@@ -325,11 +325,11 @@ public sealed class BreakoutScene : GameScene
             WebGL.Translate(MathUtils.Rand(-s, s), MathUtils.Rand(-s, s));
         }
 
-        //RenderHud();
+        RenderHud();
         RenderBricks();
-        //RenderParticles();
-        //RenderPaddle();
-        //RenderBall();
+        RenderParticles();
+        RenderPaddle();
+        RenderBall();
 
         switch (_state)
         {
@@ -367,11 +367,11 @@ public sealed class BreakoutScene : GameScene
         foreach (var brick in _bricks)
         {
             if (!brick.IsAlive) continue;
-            //WebGL.Shadow(brick.Color, 12);
+            WebGL.Shadow(brick.Color, 12);
             WebGL.RoundedRect(brick.X - brick.W / 2, brick.Y - brick.H / 2, brick.W, brick.H, 6, brick.Color);
             WebGL.RoundedRect(brick.X - brick.W / 2 + 3, brick.Y - brick.H / 2 + 3, brick.W - 6, brick.H * 0.4, 5, "#ffffff26");
         }
-        //WebGL.NoShadow();
+        WebGL.NoShadow();
     }
 
     private void RenderParticles()
