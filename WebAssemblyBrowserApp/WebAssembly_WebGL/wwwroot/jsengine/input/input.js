@@ -3,7 +3,7 @@
 // 坐标换算到逻辑分辨率（逻辑像素），与渲染层坐标系一致。
 // =====================================================================
 
-import { getCanvas } from '../render/renderer.js'
+import { glCore } from '../render/renderer.js'
 import { audio } from '../audio/audio.js'
 
 let _keys = {}
@@ -40,7 +40,7 @@ export const input = {
 }
 
 function updateMouse(e) {
-    const cv = getCanvas()
+    const cv = glCore.getCanvas()
     if (!cv) return
     const rect = cv.getBoundingClientRect()
     _mouse.x = (e.clientX - rect.left) * (cv.width / rect.width)

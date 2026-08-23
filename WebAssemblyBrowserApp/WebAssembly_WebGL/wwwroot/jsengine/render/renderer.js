@@ -118,6 +118,21 @@ export const glCore = {
         _fontCanvas.height = 256
         _fontCtx = _fontCanvas.getContext('2d')
 
+        // 画布自适应到窗口（逻辑分辨率固定为 width×height，CSS 像素做缩放）
+        // 这部分原来定义在 main.js engine.initCanvas 里，但 C# 只调 gl.init，
+        // 所以直接合并进 glCore.init，保证无论谁初始化都正确缩放。
+        const fit = () => {
+            const scale = Math.min(
+                (window.innerWidth - 24) / width,
+                (window.innerHeight - 24) / height
+            )
+            const s = Math.min(1.6, Math.max(0.25, scale))
+            el.style.width = (width * s) + 'px'
+            el.style.height = (height * s) + 'px'
+        }
+        window.addEventListener('resize', fit)
+        fit()
+
         document.getElementById('loading')?.remove()
     },
 

@@ -9,7 +9,6 @@
 // =====================================================================
 
 import { dotnet } from './_framework/dotnet.js'
-import { glCore } from './jsengine/render/renderer.js'
 import { gl } from './jsengine/render/shapes.js'
 import { input } from './jsengine/input/input.js'
 import { audio } from './jsengine/audio/audio.js'
@@ -19,24 +18,10 @@ import { storage } from './jsengine/core/storage.js'
 let _rafStarted = false
 let _lastTs = 0
 
+// 注意：engine.initCanvas 原来的 fit() 逻辑已经移到 renderer.js
+// glCore.init() 里，因为 C# GameEngine.Initialize 是直接调 gl.init
+// 而不是 engine.initCanvas。这里保留 engine 对象的最小接口：startLoop。
 const engine = {
-    initCanvas(selector, width, height) {
-        gl.init(selector, width, height)
-        const fit = () => {
-            const cv = glCore.getCanvas()
-            if (!cv) return
-            const scale = Math.min(
-                (window.innerWidth - 24) / width,
-                (window.innerHeight - 24) / height
-            )
-            const s = Math.min(1.6, Math.max(0.25, scale))
-            cv.style.width = (width * s) + 'px'
-            cv.style.height = (height * s) + 'px'
-        }
-        window.addEventListener('resize', fit)
-        fit()
-    },
-
     startLoop() {
         if (_rafStarted) return
         _rafStarted = true
@@ -58,6 +43,17 @@ function frame(ts) {
     requestAnimationFrame(frame)
 }
 
+// 暴露到 window 方便调试（仅调试用）
+if (typeof window !== 'undefined') {
+    window.__engine = {
+        get rafStarted() { return _rafStarted },
+        frame,
+        engine,
+        exports: null, // 下面赋值
+        gl,
+    }
+}
+
 // ------------------------- 启动 -------------------------
 const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotnet.create()
 
@@ -65,5 +61,7 @@ setModuleImports('main.js', { gl, input, audio, storage, engine })
 
 const config = getConfig()
 const exports = await getAssemblyExports(config.mainAssemblyName)
+
+if (window.__engine) window.__engine.exports = exports
 
 await runMain()
