@@ -27,7 +27,7 @@ public sealed partial class GameEngine
     public double Time { get; private set; }
 
     public GameScene? Current => _stack.Count > 0 ? _stack[_stack.Count - 1] : null;
-    public bool IsInitialized { get; private set; }
+    public bool IsInitialized { get; set; }
 
     private GameEngine() { }
 
@@ -39,13 +39,9 @@ public sealed partial class GameEngine
 
     public GameEngine Start(string name)
     {
-        Console.WriteLine("[dbg] S1: _stack.Clear →");
         _stack.Clear();
-        Console.WriteLine("[dbg] S2: scene.Enter → (name=" + name + ")");
         _scenes[name].Enter();
-        Console.WriteLine("[dbg] S3: scene.Enter ←");
         _stack.Add(_scenes[name]);
-        Console.WriteLine("[dbg] S4: done, stack.Count=" + _stack.Count);
         return this;
     }
 
@@ -68,15 +64,9 @@ public sealed partial class GameEngine
     {
         // gpu.init() 内部会异步请求 WebGPU 设备，不阻塞 C# 主线。
         // 设备就绪前 submit() 静默跳过，主循环照常跑（几帧后设备 ready 就渲染了）。
-        Console.WriteLine("[dbg] 01: WebGPU.Init →");
         WebGPU.Init();
-        Console.WriteLine("[dbg] 02: WebGPU.Init ←");
-        Console.WriteLine("[dbg] 03: Input.Init →");
         Input.Init();
-        Console.WriteLine("[dbg] 04: Input.Init ←");
-        Console.WriteLine("[dbg] 05: Audio.Init →");
         Audio.Init();
-        Console.WriteLine("[dbg] 06: Audio.Init ←");
         IsInitialized = true;
         return this;
     }
@@ -101,5 +91,19 @@ public sealed partial class GameEngine
     {
         var self = Instance;
         return $"isInit={self.IsInitialized};time={self.Time:0.000};dt={self.DeltaTime:0.000};stack={self._stack.Count};current={self.Current?.Name ?? "<null>"};scenes={string.Join(",", self._scenes.Keys)}";
+    }
+
+    // 逐段定位 Tick 卡死点（从 01~08，逐一调，看哪一个挂）
+    [JSExport] public static double __probe01_echo(double x) => x;
+    [JSExport] public static int    __probe02_isInit()  => Instance.IsInitialized ? 1 : 0;
+    [JSExport] public static string __probe03_checkInput(string code) => Input.IsKeyDown(code) ? "t" : "f";
+    [JSExport] public static int    __probe04_updateOnly(double dt) { if (Instance.IsInitialized && Instance.Current != null) Instance.Current.Update((float)dt); return 1; }
+    [JSExport] public static int    __probe05_renderOnly() { if (Instance.IsInitialized && Instance.Current != null) Instance.Current.Render(); return 1; }
+    [JSExport] public static int    __probe06_flushOnly()  { if (Instance.IsInitialized) WebGPU.Flush(); return 1; }
+    [JSExport] public static int    __probe07_endFrameOnly() { if (Instance.IsInitialized) Input.EndFrame(); return 1; }
+    [JSExport] public static int    __probe08_measureTextOnly() {
+        // 单独测 MeasureText —— 避免 Render 中 FillText 的字符串交互
+        if (Instance.IsInitialized) _ = WebGPU.MeasureText("HELLO", "bold 16px system-ui");
+        return 1;
     }
 }

@@ -38,7 +38,10 @@ const _dbg = {
   deviceReady: false, adapterInfo: null,
   firstShapePrefix: null,
 };
-if (typeof window !== 'undefined') window._dbg = _dbg;
+// 挂到 window 上便于探针（单独一个命名空间，避免与 main.js 的 _dbg 合并冲突）
+if (typeof window !== 'undefined') {
+  window.__renderDbg = _dbg;
+}
 
 // ---------------------------------------------------------------------
 //  WGSL 着色器
@@ -561,8 +564,8 @@ function renderFrame(shapesRaw, shadowsRaw) {
     }
     // 保护：写入元素数不能超过 GPU buffer 容量（_shapeBuffer 是 SHAPE_STRIDE*4096 floats）
     const capacityEl = 4096 * SHAPE_STRIDE;
-    if (dataElCount > capacityElCount) {
-      dataElCount = capacityElCount;
+    if (dataElCount > capacityEl) {
+      dataElCount = capacityEl;
       data = data.subarray(0, dataElCount);
     }
     _device.queue.writeBuffer(_shapeBuffer, 0, data, 0, dataElCount);

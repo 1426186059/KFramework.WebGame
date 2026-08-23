@@ -1,27 +1,41 @@
 using System;
 using System.Runtime.InteropServices.JavaScript;
-using System.Threading.Tasks;
+using WebAssemblyBrowserApp.Engine;
+using WebAssemblyBrowserApp.Games;
 
-Console.WriteLine("[dbg-min] 01: top-of-program");
+static void Step(string label) => JsDiag.Step(label);
 
-try
+Step("01: top-level start");
+var ge = GameEngine.Instance;
+Step("02: RegisterScene");
+ge.RegisterScene(new BreakoutScene());
+Step("03: ge.Initialize(#game)");
+ge.Initialize("#game");
+Step("04: ge.Start(breakout)");
+ge.Start("breakout");
+Step("05: EngineLoop.Start → requestAnimationFrame frame loop");
+EngineLoop.Start();
+Step("06: Main RETURN (resolve runMain Promise → rAF will fire!)");
+return;
+
+// --- JSInterop ---
+public static partial class JsDiag
 {
-    Console.WriteLine("[dbg-min] 02: before Task.Delay(1ms)");
-    await Task.Delay(1);
-    Console.WriteLine("[dbg-min] 03: after Task.Delay(1ms)");
-}
-catch (Exception e)
-{
-    Console.WriteLine("[dbg-min] EX: " + e.Message);
+    [JSImport("diag.step", "main.js")] internal static partial void Step(string label);
 }
 
-Console.WriteLine("[dbg-min] 04: before TCS");
-await new TaskCompletionSource().Task;
-Console.WriteLine("[dbg-min] 05: after TCS (unreachable)");
-
-/// <summary>JS 探针：导出一个 Ping 函数用于确认 C# 侧完全 alive。</summary>
 public static partial class Diagnostics
 {
-    [JSExport]
-    public static string Ping(string input) => "pong:" + input;
+    [JSExport] public static string Ping(string input) => "pong:" + input;
+}
+
+public static partial class GameBridge
+{
+    [JSExport] public static void Tick(double dt) => GameEngine.Instance.Tick(dt);
+}
+
+public static partial class EngineLoop
+{
+    [JSImport("engine.startLoop", "main.js")]
+    internal static partial void Start();
 }
