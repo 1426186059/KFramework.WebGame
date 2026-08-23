@@ -1,55 +1,32 @@
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
+using WebAssemblyBrowserApp.Engine;
+using WebAssemblyBrowserApp.Games;
 
-Console.WriteLine("Hello, Browser!");
+Console.WriteLine("[Engine] .NET 10 WebAssembly 2D 游戏引擎启动中…");
 
-if (args.Length == 1 && args[0] == "start")
-    StopwatchSample.Start();
+GameEngine.Instance
+    .RegisterScene(new BreakoutScene())
+    .Initialize("#game")
+    .Start("breakout");
 
-while (true)
+// 通知 JS 启动 requestAnimationFrame 主循环
+EngineLoop.Start();
+
+// 保持运行时存活：主循环由 JS 每帧调用 GameBridge.Tick 驱动
+await new TaskCompletionSource().Task;
+
+/// <summary>由 JS 每帧调用的导出桥（全局命名空间，导出名为 GameBridge.Tick）。</summary>
+public static partial class GameBridge
 {
-    StopwatchSample.Render();
-    await Task.Delay(1000);
+    [JSExport]
+    public static void Tick(double dt) => GameEngine.Instance.Tick(dt);
 }
 
-partial class StopwatchSample
+/// <summary>引擎启动桥：通知 JS 启动主循环。</summary>
+public static partial class EngineLoop
 {
-    private static Stopwatch stopwatch = new();
-
-    public static void Start() => stopwatch.Start();
-    public static void Render() => SetInnerText("#time", stopwatch.Elapsed.ToString(@"mm\:ss"));
-
-    [JSImport("dom.setInnerText", "main.js")]
-    internal static partial void SetInnerText(string selector, string content);
-
-    [JSExport]
-    internal static bool Toggle()
-    {
-        if (stopwatch.IsRunning)
-        {
-            stopwatch.Stop();
-            return false;
-        }
-        else
-        {
-            stopwatch.Start();
-            return true;
-        }
-    }
-
-    [JSExport]
-    internal static void Reset()
-    {
-        if (stopwatch.IsRunning)
-            stopwatch.Restart();
-        else
-            stopwatch.Reset();
-
-        Render();
-    }
-
-    [JSExport]
-    internal static bool IsRunning() => stopwatch.IsRunning;
+    [JSImport("engine.startLoop", "main.js")]
+    internal static partial void Start();
 }
