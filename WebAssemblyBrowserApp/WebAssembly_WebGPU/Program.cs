@@ -4,15 +4,13 @@ using System.Threading.Tasks;
 using WebAssemblyBrowserApp.Engine;
 using WebAssemblyBrowserApp.Games;
 
-Console.WriteLine("[Engine] .NET 10 WebAssembly 2D 游戏引擎启动中…");
+Console.WriteLine("[Engine] .NET 10 WebAssembly + WebGPU 2D 游戏引擎启动中…");
 
 GameEngine.Instance
     .RegisterScene(new BreakoutScene())
-    .Initialize("#game")
-    .Start("breakout");
+    .Initialize("#game");   // 触发 JS 异步初始化 WebGPU 设备
 
-// 通知 JS 启动 requestAnimationFrame 主循环
-EngineLoop.Start();
+// 设备就绪后，JS 会回调 GameEngine.EngineReady()（启动场景 + rAF 主循环）
 
 // 保持运行时存活：主循环由 JS 每帧调用 GameBridge.Tick 驱动
 await new TaskCompletionSource().Task;

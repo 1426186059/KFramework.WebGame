@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace WebAssemblyBrowserApp.Engine;
 
@@ -8,12 +9,12 @@ namespace WebAssemblyBrowserApp.Engine;
 /// 游戏引擎核心：场景管理、主循环调度、时间。
 /// 主循环由 JS 的 requestAnimationFrame 驱动，每帧调用 GameBridge.Tick。
 /// </summary>
-public sealed class GameEngine
+public sealed partial class GameEngine
 {
     public static GameEngine Instance { get; } = new();
 
-    public const double Width = Canvas2D.LogicalWidth;
-    public const double Height = Canvas2D.LogicalHeight;
+    public const double Width = 960;
+    public const double Height = 540;
 
     private readonly Dictionary<string, GameScene> _scenes = new();
     private readonly List<GameScene> _stack = new();
@@ -57,14 +58,21 @@ public sealed class GameEngine
         _stack.RemoveAt(_stack.Count - 1);
     }
 
-    /// <summary>初始化画布、输入与音频。</summary>
+    /// <summary>触发 WebGPU 设备初始化（异步，由 JS 在就绪后回调 CompleteInit）。</summary>
     public GameEngine Initialize(string canvasSelector = "#game")
     {
-        Canvas2D.Init(canvasSelector, Canvas2D.LogicalWidth, Canvas2D.LogicalHeight);
         Input.Init();
         Audio.Init();
-        IsInitialized = true;
+        WebGPU.Init();
         return this;
+    }
+
+    /// <summary>JS 在 WebGPU 设备就绪后调用：真正开启渲染。</summary>
+    [JSExport]
+    public static void EngineReady()
+    {
+        Instance.IsInitialized = true;
+        EngineLoop.Start();
     }
 
     /// <summary>由 JS 每帧调用一次。</summary>

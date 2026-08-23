@@ -312,14 +312,14 @@ public sealed class BreakoutScene : GameScene
 
     public override void Render()
     {
-        Canvas2D.Clear("#0d1117");
-        Canvas2D.Save();
+        WebGPU.Clear("#0d1117");
+        WebGPU.Save();
 
         // 屏幕震动
         if (_shake > 0)
         {
             double s = _shake * 14;
-            Canvas2D.Translate(MathUtils.Rand(-s, s), MathUtils.Rand(-s, s));
+            WebGPU.Translate(MathUtils.Rand(-s, s), MathUtils.Rand(-s, s));
         }
 
         RenderHud();
@@ -341,21 +341,21 @@ public sealed class BreakoutScene : GameScene
                 break;
         }
 
-        Canvas2D.Restore();
+        WebGPU.Restore();
     }
 
     private void RenderHud()
     {
-        Canvas2D.FillText("得分", 40, 30, "bold 13px system-ui, sans-serif", "#8b949e", "left");
-        Canvas2D.FillText(_score.ToString(), 40, 52, "bold 26px system-ui, sans-serif", "#e6edf3", "left");
+        WebGPU.FillText("得分", 40, 30, "bold 13px system-ui, sans-serif", "#8b949e", "left");
+        WebGPU.FillText(_score.ToString(), 40, 52, "bold 26px system-ui, sans-serif", "#e6edf3", "left");
 
-        Canvas2D.FillText("最高", GameEngine.Width - 40, 30, "bold 13px system-ui, sans-serif", "#8b949e", "right");
-        Canvas2D.FillText(_highScore.ToString("0"), GameEngine.Width - 40, 52, "bold 26px system-ui, sans-serif", "#f6c445", "right");
+        WebGPU.FillText("最高", GameEngine.Width - 40, 30, "bold 13px system-ui, sans-serif", "#8b949e", "right");
+        WebGPU.FillText(_highScore.ToString("0"), GameEngine.Width - 40, 52, "bold 26px system-ui, sans-serif", "#f6c445", "right");
 
-        Canvas2D.FillText("生命", 30, GameEngine.Height - 44, "bold 12px system-ui, sans-serif", "#8b949e", "left");
+        WebGPU.FillText("生命", 30, GameEngine.Height - 44, "bold 12px system-ui, sans-serif", "#8b949e", "left");
         for (int i = 0; i < _lives; i++)
         {
-            Canvas2D.FillCircle(34 + i * 26, GameEngine.Height - 22, 8, "#ff6b6b");
+            WebGPU.FillCircle(34 + i * 26, GameEngine.Height - 22, 8, "#ff6b6b");
         }
     }
 
@@ -364,39 +364,39 @@ public sealed class BreakoutScene : GameScene
         foreach (var brick in _bricks)
         {
             if (!brick.IsAlive) continue;
-            Canvas2D.Shadow(brick.Color, 12);
-            Canvas2D.RoundedRect(brick.X - brick.W / 2, brick.Y - brick.H / 2, brick.W, brick.H, 6, brick.Color);
-            Canvas2D.RoundedRect(brick.X - brick.W / 2 + 3, brick.Y - brick.H / 2 + 3, brick.W - 6, brick.H * 0.4, 5, "#ffffff26");
+            WebGPU.Shadow(brick.Color, 12);
+            WebGPU.RoundedRect(brick.X - brick.W / 2, brick.Y - brick.H / 2, brick.W, brick.H, 6, brick.Color);
+            WebGPU.RoundedRect(brick.X - brick.W / 2 + 3, brick.Y - brick.H / 2 + 3, brick.W - 6, brick.H * 0.4, 5, "#ffffff26");
         }
-        Canvas2D.NoShadow();
+        WebGPU.NoShadow();
     }
 
     private void RenderParticles()
     {
         foreach (var p in _particles)
         {
-            Canvas2D.Alpha(p.Alpha);
-            Canvas2D.FillCircle(p.Position.X, p.Position.Y, p.Size * p.Alpha + 0.6, p.Color);
+            WebGPU.Alpha(p.Alpha);
+            WebGPU.FillCircle(p.Position.X, p.Position.Y, p.Size * p.Alpha + 0.6, p.Color);
         }
-        Canvas2D.Alpha(1);
+        WebGPU.Alpha(1);
     }
 
     private void RenderPaddle()
     {
         var p = _paddle;
-        Canvas2D.Shadow("#4dabf7", 16);
-        Canvas2D.RoundedRect(p.Position.X - p.Width / 2, p.Position.Y - p.Height / 2, p.Width, p.Height, 8, "#4dabf7");
-        Canvas2D.NoShadow();
-        Canvas2D.RoundedRect(p.Position.X - p.Width / 2 + 5, p.Position.Y - p.Height / 2 + 3, p.Width - 10, p.Height * 0.45, 6, "#ffffff33");
+        WebGPU.Shadow("#4dabf7", 16);
+        WebGPU.RoundedRect(p.Position.X - p.Width / 2, p.Position.Y - p.Height / 2, p.Width, p.Height, 8, "#4dabf7");
+        WebGPU.NoShadow();
+        WebGPU.RoundedRect(p.Position.X - p.Width / 2 + 5, p.Position.Y - p.Height / 2 + 3, p.Width - 10, p.Height * 0.45, 6, "#ffffff33");
     }
 
     private void RenderBall()
     {
         var b = _ball;
-        Canvas2D.Shadow("#ffe066", 14);
-        Canvas2D.FillCircle(b.Position.X, b.Position.Y, b.Radius, "#ffe066");
-        Canvas2D.NoShadow();
-        Canvas2D.FillCircle(b.Position.X - 2, b.Position.Y - 2, b.Radius * 0.45, "#fff8d6");
+        WebGPU.Shadow("#ffe066", 14);
+        WebGPU.FillCircle(b.Position.X, b.Position.Y, b.Radius, "#ffe066");
+        WebGPU.NoShadow();
+        WebGPU.FillCircle(b.Position.X - 2, b.Position.Y - 2, b.Radius * 0.45, "#fff8d6");
     }
 
     private void RenderMenu()
@@ -404,16 +404,16 @@ public sealed class BreakoutScene : GameScene
         double cx = GameEngine.Width / 2;
         double cy = GameEngine.Height / 2;
 
-        Canvas2D.Shadow("#4dabf7", 24);
-        Canvas2D.FillText("BREAKOUT", cx, cy - 80, "bold 64px system-ui, sans-serif", "#e6edf3", "center");
-        Canvas2D.NoShadow();
+        WebGPU.Shadow("#4dabf7", 24);
+        WebGPU.FillText("BREAKOUT", cx, cy - 80, "bold 64px system-ui, sans-serif", "#e6edf3", "center");
+        WebGPU.NoShadow();
 
-        Canvas2D.FillText("基于 .NET 10 + WebAssembly 的 2D 游戏引擎", cx, cy - 22, "18px system-ui, sans-serif", "#8b949e", "center");
+        WebGPU.FillText("基于 .NET 10 + WebAssembly 的 2D 游戏引擎", cx, cy - 22, "18px system-ui, sans-serif", "#8b949e", "center");
 
         if ((int)(_stateTime * 2) % 2 == 0)
-            Canvas2D.FillText("点击或按空格键开始", cx, cy + 30, "bold 22px system-ui, sans-serif", "#ffe066", "center");
+            WebGPU.FillText("点击或按空格键开始", cx, cy + 30, "bold 22px system-ui, sans-serif", "#ffe066", "center");
 
-        Canvas2D.FillText("← → / A D 或鼠标移动挡板  ·  空格发射", cx, GameEngine.Height - 70, "15px system-ui, sans-serif", "#6e7681", "center");
+        WebGPU.FillText("← → / A D 或鼠标移动挡板  ·  空格发射", cx, GameEngine.Height - 70, "15px system-ui, sans-serif", "#6e7681", "center");
     }
 
     private void RenderOverlay(string title, string sub, string color)
@@ -421,17 +421,17 @@ public sealed class BreakoutScene : GameScene
         double cx = GameEngine.Width / 2;
         double cy = GameEngine.Height / 2;
 
-        Canvas2D.Alpha(0.55);
-        Canvas2D.FillRect(0, 0, GameEngine.Width, GameEngine.Height, "#000000");
-        Canvas2D.Alpha(1);
+        WebGPU.Alpha(0.55);
+        WebGPU.FillRect(0, 0, GameEngine.Width, GameEngine.Height, "#000000");
+        WebGPU.Alpha(1);
 
-        Canvas2D.Shadow(color, 28);
-        Canvas2D.FillText(title, cx, cy - 30, "bold 54px system-ui, sans-serif", color, "center");
-        Canvas2D.NoShadow();
+        WebGPU.Shadow(color, 28);
+        WebGPU.FillText(title, cx, cy - 30, "bold 54px system-ui, sans-serif", color, "center");
+        WebGPU.NoShadow();
 
-        Canvas2D.FillText(sub, cx, cy + 22, "bold 24px system-ui, sans-serif", "#e6edf3", "center");
+        WebGPU.FillText(sub, cx, cy + 22, "bold 24px system-ui, sans-serif", "#e6edf3", "center");
 
         if ((int)(_stateTime * 2) % 2 == 0)
-            Canvas2D.FillText("点击或按空格键重新开始", cx, cy + 70, "16px system-ui, sans-serif", "#8b949e", "center");
+            WebGPU.FillText("点击或按空格键重新开始", cx, cy + 70, "16px system-ui, sans-serif", "#8b949e", "center");
     }
 }
