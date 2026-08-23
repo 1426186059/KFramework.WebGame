@@ -1,3 +1,7 @@
+// 本工程使用 WebGL 2.0（getContext('webgl2')）。项目明确要求仅支持 WebGL 2.0，
+// 因此可直接使用 gl.vertexAttribDivisor / gl.drawArraysInstanced 等原生实例化 API，
+// 着色器保留 GLSL ES 1.00 语法（WebGL 2.0 向后兼容）。
+// =====================================================================
 // =====================================================================
 // .NET 10 WebAssembly 纯 WebGL 游戏引擎 —— JS 桥接层
 // 渲染后端为 WebGL：所有图元（矩形 / 圆角 / 圆 / 文本 / 图片）都由着色器批量绘制。
@@ -70,14 +74,15 @@ void main() {
     vec2 clip = (t.xy / (u_resolution * 0.5)) - 1.0;
     clip.y = -clip.y;
     gl_Position = vec4(clip, 0.0, 1.0);
-    v_uv = a_pos;
+    float shortSide = min(a_rect.z, a_rect.w);
+    v_uv = (a_pos * a_rect.zw) / max(shortSide, 0.001);  // 以短边归一化，保持圆角不被拉伸
     v_color = a_color;
     v_params = a_params;
 }
 `
 
 const SHAPE_FRAG = `
-precision mediump float;
+precision highp float;
 varying vec2 v_uv;
 varying vec4 v_color;
 varying vec2 v_params;
@@ -124,7 +129,7 @@ void main() {
 `
 
 const IMG_FRAG = `
-precision mediump float;
+precision highp float;
 varying vec2 v_uv;
 varying vec4 v_color;
 uniform sampler2D u_tex;
@@ -197,9 +202,8 @@ function linkProgram(gl, vsSrc, fsSrc) {
 }
 
 function initGL(canvas) {
-    const gl = canvas.getContext('webgl', { alpha: false, antialias: true, premultipliedAlpha: false })
-        || canvas.getContext('experimental-webgl')
-    if (!gl) throw new Error('WebGL not supported')
+    const gl = canvas.getContext('webgl2', { alpha: false, antialias: true, premultipliedAlpha: false })
+    if (!gl) throw new Error('WebGL2 not supported')
     _gl = gl
 
     _shapeProg = linkProgram(gl, SHAPE_VERT, SHAPE_FRAG)
