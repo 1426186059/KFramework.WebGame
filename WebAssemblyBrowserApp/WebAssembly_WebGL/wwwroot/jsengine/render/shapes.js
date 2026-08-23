@@ -1,126 +1,45 @@
 // =====================================================================
-// 渲染层：gl.* 绘制 API（C# 通过 setModuleImports('main.js') 桥接调用）。
-// 绘制调用把当前变换/颜色/阴影烘焙进实例缓冲（见 renderer.js pushInstance），
-// 由入口帧循环统一 flush，语义与 Canvas2D 的立即模式一致。
+// shapes.js（薄 API）：只负责给 C# 层暴露 gl.* 名称空间，
+// 所有 gl.* 方法都只是转发到 glCore（真正的合批逻辑在 C# 层 WebGL.cs）。
 // =====================================================================
 
-import {
-    pushInstance, flushShapes, hexToRgb, currentMatrix, identity, multiply,
-    initGL, getGL, getCanvas, setCanvas,
-    state, _textures,
-} from './renderer.js'
-import { drawTextSprite, drawTexturedQuad } from './text.js'
+import { glCore } from './renderer.js'
 
 export const gl = {
+    // ---- 初始化 ----
     init(selector, width, height) {
-        const el = document.querySelector(selector)
-        el.width = width
-        el.height = height
-        setCanvas(el)
-        initGL(el)
-        document.getElementById('loading')?.remove()
+        glCore.init(selector, width, height)
     },
 
-    clear(color) {
-        flushShapes()
-        const g = getGL()
-        const cv = getCanvas()
-        const rgb = hexToRgb(color)
-        g.bindFramebuffer(g.FRAMEBUFFER, null)
-        g.viewport(0, 0, cv.width, cv.height)
-        g.clearColor(rgb[0], rgb[1], rgb[2], 1)
-        g.clear(g.COLOR_BUFFER_BIT)
+    // ---- 清屏（直接传 rgba float，C# 侧完成 hex→float） ----
+    clear(r, g, b, a) {
+        glCore.clear(r, g, b, a)
     },
 
-    fillRect(x, y, w, h, color) { pushInstance(x, y, w, h, color, 0, 0) },
-
-    strokeRect(x, y, w, h, color, lineWidth) {
-        const t = lineWidth || 1
-        gl.fillRect(x, y, w, t, color)
-        gl.fillRect(x, y + h - t, w, t, color)
-        gl.fillRect(x, y, t, h, color)
-        gl.fillRect(x + w - t, y, t, h, color)
+    // ---- 形状批量绘制（C# 侧组装好 instData，紧凑布局每实例 FLOATS_PER_INST） ----
+    drawShapeBatch(dataArr, instanceCount) {
+        const data = ArrayBuffer.isView(dataArr) ? dataArr : new Float32Array(dataArr)
+        glCore.drawShapeBatch(data, instanceCount)
     },
 
-    roundedRect(x, y, w, h, r, color) {
-        // 直接传像素半径，着色器里 clamp 到短边一半（胶囊形），与 Canvas2D 语义一致
-        pushInstance(x, y, w, h, color, r, 0)
+    // ---- 单实例纹理绘制（图片 / 文本），texId 为数值 id（文本烘焙用） ----
+    drawImageInstance(dataArr, texId, uvW, uvH) {
+        const data = ArrayBuffer.isView(dataArr) ? dataArr : new Float32Array(dataArr)
+        glCore.drawImageInstance(data, texId, uvW, uvH)
     },
 
-    fillCircle(x, y, r, color) { pushInstance(x - r, y - r, r * 2, r * 2, color, r, 1) },
-
-    line(x1, y1, x2, y2, color, lineWidth) {
-        const t = lineWidth || 1
-        const dx = x2 - x1, dy = y2 - y1
-        const len = Math.hypot(dx, dy)
-        if (len < 0.001) return
-        // 用临时变换把线段转成旋转细矩形，保证斜线与 Canvas2D 一致
-        gl.save()
-        gl.translate(x1, y1)
-        gl.rotate(Math.atan2(dy, dx))
-        gl.fillRect(0, -t / 2, len, t, color)
-        gl.restore()
+    // ---- 图片 DrawImage（通过 string id），C# 侧给行主序矩阵 + alpha ----
+    drawImageById(id, dx, dy, dw, dh, matrixArr, alpha) {
+        glCore.drawImageById(id, dx, dy, dw, dh, matrixArr, alpha)
     },
 
-    fillText(text, x, y, font, color, align)
-    {
-        flushShapes()
-        drawTextSprite(text, x, y, font, color, align)
-    },
-
-    save() {
-        state.matrixStack.push(new Float32Array(currentMatrix()))
-        state.alphaStack.push(state.globalAlpha)
-        state.shadowStack.push([state.shadowColor, state.shadowBlur])
-    },
-    restore() {
-        if (state.matrixStack.length > 1) {
-            state.matrixStack.pop()
-            state.globalAlpha = state.alphaStack.pop()
-            const s = state.shadowStack.pop()
-            state.shadowColor = s[0]; state.shadowBlur = s[1]
-        }
-    },
-    translate(x, y) {
-        const m = currentMatrix()
-        const t = identity()
-        t[2] = x; t[5] = y
-        state.matrixStack[state.matrixStack.length - 1] = multiply(m, t)
-    },
-    rotate(rad) {
-        const m = currentMatrix()
-        const c = Math.cos(rad), s = Math.sin(rad)
-        const r = identity()
-        r[0] = c; r[1] = -s; r[3] = s; r[4] = c
-        state.matrixStack[state.matrixStack.length - 1] = multiply(m, r)
-    },
-    alpha(a) { state.globalAlpha = a },
-    shadow(color, blur) { state.shadowColor = color; state.shadowBlur = blur },
-    noShadow() { state.shadowColor = null; state.shadowBlur = 0 },
-
+    // ---- 图片加载 ----
     loadImage(id, url) {
-        return new Promise((resolve) => {
-            const img = new Image()
-            img.onload = () => {
-                const g = getGL()
-                const tex = g.createTexture()
-                g.bindTexture(g.TEXTURE_2D, tex)
-                g.pixelStorei(g.UNPACK_FLIP_Y_WEBGL, false)
-                g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, img)
-                g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR)
-                g.texParameteri(g.TEXTURE_2D, g.TEXTURE_WRAP_S, g.CLAMP_TO_EDGE)
-                g.texParameteri(g.TEXTURE_2D, g.TEXTURE_WRAP_T, g.CLAMP_TO_EDGE)
-                _textures[id] = tex
-                resolve(true)
-            }
-            img.onerror = () => resolve(false)
-            img.src = url
-        })
+        return glCore.loadImage(id, url)
     },
 
-    drawImage(id, dx, dy, dw, dh) {
-        flushShapes()
-        const tex = _textures[id]
-        if (tex) drawTexturedQuad(tex, dx, dy, dw, dh)
+    // ---- 文本纹理烘焙：返回 { texId, tw, th, ascent, pad } ----
+    bakeTextTexture(text, font, color) {
+        return glCore.bakeTextTexture(text, font, color)
     },
 }

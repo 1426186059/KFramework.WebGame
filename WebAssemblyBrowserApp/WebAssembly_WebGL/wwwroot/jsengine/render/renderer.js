@@ -1,94 +1,57 @@
 // =====================================================================
-// 渲染层核心：WebGL 2.0 初始化 + 实例化批处理。
-// 本模块持有全部共享 GL 状态（画布、上下文、实例缓冲、矩阵/透明度/阴影
-// 状态栈），并通过 export let 活绑定暴露给 shapes.js / text.js / 入口。
-//
-// 关键设计：每个实例在「绘制调用当时」把当前变换矩阵烘焙进实例数据
-// （attribute mat3），因此 Save/Translate/Rotate 块内绘制的图形在任何
-// 时刻 flush 都保持正确位置，与 Canvas2D 的立即应用语义一致。
-// 本工程仅使用 WebGL 2.0（getContext('webgl2')），可直接使用
-// gl.vertexAttribDivisor / gl.drawArraysInstanced 等原生实例化 API。
+// 只提供 WebGL 2.0 API
+// 渲染层核心（薄 API）：只暴露原始 WebGL 操作，不做任何业务状态/合批。
+// 合批逻辑、矩阵栈、状态管理全部由 C# 层（WebGL.cs）处理。
+// 本模块只负责：
+//   - 初始化 GL 上下文、编译着色器、创建 VBO/实例缓冲
+//   - 上传 C# 准备好的批量实例数据并 drawArraysInstanced
+//   - 上传单个纹理/文本纹理并绘制纹理四边形
+//   - 基础 gl.* 调用（清屏、视口、blend）
 // =====================================================================
 
 import { SHAPE_VERT, SHAPE_FRAG } from './shaders/shape.js'
 import { IMG_VERT, IMG_FRAG } from './shaders/image.js'
 import { BLUR_VERT, BLUR_FRAG } from './shaders/blur.js'
 
-// ------------------------- 共享状态 -------------------------
-export let _gl = null
-export let _canvas = null
-export let _fontCanvas = null
-export let _fontCtx = null
+// ------------------------- 共享 GL 对象 -------------------------
+let _gl = null
+let _canvas = null
+let _fontCanvas = null
+let _fontCtx = null
 
-// 每帧可变的绘制状态（矩阵栈 / 透明度 / 阴影）。
-// 用「可变对象」而非 export let 暴露：ES module 的 import 绑定本身只读，
-// import 方（shapes.js）直接给绑定赋值会抛 TypeError，改对象属性则合法。
-export const state = {
-    matrixStack: [identity()],
-    alphaStack: [1],
-    shadowStack: [[null, 0]],
-    globalAlpha: 1,
-    shadowColor: null,
-    shadowBlur: 0,
-}
+// Program / uniform 位置
+let _shapeProg = null, _imgProg = null, _blurProg = null
+let _quadBuf = null, _instBuf = null
+let _uShapeRes = null
+let _uImgRes = null, _uImgTex = null, _uImgUvRect = null
 
-export const _textures = {}
+// 纹理缓存：id -> WebGLTexture
+const _textures = new Map()
+let _nextTexId = 1
 
-// 实例属性：
-//  0-3   rect (x, y, w, h)
-//  4-7   color (r, g, b, a)
-//  8     radius（归一化到短边）
-//  9     kind（0=圆角矩形, 1=圆）
-//  10    shadowBlur（仅阴影批次使用，普通实例恒为 0）
-//  11-19 实例矩阵（列主序 9 个 float，attribute mat3）
+// 文本纹理缓存：key -> { texId, tw, th, ascent, pad }，LRU
+const _textCache = new Map()
+const TEXT_CACHE_LIMIT = 128
+
+// ------------------------- 常量（与 C# 保持一致） -------------------------
+// FLOATS_PER_INST = 20 （每实例 1 份，紧凑布局，不再是旧版本的 4 份重复）
+//   0-3   rect (x, y, w, h)
+//   4-7   color (r, g, b, a)
+//   8     radius
+//   9     kind（0=圆角矩形, 1=圆）
+//   10    reserved (shadowBlur 或 padding)
+//   11-19 实例矩阵 mat3（列主序 9 个 float）
 export const FLOATS_PER_INST = 20
 export const MAX_INSTANCES = 4096
-export let _instData = new Float32Array(MAX_INSTANCES * 4 * FLOATS_PER_INST)
-export let _instCount = 0
-let _shadowData = new Float32Array(MAX_INSTANCES * 4 * FLOATS_PER_INST)
-let _shadowCount = 0
 
-// ------------------------- 矩阵工具 -------------------------
-export function identity() { return new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]) }
+export const LOC_POS = 0
+export const LOC_RECT = 1
+export const LOC_COLOR = 2
+export const LOC_PARAMS = 3
+export const LOC_MATRIX_SHAPE = 4   // SHAPE：mat3 占 4,5,6
+export const LOC_MATRIX_IMG = 3     // IMG：mat3 占 3,4,5
 
-// 标准矩阵乘法 r = a·b（行主序）。Canvas2D 语义：M_new = M_old · M_transform（右乘），
-// 因此 translate/rotate 等后调用的变换先作用于顶点（旋转围绕局部原点/物体中心）。
-export function multiply(a, b) {
-    const r = new Float32Array(9)
-    for (let i = 0; i < 3; i++)
-        for (let j = 0; j < 3; j++)
-            r[i * 3 + j] = a[i * 3 + 0] * b[0 * 3 + j] + a[i * 3 + 1] * b[1 * 3 + j] + a[i * 3 + 2] * b[2 * 3 + j]
-    return r
-}
-
-export function currentMatrix() { return state.matrixStack[state.matrixStack.length - 1] }
-
-// 把仿射矩阵按「列主序」写入实例数据（GLSL attribute mat3 的布局）
-export function storeMatrix(arr, base, m) {
-    arr[base] = m[0]; arr[base + 1] = m[3]; arr[base + 2] = m[6]
-    arr[base + 3] = m[1]; arr[base + 4] = m[4]; arr[base + 5] = m[7]
-    arr[base + 6] = m[2]; arr[base + 7] = m[5]; arr[base + 8] = m[8]
-}
-
-export function hexToRgb(hex) {
-    if (typeof hex !== 'string') return [1, 1, 1, 1]
-    let h = hex.replace('#', '')
-    if (h.length === 3) h = h.split('').map(c => c + c).join('')
-    let a = 1
-    if (h.length === 8) { a = parseInt(h.slice(6, 8), 16) / 255; h = h.slice(0, 6) }
-    const n = parseInt(h, 16)
-    return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255, a]
-}
-
-// ------------------------- 程序 / 缓冲 / uniform 位置 -------------------------
-export let _shapeProg = null, _imgProg = null, _blurProg = null
-export let _quadBuf = null, _instBuf = null, _fbBuf = null
-export let _uShapeRes = null
-export let _uImgRes = null, _uImgTex = null, _uImgUvRect = null
-let _uBlurTex = null, _uBlurTexel = null, _uBlurDir = null
-let _shadowTex = null, _shadowFBO = null, _blurTex = null, _blurFBO = null
-let _shadowW = 0, _shadowH = 0
-
+// ------------------------- 着色器编译 -------------------------
 function compile(gl, type, src) {
     const sh = gl.createShader(type)
     gl.shaderSource(sh, src)
@@ -107,171 +70,268 @@ function link(gl, vs, fs) {
     return p
 }
 
-export function initGL(canvas) {
-    const gl = canvas.getContext('webgl2', { alpha: false, antialias: true, premultipliedAlpha: false })
-    if (!gl) throw new Error('WebGL2 not supported')
-    _gl = gl
-
-    _shapeProg = link(gl, SHAPE_VERT, SHAPE_FRAG)
-    _imgProg = link(gl, IMG_VERT, IMG_FRAG)
-    _blurProg = link(gl, BLUR_VERT, BLUR_FRAG)
-
-    _quadBuf = gl.createBuffer()
-    gl.bindBuffer(gl.ARRAY_BUFFER, _quadBuf)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1]), gl.STATIC_DRAW)
-
-    _instBuf = gl.createBuffer()
-    gl.bindBuffer(gl.ARRAY_BUFFER, _instBuf)
-    gl.bufferData(gl.ARRAY_BUFFER, MAX_INSTANCES * 4 * FLOATS_PER_INST * 4, gl.DYNAMIC_DRAW)
-
-    _fbBuf = gl.createBuffer()
-    gl.bindBuffer(gl.ARRAY_BUFFER, _fbBuf)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1]), gl.STATIC_DRAW)
-
-    gl.enable(gl.BLEND)
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-
-    _uShapeRes = gl.getUniformLocation(_shapeProg, 'u_resolution')
-    _uImgRes = gl.getUniformLocation(_imgProg, 'u_resolution')
-    _uImgTex = gl.getUniformLocation(_imgProg, 'u_tex')
-    _uImgUvRect = gl.getUniformLocation(_imgProg, 'u_uvRect')
-    _uBlurTex = gl.getUniformLocation(_blurProg, 'u_tex')
-    _uBlurTexel = gl.getUniformLocation(_blurProg, 'u_texel')
-    _uBlurDir = gl.getUniformLocation(_blurProg, 'u_dir')
-
-    _fontCanvas = document.createElement('canvas')
-    _fontCanvas.width = 1024
-    _fontCanvas.height = 256
-    _fontCtx = _fontCanvas.getContext('2d')
-
-    initFBOs(canvas.width, canvas.height)
-}
-
-function initFBOs(w, h) {
-    const gl = _gl
-    _shadowW = w; _shadowH = h
-    _shadowTex = gl.createTexture()
-    gl.bindTexture(gl.TEXTURE_2D, _shadowTex)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-    _shadowFBO = gl.createFramebuffer()
-    gl.bindFramebuffer(gl.FRAMEBUFFER, _shadowFBO)
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, _shadowTex, 0)
-
-    _blurTex = gl.createTexture()
-    gl.bindTexture(gl.TEXTURE_2D, _blurTex)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-    _blurFBO = gl.createFramebuffer()
-    gl.bindFramebuffer(gl.FRAMEBUFFER, _blurFBO)
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, _blurTex, 0)
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-}
-
-// a_pos 固定为 location 0（各 shader 的显式 layout 一致）
-export const LOC_POS = 0
-export const LOC_RECT = 1
-export const LOC_COLOR = 2
-export const LOC_PARAMS = 3
-export const LOC_MATRIX_SHAPE = 4   // SHAPE：mat3 占 4,5,6
-export const LOC_MATRIX_IMG = 3     // IMG：mat3 占 3,4,5
-
-export function bindQuad(prog) {
+function bindQuad(prog) {
     const gl = _gl
     gl.bindBuffer(gl.ARRAY_BUFFER, _quadBuf)
     gl.enableVertexAttribArray(LOC_POS)
     gl.vertexAttribPointer(LOC_POS, 2, gl.FLOAT, false, 0, 0)
 }
 
-// ------------------------- 实例批处理 -------------------------
-export function pushInstance(x, y, w, h, color, radius, kind) {
-    const rgb = hexToRgb(color)
-    const a = rgb[3] * state.globalAlpha
-    const m = currentMatrix()
+// ------------------------- 薄 API 导出 -------------------------
+export const glCore = {
+    // ------------------------- 初始化 -------------------------
+    init(selector, width, height) {
+        const el = document.querySelector(selector)
+        el.width = width
+        el.height = height
+        _canvas = el
 
-    // 阴影：与本体同一批次，先画（偏移 +2,+3、半透明），再画本体盖住中心，
-    // 效果等价 Canvas2D 的 shadow（无需 FBO/高斯模糊，杜绝帧缓冲串扰）
-    if (state.shadowColor) {
-        const srgb = hexToRgb(state.shadowColor)
-        if (_instCount >= MAX_INSTANCES) flushShapes()
-        let base = _instCount * 4 * FLOATS_PER_INST
-        for (let i = 0; i < 4; i++) {
-            const o = base + i * FLOATS_PER_INST
-            _instData[o] = x + 2; _instData[o + 1] = y + 3
-            _instData[o + 2] = w; _instData[o + 3] = h
-            _instData[o + 4] = srgb[0]; _instData[o + 5] = srgb[1]; _instData[o + 6] = srgb[2]; _instData[o + 7] = srgb[3] * 0.35
-            _instData[o + 8] = radius; _instData[o + 9] = kind; _instData[o + 10] = 0
-            storeMatrix(_instData, o + 11, m)
+        const gl = el.getContext('webgl2', { alpha: false, antialias: true, premultipliedAlpha: false })
+        if (!gl) throw new Error('WebGL2 not supported')
+        _gl = gl
+
+        _shapeProg = link(gl, SHAPE_VERT, SHAPE_FRAG)
+        _imgProg = link(gl, IMG_VERT, IMG_FRAG)
+        _blurProg = link(gl, BLUR_VERT, BLUR_FRAG)
+
+        // 全屏 quad（-1..1）：2 个三角形 = 6 个顶点
+        _quadBuf = gl.createBuffer()
+        gl.bindBuffer(gl.ARRAY_BUFFER, _quadBuf)
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1]), gl.STATIC_DRAW)
+
+        // 实例缓冲：预留足够空间（MAX_INSTANCES=4096，每实例 FLOATS_PER_INST floats，紧凑布局）
+        _instBuf = gl.createBuffer()
+        gl.bindBuffer(gl.ARRAY_BUFFER, _instBuf)
+        gl.bufferData(gl.ARRAY_BUFFER, MAX_INSTANCES * FLOATS_PER_INST * 4, gl.DYNAMIC_DRAW)
+
+        gl.enable(gl.BLEND)
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+
+        _uShapeRes = gl.getUniformLocation(_shapeProg, 'u_resolution')
+        _uImgRes = gl.getUniformLocation(_imgProg, 'u_resolution')
+        _uImgTex = gl.getUniformLocation(_imgProg, 'u_tex')
+        _uImgUvRect = gl.getUniformLocation(_imgProg, 'u_uvRect')
+
+        // 字体烘焙用离屏 Canvas
+        _fontCanvas = document.createElement('canvas')
+        _fontCanvas.width = 1024
+        _fontCanvas.height = 256
+        _fontCtx = _fontCanvas.getContext('2d')
+
+        document.getElementById('loading')?.remove()
+    },
+
+    // ------------------------- 清屏 -------------------------
+    clear(r, g, b, a) {
+        const gl = _gl
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+        gl.viewport(0, 0, _canvas.width, _canvas.height)
+        gl.clearColor(r, g, b, a ?? 1)
+        gl.clear(gl.COLOR_BUFFER_BIT)
+    },
+
+    // ------------------------- 形状：批量实例化绘制 -------------------------
+    // data: Float32Array，C# 已组装好的实例数据（每实例 FLOATS_PER_INST floats，紧凑布局）
+    // instanceCount: 实例数
+    drawShapeBatch(data, instanceCount) {
+        if (instanceCount <= 0) return
+        const gl = _gl
+        const prog = _shapeProg
+        gl.useProgram(prog)
+        bindQuad(prog)
+
+        // 上传实例数据（只上传 instanceCount × FLOATS_PER_INST floats）
+        gl.bindBuffer(gl.ARRAY_BUFFER, _instBuf)
+        const floatCount = instanceCount * FLOATS_PER_INST
+        const byteLen = floatCount * 4
+        if (data.length >= floatCount && data.byteLength === byteLen) {
+            gl.bufferSubData(gl.ARRAY_BUFFER, 0, data)
+        } else {
+            gl.bufferSubData(gl.ARRAY_BUFFER, 0, data.subarray(0, floatCount))
         }
-        _instCount++
-    }
 
-    if (_instCount >= MAX_INSTANCES) flushShapes()
-    let base = _instCount * 4 * FLOATS_PER_INST
-    for (let i = 0; i < 4; i++) {
-        const o = base + i * FLOATS_PER_INST
-        _instData[o] = x; _instData[o + 1] = y; _instData[o + 2] = w; _instData[o + 3] = h
-        _instData[o + 4] = rgb[0]; _instData[o + 5] = rgb[1]; _instData[o + 6] = rgb[2]; _instData[o + 7] = a
-        _instData[o + 8] = radius; _instData[o + 9] = kind; _instData[o + 10] = 0
-        storeMatrix(_instData, o + 11, m)
-    }
-    _instCount++
+        const stride = FLOATS_PER_INST * 4
+        // a_rect (vec4, location=1)
+        gl.enableVertexAttribArray(LOC_RECT)
+        gl.vertexAttribPointer(LOC_RECT, 4, gl.FLOAT, false, stride, 0)
+        gl.vertexAttribDivisor(LOC_RECT, 1)
+        // a_color (vec4, location=2)
+        gl.enableVertexAttribArray(LOC_COLOR)
+        gl.vertexAttribPointer(LOC_COLOR, 4, gl.FLOAT, false, stride, 4 * 4)
+        gl.vertexAttribDivisor(LOC_COLOR, 1)
+        // a_params (vec2: radius, kind, location=3)
+        gl.enableVertexAttribArray(LOC_PARAMS)
+        gl.vertexAttribPointer(LOC_PARAMS, 2, gl.FLOAT, false, stride, 8 * 4)
+        gl.vertexAttribDivisor(LOC_PARAMS, 1)
+        // a_matrix (mat3, location=4,5,6)
+        for (let c = 0; c < 3; c++) {
+            const loc = LOC_MATRIX_SHAPE + c
+            gl.enableVertexAttribArray(loc)
+            gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, stride, (11 + c * 3) * 4)
+            gl.vertexAttribDivisor(loc, 1)
+        }
+
+        gl.uniform2f(_uShapeRes, _canvas.width, _canvas.height)
+        gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, instanceCount)
+    },
+
+    // ------------------------- 图片/文本：单实例纹理绘制 -------------------------
+    // data: Float32Array[FLOATS_PER_INST]，单实例数据（rect/color/matrix）
+    // texId: 纹理 id（由 loadImage 或 bakeTextTexture 返回）
+    // uvW, uvH: UV 区域宽高（0..1，用于图集裁剪）
+    drawImageInstance(data, texId, uvW, uvH) {
+        const gl = _gl
+        const tex = _textures.get(texId)
+        if (!tex) return
+
+        gl.useProgram(_imgProg)
+        bindQuad(_imgProg)
+        gl.activeTexture(gl.TEXTURE0)
+        gl.bindTexture(gl.TEXTURE_2D, tex)
+        gl.uniform1i(_uImgTex, 0)
+        gl.uniform4f(_uImgUvRect, 0, 0, uvW ?? 1, uvH ?? 1)
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, _instBuf)
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, data)
+        const stride = FLOATS_PER_INST * 4
+        gl.enableVertexAttribArray(LOC_RECT)
+        gl.vertexAttribPointer(LOC_RECT, 4, gl.FLOAT, false, stride, 0)
+        gl.vertexAttribDivisor(LOC_RECT, 1)
+        gl.enableVertexAttribArray(LOC_COLOR)
+        gl.vertexAttribPointer(LOC_COLOR, 4, gl.FLOAT, false, stride, 4 * 4)
+        gl.vertexAttribDivisor(LOC_COLOR, 1)
+        for (let c = 0; c < 3; c++) {
+            const loc = LOC_MATRIX_IMG + c
+            gl.enableVertexAttribArray(loc)
+            gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, stride, (11 + c * 3) * 4)
+            gl.vertexAttribDivisor(loc, 1)
+        }
+
+        gl.uniform2f(_uImgRes, _canvas.width, _canvas.height)
+        gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, 1)
+    },
+
+    // ------------------------- 图片加载 -------------------------
+    loadImage(id, url) {
+        return new Promise((resolve) => {
+            const img = new Image()
+            img.onload = () => {
+                const gl = _gl
+                const tex = gl.createTexture()
+                gl.bindTexture(gl.TEXTURE_2D, tex)
+                gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false)
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img)
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+                _textures.set(id, tex)
+                resolve(true)
+            }
+            img.onerror = () => resolve(false)
+            img.src = url
+        })
+    },
+
+    // ------------------------- 文本纹理烘焙 -------------------------
+    // C# 层不会处理字体测量/离屏 Canvas（这是浏览器特有 API），
+    // 所以文本纹理的「创建 + 缓存」仍由 JS 薄 API 负责，但绘制调用由 C# 控制。
+    // 返回：{ texId, tw, th, ascent, pad } 或 null
+    bakeTextTexture(text, font, color) {
+        const key = text + '\u0000' + font + '\u0000' + color
+        let entry = _textCache.get(key)
+        if (!entry) {
+            entry = bakeTextImpl(text, font, color)
+            if (!entry) return null
+            _textCache.set(key, entry)
+            if (_textCache.size > TEXT_CACHE_LIMIT) {
+                const oldest = _textCache.keys().next().value
+                const old = _textCache.get(oldest)
+                const tex = _textures.get(old.texId)
+                if (tex) _gl.deleteTexture(tex)
+                _textures.delete(old.texId)
+                _textCache.delete(oldest)
+            }
+        }
+        return { texId: entry.texId, tw: entry.tw, th: entry.th, ascent: entry.ascent, pad: entry.pad }
+    },
+
+    // ------------------------- 辅助 -------------------------
+    getCanvas() { return _canvas },
+    getWidth() { return _canvas?.width ?? 0 },
+    getHeight() { return _canvas?.height ?? 0 },
+
+    // ------------------------- 图片 DrawImage（通过 string id） -------------------------
+    // C# 侧传矩阵（行主序 float[9]）+ alpha；本函数内部组装实例数据并绘制。
+    drawImageById(id, dx, dy, dw, dh, matrixArr, alpha) {
+        const tex = _textures.get(id)
+        if (!tex) return
+        const gl = _gl
+        const m = matrixArr
+        const data = new Float32Array(FLOATS_PER_INST)
+        data[0] = dx; data[1] = dy; data[2] = dw; data[3] = dh
+        data[4] = 1; data[5] = 1; data[6] = 1; data[7] = alpha
+        data[8] = 0; data[9] = 0; data[10] = 0
+        // 行主序 → 列主序
+        data[11] = m[0]; data[12] = m[3]; data[13] = m[6]
+        data[14] = m[1]; data[15] = m[4]; data[16] = m[7]
+        data[17] = m[2]; data[18] = m[5]; data[19] = m[8]
+
+        gl.useProgram(_imgProg)
+        bindQuad(_imgProg)
+        gl.activeTexture(gl.TEXTURE0)
+        gl.bindTexture(gl.TEXTURE_2D, tex)
+        gl.uniform1i(_uImgTex, 0)
+        gl.uniform4f(_uImgUvRect, 0, 0, 1, 1)
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, _instBuf)
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, data)
+        const stride = FLOATS_PER_INST * 4
+        gl.enableVertexAttribArray(LOC_RECT)
+        gl.vertexAttribPointer(LOC_RECT, 4, gl.FLOAT, false, stride, 0)
+        gl.vertexAttribDivisor(LOC_RECT, 1)
+        gl.enableVertexAttribArray(LOC_COLOR)
+        gl.vertexAttribPointer(LOC_COLOR, 4, gl.FLOAT, false, stride, 4 * 4)
+        gl.vertexAttribDivisor(LOC_COLOR, 1)
+        for (let c = 0; c < 3; c++) {
+            const loc = LOC_MATRIX_IMG + c
+            gl.enableVertexAttribArray(loc)
+            gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, stride, (11 + c * 3) * 4)
+            gl.vertexAttribDivisor(loc, 1)
+        }
+        gl.uniform2f(_uImgRes, _canvas.width, _canvas.height)
+        gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, 1)
+    },
 }
 
-function setupShapeAttribs(prog, data, count) {
+// ------------------------- 文本纹理烘焙实现 -------------------------
+function bakeTextImpl(text, font, color) {
+    const ctx = _fontCtx
+    ctx.clearRect(0, 0, _fontCanvas.width, _fontCanvas.height)
+    ctx.fillStyle = color
+    ctx.font = font
+    ctx.textBaseline = 'alphabetic'
+    ctx.textAlign = 'left'
+
+    const fontSize = parseFloat((font.match(/(\d+(?:\.\d+)?)px/) || [, '16'])[1])
+    const metrics = ctx.measureText(text)
+    const ascent = Math.max(1, Math.ceil(metrics.fontBoundingBoxAscent || metrics.actualBoundingBoxAscent || fontSize * 0.85))
+    const descent = Math.max(1, Math.ceil(metrics.fontBoundingBoxDescent || metrics.actualBoundingBoxDescent || fontSize * 0.25))
+    const pad = 4
+    ctx.fillText(text, pad, ascent + pad)
+
+    const tw = Math.max(2, Math.min(1024, Math.ceil(metrics.width) + pad * 2))
+    const th = Math.max(2, Math.min(256, ascent + descent + pad * 2))
+
     const gl = _gl
-    gl.useProgram(prog)
-    bindQuad(prog)
-    gl.bindBuffer(gl.ARRAY_BUFFER, _instBuf)
-    gl.bufferSubData(gl.ARRAY_BUFFER, 0, data.subarray(0, count * 4 * FLOATS_PER_INST))
-    const stride = FLOATS_PER_INST * 4
-    gl.enableVertexAttribArray(LOC_RECT)
-    gl.vertexAttribPointer(LOC_RECT, 4, gl.FLOAT, false, stride, 0)
-    gl.vertexAttribDivisor(LOC_RECT, 1)
-    gl.enableVertexAttribArray(LOC_COLOR)
-    gl.vertexAttribPointer(LOC_COLOR, 4, gl.FLOAT, false, stride, 4 * 4)
-    gl.vertexAttribDivisor(LOC_COLOR, 1)
-    gl.enableVertexAttribArray(LOC_PARAMS)
-    gl.vertexAttribPointer(LOC_PARAMS, 2, gl.FLOAT, false, stride, 8 * 4)
-    gl.vertexAttribDivisor(LOC_PARAMS, 1)
-    for (let c = 0; c < 3; c++) {
-        gl.enableVertexAttribArray(LOC_MATRIX_SHAPE + c)
-        gl.vertexAttribPointer(LOC_MATRIX_SHAPE + c, 3, gl.FLOAT, false, stride, (11 + c * 3) * 4)
-        gl.vertexAttribDivisor(LOC_MATRIX_SHAPE + c, 1)
-    }
+    const tex = gl.createTexture()
+    gl.bindTexture(gl.TEXTURE_2D, tex)
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, _fontCanvas)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+    const texId = _nextTexId++
+    _textures.set(texId, tex)
+    return { texId, tw, th, ascent, pad }
 }
-
-function drawShapeBatch(data, count) {
-    setupShapeAttribs(_shapeProg, data, count)
-    const gl = _gl
-    gl.uniform2f(_uShapeRes, _canvas.width, _canvas.height)
-    gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, count)
-}
-
-export function flushShapes() {
-    const gl = _gl
-    if (_instCount === 0) return
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-    gl.viewport(0, 0, _canvas.width, _canvas.height)
-    drawShapeBatch(_instData, _instCount)
-    _instCount = 0
-}
-
-// 每帧开始重置变换 / 透明度 / 阴影状态（入口 frame 循环调用）
-export function resetFrameState() {
-    state.matrixStack = [identity()]
-    state.alphaStack = [1]
-    state.shadowStack = [[null, 0]]
-    state.globalAlpha = 1
-    state.shadowColor = null
-    state.shadowBlur = 0
-}
-
-export function setCanvas(el) { _canvas = el }
-
-export function getGL() { return _gl }
-export function getCanvas() { return _canvas }

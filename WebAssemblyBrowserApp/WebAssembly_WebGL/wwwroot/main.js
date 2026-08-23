@@ -2,20 +2,14 @@
 // JSEngine 入口：装配各层模块（渲染 / 输入 / 音效 / 存储），
 // 注册 C# 桥接对象（setModuleImports），驱动 requestAnimationFrame 主循环。
 //
-// 模块结构：
-//   jsengine/
-//     render/          渲染层
-//       shaders/       着色器（shape / image / blur 各一个文件）
-//       renderer.js    WebGL 初始化 + 实例化批处理 + 共享 GL 状态
-//       shapes.js      gl.* 绘制 API
-//       text.js        文本渲染（离屏 Canvas2D → 纹理）
-//     input/           输入层（键盘 / 鼠标 / 触摸）
-//     audio/           音效层（WebAudio）
-//     core/            本地存储
+// 重构后：渲染合批逻辑完全由 C#（WebGL.cs）侧管理。
+// JS 层只暴露薄 API：glCore.init / gl.clear / gl.drawShapeBatch /
+// gl.drawImageInstance / gl.loadImage / gl.bakeTextTexture。
+// 不再由 JS 侧调用 resetFrameState 或 flushShapes。
 // =====================================================================
 
 import { dotnet } from './_framework/dotnet.js'
-import { flushShapes, resetFrameState, getCanvas } from './jsengine/render/renderer.js'
+import { glCore } from './jsengine/render/renderer.js'
 import { gl } from './jsengine/render/shapes.js'
 import { input } from './jsengine/input/input.js'
 import { audio } from './jsengine/audio/audio.js'
@@ -29,7 +23,7 @@ const engine = {
     initCanvas(selector, width, height) {
         gl.init(selector, width, height)
         const fit = () => {
-            const cv = getCanvas()
+            const cv = glCore.getCanvas()
             if (!cv) return
             const scale = Math.min(
                 (window.innerWidth - 24) / width,
@@ -50,14 +44,14 @@ const engine = {
     },
 }
 
-// 主循环：每帧重置变换栈 → 驱动 C# Tick → flush 实例化绘制
+// 主循环：每帧只驱动 C# Tick。
+// C# 侧 WebGL.cs 每帧开始时自己重置状态（ResetFrameState），
+// 每帧 Render() 结束后自己 FlushShapes()。
 function frame(ts) {
     const dt = _lastTs ? (ts - _lastTs) / 1000 : 0.016
     _lastTs = ts
     try {
-        resetFrameState()
         exports.GameBridge.Tick(dt)
-        flushShapes()
     } catch (err) {
         console.error('[Engine] Tick 异常：', err)
     }

@@ -75,8 +75,14 @@ public sealed class GameEngine
         DeltaTime = (float)Math.Min(Math.Max(rawDt, 0.0), 0.05);
         Time += DeltaTime;
 
+        // C# 侧管理渲染状态栈 & 合批
+        WebGL.ResetFrameState();
+
         Current?.Update(DeltaTime);
         Current?.Render();
+
+        // 每帧结束：flush 掉当前累计的所有形状实例
+        WebGL.FlushShapes();
 
         Input.EndFrame();
     }
