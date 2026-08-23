@@ -12,12 +12,12 @@ namespace TankGame
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class TankGameGame : Game
+    public class MainGame : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        public TankGameGame()
+        public MainGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";

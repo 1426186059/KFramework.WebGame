@@ -24,7 +24,7 @@ namespace TankGame.Pages
             // init game
             if (_game == null)
             {
-                _game = new TankGameGame();
+                _game = new MainGame();
                 _game.Run();
             }
 

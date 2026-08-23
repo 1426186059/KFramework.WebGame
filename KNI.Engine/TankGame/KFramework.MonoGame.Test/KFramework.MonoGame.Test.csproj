@@ -1,0 +1,21 @@
+<Project Sdk="MSTest.Sdk/3.6.4">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <RootNamespace>KFramework.MonoGame.Test</RootNamespace>
+    <AssemblyName>KFramework.MonoGame.Test</AssemblyName>
+	<TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.Native" Version="3.8.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KFramework.MonoGame\KFramework.MonoGame.csproj" />
+  </ItemGroup>
+
+</Project>

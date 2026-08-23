@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>KFramework.MonoGame</RootNamespace>
+    <AssemblyName>KFramework.MonoGame</AssemblyName>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="nkast.Xna.Framework.Game" Version="4.3.9001" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="KTexturePacker.Parser">
+      <HintPath>..\Need_DLL\KTexturePacker.Parser.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

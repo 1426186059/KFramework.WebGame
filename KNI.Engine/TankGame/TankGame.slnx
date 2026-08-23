@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="KFramework.MonoGame.Test/KFramework.MonoGame.Test.csproj" />
+  <Project Path="KFramework.MonoGame/KFramework.MonoGame.csproj" />
   <Project Path="TankGame/TankGame.csproj" />
 </Solution>
