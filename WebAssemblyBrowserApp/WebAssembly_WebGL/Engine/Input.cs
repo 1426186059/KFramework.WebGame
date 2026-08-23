@@ -19,6 +19,9 @@ public static partial class Input
     public const string KeyW = "KeyW";
     public const string KeyS = "KeyS";
     public const string KeyR = "KeyR";
+    public const string Escape = "Escape";
+    public const string Digit1 = "Digit1";
+    public const string Digit2 = "Digit2";
 
     [JSImport("input.init", "main.js")]
     public static partial void Init();

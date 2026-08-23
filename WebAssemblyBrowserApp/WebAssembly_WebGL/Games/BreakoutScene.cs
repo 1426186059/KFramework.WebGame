@@ -76,6 +76,9 @@ public sealed class BreakoutScene : GameScene
 
     public override void Update(float dt)
     {
+        // Esc 返回主菜单
+        if (Input.IsKeyPressed(Input.Escape)) { GameEngine.Instance.Pop(); return; }
+
         _stateTime += dt;
         _shake = Math.Max(0, _shake - dt);
 

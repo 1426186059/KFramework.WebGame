@@ -7,9 +7,11 @@ using WebAssemblyBrowserApp.Games;
 Console.WriteLine("[Engine] .NET 10 WebAssembly 纯 WebGL 游戏引擎启动中…");
 
 GameEngine.Instance
+    .RegisterScene(new MainMenuScene())
     .RegisterScene(new BreakoutScene())
+    .RegisterScene(new TankScene())
     .Initialize("#game")
-    .Start("breakout");
+    .Start("menu");
 
 // 通知 JS 启动 requestAnimationFrame 主循环
 EngineLoop.Start();
