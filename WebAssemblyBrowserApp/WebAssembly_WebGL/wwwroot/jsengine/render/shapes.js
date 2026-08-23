@@ -62,7 +62,8 @@ export const gl = {
         gl.restore()
     },
 
-    fillText(text, x, y, font, color, align) {
+    fillText(text, x, y, font, color, align)
+    {
         flushShapes()
         drawTextSprite(text, x, y, font, color, align)
     },

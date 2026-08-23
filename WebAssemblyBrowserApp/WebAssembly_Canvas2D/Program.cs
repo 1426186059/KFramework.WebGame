@@ -4,20 +4,25 @@ using System.Threading.Tasks;
 using WebAssemblyBrowserApp.Engine;
 using WebAssemblyBrowserApp.Games;
 
-Console.WriteLine("[Engine] .NET 10 WebAssembly 2D 游戏引擎启动中…");
+public class Program
+{
+    public static async void Main()
+    {
+        Console.WriteLine("[Engine] .NET 10 WebAssembly 2D 游戏引擎启动中…");
 
-GameEngine.Instance
-    .RegisterScene(new BreakoutScene())
-    .Initialize("#game")
-    .Start("breakout");
+        GameEngine.Instance
+            .RegisterScene(new BreakoutScene())
+            .Initialize("#game")
+            .Start("breakout");
 
-// 通知 JS 启动 requestAnimationFrame 主循环
-EngineLoop.Start();
+        // 通知 JS 启动 requestAnimationFrame 主循环
+        EngineLoop.Start();
 
-// 保持运行时存活：主循环由 JS 每帧调用 GameBridge.Tick 驱动
-await new TaskCompletionSource().Task;
+        // 保持运行时存活：主循环由 JS 每帧调用 GameBridge.Tick 驱动
+        await new TaskCompletionSource().Task;
+    }
+}
 
-/// <summary>由 JS 每帧调用的导出桥（全局命名空间，导出名为 GameBridge.Tick）。</summary>
 public static partial class GameBridge
 {
     [JSExport]

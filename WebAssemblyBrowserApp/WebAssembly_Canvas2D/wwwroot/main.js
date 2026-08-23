@@ -216,9 +216,12 @@ const engine = {
 function frame(ts) {
     const dt = _lastTs ? (ts - _lastTs) / 1000 : 0.016
     _lastTs = ts
-    try {
+    try
+    {
         exports.GameBridge.Tick(dt)
-    } catch (err) {
+    }
+    catch (err)
+    {
         console.error('[Engine] Tick 异常：', err)
     }
     requestAnimationFrame(frame)
