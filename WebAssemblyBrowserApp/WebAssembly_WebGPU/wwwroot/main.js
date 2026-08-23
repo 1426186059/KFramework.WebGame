@@ -14,9 +14,7 @@ let _canvas = null;
 let _format = null;
 let _viewW = 960, _viewH = 540;
 
-// 实例批次（CPU 侧累积，帧末一次性上传）
-let _shapeData = [];          // 普通形状
-let _shadowData = [];         // 阴影副本（开启阴影时额外压入）
+// 实例缓冲（GPU 侧），数据由 C# 每帧 submit 的 float[] 填充
 let _shapeBuffer = null;      // GPUBuffer (VERTEX, 实例属性)
 let _shadowBuffer = null;
 
@@ -361,26 +359,6 @@ function parseColor(c) {
 }
 
 // ---------------------------------------------------------------------
-//  批处理写入
-// ---------------------------------------------------------------------
-function pushInstance(arr, px, py, w, h, radius, type, color, lineW) {
-  const cc = parseColor(color);
-  const cx = px + w / 2, cy = py + h / 2;
-  // 左上角经矩阵变换到屏幕
-  const tl = tx(px, py);
-  const halfW = w / 2, halfH = h / 2;
-  // 矩阵含旋转时半尺寸不准确，这里对纯平移/缩放足够
-  arr.push(
-    tl[0], tl[1],          // rectPos
-    w, h,                  // rectSize（传给着色器用于位置计算实际用 rectPos+half）
-    halfW, halfH,          // halfSize（SDF 局部）
-    radius, type,
-    cc[0], cc[1], cc[2], cc[3],
-    lineW || 0
-  );
-}
-
-// ---------------------------------------------------------------------
 //  公开 API（被 C# [JSImport] 调用）
 // ---------------------------------------------------------------------
 globalThis.gpu = {
@@ -393,17 +371,18 @@ globalThis.gpu = {
     if (_device) initOffscreen();
   },
 
-  beginFrame(r, g, b, a) { _clearColor = [r, g, b, a]; _shapeData = []; _shadowData = []; _texData = []; },
+  beginFrame(r, g, b, a) { _clearColor = [r, g, b, a]; },
 
   clear(color) {
     const c = parseColor(color);
     _clearColor = c;
-    _shapeData = []; _shadowData = []; _texData = [];
   },
 
-  endFrame() {
-    renderFrame();
-    _shapeData = []; _shadowData = []; _texData = [];
+  // 整帧图元一次性提交（C# 侧已累积好 float[]）
+  submit(shapes, shadows, alpha) {
+    _alpha = alpha;
+    renderFrame(shapes, shadows);
+    _texData = [];
   },
 
   setTransform(m11, m12, m21, m22, dx, dy) { _matrix = [m11, m12, m21, m22, dx, dy]; },
@@ -413,17 +392,7 @@ globalThis.gpu = {
   translate(x, y) { _matrix = mul(_matrix, translateMatrix(x, y)); },
   setAlpha(a) { _alpha = a; },
 
-  fillRect(x, y, w, h, color) { pushInstance(_shapeData, x, y, w, h, 0, 0, color, 0); shadowPush(x, y, w, h, 0, 0, color); },
-  roundedRect(x, y, w, h, r, color) { pushInstance(_shapeData, x, y, w, h, r, 1, color, 0); shadowPush(x, y, w, h, r, 1, color); },
-  fillCircle(cx, cy, r, color) { pushInstance(_shapeData, cx - r, cy - r, r * 2, r * 2, r, 2, color, 0); shadowPush(cx - r, cy - r, r * 2, r * 2, r, 2, color); },
-  drawLine(x1, y1, x2, y2, width, color) {
-    const minx = Math.min(x1, x2), miny = Math.min(y1, y2);
-    const w = Math.abs(x2 - x1) + width, h = Math.abs(y2 - y1) + width;
-    pushInstance(_shapeData, minx, miny, w, h, 0, 3, color, width);
-  },
-
-  shadow(ox, oy, blur, r, g, b, a) { _shadow = { ox, oy, blur, color: [r, g, b, a] }; },
-  shadowColor(color, blur) { const c = parseColor(color); _shadow = { ox: 0, oy: 0, blur, color: c }; },
+  shadowColor(color, blur) { _shadow = { blur, color: parseColor(color) }; },
   noShadow() { _shadow = null; },
 
   fillText(text, x, y, font, color, align) { drawTextSprite(text, x, y, font, color, align); },
@@ -434,12 +403,6 @@ globalThis.gpu = {
     return _measureCtx.measureText(text).width;
   },
 };
-
-function shadowPush(x, y, w, h, r, type, color) {
-  if (!_shadow) return;
-  // 阴影用其自身颜色，稍偏移
-  pushInstance(_shadowData, x + _shadow.ox, y + _shadow.oy, w, h, r, type, _shadow.color, 0);
-}
 
 // ---------------------------------------------------------------------
 //  文本 / 图片：离屏 Canvas2D 烘焙 → GPUTexture
@@ -507,60 +470,58 @@ function drawImageTexture(id, x, y, w, h) {
 }
 
 // ---------------------------------------------------------------------
-//  帧渲染
+//  帧渲染（整帧一次性）
 // ---------------------------------------------------------------------
-function renderFrame() {
+function renderFrame(shapes, shadows) {
   if (!_device) return;
+  const screen = _ctx.getCurrentTexture().createView();
 
-  // 1) 若有阴影：先把阴影批次渲到离屏纹理，再两次模糊，最后合成到屏幕（在形状之前）
-  if (_shadowData.length > 0) {
-    renderShapesToView(_shadowData, _shadowView, 1.0, false);
-    // H 模糊 shadowTex -> blurTex
+  // 1) 阴影：离屏渲染 → 两次模糊 → 合成
+  if (shadows && shadows.length > 0) {
+    renderShapesToView(new Float32Array(shadows), _shadowView, 1.0);
     runBlur(_shadowView, _blurView, [1, 0]);
-    // V 模糊 blurTex -> 屏幕（合成）
-    compositeBlur(_blurView);
+    compositeBlur(_blurView, screen);
   }
 
   // 2) 主形状渲到屏幕
   const encoder = _device.createCommandEncoder();
   const pass = encoder.beginRenderPass({
     colorAttachments: [{
-      view: _ctx.getCurrentTexture().createView(),
+      view: screen,
       clearValue: { r: _clearColor[0], g: _clearColor[1], b: _clearColor[2], a: _clearColor[3] },
       loadOp: "clear", storeOp: "store",
     }],
   });
   writeGlobals(_alpha);
-  if (_shapeData.length > 0) {
-    const data = new Float32Array(_shapeData);
+  if (shapes && shapes.length > 0) {
+    const data = new Float32Array(shapes);
     _device.queue.writeBuffer(_shapeBuffer, 0, data);
     pass.setPipeline(_shapePipeline);
     pass.setBindGroup(0, _shapeBindGroup);
     pass.setVertexBuffer(0, _shapeBuffer);
-    pass.draw(6, _shapeData.length / SHAPE_FLOATS);
+    pass.draw(6, data.length / SHAPE_FLOATS);
   }
   // 3) 纹理（文本 / 图片）
-  for (const t of _texData) drawTexturePass(encoder, t, _ctx.getCurrentTexture().createView());
+  for (const t of _texData) drawTexturePass(encoder, t, screen);
   pass.end();
   _device.queue.submit([encoder.finish()]);
 }
 
-function renderShapesToView(data, view, alpha, clear) {
+function renderShapesToView(arr, view, alpha) {
   const encoder = _device.createCommandEncoder();
   const pass = encoder.beginRenderPass({
     colorAttachments: [{
       view,
       clearValue: { r: 0, g: 0, b: 0, a: 0 },
-      loadOp: clear ? "clear" : "clear", storeOp: "store",
+      loadOp: "clear", storeOp: "store",
     }],
   });
   writeGlobals(alpha);
-  const arr = new Float32Array(data);
   _device.queue.writeBuffer(_shadowBuffer, 0, arr);
   pass.setPipeline(_shapePipeline);
   pass.setBindGroup(0, _shapeBindGroup);
   pass.setVertexBuffer(0, _shadowBuffer);
-  pass.draw(6, data.length / SHAPE_FLOATS);
+  pass.draw(6, arr.length / SHAPE_FLOATS);
   pass.end();
   _device.queue.submit([encoder.finish()]);
 }
@@ -587,11 +548,11 @@ function runBlur(srcView, dstView, dir) {
   _device.queue.submit([encoder.finish()]);
 }
 
-function compositeBlur(blurView) {
+function compositeBlur(blurView, screen) {
   // 把模糊后的阴影纹理用加法式合成到屏幕（alpha 混合即可产生柔和阴影）
   const encoder = _device.createCommandEncoder();
   const pass = encoder.beginRenderPass({
-    colorAttachments: [{ view: _ctx.getCurrentTexture().createView(), loadOp: "load", storeOp: "store" }],
+    colorAttachments: [{ view: screen, loadOp: "load", storeOp: "store" }],
   });
   _device.queue.writeBuffer(_blurDirBuffer, 0, new Float32Array([0, 0, 1 / _shadowTexW, 1 / _shadowTexH]));
   const bg = _device.createBindGroup({

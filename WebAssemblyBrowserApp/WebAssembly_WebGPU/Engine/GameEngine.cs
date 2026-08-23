@@ -84,6 +84,7 @@ public sealed partial class GameEngine
 
         Current?.Update(DeltaTime);
         Current?.Render();
+        WebGPU.Flush();   // 整帧图元一次性提交 GPU（跨边界 O(1)）
 
         Input.EndFrame();
     }
