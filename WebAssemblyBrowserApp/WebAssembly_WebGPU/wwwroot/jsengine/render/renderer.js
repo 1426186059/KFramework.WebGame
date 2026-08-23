@@ -37,6 +37,7 @@ const _dbg = {
   texDraws: 0, lastErrors: [],
   deviceReady: false, adapterInfo: null,
   firstShapePrefix: null,
+  lastCenterPixel: null, // 最近一帧中心像素 (r,g,b,a)
 };
 // 挂到 window 上便于探针（单独一个命名空间，避免与 main.js 的 _dbg 合并冲突）
 if (typeof window !== 'undefined') {
@@ -260,12 +261,24 @@ function gpu_init() {
         console.warn('[WebGPU] device lost:', info?.message);
         _dbg.lastErrors.push('device_lost: ' + (info?.message ?? 'unknown'));
       });
+      // WebGPU validation error 监听：直接把 GPU 验证失败打印出来
+      _device.addEventListener('uncaughterror', (e) => {
+        const msg = e?.error?.message || String(e);
+        console.error('[WebGPU] uncaughterror:', msg);
+        _dbg.lastErrors.push('uncaughterror: ' + msg);
+        if (_dbg.lastErrors.length > 32) _dbg.lastErrors.splice(0, _dbg.lastErrors.length - 32);
+      });
 
       _ctx = _canvas.getContext('webgpu');
       _format = navigator.gpu.getPreferredCanvasFormat();
       _canvas.width = _viewW;
       _canvas.height = _viewH;
-      _ctx.configure({ device: _device, format: _format, alphaMode: 'opaque' });
+      _ctx.configure({
+        device: _device,
+        format: _format,
+        alphaMode: 'opaque',
+        usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST,
+      });
 
       // 创建管线
       const shapeModule = _device.createShaderModule({ code: SHAPE_WGSL });
@@ -533,16 +546,31 @@ function renderFrame(shapesRaw, shadowsRaw) {
 
   const screen = _ctx.getCurrentTexture().createView();
 
-  // 1) 阴影：离屏渲染 → 两次模糊 → 合成
+  if (_dbg._rfCounter === undefined) _dbg._rfCounter = 0;
+  _dbg._rfCounter++;
+  const rfCount = _dbg._rfCounter;
+  // 每 ~60 帧打一次形状调试信息（避免刷爆）
+  if (rfCount === 1 || rfCount % 60 === 0) {
+    console.info('[WebGPU] renderFrame #' + rfCount +
+      ' shapesRawLen=' + (shapesRaw ? shapesRaw.length : 'null') +
+      ' shapesLen=' + (shapes ? shapes.length : 'null') +
+      ' shadowsLen=' + (shadows ? shadows.length : 0) +
+      ' viewW=' + _viewW + ' viewH=' + _viewH +
+      ' pipelineReady=' + (!!_shapePipeline) +
+      ' globalsBuffer=' + (!!_globalsBuffer));
+  }
+
+  // 1) 阴影：离屏渲染 → 水平模糊 → 垂直模糊 → 合成到屏幕（loadOp:load 在 screen 上保留底层 clear）
   if (shadows && shadows.length > 0) {
     renderShapesToView(shadows, _shadowView, 1.0);
-    runBlur(_shadowView, _blurView, [1, 0]);
-    compositeBlur(_blurView, screen);
+    runBlur(_shadowView, _blurView,   [1, 0]); // Horizontal
+    runBlur(_blurView,   _shadowView, [0, 1]); // Vertical (swap src/dst)
+    compositeBlur(_shadowView, screen);
   }
 
   // 2) 主形状渲到屏幕
   const encoder = _device.createCommandEncoder();
-  const pass = encoder.beginRenderPass({
+  let pass = encoder.beginRenderPass({
     colorAttachments: [{
       view: screen,
       clearValue: { r: _clearColor[0], g: _clearColor[1], b: _clearColor[2], a: _clearColor[3] },
@@ -551,18 +579,14 @@ function renderFrame(shapesRaw, shadowsRaw) {
   });
   writeGlobals(_alpha);
   if (shapes && shapes.length > 0) {
-    // 注意：SHAPE_STRIDE 必须是整数， shapes.length 应当是 SHAPE_STRIDE 的整数倍
     const instanceCount = Math.floor(shapes.length / SHAPE_STRIDE);
     const elementCount = instanceCount * SHAPE_STRIDE;
-    // WebGPU queue.writeBuffer(buffer, bufferOffset, typedArray, dataOffset?, size?)
-    // 对于 TypedArray，dataOffset / size 都是「元素数」而不是字节数！
     let data = shapes;
     let dataElCount = elementCount;
     if (shapes.length !== elementCount) {
       data = shapes.subarray(0, elementCount);
       dataElCount = data.length;
     }
-    // 保护：写入元素数不能超过 GPU buffer 容量（_shapeBuffer 是 SHAPE_STRIDE*4096 floats）
     const capacityEl = 4096 * SHAPE_STRIDE;
     if (dataElCount > capacityEl) {
       dataElCount = capacityEl;
@@ -576,14 +600,36 @@ function renderFrame(shapesRaw, shadowsRaw) {
 
     _dbg.shapeBatches++;
     _dbg.totalShapes += instanceCount;
-    if (instanceCount > 0) {
-      try { _dbg.firstShapePrefix = Array.from(shapes.subarray(0, 8)); } catch (_) {}
-    }
+    try { _dbg.firstShapePrefix = Array.from(shapes.subarray(0, 8)); } catch (_) {}
+  } else {
+    // 没形状但也要打递增，只是不 draw
+    _dbg.shapeBatches++;
   }
-  // 3) 纹理（文本 / 图片）
-  for (const t of _texData) drawTexturePass(encoder, t, screen);
   pass.end();
+  // 3) 纹理（文本 / 图片）：每个纹理单独一个 render pass（loadOp:load 在现有屏幕内容上叠加）
+  for (const t of _texData) drawTexturePass(encoder, t, screen);
   _device.queue.submit([encoder.finish()]);
+
+  // 调试：每 64 帧把屏幕中心像素 copy 出来
+  if ((rfCount & 63) === 0) {
+    try {
+      const bytesPerRow = 256;
+      const dst = _device.createBuffer({ size: bytesPerRow, usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST });
+      const cpEnc = _device.createCommandEncoder();
+      cpEnc.copyTextureToBuffer(
+        { texture: _ctx.getCurrentTexture(), mipLevel: 0, origin: { x: (_viewW / 2) | 0, y: (_viewH / 2) | 0, z: 0 } },
+        { buffer: dst, bytesPerRow, rowsPerImage: 1 },
+        { width: 1, height: 1, depthOrArrayLayers: 1 }
+      );
+      _device.queue.submit([cpEnc.finish()]);
+      dst.mapAsync(GPUMapMode.READ).then(() => {
+        try {
+          const d = new Uint8Array(dst.getMappedRange());
+          _dbg.lastCenterPixel = [d[0], d[1], d[2], d[3]];
+        } finally { dst.unmap(); dst.destroy(); }
+      }).catch(() => { try { dst.destroy(); } catch (_) {} });
+    } catch (_) {}
+  }
 }
 
 function renderShapesToView(arr, view, alpha) {
