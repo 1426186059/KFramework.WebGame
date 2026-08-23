@@ -33,6 +33,25 @@ let _nextTexId = 1
 const _textCache = new Map()
 const TEXT_CACHE_LIMIT = 128
 
+// ---------- 调试探针（仅开发期有效） ----------
+// 暴露到 window._dbg，在浏览器 Console 里可直接看每帧状态
+const _dbg = {
+    clears: 0,
+    shapeBatches: 0,   // 调用 drawShapeBatch 次数
+    totalShapes: 0,    // 累计绘制形状实例数
+    imgDraws: 0,
+    bakeCalls: 0,      // bakeTextTexture 调用次数
+    bakeFailures: 0,   // bakeTextTexture 返回 null 次数
+    lastImgPrefix: null,
+    lastClearColor: null,
+    lastShapeCount: 0,
+    lastErrors: [],    // 最近的 gl.getError() 值
+    uShapeResValue: null, // 最近一次 shape batch 用的 u_resolution
+    canvasSize: null,
+    viewportValue: null,
+}
+if (typeof window !== 'undefined') window._dbg = _dbg
+
 // ------------------------- 常量（与 C# 保持一致） -------------------------
 // FLOATS_PER_INST = 20 （每实例 1 份，紧凑布局，不再是旧版本的 4 份重复）
 //   0-3   rect (x, y, w, h)
@@ -143,6 +162,12 @@ export const glCore = {
         gl.viewport(0, 0, _canvas.width, _canvas.height)
         gl.clearColor(r, g, b, a ?? 1)
         gl.clear(gl.COLOR_BUFFER_BIT)
+        // --- 调试探针 ---
+        _dbg.clears++
+        _dbg.lastClearColor = [r, g, b, a]
+        _dbg.canvasSize = [_canvas.width, _canvas.height]
+        _dbg.viewportValue = gl.getParameter(gl.VIEWPORT)
+        _checkGlError('after clear')
     },
 
     // ------------------------- 形状：批量实例化绘制 -------------------------
@@ -152,6 +177,11 @@ export const glCore = {
         if (instanceCount <= 0) return
         const gl = _gl
         const prog = _shapeProg
+
+        // 保险：强制确认 WebGL 收到的是 Float32Array（byteLength 才匹配 float32）。
+        // .NET 10 JSInterop 的 double[] 会被包装成 Float64Array，绝不能直接 bufferSubData。
+        if (!(data instanceof Float32Array)) data = new Float32Array(data)
+
         gl.useProgram(prog)
         bindQuad(prog)
 
@@ -187,7 +217,45 @@ export const glCore = {
         }
 
         gl.uniform2f(_uShapeRes, _canvas.width, _canvas.height)
+        // --- 调试探针（绘制前读一次 attrib 真实 location 验证） ---
+        _dbg.shapeBatches++
+        _dbg.totalShapes += instanceCount
+        _dbg.lastShapeCount = instanceCount
+        _dbg.uShapeResValue = [_canvas.width, _canvas.height]
+        _dbg._uShapeResLoc = _uShapeRes
+        _dbg._uShapeResIsValid = (_uShapeRes !== null && _uShapeRes !== undefined && _uShapeRes !== -1)
+        if (instanceCount > 0) {
+            // 读取首个实例的前 8 个浮点数验证上传数据正确性
+            try {
+                gl.bindBuffer(gl.ARRAY_BUFFER, _instBuf)
+                // 读回前 8 floats（rect x,y,w,h + color r,g,b,a）
+                const fb = new Float32Array(8)
+                gl.getBufferSubData(gl.ARRAY_BUFFER, 0, fb)
+                _dbg.firstInstancePrefix = Array.from(fb)
+                // 查一下真实 attrib location（与硬编码做对比）
+                _dbg.attribLocs = {
+                    pos: gl.getAttribLocation(prog, 'a_pos'),
+                    rect: gl.getAttribLocation(prog, 'a_rect'),
+                    color: gl.getAttribLocation(prog, 'a_color'),
+                    params: gl.getAttribLocation(prog, 'a_params'),
+                    matrix_col0: gl.getAttribLocation(prog, 'a_matrix[0]'),
+                    matrix_col1: gl.getAttribLocation(prog, 'a_matrix[1]'),
+                    matrix_col2: gl.getAttribLocation(prog, 'a_matrix[2]'),
+                }
+                // 颜色写掩码 + 剪刀测试 + 深度
+                _dbg.colorMask = gl.getParameter(gl.COLOR_WRITEMASK)
+                _dbg.scissorEnabled = gl.isEnabled(gl.SCISSOR_TEST)
+                _dbg.scissorBox = _dbg.scissorEnabled ? gl.getParameter(gl.SCISSOR_BOX) : null
+                _dbg.depthEnabled = gl.isEnabled(gl.DEPTH_TEST)
+                _dbg.cullFaceEnabled = gl.isEnabled(gl.CULL_FACE)
+                _dbg.currentProgramBound = gl.getParameter(gl.CURRENT_PROGRAM) === prog
+                _dbg.vertexArrayBinding = gl.getParameter(gl.VERTEX_ARRAY_BINDING)
+                _dbg.blendEnabled = gl.isEnabled(gl.BLEND)
+            } catch (_) {}
+        }
+        _checkGlError('before shape drawArraysInstanced')
         gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, instanceCount)
+        _checkGlError('after shape drawArraysInstanced n=' + instanceCount)
     },
 
     // ------------------------- 图片/文本：单实例纹理绘制 -------------------------
@@ -198,6 +266,8 @@ export const glCore = {
         const gl = _gl
         const tex = _textures.get(texId)
         if (!tex) return
+        // 保险：强制 Float32Array（见 drawShapeBatch 注释）
+        if (!(data instanceof Float32Array)) data = new Float32Array(data)
 
         gl.useProgram(_imgProg)
         bindQuad(_imgProg)
@@ -207,7 +277,13 @@ export const glCore = {
         gl.uniform4f(_uImgUvRect, 0, 0, uvW ?? 1, uvH ?? 1)
 
         gl.bindBuffer(gl.ARRAY_BUFFER, _instBuf)
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, data)
+        // 与 shape 批次一致：只传实际用到的 FLOATS_PER_INST floats，避免 buffer 越界
+        const floatCount = Math.min(data.length, FLOATS_PER_INST)
+        if (data.byteLength === floatCount * 4) {
+            gl.bufferSubData(gl.ARRAY_BUFFER, 0, data)
+        } else {
+            gl.bufferSubData(gl.ARRAY_BUFFER, 0, data.subarray(0, floatCount))
+        }
         const stride = FLOATS_PER_INST * 4
         gl.enableVertexAttribArray(LOC_RECT)
         gl.vertexAttribPointer(LOC_RECT, 4, gl.FLOAT, false, stride, 0)
@@ -223,7 +299,26 @@ export const glCore = {
         }
 
         gl.uniform2f(_uImgRes, _canvas.width, _canvas.height)
+        _dbg.imgDraws++
+        try {
+            // 读一下首个实例的 4 个字段前缀（rect x,y,w,h）验证
+            gl.bindBuffer(gl.ARRAY_BUFFER, _instBuf)
+            const fb = new Float32Array(8)
+            gl.getBufferSubData(gl.ARRAY_BUFFER, 0, fb)
+            _dbg.lastImgPrefix = Array.from(fb)
+            _dbg.imgAttribLocs = {
+                rect: gl.getAttribLocation(_imgProg, 'a_rect'),
+                color: gl.getAttribLocation(_imgProg, 'a_color'),
+                matrix0: gl.getAttribLocation(_imgProg, 'a_matrix[0]'),
+            }
+            _dbg.uImgResValid = _uImgRes !== null && _uImgRes !== undefined
+            _dbg.imgTexValid = gl.isTexture(_textures.get(texId))
+            const imgProgOk = _imgProg && gl.getParameter(gl.CURRENT_PROGRAM) === _imgProg
+            _dbg.imgProgBound = imgProgOk
+        } catch (_) {}
+        _checkGlError('before img drawArraysInstanced')
         gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, 1)
+        _checkGlError('after img drawArraysInstanced')
     },
 
     // ------------------------- 图片加载 -------------------------
@@ -252,11 +347,15 @@ export const glCore = {
     // 所以文本纹理的「创建 + 缓存」仍由 JS 薄 API 负责，但绘制调用由 C# 控制。
     // 返回：{ texId, tw, th, ascent, pad } 或 null
     bakeTextTexture(text, font, color) {
+        _dbg.bakeCalls++
         const key = text + '\u0000' + font + '\u0000' + color
         let entry = _textCache.get(key)
         if (!entry) {
             entry = bakeTextImpl(text, font, color)
-            if (!entry) return null
+            if (!entry) {
+                _dbg.bakeFailures++
+                return null
+            }
             _textCache.set(key, entry)
             if (_textCache.size > TEXT_CACHE_LIMIT) {
                 const oldest = _textCache.keys().next().value
@@ -281,7 +380,8 @@ export const glCore = {
         const tex = _textures.get(id)
         if (!tex) return
         const gl = _gl
-        const m = matrixArr
+        // 保险：强制 Float32Array（C# double[] 会被 JSInterop 包装成 Float64Array）
+        const m = (matrixArr instanceof Float32Array) ? matrixArr : new Float32Array(matrixArr)
         const data = new Float32Array(FLOATS_PER_INST)
         data[0] = dx; data[1] = dy; data[2] = dw; data[3] = dh
         data[4] = 1; data[5] = 1; data[6] = 1; data[7] = alpha
@@ -316,6 +416,21 @@ export const glCore = {
         gl.uniform2f(_uImgRes, _canvas.width, _canvas.height)
         gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, 1)
     },
+}
+
+// ------------------------- GL 错误检查（调试期用） -------------------------
+function _checkGlError(label) {
+    const gl = _gl
+    if (!gl) return
+    let e = gl.getError()
+    while (e !== gl.NO_ERROR) {
+        const map = { [gl.INVALID_ENUM]: 'INVALID_ENUM', [gl.INVALID_VALUE]: 'INVALID_VALUE', [gl.INVALID_OPERATION]: 'INVALID_OPERATION', [gl.INVALID_FRAMEBUFFER_OPERATION]: 'INVALID_FRAMEBUFFER_OPERATION', [gl.OUT_OF_MEMORY]: 'OUT_OF_MEMORY' }
+        const msg = (map[e] || ('0x' + e.toString(16))) + ' @ ' + label
+        console.error('[GL Error]', msg)
+        if (_dbg.lastErrors.length > 20) _dbg.lastErrors.shift()
+        _dbg.lastErrors.push(msg)
+        e = gl.getError()
+    }
 }
 
 // ------------------------- 文本纹理烘焙实现 -------------------------

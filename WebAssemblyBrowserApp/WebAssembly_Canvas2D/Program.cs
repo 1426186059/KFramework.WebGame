@@ -6,14 +6,15 @@ using WebAssemblyBrowserApp.Games;
 
 public class Program
 {
-    public static async void Main()
+    public static async Task Main()
     {
         Console.WriteLine("[Engine] .NET 10 WebAssembly 2D 游戏引擎启动中…");
 
         GameEngine.Instance
             .RegisterScene(new BreakoutScene())
+            .RegisterScene(new TankScene())
             .Initialize("#game")
-            .Start("breakout");
+            .Start("tank");
 
         // 通知 JS 启动 requestAnimationFrame 主循环
         EngineLoop.Start();

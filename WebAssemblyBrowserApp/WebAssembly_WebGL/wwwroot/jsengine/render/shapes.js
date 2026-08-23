@@ -5,6 +5,25 @@
 
 import { glCore } from './renderer.js'
 
+/**
+ * 把任意数值数组严格转换成 Float32Array 后再交给 WebGL 使用。
+ * 背景：
+ *   1) .NET 10 JSInterop 对 double[] 传参，在 JS 侧收到的是 Float64Array
+ *      （ArrayBuffer.isView(Float64Array)=true）。若直接交给
+ *      gl.bufferSubData，会把 64 位原始字节按 32 位 float 上传，
+ *      导致矩形位置/颜色/矩阵全部错乱（表现：什么都看不见）。
+ *   2) 对 JS Array / Float32Array / Float64Array / Int32Array 等都统一
+ *      做一次「数值语义」转换，保证 WebGL 真正收到的是 float32。
+ */
+function _toFloat32(arr) {
+    if (arr instanceof Float32Array) return arr
+    if (arr == null || arr.length === undefined) {
+        console.warn('[shapes._toFloat32] 非法数组:', arr)
+        return new Float32Array(0)
+    }
+    return new Float32Array(arr)
+}
+
 export const gl = {
     // ---- 初始化 ----
     init(selector, width, height) {
@@ -18,19 +37,19 @@ export const gl = {
 
     // ---- 形状批量绘制（C# 侧组装好 instData，紧凑布局每实例 FLOATS_PER_INST） ----
     drawShapeBatch(dataArr, instanceCount) {
-        const data = ArrayBuffer.isView(dataArr) ? dataArr : new Float32Array(dataArr)
+        const data = _toFloat32(dataArr)
         glCore.drawShapeBatch(data, instanceCount)
     },
 
     // ---- 单实例纹理绘制（图片 / 文本），texId 为数值 id（文本烘焙用） ----
     drawImageInstance(dataArr, texId, uvW, uvH) {
-        const data = ArrayBuffer.isView(dataArr) ? dataArr : new Float32Array(dataArr)
+        const data = _toFloat32(dataArr)
         glCore.drawImageInstance(data, texId, uvW, uvH)
     },
 
     // ---- 图片 DrawImage（通过 string id），C# 侧给行主序矩阵 + alpha ----
     drawImageById(id, dx, dy, dw, dh, matrixArr, alpha) {
-        glCore.drawImageById(id, dx, dy, dw, dh, matrixArr, alpha)
+        glCore.drawImageById(id, dx, dy, dw, dh, _toFloat32(matrixArr), alpha)
     },
 
     // ---- 图片加载 ----
