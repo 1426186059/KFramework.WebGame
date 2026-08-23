@@ -1,4 +1,7 @@
 <Solution>
   <Project Path="WebAssemblyBrowserApp/WebAssemblyBrowserApp.csproj" />
   <Project Path="WebAssemblyConsoleApp/WebAssemblyConsoleApp.csproj" />
+  <Project Path="WebAssembly_Canvas2D/WebAssembly_Canvas2D.csproj" />
+  <Project Path="WebAssembly_WebGL/WebAssembly_WebGL.csproj" />
+  <Project Path="WebAssembly_WebGPU/WebAssembly_WebGPU.csproj" />
 </Solution>

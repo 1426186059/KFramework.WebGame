@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <title>DotNet 2D Game Engine · Breakout</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preload" id="webassembly" />
+  <script type="importmap"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      background: radial-gradient(ellipse at center, #1a2332 0%, #0b0e14 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    }
+
+    canvas#game {
+      display: block;
+      background: #10141c;
+      border-radius: 10px;
+      box-shadow: 0 0 60px rgba(88, 166, 255, 0.15), 0 20px 60px rgba(0, 0, 0, 0.5);
+      touch-action: none;
+    }
+
+    #loading {
+      position: fixed;
+      color: #8b949e;
+      font-size: 15px;
+      letter-spacing: 0.12em;
+    }
+  </style>
+  <script type='module' src="main#[.{fingerprint}].js"></script>
+</head>
+
+<body>
+  <canvas id="game"></canvas>
+  <div id="loading">正在启动 .NET 游戏引擎…</div>
+</body>
+
+</html>
