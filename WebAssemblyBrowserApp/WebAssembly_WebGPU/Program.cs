@@ -1,30 +1,27 @@
 using System;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
-using WebAssemblyBrowserApp.Engine;
-using WebAssemblyBrowserApp.Games;
 
-Console.WriteLine("[Engine] .NET 10 WebAssembly + WebGPU 2D 游戏引擎启动中…");
+Console.WriteLine("[dbg-min] 01: top-of-program");
 
-GameEngine.Instance
-    .RegisterScene(new BreakoutScene())
-    .Initialize("#game");   // 触发 JS 异步初始化 WebGPU 设备
-
-// 设备就绪后，JS 会回调 GameEngine.EngineReady()（启动场景 + rAF 主循环）
-
-// 保持运行时存活：主循环由 JS 每帧调用 GameBridge.Tick 驱动
-await new TaskCompletionSource().Task;
-
-/// <summary>由 JS 每帧调用的导出桥（全局命名空间，导出名为 GameBridge.Tick）。</summary>
-public static partial class GameBridge
+try
 {
-    [JSExport]
-    public static void Tick(double dt) => GameEngine.Instance.Tick(dt);
+    Console.WriteLine("[dbg-min] 02: before Task.Delay(1ms)");
+    await Task.Delay(1);
+    Console.WriteLine("[dbg-min] 03: after Task.Delay(1ms)");
+}
+catch (Exception e)
+{
+    Console.WriteLine("[dbg-min] EX: " + e.Message);
 }
 
-/// <summary>引擎启动桥：通知 JS 启动主循环。</summary>
-public static partial class EngineLoop
+Console.WriteLine("[dbg-min] 04: before TCS");
+await new TaskCompletionSource().Task;
+Console.WriteLine("[dbg-min] 05: after TCS (unreachable)");
+
+/// <summary>JS 探针：导出一个 Ping 函数用于确认 C# 侧完全 alive。</summary>
+public static partial class Diagnostics
 {
-    [JSImport("engine.startLoop", "main.js")]
-    internal static partial void Start();
+    [JSExport]
+    public static string Ping(string input) => "pong:" + input;
 }

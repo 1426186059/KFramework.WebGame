@@ -8,6 +8,7 @@ namespace WebAssemblyBrowserApp.Engine;
 /// <summary>
 /// 游戏引擎核心：场景管理、主循环调度、时间。
 /// 主循环由 JS 的 requestAnimationFrame 驱动，每帧调用 GameBridge.Tick。
+/// 渲染通过 WebGPU 层（gpu.*）在 GPU 上完成。
 /// </summary>
 public sealed partial class GameEngine
 {
@@ -38,9 +39,13 @@ public sealed partial class GameEngine
 
     public GameEngine Start(string name)
     {
+        Console.WriteLine("[dbg] S1: _stack.Clear →");
         _stack.Clear();
+        Console.WriteLine("[dbg] S2: scene.Enter → (name=" + name + ")");
         _scenes[name].Enter();
+        Console.WriteLine("[dbg] S3: scene.Enter ←");
         _stack.Add(_scenes[name]);
+        Console.WriteLine("[dbg] S4: done, stack.Count=" + _stack.Count);
         return this;
     }
 
@@ -58,21 +63,22 @@ public sealed partial class GameEngine
         _stack.RemoveAt(_stack.Count - 1);
     }
 
-    /// <summary>触发 WebGPU 设备初始化（异步，由 JS 在就绪后回调 CompleteInit）。</summary>
+    /// <summary>初始化 WebGPU 画布、输入与音频（与 WebGL 同步模式一致）。</summary>
     public GameEngine Initialize(string canvasSelector = "#game")
     {
-        Input.Init();
-        Audio.Init();
+        // gpu.init() 内部会异步请求 WebGPU 设备，不阻塞 C# 主线。
+        // 设备就绪前 submit() 静默跳过，主循环照常跑（几帧后设备 ready 就渲染了）。
+        Console.WriteLine("[dbg] 01: WebGPU.Init →");
         WebGPU.Init();
+        Console.WriteLine("[dbg] 02: WebGPU.Init ←");
+        Console.WriteLine("[dbg] 03: Input.Init →");
+        Input.Init();
+        Console.WriteLine("[dbg] 04: Input.Init ←");
+        Console.WriteLine("[dbg] 05: Audio.Init →");
+        Audio.Init();
+        Console.WriteLine("[dbg] 06: Audio.Init ←");
+        IsInitialized = true;
         return this;
-    }
-
-    /// <summary>JS 在 WebGPU 设备就绪后调用：真正开启渲染。</summary>
-    [JSExport]
-    public static void EngineReady()
-    {
-        Instance.IsInitialized = true;
-        EngineLoop.Start();
     }
 
     /// <summary>由 JS 每帧调用一次。</summary>
@@ -87,5 +93,13 @@ public sealed partial class GameEngine
         WebGPU.Flush();   // 整帧图元一次性提交 GPU（跨边界 O(1)）
 
         Input.EndFrame();
+    }
+
+    /// <summary>JS 探针：导出内部状态（调试用）。</summary>
+    [JSExport]
+    public static string __dbg_state()
+    {
+        var self = Instance;
+        return $"isInit={self.IsInitialized};time={self.Time:0.000};dt={self.DeltaTime:0.000};stack={self._stack.Count};current={self.Current?.Name ?? "<null>"};scenes={string.Join(",", self._scenes.Keys)}";
     }
 }

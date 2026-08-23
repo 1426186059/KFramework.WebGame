@@ -43,8 +43,49 @@
       color: #8b949e;
       font-size: 15px;
       letter-spacing: 0.12em;
+      max-width: 80vw;
+      text-align: center;
+      word-break: break-all;
     }
   </style>
+
+  <!-- 首条错误可见性：在 main.js 执行前就捕获异常，避免永久转圈。 -->
+  <script>
+    (function () {
+      const loadingEl = () => document.getElementById('loading');
+      const show = (msg) => {
+        const el = loadingEl();
+        if (el) {
+          el.textContent = msg;
+          el.style.color = '#ff6b6b';
+          el.style.letterSpacing = '0';
+          el.style.lineHeight = '1.6';
+        }
+        console.error('[BootError]', msg);
+      };
+      window.onerror = (msg, url, line, col, err) => {
+        show('JS错误: ' + msg + ' @ ' + (url || '?') + ':' + line + ':' + col
+          + (err && err.stack ? '\n' + err.stack : ''));
+      };
+      window.addEventListener('unhandledrejection', (e) => {
+        const reason = (e && e.reason) ? (e.reason.stack || String(e.reason)) : String(e);
+        show('未处理Promise异常: ' + reason);
+      });
+      // 18s 超时兜底：如果还显示 loading，提示用户检查浏览器版本
+      setTimeout(() => {
+        const el = loadingEl();
+        if (el && el.isConnected) {
+          const cur = el.textContent || '';
+          if (!cur.includes('错误') && !cur.includes('失败') && !cur.includes('JS错误')) {
+            el.textContent = '启动超时：请确认使用 Chrome 113+/Edge 113+ 并开启硬件加速，或打开 F12 查看 Console 首条错误';
+            el.style.color = '#ff9f43';
+            el.style.letterSpacing = '0';
+          }
+        }
+      }, 18000);
+    })();
+  </script>
+
   <script type='module' src="main#[.{fingerprint}].js"></script>
 </head>
 
