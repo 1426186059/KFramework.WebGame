@@ -193,6 +193,10 @@ fn fs(in : VSOut) -> @location(0) vec4<f32> {
 // ---------------------------------------------------------------------
 //  管线 / 资源
 // ---------------------------------------------------------------------
+const BLEND_PREMULTIPLIED = {
+  color: { srcFactor: 'one', dstFactor: 'one-minus-src-alpha', operation: 'add' },
+  alpha: { srcFactor: 'one', dstFactor: 'one-minus-src-alpha', operation: 'add' },
+};
 let _shapePipeline = null, _shapeBindGroup = null;
 let _texPipeline = null;
 let _blurPipeline = null;
@@ -299,7 +303,7 @@ function gpu_init() {
             ],
           }],
         },
-        fragment: { module: shapeModule, entryPoint: 'fs', targets: [{ format: _format }] },
+        fragment: { module: shapeModule, entryPoint: 'fs', targets: [{ format: _format, blend: BLEND_PREMULTIPLIED }] },
         primitive: { topology: 'triangle-list' },
       });
       makeGlobalsBuffer();
@@ -323,7 +327,7 @@ function gpu_init() {
       _texPipeline = _device.createRenderPipeline({
         layout: 'auto',
         vertex: { module: texModule, entryPoint: 'vs' },
-        fragment: { module: texModule, entryPoint: 'fs', targets: [{ format: _format }] },
+        fragment: { module: texModule, entryPoint: 'fs', targets: [{ format: _format, blend: BLEND_PREMULTIPLIED }] },
         primitive: { topology: 'triangle-list' },
       });
       _texGlobalsBuffer = _device.createBuffer({ size: 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
@@ -334,7 +338,7 @@ function gpu_init() {
       _blurPipeline = _device.createRenderPipeline({
         layout: 'auto',
         vertex: { module: blurModule, entryPoint: 'vs' },
-        fragment: { module: blurModule, entryPoint: 'fs', targets: [{ format: _format }] },
+        fragment: { module: blurModule, entryPoint: 'fs', targets: [{ format: _format, blend: BLEND_PREMULTIPLIED }] },
         primitive: { topology: 'triangle-list' },
       });
       _blurDirBuffer = _device.createBuffer({ size: 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
@@ -549,6 +553,48 @@ function renderFrame(shapesRaw, shadowsRaw) {
   if (_dbg._rfCounter === undefined) _dbg._rfCounter = 0;
   _dbg._rfCounter++;
   const rfCount = _dbg._rfCounter;
+
+  // ============================================================
+  //  临时调试：强制清屏纯红 [1,0,0,1]，跳过所有 draw，只验证清屏能不能写入
+  // ============================================================
+  const DEBUG_CLEAR_RED_ONLY = true;
+  _dbg._version = 'V3_RED_CLEAR_ONLY';
+  if (DEBUG_CLEAR_RED_ONLY) {
+    const enc = _device.createCommandEncoder();
+    const p = enc.beginRenderPass({
+      colorAttachments: [{
+        view: screen,
+        clearValue: { r: 1, g: 0, b: 0, a: 1 },
+        loadOp: 'clear', storeOp: 'store',
+      }],
+    });
+    p.end();
+    _device.queue.submit([enc.finish()]);
+    _dbg.clears++;
+    _dbg.shapeBatches++;
+    if ((rfCount & 63) === 0) {
+      try {
+        const bytesPerRow = 256;
+        const dst = _device.createBuffer({ size: bytesPerRow, usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST });
+        const cpEnc = _device.createCommandEncoder();
+        cpEnc.copyTextureToBuffer(
+          { texture: _ctx.getCurrentTexture(), mipLevel: 0, origin: { x: (_viewW / 2) | 0, y: (_viewH / 2) | 0, z: 0 } },
+          { buffer: dst, bytesPerRow, rowsPerImage: 1 },
+          { width: 1, height: 1, depthOrArrayLayers: 1 }
+        );
+        _device.queue.submit([cpEnc.finish()]);
+        dst.mapAsync(GPUMapMode.READ).then(() => {
+          try {
+            const d = new Uint8Array(dst.getMappedRange());
+            _dbg.lastCenterPixel = [d[0], d[1], d[2], d[3]];
+          } finally { dst.unmap(); dst.destroy(); }
+        }).catch(() => { try { dst.destroy(); } catch (_) {} });
+      } catch (_) {}
+    }
+    _dbg.lastTexDraws = _dbg.texDraws;
+    _dbg.lastTexDataLen = _texData.length;
+    return;
+  }
   // 每 ~60 帧打一次形状调试信息（避免刷爆）
   if (rfCount === 1 || rfCount % 60 === 0) {
     console.info('[WebGPU] renderFrame #' + rfCount +
@@ -560,54 +606,62 @@ function renderFrame(shapesRaw, shadowsRaw) {
       ' globalsBuffer=' + (!!_globalsBuffer));
   }
 
-  // 1) 阴影：离屏渲染 → 水平模糊 → 垂直模糊 → 合成到屏幕（loadOp:load 在 screen 上保留底层 clear）
+  // 1) 阴影：离屏渲染（独立 encoder，submit 到离屏 shadowTex）→ 两次模糊（submit 到离屏 shadowTex/blurTex）
   if (shadows && shadows.length > 0) {
     renderShapesToView(shadows, _shadowView, 1.0);
-    runBlur(_shadowView, _blurView,   [1, 0]); // Horizontal
-    runBlur(_blurView,   _shadowView, [0, 1]); // Vertical (swap src/dst)
-    compositeBlur(_shadowView, screen);
+    runBlur(_shadowView, _blurView,   [1, 0]); // 水平
+    runBlur(_blurView,   _shadowView, [0, 1]); // 垂直
   }
 
-  // 2) 主形状渲到屏幕
+  // 2) 所有到屏幕 swapchain 的绘制：必须合并到 【同一个 encoder + 同一个 render pass】，最后只 submit 一次！
+  //    (WebGPU 规范：getCurrentTexture 拿到的 swapchain 图像在一帧内只能被 submit 一次)
+  //    同一个 encoder 里不能对同一个 screen view 连续多次 beginRenderPass（Chrome 下 undefined behavior → 全透明黑屏）
+  //    因此：shape → blur → 文本/图片 全部放在同一个 pass 里用 setPipeline 切换，连续 draw！
   const encoder = _device.createCommandEncoder();
-  let pass = encoder.beginRenderPass({
+  const pass = encoder.beginRenderPass({
     colorAttachments: [{
       view: screen,
       clearValue: { r: _clearColor[0], g: _clearColor[1], b: _clearColor[2], a: _clearColor[3] },
       loadOp: 'clear', storeOp: 'store',
     }],
   });
-  writeGlobals(_alpha);
-  if (shapes && shapes.length > 0) {
-    const instanceCount = Math.floor(shapes.length / SHAPE_STRIDE);
-    const elementCount = instanceCount * SHAPE_STRIDE;
-    let data = shapes;
-    let dataElCount = elementCount;
-    if (shapes.length !== elementCount) {
-      data = shapes.subarray(0, elementCount);
-      dataElCount = data.length;
-    }
-    const capacityEl = 4096 * SHAPE_STRIDE;
-    if (dataElCount > capacityEl) {
-      dataElCount = capacityEl;
-      data = data.subarray(0, dataElCount);
-    }
-    _device.queue.writeBuffer(_shapeBuffer, 0, data, 0, dataElCount);
-    pass.setPipeline(_shapePipeline);
-    pass.setBindGroup(0, _shapeBindGroup);
-    pass.setVertexBuffer(0, _shapeBuffer);
-    pass.draw(6, instanceCount);
+  {
+    // 2a) 主形状渲到屏幕
+    writeGlobals(_alpha);
+    if (shapes && shapes.length > 0) {
+      const instanceCount = Math.floor(shapes.length / SHAPE_STRIDE);
+      const elementCount = instanceCount * SHAPE_STRIDE;
+      let data = shapes;
+      let dataElCount = elementCount;
+      if (shapes.length !== elementCount) {
+        data = shapes.subarray(0, elementCount);
+        dataElCount = data.length;
+      }
+      const capacityEl = 4096 * SHAPE_STRIDE;
+      if (dataElCount > capacityEl) {
+        dataElCount = capacityEl;
+        data = data.subarray(0, dataElCount);
+      }
+      _device.queue.writeBuffer(_shapeBuffer, 0, data, 0, dataElCount);
+      pass.setPipeline(_shapePipeline);
+      pass.setBindGroup(0, _shapeBindGroup);
+      pass.setVertexBuffer(0, _shapeBuffer);
+      pass.draw(6, instanceCount);
 
-    _dbg.shapeBatches++;
-    _dbg.totalShapes += instanceCount;
-    try { _dbg.firstShapePrefix = Array.from(shapes.subarray(0, 8)); } catch (_) {}
-  } else {
-    // 没形状但也要打递增，只是不 draw
-    _dbg.shapeBatches++;
+      _dbg.shapeBatches++;
+      _dbg.totalShapes += instanceCount;
+      try { _dbg.firstShapePrefix = Array.from(shapes.subarray(0, 8)); } catch (_) {}
+    } else {
+      _dbg.shapeBatches++;
+    }
+    // 2b) 阴影 composite（同一 pass，切换到 blur pipeline draw）
+    if (shadows && shadows.length > 0) {
+      compositeBlurInEncoder(pass, encoder, _shadowView, screen);
+    }
+    // 2c) 纹理（文本 / 图片）：同一 pass，切换到 tex pipeline 每个 draw 一个 quad
+    for (const t of _texData) drawTexturePass(pass, encoder, t, screen);
   }
   pass.end();
-  // 3) 纹理（文本 / 图片）：每个纹理单独一个 render pass（loadOp:load 在现有屏幕内容上叠加）
-  for (const t of _texData) drawTexturePass(encoder, t, screen);
   _device.queue.submit([encoder.finish()]);
 
   // 调试：每 64 帧把屏幕中心像素 copy 出来
@@ -630,6 +684,8 @@ function renderFrame(shapesRaw, shadowsRaw) {
       }).catch(() => { try { dst.destroy(); } catch (_) {} });
     } catch (_) {}
   }
+  _dbg.lastTexDraws = _dbg.texDraws;
+  _dbg.lastTexDataLen = _texData.length;
 }
 
 function renderShapesToView(arr, view, alpha) {
@@ -675,9 +731,10 @@ function runBlur(srcView, dstView, dir) {
 
 function compositeBlur(blurView, screen) {
   const encoder = _device.createCommandEncoder();
-  const pass = encoder.beginRenderPass({
-    colorAttachments: [{ view: screen, loadOp: 'load', storeOp: 'store' }],
-  });
+  compositeBlurInEncoder(encoder, blurView, screen);
+  _device.queue.submit([encoder.finish()]);
+}
+function compositeBlurInEncoder(pass, encoder, blurView, screen) {
   _device.queue.writeBuffer(_blurDirBuffer, 0, new Float32Array([0, 0, 1 / _shadowTexW, 1 / _shadowTexH]));
   const bg = _device.createBindGroup({
     layout: _blurPipeline.getBindGroupLayout(0),
@@ -691,17 +748,11 @@ function compositeBlur(blurView, screen) {
   pass.setPipeline(_blurPipeline);
   pass.setBindGroup(0, bg);
   pass.draw(3);
-  pass.end();
-  _device.queue.submit([encoder.finish()]);
 }
 
-function drawTexturePass(encoder, t, screenView) {
+function drawTexturePass(pass, encoder, t, screenView) {
   const tex = _textures[t.id];
   if (!tex) return;
-  const pass = encoder.beginRenderPass({
-    colorAttachments: [{ view: screenView, loadOp: 'load', storeOp: 'store' }],
-  });
-  writeGlobals(1.0);
   _device.queue.writeBuffer(_texGlobalsBuffer, 0, new Float32Array([t.x, t.y, t.w, t.h]));
   const bg = _device.createBindGroup({
     layout: _texPipeline.getBindGroupLayout(0),
@@ -715,6 +766,5 @@ function drawTexturePass(encoder, t, screenView) {
   pass.setPipeline(_texPipeline);
   pass.setBindGroup(0, bg);
   pass.draw(6);
-  pass.end();
   _dbg.texDraws++;
 }
