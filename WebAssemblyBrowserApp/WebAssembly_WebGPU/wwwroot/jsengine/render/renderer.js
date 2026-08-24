@@ -15,6 +15,7 @@ let _ctx = null;
 let _canvas = null;
 let _format = null;
 let _viewW = 960, _viewH = 540;
+let _cssScale = 1;            // CSS 显示缩放（fit 计算；canvas 物理像素 = 逻辑分辨率 × 该值）
 
 // 实例缓冲（GPU 侧）
 let _shapeBuffer = null;
@@ -25,6 +26,7 @@ let _texData = [];            // {view, w, h, x, y} —— 当前帧要画的纹
 const _textures = [];         // 图片纹理 {texture, view, w, h}（按 id 索引，由 loadImageTexture 填充）
 const _textCache = new Map(); // 文字纹理缓存：key = text+font+color → {texture, view, w, h}
 const TEXT_CACHE_LIMIT = 128; // 最多缓存 128 个文字纹理，超限淘汰最旧
+const TEXT_SUPERSAMPLE = 2;   // 文字纹理烘焙超采样倍率：2x 像素烘焙，显示按逻辑尺寸缩小 → 高 DPI/放大时文字更清晰
 
 // 离屏阴影资源
 let _shadowTex = null, _shadowView = null, _shadowTexW = 0, _shadowTexH = 0;
@@ -116,8 +118,17 @@ function gpu_init() {
       (window.innerHeight - 24) / _viewH
     );
     const s = Math.min(1.6, Math.max(0.25, scale));
+    _cssScale = s;
     _canvas.style.width = (_viewW * s) + 'px';
     _canvas.style.height = (_viewH * s) + 'px';
+    // 逻辑分辨率挂到 canvas，供输入层做坐标换算（鼠标 CSS 像素 → 逻辑像素）
+    _canvas.dataset.vw = String(_viewW);
+    _canvas.dataset.vh = String(_viewH);
+    // 物理像素对齐 CSS 显示像素：避免浏览器把低分辨率 canvas 拉伸导致画面/文字模糊
+    if (_device) {
+      _canvas.width = Math.max(2, Math.round(_viewW * s));
+      _canvas.height = Math.max(2, Math.round(_viewH * s));
+    }
   };
   window.addEventListener('resize', fit);
   fit();
@@ -150,8 +161,8 @@ function gpu_init() {
 
       _ctx = _canvas.getContext('webgpu');
       _format = navigator.gpu.getPreferredCanvasFormat();
-      _canvas.width = _viewW;
-      _canvas.height = _viewH;
+      _canvas.width = Math.max(2, Math.round(_viewW * (_cssScale || 1)));
+      _canvas.height = Math.max(2, Math.round(_viewH * (_cssScale || 1)));
       _ctx.configure({
         device: _device,
         format: _format,
@@ -342,9 +353,14 @@ export const gpu = {
 
   resize(w, h) {
     if (!_canvas) return;
-    _canvas.width = w; _canvas.height = h;
     _viewW = w; _viewH = h;
-    if (_device) initOffscreen();
+    _canvas.dataset.vw = String(w);
+    _canvas.dataset.vh = String(h);
+    if (_device) {
+      _canvas.width = Math.max(2, Math.round(w * (_cssScale || 1)));
+      _canvas.height = Math.max(2, Math.round(h * (_cssScale || 1)));
+      initOffscreen();
+    }
   },
 
   beginFrame(r, g, b, a) { _clearColor = [r, g, b, a]; },
@@ -435,17 +451,21 @@ function drawTextSprite(text, x, y, font, color, align) {
   let entry = _textCache.get(key);
   if (!entry) {
     const m = _measureCtx.measureText(text);
-    const w = Math.ceil(m.width) + 8;
-    const h = 48;
+    const lw = Math.ceil(m.width) + 8;   // 逻辑尺寸（屏幕坐标）
+    const lh = 48;
+    const ts = TEXT_SUPERSAMPLE;
+    const pw = Math.ceil(lw * ts);       // 纹理像素尺寸 = 逻辑 × 超采样
+    const ph = Math.ceil(lh * ts);
+    const sfont = ts === 1 ? font : font.replace(/(\d+(?:\.\d+)?)px/g, (_, n) => (parseFloat(n) * ts) + 'px');
     const tex = bakeToTexture((c) => {
-      c.font = font;
+      c.font = sfont;
       c.fillStyle = color;
       c.textAlign = 'left';
       c.textBaseline = 'middle';
-      c.fillText(text, 4, h / 2);
-    }, w, h);
+      c.fillText(text, 4 * ts, ph / 2);
+    }, pw, ph);
     if (!tex) return;
-    entry = { texture: tex, view: tex.createView(), w, h };
+    entry = { texture: tex, view: tex.createView(), lw, lh };
     _textCache.set(key, entry);
     if (_textCache.size > TEXT_CACHE_LIMIT) {
       const oldest = _textCache.keys().next().value;
@@ -453,9 +473,9 @@ function drawTextSprite(text, x, y, font, color, align) {
     }
   }
   let dx = x;
-  if (align === 'center') dx = x - entry.w / 2;
-  else if (align === 'right') dx = x - entry.w;
-  _texData.push({ view: entry.view, w: entry.w, h: entry.h, x: dx, y: y - entry.h / 2 });
+  if (align === 'center') dx = x - entry.lw / 2;
+  else if (align === 'right') dx = x - entry.lw;
+  _texData.push({ view: entry.view, w: entry.lw, h: entry.lh, x: dx, y: y - entry.lh / 2 });
 }
 
 function loadImageTexture(src) {
@@ -512,10 +532,12 @@ function renderFrame(shapesRaw, shadowsRaw) {
   //      但 swiftshader / 部分驱动会读到最后一次写入，导致所有文字画到同一位置（错位/覆盖）。
   //      独立 UBO + 预建 bind group 在任何实现上行为都可预测。
   const texDraws = [];
+  const texUbos = [];   // 每帧临时 UBO，submit 后统一 destroy，避免 GPU 内存累积
   for (const t of _texData) {
     if (!t.view) continue;
     const ubo = _device.createBuffer({ size: 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
     _device.queue.writeBuffer(ubo, 0, new Float32Array([t.x, t.y, t.w, t.h]));
+    texUbos.push(ubo);
     texDraws.push(_device.createBindGroup({
       layout: _texPipeline.getBindGroupLayout(0),
       entries: [
@@ -573,6 +595,8 @@ function renderFrame(shapesRaw, shadowsRaw) {
   }
   pass.end();
   _device.queue.submit([encoder.finish()]);
+  // 释放本帧临时 UBO（submit 后 destroy 安全，避免 GPU 内存累积）
+  for (const u of texUbos) u.destroy();
 }
 
 function renderShapesToView(arr, view, alpha) {

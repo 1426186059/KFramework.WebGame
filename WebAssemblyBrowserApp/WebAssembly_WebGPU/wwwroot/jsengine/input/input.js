@@ -43,6 +43,10 @@ function updateMouse(e) {
     const cv = document.querySelector(_canvasSelector)
     if (!cv) return
     const rect = cv.getBoundingClientRect()
-    _mouse.x = (e.clientX - rect.left) * (cv.width / rect.width)
-    _mouse.y = (e.clientY - rect.top) * (cv.height / rect.height)
+    // 逻辑分辨率（渲染层挂到 canvas dataset；canvas 物理像素 = 逻辑 × CSS 缩放）
+    // 鼠标 CSS 像素 → 逻辑像素：× 逻辑分辨率 / CSS 显示尺寸
+    const vw = parseInt(cv.dataset.vw || '960', 10)
+    const vh = parseInt(cv.dataset.vh || '540', 10)
+    _mouse.x = (e.clientX - rect.left) * (vw / rect.width)
+    _mouse.y = (e.clientY - rect.top) * (vh / rect.height)
 }
