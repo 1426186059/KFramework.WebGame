@@ -7,7 +7,7 @@
 //   - 基础清屏、视口、文本/图片纹理烘焙（浏览器专属 API）
 // =====================================================================
 
-const RENDERER_VERSION = '2026-08-24d';  // 改 renderer.js 时递增，便于确认浏览器是否加载到新版（排查缓存）
+const RENDERER_VERSION = '2026-08-24e';  // 改 renderer.js 时递增，便于确认浏览器是否加载到新版（排查缓存）
 const SHAPE_STRIDE = 13;           // 与 C# WebGPU.cs 的 Stride=13 一致
 
 let _device = null;
@@ -21,8 +21,10 @@ let _shapeBuffer = null;
 let _shadowBuffer = null;
 
 // 纹理（文本 / 图片）
-let _texData = [];
-const _textures = [];         // {texture, view, w, h}
+let _texData = [];            // {view, w, h, x, y} —— 当前帧要画的纹理 quad（文本/图片）
+const _textures = [];         // 图片纹理 {texture, view, w, h}（按 id 索引，由 loadImageTexture 填充）
+const _textCache = new Map(); // 文字纹理缓存：key = text+font+color → {texture, view, w, h}
+const TEXT_CACHE_LIMIT = 128; // 最多缓存 128 个文字纹理，超限淘汰最旧
 
 // 离屏阴影资源
 let _shadowTex = null, _shadowView = null, _shadowTexW = 0, _shadowTexH = 0;
@@ -139,10 +141,10 @@ function gpu_init() {
         _dbg.lastErrors.push('device_lost: ' + (info?.message ?? 'unknown'));
       });
       // WebGPU validation error 监听：直接把 GPU 验证失败打印出来
-      _device.addEventListener('uncaughterror', (e) => {
+      _device.addEventListener('uncapturederror', (e) => {
         const msg = e?.error?.message || String(e);
-        console.error('[WebGPU] uncaughterror:', msg);
-        _dbg.lastErrors.push('uncaughterror: ' + msg);
+        console.error('[WebGPU] uncapturederror:', msg);
+        _dbg.lastErrors.push('uncapturederror: ' + msg);
         if (_dbg.lastErrors.length > 32) _dbg.lastErrors.splice(0, _dbg.lastErrors.length - 32);
       });
 
@@ -404,7 +406,7 @@ function bakeToTexture(drawFn, w, h) {
   const src = _offscreenCtx.getImageData(0, 0, w, h).data;
   let _nonTransparent = 0;
   for (let i = 3; i < src.length; i += 4) if (src[i] > 0) _nonTransparent++;
-  if (_dbg.frameCount < 3) console.log('[TEX bake]', { w, h, nonTransparent: _nonTransparent, font: _dbg.lastFont });
+  if (_dbg.frameCount < 3) console.log('[TEX bake] ' + JSON.stringify({ w, h, nonTransparent: _nonTransparent, font: _dbg.lastFont }));
   const srcRowBytes = w * 4;
   const bytesPerRow = Math.ceil(srcRowBytes / 256) * 256;
   let pixels = src;
@@ -428,23 +430,32 @@ function drawTextSprite(text, x, y, font, color, align) {
   if (!_measureCtx || !_device) return;
   _dbg.lastFont = font;
   _measureCtx.font = font;
-  const m = _measureCtx.measureText(text);
-  const w = Math.ceil(m.width) + 8;
-  const h = 48;
-  const tex = bakeToTexture((c) => {
-    c.font = font;
-    c.fillStyle = color;
-    c.textAlign = 'left';
-    c.textBaseline = 'middle';
-    c.fillText(text, 4, h / 2);
-  }, w, h);
-  if (!tex) return;
-  const id = _textures.length;
-  _textures.push({ texture: tex, view: tex.createView(), w, h });
+  // 文字纹理缓存：同一 (text, font, color) 只烘焙一次，避免每帧创建 GPU 纹理导致资源累积。
+  const key = text + '\u0001' + font + '\u0001' + color;
+  let entry = _textCache.get(key);
+  if (!entry) {
+    const m = _measureCtx.measureText(text);
+    const w = Math.ceil(m.width) + 8;
+    const h = 48;
+    const tex = bakeToTexture((c) => {
+      c.font = font;
+      c.fillStyle = color;
+      c.textAlign = 'left';
+      c.textBaseline = 'middle';
+      c.fillText(text, 4, h / 2);
+    }, w, h);
+    if (!tex) return;
+    entry = { texture: tex, view: tex.createView(), w, h };
+    _textCache.set(key, entry);
+    if (_textCache.size > TEXT_CACHE_LIMIT) {
+      const oldest = _textCache.keys().next().value;
+      _textCache.delete(oldest);
+    }
+  }
   let dx = x;
-  if (align === 'center') dx = x - w / 2;
-  else if (align === 'right') dx = x - w;
-  _texData.push({ id, x: dx, y: y - h / 2, w, h });
+  if (align === 'center') dx = x - entry.w / 2;
+  else if (align === 'right') dx = x - entry.w;
+  _texData.push({ view: entry.view, w: entry.w, h: entry.h, x: dx, y: y - entry.h / 2 });
 }
 
 function loadImageTexture(src) {
@@ -464,8 +475,9 @@ function loadImageTexture(src) {
 }
 
 function drawImageTexture(id, x, y, w, h) {
-  if (!_textures[id]) return;
-  _texData.push({ id, x, y, w, h });
+  const tex = _textures[id];
+  if (!tex || !tex.view) return;
+  _texData.push({ view: tex.view, w, h, x, y });
 }
 
 // ---------------------------------------------------------------------
@@ -477,7 +489,7 @@ function renderFrame(shapesRaw, shadowsRaw) {
   _dbg.frameCount++;
 
   if (_dbg.frameCount <= 3) {
-    console.log('[frame]', _dbg.frameCount, 'texData=', _texData.map(t => ({ x: t.x|0, y: t.y|0, w: t.w|0, h: t.h|0, id: t.id })));
+    console.log('[frame]', _dbg.frameCount, 'texData=', JSON.stringify(_texData.map(t => ({ x: t.x|0, y: t.y|0, w: t.w|0, h: t.h|0 }))));
   }
 
   const screen = _ctx.getCurrentTexture().createView();
@@ -493,6 +505,31 @@ function renderFrame(shapesRaw, shadowsRaw) {
   //    (WebGPU 规范：getCurrentTexture 拿到的 swapchain 图像在一帧内只能被 submit 一次)
   //    同一个 encoder 里不能对同一个 screen view 连续多次 beginRenderPass（Chrome 下 undefined behavior → 全透明黑屏）
   //    因此：shape → blur → 文本/图片 全部放在同一个 pass 里用 setPipeline 切换，连续 draw！
+  //
+  // 2.5) 纹理（文本/图片）draw 的准备：在 pass 记录【之前】为每个 draw 预建独立 16 字节 UBO + bind group。
+  //      不要在 pass 内 / 循环内对共享 _texGlobalsBuffer 多次 writeBuffer ——
+  //      bindGroup 不快照 buffer 数据（按 queue 顺序在 draw 时读取 buffer 当时内容），
+  //      但 swiftshader / 部分驱动会读到最后一次写入，导致所有文字画到同一位置（错位/覆盖）。
+  //      独立 UBO + 预建 bind group 在任何实现上行为都可预测。
+  const texDraws = [];
+  for (const t of _texData) {
+    if (!t.view) continue;
+    const ubo = _device.createBuffer({ size: 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+    _device.queue.writeBuffer(ubo, 0, new Float32Array([t.x, t.y, t.w, t.h]));
+    texDraws.push(_device.createBindGroup({
+      layout: _texPipeline.getBindGroupLayout(0),
+      entries: [
+        { binding: 0, resource: { buffer: _globalsBuffer } },
+        { binding: 1, resource: { buffer: ubo } },
+        { binding: 2, resource: _sampler },
+        { binding: 3, resource: t.view },
+      ],
+    }));
+  }
+
+  // 3) 全局 uniform（分辨率/alpha）也在 pass 外写入，供 shape / text / blur 所有 draw 使用
+  writeGlobals(_alpha);
+
   const encoder = _device.createCommandEncoder();
   const pass = encoder.beginRenderPass({
     colorAttachments: [{
@@ -503,7 +540,6 @@ function renderFrame(shapesRaw, shadowsRaw) {
   });
   {
     // 2a) 主形状渲到屏幕
-    writeGlobals(_alpha);
     if (shapes && shapes.length > 0) {
       const instanceCount = Math.floor(shapes.length / SHAPE_STRIDE);
       const elementCount = instanceCount * SHAPE_STRIDE;
@@ -528,8 +564,12 @@ function renderFrame(shapesRaw, shadowsRaw) {
     if (shadows && shadows.length > 0) {
       compositeBlurInEncoder(pass, encoder, _shadowView, screen);
     }
-    // 2c) 纹理（文本 / 图片）：同一 pass，切换到 tex pipeline 每个 draw 一个 quad
-    for (const t of _texData) drawTexturePass(pass, encoder, t, screen);
+    // 2c) 纹理（文本 / 图片）：同一 pass，切换到 tex pipeline，用预建的 bind group 逐个 draw
+    for (const bg of texDraws) {
+      pass.setPipeline(_texPipeline);
+      pass.setBindGroup(0, bg);
+      pass.draw(6);
+    }
   }
   pass.end();
   _device.queue.submit([encoder.finish()]);
@@ -595,22 +635,4 @@ function compositeBlurInEncoder(pass, encoder, blurView, screen) {
   pass.setPipeline(_blurPipeline);
   pass.setBindGroup(0, bg);
   pass.draw(3);
-}
-
-function drawTexturePass(pass, encoder, t, screenView) {
-  const tex = _textures[t.id];
-  if (!tex) return;
-  _device.queue.writeBuffer(_texGlobalsBuffer, 0, new Float32Array([t.x, t.y, t.w, t.h]));
-  const bg = _device.createBindGroup({
-    layout: _texPipeline.getBindGroupLayout(0),
-    entries: [
-      { binding: 0, resource: { buffer: _globalsBuffer } },
-      { binding: 1, resource: { buffer: _texGlobalsBuffer } },
-      { binding: 2, resource: _sampler },
-      { binding: 3, resource: tex.view },
-    ],
-  });
-  pass.setPipeline(_texPipeline);
-  pass.setBindGroup(0, bg);
-  pass.draw(6);
 }
