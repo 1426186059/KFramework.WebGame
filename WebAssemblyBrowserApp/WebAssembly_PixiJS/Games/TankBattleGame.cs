@@ -21,55 +21,89 @@ public sealed class TankBattleGame : GameScene
     private static readonly int[] DirX = { 0, 1, 0, -1 };
     private static readonly int[] DirY = { -1, 0, 1, 0 };
 
+    // 5 关，13×13。符号：. 空地 / B 砖墙 / S 钢墙 / ~ 水域 / % 树林 / E 基地。
+    // 每关固定约束：基地 (6,12)='E'，玩家出生 (2,12) 为空地，敌人出生 (0,0)(6,0)(12,0) 为空地。
     private static readonly string[][] Levels =
     {
         new[]
         {
-            ".............",
-            "..#..#..#..#.",
-            "..#..#..#..#.",
-            "..#..#..#..#.",
-            "......~......",
-            "..#####.####.",
-            ".....#..#.#..",
-            ".....#..#.#..",
-            "..B..........",
-            "..........B..",
-            ".....#B#.....",
-            ".....#B#.....",
-            ".B..B.E.B..B.",
+            "........S....",
+            ".S..S..S..S..",
+            ".S..S..S..S..",
+            ".S..SBS..S..S",
+            "..B..B.B..B..",
+            "..B..B.B..B..",
+            "..S..B.B..S..",
+            "...BBB.BB....",
+            "..B.......B..",
+            "....S..S.....",
+            "....S..S.....",
+            ".....SBB.....",
+            "....B.E...B..",
         },
         new[]
         {
-            ".............",
-            "..S....S.....",
-            "..#.#..B.#.#.",
-            "..#.#..B.#.#.",
-            "....#..B.....",
-            "..S.###.##..S",
-            "....#....#...",
-            "....#....#...",
-            "..B....#..B..",
-            "..B....#..B..",
-            ".....#S#.....",
-            ".....#S#.....",
-            "BB..B..E.B..B",
+            "..S........S.",
+            "....~~.~~....",
+            "...~~~~~~~...",
+            "....~~.~~....",
+            "..S.......S..",
+            "..B.BB.BB.B..",
+            "..B.BB.BB.B..",
+            ".....S.S.....",
+            "..B.BB.BB.B..",
+            "..B.BB.BB.B..",
+            "....S..S.....",
+            ".....SBB.....",
+            "....B.E...B..",
         },
         new[]
         {
-            ".............",
-            "..S......S...",
-            "..#.#####.#..",
-            "..#.#~#~#.#..",
-            "..###~#~###..",
-            "....##.##....",
-            "..B.##.##.B..",
-            "..B.##.##.B..",
-            "....##.##....",
-            "....#SSS#....",
-            "....#SSS#....",
-            "....#SSS#....",
-            "BB..B.E.B..B",
+            ".......S.....",
+            "..%....%.....",
+            "..%..%S%..%..",
+            ".....SSS.....",
+            "..B...S...B..",
+            "..B..B.B..B..",
+            "..B..B.B..B..",
+            "..%..BBB..%..",
+            "...B.....B...",
+            "....S..S.....",
+            ".....SBB.....",
+            "..%..S..S%...",
+            "....B.E...B..",
+        },
+        new[]
+        {
+            "..S........S.",
+            "..S~~..S~~S..",
+            "..S~~..S~~S..",
+            "....~~~~~....",
+            "..B..~~~~..B.",
+            "..B..BB.BB.B.",
+            "..B..BB.BB.B.",
+            ".....S.S.....",
+            "..B.BB.BB.B..",
+            "..B.BB.BB.B..",
+            "....S..S.....",
+            ".....SBB.....",
+            "....B.E...B..",
+        },
+        new[]
+        {
+            "....S....S...",
+            "..%..S..S.%..",
+            "..%..BBB..%..",
+            "....~~~~~....",
+            "..S~~S.S~~S..",
+            "..B..S.S..B..",
+            "..B..S.S..B..",
+            "..S..~S~..S..",
+            "..B......B...",
+            "....S...S....",
+            ".....SBB.....",
+            "..%.SBB.S%...",
+            "....B.E...B..",
         },
     };
 
@@ -321,18 +355,23 @@ public sealed class TankBattleGame : GameScene
         if (p.SpawnInvul > 0) p.SpawnInvul -= dt;
         if (p.Immortal > 0) p.Immortal -= dt;
 
-        int nd = p.Dir;
-        if (Input.IsKeyDown(Input.ArrowLeft) || Input.IsKeyDown(Input.KeyA)) nd = 3;
-        else if (Input.IsKeyDown(Input.ArrowRight) || Input.IsKeyDown(Input.KeyD)) nd = 1;
-        else if (Input.IsKeyDown(Input.ArrowUp) || Input.IsKeyDown(Input.KeyW)) nd = 0;
-        else if (Input.IsKeyDown(Input.ArrowDown) || Input.IsKeyDown(Input.KeyS)) nd = 2;
-        if (nd != p.Dir) p.SetDir(nd);
+        // 仅当有方向键按下才移动，松开即停（否则坦克会沿上次方向一直跑）
+        bool moving = false;
+        int nd = 0;
+        if (Input.IsKeyDown(Input.ArrowLeft) || Input.IsKeyDown(Input.KeyA)) { nd = 3; moving = true; }
+        else if (Input.IsKeyDown(Input.ArrowRight) || Input.IsKeyDown(Input.KeyD)) { nd = 1; moving = true; }
+        else if (Input.IsKeyDown(Input.ArrowUp) || Input.IsKeyDown(Input.KeyW)) { nd = 0; moving = true; }
+        else if (Input.IsKeyDown(Input.ArrowDown) || Input.IsKeyDown(Input.KeyS)) { nd = 2; moving = true; }
 
-        float nx = p.X + DirX[p.Dir] * p.Speed * dt;
-        float ny = p.Y + DirY[p.Dir] * p.Speed * dt;
-        if (CanMove(p, nx, ny)) p.SetPos(nx, ny);
-        else if (CanMove(p, nx, p.Y)) p.SetPos(nx, p.Y);
-        else if (CanMove(p, p.X, ny)) p.SetPos(p.X, ny);
+        if (moving)
+        {
+            if (nd != p.Dir) p.SetDir(nd);
+            float nx = p.X + DirX[p.Dir] * p.Speed * dt;
+            float ny = p.Y + DirY[p.Dir] * p.Speed * dt;
+            if (CanMove(p, nx, ny)) p.SetPos(nx, ny);
+            else if (CanMove(p, nx, p.Y)) p.SetPos(nx, p.Y);
+            else if (CanMove(p, p.X, ny)) p.SetPos(p.X, ny);
+        }
         p.SetPos(
             ClampF(p.X, MapOx + TankHalf, MapOx + MapSize - TankHalf),
             ClampF(p.Y, MapOy + TankHalf, MapOy + MapSize - TankHalf));
