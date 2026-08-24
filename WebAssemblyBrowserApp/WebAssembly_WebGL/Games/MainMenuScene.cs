@@ -1,3 +1,4 @@
+#nullable enable
 using WebAssemblyBrowserApp.Engine;
 
 namespace WebAssemblyBrowserApp.Games;
@@ -11,7 +12,9 @@ public sealed class MainMenuScene : GameScene
     private const float Card1X = 40, Card2X = 280, Card3X = 520;
 
     private float _time;
-    private int[] _demoPixels;
+    private int[]? _demoPixels;
+    private Texture? _demoVideo;
+    private bool _videoLoading;
 
     public MainMenuScene() : base("main-menu") { }
 
@@ -20,6 +23,7 @@ public sealed class MainMenuScene : GameScene
     public override void Update(float dt)
     {
         _time += dt;
+        EnsureVideoLoaded();
 
         if (Input.IsKeyPressed(Input.Digit1)) { GameEngine.Instance.Push("breakout"); return; }
         if (Input.IsKeyPressed(Input.Digit2)) { GameEngine.Instance.Push("tank"); return; }
@@ -82,7 +86,22 @@ public sealed class MainMenuScene : GameScene
         // 直接上传 GPU 纹理演示：像素数组 → Assets.UploadTexture → 按 id 直接 Draw
         RenderDemoTexture();
 
+        // 视频纹理演示：GPU 硬解，当前解码帧直接进 GPU（WebGL texImage2D(video) 每帧上传）
+        if (_demoVideo is { Id: >= 0 })
+        {
+            Assets.Draw(_demoVideo, 16, GameEngine.Height - 160, 256, 144);
+            WebGL.FillText("视频纹理 · GPU 硬解", 16, GameEngine.Height - 172, "12px system-ui, sans-serif", "#8b949e", "left");
+        }
+
         WebGL.Restore();
+    }
+
+    // 视频为异步加载，完成前自动跳过绘制
+    private async void EnsureVideoLoaded()
+    {
+        if (_videoLoading || _demoVideo is not null) return;
+        _videoLoading = true;
+        _demoVideo = await Assets.LoadVideoAsync("/media/demo.mp4");
     }
 
     // 每帧重绘像素：横向 RGB 渐变 + 纵向滚动 + 半透明（同时验证 alpha 混合）

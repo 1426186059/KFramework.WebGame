@@ -82,6 +82,9 @@ const assets = {
     loadImage(url) {
         return gpu.loadImage(url)
     },
+    loadVideo(url) {
+        return gpu.loadVideo(url)
+    },
     drawImage(id, x, y, w, h) {
         gpu.drawImage(id, x, y, w, h)
     },

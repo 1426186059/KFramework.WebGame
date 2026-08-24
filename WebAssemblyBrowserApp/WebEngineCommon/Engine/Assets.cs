@@ -36,6 +36,9 @@ public static partial class Assets
     [JSImport("assets.loadImage", "main.js")]
     private static partial Task<JSObject?> LoadImageAsync(string url);
 
+    [JSImport("assets.loadVideo", "main.js")]
+    private static partial Task<JSObject?> LoadVideoJsAsync(string url);
+
     [JSImport("assets.drawImage", "main.js")]
     private static partial void JsDrawImage(int id, float x, float y, float w, float h);
 
@@ -72,6 +75,43 @@ public static partial class Assets
         var tex = new Texture { Url = url, Id = id, Width = w, Height = h };
         _pending.Remove(url);
         _cache[url] = tex;
+        return tex;
+    }
+
+    // ------------------------- 视频纹理（GPU 硬解） -------------------------
+
+    private static readonly Dictionary<string, Texture> _videoCache = new();
+    private static readonly Dictionary<string, Task<Texture>> _videoPending = new();
+
+    /// <summary>
+    /// 异步加载视频为纹理（带缓存去重）。解码由浏览器硬件解码器完成，绘制时当前帧
+    /// 直接进 GPU（WebGPU 走 <c>importExternalTexture</c> 零拷贝导入；WebGL/Canvas2D 直接
+    /// 以 video 为源绘制），全程无 CPU 像素解码/拷贝 —— 即真正的「GPU 解码」路径。
+    /// 返回的 Texture 可照常传给 <see cref="Draw(Texture?,float,float,float,float)"/>。
+    /// </summary>
+    public static Task<Texture> LoadVideoAsync(string url)
+    {
+        if (_videoCache.TryGetValue(url, out var cached)) return Task.FromResult(cached);
+        if (_videoPending.TryGetValue(url, out var running)) return running;
+
+        var task = LoadVideoCoreAsync(url);
+        _videoPending[url] = task;
+        return task;
+    }
+
+    private static async Task<Texture> LoadVideoCoreAsync(string url)
+    {
+        int id = -1, w = 0, h = 0;
+        using var obj = await LoadVideoJsAsync(url);
+        if (obj is not null && obj.GetPropertyAsInt32("id") >= 0)
+        {
+            id = obj.GetPropertyAsInt32("id");
+            w = (int)obj.GetPropertyAsDouble("w");
+            h = (int)obj.GetPropertyAsDouble("h");
+        }
+        var tex = new Texture { Url = url, Id = id, Width = w, Height = h };
+        _videoPending.Remove(url);
+        _videoCache[url] = tex;
         return tex;
     }
 

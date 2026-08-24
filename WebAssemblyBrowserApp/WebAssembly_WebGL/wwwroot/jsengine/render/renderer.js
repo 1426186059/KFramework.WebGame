@@ -8,6 +8,7 @@
 //   - 上传单个纹理/文本纹理并绘制纹理四边形
 //   - 基础 gl.* 调用（清屏、视口、blend）
 // =====================================================================
+import { createVideoElement } from './video.js'
 
 // ------------------------- Shader 加载（独立 .vert / .frag 文件） -------------------------
 // 着色器源码不再内嵌在 JS 里，统一放到 wwwroot/jsengine/render/shaders/ 目录：
@@ -40,6 +41,8 @@ let _uImgRes = null, _uImgTex = null, _uImgUvRect = null
 
 // 纹理缓存：id -> WebGLTexture
 const _textures = new Map()
+// 视频纹理（GPU 硬解）：id → { video, tex, w, h }，绘制时 texImage2D(video) 直接上传当前帧
+const _videos = new Map()
 let _nextTexId = 1
 
 // 文本纹理缓存：key -> { texId, tw, th, ascent, pad }，LRU
@@ -378,6 +381,24 @@ export const glCore = {
         })
     },
 
+    // ------------------------- 视频加载（GPU 硬解，绘制时 texImage2D(video) 直接上传当前帧） -------------------------
+    loadVideo(id, url) {
+        return new Promise((resolve) => {
+            createVideoElement(url, (video, w, h) => {
+                const gl = _gl
+                const tex = gl.createTexture()
+                gl.bindTexture(gl.TEXTURE_2D, tex)
+                gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false)
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video)
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+                _videos.set(id, { video, tex, w, h })
+                resolve({ id, w, h })
+            }, () => resolve({ id: -1, w: 0, h: 0 }))
+        })
+    },
+
     // ------------------------- 动态纹理（Texture2D：像素重传） -------------------------
     uploadTexture(id, w, h, argb) {
         const gl = _gl
@@ -439,10 +460,11 @@ export const glCore = {
     // ------------------------- 图片 DrawImage（通过 string id） -------------------------
     // C# 侧传矩阵（行主序 float[9]）+ alpha；本函数内部组装实例数据并绘制。
     drawImageById(id, dx, dy, dw, dh, matrixArr, alpha) {
-        // 先查图片/文本纹理（url / texId 作 key），再查动态纹理（'dyn:'+id，Texture2D）
+        // 先查图片/文本纹理（url / texId 作 key），再查视频，再查动态纹理（'dyn:'+id，Texture2D）
         let tex = _textures.get(id)
         if (!tex) tex = _textures.get('dyn:' + id)
-        if (!tex) return
+        const v = _videos.get(id)
+        if (!tex && !v) return
         const gl = _gl
         // 保险：强制 Float32Array（C# double[] 会被 JSInterop 包装成 Float64Array）
         const m = (matrixArr instanceof Float32Array) ? matrixArr : new Float32Array(matrixArr)
@@ -458,6 +480,12 @@ export const glCore = {
         gl.useProgram(_imgProg)
         bindQuad(_imgProg)
         gl.activeTexture(gl.TEXTURE0)
+        if (v) {
+            // 视频：每帧把当前解码帧直接上传（硬件解码 + GPU 上传，无 CPU 像素处理）
+            gl.bindTexture(gl.TEXTURE_2D, v.tex)
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, v.video)
+            tex = v.tex
+        }
         gl.bindTexture(gl.TEXTURE_2D, tex)
         gl.uniform1i(_uImgTex, 0)
         gl.uniform4f(_uImgUvRect, 0, 0, 1, 1)

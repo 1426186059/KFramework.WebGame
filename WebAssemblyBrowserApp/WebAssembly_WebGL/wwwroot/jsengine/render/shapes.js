@@ -62,6 +62,11 @@ export const gl = {
         return glCore.loadImage(id, url)
     },
 
+    // ---- 视频加载（GPU 硬解） ----
+    loadVideo(id, url) {
+        return glCore.loadVideo(id, url)
+    },
+
     // ---- 动态纹理（Texture2D：像素重传） ----
     uploadTexture(id, w, h, argb) {
         glCore.uploadTexture(id, w, h, argb)

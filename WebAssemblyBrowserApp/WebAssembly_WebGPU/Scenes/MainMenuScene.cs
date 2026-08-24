@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using WebAssemblyBrowserApp.Engine;
 
@@ -20,12 +21,15 @@ public sealed class MainMenuScene : GameScene
 
     private int _selected;
     private float _stateTime;
+    private Texture? _demoVideo;
+    private bool _videoLoading;
 
     public MainMenuScene() : base("main-menu") { }
 
     public override void Update(float dt)
     {
         _stateTime += dt;
+        EnsureVideoLoaded();
 
         if (Input.IsKeyPressed("ArrowUp") || Input.IsKeyPressed("w") || Input.IsKeyPressed("W"))
         {
@@ -114,6 +118,22 @@ public sealed class MainMenuScene : GameScene
             WebGPU.FillText("↑ ↓ 选择  ·  回车 / 空格 / 点击 进入  ·  游戏中按 ESC 回到菜单",
                 cx, GameEngine.Height - 40, "14px system-ui, sans-serif", "#6e7681", "center");
         }
+
+        // 视频纹理演示：真·GPU 解码（WebGPU importExternalTexture 每帧零拷贝导入硬解帧）
+        if (_demoVideo is { Id: >= 0 })
+        {
+            Assets.Draw(_demoVideo, GameEngine.Width - 272, GameEngine.Height - 160, 256, 144);
+            WebGPU.FillText("视频纹理 · importExternalTexture", GameEngine.Width - 16, GameEngine.Height - 172,
+                "12px system-ui, sans-serif", "#8b949e", "right");
+        }
+    }
+
+    // 视频为异步加载，完成前自动跳过绘制
+    private async void EnsureVideoLoaded()
+    {
+        if (_videoLoading || _demoVideo is not null) return;
+        _videoLoading = true;
+        _demoVideo = await Assets.LoadVideoAsync("/media/demo.mp4");
     }
 
     private readonly struct Sparkle

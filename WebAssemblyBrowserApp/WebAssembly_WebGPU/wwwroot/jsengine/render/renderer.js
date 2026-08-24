@@ -6,8 +6,9 @@
 //   - 上传 C# 准备好的批量实例数据并 draw(6, instanceCount)
 //   - 基础清屏、视口、文本/图片纹理烘焙（浏览器专属 API）
 // =====================================================================
+import { createVideoElement } from './video.js'
 
-const RENDERER_VERSION = '2026-08-24e';  // 改 renderer.js 时递增，便于确认浏览器是否加载到新版（排查缓存）
+const RENDERER_VERSION = '2026-08-24g';  // 改 renderer.js 时递增，便于确认浏览器是否加载到新版（排查缓存）
 const SHAPE_STRIDE = 13;           // 与 C# WebGPU.cs 的 Stride=13 一致
 
 let _device = null;
@@ -394,6 +395,7 @@ export const gpu = {
 
   fillText(text, x, y, font, color, align) { drawTextSprite(text, x, y, font, color, align); },
   loadImage(src) { return loadImageTexture(src); },
+  loadVideo(src) { return loadVideoTexture(src); },
   drawImage(id, x, y, w, h) { drawImageTexture(id, x, y, w, h); },
   uploadTexture(id, w, h, argb) { uploadTexturePixels(id, w, h, argb); },
   disposeTexture(id) { disposeTexturePixels(id); },
@@ -489,22 +491,54 @@ function loadImageTexture(src) {
     const id = _textures.length;
     _textures.push(null);
     img.onload = () => {
-      const w = img.width, h = img.height;
-      const tex = bakeToTexture((c) => c.drawImage(img, 0, 0), w, h);
-      if (tex) _textures[id] = { texture: tex, view: tex.createView(), w, h };
-      resolve({ id, w, h });
+      (async () => {
+        try {
+          const w = img.width, h = img.height;
+          // GPU 侧解码/拷贝：ImageBitmap 由浏览器解码（Chrome 走 GPU 加速解码缓存），
+          // copyExternalImageToTexture 直接把位图拷进 GPU 纹理 —— 像素不再回读 CPU。
+          // （旧实现 bakeToTexture → getImageData 会把解码结果读回 CPU 再 writeTexture 传上去，双重 CPU 拷贝）
+          const bitmap = await createImageBitmap(img);
+          const tex = _device.createTexture({
+            size: [w, h], format: 'rgba8unorm',
+            usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
+          });
+          _device.queue.copyExternalImageToTexture(
+            { source: bitmap, flipY: false },
+            { texture: tex },
+            { width: w, height: h }
+          );
+          bitmap.close();
+          _textures[id] = { texture: tex, view: tex.createView(), w, h };
+        } catch (e) {
+          console.warn('[TEX loadImage] ' + e);
+        }
+      })().then(() => resolve({ id, w: img.width, h: img.height }));
     };
     img.onerror = () => resolve({ id: -1, w: 0, h: 0 });
     img.src = src;
   });
 }
 
+// 视频纹理：浏览器硬件解码器解码，渲染时每帧 device.importExternalTexture 直接
+// 从 GPU 导入外部纹理 —— 零 CPU 像素拷贝，这是 Web 上真正的「GPU 解码」路径。
+function loadVideoTexture(src) {
+  if (!_device) return Promise.resolve({ id: -1, w: 0, h: 0 });
+  return new Promise((resolve) => {
+    const id = _textures.length;
+    _textures.push(null);
+    createVideoElement(src, (video, w, h) => {
+      _textures[id] = { video, w, h };
+      resolve({ id, w, h });
+    }, () => resolve({ id: -1, w: 0, h: 0 }));
+  });
+}
+
 function drawImageTexture(id, x, y, w, h) {
-  // 先查图片纹理（数字 id 索引），再查动态纹理（'dyn:'+id，Texture2D）
+  // 先查图片/视频纹理（数字 id 索引），再查动态纹理（'dyn:'+id，Texture2D）
   let tex = _textures[id];
-  if (!tex || !tex.view) tex = _dynTextures.get('dyn:' + id);
-  if (!tex || !tex.view) return;
-  _texData.push({ view: tex.view, w, h, x, y });
+  if (!tex || !(tex.view || tex.video)) tex = _dynTextures.get('dyn:' + id);
+  if (!tex || !(tex.view || tex.video)) return;
+  _texData.push({ view: tex.view || null, video: tex.video || null, w, h, x, y });
 }
 
 // 动态纹理（Texture2D）：把 ARGB 像素重传到 GPU 纹理（'dyn:'+id 命名空间，与图片 id 隔离）
@@ -593,8 +627,17 @@ function renderFrame(shapesRaw, shadowsRaw) {
   //      独立 UBO + 预建 bind group 在任何实现上行为都可预测。
   const texDraws = [];
   const texUbos = [];   // 每帧临时 UBO，submit 后统一 destroy，避免 GPU 内存累积
+  const videoExt = new Map(); // 同一 video 本帧只 importExternalTexture 一次（一帧内不能重复导入同一源）
   for (const t of _texData) {
-    if (!t.view) continue;
+    if (!t.view && !t.video) continue;
+    let view = t.view;
+    if (t.video) {
+      // 尚无解码帧（HAVE_CURRENT_DATA=2）时 importExternalTexture 会抛错，跳过本帧
+      if (t.video.readyState < 2) continue;
+      // 真·GPU 解码：硬件解码帧直接导入为 GPU 外部纹理，零 CPU 拷贝
+      if (!videoExt.has(t.video)) videoExt.set(t.video, _device.importExternalTexture({ source: t.video }));
+      view = videoExt.get(t.video);
+    }
     const ubo = _device.createBuffer({ size: 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
     _device.queue.writeBuffer(ubo, 0, new Float32Array([t.x, t.y, t.w, t.h]));
     texUbos.push(ubo);
@@ -604,7 +647,7 @@ function renderFrame(shapesRaw, shadowsRaw) {
         { binding: 0, resource: { buffer: _globalsBuffer } },
         { binding: 1, resource: { buffer: ubo } },
         { binding: 2, resource: _sampler },
-        { binding: 3, resource: t.view },
+        { binding: 3, resource: view },
       ],
     }));
   }
@@ -657,6 +700,8 @@ function renderFrame(shapesRaw, shadowsRaw) {
   _device.queue.submit([encoder.finish()]);
   // 释放本帧临时 UBO（submit 后 destroy 安全，避免 GPU 内存累积）
   for (const u of texUbos) u.destroy();
+  // 外部纹理有效期只到本帧，必须销毁（每帧重新 import）
+  for (const ext of videoExt.values()) ext.destroy();
 }
 
 function renderShapesToView(arr, view, alpha) {

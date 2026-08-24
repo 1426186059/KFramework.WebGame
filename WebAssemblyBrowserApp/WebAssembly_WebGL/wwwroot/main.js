@@ -18,6 +18,7 @@ import { platform } from './jsengine/core/platform.js'
 // ------------------------- 引擎生命周期 -------------------------
 let _rafStarted = false
 let _lastTs = 0
+let _videoSeq = 0
 
 // 注意：engine.initCanvas 原来的 fit() 逻辑已经移到 renderer.js
 // glCore.init() 里，因为 C# GameEngine.Initialize 是直接调 gl.init
@@ -61,6 +62,10 @@ if (typeof window !== 'undefined') {
 const assets = {
     loadImage(url) {
         return gl.loadImage(url, url)
+    },
+    // 视频纹理（GPU 硬解）：数字 id 与图片 url id 隔离
+    loadVideo(url) {
+        return gl.loadVideo(_videoSeq++, url)
     },
     // 绘制图片 / 动态纹理（单位矩阵 + 不透明）
     drawImage(id, dx, dy, dw, dh) {
