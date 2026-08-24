@@ -53,7 +53,7 @@ setModuleImports('main.js', { gl, input, audio, storage, platform, engine });
 | 后端 | 渲染方式 | 特点 |
 |---|---|---|
 | **Canvas2D** | Canvas 2D Context 直接绘制 | 最简单，JS 桥为单文件，适合教学 / 调试 |
-| **WebGL** | WebGL 1.0 + 自定义着色器 | GPU 合批渲染，性能好，示例游戏最完整（坦克 / 打砖块 / 主菜单） |
+| **WebGL** | WebGL 2.0 + 自定义着色器 | GPU 合批渲染，性能好，示例游戏最完整（坦克 / 打砖块 / 主菜单） |
 | **WebGPU** | WebGPU + WGSL 着色器 | 下一代 GPU API，现代浏览器（Chrome / Edge）可用 |
 
 三个后端共享同一套游戏逻辑 API（`GameEngine`、`GameScene`、`TankScene` 等），切换后端即可对比不同渲染实现。
