@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
@@ -37,6 +38,12 @@ public static partial class Assets
 
     [JSImport("assets.drawImage", "main.js")]
     private static partial void JsDrawImage(int id, float x, float y, float w, float h);
+
+    [JSImport("assets.uploadTexture", "main.js")]
+    private static partial void JsUploadTexture(int id, int w, int h, int[] argb);
+
+    [JSImport("assets.disposeTexture", "main.js")]
+    private static partial void JsDisposeTexture(int id);
 
     /// <summary>
     /// 异步加载图片（带缓存去重；并发请求共享同一次加载）。
@@ -83,4 +90,27 @@ public static partial class Assets
     {
         if (tex is { Ready: true }) JsDrawImage(tex.Id, x, y, w, h);
     }
+
+    // ------------------------- 直接上传 GPU 纹理 -------------------------
+
+    /// <summary>
+    /// 直接把像素数组上传为 GPU 纹理（等效 <see cref="Texture2D.Commit"/>，但不依赖 Texture2D 对象）。
+    /// 适合已有独立像素缓冲的用途（如 FC PPU 帧缓冲）：id 由调用方自定义，JS 端 'dyn:' 命名空间
+    /// 与图片 id 隔离不冲突；之后可用 <see cref="Draw(int,float,float,float,float)"/> 按 id 直接绘制。
+    /// 像素格式 ARGB8888；对同 id 再次调用即更新纹理内容（尺寸变化时自动重建）。
+    /// </summary>
+    public static void UploadTexture(int id, int width, int height, int[] argb)
+    {
+        ArgumentNullException.ThrowIfNull(argb);
+        if (argb.Length != width * height)
+            throw new ArgumentException($"像素长度 {argb.Length} 与 {width}×{height} 不匹配。", nameof(argb));
+        JsUploadTexture(id, width, height, argb);
+    }
+
+    /// <summary>释放 <see cref="UploadTexture(int,int,int,int[])"/> 上传的 GPU 纹理。</summary>
+    public static void DisposeTexture(int id) => JsDisposeTexture(id);
+
+    /// <summary>按纹理句柄 id 直接绘制（图片 id 或动态纹理 id 均可）。</summary>
+    public static void Draw(int id, float x, float y, float w, float h)
+        => JsDrawImage(id, x, y, w, h);
 }

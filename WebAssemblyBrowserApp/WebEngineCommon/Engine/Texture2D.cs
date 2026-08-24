@@ -1,6 +1,5 @@
 #nullable enable
 using System;
-using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 
 namespace WebAssemblyBrowserApp.Engine;
@@ -98,7 +97,7 @@ public sealed partial class Texture2D : IDisposable
     /// <summary>把当前像素缓冲重传到 GPU（纹理未创建时自动创建）。同步提交，可在帧内任意时刻调用。</summary>
     public void Commit()
     {
-        JsUploadTexture(Id, Width, Height, _pixels);
+        Assets.UploadTexture(Id, Width, Height, _pixels);
         Ready = true;
     }
 
@@ -111,15 +110,9 @@ public sealed partial class Texture2D : IDisposable
     {
         if (Ready)
         {
-            JsDisposeTexture(Id);
+            Assets.DisposeTexture(Id);
             Ready = false;
         }
         GC.SuppressFinalize(this);
     }
-
-    [JSImport("assets.uploadTexture", "main.js")]
-    private static partial void JsUploadTexture(int id, int w, int h, int[] argb);
-
-    [JSImport("assets.disposeTexture", "main.js")]
-    private static partial void JsDisposeTexture(int id);
 }
