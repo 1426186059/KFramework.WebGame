@@ -7,6 +7,7 @@
 //   - 基础清屏、视口、文本/图片纹理烘焙（浏览器专属 API）
 // =====================================================================
 
+const RENDERER_VERSION = '2026-08-24c';  // 改 renderer.js 时递增，便于确认浏览器是否加载到新版（排查缓存）
 const SHAPE_STRIDE = 13;           // 与 C# WebGPU.cs 的 Stride=13 一致
 
 let _device = null;
@@ -31,15 +32,13 @@ let _blurTex = null, _blurView = null;
 let _alpha = 1.0;
 let _clearColor = [0.05, 0.07, 0.09, 1];
 
-// ------------------------- 调试探针 -------------------------
+// ------------------------- 调试探针（仅保留错误追踪） -------------------------
 const _dbg = {
-  clears: 0, shapeBatches: 0, totalShapes: 0,
-  texDraws: 0, lastErrors: [],
+  lastErrors: [],
   deviceReady: false, adapterInfo: null,
-  firstShapePrefix: null,
-  lastCenterPixel: null, // 最近一帧中心像素 (r,g,b,a)
+  frameCount: 0,
+  lastFont: '',
 };
-// 挂到 window 上便于探针（单独一个命名空间，避免与 main.js 的 _dbg 合并冲突）
 if (typeof window !== 'undefined') {
   window.__renderDbg = _dbg;
 }
@@ -89,6 +88,88 @@ fn vs(@builtin(vertex_index) vi : u32, inst : Inst) -> VSOut {
   let ndc = vec2<f32>(
     (world.x / G.resolution.x) * 2.0 - 1.0,
     1.0 - (world.y / G.resolution.y) * 2.0
+  );
+  out.pos = vec4<f32>(ndc, 0.0, 1.0);
+  out.uv = q;
+  out.half = inst.halfSize;
+  out.radius = inst.radius;
+  out.uType = inst.uType;
+  out.color = inst.color;
+  out.lineW = inst.lineW;
+  return out;
+}
+
+fn sdRoundRect(p : vec2<f32>, b : vec2<f32>, r : f32) -> f32 {
+  let q = abs(p) - (b - vec2<f32>(r, r));
+  return length(max(q, vec2<f32>(0.0, 0.0))) + min(max(q.x, q.y), 0.0) - r;
+}
+
+@fragment
+fn fs(in : VSOut) -> @location(0) vec4<f32> {
+  var d : f32;
+  if (in.uType < 0.5) {
+    d = -1.0;
+  } else if (in.uType < 1.5) {
+    d = sdRoundRect(in.uv * in.half, in.half, in.radius);
+  } else if (in.uType < 2.5) {
+    d = length(in.uv * in.half) - in.radius;
+  } else {
+    let x = abs(in.uv.x);
+    let dist = max(x - (1.0 - in.lineW / (2.0 * in.half.x)),
+                   abs(in.uv.y) - in.lineW / (2.0 * in.half.y));
+    d = dist;
+  }
+  let aa = 1.0;
+  var a = 1.0 - smoothstep(-aa, aa, d);
+  if (a <= 0.0) { discard; }
+  return vec4<f32>(in.color.rgb, in.color.a * a * G.alpha);
+}
+`;
+
+// 阴影专用：渲染到离屏纹理，不做 Y 翻转（纹理 v 轴与世界 y 向下一致，
+// 这样后续 BLUR(全屏 uv=p*0.5+0.5)/composite 才能与原始形状朝向一致，
+// 否则阴影会被垂直镜像成"对面的重影"）。Fragment 与 SHAPE 相同。
+const SHADOW_WGSL = `
+struct Globals {
+  resolution : vec2<f32>,
+  alpha      : f32,
+  _pad       : f32,
+};
+@group(0) @binding(0) var<uniform> G : Globals;
+
+struct Inst {
+  @location(0) rectPos  : vec2<f32>,
+  @location(1) rectSize : vec2<f32>,
+  @location(2) halfSize : vec2<f32>,
+  @location(3) radius   : f32,
+  @location(4) uType    : f32,
+  @location(5) color    : vec4<f32>,
+  @location(6) lineW    : f32,
+};
+
+struct VSOut {
+  @builtin(position) pos : vec4<f32>,
+  @location(0) uv       : vec2<f32>,
+  @location(1) half     : vec2<f32>,
+  @location(2) radius   : f32,
+  @location(3) uType    : f32,
+  @location(4) color    : vec4<f32>,
+  @location(5) lineW    : f32,
+};
+
+@vertex
+fn vs(@builtin(vertex_index) vi : u32, inst : Inst) -> VSOut {
+  var quad = array<vec2<f32>, 6>(
+    vec2<f32>(-1.0, -1.0), vec2<f32>( 1.0, -1.0), vec2<f32>(-1.0, 1.0),
+    vec2<f32>(-1.0,  1.0), vec2<f32>( 1.0, -1.0), vec2<f32>( 1.0, 1.0)
+  );
+  let q = quad[vi];
+  let local = q * inst.halfSize;
+  let world = inst.rectPos + inst.halfSize + local;
+  var out : VSOut;
+  let ndc = vec2<f32>(
+    (world.x / G.resolution.x) * 2.0 - 1.0,
+    (world.y / G.resolution.y) * 2.0 - 1.0
   );
   out.pos = vec4<f32>(ndc, 0.0, 1.0);
   out.uv = q;
@@ -198,6 +279,7 @@ const BLEND_PREMULTIPLIED = {
   alpha: { srcFactor: 'one', dstFactor: 'one-minus-src-alpha', operation: 'add' },
 };
 let _shapePipeline = null, _shapeBindGroup = null;
+let _shadowPipeline = null, _shadowBindGroup = null;
 let _texPipeline = null;
 let _blurPipeline = null;
 let _globalsBuffer = null;
@@ -225,6 +307,7 @@ function writeGlobals(alpha) {
 //  初始化（立即触发异步请求，不阻塞 C# 主线）
 // ---------------------------------------------------------------------
 function gpu_init() {
+  console.info('[WebGPU] renderer.js version =', RENDERER_VERSION);
   if (!navigator.gpu) {
     console.warn('[WebGPU] 浏览器不支持 WebGPU，已跳过初始化');
     _dbg.lastErrors.push('browser_not_support_webgpu');
@@ -237,9 +320,9 @@ function gpu_init() {
     return;
   }
   _offscreenCanvas = document.createElement('canvas');
-  _offscreenCtx = _offscreenCanvas.getContext('2d');
+  _offscreenCtx = _offscreenCanvas.getContext('2d', { willReadFrequently: true });
   _measureCanvas = document.createElement('canvas');
-  _measureCtx = _measureCanvas.getContext('2d');
+  _measureCtx = _measureCanvas.getContext('2d', { willReadFrequently: true });
 
   // 画布自适应（与 WebGL 相同的 fit 策略）
   const fit = () => {
@@ -312,6 +395,33 @@ function gpu_init() {
         entries: [{ binding: 0, resource: { buffer: _globalsBuffer } }],
       });
 
+      // 阴影专用管线（vs 不翻转 Y，配平离屏纹理与 BLUR/composite 的坐标约定）
+      const shadowModule = _device.createShaderModule({ code: SHADOW_WGSL });
+      _shadowPipeline = _device.createRenderPipeline({
+        layout: 'auto',
+        vertex: {
+          module: shadowModule, entryPoint: 'vs',
+          buffers: [{
+            arrayStride: SHAPE_STRIDE * 4, stepMode: 'instance',
+            attributes: [
+              { shaderLocation: 0, offset: 0,  format: 'float32x2' },
+              { shaderLocation: 1, offset: 8,  format: 'float32x2' },
+              { shaderLocation: 2, offset: 16, format: 'float32x2' },
+              { shaderLocation: 3, offset: 24, format: 'float32'   },
+              { shaderLocation: 4, offset: 28, format: 'float32'   },
+              { shaderLocation: 5, offset: 32, format: 'float32x4' },
+              { shaderLocation: 6, offset: 48, format: 'float32'   },
+            ],
+          }],
+        },
+        fragment: { module: shadowModule, entryPoint: 'fs', targets: [{ format: _format, blend: BLEND_PREMULTIPLIED }] },
+        primitive: { topology: 'triangle-list' },
+      });
+      _shadowBindGroup = _device.createBindGroup({
+        layout: _shadowPipeline.getBindGroupLayout(0),
+        entries: [{ binding: 0, resource: { buffer: _globalsBuffer } }],
+      });
+
       // 实例缓冲（动态，4096 实例）
       _shapeBuffer = _device.createBuffer({
         size: SHAPE_STRIDE * 4096 * 4,
@@ -322,10 +432,22 @@ function gpu_init() {
         usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
       });
 
+      // 纹理 / 模糊管线的显式 bind group 布局（避免 auto 推断把 G uniform 优化掉）
+      // binding 0 = Globals  uniform(16B), 1 = Tex/Dir uniform(16B), 2 = sampler, 3 = texture
+      const texBlurBGL = _device.createBindGroupLayout({
+        entries: [
+          { binding: 0, visibility: GPUShaderStage.FRAGMENT | GPUShaderStage.VERTEX, buffer: { type: 'uniform' } },
+          { binding: 1, visibility: GPUShaderStage.FRAGMENT | GPUShaderStage.VERTEX, buffer: { type: 'uniform' } },
+          { binding: 2, visibility: GPUShaderStage.FRAGMENT,                sampler: { type: 'filtering' } },
+          { binding: 3, visibility: GPUShaderStage.FRAGMENT,                texture: { sampleType: 'float' } },
+        ],
+      });
+      const texBlurLayout = _device.createPipelineLayout({ bindGroupLayouts: [texBlurBGL] });
+
       // 纹理管线
       const texModule = _device.createShaderModule({ code: TEX_WGSL });
       _texPipeline = _device.createRenderPipeline({
-        layout: 'auto',
+        layout: texBlurLayout,
         vertex: { module: texModule, entryPoint: 'vs' },
         fragment: { module: texModule, entryPoint: 'fs', targets: [{ format: _format, blend: BLEND_PREMULTIPLIED }] },
         primitive: { topology: 'triangle-list' },
@@ -336,7 +458,7 @@ function gpu_init() {
       // 模糊管线
       const blurModule = _device.createShaderModule({ code: BLUR_WGSL });
       _blurPipeline = _device.createRenderPipeline({
-        layout: 'auto',
+        layout: texBlurLayout,
         vertex: { module: blurModule, entryPoint: 'vs' },
         fragment: { module: blurModule, entryPoint: 'fs', targets: [{ format: _format, blend: BLEND_PREMULTIPLIED }] },
         primitive: { topology: 'triangle-list' },
@@ -438,7 +560,6 @@ export const gpu = {
   clear(color) {
     const c = parseColor(color);
     _clearColor = c;
-    _dbg.clears++;
   },
 
   // 整帧图元一次性提交（C# 侧已累积好 double[]）
@@ -489,10 +610,25 @@ function bakeToTexture(drawFn, w, h) {
     size: [w, h], format: 'rgba8unorm',
     usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
   });
+  // WebGPU 要求 writeTexture 的 bytesPerRow 必须是 256 的倍数
+  const src = _offscreenCtx.getImageData(0, 0, w, h).data;
+  let _nonTransparent = 0;
+  for (let i = 3; i < src.length; i += 4) if (src[i] > 0) _nonTransparent++;
+  if (_dbg.frameCount < 3) console.log('[TEX bake]', { w, h, nonTransparent: _nonTransparent, font: _dbg.lastFont });
+  const srcRowBytes = w * 4;
+  const bytesPerRow = Math.ceil(srcRowBytes / 256) * 256;
+  let pixels = src;
+  if (bytesPerRow !== srcRowBytes) {
+    // 按对齐行重排：每行补 0 到 bytesPerRow
+    pixels = new Uint8Array(bytesPerRow * h);
+    for (let y = 0; y < h; y++) {
+      pixels.set(src.subarray(y * srcRowBytes, y * srcRowBytes + srcRowBytes), y * bytesPerRow);
+    }
+  }
   _device.queue.writeTexture(
     { texture: tex },
-    new Uint8Array(_offscreenCtx.getImageData(0, 0, w, h).data.buffer),
-    { bytesPerRow: w * 4, rowsPerPixel: 1 },
+    pixels,
+    { bytesPerRow, rowsPerImage: h },
     { width: w, height: h }
   );
   return tex;
@@ -500,6 +636,7 @@ function bakeToTexture(drawFn, w, h) {
 
 function drawTextSprite(text, x, y, font, color, align) {
   if (!_measureCtx || !_device) return;
+  _dbg.lastFont = font;
   _measureCtx.font = font;
   const m = _measureCtx.measureText(text);
   const w = Math.ceil(m.width) + 8;
@@ -547,64 +684,13 @@ function drawImageTexture(id, x, y, w, h) {
 function renderFrame(shapesRaw, shadowsRaw) {
   const shapes = _toFloat32(shapesRaw);
   const shadows = _toFloat32(shadowsRaw);
+  _dbg.frameCount++;
+
+  if (_dbg.frameCount <= 3) {
+    console.log('[frame]', _dbg.frameCount, 'texData=', _texData.map(t => ({ x: t.x|0, y: t.y|0, w: t.w|0, h: t.h|0, id: t.id })));
+  }
 
   const screen = _ctx.getCurrentTexture().createView();
-
-  if (_dbg._rfCounter === undefined) _dbg._rfCounter = 0;
-  _dbg._rfCounter++;
-  const rfCount = _dbg._rfCounter;
-
-  // ============================================================
-  //  临时调试：强制清屏纯红 [1,0,0,1]，跳过所有 draw，只验证清屏能不能写入
-  // ============================================================
-  const DEBUG_CLEAR_RED_ONLY = true;
-  _dbg._version = 'V3_RED_CLEAR_ONLY';
-  if (DEBUG_CLEAR_RED_ONLY) {
-    const enc = _device.createCommandEncoder();
-    const p = enc.beginRenderPass({
-      colorAttachments: [{
-        view: screen,
-        clearValue: { r: 1, g: 0, b: 0, a: 1 },
-        loadOp: 'clear', storeOp: 'store',
-      }],
-    });
-    p.end();
-    _device.queue.submit([enc.finish()]);
-    _dbg.clears++;
-    _dbg.shapeBatches++;
-    if ((rfCount & 63) === 0) {
-      try {
-        const bytesPerRow = 256;
-        const dst = _device.createBuffer({ size: bytesPerRow, usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST });
-        const cpEnc = _device.createCommandEncoder();
-        cpEnc.copyTextureToBuffer(
-          { texture: _ctx.getCurrentTexture(), mipLevel: 0, origin: { x: (_viewW / 2) | 0, y: (_viewH / 2) | 0, z: 0 } },
-          { buffer: dst, bytesPerRow, rowsPerImage: 1 },
-          { width: 1, height: 1, depthOrArrayLayers: 1 }
-        );
-        _device.queue.submit([cpEnc.finish()]);
-        dst.mapAsync(GPUMapMode.READ).then(() => {
-          try {
-            const d = new Uint8Array(dst.getMappedRange());
-            _dbg.lastCenterPixel = [d[0], d[1], d[2], d[3]];
-          } finally { dst.unmap(); dst.destroy(); }
-        }).catch(() => { try { dst.destroy(); } catch (_) {} });
-      } catch (_) {}
-    }
-    _dbg.lastTexDraws = _dbg.texDraws;
-    _dbg.lastTexDataLen = _texData.length;
-    return;
-  }
-  // 每 ~60 帧打一次形状调试信息（避免刷爆）
-  if (rfCount === 1 || rfCount % 60 === 0) {
-    console.info('[WebGPU] renderFrame #' + rfCount +
-      ' shapesRawLen=' + (shapesRaw ? shapesRaw.length : 'null') +
-      ' shapesLen=' + (shapes ? shapes.length : 'null') +
-      ' shadowsLen=' + (shadows ? shadows.length : 0) +
-      ' viewW=' + _viewW + ' viewH=' + _viewH +
-      ' pipelineReady=' + (!!_shapePipeline) +
-      ' globalsBuffer=' + (!!_globalsBuffer));
-  }
 
   // 1) 阴影：离屏渲染（独立 encoder，submit 到离屏 shadowTex）→ 两次模糊（submit 到离屏 shadowTex/blurTex）
   if (shadows && shadows.length > 0) {
@@ -647,12 +733,6 @@ function renderFrame(shapesRaw, shadowsRaw) {
       pass.setBindGroup(0, _shapeBindGroup);
       pass.setVertexBuffer(0, _shapeBuffer);
       pass.draw(6, instanceCount);
-
-      _dbg.shapeBatches++;
-      _dbg.totalShapes += instanceCount;
-      try { _dbg.firstShapePrefix = Array.from(shapes.subarray(0, 8)); } catch (_) {}
-    } else {
-      _dbg.shapeBatches++;
     }
     // 2b) 阴影 composite（同一 pass，切换到 blur pipeline draw）
     if (shadows && shadows.length > 0) {
@@ -663,29 +743,6 @@ function renderFrame(shapesRaw, shadowsRaw) {
   }
   pass.end();
   _device.queue.submit([encoder.finish()]);
-
-  // 调试：每 64 帧把屏幕中心像素 copy 出来
-  if ((rfCount & 63) === 0) {
-    try {
-      const bytesPerRow = 256;
-      const dst = _device.createBuffer({ size: bytesPerRow, usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST });
-      const cpEnc = _device.createCommandEncoder();
-      cpEnc.copyTextureToBuffer(
-        { texture: _ctx.getCurrentTexture(), mipLevel: 0, origin: { x: (_viewW / 2) | 0, y: (_viewH / 2) | 0, z: 0 } },
-        { buffer: dst, bytesPerRow, rowsPerImage: 1 },
-        { width: 1, height: 1, depthOrArrayLayers: 1 }
-      );
-      _device.queue.submit([cpEnc.finish()]);
-      dst.mapAsync(GPUMapMode.READ).then(() => {
-        try {
-          const d = new Uint8Array(dst.getMappedRange());
-          _dbg.lastCenterPixel = [d[0], d[1], d[2], d[3]];
-        } finally { dst.unmap(); dst.destroy(); }
-      }).catch(() => { try { dst.destroy(); } catch (_) {} });
-    } catch (_) {}
-  }
-  _dbg.lastTexDraws = _dbg.texDraws;
-  _dbg.lastTexDataLen = _texData.length;
 }
 
 function renderShapesToView(arr, view, alpha) {
@@ -699,8 +756,8 @@ function renderShapesToView(arr, view, alpha) {
   });
   writeGlobals(alpha);
   _device.queue.writeBuffer(_shadowBuffer, 0, arr);
-  pass.setPipeline(_shapePipeline);
-  pass.setBindGroup(0, _shapeBindGroup);
+  pass.setPipeline(_shadowPipeline);
+  pass.setBindGroup(0, _shadowBindGroup);
   pass.setVertexBuffer(0, _shadowBuffer);
   pass.draw(6, arr.length / SHAPE_STRIDE);
   pass.end();
@@ -766,5 +823,4 @@ function drawTexturePass(pass, encoder, t, screenView) {
   pass.setPipeline(_texPipeline);
   pass.setBindGroup(0, bg);
   pass.draw(6);
-  _dbg.texDraws++;
 }

@@ -123,7 +123,7 @@ public sealed class BreakoutScene : GameScene
             _ball.Position = new Vector2(_paddle.Position.X, _paddle.Position.Y - _paddle.Height / 2 - _ball.Radius);
             if (Input.IsMousePressed() || Input.IsKeyPressed(Input.Space))
             {
-                _ball.Launch(90 + MathUtils.Rand(-25, 25));
+                _ball.Launch(0 + MathUtils.Rand(-25, 25));
                 Audio.Beep(480, 0.06, "square", 0.07);
             }
         }

@@ -1,0 +1,7 @@
+从 D:\OpenSource\KFramework.WebGame\WebAssemblyBrowserApp\WebAssembly_WebGPU\Properties\launchSettings.json 使用启动设置...
+WasmAppHost --use-staticwebassets --runtime-config D:\OpenSource\KFramework.WebGame\WebAssemblyBrowserApp\WebAssembly_WebGPU\bin\Debug\net10.0\WebAssembly_WebGPU.runtimeconfig.json
+
+App url: http://localhost:5264/
+App url: https://localhost:7234/
+Debug at url: http://localhost:5264/_framework/debug
+Debug at url: https://localhost:7234/_framework/debug
