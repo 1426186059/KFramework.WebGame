@@ -320,6 +320,9 @@ public sealed class TankBattleGame : GameScene
             if (_shovelTimer <= 0) SteelAroundBase(false);
         }
 
+        // 任意状态按 Esc 返回主菜单（与魂斗罗一致）
+        if (Input.IsKeyPressed(Input.Escape)) { GameApp.Instance.Start("main-menu"); return; }
+
         UpdateParticles(dt);
         UpdateSpawnFlashes(dt);
 
@@ -341,7 +344,6 @@ public sealed class TankBattleGame : GameScene
                 break;
 
             case State.Over:
-                if (Input.IsKeyPressed(Input.Escape)) { GameApp.Instance.Start("main-menu"); return; }
                 if (Input.IsKeyPressed(Input.Enter) || Input.IsMousePressed())
                     GameApp.Instance.Start("tank-battle");
                 break;
