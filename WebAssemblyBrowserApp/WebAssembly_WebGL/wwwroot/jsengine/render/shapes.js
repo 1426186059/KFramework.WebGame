@@ -25,6 +25,11 @@ function _toFloat32(arr) {
 }
 
 export const gl = {
+    // ---- 着色器预加载（main.js 启动时调用，与 dotnet 并行） ----
+    preloadShaders() {
+        return glCore.preloadShaders()
+    },
+
     // ---- 初始化 ----
     init(selector, width, height) {
         glCore.init(selector, width, height)

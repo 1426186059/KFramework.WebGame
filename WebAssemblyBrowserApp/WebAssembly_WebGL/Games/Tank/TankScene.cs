@@ -92,6 +92,9 @@ public sealed class TankScene : GameScene
     private float _shock;
     private bool _won;
 
+    /// <summary>敌方出生点（列, 行）。</summary>
+    private static readonly (int Col, int Row)[] SpawnPoints = { (0, 0), (6, 0), (12, 0) };
+
     public TankScene() : base("tank") { }
 
     public override void Enter()
@@ -214,17 +217,22 @@ public sealed class TankScene : GameScene
         else if (Input.IsKeyDown(Input.ArrowDown) || Input.IsKeyDown(Input.KeyS)) dir = Tank.Down;
         else if (Input.IsKeyDown(Input.ArrowLeft) || Input.IsKeyDown(Input.KeyA)) dir = Tank.Left;
         else if (Input.IsKeyDown(Input.ArrowRight) || Input.IsKeyDown(Input.KeyD)) dir = Tank.Right;
-        if (dir >= 0) p.Dir = dir;
 
-        // 移动（撞墙时尝试单轴滑动）
-        double nx = p.Pos.X + Tank.DirX[p.Dir] * p.Speed * dt;
-        double ny = p.Pos.Y + Tank.DirY[p.Dir] * p.Speed * dt;
-        if (CanMove(p, nx, ny)) p.Pos = new Vector2(nx, ny);
-        else if (CanMove(p, nx, p.Pos.Y)) p.Pos = new Vector2(nx, p.Pos.Y);
-        else if (CanMove(p, p.Pos.X, ny)) p.Pos = new Vector2(p.Pos.X, ny);
+        // 只有按住方向键才移动；松开后停止（否则会用上一次的 Dir 继续前进）
+        if (dir >= 0)
+        {
+            p.Dir = dir;
 
-        p.Pos.X = MathUtils.Clamp(p.Pos.X, TileMap.OriginX + Tank.Half, TileMap.OriginX + TileMap.MapSize - Tank.Half);
-        p.Pos.Y = MathUtils.Clamp(p.Pos.Y, TileMap.OriginY + Tank.Half, TileMap.OriginY + TileMap.MapSize - Tank.Half);
+            // 移动（撞墙时尝试单轴滑动）
+            double nx = p.Pos.X + Tank.DirX[p.Dir] * p.Speed * dt;
+            double ny = p.Pos.Y + Tank.DirY[p.Dir] * p.Speed * dt;
+            if (CanMove(p, nx, ny)) p.Pos = new Vector2(nx, ny);
+            else if (CanMove(p, nx, p.Pos.Y)) p.Pos = new Vector2(nx, p.Pos.Y);
+            else if (CanMove(p, p.Pos.X, ny)) p.Pos = new Vector2(p.Pos.X, ny);
+
+            p.Pos.X = MathUtils.Clamp(p.Pos.X, TileMap.OriginX + Tank.Half, TileMap.OriginX + TileMap.MapSize - Tank.Half);
+            p.Pos.Y = MathUtils.Clamp(p.Pos.Y, TileMap.OriginY + Tank.Half, TileMap.OriginY + TileMap.MapSize - Tank.Half);
+        }
 
         if (Input.IsKeyPressed(Input.Space) || Input.IsKeyPressed(Input.Enter) || Input.IsMousePressed())
             FirePlayer();
@@ -245,6 +253,10 @@ public sealed class TankScene : GameScene
 
     private void UpdateEnemies(float dt)
     {
+        // 基地中心，作为敌人寻的目标
+        double bx = TileMap.OriginX + _map.BaseCol * TileMap.Tile + TileMap.Tile / 2.0;
+        double by = TileMap.OriginY + _map.BaseRow * TileMap.Tile + TileMap.Tile / 2.0;
+
         foreach (var e in _enemies)
         {
             if (!e.IsAlive) continue;
@@ -253,13 +265,17 @@ public sealed class TankScene : GameScene
             e.Immortal = Math.Max(0, e.Immortal - dt);
             e.HitFlash = Math.Max(0, e.HitFlash - dt);
 
-            // 简单 AI：直线推进，被挡随机转向；偶尔随机变向
+            // 寻的：偶尔转向基地，其余随机（保持压迫感但不至于全堵基地）
+            if (Random.Shared.NextDouble() < dt * 0.6)
+                e.Dir = Random.Shared.NextDouble() < 0.45 ? DirToward(e, bx, by) : Random.Shared.Next(4);
+
+            // 移动：撞墙先沿墙滑动，仍堵则多次随机换向，避免卡墙抖动
             double nx = e.Pos.X + Tank.DirX[e.Dir] * e.Speed * dt;
             double ny = e.Pos.Y + Tank.DirY[e.Dir] * e.Speed * dt;
             if (CanMove(e, nx, ny)) e.Pos = new Vector2(nx, ny);
-            else e.Dir = Random.Shared.Next(4);
-
-            if (Random.Shared.NextDouble() < dt * 0.55) e.Dir = Random.Shared.Next(4);
+            else if (CanMove(e, nx, e.Pos.Y)) e.Pos = new Vector2(nx, e.Pos.Y);
+            else if (CanMove(e, e.Pos.X, ny)) e.Pos = new Vector2(e.Pos.X, ny);
+            else TryRandomTurn(e);
 
             // 射击
             if (e.FireCd <= 0 && Random.Shared.NextDouble() < dt * 2.2)
@@ -277,6 +293,28 @@ public sealed class TankScene : GameScene
         }
     }
 
+    /// <summary>返回朝向目标的水平/垂直方向（优先走轴距更远的一维）。</summary>
+    private static int DirToward(Tank e, double tx, double ty)
+    {
+        double dx = tx - e.Pos.X, dy = ty - e.Pos.Y;
+        return Math.Abs(dx) > Math.Abs(dy) ? (dx > 0 ? Tank.Right : Tank.Left)
+                                           : (dy > 0 ? Tank.Down : Tank.Up);
+    }
+
+    /// <summary>随机换向并验证可通行，最多尝试 4 次；返回是否成功转向。</summary>
+    private bool TryRandomTurn(Tank e)
+    {
+        for (int k = 0; k < 4; k++)
+        {
+            int nd = Random.Shared.Next(4);
+            if (nd == e.Dir) continue;
+            double nx = e.Pos.X + Tank.DirX[nd] * 2;
+            double ny = e.Pos.Y + Tank.DirY[nd] * 2;
+            if (CanMove(e, nx, ny)) { e.Dir = nd; return true; }
+        }
+        return false;
+    }
+
     private void UpdateSpawning(float dt)
     {
         if (_enemiesSpawned >= _enemiesTotal) return;
@@ -284,7 +322,7 @@ public sealed class TankScene : GameScene
         int maxOnField = _level >= 3 ? 5 : 4;
         if (_spawnTimer > 0 || _enemies.Count(e => e.IsAlive) >= maxOnField) return;
 
-        foreach (var (col, row) in new[] { (0, 0), (6, 0), (12, 0) })
+        foreach (var (col, row) in SpawnPoints)
         {
             var pos = new Vector2(
                 TileMap.OriginX + col * TileMap.Tile + TileMap.Tile / 2.0,
@@ -320,65 +358,77 @@ public sealed class TankScene : GameScene
             var b = _bullets[i];
             if (!b.IsAlive) { _bullets.RemoveAt(i); continue; }
 
-            b.Pos += new Vector2(Tank.DirX[b.Dir] * b.Speed * dt, Tank.DirY[b.Dir] * b.Speed * dt);
-
-            // 出界
-            if (b.Pos.X < TileMap.OriginX || b.Pos.X > TileMap.OriginX + TileMap.MapSize ||
-                b.Pos.Y < TileMap.OriginY || b.Pos.Y > TileMap.OriginY + TileMap.MapSize)
+            // 细分步进：每小步 ≤8px，避免掉帧/高速时穿透砖墙、坦克或边界
+            double dist = b.Speed * dt;
+            int steps = Math.Max(1, (int)Math.Ceiling(dist / 8.0));
+            double perStep = dist / steps;
+            for (int s = 0; s < steps && b.IsAlive; s++)
             {
-                b.IsAlive = false;
-                continue;
+                b.Pos += new Vector2(Tank.DirX[b.Dir] * perStep, Tank.DirY[b.Dir] * perStep);
+                StepBullet(b);
             }
+        }
+    }
 
-            int tile = _map.TileAt(b.Pos.X, b.Pos.Y);
-            if (tile == TileMap.Brick)
+    private void StepBullet(Bullet b)
+    {
+        // 出界
+        if (b.Pos.X <= TileMap.OriginX || b.Pos.X >= TileMap.OriginX + TileMap.MapSize ||
+            b.Pos.Y <= TileMap.OriginY || b.Pos.Y >= TileMap.OriginY + TileMap.MapSize)
+        {
+            b.IsAlive = false;
+            return;
+        }
+
+        int tile = _map.TileAt(b.Pos.X, b.Pos.Y);
+        if (tile == TileMap.Brick)
+        {
+            // 破坏一个子块则子弹消失；中心点落在已破空洞则穿透继续飞（连续射击可打穿整格）
+            if (_map.HitBrick(b.Pos.X, b.Pos.Y))
             {
-                if (_map.HitBrick(b.Pos.X, b.Pos.Y))
+                SpawnBurst(b.Pos, "#d4a24c", 8, 150);
+                Audio.Beep(240, 0.04, "square", 0.04);
+                if (b.IsPlayer) _score += 5;
+                b.IsAlive = false;
+            }
+            return;
+        }
+        if (tile == TileMap.Steel)
+        {
+            SpawnBurst(b.Pos, "#ced4da", 6, 120);
+            Audio.Beep(180, 0.05, "square", 0.05);
+            b.IsAlive = false;
+            return;
+        }
+        if (tile == TileMap.Base)
+        {
+            DestroyBase();
+            b.IsAlive = false;
+            return;
+        }
+        if (tile == TileMap.Water || tile == TileMap.Tree) return;   // 子弹穿过水与树
+
+        // 命中坦克
+        if (b.IsPlayer)
+        {
+            foreach (var e in _enemies)
+            {
+                if (!e.IsAlive) continue;
+                if (Math.Abs(e.Pos.X - b.Pos.X) < Tank.Half + Bullet.Half &&
+                    Math.Abs(e.Pos.Y - b.Pos.Y) < Tank.Half + Bullet.Half)
                 {
-                    SpawnBurst(b.Pos, "#d4a24c", 8, 150);
-                    Audio.Beep(240, 0.04, "square", 0.04);
-                    if (b.IsPlayer) _score += 5;
-                }
-                b.IsAlive = false;
-                continue;
-            }
-            if (tile == TileMap.Steel)
-            {
-                SpawnBurst(b.Pos, "#ced4da", 6, 120);
-                Audio.Beep(180, 0.05, "square", 0.05);
-                b.IsAlive = false;
-                continue;
-            }
-            if (tile == TileMap.Base)
-            {
-                DestroyBase();
-                b.IsAlive = false;
-                continue;
-            }
-            if (tile == TileMap.Water || tile == TileMap.Tree) continue;   // 子弹穿过水与树
-
-            // 命中坦克
-            if (b.IsPlayer)
-            {
-                foreach (var e in _enemies)
-                {
-                    if (!e.IsAlive) continue;
-                    if (Math.Abs(e.Pos.X - b.Pos.X) < Tank.Half + Bullet.Half &&
-                        Math.Abs(e.Pos.Y - b.Pos.Y) < Tank.Half + Bullet.Half)
-                    {
-                        HitEnemy(e, b);
-                        b.IsAlive = false;
-                        break;
-                    }
+                    HitEnemy(e, b);
+                    b.IsAlive = false;
+                    break;
                 }
             }
-            else if (_player.IsAlive &&
-                     Math.Abs(_player.Pos.X - b.Pos.X) < Tank.Half + Bullet.Half &&
-                     Math.Abs(_player.Pos.Y - b.Pos.Y) < Tank.Half + Bullet.Half)
-            {
-                HitPlayer(b);
-                b.IsAlive = false;
-            }
+        }
+        else if (_player.IsAlive &&
+                 Math.Abs(_player.Pos.X - b.Pos.X) < Tank.Half + Bullet.Half &&
+                 Math.Abs(_player.Pos.Y - b.Pos.Y) < Tank.Half + Bullet.Half)
+        {
+            HitPlayer(b);
+            b.IsAlive = false;
         }
     }
 
@@ -489,7 +539,23 @@ public sealed class TankScene : GameScene
     private void MaybeDropPowerUp(Vector2 pos)
     {
         if (Random.Shared.NextDouble() > 0.16) return;
-        _powerUps.Add(new PowerUp { Pos = pos, Kind = (PowerUpKind)Random.Shared.Next(5) });
+        _powerUps.Add(new PowerUp { Pos = FindDropSpot(pos), Kind = (PowerUpKind)Random.Shared.Next(5) });
+    }
+
+    /// <summary>找离 pos 最近的坦克可站立落点（避免道具掉进墙里/水里吃不到）。</summary>
+    private Vector2 FindDropSpot(Vector2 pos)
+    {
+        if (!_map.TankCollides(pos.X, pos.Y, 12)) return pos;
+        for (int ring = 1; ring <= 3; ring++)
+        {
+            double step = 16 * ring;
+            foreach (var (dx, dy) in new[] { (step, 0.0), (-step, 0.0), (0.0, step), (0.0, -step) })
+            {
+                var q = new Vector2(pos.X + dx, pos.Y + dy);
+                if (!_map.TankCollides(q.X, q.Y, 12)) return q;
+            }
+        }
+        return pos;
     }
 
     private void UpdatePowerUps(float dt)
@@ -756,7 +822,8 @@ public sealed class TankScene : GameScene
 
     private void RenderEnemies()
     {
-        foreach (var e in _enemies) RenderTank(e);
+        foreach (var e in _enemies)
+            if (e.IsAlive) RenderTank(e);   // 死亡的坦克不再绘制，尸体消失
     }
 
     private void RenderPlayer()

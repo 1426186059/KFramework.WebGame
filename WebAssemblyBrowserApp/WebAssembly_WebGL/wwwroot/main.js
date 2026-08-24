@@ -55,6 +55,10 @@ if (typeof window !== 'undefined') {
 }
 
 // ------------------------- 启动 -------------------------
+// 着色器源码是独立 .vert / .frag 文件：与 dotnet 启动并行预取，
+// 确保 C# 的 gl.init（GameEngine.Initialize）同步编译着色器时已就绪。
+const shadersReady = gl.preloadShaders()
+
 const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotnet.create()
 
 setModuleImports('main.js', { gl, input, audio, storage, engine })
@@ -64,4 +68,6 @@ const exports = await getAssemblyExports(config.mainAssemblyName)
 
 if (window.__engine) window.__engine.exports = exports
 
+// 着色器就绪后再进入 C# 入口，避免 init 编译时缺失源码
+await shadersReady
 await runMain()

@@ -1,10 +1,4 @@
-// =====================================================================
-// 图片/文字着色器（IMG program）
-// GLSL ES 3.00 + 显式 layout(location)。
-// 用于绘制纹理（离屏 Canvas2D 生成的文字纹理、加载的图片）。
-// =====================================================================
-
-export const IMG_VERT = `#version 300 es
+#version 300 es
 precision highp float;
 layout(location = 0) in vec2 a_pos;
 layout(location = 1) in vec4 a_rect;     // x, y, w, h
@@ -26,16 +20,3 @@ void main() {
                 u_uvRect.y + (0.5 + a_pos.y * 0.5) * u_uvRect.w);   // 纹理正立：v=0（图片顶部）在 quad 上边
     v_color = a_color;
 }
-`
-
-export const IMG_FRAG = `#version 300 es
-precision highp float;
-in vec2 v_uv;
-in vec4 v_color;
-uniform sampler2D u_tex;
-out vec4 fragColor;
-void main() {
-    vec4 tex = texture(u_tex, v_uv);
-    fragColor = tex * v_color;
-}
-`

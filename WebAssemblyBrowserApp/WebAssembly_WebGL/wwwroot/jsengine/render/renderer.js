@@ -9,9 +9,22 @@
 //   - 基础 gl.* 调用（清屏、视口、blend）
 // =====================================================================
 
-import { SHAPE_VERT, SHAPE_FRAG } from './shaders/shape.js'
-import { IMG_VERT, IMG_FRAG } from './shaders/image.js'
-import { BLUR_VERT, BLUR_FRAG } from './shaders/blur.js'
+// ------------------------- Shader 加载（独立 .vert / .frag 文件） -------------------------
+// 着色器源码不再内嵌在 JS 里，统一放到 wwwroot/jsengine/render/shaders/ 目录：
+//   shape.vert / shape.frag、image.vert / image.frag、blur.vert / blur.frag
+// main.js 启动时调用 preloadShaders() 预取（与 dotnet 启动并行），
+// init() 同步编译时从 _shaderCache 取，保证 C# 的 gl.init 调用不受影响。
+const SHADER_FILES = ['shape.vert', 'shape.frag', 'image.vert', 'image.frag', 'blur.vert', 'blur.frag']
+const _shaderCache = {}
+
+async function preloadShaders() {
+    const base = './jsengine/render/shaders/'
+    await Promise.all(SHADER_FILES.map(async (name) => {
+        const res = await fetch(base + name)
+        if (!res.ok) throw new Error('Shader load failed: ' + name + ' (' + res.status + ')')
+        _shaderCache[name] = await res.text()
+    }))
+}
 
 // ------------------------- 共享 GL 对象 -------------------------
 let _gl = null
@@ -98,6 +111,9 @@ function bindQuad(prog) {
 
 // ------------------------- 薄 API 导出 -------------------------
 export const glCore = {
+    // ------------------------- 着色器预加载（main.js 启动时调用） -------------------------
+    preloadShaders,
+
     // ------------------------- 初始化 -------------------------
     init(selector, width, height) {
         const el = document.querySelector(selector)
@@ -109,9 +125,15 @@ export const glCore = {
         if (!gl) throw new Error('WebGL2 not supported')
         _gl = gl
 
-        _shapeProg = link(gl, SHAPE_VERT, SHAPE_FRAG)
-        _imgProg = link(gl, IMG_VERT, IMG_FRAG)
-        _blurProg = link(gl, BLUR_VERT, BLUR_FRAG)
+        // 从预加载缓存取着色器源码；未预加载则报错（main.js 启动时已 preloadShaders）
+        const shader = (name) => {
+            const src = _shaderCache[name]
+            if (!src) throw new Error('Shader not loaded: ' + name + '（请先调用 preloadShaders()）')
+            return src
+        }
+        _shapeProg = link(gl, shader('shape.vert'), shader('shape.frag'))
+        _imgProg = link(gl, shader('image.vert'), shader('image.frag'))
+        _blurProg = link(gl, shader('blur.vert'), shader('blur.frag'))
 
         // 全屏 quad（-1..1）：2 个三角形 = 6 个顶点
         _quadBuf = gl.createBuffer()

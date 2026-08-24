@@ -88,7 +88,11 @@ public sealed class TileMap
     public bool BrickBitAlive(int row, int col, int sr, int sc) =>
         _brickBits[row * 2 + sr, col * 2 + sc];
 
-    /// <summary>子弹命中砖墙：摧毁子弹中心所在的一个 16×16 子块。返回是否命中。</summary>
+    /// <summary>
+    /// 子弹命中砖墙：摧毁该格内的一个 16×16 子块。
+    /// 优先摧毁子弹中心所在的子块；若它已被打掉，则就近补击同格内最近的存活子块
+    /// （保证连续射击同一位置能逐个打穿整格）。整格打空时返回 false（子弹应穿透）。
+    /// </summary>
     public bool HitBrick(double wx, double wy)
     {
         int c = ColAt(wx), r = RowAt(wy);
@@ -99,8 +103,27 @@ public sealed class TileMap
         int sr = (int)((wy - (OriginY + r * Tile)) / (Tile / 2.0));
         sc = Math.Clamp(sc, 0, 1);
         sr = Math.Clamp(sr, 0, 1);
+
         int bi = r * 2 + sr, bj = c * 2 + sc;
-        if (!_brickBits[bi, bj]) return false;
+        if (!_brickBits[bi, bj])
+        {
+            // 中心点落在已破坏的子块空洞：就近补击同格内最近的存活子块
+            double bestD = double.MaxValue;
+            bi = bj = -1;
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    int ii = r * 2 + i, jj = c * 2 + j;
+                    if (!_brickBits[ii, jj]) continue;
+                    double dx = OriginX + c * Tile + j * 16 + 8 - wx;
+                    double dy = OriginY + r * Tile + i * 16 + 8 - wy;
+                    double d = dx * dx + dy * dy;
+                    if (d < bestD) { bestD = d; bi = ii; bj = jj; }
+                }
+            }
+            if (bi < 0) return false;   // 整格已打空（理论上此时 _tiles 已为 Empty）
+        }
 
         _brickBits[bi, bj] = false;
         bool any = false;
