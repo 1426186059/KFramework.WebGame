@@ -3,5 +3,6 @@
   <Project Path="WebAssembly_Canvas2D/WebAssembly_Canvas2D.csproj" />
   <Project Path="WebAssembly_WebGL/WebAssembly_WebGL.csproj" />
   <Project Path="WebAssembly_WebGPU/WebAssembly_WebGPU.csproj" />
+  <Project Path="WebAssembly_PixiJS/WebAssembly_PixiJS.csproj" />
   <Project Path="WebEngineCommon/WebEngineCommon.csproj" />
 </Solution>
