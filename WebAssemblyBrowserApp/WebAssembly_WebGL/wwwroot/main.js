@@ -13,6 +13,7 @@ import { gl } from './jsengine/render/shapes.js'
 import { input } from './jsengine/input/input.js'
 import { audio } from './jsengine/audio/audio.js'
 import { storage } from './jsengine/core/storage.js'
+import { platform } from './jsengine/core/platform.js'
 
 // ------------------------- 引擎生命周期 -------------------------
 let _rafStarted = false
@@ -61,7 +62,7 @@ const shadersReady = gl.preloadShaders()
 
 const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotnet.create()
 
-setModuleImports('main.js', { gl, input, audio, storage, engine })
+setModuleImports('main.js', { gl, input, audio, storage, platform, engine })
 
 const config = getConfig()
 const exports = await getAssemblyExports(config.mainAssemblyName)

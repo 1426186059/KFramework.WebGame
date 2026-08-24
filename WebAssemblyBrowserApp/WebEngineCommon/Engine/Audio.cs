@@ -2,7 +2,7 @@ using System.Runtime.InteropServices.JavaScript;
 
 namespace WebAssemblyBrowserApp.Engine;
 
-/// <summary>基于 WebAudio 的简单音效。</summary>
+/// <summary>基于 WebAudio 的简单音效（JS 薄层封装）。</summary>
 public static partial class Audio
 {
     [JSImport("audio.init", "main.js")]

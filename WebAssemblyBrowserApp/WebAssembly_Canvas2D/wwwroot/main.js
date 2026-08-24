@@ -227,6 +227,17 @@ function frame(ts) {
     requestAnimationFrame(frame)
 }
 
+// ------------------------- 平台能力薄层 -------------------------
+const platform = {
+    innerWidth: () => (typeof window !== 'undefined' && window.innerWidth) || 960,
+    innerHeight: () => (typeof window !== 'undefined' && window.innerHeight) || 540,
+    devicePixelRatio: () => (typeof window !== 'undefined' && window.devicePixelRatio) || 1,
+    now: () => (typeof performance !== 'undefined') ? performance.now() : 0,
+    userAgent: () => (typeof navigator !== 'undefined') ? navigator.userAgent : '',
+    language: () => (typeof navigator !== 'undefined') ? (navigator.language || '') : '',
+    setTitle: (t) => { if (typeof document !== 'undefined') document.title = t },
+}
+
 // ------------------------- 启动 -------------------------
 const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotnet.create()
 
@@ -236,6 +247,7 @@ setModuleImports('main.js', {
     input,
     audio,
     storage,
+    platform,
 })
 
 const config = getConfig()

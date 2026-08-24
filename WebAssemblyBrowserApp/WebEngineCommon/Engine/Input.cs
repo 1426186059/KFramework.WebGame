@@ -3,7 +3,7 @@ using System.Runtime.InteropServices.JavaScript;
 namespace WebAssemblyBrowserApp.Engine;
 
 /// <summary>
-/// 键盘 / 鼠标 / 触摸输入。
+/// 键盘 / 鼠标 / 触摸输入（JS 薄层封装）。
 /// 键名使用 KeyboardEvent.code（如 "ArrowLeft"、"KeyA"、"Space"）。
 /// </summary>
 public static partial class Input

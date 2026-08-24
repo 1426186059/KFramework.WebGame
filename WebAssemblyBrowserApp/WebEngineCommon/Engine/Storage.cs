@@ -2,7 +2,7 @@ using System.Runtime.InteropServices.JavaScript;
 
 namespace WebAssemblyBrowserApp.Engine;
 
-/// <summary>浏览器 localStorage 封装，用于存档 / 最高分等。</summary>
+/// <summary>浏览器 localStorage 封装（JS 薄层），用于存档 / 最高分等。</summary>
 public static partial class Storage
 {
     [JSImport("storage.get", "main.js")]

@@ -90,7 +90,7 @@ public static partial class WebGPU
     public static void Restore() { if (_matrixStack.Count > 0) _matrixStack.Pop(); RestoreTransform(); }
     public static void Transform(Matrix3x2 m)
     {
-        _m11 = m.M11; _m12 = m.M12; _m21 = m.M21; _m22 = m.M22; _m31 = m.M31; _m32 = m.M32;
+        _m11 = (float)m.M11; _m12 = (float)m.M12; _m21 = (float)m.M21; _m22 = (float)m.M22; _m31 = (float)m.M31; _m32 = (float)m.M32;
         SetTransform(m.M11, m.M12, m.M21, m.M22, m.M31, m.M32);
     }
     public static void Alpha(double a) { _alpha = (float)a; SetAlpha(a); }

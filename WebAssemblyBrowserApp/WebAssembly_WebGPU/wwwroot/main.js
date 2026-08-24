@@ -12,6 +12,7 @@ import { gpu } from './jsengine/render/renderer.js'
 import { input } from './jsengine/input/input.js'
 import { audio } from './jsengine/audio/audio.js'
 import { storage } from './jsengine/core/storage.js'
+import { platform } from './jsengine/core/platform.js'
 import { diag } from './jsengine/core/diag.js'
 
 // ------------------------- 引擎生命周期 -------------------------
@@ -82,6 +83,7 @@ setModuleImports('main.js', {
   input,
   audio,
   storage,
+  platform,
   engine,
   diag,
 })
