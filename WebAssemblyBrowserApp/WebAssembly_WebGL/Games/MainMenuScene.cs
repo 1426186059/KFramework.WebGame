@@ -11,6 +11,7 @@ public sealed class MainMenuScene : GameScene
     private const float Card1X = 40, Card2X = 280, Card3X = 520;
 
     private float _time;
+    private Texture2D _demoTex;
 
     public MainMenuScene() : base("main-menu") { }
 
@@ -78,6 +79,33 @@ public sealed class MainMenuScene : GameScene
         if ((int)(_time * 2) % 2 == 0)
             WebGL.FillText("按 1 / 2 / 3 或点击卡片进入游戏", cx, GameEngine.Height - 60, "18px system-ui, sans-serif", "#ffe066", "center");
 
+        // Texture2D 演示：动态纹理全链路（逐像素写入 → Commit 重传 GPU → Draw）
+        _demoTex ??= new Texture2D(128, 128);
+        RenderDemoTexture();
+
         WebGL.Restore();
+    }
+
+    // 每帧重绘像素：横向 RGB 渐变 + 纵向滚动 + 半透明（同时验证 alpha 混合）
+    private void RenderDemoTexture()
+    {
+        var tex = _demoTex;
+        int w = tex.Width, h = tex.Height;
+        var px = tex.Pixels;
+        int offset = (int)(_time * 40) % h;
+        for (int y = 0; y < h; y++)
+        {
+            int row = (y + offset) % h;
+            for (int x = 0; x < w; x++)
+            {
+                px[y * w + x] = unchecked((int)0xCC000000) // 半透明 A=0xCC
+                    | ((x * 255 / w) << 16)               // R 横向渐变
+                    | ((row * 255 / h) << 8)              // G 纵向滚动
+                    | 160;                                 // B 固定
+            }
+        }
+        tex.Commit();
+        tex.Draw(GameEngine.Width - 148, GameEngine.Height - 148, 128, 128);
+        WebGL.FillText("Texture2D", GameEngine.Width - 164, GameEngine.Height - 160, "12px system-ui, sans-serif", "#8b949e", "center");
     }
 }

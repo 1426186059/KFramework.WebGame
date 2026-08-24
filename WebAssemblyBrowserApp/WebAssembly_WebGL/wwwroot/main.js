@@ -55,6 +55,26 @@ if (typeof window !== 'undefined') {
     }
 }
 
+// ------------------------- 资源加载（统一 assets 桥） -------------------------
+// C# 侧 Assets 模块调用（共享引擎 WebEngineCommon/Engine/Assets.cs）。
+// 内部以 url 作为纹理 id，返回 { id, w, h }（失败 id=-1），加载完成才 resolve。
+const assets = {
+    loadImage(url) {
+        return gl.loadImage(url, url)
+    },
+    // 绘制图片 / 动态纹理（单位矩阵 + 不透明）
+    drawImage(id, dx, dy, dw, dh) {
+        gl.drawImageById(id, dx, dy, dw, dh, [1, 0, 0, 0, 1, 0, 0, 0, 1], 1)
+    },
+    // Texture2D：像素重传（内部走 'dyn:'+id 命名空间）
+    uploadTexture(id, w, h, argb) {
+        gl.uploadTexture(id, w, h, argb)
+    },
+    disposeTexture(id) {
+        gl.disposeTexture(id)
+    },
+}
+
 // ------------------------- 启动 -------------------------
 // 着色器源码是独立 .vert / .frag 文件：与 dotnet 启动并行预取，
 // 确保 C# 的 gl.init（GameEngine.Initialize）同步编译着色器时已就绪。
@@ -62,7 +82,7 @@ const shadersReady = gl.preloadShaders()
 
 const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotnet.create()
 
-setModuleImports('main.js', { gl, input, audio, storage, platform, engine })
+setModuleImports('main.js', { gl, assets, input, audio, storage, platform, engine })
 
 const config = getConfig()
 const exports = await getAssemblyExports(config.mainAssemblyName)

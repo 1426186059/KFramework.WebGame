@@ -1,0 +1,86 @@
+#nullable enable
+using System.Collections.Generic;
+using System.Runtime.InteropServices.JavaScript;
+using System.Runtime.Versioning;
+using System.Threading.Tasks;
+
+namespace WebAssemblyBrowserApp.Engine;
+
+/// <summary>
+/// 已加载的图片资源句柄（三端统一）。
+/// Id 为各端渲染器的纹理/图片标识；Ready 表示可安全绘制。
+/// </summary>
+public sealed class Texture
+{
+    public string Url { get; init; } = "";
+
+    //Id 本质上是 "GPU 纹理槽位索引"，不是 Web 的概念。-1 表示"已下载但未上传"或"加载失败"的中间状态。
+    public int Id { get; init; } = -1; 
+    public int Width { get; init; }
+    public int Height { get; init; }
+    public bool Ready => Id >= 0;
+}
+
+/// <summary>
+/// 统一资源加载模块：三端共用同一套图片「加载 / 缓存 / 绘制」API。
+/// 底层由各端 main.js 注册的 assets 桥实现（Canvas2D / WebGL / WebGPU 各自适配），
+/// 游戏代码无需关心后端差异，也不用管加载时序（未就绪自动跳过绘制）。
+/// </summary>
+[SupportedOSPlatform("browser")]
+public static partial class Assets
+{
+    private static readonly Dictionary<string, Texture> _cache = new();
+    private static readonly Dictionary<string, Task<Texture>> _pending = new();
+
+    [JSImport("assets.loadImage", "main.js")]
+    private static partial Task<JSObject?> LoadImageAsync(string url);
+
+    [JSImport("assets.drawImage", "main.js")]
+    private static partial void JsDrawImage(int id, float x, float y, float w, float h);
+
+    /// <summary>
+    /// 异步加载图片（带缓存去重；并发请求共享同一次加载）。
+    /// 加载失败也返回 Texture（Ready=false），不会抛异常。
+    /// </summary>
+    public static Task<Texture> LoadAsync(string url)
+    {
+        if (_cache.TryGetValue(url, out var cached)) return Task.FromResult(cached);
+        if (_pending.TryGetValue(url, out var running)) return running;
+
+        var task = LoadCoreAsync(url);
+        _pending[url] = task;
+        return task;
+    }
+
+    private static async Task<Texture> LoadCoreAsync(string url)
+    {
+        int id = -1, w = 0, h = 0;
+        using var obj = await LoadImageAsync(url);
+        if (obj is not null && obj.GetPropertyAsInt32("id") >= 0)
+        {
+            id = obj.GetPropertyAsInt32("id");
+            w = (int)obj.GetPropertyAsDouble("w");
+            h = (int)obj.GetPropertyAsDouble("h");
+        }
+        var tex = new Texture { Url = url, Id = id, Width = w, Height = h };
+        _pending.Remove(url);
+        _cache[url] = tex;
+        return tex;
+    }
+
+    /// <summary>已缓存（无论成功失败）的纹理；未加载过返回 null。</summary>
+    public static Texture? Get(string url)
+        => _cache.TryGetValue(url, out var tex) ? tex : null;
+
+    /// <summary>把纹理绘制到屏幕 (x, y, w, h)。纹理未就绪时自动跳过，不会报错。</summary>
+    public static void Draw(Texture? tex, float x, float y, float w, float h)
+    {
+        if (tex is { Ready: true }) JsDrawImage(tex.Id, x, y, w, h);
+    }
+
+    /// <summary>绘制动态纹理（<see cref="Texture2D"/>）。未 Commit 前自动跳过。</summary>
+    public static void Draw(Texture2D tex, float x, float y, float w, float h)
+    {
+        if (tex is { Ready: true }) JsDrawImage(tex.Id, x, y, w, h);
+    }
+}

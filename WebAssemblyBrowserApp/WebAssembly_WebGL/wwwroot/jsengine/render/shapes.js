@@ -62,6 +62,14 @@ export const gl = {
         return glCore.loadImage(id, url)
     },
 
+    // ---- 动态纹理（Texture2D：像素重传） ----
+    uploadTexture(id, w, h, argb) {
+        glCore.uploadTexture(id, w, h, argb)
+    },
+    disposeTexture(id) {
+        glCore.disposeTexture(id)
+    },
+
     // ---- 文本纹理烘焙：返回 { texId, tw, th, ascent, pad } ----
     bakeTextTexture(text, font, color) {
         return glCore.bakeTextTexture(text, font, color)

@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices.JavaScript;
-using System.Threading.Tasks;
 
 namespace WebAssemblyBrowserApp.Engine;
 
@@ -58,10 +57,4 @@ public static partial class Canvas2D
     [JSImport("canvas.noShadow", "main.js")]
     public static partial void NoShadow();
 
-    /// <summary>加载图片到精灵缓存（可选，演示游戏使用矢量绘制）。</summary>
-    [JSImport("canvas.loadImage", "main.js")]
-    public static partial Task<bool> LoadImage(string id, string url);
-
-    [JSImport("canvas.drawImage", "main.js")]
-    public static partial void DrawImage(string id, float dx, float dy, float dw, float dh);
 }

@@ -109,6 +109,20 @@ function bindQuad(prog) {
     gl.vertexAttribPointer(LOC_POS, 2, gl.FLOAT, false, 0, 0)
 }
 
+// ARGB8888 int[] → RGBA Uint8Array（WebGL 纹理字节序，非预乘 alpha）
+function argbToRgba(argb) {
+    const n = argb.length
+    const rgba = new Uint8Array(n * 4)
+    for (let i = 0; i < n; i++) {
+        const c = argb[i]
+        rgba[i * 4] = (c >> 16) & 0xff
+        rgba[i * 4 + 1] = (c >> 8) & 0xff
+        rgba[i * 4 + 2] = c & 0xff
+        rgba[i * 4 + 3] = (c >>> 24) & 0xff
+    }
+    return rgba
+}
+
 // ------------------------- 薄 API 导出 -------------------------
 export const glCore = {
     // ------------------------- 着色器预加载（main.js 启动时调用） -------------------------
@@ -357,11 +371,37 @@ export const glCore = {
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
                 _textures.set(id, tex)
-                resolve(true)
+                resolve({ id, w: img.width, h: img.height })
             }
-            img.onerror = () => resolve(false)
+            img.onerror = () => resolve({ id: -1, w: 0, h: 0 })
             img.src = url
         })
+    },
+
+    // ------------------------- 动态纹理（Texture2D：像素重传） -------------------------
+    uploadTexture(id, w, h, argb) {
+        const gl = _gl
+        if (!gl) return
+        const key = 'dyn:' + id
+        let tex = _textures.get(key)
+        if (!tex) {
+            tex = gl.createTexture()
+            gl.bindTexture(gl.TEXTURE_2D, tex)
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false)
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+            _textures.set(key, tex)
+        }
+        gl.bindTexture(gl.TEXTURE_2D, tex)
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, argbToRgba(argb))
+    },
+    disposeTexture(id) {
+        const tex = _textures.get('dyn:' + id)
+        if (tex) {
+            _gl.deleteTexture(tex)
+            _textures.delete('dyn:' + id)
+        }
     },
 
     // ------------------------- 文本纹理烘焙 -------------------------
@@ -399,7 +439,9 @@ export const glCore = {
     // ------------------------- 图片 DrawImage（通过 string id） -------------------------
     // C# 侧传矩阵（行主序 float[9]）+ alpha；本函数内部组装实例数据并绘制。
     drawImageById(id, dx, dy, dw, dh, matrixArr, alpha) {
-        const tex = _textures.get(id)
+        // 先查图片/文本纹理（url / texId 作 key），再查动态纹理（'dyn:'+id，Texture2D）
+        let tex = _textures.get(id)
+        if (!tex) tex = _textures.get('dyn:' + id)
         if (!tex) return
         const gl = _gl
         // 保险：强制 Float32Array（C# double[] 会被 JSInterop 包装成 Float64Array）

@@ -24,6 +24,7 @@ let _shadowBuffer = null;
 // 纹理（文本 / 图片）
 let _texData = [];            // {view, w, h, x, y} —— 当前帧要画的纹理 quad（文本/图片）
 const _textures = [];         // 图片纹理 {texture, view, w, h}（按 id 索引，由 loadImageTexture 填充）
+const _dynTextures = new Map(); // 动态纹理（Texture2D）：'dyn:<id>' -> {texture, view, w, h}
 const _textCache = new Map(); // 文字纹理缓存：key = text+font+color → {texture, view, w, h}
 const TEXT_CACHE_LIMIT = 128; // 最多缓存 128 个文字纹理，超限淘汰最旧
 const TEXT_SUPERSAMPLE = 2;   // 文字纹理烘焙超采样倍率：2x 像素烘焙，显示按逻辑尺寸缩小 → 高 DPI/放大时文字更清晰
@@ -394,6 +395,8 @@ export const gpu = {
   fillText(text, x, y, font, color, align) { drawTextSprite(text, x, y, font, color, align); },
   loadImage(src) { return loadImageTexture(src); },
   drawImage(id, x, y, w, h) { drawImageTexture(id, x, y, w, h); },
+  uploadTexture(id, w, h, argb) { uploadTexturePixels(id, w, h, argb); },
+  disposeTexture(id) { disposeTexturePixels(id); },
   measureText(text, font) {
     if (!_measureCtx) return 0;
     _measureCtx.font = font;
@@ -479,25 +482,82 @@ function drawTextSprite(text, x, y, font, color, align) {
 }
 
 function loadImageTexture(src) {
-  if (!_device) return -1;
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  const id = _textures.length;
-  _textures.push(null);
-  img.onload = () => {
-    const w = img.width, h = img.height;
-    const tex = bakeToTexture((c) => c.drawImage(img, 0, 0), w, h);
-    if (tex) _textures[id] = { texture: tex, view: tex.createView(), w, h };
-  };
-  img.onerror = () => { /* 忽略加载失败 */ };
-  img.src = src;
-  return id;
+  if (!_device) return Promise.resolve({ id: -1, w: 0, h: 0 });
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    const id = _textures.length;
+    _textures.push(null);
+    img.onload = () => {
+      const w = img.width, h = img.height;
+      const tex = bakeToTexture((c) => c.drawImage(img, 0, 0), w, h);
+      if (tex) _textures[id] = { texture: tex, view: tex.createView(), w, h };
+      resolve({ id, w, h });
+    };
+    img.onerror = () => resolve({ id: -1, w: 0, h: 0 });
+    img.src = src;
+  });
 }
 
 function drawImageTexture(id, x, y, w, h) {
-  const tex = _textures[id];
+  // 先查图片纹理（数字 id 索引），再查动态纹理（'dyn:'+id，Texture2D）
+  let tex = _textures[id];
+  if (!tex || !tex.view) tex = _dynTextures.get('dyn:' + id);
   if (!tex || !tex.view) return;
   _texData.push({ view: tex.view, w, h, x, y });
+}
+
+// 动态纹理（Texture2D）：把 ARGB 像素重传到 GPU 纹理（'dyn:'+id 命名空间，与图片 id 隔离）
+function uploadTexturePixels(id, w, h, argb) {
+  if (!_device) return;
+  const key = 'dyn:' + id;
+  let tex = _dynTextures.get(key);
+  if (!tex || tex.w !== w || tex.h !== h) {
+    if (tex && tex.texture) tex.texture.destroy();
+    const texture = _device.createTexture({
+      size: [w, h], format: 'rgba8unorm',
+      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
+    });
+    tex = { texture, view: texture.createView(), w, h };
+    _dynTextures.set(key, tex);
+  }
+  // WebGPU 要求 writeTexture 的 bytesPerRow 必须是 256 的倍数（与 bakeToTexture 一致）
+  const srcRowBytes = w * 4;
+  const bytesPerRow = Math.ceil(srcRowBytes / 256) * 256;
+  let pixels = argbToRgba(argb);
+  if (bytesPerRow !== srcRowBytes) {
+    const padded = new Uint8Array(bytesPerRow * h);
+    for (let y = 0; y < h; y++) {
+      padded.set(pixels.subarray(y * srcRowBytes, y * srcRowBytes + srcRowBytes), y * bytesPerRow);
+    }
+    pixels = padded;
+  }
+  _device.queue.writeTexture(
+    { texture: tex.texture },
+    pixels,
+    { bytesPerRow, rowsPerImage: h },
+    { width: w, height: h }
+  );
+}
+
+function disposeTexturePixels(id) {
+  const tex = _dynTextures.get('dyn:' + id);
+  if (tex && tex.texture) tex.texture.destroy();
+  _dynTextures.delete('dyn:' + id);
+}
+
+// ARGB8888 int[] → RGBA Uint8Array（straight alpha，与 text.wgsl 的预乘假设匹配）
+function argbToRgba(argb) {
+  const n = argb.length;
+  const rgba = new Uint8Array(n * 4);
+  for (let i = 0; i < n; i++) {
+    const c = argb[i];
+    rgba[i * 4] = (c >> 16) & 0xff;
+    rgba[i * 4 + 1] = (c >> 8) & 0xff;
+    rgba[i * 4 + 2] = c & 0xff;
+    rgba[i * 4 + 3] = (c >>> 24) & 0xff;
+  }
+  return rgba;
 }
 
 // ---------------------------------------------------------------------

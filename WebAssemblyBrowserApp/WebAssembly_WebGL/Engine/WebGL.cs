@@ -54,9 +54,6 @@ public static partial class WebGL
     [JSImport("gl.drawImageInstance", "main.js")]
     private static partial void JsDrawImageInstance(double[] data, int texId, float uvW, float uvH);
 
-    [JSImport("gl.loadImage", "main.js")]
-    public static partial Task<bool> LoadImage(string id, string url);
-
     /// <summary>
     /// 烘焙文本纹理。返回对象（JSObject）包含 texId/tw/th/ascent/pad。
     /// 失败返回 null。
@@ -368,23 +365,4 @@ public static partial class WebGL
         _shadowBlur = 0;
     }
 
-    public static void DrawImage(string id, float dx, float dy, float dw, float dh)
-    {
-        // DrawImage 切换到 IMG program，先 flush SHAPE 批次
-        FlushShapes();
-
-        // float[] matrix → float[]（供 JSInterop）
-        var m = CurrentMatrix();
-        var md = new double[9];
-        for (int i = 0; i < 9; i++) md[i] = m[i];
-        JsDrawImageById(id, dx, dy, dw, dh, md, _globalAlpha);
-    }
-
-    // 图片 DrawImage 的专用桥：直接通过 string id 取纹理 + 构造单实例 + 绘制
-    [JSImport("gl.drawImageById", "main.js")]
-    private static partial void JsDrawImageById(
-        string id,
-        float dx, float dy, float dw, float dh,
-        double[] matrix,
-        float alpha);
 }

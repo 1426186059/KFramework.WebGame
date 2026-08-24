@@ -92,20 +92,6 @@ const canvas = {
     alpha(a) { _ctx.globalAlpha = a },
     shadow(color, blur) { _ctx.shadowColor = color; _ctx.shadowBlur = blur },
     noShadow() { _ctx.shadowColor = 'transparent'; _ctx.shadowBlur = 0 },
-
-    loadImage(id, url) {
-        return new Promise((resolve) => {
-            const img = new Image()
-            img.onload = () => { _images[id] = img; resolve(true) }
-            img.onerror = () => resolve(false)
-            img.src = url
-        })
-    },
-
-    drawImage(id, dx, dy, dw, dh) {
-        const img = _images[id]
-        if (img) _ctx.drawImage(img, dx, dy, dw, dh)
-    },
 }
 
 // ------------------------- 输入 -------------------------
@@ -238,12 +224,68 @@ const platform = {
     setTitle: (t) => { if (typeof document !== 'undefined') document.title = t },
 }
 
+// ------------------------- 资源加载（统一 assets 桥） -------------------------
+// C# 侧 Assets / Texture2D 模块调用（共享引擎 WebEngineCommon/Engine/）。
+// 图片加载统一返回 { id, w, h }（失败 id=-1），加载完成才 resolve。
+// 动态纹理（Texture2D）走独立的 'dyn:<id>' 命名空间，与图片 url id 互不冲突。
+const _texCanvases = new Map()  // 'dyn:<id>' -> { canvas, ctx, w, h }
+
+// ARGB8888 int[]（C# int[] → JS Int32Array）→ RGBA Uint8ClampedArray（canvas 像素顺序）
+function argbToRgba(argb) {
+    const n = argb.length
+    const rgba = new Uint8ClampedArray(n * 4)
+    for (let i = 0; i < n; i++) {
+        const c = argb[i]
+        rgba[i * 4] = (c >> 16) & 0xff
+        rgba[i * 4 + 1] = (c >> 8) & 0xff
+        rgba[i * 4 + 2] = c & 0xff
+        rgba[i * 4 + 3] = (c >>> 24) & 0xff
+    }
+    return rgba
+}
+
+const assets = {
+    loadImage(url) {
+        return new Promise((resolve) => {
+            const img = new Image()
+            img.onload = () => { _images[url] = img; resolve({ id: url, w: img.width, h: img.height }) }
+            img.onerror = () => resolve({ id: -1, w: 0, h: 0 })
+            img.src = url
+        })
+    },
+    drawImage(id, dx, dy, dw, dh) {
+        const img = _images[id]
+        if (img) { _ctx.drawImage(img, dx, dy, dw, dh); return }
+        const entry = _texCanvases.get('dyn:' + id)
+        if (entry) _ctx.drawImage(entry.canvas, dx, dy, dw, dh)
+    },
+
+    // Texture2D：把 ARGB 像素重传到离屏 canvas（按 id 缓存，尺寸变化时重建）
+    uploadTexture(id, w, h, argb) {
+        const key = 'dyn:' + id
+        let entry = _texCanvases.get(key)
+        if (!entry || entry.w !== w || entry.h !== h) {
+            const canvas = document.createElement('canvas')
+            canvas.width = w; canvas.height = h
+            entry = { canvas, ctx: canvas.getContext('2d'), w, h }
+            _texCanvases.set(key, entry)
+        }
+        const img = entry.ctx.createImageData(w, h)
+        img.data.set(argbToRgba(argb))
+        entry.ctx.putImageData(img, 0, 0)
+    },
+    disposeTexture(id) {
+        _texCanvases.delete('dyn:' + id)
+    },
+}
+
 // ------------------------- 启动 -------------------------
 const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotnet.create()
 
 setModuleImports('main.js', {
     engine,
     canvas,
+    assets,
     input,
     audio,
     storage,

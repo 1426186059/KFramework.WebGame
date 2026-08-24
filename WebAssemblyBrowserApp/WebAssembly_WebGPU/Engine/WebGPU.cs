@@ -55,8 +55,6 @@ public static partial class WebGPU
 
     // ---- 文本 / 图片（真纹理，频率低，单独提交） ----
     [JSImport("gpu.fillText", "main.js")] public static partial void FillText(string text, float x, float y, string font, string color, string align);
-    [JSImport("gpu.loadImage", "main.js")] public static partial int LoadImage(string src);
-    [JSImport("gpu.drawImage", "main.js")] public static partial void DrawImage(int id, float x, float y, float w, float h);
     [JSImport("gpu.measureText", "main.js")] public static partial float MeasureText(string text, string font);
 
     // -----------------------------------------------------------------

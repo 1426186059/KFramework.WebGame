@@ -75,11 +75,31 @@ if (typeof window !== 'undefined') {
     }
 }
 
+// ------------------------- 资源加载（统一 assets 桥） -------------------------
+// C# 侧 Assets 模块调用（共享引擎 WebEngineCommon/Engine/Assets.cs）。
+// 返回 { id, w, h }（失败 id=-1），纹理 ready 后才 resolve。
+const assets = {
+    loadImage(url) {
+        return gpu.loadImage(url)
+    },
+    drawImage(id, x, y, w, h) {
+        gpu.drawImage(id, x, y, w, h)
+    },
+    // Texture2D：像素重传（内部走 'dyn:'+id 命名空间）
+    uploadTexture(id, w, h, argb) {
+        gpu.uploadTexture(id, w, h, argb)
+    },
+    disposeTexture(id) {
+        gpu.disposeTexture(id)
+    },
+}
+
 // ------------------------- 启动 .NET WASM 运行时 -------------------------
 const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotnet.create()
 
 setModuleImports('main.js', {
   gpu,
+  assets,
   input,
   audio,
   storage,
