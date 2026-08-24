@@ -13,6 +13,7 @@ Step("02: RegisterScenes (main-menu + breakout + tank)");
 ge.RegisterScene(new MainMenuScene());
 ge.RegisterScene(new BreakoutScene());
 ge.RegisterScene(new TankScene());
+ge.RegisterScene(new XiYouJiScene());
 Step("03: ge.Initialize(#game)");
 ge.Initialize("#game");
 Step("04: ge.Start(main-menu) ← 先进入游戏选择菜单");

@@ -15,6 +15,7 @@ public sealed class MainMenuScene : GameScene
     {
         new GameItem("打砖块 BREAKOUT", "breakout",  "#4dabf7", "← → 挡板，空格发射"),
         new GameItem("坦克大战 BATTLE CITY", "tank",  "#f6c445", "↑↓←→ 移动，空格开炮"),
+        new GameItem("FC 西游记 · MONKEY KING", "xyj",  "#f08c00", "←→ 移动，SPACE 跳，J 攻击"),
     };
 
     private int _selected;

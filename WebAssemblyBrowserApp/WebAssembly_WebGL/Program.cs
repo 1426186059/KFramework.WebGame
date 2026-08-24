@@ -10,8 +10,9 @@ GameEngine.Instance
     .RegisterScene(new MainMenuScene())
     .RegisterScene(new BreakoutScene())
     .RegisterScene(new TankScene())
+    .RegisterScene(new XiYouJiScene())
     .Initialize("#game")
-    .Start("menu");
+    .Start("main-menu");
 
 // 通知 JS 启动 requestAnimationFrame 主循环
 EngineLoop.Start();

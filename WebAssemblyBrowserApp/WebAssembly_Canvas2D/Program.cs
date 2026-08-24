@@ -14,6 +14,7 @@ public class Program
             .RegisterScene(new MainMenuScene())
             .RegisterScene(new BreakoutScene())
             .RegisterScene(new TankScene())
+            .RegisterScene(new XiYouJiScene())
             .Initialize("#game")
             .Start("main-menu");
 
