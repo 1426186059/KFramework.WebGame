@@ -11,10 +11,11 @@ public class Program
         Console.WriteLine("[Engine] .NET 10 WebAssembly 2D 游戏引擎启动中…");
 
         GameEngine.Instance
+            .RegisterScene(new MainMenuScene())
             .RegisterScene(new BreakoutScene())
             .RegisterScene(new TankScene())
             .Initialize("#game")
-            .Start("tank");
+            .Start("main-menu");
 
         // 通知 JS 启动 requestAnimationFrame 主循环
         EngineLoop.Start();

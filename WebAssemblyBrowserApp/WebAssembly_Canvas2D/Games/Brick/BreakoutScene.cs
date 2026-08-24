@@ -79,6 +79,12 @@ public sealed class BreakoutScene : GameScene
         _stateTime += dt;
         _shake = MathF.Max(0, _shake - dt);
 
+        if (Input.IsKeyPressed(Input.Escape))
+        {
+            GameEngine.Instance.Start("main-menu");
+            return;
+        }
+
         _paddle.Update(dt);
 
         switch (_state)

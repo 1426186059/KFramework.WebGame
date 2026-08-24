@@ -207,6 +207,11 @@ public sealed class TankScene : GameScene
 
     public override void Update(float dt)
     {
+        if (Input.IsKeyPressed(Input.Escape))
+        {
+            GameEngine.Instance.Start("main-menu");
+            return;
+        }
         _blink += dt;
         if (_state == State.Won || _state == State.Lost)
         {
