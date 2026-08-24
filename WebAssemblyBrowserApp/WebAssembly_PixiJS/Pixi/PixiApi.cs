@@ -27,7 +27,7 @@ internal static partial class PixiApi
 
     // ---- Graphics ----
     [JSImport("pixiApi.gfx", "main.js")]
-    public static partial void Gfx(int id, int op, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8);
+    public static partial void Gfx(int id, int op, double a0, double a1, double a2, double a3, double a4, double a5, double a6, double a7, double a8, double a9);
     [JSImport("pixiApi.gfxBatch", "main.js")] public static partial void GfxBatch(int id, double[] ops);
 
     // ---- Text ----

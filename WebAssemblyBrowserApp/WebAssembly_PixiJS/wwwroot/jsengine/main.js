@@ -79,9 +79,6 @@ setModuleImports('main.js', {
   storage,
   platform,
   engine,
-  diag: {
-    step: (label) => console.log(label),
-  },
 })
 
 const config = getConfig()
@@ -93,6 +90,20 @@ if (window.__engine) window.__engine.exports = exports
 runMain()
   .then(() => console.log('[JS] runMain RESOLVED (Program.cs exited)'))
   .catch(err => console.error('[JS] runMain REJECTED：', err))
+
+// 诊断：URL ?scene=X 在 1.2s 后让 GameApp 直接进入指定场景（绕过主菜单），
+// 用于定位"黑屏"是场景切换逻辑还是目标场景本身的问题。
+try {
+  const _autoScene = new URLSearchParams(location.search).get('scene')
+  if (_autoScene && _autoScene !== 'main') {
+    setTimeout(() => {
+      try {
+        console.log('[AutoScene] switching to', _autoScene)
+        exports.PixiGame.GameApp.StartStatic(_autoScene)
+      } catch (e) { console.error('[AutoScene] StartStatic failed:', e) }
+    }, 1200)
+  }
+} catch (_) {}
 
 // dotnet.js 在 Main 未返回前可能压制 rAF；2s 后从 JS 侧显式驱动主循环
 setTimeout(() => {

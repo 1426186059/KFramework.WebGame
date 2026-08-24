@@ -50,7 +50,8 @@ public sealed class Graphics : PixiObject
             PixiApi.Gfx(Handle, op,
                 a.Length > 0 ? a[0] : 0, a.Length > 1 ? a[1] : 0, a.Length > 2 ? a[2] : 0,
                 a.Length > 3 ? a[3] : 0, a.Length > 4 ? a[4] : 0, a.Length > 5 ? a[5] : 0,
-                a.Length > 6 ? a[6] : 0, a.Length > 7 ? a[7] : 0, a.Length > 8 ? a[8] : 0);
+                a.Length > 6 ? a[6] : 0, a.Length > 7 ? a[7] : 0, a.Length > 8 ? a[8] : 0,
+                a.Length > 9 ? a[9] : 0);
         }
     }
 }

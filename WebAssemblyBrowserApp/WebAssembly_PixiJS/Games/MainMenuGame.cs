@@ -72,11 +72,11 @@ public sealed class MainMenuGame : GameScene
 
         var label = new PixiText(title, "bold 26px system-ui, sans-serif", Color.White);
         label.X = 120;   // 面板 (0,0,240,74) 的水平中心
-        label.Y = -10;
+        label.Y = 22;    // 26px 文字中心：范围 9..35，在面板内
         box.AddChild(label);
         var dlabel = new PixiText(desc, "13px system-ui, sans-serif", new Color(0.55f, 0.62f, 0.75f));
         dlabel.X = 120;
-        dlabel.Y = 24;
+        dlabel.Y = 48;   // 13px 文字中心：范围 41.5..54.5，在面板内
         box.AddChild(dlabel);
 
         _buttons.Add((box, label));
@@ -88,9 +88,10 @@ public sealed class MainMenuGame : GameScene
         if (tex is null || _root is null) return;
         var sprite = Sprite.Create();
         sprite.SetTexture(tex);
-        float scale = 150f / tex.Height;
+        // 限制最大 260x150（保持比例），避免视频过大挤压布局
+        float scale = MathF.Min(150f / tex.Height, 260f / tex.Width);
         sprite.Width = tex.Width * scale;
-        sprite.Height = 150f;
+        sprite.Height = tex.Height * scale;
         sprite.X = 20; sprite.Y = 360;
         _video = sprite;
         _root.AddChild(sprite);

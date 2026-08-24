@@ -39,7 +39,21 @@ export const pixiApi = {
   },
 
   // app.init() 完成前 app 已存在但 renderer/stage 未就绪，须用 _ready 守卫
-  render() { if (_ready && app) app.render() },
+  render() {
+    if (!_ready || !app) return
+    try {
+      app.render()
+    } catch (e) {
+      // WebGPU/WebGL 下 HTMLVideoElement 帧上传失败（视频无 back resource）只影响该视频纹理，
+      // 吞掉避免中断整个渲染循环；其余错误继续抛出。
+      const msg = (e && e.message) ? String(e.message) : String(e)
+      if (/video|copyExternalImageToTexture|back resource/i.test(msg)) {
+        console.warn('[PixiApi] render video-frame skipped:', msg)
+      } else {
+        throw e
+      }
+    }
+  },
 
   get ready() { return _ready },
   waitReady() { return _readyPromise },
@@ -103,10 +117,10 @@ export const pixiApi = {
   // -----------------------------------------------------------------
   // Graphics：即时单命令
   // -----------------------------------------------------------------
-  gfx(id, op, a0, a1, a2, a3, a4, a5, a6, a7, a8) {
+  gfx(id, op, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9) {
     const g = registry.get(id)
     if (!g) return
-    applyGfx(g, op, a0, a1, a2, a3, a4, a5, a6, a7, a8)
+    applyGfx(g, op, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9)
   },
 
   // Graphics：批量命令（Float64Array，帧末一次提交）
@@ -115,7 +129,7 @@ export const pixiApi = {
     if (!g) return
     for (let i = 0; i < ops.length; i += BATCH_STRIDE) {
       applyGfx(g, ops[i], ops[i + 1], ops[i + 2], ops[i + 3], ops[i + 4],
-        ops[i + 5], ops[i + 6], ops[i + 7], ops[i + 8], ops[i + 9])
+        ops[i + 5], ops[i + 6], ops[i + 7], ops[i + 8], ops[i + 9], ops[i + 10])
     }
   },
 
@@ -166,7 +180,8 @@ export const pixiApi = {
     }
   },
 
-  // 视频纹理（muted + loop + playsinline 保证自动播放）
+  // 视频纹理（muted + loop + playsinline 保证自动播放；等首帧真正渲染后再建纹理，
+  // 避免 WebGPU/WebGL 上传"无 back resource"的视频帧抛异常）
   loadVideo(url) {
     return new Promise((resolve) => {
       try {
@@ -181,22 +196,28 @@ export const pixiApi = {
         video.loop = true
         video.playsInline = true
         video.crossOrigin = 'anonymous'
-        video.addEventListener('loadeddata', () => {
-          try {
-            const tex = Texture.from(video)
-            const id = nextId++
-            registry.set(id, tex)
-            texIdByUrl.set(url, id)
-            video.play().catch(() => { })
-            resolve({ id, w: video.videoWidth, h: video.videoHeight })
-          } catch (e) {
-            console.warn('[PixiApi] loadVideo texture failed:', url, e)
-            resolve({ id: -1, w: 0, h: 0 })
-          }
-        })
-        video.addEventListener('error', () => {
-          console.warn('[PixiApi] loadVideo failed:', url)
+        const fail = (why) => {
+          console.warn('[PixiApi] loadVideo failed:', url, why)
           resolve({ id: -1, w: 0, h: 0 })
+        }
+        video.addEventListener('error', () => fail('media error'))
+        video.addEventListener('loadeddata', () => {
+          video.play().catch(() => { })
+          const build = () => {
+            try {
+              if (video.videoWidth <= 0 || video.readyState < 2) { setTimeout(build, 120); return }
+              const tex = Texture.from(video)
+              const id = nextId++
+              registry.set(id, tex)
+              texIdByUrl.set(url, id)
+              resolve({ id, w: video.videoWidth, h: video.videoHeight })
+            } catch (e) { fail(e) }
+          }
+          if (typeof video.requestVideoFrameCallback === 'function') {
+            try { video.requestVideoFrameCallback(() => build()) } catch (_) { setTimeout(build, 200) }
+          } else {
+            requestAnimationFrame(build)
+          }
         })
       } catch (e) {
         resolve({ id: -1, w: 0, h: 0 })
@@ -207,7 +228,7 @@ export const pixiApi = {
 
 // ---------------------------------------------------------------------
 //  图形命令分发
-//  槽位布局（11 个 float）：[op, a0..a8, pad]
+//  槽位布局（11 个 float）：[op, a0..a9]
 //    op 0 rect       [0, x,y,w,h, r,g,b,a, 0,0]
 //    op 1 roundRect  [1, x,y,w,h, radius, r,g,b,a, 0]
 //    op 2 circle     [2, cx,cy,r, 0, r,g,b,a, 0,0]
@@ -219,7 +240,7 @@ export const pixiApi = {
 //    op 8 triangle   [8, x1,y1,x2,y2,x3,y3, r,g,b,a]
 //    op 9 ellipse    [9, cx,cy, rx,ry, 0, r,g,b,a, 0]
 // ---------------------------------------------------------------------
-function applyGfx(g, op, a0, a1, a2, a3, a4, a5, a6, a7, a8) {
+function applyGfx(g, op, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9) {
   const col = (r, g2, b2) => ((Math.round(r * 255) & 255) << 16) | ((Math.round(g2 * 255) & 255) << 8) | (Math.round(b2 * 255) & 255)
   switch (op) {
     case 0: g.rect(a0, a1, a2, a3).fill({ color: col(a4, a5, a6), alpha: a7 }); break

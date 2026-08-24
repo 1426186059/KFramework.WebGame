@@ -67,6 +67,10 @@ public sealed partial class GameApp
     [JSExport]
     public static void TickBridge(float dt) => Instance.Tick(dt);
 
+    /// <summary>供 JS 在 URL 参数 ?scene=X 时绕过主菜单直接进入指定场景（用于定位"黑屏"是切换逻辑还是目标场景本身）。</summary>
+    [JSExport]
+    public static void StartStatic(string name) => Instance.Start(name);
+
     [JSExport]
     public static string DbgState()
     {
