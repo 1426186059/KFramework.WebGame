@@ -50,10 +50,10 @@ if (typeof window !== 'undefined') {
 }
 
 // ---------------------------------------------------------------------
-//  着色器：外部 .wgsl 文件（wwwroot/jsengine/shaders/）
+//  着色器：外部 .wgsl 文件（wwwroot/jsengine/render/shaders/）
 //  WGSL 源码独立维护，与 JS 逻辑解耦；运行时 fetch 文本编译。
 // ---------------------------------------------------------------------
-const SHADER_DIR = './jsengine/shaders/';
+const SHADER_DIR = './jsengine/render/shaders/';
 async function fetchShader(name) {
   const res = await fetch(SHADER_DIR + name);
   if (!res.ok) throw new Error('[WebGPU] shader 加载失败: ' + name + ' (' + res.status + ')');
@@ -138,7 +138,7 @@ function gpu_init() {
   // 异步请求设备，设备就绪后标记
   (async () => {
     try {
-      // 加载外部 WGSL 着色器（wwwroot/jsengine/shaders/*.wgsl）
+      // 加载外部 WGSL 着色器（wwwroot/jsengine/render/shaders/*.wgsl）
       const [shapeWgsl, shadowWgsl, texWgsl, blurWgsl] = await Promise.all([
         fetchShader('shape.wgsl'),
         fetchShader('shadow.wgsl'),

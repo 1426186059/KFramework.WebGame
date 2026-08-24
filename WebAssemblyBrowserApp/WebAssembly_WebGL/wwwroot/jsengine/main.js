@@ -8,12 +8,12 @@
 // 不再由 JS 侧调用 resetFrameState 或 flushShapes。
 // =====================================================================
 
-import { dotnet } from './_framework/dotnet.js'
-import { gl } from './jsengine/render/shapes.js'
-import { input } from './jsengine/input/input.js'
-import { audio } from './jsengine/audio/audio.js'
-import { storage } from './jsengine/core/storage.js'
-import { platform } from './jsengine/core/platform.js'
+import { dotnet } from '../_framework/dotnet.js'
+import { gl } from './render/shapes.js'
+import { input } from './core/input.js'
+import { audio } from './core/audio.js'
+import { storage } from './core/storage.js'
+import { platform } from './core/platform.js'
 
 // ------------------------- 引擎生命周期 -------------------------
 let _rafStarted = false

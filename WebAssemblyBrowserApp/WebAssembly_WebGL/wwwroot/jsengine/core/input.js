@@ -3,12 +3,12 @@
 // 坐标换算到逻辑分辨率（逻辑像素），与渲染层坐标系一致。
 // =====================================================================
 
-import { audio } from '../audio/audio.js'
+import { glCore } from '../render/renderer.js'
+import { audio } from './audio.js'
 
 let _keys = {}
 let _pressed = {}
 const _mouse = { x: 0, y: 0, down: false, pressed: false }
-let _canvasSelector = '#game'
 
 export const input = {
     init() {
@@ -40,13 +40,9 @@ export const input = {
 }
 
 function updateMouse(e) {
-    const cv = document.querySelector(_canvasSelector)
+    const cv = glCore.getCanvas()
     if (!cv) return
     const rect = cv.getBoundingClientRect()
-    // 逻辑分辨率（渲染层挂到 canvas dataset；canvas 物理像素 = 逻辑 × CSS 缩放）
-    // 鼠标 CSS 像素 → 逻辑像素：× 逻辑分辨率 / CSS 显示尺寸
-    const vw = parseInt(cv.dataset.vw || '960', 10)
-    const vh = parseInt(cv.dataset.vh || '540', 10)
-    _mouse.x = (e.clientX - rect.left) * (vw / rect.width)
-    _mouse.y = (e.clientY - rect.top) * (vh / rect.height)
+    _mouse.x = (e.clientX - rect.left) * (cv.width / rect.width)
+    _mouse.y = (e.clientY - rect.top) * (cv.height / rect.height)
 }

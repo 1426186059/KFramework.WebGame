@@ -7,13 +7,13 @@
 //   - JS 侧仅暴露 gpu / input / audio / storage 等薄 API
 // =====================================================================
 
-import { dotnet } from './_framework/dotnet.js'
-import { gpu } from './jsengine/render/renderer.js'
-import { input } from './jsengine/input/input.js'
-import { audio } from './jsengine/audio/audio.js'
-import { storage } from './jsengine/core/storage.js'
-import { platform } from './jsengine/core/platform.js'
-import { diag } from './jsengine/core/diag.js'
+import { dotnet } from '../_framework/dotnet.js'
+import { gpu } from './render/renderer.js'
+import { input } from './core/input.js'
+import { audio } from './core/audio.js'
+import { storage } from './core/storage.js'
+import { platform } from './core/platform.js'
+import { diag } from './core/diag.js'
 
 // ------------------------- 引擎生命周期 -------------------------
 let _rafStarted = false

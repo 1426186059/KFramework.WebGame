@@ -1,25 +1,25 @@
 // =====================================================================
 // .NET 10 WebAssembly 2D 游戏引擎 —— JS 桥接层（组装入口）
 //
-// 各底层能力已按 WebGL 端的结构拆分到 jsengine/ 下：
+// 各底层能力已拆分到 jsengine/ 下：
 //   jsengine/render/renderer.js    Canvas2D 绘制原语 + canvas 生命周期
 //   jsengine/render/textures.js    图片 / 动态纹理（Texture2D）与统一绘制
 //   jsengine/render/video.js       视频纹理（GPU 硬解，独立文件）
-//   jsengine/input/input.js        键盘 / 鼠标 / 触摸
-//   jsengine/audio/audio.js        WebAudio 音效
+//   jsengine/core/input.js         键盘 / 鼠标 / 触摸
+//   jsengine/core/audio.js         WebAudio 音效
 //   jsengine/core/storage.js       本地存储
 //   jsengine/core/platform.js      平台能力薄层
 // 本文件只做：组装对象 + 主循环 + 注册 JSInterop 模块。
 // =====================================================================
 
-import { dotnet } from './_framework/dotnet.js'
-import { canvas2d } from './jsengine/render/renderer.js'
-import { textures } from './jsengine/render/textures.js'
-import { videoTex } from './jsengine/render/video.js'
-import { input } from './jsengine/input/input.js'
-import { audio } from './jsengine/audio/audio.js'
-import { storage } from './jsengine/core/storage.js'
-import { platform } from './jsengine/core/platform.js'
+import { dotnet } from '../_framework/dotnet.js'
+import { canvas2d } from './render/renderer.js'
+import { textures } from './render/textures.js'
+import { videoTex } from './render/video.js'
+import { input } from './core/input.js'
+import { audio } from './core/audio.js'
+import { storage } from './core/storage.js'
+import { platform } from './core/platform.js'
 
 // ------------------------- 全局状态 -------------------------
 let _rafStarted = false

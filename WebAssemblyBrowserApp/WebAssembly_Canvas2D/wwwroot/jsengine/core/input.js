@@ -3,8 +3,8 @@
 // 坐标换算到逻辑分辨率（逻辑像素），与渲染层坐标系一致。
 // =====================================================================
 
-import { glCore } from '../render/renderer.js'
-import { audio } from '../audio/audio.js'
+import { canvas2d } from '../render/renderer.js'
+import { audio } from './audio.js'
 
 let _keys = {}
 let _pressed = {}
@@ -39,8 +39,9 @@ export const input = {
     endFrame() { _pressed = {}; _mouse.pressed = false },
 }
 
+// 鼠标/触摸坐标 → 画布逻辑坐标（考虑 CSS 缩放）
 function updateMouse(e) {
-    const cv = glCore.getCanvas()
+    const cv = canvas2d.getCanvas()
     if (!cv) return
     const rect = cv.getBoundingClientRect()
     _mouse.x = (e.clientX - rect.left) * (cv.width / rect.width)
