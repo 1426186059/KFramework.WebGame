@@ -11,26 +11,26 @@ public enum TankDir { Up, Right, Down, Left }
 /// </summary>
 public sealed class Tank
 {
-    public const double Size = 26;
+    public const float Size = 26;
 
     public bool IsPlayer;
     public Vector2 Position;          // 坦克中心
     public TankDir Dir = TankDir.Up;
-    public double Speed;
+    public float Speed;
     public bool Alive = true;
 
     // 玩家火力：可同时存在的最大子弹数、冷却
     public int MaxBullets;
-    public double FireCooldown;
-    public double FireTimer;
+    public float FireCooldown;
+    public float FireTimer;
 
     // 敌人属性
     public bool Armored;              // 装甲坦克（需两发）
     public int Hp = 1;
     public int Power = 1;             // 子弹威力（普通=1，可升级）
-    public double SpawnProtect;       // 出生保护剩余秒数（闪烁、无敌）
+    public float SpawnProtect;        // 出生保护剩余秒数（闪烁、无敌）
 
-    public double Half => Size / 2;
+    public float Half => Size / 2;
 
     public bool CanFire => FireTimer <= 0 && Alive;
 
@@ -48,7 +48,7 @@ public sealed class Tank
 
     public Vector2 MuzzlePosition()
     {
-        double d = Half + 4;
+        float d = Half + 4;
         return Dir switch
         {
             TankDir.Up => Position + new Vector2(0, -d),
@@ -69,5 +69,5 @@ public sealed class Bullet
     public int Power;
     public bool Alive = true;
 
-    public const double Size = 6;
+    public const float Size = 6;
 }

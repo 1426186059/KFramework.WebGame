@@ -9,7 +9,7 @@ public enum TankType { Basic = 0, Fast = 1, Heavy = 2, Armor = 3 }
 /// </summary>
 public sealed class Tank
 {
-    public const double Half = 13;
+    public const float Half = 13;
     public const int Up = 0, Right = 1, Down = 2, Left = 3;
 
     public static readonly int[] DirX = { 0, 1, 0, -1 };
@@ -24,10 +24,10 @@ public sealed class Tank
     public float SpawnInvul;   // 出生无敌
     public float Immortal;     // 道具无敌（头盔）
     public float HitFlash;     // 受击闪白
-    public double FireCd;
+    public float FireCd;
     public int Score;
 
-    public Tank(double x, double y, bool player, TankType type = TankType.Basic)
+    public Tank(float x, float y, bool player, TankType type = TankType.Basic)
     {
         Pos = new Vector2(x, y);
         IsPlayer = player;
@@ -40,10 +40,10 @@ public sealed class Tank
             TankType.Heavy => 300,
             _ => 400
         };
-        FireCd = player ? 0.3 : MathUtils.Rand(1.2, 2.4);
+        FireCd = player ? 0.3f : MathUtils.Rand(1.2f, 2.4f);
     }
 
-    public double Speed => IsPlayer ? 130 : Type is TankType.Fast or TankType.Armor ? 92 : 60;
+    public float Speed => IsPlayer ? 130 : Type is TankType.Fast or TankType.Armor ? 92 : 60;
 
     public string Color => IsPlayer ? "#ffd43b" :
         Type switch

@@ -35,10 +35,10 @@ public static partial class Input
     public static partial bool IsKeyPressed(string code);
 
     [JSImport("input.mouseX", "main.js")]
-    public static partial double MouseX();
+    public static partial float MouseX();
 
     [JSImport("input.mouseY", "main.js")]
-    public static partial double MouseY();
+    public static partial float MouseY();
 
     [JSImport("input.isMouseDown", "main.js")]
     public static partial bool IsMouseDown();
@@ -46,7 +46,7 @@ public static partial class Input
     [JSImport("input.isMousePressed", "main.js")]
     public static partial bool IsMousePressed();
 
-    /// <summary>清除本帧的“刚按下”状态，由引擎在每帧末调用。</summary>
+    /// <summary>清除本帧的"刚按下"状态，由引擎在每帧末调用。</summary>
     [JSImport("input.endFrame", "main.js")]
     public static partial void EndFrame();
 }

@@ -23,7 +23,7 @@ await new TaskCompletionSource().Task;
 public static partial class GameBridge
 {
     [JSExport]
-    public static void Tick(double dt) => GameEngine.Instance.Tick(dt);
+    public static void Tick(float dt) => GameEngine.Instance.Tick(dt);
 }
 
 /// <summary>引擎启动桥：通知 JS 启动主循环。</summary>

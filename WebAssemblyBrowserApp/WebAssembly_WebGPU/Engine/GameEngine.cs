@@ -14,8 +14,8 @@ public sealed partial class GameEngine
 {
     public static GameEngine Instance { get; } = new();
 
-    public const double Width = 960;
-    public const double Height = 540;
+    public const float Width = 960;
+    public const float Height = 540;
 
     private readonly Dictionary<string, GameScene> _scenes = new();
     private readonly List<GameScene> _stack = new();
@@ -24,7 +24,7 @@ public sealed partial class GameEngine
     public float DeltaTime { get; private set; }
 
     /// <summary>引擎累计运行时间（秒）。</summary>
-    public double Time { get; private set; }
+    public float Time { get; private set; }
 
     public GameScene? Current => _stack.Count > 0 ? _stack[_stack.Count - 1] : null;
     public bool IsInitialized { get; set; }
@@ -72,10 +72,10 @@ public sealed partial class GameEngine
     }
 
     /// <summary>由 JS 每帧调用一次。</summary>
-    public void Tick(double rawDt)
+    public void Tick(float rawDt)
     {
         if (!IsInitialized) return;
-        DeltaTime = (float)Math.Min(Math.Max(rawDt, 0.0), 0.05);
+        DeltaTime = (float)MathF.Min(MathF.Max(rawDt, 0.0f), 0.05f);
         Time += DeltaTime;
 
         Current?.Update(DeltaTime);
@@ -90,14 +90,14 @@ public sealed partial class GameEngine
     public static string __dbg_state()
     {
         var self = Instance;
-        return $"isInit={self.IsInitialized};time={self.Time:0.000};dt={self.DeltaTime:0.000};stack={self._stack.Count};current={self.Current?.Name ?? "<null>"};scenes={string.Join(",", self._scenes.Keys)}";
+        return $"isInit={self.IsInitialized};time={self.Time:0.000f};dt={self.DeltaTime:0.000f};stack={self._stack.Count};current={self.Current?.Name ?? "<null>"};scenes={string.Join(",", self._scenes.Keys)}";
     }
 
     // 逐段定位 Tick 卡死点（从 01~08，逐一调，看哪一个挂）
-    [JSExport] public static double __probe01_echo(double x) => x;
+    [JSExport] public static float __probe01_echo(float x) => x;
     [JSExport] public static int    __probe02_isInit()  => Instance.IsInitialized ? 1 : 0;
     [JSExport] public static string __probe03_checkInput(string code) => Input.IsKeyDown(code) ? "t" : "f";
-    [JSExport] public static int    __probe04_updateOnly(double dt) { if (Instance.IsInitialized && Instance.Current != null) Instance.Current.Update((float)dt); return 1; }
+    [JSExport] public static int    __probe04_updateOnly(float dt) { if (Instance.IsInitialized && Instance.Current != null) Instance.Current.Update((float)dt); return 1; }
     [JSExport] public static int    __probe05_renderOnly() { if (Instance.IsInitialized && Instance.Current != null) Instance.Current.Render(); return 1; }
     [JSExport] public static int    __probe06_flushOnly()  { if (Instance.IsInitialized) WebGPU.Flush(); return 1; }
     [JSExport] public static int    __probe07_endFrameOnly() { if (Instance.IsInitialized) Input.EndFrame(); return 1; }

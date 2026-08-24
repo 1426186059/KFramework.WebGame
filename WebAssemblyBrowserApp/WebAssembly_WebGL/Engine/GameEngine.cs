@@ -13,8 +13,8 @@ public sealed class GameEngine
 {
     public static GameEngine Instance { get; } = new();
 
-    public const double Width = WebGL.LogicalWidth;
-    public const double Height = WebGL.LogicalHeight;
+    public const float Width = WebGL.LogicalWidth;
+    public const float Height = WebGL.LogicalHeight;
 
     private readonly Dictionary<string, GameScene> _scenes = new();
     private readonly List<GameScene> _stack = new();
@@ -23,7 +23,7 @@ public sealed class GameEngine
     public float DeltaTime { get; private set; }
 
     /// <summary>引擎累计运行时间（秒）。</summary>
-    public double Time { get; private set; }
+    public float Time { get; private set; }
 
     public GameScene? Current => _stack.Count > 0 ? _stack[_stack.Count - 1] : null;
     public bool IsInitialized { get; private set; }
@@ -69,10 +69,10 @@ public sealed class GameEngine
     }
 
     /// <summary>由 JS 每帧调用一次。</summary>
-    public void Tick(double rawDt)
+    public void Tick(float rawDt)
     {
         if (!IsInitialized) return;
-        DeltaTime = (float)Math.Min(Math.Max(rawDt, 0.0), 0.05);
+        DeltaTime = (float)MathF.Min(MathF.Max(rawDt, 0.0f), 0.05f);
         Time += DeltaTime;
 
         // C# 侧管理渲染状态栈 & 合批

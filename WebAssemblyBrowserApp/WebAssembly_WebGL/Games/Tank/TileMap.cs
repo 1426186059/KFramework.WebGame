@@ -12,9 +12,9 @@ public sealed class TileMap
     public const int Cols = 13;
     public const int Rows = 13;
     public const int Tile = 32;
-    public const double MapSize = Cols * Tile;                // 416
-    public const double OriginX = (800 - MapSize) / 2.0;     // 192
-    public const double OriginY = (600 - MapSize) / 2.0;     // 92
+    public const float MapSize = Cols * Tile;                // 416
+    public const float OriginX = (800 - MapSize) / 2.0f;     // 192
+    public const float OriginY = (600 - MapSize) / 2.0f;     // 92
 
     public const int Empty = 0, Brick = 1, Steel = 2, Water = 3, Tree = 4, Base = 5;
 
@@ -58,10 +58,10 @@ public sealed class TileMap
         Array.Clear(_shovelPrev);
     }
 
-    private static int ColAt(double wx) => (int)Math.Floor((wx - OriginX) / Tile);
-    private static int RowAt(double wy) => (int)Math.Floor((wy - OriginY) / Tile);
+    private static int ColAt(float wx) => (int)MathF.Floor((wx - OriginX) / Tile);
+    private static int RowAt(float wy) => (int)MathF.Floor((wy - OriginY) / Tile);
 
-    public int TileAt(double wx, double wy)
+    public int TileAt(float wx, float wy)
     {
         int c = ColAt(wx), r = RowAt(wy);
         if (c < 0 || c >= Cols || r < 0 || r >= Rows) return Steel;
@@ -72,9 +72,9 @@ public sealed class TileMap
         tile == Brick || tile == Steel || tile == Water || tile == Base;
 
     /// <summary>坦克矩形（中心 + 半宽）是否与不可通行的地形碰撞。</summary>
-    public bool TankCollides(double cx, double cy, double half)
+    public bool TankCollides(float cx, float cy, float half)
     {
-        double left = cx - OriginX - half, top = cy - OriginY - half;
+        float left = cx - OriginX - half, top = cy - OriginY - half;
         if (left < 0 || top < 0 || left + half * 2 > MapSize || top + half * 2 > MapSize)
             return true;
 
@@ -93,14 +93,14 @@ public sealed class TileMap
     /// 优先摧毁子弹中心所在的子块；若它已被打掉，则就近补击同格内最近的存活子块
     /// （保证连续射击同一位置能逐个打穿整格）。整格打空时返回 false（子弹应穿透）。
     /// </summary>
-    public bool HitBrick(double wx, double wy)
+    public bool HitBrick(float wx, float wy)
     {
         int c = ColAt(wx), r = RowAt(wy);
         if (c < 0 || c >= Cols || r < 0 || r >= Rows) return false;
         if (_tiles[r, c] != Brick) return false;
 
-        int sc = (int)((wx - (OriginX + c * Tile)) / (Tile / 2.0));
-        int sr = (int)((wy - (OriginY + r * Tile)) / (Tile / 2.0));
+        int sc = (int)((wx - (OriginX + c * Tile)) / (Tile / 2.0f));
+        int sr = (int)((wy - (OriginY + r * Tile)) / (Tile / 2.0f));
         sc = Math.Clamp(sc, 0, 1);
         sr = Math.Clamp(sr, 0, 1);
 
@@ -108,7 +108,7 @@ public sealed class TileMap
         if (!_brickBits[bi, bj])
         {
             // 中心点落在已破坏的子块空洞：就近补击同格内最近的存活子块
-            double bestD = double.MaxValue;
+            float bestD = float.MaxValue;
             bi = bj = -1;
             for (int i = 0; i < 2; i++)
             {
@@ -116,9 +116,9 @@ public sealed class TileMap
                 {
                     int ii = r * 2 + i, jj = c * 2 + j;
                     if (!_brickBits[ii, jj]) continue;
-                    double dx = OriginX + c * Tile + j * 16 + 8 - wx;
-                    double dy = OriginY + r * Tile + i * 16 + 8 - wy;
-                    double d = dx * dx + dy * dy;
+                    float dx = OriginX + c * Tile + j * 16 + 8 - wx;
+                    float dy = OriginY + r * Tile + i * 16 + 8 - wy;
+                    float d = dx * dx + dy * dy;
                     if (d < bestD) { bestD = d; bi = ii; bj = jj; }
                 }
             }

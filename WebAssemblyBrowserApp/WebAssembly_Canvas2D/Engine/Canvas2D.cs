@@ -20,22 +20,22 @@ public static partial class Canvas2D
     public static partial void Clear(string color);
 
     [JSImport("canvas.fillRect", "main.js")]
-    public static partial void FillRect(double x, double y, double w, double h, string color);
+    public static partial void FillRect(float x, float y, float w, float h, string color);
 
     [JSImport("canvas.strokeRect", "main.js")]
-    public static partial void StrokeRect(double x, double y, double w, double h, string color, double lineWidth);
+    public static partial void StrokeRect(float x, float y, float w, float h, string color, float lineWidth);
 
     [JSImport("canvas.roundedRect", "main.js")]
-    public static partial void RoundedRect(double x, double y, double w, double h, double r, string color);
+    public static partial void RoundedRect(float x, float y, float w, float h, float r, string color);
 
     [JSImport("canvas.fillCircle", "main.js")]
-    public static partial void FillCircle(double x, double y, double r, string color);
+    public static partial void FillCircle(float x, float y, float r, string color);
 
     [JSImport("canvas.fillText", "main.js")]
-    public static partial void FillText(string text, double x, double y, string font, string color, string align);
+    public static partial void FillText(string text, float x, float y, string font, string color, string align);
 
     [JSImport("canvas.line", "main.js")]
-    public static partial void Line(double x1, double y1, double x2, double y2, string color, double lineWidth);
+    public static partial void Line(float x1, float y1, float x2, float y2, string color, float lineWidth);
 
     [JSImport("canvas.save", "main.js")]
     public static partial void Save();
@@ -44,16 +44,16 @@ public static partial class Canvas2D
     public static partial void Restore();
 
     [JSImport("canvas.translate", "main.js")]
-    public static partial void Translate(double x, double y);
+    public static partial void Translate(float x, float y);
 
     [JSImport("canvas.rotate", "main.js")]
-    public static partial void Rotate(double radians);
+    public static partial void Rotate(float radians);
 
     [JSImport("canvas.alpha", "main.js")]
-    public static partial void Alpha(double a);
+    public static partial void Alpha(float a);
 
     [JSImport("canvas.shadow", "main.js")]
-    public static partial void Shadow(string color, double blur);
+    public static partial void Shadow(string color, float blur);
 
     [JSImport("canvas.noShadow", "main.js")]
     public static partial void NoShadow();
@@ -63,5 +63,5 @@ public static partial class Canvas2D
     public static partial Task<bool> LoadImage(string id, string url);
 
     [JSImport("canvas.drawImage", "main.js")]
-    public static partial void DrawImage(string id, double dx, double dy, double dw, double dh);
+    public static partial void DrawImage(string id, float dx, float dy, float dw, float dh);
 }

@@ -12,16 +12,16 @@ namespace WebAssemblyBrowserApp.Games;
 /// </summary>
 public sealed class TankScene : GameScene
 {
-    private const double Tile = 26;
+    private const float Tile = 26;
 
     // 26*26 = 676，画布 800x600 -> 26*26=676 宽 676，留边距居中
     private const int GridW = 26;
     private const int GridH = 23; // 23*26 = 598 ≈ 600
 
-    private const double FieldW = GridW * Tile;
-    private const double FieldH = GridH * Tile;
-    private const double OffsetX = (GameEngine.Width - FieldW) / 2;
-    private const double OffsetY = (GameEngine.Height - FieldH) / 2;
+    private const float FieldW = GridW * Tile;
+    private const float FieldH = GridH * Tile;
+    private const float OffsetX = (GameEngine.Width - FieldW) / 2;
+    private const float OffsetY = (GameEngine.Height - FieldH) / 2;
 
     // 关卡地图：用字符描述墙体布局（仅砖墙 B / 钢墙 S / 空 E），其余由代码补边界。
     private static readonly string[][] LevelMaps =
@@ -123,11 +123,11 @@ public sealed class TankScene : GameScene
     private int _level = 0;             // 0-based
     private int _enemiesRemaining;      // 本关还需消灭的敌人总数
     private int _enemiesOnField;        // 同时在场敌人数上限
-    private double _spawnTimer;
-    private double _stateTime;
+    private float _spawnTimer;
+    private float _stateTime;
     private int _score;
     private int _lives = 3;
-    private double _blink;
+    private float _blink;
 
     public TankScene() : base("tank") { }
 
@@ -153,11 +153,11 @@ public sealed class TankScene : GameScene
         // 关卡参数：敌人数递增，速度/刷新更快
         _enemiesRemaining = 4 + level * 2;          // L1:4 L2:6 L3:8
         _enemiesOnField = 3 + level;                // 同时在场 3/4/5
-        _spawnTimer = 0.5;
+        _spawnTimer = 0.5f;
 
         // 玩家
-        double px = OffsetX + Tile * 4 + Tile / 2;  // 左侧出生
-        double py = OffsetY + FieldH - Tile * 1.5;
+        float px = OffsetX + Tile * 4 + Tile / 2;  // 左侧出生
+        float py = OffsetY + FieldH - Tile * 1.5f;
         _player = new Tank
         {
             IsPlayer = true,
@@ -165,8 +165,8 @@ public sealed class TankScene : GameScene
             Dir = TankDir.Up,
             Speed = 130,
             MaxBullets = 1,
-            FireCooldown = 0.35,
-            SpawnProtect = 2.5,
+            FireCooldown = 0.35f,
+            SpawnProtect = 2.5f,
         };
 
         // 基地（底部中央）
@@ -240,7 +240,7 @@ public sealed class TankScene : GameScene
         var p = _player!;
         if (!p.Alive) return;
 
-        double vx = 0, vy = 0;
+        float vx = 0, vy = 0;
         if (Input.IsKeyDown(Input.ArrowUp) || Input.IsKeyDown(Input.KeyW)) { vy = -1; p.Dir = TankDir.Up; }
         else if (Input.IsKeyDown(Input.ArrowDown) || Input.IsKeyDown(Input.KeyS)) { vy = 1; p.Dir = TankDir.Down; }
         else if (Input.IsKeyDown(Input.ArrowLeft) || Input.IsKeyDown(Input.KeyA)) { vx = -1; p.Dir = TankDir.Left; }
@@ -255,7 +255,7 @@ public sealed class TankScene : GameScene
         if ((Input.IsKeyPressed(Input.Space) || Input.IsMousePressed()) && p.CanFire)
         {
             FireBullet(p);
-            Audio.Beep(220, 0.06, "square", 0.07);
+            Audio.Beep(220, 0.06f, "square", 0.07f);
         }
     }
 
@@ -266,12 +266,12 @@ public sealed class TankScene : GameScene
 
         _spawnTimer -= dt;
         if (_spawnTimer > 0) return;
-        _spawnTimer = Math.Max(0.8, 2.2 - _level * 0.4);
+        _spawnTimer = MathF.Max(0.8f, 2.2f - _level * 0.4f);
 
         // 敌人出生在顶部两个角
         bool left = _enemies.Count % 2 == 0;
-        double cx = OffsetX + (left ? Tile * 1.5 : FieldW - Tile * 1.5);
-        double cy = OffsetY + Tile * 1.5;
+        float cx = OffsetX + (left ? Tile * 1.5f : FieldW - Tile * 1.5f);
+        float cy = OffsetY + Tile * 1.5f;
 
         // 敌人类型：关卡越高，快速/装甲越多
         bool fast = _level >= 1 && _enemiesRemaining % 3 == 0;
@@ -284,8 +284,8 @@ public sealed class TankScene : GameScene
             Dir = TankDir.Down,
             Speed = fast ? 110 : 70,
             MaxBullets = 1,
-            FireCooldown = fast ? 0.7 : 1.2,
-            SpawnProtect = 1.0,
+            FireCooldown = fast ? 0.7f : 1.2f,
+            SpawnProtect = 1.0f,
             Armored = armored,
             Hp = armored ? 2 : 1,
             Power = 1,
@@ -304,7 +304,7 @@ public sealed class TankScene : GameScene
             // 简单 AI：朝基地方向移动，偶尔横向游走并随机开火
             var toBase = (_base - e.Position).Normalized();
             // 优先沿主轴朝向基地
-            if (Math.Abs(toBase.X) > Math.Abs(toBase.Y))
+            if (MathF.Abs(toBase.X) > MathF.Abs(toBase.Y))
                 e.Dir = toBase.X > 0 ? TankDir.Right : TankDir.Left;
             else
                 e.Dir = toBase.Y > 0 ? TankDir.Down : TankDir.Up;
@@ -313,7 +313,7 @@ public sealed class TankScene : GameScene
             if (TryMove(e, dir * e.Speed * dt))
             {
                 // 移动成功：按概率横向换道
-                if (MathUtils.Rand(0, 1) < dt * 1.5)
+                if (MathUtils.Rand(0, 1) < dt * 1.5f)
                 {
                     e.Dir = (TankDir)((int)(e.Dir + 1 + (MathUtils.Rand(0, 2) > 1 ? 1 : 0)) % 4);
                 }
@@ -324,10 +324,10 @@ public sealed class TankScene : GameScene
                 e.Dir = (TankDir)((int)(e.Dir + 1 + (MathUtils.Rand(0, 2) > 1 ? 1 : 0)) % 4);
             }
 
-            if (e.CanFire && MathUtils.Rand(0, 1) < dt * 1.2)
+            if (e.CanFire && MathUtils.Rand(0, 1) < dt * 1.2f)
             {
                 FireBullet(e);
-                Audio.Beep(180, 0.05, "square", 0.04);
+                Audio.Beep(180, 0.05f, "square", 0.04f);
             }
         }
         _enemies.RemoveAll(t => !t.Alive);
@@ -359,8 +359,8 @@ public sealed class TankScene : GameScene
                 }
                 else // Steel
                 {
-                    if (b.Power > 1) { _grid[c, r] = Cell.Empty; Audio.Beep(120, 0.1, "sawtooth", 0.06); }
-                    else Audio.Beep(400, 0.03, "square", 0.04);
+                    if (b.Power > 1) { _grid[c, r] = Cell.Empty; Audio.Beep(120, 0.1f, "sawtooth", 0.06f); }
+                    else Audio.Beep(400, 0.03f, "square", 0.04f);
                     b.Alive = false;
                 }
                 continue;
@@ -374,7 +374,7 @@ public sealed class TankScene : GameScene
                     if (e.Alive && HitTank(b, e))
                     {
                         e.Hp -= b.Power;
-                        if (e.Hp <= 0) { e.Alive = false; _score += e.Armored ? 300 : 100; Audio.Beep(140, 0.18, "sawtooth", 0.08); }
+                        if (e.Hp <= 0) { e.Alive = false; _score += e.Armored ? 300 : 100; Audio.Beep(140, 0.18f, "sawtooth", 0.08f); }
                         b.Alive = false;
                         break;
                     }
@@ -390,12 +390,12 @@ public sealed class TankScene : GameScene
                     OnPlayerDestroyed();
                 }
                 // 撞基地
-                if (_baseAlive && Math.Abs(b.Position.X - _base.X) < Tank.Size / 2 &&
-                    Math.Abs(b.Position.Y - _base.Y) < Tank.Size / 2)
+                if (_baseAlive && MathF.Abs(b.Position.X - _base.X) < Tank.Size / 2 &&
+                    MathF.Abs(b.Position.Y - _base.Y) < Tank.Size / 2)
                 {
                     _baseAlive = false;
                     b.Alive = false;
-                    Audio.Beep(90, 0.4, "sawtooth", 0.12);
+                    Audio.Beep(90, 0.4f, "sawtooth", 0.12f);
                 }
             }
         }
@@ -405,19 +405,19 @@ public sealed class TankScene : GameScene
     private void OnPlayerDestroyed()
     {
         _lives--;
-        Audio.Beep(120, 0.4, "sawtooth", 0.1);
+        Audio.Beep(120, 0.4f, "sawtooth", 0.1f);
         if (_lives > 0)
         {
             // 复活
             _player = new Tank
             {
                 IsPlayer = true,
-                Position = new Vector2(OffsetX + Tile * 4 + Tile / 2, OffsetY + FieldH - Tile * 1.5),
+                Position = new Vector2(OffsetX + Tile * 4 + Tile / 2, OffsetY + FieldH - Tile * 1.5f),
                 Dir = TankDir.Up,
                 Speed = 130,
                 MaxBullets = 1,
-                FireCooldown = 0.35,
-                SpawnProtect = 2.5,
+                FireCooldown = 0.35f,
+                SpawnProtect = 2.5f,
             };
         }
     }
@@ -439,7 +439,7 @@ public sealed class TankScene : GameScene
     private bool TryMove(Tank t, Vector2 delta)
     {
         var next = t.Position + delta;
-        double half = t.Half;
+        float half = t.Half;
         // 边界
         if (next.X - half < OffsetX || next.X + half > OffsetX + FieldW ||
             next.Y - half < OffsetY || next.Y + half > OffsetY + FieldH)
@@ -457,7 +457,7 @@ public sealed class TankScene : GameScene
                 if (!InBounds(c, r)) continue;
                 if (_grid[c, r] == Cell.Empty) continue;
                 // 基地格也视为障碍（避免坦克踩在基地上）
-                if (Math.Abs(t.Position.X - _base.X) < half && Math.Abs(t.Position.Y - _base.Y) < half)
+                if (MathF.Abs(t.Position.X - _base.X) < half && MathF.Abs(t.Position.Y - _base.Y) < half)
                     continue;
                 return false;
             }
@@ -485,14 +485,14 @@ public sealed class TankScene : GameScene
     private void DamageBrick(int c, int r, int power)
     {
         _grid[c, r] = Cell.Empty;
-        Audio.Beep(260, 0.04, "square", 0.05);
+        Audio.Beep(260, 0.04f, "square", 0.05f);
     }
 
     private bool HitTank(Bullet b, Tank t)
     {
-        double dx = b.Position.X - t.Position.X;
-        double dy = b.Position.Y - t.Position.Y;
-        double rr = (Tank.Size / 2 + Bullet.Size / 2);
+        float dx = b.Position.X - t.Position.X;
+        float dy = b.Position.Y - t.Position.Y;
+        float rr = (Tank.Size / 2 + Bullet.Size / 2);
         return dx * dx + dy * dy <= rr * rr;
     }
 
@@ -526,8 +526,8 @@ public sealed class TankScene : GameScene
             for (int c = 0; c < GridW; c++)
             {
                 if (_grid[c, r] == Cell.Empty) continue;
-                double x = OffsetX + c * Tile;
-                double y = OffsetY + r * Tile;
+                float x = OffsetX + c * Tile;
+                float y = OffsetY + r * Tile;
                 if (_grid[c, r] == Cell.Brick)
                 {
                     Canvas2D.FillRect(x + 1, y + 1, Tile - 2, Tile - 2, "#b5532a");
@@ -544,8 +544,8 @@ public sealed class TankScene : GameScene
 
     private void RenderBase()
     {
-        double x = _base.X - Tank.Size / 2;
-        double y = _base.Y - Tank.Size / 2;
+        float x = _base.X - Tank.Size / 2;
+        float y = _base.Y - Tank.Size / 2;
         if (_baseAlive)
         {
             Canvas2D.FillRect(x, y, Tank.Size, Tank.Size, "#3a2f1a");
@@ -589,9 +589,9 @@ public sealed class TankScene : GameScene
 
     private void DrawTank(Tank t, string color)
     {
-        double x = t.Position.X - t.Half;
-        double y = t.Position.Y - t.Half;
-        double s = Tank.Size;
+        float x = t.Position.X - t.Half;
+        float y = t.Position.Y - t.Half;
+        float s = Tank.Size;
 
         // 车体
         Canvas2D.FillRect(x + 2, y + 2, s - 4, s - 4, color);
@@ -599,9 +599,9 @@ public sealed class TankScene : GameScene
         Canvas2D.FillRect(x, y + 2, 4, s - 4, "#222");
         Canvas2D.FillRect(x + s - 4, y + 2, 4, s - 4, "#222");
         // 炮管
-        double cx = t.Position.X, cy = t.Position.Y;
-        double len = s / 2 + 4;
-        (double ex, double ey) = t.Dir switch
+        float cx = t.Position.X, cy = t.Position.Y;
+        float len = s / 2 + 4;
+        (float ex, float ey) = t.Dir switch
         {
             TankDir.Up => (cx, cy - len),
             TankDir.Down => (cx, cy + len),
@@ -625,9 +625,9 @@ public sealed class TankScene : GameScene
 
     private void RenderOverlay(string title, string sub, string color)
     {
-        double cx = GameEngine.Width / 2;
-        double cy = GameEngine.Height / 2;
-        Canvas2D.Alpha(0.55);
+        float cx = GameEngine.Width / 2;
+        float cy = GameEngine.Height / 2;
+        Canvas2D.Alpha(0.55f);
         Canvas2D.FillRect(0, 0, GameEngine.Width, GameEngine.Height, "#000000");
         Canvas2D.Alpha(1);
         Canvas2D.FillText(title, cx, cy - 20, "bold 48px system-ui", color, "center");

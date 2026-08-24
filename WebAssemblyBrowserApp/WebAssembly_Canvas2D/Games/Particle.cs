@@ -8,12 +8,12 @@ public sealed class Particle
 {
     public Vector2 Position;
     public Vector2 Velocity;
-    public double Size;
+    public float Size;
     public float Life;
     public float MaxLife;
     public string Color;
 
-    public Particle(Vector2 position, Vector2 velocity, double size, float life, string color)
+    public Particle(Vector2 position, Vector2 velocity, float size, float life, string color)
     {
         Position = position;
         Velocity = velocity;
@@ -27,7 +27,7 @@ public sealed class Particle
     public bool Update(float dt)
     {
         Position += Velocity * dt;
-        Velocity *= Math.Pow(0.55, dt);
+        Velocity *= MathF.Pow(0.55f, dt);
         Life -= dt;
         return Life > 0;
     }

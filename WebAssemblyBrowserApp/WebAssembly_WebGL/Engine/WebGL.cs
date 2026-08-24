@@ -42,17 +42,17 @@ public static partial class WebGL
 
     /// <summary>清屏（C# 侧传 rgba float，0..1）。</summary>
     [JSImport("gl.clear", "main.js")]
-    private static partial void JsClear(double r, double g, double b, double a);
+    private static partial void JsClear(float r, float g, float b, float a);
 
     /// <summary>批量绘制形状（C# 侧已组装好实例数据）。
-    /// data: double[]，长度 = instanceCount * FLOATS_PER_INST。</summary>
+    /// data: double[]，长度 = instanceCount * FLOATS_PER_INST（JSImport 数组参数需 double[]）。</summary>
     [JSImport("gl.drawShapeBatch", "main.js")]
     private static partial void JsDrawShapeBatch(double[] data, int instanceCount);
 
     /// <summary>绘制单实例纹理（图片/文本）。
     /// data: double[FLOATS_PER_INST]。</summary>
     [JSImport("gl.drawImageInstance", "main.js")]
-    private static partial void JsDrawImageInstance(double[] data, int texId, double uvW, double uvH);
+    private static partial void JsDrawImageInstance(double[] data, int texId, float uvW, float uvH);
 
     [JSImport("gl.loadImage", "main.js")]
     public static partial Task<bool> LoadImage(string id, string url);
@@ -126,9 +126,9 @@ public static partial class WebGL
     // 5. 颜色转换（hex string → rgba float[4] 0..1）
     // =====================================================================
 
-    private static double[] HexToRgba(string hex, double alphaMul)
+    private static float[] HexToRgba(string hex, float alphaMul)
     {
-        double r = 1, g = 1, b = 1, a = 1;
+        float r = 1, g = 1, b = 1, a = 1;
         if (!string.IsNullOrEmpty(hex))
         {
             string h = hex.StartsWith('#') ? hex.Substring(1) : hex;
@@ -136,15 +136,15 @@ public static partial class WebGL
                 h = $"{h[0]}{h[0]}{h[1]}{h[1]}{h[2]}{h[2]}";
             if (h.Length == 8)
             {
-                a = Convert.ToByte(h.Substring(6, 2), 16) / 255.0;
+                a = Convert.ToByte(h.Substring(6, 2), 16) / 255.0f;
                 h = h.Substring(0, 6);
             }
             if (h.Length == 6)
             {
                 uint n = Convert.ToUInt32(h, 16);
-                r = ((n >> 16) & 255) / 255.0;
-                g = ((n >> 8) & 255) / 255.0;
-                b = (n & 255) / 255.0;
+                r = ((n >> 16) & 255) / 255.0f;
+                g = ((n >> 8) & 255) / 255.0f;
+                b = (n & 255) / 255.0f;
             }
         }
         return new[] { r, g, b, a * alphaMul };
@@ -160,8 +160,8 @@ public static partial class WebGL
     /// 颜色 = shadowColor 并降低不透明度。
     /// 这样无论 Save/Translate/Rotate 怎么变换，阴影都跟本体保持一致的相对位置。
     /// </summary>
-    private static void PushShape(double x, double y, double w, double h,
-                                  string color, double radius, int kind)
+    private static void PushShape(float x, float y, float w, float h,
+                                  string color, float radius, int kind)
     {
         var m = CurrentMatrix();
         var rgba = HexToRgba(color, _globalAlpha);
@@ -170,7 +170,7 @@ public static partial class WebGL
         if (!string.IsNullOrEmpty(_shadowColor))
         {
             if (_instCount >= MAX_INSTANCES) FlushShapes();
-            var sRgba = HexToRgba(_shadowColor, _globalAlpha * 0.35);
+            var sRgba = HexToRgba(_shadowColor, _globalAlpha * 0.35f);
             WriteInstance(_instCount, x + 2, y + 3, w, h, sRgba[0], sRgba[1], sRgba[2], sRgba[3], radius, kind, m);
             _instCount++;
         }
@@ -182,9 +182,9 @@ public static partial class WebGL
     }
 
     private static void WriteInstance(int idx,
-                                      double x, double y, double w, double h,
-                                      double cr, double cg, double cb, double ca,
-                                      double radius, int kind,
+                                      float x, float y, float w, float h,
+                                      float cr, float cg, float cb, float ca,
+                                      float radius, int kind,
                                       float[] matrix)
     {
         int o = idx * FLOATS_PER_INST;
@@ -241,16 +241,16 @@ public static partial class WebGL
     public static void Clear(string color)
     {
         FlushShapes();
-        var rgba = HexToRgba(color, 1.0);
+        var rgba = HexToRgba(color, 1.0f);
         JsClear(rgba[0], rgba[1], rgba[2], rgba[3]);
     }
 
-    public static void FillRect(double x, double y, double w, double h, string color)
+    public static void FillRect(float x, float y, float w, float h, string color)
         => PushShape(x, y, w, h, color, 0, 0);
 
-    public static void StrokeRect(double x, double y, double w, double h, string color, double lineWidth)
+    public static void StrokeRect(float x, float y, float w, float h, string color, float lineWidth)
     {
-        double t = lineWidth > 0 ? lineWidth : 1;
+        float t = lineWidth > 0 ? lineWidth : 1;
         // 四条边用 FillRect，各自独立实例化（合批依然在同一批次）
         FillRect(x, y, w, t, color);
         FillRect(x, y + h - t, w, t, color);
@@ -258,27 +258,27 @@ public static partial class WebGL
         FillRect(x + w - t, y, t, h, color);
     }
 
-    public static void RoundedRect(double x, double y, double w, double h, double r, string color)
+    public static void RoundedRect(float x, float y, float w, float h, float r, string color)
         => PushShape(x, y, w, h, color, r, 0);
 
-    public static void FillCircle(double x, double y, double r, string color)
+    public static void FillCircle(float x, float y, float r, string color)
         => PushShape(x - r, y - r, r * 2, r * 2, color, r, 1);
 
-    public static void Line(double x1, double y1, double x2, double y2, string color, double lineWidth)
+    public static void Line(float x1, float y1, float x2, float y2, string color, float lineWidth)
     {
-        double t = lineWidth > 0 ? lineWidth : 1;
-        double dx = x2 - x1, dy = y2 - y1;
-        double len = Math.Sqrt(dx * dx + dy * dy);
-        if (len < 0.001) return;
+        float t = lineWidth > 0 ? lineWidth : 1;
+        float dx = x2 - x1, dy = y2 - y1;
+        float len = MathF.Sqrt(dx * dx + dy * dy);
+        if (len < 0.001f) return;
         // 用临时变换把线段转成旋转细矩形
         Save();
         Translate(x1, y1);
-        Rotate(Math.Atan2(dy, dx));
+        Rotate(MathF.Atan2(dy, dx));
         FillRect(0, -t / 2, len, t, color);
         Restore();
     }
 
-    public static void FillText(string text, double x, double y, string font, string color, string align)
+    public static void FillText(string text, float x, float y, string font, string color, string align)
     {
         // 文本使用 IMG program 单实例绘制（SHAPE program 不擅长字形 SDF），
         // 所以绘制前必须 Flush 当前 SHAPE 批次，避免着色器切换时实例丢失
@@ -287,16 +287,16 @@ public static partial class WebGL
         var meta = JsBakeTextTexture(text, font, color);
         if (meta == null) return;
         int texId = meta.GetPropertyAsInt32("texId");
-        double tw = meta.GetPropertyAsDouble("tw");
-        double th = meta.GetPropertyAsDouble("th");
-        double ascent = meta.GetPropertyAsDouble("ascent");
-        double pad = meta.GetPropertyAsDouble("pad");
+        float tw = (float)meta.GetPropertyAsDouble("tw");
+        float th = (float)meta.GetPropertyAsDouble("th");
+        float ascent = (float)meta.GetPropertyAsDouble("ascent");
+        float pad = (float)meta.GetPropertyAsDouble("pad");
 
-        double ox = x;
+        float ox = x;
         if (align == "center") ox = x - tw / 2;
         else if (align == "right") ox = x - tw;
         // Canvas2D 语义：y = 基线(baseline)；quad 顶部 = y - ascent - pad
-        double oy = y - ascent - pad;
+        float oy = y - ascent - pad;
 
         // 构造单实例数据（与形状相同的布局，rect/color/matrix）
         var m = CurrentMatrix();
@@ -306,8 +306,8 @@ public static partial class WebGL
         data[8] = 0; data[9] = 0; data[10] = 0;
         StoreMatrixColMajor(data, 11, m);
 
-        double uvW = tw / 1024.0;   // 与 renderer.js _fontCanvas.width=1024 一致
-        double uvH = th / 256.0;    // _fontCanvas.height=256
+        float uvW = tw / 1024.0f;   // 与 renderer.js _fontCanvas.width=1024 一致
+        float uvH = th / 256.0f;    // _fontCanvas.height=256
         JsDrawImageInstance(data, texId, uvW, uvH);
     }
 
@@ -334,7 +334,7 @@ public static partial class WebGL
         }
     }
 
-    public static void Translate(double x, double y)
+    public static void Translate(float x, float y)
     {
         _matrixStack ??= new List<float[]> { Identity() };
         var m = CurrentMatrix();
@@ -343,20 +343,20 @@ public static partial class WebGL
         _matrixStack[_matrixStack.Count - 1] = Multiply(m, t);
     }
 
-    public static void Rotate(double radians)
+    public static void Rotate(float radians)
     {
         _matrixStack ??= new List<float[]> { Identity() };
         var m = CurrentMatrix();
-        double c = Math.Cos(radians), s = Math.Sin(radians);
+        float c = MathF.Cos(radians), s = MathF.Sin(radians);
         var r = Identity();
         r[0] = (float)c; r[1] = (float)(-s);
         r[3] = (float)s; r[4] = (float)c;
         _matrixStack[_matrixStack.Count - 1] = Multiply(m, r);
     }
 
-    public static void Alpha(double a) { _globalAlpha = (float)a; }
+    public static void Alpha(float a) { _globalAlpha = (float)a; }
 
-    public static void Shadow(string color, double blur)
+    public static void Shadow(string color, float blur)
     {
         _shadowColor = color;
         _shadowBlur = (float)blur;
@@ -368,12 +368,12 @@ public static partial class WebGL
         _shadowBlur = 0;
     }
 
-    public static void DrawImage(string id, double dx, double dy, double dw, double dh)
+    public static void DrawImage(string id, float dx, float dy, float dw, float dh)
     {
         // DrawImage 切换到 IMG program，先 flush SHAPE 批次
         FlushShapes();
 
-        // float[] matrix → double[]（供 JSInterop）
+        // float[] matrix → float[]（供 JSInterop）
         var m = CurrentMatrix();
         var md = new double[9];
         for (int i = 0; i < 9; i++) md[i] = m[i];
@@ -384,7 +384,7 @@ public static partial class WebGL
     [JSImport("gl.drawImageById", "main.js")]
     private static partial void JsDrawImageById(
         string id,
-        double dx, double dy, double dw, double dh,
+        float dx, float dy, float dw, float dh,
         double[] matrix,
-        double alpha);
+        float alpha);
 }

@@ -29,12 +29,12 @@ public sealed class MainMenuScene : GameScene
         if (Input.IsKeyPressed("ArrowUp") || Input.IsKeyPressed("w") || Input.IsKeyPressed("W"))
         {
             _selected = (_selected - 1 + Games.Length) % Games.Length;
-            Audio.Beep(440, 0.05, "square", 0.05);
+            Audio.Beep(440, 0.05f, "square", 0.05f);
         }
         else if (Input.IsKeyPressed("ArrowDown") || Input.IsKeyPressed("s") || Input.IsKeyPressed("S"))
         {
             _selected = (_selected + 1) % Games.Length;
-            Audio.Beep(360, 0.05, "square", 0.05);
+            Audio.Beep(360, 0.05f, "square", 0.05f);
         }
         else if (Input.IsKeyPressed(Input.Enter) || Input.IsKeyPressed(Input.Space) || Input.IsMousePressed())
         {
@@ -42,8 +42,8 @@ public sealed class MainMenuScene : GameScene
             var picked = PickGameByMouse();
             if (picked.HasValue) _selected = picked.Value;
 
-            Audio.Beep(523, 0.08, "square", 0.07);
-            Audio.Beep(659, 0.10, "square", 0.07);
+            Audio.Beep(523, 0.08f, "square", 0.07f);
+            Audio.Beep(659, 0.10f, "square", 0.07f);
             // 延迟 160ms 让音效播完，用 stateTime 下一帧开始切换
             StartSelected();
             return;
@@ -66,15 +66,15 @@ public sealed class MainMenuScene : GameScene
 
     private int? PickGameByMouse()
     {
-        double mx = Input.MouseX();
-        double my = Input.MouseY();
-        double cx = GameEngine.Width / 2;
-        double startY = GameEngine.Height / 2 - 40;
-        double itemH = 84;
+        float mx = Input.MouseX();
+        float my = Input.MouseY();
+        float cx = GameEngine.Width / 2;
+        float startY = GameEngine.Height / 2 - 40;
+        float itemH = 84;
         for (int i = 0; i < Games.Length; i++)
         {
-            double y = startY + i * itemH;
-            double w = 560, h = 68;
+            float y = startY + i * itemH;
+            float w = 560, h = 68;
             if (mx >= cx - w / 2 && mx <= cx + w / 2 && my >= y - h / 2 && my <= y + h / 2)
                 return i;
         }
@@ -85,8 +85,8 @@ public sealed class MainMenuScene : GameScene
     {
         WebGPU.Clear("#0d1117");
 
-        double cx = GameEngine.Width / 2;
-        double cy = GameEngine.Height / 2;
+        float cx = GameEngine.Width / 2;
+        float cy = GameEngine.Height / 2;
 
         // 背景装饰粒子：屏幕顶部缓慢飘落小方块
         RenderBgSparkles();
@@ -98,11 +98,11 @@ public sealed class MainMenuScene : GameScene
         WebGPU.FillText("选择一个游戏开始  ·  基于 .NET 10 WebAssembly + WebGPU",
             cx, 150, "16px system-ui, sans-serif", "#8b949e", "center");
 
-        double startY = cy - 40;
-        double itemH = 84;
+        float startY = cy - 40;
+        float itemH = 84;
         for (int i = 0; i < Games.Length; i++)
         {
-            double y = startY + i * itemH;
+            float y = startY + i * itemH;
             bool selected = i == _selected;
             RenderGameItem(cx, y, Games[i], selected);
         }
@@ -117,8 +117,8 @@ public sealed class MainMenuScene : GameScene
 
     private readonly struct Sparkle
     {
-        public readonly double X, Y, Speed, Size, Life;
-        public Sparkle(double x, double y, double s, double size, double life) { X = x; Y = y; Speed = s; Size = size; Life = life; }
+        public readonly float X, Y, Speed, Size, Life;
+        public Sparkle(float x, float y, float s, float size, float life) { X = x; Y = y; Speed = s; Size = size; Life = life; }
     }
     private readonly System.Collections.Generic.List<Sparkle> _bg = new();
 
@@ -127,11 +127,11 @@ public sealed class MainMenuScene : GameScene
         for (int i = _bg.Count - 1; i >= 0; i--)
         {
             var s = _bg[i];
-            double life = s.Life - _stateTime;
+            float life = s.Life - _stateTime;
             if (life < 0) { _bg.RemoveAt(i); continue; }
-            double y = s.Y + s.Speed * _stateTime;
+            float y = s.Y + s.Speed * _stateTime;
             if (y > GameEngine.Height + 20) { _bg.RemoveAt(i); continue; }
-            double a = Math.Clamp(life * 2, 0, 1);
+            float a = Math.Clamp(life * 2, 0, 1);
             WebGPU.Alpha(a);
             WebGPU.FillRect(s.X, y, s.Size, s.Size, i % 3 == 0 ? "#4d6bff" : (i % 3 == 1 ? "#f6c445" : "#ff6b6b"));
         }
@@ -139,18 +139,18 @@ public sealed class MainMenuScene : GameScene
         // 生成
         if (_bg.Count < 80 && Random.Shared.NextDouble() < _stateTime * 1e-1)
         {
-            _bg.Add(new Sparkle(Random.Shared.NextDouble() * GameEngine.Width, -10,
-                30 + Random.Shared.NextDouble() * 40,
-                2 + Random.Shared.NextDouble() * 3,
+            _bg.Add(new Sparkle((float)Random.Shared.NextDouble() * GameEngine.Width, -10,
+                30 + (float)Random.Shared.NextDouble() * 40,
+                2 + (float)Random.Shared.NextDouble() * 3,
                 _stateTime + 4));
         }
     }
 
-    private void RenderGameItem(double cx, double y, GameItem g, bool selected)
+    private void RenderGameItem(float cx, float y, GameItem g, bool selected)
     {
-        double w = 560, h = 68;
-        double x = cx - w / 2;
-        double top = y - h / 2;
+        float w = 560, h = 68;
+        float x = cx - w / 2;
+        float top = y - h / 2;
 
         if (selected)
         {
@@ -162,7 +162,7 @@ public sealed class MainMenuScene : GameScene
         else
         {
             WebGPU.RoundedRect(x, top, w, h, 14, "#161b22");
-            WebGPU.StrokeRect(x, top, w, h, 1.5, "#30363d");
+            WebGPU.StrokeRect(x, top, w, h, 1.5f, "#30363d");
         }
 
         WebGPU.FillText(g.DisplayName, x + 28, y - 8, "bold 22px system-ui, sans-serif", selected ? "#e6edf3" : "#c9d1d9", "left");

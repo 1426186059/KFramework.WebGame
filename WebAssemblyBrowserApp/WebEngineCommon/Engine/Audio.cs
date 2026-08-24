@@ -14,5 +14,5 @@ public static partial class Audio
 
     /// <summary>播放一个短音。waveType: sine / square / triangle / sawtooth。</summary>
     [JSImport("audio.beep", "main.js")]
-    public static partial void Beep(double frequency, double duration, string waveType, double volume);
+    public static partial void Beep(float frequency, float duration, string waveType, float volume);
 }

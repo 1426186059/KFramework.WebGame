@@ -35,7 +35,7 @@ public static partial class Diagnostics
 
 public static partial class GameBridge
 {
-    [JSExport] public static void Tick(double dt) => GameEngine.Instance.Tick(dt);
+    [JSExport] public static void Tick(float dt) => GameEngine.Instance.Tick(dt);
 }
 
 public static partial class EngineLoop

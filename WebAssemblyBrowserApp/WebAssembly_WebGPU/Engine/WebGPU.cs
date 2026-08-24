@@ -37,27 +37,27 @@ public static partial class WebGPU
     // ---- 生命周期 ----
     [JSImport("gpu.init", "main.js")] public static partial void Init();
     [JSImport("gpu.resize", "main.js")] public static partial void Resize(int w, int h);
-    [JSImport("gpu.beginFrame", "main.js")] public static partial void BeginFrame(double clearR, double clearG, double clearB, double clearA);
+    [JSImport("gpu.beginFrame", "main.js")] public static partial void BeginFrame(float clearR, float clearG, float clearB, float clearA);
     [JSImport("gpu.clear", "main.js")] public static partial void ClearColor(string color);
-    [JSImport("gpu.submit", "main.js")] public static partial void Submit(double[] shapes, double[] shadows, double alpha);
+    [JSImport("gpu.submit", "main.js")] public static partial void Submit(double[] shapes, double[] shadows, float alpha);
 
     // ---- 状态 / 变换（轻量，每帧少数几次） ----
-    [JSImport("gpu.setTransform", "main.js")] public static partial void SetTransform(double m11, double m12, double m21, double m22, double dx, double dy);
+    [JSImport("gpu.setTransform", "main.js")] public static partial void SetTransform(float m11, float m12, float m21, float m22, float dx, float dy);
     [JSImport("gpu.resetTransform", "main.js")] public static partial void ResetTransform();
     [JSImport("gpu.saveTransform", "main.js")] public static partial void SaveTransform();
     [JSImport("gpu.restoreTransform", "main.js")] public static partial void RestoreTransform();
-    [JSImport("gpu.translate", "main.js")] public static partial void Translate(double x, double y);
-    [JSImport("gpu.setAlpha", "main.js")] public static partial void SetAlpha(double a);
+    [JSImport("gpu.translate", "main.js")] public static partial void Translate(float x, float y);
+    [JSImport("gpu.setAlpha", "main.js")] public static partial void SetAlpha(float a);
 
     // ---- 阴影开关（轻量） ----
-    [JSImport("gpu.shadowColor", "main.js")] public static partial void ShadowColor(string color, double blur);
+    [JSImport("gpu.shadowColor", "main.js")] public static partial void ShadowColor(string color, float blur);
     [JSImport("gpu.noShadow", "main.js")] public static partial void NoShadowJS();
 
     // ---- 文本 / 图片（真纹理，频率低，单独提交） ----
-    [JSImport("gpu.fillText", "main.js")] public static partial void FillText(string text, double x, double y, string font, string color, string align);
+    [JSImport("gpu.fillText", "main.js")] public static partial void FillText(string text, float x, float y, string font, string color, string align);
     [JSImport("gpu.loadImage", "main.js")] public static partial int LoadImage(string src);
-    [JSImport("gpu.drawImage", "main.js")] public static partial void DrawImage(int id, double x, double y, double w, double h);
-    [JSImport("gpu.measureText", "main.js")] public static partial double MeasureText(string text, string font);
+    [JSImport("gpu.drawImage", "main.js")] public static partial void DrawImage(int id, float x, float y, float w, float h);
+    [JSImport("gpu.measureText", "main.js")] public static partial float MeasureText(string text, string font);
 
     // -----------------------------------------------------------------
     //  帧管理
@@ -93,9 +93,9 @@ public static partial class WebGPU
         _m11 = (float)m.M11; _m12 = (float)m.M12; _m21 = (float)m.M21; _m22 = (float)m.M22; _m31 = (float)m.M31; _m32 = (float)m.M32;
         SetTransform(m.M11, m.M12, m.M21, m.M22, m.M31, m.M32);
     }
-    public static void Alpha(double a) { _alpha = (float)a; SetAlpha(a); }
+    public static void Alpha(float a) { _alpha = (float)a; SetAlpha(a); }
 
-    public static void Shadow(string color, double blur)
+    public static void Shadow(string color, float blur)
     {
         _shadow = ParseShadow(color, blur);
         ShadowColor(color, blur);
@@ -105,7 +105,7 @@ public static partial class WebGPU
     // -----------------------------------------------------------------
     //  图元（累积进缓冲，不跨边界）
     // -----------------------------------------------------------------
-    private static (float, float) TransformPoint(double x, double y)
+    private static (float, float) TransformPoint(float x, float y)
     {
         return (
             (float)(_m11 * x + _m21 * y + _m31),
@@ -113,38 +113,38 @@ public static partial class WebGPU
         );
     }
 
-    public static void FillRect(double x, double y, double w, double h, string color)
+    public static void FillRect(float x, float y, float w, float h, string color)
         => Push(TRect, x, y, w, h, 0, color, 0);
-    public static void RoundedRect(double x, double y, double w, double h, double r, string color)
+    public static void RoundedRect(float x, float y, float w, float h, float r, string color)
         => Push(TRound, x, y, w, h, r, color, 0);
-    public static void FillCircle(double cx, double cy, double r, string color)
+    public static void FillCircle(float cx, float cy, float r, string color)
         => Push(TCircle, cx - r, cy - r, r * 2, r * 2, r, color, 0);
-    public static void DrawLine(double x1, double y1, double x2, double y2, double width, string color)
+    public static void DrawLine(float x1, float y1, float x2, float y2, float width, string color)
     {
         var (tx, ty) = TransformPoint(x1, y1);
         var (bx, by) = TransformPoint(x2, y2);
-        double minx = Math.Min(tx, bx), miny = Math.Min(ty, by);
-        double w = Math.Abs(bx - tx) + width, h = Math.Abs(by - ty) + width;
+        float minx = MathF.Min(tx, bx), miny = MathF.Min(ty, by);
+        float w = MathF.Abs(bx - tx) + width, h = MathF.Abs(by - ty) + width;
         Push(TLine, minx, miny, w, h, 0, color, width);
     }
-    public static void StrokeRect(double x, double y, double w, double h, double width, string color)
+    public static void StrokeRect(float x, float y, float w, float h, float width, string color)
         => Push(TRect, x, y, w, h, 0, color, width);
 
     public static void FillRect(Vector2 pos, Vector2 size, string color) => FillRect(pos.X, pos.Y, size.X, size.Y, color);
-    public static void FillCircle(Vector2 c, double r, string color) => FillCircle(c.X, c.Y, r, color);
+    public static void FillCircle(Vector2 c, float r, string color) => FillCircle(c.X, c.Y, r, color);
     public static void FillText(string text, Vector2 pos, string font, string color, string align = "center")
         => FillText(text, pos.X, pos.Y, font, color, align);
 
     // -----------------------------------------------------------------
     //  内部：压入一个实例
     // -----------------------------------------------------------------
-    private static void Push(float type, double x, double y, double w, double h, double radius, string color, double lineW)
+    private static void Push(float type, float x, float y, float w, float h, float radius, string color, float lineW)
     {
         var (px, py) = TransformPoint(x, y);
         var (cx, cy) = TransformPoint(x + w, y + h);
         // 用变换后的对角点算出世界坐标包围盒（处理平移/缩放；旋转场景用 Save/Transform 整体处理）
-        double wx = Math.Min(px, cx), wy = Math.Min(py, cy);
-        double ww = Math.Abs(cx - px), wh = Math.Abs(cy - py);
+        float wx = MathF.Min(px, cx), wy = MathF.Min(py, cy);
+        float ww = MathF.Abs(cx - px), wh = MathF.Abs(cy - py);
 
         var (r, g, b, a) = ParseColor(color);
         _batch.Add(wx); _batch.Add(wy); _batch.Add(ww); _batch.Add(wh);
@@ -158,8 +158,8 @@ public static partial class WebGPU
             var s = _shadow.Value;
             var (sx, sy) = TransformPoint(x + s.ox, y + s.oy);
             var (scx, scy) = TransformPoint(x + w + s.ox, y + h + s.oy);
-            double swx = Math.Min(sx, scx), swy = Math.Min(sy, scy);
-            double sww = Math.Abs(scx - sx), swh = Math.Abs(scy - sy);
+            float swx = MathF.Min(sx, scx), swy = MathF.Min(sy, scy);
+            float sww = MathF.Abs(scx - sx), swh = MathF.Abs(scy - sy);
             _shadowBatch.Add(swx); _shadowBatch.Add(swy); _shadowBatch.Add(sww); _shadowBatch.Add(swh);
             _shadowBatch.Add(sww / 2f); _shadowBatch.Add(swh / 2f);
             _shadowBatch.Add((float)radius); _shadowBatch.Add(type);
@@ -200,7 +200,7 @@ public static partial class WebGPU
     }
     private static float Hex(string h, int i) => Convert.ToByte(h.Substring(i, 2), 16) / 255f;
 
-    private static (float ox, float oy, float blur, float r, float g, float b, float a) ParseShadow(string color, double blur)
+    private static (float ox, float oy, float blur, float r, float g, float b, float a) ParseShadow(string color, float blur)
     {
         var (r, g, b, a) = ParseColor(color);
         return (0, 0, (float)blur, r, g, b, a);

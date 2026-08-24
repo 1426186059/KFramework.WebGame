@@ -4,7 +4,7 @@ using System;
 namespace WebAssemblyBrowserApp.Engine;
 
 /// <summary>
-/// 3×2 2D 仿射变换矩阵（double 精度，列向量约定：v' = M * v，组合时先应用右边的矩阵）。
+/// 3×2 2D 仿射变换矩阵（float 精度，列向量约定：v' = M * v，组合时先应用右边的矩阵）。
 /// 行主序存储：
 ///   | M11 M12 0 |
 ///   | M21 M22 0 |
@@ -13,16 +13,16 @@ namespace WebAssemblyBrowserApp.Engine;
 /// </summary>
 public struct Matrix3x2 : IEquatable<Matrix3x2>
 {
-    public double M11, M12;
-    public double M21, M22;
-    public double M31, M32;
+    public float M11, M12;
+    public float M21, M22;
+    public float M31, M32;
 
     public static Matrix3x2 Identity => new()
     {
         M11 = 1, M22 = 1,
     };
 
-    public Matrix3x2(double m11, double m12, double m21, double m22, double m31, double m32)
+    public Matrix3x2(float m11, float m12, float m21, float m22, float m31, float m32)
     {
         M11 = m11; M12 = m12;
         M21 = m21; M22 = m22;
@@ -31,33 +31,33 @@ public struct Matrix3x2 : IEquatable<Matrix3x2>
 
     // ---------------- 构建 ----------------
 
-    public static Matrix3x2 CreateTranslation(double tx, double ty)
+    public static Matrix3x2 CreateTranslation(float tx, float ty)
     {
         var m = Identity;
         m.M31 = tx; m.M32 = ty;
         return m;
     }
 
-    public static Matrix3x2 CreateScale(double sx, double sy)
+    public static Matrix3x2 CreateScale(float sx, float sy)
     {
         var m = Identity;
         m.M11 = sx; m.M22 = sy;
         return m;
     }
 
-    public static Matrix3x2 CreateScale(double uniform) => CreateScale(uniform, uniform);
+    public static Matrix3x2 CreateScale(float uniform) => CreateScale(uniform, uniform);
 
     /// <summary>绕原点旋转（弧度，屏幕系下正角为顺时针）。</summary>
-    public static Matrix3x2 CreateRotation(double angle)
+    public static Matrix3x2 CreateRotation(float angle)
     {
-        double c = Math.Cos(angle), s = Math.Sin(angle);
+        float c = MathF.Cos(angle), s = MathF.Sin(angle);
         return new Matrix3x2(c, s, -s, c, 0, 0);
     }
 
     /// <summary>绕任意枢轴点旋转（= T(pivot) * R * T(-pivot)）。</summary>
-    public static Matrix3x2 CreateRotationAround(double angle, double px, double py)
+    public static Matrix3x2 CreateRotationAround(float angle, float px, float py)
     {
-        double c = Math.Cos(angle), s = Math.Sin(angle);
+        float c = MathF.Cos(angle), s = MathF.Sin(angle);
         return new Matrix3x2(
             c, s,
             -s, c,
@@ -65,7 +65,7 @@ public struct Matrix3x2 : IEquatable<Matrix3x2>
             py - s * px - c * py);
     }
 
-    public static Matrix3x2 CreateTRS(double tx, double ty, double rotation, double sx = 1, double sy = 1)
+    public static Matrix3x2 CreateTRS(float tx, float ty, float rotation, float sx = 1, float sy = 1)
         => CreateTranslation(tx, ty) * CreateRotation(rotation) * CreateScale(sx, sy);
 
     // ---------------- 运算 ----------------
@@ -85,7 +85,7 @@ public struct Matrix3x2 : IEquatable<Matrix3x2>
         M11 * v.X + M21 * v.Y + M31,
         M12 * v.X + M22 * v.Y + M32);
 
-    public Vector2 TransformPoint(double x, double y) => new(
+    public Vector2 TransformPoint(float x, float y) => new(
         M11 * x + M21 * y + M31,
         M12 * x + M22 * y + M32);
 
@@ -94,7 +94,7 @@ public struct Matrix3x2 : IEquatable<Matrix3x2>
         M11 * v.X + M21 * v.Y,
         M12 * v.X + M22 * v.Y);
 
-    public double Determinant => M11 * M22 - M12 * M21;
+    public float Determinant => M11 * M22 - M12 * M21;
 
     /// <summary>求逆；行列式为 0 时返回单位矩阵。</summary>
     public Matrix3x2 Inverted()
@@ -105,13 +105,13 @@ public struct Matrix3x2 : IEquatable<Matrix3x2>
 
     public bool TryInvert(out Matrix3x2 result)
     {
-        double det = M11 * M22 - M12 * M21;
-        if (Math.Abs(det) < 1e-12)
+        float det = M11 * M22 - M12 * M21;
+        if (MathF.Abs(det) < 1e-6f)
         {
             result = Identity;
             return false;
         }
-        double invDet = 1.0 / det;
+        float invDet = 1f / det;
         result = new Matrix3x2(
             M22 * invDet,
             -M12 * invDet,

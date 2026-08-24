@@ -11,16 +11,16 @@ namespace WebAssemblyBrowserApp.Engine;
 public static partial class Platform
 {
     [JSImport("platform.innerWidth", "main.js")]
-    internal static partial double InnerWidthRaw();
+    internal static partial float InnerWidthRaw();
 
     [JSImport("platform.innerHeight", "main.js")]
-    internal static partial double InnerHeightRaw();
+    internal static partial float InnerHeightRaw();
 
     [JSImport("platform.devicePixelRatio", "main.js")]
-    internal static partial double DevicePixelRatioRaw();
+    internal static partial float DevicePixelRatioRaw();
 
     [JSImport("platform.now", "main.js")]
-    internal static partial double NowRaw();
+    internal static partial float NowRaw();
 
     [JSImport("platform.userAgent", "main.js")]
     internal static partial string UserAgentRaw();
@@ -32,16 +32,16 @@ public static partial class Platform
     internal static partial void SetTitleRaw(string title);
 
     /// <summary>窗口逻辑宽度（CSS px）。</summary>
-    public static double ViewportWidth => Safe(() => InnerWidthRaw(), 960);
+    public static float ViewportWidth => Safe(() => InnerWidthRaw(), 960);
 
     /// <summary>窗口逻辑高度（CSS px）。</summary>
-    public static double ViewportHeight => Safe(() => InnerHeightRaw(), 540);
+    public static float ViewportHeight => Safe(() => InnerHeightRaw(), 540);
 
     /// <summary>设备像素比 devicePixelRatio（CSS px 与物理 px 之比）。</summary>
-    public static double DevicePixelRatio => Safe(() => DevicePixelRatioRaw(), 1);
+    public static float DevicePixelRatio => Safe(() => DevicePixelRatioRaw(), 1);
 
-    /// <summary>performance.now()（毫秒，精度到微秒级）。</summary>
-    public static double NowMs => Safe(() => NowRaw(), 0);
+    /// <summary>performance.now()（毫秒）。</summary>
+    public static float NowMs => Safe(() => NowRaw(), 0);
 
     /// <summary>navigator.userAgent。</summary>
     public static string UserAgent => Safe(() => UserAgentRaw(), "");

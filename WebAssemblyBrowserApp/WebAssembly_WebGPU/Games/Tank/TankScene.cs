@@ -91,23 +91,23 @@ public sealed class TankScene : GameScene
 
     private sealed class TankUnit
     {
-        public double X, Y;         // 左上角坐标
-        public const double Size = 28;
+        public float X, Y;         // 左上角坐标
+        public const float Size = 28;
         public Dir Dir;
-        public double Speed;
-        public double FireCooldown;
+        public float Speed;
+        public float FireCooldown;
         public string Color = "#ffe066";
         public bool IsPlayer;
         public bool Alive = true;
-        public double ThinkTimer;
+        public float ThinkTimer;
         public int SpawnedBulletCount;
     }
 
     private sealed class Bullet
     {
-        public double X, Y;
+        public float X, Y;
         public Dir Dir;
-        public double Speed = 360;
+        public float Speed = 360;
         public bool FromPlayer;
         public bool Alive = true;
     }
@@ -122,7 +122,7 @@ public sealed class TankScene : GameScene
     private int _lives = 3;
     private int _enemiesRemainingToSpawn;
     private int _enemiesOnFieldMax = 4;
-    private double _enemySpawnTimer;
+    private float _enemySpawnTimer;
 
     private enum S { Play, LevelClear, GameOver, AllClear }
     private S _state = S.Play;
@@ -249,9 +249,9 @@ public sealed class TankScene : GameScene
         {
             _state = S.LevelClear;
             _stateTime = 0;
-            Audio.Beep(523, 0.1, "square", 0.08);
-            Audio.Beep(659, 0.1, "square", 0.08);
-            Audio.Beep(784, 0.18, "square", 0.09);
+            Audio.Beep(523, 0.1f, "square", 0.08f);
+            Audio.Beep(659, 0.1f, "square", 0.08f);
+            Audio.Beep(784, 0.18f, "square", 0.09f);
         }
     }
 
@@ -288,9 +288,9 @@ public sealed class TankScene : GameScene
             if (e.ThinkTimer <= 0)
             {
                 // 简单 AI：随机换方向，10% 几率朝玩家
-                e.ThinkTimer = 0.6 + Random.Shared.NextDouble() * 1.2;
+                e.ThinkTimer = 0.6f + (float)Random.Shared.NextDouble() * 1.2f;
                 var dirs = new Dir[] { Dir.Up, Dir.Down, Dir.Left, Dir.Right };
-                if (Random.Shared.NextDouble() < 0.15 && _player.Alive)
+                if (Random.Shared.NextDouble() < 0.15f && _player.Alive)
                 {
                     e.Dir = PickDirToPlayer(e);
                 }
@@ -300,7 +300,7 @@ public sealed class TankScene : GameScene
                 }
             }
             MoveTank(e, dt);
-            if (e.FireCooldown <= 0 && Random.Shared.NextDouble() < dt * 1.1)
+            if (e.FireCooldown <= 0 && Random.Shared.NextDouble() < dt * 1.1f)
             {
                 Fire(e);
             }
@@ -311,8 +311,8 @@ public sealed class TankScene : GameScene
 
     private static Dir PickDirToPlayer(TankUnit e)
     {
-        double dx = Math.Abs((GameEngine.Width / 2) - (e.X + TankUnit.Size / 2));
-        double dy = Math.Abs((GameEngine.Height - HudH / 2) - (e.Y + TankUnit.Size / 2));
+        float dx = MathF.Abs((GameEngine.Width / 2) - (e.X + TankUnit.Size / 2));
+        float dy = MathF.Abs((GameEngine.Height - HudH / 2) - (e.Y + TankUnit.Size / 2));
         return dx > dy
             ? (e.X < GameEngine.Width / 2 ? Dir.Right : Dir.Left)
             : (e.Y < GameEngine.Height / 2 ? Dir.Down : Dir.Up);
@@ -324,13 +324,13 @@ public sealed class TankScene : GameScene
         if (_enemies.Count >= _enemiesOnFieldMax) return;
         _enemySpawnTimer -= dt;
         if (_enemySpawnTimer > 0) return;
-        _enemySpawnTimer = 2.2;
+        _enemySpawnTimer = 2.2f;
 
         // 选一个没被挡住的出生点
         foreach (var (c, r) in _enemySpawns)
         {
-            double x = Tile * c + (Tile - TankUnit.Size) / 2;
-            double y = HudH + Tile * r + (Tile - TankUnit.Size) / 2;
+            float x = Tile * c + (Tile - TankUnit.Size) / 2;
+            float y = HudH + Tile * r + (Tile - TankUnit.Size) / 2;
             bool blocked = false;
             foreach (var o in _enemies)
             {
@@ -344,7 +344,7 @@ public sealed class TankScene : GameScene
                 Color = _levelIndex switch { 0 => "#ff6b6b", 1 => "#f6c445", _ => "#c792ea" },
                 Speed = 80 + _levelIndex * 15,
                 Dir = Dir.Down,
-                ThinkTimer = 0.5,
+                ThinkTimer = 0.5f,
             };
             enemy.X = x; enemy.Y = y;
             _enemies.Add(enemy);
@@ -358,8 +358,8 @@ public sealed class TankScene : GameScene
     // ------------------------------------------------------------
     private void MoveTank(TankUnit t, float dt)
     {
-        double dist = t.Speed * dt;
-        double dx = 0, dy = 0;
+        float dist = t.Speed * dt;
+        float dx = 0, dy = 0;
         switch (t.Dir)
         {
             case Dir.Up:    dy = -dist; break;
@@ -371,22 +371,22 @@ public sealed class TankScene : GameScene
         // 对齐网格（让转弯更平滑）
         if (t.Dir is Dir.Up or Dir.Down)
         {
-            double gridX = Math.Round(t.X / Tile) * Tile;
-            t.X += (gridX - t.X) * Math.Min(1, dt * 15);
+            float gridX = MathF.Round(t.X / Tile) * Tile;
+            t.X += (gridX - t.X) * MathF.Min(1, dt * 15);
         }
         else
         {
-            double gridY = Math.Round((t.Y - HudH) / Tile) * Tile + HudH;
-            t.Y += (gridY - t.Y) * Math.Min(1, dt * 15);
+            float gridY = MathF.Round((t.Y - HudH) / Tile) * Tile + HudH;
+            t.Y += (gridY - t.Y) * MathF.Min(1, dt * 15);
         }
 
-        double nx = t.X + dx;
-        double ny = t.Y + dy;
+        float nx = t.X + dx;
+        float ny = t.Y + dy;
         if (!CheckTankCollision(nx, ny, t)) return;
         t.X = nx; t.Y = ny;
     }
 
-    private bool CheckTankCollision(double nx, double ny, TankUnit self)
+    private bool CheckTankCollision(float nx, float ny, TankUnit self)
     {
         // 边界
         if (nx < 0) return false;
@@ -396,9 +396,9 @@ public sealed class TankScene : GameScene
 
         // 地图
         int c0 = (int)(nx / Tile);
-        int c1 = (int)((nx + TankUnit.Size - 0.001) / Tile);
+        int c1 = (int)((nx + TankUnit.Size - 0.001f) / Tile);
         int r0 = (int)((ny - HudH) / Tile);
-        int r1 = (int)((ny + TankUnit.Size - 0.001 - HudH) / Tile);
+        int r1 = (int)((ny + TankUnit.Size - 0.001f - HudH) / Tile);
         for (int r = r0; r <= r1; r++)
             for (int c = c0; c <= c1; c++)
             {
@@ -421,10 +421,10 @@ public sealed class TankScene : GameScene
 
     private void Fire(TankUnit t)
     {
-        t.FireCooldown = t.IsPlayer ? 0.45 : 0.9;
-        const double bs = 10; // bullet size
-        double bx = t.X + TankUnit.Size / 2 - bs / 2;
-        double by = t.Y + TankUnit.Size / 2 - bs / 2;
+        t.FireCooldown = t.IsPlayer ? 0.45f : 0.9f;
+        const float bs = 10; // bullet size
+        float bx = t.X + TankUnit.Size / 2 - bs / 2;
+        float by = t.Y + TankUnit.Size / 2 - bs / 2;
         switch (t.Dir)
         {
             case Dir.Up:    by = t.Y - bs; break;
@@ -438,7 +438,7 @@ public sealed class TankScene : GameScene
             FromPlayer = t.IsPlayer,
         });
         t.SpawnedBulletCount++;
-        Audio.Beep(t.IsPlayer ? 720 : 220, 0.04, "square", 0.04);
+        Audio.Beep(t.IsPlayer ? 720 : 220, 0.04f, "square", 0.04f);
     }
 
     private void UpdateBullets(float dt)
@@ -447,7 +447,7 @@ public sealed class TankScene : GameScene
         {
             var b = _bullets[i];
             if (!b.Alive) { _bullets.RemoveAt(i); continue; }
-            double d = b.Speed * dt;
+            float d = b.Speed * dt;
             switch (b.Dir)
             {
                 case Dir.Up: b.Y -= d; break;
@@ -455,7 +455,7 @@ public sealed class TankScene : GameScene
                 case Dir.Left: b.X -= d; break;
                 case Dir.Right: b.X += d; break;
             }
-            const double bs = 10;
+            const float bs = 10;
             // 出界
             if (b.X < 0 || b.Y < HudH || b.X + bs > GameW || b.Y + bs > HudH + GameH)
             {
@@ -468,26 +468,26 @@ public sealed class TankScene : GameScene
         }
     }
 
-    private bool BulletHitMap(Bullet b, double bs)
+    private bool BulletHitMap(Bullet b, float bs)
     {
         int c0 = (int)(b.X / Tile);
-        int c1 = (int)((b.X + bs - 0.001) / Tile);
+        int c1 = (int)((b.X + bs - 0.001f) / Tile);
         int r0 = (int)((b.Y - HudH) / Tile);
-        int r1 = (int)((b.Y + bs - 0.001 - HudH) / Tile);
+        int r1 = (int)((b.Y + bs - 0.001f - HudH) / Tile);
         bool hit = false;
         for (int r = r0; r <= r1; r++)
         for (int c = c0; c <= c1; c++)
         {
             if (r < 0 || r >= Rows || c < 0 || c >= Cols) continue;
             ref var k = ref _map[r, c];
-            if (k == TileKind.Brick) { k = TileKind.Empty; hit = true; Audio.Beep(520, 0.03, "square", 0.04); }
-            else if (k == TileKind.Steel) { hit = true; Audio.Beep(160, 0.04, "square", 0.04); }
+            if (k == TileKind.Brick) { k = TileKind.Empty; hit = true; Audio.Beep(520, 0.03f, "square", 0.04f); }
+            else if (k == TileKind.Steel) { hit = true; Audio.Beep(160, 0.04f, "square", 0.04f); }
             else if (k == TileKind.Eagle)
             {
                 k = TileKind.Empty;
                 _state = S.GameOver;
                 _stateTime = 0;
-                Audio.Beep(120, 0.8, "sawtooth", 0.15);
+                Audio.Beep(120, 0.8f, "sawtooth", 0.15f);
                 hit = true;
             }
         }
@@ -495,7 +495,7 @@ public sealed class TankScene : GameScene
         return hit;
     }
 
-    private bool BulletHitTanks(Bullet b, double bs)
+    private bool BulletHitTanks(Bullet b, float bs)
     {
         if (b.FromPlayer)
         {
@@ -505,7 +505,7 @@ public sealed class TankScene : GameScene
                 if (RectsOverlap(b.X, b.Y, bs, bs, e.X, e.Y, TankUnit.Size, TankUnit.Size))
                 {
                     e.Alive = false; b.Alive = false;
-                    Audio.Beep(480, 0.08, "square", 0.06);
+                    Audio.Beep(480, 0.08f, "square", 0.06f);
                     return true;
                 }
             }
@@ -516,7 +516,7 @@ public sealed class TankScene : GameScene
             {
                 b.Alive = false;
                 _lives--;
-                Audio.Beep(220, 0.3, "triangle", 0.1);
+                Audio.Beep(220, 0.3f, "triangle", 0.1f);
                 if (_lives <= 0)
                 {
                     _player.Alive = false;
@@ -546,8 +546,8 @@ public sealed class TankScene : GameScene
         return false;
     }
 
-    private static bool RectsOverlap(double ax, double ay, double aw, double ah,
-                                     double bx, double by, double bw, double bh)
+    private static bool RectsOverlap(float ax, float ay, float aw, float ah,
+                                     float bx, float by, float bw, float bh)
     {
         return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
     }
@@ -594,15 +594,15 @@ public sealed class TankScene : GameScene
         WebGPU.FillRect(0, 0, GameEngine.Width, HudH, "#161b22");
         WebGPU.FillRect(0, HudH - 1, GameEngine.Width, 1, "#30363d");
 
-        double left = 28;
+        float left = 28;
         WebGPU.FillText("坦克大战", left, 20, "bold 18px system-ui, sans-serif", "#e6edf3", "left");
         WebGPU.FillText($"第 {_levelIndex + 1} / {Levels.Length} 关", left, HudH - 14, "14px system-ui, sans-serif", "#8b949e", "left");
 
-        double cx = GameEngine.Width / 2;
+        float cx = GameEngine.Width / 2;
         WebGPU.FillText("剩余敌军", cx, 20, "13px system-ui, sans-serif", "#8b949e", "center");
         WebGPU.FillText($"{_enemiesRemainingToSpawn + _enemies.Count}", cx, HudH - 16, "bold 20px system-ui, sans-serif", "#f6c445", "center");
 
-        double rx = GameEngine.Width - 28;
+        float rx = GameEngine.Width - 28;
         WebGPU.FillText("生命", rx, 20, "13px system-ui, sans-serif", "#8b949e", "right");
         for (int i = 0; i < _lives; i++)
             WebGPU.FillRect(rx - 24 - i * 26, HudH - 22, 18, 18, "#4dabf7");
@@ -618,8 +618,8 @@ public sealed class TankScene : GameScene
         {
             var k = _map[r, c];
             if (k == TileKind.Empty || k == TileKind.Tree) continue;
-            double x = c * Tile;
-            double y = HudH + r * Tile;
+            float x = c * Tile;
+            float y = HudH + r * Tile;
             switch (k)
             {
                 case TileKind.Brick:
@@ -633,7 +633,7 @@ public sealed class TankScene : GameScene
                     WebGPU.FillRect(x + 3, y + 3, Tile - 6, 2, "#ffffffaa");
                     break;
                 case TileKind.Water:
-                    double wave = (int)((Math.Sin(GameEngine.Instance.Time * 4 + r) + 1) * 8);
+                    float wave = (int)((MathF.Sin(GameEngine.Instance.Time * 4 + r) + 1) * 8);
                     WebGPU.FillRect(x, y, Tile, Tile, "#2f6fed");
                     WebGPU.FillRect(x + 2, y + 4 + wave % 6, Tile - 4, 2, "#ffffff55");
                     WebGPU.FillRect(x + 2, y + 14 + (wave * 2) % 6, Tile - 4, 2, "#ffffff33");
@@ -645,7 +645,7 @@ public sealed class TankScene : GameScene
         }
     }
 
-    private void RenderEagle(double x, double y)
+    private void RenderEagle(float x, float y)
     {
         WebGPU.FillRect(x, y, Tile, Tile, "#30363d");
         WebGPU.FillRect(x + 4, y + 4, Tile - 8, Tile - 8, "#f6c445");
@@ -662,9 +662,9 @@ public sealed class TankScene : GameScene
         for (int c = 0; c < Cols; c++)
         {
             if (_map[r, c] != TileKind.Tree) continue;
-            double x = c * Tile;
-            double y = HudH + r * Tile;
-            WebGPU.Alpha(0.78);
+            float x = c * Tile;
+            float y = HudH + r * Tile;
+            WebGPU.Alpha(0.78f);
             WebGPU.FillRect(x + 2, y + 2, Tile - 4, Tile - 4, "#2ea043");
             WebGPU.FillRect(x + 6, y + 6, 6, 6, "#3fb950");
             WebGPU.FillRect(x + 16, y + 10, 7, 7, "#3fb950");
@@ -683,11 +683,11 @@ public sealed class TankScene : GameScene
         WebGPU.FillRect(t.X + 1, t.Y + 2, 4, TankUnit.Size - 4, "#00000066");
         WebGPU.FillRect(t.X + TankUnit.Size - 5, t.Y + 2, 4, TankUnit.Size - 4, "#00000066");
         // 炮塔（圆心）
-        double cx = t.X + TankUnit.Size / 2;
-        double cy = t.Y + TankUnit.Size / 2;
+        float cx = t.X + TankUnit.Size / 2;
+        float cy = t.Y + TankUnit.Size / 2;
         WebGPU.FillCircle(cx, cy, 7, t.IsPlayer ? "#e6edf3" : "#ffffffcc");
         // 炮管（朝 Dir）
-        double bx, by, bw, bh;
+        float bx, by, bw, bh;
         switch (t.Dir)
         {
             case Dir.Up:    bx = cx - 2; by = t.Y - 4;             bw = 4; bh = TankUnit.Size / 2 + 4; break;
@@ -701,9 +701,9 @@ public sealed class TankScene : GameScene
 
     private static void RenderOverlay(string title, string sub, string color)
     {
-        double cx = GameEngine.Width / 2;
-        double cy = GameEngine.Height / 2;
-        WebGPU.Alpha(0.6);
+        float cx = GameEngine.Width / 2;
+        float cy = GameEngine.Height / 2;
+        WebGPU.Alpha(0.6f);
         WebGPU.FillRect(0, 0, GameEngine.Width, GameEngine.Height, "#000000");
         WebGPU.Alpha(1);
         WebGPU.Shadow(color, 28);

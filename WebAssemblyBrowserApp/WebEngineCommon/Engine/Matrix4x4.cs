@@ -4,15 +4,15 @@ using System;
 namespace WebAssemblyBrowserApp.Engine;
 
 /// <summary>
-/// 4×4 矩阵（double 精度，列向量约定：v' = M * v，组合时先应用右边的矩阵）。
+/// 4×4 矩阵（float 精度，列向量约定：v' = M * v，组合时先应用右边的矩阵）。
 /// 行主序存储 M11..M44，支持按 OpenGL/WebGL/WebGPU 的列主序导出（ToArrayColumnMajor）。
 /// </summary>
 public struct Matrix4x4 : IEquatable<Matrix4x4>
 {
-    public double M11, M12, M13, M14;
-    public double M21, M22, M23, M24;
-    public double M31, M32, M33, M34;
-    public double M41, M42, M43, M44;
+    public float M11, M12, M13, M14;
+    public float M21, M22, M23, M24;
+    public float M31, M32, M33, M34;
+    public float M41, M42, M43, M44;
 
     public static Matrix4x4 Identity => new()
     {
@@ -21,7 +21,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 
     // ---------------- 构建 ----------------
 
-    public static Matrix4x4 CreateTranslation(double x, double y, double z)
+    public static Matrix4x4 CreateTranslation(float x, float y, float z)
     {
         var m = Identity;
         m.M41 = x; m.M42 = y; m.M43 = z;
@@ -30,7 +30,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 
     public static Matrix4x4 CreateTranslation(Vector3 v) => CreateTranslation(v.X, v.Y, v.Z);
 
-    public static Matrix4x4 CreateScale(double x, double y, double z)
+    public static Matrix4x4 CreateScale(float x, float y, float z)
     {
         var m = Identity;
         m.M11 = x; m.M22 = y; m.M33 = z;
@@ -39,27 +39,27 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 
     public static Matrix4x4 CreateScale(Vector3 v) => CreateScale(v.X, v.Y, v.Z);
 
-    public static Matrix4x4 CreateRotationX(double rad)
+    public static Matrix4x4 CreateRotationX(float rad)
     {
-        double c = Math.Cos(rad), s = Math.Sin(rad);
+        float c = MathF.Cos(rad), s = MathF.Sin(rad);
         var m = Identity;
         m.M22 = c; m.M23 = s;
         m.M32 = -s; m.M33 = c;
         return m;
     }
 
-    public static Matrix4x4 CreateRotationY(double rad)
+    public static Matrix4x4 CreateRotationY(float rad)
     {
-        double c = Math.Cos(rad), s = Math.Sin(rad);
+        float c = MathF.Cos(rad), s = MathF.Sin(rad);
         var m = Identity;
         m.M11 = c; m.M13 = -s;
         m.M31 = s; m.M33 = c;
         return m;
     }
 
-    public static Matrix4x4 CreateRotationZ(double rad)
+    public static Matrix4x4 CreateRotationZ(float rad)
     {
-        double c = Math.Cos(rad), s = Math.Sin(rad);
+        float c = MathF.Cos(rad), s = MathF.Sin(rad);
         var m = Identity;
         m.M11 = c; m.M12 = s;
         m.M21 = -s; m.M22 = c;
@@ -67,10 +67,10 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
     }
 
     /// <summary>任意轴旋转（轴需为单位向量）。</summary>
-    public static Matrix4x4 CreateRotation(Vector3 axis, double rad)
+    public static Matrix4x4 CreateRotation(Vector3 axis, float rad)
     {
-        double c = Math.Cos(rad), s = Math.Sin(rad), t = 1 - c;
-        double x = axis.X, y = axis.Y, z = axis.Z;
+        float c = MathF.Cos(rad), s = MathF.Sin(rad), t = 1 - c;
+        float x = axis.X, y = axis.Y, z = axis.Z;
         return new Matrix4x4
         {
             M11 = t * x * x + c,        M12 = t * x * y + s * z,  M13 = t * x * z - s * y,  M14 = 0,
@@ -85,12 +85,12 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
         => CreateTranslation(translation) * CreateRotationZ(rotationRad.Z) * CreateRotationY(rotationRad.Y) * CreateRotationX(rotationRad.X) * CreateScale(scale);
 
     /// <summary>正交投影（NDC：x/y ∈ [-1,1]，z ∈ [-1,1]）。</summary>
-    public static Matrix4x4 CreateOrthographic(double left, double right, double bottom, double top, double near, double far)
+    public static Matrix4x4 CreateOrthographic(float left, float right, float bottom, float top, float near, float far)
     {
         var m = Identity;
-        m.M11 = 2.0 / (right - left);
-        m.M22 = 2.0 / (top - bottom);
-        m.M33 = -2.0 / (far - near);
+        m.M11 = 2f / (right - left);
+        m.M22 = 2f / (top - bottom);
+        m.M33 = -2f / (far - near);
         m.M41 = -(right + left) / (right - left);
         m.M42 = -(top + bottom) / (top - bottom);
         m.M43 = -(far + near) / (far - near);
@@ -98,13 +98,13 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
     }
 
     /// <summary>标准 2D 正交投影：逻辑像素 → NDC（Y 向下，原点在左上角）。</summary>
-    public static Matrix4x4 CreateOrthographic2D(double width, double height)
+    public static Matrix4x4 CreateOrthographic2D(float width, float height)
         => CreateOrthographic(0, width, height, 0, -1, 1);
 
     /// <summary>透视投影（fovY 弧度，near &gt; 0）。</summary>
-    public static Matrix4x4 CreatePerspective(double fovY, double aspect, double near, double far)
+    public static Matrix4x4 CreatePerspective(float fovY, float aspect, float near, float far)
     {
-        double f = 1.0 / Math.Tan(fovY / 2.0);
+        float f = 1f / MathF.Tan(fovY / 2f);
         return new Matrix4x4
         {
             M11 = f / aspect, M12 = 0, M13 = 0, M14 = 0,
@@ -159,11 +159,11 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
     /// <summary>变换点（齐次除法，w 非 1 时归一化）。</summary>
     public Vector3 TransformPoint(Vector3 v)
     {
-        double x = M11 * v.X + M21 * v.Y + M31 * v.Z + M41;
-        double y = M12 * v.X + M22 * v.Y + M32 * v.Z + M42;
-        double z = M13 * v.X + M23 * v.Y + M33 * v.Z + M43;
-        double w = M14 * v.X + M24 * v.Y + M34 * v.Z + M44;
-        if (Math.Abs(w) > 1e-12 && Math.Abs(w - 1) > 1e-12)
+        float x = M11 * v.X + M21 * v.Y + M31 * v.Z + M41;
+        float y = M12 * v.X + M22 * v.Y + M32 * v.Z + M42;
+        float z = M13 * v.X + M23 * v.Y + M33 * v.Z + M43;
+        float w = M14 * v.X + M24 * v.Y + M34 * v.Z + M44;
+        if (MathF.Abs(w) > 1e-6f && MathF.Abs(w - 1) > 1e-6f)
         {
             x /= w; y /= w; z /= w;
         }
@@ -176,25 +176,25 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
         M12 * v.X + M22 * v.Y + M32 * v.Z,
         M13 * v.X + M23 * v.Y + M33 * v.Z);
 
-    public double Determinant()
+    public float Determinant()
     {
-        double a00 = M11, a01 = M12, a02 = M13, a03 = M14;
-        double a10 = M21, a11 = M22, a12 = M23, a13 = M24;
-        double a20 = M31, a21 = M32, a22 = M33, a23 = M34;
-        double a30 = M41, a31 = M42, a32 = M43, a33 = M44;
+        float a00 = M11, a01 = M12, a02 = M13, a03 = M14;
+        float a10 = M21, a11 = M22, a12 = M23, a13 = M24;
+        float a20 = M31, a21 = M32, a22 = M33, a23 = M34;
+        float a30 = M41, a31 = M42, a32 = M43, a33 = M44;
 
-        double b00 = a00 * a11 - a01 * a10;
-        double b01 = a00 * a12 - a02 * a10;
-        double b02 = a00 * a13 - a03 * a10;
-        double b03 = a01 * a12 - a02 * a11;
-        double b04 = a01 * a13 - a03 * a11;
-        double b05 = a02 * a13 - a03 * a12;
-        double b06 = a20 * a31 - a21 * a30;
-        double b07 = a20 * a32 - a22 * a30;
-        double b08 = a20 * a33 - a23 * a30;
-        double b09 = a21 * a32 - a22 * a31;
-        double b10 = a21 * a33 - a23 * a31;
-        double b11 = a22 * a33 - a23 * a32;
+        float b00 = a00 * a11 - a01 * a10;
+        float b01 = a00 * a12 - a02 * a10;
+        float b02 = a00 * a13 - a03 * a10;
+        float b03 = a01 * a12 - a02 * a11;
+        float b04 = a01 * a13 - a03 * a11;
+        float b05 = a02 * a13 - a03 * a12;
+        float b06 = a20 * a31 - a21 * a30;
+        float b07 = a20 * a32 - a22 * a30;
+        float b08 = a20 * a33 - a23 * a30;
+        float b09 = a21 * a32 - a22 * a31;
+        float b10 = a21 * a33 - a23 * a31;
+        float b11 = a22 * a33 - a23 * a32;
 
         return b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
     }
@@ -207,31 +207,31 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 
     public bool TryInvert(out Matrix4x4 result)
     {
-        double a00 = M11, a01 = M12, a02 = M13, a03 = M14;
-        double a10 = M21, a11 = M22, a12 = M23, a13 = M24;
-        double a20 = M31, a21 = M32, a22 = M33, a23 = M34;
-        double a30 = M41, a31 = M42, a32 = M43, a33 = M44;
+        float a00 = M11, a01 = M12, a02 = M13, a03 = M14;
+        float a10 = M21, a11 = M22, a12 = M23, a13 = M24;
+        float a20 = M31, a21 = M32, a22 = M33, a23 = M34;
+        float a30 = M41, a31 = M42, a32 = M43, a33 = M44;
 
-        double b00 = a00 * a11 - a01 * a10;
-        double b01 = a00 * a12 - a02 * a10;
-        double b02 = a00 * a13 - a03 * a10;
-        double b03 = a01 * a12 - a02 * a11;
-        double b04 = a01 * a13 - a03 * a11;
-        double b05 = a02 * a13 - a03 * a12;
-        double b06 = a20 * a31 - a21 * a30;
-        double b07 = a20 * a32 - a22 * a30;
-        double b08 = a20 * a33 - a23 * a30;
-        double b09 = a21 * a32 - a22 * a31;
-        double b10 = a21 * a33 - a23 * a31;
-        double b11 = a22 * a33 - a23 * a32;
+        float b00 = a00 * a11 - a01 * a10;
+        float b01 = a00 * a12 - a02 * a10;
+        float b02 = a00 * a13 - a03 * a10;
+        float b03 = a01 * a12 - a02 * a11;
+        float b04 = a01 * a13 - a03 * a11;
+        float b05 = a02 * a13 - a03 * a12;
+        float b06 = a20 * a31 - a21 * a30;
+        float b07 = a20 * a32 - a22 * a30;
+        float b08 = a20 * a33 - a23 * a30;
+        float b09 = a21 * a32 - a22 * a31;
+        float b10 = a21 * a33 - a23 * a31;
+        float b11 = a22 * a33 - a23 * a32;
 
-        double det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
-        if (Math.Abs(det) < 1e-12)
+        float det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+        if (MathF.Abs(det) < 1e-6f)
         {
             result = Identity;
             return false;
         }
-        double invDet = 1.0 / det;
+        float invDet = 1f / det;
 
         result = new Matrix4x4
         {
@@ -268,18 +268,18 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
     /// <summary>导出为 OpenGL/WebGL/WebGPU 列主序 float[16]（上传 uniform 直接可用）。</summary>
     public float[] ToArrayColumnMajor() => new float[16]
     {
-        (float)M11, (float)M12, (float)M13, (float)M14,
-        (float)M21, (float)M22, (float)M23, (float)M24,
-        (float)M31, (float)M32, (float)M33, (float)M34,
-        (float)M41, (float)M42, (float)M43, (float)M44,
+        M11, M12, M13, M14,
+        M21, M22, M23, M24,
+        M31, M32, M33, M34,
+        M41, M42, M43, M44,
     };
 
     public float[] ToArrayRowMajor() => new float[16]
     {
-        (float)M11, (float)M12, (float)M13, (float)M14,
-        (float)M21, (float)M22, (float)M23, (float)M24,
-        (float)M31, (float)M32, (float)M33, (float)M34,
-        (float)M41, (float)M42, (float)M43, (float)M44,
+        M11, M12, M13, M14,
+        M21, M22, M23, M24,
+        M31, M32, M33, M34,
+        M41, M42, M43, M44,
     };
 
     // ---------------- 相等 ----------------

@@ -87,26 +87,26 @@ public struct Color : IEquatable<Color>
     }
 
     /// <summary>HSB 构造。h ∈ [0,360)，s/b ∈ [0,1]。</summary>
-    public static Color FromHsb(double h, double s, double b, double a = 1)
+    public static Color FromHsb(float h, float s, float b, float a = 1f)
     {
         h = ((h % 360) + 360) % 360;
-        double c = b * s;
-        double x = c * (1 - Math.Abs((h / 60) % 2 - 1));
-        double m = b - c;
-        double r = 0, g = 0, bl = 0;
+        float c = b * s;
+        float x = c * (1 - MathF.Abs((h / 60) % 2 - 1));
+        float m = b - c;
+        float r = 0, g = 0, bl = 0;
         if (h < 60) { r = c; g = x; }
         else if (h < 120) { r = x; g = c; }
         else if (h < 180) { g = c; bl = x; }
         else if (h < 240) { g = x; bl = c; }
         else if (h < 300) { r = x; bl = c; }
         else { r = c; bl = x; }
-        return new Color((float)(r + m), (float)(g + m), (float)(bl + m), (float)a);
+        return new Color(r + m, g + m, bl + m, a);
     }
 
     // ---------------- HSB ----------------
 
     /// <summary>色相（度，[0,360)）。</summary>
-    public double Hue
+    public float Hue
     {
         get
         {
@@ -114,7 +114,7 @@ public struct Color : IEquatable<Color>
             float min = Math.Min(R, Math.Min(G, B));
             float d = max - min;
             if (d == 0) return 0;
-            double h;
+            float h;
             if (max == R) h = 60 * (((G - B) / d) % 6);
             else if (max == G) h = 60 * (((B - R) / d) + 2);
             else h = 60 * (((R - G) / d) + 4);
@@ -122,7 +122,7 @@ public struct Color : IEquatable<Color>
         }
     }
 
-    public double Saturation
+    public float Saturation
     {
         get
         {
@@ -133,10 +133,10 @@ public struct Color : IEquatable<Color>
         }
     }
 
-    public double Brightness => Math.Max(R, Math.Max(G, B));
+    public float Brightness => Math.Max(R, Math.Max(G, B));
 
     /// <summary>感知亮度（0..1），用于判断文字用深色还是浅色。</summary>
-    public double Luminance => 0.299 * R + 0.587 * G + 0.114 * B;
+    public float Luminance => 0.299f * R + 0.587f * G + 0.114f * B;
 
     /// <summary>判断该颜色是否偏暗（深色背景上适合用白字）。</summary>
     public bool IsDark => Luminance < 0.5;
@@ -156,11 +156,11 @@ public struct Color : IEquatable<Color>
         a.B + (b.B - a.B) * t,
         a.A + (b.A - a.A) * t);
 
-    /// <summary>乘以亮度系数（0..1），用于“变暗/变亮”。</summary>
-    public Color Scaled(double factor) => new(
-        Math.Clamp(R * (float)factor, 0, 1),
-        Math.Clamp(G * (float)factor, 0, 1),
-        Math.Clamp(B * (float)factor, 0, 1),
+    /// <summary>乘以亮度系数（0..1），用于"变暗/变亮"。</summary>
+    public Color Scaled(float factor) => new(
+        Math.Clamp(R * factor, 0, 1),
+        Math.Clamp(G * factor, 0, 1),
+        Math.Clamp(B * factor, 0, 1),
         A);
 
     // ---------------- 输出 ----------------

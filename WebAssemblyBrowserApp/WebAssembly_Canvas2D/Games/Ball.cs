@@ -6,9 +6,9 @@ namespace WebAssemblyBrowserApp.Games;
 /// <summary>弹球：粘在挡板上等待发射，发射后按速度方向移动。</summary>
 public sealed class Ball : GameObject
 {
-    public double Radius { get; set; } = 7;
+    public float Radius { get; set; } = 7;
     public bool IsStuck { get; set; } = true;
-    public double Speed { get; set; } = 330;
+    public float Speed { get; set; } = 330;
 
     public Ball()
     {
@@ -23,10 +23,10 @@ public sealed class Ball : GameObject
     }
 
     /// <summary>以给定角度（度，0 = 竖直向上）发射。</summary>
-    public void Launch(double angleDegrees)
+    public void Launch(float angleDegrees)
     {
-        double rad = angleDegrees * Math.PI / 180.0;
-        Velocity = new Vector2(Math.Sin(rad), -Math.Cos(rad)) * Speed;
+        float rad = angleDegrees * MathF.PI / 180f;
+        Velocity = new Vector2(MathF.Sin(rad), -MathF.Cos(rad)) * Speed;
         IsStuck = false;
     }
 

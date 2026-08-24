@@ -7,7 +7,7 @@ namespace WebAssemblyBrowserApp.Games;
 /// </summary>
 public sealed class MainMenuScene : GameScene
 {
-    private const double Card1X = 60, Card2X = 440, CardY = 240, CardW = 300, CardH = 130;
+    private const float Card1X = 60, Card2X = 440, CardY = 240, CardW = 300, CardH = 130;
 
     private float _time;
 
@@ -24,7 +24,7 @@ public sealed class MainMenuScene : GameScene
 
         if (Input.IsMousePressed())
         {
-            double mx = Input.MouseX(), my = Input.MouseY();
+            float mx = Input.MouseX(), my = Input.MouseY();
             if (mx >= Card1X && mx <= Card1X + CardW && my >= CardY && my <= CardY + CardH)
                 GameEngine.Instance.Push("breakout");
             else if (mx >= Card2X && mx <= Card2X + CardW && my >= CardY && my <= CardY + CardH)
@@ -37,7 +37,7 @@ public sealed class MainMenuScene : GameScene
         WebGL.Clear("#0d1117");
         WebGL.Save();
 
-        double cx = GameEngine.Width / 2;
+        float cx = GameEngine.Width / 2;
 
         WebGL.Shadow("#4dabf7", 30);
         WebGL.FillText("WEB GAMES", cx, 118, "bold 56px system-ui, sans-serif", "#e6edf3", "center");
