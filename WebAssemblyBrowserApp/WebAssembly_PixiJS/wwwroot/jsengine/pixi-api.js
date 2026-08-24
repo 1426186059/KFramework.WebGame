@@ -12,7 +12,8 @@
 // 语义（对象是持久的、可组织成父子层级、变换由 Pixi 自动合成）。
 // =====================================================================
 
-import { Application, Container, Graphics, Text, Sprite, Texture } from './vendor/pixi.min.mjs'
+import { Application, Container, Graphics, Text, Sprite, Texture, Rectangle } from './vendor/pixi.min.mjs'
+import { audio } from './core/audio.js'
 
 // 每条图形命令的 float 数（须与 C# 侧 Graphics.cs 的 BATCH_STRIDE 一致）
 const BATCH_STRIDE = 11
@@ -27,6 +28,78 @@ let _height = 540
 let _readyResolve = null
 const _readyPromise = new Promise((resolve) => { _readyResolve = resolve })
 const texIdByUrl = new Map()   // url → 纹理句柄 id（避免重复加载）
+
+// ---------------------------------------------------------------------
+// 输入：鼠标/触摸走 Pixi 的 EventSystem（FederatedPointerEvent，挂在
+// app.canvas 上，由 Pixi 处理命中与坐标）；键盘 Pixi 未提供事件封装，
+// 故使用 DOM 键盘事件，统一在本桥内管理（浏览器唯一可靠来源）。
+// ---------------------------------------------------------------------
+const _keys = {}          // code → 是否按住（KeyW / ArrowUp ...）
+const _pressed = {}       // code → 本帧新按下（EndFrame 清除）
+const _mouse = { x: 0, y: 0, down: false, pressed: false }
+let _inputInited = false
+
+function mouseFromPixi(e) {
+  if (!app) return
+  const res = app.renderer.resolution || 1
+  _mouse.x = e.global.x / res     // Pixi screen 坐标 → 逻辑坐标
+  _mouse.y = e.global.y / res
+}
+
+function initInput() {
+  if (_inputInited) return
+  // 守卫：new Application() 后、await app.init() 完成前 renderer 为 undefined，
+  // 而 app.screen 的 getter 读 this.renderer.screen 会抛错。未就绪则等
+  // initAsync 内 app 就绪后再挂（见 registry.set(0, app.stage) 之后）。
+  if (!app || !app.renderer) return
+  _inputInited = true
+
+  window.addEventListener('keydown', (e) => {
+    if (!e.repeat) { _keys[e.code] = true; _pressed[e.code] = true }
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault()
+    audio.ensure()   // 用户手势解锁 @pixi/sound
+  })
+  window.addEventListener('keyup', (e) => { _keys[e.code] = false })
+  window.addEventListener('blur', () => {
+    for (const k in _keys) _keys[k] = false
+    for (const k in _pressed) delete _pressed[k]
+    _mouse.down = false
+  })
+
+  // 指针输入走 Pixi EventSystem：stage 作为命中根（hitArea=逻辑屏幕），
+  // 事件冒泡到 stage，坐标经 FederatedPointerEvent.global 换算。
+  // hitArea 用显式 Rectangle，避免依赖 app.screen（renderer 就绪前不可用）。
+  app.stage.eventMode = 'static'
+  app.stage.hitArea = new Rectangle(0, 0, _width, _height)
+  app.stage.on('pointermove', mouseFromPixi)
+  app.stage.on('pointerdown', (e) => { _mouse.down = true; _mouse.pressed = true; audio.ensure(); mouseFromPixi(e) })
+  app.stage.on('pointerup', () => { _mouse.down = false })
+}
+
+// ---------------------------------------------------------------------
+// 存储：Pixi 不提供持久化 API，使用浏览器 localStorage，统一经本桥暴露。
+// ---------------------------------------------------------------------
+const storage = {
+  get(key, fallback) {
+    try { const v = localStorage.getItem(key); return v === null ? fallback : v } catch { return fallback }
+  },
+  set(key, value) {
+    try { localStorage.setItem(key, value) } catch { /* 隐私模式等场景静默忽略 */ }
+  },
+}
+
+// ---------------------------------------------------------------------
+// 平台：Pixi 不提供平台能力 API，使用浏览器能力，统一经本桥暴露。
+// ---------------------------------------------------------------------
+const platform = {
+  innerWidth: () => (typeof window !== 'undefined' ? window.innerWidth : 960),
+  innerHeight: () => (typeof window !== 'undefined' ? window.innerHeight : 540),
+  devicePixelRatio: () => (typeof window !== 'undefined' ? window.devicePixelRatio : 1),
+  now: () => (typeof performance !== 'undefined' ? performance.now() : 0),
+  userAgent: () => (typeof navigator !== 'undefined' ? navigator.userAgent : ''),
+  language: () => (typeof navigator !== 'undefined' ? (navigator.language || '') : ''),
+  setTitle: (t) => { if (typeof document !== 'undefined') document.title = t },
+}
 
 export const pixiApi = {
   // -----------------------------------------------------------------
@@ -224,6 +297,35 @@ export const pixiApi = {
       }
     })
   },
+
+  // -----------------------------------------------------------------
+  // 输入（鼠标/触摸走 Pixi EventSystem；键盘 DOM，Pixi 无封装）
+  // -----------------------------------------------------------------
+  inputInit() { initInput() },
+  inputIsKeyDown(code) { return !!_keys[code] },
+  inputIsKeyPressed(code) { return !!_pressed[code] },
+  inputMouseX() { return _mouse.x },
+  inputMouseY() { return _mouse.y },
+  inputIsMouseDown() { return _mouse.down },
+  inputIsMousePressed() { return _mouse.pressed },
+  inputEndFrame() { for (const k in _pressed) delete _pressed[k]; _mouse.pressed = false },
+
+  // -----------------------------------------------------------------
+  // 存储（localStorage，Pixi 无持久化 API）
+  // -----------------------------------------------------------------
+  storageGet(key, fallback) { return storage.get(key, fallback) },
+  storageSet(key, value) { storage.set(key, value) },
+
+  // -----------------------------------------------------------------
+  // 平台（浏览器能力，Pixi 无平台 API）
+  // -----------------------------------------------------------------
+  platformInnerWidth() { return platform.innerWidth() },
+  platformInnerHeight() { return platform.innerHeight() },
+  platformDevicePixelRatio() { return platform.devicePixelRatio() },
+  platformNow() { return platform.now() },
+  platformUserAgent() { return platform.userAgent() },
+  platformLanguage() { return platform.language() },
+  platformSetTitle(t) { platform.setTitle(t) },
 }
 
 // ---------------------------------------------------------------------
@@ -323,6 +425,8 @@ async function initAsync(selector) {
 
     // 根舞台注册为句柄 0（C# 侧 PixiApp.Stage 固定使用）
     registry.set(0, app.stage)
+
+    initInput()   // 鼠标/触摸挂 Pixi EventSystem，键盘挂 DOM
 
     _ready = true
     _readyResolve?.()

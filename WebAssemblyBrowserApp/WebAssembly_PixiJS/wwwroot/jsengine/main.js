@@ -1,17 +1,15 @@
 // =====================================================================
-// 独立工程入口：装配原生 Pixi API 桥 + 输入/音效/存储，注册 C# 桥接对象，
+// 独立工程入口：装配原生 Pixi API 桥 + 音效，注册 C# 桥接对象，
 // 驱动 requestAnimationFrame 主循环。
 //
 // 本工程不依赖 Canvas2D/WebGL/WebGPU 三端的任何代码（含 WebEngineCommon），
-// C# 侧通过 pixiApi.* 直接操作 PixiJS 原生对象模型。
+// C# 侧统一通过 pixiApi.* 走 Pixi 接口：对象模型 / 渲染 / 输入(EventSystem)
+// / 存储 / 平台 / 音频(@pixi/sound) 全部由 Pixi 侧提供。
 // =====================================================================
 
 import { dotnet } from '../_framework/dotnet.js'
 import { pixiApi } from './pixi-api.js'
-import { input } from './core/input.js'
 import { audio } from './core/audio.js'
-import { storage } from './core/storage.js'
-import { platform } from './core/platform.js'
 
 // ------------------------- 引擎生命周期 -------------------------
 let _rafStarted = false
@@ -74,10 +72,7 @@ const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotne
 
 setModuleImports('main.js', {
   pixiApi,
-  input,
   audio,
-  storage,
-  platform,
   engine,
 })
 

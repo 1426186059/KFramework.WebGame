@@ -2,7 +2,11 @@ using System.Runtime.InteropServices.JavaScript;
 
 namespace PixiGame;
 
-/// <summary>键盘 / 鼠标输入（JSImport 到 core/input.js）。</summary>
+/// <summary>
+/// 键盘 / 鼠标输入。JSImport 到 Pixi 桥 pixiApi.input*：
+/// 鼠标 / 触摸走 Pixi 的 EventSystem（FederatedPointerEvent）；
+/// 键盘 Pixi 无封装，用 DOM 键盘事件（统一在 Pixi 桥内管理）。
+/// </summary>
 public static partial class Input
 {
     // 常用键码常量
@@ -22,18 +26,18 @@ public static partial class Input
     public const string KeyX = "KeyX";
     public const string ControlLeft = "ControlLeft";
 
-    [JSImport("input.init", "main.js")] public static partial void Init();
+    [JSImport("pixiApi.inputInit", "main.js")] public static partial void Init();
 
     /// <summary>当前帧是否按住该键。</summary>
-    [JSImport("input.isKeyDown", "main.js")] public static partial bool IsKeyDown(string code);
+    [JSImport("pixiApi.inputIsKeyDown", "main.js")] public static partial bool IsKeyDown(string code);
 
     /// <summary>本帧是否刚按下（沿帧边界去重）。</summary>
-    [JSImport("input.isKeyPressed", "main.js")] public static partial bool IsKeyPressed(string code);
+    [JSImport("pixiApi.inputIsKeyPressed", "main.js")] public static partial bool IsKeyPressed(string code);
 
-    [JSImport("input.mouseX", "main.js")] public static partial float MouseX();
-    [JSImport("input.mouseY", "main.js")] public static partial float MouseY();
-    [JSImport("input.isMouseDown", "main.js")] public static partial bool IsMouseDown();
-    [JSImport("input.isMousePressed", "main.js")] public static partial bool IsMousePressed();
+    [JSImport("pixiApi.inputMouseX", "main.js")] public static partial float MouseX();
+    [JSImport("pixiApi.inputMouseY", "main.js")] public static partial float MouseY();
+    [JSImport("pixiApi.inputIsMouseDown", "main.js")] public static partial bool IsMouseDown();
+    [JSImport("pixiApi.inputIsMousePressed", "main.js")] public static partial bool IsMousePressed();
 
-    [JSImport("input.endFrame", "main.js")] public static partial void EndFrame();
+    [JSImport("pixiApi.inputEndFrame", "main.js")] public static partial void EndFrame();
 }
