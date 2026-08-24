@@ -26,6 +26,9 @@ fn vs(@builtin(vertex_index) vi : u32) -> VSOut {
 }
 @fragment
 fn fs(in : VSOut) -> @location(0) vec4<f32> {
+  // Canvas2D 烘焙的纹素是 straight alpha；渲染管线混合为 pre-multiplied，
+  // 这里必须预乘，否则半透明边缘会被算成“src.rgb + dst.rgb*(1-src.a)”→ 白边/光晕/笔画变粗
   let c = textureSample(tex, samp, in.uv);
-  return vec4<f32>(c.rgb, c.a * G.alpha);
+  let a = c.a * G.alpha;
+  return vec4<f32>(c.rgb * a, a);
 }

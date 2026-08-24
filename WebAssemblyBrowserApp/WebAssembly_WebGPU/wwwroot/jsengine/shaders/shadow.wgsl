@@ -75,5 +75,7 @@ fn fs(in : VSOut) -> @location(0) vec4<f32> {
   let aa = 1.0;
   var a = 1.0 - smoothstep(-aa, aa, d);
   if (a <= 0.0) { discard; }
-  return vec4<f32>(in.color.rgb, in.color.a * a * G.alpha);
+  // straight alpha → pre-multiplied（与渲染管线混合一致，阴影边缘更自然）
+  let sa = in.color.a * a * G.alpha;
+  return vec4<f32>(in.color.rgb * sa, sa);
 }
