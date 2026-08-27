@@ -1,4 +1,4 @@
-import { Assets } from 'pixi.js';
+import { Assets, Sprite } from 'pixi.js';
 import { TankLevelConfig } from './TankLevelConfig';
 import { Tile, TileBase } from './Tile';
 
@@ -16,6 +16,9 @@ export class TankLevel
 
     private async AysncInit():Promise<void>
     {
+
+        //先加载图集:
+
         const path = "MyRes/Levels/${this.nLevelIndex.toString().padStart(2, '0')}";
         const text = await Assets.load<string>(path);
         console.log(text);
@@ -48,13 +51,6 @@ export class TankLevel
             lines.push(line);
         }
 
-    //   tiles = new TileBase[nMaxWidth, lines.Count];
-    //    Tile.TileHeight = KSceneMgr.Game.GraphicsDevice.Viewport.Height / (float)Height;
-    //    Tile.TileWidth = Tile.TileHeight;
-    //    Tile.TileFloorY = KSceneMgr.Game.GraphicsDevice.Viewport.Height;
-    //    Tile.TileMinPosX = 0;
-    //    Tile.TileMaxPosX = nMaxWidth * Tile.TileWidth - KSceneMgr.Game.GraphicsDevice.Viewport.Width;
-
         for (let y = 0; y < TankLevelConfig.Height; y++)
         {
             for (let x = 0; x < TankLevelConfig.Width; ++x)
@@ -64,7 +60,7 @@ export class TankLevel
                 {
                     tileType = lines[y][x];
                 }
-                this.tiles[y][x] = LoadTile(tileType, x, y);
+                this.tiles[y][x] = this.LoadTile(tileType, x, y);
             }
         }
     }
@@ -77,26 +73,28 @@ export class TankLevel
             case ".":
                 return new Tile();
             case 'E': //敌人出生点
-                return LoadExitTile(x, y, TileCollision.Exit);
+                return this.LoadExitTile(x, y, TileCollision.Exit);
             case 'P': //玩家出生点
-                return LoadStartTile(x, y);
+                return this.LoadStartTile(x, y);
             
             case "#": //砖块
-                return LoadTile(x, y, mSpriteSheet_misc3Atlas, "misc-3_68", TileCollision.Impassable); 
+                return this.LoadTile(x, y, mSpriteSheet_misc3Atlas, "misc-3_68", TileCollision.Impassable); 
             case "*":  //铁板
-                return LoadTile(x, y, mSpriteSheet_misc3Atlas, "misc-3_68", TileCollision.Impassable);    
+                return this.LoadTile(x, y, mSpriteSheet_misc3Atlas, "misc-3_68", TileCollision.Impassable);    
             case "*":  //水
-                return LoadTile(x, y, mSpriteSheet_misc3Atlas, "misc-3_68", TileCollision.Impassable);    
+                return this.LoadTile(x, y, mSpriteSheet_misc3Atlas, "misc-3_68", TileCollision.Impassable);    
             default:
                 break;
         }
 
         throw "LoadTile error";
     }
-
+    
     private LoadTile2():TileBase
     {
-
+        let mTile = new Tile();
+        const middleground = Sprite.from("middleground.png");
+        return mTile;
     }
 
 }
