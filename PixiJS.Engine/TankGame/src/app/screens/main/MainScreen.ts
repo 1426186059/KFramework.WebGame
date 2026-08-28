@@ -11,6 +11,7 @@ import { Button } from "../../ui/Button";
 
 import { Bouncer } from "./Bouncer";
 import { ResCenter } from "../../Game/ResCenter";
+import { TankLevel } from "../../Game/TankLevel";
 
 /** The screen that holds the app */
 export class MainScreen extends Container {
@@ -25,10 +26,13 @@ export class MainScreen extends Container {
   private bouncer: Bouncer;
   private paused = false;
 
+  private mTankLevel:TankLevel;
   constructor() {
     super();
 
     ResCenter.GetSingleton().Init();
+    this.mTankLevel = new TankLevel();
+    this.mTankLevel.Init(0);
     
     this.mainContainer = new Container();
     this.addChild(this.mainContainer);

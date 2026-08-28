@@ -1,19 +1,34 @@
-import { Assets, Sprite, Texture } from 'pixi.js';
+import { Assets, Container, Sprite, Texture } from 'pixi.js';
 import { TankLevelConfig } from './TankLevelConfig';
 import { Tile, TileBase } from './Tile';
+import { engine } from '../getEngine';
+import { IDisposable } from '../../KFramework.PixiJS/Tool/IDisposable';
 
-export class TankLevel
+export class TankLevel implements IDisposable
 {
     private nLevelIndex:number = 0;
     private tiles:TileBase[][] = [];
 
+    private readonly SceneRoot:Container = new Container();
+    private _disoised:boolean = false;
+    public Dispose():void
+    {
+        if(!this._disoised)
+        {
+            this._disoised = true;
+            engine().stage.removeChild(this.SceneRoot);
+        }
+    }
+
     public Init(nLevelIndex:number):void
     {
-        //初始化 坦克关卡
+        this.Dispose();
+        this._disoised = false;
+        engine().stage.addChild(this.SceneRoot);
         this.nLevelIndex = nLevelIndex;
         this.AysncInit();
     }
-    
+
     private async AysncInit():Promise<void>
     {
         //先加载图集:
@@ -74,12 +89,12 @@ export class TankLevel
                 return this.LoadExitTile(x, y);
             case 'P': //玩家出生点
                 return this.LoadStartTile(x, y);
-
+            
             case "#": //砖块
                 return this.LoadCommonTile(x, y, "misc-3_68"); 
             case "*":  //铁板
                 return this.LoadCommonTile(x, y, "misc-3_68");    
-            case "*":  //水
+            case "~":  //水
                 return this.LoadCommonTile(x, y,  "misc-3_68");    
             default:
                 break;
@@ -93,6 +108,7 @@ export class TankLevel
         let mTile = new Tile();
         mTile.position.set(x, y);
         mTile.mSprite.texture = Texture.from(strName);
+        this.SceneRoot.addChild(mTile);
         return mTile;
     }
 
@@ -101,6 +117,7 @@ export class TankLevel
         let mTile = new Tile();
         mTile.position.set(x, y);
         //mTile.mSprite.texture = Texture.from(strName);
+        this.SceneRoot.addChild(mTile);
         return mTile;
     }
 
@@ -109,6 +126,8 @@ export class TankLevel
         let mTile = new Tile();
         mTile.position.set(x, y);
         //mTile.mSprite.texture = Texture.from(strName);
+        this.SceneRoot.addChild(mTile);
         return mTile;
     }
+
 }
