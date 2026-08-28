@@ -1,4 +1,4 @@
-import { Assets, Sprite } from 'pixi.js';
+import { Assets, Sprite, Texture } from 'pixi.js';
 import { TankLevelConfig } from './TankLevelConfig';
 import { Tile, TileBase } from './Tile';
 
@@ -13,15 +13,15 @@ export class TankLevel
         this.nLevelIndex = nLevelIndex;
         this.AysncInit();
     }
-
+    
     private async AysncInit():Promise<void>
     {
-
         //先加载图集:
-
         const path = "MyRes/Levels/${this.nLevelIndex.toString().padStart(2, '0')}";
         const text = await Assets.load<string>(path);
         console.log(text);
+        
+        this.LoadTiles(text);
     }
 
     private LoadTiles(content:string):void
@@ -71,16 +71,16 @@ export class TankLevel
             case ".":
                 return new Tile();
             case 'E': //敌人出生点
-                return this.LoadExitTile(x, y, TileCollision.Exit);
+                return this.LoadExitTile(x, y);
             case 'P': //玩家出生点
                 return this.LoadStartTile(x, y);
 
             case "#": //砖块
-                return this.LoadCommonTile(x, y, "misc-3_68", TileCollision.Impassable); 
+                return this.LoadCommonTile(x, y, "misc-3_68"); 
             case "*":  //铁板
-                return this.LoadCommonTile(x, y, "misc-3_68", TileCollision.Impassable);    
+                return this.LoadCommonTile(x, y, "misc-3_68");    
             case "*":  //水
-                return this.LoadCommonTile(x, y,  "misc-3_68", TileCollision.Impassable);    
+                return this.LoadCommonTile(x, y,  "misc-3_68");    
             default:
                 break;
         }
@@ -92,9 +92,23 @@ export class TankLevel
     {
         let mTile = new Tile();
         mTile.position.set(x, y);
-        mTile.mSprite = Sprite.from(strName);
-        mTile.parent = this;
+        mTile.mSprite.texture = Texture.from(strName);
         return mTile;
     }
 
+    private LoadStartTile(x:number, y:number):TileBase 
+    {
+        let mTile = new Tile();
+        mTile.position.set(x, y);
+        //mTile.mSprite.texture = Texture.from(strName);
+        return mTile;
+    }
+
+    private LoadExitTile(x:number, y:number):TileBase 
+    {
+        let mTile = new Tile();
+        mTile.position.set(x, y);
+        //mTile.mSprite.texture = Texture.from(strName);
+        return mTile;
+    }
 }

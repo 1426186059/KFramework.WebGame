@@ -7,5 +7,11 @@ export class TileBase extends Container
 
 export class Tile extends TileBase
 {
-    public mSprite:Sprite | null = null;
+    public readonly mSprite:Sprite = new Sprite();
+    constructor()
+    {
+        super();
+        this.addChild(this.mSprite);
+        this.mSprite.position.set(0, 0);
+    }
 }
