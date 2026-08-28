@@ -19,7 +19,7 @@ export class Bouncer {
   private yMax = 400;
   private xMin = -400;
   private xMax = 400;
-
+  
   public async show(screen: MainScreen): Promise<void> {
     this.screen = screen;
     for (let i = 0; i < Bouncer.LOGO_COUNT; i++) {

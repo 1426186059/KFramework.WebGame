@@ -1,1 +1,142 @@
-{"frames":{"misc_0":{"frame":{"x":1,"y":1,"w":14,"h":14},"rotated":false,"trimmed":false,"spriteSourceSize":{"x":0,"y":0,"w":14,"h":14},"sourceSize":{"w":14,"h":14}},"misc_1":{"frame":{"x":1,"y":17,"w":14,"h":14},"rotated":false,"trimmed":false,"spriteSourceSize":{"x":0,"y":0,"w":14,"h":14},"sourceSize":{"w":14,"h":14}},"misc_2":{"frame":{"x":1,"y":33,"w":14,"h":14},"rotated":false,"trimmed":false,"spriteSourceSize":{"x":0,"y":0,"w":14,"h":14},"sourceSize":{"w":14,"h":14}},"misc_3":{"frame":{"x":1,"y":49,"w":14,"h":14},"rotated":false,"trimmed":false,"spriteSourceSize":{"x":0,"y":0,"w":14,"h":14},"sourceSize":{"w":14,"h":14}},"misc_4":{"frame":{"x":17,"y":1,"w":14,"h":14},"rotated":false,"trimmed":false,"spriteSourceSize":{"x":0,"y":0,"w":14,"h":14},"sourceSize":{"w":14,"h":14}},"misc_5":{"frame":{"x":33,"y":1,"w":14,"h":14},"rotated":false,"trimmed":false,"spriteSourceSize":{"x":0,"y":0,"w":14,"h":14},"sourceSize":{"w":14,"h":14}}},"meta":{"image":"UIView_0.png","size":{"w":64,"h":64},"scale":1},"animations":{"misc":["misc_0","misc_1","misc_2","misc_3","misc_4","misc_5"]}}
+{
+    "frames": {
+        "misc_0": {
+            "frame": {
+                "x": 1,
+                "y": 1,
+                "w": 14,
+                "h": 14
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 14,
+                "h": 14
+            },
+            "sourceSize": {
+                "w": 14,
+                "h": 14
+            }
+        },
+        "misc_1": {
+            "frame": {
+                "x": 1,
+                "y": 17,
+                "w": 14,
+                "h": 14
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 14,
+                "h": 14
+            },
+            "sourceSize": {
+                "w": 14,
+                "h": 14
+            }
+        },
+        "misc_2": {
+            "frame": {
+                "x": 1,
+                "y": 33,
+                "w": 14,
+                "h": 14
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 14,
+                "h": 14
+            },
+            "sourceSize": {
+                "w": 14,
+                "h": 14
+            }
+        },
+        "misc_3": {
+            "frame": {
+                "x": 1,
+                "y": 49,
+                "w": 14,
+                "h": 14
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 14,
+                "h": 14
+            },
+            "sourceSize": {
+                "w": 14,
+                "h": 14
+            }
+        },
+        "misc_4": {
+            "frame": {
+                "x": 17,
+                "y": 1,
+                "w": 14,
+                "h": 14
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 14,
+                "h": 14
+            },
+            "sourceSize": {
+                "w": 14,
+                "h": 14
+            }
+        },
+        "misc_5": {
+            "frame": {
+                "x": 33,
+                "y": 1,
+                "w": 14,
+                "h": 14
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 14,
+                "h": 14
+            },
+            "sourceSize": {
+                "w": 14,
+                "h": 14
+            }
+        }
+    },
+    "meta": {
+        "image": "UIView_0.png",
+        "size": {
+            "w": 64,
+            "h": 64
+        },
+        "scale": 1
+    },
+    "animations": {
+        "misc": [
+            "misc_0",
+            "misc_1",
+            "misc_2",
+            "misc_3",
+            "misc_4",
+            "misc_5"
+        ]
+    }
+}

@@ -1,12 +1,11 @@
-export class TileBase
+import { Container, Sprite } from "pixi.js";
+
+export class TileBase extends Container
 {
     
 }
 
 export class Tile extends TileBase
 {
-    public Init(path:string):void
-    {
-        
-    }
+    public mSprite:Sprite | null = null;
 }

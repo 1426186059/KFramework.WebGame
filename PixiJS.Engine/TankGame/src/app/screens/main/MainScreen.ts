@@ -10,6 +10,7 @@ import { SettingsPopup } from "../../popups/SettingsPopup";
 import { Button } from "../../ui/Button";
 
 import { Bouncer } from "./Bouncer";
+import { ResCenter } from "../../Game/ResCenter";
 
 /** The screen that holds the app */
 export class MainScreen extends Container {
@@ -27,6 +28,8 @@ export class MainScreen extends Container {
   constructor() {
     super();
 
+    ResCenter.GetSingleton().Init();
+    
     this.mainContainer = new Container();
     this.addChild(this.mainContainer);
     this.bouncer = new Bouncer();

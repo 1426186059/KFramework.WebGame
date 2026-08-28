@@ -22,8 +22,6 @@ export class TankLevel
         const path = "MyRes/Levels/${this.nLevelIndex.toString().padStart(2, '0')}";
         const text = await Assets.load<string>(path);
         console.log(text);
-
-        
     }
 
     private LoadTiles(content:string):void
@@ -76,13 +74,13 @@ export class TankLevel
                 return this.LoadExitTile(x, y, TileCollision.Exit);
             case 'P': //玩家出生点
                 return this.LoadStartTile(x, y);
-            
+
             case "#": //砖块
-                return this.LoadTile(x, y, mSpriteSheet_misc3Atlas, "misc-3_68", TileCollision.Impassable); 
+                return this.LoadCommonTile(x, y, "misc-3_68", TileCollision.Impassable); 
             case "*":  //铁板
-                return this.LoadTile(x, y, mSpriteSheet_misc3Atlas, "misc-3_68", TileCollision.Impassable);    
+                return this.LoadCommonTile(x, y, "misc-3_68", TileCollision.Impassable);    
             case "*":  //水
-                return this.LoadTile(x, y, mSpriteSheet_misc3Atlas, "misc-3_68", TileCollision.Impassable);    
+                return this.LoadCommonTile(x, y,  "misc-3_68", TileCollision.Impassable);    
             default:
                 break;
         }
@@ -90,10 +88,12 @@ export class TankLevel
         throw "LoadTile error";
     }
     
-    private LoadTile2():TileBase
+    private LoadCommonTile(x:number, y:number, strName:string):TileBase 
     {
         let mTile = new Tile();
-        const middleground = Sprite.from("middleground.png");
+        mTile.position.set(x, y);
+        mTile.mSprite = Sprite.from(strName);
+        mTile.parent = this;
         return mTile;
     }
 

@@ -132,16 +132,20 @@ export class Navigation {
    * Hide current screen (if there is one) and present a new screen.
    * Any class that matches AppScreen interface can be used here.
    */
-  public async showScreen(ctor: AppScreenConstructor) {
+  public async showScreen(ctor: AppScreenConstructor) 
+  {
     // Block interactivity in current screen
-    if (this.currentScreen) {
+    if (this.currentScreen) 
+    {
       this.currentScreen.interactiveChildren = false;
     }
 
     // Load assets for the new screen, if available
-    if (ctor.assetBundles) {
+    if (ctor.assetBundles) 
+    {
       // Load all assets required by this new screen
-      await Assets.loadBundle(ctor.assetBundles, (progress) => {
+      await Assets.loadBundle(ctor.assetBundles, (progress) => 
+        {
         if (this.currentScreen?.onLoad) {
           this.currentScreen.onLoad(progress * 100);
         }
