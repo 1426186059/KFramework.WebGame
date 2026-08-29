@@ -66,6 +66,11 @@ export class TankLevel implements IDisposable
         for (let y = 0; y < TankLevelConfig.Height; y++)
         {
             this.tiles[y] = [];
+            if(lines[y] == undefined)
+            {
+                lines[y] = "";
+            }
+
             for (let x = 0; x < TankLevelConfig.Width; ++x)
             {
                 let tileType:string = " ";
@@ -76,6 +81,7 @@ export class TankLevel implements IDisposable
                 this.tiles[y][x] = this.LoadTile(tileType, x, y);
             }
         }
+
     }
     
     private LoadTile(tileType:string, x:number, y:number):TileBase
@@ -105,9 +111,10 @@ export class TankLevel implements IDisposable
     private LoadCommonTile(x:number, y:number, strName:string):TileBase 
     {
         let mTile = new Tile();
+        this.SceneRoot.addChild(mTile);
+        mTile.scale = new Point(1, 1);
         mTile.position = new Point(x, y);
         mTile.mSprite.texture = Texture.from(strName);
-        this.SceneRoot.addChild(mTile);
         return mTile;
     }
 

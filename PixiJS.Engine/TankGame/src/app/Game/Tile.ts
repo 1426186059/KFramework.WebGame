@@ -1,4 +1,4 @@
-import { Container, Sprite } from "pixi.js";
+import { Container, Point, Sprite } from "pixi.js";
 
 export class TileBase extends Container
 {
@@ -12,7 +12,8 @@ export class Tile extends TileBase
     {
         super();
         this.addChild(this.mSprite);
+        this.mSprite.scale = new Point(1, 1);
         this.mSprite.position.set(0, 0);
-        this.mSprite.setSize(100, 100);
+        this.mSprite.setSize(1, 1);
     }
 }
