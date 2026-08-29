@@ -106,7 +106,7 @@ export class TankLevel implements IDisposable
             case "":
             case " ":
             case ".":
-                return new Tile(this);
+                return new Tile(this, x, y);
             case 'E': //敌人出生点
                 return this.LoadExitTile(x, y);
             case 'P': //玩家出生点
@@ -148,7 +148,7 @@ export class TankLevel implements IDisposable
         this.SceneRoot.addChild(mTile);
         return mTile;
     }
-    
+
     public GetTilePos(x:number, y:number):Point 
     {
         let worldPos:Point = this.GameZoneLeftTop();
@@ -167,7 +167,7 @@ export class TankLevel implements IDisposable
         if(this.m_Background)
         {
             return new Point(
-                (engine().renderer.width - this.m_Background.width) / 2.0, 
+                (engine().renderer.width - this.GetTileWidth() * TankLevelConfig.Width) / 2.0, 
                 50);
         }
         else
