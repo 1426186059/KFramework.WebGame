@@ -1,4 +1,4 @@
-import { Assets, Container, Sprite, Texture } from 'pixi.js';
+import { Assets, Container, Point, Sprite, Texture } from 'pixi.js';
 import { TankLevelConfig } from './TankLevelConfig';
 import { Tile, TileBase } from './Tile';
 import { engine } from '../getEngine';
@@ -29,29 +29,28 @@ export class TankLevel implements IDisposable
         this.AysncInit();
     }
 
-    private async AysncInit():Promise<void>
+    private AysncInit():void
     {
         console.log("当前关卡:" + this.nLevelIndex);
         //先加载图集:
         const path = `main/MyRes/Levels/${this.nLevelIndex.toString().padStart(2, '0')}.txt`;
-        const text = await Assets.load<string>(path);
+        const text = Assets.get<string>(path);
         console.log(text);
-        
-        this.LoadTiles(text);
+        this.LoadLevel(text);
     }
 
-    private LoadTiles(content:string):void
+    private LoadLevel(content:string):void
     {
         let orilines: string[] = content.trim().split(/\r?\n/);
         let ignoreLineCount:number = 3;
         let nMaxWidth:number = 0;
-        let lines:Array<string> = [];
+        let lines:string[] = [];
 
         for (let i = 0; i < orilines.length; i++) 
         {
-            while (ignoreLineCount-- > 0)
+            if(ignoreLineCount-- > 0)
             {
-                
+                continue;
             }
 
             let line:string = orilines[i];
@@ -66,9 +65,10 @@ export class TankLevel implements IDisposable
 
         for (let y = 0; y < TankLevelConfig.Height; y++)
         {
+            this.tiles[y] = [];
             for (let x = 0; x < TankLevelConfig.Width; ++x)
             {
-                let tileType:string = ' ';
+                let tileType:string = " ";
                 if (x < lines[y].length)
                 {
                     tileType = lines[y][x];
@@ -77,11 +77,12 @@ export class TankLevel implements IDisposable
             }
         }
     }
-
+    
     private LoadTile(tileType:string, x:number, y:number):TileBase
     {
         switch (tileType)
         {
+            case "":
             case " ":
             case ".":
                 return new Tile();
@@ -97,16 +98,14 @@ export class TankLevel implements IDisposable
             case "~":  //水
                 return this.LoadCommonTile(x, y,  "Map_2");    
             default:
-                break;
+                throw "LoadTile error: " + tileType;
         }
-
-        throw "LoadTile error";
     }
     
     private LoadCommonTile(x:number, y:number, strName:string):TileBase 
     {
         let mTile = new Tile();
-        mTile.position.set(x, y);
+        mTile.position = new Point(x, y);
         mTile.mSprite.texture = Texture.from(strName);
         this.SceneRoot.addChild(mTile);
         return mTile;
