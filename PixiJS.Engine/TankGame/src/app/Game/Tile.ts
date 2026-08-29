@@ -1,19 +1,39 @@
 import { Container, Point, Sprite } from "pixi.js";
+import { TankLevel } from "./TankLevel";
 
 export class TileBase extends Container
 {
-    
+    public TileX:number;
+    public TileY:number;
+    public mTankLevel:TankLevel;
+    constructor(mTankLevel: TankLevel, x:number, y:number)
+    {
+        super();
+        this.mTankLevel = mTankLevel;
+        this.TileX = x;
+        this.TileY = y;
+    }
+
+    public resize():void
+    {
+
+    }
 }
 
 export class Tile extends TileBase
 {
     public readonly mSprite:Sprite = new Sprite();
-    constructor()
+    constructor(mTankLevel: TankLevel, x:number, y:number)
     {
-        super();
+        super(mTankLevel, x, y);
         this.addChild(this.mSprite);
-        this.mSprite.scale = new Point(1, 1);
-        this.mSprite.position.set(0, 0);
-        this.mSprite.setSize(1, 1);
+        this.resize();
     }
+
+    public override resize():void
+    {
+        this.scale = new Point(this.mTankLevel.fTileScaleCoef, this.mTankLevel.fTileScaleCoef);
+        this.position = this.mTankLevel.GetTilePos(this.TileX, this.TileY);
+    }
+
 }

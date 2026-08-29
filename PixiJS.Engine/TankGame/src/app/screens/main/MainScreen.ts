@@ -131,7 +131,7 @@ export class MainScreen extends Container {
     this.addButton.y = height - 75;
 
     this.bouncer.resize(width, height);
-    this.mTankLevel.resize(width, height);
+    this.mTankLevel.resize();
   }
 
   /** Show screen with animations */

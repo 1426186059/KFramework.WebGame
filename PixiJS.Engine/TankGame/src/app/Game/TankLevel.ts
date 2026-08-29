@@ -12,7 +12,7 @@ export class TankLevel implements IDisposable
     private readonly SceneRoot:Container = new Container();
     private _disoised:boolean = false;
     private  m_Background:Sprite | null = null;
-
+    public fTileScaleCoef:number = 1.0;
     constructor()
     {
         this.m_Background = null;
@@ -35,6 +35,7 @@ export class TankLevel implements IDisposable
         engine().stage.addChild(this.SceneRoot);
         this.SceneRoot.width = engine().renderer.width;
         this.SceneRoot.height = engine().renderer.height;
+        this.fTileScaleCoef = (engine().renderer.height - 100) / TankLevelConfig.Height / 32.0;
 
         this.nLevelIndex = nLevelIndex;
         this.AysncInit();
@@ -105,7 +106,7 @@ export class TankLevel implements IDisposable
             case "":
             case " ":
             case ".":
-                return new Tile();
+                return new Tile(this);
             case 'E': //敌人出生点
                 return this.LoadExitTile(x, y);
             case 'P': //玩家出生点
@@ -116,7 +117,9 @@ export class TankLevel implements IDisposable
             case "*":  //铁板
                 return this.LoadCommonTile(x, y, "Map_1");    
             case "~":  //水
-                return this.LoadCommonTile(x, y,  "Map_2");    
+                return this.LoadCommonTile(x, y,  "Map_2");
+            case "@":  //老窝
+                return this.LoadCommonTile(x, y,  "Map_5");     
             default:
                 throw "LoadTile error: " + tileType;
         }
@@ -124,20 +127,15 @@ export class TankLevel implements IDisposable
     
     private LoadCommonTile(x:number, y:number, strName:string):TileBase 
     {
-        let mTile = new Tile();
+        let mTile = new Tile(this, x, y);
         this.SceneRoot.addChild(mTile);
-        mTile.scale = new Point(1, 1);
-        mTile.angle = 0;
-        mTile.position = this.GetWorldPos(x, y);
         mTile.mSprite.texture = Texture.from(strName);
-        mTile.mSprite.scale = new Point(1, 1);
         return mTile;
     }
 
     private LoadStartTile(x:number, y:number):TileBase 
     {
-        let mTile = new Tile();
-        mTile.position = this.GetWorldPos(x, y);
+        let mTile = new Tile(this, x, y);
         //mTile.mSprite.texture = Texture.from(strName);
         this.SceneRoot.addChild(mTile);
         return mTile;
@@ -145,18 +143,17 @@ export class TankLevel implements IDisposable
 
     private LoadExitTile(x:number, y:number):TileBase 
     {
-        let mTile = new Tile();
-        mTile.position = this.GetWorldPos(x, y);
+        let mTile = new Tile(this, x, y);
         //mTile.mSprite.texture = Texture.from(strName);
         this.SceneRoot.addChild(mTile);
         return mTile;
     }
-
-    public GetWorldPos(x:number, y:number):Point 
+    
+    public GetTilePos(x:number, y:number):Point 
     {
         let worldPos:Point = this.GameZoneLeftTop();
-        worldPos.x += x * 32;
-        worldPos.y += y * 32;
+        worldPos.x += x * this.GetTileWidth();
+        worldPos.y += y * this.GetTileWidth();
         return worldPos;
     }
 
@@ -193,13 +190,26 @@ export class TankLevel implements IDisposable
         }
     }
 
-
-    public resize(width: number, height: number)
+    public GetTileWidth():number
     {
+        return 32 * this.fTileScaleCoef;
+    }
+
+    public resize()
+    {
+        this.fTileScaleCoef = (engine().renderer.height - 100) / TankLevelConfig.Height / 32.0;
         if(this.m_Background)
         {
             this.m_Background.position = this.GetBackGroundPos();
         }
+
+        this.SceneRoot.children.forEach(element => 
+        {
+            if(element instanceof TileBase)
+            {
+                element.resize();
+            }
+        });
     }
 
 }
