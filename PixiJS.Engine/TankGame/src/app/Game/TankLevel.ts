@@ -11,6 +11,13 @@ export class TankLevel implements IDisposable
 
     private readonly SceneRoot:Container = new Container();
     private _disoised:boolean = false;
+    private  m_Background:Sprite | null = null;
+
+    constructor()
+    {
+        this.m_Background = null;
+    }
+
     public Dispose():void
     {
         if(!this._disoised)
@@ -24,19 +31,32 @@ export class TankLevel implements IDisposable
     {
         this.Dispose();
         this._disoised = false;
+
         engine().stage.addChild(this.SceneRoot);
+        this.SceneRoot.width = engine().renderer.width;
+        this.SceneRoot.height = engine().renderer.height;
+
         this.nLevelIndex = nLevelIndex;
         this.AysncInit();
     }
 
     private AysncInit():void
-    {
+    {   
+        this.m_Background = new Sprite(Texture.from("main/MyRes/Textures/BackGround.jpg"));
+        this.SceneRoot.addChild(this.m_Background);
+        this.m_Background.scale = new Point(4, 4);
+        this.m_Background.position.set(
+            (engine().renderer.width - this.m_Background.width) / 2.0, 
+            (engine().renderer.height - this.m_Background.height) / 2.0);
+        
+        
         console.log("当前关卡:" + this.nLevelIndex);
         //先加载图集:
         const path = `main/MyRes/Levels/${this.nLevelIndex.toString().padStart(2, '0')}.txt`;
         const text = Assets.get<string>(path);
         console.log(text);
         this.LoadLevel(text);
+        
     }
 
     private LoadLevel(content:string):void
@@ -113,9 +133,10 @@ export class TankLevel implements IDisposable
         let mTile = new Tile();
         this.SceneRoot.addChild(mTile);
         mTile.scale = new Point(1, 1);
+        mTile.angle = 0;
         mTile.position = this.GetWorldPos(x, y);
         mTile.mSprite.texture = Texture.from(strName);
-        mTile.mSprite.scale = new Point(0.8, 0.8);
+        mTile.mSprite.scale = new Point(1, 1);
         return mTile;
     }
 
@@ -123,7 +144,7 @@ export class TankLevel implements IDisposable
     {
         let mTile = new Tile();
         mTile.position = this.GetWorldPos(x, y);
-        //mTile.mSprite.texture = Texture.from(strName);
+        mTile.mSprite.texture = Texture.from(strName);
         this.SceneRoot.addChild(mTile);
         return mTile;
     }
@@ -132,14 +153,44 @@ export class TankLevel implements IDisposable
     {
         let mTile = new Tile();
         mTile.position = this.GetWorldPos(x, y);
-        //mTile.mSprite.texture = Texture.from(strName);
+        mTile.mSprite.texture = Texture.from(strName);
         this.SceneRoot.addChild(mTile);
         return mTile;
     }
-
+    
     public GetWorldPos(x:number, y:number):Point 
     {
-        return new Point(x * 32, y * 32);
+        let worldPos:Point = this.GameZoneLeftTop();
+        worldPos.x += x * 32;
+        worldPos.y += y * 32;
+        return worldPos;
+    }
+
+    private ScreenCenter():Point
+    {
+        return new Point(engine().renderer.width / 2.0,  engine().renderer.height / 2.0);
+    }
+    
+    private GameZoneLeftTop():Point
+    {
+        if(this.m_Background)
+        {
+            return new Point(
+                (engine().renderer.width - this.m_Background.width) / 2.0, 
+                (engine().renderer.height - this.m_Background.height) / 2.0);
+        }
+        else
+        {
+            return new Point(0, 0);
+        }
+    }
+
+    public resize(width: number, height: number)
+    {
+        if(this.m_Background)
+        {
+            this.m_Background.position = this.GameZoneLeftTop();
+        }
     }
 
 }
