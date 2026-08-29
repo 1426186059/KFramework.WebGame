@@ -113,15 +113,16 @@ export class TankLevel implements IDisposable
         let mTile = new Tile();
         this.SceneRoot.addChild(mTile);
         mTile.scale = new Point(1, 1);
-        mTile.position = new Point(x, y);
+        mTile.position = this.GetWorldPos(x, y);
         mTile.mSprite.texture = Texture.from(strName);
+        mTile.mSprite.scale = new Point(0.8, 0.8);
         return mTile;
     }
 
     private LoadStartTile(x:number, y:number):TileBase 
     {
         let mTile = new Tile();
-        mTile.position.set(x, y);
+        mTile.position = this.GetWorldPos(x, y);
         //mTile.mSprite.texture = Texture.from(strName);
         this.SceneRoot.addChild(mTile);
         return mTile;
@@ -130,10 +131,15 @@ export class TankLevel implements IDisposable
     private LoadExitTile(x:number, y:number):TileBase 
     {
         let mTile = new Tile();
-        mTile.position.set(x, y);
+        mTile.position = this.GetWorldPos(x, y);
         //mTile.mSprite.texture = Texture.from(strName);
         this.SceneRoot.addChild(mTile);
         return mTile;
+    }
+
+    public GetWorldPos(x:number, y:number):Point 
+    {
+        return new Point(x * 32, y * 32);
     }
 
 }
