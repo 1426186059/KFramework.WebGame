@@ -44,19 +44,14 @@ export class TankLevel implements IDisposable
     {   
         this.m_Background = new Sprite(Texture.from("main/MyRes/Textures/BackGround.jpg"));
         this.SceneRoot.addChild(this.m_Background);
-        this.m_Background.scale = new Point(4, 4);
-        this.m_Background.position.set(
-            (engine().renderer.width - this.m_Background.width) / 2.0, 
-            (engine().renderer.height - this.m_Background.height) / 2.0);
-        
+        this.m_Background.scale = new Point(5, 4);
+        this.m_Background.position = this.GameZoneLeftTop();
         
         console.log("当前关卡:" + this.nLevelIndex);
-        //先加载图集:
         const path = `main/MyRes/Levels/${this.nLevelIndex.toString().padStart(2, '0')}.txt`;
         const text = Assets.get<string>(path);
         console.log(text);
         this.LoadLevel(text);
-        
     }
 
     private LoadLevel(content:string):void
@@ -74,7 +69,6 @@ export class TankLevel implements IDisposable
             }
 
             let line:string = orilines[i];
-            console.log(line);
             if(line.length > nMaxWidth)
             {
                 nMaxWidth = line.length;
@@ -144,7 +138,7 @@ export class TankLevel implements IDisposable
     {
         let mTile = new Tile();
         mTile.position = this.GetWorldPos(x, y);
-        mTile.mSprite.texture = Texture.from(strName);
+        //mTile.mSprite.texture = Texture.from(strName);
         this.SceneRoot.addChild(mTile);
         return mTile;
     }
@@ -153,11 +147,11 @@ export class TankLevel implements IDisposable
     {
         let mTile = new Tile();
         mTile.position = this.GetWorldPos(x, y);
-        mTile.mSprite.texture = Texture.from(strName);
+        //mTile.mSprite.texture = Texture.from(strName);
         this.SceneRoot.addChild(mTile);
         return mTile;
     }
-    
+
     public GetWorldPos(x:number, y:number):Point 
     {
         let worldPos:Point = this.GameZoneLeftTop();
@@ -177,7 +171,7 @@ export class TankLevel implements IDisposable
         {
             return new Point(
                 (engine().renderer.width - this.m_Background.width) / 2.0, 
-                (engine().renderer.height - this.m_Background.height) / 2.0);
+                50);
         }
         else
         {
