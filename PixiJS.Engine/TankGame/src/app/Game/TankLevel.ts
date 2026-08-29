@@ -44,8 +44,8 @@ export class TankLevel implements IDisposable
     {   
         this.m_Background = new Sprite(Texture.from("main/MyRes/Textures/BackGround.jpg"));
         this.SceneRoot.addChild(this.m_Background);
-        this.m_Background.scale = new Point(5, 4);
-        this.m_Background.position = this.GameZoneLeftTop();
+        this.m_Background.scale = new Point(5, 5);
+        this.m_Background.position = this.GetBackGroundPos();
         
         console.log("当前关卡:" + this.nLevelIndex);
         const path = `main/MyRes/Levels/${this.nLevelIndex.toString().padStart(2, '0')}.txt`;
@@ -178,12 +178,27 @@ export class TankLevel implements IDisposable
             return new Point(0, 0);
         }
     }
+    
+    private GetBackGroundPos():Point
+    {
+        if(this.m_Background)
+        {
+            return new Point(
+                (engine().renderer.width - this.m_Background.width) / 2.0, 
+                (engine().renderer.height - this.m_Background.height) / 2.0);
+        }
+        else
+        {
+            return new Point(0, 0);
+        }
+    }
+
 
     public resize(width: number, height: number)
     {
         if(this.m_Background)
         {
-            this.m_Background.position = this.GameZoneLeftTop();
+            this.m_Background.position = this.GetBackGroundPos();
         }
     }
 
