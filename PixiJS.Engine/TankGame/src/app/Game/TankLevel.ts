@@ -31,8 +31,9 @@ export class TankLevel implements IDisposable
 
     private async AysncInit():Promise<void>
     {
+        console.log("当前关卡:" + this.nLevelIndex);
         //先加载图集:
-        const path = "MyRes/Levels/${this.nLevelIndex.toString().padStart(2, '0')}";
+        const path = `main/MyRes/Levels/${this.nLevelIndex.toString().padStart(2, '0')}.txt`;
         const text = await Assets.load<string>(path);
         console.log(text);
         
@@ -42,7 +43,6 @@ export class TankLevel implements IDisposable
     private LoadTiles(content:string):void
     {
         let orilines: string[] = content.trim().split(/\r?\n/);
-        let width:number = 0;
         let ignoreLineCount:number = 3;
         let nMaxWidth:number = 0;
         let lines:Array<string> = [];
@@ -91,11 +91,11 @@ export class TankLevel implements IDisposable
                 return this.LoadStartTile(x, y);
             
             case "#": //砖块
-                return this.LoadCommonTile(x, y, "misc-3_68"); 
+                return this.LoadCommonTile(x, y, "Map_0"); 
             case "*":  //铁板
-                return this.LoadCommonTile(x, y, "misc-3_68");    
+                return this.LoadCommonTile(x, y, "Map_1");    
             case "~":  //水
-                return this.LoadCommonTile(x, y,  "misc-3_68");    
+                return this.LoadCommonTile(x, y,  "Map_2");    
             default:
                 break;
         }

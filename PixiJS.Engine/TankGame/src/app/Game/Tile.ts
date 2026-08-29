@@ -13,5 +13,6 @@ export class Tile extends TileBase
         super();
         this.addChild(this.mSprite);
         this.mSprite.position.set(0, 0);
+        this.mSprite.setSize(100, 100);
     }
 }
