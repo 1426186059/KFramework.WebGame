@@ -7,8 +7,6 @@ import { TankDirection } from "./TankLevelConfig";
 
 export class Tank_My extends TileBase  implements IDisposable
 {
-    public readonly mSprite:Sprite = new Sprite();
-
     private readonly fMoveSpeed:number = 5;
     private readonly fAniSpeed:number = 0.12;
     private mDirection:TankDirection = TankDirection.UP;
@@ -37,9 +35,8 @@ export class Tank_My extends TileBase  implements IDisposable
     constructor(mTankLevel: TankLevel, x:number, y:number)
     {
         super(mTankLevel, x, y);
-        this.addChild(this.mSprite);
         this.resize();
-
+        
         this.nTankType = 0;
         this.SwitchTankType(this.nTankType);
         this.AddKeyboard();
