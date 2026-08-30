@@ -1,8 +1,10 @@
-import { Assets, Container, Point, Sprite, Texture } from 'pixi.js';
+import { Assets, Container, Point, Sprite, Texture, Ticker } from 'pixi.js';
 import { TankLevelConfig } from './TankLevelConfig';
 import { Tile, TileBase } from './Tile';
 import { engine } from '../getEngine';
 import { IDisposable } from '../../KFramework.PixiJS/Tool/IDisposable';
+import { Tank_My } from './Tank_My';
+import { Tank_Enemy } from './Tank_Enemy';
 
 export class TankLevel implements IDisposable
 {
@@ -108,9 +110,9 @@ export class TankLevel implements IDisposable
             case ".":
                 return new Tile(this, x, y);
             case 'E': //敌人出生点
-                return this.LoadExitTile(x, y);
+                return this.LoadEnemyTile(x, y);
             case 'P': //玩家出生点
-                return this.LoadStartTile(x, y);
+                return this.LoadPlayerTile(x, y);
             
             case "#": //砖块
                 return this.LoadCommonTile(x, y, "Map_0"); 
@@ -133,18 +135,16 @@ export class TankLevel implements IDisposable
         return mTile;
     }
 
-    private LoadStartTile(x:number, y:number):TileBase 
+    private LoadPlayerTile(x:number, y:number):TileBase 
     {
-        let mTile = new Tile(this, x, y);
-        //mTile.mSprite.texture = Texture.from(strName);
+        let mTile = new Tank_My(this, x, y);
         this.SceneRoot.addChild(mTile);
         return mTile;
     }
 
-    private LoadExitTile(x:number, y:number):TileBase 
+    private LoadEnemyTile(x:number, y:number):TileBase 
     {
-        let mTile = new Tile(this, x, y);
-        //mTile.mSprite.texture = Texture.from(strName);
+        let mTile = new Tank_Enemy(this, x, y);
         this.SceneRoot.addChild(mTile);
         return mTile;
     }
@@ -211,5 +211,15 @@ export class TankLevel implements IDisposable
             }
         });
     }
-
+    
+    public update(_time: Ticker) 
+    {
+        this.SceneRoot.children.forEach(element => 
+        {
+            if(element instanceof TileBase)
+            {
+                element.update(_time);
+            }
+        });
+    }
 }

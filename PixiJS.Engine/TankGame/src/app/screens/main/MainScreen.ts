@@ -97,6 +97,7 @@ export class MainScreen extends Container {
   public update(_time: Ticker) {
     if (this.paused) return;
     this.bouncer.update();
+    this.mTankLevel.update(_time);
   }
 
   /** Pause gameplay - automatically fired when a popup is presented */

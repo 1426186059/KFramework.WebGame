@@ -3,18 +3,22 @@ import { TankLevel } from "./TankLevel";
 import { TileBase } from "./Tile";
 import { engine } from "../getEngine";
 import { IDisposable } from "../../KFramework.PixiJS/Tool/IDisposable";
+import { TankDirection } from "./TankLevelConfig";
 
 export class Tank_My extends TileBase  implements IDisposable
 {
     public readonly mSprite:Sprite = new Sprite();
 
     private readonly fMoveSpeed:number = 50;
+    private readonly fAniSpeed:number = 0.12;
+    private mDirection:TankDirection = TankDirection.UP;
     private nTankType:number = 0;
-    private readonly Animation_Up:AnimatedSprite = new AnimatedSprite([]);
-    private readonly Animation_Down:AnimatedSprite= new AnimatedSprite([]);
-    private readonly Animation_Left:AnimatedSprite= new AnimatedSprite([]);
-    private readonly Animation_Right:AnimatedSprite= new AnimatedSprite([]);
-    
+    private Animation_Up:Texture[] | null = null;
+    private Animation_Down:Texture[] | null = null;
+    private Animation_Left:Texture[] | null = null;
+    private Animation_Right:Texture[] | null = null;
+    private mAnimationPlayer:AnimatedSprite | null = null;
+
     private readonly Keys = 
     {
         w: false,
@@ -31,23 +35,6 @@ export class Tank_My extends TileBase  implements IDisposable
 
         this.nTankType = 0;
         this.SwitchTankType(this.nTankType);
-
-        this.Animation_Up.animationSpeed = 0.12;      // 帧速率（12 FPS）
-        this.Animation_Up.loop = true;
-        this.addChild(this.Animation_Up);
-
-        this.Animation_Down.animationSpeed = 0.12;      // 帧速率（12 FPS）
-        this.Animation_Down.loop = true;
-        this.addChild(this.Animation_Down);
-
-        this.Animation_Left.animationSpeed = 0.12;      // 帧速率（12 FPS）
-        this.Animation_Left.loop = true;
-        this.addChild(this.Animation_Left);
-
-        this.Animation_Right.animationSpeed = 0.12;      // 帧速率（12 FPS）
-        this.Animation_Right.loop = true;
-        this.addChild(this.Animation_Right);
-
         this.AddKeyboard();
     }
 
@@ -63,6 +50,7 @@ export class Tank_My extends TileBase  implements IDisposable
     
     public update(_time: Ticker) 
     {
+        console.log("Tank_My update");
         if (this.Keys.w) 
         {
             this.position.y -= this.fMoveSpeed * _time.deltaTime;
@@ -93,17 +81,60 @@ export class Tank_My extends TileBase  implements IDisposable
         let mSprite6:Texture = Texture.from(`Player1_${nType * 2 + 17}`);
         let mSprite7:Texture = Texture.from(`Player1_${nType * 2 + 24}`);
         let mSprite8:Texture = Texture.from(`Player1_${nType * 2 + 25}`);
+
+        console.assert(mSprite1 != null, "mSprite1 is null");
+        console.assert(mSprite2 != null, "mSprite2 is null");
+        console.assert(mSprite3 != null, "mSprite3 is null");
+        console.assert(mSprite4 != null, "mSprite4 is null");
+        console.assert(mSprite5 != null, "mSprite5 is null");
+        console.assert(mSprite6 != null, "mSprite6 is null");
+        console.assert(mSprite7 != null, "mSprite7 is null");
+        console.assert(mSprite8 != null, "mSprite8 is null");
         
-        this.Animation_Up.textures = [mSprite1, mSprite2];
-        this.Animation_Right.textures = [mSprite3, mSprite4];
-        this.Animation_Down.textures = [mSprite5, mSprite6];
-        this.Animation_Left.textures = [mSprite7, mSprite8];
+        this.Animation_Up = [mSprite1, mSprite2];
+        this.Animation_Down = [mSprite5, mSprite6];
+        this.Animation_Left = [mSprite7, mSprite8];
+        this.Animation_Right = [mSprite3, mSprite4];
+
+        if(this.mDirection == TankDirection.UP)
+        {
+            this.PlayAnimation(this.Animation_Up);
+        }
+        else if(this.mDirection == TankDirection.DOWN)
+        {
+            this.PlayAnimation(this.Animation_Down);
+        }
+        else if(this.mDirection == TankDirection.LEFT)
+        {
+            this.PlayAnimation(this.Animation_Left);
+        }
+        else if(this.mDirection == TankDirection.RIGHT)
+        {
+            this.PlayAnimation(this.Animation_Right);
+        }
+
     }
+
+    public PlayAnimation(mFrameArray:Texture[] ):void
+    {
+        if(this.mAnimationPlayer != null)
+        {
+            this.mAnimationPlayer.textures = mFrameArray;
+        }
+        else
+        {
+            this.mAnimationPlayer = new AnimatedSprite(mFrameArray);
+            this.mAnimationPlayer.animationSpeed = this.fAniSpeed;
+            this.mAnimationPlayer.loop = true;
+            this.addChild(this.mAnimationPlayer);
+        }
+    }
+
 
     private AddKeyboard():void
     {
-        window.addEventListener('keydown', this.OnKeyDown);
-        window.addEventListener('keyup', this.OnKeyUp);
+        window.addEventListener('keydown', this.OnKeyDown.bind(this));
+        window.addEventListener('keyup', this.OnKeyUp.bind(this));
     }
 
     private RemoveKeyboard():void

@@ -1,4 +1,4 @@
-import { Container, Point, Sprite } from "pixi.js";
+import { Container, Point, Sprite, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
 
 export class TileBase extends Container
@@ -18,6 +18,11 @@ export class TileBase extends Container
     {
         this.scale = new Point(this.mTankLevel.fTileScaleCoef, this.mTankLevel.fTileScaleCoef);
         this.position = this.mTankLevel.GetTilePos(this.TileX, this.TileY);
+    }
+    
+    public update(_time: Ticker) 
+    {
+        
     }
 }
 
