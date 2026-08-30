@@ -38,7 +38,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
         super.resize();
     }
     
-    public update(_time: Ticker) 
+    public override update(_time: Ticker) 
     {
         let dir:TankDirection = this.mDirection;
         let bMove = this.bMoveing;

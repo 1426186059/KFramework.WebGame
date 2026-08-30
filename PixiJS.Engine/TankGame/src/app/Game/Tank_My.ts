@@ -52,7 +52,7 @@ export class Tank_My extends TileBase  implements IDisposable
         super.resize();
     }
     
-    public update(_time: Ticker) 
+    public override update(_time: Ticker) 
     {
         let bMove:boolean = false;
         let dir:TankDirection = this.mDirection;
