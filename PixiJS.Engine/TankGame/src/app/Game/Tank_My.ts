@@ -12,6 +12,8 @@ export class Tank_My extends TileBase  implements IDisposable
     private readonly fMoveSpeed:number = 5;
     private readonly fAniSpeed:number = 0.12;
     private mDirection:TankDirection = TankDirection.UP;
+    private bMoveing:boolean = false;
+
     private nTankType:number = 0;
     private Animation_Up:Texture[] | null = null;
     private Animation_Down:Texture[] | null = null;
@@ -24,7 +26,12 @@ export class Tank_My extends TileBase  implements IDisposable
         w: false,
         a: false,
         s: false,
-        d: false
+        d: false,
+        ArrowUp: false,
+        ArrowDown: false,
+        ArrowLeft: false,
+        ArrowRight: false,
+        " ": false,
     };
 
     constructor(mTankLevel: TankLevel, x:number, y:number)
@@ -50,22 +57,56 @@ export class Tank_My extends TileBase  implements IDisposable
     
     public update(_time: Ticker) 
     {
-        console.log("Tank_My update");
-        if (this.Keys.w) 
+        let bMove:boolean = false;
+        let dir:TankDirection = this.mDirection;
+        if (this.Keys.w || this.Keys.ArrowUp) 
         {
             this.position.y -= this.fMoveSpeed * _time.deltaTime;
+            bMove = true;
+            dir = TankDirection.UP;
         }
-        if (this.Keys.s) 
+        else if (this.Keys.s || this.Keys.ArrowDown) 
         {
             this.position.y += this.fMoveSpeed * _time.deltaTime;
+            bMove = true;
+            dir = TankDirection.DOWN;
         }
-        if (this.Keys.a) 
+        else if (this.Keys.a || this.Keys.ArrowLeft) 
         {
             this.position.x -= this.fMoveSpeed * _time.deltaTime;
+            bMove = true;
+            dir = TankDirection.LEFT;
         }
-        if (this.Keys.d) 
+        else if (this.Keys.d || this.Keys.ArrowRight) 
         {
             this.position.x += this.fMoveSpeed * _time.deltaTime;
+            bMove = true;
+            dir = TankDirection.RIGHT;
+        }
+
+        if (this.Keys[" "]) 
+        {
+            //发射子弹
+        }
+
+        if(this.mDirection != dir)
+        {
+            this.mDirection = dir;
+            this.SwitchTankType (this.nTankType);
+            this.mAnimationPlayer?.gotoAndPlay(0);
+        }
+
+        if(bMove != this.bMoveing)
+        {
+            this.bMoveing = bMove;
+            if(this.bMoveing)
+            {
+                this.mAnimationPlayer?.play();
+            }
+            else
+            {
+                this.mAnimationPlayer?.stop();
+            }
         }
     }
 
@@ -98,24 +139,24 @@ export class Tank_My extends TileBase  implements IDisposable
 
         if(this.mDirection == TankDirection.UP)
         {
-            this.PlayAnimation(this.Animation_Up);
+            this.SetAnimation(this.Animation_Up);
         }
         else if(this.mDirection == TankDirection.DOWN)
         {
-            this.PlayAnimation(this.Animation_Down);
+            this.SetAnimation(this.Animation_Down);
         }
         else if(this.mDirection == TankDirection.LEFT)
         {
-            this.PlayAnimation(this.Animation_Left);
+            this.SetAnimation(this.Animation_Left);
         }
         else if(this.mDirection == TankDirection.RIGHT)
         {
-            this.PlayAnimation(this.Animation_Right);
+            this.SetAnimation(this.Animation_Right);
         }
 
     }
 
-    public PlayAnimation(mFrameArray:Texture[] ):void
+    public SetAnimation(mFrameArray:Texture[] ):void
     {
         if(this.mAnimationPlayer != null)
         {
@@ -128,7 +169,6 @@ export class Tank_My extends TileBase  implements IDisposable
             this.mAnimationPlayer.loop = true;
             this.addChild(this.mAnimationPlayer);
         }
-        this.mAnimationPlayer.play();
     }
 
 

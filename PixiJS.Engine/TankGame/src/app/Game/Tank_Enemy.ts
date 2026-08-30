@@ -9,7 +9,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
 {
     private readonly fMoveSpeed:number = 50;
     private readonly fAniSpeed:number = 0.12;
-    private mDirection:TankDirection = TankDirection.UP;
+    private mDirection:TankDirection = TankDirection.DOWN;
     
     private nTankType:number = 0;
     private Animation_Up:Texture[] | null = null;
