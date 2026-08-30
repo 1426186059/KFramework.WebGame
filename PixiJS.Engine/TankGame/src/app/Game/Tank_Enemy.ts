@@ -85,7 +85,6 @@ export class Tank_Enemy extends TileBase  implements IDisposable
         {
             this.PlayAnimation(this.Animation_Right);
         }
-
     }
 
     public PlayAnimation(mFrameArray:Texture[] ):void
@@ -101,6 +100,8 @@ export class Tank_Enemy extends TileBase  implements IDisposable
             this.mAnimationPlayer.loop = true;
             this.addChild(this.mAnimationPlayer);
         }
+
+        this.mAnimationPlayer.play();
     }
 
 }

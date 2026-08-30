@@ -9,7 +9,7 @@ export class Tank_My extends TileBase  implements IDisposable
 {
     public readonly mSprite:Sprite = new Sprite();
 
-    private readonly fMoveSpeed:number = 50;
+    private readonly fMoveSpeed:number = 5;
     private readonly fAniSpeed:number = 0.12;
     private mDirection:TankDirection = TankDirection.UP;
     private nTankType:number = 0;
@@ -128,6 +128,7 @@ export class Tank_My extends TileBase  implements IDisposable
             this.mAnimationPlayer.loop = true;
             this.addChild(this.mAnimationPlayer);
         }
+        this.mAnimationPlayer.play();
     }
 
 
