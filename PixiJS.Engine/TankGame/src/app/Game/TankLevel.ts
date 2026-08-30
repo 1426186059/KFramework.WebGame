@@ -1,4 +1,4 @@
-import { Assets, Container, Point, Sprite, Texture, Ticker } from 'pixi.js';
+import { Assets, Container, Graphics, Point, Sprite, Texture, Ticker } from 'pixi.js';
 import { TankLevelConfig } from './TankLevelConfig';
 import { Tile, TileBase } from './Tile';
 import { engine } from '../getEngine';
@@ -49,12 +49,19 @@ export class TankLevel implements IDisposable
         this.SceneRoot.addChild(this.m_Background);
         this.m_Background.scale = new Point(5, 5);
         this.m_Background.position = this.GetBackGroundPos();
+        this.m_Background.tint = 0x00FF00;
+        
+        // const g = new Graphics();
+        // g.rect(this.m_Background.position.x,  this.m_Background.position.y, this.m_Background.width, this.m_Background.height);
+        // g.fill(0x00FF00, 0.5);
+        // this.SceneRoot.addChild(g);
         
         console.log("当前关卡:" + this.nLevelIndex);
         const path = `main/MyRes/Levels/${this.nLevelIndex.toString().padStart(2, '0')}.txt`;
         const text = Assets.get<string>(path);
         console.log(text);
         this.LoadLevel(text);
+
     }
 
     private LoadLevel(content:string):void
