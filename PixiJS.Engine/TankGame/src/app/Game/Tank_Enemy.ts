@@ -24,8 +24,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
     {
         super(mTankLevel, x, y);
         this.resize();
-
-        this.nTankType = 0;
+        this.nTankType = randomInt(0, 7);
         this.SwitchTankType(this.nTankType);
     }
 
@@ -43,7 +42,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
     {
         let dir:TankDirection = this.mDirection;
         let bMove = this.bMoveing;
-        
+
         this.DoAIThink(_time);
         if(this.bMoveing)
         {
@@ -69,17 +68,15 @@ export class Tank_Enemy extends TileBase  implements IDisposable
         {
             //发射子弹
         }
-
+        
         if(this.mDirection != dir)
         {
-            this.mDirection = dir;
             this.SwitchTankType (this.nTankType);
             this.mAnimationPlayer?.gotoAndPlay(0);
         }
 
         if(bMove != this.bMoveing)
         {
-            this.bMoveing = bMove;
             if(this.bMoveing)
             {
                 this.mAnimationPlayer?.play();
@@ -95,17 +92,17 @@ export class Tank_Enemy extends TileBase  implements IDisposable
     {
         this.nTankType = nType;
 
-        let mSprite1:Texture = Texture.from(`Player1_${nType * 2 + 0}`);
-        let mSprite2:Texture = Texture.from(`Player1_${nType * 2 + 1}`);
-        let mSprite3:Texture = Texture.from(`Player1_${nType * 2 + 8}`);
-        let mSprite4:Texture = Texture.from(`Player1_${nType * 2 + 9}`);
-        let mSprite5:Texture = Texture.from(`Player1_${nType * 2 + 16}`);
-        let mSprite6:Texture = Texture.from(`Player1_${nType * 2 + 17}`);
-        let mSprite7:Texture = Texture.from(`Player1_${nType * 2 + 24}`);
-        let mSprite8:Texture = Texture.from(`Player1_${nType * 2 + 25}`);
+        let Offset:number = Math.trunc(nType / 4) * 32;
+        let mSprite1:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 0}`);
+        let mSprite2:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 1}`);
+        let mSprite3:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 8}`);
+        let mSprite4:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 9}`);
+        let mSprite5:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 16}`);
+        let mSprite6:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 17}`);
+        let mSprite7:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 24}`);
+        let mSprite8:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 25}`);
 
         console.assert(mSprite1 != null, "mSprite1 is null");
-        console.assert(mSprite2 != null, "mSprite2 is null");
         console.assert(mSprite3 != null, "mSprite3 is null");
         console.assert(mSprite4 != null, "mSprite4 is null");
         console.assert(mSprite5 != null, "mSprite5 is null");
@@ -114,9 +111,9 @@ export class Tank_Enemy extends TileBase  implements IDisposable
         console.assert(mSprite8 != null, "mSprite8 is null");
         
         this.Animation_Up = [mSprite1, mSprite2];
+        this.Animation_Right = [mSprite3, mSprite4];
         this.Animation_Down = [mSprite5, mSprite6];
         this.Animation_Left = [mSprite7, mSprite8];
-        this.Animation_Right = [mSprite3, mSprite4];
 
         if(this.mDirection == TankDirection.UP)
         {
