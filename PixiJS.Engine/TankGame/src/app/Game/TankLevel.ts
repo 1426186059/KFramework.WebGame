@@ -51,6 +51,7 @@ export class TankLevel implements IDisposable
         this.m_Background.position = this.GetBackGroundPos();
         this.m_Background.tint = 0x00FF00;
         
+        //坦克图背景是个黑图，不是透明的
         // const g = new Graphics();
         // g.rect(this.m_Background.position.x,  this.m_Background.position.y, this.m_Background.width, this.m_Background.height);
         // g.fill(0x00FF00, 0.5);
