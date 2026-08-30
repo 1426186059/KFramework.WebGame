@@ -16,7 +16,8 @@ export class TileBase extends Container
 
     public resize():void
     {
-
+        this.scale = new Point(this.mTankLevel.fTileScaleCoef, this.mTankLevel.fTileScaleCoef);
+        this.position = this.mTankLevel.GetTilePos(this.TileX, this.TileY);
     }
 }
 
@@ -32,8 +33,7 @@ export class Tile extends TileBase
 
     public override resize():void
     {
-        this.scale = new Point(this.mTankLevel.fTileScaleCoef, this.mTankLevel.fTileScaleCoef);
-        this.position = this.mTankLevel.GetTilePos(this.TileX, this.TileY);
+        super.resize();
     }
 
 }

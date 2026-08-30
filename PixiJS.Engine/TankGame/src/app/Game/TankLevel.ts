@@ -117,9 +117,9 @@ export class TankLevel implements IDisposable
             case "*":  //铁板
                 return this.LoadCommonTile(x, y, "Map_1");    
             case "~":  //水
-                return this.LoadCommonTile(x, y,  "Map_2");
+                return this.LoadCommonTile(x, y, "Map_2");
             case "@":  //老窝
-                return this.LoadCommonTile(x, y,  "Map_5");     
+                return this.LoadCommonTile(x, y, "Map_5");     
             default:
                 throw "LoadTile error: " + tileType;
         }
