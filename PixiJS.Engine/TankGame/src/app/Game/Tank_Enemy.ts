@@ -1,10 +1,11 @@
-import { AnimatedSprite, Container, Point, Sprite, Texture, Ticker } from "pixi.js";
+import { AnimatedSprite, Bounds, Container, Point, Sprite, Texture, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
-import { TileBase } from "./Tile";
+import { Tile, TileBase } from "./Tile";
 import { engine } from "../getEngine";
 import { IDisposable } from "../../KFramework.PixiJS/Tool/IDisposable";
-import { TankDirection } from "./TankLevelConfig";
+import { TankDirection, TankLevelConfig } from "./TankLevelConfig";
 import { randomInt } from "../../engine/utils/random";
+import { RectangleExtensions } from "./RectangleExtensions";
 
 export class Tank_Enemy extends TileBase  implements IDisposable
 {
@@ -46,21 +47,31 @@ export class Tank_Enemy extends TileBase  implements IDisposable
         this.DoAIThink(_time);
         if(this.bMoveing)
         {
-            if (this.mDirection == TankDirection.UP) 
+            let fMoveDistance = this.fMoveSpeed * _time.deltaTime;
+            //这里有可能移动距离过大，所以这里得分为很多帧执行
+            let nStepCount = Math.ceil(fMoveDistance / 32);
+            let fStepDistance = fMoveDistance / nStepCount;
+            while(nStepCount-- > 0)
             {
-                this.position.y -= this.fMoveSpeed * _time.deltaTime;
-            }
-            else if (this.mDirection == TankDirection.DOWN) 
-            {
-                this.position.y += this.fMoveSpeed * _time.deltaTime;
-            }
-            else if (this.mDirection == TankDirection.LEFT) 
-            {
-                this.position.x -= this.fMoveSpeed * _time.deltaTime;
-            }
-            else if (this.mDirection == TankDirection.RIGHT) 
-            {
-                this.position.x += this.fMoveSpeed * _time.deltaTime;
+                if (this.mDirection == TankDirection.UP) 
+                {
+                    this.position.y -= fStepDistance;
+                }
+                else if (this.mDirection == TankDirection.DOWN) 
+                {
+                    this.position.y += fStepDistance;
+                }
+                else if (this.mDirection == TankDirection.LEFT) 
+                {
+                    this.position.x -= fStepDistance;
+                }
+                else if (this.mDirection == TankDirection.RIGHT) 
+                {
+                    this.position.x += fStepDistance;
+                }
+
+                //在这里进行 物理碰撞检测
+                this.HandleCollisions();
             }
         }
 
@@ -92,23 +103,24 @@ export class Tank_Enemy extends TileBase  implements IDisposable
     {
         this.nTankType = nType;
 
+        let nIndex:number = nType % 4;
         let Offset:number = Math.trunc(nType / 4) * 32;
-        let mSprite1:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 0}`);
-        let mSprite2:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 1}`);
-        let mSprite3:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 8}`);
-        let mSprite4:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 9}`);
-        let mSprite5:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 16}`);
-        let mSprite6:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 17}`);
-        let mSprite7:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 24}`);
-        let mSprite8:Texture = Texture.from(`Enemys_${nType * 2 + Offset + 25}`);
-
-        console.assert(mSprite1 != null, "mSprite1 is null");
-        console.assert(mSprite3 != null, "mSprite3 is null");
-        console.assert(mSprite4 != null, "mSprite4 is null");
-        console.assert(mSprite5 != null, "mSprite5 is null");
-        console.assert(mSprite6 != null, "mSprite6 is null");
-        console.assert(mSprite7 != null, "mSprite7 is null");
-        console.assert(mSprite8 != null, "mSprite8 is null");
+        let mSprite1:Texture = Texture.from(`Enemys_${nIndex * 2 + Offset + 0}`);
+        let mSprite2:Texture = Texture.from(`Enemys_${nIndex * 2 + Offset + 1}`);
+        let mSprite3:Texture = Texture.from(`Enemys_${nIndex * 2 + Offset + 8}`);
+        let mSprite4:Texture = Texture.from(`Enemys_${nIndex * 2 + Offset + 9}`);
+        let mSprite5:Texture = Texture.from(`Enemys_${nIndex * 2 + Offset + 16}`);
+        let mSprite6:Texture = Texture.from(`Enemys_${nIndex * 2 + Offset + 17}`);
+        let mSprite7:Texture = Texture.from(`Enemys_${nIndex * 2 + Offset + 24}`);
+        let mSprite8:Texture = Texture.from(`Enemys_${nIndex * 2 + Offset + 25}`);
+        
+        console.assert(mSprite1 != null, "mSprite1 is null: " + nType);
+        console.assert(mSprite3 != null, "mSprite3 is null: " + nType);
+        console.assert(mSprite4 != null, "mSprite4 is null: " + nType);
+        console.assert(mSprite5 != null, "mSprite5 is null: " + nType);
+        console.assert(mSprite6 != null, "mSprite6 is null: " + nType);
+        console.assert(mSprite7 != null, "mSprite7 is null: " + nType);
+        console.assert(mSprite8 != null, "mSprite8 is null: " + nType);
         
         this.Animation_Up = [mSprite1, mSprite2];
         this.Animation_Right = [mSprite3, mSprite4];
@@ -187,5 +199,55 @@ export class Tank_Enemy extends TileBase  implements IDisposable
                 this.bFire = true;
             }
         }
+    }
+    
+    public override Collider2DZone():Bounds
+    {
+        if(this.mAnimationPlayer != null)
+        {
+            return this.mAnimationPlayer?.getBounds();
+        }
+        else
+        {
+            return new Bounds(0, 0, 0, 0);
+        }
+    }
+
+    private HandleCollisions():void
+    {
+        let bounds:Bounds = this.Collider2DZone();
+        let leftTile = Math.floor(bounds.left / TankLevelConfig.TileWidth) - 2;
+        let rightTile = Math.ceil(bounds.right / TankLevelConfig.TileWidth) + 2;
+        let topTile = Math.floor(bounds.top / TankLevelConfig.TileHeight) - 2;
+        let bottomTile = Math.ceil((bounds.bottom / TankLevelConfig.TileHeight)) + 2;
+
+        for (let y = topTile; y <= bottomTile; ++y)
+        {
+            for (let x = leftTile; x <= rightTile; ++x)
+            {
+                let mTile = this.mTankLevel.GetTile(x, y);
+                if (mTile instanceof Tile)
+                {
+                    let mTarget = mTile;
+                    let tileBounds:Bounds = mTarget.Collider2DZone();
+                    let depth = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
+                    //如果重叠区域 大于0
+                    if (depth.x != 0 || depth.y != 0)
+                    {
+                        let absDepthX = Math.abs(depth.x);
+                        let absDepthY = Math.abs(depth.y);
+                        if(absDepthX < absDepthY)
+                        {
+                            this.position.x += depth.x;
+                        }
+                        else
+                        {
+                             this.position.y += depth.y;
+                        }
+                    }
+                }
+            }
+        }
+        
     }
 }

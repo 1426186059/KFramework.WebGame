@@ -1,4 +1,4 @@
-import { Container, Point, Sprite, Ticker } from "pixi.js";
+import { Bounds, Container, Point, Sprite, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
 
 export class TileBase extends Container
@@ -24,6 +24,11 @@ export class TileBase extends Container
     {
         
     }
+    
+    public Collider2DZone():Bounds
+    {
+        return new Bounds(0, 0, 0, 0);
+    }
 }
 
 export class Tile extends TileBase
@@ -39,6 +44,11 @@ export class Tile extends TileBase
     public override resize():void
     {
         super.resize();
+    }
+    
+    public override Collider2DZone():Bounds
+    {
+        return this.mSprite.getBounds();
     }
 
 }

@@ -88,7 +88,7 @@ export class TankLevel implements IDisposable
             lines.push(line);
         }
 
-        for (let y = 0; y < TankLevelConfig.Height; y++)
+        for (let y = 0; y < TankLevelConfig.MapHeight; y++)
         {
             this.tiles[y] = [];
             if(lines[y] == undefined)
@@ -96,7 +96,7 @@ export class TankLevel implements IDisposable
                 lines[y] = "";
             }
 
-            for (let x = 0; x < TankLevelConfig.Width; ++x)
+            for (let x = 0; x < TankLevelConfig.MapWidth; ++x)
             {
                 let tileType:string = " ";
                 if (x < lines[y].length)
@@ -133,6 +133,21 @@ export class TankLevel implements IDisposable
             default:
                 throw "LoadTile error: " + tileType;
         }
+    }
+        
+    public GetTile(x:number, y:number):TileBase | null 
+    {
+        if(x < 0 || x >= TankLevelConfig.MapWidth)
+        {
+            return null;
+        }
+
+        if(y < 0 || y >= TankLevelConfig.MapHeight)
+        {
+            return null;
+        }
+
+        return this.tiles[y][x];
     }
     
     private LoadCommonTile(x:number, y:number, strName:string):TileBase 
@@ -175,7 +190,7 @@ export class TankLevel implements IDisposable
         if(this.m_Background)
         {
             return new Point(
-                (engine().renderer.width - this.GetTileWidth() * TankLevelConfig.Width) / 2.0, 
+                (engine().renderer.width - this.GetTileWidth() * TankLevelConfig.MapWidth) / 2.0, 
                 50);
         }
         else
@@ -202,10 +217,10 @@ export class TankLevel implements IDisposable
     {
         return 32 * this.fTileScaleCoef;
     }
-
+    
     public resize()
     {
-        this.fTileScaleCoef = (engine().renderer.height - 100) / TankLevelConfig.Height / 32.0;
+        this.fTileScaleCoef = (engine().renderer.height - 100) / TankLevelConfig.MapHeight / 32.0;
         if(this.m_Background)
         {
             this.m_Background.position = this.GetBackGroundPos();
