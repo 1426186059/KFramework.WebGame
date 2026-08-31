@@ -250,14 +250,14 @@ export class Tank_Enemy extends TileBase  implements IDisposable
                         {
                             let worldPos = this.getGlobalPosition();
                             worldPos.x += depth.x;
-                            let localPos = engine().stage.toLocal(worldPos, this.parent?this.parent:this.mTankLevel.SceneRoot);
+                            let localPos = this.mTankLevel.SceneRoot.toLocal(worldPos);
                             this.position.set(localPos.x, localPos.y);
                         }
                         else
                         {
                             let worldPos = this.getGlobalPosition();
                             worldPos.y += depth.y;
-                            let localPos = engine().stage.toLocal(worldPos, this.parent?this.parent:this.mTankLevel.SceneRoot);
+                            let localPos = this.mTankLevel.SceneRoot.toLocal(worldPos);
                             this.position.set(localPos.x, localPos.y);
                         }
                     }
