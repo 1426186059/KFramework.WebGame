@@ -215,7 +215,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
             return new Bounds(0, 0, 0, 0);
         }
     }
-
+    
     private HandleCollisions():void
     {
         let bounds:Bounds = this.Collider2DZone();

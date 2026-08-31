@@ -3,7 +3,9 @@ import { TankLevel } from "./TankLevel";
 import { TileBase } from "./TileBase";
 import { engine } from "../getEngine";
 import { IDisposable } from "../../KFramework.PixiJS/Tool/IDisposable";
-import { TankDirection } from "./TankLevelConfig";
+import { TankDirection, TankLevelConfig } from "./TankLevelConfig";
+import { Tile_Block } from "./Tile_Block";
+import { RectangleExtensions } from "./RectangleExtensions";
 
 export class Tank_My extends TileBase  implements IDisposable
 {
@@ -58,25 +60,21 @@ export class Tank_My extends TileBase  implements IDisposable
         let dir:TankDirection = this.mDirection;
         if (this.Keys.w || this.Keys.ArrowUp) 
         {
-            this.position.y -= this.fMoveSpeed * _time.deltaTime;
             bMove = true;
             dir = TankDirection.UP;
         }
         else if (this.Keys.s || this.Keys.ArrowDown) 
         {
-            this.position.y += this.fMoveSpeed * _time.deltaTime;
             bMove = true;
             dir = TankDirection.DOWN;
         }
         else if (this.Keys.a || this.Keys.ArrowLeft) 
         {
-            this.position.x -= this.fMoveSpeed * _time.deltaTime;
             bMove = true;
             dir = TankDirection.LEFT;
         }
         else if (this.Keys.d || this.Keys.ArrowRight) 
         {
-            this.position.x += this.fMoveSpeed * _time.deltaTime;
             bMove = true;
             dir = TankDirection.RIGHT;
         }
@@ -84,6 +82,36 @@ export class Tank_My extends TileBase  implements IDisposable
         if (this.Keys[" "]) 
         {
             //发射子弹
+        }
+
+        if(bMove)
+        {
+            let fMoveDistance = this.fMoveSpeed * _time.deltaTime;
+            //这里有可能移动距离过大，所以这里得分为很多帧执行
+            let nStepCount = Math.ceil(fMoveDistance / (TankLevelConfig.TileWidth / 2));
+            let fStepDistance = fMoveDistance / nStepCount;
+            while(nStepCount-- > 0)
+            {
+                if (this.mDirection == TankDirection.UP) 
+                {
+                    this.position.y -= fStepDistance;
+                }
+                else if (this.mDirection == TankDirection.DOWN) 
+                {
+                    this.position.y += fStepDistance;
+                }
+                else if (this.mDirection == TankDirection.LEFT) 
+                {
+                    this.position.x -= fStepDistance;
+                }
+                else if (this.mDirection == TankDirection.RIGHT) 
+                {
+                    this.position.x += fStepDistance;
+                }
+
+                //在这里进行 物理碰撞检测
+                this.HandleCollisions();
+            }
         }
 
         if(this.mDirection != dir)
@@ -207,6 +235,57 @@ export class Tank_My extends TileBase  implements IDisposable
         {
             return new Bounds(0, 0, 0, 0);
         }
+    }
+    
+    private HandleCollisions():void
+    {
+        let bounds:Bounds = this.Collider2DZone();
+        let leftTile = Math.floor((this.position.x + TankLevelConfig.MapWidth * TankLevelConfig.TileWidth / 2) / TankLevelConfig.TileWidth) - 2;
+        let rightTile = Math.ceil((this.position.x + TankLevelConfig.MapWidth * TankLevelConfig.TileWidth / 2) / TankLevelConfig.TileWidth) + 2;
+        let topTile = Math.floor((this.position.y + TankLevelConfig.MapHeight * TankLevelConfig.TileHeight / 2) / TankLevelConfig.TileHeight) - 2;
+        let bottomTile = Math.ceil((this.position.y + TankLevelConfig.MapHeight * TankLevelConfig.TileHeight / 2) / TankLevelConfig.TileHeight) + 2;
+
+        // console.log("leftTile: " + leftTile);
+        // console.log("rightTile: " + rightTile);
+        // console.log("topTile: " + topTile);
+        // console.log("bottomTile: " + bottomTile);
+
+        for (let y = topTile; y <= bottomTile; ++y)
+        {
+            for (let x = leftTile; x <= rightTile; ++x)
+            {
+                let mTile = this.mTankLevel.GetTile(x, y);
+                if (mTile != null && mTile instanceof Tile_Block)
+                {
+                    let mTarget:Tile_Block = mTile;
+                    let tileBounds:Bounds = mTarget.Collider2DZone();
+                    let depth:Point = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
+                    //如果重叠区域 大于0
+                    //console.log("AABB depth 000: " + depth.toString());
+                    if (depth.x != 0 || depth.y != 0)
+                    {
+                        console.log("AABB depth 111: " + depth.toString());
+                        let absDepthX = Math.abs(depth.x);
+                        let absDepthY = Math.abs(depth.y);
+                        if(absDepthX < absDepthY)
+                        {
+                            let worldPos = this.getGlobalPosition();
+                            worldPos.x += depth.x;
+                            let localPos = this.mTankLevel.SceneRoot.toLocal(worldPos);
+                            this.position.set(localPos.x, localPos.y);
+                        }
+                        else
+                        {
+                            let worldPos = this.getGlobalPosition();
+                            worldPos.y += depth.y;
+                            let localPos = this.mTankLevel.SceneRoot.toLocal(worldPos);
+                            this.position.set(localPos.x, localPos.y);
+                        }
+                    }
+                }
+            }
+        }
+        
     }
     
 }
