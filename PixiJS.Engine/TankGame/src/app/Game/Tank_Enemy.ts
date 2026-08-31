@@ -50,7 +50,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
         {
             let fMoveDistance = this.fMoveSpeed * _time.deltaTime;
             //这里有可能移动距离过大，所以这里得分为很多帧执行
-            let nStepCount = Math.ceil(fMoveDistance / 32);
+            let nStepCount = Math.ceil(fMoveDistance / TankLevelConfig.TileWidth);
             let fStepDistance = fMoveDistance / nStepCount;
             while(nStepCount-- > 0)
             {
@@ -221,7 +221,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
         let rightTile = Math.ceil(bounds.right / TankLevelConfig.TileWidth) + 2;
         let topTile = Math.floor(bounds.top / TankLevelConfig.TileHeight) - 2;
         let bottomTile = Math.ceil((bounds.bottom / TankLevelConfig.TileHeight)) + 2;
-        
+
         for (let y = topTile; y <= bottomTile; ++y)
         {
             for (let x = leftTile; x <= rightTile; ++x)
@@ -231,10 +231,12 @@ export class Tank_Enemy extends TileBase  implements IDisposable
                 {
                     let mTarget:Tile_Block = mTile;
                     let tileBounds:Bounds = mTarget.Collider2DZone();
-                    let depth = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
+                    let depth:Point = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
                     //如果重叠区域 大于0
+                    //console.log("AABB depth 000: " + depth.toString());
                     if (depth.x != 0 || depth.y != 0)
                     {
+                        console.log("AABB depth 111: " + depth.toString());
                         let absDepthX = Math.abs(depth.x);
                         let absDepthY = Math.abs(depth.y);
                         if(absDepthX < absDepthY)
@@ -243,7 +245,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
                         }
                         else
                         {
-                             this.position.y += depth.y;
+                            this.position.y += depth.y;
                         }
                     }
                 }

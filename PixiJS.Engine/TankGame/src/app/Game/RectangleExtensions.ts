@@ -8,7 +8,7 @@ export class RectangleExtensions
      * @param rectB - 另一个 Pixi 矩形对象
      * @returns 返回 Pixi.Point，包含分离所需的 x/y 深度。未碰撞则返回 {x: 0, y: 0}
      */
-    public static getIntersectionDepth(rectA: Rectangle | Bounds,  rectB: Rectangle | Bounds): Point 
+    public static getIntersectionDepth(rectA: Bounds,  rectB: Bounds): Point 
     {
         // 1. 直接使用 Pixi 矩形自带的 x, y, width, height 属性计算半宽高
         const halfWidthA = rectA.width / 2.0;
