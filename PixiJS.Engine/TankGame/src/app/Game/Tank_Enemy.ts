@@ -1,6 +1,6 @@
 import { AnimatedSprite, Bounds, Container, Point, Sprite, Texture, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
-import { Tile, TileBase } from "./Tile";
+import { Tile, TileBase } from "./TileBase";
 import { engine } from "../getEngine";
 import { IDisposable } from "../../KFramework.PixiJS/Tool/IDisposable";
 import { TankDirection, TankLevelConfig } from "./TankLevelConfig";
@@ -50,7 +50,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
         {
             let fMoveDistance = this.fMoveSpeed * _time.deltaTime;
             //这里有可能移动距离过大，所以这里得分为很多帧执行
-            let nStepCount = Math.ceil(fMoveDistance / TankLevelConfig.TileWidth);
+            let nStepCount = Math.ceil(fMoveDistance / (TankLevelConfig.TileWidth / 2));
             let fStepDistance = fMoveDistance / nStepCount;
             while(nStepCount-- > 0)
             {
@@ -98,6 +98,8 @@ export class Tank_Enemy extends TileBase  implements IDisposable
                 this.mAnimationPlayer?.stop();
             }
         }
+
+        this.showBounds();
     }
 
     public SwitchTankType(nType:number):void
@@ -217,10 +219,15 @@ export class Tank_Enemy extends TileBase  implements IDisposable
     private HandleCollisions():void
     {
         let bounds:Bounds = this.Collider2DZone();
-        let leftTile = Math.floor(bounds.left / TankLevelConfig.TileWidth) - 2;
-        let rightTile = Math.ceil(bounds.right / TankLevelConfig.TileWidth) + 2;
-        let topTile = Math.floor(bounds.top / TankLevelConfig.TileHeight) - 2;
-        let bottomTile = Math.ceil((bounds.bottom / TankLevelConfig.TileHeight)) + 2;
+        let leftTile = Math.floor((this.position.x + TankLevelConfig.MapWidth * TankLevelConfig.TileWidth / 2) / TankLevelConfig.TileWidth) - 2;
+        let rightTile = Math.ceil((this.position.x + TankLevelConfig.MapWidth * TankLevelConfig.TileWidth / 2) / TankLevelConfig.TileWidth) + 2;
+        let topTile = Math.floor((this.position.y + TankLevelConfig.MapHeight * TankLevelConfig.TileHeight / 2) / TankLevelConfig.TileHeight) - 2;
+        let bottomTile = Math.ceil((this.position.y + TankLevelConfig.MapHeight * TankLevelConfig.TileHeight / 2) / TankLevelConfig.TileHeight) + 2;
+
+        // console.log("leftTile: " + leftTile);
+        // console.log("rightTile: " + rightTile);
+        // console.log("topTile: " + topTile);
+        // console.log("bottomTile: " + bottomTile);
 
         for (let y = topTile; y <= bottomTile; ++y)
         {
@@ -241,11 +248,17 @@ export class Tank_Enemy extends TileBase  implements IDisposable
                         let absDepthY = Math.abs(depth.y);
                         if(absDepthX < absDepthY)
                         {
-                            this.position.x += depth.x;
+                            let worldPos = this.getGlobalPosition();
+                            worldPos.x += depth.x;
+                            let localPos = engine().stage.toLocal(worldPos, this.parent?this.parent:this.mTankLevel.SceneRoot);
+                            this.position.set(localPos.x, localPos.y);
                         }
                         else
                         {
-                            this.position.y += depth.y;
+                            let worldPos = this.getGlobalPosition();
+                            worldPos.y += depth.y;
+                            let localPos = engine().stage.toLocal(worldPos, this.parent?this.parent:this.mTankLevel.SceneRoot);
+                            this.position.set(localPos.x, localPos.y);
                         }
                     }
                 }

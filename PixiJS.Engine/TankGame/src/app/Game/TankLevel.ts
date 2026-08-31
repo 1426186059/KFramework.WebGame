@@ -1,6 +1,6 @@
 import { Assets, Container, Graphics, Point, Sprite, Texture, Ticker } from 'pixi.js';
 import { TankLevelConfig } from './TankLevelConfig';
-import { Tile, TileBase } from './Tile';
+import { Tile, TileBase } from './TileBase';
 import { engine } from '../getEngine';
 import { IDisposable } from '../../KFramework.PixiJS/Tool/IDisposable';
 import { Tank_My } from './Tank_My';
