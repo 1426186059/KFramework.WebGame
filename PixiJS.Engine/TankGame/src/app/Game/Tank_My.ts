@@ -1,4 +1,4 @@
-import { AnimatedSprite, Container, Point, Sprite, Texture, Ticker } from "pixi.js";
+import { AnimatedSprite, Bounds, Container, Point, Sprite, Texture, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
 import { TileBase } from "./Tile";
 import { engine } from "../getEngine";
@@ -194,6 +194,18 @@ export class Tank_My extends TileBase  implements IDisposable
         if (e.key in this.Keys)
         {
             this.Keys[e.key as keyof typeof this.Keys] = false;
+        }
+    }
+    
+    public override Collider2DZone():Bounds
+    {
+        if(this.mAnimationPlayer != null)
+        {
+            return this.mAnimationPlayer.getBounds();
+        }
+        else
+        {
+            return new Bounds(0, 0, 0, 0);
         }
     }
     

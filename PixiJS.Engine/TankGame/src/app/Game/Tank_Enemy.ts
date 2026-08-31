@@ -6,6 +6,7 @@ import { IDisposable } from "../../KFramework.PixiJS/Tool/IDisposable";
 import { TankDirection, TankLevelConfig } from "./TankLevelConfig";
 import { randomInt } from "../../engine/utils/random";
 import { RectangleExtensions } from "./RectangleExtensions";
+import { Tile_Block } from "./Tile_Block";
 
 export class Tank_Enemy extends TileBase  implements IDisposable
 {
@@ -113,7 +114,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
         let mSprite6:Texture = Texture.from(`Enemys_${nIndex * 2 + Offset + 17}`);
         let mSprite7:Texture = Texture.from(`Enemys_${nIndex * 2 + Offset + 24}`);
         let mSprite8:Texture = Texture.from(`Enemys_${nIndex * 2 + Offset + 25}`);
-        
+
         console.assert(mSprite1 != null, "mSprite1 is null: " + nType);
         console.assert(mSprite3 != null, "mSprite3 is null: " + nType);
         console.assert(mSprite4 != null, "mSprite4 is null: " + nType);
@@ -226,9 +227,9 @@ export class Tank_Enemy extends TileBase  implements IDisposable
             for (let x = leftTile; x <= rightTile; ++x)
             {
                 let mTile = this.mTankLevel.GetTile(x, y);
-                if (mTile instanceof Tile)
+                if (mTile != null && mTile instanceof Tile_Block)
                 {
-                    let mTarget = mTile;
+                    let mTarget:Tile_Block = mTile;
                     let tileBounds:Bounds = mTarget.Collider2DZone();
                     let depth = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
                     //如果重叠区域 大于0

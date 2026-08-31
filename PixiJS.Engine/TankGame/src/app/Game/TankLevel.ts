@@ -5,11 +5,12 @@ import { engine } from '../getEngine';
 import { IDisposable } from '../../KFramework.PixiJS/Tool/IDisposable';
 import { Tank_My } from './Tank_My';
 import { Tank_Enemy } from './Tank_Enemy';
+import { Tile_Block } from './Tile_Block';
 
 export class TankLevel implements IDisposable
 {
     private nLevelIndex:number = 0;
-    private tiles:TileBase[][] = [];
+    private tiles:(TileBase | null)[][] = [];
 
     private readonly SceneRoot:Container = new Container();
     private _disoised:boolean = false;
@@ -109,14 +110,14 @@ export class TankLevel implements IDisposable
 
     }
     
-    private LoadTile(tileType:string, x:number, y:number):TileBase
+    private LoadTile(tileType:string, x:number, y:number):TileBase | null
     {
         switch (tileType)
         {
             case "":
             case " ":
             case ".":
-                return new Tile(this, x, y);
+                return null;
             case 'E': //敌人出生点
                 return this.LoadEnemyTile(x, y);
             case 'P': //玩家出生点
@@ -134,7 +135,7 @@ export class TankLevel implements IDisposable
                 throw "LoadTile error: " + tileType;
         }
     }
-        
+
     public GetTile(x:number, y:number):TileBase | null 
     {
         if(x < 0 || x >= TankLevelConfig.MapWidth)
@@ -152,9 +153,10 @@ export class TankLevel implements IDisposable
     
     private LoadCommonTile(x:number, y:number, strName:string):TileBase 
     {
-        let mTile = new Tile(this, x, y);
+        let mTile = new Tile_Block(this, x, y);
         this.SceneRoot.addChild(mTile);
         mTile.mSprite.texture = Texture.from(strName);
+        mTile.showBounds();
         return mTile;
     }
 
@@ -162,6 +164,7 @@ export class TankLevel implements IDisposable
     {
         let mTile = new Tank_My(this, x, y);
         this.SceneRoot.addChild(mTile);
+       // mTile.showBounds();
         return mTile;
     }
 
@@ -169,6 +172,7 @@ export class TankLevel implements IDisposable
     {
         let mTile = new Tank_Enemy(this, x, y);
         this.SceneRoot.addChild(mTile);
+        //mTile.showBounds();
         return mTile;
     }
 

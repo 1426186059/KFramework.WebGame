@@ -1,4 +1,4 @@
-import { Bounds, Container, Point, Sprite, Ticker } from "pixi.js";
+import { Bounds, Container, Graphics, Point, Sprite, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
 
 export class TileBase extends Container
@@ -6,12 +6,14 @@ export class TileBase extends Container
     public TileX:number;
     public TileY:number;
     public mTankLevel:TankLevel;
+    protected readonly boundsGraphics = new Graphics();
     constructor(mTankLevel: TankLevel, x:number, y:number)
     {
         super();
         this.mTankLevel = mTankLevel;
         this.TileX = x;
         this.TileY = y;
+        this.addChild(this.boundsGraphics)
     }
 
     public resize():void
@@ -27,28 +29,19 @@ export class TileBase extends Container
     
     public Collider2DZone():Bounds
     {
-        return new Bounds(0, 0, 0, 0);
-    }
-}
-
-export class Tile extends TileBase
-{
-    public readonly mSprite:Sprite = new Sprite();
-    constructor(mTankLevel: TankLevel, x:number, y:number)
-    {
-        super(mTankLevel, x, y);
-        this.addChild(this.mSprite);
-        this.resize();
+        throw "Collider2DZone not implemented";
     }
 
-    public override resize():void
+    public showBounds() 
     {
-        super.resize();
-    }
-    
-    public override Collider2DZone():Bounds
-    {
-        return this.mSprite.getBounds();
+        let bounds = this.Collider2DZone();
+        console.log("showBounds bounds: " + bounds.toString());
+        this.boundsGraphics.lineStyle(2, 0xff0000, 1.0);
+        this.boundsGraphics.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+        this.boundsGraphics.x = bounds.x;
+        this.boundsGraphics.y = bounds.y;
+        // 5. 添加到舞台
+        this.addChild(this.boundsGraphics);
     }
 
 }
