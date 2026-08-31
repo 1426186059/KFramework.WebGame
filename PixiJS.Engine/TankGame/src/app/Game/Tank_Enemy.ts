@@ -221,7 +221,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
         let rightTile = Math.ceil(bounds.right / TankLevelConfig.TileWidth) + 2;
         let topTile = Math.floor(bounds.top / TankLevelConfig.TileHeight) - 2;
         let bottomTile = Math.ceil((bounds.bottom / TankLevelConfig.TileHeight)) + 2;
-
+        
         for (let y = topTile; y <= bottomTile; ++y)
         {
             for (let x = leftTile; x <= rightTile; ++x)

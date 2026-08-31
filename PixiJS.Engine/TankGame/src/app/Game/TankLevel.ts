@@ -12,7 +12,7 @@ export class TankLevel implements IDisposable
     private nLevelIndex:number = 0;
     private tiles:(TileBase | null)[][] = [];
 
-    private readonly SceneRoot:Container = new Container();
+    public readonly SceneRoot:Container = new Container();
     private _disoised:boolean = false;
     private  m_Background:Sprite | null = null;
     public fTileScaleCoef:number = 1.0;
@@ -36,9 +36,9 @@ export class TankLevel implements IDisposable
         this._disoised = false;
 
         engine().stage.addChild(this.SceneRoot);
-        this.SceneRoot.width = engine().renderer.width;
-        this.SceneRoot.height = engine().renderer.height;
-        this.fTileScaleCoef = (engine().renderer.height - 100) / TankLevelConfig.Height / 32.0;
+        this.fTileScaleCoef = (engine().renderer.height - 100) / TankLevelConfig.MapHeight / 32.0;
+        this.SceneRoot.scale.set(this.fTileScaleCoef, this.fTileScaleCoef);
+        this.SceneRoot.position = new Point(engine().renderer.width / 2.0, engine().renderer.height / 2.0);
 
         this.nLevelIndex = nLevelIndex;
         this.AysncInit();
@@ -48,8 +48,9 @@ export class TankLevel implements IDisposable
     {   
         this.m_Background = new Sprite(Texture.from("main/MyRes/Textures/BackGround.jpg"));
         this.SceneRoot.addChild(this.m_Background);
-        this.m_Background.scale = new Point(5, 5);
-        this.m_Background.position = this.GetBackGroundPos();
+        this.m_Background.scale = new Point(3, 3);
+        this.m_Background.pivot = new Point(this.m_Background.texture.width / 2, this.m_Background.texture.height / 2);
+        this.m_Background.position = new Point(0, 0);
         this.m_Background.tint = 0x00FF00;
         
         //坦克图背景是个黑图，不是透明的
@@ -155,6 +156,7 @@ export class TankLevel implements IDisposable
     {
         let mTile = new Tile_Block(this, x, y);
         this.SceneRoot.addChild(mTile);
+        mTile.position = this.GetTilePos(x, y);
         mTile.mSprite.texture = Texture.from(strName);
         mTile.showBounds();
         return mTile;
@@ -164,6 +166,7 @@ export class TankLevel implements IDisposable
     {
         let mTile = new Tank_My(this, x, y);
         this.SceneRoot.addChild(mTile);
+        mTile.position = this.GetTilePos(x, y);
        // mTile.showBounds();
         return mTile;
     }
@@ -172,71 +175,25 @@ export class TankLevel implements IDisposable
     {
         let mTile = new Tank_Enemy(this, x, y);
         this.SceneRoot.addChild(mTile);
+        mTile.position = this.GetTilePos(x, y);
         //mTile.showBounds();
         return mTile;
     }
 
     public GetTilePos(x:number, y:number):Point 
     {
-        let worldPos:Point = this.GameZoneLeftTop();
-        worldPos.x += x * this.GetTileWidth();
-        worldPos.y += y * this.GetTileWidth();
-        return worldPos;
-    }
-
-    private ScreenCenter():Point
-    {
-        return new Point(engine().renderer.width / 2.0,  engine().renderer.height / 2.0);
+        let localPos:Point = new Point(0, 0);
+        localPos.x += (x - TankLevelConfig.MapWidth / 2) * TankLevelConfig.TileWidth;
+        localPos.y += (y - TankLevelConfig.MapHeight / 2) * TankLevelConfig.TileHeight;
+        return localPos;
     }
     
-    private GameZoneLeftTop():Point
+    public resize():void
     {
-        if(this.m_Background)
-        {
-            return new Point(
-                (engine().renderer.width - this.GetTileWidth() * TankLevelConfig.MapWidth) / 2.0, 
-                50);
-        }
-        else
-        {
-            return new Point(0, 0);
-        }
-    }
-    
-    private GetBackGroundPos():Point
-    {
-        if(this.m_Background)
-        {
-            return new Point(
-                (engine().renderer.width - this.m_Background.width) / 2.0, 
-                (engine().renderer.height - this.m_Background.height) / 2.0);
-        }
-        else
-        {
-            return new Point(0, 0);
-        }
-    }
-
-    public GetTileWidth():number
-    {
-        return 32 * this.fTileScaleCoef;
-    }
-    
-    public resize()
-    {
-        this.fTileScaleCoef = (engine().renderer.height - 100) / TankLevelConfig.MapHeight / 32.0;
-        if(this.m_Background)
-        {
-            this.m_Background.position = this.GetBackGroundPos();
-        }
-
-        this.SceneRoot.children.forEach(element => 
-        {
-            if(element instanceof TileBase)
-            {
-                element.resize();
-            }
-        });
+        console.log("resize: " + "width: " + engine().renderer.width + " height: " + engine().renderer.height);
+        this.fTileScaleCoef = (engine().renderer.height - 100) / TankLevelConfig.MapHeight / TankLevelConfig.TileHeight;
+        this.SceneRoot.scale.set(this.fTileScaleCoef, this.fTileScaleCoef);
+        this.SceneRoot.position = new Point(engine().renderer.width / 2.0, engine().renderer.height / 2.0);
     }
     
     public update(_time: Ticker) 

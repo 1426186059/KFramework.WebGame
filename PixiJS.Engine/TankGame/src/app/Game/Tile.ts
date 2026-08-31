@@ -1,5 +1,6 @@
 import { Bounds, Container, Graphics, Point, Sprite, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
+import { engine } from "../getEngine";
 
 export class TileBase extends Container
 {
@@ -13,13 +14,11 @@ export class TileBase extends Container
         this.mTankLevel = mTankLevel;
         this.TileX = x;
         this.TileY = y;
-        this.addChild(this.boundsGraphics)
     }
 
     public resize():void
     {
-        this.scale = new Point(this.mTankLevel.fTileScaleCoef, this.mTankLevel.fTileScaleCoef);
-        this.position = this.mTankLevel.GetTilePos(this.TileX, this.TileY);
+       
     }
     
     public update(_time: Ticker) 
@@ -34,14 +33,13 @@ export class TileBase extends Container
 
     public showBounds() 
     {
-        let bounds = this.Collider2DZone();
-        console.log("showBounds bounds: " + bounds.toString());
-        this.boundsGraphics.lineStyle(2, 0xff0000, 1.0);
+        let bounds:Bounds = this.Collider2DZone();
+        //console.log("showBounds 222 bounds: " + bounds.toString());
+        this.boundsGraphics.clear();
         this.boundsGraphics.rect(bounds.x, bounds.y, bounds.width, bounds.height);
-        this.boundsGraphics.x = bounds.x;
-        this.boundsGraphics.y = bounds.y;
+        this.boundsGraphics.fill(0x00FF00, 0.5);
         // 5. 添加到舞台
-        this.addChild(this.boundsGraphics);
+        engine().stage.addChild(this.boundsGraphics)
     }
 
 }
