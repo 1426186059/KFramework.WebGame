@@ -1,6 +1,7 @@
 import { Container, Ticker } from "pixi.js";
 import { KUpdateMgr } from "./KUpdateMgr";
 import { IDisposable } from "../Tool/IDisposable";
+import { KTime } from "../GameEngine/KTime";
 
 export class KTimer implements IDisposable
 {
@@ -55,9 +56,9 @@ export class KTimer implements IDisposable
             this.Stop();
             return;
         }
-
-        console.log("KTimer Update: " + Ticker.shared.deltaTime);
-        let delta:number = this.unscaled ? Ticker.shared.elapsedMS / 1000 : Ticker.shared.elapsedMS * Ticker.shared.speed / 1000;
+        
+        //console.log("KTimer Update: " + KTime.deltaTime);
+        let delta:number = this.unscaled ? KTime.unscaledDeltaTime : KTime.deltaTime;
         this.time = this.time - delta;
         
         if (this.time <= 0)

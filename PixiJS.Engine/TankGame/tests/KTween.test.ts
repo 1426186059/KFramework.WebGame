@@ -12,7 +12,7 @@ import {
 
 /** 手动推进一帧（秒） */
 function step(deltaTime: number): void {
-  KTweenMgr.Instance.UpdateWith(deltaTime);
+  KTweenMgr.GetInstance().UpdateWith(deltaTime);
 }
 
 /** 推进若干秒，默认按 60FPS 切片 */

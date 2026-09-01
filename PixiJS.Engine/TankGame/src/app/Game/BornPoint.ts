@@ -5,6 +5,7 @@ import { E_BORN_TYPE } from "./TankLevelConfig";
 import { Tank_My } from "./Tank_My";
 import { Tank_Enemy } from "./Tank_Enemy";
 import { KTimer } from "../../KFramework.PixiJS/Timer/KTimer";
+import { KTween } from "../../KFramework.PixiJS/KTweeen/KTween";
 
 //出生特效
 export class BornPoint
@@ -30,26 +31,29 @@ export class BornPoint
         {
             m_BornEffect.PlayAni(this.mPos);
         }
+        
+        KTween.delayedCall(0.5, ()=>{
+            switch(this.nBornType)
+            {
+                case E_BORN_TYPE.Enemy:
+                    {
+                        let mTile = new Tank_Enemy(this.mTankLevel);
+                        this.mTankLevel.SceneRoot.addChild(mTile);
+                        mTile.position = this.mPos;
+                    }
+                    break;
+                case E_BORN_TYPE.Player1:
+                    {
+                        let mTile = new Tank_My(this.mTankLevel);
+                        this.mTankLevel.SceneRoot.addChild(mTile);
+                        mTile.position = this.mPos;
+                    }
+                    break;
+                case E_BORN_TYPE.Player2:
+                    break;
+            }
+        });
 
-        switch(this.nBornType)
-        {
-            case E_BORN_TYPE.Enemy:
-                {
-                    let mTile = new Tank_Enemy(this.mTankLevel);
-                    this.mTankLevel.SceneRoot.addChild(mTile);
-                    mTile.position = this.mPos;
-                }
-                break;
-            case E_BORN_TYPE.Player1:
-                {
-                    let mTile = new Tank_My(this.mTankLevel);
-                    this.mTankLevel.SceneRoot.addChild(mTile);
-                    mTile.position = this.mPos;
-                }
-                break;
-            case E_BORN_TYPE.Player2:
-                break;
-        }
     }
 
     public Reset():void
