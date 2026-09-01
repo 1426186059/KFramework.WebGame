@@ -45,7 +45,7 @@ export class ObjPool<T extends IPoolItem> implements IDisposable
             mItem = this.creteObjFunc();
         }
 
-        this.usedList.push(mItem!);
+        this.usedList.push(mItem);
         return mItem;
     }
 

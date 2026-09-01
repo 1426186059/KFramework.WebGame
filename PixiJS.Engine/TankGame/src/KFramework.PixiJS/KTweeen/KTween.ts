@@ -2,57 +2,32 @@ import { Container, Ticker } from "pixi.js";
 
 import { IDisposable } from "../Tool/IDisposable";
 import { LinkedListNode } from "../Tool/LinkedList";
-import { KTweenByLinkedList } from "./KTweenMgr";
+import { KTweenMgr } from "./KTweenMgr";
 import { KTweenType } from "./KTweenFunc";
 
-/** 每帧回调，参数是【已经过缓动处理】的进度 [0,1] */
 export type UpdateFunc = (fPercent: number) => void;
-/** 播放完成回调 */
 export type FinishFunc = () => void;
 
-/**
- * KTween —— 从 MonoGame 版移植过来的轻量补间库（PixiJS 版）。
- *
- * 对应关系：
- * - C# 的 KTransform 绑定对象 -> Pixi 的 Container
- * - C# 的 Vector2            -> Pixi 的 Point / PointData
- * - C# 的 KTime.deltaTime    -> KTime.deltaTime（秒），只在无参 Update() 时会去读
- *
- * 每帧需要驱动一次，推荐在主循环里调用 {@link KTween.update}：
- * ```ts
- * KUpdateMgr.AddListener(() => KTween.update(engine().ticker));
- * ```
- */
-export class KTween {
-  public static SetMaxTweenCount(nCount: number): void {
-    KTweenMgr.GetInstance().SetMaxTweenCount(nCount);
+export class KTween 
+{
+  public static SetMaxTweenCount(nCount: number): void 
+  {
+      KTweenMgr.GetInstance().SetMaxTweenCount(nCount);
   }
 
-  public static GetHandle(mTSharePtr: TweenItem): KTweenHandle {
-    return new KTweenHandle(mTSharePtr);
+  public static GetHandle(mTSharePtr: TweenItem): KTweenHandle 
+  {
+      return new KTweenHandle(mTSharePtr);
   }
 
   /** 不绑定对象（跟随全局生命周期）的补间 */
-  public static AddTween(
-    time: number,
-    updateFunc?: UpdateFunc,
-    finishFunc?: FinishFunc,
-  ): TweenItem;
-  /** 绑定到某个显示对象的补间，对象被 {@link KTween.Cancel} 时可以整组取消 */
-  public static AddTween(
-    obj: Container,
-    time: number,
-    updateFunc?: UpdateFunc,
-    finishFunc?: FinishFunc,
-  ): TweenItem;
-  public static AddTween(
-    a: number | Container,
-    b?: number | UpdateFunc,
-    c?: UpdateFunc | FinishFunc,
-    d?: FinishFunc,
-  ): TweenItem {
-    if (typeof a === "number") {
-      return KTweenMgr.GetInstance().AddTween(
+  public static AddTween(time: number, updateFunc?: UpdateFunc, finishFunc?: FinishFunc): TweenItem;
+  public static AddTween(obj: Container,time: number,updateFunc?: UpdateFunc,finishFunc?: FinishFunc): TweenItem;
+  public static AddTween(a: number | Container, b?: number | UpdateFunc, c?: UpdateFunc | FinishFunc, d?: FinishFunc): TweenItem 
+  {
+    if (typeof a === "number") 
+    {
+      return KTweenMgr.GetInstance().AddTween(null,
         a,
         b as UpdateFunc | undefined,
         c as FinishFunc | undefined,
@@ -68,31 +43,27 @@ export class KTween {
   }
 
   public static delayedCall(time: number, finishFunc?: FinishFunc): TweenItem;
-  public static delayedCall(
-    obj: Container,
-    time: number,
-    finishFunc?: FinishFunc,
-  ): TweenItem;
-  public static delayedCall(
-    a: number | Container,
-    b?: number | FinishFunc,
-    c?: FinishFunc,
-  ): TweenItem {
-    if (typeof a === "number") {
-      return KTween.AddTween(a, undefined, b as FinishFunc | undefined);
+  public static delayedCall(obj: Container, time: number, finishFunc?: FinishFunc): TweenItem;
+  public static delayedCall(a: number | Container, b?: number | FinishFunc, c?: FinishFunc): TweenItem 
+  {
+    if (typeof a === "number") 
+    {
+        return KTween.AddTween(a, undefined, b as FinishFunc | undefined);
     }
     return KTween.AddTween(a, b as number, undefined, c);
   }
 
-  public static CancelAll(): void {
+  public static CancelAll(): void 
+  {
     KTweenMgr.GetInstance().CancelAll();
   }
 
-  /** 取消某个对象上的全部补间，或者取消指定句柄 */
-  public static Cancel(target: Container | KTweenHandle): void {
-    if (target instanceof KTweenHandle) {
-      target.Cancel();
-      return;
+  public static Cancel(target: Container | KTweenHandle): void 
+  {
+    if (target instanceof KTweenHandle) 
+    {
+        target.Cancel();
+        return;
     }
     KTweenMgr.GetInstance().Cancel(target);
   }
@@ -102,7 +73,8 @@ export class KTween {
  * 补间句柄 —— 对应 C# 里的 KTween.Handle（struct 改成了 class）。
  * 内部记录 TweenItem 的版本号，回收复用后旧句柄会自动失效。
  */
-export class KTweenHandle implements IDisposable {
+export class KTweenHandle implements IDisposable 
+{
   private nVersion: number;
   private mInnerPtr: TweenItem | null;
 
@@ -190,9 +162,9 @@ export class TweenItem
   public GetHandle(): KTweenHandle {
     return new KTweenHandle(this);
   }
-
-  /** 取消自己以及串在自己后面的整条链 */
-  public cancel(): TweenItem {
+  
+  public cancel(): TweenItem 
+  {
     if (this.toggle) {
       this.toggle = false;
 

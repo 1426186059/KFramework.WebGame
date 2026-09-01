@@ -45,7 +45,7 @@ export class PoolContainer<T extends PoolItemContainer>
             mItem = this.creteObjFunc();
         }
         
-        this.usedList.push(mItem!);
+        this.usedList.push(mItem);
         mItem!.visible = true;  
         return mItem;
     }

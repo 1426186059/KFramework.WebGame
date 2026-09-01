@@ -143,7 +143,7 @@ export class KTweenMgr
       return mNextNode;
   }
 
-  public AddTween(obj: Container, time: number, updateFunc?: UpdateFunc, finishFunc?: FinishFunc): TweenItem
+  public AddTween(obj: Container | null, time: number, updateFunc?: UpdateFunc, finishFunc?: FinishFunc): TweenItem
   {
       const mItem: TweenItem = this.mItemPool.Pop();
       mItem.bindObj = obj ?? KTweenMgr.GetInstance().bindObj;
