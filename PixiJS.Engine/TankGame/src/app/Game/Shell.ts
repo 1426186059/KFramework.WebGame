@@ -1,27 +1,69 @@
-import { Bounds, Point, Sprite, Ticker } from "pixi.js";
+import { Bounds, Point, Sprite, Texture, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
 import { TileBase } from "./TileBase";
 import { engine } from "../getEngine";
 import { TankDirection, TankLevelConfig } from "./TankLevelConfig";
 import { Tile_Block } from "./Tile_Block";
 import { RectangleExtensions } from "./RectangleExtensions";
+import { ObjPool } from "../../KFramework.PixiJS/Tool/ObjPool";
+import { IPoolItem } from "../../KFramework.PixiJS/Tool/IPoolItem";
 
-export class Shell extends TileBase
+export class Shell extends TileBase implements IPoolItem
 {
-    public static readonly Pool:Shell[] = [];
-    
     public readonly mSprite:Sprite = new Sprite();
     public mDirection:TankDirection = TankDirection.UP;
     private readonly fMoveSpeed:number = 5;
     private bMoveing:boolean = false;
+    private WhoSendShell:TileBase | null = null;
 
     constructor(mTankLevel: TankLevel)
     {
         super(mTankLevel);
+        this.mTankLevel.SceneRoot.addChild(this);
         this.addChild(this.mSprite);
         this.resize();
         this.bMoveing = true;
         this.visible = true;
+        this.WhoSendShell = null;
+    }
+
+    public Reset():void
+    {
+        this.bMoveing = true;
+        this.visible = true;
+        this.WhoSendShell =null;
+    }
+
+    public Dispose(): void 
+    {
+        
+    }
+
+    public UpdateSprite(WhoSendShell:TileBase, dir:TankDirection):void
+    {
+        this.mDirection = dir;
+        this.WhoSendShell = WhoSendShell;
+        let mPos = WhoSendShell.position;
+        if (this.mDirection == TankDirection.UP) 
+        {
+            this.mSprite.texture = Texture.from(`bullet_0`);
+            this.position.set(mPos.x + 10, mPos.y);
+        }
+        else if (this.mDirection == TankDirection.DOWN) 
+        {
+            this.mSprite.texture = Texture.from(`bullet_2`);
+            this.position.set(mPos.x + 10, mPos.y + 32);
+        }
+        else if (this.mDirection == TankDirection.LEFT) 
+        {
+            this.mSprite.texture = Texture.from(`bullet_3`);
+            this.position.set(mPos.x, mPos.y + 10);
+        }
+        else if (this.mDirection == TankDirection.RIGHT) 
+        {
+            this.mSprite.texture = Texture.from(`bullet_1`);
+            this.position.set(mPos.x + 32, mPos.y + 10);
+        }
     }
 
     public override Collider2DZone():Bounds
@@ -33,6 +75,7 @@ export class Shell extends TileBase
     
     public update(_time: Ticker) 
     {
+        if(!this.visible) return;
         this.showBounds();
 
         if(this.bMoveing)
@@ -69,6 +112,8 @@ export class Shell extends TileBase
 
     private HandleCollisions():void
     {
+        if(!this.visible) return;
+
         let bounds:Bounds = this.Collider2DZone();
         let leftTile = Math.floor((this.position.x + TankLevelConfig.MapWidth * TankLevelConfig.TileWidth / 2) / TankLevelConfig.TileWidth) - 2;
         let rightTile = Math.ceil((this.position.x + TankLevelConfig.MapWidth * TankLevelConfig.TileWidth / 2) / TankLevelConfig.TileWidth) + 2;
@@ -85,7 +130,7 @@ export class Shell extends TileBase
             for (let x = leftTile; x <= rightTile; ++x)
             {
                 let mTile = this.mTankLevel.GetTile(x, y);
-                if (mTile != null)
+                if (mTile != null && this.WhoSendShell != mTile)
                 {
                     let mTarget = mTile;
                     let tileBounds:Bounds = mTarget.Collider2DZone();
@@ -95,6 +140,8 @@ export class Shell extends TileBase
                     {
                         this.bMoveing = false;
                         this.visible = false;
+                        this.mTankLevel.ShellPool.push(this);
+                        return;
                     }
                 }
             }

@@ -79,7 +79,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
         if (this.bFire) 
         {
             //发射子弹
-            
+
         }
         
         if(this.mDirection != dir)
@@ -244,7 +244,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
                     //console.log("AABB depth 000: " + depth.toString());
                     if (depth.x != 0 || depth.y != 0)
                     {
-                        console.log("AABB depth 111: " + depth.toString());
+                        //console.log("AABB depth 111: " + depth.toString());
                         let absDepthX = Math.abs(depth.x);
                         let absDepthY = Math.abs(depth.y);
                         if(absDepthX < absDepthY)

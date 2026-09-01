@@ -14,6 +14,7 @@ export class Tank_My extends TileBase  implements IDisposable
     private readonly fAniSpeed:number = 0.12;
     private mDirection:TankDirection = TankDirection.UP;
     private bMoveing:boolean = false;
+    private bFire:boolean = false;
 
     private nTankType:number = 0;
     private Animation_Up:Texture[] | null = null;
@@ -58,6 +59,7 @@ export class Tank_My extends TileBase  implements IDisposable
     public override update(_time: Ticker) 
     {
         let bMove:boolean = false;
+        let bFire2:boolean = this.bFire;
         let dir:TankDirection = this.mDirection;
         if (this.Keys.w || this.Keys.ArrowUp) 
         {
@@ -82,15 +84,23 @@ export class Tank_My extends TileBase  implements IDisposable
 
         if (this.Keys[" "]) 
         {
+            bFire2 = true;
+        }
+        else
+        {
+            bFire2 = false;
+        }
+
+        if(bFire2 != this.bFire)
+        {
+            this.bFire = bFire2;
             //发射子弹
-            let mShell:Shell = Shell.Pool.pop();
-            if(mShell == null)
+            console.log("发射子弹");
+            let mShell = this.mTankLevel.ShellPool.pop();
+            if(mShell)
             {
-                mShell = new Shell(this.mTankLevel);
+                mShell.UpdateSprite(this, dir);
             }
-            
-            this.mTankLevel.mShellList.push(mShell);
-            mShell.mDirection = dir;
         }
 
         if(bMove)
@@ -273,7 +283,7 @@ export class Tank_My extends TileBase  implements IDisposable
                     //console.log("AABB depth 000: " + depth.toString());
                     if (depth.x != 0 || depth.y != 0)
                     {
-                        console.log("AABB depth 111: " + depth.toString());
+                       // console.log("AABB depth 111: " + depth.toString());
                         let absDepthX = Math.abs(depth.x);
                         let absDepthY = Math.abs(depth.y);
                         if(absDepthX < absDepthY)

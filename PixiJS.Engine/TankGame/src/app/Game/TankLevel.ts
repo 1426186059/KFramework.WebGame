@@ -7,6 +7,7 @@ import { Tank_My } from './Tank_My';
 import { Tank_Enemy } from './Tank_Enemy';
 import { Tile_Block } from './Tile_Block';
 import { Shell } from './Shell';
+import { ObjPool } from '../../KFramework.PixiJS/Tool/ObjPool';
 
 export class TankLevel implements IDisposable
 {
@@ -18,7 +19,7 @@ export class TankLevel implements IDisposable
     private  m_Background:Sprite | null = null;
     public fTileScaleCoef:number = 1.0;
 
-    public mShellList:Shell[] = [];
+    public readonly ShellPool:ObjPool<Shell> = new ObjPool<Shell>(()=> new Shell(this));
     
     constructor()
     {
