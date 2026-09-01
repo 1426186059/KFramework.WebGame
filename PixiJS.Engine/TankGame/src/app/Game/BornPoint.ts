@@ -4,6 +4,8 @@ import { TileBase } from "./TileBase";
 import { E_BORN_TYPE, TankDirection, TankLevelConfig } from "./TankLevelConfig";
 import { RectangleExtensions } from "./RectangleExtensions";
 import { PoolItemContainer } from "../../KFramework.PixiJS/Tool/PoolItemContainer";
+import { Tank_My } from "./Tank_My";
+import { Tank_Enemy } from "./Tank_Enemy";
 
 //出生特效
 export class BornPoint extends Container
@@ -19,7 +21,7 @@ export class BornPoint extends Container
         this.mPos = mPos;
         this.nBornType = nBornType;
     }
-    
+
     public DoTimerFunc():void
     {
         let m_BornEffect = this.mTankLevel.ExplodeEffectPool.pop();
@@ -31,8 +33,18 @@ export class BornPoint extends Container
         switch(this.nBornType)
         {
             case E_BORN_TYPE.Enemy:
+                {
+                    let mTile = new Tank_Enemy(this.mTankLevel);
+                    this.mTankLevel.SceneRoot.addChild(mTile);
+                    mTile.position = this.mPos;
+                }
                 break;
             case E_BORN_TYPE.Player1:
+                {
+                    let mTile = new Tank_My(this.mTankLevel);
+                    this.mTankLevel.SceneRoot.addChild(mTile);
+                    mTile.position = this.mPos;
+                }
                 break;
             case E_BORN_TYPE.Player2:
                 break;

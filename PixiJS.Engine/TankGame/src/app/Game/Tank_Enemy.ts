@@ -23,7 +23,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
     private Animation_Right:Texture[] | null = null;
     private mAnimationPlayer:AnimatedSprite | null = null;
 
-    constructor(mTankLevel: TankLevel, x:number, y:number)
+    constructor(mTankLevel: TankLevel, x:number = 0, y:number = 0)
     {
         super(mTankLevel, x, y);
         this.resize();

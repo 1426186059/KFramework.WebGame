@@ -1,5 +1,5 @@
 import { Assets, Container, Point, Sprite, Texture, Ticker } from 'pixi.js';
-import { TankLevelConfig } from './TankLevelConfig';
+import { E_BORN_TYPE, TankLevelConfig } from './TankLevelConfig';
 import { TileBase } from './TileBase';
 import { engine } from '../getEngine';
 import { IDisposable } from '../../KFramework.PixiJS/Tool/IDisposable';
@@ -10,6 +10,7 @@ import { Shell } from './Shell';
 import { PoolContainer } from '../../KFramework.PixiJS/Tool/PoolContainer';
 import { BornEffect } from './BornEffect';
 import { ExplodeEffect } from './ExplodeEffect';
+import { BornPoint } from './BornPoint';
 
 export class TankLevel implements IDisposable
 {
@@ -200,9 +201,8 @@ export class TankLevel implements IDisposable
 
     private LoadEnemyTile(x:number, y:number):TileBase | null
     {
-        let mTile = new Tank_Enemy(this, x, y);
-        this.SceneRoot.addChild(mTile);
-        mTile.position = this.GetTilePos(x, y);
+        let mPos = this.GetTilePos(x, y);
+        new BornPoint(this, mPos, E_BORN_TYPE.Enemy); 
         return null;
     }
 

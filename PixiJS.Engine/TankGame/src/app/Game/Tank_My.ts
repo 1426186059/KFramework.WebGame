@@ -37,7 +37,7 @@ export class Tank_My extends TileBase  implements IDisposable
         " ": false,
     };
 
-    constructor(mTankLevel: TankLevel, x:number, y:number)
+    constructor(mTankLevel: TankLevel, x:number = 0, y:number = 0)
     {
         super(mTankLevel, x, y);
         this.resize();
