@@ -12,6 +12,7 @@ export class KTime
         return Ticker.shared.elapsedMS / 1000;
     };
 
+    // 最稳妥的做法是自己维护一个累加器，而不是直接去读 lastTime
     // public static get time(): number
     // {
     //     return Ticker.shared.lastTime / 1000.0;
