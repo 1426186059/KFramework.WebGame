@@ -90,16 +90,19 @@ export class Tank_My extends TileBase  implements IDisposable
         {
             bFire2 = false;
         }
-
+        
         if(bFire2 != this.bFire)
         {
             this.bFire = bFire2;
-            //发射子弹
-            console.log("发射子弹");
-            let mShell = this.mTankLevel.ShellPool.pop();
-            if(mShell)
+            if(this.bFire)
             {
-                mShell.UpdateSprite(this, dir);
+                //发射子弹
+                console.log("发射子弹");
+                let mShell = this.mTankLevel.ShellPool.pop();
+                if(mShell)
+                {
+                    mShell.UpdateSprite(this, dir);
+                }
             }
         }
 

@@ -140,8 +140,6 @@ export class Shell extends TileBase
                     //console.log("AABB depth 000: " + depth.toString());
                     if (depth.x != 0 || depth.y != 0)
                     {
-                        this.bMoveing = false;
-                        this.visible = false;
                         this.mTankLevel.ShellPool.push(this);
                         
                         let m_BornEffect = this.mTankLevel.BornEffectPool.pop();

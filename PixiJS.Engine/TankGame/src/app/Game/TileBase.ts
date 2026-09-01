@@ -34,6 +34,7 @@ export class TileBase extends PoolItemContainer
 
     public showBounds() 
     {
+        return;
         let bounds:Bounds = this.Collider2DZone();
         //console.log("showBounds 222 bounds: " + bounds.toString());
         this.boundsGraphics.clear();
