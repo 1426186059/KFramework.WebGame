@@ -78,8 +78,14 @@ export class Tank_Enemy extends TileBase  implements IDisposable
 
         if (this.bFire) 
         {
+            this.bFire = false;
             //发射子弹
-
+            console.log("发射子弹");
+            let mShell = this.mTankLevel.ShellPool.pop();
+            if(mShell)
+            {
+                mShell.UpdateSprite(this, dir);
+            }
         }
         
         if(this.mDirection != dir)
