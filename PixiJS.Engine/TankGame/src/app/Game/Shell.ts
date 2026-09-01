@@ -7,6 +7,7 @@ import { Tile_Block } from "./Tile_Block";
 import { RectangleExtensions } from "./RectangleExtensions";
 import { ObjPool } from "../../KFramework.PixiJS/Tool/PoolContainer";
 import { IPoolItem } from "../../KFramework.PixiJS/Tool/IPoolItem";
+import { Tank_Enemy } from "./Tank_Enemy";
 
 export class Shell extends TileBase
 {
@@ -141,12 +142,22 @@ export class Shell extends TileBase
                     if (depth.x != 0 || depth.y != 0)
                     {
                         this.mTankLevel.ShellPool.push(this);
-                        
+
                         let m_BornEffect = this.mTankLevel.BornEffectPool.pop();
                         if(m_BornEffect != null)
                         {
                             m_BornEffect.PlayAni(this.position);
                         }
+                        
+                        if(mTile instanceof Tank_Enemy)
+                        {
+                            
+                        }
+                        else if(mTile instanceof Tile_Block)
+                        {
+                            this.mTankLevel.SetTileNull(mTile.x, mTile.y);
+                        }
+
                         return;
                     }
                 }

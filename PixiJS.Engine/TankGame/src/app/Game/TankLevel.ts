@@ -158,6 +158,26 @@ export class TankLevel implements IDisposable
 
         return this.tiles[y][x];
     }
+
+    public SetTileNull(x:number, y:number):void
+    {
+        if(x < 0 || x >= TankLevelConfig.MapWidth)
+        {
+            return;
+        }
+
+        if(y < 0 || y >= TankLevelConfig.MapHeight)
+        {
+            return;
+        }
+        
+        let mTile = this.tiles[y][x];
+        if(mTile != null)
+        {
+            this.SceneRoot.removeChild(mTile);
+            this.tiles[y][x] = null;
+        }
+    }
     
     private LoadCommonTile(x:number, y:number, strName:string):TileBase 
     {
