@@ -33,24 +33,20 @@ export class PoolContainer<T extends PoolItemContainer>
         }
     }
     
-    public pop(): T | undefined
+    public pop(): T
     {
-        let mItem:T | undefined;
+        let mItem:T;
         if(this.pool.length > 0)
         {
-            mItem = this.pool.pop();
+            mItem = this.pool.pop()!;
         }
         else
         {
             mItem = this.creteObjFunc();
         }
         
-        if(mItem != undefined)
-        {
-            this.usedList.push(mItem);
-            mItem.visible = true;
-        }
-          
+        this.usedList.push(mItem!);
+        mItem!.visible = true;  
         return mItem;
     }
 

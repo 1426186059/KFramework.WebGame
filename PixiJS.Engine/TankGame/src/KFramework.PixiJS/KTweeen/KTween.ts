@@ -2,7 +2,7 @@ import { Container, Ticker } from "pixi.js";
 
 import { IDisposable } from "../Tool/IDisposable";
 import { LinkedListNode } from "../Tool/LinkedList";
-import { KTweenByLinkedList } from "./KTweenByLinkedList";
+import { KTweenByLinkedList } from "./KTweenMgr";
 import { KTweenType } from "./KTweenFunc";
 
 /** 每帧回调，参数是【已经过缓动处理】的进度 [0,1] */
@@ -146,7 +146,8 @@ export class KTweenHandle implements IDisposable {
 }
 
 /** 单个补间的数据（由 {@link ObjectPool} 复用，靠 nVersion 做句柄校验） */
-export class TweenItem {
+export class TweenItem 
+{
   public readonly mEntry: LinkedListNode<TweenItem>;
   /** 串行播放的下一个补间（C# 里就拼成 SqeNext，这里保留原拼写） */
   public SqeNext: TweenItem | null = null;
@@ -242,124 +243,5 @@ export class TweenItem {
   public SetEase(easeType: KTweenType): TweenItem {
     this.nType = easeType;
     return this;
-  }
-}
-
-/** TweenItem 的对象池 */
-export class ObjectPool {
-  private readonly mObjectPool: TweenItem[] = [];
-  private nMaxCapacity: number = 1024;
-
-  public SetMaxCapacity(nCount: number): void {
-    this.nMaxCapacity = nCount;
-  }
-
-  public Pop(): TweenItem {
-    if (this.mObjectPool.length > 0) {
-      return this.mObjectPool.pop()!;
-    }
-    return new TweenItem();
-  }
-
-  public Recycle(t: TweenItem): void {
-    t.Reset();
-    if (this.mObjectPool.length < this.nMaxCapacity) {
-      this.mObjectPool.push(t);
-    }
-  }
-}
-
-/**
- * 补间管理器（单例）。
- * bindObj 是"全局绑定对象"：不指定对象创建的补间会挂到它上面，
- * 这样就不会因为 bindObj == null 而在第一帧被回收。
- */
-export class KTweenMgr {
-  private static m_Instance: KTweenMgr | null = null;
-  private readonly UpdateFunc;
-  private readonly mManager: KTweenByLinkedList = new KTweenByLinkedList();
-  public readonly bindObj: Container = new Container();
-
-  private constructor() {
-    this.UpdateFunc = this.Update.bind(this);
-    Ticker.shared.add(this.UpdateFunc);
-  }
-
-  public static GetInstance(): KTweenMgr {
-    if (KTweenMgr.m_Instance === null) {
-      KTweenMgr.m_Instance = new KTweenMgr();
-    }
-    return KTweenMgr.m_Instance;
-  }
-
-  public Update(): void {
-    this.mManager.Update();
-  }
-
-  /** 手动指定 deltaTime（秒）推进一帧，方便脱离 Ticker 做单元测试 */
-  public UpdateWith(deltaTime: number): void {
-    this.mManager.UpdateWith(deltaTime);
-  }
-
-  public SetMaxTweenCount(nCount: number): void {
-    this.mManager.SetMaxTweenCount(nCount);
-  }
-
-  public CancelAll(): void {
-    this.mManager.CancelAll();
-  }
-
-  public Cancel(obj: Container): void {
-    this.mManager.Cancel(obj);
-  }
-
-  public AddTween(
-    time: number,
-    updateFunc?: UpdateFunc,
-    finishFunc?: FinishFunc,
-  ): TweenItem;
-  public AddTween(
-    obj: Container,
-    time: number,
-    updateFunc?: UpdateFunc,
-    finishFunc?: FinishFunc,
-  ): TweenItem;
-  public AddTween(
-    a: number | Container,
-    b?: number | UpdateFunc,
-    c?: UpdateFunc | FinishFunc,
-    d?: FinishFunc,
-  ): TweenItem {
-    if (typeof a === "number") {
-      return this.mManager.AddTween(
-        a,
-        b as UpdateFunc | undefined,
-        c as FinishFunc | undefined,
-      );
-    }
-
-    return this.mManager.AddTween(
-      a,
-      b as number,
-      c as UpdateFunc | undefined,
-      d,
-    );
-  }
-
-  public delayedCall(time: number, finishFunc?: FinishFunc): TweenItem;
-  public delayedCall(
-    obj: Container,
-    time: number,
-    finishFunc?: FinishFunc,
-  ): TweenItem;
-  public delayedCall(
-    a: number | Container,
-    b?: number | FinishFunc,
-    c?: FinishFunc,
-  ): TweenItem {
-    if (typeof a === "number") {
-      return this.AddTween(a, undefined, b as FinishFunc | undefined);
-    }
-    return this.AddTween(a, b as number, undefined, c);
   }
 }

@@ -33,22 +33,19 @@ export class ObjPool<T extends IPoolItem> implements IDisposable
         }
     }
     
-    public pop(): T | undefined
+    public pop(): T
     {
-        let mItem:T | undefined;
+        let mItem:T;
         if(this.pool.length > 0)
         {
-            mItem = this.pool.pop();
+            mItem = this.pool.pop()!;
         }
         else
         {
             mItem = this.creteObjFunc();
         }
-        
-        if(mItem != undefined)
-        {
-            this.usedList.push(mItem);
-        }
+
+        this.usedList.push(mItem!);
         return mItem;
     }
 

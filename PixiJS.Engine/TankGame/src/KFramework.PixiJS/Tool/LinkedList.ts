@@ -2,7 +2,8 @@
  * 双向链表 —— 对齐 .NET 的 System.Collections.Generic.LinkedList\<T\> / LinkedListNode\<T\>。
  * 节点对象由外部持有（KTween 的 TweenItem.mEntry），因此可以做到 O(1) 插入/删除。
  */
-export class LinkedListNode<T> {
+export class LinkedListNode<T> 
+{
   public list: LinkedList<T> | null = null;
   public previous: LinkedListNode<T> | null = null;
   public next: LinkedListNode<T> | null = null;
@@ -27,26 +28,31 @@ export class LinkedListNode<T> {
   }
 }
 
-export class LinkedList<T> {
-  private mFirst: LinkedListNode<T> | null = null;
-  private mLast: LinkedListNode<T> | null = null;
-  private mCount: number = 0;
+export class LinkedList<T> 
+{
+    private mFirst: LinkedListNode<T> | null = null;
+    private mLast: LinkedListNode<T> | null = null;
+    private mCount: number = 0;
 
-  public get First(): LinkedListNode<T> | null {
-    return this.mFirst;
-  }
+    public get First(): LinkedListNode<T> | null 
+    {
+      return this.mFirst;
+    }
 
-  public get Last(): LinkedListNode<T> | null {
-    return this.mLast;
-  }
+    public get Last(): LinkedListNode<T> | null 
+    {
+      return this.mLast;
+    }
 
-  public get Count(): number {
+  public get Count(): number 
+  {
     return this.mCount;
   }
 
   /** 把节点挂到链表尾部；若节点已属于其它链表会先摘下来 */
   public AddLast(node: LinkedListNode<T>): LinkedListNode<T> {
-    if (node.list !== null) {
+    if (node.list !== null) 
+    {
       node.list.Remove(node);
     }
 
@@ -54,9 +60,12 @@ export class LinkedList<T> {
     node.previous = this.mLast;
     node.next = null;
 
-    if (this.mLast !== null) {
+    if (this.mLast !== null) 
+    {
       this.mLast.next = node;
-    } else {
+    } 
+    else 
+    {
       this.mFirst = node;
     }
 
@@ -65,37 +74,47 @@ export class LinkedList<T> {
     return node;
   }
 
-  public Remove(node: LinkedListNode<T>): void {
-    if (node.list !== this) {
-      return;
-    }
+  public Remove(node: LinkedListNode<T>): void 
+  {
+      if (node.list !== this) 
+      {
+        return;
+      }
 
-    if (node.previous !== null) {
-      node.previous.next = node.next;
-    } else {
-      this.mFirst = node.next;
-    }
+      if (node.previous !== null) 
+      {
+        node.previous.next = node.next;
+      } 
+      else 
+      {
+        this.mFirst = node.next;
+      }
 
-    if (node.next !== null) {
-      node.next.previous = node.previous;
-    } else {
-      this.mLast = node.previous;
-    }
+      if (node.next !== null) 
+      {
+        node.next.previous = node.previous;
+      } 
+      else 
+      {
+        this.mLast = node.previous;
+      }
 
-    node.list = null;
-    node.previous = null;
-    node.next = null;
-    this.mCount--;
-  }
-
-  public Clear(): void {
-    let node: LinkedListNode<T> | null = this.mFirst;
-    while (node !== null) {
-      const next: LinkedListNode<T> | null = node.next;
       node.list = null;
       node.previous = null;
       node.next = null;
-      node = next;
+      this.mCount--;
+  }
+
+  public Clear(): void 
+  {
+    let node: LinkedListNode<T> | null = this.mFirst;
+    while (node !== null) 
+    {
+        const next: LinkedListNode<T> | null = node.next;
+        node.list = null;
+        node.previous = null;
+        node.next = null;
+        node = next;
     }
     this.mFirst = null;
     this.mLast = null;
