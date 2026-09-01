@@ -1,9 +1,7 @@
 import { AnimatedSprite, Assets, Bounds, Container, Point, Sprite, Texture, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
 import { TileBase } from "./TileBase";
-import { E_BORN_TYPE, TankDirection, TankLevelConfig } from "./TankLevelConfig";
-import { RectangleExtensions } from "./RectangleExtensions";
-import { PoolItemContainer } from "../../KFramework.PixiJS/Tool/PoolItemContainer";
+import { E_BORN_TYPE } from "./TankLevelConfig";
 import { Tank_My } from "./Tank_My";
 import { Tank_Enemy } from "./Tank_Enemy";
 import { KTimer } from "../../KFramework.PixiJS/Timer/KTimer";
