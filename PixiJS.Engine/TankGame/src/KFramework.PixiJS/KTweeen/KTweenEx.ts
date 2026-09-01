@@ -13,6 +13,8 @@ export type Tintable = Container & { tint: number };
  * 与 MonoGame 版的差异：
  * - KTransform -> Pixi 的 {@link Container}；Vector2 -> PointData
  * - moveXxx 走世界坐标（内部用 toGlobal / parent.toLocal 换算），moveLocalXxx 走本地坐标
+ * - 单轴 API（moveX / moveY / moveLocalX / moveLocalY）只改自己那一轴，
+ *   所以两个单轴补间可以同时跑；C# 版这里会用自己捕获的 from 覆盖另一轴，导致互相抵消
  * - 旋转单位是【弧度】（与 C# 版一致，MonoGame 的 CreateRotationZ 也是弧度）
  * - Color -> Pixi 的 tint（0xRRGGBB 数字），颜色按 RGB 三个通道分别插值
  * - C# 的两个 color 重载（SpriteRenderer / KImage）在这里合并成一个 {@link Tintable} 版本
@@ -84,9 +86,11 @@ export class KTweenEx {
   public static moveX(obj: Container, x: number, time: number): TweenItem {
     const from: Point = KTweenEx.getWorldPosition(obj);
     return KTween.AddTween(obj, time, (fPercent: number) => {
+      // 只改 x：另一轴留给可能同时存在的 moveY 补间
+      const world = KTweenEx.getWorldPosition(obj);
       KTweenEx.setWorldPosition(
         obj,
-        new Point(from.x + (x - from.x) * fPercent, from.y),
+        new Point(from.x + (x - from.x) * fPercent, world.y),
       );
     });
   }
@@ -94,9 +98,11 @@ export class KTweenEx {
   public static moveY(obj: Container, y: number, time: number): TweenItem {
     const from: Point = KTweenEx.getWorldPosition(obj);
     return KTween.AddTween(obj, time, (fPercent: number) => {
+      // 只改 y：另一轴留给可能同时存在的 moveX 补间
+      const world = KTweenEx.getWorldPosition(obj);
       KTweenEx.setWorldPosition(
         obj,
-        new Point(from.x, from.y + (y - from.y) * fPercent),
+        new Point(world.x, from.y + (y - from.y) * fPercent),
       );
     });
   }
@@ -168,15 +174,17 @@ export class KTweenEx {
 
   public static moveLocalX(obj: Container, x: number, time: number): TweenItem {
     const from: Point = obj.position.clone();
+    // 只改 x：另一轴留给可能同时存在的 moveLocalY 补间
     return KTween.AddTween(obj, time, (fPercent: number) => {
-      obj.position.set(from.x + (x - from.x) * fPercent, from.y);
+      obj.position.x = from.x + (x - from.x) * fPercent;
     });
   }
 
   public static moveLocalY(obj: Container, y: number, time: number): TweenItem {
     const from: Point = obj.position.clone();
+    // 只改 y：另一轴留给可能同时存在的 moveLocalX 补间
     return KTween.AddTween(obj, time, (fPercent: number) => {
-      obj.position.set(from.x, from.y + (y - from.y) * fPercent);
+      obj.position.y = from.y + (y - from.y) * fPercent;
     });
   }
 

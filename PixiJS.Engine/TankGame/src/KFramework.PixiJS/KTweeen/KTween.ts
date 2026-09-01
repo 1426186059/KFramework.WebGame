@@ -1,11 +1,9 @@
 import { Container, Ticker } from "pixi.js";
 
-import { KTime } from "../GameEngine/KTime";
 import { IDisposable } from "../Tool/IDisposable";
 import { LinkedListNode } from "../Tool/LinkedList";
 import { KTweenByLinkedList } from "./KTweenByLinkedList";
 import { KTweenType } from "./KTweenFunc";
-import { engine } from "../../app/getEngine";
 
 /** 每帧回调，参数是【已经过缓动处理】的进度 [0,1] */
 export type UpdateFunc = (fPercent: number) => void;
@@ -16,9 +14,9 @@ export type FinishFunc = () => void;
  * KTween —— 从 MonoGame 版移植过来的轻量补间库（PixiJS 版）。
  *
  * 对应关系：
- * - C# 的 KTransform 绑定对象 -> Pixi 的 {@link Container}
+ * - C# 的 KTransform 绑定对象 -> Pixi 的 Container
  * - C# 的 Vector2            -> Pixi 的 Point / PointData
- * - C# 的 KTime.deltaTime    -> {@link KTime}.deltaTime（秒）
+ * - C# 的 KTime.deltaTime    -> KTime.deltaTime（秒），只在无参 Update() 时会去读
  *
  * 每帧需要驱动一次，推荐在主循环里调用 {@link KTween.update}：
  * ```ts
@@ -97,12 +95,6 @@ export class KTween {
       return;
     }
     KTweenMgr.GetInstance().Cancel(target);
-  }
-
-  /** 每帧驱动一次：推进 KTime，再推进所有补间 */
-  public static update(ticker: Ticker): void {
-    KTime.From(ticker);
-    KTweenMgr.GetInstance().Update();
   }
 }
 
@@ -282,83 +274,92 @@ export class ObjectPool {
  * bindObj 是"全局绑定对象"：不指定对象创建的补间会挂到它上面，
  * 这样就不会因为 bindObj == null 而在第一帧被回收。
  */
-export class KTweenMgr 
-{
+export class KTweenMgr {
   private static m_Instance: KTweenMgr | null = null;
   private readonly UpdateFunc;
   private readonly mManager: KTweenByLinkedList = new KTweenByLinkedList();
   public readonly bindObj: Container = new Container();
 
-  private constructor() 
-  {
-      this.UpdateFunc = this.Update.bind(this);
-      Ticker.shared.add(this.UpdateFunc);
+  private constructor() {
+    this.UpdateFunc = this.Update.bind(this);
+    Ticker.shared.add(this.UpdateFunc);
   }
 
-  public static GetInstance(): KTweenMgr 
-  {
-      if (KTweenMgr.m_Instance === null) 
-      {
-          KTweenMgr.m_Instance = new KTweenMgr();
-      }
-      return KTweenMgr.m_Instance;
+  public static GetInstance(): KTweenMgr {
+    if (KTweenMgr.m_Instance === null) {
+      KTweenMgr.m_Instance = new KTweenMgr();
+    }
+    return KTweenMgr.m_Instance;
   }
 
-  public Update(): void 
-  {
-      this.mManager.Update();
+  public Update(): void {
+    this.mManager.Update();
   }
 
   /** 手动指定 deltaTime（秒）推进一帧，方便脱离 Ticker 做单元测试 */
-  public UpdateWith(deltaTime: number): void 
-  {
-      this.mManager.UpdateWith(deltaTime);
+  public UpdateWith(deltaTime: number): void {
+    this.mManager.UpdateWith(deltaTime);
   }
 
-  public SetMaxTweenCount(nCount: number): void 
-  {
-      this.mManager.SetMaxTweenCount(nCount);
+  public SetMaxTweenCount(nCount: number): void {
+    this.mManager.SetMaxTweenCount(nCount);
   }
 
-  public CancelAll(): void 
-  {
-      this.mManager.CancelAll();
+  public CancelAll(): void {
+    this.mManager.CancelAll();
   }
 
-  public Cancel(obj: Container): void 
-  {
-      this.mManager.Cancel(obj);
+  public Cancel(obj: Container): void {
+    this.mManager.Cancel(obj);
   }
 
-    public AddTween(time: number, updateFunc?: UpdateFunc, finishFunc?: FinishFunc): TweenItem;
-    public AddTween(obj: Container, time: number, updateFunc?: UpdateFunc, finishFunc?: FinishFunc): TweenItem;
-    public AddTween(a: number | Container, b?: number | UpdateFunc, c?: UpdateFunc | FinishFunc, d?: FinishFunc): TweenItem 
-    {
-      if (typeof a === "number") 
-      {
-        return this.mManager.AddTween(
-          a,
-          b as UpdateFunc | undefined,
-          c as FinishFunc | undefined,
-        );
-      }
-
+  public AddTween(
+    time: number,
+    updateFunc?: UpdateFunc,
+    finishFunc?: FinishFunc,
+  ): TweenItem;
+  public AddTween(
+    obj: Container,
+    time: number,
+    updateFunc?: UpdateFunc,
+    finishFunc?: FinishFunc,
+  ): TweenItem;
+  public AddTween(
+    a: number | Container,
+    b?: number | UpdateFunc,
+    c?: UpdateFunc | FinishFunc,
+    d?: FinishFunc,
+  ): TweenItem {
+    if (typeof a === "number") {
       return this.mManager.AddTween(
         a,
-        b as number,
-        c as UpdateFunc | undefined,
-        d,
+        b as UpdateFunc | undefined,
+        c as FinishFunc | undefined,
       );
     }
 
-    public delayedCall(time: number, finishFunc?: FinishFunc): TweenItem;
-    public delayedCall(obj: Container, time: number, finishFunc?: FinishFunc): TweenItem;
-    public delayedCall(a: number | Container, b?: number | FinishFunc, c?: FinishFunc): TweenItem 
-    {
-        if (typeof a === "number") 
-        {
-          return this.AddTween(a, undefined, b as FinishFunc | undefined);
-        }
-        return this.AddTween(a, b as number, undefined, c);
+    return this.mManager.AddTween(
+      a,
+      b as number,
+      c as UpdateFunc | undefined,
+      d,
+    );
+  }
+
+  public delayedCall(time: number, finishFunc?: FinishFunc): TweenItem;
+  public delayedCall(
+    obj: Container,
+    time: number,
+    finishFunc?: FinishFunc,
+  ): TweenItem;
+  public delayedCall(
+    a: number | Container,
+    b?: number | FinishFunc,
+    c?: FinishFunc,
+  ): TweenItem {
+    if (typeof a === "number") {
+      return this.AddTween(a, undefined, b as FinishFunc | undefined);
     }
+    return this.AddTween(a, b as number, undefined, c);
+  }
 }

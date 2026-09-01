@@ -80,10 +80,13 @@ export class TimeTool {
     const negative = text.startsWith("-");
     const body = negative ? text.slice(1) : text;
 
+    // 天数的分隔符 "." 一定出现在第一个 ":" 之前；
+    // "00:00:01.5" 里的 "." 是小数秒，不能当成天数
     let day = 0;
     let timePart = body;
     const dot = body.indexOf(".");
-    if (dot >= 0) {
+    const colon = body.indexOf(":");
+    if (dot >= 0 && (colon < 0 || dot < colon)) {
       day = Number(body.slice(0, dot)) || 0;
       timePart = body.slice(dot + 1);
     }

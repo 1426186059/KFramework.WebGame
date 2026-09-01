@@ -11,8 +11,7 @@ import { KTweenFunc } from "./KTweenFunc";
  * 补间的实际调度器：用一个双向链表保存所有在跑的 TweenItem，
  * 每帧顺序推进，删除是 O(1)（节点存在 TweenItem.mEntry 里）。
  */
-export class KTweenByLinkedList 
-{
+export class KTweenByLinkedList {
   private readonly mItemPool: ObjectPool = new ObjectPool();
   private readonly mTweenT: LinkedList<TweenItem> = new LinkedList<TweenItem>();
 
@@ -107,7 +106,9 @@ export class KTweenByLinkedList
     }
   }
 
-  private DoNext(mNode: LinkedListNode<TweenItem>): LinkedListNode<TweenItem> | null {
+  private DoNext(
+    mNode: LinkedListNode<TweenItem>,
+  ): LinkedListNode<TweenItem> | null {
     return mNode.Next;
   }
 
