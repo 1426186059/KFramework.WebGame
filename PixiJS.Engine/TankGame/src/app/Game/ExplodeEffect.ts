@@ -17,15 +17,18 @@ export class ExplodeEffect extends PoolItemContainer
         this.mTankLevel = mTankLevel;
         this.mTankLevel.SceneRoot.addChild(this);
 
-        let sheet = Assets.get('Born.atlas.json');
-        let Textures = sheet.animations['Born']
+        let Textures = 
+        [
+            Texture.from("main/MyRes/Textures/Explode1.png"),
+        ];
+
         this.mAnimationPlayer = new AnimatedSprite(Textures);
         this.mAnimationPlayer.animationSpeed = 0.1;
         this.mAnimationPlayer.loop = false;
         this.mAnimationPlayer.pivot = new Point(Textures[0].width / 2, Textures[0].height / 2);
         
         this.mAnimationPlayer.onComplete = () => {
-            this.mTankLevel.BornEffectPool.push(this);
+            this.mTankLevel.ExplodeEffectPool.push(this);
         }
         this.addChild(this.mAnimationPlayer);
     }

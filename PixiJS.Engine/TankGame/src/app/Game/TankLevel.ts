@@ -9,6 +9,7 @@ import { Tile_Block } from './Tile_Block';
 import { Shell } from './Shell';
 import { PoolContainer } from '../../KFramework.PixiJS/Tool/PoolContainer';
 import { BornEffect } from './BornEffect';
+import { ExplodeEffect } from './ExplodeEffect';
 
 export class TankLevel implements IDisposable
 {
@@ -22,6 +23,7 @@ export class TankLevel implements IDisposable
 
     public readonly ShellPool:PoolContainer<Shell> = new PoolContainer<Shell>(()=> new Shell(this));
     public readonly BornEffectPool:PoolContainer<BornEffect> = new PoolContainer<BornEffect>(()=> new BornEffect(this));
+    public readonly ExplodeEffectPool:PoolContainer<ExplodeEffect> = new PoolContainer<ExplodeEffect>(()=> new ExplodeEffect(this));
     
     public readonly MaxPosX:number = 0;
     public readonly MinPosX:number = 0;

@@ -143,7 +143,7 @@ export class Shell extends TileBase
                     {
                         this.mTankLevel.ShellPool.push(this);
 
-                        let m_BornEffect = this.mTankLevel.BornEffectPool.pop();
+                        let m_BornEffect = this.mTankLevel.ExplodeEffectPool.pop();
                         if(m_BornEffect != null)
                         {
                             m_BornEffect.PlayAni(this.position);

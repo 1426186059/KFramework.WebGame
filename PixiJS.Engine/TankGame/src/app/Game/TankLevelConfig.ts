@@ -13,3 +13,10 @@ export enum TankDirection {
     LEFT = 'LEFT',
     RIGHT = 'RIGHT'
 }
+
+export enum E_BORN_TYPE
+{
+    Player1 = 0,
+    Player2 = 1,
+    Enemy = 2,
+}
