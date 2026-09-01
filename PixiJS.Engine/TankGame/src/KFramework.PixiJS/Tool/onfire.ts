@@ -1,29 +1,17 @@
-/**
- * 重新编写一个,必须绑定target. 原来的框架，移除的时候会有bug。
- * Created by xubing on 2022/12/29
- */
-
-export interface Listener {
+export interface Listener 
+{
   cb: Function;
   target:any;
   once: boolean;
 }
 
-export interface EventsType {
+export interface EventsType 
+{
   [eventName: string]: Listener[];
 }
 
-/**
- * const ee = new OnFire();
- *
- * ee.on('click', this.testfun,this);
- *
- * ee.emit('click', 1, 2, 3);
- * ee.fire('mouseover', {}); // same with emit
- *
- * ee.off('click', this,this.testfun);
- */
-export default class OnFire {
+export default class OnFire 
+{
 
   static ver = '__VERSION__';
 
