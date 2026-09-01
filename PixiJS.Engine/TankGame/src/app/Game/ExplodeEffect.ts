@@ -1,0 +1,48 @@
+import { AnimatedSprite, Assets, Bounds, Container, Point, Sprite, Texture, Ticker } from "pixi.js";
+import { TankLevel } from "./TankLevel";
+import { TileBase } from "./TileBase";
+import { TankDirection, TankLevelConfig } from "./TankLevelConfig";
+import { RectangleExtensions } from "./RectangleExtensions";
+import { PoolItemContainer } from "../../KFramework.PixiJS/Tool/PoolItemContainer";
+
+export class ExplodeEffect extends PoolItemContainer
+{
+    private mAnimationPlayer:AnimatedSprite | null = null;
+    private mTankLevel: TankLevel;
+    
+    constructor(mTankLevel: TankLevel)
+    {
+        super();
+        this.mTankLevel = mTankLevel;
+        this.mTankLevel.SceneRoot.addChild(this);
+
+        let sheet = Assets.get('Born.atlas.json');
+        let Textures = sheet.animations['Born']
+        this.mAnimationPlayer = new AnimatedSprite(Textures);
+        this.mAnimationPlayer.animationSpeed = 0.1;
+        this.mAnimationPlayer.loop = false;
+        this.mAnimationPlayer.pivot = new Point(Textures[0].width / 2, Textures[0].height / 2);
+        
+        this.mAnimationPlayer.onComplete = () => {
+            this.mTankLevel.BornEffectPool.push(this);
+        }
+        this.addChild(this.mAnimationPlayer);
+    }
+
+    public PlayAni(mPos:Point):void
+    {
+        this.position = mPos;
+        this.mAnimationPlayer?.gotoAndPlay(0);
+    }
+
+    public Reset():void
+    {
+        
+    }
+
+    public Dispose(): void 
+    {
+        
+    }
+
+}
