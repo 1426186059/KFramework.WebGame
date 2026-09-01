@@ -34,7 +34,7 @@ export class TankLevel implements IDisposable
         
         this.MaxPosX = TankLevelConfig.MapWidth * TankLevelConfig.TileWidth / 2;
         this.MinPosX = -TankLevelConfig.MapWidth * TankLevelConfig.TileWidth / 2;
-        this.MaxPosY = TankLevelConfig.MapHeight * TankLevelConfig.TileHeight / 2 - 32;
+        this.MaxPosY = TankLevelConfig.MapHeight * TankLevelConfig.TileHeight / 2 - 30;
         this.MinPosY = -TankLevelConfig.MapHeight * TankLevelConfig.TileHeight / 2;
     }
 
