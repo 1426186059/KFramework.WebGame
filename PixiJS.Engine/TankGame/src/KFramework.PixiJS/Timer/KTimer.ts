@@ -10,6 +10,8 @@ export class KTimer implements IDisposable
     private time:number = 0;
     private func: (()=>void) | null = null;
     private go:Container | null = null;
+
+    private UpdateFunc:(()=>void) | null = null; 
     
     public static New(go:Container, func:()=>void, duration:number, loop:number = 1, unscaled:boolean = false):KTimer
     {
@@ -20,17 +22,24 @@ export class KTimer implements IDisposable
         o.time = duration;
         o.loop = loop;
         o.unscaled = unscaled;
+        o.UpdateFunc = o.Update.bind(o);
         return o;
     }
     
     public Start():void
     {
-        KUpdateMgr.AddListener(this.Update.bind(this));
+        if(this.UpdateFunc)
+        {
+            KUpdateMgr.AddListener(this.UpdateFunc);
+        }
     }
 
     public Stop():void
     {
-        KUpdateMgr.RemoveListener(this.Update.bind(this));
+        if(this.UpdateFunc)
+        {
+            KUpdateMgr.RemoveListener(this.UpdateFunc);
+        }
     }
 
     public Dispose(): void 
@@ -47,9 +56,10 @@ export class KTimer implements IDisposable
             return;
         }
 
-        let delta:number = this.unscaled ? Ticker.shared.elapsedMS / 1000 : Ticker.shared.deltaTime;
+        console.log("KTimer Update: " + Ticker.shared.deltaTime);
+        let delta:number = this.unscaled ? Ticker.shared.elapsedMS / 1000 : Ticker.shared.elapsedMS * Ticker.shared.speed / 1000;
         this.time = this.time - delta;
-
+        
         if (this.time <= 0)
         {
             if(this.func)

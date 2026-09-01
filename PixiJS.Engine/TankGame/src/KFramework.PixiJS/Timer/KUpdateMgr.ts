@@ -3,12 +3,12 @@ import { engine } from "../../app/getEngine";
 
 export class KUpdateMgr
 {
-    public static AddListener(func: (_time: Ticker)=>void):void
+    public static AddListener(func: ()=>void):void
     {
         engine().ticker.add(func);
     }
 
-    public static RemoveListener(func: (_time: Ticker)=>void):void
+    public static RemoveListener(func: ()=>void):void
     {
         engine().ticker.remove(func);
     }

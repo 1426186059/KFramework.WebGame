@@ -6,7 +6,7 @@ export class KFrameTimer
 	private loop:number = 0;
 	private nNowFrame:number = 0;
 	private nSumFrame:number = 0;
-	private running:boolean = false;
+	private UpdateFunc:(()=>void) | null = null; 
 	
 	public static New(func:()=>void, nFrameCount:number, loop:number = 1):KFrameTimer
 	{
@@ -15,29 +15,28 @@ export class KFrameTimer
 		o.nSumFrame = nFrameCount;
 		o.loop = loop;
 		o.nNowFrame = nFrameCount;
-		o.running = false;
+		o.UpdateFunc = o.Update.bind(o);
 		return o;
 	}
 
-	public Start():void
-	{
-		KUpdateMgr.AddListener(this.Update);
-		this.running = true;
-	}
+    public Start():void
+    {
+        if(this.UpdateFunc)
+        {
+            KUpdateMgr.AddListener(this.UpdateFunc);
+        }
+    }
 
-	public Stop():void
-	{
-		this.running = false;
-		KUpdateMgr.RemoveListener(this.Update);
-	}
+    public Stop():void
+    {
+        if(this.UpdateFunc)
+        {
+            KUpdateMgr.RemoveListener(this.UpdateFunc);
+        }
+    }
 
 	public Update():void
 	{
-		if (!this.running)
-		{
-			return;
-		}
-
 		this.nNowFrame = this.nNowFrame - 1;
 		if (this.nNowFrame <= 0)
 		{
@@ -45,7 +44,7 @@ export class KFrameTimer
 			{
 				this.func();
 			}
-			
+
 			if (this.loop > 0)
 			{
 				this.loop = this.loop - 1;
