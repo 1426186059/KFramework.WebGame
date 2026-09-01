@@ -8,7 +8,7 @@ export class TileBase extends Container
     public TileY:number;
     public mTankLevel:TankLevel;
     protected readonly boundsGraphics = new Graphics();
-    constructor(mTankLevel: TankLevel, x:number, y:number)
+    constructor(mTankLevel: TankLevel, x:number = 0, y:number = 0)
     {
         super();
         this.mTankLevel = mTankLevel;

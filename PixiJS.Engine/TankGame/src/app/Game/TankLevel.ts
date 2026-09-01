@@ -6,6 +6,7 @@ import { IDisposable } from '../../KFramework.PixiJS/Tool/IDisposable';
 import { Tank_My } from './Tank_My';
 import { Tank_Enemy } from './Tank_Enemy';
 import { Tile_Block } from './Tile_Block';
+import { Shell } from './Shell';
 
 export class TankLevel implements IDisposable
 {
@@ -16,6 +17,9 @@ export class TankLevel implements IDisposable
     private _disoised:boolean = false;
     private  m_Background:Sprite | null = null;
     public fTileScaleCoef:number = 1.0;
+
+    public mShellList:Shell[] = [];
+    
     constructor()
     {
         this.m_Background = null;

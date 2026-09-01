@@ -6,6 +6,7 @@ import { IDisposable } from "../../KFramework.PixiJS/Tool/IDisposable";
 import { TankDirection, TankLevelConfig } from "./TankLevelConfig";
 import { Tile_Block } from "./Tile_Block";
 import { RectangleExtensions } from "./RectangleExtensions";
+import { Shell } from "./Shell";
 
 export class Tank_My extends TileBase  implements IDisposable
 {
@@ -82,6 +83,14 @@ export class Tank_My extends TileBase  implements IDisposable
         if (this.Keys[" "]) 
         {
             //发射子弹
+            let mShell:Shell = Shell.Pool.pop();
+            if(mShell == null)
+            {
+                mShell = new Shell(this.mTankLevel);
+            }
+            
+            this.mTankLevel.mShellList.push(mShell);
+            mShell.mDirection = dir;
         }
 
         if(bMove)

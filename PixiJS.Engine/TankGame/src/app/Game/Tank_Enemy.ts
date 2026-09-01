@@ -79,6 +79,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
         if (this.bFire) 
         {
             //发射子弹
+            
         }
         
         if(this.mDirection != dir)
@@ -215,7 +216,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
             return new Bounds(0, 0, 0, 0);
         }
     }
-    
+
     private HandleCollisions():void
     {
         let bounds:Bounds = this.Collider2DZone();
