@@ -4,7 +4,7 @@ import { KTime } from "../GameEngine/KTime";
 
 export class KTimeOutGenerator
 {
-    private fLastUpdateTime:number = 0;
+    private fTime:number = 0;
     private fInternalTime:number = 0;
 
     public static New(fInternalTime:number):KTimeOutGenerator
@@ -22,12 +22,13 @@ export class KTimeOutGenerator
     
     public Reset():void
     {
-        this.fLastUpdateTime = Ticker.shared.lastTime;
+        this.fTime = 0;
     }
 
     public orTimeOut():boolean
     {
-        if ((Ticker.shared.lastTime - this.fLastUpdateTime) > this.fInternalTime)
+        this.fTime += KTime.deltaTime;
+        if (this.fTime > this.fInternalTime)
         {
             this.Reset();
             return true;
@@ -35,10 +36,11 @@ export class KTimeOutGenerator
 
         return false;
     }
-
+    
     public orTimeOutWithSpecialTime(fInternalTime:number):boolean
     {
-        if (Ticker.shared.lastTime - this.fLastUpdateTime > fInternalTime)
+        this.fTime += KTime.deltaTime;
+        if (this.fTime > fInternalTime)
         {
             this.Reset();
             return true;

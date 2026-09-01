@@ -12,14 +12,14 @@ export class KTime
         return Ticker.shared.elapsedMS / 1000;
     };
 
-    public static get time(): number
-    {
-        return Ticker.shared.lastTime;
-    }
+    // public static get time(): number
+    // {
+    //     return Ticker.shared.lastTime / 1000.0;
+    // }
 
-    /** 不受 timeScale 影响的时间（秒） */
-    public static get unscaledTime(): number
-    {
-        return Ticker.shared.lastTime
-    }
+    // /** 不受 timeScale 影响的时间（秒） */
+    // public static get unscaledTime(): number
+    // {
+    //     return Ticker.shared.lastTime / 1000;
+    // }
 }
