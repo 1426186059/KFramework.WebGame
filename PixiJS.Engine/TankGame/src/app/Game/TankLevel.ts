@@ -161,17 +161,7 @@ export class TankLevel implements IDisposable
 
     public SetTileNull(x:number, y:number):void
     {
-        if(x < 0 || x >= TankLevelConfig.MapWidth)
-        {
-            return;
-        }
-
-        if(y < 0 || y >= TankLevelConfig.MapHeight)
-        {
-            return;
-        }
-        
-        let mTile = this.tiles[y][x];
+        let mTile = this.GetTile(x, y);
         if(mTile != null)
         {
             this.SceneRoot.removeChild(mTile);
@@ -185,26 +175,23 @@ export class TankLevel implements IDisposable
         this.SceneRoot.addChild(mTile);
         mTile.position = this.GetTilePos(x, y);
         mTile.mSprite.texture = Texture.from(strName);
-        mTile.showBounds();
         return mTile;
     }
 
-    private LoadPlayerTile(x:number, y:number):TileBase 
+    private LoadPlayerTile(x:number, y:number):TileBase | null
     {
         let mTile = new Tank_My(this, x, y);
         this.SceneRoot.addChild(mTile);
         mTile.position = this.GetTilePos(x, y);
-       // mTile.showBounds();
-        return mTile;
+        return null;
     }
 
-    private LoadEnemyTile(x:number, y:number):TileBase 
+    private LoadEnemyTile(x:number, y:number):TileBase | null
     {
         let mTile = new Tank_Enemy(this, x, y);
         this.SceneRoot.addChild(mTile);
         mTile.position = this.GetTilePos(x, y);
-        //mTile.showBounds();
-        return mTile;
+        return null;
     }
 
     public GetTilePos(x:number, y:number):Point 

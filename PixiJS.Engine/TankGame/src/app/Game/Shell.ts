@@ -148,14 +148,14 @@ export class Shell extends TileBase
                         {
                             m_BornEffect.PlayAni(this.position);
                         }
-                        
+
                         if(mTile instanceof Tank_Enemy)
                         {
                             
                         }
                         else if(mTile instanceof Tile_Block)
                         {
-                            this.mTankLevel.SetTileNull(mTile.x, mTile.y);
+                            this.mTankLevel.SetTileNull(x, y);
                         }
 
                         return;
