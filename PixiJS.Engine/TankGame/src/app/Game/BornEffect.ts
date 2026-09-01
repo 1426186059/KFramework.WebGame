@@ -22,7 +22,7 @@ export class BornEffect extends PoolItemContainer
         this.mAnimationPlayer = new AnimatedSprite(Textures);
         this.mAnimationPlayer.animationSpeed = 0.1;
         this.mAnimationPlayer.loop = false;
-        this.mAnimationPlayer.pivot = new Point(Textures[0].width / 2, Textures[0].height / 2);
+        //this.mAnimationPlayer.pivot = new Point(Textures[0].width / 2, Textures[0].height / 2);
         
         this.mAnimationPlayer.onComplete = () => {
             this.mTankLevel.BornEffectPool.push(this);

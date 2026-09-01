@@ -7,7 +7,7 @@ import { Tank_Enemy } from "./Tank_Enemy";
 import { KTimer } from "../../KFramework.PixiJS/Timer/KTimer";
 
 //出生特效
-export class BornPoint extends Container
+export class BornPoint
 {
     private mTankLevel: TankLevel;
     private mPos:Point;
@@ -15,7 +15,6 @@ export class BornPoint extends Container
     
     constructor(mTankLevel: TankLevel,  mPos:Point, nBornType:E_BORN_TYPE)
     {
-        super();
         this.mTankLevel = mTankLevel;
         this.mPos = mPos;
         this.nBornType = nBornType;
@@ -29,7 +28,7 @@ export class BornPoint extends Container
         let m_BornEffect = this.mTankLevel.BornEffectPool.pop();
         if(m_BornEffect != null)
         {
-            m_BornEffect.PlayAni(this.position);
+            m_BornEffect.PlayAni(this.mPos);
         }
 
         switch(this.nBornType)

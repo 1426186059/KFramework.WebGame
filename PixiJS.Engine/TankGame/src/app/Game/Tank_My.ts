@@ -37,6 +37,9 @@ export class Tank_My extends TileBase  implements IDisposable
         " ": false,
     };
 
+    private OnKeyDownFunc = this.OnKeyDown.bind(this);
+    private OnKeyUpFunc = this.OnKeyUp.bind(this);
+
     constructor(mTankLevel: TankLevel, x:number = 0, y:number = 0)
     {
         super(mTankLevel, x, y);
@@ -226,14 +229,14 @@ export class Tank_My extends TileBase  implements IDisposable
 
     private AddKeyboard():void
     {
-        window.addEventListener('keydown', this.OnKeyDown.bind(this));
-        window.addEventListener('keyup', this.OnKeyUp.bind(this));
+        window.addEventListener('keydown', this.OnKeyDownFunc);
+        window.addEventListener('keyup', this.OnKeyUpFunc);
     }
 
     private RemoveKeyboard():void
     {
-        window.removeEventListener('keydown', this.OnKeyDown);
-        window.removeEventListener('keyup', this.OnKeyUp);
+        window.removeEventListener('keydown', this.OnKeyDownFunc);
+        window.removeEventListener('keyup', this.OnKeyUpFunc);
     }
 
     private OnKeyDown(e:KeyboardEvent):void
