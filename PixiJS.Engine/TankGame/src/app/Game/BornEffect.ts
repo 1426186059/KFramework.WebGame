@@ -5,6 +5,7 @@ import { TankDirection, TankLevelConfig } from "./TankLevelConfig";
 import { RectangleExtensions } from "./RectangleExtensions";
 import { PoolItemContainer } from "../../KFramework.PixiJS/Tool/PoolItemContainer";
 
+//出生特效
 export class BornEffect extends PoolItemContainer
 {
     private mAnimationPlayer:AnimatedSprite | null = null;
