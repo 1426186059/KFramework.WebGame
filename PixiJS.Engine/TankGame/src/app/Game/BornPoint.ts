@@ -6,6 +6,7 @@ import { RectangleExtensions } from "./RectangleExtensions";
 import { PoolItemContainer } from "../../KFramework.PixiJS/Tool/PoolItemContainer";
 import { Tank_My } from "./Tank_My";
 import { Tank_Enemy } from "./Tank_Enemy";
+import { KTimer } from "../../KFramework.PixiJS/Timer/KTimer";
 
 //出生特效
 export class BornPoint extends Container
@@ -20,11 +21,14 @@ export class BornPoint extends Container
         this.mTankLevel = mTankLevel;
         this.mPos = mPos;
         this.nBornType = nBornType;
+
+        let mTimer = KTimer.New(this.mTankLevel.SceneRoot, this.DoTimerFunc.bind(this), 5.0, -1);
+        mTimer.Start();
     }
 
-    public DoTimerFunc():void
+    private DoTimerFunc():void
     {
-        let m_BornEffect = this.mTankLevel.ExplodeEffectPool.pop();
+        let m_BornEffect = this.mTankLevel.BornEffectPool.pop();
         if(m_BornEffect != null)
         {
             m_BornEffect.PlayAni(this.position);

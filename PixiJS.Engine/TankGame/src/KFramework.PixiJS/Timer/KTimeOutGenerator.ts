@@ -1,4 +1,6 @@
-﻿import { KTime } from "../GameEngine/KTime";
+﻿import { Ticker } from "pixi.js";
+import { engine } from "../../app/getEngine";
+import { KTime } from "../GameEngine/KTime";
 
 export class KTimeOutGenerator
 {
@@ -20,12 +22,12 @@ export class KTimeOutGenerator
     
     public Reset():void
     {
-        this.fLastUpdateTime = KTime.time;
+        this.fLastUpdateTime = Ticker.shared.lastTime;
     }
 
     public orTimeOut():boolean
     {
-        if ((KTime.time - this.fLastUpdateTime) > this.fInternalTime)
+        if ((Ticker.shared.lastTime - this.fLastUpdateTime) > this.fInternalTime)
         {
             this.Reset();
             return true;
@@ -36,7 +38,7 @@ export class KTimeOutGenerator
 
     public orTimeOutWithSpecialTime(fInternalTime:number):boolean
     {
-        if (KTime.time - this.fLastUpdateTime > fInternalTime)
+        if (Ticker.shared.lastTime - this.fLastUpdateTime > fInternalTime)
         {
             this.Reset();
             return true;

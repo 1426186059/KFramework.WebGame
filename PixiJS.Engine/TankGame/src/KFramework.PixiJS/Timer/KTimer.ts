@@ -22,15 +22,15 @@ export class KTimer implements IDisposable
         o.unscaled = unscaled;
         return o;
     }
-
+    
     public Start():void
     {
-        KUpdateMgr.AddListener(this.Update);
+        KUpdateMgr.AddListener(this.Update.bind(this));
     }
 
     public Stop():void
     {
-        KUpdateMgr.RemoveListener(this.Update);
+        KUpdateMgr.RemoveListener(this.Update.bind(this));
     }
 
     public Dispose(): void 
@@ -39,7 +39,7 @@ export class KTimer implements IDisposable
         this.go = null;
     }
 
-    private Update(_time: Ticker):void
+    private Update():void
     {
         if (this.go == null)
         {
@@ -47,7 +47,7 @@ export class KTimer implements IDisposable
             return;
         }
 
-        let delta:number = this.unscaled ? _time.elapsedMS / 1000 : _time.deltaTime;
+        let delta:number = this.unscaled ? Ticker.shared.elapsedMS / 1000 : Ticker.shared.deltaTime;
         this.time = this.time - delta;
 
         if (this.time <= 0)

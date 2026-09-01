@@ -1,3 +1,4 @@
+import { KUpdateMgr } from "./KUpdateMgr";
 
 export class KFrameTimer
 {
@@ -7,55 +8,44 @@ export class KFrameTimer
 	private nSumFrame:number = 0;
 	private running:boolean = false;
 	
-	public static New(Action func, int nFrameCount, int loop):KFrameTimer
+	public static New(func:()=>void, nFrameCount:number, loop:number = 1):KFrameTimer
 	{
 		var o = new KFrameTimer();
-		o.Init(func, nFrameCount, loop);
+		o.func = func;
+		o.nSumFrame = nFrameCount;
+		o.loop = loop;
+		o.nNowFrame = nFrameCount;
+		o.running = false;
 		return o;
 	}
 
-	public void Init(Action func, int nFrameCount, int loop = 1)
+	public Start():void
 	{
-		this.func = func;
-		this.nSumFrame = nFrameCount;
-		this.loop = loop;
-		this.nNowFrame = nFrameCount;
-		this.running = false;
-	}
-
-	public void Reset(Action func, int nFrameCount, int loop)
-	{
-		this.func = func;
-		this.nSumFrame = nFrameCount;
-		this.loop = loop;
-		this.nNowFrame = nFrameCount;
-	}
-
-	public void Start()
-	{
-		KUpdateMgr.Instance.AddListener(this.Update);
+		KUpdateMgr.AddListener(this.Update);
 		this.running = true;
 	}
 
-	public void Stop()
+	public Stop():void
 	{
 		this.running = false;
-		KUpdateMgr.Instance.RemoveListener(this.Update);
+		KUpdateMgr.RemoveListener(this.Update);
 	}
 
-	public void Update()
+	public Update():void
 	{
 		if (!this.running)
 		{
 			return;
 		}
 
-		float deltaTime = KTime.time;
 		this.nNowFrame = this.nNowFrame - 1;
 		if (this.nNowFrame <= 0)
 		{
-			this.func();
-
+			if(this.func)
+			{
+				this.func();
+			}
+			
 			if (this.loop > 0)
 			{
 				this.loop = this.loop - 1;
