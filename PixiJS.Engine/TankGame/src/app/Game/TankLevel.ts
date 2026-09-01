@@ -23,9 +23,19 @@ export class TankLevel implements IDisposable
     public readonly ShellPool:PoolContainer<Shell> = new PoolContainer<Shell>(()=> new Shell(this));
     public readonly BornEffectPool:PoolContainer<BornEffect> = new PoolContainer<BornEffect>(()=> new BornEffect(this));
     
+    public readonly MaxPosX:number = 0;
+    public readonly MinPosX:number = 0;
+    public readonly MaxPosY:number = 0;
+    public readonly MinPosY:number = 0;
+
     constructor()
     {
         this.m_Background = null;
+        
+        this.MaxPosX = TankLevelConfig.MapWidth * TankLevelConfig.TileWidth / 2;
+        this.MinPosX = -TankLevelConfig.MapWidth * TankLevelConfig.TileWidth / 2;
+        this.MaxPosY = TankLevelConfig.MapHeight * TankLevelConfig.TileHeight / 2;
+        this.MinPosY = -TankLevelConfig.MapHeight * TankLevelConfig.TileHeight / 2;
     }
 
     public Dispose():void

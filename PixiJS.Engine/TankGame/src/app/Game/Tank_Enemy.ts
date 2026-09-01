@@ -7,6 +7,7 @@ import { TankDirection, TankLevelConfig } from "./TankLevelConfig";
 import { randomInt } from "../../engine/utils/random";
 import { RectangleExtensions } from "./RectangleExtensions";
 import { Tile_Block } from "./Tile_Block";
+import { PixiTool } from "../../KFramework.PixiJS/Tool/PixiTool";
 
 export class Tank_Enemy extends TileBase  implements IDisposable
 {
@@ -70,6 +71,11 @@ export class Tank_Enemy extends TileBase  implements IDisposable
                 {
                     this.position.x += fStepDistance;
                 }
+                
+                this.position.set(
+                    PixiTool.clamp(this.position.x, this.mTankLevel.MinPosX, this.mTankLevel.MaxPosX),
+                    PixiTool.clamp(this.position.y, this.mTankLevel.MinPosY, this.mTankLevel.MaxPosY),
+                );
 
                 //在这里进行 物理碰撞检测
                 this.HandleCollisions();
