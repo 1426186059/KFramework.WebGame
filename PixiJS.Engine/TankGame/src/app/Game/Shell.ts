@@ -5,10 +5,10 @@ import { engine } from "../getEngine";
 import { TankDirection, TankLevelConfig } from "./TankLevelConfig";
 import { Tile_Block } from "./Tile_Block";
 import { RectangleExtensions } from "./RectangleExtensions";
-import { ObjPool } from "../../KFramework.PixiJS/Tool/ObjPool";
+import { ObjPool } from "../../KFramework.PixiJS/Tool/PoolContainer";
 import { IPoolItem } from "../../KFramework.PixiJS/Tool/IPoolItem";
 
-export class Shell extends TileBase implements IPoolItem
+export class Shell extends TileBase
 {
     public readonly mSprite:Sprite = new Sprite();
     public mDirection:TankDirection = TankDirection.UP;
@@ -47,23 +47,25 @@ export class Shell extends TileBase implements IPoolItem
         if (this.mDirection == TankDirection.UP) 
         {
             this.mSprite.texture = Texture.from(`bullet_0`);
-            this.position.set(mPos.x + 10, mPos.y);
+            this.position.set(mPos.x + 14, mPos.y);
         }
         else if (this.mDirection == TankDirection.DOWN) 
         {
             this.mSprite.texture = Texture.from(`bullet_2`);
-            this.position.set(mPos.x + 10, mPos.y + 32);
+            this.position.set(mPos.x + 14, mPos.y + 32);
         }
         else if (this.mDirection == TankDirection.LEFT) 
         {
             this.mSprite.texture = Texture.from(`bullet_3`);
-            this.position.set(mPos.x, mPos.y + 10);
+            this.position.set(mPos.x, mPos.y + 13);
         }
         else if (this.mDirection == TankDirection.RIGHT) 
         {
             this.mSprite.texture = Texture.from(`bullet_1`);
-            this.position.set(mPos.x + 32, mPos.y + 10);
+            this.position.set(mPos.x + 32, mPos.y + 13);
         }
+
+        this.mSprite.pivot = new Point(this.mSprite.texture.width / 2, this.mSprite.texture.height / 2);
     }
 
     public override Collider2DZone():Bounds
@@ -141,6 +143,12 @@ export class Shell extends TileBase implements IPoolItem
                         this.bMoveing = false;
                         this.visible = false;
                         this.mTankLevel.ShellPool.push(this);
+                        
+                        let m_BornEffect = this.mTankLevel.BornEffectPool.pop();
+                        if(m_BornEffect != null)
+                        {
+                            m_BornEffect.PlayAni(this.position);
+                        }
                         return;
                     }
                 }

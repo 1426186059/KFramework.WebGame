@@ -1,13 +1,14 @@
-import { Assets, Container, Graphics, Point, Sprite, Texture, Ticker } from 'pixi.js';
+import { Assets, Container, Point, Sprite, Texture, Ticker } from 'pixi.js';
 import { TankLevelConfig } from './TankLevelConfig';
-import { Tile, TileBase } from './TileBase';
+import { TileBase } from './TileBase';
 import { engine } from '../getEngine';
 import { IDisposable } from '../../KFramework.PixiJS/Tool/IDisposable';
 import { Tank_My } from './Tank_My';
 import { Tank_Enemy } from './Tank_Enemy';
 import { Tile_Block } from './Tile_Block';
 import { Shell } from './Shell';
-import { ObjPool } from '../../KFramework.PixiJS/Tool/ObjPool';
+import { PoolContainer } from '../../KFramework.PixiJS/Tool/PoolContainer';
+import { BornEffect } from './BornEffect';
 
 export class TankLevel implements IDisposable
 {
@@ -19,7 +20,8 @@ export class TankLevel implements IDisposable
     private  m_Background:Sprite | null = null;
     public fTileScaleCoef:number = 1.0;
 
-    public readonly ShellPool:ObjPool<Shell> = new ObjPool<Shell>(()=> new Shell(this));
+    public readonly ShellPool:PoolContainer<Shell> = new PoolContainer<Shell>(()=> new Shell(this));
+    public readonly BornEffectPool:PoolContainer<BornEffect> = new PoolContainer<BornEffect>(()=> new BornEffect(this));
     
     constructor()
     {

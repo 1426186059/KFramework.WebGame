@@ -1,8 +1,9 @@
 import { Bounds, Container, Graphics, Point, Sprite, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
 import { engine } from "../getEngine";
+import { PoolItemContainer } from "../../KFramework.PixiJS/Tool/PoolItemContainer";
 
-export class TileBase extends Container
+export class TileBase extends PoolItemContainer
 {
     public TileX:number;
     public TileY:number;
