@@ -8,10 +8,11 @@ import { Tile_Block } from "./Tile_Block";
 import { RectangleExtensions } from "./RectangleExtensions";
 import { Shell } from "./Shell";
 import { PixiTool } from "../../KFramework.PixiJS/Tool/PixiTool";
+import { KTime } from "../../KFramework.PixiJS/GameEngine/KTime";
 
 export class Tank_My extends TileBase  implements IDisposable
 {
-    private readonly fMoveSpeed:number = 5;
+    private readonly fMoveSpeed:number = 200;
     private readonly fAniSpeed:number = 0.12;
     private mDirection:TankDirection = TankDirection.UP;
     private bMoveing:boolean = false;
@@ -112,7 +113,7 @@ export class Tank_My extends TileBase  implements IDisposable
 
         if(bMove)
         {
-            let fMoveDistance = this.fMoveSpeed * _time.deltaTime;
+            let fMoveDistance = this.fMoveSpeed * KTime.deltaTime;
             //这里有可能移动距离过大，所以这里得分为很多帧执行
             let nStepCount = Math.ceil(fMoveDistance / (TankLevelConfig.TileWidth / 2));
             let fStepDistance = fMoveDistance / nStepCount;
