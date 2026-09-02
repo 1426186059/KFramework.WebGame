@@ -39,14 +39,4 @@ export class BornPoint_Enemy
         });
     }
 
-    public Reset():void
-    {
-        
-    }
-
-    public Dispose(): void 
-    {
-        
-    }
-
 }

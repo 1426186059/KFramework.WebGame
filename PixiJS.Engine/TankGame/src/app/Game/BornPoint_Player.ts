@@ -36,14 +36,4 @@ export class BornPoint_Player
         });
     }
 
-    public Reset():void
-    {
-        
-    }
-
-    public Dispose(): void 
-    {
-        
-    }
-
 }
