@@ -106,8 +106,7 @@ export class Tank_My extends TileBase  implements IDisposable
             this.bFire = bFire2;
             if(this.bFire)
             {
-                //发射子弹
-                console.log("发射子弹");
+                //console.log("发射子弹");
                 let mShell = this.mTankLevel.ShellPool.pop();
                 if(mShell)
                 {
@@ -321,7 +320,7 @@ export class Tank_My extends TileBase  implements IDisposable
                 }
             }
         }
-        
+
         for(let i = 0; i < this.mTankLevel.TankList.length; i++)
         {
             let mTile = this.mTankLevel.TankList[i];

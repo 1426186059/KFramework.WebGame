@@ -31,10 +31,12 @@ export class BornPoint_Enemy
         }
         
         KTween.delayedCall(0.5, ()=>{
-            let mTile = this.mTankLevel.Tank_EnemyPool.pop();
-            mTile.position = this.mPos;
+            if(this.mTankLevel.Tank_EnemyPool.SumCount() < 30)
+            {
+                let mTile = this.mTankLevel.Tank_EnemyPool.pop();
+                mTile.position = this.mPos;
+            }
         });
-
     }
 
     public Reset():void
