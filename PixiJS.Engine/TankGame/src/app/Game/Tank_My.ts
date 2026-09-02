@@ -19,7 +19,7 @@ export class Tank_My extends TileBase  implements IDisposable
     private bMoveing:boolean = false;
     private bFire:boolean = false;
     public mBornPoint:BornPoint_Player | null = null;
-    
+
     private nTankType:number = 0;
     private Animation_Up:Texture[] | null = null;
     private Animation_Down:Texture[] | null = null;
@@ -116,57 +116,60 @@ export class Tank_My extends TileBase  implements IDisposable
             }
         }
 
-        if(bMove)
-        {
-            let fMoveDistance = this.fMoveSpeed * KTime.deltaTime;
-            //这里有可能移动距离过大，所以这里得分为很多帧执行
-            let nStepCount = Math.ceil(fMoveDistance / (TankLevelConfig.TileWidth / 2));
-            let fStepDistance = fMoveDistance / nStepCount;
-            while(nStepCount-- > 0)
-            {
-                if (this.mDirection == TankDirection.UP) 
-                {
-                    this.position.y -= fStepDistance;
-                }
-                else if (this.mDirection == TankDirection.DOWN) 
-                {
-                    this.position.y += fStepDistance;
-                }
-                else if (this.mDirection == TankDirection.LEFT) 
-                {
-                    this.position.x -= fStepDistance;
-                }
-                else if (this.mDirection == TankDirection.RIGHT) 
-                {
-                    this.position.x += fStepDistance;
-                }
-                
-                this.position.set(
-                    PixiTool.clamp(this.position.x, this.mTankLevel.MinPosX, this.mTankLevel.MaxPosX - 30),
-                    PixiTool.clamp(this.position.y, this.mTankLevel.MinPosY, this.mTankLevel.MaxPosY - 30),
-                );
-                //在这里进行 物理碰撞检测
-                this.HandleCollisions();
-            }
-        }
-
         if(this.mDirection != dir)
         {
             this.mDirection = dir;
             this.SwitchTankType (this.nTankType);
             this.mAnimationPlayer?.gotoAndPlay(0);
         }
-
-        if(bMove != this.bMoveing)
+        else
         {
-            this.bMoveing = bMove;
-            if(this.bMoveing)
+            //转向完了之后，才开始移动
+            if(bMove != this.bMoveing)
             {
-                this.mAnimationPlayer?.play();
+                this.bMoveing = bMove;
+                if(this.bMoveing)
+                {
+                    this.mAnimationPlayer?.play();
+                }
+                else
+                {
+                    this.mAnimationPlayer?.stop();
+                }
             }
-            else
+
+            if(bMove)
             {
-                this.mAnimationPlayer?.stop();
+                let fMoveDistance = this.fMoveSpeed * KTime.deltaTime;
+                //这里有可能移动距离过大，所以这里得分为很多帧执行
+                let nStepCount = Math.ceil(fMoveDistance / (TankLevelConfig.TileWidth / 2));
+                let fStepDistance = fMoveDistance / nStepCount;
+                while(nStepCount-- > 0)
+                {
+                    if (this.mDirection == TankDirection.UP) 
+                    {
+                        this.position.y -= fStepDistance;
+                    }
+                    else if (this.mDirection == TankDirection.DOWN) 
+                    {
+                        this.position.y += fStepDistance;
+                    }
+                    else if (this.mDirection == TankDirection.LEFT) 
+                    {
+                        this.position.x -= fStepDistance;
+                    }
+                    else if (this.mDirection == TankDirection.RIGHT) 
+                    {
+                        this.position.x += fStepDistance;
+                    }
+                    
+                    this.position.set(
+                        PixiTool.clamp(this.position.x, this.mTankLevel.MinPosX, this.mTankLevel.MaxPosX - 30),
+                        PixiTool.clamp(this.position.y, this.mTankLevel.MinPosY, this.mTankLevel.MaxPosY - 30),
+                    );
+                    //在这里进行 物理碰撞检测
+                    this.HandleCollisions();
+                }
             }
         }
     }

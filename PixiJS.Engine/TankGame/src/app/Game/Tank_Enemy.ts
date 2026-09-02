@@ -68,41 +68,6 @@ export class Tank_Enemy extends TileBase  implements IDisposable
         let bMove = this.bMoveing;
 
         this.DoAIThink(_time);
-        if(this.bMoveing)
-        {
-            let fMoveDistance = this.fMoveSpeed * KTime.deltaTime;
-            //这里有可能移动距离过大，所以这里得分为很多帧执行
-            let nStepCount = Math.ceil(fMoveDistance / (TankLevelConfig.TileWidth / 2));
-            let fStepDistance = fMoveDistance / nStepCount;
-            while(nStepCount-- > 0)
-            {
-                if (this.mDirection == TankDirection.UP) 
-                {
-                    this.position.y -= fStepDistance;
-                }
-                else if (this.mDirection == TankDirection.DOWN) 
-                {
-                    this.position.y += fStepDistance;
-                }
-                else if (this.mDirection == TankDirection.LEFT) 
-                {
-                    this.position.x -= fStepDistance;
-                }
-                else if (this.mDirection == TankDirection.RIGHT) 
-                {
-                    this.position.x += fStepDistance;
-                }
-                
-                this.position.set(
-                    PixiTool.clamp(this.position.x, this.mTankLevel.MinPosX, this.mTankLevel.MaxPosX - 30),
-                    PixiTool.clamp(this.position.y, this.mTankLevel.MinPosY, this.mTankLevel.MaxPosY - 30),
-                );
-
-                //在这里进行 物理碰撞检测
-                this.HandleCollisions();
-            }
-        }
-
         if (this.bFire) 
         {
             this.bFire = false;
@@ -119,16 +84,53 @@ export class Tank_Enemy extends TileBase  implements IDisposable
             this.SwitchTankType (this.nTankType);
             this.mAnimationPlayer?.gotoAndPlay(0);
         }
-
-        if(bMove != this.bMoveing)
+        else
         {
+            if(bMove != this.bMoveing)
+            {
+                if(this.bMoveing)
+                {
+                    this.mAnimationPlayer?.play();
+                }
+                else
+                {
+                    this.mAnimationPlayer?.stop();
+                }
+            }
+
             if(this.bMoveing)
             {
-                this.mAnimationPlayer?.play();
-            }
-            else
-            {
-                this.mAnimationPlayer?.stop();
+                let fMoveDistance = this.fMoveSpeed * KTime.deltaTime;
+                //这里有可能移动距离过大，所以这里得分为很多帧执行
+                let nStepCount = Math.ceil(fMoveDistance / (TankLevelConfig.TileWidth / 2));
+                let fStepDistance = fMoveDistance / nStepCount;
+                while(nStepCount-- > 0)
+                {
+                    if (this.mDirection == TankDirection.UP) 
+                    {
+                        this.position.y -= fStepDistance;
+                    }
+                    else if (this.mDirection == TankDirection.DOWN) 
+                    {
+                        this.position.y += fStepDistance;
+                    }
+                    else if (this.mDirection == TankDirection.LEFT) 
+                    {
+                        this.position.x -= fStepDistance;
+                    }
+                    else if (this.mDirection == TankDirection.RIGHT) 
+                    {
+                        this.position.x += fStepDistance;
+                    }
+                    
+                    this.position.set(
+                        PixiTool.clamp(this.position.x, this.mTankLevel.MinPosX, this.mTankLevel.MaxPosX - 30),
+                        PixiTool.clamp(this.position.y, this.mTankLevel.MinPosY, this.mTankLevel.MaxPosY - 30),
+                    );
+
+                    //在这里进行 物理碰撞检测
+                    this.HandleCollisions();
+                }
             }
         }
 
