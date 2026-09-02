@@ -8,6 +8,7 @@ import { Tank_Enemy } from "./Tank_Enemy";
 import { Tank_My } from "./Tank_My";
 import { PixiTool } from "../../KFramework.PixiJS/Tool/PixiTool";
 
+//坦克发射的 炮弹
 export class Shell extends TileBase
 {
     public readonly mSprite:Sprite = new Sprite();

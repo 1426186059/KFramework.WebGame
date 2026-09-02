@@ -40,9 +40,9 @@ export class Tank_My extends TileBase  implements IDisposable
         " ": false,
     };
 
-    private OnKeyDownFunc = this.OnKeyDown.bind(this);
-    private OnKeyUpFunc = this.OnKeyUp.bind(this);
-
+    private readonly OnKeyDownFunc = this.OnKeyDown.bind(this);
+    private readonly OnKeyUpFunc = this.OnKeyUp.bind(this);
+    
     constructor(mTankLevel: TankLevel, x:number = 0, y:number = 0)
     {
         super(mTankLevel, x, y);
