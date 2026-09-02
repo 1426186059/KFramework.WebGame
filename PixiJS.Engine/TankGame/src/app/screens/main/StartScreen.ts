@@ -2,7 +2,7 @@ import { FancyButton } from "@pixi/ui";
 import { animate } from "motion";
 import type { AnimationPlaybackControls } from "motion/react";
 import type { Ticker } from "pixi.js";
-import { Container } from "pixi.js";
+import { Container, Sprite, Texture } from "pixi.js";
 
 import { engine } from "../../getEngine";
 import { PausePopup } from "../../popups/PausePopup";
@@ -14,23 +14,15 @@ import { ResCenter } from "../../Game/ResCenter";
 import { TankLevel } from "../../Game/TankLevel";
 
 /** The screen that holds the app */
-export class StartScreen extends Container {
-  /** Assets bundles required by this screen */
+export class StartScreen extends Container 
+{
   public static assetBundles = ["main"];
-
-  public mainContainer: Container;
-  private pauseButton: FancyButton;
-  private settingsButton: FancyButton;
-  private addButton: FancyButton;
-  private removeButton: FancyButton;
-  private bouncer: Bouncer;
-  private paused = false;
-
   private mTankLevel:TankLevel;
   constructor() 
   {
     super();
-
+    let m_Background = new Sprite(Texture.from("main/MyRes/Textures/Title.png"));
+    this.addChild(m_Background);
   }
 
   /** Prepare the screen just before showing */
@@ -53,7 +45,7 @@ export class StartScreen extends Container {
   /** Show screen with animations */
   public async show(): Promise<void> 
   {
-    engine().audio.bgm.play("main/sounds/bgm-main.mp3", { volume: 0.5 });  
+      engine().audio.bgm.play("main/sounds/bgm-main.mp3", { volume: 0.5 });  
   }
 
   public async hide() 
