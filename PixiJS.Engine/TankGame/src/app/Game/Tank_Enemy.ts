@@ -298,6 +298,37 @@ export class Tank_Enemy extends TileBase  implements IDisposable
                 }
             }
         }
+
+
+        for(let i = 0; i < this.mTankLevel.TankList.length; i++)
+        {
+            let mTile = this.mTankLevel.TankList[i];
+            if (mTile != this)
+            {
+                let tileBounds:Bounds = mTile.Collider2DZone();
+                let depth:Point = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
+                //如果重叠区域 大于0
+                if (depth.x != 0 || depth.y != 0)
+                {
+                    let absDepthX = Math.abs(depth.x);
+                    let absDepthY = Math.abs(depth.y);
+                    if(absDepthX < absDepthY)
+                    {
+                        let worldPos = this.getGlobalPosition();
+                        worldPos.x += depth.x;
+                        let localPos = this.mTankLevel.SceneRoot.toLocal(worldPos);
+                        this.position.set(localPos.x, localPos.y);
+                    }
+                    else
+                    {
+                        let worldPos = this.getGlobalPosition();
+                        worldPos.y += depth.y;
+                        let localPos = this.mTankLevel.SceneRoot.toLocal(worldPos);
+                        this.position.set(localPos.x, localPos.y);
+                    }
+                }
+            }
+        }
         
     }
 }
