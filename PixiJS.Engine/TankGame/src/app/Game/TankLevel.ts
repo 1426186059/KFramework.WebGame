@@ -63,9 +63,6 @@ export class TankLevel implements IDisposable
 
     public Init(nLevelIndex:number):void
     {
-        this.Dispose();
-        this._disoised = false;
-
         engine().stage.addChild(this.SceneRoot);
         this.SceneRoot.addChild(this.BGRoot);
         this.SceneRoot.addChild(this.Map1Root);
@@ -191,7 +188,7 @@ export class TankLevel implements IDisposable
         let mTile = this.GetTile(x, y);
         if(mTile != null)
         {
-            this.SceneRoot.removeChild(mTile);
+            mTile.destroy();
             this.tiles[y][x] = null;
         }
     }
