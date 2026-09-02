@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@esotericsoftware/spine-pixi-v8": "^4.2.74",
+    "@pixi/devtools": "^2.0.1",
     "@pixi/sound": "^6.0.1",
     "@pixi/ui": "^2.2.2",
     "motion": "^12.4.7",
