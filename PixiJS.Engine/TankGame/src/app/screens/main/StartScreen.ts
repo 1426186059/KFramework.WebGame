@@ -1,19 +1,8 @@
-import { FancyButton } from "@pixi/ui";
-import { animate } from "motion";
-import type { AnimationPlaybackControls } from "motion/react";
 import type { Ticker } from "pixi.js";
 import { Container, Graphics, Sprite, Texture } from "pixi.js";
-
 import { engine } from "../../getEngine";
 import { PausePopup } from "../../popups/PausePopup";
-import { SettingsPopup } from "../../popups/SettingsPopup";
-import { Button } from "../../ui/Button";
 
-import { Bouncer } from "./Bouncer";
-import { ResCenter } from "../../Game/ResCenter";
-import { TankLevel } from "../../Game/TankLevel";
-
-/** The screen that holds the app */
 export class StartScreen extends Container 
 {
   public static assetBundles = ["main"];
@@ -32,6 +21,12 @@ export class StartScreen extends Container
     m_Background.position.x = engine().renderer.width * 0.5;
     m_Background.position.y = engine().renderer.height * 0.5;
     this.addChild(m_Background);
+
+    let m_Tank = new Sprite(Texture.from("Player1_8"));
+    m_Tank.pivot.set(m_Tank.texture.width * 0.5, m_Tank.texture.height * 0.5);
+    m_Tank.position.x = engine().renderer.width * 0.5 - 100;
+    m_Tank.position.y = engine().renderer.height * 0.5;
+    this.addChild(m_Tank);
   }
 
   public prepare() 
@@ -49,7 +44,6 @@ export class StartScreen extends Container
     
   }
 
-  /** Show screen with animations */
   public async show(): Promise<void> 
   {
       engine().audio.bgm.play("main/sounds/bgm-main.mp3", { volume: 0.5 });  

@@ -1,15 +1,16 @@
-import { Container, Ticker } from "pixi.js";
+import { Container } from "pixi.js";
 import { TankLevel } from "./TankLevel";
 import { engine } from "../getEngine";
 import { LoadScreen } from "../screens/LoadScreen";
 import { MainScreen } from "../screens/main/MainScreen";
 import { StartScreen } from "../screens/main/StartScreen";
 import { KUpdateMgr } from "../../KFramework.PixiJS/Timer/KUpdateMgr";
+import { IDisposable } from "../../KFramework.PixiJS/Tool/IDisposable";
 
-export class GameScene extends Container
+export class GameScene implements IDisposable
 {
     private static m_Instance: GameScene;
-    public static GetInstance(): GameScene 
+    public static GetInstance(): GameScene
     {
         if(GameScene.m_Instance == null)
         {
@@ -21,11 +22,19 @@ export class GameScene extends Container
     public mTankLevel:TankLevel | null = null;
     public nLevelIndex:number = 0;
 
+    public readonly World_Layer:Container = new Container({label:"World_Layer"});
+    public readonly UIRoot_Layer:Container = new Container({label:"UIRoot_Layer"});
+    
     private constructor()
     {
-        super();
-        engine().stage.addChild(this);
+        engine().stage.addChild(this.World_Layer);
+        engine().stage.addChild(this.UIRoot_Layer);
         KUpdateMgr.AddListener(this.update, this);
+    }
+
+    public Dispose(): void 
+    {
+        throw new Error("Method not implemented.");
     }
     
     public async Init()

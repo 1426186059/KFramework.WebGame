@@ -2,6 +2,7 @@ import type { Ticker } from "pixi.js";
 import { Assets, BigPool, Container } from "pixi.js";
 
 import type { CreationEngine } from "../engine";
+import { GameScene } from "../../app/Game/GameScene";
 
 /** Interface for app screens */
 interface AppScreen extends Container {
@@ -36,114 +37,85 @@ interface AppScreenConstructor {
   assetBundles?: string[];
 }
 
-export class Navigation {
-  /** Reference to the main application */
+export class Navigation 
+{
   public app!: CreationEngine;
-
-  /** Container for screens */
-  public container = new Container();
-
-  /** Application width */
   public width = 0;
-
-  /** Application height */
   public height = 0;
-
-  /** Constant background view for all screens */
   public background?: AppScreen;
-
-  /** Current screen being displayed */
   public currentScreen?: AppScreen;
-
-  /** Current popup being displayed */
   public currentPopup?: AppScreen;
 
-  public init(app: CreationEngine) {
+  public init(app: CreationEngine) 
+  {
     this.app = app;
   }
 
-  /** Set the  default load screen */
-  public setBackground(ctor: AppScreenConstructor) {
+  public setBackground(ctor: AppScreenConstructor) 
+  {
     this.background = new ctor();
     this.addAndShowScreen(this.background);
   }
 
-  /** Add screen to the stage, link update & resize functions */
-  private async addAndShowScreen(screen: AppScreen) {
-    // Add navigation container to stage if it does not have a parent yet
-    if (!this.container.parent) {
-      this.app.stage.addChild(this.container);
-    }
-
-    // Add screen to stage
-    this.container.addChild(screen);
-
-    // Setup things and pre-organise screen before showing
-    if (screen.prepare) {
+  private async addAndShowScreen(screen: AppScreen) 
+  {
+    GameScene.GetInstance().UIRoot_Layer.addChild(screen);
+    if (screen.prepare) 
+    {
       screen.prepare();
     }
 
-    // Add screen's resize handler, if available
-    if (screen.resize) {
-      // Trigger a first resize
+    if (screen.resize)
+    {
       screen.resize(this.width, this.height);
     }
 
-    // Add update function if available
-    if (screen.update) {
+    if (screen.update) 
+    {
       this.app.ticker.add(screen.update, screen);
     }
 
-    // Show the new screen
-    if (screen.show) {
+    if (screen.show) 
+    {
       screen.interactiveChildren = false;
       await screen.show();
       screen.interactiveChildren = true;
     }
   }
 
-  /** Remove screen from the stage, unlink update & resize functions */
-  private async hideAndRemoveScreen(screen: AppScreen) {
-    // Prevent interaction in the screen
+  private async hideAndRemoveScreen(screen: AppScreen) 
+  {
     screen.interactiveChildren = false;
-
-    // Hide screen if method is available
-    if (screen.hide) {
-      await screen.hide();
+    if (screen.hide) 
+    {
+        await screen.hide();
     }
 
-    // Unlink update function if method is available
-    if (screen.update) {
-      this.app.ticker.remove(screen.update, screen);
+    if (screen.update) 
+    {
+        this.app.ticker.remove(screen.update, screen);
     }
 
-    // Remove screen from its parent (usually app.stage, if not changed)
-    if (screen.parent) {
-      screen.parent.removeChild(screen);
+    if (screen.parent) 
+    {
+        screen.parent.removeChild(screen);
     }
 
-    // Clean up the screen so that instance can be reused again later
-    if (screen.reset) {
-      screen.reset();
+    if (screen.reset) 
+    {
+        screen.reset();
     }
   }
 
-  /**
-   * Hide current screen (if there is one) and present a new screen.
-   * Any class that matches AppScreen interface can be used here.
-   */
   public async showScreen(ctor: AppScreenConstructor) 
   {
-    // Block interactivity in current screen
     if (this.currentScreen) 
     {
       this.currentScreen.interactiveChildren = false;
     }
-
-    // Load assets for the new screen, if available
+    
     if (ctor.assetBundles) 
     {
-      // Load all assets required by this new screen
       await Assets.loadBundle(ctor.assetBundles, (progress) => 
         {
         if (this.currentScreen?.onLoad) {
@@ -152,16 +124,16 @@ export class Navigation {
       });
     }
 
-    if (this.currentScreen?.onLoad) {
+    if (this.currentScreen?.onLoad)
+    {
       this.currentScreen.onLoad(100);
     }
 
-    // If there is a screen already created, hide and destroy it
-    if (this.currentScreen) {
+    if (this.currentScreen) 
+    {
       await this.hideAndRemoveScreen(this.currentScreen);
     }
 
-    // Create the new screen and add that to the stage
     this.currentScreen = BigPool.get(ctor);
     await this.addAndShowScreen(this.currentScreen);
   }
@@ -182,47 +154,49 @@ export class Navigation {
   /**
    * Show up a popup over current screen
    */
-  public async presentPopup(ctor: AppScreenConstructor) {
-    if (this.currentScreen) {
-      this.currentScreen.interactiveChildren = false;
-      await this.currentScreen.pause?.();
-    }
+  public async presentPopup(ctor: AppScreenConstructor) 
+  {
+      if (this.currentScreen) 
+      {
+        this.currentScreen.interactiveChildren = false;
+        await this.currentScreen.pause?.();
+      }
 
-    if (this.currentPopup) {
-      await this.hideAndRemoveScreen(this.currentPopup);
-    }
+      if (this.currentPopup) 
+      {
+        await this.hideAndRemoveScreen(this.currentPopup);
+      }
 
-    this.currentPopup = new ctor();
-    await this.addAndShowScreen(this.currentPopup);
+      this.currentPopup = new ctor();
+      await this.addAndShowScreen(this.currentPopup);
   }
 
   /**
    * Dismiss current popup, if there is one
    */
-  public async dismissPopup() {
+  public async dismissPopup() 
+  {
     if (!this.currentPopup) return;
     const popup = this.currentPopup;
     this.currentPopup = undefined;
     await this.hideAndRemoveScreen(popup);
-    if (this.currentScreen) {
+    if (this.currentScreen) 
+    {
       this.currentScreen.interactiveChildren = true;
       this.currentScreen.resume?.();
     }
   }
 
-  /**
-   * Blur screens when lose focus
-   */
-  public blur() {
+
+  public blur() 
+  {
     this.currentScreen?.blur?.();
     this.currentPopup?.blur?.();
     this.background?.blur?.();
   }
 
-  /**
-   * Focus screens
-   */
-  public focus() {
+  public focus()
+  {
     this.currentScreen?.focus?.();
     this.currentPopup?.focus?.();
     this.background?.focus?.();

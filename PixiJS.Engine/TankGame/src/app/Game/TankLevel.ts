@@ -12,6 +12,7 @@ import { BornEffect } from './BornEffect';
 import { ExplodeEffect } from './ExplodeEffect';
 import { BornPoint_Enemy } from './BornPoint_Enemy';
 import { BornPoint_Player } from './BornPoint_Player';
+import { GameScene } from './GameScene';
 
 export class TankLevel implements IDisposable
 {
@@ -63,13 +64,13 @@ export class TankLevel implements IDisposable
 
     public Init(nLevelIndex:number):void
     {
-        engine().stage.addChild(this.SceneRoot);
+        GameScene.GetInstance().World_Layer.addChild(this.SceneRoot);
         this.SceneRoot.addChild(this.BGRoot);
         this.SceneRoot.addChild(this.Map1Root);
         this.SceneRoot.addChild(this.TankRoot);
         this.SceneRoot.addChild(this.Map2Root);
         this.SceneRoot.addChild(this.EffectRoot);
-
+        
         this.fTileScaleCoef = (engine().renderer.height - 100) / TankLevelConfig.MapHeight / 32.0;
         this.SceneRoot.scale.set(this.fTileScaleCoef, this.fTileScaleCoef);
         this.SceneRoot.position = new Point(engine().renderer.width / 2.0, engine().renderer.height / 2.0);
