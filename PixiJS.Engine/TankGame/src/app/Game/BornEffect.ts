@@ -15,7 +15,7 @@ export class BornEffect extends PoolItemContainer
     {
         super();
         this.mTankLevel = mTankLevel;
-        this.mTankLevel.SceneRoot.addChild(this);
+        this.mTankLevel.EffectRoot.addChild(this);
 
         let sheet = Assets.get('Born.atlas.json');
         let Textures = sheet.animations['Born']

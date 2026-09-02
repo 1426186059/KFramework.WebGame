@@ -46,7 +46,7 @@ export class Tank_My extends TileBase  implements IDisposable
     constructor(mTankLevel: TankLevel, x:number = 0, y:number = 0)
     {
         super(mTankLevel, x, y);
-        this.mTankLevel.SceneRoot.addChild(this);
+        this.mTankLevel.TankRoot.addChild(this);
         this.mTankLevel.TankList.push(this);
 
         this.nTankType = 0;

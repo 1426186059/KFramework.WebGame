@@ -28,7 +28,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
     constructor(mTankLevel: TankLevel, x:number = 0, y:number = 0)
     {
         super(mTankLevel, x, y);
-        this.mTankLevel.SceneRoot.addChild(this);
+        this.mTankLevel.TankRoot.addChild(this);
     }
 
     public override OnPoolPop():void

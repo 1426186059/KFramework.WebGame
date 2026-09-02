@@ -15,13 +15,13 @@ export class ExplodeEffect extends PoolItemContainer
     {
         super();
         this.mTankLevel = mTankLevel;
-        this.mTankLevel.SceneRoot.addChild(this);
+        this.mTankLevel.EffectRoot.addChild(this);
 
         let Textures = 
         [
             Texture.from("main/MyRes/Textures/Explode1.png"),
         ];
-
+        
         this.mAnimationPlayer = new AnimatedSprite(Textures);
         this.mAnimationPlayer.animationSpeed = 0.1;
         this.mAnimationPlayer.loop = false;

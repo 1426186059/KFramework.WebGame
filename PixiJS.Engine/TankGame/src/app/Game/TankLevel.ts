@@ -10,7 +10,7 @@ import { Shell } from './Shell';
 import { PoolContainer } from '../../KFramework.PixiJS/Tool/PoolContainer';
 import { BornEffect } from './BornEffect';
 import { ExplodeEffect } from './ExplodeEffect';
-import { BornPoint, BornPoint_Enemy } from './BornPoint_Enemy';
+import { BornPoint_Enemy } from './BornPoint_Enemy';
 import { BornPoint_Player } from './BornPoint_Player';
 
 export class TankLevel implements IDisposable
@@ -19,6 +19,12 @@ export class TankLevel implements IDisposable
     private tiles:(TileBase | null)[][] = [];
 
     public readonly SceneRoot:Container = new Container();
+    public readonly BGRoot:Container = new Container();
+    public readonly Map1Root:Container = new Container();
+    public readonly TankRoot:Container = new Container();
+    public readonly Map2Root:Container = new Container();
+    public readonly EffectRoot:Container = new Container();
+
     private _disoised:boolean = false;
     private  m_Background:Sprite | null = null;
     public fTileScaleCoef:number = 1.0;
@@ -51,7 +57,7 @@ export class TankLevel implements IDisposable
         if(!this._disoised)
         {
             this._disoised = true;
-            engine().stage.removeChild(this.SceneRoot);
+           this.SceneRoot.destroy();
         }
     }
 
@@ -61,19 +67,23 @@ export class TankLevel implements IDisposable
         this._disoised = false;
 
         engine().stage.addChild(this.SceneRoot);
+        this.SceneRoot.addChild(this.BGRoot);
+        this.SceneRoot.addChild(this.Map1Root);
+        this.SceneRoot.addChild(this.TankRoot);
+        this.SceneRoot.addChild(this.Map2Root);
+        this.SceneRoot.addChild(this.EffectRoot);
+
         this.fTileScaleCoef = (engine().renderer.height - 100) / TankLevelConfig.MapHeight / 32.0;
         this.SceneRoot.scale.set(this.fTileScaleCoef, this.fTileScaleCoef);
         this.SceneRoot.position = new Point(engine().renderer.width / 2.0, engine().renderer.height / 2.0);
 
         this.nLevelIndex = nLevelIndex;
-        this.AysncInit();
-    }
-
-    private AysncInit():void
-    {   
+        
         this.m_Background = new Sprite(Texture.from("main/MyRes/Textures/BackGround.jpg"));
-        this.SceneRoot.addChild(this.m_Background);
-        this.m_Background.scale = new Point(3, 3);
+        this.BGRoot.addChild(this.m_Background);
+        this.m_Background.setSize(
+            TankLevelConfig.MapWidth * TankLevelConfig.TileWidth, 
+            TankLevelConfig.MapHeight * TankLevelConfig.TileHeight);
         this.m_Background.pivot = new Point(this.m_Background.texture.width / 2, this.m_Background.texture.height / 2);
         this.m_Background.position = new Point(0, 0);
         this.m_Background.tint = 0x00FF00;
@@ -89,7 +99,6 @@ export class TankLevel implements IDisposable
         const text = Assets.get<string>(path);
         console.log(text);
         this.LoadLevel(text);
-
     }
 
     private LoadLevel(content:string):void
@@ -190,7 +199,7 @@ export class TankLevel implements IDisposable
     private LoadCommonTile(x:number, y:number, strName:string):TileBase 
     {
         let mTile = new Tile_Block(this, x, y);
-        this.SceneRoot.addChild(mTile);
+        this.Map1Root.addChild(mTile);
         mTile.position = this.GetTilePos(x, y);
         mTile.mSprite.texture = Texture.from(strName);
         return mTile;
@@ -228,7 +237,7 @@ export class TankLevel implements IDisposable
     
     public update(_time: Ticker) 
     {
-        this.SceneRoot.children.forEach(element => 
+        this.TankRoot.children.forEach(element => 
         {
             if(element instanceof TileBase)
             {

@@ -19,7 +19,7 @@ export class Shell extends TileBase
     constructor(mTankLevel: TankLevel)
     {
         super(mTankLevel);
-        this.mTankLevel.SceneRoot.addChild(this);
+        this.mTankLevel.TankRoot.addChild(this);
         this.addChild(this.mSprite);
     }
 
