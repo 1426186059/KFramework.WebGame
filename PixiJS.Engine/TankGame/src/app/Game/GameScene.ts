@@ -1,12 +1,19 @@
 import { Container } from "pixi.js";
 import { TankLevel } from "./TankLevel";
 import { engine } from "../getEngine";
+import { LoadScreen } from "../screens/LoadScreen";
+import { MainScreen } from "../screens/main/MainScreen";
+import { StartScreen } from "../screens/main/StartScreen";
 
 export class GameScene extends Container
 {
-    private static readonly m_Instance: GameScene = new GameScene();
+    private static m_Instance: GameScene;
     public static GetInstance(): GameScene 
     {
+        if(GameScene.m_Instance == null)
+        {
+            GameScene.m_Instance = new GameScene();
+        }
         return GameScene.m_Instance;
     }
 
@@ -17,6 +24,13 @@ export class GameScene extends Container
     {
         super();
         engine().stage.addChild(this);
+    }
+    
+    public async Init()
+    {
+        await engine().navigation.showScreen(LoadScreen);
+        await engine().navigation.showScreen(MainScreen);
+        await engine().navigation.showScreen(StartScreen);
     }
 
     public LoadLevel():void
