@@ -1,8 +1,5 @@
 import { AnimatedSprite, Assets, Bounds, Container, Point, Sprite, Texture, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
-import { TileBase } from "./TileBase";
-import { TankDirection, TankLevelConfig } from "./TankLevelConfig";
-import { RectangleExtensions } from "./RectangleExtensions";
 import { PoolItemContainer } from "../../KFramework.PixiJS/Tool/PoolItemContainer";
 
 //爆炸特效

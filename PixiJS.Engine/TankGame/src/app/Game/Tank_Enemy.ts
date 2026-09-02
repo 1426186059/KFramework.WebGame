@@ -1,7 +1,6 @@
 import { AnimatedSprite, Bounds, Container, Point, Sprite, Texture, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
-import { Tile, TileBase } from "./TileBase";
-import { engine } from "../getEngine";
+import { TileBase } from "./TileBase";
 import { IDisposable } from "../../KFramework.PixiJS/Tool/IDisposable";
 import { TankDirection, TankLevelConfig } from "./TankLevelConfig";
 import { randomInt } from "../../engine/utils/random";

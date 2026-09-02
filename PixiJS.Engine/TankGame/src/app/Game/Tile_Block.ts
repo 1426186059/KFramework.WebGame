@@ -1,7 +1,6 @@
 import { Bounds, Sprite, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
 import { TileBase } from "./TileBase";
-import { engine } from "../getEngine";
 
 export class Tile_Block extends TileBase
 {
