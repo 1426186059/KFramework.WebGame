@@ -7,13 +7,14 @@ import { RectangleExtensions } from "./RectangleExtensions";
 import { Tank_Enemy } from "./Tank_Enemy";
 import { Tank_My } from "./Tank_My";
 import { PixiTool } from "../../KFramework.PixiJS/Tool/PixiTool";
+import { KTime } from "../../KFramework.PixiJS/GameEngine/KTime";
 
 //坦克发射的 炮弹
 export class Shell extends TileBase
 {
     public readonly mSprite:Sprite = new Sprite();
     public mDirection:TankDirection = TankDirection.UP;
-    private readonly fMoveSpeed:number = 5;
+    private readonly fMoveSpeed:number = 200;
     private bMoveing:boolean = false;
     private WhoSendShell:TileBase | null = null;
 
@@ -84,14 +85,14 @@ export class Shell extends TileBase
         return bounds;
     }
     
-    public update(_time: Ticker) 
+    public update() 
     {
         if(!this.visible) return;
         this.showBounds();
 
         if(this.bMoveing)
         {
-            let fMoveDistance = this.fMoveSpeed * _time.deltaTime;
+            let fMoveDistance = this.fMoveSpeed * KTime.deltaTime;
             //这里有可能移动距离过大，所以这里得分为很多帧执行
             let nStepCount = Math.ceil(fMoveDistance / (TankLevelConfig.TileWidth / 2));
             let fStepDistance = fMoveDistance / nStepCount;

@@ -1,11 +1,21 @@
-import type { Ticker } from "pixi.js";
+import { Point, Ticker } from "pixi.js";
 import { Container, Graphics, Sprite, Texture } from "pixi.js";
 import { engine } from "../../getEngine";
 import { PausePopup } from "../../popups/PausePopup";
+import { KeyBoard, KeyCode } from "../../../KFramework.PixiJS/Input/KeyBoard";
+import { IDisposable } from "../../../KFramework.PixiJS/Tool/IDisposable";
+import { KUpdateMgr } from "../../../KFramework.PixiJS/Timer/KUpdateMgr";
+import { GameScene } from "../../Game/GameScene";
 
-export class StartScreen extends Container 
+export class StartScreen extends Container implements IDisposable
 {
   public static assetBundles = ["main"];
+
+  private opt1Pos:Point;
+  private opt2Pos:Point;
+  private m_Tank:Sprite;
+
+  private readonly mKeyBoard:KeyBoard = new KeyBoard();
   constructor() 
   {
     super();
@@ -22,11 +32,22 @@ export class StartScreen extends Container
     m_Background.position.y = engine().renderer.height * 0.5;
     this.addChild(m_Background);
 
-    let m_Tank = new Sprite(Texture.from("Player1_8"));
-    m_Tank.pivot.set(m_Tank.texture.width * 0.5, m_Tank.texture.height * 0.5);
-    m_Tank.position.x = engine().renderer.width * 0.5 - 100;
-    m_Tank.position.y = engine().renderer.height * 0.5;
-    this.addChild(m_Tank);
+    this.opt1Pos = new Point(engine().renderer.width * 0.5 - 100, engine().renderer.height * 0.5 + 70);
+    this.opt2Pos = new Point(engine().renderer.width * 0.5 - 100, engine().renderer.height * 0.5 + 100);
+    
+    this.m_Tank = new Sprite(Texture.from("Player1_8"));
+    this.m_Tank.pivot.set(this.m_Tank.texture.width * 0.5, this.m_Tank.texture.height * 0.5);
+    this.m_Tank.position = this.opt1Pos;
+    this.addChild(this.m_Tank);
+
+    KUpdateMgr.AddListener(this.update, this);
+  }
+
+  public Dispose(): void 
+  {
+    KUpdateMgr.RemoveListener(this.update, this);
+    this.mKeyBoard.Dispose(); 
+    this.destroy();
   }
 
   public prepare() 
@@ -34,9 +55,22 @@ export class StartScreen extends Container
     
   }
 
-  public update(_time: Ticker) 
+  public update() 
   {
+     if(this.mKeyBoard.GetKeyDown(KeyCode.KeyW) || this.mKeyBoard.GetKeyDown(KeyCode.ArrowUp))
+     {
+        this.m_Tank.position = this.opt1Pos;
+     }
+     else if(this.mKeyBoard.GetKeyDown(KeyCode.KeyS) || this.mKeyBoard.GetKeyDown(KeyCode.ArrowDown))
+     {
+        this.m_Tank.position = this.opt2Pos;
+     }
 
+     if(this.mKeyBoard.GetKeyDown(KeyCode.Enter))
+     {
+        this.Dispose()
+        GameScene.GetInstance().LoadLevel();
+     }
   }
 
   public reset() 

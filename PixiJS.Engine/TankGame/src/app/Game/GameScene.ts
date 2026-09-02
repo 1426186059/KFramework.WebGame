@@ -25,16 +25,21 @@ export class GameScene implements IDisposable
     public readonly World_Layer:Container = new Container({label:"World_Layer"});
     public readonly UIRoot_Layer:Container = new Container({label:"UIRoot_Layer"});
     
+    public readonly OnResizeFunc = (width: number, height: number) => this.resize(width, height);
     private constructor()
     {
         engine().stage.addChild(this.World_Layer);
         engine().stage.addChild(this.UIRoot_Layer);
         KUpdateMgr.AddListener(this.update, this);
+        engine().renderer.on("resize", this.OnResizeFunc);
     }
 
     public Dispose(): void 
     {
-        throw new Error("Method not implemented.");
+        KUpdateMgr.RemoveListener(this.update, this);
+        engine().renderer.off("resize", this.OnResizeFunc);
+        this.World_Layer.destroy();
+        this.UIRoot_Layer.destroy();
     }
     
     public async Init()

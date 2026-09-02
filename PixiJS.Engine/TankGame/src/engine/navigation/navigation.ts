@@ -70,11 +70,6 @@ export class Navigation
       screen.resize(this.width, this.height);
     }
 
-    if (screen.update) 
-    {
-      this.app.ticker.add(screen.update, screen);
-    }
-
     if (screen.show) 
     {
       screen.interactiveChildren = false;
@@ -89,11 +84,6 @@ export class Navigation
     if (screen.hide) 
     {
         await screen.hide();
-    }
-
-    if (screen.update) 
-    {
-        this.app.ticker.remove(screen.update, screen);
     }
 
     if (screen.parent) 
