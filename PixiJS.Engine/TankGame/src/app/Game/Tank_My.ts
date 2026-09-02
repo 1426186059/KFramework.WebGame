@@ -18,8 +18,8 @@ export class Tank_My extends TileBase  implements IDisposable
     private mDirection:TankDirection = TankDirection.UP;
     private bMoveing:boolean = false;
     private bFire:boolean = false;
-    public mBornPoint:BornPoint_Player;
-
+    public mBornPoint:BornPoint_Player | null = null;
+    
     private nTankType:number = 0;
     private Animation_Up:Texture[] | null = null;
     private Animation_Down:Texture[] | null = null;
