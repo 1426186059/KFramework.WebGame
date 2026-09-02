@@ -95,7 +95,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
                 
                 this.position.set(
                     PixiTool.clamp(this.position.x, this.mTankLevel.MinPosX, this.mTankLevel.MaxPosX),
-                    PixiTool.clamp(this.position.y, this.mTankLevel.MinPosY, this.mTankLevel.MaxPosY),
+                    PixiTool.clamp(this.position.y, this.mTankLevel.MinPosY, this.mTankLevel.MaxPosY - 30),
                 );
 
                 //在这里进行 物理碰撞检测

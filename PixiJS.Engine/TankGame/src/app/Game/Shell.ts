@@ -116,6 +116,18 @@ export class Shell extends TileBase
                 //在这里进行 物理碰撞检测
                 this.HandleCollisions();
             }
+
+            if(this.position.x <= this.mTankLevel.MinPosX || 
+                   this.position.x >= this.mTankLevel.MaxPosX)
+            {
+                this.mTankLevel.ShellPool.push(this);
+            }
+
+            if(this.position.y <= this.mTankLevel.MinPosY || 
+                this.position.y >= this.mTankLevel.MaxPosY)
+            {
+                this.mTankLevel.ShellPool.push(this);
+            }
         }
 
     }
