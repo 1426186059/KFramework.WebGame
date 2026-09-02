@@ -47,6 +47,7 @@ export class Tank_My extends TileBase  implements IDisposable
     {
         super(mTankLevel, x, y);
         this.mTankLevel.SceneRoot.addChild(this);
+        this.mTankLevel.TankList.push(this);
 
         this.nTankType = 0;
         this.SwitchTankType(this.nTankType);
@@ -141,7 +142,7 @@ export class Tank_My extends TileBase  implements IDisposable
                 }
                 
                 this.position.set(
-                    PixiTool.clamp(this.position.x, this.mTankLevel.MinPosX, this.mTankLevel.MaxPosX),
+                    PixiTool.clamp(this.position.x, this.mTankLevel.MinPosX, this.mTankLevel.MaxPosX - 30),
                     PixiTool.clamp(this.position.y, this.mTankLevel.MinPosY, this.mTankLevel.MaxPosY - 30),
                 );
                 //在这里进行 物理碰撞检测

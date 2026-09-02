@@ -185,7 +185,9 @@ export class Shell extends TileBase
         for(let i = 0; i < this.mTankLevel.TankList.length; i++)
         {
             let mTile = this.mTankLevel.TankList[i];
-            if(PixiTool.isAlive(mTile) && this.WhoSendShell != null && mTile.constructor !== this.WhoSendShell.constructor)
+            if(PixiTool.isAlive(mTile) && 
+                this.WhoSendShell != null && 
+                mTile.constructor !== this.WhoSendShell.constructor)
             {
                 let tileBounds:Bounds = mTile.Collider2DZone();
                 let depth:Point = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
