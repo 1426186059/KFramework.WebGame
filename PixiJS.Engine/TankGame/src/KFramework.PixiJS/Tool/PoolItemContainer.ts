@@ -3,9 +3,14 @@ import { IPoolItem } from "./IPoolItem";
 
 export class PoolItemContainer extends Container implements IPoolItem
 {
-    public Reset()
+    OnPoolPop(): void 
     {
-        throw "NotImplementedException: Reset";
+        throw new Error("Method not implemented.");
+    }
+
+    OnPoolPush(): void 
+    {
+        throw new Error("Method not implemented.");
     }
     
     public Dispose()

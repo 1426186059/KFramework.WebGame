@@ -9,6 +9,7 @@ import { RectangleExtensions } from "./RectangleExtensions";
 import { Shell } from "./Shell";
 import { PixiTool } from "../../KFramework.PixiJS/Tool/PixiTool";
 import { KTime } from "../../KFramework.PixiJS/GameEngine/KTime";
+import { BornPoint_Player } from "./BornPoint_Player";
 
 export class Tank_My extends TileBase  implements IDisposable
 {
@@ -17,6 +18,7 @@ export class Tank_My extends TileBase  implements IDisposable
     private mDirection:TankDirection = TankDirection.UP;
     private bMoveing:boolean = false;
     private bFire:boolean = false;
+    public mBornPoint:BornPoint_Player;
 
     private nTankType:number = 0;
     private Animation_Up:Texture[] | null = null;
@@ -44,8 +46,8 @@ export class Tank_My extends TileBase  implements IDisposable
     constructor(mTankLevel: TankLevel, x:number = 0, y:number = 0)
     {
         super(mTankLevel, x, y);
-        this.resize();
-        
+        this.mTankLevel.SceneRoot.addChild(this);
+
         this.nTankType = 0;
         this.SwitchTankType(this.nTankType);
         this.AddKeyboard();
@@ -53,12 +55,15 @@ export class Tank_My extends TileBase  implements IDisposable
 
     public Dispose():void
     {
+        let nIndex = this.mTankLevel.TankList.indexOf(this);
+        this.mTankLevel.TankList.splice(nIndex, 1);
         this.RemoveKeyboard();
+        this.destroy();
     }
 
-    public override resize():void
+    public OnHitAttack():void
     {
-        super.resize();
+        this.Dispose();
     }
     
     public override update(_time: Ticker) 

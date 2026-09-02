@@ -36,9 +36,14 @@ export class BornEffect extends PoolItemContainer
         this.mAnimationPlayer?.gotoAndPlay(0);
     }
 
-    public Reset():void
+    OnPoolPop(): void
     {
-        
+        this.visible = true;
+    }
+
+    OnPoolPush(): void
+    {
+        this.visible = false;
     }
 
     public Dispose(): void 

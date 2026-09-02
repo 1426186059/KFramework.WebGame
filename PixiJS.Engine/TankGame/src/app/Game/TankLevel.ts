@@ -10,7 +10,8 @@ import { Shell } from './Shell';
 import { PoolContainer } from '../../KFramework.PixiJS/Tool/PoolContainer';
 import { BornEffect } from './BornEffect';
 import { ExplodeEffect } from './ExplodeEffect';
-import { BornPoint } from './BornPoint';
+import { BornPoint, BornPoint_Enemy } from './BornPoint_Enemy';
+import { BornPoint_Player } from './BornPoint_Player';
 
 export class TankLevel implements IDisposable
 {
@@ -25,7 +26,11 @@ export class TankLevel implements IDisposable
     public readonly ShellPool:PoolContainer<Shell> = new PoolContainer<Shell>(()=> new Shell(this));
     public readonly BornEffectPool:PoolContainer<BornEffect> = new PoolContainer<BornEffect>(()=> new BornEffect(this));
     public readonly ExplodeEffectPool:PoolContainer<ExplodeEffect> = new PoolContainer<ExplodeEffect>(()=> new ExplodeEffect(this));
-    
+    public readonly Tank_EnemyPool:PoolContainer<Tank_Enemy> = new PoolContainer<Tank_Enemy>(()=> new Tank_Enemy(this));
+
+    public readonly TankList:TileBase[] = [];
+    public readonly ShellList:Shell[] = [];
+
     public readonly MaxPosX:number = 0;
     public readonly MinPosX:number = 0;
     public readonly MaxPosY:number = 0;
@@ -193,16 +198,15 @@ export class TankLevel implements IDisposable
 
     private LoadPlayerTile(x:number, y:number):TileBase | null
     {
-        let mTile = new Tank_My(this, x, y);
-        this.SceneRoot.addChild(mTile);
-        mTile.position = this.GetTilePos(x, y);
+        let mPos = this.GetTilePos(x, y);
+        new BornPoint_Player(this, mPos); 
         return null;
     }
 
     private LoadEnemyTile(x:number, y:number):TileBase | null
     {
         let mPos = this.GetTilePos(x, y);
-        new BornPoint(this, mPos, E_BORN_TYPE.Enemy); 
+        new BornPoint_Enemy(this, mPos); 
         return null;
     }
 

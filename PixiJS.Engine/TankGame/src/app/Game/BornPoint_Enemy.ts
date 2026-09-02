@@ -7,18 +7,16 @@ import { Tank_Enemy } from "./Tank_Enemy";
 import { KTimer } from "../../KFramework.PixiJS/Timer/KTimer";
 import { KTween } from "../../KFramework.PixiJS/KTweeen/KTween";
 
-//出生特效
-export class BornPoint
+//敌人 出生点
+export class BornPoint_Enemy
 {
     private mTankLevel: TankLevel;
     private mPos:Point;
-    private nBornType:E_BORN_TYPE;
     
-    constructor(mTankLevel: TankLevel,  mPos:Point, nBornType:E_BORN_TYPE)
+    constructor(mTankLevel: TankLevel,  mPos:Point)
     {
         this.mTankLevel = mTankLevel;
         this.mPos = mPos;
-        this.nBornType = nBornType;
 
         let mTimer = KTimer.New(this.mTankLevel.SceneRoot, this.DoTimerFunc.bind(this), 5.0, -1);
         mTimer.Start();
@@ -33,25 +31,8 @@ export class BornPoint
         }
         
         KTween.delayedCall(0.5, ()=>{
-            switch(this.nBornType)
-            {
-                case E_BORN_TYPE.Enemy:
-                    {
-                        let mTile = new Tank_Enemy(this.mTankLevel);
-                        this.mTankLevel.SceneRoot.addChild(mTile);
-                        mTile.position = this.mPos;
-                    }
-                    break;
-                case E_BORN_TYPE.Player1:
-                    {
-                        let mTile = new Tank_My(this.mTankLevel);
-                        this.mTankLevel.SceneRoot.addChild(mTile);
-                        mTile.position = this.mPos;
-                    }
-                    break;
-                case E_BORN_TYPE.Player2:
-                    break;
-            }
+            let mTile = this.mTankLevel.Tank_EnemyPool.pop();
+            mTile.position = this.mPos;
         });
 
     }

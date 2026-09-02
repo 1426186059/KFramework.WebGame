@@ -16,6 +16,7 @@ export class Tank_Enemy extends TileBase  implements IDisposable
     private readonly fAniSpeed:number = 0.12;
     private mDirection:TankDirection = TankDirection.DOWN;
     private bMoveing:boolean = false;
+    private HP:number = 0;
 
     private nTankType:number = 0;
     private Animation_Up:Texture[] | null = null;
@@ -27,19 +28,38 @@ export class Tank_Enemy extends TileBase  implements IDisposable
     constructor(mTankLevel: TankLevel, x:number = 0, y:number = 0)
     {
         super(mTankLevel, x, y);
-        this.resize();
+        this.mTankLevel.SceneRoot.addChild(this);
+    }
+
+    public override OnPoolPop():void
+    {
         this.nTankType = randomInt(0, 7);
         this.SwitchTankType(this.nTankType);
+        this.HP = PixiTool.clamp(this.nTankType, 1, 5);
+
+        this.mTankLevel.TankList.push(this);
+        this.visible = true;
     }
 
-    public Dispose():void
+    public override OnPoolPush():void
     {
-        
+        let nIndex = this.mTankLevel.TankList.indexOf(this);
+        this.mTankLevel.TankList.splice(nIndex,1);
+        this.visible = false;
+    }
+    
+    public override Dispose():void
+    {
+        this.destroy();
     }
 
-    public override resize():void
+    public OnHitAttack():void
     {
-        super.resize();
+        this.HP--;
+        if(this.HP <= 0)
+        {
+            this.Dispose();
+        }
     }
     
     public override update(_time: Ticker) 

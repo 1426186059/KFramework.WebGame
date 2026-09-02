@@ -20,3 +20,10 @@ export enum E_BORN_TYPE
     Player2 = 1,
     Enemy = 2,
 }
+
+export enum E_TILE_TYPE
+{
+    Player1 = 0,
+    Player2 = 1,
+    Enemy = 2,
+}

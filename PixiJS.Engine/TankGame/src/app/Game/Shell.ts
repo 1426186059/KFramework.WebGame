@@ -1,13 +1,12 @@
 import { Bounds, Point, Sprite, Texture, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
 import { TileBase } from "./TileBase";
-import { engine } from "../getEngine";
 import { TankDirection, TankLevelConfig } from "./TankLevelConfig";
 import { Tile_Block } from "./Tile_Block";
 import { RectangleExtensions } from "./RectangleExtensions";
-import { ObjPool } from "../../KFramework.PixiJS/Tool/PoolContainer";
-import { IPoolItem } from "../../KFramework.PixiJS/Tool/IPoolItem";
 import { Tank_Enemy } from "./Tank_Enemy";
+import { Tank_My } from "./Tank_My";
+import { PixiTool } from "../../KFramework.PixiJS/Tool/PixiTool";
 
 export class Shell extends TileBase
 {
@@ -22,17 +21,25 @@ export class Shell extends TileBase
         super(mTankLevel);
         this.mTankLevel.SceneRoot.addChild(this);
         this.addChild(this.mSprite);
-        this.resize();
-        this.bMoveing = true;
-        this.visible = true;
-        this.WhoSendShell = null;
     }
 
-    public Reset():void
+    public override OnPoolPop():void
     {
         this.bMoveing = true;
         this.visible = true;
         this.WhoSendShell =null;
+        this.mTankLevel.ShellList.push(this);
+        this.visible = true;
+    }
+
+    public override OnPoolPush():void
+    {
+        this.bMoveing = false;
+        this.visible = false;
+        this.WhoSendShell =null;
+
+        let nIndex = this.mTankLevel.ShellList.indexOf(this);
+        this.mTankLevel.ShellList.splice(nIndex,1);
     }
 
     public Dispose(): void 
@@ -141,8 +148,6 @@ export class Shell extends TileBase
                     //console.log("AABB depth 000: " + depth.toString());
                     if (depth.x != 0 || depth.y != 0)
                     {
-                        this.mTankLevel.ShellPool.push(this);
-
                         let m_BornEffect = this.mTankLevel.ExplodeEffectPool.pop();
                         if(m_BornEffect != null)
                         {
@@ -158,8 +163,61 @@ export class Shell extends TileBase
                             this.mTankLevel.SetTileNull(x, y);
                         }
 
+                        this.mTankLevel.ShellPool.push(this);
                         return;
                     }
+                }
+            }
+        }
+
+        for(let i = 0; i < this.mTankLevel.TankList.length; i++)
+        {
+            let mTile = this.mTankLevel.TankList[i];
+            if(PixiTool.isAlive(mTile) && this.WhoSendShell != null && mTile.constructor !== this.WhoSendShell.constructor)
+            {
+                let tileBounds:Bounds = mTile.Collider2DZone();
+                let depth:Point = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
+                if (depth.x != 0 || depth.y != 0)
+                {
+                    let m_ExplodeEffect = this.mTankLevel.ExplodeEffectPool.pop();
+                    if(m_ExplodeEffect != null)
+                    {
+                        m_ExplodeEffect.PlayAni(this.position);
+                    }
+
+                    if(mTile instanceof Tank_Enemy)
+                    {
+                        mTile.OnHitAttack();
+                    }
+                    else if(mTile instanceof Tank_My)
+                    {
+                        mTile.OnHitAttack();
+                    }
+
+                    this.mTankLevel.ShellPool.push(this);
+                    return;
+                }
+            }
+        }
+
+        for(let i = 0; i < this.mTankLevel.ShellList.length; i++)
+        {
+            let otherShell = this.mTankLevel.ShellList[i];
+            if(PixiTool.isAlive(otherShell) && this != otherShell)
+            {
+                let tileBounds:Bounds = otherShell.Collider2DZone();
+                let depth:Point = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
+                if (depth.x != 0 || depth.y != 0)
+                {
+                    let m_ExplodeEffect = this.mTankLevel.ExplodeEffectPool.pop();
+                    if(m_ExplodeEffect != null)
+                    {
+                        m_ExplodeEffect.PlayAni(this.position);
+                    }
+
+                    this.mTankLevel.ShellPool.push(this);
+                    this.mTankLevel.ShellPool.push(otherShell);
+                    return;
                 }
             }
         }

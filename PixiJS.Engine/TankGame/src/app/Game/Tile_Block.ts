@@ -11,7 +11,6 @@ export class Tile_Block extends TileBase
     {
         super(mTankLevel, x, y);
         this.addChild(this.mSprite);
-        this.resize();
     }
 
     public override Collider2DZone():Bounds

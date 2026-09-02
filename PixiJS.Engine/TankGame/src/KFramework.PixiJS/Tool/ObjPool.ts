@@ -19,10 +19,22 @@ export class ObjPool<T extends IPoolItem> implements IDisposable
         this.preLoadObj(initNum);
     }
     
+    public GetUsedList(): T[]
+    {
+        return this.usedList;
+    }
+
+    public SumCount(): number
+    {
+        return this.usedList.length + this.pool.length;
+    }
+    
     public push(obj: T) 
     {
         console.assert(this.usedList.indexOf(obj) >= 0, "recyleObj Error: " + obj.toString());
         this.usedList.splice(this.usedList.indexOf(obj), 1);
+
+        obj.OnPoolPush();
         if(this.poolMaxSize > 0 && this.pool.length >= this.poolMaxSize)
         {
              obj.Dispose();
@@ -46,6 +58,7 @@ export class ObjPool<T extends IPoolItem> implements IDisposable
         }
 
         this.usedList.push(mItem);
+        mItem.OnPoolPop();
         return mItem;
     }
 
