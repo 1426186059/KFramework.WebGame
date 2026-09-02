@@ -1,9 +1,10 @@
-import { Container } from "pixi.js";
+import { Container, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
 import { engine } from "../getEngine";
 import { LoadScreen } from "../screens/LoadScreen";
 import { MainScreen } from "../screens/main/MainScreen";
 import { StartScreen } from "../screens/main/StartScreen";
+import { KUpdateMgr } from "../../KFramework.PixiJS/Timer/KUpdateMgr";
 
 export class GameScene extends Container
 {
@@ -24,6 +25,7 @@ export class GameScene extends Container
     {
         super();
         engine().stage.addChild(this);
+        KUpdateMgr.AddListener(this.update, this);
     }
     
     public async Init()
@@ -31,6 +33,22 @@ export class GameScene extends Container
         await engine().navigation.showScreen(LoadScreen);
         await engine().navigation.showScreen(MainScreen);
         await engine().navigation.showScreen(StartScreen);
+    }
+
+    public update() 
+    {
+        if(this.mTankLevel != null)
+        {
+            this.mTankLevel.update();
+        }
+    }
+    
+    public resize(width: number, height: number) 
+    {
+        if(this.mTankLevel != null)
+        {
+            this.mTankLevel.resize();
+        }
     }
 
     public LoadLevel():void

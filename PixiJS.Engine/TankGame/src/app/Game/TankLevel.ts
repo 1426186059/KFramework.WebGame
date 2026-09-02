@@ -232,13 +232,13 @@ export class TankLevel implements IDisposable
         this.SceneRoot.position = new Point(engine().renderer.width / 2.0, engine().renderer.height / 2.0);
     }
     
-    public update(_time: Ticker) 
+    public update() 
     {
         this.TankRoot.children.forEach(element => 
         {
             if(element instanceof TileBase)
             {
-                element.update(_time);
+                element.update();
             }
         });
     }

@@ -17,7 +17,7 @@ export class TileBase extends PoolItemContainer
         this.TileY = y;
     }
     
-    public update(_time: Ticker) 
+    public update() 
     {
         
     }

@@ -26,14 +26,10 @@ export class MainScreen extends Container {
   private bouncer: Bouncer;
   private paused = false;
 
-  private mTankLevel:TankLevel;
   constructor() {
     super();
 
     ResCenter.GetSingleton().Init();
-    this.mTankLevel = new TankLevel();
-    this.mTankLevel.Init(0);
-    
     this.mainContainer = new Container();
     this.addChild(this.mainContainer);
     this.bouncer = new Bouncer();
@@ -97,7 +93,6 @@ export class MainScreen extends Container {
   public update(_time: Ticker) {
     if (this.paused) return;
     this.bouncer.update();
-    this.mTankLevel.update(_time);
   }
 
   /** Pause gameplay - automatically fired when a popup is presented */
@@ -132,7 +127,6 @@ export class MainScreen extends Container {
     this.addButton.y = height - 75;
 
     this.bouncer.resize(width, height);
-    this.mTankLevel.resize();
   }
 
   /** Show screen with animations */
