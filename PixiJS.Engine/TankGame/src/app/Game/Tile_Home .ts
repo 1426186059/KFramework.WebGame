@@ -27,12 +27,17 @@ export class Tile_Home extends TileBase
     {
         this.showBounds();
     }
-
+    
     public override Dispose(): void 
     {
+        this.mTankLevel.SetTileNull(this.TileX, this.TileY);
         this.boundsGraphics.destroy();
         this.destroy();
-        
+    }
+
+    public OnHitAttack():void
+    {
+        this.Dispose();
         KTween.delayedCall(2.0, async ()=>{
             await engine().navigation.showScreen(FailScreen);
         });

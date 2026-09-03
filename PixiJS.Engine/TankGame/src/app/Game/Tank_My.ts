@@ -13,38 +13,13 @@ import { BornPoint_Player } from "./BornPoint_Player";
 import { Tile_Home } from "./Tile_Home ";
 import { KTween } from "../../KFramework.PixiJS/KTweeen/KTween";
 import { FailScreen } from "../screens/main/FailScreen";
+import { Tank_Base } from "./Tank_Base";
+import { KeyBoard, KeyCode } from "../../KFramework.PixiJS/Input/KeyBoard";
 
-export class Tank_My extends TileBase  implements IDisposable
+export class Tank_My extends Tank_Base  implements IDisposable
 {
-    private readonly fMoveSpeed:number = 200;
-    private readonly fAniSpeed:number = 0.12;
-    private mDirection:TankDirection = TankDirection.UP;
-    private bMoveing:boolean = false;
-    private bFire:boolean = false;
     public mBornPoint:BornPoint_Player | null = null;
-
-    private nTankType:number = 0;
-    private Animation_Up:Texture[] | null = null;
-    private Animation_Down:Texture[] | null = null;
-    private Animation_Left:Texture[] | null = null;
-    private Animation_Right:Texture[] | null = null;
-    private mAnimationPlayer:AnimatedSprite | null = null;
-
-    private readonly Keys = 
-    {
-        w: false,
-        a: false,
-        s: false,
-        d: false,
-        ArrowUp: false,
-        ArrowDown: false,
-        ArrowLeft: false,
-        ArrowRight: false,
-        " ": false,
-    };
-
-    private readonly OnKeyDownFunc = this.OnKeyDown.bind(this);
-    private readonly OnKeyUpFunc = this.OnKeyUp.bind(this);
+    private readonly mKeyBoard:KeyBoard = new KeyBoard();
     
     constructor(mTankLevel: TankLevel, x:number = 0, y:number = 0)
     {
@@ -53,136 +28,66 @@ export class Tank_My extends TileBase  implements IDisposable
         this.mTankLevel.TankList.push(this);
 
         this.nTankType = 0;
+        this.mDirection = TankDirection.UP;
         this.SwitchTankType(this.nTankType);
-        this.AddKeyboard();
     }
 
     public Dispose():void
     {
         let nIndex = this.mTankLevel.TankList.indexOf(this);
         this.mTankLevel.TankList.splice(nIndex, 1);
-        this.RemoveKeyboard();
+        this.mKeyBoard.Dispose();
         this.destroy();
-    }
-    
-    public OnHitAttack():void
-    {
-        this.Dispose();
-        engine().audio.sfx.play("main/MyRes/Audio/Hit.wav");
-        KTween.delayedCall(2.0, async ()=>{
+
+         KTween.delayedCall(2.0, async ()=>{
             await engine().navigation.showScreen(FailScreen);
         });
     }
     
-    public override update() 
+    public override OnHitAttack():void
     {
-        let bMove:boolean = false;
-        let bFire2:boolean = this.bFire;
-        let dir:TankDirection = this.mDirection;
-        if (this.Keys.w || this.Keys.ArrowUp) 
-        {
-            bMove = true;
-            dir = TankDirection.UP;
-        }
-        else if (this.Keys.s || this.Keys.ArrowDown) 
-        {
-            bMove = true;
-            dir = TankDirection.DOWN;
-        }
-        else if (this.Keys.a || this.Keys.ArrowLeft) 
-        {
-            bMove = true;
-            dir = TankDirection.LEFT;
-        }
-        else if (this.Keys.d || this.Keys.ArrowRight) 
-        {
-            bMove = true;
-            dir = TankDirection.RIGHT;
-        }
-
-        if (this.Keys[" "]) 
-        {
-            bFire2 = true;
-        }
-        else
-        {
-            bFire2 = false;
-        }
-
-        if(bFire2 != this.bFire)
-        {
-            this.bFire = bFire2;
-            if(this.bFire)
-            {
-                //console.log("发射子弹");
-                let mShell = this.mTankLevel.ShellPool.pop();
-                if(mShell)
-                {
-                    engine().audio.sfx.play("main/MyRes/Audio/Fire.wav", { volume: 1.0 });
-                    mShell.UpdateSprite(this, dir);
-                }
-            }
-        }
-
-        if(this.mDirection != dir)
-        {
-            this.mDirection = dir;
-            this.SwitchTankType (this.nTankType);
-            this.mAnimationPlayer?.gotoAndPlay(0);
-        }
-        else
-        {
-            //转向完了之后，才开始移动
-            if(bMove != this.bMoveing)
-            {
-                this.bMoveing = bMove;
-                if(this.bMoveing)
-                {
-                    this.mAnimationPlayer?.play();
-                }
-                else
-                {
-                    this.mAnimationPlayer?.stop();
-                }
-            }
-
-            if(bMove)
-            {
-                let fMoveDistance = this.fMoveSpeed * KTime.deltaTime;
-                //这里有可能移动距离过大，所以这里得分为很多帧执行
-                let nStepCount = Math.ceil(fMoveDistance / (TankLevelConfig.TileWidth / 2));
-                let fStepDistance = fMoveDistance / nStepCount;
-                while(nStepCount-- > 0)
-                {
-                    if (this.mDirection == TankDirection.UP) 
-                    {
-                        this.position.y -= fStepDistance;
-                    }
-                    else if (this.mDirection == TankDirection.DOWN) 
-                    {
-                        this.position.y += fStepDistance;
-                    }
-                    else if (this.mDirection == TankDirection.LEFT) 
-                    {
-                        this.position.x -= fStepDistance;
-                    }
-                    else if (this.mDirection == TankDirection.RIGHT) 
-                    {
-                        this.position.x += fStepDistance;
-                    }
-                    
-                    this.position.set(
-                        PixiTool.clamp(this.position.x, this.mTankLevel.MinPosX, this.mTankLevel.MaxPosX - 30),
-                        PixiTool.clamp(this.position.y, this.mTankLevel.MinPosY, this.mTankLevel.MaxPosY - 30),
-                    );
-                    //在这里进行 物理碰撞检测
-                    this.HandleCollisions();
-                }
-            }
-        }
+        super.OnHitAttack();
+        engine().audio.sfx.play("main/MyRes/Audio/Hit.wav");
     }
 
-    public SwitchTankType(nType:number):void
+    protected override DoThinkOp():void
+    {
+        this.bMoveing = false;
+        this.bFire = false;
+        
+        if (this.mKeyBoard.GetKey(KeyCode.KeyW) || this.mKeyBoard.GetKey(KeyCode.ArrowUp))
+        {
+            this.bMoveing = true;
+            this.mDirection = TankDirection.UP;
+        }
+        else if (this.mKeyBoard.GetKey(KeyCode.KeyS) || this.mKeyBoard.GetKey(KeyCode.ArrowDown)) 
+        {
+            this.bMoveing = true;
+            this.mDirection = TankDirection.DOWN;
+        }
+        else if (this.mKeyBoard.GetKey(KeyCode.KeyA) || this.mKeyBoard.GetKey(KeyCode.ArrowLeft)) 
+        {
+            this.bMoveing = true;
+            this.mDirection = TankDirection.LEFT;
+        }
+        else if (this.mKeyBoard.GetKey(KeyCode.KeyD) || this.mKeyBoard.GetKey(KeyCode.ArrowRight)) 
+        {
+            this.bMoveing = true;
+            this.mDirection = TankDirection.RIGHT;
+        }
+
+        if (this.mKeyBoard.GetKey(KeyCode.Space))
+        {
+            this.bFire = true;
+        }
+    }
+    
+    public override update() 
+    {
+        super.update();
+    }
+
+    public override SwitchTankType(nType:number):void
     {
         this.nTankType = nType;
 
@@ -228,144 +133,4 @@ export class Tank_My extends TileBase  implements IDisposable
 
     }
 
-    public SetAnimation(mFrameArray:Texture[] ):void
-    {
-        if(this.mAnimationPlayer != null)
-        {
-            this.mAnimationPlayer.textures = mFrameArray;
-        }
-        else
-        {
-            this.mAnimationPlayer = new AnimatedSprite(mFrameArray);
-            this.mAnimationPlayer.animationSpeed = this.fAniSpeed;
-            this.mAnimationPlayer.loop = true;
-            this.addChild(this.mAnimationPlayer);
-        }
-    }
-
-
-    private AddKeyboard():void
-    {
-        window.addEventListener('keydown', this.OnKeyDownFunc);
-        window.addEventListener('keyup', this.OnKeyUpFunc);
-    }
-
-    private RemoveKeyboard():void
-    {
-        window.removeEventListener('keydown', this.OnKeyDownFunc);
-        window.removeEventListener('keyup', this.OnKeyUpFunc);
-    }
-
-    private OnKeyDown(e:KeyboardEvent):void
-    {
-        if (e.key in this.Keys)
-        {
-            this.Keys[e.key as keyof typeof this.Keys] = true;
-        }
-    }
-
-    private OnKeyUp(e:KeyboardEvent):void
-    {
-        if (e.key in this.Keys)
-        {
-            this.Keys[e.key as keyof typeof this.Keys] = false;
-        }
-    }
-    
-    public override Collider2DZone():Bounds
-    {
-        if(this.mAnimationPlayer != null)
-        {
-            return this.mAnimationPlayer.getBounds();
-        }
-        else
-        {
-            return new Bounds(0, 0, 0, 0);
-        }
-    }
-    
-    private HandleCollisions():void
-    {
-        let bounds:Bounds = this.Collider2DZone();
-        let leftTile = Math.floor((this.position.x + TankLevelConfig.MapWidth * TankLevelConfig.TileWidth / 2) / TankLevelConfig.TileWidth) - 2;
-        let rightTile = Math.ceil((this.position.x + TankLevelConfig.MapWidth * TankLevelConfig.TileWidth / 2) / TankLevelConfig.TileWidth) + 2;
-        let topTile = Math.floor((this.position.y + TankLevelConfig.MapHeight * TankLevelConfig.TileHeight / 2) / TankLevelConfig.TileHeight) - 2;
-        let bottomTile = Math.ceil((this.position.y + TankLevelConfig.MapHeight * TankLevelConfig.TileHeight / 2) / TankLevelConfig.TileHeight) + 2;
-
-        // console.log("leftTile: " + leftTile);
-        // console.log("rightTile: " + rightTile);
-        // console.log("topTile: " + topTile);
-        // console.log("bottomTile: " + bottomTile);
-
-        for (let y = topTile; y <= bottomTile; ++y)
-        {
-            for (let x = leftTile; x <= rightTile; ++x)
-            {
-                let mTile = this.mTankLevel.GetTile(x, y);
-                if (mTile != null)
-                {
-                    if(mTile instanceof Tile_Block || mTile instanceof Tile_Home)
-                    {
-                        let mTarget = mTile;
-                        let tileBounds:Bounds = mTarget.Collider2DZone();
-                        let depth:Point = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
-                        //如果重叠区域 大于0
-                        //console.log("AABB depth 000: " + depth.toString());
-                        if (depth.x != 0 || depth.y != 0)
-                        {
-                        // console.log("AABB depth 111: " + depth.toString());
-                            let absDepthX = Math.abs(depth.x);
-                            let absDepthY = Math.abs(depth.y);
-                            if(absDepthX < absDepthY)
-                            {
-                                let worldPos = this.getGlobalPosition();
-                                worldPos.x += depth.x;
-                                let localPos = this.mTankLevel.SceneRoot.toLocal(worldPos);
-                                this.position.set(localPos.x, localPos.y);
-                            }
-                            else
-                            {
-                                let worldPos = this.getGlobalPosition();
-                                worldPos.y += depth.y;
-                                let localPos = this.mTankLevel.SceneRoot.toLocal(worldPos);
-                                this.position.set(localPos.x, localPos.y);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        for(let i = 0; i < this.mTankLevel.TankList.length; i++)
-        {
-            let mTile = this.mTankLevel.TankList[i];
-            if (mTile != this)
-            {
-                let tileBounds:Bounds = mTile.Collider2DZone();
-                let depth:Point = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
-                //如果重叠区域 大于0
-                if (depth.x != 0 || depth.y != 0)
-                {
-                    let absDepthX = Math.abs(depth.x);
-                    let absDepthY = Math.abs(depth.y);
-                    if(absDepthX < absDepthY)
-                    {
-                        let worldPos = this.getGlobalPosition();
-                        worldPos.x += depth.x;
-                        let localPos = this.mTankLevel.SceneRoot.toLocal(worldPos);
-                        this.position.set(localPos.x, localPos.y);
-                    }
-                    else
-                    {
-                        let worldPos = this.getGlobalPosition();
-                        worldPos.y += depth.y;
-                        let localPos = this.mTankLevel.SceneRoot.toLocal(worldPos);
-                        this.position.set(localPos.x, localPos.y);
-                    }
-                }
-            }
-        }
-        
-    }
-    
 }

@@ -179,12 +179,11 @@ export class Shell extends TileBase
 
                         if(mTile instanceof Tile_Block)
                         {
-                            this.mTankLevel.SetTileNull(x, y);
+                            mTile.OnHitAttack();
                         }
                         else if(mTile instanceof Tile_Home)
                         {
-                            this.mTankLevel.SetTileNull(x, y);
-                            //mTile.OnHitAttack(x, y);
+                            mTile.OnHitAttack();
                         }
 
                         this.mTankLevel.ShellPool.push(this);

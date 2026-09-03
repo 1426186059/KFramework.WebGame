@@ -14,16 +14,11 @@ export enum TankDirection {
     RIGHT = 'RIGHT'
 }
 
-export enum E_BORN_TYPE
-{
-    Player1 = 0,
-    Player2 = 1,
-    Enemy = 2,
-}
-
 export enum E_TILE_TYPE
 {
-    Player1 = 0,
-    Player2 = 1,
-    Enemy = 2,
+    Wall = 1,
+    Barriar = 2,
+    Grass = 3,
+    Water = 4,
+    Heart = 5,
 }

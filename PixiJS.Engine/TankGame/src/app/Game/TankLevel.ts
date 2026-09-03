@@ -192,7 +192,6 @@ export class TankLevel implements IDisposable
         let mTile = this.GetTile(x, y);
         if(mTile != null)
         {
-            mTile.Dispose();
             this.tiles[y][x] = null;
         }
     }
