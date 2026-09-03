@@ -17,7 +17,7 @@ export class Shell extends TileBase
 {
     public readonly mSprite:Sprite = new Sprite();
     public mDirection:TankDirection = TankDirection.UP;
-    private readonly fMoveSpeed:number = 200;
+    private readonly fMoveSpeed:number = 300;
     private bMoveing:boolean = false;
     private WhoSendShell:Tank_Base | null = null;
 

@@ -9,17 +9,20 @@ export class BornPoint_Enemy
 {
     private mTankLevel: TankLevel;
     private mPos:Point;
-    
+    private mTimer:KTimer | null = null;
+    private mEnemyCount:number = 0;
+
     constructor(mTankLevel: TankLevel,  mPos:Point)
     {
         this.mTankLevel = mTankLevel;
         this.mPos = mPos;
     }
-    
+
     public SetEnemyCount(nCount:number)
     {
-        let mTimer = KTimer.New(this.mTankLevel.SceneRoot, this.DoTimerFunc.bind(this), 5.0, nCount);
-        mTimer.Start();
+        this.mEnemyCount = nCount;
+        this.mTimer = KTimer.New(this.mTankLevel.SceneRoot, this.DoTimerFunc.bind(this), 5.0, -1);
+        this.mTimer.Start();
     }
 
     private DoTimerFunc():void
@@ -35,6 +38,11 @@ export class BornPoint_Enemy
             {
                 let mTile = this.mTankLevel.Tank_EnemyPool.pop();
                 mTile.position = this.mPos;
+
+                if(--this.mEnemyCount <= 0)
+                {
+                    this.mTimer?.Stop();
+                }
             }
         });
     }
