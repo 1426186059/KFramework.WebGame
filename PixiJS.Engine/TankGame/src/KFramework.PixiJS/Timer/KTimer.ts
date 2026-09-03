@@ -12,7 +12,7 @@ export class KTimer implements IDisposable
     private func: (()=>void) | null = null;
     private go:Container | null = null;
 
-    private UpdateFunc:(()=>void) | null = null; 
+    private readonly UpdateFunc =  this.Update.bind(this); 
     
     public static New(go:Container, func:()=>void, duration:number, loop:number = 1, unscaled:boolean = false):KTimer
     {
@@ -23,24 +23,17 @@ export class KTimer implements IDisposable
         o.time = duration;
         o.loop = loop;
         o.unscaled = unscaled;
-        o.UpdateFunc = o.Update.bind(o);
         return o;
     }
     
     public Start():void
     {
-        if(this.UpdateFunc)
-        {
-            KUpdateMgr.AddListener(this.UpdateFunc);
-        }
+        KUpdateMgr.AddListener(this.UpdateFunc);
     }
 
     public Stop():void
     {
-        if(this.UpdateFunc)
-        {
-            KUpdateMgr.RemoveListener(this.UpdateFunc);
-        }
+        KUpdateMgr.RemoveListener(this.UpdateFunc);
     }
 
     public Dispose(): void 
