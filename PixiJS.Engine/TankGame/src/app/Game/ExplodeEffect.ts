@@ -1,6 +1,7 @@
 import { AnimatedSprite, Assets, Bounds, Container, Point, Sprite, Texture, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
 import { PoolItemContainer } from "../../KFramework.PixiJS/Tool/PoolItemContainer";
+import { engine } from "../getEngine";
 
 //爆炸特效
 export class ExplodeEffect extends PoolItemContainer

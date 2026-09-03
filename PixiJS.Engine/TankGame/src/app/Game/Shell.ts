@@ -9,6 +9,7 @@ import { Tank_My } from "./Tank_My";
 import { PixiTool } from "../../KFramework.PixiJS/Tool/PixiTool";
 import { KTime } from "../../KFramework.PixiJS/GameEngine/KTime";
 import { Tile_Home } from "./Tile_Home ";
+import { engine } from "../getEngine";
 
 //坦克发射的 炮弹
 export class Shell extends TileBase
@@ -119,7 +120,7 @@ export class Shell extends TileBase
                 //在这里进行 物理碰撞检测
                 this.HandleCollisions();
             }
-            
+
             if(this.visible)
             {
                 if(this.position.x <= this.mTankLevel.MinPosX || 
@@ -170,6 +171,10 @@ export class Shell extends TileBase
                         if(m_BornEffect != null)
                         {
                             m_BornEffect.PlayAni(this.position);
+                            if(this.WhoSendShell instanceof Tank_My)
+                            {
+                                engine().audio.sfx.play("main/MyRes/Audio/Explosion.wav");
+                            }
                         }
 
                         if(mTile instanceof Tile_Block)
@@ -204,6 +209,10 @@ export class Shell extends TileBase
                     if(m_ExplodeEffect != null)
                     {
                         m_ExplodeEffect.PlayAni(this.position);
+                        if(this.WhoSendShell instanceof Tank_My)
+                        {
+                            engine().audio.sfx.play("main/MyRes/Audio/Explosion.wav");
+                        }
                     }
 
                     if(mTile instanceof Tank_Enemy)
@@ -234,6 +243,10 @@ export class Shell extends TileBase
                     if(m_ExplodeEffect != null)
                     {
                         m_ExplodeEffect.PlayAni(this.position);
+                        if(this.WhoSendShell instanceof Tank_My)
+                        {
+                            engine().audio.sfx.play("main/MyRes/Audio/Explosion.wav");
+                        }
                     }
 
                     this.mTankLevel.ShellPool.push(this);

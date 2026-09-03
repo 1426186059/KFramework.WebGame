@@ -68,6 +68,7 @@ export class Tank_My extends TileBase  implements IDisposable
     public OnHitAttack():void
     {
         this.Dispose();
+        engine().audio.sfx.play("main/MyRes/Audio/Hit.wav");
         KTween.delayedCall(2.0, async ()=>{
             await engine().navigation.showScreen(FailScreen);
         });
@@ -117,6 +118,7 @@ export class Tank_My extends TileBase  implements IDisposable
                 let mShell = this.mTankLevel.ShellPool.pop();
                 if(mShell)
                 {
+                    engine().audio.sfx.play("main/MyRes/Audio/Fire.wav", { volume: 1.0 });
                     mShell.UpdateSprite(this, dir);
                 }
             }

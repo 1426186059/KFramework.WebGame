@@ -80,7 +80,7 @@ export class StartScreen extends Container implements IDisposable
 
   public async show(): Promise<void> 
   {
-      engine().audio.bgm.play("main/sounds/bgm-main.mp3", { volume: 0.5 });  
+      //engine().audio.bgm.play("main/sounds/bgm-main.mp3", { volume: 0.5 });  
   }
 
   public async hide() 

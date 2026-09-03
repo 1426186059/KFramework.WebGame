@@ -65,6 +65,8 @@ export class TankLevel implements IDisposable
 
     public Init(nLevelIndex:number):void
     {
+        engine().audio.sfx.play("main/MyRes/Audio/Start.wav");
+
         GameScene.GetInstance().World_Layer.addChild(this.SceneRoot);
         this.SceneRoot.addChild(this.BGRoot);
         this.SceneRoot.addChild(this.Map1Root);

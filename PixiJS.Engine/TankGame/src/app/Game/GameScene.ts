@@ -44,8 +44,10 @@ export class GameScene implements IDisposable
     
     public async Init()
     {
-        await engine().navigation.showScreen(LoadScreen);
-        await engine().navigation.showScreen(MainScreen);
+        engine().audio.sfx.setVolume(1.0);
+
+        //await engine().navigation.showScreen(LoadScreen);
+       // await engine().navigation.showScreen(MainScreen);
         await engine().navigation.showScreen(StartScreen);
     }
 
