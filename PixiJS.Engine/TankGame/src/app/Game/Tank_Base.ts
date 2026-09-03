@@ -3,7 +3,6 @@ import { TankLevel } from "./TankLevel";
 import { TileBase } from "./TileBase";
 import { IDisposable } from "../../KFramework.PixiJS/Tool/IDisposable";
 import { E_TILE_TYPE, TankDirection, TankLevelConfig } from "./TankLevelConfig";
-import { randomInt } from "../../engine/utils/random";
 import { RectangleExtensions } from "./RectangleExtensions";
 import { Tile_Block } from "./Tile_Block";
 import { PixiTool } from "../../KFramework.PixiJS/Tool/PixiTool";
@@ -68,7 +67,7 @@ export class Tank_Base extends TileBase  implements IDisposable
         let bMove = this.bMoveing;
 
         this.DoThinkOp();
-        
+
         if (this.bFire) 
         {
             this.bFire = false;
@@ -176,7 +175,8 @@ export class Tank_Base extends TileBase  implements IDisposable
         let rightTile = Math.ceil((this.position.x + TankLevelConfig.MapWidth * TankLevelConfig.TileWidth / 2) / TankLevelConfig.TileWidth) + 2;
         let topTile = Math.floor((this.position.y + TankLevelConfig.MapHeight * TankLevelConfig.TileHeight / 2) / TankLevelConfig.TileHeight) - 2;
         let bottomTile = Math.ceil((this.position.y + TankLevelConfig.MapHeight * TankLevelConfig.TileHeight / 2) / TankLevelConfig.TileHeight) + 2;
-
+        
+        //坦克 与 砖瓦 碰撞
         for (let y = topTile; y <= bottomTile; ++y)
         {
             for (let x = leftTile; x <= rightTile; ++x)
@@ -230,7 +230,7 @@ export class Tank_Base extends TileBase  implements IDisposable
             }
         }
 
-
+        //坦克与坦克之间的碰撞
         for(let i = 0; i < this.mTankLevel.TankList.length; i++)
         {
             let mTile = this.mTankLevel.TankList[i];

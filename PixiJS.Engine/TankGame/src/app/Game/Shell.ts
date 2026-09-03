@@ -148,12 +148,8 @@ export class Shell extends TileBase
         let rightTile = Math.ceil((this.position.x + TankLevelConfig.MapWidth * TankLevelConfig.TileWidth / 2) / TankLevelConfig.TileWidth) + 2;
         let topTile = Math.floor((this.position.y + TankLevelConfig.MapHeight * TankLevelConfig.TileHeight / 2) / TankLevelConfig.TileHeight) - 2;
         let bottomTile = Math.ceil((this.position.y + TankLevelConfig.MapHeight * TankLevelConfig.TileHeight / 2) / TankLevelConfig.TileHeight) + 2;
-        
-        // console.log("leftTile: " + leftTile);
-        // console.log("rightTile: " + rightTile);
-        // console.log("topTile: " + topTile);
-        // console.log("bottomTile: " + bottomTile);
 
+        // 炮弹 击中 砖瓦 
         for (let y = topTile; y <= bottomTile; ++y)
         {
             for (let x = leftTile; x <= rightTile; ++x)
@@ -193,6 +189,7 @@ export class Shell extends TileBase
             }
         }
 
+        // 炮弹 击中 坦克 
         for(let i = 0; i < this.mTankLevel.TankList.length; i++)
         {
             let mTile = this.mTankLevel.TankList[i];
@@ -228,7 +225,8 @@ export class Shell extends TileBase
                 }
             }
         }
-
+        
+        //炮弹 击中 炮弹
         for(let i = 0; i < this.mTankLevel.ShellList.length; i++)
         {
             let otherShell = this.mTankLevel.ShellList[i];
@@ -254,6 +252,7 @@ export class Shell extends TileBase
                 }
             }
         }
+
     }
 
 }

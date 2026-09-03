@@ -9,8 +9,8 @@ import { FailScreen } from "../screens/main/FailScreen";
 export class Tile_Block extends TileBase
 {
     public readonly mSprite:Sprite = new Sprite();
-    public readonly nType:E_TILE_TYPE = E_TILE_TYPE.Wall;
-
+    public nType:E_TILE_TYPE = E_TILE_TYPE.Wall;
+    
     constructor(mTankLevel: TankLevel, x:number, y:number)
     {
         super(mTankLevel, x, y);

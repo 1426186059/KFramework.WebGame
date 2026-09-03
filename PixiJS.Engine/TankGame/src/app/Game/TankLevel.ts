@@ -1,5 +1,5 @@
 import { Assets, Container, Point, Sprite, Texture, Ticker } from 'pixi.js';
-import { E_BORN_TYPE, TankLevelConfig } from './TankLevelConfig';
+import { E_BORN_TYPE, E_TILE_TYPE, TankLevelConfig } from './TankLevelConfig';
 import { TileBase } from './TileBase';
 import { engine } from '../getEngine';
 import { IDisposable } from '../../KFramework.PixiJS/Tool/IDisposable';
@@ -160,11 +160,14 @@ export class TankLevel implements IDisposable
                 return this.LoadPlayerTile(x, y);
             
             case "#": //砖块
-                return this.LoadCommonTile(x, y, "Map_0"); 
+                return this.LoadCommonTile(x, y, "Map_0", E_TILE_TYPE.Wall); 
             case "*":  //铁板
-                return this.LoadCommonTile(x, y, "Map_1");    
+                return this.LoadCommonTile(x, y, "Map_1", E_TILE_TYPE.Barriar);    
             case "~":  //水
-                return this.LoadCommonTile(x, y, "Map_2");
+                return this.LoadCommonTile(x, y, "Map_3", E_TILE_TYPE.Water);
+            case "^":  //草
+                return this.LoadCommonTile(x, y, "Map_2", E_TILE_TYPE.Grass);
+
             case "@":  //老窝
                 return this.LoadTile_Home(x, y, "Map_5");     
             default:
@@ -196,12 +199,21 @@ export class TankLevel implements IDisposable
         }
     }
     
-    private LoadCommonTile(x:number, y:number, strName:string):TileBase 
+    private LoadCommonTile(x:number, y:number, strName:string, nType:E_TILE_TYPE):TileBase 
     {
         let mTile = new Tile_Block(this, x, y);
-        this.Map1Root.addChild(mTile);
+        if(nType == E_TILE_TYPE.Grass)
+        {
+            this.Map2Root.addChild(mTile);
+        }
+        else
+        {
+            this.Map1Root.addChild(mTile);
+        }
+
         mTile.position = this.GetTilePos(x, y);
         mTile.mSprite.texture = Texture.from(strName);
+        mTile.nType = nType;
         return mTile;
     }
 
