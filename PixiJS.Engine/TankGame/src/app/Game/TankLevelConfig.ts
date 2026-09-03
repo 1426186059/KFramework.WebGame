@@ -5,6 +5,11 @@ export class TankLevelConfig
     public static readonly MapHeight:number = 20;
     public static readonly TileWidth:number = 32;
     public static readonly TileHeight:number = 32;
+    
+    public static GetLevelEnemyCount(nLevelIndex:number)
+    {
+        return nLevelIndex * 10
+    }
 }
 
 export enum TankDirection {

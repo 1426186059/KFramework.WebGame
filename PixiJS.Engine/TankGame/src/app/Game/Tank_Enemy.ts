@@ -10,6 +10,7 @@ import { PixiTool } from "../../KFramework.PixiJS/Tool/PixiTool";
 import { KTime } from "../../KFramework.PixiJS/GameEngine/KTime";
 import { Tile_Home } from "./Tile_Home ";
 import { Tank_Base } from "./Tank_Base";
+import { GameScene } from "./GameScene";
 
 export class Tank_Enemy extends Tank_Base  implements IDisposable
 {
@@ -38,10 +39,16 @@ export class Tank_Enemy extends Tank_Base  implements IDisposable
         this.mTankLevel.TankList.splice(nIndex,1);
         this.visible = false;
     }
-    
+        
     public override Dispose():void
     {
         super.Dispose();
+        this.mTankLevel.nKillEnemyCount++;
+        let nSumNeedKillEnemyCount = TankLevelConfig.GetLevelEnemyCount(this.mTankLevel.nLevelIndex);
+        if(this.mTankLevel.nKillEnemyCount >= nSumNeedKillEnemyCount)
+        {
+            GameScene.GetInstance().LoadNextLevel();
+        }
     }
 
     public override OnHitAttack():void

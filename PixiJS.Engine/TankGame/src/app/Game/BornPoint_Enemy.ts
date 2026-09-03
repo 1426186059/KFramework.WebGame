@@ -2,6 +2,7 @@ import { AnimatedSprite, Assets, Bounds, Container, Point, Sprite, Texture, Tick
 import { TankLevel } from "./TankLevel";
 import { KTimer } from "../../KFramework.PixiJS/Timer/KTimer";
 import { KTween } from "../../KFramework.PixiJS/KTweeen/KTween";
+import { TankLevelConfig } from "./TankLevelConfig";
 
 //敌人 出生点
 export class BornPoint_Enemy
@@ -13,8 +14,11 @@ export class BornPoint_Enemy
     {
         this.mTankLevel = mTankLevel;
         this.mPos = mPos;
-
-        let mTimer = KTimer.New(this.mTankLevel.SceneRoot, this.DoTimerFunc.bind(this), 5.0, -1);
+    }
+    
+    public SetEnemyCount(nCount:number)
+    {
+        let mTimer = KTimer.New(this.mTankLevel.SceneRoot, this.DoTimerFunc.bind(this), 5.0, nCount);
         mTimer.Start();
     }
 

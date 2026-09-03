@@ -20,7 +20,7 @@ export class GameScene implements IDisposable
     }
 
     public mTankLevel:TankLevel | null = null;
-    public nLevelIndex:number = 4;
+    public nLevelIndex:number = 0;
 
     public readonly World_Layer:Container = new Container({label:"World_Layer"});
     public readonly UIRoot_Layer:Container = new Container({label:"UIRoot_Layer"});

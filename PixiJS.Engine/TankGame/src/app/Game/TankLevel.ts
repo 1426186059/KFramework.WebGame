@@ -15,10 +15,12 @@ import { BornPoint_Player } from './BornPoint_Player';
 import { GameScene } from './GameScene';
 import { Tile_Home } from './Tile_Home ';
 import { Tank_Base } from './Tank_Base';
+import { RandomTool } from '../../KFramework.PixiJS/Tool/RandomTool';
+import { PixiTool } from '../../KFramework.PixiJS/Tool/PixiTool';
 
 export class TankLevel implements IDisposable
 {
-    private nLevelIndex:number = 0;
+    public nLevelIndex:number = 0;
     private tiles:(TileBase | null)[][] = [];
 
     public readonly SceneRoot:Container = new Container();
@@ -36,7 +38,7 @@ export class TankLevel implements IDisposable
     public readonly BornEffectPool:PoolContainer<BornEffect> = new PoolContainer<BornEffect>(()=> new BornEffect(this));
     public readonly ExplodeEffectPool:PoolContainer<ExplodeEffect> = new PoolContainer<ExplodeEffect>(()=> new ExplodeEffect(this));
     public readonly Tank_EnemyPool:PoolContainer<Tank_Enemy> = new PoolContainer<Tank_Enemy>(()=> new Tank_Enemy(this));
-    
+
     public readonly TankList:Tank_Base[] = [];
     public readonly ShellList:Shell[] = [];
     
@@ -45,6 +47,9 @@ export class TankLevel implements IDisposable
     public readonly MaxPosY:number = 0;
     public readonly MinPosY:number = 0;
 
+    public nKillEnemyCount:number = 0; 
+    private nNeddAllocEnemyCount:number = 0; 
+    private mBornPoint_EnemyList:BornPoint_Enemy[] = [];
     constructor()
     {
         this.m_Background = null;
@@ -65,9 +70,10 @@ export class TankLevel implements IDisposable
     }
 
     public Init(nLevelIndex:number):void
-    {
-        engine().audio.sfx.play("main/MyRes/Audio/Start.wav");
+    { 
+        this.nNeddAllocEnemyCount = TankLevelConfig.GetLevelEnemyCount(nLevelIndex);
 
+        engine().audio.sfx.play("main/MyRes/Audio/Start.wav");
         GameScene.GetInstance().World_Layer.addChild(this.SceneRoot);
         this.SceneRoot.addChild(this.BGRoot);
         this.SceneRoot.addChild(this.Map1Root);
@@ -143,6 +149,15 @@ export class TankLevel implements IDisposable
                 }
                 this.tiles[y][x] = this.LoadTile(tileType, x, y);
             }
+        }
+
+        let nSumEnemyCount = TankLevelConfig.GetLevelEnemyCount(this.nLevelIndex);
+        let nAllocCount:number = Math.ceil(nSumEnemyCount / this.mBornPoint_EnemyList.length);
+        for(let A of this.mBornPoint_EnemyList)
+        {
+            nAllocCount = Math.min(nAllocCount, nSumEnemyCount);
+            A.SetEnemyCount(nAllocCount);
+            nSumEnemyCount -= nAllocCount;
         }
 
     }
@@ -237,7 +252,8 @@ export class TankLevel implements IDisposable
     private LoadEnemyTile(x:number, y:number):TileBase | null
     {
         let mPos = this.GetTilePos(x, y);
-        new BornPoint_Enemy(this, mPos); 
+        let mPoint = new BornPoint_Enemy(this, mPos); 
+        this.mBornPoint_EnemyList.push(mPoint);
         return null;
     }
 
