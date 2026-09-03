@@ -14,6 +14,7 @@ import { BornPoint_Enemy } from './BornPoint_Enemy';
 import { BornPoint_Player } from './BornPoint_Player';
 import { GameScene } from './GameScene';
 import { Tile_Home } from './Tile_Home ';
+import { Tank_Base } from './Tank_Base';
 
 export class TankLevel implements IDisposable
 {
@@ -35,10 +36,10 @@ export class TankLevel implements IDisposable
     public readonly BornEffectPool:PoolContainer<BornEffect> = new PoolContainer<BornEffect>(()=> new BornEffect(this));
     public readonly ExplodeEffectPool:PoolContainer<ExplodeEffect> = new PoolContainer<ExplodeEffect>(()=> new ExplodeEffect(this));
     public readonly Tank_EnemyPool:PoolContainer<Tank_Enemy> = new PoolContainer<Tank_Enemy>(()=> new Tank_Enemy(this));
-
-    public readonly TankList:TileBase[] = [];
+    
+    public readonly TankList:Tank_Base[] = [];
     public readonly ShellList:Shell[] = [];
-
+    
     public readonly MaxPosX:number = 0;
     public readonly MinPosX:number = 0;
     public readonly MaxPosY:number = 0;

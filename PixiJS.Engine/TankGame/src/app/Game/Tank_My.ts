@@ -3,7 +3,7 @@ import { TankLevel } from "./TankLevel";
 import { TileBase } from "./TileBase";
 import { engine } from "../getEngine";
 import { IDisposable } from "../../KFramework.PixiJS/Tool/IDisposable";
-import { TankDirection, TankLevelConfig } from "./TankLevelConfig";
+import { E_TANK_CAMP_TYPE, TankDirection, TankLevelConfig } from "./TankLevelConfig";
 import { Tile_Block } from "./Tile_Block";
 import { RectangleExtensions } from "./RectangleExtensions";
 import { Shell } from "./Shell";
@@ -25,6 +25,8 @@ export class Tank_My extends Tank_Base  implements IDisposable
     {
         super(mTankLevel, x, y);
         this.mTankLevel.TankRoot.addChild(this);
+        this.nCampType =  E_TANK_CAMP_TYPE.Player;
+
         this.mTankLevel.TankList.push(this);
 
         this.nTankType = 0;

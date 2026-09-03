@@ -10,6 +10,7 @@ import { PixiTool } from "../../KFramework.PixiJS/Tool/PixiTool";
 import { KTime } from "../../KFramework.PixiJS/GameEngine/KTime";
 import { Tile_Home } from "./Tile_Home ";
 import { engine } from "../getEngine";
+import { Tank_Base } from "./Tank_Base";
 
 //坦克发射的 炮弹
 export class Shell extends TileBase
@@ -18,7 +19,7 @@ export class Shell extends TileBase
     public mDirection:TankDirection = TankDirection.UP;
     private readonly fMoveSpeed:number = 200;
     private bMoveing:boolean = false;
-    private WhoSendShell:TileBase | null = null;
+    private WhoSendShell:Tank_Base | null = null;
 
     constructor(mTankLevel: TankLevel)
     {
@@ -188,14 +189,13 @@ export class Shell extends TileBase
                 }
             }
         }
-
+        
         // 炮弹 击中 坦克 
         for(let i = 0; i < this.mTankLevel.TankList.length; i++)
         {
-            let mTile = this.mTankLevel.TankList[i];
-            if(PixiTool.isAlive(mTile) && 
-                this.WhoSendShell != null && 
-                mTile.constructor !== this.WhoSendShell.constructor)
+            let mTile:Tank_Base = this.mTankLevel.TankList[i];
+            if(PixiTool.isAlive(mTile) &&  this.WhoSendShell != null &&
+                this.WhoSendShell.nCampType != mTile.nCampType)
             {
                 let tileBounds:Bounds = mTile.Collider2DZone();
                 let depth:Point = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
@@ -225,7 +225,7 @@ export class Shell extends TileBase
                 }
             }
         }
-        
+
         //炮弹 击中 炮弹
         for(let i = 0; i < this.mTankLevel.ShellList.length; i++)
         {

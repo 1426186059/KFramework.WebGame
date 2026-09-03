@@ -22,3 +22,9 @@ export enum E_TILE_TYPE
     Water = 4,
     Heart = 5,
 }
+
+export enum E_TANK_CAMP_TYPE
+{
+    Player = 1,
+    Enemy = 2,
+}

@@ -2,7 +2,7 @@ import { AnimatedSprite, Bounds, Container, Point, Sprite, Texture, Ticker } fro
 import { TankLevel } from "./TankLevel";
 import { TileBase } from "./TileBase";
 import { IDisposable } from "../../KFramework.PixiJS/Tool/IDisposable";
-import { E_TILE_TYPE, TankDirection, TankLevelConfig } from "./TankLevelConfig";
+import { E_TANK_CAMP_TYPE, E_TILE_TYPE, TankDirection, TankLevelConfig } from "./TankLevelConfig";
 import { RectangleExtensions } from "./RectangleExtensions";
 import { Tile_Block } from "./Tile_Block";
 import { PixiTool } from "../../KFramework.PixiJS/Tool/PixiTool";
@@ -25,6 +25,8 @@ export class Tank_Base extends TileBase  implements IDisposable
     protected Animation_Left:Texture[] | null = null;
     protected Animation_Right:Texture[] | null = null;
     protected mAnimationPlayer:AnimatedSprite | null = null;
+
+    public nCampType:E_TANK_CAMP_TYPE = E_TANK_CAMP_TYPE.Enemy;
 
     constructor(mTankLevel: TankLevel, x:number = 0, y:number = 0)
     {

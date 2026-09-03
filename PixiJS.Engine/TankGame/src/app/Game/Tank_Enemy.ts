@@ -2,7 +2,7 @@ import { AnimatedSprite, Bounds, Container, Point, Sprite, Texture, Ticker } fro
 import { TankLevel } from "./TankLevel";
 import { TileBase } from "./TileBase";
 import { IDisposable } from "../../KFramework.PixiJS/Tool/IDisposable";
-import { E_TILE_TYPE, TankDirection, TankLevelConfig } from "./TankLevelConfig";
+import { E_TANK_CAMP_TYPE, E_TILE_TYPE, TankDirection, TankLevelConfig } from "./TankLevelConfig";
 import { randomInt } from "../../engine/utils/random";
 import { RectangleExtensions } from "./RectangleExtensions";
 import { Tile_Block } from "./Tile_Block";
@@ -19,7 +19,7 @@ export class Tank_Enemy extends Tank_Base  implements IDisposable
     {
         super(mTankLevel, x, y);
         this.mTankLevel.TankRoot.addChild(this);
-        this.mDirection = TankDirection.DOWN;
+        this.nCampType =  E_TANK_CAMP_TYPE.Enemy;
     }
 
     public override OnPoolPop():void
