@@ -51,7 +51,6 @@ export class KeyBoard implements IDisposable
 
     private Update():void
     {
-        console.log("KeyBoard Update");
         for(const [key] of Object.entries(this.Keys)) 
         {
             this.LastKeys[key] = this.Keys[key];
