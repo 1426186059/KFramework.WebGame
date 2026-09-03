@@ -1,21 +1,21 @@
-import { Ticker, Container } from "pixi.js";
+import { Container } from "pixi.js";
 
 import { KTime } from "../GameEngine/KTime";
 import { LinkedList, LinkedListNode } from "../Tool/LinkedList";
 import { FinishFunc, TweenItem, UpdateFunc } from "./KTween";
 import { KTweenFunc } from "./KTweenFunc";
 import { PixiTool } from "../Tool/PixiTool";
+import { KUpdateMgr } from "../Timer/KUpdateMgr";
 
 export class KTweenMgr 
 {
     private static m_Instance: KTweenMgr | null = null;
-    private readonly UpdateFunc;
+    private readonly UpdateFunc = this.Update.bind(this);
     public readonly bindObj: Container = new Container();
-
+    
     private constructor() 
     {
-      this.UpdateFunc = this.Update.bind(this);
-      KUpdateMgr.GetTicker().add(this.UpdateFunc);
+        KUpdateMgr.AddListener(this.UpdateFunc);
     }
   
     public static GetInstance(): KTweenMgr 
