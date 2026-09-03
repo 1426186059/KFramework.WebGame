@@ -1,6 +1,4 @@
-﻿import { Ticker } from "pixi.js";
-import { engine } from "../../app/getEngine";
-import { KTime } from "../GameEngine/KTime";
+﻿import { KTime } from "../GameEngine/KTime";
 
 export class KTimeOutGenerator
 {

@@ -1,7 +1,8 @@
-import { Container, Ticker } from "pixi.js";
+import { Container } from "pixi.js";
 import { KUpdateMgr } from "./KUpdateMgr";
 import { IDisposable } from "../Tool/IDisposable";
 import { KTime } from "../GameEngine/KTime";
+import { PixiTool } from "../Tool/PixiTool";
 
 export class KTimer implements IDisposable
 {
@@ -44,7 +45,7 @@ export class KTimer implements IDisposable
 
     private Update():void
     {
-        if (this.go == null)
+        if (!PixiTool.isAlive(this.go))
         {
             this.Stop();
             return;
