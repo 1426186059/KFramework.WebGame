@@ -16,12 +16,12 @@ export class KTime
     // 最稳妥的做法是自己维护一个累加器，而不是直接去读 lastTime
     // public static get time(): number
     // {
-    //     return Ticker.shared.lastTime / 1000.0;
+    //     return KUpdateMgr.GetTicker().lastTime / 1000.0;
     // }
 
     // /** 不受 timeScale 影响的时间（秒） */
     // public static get unscaledTime(): number
     // {
-    //     return Ticker.shared.lastTime / 1000;
+    //     return KUpdateMgr.GetTicker().lastTime / 1000;
     // }
 }

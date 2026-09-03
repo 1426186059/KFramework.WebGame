@@ -14,7 +14,6 @@ export class KeyBoard implements IDisposable
     constructor()
     {
         this.AddKeyboard();
-        console.assert(Ticker.shared == engine().ticker, "Ticker.shared != engine().ticker")
         KUpdateMgr.AddListener(this.Update, this, UPDATE_PRIORITY.LOW);
     }
 

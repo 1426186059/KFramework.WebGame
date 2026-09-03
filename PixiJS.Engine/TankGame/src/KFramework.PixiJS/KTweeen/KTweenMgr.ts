@@ -15,7 +15,7 @@ export class KTweenMgr
     private constructor() 
     {
       this.UpdateFunc = this.Update.bind(this);
-      Ticker.shared.add(this.UpdateFunc);
+      KUpdateMgr.GetTicker().add(this.UpdateFunc);
     }
   
     public static GetInstance(): KTweenMgr 
