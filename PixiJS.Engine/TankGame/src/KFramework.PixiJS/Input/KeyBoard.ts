@@ -1,20 +1,27 @@
+import { Ticker, UPDATE_PRIORITY } from "pixi.js";
 import { IDisposable } from "../Tool/IDisposable";
+import { engine } from "../../app/getEngine";
+import { KUpdateMgr } from "../Timer/KUpdateMgr";
 
 export class KeyBoard implements IDisposable
 {
     private readonly LastKeys: { [key: string]: boolean } = {};
     private readonly Keys: Record<string, boolean> = {};
+
     private readonly OnKeyDownFunc = this.OnKeyDown.bind(this);
     private readonly OnKeyUpFunc = this.OnKeyUp.bind(this);
 
     constructor()
     {
         this.AddKeyboard();
+        console.assert(Ticker.shared == engine().ticker, "Ticker.shared != engine().ticker")
+        KUpdateMgr.AddListener(this.Update, this, UPDATE_PRIORITY.LOW);
     }
 
     public Dispose(): void 
     {
         this.RemoveKeyboard();
+        KUpdateMgr.RemoveListener(this.Update, this);
     }
 
     private AddKeyboard():void
@@ -33,14 +40,22 @@ export class KeyBoard implements IDisposable
     //event.code → 值是 物理键位名，永远不变
     private OnKeyDown(e:KeyboardEvent):void
     {
-        this.LastKeys[e.code] = this.Keys[e.code];
         this.Keys[e.code] = true;
+        //console.log("OnKeyDown")
     }
 
     private OnKeyUp(e:KeyboardEvent):void
     {
-        this.LastKeys[e.code] = this.Keys[e.code];
         this.Keys[e.code] = false;
+    }
+
+    private Update():void
+    {
+        console.log("KeyBoard Update");
+        for(const [key] of Object.entries(this.Keys)) 
+        {
+            this.LastKeys[key] = this.Keys[key];
+        }
     }
 
     public GetKeyDown(key:string):boolean

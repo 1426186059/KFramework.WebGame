@@ -1,16 +1,17 @@
 ﻿import { Ticker } from "pixi.js";
+import { KUpdateMgr } from "../Timer/KUpdateMgr";
 
 export class KTime 
 {
     public static get deltaTime(): number
     {
-        return Ticker.shared.deltaMS / 1000;
-    };
+        return KUpdateMgr.GetTicker().deltaMS / 1000;
+    }
     
     public static get unscaledDeltaTime(): number
     {
-        return Ticker.shared.elapsedMS / 1000;
-    };
+        return KUpdateMgr.GetTicker().elapsedMS / 1000;
+    }
 
     // 最稳妥的做法是自己维护一个累加器，而不是直接去读 lastTime
     // public static get time(): number

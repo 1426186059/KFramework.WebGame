@@ -3,14 +3,19 @@ import { engine } from "../../app/getEngine";
 
 export class KUpdateMgr
 {
-    public static AddListener(func: ()=>void, context?: any):void
+    public static GetTicker():Ticker
     {
-        engine().ticker.add(func, context);
+        return engine().ticker;
+    }
+
+    public static AddListener(func: ()=>void, context?: any, priority?: number):void
+    {
+        this.GetTicker().add(func, context, priority);
     }
 
     public static RemoveListener(func: ()=>void, context?: any):void
     {
-        engine().ticker.remove(func, context);
+        this.GetTicker().remove(func, context);
     }
 }
 

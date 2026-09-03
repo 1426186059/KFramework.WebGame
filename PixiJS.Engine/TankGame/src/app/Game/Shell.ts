@@ -52,7 +52,12 @@ export class Shell extends TileBase
         
     }
 
-    public UpdateSprite(WhoSendShell:TileBase, dir:TankDirection):void
+    private isAlive():boolean
+    {
+        return PixiTool.isAlive(this) && this.visible;
+    }
+
+    public UpdateSprite(WhoSendShell:Tank_Base, dir:TankDirection):void
     {
         this.mDirection = dir;
         this.WhoSendShell = WhoSendShell;
@@ -90,7 +95,7 @@ export class Shell extends TileBase
     
     public update() 
     {
-        if(!this.visible) return;
+        if(!this.isAlive()) return;
         this.showBounds();
 
         if(this.bMoveing)
@@ -122,7 +127,7 @@ export class Shell extends TileBase
                 this.HandleCollisions();
             }
 
-            if(this.visible)
+            if(this.isAlive())
             {
                 if(this.position.x <= this.mTankLevel.MinPosX || 
                     this.position.x >= this.mTankLevel.MaxPosX)
@@ -142,7 +147,7 @@ export class Shell extends TileBase
 
     private HandleCollisions():void
     {
-        if(!this.visible) return;
+        if(!this.isAlive()) return;
 
         let bounds:Bounds = this.Collider2DZone();
         let leftTile = Math.floor((this.position.x + TankLevelConfig.MapWidth * TankLevelConfig.TileWidth / 2) / TankLevelConfig.TileWidth) - 2;
@@ -194,7 +199,7 @@ export class Shell extends TileBase
         for(let i = 0; i < this.mTankLevel.TankList.length; i++)
         {
             let mTile:Tank_Base = this.mTankLevel.TankList[i];
-            if(PixiTool.isAlive(mTile) &&  this.WhoSendShell != null &&
+            if(mTile.isAlive() &&  this.WhoSendShell != null &&
                 this.WhoSendShell.nCampType != mTile.nCampType)
             {
                 let tileBounds:Bounds = mTile.Collider2DZone();
@@ -230,12 +235,13 @@ export class Shell extends TileBase
         for(let i = 0; i < this.mTankLevel.ShellList.length; i++)
         {
             let otherShell = this.mTankLevel.ShellList[i];
-            if(PixiTool.isAlive(otherShell) && this != otherShell)
+            if(otherShell.isAlive() && this != otherShell)
             {
                 let tileBounds:Bounds = otherShell.Collider2DZone();
                 let depth:Point = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
                 if (depth.x != 0 || depth.y != 0)
                 {
+                    //console.log("炮弹 击中 炮弹");
                     let m_ExplodeEffect = this.mTankLevel.ExplodeEffectPool.pop();
                     if(m_ExplodeEffect != null)
                     {

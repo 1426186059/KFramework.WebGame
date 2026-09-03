@@ -57,6 +57,11 @@ export class Tank_Base extends TileBase  implements IDisposable
             this.Dispose();
         }
     }
+    
+    public isAlive():boolean
+    {
+        return PixiTool.isAlive(this) && this.visible;
+    }
 
     protected DoThinkOp():void
     {
