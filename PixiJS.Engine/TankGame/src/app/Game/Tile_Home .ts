@@ -1,8 +1,12 @@
-import { Bounds, DestroyOptions, Sprite, Ticker } from "pixi.js";
+import { Bounds, Sprite, Ticker } from "pixi.js";
 import { TankLevel } from "./TankLevel";
 import { TileBase } from "./TileBase";
+import { KTween } from "../../KFramework.PixiJS/KTweeen/KTween";
+import { engine } from "../getEngine";
+import { FailScreen } from "../screens/main/FailScreen";
 
-export class Tile_Block extends TileBase
+//坦克老巢
+export class Tile_Home extends TileBase
 {
     public readonly mSprite:Sprite = new Sprite();
 
@@ -23,9 +27,15 @@ export class Tile_Block extends TileBase
     {
         this.showBounds();
     }
-    
-    public override destroy(options?: DestroyOptions): void 
+
+    public override Dispose(): void 
     {
-        super.destroy(options);
+        this.boundsGraphics.destroy();
+        this.destroy();
+        
+        KTween.delayedCall(2.0, async ()=>{
+            await engine().navigation.showScreen(FailScreen);
+        });
     }
+
 }

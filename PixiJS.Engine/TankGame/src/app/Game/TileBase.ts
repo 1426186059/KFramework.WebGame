@@ -16,6 +16,12 @@ export class TileBase extends PoolItemContainer
         this.TileX = x;
         this.TileY = y;
     }
+
+    public override Dispose(): void 
+    {
+        this.boundsGraphics.destroy();
+        this.destroy();
+    }
     
     public update() 
     {

@@ -8,6 +8,7 @@ import { Tank_Enemy } from "./Tank_Enemy";
 import { Tank_My } from "./Tank_My";
 import { PixiTool } from "../../KFramework.PixiJS/Tool/PixiTool";
 import { KTime } from "../../KFramework.PixiJS/GameEngine/KTime";
+import { Tile_Home } from "./Tile_Home ";
 
 //坦克发射的 炮弹
 export class Shell extends TileBase
@@ -118,17 +119,20 @@ export class Shell extends TileBase
                 //在这里进行 物理碰撞检测
                 this.HandleCollisions();
             }
-
-            if(this.position.x <= this.mTankLevel.MinPosX || 
-                   this.position.x >= this.mTankLevel.MaxPosX)
+            
+            if(this.visible)
             {
-                this.mTankLevel.ShellPool.push(this);
-            }
+                if(this.position.x <= this.mTankLevel.MinPosX || 
+                    this.position.x >= this.mTankLevel.MaxPosX)
+                {
+                    this.mTankLevel.ShellPool.push(this);
+                }
 
-            if(this.position.y <= this.mTankLevel.MinPosY || 
-                this.position.y >= this.mTankLevel.MaxPosY)
-            {
-                this.mTankLevel.ShellPool.push(this);
+                if(this.position.y <= this.mTankLevel.MinPosY || 
+                    this.position.y >= this.mTankLevel.MaxPosY)
+                {
+                    this.mTankLevel.ShellPool.push(this);
+                }
             }
         }
 
@@ -168,13 +172,14 @@ export class Shell extends TileBase
                             m_BornEffect.PlayAni(this.position);
                         }
 
-                        if(mTile instanceof Tank_Enemy)
-                        {
-                            
-                        }
-                        else if(mTile instanceof Tile_Block)
+                        if(mTile instanceof Tile_Block)
                         {
                             this.mTankLevel.SetTileNull(x, y);
+                        }
+                        else if(mTile instanceof Tile_Home)
+                        {
+                            this.mTankLevel.SetTileNull(x, y);
+                            //mTile.OnHitAttack(x, y);
                         }
 
                         this.mTankLevel.ShellPool.push(this);

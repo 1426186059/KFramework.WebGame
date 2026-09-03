@@ -13,6 +13,7 @@ import { ExplodeEffect } from './ExplodeEffect';
 import { BornPoint_Enemy } from './BornPoint_Enemy';
 import { BornPoint_Player } from './BornPoint_Player';
 import { GameScene } from './GameScene';
+import { Tile_Home } from './Tile_Home ';
 
 export class TankLevel implements IDisposable
 {
@@ -163,7 +164,7 @@ export class TankLevel implements IDisposable
             case "~":  //水
                 return this.LoadCommonTile(x, y, "Map_2");
             case "@":  //老窝
-                return this.LoadCommonTile(x, y, "Map_5");     
+                return this.LoadTile_Home(x, y, "Map_5");     
             default:
                 throw "LoadTile error: " + tileType;
         }
@@ -183,13 +184,13 @@ export class TankLevel implements IDisposable
 
         return this.tiles[y][x];
     }
-
+    
     public SetTileNull(x:number, y:number):void
     {
         let mTile = this.GetTile(x, y);
         if(mTile != null)
         {
-            mTile.destroy();
+            mTile.Dispose();
             this.tiles[y][x] = null;
         }
     }
@@ -197,6 +198,15 @@ export class TankLevel implements IDisposable
     private LoadCommonTile(x:number, y:number, strName:string):TileBase 
     {
         let mTile = new Tile_Block(this, x, y);
+        this.Map1Root.addChild(mTile);
+        mTile.position = this.GetTilePos(x, y);
+        mTile.mSprite.texture = Texture.from(strName);
+        return mTile;
+    }
+
+    private LoadTile_Home(x:number, y:number, strName:string):TileBase | null
+    {
+        let mTile = new Tile_Home(this, x, y);
         this.Map1Root.addChild(mTile);
         mTile.position = this.GetTilePos(x, y);
         mTile.mSprite.texture = Texture.from(strName);

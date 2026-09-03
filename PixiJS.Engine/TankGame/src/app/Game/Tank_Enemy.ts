@@ -61,12 +61,12 @@ export class Tank_Enemy extends TileBase  implements IDisposable
         }
     }
     
-    public override update(_time: Ticker) 
+    public override update() 
     {
         let dir:TankDirection = this.mDirection;
         let bMove = this.bMoveing;
 
-        this.DoAIThink(_time);
+        this.DoAIThink();
         if (this.bFire) 
         {
             this.bFire = false;
@@ -200,10 +200,10 @@ export class Tank_Enemy extends TileBase  implements IDisposable
 
     private fLastThinkTime:number = 0;
     private bFire:boolean = false;
-    private DoAIThink(_time: Ticker):void
+    private DoAIThink():void
     {
         const currentTime = performance.now() / 1000.0;
-        if(currentTime - this.fLastThinkTime > 0.5)
+        if(currentTime - this.fLastThinkTime > 1.0)
         {
             this.fLastThinkTime = currentTime;
             let nResult = randomInt(0, 10);
@@ -268,9 +268,9 @@ export class Tank_Enemy extends TileBase  implements IDisposable
             for (let x = leftTile; x <= rightTile; ++x)
             {
                 let mTile = this.mTankLevel.GetTile(x, y);
-                if (mTile != null && mTile instanceof Tile_Block)
+                if (mTile != null)
                 {
-                    let mTarget:Tile_Block = mTile;
+                    let mTarget:TileBase = mTile;
                     let tileBounds:Bounds = mTarget.Collider2DZone();
                     let depth:Point = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
                     //如果重叠区域 大于0

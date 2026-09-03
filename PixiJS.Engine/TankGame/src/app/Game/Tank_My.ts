@@ -10,6 +10,9 @@ import { Shell } from "./Shell";
 import { PixiTool } from "../../KFramework.PixiJS/Tool/PixiTool";
 import { KTime } from "../../KFramework.PixiJS/GameEngine/KTime";
 import { BornPoint_Player } from "./BornPoint_Player";
+import { Tile_Home } from "./Tile_Home ";
+import { KTween } from "../../KFramework.PixiJS/KTweeen/KTween";
+import { FailScreen } from "../screens/main/FailScreen";
 
 export class Tank_My extends TileBase  implements IDisposable
 {
@@ -61,13 +64,16 @@ export class Tank_My extends TileBase  implements IDisposable
         this.RemoveKeyboard();
         this.destroy();
     }
-
+    
     public OnHitAttack():void
     {
         this.Dispose();
+        KTween.delayedCall(2.0, async ()=>{
+            await engine().navigation.showScreen(FailScreen);
+        });
     }
     
-    public override update(_time: Ticker) 
+    public override update() 
     {
         let bMove:boolean = false;
         let bFire2:boolean = this.bFire;
@@ -294,31 +300,34 @@ export class Tank_My extends TileBase  implements IDisposable
             for (let x = leftTile; x <= rightTile; ++x)
             {
                 let mTile = this.mTankLevel.GetTile(x, y);
-                if (mTile != null && mTile instanceof Tile_Block)
+                if (mTile != null)
                 {
-                    let mTarget:Tile_Block = mTile;
-                    let tileBounds:Bounds = mTarget.Collider2DZone();
-                    let depth:Point = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
-                    //如果重叠区域 大于0
-                    //console.log("AABB depth 000: " + depth.toString());
-                    if (depth.x != 0 || depth.y != 0)
+                    if(mTile instanceof Tile_Block || mTile instanceof Tile_Home)
                     {
-                       // console.log("AABB depth 111: " + depth.toString());
-                        let absDepthX = Math.abs(depth.x);
-                        let absDepthY = Math.abs(depth.y);
-                        if(absDepthX < absDepthY)
+                        let mTarget = mTile;
+                        let tileBounds:Bounds = mTarget.Collider2DZone();
+                        let depth:Point = RectangleExtensions.getIntersectionDepth(bounds, tileBounds);
+                        //如果重叠区域 大于0
+                        //console.log("AABB depth 000: " + depth.toString());
+                        if (depth.x != 0 || depth.y != 0)
                         {
-                            let worldPos = this.getGlobalPosition();
-                            worldPos.x += depth.x;
-                            let localPos = this.mTankLevel.SceneRoot.toLocal(worldPos);
-                            this.position.set(localPos.x, localPos.y);
-                        }
-                        else
-                        {
-                            let worldPos = this.getGlobalPosition();
-                            worldPos.y += depth.y;
-                            let localPos = this.mTankLevel.SceneRoot.toLocal(worldPos);
-                            this.position.set(localPos.x, localPos.y);
+                        // console.log("AABB depth 111: " + depth.toString());
+                            let absDepthX = Math.abs(depth.x);
+                            let absDepthY = Math.abs(depth.y);
+                            if(absDepthX < absDepthY)
+                            {
+                                let worldPos = this.getGlobalPosition();
+                                worldPos.x += depth.x;
+                                let localPos = this.mTankLevel.SceneRoot.toLocal(worldPos);
+                                this.position.set(localPos.x, localPos.y);
+                            }
+                            else
+                            {
+                                let worldPos = this.getGlobalPosition();
+                                worldPos.y += depth.y;
+                                let localPos = this.mTankLevel.SceneRoot.toLocal(worldPos);
+                                this.position.set(localPos.x, localPos.y);
+                            }
                         }
                     }
                 }
