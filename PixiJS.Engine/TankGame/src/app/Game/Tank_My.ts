@@ -77,8 +77,8 @@ export class Tank_My extends Tank_Base  implements IDisposable
             this.bMoveing = true;
             this.mDirection = TankDirection.RIGHT;
         }
-
-        if (this.mKeyBoard.GetKey(KeyCode.Space))
+        
+        if (this.mKeyBoard.GetKeyDown(KeyCode.Space))
         {
             this.bFire = true;
         }
