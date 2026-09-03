@@ -41,7 +41,6 @@ export class KeyBoard implements IDisposable
     private OnKeyDown(e:KeyboardEvent):void
     {
         this.Keys[e.code] = true;
-        //console.log("OnKeyDown")
     }
 
     private OnKeyUp(e:KeyboardEvent):void
