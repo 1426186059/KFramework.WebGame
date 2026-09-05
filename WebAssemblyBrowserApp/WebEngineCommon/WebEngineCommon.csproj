@@ -1,8 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    共享引擎源码库（Canvas2D / WebGL / WebGPU 等 wasm 应用共同引用）。
+    注意：不能使用 Microsoft.NET.Sdk.WebAssembly —— 那会把库也构建成带 _framework/* 运行时资产的
+    wasm 工程，静态资产经 ProjectReference 传播进引用方，与主应用自身的 dotnet.js 重复，
+    导致 OverrideHtmlAssetPlaceholders 报 "already mapped to ... dotnet.js"。
+    这里只是纯 C# 互操作库（JSImport/JSExport 在 net10 任意 TFM 均可编译），由引用它的 wasm 应用承载运行时。
+  -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RootNamespace>WebAssemblyBrowserApp</RootNamespace>
     <OutputType>Library</OutputType>
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
   </PropertyGroup>
 </Project>
