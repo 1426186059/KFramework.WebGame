@@ -10,17 +10,25 @@
   <link rel="preload" id="webassembly" />
   <script type="importmap"></script>
   <script type='module' src="main#[.{fingerprint}].js"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin: 2rem; color: #222; }
+    h1 { margin-bottom: .25rem; }
+    h2 { margin-top: 1.5rem; }
+    h3 { margin: 0 0 .25rem; }
+    .muted { color: #777; font-size: .85rem; margin: .25rem 0 .75rem; }
+    #status { font-weight: 600; color: #0a7; }
+    .card { background: #f7f7fa; border: 1px solid #e3e3e8; border-radius: 8px; padding: .75rem 1rem; margin-bottom: 1rem; }
+    table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+    th, td { text-align: left; padding: .35rem .6rem; border-bottom: 1px solid #e3e3e8; }
+    th { background: #ececf2; }
+    td:not(:first-child) { font-variant-numeric: tabular-nums; }
+  </style>
 </head>
 
 <body>
-  <h1>Stopwatch</h1>
-  <p>
-    Time elapsed in .NET is <span id="time"><i>loading...</i></span>
-  </p>
-  <p>
-    <button id="pause">Pause</button>
-    <button id="reset">Reset</button>
-  </p>
+  <h1>C# 反射性能测试</h1>
+  <p id="status">加载中...</p>
+  <div id="results"><i>loading...</i></div>
 </body>
 
 </html>

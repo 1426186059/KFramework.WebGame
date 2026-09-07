@@ -9,24 +9,13 @@ const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotne
 
 setModuleImports('main.js', {
     dom: {
-        setInnerText: (selector, time) => document.querySelector(selector).innerText = time
+        setInnerText: (selector, text) => document.querySelector(selector).innerText = text,
+        setInnerHTML: (selector, html) => document.querySelector(selector).innerHTML = html
     }
 });
 
 const config = getConfig();
 const exports = await getAssemblyExports(config.mainAssemblyName);
-
-document.getElementById('reset').addEventListener('click', e => {
-    exports.StopwatchSample.Reset();
-    e.preventDefault();
-});
-
-const pauseButton = document.getElementById('pause');
-pauseButton.addEventListener('click', e => {
-    const isRunning = exports.StopwatchSample.Toggle();
-    pauseButton.innerText = isRunning ? 'Pause' : 'Start';
-    e.preventDefault();
-});
 
 // run the C# Main() method and keep the runtime process running and executing further API calls
 await runMain();
