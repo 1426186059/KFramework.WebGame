@@ -1,8 +1,9 @@
 <Solution>
   <Project Path="WebAssembly_BrowserApp/WebAssembly_BrowserApp.csproj" />
   <Project Path="WebAssembly_Canvas2D/WebAssembly_Canvas2D.csproj" />
+  <Project Path="WebAssembly_PixiJS/WebAssembly_PixiJS.csproj" />
+  <Project Path="WebAssembly_SkiaSharp/WebAssembly_SkiaSharp.csproj" Id="2628fb46-f76e-48bf-87d4-f21479292eb1" />
   <Project Path="WebAssembly_WebGL/WebAssembly_WebGL.csproj" />
   <Project Path="WebAssembly_WebGPU/WebAssembly_WebGPU.csproj" />
-  <Project Path="WebAssembly_PixiJS/WebAssembly_PixiJS.csproj" />
   <Project Path="WebEngineCommon/WebEngineCommon.csproj" />
 </Solution>

@@ -1,0 +1,68 @@
+using WebAssemblyBrowserApp.Engine;
+
+namespace WebAssemblyBrowserApp.Games;
+
+/// <summary>坦克大战的方向（0=上 1=右 2=下 3=左）。</summary>
+public enum TankDir { Up, Right, Down, Left }
+
+/// <summary>坦克实体（玩家与敌人共用）。</summary>
+public sealed class Tank
+{
+    public const float Size = 26;
+
+    public bool IsPlayer;
+    public Vector2 Position;          // 坦克中心
+    public TankDir Dir = TankDir.Up;
+    public float Speed;
+    public bool Alive = true;
+
+    public int MaxBullets;
+    public float FireCooldown;
+    public float FireTimer;
+
+    public bool Armored;              // 装甲坦克（需两发）
+    public int Hp = 1;
+    public int Power = 1;             // 子弹威力
+    public float SpawnProtect;        // 出生保护剩余秒数（闪烁、无敌）
+
+    public float Half => Size / 2;
+
+    public bool CanFire => FireTimer <= 0 && Alive;
+
+    public void Update(float dt)
+    {
+        if (FireTimer > 0) FireTimer -= dt;
+        if (SpawnProtect > 0) SpawnProtect -= dt;
+    }
+
+    public void Fire()
+    {
+        if (!CanFire) return;
+        FireTimer = FireCooldown;
+    }
+
+    public Vector2 MuzzlePosition()
+    {
+        float d = Half + 4;
+        return Dir switch
+        {
+            TankDir.Up => Position + new Vector2(0, -d),
+            TankDir.Down => Position + new Vector2(0, d),
+            TankDir.Left => Position + new Vector2(-d, 0),
+            TankDir.Right => Position + new Vector2(d, 0),
+            _ => Position,
+        };
+    }
+}
+
+/// <summary>子弹。IsPlayer=true 表示玩家发射。</summary>
+public sealed class Bullet
+{
+    public Vector2 Position;
+    public Vector2 Velocity;
+    public bool IsPlayer;
+    public int Power;
+    public bool Alive = true;
+
+    public const float Size = 6;
+}
