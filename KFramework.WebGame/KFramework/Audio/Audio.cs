@@ -40,12 +40,14 @@ public static partial class Audio
     /// <summary>浏览器要求用户手势后才能启动音频上下文，请在首次点击/按键时调用。</summary>
     public static void Unlock() => UnlockCore();
 
-    [JSImport("audio.play", "audio")]
+    // 注意：函数名就是模块对象上的属性名，不能带 "audio." 前缀
+    // —— .NET 会把点号当成嵌套路径去解析，导致 "audio not found"。
+    [JSImport("play", "audio")]
     private static partial void PlayCore(int sfx, float volume, float pitch);
 
-    [JSImport("audio.unlock", "audio")]
+    [JSImport("unlock", "audio")]
     private static partial void UnlockCore();
 
-    [JSImport("audio.setMuted", "audio")]
+    [JSImport("setMuted", "audio")]
     private static partial void SetMutedCore(bool muted);
 }
