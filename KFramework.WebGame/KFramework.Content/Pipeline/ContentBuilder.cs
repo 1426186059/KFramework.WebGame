@@ -110,7 +110,7 @@ public sealed class ContentBuilder
                 }
                 else if (relative.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                 {
-                    pak.AddText(name, Encoding.UTF8.GetString(bytes), AssetType.Json);
+                    pak.AddText(name, ReadText(bytes), AssetType.Json);
                     manifest.Assets.Add(new ManifestAsset
                     {
                         Name = name, Type = "json", Page = -1, Size = bytes.Length,
@@ -120,7 +120,7 @@ public sealed class ContentBuilder
                 else if (relative.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) ||
                          relative.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
                 {
-                    pak.AddText(name, Encoding.UTF8.GetString(bytes), AssetType.Text);
+                    pak.AddText(name, ReadText(bytes), AssetType.Text);
                     manifest.Assets.Add(new ManifestAsset
                     {
                         Name = name, Type = "text", Page = -1, Size = bytes.Length,
@@ -185,7 +185,9 @@ public sealed class ContentBuilder
             Checksum = PakFormat.Checksum(pakBytes),
         });
 
-        File.WriteAllText(Path.Combine(outputDirectory, "manifest.json"), manifest.ToJson(), Encoding.UTF8);
+        // 必须写无 BOM 的 UTF-8：带 BOM 时浏览器端的 JSON 解析器会在第 0 字节报错
+        File.WriteAllText(Path.Combine(outputDirectory, "manifest.json"),
+                          manifest.ToJson(), new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
 
         watch.Stop();
 
@@ -214,6 +216,13 @@ public sealed class ContentBuilder
                 File.Delete(file);
             }
         }
+    }
+
+    /// <summary>解码文本并去掉 UTF-8 BOM，保证包内 JSON 可被解析器直接读取。</summary>
+    private static string ReadText(byte[] bytes)
+    {
+        int start = bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF ? 3 : 0;
+        return Encoding.UTF8.GetString(bytes, start, bytes.Length - start);
     }
 
     /// <summary>构建产物、隐藏文件、content 输出目录都不属于原始资源。</summary>

@@ -148,7 +148,7 @@ public sealed class ContentManager : IDisposable
 
         Require(key);
         (PakReader reader, PakEntry entry) = Locate(key);
-        string text = System.Text.Encoding.UTF8.GetString(reader.Read(entry));
+        string text = DecodeUtf8(reader.Read(entry));
         _textCache[key] = text;
         return text;
     }
@@ -177,7 +177,14 @@ public sealed class ContentManager : IDisposable
     private async Task<string> GetTextAsync(string relativePath, CancellationToken cancellationToken)
     {
         byte[] data = await GetBytesAsync(relativePath, cancellationToken).ConfigureAwait(false);
-        return System.Text.Encoding.UTF8.GetString(data);
+        return DecodeUtf8(data);
+    }
+
+    /// <summary>解码 UTF-8 并去掉 BOM，避免 JSON 解析在首字节失败。</summary>
+    private static string DecodeUtf8(byte[] data)
+    {
+        int start = data.Length >= 3 && data[0] == 0xEF && data[1] == 0xBB && data[2] == 0xBF ? 3 : 0;
+        return System.Text.Encoding.UTF8.GetString(data, start, data.Length - start);
     }
 
     public void Dispose()
