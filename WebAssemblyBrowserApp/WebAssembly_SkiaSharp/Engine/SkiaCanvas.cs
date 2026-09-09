@@ -25,6 +25,9 @@ public static partial class SkiaCanvas
     private static SKCanvas _canvas = null!;
     private static byte[] _pixels = Array.Empty<byte>();
 
+    /// <summary>固定 _pixels 的句柄，与位图同生命周期，保证光栅化直接写入托管数组。</summary>
+    private static GCHandle _pixelsHandle;
+
     private static readonly SKPaint FillPaint = new() { IsAntialias = true, Style = SKPaintStyle.Fill };
     private static readonly SKPaint StrokePaint = new() { IsAntialias = true, Style = SKPaintStyle.Stroke };
     private static readonly SKPaint TextPaint = new() { IsAntialias = true, Style = SKPaintStyle.Fill };
@@ -44,10 +47,15 @@ public static partial class SkiaCanvas
     {
         JsInit(selector, width, height);
 
-        var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
-        _bitmap = new SKBitmap(info);
-        _canvas = new SKCanvas(_bitmap);
+        // 关键优化：把 _pixels 固定后直接作为 SKBitmap 的像素存储，
+        // 这样软件光栅化的结果直接落在托管数组里，Flush 时无需再做一次 Marshal.Copy。
         _pixels = new byte[width * height * 4];
+        _pixelsHandle = GCHandle.Alloc(_pixels, GCHandleType.Pinned);
+        var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
+        _bitmap = new SKBitmap();
+        if (!_bitmap.InstallPixels(info, _pixelsHandle.AddrOfPinnedObject(), info.RowBytes))
+            throw new InvalidOperationException("无法为 SKBitmap 安装托管像素缓冲区");
+        _canvas = new SKCanvas(_bitmap);
 
         ResolveFonts();
     }
@@ -57,11 +65,30 @@ public static partial class SkiaCanvas
     {
         if (_canvas is null) return;
         _canvas.Flush();
-        Marshal.Copy(_bitmap.GetPixels(), _pixels, 0, _pixels.Length);
         Present(_pixels);
     }
 
     public static SKCanvas Canvas => _canvas;
+
+    // ------------------------- 图层缓存 -------------------------
+
+    /// <summary>
+    /// 把一段静态绘制结果缓存为离屏位图。
+    /// 全屏渐变这类着色器填充在软件光栅化下每帧要逐像素求值（800×600 约 48 万像素，实测约 20ms），
+    /// 而背景通常完全静态 —— 缓存后每帧只需一次位图拷贝。
+    /// </summary>
+    public static SKBitmap CacheLayer(int width, int height, Action draw)
+    {
+        var layer = new SKBitmap(new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul));
+        var saved = _canvas;
+        _canvas = new SKCanvas(layer);
+        try { draw(); }
+        finally { _canvas.Dispose(); _canvas = saved; }
+        return layer;
+    }
+
+    /// <summary>把缓存图层贴回当前画布（快速位图拷贝）。</summary>
+    public static void DrawLayer(SKBitmap layer, float x, float y) => _canvas.DrawBitmap(layer, x, y);
 
     [JSImport("engine.initCanvas", "main.js")]
     private static partial void JsInit(string selector, int width, int height);

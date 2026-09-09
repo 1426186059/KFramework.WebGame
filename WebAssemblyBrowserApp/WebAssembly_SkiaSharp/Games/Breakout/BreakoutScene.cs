@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SkiaSharp;
 using WebAssemblyBrowserApp.Engine;
 
 namespace WebAssemblyBrowserApp.Games;
@@ -43,6 +44,7 @@ public sealed class BreakoutScene : GameScene
     private int _score;
     private int _lives = 3;
     private float _highScore;
+    private SKBitmap? _bgLayer;
 
     public BreakoutScene() : base("breakout") { }
 
@@ -323,13 +325,15 @@ public sealed class BreakoutScene : GameScene
 
     // ------------------------- 渲染 -------------------------
 
+    private void DrawBackground()
+        => SkiaCanvas.GradientRoundRect(0, 0, GameEngine.Width, GameEngine.Height, 0, "#111a2b", "#0d1117");
+
     public override void Render()
     {
-        SkiaCanvas.Clear("#0d1117");
+        // 背景：静态垂直渐变缓存为图层，避免每帧逐像素求值 48 万像素的着色器
+        _bgLayer ??= SkiaCanvas.CacheLayer((int)GameEngine.Width, (int)GameEngine.Height, DrawBackground);
+        SkiaCanvas.DrawLayer(_bgLayer, 0, 0);
         SkiaCanvas.Save();
-
-        // 背景：Skia 垂直渐变（Canvas2D 版是纯色，这里展示着色器能力）
-        SkiaCanvas.GradientRoundRect(0, 0, GameEngine.Width, GameEngine.Height, 0, "#111a2b", "#0d1117");
 
         // 屏幕震动
         if (_shake > 0)

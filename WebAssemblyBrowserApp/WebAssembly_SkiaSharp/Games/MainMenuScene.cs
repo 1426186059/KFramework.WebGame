@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SkiaSharp;
 using WebAssemblyBrowserApp.Engine;
 
 namespace WebAssemblyBrowserApp.Games;
@@ -29,6 +30,7 @@ public sealed class MainMenuScene : GameScene
 
     private int _selected;
     private float _stateTime;
+    private SKBitmap? _bgLayer;
 
     public MainMenuScene() : base("main-menu") { }
 
@@ -89,7 +91,10 @@ public sealed class MainMenuScene : GameScene
 
     public override void Render()
     {
-        SkiaCanvas.GradientRoundRect(0, 0, GameEngine.Width, GameEngine.Height, 0, "#132033", "#0d1117");
+        // 静态背景渐变只画一次：原本每帧要逐像素求值 48 万个像素的着色器（约 20ms），
+        // 缓存后每帧只需一次位图拷贝。
+        _bgLayer ??= SkiaCanvas.CacheLayer((int)GameEngine.Width, (int)GameEngine.Height, DrawBackground);
+        SkiaCanvas.DrawLayer(_bgLayer, 0, 0);
 
         float cx = GameEngine.Width / 2;
         float cy = GameEngine.Height / 2;
@@ -113,6 +118,9 @@ public sealed class MainMenuScene : GameScene
                 cx, GameEngine.Height - 40, "13px system-ui", "#6e7681", "center");
         }
     }
+
+    private void DrawBackground()
+        => SkiaCanvas.GradientRoundRect(0, 0, GameEngine.Width, GameEngine.Height, 0, "#132033", "#0d1117");
 
     private void RenderBgSparkles()
     {

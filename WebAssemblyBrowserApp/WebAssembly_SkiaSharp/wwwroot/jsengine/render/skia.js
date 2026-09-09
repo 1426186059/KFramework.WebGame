@@ -9,6 +9,7 @@ let _canvas = null
 let _ctx = null
 let _w = 0
 let _h = 0
+let _img = null
 
 export const skia = {
     init(selector, width, height) {
@@ -19,13 +20,15 @@ export const skia = {
         _w = width
         _h = height
         _ctx = el.getContext('2d', { alpha: false })
+        // 复用同一个 ImageData，避免每帧分配约 1.92MB 对象带来的 GC 抖动
+        _img = new ImageData(_w, _h)
     },
 
     // pixels: Uint8Array，长度 = w * h * 4，内存布局 RGBA（与 Skia Rgba8888 一致）
     present(pixels) {
         if (!_ctx) return
-        const data = new Uint8ClampedArray(pixels.buffer, pixels.byteOffset, pixels.length)
-        _ctx.putImageData(new ImageData(data, _w, _h), 0, 0)
+        _img.data.set(pixels)
+        _ctx.putImageData(_img, 0, 0)
     },
 
     getCanvas() { return _canvas },
