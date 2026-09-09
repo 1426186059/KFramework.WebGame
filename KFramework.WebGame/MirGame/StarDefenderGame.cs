@@ -30,6 +30,9 @@ public sealed class StarDefenderGame : Game
     private Texture2D _bulletTexture = null!;
     private Texture2D _enemyBulletTexture = null!;
     private Texture2D _particleTexture = null!;
+
+    /// <summary>1x1 白色纹理，用于纯色矩形（进度条、遮罩）。不依赖内容包，加载期间即可用。</summary>
+    private Texture2D _whiteTexture = null!;
     private Texture2D _starTexture = null!;
     private Texture2D _powerUpTexture = null!;
     private Texture2D _heartTexture = null!;
@@ -82,8 +85,9 @@ public sealed class StarDefenderGame : Game
 
     protected override Task LoadContentAsync()
     {
-        // 字体不依赖内容包，先准备好，这样加载进度条可以立刻显示
+        // 字体与纯色纹理不依赖内容包，先准备好，这样加载进度条可以立刻显示
         _batch = new SpriteBatch(GraphicsDevice);
+        _whiteTexture = GraphicsDevice.CreateTexture(1, 1, [255, 255, 255, 255]);
         _titleFont = new SpriteFont(GraphicsDevice, 46f);
         _uiFont = new SpriteFont(GraphicsDevice, 24f);
         _smallFont = new SpriteFont(GraphicsDevice, 17f);
@@ -722,8 +726,8 @@ public sealed class StarDefenderGame : Game
         var background = new Rectangle((int)x, (int)y, (int)barWidth, 10);
         var fill = new Rectangle((int)x, (int)y, (int)(barWidth * MathHelper.Clamp(_loadProgress, 0f, 1f)), 10);
 
-        _batch.Draw(_particleTexture, background, new Color(40, 50, 74));
-        if (fill.Width > 0) _batch.Draw(_particleTexture, fill, new Color(80, 200, 255));
+        _batch.Draw(_whiteTexture, background, new Color(40, 50, 74));
+        if (fill.Width > 0) _batch.Draw(_whiteTexture, fill, new Color(80, 200, 255));
     }
 
     private void DrawTitle()
@@ -777,7 +781,7 @@ public sealed class StarDefenderGame : Game
         float center = DesignWidth * 0.5f;
 
         // 半透明遮罩
-        _batch.Draw(_particleTexture, new Rectangle(0, 0, DesignWidth, DesignHeight), new Color(4, 6, 14, 190));
+        _batch.Draw(_whiteTexture, new Rectangle(0, 0, DesignWidth, DesignHeight), new Color(4, 6, 14, 190));
 
         DrawTextCentered(_titleFont, "GAME OVER", center, 250f, new Color(255, 120, 120));
         DrawTextCentered(_uiFont, $"得分  {_score}", center, 340f, new Color(230, 240, 255));

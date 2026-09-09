@@ -57,10 +57,19 @@ public abstract class Game : IDisposable
 
         if (!_initialized)
         {
-            Initialize();
-            Components.Initialize();
-            await LoadContentAsync().ConfigureAwait(false);
-            Components.LoadContent();
+            try
+            {
+                Initialize();
+                Components.Initialize();
+                await LoadContentAsync().ConfigureAwait(false);
+                Components.LoadContent();
+            }
+            catch (Exception ex)
+            {
+                // 初始化阶段的异常必须能完整看到，否则浏览器只会表现为"白屏"
+                Console.Error.WriteLine($"[KFramework] 初始化失败：{ex}");
+                throw;
+            }
             _initialized = true;
         }
 

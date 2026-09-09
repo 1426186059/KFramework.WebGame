@@ -56,6 +56,9 @@ export function render(text, font, x, y, width, height, rgba) {
     context.fillStyle = '#ffffff';
     context.fillText(text, x, y);
 
-    const data = context.getImageData(0, 0, width, height).data;
-    writeBytes(rgba, data);
+    // getImageData 返回的是 Uint8ClampedArray，而 .NET 的 MemoryView 只接受 Uint8Array，必须转换
+    const image = context.getImageData(0, 0, width, height).data;
+    const bytes = new Uint8Array(image.length);
+    bytes.set(image);
+    writeBytes(rgba, bytes);
 }

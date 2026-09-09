@@ -93,11 +93,14 @@ public sealed class SpriteBatch
         => Draw(texture, destination, null, color);
 
     public void Draw(Texture2D texture, Rectangle destination, Rectangle? sourceRectangle, Color color)
-        => Draw(texture, new Vector2(destination.X, destination.Y), sourceRectangle, color,
-                0f, Vector2.Zero,
-                new Vector2(destination.Width / (float)(sourceRectangle?.Width ?? texture.Width),
-                            destination.Height / (float)(sourceRectangle?.Height ?? texture.Height)),
-                SpriteEffects.None, 0f);
+    {
+        ArgumentNullException.ThrowIfNull(texture);
+        Draw(texture, new Vector2(destination.X, destination.Y), sourceRectangle, color,
+             0f, Vector2.Zero,
+             new Vector2(destination.Width / (float)(sourceRectangle?.Width ?? texture.Width),
+                         destination.Height / (float)(sourceRectangle?.Height ?? texture.Height)),
+             SpriteEffects.None, 0f);
+    }
 
     /// <summary>完整参数的绘制。</summary>
     public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color,

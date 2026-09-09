@@ -15,18 +15,45 @@ setModuleImports('audio', audio);
 setModuleImports('text', text);
 
 const config = getConfig();
-const exports = await getAssemblyExports(config.mainAssemblyName);
 
-// KFramework.GameHost.Frame 由 requestAnimationFrame 每帧调用
-let host = exports.KFramework?.GameHost ?? exports.GameHost;
+/**
+ * 帧回调 KFramework.GameHost.Frame 定义在 KFramework 程序集里，
+ * 而 config.mainAssemblyName 是 MirGame，因此需要在多个程序集中查找。
+ */
+async function resolveGameHost() {
+    const candidates = [
+        config.mainAssemblyName,
+        'KFramework',
+        'KFramework.dll',
+    ].filter(Boolean);
 
-// 兜底：导出结构可能因命名空间层级不同而变化，按方法特征查找
-if (!host) {
-    host = Object.values(exports).find((value) => value && typeof value.Frame === 'function');
+    for (const assemblyName of candidates) {
+        let exports = null;
+        try {
+            exports = await getAssemblyExports(assemblyName);
+        } catch (error) {
+            console.warn('[main] 读取程序集导出失败:', assemblyName, error);
+            continue;
+        }
+        if (!exports) continue;
+
+        const host =
+            exports.KFramework?.GameHost ??
+            exports.GameHost ??
+            Object.values(exports).find((value) => value && typeof value.Frame === 'function');
+
+        if (host) {
+            console.log('[main] 已定位帧回调:', assemblyName);
+            return host;
+        }
+    }
+    return null;
 }
 
+const host = await resolveGameHost();
+
 if (!host) {
-    console.error('[main] 找不到 KFramework.GameHost 导出，可用导出：', Object.keys(exports));
+    console.error('[main] 找不到 KFramework.GameHost 导出，画面不会刷新');
 } else {
     platform.setFrameCallback((timestamp) => host.Frame(timestamp));
 }

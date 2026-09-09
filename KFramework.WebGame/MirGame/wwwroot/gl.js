@@ -56,12 +56,17 @@ export function getError() {
 function toBytes(view) {
     if (view == null) return null;
     if (view instanceof Uint8Array) return view;
+
+    // .NET 传入的 Span<byte> 在 JS 侧是 MemoryView，只能靠 copyTo / slice 读出 Uint8Array
     if (typeof view.copyTo === 'function') {
         const buffer = new Uint8Array(view.byteLength);
         view.copyTo(buffer);
         return buffer;
     }
-    if (typeof view.slice === 'function') return view.slice();
+    if (typeof view.slice === 'function') {
+        const sliced = view.slice();
+        return sliced instanceof Uint8Array ? sliced : new Uint8Array(sliced);
+    }
     throw new Error('[gl] 无法把参数转换为 Uint8Array');
 }
 
