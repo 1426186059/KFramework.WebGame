@@ -59,6 +59,18 @@ export function getError(): number {
     return gpu().getError() | 0;
 }
 
+/** 读取一个像素（x/y 为 WebGL 坐标，原点在左下角），用于自检"到底画出来没有"。 */
+export function readPixel(x: number, y: number, out: MemoryView | Uint8Array): void {
+    const pixels = new Uint8Array(4);
+    gpu().readPixels(x, y, 1, 1, gpu().RGBA, gpu().UNSIGNED_BYTE, pixels);
+
+    if (out instanceof Uint8Array) {
+        out.set(pixels);
+        return;
+    }
+    out.set(pixels, 0);
+}
+
 // ---------- 字节视图转换 ----------
 
 function toBytes(view: MemoryView | Uint8Array | null): Uint8Array | null {
@@ -117,8 +129,17 @@ export function uniformMatrix4fv(location: WebGLUniformLocation | null, transpos
     if (!bytes) return;
     const aligned = new Uint8Array(bytes.length);
     aligned.set(bytes);
-    gpu().uniformMatrix4fv(location, transpose !== 0, new Float32Array(aligned.buffer));
+    const matrix = new Float32Array(aligned.buffer);
+
+    if (!uniformLogged) {
+        uniformLogged = true;
+        console.log('[gl] 上传矩阵:', Array.from(matrix).map((n) => n.toFixed(4)).join(','));
+    }
+
+    gpu().uniformMatrix4fv(location, transpose !== 0, matrix);
 }
+
+let uniformLogged = false;
 
 // ---------- 缓冲 ----------
 

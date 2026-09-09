@@ -48,6 +48,7 @@ internal sealed class SpriteEffect : IDisposable
     private readonly JSObject? _projectionLocation;
     private readonly JSObject? _textureLocation;
     private readonly byte[] _matrixBuffer = new byte[16 * sizeof(float)];
+    private bool _locationsLogged;
 
     internal readonly int PositionLocation;
     internal readonly int TexCoordLocation;
@@ -102,6 +103,13 @@ internal sealed class SpriteEffect : IDisposable
             GL.UniformMatrix4fv(_projectionLocation, 0, _matrixBuffer);
         }
         if (_textureLocation is not null) GL.Uniform1i(_textureLocation, 0);
+
+        if (!_locationsLogged)
+        {
+            _locationsLogged = true;
+            Console.WriteLine($"[SpriteEffect] attribute: pos={PositionLocation} uv={TexCoordLocation} color={ColorLocation} | " +
+                              $"uniform: proj={(_projectionLocation is null ? "null" : "ok")} tex={(_textureLocation is null ? "null" : "ok")}");
+        }
     }
 
     /// <summary>按列主序把矩阵写成 16 个 float 的小端字节流。</summary>

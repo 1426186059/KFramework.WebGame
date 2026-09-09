@@ -12,13 +12,13 @@
     "noImplicitOverride": true,
     "exactOptionalPropertyTypes": false,
 
-    "rootDir": ".",
+    "rootDir": "./src",
     "outDir": "../../MirGame/wwwroot/jsengine",
 
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "newLine": "lf"
   },
-  "include": ["**/*.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }

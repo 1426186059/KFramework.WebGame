@@ -28,9 +28,10 @@ public struct Matrix4x4
         m.M11 = 2f / (right - left);
         m.M22 = 2f / (top - bottom);
         m.M33 = -2f / (zFar - zNear);
-        m.M41 = -(right + left) / (right - left);
-        m.M42 = -(top + bottom) / (top - bottom);
-        m.M43 = -(zFar + zNear) / (zFar - zNear);
+        // 列主序：平移位于第 4 列（M14/M24/M34），不是第 4 行
+        m.M14 = -(right + left) / (right - left);
+        m.M24 = -(top + bottom) / (top - bottom);
+        m.M34 = -(zFar + zNear) / (zFar - zNear);
         return m;
     }
 
@@ -42,14 +43,14 @@ public struct Matrix4x4
         => new() { M11 = scaleX, M22 = scaleY, M33 = 1f, M44 = 1f };
 
     public static Matrix4x4 CreateTranslation(float x, float y, float z = 0f)
-        => new() { M11 = 1f, M22 = 1f, M33 = 1f, M44 = 1f, M41 = x, M42 = y, M43 = z };
+        => new() { M11 = 1f, M22 = 1f, M33 = 1f, M44 = 1f, M14 = x, M24 = y, M34 = z };
 
     /// <summary>先缩放后平移，2D 屏幕适配（letterbox / 居中）最常用的组合。</summary>
     public static Matrix4x4 CreateScaleTranslation(float scaleX, float scaleY, float translateX, float translateY)
         => new()
         {
             M11 = scaleX, M22 = scaleY, M33 = 1f, M44 = 1f,
-            M41 = translateX, M42 = translateY
+            M14 = translateX, M24 = translateY
         };
 
     public static Matrix4x4 operator *(Matrix4x4 a, Matrix4x4 b) => new()
@@ -75,6 +76,7 @@ public struct Matrix4x4
         M44 = a.M41 * b.M14 + a.M42 * b.M24 + a.M43 * b.M34 + a.M44 * b.M44,
     };
 
+    /// <summary>变换一个点：取第 1、2 行的前两列做线性变换，加上第 4 列作为平移。</summary>
     public Vector2 Transform(Vector2 p)
-        => new(M11 * p.X + M21 * p.Y + M41, M12 * p.X + M22 * p.Y + M42);
+        => new(M11 * p.X + M12 * p.Y + M14, M21 * p.X + M22 * p.Y + M24);
 }

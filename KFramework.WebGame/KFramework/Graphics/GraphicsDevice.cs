@@ -140,6 +140,17 @@ public sealed class GraphicsDevice : IDisposable
         }
     }
 
+    /// <summary>
+    /// 读取画布上的一个像素。坐标以**左上角为原点**（与精灵坐标系一致），
+    /// 内部会自动换算成 WebGL 的左下原点。用于截图式自检。
+    /// </summary>
+    public Color ReadPixel(int x, int y)
+    {
+        Span<byte> rgba = stackalloc byte[4];
+        GL.ReadPixel(x, Viewport.Height - 1 - y, rgba);
+        return new Color(rgba[0], rgba[1], rgba[2], rgba[3]);
+    }
+
     public void Clear(Color color)
     {
         GL.ClearColor(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
@@ -196,6 +207,10 @@ public sealed class GraphicsDevice : IDisposable
         GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
         GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
         GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
+
+        int error = GL.GetError();
+        if (error != 0) Console.Error.WriteLine($"[KFramework] 纹理上传失败 0x{error:X4}（{width}x{height}，{rgba.Length} 字节）");
+
         return new Texture2D(handle, width, height, _batchKeySource++, ownsHandle: true);
     }
 

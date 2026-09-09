@@ -106,6 +106,9 @@ internal static partial class GL
     [JSImport("getError", "gl")]
     internal static partial int GetError();
 
+    [JSImport("readPixel", "gl")]
+    internal static partial void ReadPixel(int x, int y, [JSMarshalAs<JSType.MemoryView>] Span<byte> rgba);
+
     #endregion
 
     #region 着色器 / 程序
