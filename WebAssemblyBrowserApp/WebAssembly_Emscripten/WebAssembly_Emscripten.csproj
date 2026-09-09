@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+
+    <!-- 用 emcc 链接原生代码（C/C++ → WASM） -->
+    <WasmBuildNative>true</WasmBuildNative>
+    <!-- 只有 AOT 才会扫描用户程序集里的 DllImport 并生成 pinvoke 绑定表 -->
+    <RunAOTCompilation>true</RunAOTCompilation>
+    <NativeDebugSymbols>true</NativeDebugSymbols>
+    <!-- WebGL2：让 emscripten 把 library_webgl.js 与 emscripten_webgl_* 符号链接进来 -->
+    <EmccExtraLDFlags>$(EmccExtraLDFlags) -s USE_WEBGL2=1</EmccExtraLDFlags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <StaticWebAssetFingerprintPattern Include="JS" Pattern="*.js" Expression="#[.{fingerprint}]!" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- C++ 源文件由 .NET WASM SDK 交给 emcc 编译 -->
+    <NativeFileReference Include="native/gfx.cpp" />
+  </ItemGroup>
+</Project>
