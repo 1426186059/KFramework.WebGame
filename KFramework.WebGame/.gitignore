@@ -431,3 +431,7 @@ FodyWeavers.xsd
 # KFramework 内容管线：raw/ 是手写的原始资源（入库），content/ 是构建产物（不入库）
 KFramework.Content/content/
 MirGame/wwwroot/content/
+
+# 引擎浏览器层的源码是 KFramework/tsengine 的 TypeScript，
+# 编译产物 MirGame/wwwroot/jsengine/ 需要入库，这样部署时不必依赖 node。
+node_modules/

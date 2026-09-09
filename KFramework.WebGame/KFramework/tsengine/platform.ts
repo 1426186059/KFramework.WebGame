@@ -2,18 +2,20 @@
 
 import { getCanvasElement } from './gl.js';
 
-let frameCallback = null;
+type FrameCallback = (timestamp: number) => void;
+
+let frameCallback: FrameCallback | null = null;
 let running = false;
 
-export function setFrameCallback(callback) {
+export function setFrameCallback(callback: FrameCallback | null): void {
     frameCallback = callback;
 }
 
-export function startRenderLoop() {
+export function startRenderLoop(): void {
     if (running) return;
     running = true;
 
-    const tick = (timestamp) => {
+    const tick = (timestamp: number): void => {
         if (!running) return;
         try {
             frameCallback?.(timestamp);
@@ -26,13 +28,13 @@ export function startRenderLoop() {
     requestAnimationFrame(tick);
 }
 
-export function stopRenderLoop() {
+export function stopRenderLoop(): void {
     running = false;
 }
 
 // ---------- 画布尺寸 ----------
 
-function writeInts(view, values) {
+function writeInts(view: MemoryView | Int32Array, values: number[]): void {
     const array = new Int32Array(values);
     if (view instanceof Int32Array) {
         view.set(array);
@@ -42,11 +44,11 @@ function writeInts(view, values) {
         view.set(array, 0);
         return;
     }
-    // 兜底：逐元素写
-    for (let i = 0; i < values.length; i++) view[i] = values[i];
+    const fallback = view as unknown as Record<number, number>;
+    for (let i = 0; i < values.length; i++) fallback[i] = values[i];
 }
 
-export function getCanvasSize(view) {
+export function getCanvasSize(view: MemoryView | Int32Array): void {
     const canvas = getCanvasElement();
     if (!canvas) {
         writeInts(view, [1, 1, 1, 1, 1000]);
@@ -68,19 +70,19 @@ export function getCanvasSize(view) {
     writeInts(view, [cssWidth, cssHeight, drawWidth, drawHeight, Math.round(dpr * 1000)]);
 }
 
-export function setTitle(title) {
+export function setTitle(title: string): void {
     document.title = title;
 }
 
-export function getQueryParameter(name) {
+export function getQueryParameter(name: string): string {
     return new URLSearchParams(window.location.search).get(name) ?? '';
 }
 
-export function isMobile() {
+export function isMobile(): boolean {
     return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 }
 
-export function getBaseUri() {
+export function getBaseUri(): string {
     return document.baseURI || window.location.href;
 }
 
@@ -97,6 +99,12 @@ const TOUCHES = 276;
 const TOUCH_STRIDE = 12;
 const MAX_TOUCHES = 8;
 
+interface ActiveTouch {
+    id: number;
+    x: number;
+    y: number;
+}
+
 const keys = new Uint8Array(256);
 const scratch = new Uint8Array(STATE_SIZE);
 const scratchView = new DataView(scratch.buffer);
@@ -105,9 +113,9 @@ let mouseX = 0;
 let mouseY = 0;
 let mouseButtons = 0;
 let mouseWheel = 0;
-const activeTouches = [];
+const activeTouches: ActiveTouch[] = [];
 
-function mapKey(code) {
+function mapKey(code: string): number {
     if (code.startsWith('Key') && code.length === 4) return code.charCodeAt(3);
     if (code.startsWith('Digit') && code.length === 6) return 48 + (code.charCodeAt(5) - 48);
 
@@ -132,15 +140,15 @@ function mapKey(code) {
     }
 }
 
-function localPoint(clientX, clientY) {
+function localPoint(clientX: number, clientY: number): [number, number] {
     const canvas = getCanvasElement();
     if (!canvas) return [0, 0];
     const rect = canvas.getBoundingClientRect();
     return [Math.round(clientX - rect.left), Math.round(clientY - rect.top)];
 }
 
-function bindInput() {
-    window.addEventListener('keydown', (e) => {
+function bindInput(): void {
+    window.addEventListener('keydown', (e: KeyboardEvent) => {
         const key = mapKey(e.code);
         if (key) {
             keys[key] = 1;
@@ -149,7 +157,7 @@ function bindInput() {
         }
     });
 
-    window.addEventListener('keyup', (e) => {
+    window.addEventListener('keyup', (e: KeyboardEvent) => {
         const key = mapKey(e.code);
         if (key) keys[key] = 0;
     });
@@ -163,28 +171,28 @@ function bindInput() {
     const canvas = getCanvasElement();
     if (!canvas) return;
 
-    canvas.addEventListener('mousemove', (e) => {
+    canvas.addEventListener('mousemove', (e: MouseEvent) => {
         [mouseX, mouseY] = localPoint(e.clientX, e.clientY);
     });
 
-    canvas.addEventListener('mousedown', (e) => {
+    canvas.addEventListener('mousedown', (e: MouseEvent) => {
         [mouseX, mouseY] = localPoint(e.clientX, e.clientY);
         mouseButtons |= (1 << e.button);
         e.preventDefault();
     });
 
-    window.addEventListener('mouseup', (e) => {
+    window.addEventListener('mouseup', (e: MouseEvent) => {
         mouseButtons &= ~(1 << e.button);
     });
 
-    canvas.addEventListener('wheel', (e) => {
+    canvas.addEventListener('wheel', (e: WheelEvent) => {
         mouseWheel += Math.sign(e.deltaY);
         e.preventDefault();
     }, { passive: false });
 
-    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    canvas.addEventListener('contextmenu', (e: Event) => e.preventDefault());
 
-    const readTouches = (e) => {
+    const readTouches = (e: TouchEvent): void => {
         activeTouches.length = 0;
         for (let i = 0; i < e.touches.length && i < MAX_TOUCHES; i++) {
             const touch = e.touches[i];
@@ -193,16 +201,16 @@ function bindInput() {
         }
     };
 
-    const touchOptions = { passive: false };
-    canvas.addEventListener('touchstart', (e) => { readTouches(e); e.preventDefault(); }, touchOptions);
-    canvas.addEventListener('touchmove', (e) => { readTouches(e); e.preventDefault(); }, touchOptions);
-    canvas.addEventListener('touchend', (e) => { readTouches(e); e.preventDefault(); }, touchOptions);
-    canvas.addEventListener('touchcancel', (e) => { readTouches(e); }, touchOptions);
+    const touchOptions: AddEventListenerOptions = { passive: false };
+    canvas.addEventListener('touchstart', (e: TouchEvent) => { readTouches(e); e.preventDefault(); }, touchOptions);
+    canvas.addEventListener('touchmove', (e: TouchEvent) => { readTouches(e); e.preventDefault(); }, touchOptions);
+    canvas.addEventListener('touchend', (e: TouchEvent) => { readTouches(e); e.preventDefault(); }, touchOptions);
+    canvas.addEventListener('touchcancel', (e: TouchEvent) => { readTouches(e); }, touchOptions);
 }
 
 let inputBound = false;
 
-export function pollInput(view) {
+export function pollInput(view: MemoryView | Uint8Array): void {
     // 画布由 C# 在 GraphicsDevice 构造时初始化，这里首次 poll 时才绑定事件
     if (!inputBound) {
         bindInput();
@@ -235,5 +243,6 @@ export function pollInput(view) {
         view.set(scratch, 0);
         return;
     }
-    for (let i = 0; i < STATE_SIZE; i++) view[i] = scratch[i];
+    const fallback = view as unknown as Record<number, number>;
+    for (let i = 0; i < STATE_SIZE; i++) fallback[i] = scratch[i];
 }

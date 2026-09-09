@@ -54,6 +54,8 @@ public sealed partial class SpriteFont : IDisposable
         MeasureCore("Hg", _fontCss, metrics);
         Ascent = metrics[2];
         LineHeight = metrics[1];
+
+        Console.WriteLine($"[SpriteFont] 字号 {Size} | 基线 {Ascent} | 行高 {LineHeight}");
     }
 
     public Vector2 Measure(string text)
@@ -80,8 +82,10 @@ public sealed partial class SpriteFont : IDisposable
         Span<int> metrics = stackalloc int[4];
         MeasureCore(text, _fontCss, metrics);
         int advance = metrics[0];
-        int height = metrics[1];
-        int ascent = metrics[2];
+
+        // 兜底：即使浏览器返回的度量异常，也保证字形盒子装得下这个字号的字符
+        int height = Math.Max(metrics[1], (int)(Size * 1.15f) + 4);
+        int ascent = Math.Max(metrics[2], (int)(Size * 0.85f) + 2);
 
         Texture2D? texture = null;
         Vector2 drawOffset = new(-Padding, 0f);

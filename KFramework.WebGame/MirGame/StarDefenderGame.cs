@@ -43,6 +43,7 @@ public sealed class StarDefenderGame : Game
     private float _loadProgress;
     private bool _loadFailed;
     private string _loadError = "";
+    private State _diagnosedState = State.Loading;
 
     private State _state = State.Loading;
     private float _stateTimer;
@@ -603,6 +604,14 @@ public sealed class StarDefenderGame : Game
     protected override void Draw(GameTime gameTime)
     {
         ComputeView();
+
+        // 状态切换时输出一次关键参数，便于对比各阶段的绘制情况
+        if (_state != _diagnosedState)
+        {
+            _diagnosedState = _state;
+            Console.WriteLine($"[StarDefender] 状态={_state} | 视口 {Window.Width}x{Window.Height} | scale={_viewScale:F3} | offset={_viewOffset}");
+            Console.WriteLine($"[StarDefender] 玩家 {_player.Position} | 生命 {_player.Lives} | 纹理 {_playerTexture.Width}x{_playerTexture.Height} | 敌人 {_enemies.Count} | 子弹 {_bullets.Count}");
+        }
 
         float shakeX = 0f, shakeY = 0f;
         if (_shake > 0f)

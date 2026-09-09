@@ -87,6 +87,7 @@ public sealed class ContentManager : IDisposable
             (PakReader reader, PakEntry entry) = Locate($"atlas/{page}");
             byte[] pixels = reader.Read(entry);
             _atlasPages[page] = _device.CreateTexture(entry.Width, entry.Height, pixels);
+            Console.WriteLine($"[KFramework] 图集页 {page}: {entry.Width}x{entry.Height}，{pixels.Length} 字节");
             Report();
         }
     }

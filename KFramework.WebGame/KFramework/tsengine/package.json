@@ -1,0 +1,14 @@
+{
+  "name": "kframework-tsengine",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KFramework 浏览器引擎的 TypeScript 源码。编译产物直接输出到 MirGame/wwwroot/jsengine，供浏览器加载。",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "tsc --build --clean"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}

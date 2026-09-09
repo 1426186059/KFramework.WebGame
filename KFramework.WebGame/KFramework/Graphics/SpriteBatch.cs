@@ -60,7 +60,8 @@ public sealed class SpriteBatch
         if (_beginCalled) throw new InvalidOperationException("上一次 Begin 还没有对应的 End。");
 
         _sortMode = sortMode;
-        _blendState = blendState ?? BlendState.AlphaBlend;
+        // 纹理数据是非预乘的，所以默认用 NonPremultiplied（SRC_ALPHA, ONE_MINUS_SRC_ALPHA）
+        _blendState = blendState ?? BlendState.NonPremultiplied;
         _samplerState = samplerState ?? SamplerState.Point;
         _transform = transformMatrix ?? Matrix4x4.Identity;
         _itemCount = 0;
@@ -167,6 +168,7 @@ public sealed class SpriteBatch
                 break;
         }
 
+        _lastFlushCount = 0;
         _device.SetBlendState(_blendState);
         _device.Effect.Apply(_projection * _transform);
 
@@ -191,7 +193,34 @@ public sealed class SpriteBatch
         }
         DrawRange(batchStart, _itemCount - batchStart);
 
+        ReportGlError("SpriteBatch.Flush");
+
+        if (_flushesDiagnosed < 3)
+        {
+            _flushesDiagnosed++;
+            Texture2D first = _items[batchStart].Texture;
+            Console.WriteLine($"[SpriteBatch] 第 {_flushesDiagnosed} 次提交：{_lastFlushCount} 个精灵，底图 {first.TextureWidth}x{first.TextureHeight}");
+        }
+
         _itemCount = 0;
+    }
+
+    private static int _flushesDiagnosed;
+
+    /// <summary>记录本次 Flush 实际提交的精灵数（DrawRange 里累加）。</summary>
+    private static int _lastFlushCount;
+
+    private static bool _glErrorReported;
+
+    /// <summary>只上报一次的 WebGL 错误，用来定位"画面全黑但没抛异常"这类问题。</summary>
+    private static void ReportGlError(string stage)
+    {
+        if (_glErrorReported) return;
+        int error = GL.GetError();
+        if (error == 0) return;
+
+        _glErrorReported = true;
+        Console.Error.WriteLine($"[KFramework] WebGL 错误 0x{error:X4} @ {stage}");
     }
 
     private void DrawRange(int start, int count)
@@ -203,6 +232,7 @@ public sealed class SpriteBatch
 
         GL.BufferSubData(GL.ARRAY_BUFFER, 0, MemoryMarshal.AsBytes(_vertices.AsSpan(0, count * 4)));
         GL.DrawElements(GL.TRIANGLES, count * 6, GL.UNSIGNED_SHORT, 0);
+        _lastFlushCount += count;
     }
 
     private static void BuildQuad(in SpriteBatchItem item, Span<VertexPositionColorTexture> destination)

@@ -23,6 +23,16 @@
     <ProjectReference Include="..\KFramework.Content\KFramework.Content.csproj" />
   </ItemGroup>
 
+  <!-- 引擎的浏览器层用 TypeScript 编写（KFramework/tsengine），
+       tsc 的产物直接输出到 wwwroot/jsengine（见 tsengine/tsconfig.json 的 outDir）。
+       装了 node 时这里顺手编译一次；没装 node 则使用仓库中已提交的产物。 -->
+  <Target Name="BuildTypeScript" BeforeTargets="BeforeBuild"
+          Condition="Exists('$(MSBuildThisFileDirectory)..\KFramework\tsengine\node_modules')">
+    <Exec Command="npm run build"
+          WorkingDirectory="$(MSBuildThisFileDirectory)..\KFramework\tsengine"
+          ContinueOnError="true" />
+  </Target>
+
   <!-- 1. 运行内容管线：KFramework.Content/raw -> KFramework.Content/content
        2. 把发布后的 content 同步到 wwwroot/content 供浏览器 HTTP 访问 -->
   <Target Name="BuildGameContent" BeforeTargets="BeforeBuild">

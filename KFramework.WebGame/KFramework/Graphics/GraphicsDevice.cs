@@ -16,8 +16,10 @@ public sealed class GraphicsDevice : IDisposable
     internal readonly JSObject IndexBuffer;
     internal readonly JSObject VertexArray;
 
-    private BlendState _blendState = BlendState.AlphaBlend;
-    private SamplerState _samplerState = SamplerState.Point;
+    // 初值必须为 null：SetBlendState 用引用相等做短路，若初值就等于目标值，
+    // 首次调用会被跳过，glBlendFunc 永远不下发（表现为画面全黑）。
+    private BlendState _blendState = null!;
+    private SamplerState _samplerState = null!;
     private int _batchKeySource = 1;
 
     public Viewport Viewport { get; private set; }
@@ -58,7 +60,9 @@ public sealed class GraphicsDevice : IDisposable
         GL.Disable(GL.DEPTH_TEST);
         GL.Enable(GL.BLEND);
         GL.BlendEquation(GL.FUNC_ADD);
-        SetBlendState(BlendState.AlphaBlend);
+        SetBlendState(BlendState.NonPremultiplied);
+
+        Console.WriteLine($"[KFramework] WebGL2 就绪 | {Renderer} | 画布 {Viewport.Width}x{Viewport.Height} | 最大纹理 {MaxTextureSize}");
     }
 
     private void ConfigureAttributes()
