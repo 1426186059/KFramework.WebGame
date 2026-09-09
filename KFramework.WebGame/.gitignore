@@ -427,3 +427,7 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# KFramework 内容管线：raw/ 是手写的原始资源（入库），content/ 是构建产物（不入库）
+KFramework.Content/content/
+MirGame/wwwroot/content/

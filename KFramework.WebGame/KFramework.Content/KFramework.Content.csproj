@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>KFramework.Content</RootNamespace>
+    <AssemblyName>KFramework.Content</AssemblyName>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 原始资源（Raw Content）：开发者手工维护的源文件，纯文本 / 图片 -->
+    <Folder Include="raw\" />
+    <!-- 发布资源（Published Content）：构建产物，不入库 -->
+    <Folder Include="content\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="raw\**\*" Exclude="bin\**;obj\**" />
+  </ItemGroup>
+
+</Project>

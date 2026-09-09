@@ -1,0 +1,57 @@
+{
+  "design": {
+    "width": 480,
+    "height": 720
+  },
+  "player": {
+    "speed": 300,
+    "bulletSpeed": 700,
+    "fireInterval": 0.15,
+    "maxLives": 3,
+    "invulnerableTime": 1.6,
+    "radius": 11
+  },
+  "enemies": {
+    "scout": {
+      "texture": "sprites/enemy_scout",
+      "health": 1,
+      "speed": 105,
+      "score": 100,
+      "radius": 10,
+      "fireInterval": 0.0,
+      "contactDamage": 1
+    },
+    "fighter": {
+      "texture": "sprites/enemy_fighter",
+      "health": 3,
+      "speed": 78,
+      "score": 250,
+      "radius": 14,
+      "fireInterval": 1.8,
+      "contactDamage": 1
+    },
+    "bomber": {
+      "texture": "sprites/enemy_bomber",
+      "health": 8,
+      "speed": 46,
+      "score": 600,
+      "radius": 22,
+      "fireInterval": 1.1,
+      "contactDamage": 2
+    }
+  },
+  "waves": [
+    { "spawn": [ { "type": "scout", "count": 6 } ], "interval": 0.55, "restAfter": 1.6 },
+    { "spawn": [ { "type": "scout", "count": 8 }, { "type": "fighter", "count": 2 } ], "interval": 0.42, "restAfter": 1.8 },
+    { "spawn": [ { "type": "fighter", "count": 5 }, { "type": "scout", "count": 6 } ], "interval": 0.38, "restAfter": 2.0 },
+    { "spawn": [ { "type": "scout", "count": 10 }, { "type": "fighter", "count": 4 } ], "interval": 0.32, "restAfter": 2.0 },
+    { "spawn": [ { "type": "bomber", "count": 1 }, { "type": "scout", "count": 8 } ], "interval": 0.45, "restAfter": 2.4 },
+    { "spawn": [ { "type": "fighter", "count": 8 }, { "type": "bomber", "count": 1 } ], "interval": 0.34, "restAfter": 2.4 },
+    { "spawn": [ { "type": "scout", "count": 14 }, { "type": "fighter", "count": 6 }, { "type": "bomber", "count": 2 } ], "interval": 0.26, "restAfter": 3.0 }
+  ],
+  "powerup": {
+    "dropChance": 0.14,
+    "fallSpeed": 90,
+    "duration": 8.0
+  }
+}

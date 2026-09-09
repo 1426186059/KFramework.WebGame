@@ -1,0 +1,8 @@
+{
+  "width": 12,
+  "height": 12,
+  "shapes": [
+    { "type": "circle", "cx": 6, "cy": 6, "r": 5, "color": "#fb7185" },
+    { "type": "circle", "cx": 6, "cy": 6, "r": 2.4, "color": "#ffe4e6" }
+  ]
+}

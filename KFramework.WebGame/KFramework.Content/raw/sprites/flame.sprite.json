@@ -1,0 +1,8 @@
+{
+  "width": 16,
+  "height": 18,
+  "shapes": [
+    { "type": "poly", "points": [ 8, 0, 13, 9, 8, 18, 3, 9 ], "color": "#fbbf24" },
+    { "type": "poly", "points": [ 8, 3, 11, 9, 8, 15, 5, 9 ], "color": "#fef3c7" }
+  ]
+}

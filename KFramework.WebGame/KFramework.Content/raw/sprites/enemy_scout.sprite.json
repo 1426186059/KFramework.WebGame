@@ -1,0 +1,11 @@
+{
+  "width": 24,
+  "height": 24,
+  "shapes": [
+    { "type": "poly", "points": [ 12, 23, 1, 9, 5, 1, 19, 1, 23, 9 ], "color": "#a78bfa" },
+    { "type": "poly", "points": [ 12, 18, 6, 10, 8, 5, 16, 5, 18, 10 ], "color": "#5b21b6" },
+    { "type": "circle", "cx": 12, "cy": 11, "r": 2.6, "color": "#f472b6" },
+    { "type": "rect", "x": 1, "y": 2, "w": 4, "h": 3, "color": "#f9a8d4" },
+    { "type": "rect", "x": 19, "y": 2, "w": 4, "h": 3, "color": "#f9a8d4" }
+  ]
+}

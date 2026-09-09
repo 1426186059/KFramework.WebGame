@@ -1,11 +1,38 @@
 <Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>MirGame</RootNamespace>
+    <StartupObject>MirGame.Program</StartupObject>
+    <!-- 内容包里的 JSON（manifest / 游戏配置）在运行时用反射反序列化 -->
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <WasmLoadAllGlobalizationData>false</WasmLoadAllGlobalizationData>
   </PropertyGroup>
 
   <ItemGroup>
     <StaticWebAssetFingerprintPattern Include="JS" Pattern="*.js" Expression="#[.{fingerprint}]!" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KFramework\KFramework.csproj" />
+    <ProjectReference Include="..\KFramework.Content\KFramework.Content.csproj" />
+  </ItemGroup>
+
+  <!-- 1. 运行内容管线：KFramework.Content/raw -> KFramework.Content/content
+       2. 把发布后的 content 同步到 wwwroot/content 供浏览器 HTTP 访问 -->
+  <Target Name="BuildGameContent" BeforeTargets="BeforeBuild">
+    <Exec Command="dotnet run --project &quot;$(MSBuildThisFileDirectory)..\KFramework.Content.Cli\KFramework.Content.Cli.csproj&quot; -v q --nologo -- --root &quot;$(MSBuildThisFileDirectory)..\KFramework.Content&quot;" />
+    <ItemGroup>
+      <_PublishedContent Include="$(MSBuildThisFileDirectory)..\KFramework.Content\content\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_PublishedContent)"
+          DestinationFiles="@(_PublishedContent->'$(MSBuildThisFileDirectory)wwwroot\content\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+  </Target>
+
 </Project>

@@ -1,0 +1,7 @@
+{
+  "width": 10,
+  "height": 10,
+  "shapes": [
+    { "type": "circle", "cx": 5, "cy": 5, "r": 4.4, "color": "#ffffff" }
+  ]
+}
