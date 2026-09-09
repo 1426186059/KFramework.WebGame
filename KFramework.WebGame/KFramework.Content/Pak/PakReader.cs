@@ -85,12 +85,12 @@ public sealed class PakReader
         ReadOnlySpan<byte> blob = _data.AsSpan((int)(_blobOffset + entry.BlobOffset), entry.BlobSize);
 
         byte[] raw;
-        if (entry.Compression == CompressionMode.Brotli)
+        if (entry.Compression == CompressionMode.Deflate)
         {
             raw = new byte[entry.RawSize];
             using var source = new MemoryStream(blob.ToArray(), writable: false);
-            using var brotli = new BrotliStream(source, System.IO.Compression.CompressionMode.Decompress);
-            int read = brotli.ReadAtLeast(raw, raw.Length, throwOnEndOfStream: false);
+            using var zlib = new ZLibStream(source, System.IO.Compression.CompressionMode.Decompress);
+            int read = zlib.ReadAtLeast(raw, raw.Length, throwOnEndOfStream: false);
             if (read != entry.RawSize)
                 throw new InvalidDataException($"资源 “{entry.Name}” 解压后长度不符。");
         }

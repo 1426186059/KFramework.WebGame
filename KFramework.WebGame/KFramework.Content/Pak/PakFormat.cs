@@ -20,7 +20,12 @@ public enum AssetType : byte
 public enum CompressionMode : byte
 {
     None = 0,
-    Brotli = 1,
+    /// <summary>
+    /// ZLib（Deflate + 校验头）。
+    /// 注意：不能用 Brotli —— .NET 的 BrotliStream 在 WebAssembly 运行时上会抛
+    /// PlatformNotSupported，而运行时必须能解压，因此统一选 ZLib。
+    /// </summary>
+    Deflate = 1,
 }
 
 /// <summary>

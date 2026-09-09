@@ -35,7 +35,7 @@ public sealed class PakWriter
         ulong id = PakFormat.HashId(normalized);
 
         CompressionMode mode = compression ?? (raw.Length >= PakFormat.CompressionThreshold
-            ? CompressionMode.Brotli
+            ? CompressionMode.Deflate
             : CompressionMode.None);
 
         byte[] payload = Compress(raw, mode);
@@ -75,8 +75,8 @@ public sealed class PakWriter
         if (mode == CompressionMode.None || raw.Length == 0) return raw.ToArray();
 
         using var output = new MemoryStream();
-        using (var brotli = new BrotliStream(output, CompressionLevel.SmallestSize, leaveOpen: true))
-            brotli.Write(raw);
+        using (var zlib = new ZLibStream(output, CompressionLevel.SmallestSize, leaveOpen: true))
+            zlib.Write(raw);
         return output.ToArray();
     }
 
