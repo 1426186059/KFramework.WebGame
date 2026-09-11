@@ -1,0 +1,28 @@
+{
+  // mirengine/tsengine TypeScript 构建配置。
+  // 源码 = src\ 下的 *.ts（含 core/、render/ 子目录）；产物 = dist\ 下同名 *.js（ES module），
+  // 目录结构与 src\ 一一对应，最后由各站 csproj 的 CopyJsEngine 目标复制到 wwwroot\jsengine
+  // 供浏览器直接加载（产物目录刻意不带 \src 前缀：wwwroot\jsengine\main.js 就是入口）。
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "target": "ES2022",
+    // ES2022：src/main.ts 使用了顶层 await（等待 dotnet 引导 / getAssemblyExports）。
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "types": [],
+    "allowJs": false,
+    "checkJs": false,
+    // 全开严格检查（含 strictNullChecks / strictFunctionTypes / useUnknownInCatchVariables 等），
+    // 保证“参数类型齐全 + 空值不会隐式通过”，和 VS / tsc 报的结果一致。
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "sourceMap": false,
+    // 产物与仓库既有文件一致用 CRLF，避免重写时产生整文件 diff。
+    "newLine": "CRLF"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

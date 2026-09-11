@@ -1,0 +1,349 @@
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Reflection;
+using G = Library.Network.GeneralPackets;
+
+namespace Library.Network
+{
+    public abstract class BaseConnection
+    {
+        public static Dictionary<string, DiagnosticValue> Diagnostics = new Dictionary<string, DiagnosticValue>();
+        public static Dictionary<(Type ConnectionType, Type PacketType), MethodInfo> PacketMethods = new Dictionary<(Type ConnectionType, Type PacketType), MethodInfo>();
+        private static readonly object PacketMethodsLock = new object();
+        public static bool Monitor;
+
+        public bool Connected { get; set; }
+        protected bool Sending { get; set; }
+
+        public int TotalBytesSent { get; set; }
+        public int TotalBytesReceived { get; set; }
+        public int TotalPacketsProcessed { get; set; }
+
+        public bool AdditionalLogging;
+
+        protected INetworkTransport Transport;
+
+        public DateTime TimeConnected { get; set; }
+        public TimeSpan Duration => Time.Now - TimeConnected;
+
+        protected abstract TimeSpan TimeOutDelay { get; }
+        public DateTime TimeOutTime { get; set; }
+
+        private bool _disconnecting;
+        public bool Disconnecting
+        {
+            get { return _disconnecting; }
+            set
+            {
+                if (_disconnecting == value) return;
+                _disconnecting = value;
+                TimeOutTime = Time.Now.AddSeconds(2);
+            }
+        }
+
+        public ConcurrentQueue<Packet> ReceiveList = new ConcurrentQueue<Packet>();
+        public ConcurrentQueue<Packet> SendList = new ConcurrentQueue<Packet>();
+        private byte[] _rawData = new byte[0];
+        private readonly byte[] _recvBuf = new byte[1 << 16]; // 64KB 接收缓冲
+
+        public EventHandler<Exception> OnException;
+
+        protected BaseConnection(INetworkTransport transport)
+        {
+            Transport = transport;
+
+            Connected = true;
+            TimeConnected = Time.Now;
+
+            TotalPacketsProcessed = 0;
+        }
+
+        /// <summary>
+        /// 每帧轮询取出 JS/后台线程入队的字节，拼接到 _rawData 并解析出完整 Packet。
+        /// 取代原基于 TcpClient.Socket 的 BeginReceive/EndReceive 异步回调。
+        /// </summary>
+        private void PumpReceive()
+        {
+            try
+            {
+                int dataRead;
+                while ((dataRead = Transport.Receive(_recvBuf)) > 0)
+                {
+                    TotalBytesReceived += dataRead;
+
+                    UpdateTimeOut();
+
+                    byte[] temp = _rawData;
+                    _rawData = new byte[dataRead + temp.Length];
+                    Buffer.BlockCopy(temp, 0, _rawData, 0, temp.Length);
+                    Buffer.BlockCopy(_recvBuf, 0, _rawData, temp.Length, dataRead);
+
+                    Packet p;
+                    int parsed = 0;
+                    while ((p = Packet.ReceivePacket(_rawData, out _rawData)) != null)
+                    {
+                        ReceiveList.Enqueue(p);
+                        TotalPacketsProcessed++;
+                        parsed++;
+                    }
+                    if (dataRead > 0 && parsed == 0)
+                    {
+                        // PumpReceive: 读到了字节但解析出 0 个包
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (AdditionalLogging)
+                    OnException(this, ex);
+                Disconnecting = true;
+            }
+        }
+
+        /// <summary>把待发送队列一次性写入传输层（同步语义，内部负责 WS 二进制帧）。</summary>
+        private void PumpSend(List<byte> data)
+        {
+            if (!Connected || data.Count == 0) return;
+
+            try
+            {
+                Sending = true;
+                TotalBytesSent += data.Count;
+                Transport.Send(data.ToArray(), 0, data.Count);
+                Sending = false;
+                UpdateTimeOut();
+            }
+            catch (Exception ex)
+            {
+                if (AdditionalLogging)
+                    OnException(this, ex);
+                Disconnecting = true;
+                Sending = false;
+            }
+        }
+
+        public virtual void Enqueue(Packet p)
+        {
+            if (!Connected || p == null) return;
+
+            SendList.Enqueue(p);
+        }
+
+        public abstract void TryDisconnect();
+
+        public virtual void Disconnect()
+        {
+            if (!Connected) return;
+
+            Connected = false;
+
+            SendList = null;
+            ReceiveList = null;
+            _rawData = null;
+
+            Transport?.Disconnect();
+            Transport = null;
+        }
+
+        public abstract void TrySendDisconnect(Packet p);
+
+        public virtual void SendDisconnect(Packet p)
+        {
+            if (!Connected || Disconnecting)
+            {
+                Disconnecting = true;
+                return;
+            }
+
+            List<byte> data = new List<byte>();
+
+            data.AddRange(p.GetPacketBytes());
+
+            BeginSendDisconnect(data);
+        }
+
+        private void BeginSendDisconnect(List<byte> data)
+        {
+            if (!Connected || data.Count == 0) return;
+
+            if (Disconnecting) return;
+
+            try
+            {
+                Disconnecting = true;
+
+                TotalBytesSent += data.Count;
+                Transport.Send(data.ToArray(), 0, data.Count);
+            }
+            catch (Exception ex)
+            {
+                if (AdditionalLogging)
+                    OnException(this, ex);
+            }
+        }
+
+        public virtual void Process()
+        {
+            if (Transport == null || !Transport.IsConnected)
+            {
+                TryDisconnect();
+                return;
+            }
+
+            PumpReceive();
+
+            while (!ReceiveList.IsEmpty && !Disconnecting)
+            {
+                try
+                {
+                    Packet p;
+                    if (!ReceiveList.TryDequeue(out p)) continue;
+
+                    ProcessPacket(p);
+                }
+                catch (NotImplementedException ex)
+                {
+                    OnException(this, ex);
+                    Disconnecting = true;
+                }
+                catch (Exception ex)
+                {
+                    OnException(this, ex);
+                    throw;
+                }
+            }
+
+            if (Time.Now >= TimeOutTime)
+            {
+                if (!Disconnecting)
+                    TrySendDisconnect(new G.Disconnect { Reason = DisconnectReason.TimedOut });
+                else
+                    TryDisconnect();
+
+                return;
+            }
+
+            if (!Disconnecting && Sending)
+                UpdateTimeOut();
+
+            if (SendList.IsEmpty || Sending) return;
+
+            List<byte> data = new List<byte>();
+            while (!SendList.IsEmpty)
+            {
+                Packet p;
+
+                if (!SendList.TryDequeue(out p)) continue;
+
+                if (p == null) continue;
+
+                try
+                {
+                    byte[] bytes = p.GetPacketBytes();
+
+                    data.AddRange(bytes);
+                }
+                catch (Exception ex)
+                {
+                    OnException?.Invoke(this, ex);
+                    Disconnecting = true;
+                    return;
+                }
+
+
+                if (!Monitor) continue;
+
+                DiagnosticValue value;
+                Type type = p.GetType();
+
+                if (!Diagnostics.TryGetValue(type.FullName, out value))
+                    Diagnostics[type.FullName] = value = new DiagnosticValue { Name = type.FullName };
+
+                value.Count++;
+                value.TotalSize += p.Length;
+
+                if (p.Length > value.LargestSize)
+                    value.LargestSize = p.Length;
+            }
+
+            PumpSend(data);
+        }
+
+        private void ProcessPacket(Packet p)
+        {
+            if (p == null) return;
+
+            DateTime start = Time.Now;
+
+            Type connectionType = GetType();
+            (Type ConnectionType, Type PacketType) key = (connectionType, p.PacketType);
+
+            MethodInfo info;
+            lock (PacketMethodsLock)
+            {
+                if (!PacketMethods.TryGetValue(key, out info))
+                {
+                    info = connectionType.GetMethod("Process", new[] { p.PacketType });
+                    if (info != null)
+                        PacketMethods[key] = info;
+                }
+            }
+
+            if (info == null)
+            {
+                ProcessUnhandledPacket(p);
+                return;
+            }
+
+            info.Invoke(this, new object[] { p });
+
+            if (!Monitor) return;
+
+            TimeSpan execution = Time.Now - start;
+            DiagnosticValue value;
+
+            if (!Diagnostics.TryGetValue(p.PacketType.FullName, out value))
+                Diagnostics[p.PacketType.FullName] = value = new DiagnosticValue { Name = p.PacketType.FullName };
+
+            value.Count++;
+            value.TotalTime += execution;
+            value.TotalSize += p.Length;
+
+            if (execution > value.LargestTime)
+                value.LargestTime = execution;
+
+            if (p.Length > value.LargestSize)
+                value.LargestSize = p.Length;
+        }
+
+        protected virtual void ProcessUnhandledPacket(Packet p)
+        {
+            throw new NotImplementedException($"Not Implemented Exception: Method Process({p.PacketType}).");
+        }
+
+        public void UpdateTimeOut()
+        {
+            if (Disconnecting) return;
+
+            TimeOutTime = Time.Now + TimeOutDelay;
+        }
+    }
+
+
+    public class DiagnosticValue
+    {
+        public string Name { get; set; }
+        public TimeSpan TotalTime { get; set; }
+        public TimeSpan LargestTime { get; set; }
+        public int Count { get; set; }
+        public long TotalSize { get; set; }
+        public long LargestSize { get; set; }
+
+        public long TotalTicks => TotalTime.Ticks;
+        public long TotalMilliseconds => TotalTicks / TimeSpan.TicksPerMillisecond;
+
+        public long LargestTicks => LargestTime.Ticks;
+        public long LargestMilliseconds => LargestTicks / TimeSpan.TicksPerMillisecond;
+    }
+}

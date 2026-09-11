@@ -1,0 +1,95 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <RunAotCompilation>false</RunAotCompilation>
+    <!-- CS0436：高仿的 System.Drawing 类型有意覆盖框架同名类型（去 System.Drawing.Common 依赖），
+         该警告会为每个使用点刷屏，属预期行为，统一抑制。 -->
+    <NoWarn>$(NoWarn);CS0436</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <StaticWebAssetFingerprintPattern Include="JS" Pattern="*.js" Expression="#[.{fingerprint}]!" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="**\obj\**" />
+    <Compile Remove="**\bin\**" />
+    <!-- WinForms / SlimDX / NAudio / WebView2 原生后端在浏览器里无意义：排除 -->
+    <Compile Remove="Mir2\Forms\**" />
+    <Compile Remove="Mir2\Program.cs" />
+    <Compile Remove="Mir2\Utils\BrowserHelper.cs" />
+    <!-- 已删除整套 Crystal RenderingCore 框架；DXManager 直接走 BrowserCanvas(JSBind) 即时模式渲染 -->
+    <!-- Mir3 特有的 ImageManager（.Zl）与 Mir2(.lib) 格式不同，暂不用 -->
+    <Compile Remove="ImageManager\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- System.Drawing 已由通用库的高仿类提供（链入本工程编译），不再依赖 GDI+ 的 System.Drawing.Common -->
+  </ItemGroup>
+
+  <!-- 高仿类 / 输入事件参数已由通用库 MirEngine.Browser 编译提供（MirEngine 命名空间），
+       无需再以源码形式链入本工程。 -->
+
+  <ItemGroup>
+    <!-- 浏览器通用库（与 Web_Mir3 共用）：JSBind 绑定、协程、WebGL2 渲染后端、异步资源加载 -->
+    <ProjectReference Include="..\MirEngine.Browser\MirEngine.Browser.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\MyRes\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- 浏览器通用库 MirEngine.Browser\tsengine：**TypeScript 源码 → tsc 产物（dist\*.js）→ 本站 wwwroot\jsengine**。
+       目录分工（改名后不再混用同一个名字）：
+         MirEngine.Browser\tsengine\src\   —— 唯一可编辑源（*.ts），入库
+         MirEngine.Browser\tsengine\dist\  —— tsc 产物（*.js），不入库存忽略
+         wwwroot\jsengine\                 —— 运行时加载目录，由本目标从 dist\ 拷入
+       ① 在 tsengine 目录执行一次 `npm install` 后：
+            npm run build   —— 由 tsc 把 src\ 编译到 dist\（同名 *.js，无 src 前缀）
+            npm run watch   —— 改 TS 时自动重编译
+       ② CopyJsEngine 把 dist\ 下的 *.js 物理拷贝到本站 wwwroot\jsengine（保持子目录结构），
+          作为本地静态资源随构建/发布输出。只拷 dist\：src\ 源码与 node_modules 都不进 wwwroot。
+       ③ 检测到本地装了 typescript 时，构建前自动跑一次 tsc，保证产物与源码一致；
+          没装则跳过编译，仅拷贝现存的 dist\*.js（此时改了 TS 不会生效，需手工 npm run build）。
+          连入口 dist\main.js 都不存在时直接报错，避免悄悄拷出一个跑不起来的站点。
+       不再使用 Link：此前 Link 方式会让入口 main.js 被 WASM 运行时当成引导资源嵌入成空内容，
+       导致 integrity 报空哈希。 -->
+  <Target Name="BuildJsEngine" BeforeTargets="CopyJsEngine">
+    <!-- 直接用 node 跑本地 tsc（而不是 npm run build）：
+         从工程目录发起，tsc 打印的相对路径就是本工程相对路径，VS「错误列表」里可双击直接跳到出错的 .ts。
+         CustomError* 让 tsc 的每一行报错/告警都作为一条可点击项进错误列表，而不是只在输出窗口里一闪而过。
+         等价的手工命令：cd MirEngine.Browser\tsengine &amp;&amp; npm run build（或 npm run watch 边改边编译）。 -->
+    <Exec Command="node ..\MirEngine.Browser\tsengine\node_modules\typescript\lib\tsc.js -p ..\MirEngine.Browser\tsengine\tsconfig.json"
+          Condition="Exists('..\MirEngine.Browser\tsengine\node_modules\typescript')"
+          CustomErrorRegularExpression="error TS[0-9]+"
+          CustomWarningRegularExpression="warning TS[0-9]+" />
+  </Target>
+
+  <!-- 没装 typescript 时上面的 Exec 会被 Condition 跳过，编译等于没跑：这里显式告警，
+       避免“改了 TS 但 wwwroot 里还是旧产物”这种悄悄滑过去的情况。 -->
+  <Target Name="WarnJsEngineSkipped" AfterTargets="BuildJsEngine">
+    <Warning Condition="!Exists('..\MirEngine.Browser\tsengine\node_modules\typescript')"
+             Text="未检测到 MirEngine.Browser\tsengine\node_modules\typescript，本次跳过了 TS 编译，wwwroot\jsengine 将沿用现有产物。请在该目录执行 npm install（之后构建会自动编译）。" />
+  </Target>
+
+  <Target Name="CopyJsEngine" BeforeTargets="BeforeBuild;BeforeRebuild">
+    <ItemGroup>
+      <!-- 只拷 dist\ 下的 *.js：dist\**\*.js 的 RecursiveDir 正好是 core\ / render\ 等子目录结构。 -->
+      <_JsEngineSrc Include="..\MirEngine.Browser\tsengine\dist\**\*.js" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_JsEngineSrc)"
+          DestinationFiles="@(_JsEngineSrc->'wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+  <!-- 兜底校验：没有 tsc 产物就没有入口 dist\main.js，此时必须先在 tsengine 目录下
+       npm install && npm run build，否则站点起来后只会白屏并且难定位。 -->
+  <Target Name="CheckJsEngineOutput" AfterTargets="CopyJsEngine">
+    <Error Condition="!Exists('..\MirEngine.Browser\tsengine\dist\main.js')"
+           Text="缺少 tsengine 编译产物 dist\main.js。请先在 WebAssemblyBrowserApp\MirEngine.Browser\tsengine 目录下执行：npm install &amp;&amp; npm run build（或 npm run watch）后重新生成。" />
+  </Target>
+</Project>

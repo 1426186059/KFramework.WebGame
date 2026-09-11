@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="MirEngine.Browser/MirEngine.Browser.csproj" />
+  <Project Path="Web_Mir2/Web_Mir2.csproj" Id="91cd6c9f-c5f2-40da-aea8-3c16f909c452" />
+  <Project Path="Web_Mir3/Web_Mir3.csproj" />
+</Solution>

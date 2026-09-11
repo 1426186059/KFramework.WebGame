@@ -1,0 +1,14 @@
+# 本地资源 junction（指向真实 Zircon Debug\Client，不入库；为本机绝对路径，CI/他人无效）
+Web_Mir3/wwwroot/data/
+Web_Mir3/wwwroot/Map/
+Web_Mir3/wwwroot/Sound/
+Web_Mir3/wwwroot/Translations/
+Web_Mir3/wwwroot/data_local_bak/
+
+# .NET
+bin/
+obj/
+*.user
+*ai/
+
+/.playwright-cli/

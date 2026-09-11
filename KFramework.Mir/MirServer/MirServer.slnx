@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Mir2Server/Mir2Server.csproj" />
+  <Project Path="Mir3Server/Mir3Server.csproj" />
+</Solution>

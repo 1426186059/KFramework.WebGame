@@ -1,0 +1,7 @@
+# TypeScript 构建依赖与锁文件（npm install 安装到此）
+node_modules
+package-lock.json
+
+# tsc 产物：由 `npm run build` 从 src\ 编译到 dist\（见 tsconfig.json 的 rootDir/outDir），
+# 属于生成物，不入库，请勿手工编辑；缺了就重新 npm run build 生成。
+dist/
