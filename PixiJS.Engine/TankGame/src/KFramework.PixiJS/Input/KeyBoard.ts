@@ -23,6 +23,7 @@ export class KeyBoard implements IDisposable
         KUpdateMgr.RemoveListener(this.Update, this);
     }
 
+    // 事件挂在 window 上而不是 app.canvas 上：即使焦点不在画布上也收得到按键。
     private AddKeyboard():void
     {
         window.addEventListener('keydown', this.OnKeyDownFunc);
