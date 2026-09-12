@@ -11,4 +11,7 @@ obj/
 *.user
 *ai/
 
+# MapTool 运行时配置（本机绝对路径，不入库）
+Tool/Mir2Tool/MapTool/maptool.config.json
+
 /.playwright-cli/
