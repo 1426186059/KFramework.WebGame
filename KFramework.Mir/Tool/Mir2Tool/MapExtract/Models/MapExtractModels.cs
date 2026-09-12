@@ -1,13 +1,26 @@
-namespace MapTool.Models
+namespace MapExtract.Models
 {
     /// <summary>地图工具路径配置（对应 Unity 窗口顶部的路径配置区）。</summary>
-    public class MapToolConfig
+    public class MapExtractConfig
     {
+        /// <summary>
+        /// 客户端资源根目录（父目录）。给出这个目录后，下面的相对路径会自动探测：
+        ///   MapDir        = {根}\Map
+        ///   SourcePath    = {根}\Data\Map        （素材 Lib 所在，需先解压为 PNG）
+        ///   MinimapLibPath= {根}\Data\mmap.Lib   （小地图素材源，只读；按需抽到 目标路径\{地图}\MMap\）
+        ///   MirDBPath     = 向上几层查找 Server\Debug\Server.MirDB
+        /// </summary>
+        public string ClientRootPath { get; set; } = @"D:\OpenSource\Crystal\Build\Client\Debug";
+
         public string MapDir { get; set; } = @"D:\OpenSource\Crystal\Build\Client\Debug\Map";
-        public string SourcePath { get; set; } = @"D:\OpenSource\Mir2Res\Data\Map";
+        public string SourcePath { get; set; } = @"D:\OpenSource\Crystal\Build\Client\Debug\Data\Map";
         public string DestinationPath { get; set; } = @"D:\OpenSource\2026Map";
-        public string MinimapPath { get; set; } = @"D:\OpenSource\Mir2Res\Data\mmap";
-        public string MirDBPath { get; set; } = @"D:\OpenSource\Mir2_Unity_2026\Mir2Server\Build\Server\Debug\Server.MirDB";
+        /// <summary>
+        /// 小地图素材源 .Lib（整个客户端只有这一个：{根}\Data\mmap.Lib），可自动探测。
+        /// 只读；按需抽出的图直接落到「目标路径」，不回写客户端素材目录。
+        /// </summary>
+        public string MinimapLibPath { get; set; } = @"D:\OpenSource\Crystal\Build\Client\Debug\Data\mmap.Lib";
+        public string MirDBPath { get; set; } = @"D:\OpenSource\Crystal\Build\Server\Debug\Server.MirDB";
         public bool RecursiveScan { get; set; }
     }
 
@@ -69,6 +82,7 @@ namespace MapTool.Models
         public bool SmTilesExists { get; set; }
         public bool ObjectsExists { get; set; }
         public bool MinimapExists { get; set; }
+        public bool MinimapLibExists { get; set; }
         public bool MirDBExists { get; set; }
     }
 

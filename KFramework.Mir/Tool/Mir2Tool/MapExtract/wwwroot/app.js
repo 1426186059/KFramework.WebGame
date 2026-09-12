@@ -11,6 +11,7 @@ const state = {
     mirDbCount: 0,
     browseTarget: null,
     browseFile: false,
+    browseFilter: "*",
     browsePath: "",
     configSaveTimer: null,
 };
@@ -57,24 +58,26 @@ function clearLog() { $("log").innerHTML = ""; }
 
 /* ---------------- 配置 ---------------- */
 
-const CONFIG_FIELDS = ["mapDir", "sourcePath", "destinationPath", "minimapPath", "mirDBPath"];
+const CONFIG_FIELDS = ["clientRootPath", "mapDir", "sourcePath", "destinationPath", "minimapLibPath", "mirDBPath"];
 
 function applyConfigToForm(cfg) {
     if (!cfg) return;
+    $("clientRootPath").value = cfg.clientRootPath || "";
     $("mapDir").value = cfg.mapDir || "";
     $("sourcePath").value = cfg.sourcePath || "";
     $("destinationPath").value = cfg.destinationPath || "";
-    $("minimapPath").value = cfg.minimapPath || "";
+    $("minimapLibPath").value = cfg.minimapLibPath || "";
     $("mirDBPath").value = cfg.mirDBPath || "";
     $("recursiveScan").checked = !!cfg.recursiveScan;
 }
 
 function collectConfig() {
     return {
+        clientRootPath: $("clientRootPath").value.trim(),
         mapDir: $("mapDir").value.trim(),
         sourcePath: $("sourcePath").value.trim(),
         destinationPath: $("destinationPath").value.trim(),
-        minimapPath: $("minimapPath").value.trim(),
+        minimapLibPath: $("minimapLibPath").value.trim(),
         mirDBPath: $("mirDBPath").value.trim(),
         recursiveScan: $("recursiveScan").checked,
     };
@@ -116,10 +119,11 @@ function setDot(id, ok) {
 async function checkPaths() {
     try {
         const c = await api("/api/paths/check");
+        setDot("clientRootPath", ($("clientRootPath").value.trim().length > 0));
         setDot("mapDir", c.mapDirExists);
         setDot("sourcePath", c.sourceDirExists);
         setDot("destinationPath", true);
-        setDot("minimapPath", c.minimapExists);
+        setDot("minimapLibPath", c.minimapLibExists);
         setDot("mirDBPath", c.mirDBExists);
 
         const rows = [
@@ -128,7 +132,7 @@ async function checkPaths() {
             ["  Tiles/  子目录", c.tilesExists],
             ["  SmTiles/ 子目录", c.smTilesExists],
             ["  Objects/ 子目录", c.objectsExists],
-            ["小地图源路径", c.minimapExists],
+            ["小地图 PNG 目录（由 Lib 推导）", c.minimapExists],
             ["MirDB 文件", c.mirDBExists],
         ];
         $("checkList").innerHTML = rows.map(([name, ok]) =>
@@ -347,11 +351,44 @@ function refreshPreview(name) {
     renderTable();
 }
 
+/* ---------------- 客户端资源根目录 → 相对路径探测 ---------------- */
+
+async function detect() {
+    const btn = $("btnDetect");
+    btn.disabled = true;
+    btn.textContent = "探测中...";
+    try {
+        await saveConfig(true);
+        const root = $("clientRootPath").value.trim();
+        const d = await api("/api/detect?root=" + encodeURIComponent(root));
+
+        // 回填自动探测到的路径
+        if (d.mapDir) $("mapDir").value = d.mapDir;
+        if (d.sourcePath) $("sourcePath").value = d.sourcePath;
+        if (d.minimapLibPath) $("minimapLibPath").value = d.minimapLibPath;
+        if (d.mirDBPath) $("mirDBPath").value = d.mirDBPath;
+        await saveConfig(true);
+
+        $("detectInfo").textContent = d.message || "";
+        $("detectResult").innerHTML =
+            `Map ${d.mapDirFound ? "✔" : "✘"} ｜ 图片源 ${d.sourcePathFound ? "✔" : "✘"} ｜ ` +
+            `小地图 Lib ${d.minimapLibFound ? "✔" : "✘"} ｜ ` +
+            `MirDB ${d.mirDBFound ? "✔" : "✘"}`;
+        toast(d.message || "探测完成");
+    } catch (e) {
+        toast("探测失败: " + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "自动探测相对路径";
+    }
+}
+
 /* ---------------- 目录浏览 ---------------- */
 
-function openBrowse(target, isFile) {
+function openBrowse(target, isFile, filter) {
     state.browseTarget = target;
     state.browseFile = isFile;
+    state.browseFilter = filter || "*";
     const cur = $(target).value.trim();
     $("browseTitle").textContent = isFile ? "选择文件" : "选择目录";
     $("browsePick").style.display = isFile ? "none" : "";
@@ -362,7 +399,7 @@ function openBrowse(target, isFile) {
 async function browseGo(path) {
     try {
         const url = `/api/fs?path=${encodeURIComponent(path || "")}` +
-            (state.browseFile ? "&files=true&filter=*" : "");
+            (state.browseFile ? "&files=true&filter=" + encodeURIComponent(state.browseFilter) : "");
         const d = await api(url);
         state.browsePath = d.path || "";
         $("browsePath").textContent = d.path || "（此电脑）";
@@ -411,10 +448,13 @@ function bind() {
         btn.addEventListener("click", () => openBrowse(btn.getAttribute("data-browse"), false));
     });
     document.querySelectorAll("[data-browse-file]").forEach(btn => {
-        btn.addEventListener("click", () => openBrowse(btn.getAttribute("data-browse-file"), true));
+        const target = btn.getAttribute("data-browse-file");
+        const filter = btn.getAttribute("data-filter");
+        btn.addEventListener("click", () => openBrowse(target, true, filter));
     });
 
     $("btnSaveConfig").addEventListener("click", () => saveConfig(false));
+    $("btnDetect").addEventListener("click", detect);
     $("btnLoadMirDb").addEventListener("click", loadMirDb);
     $("btnScan").addEventListener("click", scan);
     $("btnExtract").addEventListener("click", extract);
@@ -486,7 +526,9 @@ async function main() {
     try {
         await loadConfig();
         logLine("地图工具已就绪。");
-        logLine("提示：先「保存配置」→「加载 MirDB」→「扫描地图」→ 勾选后「提取」。");
+        logLine("提示：① 填「客户端资源根目录」→「自动探测相对路径」");
+        logLine("      ②「加载 MirDB」→「扫描地图」→ 勾选后「提取」");
+        logLine("      素材只按需从 .Lib 抽用到的那几张，不会整库导出");
     } catch (e) {
         toast("初始化失败: " + e.message);
     }

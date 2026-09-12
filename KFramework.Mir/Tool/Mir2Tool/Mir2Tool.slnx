@@ -1,4 +1,5 @@
 <Solution>
-  <Project Path="MapTool/MapExtract.csproj" Id="49d75bd5-1906-41ca-bdc7-985c8ae606bd" />
+  <Project Path="MapExtract/MapExtract.csproj" Id="49d75bd5-1906-41ca-bdc7-985c8ae606bd" />
   <Project Path="LibraryExtract/LibraryExtract.csproj" Id="7f2c1a94-5b3e-4d81-9f0a-62c4e8b1d735" />
+  <Project Path="MirLib/MirLib.csproj" Id="b3e6f0a1-4c7d-4a52-9e18-5df02c7a9146" />
 </Solution>

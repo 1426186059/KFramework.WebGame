@@ -12,7 +12,7 @@ obj/
 *ai/
 
 # 工具运行时配置（本机绝对路径，不入库）
-Tool/Mir2Tool/MapTool/maptool.config.json
+Tool/Mir2Tool/MapExtract/mapextract.config.json
 Tool/Mir2Tool/LibraryExtract/libraryextract.config.json
 
 /.playwright-cli/

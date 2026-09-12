@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using Mir.Lib;
 
 namespace Mir.Map
 {
@@ -39,11 +40,24 @@ namespace Mir.Map
         public string SourcePath = "";       // 图片池路径
         public string DestinationPath = "";  // 图片目标路径
         public string MapName = "";          // 地图名字
-        public string MinimapPath = "";      // 小地图资源路径（原版 Data\mmap）
+        /// <summary>小地图 PNG 目录（由 MinimapLibPath 推导：Data\mmap.Lib → Data\mmap）</summary>
+        public string MinimapPath = "";
+        /// <summary>小地图素材源 .Lib（如 Data\mmap.Lib）；为空时按 MinimapPath 同级推导 mmap.Lib</summary>
+        public string MinimapLibPath = "";
         public int MinimapIndex = -1;   // 小地图库索引，-1 表示自动用 MapName 匹配
         public int BigMapIndex = -1;    // 大地图库索引，-1 表示不拷贝
         public byte[] RawBytes => Bytes;  // 原始 .map 字节，用于输出 .bytes 文件
         public bool CancelRequested = false;  // 取消标记
+
+        /// <summary>
+        /// 按需解压缓存：源目录里缺图时，直接从同名 .Lib 里抽这一张。
+        /// 为 null 表示关闭按需解压（只使用已存在的 PNG）。
+        /// </summary>
+        public LibCache? LibCache;
+
+        /// <summary>本次按需从 Lib 抽出的张数</summary>
+        public int LazyExtractedCount;
+        public int LazyMissedCount;
 
         /// <summary>日志回调（由宿主注入，用于收集到界面）</summary>
         public Action<string>? LogSink;
@@ -208,17 +222,12 @@ namespace Mir.Map
             int bestIdx = PickLargerMapImage();
             if (bestIdx > 0)
             {
-                string? mmapFile = FindMapImageFile(bestIdx);
-                if (mmapFile != null)
-                {
-                    string dstFile = mmapDir + "LargeMap.png";
-                    File.Copy(mmapFile, dstFile, true);
+                // 直接落到目标目录：已有图片则复制，否则从 mmap.Lib 抽这一张
+                string dstFile = mmapDir + "LargeMap.png";
+                if (EnsureMinimapImage(bestIdx, dstFile))
                     Log($"[{MapName}] 原版小地图已保存 (索引={bestIdx}): {dstFile}");
-                }
                 else
-                {
                     LogWarning($"[{MapName}] 原版地图图片不存在: 索引={bestIdx}");
-                }
             }
             else
             {
@@ -231,14 +240,103 @@ namespace Mir.Map
             ClearTexCache();
         }
 
-        // 查找 mmap 目录下给定索引的图片文件（png/bmp，忽略大小写）
-        string? FindMapImageFile(int idx)
+        /// <summary>
+        /// 素材 PNG 缺失时，按需从同名 .Lib 里「只抽这一张」，并且<b>直接写到目标目录</b>，
+        /// 不回写客户端素材目录（避免污染客户端、也省一份磁盘）。
+        /// 约定：Tiles/0.png ← Tiles.Lib#0，Objects2/5.png ← Objects2.Lib#5
+        /// 磁盘上只会落地地图真正引用到的图，而不是整个素材库。
+        /// </summary>
+        /// <param name="sourcePngPath">源素材池里的路径，仅用于定位对应的 .Lib</param>
+        /// <param name="outputPngPath">实际落盘位置（目标目录）</param>
+        bool EnsureTileFromLib(string sourcePngPath, string outputPngPath, int imgIndex)
+        {
+            if (LibCache == null) return false;
+
+            string? libPath = LibPathForPng(sourcePngPath);
+            if (libPath == null || !File.Exists(libPath)) return false;
+
+            bool ok = LibCache.TryExtract(libPath, imgIndex, outputPngPath);
+            if (ok)
+            {
+                LazyExtractedCount++;
+                if (LazyExtractedCount <= 5)
+                    Log($"[{MapName}] 按需解压 #{imgIndex} ← {Path.GetFileName(libPath)}");
+            }
+            else
+            {
+                LazyMissedCount++;
+            }
+            return ok;
+        }
+
+        /// <summary>{...}\Tiles\0.png → {...}\Tiles.Lib</summary>
+        static string? LibPathForPng(string pngPath)
+        {
+            string? dir = Path.GetDirectoryName(pngPath);
+            if (string.IsNullOrEmpty(dir)) return null;
+            string? parent = Path.GetDirectoryName(dir);
+            if (string.IsNullOrEmpty(parent)) return null;
+            return Path.Combine(parent, Path.GetFileName(dir) + ".Lib");
+        }
+
+        // 查找已存在的小地图图片文件（png/bmp，忽略大小写）
+        string? FindExistingMapImage(int idx)
         {
             string basePath = MinimapPath.TrimEnd('\\', '/') + "/" + idx;
             string[] exts = { ".png", ".PNG", ".bmp", ".BMP" };
             foreach (var ext in exts)
                 if (File.Exists(basePath + ext)) return basePath + ext;
             return null;
+        }
+
+        /// <summary>小地图素材库路径（显式配置优先，否则按 MinimapPath 同级推导 mmap.Lib）</summary>
+        string MinimapLib()
+        {
+            if (!string.IsNullOrEmpty(MinimapLibPath)) return MinimapLibPath;
+            string? parent = Path.GetDirectoryName(MinimapPath.TrimEnd('\\', '/'));
+            return string.IsNullOrEmpty(parent) ? "" : Path.Combine(parent, "mmap.Lib");
+        }
+
+        /// <summary>取某索引小地图尺寸：优先已有图片，否则只读 Lib 头部（不解压、不落地）</summary>
+        (int w, int h) GetMapImageSize(int idx)
+        {
+            string? existing = FindExistingMapImage(idx);
+            if (existing != null)
+            {
+                var (w, h, ok) = ReadImageSize(existing);
+                if (ok) return (w, h);
+            }
+
+            string lib = MinimapLib();
+            if (LibCache != null && !string.IsNullOrEmpty(lib) && File.Exists(lib))
+            {
+                if (LibCache.TryGetImageSize(lib, idx, out int lw, out int lh)) return (lw, lh);
+            }
+            return (0, 0);
+        }
+
+        /// <summary>把某索引的小地图落到 destPath（目标目录）：优先复制已有图片，否则直接从 Lib 抽到 destPath</summary>
+        bool EnsureMinimapImage(int idx, string destPath)
+        {
+            string? existing = FindExistingMapImage(idx);
+            if (existing != null)
+            {
+                File.Copy(existing, destPath, true);
+                return true;
+            }
+
+            string lib = MinimapLib();
+            if (LibCache == null || string.IsNullOrEmpty(lib) || !File.Exists(lib)) return false;
+
+            if (LibCache.TryExtract(lib, idx, destPath))
+            {
+                LazyExtractedCount++;
+                Log($"[{MapName}] 按需解压小地图 #{idx} ← {Path.GetFileName(lib)} → {destPath}");
+                return true;
+            }
+
+            LazyMissedCount++;
+            return false;
         }
 
         // 读取图片尺寸（支持 png/bmp）
@@ -273,16 +371,11 @@ namespace Mir.Map
 
             foreach (int idx in candidates)
             {
-                string? path = FindMapImageFile(idx);
-                if (path == null)
+                // 只读尺寸即可（已有图片读文件，否则读 Lib 头部），不必先把图落地
+                var (w, h) = GetMapImageSize(idx);
+                if (w == 0 || h == 0)
                 {
-                    LogWarning($"[{MapName}] 地图图片不存在: 索引={idx}");
-                    continue;
-                }
-                var (w, h, ok) = ReadImageSize(path);
-                if (!ok)
-                {
-                    LogWarning($"[{MapName}] 地图图片读取失败: {path}");
+                    LogWarning($"[{MapName}] 地图图片不可用: 索引={idx}");
                     continue;
                 }
                 int area = w * h;
@@ -656,19 +749,24 @@ namespace Mir.Map
             if (!Directory.Exists(dstDir)) Directory.CreateDirectory(dstDir);
 
             FileInfo file = new FileInfo(sourcesFullPath);
+            bool ok;
             if (file.Exists)
             {
                 file.CopyTo(destinationFullPath, true);
-                count++;
+                ok = true;
             }
             else
             {
-                if (_backMissLogged < 3)
-                    LogWarning("源背景图片不存在:" + sourcesFullPath);
-                _backMissLogged++;
-                missCount++;
+                // 源目录没有 → 直接从同名 .Lib 抽到「目标目录」，不回写客户端素材目录
+                ok = EnsureTileFromLib(sourcesFullPath, destinationFullPath, imgIndex);
+                if (!ok && _backMissLogged < 3)
+                {
+                    LogWarning("背景图缺失，且 Lib 中无此图:" + sourcesFullPath);
+                    _backMissLogged++;
+                }
             }
-            RecordCopyStat("Back", fileIndex, file.Exists);
+            if (ok) count++; else missCount++;
+            RecordCopyStat("Back", fileIndex, ok);
             ReportProgress("拷贝背景图 - " + MapName, (float)(count + missCount) / Math.Max(1, Width * Height));
         }
 
@@ -704,17 +802,20 @@ namespace Mir.Map
             }
 
             FileInfo file = new FileInfo(sourcesFullPath);
-            bool fexists = file.Exists;
-            if (fexists)
+            bool fexists;
+            if (file.Exists)
             {
                 file.CopyTo(destinationFullPath, true);
-                count++;
+                fexists = true;
             }
             else
             {
-                LogWarning("源前景图片不存在:" + sourcesFullPath);
-                missCount++;
+                // 源目录没有 → 直接从同名 .Lib 抽到「目标目录」，不回写客户端素材目录
+                fexists = EnsureTileFromLib(sourcesFullPath, destinationFullPath, imgIndex);
+                if (!fexists)
+                    LogWarning("前景图缺失，且 Lib 中无此图:" + sourcesFullPath);
             }
+            if (fexists) count++; else missCount++;
             RecordCopyStat("Front", fileIndex, fexists);
             ReportProgress("拷贝前景图 - " + MapName, (float)(count + missCount) / Math.Max(1, Width * Height));
         }
@@ -751,17 +852,20 @@ namespace Mir.Map
             }
 
             FileInfo file = new FileInfo(sourcesFullPath);
-            bool mexists = file.Exists;
-            if (mexists)
+            bool mexists;
+            if (file.Exists)
             {
                 file.CopyTo(destinationFullPath, true);
-                count++;
+                mexists = true;
             }
             else
             {
-                LogWarning("源中景图片不存在:" + sourcesFullPath);
-                missCount++;
+                // 源目录没有 → 直接从同名 .Lib 抽到「目标目录」，不回写客户端素材目录
+                mexists = EnsureTileFromLib(sourcesFullPath, destinationFullPath, imgIndex);
+                if (!mexists)
+                    LogWarning("中景图缺失，且 Lib 中无此图:" + sourcesFullPath);
             }
+            if (mexists) count++; else missCount++;
             RecordCopyStat("Middle", fileIndex, mexists);
             ReportProgress("拷贝中景图 - " + MapName, (float)(count + missCount) / Math.Max(1, Width * Height));
         }

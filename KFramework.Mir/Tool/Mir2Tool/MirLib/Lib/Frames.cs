@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace LibraryExtract.Lib
+namespace Mir.Lib
 {
     /// <summary>移植自 LibraryEditor/Frames.cs（原样保留，仅命名空间调整）</summary>
     public class FrameSet : Dictionary<MirAction, Frame>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>传奇地图工具 (MapTool)</title>
+    <title>传奇地图工具 (MapExtract)</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -12,7 +12,7 @@
             <span class="logo">◈</span>
             <div>
                 <h1>传奇地图工具</h1>
-                <p>MapTool · 扫描 / 提取 / 小地图渲染对比</p>
+                <p>MapExtract · 扫描 / 提取 / 小地图渲染对比</p>
             </div>
         </div>
         <div class="top-status">
@@ -27,6 +27,22 @@
             <!-- 路径配置 -->
             <div class="card">
                 <div class="card-title">路径配置</div>
+
+                <div class="field">
+                    <label>客户端资源根目录</label>
+                    <input id="clientRootPath" type="text" placeholder="客户端资源父目录（其下有 Map / Data）" />
+                    <button class="btn btn-ghost" data-browse="clientRootPath">浏览</button>
+                    <span id="dot-clientRootPath" class="dot"></span>
+                </div>
+                <div class="row-actions">
+                    <button id="btnDetect" class="btn btn-primary">自动探测相对路径</button>
+                    <span id="detectInfo" class="muted"></span>
+                </div>
+
+                <div id="detectResult" class="muted small">
+                    Map = &lt;根&gt;\Map ｜ 图片源 = &lt;根&gt;\Data\Map ｜ 小地图 Lib = &lt;根&gt;\Data\mmap.Lib ｜ MirDB = 向上查找 Server.MirDB<br />
+                    素材（Tiles/SmTiles/Objects、小地图）均由对应的 .Lib <b>按需抽单张</b>，不做整库导出
+                </div>
 
                 <div class="field">
                     <label>地图目录</label>
@@ -47,15 +63,15 @@
                     <span id="dot-destinationPath" class="dot"></span>
                 </div>
                 <div class="field">
-                    <label>小地图源路径</label>
-                    <input id="minimapPath" type="text" placeholder="原版 Data\\mmap 目录" />
-                    <button class="btn btn-ghost" data-browse="minimapPath">浏览</button>
-                    <span id="dot-minimapPath" class="dot"></span>
+                    <label>小地图路径</label>
+                    <input id="minimapLibPath" type="text" placeholder="小地图素材源 .Lib（如 Data\mmap.Lib）" />
+                    <button class="btn btn-ghost" data-browse-file="minimapLibPath" data-filter="*.Lib">浏览</button>
+                    <span id="dot-minimapLibPath" class="dot"></span>
                 </div>
                 <div class="field">
                     <label>MirDB 路径</label>
                     <input id="mirDBPath" type="text" placeholder="Server.MirDB 文件" />
-                    <button class="btn btn-ghost" data-browse-file="mirDBPath">浏览</button>
+                    <button class="btn btn-ghost" data-browse-file="mirDBPath" data-filter="*.MirDB">浏览</button>
                     <span id="dot-mirDBPath" class="dot"></span>
                 </div>
 

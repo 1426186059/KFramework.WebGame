@@ -1,24 +1,25 @@
 using System.Text;
 using System.Text.Json;
-using MapTool.Models;
+using MapExtract.Models;
+using Mir.Lib;
 using Mir.Map;
 
-namespace MapTool.Services
+namespace MapExtract.Services
 {
     /// <summary>
     /// 复刻 Unity 工程 Assets/Editor/MapTool.cs (MapToolWindow) 的全部功能：
     /// 路径配置 / 扫描地图 / 加载 MirDB / 提取地图 / 小地图预览。
     /// 抽离为一组无状态的 HTTP 调用即可使用的服务。
     /// </summary>
-    public sealed class MapToolService
+    public sealed class MapExtractService
     {
         private const int MaxLogLines = 2000;
 
-        private readonly ILogger<MapToolService> _logger;
+        private readonly ILogger<MapExtractService> _logger;
         private readonly string _configPath;
         private readonly object _work = new object();
 
-        private MapToolConfig _config;
+        private MapExtractConfig _config;
 
         // MirDB 解析缓存：MapName(string) → MapEntry
         private Dictionary<string, MirDBParser.MapEntry>? _mirDb;
@@ -29,10 +30,10 @@ namespace MapTool.Services
         private readonly Dictionary<string, string> _mapFormats = new();
         private readonly Dictionary<string, int> _mapTypeIds = new();
 
-        public MapToolService(ILogger<MapToolService> logger, IWebHostEnvironment env)
+        public MapExtractService(ILogger<MapExtractService> logger, IWebHostEnvironment env)
         {
             _logger = logger;
-            _configPath = Path.Combine(env.ContentRootPath, "maptool.config.json");
+            _configPath = Path.Combine(env.ContentRootPath, "mapextract.config.json");
             _config = LoadConfig();
 
             // OnEnable 时的自动加载行为
@@ -48,9 +49,9 @@ namespace MapTool.Services
 
         // ==================== 配置 ====================
 
-        public MapToolConfig GetConfig() => _config;
+        public MapExtractConfig GetConfig() => _config;
 
-        public MapToolConfig UpdateConfig(MapToolConfig cfg)
+        public MapExtractConfig UpdateConfig(MapExtractConfig cfg)
         {
             lock (_work)
             {
@@ -72,14 +73,14 @@ namespace MapTool.Services
             return _config;
         }
 
-        private MapToolConfig LoadConfig()
+        private MapExtractConfig LoadConfig()
         {
             try
             {
                 if (File.Exists(_configPath))
                 {
                     var json = File.ReadAllText(_configPath);
-                    var cfg = JsonSerializer.Deserialize<MapToolConfig>(json);
+                    var cfg = JsonSerializer.Deserialize<MapExtractConfig>(json);
                     if (cfg != null) return cfg;
                 }
             }
@@ -87,7 +88,7 @@ namespace MapTool.Services
             {
                 _logger.LogWarning(ex, "读取配置失败，使用默认值");
             }
-            return new MapToolConfig();
+            return new MapExtractConfig();
         }
 
         private void SaveConfig()
@@ -116,7 +117,8 @@ namespace MapTool.Services
                 TilesExists = Directory.Exists(src + "/Tiles"),
                 SmTilesExists = Directory.Exists(src + "/SmTiles"),
                 ObjectsExists = Directory.Exists(src + "/Objects"),
-                MinimapExists = Directory.Exists(c.MinimapPath),
+                MinimapExists = Directory.Exists(DeriveMinimapDir(c.MinimapLibPath)),
+                MinimapLibExists = File.Exists(c.MinimapLibPath),
                 MirDBExists = File.Exists(c.MirDBPath),
             };
         }
@@ -391,7 +393,9 @@ namespace MapTool.Services
 
             mr.SourcePath = src;
             mr.DestinationPath = dst;
-            mr.MinimapPath = _config.MinimapPath.TrimEnd('\\', '/') + "/";
+            string mmapDir = DeriveMinimapDir(_config.MinimapLibPath);
+            mr.MinimapPath = string.IsNullOrEmpty(mmapDir) ? "" : mmapDir.TrimEnd('\\', '/') + "/";
+            mr.MinimapLibPath = _config.MinimapLibPath ?? "";
 
             // 从 MirDB 自动匹配 MiniMap/BigMap 索引及中文名
             string? chineseTitle = null;
@@ -411,7 +415,15 @@ namespace MapTool.Services
 
             mr.LogSink = line => AppendLog(log, line);
             mr.MapName = mapName;
+
+            // 按需解压：缺图时才从 .Lib 抽单张，绝不整库导出
+            using var libCache = new LibCache();
+            mr.LibCache = libCache;
             mr.DrawFloor();
+
+            if (mr.LazyExtractedCount > 0)
+                AppendLog(log, $"[{mapName}] 按需从 Lib 解压 {mr.LazyExtractedCount} 张"
+                               + (mr.LazyMissedCount > 0 ? $"；Lib 中缺失 {mr.LazyMissedCount} 张" : ""));
 
             // 将中文名写入地图目录下的 {中文名}.txt
             if (!string.IsNullOrEmpty(chineseTitle))
@@ -546,6 +558,110 @@ namespace MapTool.Services
             return list;
         }
 
+        // ==================== 客户端资源根目录 → 相对路径自动探测 ====================
+
+        /// <summary>素材库格式子目录名（图片源路径下）</summary>
+        private static readonly string[] FormatFolders = { "WemadeMir2", "ShandaMir2", "WemadeMir3" };
+
+        /// <summary>
+        /// 给出客户端资源父目录，自动找出：
+        /// Map / Data\Map（素材 Lib）/ Data\mmap（小地图，来自 mmap.Lib）/ Server.MirDB
+        /// </summary>
+        public DetectResultDto Detect(string? clientRoot)
+        {
+            var r = new DetectResultDto();
+            string root = (clientRoot ?? _config.ClientRootPath ?? "").Trim().TrimEnd('\\', '/');
+
+            if (string.IsNullOrEmpty(root) || !Directory.Exists(root))
+            {
+                r.Message = "客户端资源根目录不存在: " + root;
+                return r;
+            }
+
+            r.ClientRootPath = root;
+
+            // 地图目录：{根}\Map
+            r.MapDir = Path.Combine(root, "Map");
+            r.MapDirFound = Directory.Exists(r.MapDir) && (
+                Directory.GetFiles(r.MapDir, "*.map", SearchOption.TopDirectoryOnly).Length > 0 ||
+                Directory.GetFiles(r.MapDir, "*.MAP", SearchOption.TopDirectoryOnly).Length > 0);
+
+            // 图片源路径：{根}\Data\Map（其下按格式分子目录存放 .Lib）
+            r.SourcePath = Path.Combine(root, "Data", "Map");
+            r.SourcePathFound = Directory.Exists(r.SourcePath)
+                                && FormatFolders.Any(f => Directory.Exists(Path.Combine(r.SourcePath, f)));
+
+            // 小地图：只需素材源 Lib {根}\Data\mmap.Lib；PNG 目录自动推导为 {根}\Data\mmap
+            string dataDir = Path.Combine(root, "Data");
+            r.MinimapLibPath = FindMinimapLib(dataDir) ?? Path.Combine(dataDir, "mmap.Lib");
+            r.MinimapLibFound = File.Exists(r.MinimapLibPath);
+            r.MinimapDir = DeriveMinimapDir(r.MinimapLibPath);
+            r.MinimapReady = MinimapReady(r.MinimapDir);
+
+            // MirDB：从根目录向上几层查找
+            r.MirDBPath = FindMirDB(root) ?? "";
+            r.MirDBFound = r.MirDBPath.Length > 0;
+
+            r.Ok = r.MapDirFound && r.SourcePathFound;
+            r.Message = r.Ok
+                ? "探测成功：地图目录、图片源路径已找到"
+                  + (r.MinimapLibFound ? (r.MinimapReady ? "；小地图目录已有图" : "；小地图将按需从 mmap.Lib 抽取") : "（未找到 mmap.Lib）")
+                  + (r.MirDBFound ? "；MirDB 已找到" : "（未找到 Server.MirDB）")
+                : "探测完成，但部分路径未找到，请检查下方结果。";
+
+            return r;
+        }
+
+        /// <summary>小地图 PNG 目录 = 与 mmap.Lib 同级、同名：Data\mmap.Lib → Data\mmap</summary>
+        public static string DeriveMinimapDir(string libPath)
+        {
+            if (string.IsNullOrWhiteSpace(libPath)) return "";
+            string? dir = Path.GetDirectoryName(libPath.TrimEnd('\\', '/'));
+            if (string.IsNullOrEmpty(dir)) return "";
+            return Path.Combine(dir, Path.GetFileNameWithoutExtension(libPath));
+        }
+
+        private static bool MinimapReady(string dir)
+        {
+            if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir)) return false;
+            try { return Directory.GetFiles(dir, "*.png", SearchOption.TopDirectoryOnly).Length > 0; }
+            catch { return false; }
+        }
+
+        /// <summary>小地图素材库固定为 {根}\Data\mmap.Lib（整个客户端只有这一个）</summary>
+        private static string? FindMinimapLib(string dataDir)
+        {
+            if (!Directory.Exists(dataDir)) return null;
+
+            try
+            {
+                // 文件名大小写在不同客户端可能不同（mmap.Lib / MMAP.lib），做一次不区分大小写匹配
+                foreach (var f in Directory.GetFiles(dataDir, "*.Lib", SearchOption.TopDirectoryOnly))
+                    if (string.Equals(Path.GetFileNameWithoutExtension(f), "mmap", StringComparison.OrdinalIgnoreCase))
+                        return f;
+            }
+            catch { }
+
+            return null;
+        }
+
+        private static string? FindMirDB(string root)
+        {
+            DirectoryInfo? dir = new DirectoryInfo(root);
+            for (int up = 0; up <= 3 && dir != null; up++)
+            {
+                string[] candidates =
+                {
+                    Path.Combine(dir.FullName, "Server.MirDB"),
+                    Path.Combine(dir.FullName, "Server", "Debug", "Server.MirDB"),
+                    Path.Combine(dir.FullName, "Server", "Release", "Server.MirDB"),
+                };
+                foreach (var c in candidates)
+                    if (File.Exists(c)) return c;
+                dir = dir.Parent;
+            }
+            return null;
+        }
         // ==================== 类型描述（移植自 MapToolWindow.GetTypeDescription）====================
 
         public static string GetTypeDescription(string fmt, int typeId)

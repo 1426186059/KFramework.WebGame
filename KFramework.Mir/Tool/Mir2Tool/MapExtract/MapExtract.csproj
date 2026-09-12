@@ -4,13 +4,15 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>MapTool</RootNamespace>
+    <RootNamespace>MapExtract</RootNamespace>
     <!-- System.Drawing.Common 仅支持 Windows，本工具定位为 Windows 桌面端辅助工具 -->
     <NoWarn>$(NoWarn);CA1416</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
+    <!-- 共享的 .Lib 读取能力（MLibraryV2），用于从客户端资源解压素材 -->
+    <ProjectReference Include="..\MirLib\MirLib.csproj" />
   </ItemGroup>
 
 </Project>

@@ -112,6 +112,7 @@ body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 .btn-ghost { background: #fff; }
 .btn-xs { padding: 2px 8px; font-size: 11px; }
 
+
 .help { background: #f7f9fc; border: 1px dashed var(--border); border-radius: 8px; padding: 10px; color: #566275; font-size: 12px; line-height: 1.6; margin: 0; white-space: pre-wrap; }
 .check-list { display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
 .check-list .ok { color: #1f8f4e; }

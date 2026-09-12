@@ -5,7 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
 
-namespace LibraryExtract.Lib
+namespace Mir.Lib
 {
     /// <summary>
     /// 移植自 LibraryEditor/MLibraryV2.cs

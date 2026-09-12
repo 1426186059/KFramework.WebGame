@@ -1,4 +1,4 @@
-namespace LibraryExtract.Lib
+namespace Mir.Lib
 {
     /// <summary>移植自 LibraryEditor/Enums.cs（原样保留，仅命名空间调整）</summary>
     public enum MirAction : byte
