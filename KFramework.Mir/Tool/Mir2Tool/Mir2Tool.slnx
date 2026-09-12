@@ -1,3 +1,4 @@
 <Solution>
-  <Project Path="MapTool/MapTool.csproj" Id="49d75bd5-1906-41ca-bdc7-985c8ae606bd" />
+  <Project Path="MapTool/MapExtract.csproj" Id="49d75bd5-1906-41ca-bdc7-985c8ae606bd" />
+  <Project Path="LibraryExtract/LibraryExtract.csproj" Id="7f2c1a94-5b3e-4d81-9f0a-62c4e8b1d735" />
 </Solution>
