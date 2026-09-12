@@ -1,14 +1,12 @@
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using Mir.Lib;
+using SkiaSharp;
 
 namespace Mir.Map
 {
     /// <summary>
     /// 移植自 Unity 工程 Assets/Model/Script/MirGraphics/MapReader.Editor.cs
     /// 负责把地图引用的贴图从素材池拷贝到目标目录，并渲染出 LargeMap2.png（小地图）。
-    /// Unity 的 Texture2D / RenderTexture / EncodeToPNG 全部替换为 System.Drawing。
+    /// Unity 的 Texture2D / RenderTexture / EncodeToPNG 全部替换为 SkiaSharp。
     /// </summary>
     public partial class MapReader
     {
@@ -339,13 +337,14 @@ namespace Mir.Map
             return false;
         }
 
-        // 读取图片尺寸（支持 png/bmp）
+        // 读取图片尺寸（Skia 能解码的都支持：png/bmp/webp/jpg...）
         (int w, int h, bool ok) ReadImageSize(string imagePath)
         {
             try
             {
                 if (!File.Exists(imagePath)) return (0, 0, false);
-                using var img = Image.FromFile(imagePath);
+                using var img = SKBitmap.Decode(imagePath);
+                if (img == null) return (0, 0, false);
                 return (img.Width, img.Height, true);
             }
             catch { return (0, 0, false); }
@@ -419,10 +418,10 @@ namespace Mir.Map
             }
 
             // Step 1: 创建绘制画布 (tile 已缩到1/4)，绘制三层
-            Bitmap canvas = new Bitmap(canvasW, canvasH, PixelFormat.Format32bppArgb);
-            using (var g = Graphics.FromImage(canvas))
+            SKBitmap canvas = SkiaBitmaps.Create(canvasW, canvasH);
+            using (var g = new SKCanvas(canvas))
             {
-                g.Clear(Color.Transparent);
+                g.Clear(SKColors.Transparent);
             }
 
             _loadSuccess = 0; _loadFail = 0;
@@ -441,7 +440,7 @@ namespace Mir.Map
             const int targetMax = 1024;
             float downscale = Math.Max((float)canvasW / targetMax, (float)canvasH / targetMax);
             int finalW = canvasW, finalH = canvasH;
-            Bitmap final = canvas;
+            SKBitmap final = canvas;
 
             if (downscale > 1f)
             {
@@ -449,19 +448,19 @@ namespace Mir.Map
                 finalH = (int)MathF.Round(canvasH / downscale);
                 Log($"[{MapName}] MiniMap缩放: ({canvasW}×{canvasH}) → ({finalW}×{finalH})");
 
-                final = new Bitmap(finalW, finalH, PixelFormat.Format32bppArgb);
-                using (var g = Graphics.FromImage(final))
+                final = SkiaBitmaps.Create(finalW, finalH);
+                using (var g = new SKCanvas(final))
                 {
-                    g.CompositingMode = CompositingMode.SourceCopy;
-                    g.InterpolationMode = InterpolationMode.HighQualityBilinear;
-                    g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    g.DrawImage(canvas, new Rectangle(0, 0, finalW, finalH), 0, 0, canvasW, canvasH, GraphicsUnit.Pixel);
+                    // 整体缩放：线性过滤 + mipmap，最接近原先 GDI+ 的 HighQualityBilinear
+                    var sampling = new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.Linear);
+                    g.DrawBitmap(canvas, SKRect.Create(0, 0, canvasW, canvasH),
+                                 SKRect.Create(0, 0, finalW, finalH), sampling);
                 }
                 canvas.Dispose();
             }
 
-            // Step 3: 导出 PNG
-            final.Save(dst, ImageFormat.Png);
+            // Step 3: 导出图片
+            SkiaBitmaps.SavePng(final, dst);
             final.Dispose();
 
             _tileScale = 1;
@@ -483,23 +482,18 @@ namespace Mir.Map
                 dy = (y + 1) * _drawCH - texH;
         }
 
-        // 将贴图按 1:1 绘制到画布（GDI+ DrawImage 自带裁剪与 Alpha 混合）
-        static void DrawTile(Graphics g, Bitmap tile, int dstX, int dstY)
+        // 将贴图按 1:1 绘制到画布（Skia 自动裁剪，默认 SourceOver 混合）
+        static void DrawTile(SKCanvas g, SKBitmap tile, int dstX, int dstY)
         {
-            g.DrawImage(tile, new Rectangle(dstX, dstY, tile.Width, tile.Height), 0, 0, tile.Width, tile.Height, GraphicsUnit.Pixel);
+            // 1:1 拷贝，用 Nearest 保证像素级精确、无接缝
+            g.DrawBitmap(tile, SKRect.Create(dstX, dstY, tile.Width, tile.Height),
+                         new SKSamplingOptions(SKFilterMode.Nearest));
         }
 
-        static Graphics CreateLayerGraphics(Bitmap canvas)
-        {
-            var g = Graphics.FromImage(canvas);
-            g.CompositingMode = CompositingMode.SourceOver;
-            g.InterpolationMode = InterpolationMode.NearestNeighbor;
-            g.PixelOffsetMode = PixelOffsetMode.Half;
-            return g;
-        }
+        static SKCanvas CreateLayerGraphics(SKBitmap canvas) => new SKCanvas(canvas);
 
         // ============ DrawBack: 偶数行列，平坦网格 ============
-        void DrawLayer_Back(Bitmap canvas)
+        void DrawLayer_Back(SKBitmap canvas)
         {
             int total = (Width / 2) * (Height / 2);
             int done = 0;
@@ -536,7 +530,7 @@ namespace Mir.Map
         }
 
         // ============ DrawMiddle: 所有格子；非标准尺寸 Y 偏移 ============
-        void DrawLayer_Middle(Bitmap canvas)
+        void DrawLayer_Middle(SKBitmap canvas)
         {
             int total = Width * Height;
             int done = 0;
@@ -571,7 +565,7 @@ namespace Mir.Map
         }
 
         // ============ DrawFront: 非标准尺寸 Y 偏移，区分 blend ============
-        void DrawLayer_Front(Bitmap canvas)
+        void DrawLayer_Front(SKBitmap canvas)
         {
             int total = Width * Height;
             int done = 0;
@@ -628,7 +622,7 @@ namespace Mir.Map
         int _missLogMax = 5;
 
         // 贴图缓存 (路径 → Bitmap)，tile 加载时按 _tileScale 缩小
-        readonly Dictionary<string, Bitmap> _texCache = new Dictionary<string, Bitmap>();
+        readonly Dictionary<string, SKBitmap> _texCache = new Dictionary<string, SKBitmap>();
         readonly HashSet<string> _texMiss = new HashSet<string>();
 
         /// <summary>获取 (libIdx, imgIdx) 对应的 PNG 文件路径</summary>
@@ -641,7 +635,7 @@ namespace Mir.Map
             return tileRoot + "Objects" + (libIdx - 1) + "/" + imgIdx + ".png";
         }
 
-        Bitmap? LoadTileBitmap(string pngPath)
+        SKBitmap? LoadTileBitmap(string pngPath)
         {
             if (_texCache.TryGetValue(pngPath, out var cached) && cached != null)
                 return cached;
@@ -649,7 +643,7 @@ namespace Mir.Map
                 return null;
 
             // Step 1: 先尝试目标路径
-            Bitmap? result = TryLoadScaled(pngPath);
+            SKBitmap? result = TryLoadScaled(pngPath);
 
             // Step 2: 回退到源路径 (部分 tile 未拷贝到目标)
             if (result == null)
@@ -677,36 +671,36 @@ namespace Mir.Map
             return null;
         }
 
-        Bitmap? TryLoadScaled(string path)
+        SKBitmap? TryLoadScaled(string path)
         {
             try
             {
                 if (!File.Exists(path)) return null;
-                byte[] data = File.ReadAllBytes(path);
-                using var ms = new MemoryStream(data);
-                using var src = new Bitmap(ms);
+
+                using var src = SkiaBitmaps.Decode(path);
+                if (src == null) return null;
 
                 if (_tileScale > 1)
                 {
                     int nw = Math.Max(1, src.Width / _tileScale);
                     int nh = Math.Max(1, src.Height / _tileScale);
-                    var scaled = new Bitmap(nw, nh, PixelFormat.Format32bppArgb);
-                    using (var g = Graphics.FromImage(scaled))
+                    var scaled = SkiaBitmaps.Create(nw, nh);
+                    using (var g = new SKCanvas(scaled))
                     {
-                        g.CompositingMode = CompositingMode.SourceCopy;
-                        g.InterpolationMode = InterpolationMode.Bilinear;
-                        g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                        g.DrawImage(src, new Rectangle(0, 0, nw, nh), 0, 0, src.Width, src.Height, GraphicsUnit.Pixel);
+                        g.Clear(SKColors.Transparent);
+                        // tile 缩到 1/4：双线性，与原先 GDI+ Bilinear 一致
+                        g.DrawBitmap(src, SKRect.Create(0, 0, nw, nh),
+                                     new SKSamplingOptions(SKFilterMode.Linear));
                     }
                     return scaled;
                 }
 
-                // 复制一份，避免依赖外部 stream / 锁定文件
-                var copy = new Bitmap(src.Width, src.Height, PixelFormat.Format32bppArgb);
-                using (var g = Graphics.FromImage(copy))
+                // 复制一份，避免持有解码出来的临时对象
+                var copy = SkiaBitmaps.Create(src.Width, src.Height);
+                using (var g = new SKCanvas(copy))
                 {
-                    g.CompositingMode = CompositingMode.SourceCopy;
-                    g.DrawImage(src, new Rectangle(0, 0, src.Width, src.Height), 0, 0, src.Width, src.Height, GraphicsUnit.Pixel);
+                    g.Clear(SKColors.Transparent);
+                    g.DrawBitmap(src, SKPoint.Empty, new SKSamplingOptions(SKFilterMode.Nearest));
                 }
                 return copy;
             }

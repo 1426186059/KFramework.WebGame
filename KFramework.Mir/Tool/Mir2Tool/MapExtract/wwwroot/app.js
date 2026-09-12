@@ -69,6 +69,10 @@ function applyConfigToForm(cfg) {
     $("minimapLibPath").value = cfg.minimapLibPath || "";
     $("mirDBPath").value = cfg.mirDBPath || "";
     $("recursiveScan").checked = !!cfg.recursiveScan;
+    $("exportWebP").checked = cfg.exportWebP !== false;
+    $("webpLossless").checked = cfg.webpLossless !== false;
+    $("webpQuality").value = String(cfg.webpQuality ?? 90);
+    $("deletePngAfterWebP").checked = !!cfg.deletePngAfterWebP;
 }
 
 function collectConfig() {
@@ -80,6 +84,13 @@ function collectConfig() {
         minimapLibPath: $("minimapLibPath").value.trim(),
         mirDBPath: $("mirDBPath").value.trim(),
         recursiveScan: $("recursiveScan").checked,
+        exportWebP: $("exportWebP").checked,
+        webpLossless: $("webpLossless").checked,
+        webpQuality: (() => {
+            const q = parseInt($("webpQuality").value.trim(), 10);
+            return isNaN(q) ? 90 : Math.min(100, Math.max(1, q));
+        })(),
+        deletePngAfterWebP: $("deletePngAfterWebP").checked,
     };
 }
 
@@ -442,6 +453,10 @@ function closeBrowse() { $("browseModal").classList.add("hidden"); }
 function bind() {
     CONFIG_FIELDS.forEach(id => $(id).addEventListener("change", scheduleSave));
     $("recursiveScan").addEventListener("change", scheduleSave);
+    $("exportWebP").addEventListener("change", scheduleSave);
+    $("webpLossless").addEventListener("change", scheduleSave);
+    $("webpQuality").addEventListener("change", scheduleSave);
+    $("deletePngAfterWebP").addEventListener("change", scheduleSave);
     $("onlyMirDb").addEventListener("change", renderTable);
 
     document.querySelectorAll("[data-browse]").forEach(btn => {

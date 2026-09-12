@@ -1,5 +1,3 @@
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Text;
 using System.Text.Json;
 using LibraryExtract.Models;
@@ -326,9 +324,9 @@ namespace LibraryExtract.Services
                             if (mImage == null || mImage.Image == null)
                                 continue;
 
-                            Image image = mImage.Image;
+                            var image = mImage.Image;
                             string pngPath = Path.Combine(outputDir, j.ToString() + ".png");
-                            image.Save(pngPath, System.Drawing.Imaging.ImageFormat.Png);
+                            SkiaBitmaps.SavePng(image, pngPath);
                             image.Dispose();
                             mImage.Image = null;
 

@@ -1,9 +1,7 @@
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
+using SkiaSharp;
 
 namespace Mir.Lib
 {
@@ -115,7 +113,7 @@ namespace Mir.Lib
                     mi.CreateTextureFromBytes();
 
                 if (mi.Image != null)
-                    mi.Image.Save(pngPath, System.Drawing.Imaging.ImageFormat.Png);
+                    SkiaBitmaps.SavePng(mi.Image, pngPath);
             }
 
             // 写 .bytes（只含元数据）
@@ -224,13 +222,13 @@ namespace Mir.Lib
             }
         }
 
-        public Point GetOffSet(int index)
+        public SKPoint GetOffSet(int index)
         {
             if (!_initialized)
                 Initialize();
 
             if (Images == null || index < 0 || index >= Images.Count)
-                return Point.Empty;
+                return SKPoint.Empty;
 
             if (Images[index] == null)
             {
@@ -238,15 +236,15 @@ namespace Mir.Lib
                 Images[index] = new MImage(_reader);
             }
 
-            return new Point(Images[index].X, Images[index].Y);
+            return new SKPoint(Images[index].X, Images[index].Y);
         }
 
-        public Size GetSize(int index)
+        public SKSize GetSize(int index)
         {
             if (!_initialized)
                 Initialize();
             if (Images == null || index < 0 || index >= Images.Count)
-                return Size.Empty;
+                return SKSize.Empty;
 
             if (Images[index] == null)
             {
@@ -254,7 +252,7 @@ namespace Mir.Lib
                 Images[index] = new MImage(_reader);
             }
 
-            return new Size(Images[index].Width, Images[index].Height);
+            return new SKSize(Images[index].Width, Images[index].Height);
         }
 
         public MImage? GetMImage(int index)
@@ -265,15 +263,15 @@ namespace Mir.Lib
             return Images[index];
         }
 
-        public Bitmap GetPreview(int index)
+        public SKBitmap GetPreview(int index)
         {
             if (index < 0 || index >= Images.Count)
-                return new Bitmap(1, 1);
+                return SkiaBitmaps.CreateEmpty();
 
             MImage image = Images[index];
 
             if (image == null || image.Image == null)
-                return new Bitmap(1, 1);
+                return SkiaBitmaps.CreateEmpty();
 
             if (image.Preview == null)
                 image.CreatePreview();
@@ -281,7 +279,7 @@ namespace Mir.Lib
             return image.Preview!;
         }
 
-        public void AddImage(Bitmap image, short x, short y, bool removeBlack = true)
+        public void AddImage(SKBitmap image, short x, short y, bool removeBlack = true)
         {
             MImage mImage = new MImage(image, removeBlack) { X = x, Y = y };
 
@@ -289,7 +287,7 @@ namespace Mir.Lib
             Images.Add(mImage);
         }
 
-        public void AddImage(Bitmap image, Bitmap maskImage, short x, short y, bool removeBlack = true)
+        public void AddImage(SKBitmap image, SKBitmap maskImage, short x, short y, bool removeBlack = true)
         {
             MImage mImage = new MImage(image, maskImage, removeBlack) { X = x, Y = y };
 
@@ -297,14 +295,14 @@ namespace Mir.Lib
             Images.Add(mImage);
         }
 
-        public void ReplaceImage(int Index, Bitmap image, short x, short y, bool removeBlack = true)
+        public void ReplaceImage(int Index, SKBitmap image, short x, short y, bool removeBlack = true)
         {
             MImage mImage = new MImage(image, removeBlack) { X = x, Y = y };
 
             Images[Index] = mImage;
         }
 
-        public void InsertImage(int index, Bitmap image, short x, short y, bool removeBlack = true)
+        public void InsertImage(int index, SKBitmap image, short x, short y, bool removeBlack = true)
         {
             MImage mImage = new MImage(image, removeBlack) { X = x, Y = y };
 
@@ -357,14 +355,14 @@ namespace Mir.Lib
             public int Length;
             public byte[] FBytes;
             public bool TextureValid;
-            public Bitmap? Image, Preview;
+            public SKBitmap? Image, Preview;
 
             //layer 2:
             public short MaskWidth, MaskHeight, MaskX, MaskY;
 
             public int MaskLength;
             public byte[] MaskFBytes = Array.Empty<byte>();
-            public Bitmap? MaskImage;
+            public SKBitmap? MaskImage;
             public Boolean HasMask;
 
             public MImage(BinaryReader reader)
@@ -399,7 +397,7 @@ namespace Mir.Lib
                 this.Height = Height;
             }
 
-            public MImage(Bitmap image, bool removeBlack = true)
+            public MImage(SKBitmap image, bool removeBlack = true)
             {
                 if (image == null)
                 {
@@ -414,7 +412,7 @@ namespace Mir.Lib
                 FBytes = ConvertBitmapToArray(Image!, removeBlack);
             }
 
-            public MImage(Bitmap image, Bitmap Maskimage, bool removeBlack = true)
+            public MImage(SKBitmap image, SKBitmap Maskimage, bool removeBlack = true)
             {
                 if (image == null)
                 {
@@ -438,20 +436,18 @@ namespace Mir.Lib
                 MaskFBytes = ConvertBitmapToArray(MaskImage!, removeBlack);
             }
 
-            private Bitmap FixImageSize(Bitmap input)
+            private static SKBitmap FixImageSize(SKBitmap input)
             {
                 int w = input.Width + (4 - input.Width % 4) % 4;
                 int h = input.Height + (4 - input.Height % 4) % 4;
 
                 if (input.Width != w || input.Height != h)
                 {
-                    Bitmap temp = new Bitmap(w, h);
-                    using (Graphics g = Graphics.FromImage(temp))
+                    SKBitmap temp = SkiaBitmaps.Create(w, h);
+                    using (var canvas = new SKCanvas(temp))
                     {
-                        g.Clear(Color.Transparent);
-                        g.InterpolationMode = InterpolationMode.NearestNeighbor;
-                        g.DrawImage(input, 0, 0);
-                        g.Save();
+                        canvas.Clear(SKColors.Transparent);
+                        canvas.DrawBitmap(input, SKPoint.Empty, new SKSamplingOptions(SKFilterMode.Nearest));
                     }
                     input.Dispose();
                     input = temp;
@@ -460,16 +456,9 @@ namespace Mir.Lib
                 return input;
             }
 
-            private unsafe byte[] ConvertBitmapToArray(Bitmap input, bool removeBlack = true)
+            private static byte[] ConvertBitmapToArray(SKBitmap input, bool removeBlack = true)
             {
-                BitmapData data = input.LockBits(new Rectangle(0, 0, input.Width, input.Height), ImageLockMode.ReadOnly,
-                                                 PixelFormat.Format32bppArgb);
-
-                byte[] pixels = new byte[input.Width * input.Height * 4];
-
-                Marshal.Copy(data.Scan0, pixels, 0, pixels.Length);
-
-                input.UnlockBits(data);
+                byte[] pixels = SkiaBitmaps.ToBgra(input);
 
                 if (removeBlack)
                 {
@@ -486,25 +475,14 @@ namespace Mir.Lib
                 return compressedBytes;
             }
 
-            public unsafe void CreateTexture(BinaryReader reader)
+            public void CreateTexture(BinaryReader reader)
             {
                 int w = Width;
                 int h = Height;
 
                 if (w < 2 || h < 2) return;
 
-                Image = new Bitmap(w, h);
-
-                BitmapData data = Image.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadWrite,
-                                                 PixelFormat.Format32bppArgb);
-
-                byte[] dest = Decompress(FBytes);
-
-                Marshal.Copy(dest, 0, data.Scan0, dest.Length);
-
-                Image.UnlockBits(data);
-
-                dest = null!;
+                Image = SkiaBitmaps.FromBgra(Decompress(FBytes), w, h);
 
                 if (HasMask)
                 {
@@ -518,16 +496,7 @@ namespace Mir.Lib
 
                     try
                     {
-                        MaskImage = new Bitmap(w, h);
-
-                        data = MaskImage.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadWrite,
-                                                         PixelFormat.Format32bppArgb);
-
-                        dest = Decompress(MaskFBytes);
-
-                        Marshal.Copy(dest, 0, data.Scan0, dest.Length);
-
-                        MaskImage.UnlockBits(data);
+                        MaskImage = SkiaBitmaps.FromBgra(Decompress(MaskFBytes), w, h);
                     }
                     catch (Exception ex)
                     {
@@ -535,26 +504,19 @@ namespace Mir.Lib
                         Console.Error.WriteLine(string.Format("[{0}] {1}{2}", DateTime.Now, ex, Environment.NewLine));
                     }
                 }
-
-                dest = null!;
             }
 
             /// <summary>
-            /// 从内存中的 FBytes 解压还原 Bitmap（不依赖文件流，供导出PNG用）
+            /// 从内存中的 FBytes 解压还原位图（不依赖文件流，供导出图片用）
             /// </summary>
-            public unsafe void CreateTextureFromBytes()
+            public void CreateTextureFromBytes()
             {
                 int w = Width;
                 int h = Height;
 
                 if (w < 2 || h < 2 || FBytes == null || FBytes.Length == 0) return;
 
-                Image = new Bitmap(w, h);
-                BitmapData data = Image.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadWrite,
-                                                 PixelFormat.Format32bppArgb);
-                byte[] dest = Decompress(FBytes);
-                Marshal.Copy(dest, 0, data.Scan0, Math.Min(dest.Length, w * h * 4));
-                Image.UnlockBits(data);
+                Image = SkiaBitmaps.FromBgra(Decompress(FBytes), w, h);
             }
 
             public void Save(BinaryWriter writer)
@@ -636,22 +598,23 @@ namespace Mir.Lib
             {
                 if (Image == null)
                 {
-                    Preview = new Bitmap(1, 1);
+                    Preview = SkiaBitmaps.CreateEmpty();
                     return;
                 }
 
-                Preview = new Bitmap(64, 64);
-
-                using (Graphics g = Graphics.FromImage(Preview))
+                var preview = SkiaBitmaps.Create(64, 64);
+                using (var canvas = new SKCanvas(preview))
                 {
-                    g.InterpolationMode = InterpolationMode.Low;
-                    g.Clear(Color.Transparent);
+                    canvas.Clear(SKColors.Transparent);
                     int w = Math.Min((int)Width, 64);
                     int h = Math.Min((int)Height, 64);
-                    g.DrawImage(Image, new Rectangle((64 - w) / 2, (64 - h) / 2, w, h), new Rectangle(0, 0, Width, Height), GraphicsUnit.Pixel);
-
-                    g.Save();
+                    float dx = (64 - w) / 2f;
+                    float dy = (64 - h) / 2f;
+                    canvas.DrawBitmap(Image, SKRect.Create(dx, dy, w, h),
+                                     new SKSamplingOptions(SKFilterMode.Linear));
                 }
+
+                Preview = preview;
             }
         }
     }

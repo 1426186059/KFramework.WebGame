@@ -1,4 +1,4 @@
-using System.Drawing.Imaging;
+using SkiaSharp;
 
 namespace Mir.Lib
 {
@@ -56,7 +56,7 @@ namespace Mir.Lib
                 string? dir = Path.GetDirectoryName(outputPng);
                 if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
 
-                mi.Image.Save(outputPng, ImageFormat.Png);
+                SkiaBitmaps.SavePng(mi.Image, outputPng);
                 mi.Image.Dispose();
                 mi.Image = null;
 

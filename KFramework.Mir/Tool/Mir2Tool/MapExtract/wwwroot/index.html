@@ -80,6 +80,16 @@
                     <button id="btnLoadMirDb" class="btn">加载 MirDB</button>
                     <label class="check"><input id="recursiveScan" type="checkbox" /> 递归扫描子目录</label>
                     <label class="check"><input id="onlyMirDb" type="checkbox" checked /> 仅显示 MirDB 中的地图</label>
+                    <label class="check" title="导出地图时，顺手把产出的 PNG 也转成 WebP（网页游戏用）">
+                        <input id="exportWebP" type="checkbox" /> 转 WebP
+                    </label>
+                    <label class="check" title="无损 WebP：像素 100% 还原，避免有损压缩的振铃/透明边失真（推荐）">
+                        <input id="webpLossless" type="checkbox" /> 无损
+                    </label>
+                    <label class="check">质量/力度<input id="webpQuality" type="text" class="num" /></label>
+                    <label class="check" title="更省磁盘；关闭后预览仍使用 PNG">
+                        <input id="deletePngAfterWebP" type="checkbox" /> 转后删 PNG
+                    </label>
                 </div>
             </div>
 

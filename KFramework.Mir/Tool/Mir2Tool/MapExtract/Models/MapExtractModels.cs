@@ -22,6 +22,15 @@ namespace MapExtract.Models
         public string MinimapLibPath { get; set; } = @"D:\OpenSource\Crystal\Build\Client\Debug\Data\mmap.Lib";
         public string MirDBPath { get; set; } = @"D:\OpenSource\Crystal\Build\Server\Debug\Server.MirDB";
         public bool RecursiveScan { get; set; }
+
+        /// <summary>导出地图时，顺手把产出的 PNG 也转成 WebP（网页游戏用）</summary>
+        public bool ExportWebP { get; set; } = true;
+        /// <summary>WebP 无损编码（默认 true）：像素 100% 还原，避免有损压缩的振铃/透明边失真</summary>
+        public bool WebPLossless { get; set; } = true;
+        /// <summary>WebP 质量/压缩力度 1~100；无损模式下表示压缩力度，有损模式下表示画质</summary>
+        public int WebPQuality { get; set; } = 90;
+        /// <summary>转成 WebP 后删除 PNG（更省磁盘；关闭后预览仍走 PNG）</summary>
+        public bool DeletePngAfterWebP { get; set; }
     }
 
     /// <summary>扫描到的一张地图（含 MirDB 匹配信息）。</summary>

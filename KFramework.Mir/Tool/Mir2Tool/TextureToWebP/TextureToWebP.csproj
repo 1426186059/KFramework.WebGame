@@ -4,11 +4,11 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>LibraryExtract</RootNamespace>
+    <RootNamespace>TextureToWebP</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- 图像处理统一使用 SkiaSharp，不再依赖 System.Drawing -->
+    <!-- 图像处理统一使用 SkiaSharp（跨平台、原生支持 WebP），不依赖 System.Drawing -->
     <PackageReference Include="SkiaSharp" Version="4.152.0" />
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="4.152.0" />
     <ProjectReference Include="..\MirLib\MirLib.csproj" />

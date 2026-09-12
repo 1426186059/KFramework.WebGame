@@ -3,6 +3,7 @@ using System.Text.Json;
 using MapExtract.Models;
 using Mir.Lib;
 using Mir.Map;
+using SkiaSharp;
 
 namespace MapExtract.Services
 {
@@ -425,6 +426,10 @@ namespace MapExtract.Services
                 AppendLog(log, $"[{mapName}] 按需从 Lib 解压 {mr.LazyExtractedCount} 张"
                                + (mr.LazyMissedCount > 0 ? $"；Lib 中缺失 {mr.LazyMissedCount} 张" : ""));
 
+            // 顺手把该地图产出的 PNG 转成 WebP（网页游戏直接用 WebP 更省体积/流量）
+            if (_config.ExportWebP)
+                ConvertOutputToWebP(dst + mapName, log);
+
             // 将中文名写入地图目录下的 {中文名}.txt
             if (!string.IsNullOrEmpty(chineseTitle))
             {
@@ -442,6 +447,65 @@ namespace MapExtract.Services
 
             AppendLog(log, $"地图 [{mapName}] 提取完成 -> {dst}{mapName}");
             return true;
+        }
+
+        /// <summary>
+        /// 把某张地图输出目录里的 PNG 转成 WebP。
+        /// 网页游戏用 WebP：浏览器原生支持，体积通常只有 PNG 的 20%~40%。
+        /// </summary>
+        private void ConvertOutputToWebP(string mapOutputDir, List<string> log)
+        {
+            if (!Directory.Exists(mapOutputDir)) return;
+
+            string name = Path.GetFileName(mapOutputDir.TrimEnd('\\', '/'));
+            int count = 0;
+            long srcBytes = 0, webpBytes = 0;
+
+            foreach (var png in Directory.GetFiles(mapOutputDir, "*.png", SearchOption.AllDirectories))
+            {
+                try
+                {
+                    var bmp = SkiaBitmaps.Decode(png);
+                    if (bmp == null) continue;
+
+                    using (bmp)
+                    {
+                        try { srcBytes += new FileInfo(png).Length; } catch { }
+
+                        string webp = Path.ChangeExtension(png, ".webp");
+                        SkiaBitmaps.SaveWebP(bmp, webp, ClampQuality(_config.WebPQuality), _config.WebPLossless);
+
+                        try { webpBytes += new FileInfo(webp).Length; } catch { }
+                    }
+
+                    if (_config.DeletePngAfterWebP)
+                        File.Delete(png);
+
+                    count++;
+                }
+                catch (Exception ex)
+                {
+                    AppendLog(log, $"[WARN] [{name}] WebP 转换失败: {Path.GetFileName(png)} -> {ex.Message}");
+                }
+            }
+
+            if (count > 0)
+            {
+                double ratio = srcBytes > 0 ? (1.0 - (double)webpBytes / srcBytes) * 100 : 0;
+                AppendLog(log, $"[{name}] WebP {count} 个：{FmtBytes(srcBytes)} → {FmtBytes(webpBytes)}"
+                               + $"（节省 {ratio:F1}%）"
+                               + (_config.DeletePngAfterWebP ? "；已删除 PNG" : ""));
+            }
+        }
+
+        private static int ClampQuality(int q) => q < 1 ? 1 : (q > 100 ? 100 : q);
+
+        internal static string FmtBytes(long bytes)
+        {
+            if (bytes >= 1024L * 1024 * 1024) return (bytes / 1073741824.0).ToString("F2") + " GB";
+            if (bytes >= 1024L * 1024) return (bytes / 1048576.0).ToString("F1") + " MB";
+            if (bytes >= 1024) return (bytes / 1024.0).ToString("F0") + " KB";
+            return bytes + " B";
         }
 
         /// <summary>移植自 MapToolWindow.formatToSourcePath（改为基于配置的源路径）</summary>
