@@ -97,13 +97,15 @@ namespace Mir.Lib
             string? dir = Path.GetDirectoryName(path);
             if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
 
-            var options = new SKWebpEncoderOptions
-            {
-                Lossless = lossless,
-                Quality = (byte)ClampQuality(quality),
-            };
-            using var img = SKImage.FromBitmap(bmp);
-            using var data = img.Encode(options);
+            // 4.152.0：WebP 选项经 SKPixmap.Encode 传入，quality 为 float(0~100)。
+            // Lossless 枚举 = 像素 100% 还原，消除有损压缩在硬边缘的振铃/透明边失真；
+            // 有损模式下 quality 为视觉质量，无损模式下为压缩力度（越大越慢、体积略小）。
+            var compression = lossless ? SKWebpEncoderCompression.Lossless : SKWebpEncoderCompression.Lossy;
+            var options = new SKWebpEncoderOptions(compression, quality);
+
+            using var pixmap = new SKPixmap();
+            bmp.PeekPixels(pixmap);
+            using var data = pixmap.Encode(options);
             if (data == null) throw new IOException("WebP 编码失败: " + path);
 
             using var fs = File.Create(path);
