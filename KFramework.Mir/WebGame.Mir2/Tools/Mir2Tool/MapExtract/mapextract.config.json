@@ -1,0 +1,9 @@
+﻿{
+  "ClientRootPath": "D:\\OpenSource\\Crystal\\Build\\Client\\Debug",
+  "MapDir": "D:\\OpenSource\\Crystal\\Build\\Client\\Debug\\Map",
+  "SourcePath": "D:\\OpenSource\\Crystal\\Build\\Client\\Debug\\Data\\Map",
+  "DestinationPath": "D:\\OpenSource\\2026Map",
+  "MinimapLibPath": "D:\\OpenSource\\Crystal\\Build\\Client\\Debug\\Data\\mmap.Lib",
+  "MirDBPath": "D:\\OpenSource\\Crystal\\Build\\Server\\Debug\\Server.MirDB",
+  "RecursiveScan": false
+}

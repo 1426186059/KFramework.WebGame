@@ -1,0 +1,13 @@
+{
+  "name": "mirengine-tsengine",
+  "version": "1.0.0",
+  "private": true,
+  "description": "浏览器引擎 TS 层源码（原 jsengine 已改名为 tsengine）。src\\ 下是唯一可编辑源，tsc 产出 dist\\ 下的 ES module .js，由各站 csproj 的 CopyJsEngine 目标复制到 Web_Mir2 / Web_Mir3 的 wwwroot\\jsengine。",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -p tsconfig.json --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

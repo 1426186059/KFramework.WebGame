@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <RootNamespace>MirEngine</RootNamespace>
+    <AssemblyName>MirEngine.Browser</AssemblyName>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <NoWarn>$(NoWarn);CS0436</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 不引用 System.Drawing.Common：GDI+ 在 browser/WASM 不可用。
+         几何 / 颜色 / 字体 / 键鼠事件参数统一由 MirEngine\Shims 下的高仿类提供。
+         它们位于 MirEngine 命名空间（不与框架的 System.Drawing 同名），因此可直接编进本库，
+         宿主工程只需 ProjectReference + using MirEngine; 即可。 -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="**\obj\**" />
+    <Compile Remove="**\bin\**" />
+    <!-- Shims\Forms\ 是公共 WinForms shim 的单一来源（TextBox / BorderStyle / SystemInformation /
+         TextFormatFlags / Cursor / Timer / Application / TextRenderer 等）。宿主工程（Web_Mir2 / Web_Mir3）
+         一律复用本库，不得再自行定义同名类型，避免重复定义与"改错文件"。
+         例外：Control.ModifierKeys 依赖宿主的 Client.CMain，仍由各宿主工程自行保留。 -->
+  </ItemGroup>
+
+</Project>
