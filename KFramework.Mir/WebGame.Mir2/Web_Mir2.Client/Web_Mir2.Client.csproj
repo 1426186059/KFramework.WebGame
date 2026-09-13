@@ -38,10 +38,10 @@
     <Content Update="wwwroot\MyRes\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
-  <!-- 浏览器通用库 MirEngine.Browser\tsengine：**TypeScript 源码 → tsc 产物（dist\*.js）→ 本站 wwwroot\jsengine**。
+  <!-- 浏览器通用库 Web_Mir2.Engine\tsengine：**TypeScript 源码 → tsc 产物（dist\*.js）→ 本站 wwwroot\jsengine**。
        目录分工（改名后不再混用同一个名字）：
-         MirEngine.Browser\tsengine\src\   —— 唯一可编辑源（*.ts），入库
-         MirEngine.Browser\tsengine\dist\  —— tsc 产物（*.js），不入库存忽略
+         Web_Mir2.Engine\tsengine\src\   —— 唯一可编辑源（*.ts），入库
+         Web_Mir2.Engine\tsengine\dist\  —— tsc 产物（*.js），不入库存忽略
          wwwroot\jsengine\                 —— 运行时加载目录，由本目标从 dist\ 拷入
        ① 在 tsengine 目录执行一次 `npm install` 后：
             npm run build   —— 由 tsc 把 src\ 编译到 dist\（同名 *.js，无 src 前缀）
@@ -57,20 +57,20 @@
     <!-- 直接用 node 跑本地 tsc（而不是 npm run build）：
          从工程目录发起，tsc 打印的相对路径就是本工程相对路径，VS「错误列表」里可双击直接跳到出错的 .ts。
          CustomError* 让 tsc 的每一行报错/告警都作为一条可点击项进错误列表，而不是只在输出窗口里一闪而过。
-         等价的手工命令：cd MirEngine.Browser\tsengine &amp;&amp; npm run build（或 npm run watch 边改边编译）。 -->
-    <Exec Command="node ..\MirEngine.Browser\tsengine\node_modules\typescript\lib\tsc.js -p ..\MirEngine.Browser\tsengine\tsconfig.json" Condition="Exists('..\MirEngine.Browser\tsengine\node_modules\typescript')" CustomErrorRegularExpression="error TS[0-9]+" CustomWarningRegularExpression="warning TS[0-9]+" />
+         等价的手工命令：cd Web_Mir2.Engine\tsengine &amp;&amp; npm run build（或 npm run watch 边改边编译）。 -->
+    <Exec Command="node ..\Web_Mir2.Engine\tsengine\node_modules\typescript\lib\tsc.js -p ..\Web_Mir2.Engine\tsengine\tsconfig.json" Condition="Exists('..\Web_Mir2.Engine\tsengine\node_modules\typescript')" CustomErrorRegularExpression="error TS[0-9]+" CustomWarningRegularExpression="warning TS[0-9]+" />
   </Target>
 
   <!-- 没装 typescript 时上面的 Exec 会被 Condition 跳过，编译等于没跑：这里显式告警，
        避免“改了 TS 但 wwwroot 里还是旧产物”这种悄悄滑过去的情况。 -->
   <Target Name="WarnJsEngineSkipped" AfterTargets="BuildJsEngine">
-    <Warning Condition="!Exists('..\MirEngine.Browser\tsengine\node_modules\typescript')" Text="未检测到 MirEngine.Browser\tsengine\node_modules\typescript，本次跳过了 TS 编译，wwwroot\jsengine 将沿用现有产物。请在该目录执行 npm install（之后构建会自动编译）。" />
+    <Warning Condition="!Exists('..\Web_Mir2.Engine\tsengine\node_modules\typescript')" Text="未检测到 Web_Mir2.Engine\tsengine\node_modules\typescript，本次跳过了 TS 编译，wwwroot\jsengine 将沿用现有产物。请在该目录执行 npm install（之后构建会自动编译）。" />
   </Target>
 
   <Target Name="CopyJsEngine" BeforeTargets="BeforeBuild;BeforeRebuild">
     <ItemGroup>
       <!-- 只拷 dist\ 下的 *.js：dist\**\*.js 的 RecursiveDir 正好是 core\ / render\ 等子目录结构。 -->
-      <_JsEngineSrc Include="..\MirEngine.Browser\tsengine\dist\**\*.js" />
+      <_JsEngineSrc Include="..\Web_Mir2.Engine\tsengine\dist\**\*.js" />
     </ItemGroup>
     <Copy SourceFiles="@(_JsEngineSrc)" DestinationFiles="@(_JsEngineSrc->'wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
@@ -78,6 +78,6 @@
   <!-- 兜底校验：没有 tsc 产物就没有入口 dist\main.js，此时必须先在 tsengine 目录下
        npm install && npm run build，否则站点起来后只会白屏并且难定位。 -->
   <Target Name="CheckJsEngineOutput" AfterTargets="CopyJsEngine">
-    <Error Condition="!Exists('..\MirEngine.Browser\tsengine\dist\main.js')" Text="缺少 tsengine 编译产物 dist\main.js。请先在 WebAssemblyBrowserApp\MirEngine.Browser\tsengine 目录下执行：npm install &amp;&amp; npm run build（或 npm run watch）后重新生成。" />
+    <Error Condition="!Exists('..\Web_Mir2.Engine\tsengine\dist\main.js')" Text="缺少 tsengine 编译产物 dist\main.js。请先在 Web_Mir2.Engine\tsengine 目录下执行：npm install &amp;&amp; npm run build（或 npm run watch）后重新生成。" />
   </Target>
 </Project>

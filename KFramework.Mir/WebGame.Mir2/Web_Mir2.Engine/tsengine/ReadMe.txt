@@ -1,4 +1,4 @@
-MirEngine.Browser\tsengine —— 浏览器引擎的 TypeScript 源码仓库
+Web_Mir2.Engine\tsengine —— 浏览器引擎的 TypeScript 源码仓库
 ================================================================
 
 【这个目录是干什么的】
@@ -22,7 +22,7 @@ MirEngine.Browser\tsengine —— 浏览器引擎的 TypeScript 源码仓库
        没有就去 https://nodejs.org/ 装 LTS 版（本项目在 Node 24 上验证过，Node 18+ 均可）。
 
     2) 安装 TypeScript 编译依赖（只需做一次）：
-           cd WebAssemblyBrowserApp\MirEngine.Browser\tsengine
+           cd Web_Mir2.Engine\tsengine
            npm install
        这一步会在本目录生成 node_modules\（已忽略入库）和 package-lock.json（已忽略入库）。
        国内网络慢可先切镜像再装：
