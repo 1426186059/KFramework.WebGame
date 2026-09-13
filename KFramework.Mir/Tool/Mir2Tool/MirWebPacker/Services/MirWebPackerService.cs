@@ -156,8 +156,6 @@ public sealed class MirWebPackerService
         Directory.CreateDirectory(outputDir);
         OutputRoot = outputDir;
 
-        string kind = req.Kind ?? "map";
-
         var subDirs = Directory.GetDirectories(root)
             .OrderBy(d => d, StringComparer.OrdinalIgnoreCase)
             .Where(d => !string.Equals(
@@ -182,7 +180,7 @@ public sealed class MirWebPackerService
             try
             {
                 var assets = _scanner.Scan(dir, req.Lossless, req.Quality);
-                builds.Add(new AssetBundleBuild { AssetBundleName = name, Kind = kind, Assets = assets });
+                builds.Add(new AssetBundleBuild { AssetBundleName = name, Assets = assets });
                 logLines.Add($"[扫描] {name}: {assets.Count} 个资源");
             }
             catch (Exception ex)
@@ -197,7 +195,7 @@ public sealed class MirWebPackerService
 
         // 2) 交给 WebLib.BuildPipeline 一次性构建所有包（ZIP + 总清单），对齐 Unity BuildPipeline.BuildAssetBundles
         var options = BuildAssetBundleOptions.ChunkBasedCompression | BuildAssetBundleOptions.Deterministic;
-        var result = BuildPipeline.BuildAssetBundles(builds, options, BuildTarget.WebGL, kind);
+        var result = BuildPipeline.BuildAssetBundles(builds, options, BuildTarget.WebGL);
 
         // 3) 落地：每个包写为文件名含短哈希的 .web.lib
         long totalBytes = 0;

@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace WebLib.AssetBundle;
+namespace WebLib;
 
 /// <summary>
 /// 内容哈希的唯一入口。当前固定使用 MD5（小写十六进制、无算法前缀）。

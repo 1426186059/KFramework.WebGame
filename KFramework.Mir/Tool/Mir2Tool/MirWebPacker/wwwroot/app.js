@@ -126,7 +126,6 @@ $("btnPack").onclick = async () => {
     const req = {
         root,
         outputDir: $("outputDir").value.trim() || null,
-        kind: $("kind").value.trim() || "map",
         lossless: $("lossless").checked,
         quality: parseInt($("quality").value, 10) || 90,
     };

@@ -6,7 +6,6 @@ namespace WebLib;
 /// </summary>
 /// <param name="Format">固定 "web.lib"</param>
 /// <param name="Version">清单结构版本</param>
-/// <param name="Kind">资源种类，如 map / library / shared</param>
 /// <param name="Name">逻辑名，如 3-1</param>
 /// <param name="Entries">资源索引</param>
-public sealed record AssetBundleContent(string Format, int Version, string Kind, string Name, List<AssetBundleEntry> Entries);
+public sealed record AssetBundleContent(string Format, int Version, string Name, List<AssetBundleEntry> Entries);

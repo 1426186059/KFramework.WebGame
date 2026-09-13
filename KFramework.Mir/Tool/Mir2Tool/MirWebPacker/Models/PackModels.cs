@@ -34,9 +34,6 @@ public sealed class PackRootRequest
     /// <summary>产物输出目录；缺省为 {root}/_packages</summary>
     public string? OutputDir { get; set; }
 
-    /// <summary>资源种类，写入每个包与总清单，如 map / library / shared</summary>
-    public string? Kind { get; set; } = "map";
-
     /// <summary>WebP 无损编码（默认 true）：像素 100% 还原</summary>
     public bool Lossless { get; set; } = true;
 

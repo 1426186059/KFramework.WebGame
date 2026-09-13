@@ -25,8 +25,7 @@ public static class BuildPipeline
     public static BuildResult BuildAssetBundles(
         IReadOnlyList<AssetBundleBuild> builds,
         BuildAssetBundleOptions options = BuildAssetBundleOptions.ChunkBasedCompression | BuildAssetBundleOptions.Deterministic,
-        BuildTarget target = BuildTarget.WebGL,
-        string kind = "map")
+        BuildTarget target = BuildTarget.WebGL)
     {
         var bundles = new Dictionary<string, byte[]>();
         var packages = new List<BundlePackage>();
@@ -43,7 +42,7 @@ public static class BuildPipeline
             packages.Add(new BundlePackage(b.AssetBundleName, file, bytes.LongLength, full, b.Assets.Count, Array.Empty<string>()));
         }
 
-        var manifest = new AssetBundleManifest(SetFormat, Version, kind, Hash.Algorithm, DateTime.UtcNow.ToString("O"), packages);
+        var manifest = new AssetBundleManifest(SetFormat, Version, Hash.Algorithm, DateTime.UtcNow.ToString("O"), packages);
         return new BuildResult(manifest, bundles);
     }
 
@@ -56,7 +55,7 @@ public static class BuildPipeline
         var entries = sorted.Select(a => new AssetBundleEntry(
             a.Path, a.Mime, a.Bytes.LongLength, Crc32Hex(a.Bytes), Hash.Hex(a.Bytes))).ToList();
 
-        var content = new AssetBundleContent(BundleFormat, Version, build.Kind, build.AssetBundleName, entries);
+        var content = new AssetBundleContent(BundleFormat, Version, build.AssetBundleName, entries);
 
         using var ms = new MemoryStream();
         using (var zip = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
