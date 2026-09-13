@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WebLib</RootNamespace>
+    <AssemblyName>WebLib</AssemblyName>
+    <Description>传奇 Web 资源包格式（.web.lib）核心库：打包 / 解包 + 总清单 + 热更（参照 Unity AssetBundle）。工具端与浏览器 WASM 引擎共用。</Description>
+  </PropertyGroup>
+
+</Project>

@@ -17,6 +17,8 @@
     <PackageReference Include="SkiaSharp" Version="4.152.0" />
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="4.152.0" />
     <ProjectReference Include="..\MirLib\MirLib.csproj" />
+    <!-- 资源包格式核心库（打包/解包/总清单/热更），与游戏引擎共用 -->
+    <ProjectReference Include="..\..\..\WebLib\WebLib.csproj" />
   </ItemGroup>
 
 </Project>

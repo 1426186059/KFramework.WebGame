@@ -37,6 +37,8 @@
   <ItemGroup>
     <!-- 浏览器通用库（与 Web_Mir3 共用）：JSBind 绑定、协程、WebGL2 渲染后端、异步资源加载 -->
     <ProjectReference Include="..\MirEngine.Browser\MirEngine.Browser.csproj" />
+    <!-- 资源包格式核心库（.web.lib 解包 / 总清单 / 热更），与打包工具共用 -->
+    <ProjectReference Include="..\..\WebLib\WebLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

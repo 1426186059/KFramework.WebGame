@@ -1,22 +1,23 @@
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using MirWebPacker.Models;
+using WebLib;
 
 namespace MirWebPacker.Services;
 
 /// <summary>
 /// Web 版打包服务：
 /// 1) 目录浏览（与 MapExtract 同源），用于在网页上选择资源根目录；
-/// 2) 打包：把 root 下每个子目录分别打成 .web.lib（多级目录分别打包），
-///    每个 zip 文件名带上内容短哈希，并生成一份总的 version.manifest 供游戏热更。
+/// 2) 打包：把 root 下每个子目录分别打成 .web.lib（多级目录分别打包），每个 zip 文件名带上内容短哈希，
+///    并生成一份总的 version.manifest 供游戏热更（通过 WebLib 的 BuildPipeline，对齐 Unity BuildPipeline.BuildAssetBundles）。
+///
+/// 核心打包/解包/总清单逻辑全部在共享库 WebLib 中（引擎侧同样使用，对应 Unity AssetBundle 体系），
+/// 本服务只负责目录扫描（依赖 Skia 转码）+ 落地文件 + 提供 Web 接口。
 /// </summary>
 public sealed class MirWebPackerService
 {
-    private static readonly JsonSerializerOptions s_jsonOpts = new() { WriteIndented = true };
-
     private readonly ILogger<MirWebPackerService> _logger;
-    private readonly MirWebPacker _packer;
+    private readonly AssetScanner _scanner;
     private readonly object _work = new();
     private readonly string _outputRootFile;
     private string _outputRoot = "";
@@ -24,7 +25,7 @@ public sealed class MirWebPackerService
     public MirWebPackerService(ILogger<MirWebPackerService> logger, IWebHostEnvironment env)
     {
         _logger = logger;
-        _packer = new MirWebPacker(msg => _logger.LogInformation("{Msg}", msg));
+        _scanner = new AssetScanner(msg => _logger.LogInformation("{Msg}", msg));
         _outputRootFile = Path.Combine(env.ContentRootPath, "mirwebpack.output.json");
         _outputRoot = LoadOutputRoot();
     }
@@ -38,7 +39,7 @@ public sealed class MirWebPackerService
             lock (_work)
             {
                 _outputRoot = value;
-                try { File.WriteAllText(_outputRootFile, value, Encoding.UTF8); } catch { }
+                try { File.WriteAllText(_outputRootFile, value, new UTF8Encoding(false)); } catch { }
             }
         }
     }
@@ -155,6 +156,8 @@ public sealed class MirWebPackerService
         Directory.CreateDirectory(outputDir);
         OutputRoot = outputDir;
 
+        string kind = req.Kind ?? "map";
+
         var subDirs = Directory.GetDirectories(root)
             .OrderBy(d => d, StringComparer.OrdinalIgnoreCase)
             .Where(d => !string.Equals(
@@ -167,66 +170,68 @@ public sealed class MirWebPackerService
         bool multiLevel = subDirs.Count > 0;
         var targets = multiLevel ? subDirs : new List<string> { root };
 
-        var packages = new List<PackageInfo>();
-        long totalBytes = 0;
+        // 1) 扫描每个目录 + png->webp 转码，构建 AssetBundleBuild 列表
+        var builds = new List<AssetBundleBuild>();
         var logLines = new List<string>();
-
         foreach (var dir in targets)
         {
-            string rawName = multiLevel
+            string name = multiLevel
                 ? Path.GetFileName(dir.TrimEnd('\\', '/'))
                 : Path.GetFileName(root);
-            string name = SanitizeName(rawName);
 
-            string temp = Path.Combine(Path.GetTempPath(), "mirwp_" + Guid.NewGuid().ToString("N") + ".tmp");
             try
             {
-                var manifest = _packer.Pack(dir, temp, name, req.Lossless, req.Quality);
-
-                string sha1 = Sha1File(temp);
-                string shortHash = sha1[..8];
-                string finalName = $"{name}.{shortHash}.web.lib";
-                string finalPath = Path.Combine(outputDir, finalName);
-                if (File.Exists(finalPath)) File.Delete(finalPath);
-                File.Move(temp, finalPath);
-
-                long size = new FileInfo(finalPath).Length;
-                totalBytes += size;
-                packages.Add(new PackageInfo(
-                    name,
-                    finalName,
-                    "/api/file/" + Uri.EscapeDataString(finalName),
-                    size,
-                    "sha1:" + sha1,
-                    manifest.Entries.Count,
-                    null));
-                logLines.Add($"✓ {name} → {finalName}  ({FmtBytes(size)}, {manifest.Entries.Count} 个资源)");
+                var assets = _scanner.Scan(dir, req.Lossless, req.Quality);
+                builds.Add(new AssetBundleBuild { AssetBundleName = name, Kind = kind, Assets = assets });
+                logLines.Add($"[扫描] {name}: {assets.Count} 个资源");
             }
             catch (Exception ex)
             {
-                if (File.Exists(temp)) File.Delete(temp);
                 logLines.Add($"[ERROR] {name}: {ex.Message}");
-                _logger.LogWarning(ex, "打包失败: {Dir}", dir);
+                _logger.LogWarning(ex, "扫描失败: {Dir}", dir);
             }
         }
 
-        if (packages.Count == 0)
+        if (builds.Count == 0)
             return Error("没有可打包的目录（根目录下没有子目录，且根目录本身也无资源）。\n" + string.Join("\n", logLines));
 
-        var bundle = new BundleManifest(
-            "web.lib.bundle",
-            1,
-            req.Kind ?? "map",
-            root,
-            DateTime.UtcNow.ToString("O"),
-            packages.Select(p => new BundlePackage(
-                p.Name, p.File, p.Size, p.Hash, p.Entries)).ToList());
+        // 2) 交给 WebLib.BuildPipeline 一次性构建所有包（ZIP + 总清单），对齐 Unity BuildPipeline.BuildAssetBundles
+        var options = BuildAssetBundleOptions.ChunkBasedCompression | BuildAssetBundleOptions.Deterministic;
+        var result = BuildPipeline.BuildAssetBundles(builds, options, BuildTarget.WebGL, kind);
 
+        // 3) 落地：每个包写为文件名含短哈希的 .web.lib
+        long totalBytes = 0;
+        var packages = new List<PackageInfo>();
+        foreach (var b in builds)
+        {
+            var pkg = result.Manifest.Packages.First(p => p.Name == b.AssetBundleName);
+            var bytes = result.Bundles[b.AssetBundleName];
+
+            string finalPath = Path.Combine(outputDir, pkg.File);
+            if (File.Exists(finalPath)) File.Delete(finalPath);
+            File.WriteAllBytes(finalPath, bytes);
+
+            long size = new FileInfo(finalPath).Length;
+            totalBytes += size;
+            packages.Add(new PackageInfo(
+                b.AssetBundleName,
+                pkg.File,
+                "/api/file/" + Uri.EscapeDataString(pkg.File),
+                size,
+                pkg.Hash,
+                pkg.Entries,
+                null));
+            logLines.Add($"✓ {b.AssetBundleName} → {pkg.File}  ({FmtBytes(size)}, {pkg.Entries} 个资源)");
+        }
+        packages = packages.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase).ToList();
+
+        // 4) 写总清单 version.manifest（不含 Root，兼顾分散打包）
         string manifestPath = Path.Combine(outputDir, "version.manifest");
-        string manifestJson = JsonSerializer.Serialize(bundle, s_jsonOpts);
-        File.WriteAllText(manifestPath, manifestJson, Encoding.UTF8);
+        string manifestJson = result.Manifest.Serialize();
+        File.WriteAllText(manifestPath, manifestJson, new UTF8Encoding(false));
 
         var msg = $"打包完成：{packages.Count} 个资源包，共 {FmtBytes(totalBytes)}\n" +
+                  $"哈希算法：{result.Manifest.Hash}\n" +
                   $"输出目录: {outputDir}\nversion.manifest 已生成（{packages.Count} 个包）\n\n" +
                   string.Join("\n", logLines);
         return new PackRootResult(
@@ -235,25 +240,6 @@ public sealed class MirWebPackerService
     }
 
     // ==================== 工具 ====================
-
-    private static string Sha1File(string path)
-    {
-        using var fs = File.OpenRead(path);
-        var hash = SHA1.HashData(fs);
-        return Convert.ToHexString(hash).ToLowerInvariant();
-    }
-
-    private static string SanitizeName(string name)
-    {
-        var sb = new StringBuilder();
-        foreach (var c in name)
-        {
-            bool ok = char.IsLetterOrDigit(c) || c == '.' || c == '-' || c == '_';
-            sb.Append(ok ? c : '_');
-        }
-        var s = sb.ToString().Trim('.', '_');
-        return string.IsNullOrEmpty(s) ? "pkg" : s;
-    }
 
     public static string FmtBytes(long bytes)
     {

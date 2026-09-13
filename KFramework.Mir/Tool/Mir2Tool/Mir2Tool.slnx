@@ -4,4 +4,5 @@
   <Project Path="TextureToWebP/TextureToWebP.csproj" Id="c5a8d3f6-2e91-4b07-8f4a-9d1e7b3c2058" />
   <Project Path="MirLib/MirLib.csproj" Id="b3e6f0a1-4c7d-4a52-9e18-5df02c7a9146" />
   <Project Path="MirWebPacker/MirWebPacker.csproj" Id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d" />
+  <Project Path="..\..\WebLib\WebLib.csproj" Id="f47b8c1a-2d3e-4f56-9a0b-1c2d3e4f5a6b" />
 </Solution>
