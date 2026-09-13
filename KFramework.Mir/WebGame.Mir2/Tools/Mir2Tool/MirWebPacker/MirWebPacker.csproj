@@ -16,9 +16,12 @@
     <!-- 图像处理复用 MirLib 的 SkiaSharp 能力（含无损 WebP） -->
     <PackageReference Include="SkiaSharp" Version="4.152.0" />
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="4.152.0" />
-    <ProjectReference Include="..\MirLib\MirLib.csproj" />
     <!-- 资源包格式核心库（打包/解包/总清单/热更），与游戏引擎共用 -->
-    <ProjectReference Include="..\..\..\WebLib\WebLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MirLib\MirLib.csproj" />
+    <ProjectReference Include="..\WebLib\WebLib.csproj" />
   </ItemGroup>
 
 </Project>

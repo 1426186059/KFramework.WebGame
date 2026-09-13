@@ -2,6 +2,7 @@
   <Folder Name="/Mir2Tool/">
     <Project Path="Tools/Mir2Tool/LibraryExtract/LibraryExtract.csproj" />
     <Project Path="Tools/Mir2Tool/MapExtract/MapExtract.csproj" />
+    <Project Path="Tools/Mir2Tool/MirLib/MirLib.csproj" />
     <Project Path="Tools/Mir2Tool/MirWebPacker/MirWebPacker.csproj" />
     <Project Path="Tools/Mir2Tool/TextureToWebP/TextureToWebP.csproj" />
     <Project Path="Tools/Mir2Tool/WebLib/WebLib.csproj" />

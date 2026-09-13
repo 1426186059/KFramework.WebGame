@@ -11,8 +11,9 @@
     <!-- 图像处理统一使用 SkiaSharp，不再依赖 System.Drawing -->
     <PackageReference Include="SkiaSharp" Version="4.152.0" />
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="4.152.0" />
-    <!-- 共享的 .Lib 读取能力（MLibraryV2），用于从客户端资源按需抽素材 -->
     <ProjectReference Include="..\MirLib\MirLib.csproj" />
+    <!-- 共享的 .Lib 读取能力（MLibraryV2），用于从客户端资源按需抽素材 -->
+    <ProjectReference Include="..\WebLib\WebLib.csproj" />
   </ItemGroup>
 
 </Project>
