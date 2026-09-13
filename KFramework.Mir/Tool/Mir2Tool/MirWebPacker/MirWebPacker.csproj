@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <Content Include="Properties\launchSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- 图像处理复用 MirLib 的 SkiaSharp 能力（含无损 WebP） -->
     <PackageReference Include="SkiaSharp" Version="4.152.0" />
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="4.152.0" />
