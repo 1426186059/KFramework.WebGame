@@ -112,6 +112,18 @@ namespace Mir.Lib
             data.SaveTo(fs);
         }
 
+        /// <summary>把位图编码为 WebP 字节数组（用于打包进内存流，不直接落盘）</summary>
+        public static byte[] EncodeWebPBytes(SKBitmap bmp, int quality = 90, bool lossless = true)
+        {
+            var compression = lossless ? SKWebpEncoderCompression.Lossless : SKWebpEncoderCompression.Lossy;
+            var options = new SKWebpEncoderOptions(compression, quality);
+            using var pixmap = new SKPixmap();
+            bmp.PeekPixels(pixmap);
+            using var data = pixmap.Encode(options);
+            if (data == null) throw new IOException("WebP 编码失败");
+            return data.ToArray();
+        }
+
         private static int ClampQuality(int q) => q < 0 ? 0 : (q > 100 ? 100 : q);
 
         /// <summary>解码图片文件；失败返回 null</summary>

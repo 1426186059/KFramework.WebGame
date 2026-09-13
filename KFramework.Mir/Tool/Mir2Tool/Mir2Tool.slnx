@@ -3,4 +3,5 @@
   <Project Path="LibraryExtract/LibraryExtract.csproj" Id="7f2c1a94-5b3e-4d81-9f0a-62c4e8b1d735" />
   <Project Path="TextureToWebP/TextureToWebP.csproj" Id="c5a8d3f6-2e91-4b07-8f4a-9d1e7b3c2058" />
   <Project Path="MirLib/MirLib.csproj" Id="b3e6f0a1-4c7d-4a52-9e18-5df02c7a9146" />
+  <Project Path="MirWebPacker/MirWebPacker.csproj" Id="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d" />
 </Solution>
