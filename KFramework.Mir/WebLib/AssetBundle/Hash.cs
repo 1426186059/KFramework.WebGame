@@ -17,6 +17,6 @@ public static class Hash
         Convert.ToHexString(MD5.HashData(data)).ToLowerInvariant();
 
     /// <summary>取完整哈希的前 <paramref name="len"/> 位，用于包文件名（短哈希）。</summary>
-    public static string Shorten(string fullHex, int len = 8) =>
+    public static string Shorten(string fullHex, int len = 16) =>
         fullHex.Length <= len ? fullHex : fullHex[..len];
 }
