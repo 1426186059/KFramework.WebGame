@@ -1,5 +1,5 @@
-using System.Diagnostics;
-using KFramework.Content;
+﻿using System.Diagnostics;
+using KFramework.MonoGame;
 
 namespace KFramework.Example2;
 
@@ -20,7 +20,7 @@ internal sealed class SoundCenter
             if (content.TryLoadBytes("audio/" + key, out byte[]? bytes) && bytes is not null)
                 center._effects[key] = SoundEffect.FromBytes(bytes, "audio/wav");
             else
-                Console.WriteLine($"[KFramework] 缺少音效资源：audio/{key}");
+                Console.WriteLine($"[KFramework.MonoGame] 缺少音效资源：audio/{key}");
         }
         return center;
     }

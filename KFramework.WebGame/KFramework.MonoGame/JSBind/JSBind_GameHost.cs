@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices.JavaScript;
 
-namespace KFramework.JSBind
+namespace KFramework.MonoGame
 {
 
     /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace KFramework
+﻿namespace KFramework.MonoGame
 {
 
     /// <summary>一帧的时间信息。为结构体，每帧零分配。</summary>

@@ -1,4 +1,4 @@
-namespace KFramework.CoroutineIEnumerator
+﻿namespace KFramework.MonoGame
 {
     /// <summary>
     /// 等到本帧渲染结束（LateUpdate 之后）再继续（等价于 Unity 的 WaitForEndOfFrame）。

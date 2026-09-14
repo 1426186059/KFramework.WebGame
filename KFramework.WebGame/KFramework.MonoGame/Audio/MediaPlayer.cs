@@ -1,4 +1,4 @@
-﻿namespace KFramework
+﻿namespace KFramework.MonoGame
 {
 
     /// <summary>

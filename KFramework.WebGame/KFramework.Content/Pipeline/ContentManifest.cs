@@ -1,7 +1,7 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace KFramework.Content.Pipeline;
+namespace KFramework.MonoGame;
 
 /// <summary>清单中的一个资源条目。</summary>
 public sealed class ManifestAsset
@@ -65,7 +65,7 @@ public sealed class ContentManifest
 
     public ManifestAsset? Find(string name)
     {
-        string normalized = Pak.PakFormat.NormalizeName(name);
+        string normalized = PakFormat.NormalizeName(name);
         foreach (ManifestAsset asset in Assets)
             if (asset.Name == normalized) return asset;
         return null;

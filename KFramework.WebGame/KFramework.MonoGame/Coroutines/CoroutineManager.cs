@@ -1,7 +1,7 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Diagnostics;
 
-namespace KFramework.CoroutineIEnumerator
+namespace KFramework.MonoGame
 {
     /// <summary>
     /// 协程调度器（等价于 Unity 的 MonoBehaviour 协程系统）。

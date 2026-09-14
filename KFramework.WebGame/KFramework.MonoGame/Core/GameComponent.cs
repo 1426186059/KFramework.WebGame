@@ -1,6 +1,6 @@
-﻿using KFramework.Graphics;
+﻿using KFramework.MonoGame;
 
-namespace KFramework
+namespace KFramework.MonoGame
 {
 
     /// <summary>可挂载到 <see cref="Game"/> 上的逻辑组件。</summary>

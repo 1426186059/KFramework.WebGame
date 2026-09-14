@@ -1,8 +1,8 @@
 ﻿using System.Runtime.InteropServices.JavaScript;
 
-using KFramework.JSBind;
+using KFramework.MonoGame;
 
-namespace KFramework.Graphics
+namespace KFramework.MonoGame
 {
 
     /// <summary>
@@ -65,7 +65,7 @@ namespace KFramework.Graphics
             JSBind_GL.BlendEquation(JSBind_GL.FUNC_ADD);
             SetBlendState(BlendState.NonPremultiplied);
 
-            Console.WriteLine($"[KFramework] WebGL2 就绪 | {Renderer} | 画布 {Viewport.Width}x{Viewport.Height} | 最大纹理 {MaxTextureSize}");
+            Console.WriteLine($"[KFramework.MonoGame] WebGL2 就绪 | {Renderer} | 画布 {Viewport.Width}x{Viewport.Height} | 最大纹理 {MaxTextureSize}");
         }
 
         private void ConfigureAttributes()
@@ -212,7 +212,7 @@ namespace KFramework.Graphics
             JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_WRAP_T, JSBind_GL.CLAMP_TO_EDGE);
 
             int error = JSBind_GL.GetError();
-            if (error != 0) Console.Error.WriteLine($"[KFramework] 纹理上传失败 0x{error:X4}（{width}x{height}，{rgba.Length} 字节）");
+            if (error != 0) Console.Error.WriteLine($"[KFramework.MonoGame] 纹理上传失败 0x{error:X4}（{width}x{height}，{rgba.Length} 字节）");
 
             return new Texture2D(handle, width, height, _batchKeySource++, ownsHandle: true);
         }

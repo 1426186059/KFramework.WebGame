@@ -1,4 +1,4 @@
-namespace KFramework.Content.Pak;
+﻿namespace KFramework.MonoGame;
 
 /// <summary>资源类型。</summary>
 public enum AssetType : byte

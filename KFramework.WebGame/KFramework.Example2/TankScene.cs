@@ -1,8 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using KFramework;
-using KFramework.Content;
-using KFramework.Graphics;
+using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 
 namespace KFramework.Example2;

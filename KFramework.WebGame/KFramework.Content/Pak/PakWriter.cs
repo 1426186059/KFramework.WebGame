@@ -1,8 +1,8 @@
-using System.Buffers.Binary;
+﻿using System.Buffers.Binary;
 using System.IO.Compression;
 using System.Text;
 
-namespace KFramework.Content.Pak;
+namespace KFramework.MonoGame;
 
 /// <summary>把若干资源写成一个 .pak 文件。</summary>
 public sealed class PakWriter
@@ -64,7 +64,7 @@ public sealed class PakWriter
     }
 
     /// <summary>添加一个 RGBA8 位图资源。</summary>
-    public void AddTexture(string name, Pipeline.Bitmap bitmap, AssetType type = AssetType.Texture)
+    public void AddTexture(string name, Bitmap bitmap, AssetType type = AssetType.Texture)
         => Add(name, type, bitmap.Pixels, bitmap.Width, bitmap.Height);
 
     public void AddText(string name, string text, AssetType type = AssetType.Text)

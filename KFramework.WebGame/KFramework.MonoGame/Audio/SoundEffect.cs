@@ -1,7 +1,7 @@
 ﻿using System.Threading;
-using KFramework.JSBind;
+using KFramework.MonoGame;
 
-namespace KFramework
+namespace KFramework.MonoGame
 {
 
     /// <summary>

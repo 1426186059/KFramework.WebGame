@@ -1,4 +1,4 @@
-namespace KFramework.CoroutineIEnumerator
+﻿namespace KFramework.MonoGame
 {
     /// <summary>
     /// 在条件为 true 期间一直等待，条件变 false 后继续（等价于 Unity 的 WaitUntil）。

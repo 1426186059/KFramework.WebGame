@@ -1,4 +1,4 @@
-// TexturePacker JSON(hash) 图集导入器：把 *.atlas.json + 图集页位图拆成单张散图，
+﻿// TexturePacker JSON(hash) 图集导入器：把 *.atlas.json + 图集页位图拆成单张散图，
 // 输出到内容管线的 raw/ 目录，由 ContentBuilder 重新装箱。
 //
 //   用法：AtlasImporter <图集目录> <输出目录>
@@ -6,7 +6,7 @@
 // 同时导出 animations 段为 <图集名>.anim.json，供运行时做逐帧动画。
 using System.Text;
 using System.Text.Json;
-using KFramework.Content.Pipeline;
+using KFramework.MonoGame;
 
 namespace KFramework.Example2.Tools;
 

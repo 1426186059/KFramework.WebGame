@@ -1,3 +1,5 @@
+using KFramework.MonoGame;
+
 namespace KFramework.Example2;
 
 /// <summary>坦克大战的全局常量与枚举。</summary>

@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 
-namespace KFramework
+namespace KFramework.MonoGame
 {
 
     /// <summary>二维向量（SIMD 友好的 64 位结构，可直接传给 WebGL）。</summary>

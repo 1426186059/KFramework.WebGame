@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Diagnostics;
 
-namespace KFramework.CoroutineIEnumerator
+namespace KFramework.MonoGame
 {
     /// <summary>
     /// 一个正在运行的协程句柄（等价于 Unity 的 Coroutine）。

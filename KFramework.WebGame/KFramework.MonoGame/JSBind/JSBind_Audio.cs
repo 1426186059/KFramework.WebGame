@@ -1,13 +1,13 @@
 ﻿using System.Runtime.InteropServices.JavaScript;
 
-namespace KFramework.JSBind
+namespace KFramework.MonoGame
 {
 
     /// <summary>
     /// audio 模块绑定。分两组能力：
     /// 1) 合成音效（振荡器实时合成，零资源，适合原型）；
     /// 2) 真实音频文件（wav/mp3/ogg，经 decodeAudioData 解码成 AudioBuffer 后播放）。
-    /// 这里只做跨语言调用，业务封装见 KFramework.Audio 下的 SoundEffect / SoundEffectInstance / MediaPlayer。
+    /// 这里只做跨语言调用，业务封装见 KFramework.MonoGame.Audio 下的 SoundEffect / SoundEffectInstance / MediaPlayer。
     /// </summary>
     internal static partial class JSBind_Audio
     {

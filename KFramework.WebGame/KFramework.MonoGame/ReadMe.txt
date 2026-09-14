@@ -31,14 +31,16 @@ KFramework.MonoGame —— 仿 MonoGame 引擎（面向 AI 智能体）
 
 命名空间约定
 ------------
-- 本库根命名空间为 KFramework（csproj 中 RootNamespace=KFramework，程序集名 KFramework）。
+- 本库源码统一使用单一命名空间 KFramework.MonoGame（不再细分 Graphics / JSBind / Content / CoroutineIEnumerator 等子命名空间，所有类型都直接位于 KFramework.MonoGame 之下），
+  一律采用传统大括号块式（namespace KFramework.MonoGame { }）；程序集名为 KFramework.MonoGame，外部以 using KFramework.MonoGame 引用。
+- 工程的 csproj <RootNamespace> 设为 KFramework.MonoGame（仅作为在 IDE 中新建文件的默认命名空间元数据，不影响已有源码命名空间与任何引用）。
 - 一律使用传统的“大括号块式”命名空间声明：
-      namespace KFramework
+      namespace KFramework.MonoGame
       {
           ...
       }
   不使用 C# 10 的文件作用域写法（行尾带分号的 namespace KFramework;）。
-- 子命名空间同样为大括号块式：KFramework.Graphics、KFramework.JSBind、KFramework.Content、KFramework.CoroutineIEnumerator。
+- 本库不分子命名空间：游戏宿主（Game / GameTime）、图形（GraphicsDevice / SpriteBatch / Texture2D）、音频（SoundEffect / MediaPlayer / AudioMaster）、输入（Input / Keys）、数学（Vector2 / Color / Rectangle）、JS 绑定（JSBind_*）、协程（Coroutine*）、内容管理（ContentManager）等全部直接位于 KFramework.MonoGame 之下。
 - 上层扩展层 KFramework.MonoGameExtend 使用命名空间 KFramework.MonoGameExtend（亦为大括号块式），
   与本库互不冲突；本库只提供基础引擎能力，详见 KFramework.MonoGameExtend/ReadMe.txt。
 

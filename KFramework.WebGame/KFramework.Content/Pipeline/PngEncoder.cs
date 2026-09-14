@@ -1,8 +1,8 @@
-using System.Buffers.Binary;
+﻿using System.Buffers.Binary;
 using System.IO.Compression;
 using System.Text;
 
-namespace KFramework.Content.Pipeline;
+namespace KFramework.MonoGame;
 
 /// <summary>把 RGBA8 位图编码为 8 位 RGBA PNG，仅用于输出"发布 Content"里的人眼预览图。</summary>
 public static class PngEncoder

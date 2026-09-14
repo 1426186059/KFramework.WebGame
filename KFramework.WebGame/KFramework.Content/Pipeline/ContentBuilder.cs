@@ -1,8 +1,8 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
-using KFramework.Content.Pak;
+using KFramework.MonoGame;
 
-namespace KFramework.Content.Pipeline;
+namespace KFramework.MonoGame;
 
 /// <summary>一次构建的结果统计。</summary>
 public sealed class BuildReport

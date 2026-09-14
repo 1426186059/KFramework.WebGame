@@ -1,7 +1,7 @@
-using System.Buffers.Binary;
+﻿using System.Buffers.Binary;
 using System.IO.Compression;
 
-namespace KFramework.Content.Pipeline;
+namespace KFramework.MonoGame;
 
 /// <summary>
 /// 最小可用的 PNG 解码器：支持 8 位色深、非隔行的 灰度 / RGB / 调色板 / 灰度+Alpha / RGBA。
@@ -78,7 +78,7 @@ public static class PngDecoder
     {
         var output = new byte[expectedLength];
         using var source = new MemoryStream(compressed, writable: false);
-        using var zlib = new ZLibStream(source, CompressionMode.Decompress);
+        using var zlib = new ZLibStream(source, System.IO.Compression.CompressionMode.Decompress);
         int read = zlib.ReadAtLeast(output, expectedLength, throwOnEndOfStream: false);
         if (read != expectedLength) throw new InvalidDataException("PNG 数据不完整。");
         return output;

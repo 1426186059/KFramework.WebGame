@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace KFramework
+namespace KFramework.MonoGame
 {
 
     /// <summary>

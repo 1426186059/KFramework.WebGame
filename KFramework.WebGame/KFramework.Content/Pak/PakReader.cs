@@ -1,8 +1,8 @@
-using System.Buffers.Binary;
+﻿using System.Buffers.Binary;
 using System.IO.Compression;
 using System.Text;
 
-namespace KFramework.Content.Pak;
+namespace KFramework.MonoGame;
 
 /// <summary>只读的 .pak 解析器，浏览器端与工具端共用。</summary>
 public sealed class PakReader

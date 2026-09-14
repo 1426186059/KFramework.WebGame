@@ -1,4 +1,4 @@
-﻿namespace KFramework
+﻿namespace KFramework.MonoGame
 {
 
     /// <summary>轴对齐矩形，屏幕坐标系（左上原点，Y 向下）。</summary>

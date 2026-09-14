@@ -1,11 +1,10 @@
-using KFramework;
-using KFramework.Graphics;
+﻿using KFramework.MonoGame;
 
 namespace KFramework.Example2;
 
 /// <summary>
 /// 抬头显示：关卡、剩余命数、剩余敌人、状态提示。
-/// KFramework 的 SpriteFont 用 Canvas2D 实时光栅化字形并缓存进图集，
+/// KFramework.MonoGame 的 SpriteFont 用 Canvas2D 实时光栅化字形并缓存进图集，
 /// 因此和精灵共用同一批次，不需要额外的字体资源文件。
 /// </summary>
 internal sealed class Hud

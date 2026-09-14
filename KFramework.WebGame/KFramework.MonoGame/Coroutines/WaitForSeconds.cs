@@ -1,4 +1,4 @@
-namespace KFramework.CoroutineIEnumerator
+﻿namespace KFramework.MonoGame
 {
     /// <summary>等待约指定秒数后继续（等价于 Unity 的 WaitForSeconds）。</summary>
     public sealed class WaitForSeconds : YieldInstruction

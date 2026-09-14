@@ -1,12 +1,9 @@
 ﻿using System.Net.Http;
 using System.Text.Json;
-using KFramework.Content.Pak;
-using KFramework.Content.Pipeline;
-using KFramework.Graphics;
+using KFramework.MonoGame;
 
-using KFramework.JSBind;
 
-namespace KFramework.Content
+namespace KFramework.MonoGame
 {
 
     /// <summary>
@@ -90,7 +87,7 @@ namespace KFramework.Content
                 (PakReader reader, PakEntry entry) = Locate($"atlas/{page}");
                 byte[] pixels = reader.Read(entry);
                 _atlasPages[page] = _device.CreateTexture(entry.Width, entry.Height, pixels);
-                Console.WriteLine($"[KFramework] 图集页 {page}: {entry.Width}x{entry.Height}，{pixels.Length} 字节");
+                Console.WriteLine($"[KFramework.MonoGame] 图集页 {page}: {entry.Width}x{entry.Height}，{pixels.Length} 字节");
                 Report();
             }
         }

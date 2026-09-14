@@ -1,9 +1,9 @@
 ﻿using System.Buffers.Binary;
 using System.Runtime.InteropServices.JavaScript;
 
-using KFramework.JSBind;
+using KFramework.MonoGame;
 
-namespace KFramework.Graphics
+namespace KFramework.MonoGame
 {
 
     /// <summary>

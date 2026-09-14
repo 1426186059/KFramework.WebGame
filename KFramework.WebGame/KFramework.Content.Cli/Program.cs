@@ -1,6 +1,6 @@
-using KFramework.Content.Pipeline;
+﻿using KFramework.MonoGame;
 
-// kfc —— KFramework 内容管线命令行工具
+// kfc —— KFramework.MonoGame 内容管线命令行工具
 //   kfc --root <内容项目目录> [--out <发布目录>] [--atlas-size 2048] [--no-preview]
 // 约定：<root>/raw 是开发者维护的原始资源，<root>/content 是工具生成的发布资源。
 

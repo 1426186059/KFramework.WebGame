@@ -1,5 +1,4 @@
-using KFramework;
-using KFramework.Graphics;
+﻿using KFramework.MonoGame;
 
 namespace MirGame;
 
@@ -80,7 +79,7 @@ public sealed class StarDefenderGame : Game
 
     protected override void Initialize()
     {
-        Window.Title = "Star Defender — KFramework WebGame";
+        Window.Title = "Star Defender — KFramework.MonoGame WebGame";
         _stars = new Starfield(DesignWidth, DesignHeight, 110);
     }
 

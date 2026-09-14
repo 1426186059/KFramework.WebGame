@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>KFramework.MonoGame</RootNamespace>
-    <AssemblyName>KFramework</AssemblyName>
+    <AssemblyName>KFramework.MonoGame</AssemblyName>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

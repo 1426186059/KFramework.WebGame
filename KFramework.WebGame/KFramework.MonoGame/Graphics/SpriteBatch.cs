@@ -1,8 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 
-using KFramework.JSBind;
+using KFramework.MonoGame;
 
-namespace KFramework.Graphics
+namespace KFramework.MonoGame
 {
 
     /// <summary>
@@ -98,7 +98,7 @@ namespace KFramework.Graphics
 
         /// <summary>
         /// MonoGame 的带旋转 / 翻转重载：目标矩形既决定位置也决定缩放。
-        /// 内部退化成 position + scale，与 KFramework 的单一实现保持一致。
+        /// 内部退化成 position + scale，与 KFramework.MonoGame 的单一实现保持一致。
         /// </summary>
         public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color,
                          float rotation, Vector2 origin, SpriteEffects effects, float layerDepth)
@@ -244,7 +244,7 @@ namespace KFramework.Graphics
             if (error == 0) return;
 
             _glErrorReported = true;
-            Console.Error.WriteLine($"[KFramework] WebGL 错误 0x{error:X4} @ {stage}");
+            Console.Error.WriteLine($"[KFramework.MonoGame] WebGL 错误 0x{error:X4} @ {stage}");
         }
 
         private void DrawRange(int start, int count)

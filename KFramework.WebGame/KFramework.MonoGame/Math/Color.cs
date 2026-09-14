@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace KFramework
+namespace KFramework.MonoGame
 {
 
     /// <summary>RGBA 颜色，内存布局与 WebGL 顶点数据一致（每通道 1 字节）。</summary>

@@ -1,8 +1,7 @@
-﻿using KFramework.Graphics;
+﻿using KFramework.MonoGame;
 
-using KFramework.JSBind;
 
-namespace KFramework
+namespace KFramework.MonoGame
 {
 
     /// <summary>浏览器画布窗口。</summary>

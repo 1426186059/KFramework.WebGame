@@ -1,8 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 
-using KFramework.JSBind;
+using KFramework.MonoGame;
 
-namespace KFramework.Graphics
+namespace KFramework.MonoGame
 {
 
     /// <summary>渲染目标区域（屏幕坐标系，左上原点）。</summary>

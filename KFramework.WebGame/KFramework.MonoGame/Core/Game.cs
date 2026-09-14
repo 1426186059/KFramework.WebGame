@@ -1,9 +1,7 @@
-﻿using KFramework.Content;
-using KFramework.Graphics;
+﻿using KFramework.MonoGame;
 
-using KFramework.JSBind;
 
-namespace KFramework
+namespace KFramework.MonoGame
 {
 
     /// <summary>
@@ -70,7 +68,7 @@ namespace KFramework
                 catch (Exception ex)
                 {
                     // 初始化阶段的异常必须能完整看到，否则浏览器只会表现为"白屏"
-                    Console.Error.WriteLine($"[KFramework] 初始化失败：{ex}");
+                    Console.Error.WriteLine($"[KFramework.MonoGame] 初始化失败：{ex}");
                     throw;
                 }
                 _initialized = true;
@@ -155,7 +153,7 @@ namespace KFramework
             {
                 // 浏览器里异常会打断 rAF 链，这里就地截获并停止循环，避免持续刷屏
                 _frameFaulted = true;
-                Console.Error.WriteLine($"[KFramework] 运行时异常，主循环已停止：{ex}");
+                Console.Error.WriteLine($"[KFramework.MonoGame] 运行时异常，主循环已停止：{ex}");
                 Exit();
             }
         }

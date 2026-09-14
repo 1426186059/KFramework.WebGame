@@ -1,4 +1,4 @@
-namespace KFramework.CoroutineIEnumerator
+﻿namespace KFramework.MonoGame
 {
     /// <summary>
     /// 协程暂停指令的基类（等价于 Unity 的 YieldInstruction）。

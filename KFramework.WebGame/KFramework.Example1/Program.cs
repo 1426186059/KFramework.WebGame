@@ -1,4 +1,4 @@
-using KFramework;
+﻿using KFramework.MonoGame;
 
 namespace MirGame;
 

@@ -1,4 +1,4 @@
-namespace KFramework.CoroutineIEnumerator
+﻿namespace KFramework.MonoGame
 {
     /// <summary>
     /// 等到下一次 FixedUpdate 后再继续（等价于 Unity 的 WaitForFixedUpdate）。

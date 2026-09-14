@@ -1,4 +1,4 @@
-using KFramework.Graphics;
+﻿using KFramework.MonoGame;
 
 namespace KFramework.Example2;
 
