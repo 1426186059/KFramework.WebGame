@@ -1,5 +1,3 @@
-using KFramework;
-using KFramework;
 using System.Collections.Generic;
 
 namespace KFramework.MonoGame
