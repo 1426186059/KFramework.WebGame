@@ -1,0 +1,284 @@
+{
+  "version": 1,
+  "generatedAt": "2026-09-14T22:56:02.2438944\u002B00:00",
+  "root": "D:\\OpenSource\\KFramework.WebGame\\KFramework.WebGame\\KFramework.Example3\\Content\\raw",
+  "paks": [
+    {
+      "file": "content.pak",
+      "size": 1386399,
+      "checksum": 971054415
+    }
+  ],
+  "assets": [
+    {
+      "name": "myres/atlas/characters",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 25654
+    },
+    {
+      "name": "myres/atlas/misc-3",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 50982
+    },
+    {
+      "name": "myres/sounds/smb_1-up",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 38426
+    },
+    {
+      "name": "myres/sounds/smb_bowserfalls",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 46466
+    },
+    {
+      "name": "myres/sounds/smb_bowserfire",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 51526
+    },
+    {
+      "name": "myres/sounds/smb_breakblock",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 25090
+    },
+    {
+      "name": "myres/sounds/smb_bump",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 10426
+    },
+    {
+      "name": "myres/sounds/smb_coin",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 42654
+    },
+    {
+      "name": "myres/sounds/smb_fireball",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 6756
+    },
+    {
+      "name": "myres/sounds/smb_fireworks",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 19542
+    },
+    {
+      "name": "myres/sounds/smb_flagpole",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 52622
+    },
+    {
+      "name": "myres/sounds/smb_gameover",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 167408
+    },
+    {
+      "name": "myres/sounds/smb_jump-small",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 26982
+    },
+    {
+      "name": "myres/sounds/smb_jump-super",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 26712
+    },
+    {
+      "name": "myres/sounds/smb_kick",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 8948
+    },
+    {
+      "name": "myres/sounds/smb_mariodie",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 120570
+    },
+    {
+      "name": "myres/sounds/smb_pause",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 31174
+    },
+    {
+      "name": "myres/sounds/smb_pipe",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 35538
+    },
+    {
+      "name": "myres/sounds/smb_powerup",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 44580
+    },
+    {
+      "name": "myres/sounds/smb_powerup_appears",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 26728
+    },
+    {
+      "name": "myres/sounds/smb_stage_clear",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 249748
+    },
+    {
+      "name": "myres/sounds/smb_stomp",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 13070
+    },
+    {
+      "name": "myres/sounds/smb_vine",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 52108
+    },
+    {
+      "name": "myres/sounds/smb_warning",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 130232
+    },
+    {
+      "name": "myres/sounds/smb_world_clear",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 277206
+    },
+    {
+      "name": "myres/atlas/misc-3_0",
+      "type": "texture",
+      "page": 0,
+      "x": 0,
+      "y": 0,
+      "width": 1022,
+      "height": 537,
+      "size": 2195256
+    },
+    {
+      "name": "myres/atlas/characters_0",
+      "type": "texture",
+      "page": 0,
+      "x": 1024,
+      "y": 0,
+      "width": 264,
+      "height": 510,
+      "size": 538560
+    }
+  ]
+}

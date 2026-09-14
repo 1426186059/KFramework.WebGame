@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>KFramework.Example3</RootNamespace>
+    <AssemblyName>KFramework.Example3</AssemblyName>
+    <StartupObject>KFramework.Example3.Program</StartupObject>
+    <!-- 内容包里的 JSON（图集 manifest）在运行时用反射反序列化 -->
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <WasmLoadAllGlobalizationData>false</WasmLoadAllGlobalizationData>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <StaticWebAssetFingerprintPattern Include="JS" Pattern="*.js" Expression="#[.{fingerprint}]!" />
+  </ItemGroup>
+
+  <!-- 关卡文本以嵌入资源形式随程序集发布，避免 wasm 上 TitleContainer 根路径问题 -->
+  <ItemGroup>
+    <EmbeddedResource Include="Levels\**\*.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KFramework.MonoGame\KFramework.MonoGame.csproj" />
+    <ProjectReference Include="..\KFramework.MonoGameExtend\KFramework.MonoGameExtend.csproj" />
+    <ProjectReference Include="..\KFramework.Content\KFramework.Content.csproj" />
+  </ItemGroup>
+
+  <!-- 引擎的浏览器层（KFramework/tsengine）目前由 tsconfig 固定输出到 MirGame/wwwroot/jsengine。 -->
+  <Target Name="SyncJsEngine" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <_EngineJs Include="$(MSBuildThisFileDirectory)..\MirGame\wwwroot\jsengine\**\*.js" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_EngineJs)"
+          DestinationFiles="@(_EngineJs->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+  <!-- 本工程独占的内容管线：Content/raw -> Content/content -> wwwroot/content -->
+  <Target Name="BuildGameContent" BeforeTargets="BeforeBuild">
+    <Exec Command="dotnet run --project &quot;$(MSBuildThisFileDirectory)..\KFramework.Content.Cli\KFramework.Content.Cli.csproj&quot; -v q --nologo -- --root &quot;$(MSBuildThisFileDirectory)Content&quot;"
+          ContinueOnError="true" />
+    <ItemGroup>
+      <_PublishedContent Include="$(MSBuildThisFileDirectory)Content\content\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_PublishedContent)"
+          DestinationFiles="@(_PublishedContent->'$(MSBuildThisFileDirectory)wwwroot\content\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>
