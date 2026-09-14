@@ -32,7 +32,13 @@ namespace KFramework.MonoGameExtend
         {
             Game = mGame;
             SpriteBatch = new SpriteBatch(mGame.GraphicsDevice);
+            // 浏览器窗口尺寸变化通知：Game.TickFrame 里 GraphicsDevice.SyncCanvasSize 检测到
+            // 画布变化后会触发 GameWindow.SizeChanged，这里转发到 ScreenSizeChanged，
+            // KCanvas 据此重算画布尺寸并把 UI 子控件级联重排，实现自适应屏幕。
+            mGame.Window.SizeChanged += OnWindowSizeChangedForward;
         }
+
+        private static void OnWindowSizeChangedForward() => OnScreenSizeChanged(Game, EventArgs.Empty);
 
         public static void SetMainScene(KSceneBase mainScene)
         {
