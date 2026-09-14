@@ -1,12 +1,33 @@
-// 程序化音效：全部用 WebAudio 振荡器 + 噪声实时合成，不需要任何音频文件。
-// 0=Shoot 1=Explosion 2=Hit 3=Pickup 4=Select 5=GameOver 6=PowerUp
+// 音频引擎：两条能力并存。
+// 1) 合成音效：WebAudio 振荡器 + 噪声实时合成，零资源，适合原型（见 playSynth）。
+// 2) 真实音频：wav/mp3/ogg 经 decodeAudioData 解码成 AudioBuffer，再按实例播放（见 loadAudio / createInstance）。
+//    实例模型对齐 MonoGame 的 SoundEffectInstance：一个缓冲可对应多个实例，各自控制播放/音量/音高/声相。
 
-const MASTER_VOLUME = 0.35;
+let MASTER_VOLUME = 0.35;
 
 let context: AudioContext | null = null;
 let master: GainNode | null = null;
 let muted = false;
 let noiseBuffer: AudioBuffer | null = null;
+
+const buffers = new Map<number, AudioBuffer>();   // 缓冲 handle → AudioBuffer
+const instances = new Map<number, Instance>();     // 实例 id → 播放实例
+let nextInstance = 1;
+
+interface Instance {
+    buffer: AudioBuffer;
+    source: AudioBufferSourceNode | null;
+    gain: GainNode;
+    panner: StereoPannerNode;
+    loop: boolean;
+    volume: number;
+    pitch: number;
+    pan: number;
+    startedAt: number;   // ctx.currentTime，用于 pause 时计算偏移
+    offset: number;      // 暂停后的播放位置（秒）
+    playing: boolean;
+    paused: boolean;
+}
 
 function ensureContext(): AudioContext | null {
     if (context) return context;
@@ -41,6 +62,13 @@ export function setMuted(value: boolean): void {
     muted = !!value;
     if (master) master.gain.value = muted ? 0 : MASTER_VOLUME;
 }
+
+export function setMasterVolume(value: number): void {
+    MASTER_VOLUME = Math.max(0, Math.min(1, value));
+    if (master) master.gain.value = muted ? 0 : MASTER_VOLUME;
+}
+
+// ===== 合成音效 =====
 
 function tone(
     type: OscillatorType, from: number, to: number,
@@ -91,7 +119,7 @@ function noise(duration: number, volume: number, cutoffFrom: number, cutoffTo: n
     source.stop(start + duration);
 }
 
-export function play(kind: number, volume: number, pitch: number): void {
+export function playSynth(kind: number, volume: number, pitch: number): void {
     if (muted) return;
 
     const v = Math.max(0, Math.min(1, volume));
@@ -126,4 +154,172 @@ export function play(kind: number, volume: number, pitch: number): void {
             tone('square', 880 * p, 880 * p, 0.14, 0.18 * v, 0.14);
             break;
     }
+}
+
+// ===== 真实音频缓冲 =====
+
+export function loadAudio(handle: number, data: Uint8Array, _mime: string): void {
+    const ctx = ensureContext();
+    if (!ctx) return;
+
+    // decodeAudioData 会 detach 底层 ArrayBuffer，必须把托管内存拷贝出来。
+    const copy = data.slice();
+    ctx.decodeAudioData(copy.buffer, (buf) => { buffers.set(handle, buf); }, () => { /* 解码失败：忽略 */ });
+}
+
+export function isLoaded(handle: number): boolean {
+    return buffers.has(handle);
+}
+
+export function getDuration(handle: number): number {
+    const b = buffers.get(handle);
+    return b ? b.duration : 0;
+}
+
+export function releaseBuffer(handle: number): void {
+    buffers.delete(handle);
+}
+
+// ===== 播放实例 =====
+
+export function createInstance(handle: number): number {
+    const buffer = buffers.get(handle);
+    if (!buffer || !context) return 0;
+
+    const id = nextInstance++;
+    instances.set(id, {
+        buffer,
+        source: null,
+        gain: context.createGain(),
+        panner: context.createStereoPanner(),
+        loop: false,
+        volume: 1,
+        pitch: 1,
+        pan: 0,
+        startedAt: 0,
+        offset: 0,
+        playing: false,
+        paused: false,
+    });
+    return id;
+}
+
+function startSource(inst: Instance, fromOffset: number, id: number): void {
+    if (!context || !master) return;
+
+    const src = context.createBufferSource();
+    src.buffer = inst.buffer;
+    src.loop = inst.loop;
+    src.playbackRate.value = inst.pitch;
+
+    inst.gain.gain.value = inst.volume;
+    inst.panner.pan.value = inst.pan;
+
+    src.connect(inst.panner);
+    inst.panner.connect(inst.gain);
+    inst.gain.connect(master);
+
+    src.start(0, fromOffset);
+    inst.source = src;
+    inst.startedAt = context.currentTime;
+    inst.offset = fromOffset;
+    inst.playing = true;
+    inst.paused = false;
+
+    src.onended = () => {
+        if (inst.loop || inst.paused) return;
+        inst.playing = false;
+        inst.source = null;
+        instances.delete(id);   // 一次性播放（非循环、非暂停）结束后自动清理实例
+    };
+}
+
+export function playInstance(id: number, volume: number, pitch: number, pan: number, loop: boolean): void {
+    const inst = instances.get(id);
+    if (!inst || !context) return;
+
+    // 若正在播，先停旧源再起新源（AudioBufferSourceNode 一次性）
+    if (inst.source) {
+        inst.source.onended = null;
+        try { inst.source.stop(); } catch { /* 已停止 */ }
+        inst.source = null;
+    }
+
+    inst.loop = loop;
+    inst.volume = volume;
+    inst.pitch = pitch;
+    inst.pan = pan;
+    startSource(inst, inst.paused ? inst.offset : 0, id);
+}
+
+export function stopInstance(id: number): void {
+    const inst = instances.get(id);
+    if (!inst) return;
+    inst.paused = false;
+    inst.offset = 0;
+    if (inst.source) {
+        inst.source.onended = null;
+        try { inst.source.stop(); } catch { /* 已停止 */ }
+        inst.source = null;
+    }
+    inst.playing = false;
+}
+
+export function pauseInstance(id: number): void {
+    const inst = instances.get(id);
+    if (!inst || !inst.source || !context) return;
+    inst.offset += context.currentTime - inst.startedAt;
+    try { inst.source.stop(); } catch { /* 已停止 */ }
+    inst.source = null;
+    inst.paused = true;
+    inst.playing = false;
+}
+
+export function resumeInstance(id: number): void {
+    const inst = instances.get(id);
+    if (!inst || !inst.paused) return;
+    startSource(inst, inst.offset, id);
+}
+
+export function setInstanceVolume(id: number, volume: number): void {
+    const inst = instances.get(id);
+    if (!inst) return;
+    inst.volume = volume;
+    if (inst.source) inst.gain.gain.value = volume;
+}
+
+export function setInstancePitch(id: number, pitch: number): void {
+    const inst = instances.get(id);
+    if (!inst) return;
+    inst.pitch = pitch;
+    if (inst.source) inst.source.playbackRate.value = pitch;
+}
+
+export function setInstancePan(id: number, pan: number): void {
+    const inst = instances.get(id);
+    if (!inst) return;
+    inst.pan = pan;
+    if (inst.source) inst.panner.pan.value = pan;
+}
+
+export function setInstanceLoop(id: number, loop: boolean): void {
+    const inst = instances.get(id);
+    if (!inst) return;
+    inst.loop = loop;
+    if (inst.source) inst.source.loop = loop;
+}
+
+export function isInstancePlaying(id: number): boolean {
+    const inst = instances.get(id);
+    return !!inst && inst.playing;
+}
+
+export function releaseInstance(id: number): void {
+    const inst = instances.get(id);
+    if (!inst) return;
+    if (inst.source) {
+        inst.source.onended = null;
+        try { inst.source.stop(); } catch { /* 已停止 */ }
+    }
+    instances.delete(id);
 }
