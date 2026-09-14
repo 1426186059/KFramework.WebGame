@@ -1,7 +1,8 @@
 <Solution>
-  <Project Path="KFramework.Example1/KFramework.Example1.csproj" />
-  <Project Path="KFramework.Content/KFramework.Content.csproj" />
   <Project Path="KFramework.Content.Cli/KFramework.Content.Cli.csproj" />
+  <Project Path="KFramework.Content/KFramework.Content.csproj" />
+  <Project Path="KFramework.Example1/KFramework.Example1.csproj" />
+  <Project Path="KFramework.Example2/KFramework.Example2.csproj" />
   <Project Path="KFramework.MonoGame/KFramework.MonoGame.csproj" />
   <Project Path="KFramework.MonoGameEx/KFramework.MonoGameEx.csproj" />
 </Solution>

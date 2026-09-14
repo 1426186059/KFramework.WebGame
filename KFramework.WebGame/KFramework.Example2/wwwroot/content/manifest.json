@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-14T17:33:17.8256231\u002B00:00",
+  "generatedAt": "2026-09-14T17:47:39.8686191\u002B00:00",
   "root": "D:\\OpenSource\\KFramework.WebGame\\KFramework.WebGame\\KFramework.Example2\\Content\\raw",
   "paks": [
     {
       "file": "content.pak",
-      "size": 133867,
-      "checksum": 446212091
+      "size": 134652,
+      "checksum": 3553250981
     }
   ],
   "assets": [
@@ -109,6 +109,56 @@
       "width": 0,
       "height": 0,
       "size": 4394
+    },
+    {
+      "name": "levels/00",
+      "type": "text",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 522
+    },
+    {
+      "name": "levels/01",
+      "type": "text",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 499
+    },
+    {
+      "name": "levels/02",
+      "type": "text",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 499
+    },
+    {
+      "name": "levels/03",
+      "type": "text",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 499
+    },
+    {
+      "name": "levels/04",
+      "type": "text",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 499
     },
     {
       "name": "misc-3.anim",
