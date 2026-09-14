@@ -5,12 +5,16 @@ namespace KFramework.Example2;
 /// <summary>
 /// 坦克基类：位置 / 朝向 / 移动 / 开炮的共同逻辑。
 /// 对应 PixiJS 版的 Tank_Base.ts。
+/// 显示对象用 <see cref="TGameSprite"/>（等价于 PixiJS 的 mSprite），由 <see cref="SyncView"/> 每帧同步。
 /// </summary>
 internal abstract class TankBase
 {
     public Vector2 Position;
     public Dir Direction = Dir.Up;
     public bool Active = true;
+
+    /// <summary>显示节点（等价于 PixiJS 的 mSprite）。通过 Parent 加入 TankRoot 完成 addChild。</summary>
+    public readonly TGameSprite View = new();
 
     protected float FireTimer;
 
@@ -20,6 +24,12 @@ internal abstract class TankBase
 
     /// <summary>推进一帧；返回本帧发射的炮弹，没开炮则为 null。</summary>
     public abstract Shell? Update(float dt, TankLevel level);
+
+    protected TankBase()
+    {
+        View.Pivot = new Vector2(0.5f);   // 以中心为原点，等价于 PixiJS 的 anchor.set(0.5)
+        View.UseNativeSize = true;        // 用纹理原始尺寸，SceneRoot 的缩放再整体施加
+    }
 
     /// <summary>朝指定方向移动，被地形或边界阻挡时返回 false。</summary>
     protected bool Move(Dir dir, float dt, TankLevel level)
@@ -48,14 +58,10 @@ internal abstract class TankBase
         }
     }
 
-    public void Draw(SpriteBatch batch, Vector2 origin, ResCenter res, int animFrame)
+    /// <summary>把数据（位置 / 朝向帧）同步到显示节点，等价于 PixiJS 里显示对象跟随实体。</summary>
+    public void SyncView(ResCenter res, int animFrame)
     {
-        if (!Active) return;
-
-        Texture2D? tex = ResCenter.Pick(GetSprites(res), DirBase[(int)Direction] + animFrame);
-        if (tex is null) return;
-
-        Vector2 at = origin + Position;
-        batch.Draw(tex, new Vector2(at.X - tex.Width / 2f, at.Y - tex.Height / 2f), Color.White);
+        View.LocalPosition = Position;
+        View.Sprite = ResCenter.Pick(GetSprites(res), DirBase[(int)Direction] + animFrame);
     }
 }

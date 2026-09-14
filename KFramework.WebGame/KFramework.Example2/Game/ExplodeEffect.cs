@@ -9,18 +9,25 @@ internal sealed class ExplodeEffect
     public float Time;
     public bool Active = true;
 
+    /// <summary>显示节点（等价于 PixiJS 的 mSprite）。</summary>
+    public readonly TGameSprite View = new();
+
+    public ExplodeEffect()
+    {
+        View.Pivot = new Vector2(0.5f);
+        View.UseNativeSize = true;
+    }
+
     public void Update(float dt)
     {
         Time += dt;
         if (Time >= TankConfig.ExplodeDuration) Active = false;
     }
 
-    public void Draw(SpriteBatch batch, Vector2 origin, ResCenter res)
+    /// <summary>把数据同步到显示节点。</summary>
+    public void SyncView(ResCenter res)
     {
-        Texture2D? tex = Time < TankConfig.ExplodeDuration * 0.5f ? res.Explode1 : res.Explode2;
-        if (tex is null) return;
-
-        Vector2 at = origin + Position;
-        batch.Draw(tex, new Vector2(at.X - tex.Width / 2f, at.Y - tex.Height / 2f), Color.White);
+        View.LocalPosition = Position;
+        View.Sprite = Time < TankConfig.ExplodeDuration * 0.5f ? res.Explode1 : res.Explode2;
     }
 }

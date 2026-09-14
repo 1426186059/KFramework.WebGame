@@ -30,6 +30,15 @@ internal sealed class PowerUp
     public float Life = LifeTime;
     public bool Active = true;
 
+    /// <summary>显示节点（等价于 PixiJS 的 mSprite）。</summary>
+    public readonly TGameSprite View = new();
+
+    public PowerUp()
+    {
+        View.Pivot = new Vector2(0.5f);
+        View.UseNativeSize = true;
+    }
+
     public void Update(float dt)
     {
         Life -= dt;
@@ -44,14 +53,12 @@ internal sealed class PowerUp
                (int)Position.Y - TankConfig.TileSize / 2,
                TankConfig.TileSize, TankConfig.TileSize);
 
-    public void Draw(SpriteBatch batch, Vector2 origin, ResCenter res)
+    /// <summary>把数据同步到显示节点；返回 false 表示本帧应隐藏（闪烁灭帧）。</summary>
+    public bool SyncView(ResCenter res)
     {
-        if (BlinkOff) return;
-
-        Texture2D? tex = ResCenter.Pick(res.Bonus, (int)Kind);
-        if (tex is null) return;
-
-        Vector2 at = origin + Position;
-        batch.Draw(tex, new Vector2(at.X - tex.Width / 2f, at.Y - tex.Height / 2f), Color.White);
+        if (BlinkOff) return false;
+        View.LocalPosition = Position;
+        View.Sprite = ResCenter.Pick(res.Bonus, (int)Kind);
+        return true;
     }
 }

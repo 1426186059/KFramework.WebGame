@@ -5,7 +5,7 @@ namespace KFramework.Example2;
 
 /// <summary>
 /// 坦克大战的宿主：只负责初始化引擎（输入 / 场景管理器 / 字体 / 内容），
-/// 真正的游戏逻辑与界面都在 <see cref="TankScene"/> 里，由 MonoGameExtend 的节点树驱动。
+/// 真正的游戏逻辑与界面都在 <see cref="GameScene"/> 里，由 MonoGameExtend 的节点树驱动。
 /// 对应 PixiJS 版的 CreationEngine + GameScene。
 /// </summary>
 public sealed class TankGame : Game
@@ -23,7 +23,7 @@ public sealed class TankGame : Game
 
         await Content.LoadAsync().ConfigureAwait(false);
 
-        var scene = new TankScene(Content, GraphicsDevice, KSceneMgr.SpriteBatch, KDefaultRes.DefaultSpriteFont);
+        var scene = new GameScene();
         KSceneMgr.SetMainScene(scene);
     }
 

@@ -11,6 +11,10 @@ internal static class TankConfig
     public const int TileSize = 32;
     public const int TankSize = 32;
 
+    /// <summary>地图在“居中坐标”下的半宽 / 半高（PixiJS 里战场以原点居中）。</summary>
+    public static readonly float MapHalfW = MapWidth * TileSize / 2f;
+    public static readonly float MapHalfH = MapHeight * TileSize / 2f;
+
     /// <summary>关卡文本开头的注释行数量（原工程 ignoreLineCount = 3）。</summary>
     public const int LevelSkipLines = 3;
 

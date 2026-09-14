@@ -30,6 +30,11 @@ namespace KFramework.MonoGameExtend
             SetDirty();
         }
 
+        public KTransform(string Name) : this()
+        {
+            this.Name = Name;
+        }
+
         // 标记自身及所有子节点需要更新
         private void SetDirty()
         {

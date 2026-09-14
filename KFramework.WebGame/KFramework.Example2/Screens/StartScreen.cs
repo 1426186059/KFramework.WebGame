@@ -6,40 +6,38 @@ namespace KFramework.Example2.Screens;
 
 /// <summary>
 /// 开始界面（对应 PixiJS 的 screens/main/StartScreen.ts）。
-/// 继承 KWidget，作为铺满画布（KCanvas）的 UI 控件；内部控件用锚点
-/// （MinMaxAnchor / AnchorOffset / Pivot）相对本控件 Size 摆位，屏幕尺寸变化时会自动按比例重排。
-/// 黑屏之类的问题可直接在这个脚本里排查，不再和战斗逻辑混在一起。
+/// 继承 KWidget，铺满画布；内容在构造里拼装，输入自己管：
+/// Enter / Space 或点 START → 开始。直接 override Update()（随节点树遍历自驱动），
+/// 隐藏（Parent==null，脱离节点树）时 Update 直接 return，天然“自己管自己”。
 /// </summary>
 public sealed class StartScreen : KWidget
 {
     private readonly KCanvas _canvas;
+    private readonly Action _onStart;
 
-    /// <summary>构造函数即把自己 addChild 到画布（对应 PixiJS 的 root.addChild(this)）。</summary>
-    public StartScreen(KCanvas canvas)
+    public StartScreen(KCanvas canvas, SpriteFont font, Action onStart)
     {
         _canvas = canvas;
-        Parent = canvas;   // 挂到画布：否则不会进入 _uiRoot.ChildList，KCanvas.DrawWidget 不会画它
-        MinMaxAnchor = KRectangleF.MinMax(0, 0, 1, 1);
-    }
+        _onStart = onStart;
 
-    public void Build(SpriteFont font, Action onStart)
-    {
-        var titleLabel = new KLabel("BATTLE CITY", new Color(140, 210, 255), font)
+        Parent = canvas;   // 挂到画布：否则不会进入 ChildList，KCanvas 不会画它
+        MinMaxAnchor = KRectangleF.MinMax(0, 0, 1, 1);
+
+        new KLabel("BATTLE CITY", new Color(140, 210, 255), font)
         {
             MinMaxAnchor = KRectangleF.MinMax(0.5f, 0.5f, 0.34f, 0.34f),
             Pivot = new Vector2(0.5f),
             Parent = this,
         };
 
-        var subLabel = new KLabel("PRESS SPACE / ENTER OR TAP START", new Color(150, 170, 200), font)
+        new KLabel("PRESS SPACE / ENTER OR TAP START", new Color(150, 170, 200), font)
         {
             MinMaxAnchor = KRectangleF.MinMax(0.5f, 0.5f, 0.46f, 0.46f),
             Pivot = new Vector2(0.5f),
             Parent = this,
         };
 
-        // 固定尺寸控件用"零尺寸锚点 + AnchorOffset 固定像素"摆位，
-        // 这样 Parent 尺寸变化（Resize）时不会把 Size 冲成 0。
+        // 固定尺寸控件用"零尺寸锚点 + AnchorOffset 固定像素"摆位，Resize 时不会把 Size 冲成 0。
         var startButton = new KButton
         {
             Size = new Vector2(320, 84),
@@ -51,7 +49,15 @@ public sealed class StartScreen : KWidget
         };
         startButton.Label.Text = "START";
         startButton.Label.Font = font;
-        startButton.PointerClickEvent += (_, _) => onStart();
+        startButton.PointerClickEvent += (_, _) => _onStart();
+    }
+
+    // 与 TS 的 update() 一致：屏幕自己轮询输入；隐藏时不响应。
+    public override void Update()
+    {
+        if (Parent == null) return;
+        if (KInputMgr.GetKeyDown(Keys.Enter) || KInputMgr.GetKeyDown(Keys.Space))
+            _onStart();
     }
 
     public void Show() => Parent = _canvas;

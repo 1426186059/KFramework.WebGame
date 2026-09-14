@@ -6,23 +6,22 @@ namespace KFramework.Example2.Screens;
 
 /// <summary>
 /// 结束界面（对应 PixiJS 的 screens/main/FailScreen.ts）。
-/// 继承 KWidget，铺满画布；内部控件用锚点摆位，Resize 时自动按比例重排。
+/// 输入自己管：R / Enter / Space 或点 RETRY → 重开。隐藏时 Update 直接 return。
 /// </summary>
 public sealed class FailScreen : KWidget
 {
     private readonly KCanvas _canvas;
-    private KLabel _statusLabel = null!;
+    private readonly Action _onRetry;
+    private readonly KLabel _statusLabel;
 
-    /// <summary>构造函数即把自己 addChild 到画布（对应 PixiJS 的 root.addChild(this)）。</summary>
-    public FailScreen(KCanvas canvas)
+    public FailScreen(KCanvas canvas, SpriteFont font, Action onRetry)
     {
         _canvas = canvas;
-        Parent = canvas;   // 挂到画布：否则不会进入 _uiRoot.ChildList，KCanvas.DrawWidget 不会画它
-        MinMaxAnchor = KRectangleF.MinMax(0, 0, 1, 1);
-    }
+        _onRetry = onRetry;
 
-    public void Build(SpriteFont font, Action onRetry)
-    {
+        Parent = canvas;   // 挂到画布：否则不会进入 ChildList，KCanvas 不会画它
+        MinMaxAnchor = KRectangleF.MinMax(0, 0, 1, 1);
+
         _statusLabel = new KLabel("GAME OVER", new Color(255, 120, 120), font)
         {
             MinMaxAnchor = KRectangleF.MinMax(0.5f, 0.5f, 0.40f, 0.40f),
@@ -30,7 +29,7 @@ public sealed class FailScreen : KWidget
             Parent = this,
         };
 
-        var subLabel = new KLabel("PRESS R / ENTER OR TAP RETRY", new Color(150, 170, 200), font)
+        new KLabel("PRESS R / ENTER OR TAP RETRY", new Color(150, 170, 200), font)
         {
             MinMaxAnchor = KRectangleF.MinMax(0.5f, 0.5f, 0.52f, 0.52f),
             Pivot = new Vector2(0.5f),
@@ -48,7 +47,15 @@ public sealed class FailScreen : KWidget
         };
         retryButton.Label.Text = "RETRY";
         retryButton.Label.Font = font;
-        retryButton.PointerClickEvent += (_, _) => onRetry();
+        retryButton.PointerClickEvent += (_, _) => _onRetry();
+    }
+
+    // 与 TS 的 update() 一致：屏幕自己轮询输入；隐藏时不响应。
+    public override void Update()
+    {
+        if (Parent == null) return;
+        if (KInputMgr.GetKeyDown(Keys.R) || KInputMgr.GetKeyDown(Keys.Enter) || KInputMgr.GetKeyDown(Keys.Space))
+            _onRetry();
     }
 
     /// <summary>胜利/失败文案由场景在切入时设置。</summary>
