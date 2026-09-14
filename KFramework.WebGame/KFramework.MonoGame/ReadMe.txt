@@ -44,5 +44,6 @@ KFramework.MonoGame —— 仿 MonoGame 引擎（面向 AI 智能体）
 --------
   真实音频（wav/mp3/ogg）：SoundEffect.FromBytes(bytes, mime) → 浏览器 decodeAudioData 解码 →
                            SoundEffect.Play / CreateInstance / MediaPlayer 播放。
-  合成音效：不属于本库；需要零资源原型音效的 Example 可自行用 WebAudio 合成，
-           并对 audio 模块的 playSynth 做 JSImport（见 Example2 的 SynthAudio.cs）。
+  合成音效：不属于本库；若 Example 需要零资源原型音效，可自行用 WebAudio 合成
+           （audio 模块的 playSynth），但本仓库示例统一使用真实 wav（见 Example2 的 SoundCenter），
+           不内置合成示例，以保持引擎通用、干净。

@@ -50,9 +50,12 @@ public sealed class SoundEffect : IDisposable
     /// <summary>一次性播放。未解码或缓冲缺失时返回 false。</summary>
     public bool Play() => Play(1f, 1f, 0f);
 
+    /// <summary>底层音频缓冲是否已在浏览器侧解码完成（实时查询，兼容 <see cref="FromBytes"/> 的异步解码）。</summary>
+    private bool IsReady => _loaded || JSBind_Audio.IsLoaded(_handle);
+
     public bool Play(float volume, float pitch, float pan)
     {
-        if (!_loaded) return false;
+        if (!IsReady) return false;
 
         int instance = JSBind_Audio.CreateInstance(_handle);
         if (instance == 0) return false;
@@ -64,7 +67,7 @@ public sealed class SoundEffect : IDisposable
     /// <summary>创建受控播放实例（可暂停/循环/调音量）。</summary>
     public SoundEffectInstance CreateInstance()
     {
-        int instance = _loaded ? JSBind_Audio.CreateInstance(_handle) : 0;
+        int instance = IsReady ? JSBind_Audio.CreateInstance(_handle) : 0;
         return new SoundEffectInstance(instance);
     }
 
