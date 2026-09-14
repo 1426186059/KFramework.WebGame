@@ -6,7 +6,7 @@ namespace KFramework.JSBind;
 /// text 模块绑定：借 Canvas2D 测量与栅格化文字。
 /// 这里只负责跨语言调用，字形图集与排版见 <c>KFramework.Graphics.SpriteFont</c>。
 /// </summary>
-internal static partial class TextBind
+internal static partial class JSBind_Text
 {
     /// <summary>测量文本尺寸，结果写入 [宽, 高]。</summary>
     [JSImport("measure", "text")]

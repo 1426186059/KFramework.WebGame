@@ -192,8 +192,8 @@ public sealed class SpriteBatch
         _device.SetBlendState(_blendState);
         _device.Effect.Apply(_projection * _transform);
 
-        GL.BindVertexArray(_device.VertexArray);
-        GL.BindBuffer(GL.ARRAY_BUFFER, _device.VertexBuffer);
+        JSBind_GL.BindVertexArray(_device.VertexArray);
+        JSBind_GL.BindBuffer(JSBind_GL.ARRAY_BUFFER, _device.VertexBuffer);
 
         int batchStart = 0;
         int currentKey = -1;
@@ -239,7 +239,7 @@ public sealed class SpriteBatch
     private static void ReportGlError(string stage)
     {
         if (_glErrorReported) return;
-        int error = GL.GetError();
+        int error = JSBind_GL.GetError();
         if (error == 0) return;
 
         _glErrorReported = true;
@@ -253,8 +253,8 @@ public sealed class SpriteBatch
         for (int i = 0; i < count; i++)
             BuildQuad(_items[start + i], _vertices.AsSpan(i * 4, 4));
 
-        GL.BufferSubData(GL.ARRAY_BUFFER, 0, MemoryMarshal.AsBytes(_vertices.AsSpan(0, count * 4)));
-        GL.DrawElements(GL.TRIANGLES, count * 6, GL.UNSIGNED_SHORT, 0);
+        JSBind_GL.BufferSubData(JSBind_GL.ARRAY_BUFFER, 0, MemoryMarshal.AsBytes(_vertices.AsSpan(0, count * 4)));
+        JSBind_GL.DrawElements(JSBind_GL.TRIANGLES, count * 6, JSBind_GL.UNSIGNED_SHORT, 0);
         _lastFlushCount += count;
     }
 

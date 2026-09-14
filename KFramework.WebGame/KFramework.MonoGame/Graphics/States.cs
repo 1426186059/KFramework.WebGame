@@ -38,15 +38,15 @@ public sealed class SamplerState
 
     /// <summary>最近邻采样，像素风游戏的首选，放大后不模糊。</summary>
     public static readonly SamplerState Point =
-        new(GL.NEAREST, GL.NEAREST, GL.CLAMP_TO_EDGE);
+        new(JSBind_GL.NEAREST, JSBind_GL.NEAREST, JSBind_GL.CLAMP_TO_EDGE);
 
     /// <summary>双线性采样，适合需要平滑缩放的美术风格。</summary>
     public static readonly SamplerState Linear =
-        new(GL.LINEAR, GL.LINEAR, GL.CLAMP_TO_EDGE);
+        new(JSBind_GL.LINEAR, JSBind_GL.LINEAR, JSBind_GL.CLAMP_TO_EDGE);
 
     /// <summary>线性采样 + 平铺，用于背景滚动。</summary>
     public static readonly SamplerState LinearWrap =
-        new(GL.LINEAR, GL.LINEAR, GL.REPEAT);
+        new(JSBind_GL.LINEAR, JSBind_GL.LINEAR, JSBind_GL.REPEAT);
 
     /// <summary>点采样 + 边缘钳制（MonoGame 命名，等价于 <see cref="Point"/>）。</summary>
     public static readonly SamplerState PointClamp = Point;
@@ -67,17 +67,17 @@ public sealed class BlendState
     }
 
     public static readonly BlendState AlphaBlend =
-        new(GL.ONE, GL.ONE_MINUS_SRC_ALPHA, GL.ONE, GL.ONE_MINUS_SRC_ALPHA);
+        new(JSBind_GL.ONE, JSBind_GL.ONE_MINUS_SRC_ALPHA, JSBind_GL.ONE, JSBind_GL.ONE_MINUS_SRC_ALPHA);
 
     public static readonly BlendState NonPremultiplied =
-        new(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA, GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
+        new(JSBind_GL.SRC_ALPHA, JSBind_GL.ONE_MINUS_SRC_ALPHA, JSBind_GL.SRC_ALPHA, JSBind_GL.ONE_MINUS_SRC_ALPHA);
 
     /// <summary>叠加发光，用于粒子、爆炸、激光。</summary>
     public static readonly BlendState Additive =
-        new(GL.SRC_ALPHA, GL.ONE, GL.SRC_ALPHA, GL.ONE);
+        new(JSBind_GL.SRC_ALPHA, JSBind_GL.ONE, JSBind_GL.SRC_ALPHA, JSBind_GL.ONE);
 
     public static readonly BlendState Opaque =
-        new(GL.ONE, GL.ZERO, GL.ONE, GL.ZERO);
+        new(JSBind_GL.ONE, JSBind_GL.ZERO, JSBind_GL.ONE, JSBind_GL.ZERO);
 }
 
 /// <summary>精灵翻转方式。</summary>

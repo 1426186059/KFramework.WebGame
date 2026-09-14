@@ -29,15 +29,15 @@ public static class Audio
         set
         {
             _enabled = value;
-            AudioBind.SetMuted(!value);
+            JSBind_Audio.SetMuted(!value);
         }
     }
 
     public static void Play(Sfx sfx, float volume = 1f, float pitch = 1f)
     {
-        if (_enabled) AudioBind.Play((int)sfx, volume, pitch);
+        if (_enabled) JSBind_Audio.Play((int)sfx, volume, pitch);
     }
 
     /// <summary>浏览器要求用户手势后才能启动音频上下文，请在首次点击/按键时调用。</summary>
-    public static void Unlock() => AudioBind.Unlock();
+    public static void Unlock() => JSBind_Audio.Unlock();
 }

@@ -35,33 +35,33 @@ public sealed class GraphicsDevice : IDisposable
 
     public GraphicsDevice(string canvasSelector = "#game")
     {
-        if (!GL.InitContext(canvasSelector))
+        if (!JSBind_GL.InitContext(canvasSelector))
             throw new InvalidOperationException("无法创建 WebGL 2.0 上下文，请使用支持 WebGL2 的浏览器。");
 
-        MaxTextureSize = GL.GetParameterInt(GL.MAX_TEXTURE_SIZE);
-        Renderer = GL.GetParameterString(GL.RENDERER);
+        MaxTextureSize = JSBind_GL.GetParameterInt(JSBind_GL.MAX_TEXTURE_SIZE);
+        Renderer = JSBind_GL.GetParameterString(JSBind_GL.RENDERER);
 
         Effect = new SpriteEffect();
 
-        VertexBuffer = GL.CreateBuffer();
-        IndexBuffer = GL.CreateBuffer();
-        VertexArray = GL.CreateVertexArray();
+        VertexBuffer = JSBind_GL.CreateBuffer();
+        IndexBuffer = JSBind_GL.CreateBuffer();
+        VertexArray = JSBind_GL.CreateVertexArray();
 
-        GL.BindVertexArray(VertexArray);
+        JSBind_GL.BindVertexArray(VertexArray);
 
-        GL.BindBuffer(GL.ARRAY_BUFFER, VertexBuffer);
-        GL.BufferDataSize(GL.ARRAY_BUFFER, MaxBatchSize * 4 * VertexPositionColorTexture.SizeInBytes, GL.DYNAMIC_DRAW);
+        JSBind_GL.BindBuffer(JSBind_GL.ARRAY_BUFFER, VertexBuffer);
+        JSBind_GL.BufferDataSize(JSBind_GL.ARRAY_BUFFER, MaxBatchSize * 4 * VertexPositionColorTexture.SizeInBytes, JSBind_GL.DYNAMIC_DRAW);
 
-        GL.BindBuffer(GL.ELEMENT_ARRAY_BUFFER, IndexBuffer);
-        GL.BufferData(GL.ELEMENT_ARRAY_BUFFER, BuildQuadIndices(MaxBatchSize), GL.STATIC_DRAW);
+        JSBind_GL.BindBuffer(JSBind_GL.ELEMENT_ARRAY_BUFFER, IndexBuffer);
+        JSBind_GL.BufferData(JSBind_GL.ELEMENT_ARRAY_BUFFER, BuildQuadIndices(MaxBatchSize), JSBind_GL.STATIC_DRAW);
 
         ConfigureAttributes();
 
         SyncCanvasSize();
 
-        GL.Disable(GL.DEPTH_TEST);
-        GL.Enable(GL.BLEND);
-        GL.BlendEquation(GL.FUNC_ADD);
+        JSBind_GL.Disable(JSBind_GL.DEPTH_TEST);
+        JSBind_GL.Enable(JSBind_GL.BLEND);
+        JSBind_GL.BlendEquation(JSBind_GL.FUNC_ADD);
         SetBlendState(BlendState.NonPremultiplied);
 
         Console.WriteLine($"[KFramework] WebGL2 就绪 | {Renderer} | 画布 {Viewport.Width}x{Viewport.Height} | 最大纹理 {MaxTextureSize}");
@@ -72,18 +72,18 @@ public sealed class GraphicsDevice : IDisposable
         int stride = VertexPositionColorTexture.SizeInBytes;
         if (Effect.PositionLocation >= 0)
         {
-            GL.EnableVertexAttribArray(Effect.PositionLocation);
-            GL.VertexAttribPointer(Effect.PositionLocation, 2, GL.FLOAT, false, stride, 0);
+            JSBind_GL.EnableVertexAttribArray(Effect.PositionLocation);
+            JSBind_GL.VertexAttribPointer(Effect.PositionLocation, 2, JSBind_GL.FLOAT, false, stride, 0);
         }
         if (Effect.TexCoordLocation >= 0)
         {
-            GL.EnableVertexAttribArray(Effect.TexCoordLocation);
-            GL.VertexAttribPointer(Effect.TexCoordLocation, 2, GL.FLOAT, false, stride, 8);
+            JSBind_GL.EnableVertexAttribArray(Effect.TexCoordLocation);
+            JSBind_GL.VertexAttribPointer(Effect.TexCoordLocation, 2, JSBind_GL.FLOAT, false, stride, 8);
         }
         if (Effect.ColorLocation >= 0)
         {
-            GL.EnableVertexAttribArray(Effect.ColorLocation);
-            GL.VertexAttribPointer(Effect.ColorLocation, 4, GL.UNSIGNED_BYTE, true, stride, 16);
+            JSBind_GL.EnableVertexAttribArray(Effect.ColorLocation);
+            JSBind_GL.VertexAttribPointer(Effect.ColorLocation, 4, JSBind_GL.UNSIGNED_BYTE, true, stride, 16);
         }
     }
 
@@ -110,14 +110,14 @@ public sealed class GraphicsDevice : IDisposable
     public bool SyncCanvasSize()
     {
         Span<int> size = stackalloc int[5];
-        Platform.GetCanvasSize(size);
+        JSBind_Platform.GetCanvasSize(size);
         int width = size[2];
         int height = size[3];
         if (width <= 0 || height <= 0) return false;
         if (width == Viewport.Width && height == Viewport.Height) return false;
 
         Viewport = new Viewport(0, 0, width, height);
-        GL.Viewport(0, 0, width, height);
+        JSBind_GL.Viewport(0, 0, width, height);
         return true;
     }
 
@@ -127,7 +127,7 @@ public sealed class GraphicsDevice : IDisposable
         get
         {
             Span<int> size = stackalloc int[5];
-            Platform.GetCanvasSize(size);
+            JSBind_Platform.GetCanvasSize(size);
             return new Vector2(size[0], size[1]);
         }
     }
@@ -137,7 +137,7 @@ public sealed class GraphicsDevice : IDisposable
         get
         {
             Span<int> size = stackalloc int[5];
-            Platform.GetCanvasSize(size);
+            JSBind_Platform.GetCanvasSize(size);
             return size[4] / 1000f;
         }
     }
@@ -149,22 +149,22 @@ public sealed class GraphicsDevice : IDisposable
     public Color ReadPixel(int x, int y)
     {
         Span<byte> rgba = stackalloc byte[4];
-        GL.ReadPixel(x, Viewport.Height - 1 - y, rgba);
+        JSBind_GL.ReadPixel(x, Viewport.Height - 1 - y, rgba);
         return new Color(rgba[0], rgba[1], rgba[2], rgba[3]);
     }
 
     public void Clear(Color color)
     {
-        GL.ClearColor(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
-        GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+        JSBind_GL.ClearColor(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
+        JSBind_GL.Clear(JSBind_GL.COLOR_BUFFER_BIT | JSBind_GL.DEPTH_BUFFER_BIT);
     }
 
     internal void SetBlendState(BlendState state)
     {
         if (ReferenceEquals(_blendState, state)) return;
         _blendState = state;
-        GL.Enable(GL.BLEND);
-        GL.BlendFuncSeparate(state.SourceBlend, state.DestinationBlend,
+        JSBind_GL.Enable(JSBind_GL.BLEND);
+        JSBind_GL.BlendFuncSeparate(state.SourceBlend, state.DestinationBlend,
                              state.SourceAlphaBlend, state.DestinationAlphaBlend);
     }
 
@@ -174,18 +174,18 @@ public sealed class GraphicsDevice : IDisposable
         if (ReferenceEquals(_samplerState, state) && _samplerAppliedKey == current.BatchKey) return;
         _samplerState = state;
         _samplerAppliedKey = current.BatchKey;
-        GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, state.MinFilter);
-        GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, state.MagFilter);
-        GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, state.WrapMode);
-        GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, state.WrapMode);
+        JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MIN_FILTER, state.MinFilter);
+        JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MAG_FILTER, state.MagFilter);
+        JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_WRAP_S, state.WrapMode);
+        JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_WRAP_T, state.WrapMode);
     }
 
     private int _samplerAppliedKey = -1;
 
     internal void BindTexture(Texture2D texture)
     {
-        GL.ActiveTexture(GL.TEXTURE0);
-        GL.BindTexture(GL.TEXTURE_2D, texture.Handle);
+        JSBind_GL.ActiveTexture(JSBind_GL.TEXTURE0);
+        JSBind_GL.BindTexture(JSBind_GL.TEXTURE_2D, texture.Handle);
         _samplerAppliedKey = -1;   // 换纹理后采样参数需要重新下发
     }
 
@@ -201,16 +201,16 @@ public sealed class GraphicsDevice : IDisposable
         if (width > MaxTextureSize || height > MaxTextureSize)
             throw new ArgumentOutOfRangeException(nameof(width), $"纹理尺寸超过上限 {MaxTextureSize}");
 
-        JSObject handle = GL.CreateTexture();
-        GL.BindTexture(GL.TEXTURE_2D, handle);
-        GL.PixelStorei(GL.UNPACK_ALIGNMENT, 1);
-        GL.TexImage2D(GL.TEXTURE_2D, 0, GL.RGBA8, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, rgba);
-        GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
-        GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
-        GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
-        GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
+        JSObject handle = JSBind_GL.CreateTexture();
+        JSBind_GL.BindTexture(JSBind_GL.TEXTURE_2D, handle);
+        JSBind_GL.PixelStorei(JSBind_GL.UNPACK_ALIGNMENT, 1);
+        JSBind_GL.TexImage2D(JSBind_GL.TEXTURE_2D, 0, JSBind_GL.RGBA8, width, height, 0, JSBind_GL.RGBA, JSBind_GL.UNSIGNED_BYTE, rgba);
+        JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MIN_FILTER, JSBind_GL.NEAREST);
+        JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MAG_FILTER, JSBind_GL.NEAREST);
+        JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_WRAP_S, JSBind_GL.CLAMP_TO_EDGE);
+        JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_WRAP_T, JSBind_GL.CLAMP_TO_EDGE);
 
-        int error = GL.GetError();
+        int error = JSBind_GL.GetError();
         if (error != 0) Console.Error.WriteLine($"[KFramework] 纹理上传失败 0x{error:X4}（{width}x{height}，{rgba.Length} 字节）");
 
         return new Texture2D(handle, width, height, _batchKeySource++, ownsHandle: true);
@@ -218,8 +218,8 @@ public sealed class GraphicsDevice : IDisposable
 
     public void Dispose()
     {
-        GL.DeleteBuffer(VertexBuffer);
-        GL.DeleteBuffer(IndexBuffer);
+        JSBind_GL.DeleteBuffer(VertexBuffer);
+        JSBind_GL.DeleteBuffer(IndexBuffer);
         Effect.Dispose();
     }
 }

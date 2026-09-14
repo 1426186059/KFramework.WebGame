@@ -4,190 +4,98 @@ using KFramework.Graphics;
 namespace KFramework.Example2;
 
 /// <summary>
-/// 坦克大战（垂直切片）：关卡加载 → 地形绘制 → 玩家移动/开炮 → 子弹碰撞 → 敌人 AI。
-/// 采用 KFramework 的立即模式渲染：每帧遍历逻辑对象，用 SpriteBatch 统一提交。
+/// 坦克大战主类：只负责资源装载、更新调度与绘制顺序。
+/// 具体逻辑分散在 TankLevel / TankBase / PlayerTank / EnemyTank / Shell / PowerUp / *Effect / Hud 中。
 /// </summary>
 public sealed class TankGame : Game
 {
-    private const int MapWidth = 21;
-    private const int MapHeight = 20;
-    private const int TileSize = 32;
-    private const int LevelSkipLines = 3;
-
-    private const float PlayerSpeed = 90f;
-    private const float EnemySpeed = 55f;
-    private const float BulletSpeed = 260f;
-    private const float FireInterval = 0.45f;
-
-    private const int TankSize = 32;
-
-    private enum Tile : byte
-    {
-        Empty = 0,
-        Wall,      // 砖：子弹可摧毁
-        Barriar,   // 铁：挡子弹
-        Grass,     // 草：可通行，绘制在坦克之上
-        Water,     // 水：挡坦克，子弹可飞过
-        Heart,     // 老窝
-    }
-
-    private enum Dir : byte
-    {
-        Up = 0,
-        Right = 1,
-        Down = 2,
-        Left = 3,
-    }
-
-    private static readonly Vector2[] DirVectors =
-    {
-        new(0f, -1f), new(1f, 0f), new(0f, 1f), new(-1f, 0f),
-    };
-
-    // 坦克精灵在 Player1 / Enemys 图集里的排布（按方向分组，每方向 8 帧）。
-    // 若实机方向对不上，只改这两个表即可。
-    private static readonly int[] PlayerDirBase = { 0, 8, 16, 24 };
-    private static readonly int[] EnemyDirBase = { 0, 16, 32, 48 };
+    private const int LevelCount = 5;
+    private const int DropsEvery = 3;          // 每击毁 N 台敌人掉一个道具
+    private const float StageClearDelay = 2f;
 
     private SpriteBatch _batch = null!;
-    private bool _ready;
+    private ResCenter _res = null!;
+    private Hud _hud = null!;
+    private readonly TankLevel _level = new();
+    private readonly Random _rng = new(20240915);
 
-    private readonly Tile[,] _tiles = new Tile[MapHeight, MapWidth];
-    private readonly List<Point> _enemySpawns = new();
+    private PlayerTank? _player;
+    private readonly List<EnemyTank> _enemies = new();
+    private readonly List<Shell> _shells = new();
+    private readonly List<ExplodeEffect> _explosions = new();
+    private readonly List<BornEffect> _borns = new();
+    private readonly List<PowerUp> _powerUps = new();
 
-    private Texture2D? _wall;
-    private Texture2D? _barriar;
-    private Texture2D? _grass;
-    private Texture2D? _water;
-    private Texture2D? _heart;
-    private Texture2D?[] _playerSprites = Array.Empty<Texture2D?>();
-    private Texture2D?[] _enemySprites = Array.Empty<Texture2D?>();
-    private Texture2D?[] _bulletSprites = Array.Empty<Texture2D?>();
+    private int _levelIndex;
+    private int _lives = TankConfig.PlayerLives;
+    private int _enemiesRemaining = TankConfig.EnemyTotal;
+    private int _killed;
+    private int _fireLevel;
 
-    private Vector2 _playerPos;
-    private Dir _playerDir = Dir.Up;
-    private float _playerFireTimer;
-    private bool _playerAlive = true;
-    private int _playerAnim;
-
-    private sealed class Bullet
-    {
-        public Vector2 Pos;
-        public Dir Dir;
-        public bool Active;
-        public bool FromPlayer;
-    }
-
-    private sealed class Enemy
-    {
-        public Vector2 Pos;
-        public Dir Dir;
-        public bool Active;
-        public float TurnTimer;
-        public float FireTimer;
-    }
-
-    private readonly List<Bullet> _bullets = new();
-    private readonly List<Enemy> _enemies = new();
-    private readonly Random _random = new(12345);
+    private float _respawnTimer;
+    private float _spawnTimer;
+    private float _shieldTimer;
+    private float _freezeTimer;
+    private float _stageClearTimer = -1f;
 
     private int _animTick;
-
-    /// <summary>精灵表检视模式：把 Player1 全 32 帧平铺出来，用来确认方向排布。</summary>
     private bool _inspectSprites;
+    private bool _gameOver;
+    private bool _allCleared;
+    private bool _ready;
 
-    /// <summary>地图左上角在屏幕上的偏移（让 21x20 的地图居中）。</summary>
+    private int AnimFrame => (_animTick / 8) % 2;
+    private bool StageCleared => _stageClearTimer > 0f;
+
+    /// <summary>地图左上角偏移，让 21x20 的战场居中。</summary>
     private Vector2 Origin => new(
-        (GraphicsDevice.Viewport.Width - MapWidth * TileSize) * 0.5f,
-        (GraphicsDevice.Viewport.Height - MapHeight * TileSize) * 0.5f);
+        (GraphicsDevice.Viewport.Width - TankConfig.MapWidth * TankConfig.TileSize) * 0.5f,
+        (GraphicsDevice.Viewport.Height - TankConfig.MapHeight * TankConfig.TileSize) * 0.5f);
 
     protected override async Task LoadContentAsync()
     {
         _batch = new SpriteBatch(GraphicsDevice);
         await Content.LoadAsync().ConfigureAwait(false);
 
-        _wall = TryTex("Map_0");
-        _barriar = TryTex("Map_1");
-        _grass = TryTex("Map_2");
-        _water = TryTex("Map_3");
-        _heart = TryTex("Map_5");
-
-        _playerSprites = LoadRange("Player1_", 32);
-        _enemySprites = LoadRange("Enemys_", 64);
-        _bulletSprites = LoadRange("bullet_", 4);
+        _res = ResCenter.Load(Content);
+        _hud = new Hud(GraphicsDevice);
 
         LoadLevel(0);
-        SpawnEnemies(4);
-
         _ready = true;
     }
 
-    private Texture2D? TryTex(string name)
+    private void LoadLevel(int index)
     {
-        Content.TryLoadTexture(name, out Texture2D? tex);
-        return tex;
-    }
+        _levelIndex = index;
+        _level.Load(Content.LoadText($"levels/{index:00}"));
 
-    private Texture2D?[] LoadRange(string prefix, int count)
-    {
-        var result = new Texture2D?[count];
-        for (int i = 0; i < count; i++) result[i] = TryTex(prefix + i);
-        return result;
-    }
-
-    // ===== 关卡 =====
-
-    private void LoadLevel(int levelIndex)
-    {
-        string text = Content.LoadText($"levels/{levelIndex:00}");
-        string[] lines = text.Trim().Split('\n');
-
-        _enemySpawns.Clear();
-        int row = 0;
-        for (int i = LevelSkipLines; i < lines.Length && row < MapHeight; i++, row++)
-        {
-            string line = lines[i].TrimEnd('\r');
-            for (int x = 0; x < MapWidth; x++)
-            {
-                char c = x < line.Length ? line[x] : ' ';
-                _tiles[row, x] = ParseTile(c);
-
-                if (c == 'P') _playerPos = TileCenter(x, row);
-                else if (c == 'E') _enemySpawns.Add(new Point(x, row));
-            }
-        }
-    }
-
-    private static Tile ParseTile(char c) => c switch
-    {
-        '#' => Tile.Wall,
-        '*' => Tile.Barriar,
-        '~' => Tile.Water,
-        '^' => Tile.Grass,
-        '@' => Tile.Heart,
-        _ => Tile.Empty,
-    };
-
-    private Vector2 TileCenter(int x, int y) => new(x * TileSize + TileSize / 2f, y * TileSize + TileSize / 2f);
-
-    private void SpawnEnemies(int count)
-    {
         _enemies.Clear();
-        for (int i = 0; i < count && i < _enemySpawns.Count; i++)
-        {
-            Point p = _enemySpawns[i];
-            _enemies.Add(new Enemy
-            {
-                Pos = TileCenter(p.X, p.Y),
-                Dir = Dir.Down,
-                Active = true,
-                TurnTimer = 0f,
-                FireTimer = 0f,
-            });
-        }
+        _shells.Clear();
+        _explosions.Clear();
+        _borns.Clear();
+        _powerUps.Clear();
+
+        _enemiesRemaining = TankConfig.EnemyTotal;
+        _killed = 0;
+        _spawnTimer = 1.5f;
+        _stageClearTimer = -1f;
+        _freezeTimer = 0f;
+
+        SpawnPlayer(keepStats: index > 0);
     }
 
-    // ===== 逻辑 =====
+    private void SpawnPlayer(bool keepStats)
+    {
+        if (!keepStats)
+        {
+            _lives = TankConfig.PlayerLives;
+            _fireLevel = 0;
+        }
+
+        _player = new PlayerTank { Position = _level.PlayerSpawn, Direction = Dir.Up, Active = true };
+        _borns.Add(new BornEffect { Position = _level.PlayerSpawn });
+        _shieldTimer = 2f;   // 出生保护
+    }
 
     protected override void Update(GameTime gameTime)
     {
@@ -195,145 +103,262 @@ public sealed class TankGame : Game
 
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
         _animTick++;
-        _playerAnim = (_animTick / 8) % 2;
 
+        // Tab：精灵表检视，用来确认方向排布
         if (Input.GetKeyboardState().IsKeyPressed(Keys.Tab)) _inspectSprites = !_inspectSprites;
         if (_inspectSprites) return;
 
-        UpdatePlayer(dt);
-        UpdateEnemies(dt);
-        UpdateBullets(dt);
-    }
-
-    private void UpdatePlayer(float dt)
-    {
-        if (!_playerAlive) return;
-
-        var keyboard = Input.GetKeyboardState();
-
-        Dir? wanted = null;
-        if (keyboard.IsKeyDown(Keys.Up) || keyboard.IsKeyDown(Keys.W)) wanted = Dir.Up;
-        else if (keyboard.IsKeyDown(Keys.Right) || keyboard.IsKeyDown(Keys.D)) wanted = Dir.Right;
-        else if (keyboard.IsKeyDown(Keys.Down) || keyboard.IsKeyDown(Keys.S)) wanted = Dir.Down;
-        else if (keyboard.IsKeyDown(Keys.Left) || keyboard.IsKeyDown(Keys.A)) wanted = Dir.Left;
-
-        if (wanted.HasValue)
+        // R：重开当前关；N：跳到下一关（调试用）
+        if (Input.GetKeyboardState().IsKeyPressed(Keys.R)) { LoadLevel(_levelIndex); return; }
+        if (Input.GetKeyboardState().IsKeyPressed(Keys.N) && _levelIndex + 1 < LevelCount)
         {
-            _playerDir = wanted.Value;
-            Vector2 delta = DirVectors[(int)_playerDir] * PlayerSpeed * dt;
-            TryMove(ref _playerPos, delta);
+            LoadLevel(_levelIndex + 1);
+            return;
         }
 
-        _playerFireTimer -= dt;
-        if (keyboard.IsKeyDown(Keys.Space) && _playerFireTimer <= 0f)
-        {
-            Fire(_playerPos, _playerDir, true);
-            _playerFireTimer = FireInterval;
-        }
+        if (_gameOver || _allCleared) return;
+
+        _shieldTimer -= dt;
+        _freezeTimer -= dt;
+
+        UpdateStageClear(dt);
+        UpdateRespawn(dt);
+        UpdateTanks(dt);
+        UpdateShells(dt);
+        UpdatePowerUps(dt);
+        UpdateEffects(dt);
+        UpdateSpawning(dt);
+        CheckVictory();
     }
 
-    private void UpdateEnemies(float dt)
+    private void UpdateStageClear(float dt)
     {
-        foreach (var enemy in _enemies)
+        if (!StageCleared) return;
+
+        _stageClearTimer -= dt;
+        if (_stageClearTimer > 0f) return;
+
+        if (_levelIndex + 1 >= LevelCount)
+        {
+            _allCleared = true;
+            Audio.Play(Audio.Sfx.GameOver);
+            return;
+        }
+        LoadLevel(_levelIndex + 1);
+    }
+
+    private void UpdateTanks(float dt)
+    {
+        if (_player is { Active: true })
+        {
+            Shell? shell = _player.Update(dt, _level);
+            if (shell is not null)
+            {
+                shell.SpeedBonus = _fireLevel;
+                _shells.Add(shell);
+                Audio.Play(Audio.Sfx.Shoot);
+            }
+        }
+
+        bool frozen = _freezeTimer > 0f;
+        foreach (EnemyTank enemy in _enemies)
         {
             if (!enemy.Active) continue;
 
-            enemy.TurnTimer -= dt;
-            if (enemy.TurnTimer <= 0f)
-            {
-                enemy.Dir = (Dir)_random.Next(4);
-                enemy.TurnTimer = 0.8f + (float)_random.NextDouble() * 1.6f;
-            }
+            // 时钟道具：敌人停止行动，但仍在场上
+            if (frozen) continue;
 
-            Vector2 delta = DirVectors[(int)enemy.Dir] * EnemySpeed * dt;
-            if (!TryMove(ref enemy.Pos, delta)) enemy.TurnTimer = 0f;   // 撞墙就立刻转向
-
-            enemy.FireTimer -= dt;
-            if (enemy.FireTimer <= 0f)
-            {
-                Fire(enemy.Pos, enemy.Dir, false);
-                enemy.FireTimer = 1.2f + (float)_random.NextDouble() * 1.5f;
-            }
+            Shell? shell = enemy.Update(dt, _level);
+            if (shell is not null) _shells.Add(shell);
         }
     }
 
-    private void UpdateBullets(float dt)
+    private void UpdateShells(float dt)
     {
-        foreach (var bullet in _bullets)
+        foreach (Shell shell in _shells)
         {
-            if (!bullet.Active) continue;
+            if (!shell.Active) continue;
+            shell.Update(dt);
 
-            bullet.Pos += DirVectors[(int)bullet.Dir] * BulletSpeed * dt;
-
-            // 出界
-            if (bullet.Pos.X < 0 || bullet.Pos.Y < 0 ||
-                bullet.Pos.X > MapWidth * TileSize || bullet.Pos.Y > MapHeight * TileSize)
+            if (shell.OutOfField)
             {
-                bullet.Active = false;
+                shell.Active = false;
                 continue;
             }
 
-            int tx = (int)(bullet.Pos.X / TileSize);
-            int ty = (int)(bullet.Pos.Y / TileSize);
-            if (tx < 0 || ty < 0 || tx >= MapWidth || ty >= MapHeight) continue;
+            Point tile = shell.Tile;
 
-            Tile tile = _tiles[ty, tx];
-            if (tile == Tile.Wall)
+            // 强化子弹可以打穿铁块
+            if (shell.SpeedBonus >= 2 && _level.Get(tile.X, tile.Y) == Tile.Barriar)
+                _level.Clear(tile.X, tile.Y);
+
+            if (_level.BulletHit(tile.X, tile.Y, out bool heartHit))
             {
-                _tiles[ty, tx] = Tile.Empty;
-                bullet.Active = false;
+                shell.Active = false;
+                Audio.Play(Audio.Sfx.Hit);
+                if (heartHit)
+                {
+                    _gameOver = true;
+                    _explosions.Add(new ExplodeEffect { Position = _level.TileCenter(tile.X, tile.Y) });
+                    Audio.Play(Audio.Sfx.GameOver);
+                }
+                continue;
             }
-            else if (tile == Tile.Barriar || tile == Tile.Heart)
-            {
-                bullet.Active = false;
-                if (tile == Tile.Heart) _playerAlive = false;
-            }
+
+            if (shell.FromPlayer) HitEnemies(shell);
+            else HitPlayer(shell);
         }
 
-        _bullets.RemoveAll(static b => !b.Active);
+        _shells.RemoveAll(static s => !s.Active);
+        _enemies.RemoveAll(static e => !e.Active);
     }
 
-    private void Fire(Vector2 from, Dir dir, bool byPlayer)
+    private void HitEnemies(Shell shell)
     {
-        _bullets.Add(new Bullet
+        foreach (EnemyTank enemy in _enemies)
         {
-            Pos = from + DirVectors[(int)dir] * (TankSize / 2f),
-            Dir = dir,
-            Active = true,
-            FromPlayer = byPlayer,
-        });
+            if (!enemy.Active) continue;
+            if (!shell.Bounds.Intersects(enemy.Bounds)) continue;
+
+            shell.Active = false;
+            enemy.Active = false;
+            _killed++;
+            _explosions.Add(new ExplodeEffect { Position = enemy.Position });
+            Audio.Play(Audio.Sfx.Explosion);
+
+            if (_killed % DropsEvery == 0) DropPowerUp(enemy.Position);
+            return;
+        }
     }
 
-    /// <summary>尝试移动；被阻挡时返回 false（位置保持不变）。</summary>
-    private bool TryMove(ref Vector2 pos, Vector2 delta)
+    private void HitPlayer(Shell shell)
     {
-        Vector2 next = pos + delta;
+        if (_player is not { Active: true }) return;
+        if (!shell.Bounds.Intersects(_player.Bounds)) return;
 
-        // 用坦克外接矩形覆盖到的格子做检测
-        float left = next.X - TankSize / 2f;
-        float right = next.X + TankSize / 2f - 0.001f;
-        float top = next.Y - TankSize / 2f;
-        float bottom = next.Y + TankSize / 2f - 0.001f;
+        shell.Active = false;
 
-        if (left < 0 || top < 0 || right >= MapWidth * TileSize || bottom >= MapHeight * TileSize)
-            return false;
-
-        for (int ty = (int)(top / TileSize); ty <= (int)(bottom / TileSize); ty++)
+        // 护盾期间免疫，只播个命中音
+        if (_shieldTimer > 0f)
         {
-            for (int tx = (int)(left / TileSize); tx <= (int)(right / TileSize); tx++)
-            {
-                if (!IsPassable(_tiles[ty, tx])) return false;
-            }
+            Audio.Play(Audio.Sfx.Hit);
+            return;
         }
 
-        pos = next;
-        return true;
+        _explosions.Add(new ExplodeEffect { Position = _player.Position });
+        Audio.Play(Audio.Sfx.Explosion);
+        _player = null;
+
+        _lives--;
+        if (_lives <= 0)
+        {
+            _gameOver = true;
+            Audio.Play(Audio.Sfx.GameOver);
+        }
+        else
+        {
+            _respawnTimer = 1.5f;
+        }
     }
 
-    private static bool IsPassable(Tile tile)
-        => tile is Tile.Empty or Tile.Grass;
+    private void DropPowerUp(Vector2 at)
+        => _powerUps.Add(new PowerUp { Position = at, Kind = (PowerUpKind)_rng.Next(6) });
 
-    // ===== 绘制 =====
+    private void UpdatePowerUps(float dt)
+    {
+        foreach (PowerUp powerUp in _powerUps) powerUp.Update(dt);
+        _powerUps.RemoveAll(static p => !p.Active);
+
+        if (_player is not { Active: true }) return;
+
+        foreach (PowerUp powerUp in _powerUps)
+        {
+            if (!powerUp.Active) continue;
+            if (!powerUp.Bounds.Intersects(_player.Bounds)) continue;
+
+            powerUp.Active = false;
+            ApplyPowerUp(powerUp.Kind);
+        }
+    }
+
+    private void ApplyPowerUp(PowerUpKind kind)
+    {
+        Audio.Play(Audio.Sfx.Pickup);
+        switch (kind)
+        {
+            case PowerUpKind.Tank:
+            case PowerUpKind.Shovel:
+                _lives++;
+                break;
+            case PowerUpKind.Helmet:
+                _shieldTimer = 6f;
+                break;
+            case PowerUpKind.Star:
+                _fireLevel = Math.Min(_fireLevel + 1, 3);
+                break;
+            case PowerUpKind.Clock:
+                _freezeTimer = 6f;
+                break;
+            case PowerUpKind.Grenade:
+                foreach (EnemyTank enemy in _enemies)
+                {
+                    if (!enemy.Active) continue;
+                    enemy.Active = false;
+                    _explosions.Add(new ExplodeEffect { Position = enemy.Position });
+                    _killed++;
+                }
+                Audio.Play(Audio.Sfx.Explosion);
+                break;
+        }
+    }
+
+    private void UpdateRespawn(float dt)
+    {
+        if (_player is not null || _respawnTimer <= 0f) return;
+
+        _respawnTimer -= dt;
+        if (_respawnTimer <= 0f) SpawnPlayer(keepStats: true);
+    }
+
+    private void UpdateSpawning(float dt)
+    {
+        if (StageCleared) return;
+
+        int onField = _enemies.Count(static e => e.Active);
+        if (onField >= TankConfig.EnemyOnField || _enemiesRemaining <= 0) return;
+
+        _spawnTimer -= dt;
+        if (_spawnTimer > 0f) return;
+        _spawnTimer = 2f;
+
+        if (_level.EnemySpawns.Count == 0) return;
+
+        int slot = (_enemies.Count + TankConfig.EnemyTotal - _enemiesRemaining) % _level.EnemySpawns.Count;
+        Point spawn = _level.EnemySpawns[slot];
+        Vector2 at = _level.TileCenter(spawn.X, spawn.Y);
+
+        _enemies.Add(new EnemyTank { Position = at, Direction = Dir.Down, Active = true });
+        _borns.Add(new BornEffect { Position = at });
+        _enemiesRemaining--;
+    }
+
+    private void UpdateEffects(float dt)
+    {
+        foreach (ExplodeEffect effect in _explosions) effect.Update(dt);
+        foreach (BornEffect effect in _borns) effect.Update(dt);
+
+        _explosions.RemoveAll(static e => !e.Active);
+        _borns.RemoveAll(static b => !b.Active);
+    }
+
+    private void CheckVictory()
+    {
+        if (StageCleared || _gameOver) return;
+        if (_enemiesRemaining > 0 || _enemies.Any(static e => e.Active)) return;
+
+        _stageClearTimer = StageClearDelay;
+        _powerUps.Clear();
+    }
 
     protected override void Draw(GameTime gameTime)
     {
@@ -348,96 +373,54 @@ public sealed class TankGame : Game
             return;
         }
 
-        DrawTerrain(grassOnTop: false);
-        DrawTanks();
-        DrawBullets();
-        DrawTerrain(grassOnTop: true);
+        Vector2 origin = Origin;
+
+        _level.Draw(_batch, origin, _res, grassOnTop: false);
+        foreach (PowerUp powerUp in _powerUps) powerUp.Draw(_batch, origin, _res);
+        foreach (BornEffect effect in _borns) effect.Draw(_batch, origin, _res);
+
+        _player?.Draw(_batch, origin, _res, AnimFrame);
+        if (_shieldTimer > 0f && _player is { Active: true } && _res.Shield is not null)
+            DrawCentered(_res.Shield, origin + _player.Position);
+
+        foreach (EnemyTank enemy in _enemies) enemy.Draw(_batch, origin, _res, AnimFrame);
+        foreach (Shell shell in _shells) shell.Draw(_batch, origin, _res);
+        foreach (ExplodeEffect effect in _explosions) effect.Draw(_batch, origin, _res);
+
+        // 草丛要盖在坦克之上
+        _level.Draw(_batch, origin, _res, grassOnTop: true);
+
+        DrawHud(origin);
 
         _batch.End();
     }
 
-    private void DrawTerrain(bool grassOnTop)
+    private void DrawHud(Vector2 origin)
     {
-        Vector2 origin = Origin;
-        for (int y = 0; y < MapHeight; y++)
-        {
-            for (int x = 0; x < MapWidth; x++)
-            {
-                Tile tile = _tiles[y, x];
-                if (tile == Tile.Empty) continue;
+        string? status = null;
+        if (_gameOver) status = "GAME OVER";
+        else if (_allCleared) status = "ALL CLEAR";
+        else if (StageCleared) status = "STAGE CLEAR";
 
-                bool isGrass = tile == Tile.Grass;
-                if (isGrass != grassOnTop) continue;
-
-                Texture2D? tex = tile switch
-                {
-                    Tile.Wall => _wall,
-                    Tile.Barriar => _barriar,
-                    Tile.Water => _water,
-                    Tile.Heart => _heart,
-                    Tile.Grass => _grass,
-                    _ => null,
-                };
-                if (tex is null) continue;
-
-                _batch.Draw(tex, new Vector2(origin.X + x * TileSize, origin.Y + y * TileSize), Color.White);
-            }
-        }
+        _hud.Draw(_batch, _levelIndex, _lives, _enemiesRemaining,
+                  _enemies.Count(static e => e.Active), status,
+                  origin.X + TankConfig.MapWidth * TankConfig.TileSize, origin.Y);
     }
 
-    private void DrawTanks()
-    {
-        Vector2 origin = Origin;
+    private void DrawCentered(Texture2D tex, Vector2 center)
+        => _batch.Draw(tex, new Vector2(center.X - tex.Width / 2f, center.Y - tex.Height / 2f), Color.White);
 
-        if (_playerAlive)
-        {
-            int index = PlayerDirBase[(int)_playerDir] + _playerAnim;
-            Texture2D? tex = Pick(_playerSprites, index);
-            if (tex is not null) DrawCentered(tex, origin + _playerPos);
-        }
-
-        foreach (var enemy in _enemies)
-        {
-            if (!enemy.Active) continue;
-            int index = EnemyDirBase[(int)enemy.Dir] + _playerAnim;
-            Texture2D? tex = Pick(_enemySprites, index);
-            if (tex is not null) DrawCentered(tex, origin + enemy.Pos);
-        }
-    }
-
-    private void DrawBullets()
-    {
-        Vector2 origin = Origin;
-        foreach (var bullet in _bullets)
-        {
-            if (!bullet.Active) continue;
-            Texture2D? tex = Pick(_bulletSprites, (int)bullet.Dir);
-            if (tex is not null) DrawCentered(tex, origin + bullet.Pos);
-        }
-    }
-
-    /// <summary>把 Player1 全 32 帧按 8 列平铺，用来肉眼确认「方向 / 动画帧 / 等级」的排布顺序。</summary>
+    /// <summary>把 Player1 全 32 帧按 8 列平铺，用于肉眼确认方向的排布顺序。</summary>
     private void DrawSpriteSheet()
     {
         const int columns = 8;
         const int cell = 48;
 
-        for (int i = 0; i < _playerSprites.Length; i++)
+        for (int i = 0; i < _res.Player.Length; i++)
         {
-            Texture2D? tex = _playerSprites[i];
+            Texture2D? tex = _res.Player[i];
             if (tex is null) continue;
             _batch.Draw(tex, new Vector2(24f + (i % columns) * cell, 24f + (i / columns) * cell), Color.White);
         }
-    }
-
-    private void DrawCentered(Texture2D tex, Vector2 center)
-    {
-        _batch.Draw(tex, new Vector2(center.X - tex.Width / 2f, center.Y - tex.Height / 2f), Color.White);
-    }
-
-    private static Texture2D? Pick(Texture2D?[] sprites, int index)
-    {
-        if (sprites.Length == 0) return null;
-        return sprites[((index % sprites.Length) + sprites.Length) % sprites.Length];
     }
 }

@@ -26,7 +26,7 @@ public sealed class GameWindow
 
     public string Title
     {
-        set => Platform.SetTitle(value);
+        set => JSBind_Platform.SetTitle(value);
     }
 
     /// <summary>画布尺寸变化时触发（含浏览器缩放、手机旋转）。</summary>

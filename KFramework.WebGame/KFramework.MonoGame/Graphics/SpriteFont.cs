@@ -54,7 +54,7 @@ public sealed class SpriteFont : IDisposable
         _atlas = device.CreateTexture(AtlasSize, AtlasSize);
 
         Span<int> metrics = stackalloc int[4];
-        TextBind.Measure("Hg", _fontCss, metrics);
+        JSBind_Text.Measure("Hg", _fontCss, metrics);
         Ascent = metrics[2];
         LineHeight = metrics[1];
 
@@ -86,7 +86,7 @@ public sealed class SpriteFont : IDisposable
 
         string text = c.ToString();
         Span<int> metrics = stackalloc int[4];
-        TextBind.Measure(text, _fontCss, metrics);
+        JSBind_Text.Measure(text, _fontCss, metrics);
         int advance = metrics[0];
 
         // 兜底：即使浏览器返回的度量异常，也保证字形盒子装得下这个字号的字符
@@ -116,7 +116,7 @@ public sealed class SpriteFont : IDisposable
             }
 
             byte[] pixels = new byte[cellWidth * cellHeight * 4];
-            TextBind.Render(text, _fontCss, Padding, Padding + ascent, cellWidth, cellHeight, pixels);
+            JSBind_Text.Render(text, _fontCss, Padding, Padding + ascent, cellWidth, cellHeight, pixels);
             _atlas.SetData(pixels, _shelfX, _shelfY, cellWidth, cellHeight);
 
             texture = _atlas.CreateSubtexture(new Rectangle(_shelfX, _shelfY, cellWidth, cellHeight));

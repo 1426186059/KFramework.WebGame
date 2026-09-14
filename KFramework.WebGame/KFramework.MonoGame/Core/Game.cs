@@ -49,7 +49,7 @@ public abstract class Game : IDisposable
         Window = new GameWindow(GraphicsDevice);
         Content = new ContentManager(GraphicsDevice, contentRoot);
         Components = new GameComponentCollection();
-        GameHost.Current = this;
+        JSBind_GameHost.Current = this;
     }
 
     /// <summary>启动主循环；返回的 Task 在 <see cref="Exit"/> 后完成。</summary>
@@ -75,7 +75,7 @@ public abstract class Game : IDisposable
             _initialized = true;
         }
 
-        Platform.StartRenderLoop();
+        JSBind_Platform.StartRenderLoop();
         await _exitSignal.Task;
     }
 

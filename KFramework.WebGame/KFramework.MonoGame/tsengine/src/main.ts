@@ -20,15 +20,25 @@ interface AssemblyExports {
 function findHost(exports: AssemblyExports | null): GameHost | undefined {
     if (!exports) return undefined;
 
-    const byNamespace = (exports as { KFramework?: { GameHost?: GameHost } }).KFramework?.GameHost;
+    // KFramework 的 JS 绑定统一放在 KFramework.JSBind 命名空间，类名以 JSBind_ 开头。
+    // 帧回调的完整路径是 KFramework.JSBind.JSBind_GameHost。
+    const byNamespace = (
+        exports as { KFramework?: { JSBind?: { JSBind_GameHost?: GameHost } } }
+    ).KFramework?.JSBind?.JSBind_GameHost;
     if (byNamespace) return byNamespace;
 
-    const direct = exports as { GameHost?: GameHost };
-    if (direct.GameHost) return direct.GameHost;
+    const direct = exports as { JSBind_GameHost?: GameHost };
+    if (direct.JSBind_GameHost) return direct.JSBind_GameHost;
 
-    return Object.values(exports).find(
-        (value): value is GameHost => !!value && typeof (value as GameHost).Frame === 'function',
-    );
+    // 兜底：递归下钻整棵导出树找带 Frame 的类型，避免 C# 侧改名后这里静默失效。
+    const stack: unknown[] = [exports];
+    while (stack.length > 0) {
+        const node = stack.pop();
+        if (!node || typeof node !== 'object') continue;
+        if (typeof (node as GameHost).Frame === 'function') return node as GameHost;
+        stack.push(...Object.values(node));
+    }
+    return undefined;
 }
 
 const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotnet
@@ -45,7 +55,7 @@ setModuleImports('text', text);
 const config = getConfig();
 
 /**
- * 帧回调 KFramework.GameHost.Frame 定义在 KFramework 程序集里，
+ * 帧回调 JSBind_GameHost.Frame 定义在 KFramework 程序集里，
  * 而 config.mainAssemblyName 是游戏程序集，因此需要在多个程序集中查找。
  */
 async function resolveGameHost(): Promise<GameHost | undefined> {
@@ -68,7 +78,7 @@ async function resolveGameHost(): Promise<GameHost | undefined> {
 const host = await resolveGameHost();
 
 if (!host) {
-    console.error('[main] 找不到 KFramework.GameHost 导出，画面不会刷新');
+    console.error('[main] 找不到 JSBind_GameHost 导出，画面不会刷新');
 } else {
     platform.setFrameCallback((timestamp: number) => host.Frame(timestamp));
 }

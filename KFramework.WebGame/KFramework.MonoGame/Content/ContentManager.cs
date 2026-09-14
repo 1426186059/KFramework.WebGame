@@ -39,7 +39,7 @@ public sealed class ContentManager : IDisposable
         _root = root.TrimEnd('/');
 
         // HttpClient 不接受相对地址，因此用页面基址拼出绝对 URL
-        string baseUri = Platform.GetBaseUri();
+        string baseUri = JSBind_Platform.GetBaseUri();
         Uri? baseAddress = null;
 
         if (!string.IsNullOrEmpty(baseUri))

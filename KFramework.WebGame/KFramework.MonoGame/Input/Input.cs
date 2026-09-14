@@ -34,7 +34,7 @@ public static partial class Input
     internal static void Poll()
     {
         Array.Copy(_current, _previous, Layout.Size);
-        Platform.PollInput(_current);
+        JSBind_Platform.PollInput(_current);
     }
 
     private static int ReadInt(byte[] buffer, int offset)

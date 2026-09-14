@@ -60,37 +60,37 @@ internal sealed class SpriteEffect : IDisposable
 
     internal SpriteEffect()
     {
-        _program = GL.CreateProgram();
+        _program = JSBind_GL.CreateProgram();
 
-        JSObject vertexShader = Compile(GL.VERTEX_SHADER, VertexSource);
-        JSObject fragmentShader = Compile(GL.FRAGMENT_SHADER, FragmentSource);
+        JSObject vertexShader = Compile(JSBind_GL.VERTEX_SHADER, VertexSource);
+        JSObject fragmentShader = Compile(JSBind_GL.FRAGMENT_SHADER, FragmentSource);
 
-        GL.AttachShader(_program, vertexShader);
-        GL.AttachShader(_program, fragmentShader);
-        GL.LinkProgram(_program);
+        JSBind_GL.AttachShader(_program, vertexShader);
+        JSBind_GL.AttachShader(_program, fragmentShader);
+        JSBind_GL.LinkProgram(_program);
 
-        if (GL.GetProgramParameter(_program, GL.LINK_STATUS) == 0)
-            throw new InvalidOperationException("着色器链接失败: " + GL.GetProgramInfoLog(_program));
+        if (JSBind_GL.GetProgramParameter(_program, JSBind_GL.LINK_STATUS) == 0)
+            throw new InvalidOperationException("着色器链接失败: " + JSBind_GL.GetProgramInfoLog(_program));
 
-        GL.DeleteShader(vertexShader);
-        GL.DeleteShader(fragmentShader);
+        JSBind_GL.DeleteShader(vertexShader);
+        JSBind_GL.DeleteShader(fragmentShader);
 
-        _projectionLocation = GL.GetUniformLocation(_program, "uProjection");
-        _textureLocation = GL.GetUniformLocation(_program, "uTexture");
-        PositionLocation = GL.GetAttribLocation(_program, "aPosition");
-        TexCoordLocation = GL.GetAttribLocation(_program, "aTexCoord");
-        ColorLocation = GL.GetAttribLocation(_program, "aColor");
+        _projectionLocation = JSBind_GL.GetUniformLocation(_program, "uProjection");
+        _textureLocation = JSBind_GL.GetUniformLocation(_program, "uTexture");
+        PositionLocation = JSBind_GL.GetAttribLocation(_program, "aPosition");
+        TexCoordLocation = JSBind_GL.GetAttribLocation(_program, "aTexCoord");
+        ColorLocation = JSBind_GL.GetAttribLocation(_program, "aColor");
     }
 
     private static JSObject Compile(int type, string source)
     {
-        JSObject shader = GL.CreateShader(type);
-        GL.ShaderSource(shader, source);
-        GL.CompileShader(shader);
-        if (GL.GetShaderParameter(shader, GL.COMPILE_STATUS) == 0)
+        JSObject shader = JSBind_GL.CreateShader(type);
+        JSBind_GL.ShaderSource(shader, source);
+        JSBind_GL.CompileShader(shader);
+        if (JSBind_GL.GetShaderParameter(shader, JSBind_GL.COMPILE_STATUS) == 0)
         {
-            string log = GL.GetShaderInfoLog(shader);
-            GL.DeleteShader(shader);
+            string log = JSBind_GL.GetShaderInfoLog(shader);
+            JSBind_GL.DeleteShader(shader);
             throw new InvalidOperationException($"着色器编译失败: {log}");
         }
         return shader;
@@ -98,13 +98,13 @@ internal sealed class SpriteEffect : IDisposable
 
     internal void Apply(Matrix4x4 projection)
     {
-        GL.UseProgram(_program);
+        JSBind_GL.UseProgram(_program);
         if (_projectionLocation is not null)
         {
             WriteMatrix(projection, _matrixBuffer);
-            GL.UniformMatrix4fv(_projectionLocation, 0, _matrixBuffer);
+            JSBind_GL.UniformMatrix4fv(_projectionLocation, 0, _matrixBuffer);
         }
-        if (_textureLocation is not null) GL.Uniform1i(_textureLocation, 0);
+        if (_textureLocation is not null) JSBind_GL.Uniform1i(_textureLocation, 0);
 
         if (!_locationsLogged)
         {
@@ -130,5 +130,5 @@ internal sealed class SpriteEffect : IDisposable
     private static void Write(Span<byte> destination, int index, float value)
         => BinaryPrimitives.WriteSingleLittleEndian(destination.Slice(index * 4, 4), value);
 
-    public void Dispose() => GL.DeleteProgram(_program);
+    public void Dispose() => JSBind_GL.DeleteProgram(_program);
 }

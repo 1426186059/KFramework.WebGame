@@ -3,7 +3,7 @@ using System.Runtime.InteropServices.JavaScript;
 namespace KFramework.JSBind;
 
 /// <summary>浏览器平台服务（画布尺寸、主循环驱动、地址栏参数等）。</summary>
-internal static partial class Platform
+internal static partial class JSBind_Platform
 {
     /// <summary>
     /// 读取画布尺寸。out 布局：[0]=CSS 宽 [1]=CSS 高 [2]=绘制缓冲宽 [3]=绘制缓冲高 [4]=DPR*1000
@@ -11,7 +11,7 @@ internal static partial class Platform
     [JSImport("getCanvasSize", "platform")]
     internal static partial void GetCanvasSize([JSMarshalAs<JSType.MemoryView>] Span<int> size);
 
-    /// <summary>启动 requestAnimationFrame 主循环，之后每帧回调 <c>KFramework.GameHost.Frame</c>。</summary>
+    /// <summary>启动 requestAnimationFrame 主循环，之后每帧回调 <c>KFramework.JSBind_GameHost.Frame</c>。</summary>
     [JSImport("startRenderLoop", "platform")]
     internal static partial void StartRenderLoop();
 

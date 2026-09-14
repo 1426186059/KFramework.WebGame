@@ -67,16 +67,16 @@ public sealed class Texture2D : IDisposable
     public void SetData(byte[] rgba, int x, int y, int width, int height)
     {
         ArgumentNullException.ThrowIfNull(rgba);
-        GL.BindTexture(GL.TEXTURE_2D, Handle);
-        GL.PixelStorei(GL.UNPACK_ALIGNMENT, 1);
+        JSBind_GL.BindTexture(JSBind_GL.TEXTURE_2D, Handle);
+        JSBind_GL.PixelStorei(JSBind_GL.UNPACK_ALIGNMENT, 1);
         if (x == 0 && y == 0 && width == TextureWidth && height == TextureHeight)
-            GL.TexImage2D(GL.TEXTURE_2D, 0, GL.RGBA8, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, rgba);
+            JSBind_GL.TexImage2D(JSBind_GL.TEXTURE_2D, 0, JSBind_GL.RGBA8, width, height, 0, JSBind_GL.RGBA, JSBind_GL.UNSIGNED_BYTE, rgba);
         else
-            GL.TexSubImage2D(GL.TEXTURE_2D, 0, x, y, width, height, GL.RGBA, GL.UNSIGNED_BYTE, rgba);
+            JSBind_GL.TexSubImage2D(JSBind_GL.TEXTURE_2D, 0, x, y, width, height, JSBind_GL.RGBA, JSBind_GL.UNSIGNED_BYTE, rgba);
     }
 
     public void Dispose()
     {
-        if (OwnsHandle) GL.DeleteTexture(Handle);
+        if (OwnsHandle) JSBind_GL.DeleteTexture(Handle);
     }
 }

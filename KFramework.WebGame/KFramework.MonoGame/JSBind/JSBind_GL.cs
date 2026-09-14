@@ -3,10 +3,10 @@ using System.Runtime.InteropServices.JavaScript;
 namespace KFramework.JSBind;
 
 /// <summary>
-/// WebGL 2.0 的底层绑定。所有方法一对一映射到 <c>gl.xxx</c>，由 wwwroot/gl.js 提供实现。
+/// WebGL 2.0 的底层绑定。所有方法一对一映射到 <c>JSBind_GL.xxx</c>，由 wwwroot/JSBind_GL.js 提供实现。
 /// 这只是薄封装，上层请用 <see cref="GraphicsDevice"/> / <see cref="SpriteBatch"/>。
 /// </summary>
-internal static partial class GL
+internal static partial class JSBind_GL
 {
     #region 常量
 

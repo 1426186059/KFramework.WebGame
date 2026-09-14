@@ -1,11 +1,12 @@
 using System.Runtime.InteropServices.JavaScript;
 
-namespace KFramework;
+namespace KFramework.JSBind;
 
 /// <summary>
-/// requestAnimationFrame 回调的入口。JS 侧每帧调用 <c>KFramework.GameHost.Frame(timestamp)</c>。
+/// requestAnimationFrame 回调的入口。JS 侧每帧调用 <c>JSBind_GameHost.Frame(timestamp)</c>。
+/// 注意：类名与命名空间都被 wwwroot/jsengine/main.js 硬编码查找，改名时务必同步改 JS。
 /// </summary>
-public static partial class GameHost
+public static partial class JSBind_GameHost
 {
     internal static Game? Current;
 
