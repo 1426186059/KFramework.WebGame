@@ -1,5 +1,7 @@
 using System.Runtime.InteropServices;
 
+using KFramework.JSBind;
+
 namespace KFramework.Graphics;
 
 /// <summary>

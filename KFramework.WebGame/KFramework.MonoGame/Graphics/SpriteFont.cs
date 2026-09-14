@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices.JavaScript;
+using KFramework.JSBind;
 
 namespace KFramework.Graphics;
 
@@ -6,7 +6,7 @@ namespace KFramework.Graphics;
 /// 位图字体：字形在首次使用时通过 Canvas2D 光栅化并写入一张动态字形图集，
 /// 之后所有文字共用同一张纹理，和精灵一起合并进批次，不需要任何字体资源文件。
 /// </summary>
-public sealed partial class SpriteFont : IDisposable
+public sealed class SpriteFont : IDisposable
 {
     private readonly struct Glyph
     {
@@ -54,7 +54,7 @@ public sealed partial class SpriteFont : IDisposable
         _atlas = device.CreateTexture(AtlasSize, AtlasSize);
 
         Span<int> metrics = stackalloc int[4];
-        MeasureCore("Hg", _fontCss, metrics);
+        TextBind.Measure("Hg", _fontCss, metrics);
         Ascent = metrics[2];
         LineHeight = metrics[1];
 
@@ -86,7 +86,7 @@ public sealed partial class SpriteFont : IDisposable
 
         string text = c.ToString();
         Span<int> metrics = stackalloc int[4];
-        MeasureCore(text, _fontCss, metrics);
+        TextBind.Measure(text, _fontCss, metrics);
         int advance = metrics[0];
 
         // 兜底：即使浏览器返回的度量异常，也保证字形盒子装得下这个字号的字符
@@ -116,7 +116,7 @@ public sealed partial class SpriteFont : IDisposable
             }
 
             byte[] pixels = new byte[cellWidth * cellHeight * 4];
-            RenderCore(text, _fontCss, Padding, Padding + ascent, cellWidth, cellHeight, pixels);
+            TextBind.Render(text, _fontCss, Padding, Padding + ascent, cellWidth, cellHeight, pixels);
             _atlas.SetData(pixels, _shelfX, _shelfY, cellWidth, cellHeight);
 
             texture = _atlas.CreateSubtexture(new Rectangle(_shelfX, _shelfY, cellWidth, cellHeight));
@@ -159,13 +159,6 @@ public sealed partial class SpriteFont : IDisposable
             cursor.X += glyph.Advance * scale;
         }
     }
-
-    [JSImport("measure", "text")]
-    private static partial void MeasureCore(string text, string font, [JSMarshalAs<JSType.MemoryView>] Span<int> result);
-
-    [JSImport("render", "text")]
-    private static partial void RenderCore(string text, string font, int x, int y, int width, int height,
-        [JSMarshalAs<JSType.MemoryView>] Span<byte> rgba);
 
     public void Dispose() => _atlas.Dispose();
 }

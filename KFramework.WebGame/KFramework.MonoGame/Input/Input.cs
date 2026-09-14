@@ -1,5 +1,5 @@
 using System.Buffers.Binary;
-using System.Runtime.InteropServices.JavaScript;
+using KFramework.JSBind;
 
 namespace KFramework;
 
@@ -34,11 +34,8 @@ public static partial class Input
     internal static void Poll()
     {
         Array.Copy(_current, _previous, Layout.Size);
-        PollCore(_current);
+        Platform.PollInput(_current);
     }
-
-    [JSImport("pollInput", "platform")]
-    private static partial void PollCore([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
 
     private static int ReadInt(byte[] buffer, int offset)
         => BinaryPrimitives.ReadInt32LittleEndian(buffer.AsSpan(offset, 4));

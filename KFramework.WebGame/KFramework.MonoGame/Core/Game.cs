@@ -1,6 +1,8 @@
 using KFramework.Content;
 using KFramework.Graphics;
 
+using KFramework.JSBind;
+
 namespace KFramework;
 
 /// <summary>

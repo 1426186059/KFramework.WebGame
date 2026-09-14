@@ -1,12 +1,13 @@
-using System.Runtime.InteropServices.JavaScript;
+using KFramework.JSBind;
 
 namespace KFramework;
 
 /// <summary>
 /// 极简音效系统：不依赖任何音频文件，全部由 WebAudio 振荡器 + 包络实时合成。
 /// 优点：零资源体积、零加载时间；适合原型与网页小游戏。
+/// 跨语言调用一律走 <see cref="AudioBind"/>，本类只做业务封装。
 /// </summary>
-public static partial class Audio
+public static class Audio
 {
     /// <summary>内置音色。</summary>
     public enum Sfx : int
@@ -28,26 +29,15 @@ public static partial class Audio
         set
         {
             _enabled = value;
-            SetMutedCore(!value);
+            AudioBind.SetMuted(!value);
         }
     }
 
     public static void Play(Sfx sfx, float volume = 1f, float pitch = 1f)
     {
-        if (_enabled) PlayCore((int)sfx, volume, pitch);
+        if (_enabled) AudioBind.Play((int)sfx, volume, pitch);
     }
 
     /// <summary>浏览器要求用户手势后才能启动音频上下文，请在首次点击/按键时调用。</summary>
-    public static void Unlock() => UnlockCore();
-
-    // 注意：函数名就是模块对象上的属性名，不能带 "audio." 前缀
-    // —— .NET 会把点号当成嵌套路径去解析，导致 "audio not found"。
-    [JSImport("play", "audio")]
-    private static partial void PlayCore(int sfx, float volume, float pitch);
-
-    [JSImport("unlock", "audio")]
-    private static partial void UnlockCore();
-
-    [JSImport("setMuted", "audio")]
-    private static partial void SetMutedCore(bool muted);
+    public static void Unlock() => AudioBind.Unlock();
 }

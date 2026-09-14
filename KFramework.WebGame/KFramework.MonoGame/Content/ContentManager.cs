@@ -4,6 +4,8 @@ using KFramework.Content.Pak;
 using KFramework.Content.Pipeline;
 using KFramework.Graphics;
 
+using KFramework.JSBind;
+
 namespace KFramework.Content;
 
 /// <summary>

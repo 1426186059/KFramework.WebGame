@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices.JavaScript;
 
-namespace KFramework.Graphics;
+namespace KFramework.JSBind;
 
 /// <summary>
 /// WebGL 2.0 的底层绑定。所有方法一对一映射到 <c>gl.xxx</c>，由 wwwroot/gl.js 提供实现。

@@ -1,5 +1,7 @@
 using KFramework.Graphics;
 
+using KFramework.JSBind;
+
 namespace KFramework;
 
 /// <summary>浏览器画布窗口。</summary>

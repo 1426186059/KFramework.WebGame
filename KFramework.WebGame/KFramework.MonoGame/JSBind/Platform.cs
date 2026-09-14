@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices.JavaScript;
 
-namespace KFramework;
+namespace KFramework.JSBind;
 
 /// <summary>浏览器平台服务（画布尺寸、主循环驱动、地址栏参数等）。</summary>
 internal static partial class Platform
@@ -27,4 +27,11 @@ internal static partial class Platform
     /// <summary>页面基址（document.baseURI），用于把内容包的相对路径拼成绝对 URL。</summary>
     [JSImport("getBaseUri", "platform")]
     internal static partial string GetBaseUri();
+
+    /// <summary>
+    /// 一次性拉回本帧的原始输入状态（键盘 / 鼠标 / 触摸），布局见 <c>KFramework.Input.Layout</c>。
+    /// 放在 platform 模块而不单独开 input 模块，是为了把状态收集合并成一次跨界调用。
+    /// </summary>
+    [JSImport("pollInput", "platform")]
+    internal static partial void PollInput([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
 }
