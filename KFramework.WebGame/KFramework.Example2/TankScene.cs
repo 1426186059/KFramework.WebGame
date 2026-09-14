@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using KFramework;
 using KFramework.Content;
 using KFramework.Graphics;
-using KFramework.MonoGame;
+using KFramework.MonoGameExtend;
 
 namespace KFramework.Example2;
 
 /// <summary>
-/// 坦克大战主场景：基于 KFramework.MonoGameEx 的节点树（<see cref="KSceneBase"/>）。
+/// 坦克大战主场景：基于 KFramework.MonoGameExtend 的节点树（<see cref="KSceneBase"/>）。
 /// <list type="bullet">
 ///   <item>游戏逻辑（玩家/敌人坦克、炮弹、关卡、碰撞、特效）沿用 SpriteBatch 渲染，
 ///         与 PixiJS 版的 TankLevel / Tank_My / Tank_Enemy / Shell 一一对应；</item>
-///   <item>标题界面与结束界面用 MonoGameEx 的 <see cref="KLabel"/> / <see cref="KButton"/> 节点树搭建，
+///   <item>标题界面与结束界面用 MonoGameExtend 的 <see cref="KLabel"/> / <see cref="KButton"/> 节点树搭建，
 ///         移植自 PixiJS 版的 StartScreen / FailScreen；</item>
 ///   <item>真实音效通过 <see cref="SoundCenter"/>（SoundEffect 加载 wav）播放，
 ///         并在首次用户输入时调用 <see cref="AudioMaster.Unlock"/> 解锁浏览器音频上下文。</item>

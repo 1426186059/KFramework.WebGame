@@ -29,6 +29,19 @@ KFramework.MonoGame —— 仿 MonoGame 引擎（面向 AI 智能体）
    图片走 Texture2D，文本/JSON 走 LoadText/LoadJson，
    原始字节（如 wav/mp3）走 LoadBytes，再交给 SoundEffect.FromBytes 解码。
 
+命名空间约定
+------------
+- 本库根命名空间为 KFramework（csproj 中 RootNamespace=KFramework，程序集名 KFramework）。
+- 一律使用传统的“大括号块式”命名空间声明：
+      namespace KFramework
+      {
+          ...
+      }
+  不使用 C# 10 的文件作用域写法（行尾带分号的 namespace KFramework;）。
+- 子命名空间同样为大括号块式：KFramework.Graphics、KFramework.JSBind、KFramework.Content、KFramework.CoroutineIEnumerator。
+- 上层扩展层 KFramework.MonoGameExtend 使用命名空间 KFramework.MonoGameExtend（亦为大括号块式），
+  与本库互不冲突；本库只提供基础引擎能力，详见 KFramework.MonoGameExtend/ReadMe.txt。
+
 目录速览
 --------
   Core/      Game、GameTime、GameHost 等生命周期

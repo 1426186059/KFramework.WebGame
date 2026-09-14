@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KFramework.MonoGame\KFramework.MonoGame.csproj" />
-    <ProjectReference Include="..\KFramework.MonoGameEx\KFramework.MonoGameEx.csproj" />
+    <ProjectReference Include="..\KFramework.MonoGameExtend\KFramework.MonoGameExtend.csproj" />
     <ProjectReference Include="..\KFramework.Content\KFramework.Content.csproj" />
   </ItemGroup>
 
