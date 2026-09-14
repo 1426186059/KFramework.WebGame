@@ -20,11 +20,11 @@ interface AssemblyExports {
 function findHost(exports: AssemblyExports | null): GameHost | undefined {
     if (!exports) return undefined;
 
-    // KFramework 的 JS 绑定统一放在 KFramework.JSBind 命名空间，类名以 JSBind_ 开头。
-    // 帧回调的完整路径是 KFramework.JSBind.JSBind_GameHost。
+    // 引擎的 JS 绑定统一放在 KFramework.MonoGame 命名空间，类名以 JSBind_ 开头。
+    // 帧回调的完整路径是 KFramework.MonoGame.JSBind_GameHost。
     const byNamespace = (
-        exports as { KFramework?: { JSBind?: { JSBind_GameHost?: GameHost } } }
-    ).KFramework?.JSBind?.JSBind_GameHost;
+        exports as { KFramework?: { MonoGame?: { JSBind_GameHost?: GameHost } } }
+    ).KFramework?.MonoGame?.JSBind_GameHost;
     if (byNamespace) return byNamespace;
 
     const direct = exports as { JSBind_GameHost?: GameHost };
@@ -55,11 +55,11 @@ setModuleImports('text', text);
 const config = getConfig();
 
 /**
- * 帧回调 JSBind_GameHost.Frame 定义在 KFramework 程序集里，
+ * 帧回调 JSBind_GameHost.Frame 定义在 KFramework.MonoGame 程序集里，
  * 而 config.mainAssemblyName 是游戏程序集，因此需要在多个程序集中查找。
  */
 async function resolveGameHost(): Promise<GameHost | undefined> {
-    const candidates = [config.mainAssemblyName, 'KFramework', 'KFramework.dll'].filter(Boolean);
+    const candidates = [config.mainAssemblyName, 'KFramework.MonoGame', 'KFramework.MonoGame.dll'].filter(Boolean);
 
     for (const assemblyName of candidates) {
         try {
