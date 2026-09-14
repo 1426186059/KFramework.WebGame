@@ -22,11 +22,6 @@ internal static partial class JSBind_Audio
     [JSImport("setMasterVolume", "audio")]
     internal static partial void SetMasterVolume(float volume);
 
-    // ===== 合成音效 =====
-
-    [JSImport("playSynth", "audio")]
-    internal static partial void PlaySynth(int kind, float volume, float pitch);
-
     // ===== 音频缓冲 =====
 
     /// <summary>提交编码后的音频字节，JS 侧异步解码；用 IsLoaded 查询结果。</summary>

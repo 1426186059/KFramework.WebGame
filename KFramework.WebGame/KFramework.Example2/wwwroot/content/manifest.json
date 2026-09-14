@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-14T18:31:55.3974391\u002B00:00",
+  "generatedAt": "2026-09-14T19:02:05.2084145\u002B00:00",
   "root": "D:\\OpenSource\\KFramework.WebGame\\KFramework.WebGame\\KFramework.Example2\\Content\\raw",
   "paks": [
     {
       "file": "content.pak",
-      "size": 136562,
-      "checksum": 2180499711
+      "size": 308253,
+      "checksum": 2324816499
     }
   ],
   "assets": [
@@ -99,6 +99,66 @@
       "width": 0,
       "height": 0,
       "size": 64
+    },
+    {
+      "name": "audio/explosion",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 39734
+    },
+    {
+      "name": "audio/gameover",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 92654
+    },
+    {
+      "name": "audio/hit",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 7982
+    },
+    {
+      "name": "audio/pickup",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 19448
+    },
+    {
+      "name": "audio/powerup",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 24740
+    },
+    {
+      "name": "audio/shoot",
+      "type": "bytes",
+      "page": -1,
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0,
+      "size": 8864
     },
     {
       "name": "characters.anim",

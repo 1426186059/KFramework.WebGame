@@ -163,6 +163,30 @@ public sealed class ContentManager : IDisposable
 
     public bool Contains(string name) => _manifest?.Find(name) is not null;
 
+    /// <summary>读取包内原始字节（图片二进制、音频等）。适合把 wav/mp3 交给 <see cref="SoundEffect"/> 解码。</summary>
+    public byte[] LoadBytes(string name)
+    {
+        string key = PakFormat.NormalizeName(name);
+        Require(key);
+        (PakReader reader, PakEntry entry) = Locate(key);
+        return reader.Read(entry);
+    }
+
+    public bool TryLoadBytes(string name, out byte[]? bytes)
+    {
+        try
+        {
+            bytes = LoadBytes(name);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logs.Add(ex.Message);
+            bytes = null;
+            return false;
+        }
+    }
+
     #endregion
 
     private ManifestAsset Require(string normalizedName)

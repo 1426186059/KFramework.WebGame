@@ -15,6 +15,7 @@ public sealed class TankGame : Game
 
     private SpriteBatch _batch = null!;
     private ResCenter _res = null!;
+    private SoundCenter _sounds = null!;
     private Hud _hud = null!;
     private readonly TankLevel _level = new();
     private readonly Random _rng = new(20240915);
@@ -58,6 +59,7 @@ public sealed class TankGame : Game
         await Content.LoadAsync().ConfigureAwait(false);
 
         _res = ResCenter.Load(Content);
+        _sounds = SoundCenter.Load(Content);
         _hud = new Hud(GraphicsDevice);
 
         LoadLevel(0);
@@ -141,7 +143,7 @@ public sealed class TankGame : Game
         if (_levelIndex + 1 >= LevelCount)
         {
             _allCleared = true;
-            Audio.Play(Audio.Sfx.GameOver);
+            _sounds.Play("gameover");
             return;
         }
         LoadLevel(_levelIndex + 1);
@@ -156,7 +158,7 @@ public sealed class TankGame : Game
             {
                 shell.SpeedBonus = _fireLevel;
                 _shells.Add(shell);
-                Audio.Play(Audio.Sfx.Shoot);
+                _sounds.Play("shoot");
             }
         }
 
@@ -195,12 +197,12 @@ public sealed class TankGame : Game
             if (_level.BulletHit(tile.X, tile.Y, out bool heartHit))
             {
                 shell.Active = false;
-                Audio.Play(Audio.Sfx.Hit);
+                _sounds.Play("hit");
                 if (heartHit)
                 {
                     _gameOver = true;
                     _explosions.Add(new ExplodeEffect { Position = _level.TileCenter(tile.X, tile.Y) });
-                    Audio.Play(Audio.Sfx.GameOver);
+                    _sounds.Play("gameover");
                 }
                 continue;
             }
@@ -224,7 +226,7 @@ public sealed class TankGame : Game
             enemy.Active = false;
             _killed++;
             _explosions.Add(new ExplodeEffect { Position = enemy.Position });
-            Audio.Play(Audio.Sfx.Explosion);
+            _sounds.Play("explosion");
 
             if (_killed % DropsEvery == 0) DropPowerUp(enemy.Position);
             return;
@@ -241,19 +243,19 @@ public sealed class TankGame : Game
         // 护盾期间免疫，只播个命中音
         if (_shieldTimer > 0f)
         {
-            Audio.Play(Audio.Sfx.Hit);
+            _sounds.Play("hit");
             return;
         }
 
         _explosions.Add(new ExplodeEffect { Position = _player.Position });
-        Audio.Play(Audio.Sfx.Explosion);
+        _sounds.Play("explosion");
         _player = null;
 
         _lives--;
         if (_lives <= 0)
         {
             _gameOver = true;
-            Audio.Play(Audio.Sfx.GameOver);
+            _sounds.Play("gameover");
         }
         else
         {
@@ -283,7 +285,7 @@ public sealed class TankGame : Game
 
     private void ApplyPowerUp(PowerUpKind kind)
     {
-        Audio.Play(Audio.Sfx.Pickup);
+        _sounds.Play("pickup");
         switch (kind)
         {
             case PowerUpKind.Tank:
@@ -295,6 +297,7 @@ public sealed class TankGame : Game
                 break;
             case PowerUpKind.Star:
                 _fireLevel = Math.Min(_fireLevel + 1, 3);
+                _sounds.Play("powerup");
                 break;
             case PowerUpKind.Clock:
                 _freezeTimer = 6f;
@@ -307,7 +310,7 @@ public sealed class TankGame : Game
                     _explosions.Add(new ExplodeEffect { Position = enemy.Position });
                     _killed++;
                 }
-                Audio.Play(Audio.Sfx.Explosion);
+                _sounds.Play("explosion");
                 break;
         }
     }
