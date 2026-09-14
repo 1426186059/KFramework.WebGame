@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET + Browser (Example3)",
+      "type": "blazorwasm",
+      "request": "launch",
+      "url": "http://localhost:54041/",
+      "timeout": 60000
+    }
+  ]
+}
