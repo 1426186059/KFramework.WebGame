@@ -84,6 +84,29 @@ public struct KeyboardState(byte[] current, byte[] previous)
     public bool IsKeyReleased(Keys key)
         => key != Keys.None && _current[(int)key] == 0 && _previous[(int)key] != 0;
 
+    /// <summary>当前按住的所有键（MonoGame 命名）。</summary>
+    public Keys[] GetPressedKeys()
+    {
+        int count = 0;
+        for (int i = 1; i < Input.Layout.KeysLength; i++)
+            if (_current[i] != 0) count++;
+
+        var result = new Keys[count];
+        int n = 0;
+        for (int i = 1; i < Input.Layout.KeysLength; i++)
+            if (_current[i] != 0) result[n++] = (Keys)i;
+        return result;
+    }
+
+    /// <summary>当前按住的键数量。</summary>
+    public int GetPressedKeyCount()
+    {
+        int count = 0;
+        for (int i = 1; i < Input.Layout.KeysLength; i++)
+            if (_current[i] != 0) count++;
+        return count;
+    }
+
     /// <summary>归一化后的移动方向（WASD / 方向键）。</summary>
     public Vector2 MovementDirection
     {

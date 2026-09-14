@@ -13,6 +13,9 @@ public struct Rectangle : IEquatable<Rectangle>
         X = x; Y = y; Width = width; Height = height;
     }
 
+    public Rectangle(Point location, Point size)
+        : this(location.X, location.Y, size.X, size.Y) { }
+
     public static Rectangle Empty => default;
 
     public int Left => X;
@@ -27,6 +30,7 @@ public struct Rectangle : IEquatable<Rectangle>
     }
 
     public Point Center => new(X + Width / 2, Y + Height / 2);
+    public Point Size => new(Width, Height);
 
     public bool IsEmpty => Width == 0 && Height == 0;
 

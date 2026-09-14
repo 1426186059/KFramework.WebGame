@@ -27,6 +27,12 @@ public static class MathHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float Lerp(float a, float b, float t) => a + (b - a) * t;
 
+/// <summary>
+/// Unity 的精确插值：先算 (1 - t) * a 再与 t * b 相加。
+/// 与 Lerp 的差别在于 t = 1 时能精确返回 b（a + (b - a) * t 会有舍入误差）。
+/// </summary>
+public static float LerpPrecise(float a, float b, float t) => (1f - t) * a + t * b;
+
     /// <summary>帧率无关的指数平滑，用于跟随/缓动。</summary>
     public static float Damp(float current, float target, float smoothing, float dt)
         => Lerp(current, target, 1f - MathF.Exp(-smoothing * dt));

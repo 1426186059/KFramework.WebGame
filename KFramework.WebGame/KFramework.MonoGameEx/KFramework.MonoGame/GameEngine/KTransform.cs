@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using KFramework;
 using System;
 using System.Collections.Generic;
 
@@ -17,7 +17,7 @@ namespace KFramework.MonoGame
         private bool _cacheDispose;
 
         // 缓存的世界矩阵（脏标记更新）
-        private Matrix _worldMatrix;
+        private Matrix4x4 _worldMatrix;
         private bool _isDirty = true;
         public string Name { get; set; } = "GameObject";
         public bool IsDispose { get { return _cacheDispose; } }
@@ -146,16 +146,16 @@ namespace KFramework.MonoGame
 
 
         // 获取世界矩阵（懒计算）
-        public Matrix Local_To_World_Matrix
+        public Matrix4x4 Local_To_World_Matrix
         {
             get
             {
                 if (_isDirty)
                 {
                     // 构建本地矩阵：缩放 → 旋转 → 平移
-                    Matrix localMatrix = Matrix.CreateScale(LocalScale.X, LocalScale.Y, 1f)
-                                       * Matrix.CreateRotationZ(LocalRotation)
-                                       * Matrix.CreateTranslation(LocalPosition.X, LocalPosition.Y, 0f);
+                    Matrix4x4 localMatrix = Matrix4x4.CreateScale(LocalScale.X, LocalScale.Y, 1f)
+                                       * Matrix4x4.CreateRotationZ(LocalRotation)
+                                       * Matrix4x4.CreateTranslation(LocalPosition.X, LocalPosition.Y, 0f);
 
                     // 有父节点则乘以父节点世界矩阵，否则就是自身
                     _worldMatrix = Parent != null
@@ -174,7 +174,7 @@ namespace KFramework.MonoGame
         {
             get
             {
-                Matrix m = Local_To_World_Matrix;
+                Matrix4x4 m = Local_To_World_Matrix;
                 return new Vector2(m.M41, m.M42);
             }
 
@@ -183,8 +183,8 @@ namespace KFramework.MonoGame
                 // 设置世界位置：LocalPosition 是相对父节点的局部坐标，
                 // 故用【父节点】世界矩阵求逆把世界点转回局部。
                 // 不能用 WorldToLocal（它用自身矩阵，会多减一次自身 LocalPosition）。
-                Matrix parentWorld = Parent != null ? Parent.Local_To_World_Matrix : Matrix.Identity;
-                var inv = Matrix.Invert(parentWorld);
+                Matrix4x4 parentWorld = Parent != null ? Parent.Local_To_World_Matrix : Matrix4x4.Identity;
+                var inv = Matrix4x4.Invert(parentWorld);
                 LocalPosition = Vector2.Transform(value, inv);
             }
         }
@@ -193,7 +193,7 @@ namespace KFramework.MonoGame
         {
             get
             {
-                Matrix m = Local_To_World_Matrix;
+                Matrix4x4 m = Local_To_World_Matrix;
                 // MonoGame 的 CreateRotationZ 把 sin 放在 M12、M21=-sin，
                 // 故旋转角 = Atan2(M12, M11)（注意不是 M21）。
                 return MathF.Atan2(m.M12, m.M11);
@@ -204,7 +204,7 @@ namespace KFramework.MonoGame
         {
             get
             {
-                Matrix m = Local_To_World_Matrix;
+                Matrix4x4 m = Local_To_World_Matrix;
                 float scaleX = MathF.Sqrt(m.M11 * m.M11 + m.M12 * m.M12);
                 float scaleY = MathF.Sqrt(m.M21 * m.M21 + m.M22 * m.M22);
                 return new Vector2(scaleX, scaleY);
@@ -223,7 +223,7 @@ namespace KFramework.MonoGame
         // 注意：WorldPosition.setter 设置世界位置用的是【父】矩阵，不要与本方法混淆。
         public Vector2 WorldToLocal(Vector2 worldPoint)
         {
-            var inv = Matrix.Invert(Local_To_World_Matrix);
+            var inv = Matrix4x4.Invert(Local_To_World_Matrix);
             return Vector2.Transform(worldPoint, inv);
         }
 

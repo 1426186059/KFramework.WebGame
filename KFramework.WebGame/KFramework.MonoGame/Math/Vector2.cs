@@ -55,8 +55,17 @@ public struct Vector2 : IEquatable<Vector2>
     public static Vector2 Lerp(Vector2 a, Vector2 b, float t)
         => new(MathHelper.Lerp(a.X, b.X, t), MathHelper.Lerp(a.Y, b.Y, t));
 
+    /// <summary>Unity 风格的精确插值，见 <see cref="MathHelper.LerpPrecise"/>。</summary>
+    public static Vector2 LerpPrecise(Vector2 a, Vector2 b, float t)
+        => new(MathHelper.LerpPrecise(a.X, b.X, t), MathHelper.LerpPrecise(a.Y, b.Y, t));
+
+    public Point ToPoint() => new((int)X, (int)Y);
+
     public static Vector2 Clamp(Vector2 v, Vector2 min, Vector2 max)
         => new(MathHelper.Clamp(v.X, min.X, max.X), MathHelper.Clamp(v.Y, min.Y, max.Y));
+
+    /// <summary>用矩阵变换一个点（对应 MonoGame 的 <c>Vector2.Transform(pos, matrix)</c>）。</summary>
+    public static Vector2 Transform(Vector2 position, Matrix4x4 matrix) => matrix.Transform(position);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2 operator +(Vector2 a, Vector2 b) => new(a.X + b.X, a.Y + b.Y);

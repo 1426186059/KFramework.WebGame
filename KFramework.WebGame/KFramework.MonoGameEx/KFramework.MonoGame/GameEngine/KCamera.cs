@@ -1,5 +1,5 @@
-﻿using KFramework.MonoGame;
-using Microsoft.Xna.Framework;
+using KFramework.MonoGame;
+using KFramework;
 
 public class KCamera : KTransform
 {
@@ -94,12 +94,12 @@ public class KCamera : KTransform
         //);
     }
 
-    public Matrix ViewMatrix
+    public Matrix4x4 ViewMatrix
     {
         get { return World_To_Screen_Matrix; }
     }
 
-    public Matrix World_To_Screen_Matrix
+    public Matrix4x4 World_To_Screen_Matrix
     {
         get
         {
@@ -108,10 +108,10 @@ public class KCamera : KTransform
             // 1. 减去相机位置（相机跟随）
             // 2. 乘以缩放系数（适配屏幕）
             // 3. 加上屏幕偏移（居中）
-            return Matrix.CreateTranslation(-LocalPosition.X, -LocalPosition.Y, 0f) *
-                Matrix.CreateRotationZ(-LocalRotation) *
-                Matrix.CreateScale(ScaleCoef, ScaleCoef, 1f) *
-                Matrix.CreateTranslation(_screenOffset.X, _screenOffset.Y, 0f);
+            return Matrix4x4.CreateTranslation(-LocalPosition.X, -LocalPosition.Y, 0f) *
+                Matrix4x4.CreateRotationZ(-LocalRotation) *
+                Matrix4x4.CreateScale(ScaleCoef, ScaleCoef, 1f) *
+                Matrix4x4.CreateTranslation(_screenOffset.X, _screenOffset.Y, 0f);
         }
     }
 
@@ -122,7 +122,7 @@ public class KCamera : KTransform
     /// </summary>
     public Vector2 ScreenToWorld(Vector2 screenPos)
     {
-        return Vector2.Transform(screenPos, Matrix.Invert(World_To_Screen_Matrix));
+        return Vector2.Transform(screenPos, Matrix4x4.Invert(World_To_Screen_Matrix));
     }
 
     /// <summary>
@@ -162,7 +162,7 @@ public class KCamera : KTransform
         if (Parent != null)
         {
             // 摄像机一定有父节点，把目标的世界坐标转换到父节点的本地空间
-            var invParent = Matrix.Invert(Parent.Local_To_World_Matrix);
+            var invParent = Matrix4x4.Invert(Parent.Local_To_World_Matrix);
             LocalPosition = Vector2.Transform(target.WorldPosition, invParent);
         }
         else
@@ -175,7 +175,7 @@ public class KCamera : KTransform
     {
         if (Parent != null)
         {
-            var invParent = Matrix.Invert(Parent.Local_To_World_Matrix);
+            var invParent = Matrix4x4.Invert(Parent.Local_To_World_Matrix);
             LocalPosition = Vector2.Transform(target.WorldPosition + offset, invParent);
         }
         else

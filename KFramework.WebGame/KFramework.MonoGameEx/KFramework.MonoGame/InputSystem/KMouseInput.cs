@@ -1,11 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+using KFramework;
 using System;
 
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 鼠标输入设备
+    /// 鼠标输入设备。
+    /// 适配说明：KFramework 的 MouseState 用 bool 表示按键（无 ButtonState 枚举），
+    /// 滚轮只提供本帧增量（无累计值 / 无横向滚轮），也不支持 XButton 与设置光标位置。
     /// </summary>
     public class KMouseInput : IKInputDevice
     {
@@ -15,14 +16,14 @@ namespace KFramework.MonoGame
 
         private MouseState _prev;
         private MouseState _curr;
+        private int _scrollValue;
 
+        // KFramework 只上报左 / 中 / 右三键，XButton 不在其中。
         private static readonly MouseButton[] AllButtons =
         {
             MouseButton.Left,
             MouseButton.Right,
             MouseButton.Middle,
-            MouseButton.XButton1,
-            MouseButton.XButton2,
         };
 
         /// <summary>按键按下（参数：按键、屏幕坐标）</summary>
@@ -50,24 +51,25 @@ namespace KFramework.MonoGame
         public bool Moved => _curr.X != _prev.X || _curr.Y != _prev.Y;
 
         /// <summary>滚轮本帧增量</summary>
-        public int ScrollDelta => _curr.ScrollWheelValue - _prev.ScrollWheelValue;
+        public int ScrollDelta => _curr.ScrollDelta;
 
-        /// <summary>滚轮累计值</summary>
-        public int ScrollValue => _curr.ScrollWheelValue;
+        /// <summary>滚轮累计值（KFramework 只给增量，这里自行累加）</summary>
+        public int ScrollValue => _scrollValue;
 
-        /// <summary>横向滚轮本帧增量</summary>
-        public int HorizontalScrollDelta => _curr.HorizontalScrollWheelValue - _prev.HorizontalScrollWheelValue;
+        /// <summary>横向滚轮本帧增量 —— 浏览器端不支持，恒为 0</summary>
+        public int HorizontalScrollDelta => 0;
 
         public void Init()
         {
-            _curr = Mouse.GetState();
+            _curr = Input.GetMouseState();
             _prev = _curr;
         }
 
         public void Update(GameTime gameTime)
         {
             _prev = _curr;
-            _curr = Mouse.GetState();
+            _curr = Input.GetMouseState();
+            _scrollValue += ScrollDelta;
 
             for (int i = 0; i < AllButtons.Length; i++)
             {
@@ -82,28 +84,25 @@ namespace KFramework.MonoGame
 
         public void Reset()
         {
-            _curr = Mouse.GetState();
+            _curr = Input.GetMouseState();
             _prev = _curr;
         }
 
         /// <summary>按键是否按住</summary>
-        public bool GetButton(MouseButton button)
-            => GetState(_curr, button) == ButtonState.Pressed;
+        public bool GetButton(MouseButton button) => GetState(_curr, button);
 
         /// <summary>按键是否本帧刚按下</summary>
         public bool GetButtonDown(MouseButton button)
-            => GetState(_curr, button) == ButtonState.Pressed
-            && GetState(_prev, button) == ButtonState.Released;
+            => GetState(_curr, button) && !GetState(_prev, button);
 
         /// <summary>按键是否本帧刚抬起</summary>
         public bool GetButtonUp(MouseButton button)
-            => GetState(_curr, button) == ButtonState.Released
-            && GetState(_prev, button) == ButtonState.Pressed;
+            => !GetState(_curr, button) && GetState(_prev, button);
 
         public KPressState GetButtonState(MouseButton button)
         {
-            bool now = GetState(_curr, button) == ButtonState.Pressed;
-            bool before = GetState(_prev, button) == ButtonState.Pressed;
+            bool now = GetState(_curr, button);
+            bool before = GetState(_prev, button);
             if (now && !before) return KPressState.Down;
             if (now) return KPressState.Held;
             if (before) return KPressState.Up;
@@ -117,23 +116,19 @@ namespace KFramework.MonoGame
             return _curr.X >= 0 && _curr.X < vp.Width && _curr.Y >= 0 && _curr.Y < vp.Height;
         }
 
-        /// <summary>设置鼠标位置</summary>
+        /// <summary>设置鼠标位置 —— 浏览器不允许脚本移动光标，空实现</summary>
         public void SetPosition(int x, int y)
         {
-            Mouse.SetPosition(x, y);
-            _curr = Mouse.GetState();
         }
 
-        private static ButtonState GetState(MouseState state, MouseButton button)
+        private static bool GetState(MouseState state, MouseButton button)
         {
             return button switch
             {
                 MouseButton.Left => state.LeftButton,
                 MouseButton.Right => state.RightButton,
                 MouseButton.Middle => state.MiddleButton,
-                MouseButton.XButton1 => state.XButton1,
-                MouseButton.XButton2 => state.XButton2,
-                _ => ButtonState.Released,
+                _ => false,
             };
         }
     }

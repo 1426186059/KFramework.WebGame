@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+using KFramework;
+using KFramework;
 using System.Collections.Generic;
 
 namespace KFramework.MonoGame
@@ -16,9 +16,6 @@ namespace KFramework.MonoGame
 
         /// <summary>鼠标</summary>
         public static KMouseInput Mouse { get; private set; }
-
-        /// <summary>手柄</summary>
-        public static KGamePadInput GamePad { get; private set; }
 
         /// <summary>触摸</summary>
         public static KTouchInput Touch { get; private set; }
@@ -43,7 +40,6 @@ namespace KFramework.MonoGame
 
             Keyboard = new KKeyboardInput();
             Mouse = new KMouseInput();
-            GamePad = new KGamePadInput();
             Touch = new KTouchInput();
 
             // 分发器依赖鼠标与触摸，必须排在它们之后更新
@@ -51,7 +47,6 @@ namespace KFramework.MonoGame
 
             AddDevice(Keyboard);
             AddDevice(Mouse);
-            AddDevice(GamePad);
             AddDevice(Touch);
             AddDevice(Pointer);
 
@@ -204,30 +199,16 @@ namespace KFramework.MonoGame
         public static bool IsPointerOverUI => Pointer != null && Pointer.IsPointerOverUI;
 
         /// <summary>
-        /// 移动轴：键盘 WASD / 方向键 与 手柄左摇杆合并，Y 向下为正
+        /// 移动轴：键盘 WASD / 方向键，Y 向下为正
         /// </summary>
         public static Vector2 GetMoveAxis()
-        {
-            Vector2 axis = Keyboard != null ? Keyboard.GetAxis() : Vector2.Zero;
-
-            if (axis == Vector2.Zero && GamePad != null && GamePad.IsConnected())
-            {
-                axis = GamePad.GetLeftStick();
-                if (axis == Vector2.Zero) axis = GamePad.GetDPadAxis();
-            }
-
-            return axis;
-        }
+            => Keyboard != null ? Keyboard.GetAxis() : Vector2.Zero;
 
         /// <summary>
-        /// 退出键：Esc 或 手柄 Back
+        /// 退出键：Esc
         /// </summary>
         public static bool GetQuitPressed()
-        {
-            if (Keyboard != null && Keyboard.GetKeyDown(Keys.Escape)) return true;
-            if (GamePad != null && GamePad.GetButtonDown(Buttons.Back)) return true;
-            return false;
-        }
+            => Keyboard != null && Keyboard.GetKeyDown(Keys.Escape);
 
     }
 }

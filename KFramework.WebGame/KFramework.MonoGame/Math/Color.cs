@@ -46,6 +46,9 @@ public struct Color : IEquatable<Color>
                (byte)MathHelper.Lerp(a.B, b.B, t),
                (byte)MathHelper.Lerp(a.A, b.A, t));
 
+    /// <summary>Unity 风格的精确插值（颜色分量精度无差别，转发到 <see cref="Lerp"/>）。</summary>
+    public static Color LerpPrecise(Color a, Color b, float t) => Lerp(a, b, t);
+
     public Color WithAlpha(byte a) => new(R, G, B, a);
 
     /// <summary>按 0..1 系数调整亮度。</summary>

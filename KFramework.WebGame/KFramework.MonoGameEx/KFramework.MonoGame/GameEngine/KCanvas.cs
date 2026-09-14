@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using KFramework;
+using KFramework.Graphics;
 using System;
 
 namespace KFramework.MonoGame
@@ -129,7 +129,7 @@ namespace KFramework.MonoGame
 
         public override void Draw()
         {
-            Matrix viewMatrix = Matrix.Identity;
+            Matrix4x4 viewMatrix = Matrix4x4.Identity;
             var mSpriteBatch = KSceneMgr.SpriteBatch;
             mSpriteBatch.Begin(
                 transformMatrix: viewMatrix,

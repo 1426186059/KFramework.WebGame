@@ -1,10 +1,28 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input.Touch;
+using KFramework;
 using System;
 using System.Collections.Generic;
 
 namespace KFramework.MonoGame
 {
+    /// <summary>
+    /// 触摸点状态。
+    /// MonoGame 用 TouchLocationState 由底层驱动给出，而 KFramework 的 TouchPoint
+    /// 只有 Id / Position，没有状态字段，因此这里通过「本帧与上一帧的 id 差分」推断。
+    /// </summary>
+    public enum KTouchState
+    {
+        Invalid = 0,
+        /// <summary>本帧新按下</summary>
+        Began,
+        /// <summary>位置发生变化</summary>
+        Moved,
+        /// <summary>按下后位置未变</summary>
+        Stationary,
+        /// <summary>本帧抬起（上一帧存在、本帧消失）</summary>
+        Ended,
+        Canceled,
+    }
+
     /// <summary>
     /// 单个触摸点信息
     /// </summary>
@@ -14,11 +32,11 @@ namespace KFramework.MonoGame
         public Vector2 Position;
         public Vector2 StartPosition;
         public Vector2 Delta;
-        public TouchLocationState State;
+        public KTouchState State;
 
-        public bool IsBegan => State == TouchLocationState.Pressed;
-        public bool IsMoved => State == TouchLocationState.Moved;
-        public bool IsEnded => State == TouchLocationState.Released;
+        public bool IsBegan => State == KTouchState.Began;
+        public bool IsMoved => State == KTouchState.Moved;
+        public bool IsEnded => State == KTouchState.Ended;
     }
 
     /// <summary>
@@ -28,11 +46,16 @@ namespace KFramework.MonoGame
     {
         public string Name => "Touch";
         public bool Enabled { get; set; } = true;
-        public bool IsAvailable => TouchPanel.GetCapabilities().IsConnected;
+
+        // KFramework 没有「是否支持触摸」的能力查询；GetTouchState 在无触点时返回 Count=0，
+        // 因此这里恒定可用，由 Update 自行判断有没有触点。
+        public bool IsAvailable => true;
 
         private readonly List<KTouch> _touches = new List<KTouch>();
         private readonly Dictionary<int, Vector2> _startPositions = new Dictionary<int, Vector2>();
         private readonly Dictionary<int, Vector2> _lastPositions = new Dictionary<int, Vector2>();
+        private readonly HashSet<int> _currentIds = new HashSet<int>();
+        private readonly List<int> _endedIds = new List<int>();
 
         /// <summary>当前所有触摸点</summary>
         public IReadOnlyList<KTouch> Touches => _touches;
@@ -59,48 +82,76 @@ namespace KFramework.MonoGame
         public void Update(GameTime gameTime)
         {
             _touches.Clear();
+            _currentIds.Clear();
+            _endedIds.Clear();
 
-            TouchCollection collection = TouchPanel.GetState();
+            TouchCollection collection = Input.GetTouchState();
+
+            // 1) 本帧存在的触点：新 id = Began，位置变了 = Moved，否则 Stationary
             for (int i = 0; i < collection.Count; i++)
             {
-                TouchLocation loc = collection[i];
-                Vector2 pos = loc.Position;
+                TouchPoint point = collection[i];
+                _currentIds.Add(point.Id);
 
-                if (loc.State == TouchLocationState.Pressed)
+                bool isNew = !_lastPositions.ContainsKey(point.Id);
+                if (isNew)
                 {
-                    _startPositions[loc.Id] = pos;
-                    _lastPositions[loc.Id] = pos;
+                    _startPositions[point.Id] = point.Position;
+                    _lastPositions[point.Id] = point.Position;
                 }
 
-                Vector2 start = _startPositions.TryGetValue(loc.Id, out var s) ? s : pos;
-                Vector2 last = _lastPositions.TryGetValue(loc.Id, out var l) ? l : pos;
+                Vector2 start = _startPositions.TryGetValue(point.Id, out var s) ? s : point.Position;
+                Vector2 last = _lastPositions.TryGetValue(point.Id, out var l) ? l : point.Position;
+
+                KTouchState state = isNew
+                    ? KTouchState.Began
+                    : (point.Position != last ? KTouchState.Moved : KTouchState.Stationary);
 
                 var touch = new KTouch
                 {
-                    Id = loc.Id,
-                    Position = pos,
+                    Id = point.Id,
+                    Position = point.Position,
                     StartPosition = start,
-                    Delta = pos - last,
-                    State = loc.State,
+                    Delta = point.Position - last,
+                    State = state,
                 };
 
-                _lastPositions[loc.Id] = pos;
+                _lastPositions[point.Id] = point.Position;
                 _touches.Add(touch);
 
-                switch (loc.State)
+                if (state == KTouchState.Began) TouchBegan?.Invoke(touch);
+                else if (state == KTouchState.Moved) TouchMoved?.Invoke(touch);
+            }
+
+            // 2) 上一帧有、本帧消失的触点 = Ended
+            foreach (var pair in _lastPositions)
+            {
+                if (_currentIds.Contains(pair.Key)) continue;
+                _endedIds.Add(pair.Key);
+            }
+
+            for (int i = 0; i < _endedIds.Count; i++)
+            {
+                int id = _endedIds[i];
+                Vector2 start = _startPositions.TryGetValue(id, out var s) ? s : _lastPositions[id];
+
+                var touch = new KTouch
                 {
-                    case TouchLocationState.Pressed:
-                        TouchBegan?.Invoke(touch);
-                        break;
-                    case TouchLocationState.Moved:
-                        TouchMoved?.Invoke(touch);
-                        break;
-                    case TouchLocationState.Released:
-                        TouchEnded?.Invoke(touch);
-                        _startPositions.Remove(loc.Id);
-                        _lastPositions.Remove(loc.Id);
-                        break;
-                }
+                    Id = id,
+                    Position = _lastPositions[id],
+                    StartPosition = start,
+                    Delta = Vector2.Zero,
+                    State = KTouchState.Ended,
+                };
+
+                _touches.Add(touch);
+                TouchEnded?.Invoke(touch);
+            }
+
+            for (int i = 0; i < _endedIds.Count; i++)
+            {
+                _startPositions.Remove(_endedIds[i]);
+                _lastPositions.Remove(_endedIds[i]);
             }
         }
 

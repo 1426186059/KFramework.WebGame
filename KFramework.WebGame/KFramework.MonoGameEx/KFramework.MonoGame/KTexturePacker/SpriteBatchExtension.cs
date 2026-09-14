@@ -1,6 +1,6 @@
 using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using KFramework;
+using KFramework.Graphics;
 
 namespace KFramework.MonoGame.KTexturePacker
 {

@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+using KFramework;
+using KFramework;
 using System;
 using System.Collections.Generic;
 
@@ -37,14 +37,14 @@ namespace KFramework.MonoGame
 
         public void Init()
         {
-            _curr = Keyboard.GetState();
+            _curr = Input.GetKeyboardState();
             _prev = _curr;
         }
 
         public void Update(GameTime gameTime)
         {
             _prev = _curr;
-            _curr = Keyboard.GetState();
+            _curr = Input.GetKeyboardState();
 
             _pressedThisFrame.Clear();
             _releasedThisFrame.Clear();
@@ -74,7 +74,7 @@ namespace KFramework.MonoGame
 
         public void Reset()
         {
-            _curr = Keyboard.GetState();
+            _curr = Input.GetKeyboardState();
             _prev = _curr;
             _pressedThisFrame.Clear();
             _releasedThisFrame.Clear();

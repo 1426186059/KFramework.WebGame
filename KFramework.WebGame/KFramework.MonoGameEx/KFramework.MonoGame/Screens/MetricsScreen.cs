@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using KFramework;
+using KFramework.Graphics;
 using System;
 
 namespace KFramework.MonoGame
@@ -49,7 +49,8 @@ namespace KFramework.MonoGame
 
         public void DrawMe()
         {
-            nDrawCount = KSceneMgr.Game.GraphicsDevice.Metrics.DrawCount;
+            // KFramework 没有 GraphicsDevice.Metrics，改用 SpriteBatch 的批次数作为 draw call 指标
+            nDrawCount = KSceneMgr.SpriteBatch.LastDrawCount;
             mImage.Draw();
             mLable.Draw();
         }

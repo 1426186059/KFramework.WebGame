@@ -1,7 +1,7 @@
-﻿using KTexturePacker.Parser;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
+using KTexturePacker.Parser;
+using KFramework;
+using KFramework.Content;
+using KFramework.Graphics;
 using System.IO;
 
 namespace KFramework.MonoGame.KTexturePacker
@@ -18,21 +18,16 @@ namespace KFramework.MonoGame.KTexturePacker
         public SpriteSheet Load(string jsonPath)
         {
             string dir = Path.GetDirectoryName(jsonPath);
-            string dataFile = Path.Combine(contentManager.RootDirectory, jsonPath);  
-            string source = string.Empty;
-            using (Stream fileStream = TitleContainer.OpenStream(dataFile))
-            using (var reader = new StreamReader(fileStream))
-            {
-                source = reader.ReadToEnd();
-            }
 
-            AtlasData mData = AtlasParser.Parse(source);
+            // KFramework 没有文件系统、TitleContainer 与 .xnb 管线：
+            // 所有资源都由 ContentManager 按名字从内容包里读取。
+            AtlasData mData = contentManager.LoadJson<AtlasData>(jsonPath);
 
             SpriteSheet spriteSheet = new SpriteSheet();
             foreach (var v in mData.Pages)
             {
                 string texturePath = Path.Combine(dir, Path.GetFileNameWithoutExtension(v.Image));
-                Texture2D texture = contentManager.Load<Texture2D>(texturePath);
+                Texture2D texture = contentManager.LoadTexture(texturePath);
                 foreach (var v2 in v.Regions)
                 {
                     bool isRotated = v2.Rotated;

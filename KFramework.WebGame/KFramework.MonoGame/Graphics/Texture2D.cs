@@ -23,6 +23,9 @@ public sealed class Texture2D : IDisposable
     /// <summary>是否负责释放底层纹理（图集子图为 false）。</summary>
     internal readonly bool OwnsHandle;
 
+    /// <summary>可选的调试用名称（对齐 MonoGame 的 Texture2D.Name）。</summary>
+    public string Name { get; set; } = string.Empty;
+
     public int Width => Bounds.Width;
     public int Height => Bounds.Height;
 

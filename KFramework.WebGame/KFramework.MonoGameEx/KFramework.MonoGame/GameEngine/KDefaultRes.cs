@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using KFramework;
+using KFramework.Graphics;
 
 namespace KFramework.MonoGame
 {
@@ -15,8 +15,9 @@ namespace KFramework.MonoGame
             {
                 if (_cacheDefaultTexture2D == null)
                 {
-                    _cacheDefaultTexture2D = new Texture2D(KSceneMgr.Game.GraphicsDevice, 1, 1);
-                    _cacheDefaultTexture2D.SetData(new Color[] { Color.White });
+                    // KFramework：纹理由 GraphicsDevice 创建，像素数据是 RGBA8 字节而不是 Color[]
+                    _cacheDefaultTexture2D = KSceneMgr.Game.GraphicsDevice.CreateTexture(1, 1);
+                    _cacheDefaultTexture2D.SetData(new byte[] { 255, 255, 255, 255 });
                 }
                 return _cacheDefaultTexture2D;
             }

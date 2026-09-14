@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using System.Diagnostics;
-using Microsoft.Xna.Framework;
+using KFramework;
 
 namespace KFramework.MonoGame
 {

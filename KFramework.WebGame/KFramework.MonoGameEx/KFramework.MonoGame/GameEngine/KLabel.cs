@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using KFramework;
+using KFramework.Graphics;
 
 namespace KFramework.MonoGame
 {
@@ -62,6 +62,7 @@ namespace KFramework.MonoGame
             //    WorldPos = WorldPosition + (Size * WorldScale - mTextSize * WorldScale) * _cacheAlignment;
             //}
 
+            // KFramework 的 DrawString 不提供 SpriteEffects 参数，缩放用 float（取 X 作等比缩放）
             mSpriteBatch.DrawString(
                 Font,
                 Text,
@@ -69,14 +70,13 @@ namespace KFramework.MonoGame
                 Color,
                 LocalRotation,
                 Origin,
-                WorldScale,
-                SpriteEffects.None,
+                WorldScale.X,
                 0);
         }
 
         public int GetHeight()
         {
-            return Font.LineSpacing;
+            return (int)Font.LineSpacing;
         }
 
         public int GetWidth()

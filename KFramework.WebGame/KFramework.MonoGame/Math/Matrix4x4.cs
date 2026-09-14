@@ -53,6 +53,49 @@ public struct Matrix4x4
             M14 = translateX, M24 = translateY
         };
 
+    /// <summary>三轴缩放（2D 场景下 z 传 1 即可）。</summary>
+    public static Matrix4x4 CreateScale(float scaleX, float scaleY, float scaleZ)
+        => new() { M11 = scaleX, M22 = scaleY, M33 = scaleZ, M44 = 1f };
+
+    /// <summary>
+    /// 绕 Z 轴旋转（2D 旋转）。sin 落在 M12、M21 = -sin，
+    /// 因此旋转角可由 Atan2(M12, M11) 还原。
+    /// </summary>
+    public static Matrix4x4 CreateRotationZ(float radians)
+    {
+        float c = MathF.Cos(radians), s = MathF.Sin(radians);
+        return new()
+        {
+            M11 = c, M12 = s,
+            M21 = -s, M22 = c,
+            M33 = 1f, M44 = 1f,
+        };
+    }
+
+    /// <summary>
+    /// 求逆。复用 System.Numerics 的实现以保证数值正确性；
+    /// 奇异矩阵（不可逆）返回单位矩阵而不是 NaN，避免变换结果污染。
+    /// </summary>
+    public static Matrix4x4 Invert(Matrix4x4 m)
+    {
+        var source = new System.Numerics.Matrix4x4(
+            m.M11, m.M12, m.M13, m.M14,
+            m.M21, m.M22, m.M23, m.M24,
+            m.M31, m.M32, m.M33, m.M34,
+            m.M41, m.M42, m.M43, m.M44);
+
+        if (!System.Numerics.Matrix4x4.Invert(source, out var inverse))
+            return Identity;
+
+        return new()
+        {
+            M11 = inverse.M11, M12 = inverse.M12, M13 = inverse.M13, M14 = inverse.M14,
+            M21 = inverse.M21, M22 = inverse.M22, M23 = inverse.M23, M24 = inverse.M24,
+            M31 = inverse.M31, M32 = inverse.M32, M33 = inverse.M33, M34 = inverse.M34,
+            M41 = inverse.M41, M42 = inverse.M42, M43 = inverse.M43, M44 = inverse.M44,
+        };
+    }
+
     public static Matrix4x4 operator *(Matrix4x4 a, Matrix4x4 b) => new()
     {
         M11 = a.M11 * b.M11 + a.M12 * b.M21 + a.M13 * b.M31 + a.M14 * b.M41,

@@ -13,7 +13,7 @@
     "exactOptionalPropertyTypes": false,
 
     "rootDir": "./src",
-    "outDir": "../../MirGame/wwwroot/jsengine",
+    "outDir": "../../KFramework.Example1/wwwroot/jsengine",
 
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

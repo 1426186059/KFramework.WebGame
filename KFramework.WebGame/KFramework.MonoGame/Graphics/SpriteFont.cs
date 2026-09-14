@@ -43,6 +43,9 @@ public sealed partial class SpriteFont : IDisposable
     /// <summary>行高（像素）。</summary>
     public readonly float LineHeight;
 
+    /// <summary>行距（MonoGame 命名为 LineSpacing，等价于 LineHeight）。</summary>
+    public float LineSpacing => LineHeight;
+
     public SpriteFont(GraphicsDevice device, float size = 28f, string family = "system-ui, sans-serif", bool bold = true)
     {
         _device = device;
@@ -57,6 +60,9 @@ public sealed partial class SpriteFont : IDisposable
 
         Console.WriteLine($"[SpriteFont] 字号 {Size} | 基线 {Ascent} | 行高 {LineHeight}");
     }
+
+    /// <summary>Measure 的 MonoGame 命名别名。</summary>
+    public Vector2 MeasureString(string text) => Measure(text);
 
     public Vector2 Measure(string text)
     {

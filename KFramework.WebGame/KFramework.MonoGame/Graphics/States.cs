@@ -45,6 +45,9 @@ public sealed class SamplerState
     /// <summary>线性采样 + 平铺，用于背景滚动。</summary>
     public static readonly SamplerState LinearWrap =
         new(GL.LINEAR, GL.LINEAR, GL.REPEAT);
+
+    /// <summary>点采样 + 边缘钳制（MonoGame 命名，等价于 <see cref="Point"/>）。</summary>
+    public static readonly SamplerState PointClamp = Point;
 }
 
 /// <summary>混合模式。</summary>

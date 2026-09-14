@@ -52,6 +52,9 @@ public sealed class SpriteBatch
 
     public GraphicsDevice GraphicsDevice => _device;
 
+    /// <summary>上一次 End() 实际提交的批次数，近似 draw call 数，供调试面板使用。</summary>
+    public int LastDrawCount => _lastFlushCount;
+
     public void Begin(SpriteSortMode sortMode = SpriteSortMode.Deferred,
                       BlendState? blendState = null,
                       SamplerState? samplerState = null,
@@ -90,6 +93,21 @@ public sealed class SpriteBatch
     public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color)
         => Draw(texture, position, sourceRectangle, color, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
 
+    /// <summary>
+    /// MonoGame 的带旋转 / 翻转重载：目标矩形既决定位置也决定缩放。
+    /// 内部退化成 position + scale，与 KFramework 的单一实现保持一致。
+    /// </summary>
+    public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color,
+                     float rotation, Vector2 origin, SpriteEffects effects, float layerDepth)
+    {
+        int sw = sourceRectangle?.Width ?? texture.Width;
+        int sh = sourceRectangle?.Height ?? texture.Height;
+        var scale = new Vector2(sw == 0 ? 0f : destinationRectangle.Width / (float)sw,
+                                sh == 0 ? 0f : destinationRectangle.Height / (float)sh);
+        Draw(texture, new Vector2(destinationRectangle.X, destinationRectangle.Y), sourceRectangle, color,
+             rotation, origin, scale, effects, layerDepth);
+    }
+
     public void Draw(Texture2D texture, Rectangle destination, Color color)
         => Draw(texture, destination, null, color);
 
@@ -105,7 +123,7 @@ public sealed class SpriteBatch
 
     /// <summary>完整参数的绘制。</summary>
     public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color,
-                     float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth)
+                     float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth = 0f)
     {
         ArgumentNullException.ThrowIfNull(texture);
         if (!_beginCalled) throw new InvalidOperationException("Draw 必须在 Begin / End 之间调用。");
