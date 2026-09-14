@@ -23,6 +23,16 @@ namespace KFramework.MonoGame
         [JSImport("setMasterVolume", "audio")]
         internal static partial void SetMasterVolume(float volume);
 
+        // ===== 合成音效（薄原语；合成映射在 C# 层 SynthAudio） =====
+
+        /// <summary>单振荡器音：频率从 from 滑到 to，时长 duration，增益包络 volume，delay 秒后开始。</summary>
+        [JSImport("playTone", "audio")]
+        internal static partial void PlayTone(string type, float from, float to, float duration, float volume, float delay);
+
+        /// <summary>滤波噪声：低通截止从 cutoffFrom 滑到 cutoffTo，时长 duration，增益 volume。</summary>
+        [JSImport("playNoise", "audio")]
+        internal static partial void PlayNoise(float duration, float volume, float cutoffFrom, float cutoffTo);
+
         // ===== 音频缓冲 =====
 
         /// <summary>提交编码后的音频字节，JS 侧异步解码；用 IsLoaded 查询结果。</summary>

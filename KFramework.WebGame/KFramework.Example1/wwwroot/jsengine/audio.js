@@ -48,7 +48,7 @@ export function setMasterVolume(value) {
         master.gain.value = muted ? 0 : MASTER_VOLUME;
 }
 // ===== 合成音效 =====
-function tone(type, from, to, duration, volume, delay = 0) {
+export function playTone(type, from, to, duration, volume, delay = 0) {
     const ctx = ensureContext();
     if (!ctx || muted || !master)
         return;
@@ -66,7 +66,7 @@ function tone(type, from, to, duration, volume, delay = 0) {
     oscillator.start(start);
     oscillator.stop(start + duration + 0.02);
 }
-function noise(duration, volume, cutoffFrom, cutoffTo) {
+export function playNoise(duration, volume, cutoffFrom, cutoffTo) {
     const ctx = ensureContext();
     if (!ctx || muted || !master)
         return;
@@ -85,41 +85,6 @@ function noise(duration, volume, cutoffFrom, cutoffTo) {
     gain.connect(master);
     source.start(start);
     source.stop(start + duration);
-}
-export function playSynth(kind, volume, pitch) {
-    if (muted)
-        return;
-    const v = Math.max(0, Math.min(1, volume));
-    const p = pitch > 0 ? pitch : 1;
-    switch (kind | 0) {
-        case 0: // 射击：短促下滑方波
-            tone('square', 880 * p, 220 * p, 0.10, 0.16 * v);
-            break;
-        case 1: // 爆炸：低频噪声
-            noise(0.45, 0.55 * v, 1800, 90);
-            tone('sawtooth', 180 * p, 40 * p, 0.35, 0.14 * v);
-            break;
-        case 2: // 命中
-            tone('triangle', 420 * p, 180 * p, 0.09, 0.18 * v);
-            break;
-        case 3: // 拾取：上行三音
-            tone('sine', 660 * p, 660 * p, 0.07, 0.20 * v, 0);
-            tone('sine', 880 * p, 880 * p, 0.07, 0.20 * v, 0.06);
-            tone('sine', 1170 * p, 1170 * p, 0.10, 0.18 * v, 0.12);
-            break;
-        case 4: // 菜单选择
-            tone('sine', 520 * p, 780 * p, 0.08, 0.16 * v);
-            break;
-        case 5: // 游戏结束
-            tone('sawtooth', 420 * p, 60 * p, 0.9, 0.22 * v);
-            tone('square', 210 * p, 40 * p, 1.0, 0.12 * v, 0.05);
-            break;
-        case 6: // 强化：上行琶音
-            tone('square', 440 * p, 440 * p, 0.08, 0.16 * v, 0);
-            tone('square', 587 * p, 587 * p, 0.08, 0.16 * v, 0.07);
-            tone('square', 880 * p, 880 * p, 0.14, 0.18 * v, 0.14);
-            break;
-    }
 }
 // ===== 真实音频缓冲 =====
 export function loadAudio(handle, data, _mime) {

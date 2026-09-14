@@ -138,8 +138,8 @@ public sealed class StarDefenderGame : Game
                 _stateTimer += dt;
                 if (keyboard.IsKeyPressed(Keys.Space) || keyboard.IsKeyPressed(Keys.Enter) || ConsumePointerPress())
                 {
-                    Audio.Unlock();
-                    Audio.Play(Audio.Sfx.Select);
+                    SynthAudio.Unlock();
+                    SynthAudio.Play(SynthAudio.Sfx.Select);
                     StartGame();
                 }
                 break;
@@ -153,7 +153,7 @@ public sealed class StarDefenderGame : Game
                 if (_stateTimer > 0.7f && (keyboard.IsKeyPressed(Keys.R) ||
                                            keyboard.IsKeyPressed(Keys.Space) || ConsumePointerPress()))
                 {
-                    Audio.Play(Audio.Sfx.Select);
+                    SynthAudio.Play(SynthAudio.Sfx.Select);
                     StartGame();
                 }
                 break;
@@ -203,7 +203,7 @@ public sealed class StarDefenderGame : Game
             if (_player.PowerTimer <= 0f)
             {
                 _player.PowerLevel = 1;
-                Audio.Play(Audio.Sfx.Hit, 0.4f, 0.6f);
+                SynthAudio.Play(SynthAudio.Sfx.Hit, 0.4f, 0.6f);
             }
         }
 
@@ -213,7 +213,7 @@ public sealed class StarDefenderGame : Game
         {
             _player.FireTimer = config.FireInterval;
             FirePlayerBullets();
-            Audio.Play(Audio.Sfx.Shoot, 0.22f, 1f + Random.Shared.NextSingle() * 0.1f);
+            SynthAudio.Play(SynthAudio.Sfx.Shoot, 0.22f, 1f + Random.Shared.NextSingle() * 0.1f);
         }
 
         // ---- 敌人 ----
@@ -362,7 +362,7 @@ public sealed class StarDefenderGame : Game
     {
         enemy.Dead = true;
         SpawnExplosion(enemy.Position, (int)(enemy.Radius * 1.5f) + 8, new Color(255, 190, 90));
-        Audio.Play(Audio.Sfx.Explosion, enemy.Radius > 18f ? 0.6f : 0.35f, enemy.Radius > 18f ? 0.7f : 1.2f);
+        SynthAudio.Play(SynthAudio.Sfx.Explosion, enemy.Radius > 18f ? 0.6f : 0.35f, enemy.Radius > 18f ? 0.7f : 1.2f);
         _shake = Math.Min(1f, _shake + enemy.Radius * 0.03f);
 
         if (!awardScore) return;
@@ -396,7 +396,7 @@ public sealed class StarDefenderGame : Game
         _combo = 0;
         _shake = 1f;
         SpawnExplosion(_player.Position, 26, new Color(255, 140, 80));
-        Audio.Play(Audio.Sfx.Explosion, 0.5f, 0.8f);
+        SynthAudio.Play(SynthAudio.Sfx.Explosion, 0.5f, 0.8f);
 
         if (_player.Lives <= 0)
         {
@@ -404,13 +404,13 @@ public sealed class StarDefenderGame : Game
             _bestScore = Math.Max(_bestScore, _score);
             _state = State.GameOver;
             _stateTimer = 0f;
-            Audio.Play(Audio.Sfx.GameOver);
+            SynthAudio.Play(SynthAudio.Sfx.GameOver);
         }
     }
 
     private void ApplyPowerUp(PowerUpKind kind)
     {
-        Audio.Play(Audio.Sfx.PowerUp, 0.5f);
+        SynthAudio.Play(SynthAudio.Sfx.PowerUp, 0.5f);
         switch (kind)
         {
             case PowerUpKind.Weapon:
