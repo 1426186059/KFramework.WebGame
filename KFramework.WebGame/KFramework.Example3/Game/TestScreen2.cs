@@ -48,9 +48,10 @@ namespace KFramework.Example3
         {
             try
             {
-                await contentManager.LoadBundleAsync("content").ConfigureAwait(false);
-                SpriteSheetLoader mLoader = new SpriteSheetLoader(contentManager.GetBundle("content")!, KSceneMgr.Game.GraphicsDevice);
-                _spriteSheet = await mLoader.LoadAsync("MyRes/Atlas/AAA.atlas").ConfigureAwait(false);
+                await contentManager.LoadBundleAsync("MyRes/Atlas").ConfigureAwait(false);
+                var atlasBundle = contentManager.GetBundle("MyRes/Atlas")!;
+                SpriteSheetLoader mLoader = new SpriteSheetLoader(atlasBundle, KSceneMgr.Game.GraphicsDevice);
+                _spriteSheet = mLoader.Load(atlasBundle, "MyRes/Atlas/AAA");
                 _texture = _spriteSheet.Sprite("characters_characters_0").Texture;
             }
             catch (Exception ex)

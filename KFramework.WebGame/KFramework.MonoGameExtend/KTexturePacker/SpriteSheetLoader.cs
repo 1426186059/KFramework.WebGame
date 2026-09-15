@@ -1,8 +1,7 @@
-﻿using KTexturePacker.Parser;
-using KFramework.MonoGame;
+﻿using KFramework.MonoGame;
+using KTexturePacker.Parser;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace KFramework.MonoGameExtend
 {
@@ -17,19 +16,19 @@ namespace KFramework.MonoGameExtend
             _device = device;
         }
 
-        public Task<SpriteSheet> LoadAsync(string jsonPath, CancellationToken cancellationToken = default)
+        public SpriteSheet Load(AssetBundle mBundle, string jsonPath, CancellationToken cancellationToken = default)
         {
             string dir = Path.GetDirectoryName(jsonPath);
 
             // KFramework.MonoGame 没有文件系统、TitleContainer 与 .xnb 管线：
             // 所有资源都由 AssetBundle 从已加载的包中按名字同步读取（包已在内存中，取资源即时完成）。
-            AtlasData mData = _bundle.LoadJson<AtlasData>(jsonPath);
+            AtlasData mData = mBundle.LoadJson<AtlasData>(jsonPath);
 
             SpriteSheet spriteSheet = new SpriteSheet();
             foreach (var v in mData.Pages)
             {
                 string texturePath = Path.Combine(dir, Path.GetFileNameWithoutExtension(v.Image));
-                Texture2D texture = _bundle.LoadTexture(texturePath, _device);
+                Texture2D texture = mBundle.LoadTexture(texturePath, _device);
                 foreach (var v2 in v.Regions)
                 {
                     bool isRotated = v2.Rotated;
@@ -42,7 +41,7 @@ namespace KFramework.MonoGameExtend
                 }
             }
 
-            return Task.FromResult(spriteSheet);
+            return spriteSheet;
         }
     }
 

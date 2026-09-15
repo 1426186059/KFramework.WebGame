@@ -42,14 +42,16 @@ public sealed class BuildReport
 ///
 /// <para>打包目录约定：</para>
 /// <list type="bullet">
-///   <item>在 raw 目录下放置一个打包配置文件（<c>bundles.json</c> 或 <c>pack.json</c>）指定打包根目录：
+///   <item>在 Content 根目录放置一个打包配置文件 <c>build.config.json</c> 指定打包根目录：
 ///         字段 <c>bundlesDir</c>（或 <c>bundleDirs</c>）可填字符串，也可填字符串数组，例如
 ///         <c>{ "bundlesDir": ["Bundles", "UI"] }</c>；未配置或字段缺失时缺省为 <c>Bundles</c>。</item>
 ///   <item>每个打包根目录下的「每一个含资源的子文件夹」分别打包成一个 AssetBundle（包名 = 子文件夹相对该根目录的路径）。</item>
 ///   <item>多个根目录下的子文件夹包名必须唯一，出现同名会直接报错（请保证各根目录内子文件夹名不重复）。</item>
 ///   <item>每个文件夹只打包其「直接」资源，不含子目录资源（子目录自身也是独立的 AssetBundle）。</item>
+///   <item>是否自动图集打包由 <c>autoAtlas</c> 控制（默认 true）：true 时独立 <c>.png</c> 经图集打包器装箱成图集；
+///        false 时 <c>.png</c> 原样整图入包（适合已用 <c>.atlas</c> 预切好的图集，运行端按整张页图切片）。<c>.sprite.json</c> 矢量图始终装箱，不受此项影响。</item>
 ///   <item>除「指定打包目录」外，其余 raw 文件（如静态资源、配置文件等）原封不动地复制到 <c>content/</c>，不做打包/压缩。</item>
-///   <item>若配置的根目录都不存在，则回退为「整包 raw 作为一个 content 包」的兼容模式。</item>
+///   <item>配置里指定的打包根目录必须真实存在；若不存在则直接报错（不再支持把整个 raw 打成单个 content 整包的“兼容模式”）。</item>
 ///   <item>输出目录由配置 <c>outDir</c> 指定（相对 root，默认 <c>content</c>）；发布方式由 <c>deploy</c> 决定：
 ///         <c>www</c>（把产物整体镜像复制到 <c>wwwDir</c>，默认 www）/ <c>serve</c>（在产物目录上启动本地 HTTP 服务，端口 <c>port</c> 默认 8080）/ <c>none</c>。</item>
 /// </list>
@@ -109,67 +111,62 @@ public sealed class ContentBuilder
 
         if (bundleRoots.Count == 0)
         {
-            // ===== 模式 B（兼容旧用法）：整包 raw 作为一个 content 包 =====
-            Console.WriteLine($"[kfc] 打包模式：整包（未发现 {string.Join(", ", bundleDirs)} 目录，回退为单个 content 包）");
-            string[] allFiles = Directory.EnumerateFiles(rawDirectory, "*", SearchOption.AllDirectories)
-                .Where(f => !IsIgnored(Path.GetRelativePath(rawDirectory, f).Replace('\\', '/')))
-                .OrderBy(static f => f, StringComparer.Ordinal)
-                .ToArray();
-            builds.Add(BuildBundle("content", allFiles, rawDirectory, options, warnings,
-                ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, outputDirectory));
-            bundleCount = 1;
+            // 不再支持“整包 raw”模式：必须显式指定 bundlesDir（一个或多个打包目录），
+            // 其下每个含资源的子文件夹会分别打包为一个 AssetBundle，其余 raw 文件原封不动拷贝到 content/。
+            throw new InvalidOperationException(
+                $"未找到任何打包目录（bundlesDir = [{string.Join(", ", bundleDirs)}]）。请指定一个存在的打包目录：其下每个含资源的子文件夹会分别打包为一个 AssetBundle，其余 raw 文件原封不动拷贝到 content/。整包模式已移除。");
         }
-        else
+
+        // ===== 按目录分别打包（指定 bundlesDir 模式）：每个含资源的子文件夹各自成包 =====
+        Console.WriteLine($"[kfc] 打包模式：按目录分别打包（打包目录 = {string.Join(", ", bundleDirs)}）");
+
+        // 提示配置中存在但物理缺失的打包目录
+        foreach (string dir in bundleDirs)
         {
-            // ===== 模式 A：按目录分别打包（更通用）=====
-            Console.WriteLine($"[kfc] 打包模式：按目录分别打包（打包目录 = {string.Join(", ", bundleDirs)}）");
-
-            // 提示配置中存在但物理缺失的打包目录
-            foreach (string dir in bundleDirs)
-            {
-                string dirRoot = Path.Combine(rawDirectory, dir);
-                if (!Directory.Exists(dirRoot)) warnings.Add($"打包目录未找到，已忽略：{dir}");
-            }
-
-            // 各根目录下的子文件夹包名必须唯一（保证运行端 GetBundle(name) 无歧义）
-            var usedNames = new HashSet<string>(StringComparer.Ordinal);
-            foreach (string bundlesRoot in bundleRoots)
-            {
-                foreach (string folder in Directory.EnumerateDirectories(bundlesRoot, "*", SearchOption.AllDirectories)
-                                               .OrderBy(static f => f, StringComparer.Ordinal))
-                {
-                    // 只打包「直接」含资源的子文件夹；子目录下的资源由其自身所在的文件夹负责
-                    string[] directFiles = Directory.EnumerateFiles(folder, "*", SearchOption.TopDirectoryOnly)
-                        .Where(f => !IsIgnored(Path.GetRelativePath(rawDirectory, f).Replace('\\', '/')))
-                        .OrderBy(static f => f, StringComparer.Ordinal)
-                        .ToArray();
-                    if (directFiles.Length == 0) continue;
-
-                    string bundleName = PakFormat.NormalizeName(Path.GetRelativePath(bundlesRoot, folder).Replace('\\', '/'));
-                    if (!usedNames.Add(bundleName))
-                        throw new InvalidOperationException(
-                            $"发现重复的 AssetBundle 名「{bundleName}」：配置的打包目录（{string.Join(", ", bundleDirs)}）下存在同名子文件夹，请保证各打包目录内的子文件夹名唯一。");
-
-                    AssetBundleBuild build = BuildBundle(bundleName, directFiles, bundlesRoot, options, warnings,
-                        ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, outputDirectory);
-                    builds.Add(build);
-                    bundleCount++;
-                }
-            }
-
-            if (builds.Count == 0)
-                warnings.Add($"打包目录（{string.Join(", ", bundleDirs)}）下没有发现任何「含资源的子文件夹」，未产出任何 AssetBundle。");
-
-            // 除指定打包目录外，其余 raw 文件原封不动地复制到 content/（不做打包/压缩，保持原样）
-            int copied = CopyRawAssetsVerbatim(rawDirectory, outputDirectory, bundleRoots);
-            if (copied > 0) Console.WriteLine($"[kfc] 其余 {copied} 个文件已原样复制到 content/（未打包）");
+            string dirRoot = Path.Combine(rawDirectory, dir);
+            if (!Directory.Exists(dirRoot)) warnings.Add($"打包目录未找到，已忽略：{dir}");
         }
+
+        // 各根目录下的子文件夹包名必须唯一（保证运行端 GetBundle(name) 无歧义）
+        var usedNames = new HashSet<string>(StringComparer.Ordinal);
+        foreach (string bundlesRoot in bundleRoots)
+        {
+            foreach (string folder in Directory.EnumerateDirectories(bundlesRoot, "*", SearchOption.AllDirectories)
+                                           .OrderBy(static f => f, StringComparer.Ordinal))
+            {
+                // 只打包「直接」含资源的子文件夹；子目录下的资源由其自身所在的文件夹负责
+                string[] directFiles = Directory.EnumerateFiles(folder, "*", SearchOption.TopDirectoryOnly)
+                    .Where(f => !IsIgnored(Path.GetRelativePath(rawDirectory, f).Replace('\\', '/')))
+                    .OrderBy(static f => f, StringComparer.Ordinal)
+                    .ToArray();
+                if (directFiles.Length == 0) continue;
+
+                string bundleName = PakFormat.NormalizeName(Path.GetRelativePath(bundlesRoot, folder).Replace('\\', '/'));
+                if (!usedNames.Add(bundleName))
+                    throw new InvalidOperationException(
+                        $"发现重复的 AssetBundle 名「{bundleName}」：配置的打包目录（{string.Join(", ", bundleDirs)}）下存在同名子文件夹，请保证各打包目录内的子文件夹名唯一。");
+
+                AssetBundleBuild build = BuildBundle(bundleName, directFiles, bundlesRoot, options, config.AutoAtlas, warnings,
+                    ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, outputDirectory);
+                builds.Add(build);
+                bundleCount++;
+            }
+        }
+
+        if (builds.Count == 0)
+            warnings.Add($"打包目录（{string.Join(", ", bundleDirs)}）下没有发现任何「含资源的子文件夹」，未产出任何 AssetBundle。");
+
+        // 除指定打包目录外，其余 raw 文件原封不动地复制到 content/（不做打包/压缩，保持原样）
+        int copied = CopyRawAssetsVerbatim(rawDirectory, outputDirectory, bundleRoots);
+        if (copied > 0) Console.WriteLine($"[kfc] 其余 {copied} 个文件已原样复制到 content/（未打包）");
 
         // 构建所有 AssetBundle（每个包独立 .web.lib，并汇总总清单 version.manifest）
         BuildResult result = BundleBuilder.BuildAssetBundles(builds);
         foreach (var pkg in result.Manifest.Packages)
         {
-            File.WriteAllBytes(Path.Combine(outputDirectory, pkg.File), result.Bundles[pkg.Name]);
+            string pkgPath = Path.Combine(outputDirectory, pkg.File);
+            Directory.CreateDirectory(Path.GetDirectoryName(pkgPath)!);
+            File.WriteAllBytes(pkgPath, result.Bundles[pkg.Name]);
             Console.WriteLine($"[kfc] 资源包 {pkg.Name} -> {pkg.File}（{pkg.Size} 字节，哈希 {pkg.Hash}）");
         }
         File.WriteAllText(Path.Combine(outputDirectory, "version.manifest"), result.Manifest.Serialize());
@@ -200,7 +197,7 @@ public sealed class ContentBuilder
     /// 图集页与子图索引都写入同一个包，因此每个包自带其纹理（运行端按 Page 切片）。
     /// </summary>
     private static AssetBundleBuild BuildBundle(
-        string bundleName, string[] files, string assetBaseDir, BuildOptions options,
+        string bundleName, string[] files, string assetBaseDir, BuildOptions options, bool autoAtlas,
         List<string> warnings, ref long rawBytes, ref int textureCount, ref int dataCount, ref int atlasPageCount,
         string outputDirectory)
     {
@@ -235,8 +232,23 @@ public sealed class ContentBuilder
                 else if (relative.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
                 {
                     Bitmap image = PngDecoder.Decode(bytes);
-                    if (options.TrimSprites) image = image.Trim();
-                    packer.Add(name, image);
+                    if (autoAtlas)
+                    {
+                        if (options.TrimSprites) image = image.Trim();
+                        packer.Add(name, image);
+                    }
+                    else
+                    {
+                        // 不装箱：解码为 RGBA8 像素，整图原样入包（适合 .atlas 预切图集，运行端按整张页图切片）
+                        bundle.Assets.Add(new AssetBundleAsset
+                        {
+                            Path = name,
+                            Type = "texture",
+                            Bytes = image.Pixels,
+                            Width = image.Width,
+                            Height = image.Height,
+                        });
+                    }
                     textureCount++;
                 }
                 else
@@ -295,7 +307,7 @@ public sealed class ContentBuilder
         return bundle;
     }
 
-    /// <summary>打包配置（raw/bundles.json 或 raw/pack.json）。</summary>
+    /// <summary>打包配置（build.config.json，位于 Content 根目录）。</summary>
     private sealed class BuildConfig
     {
         /// <summary>打包根目录（相对 raw），字符串或数组；缺省 Bundles。</summary>
@@ -303,6 +315,11 @@ public sealed class ContentBuilder
 
         /// <summary>打包产物目录（相对 root），缺省 content。</summary>
         public string OutDir { get; set; } = "content";
+
+        /// <summary>是否自动图集打包（默认 true）：true 时独立 <c>.png</c> 经图集打包器装箱成图集；
+        /// false 时 <c>.png</c> 原样整图入包（适合已用 <c>.atlas</c> 预切好的图集，运行端按整张页图切片）。
+        /// <c>.sprite.json</c> 矢量图始终装箱，不受此项影响。</summary>
+        public bool AutoAtlas { get; set; } = true;
 
         /// <summary>发布方式：www(复制到 wwwDir) / serve(本地 HTTP) / none；缺省 www。</summary>
         public string Deploy { get; set; } = "www";
@@ -315,21 +332,22 @@ public sealed class ContentBuilder
     }
 
     /// <summary>
-    /// 读取打包配置；支持 <c>bundles.json</c> / <c>pack.json</c>。
+    /// 读取打包配置 <c>build.config.json</c>（位于 Content 根目录）。
     /// 字段：<c>bundlesDir</c> / <c>bundleDirs</c>（字符串或数组，默认 <c>Bundles</c>）、
     /// <c>outDir</c>（默认 content）、<c>deploy</c>（www/serve/none，默认 www）、
     /// <c>wwwDir</c>（默认 www）、<c>port</c>（默认 8080）。
-    /// 配置文件均不存在时自动生成一个默认 <c>bundles.json</c>。
+    /// 配置文件均不存在时自动在 Content 根目录生成一个默认 <c>build.config.json</c>。
     /// </summary>
     private static BuildConfig ReadConfig(string rawDirectory)
     {
-        foreach (string cfg in new[] { "bundles.json", "pack.json" })
+        // 读取 Content 根目录下的 build.config.json
+        string contentRoot = Path.GetDirectoryName(Path.GetFullPath(rawDirectory)) ?? rawDirectory;
+        string configPath = Path.Combine(contentRoot, "build.config.json");
+        if (File.Exists(configPath))
         {
-            string path = Path.Combine(rawDirectory, cfg);
-            if (!File.Exists(path)) continue;
             try
             {
-                using var doc = JsonDocument.Parse(File.ReadAllText(path));
+                using var doc = JsonDocument.Parse(File.ReadAllText(configPath));
                 var root = doc.RootElement;
                 var config = new BuildConfig();
 
@@ -340,6 +358,9 @@ public sealed class ContentBuilder
 
                 if (root.TryGetProperty("outDir", out JsonElement o) && o.ValueKind == JsonValueKind.String)
                     config.OutDir = o.GetString()!.Replace('\\', '/').Trim('/');
+                if (root.TryGetProperty("autoAtlas", out JsonElement at) &&
+                    (at.ValueKind == JsonValueKind.True || at.ValueKind == JsonValueKind.False))
+                    config.AutoAtlas = at.GetBoolean();
                 if (root.TryGetProperty("deploy", out JsonElement d) && d.ValueKind == JsonValueKind.String)
                     config.Deploy = d.GetString()!.ToLowerInvariant();
                 if (root.TryGetProperty("wwwDir", out JsonElement w) && w.ValueKind == JsonValueKind.String)
@@ -356,7 +377,7 @@ public sealed class ContentBuilder
         }
 
         // 未找到打包配置：自动生成一个默认 bundles.json（含全部默认项），方便后续按目录分别打包
-        string defaultPath = Path.Combine(rawDirectory, "bundles.json");
+        string defaultPath = Path.Combine(contentRoot, "build.config.json");
         try
         {
             File.WriteAllText(defaultPath,
@@ -394,14 +415,16 @@ public sealed class ContentBuilder
 
     private static void CleanOutput(string outputDirectory)
     {
-        foreach (string file in Directory.EnumerateFiles(outputDirectory, "*", SearchOption.TopDirectoryOnly))
+        foreach (string file in Directory.EnumerateFiles(outputDirectory, "*", SearchOption.AllDirectories))
         {
             string name = Path.GetFileName(file);
+            bool isPreviewPng = name.EndsWith(".png", StringComparison.OrdinalIgnoreCase) &&
+                               name.StartsWith("atlas_", StringComparison.OrdinalIgnoreCase);
             if (name.EndsWith(".pak", StringComparison.OrdinalIgnoreCase) ||
-                name.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
                 name.EndsWith(".web.lib", StringComparison.OrdinalIgnoreCase) ||
                 name.Equals("manifest.json", StringComparison.OrdinalIgnoreCase) ||
-                name.Equals("version.manifest", StringComparison.OrdinalIgnoreCase))
+                name.Equals("version.manifest", StringComparison.OrdinalIgnoreCase) ||
+                isPreviewPng)
             {
                 File.Delete(file);
             }
@@ -420,15 +443,14 @@ public sealed class ContentBuilder
             if (string.Equals(segment, "bin", StringComparison.OrdinalIgnoreCase)) return true;
             if (string.Equals(segment, "obj", StringComparison.OrdinalIgnoreCase)) return true;
             if (string.Equals(segment, "content", StringComparison.OrdinalIgnoreCase)) return true;
-            if (string.Equals(segment, "bundles.json", StringComparison.OrdinalIgnoreCase)) return true;
-            if (string.Equals(segment, "pack.json", StringComparison.OrdinalIgnoreCase)) return true;
+            if (string.Equals(segment, "build.config.json", StringComparison.OrdinalIgnoreCase)) return true;
         }
         return false;
     }
 
     /// <summary>
     /// 在「按目录打包」模式下，把不在任何打包根目录内的 raw 文件原样复制到 content/（不做打包/压缩，保持原样）。
-    /// 属于打包根目录的文件已被打成 AssetBundle，跳过；打包配置文件（bundles.json / pack.json）也跳过。
+    /// 属于打包根目录的文件已被打成 AssetBundle，跳过；打包配置文件（build.config.json）也跳过。
     /// </summary>
     private static int CopyRawAssetsVerbatim(string rawDirectory, string outputDirectory, List<string> bundleRoots)
     {

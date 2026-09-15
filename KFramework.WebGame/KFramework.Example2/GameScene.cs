@@ -60,7 +60,7 @@ public sealed class GameScene : KSceneBase
 
     public override void LoadContent()
     {
-        AssetBundle bundle = _content.GetBundle("content")
+        AssetBundle bundle = _content.GetBundle("Assets")
             ?? throw new InvalidOperationException("内容包 content 尚未加载");
         _res = ResCenter.Load(bundle, _gd);
         _sounds = SoundCenter.Load(bundle);

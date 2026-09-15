@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace KFramework.Example3
+﻿namespace KFramework.Example3
 {
     internal class Level : IDisposable
     {
@@ -39,7 +33,7 @@ namespace KFramework.Example3
         private Level(int nLevelIndex, Stream levelStream,
                       SpriteSheet charactersAtlas, SpriteSheet misc3Atlas)
         {
-            this.mContentInstace = KSceneMgr.Game.Content.GetBundle("content")
+            this.mContentInstace = KSceneMgr.Game.Content.GetBundle("MyRes/Sounds")
                 ?? throw new InvalidOperationException("内容包 content 尚未加载");
             mSpriteSheet_charactersAtlas = charactersAtlas;
             mSpriteSheet_misc3Atlas = misc3Atlas;
@@ -79,16 +73,17 @@ namespace KFramework.Example3
             ContentManager content = KSceneMgr.Game.Content;
 
             // 异步加载本关卡依赖的 Bundle（资源全部从 Bundle 中读取）
-            await content.LoadBundleAsync("content", cancellationToken).ConfigureAwait(false);
+            await content.LoadBundleAsync("MyRes/Atlas", cancellationToken).ConfigureAwait(false);
 
             string text = await content
                 .LoadTextAsync($"Levels/{nLevelIndex:00}.txt", cancellationToken)
                 .ConfigureAwait(false);
             using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(text));
 
-            SpriteSheetLoader mLoader = new SpriteSheetLoader(content.GetBundle("content")!, KSceneMgr.Game.GraphicsDevice);
-            SpriteSheet characters = await mLoader.LoadAsync("MyRes/Atlas/characters", cancellationToken).ConfigureAwait(false);
-            SpriteSheet misc3 = await mLoader.LoadAsync("MyRes/Atlas/misc-3", cancellationToken).ConfigureAwait(false);
+            var atlasBundle = content.GetBundle("MyRes/Atlas")!;
+            SpriteSheetLoader mLoader = new SpriteSheetLoader(atlasBundle, KSceneMgr.Game.GraphicsDevice);
+            SpriteSheet characters = mLoader.Load(atlasBundle, "MyRes/Atlas/characters");
+            SpriteSheet misc3 = mLoader.Load(atlasBundle, "MyRes/Atlas/misc-3");
 
             return new Level(nLevelIndex, stream, characters, misc3);
         }
