@@ -116,6 +116,14 @@ namespace KFramework.MonoGame
             Array.Clear(_released);
         }
 
+        /// <summary>固定步长下，一个渲染帧可能跑多个 Update 步；在每个步结束后清空按下/抬起边沿，
+        /// 确保一次点击只被识别一次（否则边沿会在多个步里重复触发）。下一帧 <see cref="Poll"/> 时边沿重新产生。</summary>
+        public static void ConsumeEdges()
+        {
+            Array.Clear(_pressed);
+            Array.Clear(_released);
+        }
+
         /// <summary>解绑 JS 侧监听。</summary>
         public static void Unbind()
         {

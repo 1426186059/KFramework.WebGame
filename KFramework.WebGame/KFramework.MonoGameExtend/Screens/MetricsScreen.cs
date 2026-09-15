@@ -10,6 +10,7 @@ namespace KFramework.MonoGameExtend
 
         int nFPS = 0;
         long nDrawCount = 0;
+        long nSpriteCount = 0;
 
         public MetricsScreen()
         {
@@ -43,13 +44,16 @@ namespace KFramework.MonoGameExtend
         {
             base.Update();
             nFPS = (int)Math.Ceiling(1 / KTime.deltaTime);
-            mLable.Text = $"FPS: {nFPS} DC: {nDrawCount} ScreenSize: {KSceneMgr.Game.GraphicsDevice.Viewport.Bounds.Size}";
+            mLable.Text = $"FPS: {nFPS} DC: {nDrawCount} Sprites: {nSpriteCount} ScreenSize: {KSceneMgr.Game.GraphicsDevice.Viewport.Bounds.Size}";
         }
 
         public void DrawMe()
         {
-            // KFramework.MonoGame 没有 GraphicsDevice.Metrics，改用 SpriteBatch 的批次数作为 draw call 指标
+            // KFramework.MonoGame 没有 GraphicsDevice.Metrics：
+            // LastDrawCount = 真正向 GPU 提交的绘制次数（draw call）；
+            // SpriteCount = 合并后提交的总精灵数（不等于 draw call）。
             nDrawCount = KSceneMgr.SpriteBatch.LastDrawCount;
+            nSpriteCount = KSceneMgr.SpriteBatch.SpriteCount;
             mImage.Draw();
             mLable.Draw();
         }

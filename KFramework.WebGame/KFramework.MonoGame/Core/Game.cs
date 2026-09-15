@@ -135,6 +135,9 @@ namespace KFramework.MonoGame
                         var stepTime = new GameTime(_totalGameTime, TimeSpan.FromSeconds(target));
                         Update(stepTime);
                         Components.Update(stepTime);
+                        // 固定步长下同一帧可能跑多个步，但 Poll 每帧只一次；
+                        // 每个步结束后清空按下/抬起边沿，确保一次按键只触发一次（见 Input.ConsumeStepEdges）。
+                        Input.ConsumeStepEdges();
                         _accumulator -= target;
                         steps++;
                     }

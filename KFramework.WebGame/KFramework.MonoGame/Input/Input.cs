@@ -24,6 +24,22 @@ namespace KFramework.MonoGame
             Input_Touch.Poll();
         }
 
+        /// <summary>每个固定步结束后由 <see cref="Game"/> 调用：清空键盘/鼠标的按下、抬起边沿，
+        /// 使一次按键 / 一次点击只被识别一次。
+        ///
+        /// <para>固定步长下，一个渲染帧可能跑多个 Update 步，但 <see cref="Poll"/> 每帧只调用一次。
+        /// 若不在每个步后清理边沿，<c>GetKeyDown</c> / <c>GetButtonDown</c> 会在该帧的所有步里都返回
+        /// true，导致"按一次"的逻辑（如跳跃）被重复触发，结果随帧时序抖动（忽高忽低）。
+        /// 边沿在下一帧 <see cref="Poll"/> 时重新产生。</para>
+        ///
+        /// <para>触摸边沿由 per-frame 的帧列表承载，不在本方法内消费（另行处理）。</para>
+        /// </summary>
+        public static void ConsumeStepEdges()
+        {
+            Input_KeyBoard.ConsumeEdges();
+            Input_Mouse.ConsumeEdges();
+        }
+
         /// <summary>清空三个模块的状态。</summary>
         public static void Reset()
         {

@@ -43,6 +43,26 @@ function ensureContext(): AudioContext | null {
     return context;
 }
 
+// 浏览器自动播放策略：AudioContext 必须在用户手势后才能从 suspended 变为 running。
+// 否则即使调用了 source.start()，声音也完全静默（"声音听不见" 的最常见原因）。
+// 这里在引擎层注册一次性手势监听，首次 pointerdown/keydown/touchstart 时自动 resume，
+// 任何示例都无需手动调用 unlock()，也不依赖游戏逻辑。
+let autoUnlockAttached = false;
+function attachAutoUnlock(): void {
+    if (autoUnlockAttached) return;
+    autoUnlockAttached = true;
+
+    const resume = (): void => {
+        const ctx = ensureContext();
+        if (ctx && ctx.state === 'suspended') void ctx.resume();
+    };
+
+    window.addEventListener('pointerdown', resume);
+    window.addEventListener('keydown', resume);
+    window.addEventListener('touchstart', resume);
+}
+attachAutoUnlock();
+
 function getNoiseBuffer(ctx: AudioContext): AudioBuffer {
     if (noiseBuffer) return noiseBuffer;
 
@@ -176,6 +196,9 @@ export function createInstance(handle: number): number {
 
 function startSource(inst: Instance, fromOffset: number, id: number): void {
     if (!context || !master) return;
+
+    // 防御性 resume：若在用户手势内触发播放但自动解锁尚未生效，这里再补一次。
+    if (context.state === 'suspended') void context.resume();
 
     const src = context.createBufferSource();
     src.buffer = inst.buffer;

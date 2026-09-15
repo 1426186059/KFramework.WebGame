@@ -22,6 +22,25 @@ function ensureContext() {
     master.connect(context.destination);
     return context;
 }
+// 浏览器自动播放策略：AudioContext 必须在用户手势后才能从 suspended 变为 running。
+// 否则即使调用了 source.start()，声音也完全静默（"声音听不见" 的最常见原因）。
+// 这里在引擎层注册一次性手势监听，首次 pointerdown/keydown/touchstart 时自动 resume，
+// 任何示例都无需手动调用 unlock()，也不依赖游戏逻辑。
+let autoUnlockAttached = false;
+function attachAutoUnlock() {
+    if (autoUnlockAttached)
+        return;
+    autoUnlockAttached = true;
+    const resume = () => {
+        const ctx = ensureContext();
+        if (ctx && ctx.state === 'suspended')
+            void ctx.resume();
+    };
+    window.addEventListener('pointerdown', resume);
+    window.addEventListener('keydown', resume);
+    window.addEventListener('touchstart', resume);
+}
+attachAutoUnlock();
 function getNoiseBuffer(ctx) {
     if (noiseBuffer)
         return noiseBuffer;
@@ -93,7 +112,10 @@ export function loadAudio(handle, data, _mime) {
         return;
     // decodeAudioData 会 detach 底层 ArrayBuffer，必须把托管内存拷贝出来。
     const copy = data.slice();
-    ctx.decodeAudioData(copy.buffer, (buf) => { buffers.set(handle, buf); }, () => { });
+    ctx.decodeAudioData(copy.buffer, (buf) => { buffers.set(handle, buf); }, (err) => {
+        // 不能再静默：解码失败是"声音听不见"的常见原因，必须能定位到
+        console.error('[audio] decodeAudioData 失败, handle=' + handle, err);
+    });
 }
 export function isLoaded(handle) {
     return buffers.has(handle);
@@ -130,6 +152,9 @@ export function createInstance(handle) {
 function startSource(inst, fromOffset, id) {
     if (!context || !master)
         return;
+    // 防御性 resume：若在用户手势内触发播放但自动解锁尚未生效，这里再补一次。
+    if (context.state === 'suspended')
+        void context.resume();
     const src = context.createBufferSource();
     src.buffer = inst.buffer;
     src.loop = inst.loop;
