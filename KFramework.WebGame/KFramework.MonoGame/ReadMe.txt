@@ -60,5 +60,35 @@ KFramework.MonoGame —— 仿 MonoGame 引擎（面向 AI 智能体）
   真实音频（wav/mp3/ogg）：SoundEffect.FromBytes(bytes, mime) → 浏览器 decodeAudioData 解码 →
                            SoundEffect.Play / CreateInstance / MediaPlayer 播放。
   合成音效：不属于本库；若 Example 需要零资源原型音效，可自行用 WebAudio 合成
-           （audio 模块的 playSynth），但本仓库示例统一使用真实 wav（见 Example2 的 SoundCenter），
-           不内置合成示例，以保持引擎通用、干净。
+          （audio 模块的 playSynth），但本仓库示例统一使用真实 wav（见 Example2 的 SoundCenter），
+          不内置合成示例，以保持引擎通用、干净。
+
+WASM 工程约束：禁止使用反射
+--------------------------
+（硬性规定）本库编译为浏览器 wasm（Mono 解释器 / AOT），运行时反射开销极大且发布裁剪后极易崩溃，故：
+
+1. 禁止在运行时使用 System.Reflection 做任何动态行为：
+   - Type.GetType / Assembly.GetType 按名解析类型；
+   - Activator.CreateInstance / FormatterServices.GetUninitializedObject 动态构造实例；
+   - Type.GetMethod / GetProperty / GetField / GetConstructor 而后 Invoke；
+   - PropertyInfo / FieldInfo / MethodInfo 的 GetValue / SetValue / Invoke；
+   - Expression 树 Compile()（走反射发射，wasm 不可用或极慢）；
+   - 依赖运行时反射的通用反序列化（如默认 JsonSerializer 对未知/多态类型的反射构造）。
+
+2. 为什么禁用：
+   - wasm 解释/AOT 下反射路径（元数据查找、IL 解释、动态分发）比原生 JIT 慢一到数个数量级；
+   - 发布默认开启 IL 裁剪（trim）与 AOT，未被静态引用到的类型/成员会被移除，运行时按字符串反射取类型在发布版里直接抛 NullReferenceException / TypeLoadException，而开发期正常，极难排查；
+   - AOT 无 JIT，任何依赖运行时发射（Emit / Expression.Compile）的方案都会失败。
+
+3. 替代做法：
+   - 按“名字/枚举/ID”构造对象：用显式 switch / if 分支 new，或静态 Dictionary<string, Func<T>> 启动时手动注册，不用 Activator.CreateInstance；
+   - 按类型名查找：用静态字典 / 工厂手写映射，不用 Type.GetType；
+   - 通用属性读写：显式强类型访问器，或源生成器生成访问代码，不用 PropertyInfo；
+   - 多态 / 组件分发：接口 + 显式 new，或编译期源生成器生成注册表；
+   - 序列化：已知类型显式读写，或使用 source-generated 序列化。
+   首选 Roslyn 源生成器（Source Generator）：编译期读取符号生成强类型注册/访问代码，运行时零反射、零开销，且对裁剪/AOT 友好。
+
+4. 例外：
+   - 仅限编译期的分析与代码生成（源生成器、analyzer）可使用符号 API（ISymbol 等），那不是运行时反射；
+   - 纯编辑器 / 构建工具（不进入 wasm 的程序集，如 kfc CLI、构建任务）不受此限。
+

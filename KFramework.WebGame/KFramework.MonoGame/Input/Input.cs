@@ -56,6 +56,14 @@ namespace KFramework.MonoGame
             Input_Touch.Unbind();
         }
 
+        /// <summary>释放三个输入模块（键盘 / 鼠标 / 触摸）的底层资源。幂等，可安全重复调用。</summary>
+        public static void Dispose()
+        {
+            Input_KeyBoard.Instance.Dispose();
+            Input_Mouse.Instance.Dispose();
+            Input_Touch.Instance.Dispose();
+        }
+
         /// <summary>触屏或鼠标左键当前是否按住（移动端虚拟摇杆等统一处理）。</summary>
         public static bool IsPointerDown
             => Input_Mouse.GetButton(MouseButton.Left) || Input_Touch.Touches.Count > 0;

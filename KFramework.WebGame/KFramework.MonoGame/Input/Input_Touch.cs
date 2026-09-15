@@ -88,7 +88,7 @@ namespace KFramework.MonoGame
     /// 自己 poll 自己的事件队列（<c>input_touch</c> 模块），维护触点表与 Began/Moved/Ended 阶段，
     /// 并识别手势：Tap / LongPress / Swipe / Pinch。所有容器复用，运行期零 GC。
     /// </summary>
-    public static class Input_Touch
+    public sealed class Input_Touch : IDisposable
     {
         // 事件类型（与 input_touch.ts 一致）
         private const int EvStart = 7;
@@ -317,6 +317,21 @@ namespace KFramework.MonoGame
         {
             JSBind_Input.UnbindTouch();
             Reset();
+        }
+
+        private bool _disposed;
+
+        /// <summary>供生命周期统一管理的单例实例（实现了 <see cref="IDisposable"/>）。</summary>
+        public static Input_Touch Instance { get; } = new Input_Touch();
+
+        /// <summary>
+        /// 释放底层资源：解绑 JS 侧触摸监听并清空状态。幂等，可安全重复调用。
+        /// </summary>
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+            Unbind();
         }
 
         // ===== 查询 =====

@@ -9,7 +9,7 @@ namespace KFramework.MonoGame
     /// 自己 poll 自己的事件队列（<c>input_mouse</c> 模块），维护位置 / 按键 / 滚轮增量。
     /// 查询返回的是值类型快照，可以安全跨帧比较。
     /// </summary>
-    public static class Input_Mouse
+    public sealed class Input_Mouse : IDisposable
     {
         // 事件类型（与 input_mouse.ts 一致）
         private const int EvMouseDown = 3;
@@ -129,6 +129,21 @@ namespace KFramework.MonoGame
         {
             JSBind_Input.UnbindMouse();
             Reset();
+        }
+
+        private bool _disposed;
+
+        /// <summary>供生命周期统一管理的单例实例（实现了 <see cref="IDisposable"/>）。</summary>
+        public static Input_Mouse Instance { get; } = new Input_Mouse();
+
+        /// <summary>
+        /// 释放底层资源：解绑 JS 侧鼠标监听并清空状态。幂等，可安全重复调用。
+        /// </summary>
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+            Unbind();
         }
 
         // ===== 查询 =====

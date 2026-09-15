@@ -11,7 +11,7 @@ namespace KFramework.MonoGame
     ///
     /// <para>用事件而不是"电平差分"算边沿，因此同一帧内按下又抬起也能被正确识别。</para>
     /// </summary>
-    public static class Input_KeyBoard
+    public sealed class Input_KeyBoard : IDisposable
     {
         // 事件类型（与 input_keyboard.ts 一致）
         private const int EvKeyDown = 1;
@@ -43,14 +43,19 @@ namespace KFramework.MonoGame
             => BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(offset, 4));
 
         /// <summary>每帧调用一次：取回本模块的事件队列并更新状态。</summary>
+        /// <remarks>
+        /// 注意：<b>不要在开头清空按下/抬起边沿</b>。边沿（<see cref="_pressed"/> / <see cref="_released"/>）
+        /// 由 <see cref="ConsumeEdges"/> 在固定步长的每个 Update 步结束后清空，因此会跨帧保留，
+        /// 直到被某个真正运行的 Update 步消费。若在此处清空，则在 <c>steps==0</c> 的帧（高刷新率或
+        /// 时序抖动导致 accumulator 不足一步）里读到的按键边沿会被下一帧的 Poll 抹掉，造成按键丢失——
+        /// 尤其表现为“跳跃/确认”等边沿触发的操作偶发或完全失灵、相应音效不播放。
+        /// </remarks>
         public static void Poll()
         {
-            Array.Clear(_pressed);
-            Array.Clear(_released);
-
             JSBind_Input.PollKeyboard(_buffer);
 
             int count = ReadInt(0);
+            if (count > 0) Console.WriteLine($"[DBG] Poll count={count} firstKey={(count > 0 ? ReadInt(4 + 4) : -1)}");
             if (count <= 0) return;
             if (count > MaxEvents) count = MaxEvents;
 
@@ -67,28 +72,32 @@ namespace KFramework.MonoGame
                     case EvBlur: Reset(); break;
                 }
             }
-
-            for (int k = 1; k < KeyCount; k++)
-            {
-                if (_pressed[k]) KeyDown?.Invoke((Keys)k);
-                else if (_released[k]) KeyUp?.Invoke((Keys)k);
-            }
         }
 
         private static void SetKey(int keyCode, bool down)
         {
             int k = keyCode & 0xFF;
             if (k <= 0 || k >= KeyCount) return;
+            if (k == 38) Console.WriteLine($"[DBG] SetKey 38 down={down} heldBefore={_held[38]}");
 
             if (down)
             {
-                // 浏览器长按会连发 keydown，只有"从没按下"的那次才算本帧按下
-                if (!_held[k]) _pressed[k] = true;
+                // 浏览器长按会连发 keydown，只有"从没按下"的那次才算本次按下；
+                // 同时触发 KeyDown 事件（仅在状态跳变时，避免跨帧重复触发）。
+                if (!_held[k])
+                {
+                    _pressed[k] = true;
+                    KeyDown?.Invoke((Keys)k);
+                }
                 _held[k] = true;
             }
             else
             {
-                if (_held[k]) _released[k] = true;
+                if (_held[k])
+                {
+                    _released[k] = true;
+                    KeyUp?.Invoke((Keys)k);
+                }
                 _held[k] = false;
             }
         }
@@ -117,11 +126,30 @@ namespace KFramework.MonoGame
             Reset();
         }
 
+        private bool _disposed;
+
+        /// <summary>供生命周期统一管理的单例实例（实现了 <see cref="IDisposable"/>）。</summary>
+        public static Input_KeyBoard Instance { get; } = new Input_KeyBoard();
+
+        /// <summary>
+        /// 释放底层资源：解绑 JS 侧键盘监听并清空状态。幂等，可安全重复调用。
+        /// </summary>
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+            Unbind();
+        }
+
         // ===== 查询 =====
 
         public static bool GetKey(Keys key) => key != Keys.None && _held[(int)key];
 
-        public static bool GetKeyDown(Keys key) => key != Keys.None && _pressed[(int)key];
+        public static bool GetKeyDown(Keys key)
+        {
+            if ((int)key == 38) Console.WriteLine($"[DBG] GetKeyDown Up: _pressed[38]={_pressed[38]} held[38]={_held[38]}");
+            return key != Keys.None && _pressed[(int)key];
+        }
 
         public static bool GetKeyUp(Keys key) => key != Keys.None && _released[(int)key];
 
