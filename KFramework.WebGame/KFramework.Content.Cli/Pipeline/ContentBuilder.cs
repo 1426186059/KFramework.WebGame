@@ -1,6 +1,9 @@
 using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace KFramework.MonoGame;
 
@@ -28,6 +31,9 @@ public sealed class BuildReport
     }
 
     public int AtlasCount { get; init; }
+
+    /// <summary>实际发布（打包产物）目录，供命令行回显。</summary>
+    public string OutputDirectory { get; init; } = "";
 }
 
 /// <summary>
@@ -42,7 +48,10 @@ public sealed class BuildReport
 ///   <item>每个打包根目录下的「每一个含资源的子文件夹」分别打包成一个 AssetBundle（包名 = 子文件夹相对该根目录的路径）。</item>
 ///   <item>多个根目录下的子文件夹包名必须唯一，出现同名会直接报错（请保证各根目录内子文件夹名不重复）。</item>
 ///   <item>每个文件夹只打包其「直接」资源，不含子目录资源（子目录自身也是独立的 AssetBundle）。</item>
+///   <item>除「指定打包目录」外，其余 raw 文件（如静态资源、配置文件等）原封不动地复制到 <c>content/</c>，不做打包/压缩。</item>
 ///   <item>若配置的根目录都不存在，则回退为「整包 raw 作为一个 content 包」的兼容模式。</item>
+///   <item>输出目录由配置 <c>outDir</c> 指定（相对 root，默认 <c>content</c>）；发布方式由 <c>deploy</c> 决定：
+///         <c>www</c>（把产物整体镜像复制到 <c>wwwDir</c>，默认 www）/ <c>serve</c>（在产物目录上启动本地 HTTP 服务，端口 <c>port</c> 默认 8080）/ <c>none</c>。</item>
 /// </list>
 /// </summary>
 public sealed class ContentBuilder
@@ -64,7 +73,7 @@ public sealed class ContentBuilder
         public bool TrimSprites { get; set; } = true;
     }
 
-    public BuildReport Build(string rawDirectory, string outputDirectory, BuildOptions? options = null)
+    public BuildReport Build(string rawDirectory, string? outputOverride = null, BuildOptions? options = null)
     {
         options ??= new BuildOptions();
         var watch = Stopwatch.StartNew();
@@ -73,10 +82,15 @@ public sealed class ContentBuilder
         if (!Directory.Exists(rawDirectory))
             throw new DirectoryNotFoundException($"原始资源目录不存在：{rawDirectory}");
 
+        BuildConfig config = ReadConfig(rawDirectory);
+        List<string> bundleDirs = config.BundleDirs;
+        if (bundleDirs.Count == 0) bundleDirs = new List<string> { "Bundles" };
+
+        // 输出目录：CLI --out 优先，否则取配置 outDir（默认 content，相对 root）
+        string root = Path.GetDirectoryName(Path.GetFullPath(rawDirectory)) ?? rawDirectory;
+        string outputDirectory = outputOverride ?? Path.Combine(root, config.OutDir);
         Directory.CreateDirectory(outputDirectory);
         CleanOutput(outputDirectory);
-
-        List<string> bundleDirs = ReadBundlesDir(rawDirectory);
 
         var builds = new List<AssetBundleBuild>();
         long rawBytes = 0;
@@ -89,8 +103,8 @@ public sealed class ContentBuilder
         var bundleRoots = new List<string>();
         foreach (string dir in bundleDirs)
         {
-            string root = Path.Combine(rawDirectory, dir);
-            if (Directory.Exists(root)) bundleRoots.Add(root);
+            string dirRoot = Path.Combine(rawDirectory, dir);
+            if (Directory.Exists(dirRoot)) bundleRoots.Add(dirRoot);
         }
 
         if (bundleRoots.Count == 0)
@@ -113,8 +127,8 @@ public sealed class ContentBuilder
             // 提示配置中存在但物理缺失的打包目录
             foreach (string dir in bundleDirs)
             {
-                string root = Path.Combine(rawDirectory, dir);
-                if (!Directory.Exists(root)) warnings.Add($"打包目录未找到，已忽略：{dir}");
+                string dirRoot = Path.Combine(rawDirectory, dir);
+                if (!Directory.Exists(dirRoot)) warnings.Add($"打包目录未找到，已忽略：{dir}");
             }
 
             // 各根目录下的子文件夹包名必须唯一（保证运行端 GetBundle(name) 无歧义）
@@ -145,6 +159,10 @@ public sealed class ContentBuilder
 
             if (builds.Count == 0)
                 warnings.Add($"打包目录（{string.Join(", ", bundleDirs)}）下没有发现任何「含资源的子文件夹」，未产出任何 AssetBundle。");
+
+            // 除指定打包目录外，其余 raw 文件原封不动地复制到 content/（不做打包/压缩，保持原样）
+            int copied = CopyRawAssetsVerbatim(rawDirectory, outputDirectory, bundleRoots);
+            if (copied > 0) Console.WriteLine($"[kfc] 其余 {copied} 个文件已原样复制到 content/（未打包）");
         }
 
         // 构建所有 AssetBundle（每个包独立 .web.lib，并汇总总清单 version.manifest）
@@ -155,6 +173,9 @@ public sealed class ContentBuilder
             Console.WriteLine($"[kfc] 资源包 {pkg.Name} -> {pkg.File}（{pkg.Size} 字节，哈希 {pkg.Hash}）");
         }
         File.WriteAllText(Path.Combine(outputDirectory, "version.manifest"), result.Manifest.Serialize());
+
+        // 发布阶段（部署）：复制到其他目录 / 本地 HTTP 服务 / 不发布
+        Deploy(config, root, outputDirectory, warnings);
 
         long totalBundleBytes = result.Manifest.Packages.Sum(p => p.Size);
         watch.Stop();
@@ -169,6 +190,7 @@ public sealed class ContentBuilder
             RawBytes = rawBytes,
             PackedBytes = totalBundleBytes,
             Elapsed = watch.Elapsed,
+            OutputDirectory = outputDirectory,
             Warnings = warnings,
         };
     }
@@ -273,12 +295,33 @@ public sealed class ContentBuilder
         return bundle;
     }
 
+    /// <summary>打包配置（raw/bundles.json 或 raw/pack.json）。</summary>
+    private sealed class BuildConfig
+    {
+        /// <summary>打包根目录（相对 raw），字符串或数组；缺省 Bundles。</summary>
+        public List<string> BundleDirs { get; set; } = new();
+
+        /// <summary>打包产物目录（相对 root），缺省 content。</summary>
+        public string OutDir { get; set; } = "content";
+
+        /// <summary>发布方式：www(复制到 wwwDir) / serve(本地 HTTP) / none；缺省 www。</summary>
+        public string Deploy { get; set; } = "www";
+
+        /// <summary>deploy=www 时的复制目标（相对 root），缺省 www。</summary>
+        public string WwwDir { get; set; } = "www";
+
+        /// <summary>deploy=serve 时的端口，缺省 8080。</summary>
+        public int Port { get; set; } = 8080;
+    }
+
     /// <summary>
-    /// 读取打包配置，返回打包根目录列表（相对 raw）。
-    /// 支持 <c>bundles.json</c> / <c>pack.json</c>，字段 <c>bundlesDir</c>（或 <c>bundleDirs</c>）可为字符串或字符串数组；
-    /// 缺省默认 <c>["Bundles"]</c>。若配置文件均不存在，则自动生成一个默认 <c>bundles.json</c>。
+    /// 读取打包配置；支持 <c>bundles.json</c> / <c>pack.json</c>。
+    /// 字段：<c>bundlesDir</c> / <c>bundleDirs</c>（字符串或数组，默认 <c>Bundles</c>）、
+    /// <c>outDir</c>（默认 content）、<c>deploy</c>（www/serve/none，默认 www）、
+    /// <c>wwwDir</c>（默认 www）、<c>port</c>（默认 8080）。
+    /// 配置文件均不存在时自动生成一个默认 <c>bundles.json</c>。
     /// </summary>
-    private static List<string> ReadBundlesDir(string rawDirectory)
+    private static BuildConfig ReadConfig(string rawDirectory)
     {
         foreach (string cfg in new[] { "bundles.json", "pack.json" })
         {
@@ -288,29 +331,44 @@ public sealed class ContentBuilder
             {
                 using var doc = JsonDocument.Parse(File.ReadAllText(path));
                 var root = doc.RootElement;
+                var config = new BuildConfig();
+
                 var dirs = new List<string>();
                 if (root.TryGetProperty("bundlesDir", out JsonElement a)) dirs.AddRange(ResolveBundleDirs(a));
                 if (root.TryGetProperty("bundleDirs", out JsonElement b)) dirs.AddRange(ResolveBundleDirs(b));
-                if (dirs.Count > 0) return dirs;
+                config.BundleDirs = dirs;
+
+                if (root.TryGetProperty("outDir", out JsonElement o) && o.ValueKind == JsonValueKind.String)
+                    config.OutDir = o.GetString()!.Replace('\\', '/').Trim('/');
+                if (root.TryGetProperty("deploy", out JsonElement d) && d.ValueKind == JsonValueKind.String)
+                    config.Deploy = d.GetString()!.ToLowerInvariant();
+                if (root.TryGetProperty("wwwDir", out JsonElement w) && w.ValueKind == JsonValueKind.String)
+                    config.WwwDir = w.GetString()!.Replace('\\', '/').Trim('/');
+                if (root.TryGetProperty("port", out JsonElement p) && p.ValueKind == JsonValueKind.Number)
+                    config.Port = p.GetInt32();
+
+                return config;
             }
             catch
             {
-                // 配置损坏则忽略，使用默认目录
+                // 配置损坏则忽略，使用默认配置
             }
         }
 
-        // 未找到打包配置：自动生成一个默认 bundles.json（打包目录默认 Bundles），方便后续按目录分别打包
+        // 未找到打包配置：自动生成一个默认 bundles.json（含全部默认项），方便后续按目录分别打包
         string defaultPath = Path.Combine(rawDirectory, "bundles.json");
         try
         {
-            File.WriteAllText(defaultPath, "{\"bundlesDir\":\"Bundles\"}", new UTF8Encoding(false));
-            Console.WriteLine($"[kfc] 未发现打包配置，已自动生成 {Path.GetFileName(defaultPath)}（默认打包目录 Bundles）");
+            File.WriteAllText(defaultPath,
+                "{\"bundlesDir\":\"Bundles\",\"outDir\":\"content\",\"deploy\":\"www\",\"wwwDir\":\"www\",\"port\":8080}",
+                new UTF8Encoding(false));
+            Console.WriteLine($"[kfc] 未发现打包配置，已自动生成 {Path.GetFileName(defaultPath)}（默认：打包目录 Bundles，输出 content，发布方式 www）");
         }
         catch
         {
             // 无法写入也不影响本次打包（回退整包 content）
         }
-        return new List<string> { "Bundles" };
+        return new BuildConfig();
     }
 
     /// <summary>把 <c>bundlesDir</c> 字段解析为目录列表：字符串或字符串数组都支持。</summary>
@@ -366,6 +424,191 @@ public sealed class ContentBuilder
             if (string.Equals(segment, "pack.json", StringComparison.OrdinalIgnoreCase)) return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// 在「按目录打包」模式下，把不在任何打包根目录内的 raw 文件原样复制到 content/（不做打包/压缩，保持原样）。
+    /// 属于打包根目录的文件已被打成 AssetBundle，跳过；打包配置文件（bundles.json / pack.json）也跳过。
+    /// </summary>
+    private static int CopyRawAssetsVerbatim(string rawDirectory, string outputDirectory, List<string> bundleRoots)
+    {
+        int copied = 0;
+        foreach (string file in Directory.EnumerateFiles(rawDirectory, "*", SearchOption.AllDirectories)
+                     .OrderBy(static f => f, StringComparer.Ordinal))
+        {
+            string relative = Path.GetRelativePath(rawDirectory, file).Replace('\\', '/');
+            if (IsIgnored(relative)) continue;
+
+            // 属于某个打包根目录的文件已被打成 AssetBundle，不再原样复制
+            bool underBundle = false;
+            foreach (string root in bundleRoots)
+            {
+                string rootRel = Path.GetRelativePath(rawDirectory, root).Replace('\\', '/').TrimEnd('/');
+                if (relative == rootRel || relative.StartsWith(rootRel + "/", StringComparison.Ordinal))
+                {
+                    underBundle = true;
+                    break;
+                }
+            }
+            if (underBundle) continue;
+
+            string dest = Path.Combine(outputDirectory, relative);
+            Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+            File.Copy(file, dest, overwrite: true);
+            copied++;
+        }
+        return copied;
+    }
+
+    /// <summary>
+    /// 发布（部署）阶段：根据配置把构建产物发布出去。
+    /// <list type="bullet">
+    ///   <item><c>www</c> / <c>copy</c>：把 outputDirectory 整体镜像复制到 wwwDir（相对 root）。</item>
+    ///   <item><c>serve</c>：在 outputDirectory 上启动一个本地静态 HTTP 服务（阻塞，直到 Ctrl+C）。</item>
+    ///   <item><c>none</c>（或其它值）：不发布。</item>
+    /// </list>
+    /// </summary>
+    private static void Deploy(BuildConfig config, string root, string outputDirectory, List<string> warnings)
+    {
+        string mode = config.Deploy;
+        if (mode is "www" or "copy")
+        {
+            string wwwDir = Path.Combine(root, config.WwwDir);
+            CopyDirectory(outputDirectory, wwwDir);
+            Console.WriteLine($"[kfc] 已发布到 {wwwDir}（deploy = {mode}）");
+        }
+        else if (mode == "serve")
+        {
+            ServeContent(outputDirectory, config.Port); // 阻塞直到 Ctrl+C
+        }
+        else if (mode != "none")
+        {
+            warnings.Add($"未知的 deploy 模式：{mode}（可选 www / serve / none）");
+        }
+    }
+
+    /// <summary>把 source 目录整体镜像复制到 dest（先清空 dest 再复制，保证不含残留旧文件）。</summary>
+    private static void CopyDirectory(string source, string dest)
+    {
+        if (Directory.Exists(dest)) Directory.Delete(dest, recursive: true);
+        Directory.CreateDirectory(dest);
+
+        foreach (string file in Directory.EnumerateFiles(source))
+            File.Copy(file, Path.Combine(dest, Path.GetFileName(file)), overwrite: true);
+        foreach (string dir in Directory.EnumerateDirectories(source))
+            CopyDirectory(dir, Path.Combine(dest, Path.GetFileName(dir)));
+    }
+
+    /// <summary>
+    /// 在指定目录上启动一个极简的本地静态 HTTP 服务（用于开发调试）。
+    /// 使用原始 Tcp 监听以避开 Windows 下 http.sys 的 URL ACL 限制；Ctrl+C 退出。
+    /// </summary>
+    private static void ServeContent(string directory, int port)
+    {
+        string root = Path.GetFullPath(directory);
+        var listener = new TcpListener(IPAddress.Loopback, port);
+        listener.Start();
+        Console.WriteLine($"[kfc] 本地 HTTP 服务已启动：http://localhost:{port}/ （Ctrl+C 退出）");
+
+        Console.CancelKeyPress += (_, e) =>
+        {
+            e.Cancel = true;
+            try { listener.Stop(); } catch { /* ignore */ }
+        };
+
+        while (true)
+        {
+            TcpClient client;
+            try
+            {
+                client = listener.AcceptTcpClient();
+            }
+            catch (SocketException)
+            {
+                break; // 已被 Stop()
+            }
+
+            _ = Task.Run(() => HandleHttpRequest(client, root));
+        }
+    }
+
+    private static async Task HandleHttpRequest(TcpClient client, string root)
+    {
+        try
+        {
+            using var _ = client;
+            using NetworkStream stream = client.GetStream();
+            using var reader = new StreamReader(stream, Encoding.ASCII, detectEncodingFromByteOrderMarks: false,
+                bufferSize: 1024, leaveOpen: true);
+
+            string? requestLine = await reader.ReadLineAsync().ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(requestLine)) return;
+
+            string path = requestLine.Split(' ')[1];
+            path = Uri.UnescapeDataString(path.Split('?')[0]);
+            if (path.EndsWith('/')) path += "index.html";
+
+            string filePath = Path.GetFullPath(Path.Combine(root, path.TrimStart('/')));
+            if (!filePath.StartsWith(root, StringComparison.Ordinal))
+            {
+                await WriteStatusAsync(stream, 403, "Forbidden");
+                return;
+            }
+
+            if (File.Exists(filePath))
+            {
+                byte[] body = await File.ReadAllBytesAsync(filePath).ConfigureAwait(false);
+                await WriteResponseAsync(stream, 200, MimeOfExtension(filePath), body).ConfigureAwait(false);
+            }
+            else
+            {
+                await WriteStatusAsync(stream, 404, "Not Found");
+            }
+        }
+        catch
+        {
+            // 单个请求出错不影响服务继续运行
+        }
+    }
+
+    private static async Task WriteResponseAsync(NetworkStream stream, int code, string mime, byte[] body)
+    {
+        var header = new StringBuilder();
+        header.AppendLine($"HTTP/1.1 {code} {(code == 200 ? "OK" : code == 404 ? "Not Found" : "Forbidden")}");
+        header.AppendLine("Content-Type: " + mime);
+        header.AppendLine("Content-Length: " + body.Length);
+        header.AppendLine("Access-Control-Allow-Origin: *");
+        header.AppendLine("Connection: close");
+        header.AppendLine();
+        byte[] headerBytes = Encoding.ASCII.GetBytes(header.ToString());
+        await stream.WriteAsync(headerBytes, default).ConfigureAwait(false);
+        await stream.WriteAsync(body, default).ConfigureAwait(false);
+    }
+
+    private static async Task WriteStatusAsync(NetworkStream stream, int code, string text)
+    {
+        byte[] body = Encoding.ASCII.GetBytes(text);
+        await WriteResponseAsync(stream, code, "text/plain", body).ConfigureAwait(false);
+    }
+
+    private static string MimeOfExtension(string filePath)
+    {
+        return Path.GetExtension(filePath).ToLowerInvariant() switch
+        {
+            ".html" or ".htm" => "text/html",
+            ".js" => "text/javascript",
+            ".css" => "text/css",
+            ".json" => "application/json",
+            ".web.lib" => "application/octet-stream",
+            ".png" => "image/png",
+            ".jpg" or ".jpeg" => "image/jpeg",
+            ".gif" => "image/gif",
+            ".svg" => "image/svg+xml",
+            ".wasm" => "application/wasm",
+            ".txt" => "text/plain",
+            ".map" => "application/json",
+            _ => "application/octet-stream",
+        };
     }
 
     /// <summary>文件路径 → 资源名：去掉扩展名，小写化，统一用 / 分隔。</summary>

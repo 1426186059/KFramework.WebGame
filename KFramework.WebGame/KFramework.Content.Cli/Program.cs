@@ -43,7 +43,6 @@ namespace KFramework.Content.Cli
 
             string projectDirectory = Path.GetFullPath(root);
             string rawDirectory = Path.Combine(projectDirectory, "raw");
-            string outputDirectory = Path.GetFullPath(output ?? Path.Combine(projectDirectory, "content"));
 
             if (!Directory.Exists(rawDirectory))
             {
@@ -54,14 +53,14 @@ namespace KFramework.Content.Cli
             try
             {
                 var builder = new ContentBuilder();
-                BuildReport report = builder.Build(rawDirectory, outputDirectory, new ContentBuilder.BuildOptions
+                BuildReport report = builder.Build(rawDirectory, output, new ContentBuilder.BuildOptions
                 {
                     AtlasMaxSize = atlasSize,
                     WritePreviewPng = preview,
                 });
 
                 Console.WriteLine($"[kfc] raw     : {rawDirectory}");
-                Console.WriteLine($"[kfc] content : {outputDirectory}");
+                Console.WriteLine($"[kfc] content : {report.OutputDirectory}");
                 Console.WriteLine($"[kfc] {report}");
 
                 foreach (string warning in report.Warnings)

@@ -92,6 +92,10 @@ string    level  = bundle.LoadText("levels/00");
   - 多目录： `{ "bundlesDir": ["Bundles", "UI"] }`
   - 缺省默认 `Bundles`；若 `bundles.json`/`pack.json` 都不存在，`kfc` 会**自动生成**一个默认的 `bundles.json`（打包目录 Bundles），并回退为整包 `content`。
   - **多个根目录下的子文件夹包名必须唯一**（包名 = 子文件夹相对其根目录的路径），出现同名会报错。
+- 输出目录与发布方式（同样写在该配置文件中）：
+  - `outDir`：打包产物目录，相对 `root`（即 `--root` 指向的目录），默认 `content`；CLI `--out` 可临时覆盖。
+  - `deploy`：发布方式，默认 `www`；可选 `www`（把产物整体镜像复制到 `wwwDir`，默认 `www`）/ `serve`（在产物目录上启动本地 HTTP 服务，端口 `port` 默认 8080）/ `none`（不发布）。
+  - 完整示例：`{ "bundlesDir": "Bundles", "outDir": "content", "deploy": "www", "wwwDir": "www", "port": 8080 }`
 - `Bundles/data/game.json` → 包 `data`，资源 `data/game`；
   `Bundles/sprites/player.sprite.json` → 包 `sprites`，资源 `sprites/player`。
 - **每个文件夹只打包其直接资源，不含子目录资源**；子目录本身是独立的 AssetBundle。
