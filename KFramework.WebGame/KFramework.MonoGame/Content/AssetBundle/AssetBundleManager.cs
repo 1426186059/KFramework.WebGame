@@ -1,7 +1,7 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace KFramework.Content;
+namespace KFramework.MonoGame;
 
 /// <summary>
 /// 运行时资源管家（对齐 Unity 高层的 AssetBundleManager 思路）：

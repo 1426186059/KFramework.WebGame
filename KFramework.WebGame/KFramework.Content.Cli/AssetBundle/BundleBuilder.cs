@@ -1,7 +1,7 @@
 using System.IO.Compression;
 using System.Text.Json;
 
-namespace KFramework.Content;
+namespace KFramework.MonoGame;
 
 /// <summary>
 /// 描述一个待构建的资源包（对齐 Unity <c>AssetBundleBuild</c>）。

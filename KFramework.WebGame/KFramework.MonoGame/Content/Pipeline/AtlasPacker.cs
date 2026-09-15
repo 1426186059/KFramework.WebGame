@@ -1,4 +1,4 @@
-namespace KFramework.Content;
+namespace KFramework.MonoGame;
 
 /// <summary>图集中的一块区域。</summary>
 public sealed class AtlasRegion

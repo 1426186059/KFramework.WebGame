@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\KFramework.Content\KFramework.Content.csproj" />
+    <ProjectReference Include="..\..\..\KFramework.Content.Cli\KFramework.Content.Cli.csproj" />
   </ItemGroup>
 
 </Project>

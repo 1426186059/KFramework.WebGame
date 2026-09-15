@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KFramework.MonoGame\KFramework.MonoGame.csproj" />
-    <ProjectReference Include="..\KFramework.Content\KFramework.Content.csproj" />
   </ItemGroup>
 
   <!-- 引擎的浏览器层用 TypeScript 编写（KFramework/tsengine），
@@ -36,7 +35,7 @@
   <!-- 1. 运行内容管线：KFramework.Content/raw -> KFramework.Content/content
        2. 把发布后的 content 同步到 wwwroot/content 供浏览器 HTTP 访问 -->
   <Target Name="BuildGameContent" BeforeTargets="BeforeBuild">
-    <Exec Command="dotnet run --project &quot;$(MSBuildThisFileDirectory)..\KFramework.Content.Cli\KFramework.Content.Cli.csproj&quot; -v q --nologo -- --root &quot;$(MSBuildThisFileDirectory)..\KFramework.Content&quot;" />
+    <Exec Command="dotnet run --project &quot;$(MSBuildThisFileDirectory)..\KFramework.Content.Cli\KFramework.Content.Cli.csproj&quot; -v q --nologo -- --root &quot;$(MSBuildThisFileDirectory)Content&quot;" />
     <ItemGroup>
       <_PublishedContent Include="$(MSBuildThisFileDirectory)..\KFramework.Content\content\**\*.*" />
     </ItemGroup>

@@ -1,4 +1,4 @@
-namespace KFramework.Content;
+namespace KFramework.MonoGame;
 
 /// <summary>
 /// 单个 .web.lib 包内的清单（包内 manifest.json）。加载时由 <see cref="AssetBundle.Content"/> 暴露。

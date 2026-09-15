@@ -1,7 +1,7 @@
 using System.Buffers.Binary;
 using System.IO.Compression;
 
-namespace KFramework.Content;
+namespace KFramework.MonoGame;
 
 /// <summary>
 /// 最小可用的 PNG 解码器：支持 8 位色深、非隔行的 灰度 / RGB / 调色板 / 灰度+Alpha / RGBA。

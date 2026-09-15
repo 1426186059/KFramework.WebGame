@@ -1,4 +1,4 @@
-namespace KFramework.Content;
+namespace KFramework.MonoGame;
 
 /// <summary>RGBA 颜色（内容管线内部使用，不依赖引擎，便于工具端独立运行）。</summary>
 public readonly struct Rgba(byte r, byte g, byte b, byte a = 255) : IEquatable<Rgba>

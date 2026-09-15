@@ -2,7 +2,7 @@ using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace KFramework.Content;
+namespace KFramework.MonoGame;
 
 /// <summary>
 /// 一个已加载的 .web.lib 资源包（对齐 Unity <c>AssetBundle</c>）。

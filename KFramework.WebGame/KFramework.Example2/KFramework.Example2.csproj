@@ -30,7 +30,6 @@
   <ItemGroup>
     <ProjectReference Include="..\KFramework.MonoGame\KFramework.MonoGame.csproj" />
     <ProjectReference Include="..\KFramework.MonoGameExtend\KFramework.MonoGameExtend.csproj" />
-    <ProjectReference Include="..\KFramework.Content\KFramework.Content.csproj" />
   </ItemGroup>
 
   <!-- 引擎的浏览器层（KFramework/tsengine）目前由 tsconfig 固定输出到 MirGame/wwwroot/jsengine。
