@@ -106,42 +106,13 @@ export function playNoise(duration, volume, cutoffFrom, cutoffTo) {
     source.stop(start + duration);
 }
 // ===== 真实音频缓冲 =====
-// .NET 的 JSType.MemoryView 把 Span<byte> 编组成 JS 的 MemoryView（不是 TypedArray），
-// 必须经 toBytes 转换后才能读取底层字节（参照 gl.js 的已验证写法，否则解码必然失败、完全没声音）。
-function toBytes(view) {
-    if (view == null)
-        return null;
-    // 即使传入的是 Uint8Array（如借用 WASM 堆内存的视图），也必须立刻拷贝出独立副本：
-    // decodeAudioData 是异步解码，回调触发时原内存可能已被回收/复用，借用会导致静默解码失败（没声音、无报错）。
-    if (view instanceof Uint8Array)
-        return view.slice();
-    const memory = view;
-    if (typeof memory.copyTo === 'function') {
-        const buffer = new Uint8Array(memory.byteLength);
-        memory.copyTo(buffer);
-        return buffer;
-    }
-    if (typeof memory.slice === 'function') {
-        const sliced = memory.slice();
-        return sliced instanceof Uint8Array ? sliced : new Uint8Array(sliced);
-    }
-    throw new Error('[audio] 无法把参数转换为 Uint8Array');
-}
 export function loadAudio(handle, data, _mime) {
     const ctx = ensureContext();
     if (!ctx)
         return;
-    const bytes = toBytes(data);
-    if (!bytes) {
-        console.error('[audio] loadAudio 收到空数据, handle=' + handle);
-        return;
-    }
-    console.log('[audio] loadAudio 开始解码 handle=' + handle + ' 字节数=' + bytes.length + ' mime=' + _mime + ' ctxState=' + ctx.state);
-    // decodeAudioData 会 detach 底层 ArrayBuffer，toBytes 已做独立拷贝，直接喂 buffer 即可。
-    ctx.decodeAudioData(bytes.buffer, (buf) => {
-        buffers.set(handle, buf);
-        console.log('[audio] 解码成功 handle=' + handle + ' 时长=' + buf.duration.toFixed(2) + 's 声道=' + buf.numberOfChannels + ' 采样率=' + buf.sampleRate);
-    }, (err) => {
+    // decodeAudioData 会 detach 底层 ArrayBuffer，必须把托管内存拷贝出来。
+    const copy = data.slice();
+    ctx.decodeAudioData(copy.buffer, (buf) => { buffers.set(handle, buf); }, (err) => {
         // 不能再静默：解码失败是"声音听不见"的常见原因，必须能定位到
         console.error('[audio] decodeAudioData 失败, handle=' + handle, err);
     });
@@ -208,7 +179,6 @@ function startSource(inst, fromOffset, id) {
     };
 }
 export function playInstance(id, volume, pitch, pan, loop) {
-    console.log('[audio] playInstance id=' + id + ' vol=' + volume + ' loop=' + loop + ' ctxState=' + (context ? context.state : 'null'));
     const inst = instances.get(id);
     if (!inst || !context)
         return;
