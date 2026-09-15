@@ -40,9 +40,23 @@ namespace KFramework.Example3
                 contentManager = KSceneMgr.Game.Content;
             }
 
-            SpriteSheetLoader mLoader = new SpriteSheetLoader(contentManager);
-            _spriteSheet = mLoader.Load("MyRes/Atlas/AAA.atlas");
-            _texture =  _spriteSheet.Sprite($"characters_characters_0").Texture;
+            // 异步加载：先加载 atlas Bundle，再从其中取出 SpriteSheet（KUIBase.Init 为同步，这里 fire-and-forget）
+            _ = LoadSheetAsync();
+        }
+
+        private async Task LoadSheetAsync()
+        {
+            try
+            {
+                await contentManager.LoadBundleAsync("content").ConfigureAwait(false);
+                SpriteSheetLoader mLoader = new SpriteSheetLoader(contentManager);
+                _spriteSheet = await mLoader.LoadAsync("MyRes/Atlas/AAA.atlas").ConfigureAwait(false);
+                _texture = _spriteSheet.Sprite("characters_characters_0").Texture;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"[TestScreen2] 图集加载失败：{ex}");
+            }
         }
 
         public override void Update()
@@ -76,6 +90,9 @@ namespace KFramework.Example3
                 sortMode: SpriteSortMode.Deferred,
                 samplerState: SamplerState.PointClamp);
 
+            // 图集尚未异步加载完成时跳过绘制
+            if (_texture != null)
+            {
             // 直接用世界坐标绘制，无需手动转换
             _spriteBatch.Draw(
                 _texture,
@@ -98,6 +115,7 @@ namespace KFramework.Example3
                 _child.WorldScale,
                 SpriteEffects.None,
                 0f);
+            }
 
             _spriteBatch.End();
         }

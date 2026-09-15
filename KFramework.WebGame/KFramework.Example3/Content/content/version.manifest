@@ -1,0 +1,16 @@
+{
+  "Format": "web.lib.bundle",
+  "Version": 1,
+  "Hash": "md5",
+  "CreatedAt": "2026-09-15T00:52:41.1679425Z",
+  "Packages": [
+    {
+      "Name": "content",
+      "File": "content.eecdcef012f86347.web.lib",
+      "Size": 1411188,
+      "Hash": "eecdcef012f8634786793113355ac763",
+      "Entries": 28,
+      "Dependencies": []
+    }
+  ]
+}

@@ -64,17 +64,19 @@ public sealed class ContentBuilder
         CleanOutput(outputDirectory);
 
         var packer = new AtlasPacker { MaxSize = options.AtlasMaxSize, Padding = options.AtlasPadding };
-        var pak = new PakWriter();
-        var manifest = new ContentManifest
-        {
-            GeneratedAt = DateTimeOffset.UtcNow.ToString("O"),
-            Root = Path.GetFullPath(rawDirectory),
-        };
+        var bundle = new AssetBundleBuild { AssetBundleName = "content" };
 
         long rawBytes = 0;
         int textureCount = 0;
         int dataCount = 0;
         var names = new HashSet<string>(StringComparer.Ordinal);
+
+        string MimeOf(string relative) => relative.EndsWith(".json", StringComparison.OrdinalIgnoreCase) ? "json"
+            : relative.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) || relative.EndsWith(".csv", StringComparison.OrdinalIgnoreCase) ? "text"
+            : relative.EndsWith(".wav", StringComparison.OrdinalIgnoreCase) ? "audio/wav"
+            : relative.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase) ? "audio/mpeg"
+            : relative.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase) ? "audio/ogg"
+            : "application/octet-stream";
 
         foreach (string file in Directory.EnumerateFiles(rawDirectory, "*", SearchOption.AllDirectories)
                                          .OrderBy(static f => f, StringComparer.Ordinal))
@@ -108,31 +110,14 @@ public sealed class ContentBuilder
                     packer.Add(name, image);
                     textureCount++;
                 }
-                else if (relative.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-                {
-                    pak.AddText(name, ReadText(bytes), AssetType.Json);
-                    manifest.Assets.Add(new ManifestAsset
-                    {
-                        Name = name, Type = "json", Page = -1, Size = bytes.Length,
-                    });
-                    dataCount++;
-                }
-                else if (relative.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) ||
-                         relative.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
-                {
-                    pak.AddText(name, ReadText(bytes), AssetType.Text);
-                    manifest.Assets.Add(new ManifestAsset
-                    {
-                        Name = name, Type = "text", Page = -1, Size = bytes.Length,
-                    });
-                    dataCount++;
-                }
                 else
                 {
-                    pak.Add(name, AssetType.Bytes, bytes);
-                    manifest.Assets.Add(new ManifestAsset
+                    // 文本 / JSON / 音效 / 任意字节 —— 全部原样作为 Bundle 内资源
+                    bundle.Assets.Add(new AssetBundleAsset
                     {
-                        Name = name, Type = "bytes", Page = -1, Size = bytes.Length,
+                        Path = name,
+                        Type = MimeOf(relative),
+                        Bytes = bytes,
                     });
                     dataCount++;
                 }
@@ -147,21 +132,29 @@ public sealed class ContentBuilder
         IReadOnlyList<AtlasPage> pages = packer.Pack();
         foreach (AtlasPage page in pages)
         {
-            string pageName = $"atlas/{page.Index}";
-            pak.AddTexture(pageName, page.Bitmap, AssetType.Atlas);
+            // 每个图集页是一张原始 RGBA8 纹理，存为 atlas/{index}
+            bundle.Assets.Add(new AssetBundleAsset
+            {
+                Path = $"atlas/{page.Index}",
+                Type = "atlas",
+                Bytes = page.Bitmap.Pixels,
+                Width = page.Bitmap.Width,
+                Height = page.Bitmap.Height,
+            });
 
             foreach (AtlasRegion region in page.Regions)
             {
-                manifest.Assets.Add(new ManifestAsset
+                // 子图仅作为索引条目（无独立数据），运行时按 Page/X/Y 从图集页切片
+                bundle.Assets.Add(new AssetBundleAsset
                 {
-                    Name = region.Name,
+                    Path = region.Name,
                     Type = "texture",
+                    Bytes = Array.Empty<byte>(),
                     Page = page.Index,
                     X = region.X,
                     Y = region.Y,
                     Width = region.Width,
                     Height = region.Height,
-                    Size = region.Width * region.Height * 4L,
                 });
             }
 
@@ -169,26 +162,16 @@ public sealed class ContentBuilder
                 File.WriteAllBytes(Path.Combine(outputDirectory, $"atlas_{page.Index}.png"), PngEncoder.Encode(page.Bitmap));
         }
 
-        // 写出 pak
-        byte[] pakBytes;
-        using (var buffer = new MemoryStream())
+        // 构建 AssetBundle（.web.lib），并写出总清单 version.manifest（含每个包的完整内容哈希）
+        BuildResult result = BundleBuilder.BuildAssetBundles(new[] { bundle });
+        foreach (var pkg in result.Manifest.Packages)
         {
-            pak.SaveTo(buffer);
-            pakBytes = buffer.ToArray();
+            File.WriteAllBytes(Path.Combine(outputDirectory, pkg.File), result.Bundles[pkg.Name]);
+            Console.WriteLine($"[kfc] 资源包 {pkg.Name} -> {pkg.File}（{pkg.Size} 字节，哈希 {pkg.Hash}）");
         }
-        File.WriteAllBytes(Path.Combine(outputDirectory, options.PakFileName), pakBytes);
+        File.WriteAllText(Path.Combine(outputDirectory, "version.manifest"), result.Manifest.Serialize());
 
-        manifest.Paks.Add(new ManifestPak
-        {
-            File = options.PakFileName,
-            Size = pakBytes.Length,
-            Checksum = PakFormat.Checksum(pakBytes),
-        });
-
-        // 必须写无 BOM 的 UTF-8：带 BOM 时浏览器端的 JSON 解析器会在第 0 字节报错
-        File.WriteAllText(Path.Combine(outputDirectory, "manifest.json"),
-                          manifest.ToJson(), new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-
+        long totalBundleBytes = result.Manifest.Packages.Sum(p => p.Size);
         watch.Stop();
 
         return new BuildReport
@@ -198,7 +181,7 @@ public sealed class ContentBuilder
             DataCount = dataCount,
             AtlasPageCount = pages.Count,
             RawBytes = rawBytes,
-            PackedBytes = pakBytes.Length,
+            PackedBytes = totalBundleBytes,
             Elapsed = watch.Elapsed,
             Warnings = warnings,
         };
@@ -211,7 +194,9 @@ public sealed class ContentBuilder
             string name = Path.GetFileName(file);
             if (name.EndsWith(".pak", StringComparison.OrdinalIgnoreCase) ||
                 name.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-                name.Equals("manifest.json", StringComparison.OrdinalIgnoreCase))
+                name.EndsWith(".web.lib", StringComparison.OrdinalIgnoreCase) ||
+                name.Equals("manifest.json", StringComparison.OrdinalIgnoreCase) ||
+                name.Equals("version.manifest", StringComparison.OrdinalIgnoreCase))
             {
                 File.Delete(file);
             }

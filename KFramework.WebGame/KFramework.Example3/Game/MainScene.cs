@@ -1,4 +1,7 @@
 ﻿
+using System;
+using System.Threading.Tasks;
+
 namespace KFramework.Example3
 {
     internal class MainScene : KSceneBase
@@ -9,7 +12,7 @@ namespace KFramework.Example3
         public TestScreen mTestScreen;
 
         public int nLevelIndex;
-        public Level mLevel;
+        public Level? mLevel;
 
         public override void LoadContent()
         {
@@ -19,7 +22,7 @@ namespace KFramework.Example3
             KDefaultRes.DefaultSpriteFont = Font2;
 
             nLevelIndex = 0;
-            mLevel = new Level(nLevelIndex);
+            _ = LoadLevelAsync();
             //new TestScreen();
         }
 
@@ -39,31 +42,44 @@ namespace KFramework.Example3
             }
         }
 
-        public void ReloadCurrentLevel()
-        {
-            LoadLevel();
-        }
+        public void ReloadCurrentLevel() => _ = LoadLevelAsync();
 
         public void LoadNextLevel()
         {
             nLevelIndex++;
-            LoadLevel();
+            _ = LoadLevelAsync();
         }
 
-        public void LoadLevel()
+        public void LoadLevel() => _ = LoadLevelAsync();
+
+        // 自增令牌：连续触发（切关 / 缩放）时只保留最后一次加载结果，避免竞态与重复释放
+        private int _loadToken;
+
+        private async Task LoadLevelAsync()
         {
-            if (mLevel != null)
+            int myToken = ++_loadToken;
+
+            Level? old = mLevel;
+            mLevel = null;
+            old?.Dispose();
+
+            Level? level = null;
+            try
             {
-                mLevel.Dispose();
+                level = await Level.LoadAsync(nLevelIndex).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"[MainScene] 关卡 {nLevelIndex} 下载/加载失败：{ex}");
+                return;
             }
 
-            mLevel = new Level(nLevelIndex);
-
-            //var levelFileName = Path.GetFileName(levelPath);
-            //var leaderboardFileName = Path.ChangeExtension(levelFileName, ".json");
-            //leaderboardManager.Storage.SettingsFileName = leaderboardFileName;
-            //level.LeaderboardManager = leaderboardManager;
-            //endOfLevelMessgeState = EndOfLevelMessageState.NotShowing;
+            if (myToken != _loadToken)
+            {
+                level.Dispose();
+                return;
+            }
+            mLevel = level;
         }
     }
 }

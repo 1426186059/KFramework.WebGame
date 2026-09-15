@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KFramework.Example3
 {
@@ -34,22 +36,18 @@ namespace KFramework.Example3
         private StartScreen mStartScreen;
         private GameScreen mGameScreen;
 
-        public Level(int nLevelIndex)
+        private Level(int nLevelIndex, Stream levelStream,
+                      SpriteSheet charactersAtlas, SpriteSheet misc3Atlas)
         {
             this.mContentInstace = KSceneMgr.Game.Content;
-
-            SpriteSheetLoader mLoader = new SpriteSheetLoader(this.mContentInstace);
-            mSpriteSheet_charactersAtlas = mLoader.Load("MyRes/Atlas/characters");
-            mSpriteSheet_misc3Atlas = mLoader.Load("MyRes/Atlas/misc-3");
+            mSpriteSheet_charactersAtlas = charactersAtlas;
+            mSpriteSheet_misc3Atlas = misc3Atlas;
 
             PrintTool.Assert(mSpriteSheet_charactersAtlas != null);
             PrintTool.Assert(mSpriteSheet_misc3Atlas != null);
 
             this.nLevelIndex = nLevelIndex;
-            using (Stream fileStream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"KFramework.Example3.Levels.{nLevelIndex:00}.txt"))
-            {
-                LoadTiles(fileStream);
-            }
+            LoadTiles(levelStream);
 
             KSprite particleTexture = new KSprite(mSpriteSheet_misc3Atlas.Sprite("misc-3_16"));
             mParticleManager = new ParticleManager(particleTexture, Vector2.Zero);
@@ -66,6 +64,32 @@ namespace KFramework.Example3
                 mGameScreen = new GameScreen(this);
             }
 
+        }
+
+        /// <summary>
+        /// 异步创建关卡：
+        /// 1) 先按需异步加载所需 AssetBundle（content 包内含图集页、图集描述与音效）；
+        /// 2) 关卡文本通过 HTTP 从页面基址远程下载（与内容包同一套下载链路）；
+        /// 3) 图集（SpriteSheet）从已加载的 Bundle 中异步取出切片，最后构造 <see cref="Level"/>。
+        /// 由于 Bundle 是异步加载的，窗口缩放触发重建关卡时资源会被重新异步加载出来。
+        /// </summary>
+        public static async Task<Level> LoadAsync(int nLevelIndex, CancellationToken cancellationToken = default)
+        {
+            ContentManager content = KSceneMgr.Game.Content;
+
+            // 异步加载本关卡依赖的 Bundle（资源全部从 Bundle 中读取）
+            await content.LoadBundleAsync("content", cancellationToken).ConfigureAwait(false);
+
+            string text = await content
+                .DownloadTextAsync($"Levels/{nLevelIndex:00}.txt", cancellationToken)
+                .ConfigureAwait(false);
+            using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(text));
+
+            SpriteSheetLoader mLoader = new SpriteSheetLoader(content);
+            SpriteSheet characters = await mLoader.LoadAsync("MyRes/Atlas/characters", cancellationToken).ConfigureAwait(false);
+            SpriteSheet misc3 = await mLoader.LoadAsync("MyRes/Atlas/misc-3", cancellationToken).ConfigureAwait(false);
+
+            return new Level(nLevelIndex, stream, characters, misc3);
         }
         
         private void LoadTiles(Stream fileStream)
@@ -341,11 +365,12 @@ namespace KFramework.Example3
         public void Dispose()
         {
             KSceneMgr.ScreenSizeChanged -= OnWindowSizeChanged;
-            if (mContentInstace != null)
-            {
-                this.mContentInstace.Dispose();
-                this.mContentInstace = null;
-            }
+
+            // 注意：mContentInstace 就是 KSceneMgr.Game.Content，是整个游戏共享、由
+            // Game.Dispose() 在退出时统一释放的 ContentManager。Player / 各类方块 / 敌人
+            // 在游戏运行中都会通过它 LoadSound(...)，因此它绝不能在此处被 Dispose——
+            // 否则窗口缩放重建 Level 时会释放掉共享的 HttpClient，导致后续关卡 HTTP 下载
+            // 抛 ObjectDisposedException。这里只释放 Level 自己持有的资源。
 
             if (mStartScreen != null)
             {
@@ -482,8 +507,8 @@ namespace KFramework.Example3
 
         public void OnWindowSizeChanged(object sender, EventArgs e)
         {
-            this.Dispose();
-            ((MainScene)KSceneMgr.Main).mLevel = new Level(nLevelIndex);
+            // 交给 MainScene 异步重新下载并重建关卡（会负责释放旧 Level）
+            ((MainScene)KSceneMgr.Main).ReloadCurrentLevel();
         }
 
     }
