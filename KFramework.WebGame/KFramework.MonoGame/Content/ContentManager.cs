@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using KFramework.MonoGame;
 
@@ -82,9 +83,14 @@ public sealed class ContentManager : IDisposable
     #region 清单与 Bundle 加载（全部异步）
 
     /// <summary>拉取并解析总清单 version.manifest（仅包列表与哈希，不含资源索引）。</summary>
+    /// <remarks>
+    /// 清单文件名不带内容哈希，因此对这次请求单独带 <c>Cache-Control: no-cache</c>，强制绕过 HTTP 缓存，
+    /// 保证每次都拿到最新清单；否则浏览器/代理会一直返回旧缓存，热更永远比对不到新包。
+    /// 真正的资源包（.web.lib）文件名已含内容哈希，走默认 HTTP 缓存即可。
+    /// </remarks>
     public async Task LoadManifestAsync(CancellationToken cancellationToken = default)
     {
-        string json = await GetTextAsync("version.manifest", cancellationToken).ConfigureAwait(false);
+        string json = await GetTextAsync("version.manifest", cancellationToken, noCache: true).ConfigureAwait(false);
         _bundleManifest = AssetBundleManifest.Parse(json);
     }
 
@@ -303,17 +309,32 @@ public sealed class ContentManager : IDisposable
 
     #region 底层 HTTP
 
-    private async Task<byte[]> GetBytesAsync(string relativePath, CancellationToken cancellationToken)
+    private async Task<byte[]> GetBytesAsync(string relativePath, CancellationToken cancellationToken, bool noCache = false)
     {
         string url = $"{_root}/{relativePath}";
-        byte[] data = await _http.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
+        byte[] data;
+        if (noCache)
+        {
+            // 单请求级别绕过 HTTP 缓存（对应 UnityWebRequest 的 cache 控制），不影响其它走默认缓存的请求
+            var req = new HttpRequestMessage(HttpMethod.Get, url)
+            {
+                Headers = { CacheControl = new CacheControlHeaderValue { NoCache = true, NoStore = true }}
+            };
+            using var r = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
+            r.EnsureSuccessStatusCode();
+            data = await r.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
+        }
+        else
+        {
+            data = await _http.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
+        }
         _logs.Add($"已下载 {url}（{data.Length} 字节）");
         return data;
     }
 
-    private async Task<string> GetTextAsync(string relativePath, CancellationToken cancellationToken)
+    private async Task<string> GetTextAsync(string relativePath, CancellationToken cancellationToken, bool noCache = false)
     {
-        byte[] data = await GetBytesAsync(relativePath, cancellationToken).ConfigureAwait(false);
+        byte[] data = await GetBytesAsync(relativePath, cancellationToken, noCache).ConfigureAwait(false);
         return DecodeUtf8(data);
     }
 

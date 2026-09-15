@@ -1,4 +1,5 @@
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace KFramework.MonoGame;
 
@@ -47,10 +48,14 @@ public sealed class AssetBundleManager
         _saveLocal = saveLocal ?? ((_, _) => Task.CompletedTask);
     }
 
-    /// <summary>拉取远端 version.manifest。</summary>
+    /// <summary>拉取远端 version.manifest（单请求带 Cache-Control: no-cache，绕过 HTTP 缓存，确保热更能检测到清单变化）。</summary>
     public async Task<AssetBundleManifest> FetchManifestAsync(CancellationToken cancellationToken = default)
     {
-        using var r = await _http.GetAsync(_baseUrl + "version.manifest", cancellationToken).ConfigureAwait(false);
+        var req = new HttpRequestMessage(HttpMethod.Get, _baseUrl + "version.manifest")
+        {
+            Headers = { CacheControl = new CacheControlHeaderValue { NoCache = true, NoStore = true } }
+        };
+        using var r = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
         r.EnsureSuccessStatusCode();
         await using var s = await r.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
         return AssetBundleManifest.Parse(s);
