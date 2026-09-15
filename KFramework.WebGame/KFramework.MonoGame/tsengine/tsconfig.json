@@ -13,7 +13,11 @@
     "exactOptionalPropertyTypes": false,
 
     "rootDir": "./src",
-    "outDir": "../../KFramework.Example1/wwwroot/jsengine",
+    // 产物统一输出到 tsengine/dist，不直接落进任何示例工程；
+    // 各示例再由 SyncJsEngine 从 dist 复制到自己的 wwwroot/jsengine。
+    // 用 dist 而不是 bin：bin 在 .NET 里是 MSBuild 构建输出目录，
+    // 容易被误认为可随意删除，也常被 .gitignore 的 [Bb]in/ 规则误伤。
+    "outDir": "./dist",
 
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
