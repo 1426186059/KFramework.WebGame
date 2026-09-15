@@ -470,37 +470,27 @@ namespace KFramework.Example3
 
         private void HandleInput()
         {
-            if (OperatingSystem.IsWindows())
+            if (KInputMgr.GetKey(Keys.A) || KInputMgr.GetKey(Keys.Left))
             {
-                //在桌面上 怎么操作
-                if (KInputMgr.GetKey(Keys.A) || KInputMgr.GetKey(Keys.Left))
-                {
-                    movement = -1.0f;
-                }
-                else if (KInputMgr.GetKey(Keys.D) || KInputMgr.GetKey(Keys.Right))
-                {
-                    movement = 1.0f;
-                }
-
-                if (KInputMgr.GetKeyDown(Keys.Up) || KInputMgr.GetKeyDown(Keys.W))
-                {
-                    isJumping = true;
-                    PlayAnimation(EAniType.Jump);
-                }
-
-                if (PlayerData.Instance.bEat_FireFlower && PlayerData.Instance.bEat_Mushroom)
-                {
-                    if (KInputMgr.GetKeyDown(Keys.Space))
-                    {
-                        SendFireBall();
-                    }
-                }
-
+                movement = -1.0f;
             }
-            else if (OperatingSystem.IsAndroid() || OperatingSystem.IsIOS())
+            else if (KInputMgr.GetKey(Keys.D) || KInputMgr.GetKey(Keys.Right))
             {
-                //在手机平台上 怎么操作
+                movement = 1.0f;
+            }
 
+            if (KInputMgr.GetKeyDown(Keys.Up) || KInputMgr.GetKeyDown(Keys.W))
+            {
+                isJumping = true;
+                PlayAnimation(EAniType.Jump);
+            }
+
+            if (PlayerData.Instance.bEat_FireFlower && PlayerData.Instance.bEat_Mushroom)
+            {
+                if (KInputMgr.GetKeyDown(Keys.Space))
+                {
+                    SendFireBall();
+                }
             }
         }
 
