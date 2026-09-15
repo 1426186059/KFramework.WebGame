@@ -113,7 +113,6 @@ namespace KFramework.MonoGame
                 double elapsed = _lastTimestamp < 0 ? 0d : (timestampMs - _lastTimestamp) / 1000d;
                 _lastTimestamp = timestampMs;
                 if (elapsed < 0d) elapsed = 0d;
-                else if (elapsed > MaxElapsedSeconds) elapsed = MaxElapsedSeconds;
 
                 Input.Poll();
 
@@ -123,6 +122,12 @@ namespace KFramework.MonoGame
                 if (IsFixedTimeStep)
                 {
                     _accumulator += elapsed;
+
+                    // 螺旋死亡保护：对齐 MonoGame，用 clamp 限制上限，而不是清零丢弃时间。
+                    // 官方 Game.cs:553-554
+                    //   if (_accumulatedElapsedTime > _maxElapsedTime) _accumulatedElapsedTime = _maxElapsedTime;
+                    if (_accumulator > MaxElapsedSeconds) _accumulator = MaxElapsedSeconds;
+
                     int steps = 0;
                     while (_accumulator >= target && steps < MaxStepsPerFrame)
                     {
@@ -133,21 +138,35 @@ namespace KFramework.MonoGame
                         _accumulator -= target;
                         steps++;
                     }
-                    if (steps == MaxStepsPerFrame) _accumulator = 0d;
+
+                    // 剩下的 accumulator 留到下一帧继续补，不要清零（旧实现清零会丢弃时间）。
+
+                    // 对齐 MonoGame「每次 Tick 至少 Update 一次」的保证（官方注释 Game.cs:505-512）。
+                    // 官方在 Game.cs:537-550 用 Sleep + goto RetryTick 等待到时间够为止；
+                    // 浏览器不能阻塞 rAF 线程，故改成「逻辑没推进就跳过本帧渲染」，
+                    // 效果同样是渲染与逻辑同频，消除高刷屏上"一帧不动、一帧走两格"造成的跳动。
+                    if (steps == 0) return;
+
+                    // Draw 使用逻辑时间：对齐官方 Game.cs:592
+                    //   _gameTime.ElapsedGameTime = TimeSpan.FromTicks(TargetElapsedTime.Ticks * stepCount);
+                    var drawElapsed = TimeSpan.FromSeconds(target * steps);
+                    GraphicsDevice.Clear(ClearColor);
+                    var drawTime = new GameTime(_totalGameTime, drawElapsed);
+                    Draw(drawTime);
+                    Components.Draw(drawTime);
                 }
                 else
                 {
-                    var span = TimeSpan.FromSeconds(elapsed);
+                    var span = TimeSpan.FromSeconds(Math.Min(elapsed, MaxElapsedSeconds));
                     _totalGameTime += span;
                     var frameTime = new GameTime(_totalGameTime, span);
                     Update(frameTime);
                     Components.Update(frameTime);
-                }
 
-                GraphicsDevice.Clear(ClearColor);
-                var drawTime = new GameTime(_totalGameTime, TimeSpan.FromSeconds(elapsed));
-                Draw(drawTime);
-                Components.Draw(drawTime);
+                    GraphicsDevice.Clear(ClearColor);
+                    Draw(frameTime);
+                    Components.Draw(frameTime);
+                }
             }
             catch (Exception ex)
             {

@@ -462,6 +462,9 @@
             var mSpriteBatch = KSceneMgr.SpriteBatch;
             mSpriteBatch.Begin(
                 transformMatrix: viewMatrix,
+                // 暂保持 Deferred：目前所有精灵的 layerDepth 均为 0，
+                // 若切到 Texture 会退化为"只按纹理分组"，导致敌人/道具/粒子被地形遮挡。
+                // 待给各类对象设置 layerDepth（或改为按类别分组 Begin/End）后再切换，见说明。
                 sortMode: SpriteSortMode.Deferred,
                 samplerState: SamplerState.PointClamp,
                 blendState: BlendState.NonPremultiplied);

@@ -56,10 +56,20 @@ namespace KFramework.MonoGame
 
         public bool Play(float volume, float pitch, float pan)
         {
-            if (!IsReady) return false;
+            // 不再静默返回：解码未完成时丢弃播放是"声音听不见"的常见原因，必须能定位
+            if (!IsReady)
+            {
+                Console.WriteLine($"[SoundEffect] 播放被丢弃：音频尚未解码完成 (handle={_handle})，" +
+                                  $"请用 LoadAsync 等待解码，或稍后重试");
+                return false;
+            }
 
             int instance = JSBind_Audio.CreateInstance(_handle);
-            if (instance == 0) return false;
+            if (instance == 0)
+            {
+                Console.WriteLine($"[SoundEffect] 播放失败：创建实例失败 (handle={_handle})，音频可能未解码");
+                return false;
+            }
 
             JSBind_Audio.PlayInstance(instance, volume, pitch, pan, loop: false);
             return true;   // 实例由 JS 侧 onended 自动释放

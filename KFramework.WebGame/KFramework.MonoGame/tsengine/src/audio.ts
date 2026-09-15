@@ -127,7 +127,14 @@ export function loadAudio(handle: number, data: Uint8Array, _mime: string): void
 
     // decodeAudioData 会 detach 底层 ArrayBuffer，必须把托管内存拷贝出来。
     const copy = data.slice();
-    ctx.decodeAudioData(copy.buffer, (buf) => { buffers.set(handle, buf); }, () => { /* 解码失败：忽略 */ });
+    ctx.decodeAudioData(
+        copy.buffer,
+        (buf) => { buffers.set(handle, buf); },
+        (err) => {
+            // 不能再静默：解码失败是"声音听不见"的常见原因，必须能定位到
+            console.error('[audio] decodeAudioData 失败, handle=' + handle, err);
+        },
+    );
 }
 
 export function isLoaded(handle: number): boolean {

@@ -38,10 +38,17 @@ namespace KFramework.MonoGame
         private Matrix4x4 _transform = Matrix4x4.Identity;
         private Matrix4x4 _projection;
 
+        // 排序键：先按层级（layerDepth），同层内再按底层纹理（BatchKey）分组。
+        //
+        // 与 MonoGame 官方不同（官方 Texture 模式是「纹理优先，深度次之」），这里刻意反过来：
+        // 先保证"背景 → tile → 角色"这类前后遮挡关系不被打乱，
+        // 再在同一层内把同图集的精灵聚到一起合并批次。
+        // 若所有精灵的 layerDepth 都相同（当前 Example3 就是如此），则退化为「按纹理分组」，
+        // 此时层次由 layerDepth 决定 —— 需要给不同类别的对象设置不同 layerDepth 才正确。
         private static readonly Comparison<SpriteBatchItem> ByTexture = static (a, b) =>
         {
-            int d = a.Texture.BatchKey.CompareTo(b.Texture.BatchKey);
-            return d != 0 ? d : a.LayerDepth.CompareTo(b.LayerDepth);
+            int d = a.LayerDepth.CompareTo(b.LayerDepth);
+            return d != 0 ? d : a.Texture.BatchKey.CompareTo(b.Texture.BatchKey);
         };
 
         private static readonly Comparison<SpriteBatchItem> BackToFront = static (a, b) => b.LayerDepth.CompareTo(a.LayerDepth);
