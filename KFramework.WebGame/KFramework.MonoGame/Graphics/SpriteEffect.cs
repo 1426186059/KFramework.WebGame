@@ -115,17 +115,29 @@ namespace KFramework.MonoGame
             }
         }
 
-        /// <summary>按列主序把矩阵写成 16 个 float 的小端字节流。</summary>
+        /// <summary>
+        /// 把矩阵写成 16 个 float 的小端字节流交给 WebGL。
+        ///
+        /// WebGL 的 uniformMatrix4fv 要求【列主序】数据，且 transpose 参数必须为 false
+        /// （传 true 会直接产生 INVALID_VALUE 错误，不能指望 GPU 帮我们转置）。
+        ///
+        /// 而本引擎的矩阵是行主序 + 行向量（p' = p × M），与 GLSL 的列向量（v' = M × v）
+        /// 相差一个转置。好在"行主序内存按原样摊平"恰好等于"转置矩阵的列主序"，且
+        ///     v' = Mᵀ × v   与   p' = p × M
+        /// 数学上完全等价，所以这里【按字段原顺序直写】即可，不需要任何额外转置操作。
+        /// 平移 M41 / M42 / M43 会自然落到列主序数组的第 12 / 13 / 14 位（也就是第 4 列），
+        /// 正是 GLSL 期望的平移位置。
+        /// </summary>
         private static void WriteMatrix(in Matrix4x4 value, Span<byte> destination)
         {
-            Write(destination, 0, value.M11);  Write(destination, 1, value.M21);
-            Write(destination, 2, value.M31);  Write(destination, 3, value.M41);
-            Write(destination, 4, value.M12);  Write(destination, 5, value.M22);
-            Write(destination, 6, value.M32);  Write(destination, 7, value.M42);
-            Write(destination, 8, value.M13);  Write(destination, 9, value.M23);
-            Write(destination, 10, value.M33); Write(destination, 11, value.M43);
-            Write(destination, 12, value.M14); Write(destination, 13, value.M24);
-            Write(destination, 14, value.M34); Write(destination, 15, value.M44);
+            Write(destination, 0, value.M11);  Write(destination, 1, value.M12);
+            Write(destination, 2, value.M13);  Write(destination, 3, value.M14);
+            Write(destination, 4, value.M21);  Write(destination, 5, value.M22);
+            Write(destination, 6, value.M23);  Write(destination, 7, value.M24);
+            Write(destination, 8, value.M31);  Write(destination, 9, value.M32);
+            Write(destination, 10, value.M33); Write(destination, 11, value.M34);
+            Write(destination, 12, value.M41); Write(destination, 13, value.M42);
+            Write(destination, 14, value.M43); Write(destination, 15, value.M44);
         }
 
         private static void Write(Span<byte> destination, int index, float value)

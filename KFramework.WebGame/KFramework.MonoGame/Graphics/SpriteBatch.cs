@@ -191,7 +191,9 @@ namespace KFramework.MonoGame
 
             _lastFlushCount = 0;
             _device.SetBlendState(_blendState);
-            _device.Effect.Apply(_projection * _transform);
+            // 行向量约定（p' = p × M）：先发生的变换写在左边。
+            // 精灵顶点要先做世界变换（transform），再做正交投影（projection），故 transform 在左。
+            _device.Effect.Apply(_transform * _projection);
 
             JSBind_GL.BindVertexArray(_device.VertexArray);
             JSBind_GL.BindBuffer(JSBind_GL.ARRAY_BUFFER, _device.VertexBuffer);
