@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <RootNamespace>KFramework.MonoGame</RootNamespace>
-    <AssemblyName>KFramework.MonoGame.Content</AssemblyName>
+    <RootNamespace>KFramework.Content</RootNamespace>
+    <AssemblyName>KFramework.Content</AssemblyName>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

@@ -1,8 +1,8 @@
-﻿using System.Buffers.Binary;
+using System.Buffers.Binary;
 using System.IO.Compression;
 using System.Text;
 
-namespace KFramework.MonoGame;
+namespace KFramework.Content;
 
 /// <summary>把若干资源写成一个 .pak 文件。</summary>
 public sealed class PakWriter

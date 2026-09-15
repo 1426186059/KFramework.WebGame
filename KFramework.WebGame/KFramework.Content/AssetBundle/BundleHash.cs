@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace KFramework.MonoGame;
+namespace KFramework.Content;
 
 /// <summary>
 /// 内容哈希唯一入口（对齐 WebLib.Hash）。当前固定使用 MD5（小写十六进制、无算法前缀）。

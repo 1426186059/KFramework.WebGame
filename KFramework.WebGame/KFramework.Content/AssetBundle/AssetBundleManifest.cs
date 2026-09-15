@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace KFramework.MonoGame;
+namespace KFramework.Content;
 
 /// <summary>
 /// 所有 .web.lib 的总清单（对齐 Unity <c>AssetBundleManifest</c>），落盘为 version.manifest（JSON）。

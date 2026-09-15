@@ -1,6 +1,6 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 
-namespace KFramework.MonoGame;
+namespace KFramework.Content;
 
 /// <summary>
 /// 把矢量描述（.sprite.json）离线光栅化成位图。

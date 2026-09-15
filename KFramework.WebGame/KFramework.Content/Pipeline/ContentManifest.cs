@@ -1,7 +1,7 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace KFramework.MonoGame;
+namespace KFramework.Content;
 
 /// <summary>清单中的一个资源条目。</summary>
 public sealed class ManifestAsset

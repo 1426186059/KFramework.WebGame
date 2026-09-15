@@ -1,7 +1,7 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace KFramework.MonoGame;
+namespace KFramework.Content;
 
 /// <summary>
 /// 运行时资源管家（对齐 Unity 高层的 AssetBundleManager 思路）：
@@ -53,7 +53,7 @@ public sealed class AssetBundleManager
     {
         var req = new HttpRequestMessage(HttpMethod.Get, _baseUrl + "version.manifest")
         {
-            Headers = { CacheControl = new CacheControlHeaderValue { NoCache = true, NoStore = true } }
+            Headers = { CacheControl = new CacheControlHeaderValue { NoCache = true } }
         };
         using var r = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
         r.EnsureSuccessStatusCode();

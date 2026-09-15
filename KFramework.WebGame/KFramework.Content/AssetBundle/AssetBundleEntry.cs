@@ -1,4 +1,4 @@
-namespace KFramework.MonoGame;
+namespace KFramework.Content;
 
 /// <summary>
 /// 单个资源在 <see cref="AssetBundle"/> 包内的条目（写入包内 manifest.json）。
