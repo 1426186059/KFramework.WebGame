@@ -53,7 +53,8 @@ for ($i=0; $i -lt $sprites1.Count; $i++) {
     $n = $sprites1[$i]
     $circle = $n -like '*bullet*' -or $n -like '*particle*' -or $n -like '*star*' -or $n -like '*enemy_bullet*'
     $sz = if ($circle) {16} else {32}
-    Write-Sprite "$e1/$($n).sprite.json" $sz $sz $palette[$i % $palette.Count] $(if($circle){'circle'}else{'rect'})
+    $leaf = Split-Path $n -Leaf
+    Write-Sprite "$e1/Bundles/sprites/$leaf.sprite.json" $sz $sz $palette[$i % $palette.Count] $(if($circle){'circle'}else{'rect'})
 }
 $game = [ordered]@{
     design  = @{ width=480; height=720 }
@@ -71,8 +72,13 @@ $game = [ordered]@{
     )
     powerup = @{ dropChance=0.14; fallSpeed=90; duration=8 }
 }
-New-Item -ItemType Directory -Force -Path (Join-Path $Base "$e1/data") | Out-Null
-[System.IO.File]::WriteAllText((Join-Path $Base "$e1/data/game.json"), ($game | ConvertTo-Json -Depth 6), [System.Text.UTF8Encoding]::new($false))
+# 清理旧的原地 raw 布局（sprites/data 直接放在 raw 根），避免与新的 Bundles 目录混淆
+if (Test-Path (Join-Path $Base "$e1/sprites")) { Remove-Item -Recurse -Force (Join-Path $Base "$e1/sprites") }
+if (Test-Path (Join-Path $Base "$e1/data"))    { Remove-Item -Recurse -Force (Join-Path $Base "$e1/data") }
+New-Item -ItemType Directory -Force -Path (Join-Path $Base "$e1/Bundles/data") | Out-Null
+[System.IO.File]::WriteAllText((Join-Path $Base "$e1/Bundles/data/game.json"), ($game | ConvertTo-Json -Depth 6), [System.Text.UTF8Encoding]::new($false))
+# 打包配置：指定 Bundles 为 AssetBundle 打包目录（每个含资源的子文件夹 = 一个 AssetBundle）
+[System.IO.File]::WriteAllText((Join-Path $Base "$e1/bundles.json"), '{"bundlesDir":"Bundles"}', [System.Text.UTF8Encoding]::new($false))
 
 # ---------------- Example2 ----------------
 $e2 = 'KFramework.Example2/Content/raw'

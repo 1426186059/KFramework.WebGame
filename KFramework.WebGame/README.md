@@ -77,14 +77,30 @@ string    level  = bundle.LoadText("levels/00");
 
 ## 4. 内容管线（raw → `kfc` → content）
 
-资源由 `KFramework.Content.Cli`（`kfc`）构建：
+资源由 `KFramework.Content.Cli`（`kfc`）构建：`kfc --root <示例目录>/Content`（见各示例 csproj 的 prebuild 目标）。
 
 - 源：`各示例/Content/raw/`
   - `*.png` / `*.sprite.json`（矢量形状）→ 进入图集，资源名 = 去扩展名小写（如 `sprites/player`）；
   - `*.json`（非 `.sprite.json`）/ `*.txt` / `*.csv` → 作为数据资源（如 `data/game`）；
   - `*.wav` / `*.mp3` / `*.ogg` → 作为音频字节资源（如 `audio/shoot`）。
-- 构建：`kfc --root <示例目录>/Content`（见各示例 csproj 的 prebuild 目标）。
-- 产物：`wwwroot/content/version.manifest` + `*.web.lib`（一个 Bundle = 一个 zip，内含图集页 + 切片索引）。
+
+### 4.1 打包目录（AssetBundle 拆分，推荐）
+为更通用，`raw/` 下用**打包配置文件**指定一个「打包根目录」，其下每个**含资源的子文件夹**分别打成一个 `AssetBundle`（Unity 风格：包名 = 文件夹相对路径）：
+
+- 配置文件：`raw/bundles.json`（或 `pack.json`）。`bundlesDir`（别名 `bundleDirs`）字段支持**字符串或字符串数组**，可指定多个打包根目录：
+  - 单目录： `{ "bundlesDir": "Bundles" }`
+  - 多目录： `{ "bundlesDir": ["Bundles", "UI"] }`
+  - 缺省默认 `Bundles`；若 `bundles.json`/`pack.json` 都不存在，`kfc` 会**自动生成**一个默认的 `bundles.json`（打包目录 Bundles），并回退为整包 `content`。
+  - **多个根目录下的子文件夹包名必须唯一**（包名 = 子文件夹相对其根目录的路径），出现同名会报错。
+- `Bundles/data/game.json` → 包 `data`，资源 `data/game`；
+  `Bundles/sprites/player.sprite.json` → 包 `sprites`，资源 `sprites/player`。
+- **每个文件夹只打包其直接资源，不含子目录资源**；子目录本身是独立的 AssetBundle。
+- 用法：`Content.GetBundle("data").LoadJson<GameConfig>("data/game")` / `Content.GetBundle("sprites").LoadTexture("sprites/player", GraphicsDevice)`。
+
+### 4.2 兼容模式
+若 `raw/` 下不存在该打包根目录，则**回退为整包**：把整个 `raw/` 作为单个 `content` 包（旧用法，资源名相对 `raw/`）。此时用 `Content.GetBundle("content")` 取资源。
+
+- 产物：`wwwroot/content/version.manifest` + 每个包一个 `*.web.lib`（zip，内含图集页 + 切片索引）。总清单列出全部 Bundle，`ContentManager.LoadBundleAsync(name)` 按名加载任意包。
 
 ---
 

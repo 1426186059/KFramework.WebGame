@@ -873,27 +873,31 @@ public sealed class StarDefenderGame : Game
 
     private void FinishLoading()
     {
-        AssetBundle bundle = Content.GetBundle("content")
-            ?? throw new InvalidOperationException("内容包 content 尚未加载");
+        // 按目录分别打包：data 包（配置）与 sprites 包（精灵图集），各自独立 AssetBundle
+        AssetBundle dataBundle = Content.GetBundle("data")
+            ?? throw new InvalidOperationException("内容包 data 尚未加载");
+        AssetBundle spriteBundle = Content.GetBundle("sprites")
+            ?? throw new InvalidOperationException("内容包 sprites 尚未加载");
 
-        _config = bundle.LoadJson<GameConfig>("data/game");
+        _config = dataBundle.LoadJson<GameConfig>("data/game");
 
-        _playerTexture = bundle.LoadTexture("sprites/player", GraphicsDevice);
-        _flameTexture = bundle.LoadTexture("sprites/flame", GraphicsDevice);
-        _bulletTexture = bundle.LoadTexture("sprites/bullet", GraphicsDevice);
-        _enemyBulletTexture = bundle.LoadTexture("sprites/enemy_bullet", GraphicsDevice);
-        _particleTexture = bundle.LoadTexture("sprites/particle", GraphicsDevice);
-        _starTexture = bundle.LoadTexture("sprites/star", GraphicsDevice);
-        _powerUpTexture = bundle.LoadTexture("sprites/powerup", GraphicsDevice);
-        _heartTexture = bundle.LoadTexture("sprites/heart", GraphicsDevice);
+        _playerTexture = spriteBundle.LoadTexture("sprites/player", GraphicsDevice);
+        _flameTexture = spriteBundle.LoadTexture("sprites/flame", GraphicsDevice);
+        _bulletTexture = spriteBundle.LoadTexture("sprites/bullet", GraphicsDevice);
+        _enemyBulletTexture = spriteBundle.LoadTexture("sprites/enemy_bullet", GraphicsDevice);
+        _particleTexture = spriteBundle.LoadTexture("sprites/particle", GraphicsDevice);
+        _starTexture = spriteBundle.LoadTexture("sprites/star", GraphicsDevice);
+        _powerUpTexture = spriteBundle.LoadTexture("sprites/powerup", GraphicsDevice);
+        _heartTexture = spriteBundle.LoadTexture("sprites/heart", GraphicsDevice);
 
         foreach (KeyValuePair<string, EnemyConfig> pair in _config.Enemies)
         {
             if (_enemyTextures.ContainsKey(pair.Value.Texture)) continue;
-            if (bundle.Contains(pair.Value.Texture))
-                _enemyTextures[pair.Value.Texture] = bundle.LoadTexture(pair.Value.Texture, GraphicsDevice);
+            if (spriteBundle.Contains(pair.Value.Texture))
+                _enemyTextures[pair.Value.Texture] = spriteBundle.LoadTexture(pair.Value.Texture, GraphicsDevice);
         }
 
-        Console.WriteLine($"[StarDefender] 内容就绪，共 {bundle.AssetNames.Count} 个资源");
+        int total = dataBundle.AssetNames.Count + spriteBundle.AssetNames.Count;
+        Console.WriteLine($"[StarDefender] 内容就绪，共 {total} 个资源（data + sprites 两个 AssetBundle）");
     }
 }

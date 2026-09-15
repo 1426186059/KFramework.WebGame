@@ -96,14 +96,8 @@ public sealed class AssetBundle : IDisposable
     // 真正的异步只发生在 ContentManager.LoadBundleAsync（拉包）；取资源本身不依赖网络，因此为同步。
     // 纹理需要上传 GPU，故由调用方传入 GraphicsDevice。
 
-    private static string DecodeUtf8(byte[] data)
-    {
-        int start = data.Length >= 3 && data[0] == 0xEF && data[1] == 0xBB && data[2] == 0xBF ? 3 : 0;
-        return System.Text.Encoding.UTF8.GetString(data, start, data.Length - start);
-    }
-
     /// <summary>同步读取文本原文（UTF-8，去 BOM）。</summary>
-    public string LoadText(string name) => DecodeUtf8(LoadAsset(name));
+    public string LoadText(string name) => InnerCommonFunc.DecodeUtf8(LoadAsset(name));
 
     /// <summary>同步读取并反序列化 JSON（包已加载后即时）。</summary>
     public T? LoadJson<T>(string name)

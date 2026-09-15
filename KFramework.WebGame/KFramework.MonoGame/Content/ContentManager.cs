@@ -152,18 +152,12 @@ public sealed class ContentManager : IDisposable
     public async Task<string> LoadTextAsync(string relativePath, CancellationToken cancellationToken = default)
     {
         byte[] data = await _http.GetByteArrayAsync(relativePath, cancellationToken).ConfigureAwait(false);
-        return DecodeUtf8(data);
+        return InnerCommonFunc.DecodeUtf8(data);
     }
 
     /// <summary>按页面基址异步下载任意字节流（不走内容包）。</summary>
     public async Task<byte[]> LoadBytesAsync(string relativePath, CancellationToken cancellationToken = default)
         => await _http.GetByteArrayAsync(relativePath, cancellationToken).ConfigureAwait(false);
-
-    private static string DecodeUtf8(byte[] data)
-    {
-        int start = data.Length >= 3 && data[0] == 0xEF && data[1] == 0xBB && data[2] == 0xBF ? 3 : 0;
-        return System.Text.Encoding.UTF8.GetString(data, start, data.Length - start);
-    }
 
     #endregion
 
