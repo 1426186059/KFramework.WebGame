@@ -11,7 +11,7 @@ namespace KFramework.Example3
         int nLevelIndex;
         private const int EntityLayer = 2;
         private Tile[,] tiles;
-        public ContentManager mContentInstace;
+        public AssetBundle mContentInstace;
         private string levelPath;
         public SpriteSheet mSpriteSheet_charactersAtlas;
         public SpriteSheet mSpriteSheet_misc3Atlas;
@@ -39,7 +39,8 @@ namespace KFramework.Example3
         private Level(int nLevelIndex, Stream levelStream,
                       SpriteSheet charactersAtlas, SpriteSheet misc3Atlas)
         {
-            this.mContentInstace = KSceneMgr.Game.Content;
+            this.mContentInstace = KSceneMgr.Game.Content.GetBundle("content")
+                ?? throw new InvalidOperationException("内容包 content 尚未加载");
             mSpriteSheet_charactersAtlas = charactersAtlas;
             mSpriteSheet_misc3Atlas = misc3Atlas;
 
@@ -81,11 +82,11 @@ namespace KFramework.Example3
             await content.LoadBundleAsync("content", cancellationToken).ConfigureAwait(false);
 
             string text = await content
-                .DownloadTextAsync($"Levels/{nLevelIndex:00}.txt", cancellationToken)
+                .LoadTextAsync($"Levels/{nLevelIndex:00}.txt", cancellationToken)
                 .ConfigureAwait(false);
             using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(text));
 
-            SpriteSheetLoader mLoader = new SpriteSheetLoader(content);
+            SpriteSheetLoader mLoader = new SpriteSheetLoader(content.GetBundle("content")!, KSceneMgr.Game.GraphicsDevice);
             SpriteSheet characters = await mLoader.LoadAsync("MyRes/Atlas/characters", cancellationToken).ConfigureAwait(false);
             SpriteSheet misc3 = await mLoader.LoadAsync("MyRes/Atlas/misc-3", cancellationToken).ConfigureAwait(false);
 

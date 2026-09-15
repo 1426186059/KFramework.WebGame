@@ -1,0 +1,13 @@
+{
+    "width":  24,
+    "height":  24,
+    "shapes":  [
+                   {
+                       "color":  "#ff5555",
+                       "cx":  12,
+                       "r":  11,
+                       "type":  "circle",
+                       "cy":  12
+                   }
+               ]
+}

@@ -873,24 +873,27 @@ public sealed class StarDefenderGame : Game
 
     private void FinishLoading()
     {
-        _config = Content.LoadJson<GameConfig>("data/game");
+        AssetBundle bundle = Content.GetBundle("content")
+            ?? throw new InvalidOperationException("内容包 content 尚未加载");
 
-        _playerTexture = Content.LoadTexture("sprites/player");
-        _flameTexture = Content.LoadTexture("sprites/flame");
-        _bulletTexture = Content.LoadTexture("sprites/bullet");
-        _enemyBulletTexture = Content.LoadTexture("sprites/enemy_bullet");
-        _particleTexture = Content.LoadTexture("sprites/particle");
-        _starTexture = Content.LoadTexture("sprites/star");
-        _powerUpTexture = Content.LoadTexture("sprites/powerup");
-        _heartTexture = Content.LoadTexture("sprites/heart");
+        _config = bundle.LoadJson<GameConfig>("data/game");
+
+        _playerTexture = bundle.LoadTexture("sprites/player", GraphicsDevice);
+        _flameTexture = bundle.LoadTexture("sprites/flame", GraphicsDevice);
+        _bulletTexture = bundle.LoadTexture("sprites/bullet", GraphicsDevice);
+        _enemyBulletTexture = bundle.LoadTexture("sprites/enemy_bullet", GraphicsDevice);
+        _particleTexture = bundle.LoadTexture("sprites/particle", GraphicsDevice);
+        _starTexture = bundle.LoadTexture("sprites/star", GraphicsDevice);
+        _powerUpTexture = bundle.LoadTexture("sprites/powerup", GraphicsDevice);
+        _heartTexture = bundle.LoadTexture("sprites/heart", GraphicsDevice);
 
         foreach (KeyValuePair<string, EnemyConfig> pair in _config.Enemies)
         {
             if (_enemyTextures.ContainsKey(pair.Value.Texture)) continue;
-            if (Content.Contains(pair.Value.Texture))
-                _enemyTextures[pair.Value.Texture] = Content.LoadTexture(pair.Value.Texture);
+            if (bundle.Contains(pair.Value.Texture))
+                _enemyTextures[pair.Value.Texture] = bundle.LoadTexture(pair.Value.Texture, GraphicsDevice);
         }
 
-        Console.WriteLine($"[StarDefender] 内容就绪，共 {Content.AssetNames.Count} 个资源");
+        Console.WriteLine($"[StarDefender] 内容就绪，共 {bundle.AssetNames.Count} 个资源");
     }
 }

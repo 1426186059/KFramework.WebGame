@@ -27,39 +27,39 @@ internal sealed class ResCenter
     /// <summary>道具图标，下标对应 <see cref="PowerUpKind"/>。</summary>
     public Texture2D?[] Bonus { get; private init; } = Array.Empty<Texture2D?>();
 
-    public static ResCenter Load(ContentManager content)
+    public static ResCenter Load(AssetBundle bundle, GraphicsDevice device)
     {
         return new ResCenter
         {
-            Wall = Try(content, "Map_0"),
-            Barriar = Try(content, "Map_1"),
-            Grass = Try(content, "Map_2"),
-            Water = Try(content, "Map_3"),
-            Heart = Try(content, "Map_5"),
+            Wall = Try(bundle, device, "Map_0"),
+            Barriar = Try(bundle, device, "Map_1"),
+            Grass = Try(bundle, device, "Map_2"),
+            Water = Try(bundle, device, "Map_3"),
+            Heart = Try(bundle, device, "Map_5"),
 
-            Explode1 = Try(content, "Explode1"),
-            Explode2 = Try(content, "Explode2"),
-            Flag = Try(content, "Flag"),
-            Shield = Try(content, "Shield"),
+            Explode1 = Try(bundle, device, "Explode1"),
+            Explode2 = Try(bundle, device, "Explode2"),
+            Flag = Try(bundle, device, "Flag"),
+            Shield = Try(bundle, device, "Shield"),
 
-            Player = Range(content, "Player1_", 32),
-            Enemy = Range(content, "Enemys_", 64),
-            Bullet = Range(content, "bullet_", 4),
-            Born = Range(content, "Born_", 4),
-            Bonus = Range(content, "Bonus_", 6),
+            Player = Range(bundle, device, "Player1_", 32),
+            Enemy = Range(bundle, device, "Enemys_", 64),
+            Bullet = Range(bundle, device, "bullet_", 4),
+            Born = Range(bundle, device, "Born_", 4),
+            Bonus = Range(bundle, device, "Bonus_", 6),
         };
     }
 
-    private static Texture2D? Try(ContentManager content, string name)
+    private static Texture2D? Try(AssetBundle bundle, GraphicsDevice device, string name)
     {
-        content.TryLoadTexture(name, out Texture2D? tex);
+        bundle.TryLoadTexture(name, device, out Texture2D? tex);
         return tex;
     }
 
-    private static Texture2D?[] Range(ContentManager content, string prefix, int count)
+    private static Texture2D?[] Range(AssetBundle bundle, GraphicsDevice device, string prefix, int count)
     {
         var result = new Texture2D?[count];
-        for (int i = 0; i < count; i++) result[i] = Try(content, prefix + i);
+        for (int i = 0; i < count; i++) result[i] = Try(bundle, device, prefix + i);
         return result;
     }
 

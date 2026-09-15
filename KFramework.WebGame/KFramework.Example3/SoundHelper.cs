@@ -9,6 +9,6 @@ namespace KFramework.Example3;
 /// </summary>
 internal static class SoundHelper
 {
-    public static SoundEffect LoadSound(this ContentManager content, string name)
-        => SoundEffect.FromBytes(content.LoadBytes(name), "audio/wav");
+    public static SoundEffect LoadSound(this AssetBundle bundle, string name)
+        => SoundEffect.FromBytes(bundle.LoadAsset(name), "audio/wav");
 }

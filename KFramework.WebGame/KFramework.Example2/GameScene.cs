@@ -60,11 +60,13 @@ public sealed class GameScene : KSceneBase
 
     public override void LoadContent()
     {
-        _res = ResCenter.Load(_content);
-        _sounds = SoundCenter.Load(_content);
+        AssetBundle bundle = _content.GetBundle("content")
+            ?? throw new InvalidOperationException("内容包 content 尚未加载");
+        _res = ResCenter.Load(bundle, _gd);
+        _sounds = SoundCenter.Load(bundle);
         _hud = new Hud(_gd);
 
-        _level.Init(_content, _sounds, _res);
+        _level.Init(bundle, _sounds, _res);
         _level.Resize(_gd.Viewport.Width, _gd.Viewport.Height);   // 对应 PixiJS 初始化时算一次 fTileScaleCoef
 
         _uiRoot.Parent = SceneNodeRoot;

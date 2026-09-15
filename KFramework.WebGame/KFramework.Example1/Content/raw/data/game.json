@@ -1,0 +1,81 @@
+{
+    "design":  {
+                   "height":  720,
+                   "width":  480
+               },
+    "player":  {
+                   "fireInterval":  0.15,
+                   "bulletSpeed":  700,
+                   "invulnerableTime":  1.6,
+                   "radius":  11,
+                   "maxLives":  3,
+                   "speed":  300
+               },
+    "enemies":  {
+                    "fighter":  {
+                                    "radius":  10,
+                                    "texture":  "sprites/enemy_fighter",
+                                    "score":  100,
+                                    "health":  1,
+                                    "speed":  100
+                                },
+                    "scout":  {
+                                  "radius":  9,
+                                  "texture":  "sprites/enemy_scout",
+                                  "score":  120,
+                                  "health":  1,
+                                  "speed":  140
+                              },
+                    "bomber":  {
+                                   "radius":  14,
+                                   "texture":  "sprites/enemy_bomber",
+                                   "score":  300,
+                                   "health":  3,
+                                   "speed":  60
+                               },
+                    "asteroid":  {
+                                     "radius":  16,
+                                     "texture":  "sprites/asteroid",
+                                     "score":  500,
+                                     "health":  5,
+                                     "speed":  40
+                                 }
+                },
+    "waves":  [
+                  {
+                      "spawn":  [
+                                    {
+                                        "count":  8,
+                                        "type":  "fighter"
+                                    }
+                                ],
+                      "interval":  0.5,
+                      "restAfter":  1.5
+                  },
+                  {
+                      "spawn":  [
+                                    {
+                                        "count":  6,
+                                        "type":  "scout"
+                                    }
+                                ],
+                      "interval":  0.4,
+                      "restAfter":  1.5
+                  },
+                  {
+                      "spawn":  [
+                                    {
+                                        "count":  3,
+                                        "type":  "bomber"
+                                    }
+                                ],
+                      "interval":  0.8,
+                      "restAfter":  2
+                  }
+              ],
+    "powerup":  {
+                    "fallSpeed":  90,
+                    "dropChance":  0.14,
+                    "duration":  8
+                }
+}

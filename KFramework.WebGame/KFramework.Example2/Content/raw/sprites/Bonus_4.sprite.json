@@ -1,0 +1,14 @@
+{
+    "width":  24,
+    "height":  24,
+    "shapes":  [
+                   {
+                       "h":  22,
+                       "color":  "#55ffff",
+                       "y":  1,
+                       "type":  "rect",
+                       "x":  1,
+                       "w":  22
+                   }
+               ]
+}

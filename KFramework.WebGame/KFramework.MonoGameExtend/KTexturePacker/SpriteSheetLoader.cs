@@ -8,26 +8,28 @@ namespace KFramework.MonoGameExtend
 {
     public class SpriteSheetLoader
     {
-        private readonly ContentManager contentManager;
+        private readonly AssetBundle _bundle;
+        private readonly GraphicsDevice _device;
 
-        public SpriteSheetLoader(ContentManager contentManager)
+        public SpriteSheetLoader(AssetBundle bundle, GraphicsDevice device)
         {
-            this.contentManager = contentManager;
+            _bundle = bundle;
+            _device = device;
         }
-        
-        public async Task<SpriteSheet> LoadAsync(string jsonPath, CancellationToken cancellationToken = default)
+
+        public Task<SpriteSheet> LoadAsync(string jsonPath, CancellationToken cancellationToken = default)
         {
             string dir = Path.GetDirectoryName(jsonPath);
 
             // KFramework.MonoGame 没有文件系统、TitleContainer 与 .xnb 管线：
-            // 所有资源都由 ContentManager 从已加载的 AssetBundle 中按名字异步读取。
-            AtlasData mData = await contentManager.LoadJsonAsync<AtlasData>(jsonPath, cancellationToken);
+            // 所有资源都由 AssetBundle 从已加载的包中按名字同步读取（包已在内存中，取资源即时完成）。
+            AtlasData mData = _bundle.LoadJson<AtlasData>(jsonPath);
 
             SpriteSheet spriteSheet = new SpriteSheet();
             foreach (var v in mData.Pages)
             {
                 string texturePath = Path.Combine(dir, Path.GetFileNameWithoutExtension(v.Image));
-                Texture2D texture = await contentManager.LoadTextureAsync(texturePath, cancellationToken);
+                Texture2D texture = _bundle.LoadTexture(texturePath, _device);
                 foreach (var v2 in v.Regions)
                 {
                     bool isRotated = v2.Rotated;
@@ -40,7 +42,7 @@ namespace KFramework.MonoGameExtend
                 }
             }
 
-            return spriteSheet;
+            return Task.FromResult(spriteSheet);
         }
     }
 

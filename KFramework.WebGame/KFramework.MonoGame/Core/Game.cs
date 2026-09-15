@@ -46,7 +46,7 @@ namespace KFramework.MonoGame
         {
             GraphicsDevice = new GraphicsDevice(canvasSelector);
             Window = new GameWindow(GraphicsDevice);
-            Content = new ContentManager(GraphicsDevice, contentRoot);
+            Content = new ContentManager(contentRoot);
             Components = new GameComponentCollection();
             JSBind_GameHost.Current = this;
         }

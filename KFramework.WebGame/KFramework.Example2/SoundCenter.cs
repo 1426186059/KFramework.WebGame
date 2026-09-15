@@ -12,12 +12,12 @@ internal sealed class SoundCenter
 {
     private readonly Dictionary<string, SoundEffect> _effects = new(StringComparer.OrdinalIgnoreCase);
 
-    public static SoundCenter Load(ContentManager content)
+    public static SoundCenter Load(AssetBundle bundle)
     {
         var center = new SoundCenter();
         foreach (string key in new[] { "shoot", "explosion", "hit", "pickup", "powerup", "gameover" })
         {
-            if (content.TryLoadBytes("audio/" + key, out byte[]? bytes) && bytes is not null)
+            if (bundle.TryGetAsset("audio/" + key, out byte[]? bytes) && bytes is not null)
                 center._effects[key] = SoundEffect.FromBytes(bytes, "audio/wav");
             else
                 Console.WriteLine($"[KFramework.MonoGame] 缺少音效资源：audio/{key}");

@@ -68,7 +68,7 @@ internal sealed class TankLevel
     private bool _allCleared;
 
     // 依赖（由场景在加载时注入，对应 PixiJS 的 engine() 全局单例）
-    private ContentManager _content = null!;
+    private AssetBundle _content = null!;
     private SoundCenter _sounds = null!;
     private ResCenter _res = null!;
 
@@ -76,7 +76,7 @@ internal sealed class TankLevel
     /// <summary>战场整体缩放系数（原版 fTileScaleCoef）。</summary>
     public float fTileScaleCoef = 1.0f;
 
-    public void Init(ContentManager content, SoundCenter sounds, ResCenter res)
+    public void Init(AssetBundle content, SoundCenter sounds, ResCenter res)
     {
         _content = content;
         _sounds = sounds;
