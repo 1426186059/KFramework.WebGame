@@ -22,8 +22,8 @@ namespace KFramework.Example3
             KDefaultRes.DefaultSpriteFont = Font2;
 
             nLevelIndex = 0;
-            //_ = LoadLevelAsync();
-            new TestScreen();
+            _ = LoadLevelAsync();
+            //new TestScreen();
         }
 
         public override void Update()

@@ -273,8 +273,17 @@ namespace KFramework.MonoGame
             if ((item.Effects & SpriteEffects.FlipHorizontally) != 0) (u0, u1) = (u1, u0);
             if ((item.Effects & SpriteEffects.FlipVertically) != 0) (v0, v1) = (v1, v0);
 
-            float ox = item.Origin.X, oy = item.Origin.Y;
             float w = item.Size.X, h = item.Size.Y;
+
+            // MonoGame 语义：origin 位于【源矩形】坐标系（单位是源图像素），
+            // 绘制时必须按本次缩放（目标尺寸 / 源尺寸）把它放大到目标空间：
+            //     顶点偏移 = -origin × scale
+            // 否则一旦精灵被缩放（目标矩形 ≠ 源矩形），Pivot / origin 的偏移量会严重偏小，
+            // 典型症状就是"Pivot 看起来完全不起作用"。
+            float scaleX = item.Source.Width == 0 ? 0f : w / item.Source.Width;
+            float scaleY = item.Source.Height == 0 ? 0f : h / item.Source.Height;
+            float ox = item.Origin.X * scaleX;
+            float oy = item.Origin.Y * scaleY;
 
             Vector2 tl = new(-ox, -oy);
             Vector2 tr = new(w - ox, -oy);
