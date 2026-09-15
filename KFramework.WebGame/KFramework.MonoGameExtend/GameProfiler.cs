@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KFramework.MonoGame;
+using System;
 using System.Collections.Generic;
 
 namespace KFramework.MonoGameExtend

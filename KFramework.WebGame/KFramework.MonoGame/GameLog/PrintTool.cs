@@ -75,13 +75,6 @@ namespace KFramework.MonoGame
 #endif
         }
 
-        public static void LogJsonObj(object data)
-        {
-#if DEBUG
-            Console.WriteLine(JsonTool.ToJson(data));
-#endif
-        }
-
         public static void Log(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
 #if DEBUG

@@ -1,8 +1,4 @@
-﻿
-using KFramework.MonoGame.CommonFunc;
-using KFramework.MonoGame.Log;
-
-namespace KFramework.Example3
+﻿namespace KFramework.Example3
 {
     internal class StartScreen : KUIBase
     {

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using KFramework.MonoGame;
+using System.Diagnostics;
 
 namespace KFramework.MonoGameExtend
 {
