@@ -25,9 +25,9 @@ namespace KFramework.MonoGame
     /// 本帧发生变化的触点请取 <see cref="Input.BeganTouches"/> /
     /// <see cref="Input.MovedTouches"/> / <see cref="Input.EndedTouches"/>。
     /// </summary>
-    public struct TouchCollection(List<TouchPoint> touches)
+    public struct TouchCollection(IReadOnlyList<TouchPoint> touches)
     {
-        private readonly List<TouchPoint> _touches = touches;
+        private readonly IReadOnlyList<TouchPoint> _touches = touches;
 
         /// <summary>当前触点数量。</summary>
         public int Count => _touches == null ? 0 : _touches.Count;

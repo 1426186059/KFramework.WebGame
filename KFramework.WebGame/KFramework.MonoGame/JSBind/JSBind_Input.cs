@@ -1,29 +1,38 @@
 using System.Runtime.InteropServices.JavaScript;
-using System.Runtime.Versioning;
 
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 输入的 JS 绑定（对应 tsengine/src/input.ts）。
+    /// 输入的 JS 绑定。按模块拆分：键盘 / 鼠标 / 触摸各自一个 JS 模块、各自一次 poll。
     ///
-    /// <para>为什么单独成一类：输入与 GL / Audio / Text 一样是独立的浏览器模块，
-    /// 放在 <c>JSBind_Platform</c> 里会让平台层不断膨胀，也让模块名与 C# 类名对不上。
-    /// 模块名 "input" 必须与 main.ts 的 <c>setModuleImports('input', input)</c> 一致。</para>
-    ///
-    /// <para>这一层是【薄绑定】：只把事件队列原样拉回，不做任何语义处理，
-    /// 全部逻辑在 <see cref="Input"/> 中实现。</para>
+    /// 一帧 3 次跨界调用（每模块一次）—— 输入本身是低频操作，
+    /// 换来的是三个模块完全独立、互不耦合，且 C# 与 TS 的模块名一一对应。
+    /// 模块名必须与 main.ts 的 setModuleImports 一致。
     /// </summary>
     internal static partial class JSBind_Input
     {
-        /// <summary>
-        /// 一次性拉回本帧的输入事件队列（键盘 / 鼠标 / 触摸）。
-        /// 缓冲布局：前 4 字节是事件数量，随后每条事件 20 字节（5 个 i32）。
-        /// </summary>
-        [JSImport("pollInput", "input")]
-        internal static partial void PollInput([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
+        // ===== 键盘（tsengine/src/input_keyboard.ts） =====
 
-        /// <summary>解绑 JS 侧注册的全部输入监听（切场景 / 销毁时调用）。</summary>
-        [JSImport("unbindInput", "input")]
-        internal static partial void UnbindInput();
+        [JSImport("pollKeyboard", "input_keyboard")]
+        internal static partial void PollKeyboard([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
+
+        [JSImport("unbindKeyboard", "input_keyboard")]
+        internal static partial void UnbindKeyboard();
+
+        // ===== 鼠标（tsengine/src/input_mouse.ts） =====
+
+        [JSImport("pollMouse", "input_mouse")]
+        internal static partial void PollMouse([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
+
+        [JSImport("unbindMouse", "input_mouse")]
+        internal static partial void UnbindMouse();
+
+        // ===== 触摸（tsengine/src/input_touch.ts） =====
+
+        [JSImport("pollTouch", "input_touch")]
+        internal static partial void PollTouch([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
+
+        [JSImport("unbindTouch", "input_touch")]
+        internal static partial void UnbindTouch();
     }
 }

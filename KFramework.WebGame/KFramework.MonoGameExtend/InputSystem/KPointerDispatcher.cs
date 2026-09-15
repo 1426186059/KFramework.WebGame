@@ -7,14 +7,9 @@ namespace KFramework.MonoGameExtend
     /// <summary>
     /// 指针事件分发器 —— 把鼠标 / 触摸统一成指针事件，派发给已注册的 IClickable
     /// </summary>
-    public class KPointerDispatcher : IKInputDevice
+    public class KPointerDispatcher
     {
-        public string Name => "PointerDispatcher";
-        public bool Enabled { get; set; } = true;
-        public bool IsAvailable => true;
-
-        private readonly Input_Mouse _mouse;
-        private readonly Input_Touch _touch;
+        // 直接读基石层的静态封装（Input_Mouse / Input_Touch），不再持有设备实例
 
         private readonly List<IClickable> _clickables = new List<IClickable>();
         private bool _sortDirty;
@@ -52,12 +47,6 @@ namespace KFramework.MonoGameExtend
             MouseButton.Right,
             MouseButton.Middle,
         };
-
-        public KPointerDispatcher(Input_Mouse mouse, Input_Touch touch)
-        {
-            _mouse = mouse;
-            _touch = touch;
-        }
 
         public void Init()
         {
@@ -109,8 +98,8 @@ namespace KFramework.MonoGameExtend
                 _sortDirty = false;
             }
 
-            if (_mouse != null && _mouse.Enabled && _mouse.IsAvailable) UpdateMouse();
-            if (_touch != null && _touch.Enabled && _touch.IsAvailable) UpdateTouch();
+            if (!Input.IsMobileDevice) UpdateMouse();
+            UpdateTouch();
         }
 
         public void Reset()
@@ -124,7 +113,7 @@ namespace KFramework.MonoGameExtend
 
         private void UpdateMouse()
         {
-            Vector2 pos = _mouse.Position;
+            Vector2 pos = Input_Mouse.Position;
 
             // 悬停检测
             IClickable hit = Raycast(pos);
@@ -132,12 +121,12 @@ namespace KFramework.MonoGameExtend
             {
                 if (_hoverTarget != null)
                 {
-                    FillArgs(pos, pos, _mouse.Delta, KPointerSource.Mouse, MouseButton.Left, -1);
+                    FillArgs(pos, pos, Input_Mouse.Delta, KPointerSource.Mouse, MouseButton.Left, -1);
                     _hoverTarget.OnPointerExit(_args);
                 }
                 if (hit != null)
                 {
-                    FillArgs(pos, pos, _mouse.Delta, KPointerSource.Mouse, MouseButton.Left, -1);
+                    FillArgs(pos, pos, Input_Mouse.Delta, KPointerSource.Mouse, MouseButton.Left, -1);
                     hit.OnPointerEnter(_args);
                 }
                 _hoverTarget = hit;
@@ -149,10 +138,10 @@ namespace KFramework.MonoGameExtend
                 MouseButton btn = DispatchButtons[i];
                 int pointerId = -(int)btn - 1; // 鼠标用负 id，避免和触摸 id 冲突
 
-                if (_mouse.GetButtonDown(btn))
-                    HandlePointerDown(pointerId, pos, _mouse.Delta, KPointerSource.Mouse, btn);
-                else if (_mouse.GetButtonUp(btn))
-                    HandlePointerUp(pointerId, pos, _mouse.Delta, KPointerSource.Mouse, btn);
+                if (Input_Mouse.GetButtonDown(btn))
+                    HandlePointerDown(pointerId, pos, Input_Mouse.Delta, KPointerSource.Mouse, btn);
+                else if (Input_Mouse.GetButtonUp(btn))
+                    HandlePointerUp(pointerId, pos, Input_Mouse.Delta, KPointerSource.Mouse, btn);
             }
         }
 
@@ -160,7 +149,7 @@ namespace KFramework.MonoGameExtend
 
         private void UpdateTouch()
         {
-            var touches = _touch.Touches;
+            var touches = Input_Touch.FrameTouches;
             for (int i = 0; i < touches.Count; i++)
             {
                 KTouch t = touches[i];

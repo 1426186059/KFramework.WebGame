@@ -1,110 +1,155 @@
 using System;
-using System.Collections.Generic;
+using System.Buffers.Binary;
 
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 键盘输入设备（基石层）。
+    /// 键盘 —— 对原始输入事件的封装。
     ///
-    /// <para>本类只做「事件分发与查询封装」，不保存状态：
-    /// 按键电平与按下/抬起边沿全部由 <see cref="Input"/> 依据浏览器事件维护。
-    /// 这样即使同一帧内按下又抬起，也能被正确识别（用电平差分会漏掉）。</para>
+    /// <para>自己 poll 自己的事件队列（<c>input_keyboard</c> 模块），维护按键电平与
+    /// 按下/抬起边沿，并对外提供查询。JS 侧只负责把原始事件入队，不做任何语义处理。</para>
+    ///
+    /// <para>用事件而不是"电平差分"算边沿，因此同一帧内按下又抬起也能被正确识别。</para>
     /// </summary>
-    public class Input_KeyBoard
+    public static class Input_KeyBoard
     {
-        public string Name => "Keyboard";
-        public bool Enabled { get; set; } = true;
-        public bool IsAvailable => !Input.IsMobileDevice;
+        // 事件类型（与 input_keyboard.ts 一致）
+        private const int EvKeyDown = 1;
+        private const int EvKeyUp = 2;
+        private const int EvBlur = 10;
 
-        /// <summary>本帧刚按下的按键</summary>
-        private readonly List<Keys> _pressedThisFrame = new List<Keys>();
+        private const int Stride = 8;            // 每条 2 个 i32
+        private const int MaxEvents = 64;
 
-        /// <summary>本帧刚抬起的按键</summary>
-        private readonly List<Keys> _releasedThisFrame = new List<Keys>();
+        public const int KeyCount = 256;
 
-        /// <summary>任意键按下事件</summary>
-        public event Action<Keys> KeyDown;
+        private static readonly byte[] _buffer = new byte[4 + MaxEvents * Stride];
 
-        /// <summary>任意键抬起事件</summary>
-        public event Action<Keys> KeyUp;
+        private static readonly bool[] _held = new bool[KeyCount];
+        private static readonly bool[] _pressed = new bool[KeyCount];
+        private static readonly bool[] _released = new bool[KeyCount];
 
-        public KeyboardState CurrentState => Input.GetKeyboardState();
+        /// <summary>任意键按下</summary>
+        public static event Action<Keys> KeyDown;
 
-        public IReadOnlyList<Keys> PressedThisFrame => _pressedThisFrame;
-        public IReadOnlyList<Keys> ReleasedThisFrame => _releasedThisFrame;
+        /// <summary>任意键抬起</summary>
+        public static event Action<Keys> KeyUp;
 
-        public void Init()
+        internal static bool[] Held => _held;
+        internal static bool[] Pressed => _pressed;
+        internal static bool[] Released => _released;
+
+        private static int ReadInt(int offset)
+            => BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(offset, 4));
+
+        /// <summary>每帧调用一次：取回本模块的事件队列并更新状态。</summary>
+        public static void Poll()
         {
-            _pressedThisFrame.Clear();
-            _releasedThisFrame.Clear();
-        }
+            Array.Clear(_pressed);
+            Array.Clear(_released);
 
-        public void Update(GameTime gameTime)
-        {
-            _pressedThisFrame.Clear();
-            _releasedThisFrame.Clear();
+            JSBind_Input.PollKeyboard(_buffer);
 
-            // 直接查 Input 的边沿数组，遍历 256 个键槽，零分配
-            for (int i = 1; i < Input.KeyCount; i++)
+            int count = ReadInt(0);
+            if (count <= 0) return;
+            if (count > MaxEvents) count = MaxEvents;
+
+            for (int i = 0; i < count; i++)
             {
-                Keys key = (Keys)i;
+                int off = 4 + i * Stride;
+                int type = ReadInt(off);
+                int keyCode = ReadInt(off + 4);
 
-                if (Input.IsKeyPressed(key))
+                switch (type)
                 {
-                    _pressedThisFrame.Add(key);
-                    KeyDown?.Invoke(key);
+                    case EvKeyDown: SetKey(keyCode, true); break;
+                    case EvKeyUp: SetKey(keyCode, false); break;
+                    case EvBlur: Reset(); break;
                 }
-                else if (Input.IsKeyReleased(key))
-                {
-                    _releasedThisFrame.Add(key);
-                    KeyUp?.Invoke(key);
-                }
+            }
+
+            for (int k = 1; k < KeyCount; k++)
+            {
+                if (_pressed[k]) KeyDown?.Invoke((Keys)k);
+                else if (_released[k]) KeyUp?.Invoke((Keys)k);
             }
         }
 
-        public void Reset()
+        private static void SetKey(int keyCode, bool down)
         {
-            _pressedThisFrame.Clear();
-            _releasedThisFrame.Clear();
-            Input.Reset();
+            int k = keyCode & 0xFF;
+            if (k <= 0 || k >= KeyCount) return;
+
+            if (down)
+            {
+                // 浏览器长按会连发 keydown，只有"从没按下"的那次才算本帧按下
+                if (!_held[k]) _pressed[k] = true;
+                _held[k] = true;
+            }
+            else
+            {
+                if (_held[k]) _released[k] = true;
+                _held[k] = false;
+            }
         }
 
-        /// <summary>按键是否处于按住状态</summary>
-        public bool GetKey(Keys key) => Input.IsKeyDown(key);
-
-        /// <summary>按键是否本帧刚按下</summary>
-        public bool GetKeyDown(Keys key) => Input.IsKeyPressed(key);
-
-        /// <summary>按键是否本帧刚抬起</summary>
-        public bool GetKeyUp(Keys key) => Input.IsKeyReleased(key);
-
-        /// <summary>是否有任意键按住</summary>
-        public bool AnyKey => Input.GetKeyboardState().AnyKeyDown;
-
-        /// <summary>是否有任意键本帧刚按下</summary>
-        public bool AnyKeyDown => _pressedThisFrame.Count > 0;
-
-        public KPressState GetKeyState(Keys key)
+        /// <summary>清空键盘状态（失焦时由 Blur 事件触发）。</summary>
+        public static void Reset()
         {
-            if (Input.IsKeyPressed(key)) return KPressState.Down;
-            if (Input.IsKeyDown(key)) return KPressState.Held;
-            if (Input.IsKeyReleased(key)) return KPressState.Up;
+            Array.Clear(_held);
+            Array.Clear(_pressed);
+            Array.Clear(_released);
+        }
+
+        /// <summary>解绑 JS 侧监听（切场景 / 销毁时调用）。</summary>
+        public static void Unbind()
+        {
+            JSBind_Input.UnbindKeyboard();
+            Reset();
+        }
+
+        // ===== 查询 =====
+
+        public static bool GetKey(Keys key) => key != Keys.None && _held[(int)key];
+
+        public static bool GetKeyDown(Keys key) => key != Keys.None && _pressed[(int)key];
+
+        public static bool GetKeyUp(Keys key) => key != Keys.None && _released[(int)key];
+
+        public static bool AnyKey
+        {
+            get
+            {
+                for (int i = 1; i < KeyCount; i++)
+                    if (_held[i]) return true;
+                return false;
+            }
+        }
+
+        public static bool AnyKeyDown
+        {
+            get
+            {
+                for (int i = 1; i < KeyCount; i++)
+                    if (_pressed[i]) return true;
+                return false;
+            }
+        }
+
+        public static KPressState GetKeyState(Keys key)
+        {
+            if (GetKeyDown(key)) return KPressState.Down;
+            if (GetKey(key)) return KPressState.Held;
+            if (GetKeyUp(key)) return KPressState.Up;
             return KPressState.None;
         }
 
-        /// <summary>Shift 是否按住</summary>
-        public bool Shift => GetKey(Keys.LeftShift) || GetKey(Keys.RightShift);
+        public static bool Shift => GetKey(Keys.LeftShift) || GetKey(Keys.RightShift);
+        public static bool Ctrl => GetKey(Keys.LeftControl) || GetKey(Keys.RightControl);
+        public static bool Alt => GetKey(Keys.LeftAlt) || GetKey(Keys.RightAlt);
 
-        /// <summary>Ctrl 是否按住</summary>
-        public bool Ctrl => GetKey(Keys.LeftControl) || GetKey(Keys.RightControl);
-
-        /// <summary>Alt 是否按住</summary>
-        public bool Alt => GetKey(Keys.LeftAlt) || GetKey(Keys.RightAlt);
-
-        /// <summary>
-        /// WASD / 方向键组成的二维轴，范围 [-1,1]，Y 向下为正（与屏幕坐标一致）
-        /// </summary>
-        public Vector2 GetAxis()
+        /// <summary>WASD / 方向键组成的二维轴，Y 向下为正。</summary>
+        public static Vector2 GetAxis()
         {
             float x = 0f, y = 0f;
             if (GetKey(Keys.A) || GetKey(Keys.Left)) x -= 1f;

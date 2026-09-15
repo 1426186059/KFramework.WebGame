@@ -1,12 +1,10 @@
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 
 namespace KFramework.MonoGame
 {
-    /// <summary>
-    /// 触摸点状态。阶段由 <see cref="Input"/> 依据浏览器事件直接给出，
-    /// 上层不需要再做「本帧与上一帧的 id 差分」。
-    /// </summary>
+    /// <summary>触摸点状态。由事件直接给出，不需要上层做 id 差分。</summary>
     public enum KTouchState
     {
         Invalid = 0,
@@ -34,17 +32,14 @@ namespace KFramework.MonoGame
         public float Duration;
 
         public bool IsBegan => State == KTouchState.Began;
-        public bool IsMoved => KTouchState.Moved == State;
+        public bool IsMoved => State == KTouchState.Moved;
         public bool IsEnded => State == KTouchState.Ended;
 
-        /// <summary>自按下点算起的总位移</summary>
         public Vector2 TotalDrag => Position - StartPosition;
-
-        /// <summary>自按下点算起的直线距离（像素）</summary>
         public float TotalDistance => TotalDrag.Length();
     }
 
-    /// <summary>轻点（Tap）：按下后很快抬起、且位移很小。</summary>
+    /// <summary>轻点（Tap）</summary>
     public readonly struct KTapGesture(int id, Vector2 position, float duration)
     {
         public readonly int Id = id;
@@ -52,7 +47,7 @@ namespace KFramework.MonoGame
         public readonly float Duration = duration;
     }
 
-    /// <summary>滑动（Swipe）：按下后朝某方向甩出。</summary>
+    /// <summary>滑动（Swipe）</summary>
     public readonly struct KSwipeGesture(int id, Vector2 startPosition, Vector2 endPosition,
                                          Vector2 delta, float duration)
     {
@@ -63,12 +58,10 @@ namespace KFramework.MonoGame
         public readonly float Duration = duration;
 
         public float Distance => Delta.Length();
-
         public Vector2 Direction => Delta.LengthSquared() > 0f ? Vector2.Normalize(Delta) : Vector2.Zero;
-
         public float Speed => Duration > 0f ? Distance / Duration : 0f;
 
-        /// <summary>主方向（四向吸附）。屏幕坐标 Y 向下为正，故 Down 表示手指向下划。</summary>
+        /// <summary>四向吸附的主方向。屏幕 Y 向下为正，故 Down 表示手指向下划。</summary>
         public KSwipeDirection SwipeDirection
         {
             get
@@ -81,7 +74,7 @@ namespace KFramework.MonoGame
         }
     }
 
-    /// <summary>滑动的主方向（四向吸附）</summary>
+    /// <summary>滑动的主方向</summary>
     public enum KSwipeDirection
     {
         None,
@@ -92,117 +85,148 @@ namespace KFramework.MonoGame
     }
 
     /// <summary>
-    /// 触摸输入设备（基石层）—— 手机 / 平板的主要输入来源。
+    /// 触摸 —— 对原始输入事件的封装（手机 / 平板的主要输入来源）。
     ///
-    /// <para>触点与阶段（Began / Moved / Ended）由 <see cref="Input"/> 维护，
-    /// 本类负责包装成 <see cref="KTouch"/>，并识别手势：
-    /// Tap（轻点）、LongPress（长按）、Swipe（滑动）、Pinch（双指缩放）。</para>
-    ///
-    /// <para>所有容器预分配并复用（只 Clear 不 new），运行期零 GC。</para>
+    /// 自己 poll 自己的事件队列（<c>input_touch</c> 模块），维护触点表与 Began/Moved/Ended 阶段，
+    /// 并识别手势：Tap / LongPress / Swipe / Pinch。所有容器复用，运行期零 GC。
     /// </summary>
-    public class Input_Touch
+    public static class Input_Touch
     {
-        public string Name => "Touch";
-        public bool Enabled { get; set; } = true;
+        // 事件类型（与 input_touch.ts 一致）
+        private const int EvStart = 7;
+        private const int EvMove = 8;
+        private const int EvEnd = 9;
 
-        // 无触点时底层返回空列表，恒定可用
-        public bool IsAvailable => true;
+        private const int Stride = 16;           // 每条 4 个 i32
+        private const int MaxEvents = 64;
+
+        private static readonly byte[] _buffer = new byte[4 + MaxEvents * Stride];
+
+        private static readonly List<TouchPoint> _touches = new List<TouchPoint>();
+        private static readonly List<TouchPoint> _began = new List<TouchPoint>();
+        private static readonly List<TouchPoint> _moved = new List<TouchPoint>();
+        private static readonly List<TouchPoint> _ended = new List<TouchPoint>();
+        private static readonly List<KTouch> _frame = new List<KTouch>();
+
+        private static readonly Dictionary<int, Vector2> _startPositions = new Dictionary<int, Vector2>();
+        private static readonly Dictionary<int, Vector2> _lastPositions = new Dictionary<int, Vector2>();
+        private static readonly Dictionary<int, float> _startTimes = new Dictionary<int, float>();
+        private static readonly HashSet<int> _longPressed = new HashSet<int>();
+
+        // 手势时长用自包含的计时，不依赖外部时间源（基石层拿不到上层的 KTime）
+        private static readonly long _startTicks = Environment.TickCount64;
+        private static float _elapsed;
 
         // ===== 手势阈值 =====
+        public static float TapMaxDistance { get; set; } = 24f;
+        public static float TapMaxDuration { get; set; } = 0.3f;
+        public static float LongPressDuration { get; set; } = 0.6f;
+        public static float SwipeMinDistance { get; set; } = 40f;
+        public static float SwipeMaxDuration { get; set; } = 1.0f;
+        public static bool GesturesEnabled { get; set; } = true;
 
-        /// <summary>轻点允许的最大位移（像素）</summary>
-        public float TapMaxDistance { get; set; } = 24f;
+        /// <summary>当前留在屏上的触点</summary>
+        public static IReadOnlyList<TouchPoint> Touches => _touches;
 
-        /// <summary>轻点允许的最长按住时间（秒）</summary>
-        public float TapMaxDuration { get; set; } = 0.3f;
+        /// <summary>本帧包装后的触点（含 Ended）</summary>
+        public static IReadOnlyList<KTouch> FrameTouches => _frame;
 
-        /// <summary>长按判定时间（秒）</summary>
-        public float LongPressDuration { get; set; } = 0.6f;
+        public static event Action<KTouch> TouchBegan;
+        public static event Action<KTouch> TouchMoved;
+        public static event Action<KTouch> TouchEnded;
+        public static event Action<KTapGesture> Tap;
+        public static event Action<KTouch> LongPress;
+        public static event Action<KSwipeGesture> Swipe;
 
-        /// <summary>滑动判定的最小位移（像素）</summary>
-        public float SwipeMinDistance { get; set; } = 40f;
+        private static int ReadInt(int offset)
+            => BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(offset, 4));
 
-        /// <summary>滑动允许的最长时间（秒）</summary>
-        public float SwipeMaxDuration { get; set; } = 1.0f;
-
-        /// <summary>是否启用手势识别</summary>
-        public bool GesturesEnabled { get; set; } = true;
-
-        private readonly List<KTouch> _touches = new List<KTouch>();
-        private readonly Dictionary<int, Vector2> _startPositions = new Dictionary<int, Vector2>();
-        private readonly Dictionary<int, Vector2> _lastPositions = new Dictionary<int, Vector2>();
-        private readonly Dictionary<int, float> _startTimes = new Dictionary<int, float>();
-        private readonly HashSet<int> _longPressedIds = new HashSet<int>();
-
-        private float _elapsedTotal;
-
-        /// <summary>当前所有触摸点（含本帧刚抬起的，状态为 Ended）</summary>
-        public IReadOnlyList<KTouch> Touches => _touches;
-
-        /// <summary>触摸点数量</summary>
-        public int TouchCount => _touches.Count;
-
-        /// <summary>触摸开始</summary>
-        public event Action<KTouch> TouchBegan;
-
-        /// <summary>触摸移动</summary>
-        public event Action<KTouch> TouchMoved;
-
-        /// <summary>触摸结束</summary>
-        public event Action<KTouch> TouchEnded;
-
-        /// <summary>轻点</summary>
-        public event Action<KTapGesture> Tap;
-
-        /// <summary>长按：按住到阈值触发一次</summary>
-        public event Action<KTouch> LongPress;
-
-        /// <summary>滑动</summary>
-        public event Action<KSwipeGesture> Swipe;
-
-        public void Init()
+        /// <summary>每帧调用一次：取回本模块的事件队列并更新状态。</summary>
+        public static void Poll()
         {
-            _touches.Clear();
-            _startPositions.Clear();
-            _lastPositions.Clear();
-            _startTimes.Clear();
-            _longPressedIds.Clear();
-            _elapsedTotal = 0f;
-        }
+            _elapsed = (Environment.TickCount64 - _startTicks) / 1000f;
 
-        public void Update(GameTime gameTime)
-        {
-            _elapsedTotal += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            _touches.Clear();
+            _began.Clear();
+            _moved.Clear();
+            _ended.Clear();
+            _frame.Clear();
 
-            var active = Input.Touches;
-            var began = Input.BeganTouches;
-            var ended = Input.EndedTouches;
-            var moved = Input.MovedTouches;
+            JSBind_Input.PollTouch(_buffer);
 
-            // 1) 新按下的：记下起点与起始时间
-            for (int i = 0; i < began.Count; i++)
+            int count = ReadInt(0);
+            if (count > 0)
             {
-                int id = began[i].Id;
-                _startPositions[id] = began[i].Position;
-                _startTimes[id] = _elapsedTotal;
-                _lastPositions[id] = began[i].Position;
-                _longPressedIds.Remove(id);
+                if (count > MaxEvents) count = MaxEvents;
+
+                for (int i = 0; i < count; i++)
+                {
+                    int off = 4 + i * Stride;
+                    int type = ReadInt(off);
+                    int id = ReadInt(off + 4);
+                    int x = ReadInt(off + 8);
+                    int y = ReadInt(off + 12);
+
+                    switch (type)
+                    {
+                        case EvStart: AddTouch(id, x, y); break;
+                        case EvMove: MoveTouch(id, x, y); break;
+                        case EvEnd: RemoveTouch(id); break;
+                    }
+                }
             }
 
-            // 2) 仍在屏上的触点
-            for (int i = 0; i < active.Count; i++)
-            {
-                TouchPoint p = active[i];
+            BuildFrame();
+        }
 
+        private static void AddTouch(int id, int x, int y)
+        {
+            var p = new TouchPoint(id, new Vector2(x, y));
+            _touches.Add(p);
+            _began.Add(p);
+            _startPositions[id] = p.Position;
+            _lastPositions[id] = p.Position;
+            _startTimes[id] = _elapsed;
+            _longPressed.Remove(id);
+        }
+
+        private static void MoveTouch(int id, int x, int y)
+        {
+            for (int i = 0; i < _touches.Count; i++)
+            {
+                if (_touches[i].Id != id) continue;
+
+                var moved = new TouchPoint(id, new Vector2(x, y));
+                _touches[i] = moved;
+                _moved.Add(moved);
+                return;
+            }
+        }
+
+        private static void RemoveTouch(int id)
+        {
+            for (int i = 0; i < _touches.Count; i++)
+            {
+                if (_touches[i].Id != id) continue;
+
+                _ended.Add(_touches[i]);
+                _touches.RemoveAt(i);
+                return;
+            }
+        }
+
+        private static void BuildFrame()
+        {
+            // 仍在屏上的
+            for (int i = 0; i < _touches.Count; i++)
+            {
+                TouchPoint p = _touches[i];
                 Vector2 start = _startPositions.TryGetValue(p.Id, out var s) ? s : p.Position;
                 Vector2 last = _lastPositions.TryGetValue(p.Id, out var l) ? l : p.Position;
-                float startTime = _startTimes.TryGetValue(p.Id, out var t) ? t : _elapsedTotal;
-                float duration = _elapsedTotal - startTime;
+                float duration = _elapsed - (_startTimes.TryGetValue(p.Id, out var t) ? t : _elapsed);
 
                 KTouchState state = KTouchState.Stationary;
-                if (ContainsId(began, p.Id)) state = KTouchState.Began;
-                else if (ContainsId(moved, p.Id)) state = KTouchState.Moved;
+                if (ContainsId(_began, p.Id)) state = KTouchState.Began;
+                else if (ContainsId(_moved, p.Id)) state = KTouchState.Moved;
 
                 var touch = new KTouch
                 {
@@ -215,25 +239,21 @@ namespace KFramework.MonoGame
                 };
 
                 _lastPositions[p.Id] = p.Position;
-                _touches.Add(touch);
+                _frame.Add(touch);
 
                 if (state == KTouchState.Began) TouchBegan?.Invoke(touch);
                 else if (state == KTouchState.Moved) TouchMoved?.Invoke(touch);
 
-                // 长按：按住到阈值就触发一次，不等抬手
-                if (GesturesEnabled && duration >= LongPressDuration && _longPressedIds.Add(p.Id))
-                {
+                if (GesturesEnabled && duration >= LongPressDuration && _longPressed.Add(p.Id))
                     LongPress?.Invoke(touch);
-                }
             }
 
-            // 3) 本帧抬起的
-            for (int i = 0; i < ended.Count; i++)
+            // 本帧抬起的
+            for (int i = 0; i < _ended.Count; i++)
             {
-                TouchPoint p = ended[i];
-
+                TouchPoint p = _ended[i];
                 Vector2 start = _startPositions.TryGetValue(p.Id, out var s) ? s : p.Position;
-                float duration = _startTimes.TryGetValue(p.Id, out var t) ? _elapsedTotal - t : 0f;
+                float duration = _elapsed - (_startTimes.TryGetValue(p.Id, out var t) ? t : _elapsed);
 
                 var touch = new KTouch
                 {
@@ -245,7 +265,7 @@ namespace KFramework.MonoGame
                     Duration = duration,
                 };
 
-                _touches.Add(touch);
+                _frame.Add(touch);
                 TouchEnded?.Invoke(touch);
 
                 if (GesturesEnabled) RecognizeReleaseGesture(p.Id, touch);
@@ -253,19 +273,18 @@ namespace KFramework.MonoGame
                 _startPositions.Remove(p.Id);
                 _lastPositions.Remove(p.Id);
                 _startTimes.Remove(p.Id);
-                _longPressedIds.Remove(p.Id);
+                _longPressed.Remove(p.Id);
             }
         }
 
-        private static bool ContainsId(IReadOnlyList<TouchPoint> list, int id)
+        private static bool ContainsId(List<TouchPoint> list, int id)
         {
             for (int i = 0; i < list.Count; i++)
                 if (list[i].Id == id) return true;
             return false;
         }
 
-        /// <summary>抬手瞬间判定 Tap 还是 Swipe（位移小的是 Tap，大的是 Swipe）。</summary>
-        private void RecognizeReleaseGesture(int id, KTouch touch)
+        private static void RecognizeReleaseGesture(int id, KTouch touch)
         {
             float distance = touch.TotalDistance;
 
@@ -282,22 +301,39 @@ namespace KFramework.MonoGame
             }
         }
 
-        public void Reset()
+        public static void Reset()
         {
-            Init();
+            _touches.Clear();
+            _began.Clear();
+            _moved.Clear();
+            _ended.Clear();
+            _frame.Clear();
+            _startPositions.Clear();
+            _lastPositions.Clear();
+            _startTimes.Clear();
+            _longPressed.Clear();
         }
 
-        /// <summary>获取指定索引的触摸点</summary>
-        public KTouch GetTouch(int index) => _touches[index];
-
-        /// <summary>按 id 查找触摸点</summary>
-        public bool TryGetTouchById(int id, out KTouch touch)
+        /// <summary>解绑 JS 侧监听。</summary>
+        public static void Unbind()
         {
-            for (int i = 0; i < _touches.Count; i++)
+            JSBind_Input.UnbindTouch();
+            Reset();
+        }
+
+        // ===== 查询 =====
+
+        public static int TouchCount => _frame.Count;
+
+        public static KTouch GetTouch(int index) => _frame[index];
+
+        public static bool TryGetTouchById(int id, out KTouch touch)
+        {
+            for (int i = 0; i < _frame.Count; i++)
             {
-                if (_touches[i].Id == id)
+                if (_frame[i].Id == id)
                 {
-                    touch = _touches[i];
+                    touch = _frame[i];
                     return true;
                 }
             }
@@ -305,26 +341,22 @@ namespace KFramework.MonoGame
             return false;
         }
 
-        /// <summary>本帧是否有触摸开始</summary>
-        public bool AnyTouchBegan()
+        public static bool AnyTouchBegan()
         {
-            for (int i = 0; i < _touches.Count; i++)
-                if (_touches[i].IsBegan) return true;
+            for (int i = 0; i < _frame.Count; i++)
+                if (_frame[i].IsBegan) return true;
             return false;
         }
 
         /// <summary>双指缩放比例（相对上一帧）。少于两指时返回 1</summary>
-        public float GetPinchScale()
+        public static float GetPinchScale()
         {
-            if (_touches.Count < 2) return 1f;
+            if (_frame.Count < 2) return 1f;
 
-            KTouch a = _touches[0];
-            KTouch b = _touches[1];
+            KTouch a = _frame[0];
+            KTouch b = _frame[1];
 
-            Vector2 prevA = a.Position - a.Delta;
-            Vector2 prevB = b.Position - b.Delta;
-
-            float prevDist = Vector2.Distance(prevA, prevB);
+            float prevDist = Vector2.Distance(a.Position - a.Delta, b.Position - b.Delta);
             float currDist = Vector2.Distance(a.Position, b.Position);
 
             if (prevDist <= 0.0001f) return 1f;
@@ -332,19 +364,18 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>双指中心点，通常作为缩放锚点</summary>
-        public Vector2 GetPinchCenter()
+        public static Vector2 GetPinchCenter()
         {
-            if (_touches.Count == 0) return Vector2.Zero;
-            if (_touches.Count < 2) return _touches[0].Position;
-
-            return (_touches[0].Position + _touches[1].Position) * 0.5f;
+            if (_frame.Count == 0) return Vector2.Zero;
+            if (_frame.Count < 2) return _frame[0].Position;
+            return (_frame[0].Position + _frame[1].Position) * 0.5f;
         }
 
-        /// <summary>两指当前间距（像素）。少于两指时返回 0。</summary>
-        public float GetPinchDistance()
+        /// <summary>两指当前间距。少于两指返回 0。</summary>
+        public static float GetPinchDistance()
         {
-            if (_touches.Count < 2) return 0f;
-            return Vector2.Distance(_touches[0].Position, _touches[1].Position);
+            if (_frame.Count < 2) return 0f;
+            return Vector2.Distance(_frame[0].Position, _frame[1].Position);
         }
     }
 }

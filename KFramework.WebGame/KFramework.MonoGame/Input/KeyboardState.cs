@@ -37,7 +37,7 @@ namespace KFramework.MonoGame
         {
             get
             {
-                for (int i = 1; i < Input.KeyCount; i++)
+                for (int i = 1; i < Input_KeyBoard.KeyCount; i++)
                     if (_held[i]) return true;
                 return false;
             }
@@ -52,7 +52,7 @@ namespace KFramework.MonoGame
             int count = GetPressedKeyCount();
             var result = new Keys[count];
             int n = 0;
-            for (int i = 1; i < Input.KeyCount; i++)
+            for (int i = 1; i < Input_KeyBoard.KeyCount; i++)
                 if (_held[i]) result[n++] = (Keys)i;
             return result;
         }
@@ -61,7 +61,7 @@ namespace KFramework.MonoGame
         public int GetPressedKeyCount()
         {
             int count = 0;
-            for (int i = 1; i < Input.KeyCount; i++)
+            for (int i = 1; i < Input_KeyBoard.KeyCount; i++)
                 if (_held[i]) count++;
             return count;
         }

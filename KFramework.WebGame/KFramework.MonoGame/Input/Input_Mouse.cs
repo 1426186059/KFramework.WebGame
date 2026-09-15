@@ -1,128 +1,197 @@
 using System;
+using System.Buffers.Binary;
 
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 鼠标输入设备（基石层）。
+    /// 鼠标 —— 对原始输入事件的封装。
     ///
-    /// <para><see cref="MouseState"/> 是纯值类型，因此可以安全地跨帧缓存来做边沿检测
-    /// （与 KeyboardState 不同，后者持有 Input 的状态数组引用，不能跨帧缓存）。</para>
-    ///
-    /// <para>适配说明：本引擎只上报左 / 中 / 右三键，不支持 XButton；
-    /// 滚轮只有本帧增量；浏览器不允许脚本移动光标，因此没有 SetPosition 能力。</para>
+    /// 自己 poll 自己的事件队列（<c>input_mouse</c> 模块），维护位置 / 按键 / 滚轮增量。
+    /// 查询返回的是值类型快照，可以安全跨帧比较。
     /// </summary>
-    public class Input_Mouse
+    public static class Input_Mouse
     {
-        public bool Enabled { get; set; } = true;
-        public bool IsAvailable => !Input.IsMobileDevice;
+        // 事件类型（与 input_mouse.ts 一致）
+        private const int EvMouseDown = 3;
+        private const int EvMouseUp = 4;
+        private const int EvMouseMove = 5;
+        private const int EvWheel = 6;
 
-        private MouseState _prev;
-        private MouseState _curr;
-        private int _scrollValue;
+        private const int Stride = 20;           // 每条 5 个 i32
+        private const int MaxEvents = 64;
+        private const int MaxButtons = 8;
 
-        private static readonly MouseButton[] AllButtons =
+        private static readonly byte[] _buffer = new byte[4 + MaxEvents * Stride];
+
+        private static int _x, _y;
+        private static int _prevX, _prevY;
+        private static int _buttons, _prevButtons;
+        private static int _wheelDelta;
+        private static int _scrollValue;
+        private static readonly bool[] _pressed = new bool[MaxButtons];
+        private static readonly bool[] _released = new bool[MaxButtons];
+
+        /// <summary>按键按下（参数：按键、坐标）</summary>
+        public static event Action<MouseButton, Vector2> ButtonDown;
+
+        /// <summary>按键抬起</summary>
+        public static event Action<MouseButton, Vector2> ButtonUp;
+
+        /// <summary>滚轮滚动（本帧增量）</summary>
+        public static event Action<int> ScrollWheel;
+
+        private static int ReadInt(int offset)
+            => BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(offset, 4));
+
+        /// <summary>每帧调用一次：取回本模块的事件队列并更新状态。</summary>
+        public static void Poll()
         {
-            MouseButton.Left,
-            MouseButton.Right,
-            MouseButton.Middle,
-        };
+            Array.Clear(_pressed);
+            Array.Clear(_released);
+            _wheelDelta = 0;
+            _prevButtons = _buttons;
+            _prevX = _x;
+            _prevY = _y;
 
-        /// <summary>按键按下（参数：按键、屏幕坐标）</summary>
-        public event Action<MouseButton, Vector2> ButtonDown;
+            JSBind_Input.PollMouse(_buffer);
 
-        /// <summary>按键抬起（参数：按键、屏幕坐标）</summary>
-        public event Action<MouseButton, Vector2> ButtonUp;
+            int count = ReadInt(0);
+            if (count <= 0) return;
+            if (count > MaxEvents) count = MaxEvents;
 
-        /// <summary>滚轮滚动（参数：本帧增量）</summary>
-        public event Action<int> ScrollWheel;
-
-        public MouseState CurrentState => _curr;
-        public MouseState PreviousState => _prev;
-
-        /// <summary>当前屏幕坐标</summary>
-        public Vector2 Position => new Vector2(_curr.X, _curr.Y);
-
-        /// <summary>上一帧屏幕坐标</summary>
-        public Vector2 PreviousPosition => new Vector2(_prev.X, _prev.Y);
-
-        /// <summary>本帧位移</summary>
-        public Vector2 Delta => Position - PreviousPosition;
-
-        /// <summary>鼠标是否移动过</summary>
-        public bool Moved => _curr.X != _prev.X || _curr.Y != _prev.Y;
-
-        /// <summary>滚轮本帧增量</summary>
-        public int ScrollDelta => _curr.ScrollDelta;
-
-        /// <summary>滚轮累计值</summary>
-        public int ScrollValue => _scrollValue;
-
-        /// <summary>横向滚轮本帧增量 —— 浏览器端不支持，恒为 0</summary>
-        public int HorizontalScrollDelta => 0;
-
-        public void Init()
-        {
-            _curr = Input.GetMouseState();
-            _prev = _curr;
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            _prev = _curr;
-            _curr = Input.GetMouseState();
-            _scrollValue += ScrollDelta;
-
-            for (int i = 0; i < AllButtons.Length; i++)
+            for (int i = 0; i < count; i++)
             {
-                var btn = AllButtons[i];
-                if (GetButtonDown(btn)) ButtonDown?.Invoke(btn, Position);
-                else if (GetButtonUp(btn)) ButtonUp?.Invoke(btn, Position);
+                int off = 4 + i * Stride;
+                int type = ReadInt(off);
+                int button = ReadInt(off + 4);
+                int x = ReadInt(off + 8);
+                int y = ReadInt(off + 12);
+                int wheel = ReadInt(off + 16);
+
+                _x = x; _y = y;
+
+                switch (type)
+                {
+                    case EvMouseDown: SetButton(button, true); break;
+                    case EvMouseUp: SetButton(button, false); break;
+                    case EvWheel: _wheelDelta += wheel; break;
+                }
             }
 
-            int scroll = ScrollDelta;
-            if (scroll != 0) ScrollWheel?.Invoke(scroll);
+            var pos = Position;
+            for (int b = 0; b < MaxButtons; b++)
+            {
+                var btn = ToButton(b);
+                if (_pressed[b]) ButtonDown?.Invoke(btn, pos);
+                else if (_released[b]) ButtonUp?.Invoke(btn, pos);
+            }
+
+            if (_wheelDelta != 0) ScrollWheel?.Invoke(_wheelDelta);
+            _scrollValue += _wheelDelta;
         }
 
-        public void Reset()
+        private static void SetButton(int button, bool down)
         {
-            _curr = Input.GetMouseState();
-            _prev = _curr;
+            if (button < 0 || button >= MaxButtons) return;
+
+            int bit = 1 << button;
+            if (down)
+            {
+                if ((_buttons & bit) == 0) _pressed[button] = true;
+                _buttons |= bit;
+            }
+            else
+            {
+                if ((_buttons & bit) != 0) _released[button] = true;
+                _buttons &= ~bit;
+            }
         }
 
-        /// <summary>按键是否按住</summary>
-        public bool GetButton(MouseButton button) => GetState(_curr, button);
-
-        /// <summary>按键是否本帧刚按下</summary>
-        public bool GetButtonDown(MouseButton button)
-            => GetState(_curr, button) && !GetState(_prev, button);
-
-        /// <summary>按键是否本帧刚抬起</summary>
-        public bool GetButtonUp(MouseButton button)
-            => !GetState(_curr, button) && GetState(_prev, button);
-
-        public KPressState GetButtonState(MouseButton button)
+        public static void Reset()
         {
-            bool now = GetState(_curr, button);
-            bool before = GetState(_prev, button);
-            if (now && !before) return KPressState.Down;
-            if (now) return KPressState.Held;
-            if (before) return KPressState.Up;
+            _buttons = 0;
+            _prevButtons = 0;
+            _wheelDelta = 0;
+            Array.Clear(_pressed);
+            Array.Clear(_released);
+        }
+
+        /// <summary>解绑 JS 侧监听。</summary>
+        public static void Unbind()
+        {
+            JSBind_Input.UnbindMouse();
+            Reset();
+        }
+
+        // ===== 查询 =====
+
+        public static Vector2 Position => new Vector2(_x, _y);
+
+        /// <summary>本帧位移</summary>
+        public static Vector2 Delta => new Vector2(_x - _prevX, _y - _prevY);
+
+        /// <summary>本帧是否移动过</summary>
+        public static bool Moved => _x != _prevX || _y != _prevY;
+
+        public static int X => _x;
+        public static int Y => _y;
+
+        /// <summary>滚轮本帧增量</summary>
+        public static int ScrollDelta => _wheelDelta;
+
+        /// <summary>滚轮累计值</summary>
+        public static int ScrollValue => _scrollValue;
+
+        /// <summary>横向滚轮 —— 浏览器不支持，恒为 0</summary>
+        public static int HorizontalScrollDelta => 0;
+
+        public static bool GetButton(MouseButton button) => (Buttons & (1 << (int)button)) != 0;
+
+        public static bool GetButtonDown(MouseButton button)
+        {
+            int b = (int)button;
+            return b >= 0 && b < MaxButtons && _pressed[b];
+        }
+
+        public static bool GetButtonUp(MouseButton button)
+        {
+            int b = (int)button;
+            return b >= 0 && b < MaxButtons && _released[b];
+        }
+
+        public static KPressState GetButtonState(MouseButton button)
+        {
+            if (GetButtonDown(button)) return KPressState.Down;
+            if (GetButton(button)) return KPressState.Held;
+            if (GetButtonUp(button)) return KPressState.Up;
             return KPressState.None;
         }
 
+        /// <summary>本帧按键位图（供快照用）</summary>
+        public static int Buttons => _buttons;
+
+        /// <summary>上一帧按键位图（供快照用）</summary>
+        public static int PreviousButtons => _prevButtons;
+
+        /// <summary>是否在指定区域内</summary>
+        public static bool IsInside(int width, int height)
+            => _x >= 0 && _x < width && _y >= 0 && _y < height;
+
         /// <summary>设置鼠标位置 —— 浏览器不允许脚本移动光标，空实现</summary>
-        public void SetPosition(int x, int y)
+        public static void SetPosition(int x, int y)
         {
         }
 
-        private static bool GetState(MouseState state, MouseButton button)
+        private static MouseButton ToButton(int index)
         {
-            return button switch
+            return index switch
             {
-                MouseButton.Left => state.LeftButton,
-                MouseButton.Right => state.RightButton,
-                MouseButton.Middle => state.MiddleButton,
-                _ => false,
+                0 => MouseButton.Left,
+                1 => MouseButton.Right,
+                2 => MouseButton.Middle,
+                3 => MouseButton.XButton1,
+                4 => MouseButton.XButton2,
+                _ => MouseButton.Left,
             };
         }
     }

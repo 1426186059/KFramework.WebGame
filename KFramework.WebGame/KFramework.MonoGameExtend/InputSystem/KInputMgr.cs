@@ -1,110 +1,58 @@
-﻿using System.Collections.Generic;
-using KFramework.MonoGame;
+﻿using KFramework.MonoGame;
+using System;
 
 namespace KFramework.MonoGameExtend
 {
     /// <summary>
-    /// 输入总调度器 —— 统一管理各输入设备，每帧按顺序轮询
+    /// 输入总调度（上层便捷入口）。
+    ///
+    /// <para>键盘 / 鼠标 / 触摸的采集与状态都在基石层：
+    /// <see cref="Input_KeyBoard"/> / <see cref="Input_Mouse"/> / <see cref="Input_Touch"/>，
+    /// 三者各自 poll 自己的事件队列（一帧 3 次跨界，输入是低频操作，完全可接受）。</para>
+    ///
+    /// <para>因此本类不再维护"设备列表 + 轮询"，只负责驱动指针分发（UI 点击），
+    /// 并把查询转发到基石封装 —— 保持原有调用方式不变。</para>
     /// </summary>
     public static class KInputMgr
     {
-        private static readonly List<IKInputDevice> mDeviceList = new List<IKInputDevice>();
-
-        /// <summary>键盘</summary>
-        public static Input_KeyBoard Keyboard { get; private set; }
-
-        /// <summary>鼠标</summary>
-        public static Input_Mouse Mouse { get; private set; }
-
-        /// <summary>触摸</summary>
-        public static Input_Touch Touch { get; private set; }
-
         /// <summary>指针事件分发器</summary>
         public static KPointerDispatcher Pointer { get; private set; }
 
-        /// <summary>总开关，关闭后所有设备停止轮询</summary>
+        /// <summary>总开关</summary>
         public static bool Enabled { get; set; } = true;
 
         /// <summary>是否已初始化</summary>
         public static bool Inited { get; private set; }
 
-        /// <summary>
-        /// 初始化，在 KSceneMgr.Init 之前调用
-        /// </summary>
         public static void Init()
         {
             if (Inited) return;
 
-            mDeviceList.Clear();
-
-            Keyboard = new Input_KeyBoard();
-            Mouse = new Input_Mouse();
-            Touch = new Input_Touch();
-
-            // 分发器依赖鼠标与触摸，必须排在它们之后更新
-            Pointer = new KPointerDispatcher(Mouse, Touch);
-
-            AddDevice(Keyboard);
-            AddDevice(Mouse);
-            AddDevice(Touch);
-            AddDevice(Pointer);
+            Pointer = new KPointerDispatcher();
+            Pointer.Init();
 
             Inited = true;
         }
 
         /// <summary>
-        /// 每帧调用一次，放在其它逻辑 Update 之前
+        /// 每帧调用一次，放在其它逻辑 Update 之前。
+        /// 注意：键盘 / 鼠标 / 触摸的事件由 <see cref="Input.Poll"/> 各模块自行取回（Game 每帧调用），
+        /// 这里只驱动指针分发。
         /// </summary>
         public static void Update(GameTime gameTime)
         {
             if (!Enabled || !Inited) return;
 
-            for (int i = 0; i < mDeviceList.Count; i++)
-            {
-                IKInputDevice device = mDeviceList[i];
-                if (!device.Enabled) continue;
-                if (!device.IsAvailable) continue;
-                device.Update(gameTime);
-            }
+            Pointer?.Update(gameTime);
         }
 
-        /// <summary>重置所有设备状态，切场景或窗口失焦时调用</summary>
         public static void Reset()
         {
-            for (int i = 0; i < mDeviceList.Count; i++)
-                mDeviceList[i].Reset();
+            Input.Reset();
+            Pointer?.Reset();
         }
 
-        /// <summary>添加自定义设备（会立即 Init）</summary>
-        public static void AddDevice(IKInputDevice device)
-        {
-            if (device == null) return;
-            if (mDeviceList.Contains(device)) return;
-            device.Init();
-            mDeviceList.Add(device);
-        }
-
-        /// <summary>移除设备</summary>
-        public static void RemoveDevice(IKInputDevice device)
-        {
-            if (device == null) return;
-            mDeviceList.Remove(device);
-        }
-
-        /// <summary>按名字查找设备</summary>
-        public static IKInputDevice GetDevice(string name)
-        {
-            for (int i = 0; i < mDeviceList.Count; i++)
-                if (mDeviceList[i].Name == name) return mDeviceList[i];
-            return null;
-        }
-
-        // ===== 常用快捷方法 =====
-
-        /// <summary>
-        /// 注册可点击对象。允许在 Init 之前调用（如 UI 在构造函数里注册），
-        /// 此时会自动完成初始化，避免注册丢失
-        /// </summary>
+        /// <summary>注册可点击对象。</summary>
         public static void Register(IClickable clickable)
         {
             if (!Inited) Init();
@@ -114,34 +62,40 @@ namespace KFramework.MonoGameExtend
         /// <summary>注销可点击对象</summary>
         public static void Unregister(IClickable clickable) => Pointer?.Unregister(clickable);
 
-        /// <summary>按键是否按住</summary>
-        public static bool GetKey(Keys key) => Keyboard != null && Keyboard.GetKey(key);
+        // ===== 键盘 =====
 
-        /// <summary>按键是否本帧刚按下</summary>
-        public static bool GetKeyDown(Keys key) => Keyboard != null && Keyboard.GetKeyDown(key);
+        public static bool GetKey(Keys key) => Input_KeyBoard.GetKey(key);
+        public static bool GetKeyDown(Keys key) => Input_KeyBoard.GetKeyDown(key);
+        public static bool GetKeyUp(Keys key) => Input_KeyBoard.GetKeyUp(key);
 
-        /// <summary>按键是否本帧刚抬起</summary>
-        public static bool GetKeyUp(Keys key) => Keyboard != null && Keyboard.GetKeyUp(key);
+        // ===== 鼠标 =====
 
-        /// <summary>鼠标键是否按住</summary>
-        public static bool GetMouseButton(MouseButton button) => Mouse != null && Mouse.GetButton(button);
+        public static bool GetMouseButton(MouseButton button) => Input_Mouse.GetButton(button);
+        public static bool GetMouseButtonDown(MouseButton button) => Input_Mouse.GetButtonDown(button);
+        public static bool GetMouseButtonUp(MouseButton button) => Input_Mouse.GetButtonUp(button);
 
-        /// <summary>鼠标键是否本帧刚按下</summary>
-        public static bool GetMouseButtonDown(MouseButton button) => Mouse != null && Mouse.GetButtonDown(button);
-
-        /// <summary>鼠标键是否本帧刚抬起</summary>
-        public static bool GetMouseButtonUp(MouseButton button) => Mouse != null && Mouse.GetButtonUp(button);
-
-        // ===== Unity 风格重载：0=左键 1=右键 2=中键 =====
-
-        /// <summary>鼠标键是否按住，索引同 Unity：0 左 1 右 2 中</summary>
+        // Unity 风格重载：0=左键 1=右键 2=中键
         public static bool GetMouseButton(int index) => GetMouseButton(ToButton(index));
-
-        /// <summary>鼠标键是否本帧刚按下，索引同 Unity：0 左 1 右 2 中</summary>
         public static bool GetMouseButtonDown(int index) => GetMouseButtonDown(ToButton(index));
-
-        /// <summary>鼠标键是否本帧刚抬起，索引同 Unity：0 左 1 右 2 中</summary>
         public static bool GetMouseButtonUp(int index) => GetMouseButtonUp(ToButton(index));
+
+        // ===== 触摸 =====
+
+        public static int TouchCount => Input_Touch.TouchCount;
+        public static KTouch GetTouch(int index) => Input_Touch.GetTouch(index);
+
+        // ===== 聚合查询 =====
+
+        public static bool AnyKey => Input_KeyBoard.AnyKey;
+        public static bool AnyKeyDown => Input_KeyBoard.AnyKeyDown;
+        public static Vector2 MousePosition => Input_Mouse.Position;
+        public static int ScrollDelta => Input_Mouse.ScrollDelta;
+        public static bool IsPointerOverUI => Pointer != null && Pointer.IsPointerOverUI;
+
+        public static Vector2 GetMoveAxis() => Input_KeyBoard.GetAxis();
+
+        /// <summary>退出键：Esc</summary>
+        public static bool GetQuitPressed() => Input_KeyBoard.GetKeyDown(Keys.Escape);
 
         private static MouseButton ToButton(int index)
         {
@@ -155,59 +109,5 @@ namespace KFramework.MonoGameExtend
                 _ => MouseButton.Left,
             };
         }
-
-        /// <summary>是否有任意键按住（含鼠标），同 Unity Input.anyKey</summary>
-        public static bool AnyKey
-        {
-            get
-            {
-                if (Keyboard != null && Keyboard.AnyKey) return true;
-                if (Mouse != null && (Mouse.GetButton(MouseButton.Left)
-                    || Mouse.GetButton(MouseButton.Right)
-                    || Mouse.GetButton(MouseButton.Middle))) return true;
-                return false;
-            }
-        }
-
-        /// <summary>是否有任意键本帧刚按下，同 Unity Input.anyKeyDown</summary>
-        public static bool AnyKeyDown
-        {
-            get
-            {
-                if (Keyboard != null && Keyboard.AnyKeyDown) return true;
-                if (Mouse != null && (Mouse.GetButtonDown(MouseButton.Left)
-                    || Mouse.GetButtonDown(MouseButton.Right)
-                    || Mouse.GetButtonDown(MouseButton.Middle))) return true;
-                return false;
-            }
-        }
-
-        /// <summary>触摸点数量，同 Unity Input.touchCount</summary>
-        public static int TouchCount => Touch != null ? Touch.TouchCount : 0;
-
-        /// <summary>获取触摸点，同 Unity Input.GetTouch(i)</summary>
-        public static KTouch GetTouch(int index) => Touch.GetTouch(index);
-
-        /// <summary>鼠标屏幕坐标</summary>
-        public static Vector2 MousePosition => Mouse != null ? Mouse.Position : Vector2.Zero;
-
-        /// <summary>鼠标滚轮本帧增量</summary>
-        public static int ScrollDelta => Mouse != null ? Mouse.ScrollDelta : 0;
-
-        /// <summary>指针是否停在 UI 上</summary>
-        public static bool IsPointerOverUI => Pointer != null && Pointer.IsPointerOverUI;
-
-        /// <summary>
-        /// 移动轴：键盘 WASD / 方向键，Y 向下为正
-        /// </summary>
-        public static Vector2 GetMoveAxis()
-            => Keyboard != null ? Keyboard.GetAxis() : Vector2.Zero;
-
-        /// <summary>
-        /// 退出键：Esc
-        /// </summary>
-        public static bool GetQuitPressed()
-            => Keyboard != null && Keyboard.GetKeyDown(Keys.Escape);
-
     }
 }
