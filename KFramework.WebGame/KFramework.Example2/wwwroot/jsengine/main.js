@@ -7,6 +7,9 @@ import * as gl from './gl.js';
 import * as platform from './platform.js';
 import * as audio from './audio.js';
 import * as text from './text.js';
+import * as inputKeyboard from './input_keyboard.js';
+import * as inputMouse from './input_mouse.js';
+import * as inputTouch from './input_touch.js';
 function findHost(exports) {
     if (!exports)
         return undefined;
@@ -39,6 +42,9 @@ setModuleImports('gl', gl);
 setModuleImports('platform', platform);
 setModuleImports('audio', audio);
 setModuleImports('text', text);
+setModuleImports('input_keyboard', inputKeyboard);
+setModuleImports('input_mouse', inputMouse);
+setModuleImports('input_touch', inputTouch);
 const config = getConfig();
 /**
  * 帧回调 JSBind_GameHost.Frame 定义在 KFramework.MonoGame 程序集里，
