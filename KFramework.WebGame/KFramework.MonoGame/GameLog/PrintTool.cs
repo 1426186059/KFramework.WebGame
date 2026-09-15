@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text;
 
-namespace KFramework.MonoGameExtend
+namespace KFramework.MonoGame
 {
     public static class PrintTool
     {
@@ -63,7 +63,7 @@ namespace KFramework.MonoGameExtend
         {
 #if DEBUG
             string content = GetStr(data1, data2, data3, data4, data5, data6, data7, data8, data9);
-            Debug.WriteLine($"<color=yellow>{content}</color>");
+            Console.WriteLine($"<color=yellow>{content}</color>");
 #endif
         }
 
@@ -71,14 +71,14 @@ namespace KFramework.MonoGameExtend
         {
 #if DEBUG
             string content = string.Format(formatStr, data1, data2, data3, data4, data5, data6, data7, data8, data9);
-            Debug.WriteLine($"<color=yellow>{content}</color>");
+            Console.WriteLine($"<color=yellow>{content}</color>");
 #endif
         }
 
         public static void LogJsonObj(object data)
         {
 #if DEBUG
-            Debug.WriteLine(JsonTool.ToJson(data));
+            Console.WriteLine(JsonTool.ToJson(data));
 #endif
         }
 
@@ -86,15 +86,7 @@ namespace KFramework.MonoGameExtend
         {
 #if DEBUG
             string content = GetStr(data1, data2, data3, data4, data5, data6, data7, data8, data9);
-            Debug.WriteLine(content);
-#endif
-        }
-
-        public static void LogFormat(string formatStr, object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
-        {
-#if DEBUG
-            string content = string.Format(formatStr, data1, data2, data3, data4, data5, data6, data7, data8, data9);
-            Debug.WriteLine(content);
+            Console.WriteLine(content);
 #endif
         }
 
@@ -102,15 +94,7 @@ namespace KFramework.MonoGameExtend
         {
 #if DEBUG
             string content = GetStr(data1, data2, data3, data4, data5, data6, data7, data8, data9);
-            Debug.WriteLine(content);
-#endif
-        }
-
-        public static void LogErrorFormat(string formatStr, object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
-        {
-#if DEBUG
-            string content = string.Format(formatStr, data1, data2, data3, data4, data5, data6, data7, data8, data9);
-            Debug.WriteLine(content);
+            Console.Error.WriteLine(content);
 #endif
         }
 
@@ -118,14 +102,6 @@ namespace KFramework.MonoGameExtend
         {
 #if DEBUG
             string content = GetStr(data1, data2, data3, data4, data5, data6, data7, data8, data9);
-            Debug.Assert(isTrue, content);
-#endif
-        }
-
-        public static void AssertFormat(bool isTrue, string formatStr, object data1 = null, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
-        {
-#if DEBUG
-            string content = string.Format(formatStr, data1, data2, data3, data4, data5, data6, data7, data8, data9);
             Debug.Assert(isTrue, content);
 #endif
         }

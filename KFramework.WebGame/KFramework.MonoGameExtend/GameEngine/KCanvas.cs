@@ -81,8 +81,9 @@ namespace KFramework.MonoGameExtend
         {
             PrintTool.Log("OnWindowSizeChanged");
             DoChange();
-
+            Viewport Screent = KSceneMgr.Game.GraphicsDevice.Viewport;
             PrintTool.Log("KCanvas Size: ", Size);
+            PrintTool.Log("Viewport Size: ", new Vector2(Screent.Width, Screent.Height));
             PrintTool.Log("KCanvas LocalPosition: " + LocalPosition);
             PrintTool.Log("KCanvas WorldPosition: " + WorldPosition);
             PrintTool.Log("KCanvas ScreenPosition: " + ScreenPosition);
@@ -152,6 +153,12 @@ namespace KFramework.MonoGameExtend
 
                 DrawWidget(v);
             }
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            KSceneMgr.ScreenSizeChanged -= OnWindowSizeChanged;
         }
     }
 }
