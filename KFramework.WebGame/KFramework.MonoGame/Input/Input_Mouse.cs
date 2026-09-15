@@ -1,24 +1,25 @@
-﻿using KFramework.MonoGame;
 using System;
 
-namespace KFramework.MonoGameExtend
+namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 鼠标输入设备。
-    /// 适配说明：KFramework.MonoGame 的 MouseState 用 bool 表示按键（无 ButtonState 枚举），
-    /// 滚轮只提供本帧增量（无累计值 / 无横向滚轮），也不支持 XButton 与设置光标位置。
+    /// 鼠标输入设备（基石层）。
+    ///
+    /// <para><see cref="MouseState"/> 是纯值类型，因此可以安全地跨帧缓存来做边沿检测
+    /// （与 KeyboardState 不同，后者持有 Input 的状态数组引用，不能跨帧缓存）。</para>
+    ///
+    /// <para>适配说明：本引擎只上报左 / 中 / 右三键，不支持 XButton；
+    /// 滚轮只有本帧增量；浏览器不允许脚本移动光标，因此没有 SetPosition 能力。</para>
     /// </summary>
-    public class KMouseInput : IKInputDevice
+    public class Input_Mouse
     {
-        public string Name => "Mouse";
         public bool Enabled { get; set; } = true;
-        public bool IsAvailable => !GameConst.IsMobile;
+        public bool IsAvailable => !Input.IsMobileDevice;
 
         private MouseState _prev;
         private MouseState _curr;
         private int _scrollValue;
 
-        // KFramework.MonoGame 只上报左 / 中 / 右三键，XButton 不在其中。
         private static readonly MouseButton[] AllButtons =
         {
             MouseButton.Left,
@@ -53,7 +54,7 @@ namespace KFramework.MonoGameExtend
         /// <summary>滚轮本帧增量</summary>
         public int ScrollDelta => _curr.ScrollDelta;
 
-        /// <summary>滚轮累计值（KFramework.MonoGame 只给增量，这里自行累加）</summary>
+        /// <summary>滚轮累计值</summary>
         public int ScrollValue => _scrollValue;
 
         /// <summary>横向滚轮本帧增量 —— 浏览器端不支持，恒为 0</summary>
@@ -107,13 +108,6 @@ namespace KFramework.MonoGameExtend
             if (now) return KPressState.Held;
             if (before) return KPressState.Up;
             return KPressState.None;
-        }
-
-        /// <summary>鼠标是否在窗口内</summary>
-        public bool IsInsideWindow()
-        {
-            var vp = KSceneMgr.Game.GraphicsDevice.Viewport;
-            return _curr.X >= 0 && _curr.X < vp.Width && _curr.Y >= 0 && _curr.Y < vp.Height;
         }
 
         /// <summary>设置鼠标位置 —— 浏览器不允许脚本移动光标，空实现</summary>

@@ -8,6 +8,7 @@ import * as gl from './gl.js';
 import * as platform from './platform.js';
 import * as audio from './audio.js';
 import * as text from './text.js';
+import * as input from './input.js';
 
 interface GameHost {
     Frame(timestampMs: number): void;
@@ -51,6 +52,7 @@ setModuleImports('gl', gl);
 setModuleImports('platform', platform);
 setModuleImports('audio', audio);
 setModuleImports('text', text);
+setModuleImports('input', input);
 
 const config = getConfig();
 

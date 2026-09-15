@@ -1,20 +1,20 @@
-﻿using KFramework.MonoGame;
 using System;
 using System.Collections.Generic;
 
-namespace KFramework.MonoGameExtend
+namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 键盘输入设备
+    /// 键盘输入设备（基石层）。
+    ///
+    /// <para>本类只做「事件分发与查询封装」，不保存状态：
+    /// 按键电平与按下/抬起边沿全部由 <see cref="Input"/> 依据浏览器事件维护。
+    /// 这样即使同一帧内按下又抬起，也能被正确识别（用电平差分会漏掉）。</para>
     /// </summary>
-    public class KKeyboardInput : IKInputDevice
+    public class Input_KeyBoard
     {
         public string Name => "Keyboard";
         public bool Enabled { get; set; } = true;
-        public bool IsAvailable => !GameConst.IsMobile;
-
-        private KeyboardState _prev;
-        private KeyboardState _curr;
+        public bool IsAvailable => !Input.IsMobileDevice;
 
         /// <summary>本帧刚按下的按键</summary>
         private readonly List<Keys> _pressedThisFrame = new List<Keys>();
@@ -28,79 +28,67 @@ namespace KFramework.MonoGameExtend
         /// <summary>任意键抬起事件</summary>
         public event Action<Keys> KeyUp;
 
-        public KeyboardState CurrentState => _curr;
-        public KeyboardState PreviousState => _prev;
+        public KeyboardState CurrentState => Input.GetKeyboardState();
 
         public IReadOnlyList<Keys> PressedThisFrame => _pressedThisFrame;
         public IReadOnlyList<Keys> ReleasedThisFrame => _releasedThisFrame;
 
         public void Init()
         {
-            _curr = Input.GetKeyboardState();
-            _prev = _curr;
+            _pressedThisFrame.Clear();
+            _releasedThisFrame.Clear();
         }
 
         public void Update(GameTime gameTime)
         {
-            _prev = _curr;
-            _curr = Input.GetKeyboardState();
-
             _pressedThisFrame.Clear();
             _releasedThisFrame.Clear();
 
-            // 本帧按下
-            var currKeys = _curr.GetPressedKeys();
-            for (int i = 0; i < currKeys.Length; i++)
+            // 直接查 Input 的边沿数组，遍历 256 个键槽，零分配
+            for (int i = 1; i < Input.KeyCount; i++)
             {
-                if (_prev.IsKeyUp(currKeys[i]))
-                {
-                    _pressedThisFrame.Add(currKeys[i]);
-                    KeyDown?.Invoke(currKeys[i]);
-                }
-            }
+                Keys key = (Keys)i;
 
-            // 本帧抬起
-            var prevKeys = _prev.GetPressedKeys();
-            for (int i = 0; i < prevKeys.Length; i++)
-            {
-                if (_curr.IsKeyUp(prevKeys[i]))
+                if (Input.IsKeyPressed(key))
                 {
-                    _releasedThisFrame.Add(prevKeys[i]);
-                    KeyUp?.Invoke(prevKeys[i]);
+                    _pressedThisFrame.Add(key);
+                    KeyDown?.Invoke(key);
+                }
+                else if (Input.IsKeyReleased(key))
+                {
+                    _releasedThisFrame.Add(key);
+                    KeyUp?.Invoke(key);
                 }
             }
         }
 
         public void Reset()
         {
-            _curr = Input.GetKeyboardState();
-            _prev = _curr;
             _pressedThisFrame.Clear();
             _releasedThisFrame.Clear();
+            Input.Reset();
         }
 
         /// <summary>按键是否处于按住状态</summary>
-        public bool GetKey(Keys key) => _curr.IsKeyDown(key);
+        public bool GetKey(Keys key) => Input.IsKeyDown(key);
 
         /// <summary>按键是否本帧刚按下</summary>
-        public bool GetKeyDown(Keys key) => _curr.IsKeyDown(key) && _prev.IsKeyUp(key);
+        public bool GetKeyDown(Keys key) => Input.IsKeyPressed(key);
 
         /// <summary>按键是否本帧刚抬起</summary>
-        public bool GetKeyUp(Keys key) => _curr.IsKeyUp(key) && _prev.IsKeyDown(key);
+        public bool GetKeyUp(Keys key) => Input.IsKeyReleased(key);
 
         /// <summary>是否有任意键按住</summary>
-        public bool AnyKey => _curr.GetPressedKeyCount() > 0;
+        public bool AnyKey => Input.GetKeyboardState().AnyKeyDown;
 
         /// <summary>是否有任意键本帧刚按下</summary>
         public bool AnyKeyDown => _pressedThisFrame.Count > 0;
 
         public KPressState GetKeyState(Keys key)
         {
-            bool now = _curr.IsKeyDown(key);
-            bool before = _prev.IsKeyDown(key);
-            if (now && !before) return KPressState.Down;
-            if (now) return KPressState.Held;
-            if (before) return KPressState.Up;
+            if (Input.IsKeyPressed(key)) return KPressState.Down;
+            if (Input.IsKeyDown(key)) return KPressState.Held;
+            if (Input.IsKeyReleased(key)) return KPressState.Up;
             return KPressState.None;
         }
 

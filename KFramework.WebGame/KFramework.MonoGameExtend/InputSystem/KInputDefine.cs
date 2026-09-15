@@ -3,17 +3,9 @@ using System;
 
 namespace KFramework.MonoGameExtend
 {
-    /// <summary>
-    /// 鼠标按键
-    /// </summary>
-    public enum MouseButton
-    {
-        Left,
-        Right,
-        Middle,
-        XButton1,
-        XButton2,
-    }
+    // MouseButton / KPressState / IKInputDevice 已下沉到基石层
+    // KFramework.MonoGame/Input/InputDefine.cs —— 设备实现都在基石层，接口不能反向依赖上层。
+    // 这里只保留指针分发（鼠标 / 触摸统一成指针事件）相关的定义。
 
     /// <summary>
     /// 指针来源设备
@@ -22,21 +14,6 @@ namespace KFramework.MonoGameExtend
     {
         Mouse,
         Touch,
-    }
-
-    /// <summary>
-    /// 按键的瞬时状态
-    /// </summary>
-    public enum KPressState
-    {
-        /// <summary>未按下</summary>
-        None,
-        /// <summary>本帧刚按下</summary>
-        Down,
-        /// <summary>持续按住</summary>
-        Held,
-        /// <summary>本帧刚抬起</summary>
-        Up,
     }
 
     /// <summary>
@@ -104,29 +81,5 @@ namespace KFramework.MonoGameExtend
 
         /// <summary>指针移出</summary>
         void OnPointerExit(KPointerEventArgs args);
-    }
-
-    /// <summary>
-    /// 输入设备统一接口，由 KInputMgr 调度
-    /// </summary>
-    public interface IKInputDevice
-    {
-        /// <summary>设备名，用于查询与调试</summary>
-        string Name { get; }
-
-        /// <summary>是否启用（禁用后不再轮询）</summary>
-        bool Enabled { get; set; }
-
-        /// <summary>当前平台是否可用</summary>
-        bool IsAvailable { get; }
-
-        /// <summary>初始化，KInputMgr 创建时调用一次</summary>
-        void Init();
-
-        /// <summary>每帧轮询一次</summary>
-        void Update(GameTime gameTime);
-
-        /// <summary>重置内部状态（如切场景、失焦）</summary>
-        void Reset();
     }
 }

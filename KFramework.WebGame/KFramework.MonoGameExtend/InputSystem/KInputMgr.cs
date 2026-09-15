@@ -11,13 +11,13 @@ namespace KFramework.MonoGameExtend
         private static readonly List<IKInputDevice> mDeviceList = new List<IKInputDevice>();
 
         /// <summary>键盘</summary>
-        public static KKeyboardInput Keyboard { get; private set; }
+        public static Input_KeyBoard Keyboard { get; private set; }
 
         /// <summary>鼠标</summary>
-        public static KMouseInput Mouse { get; private set; }
+        public static Input_Mouse Mouse { get; private set; }
 
         /// <summary>触摸</summary>
-        public static KTouchInput Touch { get; private set; }
+        public static Input_Touch Touch { get; private set; }
 
         /// <summary>指针事件分发器</summary>
         public static KPointerDispatcher Pointer { get; private set; }
@@ -37,9 +37,9 @@ namespace KFramework.MonoGameExtend
 
             mDeviceList.Clear();
 
-            Keyboard = new KKeyboardInput();
-            Mouse = new KMouseInput();
-            Touch = new KTouchInput();
+            Keyboard = new Input_KeyBoard();
+            Mouse = new Input_Mouse();
+            Touch = new Input_Touch();
 
             // 分发器依赖鼠标与触摸，必须排在它们之后更新
             Pointer = new KPointerDispatcher(Mouse, Touch);

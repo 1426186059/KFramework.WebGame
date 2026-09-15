@@ -29,11 +29,6 @@ namespace KFramework.MonoGame
         [JSImport("getBaseUri", "platform")]
         internal static partial string GetBaseUri();
 
-        /// <summary>
-        /// 一次性拉回本帧的原始输入状态（键盘 / 鼠标 / 触摸），布局见 <c>KFramework.MonoGame.Layout</c>。
-        /// 放在 platform 模块而不单独开 input 模块，是为了把状态收集合并成一次跨界调用。
-        /// </summary>
-        [JSImport("pollInput", "platform")]
-        internal static partial void PollInput([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
+        // 输入相关的绑定已移到 JSBind_Input（对应独立的 "input" 模块）
     }
 }

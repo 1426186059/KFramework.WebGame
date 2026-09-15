@@ -13,8 +13,8 @@ namespace KFramework.MonoGameExtend
         public bool Enabled { get; set; } = true;
         public bool IsAvailable => true;
 
-        private readonly KMouseInput _mouse;
-        private readonly KTouchInput _touch;
+        private readonly Input_Mouse _mouse;
+        private readonly Input_Touch _touch;
 
         private readonly List<IClickable> _clickables = new List<IClickable>();
         private bool _sortDirty;
@@ -53,7 +53,7 @@ namespace KFramework.MonoGameExtend
             MouseButton.Middle,
         };
 
-        public KPointerDispatcher(KMouseInput mouse, KTouchInput touch)
+        public KPointerDispatcher(Input_Mouse mouse, Input_Touch touch)
         {
             _mouse = mouse;
             _touch = touch;
