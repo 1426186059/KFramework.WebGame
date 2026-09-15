@@ -16,8 +16,9 @@ namespace KFramework.MonoGameExtend
             _device = device;
         }
 
-        public SpriteSheet Load(AssetBundle mBundle, string jsonPath, CancellationToken cancellationToken = default)
+        public SpriteSheet Load(string jsonPath)
         {
+            AssetBundle mBundle = _bundle;
             string dir = Path.GetDirectoryName(jsonPath);
 
             // KFramework.MonoGame 没有文件系统、TitleContainer 与 .xnb 管线：
