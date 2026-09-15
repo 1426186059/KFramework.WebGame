@@ -6,7 +6,7 @@ namespace KFramework.MonoGameExtend
     public static class PrintTool
     {
         private static readonly StringBuilder mStringBuilder = new StringBuilder();
-        private const string ConcatStr = "___";
+        private const string ConcatStr = "_";
 
         private static string GetStr(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
