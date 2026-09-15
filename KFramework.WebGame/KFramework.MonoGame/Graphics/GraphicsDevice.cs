@@ -65,7 +65,7 @@ namespace KFramework.MonoGame
             JSBind_GL.BlendEquation(JSBind_GL.FUNC_ADD);
             SetBlendState(BlendState.NonPremultiplied);
 
-            Console.WriteLine($"[KFramework.MonoGame] WebGL2 就绪 | {Renderer} | 画布 {Viewport.Width}x{Viewport.Height} | 最大纹理 {MaxTextureSize}");
+            PrintTool.Log($"[KFramework.MonoGame] WebGL2 就绪 | {Renderer} | 画布 {Viewport.Width}x{Viewport.Height} | 最大纹理 {MaxTextureSize}");
         }
 
         private void ConfigureAttributes()

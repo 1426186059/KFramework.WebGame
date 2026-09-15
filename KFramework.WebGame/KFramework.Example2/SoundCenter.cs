@@ -20,7 +20,7 @@ internal sealed class SoundCenter
             if (bundle.TryGetAsset("audio/" + key, out byte[]? bytes) && bytes is not null)
                 center._effects[key] = SoundEffect.FromBytes(bytes, "audio/wav");
             else
-                Console.WriteLine($"[KFramework.MonoGame] 缺少音效资源：audio/{key}");
+                PrintTool.Log($"[KFramework.MonoGame] 缺少音效资源：audio/{key}");
         }
         return center;
     }

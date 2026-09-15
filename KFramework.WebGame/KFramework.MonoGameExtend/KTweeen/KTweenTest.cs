@@ -11,38 +11,38 @@ namespace KFramework.MonoGameExtend
     {
         static void Test1()
         {
-            Console.WriteLine("[Test1] 单段 moveX");
+            PrintTool.Log("[Test1] 单段 moveX");
             KTransform obj = new KTransform();
             KTweenEx.moveX(obj, 5, 1.0f);
 
             if (Math.Abs(obj.LocalPosition.X - 5) < 0.0001f)
-                Console.WriteLine("    PASS: x=" + obj.LocalPosition.X);
+                PrintTool.Log("    PASS: x=" + obj.LocalPosition.X);
             else
-                Console.WriteLine("    FAIL: x=" + obj.LocalPosition.X);
+                PrintTool.Log("    FAIL: x=" + obj.LocalPosition.X);
         }
 
         static void Test2()
         {
-            Console.WriteLine("[Test2] 链式两段 moveX");
+            PrintTool.Log("[Test2] 链式两段 moveX");
             KTransform obj = new KTransform();
             KTweenEx.moveX(obj, 5, 1.0f).AppendTween(KTweenEx.moveX(obj, 10, 1.0f));
 
             if (Math.Abs(obj.LocalPosition.X - 10) < 0.0001f)
-                Console.WriteLine("    PASS: x=" + obj.LocalPosition.X);
+                PrintTool.Log("    PASS: x=" + obj.LocalPosition.X);
             else
-                Console.WriteLine("    FAIL: x=" + obj.LocalPosition.X);
+                PrintTool.Log("    FAIL: x=" + obj.LocalPosition.X);
         }
 
         static void Test3()
         {
-            Console.WriteLine("[Test3] delayedCall 回调");
+            PrintTool.Log("[Test3] delayedCall 回调");
             bool called = false;
             KTween.delayedCall(0.5f, () => called = true);
 
             if (called)
-                Console.WriteLine("    PASS: finishFunc 已触发");
+                PrintTool.Log("    PASS: finishFunc 已触发");
             else
-                Console.WriteLine("    FAIL: finishFunc 未触发");
+                PrintTool.Log("    FAIL: finishFunc 未触发");
         }
 
         public static void RunAll()

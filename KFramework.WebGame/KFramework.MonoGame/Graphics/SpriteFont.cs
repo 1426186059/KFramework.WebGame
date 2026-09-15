@@ -59,7 +59,7 @@ namespace KFramework.MonoGame
             Ascent = metrics[2];
             LineHeight = metrics[1];
 
-            Console.WriteLine($"[SpriteFont] 字号 {Size} | 基线 {Ascent} | 行高 {LineHeight}");
+            PrintTool.Log($"[SpriteFont] 字号 {Size} | 基线 {Ascent} | 行高 {LineHeight}");
         }
 
         /// <summary>Measure 的 MonoGame 命名别名。</summary>

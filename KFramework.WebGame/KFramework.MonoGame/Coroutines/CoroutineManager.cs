@@ -80,7 +80,7 @@ namespace KFramework.MonoGame
                     catch (Exception ex)
                     {
                         // 对齐 Unity：协程内抛异常会被捕获并记录，不会中断整个玩家循环。
-                        Console.WriteLine($"[Coroutine] 协程执行异常: {ex}");
+                        PrintTool.Log($"[Coroutine] 协程执行异常: {ex}");
                         c.IsDone = true;
                     }
                     if (c.IsDone) _active.RemoveAt(i);

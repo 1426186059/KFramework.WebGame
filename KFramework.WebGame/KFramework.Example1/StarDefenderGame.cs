@@ -608,15 +608,15 @@ public sealed class StarDefenderGame : Game
         if (_state != _diagnosedState)
         {
             _diagnosedState = _state;
-            Console.WriteLine($"[StarDefender] 状态={_state} | 视口 {Window.Width}x{Window.Height} | scale={_viewScale:F3} | offset={_viewOffset}");
-            Console.WriteLine($"[StarDefender] 玩家 {_player.Position} | 生命 {_player.Lives} | 纹理 {_playerTexture.Width}x{_playerTexture.Height} | 敌人 {_enemies.Count} | 子弹 {_bullets.Count}");
+            PrintTool.Log($"[StarDefender] 状态={_state} | 视口 {Window.Width}x{Window.Height} | scale={_viewScale:F3} | offset={_viewOffset}");
+            PrintTool.Log($"[StarDefender] 玩家 {_player.Position} | 生命 {_player.Lives} | 纹理 {_playerTexture.Width}x{_playerTexture.Height} | 敌人 {_enemies.Count} | 子弹 {_bullets.Count}");
 
             // 自检：把玩家所在位置与画面中心的像素读回来，确认真的画出了东西
             int px = (int)(_player.Position.X * _viewScale + _viewOffset.X);
             int py = (int)(_player.Position.Y * _viewScale + _viewOffset.Y);
             Color atPlayer = GraphicsDevice.ReadPixel(px, py);
             Color atCenter = GraphicsDevice.ReadPixel(Window.Width / 2, Window.Height / 2);
-            Console.WriteLine($"[自检] 玩家处像素 {atPlayer} @({px},{py}) | 画面中心 {atCenter} | 清屏色 {ClearColor}");
+            PrintTool.Log($"[自检] 玩家处像素 {atPlayer} @({px},{py}) | 画面中心 {atCenter} | 清屏色 {ClearColor}");
         }
 
         float shakeX = 0f, shakeY = 0f;
@@ -898,6 +898,6 @@ public sealed class StarDefenderGame : Game
         }
 
         int total = dataBundle.AssetNames.Count + spriteBundle.AssetNames.Count;
-        Console.WriteLine($"[StarDefender] 内容就绪，共 {total} 个资源（data + sprites 两个 AssetBundle）");
+        PrintTool.Log($"[StarDefender] 内容就绪，共 {total} 个资源（data + sprites 两个 AssetBundle）");
     }
 }

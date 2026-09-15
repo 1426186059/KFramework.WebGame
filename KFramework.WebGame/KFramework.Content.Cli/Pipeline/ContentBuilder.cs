@@ -118,7 +118,7 @@ public sealed class ContentBuilder
         }
 
         // ===== 按目录分别打包（指定 bundlesDir 模式）：每个含资源的子文件夹各自成包 =====
-        Console.WriteLine($"[kfc] 打包模式：按目录分别打包（打包目录 = {string.Join(", ", bundleDirs)}）");
+        PrintTool.Log($"[kfc] 打包模式：按目录分别打包（打包目录 = {string.Join(", ", bundleDirs)}）");
 
         // 提示配置中存在但物理缺失的打包目录
         foreach (string dir in bundleDirs)
@@ -158,7 +158,7 @@ public sealed class ContentBuilder
 
         // 除指定打包目录外，其余 raw 文件原封不动地复制到 content/（不做打包/压缩，保持原样）
         int copied = CopyRawAssetsVerbatim(rawDirectory, outputDirectory, bundleRoots);
-        if (copied > 0) Console.WriteLine($"[kfc] 其余 {copied} 个文件已原样复制到 content/（未打包）");
+        if (copied > 0) PrintTool.Log($"[kfc] 其余 {copied} 个文件已原样复制到 content/（未打包）");
 
         // 构建所有 AssetBundle（每个包独立 .web.lib，并汇总总清单 version.manifest）
         BuildResult result = BundleBuilder.BuildAssetBundles(builds);
@@ -167,7 +167,7 @@ public sealed class ContentBuilder
             string pkgPath = Path.Combine(outputDirectory, pkg.File);
             Directory.CreateDirectory(Path.GetDirectoryName(pkgPath)!);
             File.WriteAllBytes(pkgPath, result.Bundles[pkg.Name]);
-            Console.WriteLine($"[kfc] 资源包 {pkg.Name} -> {pkg.File}（{pkg.Size} 字节，哈希 {pkg.Hash}）");
+            PrintTool.Log($"[kfc] 资源包 {pkg.Name} -> {pkg.File}（{pkg.Size} 字节，哈希 {pkg.Hash}）");
         }
         File.WriteAllText(Path.Combine(outputDirectory, "version.manifest"), result.Manifest.Serialize());
 
@@ -383,7 +383,7 @@ public sealed class ContentBuilder
             File.WriteAllText(defaultPath,
                 "{\"bundlesDir\":\"Bundles\",\"outDir\":\"content\",\"deploy\":\"www\",\"wwwDir\":\"www\",\"port\":8080}",
                 new UTF8Encoding(false));
-            Console.WriteLine($"[kfc] 未发现打包配置，已自动生成 {Path.GetFileName(defaultPath)}（默认：打包目录 Bundles，输出 content，发布方式 www）");
+            PrintTool.Log($"[kfc] 未发现打包配置，已自动生成 {Path.GetFileName(defaultPath)}（默认：打包目录 Bundles，输出 content，发布方式 www）");
         }
         catch
         {
@@ -497,7 +497,7 @@ public sealed class ContentBuilder
         {
             string wwwDir = Path.Combine(root, config.WwwDir);
             CopyDirectory(outputDirectory, wwwDir);
-            Console.WriteLine($"[kfc] 已发布到 {wwwDir}（deploy = {mode}）");
+            PrintTool.Log($"[kfc] 已发布到 {wwwDir}（deploy = {mode}）");
         }
         else if (mode == "serve")
         {
@@ -530,7 +530,7 @@ public sealed class ContentBuilder
         string root = Path.GetFullPath(directory);
         var listener = new TcpListener(IPAddress.Loopback, port);
         listener.Start();
-        Console.WriteLine($"[kfc] 本地 HTTP 服务已启动：http://localhost:{port}/ （Ctrl+C 退出）");
+        PrintTool.Log($"[kfc] 本地 HTTP 服务已启动：http://localhost:{port}/ （Ctrl+C 退出）");
 
         Console.CancelKeyPress += (_, e) =>
         {

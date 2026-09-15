@@ -110,7 +110,7 @@ namespace KFramework.MonoGame
             if (!_locationsLogged)
             {
                 _locationsLogged = true;
-                Console.WriteLine($"[SpriteEffect] attribute: pos={PositionLocation} uv={TexCoordLocation} color={ColorLocation} | " +
+                PrintTool.Log($"[SpriteEffect] attribute: pos={PositionLocation} uv={TexCoordLocation} color={ColorLocation} | " +
                                   $"uniform: proj={(_projectionLocation is null ? "null" : "ok")} tex={(_textureLocation is null ? "null" : "ok")}");
             }
         }

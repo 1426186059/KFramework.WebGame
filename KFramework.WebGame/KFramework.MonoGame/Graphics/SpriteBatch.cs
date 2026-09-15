@@ -222,7 +222,7 @@ namespace KFramework.MonoGame
                 Texture2D first = _items[batchStart].Texture;
                 VertexPositionColorTexture v0 = _vertices[0];
                 VertexPositionColorTexture v2 = _vertices[2];
-                Console.WriteLine($"[SpriteBatch] 第 {_flushesDiagnosed} 次：{_lastFlushCount} 个精灵，底图 {first.TextureWidth}x{first.TextureHeight}，" +
+                PrintTool.Log($"[SpriteBatch] 第 {_flushesDiagnosed} 次：{_lastFlushCount} 个精灵，底图 {first.TextureWidth}x{first.TextureHeight}，" +
                                   $"首顶点 pos={v0.Position} uv={v0.TexCoord} color={v0.Color} | 对角 pos={v2.Position} uv={v2.TexCoord}");
             }
 

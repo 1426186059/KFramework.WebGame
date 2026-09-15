@@ -36,7 +36,7 @@ namespace KFramework.Content.Cli
                         preview = false;
                         break;
                     case "--help" or "-h":
-                        Console.WriteLine("用法: kfc --root <内容项目目录> [--out <输出目录>] [--atlas-size 2048] [--no-preview]");
+                        PrintTool.Log("用法: kfc --root <内容项目目录> [--out <输出目录>] [--atlas-size 2048] [--no-preview]");
                         return ExitSuccess;
                 }
             }
@@ -59,12 +59,12 @@ namespace KFramework.Content.Cli
                     WritePreviewPng = preview,
                 });
 
-                Console.WriteLine($"[kfc] raw     : {rawDirectory}");
-                Console.WriteLine($"[kfc] content : {report.OutputDirectory}");
-                Console.WriteLine($"[kfc] {report}");
+                PrintTool.Log($"[kfc] raw     : {rawDirectory}");
+                PrintTool.Log($"[kfc] content : {report.OutputDirectory}");
+                PrintTool.Log($"[kfc] {report}");
 
                 foreach (string warning in report.Warnings)
-                    Console.WriteLine($"[kfc] 警告: {warning}");
+                    PrintTool.Log($"[kfc] 警告: {warning}");
 
                 return ExitSuccess;
             }

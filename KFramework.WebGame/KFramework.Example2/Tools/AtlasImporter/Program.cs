@@ -37,7 +37,7 @@ internal static class Program
             totalFrames += ImportAtlas(jsonPath, outputDirectory);
         }
 
-        Console.WriteLine($"完成：共导出 {totalFrames} 张精灵到 {outputDirectory}");
+        PrintTool.Log($"完成：共导出 {totalFrames} 张精灵到 {outputDirectory}");
         return 0;
     }
 
@@ -71,7 +71,7 @@ internal static class Program
         }
 
         ExportAnimations(document.RootElement, atlasName, outputDirectory);
-        Console.WriteLine($"{atlasName}: {count} 帧（页 {page.Width}x{page.Height}）");
+        PrintTool.Log($"{atlasName}: {count} 帧（页 {page.Width}x{page.Height}）");
         return count;
     }
 
