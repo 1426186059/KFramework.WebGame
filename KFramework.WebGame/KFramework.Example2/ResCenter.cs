@@ -31,22 +31,22 @@ internal sealed class ResCenter
     {
         return new ResCenter
         {
-            Wall = Try(bundle, device, "Map_0"),
-            Barriar = Try(bundle, device, "Map_1"),
-            Grass = Try(bundle, device, "Map_2"),
-            Water = Try(bundle, device, "Map_3"),
-            Heart = Try(bundle, device, "Map_5"),
+            Wall = Try(bundle, device, "Assets/Map_0.png"),
+            Barriar = Try(bundle, device, "Assets/Map_1.png"),
+            Grass = Try(bundle, device, "Assets/Map_2.png"),
+            Water = Try(bundle, device, "Assets/Map_3.png"),
+            Heart = Try(bundle, device, "Assets/Map_5.png"),
 
-            Explode1 = Try(bundle, device, "Explode1"),
-            Explode2 = Try(bundle, device, "Explode2"),
-            Flag = Try(bundle, device, "Flag"),
-            Shield = Try(bundle, device, "Shield"),
+            Explode1 = Try(bundle, device, "Assets/Explode1.png"),
+            Explode2 = Try(bundle, device, "Assets/Explode2.png"),
+            Flag = Try(bundle, device, "Assets/Flag.png"),
+            Shield = Try(bundle, device, "Assets/Shield.png"),
 
-            Player = Range(bundle, device, "Player1_", 32),
-            Enemy = Range(bundle, device, "Enemys_", 64),
-            Bullet = Range(bundle, device, "bullet_", 4),
-            Born = Range(bundle, device, "Born_", 4),
-            Bonus = Range(bundle, device, "Bonus_", 6),
+            Player = Range(bundle, device, "Assets/Player1_", 32),
+            Enemy = Range(bundle, device, "Assets/Enemys_", 64),
+            Bullet = Range(bundle, device, "Assets/bullet_", 4),
+            Born = Range(bundle, device, "Assets/Born_", 4),
+            Bonus = Range(bundle, device, "Assets/Bonus_", 6),
         };
     }
 

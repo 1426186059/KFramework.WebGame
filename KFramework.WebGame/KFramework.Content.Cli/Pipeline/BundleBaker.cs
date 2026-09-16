@@ -144,7 +144,8 @@ public static class BundleBaker
             var rootNode = new JsonObject { ["Pages"] = allPages };
             bundle.Assets.Add(new AssetBundleAsset
             {
-                Path = "atlas",
+                // 图集描述 JSON 的路径按 raw 根目录计算，保留 .json 后缀（如 myres/atlas/atlas.json），与包内其它资源名保持一致
+                Path = Path.Combine(bundleName, "atlas.json").Replace('\\', '/'),
                 Type = "atlas",
                 Bytes = Encoding.UTF8.GetBytes(rootNode.ToJsonString()),
             });
@@ -322,17 +323,10 @@ public static class BundleBaker
         return false;
     }
 
-    /// <summary>文件路径 → 资源名：去掉扩展名，小写化，统一用 / 分隔。</summary>
+    /// <summary>文件路径 → 资源名：保留原始扩展名（如 .png/.json/.txt/.sprite.json），仅小写化、统一用 / 分隔。
+    /// 保留扩展名可让资源名携带更多类型信息，配合模糊/精确查找更易区分同名不同型的资源。</summary>
     private static string AssetNameOf(string relativePath)
-    {
-        string name = relativePath;
-        if (name.EndsWith(".sprite.json", StringComparison.OrdinalIgnoreCase))
-            name = name[..^".sprite.json".Length];
-        else
-            name = Path.ChangeExtension(name, null);
-
-        return PakFormat.NormalizeName(name);
-    }
+        => PakFormat.NormalizeName(relativePath);
 
     /// <summary>按扩展名推断资源 MIME（仅作为包内元数据，不影响实际字节）。</summary>
     private static string MimeOf(string relative)

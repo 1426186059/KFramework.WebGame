@@ -879,16 +879,16 @@ public sealed class StarDefenderGame : Game
         AssetBundle spriteBundle = Content.GetBundle("bundles/sprites")
             ?? throw new InvalidOperationException("内容包 bundles/sprites 尚未加载");
 
-        _config = dataBundle.LoadJson<GameConfig>("data/game");
+        _config = dataBundle.LoadJson<GameConfig>("Bundles/data/game.json");
 
-        _playerTexture = spriteBundle.LoadTexture("sprites/player", GraphicsDevice);
-        _flameTexture = spriteBundle.LoadTexture("sprites/flame", GraphicsDevice);
-        _bulletTexture = spriteBundle.LoadTexture("sprites/bullet", GraphicsDevice);
-        _enemyBulletTexture = spriteBundle.LoadTexture("sprites/enemy_bullet", GraphicsDevice);
-        _particleTexture = spriteBundle.LoadTexture("sprites/particle", GraphicsDevice);
-        _starTexture = spriteBundle.LoadTexture("sprites/star", GraphicsDevice);
-        _powerUpTexture = spriteBundle.LoadTexture("sprites/powerup", GraphicsDevice);
-        _heartTexture = spriteBundle.LoadTexture("sprites/heart", GraphicsDevice);
+        _playerTexture = spriteBundle.LoadTexture("Bundles/sprites/player.png", GraphicsDevice);
+        _flameTexture = spriteBundle.LoadTexture("Bundles/sprites/flame.png", GraphicsDevice);
+        _bulletTexture = spriteBundle.LoadTexture("Bundles/sprites/bullet.png", GraphicsDevice);
+        _enemyBulletTexture = spriteBundle.LoadTexture("Bundles/sprites/enemy_bullet.png", GraphicsDevice);
+        _particleTexture = spriteBundle.LoadTexture("Bundles/sprites/particle.png", GraphicsDevice);
+        _starTexture = spriteBundle.LoadTexture("Bundles/sprites/star.png", GraphicsDevice);
+        _powerUpTexture = spriteBundle.LoadTexture("Bundles/sprites/powerup.png", GraphicsDevice);
+        _heartTexture = spriteBundle.LoadTexture("Bundles/sprites/heart.png", GraphicsDevice);
 
         foreach (KeyValuePair<string, EnemyConfig> pair in _config.Enemies)
         {

@@ -10,5 +10,9 @@ namespace KFramework.Example3;
 internal static class SoundHelper
 {
     public static SoundEffect LoadSound(this AssetBundle bundle, string name)
-        => SoundEffect.FromBytes(bundle.LoadAsset(name), "audio/wav");
+    {
+        // 资源名统一带原始扩展名（如 .wav），调用处可省略；此处按需补上后缀以匹配包内资源名。
+        if (!name.EndsWith(".wav", StringComparison.OrdinalIgnoreCase)) name += ".wav";
+        return SoundEffect.FromBytes(bundle.LoadAsset(name), "audio/wav");
+    }
 }

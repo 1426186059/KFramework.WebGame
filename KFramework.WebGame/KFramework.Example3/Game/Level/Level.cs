@@ -74,14 +74,14 @@
 
             // 异步加载本关卡依赖的 Bundle（资源全部从 Bundle 中读取）
             await content.LoadBundleAsync("MyRes/Atlas", cancellationToken).ConfigureAwait(false);
-            var atlasBundle = content.GetBundle("MyRes/Atlas")!;
+            AssetBundle atlasBundle = content.GetBundle("MyRes/Atlas")!;
             SpriteSheetLoader mLoader = new SpriteSheetLoader(atlasBundle, KSceneMgr.Game.GraphicsDevice);
-            SpriteSheet characters = await mLoader.LoadAsync("MyRes/Atlas/characters.atlas");
-            SpriteSheet misc3 = await mLoader.LoadAsync("MyRes/Atlas/misc-3.atlas");
+            SpriteSheet characters = await mLoader.LoadAsync("MyRes/Atlas/atlas.json");
+            SpriteSheet misc3 = await mLoader.LoadAsync("MyRes/Atlas/atlas.json");
             
             await content.LoadBundleAsync("myres_levels", cancellationToken).ConfigureAwait(false);
             var LevelConfigBundle = content.GetBundle("myres_levels")!;
-            string text = LevelConfigBundle.LoadText($"MyRes/Levels/{nLevelIndex:00}");
+            string text = LevelConfigBundle.LoadText($"MyRes/Levels/{nLevelIndex:00}.txt");
             using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(text));
             return new Level(nLevelIndex, stream, characters, misc3);
 

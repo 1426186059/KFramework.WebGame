@@ -33,8 +33,8 @@ namespace KFramework.MonoGameExtend
             foreach (var v in mData.Pages)
             {
                 string texturePath = strict
-                    ? Path.Combine(dir, Path.GetFileNameWithoutExtension(v.Image))
-                    : Path.GetFileNameWithoutExtension(v.Image);
+                    ? Path.Combine(dir, Path.GetFileName(v.Image))
+                    : Path.GetFileName(v.Image);
                 var texInfo = mBundle.GetAssetInfo(texturePath, strict);
                 if (texInfo is { Format: AssetTextureFormat.Ktx2 })
                     throw new InvalidOperationException(
@@ -45,8 +45,8 @@ namespace KFramework.MonoGameExtend
             foreach (var v in mData.Pages)
             {
                 string texturePath = strict
-                    ? Path.Combine(dir, Path.GetFileNameWithoutExtension(v.Image))
-                    : Path.GetFileNameWithoutExtension(v.Image);
+                    ? Path.Combine(dir, Path.GetFileName(v.Image))
+                    : Path.GetFileName(v.Image);
                 Texture2D texture = mBundle.LoadTexture(texturePath, _device, strict);
                 foreach (var v2 in v.Regions)
                 {
@@ -85,8 +85,8 @@ namespace KFramework.MonoGameExtend
             foreach (var v in mData.Pages)
             {
                 string texturePath = strict
-                    ? Path.Combine(dir, Path.GetFileNameWithoutExtension(v.Image))
-                    : Path.GetFileNameWithoutExtension(v.Image);
+                    ? Path.Combine(dir, Path.GetFileName(v.Image))
+                    : Path.GetFileName(v.Image);
                 Texture2D texture = await mBundle.LoadTextureAsync(texturePath, _device, strict).ConfigureAwait(false);
                 foreach (var v2 in v.Regions)
                 {

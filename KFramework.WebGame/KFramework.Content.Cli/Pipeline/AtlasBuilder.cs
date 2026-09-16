@@ -64,7 +64,9 @@ public static class AtlasBuilder
 
             bundle.Assets.Add(new AssetBundleAsset
             {
-                Path = page.Name,
+                // 图集页纹理路径按 raw 根目录计算，保留 .png 后缀（如 myres/atlas/atlas_0.png），
+                // 与 SpriteSheetLoader 由 jsonPath 的目录 + 页文件名（含扩展名）推得的纹理路径一致
+                Path = Path.Combine(bundleName, page.Name + ".png").Replace('\\', '/'),
                 Type = "texture",
                 Bytes = bytes,
                 Width = page.Width,
@@ -79,8 +81,8 @@ public static class AtlasBuilder
                     page.ToPng());
         }
 
-        // 运行端按 GetFileNameWithoutExtension(image) 取纹理名（与包内资源名 page.Name 对应），
-        // 故 AtlasData 中 image 的扩展名仅为可读提示，无需因编码格式而改写。
+        // 运行端按 GetFileName(image) 取纹理名（含 .png 后缀，与包内资源名 Path.Combine(bundleName, page.Name + ".png") 对应），
+        // 故 AtlasData 中 image 的扩展名需与包内页纹理名一致（仅作可读提示与查找键，无需因编码格式改写内容）。
         var root = JsonNode.Parse(result.AtlasJson)!.AsObject();
         // DeepClone 返回脱离父节点的副本：否则 root["pages"] 仍挂着 root，
         // 被调用方再挂到自己的 JsonObject 时会抛 "The node already has a parent"。

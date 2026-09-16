@@ -168,7 +168,7 @@ namespace KFramework.Content.Build
                             if (!usedNames.Add(rootBundleName))
                                 throw new InvalidOperationException(
                                     $"发现重复的 AssetBundle 名「{rootBundleName}」：配置的打包目录（{string.Join(", ", bundleDirs)}）下存在同名子文件夹，请保证各打包目录内的子文件夹名唯一。");
-                            AssetBundleBuild build = BundleBaker.BuildBundle(rootBundleName, rootFiles, bundlesRoot, options, Global.mBuildConfig.AutoAtlas, warnings,
+                            AssetBundleBuild build = BundleBaker.BuildBundle(rootBundleName, rootFiles, rawDirectory, options, Global.mBuildConfig.AutoAtlas, warnings,
                                 ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, tempDirectory);
                             builds.Add(build);
                             bundleCount++;
@@ -192,7 +192,7 @@ namespace KFramework.Content.Build
                             throw new InvalidOperationException(
                                 $"发现重复的 AssetBundle 名「{bundleName}」：配置的打包目录（{string.Join(", ", bundleDirs)}）下存在同名子文件夹，请保证各打包目录内的子文件夹名唯一。");
 
-                        AssetBundleBuild build = BundleBaker.BuildBundle(bundleName, directFiles, bundlesRoot, options, Global.mBuildConfig.AutoAtlas, warnings,
+                        AssetBundleBuild build = BundleBaker.BuildBundle(bundleName, directFiles, rawDirectory, options, Global.mBuildConfig.AutoAtlas, warnings,
                             ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, tempDirectory);
                         builds.Add(build);
                         bundleCount++;

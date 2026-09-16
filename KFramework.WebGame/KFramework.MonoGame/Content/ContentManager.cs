@@ -1,5 +1,6 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace KFramework.MonoGame;
 
@@ -197,10 +198,17 @@ public sealed class ContentManager : IDisposable
     /// </summary>
     public async Task<Texture2D> LoadTexture2DAsync(byte[] data, GraphicsDevice device)
     {
-        int[] size = new int[2];
-        byte[] pixels = await JSBind_Texture.DecodeImageToRgbaAuto(data, size).ConfigureAwait(false);
-        int w = size[0], h = size[1];
+        int w, h;
+        using (JSObject sizeObj = await JSBind_Texture.GetImageSize(data).ConfigureAwait(false))
+        {
+            w = sizeObj.GetPropertyAsInt32("width");
+            h = sizeObj.GetPropertyAsInt32("height");
+        }
         if (w <= 0 || h <= 0) throw new InvalidOperationException("图片解码失败：尺寸无效。");
+        // 已知尺寸，预分配像素缓冲后一次性解码（源生成互操作不支持直接回传 byte[]，故走 out 缓冲）。
+        int[] size = new int[2];
+        byte[] pixels = new byte[w * h * 4];
+        await JSBind_Texture.DecodeImageToRgba(data, size, pixels).ConfigureAwait(false);
         return device.CreateTexture(w, h, pixels);
     }
 

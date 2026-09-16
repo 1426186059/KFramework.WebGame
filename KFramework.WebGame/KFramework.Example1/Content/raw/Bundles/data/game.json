@@ -14,28 +14,28 @@
     "enemies":  {
                     "fighter":  {
                                     "radius":  10,
-                                    "texture":  "sprites/enemy_fighter",
+                                    "texture":  "Bundles/sprites/enemy_fighter.png",
                                     "score":  100,
                                     "health":  1,
                                     "speed":  100
                                 },
                     "scout":  {
                                   "radius":  9,
-                                  "texture":  "sprites/enemy_scout",
+                                  "texture":  "Bundles/sprites/enemy_scout.png",
                                   "score":  120,
                                   "health":  1,
                                   "speed":  140
                               },
                     "bomber":  {
                                    "radius":  14,
-                                   "texture":  "sprites/enemy_bomber",
+                                   "texture":  "Bundles/sprites/enemy_bomber.png",
                                    "score":  300,
                                    "health":  3,
                                    "speed":  60
                                },
                     "asteroid":  {
                                      "radius":  16,
-                                     "texture":  "sprites/asteroid",
+                                     "texture":  "Bundles/sprites/asteroid.png",
                                      "score":  500,
                                      "health":  5,
                                      "speed":  40

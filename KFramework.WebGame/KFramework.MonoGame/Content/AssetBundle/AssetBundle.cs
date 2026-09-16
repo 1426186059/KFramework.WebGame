@@ -244,7 +244,7 @@ public sealed class AssetBundle : IDisposable
         catch (KeyNotFoundException) { tex = null; return false; }
     }
 
-    /// <summary>包内全部资源名（含图集子图与数据）。</summary>
+    /// <summary>包内全部资源名（含图集子图与数据），均为<b>相对 raw 目录</b>的路径，并保留原始扩展名（如 myres/atlas/characters.png、myres/data/game.json）。</summary>
     public IReadOnlyList<string> AssetNames => Content.Entries.Select(e => e.Path).ToArray();
 
     /// <summary>卸载（对应 Unity Unload，本库即关闭 zip 流）。</summary>

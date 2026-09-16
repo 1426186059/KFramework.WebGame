@@ -21,13 +21,11 @@ namespace KFramework.MonoGame
         internal static partial Task DecodeImageToRgba(byte[] bytes, int[] outSize, byte[] outPixels);
 
         /// <summary>
-        /// 借浏览器原生解码器把图像字节解码为 RGBA8，像素缓冲由 JS 端按真实尺寸内部分配后回传，
-        /// 调用方无需预知尺寸（用于内容包之外的松散图片）。
-        /// <paramref name="bytes"/> 为图像文件字节；<paramref name="outSize"/> 写入 [宽, 高]（int[2]）；
-        /// 返回 RGBA8 像素（长度 = 宽*高*4）。
+        /// 仅取图像尺寸（不解码像素），供内容包之外的松散图片预分配像素缓冲。
+        /// <paramref name="bytes"/> 为图像文件字节；返回 JSObject { width, height }（C# 经 <c>GetPropertyAsInt32</c> 读取）。
         /// </summary>
-        [JSImport("decodeImageToRgbaAuto", "texture")]
-        internal static partial Task<byte[]> DecodeImageToRgbaAuto(byte[] bytes, int[] outSize);
+        [JSImport("getImageSize", "texture")]
+        internal static partial Task<JSObject> GetImageSize(byte[] bytes);
 
         /// <summary>
         /// 借浏览器中的 Basis Universal 转码器（basis_transcoder.js/.wasm）把 KTX2（Basis 超压缩）纹理
