@@ -105,14 +105,28 @@ export function uniform1f(location, v) { gpu().uniform1f(location, v); }
 export function uniform4f(location, x, y, z, w) {
     gpu().uniform4f(location, x, y, z, w);
 }
+// 矩阵固定为 16 个 float（64 字节），复用一份对齐缓冲，避免每帧 uniformMatrix4fv 分配。
+let _matrixBytes = null;
+let _matrixF32 = null;
 export function uniformMatrix4fv(location, transpose, value) {
     // C# 侧以 16 个 float 的小端字节流传入，这里拷一份对齐的缓冲再还原
     const bytes = toBytes(value);
     if (!bytes)
         return;
-    const aligned = new Uint8Array(bytes.length);
-    aligned.set(bytes);
-    const matrix = new Float32Array(aligned.buffer);
+    let matrix;
+    if (bytes.length === 64 && _matrixBytes) {
+        _matrixBytes.set(bytes);
+        matrix = _matrixF32;
+    }
+    else {
+        const aligned = new Uint8Array(bytes.length);
+        aligned.set(bytes);
+        matrix = new Float32Array(aligned.buffer);
+        if (bytes.length === 64) {
+            _matrixBytes = aligned;
+            _matrixF32 = matrix;
+        }
+    }
     if (!uniformLogged) {
         uniformLogged = true;
         console.log('[gl] 上传矩阵:', Array.from(matrix).map((n) => n.toFixed(4)).join(','));

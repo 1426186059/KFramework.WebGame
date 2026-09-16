@@ -54,6 +54,11 @@ namespace KFramework.MonoGame
         private static readonly Comparison<SpriteBatchItem> BackToFront = static (a, b) => b.LayerDepth.CompareTo(a.LayerDepth);
         private static readonly Comparison<SpriteBatchItem> FrontToBack = static (a, b) => a.LayerDepth.CompareTo(b.LayerDepth);
 
+        // 比较器实例一次性创建并复用，避免 Flush 每帧 new Comparer<T> 产生 GC 压力。
+        private static readonly IComparer<SpriteBatchItem> TextureComparer = Comparer<SpriteBatchItem>.Create(ByTexture);
+        private static readonly IComparer<SpriteBatchItem> BackToFrontComparer = Comparer<SpriteBatchItem>.Create(BackToFront);
+        private static readonly IComparer<SpriteBatchItem> FrontToBackComparer = Comparer<SpriteBatchItem>.Create(FrontToBack);
+
         public SpriteBatch(GraphicsDevice device)
         {
             ArgumentNullException.ThrowIfNull(device);
@@ -189,13 +194,13 @@ namespace KFramework.MonoGame
             switch (_sortMode)
             {
                 case SpriteSortMode.Texture:
-                    Array.Sort(_items, 0, _itemCount, Comparer<SpriteBatchItem>.Create(ByTexture));
+                    Array.Sort(_items, 0, _itemCount, TextureComparer);
                     break;
                 case SpriteSortMode.BackToFront:
-                    Array.Sort(_items, 0, _itemCount, Comparer<SpriteBatchItem>.Create(BackToFront));
+                    Array.Sort(_items, 0, _itemCount, BackToFrontComparer);
                     break;
                 case SpriteSortMode.FrontToBack:
-                    Array.Sort(_items, 0, _itemCount, Comparer<SpriteBatchItem>.Create(FrontToBack));
+                    Array.Sort(_items, 0, _itemCount, FrontToBackComparer);
                     break;
             }
 

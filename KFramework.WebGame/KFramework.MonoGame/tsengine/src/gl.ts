@@ -123,13 +123,25 @@ export function uniform1f(location: WebGLUniformLocation | null, v: number): voi
 export function uniform4f(location: WebGLUniformLocation | null, x: number, y: number, z: number, w: number): void {
     gpu().uniform4f(location, x, y, z, w);
 }
+// 矩阵固定为 16 个 float（64 字节），复用一份对齐缓冲，避免每帧 uniformMatrix4fv 分配。
+let _matrixBytes: Uint8Array | null = null;
+let _matrixF32: Float32Array | null = null;
+
 export function uniformMatrix4fv(location: WebGLUniformLocation | null, transpose: number, value: MemoryView | Float32Array): void {
     // C# 侧以 16 个 float 的小端字节流传入，这里拷一份对齐的缓冲再还原
     const bytes = toBytes(value as MemoryView);
     if (!bytes) return;
-    const aligned = new Uint8Array(bytes.length);
-    aligned.set(bytes);
-    const matrix = new Float32Array(aligned.buffer);
+
+    let matrix: Float32Array;
+    if (bytes.length === 64 && _matrixBytes) {
+        _matrixBytes.set(bytes);
+        matrix = _matrixF32!;
+    } else {
+        const aligned = new Uint8Array(bytes.length);
+        aligned.set(bytes);
+        matrix = new Float32Array(aligned.buffer);
+        if (bytes.length === 64) { _matrixBytes = aligned; _matrixF32 = matrix; }
+    }
 
     if (!uniformLogged) {
         uniformLogged = true;
