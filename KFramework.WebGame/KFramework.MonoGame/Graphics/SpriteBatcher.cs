@@ -1,7 +1,3 @@
-using System;
-
-using KFramework.MonoGame;
-
 namespace KFramework.MonoGame
 {
     /// <summary>

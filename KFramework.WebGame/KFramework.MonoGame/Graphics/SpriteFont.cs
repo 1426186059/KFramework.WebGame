@@ -1,6 +1,4 @@
-﻿using KFramework.MonoGame;
-
-namespace KFramework.MonoGame
+﻿namespace KFramework.MonoGame
 {
 
     /// <summary>
