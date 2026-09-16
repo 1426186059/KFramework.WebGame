@@ -1,4 +1,6 @@
-﻿using KFramework.MonoGame;
+﻿using System;
+using System.Text;
+using KFramework.MonoGame;
 
 namespace KFramework.Content.Build
 {
@@ -14,6 +16,19 @@ namespace KFramework.Content.Build
 
         private static int Main(string[] args)
         {
+            // 强制控制台使用 UTF-8 输出，避免在 GBK（代码页 936）终端下中文日志乱码。
+            // 在 Windows 上，设置 OutputEncoding 会同时把控制台输出代码页切到 65001。
+            try
+            {
+                var utf8NoBom = new UTF8Encoding(false);
+                Console.OutputEncoding = utf8NoBom;
+                Console.InputEncoding = utf8NoBom;
+            }
+            catch
+            {
+                // 某些重定向环境不允许修改控制台编码，忽略即可。
+            }
+
             string root = Directory.GetCurrentDirectory();
             string? output = null;
             int atlasSize = 2048;
