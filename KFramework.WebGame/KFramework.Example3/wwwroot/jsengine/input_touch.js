@@ -1,3 +1,4 @@
+// 【依赖 C#】由 KFramework.MonoGame.JSBind_Input 经 [JSImport(module: "input_touch")] 调用；产物 input_touch.js 由 SyncJsEngine 复制。
 // 触摸模块（手机 / 平板）：只注册监听 + 事件入队。
 // 触点表与 Began/Moved/Ended 阶段在 C# 侧（Input_Touch）实现。
 //

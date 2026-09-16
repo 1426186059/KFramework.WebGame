@@ -1,3 +1,4 @@
+// 【依赖 C#】由 KFramework.MonoGame.JSBind_Texture 经 [JSImport(module: "texture")] 调用（含 KTX2/Basis 转码）；产物 texture.js 由 SyncJsEngine 复制。
 import * as gl from './gl.js';
 // 纹理解码：借浏览器原生解码器把图像字节（PNG / WebP 等）解码为 RGBA8。
 // 因 WASM 无托管 WebP 解码器，统一走 createImageBitmap（浏览器原生，覆盖 Png / Webp）。

@@ -1,3 +1,4 @@
+// 【依赖 C#】由 KFramework.MonoGame.JSBind_Audio 经 [JSImport(module: "audio")] 调用；编译产物 audio.js 由各示例 SyncJsEngine 复制到 wwwroot/jsengine。
 // 音频引擎：两条能力并存。
 // 1) 合成音效：WebAudio 振荡器 + 噪声实时合成，零资源，适合原型（见 playSynth）。
 // 2) 真实音频：wav/mp3/ogg 经 decodeAudioData 解码成 AudioBuffer，再按实例播放（见 loadAudio / createInstance）。
