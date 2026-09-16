@@ -1,6 +1,7 @@
 {
   "AssetBundleDir": [
-    "Bundles"
+    "MyBundle2",
+    "MyRes"
   ],
   "outDir": "content",
   "autoAtlas": true,
