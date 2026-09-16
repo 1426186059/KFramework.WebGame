@@ -180,3 +180,8 @@ export function drawElements(mode, count, type, offset) {
     gpu().drawElements(mode, count, type, offset);
 }
 export function drawArrays(mode, first, count) { gpu().drawArrays(mode, first, count); }
+// ---------- 剔除 / 深度（照 MonoGame 的 RasterizerState / DepthStencilState 下发） ----------
+export function cullFace(mode) { gpu().cullFace(mode); }
+export function frontFace(mode) { gpu().frontFace(mode); }
+export function depthMask(flag) { gpu().depthMask(flag); }
+export function depthFunc(func) { gpu().depthFunc(func); }

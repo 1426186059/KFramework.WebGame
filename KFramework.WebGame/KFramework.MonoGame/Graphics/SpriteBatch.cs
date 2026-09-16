@@ -22,6 +22,9 @@ namespace KFramework.MonoGame
 
         private bool _beginCalled;
 
+        private RasterizerState _rasterizerState = RasterizerState.CullCounterClockwise;
+        private DepthStencilState _depthStencilState = DepthStencilState.None;
+
         public SpriteBatch(GraphicsDevice device)
         {
             ArgumentNullException.ThrowIfNull(device);
@@ -43,6 +46,8 @@ namespace KFramework.MonoGame
             _blendState = blendState ?? BlendState.NonPremultiplied;
             _samplerState = samplerState ?? SamplerState.Point;
             _transform = transformMatrix ?? Matrix4x4.Identity;
+            _rasterizerState = RasterizerState.CullCounterClockwise;
+            _depthStencilState = DepthStencilState.None;
             _batcher.SetSamplerState(_samplerState);
 
             var viewport = _device.Viewport;
@@ -67,9 +72,10 @@ namespace KFramework.MonoGame
         private void Setup()
         {
             _device.SetBlendState(_blendState);
-            // 绘制前确保 2D 状态：关闭背面剔除/深度测试，避免外部 GL 状态（如 3D 渲染遗留的 CULL_FACE）
-            // 把四边形其中一个三角形剔掉，造成“缺一个三角”。
-            _device.Ensure2DState();
+            // 照 MonoGame 的 Setup()：把光栅化/深度状态交给 GraphicsDevice 统一管理（绘制前强制下发，
+            // 不受外部 GL 状态影响），确保 2D 绘制用一致的状态：剔除逆时针背面 + 关闭深度测试。
+            _device.DepthStencilState = _depthStencilState;
+            _device.RasterizerState = _rasterizerState;
             // 行向量约定（p' = p × M）：变换在左、投影在右，故 transform 先发生。
             _device.Effect.Apply(_transform * _projection);
         }

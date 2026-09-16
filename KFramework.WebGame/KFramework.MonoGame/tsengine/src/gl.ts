@@ -213,3 +213,10 @@ export function drawElements(mode: number, count: number, type: number, offset: 
     gpu().drawElements(mode, count, type, offset);
 }
 export function drawArrays(mode: number, first: number, count: number): void { gpu().drawArrays(mode, first, count); }
+
+// ---------- 剔除 / 深度（照 MonoGame 的 RasterizerState / DepthStencilState 下发） ----------
+
+export function cullFace(mode: number): void { gpu().cullFace(mode); }
+export function frontFace(mode: number): void { gpu().frontFace(mode); }
+export function depthMask(flag: boolean): void { gpu().depthMask(flag); }
+export function depthFunc(func: number): void { gpu().depthFunc(func); }

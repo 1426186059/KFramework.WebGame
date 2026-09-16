@@ -24,6 +24,8 @@ namespace KFramework.MonoGame
         // 首次调用会被跳过，glBlendFunc 永远不下发（表现为画面全黑）。
         private BlendState _blendState = null!;
         private SamplerState _samplerState = null!;
+        private RasterizerState _rasterizerState = null!;
+        private DepthStencilState _depthStencilState = null!;
         private ulong _sortingKeySource = 1;
 
         public Viewport Viewport { get; private set; }
@@ -42,6 +44,30 @@ namespace KFramework.MonoGame
 
         public BlendState BlendState => _blendState;
         public SamplerState SamplerState => _samplerState;
+
+        /// <summary>光栅化状态（照 MonoGame 的 GraphicsDevice.RasterizerState）。setter 立即下发到 WebGL。</summary>
+        public RasterizerState RasterizerState
+        {
+            get => _rasterizerState;
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                _rasterizerState = value;
+                ApplyRasterizerState();
+            }
+        }
+
+        /// <summary>深度/模板状态（照 MonoGame 的 GraphicsDevice.DepthStencilState）。setter 立即下发到 WebGL。</summary>
+        public DepthStencilState DepthStencilState
+        {
+            get => _depthStencilState;
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                _depthStencilState = value;
+                ApplyDepthStencilState();
+            }
+        }
 
         /// <summary>设备纹理槽（照 MonoGame 的 GraphicsDevice.Textures，本 2D 后端只用单元 0）。</summary>
         public TextureCollection Textures { get; } = new TextureCollection(1);
@@ -75,7 +101,14 @@ namespace KFramework.MonoGame
 
             SyncCanvasSize();
 
-            JSBind_GL.Disable(JSBind_GL.DEPTH_TEST);
+            // 与 MonoGame 一致：正面 = 逆时针（CCW），配合 CullCounterClockwiseFace 保留正面三角形。
+            JSBind_GL.FrontFace(JSBind_GL.CCW);
+
+            _rasterizerState = RasterizerState.CullCounterClockwise;
+            ApplyRasterizerState();
+            _depthStencilState = DepthStencilState.None;
+            ApplyDepthStencilState();
+
             JSBind_GL.Enable(JSBind_GL.BLEND);
             JSBind_GL.BlendEquation(JSBind_GL.FUNC_ADD);
             SetBlendState(BlendState.NonPremultiplied);
@@ -193,16 +226,80 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 精灵批处理是纯 2D 绘制：四边形的两个三角形都必须被光栅化，不依赖任何背面剔除或深度测试。
-        /// 外部代码（如 MonoGameExtend 的 3D 渲染）可能开启了 CULL_FACE / DEPTH_TEST 且未还原，
-        /// 这里在绘制前显式关闭，确保两个三角形都能画出来，不受外部 GL 状态影响。
-        /// 这是“缺一个三角”的根因兜底：只要剔除开着且三角形绕向不一致，就必定丢一个三角形。
+        /// 把当前 <see cref="RasterizerState"/> 下发给 WebGL。
+        /// 本 2D 后端只用 CullCounterClockwiseFace（与 WebGL 默认 BACK 剔除一致），
+        /// 故只切 Enable/Disable(CULL_FACE)，不调 glCullFace；CullNone 即关闭剔除。
+        /// 每次 <see cref="SpriteBatch.Setup"/> 都会重新设置，因此绘制前状态始终被强制回 2D 设定，
+        /// 不受外部 GL 状态（如 3D 渲染遗留的 CULL_FACE）影响。
         /// </summary>
-        internal void Ensure2DState()
+        /// <summary>
+        /// 把当前 <see cref="RasterizerState"/> 下发给 WebGL（照 MonoGame 的 RasterizerState.Apply）。
+        /// CullMode.None 关闭剔除；否则开启 CULL_FACE 并按绕向选 FRONT/BACK，
+        /// 配合构造函数里设定的 CCW 正面，CullCounterClockwiseFace 即“剔除逆时针背面”。
+        /// 每次 <see cref="SpriteBatch.Setup"/> 都会重新设置，因此绘制前状态始终被强制回 2D 设定，
+        /// 不受外部 GL 状态（如 3D 渲染遗留）影响。
+        /// </summary>
+        private void ApplyRasterizerState()
         {
-            JSBind_GL.Disable(JSBind_GL.CULL_FACE);
-            JSBind_GL.Disable(JSBind_GL.DEPTH_TEST);
+            switch (_rasterizerState.CullMode)
+            {
+                case CullMode.None:
+                    JSBind_GL.Disable(JSBind_GL.CULL_FACE);
+                    break;
+                case CullMode.CullClockwiseFace:
+                    JSBind_GL.Enable(JSBind_GL.CULL_FACE);
+                    JSBind_GL.CullFace(JSBind_GL.FRONT);
+                    break;
+                case CullMode.CullCounterClockwiseFace:
+                    JSBind_GL.Enable(JSBind_GL.CULL_FACE);
+                    JSBind_GL.CullFace(JSBind_GL.BACK);
+                    break;
+                default:
+                    JSBind_GL.Enable(JSBind_GL.CULL_FACE);
+                    JSBind_GL.CullFace(JSBind_GL.BACK);
+                    break;
+            }
+
+            if (_rasterizerState.ScissorTestEnable)
+                JSBind_GL.Enable(JSBind_GL.SCISSOR_TEST);
+            else
+                JSBind_GL.Disable(JSBind_GL.SCISSOR_TEST);
         }
+
+        /// <summary>
+        /// 把当前 <see cref="DepthStencilState"/> 下发给 WebGL。
+        /// 深度测试关闭时 glDepthMask / glDepthFunc 无影响，故只切 Enable/Disable(DEPTH_TEST)；
+        /// SpriteBatch 默认用 <see cref="DepthStencilState.None"/>（关闭深度测试）。
+        /// 同样在每次 Setup 被强制下发，保证 2D 绘制不受外部状态干扰。
+        /// </summary>
+        /// <summary>
+        /// 把当前 <see cref="DepthStencilState"/> 下发给 WebGL（照 MonoGame 的 DepthStencilState.Apply）。
+        /// 切换 DEPTH_TEST 开关，并下发深度写入掩码与比较函数；SpriteBatch 默认用
+        /// <see cref="DepthStencilState.None"/>（关闭深度测试）。
+        /// 同样在每次 Setup 被强制下发，保证 2D 绘制不受外部状态干扰。
+        /// </summary>
+        private void ApplyDepthStencilState()
+        {
+            if (_depthStencilState.DepthBufferEnable)
+                JSBind_GL.Enable(JSBind_GL.DEPTH_TEST);
+            else
+                JSBind_GL.Disable(JSBind_GL.DEPTH_TEST);
+
+            JSBind_GL.DepthMask(_depthStencilState.DepthBufferWriteEnable);
+            JSBind_GL.DepthFunc(ToGLDepthFunc(_depthStencilState.DepthBufferFunction));
+        }
+
+        private static int ToGLDepthFunc(CompareFunction func) => func switch
+        {
+            CompareFunction.Never => JSBind_GL.NEVER,
+            CompareFunction.Less => JSBind_GL.LESS,
+            CompareFunction.Equal => JSBind_GL.EQUAL,
+            CompareFunction.LessEqual => JSBind_GL.LEQUAL,
+            CompareFunction.Greater => JSBind_GL.GREATER,
+            CompareFunction.NotEqual => JSBind_GL.NOTEQUAL,
+            CompareFunction.GreaterEqual => JSBind_GL.GEQUAL,
+            _ => JSBind_GL.ALWAYS,
+        };
 
         internal void SetSamplerState(SamplerState state, Texture2D? current)
         {

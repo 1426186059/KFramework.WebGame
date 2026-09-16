@@ -31,6 +31,20 @@ namespace KFramework.MonoGame
         public const int STENCIL_TEST = 0x0B90;
         public const int SCISSOR_TEST = 0x0C11;
         public const int CULL_FACE = 0x0B44;
+        public const int FRONT = 0x0404;
+        public const int BACK = 0x0405;
+        public const int CW = 0x0900;
+        public const int CCW = 0x0901;
+
+        // 深度比较函数（glDepthFunc），与 CompareFunction 枚举对应
+        public const int NEVER = 0x0200;
+        public const int LESS = 0x0201;
+        public const int EQUAL = 0x0202;
+        public const int LEQUAL = 0x0203;
+        public const int GREATER = 0x0204;
+        public const int NOTEQUAL = 0x0205;
+        public const int GEQUAL = 0x0206;
+        public const int ALWAYS = 0x0207;
 
         public const int COLOR_BUFFER_BIT = 0x00004000;
         public const int DEPTH_BUFFER_BIT = 0x00000100;
@@ -273,6 +287,18 @@ namespace KFramework.MonoGame
 
         [JSImport("drawArrays", "gl")]
         internal static partial void DrawArrays(int mode, int first, int count);
+
+        [JSImport("cullFace", "gl")]
+        internal static partial void CullFace(int mode);
+
+        [JSImport("frontFace", "gl")]
+        internal static partial void FrontFace(int mode);
+
+        [JSImport("depthMask", "gl")]
+        internal static partial void DepthMask(bool flag);
+
+        [JSImport("depthFunc", "gl")]
+        internal static partial void DepthFunc(int func);
 
         #endregion
     }
