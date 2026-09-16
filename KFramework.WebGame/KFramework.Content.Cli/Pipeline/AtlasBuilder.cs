@@ -1,3 +1,4 @@
+using KFramework.MonoGame;
 using KTexturePacker.Core;
 using SkiaSharp;
 using System.IO;
@@ -9,7 +10,7 @@ namespace KFramework.Content.Build;
 /// 图集打包（下游）：把自动装箱的散图（SpriteInput）与导入的 .atlas 预切图集合并成同一份 AtlasData。
 /// 复用上游 KTexturePacker 的共享核心（<see cref="AtlasBaker"/>：MaxRects 摆放 + 整页合成 + 导出），
 /// 核心只产出 RGBA8 中间格式；每张图集页作为独立整图纹理写入包，并在本层（下游）按
-/// <see cref="ContentBuilder.BuildOptions.TextureFormat"/> 把 RGBA 转成目标格式（默认 png，可选 webp）再入库。
+/// <see cref="ContentBuilder.BuildOptions.TextureFormat"/> 把 RGBA 转成目标格式（默认 Rgba，可选 Png / Ktx2）再入库。
 /// 即：上游 KTexturePacker 只产出 RGBA 中间格式，PNG 是其默认交付物，其它格式由下游任取 RGBA 自行转换。
 /// </summary>
 public static class AtlasBuilder
@@ -45,12 +46,22 @@ public static class AtlasBuilder
 
         atlasPageCount += result.Pages.Count;
 
-        // 下游转码：默认用上游 RGBA 编码 PNG 入库；若要求 webp，在本层把 RGBA 直接转成 WebP 再入库。
-        bool toWebp = string.Equals(options.TextureFormat, "webp", StringComparison.OrdinalIgnoreCase);
-
+        // 下游按 BuildOptions.TextureFormat 把上游 RGBA 中间格式转成目标编码入库：
+        //   Rgba（默认）：直接存裸 RGBA8，运行端零解码、直接上传 GPU，体积由 .web.lib 的 zip 承担；
+        //   Png         ：用上游 RGBA 编码 PNG，体积更小，运行端在 LoadBundle 阶段解码；
+        //   Webp        ：用上游 RGBA 编码 WebP，体积更小，运行端借浏览器原生解码；
+        //   Ktx2        ：GPU 压缩纹理，本仓库暂未实现编码，预留枚举位。
         foreach (AtlasPageOutput page in result.Pages)
         {
-            byte[] bytes = toWebp ? EncodeWebp(page.RgbaPixels, page.Width, page.Height) : page.ToPng();
+            (byte[] bytes, AssetTextureFormat fmt) = options.TextureFormat switch
+            {
+                AssetTextureFormat.Rgba => (page.RgbaPixels, AssetTextureFormat.Rgba),
+                AssetTextureFormat.Png  => (page.ToPng(),     AssetTextureFormat.Png),
+                AssetTextureFormat.Webp => (BundleBaker.EncodeWebpFromRgba(page.RgbaPixels, page.Width, page.Height), AssetTextureFormat.Webp),
+                AssetTextureFormat.Ktx2 => throw new NotSupportedException(
+                    "KTX2 编码尚未实现：需引入 GPU 压缩纹理编码器（如 Basis/ASTC）。当前可用 Rgba / Png / Webp。"),
+                _ => (page.ToPng(), AssetTextureFormat.Png),
+            };
 
             bundle.Assets.Add(new AssetBundleAsset
             {
@@ -59,6 +70,7 @@ public static class AtlasBuilder
                 Bytes = bytes,
                 Width = page.Width,
                 Height = page.Height,
+                Format = fmt,
             });
 
             // 预览图始终用原始 PNG，便于人工核对。
@@ -68,25 +80,10 @@ public static class AtlasBuilder
                     page.ToPng());
         }
 
+        // 运行端按 GetFileNameWithoutExtension(image) 取纹理名（与包内资源名 page.Name 对应），
+        // 故 AtlasData 中 image 的扩展名仅为可读提示，无需因编码格式而改写。
         var root = JsonNode.Parse(result.AtlasJson)!.AsObject();
-        // 若本层转成了 webp，同步把 AtlasData 里 image 的扩展名改掉，保持元数据一致
-        // （运行端按 GetFileNameWithoutExtension(image) 取纹理名，扩展名仅为可读提示）。
-        if (toWebp)
-            foreach (var p in (JsonArray)root["pages"]!)
-                if (p is JsonObject o && o["image"] is JsonNode img)
-                    o["image"] = img.GetValue<string>().Replace(".png", ".webp");
-
         return (JsonArray)root["pages"]!;
-    }
-
-    /// <summary>把 RGBA8 源像素直接编码为 WebP（下游转码用，避免经由 PNG 多一道解码）。</summary>
-    private static byte[] EncodeWebp(byte[] rgba, int w, int h)
-    {
-        using var bmp = new SKBitmap(w, h, SKColorType.Rgba8888, SKAlphaType.Unpremul);
-        rgba.CopyTo(bmp.GetPixelSpan());
-        using var img = SKImage.FromBitmap(bmp);
-        using var data = img.Encode(SKEncodedImageFormat.Webp, 90);
-        return data.ToArray();
     }
 
     /// <summary>一个被导入的 .atlas 预切图集的整页：页图 JSON 原文 + 页图 PNG 字节。</summary>

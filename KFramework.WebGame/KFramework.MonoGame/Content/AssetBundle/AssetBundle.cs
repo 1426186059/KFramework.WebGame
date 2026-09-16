@@ -1,4 +1,3 @@
-using System.Drawing;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.Json;
@@ -9,7 +8,8 @@ namespace KFramework.MonoGame;
 /// <summary>
 /// 一个已加载的 .web.lib 资源包（对齐 Unity <c>AssetBundle</c>）。
 /// 通过 <see cref="LoadFromMemory"/> / <see cref="LoadFromStream"/> 加载，纯流式、无文件系统依赖，可在浏览器 WASM 运行。
-/// 引擎拿到字节后自行交给自己的解码器（webp / 音频等）。
+/// 包内纹理在 <see cref="DecodeTexturesAsync"/>（LoadBundle 阶段）按 <see cref="AssetBundleEntry.Format"/> 解码为 RGBA8 后上传 GPU；
+/// 非纹理资源（音频 / JSON 等）原样取出。
 ///
 /// 一个资源包对应一个“Bundle”，里面装着若干资源（图集页、音效、JSON 等）。
 /// 所有资源都从已加载的 Bundle 中按名字取出。
@@ -17,13 +17,16 @@ namespace KFramework.MonoGame;
 /// <example>
 /// <code>
 /// using var ab = AssetBundle.LoadFromMemory(bytes);
-/// byte[] webp = ab.LoadAsset("myres/atlas/characters_0");
+/// await ab.DecodeTexturesAsync();                              // 加载阶段解码纹理（Png 等）
+/// Texture2D tex = ab.LoadTexture("myres/atlas/characters_0", device); // 仅上传 GPU
 /// </code>
 /// </example>
 public sealed class AssetBundle : IDisposable
 {
     private readonly ZipArchive _zip;
     private readonly Dictionary<string, ZipArchiveEntry> _byPath;
+    // 加载阶段（LoadBundleAsync）预解码后的 RGBA8 像素缓存：path -> RGBA8（长度 = W*H*4）。
+    private readonly Dictionary<string, byte[]> _decodedTextures = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>包内清单（资源索引 + 元信息）。</summary>
     public AssetBundleContent Content { get; }
@@ -104,6 +107,7 @@ public sealed class AssetBundle : IDisposable
         => JsonSerializer.Deserialize<T>(LoadText(name), s_opts);
 
     /// <summary>同步取一张整图纹理（图集请改用 <see cref="KFramework.MonoGameExtend.SpriteSheetLoader"/> 加载）。</summary>
+    /// <remarks>解码已在 <see cref="DecodeTexturesAsync"/>（LoadBundle 异步阶段）完成并缓存；此处仅做 GPU 上传。</remarks>
     public Texture2D LoadTexture(string name, GraphicsDevice device)
     {
         AssetBundleEntry? info = GetAssetInfo(name)
@@ -111,23 +115,70 @@ public sealed class AssetBundle : IDisposable
         if (info.Page >= 0)
             throw new InvalidOperationException(
                 $"资源「{name}」是旧格式的子图条目，请改用 SpriteSheetLoader 加载图集（整页纹理 + source rect）。");
-        byte[] pixels = LoadAsset(name);
+
+        // 优先用加载阶段预解码的缓存；未命中（如直接 LoadFromMemory 而未调 DecodeTexturesAsync）则按格式兜底解码。
+        if (!_decodedTextures.TryGetValue(name, out var pixels))
+            pixels = DecodeEntryPixels(name, info);
+
         int width = info.Width;
         int height = info.Height;
-
-        // 图集页以 PNG 形式入库，运行时需解码为 RGBA8 再上传 GPU；
-        // 个别散图也可能直接存 RGBA8，故按 PNG 魔数判断，不解码则原样上传。
-        // 注：若下游内容构建把图集页转成了 WebP，其解析由 JS 宿主层完成后以 RGBA8 交给运行端；运行端零依赖、不参与 WebP 解码。
-        if (pixels.Length >= 8 && pixels[0] == 0x89 && pixels[1] == 0x50 && pixels[2] == 0x4E && pixels[3] == 0x47)
-        {
-            Bitmap bmp = PngDecoder.Decode(pixels);
-            pixels = bmp.Pixels;
-            if (width <= 0 || height <= 0) { width = bmp.Width; height = bmp.Height; }
-        }
-
         if (width <= 0 || height <= 0)
             throw new InvalidOperationException($"纹理 “{name}” 缺少像素尺寸，无法上传 GPU。");
         return device.CreateTexture(width, height, pixels);
+    }
+
+    // ============ 加载阶段异步解码（对齐 PixiJS：bundle 拉取/解包/解码异步，取资源同步） ============
+    // 把需要解码的纹理（如 Png）在 LoadBundleAsync 阶段提前解码为 RGBA8 并缓存，
+    // 使 LoadTexture 只负责 GPU 上传、不再做图像解码。解码本身为 CPU 同步（WASM 单线程），
+    // 但被安排在异步加载阶段完成，逐资源取用时保持同步、零解码。Rgba 格式本身已是像素，无需预解码。
+
+    /// <summary>
+    /// 在包已驻留内存后、取资源之前，把需要解码的纹理（Png / Webp）提前解码为 RGBA8 并缓存。
+    /// 应在 <see cref="ContentManager.LoadBundleAsync"/>（异步阶段）调用一次。
+    /// </summary>
+    /// <remarks>
+    /// Rgba 本身已是像素，直接上传无需预解码；Png 走托管 PngDecoder 同步解码；
+    /// Webp 无托管解码器，借浏览器原生 <c>createImageBitmap</c> 异步解码（WASM/浏览器目标）。
+    /// </remarks>
+    public async Task DecodeTexturesAsync()
+    {
+        foreach (var e in Content.Entries)
+        {
+            if (!string.Equals(e.Type, "texture", StringComparison.OrdinalIgnoreCase)) continue;
+            if (e.Format == AssetTextureFormat.Rgba) continue;
+
+            if (e.Format == AssetTextureFormat.Webp)
+            {
+                // Webp 无托管解码器：借浏览器原生解码（需清单中的宽高来预分配像素缓冲）。
+                int w = e.Width, h = e.Height;
+                if (w <= 0 || h <= 0)
+                    throw new InvalidOperationException($"纹理 “{e.Path}” 缺少像素尺寸，无法解码 WebP。");
+                byte[] raw = LoadAsset(e.Path);
+                var pixels = new byte[w * h * 4];
+                var size = new int[2];
+                await JSBind_Text.DecodeImageToRgba(raw, size, pixels).ConfigureAwait(false);
+                _decodedTextures[e.Path] = pixels;
+                continue;
+            }
+
+            _decodedTextures[e.Path] = DecodeEntryPixels(e.Path, e);
+        }
+    }
+
+    /// <summary>按条目声明的格式把包内纹理字节解码为 RGBA8（供预解码缓存与 LoadTexture 兜底共用）。</summary>
+    private byte[] DecodeEntryPixels(string name, AssetBundleEntry e)
+    {
+        byte[] raw = LoadAsset(name);
+        return e.Format switch
+        {
+            AssetTextureFormat.Rgba => raw,
+            AssetTextureFormat.Png  => PngDecoder.Decode(raw).Pixels,
+            AssetTextureFormat.Webp => throw new InvalidOperationException(
+                $"纹理 “{name}” 为 WebP：必须在 LoadBundleAsync 阶段（DecodeTexturesAsync）经浏览器原生解码，请先调用 LoadBundleAsync，不要走同步兜底。"),
+            AssetTextureFormat.Ktx2 => throw new NotSupportedException(
+                $"纹理 “{name}” 为 KTX2（GPU 压缩纹理），解码未实现：需 GPU 压缩纹理转码器。"),
+            _ => raw,
+        };
     }
 
     /// <summary>同步尝试取一张纹理；找不到返回 false。</summary>

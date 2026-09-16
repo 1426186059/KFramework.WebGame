@@ -33,6 +33,9 @@ namespace KFramework.Content.Build
         public int X { get; set; }
         /// <summary>子图在图集页中的 Y 偏移。</summary>
         public int Y { get; set; }
+
+        /// <summary>纹理编码格式（仅 Type=="texture" 有意义）：Rgba / Png / Ktx2。运行端按此在加载阶段解码。</summary>
+        public AssetTextureFormat Format { get; set; } = AssetTextureFormat.Rgba;
     }
 
     /// <summary>
@@ -83,7 +86,7 @@ namespace KFramework.Content.Build
 
             var entries = sorted.Select(a => new AssetBundleEntry(
                 a.Path, a.Type, a.Bytes.LongLength, Crc32Hex(a.Bytes), BundleHash.Hex(a.Bytes),
-                a.Width, a.Height, a.Page, a.X, a.Y)).ToList();
+                a.Width, a.Height, a.Page, a.X, a.Y, a.Format)).ToList();
 
             var content = new AssetBundleContent(BundleFormat, Version, build.AssetBundleName, entries);
 

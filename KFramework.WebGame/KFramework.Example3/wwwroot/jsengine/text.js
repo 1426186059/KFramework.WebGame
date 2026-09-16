@@ -67,3 +67,20 @@ export function render(text, font, x, y, width, height, rgba) {
     bytes.set(image);
     writeBytes(rgba, bytes);
 }
+
+// 浏览器原生解码图像字节（PNG / WebP 等）为 RGBA8，供运行端 LoadBundle 预解码纹理。
+export async function decodeImageToRgba(bytes, outSize, outPixels) {
+    const blob = new Blob([bytes]);
+    const bitmap = await createImageBitmap(blob);
+    const w = bitmap.width, h = bitmap.height;
+    const cv = document.createElement('canvas');
+    cv.width = w; cv.height = h;
+    const c = cv.getContext('2d');
+    c.drawImage(bitmap, 0, 0);
+    const image = c.getImageData(0, 0, w, h).data;
+    const out = new Uint8Array(image.length);
+    out.set(image);
+    writeBytes(outPixels, out);
+    writeInts(outSize, [w, h]);
+    if (bitmap.close) bitmap.close();
+}

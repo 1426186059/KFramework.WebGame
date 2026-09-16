@@ -107,6 +107,8 @@ public sealed class ContentManager : IDisposable
             throw new InvalidOperationException($"资源包 “{bundleName}” 下载失败（{pkg.File}）。");
 
         var bundle = AssetBundle.LoadFromMemory(bytes);
+        // 拉包阶段即把需要解码的纹理（Png 等）解码为 RGBA8 并缓存，使后续 LoadTexture 仅做 GPU 上传。
+        await bundle.DecodeTexturesAsync().ConfigureAwait(false);
         _bundles[bundle.Content.Name] = bundle;
         PrintTool.Log($"[KFramework.MonoGame] 已加载资源包 {bundle.Content.Name}（{bytes.Length} 字节，{bundle.Content.Entries.Count} 项）");
         progress?.Report(1f);

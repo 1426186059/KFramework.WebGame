@@ -17,5 +17,13 @@ namespace KFramework.MonoGame
         [JSImport("render", "text")]
         internal static partial void Render(string text, string font, int x, int y, int width, int height,
             [JSMarshalAs<JSType.MemoryView>] Span<byte> rgba);
+
+        /// <summary>
+        /// 借浏览器原生解码器（createImageBitmap）把图像字节（PNG / WebP 等）解码为 RGBA8。
+        /// <paramref name="bytes"/> 为图像文件字节；<paramref name="outSize"/> 写入 [宽, 高]（int[2]）；
+        /// <paramref name="outPixels"/> 写入 RGBA8 像素（长度 = 宽*高*4）。
+        /// </summary>
+        [JSImport("decodeImageToRgba", "text")]
+        internal static partial Task DecodeImageToRgba(byte[] bytes, int[] outSize, byte[] outPixels);
     }
 }

@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using KFramework.MonoGame;
 
 namespace KFramework.Content.Build
 {
@@ -26,6 +27,10 @@ namespace KFramework.Content.Build
         /// <summary>是否自动图集打包（默认 true）。</summary>
         [JsonPropertyName("autoAtlas")]
         public bool AutoAtlas { get; set; } = true;
+
+        /// <summary>图集页 / 整图纹理的最终编码格式（见 <see cref="AssetTextureFormat"/>）：Rgba（默认）/ Png / Ktx2。</summary>
+        [JsonPropertyName("textureFormat")]
+        public AssetTextureFormat TextureFormat { get; set; } = AssetTextureFormat.Rgba;
 
         /// <summary>发布方式：www / serve / none，缺省 www。</summary>
         [JsonPropertyName("deploy")]

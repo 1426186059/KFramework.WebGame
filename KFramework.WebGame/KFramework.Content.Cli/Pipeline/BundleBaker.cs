@@ -94,14 +94,25 @@ public static class BundleBaker
                     }
                     else
                     {
-                        // 不装箱：整图原样入包（适合 .atlas 预切图集，运行端按整张页图切片）
+                        // 不装箱：整图原样入包（适合 .atlas 预切图集，运行端按整张页图切片）。
+                        // 按 BuildOptions.TextureFormat 编码：Rgba 存裸像素；Png 编码 PNG；Webp 编码 WebP；Ktx2 暂未实现。
+                        (byte[] encoded, AssetTextureFormat fmt) = options.TextureFormat switch
+                        {
+                            AssetTextureFormat.Rgba => (GetPixels(skImage), AssetTextureFormat.Rgba),
+                            AssetTextureFormat.Png  => (EncodePng(skImage),  AssetTextureFormat.Png),
+                            AssetTextureFormat.Webp => (EncodeWebp(skImage), AssetTextureFormat.Webp),
+                            AssetTextureFormat.Ktx2 => throw new NotSupportedException(
+                                "KTX2 编码尚未实现：需引入 GPU 压缩纹理编码器（如 Basis/ASTC）。当前可用 Rgba / Png / Webp。"),
+                            _ => (GetPixels(skImage), AssetTextureFormat.Rgba),
+                        };
                         bundle.Assets.Add(new AssetBundleAsset
                         {
                             Path = name,
                             Type = "texture",
-                            Bytes = GetPixels(skImage),
+                            Bytes = encoded,
                             Width = skImage.Width,
                             Height = skImage.Height,
+                            Format = fmt,
                         });
                         skImage.Dispose();
                     }
@@ -193,6 +204,38 @@ public static class BundleBaker
     {
         using var pixmap = bmp.PeekPixels();
         return pixmap.GetPixelSpan().ToArray();
+    }
+
+    /// <summary>把 SKBitmap 编码为 PNG 字节（整图非装箱模式下 TextureFormat=Png 时使用）。</summary>
+    private static byte[] EncodePng(SKBitmap bmp)
+    {
+        using var img = SKImage.FromBitmap(bmp);
+        using var data = img.Encode(SKEncodedImageFormat.Png, 100);
+        return data.ToArray();
+    }
+
+    /// <summary>把 SKBitmap 编码为 WebP 字节（q90，整图非装箱模式下 TextureFormat=Webp 时使用）。</summary>
+    private static byte[] EncodeWebp(SKBitmap bmp)
+    {
+        using var img = SKImage.FromBitmap(bmp);
+        using var data = img.Encode(SKEncodedImageFormat.Webp, 90);
+        return data.ToArray();
+    }
+
+    /// <summary>把 RGBA8 字节（行优先 W*H*4）编码为 WebP（供图集页复用，因上游 KTexturePacker 不提供 ToWebp）。</summary>
+    internal static byte[] EncodeWebpFromRgba(byte[] rgba, int width, int height)
+    {
+        var bmp = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+        try
+        {
+            using var pixmap = bmp.PeekPixels();
+            Marshal.Copy(rgba, 0, pixmap.GetPixels(), rgba.Length);
+            return EncodeWebp(bmp);
+        }
+        finally
+        {
+            bmp.Dispose();
+        }
     }
 
 

@@ -72,8 +72,10 @@ namespace KFramework.Content.Build
             /// <summary>是否裁掉精灵四周的透明边。</summary>
             public bool TrimSprites { get; set; } = true;
 
-            /// <summary>图集页（整图纹理）的最终编码格式：<c>png</c>（默认，上游 KTexturePacker 的中间格式）/ <c>webp</c>（下游内容构建在此把 PNG 转成 WebP 再入库，体积更小；运行时零依赖，WebP 解析由 JS 宿主层完成）。</summary>
-            public string TextureFormat { get; set; } = "png";
+            /// <summary>图集页（整图纹理）的最终编码格式（见 <see cref="AssetTextureFormat"/>）：
+            /// <c>Rgba</c>（默认，裸 RGBA8，运行端零解码、直接上传 GPU）/ <c>Png</c>（编码 PNG，体积更小，运行端在 LoadBundle 阶段解码）/
+            /// <c>Ktx2</c>（GPU 压缩纹理，本仓库暂未实现编码）。可在 build.config.json 的 <c>textureFormat</c> 配置，或用 kfc --format 覆盖。</summary>
+            public AssetTextureFormat TextureFormat { get; set; } = AssetTextureFormat.Rgba;
         }
 
         public BuildReport Build(string rawDirectory, BuildOptions? options = null)
