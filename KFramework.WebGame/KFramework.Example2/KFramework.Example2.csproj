@@ -58,10 +58,10 @@
     <Exec Command="dotnet run --project &quot;$(MSBuildThisFileDirectory)..\KFramework.Content.Cli\KFramework.Content.Cli.csproj&quot; -v q --nologo -- --root &quot;$(MSBuildThisFileDirectory)Content&quot;"
           ContinueOnError="true" />
     <ItemGroup>
-      <_PublishedContent Include="$(MSBuildThisFileDirectory)Content\content\**\*.*" />
+      <_PublishedContent Include="$(MSBuildThisFileDirectory)Content\hot_update_res\**\*.*" />
     </ItemGroup>
     <Copy SourceFiles="@(_PublishedContent)"
-          DestinationFiles="@(_PublishedContent->'$(MSBuildThisFileDirectory)wwwroot\content\%(RecursiveDir)%(Filename)%(Extension)')"
+          DestinationFiles="@(_PublishedContent->'$(MSBuildThisFileDirectory)wwwroot\hot_update_res\%(RecursiveDir)%(Filename)%(Extension)')"
           SkipUnchangedFiles="true" />
   </Target>
 

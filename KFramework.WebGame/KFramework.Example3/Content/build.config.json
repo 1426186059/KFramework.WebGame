@@ -1,6 +1,6 @@
 {
   "rawDir": "raw",
-  "outDir": "publish",
+  "outDir": "hot_update_res",
   "AssetBundleDir": [
     "MyBundle2",
     "MyRes"

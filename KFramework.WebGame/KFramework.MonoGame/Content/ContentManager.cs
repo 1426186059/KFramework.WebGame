@@ -29,7 +29,7 @@ public sealed class ContentManager : IDisposable
     private readonly Dictionary<string, AssetBundle> _bundles = new(StringComparer.OrdinalIgnoreCase);
 
     public ContentManager(
-        string root = "content",
+        string root = "hot_update_res",
         Func<string, Task<byte[]?>>? loadLocal = null,
         Func<string, byte[], Task>? saveLocal = null)
     {

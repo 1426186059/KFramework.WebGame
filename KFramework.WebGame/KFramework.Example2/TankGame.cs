@@ -10,7 +10,7 @@ namespace KFramework.Example2;
 /// </summary>
 public sealed class TankGame : Game
 {
-    public TankGame() : base("#game", "content") { }
+    public TankGame() : base("#game", "hot_update_res") { }
 
     protected override async Task LoadContentAsync()
     {

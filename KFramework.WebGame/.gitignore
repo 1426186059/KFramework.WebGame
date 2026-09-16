@@ -428,7 +428,10 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
-# KFramework 内容管线：raw/ 是手写的原始资源（入库），content/ 是构建产物（不入库）
+# KFramework 内容管线：raw/ 是手写的原始资源（入库），构建产物不入库
+#   - 默认产物目录 hot_update_res（相对 Content 根，由各工程 build.config.json 的 outDir 决定）
+#   - 例：KFramework.Example1/Content/hot_update_res/
+**/hot_update_res/
 KFramework.Content/content/
 MirGame/wwwroot/content/
 

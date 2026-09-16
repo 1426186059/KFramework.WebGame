@@ -42,7 +42,7 @@ namespace KFramework.MonoGame
         /// <summary>每帧绘制前的清屏色。</summary>
         public Color ClearColor { get; set; } = new Color(12, 14, 24);
 
-        protected Game(string canvasSelector = "#game", string contentRoot = "content")
+        protected Game(string canvasSelector = "#game", string contentRoot = "hot_update_res")
         {
             GraphicsDevice = new GraphicsDevice(canvasSelector);
             Window = new GameWindow(GraphicsDevice);

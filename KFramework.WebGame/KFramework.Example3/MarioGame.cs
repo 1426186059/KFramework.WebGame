@@ -6,7 +6,7 @@ namespace KFramework.Example3;
 /// </summary>
 public sealed class MarioGame : Game
 {
-    public MarioGame() : base("#game", "content") { }
+    public MarioGame() : base("#game", "hot_update_res") { }
 
     protected override async Task LoadContentAsync()
     {

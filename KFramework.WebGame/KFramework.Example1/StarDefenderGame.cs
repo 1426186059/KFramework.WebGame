@@ -72,7 +72,7 @@ public sealed class StarDefenderGame : Game
     private float _viewScale = 1f;
     private Vector2 _viewOffset;
 
-    public StarDefenderGame() : base("#game", "content")
+    public StarDefenderGame() : base("#game", "hot_update_res")
     {
         ClearColor = new Color(8, 10, 22);
     }

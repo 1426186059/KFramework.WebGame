@@ -15,9 +15,9 @@ namespace KFramework.Content.Build
         [JsonPropertyName("rawDir")]
         public string RawDir { get; set; } = "raw";
 
-        /// <summary>打包产物目录（相对 Content 根），缺省 content；发布阶段由各示例 csproj 的 BuildGameContent 复制到 wwwroot/content。</summary>
+        /// <summary>打包产物目录（相对 Content 根），缺省 hot_update_res；各示例工程可在 build.config.json 覆盖（示例统一为 hot_update_res，由 csproj 的 BuildGameContent 复制到 wwwroot/hot_update_res，运行时 ContentManager 的 contentRoot 也默认 hot_update_res）。</summary>
         [JsonPropertyName("outDir")]
-        public string OutDir { get; set; } = "content";
+        public string OutDir { get; set; } = "hot_update_res";
 
         /// <summary>打包目录（字符串或数组）；空字符串表示 Content/raw 自身为打包目录。</summary>
         [JsonPropertyName("AssetBundleDir")]
@@ -32,7 +32,7 @@ namespace KFramework.Content.Build
         [JsonPropertyName("textureFormat")]
         public AssetTextureFormat TextureFormat { get; set; } = AssetTextureFormat.Rgba;
 
-        /// <summary>发布方式：www / serve / none，缺省 none（由各示例 csproj 的 BuildGameContent 负责复制到 wwwroot/content）。</summary>
+        /// <summary>发布方式：www / serve / none，缺省 none（由各示例 csproj 的 BuildGameContent 负责复制到 wwwroot/hot_update_res）。</summary>
         [JsonPropertyName("deploy")]
         public string Deploy { get; set; } = "none";
 

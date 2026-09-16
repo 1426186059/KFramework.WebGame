@@ -50,16 +50,16 @@
     <Exec Command="dotnet run --project &quot;$(MSBuildThisFileDirectory)..\KFramework.Content.Cli\KFramework.Content.Cli.csproj&quot; -v q --nologo -- --root &quot;$(MSBuildThisFileDirectory)Content&quot;" ContinueOnError="true" />
     <!-- 清理旧格式（.pak / manifest.json）与旧哈希的 .web.lib，避免与新版内容混淆 -->
     <ItemGroup>
-      <WebLibStale Include="$(MSBuildThisFileDirectory)wwwroot\content\*.pak" />
-      <WebLibStale Include="$(MSBuildThisFileDirectory)wwwroot\content\manifest.json" />
-      <WebLibStale Include="$(MSBuildThisFileDirectory)wwwroot\content\*.web.lib" />
-      <WebLibStale Include="$(MSBuildThisFileDirectory)wwwroot\content\version.manifest" />
+      <WebLibStale Include="$(MSBuildThisFileDirectory)wwwroot\hot_update_res\*.pak" />
+      <WebLibStale Include="$(MSBuildThisFileDirectory)wwwroot\hot_update_res\manifest.json" />
+      <WebLibStale Include="$(MSBuildThisFileDirectory)wwwroot\hot_update_res\*.web.lib" />
+      <WebLibStale Include="$(MSBuildThisFileDirectory)wwwroot\hot_update_res\version.manifest" />
     </ItemGroup>
     <Delete Files="@(WebLibStale)" Condition="'@(WebLibStale)' != ''" ContinueOnError="true" />
     <ItemGroup>
-      <_PublishedContent Include="$(MSBuildThisFileDirectory)Content\publish\**\*.*" />
+      <_PublishedContent Include="$(MSBuildThisFileDirectory)Content\hot_update_res\**\*.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(_PublishedContent)" DestinationFiles="@(_PublishedContent->'$(MSBuildThisFileDirectory)wwwroot\content\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(_PublishedContent)" DestinationFiles="@(_PublishedContent->'$(MSBuildThisFileDirectory)wwwroot\hot_update_res\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
 	
