@@ -873,11 +873,11 @@ public sealed class StarDefenderGame : Game
 
     private void FinishLoading()
     {
-        // 按目录分别打包：data 包（配置）与 sprites 包（精灵图集），各自独立 AssetBundle
-        AssetBundle dataBundle = Content.GetBundle("data")
-            ?? throw new InvalidOperationException("内容包 data 尚未加载");
-        AssetBundle spriteBundle = Content.GetBundle("sprites")
-            ?? throw new InvalidOperationException("内容包 sprites 尚未加载");
+        // 按目录分别打包：bundles/data 包（配置）与 bundles/sprites 包（精灵图集），各自独立 AssetBundle
+        AssetBundle dataBundle = Content.GetBundle("bundles/data")
+            ?? throw new InvalidOperationException("内容包 bundles/data 尚未加载");
+        AssetBundle spriteBundle = Content.GetBundle("bundles/sprites")
+            ?? throw new InvalidOperationException("内容包 bundles/sprites 尚未加载");
 
         _config = dataBundle.LoadJson<GameConfig>("data/game");
 

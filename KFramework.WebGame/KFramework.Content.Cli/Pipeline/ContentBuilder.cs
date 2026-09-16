@@ -43,7 +43,7 @@ namespace KFramework.Content.Build
     ///         字段 <c>bundlesDir</c> / <c>bundleDirs</c> / <c>AssetBundleDir</c> 可填字符串或字符串数组，例如
     ///         <c>{ "bundlesDir": ["Bundles", "UI"] }</c>；未配置或字段缺失时缺省为 <c>Bundles</c>。
     ///         字段值为空字符串 <c>""</c> 表示「打包根目录（Content/raw）自身」作为打包目录，其下每个含资源的子文件夹各自成包。</item>
-    ///   <item>每个打包根目录下的「每一个含资源的子文件夹」分别打包成一个 AssetBundle（包名 = 子文件夹相对该根目录的路径）。</item>
+    ///   <item>打包根目录自身若直接含资源，也会打成一个以根目录（相对 raw 的路径，如 MyRes）命名的 AssetBundle；其下「每一个含资源的子文件夹」再各自打成一个 AssetBundle（包名 = 子文件夹相对 raw 根目录的全路径，如 MyRes/atlas）。根目录包只含自身直接资源，不含子目录资源。</item>
     ///   <item>多个根目录下的子文件夹包名必须唯一，出现同名会直接报错（请保证各根目录内子文件夹名不重复）。</item>
     ///   <item>每个文件夹只打包其「直接」资源，不含子目录资源（子目录自身也是独立的 AssetBundle）。</item>
     ///   <item>是否自动图集打包由 <c>autoAtlas</c> 控制（默认 true）：true 时独立 <c>.png</c> 经图集打包器装箱成图集；
@@ -138,10 +138,43 @@ namespace KFramework.Content.Build
                     if (!Directory.Exists(dirRoot)) warnings.Add($"打包目录未找到，已忽略：{dir}");
                 }
 
-                // 各根目录下的子文件夹包名必须唯一（保证运行端 GetBundle(name) 无歧义）
+                // 各根目录下的（含根目录自身）子文件夹包名必须唯一（保证运行端 GetBundle(name) 无歧义）
                 var usedNames = new HashSet<string>(StringComparer.Ordinal);
                 foreach (string bundlesRoot in bundleRoots)
                 {
+                    // 1) 打包根目录自身：根目录若直接含资源，也打成一个以根目录（最后一级文件夹名）命名的 AssetBundle；
+                    //    子目录资源不并入此包（各自成包），即「屏蔽子目录的资源」。
+                    {
+                        // 根目录包名 = 该打包根相对 raw 根目录的路径（如 MyRes）；空字符串（raw 自身为打包根）时用 raw 最后一级文件夹名
+                        string bundleRootRel = Path.GetRelativePath(rawDirectory, bundlesRoot).Replace('\\', '/');
+                        string rootBundleName = PakFormat.NormalizeName(
+                            string.IsNullOrEmpty(bundleRootRel)
+                                ? Path.GetFileName(rawDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar))
+                                : bundleRootRel);
+                        string[] rootFiles = Directory.EnumerateFiles(bundlesRoot, "*", SearchOption.TopDirectoryOnly)
+                            .Where(f => !BundleBaker.IsIgnored(Path.GetRelativePath(rawDirectory, f).Replace('\\', '/')))
+                            .OrderBy(static f => f, StringComparer.Ordinal)
+                            .ToArray();
+                        if (rootFiles.Length > 0)
+                        {
+                            if (!usedNames.Add(rootBundleName))
+                                throw new InvalidOperationException(
+                                    $"发现重复的 AssetBundle 名「{rootBundleName}」：配置的打包目录（{string.Join(", ", bundleDirs)}）下存在同名子文件夹，请保证各打包目录内的子文件夹名唯一。");
+                            // 扁平别名（'/' -> '_'）：与逻辑名一起注册，避免与其它包（或其别名）重名。
+                            // 逻辑名本身不含 '/' 时别名==名，无需重复注册。
+                            string rootAlias = rootBundleName.Replace('/', '_');
+                            if (rootAlias != rootBundleName && !usedNames.Add(rootAlias))
+                                throw new InvalidOperationException(
+                                    $"资源包「{rootBundleName}」的扁平别名「{rootAlias}」与另一个包重名，请保证打包目录内子文件夹路径唯一。");
+                            AssetBundleBuild build = BundleBaker.BuildBundle(rootBundleName, rootFiles, bundlesRoot, options, Global.mBuildConfig.AutoAtlas, warnings,
+                                ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, outputDirectory);
+                            if (rootAlias != rootBundleName) build.Aliases.Add(rootAlias);
+                            builds.Add(build);
+                            bundleCount++;
+                        }
+                    }
+
+                    // 2) 各子文件夹：每个含资源的子文件夹各自成包（子目录资源由其自身文件夹负责）
                     foreach (string folder in Directory.EnumerateDirectories(bundlesRoot, "*", SearchOption.AllDirectories)
                                                    .OrderBy(static f => f, StringComparer.Ordinal))
                     {
@@ -152,20 +185,28 @@ namespace KFramework.Content.Build
                             .ToArray();
                         if (directFiles.Length == 0) continue;
 
-                        string bundleName = PakFormat.NormalizeName(Path.GetRelativePath(bundlesRoot, folder).Replace('\\', '/'));
+                        // 子文件夹包名 = 该文件夹相对 raw 根目录的全路径（如 myres/group/atlas），使文件名带打包根前缀（myres_group_atlas）
+                        string bundleName = PakFormat.NormalizeName(Path.GetRelativePath(rawDirectory, folder).Replace('\\', '/'));
                         if (!usedNames.Add(bundleName))
                             throw new InvalidOperationException(
                                 $"发现重复的 AssetBundle 名「{bundleName}」：配置的打包目录（{string.Join(", ", bundleDirs)}）下存在同名子文件夹，请保证各打包目录内的子文件夹名唯一。");
+                        // 扁平别名（'/' -> '_'）：与逻辑名一起注册，避免与其它包（或其别名）重名。
+                        // 逻辑名本身不含 '/' 时别名==名，无需重复注册。
+                        string bundleAlias = bundleName.Replace('/', '_');
+                        if (bundleAlias != bundleName && !usedNames.Add(bundleAlias))
+                            throw new InvalidOperationException(
+                                $"资源包「{bundleName}」的扁平别名「{bundleAlias}」与另一个包重名，请保证打包目录内子文件夹路径唯一。");
 
                         AssetBundleBuild build = BundleBaker.BuildBundle(bundleName, directFiles, bundlesRoot, options, Global.mBuildConfig.AutoAtlas, warnings,
                             ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, outputDirectory);
+                        if (bundleAlias != bundleName) build.Aliases.Add(bundleAlias);
                         builds.Add(build);
                         bundleCount++;
                     }
                 }
 
                 if (builds.Count == 0)
-                    warnings.Add($"打包目录（{string.Join(", ", bundleDirs)}）下没有发现任何「含资源的子文件夹」，未产出任何 AssetBundle。");
+                    warnings.Add($"打包目录（{string.Join(", ", bundleDirs)}）下没有发现任何「含资源的文件夹（含根目录自身）」，未产出任何 AssetBundle。");
             }
 
 

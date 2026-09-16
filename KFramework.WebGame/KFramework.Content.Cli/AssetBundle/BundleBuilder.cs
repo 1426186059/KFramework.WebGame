@@ -10,11 +10,14 @@ namespace KFramework.Content.Build
     /// </summary>
     public sealed class AssetBundleBuild
     {
-        /// <summary>逻辑包名（对应 Unity 的 assetBundleName，如 myres/atlas/characters）。</summary>
+        /// <summary>逻辑包名（对应 Unity 的 assetBundleName，全相对路径含 '/'，如 myres/group/atlas）。</summary>
         public string AssetBundleName { get; set; } = "";
 
         /// <summary>包内资源。</summary>
         public List<AssetBundleAsset> Assets { get; set; } = new();
+
+        /// <summary>别名：除逻辑名外可引用的其它名字（如把 '/' 换成 '_' 的扁平名 myres_group_atlas）。运行端按逻辑名或任一别名都能取包。</summary>
+        public List<string> Aliases { get; set; } = new();
     }
 
     /// <summary>包内一条待写入的资源。</summary>
@@ -68,10 +71,13 @@ namespace KFramework.Content.Build
                 byte[] bytes = WriteBundle(b);
                 string full = BundleHash.Hex(bytes);
                 string shortH = BundleHash.Shorten(full);
-                string file = $"{Sanitize(b.AssetBundleName)}.{shortH}.web.lib";
+                // 文件名扁平化：把逻辑名的路径分隔符 '/' 换成 '_'，避免产生嵌套子目录（仍含短哈希）
+                string flatName = b.AssetBundleName.Replace('/', '_');
+                string file = $"{Sanitize(flatName)}.{shortH}.web.lib";
 
                 bundles[b.AssetBundleName] = bytes;
-                packages.Add(new BundlePackage(b.AssetBundleName, file, bytes.LongLength, full, b.Assets.Count, Array.Empty<string>()));
+                IReadOnlyList<string> aliases = b.Aliases.Count > 0 ? b.Aliases : Array.Empty<string>();
+                packages.Add(new BundlePackage(b.AssetBundleName, file, bytes.LongLength, full, b.Assets.Count, Array.Empty<string>(), aliases));
             }
 
             var manifest = new AssetBundleManifest(SetFormat, Version, BundleHash.Algorithm, DateTime.UtcNow.ToString("O"), packages);
@@ -88,7 +94,8 @@ namespace KFramework.Content.Build
                 a.Path, a.Type, a.Bytes.LongLength, Crc32Hex(a.Bytes), BundleHash.Hex(a.Bytes),
                 a.Width, a.Height, a.Page, a.X, a.Y, a.Format)).ToList();
 
-            var content = new AssetBundleContent(BundleFormat, Version, build.AssetBundleName, entries);
+            IReadOnlyList<string> aliases = build.Aliases.Count > 0 ? build.Aliases : Array.Empty<string>();
+            var content = new AssetBundleContent(BundleFormat, Version, build.AssetBundleName, entries, aliases);
 
             using var ms = new MemoryStream();
             using (var zip = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))

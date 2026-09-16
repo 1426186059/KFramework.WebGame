@@ -95,12 +95,9 @@ public sealed class ContentManager : IDisposable
 
         if (_bundleManifest is null) await LoadManifestAsync(cancellationToken).ConfigureAwait(false);
 
-        BundlePackage? pkg = null;
-        foreach (var p in _bundleManifest!.Packages)
-            if (string.Equals(p.Name, bundleName, StringComparison.OrdinalIgnoreCase)) { pkg = p; break; }
-
+        BundlePackage? pkg = AssetBundleManifest.FindPackage(_bundleManifest!.Packages, bundleName);
         if (pkg is null)
-            throw new KeyNotFoundException($"总清单中没有资源包 “{bundleName}”。");
+            throw new KeyNotFoundException($"总清单中没有资源包 “{bundleName}”（含别名）。");
 
         byte[]? bytes = await _manager.LoadBundleBytesAsync(pkg, cancellationToken).ConfigureAwait(false);
         if (bytes is null)
@@ -109,8 +106,13 @@ public sealed class ContentManager : IDisposable
         var bundle = AssetBundle.LoadFromMemory(bytes);
         // 拉包阶段即把需要解码的纹理（Png 等）解码为 RGBA8 并缓存，使后续 LoadTexture 仅做 GPU 上传。
         await bundle.DecodeTexturesAsync().ConfigureAwait(false);
-        _bundles[bundle.Content.Name] = bundle;
-        PrintTool.Log($"[KFramework.MonoGame] 已加载资源包 {bundle.Content.Name}（{bytes.Length} 字节，{bundle.Content.Entries.Count} 项）");
+        // 同时以「逻辑名 + 全部别名」登记，使 GetBundle 用任一名字都能取到
+        string key = bundle.Content.Name;
+        _bundles[key] = bundle;
+        if (pkg.Aliases is not null)
+            foreach (var alias in pkg.Aliases)
+                if (!_bundles.ContainsKey(alias)) _bundles[alias] = bundle;
+        PrintTool.Log($"[KFramework.MonoGame] 已加载资源包 {key}（{bytes.Length} 字节，{bundle.Content.Entries.Count} 项）");
         progress?.Report(1f);
         return bundle;
     }
@@ -142,7 +144,9 @@ public sealed class ContentManager : IDisposable
         if (_bundles.TryGetValue(bundleName, out var b))
         {
             b.Dispose();
-            _bundles.Remove(bundleName);
+            // 移除所有指向该 bundle 的键（逻辑名 + 别名）
+            foreach (var kv in _bundles.Where(kv => kv.Value == b).ToArray())
+                _bundles.Remove(kv.Key);
         }
     }
 

@@ -57,6 +57,19 @@ public sealed class AssetBundleManifest
         => JsonSerializer.Deserialize<AssetBundleManifest>(json)
            ?? throw new InvalidDataException("version.manifest 解析失败");
 
+    /// <summary>按逻辑名或任一别名（不区分大小写）查找包条目；找不到返回 null。</summary>
+    public static BundlePackage? FindPackage(IReadOnlyList<BundlePackage> packages, string name)
+    {
+        foreach (var p in packages)
+        {
+            if (string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase)) return p;
+            if (p.Aliases is not null)
+                foreach (var a in p.Aliases)
+                    if (string.Equals(a, name, StringComparison.OrdinalIgnoreCase)) return p;
+        }
+        return null;
+    }
+
     // ==================== Unity 风格 API ====================
 
     /// <summary>所有包的逻辑名（对应 Unity GetAllAssetBundles）。</summary>
@@ -65,12 +78,12 @@ public sealed class AssetBundleManifest
 
     /// <summary>取某包的完整内容哈希（对应 Unity GetAssetBundleHash）。用于精确热更比对。</summary>
     public string? GetAssetBundleHash(string bundleName)
-        => Packages.FirstOrDefault(p => string.Equals(p.Name, bundleName, StringComparison.OrdinalIgnoreCase))?.Hash;
+        => FindPackage(Packages, bundleName)?.Hash;
 
     /// <summary>取某包直接依赖的其它包逻辑名（对应 Unity GetDirectDependencies）。</summary>
     public string[] GetDirectDependencies(string bundleName)
     {
-        var p = Packages.FirstOrDefault(x => string.Equals(x.Name, bundleName, StringComparison.OrdinalIgnoreCase));
+        var p = FindPackage(Packages, bundleName);
         return p?.Dependencies?.ToArray() ?? Array.Empty<string>();
     }
 
@@ -81,7 +94,7 @@ public sealed class AssetBundleManifest
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         void Visit(string name)
         {
-            var p = Packages.FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+            var p = FindPackage(Packages, name);
             if (p?.Dependencies == null) return;
             foreach (var d in p.Dependencies)
                 if (seen.Add(d)) { result.Add(d); Visit(d); }
@@ -95,16 +108,18 @@ public sealed class AssetBundleManifest
 /// 总清单里的一个资源包条目。File 已含内容短哈希（如 myres_atlas_characters.a1b2c3d4.web.lib），
 /// 对齐 Unity <c>AssetBundleManifest</c> 中“包名 + 哈希”的索引概念。
 /// </summary>
-/// <param name="Name">逻辑名，如 myres/atlas/characters</param>
-/// <param name="File">包文件名（含短哈希），如 myres_atlas_characters.a1b2c3d4.web.lib</param>
+/// <param name="Name">逻辑名（全相对路径，含 '/'，如 myres/group/atlas）</param>
+/// <param name="File">包文件名（含短哈希、扁平化）：把逻辑名的 '/' 换成 '_'，如 myres_group_atlas.a1b2c3d4.web.lib</param>
 /// <param name="Size">字节长度</param>
 /// <param name="Hash">完整内容哈希（小写十六进制，无算法前缀）；算法见总清单 Hash 字段</param>
 /// <param name="Entries">包内资源条目数</param>
 /// <param name="Dependencies">依赖的其它包逻辑名（对应 Unity GetDirectDependencies / GetAllDependencies）</param>
+/// <param name="Aliases">别名（可选）：除逻辑名外可引用的其它名字，如扁平名 myres_group_atlas；运行端按逻辑名或任一别名都能取该包</param>
 public sealed record BundlePackage(
     string Name,
     string File,
     long Size,
     string Hash,
     int Entries,
-    IReadOnlyList<string> Dependencies = null!);
+    IReadOnlyList<string> Dependencies = null!,
+    IReadOnlyList<string>? Aliases = null);
