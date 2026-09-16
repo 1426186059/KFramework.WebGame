@@ -1,3 +1,4 @@
+// 【共享类型】本文件定义 MemoryView 等共享类型，供引擎各模块（及对应 JSBind）使用；自身不产生独立 JS 文件。
 // .NET 的 Span<T> 在 JS 侧以 MemoryView 的形式传入（不是 TypedArray），
 // 因此这里给出它的最小可用类型描述，供引擎各模块共享。
 interface MemoryView {

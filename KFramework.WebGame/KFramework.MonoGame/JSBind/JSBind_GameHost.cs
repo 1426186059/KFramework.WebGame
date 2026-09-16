@@ -5,7 +5,8 @@ namespace KFramework.MonoGame
 
     /// <summary>
     /// requestAnimationFrame 回调的入口。JS 侧每帧调用 <c>JSBind_GameHost.Frame(timestamp)</c>。
-    /// 注意：类名与命名空间都被 wwwroot/jsengine/main.js 硬编码查找，改名时务必同步改 JS。
+    /// 依赖 KFramework.TSEngine 项目：本类由 src/main.ts 编译出的 wwwroot/jsengine/main.js 每帧调用。
+/// 注意：类名与命名空间都被 wwwroot/jsengine/main.js 硬编码查找，改名时务必同步改 JS。
     /// </summary>
     public static partial class JSBind_GameHost
     {

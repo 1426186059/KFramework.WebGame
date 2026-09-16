@@ -1,3 +1,4 @@
+// 【依赖 C#】本文件是 JSBind_Input 三个输入模块（input_keyboard / input_mouse / input_touch）的公共工具，自身不被 [JSImport] 直接调用。
 // 输入模块的公共工具：坐标换算 + 缓冲写回。
 // 键盘 / 鼠标 / 触摸三个模块共用，本文件自身不注册任何监听、不持有状态。
 

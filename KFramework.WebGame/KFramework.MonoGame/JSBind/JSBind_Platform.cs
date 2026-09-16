@@ -3,7 +3,11 @@
 namespace KFramework.MonoGame
 {
 
-    /// <summary>浏览器平台服务（画布尺寸、主循环驱动、地址栏参数等）。</summary>
+    /// <summary>
+/// 浏览器平台服务（画布尺寸、主循环驱动、地址栏参数等）。
+/// 依赖 KFramework.TSEngine 项目：本类 JSImport 全部映射到 src/platform.ts 的 "platform" 模块；
+/// 编译产物 platform.js 由各示例 SyncJsEngine 复制到 wwwroot/jsengine。
+/// </summary>
     internal static partial class JSBind_Platform
     {
         /// <summary>

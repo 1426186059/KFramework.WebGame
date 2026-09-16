@@ -1,3 +1,4 @@
+// 【依赖 C#】由 KFramework.MonoGame.JSBind_Input 经 [JSImport(module: "input_mouse")] 调用；产物 input_mouse.js 由 SyncJsEngine 复制。
 // 鼠标模块：只注册监听 + 事件入队。状态与边沿在 C# 侧（Input_Mouse）实现。
 //
 // 事件格式：每条 5 个 i32（type, button, x, y, wheel）= 20 字节。

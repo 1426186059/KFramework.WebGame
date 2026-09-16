@@ -7,7 +7,7 @@ namespace KFramework.MonoGame
     /// <summary>
     /// texture 模块绑定：借浏览器原生解码器把图像字节（PNG / WebP 等）解码为 RGBA8；
     /// 或借 Basis Universal 转码器把 KTX2（GPU 压缩纹理）转码为设备原生压缩格式并上传 GPU。
-    /// 这里只负责跨语言调用，实际逻辑见 KFramework.TSEngine 的 texture 模块。
+    /// 这里只负责跨语言调用，实际逻辑见 KFramework.TSEngine/src/texture.ts（"texture" 模块）；编译产物 texture.js 由 SyncJsEngine 复制到 wwwroot/jsengine。
     /// </summary>
     internal static partial class JSBind_Texture
     {

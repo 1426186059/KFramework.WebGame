@@ -1,3 +1,4 @@
+// 【依赖 C#】由 KFramework.MonoGame.JSBind_Input 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
 // 键盘模块：只注册监听 + 事件入队。
 // 键码映射、按下/抬起状态、边沿全在 C# 侧（KFramework.MonoGame.Input_KeyBoard）实现。
 //

@@ -1,3 +1,4 @@
+// 【依赖 C#】由 KFramework.MonoGame.JSBind_Platform 经 [JSImport(module: "platform")] 调用；产物 platform.js 由 SyncJsEngine 复制。
 // 平台层：画布尺寸自适应、requestAnimationFrame 主循环、浏览器环境查询。
 //
 // 输入已独立成 ./input.ts（薄绑定层），由 C# 侧 JSBind_Input 单独对接模块名 "input"。

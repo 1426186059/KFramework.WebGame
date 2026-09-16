@@ -1,3 +1,4 @@
+// 【依赖 C#】由 KFramework.MonoGame.JSBind_Text 经 [JSImport(module: "text")] 调用；产物 text.js 由 SyncJsEngine 复制。
 // 文字光栅化：用 Canvas2D 把字形画进字形图集，C# 侧只负责上传像素。
 
 const canvas = document.createElement('canvas');

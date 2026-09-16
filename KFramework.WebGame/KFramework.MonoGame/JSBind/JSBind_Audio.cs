@@ -7,7 +7,9 @@ namespace KFramework.MonoGame
     /// audio 模块绑定。分两组能力：
     /// 1) 合成音效（振荡器实时合成，零资源，适合原型）；
     /// 2) 真实音频文件（wav/mp3/ogg，经 decodeAudioData 解码成 AudioBuffer 后播放）。
-    /// 这里只做跨语言调用，业务封装见 KFramework.MonoGame.Audio 下的 SoundEffect / SoundEffectInstance / MediaPlayer。
+    /// 依赖 KFramework.TSEngine 项目（TypeScript 源码）：本类所有 JSImport 映射到 src/audio.ts 的 "audio" 模块；
+/// 编译产物 audio.js 由各示例 SyncJsEngine 复制到 wwwroot/jsengine。
+/// 这里只做跨语言调用，业务封装见 KFramework.MonoGame.Audio 下的 SoundEffect / SoundEffectInstance / MediaPlayer。
     /// </summary>
     internal static partial class JSBind_Audio
     {
