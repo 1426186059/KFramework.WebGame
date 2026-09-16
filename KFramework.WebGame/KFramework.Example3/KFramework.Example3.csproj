@@ -57,9 +57,10 @@
     </ItemGroup>
     <Delete Files="@(WebLibStale)" Condition="'@(WebLibStale)' != ''" ContinueOnError="true" />
     <ItemGroup>
-      <_PublishedContent Include="$(MSBuildThisFileDirectory)Content\content\**\*.*" />
+      <_PublishedContent Include="$(MSBuildThisFileDirectory)Content\publish\**\*.*" />
     </ItemGroup>
     <Copy SourceFiles="@(_PublishedContent)" DestinationFiles="@(_PublishedContent->'$(MSBuildThisFileDirectory)wwwroot\content\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
+	
 </Project>
