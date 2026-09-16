@@ -112,12 +112,17 @@ namespace KFramework.MonoGame
             {
                 int v = i * 4;
                 int o = i * 6;
+                // 与官方 MonoGame 完全一致的三角剖分：两个三角形绕向相同（都为 +1）。
+                // 三角1 = (TL, TR, BL)，三角2 = (TR, BR, BL)。
+                // 注意：本仓库早期版本用过 (TL, BL, BR) 写第二个三角形，绕向与三角1相反；
+                // 一旦外部代码（如 3D 渲染）开启了背面剔除而没关，绕向相反的那个三角形就会被剔掉，
+                // 表现为“每个四边形缺一个三角”。这里改回与 MonoGame 一致，使两个三角形绕向相同。
                 indices[o + 0] = (ushort)(v + 0);
                 indices[o + 1] = (ushort)(v + 1);
                 indices[o + 2] = (ushort)(v + 2);
-                indices[o + 3] = (ushort)(v + 0);
-                indices[o + 4] = (ushort)(v + 2);
-                indices[o + 5] = (ushort)(v + 3);
+                indices[o + 3] = (ushort)(v + 1);
+                indices[o + 4] = (ushort)(v + 3);
+                indices[o + 5] = (ushort)(v + 2);
             }
             return data;
         }
@@ -185,6 +190,18 @@ namespace KFramework.MonoGame
             JSBind_GL.Enable(JSBind_GL.BLEND);
             JSBind_GL.BlendFuncSeparate(state.SourceBlend, state.DestinationBlend,
                                  state.SourceAlphaBlend, state.DestinationAlphaBlend);
+        }
+
+        /// <summary>
+        /// 精灵批处理是纯 2D 绘制：四边形的两个三角形都必须被光栅化，不依赖任何背面剔除或深度测试。
+        /// 外部代码（如 MonoGameExtend 的 3D 渲染）可能开启了 CULL_FACE / DEPTH_TEST 且未还原，
+        /// 这里在绘制前显式关闭，确保两个三角形都能画出来，不受外部 GL 状态影响。
+        /// 这是“缺一个三角”的根因兜底：只要剔除开着且三角形绕向不一致，就必定丢一个三角形。
+        /// </summary>
+        internal void Ensure2DState()
+        {
+            JSBind_GL.Disable(JSBind_GL.CULL_FACE);
+            JSBind_GL.Disable(JSBind_GL.DEPTH_TEST);
         }
 
         internal void SetSamplerState(SamplerState state, Texture2D? current)

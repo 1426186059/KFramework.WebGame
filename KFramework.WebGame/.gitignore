@@ -435,3 +435,6 @@ MirGame/wwwroot/content/
 # 引擎浏览器层的源码是 KFramework/tsengine 的 TypeScript，
 # 编译产物 MirGame/wwwroot/jsengine/ 需要入库，这样部署时不必依赖 node。
 node_modules/
+
+# AI 工作目录（agent 的临时脚本、截图、测试产物等），纯本地、不入库
+.ai/

@@ -67,6 +67,9 @@ namespace KFramework.MonoGame
         private void Setup()
         {
             _device.SetBlendState(_blendState);
+            // 绘制前确保 2D 状态：关闭背面剔除/深度测试，避免外部 GL 状态（如 3D 渲染遗留的 CULL_FACE）
+            // 把四边形其中一个三角形剔掉，造成“缺一个三角”。
+            _device.Ensure2DState();
             // 行向量约定（p' = p × M）：变换在左、投影在右，故 transform 先发生。
             _device.Effect.Apply(_transform * _projection);
         }
