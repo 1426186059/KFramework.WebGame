@@ -188,33 +188,7 @@ namespace KFramework.Content.Build
                 Warnings = warnings,
             };
         }
-
-
-
-
-
-
-
-        private static void CleanOutput(string outputDirectory)
-        {
-            foreach (string file in Directory.EnumerateFiles(outputDirectory, "*", SearchOption.AllDirectories))
-            {
-                string name = Path.GetFileName(file);
-                bool isPreviewPng = name.EndsWith(".png", StringComparison.OrdinalIgnoreCase) &&
-                                   name.StartsWith("atlas_", StringComparison.OrdinalIgnoreCase);
-                if (name.EndsWith(".pak", StringComparison.OrdinalIgnoreCase) ||
-                    name.EndsWith(".web.lib", StringComparison.OrdinalIgnoreCase) ||
-                    name.Equals("manifest.json", StringComparison.OrdinalIgnoreCase) ||
-                    name.Equals("version.manifest", StringComparison.OrdinalIgnoreCase) ||
-                    isPreviewPng)
-                {
-                    File.Delete(file);
-                }
-            }
-        }
-
-
-
+        
         /// <summary>
         /// 在「按目录打包」模式下，把不在任何打包根目录内的 raw 文件原样复制到 content/（不做打包/压缩，保持原样）。
         /// 属于打包根目录的文件已被打成 AssetBundle，跳过；打包配置文件（build.config.json）也跳过。
@@ -249,9 +223,5 @@ namespace KFramework.Content.Build
             return copied;
         }
 
-
-
-
     }
-
 }
