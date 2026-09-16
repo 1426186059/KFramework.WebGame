@@ -53,7 +53,7 @@ KFramework.MonoGame —— 仿 MonoGame 引擎（面向 AI 智能体）
   Content/   ContentManager（运行时取资源，含 LoadBytes）
   Math/      向量与数学
   JSBind/    C# ⇄ JS 绑定（JSImport 集中地，业务不要碰）
-  tsengine/  JS 侧引擎（gl / text / audio / platform / main），被所有 Example 共享
+  KFramework.TSEngine/  JS 侧引擎（gl / text / audio / platform / main），被所有 Example 共享
 
 音频说明
 --------

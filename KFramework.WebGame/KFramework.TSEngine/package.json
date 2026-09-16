@@ -1,20 +1,14 @@
 {
-  "name": "kframework.tsengine",
+  "name": "kframework-tsengine",
   "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "private": true,
+  "description": "KFramework 浏览器引擎的 TypeScript 源码。编译产物输出到 dist/jsengine（含依赖），供各示例直接复制到 wwwroot/jsengine。",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc --build",
-    "clean": "tsc --build --clean"
+    "build": "tsc && node copy_deps.mjs",
+    "watch": "tsc --watch",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\""
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "devDependencies": {
-    "@types/node": "^22.20.3",
-    "eslint": "^10.10.0",
-    "typescript": "^7.0.2"
+    "typescript": "^5.9.2"
   }
 }

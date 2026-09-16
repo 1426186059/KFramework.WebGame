@@ -32,25 +32,23 @@
     <ProjectReference Include="..\KFramework.MonoGameExtend\KFramework.MonoGameExtend.csproj" />
   </ItemGroup>
 
-  <!-- 引擎的浏览器层（KFramework/tsengine）目前由 tsconfig 固定输出到 MirGame/wwwroot/jsengine。
+  <!-- 引擎的浏览器层（KFramework.TSEngine）目前由 tsconfig 固定输出到 MirGame/wwwroot/jsengine。
        这里把它同步过来即可，无需为每个游戏工程复制一份 TypeScript。 -->
   <!-- 编译引擎的浏览器层（TypeScript）。tsc 报错即中断构建，不留旧产物。 -->
   <Target Name="BuildTypeScript" BeforeTargets="BeforeBuild"
-          Condition="Exists('$(MSBuildThisFileDirectory)..\KFramework.MonoGame\tsengine\node_modules')">
+          Condition="Exists('$(MSBuildThisFileDirectory)..\KFramework.TSEngine\node_modules')">
     <Exec Command="npm run build"
-          WorkingDirectory="$(MSBuildThisFileDirectory)..\KFramework.MonoGame\tsengine" />
+          WorkingDirectory="$(MSBuildThisFileDirectory)..\KFramework.TSEngine" />
   </Target>
 
+  <!-- KFramework.TSEngine/dist/jsengine 已是完整产物（含 deps/ktx2 转码器），
+       直接整体复制到本工程 wwwroot/jsengine 即可。 -->
   <Target Name="SyncJsEngine" BeforeTargets="BeforeBuild">
     <ItemGroup>
-      <_EngineJs Include="$(MSBuildThisFileDirectory)..\KFramework.MonoGame\tsengine\dist\**\*.js" />
-      <_EngineDeps Include="$(MSBuildThisFileDirectory)..\KFramework.MonoGame\tsengine\deps\**\*" />
+      <_Engine Include="$(MSBuildThisFileDirectory)..\KFramework.TSEngine\dist\jsengine\**\*" />
     </ItemGroup>
-    <Copy SourceFiles="@(_EngineJs)"
-          DestinationFiles="@(_EngineJs->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')"
-          SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(_EngineDeps)"
-          DestinationFiles="@(_EngineDeps->'$(MSBuildThisFileDirectory)wwwroot\jsengine\deps\%(RecursiveDir)%(Filename)%(Extension)')"
+    <Copy SourceFiles="@(_Engine)"
+          DestinationFiles="@(_Engine->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')"
           SkipUnchangedFiles="true" />
   </Target>
 

@@ -23,30 +23,26 @@
     <ProjectReference Include="..\KFramework.MonoGameExtend\KFramework.MonoGameExtend.csproj" />
   </ItemGroup>
 
-  <!-- 引擎的浏览器层用 TypeScript 编写（KFramework/tsengine），
-       tsc 的产物直接输出到 wwwroot/jsengine（见 tsengine/tsconfig.json 的 outDir）。
+  <!-- 引擎的浏览器层用 TypeScript 编写（KFramework.TSEngine），
+       tsc 的产物直接输出到 wwwroot/jsengine（见 KFramework.TSEngine/tsconfig.json 的 outDir）。
        装了 node 时这里顺手编译一次；没装 node 则使用仓库中已提交的产物。 -->
   <!-- 编译引擎的浏览器层（TypeScript）。
        注意：不带 ContinueOnError —— tsc 报错必须让整个构建失败，
        否则会用 tsengine/bin 里的旧产物继续跑，问题极难排查。 -->
   <Target Name="BuildTypeScript" BeforeTargets="BeforeBuild"
-          Condition="Exists('$(MSBuildThisFileDirectory)..\KFramework.MonoGame\tsengine\node_modules')">
+          Condition="Exists('$(MSBuildThisFileDirectory)..\KFramework.TSEngine\node_modules')">
     <Exec Command="npm run build"
-          WorkingDirectory="$(MSBuildThisFileDirectory)..\KFramework.MonoGame\tsengine" />
+          WorkingDirectory="$(MSBuildThisFileDirectory)..\KFramework.TSEngine" />
   </Target>
 
-  <!-- tsc 产物统一在 KFramework.MonoGame/tsengine/bin，复制到本工程 wwwroot/jsengine。
-       挂在 BuildTypeScript 之后，保证先编译再复制。 -->
+  <!-- KFramework.TSEngine/dist/jsengine 已是完整产物（含 deps/ktx2 转码器），
+       直接整体复制到本工程 wwwroot/jsengine 即可。 -->
   <Target Name="SyncJsEngine" BeforeTargets="BeforeBuild">
     <ItemGroup>
-      <_EngineJs Include="$(MSBuildThisFileDirectory)..\KFramework.MonoGame\tsengine\dist\**\*.js" />
-      <_EngineDeps Include="$(MSBuildThisFileDirectory)..\KFramework.MonoGame\tsengine\deps\**\*" />
+      <_Engine Include="$(MSBuildThisFileDirectory)..\KFramework.TSEngine\dist\jsengine\**\*" />
     </ItemGroup>
-    <Copy SourceFiles="@(_EngineJs)"
-          DestinationFiles="@(_EngineJs->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')"
-          SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(_EngineDeps)"
-          DestinationFiles="@(_EngineDeps->'$(MSBuildThisFileDirectory)wwwroot\jsengine\deps\%(RecursiveDir)%(Filename)%(Extension)')"
+    <Copy SourceFiles="@(_Engine)"
+          DestinationFiles="@(_Engine->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')"
           SkipUnchangedFiles="true" />
   </Target>
 
