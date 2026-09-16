@@ -1,1 +1,1 @@
-{"bundlesDir":"MyBundle","autoAtlas":false,"outDir":"content","deploy":"none"}
+{"bundlesDir":"Bundles","outDir":"content","deploy":"www","wwwDir":"www","port":8080}

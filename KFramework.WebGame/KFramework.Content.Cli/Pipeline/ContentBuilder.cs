@@ -47,8 +47,9 @@ public sealed class BuildReport
 /// <para>打包目录约定：</para>
 /// <list type="bullet">
 ///   <item>在 Content 根目录放置一个打包配置文件 <c>build.config.json</c> 指定打包根目录：
-///         字段 <c>bundlesDir</c>（或 <c>bundleDirs</c>）可填字符串，也可填字符串数组，例如
-///         <c>{ "bundlesDir": ["Bundles", "UI"] }</c>；未配置或字段缺失时缺省为 <c>Bundles</c>。</item>
+///         字段 <c>bundlesDir</c> / <c>bundleDirs</c> / <c>AssetBundleDir</c> 可填字符串或字符串数组，例如
+///         <c>{ "bundlesDir": ["Bundles", "UI"] }</c>；未配置或字段缺失时缺省为 <c>Bundles</c>。
+///         字段值为空字符串 <c>""</c> 表示「打包根目录（Content/raw）自身」作为打包目录，其下每个含资源的子文件夹各自成包。</item>
 ///   <item>每个打包根目录下的「每一个含资源的子文件夹」分别打包成一个 AssetBundle（包名 = 子文件夹相对该根目录的路径）。</item>
 ///   <item>多个根目录下的子文件夹包名必须唯一，出现同名会直接报错（请保证各根目录内子文件夹名不重复）。</item>
 ///   <item>每个文件夹只打包其「直接」资源，不含子目录资源（子目录自身也是独立的 AssetBundle）。</item>
@@ -88,8 +89,8 @@ public sealed class ContentBuilder
         if (!Directory.Exists(rawDirectory))
             throw new DirectoryNotFoundException($"原始资源目录不存在：{rawDirectory}");
 
-        BuildConfig config = ReadConfig(rawDirectory);
-        List<string> bundleDirs = config.BundleDirs;
+        BuildConfig config = BuildConfig.Load(rawDirectory);
+        List<string> bundleDirs = config.BundleDirsResolved;
         if (bundleDirs.Count == 0) bundleDirs = new List<string> { "Bundles" };
 
         // 输出目录：CLI --out 优先，否则取配置 outDir（默认 content，相对 root）
@@ -462,111 +463,7 @@ public sealed class ContentBuilder
         return node;
     }
 
-    /// <summary>打包配置（build.config.json，位于 Content 根目录）。</summary>
-    private sealed class BuildConfig
-    {
-        /// <summary>打包根目录（相对 raw），字符串或数组；缺省 Bundles。</summary>
-        public List<string> BundleDirs { get; set; } = new();
 
-        /// <summary>打包产物目录（相对 root），缺省 content。</summary>
-        public string OutDir { get; set; } = "content";
-
-        /// <summary>是否自动图集打包（默认 true）：true 时独立 <c>.png</c> 经图集打包器装箱成图集；
-        /// false 时 <c>.png</c> 原样整图入包（适合已用 <c>.atlas</c> 预切好的图集，运行端按整张页图切片）。
-        /// <c>.sprite.json</c> 矢量图始终装箱，不受此项影响。</summary>
-        public bool AutoAtlas { get; set; } = true;
-
-        /// <summary>发布方式：www(复制到 wwwDir) / serve(本地 HTTP) / none；缺省 www。</summary>
-        public string Deploy { get; set; } = "www";
-
-        /// <summary>deploy=www 时的复制目标（相对 root），缺省 www。</summary>
-        public string WwwDir { get; set; } = "www";
-
-        /// <summary>deploy=serve 时的端口，缺省 8080。</summary>
-        public int Port { get; set; } = 8080;
-    }
-
-    /// <summary>
-    /// 读取打包配置 <c>build.config.json</c>（位于 Content 根目录）。
-    /// 字段：<c>bundlesDir</c> / <c>bundleDirs</c>（字符串或数组，默认 <c>Bundles</c>）、
-    /// <c>outDir</c>（默认 content）、<c>deploy</c>（www/serve/none，默认 www）、
-    /// <c>wwwDir</c>（默认 www）、<c>port</c>（默认 8080）。
-    /// 配置文件均不存在时自动在 Content 根目录生成一个默认 <c>build.config.json</c>。
-    /// </summary>
-    private static BuildConfig ReadConfig(string rawDirectory)
-    {
-        // 读取 Content 根目录下的 build.config.json
-        string contentRoot = Path.GetDirectoryName(Path.GetFullPath(rawDirectory)) ?? rawDirectory;
-        string configPath = Path.Combine(contentRoot, "build.config.json");
-        if (File.Exists(configPath))
-        {
-            try
-            {
-                using var doc = JsonDocument.Parse(File.ReadAllText(configPath));
-                var root = doc.RootElement;
-                var config = new BuildConfig();
-
-                var dirs = new List<string>();
-                if (root.TryGetProperty("bundlesDir", out JsonElement a)) dirs.AddRange(ResolveBundleDirs(a));
-                if (root.TryGetProperty("bundleDirs", out JsonElement b)) dirs.AddRange(ResolveBundleDirs(b));
-                config.BundleDirs = dirs;
-
-                if (root.TryGetProperty("outDir", out JsonElement o) && o.ValueKind == JsonValueKind.String)
-                    config.OutDir = o.GetString()!.Replace('\\', '/').Trim('/');
-                if (root.TryGetProperty("autoAtlas", out JsonElement at) &&
-                    (at.ValueKind == JsonValueKind.True || at.ValueKind == JsonValueKind.False))
-                    config.AutoAtlas = at.GetBoolean();
-                if (root.TryGetProperty("deploy", out JsonElement d) && d.ValueKind == JsonValueKind.String)
-                    config.Deploy = d.GetString()!.ToLowerInvariant();
-                if (root.TryGetProperty("wwwDir", out JsonElement w) && w.ValueKind == JsonValueKind.String)
-                    config.WwwDir = w.GetString()!.Replace('\\', '/').Trim('/');
-                if (root.TryGetProperty("port", out JsonElement p) && p.ValueKind == JsonValueKind.Number)
-                    config.Port = p.GetInt32();
-
-                return config;
-            }
-            catch
-            {
-                // 配置损坏则忽略，使用默认配置
-            }
-        }
-
-        // 未找到打包配置：自动生成一个默认 bundles.json（含全部默认项），方便后续按目录分别打包
-        string defaultPath = Path.Combine(contentRoot, "build.config.json");
-        try
-        {
-            File.WriteAllText(defaultPath,
-                "{\"bundlesDir\":\"Bundles\",\"outDir\":\"content\",\"deploy\":\"www\",\"wwwDir\":\"www\",\"port\":8080}",
-                new UTF8Encoding(false));
-            PrintTool.Log($"[kfc] 未发现打包配置，已自动生成 {Path.GetFileName(defaultPath)}（默认：打包目录 Bundles，输出 content，发布方式 www）");
-        }
-        catch
-        {
-            // 无法写入也不影响本次打包（回退整包 content）
-        }
-        return new BuildConfig();
-    }
-
-    /// <summary>把 <c>bundlesDir</c> 字段解析为目录列表：字符串或字符串数组都支持。</summary>
-    private static IEnumerable<string> ResolveBundleDirs(JsonElement element)
-    {
-        if (element.ValueKind == JsonValueKind.String)
-        {
-            string? s = element.GetString();
-            if (!string.IsNullOrWhiteSpace(s)) yield return s!.Replace('\\', '/').Trim('/');
-        }
-        else if (element.ValueKind == JsonValueKind.Array)
-        {
-            foreach (JsonElement item in element.EnumerateArray())
-            {
-                if (item.ValueKind == JsonValueKind.String)
-                {
-                    string? s = item.GetString();
-                    if (!string.IsNullOrWhiteSpace(s)) yield return s!.Replace('\\', '/').Trim('/');
-                }
-            }
-        }
-    }
 
     private static void CleanOutput(string outputDirectory)
     {
