@@ -150,7 +150,7 @@ public sealed class ContentBuilder
                         throw new InvalidOperationException(
                             $"发现重复的 AssetBundle 名「{bundleName}」：配置的打包目录（{string.Join(", ", bundleDirs)}）下存在同名子文件夹，请保证各打包目录内的子文件夹名唯一。");
 
-                    AssetBundleBuild build = BuildBundle(bundleName, directFiles, bundlesRoot, options, config.AutoAtlas, warnings,
+                    AssetBundleBuild build = BuildBundle(bundleName, directFiles, bundlesRoot, options, Global.mBuildConfig.AutoAtlas, warnings,
                         ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, outputDirectory);
                     builds.Add(build);
                     bundleCount++;
