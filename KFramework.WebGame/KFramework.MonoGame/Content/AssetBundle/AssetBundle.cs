@@ -156,7 +156,7 @@ public sealed class AssetBundle : IDisposable
                 byte[] raw = LoadAsset(e.Path);
                 var pixels = new byte[w * h * 4];
                 var size = new int[2];
-                await JSBind_Text.DecodeImageToRgba(raw, size, pixels).ConfigureAwait(false);
+                await JSBind_Texture.DecodeImageToRgba(raw, size, pixels).ConfigureAwait(false);
                 _decodedTextures[e.Path] = pixels;
                 continue;
             }

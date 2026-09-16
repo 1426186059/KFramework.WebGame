@@ -7,6 +7,7 @@ import * as gl from './gl.js';
 import * as platform from './platform.js';
 import * as audio from './audio.js';
 import * as text from './text.js';
+import * as texture from './texture.js';
 function findHost(exports) {
     if (!exports)
         return undefined;
@@ -39,6 +40,7 @@ setModuleImports('gl', gl);
 setModuleImports('platform', platform);
 setModuleImports('audio', audio);
 setModuleImports('text', text);
+setModuleImports('texture', texture);
 const config = getConfig();
 /**
  * 帧回调 JSBind_GameHost.Frame 定义在 KFramework.MonoGame 程序集里，

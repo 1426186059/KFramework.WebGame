@@ -78,24 +78,3 @@ export function render(
     bytes.set(image);
     writeBytes(rgba, bytes);
 }
-
-// 浏览器原生解码图像字节（PNG / WebP 等）为 RGBA8，供运行端 LoadBundle 预解码纹理。
-// WASM 无托管 WebP 解码器，统一借 createImageBitmap（浏览器原生，覆盖 Png / Webp）。
-export async function decodeImageToRgba(
-    bytes: Uint8Array, outSize: Int32Array | MemoryView, outPixels: Uint8Array | MemoryView,
-): Promise<void> {
-    const blob = new Blob([bytes as BlobPart]);
-    const bitmap = await createImageBitmap(blob);
-    const w = bitmap.width, h = bitmap.height;
-    const cv = document.createElement('canvas');
-    cv.width = w;
-    cv.height = h;
-    const c = cv.getContext('2d')!;
-    c.drawImage(bitmap, 0, 0);
-    const image = c.getImageData(0, 0, w, h).data;
-    const out = new Uint8Array(image.length);
-    out.set(image);
-    writeBytes(outPixels, out);
-    writeInts(outSize, [w, h]);
-    if (bitmap.close) bitmap.close();
-}
