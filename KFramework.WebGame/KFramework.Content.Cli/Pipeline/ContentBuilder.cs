@@ -597,9 +597,9 @@ namespace KFramework.Content.Build
                 CopyDirectory(outputDirectory, wwwDir);
                 PrintTool.Log($"[kfc] 已发布到 {wwwDir}（deploy = {mode}）");
             }
-            else if (mode == "serve")
+            else if (mode == "server")
             {
-                ServeContent(outputDirectory, config.Port); // 阻塞直到 Ctrl+C
+                ServerContent(outputDirectory, config.Port); // 阻塞直到 Ctrl+C
             }
             else if (mode != "none")
             {
@@ -623,7 +623,7 @@ namespace KFramework.Content.Build
         /// 在指定目录上启动一个极简的本地静态 HTTP 服务（用于开发调试）。
         /// 使用原始 Tcp 监听以避开 Windows 下 http.sys 的 URL ACL 限制；Ctrl+C 退出。
         /// </summary>
-        private static void ServeContent(string directory, int port)
+        private static void ServerContent(string directory, int port)
         {
             string root = Path.GetFullPath(directory);
             var listener = new TcpListener(IPAddress.Loopback, port);
