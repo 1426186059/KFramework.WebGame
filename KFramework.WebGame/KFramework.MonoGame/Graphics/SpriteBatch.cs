@@ -67,11 +67,6 @@ namespace KFramework.MonoGame
 
         public GraphicsDevice GraphicsDevice => _device;
 
-        /// <summary>上一次 End() 真正向 GPU 提交的绘制次数（每次 DrawRange = 一次 GL draw call），供调试面板使用。</summary>
-        public int LastDrawCount => _frameDrawCalls;
-
-        /// <summary>上一次 End() 提交的总精灵数（已合并进批次，不等于 draw call 数，照 MonoGame 的 GraphicsMetrics.SpriteCount）。</summary>
-        public int SpriteCount => _frameSpriteCount;
 
         public void Begin(SpriteSortMode sortMode = SpriteSortMode.Deferred,
                           BlendState? blendState = null,
@@ -204,8 +199,6 @@ namespace KFramework.MonoGame
                     break;
             }
 
-            _frameDrawCalls = 0;
-            _frameSpriteCount = 0;
             _device.SetBlendState(_blendState);
             // 行向量约定（p' = p × M）：先发生的变换写在左边。
             // 精灵顶点要先做世界变换（transform），再做正交投影（projection），故 transform 在左。
@@ -240,7 +233,7 @@ namespace KFramework.MonoGame
                 Texture2D first = _items[batchStart].Texture;
                 VertexPositionColorTexture v0 = _vertices[0];
                 VertexPositionColorTexture v2 = _vertices[2];
-                PrintTool.Log($"[SpriteBatch] 第 {_flushesDiagnosed} 次：{_frameSpriteCount} 个精灵 / {_frameDrawCalls} 次绘制，底图 {first.TextureWidth}x{first.TextureHeight}，" +
+                PrintTool.Log($"[SpriteBatch] 第 {_flushesDiagnosed} 次：{_device._metrics._spriteCount} 个精灵 / {_device._metrics._drawCount} 次绘制，底图 {first.TextureWidth}x{first.TextureHeight}，" +
                                   $"首顶点 pos={v0.Position} uv={v0.TexCoord} color={v0.Color} | 对角 pos={v2.Position} uv={v2.TexCoord}");
             }
 
@@ -248,12 +241,6 @@ namespace KFramework.MonoGame
         }
 
         private static int _flushesDiagnosed;
-
-        /// <summary>记录本次 Flush 真正提交的 GL 绘制次数（每次 DrawRange 累加一次）。</summary>
-        private static int _frameDrawCalls;
-
-        /// <summary>记录本次 Flush 提交的总精灵数（所有 DrawRange 的 count 之和，照 MonoGame GraphicsMetrics.SpriteCount）。</summary>
-        private static int _frameSpriteCount;
 
         private static bool _glErrorReported;
 
@@ -277,8 +264,10 @@ namespace KFramework.MonoGame
 
             JSBind_GL.BufferSubData(JSBind_GL.ARRAY_BUFFER, 0, MemoryMarshal.AsBytes(_vertices.AsSpan(0, count * 4)));
             JSBind_GL.DrawElements(JSBind_GL.TRIANGLES, count * 6, JSBind_GL.UNSIGNED_SHORT, 0);
-            _frameDrawCalls++;
-            _frameSpriteCount += count;
+            // 照 MonoGame：每次真正的 GL draw call 累加 DrawCount，并按精灵数累加 SpriteCount / PrimitiveCount（每个精灵 = 2 个三角形）。
+            _device._metrics._drawCount++;
+            _device._metrics._spriteCount += count;
+            _device._metrics._primitiveCount += count * 2;
         }
 
         private static void BuildQuad(in SpriteBatchItem item, Span<VertexPositionColorTexture> destination)

@@ -43,17 +43,16 @@ namespace KFramework.MonoGameExtend
         public override void Update()
         {
             base.Update();
-            nFPS = (int)Math.Ceiling(1 / KTime.deltaTime);
+            nFPS = (int)Math.Round(Game.RenderFps);
             mLable.Text = $"FPS: {nFPS} DC: {nDrawCount} Sprites: {nSpriteCount} ScreenSize: {KSceneMgr.Game.GraphicsDevice.Viewport.Bounds.Size}";
         }
 
         public void DrawMe()
         {
-            // KFramework.MonoGame 没有 GraphicsDevice.Metrics：
-            // LastDrawCount = 真正向 GPU 提交的绘制次数（draw call）；
-            // SpriteCount = 合并后提交的总精灵数（不等于 draw call）。
-            nDrawCount = KSceneMgr.SpriteBatch.LastDrawCount;
-            nSpriteCount = KSceneMgr.SpriteBatch.SpriteCount;
+            // 照 MonoGame：GraphicsDevice.Metrics 是整帧累计的渲染统计（每帧 Clear 时重置一次）。
+            var metrics = KSceneMgr.Game.GraphicsDevice.Metrics;
+            nDrawCount = metrics.DrawCount;
+            nSpriteCount = metrics.SpriteCount;
             mImage.Draw();
             mLable.Draw();
         }

@@ -27,6 +27,14 @@ namespace KFramework.MonoGame
 
         public Viewport Viewport { get; private set; }
 
+        internal GraphicsMetrics _metrics;
+
+        /// <summary>
+        /// 渲染统计快照，照 MonoGame 的 GraphicsDevice.Metrics。
+        /// 每帧由 Clear 重置一次（照 MonoGame 在 Present 里重置），跨所有 SpriteBatch 批次累计。
+        /// </summary>
+        public GraphicsMetrics Metrics { get { return _metrics; } set { _metrics = value; } }
+
         public int MaxTextureSize { get; }
 
         public string Renderer { get; }
@@ -156,6 +164,9 @@ namespace KFramework.MonoGame
 
         public void Clear(Color color)
         {
+            // 每帧清一次渲染统计，照 MonoGame 在 Present 里 _graphicsMetrics = new GraphicsMetrics()（跨所有 SpriteBatch 批次累计）。
+            _metrics = new GraphicsMetrics();
+            _metrics._clearCount++;
             JSBind_GL.ClearColor(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
             JSBind_GL.Clear(JSBind_GL.COLOR_BUFFER_BIT | JSBind_GL.DEPTH_BUFFER_BIT);
         }
