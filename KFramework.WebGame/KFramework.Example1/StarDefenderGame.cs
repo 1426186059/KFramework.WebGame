@@ -1,5 +1,4 @@
 ﻿using KFramework.MonoGame;
-using KFramework.MonoGameExtend;
 
 namespace MirGame;
 
@@ -25,18 +24,18 @@ public sealed class StarDefenderGame : Game
     private SpriteFont _uiFont = null!;
     private SpriteFont _smallFont = null!;
 
-    private KSpriteInfo _playerSprite = null!;
-    private KSpriteInfo _flameSprite = null!;
-    private KSpriteInfo _bulletSprite = null!;
-    private KSpriteInfo _enemyBulletSprite = null!;
-    private KSpriteInfo _particleSprite = null!;
+    private Texture2D _playerTexture = null!;
+    private Texture2D _flameTexture = null!;
+    private Texture2D _bulletTexture = null!;
+    private Texture2D _enemyBulletTexture = null!;
+    private Texture2D _particleTexture = null!;
 
     /// <summary>1x1 白色纹理，用于纯色矩形（进度条、遮罩）。不依赖内容包，加载期间即可用。</summary>
     private Texture2D _whiteTexture = null!;
-    private KSpriteInfo _starSprite = null!;
-    private KSpriteInfo _powerUpSprite = null!;
-    private KSpriteInfo _heartSprite = null!;
-    private readonly Dictionary<string, KSpriteInfo> _enemySprites = new(StringComparer.OrdinalIgnoreCase);
+    private Texture2D _starTexture = null!;
+    private Texture2D _powerUpTexture = null!;
+    private Texture2D _heartTexture = null!;
+    private readonly Dictionary<string, Texture2D> _enemyTextures = new(StringComparer.OrdinalIgnoreCase);
 
     private GameConfig _config = new();
     private Task? _contentTask;
@@ -192,7 +191,7 @@ public sealed class StarDefenderGame : Game
             }
         }
 
-        float halfWidth = _playerSprite.SourceRectangle.Width * 0.5f;
+        float halfWidth = _playerTexture.Width * 0.5f;
         _player.Position.X = MathHelper.Clamp(_player.Position.X, halfWidth, DesignWidth - halfWidth);
         _player.Position.Y = MathHelper.Clamp(_player.Position.Y, 40f, DesignHeight - 40f);
 
@@ -484,7 +483,7 @@ public sealed class StarDefenderGame : Game
     private void SpawnEnemy(string type)
     {
         if (!_config.Enemies.TryGetValue(type, out EnemyConfig? config)) return;
-        if (!_enemySprites.TryGetValue(config.Texture, out KSpriteInfo? sprite)) return;
+        if (!_enemyTextures.TryGetValue(config.Texture, out Texture2D? texture)) return;
 
         float x = MathHelper.Clamp(45f + Random.Shared.NextSingle() * (DesignWidth - 90f), 30f, DesignWidth - 30f);
 
@@ -492,7 +491,7 @@ public sealed class StarDefenderGame : Game
         {
             Type = type,
             Config = config,
-            Sprite = sprite,
+            Texture = texture,
             Position = new Vector2(x, -40f),
             BaseX = x,
             Health = config.Health,
@@ -610,7 +609,7 @@ public sealed class StarDefenderGame : Game
         {
             _diagnosedState = _state;
             PrintTool.Log($"[StarDefender] 状态={_state} | 视口 {Window.Width}x{Window.Height} | scale={_viewScale:F3} | offset={_viewOffset}");
-            PrintTool.Log($"[StarDefender] 玩家 {_player.Position} | 生命 {_player.Lives} | 纹理 {_playerSprite.SourceRectangle.Width}x{_playerSprite.SourceRectangle.Height} | 敌人 {_enemies.Count} | 子弹 {_bullets.Count}");
+            PrintTool.Log($"[StarDefender] 玩家 {_player.Position} | 生命 {_player.Lives} | 纹理 {_playerTexture.Width}x{_playerTexture.Height} | 敌人 {_enemies.Count} | 子弹 {_bullets.Count}");
 
             // 自检：把玩家所在位置与画面中心的像素读回来，确认真的画出了东西
             int px = (int)(_player.Position.X * _viewScale + _viewOffset.X);
@@ -642,7 +641,7 @@ public sealed class StarDefenderGame : Game
 
         // 背景星空
         _batch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.Linear, transform);
-        _stars.Draw(_batch, _starSprite);
+        _stars.Draw(_batch, _starTexture);
 
         // 游戏实体
         foreach (PowerUp powerUp in _powerUps)
@@ -654,19 +653,19 @@ public sealed class StarDefenderGame : Game
                 PowerUpKind.Shield => new Color(140, 200, 255),
                 _ => new Color(150, 255, 200),
             };
-            _batch.DrawCentered(_powerUpSprite, powerUp.Position + new Vector2(0f, bob), tint,
+            _batch.DrawCentered(_powerUpTexture, powerUp.Position + new Vector2(0f, bob), tint,
                                 _time * 1.5f, 1f + MathF.Sin(_time * 6f) * 0.08f);
         }
 
         foreach (Enemy enemy in _enemies)
         {
             Color tint = enemy.HitFlash > 0f ? Color.Lerp(Color.White, new Color(255, 120, 120), enemy.HitFlash) : Color.White;
-            _batch.DrawCentered(enemy.Sprite, enemy.Position, tint);
+            _batch.DrawCentered(enemy.Texture, enemy.Position, tint);
         }
 
         foreach (Bullet bullet in _bullets)
         {
-            KSpriteInfo texture = bullet.FromPlayer ? _bulletSprite : _enemyBulletSprite;
+            Texture2D texture = bullet.FromPlayer ? _bulletTexture : _enemyBulletTexture;
             _batch.DrawCentered(texture, bullet.Position, Color.White,
                                 bullet.FromPlayer ? 0f : _time * 6f, bullet.FromPlayer ? 1f : 1f);
         }
@@ -677,14 +676,14 @@ public sealed class StarDefenderGame : Game
             if (!blink)
             {
                 float flameScale = 0.75f + MathF.Sin(_time * 30f) * 0.18f;
-                _batch.DrawCentered(_flameSprite, _player.Position + new Vector2(0f, 20f),
+                _batch.DrawCentered(_flameTexture, _player.Position + new Vector2(0f, 20f),
                                     new Color(255, 220, 150), 0f, flameScale);
-                _batch.DrawCentered(_playerSprite, _player.Position, Color.White);
+                _batch.DrawCentered(_playerTexture, _player.Position, Color.White);
 
                 if (_player.PowerTimer > 0f)
                 {
                     float pulse = 0.6f + MathF.Sin(_time * 10f) * 0.2f;
-                    _batch.DrawCentered(_powerUpSprite, _player.Position, new Color(140, 255, 200), 0f, pulse);
+                    _batch.DrawCentered(_powerUpTexture, _player.Position, new Color(140, 255, 200), 0f, pulse, 0.1f);
                 }
             }
         }
@@ -697,9 +696,9 @@ public sealed class StarDefenderGame : Game
             foreach (Particle particle in _particles)
             {
                 float t = particle.Life / Math.Max(0.0001f, particle.MaxLife);
-                float size = MathHelper.Lerp(particle.SizeEnd, particle.Size, t) / _particleSprite.SourceRectangle.Height;
+                float size = MathHelper.Lerp(particle.SizeEnd, particle.Size, t) / _particleTexture.Height;
                 Color color = new Color(particle.Color.R, particle.Color.G, particle.Color.B, (byte)(255 * t));
-                _batch.DrawCentered(_particleSprite, particle.Position, color, 0f, size);
+                _batch.DrawCentered(_particleTexture, particle.Position, color, 0f, size);
             }
             _batch.End();
         }
@@ -785,11 +784,11 @@ public sealed class StarDefenderGame : Game
 
         // 生命
         for (int i = 0; i < _player.Lives; i++)
-            _batch.Draw(_heartSprite, new Vector2(DesignWidth - 34f - i * 24f, DesignHeight - 34f), Color.White);
+            _batch.Draw(_heartTexture, new Vector2(DesignWidth - 34f - i * 24f, DesignHeight - 34f), Color.White);
 
         // 火力等级
         for (int i = 0; i < _player.PowerLevel; i++)
-            _batch.Draw(_powerUpSprite, new Vector2(16f + i * 22f, DesignHeight - 34f), new Color(150, 255, 200));
+            _batch.Draw(_powerUpTexture, new Vector2(16f + i * 22f, DesignHeight - 34f), new Color(150, 255, 200));
     }
 
     private void DrawGameOver()
@@ -882,22 +881,20 @@ public sealed class StarDefenderGame : Game
 
         _config = dataBundle.LoadJson<GameConfig>("data/game");
 
-        // 图集统一通过 SpriteSheetLoader 加载：整页纹理 + source rect（照官方 MonoGame，可合批）
-        SpriteSheet sheet = new SpriteSheetLoader(spriteBundle, GraphicsDevice).Load("atlas");
-        _playerSprite = sheet.Sprite("sprites/player");
-        _flameSprite = sheet.Sprite("sprites/flame");
-        _bulletSprite = sheet.Sprite("sprites/bullet");
-        _enemyBulletSprite = sheet.Sprite("sprites/enemy_bullet");
-        _particleSprite = sheet.Sprite("sprites/particle");
-        _starSprite = sheet.Sprite("sprites/star");
-        _powerUpSprite = sheet.Sprite("sprites/powerup");
-        _heartSprite = sheet.Sprite("sprites/heart");
+        _playerTexture = spriteBundle.LoadTexture("sprites/player", GraphicsDevice);
+        _flameTexture = spriteBundle.LoadTexture("sprites/flame", GraphicsDevice);
+        _bulletTexture = spriteBundle.LoadTexture("sprites/bullet", GraphicsDevice);
+        _enemyBulletTexture = spriteBundle.LoadTexture("sprites/enemy_bullet", GraphicsDevice);
+        _particleTexture = spriteBundle.LoadTexture("sprites/particle", GraphicsDevice);
+        _starTexture = spriteBundle.LoadTexture("sprites/star", GraphicsDevice);
+        _powerUpTexture = spriteBundle.LoadTexture("sprites/powerup", GraphicsDevice);
+        _heartTexture = spriteBundle.LoadTexture("sprites/heart", GraphicsDevice);
 
         foreach (KeyValuePair<string, EnemyConfig> pair in _config.Enemies)
         {
-            if (_enemySprites.ContainsKey(pair.Value.Texture)) continue;
-            if (sheet.Contains(pair.Value.Texture))
-                _enemySprites[pair.Value.Texture] = sheet.Sprite(pair.Value.Texture);
+            if (_enemyTextures.ContainsKey(pair.Value.Texture)) continue;
+            if (spriteBundle.Contains(pair.Value.Texture))
+                _enemyTextures[pair.Value.Texture] = spriteBundle.LoadTexture(pair.Value.Texture, GraphicsDevice);
         }
 
         int total = dataBundle.AssetNames.Count + spriteBundle.AssetNames.Count;

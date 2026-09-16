@@ -32,10 +32,8 @@
 
   <!-- 引擎的浏览器层（KFramework/tsengine）目前由 tsconfig 固定输出到 MirGame/wwwroot/jsengine。 -->
   <!-- 编译引擎的浏览器层（TypeScript）。tsc 报错即中断构建，不留旧产物。 -->
-  <Target Name="BuildTypeScript" BeforeTargets="BeforeBuild"
-          Condition="Exists('$(MSBuildThisFileDirectory)..\KFramework.MonoGame\tsengine\node_modules')">
-    <Exec Command="npm run build"
-          WorkingDirectory="$(MSBuildThisFileDirectory)..\KFramework.MonoGame\tsengine" />
+  <Target Name="BuildTypeScript" BeforeTargets="BeforeBuild" Condition="Exists('$(MSBuildThisFileDirectory)..\KFramework.MonoGame\tsengine\node_modules')">
+    <Exec Command="npm run build" WorkingDirectory="$(MSBuildThisFileDirectory)..\KFramework.MonoGame\tsengine" />
   </Target>
 
   <Target Name="SyncJsEngine" BeforeTargets="BeforeBuild">
@@ -60,14 +58,6 @@
       <_PublishedContent Include="$(MSBuildThisFileDirectory)Content\content\**\*.*" />
     </ItemGroup>
     <Copy SourceFiles="@(_PublishedContent)" DestinationFiles="@(_PublishedContent->'$(MSBuildThisFileDirectory)wwwroot\content\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
-  </Target>
-
-  <!-- 关卡文本发布到 wwwroot/Levels，运行时由浏览器通过 HTTP 远程下载 -->
-  <Target Name="CopyLevels" BeforeTargets="BeforeBuild">
-    <ItemGroup>
-      <_LevelTxt Include="$(MSBuildThisFileDirectory)Levels\**\*.txt" />
-    </ItemGroup>
-    <Copy SourceFiles="@(_LevelTxt)" DestinationFiles="@(_LevelTxt->'$(MSBuildThisFileDirectory)wwwroot\Levels\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
 </Project>
