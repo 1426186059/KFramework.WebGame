@@ -64,7 +64,7 @@ namespace KFramework.Content.Build
             /// <summary>图集内相邻精灵的间隔。</summary>
             public int AtlasPadding { get; set; } = 2;
 
-            /// <summary>是否额外输出 atlas_N.png，方便用看图工具检查发布结果。</summary>
+            /// <summary>是否额外输出 atlas_N.png 预览图，方便用看图工具检查发布结果；预览图写到配置 tempDir 指定的临时目录（默认 Content/temp），不随 outDir 发布。</summary>
             public bool WritePreviewPng { get; set; } = true;
 
             public string PakFileName { get; set; } = "content.pak";
@@ -103,6 +103,14 @@ namespace KFramework.Content.Build
             {
                 outputDirectory = Path.Combine(root, Global.mBuildConfig.OutDir);
             }
+
+            // 打包中间产物目录（atlas 预览 PNG 等）：与 raw 同级，由配置 tempDir 指定（默认 temp），不随 outDir 发布
+            string tempDirectory = Global.mBuildConfig.TempDir;
+            if (!Path.IsPathFullyQualified(tempDirectory))
+            {
+                tempDirectory = Path.Combine(root, Global.mBuildConfig.TempDir);
+            }
+            Directory.CreateDirectory(tempDirectory);
 
             // 目录可能不存在（首次构建 / 清理后），删之前先判存在，否则 Directory.Delete 会抛 DirectoryNotFoundException
             if (Directory.Exists(outputDirectory))
@@ -167,7 +175,7 @@ namespace KFramework.Content.Build
                                 throw new InvalidOperationException(
                                     $"资源包「{rootBundleName}」的扁平别名「{rootAlias}」与另一个包重名，请保证打包目录内子文件夹路径唯一。");
                             AssetBundleBuild build = BundleBaker.BuildBundle(rootBundleName, rootFiles, bundlesRoot, options, Global.mBuildConfig.AutoAtlas, warnings,
-                                ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, outputDirectory);
+                                ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, tempDirectory);
                             if (rootAlias != rootBundleName) build.Aliases.Add(rootAlias);
                             builds.Add(build);
                             bundleCount++;
@@ -198,7 +206,7 @@ namespace KFramework.Content.Build
                                 $"资源包「{bundleName}」的扁平别名「{bundleAlias}」与另一个包重名，请保证打包目录内子文件夹路径唯一。");
 
                         AssetBundleBuild build = BundleBaker.BuildBundle(bundleName, directFiles, bundlesRoot, options, Global.mBuildConfig.AutoAtlas, warnings,
-                            ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, outputDirectory);
+                            ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, tempDirectory);
                         if (bundleAlias != bundleName) build.Aliases.Add(bundleAlias);
                         builds.Add(build);
                         bundleCount++;

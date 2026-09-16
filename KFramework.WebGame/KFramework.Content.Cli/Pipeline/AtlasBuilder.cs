@@ -25,7 +25,7 @@ public static class AtlasBuilder
         List<ImportedAtlas> importedAtlases,
         ContentBuilder.BuildOptions options,
         string bundleName,
-        string outputDirectory,
+        string tempDirectory,
         ref int atlasPageCount)
     {
         // 交给上游 KTexturePacker 共享核心：自动散图装箱 + 导入页合并 → 通用 AtlasData JSON + 每页 PNG 图像。
@@ -72,10 +72,10 @@ public static class AtlasBuilder
                 Format = fmt,
             });
 
-            // 预览图始终用原始 PNG，便于人工核对。
+            // 预览图始终用原始 PNG，便于人工核对；写到临时目录（tempDirectory），不随 outDir 发布。
             if (options.WritePreviewPng)
                 File.WriteAllBytes(
-                    Path.Combine(outputDirectory, $"atlas_{bundleName.Replace('/', '_')}_{page.Name}.png"),
+                    Path.Combine(tempDirectory, $"atlas_{bundleName.Replace('/', '_')}_{page.Name}.png"),
                     page.ToPng());
         }
 

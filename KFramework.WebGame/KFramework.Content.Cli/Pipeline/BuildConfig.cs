@@ -19,6 +19,10 @@ namespace KFramework.Content.Build
         [JsonPropertyName("outDir")]
         public string OutDir { get; set; } = "hot_update_res";
 
+        /// <summary>打包中间产物目录（如 atlas 预览 PNG），相对 Content 根（与 raw 同级），缺省 temp；这些文件是打包过程副产物，不随 outDir 发布。</summary>
+        [JsonPropertyName("tempDir")]
+        public string TempDir { get; set; } = "temp";
+
         /// <summary>打包目录（字符串或数组）；空字符串表示 Content/raw 自身为打包目录。</summary>
         [JsonPropertyName("AssetBundleDir")]
         [JsonConverter(typeof(StringOrStringArrayConverter))]
@@ -89,6 +93,7 @@ namespace KFramework.Content.Build
             config.BundleDirsResolved = dirs;
 
             config.OutDir = config.OutDir.Replace('\\', '/').Trim('/');
+            config.TempDir = config.TempDir.Replace('\\', '/').Trim('/');
             config.WwwDir = config.WwwDir.Replace('\\', '/').Trim('/');
             config.Deploy = config.Deploy.ToLowerInvariant();
             return config;

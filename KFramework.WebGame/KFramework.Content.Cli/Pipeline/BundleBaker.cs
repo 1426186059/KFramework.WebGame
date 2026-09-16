@@ -19,7 +19,7 @@ public static class BundleBaker
     public static AssetBundleBuild BuildBundle(
         string bundleName, string[] files, string assetBaseDir, ContentBuilder.BuildOptions options, bool autoAtlas,
         List<string> warnings, ref long rawBytes, ref int textureCount, ref int dataCount, ref int atlasPageCount,
-        string outputDirectory)
+        string tempDirectory)
     {
         // 图集打包统一复用外部 KTexturePacker 工具的核心（MaxRects 摆放 + 整页合成 + AtlasData 导出）。
         // 产物：整页纹理（atlas_{i}，单张 Texture2D）+ 一份 AtlasData JSON（资源名固定为 "atlas"）。
@@ -137,7 +137,7 @@ public static class BundleBaker
         }
 
         // 图集打包：把自动装箱的散图 + 导入的 .atlas 预切图集合并成同一份 AtlasData
-        JsonArray allPages = AtlasBuilder.BuildAtlas(bundle, inputs, importedAtlases, options, bundleName, outputDirectory, ref atlasPageCount);
+        JsonArray allPages = AtlasBuilder.BuildAtlas(bundle, inputs, importedAtlases, options, bundleName, tempDirectory, ref atlasPageCount);
 
         if (allPages.Count > 0)
         {
