@@ -1,72 +1,35 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
 
 using KFramework.MonoGame;
 
 namespace KFramework.MonoGame
 {
-
     /// <summary>
-    /// 2D 精灵批处理器。用法与 MonoGame 一致：<c>Begin()</c> → 若干 <c>Draw()</c> → <c>End()</c>。
-    /// 同一张底层纹理（含图集内的所有子图）会被合并为一次 draw call。
+    /// 2D 精灵批处理器。用法与 MonoGame 一致：Begin() → 若干 Draw() → End()。
+    /// 合批逻辑全部委托给 <see cref="SpriteBatcher"/>（照 MonoGame 的 SpriteBatch / SpriteBatcher 拆分）。
+    /// 同一张纹理（用 source rect 绘制的图集页）会被合并为一次 draw call；分组按引用相等判断。
     /// </summary>
     public sealed class SpriteBatch
     {
-        private struct SpriteBatchItem
-        {
-            public SpriteBatchItem() => Texture = null!;
-
-            public Texture2D Texture;
-            public Vector2 Position;
-            public Rectangle Source;
-            public Vector2 Size;
-            public Vector2 Origin;
-            public float Rotation;
-            public Color Color;
-            public float LayerDepth;
-            public SpriteEffects Effects;
-        }
-
         private readonly GraphicsDevice _device;
-        private readonly SpriteBatchItem[] _items = new SpriteBatchItem[GraphicsDevice.MaxBatchSize];
-        private readonly VertexPositionColorTexture[] _vertices = new VertexPositionColorTexture[GraphicsDevice.MaxBatchSize * 4];
-        private int _itemCount;
+        private readonly SpriteBatcher _batcher;
 
-        private bool _beginCalled;
         private SpriteSortMode _sortMode;
         private BlendState _blendState = BlendState.AlphaBlend;
         private SamplerState _samplerState = SamplerState.Point;
         private Matrix4x4 _transform = Matrix4x4.Identity;
         private Matrix4x4 _projection;
 
-        // 排序键：先按层级（layerDepth），同层内再按底层纹理（BatchKey）分组。
-        //
-        // 与 MonoGame 官方不同（官方 Texture 模式是「纹理优先，深度次之」），这里刻意反过来：
-        // 先保证"背景 → tile → 角色"这类前后遮挡关系不被打乱，
-        // 再在同一层内把同图集的精灵聚到一起合并批次。
-        // 若所有精灵的 layerDepth 都相同（当前 Example3 就是如此），则退化为「按纹理分组」，
-        // 此时层次由 layerDepth 决定 —— 需要给不同类别的对象设置不同 layerDepth 才正确。
-        private static readonly Comparison<SpriteBatchItem> ByTexture = static (a, b) =>
-        {
-            int d = a.LayerDepth.CompareTo(b.LayerDepth);
-            return d != 0 ? d : a.Texture.BatchKey.CompareTo(b.Texture.BatchKey);
-        };
-
-        private static readonly Comparison<SpriteBatchItem> BackToFront = static (a, b) => b.LayerDepth.CompareTo(a.LayerDepth);
-        private static readonly Comparison<SpriteBatchItem> FrontToBack = static (a, b) => a.LayerDepth.CompareTo(b.LayerDepth);
-
-        // 比较器实例一次性创建并复用，避免 Flush 每帧 new Comparer<T> 产生 GC 压力。
-        private static readonly IComparer<SpriteBatchItem> TextureComparer = Comparer<SpriteBatchItem>.Create(ByTexture);
-        private static readonly IComparer<SpriteBatchItem> BackToFrontComparer = Comparer<SpriteBatchItem>.Create(BackToFront);
-        private static readonly IComparer<SpriteBatchItem> FrontToBackComparer = Comparer<SpriteBatchItem>.Create(FrontToBack);
+        private bool _beginCalled;
 
         public SpriteBatch(GraphicsDevice device)
         {
             ArgumentNullException.ThrowIfNull(device);
             _device = device;
+            _batcher = new SpriteBatcher(device);
         }
 
         public GraphicsDevice GraphicsDevice => _device;
-
 
         public void Begin(SpriteSortMode sortMode = SpriteSortMode.Deferred,
                           BlendState? blendState = null,
@@ -76,14 +39,17 @@ namespace KFramework.MonoGame
             if (_beginCalled) throw new InvalidOperationException("上一次 Begin 还没有对应的 End。");
 
             _sortMode = sortMode;
-            // 纹理数据是非预乘的，所以默认用 NonPremultiplied（SRC_ALPHA, ONE_MINUS_SRC_ALPHA）
+            // 纹理数据是非预乘的，默认用 NonPremultiplied（SRC_ALPHA, ONE_MINUS_SRC_ALPHA）
             _blendState = blendState ?? BlendState.NonPremultiplied;
             _samplerState = samplerState ?? SamplerState.Point;
             _transform = transformMatrix ?? Matrix4x4.Identity;
-            _itemCount = 0;
+            _batcher.SetSamplerState(_samplerState);
 
             var viewport = _device.Viewport;
             _projection = Matrix4x4.CreateOrthographicScreen(viewport.Width, viewport.Height);
+
+            // Immediate 模式：每次 Draw 立即下发，故提前把渲染状态设好。
+            if (sortMode == SpriteSortMode.Immediate) Setup();
 
             _beginCalled = true;
         }
@@ -91,8 +57,18 @@ namespace KFramework.MonoGame
         public void End()
         {
             if (!_beginCalled) throw new InvalidOperationException("End 必须在 Begin 之后调用。");
-            Flush();
             _beginCalled = false;
+
+            if (_sortMode != SpriteSortMode.Immediate) Setup();
+            _batcher.DrawBatch(_sortMode, _device.Effect);
+        }
+
+        /// <summary>下发混合状态 + 把 (变换 × 正交投影) 写入着色器。照 MonoGame 的 Setup()。</summary>
+        private void Setup()
+        {
+            _device.SetBlendState(_blendState);
+            // 行向量约定（p' = p × M）：变换在左、投影在右，故 transform 先发生。
+            _device.Effect.Apply(_transform * _projection);
         }
 
         #region Draw 重载
@@ -106,10 +82,57 @@ namespace KFramework.MonoGame
         public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color)
             => Draw(texture, position, sourceRectangle, color, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
 
-        /// <summary>
-        /// MonoGame 的带旋转 / 翻转重载：目标矩形既决定位置也决定缩放。
-        /// 内部退化成 position + scale，与 KFramework.MonoGame 的单一实现保持一致。
-        /// </summary>
+        /// <summary>完整参数的绘制（照 MonoGame 的 Draw，UV 计算兼容本引擎的图集 Bounds 偏移）。</summary>
+        public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color,
+                         float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth = 0f)
+        {
+            CheckValid(texture);
+
+            SpriteBatchItem item = _batcher.CreateBatchItem();
+            item.Texture = texture;
+
+            // 排序键：照 MonoGame。Texture 排序模式用 Texture.SortingKey（纹理内在序号）。
+            switch (_sortMode)
+            {
+                case SpriteSortMode.Texture:
+                    item.SortKey = texture.SortingKey;
+                    break;
+                case SpriteSortMode.FrontToBack:
+                    item.SortKey = layerDepth;
+                    break;
+                case SpriteSortMode.BackToFront:
+                    item.SortKey = -layerDepth;
+                    break;
+                default:
+                    item.SortKey = 0;
+                    break;
+            }
+
+            Rectangle source = sourceRectangle ?? new Rectangle(0, 0, texture.Width, texture.Height);
+            float w = source.Width * scale.X;
+            float h = source.Height * scale.Y;
+
+            Vector2 uvTL = new Vector2((texture.Bounds.X + source.X) / (float)texture.TextureWidth,
+                                       (texture.Bounds.Y + source.Y) / (float)texture.TextureHeight);
+            Vector2 uvBR = new Vector2((texture.Bounds.X + source.X + source.Width) / (float)texture.TextureWidth,
+                                       (texture.Bounds.Y + source.Y + source.Height) / (float)texture.TextureHeight);
+
+            if ((effects & SpriteEffects.FlipVertically) != 0) (uvTL.Y, uvBR.Y) = (uvBR.Y, uvTL.Y);
+            if ((effects & SpriteEffects.FlipHorizontally) != 0) (uvTL.X, uvBR.X) = (uvBR.X, uvTL.X);
+
+            // 照 MonoGame：origin 先乘以 scale，再参与定位。
+            origin = origin * scale;
+            float c = MathF.Cos(rotation), s = MathF.Sin(rotation);
+
+            if (rotation == 0f)
+                item.Set(position.X - origin.X, position.Y - origin.Y, w, h, color, uvTL, uvBR, layerDepth);
+            else
+                item.Set(position.X, position.Y, -origin.X, -origin.Y, w, h, s, c, color, uvTL, uvBR, layerDepth);
+
+            if (_sortMode == SpriteSortMode.Immediate) _batcher.DrawBatch(_sortMode, _device.Effect);
+        }
+
+        /// <summary>目标矩形既决定位置也决定缩放（照 MonoGame 的带目标矩形重载）。</summary>
         public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color,
                          float rotation, Vector2 origin, SpriteEffects effects, float layerDepth)
         {
@@ -134,35 +157,7 @@ namespace KFramework.MonoGame
                  SpriteEffects.None, 0f);
         }
 
-        /// <summary>完整参数的绘制。</summary>
-        public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color,
-                         float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth = 0f)
-        {
-            ArgumentNullException.ThrowIfNull(texture);
-            if (!_beginCalled) throw new InvalidOperationException("Draw 必须在 Begin / End 之间调用。");
-
-            Rectangle source = sourceRectangle ?? new Rectangle(0, 0, texture.Width, texture.Height);
-
-            SpriteBatchItem item = new()
-            {
-                Texture = texture,
-                Position = position,
-                Source = source,
-                Size = new Vector2(source.Width * scale.X, source.Height * scale.Y),
-                Origin = origin,
-                Rotation = rotation,
-                Color = color,
-                LayerDepth = layerDepth,
-                Effects = effects,
-            };
-
-            if (_itemCount >= _items.Length) Flush();
-            _items[_itemCount++] = item;
-
-            if (_sortMode == SpriteSortMode.Immediate) Flush();
-        }
-
-        /// <summary>九宫格之外的常用辅助：以中心点对齐绘制并缩放。</summary>
+        /// <summary>以中心点对齐绘制并缩放。</summary>
         public void DrawCentered(Texture2D texture, Vector2 center, Color color,
                                  float rotation = 0f, float scale = 1f, float layerDepth = 0f)
             => Draw(texture, center, null, color, rotation,
@@ -182,140 +177,10 @@ namespace KFramework.MonoGame
 
         #endregion
 
-        private void Flush()
+        private void CheckValid(Texture2D texture)
         {
-            if (_itemCount == 0) return;
-
-            switch (_sortMode)
-            {
-                case SpriteSortMode.Texture:
-                    Array.Sort(_items, 0, _itemCount, TextureComparer);
-                    break;
-                case SpriteSortMode.BackToFront:
-                    Array.Sort(_items, 0, _itemCount, BackToFrontComparer);
-                    break;
-                case SpriteSortMode.FrontToBack:
-                    Array.Sort(_items, 0, _itemCount, FrontToBackComparer);
-                    break;
-            }
-
-            _device.SetBlendState(_blendState);
-            // 行向量约定（p' = p × M）：先发生的变换写在左边。
-            // 精灵顶点要先做世界变换（transform），再做正交投影（projection），故 transform 在左。
-            _device.Effect.Apply(_transform * _projection);
-
-            JSBind_GL.BindVertexArray(_device.VertexArray);
-            JSBind_GL.BindBuffer(JSBind_GL.ARRAY_BUFFER, _device.VertexBuffer);
-
-            int batchStart = 0;
-            int currentKey = -1;
-
-            for (int i = 0; i < _itemCount; i++)
-            {
-                int key = _items[i].Texture.BatchKey;
-                if (key != currentKey)
-                {
-                    if (i > batchStart) DrawRange(batchStart, i - batchStart);
-                    Texture2D texture = _items[i].Texture;
-                    _device.BindTexture(texture);
-                    _device.SetSamplerState(_samplerState, texture);
-                    batchStart = i;
-                    currentKey = key;
-                }
-            }
-            DrawRange(batchStart, _itemCount - batchStart);
-
-            ReportGlError("SpriteBatch.Flush");
-
-            if (_flushesDiagnosed < 8)
-            {
-                _flushesDiagnosed++;
-                Texture2D first = _items[batchStart].Texture;
-                VertexPositionColorTexture v0 = _vertices[0];
-                VertexPositionColorTexture v2 = _vertices[2];
-                PrintTool.Log($"[SpriteBatch] 第 {_flushesDiagnosed} 次：{_device._metrics._spriteCount} 个精灵 / {_device._metrics._drawCount} 次绘制，底图 {first.TextureWidth}x{first.TextureHeight}，" +
-                                  $"首顶点 pos={v0.Position} uv={v0.TexCoord} color={v0.Color} | 对角 pos={v2.Position} uv={v2.TexCoord}");
-            }
-
-            _itemCount = 0;
+            if (texture == null) throw new ArgumentNullException(nameof(texture));
+            if (!_beginCalled) throw new InvalidOperationException("Draw 必须在 Begin / End 之间调用。");
         }
-
-        private static int _flushesDiagnosed;
-
-        private static bool _glErrorReported;
-
-        /// <summary>只上报一次的 WebGL 错误，用来定位"画面全黑但没抛异常"这类问题。</summary>
-        private static void ReportGlError(string stage)
-        {
-            if (_glErrorReported) return;
-            int error = JSBind_GL.GetError();
-            if (error == 0) return;
-
-            _glErrorReported = true;
-            Console.Error.WriteLine($"[KFramework.MonoGame] WebGL 错误 0x{error:X4} @ {stage}");
-        }
-
-        private void DrawRange(int start, int count)
-        {
-            if (count <= 0) return;
-
-            for (int i = 0; i < count; i++)
-                BuildQuad(_items[start + i], _vertices.AsSpan(i * 4, 4));
-
-            JSBind_GL.BufferSubData(JSBind_GL.ARRAY_BUFFER, 0, MemoryMarshal.AsBytes(_vertices.AsSpan(0, count * 4)));
-            JSBind_GL.DrawElements(JSBind_GL.TRIANGLES, count * 6, JSBind_GL.UNSIGNED_SHORT, 0);
-            // 照 MonoGame：每次真正的 GL draw call 累加 DrawCount，并按精灵数累加 SpriteCount / PrimitiveCount（每个精灵 = 2 个三角形）。
-            _device._metrics._drawCount++;
-            _device._metrics._spriteCount += count;
-            _device._metrics._primitiveCount += count * 2;
-        }
-
-        private static void BuildQuad(in SpriteBatchItem item, Span<VertexPositionColorTexture> destination)
-        {
-            Texture2D texture = item.Texture;
-
-            float u0 = (texture.Bounds.X + item.Source.X) / (float)texture.TextureWidth;
-            float v0 = (texture.Bounds.Y + item.Source.Y) / (float)texture.TextureHeight;
-            float u1 = (texture.Bounds.X + item.Source.X + item.Source.Width) / (float)texture.TextureWidth;
-            float v1 = (texture.Bounds.Y + item.Source.Y + item.Source.Height) / (float)texture.TextureHeight;
-
-            if ((item.Effects & SpriteEffects.FlipHorizontally) != 0) (u0, u1) = (u1, u0);
-            if ((item.Effects & SpriteEffects.FlipVertically) != 0) (v0, v1) = (v1, v0);
-
-            float w = item.Size.X, h = item.Size.Y;
-
-            // MonoGame 语义：origin 位于【源矩形】坐标系（单位是源图像素），
-            // 绘制时必须按本次缩放（目标尺寸 / 源尺寸）把它放大到目标空间：
-            //     顶点偏移 = -origin × scale
-            // 否则一旦精灵被缩放（目标矩形 ≠ 源矩形），Pivot / origin 的偏移量会严重偏小，
-            // 典型症状就是"Pivot 看起来完全不起作用"。
-            float scaleX = item.Source.Width == 0 ? 0f : w / item.Source.Width;
-            float scaleY = item.Source.Height == 0 ? 0f : h / item.Source.Height;
-            float ox = item.Origin.X * scaleX;
-            float oy = item.Origin.Y * scaleY;
-
-            Vector2 tl = new(-ox, -oy);
-            Vector2 tr = new(w - ox, -oy);
-            Vector2 br = new(w - ox, h - oy);
-            Vector2 bl = new(-ox, h - oy);
-
-            if (item.Rotation != 0f)
-            {
-                float c = MathF.Cos(item.Rotation), s = MathF.Sin(item.Rotation);
-                tl = Rotate(tl, c, s); tr = Rotate(tr, c, s);
-                br = Rotate(br, c, s); bl = Rotate(bl, c, s);
-            }
-
-            Vector2 p = item.Position;
-            Color color = item.Color;
-
-            destination[0] = new VertexPositionColorTexture(p + tl, new Vector2(u0, v0), color);
-            destination[1] = new VertexPositionColorTexture(p + tr, new Vector2(u1, v0), color);
-            destination[2] = new VertexPositionColorTexture(p + br, new Vector2(u1, v1), color);
-            destination[3] = new VertexPositionColorTexture(p + bl, new Vector2(u0, v1), color);
-        }
-
-        private static Vector2 Rotate(Vector2 v, float cos, float sin)
-            => new(v.X * cos - v.Y * sin, v.X * sin + v.Y * cos);
     }
 }

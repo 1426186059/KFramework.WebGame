@@ -12,6 +12,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KFramework.MonoGame\KFramework.MonoGame.csproj" />
+    <!-- 图集打包复用外部 KTexturePacker 工具的核心（MaxRects 摆放 + 整页合成 + AtlasData 导出） -->
+    <PackageReference Include="SkiaSharp" Version="4.150.1" />
+    <Reference Include="KTexturePacker.Core">
+      <HintPath>..\Need_DLL\KTexturePacker.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

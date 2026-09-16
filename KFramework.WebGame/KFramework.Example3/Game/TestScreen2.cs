@@ -51,7 +51,7 @@ namespace KFramework.Example3
                 await contentManager.LoadBundleAsync("MyRes/Atlas").ConfigureAwait(false);
                 var atlasBundle = contentManager.GetBundle("MyRes/Atlas")!;
                 SpriteSheetLoader mLoader = new SpriteSheetLoader(atlasBundle, KSceneMgr.Game.GraphicsDevice);
-                _spriteSheet = mLoader.Load("MyRes/Atlas/AAA");
+                _spriteSheet = mLoader.Load("atlas");
                 _texture = _spriteSheet.Sprite("characters_characters_0").Texture;
             }
             catch (Exception ex)

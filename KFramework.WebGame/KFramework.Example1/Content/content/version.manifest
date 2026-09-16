@@ -2,7 +2,7 @@
   "Format": "web.lib.bundle",
   "Version": 1,
   "Hash": "md5",
-  "CreatedAt": "2026-09-15T17:55:01.3468317Z",
+  "CreatedAt": "2026-09-16T11:58:31.8053056Z",
   "Packages": [
     {
       "Name": "data",
@@ -14,10 +14,10 @@
     },
     {
       "Name": "sprites",
-      "File": "sprites.063208620f277883.web.lib",
-      "Size": 2523,
-      "Hash": "063208620f2778838961401c652ead0b",
-      "Entries": 13,
+      "File": "sprites.15f48bab612ea07f.web.lib",
+      "Size": 1486,
+      "Hash": "15f48bab612ea07fe18a428f1d8979e9",
+      "Entries": 2,
       "Dependencies": []
     }
   ]

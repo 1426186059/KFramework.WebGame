@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KFramework.MonoGame\KFramework.MonoGame.csproj" />
+    <ProjectReference Include="..\KFramework.MonoGameExtend\KFramework.MonoGameExtend.csproj" />
   </ItemGroup>
 
   <!-- 引擎的浏览器层用 TypeScript 编写（KFramework/tsengine），

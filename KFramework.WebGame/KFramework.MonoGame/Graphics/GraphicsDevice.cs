@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices.JavaScript;
+﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.JavaScript;
 
 using KFramework.MonoGame;
 
@@ -23,7 +24,7 @@ namespace KFramework.MonoGame
         // 首次调用会被跳过，glBlendFunc 永远不下发（表现为画面全黑）。
         private BlendState _blendState = null!;
         private SamplerState _samplerState = null!;
-        private int _batchKeySource = 1;
+        private ulong _sortingKeySource = 1;
 
         public Viewport Viewport { get; private set; }
 
@@ -41,6 +42,12 @@ namespace KFramework.MonoGame
 
         public BlendState BlendState => _blendState;
         public SamplerState SamplerState => _samplerState;
+
+        /// <summary>设备纹理槽（照 MonoGame 的 GraphicsDevice.Textures，本 2D 后端只用单元 0）。</summary>
+        public TextureCollection Textures { get; } = new TextureCollection(1);
+
+        /// <summary>设备采样器状态槽（照 MonoGame 的 GraphicsDevice.SamplerStates，本 2D 后端只用单元 0）。</summary>
+        public SamplerStateCollection SamplerStates { get; } = new SamplerStateCollection(1);
 
         public GraphicsDevice(string canvasSelector = "#game")
         {
@@ -183,22 +190,42 @@ namespace KFramework.MonoGame
         internal void SetSamplerState(SamplerState state, Texture2D? current)
         {
             if (current is null) return;
-            if (ReferenceEquals(_samplerState, state) && _samplerAppliedKey == current.BatchKey) return;
+            if (ReferenceEquals(_samplerState, state) && _samplerAppliedKey == current.SortingKey) return;
             _samplerState = state;
-            _samplerAppliedKey = current.BatchKey;
+            _samplerAppliedKey = current.SortingKey;
+            SamplerStates[0] = state;
+
             JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MIN_FILTER, state.MinFilter);
             JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MAG_FILTER, state.MagFilter);
             JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_WRAP_S, state.WrapMode);
             JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_WRAP_T, state.WrapMode);
         }
 
-        private int _samplerAppliedKey = -1;
+        private ulong _samplerAppliedKey;
 
         internal void BindTexture(Texture2D texture)
         {
             JSBind_GL.ActiveTexture(JSBind_GL.TEXTURE0);
             JSBind_GL.BindTexture(JSBind_GL.TEXTURE_2D, texture.Handle);
-            _samplerAppliedKey = -1;   // 换纹理后采样参数需要重新下发
+            Textures[0] = texture;
+            _samplerAppliedKey = 0;   // 换纹理后采样参数需要重新下发
+        }
+
+        /// <summary>
+        /// 把若干顶点上传到动态顶点缓冲并发起一次索引绘制（照 MonoGame 的 DrawUserIndexedPrimitives）。
+        /// 索引来自初始化时建好的静态 ELEMENT_ARRAY_BUFFER（已绑进 VertexArray）。
+        /// 每调用一次累加一次 DrawCount；PrimitiveCount 同步累加（每个四边形 = 2 三角形）。
+        /// SpriteCount 由 SpriteBatcher.DrawBatch 整批累加一次，这里不再加。
+        /// </summary>
+        internal void DrawUserIndexedPrimitives(VertexPositionColorTexture[] vertices, int vertexCount)
+        {
+            JSBind_GL.BindVertexArray(VertexArray);
+            JSBind_GL.BindBuffer(JSBind_GL.ARRAY_BUFFER, VertexBuffer);
+            JSBind_GL.BufferSubData(JSBind_GL.ARRAY_BUFFER, 0, MemoryMarshal.AsBytes(vertices.AsSpan(0, vertexCount)));
+            JSBind_GL.DrawElements(JSBind_GL.TRIANGLES, vertexCount / 4 * 6, JSBind_GL.UNSIGNED_SHORT, 0);
+
+            _metrics._drawCount++;
+            _metrics._primitiveCount += vertexCount / 2;
         }
 
         /// <summary>创建一张空的 RGBA8 纹理。</summary>
@@ -225,7 +252,9 @@ namespace KFramework.MonoGame
             int error = JSBind_GL.GetError();
             if (error != 0) Console.Error.WriteLine($"[KFramework.MonoGame] 纹理上传失败 0x{error:X4}（{width}x{height}，{rgba.Length} 字节）");
 
-            return new Texture2D(handle, width, height, _batchKeySource++, ownsHandle: true);
+            var texture = new Texture2D(this, handle, width, height, ownsHandle: true);
+            texture._sortingKey = _sortingKeySource++;
+            return texture;
         }
 
         public void Dispose()

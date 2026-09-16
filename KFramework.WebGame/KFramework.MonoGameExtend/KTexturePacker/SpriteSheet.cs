@@ -29,5 +29,7 @@ namespace KFramework.MonoGameExtend
             return spriteList[sprite];
         }
 
+        public bool Contains(string sprite) => spriteList.ContainsKey(sprite);
+
     }
 }

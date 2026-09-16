@@ -28,12 +28,12 @@
 
 - `byte[] LoadAsset(name)` / `bool TryGetAsset(name, out byte[])` —— 原始字节（Unity `LoadAsset<TextAsset>`）。
 - `string LoadText(name)` —— 文本（UTF-8，去 BOM）。
-- `T? LoadJson<T>(name)` —— JSON 反序列化。
-- `Texture2D LoadTexture(name, GraphicsDevice device)` —— 取一张纹理：
-  - 图集子图（清单里 `Page ≥ 0`）→ 按 `Page/X/Y/Width/Height` 从对应图集页切片；
-  - 整张（图集原始页等）→ 按 RGBA8 直接 `device.CreateTexture` 上传 GPU。
+- `T? LoadJson<T>(name)` —— JSON 反序列化（图集的 `AtlasData` 即由此读取）。
+- `Texture2D LoadTexture(name, GraphicsDevice device)` —— 取**整张**纹理（按 RGBA8 直接 `device.CreateTexture` 上传 GPU）。
+  注意：图集**不再**以“子图切片”形式存在，故 `AssetBundle` 不再支持 `Page ≥ 0` 的切片；
+  若对带 `Page` 标记的旧资源名调用，会抛 `InvalidOperationException`。整页纹理（如图集页 `atlas_0`）正常上传。
 - `bool TryLoadTexture(name, GraphicsDevice device, out Texture2D? tex)` —— 取不到返回 `false`。
-- `Texture2D LoadAtlasPage(int page, GraphicsDevice device)` —— 上传指定图集页。
+- 图集精灵请改用 `SpriteSheetLoader`（见第 6 节），不要直接用 `LoadTexture` 取子图。
 - `bool Contains(name)` / `AssetBundleEntry? GetAssetInfo(name)` / `IReadOnlyList<string> AssetNames` —— 元信息。
 
 因为上传 GPU 需要设备，所以**所有取纹理的方法都接收 `GraphicsDevice` 参数**（由调用方在加载阶段传入）。
@@ -69,8 +69,12 @@ AssetBundle bundle = Content.GetBundle("content")
 
 // 3) 之后所有取资源都是同步的
 GameConfig cfg   = bundle.LoadJson<GameConfig>("data/game");
-Texture2D player = bundle.LoadTexture("sprites/player", GraphicsDevice);
+Texture2D player = bundle.LoadTexture("sprites/player", GraphicsDevice);   // 整张纹理
 string    level  = bundle.LoadText("levels/00");
+
+// 4) 图集：用 SpriteSheetLoader 取整页图集，得到可批处理的 KSpriteInfo
+SpriteSheet sheet = new SpriteSheetLoader(bundle, GraphicsDevice).Load("atlas");
+KSpriteInfo playerSprite = sheet.Sprite("sprites/player");
 ```
 
 ---
@@ -104,14 +108,45 @@ string    level  = bundle.LoadText("levels/00");
 ### 4.2 兼容模式
 若 `raw/` 下不存在该打包根目录，则**回退为整包**：把整个 `raw/` 作为单个 `content` 包（旧用法，资源名相对 `raw/`）。此时用 `Content.GetBundle("content")` 取资源。
 
-- 产物：`wwwroot/content/version.manifest` + 每个包一个 `*.web.lib`（zip，内含图集页 + 切片索引）。总清单列出全部 Bundle，`ContentManager.LoadBundleAsync(name)` 按名加载任意包。
+- 产物：`wwwroot/content/version.manifest` + 每个包一个 `*.web.lib`（zip，内含整张纹理 PNG、AtlasData JSON 等资源）。总清单列出全部 Bundle，`ContentManager.LoadBundleAsync(name)` 按名加载任意包；图集页用 `SpriteSheetLoader.Load("atlas")` 取出。
 
 ---
 
-## 5. 已知约束 / TODO
+## 5. 图集格式与 SpriteSheetLoader（统一加载方式）
 
-- **Example3 的旧图集加载方式待对齐**：`SpriteSheetLoader` 当前按“AtlasData JSON + 整张 PNG”的老格式取图，
-  与新管线的“单个 sprite → 自动打包成图集页 → 子图切片”不一致。需要把 Example3 也改为
-  “每个精灵一个 `*.sprite.json` + 用 `AssetBundle.LoadTexture` 取子图”，或在 `ContentBuilder` 中保留老图集描述格式。
+图集打包**复用 `KTexturePacker`（`KTexturePacker.Core`）的同一份代码**：`ContentBuilder`（即 `kfc`）直接引用
+`Need_DLL/KTexturePacker.Core.dll`，用 `AtlasPacker.PackPages` + `AtlasExporter.ToGenericJson` 产出与
+`KTexturePacker` 一致的 AtlasData JSON。框架不再自带重复的打包实现。
+
+打包产物（每个图集）由两部分组成，统一以资源名 `atlas` 暴露：
+
+- `atlas` —— `AtlasData` JSON（`Pages[].Image/Width/Height/Regions[]`，`Region` 含 `Name/X/Y/W/H/Rotated/SourceW/SourceH`）。
+- `atlas_0`、`atlas_1` …… —— 各图集页的**整张 PNG**（资源类型为 `texture`）。
+
+> 资源名由 `ContentBuilder` 的 `AtlasBaseName`（默认 `"atlas"`）决定，多页时页序号追加到页 PNG 名（`atlas_{i}.png`），
+> JSON 里的 `Image` 字段即指向这些页 PNG。
+
+运行时统一用 `SpriteSheetLoader` 加载（**所有图集都用这种方式，不要用 `LoadTexture` 取子图**）：
+
+```csharp
+SpriteSheet sheet = new SpriteSheetLoader(bundle, GraphicsDevice).Load("atlas");
+KSpriteInfo playerSprite = sheet.Sprite("sprites/player");   // 资源名 = 去扩展名小写
+if (sheet.Contains("sprites/enemy")) { /* ... */ }
+
+// 绘制：以精灵中心点对齐（自动处理 Rotated）
+_batch.DrawCentered(playerSprite, position, Color.White);
+// 或左上角对齐
+_batch.Draw(playerSprite, position, Color.White);
+```
+
+`KSpriteInfo` 携带 `.Texture`（整页纹理）、`.SourceRectangle`（页内矩形）、`.IsRotated`（旋转 90° 标记）、
+`.Origin`（默认左上）。因整页纹理可被多个精灵共享并一起批处理，旋转精灵的绘制由扩展方法在 `origin`/`rotation` 上做换算。
+
+---
+
+## 6. 已知约束 / TODO
+
 - 构建阶段（`kfc`）只打包 `raw/` 中存在的资源；缺失的资源在**运行时**才会 `KeyNotFoundException`，
   因此每个示例都需要一份对应的 `Content/raw/` 样例内容（见各示例 `Content/raw/`）。
+- 图集页 PNG 由 `KTexturePacker.Core` 经 SkiaSharp 合成；`Need_DLL/KTexturePacker.Core.dll` 需与
+  `SkiaSharp` 版本匹配（见 `KFramework.Content.Cli.csproj` 的 `PackageReference`）。

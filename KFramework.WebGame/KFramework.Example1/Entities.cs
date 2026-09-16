@@ -1,4 +1,5 @@
 ﻿using KFramework.MonoGame;
+using KFramework.MonoGameExtend;
 
 namespace MirGame;
 
@@ -37,7 +38,7 @@ public sealed class Enemy
 {
     public string Type = "";
     public EnemyConfig Config = new();
-    public Texture2D Texture = null!;
+    public KSpriteInfo Sprite = null!;
     public Vector2 Position;
     public float BaseX;
     public float Health;
@@ -125,7 +126,7 @@ public sealed class Starfield
         }
     }
 
-    public void Draw(SpriteBatch batch, Texture2D texture)
+    public void Draw(SpriteBatch batch, KSpriteInfo texture)
     {
         foreach (Star star in _stars)
             batch.DrawCentered(texture, star.Position, star.Color, 0f, star.Size);

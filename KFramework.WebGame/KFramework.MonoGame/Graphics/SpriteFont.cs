@@ -11,13 +11,13 @@ namespace KFramework.MonoGame
     {
         private readonly struct Glyph
         {
-            public readonly Texture2D? Texture;
+            public readonly Rectangle Bounds;
             public readonly float Advance;
             public readonly Vector2 DrawOffset;
 
-            public Glyph(Texture2D? texture, float advance, Vector2 drawOffset)
+            public Glyph(Rectangle bounds, float advance, Vector2 drawOffset)
             {
-                Texture = texture;
+                Bounds = bounds;
                 Advance = advance;
                 DrawOffset = drawOffset;
             }
@@ -94,7 +94,7 @@ namespace KFramework.MonoGame
             int height = Math.Max(metrics[1], (int)(Size * 1.15f) + 4);
             int ascent = Math.Max(metrics[2], (int)(Size * 0.85f) + 2);
 
-            Texture2D? texture = null;
+            Rectangle bounds = Rectangle.Empty;
             Vector2 drawOffset = new(-Padding, 0f);
 
             int cellWidth = advance + Padding * 2;
@@ -111,7 +111,7 @@ namespace KFramework.MonoGame
                 if (_shelfY + cellHeight > AtlasSize)
                 {
                     // 图集已满：后续字符退化为空，避免越界写入
-                    glyph = new Glyph(null, advance, drawOffset);
+                    glyph = new Glyph(Rectangle.Empty, advance, drawOffset);
                     _glyphs[c] = glyph;
                     return glyph;
                 }
@@ -120,14 +120,15 @@ namespace KFramework.MonoGame
                 JSBind_Text.Render(text, _fontCss, Padding, Padding + ascent, cellWidth, cellHeight, pixels);
                 _atlas.SetData(pixels, _shelfX, _shelfY, cellWidth, cellHeight);
 
-                texture = _atlas.CreateSubtexture(new Rectangle(_shelfX, _shelfY, cellWidth, cellHeight));
+                // 照官方 MonoGame 的图集用法：整张图集是单个 Texture2D，字形用 source rect 绘制，可合批。
+                bounds = new Rectangle(_shelfX, _shelfY, cellWidth, cellHeight);
                 drawOffset = new Vector2(-Padding, -(Padding + ascent));
 
                 _shelfX += cellWidth;
                 _shelfHeight = Math.Max(_shelfHeight, cellHeight);
             }
 
-            glyph = new Glyph(texture, advance, drawOffset);
+            glyph = new Glyph(bounds, advance, drawOffset);
             _glyphs[c] = glyph;
             return glyph;
         }
@@ -150,11 +151,11 @@ namespace KFramework.MonoGame
                 }
 
                 Glyph glyph = GetGlyph(c);
-                if (glyph.Texture is not null)
+                if (glyph.Bounds.Width > 0)
                 {
                     Vector2 drawAt = new(cursor.X + glyph.DrawOffset.X * scale,
                                          cursor.Y + (Ascent + glyph.DrawOffset.Y) * scale);
-                    batch.Draw(glyph.Texture, drawAt, null, color, 0f, Vector2.Zero,
+                    batch.Draw(_atlas, drawAt, glyph.Bounds, color, 0f, Vector2.Zero,
                                new Vector2(scale, scale), SpriteEffects.None, layerDepth);
                 }
                 cursor.X += glyph.Advance * scale;

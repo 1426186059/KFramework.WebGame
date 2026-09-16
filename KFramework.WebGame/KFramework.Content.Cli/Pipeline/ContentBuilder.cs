@@ -1,9 +1,12 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using KTexturePacker.Core;
+using SkiaSharp;
 
 namespace KFramework.MonoGame;
 
@@ -201,7 +204,11 @@ public sealed class ContentBuilder
         List<string> warnings, ref long rawBytes, ref int textureCount, ref int dataCount, ref int atlasPageCount,
         string outputDirectory)
     {
-        var packer = new AtlasPacker { MaxSize = options.AtlasMaxSize, Padding = options.AtlasPadding };
+        // 图集打包统一复用外部 KTexturePacker 工具的核心（MaxRects 摆放 + 整页合成 + AtlasData 导出）。
+        // 产物：整页纹理（atlas_{i}，单张 Texture2D）+ 一份 AtlasData JSON（资源名固定为 "atlas"）。
+        // 运行时由 SpriteSheetLoader 读取该 JSON 并提供 source rect，从而同一张图集页可合批。
+        const string AtlasBaseName = "atlas";
+        var inputs = new List<SpriteInput>();
         var bundle = new AssetBundleBuild { AssetBundleName = bundleName };
         var names = new HashSet<string>(StringComparer.Ordinal);
 
@@ -226,7 +233,7 @@ public sealed class ContentBuilder
                 {
                     Bitmap sprite = ShapeImporter.Import(Encoding.UTF8.GetString(bytes));
                     if (options.TrimSprites) sprite = sprite.Trim();
-                    packer.Add(name, sprite);
+                    inputs.Add(new SpriteInput(name, ToSkBitmap(sprite)));
                     textureCount++;
                 }
                 else if (relative.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
@@ -235,11 +242,11 @@ public sealed class ContentBuilder
                     if (autoAtlas)
                     {
                         if (options.TrimSprites) image = image.Trim();
-                        packer.Add(name, image);
+                        inputs.Add(new SpriteInput(name, ToSkBitmap(image)));
                     }
                     else
                     {
-                        // 不装箱：解码为 RGBA8 像素，整图原样入包（适合 .atlas 预切图集，运行端按整张页图切片）
+                        // 不装箱：整图原样入包（适合 .atlas 预切图集，运行端按整张页图切片）
                         bundle.Assets.Add(new AssetBundleAsset
                         {
                             Path = name,
@@ -269,42 +276,76 @@ public sealed class ContentBuilder
             }
         }
 
-        // 纹理统一装箱（每个包独立图集）
-        IReadOnlyList<AtlasPage> pages = packer.Pack();
-        atlasPageCount += pages.Count;
-        foreach (AtlasPage page in pages)
+        // 纹理统一装箱（每个包独立图集），复用 KTexturePacker 的 MaxRects 算法 + 整页合成
+        if (inputs.Count > 0)
         {
-            bundle.Assets.Add(new AssetBundleAsset
+            var settings = new PackerSettings
             {
-                Path = $"atlas/{page.Index}",
-                Type = "atlas",
-                Bytes = page.Bitmap.Pixels,
-                Width = page.Bitmap.Width,
-                Height = page.Bitmap.Height,
-            });
+                MaxSize = options.AtlasMaxSize,
+                Padding = options.AtlasPadding,
+                AllowRotation = true,
+            };
 
-            foreach (AtlasRegion region in page.Regions)
+            IReadOnlyList<PackingResult> pages = AtlasPacker.PackPages(inputs, settings);
+            atlasPageCount += pages.Count;
+
+            var imageNames = new List<string>(pages.Count);
+            for (int i = 0; i < pages.Count; i++)
+                imageNames.Add($"{AtlasBaseName}_{i}.png");
+
+            for (int i = 0; i < pages.Count; i++)
             {
+                PackingResult page = pages[i];
+
+                using SKBitmap atlas = AtlasPacker.RenderAtlas(page);
+                byte[] png = EncodePng(atlas);
+
                 bundle.Assets.Add(new AssetBundleAsset
                 {
-                    Path = region.Name,
+                    Path = $"{AtlasBaseName}_{i}",
                     Type = "texture",
-                    Bytes = Array.Empty<byte>(),
-                    Page = page.Index,
-                    X = region.X,
-                    Y = region.Y,
-                    Width = region.Width,
-                    Height = region.Height,
+                    Bytes = png,
+                    Width = atlas.Width,
+                    Height = atlas.Height,
                 });
+
+                if (options.WritePreviewPng)
+                    File.WriteAllBytes(
+                        Path.Combine(outputDirectory, $"atlas_{bundleName.Replace('/', '_')}_{i}.png"),
+                        png);
             }
 
-            if (options.WritePreviewPng)
-                File.WriteAllBytes(
-                    Path.Combine(outputDirectory, $"atlas_{bundleName.Replace('/', '_')}_{page.Index}.png"),
-                    PngEncoder.Encode(page.Bitmap));
+            string json = AtlasExporter.ToGenericJson(pages, imageNames);
+            bundle.Assets.Add(new AssetBundleAsset
+            {
+                Path = AtlasBaseName,
+                Type = "atlas",
+                Bytes = Encoding.UTF8.GetBytes(json),
+            });
+
+            // 打包结束，释放输入位图（PackPages/RenderAtlas 已拷贝像素）
+            foreach (SpriteInput input in inputs)
+                input.Bitmap.Dispose();
         }
 
         return bundle;
+    }
+
+    /// <summary>把框架 RGBA8 位图（直 alpha）转为 Skia 位图，供 KTexturePacker 装箱。</summary>
+    private static SKBitmap ToSkBitmap(Bitmap bmp)
+    {
+        var sk = new SKBitmap(bmp.Width, bmp.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+        using SKPixmap pixmap = sk.PeekPixels();
+        Marshal.Copy(bmp.Pixels, 0, pixmap.GetPixels(), bmp.Pixels.Length);
+        return sk;
+    }
+
+    /// <summary>把 Skia 整页位图编码为 PNG 字节（用于包内整图纹理与预览）。</summary>
+    private static byte[] EncodePng(SKBitmap bmp)
+    {
+        using SKImage image = SKImage.FromBitmap(bmp);
+        using SKData data = image.Encode(SKEncodedImageFormat.Png, 100);
+        return data.ToArray();
     }
 
     /// <summary>打包配置（build.config.json，位于 Content 根目录）。</summary>
