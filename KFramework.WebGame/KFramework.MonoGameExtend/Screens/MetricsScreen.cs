@@ -43,7 +43,7 @@ namespace KFramework.MonoGameExtend
         public override void Update()
         {
             base.Update();
-            nFPS = (int)Math.Round(Game.RenderFps);
+            nFPS = (int)Math.Round(1 / KTime.deltaTime);
             mLable.Text = $"FPS: {nFPS} DC: {nDrawCount} Sprites: {nSpriteCount} ScreenSize: {KSceneMgr.Game.GraphicsDevice.Viewport.Bounds.Size}";
         }
 
