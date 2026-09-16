@@ -1,6 +1,6 @@
 ﻿using KFramework.MonoGame;
 
-namespace KFramework.Content.Cli
+namespace KFramework.Content.Build
 {
     /// <summary>
     /// kfc —— KFramework.MonoGame 内容管线命令行工具

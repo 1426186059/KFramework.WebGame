@@ -17,7 +17,7 @@ public enum AssetType : byte
 }
 
 /// <summary>单条记录的压缩方式。</summary>
-public enum CompressionMode : byte
+public enum KCompressionMode : byte
 {
     None = 0,
     /// <summary>
@@ -89,7 +89,7 @@ public readonly struct PakEntry
     public readonly ulong Id;
     public readonly string Name;
     public readonly AssetType Type;
-    public readonly CompressionMode Compression;
+    public readonly KCompressionMode Compression;
     public readonly int BlobOffset;
     public readonly int BlobSize;
     public readonly int RawSize;
@@ -97,7 +97,7 @@ public readonly struct PakEntry
     public readonly int Width;
     public readonly int Height;
 
-    internal PakEntry(ulong id, string name, AssetType type, CompressionMode compression,
+    internal PakEntry(ulong id, string name, AssetType type, KCompressionMode compression,
                       int blobOffset, int blobSize, int rawSize, uint checksum, int width, int height)
     {
         Id = id;

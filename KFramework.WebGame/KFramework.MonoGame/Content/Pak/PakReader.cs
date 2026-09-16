@@ -49,7 +49,7 @@ public sealed class PakReader
             int nameOffset = BinaryPrimitives.ReadInt32LittleEndian(slot.Slice(8, 4));
             int nameLength = BinaryPrimitives.ReadUInt16LittleEndian(slot.Slice(12, 2));
             var type = (AssetType)slot[14];
-            var compression = (CompressionMode)slot[15];
+            var compression = (KCompressionMode)slot[15];
             int blobOffset = BinaryPrimitives.ReadInt32LittleEndian(slot.Slice(16, 4));
             int blobSize = BinaryPrimitives.ReadInt32LittleEndian(slot.Slice(20, 4));
             int rawSize = BinaryPrimitives.ReadInt32LittleEndian(slot.Slice(24, 4));
@@ -85,7 +85,7 @@ public sealed class PakReader
         ReadOnlySpan<byte> blob = _data.AsSpan((int)(_blobOffset + entry.BlobOffset), entry.BlobSize);
 
         byte[] raw;
-        if (entry.Compression == CompressionMode.Deflate)
+        if (entry.Compression == KCompressionMode.Deflate)
         {
             raw = new byte[entry.RawSize];
             using var source = new MemoryStream(blob.ToArray(), writable: false);

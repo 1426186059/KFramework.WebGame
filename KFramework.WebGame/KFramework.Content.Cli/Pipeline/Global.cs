@@ -1,4 +1,4 @@
-namespace KFramework.MonoGame
+namespace KFramework.Content.Build
 {
     public static class Global
     {
