@@ -144,16 +144,21 @@ public sealed class AssetBundle : IDisposable
             throw new InvalidOperationException(
                 $"资源「{name}」是旧格式的子图条目，请改用 SpriteSheetLoader 加载图集（整页纹理 + source rect）。");
 
-        if (info.Format != AssetTextureFormat.Ktx2)
-            return LoadTexture(name, device);   // 非压缩：同步上传路径
+        // KTX2 是 GPU 压缩纹理：只有它才需要借浏览器 Basis 转码器转码后直接上传 GPU
+        // （唯一需要异步、依赖 GPU 上下文的格式）。
+        if (info.Format == AssetTextureFormat.Ktx2)
+        {
+            byte[] raw = LoadAsset(name);
+            (int basisFormat, int glFormat) = Ktx2TranscodeSelector.Pick();
+            JSObject handle = await JSBind_Texture.UploadKtx2(raw, basisFormat, glFormat).ConfigureAwait(false);
+            int width = info.Width, height = info.Height;
+            if (width <= 0 || height <= 0)
+                throw new InvalidOperationException($"纹理 “{name}” 缺少像素尺寸，无法上传 GPU。");
+            return new Texture2D(device, handle, width, height, ownsHandle: true);
+        }
 
-        byte[] raw = LoadAsset(name);
-        (int basisFormat, int glFormat) = Ktx2TranscodeSelector.Pick();
-        JSObject handle = await JSBind_Texture.UploadKtx2(raw, basisFormat, glFormat).ConfigureAwait(false);
-        int width = info.Width, height = info.Height;
-        if (width <= 0 || height <= 0)
-            throw new InvalidOperationException($"纹理 “{name}” 缺少像素尺寸，无法上传 GPU。");
-        return new Texture2D(device, handle, width, height, ownsHandle: true);
+        // 其余格式（Rgba / Png / Webp 等）：像素已在 DecodeTexturesAsync 预解码，走同步上传路径。
+        return LoadTexture(name, device);
     }
 
     // ============ 加载阶段异步解码（对齐 PixiJS：bundle 拉取/解包/解码异步，取资源同步） ============

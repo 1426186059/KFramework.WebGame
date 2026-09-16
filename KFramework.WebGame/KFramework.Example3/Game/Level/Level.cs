@@ -76,8 +76,8 @@
             await content.LoadBundleAsync("MyRes/Atlas", cancellationToken).ConfigureAwait(false);
             var atlasBundle = content.GetBundle("MyRes/Atlas")!;
             SpriteSheetLoader mLoader = new SpriteSheetLoader(atlasBundle, KSceneMgr.Game.GraphicsDevice);
-            SpriteSheet characters = await mLoader.LoadAsync("MyRes/Atlas/characters");
-            SpriteSheet misc3 = await mLoader.LoadAsync("MyRes/Atlas/misc-3");
+            SpriteSheet characters = await mLoader.LoadAsync("MyRes/Atlas/characters.atlas");
+            SpriteSheet misc3 = await mLoader.LoadAsync("MyRes/Atlas/misc-3.atlas");
             
             await content.LoadBundleAsync("myres_levels", cancellationToken).ConfigureAwait(false);
             var LevelConfigBundle = content.GetBundle("myres_levels")!;
