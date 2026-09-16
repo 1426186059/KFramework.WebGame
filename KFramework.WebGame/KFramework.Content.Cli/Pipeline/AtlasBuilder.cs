@@ -82,7 +82,9 @@ public static class AtlasBuilder
         // 运行端按 GetFileNameWithoutExtension(image) 取纹理名（与包内资源名 page.Name 对应），
         // 故 AtlasData 中 image 的扩展名仅为可读提示，无需因编码格式而改写。
         var root = JsonNode.Parse(result.AtlasJson)!.AsObject();
-        return (JsonArray)root["pages"]!;
+        // DeepClone 返回脱离父节点的副本：否则 root["pages"] 仍挂着 root，
+        // 被调用方再挂到自己的 JsonObject 时会抛 "The node already has a parent"。
+        return (JsonArray)root["pages"]!.DeepClone();
     }
 
     /// <summary>一个被导入的 .atlas 预切图集的整页：页图 JSON 原文 + 页图 PNG 字节。</summary>

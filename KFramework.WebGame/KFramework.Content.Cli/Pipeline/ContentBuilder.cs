@@ -104,7 +104,9 @@ namespace KFramework.Content.Build
                 outputDirectory = Path.Combine(root, Global.mBuildConfig.OutDir);
             }
 
-            Directory.Delete(outputDirectory, true);
+            // 目录可能不存在（首次构建 / 清理后），删之前先判存在，否则 Directory.Delete 会抛 DirectoryNotFoundException
+            if (Directory.Exists(outputDirectory))
+                Directory.Delete(outputDirectory, true);
             Directory.CreateDirectory(outputDirectory);
 
             List<string> bundleRoots = new List<string>();

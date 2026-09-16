@@ -1,0 +1,48 @@
+{
+  "Format": "web.lib.bundle",
+  "Version": 1,
+  "Hash": "md5",
+  "CreatedAt": "2026-09-16T20:39:34.5740368Z",
+  "Packages": [
+    {
+      "Name": "atlas",
+      "File": "atlas.3369349bf9cc609f.web.lib",
+      "Size": 145591,
+      "Hash": "3369349bf9cc609fcc6999cb37d566d6",
+      "Entries": 5,
+      "Dependencies": []
+    },
+    {
+      "Name": "effects",
+      "File": "effects.d9a7ed3a821d3be2.web.lib",
+      "Size": 696,
+      "Hash": "d9a7ed3a821d3be2453f25fdedb3a6c0",
+      "Entries": 2,
+      "Dependencies": []
+    },
+    {
+      "Name": "fonts",
+      "File": "fonts.dcfae5e762f3be41.web.lib",
+      "Size": 2582,
+      "Hash": "dcfae5e762f3be41b6415826e1bec65a",
+      "Entries": 2,
+      "Dependencies": []
+    },
+    {
+      "Name": "levels",
+      "File": "levels.b6ad9c534d11f9a8.web.lib",
+      "Size": 1170,
+      "Hash": "b6ad9c534d11f9a8848e1102e33af89a",
+      "Entries": 2,
+      "Dependencies": []
+    },
+    {
+      "Name": "sounds",
+      "File": "sounds.3bc716fefc49c608.web.lib",
+      "Size": 1272631,
+      "Hash": "3bc716fefc49c6083ae25858dbfd97f1",
+      "Entries": 23,
+      "Dependencies": []
+    }
+  ]
+}

@@ -76,7 +76,7 @@ namespace KFramework.Content.Build
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"[kfc] 构建失败: {ex.Message}");
+                Console.Error.WriteLine($"[kfc] 构建失败: {ex}");
                 return ExitFailure;
             }
         }
