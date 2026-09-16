@@ -1,12 +1,5 @@
 namespace KFramework.MonoGame
 {
-    /// <summary>像素表面格式（照 MonoGame 的 SurfaceFormat，这里仅保留 2D 引擎实际用到的成员）。</summary>
-    public enum SurfaceFormat
-    {
-        /// <summary>RGBA8，8 位每通道。</summary>
-        Color,
-    }
-
     /// <summary>
     /// 纹理资源的抽象基类（照 MonoGame 的 Texture）。
     /// 提供 Format/LevelCount 与排序用的 SortingKey（合批时按纹理分组的内在顺序键）。
