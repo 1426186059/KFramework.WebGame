@@ -1,6 +1,3 @@
-using KFramework.MonoGame;
-using KFramework.MonoGameExtend;
-
 namespace KFramework.Example3;
 
 /// <summary>
@@ -18,7 +15,7 @@ public sealed class MarioGame : Game
         // 场景管理器：创建共享 SpriteBatch 并接管 Update/Draw 的遍历
         KSceneMgr.Init(this);
         // 节点树 UI 文本需要默认字体（程序化生成，避免依赖 .spritefont 内容文件）
-        KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 28f);
+        KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 18f);
 
         await Content.LoadAsync().ConfigureAwait(false);
 
@@ -34,6 +31,7 @@ public sealed class MarioGame : Game
 
     protected override void Draw(GameTime gameTime)
     {
+        GraphicsDevice.Clear(Color.CornflowerBlue);
         KSceneMgr.Draw(gameTime);
     }
 }
