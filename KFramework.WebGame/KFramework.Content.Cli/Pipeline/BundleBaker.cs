@@ -4,6 +4,7 @@ using SkiaSharp;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
+using System.Diagnostics;
 using System.Text.Json.Nodes;
 
 namespace KFramework.Content.Build;
@@ -101,8 +102,7 @@ public static class BundleBaker
                             AssetTextureFormat.Rgba => (GetPixels(skImage), AssetTextureFormat.Rgba),
                             AssetTextureFormat.Png  => (EncodePng(skImage),  AssetTextureFormat.Png),
                             AssetTextureFormat.Webp => (EncodeWebp(skImage), AssetTextureFormat.Webp),
-                            AssetTextureFormat.Ktx2 => throw new NotSupportedException(
-                                "KTX2 编码尚未实现：需引入 GPU 压缩纹理编码器（如 Basis/ASTC）。当前可用 Rgba / Png / Webp。"),
+                            AssetTextureFormat.Ktx2 => (EncodeKtx2(skImage, options.BasisuPath, options.Ktx2Quality), AssetTextureFormat.Ktx2),
                             _ => (GetPixels(skImage), AssetTextureFormat.Rgba),
                         };
                         bundle.Assets.Add(new AssetBundleAsset
@@ -241,6 +241,71 @@ public static class BundleBaker
 
 
     /// <summary>构建产物、隐藏文件、content 输出目录都不属于原始资源；打包配置文件也不该进包。</summary>
+    /// <summary>把 RGBA8 字节（行优先 W*H*4）编码为 KTX2（Basis Universal 超压缩）。</summary>
+    /// <remarks>
+    /// 经临时 PNG 调用 <c>basisu</c> 命令行编码为 KTX2（UASTC）。需预先安装 Basis Universal 工具
+    /// （https://github.com/BinomialLLC/basis_universal），并配置 <paramref name="basisuPath"/>（为空则用 PATH 中的 basisu）。
+    /// 编码失败时抛出明确异常，提示安装/配置 basisu。
+    /// </remarks>
+    internal static byte[] EncodeKtx2FromRgba(byte[] rgba, int width, int height, string? basisuPath, int quality)
+    {
+        var bmp = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+        try
+        {
+            using var pixmap = bmp.PeekPixels();
+            Marshal.Copy(rgba, 0, pixmap.GetPixels(), rgba.Length);
+            return EncodeKtx2(bmp, basisuPath, quality);
+        }
+        finally
+        {
+            bmp.Dispose();
+        }
+    }
+
+    /// <summary>把 SKBitmap 编码为 KTX2（Basis Universal 超压缩），借外部 <c>basisu</c> 命令行完成。</summary>
+    internal static byte[] EncodeKtx2(SKBitmap bmp, string? basisuPath, int quality)
+    {
+        string tmpPng = Path.Combine(Path.GetTempPath(), $"kf_{Guid.NewGuid():N}.png");
+        string outKtx = Path.Combine(Path.GetTempPath(), $"kf_{Guid.NewGuid():N}.ktx2");
+        try
+        {
+            using (var img = SKImage.FromBitmap(bmp))
+            using (var data = img.Encode(SKEncodedImageFormat.Png, 100))
+                File.WriteAllBytes(tmpPng, data.ToArray());
+
+            string exe = string.IsNullOrWhiteSpace(basisuPath) ? "basisu" : basisuPath;
+            var psi = new ProcessStartInfo(exe,
+                $"-file \"{tmpPng}\" -format ktx2 -uastc {quality} -mipmap -o \"{outKtx}\"")
+            {
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            };
+            Process proc;
+            try
+            {
+                proc = Process.Start(psi)
+                       ?? throw new InvalidOperationException($"无法启动 basisu（{exe}）。");
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(
+                    $"无法启动 basisu（{exe}）。请安装 Basis Universal 命令行工具并配置 BuildOptions.BasisuPath。原因：{ex.Message}");
+            }
+
+            string err = proc.StandardError.ReadToEnd();
+            proc.WaitForExit();
+            if (proc.ExitCode != 0)
+                throw new InvalidOperationException($"basisu 编码失败（退出码 {proc.ExitCode}）：{err}");
+            return File.ReadAllBytes(outKtx);
+        }
+        finally
+        {
+            if (File.Exists(tmpPng)) File.Delete(tmpPng);
+            if (File.Exists(outKtx)) File.Delete(outKtx);
+        }
+    }
+
     internal static bool IsIgnored(string relativePath)
     {
         if (relativePath.Length == 0) return true;

@@ -74,8 +74,15 @@ namespace KFramework.Content.Build
 
             /// <summary>图集页（整图纹理）的最终编码格式（见 <see cref="AssetTextureFormat"/>）：
             /// <c>Rgba</c>（默认，裸 RGBA8，运行端零解码、直接上传 GPU）/ <c>Png</c>（编码 PNG，体积更小，运行端在 LoadBundle 阶段解码）/
-            /// <c>Ktx2</c>（GPU 压缩纹理，本仓库暂未实现编码）。可在 build.config.json 的 <c>textureFormat</c> 配置，或用 kfc --format 覆盖。</summary>
+            /// <c>Webp</c>（编码 WebP，体积更小，运行端借浏览器原生解码）/ <c>Ktx2</c>（KTX2/Basis 超压缩 GPU 纹理，显存与上传开销最低，构建端需 basisu，运行端需浏览器 Basis 转码器）。
+            /// 可在 build.config.json 的 <c>textureFormat</c> 配置，或用 kfc --format 覆盖。</summary>
             public AssetTextureFormat TextureFormat { get; set; } = AssetTextureFormat.Rgba;
+
+            /// <summary>basisu 可执行文件路径（<c>Ktx2</c> 编码用）。为空则用 PATH 中的 "basisu"。</summary>
+            public string? BasisuPath { get; set; }
+
+            /// <summary>KTX2（Basis UASTC）质量等级 0~4，越大越好越慢。仅 <c>TextureFormat=Ktx2</c> 时生效。</summary>
+            public int Ktx2Quality { get; set; } = 2;
         }
 
         public BuildReport Build(string rawDirectory, BuildOptions? options = null)

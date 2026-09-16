@@ -82,8 +82,8 @@
 
             var atlasBundle = content.GetBundle("MyRes/Atlas")!;
             SpriteSheetLoader mLoader = new SpriteSheetLoader(atlasBundle, KSceneMgr.Game.GraphicsDevice);
-            SpriteSheet characters = mLoader.Load("MyRes/Atlas/characters");
-            SpriteSheet misc3 = mLoader.Load("MyRes/Atlas/misc-3");
+            SpriteSheet characters = await mLoader.LoadAsync("MyRes/Atlas/characters");
+            SpriteSheet misc3 = await mLoader.LoadAsync("MyRes/Atlas/misc-3");
 
             return new Level(nLevelIndex, stream, characters, misc3);
         }

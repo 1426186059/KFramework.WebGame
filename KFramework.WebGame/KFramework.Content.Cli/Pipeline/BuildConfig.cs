@@ -53,9 +53,9 @@ namespace KFramework.Content.Build
         /// 读取并解析 <c>build.config.json</c>（位于 Content 根目录）。
         /// 文件不存在时自动生成一份默认配置；文件损坏时回退为带默认值的配置。
         /// </summary>
-        public static BuildConfig Load(string rawDirectory)
+        public static BuildConfig Load(string contentDir)
         {
-            string contentRoot = Path.GetDirectoryName(Path.GetFullPath(rawDirectory)) ?? rawDirectory;
+            string contentRoot = contentDir;
             string configPath = Path.Combine(contentRoot, "build.config.json");
 
             BuildConfig config;

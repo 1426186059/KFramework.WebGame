@@ -1,11 +1,13 @@
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 
 namespace KFramework.MonoGame
 {
 
     /// <summary>
-    /// texture 模块绑定：借浏览器原生解码器把图像字节（PNG / WebP 等）解码为 RGBA8。
-    /// 这里只负责跨语言调用，实际解码见 tsengine 的 texture 模块（createImageBitmap）。
+    /// texture 模块绑定：借浏览器原生解码器把图像字节（PNG / WebP 等）解码为 RGBA8；
+    /// 或借 Basis Universal 转码器把 KTX2（GPU 压缩纹理）转码为设备原生压缩格式并上传 GPU。
+    /// 这里只负责跨语言调用，实际逻辑见 tsengine 的 texture 模块。
     /// </summary>
     internal static partial class JSBind_Texture
     {
@@ -17,5 +19,15 @@ namespace KFramework.MonoGame
         /// </summary>
         [JSImport("decodeImageToRgba", "texture")]
         internal static partial Task DecodeImageToRgba(byte[] bytes, int[] outSize, byte[] outPixels);
+
+        /// <summary>
+        /// 借浏览器中的 Basis Universal 转码器（basis_transcoder.js/.wasm）把 KTX2（Basis 超压缩）纹理
+        /// 转码为当前设备支持的 GPU 压缩格式，并直接上传到一张新建的 WebGL2 纹理。
+        /// <paramref name="bytes"/> 为 KTX2 文件字节；<paramref name="basisFormat"/> 为目标 Basis 转码格式枚举；
+        /// <paramref name="glFormat"/> 为对应的 WebGL 压缩内部格式枚举（RGBA32 回退时为 RGBA8）。
+        /// 返回新建的 WebGLTexture 句柄（JSObject）。
+        /// </summary>
+        [JSImport("uploadKtx2", "texture")]
+        internal static partial Task<JSObject> UploadKtx2(byte[] bytes, int basisFormat, int glFormat);
     }
 }

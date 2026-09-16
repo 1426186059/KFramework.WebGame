@@ -5,4 +5,8 @@
   <Project Path="KFramework.Example3/KFramework.Example3.csproj" />
   <Project Path="KFramework.MonoGame/KFramework.MonoGame.csproj" />
   <Project Path="KFramework.MonoGameExtend/KFramework.MonoGameExtend.csproj" />
+  <Project Path="KFramework.TSEngine/KFramework.TSEngine.esproj">
+    <Build />
+    <Deploy />
+  </Project>
 </Solution>

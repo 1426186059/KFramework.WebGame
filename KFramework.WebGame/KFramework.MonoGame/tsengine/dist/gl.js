@@ -160,6 +160,15 @@ export function texImage2D(target, level, internalFormat, width, height, border,
 export function texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, data) {
     gpu().texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, toBytes(data));
 }
+// ---------- 压缩纹理（KTX2 / Basis Universal） ----------
+/** 查询 WebGL 扩展是否可用（如 'WEBGL_compressed_texture_astc'）。返回扩展对象或 null。 */
+export function hasExtension(name) {
+    return gpu().getExtension(name);
+}
+/** 上传一块 GPU 压缩纹理数据（WebGL2 compressedTexImage2D）。 */
+export function compressedTexImage2D(target, level, internalFormat, width, height, border, data) {
+    gpu().compressedTexImage2D(target, level, internalFormat, width, height, border, toBytes(data) ?? new Uint8Array(0));
+}
 export function texParameteri(target, pname, param) { gpu().texParameteri(target, pname, param); }
 export function activeTexture(unit) { gpu().activeTexture(unit); }
 export function deleteTexture(texture) { gpu().deleteTexture(texture); }

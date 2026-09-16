@@ -39,8 +39,10 @@
   <Target Name="SyncJsEngine" BeforeTargets="BeforeBuild">
     <ItemGroup>
       <_EngineJs Include="$(MSBuildThisFileDirectory)..\KFramework.MonoGame\tsengine\dist\**\*.js" />
+      <_EngineDeps Include="$(MSBuildThisFileDirectory)..\KFramework.MonoGame\tsengine\deps\**\*" />
     </ItemGroup>
     <Copy SourceFiles="@(_EngineJs)" DestinationFiles="@(_EngineJs->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(_EngineDeps)" DestinationFiles="@(_EngineDeps->'$(MSBuildThisFileDirectory)wwwroot\jsengine\deps\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
   <!-- 本工程独占的内容管线：Content/raw -> Content/content -> wwwroot/content -->

@@ -1,10 +1,11 @@
 {
+  "rawDir": "raw",
+  "outDir": "publish",
   "AssetBundleDir": [
-    "MyBundle2",
-    "MyRes"
+    "Bundles"
   ],
-  "outDir": "content",
   "autoAtlas": true,
+  "textureFormat": "Rgba",
   "deploy": "www",
   "wwwDir": "www",
   "port": 8080

@@ -13,7 +13,7 @@ namespace KFramework.MonoGame;
 ///   <item><see cref="Rgba"/>：裸 RGBA8，运行端零解码、直接上传 GPU；体积由 .web.lib 的 zip 容器承担（deflate）。默认。</item>
 ///   <item><see cref="Png"/>：经 PNG 编码，体积更小；运行端在 LoadBundle 阶段用 PngDecoder 解码为 RGBA8。</item>
 ///   <item><see cref="Webp"/>：经 WebP 编码（有损/无损，体积更小）；运行端在 LoadBundle 阶段借浏览器原生 createImageBitmap 解码为 RGBA8。</item>
-///   <item><see cref="Ktx2"/>：GPU 压缩纹理（如 ASTC/Basis），显存与上传开销最低；本仓库暂未实现编码/解码，仅预留枚举位。</item>
+///   <item><see cref="Ktx2"/>：GPU 压缩纹理（如 ASTC/Basis），显存与上传开销最低；构建端用 basisu 编码，运行端借浏览器 Basis 转码器转码为设备原生压缩格式后直接上传 GPU。</item>
 /// </list>
 /// 编码统一在 <c>KFramework.Content.Cli</c>（SkiaSharp 负责 Png/Webp）；解码在运行端：
 /// Png 走托管 PngDecoder，Webp 走浏览器原生解码（需经 LoadBundleAsync 预解码，不能同步兜底）。
@@ -30,6 +30,6 @@ public enum AssetTextureFormat
     /// <summary>WebP 编码（有损 q90）。运行端在 LoadBundle 阶段借浏览器原生 createImageBitmap 解码为 RGBA8 后上传。</summary>
     Webp = 2,
 
-    /// <summary>KTX2（GPU 压缩纹理）。需对应平台转码器，本仓库暂未实现编码/解码，预留枚举位。</summary>
+    /// <summary>KTX2（Basis Universal 超压缩 GPU 纹理）。构建端用 basisu 编码，运行端借浏览器 Basis 转码器转码为设备原生压缩格式（ASTC/BC7/DXT/ETC2…）后直接上传 GPU；无转码器时回退为 RGBA8。</summary>
     Ktx2 = 3,
 }

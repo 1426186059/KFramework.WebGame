@@ -80,6 +80,13 @@ namespace KFramework.MonoGame
         public const int RGBA = 0x1908;
         public const int RGBA8 = 0x8058;
 
+        // GPU 压缩纹理内部格式（KTX2 / Basis Universal 转码目标）。
+        public const int COMPRESSED_RGBA_ASTC_4x4_KHR = 0x93B0;
+        public const int COMPRESSED_RGBA_BPTC_UNORM = 0x8E8C;
+        public const int COMPRESSED_RGBA_S3TC_DXT5_EXT = 0x83F3;
+        public const int COMPRESSED_RGBA8_ETC2_EAC = 0x9278;
+        public const int COMPRESSED_RGBA_PVRTC_4BPPV1_IMG = 0x8C02;
+
         public const int NEAREST = 0x2600;
         public const int LINEAR = 0x2601;
         public const int NEAREST_MIPMAP_NEAREST = 0x2700;
@@ -247,6 +254,9 @@ namespace KFramework.MonoGame
 
         [JSImport("deleteTexture", "gl")]
         internal static partial void DeleteTexture(JSObject texture);
+
+        [JSImport("hasExtension", "gl")]
+        internal static partial bool HasExtension(string name);
 
         [JSImport("pixelStorei", "gl")]
         internal static partial void PixelStorei(int pname, int param);

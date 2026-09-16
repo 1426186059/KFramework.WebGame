@@ -50,7 +50,7 @@ public static class AtlasBuilder
         //   Rgba（默认）：直接存裸 RGBA8，运行端零解码、直接上传 GPU，体积由 .web.lib 的 zip 承担；
         //   Png         ：用上游 RGBA 编码 PNG，体积更小，运行端在 LoadBundle 阶段解码；
         //   Webp        ：用上游 RGBA 编码 WebP，体积更小，运行端借浏览器原生解码；
-        //   Ktx2        ：GPU 压缩纹理，本仓库暂未实现编码，预留枚举位。
+        //   Ktx2        ：GPU 压缩纹理（Basis 超压缩），构建端用 basisu 编码，运行端借浏览器 Basis 转码器直传 GPU。
         foreach (AtlasPageOutput page in result.Pages)
         {
             (byte[] bytes, AssetTextureFormat fmt) = options.TextureFormat switch
@@ -58,8 +58,7 @@ public static class AtlasBuilder
                 AssetTextureFormat.Rgba => (page.RgbaPixels, AssetTextureFormat.Rgba),
                 AssetTextureFormat.Png  => (page.ToPng(),     AssetTextureFormat.Png),
                 AssetTextureFormat.Webp => (BundleBaker.EncodeWebpFromRgba(page.RgbaPixels, page.Width, page.Height), AssetTextureFormat.Webp),
-                AssetTextureFormat.Ktx2 => throw new NotSupportedException(
-                    "KTX2 编码尚未实现：需引入 GPU 压缩纹理编码器（如 Basis/ASTC）。当前可用 Rgba / Png / Webp。"),
+                AssetTextureFormat.Ktx2 => (BundleBaker.EncodeKtx2FromRgba(page.RgbaPixels, page.Width, page.Height, options.BasisuPath, options.Ktx2Quality), AssetTextureFormat.Ktx2),
                 _ => (page.ToPng(), AssetTextureFormat.Png),
             };
 
