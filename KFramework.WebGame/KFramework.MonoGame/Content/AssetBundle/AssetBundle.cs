@@ -112,9 +112,21 @@ public sealed class AssetBundle : IDisposable
             throw new InvalidOperationException(
                 $"资源「{name}」是旧格式的子图条目，请改用 SpriteSheetLoader 加载图集（整页纹理 + source rect）。");
         byte[] pixels = LoadAsset(name);
-        if (info.Width <= 0 || info.Height <= 0)
+        int width = info.Width;
+        int height = info.Height;
+
+        // 图集页等纹理以 PNG 形式入库，运行时需解码为 RGBA8 再上传 GPU；
+        // 个别散图也可能直接存 RGBA8，故按 PNG 魔数判断，不解码则原样上传。
+        if (pixels.Length >= 8 && pixels[0] == 0x89 && pixels[1] == 0x50 && pixels[2] == 0x4E && pixels[3] == 0x47)
+        {
+            Bitmap bmp = PngDecoder.Decode(pixels);
+            pixels = bmp.Pixels;
+            if (width <= 0 || height <= 0) { width = bmp.Width; height = bmp.Height; }
+        }
+
+        if (width <= 0 || height <= 0)
             throw new InvalidOperationException($"纹理 “{name}” 缺少像素尺寸，无法上传 GPU。");
-        return device.CreateTexture(info.Width, info.Height, pixels);
+        return device.CreateTexture(width, height, pixels);
     }
 
     /// <summary>同步尝试取一张纹理；找不到返回 false。</summary>

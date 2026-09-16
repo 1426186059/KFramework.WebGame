@@ -11,6 +11,7 @@ namespace KFramework.Example3
         Texture2D _texture;
 
         KTransform playerTransform;
+        KSpriteInfo _sprite;
 
         public TestScreen2()
         {
@@ -52,7 +53,8 @@ namespace KFramework.Example3
                 var atlasBundle = contentManager.GetBundle("MyRes/Atlas")!;
                 SpriteSheetLoader mLoader = new SpriteSheetLoader(atlasBundle, KSceneMgr.Game.GraphicsDevice);
                 _spriteSheet = mLoader.Load("atlas");
-                _texture = _spriteSheet.Sprite("characters_characters_0").Texture;
+                _sprite = _spriteSheet.Sprite("characters_256");
+                _texture = _sprite.Texture;
             }
             catch (Exception ex)
             {
@@ -92,13 +94,15 @@ namespace KFramework.Example3
                 samplerState: SamplerState.PointClamp);
 
             // 图集尚未异步加载完成时跳过绘制
-            if (_texture != null)
+            if (_sprite != null)
             {
-            // 直接用世界坐标绘制，无需手动转换
+            // 直接用世界坐标绘制，无需手动转换。
+            // 注意：_sprite.Texture 是整张图集页，必须配合 SourceRectangle 只画“characters_256”这一格，
+            // 否则 source=null 会把整页（含大量透明空隙）画上去，看起来像“缺了一块三角形”。
             _spriteBatch.Draw(
-                _texture,
+                _sprite.Texture,
                 _root.WorldPosition,
-                null,
+                _sprite.SourceRectangle,
                 Color.White,
                 _root.WorldRotation,
                 Vector2.Zero,        // origin
@@ -107,9 +111,9 @@ namespace KFramework.Example3
                 0f);
 
             _spriteBatch.Draw(
-                _texture,
+                _sprite.Texture,
                 _child.WorldPosition,
-                null,
+                _sprite.SourceRectangle,
                 Color.Red,
                 _child.WorldRotation,
                 Vector2.Zero,

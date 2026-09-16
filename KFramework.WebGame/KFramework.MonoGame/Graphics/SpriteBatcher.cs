@@ -128,7 +128,7 @@ namespace KFramework.MonoGame
         private void FlushVertexArray(int start, int end)
         {
             if (start == end) return;
-            _device.DrawUserIndexedPrimitives(_vertexArray, end - start);
+            _device.DrawUserIndexedPrimitives(_vertexArray, start, end);
         }
     }
 }

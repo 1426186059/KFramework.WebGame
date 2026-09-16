@@ -217,15 +217,23 @@ namespace KFramework.MonoGame
         /// 每调用一次累加一次 DrawCount；PrimitiveCount 同步累加（每个四边形 = 2 三角形）。
         /// SpriteCount 由 SpriteBatcher.DrawBatch 整批累加一次，这里不再加。
         /// </summary>
-        internal void DrawUserIndexedPrimitives(VertexPositionColorTexture[] vertices, int vertexCount)
+        internal void DrawUserIndexedPrimitives(VertexPositionColorTexture[] vertices, int start, int end)
         {
+            int vRun = end - start;
+            if (vRun <= 0) return;
+
             JSBind_GL.BindVertexArray(VertexArray);
             JSBind_GL.BindBuffer(JSBind_GL.ARRAY_BUFFER, VertexBuffer);
-            JSBind_GL.BufferSubData(JSBind_GL.ARRAY_BUFFER, 0, MemoryMarshal.AsBytes(vertices.AsSpan(0, vertexCount)));
-            JSBind_GL.DrawElements(JSBind_GL.TRIANGLES, vertexCount / 4 * 6, JSBind_GL.UNSIGNED_SHORT, 0);
+            // 索引缓冲是[0, MaxBatchSize*4)的绝对下标：第 i 个四边形占 6 个索引，起始字节 i*6*2。
+            // 因此把本批顶点（从 start 顶点起）上传到顶点缓冲的 start*SizeInBytes 处，
+            // 并让 DrawElements 从 (start/4)*6*2 字节处读取索引，即可精确引用到本批顶点——
+            // 多纹理切批后，后面的 run 不会再串到前一批的几何（否则会丢失/错位三角形）。
+            JSBind_GL.BufferSubData(JSBind_GL.ARRAY_BUFFER, start * VertexPositionColorTexture.SizeInBytes,
+                                    MemoryMarshal.AsBytes(vertices.AsSpan(start, vRun)));
+            JSBind_GL.DrawElements(JSBind_GL.TRIANGLES, vRun / 4 * 6, JSBind_GL.UNSIGNED_SHORT, (start / 4) * 6 * 2);
 
             _metrics._drawCount++;
-            _metrics._primitiveCount += vertexCount / 2;
+            _metrics._primitiveCount += vRun / 2;
         }
 
         /// <summary>创建一张空的 RGBA8 纹理。</summary>

@@ -2,14 +2,14 @@
   "Format": "web.lib.bundle",
   "Version": 1,
   "Hash": "md5",
-  "CreatedAt": "2026-09-16T12:03:04.5049119Z",
+  "CreatedAt": "2026-09-16T13:15:54.2200544Z",
   "Packages": [
     {
       "Name": "myres/atlas",
-      "File": "myres/atlas.20c1b1da068d6674.web.lib",
-      "Size": 138158,
-      "Hash": "20c1b1da068d6674ffbad346aee1472f",
-      "Entries": 4,
+      "File": "myres/atlas.04e14e647a0dbdfd.web.lib",
+      "Size": 196134,
+      "Hash": "04e14e647a0dbdfdbfb82a7c18fdedfd",
+      "Entries": 3,
       "Dependencies": []
     },
     {
