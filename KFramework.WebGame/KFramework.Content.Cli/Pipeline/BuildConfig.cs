@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -80,7 +77,7 @@ public sealed class BuildConfig
             try
             {
                 // 配置文件不存在：自动生成一份默认 build.config.json，方便后续按目录分别打包
-                File.WriteAllText(configPath, DefaultJson, new UTF8Encoding(false));
+                File.WriteAllText(configPath, GetDefaultJson(), new UTF8Encoding(false));
             }
             catch
             {
@@ -109,8 +106,16 @@ public sealed class BuildConfig
         }
     }
 
-    private const string DefaultJson =
-        "{\"bundlesDir\":\"Bundles\",\"outDir\":\"content\",\"deploy\":\"www\",\"wwwDir\":\"www\",\"port\":8080}";
+    private static string GetDefaultJson()
+    {
+        BuildConfig mConfig = new BuildConfig();
+        mConfig.AssetBundleDir = new List<string> { "Bundles" };
+        mConfig.OutDir =  "content";
+        mConfig.Deploy = "www";
+        mConfig.WwwDir = "www";
+        mConfig.Port = 8080;
+        return JsonSerializer.Serialize(mConfig, new JsonSerializerOptions { WriteIndented = true });
+    }
 }
 
 /// <summary>允许 JSON 字段既可以是单个字符串，也可以是字符串数组，统一反序列化为 <see cref="List{T}"/>（T=string）。</summary>

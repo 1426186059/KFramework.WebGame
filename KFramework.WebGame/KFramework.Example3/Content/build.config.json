@@ -1,1 +1,10 @@
-{"bundlesDir":"Bundles","outDir":"content","deploy":"www","wwwDir":"www","port":8080}
+{
+  "AssetBundleDir": [
+    "Bundles"
+  ],
+  "outDir": "content",
+  "autoAtlas": true,
+  "deploy": "www",
+  "wwwDir": "www",
+  "port": 8080
+}
