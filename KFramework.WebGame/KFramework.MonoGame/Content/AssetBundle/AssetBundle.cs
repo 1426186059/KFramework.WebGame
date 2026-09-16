@@ -115,8 +115,9 @@ public sealed class AssetBundle : IDisposable
         int width = info.Width;
         int height = info.Height;
 
-        // 图集页等纹理以 PNG 形式入库，运行时需解码为 RGBA8 再上传 GPU；
+        // 图集页以 PNG 形式入库，运行时需解码为 RGBA8 再上传 GPU；
         // 个别散图也可能直接存 RGBA8，故按 PNG 魔数判断，不解码则原样上传。
+        // 注：若下游内容构建把图集页转成了 WebP，其解析由 JS 宿主层完成后以 RGBA8 交给运行端；运行端零依赖、不参与 WebP 解码。
         if (pixels.Length >= 8 && pixels[0] == 0x89 && pixels[1] == 0x50 && pixels[2] == 0x4E && pixels[3] == 0x47)
         {
             Bitmap bmp = PngDecoder.Decode(pixels);

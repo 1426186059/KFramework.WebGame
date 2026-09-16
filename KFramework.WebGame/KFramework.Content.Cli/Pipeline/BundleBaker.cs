@@ -23,7 +23,6 @@ public static class BundleBaker
         // 图集打包统一复用外部 KTexturePacker 工具的核心（MaxRects 摆放 + 整页合成 + AtlasData 导出）。
         // 产物：整页纹理（atlas_{i}，单张 Texture2D）+ 一份 AtlasData JSON（资源名固定为 "atlas"）。
         // 运行时由 SpriteSheetLoader 读取该 JSON 并提供 source rect，从而同一张图集页可合批。
-        const string AtlasBaseName = "atlas";
         var inputs = new List<SpriteInput>();
         var bundle = new AssetBundleBuild { AssetBundleName = bundleName };
         var names = new HashSet<string>(StringComparer.Ordinal);
@@ -31,7 +30,7 @@ public static class BundleBaker
         // 预扫描：识别 .atlas 预切图集，记录其整页图，避免后续被当成散图重打包；
         // 这些子精灵名（如 characters_256、misc-3_68）需原样保留到最终的 AtlasData。
         var skipRelative = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var importedAtlases = new List<ImportedAtlas>();
+        var importedAtlases = new List<AtlasBuilder.ImportedAtlas>();
         foreach (string atlasFile in files)
         {
             string atlasRel = Path.GetRelativePath(assetBaseDir, atlasFile).Replace('\\', '/');
@@ -47,7 +46,7 @@ public static class BundleBaker
                         string image = page.GetProperty("image").GetString()!;
                         string pagePath = Path.Combine(Path.GetDirectoryName(atlasFile)!, image);
                         byte[] pageBytes = File.ReadAllBytes(pagePath);
-                        importedAtlases.Add(new ImportedAtlas(page.GetRawText(), pageBytes));
+                        importedAtlases.Add(new AtlasBuilder.ImportedAtlas(page.GetRawText(), pageBytes));
                         skipRelative.Add(Path.GetRelativePath(assetBaseDir, pagePath).Replace('\\', '/'));
                     }
                 }
@@ -126,95 +125,15 @@ public static class BundleBaker
             }
         }
 
-        // 纹理装箱：把自动装箱的散图 + 导入的 .atlas 预切图集，合并成同一份 AtlasData
-        //（资源名固定 "atlas"）。运行时由 SpriteSheetLoader 读取该 JSON 并按页加载整图纹理，所有精灵可合批。
-        var allPages = new JsonArray();
-        int pageIndex = 0;
-
-        if (inputs.Count > 0)
-        {
-            var settings = new PackerSettings
-            {
-                MaxSize = options.AtlasMaxSize,
-                Padding = options.AtlasPadding,
-                AllowRotation = true,
-            };
-
-            IReadOnlyList<PackingResult> pages = AtlasPacker.PackPages(inputs, settings);
-            atlasPageCount += pages.Count;
-
-            var imageNames = new List<string>(pages.Count);
-            for (int i = 0; i < pages.Count; i++)
-                imageNames.Add($"{AtlasBaseName}_{pageIndex + i}.png");
-
-            for (int i = 0; i < pages.Count; i++)
-            {
-                PackingResult page = pages[i];
-
-                using SKBitmap atlas = AtlasPacker.RenderAtlas(page);
-                byte[] png = EncodePng(atlas);
-
-                bundle.Assets.Add(new AssetBundleAsset
-                {
-                    Path = $"{AtlasBaseName}_{pageIndex + i}",
-                    Type = "texture",
-                    Bytes = png,
-                    Width = atlas.Width,
-                    Height = atlas.Height,
-                });
-
-                if (options.WritePreviewPng)
-                    File.WriteAllBytes(
-                        Path.Combine(outputDirectory, $"atlas_{bundleName.Replace('/', '_')}_{pageIndex + i}.png"),
-                        png);
-            }
-
-            // 复用 KTexturePacker 的 AtlasData 导出，再把其 Pages 并入合并列表
-            string autoJson = AtlasExporter.ToGenericJson(pages, imageNames);
-            using (var autoDoc = JsonDocument.Parse(autoJson))
-            {
-                JsonElement pagesEl = default;
-                if (!autoDoc.RootElement.TryGetProperty("Pages", out pagesEl) &&
-                    !autoDoc.RootElement.TryGetProperty("pages", out pagesEl)) { }
-                else if (pagesEl.ValueKind == JsonValueKind.Array)
-                {
-                    foreach (JsonElement p in pagesEl.EnumerateArray())
-                        allPages.Add(JsonNode.Parse(p.GetRawText()));
-                }
-            }
-
-            pageIndex += pages.Count;
-
-            // 打包结束，释放输入位图（PackPages/RenderAtlas 已拷贝像素）
-            foreach (SpriteInput input in inputs)
-                input.Bitmap.Dispose();
-        }
-
-        // 导入的 .atlas 预切图集：整页图原样存为整图纹理，子精灵名（regions）原样保留到 AtlasData
-        foreach (ImportedAtlas imp in importedAtlases)
-        {
-            using var pd = JsonDocument.Parse(imp.PageJson);
-            int pw = pd.RootElement.GetProperty("width").GetInt32();
-            int ph = pd.RootElement.GetProperty("height").GetInt32();
-
-            allPages.Add(BuildAtlasPageNode(imp.PageJson, $"{AtlasBaseName}_{pageIndex}.png"));
-            bundle.Assets.Add(new AssetBundleAsset
-            {
-                Path = $"{AtlasBaseName}_{pageIndex}",
-                Type = "texture",
-                Bytes = imp.PageBytes,
-                Width = pw,
-                Height = ph,
-            });
-            pageIndex++;
-        }
+        // 图集打包：把自动装箱的散图 + 导入的 .atlas 预切图集合并成同一份 AtlasData
+        JsonArray allPages = AtlasBuilder.BuildAtlas(bundle, inputs, importedAtlases, options, bundleName, outputDirectory, ref atlasPageCount);
 
         if (allPages.Count > 0)
         {
             var rootNode = new JsonObject { ["Pages"] = allPages };
             bundle.Assets.Add(new AssetBundleAsset
             {
-                Path = AtlasBaseName,
+                Path = "atlas",
                 Type = "atlas",
                 Bytes = Encoding.UTF8.GetBytes(rootNode.ToJsonString()),
             });
@@ -276,53 +195,7 @@ public static class BundleBaker
         return pixmap.GetPixelSpan().ToArray();
     }
 
-    /// <summary>把 Skia 整页位图编码为 PNG 字节（用于包内整图纹理与预览）。</summary>
-    private static byte[] EncodePng(SKBitmap bmp)
-    {
-        using SKImage image = SKImage.FromBitmap(bmp);
-        using SKData data = image.Encode(SKEncodedImageFormat.Png, 100);
-        return data.ToArray();
-    }
 
-    /// <summary>一个被导入的 .atlas 预切图集的整页：页图 JSON 原文 + 页图 PNG 字节。</summary>
-    private sealed record ImportedAtlas(string PageJson, byte[] PageBytes);
-
-    /// <summary>
-    /// 把通用的 .atlas 页（小写键：image/width/height/regions[]）转换成框架 AtlasData 的页节点
-    /// （PascalCase：Image/Width/Height/Regions[]，Region 含 Name/X/Y/W/H/Rotated/SourceW/SourceH），
-    /// 供 <see cref="KTexturePacker.Parser.AtlasData"/> 反序列化、<see cref="SpriteSheetLoader"/> 读取。
-    /// </summary>
-    private static JsonNode BuildAtlasPageNode(string pageJson, string imageName)
-    {
-        using var doc = JsonDocument.Parse(pageJson);
-        JsonElement page = doc.RootElement;
-
-        var node = new JsonObject
-        {
-            ["Image"] = imageName,
-            ["Width"] = page.GetProperty("width").GetInt32(),
-            ["Height"] = page.GetProperty("height").GetInt32(),
-        };
-
-        var regions = new JsonArray();
-        foreach (JsonElement r in page.GetProperty("regions").EnumerateArray())
-        {
-            var rn = new JsonObject
-            {
-                ["Name"] = r.GetProperty("name").GetString(),
-                ["X"] = r.GetProperty("x").GetInt32(),
-                ["Y"] = r.GetProperty("y").GetInt32(),
-                ["W"] = r.GetProperty("w").GetInt32(),
-                ["H"] = r.GetProperty("h").GetInt32(),
-                ["Rotated"] = r.GetProperty("rotated").GetBoolean(),
-                ["SourceW"] = r.TryGetProperty("sourceW", out var sw) ? sw.GetInt32() : r.GetProperty("w").GetInt32(),
-                ["SourceH"] = r.TryGetProperty("sourceH", out var sh) ? sh.GetInt32() : r.GetProperty("h").GetInt32(),
-            };
-            regions.Add(rn);
-        }
-        node["Regions"] = regions;
-        return node;
-    }
 
     /// <summary>构建产物、隐藏文件、content 输出目录都不属于原始资源；打包配置文件也不该进包。</summary>
     internal static bool IsIgnored(string relativePath)
