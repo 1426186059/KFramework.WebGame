@@ -80,92 +80,91 @@ public sealed class ContentBuilder
         public bool TrimSprites { get; set; } = true;
     }
 
-    public BuildReport Build(string rawDirectory, string? outputOverride = null, BuildOptions? options = null)
+    public BuildReport Build(string rawDirectory, BuildOptions? options = null)
     {
         options ??= new BuildOptions();
         var watch = Stopwatch.StartNew();
         var warnings = new List<string>();
 
         if (!Directory.Exists(rawDirectory))
+        {
             throw new DirectoryNotFoundException($"原始资源目录不存在：{rawDirectory}");
-
-        BuildConfig config = BuildConfig.Load(rawDirectory);
-        List<string> bundleDirs = config.BundleDirsResolved;
-        if (bundleDirs.Count == 0) bundleDirs = new List<string> { "Bundles" };
-
-        // 输出目录：CLI --out 优先，否则取配置 outDir（默认 content，相对 root）
+        }
+        
+        List<string> bundleDirs = Global.mBuildConfig.BundleDirsResolved;
         string root = Path.GetDirectoryName(Path.GetFullPath(rawDirectory)) ?? rawDirectory;
-        string outputDirectory = outputOverride ?? Path.Combine(root, config.OutDir);
-        Directory.CreateDirectory(outputDirectory);
-        CleanOutput(outputDirectory);
+        string outputDirectory = Global.mBuildConfig.OutDir;
+        if (!Path.IsPathFullyQualified(outputDirectory))
+        {
+            outputDirectory = Path.Combine(root, Global.mBuildConfig.OutDir);
+        }
 
-        var builds = new List<AssetBundleBuild>();
+        Directory.Delete(outputDirectory, true);
+        Directory.CreateDirectory(outputDirectory);
+
+        List<string> bundleRoots = new List<string>();
+        List<AssetBundleBuild> builds = new List<AssetBundleBuild>();
         long rawBytes = 0;
         int textureCount = 0;
         int dataCount = 0;
         int atlasPageCount = 0;
         int bundleCount = 0;
 
-        // 解析配置里实际存在的打包根目录
-        var bundleRoots = new List<string>();
-        foreach (string dir in bundleDirs)
+        if (bundleDirs.Count > 0)
         {
-            string dirRoot = Path.Combine(rawDirectory, dir);
-            if (Directory.Exists(dirRoot)) bundleRoots.Add(dirRoot);
-        }
-
-        if (bundleRoots.Count == 0)
-        {
-            // 不再支持“整包 raw”模式：必须显式指定 bundlesDir（一个或多个打包目录），
-            // 其下每个含资源的子文件夹会分别打包为一个 AssetBundle，其余 raw 文件原封不动拷贝到 content/。
-            throw new InvalidOperationException(
-                $"未找到任何打包目录（bundlesDir = [{string.Join(", ", bundleDirs)}]）。请指定一个存在的打包目录：其下每个含资源的子文件夹会分别打包为一个 AssetBundle，其余 raw 文件原封不动拷贝到 content/。整包模式已移除。");
-        }
-
-        // ===== 按目录分别打包（指定 bundlesDir 模式）：每个含资源的子文件夹各自成包 =====
-        PrintTool.Log($"[kfc] 打包模式：按目录分别打包（打包目录 = {string.Join(", ", bundleDirs)}）");
-
-        // 提示配置中存在但物理缺失的打包目录
-        foreach (string dir in bundleDirs)
-        {
-            string dirRoot = Path.Combine(rawDirectory, dir);
-            if (!Directory.Exists(dirRoot)) warnings.Add($"打包目录未找到，已忽略：{dir}");
-        }
-
-        // 各根目录下的子文件夹包名必须唯一（保证运行端 GetBundle(name) 无歧义）
-        var usedNames = new HashSet<string>(StringComparer.Ordinal);
-        foreach (string bundlesRoot in bundleRoots)
-        {
-            foreach (string folder in Directory.EnumerateDirectories(bundlesRoot, "*", SearchOption.AllDirectories)
-                                           .OrderBy(static f => f, StringComparer.Ordinal))
+            foreach (string dir in bundleDirs)
             {
-                // 只打包「直接」含资源的子文件夹；子目录下的资源由其自身所在的文件夹负责
-                string[] directFiles = Directory.EnumerateFiles(folder, "*", SearchOption.TopDirectoryOnly)
-                    .Where(f => !IsIgnored(Path.GetRelativePath(rawDirectory, f).Replace('\\', '/')))
-                    .OrderBy(static f => f, StringComparer.Ordinal)
-                    .ToArray();
-                if (directFiles.Length == 0) continue;
-
-                string bundleName = PakFormat.NormalizeName(Path.GetRelativePath(bundlesRoot, folder).Replace('\\', '/'));
-                if (!usedNames.Add(bundleName))
-                    throw new InvalidOperationException(
-                        $"发现重复的 AssetBundle 名「{bundleName}」：配置的打包目录（{string.Join(", ", bundleDirs)}）下存在同名子文件夹，请保证各打包目录内的子文件夹名唯一。");
-
-                AssetBundleBuild build = BuildBundle(bundleName, directFiles, bundlesRoot, options, config.AutoAtlas, warnings,
-                    ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, outputDirectory);
-                builds.Add(build);
-                bundleCount++;
+                string dirRoot = Path.Combine(rawDirectory, dir);
+                if (Directory.Exists(dirRoot))
+                {
+                    bundleRoots.Add(dirRoot);
+                }
             }
+
+            // ===== 按目录分别打包（指定 bundlesDir 模式）：每个含资源的子文件夹各自成包 =====
+            PrintTool.Log($"[kfc] 打包模式：按目录分别打包（打包目录 = {string.Join(", ", bundleDirs)}）");
+
+            // 提示配置中存在但物理缺失的打包目录
+            foreach (string dir in bundleDirs)
+            {
+                string dirRoot = Path.Combine(rawDirectory, dir);
+                if (!Directory.Exists(dirRoot)) warnings.Add($"打包目录未找到，已忽略：{dir}");
+            }
+
+            // 各根目录下的子文件夹包名必须唯一（保证运行端 GetBundle(name) 无歧义）
+            var usedNames = new HashSet<string>(StringComparer.Ordinal);
+            foreach (string bundlesRoot in bundleRoots)
+            {
+                foreach (string folder in Directory.EnumerateDirectories(bundlesRoot, "*", SearchOption.AllDirectories)
+                                               .OrderBy(static f => f, StringComparer.Ordinal))
+                {
+                    // 只打包「直接」含资源的子文件夹；子目录下的资源由其自身所在的文件夹负责
+                    string[] directFiles = Directory.EnumerateFiles(folder, "*", SearchOption.TopDirectoryOnly)
+                        .Where(f => !IsIgnored(Path.GetRelativePath(rawDirectory, f).Replace('\\', '/')))
+                        .OrderBy(static f => f, StringComparer.Ordinal)
+                        .ToArray();
+                    if (directFiles.Length == 0) continue;
+
+                    string bundleName = PakFormat.NormalizeName(Path.GetRelativePath(bundlesRoot, folder).Replace('\\', '/'));
+                    if (!usedNames.Add(bundleName))
+                        throw new InvalidOperationException(
+                            $"发现重复的 AssetBundle 名「{bundleName}」：配置的打包目录（{string.Join(", ", bundleDirs)}）下存在同名子文件夹，请保证各打包目录内的子文件夹名唯一。");
+
+                    AssetBundleBuild build = BuildBundle(bundleName, directFiles, bundlesRoot, options, config.AutoAtlas, warnings,
+                        ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, outputDirectory);
+                    builds.Add(build);
+                    bundleCount++;
+                }
+            }
+
+            if (builds.Count == 0)
+                warnings.Add($"打包目录（{string.Join(", ", bundleDirs)}）下没有发现任何「含资源的子文件夹」，未产出任何 AssetBundle。");
         }
 
-        if (builds.Count == 0)
-            warnings.Add($"打包目录（{string.Join(", ", bundleDirs)}）下没有发现任何「含资源的子文件夹」，未产出任何 AssetBundle。");
 
-        // 除指定打包目录外，其余 raw 文件原封不动地复制到 content/（不做打包/压缩，保持原样）
-        int copied = CopyRawAssetsVerbatim(rawDirectory, outputDirectory, bundleRoots);
-        if (copied > 0) PrintTool.Log($"[kfc] 其余 {copied} 个文件已原样复制到 content/（未打包）");
-
-        // 构建所有 AssetBundle（每个包独立 .web.lib，并汇总总清单 version.manifest）
+        int copied = CopyRawAssets(rawDirectory, outputDirectory, bundleRoots);
+        PrintTool.Log($"[kfc] 其余 {copied} 个文件已原样复制到 content/（未打包）");
+        
         BuildResult result = BundleBuilder.BuildAssetBundles(builds);
         foreach (var pkg in result.Manifest.Packages)
         {
@@ -177,7 +176,7 @@ public sealed class ContentBuilder
         File.WriteAllText(Path.Combine(outputDirectory, "version.manifest"), result.Manifest.Serialize());
 
         // 发布阶段（部署）：复制到其他目录 / 本地 HTTP 服务 / 不发布
-        Deploy(config, root, outputDirectory, warnings);
+        Deploy(Global.mBuildConfig, root, outputDirectory, warnings);
 
         long totalBundleBytes = result.Manifest.Packages.Sum(p => p.Size);
         watch.Stop();
@@ -504,7 +503,7 @@ public sealed class ContentBuilder
     /// 在「按目录打包」模式下，把不在任何打包根目录内的 raw 文件原样复制到 content/（不做打包/压缩，保持原样）。
     /// 属于打包根目录的文件已被打成 AssetBundle，跳过；打包配置文件（build.config.json）也跳过。
     /// </summary>
-    private static int CopyRawAssetsVerbatim(string rawDirectory, string outputDirectory, List<string> bundleRoots)
+    private static int CopyRawAssets(string rawDirectory, string outputDirectory, List<string> bundleRoots)
     {
         int copied = 0;
         foreach (string file in Directory.EnumerateFiles(rawDirectory, "*", SearchOption.AllDirectories)

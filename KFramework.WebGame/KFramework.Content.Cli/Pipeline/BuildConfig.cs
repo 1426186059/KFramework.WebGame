@@ -5,29 +5,22 @@ using System.Text.Json.Serialization;
 namespace KFramework.MonoGame;
 
 /// <summary>
-/// <c>build.config.json</c> 的强类型模型（位于 Content 根目录，与 Pipeline 的 ContentBuilder 配套）。
-/// 对应字段：
-/// <list type="bullet">
-///   <item><c>bundlesDir</c> / <c>bundleDirs</c> / <c>AssetBundleDir</c>：打包目录，可填单个字符串或字符串数组；
-///         值为空字符串 <c>""</c> 表示「打包根目录（Content/raw）自身」作为打包目录，其下每个含资源的子文件夹各自成包；
-///         三者均缺省时回退为 <c>Bundles</c>。</item>
-///   <item><c>outDir</c>：打包产物目录（相对 Content 根），默认 <c>content</c>。</item>
-///   <item><c>autoAtlas</c>：是否自动图集打包，默认 <c>true</c>（true 时独立 .png 经图集打包器装箱，false 时原样整图入包）。</item>
-///   <item><c>deploy</c>：发布方式 <c>www</c> / <c>serve</c> / <c>none</c>，默认 <c>www</c>。</item>
-///   <item><c>wwwDir</c>：本地静态服务器根目录（相对 Content 根），默认 <c>www</c>。</item>
-///   <item><c>port</c>：deploy=serve 时的端口，默认 <c>8080</c>。</item>
-/// </list>
+/// 读取并解析 <c>build.config.json</c>（位于 Content 根目录）。
+/// 文件不存在时自动生成一份默认配置；文件损坏时回退为带默认值的配置。
 /// </summary>
 public sealed class BuildConfig
 {
+    [JsonPropertyName("rawDir")]
+    public string RawDir { get; set; } = "raw";
+
+    /// <summary>打包产物目录（相对 Content 根），缺省 publish。</summary>
+    [JsonPropertyName("outDir")]
+    public string OutDir { get; set; } = "publish";
+    
     /// <summary>打包目录（字符串或数组）；空字符串表示 Content/raw 自身为打包目录。</summary>
     [JsonPropertyName("AssetBundleDir")]
     [JsonConverter(typeof(StringOrStringArrayConverter))]
-    public List<string>? AssetBundleDir { get; set; }
-
-    /// <summary>打包产物目录（相对 Content 根），缺省 content。</summary>
-    [JsonPropertyName("outDir")]
-    public string OutDir { get; set; } = "content";
+    public List<string>? AssetBundleDir { get; set; } = new List<string> { "Bundles" };
 
     /// <summary>是否自动图集打包（默认 true）。</summary>
     [JsonPropertyName("autoAtlas")]
@@ -109,11 +102,6 @@ public sealed class BuildConfig
     private static string GetDefaultJson()
     {
         BuildConfig mConfig = new BuildConfig();
-        mConfig.AssetBundleDir = new List<string> { "Bundles" };
-        mConfig.OutDir =  "content";
-        mConfig.Deploy = "www";
-        mConfig.WwwDir = "www";
-        mConfig.Port = 8080;
         return JsonSerializer.Serialize(mConfig, new JsonSerializerOptions { WriteIndented = true });
     }
 }

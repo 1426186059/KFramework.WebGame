@@ -41,25 +41,26 @@ namespace KFramework.Content.Cli
                 }
             }
 
-            string projectDirectory = Path.GetFullPath(root);
-            string rawDirectory = Path.Combine(projectDirectory, "raw");
+            Global.mBuildConfig = BuildConfig.Load(root);
+            string ContentDir = Path.GetFullPath(root);
+            string rawDir = Path.Combine(ContentDir, Global.mBuildConfig.RawDir);
 
-            if (!Directory.Exists(rawDirectory))
+            if (!Directory.Exists(rawDir))
             {
-                Console.Error.WriteLine($"错误：原始资源目录不存在 -> {rawDirectory}");
-                return ExitFailure;
+                //原始资源目录不存在，那就直接成功就行了啊
+                return ExitSuccess;
             }
 
             try
             {
                 var builder = new ContentBuilder();
-                BuildReport report = builder.Build(rawDirectory, output, new ContentBuilder.BuildOptions
+                BuildReport report = builder.Build(rawDir, new ContentBuilder.BuildOptions
                 {
                     AtlasMaxSize = atlasSize,
                     WritePreviewPng = preview,
                 });
 
-                PrintTool.Log($"[kfc] raw     : {rawDirectory}");
+                PrintTool.Log($"[kfc] raw     : {rawDir}");
                 PrintTool.Log($"[kfc] content : {report.OutputDirectory}");
                 PrintTool.Log($"[kfc] {report}");
 
