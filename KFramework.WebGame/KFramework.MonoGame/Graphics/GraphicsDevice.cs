@@ -101,10 +101,13 @@ namespace KFramework.MonoGame
 
             SyncCanvasSize();
 
-            // 与 MonoGame 一致：正面 = 逆时针（CCW），配合 CullCounterClockwiseFace 保留正面三角形。
+            // 与 MonoGame 一致：正面 = 逆时针（CCW），供 3D 渲染使用。
+            // 注意：本后端的正交投影会翻转 Y，2D 精灵四边形在窗口空间是顺时针绕序，
+            // 若按 CCW 正面 + 背面剔除会把所有精灵判为背面而整批剔除（表现为“啥都不渲染”），
+            // 因此 2D 精灵管线默认用 CullNone 关闭剔除（见 SpriteBatch）。
             JSBind_GL.FrontFace(JSBind_GL.CCW);
 
-            _rasterizerState = RasterizerState.CullCounterClockwise;
+            _rasterizerState = RasterizerState.CullNone;
             ApplyRasterizerState();
             _depthStencilState = DepthStencilState.None;
             ApplyDepthStencilState();

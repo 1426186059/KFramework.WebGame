@@ -22,7 +22,9 @@ namespace KFramework.MonoGame
 
         private bool _beginCalled;
 
-        private RasterizerState _rasterizerState = RasterizerState.CullCounterClockwise;
+        // 2D 精灵默认不剔除：本后端的正交投影翻转 Y，使四边形绕序与 MonoGame 默认的 CCW 正面相反，
+        // 开启背面剔除会把精灵整批剔掉。需要剔除的 3D 渲染可显式设置 GraphicsDevice.RasterizerState。
+        private RasterizerState _rasterizerState = RasterizerState.CullNone;
         private DepthStencilState _depthStencilState = DepthStencilState.None;
 
         public SpriteBatch(GraphicsDevice device)
@@ -46,7 +48,7 @@ namespace KFramework.MonoGame
             _blendState = blendState ?? BlendState.NonPremultiplied;
             _samplerState = samplerState ?? SamplerState.Point;
             _transform = transformMatrix ?? Matrix4x4.Identity;
-            _rasterizerState = RasterizerState.CullCounterClockwise;
+            _rasterizerState = RasterizerState.CullNone;
             _depthStencilState = DepthStencilState.None;
             _batcher.SetSamplerState(_samplerState);
 
