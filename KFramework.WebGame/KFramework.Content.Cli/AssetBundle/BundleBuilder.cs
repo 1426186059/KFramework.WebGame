@@ -15,9 +15,6 @@ namespace KFramework.Content.Build
 
         /// <summary>包内资源。</summary>
         public List<AssetBundleAsset> Assets { get; set; } = new();
-
-        /// <summary>别名：除逻辑名外可引用的其它名字（如把 '/' 换成 '_' 的扁平名 myres_group_atlas）。运行端按逻辑名或任一别名都能取包。</summary>
-        public List<string> Aliases { get; set; } = new();
     }
 
     /// <summary>包内一条待写入的资源。</summary>
@@ -76,8 +73,7 @@ namespace KFramework.Content.Build
                 string file = $"{Sanitize(flatName)}.{shortH}.web.lib";
 
                 bundles[b.AssetBundleName] = bytes;
-                IReadOnlyList<string> aliases = b.Aliases.Count > 0 ? b.Aliases : Array.Empty<string>();
-                packages.Add(new BundlePackage(b.AssetBundleName, file, bytes.LongLength, full, b.Assets.Count, Array.Empty<string>(), aliases));
+                packages.Add(new BundlePackage(b.AssetBundleName, file, bytes.LongLength, full, b.Assets.Count, Array.Empty<string>()));
             }
 
             var manifest = new AssetBundleManifest(SetFormat, Version, BundleHash.Algorithm, DateTime.UtcNow.ToString("O"), packages);
@@ -94,8 +90,7 @@ namespace KFramework.Content.Build
                 a.Path, a.Type, a.Bytes.LongLength, Crc32Hex(a.Bytes), BundleHash.Hex(a.Bytes),
                 a.Width, a.Height, a.Page, a.X, a.Y, a.Format)).ToList();
 
-            IReadOnlyList<string> aliases = build.Aliases.Count > 0 ? build.Aliases : Array.Empty<string>();
-            var content = new AssetBundleContent(BundleFormat, Version, build.AssetBundleName, entries, aliases);
+            var content = new AssetBundleContent(BundleFormat, Version, build.AssetBundleName, entries);
 
             using var ms = new MemoryStream();
             using (var zip = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))

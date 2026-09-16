@@ -168,15 +168,8 @@ namespace KFramework.Content.Build
                             if (!usedNames.Add(rootBundleName))
                                 throw new InvalidOperationException(
                                     $"发现重复的 AssetBundle 名「{rootBundleName}」：配置的打包目录（{string.Join(", ", bundleDirs)}）下存在同名子文件夹，请保证各打包目录内的子文件夹名唯一。");
-                            // 扁平别名（'/' -> '_'）：与逻辑名一起注册，避免与其它包（或其别名）重名。
-                            // 逻辑名本身不含 '/' 时别名==名，无需重复注册。
-                            string rootAlias = rootBundleName.Replace('/', '_');
-                            if (rootAlias != rootBundleName && !usedNames.Add(rootAlias))
-                                throw new InvalidOperationException(
-                                    $"资源包「{rootBundleName}」的扁平别名「{rootAlias}」与另一个包重名，请保证打包目录内子文件夹路径唯一。");
                             AssetBundleBuild build = BundleBaker.BuildBundle(rootBundleName, rootFiles, bundlesRoot, options, Global.mBuildConfig.AutoAtlas, warnings,
                                 ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, tempDirectory);
-                            if (rootAlias != rootBundleName) build.Aliases.Add(rootAlias);
                             builds.Add(build);
                             bundleCount++;
                         }
@@ -198,16 +191,9 @@ namespace KFramework.Content.Build
                         if (!usedNames.Add(bundleName))
                             throw new InvalidOperationException(
                                 $"发现重复的 AssetBundle 名「{bundleName}」：配置的打包目录（{string.Join(", ", bundleDirs)}）下存在同名子文件夹，请保证各打包目录内的子文件夹名唯一。");
-                        // 扁平别名（'/' -> '_'）：与逻辑名一起注册，避免与其它包（或其别名）重名。
-                        // 逻辑名本身不含 '/' 时别名==名，无需重复注册。
-                        string bundleAlias = bundleName.Replace('/', '_');
-                        if (bundleAlias != bundleName && !usedNames.Add(bundleAlias))
-                            throw new InvalidOperationException(
-                                $"资源包「{bundleName}」的扁平别名「{bundleAlias}」与另一个包重名，请保证打包目录内子文件夹路径唯一。");
 
                         AssetBundleBuild build = BundleBaker.BuildBundle(bundleName, directFiles, bundlesRoot, options, Global.mBuildConfig.AutoAtlas, warnings,
                             ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, tempDirectory);
-                        if (bundleAlias != bundleName) build.Aliases.Add(bundleAlias);
                         builds.Add(build);
                         bundleCount++;
                     }

@@ -67,15 +67,26 @@ public sealed class AssetBundle : IDisposable
     public static AssetBundle LoadFromStream(Stream stream)
         => new(new ZipArchive(stream, ZipArchiveMode.Read, leaveOpen: true));
 
-    /// <summary>按包内相对路径取出资源字节；不存在抛 <see cref="KeyNotFoundException"/>（对应 Unity LoadAsset）。</summary>
-    public byte[] LoadAsset(string name)
-        => TryGetAsset(name, out var b) ? b : throw new KeyNotFoundException($"资源不存在: {name}");
+    // 严格：按包内相对路径精确匹配；宽松：Path 包含关键字（不区分大小写）的第一个匹配。
+    private AssetBundleEntry? FindEntry(string name, bool strict)
+    {
+        if (strict)
+            return Content.Entries.FirstOrDefault(x => string.Equals(x.Path, name, StringComparison.OrdinalIgnoreCase));
+        return Content.Entries.FirstOrDefault(x => x.Path.Contains(name, StringComparison.OrdinalIgnoreCase));
+    }
 
-    /// <summary>按包内相对路径取出资源字节；不存在返回 false。</summary>
-    public bool TryGetAsset(string name, out byte[] bytes)
+    /// <summary>按包内相对路径取出资源字节；不存在抛 <see cref="KeyNotFoundException"/>（对应 Unity LoadAsset）。
+    /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个资源。</summary>
+    public byte[] LoadAsset(string name, bool strict = true)
+        => TryGetAsset(name, out var b, strict) ? b : throw new KeyNotFoundException($"资源不存在: {name}");
+
+    /// <summary>按包内相对路径取出资源字节；不存在返回 false。
+    /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个资源。</summary>
+    public bool TryGetAsset(string name, out byte[] bytes, bool strict = true)
     {
         bytes = Array.Empty<byte>();
-        if (!_byPath.TryGetValue(name, out var e))
+        string path = strict ? name : (FindEntry(name, false)?.Path ?? string.Empty);
+        if (string.IsNullOrEmpty(path) || !_byPath.TryGetValue(path, out var e))
             return false;
         using var ms = new MemoryStream();
         using (var s = e.Open()) s.CopyTo(ms);
@@ -84,35 +95,39 @@ public sealed class AssetBundle : IDisposable
     }
 
     /// <summary>异步取出资源字节（对应 Unity LoadAssetAsync）。</summary>
-    public Task<byte[]?> LoadAssetAsync(string name)
-        => Task.FromResult(TryGetAsset(name, out var b) ? b : null);
+    public Task<byte[]?> LoadAssetAsync(string name, bool strict = true)
+        => Task.FromResult(TryGetAsset(name, out var b, strict) ? b : null);
 
     /// <summary>列出包内全部资源路径（对应 Unity GetAllAssetNames）。</summary>
     public string[] GetAllAssetNames() => _byPath.Keys.ToArray();
 
-    /// <summary>是否包含某资源（对应 Unity Contains）。</summary>
+    /// <summary>是否包含某资源（对应 Unity Contains，仅精确路径）。</summary>
     public bool Contains(string name) => _byPath.ContainsKey(name);
 
-    /// <summary>取某资源的元信息（路径 / 类型 / 大小 / crc / 哈希 / 像素尺寸）。</summary>
-    public AssetBundleEntry? GetAssetInfo(string name)
-        => Content.Entries.FirstOrDefault(x => string.Equals(x.Path, name, StringComparison.OrdinalIgnoreCase));
+    /// <summary>取某资源的元信息（路径 / 类型 / 大小 / crc / 哈希 / 像素尺寸）。
+    /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个资源。</summary>
+    public AssetBundleEntry? GetAssetInfo(string name, bool strict = true)
+        => FindEntry(name, strict);
 
     // ============ 同步资源取出（包已驻留内存后即时，对齐 Unity AssetBundle.LoadAsset 同步语义） ============
     // 真正的异步只发生在 ContentManager.LoadBundleAsync（拉包）；取资源本身不依赖网络，因此为同步。
     // 纹理需要上传 GPU，故由调用方传入 GraphicsDevice。
 
-    /// <summary>同步读取文本原文（UTF-8，去 BOM）。</summary>
-    public string LoadText(string name) => InnerCommonFunc.DecodeUtf8(LoadAsset(name));
+    /// <summary>同步读取文本原文（UTF-8，去 BOM）。
+    /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个资源。</summary>
+    public string LoadText(string name, bool strict = true) => InnerCommonFunc.DecodeUtf8(LoadAsset(name, strict));
 
-    /// <summary>同步读取并反序列化 JSON（包已加载后即时）。</summary>
-    public T? LoadJson<T>(string name)
-        => JsonSerializer.Deserialize<T>(LoadText(name), s_opts);
+    /// <summary>同步读取并反序列化 JSON（包已加载后即时）。
+    /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个资源。</summary>
+    public T? LoadJson<T>(string name, bool strict = true)
+        => JsonSerializer.Deserialize<T>(LoadText(name, strict), s_opts);
 
-    /// <summary>同步取一张整图纹理（图集请改用 <see cref="KFramework.MonoGameExtend.SpriteSheetLoader"/> 加载）。</summary>
+    /// <summary>同步取一张整图纹理（图集请改用 <see cref="KFramework.MonoGameExtend.SpriteSheetLoader"/> 加载）。
+    /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个纹理。</summary>
     /// <remarks>解码已在 <see cref="DecodeTexturesAsync"/>（LoadBundle 异步阶段）完成并缓存；此处仅做 GPU 上传。</remarks>
-    public Texture2D LoadTexture(string name, GraphicsDevice device)
+    public Texture2D LoadTexture(string name, GraphicsDevice device, bool strict = true)
     {
-        AssetBundleEntry? info = GetAssetInfo(name)
+        AssetBundleEntry? info = GetAssetInfo(name, strict)
             ?? throw new KeyNotFoundException($"资源不存在: {name}");
         if (info.Page >= 0)
             throw new InvalidOperationException(
@@ -122,8 +137,10 @@ public sealed class AssetBundle : IDisposable
                 $"资源「{name}」为 KTX2（GPU 压缩纹理）：转码需 GPU 上下文，请改用 LoadTextureAsync 异步加载。");
 
         // 优先用加载阶段预解码的缓存；未命中（如直接 LoadFromMemory 而未调 DecodeTexturesAsync）则按格式兜底解码。
-        if (!_decodedTextures.TryGetValue(name, out var pixels))
-            pixels = DecodeEntryPixels(name, info);
+        // 缓存键用真实路径（info.Path），严格/宽松模式下 name 可能只是关键字。
+        string path = info.Path;
+        if (!_decodedTextures.TryGetValue(path, out var pixels))
+            pixels = DecodeEntryPixels(path, info);
 
         int width = info.Width;
         int height = info.Height;
@@ -135,10 +152,11 @@ public sealed class AssetBundle : IDisposable
     /// <summary>
     /// 异步加载一张整图纹理。对 RGBA8 / Png（已在 <see cref="DecodeTexturesAsync"/> 预解码）/ Webp 复用同步上传路径；
     /// 对 KTX2（GPU 压缩纹理）则借浏览器 Basis 转码器把 KTX2 转码为当前设备原生压缩格式并直接上传 GPU。
+    /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个纹理。
     /// </summary>
-    public async Task<Texture2D> LoadTextureAsync(string name, GraphicsDevice device)
+    public async Task<Texture2D> LoadTextureAsync(string name, GraphicsDevice device, bool strict = true)
     {
-        AssetBundleEntry? info = GetAssetInfo(name)
+        AssetBundleEntry? info = GetAssetInfo(name, strict)
             ?? throw new KeyNotFoundException($"资源不存在: {name}");
         if (info.Page >= 0)
             throw new InvalidOperationException(
@@ -148,7 +166,7 @@ public sealed class AssetBundle : IDisposable
         // （唯一需要异步、依赖 GPU 上下文的格式）。
         if (info.Format == AssetTextureFormat.Ktx2)
         {
-            byte[] raw = LoadAsset(name);
+            byte[] raw = LoadAsset(info.Path);
             (int basisFormat, int glFormat) = Ktx2TranscodeSelector.Pick();
             JSObject handle = await JSBind_Texture.UploadKtx2(raw, basisFormat, glFormat).ConfigureAwait(false);
             int width = info.Width, height = info.Height;
@@ -158,7 +176,7 @@ public sealed class AssetBundle : IDisposable
         }
 
         // 其余格式（Rgba / Png / Webp 等）：像素已在 DecodeTexturesAsync 预解码，走同步上传路径。
-        return LoadTexture(name, device);
+        return LoadTexture(info.Path, device);
     }
 
     // ============ 加载阶段异步解码（对齐 PixiJS：bundle 拉取/解包/解码异步，取资源同步） ============
@@ -218,10 +236,11 @@ public sealed class AssetBundle : IDisposable
         };
     }
 
-    /// <summary>同步尝试取一张纹理；找不到返回 false。</summary>
-    public bool TryLoadTexture(string name, GraphicsDevice device, out Texture2D? tex)
+    /// <summary>同步尝试取一张纹理；找不到返回 false。
+    /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个纹理。</summary>
+    public bool TryLoadTexture(string name, GraphicsDevice device, out Texture2D? tex, bool strict = true)
     {
-        try { tex = LoadTexture(name, device); return true; }
+        try { tex = LoadTexture(name, device, strict); return true; }
         catch (KeyNotFoundException) { tex = null; return false; }
     }
 

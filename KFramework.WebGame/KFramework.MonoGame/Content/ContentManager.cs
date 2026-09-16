@@ -12,6 +12,8 @@ namespace KFramework.MonoGame;
 ///   <item>具体资源的取出（<c>LoadTexture</c> / <c>LoadJson</c> / <c>LoadText</c> / 图集切片）全部在
 ///     <see cref="AssetBundle"/> 上以<b>同步</b>方式完成 —— 因为包一旦驻留内存，取资源是即时操作
 ///     （对齐 Unity 的 <c>AssetBundle.LoadAsset</c> 同步语义）。真正的异步只发生在拉包本身。</item>
+///   <item>例外：<see cref="LoadTexture2DAsync(string, GraphicsDevice, CancellationToken)"/> 面向<b>未被打包、直接复制到站点目录</b>的松散图片，
+///     不经内容包，按页面基址下载后借浏览器原生解码并上传 GPU。</item>
 ///   <item>调用方先 <see cref="LoadAsync"/> / <see cref="LoadBundleAsync"/> 把包载进内存，
 ///     再用 <see cref="GetBundle"/> 取出 <see cref="AssetBundle"/>，随后在包上同步取资源。</item>
 /// </list>
@@ -53,14 +55,24 @@ public sealed class ContentManager : IDisposable
     /// <summary>已加载的 Bundle 逻辑名。</summary>
     public IReadOnlyList<string> LoadedBundles => _bundles.Keys.ToArray();
 
-    /// <summary>取一个已加载的 Bundle（同步；包必须先经 <see cref="LoadBundleAsync"/> 加载）。</summary>
-    public AssetBundle? GetBundle(string bundleName)
-        => _bundles.TryGetValue(bundleName, out var b) ? b : null;
+    /// <summary>取一个已加载的 Bundle（同步；包必须先经 <see cref="LoadBundleAsync"/> 加载）。
+    /// <paramref name="strict"/> 为 true 时按精确逻辑名匹配；为 false 时按关键字（键包含）匹配首个已加载 Bundle。</summary>
+    public AssetBundle? GetBundle(string bundleName, bool strict = true)
+        => TryGetBundle(bundleName, out var b, strict) ? b : null;
 
-    /// <summary>尝试取一个已加载的 Bundle。</summary>
-    public bool TryGetBundle(string bundleName, out AssetBundle? bundle)
+    /// <summary>尝试取一个已加载的 Bundle。
+    /// <paramref name="strict"/> 为 true 时按精确逻辑名匹配；为 false 时按关键字（键包含）匹配首个已加载 Bundle。</summary>
+    public bool TryGetBundle(string bundleName, out AssetBundle? bundle, bool strict = true)
     {
-        if (_bundles.TryGetValue(bundleName, out var b)) { bundle = b; return true; }
+        if (strict)
+        {
+            if (_bundles.TryGetValue(bundleName, out var b)) { bundle = b; return true; }
+            bundle = null; return false;
+        }
+        // 宽松：键（逻辑名 + 别名）包含关键字（不区分大小写）的第一个匹配
+        foreach (var kv in _bundles)
+            if (kv.Key.Contains(bundleName, StringComparison.OrdinalIgnoreCase))
+            { bundle = kv.Value; return true; }
         bundle = null; return false;
     }
 
@@ -81,23 +93,25 @@ public sealed class ContentManager : IDisposable
 
     /// <summary>
     /// 异步加载单个 AssetBundle。已加载过则直接返回（幂等）。
+    /// <paramref name="strict"/> 为 true 时按精确逻辑名匹配；为 false 时按关键字（Name 包含）匹配首个包。
     /// </summary>
     public async Task<AssetBundle> LoadBundleAsync(
         string bundleName,
         CancellationToken cancellationToken = default,
-        IProgress<float>? progress = null)
+        IProgress<float>? progress = null,
+        bool strict = true)
     {
-        if (_bundles.TryGetValue(bundleName, out var existing))
+        if (TryGetBundle(bundleName, out var existing, strict))
         {
             progress?.Report(1f);
-            return existing;
+            return existing!;
         }
 
         if (_bundleManifest is null) await LoadManifestAsync(cancellationToken).ConfigureAwait(false);
 
-        BundlePackage? pkg = AssetBundleManifest.FindPackage(_bundleManifest!.Packages, bundleName);
+        BundlePackage? pkg = AssetBundleManifest.FindPackage(_bundleManifest!.Packages, bundleName, strict);
         if (pkg is null)
-            throw new KeyNotFoundException($"总清单中没有资源包 “{bundleName}”（含别名）。");
+            throw new KeyNotFoundException($"总清单中没有资源包 “{bundleName}”（{(strict ? "精确名" : "关键字")}）。");
 
         byte[]? bytes = await _manager.LoadBundleBytesAsync(pkg, cancellationToken).ConfigureAwait(false);
         if (bytes is null)
@@ -109,9 +123,6 @@ public sealed class ContentManager : IDisposable
         // 同时以「逻辑名 + 全部别名」登记，使 GetBundle 用任一名字都能取到
         string key = bundle.Content.Name;
         _bundles[key] = bundle;
-        if (pkg.Aliases is not null)
-            foreach (var alias in pkg.Aliases)
-                if (!_bundles.ContainsKey(alias)) _bundles[alias] = bundle;
         PrintTool.Log($"[KFramework.MonoGame] 已加载资源包 {key}（{bytes.Length} 字节，{bundle.Content.Entries.Count} 项）");
         progress?.Report(1f);
         return bundle;
@@ -164,6 +175,34 @@ public sealed class ContentManager : IDisposable
     /// <summary>按页面基址异步下载任意字节流（不走内容包）。</summary>
     public async Task<byte[]> LoadBytesAsync(string relativePath, CancellationToken cancellationToken = default)
         => await _http.GetByteArrayAsync(relativePath, cancellationToken).ConfigureAwait(false);
+
+    #endregion
+
+    #region 直接加载图片（不经内容包，用于图片未被打包、只是直接复制到站点目录的情形）
+
+    /// <summary>
+    /// 异步直接加载一张图片（不经内容包）。用于图片未被打包、只是直接复制到站点目录的情形
+    /// （例如 wwwroot 下的 png/jpg/webp）。按页面基址下载后经浏览器原生解码为 RGBA8 并上传 GPU。
+    /// 与 <see cref="AssetBundle"/> 上的取资源方法不同，本方法面向「包外松散图片」。
+    /// </summary>
+    public async Task<Texture2D> LoadTexture2DAsync(string relativePath, GraphicsDevice device, CancellationToken cancellationToken = default)
+    {
+        byte[] data = await _http.GetByteArrayAsync(relativePath, cancellationToken).ConfigureAwait(false);
+        return await LoadTexture2DAsync(data, device).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// 异步直接加载一张图片（已持有图片字节，不经内容包）。内部借浏览器原生解码器把图像字节
+    /// （PNG / JPG / WebP 等）解码为 RGBA8 后上传 GPU。
+    /// </summary>
+    public async Task<Texture2D> LoadTexture2DAsync(byte[] data, GraphicsDevice device)
+    {
+        int[] size = new int[2];
+        byte[] pixels = await JSBind_Texture.DecodeImageToRgbaAuto(data, size).ConfigureAwait(false);
+        int w = size[0], h = size[1];
+        if (w <= 0 || h <= 0) throw new InvalidOperationException("图片解码失败：尺寸无效。");
+        return device.CreateTexture(w, h, pixels);
+    }
 
     #endregion
 

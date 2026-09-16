@@ -21,6 +21,30 @@ export async function decodeImageToRgba(
     if (bitmap.close) bitmap.close();
 }
 
+// 与 decodeImageToRgba 行为一致，但像素缓冲由本函数按真实尺寸内部分配后回传，
+// 调用方无需预先知道图像尺寸（用于「直接复制、未打包」的松散图片，没有清单可查尺寸）。
+// @param bytes 图像文件字节（PNG / JPG / WebP 等浏览器原生可解码格式）
+// @param outSize 写入 [宽, 高]（Int32Array，长度 2）
+// @returns RGBA8 像素（长度 = 宽*高*4）
+export async function decodeImageToRgbaAuto(
+    bytes: Uint8Array, outSize: Int32Array,
+): Promise<Uint8Array> {
+    const blob = new Blob([bytes as BlobPart]);
+    const bitmap = await createImageBitmap(blob);
+    const w = bitmap.width, h = bitmap.height;
+    const cv = document.createElement('canvas');
+    cv.width = w;
+    cv.height = h;
+    const c = cv.getContext('2d')!;
+    c.drawImage(bitmap, 0, 0);
+    const image = c.getImageData(0, 0, w, h).data;
+    outSize[0] = w;
+    outSize[1] = h;
+    if (bitmap.close) bitmap.close();
+    // getImageData().data 是 Uint8ClampedArray，转成 Uint8Array 以便回传 C# byte[]
+    return new Uint8Array(image);
+}
+
 // ---------- KTX2（Basis Universal 超压缩）纹理上传 ----------
 
 // 懒加载官方 Basis Universal 转码器（basis_transcoder.js + .wasm）。

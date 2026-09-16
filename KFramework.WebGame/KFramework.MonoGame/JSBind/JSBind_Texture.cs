@@ -21,6 +21,15 @@ namespace KFramework.MonoGame
         internal static partial Task DecodeImageToRgba(byte[] bytes, int[] outSize, byte[] outPixels);
 
         /// <summary>
+        /// 借浏览器原生解码器把图像字节解码为 RGBA8，像素缓冲由 JS 端按真实尺寸内部分配后回传，
+        /// 调用方无需预知尺寸（用于内容包之外的松散图片）。
+        /// <paramref name="bytes"/> 为图像文件字节；<paramref name="outSize"/> 写入 [宽, 高]（int[2]）；
+        /// 返回 RGBA8 像素（长度 = 宽*高*4）。
+        /// </summary>
+        [JSImport("decodeImageToRgbaAuto", "texture")]
+        internal static partial Task<byte[]> DecodeImageToRgbaAuto(byte[] bytes, int[] outSize);
+
+        /// <summary>
         /// 借浏览器中的 Basis Universal 转码器（basis_transcoder.js/.wasm）把 KTX2（Basis 超压缩）纹理
         /// 转码为当前设备支持的 GPU 压缩格式，并直接上传到一张新建的 WebGL2 纹理。
         /// <paramref name="bytes"/> 为 KTX2 文件字节；<paramref name="basisFormat"/> 为目标 Basis 转码格式枚举；

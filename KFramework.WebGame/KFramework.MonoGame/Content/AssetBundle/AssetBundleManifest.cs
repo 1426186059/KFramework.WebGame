@@ -57,15 +57,22 @@ public sealed class AssetBundleManifest
         => JsonSerializer.Deserialize<AssetBundleManifest>(json)
            ?? throw new InvalidDataException("version.manifest 解析失败");
 
-    /// <summary>按逻辑名或任一别名（不区分大小写）查找包条目；找不到返回 null。</summary>
-    public static BundlePackage? FindPackage(IReadOnlyList<BundlePackage> packages, string name)
+    /// <summary>按逻辑名（不区分大小写）查找包条目；找不到返回 null。</summary>
+    public static BundlePackage? FindPackage(IReadOnlyList<BundlePackage> packages, string name, bool strict = true)
     {
-        foreach (var p in packages)
+        if (strict)
         {
-            if (string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase)) return p;
-            if (p.Aliases is not null)
-                foreach (var a in p.Aliases)
-                    if (string.Equals(a, name, StringComparison.OrdinalIgnoreCase)) return p;
+            foreach (var p in packages)
+            {
+                if (string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase)) return p;
+            }
+        }
+        else
+        {
+            foreach (var p in packages)
+            {
+                if (p.Name.Contains(name, StringComparison.OrdinalIgnoreCase)) return p;
+            }
         }
         return null;
     }
@@ -114,12 +121,10 @@ public sealed class AssetBundleManifest
 /// <param name="Hash">完整内容哈希（小写十六进制，无算法前缀）；算法见总清单 Hash 字段</param>
 /// <param name="Entries">包内资源条目数</param>
 /// <param name="Dependencies">依赖的其它包逻辑名（对应 Unity GetDirectDependencies / GetAllDependencies）</param>
-/// <param name="Aliases">别名（可选）：除逻辑名外可引用的其它名字，如扁平名 myres_group_atlas；运行端按逻辑名或任一别名都能取该包</param>
 public sealed record BundlePackage(
     string Name,
     string File,
     long Size,
     string Hash,
     int Entries,
-    IReadOnlyList<string> Dependencies = null!,
-    IReadOnlyList<string>? Aliases = null);
+    IReadOnlyList<string> Dependencies = null!);
