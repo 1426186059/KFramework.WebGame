@@ -22,21 +22,20 @@ public static class BundleBaker
         string tempDirectory)
     {
         // 图集打包统一复用外部 KTexturePacker 工具的核心（MaxRects 摆放 + 整页合成 + AtlasData 导出）。
-        // 产物：整页纹理（atlas_{i}，单张 Texture2D）+ 一份 AtlasData JSON（资源名固定为 "atlas"）。
-        // 运行时由 SpriteSheetLoader 读取该 JSON 并提供 source rect，从而同一张图集页可合批。
+        // 自动装箱的散图合成整页纹理（atlas_{i}）+ 一份 AtlasData JSON（资源名固定为 "atlas.json"）；
+        // 已切好的 .atlas 图集（以 .atlas 结尾）由前述预扫描原样入库，不参与此处自动打包。
+        // 运行时由 SpriteSheetLoader 读取 JSON 并提供 source rect，从而同一张图集页可合批。
         var inputs = new List<SpriteInput>();
         var bundle = new AssetBundleBuild { AssetBundleName = bundleName };
         var names = new HashSet<string>(StringComparer.Ordinal);
 
-        // 预扫描：识别 .atlas 预切图集，记录其整页图，避免后续被当成散图重打包；
-        // 这些子精灵名（如 characters_256、misc-3_68）需原样保留到最终的 AtlasData。
-        var skipRelative = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var importedAtlases = new List<AtlasBuilder.ImportedAtlas>();
+        // 预扫描：识别 .atlas 预切图集（通用判定：以 .atlas 结尾）。
+        // 已切好的图集（描述文件 + 整页图）直接原样入库，不再走自动装箱，保留用户打包好的布局。
+        var atlasPageRelatives = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (string atlasFile in files)
         {
             string atlasRel = Path.GetRelativePath(assetBaseDir, atlasFile).Replace('\\', '/');
-            if (!atlasRel.EndsWith(".atlas", StringComparison.OrdinalIgnoreCase)) continue;
-            skipRelative.Add(atlasRel);
+            if (!AtlasFile.IsAtlas(atlasRel)) continue;
             try
             {
                 using var doc = JsonDocument.Parse(File.ReadAllBytes(atlasFile));
@@ -46,15 +45,13 @@ public static class BundleBaker
                     {
                         string image = page.GetProperty("image").GetString()!;
                         string pagePath = Path.Combine(Path.GetDirectoryName(atlasFile)!, image);
-                        byte[] pageBytes = File.ReadAllBytes(pagePath);
-                        importedAtlases.Add(new AtlasBuilder.ImportedAtlas(page.GetRawText(), pageBytes));
-                        skipRelative.Add(Path.GetRelativePath(assetBaseDir, pagePath).Replace('\\', '/'));
+                        atlasPageRelatives.Add(Path.GetRelativePath(assetBaseDir, pagePath).Replace('\\', '/'));
                     }
                 }
             }
             catch (Exception ex)
             {
-                warnings.Add($"导入图集失败 {atlasRel}：{ex.Message}");
+                warnings.Add($"解析图集失败 {atlasRel}：{ex.Message}");
             }
         }
 
@@ -62,7 +59,6 @@ public static class BundleBaker
         {
             string relative = Path.GetRelativePath(assetBaseDir, file).Replace('\\', '/');
             if (IsIgnored(relative)) continue;
-            if (skipRelative.Contains(relative)) continue;
 
             string name = AssetNameOf(relative);
             if (!names.Add(name))
@@ -76,6 +72,39 @@ public static class BundleBaker
 
             try
             {
+                if (AtlasFile.IsAtlas(relative))
+                {
+                    // 已切好的图集描述文件：原样入库，运行端按 .atlas 直接加载，不再自动打包
+                    bundle.Assets.Add(new AssetBundleAsset
+                    {
+                        Path = name,
+                        Type = "atlas",
+                        Bytes = bytes,
+                    });
+                    dataCount++;
+                    continue;
+                }
+
+                if (atlasPageRelatives.Contains(relative))
+                {
+                    // 已切图集的整页图：原样入库为整图纹理，跳过自动装箱（不再重排/重切）
+                    Bitmap image = PngDecoder.Decode(bytes);
+                    SKBitmap skImage = ToSkBitmap(image);
+                    (byte[] encoded, AssetTextureFormat fmt) = EncodeTexture(skImage, options);
+                    bundle.Assets.Add(new AssetBundleAsset
+                    {
+                        Path = name,
+                        Type = "texture",
+                        Bytes = encoded,
+                        Width = skImage.Width,
+                        Height = skImage.Height,
+                        Format = fmt,
+                    });
+                    skImage.Dispose();
+                    textureCount++;
+                    continue;
+                }
+
                 if (relative.EndsWith(".sprite.json", StringComparison.OrdinalIgnoreCase))
                 {
                     Bitmap sprite = ShapeImporter.Import(Encoding.UTF8.GetString(bytes));
@@ -95,16 +124,8 @@ public static class BundleBaker
                     }
                     else
                     {
-                        // 不装箱：整图原样入包（适合 .atlas 预切图集，运行端按整张页图切片）。
-                        // 按 BuildOptions.TextureFormat 编码：Rgba 存裸像素；Png 编码 PNG；Webp 编码 WebP；Ktx2 暂未实现。
-                        (byte[] encoded, AssetTextureFormat fmt) = options.TextureFormat switch
-                        {
-                            AssetTextureFormat.Rgba => (GetPixels(skImage), AssetTextureFormat.Rgba),
-                            AssetTextureFormat.Png  => (EncodePng(skImage),  AssetTextureFormat.Png),
-                            AssetTextureFormat.Webp => (EncodeWebp(skImage), AssetTextureFormat.Webp),
-                            AssetTextureFormat.Ktx2 => (EncodeKtx2(skImage, options.BasisuPath, options.Ktx2Quality), AssetTextureFormat.Ktx2),
-                            _ => (GetPixels(skImage), AssetTextureFormat.Rgba),
-                        };
+                        // 不装箱：整图原样入包，按 BuildOptions.TextureFormat 编码（与已切图集整页图同一编码路径）。
+                        (byte[] encoded, AssetTextureFormat fmt) = EncodeTexture(skImage, options);
                         bundle.Assets.Add(new AssetBundleAsset
                         {
                             Path = name,
@@ -136,19 +157,21 @@ public static class BundleBaker
             }
         }
 
-        // 图集打包：把自动装箱的散图 + 导入的 .atlas 预切图集合并成同一份 AtlasData
-        JsonArray allPages = AtlasBuilder.BuildAtlas(bundle, inputs, importedAtlases, options, bundleName, tempDirectory, ref atlasPageCount);
-
-        if (allPages.Count > 0)
+        // 仅当存在需要自动装箱的散图时才生成 atlas.json；已切好的 .atlas 图集不参与此处打包（前述预扫描已原样入库）。
+        if (inputs.Count > 0)
         {
-            var rootNode = new JsonObject { ["Pages"] = allPages };
-            bundle.Assets.Add(new AssetBundleAsset
+            JsonArray allPages = AtlasBuilder.BuildAtlas(bundle, inputs, options, bundleName, tempDirectory, ref atlasPageCount);
+            if (allPages.Count > 0)
             {
-                // 图集描述 JSON 的路径按 raw 根目录计算，保留 .json 后缀（如 myres/atlas/atlas.json），与包内其它资源名保持一致
-                Path = Path.Combine(bundleName, "atlas.json").Replace('\\', '/'),
-                Type = "atlas",
-                Bytes = Encoding.UTF8.GetBytes(rootNode.ToJsonString()),
-            });
+                var rootNode = new JsonObject { ["Pages"] = allPages };
+                bundle.Assets.Add(new AssetBundleAsset
+                {
+                    // 图集描述 JSON 的路径按 raw 根目录计算，保留 .json 后缀（如 myres/atlas/atlas.json），与包内其它资源名保持一致
+                    Path = Path.Combine(bundleName, "atlas.json").Replace('\\', '/'),
+                    Type = "atlas",
+                    Bytes = Encoding.UTF8.GetBytes(rootNode.ToJsonString()),
+                });
+            }
         }
 
         return bundle;
@@ -206,6 +229,17 @@ public static class BundleBaker
         using var pixmap = bmp.PeekPixels();
         return pixmap.GetPixelSpan().ToArray();
     }
+
+    /// <summary>按 BuildOptions.TextureFormat 把 SKBitmap 编码为目标格式字节 + 格式标记（整图纹理与已切图集整页图共用）。</summary>
+    private static (byte[] Bytes, AssetTextureFormat Format) EncodeTexture(SKBitmap skImage, ContentBuilder.BuildOptions options)
+        => options.TextureFormat switch
+        {
+            AssetTextureFormat.Rgba => (GetPixels(skImage), AssetTextureFormat.Rgba),
+            AssetTextureFormat.Png  => (EncodePng(skImage),  AssetTextureFormat.Png),
+            AssetTextureFormat.Webp => (EncodeWebp(skImage), AssetTextureFormat.Webp),
+            AssetTextureFormat.Ktx2 => (EncodeKtx2(skImage, options.BasisuPath, options.Ktx2Quality), AssetTextureFormat.Ktx2),
+            _ => (GetPixels(skImage), AssetTextureFormat.Rgba),
+        };
 
     /// <summary>把 SKBitmap 编码为 PNG 字节（整图非装箱模式下 TextureFormat=Png 时使用）。</summary>
     private static byte[] EncodePng(SKBitmap bmp)

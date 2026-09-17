@@ -7,7 +7,7 @@ using System.Text.Json.Nodes;
 namespace KFramework.Content.Build;
 
 /// <summary>
-/// 图集打包（下游）：把自动装箱的散图（SpriteInput）与导入的 .atlas 预切图集合并成同一份 AtlasData。
+/// 图集打包（下游）：把需要自动装箱的散图（SpriteInput）打包成 AtlasData。已切好的 .atlas 图集由 BundleBaker 原样入库，不参与此流程。
 /// 复用上游 KTexturePacker 的共享核心（<see cref="AtlasBaker"/>：MaxRects 摆放 + 整页合成 + 导出），
 /// 核心只产出 RGBA8 中间格式；每张图集页作为独立整图纹理写入包，并在本层（下游）按
 /// <see cref="ContentBuilder.BuildOptions.TextureFormat"/> 把 RGBA 转成目标格式（默认 Rgba，可选 Png / Ktx2）再入库。
@@ -16,22 +16,19 @@ namespace KFramework.Content.Build;
 public static class AtlasBuilder
 {
     /// <summary>
-    /// 把自动装箱的散图 inputs 与导入的 .atlas 预切图集 importedAtlases 合并打包，
-    /// 直接把整图纹理页写入 <paramref name="bundle"/>，并返回合并后的 AtlasData pages 节点。
+    /// 把需要自动装箱的散图 inputs 打包成图集，直接把整图纹理页写入 <paramref name="bundle"/>，并返回 AtlasData pages 节点。
+    /// 已切好的 .atlas 图集不参与此流程（由 BundleBaker 原样入库）。
     /// </summary>
     internal static JsonArray BuildAtlas(
         AssetBundleBuild bundle,
         List<SpriteInput> inputs,
-        List<ImportedAtlas> importedAtlases,
         ContentBuilder.BuildOptions options,
         string bundleName,
         string tempDirectory,
         ref int atlasPageCount)
     {
-        // 交给上游 KTexturePacker 共享核心：自动散图装箱 + 导入页合并 → 通用 AtlasData JSON + 每页 PNG 图像。
-        var imported = importedAtlases
-            .Select(a => new ImportedAtlasPage { PageJson = a.PageJson, ImageBytes = a.PageBytes })
-            .ToList();
+        // 交给上游 KTexturePacker 共享核心自动装箱（已切 .atlas 图集不在此合并，保持用户打包好的布局）。
+        var imported = new List<ImportedAtlasPage>();
 
         AtlasBaker.AtlasBakeResult result = AtlasBaker.Bake(
             inputs,
@@ -88,7 +85,4 @@ public static class AtlasBuilder
         // 被调用方再挂到自己的 JsonObject 时会抛 "The node already has a parent"。
         return (JsonArray)root["pages"]!.DeepClone();
     }
-
-    /// <summary>一个被导入的 .atlas 预切图集的整页：页图 JSON 原文 + 页图 PNG 字节。</summary>
-    internal sealed record ImportedAtlas(string PageJson, byte[] PageBytes);
 }
