@@ -215,8 +215,21 @@ public static class BundleBaker
     }
 
     /// <summary>取出 Rgba8888 直 alpha 像素字节（整图纹理上传与装箱产物均依赖此格式）。</summary>
+    /// <remarks>
+    /// <see cref="SKBitmap.Decode"/> 在 Windows 上默认解成 Bgra8888（平台色彩类型），
+    /// 直接取字节会把 BGRA 当 RGBA 入库，导致运行端 R/B 通道互换（红砖变蓝）。
+    /// 这里统一转换成 Rgba8888 再取字节。
+    /// </remarks>
     private static byte[] GetPixels(SKBitmap bmp)
     {
+        if (bmp.ColorType != SKColorType.Rgba8888)
+        {
+            using SKBitmap converted = bmp.Copy(SKColorType.Rgba8888)
+                ?? throw new InvalidOperationException($"纹理色彩类型转换失败：{bmp.ColorType} → Rgba8888");
+            using var convertedPixmap = converted.PeekPixels();
+            return convertedPixmap.GetPixelSpan().ToArray();
+        }
+
         using var pixmap = bmp.PeekPixels();
         return pixmap.GetPixelSpan().ToArray();
     }
