@@ -5,6 +5,7 @@
   "AssetBundleDir": [
     "main"
   ],
+  "splitMode": "Whole",
   "autoAtlas": true,
   "textureFormat": "Rgba",
   "deploy": "none",

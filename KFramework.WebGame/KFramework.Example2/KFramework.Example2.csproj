@@ -16,14 +16,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Tools/AtlasImporter 是独立的控制台工程，不能被本工程的源码 glob 递归包含，
-         否则它的 obj/AssemblyInfo.cs 会造成 CS0579 特性重复。 -->
-    <Compile Remove="Tools\**" />
-    <None Remove="Tools\**" />
-    <EmbeddedResource Remove="Tools\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <StaticWebAssetFingerprintPattern Include="JS" Pattern="*.js" Expression="#[.{fingerprint}]!" />
   </ItemGroup>
 
@@ -35,10 +27,8 @@
   <!-- 引擎的浏览器层（KFramework.TSEngine）目前由 tsconfig 固定输出到 MirGame/wwwroot/jsengine。
        这里把它同步过来即可，无需为每个游戏工程复制一份 TypeScript。 -->
   <!-- 编译引擎的浏览器层（TypeScript）。tsc 报错即中断构建，不留旧产物。 -->
-  <Target Name="BuildTypeScript" BeforeTargets="BeforeBuild"
-          Condition="Exists('$(MSBuildThisFileDirectory)..\KFramework.TSEngine\node_modules')">
-    <Exec Command="npm run build"
-          WorkingDirectory="$(MSBuildThisFileDirectory)..\KFramework.TSEngine" />
+  <Target Name="BuildTypeScript" BeforeTargets="BeforeBuild" Condition="Exists('$(MSBuildThisFileDirectory)..\KFramework.TSEngine\node_modules')">
+    <Exec Command="npm run build" WorkingDirectory="$(MSBuildThisFileDirectory)..\KFramework.TSEngine" />
   </Target>
 
   <!-- KFramework.TSEngine/dist/jsengine 已是完整产物（含 deps/ktx2 转码器），
@@ -47,22 +37,17 @@
     <ItemGroup>
       <_Engine Include="$(MSBuildThisFileDirectory)..\KFramework.TSEngine\dist\jsengine\**\*" />
     </ItemGroup>
-    <Copy SourceFiles="@(_Engine)"
-          DestinationFiles="@(_Engine->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')"
-          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(_Engine)" DestinationFiles="@(_Engine->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
   <!-- 本工程独占的内容管线：Content/raw -> Content/content -> wwwroot/content
        （不共用 KFramework.Content 目录，避免和 MirGame 的素材混在一起） -->
   <Target Name="BuildGameContent" BeforeTargets="BeforeBuild">
-    <Exec Command="dotnet run --project &quot;$(MSBuildThisFileDirectory)..\KFramework.Content.Cli\KFramework.Content.Cli.csproj&quot; -v q --nologo -- --root &quot;$(MSBuildThisFileDirectory)Content&quot;"
-          ContinueOnError="true" />
+    <Exec Command="dotnet run --project &quot;$(MSBuildThisFileDirectory)..\KFramework.Content.Cli\KFramework.Content.Cli.csproj&quot; -v q --nologo -- --root &quot;$(MSBuildThisFileDirectory)Content&quot;" ContinueOnError="true" />
     <ItemGroup>
       <_PublishedContent Include="$(MSBuildThisFileDirectory)Content\hot_update_res\**\*.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(_PublishedContent)"
-          DestinationFiles="@(_PublishedContent->'$(MSBuildThisFileDirectory)wwwroot\hot_update_res\%(RecursiveDir)%(Filename)%(Extension)')"
-          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(_PublishedContent)" DestinationFiles="@(_PublishedContent->'$(MSBuildThisFileDirectory)wwwroot\hot_update_res\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
 </Project>

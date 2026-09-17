@@ -65,7 +65,8 @@ namespace KFramework.Content.Build
             }
 
             Global.mBuildConfig = BuildConfig.Load(root);
-            if (split is not null) Global.mBuildConfig.SplitMode = split;
+            if (split is not null && Enum.TryParse<BundleSplitMode>(split, ignoreCase: true, out var sm))
+                Global.mBuildConfig.SplitMode = sm;
             string ContentDir = Path.GetFullPath(root);
             string rawDir = Path.Combine(ContentDir, Global.mBuildConfig.RawDir);
 

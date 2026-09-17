@@ -237,7 +237,7 @@ internal sealed class TankLevel
         _allCleared = false;
 
         _levelIndex = index;
-        Load(_content.LoadText($"Assets/levels/{index:00}.txt"));
+        Load(_content.LoadText($"main/MyRes/levels/{index:00}.txt"));
 
         _enemiesRemaining = TankConfig.EnemyTotal;
         _killed = 0;

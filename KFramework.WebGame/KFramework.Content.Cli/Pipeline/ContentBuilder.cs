@@ -139,7 +139,7 @@ namespace KFramework.Content.Build
                         warnings.Add($"打包目录未找到，已忽略：{dir}");
                 }
 
-                BundleSplitMode mode = Global.mBuildConfig.SplitModeResolved;
+                BundleSplitMode mode = Global.mBuildConfig.SplitMode;
                 PrintTool.Log($"[kfc] 分包模式：{mode}（打包目录 = {string.Join(", ", bundleDirs)}）");
 
                 // 各根目录产出的包名必须唯一（保证运行端 GetBundle(name) 无歧义）
