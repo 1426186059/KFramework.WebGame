@@ -60,7 +60,7 @@ public sealed class AssetBundle : IDisposable
 
         using var ms = new MemoryStream();
         using (var es = m.Open()) es.CopyTo(ms);
-        Content = JsonSerializer.Deserialize(ms.ToArray(), JsonAutoGenerator.Default.AssetBundleContent)
+        Content = JsonSerializer.Deserialize(ms.ToArray(), AppJsonContext.Default.AssetBundleContent)
                   ?? throw new InvalidDataException("manifest.json 解析失败");
 
         _byPath = new Dictionary<string, ZipArchiveEntry>(StringComparer.OrdinalIgnoreCase);

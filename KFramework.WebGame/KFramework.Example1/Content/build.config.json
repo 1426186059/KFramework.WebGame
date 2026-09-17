@@ -1,0 +1,13 @@
+{
+  "rawDir": "raw",
+  "outDir": "hot_update_res",
+  "tempDir": "temp",
+  "AssetBundleDir": [
+    "Bundles"
+  ],
+  "autoAtlas": true,
+  "textureFormat": "Rgba",
+  "deploy": "none",
+  "wwwDir": "www",
+  "port": 8080
+}

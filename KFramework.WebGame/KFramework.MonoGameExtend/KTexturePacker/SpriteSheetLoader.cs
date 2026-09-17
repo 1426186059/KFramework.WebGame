@@ -2,6 +2,7 @@
 using KTexturePacker.Parser;
 using System;
 using System.IO;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,7 +28,8 @@ namespace KFramework.MonoGameExtend
             AssetBundle mBundle = _bundle;
             string dir = Path.GetDirectoryName(jsonPath);
 
-            AtlasData mData = mBundle.LoadJson<AtlasData>(jsonPath, strict);
+            string jsonContent = mBundle.LoadText(jsonPath, strict);
+            AtlasData mData = JsonTool.FromJson(jsonContent, AppJsonContext.Default.AtlasData);
 
             SpriteSheet spriteSheet = new SpriteSheet();
             foreach (var v in mData.Pages)

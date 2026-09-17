@@ -30,6 +30,17 @@
     <ProjectReference Include="..\KFramework.MonoGameExtend\KFramework.MonoGameExtend.csproj" />
   </ItemGroup>
 
+  <!-- KTexturePacker 是预编译 DLL：必须在本入口工程直接引用，否则会被“未使用引用”优化剔除，
+       导致浏览器运行时 FileNotFoundException（Parser 依赖 Core）。 -->
+  <ItemGroup>
+    <Reference Include="KTexturePacker.Parser">
+      <HintPath>..\Need_DLL\KTexturePacker.Parser.dll</HintPath>
+    </Reference>
+    <Reference Include="KTexturePacker.Core">
+      <HintPath>..\Need_DLL\KTexturePacker.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
   <!-- 引擎的浏览器层（KFramework.TSEngine）目前由 tsconfig 固定输出到 MirGame/wwwroot/jsengine。 -->
   <!-- 编译引擎的浏览器层（TypeScript）。tsc 报错即中断构建，不留旧产物。 -->
   <Target Name="BuildTypeScript" BeforeTargets="BeforeBuild" Condition="Exists('$(MSBuildThisFileDirectory)..\KFramework.TSEngine\node_modules')">
