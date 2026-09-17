@@ -20,10 +20,13 @@ namespace KFramework.MonoGame
         /// <summary>是否负责释放底层纹理。</summary>
         internal readonly bool OwnsHandle;
 
+        /// <summary>是否为 GPU 压缩纹理（ASTC/BC7/DXT 等）；压缩纹理为不可变数据，不支持 SetData 局部更新。</summary>
+        internal readonly bool IsCompressed;
+
         public int Width => Bounds.Width;
         public int Height => Bounds.Height;
 
-        internal Texture2D(GraphicsDevice device, JSObject handle, int width, int height, bool ownsHandle)
+        internal Texture2D(GraphicsDevice device, JSObject handle, int width, int height, bool ownsHandle, bool isCompressed = false)
         {
             graphicsDevice = device;
             Handle = handle;
@@ -31,6 +34,7 @@ namespace KFramework.MonoGame
             TextureHeight = height;
             Bounds = new Rectangle(0, 0, width, height);
             OwnsHandle = ownsHandle;
+            IsCompressed = isCompressed;
         }
 
         /// <summary>上传 RGBA8 像素数据到整张纹理。</summary>
@@ -40,6 +44,8 @@ namespace KFramework.MonoGame
         /// <summary>更新纹理的局部区域（用于动态字形图集等）。</summary>
         public void SetData(byte[] rgba, int x, int y, int width, int height)
         {
+            if (IsCompressed)
+                throw new InvalidOperationException("压缩纹理为不可变 GPU 数据，不支持 SetData 局部更新；如需更新请整张重建。");
             ArgumentNullException.ThrowIfNull(rgba);
             JSBind_GL.BindTexture(JSBind_GL.TEXTURE_2D, Handle);
             JSBind_GL.PixelStorei(JSBind_GL.UNPACK_ALIGNMENT, 1);

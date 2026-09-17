@@ -382,6 +382,37 @@ namespace KFramework.MonoGame
             return texture;
         }
 
+        /// <summary>
+        /// 用 GPU 压缩纹理字节（ASTC / BC7 / DXT 等）创建纹理：直接 compressedTexImage2D 上传到 GPU，不走 CPU 解码到 RGBA8。
+        /// <paramref name="internalFormat"/> 传对应 GL 常量（如 COMPRESSED_RGBA_ASTC_4x4_KHR = 0x93B0、COMPRESSED_RGBA_BC7_EXT = 0x9093）。
+        /// 压缩纹理为不可变 GPU 数据：不支持 SetData 局部更新，也不支持 generateMipmap；过滤固定为 LINEAR + CLAMP_TO_EDGE。
+        /// </summary>
+        public Texture2D CreateCompressedTexture(int width, int height, byte[] compressedData, int internalFormat)
+        {
+            ArgumentOutOfRangeException.ThrowIfLessThan(width, 1);
+            ArgumentOutOfRangeException.ThrowIfLessThan(height, 1);
+            if (width > MaxTextureSize || height > MaxTextureSize)
+                throw new ArgumentOutOfRangeException(nameof(width), $"纹理尺寸超过上限 {MaxTextureSize}");
+            ArgumentNullException.ThrowIfNull(compressedData);
+            if (compressedData.Length == 0)
+                throw new ArgumentException("压缩数据不能为空", nameof(compressedData));
+
+            JSObject handle = JSBind_GL.CreateTexture();
+            JSBind_GL.BindTexture(JSBind_GL.TEXTURE_2D, handle);
+            JSBind_GL.CompressedTexImage2D(JSBind_GL.TEXTURE_2D, 0, internalFormat, width, height, 0, compressedData);
+            JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MIN_FILTER, JSBind_GL.LINEAR);
+            JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MAG_FILTER, JSBind_GL.LINEAR);
+            JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_WRAP_S, JSBind_GL.CLAMP_TO_EDGE);
+            JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_WRAP_T, JSBind_GL.CLAMP_TO_EDGE);
+
+            int error = JSBind_GL.GetError();
+            if (error != 0) Console.Error.WriteLine($"[KFramework.MonoGame] 压缩纹理上传失败 0x{error:X4}（{width}x{height}，{compressedData.Length} 字节）");
+
+            var texture = new Texture2D(this, handle, width, height, ownsHandle: true, isCompressed: true);
+            texture._sortingKey = _sortingKeySource++;
+            return texture;
+        }
+
         public void Dispose()
         {
             JSBind_GL.DeleteBuffer(VertexBuffer);

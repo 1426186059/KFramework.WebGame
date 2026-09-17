@@ -172,7 +172,7 @@ public sealed class AssetBundle : IDisposable
             int width = info.Width, height = info.Height;
             if (width <= 0 || height <= 0)
                 throw new InvalidOperationException($"纹理 “{name}” 缺少像素尺寸，无法上传 GPU。");
-            return new Texture2D(device, handle, width, height, ownsHandle: true);
+            return new Texture2D(device, handle, width, height, ownsHandle: true, isCompressed: true);
         }
 
         // 其余格式（Rgba / Png / Webp 等）：像素已在 DecodeTexturesAsync 预解码，走同步上传路径。

@@ -246,6 +246,10 @@ namespace KFramework.MonoGame
         internal static partial void TexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
             [JSMarshalAs<JSType.MemoryView>] Span<byte> data);
 
+        [JSImport("compressedTexImage2D", "gl")]
+        internal static partial void CompressedTexImage2D(int target, int level, int internalFormat, int width, int height, int border,
+            [JSMarshalAs<JSType.MemoryView>] Span<byte> data);
+
         [JSImport("texParameteri", "gl")]
         internal static partial void TexParameteri(int target, int pname, int param);
 
