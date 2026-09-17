@@ -69,14 +69,14 @@ const GL = {
     CLAMP_TO_EDGE: 0x812f,
 };
 /**
- * 借浏览器中的 Basis 转码器把 KTX2（Basis 超压缩）纹理转码为当前设备支持的 GPU 压缩格式，
- * 并直接上传到一张新建的 WebGL2 纹理。
+ * 借浏览器中的 Basis 转码器把 KTX2（Basis 超压缩）纹理的【基础级别（mip 0）】转码为当前设备支持的
+ * GPU 压缩格式字节，并写入 outBuffer（由 C# 按 GetTranscodedSize 预分配）。纯 CPU 侧，不上传 GPU；
+ * 真正的 GPU 上传延后到 C# 的 CreateCompressedTexture（即 LoadTexture 时）。
  * @param bytes KTX2 文件字节
  * @param basisFormat 目标 Basis 转码格式枚举（cTFASTC_4x4=10 / cTFBC7_M5=7 / cTFBC3=3 / cTFETC2=1 / cTFPVRTC1_4_RGBA=9 / cTFRGBA32=13）
- * @param glFormat 对应的 WebGL 内部格式枚举（cTFRGBA32 回退时为 RGBA8）
- * @returns 新建的 WebGLTexture
+ * @param outBuffer 预分配的字节缓冲（长度需 >= 转码后字节数）
  */
-export async function uploadKtx2(bytes, basisFormat, glFormat) {
+export async function transcodeKtx2Into(bytes, basisFormat, outBuffer) {
     const mod = await loadBasis();
     const src = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
     const ktx2File = new mod.KTX2File(src);
@@ -85,40 +85,13 @@ export async function uploadKtx2(bytes, basisFormat, glFormat) {
             throw new Error('[ktx2] 无效的 KTX2 文件');
         if (!ktx2File.startTranscoding())
             throw new Error('[ktx2] Basis startTranscoding 失败');
-        const faceCount = ktx2File.getFaces() || 1;
-        const layerCount = ktx2File.getLayers() || 1;
-        const levelCount = ktx2File.getLevels();
-        const tex = gl.createTexture();
-        gl.bindTexture(GL.TEXTURE_2D, tex);
-        const uncompressed = basisFormat === 13; // cTFRGBA32 回退：裸 RGBA8
-        for (let face = 0; face < faceCount; face++) {
-            for (let mip = 0; mip < levelCount; mip++) {
-                for (let layer = 0; layer < layerCount; layer++) {
-                    const info = ktx2File.getImageLevelInfo(mip, layer, face);
-                    const w = levelCount > 1 ? info.origWidth : info.width;
-                    const h = levelCount > 1 ? info.origHeight : info.height;
-                    const size = ktx2File.getImageTranscodedSizeInBytes(mip, layer, 0, basisFormat);
-                    const dst = new Uint8Array(size);
-                    if (!ktx2File.transcodeImage(dst, mip, layer, face, basisFormat, 0, -1, -1))
-                        throw new Error(`[ktx2] 转码第 ${mip} 级失败`);
-                    if (uncompressed) {
-                        gl.texImage2D(GL.TEXTURE_2D, mip, GL.RGBA8, w, h, 0, GL.RGBA, GL.UNSIGNED_BYTE, dst);
-                    }
-                    else {
-                        gl.compressedTexImage2D(GL.TEXTURE_2D, mip, glFormat, w, h, 0, dst);
-                    }
-                }
-            }
-        }
-        const err = gl.getError();
-        if (err !== 0)
-            console.error(`[ktx2] 上传后 GL 错误 0x${err.toString(16)}`);
-        const minFilter = levelCount > 1 ? GL.LINEAR_MIPMAP_LINEAR : GL.LINEAR;
-        gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, minFilter);
-        gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
-        gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
-        gl.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
-        return tex;
+        const info = ktx2File.getImageLevelInfo(0, 0, 0);
+        const size = ktx2File.getImageTranscodedSizeInBytes(0, 0, 0, basisFormat);
+        if (outBuffer.length < size)
+            throw new Error(`[ktx2] 输出缓冲 ${outBuffer.length} 小于所需 ${size}（请检查 GetTranscodedSize）`);
+        const dst = outBuffer instanceof Uint8Array ? outBuffer : new Uint8Array(outBuffer);
+        if (!ktx2File.transcodeImage(dst, 0, 0, 0, basisFormat, 0, -1, -1))
+            throw new Error('[ktx2] 转码基础级别失败');
     }
     finally {
         ktx2File.close();

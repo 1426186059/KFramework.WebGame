@@ -28,13 +28,12 @@ namespace KFramework.MonoGame
         internal static partial Task<JSObject> GetImageSize(byte[] bytes);
 
         /// <summary>
-        /// 借浏览器中的 Basis Universal 转码器（basis_transcoder.js/.wasm）把 KTX2（Basis 超压缩）纹理
-        /// 转码为当前设备支持的 GPU 压缩格式，并直接上传到一张新建的 WebGL2 纹理。
-        /// <paramref name="bytes"/> 为 KTX2 文件字节；<paramref name="basisFormat"/> 为目标 Basis 转码格式枚举；
-        /// <paramref name="glFormat"/> 为对应的 WebGL 压缩内部格式枚举（RGBA32 回退时为 RGBA8）。
-        /// 返回新建的 WebGLTexture 句柄（JSObject）。
+        /// 借浏览器中的 Basis Universal 转码器（basis_transcoder.js/.wasm）把 KTX2（Basis 超压缩）纹理的【基础级别】
+        /// 转码为当前设备支持的 GPU 压缩格式字节，并写入 <paramref name="outBuffer"/>（按 <see cref="Ktx2TranscodeSelector.GetTranscodedSize"/> 预分配）。
+        /// CPU 侧、不上传 GPU；C# 缓存字节后待 LoadTexture 经 CreateCompressedTexture 上传。
+        /// 用输出缓冲而非返回值，是因为 JSImport 不直接支持返回 byte[]。
         /// </summary>
-        [JSImport("uploadKtx2", "texture")]
-        internal static partial Task<JSObject> UploadKtx2(byte[] bytes, int basisFormat, int glFormat);
+        [JSImport("transcodeKtx2Into", "texture")]
+        internal static partial Task TranscodeKtx2Into(byte[] bytes, int basisFormat, byte[] outBuffer);
     }
 }

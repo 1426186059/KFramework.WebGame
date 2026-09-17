@@ -412,7 +412,7 @@ namespace KFramework.MonoGame
                     $"压缩数据长度 {compressedData?.Length ?? 0} 与格式 {format} 预期的 {expected} 字节不一致（宽高 {width}x{height}）。",
                     nameof(compressedData));
 
-            return CreateCompressedTextureInternal(width, height, compressedData, SurfaceFormatGL.ToInternalFormat(format));
+            return CreateCompressedTextureInternal(width, height, compressedData, (int)format);
         }
 
         private Texture2D CreateCompressedTextureInternal(int width, int height, byte[] compressedData, int internalFormat)

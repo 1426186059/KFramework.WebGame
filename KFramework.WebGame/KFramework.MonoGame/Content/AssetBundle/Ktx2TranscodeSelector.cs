@@ -21,20 +21,38 @@ namespace KFramework.MonoGame
         public const int RGBA32 = 13;         // TranscoderFormat.RGBA32        -> 裸 RGBA8（不压缩，兜底）
 
         // 优先级（参考 three.js：质量从高到低）ASTC → BC7(BPTC) → ETC2/EAC → S3TC(DXT) → PVRTC → RGBA32。
-        public static (int basisFormat, int glFormat) Pick()
+        // 返回的 glFormat 即 <see cref="SurfaceFormat"/>（其取值就是对应的 GL 内部格式，无需再映射）。
+        public static (int basisFormat, SurfaceFormat glFormat) Pick()
         {
             if (JSBind_GL.HasExtension("WEBGL_compressed_texture_astc"))
-                return (ASTC_4x4, JSBind_GL.COMPRESSED_RGBA_ASTC_4x4_KHR);
+                return (ASTC_4x4, SurfaceFormat.Astc4X4);
             if (JSBind_GL.HasExtension("EXT_texture_compression_bptc"))
-                return (BC7_M5, JSBind_GL.COMPRESSED_RGBA_BPTC_UNORM);
+                return (BC7_M5, SurfaceFormat.Bc7);
             if (JSBind_GL.HasExtension("WEBGL_compressed_texture_etc"))
-                return (ETC2, JSBind_GL.COMPRESSED_RGBA8_ETC2_EAC);
+                return (ETC2, SurfaceFormat.Etc2Rgba8);
             if (JSBind_GL.HasExtension("WEBGL_compressed_texture_s3tc"))
-                return (BC3, JSBind_GL.COMPRESSED_RGBA_S3TC_DXT5_EXT);
+                return (BC3, SurfaceFormat.Dxt5);
             if (JSBind_GL.HasExtension("WEBGL_compressed_texture_pvrtc"))
-                return (PVRTC1_4_RGBA, JSBind_GL.COMPRESSED_RGBA_PVRTC_4BPPV1_IMG);
+                return (PVRTC1_4_RGBA, SurfaceFormat.PvrtcRgba4Bpp);
             // 兜底：转码为裸 RGBA8，按普通纹理上传（体积/显存吃亏，但保证能显示）。
-            return (RGBA32, JSBind_GL.RGBA8);
+            return (RGBA32, SurfaceFormat.Color);
+        }
+
+        /// <summary>
+        /// 计算某目标格式、给定尺寸下的转码后字节数（与 basis_transcoder 的 getImageTranscodedSizeInBytes 一致）。
+        /// 用于解包阶段在 C# 侧预分配转码输出缓冲（JSImport 不直接支持返回 byte[]）。
+        /// </summary>
+        public static int GetTranscodedSize(SurfaceFormat format, int width, int height)
+        {
+            int blocksW = (width + 3) / 4;
+            int blocksH = (height + 3) / 4;
+            return format switch
+            {
+                SurfaceFormat.Etc2Rgba8 or SurfaceFormat.Dxt5 or SurfaceFormat.Bc7 or SurfaceFormat.Astc4X4 => blocksW * blocksH * 16, // 16 字节 / 4x4 块
+                SurfaceFormat.PvrtcRgba4Bpp => Math.Max(32, width * height / 2), // 4 bpp，最小 32 字节
+                SurfaceFormat.Color => width * height * 4,                       // 裸 RGBA8
+                _ => blocksW * blocksH * 16,
+            };
         }
     }
 }
