@@ -23,16 +23,18 @@
     <ProjectReference Include="..\KFramework.MonoGameExtend\KFramework.MonoGameExtend.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Content\temp\" />
+  </ItemGroup>
+
   <!-- 引擎的浏览器层用 TypeScript 编写（KFramework.TSEngine），
        tsc 的产物直接输出到 wwwroot/jsengine（见 KFramework.TSEngine/tsconfig.json 的 outDir）。
        装了 node 时这里顺手编译一次；没装 node 则使用仓库中已提交的产物。 -->
   <!-- 编译引擎的浏览器层（TypeScript）。
        注意：不带 ContinueOnError —— tsc 报错必须让整个构建失败，
        否则会用 tsengine/bin 里的旧产物继续跑，问题极难排查。 -->
-  <Target Name="BuildTypeScript" BeforeTargets="BeforeBuild"
-          Condition="Exists('$(MSBuildThisFileDirectory)..\KFramework.TSEngine\node_modules')">
-    <Exec Command="npm run build"
-          WorkingDirectory="$(MSBuildThisFileDirectory)..\KFramework.TSEngine" />
+  <Target Name="BuildTypeScript" BeforeTargets="BeforeBuild" Condition="Exists('$(MSBuildThisFileDirectory)..\KFramework.TSEngine\node_modules')">
+    <Exec Command="npm run build" WorkingDirectory="$(MSBuildThisFileDirectory)..\KFramework.TSEngine" />
   </Target>
 
   <!-- KFramework.TSEngine/dist/jsengine 已是完整产物（含 deps/ktx2 转码器），
@@ -41,9 +43,7 @@
     <ItemGroup>
       <_Engine Include="$(MSBuildThisFileDirectory)..\KFramework.TSEngine\dist\jsengine\**\*" />
     </ItemGroup>
-    <Copy SourceFiles="@(_Engine)"
-          DestinationFiles="@(_Engine->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')"
-          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(_Engine)" DestinationFiles="@(_Engine->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
   <!-- 1. 运行内容管线：Content/raw -> Content/hot_update_res
@@ -53,9 +53,7 @@
     <ItemGroup>
       <_PublishedContent Include="$(MSBuildThisFileDirectory)Content\hot_update_res\**\*.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(_PublishedContent)"
-          DestinationFiles="@(_PublishedContent->'$(MSBuildThisFileDirectory)wwwroot\hot_update_res\%(RecursiveDir)%(Filename)%(Extension)')"
-          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(_PublishedContent)" DestinationFiles="@(_PublishedContent->'$(MSBuildThisFileDirectory)wwwroot\hot_update_res\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
 </Project>

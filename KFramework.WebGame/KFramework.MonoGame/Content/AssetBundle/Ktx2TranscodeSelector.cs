@@ -39,20 +39,16 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 计算某目标格式、给定尺寸下的转码后字节数（与 basis_transcoder 的 getImageTranscodedSizeInBytes 一致）。
+        /// 计算某目标格式、给定尺寸下的转码后字节数（与 <c>SurfaceFormatGL.GetExpectedCompressedBytes</c> 一致），
         /// 用于解包阶段在 C# 侧预分配转码输出缓冲（JSImport 不直接支持返回 byte[]）。
+        /// 与 <see cref="GraphicsDevice.CreateTexture"/> 上传前的校验共用同一套公式，保证分配 = 校验。
         /// </summary>
         public static int GetTranscodedSize(SurfaceFormat format, int width, int height)
         {
-            int blocksW = (width + 3) / 4;
-            int blocksH = (height + 3) / 4;
-            return format switch
-            {
-                SurfaceFormat.Etc2Rgba8 or SurfaceFormat.Dxt5 or SurfaceFormat.Bc7 or SurfaceFormat.Astc4X4 => blocksW * blocksH * 16, // 16 字节 / 4x4 块
-                SurfaceFormat.PvrtcRgba4Bpp => Math.Max(32, width * height / 2), // 4 bpp，最小 32 字节
-                SurfaceFormat.Color => width * height * 4,                       // 裸 RGBA8
-                _ => blocksW * blocksH * 16,
-            };
+            if (format == SurfaceFormat.Color)
+                return width * height * 4; // 裸 RGBA8 兜底
+            int expected = SurfaceFormatGL.GetExpectedCompressedBytes(format, width, height);
+            return expected > 0 ? expected : width * height * 4;
         }
     }
 }

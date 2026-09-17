@@ -1,3 +1,4 @@
+// 【依赖 C#】由 KFramework.MonoGame.JSBind_GL 经 [JSImport(module: "gl")] 调用；编译产物 gl.js 由各示例 SyncJsEngine 复制到 wwwroot/jsengine。
 // WebGL 2.0 绑定层。C# 侧通过 [JSImport("函数名", "gl")] 调用这里的导出函数。
 //
 // 重要：.NET 传入的 Span<T> 在 JS 侧是 MemoryView（不是 TypedArray），
@@ -160,6 +161,15 @@ export function texImage2D(target, level, internalFormat, width, height, border,
 export function texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, data) {
     gpu().texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, toBytes(data));
 }
+// ---------- 压缩纹理（KTX2 / Basis Universal） ----------
+/** 查询 WebGL 扩展是否可用（如 'WEBGL_compressed_texture_astc'）。返回扩展对象或 null。 */
+export function hasExtension(name) {
+    return gpu().getExtension(name);
+}
+/** 上传一块 GPU 压缩纹理数据（WebGL2 compressedTexImage2D）。 */
+export function compressedTexImage2D(target, level, internalFormat, width, height, border, data) {
+    gpu().compressedTexImage2D(target, level, internalFormat, width, height, border, toBytes(data) ?? new Uint8Array(0));
+}
 export function texParameteri(target, pname, param) { gpu().texParameteri(target, pname, param); }
 export function activeTexture(unit) { gpu().activeTexture(unit); }
 export function deleteTexture(texture) { gpu().deleteTexture(texture); }
@@ -180,9 +190,7 @@ export function drawElements(mode, count, type, offset) {
     gpu().drawElements(mode, count, type, offset);
 }
 export function drawArrays(mode, first, count) { gpu().drawArrays(mode, first, count); }
-
 // ---------- 剔除 / 深度（照 MonoGame 的 RasterizerState / DepthStencilState 下发） ----------
-
 export function cullFace(mode) { gpu().cullFace(mode); }
 export function frontFace(mode) { gpu().frontFace(mode); }
 export function depthMask(flag) { gpu().depthMask(flag); }

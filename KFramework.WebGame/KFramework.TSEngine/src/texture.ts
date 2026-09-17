@@ -1,5 +1,4 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Texture 经 [JSImport(module: "texture")] 调用（含 KTX2/Basis 转码）；产物 texture.js 由 SyncJsEngine 复制。
-import * as gl from './gl.js';
 
 // 纹理解码：借浏览器原生解码器把图像字节（PNG / WebP 等）解码为 RGBA8。
 // 因 WASM 无托管 WebP 解码器，统一走 createImageBitmap（浏览器原生，覆盖 Png / Webp）。
@@ -61,21 +60,6 @@ async function loadBasis(): Promise<any> {
     return mod;
 }
 
-// 各 Basis 转码格式对应的 GL 内部格式（与 C# Ktx2TranscodeSelector 保持一致）。
-const GL = {
-    TEXTURE_2D: 0x0de1,
-    RGBA8: 0x8058,
-    RGBA: 0x1908,
-    UNSIGNED_BYTE: 0x1401,
-    TEXTURE_MIN_FILTER: 0x2801,
-    TEXTURE_MAG_FILTER: 0x2800,
-    TEXTURE_WRAP_S: 0x2802,
-    TEXTURE_WRAP_T: 0x2803,
-    LINEAR: 0x2601,
-    LINEAR_MIPMAP_LINEAR: 0x2703,
-    CLAMP_TO_EDGE: 0x812f,
-};
-
 /**
  * 借浏览器中的 Basis 转码器把 KTX2（Basis 超压缩）纹理转码为当前设备支持的 GPU 压缩格式，
  * 并直接上传到一张新建的 WebGL2 纹理。
@@ -99,7 +83,6 @@ export async function transcodeKtx2Into(
             throw new Error('[ktx2] Basis startTranscoding 失败');
 
         // 只转码基础级别（mip 0 / layer 0 / face 0）：GPU 上传延后到 C# 的 CreateCompressedTexture。
-        const info = ktx2File.getImageLevelInfo(0, 0, 0);
         const size = ktx2File.getImageTranscodedSizeInBytes(0, 0, 0, basisFormat);
         if (outBuffer.length < size)
             throw new Error(`[ktx2] 输出缓冲 ${outBuffer.length} 小于所需 ${size}（请检查 GetTranscodedSize）`);

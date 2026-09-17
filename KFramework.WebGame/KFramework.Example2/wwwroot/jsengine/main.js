@@ -1,3 +1,4 @@
+// 【依赖 C#】本文件编译出的 main.js 每帧回调 KFramework.MonoGame.JSBind_GameHost.Frame（类名/命名空间被其硬编码查找）。
 // 引擎的浏览器启动器。
 //
 // 它是 TypeScript 源码，编译产物由 tsconfig 直接输出到 MirGame/wwwroot/jsengine/，
@@ -8,6 +9,8 @@ import * as platform from './platform.js';
 import * as audio from './audio.js';
 import * as text from './text.js';
 import * as texture from './texture.js';
+import * as cachestorage from './cachestorage.js';
+import * as indexeddb from './indexeddb.js';
 import * as inputKeyboard from './input_keyboard.js';
 import * as inputMouse from './input_mouse.js';
 import * as inputTouch from './input_touch.js';
@@ -44,6 +47,8 @@ setModuleImports('platform', platform);
 setModuleImports('audio', audio);
 setModuleImports('text', text);
 setModuleImports('texture', texture);
+setModuleImports('cachestorage', cachestorage);
+setModuleImports('indexeddb', indexeddb);
 setModuleImports('input_keyboard', inputKeyboard);
 setModuleImports('input_mouse', inputMouse);
 setModuleImports('input_touch', inputTouch);

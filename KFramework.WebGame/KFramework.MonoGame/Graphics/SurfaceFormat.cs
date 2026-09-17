@@ -23,11 +23,28 @@ namespace KFramework.MonoGame
         public const int COMPRESSED_RGBA_PVRTC_4BPPV1_IMG = 0x8C02;
 
         /// <summary>
-        /// 返回该压缩格式下给定宽高预期的字节数（用于在上传前校验 data 长度，对应 MonoGame 的块大小校验）。
-        /// 非压缩格式（<see cref="SurfaceFormat.Color"/>）返回 -1（不校验）。
+        /// 该格式是否为 GPU 压缩格式（照 MonoGame 的 <c>SurfaceFormat.IsCompressedFormat</c>）。
+        /// 本子集里只有 <see cref="SurfaceFormat.Color"/> 是未压缩的 RGBA8。
+        /// </summary>
+        public static bool IsCompressed(this SurfaceFormat format) => format != SurfaceFormat.Color;
+
+        /// <summary>
+        /// 返回该格式下给定宽高预期的字节数（用于在上传前校验 data 长度，对应 MonoGame 的块大小校验）。
+        /// 未压缩格式（<see cref="SurfaceFormat.Color"/>）返回 -1（不校验）。
+        /// 注意 PVRTC 的最小尺寸不是按 4x4 块向上取整，而是有显式下限（照 MonoGame 平台层 PlatformConstruct）。
         /// </summary>
         public static int GetExpectedCompressedBytes(SurfaceFormat format, int width, int height)
         {
+            switch (format)
+            {
+                // PVRTC 2bpp：imageSize = max(w,16) * max(h,8) * 2 / 8
+                case SurfaceFormat.PvrtcRgba2Bpp:
+                    return Math.Max(width, 16) * Math.Max(height, 8) * 2 / 8;
+                // PVRTC 4bpp：imageSize = max(w,8) * max(h,8) * 4 / 8
+                case SurfaceFormat.PvrtcRgba4Bpp:
+                    return Math.Max(width, 8) * Math.Max(height, 8) * 4 / 8;
+            }
+
             (int blockW, int blockH, int bytesPerBlock) = BlockInfo(format);
             if (bytesPerBlock <= 0) return -1;
             int blocksX = (width + blockW - 1) / blockW;
@@ -35,7 +52,7 @@ namespace KFramework.MonoGame
             return blocksX * blocksY * bytesPerBlock;
         }
 
-        private static (int, int, int) BlockInfo(SurfaceFormat format) => format switch
+        internal static (int, int, int) BlockInfo(SurfaceFormat format) => format switch
         {
             SurfaceFormat.Dxt1 or SurfaceFormat.Etc2Rgb8 or SurfaceFormat.PvrtcRgba2Bpp => (4, 4, 8),
             SurfaceFormat.Dxt3 or SurfaceFormat.Dxt5 or SurfaceFormat.Bc7
@@ -48,6 +65,23 @@ namespace KFramework.MonoGame
             SurfaceFormat.Astc12X12 => (12, 12, 16),
             _ => (0, 0, 0), // 非压缩
         };
+
+        /// <summary>该格式下每像素（未压缩）或每块（压缩）的字节数（照 MonoGame 的 SurfaceFormat.GetSize）。</summary>
+        public static int GetSize(this SurfaceFormat format)
+        {
+            if (!format.IsCompressed()) return 4; // 仅 RGBA8
+            (_, _, int bytesPerBlock) = BlockInfo(format);
+            return bytesPerBlock;
+        }
+
+        /// <summary>是否为 GPU 压缩格式（照 MonoGame 的 SurfaceFormat.IsCompressedFormat）。</summary>
+        public static bool IsCompressedFormat(this SurfaceFormat format) => format.IsCompressed();
+
+        /// <summary>返回压缩格式的块尺寸（照 MonoGame 的 SurfaceFormat.GetBlockSize）。未压缩返回 0,0。</summary>
+        public static void GetBlockSize(this SurfaceFormat format, out int blockWidth, out int blockHeight)
+        {
+            (blockWidth, blockHeight, _) = BlockInfo(format);
+        }
     }
 
     /// <summary>
