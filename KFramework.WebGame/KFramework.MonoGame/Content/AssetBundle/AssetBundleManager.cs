@@ -62,7 +62,7 @@ public sealed class AssetBundleManager : IDisposable
     public AssetBundleManager(
         HttpClient http,
         string baseUrl,
-        BundleCacheMode cacheMode = BundleCacheMode.CacheStorage)
+        BundleCacheMode cacheMode = BundleCacheMode.Http)
     {
         _http = http;
         _baseUrl = baseUrl.TrimEnd('/') + "/";

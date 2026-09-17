@@ -12,7 +12,7 @@ namespace KFramework.MonoGame
         public ContentManager(
             string root = "hot_update_res",
             string BaseURL = null,
-            AssetBundleManager.BundleCacheMode cacheMode = AssetBundleManager.BundleCacheMode.CacheStorage)
+            AssetBundleManager.BundleCacheMode cacheMode = AssetBundleManager.BundleCacheMode.Http)
         {
             ArgumentNullException.ThrowIfNull(root);
             string rootUrl = root.TrimEnd('/');
