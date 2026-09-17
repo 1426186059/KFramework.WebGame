@@ -31,9 +31,8 @@ namespace KFramework.MonoGameExtend
             SpriteSheet spriteSheet = new SpriteSheet();
             foreach (var v in mData.Pages)
             {
-                string texturePath = strict
-                    ? Path.Combine(dir, Path.GetFileName(v.Image))
-                    : Path.GetFileName(v.Image);
+                string texturePath = dir != null ? 
+                    Path.Combine(dir, Path.GetFileName(v.Image)) : Path.GetFileName(v.Image); ;
                 Texture2D texture = mBundle.LoadTexture(texturePath, _device, strict);
                 foreach (var v2 in v.Regions)
                 {
