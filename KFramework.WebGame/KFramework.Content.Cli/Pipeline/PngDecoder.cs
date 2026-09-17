@@ -1,11 +1,11 @@
 using System.Buffers.Binary;
 using System.IO.Compression;
 
-namespace KFramework.MonoGame;
+namespace KFramework.Content.Build;
 
 /// <summary>
 /// 最小可用的 PNG 解码器：支持 8 位色深、非隔行的 灰度 / RGB / 调色板 / 灰度+Alpha / RGBA。
-/// 不依赖任何图形库，可在打包工具与浏览器里共用。
+/// 不依赖任何图形库，仅用于打包工具端。
 /// </summary>
 public static class PngDecoder
 {

@@ -6,6 +6,7 @@
 // 同时导出 animations 段为 <图集名>.anim.json，供运行时做逐帧动画。
 using System.Text;
 using System.Text.Json;
+using KFramework.Content.Build;
 using KFramework.MonoGame;
 
 namespace KFramework.Example2.Tools;

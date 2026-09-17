@@ -1,4 +1,4 @@
-namespace KFramework.MonoGame;
+namespace KFramework.Content.Build;
 
 /// <summary>RGBA 颜色（内容管线内部使用，不依赖引擎，便于工具端独立运行）。</summary>
 public readonly struct Rgba(byte r, byte g, byte b, byte a = 255) : IEquatable<Rgba>
@@ -43,16 +43,8 @@ public readonly struct Rgba(byte r, byte g, byte b, byte a = 255) : IEquatable<R
     public override string ToString() => $"#{R:X2}{G:X2}{B:X2}{A:X2}";
 }
 
-/// <summary>内容管线内的浮点二维点。</summary>
-public readonly struct Vec2f(float x, float y)
-{
-    public readonly float X = x;
-    public readonly float Y = y;
-}
-
 /// <summary>
-/// RGBA8 位图，行优先、左上原点。提供带 3x3 超采样的图元光栅化，
-/// 用于把矢量描述（.sprite.json）离线烘焙成像素资源。
+/// RGBA8 位图，行优先、左上原点。
 /// </summary>
 public sealed class Bitmap
 {
@@ -121,145 +113,6 @@ public sealed class Bitmap
         Pixels[i + 2] = color.B;
         Pixels[i + 3] = color.A;
     }
-
-    #region 图元
-
-    public void FillRect(int x, int y, int width, int height, Rgba color)
-    {
-        int x1 = Math.Max(0, x), y1 = Math.Max(0, y);
-        int x2 = Math.Min(Width, x + width), y2 = Math.Min(Height, y + height);
-        for (int py = y1; py < y2; py++)
-            for (int px = x1; px < x2; px++)
-                BlendPixel(px, py, color);
-    }
-
-    public void FillCircle(float cx, float cy, float radius, Rgba color)
-        => FillShape(new CircleShape(cx, cy, radius), color);
-
-    public void FillEllipse(float cx, float cy, float radiusX, float radiusY, Rgba color)
-        => FillShape(new EllipseShape(cx, cy, radiusX, radiusY), color);
-
-    public void FillTriangle(Vec2f a, Vec2f b, Vec2f c, Rgba color)
-        => FillShape(new TriangleShape(a, b, c), color);
-
-    public void FillPolygon(ReadOnlySpan<Vec2f> points, Rgba color)
-    {
-        if (points.Length < 3) return;
-        FillShape(new PolygonShape(points.ToArray()), color);
-    }
-
-    /// <summary>带宽度的直线（端点为圆头，用于绘制进度条、光束）。</summary>
-    public void DrawLine(Vec2f from, Vec2f to, float width, Rgba color)
-    {
-        float dx = to.X - from.X, dy = to.Y - from.Y;
-        float length = MathF.Sqrt(dx * dx + dy * dy);
-        if (length < 1e-4f) { FillCircle(from.X, from.Y, width * 0.5f, color); return; }
-
-        float ux = dx / length, uy = dy / length;
-        float hx = -uy * width * 0.5f, hy = ux * width * 0.5f;
-
-        FillShape(new PolygonShape(new[]
-        {
-            new Vec2f(from.X + hx, from.Y + hy),
-            new Vec2f(to.X + hx, to.Y + hy),
-            new Vec2f(to.X - hx, to.Y - hy),
-            new Vec2f(from.X - hx, from.Y - hy),
-        }), color);
-
-        FillCircle(from.X, from.Y, width * 0.5f, color);
-        FillCircle(to.X, to.Y, width * 0.5f, color);
-    }
-
-    private const int Supersample = 3;
-
-    /// <summary>对形状做 3x3 超采样，得到抗锯齿边缘。</summary>
-    private void FillShape<TShape>(in TShape shape, Rgba color) where TShape : struct, IShape
-    {
-        float step = 1f / Supersample;
-        float inv = 1f / (Supersample * Supersample);
-
-        for (int y = 0; y < Height; y++)
-        {
-            for (int x = 0; x < Width; x++)
-            {
-                int hits = 0;
-                for (int sy = 0; sy < Supersample; sy++)
-                {
-                    float py = y + (sy + 0.5f) * step;
-                    for (int sx = 0; sx < Supersample; sx++)
-                    {
-                        float px = x + (sx + 0.5f) * step;
-                        if (shape.Contains(px, py)) hits++;
-                    }
-                }
-                if (hits > 0) BlendPixel(x, y, color, hits * inv);
-            }
-        }
-    }
-
-    private interface IShape
-    {
-        bool Contains(float x, float y);
-    }
-
-    private readonly struct CircleShape(float cx, float cy, float r) : IShape
-    {
-        private readonly float _r2 = r * r;
-
-        public bool Contains(float x, float y)
-        {
-            float dx = x - cx, dy = y - cy;
-            return dx * dx + dy * dy <= _r2;
-        }
-    }
-
-    private readonly struct EllipseShape(float cx, float cy, float rx, float ry) : IShape
-    {
-        public bool Contains(float x, float y)
-        {
-            float dx = (x - cx) / rx, dy = (y - cy) / ry;
-            return dx * dx + dy * dy <= 1f;
-        }
-    }
-
-    private readonly struct TriangleShape(Vec2f a, Vec2f b, Vec2f c) : IShape
-    {
-        public bool Contains(float x, float y)
-        {
-            float d1 = Sign(x, y, a, b);
-            float d2 = Sign(x, y, b, c);
-            float d3 = Sign(x, y, c, a);
-            bool hasNeg = d1 < 0 || d2 < 0 || d3 < 0;
-            bool hasPos = d1 > 0 || d2 > 0 || d3 > 0;
-            return !(hasNeg && hasPos);
-        }
-
-        private static float Sign(float px, float py, Vec2f a, Vec2f b)
-            => (px - b.X) * (a.Y - b.Y) - (a.X - b.X) * (py - b.Y);
-    }
-
-    private readonly struct PolygonShape(Vec2f[] points) : IShape
-    {
-        private readonly Vec2f[] _points = points;
-
-        /// <summary>奇偶规则（even-odd），可处理凹多边形。</summary>
-        public bool Contains(float x, float y)
-        {
-            bool inside = false;
-            Vec2f[] pts = _points;
-            for (int i = 0, j = pts.Length - 1; i < pts.Length; j = i++)
-            {
-                if ((pts[i].Y > y) != (pts[j].Y > y))
-                {
-                    float t = (y - pts[i].Y) / (pts[j].Y - pts[i].Y);
-                    if (x < pts[i].X + t * (pts[j].X - pts[i].X)) inside = !inside;
-                }
-            }
-            return inside;
-        }
-    }
-
-    #endregion
 
     /// <summary>把另一张位图绘制到指定位置（不做缩放）。</summary>
     public void Blit(Bitmap source, int x, int y)

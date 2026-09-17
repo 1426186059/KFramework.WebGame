@@ -47,7 +47,9 @@ namespace KFramework.Content.Build
     ///   <item>多个根目录下的子文件夹包名必须唯一，出现同名会直接报错（请保证各根目录内子文件夹名不重复）。</item>
     ///   <item>每个文件夹只打包其「直接」资源，不含子目录资源（子目录自身也是独立的 AssetBundle）。</item>
     ///   <item>是否自动图集打包由 <c>autoAtlas</c> 控制（默认 true）：true 时独立 <c>.png</c> 经图集打包器装箱成图集；
-    ///        false 时 <c>.png</c> 原样整图入包（适合已用 <c>.atlas</c> 预切好的图集，运行端按整张页图切片）。<c>.sprite.json</c> 矢量图始终装箱，不受此项影响。</item>
+    ///        false 时 <c>.png</c> 原样整图入包（适合已用 <c>.atlas</c> 预切好的图集，运行端按整张页图切片）。</item>
+    ///   <item>资源分包方式由 <c>splitMode</c> 控制（默认 folder）：<c>folder</c> = 按文件夹拆分（顶级根目录自身及其每个含资源的子文件夹各自成包）；
+    ///        <c>whole</c> = 整包不拆分（根目录含所有子目录整体打成一个包）。</item>
     ///   <item>除「指定打包目录」外，其余 raw 文件（如静态资源、配置文件等）原封不动地复制到 <c>content/</c>，不做打包/压缩。</item>
     ///   <item>配置里指定的打包根目录必须真实存在；若不存在则直接报错（不再支持把整个 raw 打成单个 content 整包的“兼容模式”）。</item>
     ///   <item>输出目录由配置 <c>outDir</c> 指定（相对 root，默认 <c>content</c>）；发布方式由 <c>deploy</c> 决定：
@@ -127,72 +129,32 @@ namespace KFramework.Content.Build
 
             if (bundleDirs.Count > 0)
             {
+                // 收集真实存在的打包根目录（供后续原样复制时跳过已打包文件）
                 foreach (string dir in bundleDirs)
                 {
                     string dirRoot = Path.Combine(rawDirectory, dir);
                     if (Directory.Exists(dirRoot))
-                    {
                         bundleRoots.Add(dirRoot);
-                    }
+                    else
+                        warnings.Add($"打包目录未找到，已忽略：{dir}");
                 }
 
-                // ===== 按目录分别打包（指定 bundlesDir 模式）：每个含资源的子文件夹各自成包 =====
-                PrintTool.Log($"[kfc] 打包模式：按目录分别打包（打包目录 = {string.Join(", ", bundleDirs)}）");
+                BundleSplitMode mode = Global.mBuildConfig.SplitModeResolved;
+                PrintTool.Log($"[kfc] 分包模式：{mode}（打包目录 = {string.Join(", ", bundleDirs)}）");
 
-                // 提示配置中存在但物理缺失的打包目录
-                foreach (string dir in bundleDirs)
-                {
-                    string dirRoot = Path.Combine(rawDirectory, dir);
-                    if (!Directory.Exists(dirRoot)) warnings.Add($"打包目录未找到，已忽略：{dir}");
-                }
-
-                // 各根目录下的（含根目录自身）子文件夹包名必须唯一（保证运行端 GetBundle(name) 无歧义）
+                // 各根目录产出的包名必须唯一（保证运行端 GetBundle(name) 无歧义）
                 var usedNames = new HashSet<string>(StringComparer.Ordinal);
                 foreach (string bundlesRoot in bundleRoots)
                 {
-                    // 1) 打包根目录自身：根目录若直接含资源，也打成一个以根目录（最后一级文件夹名）命名的 AssetBundle；
-                    //    子目录资源不并入此包（各自成包），即「屏蔽子目录的资源」。
+                    foreach (var (bundleName, files) in BundleSplitter.Enumerate(bundlesRoot, rawDirectory, mode))
                     {
-                        // 根目录包名 = 该打包根相对 raw 根目录的路径（如 MyRes）；空字符串（raw 自身为打包根）时用 raw 最后一级文件夹名
-                        string bundleRootRel = Path.GetRelativePath(rawDirectory, bundlesRoot).Replace('\\', '/');
-                        string rootBundleName = PakFormat.NormalizeName(
-                            string.IsNullOrEmpty(bundleRootRel)
-                                ? Path.GetFileName(rawDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar))
-                                : bundleRootRel);
-                        string[] rootFiles = Directory.EnumerateFiles(bundlesRoot, "*", SearchOption.TopDirectoryOnly)
-                            .Where(f => !BundleBaker.IsIgnored(Path.GetRelativePath(rawDirectory, f).Replace('\\', '/')))
-                            .OrderBy(static f => f, StringComparer.Ordinal)
-                            .ToArray();
-                        if (rootFiles.Length > 0)
-                        {
-                            if (!usedNames.Add(rootBundleName))
-                                throw new InvalidOperationException(
-                                    $"发现重复的 AssetBundle 名「{rootBundleName}」：配置的打包目录（{string.Join(", ", bundleDirs)}）下存在同名子文件夹，请保证各打包目录内的子文件夹名唯一。");
-                            AssetBundleBuild build = BundleBaker.BuildBundle(rootBundleName, rootFiles, rawDirectory, options, Global.mBuildConfig.AutoAtlas, warnings,
-                                ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, tempDirectory);
-                            builds.Add(build);
-                            bundleCount++;
-                        }
-                    }
-
-                    // 2) 各子文件夹：每个含资源的子文件夹各自成包（子目录资源由其自身文件夹负责）
-                    foreach (string folder in Directory.EnumerateDirectories(bundlesRoot, "*", SearchOption.AllDirectories)
-                                                   .OrderBy(static f => f, StringComparer.Ordinal))
-                    {
-                        // 只打包「直接」含资源的子文件夹；子目录下的资源由其自身所在的文件夹负责
-                        string[] directFiles = Directory.EnumerateFiles(folder, "*", SearchOption.TopDirectoryOnly)
-                            .Where(f => !BundleBaker.IsIgnored(Path.GetRelativePath(rawDirectory, f).Replace('\\', '/')))
-                            .OrderBy(static f => f, StringComparer.Ordinal)
-                            .ToArray();
-                        if (directFiles.Length == 0) continue;
-
-                        // 子文件夹包名 = 该文件夹相对 raw 根目录的全路径（如 myres/group/atlas），使文件名带打包根前缀（myres_group_atlas）
-                        string bundleName = PakFormat.NormalizeName(Path.GetRelativePath(rawDirectory, folder).Replace('\\', '/'));
                         if (!usedNames.Add(bundleName))
                             throw new InvalidOperationException(
                                 $"发现重复的 AssetBundle 名「{bundleName}」：配置的打包目录（{string.Join(", ", bundleDirs)}）下存在同名子文件夹，请保证各打包目录内的子文件夹名唯一。");
 
-                        AssetBundleBuild build = BundleBaker.BuildBundle(bundleName, directFiles, rawDirectory, options, Global.mBuildConfig.AutoAtlas, warnings,
+                        AssetBundleBuild build = BundleBaker.BuildBundle(
+                            bundleName, files, rawDirectory, options,
+                            Global.mBuildConfig.AutoAtlas, warnings,
                             ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, tempDirectory);
                         builds.Add(build);
                         bundleCount++;

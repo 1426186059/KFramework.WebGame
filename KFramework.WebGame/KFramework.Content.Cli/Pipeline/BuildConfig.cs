@@ -32,6 +32,21 @@ namespace KFramework.Content.Build
         [JsonPropertyName("autoAtlas")]
         public bool AutoAtlas { get; set; } = true;
 
+        /// <summary>
+        /// AssetBundle 分包模式（默认 folder）：
+        /// <c>folder</c> = 按文件夹拆分（顶级根目录自身及其每个含资源的子文件夹各自成包）；
+        /// <c>whole</c> = 整包不拆分（根目录含所有子目录整体打成一个包）。
+        /// </summary>
+        [JsonPropertyName("splitMode")]
+        public string SplitMode { get; set; } = "folder";
+
+        /// <summary>解析后的分包模式（见 <see cref="BundleSplitMode"/>）。</summary>
+        [JsonIgnore]
+        public BundleSplitMode SplitModeResolved
+            => string.Equals(SplitMode, "whole", StringComparison.OrdinalIgnoreCase)
+                ? BundleSplitMode.Whole
+                : BundleSplitMode.Folder;
+
         /// <summary>图集页 / 整图纹理的最终编码格式（见 <see cref="AssetTextureFormat"/>）：Rgba（默认）/ Png / Ktx2。</summary>
         [JsonPropertyName("textureFormat")]
         public AssetTextureFormat TextureFormat { get; set; } = AssetTextureFormat.Rgba;

@@ -1,6 +1,5 @@
 using System.IO.Compression;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace KFramework.MonoGame;
 
@@ -42,14 +41,6 @@ public sealed class AssetBundle : IDisposable
 
     /// <summary>包内清单（资源索引 + 元信息）。</summary>
     public AssetBundleContent Content { get; }
-
-    private static readonly JsonSerializerOptions s_opts = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        ReadCommentHandling = JsonCommentHandling.Skip,
-        AllowTrailingCommas = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    };
 
     private AssetBundle(ZipArchive zip)
     {
@@ -127,11 +118,6 @@ public sealed class AssetBundle : IDisposable
     /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个资源。</summary>
     public string LoadText(string name, bool strict = true) => InnerCommonFunc.DecodeUtf8(LoadAsset(name, strict));
 
-    /// <summary>同步读取并反序列化 JSON（包已加载后即时）。
-    /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个资源。</summary>
-    public T? LoadJson<T>(string name, bool strict = true)
-        => JsonSerializer.Deserialize<T>(LoadText(name, strict), s_opts);
-
     /// <summary>同步取一张整图纹理（图集请改用 <see cref="KFramework.MonoGameExtend.SpriteSheetLoader"/> 加载）。
     /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个纹理。</summary>
     /// <remarks>解码已在 <see cref="DecodeTexturesAsync"/>（LoadBundle 异步阶段）完成并缓存；此处仅做 GPU 上传。</remarks>
@@ -181,8 +167,8 @@ public sealed class AssetBundle : IDisposable
     /// 真正的 GPU 上传由 <see cref="LoadTexture"/> 完成，使四种格式取用逻辑一致（避免一次性把所有纹理灌进显存）。
     /// </summary>
     /// <remarks>
-    /// Rgba 本身已是像素，直接上传无需预解码；Png 走托管 PngDecoder 同步解码；
-    /// Webp 无托管解码器，借浏览器原生 <c>createImageBitmap</c> 异步解码（WASM/浏览器目标）。
+    /// Rgba 本身已是像素，直接上传无需预解码；Png / Webp 均无托管解码器，统一借浏览器原生
+    /// <c>createImageBitmap</c> 异步解码（WASM/浏览器目标），需清单中的宽高来预分配像素缓冲。
     /// KTX2 的转码需要 GL 上下文（用于选择目标压缩格式），故仅当传入 <paramref name="device"/> 时才在加载阶段完成；上传 GPU 仍在 <see cref="LoadTexture"/>。
     /// </remarks>
     public async Task DecodeTexturesAsync(GraphicsDevice? device = null)
@@ -214,12 +200,12 @@ public sealed class AssetBundle : IDisposable
                 continue;
             }
 
-            if (e.Format == AssetTextureFormat.Webp)
+            if (e.Format is AssetTextureFormat.Webp or AssetTextureFormat.Png)
             {
-                // Webp 无托管解码器：借浏览器原生解码（需清单中的宽高来预分配像素缓冲）。
+                // Webp / Png 均无托管解码器：统一借浏览器原生解码（需清单中的宽高来预分配像素缓冲）。
                 int w = e.Width, h = e.Height;
                 if (w <= 0 || h <= 0)
-                    throw new InvalidOperationException($"纹理 “{e.Path}” 缺少像素尺寸，无法解码 WebP。");
+                    throw new InvalidOperationException($"纹理 “{e.Path}” 缺少像素尺寸，无法解码 {e.Format}。");
                 byte[] raw = LoadAsset(e.Path);
                 var pixels = new byte[w * h * 4];
                 var size = new int[2];
@@ -239,9 +225,8 @@ public sealed class AssetBundle : IDisposable
         return e.Format switch
         {
             AssetTextureFormat.Rgba => raw,
-            AssetTextureFormat.Png  => PngDecoder.Decode(raw).Pixels,
-            AssetTextureFormat.Webp => throw new InvalidOperationException(
-                $"纹理 “{name}” 为 WebP：必须在 LoadBundleAsync 阶段（DecodeTexturesAsync）经浏览器原生解码，请先调用 LoadBundleAsync，不要走同步兜底。"),
+            AssetTextureFormat.Webp or AssetTextureFormat.Png => throw new InvalidOperationException(
+                $"纹理 “{name}” 为 {e.Format}：必须在 LoadBundleAsync 阶段（DecodeTexturesAsync）经浏览器原生解码，请先调用 LoadBundleAsync，不要走同步兜底。"),
             AssetTextureFormat.Ktx2 => throw new NotSupportedException(
                 $"纹理 “{name}” 为 KTX2（GPU 压缩纹理）：请在 LoadBundleAsync 阶段传入 GraphicsDevice 预解码，不要走同步兜底。"),
             _ => raw,

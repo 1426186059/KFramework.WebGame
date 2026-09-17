@@ -33,6 +33,7 @@ namespace KFramework.Content.Build
             string? output = null;
             int atlasSize = 2048;
             bool preview = true;
+            string? split = null;
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -51,16 +52,20 @@ namespace KFramework.Content.Build
                         if (Enum.TryParse<AssetTextureFormat>(args[++i], ignoreCase: true, out var fmt))
                             Global.mBuildConfig.TextureFormat = fmt;
                         break;
+                    case "--split" when i + 1 < args.Length:
+                        split = args[++i];
+                        break;
                     case "--no-preview":
                         preview = false;
                         break;
                     case "--help" or "-h":
-                        PrintTool.Log("用法: kfc --root <内容项目目录> [--out <输出目录>] [--atlas-size 2048] [--format Rgba|Png|Ktx2] [--no-preview]");
+                        PrintTool.Log("用法: kfc --root <内容项目目录> [--out <输出目录>] [--atlas-size 2048] [--format Rgba|Png|Ktx2] [--split folder|whole] [--no-preview]");
                         return ExitSuccess;
                 }
             }
 
             Global.mBuildConfig = BuildConfig.Load(root);
+            if (split is not null) Global.mBuildConfig.SplitMode = split;
             string ContentDir = Path.GetFullPath(root);
             string rawDir = Path.Combine(ContentDir, Global.mBuildConfig.RawDir);
 

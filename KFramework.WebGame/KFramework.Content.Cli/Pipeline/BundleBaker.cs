@@ -105,15 +105,7 @@ public static class BundleBaker
                     continue;
                 }
 
-                if (relative.EndsWith(".sprite.json", StringComparison.OrdinalIgnoreCase))
-                {
-                    Bitmap sprite = ShapeImporter.Import(Encoding.UTF8.GetString(bytes));
-                    SKBitmap skSprite = ToSkBitmap(sprite);
-                    if (options.TrimSprites) skSprite = Trim(skSprite);
-                    inputs.Add(new SpriteInput(name, skSprite));
-                    textureCount++;
-                }
-                else if (relative.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+                if (relative.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
                 {
                     Bitmap image = PngDecoder.Decode(bytes);
                     SKBitmap skImage = ToSkBitmap(image);
@@ -357,7 +349,7 @@ public static class BundleBaker
         return false;
     }
 
-    /// <summary>文件路径 → 资源名：保留原始扩展名（如 .png/.json/.txt/.sprite.json），仅小写化、统一用 / 分隔。
+    /// <summary>文件路径 → 资源名：保留原始扩展名（如 .png/.json/.txt），仅小写化、统一用 / 分隔。
     /// 保留扩展名可让资源名携带更多类型信息，配合模糊/精确查找更易区分同名不同型的资源。</summary>
     private static string AssetNameOf(string relativePath)
         => PakFormat.NormalizeName(relativePath);
