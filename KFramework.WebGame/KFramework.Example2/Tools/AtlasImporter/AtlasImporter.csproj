@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\KFramework.Content.Cli\KFramework.Content.Cli.csproj" />
+    <PackageReference Include="SkiaSharp" Version="4.152.0" />
   </ItemGroup>
 
 </Project>

@@ -6,8 +6,8 @@
 // 同时导出 animations 段为 <图集名>.anim.json，供运行时做逐帧动画。
 using System.Text;
 using System.Text.Json;
-using KFramework.Content.Build;
 using KFramework.MonoGame;
+using SkiaSharp;
 
 namespace KFramework.Example2.Tools;
 
@@ -60,14 +60,18 @@ internal static class Program
             return 0;
         }
 
-        Bitmap page = PngDecoder.Decode(File.ReadAllBytes(pagePath));
+        using SKBitmap page = SKBitmap.Decode(File.ReadAllBytes(pagePath))
+            ?? throw new InvalidOperationException($"解码图集页失败：{pagePath}");
         string atlasName = Path.GetFileName(jsonPath).Replace(".atlas.json", string.Empty, StringComparison.OrdinalIgnoreCase);
 
         int count = 0;
         foreach (JsonProperty frameProperty in frames.EnumerateObject())
         {
-            Bitmap sprite = ExtractFrame(frameProperty.Value, page);
-            File.WriteAllBytes(Path.Combine(outputDirectory, $"{frameProperty.Name}.png"), PngEncoder.Encode(sprite));
+            using SKBitmap sprite = ExtractFrame(frameProperty.Value, page);
+            using SKImage image = SKImage.FromBitmap(sprite);
+            using SKData data = image.Encode(SKEncodedImageFormat.Png, 100)
+                ?? throw new InvalidOperationException($"编码精灵失败：{frameProperty.Name}");
+            File.WriteAllBytes(Path.Combine(outputDirectory, $"{frameProperty.Name}.png"), data.ToArray());
             count++;
         }
 
@@ -77,7 +81,7 @@ internal static class Program
     }
 
     /// <summary>按 frame 矩形从图集页里切一块出来；rotated 的帧按逆时针旋转 90° 还原。</summary>
-    private static Bitmap ExtractFrame(JsonElement frameEntry, Bitmap page)
+    private static SKBitmap ExtractFrame(JsonElement frameEntry, SKBitmap page)
     {
         JsonElement rect = frameEntry.GetProperty("frame");
         int x = rect.GetProperty("x").GetInt32();
@@ -89,8 +93,8 @@ internal static class Program
         if (!rotated) return CopyRegion(page, x, y, w, h);
 
         // 旋转过的帧在图上占位是 h 宽 w 高，取出来后要逆时针转回来。
-        Bitmap rotatedRegion = CopyRegion(page, x, y, h, w);
-        Bitmap result = new(w, h);
+        using SKBitmap rotatedRegion = CopyRegion(page, x, y, h, w);
+        var result = new SKBitmap(w, h, rotatedRegion.ColorType, rotatedRegion.AlphaType);
         for (int sy = 0; sy < w; sy++)
         {
             for (int sx = 0; sx < h; sx++)
@@ -102,19 +106,14 @@ internal static class Program
         return result;
     }
 
-    private static Bitmap CopyRegion(Bitmap source, int x, int y, int width, int height)
+    private static SKBitmap CopyRegion(SKBitmap source, int x, int y, int width, int height)
     {
-        Bitmap region = new(width, height);
-        for (int row = 0; row < height; row++)
-        {
-            for (int column = 0; column < width; column++)
-            {
-                int sx = x + column;
-                int sy = y + row;
-                if (sx < 0 || sy < 0 || sx >= source.Width || sy >= source.Height) continue;
-                region.SetPixel(column, row, source.GetPixel(sx, sy));
-            }
-        }
+        x = Math.Max(0, x);
+        y = Math.Max(0, y);
+        width = Math.Min(width, source.Width - x);
+        height = Math.Min(height, source.Height - y);
+        var region = new SKBitmap(Math.Max(width, 1), Math.Max(height, 1), source.ColorType, source.AlphaType);
+        source.ExtractSubset(region, new SKRectI(x, y, x + width, y + height));
         return region;
     }
 

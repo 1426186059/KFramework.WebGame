@@ -88,8 +88,12 @@ public static class BundleBaker
                 if (atlasPageRelatives.Contains(relative))
                 {
                     // 已切图集的整页图：原样入库为整图纹理，跳过自动装箱（不再重排/重切）
-                    Bitmap image = PngDecoder.Decode(bytes);
-                    SKBitmap skImage = ToSkBitmap(image);
+                    SKBitmap skImage = SKBitmap.Decode(bytes);
+                    if (skImage is null)
+                    {
+                        warnings.Add($"解码纹理失败：{relative}");
+                        continue;
+                    }
                     (byte[] encoded, AssetTextureFormat fmt) = EncodeTexture(skImage, options);
                     bundle.Assets.Add(new AssetBundleAsset
                     {
@@ -107,8 +111,12 @@ public static class BundleBaker
 
                 if (relative.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
                 {
-                    Bitmap image = PngDecoder.Decode(bytes);
-                    SKBitmap skImage = ToSkBitmap(image);
+                    SKBitmap skImage = SKBitmap.Decode(bytes);
+                    if (skImage is null)
+                    {
+                        warnings.Add($"解码纹理失败：{relative}");
+                        continue;
+                    }
                     if (autoAtlas)
                     {
                         if (options.TrimSprites) skImage = Trim(skImage);
@@ -167,15 +175,6 @@ public static class BundleBaker
         }
 
         return bundle;
-    }
-
-    /// <summary>把框架 RGBA8 位图（直 alpha）转为 Skia 位图（Rgba8888 / Unpremul），供 KTexturePacker 装箱。</summary>
-    private static SKBitmap ToSkBitmap(Bitmap bmp)
-    {
-        var sk = new SKBitmap(bmp.Width, bmp.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
-        using SKPixmap pixmap = sk.PeekPixels();
-        Marshal.Copy(bmp.Pixels, 0, pixmap.GetPixels(), bmp.Pixels.Length);
-        return sk;
     }
 
     /// <summary>裁掉四周完全透明的行列，减小图集占用（替代原 Bitmap.Trim）。</summary>
