@@ -382,41 +382,17 @@ namespace KFramework.MonoGame
             return texture;
         }
 
-        /// <summary>
-        /// 用 GPU 压缩纹理字节（ASTC / BC7 / DXT 等）创建纹理：直接 compressedTexImage2D 上传到 GPU，不走 CPU 解码到 RGBA8。
-        /// <paramref name="internalFormat"/> 传对应 GL 常量（如 COMPRESSED_RGBA_ASTC_4x4_KHR = 0x93B0、COMPRESSED_RGBA_BC7_EXT = 0x9093）。
-        /// 压缩纹理为不可变 GPU 数据：不支持 SetData 局部更新，也不支持 generateMipmap；过滤固定为 LINEAR + CLAMP_TO_EDGE。
-        /// </summary>
-        public Texture2D CreateCompressedTexture(int width, int height, byte[] compressedData, int internalFormat)
-        {
-            ArgumentOutOfRangeException.ThrowIfLessThan(width, 1);
-            ArgumentOutOfRangeException.ThrowIfLessThan(height, 1);
-            if (width > MaxTextureSize || height > MaxTextureSize)
-                throw new ArgumentOutOfRangeException(nameof(width), $"纹理尺寸超过上限 {MaxTextureSize}");
-            ArgumentNullException.ThrowIfNull(compressedData);
-            if (compressedData.Length == 0)
-                throw new ArgumentException("压缩数据不能为空", nameof(compressedData));
-
-            return CreateCompressedTextureInternal(width, height, compressedData, internalFormat);
-        }
-
-        /// <summary>
-        /// <see cref="SurfaceFormat"/> 重载（对齐 MonoGame 写法）：用枚举表达格式而非裸 GL 常量。
-        /// 会按格式校验 <paramref name="compressedData"/> 长度是否等于 宽高×压缩块大小（数据截断/越界会抛 <see cref="ArgumentException"/>）。
-        /// </summary>
+        //专门创建 GPU 压缩纹理
         public Texture2D CreateCompressedTexture(int width, int height, byte[] compressedData, SurfaceFormat format)
         {
             int expected = SurfaceFormatGL.GetExpectedCompressedBytes(format, width, height);
             if (expected > 0 && compressedData is not null && compressedData.Length != expected)
+            {
                 throw new ArgumentException(
                     $"压缩数据长度 {compressedData?.Length ?? 0} 与格式 {format} 预期的 {expected} 字节不一致（宽高 {width}x{height}）。",
                     nameof(compressedData));
+            }
 
-            return CreateCompressedTextureInternal(width, height, compressedData, (int)format);
-        }
-
-        private Texture2D CreateCompressedTextureInternal(int width, int height, byte[] compressedData, int internalFormat)
-        {
             ArgumentOutOfRangeException.ThrowIfLessThan(width, 1);
             ArgumentOutOfRangeException.ThrowIfLessThan(height, 1);
             if (width > MaxTextureSize || height > MaxTextureSize)
@@ -427,7 +403,7 @@ namespace KFramework.MonoGame
 
             JSObject handle = JSBind_GL.CreateTexture();
             JSBind_GL.BindTexture(JSBind_GL.TEXTURE_2D, handle);
-            JSBind_GL.CompressedTexImage2D(JSBind_GL.TEXTURE_2D, 0, internalFormat, width, height, 0, compressedData);
+            JSBind_GL.CompressedTexImage2D(JSBind_GL.TEXTURE_2D, 0, (int)format, width, height, 0, compressedData);
             JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MIN_FILTER, JSBind_GL.LINEAR);
             JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MAG_FILTER, JSBind_GL.LINEAR);
             JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_WRAP_S, JSBind_GL.CLAMP_TO_EDGE);
