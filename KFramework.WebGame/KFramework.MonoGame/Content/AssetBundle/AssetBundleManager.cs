@@ -1,9 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace KFramework.MonoGame;
 
@@ -36,10 +31,11 @@ public sealed class AssetBundleManager : IDisposable
         /// </summary>
         Http,
         /// <summary>
-        /// 在内存中维护一份字节缓存（进程/会话生命周期内有效），配合内容哈希校验实现免重复下载。
-        /// 自包含、引擎无关、可在 WASM 直接运行；但不落盘，页面刷新即失效，仅适合同一会话内反复加载。
+        /// 先走传输层 HTTP（命中浏览器 HTTP 缓存最快），失败/无网络时降级（fallback）到本地 Cache Storage。
+        /// 每次成功下载都会把字节补进 Cache Storage，使后续离线/弱网也能走降级路径。
+        /// 适合“优先用网络、断网自动退避到本地”的场景。仅浏览器/WASM 环境可用。
         /// </summary>
-        Memory,
+        HttpThenCacheStorage,
         /// <summary>
         /// 持久化到浏览器 Cache Storage，跨页面刷新/重进仍然有效（真正的本地缓存）。默认策略。
         /// 仅浏览器/WASM 环境可用；Cache Storage 以 Response 形式存二进制资源、序列化开销更小，
@@ -51,9 +47,6 @@ public sealed class AssetBundleManager : IDisposable
     private readonly HttpClient _http;
     private readonly string _baseUrl;
     private readonly BundleCacheMode _cacheMode;
-
-    // 内容哈希校验的字节缓存（仅 Memory 模式使用）
-    private readonly Dictionary<string, byte[]> _memoryCache = new(StringComparer.OrdinalIgnoreCase);
 
     // 总清单（拉取后驻留）
     private AssetBundleManifest? _manifest;
@@ -107,30 +100,42 @@ public sealed class AssetBundleManager : IDisposable
     }
 
     /// <summary>
-    /// 取一个 .web.lib 的字节：Memory / CacheStorage 模式下先查本地缓存，命中且哈希一致则直接复用（精确热更），
-    /// 否则从远端下载并写回缓存。Http 模式下不查本地缓存，直接走 GetAsync（依赖传输层缓存）。
-    /// 返回 null 表示下载失败。
+    /// 取一个 .web.lib 的字节，按 <see cref="BundleCacheMode"/> 执行缓存策略：
+    /// <list type="bullet">
+    ///   <item><description><see cref="BundleCacheMode.CacheStorage"/>：先查本地 Cache Storage，命中且哈希一致则复用，否则下载并写回。默认策略。</description></item>
+    ///   <item><description><see cref="BundleCacheMode.HttpThenCacheStorage"/>：先走 HTTP（命中浏览器缓存最快）；失败/无网络则降级到本地 Cache Storage（每次成功下载都会补写 Cache Storage 以备离线）。</description></item>
+    ///   <item><description><see cref="BundleCacheMode.Http"/>：不查本地缓存，直接走 GetAsync（依赖传输层缓存）。</description></item>
+    /// </list>
+    /// 返回 null 表示所有可用来源都取不到字节。
     /// </summary>
     public async Task<byte[]?> LoadBundleBytesAsync(BundlePackage package, CancellationToken cancellationToken = default)
     {
-        byte[]? cached = _cacheMode switch
+        switch (_cacheMode)
         {
-            BundleCacheMode.CacheStorage => await LoadFromCacheStorageAsync(package).ConfigureAwait(false),
-            BundleCacheMode.Memory    => LoadFromMemory(package),
-            _                         => null,
-        };
-        if (cached is not null) return cached;
-
-        byte[]? remote = await DownloadBundleAsync(package.File, cancellationToken).ConfigureAwait(false);
-        if (remote is not null)
-        {
-            switch (_cacheMode)
+            case BundleCacheMode.CacheStorage:
             {
-                case BundleCacheMode.Memory:    _memoryCache[package.File] = remote; break;
-                case BundleCacheMode.CacheStorage: await JSBind_CacheStorage.SaveAsync(package.File, remote).ConfigureAwait(false); break;
+                byte[]? local = await LoadFromCacheStorageAsync(package).ConfigureAwait(false);
+                if (local is not null) return local;
+                byte[]? remote = await DownloadBundleAsync(package.File, cancellationToken).ConfigureAwait(false);
+                if (remote is not null)
+                    await JSBind_CacheStorage.SaveAsync(package.File, remote).ConfigureAwait(false);
+                return remote;
             }
+            case BundleCacheMode.HttpThenCacheStorage:
+            {
+                // 先走 HTTP（命中浏览器缓存最快）；失败/无网络时降级到本地 Cache Storage。
+                byte[]? remote = await DownloadBundleAsync(package.File, cancellationToken).ConfigureAwait(false);
+                if (remote is not null)
+                {
+                    // 成功即补写本地 Cache Storage，使后续离线也能走降级路径。
+                    await JSBind_CacheStorage.SaveAsync(package.File, remote).ConfigureAwait(false);
+                    return remote;
+                }
+                return await LoadFromCacheStorageAsync(package).ConfigureAwait(false);
+            }
+            default: // Http
+                return await DownloadBundleAsync(package.File, cancellationToken).ConfigureAwait(false);
         }
-        return remote;
     }
 
     /// <summary>
@@ -147,15 +152,6 @@ public sealed class AssetBundleManager : IDisposable
         return string.Equals(BundleHash.Hex(local), package.Hash, StringComparison.OrdinalIgnoreCase)
             ? local
             : null;
-    }
-
-    /// <summary>从内存缓存取字节，并校验内容哈希与清单一致；不一致/缺失返回 null。</summary>
-    private byte[]? LoadFromMemory(BundlePackage package)
-    {
-        if (_memoryCache.TryGetValue(package.File, out var local)
-            && string.Equals(BundleHash.Hex(local), package.Hash, StringComparison.OrdinalIgnoreCase))
-            return local;
-        return null;
     }
 
     #endregion
