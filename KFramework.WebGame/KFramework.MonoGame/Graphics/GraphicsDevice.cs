@@ -1,8 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 
-using KFramework.MonoGame;
-
 namespace KFramework.MonoGame
 {
 
