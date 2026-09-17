@@ -2,29 +2,21 @@ using System.Runtime.InteropServices.JavaScript;
 
 namespace KFramework.MonoGame
 {
-    //负责加载/卸载 AssetBundle
-    //也提供 加载 Text/字节数组/Texture2D 的方法（不经AssetBundle，直接按页面基址下载）
+    // 负责加载/卸载 AssetBundle（统一委托 AssetBundleManager）
+    // 也提供 加载 Text/字节数组/Texture2D 的方法（不经AssetBundle，直接按页面基址下载）
     public sealed class ContentManager : IDisposable
     {
         private readonly HttpClient _http;
-        private readonly string _root;
         private readonly AssetBundleManager _manager;
-
-        // 总清单（包列表 + 哈希）
-        private AssetBundleManifest? _bundleManifest;
-
-        // 逻辑包名 -> 已加载的 Bundle
-        private readonly Dictionary<string, AssetBundle> _bundles = new(StringComparer.OrdinalIgnoreCase);
 
         public ContentManager(
             string root = "hot_update_res",
             string BaseURL = null,
-            Func<string, Task<byte[]?>>? loadLocal = null,
-            Func<string, byte[], Task>? saveLocal = null)
+            AssetBundleManager.BundleCacheMode cacheMode = AssetBundleManager.BundleCacheMode.CacheStorage)
         {
             ArgumentNullException.ThrowIfNull(root);
-            _root = root.TrimEnd('/');
-            
+            string rootUrl = root.TrimEnd('/');
+
             string baseUri = BaseURL;
             if (string.IsNullOrWhiteSpace(BaseURL))
             {
@@ -46,47 +38,33 @@ namespace KFramework.MonoGame
             }
 
             _http = baseAddress is null ? new HttpClient() : new HttpClient { BaseAddress = baseAddress };
-            _manager = new AssetBundleManager(_http, _root, loadLocal, saveLocal);
+            _manager = new AssetBundleManager(_http, rootUrl, cacheMode);
         }
 
         /// <summary>已加载的 Bundle 逻辑名。</summary>
-        public IReadOnlyList<string> LoadedBundles => _bundles.Keys.ToArray();
+        public IReadOnlyList<string> LoadedBundles => _manager.LoadedBundles;
 
-        /// <summary>取一个已加载的 Bundle（同步；包必须先经 <see cref="LoadBundleAsync"/> 加载）。
+        /// <summary>取一个已加载的 Bundle（同步；包须先经 <see cref="LoadBundleAsync"/> 加载）。
         /// <paramref name="strict"/> 为 true 时按精确逻辑名匹配；为 false 时按关键字（键包含）匹配首个已加载 Bundle。</summary>
         public AssetBundle? GetBundle(string bundleName, bool strict = true)
-            => TryGetBundle(bundleName, out var b, strict) ? b : null;
+            => _manager.GetBundle(bundleName, strict);
 
         /// <summary>尝试取一个已加载的 Bundle。
         /// <paramref name="strict"/> 为 true 时按精确逻辑名匹配；为 false 时按关键字（键包含）匹配首个已加载 Bundle。</summary>
         public bool TryGetBundle(string bundleName, out AssetBundle? bundle, bool strict = true)
-        {
-            if (strict)
-            {
-                if (_bundles.TryGetValue(bundleName, out var b)) { bundle = b; return true; }
-                bundle = null; return false;
-            }
-            // 宽松：键（逻辑名 + 别名）包含关键字（不区分大小写）的第一个匹配
-            foreach (var kv in _bundles)
-                if (kv.Key.Contains(bundleName, StringComparison.OrdinalIgnoreCase))
-                { bundle = kv.Value; return true; }
-            bundle = null; return false;
-        }
+            => _manager.TryGetBundle(bundleName, out bundle, strict);
 
-        #region 清单与 Bundle 加载（全部异步）
+        #region 清单与 Bundle 加载（全部异步，委托 AssetBundleManager）
 
         /// <summary>拉取并解析总清单 version.manifest（仅包列表与哈希，不含资源索引）。</summary>
         public async Task LoadManifestAsync(CancellationToken cancellationToken = default)
-            => _bundleManifest = await _manager.FetchManifestAsync(cancellationToken).ConfigureAwait(false);
+            => await _manager.FetchManifestAsync(cancellationToken).ConfigureAwait(false);
 
         /// <summary>
         /// 一键加载：先拉总清单，再并发加载其中列出的全部 Bundle（等价于“加载所有资源”）。
         /// </summary>
         public async Task LoadAsync(IProgress<float>? progress = null, CancellationToken cancellationToken = default)
-        {
-            if (_bundleManifest is null) await LoadManifestAsync(cancellationToken).ConfigureAwait(false);
-            await LoadBundlesAsync(_bundleManifest!.GetAllAssetBundles(), cancellationToken, progress).ConfigureAwait(false);
-        }
+            => await _manager.LoadAllAsync(progress, cancellationToken).ConfigureAwait(false);
 
         /// <summary>
         /// 异步加载单个 AssetBundle。已加载过则直接返回（幂等）。
@@ -97,66 +75,17 @@ namespace KFramework.MonoGame
             CancellationToken cancellationToken = default,
             IProgress<float>? progress = null,
             bool strict = true)
-        {
-            if (TryGetBundle(bundleName, out var existing, strict))
-            {
-                progress?.Report(1f);
-                return existing!;
-            }
-
-            if (_bundleManifest is null) await LoadManifestAsync(cancellationToken).ConfigureAwait(false);
-
-            BundlePackage? pkg = AssetBundleManifest.FindPackage(_bundleManifest!.Packages, bundleName, strict);
-            if (pkg is null)
-                throw new KeyNotFoundException($"总清单中没有资源包 “{bundleName}”（{(strict ? "精确名" : "关键字")}）。");
-
-            byte[]? bytes = await _manager.LoadBundleBytesAsync(pkg, cancellationToken).ConfigureAwait(false);
-            if (bytes is null)
-                throw new InvalidOperationException($"资源包 “{bundleName}” 下载失败（{pkg.File}）。");
-
-            var bundle = AssetBundle.LoadFromMemory(bytes);
-            // 拉包阶段即把需要解码的纹理（Png 等）解码为 RGBA8 并缓存，使后续 LoadTexture 仅做 GPU 上传。
-            await bundle.DecodeTexturesAsync().ConfigureAwait(false);
-            // 同时以「逻辑名 + 全部别名」登记，使 GetBundle 用任一名字都能取到
-            string key = bundle.Content.Name;
-            _bundles[key] = bundle;
-            PrintTool.Log($"[KFramework.MonoGame] 已加载资源包 {key}（{bytes.Length} 字节，{bundle.Content.Entries.Count} 项）");
-            progress?.Report(1f);
-            return bundle;
-        }
+            => await _manager.LoadBundleAsync(bundleName, cancellationToken, progress, strict).ConfigureAwait(false);
 
         /// <summary>异步并发加载多个 AssetBundle（单个失败不影响其余，逐包上报进度 0~1）。</summary>
         public async Task<IReadOnlyList<AssetBundle>> LoadBundlesAsync(
             IEnumerable<string> bundleNames,
             CancellationToken cancellationToken = default,
             IProgress<float>? progress = null)
-        {
-            var list = bundleNames as IReadOnlyList<string> ?? bundleNames.ToArray();
-            var results = new AssetBundle[list.Count];
-            int completed = 0;
-
-            var tasks = list.Select(async (name, i) =>
-            {
-                results[i] = await LoadBundleAsync(name, cancellationToken).ConfigureAwait(false);
-                int n = Interlocked.Increment(ref completed);
-                progress?.Report(n / (float)Math.Max(1, list.Count));
-            });
-
-            await Task.WhenAll(tasks).ConfigureAwait(false);
-            return results;
-        }
+            => await _manager.LoadBundlesAsync(bundleNames, cancellationToken, progress).ConfigureAwait(false);
 
         /// <summary>卸载一个已加载的 Bundle（释放其 zip 流；正在使用的纹理/字节请自行管理）。</summary>
-        public void UnloadBundle(string bundleName)
-        {
-            if (_bundles.TryGetValue(bundleName, out var b))
-            {
-                b.Dispose();
-                // 移除所有指向该 bundle 的键（逻辑名 + 别名）
-                foreach (var kv in _bundles.Where(kv => kv.Value == b).ToArray())
-                    _bundles.Remove(kv.Key);
-            }
-        }
+        public void UnloadBundle(string bundleName) => _manager.UnloadBundle(bundleName);
 
         #endregion
 
@@ -212,8 +141,7 @@ namespace KFramework.MonoGame
 
         public void Dispose()
         {
-            foreach (var b in _bundles.Values) b.Dispose();
-            _bundles.Clear();
+            _manager.Dispose();
             _http.Dispose();
         }
     }
