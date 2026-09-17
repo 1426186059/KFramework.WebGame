@@ -38,23 +38,17 @@ public sealed class AssetBundleManifest
         Packages = packages;
     }
 
-    private static readonly JsonSerializerOptions s_opts = new()
-    {
-        WriteIndented = true,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    };
-
     /// <summary>序列化为 JSON 字符串（version.manifest 的内容）。</summary>
-    public string Serialize() => JsonSerializer.Serialize(this, s_opts);
+    public string Serialize() => JsonSerializer.Serialize(this, JsonAutoGenerator.Default.AssetBundleManifest);
 
     /// <summary>从流解析总清单（version.manifest）。</summary>
     public static AssetBundleManifest Parse(Stream stream)
-        => JsonSerializer.Deserialize<AssetBundleManifest>(stream)
+        => JsonSerializer.Deserialize(stream, JsonAutoGenerator.Default.AssetBundleManifest)
            ?? throw new InvalidDataException("version.manifest 解析失败");
 
     /// <summary>从 JSON 字符串解析总清单（version.manifest）。</summary>
     public static AssetBundleManifest Parse(string json)
-        => JsonSerializer.Deserialize<AssetBundleManifest>(json)
+        => JsonSerializer.Deserialize(json, JsonAutoGenerator.Default.AssetBundleManifest)
            ?? throw new InvalidDataException("version.manifest 解析失败");
 
     /// <summary>按逻辑名（不区分大小写）查找包条目；找不到返回 null。</summary>
