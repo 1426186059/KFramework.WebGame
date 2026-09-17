@@ -4,6 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <title>KFramework.Example3 - 超级马里奥</title>
+    <!-- 框架在构建/发布时填充此 import map，把明文模块名（如 ./jsengine/gl.js）映射到指纹名，
+         浏览器据此解析 main.js 内部的 import 说明符，使 *.js 指纹化后仍能正常加载。 -->
+    <script type="importmap"></script>
     <style>
         html, body {
             margin: 0;
@@ -35,6 +38,8 @@
 <body>
     <div id="boot">正在加载…</div>
     <canvas id="game"></canvas>
-    <script type="module" src="./jsengine/main.js"></script>
+    <!-- 入口走内联 module 的 import，使其经由上方 import map 解析到指纹名（import map 只解析 import 说明符，
+         不解析 <script src>；而 jsengine 不像 _framework 有 SDK 的明文→指纹服务端映射）。 -->
+    <script type="module">import './jsengine/main.js';</script>
 </body>
 </html>
