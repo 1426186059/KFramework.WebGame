@@ -188,7 +188,8 @@ public sealed class AssetBundleManager : IDisposable
         string bundleName,
         CancellationToken cancellationToken = default,
         IProgress<float>? progress = null,
-        bool strict = true)
+        bool strict = true,
+        GraphicsDevice? device = null)
     {
         if (TryGetBundle(bundleName, out var existing, strict))
         {
@@ -207,8 +208,9 @@ public sealed class AssetBundleManager : IDisposable
             throw new InvalidOperationException($"资源包 “{bundleName}” 下载失败（{pkg.File}）。");
 
         var bundle = AssetBundle.LoadFromMemory(bytes);
-        // 拉包阶段即把需要解码的纹理（Png 等）解码为 RGBA8 并缓存，使后续 LoadTexture 仅做 GPU 上传。
-        await bundle.DecodeTexturesAsync().ConfigureAwait(false);
+        // 拉包阶段即把需要解码的纹理（Png 等）解码为 RGBA8 并缓存；传了 device 时 KTX2 也在此阶段转码+上传 GPU，
+        // 使后续 LoadTexture 仅做取用、不再做解码/上传。
+        await bundle.DecodeTexturesAsync(device).ConfigureAwait(false);
         // 以逻辑名登记，使 GetBundle 用该名字能取到
         string key = bundle.Content.Name;
         _bundles[key] = bundle;
@@ -221,7 +223,8 @@ public sealed class AssetBundleManager : IDisposable
     public async Task<IReadOnlyList<AssetBundle>> LoadBundlesAsync(
         IEnumerable<string> bundleNames,
         CancellationToken cancellationToken = default,
-        IProgress<float>? progress = null)
+        IProgress<float>? progress = null,
+        GraphicsDevice? device = null)
     {
         var list = bundleNames as IReadOnlyList<string> ?? bundleNames.ToArray();
         var results = new AssetBundle[list.Count];
@@ -229,7 +232,7 @@ public sealed class AssetBundleManager : IDisposable
 
         var tasks = list.Select(async (name, i) =>
         {
-            results[i] = await LoadBundleAsync(name, cancellationToken).ConfigureAwait(false);
+            results[i] = await LoadBundleAsync(name, cancellationToken, device: device).ConfigureAwait(false);
             int n = Interlocked.Increment(ref completed);
             progress?.Report(n / (float)Math.Max(1, list.Count));
         });
@@ -239,10 +242,10 @@ public sealed class AssetBundleManager : IDisposable
     }
 
     /// <summary>一键加载：先拉总清单，再并发加载其中列出的全部 Bundle（等价于“加载所有资源”）。</summary>
-    public async Task LoadAllAsync(IProgress<float>? progress = null, CancellationToken cancellationToken = default)
+    public async Task LoadAllAsync(IProgress<float>? progress = null, CancellationToken cancellationToken = default, GraphicsDevice? device = null)
     {
         if (_manifest is null) await FetchManifestAsync(cancellationToken).ConfigureAwait(false);
-        await LoadBundlesAsync(_manifest!.GetAllAssetBundles(), cancellationToken, progress).ConfigureAwait(false);
+        await LoadBundlesAsync(_manifest!.GetAllAssetBundles(), cancellationToken, progress, device).ConfigureAwait(false);
     }
 
     /// <summary>卸载一个已加载的 Bundle（释放其 zip 流；正在使用的纹理/字节请自行管理）。</summary>

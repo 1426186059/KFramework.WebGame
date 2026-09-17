@@ -10,8 +10,10 @@ namespace KFramework.MonoGame;
 /// <summary>
 /// 一个已加载的 .web.lib 资源包（对齐 Unity <c>AssetBundle</c>）。
 /// 通过 <see cref="LoadFromMemory"/> / <see cref="LoadFromStream"/> 加载，纯流式、无文件系统依赖，可在浏览器 WASM 运行。
-/// 包内纹理在 <see cref="DecodeTexturesAsync"/>（LoadBundle 阶段）按 <see cref="AssetBundleEntry.Format"/> 解码为 RGBA8 后上传 GPU；
-/// 非纹理资源（音频 / JSON 等）原样取出。
+/// 包内纹理在 <see cref="DecodeTexturesAsync"/>（LoadBundle 阶段）按 <see cref="AssetBundleEntry.Format"/> 解码：
+/// Rgba 原样、Png/Webp 解码为 RGBA8、Ktx2（传入 <see cref="GraphicsDevice"/> 时）借 Basis 转码器转码为设备原生压缩格式并上传 GPU；
+/// 非纹理资源（音频 / JSON 等）原样取出。KTX2 在包加载阶段解码后，<see cref="LoadTexture"/> 同步即可取用；
+/// KTX2 必须在解包阶段传入 <see cref="GraphicsDevice"/> 才会转码+上传 GPU；不传则含 KTX2 的包在 <see cref="DecodeTexturesAsync"/> 阶段直接报错。
 ///
 /// 一个资源包对应一个“Bundle”，里面装着若干资源（图集页、音效、JSON 等）。
 /// 所有资源都从已加载的 Bundle 中按名字取出。
@@ -19,7 +21,7 @@ namespace KFramework.MonoGame;
 /// <example>
 /// <code>
 /// using var ab = AssetBundle.LoadFromMemory(bytes);
-/// await ab.DecodeTexturesAsync();                              // 加载阶段解码纹理（Png 等）
+/// await ab.DecodeTexturesAsync(device);                      // 加载阶段解码/上传纹理（KTX2 需传 device）
 /// Texture2D tex = ab.LoadTexture("myres/atlas/characters_0", device); // 仅上传 GPU
 /// </code>
 /// </example>
@@ -29,6 +31,8 @@ public sealed class AssetBundle : IDisposable
     private readonly Dictionary<string, ZipArchiveEntry> _byPath;
     // 加载阶段（LoadBundleAsync）预解码后的 RGBA8 像素缓存：path -> RGBA8（长度 = W*H*4）。
     private readonly Dictionary<string, byte[]> _decodedTextures = new(StringComparer.OrdinalIgnoreCase);
+    // 加载阶段预解码的 GPU 纹理缓存（仅 KTX2 等 GPU 压缩纹理；path -> 已上传 GPU 的 Texture2D）。
+    private readonly Dictionary<string, Texture2D> _decodedGpuTextures = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>包内清单（资源索引 + 元信息）。</summary>
     public AssetBundleContent Content { get; }
@@ -133,8 +137,12 @@ public sealed class AssetBundle : IDisposable
             throw new InvalidOperationException(
                 $"资源「{name}」是旧格式的子图条目，请改用 SpriteSheetLoader 加载图集（整页纹理 + source rect）。");
         if (info.Format == AssetTextureFormat.Ktx2)
+        {
+            if (_decodedGpuTextures.TryGetValue(info.Path, out var gpuTex))
+                return gpuTex;
             throw new InvalidOperationException(
-                $"资源「{name}」为 KTX2（GPU 压缩纹理）：转码需 GPU 上下文，请改用 LoadTextureAsync 异步加载。");
+                $"资源「{name}」为 KTX2（GPU 压缩纹理）：需在 LoadBundleAsync 阶段传入 GraphicsDevice 预解码（KTX2 转码+上传必须在加载阶段完成）。");
+        }
 
         // 优先用加载阶段预解码的缓存；未命中（如直接 LoadFromMemory 而未调 DecodeTexturesAsync）则按格式兜底解码。
         // 缓存键用真实路径（info.Path），严格/宽松模式下 name 可能只是关键字。
@@ -149,58 +157,45 @@ public sealed class AssetBundle : IDisposable
         return device.CreateTexture(width, height, pixels);
     }
 
-    /// <summary>
-    /// 异步加载一张整图纹理。对 RGBA8 / Png（已在 <see cref="DecodeTexturesAsync"/> 预解码）/ Webp 复用同步上传路径；
-    /// 对 KTX2（GPU 压缩纹理）则借浏览器 Basis 转码器把 KTX2 转码为当前设备原生压缩格式并直接上传 GPU。
-    /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个纹理。
-    /// </summary>
-    public async Task<Texture2D> LoadTextureAsync(string name, GraphicsDevice device, bool strict = true)
-    {
-        AssetBundleEntry? info = GetAssetInfo(name, strict)
-            ?? throw new KeyNotFoundException($"资源不存在: {name}");
-        if (info.Page >= 0)
-            throw new InvalidOperationException(
-                $"资源「{name}」是旧格式的子图条目，请改用 SpriteSheetLoader 加载图集（整页纹理 + source rect）。");
-
-        // KTX2 是 GPU 压缩纹理：只有它才需要借浏览器 Basis 转码器转码后直接上传 GPU
-        // （唯一需要异步、依赖 GPU 上下文的格式）。
-        if (info.Format == AssetTextureFormat.Ktx2)
-        {
-            byte[] raw = LoadAsset(info.Path);
-            (int basisFormat, int glFormat) = Ktx2TranscodeSelector.Pick();
-            JSObject handle = await JSBind_Texture.UploadKtx2(raw, basisFormat, glFormat).ConfigureAwait(false);
-            int width = info.Width, height = info.Height;
-            if (width <= 0 || height <= 0)
-                throw new InvalidOperationException($"纹理 “{name}” 缺少像素尺寸，无法上传 GPU。");
-            return new Texture2D(device, handle, width, height, ownsHandle: true, isCompressed: true);
-        }
-
-        // 其余格式（Rgba / Png / Webp 等）：像素已在 DecodeTexturesAsync 预解码，走同步上传路径。
-        return LoadTexture(info.Path, device);
-    }
-
     // ============ 加载阶段异步解码（对齐 PixiJS：bundle 拉取/解包/解码异步，取资源同步） ============
     // 把需要解码的纹理（如 Png）在 LoadBundleAsync 阶段提前解码为 RGBA8 并缓存，
     // 使 LoadTexture 只负责 GPU 上传、不再做图像解码。解码本身为 CPU 同步（WASM 单线程），
     // 但被安排在异步加载阶段完成，逐资源取用时保持同步、零解码。Rgba 格式本身已是像素，无需预解码。
 
     /// <summary>
-    /// 在包已驻留内存后、取资源之前，把需要解码的纹理（Png / Webp）提前解码为 RGBA8 并缓存。
-    /// 应在 <see cref="ContentManager.LoadBundleAsync"/>（异步阶段）调用一次。
+    /// 在包已驻留内存后、取资源之前，把需要解码的纹理（Png / Webp / Ktx2）提前解码/上传。
+    /// KTX2 必须在解包阶段传入 <paramref name="device"/> 才会转码+上传 GPU；不传则含 KTX2 的包直接报错。
+    /// 传入 <paramref name="device"/> 时 KTX2 也在此阶段借浏览器 Basis 转码器转码为设备原生压缩格式并上传 GPU，
+    /// 缓存为 GPU 纹理，使后续 <see cref="LoadTexture"/> 同步即可取用（对齐“解包即解码”的加载模型）。
     /// </summary>
     /// <remarks>
     /// Rgba 本身已是像素，直接上传无需预解码；Png 走托管 PngDecoder 同步解码；
     /// Webp 无托管解码器，借浏览器原生 <c>createImageBitmap</c> 异步解码（WASM/浏览器目标）。
+    /// KTX2 的转码+上传需要 GL 上下文，故仅当传入 <paramref name="device"/> 时才在加载阶段完成。
     /// </remarks>
-    public async Task DecodeTexturesAsync()
+    public async Task DecodeTexturesAsync(GraphicsDevice? device = null)
     {
         foreach (var e in Content.Entries)
         {
             if (!string.Equals(e.Type, "texture", StringComparison.OrdinalIgnoreCase)) continue;
             if (e.Format == AssetTextureFormat.Rgba) continue;
-            // KTX2 是 GPU 压缩纹理：转码需 GPU 上下文与 Basis 转码器，不能在包加载阶段做，
-            // 留到 LoadTextureAsync 上传时按需转码+上传。此处跳过预解码。
-            if (e.Format == AssetTextureFormat.Ktx2) continue;
+
+            // KTX2 是 GPU 压缩纹理：转码+上传需要 GL 上下文（device）与 Basis 转码器，
+            // 必须在解包阶段（此处）完成。未传 device 则明确报错，而不是把问题推到取资源时。
+            if (e.Format == AssetTextureFormat.Ktx2)
+            {
+                if (device is null)
+                    throw new InvalidOperationException(
+                        $"纹理 “{e.Path}” 为 KTX2（GPU 压缩纹理）：转码+上传需 GL 上下文，请在 LoadBundleAsync 阶段传入 GraphicsDevice 进行预解码。");
+                int w = e.Width, h = e.Height;
+                if (w <= 0 || h <= 0)
+                    throw new InvalidOperationException($"纹理 “{e.Path}” 缺少像素尺寸，无法上传 KTX2。");
+                byte[] raw = LoadAsset(e.Path);
+                (int basisFormat, int glFormat) = Ktx2TranscodeSelector.Pick();
+                JSObject handle = await JSBind_Texture.UploadKtx2(raw, basisFormat, glFormat).ConfigureAwait(false);
+                _decodedGpuTextures[e.Path] = new Texture2D(device, handle, w, h, ownsHandle: true, isCompressed: true);
+                continue;
+            }
 
             if (e.Format == AssetTextureFormat.Webp)
             {
@@ -231,7 +226,7 @@ public sealed class AssetBundle : IDisposable
             AssetTextureFormat.Webp => throw new InvalidOperationException(
                 $"纹理 “{name}” 为 WebP：必须在 LoadBundleAsync 阶段（DecodeTexturesAsync）经浏览器原生解码，请先调用 LoadBundleAsync，不要走同步兜底。"),
             AssetTextureFormat.Ktx2 => throw new NotSupportedException(
-                $"纹理 “{name}” 为 KTX2（GPU 压缩纹理）：请使用 LoadTextureAsync 经浏览器 Basis 转码器上传，不要走同步兜底。"),
+                $"纹理 “{name}” 为 KTX2（GPU 压缩纹理）：请在 LoadBundleAsync 阶段传入 GraphicsDevice 预解码，不要走同步兜底。"),
             _ => raw,
         };
     }
@@ -250,5 +245,11 @@ public sealed class AssetBundle : IDisposable
     /// <summary>卸载（对应 Unity Unload，本库即关闭 zip 流）。</summary>
     public void Unload(bool unloadAllLoadedObjects = true) => Dispose();
 
-    public void Dispose() => _zip.Dispose();
+    public void Dispose()
+    {
+        _zip.Dispose();
+        // 回收解包阶段预上传的 GPU 压缩纹理（KTX2 等），避免 Bundle 卸载后显存泄漏。
+        foreach (var t in _decodedGpuTextures.Values) t.Dispose();
+        _decodedGpuTextures.Clear();
+    }
 }
