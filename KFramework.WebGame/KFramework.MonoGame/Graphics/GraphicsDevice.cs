@@ -397,6 +397,34 @@ namespace KFramework.MonoGame
             if (compressedData.Length == 0)
                 throw new ArgumentException("压缩数据不能为空", nameof(compressedData));
 
+            return CreateCompressedTextureInternal(width, height, compressedData, internalFormat);
+        }
+
+        /// <summary>
+        /// <see cref="SurfaceFormat"/> 重载（对齐 MonoGame 写法）：用枚举表达格式而非裸 GL 常量。
+        /// 会按格式校验 <paramref name="compressedData"/> 长度是否等于 宽高×压缩块大小（数据截断/越界会抛 <see cref="ArgumentException"/>）。
+        /// </summary>
+        public Texture2D CreateCompressedTexture(int width, int height, byte[] compressedData, SurfaceFormat format)
+        {
+            int expected = SurfaceFormatGL.GetExpectedCompressedBytes(format, width, height);
+            if (expected > 0 && compressedData is not null && compressedData.Length != expected)
+                throw new ArgumentException(
+                    $"压缩数据长度 {compressedData?.Length ?? 0} 与格式 {format} 预期的 {expected} 字节不一致（宽高 {width}x{height}）。",
+                    nameof(compressedData));
+
+            return CreateCompressedTextureInternal(width, height, compressedData, SurfaceFormatGL.ToInternalFormat(format));
+        }
+
+        private Texture2D CreateCompressedTextureInternal(int width, int height, byte[] compressedData, int internalFormat)
+        {
+            ArgumentOutOfRangeException.ThrowIfLessThan(width, 1);
+            ArgumentOutOfRangeException.ThrowIfLessThan(height, 1);
+            if (width > MaxTextureSize || height > MaxTextureSize)
+                throw new ArgumentOutOfRangeException(nameof(width), $"纹理尺寸超过上限 {MaxTextureSize}");
+            ArgumentNullException.ThrowIfNull(compressedData);
+            if (compressedData.Length == 0)
+                throw new ArgumentException("压缩数据不能为空", nameof(compressedData));
+
             JSObject handle = JSBind_GL.CreateTexture();
             JSBind_GL.BindTexture(JSBind_GL.TEXTURE_2D, handle);
             JSBind_GL.CompressedTexImage2D(JSBind_GL.TEXTURE_2D, 0, internalFormat, width, height, 0, compressedData);
