@@ -353,66 +353,59 @@ namespace KFramework.MonoGame
             _metrics._primitiveCount += vRun / 2;
         }
 
-        /// <summary>创建一张空的 RGBA8 纹理。</summary>
+        /// <summary>创建一张空的 RGBA8 纹理（便捷重载）。</summary>
         public Texture2D CreateTexture(int width, int height)
-            => CreateTexture(width, height, new byte[width * height * 4]);
+            => CreateTexture(width, height, new byte[width * height * 4], SurfaceFormat.Color);
 
-        /// <summary>用 RGBA8 像素数据创建纹理。</summary>
-        public Texture2D CreateTexture(int width, int height, byte[] rgba)
+        /// <summary>
+        /// 创建纹理：<paramref name="data"/> 为 RGBA8 像素（<paramref name="format"/> = Color）或 GPU 压缩字节（DXT / ASTC / BC7 等）。
+        /// 压缩格式会先按「宽高 × 压缩块大小」校验 <paramref name="data"/> 长度；压缩纹理为不可变 GPU 数据，
+        /// 过滤固定为 LINEAR + CLAMP_TO_EDGE（不支持 generateMipmap / SetData 局部更新）。
+        /// </summary>
+        public Texture2D CreateTexture(int width, int height, byte[] data, SurfaceFormat format = SurfaceFormat.Color)
         {
             ArgumentOutOfRangeException.ThrowIfLessThan(width, 1);
             ArgumentOutOfRangeException.ThrowIfLessThan(height, 1);
             if (width > MaxTextureSize || height > MaxTextureSize)
                 throw new ArgumentOutOfRangeException(nameof(width), $"纹理尺寸超过上限 {MaxTextureSize}");
+            ArgumentNullException.ThrowIfNull(data);
+            if (data.Length == 0)
+                throw new ArgumentException("纹理数据不能为空", nameof(data));
 
-            JSObject handle = JSBind_GL.CreateTexture();
-            JSBind_GL.BindTexture(JSBind_GL.TEXTURE_2D, handle);
-            JSBind_GL.PixelStorei(JSBind_GL.UNPACK_ALIGNMENT, 1);
-            JSBind_GL.TexImage2D(JSBind_GL.TEXTURE_2D, 0, JSBind_GL.RGBA8, width, height, 0, JSBind_GL.RGBA, JSBind_GL.UNSIGNED_BYTE, rgba);
-            JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MIN_FILTER, JSBind_GL.NEAREST);
-            JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MAG_FILTER, JSBind_GL.NEAREST);
-            JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_WRAP_S, JSBind_GL.CLAMP_TO_EDGE);
-            JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_WRAP_T, JSBind_GL.CLAMP_TO_EDGE);
-
-            int error = JSBind_GL.GetError();
-            if (error != 0) Console.Error.WriteLine($"[KFramework.MonoGame] 纹理上传失败 0x{error:X4}（{width}x{height}，{rgba.Length} 字节）");
-
-            var texture = new Texture2D(this, handle, width, height, ownsHandle: true);
-            texture._sortingKey = _sortingKeySource++;
-            return texture;
-        }
-
-        //专门创建 GPU 压缩纹理
-        public Texture2D CreateCompressedTexture(int width, int height, byte[] compressedData, SurfaceFormat format)
-        {
-            int expected = SurfaceFormatGL.GetExpectedCompressedBytes(format, width, height);
-            if (expected > 0 && compressedData is not null && compressedData.Length != expected)
+            bool compressed = format != SurfaceFormat.Color;
+            if (compressed)
             {
-                throw new ArgumentException(
-                    $"压缩数据长度 {compressedData?.Length ?? 0} 与格式 {format} 预期的 {expected} 字节不一致（宽高 {width}x{height}）。",
-                    nameof(compressedData));
+                int expected = SurfaceFormatGL.GetExpectedCompressedBytes(format, width, height);
+                if (expected > 0 && data.Length != expected)
+                    throw new ArgumentException(
+                        $"压缩数据长度 {data.Length} 与格式 {format} 预期的 {expected} 字节不一致（宽高 {width}x{height}）。",
+                        nameof(data));
             }
 
-            ArgumentOutOfRangeException.ThrowIfLessThan(width, 1);
-            ArgumentOutOfRangeException.ThrowIfLessThan(height, 1);
-            if (width > MaxTextureSize || height > MaxTextureSize)
-                throw new ArgumentOutOfRangeException(nameof(width), $"纹理尺寸超过上限 {MaxTextureSize}");
-            ArgumentNullException.ThrowIfNull(compressedData);
-            if (compressedData.Length == 0)
-                throw new ArgumentException("压缩数据不能为空", nameof(compressedData));
-
             JSObject handle = JSBind_GL.CreateTexture();
             JSBind_GL.BindTexture(JSBind_GL.TEXTURE_2D, handle);
-            JSBind_GL.CompressedTexImage2D(JSBind_GL.TEXTURE_2D, 0, (int)format, width, height, 0, compressedData);
-            JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MIN_FILTER, JSBind_GL.LINEAR);
-            JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MAG_FILTER, JSBind_GL.LINEAR);
+
+            if (compressed)
+            {
+                JSBind_GL.CompressedTexImage2D(JSBind_GL.TEXTURE_2D, 0, (int)format, width, height, 0, data);
+                JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MIN_FILTER, JSBind_GL.LINEAR);
+                JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MAG_FILTER, JSBind_GL.LINEAR);
+            }
+            else
+            {
+                JSBind_GL.PixelStorei(JSBind_GL.UNPACK_ALIGNMENT, 1);
+                JSBind_GL.TexImage2D(JSBind_GL.TEXTURE_2D, 0, JSBind_GL.RGBA8, width, height, 0, JSBind_GL.RGBA, JSBind_GL.UNSIGNED_BYTE, data);
+                JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MIN_FILTER, JSBind_GL.NEAREST);
+                JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MAG_FILTER, JSBind_GL.NEAREST);
+            }
+
             JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_WRAP_S, JSBind_GL.CLAMP_TO_EDGE);
             JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_WRAP_T, JSBind_GL.CLAMP_TO_EDGE);
 
             int error = JSBind_GL.GetError();
-            if (error != 0) Console.Error.WriteLine($"[KFramework.MonoGame] 压缩纹理上传失败 0x{error:X4}（{width}x{height}，{compressedData.Length} 字节）");
+            if (error != 0) Console.Error.WriteLine($"[KFramework.MonoGame] 纹理上传失败 0x{error:X4}（{(compressed ? "压缩" : "RGBA8")} {width}x{height}，{data.Length} 字节）");
 
-            var texture = new Texture2D(this, handle, width, height, ownsHandle: true, isCompressed: true);
+            var texture = new Texture2D(this, handle, width, height, ownsHandle: true, isCompressed: compressed);
             texture._sortingKey = _sortingKeySource++;
             return texture;
         }

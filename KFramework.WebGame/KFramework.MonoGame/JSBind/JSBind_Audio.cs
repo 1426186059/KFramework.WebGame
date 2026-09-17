@@ -19,9 +19,11 @@ namespace KFramework.MonoGame
         [JSImport("unlock", "audio")]
         internal static partial void Unlock();
 
+        /// <summary>静音开关（整条音频输出）。</summary>
         [JSImport("setMuted", "audio")]
         internal static partial void SetMuted(bool muted);
 
+        /// <summary>设置主音量（0~1）。</summary>
         [JSImport("setMasterVolume", "audio")]
         internal static partial void SetMasterVolume(float volume);
 
@@ -57,33 +59,43 @@ namespace KFramework.MonoGame
         [JSImport("createInstance", "audio")]
         internal static partial int CreateInstance(int handle);
 
+        /// <summary>播放缓冲实例（音量/音高/声像/循环）。</summary>
         [JSImport("playInstance", "audio")]
         internal static partial void PlayInstance(int instance, float volume, float pitch, float pan, bool loop);
 
+        /// <summary>停止实例（回到开头，可再次 play）。</summary>
         [JSImport("stopInstance", "audio")]
         internal static partial void StopInstance(int instance);
 
+        /// <summary>暂停实例（保留播放位置）。</summary>
         [JSImport("pauseInstance", "audio")]
         internal static partial void PauseInstance(int instance);
 
+        /// <summary>从暂停处继续播放。</summary>
         [JSImport("resumeInstance", "audio")]
         internal static partial void ResumeInstance(int instance);
 
+        /// <summary>设置实例音量。</summary>
         [JSImport("setInstanceVolume", "audio")]
         internal static partial void SetInstanceVolume(int instance, float volume);
 
+        /// <summary>设置实例音高（播放速率）。</summary>
         [JSImport("setInstancePitch", "audio")]
         internal static partial void SetInstancePitch(int instance, float pitch);
 
+        /// <summary>设置实例声像（-1 左 / 0 中 / 1 右）。</summary>
         [JSImport("setInstancePan", "audio")]
         internal static partial void SetInstancePan(int instance, float pan);
 
+        /// <summary>设置实例是否循环。</summary>
         [JSImport("setInstanceLoop", "audio")]
         internal static partial void SetInstanceLoop(int instance, bool loop);
 
+        /// <summary>实例是否正在播放。</summary>
         [JSImport("isInstancePlaying", "audio")]
         internal static partial bool IsInstancePlaying(int instance);
 
+        /// <summary>释放实例（与 CreateInstance 配对）。</summary>
         [JSImport("releaseInstance", "audio")]
         internal static partial void ReleaseInstance(int instance);
     }

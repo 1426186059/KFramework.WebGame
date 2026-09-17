@@ -11,7 +11,7 @@ namespace KFramework.MonoGame;
 /// 通过 <see cref="LoadFromMemory"/> / <see cref="LoadFromStream"/> 加载，纯流式、无文件系统依赖，可在浏览器 WASM 运行。
 /// 包内纹理在 <see cref="DecodeTexturesAsync"/>（LoadBundle 阶段）按 <see cref="AssetBundleEntry.Format"/> 解码/转码为字节并缓存：
 /// Rgba 原样、Png/Webp 解码为 RGBA8、Ktx2（传入 <see cref="GraphicsDevice"/> 时）借 Basis 转码器转码为设备原生压缩字节；
-/// GPU 上统一推迟到 <see cref="LoadTexture"/>（KTX2 走 CreateCompressedTexture，其余走 CreateTexture）。
+/// GPU 上统一推迟到 <see cref="LoadTexture"/>（KTX2 走 CreateTexture 压缩格式重载，其余走 CreateTexture 的 RGBA8 路径）。
 /// 非纹理资源（音频 / JSON 等）原样取出。四种格式取用时逻辑一致，且未被引用的纹理不会提前占用显存。
 /// KTX2 必须在解包阶段传入 <see cref="GraphicsDevice"/> 才会转码；不传则含 KTX2 的包在 <see cref="DecodeTexturesAsync"/> 阶段直接报错。
 ///
@@ -154,9 +154,7 @@ public sealed class AssetBundle : IDisposable
             if (w <= 0 || h <= 0)
                 throw new InvalidOperationException($"纹理 “{name}” 缺少像素尺寸，无法上传 GPU。");
             // RGBA32 回退（GlFormat == RGBA8）走普通 RGBA8 上传；其余走压缩纹理上传。
-            return decodedKtx2.GlFormat == SurfaceFormat.Color
-                ? device.CreateTexture(w, h, decodedKtx2.Data)
-                : device.CreateCompressedTexture(w, h, decodedKtx2.Data, decodedKtx2.GlFormat);
+            return device.CreateTexture(w, h, decodedKtx2.Data, decodedKtx2.GlFormat);
         }
 
         // 优先用加载阶段预解码的缓存；未命中（如直接 LoadFromMemory 而未调 DecodeTexturesAsync）则按格式兜底解码。
@@ -179,7 +177,7 @@ public sealed class AssetBundle : IDisposable
 
     /// <summary>
     /// 在包已驻留内存后、取资源之前，把需要解码的纹理（Png / Webp / Ktx2）提前解码/转码为字节并缓存；
-    /// GPU 上统一推迟到 <see cref="LoadTexture"/>（KTX2 走 CreateCompressedTexture 压缩上传，其余走 CreateTexture）。
+    /// GPU 上统一推迟到 <see cref="LoadTexture"/>（KTX2 走 CreateTexture 压缩格式重载，其余走 CreateTexture 的 RGBA8 路径）。
     /// KTX2 必须在解包阶段传入 <paramref name="device"/> 才会转码；不传则含 KTX2 的包直接报错。
     /// 传入 <paramref name="device"/> 时 KTX2 在此阶段借浏览器 Basis 转码器转码为设备原生压缩字节并缓存；
     /// 真正的 GPU 上传由 <see cref="LoadTexture"/> 完成，使四种格式取用逻辑一致（避免一次性把所有纹理灌进显存）。

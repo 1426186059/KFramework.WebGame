@@ -10,6 +10,7 @@ namespace KFramework.MonoGame
     /// </summary>
     public static partial class JSBind_GameHost
     {
+        /// <summary>当前在跑的游戏实例；JS 每帧回调 Frame 时据此转发到 TickFrame。</summary>
         internal static Game? Current;
 
         /// <summary>由 wwwroot/main.js 的渲染循环调用。</summary>

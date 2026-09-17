@@ -20,12 +20,15 @@ namespace KFramework.MonoGame
         [JSImport("startRenderLoop", "platform")]
         internal static partial void StartRenderLoop();
 
+        /// <summary>设置页面标题（浏览器标签页文字）。</summary>
         [JSImport("setTitle", "platform")]
         internal static partial void SetTitle(string title);
 
+        /// <summary>读取地址栏查询参数（?key=value 中的 value）。</summary>
         [JSImport("getQueryParameter", "platform")]
         internal static partial string GetQueryParameter(string name);
 
+        /// <summary>当前是否移动端（触屏优先设备）。</summary>
         [JSImport("isMobile", "platform")]
         internal static partial bool IsMobile();
 
