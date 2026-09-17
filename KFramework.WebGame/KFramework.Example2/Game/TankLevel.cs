@@ -121,16 +121,17 @@ internal sealed class TankLevel
     /// <summary>对应 PixiJS 的 LoadCommonTile / LoadTile_Home：为格子建一个显示节点挂到 Map1Root / Map2Root。</summary>
     private void BuildTileView(int x, int y, char c)
     {
-        Texture2D? tex = c switch
+        KSprite tex = c switch
         {
             '#' => _res.Wall,
             '*' => _res.Barriar,
             '~' => _res.Water,
             '^' => _res.Grass,
             '@' => _res.Heart,
-            _ => null,
+            _ => default,
         };
-        if (tex is null) { _tileViews[y, x] = null; return; }
+        bool hasTile = c is '#' or '*' or '~' or '^' or '@';
+        if (!hasTile) { _tileViews[y, x] = null; return; }
 
         var view = new TGameSprite();
         view.Parent = c == '^' ? Map2Root : Map1Root;   // 草在坦克之上
@@ -314,7 +315,7 @@ internal sealed class TankLevel
         foreach (BornEffect effect in _borns) if (effect.Active) effect.SyncView(_res);
         foreach (ExplodeEffect effect in _explosions) if (effect.Active) effect.SyncView(_res);
 
-        if (_shieldTimer > 0f && _player is { Active: true } && _res.Shield is not null)
+        if (_shieldTimer > 0f && _player is { Active: true })
         {
             _shieldView.Parent = TankRoot;
             _shieldView.LocalPosition = _player.Position;

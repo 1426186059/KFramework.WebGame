@@ -206,9 +206,9 @@ public sealed class GameScene : KSceneBase
 
         for (int i = 0; i < _res.Player.Length; i++)
         {
-            Texture2D? tex = _res.Player[i];
-            if (tex is null) continue;
-            batch.Draw(tex, new Vector2(24f + (i % columns) * cell, 24f + (i / columns) * cell), Color.White);
+            KSprite sprite = _res.Player[i];
+            if (sprite.Texture is null) continue;
+            batch.Draw(sprite.Texture, new Vector2(24f + (i % columns) * cell, 24f + (i / columns) * cell), sprite.Rectangle, Color.White);
         }
     }
 

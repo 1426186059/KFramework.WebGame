@@ -1,4 +1,5 @@
 ﻿using KFramework.MonoGame;
+using KFramework.MonoGameExtend;
 
 namespace KFramework.Example2;
 
@@ -20,7 +21,7 @@ internal abstract class TankBase
 
     protected abstract float Speed { get; }
     protected abstract int[] DirBase { get; }
-    protected abstract Texture2D?[] GetSprites(ResCenter res);
+    protected abstract KSprite[] GetSprites(ResCenter res);
 
     /// <summary>推进一帧；返回本帧发射的炮弹，没开炮则为 null。</summary>
     public abstract Shell? Update(float dt, TankLevel level);

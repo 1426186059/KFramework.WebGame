@@ -6,7 +6,7 @@
     "main"
   ],
   "splitMode": "Whole",
-  "autoAtlas": true,
+  "autoAtlas": false,
   "textureFormat": "Rgba",
   "deploy": "none",
   "wwwDir": "www",

@@ -1,4 +1,5 @@
 ﻿using KFramework.MonoGame;
+using KFramework.MonoGameExtend;
 
 namespace KFramework.Example2;
 
@@ -14,7 +15,7 @@ internal sealed class EnemyTank : TankBase
 
     protected override float Speed => TankConfig.EnemySpeed;
     protected override int[] DirBase => TankConfig.EnemyDirBase;
-    protected override Texture2D?[] GetSprites(ResCenter res) => res.Enemy;
+    protected override KSprite[] GetSprites(ResCenter res) => res.Enemy;
 
     public override Shell? Update(float dt, TankLevel level)
     {
