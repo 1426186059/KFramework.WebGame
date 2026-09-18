@@ -6,11 +6,11 @@ namespace KFramework.MonoGameExtend
     {
         private Vector2 _cacheAlignment;
 
-        public SpriteFont Font { get; set; } = null;
+        public IFont Font { get; set; } = null;
         public string Text { get; set; } = string.Empty;
         public Color Color { get; set; } = Color.Green;
 
-        public KLabel(string mText = "", Color mColor = default, SpriteFont Font = null)
+        public KLabel(string mText = "", Color mColor = default, IFont Font = null)
         {
             if(mColor == default)
             {

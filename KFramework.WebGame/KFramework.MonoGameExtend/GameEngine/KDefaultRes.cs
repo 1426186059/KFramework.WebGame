@@ -4,7 +4,8 @@ namespace KFramework.MonoGameExtend
 {
     public static class KDefaultRes
     {
-        public static SpriteFont DefaultSpriteFont { get; set; }
+        /// <summary>默认字体：SpriteFont（系统字体 / 自定义字体）或 BitmapFont（美术字）皆可。</summary>
+        public static IFont DefaultSpriteFont { get; set; }
 
 
         private static Texture2D _cacheDefaultTexture2D;

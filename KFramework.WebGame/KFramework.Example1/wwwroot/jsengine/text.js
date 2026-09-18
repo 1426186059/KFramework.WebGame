@@ -34,10 +34,18 @@ function writeBytes(view, data) {
     for (let i = 0; i < data.length; i++)
         fallback[i] = data[i];
 }
+// 字距（Canvas2D 的 letterSpacing 是较新属性，不支持的浏览器直接忽略，退回默认字距）
+function applyLetterSpacing(c, letterSpacing) {
+    if (!('letterSpacing' in c))
+        return;
+    c.letterSpacing =
+        letterSpacing !== 0 ? `${letterSpacing}px` : '0px';
+}
 // out: [0]=advance(宽) [1]=总高 [2]=基线以上高度(ascent)
-export function measure(text, font, out) {
+export function measure(text, font, letterSpacing, out) {
     const c = ctx2d();
     c.font = font;
+    applyLetterSpacing(c, letterSpacing);
     const metrics = c.measureText(text);
     // actualBoundingBox* 在部分 WebKit 版本上会返回 0，字形会被裁成一条缝。
     // 这里用字号推算一个下限兜底，保证任何浏览器上字形盒子都装得下文字。
@@ -52,12 +60,13 @@ export function measure(text, font, out) {
     ]);
 }
 // 在 (x, y) 处（y 为基线）绘制白色文字，结果写入 rgba
-export function render(text, font, x, y, width, height, rgba) {
+export function render(text, font, letterSpacing, x, y, width, height, rgba) {
     canvas.width = width;
     canvas.height = height;
     const c = ctx2d();
     c.clearRect(0, 0, width, height);
     c.font = font;
+    applyLetterSpacing(c, letterSpacing);
     c.textAlign = 'left';
     c.textBaseline = 'alphabetic';
     c.fillStyle = '#ffffff';
@@ -67,4 +76,32 @@ export function render(text, font, x, y, width, height, rgba) {
     const bytes = new Uint8Array(image.length);
     bytes.set(image);
     writeBytes(rgba, bytes);
+}
+// 自定义字体：把 ttf/otf/woff 注册进 document.fonts，之后即可像系统字体那样用 family 名光栅化。
+// 注册失败（URL 不可达 / 字节不是合法字体）返回 false，C# 侧据此决定是否继续建 SpriteFont。
+export async function loadFontFromUrl(family, url) {
+    try {
+        const face = new FontFace(family, `url(${url})`);
+        await face.load();
+        document.fonts.add(face);
+        return true;
+    }
+    catch (e) {
+        console.warn('[text] 字体加载失败:', family, url, e);
+        return false;
+    }
+}
+export async function loadFontFromBytes(family, bytes) {
+    try {
+        // 复制一份字节：FontFace 内部是异步解析的，源缓冲被回收会导致解析失败
+        const copy = new Uint8Array(bytes);
+        const face = new FontFace(family, copy.buffer);
+        await face.load();
+        document.fonts.add(face);
+        return true;
+    }
+    catch (e) {
+        console.warn('[text] 字体注册失败:', family, e);
+        return false;
+    }
 }

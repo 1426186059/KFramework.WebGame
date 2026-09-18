@@ -48,6 +48,7 @@ KFramework.MonoGame —— 仿 MonoGame 引擎（面向 AI 智能体）
 --------
   Core/      Game、GameTime、GameHost 等生命周期
   Graphics/  GraphicsDevice、SpriteBatch、Texture2D、效果与状态
+  Fonts/     SpriteFont（系统/自定义字体）、BitmapFont（美术字）、BmFontData（.fnt 解析）、FontStyle、IFont
   Audio/     SoundEffect、SoundEffectInstance、MediaPlayer、AudioMaster（通用音频）
   Input/     Input
   Content/   ContentManager（运行时取资源，含 LoadBytes）
@@ -62,6 +63,30 @@ KFramework.MonoGame —— 仿 MonoGame 引擎（面向 AI 智能体）
   合成音效：不属于本库；若 Example 需要零资源原型音效，可自行用 WebAudio 合成
           （audio 模块的 playSynth），但本仓库示例统一使用真实 wav（见 Example2 的 SoundCenter），
           不内置合成示例，以保持引擎通用、干净。
+
+字体说明
+--------
+  三类字体来源，统一走 IFont（SpriteBatch.DrawString / KLabel / KDefaultRes.DefaultSpriteFont 都接受它）。
+  字体相关实现集中在 Fonts/ 目录；跨语言（Canvas2D 测字/光栅化）仍走 JSBind/JSBind_Text.cs。
+
+  1) 系统字体 —— SpriteFont：给 Canvas2D 一个 CSS font 串实时光栅化，不需要任何字体资源文件。
+       new SpriteFont(device, 24f, "system-ui, sans-serif")
+       new SpriteFont(device, 24f, "Arial", FontStyle.Bold | FontStyle.Italic, weight: 600, letterSpacing: 1f)
+     样式参数：FontStyle（Bold / Italic / Oblique，可位组合）、weight（1~1000，0 表示由 Bold 决定）、
+     FontStretch（font-stretch 各档）、letterSpacing（字距，浏览器不支持时自动忽略）。
+
+  2) 自定义字体（ttf / otf / woff）—— 先注册到 document.fonts，再当普通 family 用：
+       await SpriteFont.RegisterFontAsync("MyFont", bytes);        // 字节可来自 AssetBundle / LoadBytesAsync
+       var font = new SpriteFont(device, 24f, "MyFont");
+     或一步到位：await SpriteFont.FromFontAsync(device, "MyFont", 24f, bytes);（另有 URL 重载）
+     注意：字体必须在光栅化之前注册完成，故注册是异步的（通常放在 LoadAsync 阶段做一次）。
+
+  3) 美术字（BMFont 图集，对应 Unity 的 Custom Font）—— BitmapFont：
+       var font = await BitmapFont.LoadAsync(Content, "myres", "myres/fonts/hud.fnt", GraphicsDevice);
+       batch.DrawString(font, "SCORE 0123", pos, Color.White);   // 美术字自带颜色，用 White 保留原色
+     打包：raw/ 里放 .fnt + 它引用的图集页 png 即可，kfc 会识别 .fnt 的 page 页并按「已切图集」原样入包
+     （不参与自动装箱），否则重排像素会让字形坐标全部失效。
+     支持 BMFont 的文本与 XML 两种导出格式；二进制 .fnt（BMF 头）不支持。
 
 WASM 工程约束：禁止使用反射
 --------------------------

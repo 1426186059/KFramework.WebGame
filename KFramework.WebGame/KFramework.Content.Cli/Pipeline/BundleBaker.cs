@@ -29,9 +29,30 @@ public static class BundleBaker
         var bundle = new AssetBundleBuild { AssetBundleName = bundleName };
         var names = new HashSet<string>(StringComparer.Ordinal);
 
-        // 预扫描：识别 .atlas 预切图集（通用判定：以 .atlas 结尾）。
+        // 预扫描：识别 .atlas 预切图集（通用判定：以 .atlas 结尾），以及 .fnt 美术字引用的图集页。
         // 已切好的图集（描述文件 + 整页图）直接原样入库，不再走自动装箱，保留用户打包好的布局。
         var atlasPageRelatives = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        // 美术字（BMFont）：.fnt 里的字形坐标绑定在美术排好的图集页上，页图也必须原样入包，
+        // 否则自动装箱会重排像素、字形矩形全部失效。
+        foreach (string fontFile in files)
+        {
+            string fontRel = Path.GetRelativePath(assetBaseDir, fontFile).Replace('\\', '/');
+            if (!FontFile.IsFont(fontRel)) continue;
+            try
+            {
+                foreach (string pageFile in FontFile.PageImages(fontFile))
+                {
+                    string pagePath = Path.Combine(Path.GetDirectoryName(fontFile)!, pageFile);
+                    atlasPageRelatives.Add(Path.GetRelativePath(assetBaseDir, pagePath).Replace('\\', '/'));
+                }
+            }
+            catch (Exception ex)
+            {
+                warnings.Add($"解析美术字失败 {fontRel}：{ex.Message}");
+            }
+        }
+
         foreach (string atlasFile in files)
         {
             string atlasRel = Path.GetRelativePath(assetBaseDir, atlasFile).Replace('\\', '/');

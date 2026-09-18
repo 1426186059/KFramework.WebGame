@@ -179,10 +179,10 @@ namespace KFramework.MonoGame
 
         #region 文字
 
-        public void DrawString(SpriteFont font, string text, Vector2 position, Color color)
+        public void DrawString(IFont font, string text, Vector2 position, Color color)
             => font.Draw(this, text, position, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 
-        public void DrawString(SpriteFont font, string text, Vector2 position, Color color,
+        public void DrawString(IFont font, string text, Vector2 position, Color color,
                                float rotation, Vector2 origin, float scale, float layerDepth = 0f)
             => font.Draw(this, text, position, color, rotation, origin, scale, SpriteEffects.None, layerDepth);
 

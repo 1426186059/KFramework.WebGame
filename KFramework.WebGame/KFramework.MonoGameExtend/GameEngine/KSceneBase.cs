@@ -9,8 +9,8 @@ namespace KFramework.MonoGameExtend
         public readonly LinkedListNode<KSceneBase> SceneEntry;
         public readonly KTransform SceneNodeRoot = new KTransform(); 
 
-        /// <summary>场景默认字体（由游戏层在初始化时设置）</summary>
-        public SpriteFont Font2 { get; set; }
+        /// <summary>场景默认字体（由游戏层在初始化时设置；可以是 SpriteFont 系统/自定义字体，也可以是 BitmapFont 美术字）</summary>
+        public IFont Font2 { get; set; }
 
         public KSceneBase()
         {
