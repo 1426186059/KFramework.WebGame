@@ -5,62 +5,73 @@ using KFramework.MonoGameExtend;
 namespace KFramework.Example2.Screens;
 
 /// <summary>
-/// 结束界面（对应 PixiJS 的 screens/main/FailScreen.ts）。
-/// 输入自己管：R / Enter / Space 或点 RETRY → 重开。隐藏时 Update 直接 return。
+/// 失败/结束界面（对应 PixiJS 的 screens/main/FailScreen.ts，非常简洁）：
+/// 黑色全屏背景 + 居中的 UIGameOver.png，3 秒后自动回到开始界面。
+/// 与原版一致：没有任何按钮/文字，时间到即切回 Title。
+///
+/// 节点树控件初始化顺序必须遵守：Parent 先挂 → 再 Pivot → 再 MinMaxAnchor/Anchor。
 /// </summary>
 public sealed class FailScreen : KWidget
 {
     private readonly KCanvas _canvas;
-    private readonly Action _onRetry;
-    private readonly KLabel _statusLabel;
+    private readonly Action _onTimeout;
 
-    public FailScreen(KCanvas canvas, SpriteFont font, Action onRetry)
+    private float _timer = 3f;
+    private bool _fired;
+
+    public FailScreen(KCanvas canvas, ResCenter res, Action onTimeout)
     {
         _canvas = canvas;
-        _onRetry = onRetry;
+        _onTimeout = onTimeout;
 
-        Parent = canvas;   // 挂到画布：否则不会进入 ChildList，KCanvas 不会画它
+        Parent = canvas;   // 先挂到画布：否则布局拿不到父尺寸
         MinMaxAnchor = KRectangleF.MinMax(0, 0, 1, 1);
 
-        _statusLabel = new KLabel("GAME OVER", new Color(255, 120, 120), font)
+        // 黑色全屏背景（对应 Pixi 的黑色 Graphics 矩形）
+        new KImage
         {
-            MinMaxAnchor = KRectangleF.MinMax(0.5f, 0.5f, 0.40f, 0.40f),
-            Pivot = new Vector2(0.5f),
             Parent = this,
+            Sprite = KDefaultRes.DefaultTexture2D,
+            Color = Color.Black,
+            MinMaxAnchor = KRectangleF.MinMax(0, 0, 1, 1),
         };
 
-        new KLabel("PRESS R / ENTER OR TAP RETRY", new Color(150, 170, 200), font)
+        // 居中失败图（对应 Pixi 的 Texture.from("main/MyRes/Textures/UIGameOver.png")，pivot=center, position=center）
+        new KImage
         {
-            MinMaxAnchor = KRectangleF.MinMax(0.5f, 0.5f, 0.52f, 0.52f),
-            Pivot = new Vector2(0.5f),
             Parent = this,
-        };
-
-        var retryButton = new KButton
-        {
-            Size = new Vector2(320, 84),
-            Color = new Color(40, 70, 120),
-            MinMaxAnchor = KRectangleF.MinMax(0.5f, 0.5f, 0.66f, 0.66f),
-            AnchorOffset = new KRectangleFOffset(-160, 160, -42, 42),
+            Sprite = res.UIGameOver,
+            UseNativeSize = true,
             Pivot = new Vector2(0.5f),
-            Parent = this,
+            MinMaxAnchor = KRectangleF.MinMax(0.5f, 0.5f, 0.5f, 0.5f),
         };
-        retryButton.Label.Text = "RETRY";
-        retryButton.Label.Font = font;
-        retryButton.PointerClickEvent += (_, _) => _onRetry();
     }
 
-    // 与 TS 的 update() 一致：屏幕自己轮询输入；隐藏时不响应。
+    // 与 TS 的 KTween.delayedCall(3, ...) 一致：显示期间倒计时，到 0 自动回到开始界面。
     public override void Update()
     {
-        if (Parent == null) return;
-        if (KInputMgr.GetKeyDown(Keys.R) || KInputMgr.GetKeyDown(Keys.Enter) || KInputMgr.GetKeyDown(Keys.Space))
-            _onRetry();
+        if (Parent == null) return;   // 隐藏时停止计时
+        if (_fired) return;
+
+        _timer -= KTime.deltaTime;
+        if (_timer <= 0f)
+        {
+            _fired = true;
+            _onTimeout();
+        }
     }
 
-    /// <summary>胜利/失败文案由场景在切入时设置。</summary>
-    public void SetStatus(string text) => _statusLabel.Text = text;
+    public void Show()
+    {
+        Parent = _canvas;
+        _timer = 3f;     // 每次显示都重置 3 秒计时
+        _fired = false;
+    }
 
-    public void Show() => Parent = _canvas;
-    public void Hide() => Parent = null;
+    public void Hide()
+    {
+        Parent = null;
+        _timer = 3f;
+        _fired = false;
+    }
 }

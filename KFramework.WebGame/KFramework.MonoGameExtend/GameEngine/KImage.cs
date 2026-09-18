@@ -62,6 +62,8 @@ namespace KFramework.MonoGameExtend
 
         public override void Draw()
         {
+            if (!activeInHierarchy) return;
+
             if (_cacheSprite.Texture == null)
             {
                 _cacheSprite = new KSprite(KDefaultRes.DefaultTexture2D);

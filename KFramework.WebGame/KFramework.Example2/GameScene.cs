@@ -10,7 +10,6 @@ public sealed class GameScene : KSceneBase
     private readonly ContentManager _content = KSceneMgr.Game.Content;
     private readonly GraphicsDevice _gd = KSceneMgr.Game.GraphicsDevice;
     private readonly SpriteBatch _batch = KSceneMgr.SpriteBatch;
-    private readonly SpriteFont _font = KDefaultRes.DefaultSpriteFont;
 
     // 保留给外部（对应 PixiJS 的 World_Layer / UIRoot_Layer 层级节点）
     public readonly KTransform World_Layer = new KTransform(Name: "World_Layer");
@@ -36,7 +35,6 @@ public sealed class GameScene : KSceneBase
     private bool _inspectSprites;
 
     private readonly Color _bg = new(18, 20, 28);
-    private readonly Color _dim = new(0, 0, 0, 170);
 
     private static GameScene m_Instance;
     public static GameScene GetInstance()
@@ -71,8 +69,12 @@ public sealed class GameScene : KSceneBase
 
         _uiRoot.Parent = SceneNodeRoot;
         // 屏幕在构造时自行拼装内容并挂到 _uiRoot（对应 PixiJS 的 root.addChild(this) + 构造内建内容）
-        _startScreen = new StartScreen(_uiRoot, _font, StartGame);
-        _failScreen = new FailScreen(_uiRoot, _font, StartGame);
+        _startScreen = new StartScreen(_uiRoot, _res, StartGame);
+        _failScreen = new FailScreen(_uiRoot, _res, () =>
+        {
+            _state = GameState.Title;
+            ShowGroup(GameState.Title);
+        });
         ShowGroup(GameState.Title);
 
         _started = true;
@@ -133,13 +135,13 @@ public sealed class GameScene : KSceneBase
 
         DrawBackground();
 
-        if (_state == GameState.Playing || _state == GameState.Over)
+        // 仅 Playing 时绘制战场与 HUD；Title/Over 由各自的屏幕（StartScreen/FailScreen）
+        // 通过节点树 base.Draw() 负责，与 Pixi 一致（失败界面是独立全屏界面，不叠加战场）。
+        if (_state == GameState.Playing)
         {
             DrawWorld();
             DrawHudLayer();
         }
-
-        if (_state == GameState.Over) DrawDimOverlay();
 
         base.Draw();
     }
@@ -172,30 +174,18 @@ public sealed class GameScene : KSceneBase
         _batch.End();
     }
 
-    private void DrawDimOverlay()
-    {
-        BeginBatch();
-        _batch.Draw(KDefaultRes.DefaultTexture2D,
-                    new Rectangle(0, 0, _gd.Viewport.Width, _gd.Viewport.Height), _dim);
-        _batch.End();
-    }
-
     private void OnScreenSizeChanged(object? sender, EventArgs e)
         => _level.Resize(_gd.Viewport.Width, _gd.Viewport.Height);
 
     private void DrawHud(SpriteBatch batch)
     {
-        string? status = _state == GameState.Over
-            ? (_level.AllCleared ? "ALL CLEAR" : "GAME OVER")
-            : null;
-
         // 战场居中显示：半宽 = MapWidth*TileSize*coef/2，据此算 HUD 锚点。
         float coef = _level.fTileScaleCoef;
         float fieldRight = _gd.Viewport.Width / 2f + TankConfig.MapWidth * TankConfig.TileSize * coef / 2f;
         float fieldTop = _gd.Viewport.Height / 2f - TankConfig.MapHeight * TankConfig.TileSize * coef / 2f;
 
         _hud.Draw(batch, _level.LevelIndex, _level.Lives, _level.EnemiesRemaining,
-                  _level.ActiveEnemies, status, fieldRight, fieldTop);
+                  _level.ActiveEnemies, null, fieldRight, fieldTop);
     }
 
     // 把 Player1 全 32 帧平铺，用于肉眼确认朝向排布顺序。
@@ -227,7 +217,6 @@ public sealed class GameScene : KSceneBase
     private void EnterOver(bool victory)
     {
         _state = GameState.Over;
-        _failScreen.SetStatus(victory ? "ALL CLEAR" : "GAME OVER");
         ShowGroup(GameState.Over);
     }
 

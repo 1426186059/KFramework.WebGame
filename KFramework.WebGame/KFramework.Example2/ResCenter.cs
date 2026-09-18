@@ -9,7 +9,7 @@ namespace KFramework.Example2;
 /// 图集统一通过 <see cref="SpriteSheetLoader"/> 加载（KFramework 的资源管线只认 AtlasData 格式），
 /// 单帧以 KSpriteInfo 形式存在页纹理上，用 KSprite 包装后即可直接赋给 KImage.Sprite。
 /// </summary>
-internal sealed class ResCenter
+public sealed class ResCenter
 {
     // ===== 地图瓦片（取 AtlasData 中的具体帧，映射与原版 LoadTile 完全一致）=====
     public KSprite Wall { get; private init; }      // '#' -> Map_0
@@ -23,6 +23,8 @@ internal sealed class ResCenter
     public KSprite Explode2 { get; private init; }
     public KSprite Flag { get; private init; }
     public KSprite Shield { get; private init; }
+    public KSprite Title { get; private init; }        // 开始界面图（main/MyRes/Textures/Title.png）
+    public KSprite UIGameOver { get; private init; }   // 失败界面图（main/MyRes/Textures/UIGameOver.png）
 
     // ===== 序列帧（按帧名前缀 + 序号构造，顺序与原版 animations 一致）=====
     public KSprite[] Player { get; private init; }   // Player1_0 .. Player1_31
@@ -83,6 +85,8 @@ internal sealed class ResCenter
             Explode2 = LoadTexture(bundle, device, "main/MyRes/Textures/Explode2.png"),
             Flag = LoadTexture(bundle, device, "main/MyRes/Textures/Flag.png"),
             Shield = LoadTexture(bundle, device, "main/MyRes/Textures/Shield.png"),
+            Title = LoadTexture(bundle, device, "main/MyRes/Textures/Title.png"),
+            UIGameOver = LoadTexture(bundle, device, "main/MyRes/Textures/UIGameOver.png"),
 
             // 序列帧数组：帧名前缀 + 序号，顺序即原版动画帧顺序
             Player = Range(player1, "Player1_", 32),

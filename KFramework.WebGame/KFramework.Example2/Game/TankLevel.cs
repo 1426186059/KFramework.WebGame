@@ -293,6 +293,10 @@ internal sealed class TankLevel
     {
         _animTick++;
 
+        // 出生护盾 / 道具护盾计时。之前只设置从不递减，导致护盾永远覆盖在玩家坦克上，
+        // 看起来就像“坦克变成了护盾图”。
+        if (_shieldTimer > 0f) _shieldTimer = Math.Max(0f, _shieldTimer - dt);
+
         UpdateStageClear(dt);
         UpdateRespawn(dt);
         UpdateTanks(dt);

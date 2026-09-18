@@ -44,6 +44,8 @@ namespace KFramework.MonoGameExtend
 
         public override void Draw()
         {
+            if (!activeInHierarchy) return;
+
             var mSpriteBatch = KSceneMgr.SpriteBatch;
             if (Font == null)
             {
