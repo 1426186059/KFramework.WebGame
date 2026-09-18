@@ -59,9 +59,8 @@
   <!-- 本工程独占的内容管线：Content/raw -> Content/content -> wwwroot/content -->
   <Target Name="BuildGameContent" BeforeTargets="BeforeBuild">
     <Exec Command="dotnet run --project &quot;$(MSBuildThisFileDirectory)..\KFramework.Content.Cli\KFramework.Content.Cli.csproj&quot; -v q --nologo -- --root &quot;$(MSBuildThisFileDirectory)Content&quot;" ContinueOnError="true" />
-    <!-- 清理旧格式（.pak / manifest.json）与旧哈希的 .web.lib，避免与新版内容混淆 -->
+    <!-- 清理旧格式（manifest.json）与旧哈希的 .web.lib，避免与新版内容混淆 -->
     <ItemGroup>
-      <WebLibStale Include="$(MSBuildThisFileDirectory)wwwroot\hot_update_res\*.pak" />
       <WebLibStale Include="$(MSBuildThisFileDirectory)wwwroot\hot_update_res\manifest.json" />
       <WebLibStale Include="$(MSBuildThisFileDirectory)wwwroot\hot_update_res\*.web.lib" />
       <WebLibStale Include="$(MSBuildThisFileDirectory)wwwroot\hot_update_res\version.manifest" />

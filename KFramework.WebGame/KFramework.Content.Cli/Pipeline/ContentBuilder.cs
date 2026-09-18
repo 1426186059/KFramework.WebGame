@@ -69,8 +69,6 @@ namespace KFramework.Content.Build
             /// <summary>是否额外输出 atlas_N.png 预览图，方便用看图工具检查发布结果；预览图写到配置 tempDir 指定的临时目录（默认 Content/temp），不随 outDir 发布。</summary>
             public bool WritePreviewPng { get; set; } = true;
 
-            public string PakFileName { get; set; } = "content.pak";
-
             /// <summary>是否裁掉精灵四周的透明边。</summary>
             public bool TrimSprites { get; set; } = true;
 
