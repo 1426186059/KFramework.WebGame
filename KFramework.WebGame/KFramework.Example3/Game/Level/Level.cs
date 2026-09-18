@@ -81,7 +81,7 @@
             
             await content.LoadBundleAsync("myres/levels", cancellationToken).ConfigureAwait(false);
             var LevelConfigBundle = content.GetBundle("myres/levels")!;
-            string text = LevelConfigBundle.LoadText($"MyRes/Levels/{nLevelIndex:00}.txt");
+            string text = LevelConfigBundle.LoadText($"MyRes/Levels/{nLevelIndex:00}.txt", false);
             using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(text));
             return new Level(nLevelIndex, stream, characters, misc3);
 
@@ -392,15 +392,24 @@
             {
                 v.Dispose();
             }
+            mPowerUpObjectList.Clear();
 
             foreach (var v in mEnemyObjectList)
             {
                 v.Dispose();
             }
+            mEnemyObjectList.Clear();
 
             foreach (var v in mBackgroundObjectList)
             {
                 v.Dispose();
+            }
+            mBackgroundObjectList.Clear();
+
+            if (mPlayer != null)
+            {
+                mPlayer.Dispose();
+                mPlayer = null;
             }
         }
 
