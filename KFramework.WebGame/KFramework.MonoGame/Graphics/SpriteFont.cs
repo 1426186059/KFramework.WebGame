@@ -45,7 +45,7 @@
         /// <summary>行距（MonoGame 命名为 LineSpacing，等价于 LineHeight）。</summary>
         public float LineSpacing => LineHeight;
 
-        public SpriteFont(GraphicsDevice device, float size = 28f, string family = "system-ui, sans-serif", bool bold = true)
+        public SpriteFont(GraphicsDevice device, float size = 20f, string family = "system-ui, sans-serif", bool bold = false)
         {
             _device = device;
             Size = size;
