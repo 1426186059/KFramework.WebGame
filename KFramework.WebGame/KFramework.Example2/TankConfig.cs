@@ -39,8 +39,11 @@ internal static class TankConfig
 
     // 坦克精灵在 Player1 / Enemys 图集里的排布（按方向分组，每方向 8 帧）。
     // 若实机方向对不上，只改这两个表即可。
+    // 顺序与 Dir 枚举一致：Up=0, Right=1, Down=2, Left=3。
+    // 每方向 2 帧（帧 index 与 PixiJS 原版 SwitchTankType 一致：base+0/+1 为本方向两帧，方向间距 8）。
+    // 移植版只取 type 0，所以敌我共用同一套方向基址。
     public static readonly int[] PlayerDirBase = { 0, 8, 16, 24 };
-    public static readonly int[] EnemyDirBase = { 0, 16, 32, 48 };
+    public static readonly int[] EnemyDirBase = { 0, 8, 16, 24 };
 }
 
 /// <summary>地块类型。</summary>
