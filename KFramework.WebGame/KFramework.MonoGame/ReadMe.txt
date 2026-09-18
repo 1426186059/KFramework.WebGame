@@ -48,7 +48,7 @@ KFramework.MonoGame —— 仿 MonoGame 引擎（面向 AI 智能体）
 --------
   Core/      Game、GameTime、GameHost 等生命周期
   Graphics/  GraphicsDevice、SpriteBatch、Texture2D、效果与状态
-  Fonts/     SpriteFont（系统/自定义字体）、BitmapFont（美术字）、BmFontData（.fnt 解析）、FontStyle、IFont
+  Fonts/     SpriteFont（系统/自定义字体）、KFont（引擎内自绘矢量字体）、BitmapFont（美术字）、BmFontData（.fnt 解析）、FontStyle、IFont
   Audio/     SoundEffect、SoundEffectInstance、MediaPlayer、AudioMaster（通用音频）
   Input/     Input
   Content/   ContentManager（运行时取资源，含 LoadBytes）
@@ -66,8 +66,9 @@ KFramework.MonoGame —— 仿 MonoGame 引擎（面向 AI 智能体）
 
 字体说明
 --------
-  三类字体来源，统一走 IFont（SpriteBatch.DrawString / KLabel / KDefaultRes.DefaultSpriteFont 都接受它）。
-  字体相关实现集中在 Fonts/ 目录；跨语言（Canvas2D 测字/光栅化）仍走 JSBind/JSBind_Text.cs。
+  四类字体来源，统一走 IFont（SpriteBatch.DrawString / KLabel / KDefaultRes.DefaultSpriteFont 都接受它）。
+  字体相关实现集中在 Fonts/ 目录。字形位图的来源有两条路：1)~2) 借浏览器 Canvas2D（JSBind/JSBind_Text.cs），
+  3) 由引擎自己在 C# 侧解析字体轮廓并光栅化（不再碰 Canvas），4) 直接用美术产出的图集。
 
   1) 系统字体 —— SpriteFont：给 Canvas2D 一个 CSS font 串实时光栅化，不需要任何字体资源文件。
        new SpriteFont(device, 24f, "system-ui, sans-serif")
@@ -81,7 +82,17 @@ KFramework.MonoGame —— 仿 MonoGame 引擎（面向 AI 智能体）
      或一步到位：await SpriteFont.FromFontAsync(device, "MyFont", 24f, bytes);（另有 URL 重载）
      注意：字体必须在光栅化之前注册完成，故注册是异步的（通常放在 LoadAsync 阶段做一次）。
 
-  3) 美术字（BMFont 图集，对应 Unity 的 Custom Font）—— BitmapFont：
+  3) 引擎内自绘（ttf / otf / woff 字节）—— KFont：C# 自己解析字形轮廓并光栅化，全程不碰 Canvas2D：
+       var font = KFont.FromBundle(ab, GraphicsDevice, "myres/fonts/hud.ttf", 24f);
+       var font = KFont.FromBytes(GraphicsDevice, 24f, bytes, atlasSize: 2048, obliqueDegrees: 12f, boldPixels: 1);
+       batch.DrawString(font, "你好 SCORE 0123", pos, Color.White);
+     绘制仍走 SpriteBatch（WebGL 合批），只是字形位图不再来自浏览器；因此不受浏览器字体环境影响，
+     也不需要异步注册（构造即就绪）。代价是必须拿到字体文件字节，故只吃自定义字体，吃不到系统字体。
+     支持：ttf / otf（TrueType 轮廓 glyf，含复合字形）/ woff / ttc（取第一个字体）；
+     不支持：OTTO（CFF 轮廓）与 woff2。中文等字形多的字体把 atlasSize 调大（2048），图集满后新字退化为空白。
+     合成样式：obliqueDegrees（斜切）、boldPixels（膨胀加粗）、letterSpacing（字距）；不做自动 kerning。
+
+  4) 美术字（BMFont 图集，对应 Unity 的 Custom Font）—— BitmapFont：
        var font = await BitmapFont.LoadAsync(Content, "myres", "myres/fonts/hud.fnt", GraphicsDevice);
        batch.DrawString(font, "SCORE 0123", pos, Color.White);   // 美术字自带颜色，用 White 保留原色
      打包：raw/ 里放 .fnt + 它引用的图集页 png 即可，kfc 会识别 .fnt 的 page 页并按「已切图集」原样入包
