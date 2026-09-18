@@ -144,14 +144,40 @@ namespace KFramework.MonoGameExtend
 
         public void DrawWidget(KTransform t)
         {
-            foreach (var v in t.ChildList)
+            var mEntry = t.ChildList.First;
+            while (mEntry != null)
             {
-                if (v is KWidget)
+                var next = mEntry.Next;
+                if (mEntry.Value.IsDispose)
                 {
-                    (v as KWidget).Draw();
+                    if (mEntry.List != null)
+                    {
+                        t.ChildList.Remove(mEntry);
+                    }
                 }
+                else
+                {
+                    if (mEntry.Value.activeInHierarchy)
+                    {
+                        if (mEntry.Value is KWidget)
+                        {
+                            mEntry.Value.Draw();
+                        }
 
-                DrawWidget(v);
+                        if (mEntry.Value.IsDispose)
+                        {
+                            if (mEntry.List != null)
+                            {
+                                t.ChildList.Remove(mEntry);
+                            }
+                        }
+                        else
+                        {
+                            DrawWidget(mEntry.Value);
+                        }
+                    }
+                }
+                mEntry = next;
             }
         }
 
