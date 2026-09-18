@@ -1,0 +1,38 @@
+using KFramework.MonoGameExtend;
+
+namespace MirGame.Tests;
+
+/// <summary>测试模块注册表：新增一个测试模块时在这里登记一项即可。</summary>
+public sealed class TestEntry
+{
+    public required string Name { get; init; }
+
+    public required string Desc { get; init; }
+
+    public required Func<KSceneBase> Factory { get; init; }
+}
+
+public static class TestRegistry
+{
+    public static IReadOnlyList<TestEntry> Entries { get; } =
+    [
+        new TestEntry
+        {
+            Name = "字体测试",
+            Desc = "系统字体 SpriteFont（Canvas2D 光栅化）与包内矢量字体 KFont（引擎自解析 ttf）：Arial / Consolas / Georgia / 黑体",
+            Factory = static () => new FontTest.FontTestScene(),
+        },
+        new TestEntry
+        {
+            Name = "WebSocket 测试",
+            Desc = "只做客户端：浏览器原生 WebSocket 连接自写的本地测试服务器（Tools/WebSocketTestServer，默认 ws://127.0.0.1:9000/）",
+            Factory = static () => new WebSocketTest.WebSocketTestScene(),
+        },
+        new TestEntry
+        {
+            Name = "图片测试",
+            Desc = "AssetBundle 整图 / 图集纹理的加载与绘制（待实现，本页只列出现有资源，供后续扩展）",
+            Factory = static () => new ImageTest.ImageTestScene(),
+        },
+    ];
+}
