@@ -1,17 +1,17 @@
-﻿using KFramework.MonoGame;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace KFramework.MonoGameExtend
 {
     public static partial class KTween
     {
-        public class KTweenByLinkedList
+        public class KTweenMgr : SingleTonMonoBehaviour<KTweenMgr>
         {
+            public readonly KTransform bindObj = new KTransform();
             private readonly ObjectPool mItemPool = new ObjectPool();
             private readonly LinkedList<TweenItem> mTweenT = new LinkedList<TweenItem>();
 
-            public void Update()
+            public override void Update()
             {
                 float deltaTime = KTime.deltaTime;
 

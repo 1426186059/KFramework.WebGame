@@ -110,52 +110,6 @@ namespace KFramework.MonoGameExtend
             }
         };
 
-        public class KTweenMgr:SingleTonMonoBehaviour<KTweenMgr>
-        {
-            private readonly KTweenByLinkedList mManager = new KTweenByLinkedList();
-            public readonly KTransform bindObj = new KTransform();
-
-            public override void Update()
-            {
-                mManager.Update();
-            }
-
-            public void SetMaxTweenCount(int nCount)
-            {
-                mManager.SetMaxTweenCount(nCount);
-            }
-
-            public void CancelAll()
-            {
-                mManager.CancelAll();
-            }
-
-            public void Cancel(KTransform obj)
-            {
-                mManager.Cancel(obj);
-            }
-
-            public TweenItem AddTween(float time, Action<float> updateFunc = null, Action finishFunc = null)
-            {
-                return mManager.AddTween(time, updateFunc, finishFunc);
-            }
-
-            public TweenItem AddTween(KTransform obj, float time, Action<float> updateFunc = null, Action finishFunc = null)
-            {
-                return mManager.AddTween(obj, time, updateFunc, finishFunc);
-            }
-
-            public TweenItem delayedCall(float time, Action finishFunc = null)
-            {
-                return AddTween(time, null, finishFunc);
-            }
-
-            public TweenItem delayedCall(KTransform obj, float time, Action finishFunc = null)
-            {
-                return AddTween(obj, time, null, finishFunc);
-            }
-        }
-
         public class TweenItem
         {
             public readonly LinkedListNode<TweenItem> mEntry;
