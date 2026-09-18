@@ -1,8 +1,8 @@
-// 【依赖 C#】由 KFramework.MonoGame.JSBind_Net 经 [JSImport(module: "net")] 调用；
-// 产物 net.js 由 SyncJsEngine 复制到各示例 wwwroot/jsengine。
+// 【依赖 C#】由 KFramework.MonoGame.JSBind_Net_WebSocket 经 [JSImport(module: "net_websocket")] 调用；
+// 产物 net_websocket.js 由 SyncJsEngine 复制到各示例 wwwroot/jsengine。
 //
 // 薄薄的一层浏览器 WebSocket 桥接：只负责创建 / 发送 / 关闭连接，并把事件推回 C#。
-// 真正的协议、缓冲、分包都在 C# 侧（WebSocketClient / NetworkClient）完成，这里不做任何业务逻辑。
+// 真正的收发逻辑都在 C# 侧（WebSocketClient）完成，这里不做任何业务逻辑。
 let handlers = null;
 const sockets = new Map();
 let nextId = 1;

@@ -26,12 +26,10 @@
 
   <ItemGroup>
     <!-- 传奇客户端游戏逻辑（从 Web_Mir2.Client 迁移过来的 Mir2/ + Shared/）。
-         仍依赖原引擎命名空间 MirEngine 与 SlimDX/NAudio 浏览器垫片（见本工程 Shims/），先使其可编译，
-         后续把 DXManager/BrowserCanvas 渲染、输入、音频逐步改接到 KFramework.MonoGame。 -->
-    <ProjectReference Include="..\Web_Mir2.Engine\Web_Mir2.Engine.csproj" />
+         引擎命名空间 MirEngine 与 SlimDX/NAudio 浏览器垫片均由本工程 Shims/ 自提供，不再引用 Web_Mir2.Engine。
+         渲染/输入/音频/网络后端统一走 KFramework.MonoGame。 -->
     <!-- 目标框架：KFramework.MonoGame（MonoGame 化的图形/输入/音频/资源） -->
     <ProjectReference Include="..\..\..\KFramework.WebGame\KFramework.MonoGame\KFramework.MonoGame.csproj" />
-    <ProjectReference Include="..\..\..\KFramework.WebGame\KFramework.MonoGameExtend\KFramework.MonoGameExtend.csproj" />
   </ItemGroup>
 
   <!-- 全局 using（global using MirEngine; + JSExport/JSImport）由本工程 Shims/GlobalUsings.cs 提供。 -->

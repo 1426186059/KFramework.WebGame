@@ -1,26 +1,30 @@
 ﻿using System.Collections.Concurrent;
 using Client.MirControls;
 using C = ClientPackets;
+using KFramework.MonoGame;
 using MirEngine;
 
 namespace Client.MirNetwork
 {
-    // 浏览器版 Network：用 BrowserWebSocket 取代 TcpClient。每帧 Process() 轮询收包。
+    // 浏览器版 Network：用 KFramework.MonoGame 的 Net_WebSocket_Client 取代旧的 BrowserWebSocket。
+    // 事件驱动：OnBinaryMessage 把一帧原始字节入队，Process() 每帧循环切分成 Mir Packet 并派发；
+    // 发送队列合并后一次性写出（一条 WS 消息可能含多个 Packet，必须像 TCP 端那样切分）。
     static class Network
     {
-        private static int _ws;
+        private static Net_WebSocket_Client _ws;
         public static int ConnectAttempt = 0;
         public static int MaxAttempts = 20;
         public static bool ErrorShown;
         public static bool Connected;
         public static long TimeOutTime, TimeConnected, RetryTime = CMain.Time + 5000;
 
-        private static ConcurrentQueue<Packet> _receiveList;
+        private static ConcurrentQueue<Packet> _receiveList = new ConcurrentQueue<Packet>();
         private static ConcurrentQueue<Packet> _sendList = new ConcurrentQueue<Packet>();
+        private static readonly ConcurrentQueue<byte[]> _rawQueue = new ConcurrentQueue<byte[]>();
 
         public static void Connect()
         {
-            if (_ws > 0) Disconnect();
+            if (_ws != null) Disconnect();
 
             if (ConnectAttempt >= MaxAttempts)
             {
@@ -38,18 +42,17 @@ namespace Client.MirNetwork
             try
             {
                 string url = $"ws://{Settings.IPAddress}:{Settings.Port}";
-                _ws = BrowserWebSocket.Connect(url);
-                if (_ws > 0)
+                _ws = new Net_WebSocket_Client();
+                _ws.Opened += () => { Connected = true; TimeConnected = CMain.Time; };
+                _ws.Closed += code => { Connected = false; };
+                _ws.Error += msg => { if (Settings.LogErrors) CMain.SaveError(msg); };
+                _ws.MessageReceived += m =>
                 {
-                    _receiveList = new ConcurrentQueue<Packet>();
-                    TimeOutTime = CMain.Time + Settings.TimeOut;
-                    TimeConnected = CMain.Time;
-                }
-                else
-                {
-                    Thread.Sleep(100);
-                    Connect();
-                }
+                    byte[] data = m.ToArray();
+                    if (data.Length > 0) _rawQueue.Enqueue(data);
+                };
+                _ws.Connect(url);
+                TimeOutTime = CMain.Time + Settings.TimeOut;
             }
             catch (System.Exception ex)
             {
@@ -60,25 +63,26 @@ namespace Client.MirNetwork
 
         public static void Disconnect()
         {
-            if (_ws > 0) { BrowserWebSocket.Close(_ws); _ws = 0; }
+            if (_ws != null) { _ws.Close(); _ws = null; }
             TimeConnected = 0;
             Connected = false;
             _sendList = new ConcurrentQueue<Packet>();
-            _receiveList = null;
+            _receiveList = new ConcurrentQueue<Packet>();
+            while (_rawQueue.TryDequeue(out _)) { }
         }
 
         public static void Process()
         {
-            if (_ws <= 0)
+            if (_ws == null)
             {
                 if (Connected)
                 {
-                    while (_receiveList != null && !_receiveList.IsEmpty)
+                    while (!_receiveList.IsEmpty)
                     {
                         if (!_receiveList.TryDequeue(out Packet p) || p == null) continue;
                         if (!(p is ServerPackets.Disconnect) && !(p is ServerPackets.ClientVersion)) continue;
                         MirScene.ActiveScene.ProcessPacket(p);
-                        _receiveList = null;
+                        _receiveList = new ConcurrentQueue<Packet>();
                         return;
                     }
                     MirMessageBox.Show(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LostConnectionWithServer), true);
@@ -93,27 +97,14 @@ namespace Client.MirNetwork
                 return;
             }
 
-            int state = BrowserWebSocket.GetState(_ws);
-            if (state == 3) // CLOSED
-            {
-                Disconnect();
-                Connect();
-                return;
-            }
-
-            if (!Connected && state == 1) // OPEN
+            if (!Connected && _ws.IsOpen)
             {
                 Connected = true;
             }
 
-            // 收取所有已到达的消息。一条 WS 二进制消息可能包含多个完整 Mir Packet：
-            // 服务器 MirConnection.BeginSend 会把 _sendList 里多个 Packet 的字节拼成一个 buffer 一次 Write，
-            // WebSocketStream 以 endOfMessage=true 发出，于是“一条 WS 消息 = 多个 Packet”。
-            // 必须像 TCP 端（MirConnection.cs 的 ReceiveData）那样循环切分，否则只解析第一条、其余全部丢失——
-            // 典型表现就是登录框卡在“尝试连接服务器”：S.Connected 被解析后回了版本，但同一条消息里的
-            // S.ClientVersion 被丢弃，客户端永远等不到回应。
+            // 收取所有已到达的二进制消息并切分为 Packet（一条 WS 消息可能含多个完整 Packet）。
             byte[] msg;
-            while (_receiveList != null && (msg = BrowserWebSocket.Receive(_ws)).Length > 0)
+            while (_rawQueue.TryDequeue(out msg))
             {
                 byte[] rest = msg;
                 Packet p;
@@ -125,16 +116,16 @@ namespace Client.MirNetwork
                 }
             }
 
-            while (_receiveList != null && !_receiveList.IsEmpty)
+            while (!_receiveList.IsEmpty)
             {
                 if (!_receiveList.TryDequeue(out Packet p) || p == null) continue;
                 MirScene.ActiveScene.ProcessPacket(p);
             }
 
-            if (CMain.Time > TimeOutTime && _sendList != null && _sendList.IsEmpty)
+            if (CMain.Time > TimeOutTime && _sendList.IsEmpty)
                 _sendList.Enqueue(new C.KeepAlive());
 
-            if (_sendList == null || _sendList.IsEmpty) return;
+            if (_sendList.IsEmpty) return;
 
             TimeOutTime = CMain.Time + Settings.TimeOut;
 
@@ -146,7 +137,7 @@ namespace Client.MirNetwork
             }
 
             CMain.BytesSent += data.Count;
-            BrowserWebSocket.Send(_ws, data.ToArray());
+            _ws.Send(data.ToArray());
         }
 
         public static void Enqueue(Packet p)

@@ -1,26 +1,44 @@
 <!DOCTYPE html>
-<!--  Licensed to the .NET Foundation under one or more agreements. -->
-<!-- The .NET Foundation licenses this file to you under the MIT license. -->
-<html>
-
+<html lang="zh-CN">
 <head>
-  <title>WebGame.Mir2.MonoGame.Client</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="preload" id="webassembly" />
-  <script type="importmap"></script>
-  <script type='module' src="main#[.{fingerprint}].js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>WebGame.Mir2.MonoGame.Client</title>
+    <!-- 框架在构建/发布时填充此 import map，把明文模块名（如 ./jsengine/gl.js）映射到指纹名。 -->
+    <script type="importmap"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: #0a0c14;
+            overflow: hidden;
+        }
+
+        #game {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            image-rendering: pixelated;
+        }
+
+        #boot {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8a93b2;
+            font: 14px/1.6 system-ui, sans-serif;
+            pointer-events: none;
+        }
+    </style>
 </head>
-
 <body>
-  <h1>Stopwatch</h1>
-  <p>
-    Time elapsed in .NET is <span id="time"><i>loading...</i></span>
-  </p>
-  <p>
-    <button id="pause">Pause</button>
-    <button id="reset">Reset</button>
-  </p>
+    <div id="boot">正在加载…</div>
+    <canvas id="game"></canvas>
+    <!-- 入口走内联 module 的 import，使其经由上方 import map 解析到指纹名（import map 只解析 import 说明符，
+         不解析 <script src>；而 jsengine 不像 _framework 有 SDK 的明文→指纹服务端映射）。 -->
+    <script type="module">import './jsengine/main.js';</script>
 </body>
-
 </html>

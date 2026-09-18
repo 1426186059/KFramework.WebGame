@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Client.MirSounds.Libraries;
+using KFramework.MonoGame;
 using MirEngine;
 
 namespace Client.MirSounds
@@ -61,7 +63,8 @@ namespace Client.MirSounds
             // 导致所有 PlaySound(索引) 都解析出错误文件名 -> 全程静音。
             SoundList.LoadSoundList();
 
-            BrowserAudio.InitAudio();
+            // 音频后端改为 KFramework.MonoGame（WebAudio）；实际解锁需首次用户手势，在 ConfigureInput 里触发。
+            AudioMaster.Unlock();
         }
 
         /// <summary>
@@ -99,7 +102,7 @@ namespace Client.MirSounds
 
             if (!loop)
             {
-                BrowserAudio.PlaySound(file, Vol, false);
+                _ = PlayFileAsync(file, Vol, false);
             }
             else
             {
@@ -164,8 +167,36 @@ namespace Client.MirSounds
             foreach (LoopProvider sound in _loopingSounds.Values) { sound.Dispose(); }
             _loopingSounds.Clear();
             _delayList.Clear();
+        }
 
-            BrowserAudio.StopAllSounds();
+        // 浏览器端用 KFramework.MonoGame 的 SoundEffect：先按资源 URL 异步取字节（fetch），
+        // 再按扩展名 mime 构造 SoundEffect 播放（循环用 SoundEffectInstance）。
+        private static async Task PlayFileAsync(string file, int vol, bool loop)
+        {
+            try
+            {
+                string url = BrowserResource.ResolveUrl(file);
+                byte[] bytes = await BrowserResource.GetBytesAsync(url);
+                if (bytes == null || bytes.Length == 0) return;
+                string mime = file.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase) ? "audio/mpeg" : "audio/wav";
+                var se = await SoundEffect.LoadAsync(bytes, mime);
+                if (se == null) return;
+                if (loop)
+                {
+                    var inst = se.CreateInstance();
+                    inst.IsLooped = true;
+                    inst.Volume = vol / 100f;
+                    inst.Play();
+                }
+                else
+                {
+                    se.Play(vol / 100f, 1f, 0f);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (Settings.LogErrors) CMain.SaveError(ex.ToString());
+            }
         }
     }
 }

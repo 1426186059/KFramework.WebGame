@@ -3,6 +3,7 @@ using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirScenes;
 using Client.MirSounds;
+using KFramework.MonoGame;
 using MirEngine;
 
 namespace Client
@@ -62,49 +63,58 @@ namespace Client
 
         private static void ConfigureInput()
         {
-            BrowserMouse.Attach();
-            BrowserMouse.MouseDown += (s, e) =>
-            {
-                try
-                {
-                    // 命中测试依赖 CMain.MPoint：按下时先同步坐标，避免“无前置移动直接点击”时仍用旧坐标打偏。
-                    CMain.MPoint = e.Location;
-                    MirScene.ActiveScene?.OnMouseDown(e);
-                }
-                catch (Exception ex) { CMain.SaveError(ex.ToString()); }
-            };
-            // 关键：鼠标移动必须经由 CMain.CMain_MouseMove，它负责更新 CMain.MPoint（控件命中测试依赖该坐标）。
-            // 若直接转发到 ActiveScene.OnMouseMove，CMain.MPoint 永远停在 (0,0)，所有点击都会打偏，表现为“鼠标/键盘失效”。
-            BrowserMouse.MouseMove += CMain.CMain_MouseMove;
-            BrowserMouse.MouseUp += (s, e) =>
-            {
-                try
-                {
-                    // 复刻 WinForms 原版 CMain_MouseUp：松开按键必须清掉 MapControl.MapButtons。
-                    // 浏览器端此前漏了这一步，导致按下后 MapButtons 永久保留：
-                    // 左键点过再右键点过就会变成 Left|Right，MapControl.CheckInput 的 switch(MapButtons)
-                    // 两个分支都不匹配 —— 这正是"点击鼠标人物不移动"的原因。
-                    MapControl.MapButtons &= ~e.Button;
-                    if (e.Button != MouseButtons.Right || !Settings.NewMove)
-                        GameScene.CanRun = false;
+            // 输入改走 KFramework.MonoGame 的 Input 层（KInputMgr 已把指针/键盘事件桥到 GL 画布）。
+            // 鼠标移动不提供事件，改为每帧在 MirGame.Update 里轮询 Input_Mouse.Position 并转发 CMain_MouseMove。
+            // 字符输入（KeyPress）浏览器端由 MirTextBox 的 DOM 输入层承担，这里不桥接。
+            Input_Mouse.ButtonDown += OnMouseDown;
+            Input_Mouse.ButtonUp += OnMouseUp;
+            Input_Mouse.ScrollWheel += OnScrollWheel;
+            Input_KeyBoard.KeyDown += OnKeyDown;
+            Input_KeyBoard.KeyUp += OnKeyUp;
+            // 首次任意输入即解锁 WebAudio（浏览器自动播放策略要求用户手势）。
+            Input_KeyBoard.KeyDown += _ => AudioMaster.Unlock();
+            Input_Mouse.ButtonDown += (_, _) => AudioMaster.Unlock();
+        }
 
-                    MirScene.ActiveScene?.OnMouseUp(e);
-                    // 复刻 WinForms 原版 CMain_MouseClick：抬起后派发单击，按钮（如连接框 Cancel）与双击逻辑才能触发。
-                    // 缺失此步会导致所有按钮点击无反应。
-                    MirScene.ActiveScene?.OnMouseClick(e);
-                }
-                catch (Exception ex) { CMain.SaveError(ex.ToString()); }
-            };
-            BrowserMouse.MouseWheel += (s, e) =>
-            {
-                try { MirScene.ActiveScene?.OnMouseWheel(e); }
-                catch (Exception ex) { CMain.SaveError(ex.ToString()); }
-            };
+        private static void OnKeyDown(KFramework.MonoGame.Keys k) => CMain.CMain_KeyDown(null, ToKeyEventArgs(k));
+        private static void OnKeyUp(KFramework.MonoGame.Keys k) => CMain.CMain_KeyUp(null, ToKeyEventArgs(k));
 
-            BrowserKeyboard.Attach();
-            BrowserKeyboard.KeyDown += (s, e) => CMain.CMain_KeyDown(s, e);
-            BrowserKeyboard.KeyUp += (s, e) => CMain.CMain_KeyUp(s, e);
-            BrowserKeyboard.KeyPress += (s, e) => CMain.CMain_KeyPress(s, e);
+        private static void OnMouseDown(KFramework.MonoGame.MouseButton b, Vector2 p)
+        {
+            CMain.MPoint = new MirEngine.Point((int)p.X, (int)p.Y);
+            MirScene.ActiveScene?.OnMouseDown(ToMouseEventArgs(b, p));
+        }
+        private static void OnMouseUp(KFramework.MonoGame.MouseButton b, Vector2 p)
+        {
+            CMain.MPoint = new MirEngine.Point((int)p.X, (int)p.Y);
+            var e = ToMouseEventArgs(b, p);
+            // 复刻 WinForms 原版 CMain_MouseUp：松开按键必须清掉 MapControl.MapButtons，否则后续点击会错位。
+            MapControl.MapButtons &= ~e.Button;
+            if (e.Button != MouseButtons.Right || !Settings.NewMove)
+                GameScene.CanRun = false;
+            MirScene.ActiveScene?.OnMouseUp(e);
+            MirScene.ActiveScene?.OnMouseClick(e);
+        }
+        private static void OnScrollWheel(int delta)
+        {
+            MirScene.ActiveScene?.OnMouseWheel(new MouseEventArgs(MouseButtons.None, 0, CMain.MPoint.X, CMain.MPoint.Y, delta));
+        }
+
+        private static KeyEventArgs ToKeyEventArgs(KFramework.MonoGame.Keys k)
+        {
+            MirEngine.Keys keyData = (MirEngine.Keys)(int)k;
+            if (Input_KeyBoard.Shift) keyData |= MirEngine.Keys.Shift;
+            if (Input_KeyBoard.Ctrl) keyData |= MirEngine.Keys.Control;
+            if (Input_KeyBoard.Alt) keyData |= MirEngine.Keys.Alt;
+            return new KeyEventArgs(keyData);
+        }
+
+        private static MouseEventArgs ToMouseEventArgs(KFramework.MonoGame.MouseButton b, Vector2 p)
+        {
+            MouseButtons mb = b == KFramework.MonoGame.MouseButton.Right ? MouseButtons.Right
+                            : b == KFramework.MonoGame.MouseButton.Middle ? MouseButtons.Middle
+                            : MouseButtons.Left;
+            return new MouseEventArgs(mb, 1, (int)p.X, (int)p.Y, 0);
         }
     }
 }

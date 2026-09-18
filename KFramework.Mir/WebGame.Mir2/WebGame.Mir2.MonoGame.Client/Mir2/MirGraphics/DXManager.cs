@@ -1,13 +1,22 @@
 using System;
-using System.Collections.Generic;
-using MirEngine;
 using Client.MirControls;
 using Client.MirScenes;
+using KFramework.MonoGame;
+using MirEngine;
+using SlimDX;
+using SlimDX.Direct3D9;
+
+// 让 Point/Color/Rectangle 默认指向 MirEngine（游戏逻辑层使用的类型）；KFramework.MonoGame 的同名类型一律全限定。
+using Point = MirEngine.Point;
+using Color = MirEngine.Color;
+using Rectangle = MirEngine.Rectangle;
 
 namespace Client.MirGraphics
 {
-    // 浏览器版 DXManager：Unity 风格即时模式精灵渲染器（单一画布 + 离屏 RenderTarget）。
-    // 所有绘制直接走 BrowserCanvas（int 句柄：0=主画布，>0=离屏 canvas），不再依赖 Crystal 的 IRenderingPipeline 框架。
+    // KFramework.MonoGame 版 DXManager：主精灵路径走 GraphicsDevice / SpriteBatch（Texture2D 承载），
+    // 离屏渲染目标（地板/光照烘焙）当前 KFramework.MonoGame 的 SpriteBatch 不暴露 RenderTarget，
+    // 暂以无操作桩保留（DXManager.FloorTexture/LightTexture/Lights 等绘制不生效，画面地板/光照暂缺，
+    // 待引擎提供 RenderTarget2D 后重写 GameScene 的烘焙路再补）。不再依赖旧 BrowserCanvas 后端。
     class DXManager
     {
         public static List<MImage> TextureList = new List<MImage>();
@@ -42,54 +51,67 @@ namespace Client.MirGraphics
 
         public static int DPSCounter;
 
+        // KFramework.MonoGame 渲染后端（由 MirGame.Initialize 注入）。
+        public static GraphicsDevice GDevice;
+        public static SpriteBatch Batch;
+        public static void Initialize(GraphicsDevice device, SpriteBatch batch)
+        {
+            GDevice = device;
+            Batch = batch;
+        }
+
         public static void Create()
         {
-            SlimDX.Direct3D9.Device.CurrentTarget = 0;
-
-            // 原版 Crystal 的 SetBlend(true, rate, mode) 除 INVLIGHT 外一律是加色混合（SourceAlpha/One），
-            // 与 Mir3(Zircon) 的 setBlend 语义不同；JS 侧默认用 Mir3 那张表，必须显式切到 crystal。
-            // 不切换的话，安全区结界 / 点击地面这类靠"加色 + 黑底"呈现的特效会被当成 screen，
-            // 画出来就是一坨不透明黑底加亮块。
-            BrowserCanvas.SetBlendProfile("crystal");
+            // 旧 BrowserCanvas 的 SetBlendProfile("crystal") 已不再需要：混合语义由下方 Draw 按 Blending 标志选择。
         }
 
-        static Color ToColor(SlimDX.Color4 c) =>
-            Color.FromArgb((int)(c.Alpha * 255), (int)(c.Red * 255), (int)(c.Green * 255), (int)(c.Blue * 255));
+        static KFramework.MonoGame.Color ToColor(SlimDX.Color4 c) =>
+            new KFramework.MonoGame.Color((byte)(c.Red * 255), (byte)(c.Green * 255), (byte)(c.Blue * 255), (byte)(c.Alpha * 255));
 
-        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color)
+        static KFramework.MonoGame.Rectangle ToRect(Rectangle r) =>
+            new KFramework.MonoGame.Rectangle(r.X, r.Y, r.Width, r.Height);
+
+        // —— 主精灵路径：Texture2D（KFramework.MonoGame）——
+        public static void Draw(Texture2D texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color)
         {
-            if (texture == null || !texture.Valid) return;
+            if (texture == null) return;
             Rectangle src = sourceRect ?? new Rectangle(0, 0, texture.Width, texture.Height);
             SlimDX.Vector3 pos = position ?? SlimDX.Vector3.Zero;
-            SlimDX.Direct3D9.Device.ApplyTarget();
-            BrowserCanvas.DrawImage(texture.Handle, src.X, src.Y, src.Width, src.Height, pos.X, pos.Y, src.Width, src.Height, ToColor(color).ToArgb());
+            KFramework.MonoGame.BlendState blend = Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied;
+            Batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred, blend, KFramework.MonoGame.SamplerState.PointClamp);
+            Batch.Draw(texture, new KFramework.MonoGame.Vector2(pos.X, pos.Y), ToRect(src), ToColor(color));
+            Batch.End();
             CMain.DPSCounter++;
         }
 
-        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle sourceRect, RectangleF destRect, SlimDX.Color4 color)
+        public static void Draw(Texture2D texture, Rectangle sourceRect, RectangleF destRect, SlimDX.Color4 color)
         {
-            if (texture == null || !texture.Valid) return;
-            SlimDX.Direct3D9.Device.ApplyTarget();
-            BrowserCanvas.DrawImage(texture.Handle, sourceRect.X, sourceRect.Y, sourceRect.Width, sourceRect.Height, destRect.X, destRect.Y, destRect.Width, destRect.Height, ToColor(color).ToArgb());
+            if (texture == null) return;
+            KFramework.MonoGame.BlendState blend = Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied;
+            Batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred, blend, KFramework.MonoGame.SamplerState.PointClamp);
+            Batch.Draw(texture,
+                new KFramework.MonoGame.Rectangle((int)destRect.X, (int)destRect.Y, (int)destRect.Width, (int)destRect.Height),
+                ToRect(sourceRect), ToColor(color));
+            Batch.End();
             CMain.DPSCounter++;
         }
 
-        public static void DrawOpaque(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, float opacity)
+        public static void DrawOpaque(Texture2D texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, float opacity)
         {
             var c = color; c.Alpha = opacity; Draw(texture, sourceRect, position, c);
         }
 
-        public static void SetSurface(SlimDX.Direct3D9.Surface surface)
-        {
-            SlimDX.Direct3D9.Device.CurrentTarget = surface == null ? 0 : surface.Handle;
-        }
+        // —— 渲染目标路径（离屏烘焙，KFramework 暂不支持）：无操作，地板/光照不绘制 ——
+        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color) { }
+        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle sourceRect, RectangleF destRect, SlimDX.Color4 color) { }
+        public static void DrawOpaque(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, float opacity) { }
 
+        public static void SetSurface(SlimDX.Direct3D9.Surface surface) { }   // 离屏渲染目标暂不支持
         public static void SetGrayscale(bool value) { GrayScale = value; }
         public static void SetOpacity(float opacity) { Opacity = opacity; }
         public static void SetBlend(bool value, float rate = 1F, BlendMode mode = BlendMode.NORMAL)
         {
             Blending = value; BlendingRate = rate; BlendingMode = mode;
-            BrowserCanvas.SetBlendState((int)mode, rate, value);
         }
         public static void SetNormal(float blend, Color tintcolor) { }
         public static void SetGrayscale(float blend, Color tintcolor) { }
@@ -99,30 +121,20 @@ namespace Client.MirGraphics
         public static void ResetDevice() { }
         public static void AttemptRecovery() { }
 
+        // 离屏渲染目标（KFramework.MonoGame 的 SpriteBatch 不暴露 RenderTarget）：返回无效占位纹理，
+        // 调用方（GameScene 烘焙）据此跳过真实离屏合成，地板/光照暂不显示。
         public static SlimDX.Direct3D9.Texture CreateRenderTarget(int w, int h)
         {
-            int id = BrowserCanvas.CreateOffscreen(Math.Max(1, w), Math.Max(1, h));
-            return new SlimDX.Direct3D9.Texture(id, w, h);
+            return new SlimDX.Direct3D9.Texture(-1, w, h);
         }
 
-        public static void ClearControlTexture(SlimDX.Direct3D9.Texture tex, Color backColour)
-        {
-            if (tex == null || !tex.Valid) return;
-            int prev = SlimDX.Direct3D9.Device.CurrentTarget;
-            SlimDX.Direct3D9.Device.CurrentTarget = tex.Handle;
-            SlimDX.Direct3D9.Device.ApplyTarget();
-            BrowserCanvas.Clear(backColour);
-            SlimDX.Direct3D9.Device.CurrentTarget = prev;
-        }
+        public static void ClearControlTexture(SlimDX.Direct3D9.Texture tex, Color backColour) { }
 
-        // 每帧渲染：清主画布 → 场景绘制 → 提交。对应原版 RenderingPipelineManager.RenderFrame。
+        // 每帧渲染：清主画布 → 场景绘制（各 DXManager.Draw 内部自管 Begin/End）→ 提交。
         public static void RenderFrame(Action draw)
         {
-            SlimDX.Direct3D9.Device.CurrentTarget = 0;
-            SlimDX.Direct3D9.Device.ApplyTarget();
-            BrowserCanvas.Clear(Color.Black);
+            GDevice.Clear(KFramework.MonoGame.Color.Black);
             draw?.Invoke();
-            BrowserCanvas.Flush();
         }
 
         public static void Clean()

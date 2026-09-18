@@ -1,7 +1,13 @@
-// 浏览器端入口由 main.js 通过 [JSExport] Client.Program.Init / Frame / Step 直接驱动，
-// 不依赖 .NET 默认托管入口（dotnet.run）。此处仅保留一个合法的托管入口点 Main，
-// 不执行任何逻辑——避免默认模板的 Stopwatch 循环去调用未注册的 dom.setInnerText（会触发 unreachable）。
+using KFramework.MonoGame;
+
+// 浏览器端入口：WASM 启动后由运行时调用 Main。
+// 真正的每帧循环由 KFramework.MonoGame 的 GameHost（KFramework.TSEngine 的 jsengine/main.js 经
+// requestAnimationFrame 驱动）接管：它在启动时把 JSBind_GameHost.Current 指向 MirGame，
+// 之后每帧回调 JSBind_GameHost.Frame → MirGame.TickFrame。这里仅负责创建并启动游戏。
 class Program
 {
-    static void Main() { }
+    static void Main()
+    {
+        _ = new Client.MirGame().RunAsync();
+    }
 }

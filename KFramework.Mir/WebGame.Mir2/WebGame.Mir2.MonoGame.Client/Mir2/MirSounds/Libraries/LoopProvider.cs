@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Threading.Tasks;
+using KFramework.MonoGame;
 using MirEngine;
 
 namespace Client.MirSounds.Libraries
 {
     /// <summary>
     /// 可循环 / 可停止的声音（背景音乐、持续吟唱、光环等）。
-    /// 浏览器端由 WebAudio 的 AudioBufferSourceNode 承担循环，这里只持有它的句柄。
+    /// 浏览器端改用 KFramework.MonoGame 的 SoundEffect / SoundEffectInstance（底层 WebAudio），
+    /// 这里持有 SoundEffect 与循环实例句柄。
     /// </summary>
     internal class LoopProvider : ISoundLibrary, IDisposable
     {
@@ -15,7 +18,8 @@ namespace Client.MirSounds.Libraries
         private readonly string _fileName;
         private readonly bool _loop;
 
-        private int _audioId;
+        private SoundEffect _se;
+        private SoundEffectInstance _inst;
         private int _volume;
         private bool _disposed;
 
@@ -35,46 +39,87 @@ namespace Client.MirSounds.Libraries
             _fileName = fileName;
             _loop = loop;
 
-            Play(volume);
+            _ = PlayAsync(volume);
+        }
+
+        private async Task PlayAsync(int volume)
+        {
+            try
+            {
+                _volume = volume;
+                ExpireTime = CMain.Time + Settings.SoundCleanMinutes * 60 * 1000;
+
+                if (_se != null) return;
+
+                string url = BrowserResource.ResolveUrl(_fileName);
+                byte[] bytes = await BrowserResource.GetBytesAsync(url);
+                if (bytes == null || bytes.Length == 0) return;
+
+                string mime = _fileName.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase) ? "audio/mpeg" : "audio/wav";
+                _se = await SoundEffect.LoadAsync(bytes, mime);
+                if (_se == null) return;
+
+                if (_loop)
+                {
+                    _inst = _se.CreateInstance();
+                    _inst.IsLooped = true;
+                    _inst.Volume = _volume / 100f;
+                    _inst.Play();
+                }
+                else
+                {
+                    _se.Play(_volume / 100f, 1f, 0f);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (Settings.LogErrors) CMain.SaveError(ex.ToString());
+            }
         }
 
         public bool IsPlaying()
         {
-            return _audioId != 0;
+            return _inst != null && _inst.State == SoundState.Playing;
         }
 
         public void Play(int volume)
         {
             _volume = volume;
-            ExpireTime = CMain.Time + Settings.SoundCleanMinutes * 60 * 1000;
-
-            if (_audioId != 0) return;
-
-            _audioId = BrowserAudio.PlaySound(_fileName, _volume, _loop);
+            if (_se == null) { _ = PlayAsync(volume); return; }
+            if (_loop)
+            {
+                if (_inst == null)
+                {
+                    _inst = _se.CreateInstance();
+                    _inst.IsLooped = true;
+                }
+                _inst.Volume = _volume / 100f;
+                _inst.Play();
+            }
+            else
+            {
+                _se.Play(_volume / 100f, 1f, 0f);
+            }
         }
 
         public void SetVolume(int vol)
         {
             _volume = vol;
-
-            if (_audioId != 0) BrowserAudio.SetSoundVolume(_audioId, vol);
+            if (_inst != null) _inst.Volume = vol / 100f;
         }
 
-        public void Stop()
-        {
-            Dispose();
-        }
+        public void Stop() => Dispose();
 
         public void Dispose()
         {
             if (_disposed) return;
             _disposed = true;
 
-            if (_audioId != 0)
-            {
-                BrowserAudio.StopSound(_audioId);
-                _audioId = 0;
-            }
+            _inst?.Stop();
+            _inst?.Dispose();
+            _se?.Dispose();
+            _inst = null;
+            _se = null;
         }
     }
 }

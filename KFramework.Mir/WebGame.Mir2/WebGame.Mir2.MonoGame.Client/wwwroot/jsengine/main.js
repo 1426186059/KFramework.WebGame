@@ -14,7 +14,8 @@ import * as indexeddb from './indexeddb.js';
 import * as inputKeyboard from './input_keyboard.js';
 import * as inputMouse from './input_mouse.js';
 import * as inputTouch from './input_touch.js';
-import * as net from './net.js';
+import * as net from './net_websocket.js';
+import * as quic from './net_quic.js';
 function findHost(exports) {
     if (!exports)
         return undefined;
@@ -53,20 +54,25 @@ setModuleImports('indexeddb', indexeddb);
 setModuleImports('input_keyboard', inputKeyboard);
 setModuleImports('input_mouse', inputMouse);
 setModuleImports('input_touch', inputTouch);
-setModuleImports('net', net);
+setModuleImports('net_websocket', net);
+setModuleImports('net_quic', quic);
 const config = getConfig();
-// 网络层：把浏览器 WebSocket 事件推回 C# JSBind_Net
+// 网络层：把浏览器 WebSocket / WebTransport(QUIC) 事件推回对应的 C# 绑定
 try {
     const kf = (await getAssemblyExports('KFramework.MonoGame'));
-    const netNs = kf?.KFramework?.MonoGame?.JSBind_Net;
-    if (netNs) {
-        net.setHandlers({
-            onOpen: (h) => netNs.OnOpen(h),
-            onBinaryMessage: (h, d) => netNs.OnBinaryMessage(h, d),
-            onClose: (h, c) => netNs.OnClose(h, c),
-            onError: (h, m) => netNs.OnError(h, m),
-        });
-    }
+    const KF = kf;
+    const wire = (name, mod) => {
+        const ns = KF?.KFramework?.MonoGame?.[name];
+        if (ns)
+            mod.setHandlers({
+                onOpen: (h) => ns.OnOpen(h),
+                onBinaryMessage: (h, d) => ns.OnBinaryMessage(h, d),
+                onClose: (h, c) => ns.OnClose(h, c),
+                onError: (h, m) => ns.OnError(h, m),
+            });
+    };
+    wire('JSBind_Net_WebSocket', net);
+    wire('JSBind_Net_Quic', quic);
 }
 catch (e) {
     console.warn('[main] 网络层导出未就绪:', e);

@@ -717,8 +717,7 @@ namespace Client.MirGraphics
                             if (a) { rgba[i] = 46; rgba[i + 1] = 46; rgba[i + 2] = 46; rgba[i + 3] = 255; }
                             else { rgba[i] = 22; rgba[i + 1] = 22; rgba[i + 2] = 22; rgba[i + 3] = 255; }
                         }
-                    BrowserCanvas.UploadImage(MosaicHandle, rgba, s, s);
-                    _mosaicImage = new MImage { Width = (short)s, Height = (short)s, Image = new Texture(MosaicHandle, s, s), TextureValid = true };
+                    _mosaicImage = new MImage { Width = (short)s, Height = (short)s, Image = DXManager.GDevice.CreateTexture(s, s, rgba), TextureValid = true };
                 }
                 return _mosaicImage;
             }
@@ -1045,12 +1044,12 @@ namespace Client.MirGraphics
         public int Length;
 
         public bool TextureValid;
-        public Texture Image;
+        public KFramework.MonoGame.Texture2D Image;
         //layer 2:
         public short MaskWidth, MaskHeight, MaskX, MaskY;
         public int MaskLength;
 
-        public Texture MaskImage;
+        public KFramework.MonoGame.Texture2D MaskImage;
         public Boolean HasMask;
 
         public long CleanTime;
@@ -1100,9 +1099,7 @@ namespace Client.MirGraphics
                 rgba[i * 4 + 2] = raw[i * 4];
                 rgba[i * 4 + 3] = raw[i * 4 + 3];
             }
-            int id = System.Threading.Interlocked.Increment(ref _imageKey);
-            BrowserCanvas.UploadImage(id, rgba, w, h);
-            Image = new Texture(id, w, h);
+            Image = DXManager.GDevice.CreateTexture(w, h, rgba);
             Data = raw;
 
             if (HasMask)
@@ -1117,9 +1114,7 @@ namespace Client.MirGraphics
                     mrgba[i * 4 + 2] = mraw[i * 4];
                     mrgba[i * 4 + 3] = mraw[i * 4 + 3];
                 }
-                int mid = System.Threading.Interlocked.Increment(ref _imageKey);
-                BrowserCanvas.UploadImage(mid, mrgba, w, h);
-                MaskImage = new Texture(mid, w, h);
+                MaskImage = DXManager.GDevice.CreateTexture(w, h, mrgba);
             }
 
             DXManager.TextureList.Add(this);
@@ -1132,12 +1127,12 @@ namespace Client.MirGraphics
         {
             DXManager.TextureList.Remove(this);
 
-            if (Image != null && !Image.Disposed)
+            if (Image != null)
             {
                 Image.Dispose();
             }
 
-            if (MaskImage != null && !MaskImage.Disposed)
+            if (MaskImage != null)
             {
                 MaskImage.Dispose();
             }

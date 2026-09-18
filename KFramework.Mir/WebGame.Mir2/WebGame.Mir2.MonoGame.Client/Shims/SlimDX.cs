@@ -72,7 +72,9 @@ namespace SlimDX.Direct3D9
 
         public Texture(Device device, int width, int height, int levels, Usage usage, Format format, Pool pool)
         {
-            Handle = BrowserCanvas.CreateOffscreen(Math.Max(1, width), Math.Max(1, height));
+            // 离屏渲染目标（KFramework.MonoGame 的 SpriteBatch 不暴露 RenderTarget）：返回无效占位句柄，
+            // 调用方据此跳过真实离屏合成（地板/光照烘焙暂不生效）。
+            Handle = -1;
             Width = width; Height = height; Disposed = false;
         }
 
@@ -81,7 +83,6 @@ namespace SlimDX.Direct3D9
         public void Dispose()
         {
             if (Disposed) return;
-            if (Handle != 0) MirEngine.BrowserCanvas.DisposeImage(Handle);
             Disposed = true; Handle = 0;
         }
     }
@@ -119,14 +120,13 @@ namespace SlimDX.Direct3D9
         public static int LastTarget = -1;
         public static void ApplyTarget()
         {
-            if (LastTarget != CurrentTarget) { BrowserCanvas.SetTarget(CurrentTarget); LastTarget = CurrentTarget; }
+            LastTarget = CurrentTarget;
         }
         public void Dispose() { }
         public void SetRenderState(RenderState s, object v) { }
         public void Clear(ClearFlags f, Color c, float z, int s)
         {
-            ApplyTarget();
-            BrowserCanvas.Clear(c);
+            // 清屏由 DXManager.GDevice.Clear 统一负责；离屏目标清屏（地板/光照烘焙）暂不支持。
         }
         public void SetRenderTarget(int i, Surface sf) { CurrentTarget = sf == null ? 0 : sf.Handle; }
     }
@@ -147,9 +147,7 @@ namespace SlimDX.Direct3D9
         public float Width = 1F;
         public void Draw(Vector2[] points, Color color)
         {
-            if (points == null || points.Length < 2) return;
-            for (int i = 0; i + 1 < points.Length; i++)
-                MirEngine.BrowserCanvas.DrawLine(points[i].X, points[i].Y, points[i + 1].X, points[i + 1].Y, Width, color.ToArgb());
+            // 线条绘制暂未接入 SpriteBatch；保留签名以兼容调用点（不影响主流程）。
         }
     }
 
