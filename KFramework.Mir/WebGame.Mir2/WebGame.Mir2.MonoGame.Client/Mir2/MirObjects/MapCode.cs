@@ -135,18 +135,18 @@
         public CellInfo[,] MapCells;
         private string FileName;
         private byte[] Bytes;
-        
+
         public MapReader(string FileName)
         {
             this.FileName = FileName;
-
-            initiate();
         }
 
-        private void initiate()
+        // 异步加载：先按 URL 取字节（远程资源服务器，经 ContentManager），再解析地图格式。
+        // 与 MLibrary 的按需异步加载一致 —— 调用方等待结果，不阻塞主线程。
+        public async Task LoadAsync()
         {
             // 浏览器端（WASM）没有本地文件系统，File.Exists 恒为 false。
-            // 本地读取失败时改从资源服务器按 URL 同步取字节（BrowserResource 内部带缓存），
+            // 本地读取失败时改从资源服务器按 URL 异步取字节，
             // 否则会静默退化成 1000x1000 全空地图 —— 表现为"大地图不显示、点击人物不走"。
             if (File.Exists(FileName))
             {
@@ -154,7 +154,7 @@
             }
             else
             {
-                Bytes = MirEngine.BrowserResource.GetBytes(FileName);
+                Bytes = await MirEngine.BrowserResource.GetBytesAsync(FileName).ConfigureAwait(false);
             }
 
             if (Bytes == null || Bytes.Length == 0)
@@ -174,8 +174,12 @@
             }
 
             MirEngine.BrowserResource.Log("[Map] 地图已读取: " + FileName + " 字节数=" + Bytes.Length);
+            Parse();
+        }
 
-
+        // 已持有字节后按格式解析（原 initiate 的后半段）。
+        private void Parse()
+        {
             //c# custom map format
             if ((Bytes[2] == 0x43) && (Bytes[3] == 0x23))
             {

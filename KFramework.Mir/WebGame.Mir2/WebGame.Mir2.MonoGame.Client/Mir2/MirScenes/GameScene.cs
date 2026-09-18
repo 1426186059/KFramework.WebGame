@@ -6,6 +6,7 @@ using Client.MirSounds;
 using SlimDX;
 using SlimDX.Direct3D9;
 using MirEngine;
+using System.Threading.Tasks;
 using S = ServerPackets;
 using C = ClientPackets;
 using Effect = Client.MirObjects.Effect;
@@ -2146,7 +2147,7 @@ namespace Client.MirScenes
                 Music = p.Music
             };
             MapControl.Weather = p.WeatherParticles;
-            MapControl.LoadMap();
+            _ = MapControl.LoadMapAsync();
             InsertControl(0, MapControl);
         }
 
@@ -3984,7 +3985,7 @@ namespace Client.MirScenes
                 MapControl.MapDarkLight = p.MapDarkLight;
                 MapControl.Music = p.Music;
                 MapControl.Weather = p.Weather;
-                MapControl.LoadMap();
+                _ = MapControl.LoadMapAsync();
             }
 
             MapControl.NextAction = 0;
@@ -10510,7 +10511,7 @@ namespace Client.MirScenes
             }
         }
 
-        public void LoadMap()
+        public async Task LoadMapAsync()
         {
             ResetMap();
 
@@ -10519,6 +10520,7 @@ namespace Client.MirScenes
             MapObject.MagicObjectID = 0;
 
             MapReader Map = new MapReader(FileName);
+            await Map.LoadAsync().ConfigureAwait(false);
             M2CellInfo = Map.MapCells;
             Width = Map.Width;
             Height = Map.Height;

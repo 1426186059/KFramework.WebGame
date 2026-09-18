@@ -1,5 +1,7 @@
 <Solution>
-  <Folder Name="/TestTool/" />
+  <Folder Name="/TestTool/">
+    <Project Path="TestTool/WebSocketTestServer/WebSocketTestServer.csproj" />
+  </Folder>
   <Project Path="KFramework.Content.Cli/KFramework.Content.Cli.csproj" />
   <Project Path="KFramework.Example1/KFramework.Example1.csproj" />
   <Project Path="KFramework.Example2/KFramework.Example2.csproj" />

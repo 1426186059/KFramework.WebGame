@@ -25,9 +25,13 @@ namespace Client
         {
             // 把 KFramework.MonoGame 的 GraphicsDevice / SpriteBatch 交给 DXManager（渲染后端）。
             DXManager.Initialize(GraphicsDevice, new SpriteBatch(GraphicsDevice));
+        }
 
+        protected override async Task LoadContentAsync()
+        {
             // 引擎引导：设资源基址、加载设置、建 DXManager、登记库、建登录场景、声音、输入。
-            Program.Init();
+            // 放在异步加载阶段：声音索引表（SoundList）需经资源服务器异步读取，避免同步网络冻结主线程。
+            await Program.Init().ConfigureAwait(false);
         }
 
         protected override void Update(GameTime gameTime)

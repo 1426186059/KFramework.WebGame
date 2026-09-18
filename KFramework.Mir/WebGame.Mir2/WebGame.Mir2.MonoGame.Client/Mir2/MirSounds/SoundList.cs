@@ -10,16 +10,16 @@ namespace Client.MirSounds
     {
         public static Dictionary<int, string> Indexes = new Dictionary<int, string>();
 
-        public static void LoadSoundList()
+        public static async Task LoadSoundListAsync()
         {
             string fileName = Path.Combine(Settings.SoundPath, "SoundList.lst");
 
-            // 浏览器端没有本地文件系统：File.Exists 恒为 false，必须回退到资源服务器按 URL 取。
+            // 浏览器端没有本地文件系统：File.Exists 恒为 false，必须回退到资源服务器按 URL 异步取。
             // 不加载这张表，索引 -> 文件名就只能靠 "1000-1.wav" 这类推测命名，
             // 而实际资源是 "1.wav" / "Login2.wav"（见 SoundList.lst），结果就是永远找不到文件 —— 表现为"完全没有音效"。
             byte[] bytes = null;
             if (File.Exists(fileName)) bytes = File.ReadAllBytes(fileName);
-            else bytes = MirEngine.BrowserResource.GetBytes(fileName);
+            else bytes = await MirEngine.BrowserResource.GetBytesAsync(fileName).ConfigureAwait(false);
 
             if (bytes == null || bytes.Length == 0)
             {

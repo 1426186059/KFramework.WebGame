@@ -14,13 +14,18 @@ namespace Client
     {
         public static CMain Form = new CMain();
         public static bool Launch, Restart;
+        private static bool _bootstrapped;
 
         [JSExport]
-        public static void Init()
+        public static async Task Init()
         {
+            if (_bootstrapped) return;
+            _bootstrapped = true;
+
             // 资源基址：指向 Crystal 客户端资源目录对应的本地 HTTP 服务
             // （D:\OpenSource\Crystal\Build\Client\Debug），避免把 GB 级资源复制进 wwwroot。
-            MirEngine.BrowserResource.BaseUrl = "http://127.0.0.1:5080/";
+            // 同时创建一个指向它的 ContentManager，统一经 KFramework.MonoGame 异步加载远程资源。
+            MirEngine.BrowserResource.Configure("http://127.0.0.1:5080/");
 
             Settings.Load();
             DXManager.Create();
@@ -48,7 +53,7 @@ namespace Client
             _ = Libraries.LoadAsync();
 
             MirScene.ActiveScene = new LoginScene();
-            SoundManager.Create();
+            await SoundManager.CreateAsync().ConfigureAwait(false);
             ConfigureInput();
         }
 

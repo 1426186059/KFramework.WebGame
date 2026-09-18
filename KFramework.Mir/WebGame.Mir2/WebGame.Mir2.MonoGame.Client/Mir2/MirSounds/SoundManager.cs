@@ -57,11 +57,11 @@ namespace Client.MirSounds
             }
         }
 
-        public static void Create()
+        public static async Task CreateAsync()
         {
             // 索引 -> 文件名 映射表。原桌面端在窗体初始化时加载，浏览器端此前从没被调用过，
             // 导致所有 PlaySound(索引) 都解析出错误文件名 -> 全程静音。
-            SoundList.LoadSoundList();
+            await SoundList.LoadSoundListAsync().ConfigureAwait(false);
 
             // 音频后端改为 KFramework.MonoGame（WebAudio）；实际解锁需首次用户手势，在 ConfigureInput 里触发。
             AudioMaster.Unlock();
