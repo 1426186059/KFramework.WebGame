@@ -1,5 +1,5 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_CacheStorage 经 [JSImport(module: "cachestorage")] 调用；
-// 产物 cachestorage.js 由 SyncJsEngine 复制到 wwwroot/jsengine。
+// 产物 storage_cachestorage.js 由 SyncJsEngine 复制到 wwwroot/jsengine。
 //
 // 把资源包（JS/CSS/图片/KTX2 纹理、.web.lib 等静态资源字节）持久化到浏览器 Cache Storage。
 // 与 IndexedDB 相比：Cache Storage 以 Response 形式存储，专为二进制资源设计、序列化/反序列化开销更小，
