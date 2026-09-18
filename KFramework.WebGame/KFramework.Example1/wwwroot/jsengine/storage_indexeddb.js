@@ -1,9 +1,9 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_IndexedDB 经 [JSImport(module: "indexeddb")] 调用；
-// 产物 indexeddb.js 由 SyncJsEngine 复制到 wwwroot/jsengine。
+// 产物 storage_indexeddb.js 由 SyncJsEngine 复制到 wwwroot/jsengine。
 //
 // 把「用户本地数据」持久化到浏览器 IndexedDB：账号、密码、用户存档、装备数据、设置等。
 // IndexedDB 支持事务与键值/对象存储，适合需要可靠持久化、可被查询的用户数据；
-// 不要在这里存资源包/纹理（那应走 Cache Storage，见 cachestorage.ts）。
+// 不要在这里存资源包/纹理（那应走 Cache Storage，见 storage_cachestorage.ts）。
 //
 // 与 C# 交换字节采用「预分配缓冲 + 写回」模式：先 bytesSize() 探长度，C# 按长度分配 byte[] 后交给
 // loadBytesInto() 写入，绕开 .NET WASM 不支持 byte[] 作为返回值的限制（SYSLIB1072）。

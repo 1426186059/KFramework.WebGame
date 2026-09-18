@@ -7,7 +7,7 @@ namespace KFramework.MonoGame
     /// cachestorage 模块绑定：把资源包字节（JS/CSS/图片/KTX2 纹理、.web.lib 等静态资源）持久化到
     /// 浏览器 Cache Storage。相较于 IndexedDB，Cache Storage 以 Response 形式存储二进制资源，序列化开销更小，
     /// 后续可叠加 Service Worker 拦截 fetch 直接返回缓存响应，做到“零解析开销”。
-    /// 实际逻辑见 KFramework.TSEngine/src/cachestorage.ts（"cachestorage" 模块）。
+    /// 实际逻辑见 KFramework.TSEngine/src/storage_cachestorage.ts（"cachestorage" 模块）。
     ///
     /// 与 C# 交换字节采用「预分配缓冲 + 写回」模式（同 decodeImageToRgba）：先 <see cref="GetSizeAsync"/>
     /// 探长度，C# 按长度分配 byte[] 后交给 <see cref="LoadIntoAsync"/> 写入，绕开 .NET WASM 不支持 byte[]

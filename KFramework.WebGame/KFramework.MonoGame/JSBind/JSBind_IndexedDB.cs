@@ -7,7 +7,7 @@ namespace KFramework.MonoGame
     /// indexeddb 模块绑定：把「用户本地数据」持久化到浏览器 IndexedDB——账号、密码、用户存档、装备数据、设置等。
     /// IndexedDB 支持事务与键值存储，适合需要可靠持久化、可被查询的用户数据；不要在这里存资源包/纹理
     /// （那应走 Cache Storage，见 <see cref="JSBind_CacheStorage"/>）。
-    /// 实际逻辑见 KFramework.TSEngine/src/indexeddb.ts（"indexeddb" 模块）。
+    /// 实际逻辑见 KFramework.TSEngine/src/storage_indexeddb.ts（"indexeddb" 模块）。
     ///
     /// 字符串 KV（账号/密码等）直接返回 string；字节 KV（用户存档等）采用「预分配缓冲 + 写回」模式：
     /// 先 <see cref="BytesSizeAsync"/> 探长度，C# 按长度分配 byte[] 后交给 <see cref="LoadBytesIntoAsync"/> 写入。
