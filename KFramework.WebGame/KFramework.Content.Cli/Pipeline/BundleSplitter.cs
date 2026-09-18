@@ -1,5 +1,3 @@
-using KFramework.MonoGame;
-
 namespace KFramework.Content.Build;
 
 /// <summary>
@@ -47,7 +45,7 @@ public static class BundleSplitter
             string[] files = DirectFiles(folder, rawDirectory).ToArray();
             if (files.Length == 0) continue;
             yield return (
-                PakFormat.NormalizeName(Path.GetRelativePath(rawDirectory, folder).Replace('\\', '/')),
+                AssetName.Normalize(Path.GetRelativePath(rawDirectory, folder).Replace('\\', '/')),
                 files);
         }
     }
@@ -56,7 +54,7 @@ public static class BundleSplitter
     private static string RootBundleName(string bundlesRoot, string rawDirectory)
     {
         string rel = Path.GetRelativePath(rawDirectory, bundlesRoot).Replace('\\', '/');
-        return PakFormat.NormalizeName(
+        return AssetName.Normalize(
             string.IsNullOrEmpty(rel)
                 ? Path.GetFileName(rawDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar))
                 : rel);

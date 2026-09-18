@@ -364,7 +364,7 @@ public static class BundleBaker
     /// <summary>文件路径 → 资源名：保留原始扩展名（如 .png/.json/.txt），仅小写化、统一用 / 分隔。
     /// 保留扩展名可让资源名携带更多类型信息，配合模糊/精确查找更易区分同名不同型的资源。</summary>
     private static string AssetNameOf(string relativePath)
-        => PakFormat.NormalizeName(relativePath);
+        => AssetName.Normalize(relativePath);
 
     /// <summary>按扩展名推断资源 MIME（仅作为包内元数据，不影响实际字节）。</summary>
     private static string MimeOf(string relative)
