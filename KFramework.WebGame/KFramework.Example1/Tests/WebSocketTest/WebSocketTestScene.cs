@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 
 using KFramework.MonoGame;
@@ -23,10 +24,17 @@ public sealed class WebSocketTestScene : TestSceneBase
     private const string ServerUrl = "ws://127.0.0.1:9000/";
 
     private static readonly string[] ButtonNames =
-        ["连接", "断开", "发送输入框", "发送 Hello", "发送 中文消息", "清空日志"];
+        ["连接", "断开", "发送输入框", "发送 Hello", "发送 中文消息", "收 256KB", "收 1MB", "清空日志"];
 
     private readonly List<Rectangle> _buttons = [];
     private readonly List<string> _log = [];
+
+    /// <summary>
+    /// 按钮行的起始 y：由 DrawBody 的流式布局算出来（③ 操作 标题之后），Update 的 Layout() 复用它，
+    /// 保证点击命中区与画面上看到的位置一致（别再写死，否则会跟上面的 ①② 区重叠）。
+    /// 初值只在首帧 Draw 之前兜底。
+    /// </summary>
+    private float _buttonsTop = 190f;
 
     private Net_WebSocket_Client? _ws;
     private string _status = "未连接";
@@ -73,7 +81,10 @@ public sealed class WebSocketTestScene : TestSceneBase
             case 2: Send(_input, clearInput: true); break;
             case 3: Send("Hello WebSocket " + DateTime.Now.ToString("HH:mm:ss")); break;
             case 4: Send("中文消息测试 你好，服务器！"); break;
-            case 5: _log.Clear(); break;
+            // 大包：让服务器下发 > 64KB 的二进制帧，验证零拷贝通道（Net_RecvBuffer + MemoryView 写入）
+            case 5: Send("big " + (256 * 1024)); break;
+            case 6: Send("big " + (1024 * 1024)); break;
+            case 7: _log.Clear(); break;
         }
     }
 
@@ -86,7 +97,7 @@ public sealed class WebSocketTestScene : TestSceneBase
             ws.Opened += () => { _status = "已连接 " + ServerUrl; Log("[打开] " + ServerUrl); };
             ws.Closed += code => { _status = $"已关闭（code={code}）"; Log("[关闭] code=" + code); };
             ws.Error += message => { _status = "错误：" + message; Log("[错误] " + message); };
-            ws.MessageReceived += data => Log("[收到] " + Encoding.UTF8.GetString(data.Span));
+            ws.MessageReceived += data => OnReceived(ws, data);
             _ws = ws;
 
             _status = "连接中…";
@@ -143,7 +154,7 @@ public sealed class WebSocketTestScene : TestSceneBase
         _buttons.Clear();
 
         int x = 28;
-        int y = 190;
+        int y = (int)_buttonsTop;
         for (int i = 0; i < ButtonNames.Length; i++)
         {
             int width = 140;
@@ -179,8 +190,9 @@ public sealed class WebSocketTestScene : TestSceneBase
         batch.DrawString(Font, shown, new Vector2(inputRect.X + 8, inputRect.Y + 6), Color.White);
         y += inputRect.Height + 16f;
 
-        // 按钮
+        // 按钮：起点跟随上面的流式布局（Layout 用它生成命中矩形，画面与点击位置才对得上）
         y += DrawSection(batch, "③ 操作", new Vector2(x, y));
+        _buttonsTop = y;
         for (int i = 0; i < _buttons.Count; i++)
         {
             Rectangle rect = _buttons[i];
@@ -195,6 +207,38 @@ public sealed class WebSocketTestScene : TestSceneBase
         int start = Math.Max(0, _log.Count - 12);
         for (int i = start; i < _log.Count; i++)
             y += DrawLine(batch, Font, _log[i], new Vector2(x, y), Color.LightGray);
+    }
+
+    private void OnReceived(Net_WebSocket_Client ws, ReadOnlyMemory<byte> data)
+    {
+        // 大包用的是 Net_RecvBuffer 的共享固定缓冲，只在本次回调内有效 —— 这里立刻校验，不留存
+        if (ws.LastMessageFromSharedBuffer)
+        {
+            Log(VerifyBigPacket(data.Span));
+            return;
+        }
+
+        Log("[收到] " + Encoding.UTF8.GetString(data.Span));
+    }
+
+    /// <summary>校验 big 命令下发的二进制大包：服务器按 <c>i % 251</c> 填充，逐字节比对即可确认零拷贝没写错位。</summary>
+    private static string VerifyBigPacket(ReadOnlySpan<byte> data)
+    {
+        Stopwatch sw = Stopwatch.StartNew();
+        int bad = -1;
+        for (int i = 0; i < data.Length; i++)
+        {
+            if (data[i] != (byte)(i % 251))
+            {
+                bad = i;
+                break;
+            }
+        }
+        sw.Stop();
+
+        return bad < 0
+            ? $"[大包] {data.Length} 字节，零拷贝共享缓冲，内容校验 OK（遍历 {sw.Elapsed.TotalMilliseconds:F2} ms）"
+            : $"[大包] {data.Length} 字节，内容校验失败：第 {bad} 字节不符！";
     }
 
     private void Log(string message)

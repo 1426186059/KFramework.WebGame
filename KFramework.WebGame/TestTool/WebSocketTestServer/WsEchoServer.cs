@@ -89,6 +89,10 @@ internal sealed class WsEchoServer
                     {
                         string text = Encoding.UTF8.GetString(frame.Value.Payload);
                         Console.WriteLine($"[#{id}] {text}");
+
+                        // 测试命令（命中就不 echo / 广播）：big <n> → 下发 n 字节二进制大包
+                        if (await TryRunCommandAsync(stream, text, token).ConfigureAwait(false)) break;
+
                         await SendTextAsync(stream, $"[echo] {text}", token).ConfigureAwait(false);
                         await BroadcastAsync($"[#{id}] {text}", id, token).ConfigureAwait(false);
                         break;
@@ -96,6 +100,9 @@ internal sealed class WsEchoServer
                     case 0x2: // binary
                     {
                         byte[] data = frame.Value.Payload;
+                        // 客户端 Send 一律发二进制帧，所以测试命令也从二进制帧里按 UTF-8 识别
+                        if (await TryRunCommandAsync(stream, Encoding.UTF8.GetString(data), token).ConfigureAwait(false)) break;
+
                         await SendTextAsync(stream, $"[服务器] 收到二进制 {data.Length} 字节（首字节 {data[0]}）", token)
                             .ConfigureAwait(false);
                         break;
@@ -119,6 +126,26 @@ internal sealed class WsEchoServer
     private int OnlineCount
     {
         get { lock (_gate) return _clients.Count; }
+    }
+
+    /// <summary>
+    /// 测试命令（命中则不再走 echo / 广播）：<c>big &lt;n&gt;</c> → 下发一个 n 字节的二进制帧。
+    /// <para>内容按 <c>i % 251</c> 填充，客户端可以逐字节校验，用来验证
+    /// &gt; 64KB 的大包是否走了零拷贝通道（C# 侧 Net_RecvBuffer + MemoryView 写入）且数据没有错位。</para>
+    /// </summary>
+    private static async Task<bool> TryRunCommandAsync(NetworkStream stream, string text, CancellationToken token)
+    {
+        string[] parts = text.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (parts.Length != 2 || !parts[0].Equals("big", StringComparison.OrdinalIgnoreCase)) return false;
+        if (!int.TryParse(parts[1], out int size) || size <= 0 || size > MaxFrameBytes) return false;
+
+        var payload = new byte[size];
+        for (int i = 0; i < payload.Length; i++) payload[i] = (byte)(i % 251);
+
+        await WriteFrameAsync(stream, 0x2, payload, token).ConfigureAwait(false);
+        await SendTextAsync(stream, $"[服务器] 已下发二进制大包 {size} 字节（i%251 填充，请校验内容）", token)
+            .ConfigureAwait(false);
+        return true;
     }
 
     #region 握手

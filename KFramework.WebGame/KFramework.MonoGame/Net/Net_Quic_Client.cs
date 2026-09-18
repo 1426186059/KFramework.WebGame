@@ -31,6 +31,10 @@ namespace KFramework.MonoGame
         private int _handle = -1;
 
         public event Action? Opened;
+        /// <summary>
+        /// 收到一帧数据。小帧是独立的 byte[]，可长期持有；
+        /// 大帧（&gt; 64KB）走零拷贝通道，底层是共享固定缓冲，<b>只在本次回调内有效</b>。
+        /// </summary>
         public event Action<ReadOnlyMemory<byte>>? MessageReceived;
         public event Action<int>? Closed;
         public event Action<string>? Error;
@@ -82,8 +86,19 @@ namespace KFramework.MonoGame
             }
         }
 
+        /// <summary>
+        /// 最近一次 <see cref="MessageReceived"/> 的数据是否来自大包的共享固定缓冲（<see cref="Net_RecvBuffer"/>）。
+        /// true 表示这份数据只在本次回调内有效，需要留存请自行 ToArray()。
+        /// </summary>
+        public bool LastMessageFromSharedBuffer { get; private set; }
+
         internal void RaiseOpened() => Opened?.Invoke();
-        internal void RaiseMessage(byte[] data) => MessageReceived?.Invoke(data);
+
+        internal void RaiseMessage(ReadOnlyMemory<byte> data, bool fromSharedBuffer)
+        {
+            LastMessageFromSharedBuffer = fromSharedBuffer;
+            MessageReceived?.Invoke(data);
+        }
         internal void RaiseClosed(int code) => Closed?.Invoke(code);
         internal void RaiseError(string message) => Error?.Invoke(message);
     }

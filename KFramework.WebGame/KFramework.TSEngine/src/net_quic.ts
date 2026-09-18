@@ -9,10 +9,17 @@
 
 export interface NetHandlers {
     onOpen: (handle: number) => void;
+    /** 小包：整帧直接交给 C#（由运行时封送成 byte[]）。 */
     onBinaryMessage: (handle: number, data: Uint8Array) => void;
+    /** 大包：只回传 (ArrayBuffer 偏移, 长度)，数据由 C# 侧拉走（零拷贝）。 */
+    onBigMessage: (handle: number, offset: number, length: number) => void;
     onClose: (handle: number, code: number) => void;
     onError: (handle: number, message: string) => void;
 }
+
+// 大包阈值（字节），必须与 C# 侧 Net_RecvBuffer.BigPacketThreshold 一致。
+// 语义同 net_websocket.ts：超阈值只回传 (偏移, 长度)，由 C# 递固定缓冲过来再写入。
+export const BIG_PACKET_LIMIT = 64 * 1024;
 
 const CONNECTING = 0;
 const OPEN = 1;
@@ -20,6 +27,8 @@ const CLOSING = 2;
 const CLOSED = 3;
 
 let handlers: NetHandlers | null = null;
+/** 正在等待 C# 拉走的大包（只保存当前这一帧，用完即删）。 */
+const pending = new Map<number, Uint8Array>();
 const sessions = new Map<number, {
     wt: WebTransport;
     state: number;
@@ -99,7 +108,7 @@ function readLoop(id: number, reader: ReadableStreamDefaultReader<Uint8Array>): 
             while (true) {
                 const { value, done } = await reader.read();
                 if (done) break;
-                if (value) handlers?.onBinaryMessage(id, new Uint8Array(value));
+                if (value) deliver(id, new Uint8Array(value));
             }
         } catch {
             /* 流关闭/出错时自然结束 */
@@ -107,6 +116,36 @@ function readLoop(id: number, reader: ReadableStreamDefaultReader<Uint8Array>): 
             reader.releaseLock();
         }
     })();
+}
+
+/** 收包分流：小包整帧交给 C#，大包只回传 (ArrayBuffer 偏移, 长度)。 */
+function deliver(id: number, data: Uint8Array): void {
+    if (data.byteLength > BIG_PACKET_LIMIT) {
+        pending.set(id, data);
+        try {
+            handlers?.onBigMessage(id, data.byteOffset, data.byteLength);
+        } finally {
+            pending.delete(id);
+        }
+        return;
+    }
+    handlers?.onBinaryMessage(id, data);
+}
+
+/**
+ * 大包通道：C# 把它的固定缓冲以 MemoryView 递过来，这里按 (offset, length)
+ * 从 ArrayBuffer 直接拷进去（不产生中间数组）。target 就是 WASM 堆上的那块内存。
+ */
+export function quicRead(handle: number, offset: number, length: number, target: MemoryView | Uint8Array): void {
+    const src = pending.get(handle);
+    if (!src) return;
+
+    const chunk = new Uint8Array(src.buffer, offset, length);
+    if (target instanceof Uint8Array) {
+        target.set(chunk);
+        return;
+    }
+    target.set(chunk, 0);
 }
 
 /** 在可靠流上发送一帧；流未就绪（连接未 OPEN）时返回 false。写入前复制数据，避免底层复用缓冲。 */
@@ -128,6 +167,7 @@ export function quicClose(handle: number): void {
     entry.state = CLOSING;
     try { entry.wt.close(); } catch { /* ignore */ }
     sessions.delete(handle);
+    pending.delete(handle);
 }
 
 /** 返回内部状态：0 CONNECTING / 1 OPEN / 2 CLOSING / 3 CLOSED。 */

@@ -26,6 +26,10 @@ namespace KFramework.MonoGame
         [JSImport("quicState", "net_quic")]
         internal static partial int QuicState(int handle);
 
+        // 大包零拷贝通道：同 JSBind_Net_WebSocket.NetRead，把固定缓冲递给 JS 直接写入。
+        [JSImport("quicRead", "net_quic")]
+        internal static partial void QuicRead(int handle, int offset, int length, [JSMarshalAs<JSType.MemoryView>] Span<byte> target);
+
         [JSExport]
         internal static void OnOpen(int handle)
         {
@@ -48,14 +52,31 @@ namespace KFramework.MonoGame
             if (Net_Quic_Client.s_instances.TryGetValue(handle, out var c)) c.RaiseError(message);
         }
 
+        // 同 JSBind_Net_WebSocket：JS→C# 方向不能用 MemoryView（JS 侧给的是 Uint8Array），
+        // 统一用 JSType.Array 由运行时封送成新的 byte[]。
+        // 注：byte[] 不加 JSMarshalAs —— 生成器对 byte[] 有特化，JS 侧直接给 Uint8Array 即可。
         [JSExport]
-        internal static void OnBinaryMessage(int handle, [JSMarshalAs<JSType.MemoryView>] Span<byte> data)
+        internal static void OnBinaryMessage(int handle, byte[] data)
         {
             if (!Net_Quic_Client.s_instances.TryGetValue(handle, out var c)) return;
-            // MemoryView 只在调用期间有效，必须立即拷出。
-            var copy = new byte[data.Length];
-            data.CopyTo(copy);
-            c.RaiseMessage(copy);
+            c.RaiseMessage(data ?? Array.Empty<byte>(), fromSharedBuffer: false);
+        }
+
+        /// <summary>大包零拷贝通道，同 <see cref="JSBind_Net_WebSocket.OnBigMessage"/>。</summary>
+        [JSExport]
+        internal static void OnBigMessage(int handle, int offset, int length)
+        {
+            if (!Net_Quic_Client.s_instances.TryGetValue(handle, out var c)) return;
+            if (length <= 0)
+            {
+                c.RaiseMessage(ReadOnlyMemory<byte>.Empty, fromSharedBuffer: false);
+                return;
+            }
+
+            byte[] buffer = Net_RecvBuffer.Ensure(length);
+            QuicRead(handle, offset, length, buffer.AsSpan(0, length));
+            // 共享缓冲：只在本次回调内有效（见 Net_RecvBuffer 的说明）
+            c.RaiseMessage(buffer.AsMemory(0, length), fromSharedBuffer: true);
         }
     }
 }

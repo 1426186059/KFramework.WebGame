@@ -6,11 +6,16 @@
 //
 // 说明：WebTransport 还提供不可靠 datagram，但游戏消息通常需要可靠有序，故本桥默认走可靠流；
 // 若确需 datagram，可在 C# 侧扩展方法后在此补一个 writer。
+// 大包阈值（字节），必须与 C# 侧 Net_RecvBuffer.BigPacketThreshold 一致。
+// 语义同 net_websocket.ts：超阈值只回传 (偏移, 长度)，由 C# 递固定缓冲过来再写入。
+export const BIG_PACKET_LIMIT = 64 * 1024;
 const CONNECTING = 0;
 const OPEN = 1;
 const CLOSING = 2;
 const CLOSED = 3;
 let handlers = null;
+/** 正在等待 C# 拉走的大包（只保存当前这一帧，用完即删）。 */
+const pending = new Map();
 const sessions = new Map();
 let nextId = 1;
 /** C# 侧注册事件回调（由 main.ts 在拿到程序集导出后调用一次）。 */
@@ -87,7 +92,7 @@ function readLoop(id, reader) {
                 if (done)
                     break;
                 if (value)
-                    handlers?.onBinaryMessage(id, new Uint8Array(value));
+                    deliver(id, new Uint8Array(value));
             }
         }
         catch {
@@ -97,6 +102,35 @@ function readLoop(id, reader) {
             reader.releaseLock();
         }
     })();
+}
+/** 收包分流：小包整帧交给 C#，大包只回传 (ArrayBuffer 偏移, 长度)。 */
+function deliver(id, data) {
+    if (data.byteLength > BIG_PACKET_LIMIT) {
+        pending.set(id, data);
+        try {
+            handlers?.onBigMessage(id, data.byteOffset, data.byteLength);
+        }
+        finally {
+            pending.delete(id);
+        }
+        return;
+    }
+    handlers?.onBinaryMessage(id, data);
+}
+/**
+ * 大包通道：C# 把它的固定缓冲以 MemoryView 递过来，这里按 (offset, length)
+ * 从 ArrayBuffer 直接拷进去（不产生中间数组）。target 就是 WASM 堆上的那块内存。
+ */
+export function quicRead(handle, offset, length, target) {
+    const src = pending.get(handle);
+    if (!src)
+        return;
+    const chunk = new Uint8Array(src.buffer, offset, length);
+    if (target instanceof Uint8Array) {
+        target.set(chunk);
+        return;
+    }
+    target.set(chunk, 0);
 }
 /** 在可靠流上发送一帧；流未就绪（连接未 OPEN）时返回 false。写入前复制数据，避免底层复用缓冲。 */
 export function quicSend(handle, data) {
@@ -122,6 +156,7 @@ export function quicClose(handle) {
     }
     catch { /* ignore */ }
     sessions.delete(handle);
+    pending.delete(handle);
 }
 /** 返回内部状态：0 CONNECTING / 1 OPEN / 2 CLOSING / 3 CLOSED。 */
 export function quicState(handle) {

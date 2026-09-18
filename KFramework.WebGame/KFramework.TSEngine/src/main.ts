@@ -26,6 +26,7 @@ interface GameHost {
 interface NetExport {
     OnOpen: (handle: number) => void;
     OnBinaryMessage: (handle: number, data: Uint8Array) => void;
+    OnBigMessage: (handle: number, offset: number, length: number) => void;
     OnClose: (handle: number, code: number) => void;
     OnError: (handle: number, message: string) => void;
 }
@@ -88,6 +89,7 @@ try {
         if (ns) mod.setHandlers({
             onOpen: (h) => ns.OnOpen(h),
             onBinaryMessage: (h, d) => ns.OnBinaryMessage(h, d),
+            onBigMessage: (h, offset, len) => ns.OnBigMessage?.(h, offset, len),
             onClose: (h, c) => ns.OnClose(h, c),
             onError: (h, m) => ns.OnError(h, m),
         });
