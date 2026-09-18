@@ -81,7 +81,7 @@
             
             await content.LoadBundleAsync("myres/levels", cancellationToken).ConfigureAwait(false);
             var LevelConfigBundle = content.GetBundle("myres/levels")!;
-            string text = LevelConfigBundle.LoadText($"MyRes/Levels/{nLevelIndex:00}.txt", false);
+            string text = LevelConfigBundle.LoadText($"MyRes/Levels/{nLevelIndex:00}.txt");
             using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(text));
             return new Level(nLevelIndex, stream, characters, misc3);
 

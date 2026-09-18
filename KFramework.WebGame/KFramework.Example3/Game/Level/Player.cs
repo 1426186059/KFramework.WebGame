@@ -711,6 +711,7 @@ namespace KFramework.Example3
                                     if (previousTop >= tileBounds.Bottom)
                                     {
                                         jumpTime = 0.0f; //碰撞完后，就把跳跃时间归零
+                                        Velocity.Y = 0; // 把向上的速度也归0
                                         if (mTile.Target is QuestionBlock)
                                         {
                                             QuestionBlock mQuestionBlock = mTile.Target as QuestionBlock;
