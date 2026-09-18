@@ -109,11 +109,14 @@ namespace KFramework.Example3
         private const float AirDragFactor = 0.58f;
 
         // ==================== Jump Constants ====================
-        private const float MaxJumpTime = 0.35f;
-        private const float JumpLaunchVelocity = -6000.0f;//这里为负的原因：Y轴向下的原因
+        // 马里奥式可变跳跃：轻按=小跳，长按=大跳；上升中松手即“截断”下降，最高高度有上限。
+        // 高度以“格”为单位、按屏幕动态换算，保证不同分辨率下跳的格数一致。
+        private const float MaxJumpTime = 0.15f;          // 全力跳（按住满）的上升持续时长（秒）
+        private const float MaxJumpSpeed = -5600f;          // 起跳速度
+        private const float MaxJumpHeightTiles = 4.0f;    // 全力跳的最高高度（格）：设上限，避免跳太高
+        private const float JumpCutFactor = 0.4f;         // 上升中松手的“截断”系数：松手瞬间上升速度乘此值 → 小跳
         public const float GravityAcceleration = 3400.0f;
         private const float MaxFallSpeed = 550.0f;
-        private const float JumpControlPower = 1f;
         private float MaxJumpUpPosY = 0;
         private float MinJumpDownPosY = 0;
 
@@ -131,6 +134,7 @@ namespace KFramework.Example3
         }
 
         private bool wasJumping;
+        private bool jumpKeyHeld;          // 跳跃键当前是否被按住（用于可变跳跃：上升中是否仍在按住）
         private float initialFallYPosition;
         private bool isFalling;
         private float jumpTime;
@@ -479,6 +483,10 @@ namespace KFramework.Example3
                 movement = 1.0f;
             }
 
+            // 跳跃：用 GetKeyDown（边沿）在“按下那一帧”发起一次起跳；
+            // 同时用 GetKey（按住）记录 jumpKeyHeld，供 DoJump 判断上升中是否仍在按住
+            // （按住=大跳，松手=截断成小跳），从而实现马里奥式可变跳跃高度。
+            jumpKeyHeld = KInputMgr.GetKey(Keys.Up) || KInputMgr.GetKey(Keys.W);
             if (KInputMgr.GetKeyDown(Keys.Up) || KInputMgr.GetKeyDown(Keys.W))
             {
                 isJumping = true;
@@ -581,38 +589,53 @@ namespace KFramework.Example3
 
         private float DoJump(float velocityY)
         {
-            if (isJumping)
+            // 起跳：仅“按下那一帧 + 在地面”触发一次。
+            if (isJumping && !wasJumping && IsOnGround)
             {
-                if ((!wasJumping && IsOnGround) || jumpTime > 0.0f)
+                jumpTime = 0.0001f;
+                if (BigPlayer)
                 {
-                    if (jumpTime == 0.0f)
-                    {
-                        if (BigPlayer)
-                        {
-                            jumpBigSound.Play();
-                        }
-                        else
-                        {
-                            jumpSound.Play();
-                        }
-                    }
-
-                    jumpTime += KTime.deltaTime;
-                }
-
-                if (0.0f < jumpTime && jumpTime <= MaxJumpTime)
-                {
-                    velocityY = JumpLaunchVelocity * (1.0f - (float)Math.Pow(jumpTime / MaxJumpTime, JumpControlPower));
+                    jumpBigSound.Play();
                 }
                 else
                 {
+                    jumpSound.Play();
+                }
+            }
+
+            if (jumpTime > 0.0f)
+            {
+                // 上升阶段（可变跳跃核心）：
+                // 1) 只要仍在按住跳跃键，就维持恒定向上速度（火箭推力），按得越久上升越久 → 越高。
+                // 2) 若在上升中松开按键，立即把上升速度乘 JumpCutFactor 截断，并结束推力交给重力 → 小跳。
+                // 3) 若按住到 MaxJumpTime，结束推力，达到本次跳跃的最高高度上限（MaxJumpHeightTiles 格）。
+                // 高度以格为单位按当前 Tile.TileHeight 换算，适配不同屏幕分辨率。
+                float launch = MaxJumpHeightTiles * Tile.TileHeight / MaxJumpTime * 2;
+                launch = launch * (1.0f - Math.Clamp(jumpTime / MaxJumpTime, 0, 1));
+                launch = Math.Max(MaxJumpSpeed * (1.0f - Math.Clamp(jumpTime / MaxJumpTime, 0, 1)), launch);
+                launch = Math.Max(velocityY, launch);
+                velocityY = -launch;
+
+                if (!jumpKeyHeld)
+                {
+                    // 上升中松手：截断——削减当前上升速度，之后由重力自然拉回（小跳/中跳）
+                    velocityY *= JumpCutFactor;
                     jumpTime = 0.0f;
+                }
+                else
+                {
+                    jumpTime += KTime.deltaTime;
+                    if (jumpTime >= MaxJumpTime)
+                    {
+                        jumpTime = 0.0f; // 全力跳满，达到高度上限，交回重力
+                    }
                 }
 
                 isFalling = false;
             }
             else
             {
+                // 非上升阶段：维护掉落伤害判定
                 jumpTime = 0.0f;
                 if (!IsOnGround && !isJumping && !isFalling)
                 {
@@ -685,8 +708,9 @@ namespace KFramework.Example3
                                     //    Velocity.Y = -Velocity.Y / 2f;
                                     //}
                                     WorldPosition = new Vector2(WorldPosition.X, WorldPosition.Y + depth.Y);
-                                    if (previousTop > tileBounds.Bottom)
+                                    if (previousTop >= tileBounds.Bottom)
                                     {
+                                        jumpTime = 0.0f; //碰撞完后，就把跳跃时间归零
                                         if (mTile.Target is QuestionBlock)
                                         {
                                             QuestionBlock mQuestionBlock = mTile.Target as QuestionBlock;
@@ -716,8 +740,9 @@ namespace KFramework.Example3
                                             IsOnGround = true;
                                         }
 
-                                        if (previousTop > tileBounds.Bottom)
+                                        if (previousTop >= tileBounds.Bottom)
                                         {
+                                            jumpTime = 0.0f; //碰撞完后，就把跳跃时间归零
                                             //向上顶的时候，有个反弹速度
                                             Velocity.Y /= 2f;
                                             if (mTile.Target is BreakableBlock)
