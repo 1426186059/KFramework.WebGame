@@ -36,4 +36,13 @@
 
   <!-- 全局 using（global using MirEngine; + JSExport/JSImport）由本工程 Shims/GlobalUsings.cs 提供。 -->
 
+  <!-- 引擎浏览器层（KFramework.TSEngine）编译产物 dist/jsengine 整目录复制到 wwwroot/jsengine。
+       需先到 KFramework.TSEngine 目录执行 npm install && npm run build 生成 dist（含 net.js）。 -->
+  <Target Name="SyncJsEngine" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <_Engine Include="$(MSBuildThisFileDirectory)..\..\..\KFramework.WebGame\KFramework.TSEngine\dist\jsengine\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_Engine)" DestinationFiles="@(_Engine->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+
 </Project>
