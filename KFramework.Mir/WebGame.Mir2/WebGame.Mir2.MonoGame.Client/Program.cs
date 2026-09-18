@@ -1,55 +1,7 @@
-using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices.JavaScript;
-using System.Threading.Tasks;
-
-Console.WriteLine("Hello, Browser!");
-
-if (args.Length == 1 && args[0] == "start")
-    StopwatchSample.Start();
-
-while (true)
+// 浏览器端入口由 main.js 通过 [JSExport] Client.Program.Init / Frame / Step 直接驱动，
+// 不依赖 .NET 默认托管入口（dotnet.run）。此处仅保留一个合法的托管入口点 Main，
+// 不执行任何逻辑——避免默认模板的 Stopwatch 循环去调用未注册的 dom.setInnerText（会触发 unreachable）。
+class Program
 {
-    StopwatchSample.Render();
-    await Task.Delay(1000);
-}
-
-partial class StopwatchSample
-{
-    private static Stopwatch stopwatch = new();
-
-    public static void Start() => stopwatch.Start();
-    public static void Render() => SetInnerText("#time", stopwatch.Elapsed.ToString(@"mm\:ss"));
-
-    [JSImport("dom.setInnerText", "main.js")]
-    internal static partial void SetInnerText(string selector, string content);
-
-    [JSExport]
-    internal static bool Toggle()
-    {
-        if (stopwatch.IsRunning)
-        {
-            stopwatch.Stop();
-            return false;
-        }
-        else
-        {
-            stopwatch.Start();
-            return true;
-        }
-    }
-
-    [JSExport]
-    internal static void Reset()
-    {
-        if (stopwatch.IsRunning)
-            stopwatch.Restart();
-        else
-            stopwatch.Reset();
-
-        Render();
-    }
-
-    [JSExport]
-    internal static bool IsRunning() => stopwatch.IsRunning;
+    static void Main() { }
 }

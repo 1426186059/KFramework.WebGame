@@ -1,11 +1,39 @@
 <Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- 传奇源码按 nullable-disable 编写，沿用以免大量误报 -->
+    <Nullable>disable</Nullable>
+    <!-- CS0436：高仿的 System.Windows.Forms / System.Drawing 类型有意覆盖框架同名类型（去原生依赖），
+         该警告会为每个使用点刷屏，属预期行为，统一抑制。 -->
+    <NoWarn>$(NoWarn);CS0436</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <StaticWebAssetFingerprintPattern Include="JS" Pattern="*.js" Expression="#[.{fingerprint}]!" />
   </ItemGroup>
+
+  <ItemGroup>
+    <!-- 浏览器版入口/窗体由 Host/ 下的 CMain、Program(partial) 与 Shims/BrowserHelperShim.cs 提供，
+         WinForms 原生版本（Forms/**、Mir2/Program.cs、Utils/BrowserHelper.cs）在浏览器里无意义，排除出编译。 -->
+    <Compile Remove="Mir2\Forms\**" />
+    <Compile Remove="Mir2\Program.cs" />
+    <Compile Remove="Mir2\Utils\BrowserHelper.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 传奇客户端游戏逻辑（从 Web_Mir2.Client 迁移过来的 Mir2/ + Shared/）。
+         仍依赖原引擎命名空间 MirEngine 与 SlimDX/NAudio 浏览器垫片（见本工程 Shims/），先使其可编译，
+         后续把 DXManager/BrowserCanvas 渲染、输入、音频逐步改接到 KFramework.MonoGame。 -->
+    <ProjectReference Include="..\Web_Mir2.Engine\Web_Mir2.Engine.csproj" />
+    <!-- 目标框架：KFramework.MonoGame（MonoGame 化的图形/输入/音频/资源） -->
+    <ProjectReference Include="..\..\..\KFramework.WebGame\KFramework.MonoGame\KFramework.MonoGame.csproj" />
+    <ProjectReference Include="..\..\..\KFramework.WebGame\KFramework.MonoGameExtend\KFramework.MonoGameExtend.csproj" />
+  </ItemGroup>
+
+  <!-- 全局 using（global using MirEngine; + JSExport/JSImport）由本工程 Shims/GlobalUsings.cs 提供。 -->
+
 </Project>
