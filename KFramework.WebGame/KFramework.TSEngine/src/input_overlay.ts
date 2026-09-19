@@ -4,6 +4,12 @@
 // 浏览器原生文本输入覆盖层：在 canvas 之上叠加一个 DOM <input>/<textarea>，承接键盘 / IME /
 // 密码掩码，并把输入结果经 setHandlers 注册的 C# 回调（[JSExport]）回传，驱动 MirTextBox。
 //
+// 重要分工：本 DOM 元素【只做输入捕获代理】，可见的文字与光标由引擎在 canvas 上绘制
+// （见 MirTextBox.CreateTexture → BrowserCanvas.DrawTextBox）。因此本元素的文字颜色与光标均设为
+// 透明（见 place()），仅借其获得浏览器原生的 IME 组字 / 候选窗 / 软键盘能力——这是 WebGL canvas
+// 拿不到输入合成事件时的唯一可行路径。引擎绘制的好处：文字/光标归对话框绘制层级管，
+// 弹窗出现时正常遮挡，不再有“浮层盖不住 / 焦点切换光标跳到顶”的问题。
+//
 // 为什么光标 / 输入必须走这个 DOM 覆盖层方案（而不是在 canvas 上自绘）？
 //   canvas / WebGL 是“位图画布”，画布上的一切——文字、光标、选区——都必须由游戏每帧手绘。
 //   而浏览器原生的文本编辑能力是“活”的、由操作系统 / 浏览器增量维护的，canvas 无法等价复刻：
@@ -60,13 +66,6 @@ function canvasMetrics(): { left: number; top: number; dpr: number } {
     const rect = canvas.getBoundingClientRect();
     const dpr = rect.width > 0 ? canvas.width / rect.width : 1; // backing/CSS 比，与 input_common.canvasPoint 同一算法
     return { left: rect.left, top: rect.top, dpr: dpr > 0 ? dpr : 1 };
-}
-
-function colorToCss(color: number): string {
-    const r = (color >> 16) & 0xff;
-    const g = (color >> 8) & 0xff;
-    const b = color & 0xff;
-    return '#' + [r, g, b].map((x) => x.toString(16).padStart(2, '0')).join('');
 }
 
 function attach(el: InputEl): void {
@@ -130,9 +129,11 @@ function place(el: HTMLElement, p: ShowParams): void {
     el.style.width = p.cw / dpr + 'px';
     el.style.height = p.ch / dpr + 'px';
     el.style.font = p.fontPx / dpr + 'px ' + (p.fontFamily || 'sans-serif');
-    const css = colorToCss(p.color);
-    el.style.color = css;
-    el.style.caretColor = css;
+    // 文字与光标由引擎在 canvas 上绘制（见 MirTextBox.CreateTexture → BrowserCanvas.DrawTextBox），
+    // 本 DOM 元素仅作 IME / 键盘捕获代理，故颜色与光标均透明，避免与引擎绘制重影。
+    // 注意：透明不影响 IME——候选词窗是浏览器 UI，仍按本元素光标位置弹出；input 事件照常回传合成文本。
+    el.style.color = 'transparent';
+    el.style.caretColor = 'transparent';
 }
 
 /** C# 侧注册事件回调（由 main.ts 在拿到程序集导出后调用一次）。 */
