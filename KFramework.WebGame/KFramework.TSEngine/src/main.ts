@@ -18,6 +18,7 @@ import * as inputTouch from './input_touch.js';
 import * as net from './net_websocket.js';
 import * as quic from './net_quic.js';
 import type { NetHandlers } from './net_websocket.js';
+import type { QuicNetHandlers } from './net_quic.js';
 
 interface GameHost {
     Frame(timestampMs: number): void;
@@ -26,7 +27,16 @@ interface GameHost {
 interface NetExport {
     OnOpen: (handle: number) => void;
     OnBinaryMessage: (handle: number, data: Uint8Array) => void;
-    OnBigMessage: (handle: number, offset: number, length: number) => void;
+    OnClose: (handle: number, code: number) => void;
+    OnError: (handle: number, message: string) => void;
+}
+
+// QUIC(WebTransport) 比 WebSocket 多一层“流”：所有收发事件都带 streamId，另加开/关流通知。
+interface QuicNetExport {
+    OnOpen: (handle: number) => void;
+    OnStreamOpen: (handle: number, streamId: number, kind: number) => void;
+    OnBinaryMessage: (handle: number, streamId: number, data: Uint8Array) => void;
+    OnStreamClose: (handle: number, streamId: number, code: number) => void;
     OnClose: (handle: number, code: number) => void;
     OnError: (handle: number, message: string) => void;
 }
@@ -83,19 +93,29 @@ const config = getConfig();
 // 网络层：把浏览器 WebSocket / WebTransport(QUIC) 事件推回对应的 C# 绑定
 try {
     const kf = (await getAssemblyExports('KFramework.MonoGame')) as AssemblyExports | null;
-    const KF = kf as { KFramework?: { MonoGame?: Record<string, NetExport> } } | null;
+    const KF = kf as { KFramework?: { MonoGame?: Record<string, NetExport & QuicNetExport> } } | null;
     const wire = (name: string, mod: { setHandlers(h: NetHandlers): void }) => {
         const ns = KF?.KFramework?.MonoGame?.[name];
         if (ns) mod.setHandlers({
             onOpen: (h) => ns.OnOpen(h),
             onBinaryMessage: (h, d) => ns.OnBinaryMessage(h, d),
-            onBigMessage: (h, offset, len) => ns.OnBigMessage?.(h, offset, len),
+            onClose: (h, c) => ns.OnClose(h, c),
+            onError: (h, m) => ns.OnError(h, m),
+        });
+    };
+    const wireQuic = (name: string, mod: { setHandlers(h: QuicNetHandlers): void }) => {
+        const ns = KF?.KFramework?.MonoGame?.[name];
+        if (ns) mod.setHandlers({
+            onOpen: (h) => ns.OnOpen(h),
+            onStreamOpen: (h, streamId, kind) => ns.OnStreamOpen?.(h, streamId, kind),
+            onBinaryMessage: (h, streamId, d) => ns.OnBinaryMessage(h, streamId, d),
+            onStreamClose: (h, streamId, c) => ns.OnStreamClose?.(h, streamId, c),
             onClose: (h, c) => ns.OnClose(h, c),
             onError: (h, m) => ns.OnError(h, m),
         });
     };
     wire('JSBind_Net_WebSocket', net);
-    wire('JSBind_Net_Quic', quic);
+    wireQuic('JSBind_Net_Quic', quic);
 } catch (e) {
     console.warn('[main] 网络层导出未就绪:', e);
 }

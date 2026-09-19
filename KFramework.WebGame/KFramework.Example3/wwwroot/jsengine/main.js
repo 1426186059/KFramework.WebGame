@@ -67,13 +67,24 @@ try {
             mod.setHandlers({
                 onOpen: (h) => ns.OnOpen(h),
                 onBinaryMessage: (h, d) => ns.OnBinaryMessage(h, d),
-                onBigMessage: (h, offset, len) => ns.OnBigMessage?.(h, offset, len),
+                onClose: (h, c) => ns.OnClose(h, c),
+                onError: (h, m) => ns.OnError(h, m),
+            });
+    };
+    const wireQuic = (name, mod) => {
+        const ns = KF?.KFramework?.MonoGame?.[name];
+        if (ns)
+            mod.setHandlers({
+                onOpen: (h) => ns.OnOpen(h),
+                onStreamOpen: (h, streamId, kind) => ns.OnStreamOpen?.(h, streamId, kind),
+                onBinaryMessage: (h, streamId, d) => ns.OnBinaryMessage(h, streamId, d),
+                onStreamClose: (h, streamId, c) => ns.OnStreamClose?.(h, streamId, c),
                 onClose: (h, c) => ns.OnClose(h, c),
                 onError: (h, m) => ns.OnError(h, m),
             });
     };
     wire('JSBind_Net_WebSocket', net);
-    wire('JSBind_Net_Quic', quic);
+    wireQuic('JSBind_Net_Quic', quic);
 }
 catch (e) {
     console.warn('[main] 网络层导出未就绪:', e);

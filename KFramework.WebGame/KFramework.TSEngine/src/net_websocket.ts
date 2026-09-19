@@ -2,29 +2,29 @@
 // 产物 net_websocket.js 由 SyncJsEngine 复制到各示例 wwwroot/jsengine。
 //
 // 薄薄的一层浏览器 WebSocket 桥接：只负责创建 / 发送 / 关闭连接，并把事件推回 C#。
-// 真正的收发逻辑都在 C# 侧（WebSocketClient）完成，这里不做任何业务逻辑。
+// 真正的收发逻辑都在 C# 侧（Net_WebSocket_Client）完成，这里不做任何业务逻辑。
+//
+// 收发一律走 byte[] 封送：实时通信以小包为主，JS→C# 一次封送（一次拷贝 + 一个 gen0 数组）
+// 足够便宜，不再为偶发大包单独做零拷贝通道，代码更干净。
+//
+// 分配纪律：
+//   1. new Uint8Array(arrayBuffer) 是“视图”，不复制；new Uint8Array(uint8Array) 才是“按内容复制” —— 千万别写反；
+//   2. 二进制帧直接建视图交给 C#（C# 的 byte[] 参数只认 Uint8Array，裸 ArrayBuffer 会被运行时断言拒绝）；
+//   3. TextEncoder 复用同一个实例，别每帧 new。
 
 export interface NetHandlers {
     onOpen: (handle: number) => void;
-    /** 小包：整帧直接交给 C#（由运行时封送成 byte[]）。 */
+    /** 收到一帧：整帧交给 C#（运行时封送成 byte[]，必然有一份拷贝；必须传 Uint8Array）。 */
     onBinaryMessage: (handle: number, data: Uint8Array) => void;
-    /** 大包：只回传 (ArrayBuffer 偏移, 长度)，数据由 C# 侧拉走（零拷贝）。 */
-    onBigMessage: (handle: number, offset: number, length: number) => void;
     onClose: (handle: number, code: number) => void;
     onError: (handle: number, message: string) => void;
 }
 
-// 大包阈值（字节），必须与 C# 侧 Net_RecvBuffer.BigPacketThreshold 一致。
-// 超过它的帧走零拷贝通道：整帧不再穿过 JS↔C# 边界，而是先挂在 pending 上，
-// 只把 (ArrayBuffer 偏移, 长度) 交给 C#，由 C# 递一块 WASM 堆上的固定缓冲过来，
-// JS 用 MemoryView.set 直接写进去 —— 整条链路上只有一次拷贝，托管侧不再分配大数组。
-export const BIG_PACKET_LIMIT = 64 * 1024;
-
 let handlers: NetHandlers | null = null;
 const sockets = new Map<number, WebSocket>();
-/** 正在等待 C# 拉走的大包（只保存当前这一帧，用完即删）。 */
-const pending = new Map<number, Uint8Array>();
 let nextId = 1;
+/** 文本帧编码复用同一个 TextEncoder（每帧 new 一个纯属浪费）。 */
+const utf8 = new TextEncoder();
 
 /** C# 侧注册事件回调（由 main.ts 在拿到程序集导出后调用一次）。 */
 export function setHandlers(h: NetHandlers): void {
@@ -44,22 +44,24 @@ export function netCreate(url: string): number {
     ws.binaryType = 'arraybuffer';
     ws.onopen = () => handlers?.onOpen(id);
     ws.onmessage = (ev: MessageEvent) => {
-        const data = typeof ev.data === 'string'
-            ? new TextEncoder().encode(ev.data)
-            : new Uint8Array(ev.data as ArrayBuffer);
+        const raw: unknown = ev.data;
 
-        if (data.byteLength > BIG_PACKET_LIMIT) {
-            // 大包：整帧留在 JS 侧，只把 (ArrayBuffer 偏移, 长度) 回报给 C#
-            pending.set(id, data);
-            try {
-                handlers?.onBigMessage(id, data.byteOffset, data.byteLength);
-            } finally {
-                pending.delete(id);
-            }
+        // 文本帧：编码成 UTF-8 字节（这一步必然产生新数组，省不掉）
+        if (typeof raw === 'string') {
+            handlers?.onBinaryMessage(id, utf8.encode(raw));
             return;
         }
 
-        handlers?.onBinaryMessage(id, data);
+        // 二进制帧：binaryType='arraybuffer'。C# 的 byte[] 只接受 Array / Uint8Array
+        // （运行时会断言 “Value is not an Array or Uint8Array”），裸 ArrayBuffer 传过去会直接抛错。
+        // 这里的 new Uint8Array(raw) 是零拷贝视图，只多一个几十字节的视图头。
+        if (raw instanceof ArrayBuffer) {
+            handlers?.onBinaryMessage(id, new Uint8Array(raw));
+            return;
+        }
+
+        // 走到这里说明 binaryType 被改过或收到了 Blob，明确报错好过静默丢包
+        handlers?.onError(id, `[net] 不支持的消息类型：${Object.prototype.toString.call(raw)}`);
     };
     ws.onclose = (ev: CloseEvent) => handlers?.onClose(id, ev.code);
     ws.onerror = () => handlers?.onError(id, 'websocket error');
@@ -67,28 +69,24 @@ export function netCreate(url: string): number {
     return id;
 }
 
-/**
- * 大包通道：C# 把它的固定缓冲以 MemoryView 递过来，这里按 (offset, length)
- * 从 ArrayBuffer 直接拷进去（不产生中间数组）。target 就是 WASM 堆上的那块内存。
- */
-export function netRead(handle: number, offset: number, length: number, target: MemoryView | Uint8Array): void {
-    const src = pending.get(handle);
-    if (!src) return;
-
-    const chunk = new Uint8Array(src.buffer, offset, length);
-    if (target instanceof Uint8Array) {
-        target.set(chunk);
-        return;
-    }
-    target.set(chunk, 0);
-}
-
 /** 发送二进制帧；连接未处于 OPEN 状态时返回 false。 */
-export function netSend(handle: number, data: ArrayBuffer): boolean {
+export function netSend(handle: number, data: Uint8Array | ArrayBuffer): boolean {
     const ws = sockets.get(handle);
     if (!ws || ws.readyState !== WebSocket.OPEN) return false;
+
+    // 千万别写 new Uint8Array(data)：data 是 Uint8Array 时那是“按内容复制”（白白多一份 O(n)）。
+    // 直接透传视图，或在 ArrayBuffer 上建视图 —— 两者都不复制。
+    // send 是同步把数据拷进浏览器自己的发送队列的，不会持有这块内存，所以传视图是安全的。
+    const payload = data instanceof Uint8Array
+        ? data
+        : data instanceof ArrayBuffer ? new Uint8Array(data) : null;
+    if (!payload) {
+        handlers?.onError(handle, `netSend: 不支持的数据类型 ${Object.prototype.toString.call(data)}`);
+        return false;
+    }
+
     try {
-        ws.send(data);
+        ws.send(payload);
         return true;
     } catch (e) {
         handlers?.onError(handle, String(e));
@@ -102,7 +100,6 @@ export function netClose(handle: number): void {
         try { ws.close(); } catch { /* ignore */ }
         sockets.delete(handle);
     }
-    pending.delete(handle);
 }
 
 /** 返回 WebSocket.readyState：0 CONNECTING / 1 OPEN / 2 CLOSING / 3 CLOSED。 */
