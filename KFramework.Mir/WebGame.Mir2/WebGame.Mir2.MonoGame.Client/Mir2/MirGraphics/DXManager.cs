@@ -204,13 +204,11 @@ namespace Client.MirGraphics
         public static void PresentToScreen(KFramework.MonoGame.Texture2D texture)
         {
             if (texture == null) return;
-            // 上屏必须是 1:1（离屏纹理已按画布原生分辨率烘焙），绝不能再叠加 RenderTransform，
-            // 否则整帧被二次缩放导致错位/黑边。
             RenderTransform = null;
             var vp = GDevice.Viewport;
             Draw(texture,
                 new Rectangle(0, 0, texture.Width, texture.Height),
-                new RectangleF(0, 0, vp.Width, vp.Height),
+                new RectangleF(0, 0, texture.Width, texture.Height),
                 Color.White);
         }
 
