@@ -1,3 +1,4 @@
+using KFramework.MonoGame;
 using System;
 
 namespace MirEngine
@@ -16,8 +17,8 @@ namespace MirEngine
     {
         public static event EventHandler<string> ValueChanged
         {
-            add => KFramework.MonoGame.JSBind_InputOverlay.ValueChanged += value;
-            remove => KFramework.MonoGame.JSBind_InputOverlay.ValueChanged -= value;
+            add => JSBind_InputOverlay.ValueChanged += value;
+            remove => JSBind_InputOverlay.ValueChanged -= value;
         }
 
         public static event EventHandler Enter

@@ -14,8 +14,8 @@ import * as indexeddb from './storage_indexeddb.js';
 import * as inputKeyboard from './input_keyboard.js';
 import * as inputMouse from './input_mouse.js';
 import * as inputTouch from './input_touch.js';
-import * as inputOverlay from './input_overlay.js';
 import * as net from './net_websocket.js';
+import * as inputOverlay from './input_overlay.js';
 function findHost(exports) {
     if (!exports)
         return undefined;
@@ -54,8 +54,8 @@ setModuleImports('indexeddb', indexeddb);
 setModuleImports('input_keyboard', inputKeyboard);
 setModuleImports('input_mouse', inputMouse);
 setModuleImports('input_touch', inputTouch);
-setModuleImports('input_overlay', inputOverlay);
 setModuleImports('net_websocket', net);
+setModuleImports('input_overlay', inputOverlay);
 const config = getConfig();
 // 网络层：把浏览器 WebSocket 事件推回对应的 C# 绑定
 try {
@@ -81,7 +81,7 @@ catch (e) {
 try {
     const kf = await getAssemblyExports('KFramework.MonoGame');
     const ov = kf?.KFramework?.MonoGame?.JSBind_InputOverlay;
-    if (ov && typeof inputOverlay.setHandlers === 'function') {
+    if (ov) {
         inputOverlay.setHandlers({
             onValueChanged: (v) => ov.OnValueChanged(v),
             onEnter: () => ov.OnEnter(),
