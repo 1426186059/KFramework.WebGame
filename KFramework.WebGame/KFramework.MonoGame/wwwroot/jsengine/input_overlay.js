@@ -97,13 +97,24 @@ function ensureEl(multiline) {
     attach(el);
     return el;
 }
+// 把完整 CSS 字体串(含字重/族，如 "bold 14px 'Tahoma'")中的 px 按 dpr 缩放到 CSS 像素后整体套用，
+// 使 DOM 输入框字形与画布 SpriteFont 完全一致（字重/族/字号均对齐）。
+function scaleFontPx(css, dpr) {
+    const c = (css || '').trim();
+    if (!c) return (10 / dpr) + 'px sans-serif';
+    const m = c.match(/([\d.]+)\s*px/);
+    if (!m) return c;
+    const px = parseFloat(m[1]) / dpr;
+    return c.replace(/([\d.]+)\s*px/, px.toFixed(2) + 'px');
+}
+
 function place(el, p) {
     const { left, top, dpr } = canvasMetrics();
     el.style.left = left + p.cx / dpr + 'px';
     el.style.top = top + p.cy / dpr + 'px';
     el.style.width = p.cw / dpr + 'px';
     el.style.height = p.ch / dpr + 'px';
-    el.style.font = p.fontPx / dpr + 'px ' + (p.fontFamily || 'sans-serif');
+    el.style.font = scaleFontPx(p.fontFamily, dpr);
     const css = colorToCss(p.color);
     el.style.color = css;
     el.style.caretColor = css;

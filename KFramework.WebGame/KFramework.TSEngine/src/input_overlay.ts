@@ -56,7 +56,7 @@ interface ShowParams {
     password: boolean;
     maxLength: number;
     multiline: boolean;
-    fontFamily: string; // 与 C# BrowserInputOverlay.Show 的第 11 个参数对齐，用于让覆盖层字体贴近游戏内文本
+    fontFamily: string; // 承载完整 CSS 字体串（含字重/族，如 "bold 14px 'Tahoma'"），由 place() 整体套用（仅缩放 px）
     transparent: boolean; // 本 DOM 元素是否透明：true=文字/光标由引擎自绘；false=由 DOM 直接显示
 }
 
@@ -131,13 +131,24 @@ function ensureEl(multiline: boolean): InputEl {
     return el;
 }
 
+// 把完整 CSS 字体串(含字重/族，如 "bold 14px 'Tahoma'")中的 px 按 dpr 缩放到 CSS 像素后整体套用，
+// 使 DOM 输入框字形与画布 SpriteFont 完全一致（字重/族/字号均对齐）。
+function scaleFontPx(css: string | undefined, dpr: number): string {
+    const c = (css || '').trim();
+    if (!c) return (10 / dpr) + 'px sans-serif';
+    const m = c.match(/([\d.]+)\s*px/);
+    if (!m) return c;
+    const px = parseFloat(m[1]) / dpr;
+    return c.replace(/([\d.]+)\s*px/, px.toFixed(2) + 'px');
+}
+
 function place(el: HTMLElement, p: ShowParams): void {
     const { left, top, dpr } = canvasMetrics();
     el.style.left = left + p.cx / dpr + 'px';
     el.style.top = top + p.cy / dpr + 'px';
     el.style.width = p.cw / dpr + 'px';
     el.style.height = p.ch / dpr + 'px';
-    el.style.font = p.fontPx / dpr + 'px ' + (p.fontFamily || 'sans-serif');
+    el.style.font = scaleFontPx(p.fontFamily, dpr);
     // transparent=true：文字与光标由引擎在 canvas 自绘（见 MirTextBox.CreateTexture → BrowserCanvas.DrawTextBox），
     // 本 DOM 元素仅作 IME / 键盘捕获代理，颜色与光标均透明，避免与引擎绘制重影。
     // transparent=false：由 DOM 直接显示文字与光标；密码掩码由上面的 type=password 处理。

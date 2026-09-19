@@ -48,9 +48,16 @@ namespace Client.MirControls
             base.OnLocationChanged();
             ApplyNativeTextBoxState();
 
-            // 文本框随对话框重新居中/移动时，原生输入覆盖层同步跟随（坐标即逻辑空间，与 Unity 移植版一致，无需额外缩放）。
+            // 文本框随对话框重新居中/移动时，原生输入覆盖层同步跟随。覆盖层要后备缓冲像素，
+            // 故同样乘以 by-height 缩放 s（与 ShowNativeInput 一致），否则光标会偏移。
             if (_current == this)
-                BrowserInputOverlay.Reposition(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height);
+            {
+                var vp = DXManager.GDevice.Viewport;
+                float sScale = vp.Height > 0 ? (float)vp.Height / Client.Settings.ScreenHeight : 1f;
+                BrowserInputOverlay.Reposition(
+                    DisplayLocation.X * sScale, DisplayLocation.Y * sScale,
+                    Size.Width * sScale, Size.Height * sScale);
+            }
 
             TextureValid = false;
             Redraw();
@@ -391,8 +398,9 @@ namespace Client.MirControls
 
             _nativeActive = true;
             int fore = (TextBox.ForeColor != Color.Empty ? TextBox.ForeColor : Color.White).ToArgb();
-            // 字号取 FontToCss 解析出的 px（与离屏纹理渲染口径一致，Point 单位已乘 4/3），
-            // 字体族用 TextBox.Font.Name（与 RT 同字体），保证 DOM 叠层与失焦时 RT 渲染完全一致，切换不跳变。
+            // 完整 CSS 字体串（含字重/族，如 "bold 14px 'Tahoma'"），与离屏纹理渲染口径完全一致；
+            // 直接交给 DOM 覆盖层作为字体（place() 仅对其中的 px 按 dpr 缩放），从而保证 DOM 输入框的
+            // 字形(字重/族/字号)与画布 SpriteFont 渲染的失焦文字完全一致，切换不跳变。
             double fontPx = 10d;
             string fontCss = BrowserCanvas.FontToCss(TextBox.Font);
             int pxIdx = fontCss.IndexOf("px");
@@ -402,10 +410,17 @@ namespace Client.MirControls
                 if (double.TryParse(fontCss.Substring(s, pxIdx - s), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double p))
                     fontPx = p;
             }
-            string fontFamily = TextBox.Font != null ? TextBox.Font.Name : "Arial";
-            // 覆盖层坐标/字号直接采用逻辑(1024x768)空间，与 Unity 移植版一致，由覆盖层自身适配画布缩放。
-            BrowserInputOverlay.Show(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height,
-                fontPx, fore, TextBox.Text ?? string.Empty, TextBox.UseSystemPasswordChar, TextBox.MaxLength, TextBox.Multiline, fontFamily, TransparentDomInput);
+
+            // 覆盖层坐标系是"后备缓冲(绘制)像素"（见 JSBind_InputOverlay.Show 注释），而 DisplayLocation/
+            // Size 是逻辑坐标(1024x768)。渲染端 UI 以 s = 视口高/768 按高缩放铺进后备缓冲，这里必须把
+            // 逻辑坐标×s 换算成后备缓冲像素，DOM 覆盖层(及其光标)才能与画布文本框严格对齐；否则光标/输入框错位。
+            var vp = DXManager.GDevice.Viewport;
+            float sScale = vp.Height > 0 ? (float)vp.Height / Client.Settings.ScreenHeight : 1f;
+
+            BrowserInputOverlay.Show(
+                DisplayLocation.X * sScale, DisplayLocation.Y * sScale,
+                Size.Width * sScale, Size.Height * sScale,
+                fontPx * sScale, fore, TextBox.Text ?? string.Empty, TextBox.UseSystemPasswordChar, TextBox.MaxLength, TextBox.Multiline, fontCss, TransparentDomInput);
             TextureValid = false;
             Redraw();
         }
