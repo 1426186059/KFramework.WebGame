@@ -1158,7 +1158,14 @@ namespace Client.MirScenes
         {
             if (MapControl != null && !MapControl.IsDisposed)
                 MapControl.DrawControl();
-            base.DrawControl();
+
+            // 地图已由 MapControl.DrawControl 按高度缩放直接上屏铺满视口。
+            // 不要再走 base.DrawControl() 的世界层烘焙+上屏：世界层是一张整屏 RT，
+            // 其烘焙结果(黑底)被 PresentToScreen 再次覆盖到地图之上，会导致
+            // “只显示 UI 层 / 地图不显示”。这里仅在世界层之上叠加 UI 层。
+            UILayer.Bake();
+            var uiRT = UILayer.RenderTargetTexture;
+            if (uiRT != null) DXManager.PresentToScreen(uiRT);
 
 
             if (PickedUpGold || (SelectedCell != null && SelectedCell.Item != null))
