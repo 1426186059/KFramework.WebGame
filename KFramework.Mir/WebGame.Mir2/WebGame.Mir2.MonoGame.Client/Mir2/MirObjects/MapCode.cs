@@ -1,4 +1,6 @@
-﻿namespace Client.MirObjects
+﻿using WebGame.Mir2.MonoGame.Client;
+
+namespace Client.MirObjects
 {
     public class CellInfo
     {

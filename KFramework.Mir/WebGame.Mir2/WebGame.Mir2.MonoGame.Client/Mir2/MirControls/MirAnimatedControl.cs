@@ -1,4 +1,6 @@
-﻿namespace Client.MirControls
+﻿using WebGame.Mir2.MonoGame.Client;
+
+namespace Client.MirControls
 {
     public class MirAnimatedControl : MirImageControl
     {

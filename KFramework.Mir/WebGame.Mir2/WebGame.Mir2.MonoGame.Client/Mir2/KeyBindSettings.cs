@@ -1,3 +1,5 @@
+using WebGame.Mir2.MonoGame.Client;
+
 namespace Client
 {
 

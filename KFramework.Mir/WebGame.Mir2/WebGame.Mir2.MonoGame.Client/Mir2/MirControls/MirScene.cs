@@ -2,6 +2,7 @@
 using Client.MirNetwork;
 using Client.MirScenes;
 using SlimDX.Direct3D9;
+using WebGame.Mir2.MonoGame.Client;
 using S = ServerPackets;
 
 namespace Client.MirControls

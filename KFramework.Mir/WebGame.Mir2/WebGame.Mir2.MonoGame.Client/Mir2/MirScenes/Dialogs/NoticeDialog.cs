@@ -4,6 +4,7 @@ using Client.MirSounds;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Diagnostics;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirScenes.Dialogs
 {

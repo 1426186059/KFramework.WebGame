@@ -9,6 +9,7 @@ using Client.MirSounds;
 using SlimDX.Direct3D9;
 using C = ClientPackets;
 using MirEngine;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirScenes.Dialogs
 {

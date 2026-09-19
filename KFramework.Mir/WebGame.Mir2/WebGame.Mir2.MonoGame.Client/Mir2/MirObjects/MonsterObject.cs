@@ -3,6 +3,7 @@ using Client.MirScenes;
 using Client.MirSounds;
 using S = ServerPackets;
 using Client.MirControls;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirObjects
 {

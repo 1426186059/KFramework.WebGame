@@ -5,6 +5,7 @@ using System.Globalization;
 using Client.MirNetwork;
 
 using C = ClientPackets;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirScenes.Dialogs
 {

@@ -8,6 +8,7 @@ using Frame = Client.MirObjects.Frame;
 using Client.MirObjects;
 using System.Text.RegularExpressions;
 using MirEngine;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirGraphics
 {
@@ -202,7 +203,7 @@ namespace Client.MirGraphics
             }
             #endregion
 
-            // 静态构造里不加载任何库：加载统一由 LoadAsync() 在 Program.Init 之后驱动，
+            // 静态构造里不加载任何库：加载统一由 LoadAsync() 在 CMain.Init 之后驱动，
             // 全程走 HTTP 异步，避免同步网络请求冻结主线程（渲染/输入/心跳）。
 
             // 把 MapLibs 的空槽填成占位库（_fileName=".Lib"，InitializeAsync 会跳过并标记 _failed，
@@ -213,7 +214,7 @@ namespace Client.MirGraphics
 
         /// <summary>
         /// 异步加载总入口：先并发加载首屏库（登录场景立即需要），再后台限流加载其余库。
-        /// 由 Program.Init 以 fire-and-forget 方式启动，不阻塞启动流程。
+        /// 由 CMain.Init 以 fire-and-forget 方式启动，不阻塞启动流程。
         /// </summary>
         public static async Task LoadAsync()
         {

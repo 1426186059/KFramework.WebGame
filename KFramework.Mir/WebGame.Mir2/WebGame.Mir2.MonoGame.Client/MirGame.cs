@@ -5,7 +5,7 @@ using Client.MirSounds;
 using KFramework.MonoGame;
 using MirEngine;
 
-namespace Client
+namespace WebGame.Mir2.MonoGame.Client
 {
     /// <summary>
     /// KFramework.MonoGame 宿主：取代原 WinForms.Forms/CMain 窗体与旧 main.js 的 rAF 循环。
@@ -31,7 +31,7 @@ namespace Client
         {
             // 引擎引导：设资源基址、加载设置、建 DXManager、登记库、建登录场景、声音、输入。
             // 放在异步加载阶段：声音索引表（SoundList）需经资源服务器异步读取，避免同步网络冻结主线程。
-            await Program.Init().ConfigureAwait(false);
+            await CMain.Init().ConfigureAwait(false);
         }
 
         protected override void Update(GameTime gameTime)

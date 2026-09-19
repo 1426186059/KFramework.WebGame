@@ -1,5 +1,6 @@
 ﻿using Client.MirScenes;
 using Client.MirScenes.Dialogs;
+using WebGame.Mir2.MonoGame.Client;
 using S = ServerPackets;
 
 namespace Client.MirObjects

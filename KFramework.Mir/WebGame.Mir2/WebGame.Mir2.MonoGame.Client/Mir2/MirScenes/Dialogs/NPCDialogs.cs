@@ -10,6 +10,7 @@ using MirEngine;
 using C = ClientPackets;
 using S = ServerPackets;
 using System.Diagnostics;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirScenes.Dialogs
 {

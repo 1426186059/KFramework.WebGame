@@ -10,7 +10,7 @@ namespace MirEngine
     // 不再自行维护 HttpClient，也不再提供会冻结主线程的同步 GetBytes。
     public class BrowserResource
     {
-        // 指向资源服务器（如 http://127.0.0.1:5080/）的 ContentManager，由 Program.Init 经 Configure 注入。
+        // 指向资源服务器（如 http://127.0.0.1:5080/）的 ContentManager，由 CMain.Init 经 Configure 注入。
         public static ContentManager Content { get; private set; }
 
         public static async Task<byte[]> GetBytesAsync(string url)

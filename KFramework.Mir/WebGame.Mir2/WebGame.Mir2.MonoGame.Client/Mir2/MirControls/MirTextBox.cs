@@ -2,6 +2,7 @@ using Client.MirGraphics;
 using MirEngine;
 using SlimDX;
 using SlimDX.Direct3D9;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirControls
 {
@@ -239,12 +240,12 @@ namespace Client.MirControls
             DialogChanged();
 
             if (TextBox.Visible && TextBox.CanFocus)
-                if (Program.Form.ActiveControl == null || Program.Form.ActiveControl == Program.Form)
-                    Program.Form.ActiveControl = TextBox;
+                if (CMain.Form.ActiveControl == null || CMain.Form.ActiveControl == CMain.Form)
+                    CMain.Form.ActiveControl = TextBox;
 
             if (!TextBox.Visible)
-                if (Program.Form.ActiveControl == TextBox)
-                    Program.Form.Focus();
+                if (CMain.Form.ActiveControl == TextBox)
+                    CMain.Form.Focus();
         }
         private void SetFocus(object sender, EventArgs e)
         {
@@ -255,7 +256,7 @@ namespace Client.MirControls
 
             if (TextBox.CanFocus) TextBox.Focus();
             else if (TextBox.Visible && TextBox.Parent != null)
-                Program.Form.ActiveControl = TextBox;
+                CMain.Form.ActiveControl = TextBox;
 
 
         }
@@ -483,7 +484,7 @@ namespace Client.MirControls
 
             if (e.KeyChar == (char)Keys.Escape)
             {
-                Program.Form.ActiveControl = null;
+                CMain.Form.ActiveControl = null;
                 e.Handled = true;
             }
         }
@@ -491,7 +492,7 @@ namespace Client.MirControls
 
         void MirTextBox_Shown(object sender, EventArgs e)
         {
-            TextBox.Parent = Program.Form;
+            TextBox.Parent = CMain.Form;
             ApplyNativeTextBoxState();
             CMain.Ctrl = false;
             CMain.Shift = false;

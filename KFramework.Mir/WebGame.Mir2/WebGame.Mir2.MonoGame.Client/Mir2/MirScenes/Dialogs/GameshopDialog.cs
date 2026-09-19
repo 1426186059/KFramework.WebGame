@@ -1,6 +1,7 @@
 ﻿using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirSounds;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirScenes.Dialogs
 {

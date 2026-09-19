@@ -3,6 +3,7 @@ using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirScenes.Dialogs;
 using Client.MirSounds;
+using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
 using S = ServerPackets;
 namespace Client.MirScenes
@@ -115,7 +116,7 @@ namespace Client.MirScenes
                 Parent = Background,
                 PressedIndex = 354
             };
-            ExitGame.Click += (o, e) => Program.Form.Close();
+            ExitGame.Click += (o, e) => CMain.Form.Close();
 
 
             CharacterDisplay = new MirAnimatedControl

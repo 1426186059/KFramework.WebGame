@@ -5,6 +5,7 @@ using Client.MirSounds;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
 
 
@@ -1052,7 +1053,7 @@ namespace Client.MirScenes.Dialogs
                         Match = SearchTextBox.Text,
                         MarketType = MarketType
                     });
-                    Program.Form.ActiveControl = null;
+                    CMain.Form.ActiveControl = null;
                     break;
                 case (char)Keys.Escape:
                     e.Handled = true;

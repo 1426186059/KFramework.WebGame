@@ -1,6 +1,7 @@
 ﻿using S = ServerPackets;
 using Client.MirControls;
 using Client.MirGraphics;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirScenes.Dialogs
 {

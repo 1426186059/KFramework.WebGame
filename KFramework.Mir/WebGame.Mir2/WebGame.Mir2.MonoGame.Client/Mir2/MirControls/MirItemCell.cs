@@ -5,6 +5,7 @@ using Client.MirScenes;
 using Client.MirSounds;
 using Client.MirScenes.Dialogs;
 using C = ClientPackets;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirControls
 {

@@ -13,6 +13,7 @@ using Effect = Client.MirObjects.Effect;
 using Client.MirScenes.Dialogs;
 using Client.Utils;
 using Client.MirGraphics.Particles;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirScenes
 {
@@ -1129,7 +1130,7 @@ namespace Client.MirScenes
             {
                 //If Last Combat < 10 CANCEL
                 MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExitTip), MirMessageBoxButtons.YesNo);
-                messageBox.YesButton.Click += (o, e) => Program.Form.Close();
+                messageBox.YesButton.Click += (o, e) => CMain.Form.Close();
                 messageBox.Show();
             }
             else

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Client.MirSounds.Libraries;
 using KFramework.MonoGame;
 using MirEngine;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirSounds
 {

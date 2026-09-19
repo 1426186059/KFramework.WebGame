@@ -2,6 +2,7 @@
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirSounds;
+using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
 
 namespace Client.MirScenes.Dialogs

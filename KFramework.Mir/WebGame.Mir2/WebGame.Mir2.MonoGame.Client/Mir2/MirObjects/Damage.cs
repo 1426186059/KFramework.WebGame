@@ -1,4 +1,5 @@
 ﻿using Client.MirControls;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirObjects
 {

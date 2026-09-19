@@ -6,6 +6,7 @@ using Client.MirNetwork;
 using Client.MirSounds;
 using S = ServerPackets;
 using C = ClientPackets;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirScenes
 {
@@ -113,7 +114,7 @@ namespace Client.MirScenes
             };
 
             _connectBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AttemptingConnectServer), MirMessageBoxButtons.Cancel);
-            _connectBox.CancelButton.Click += (o, e) => Program.Form.Close();
+            _connectBox.CancelButton.Click += (o, e) => CMain.Form.Close();
             Shown += (sender, args) =>
                 {
                     Network.Connect();
@@ -175,7 +176,7 @@ namespace Client.MirScenes
             if (!Network.Connected && (_connectBox == null || _connectBox.IsDisposed))
             {
                 _connectBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AttemptingConnectServer), MirMessageBoxButtons.Cancel);
-                _connectBox.CancelButton.Click += (o, e) => Program.Form.Close();
+                _connectBox.CancelButton.Click += (o, e) => CMain.Form.Close();
                 _connectBox.Show();
             }
         }
@@ -478,7 +479,7 @@ namespace Client.MirScenes
                         Parent = this,
                         PressedIndex = 331,
                     };
-                CloseButton.Click += (o, e) => Program.Form.Close();
+                CloseButton.Click += (o, e) => CMain.Form.Close();
 
                 PasswordTextBox = new MirTextBox
                 {

@@ -1,6 +1,7 @@
 ﻿using Client.MirControls;
 using KFramework.MonoGame;
 using System.Collections.Concurrent;
+using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
 
 namespace Client.MirNetwork
@@ -30,7 +31,7 @@ namespace Client.MirNetwork
                 if (ErrorShown) return;
                 ErrorShown = true;
                 MirMessageBox errorBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ErrorConnectingToServer), MirMessageBoxButtons.Cancel);
-                errorBox.CancelButton.Click += (o, e) => Program.Form.Close();
+                errorBox.CancelButton.Click += (o, e) => CMain.Form.Close();
                 errorBox.Label.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MaximumConnectionAttemptsReached), MaxAttempts);
                 errorBox.Show();
                 return;

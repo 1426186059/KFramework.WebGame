@@ -5,7 +5,7 @@
 namespace MirEngine
 {
     using System;
-    using Client;
+    using WebGame.Mir2.MonoGame.Client;
 
     public static class Control
     {
@@ -14,9 +14,9 @@ namespace MirEngine
             get
             {
                 Keys k = 0;
-                if (Client.CMain.Shift) k |= Keys.Shift;
-                if (Client.CMain.Ctrl) k |= Keys.Control;
-                if (Client.CMain.Alt) k |= Keys.Alt;
+                if (CMain.Shift) k |= Keys.Shift;
+                if (CMain.Ctrl) k |= Keys.Control;
+                if (CMain.Alt) k |= Keys.Alt;
                 return k;
             }
         }

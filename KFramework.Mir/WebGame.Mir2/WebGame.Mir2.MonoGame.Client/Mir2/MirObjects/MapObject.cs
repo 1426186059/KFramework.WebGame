@@ -4,6 +4,7 @@ using Client.MirScenes;
 using Client.MirSounds;
 using Client.MirScenes.Dialogs;
 using SlimDX;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirObjects
 {

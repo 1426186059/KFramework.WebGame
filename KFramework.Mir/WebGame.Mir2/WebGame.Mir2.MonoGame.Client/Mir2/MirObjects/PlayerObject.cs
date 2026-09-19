@@ -7,6 +7,7 @@ using S = ServerPackets;
 using C = ClientPackets;
 using Client.MirScenes.Dialogs;
 using System.Reflection;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirObjects
 {

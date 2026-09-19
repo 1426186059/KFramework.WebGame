@@ -1,4 +1,5 @@
 ﻿using Client.MirGraphics;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirControls
 {
@@ -150,9 +151,9 @@ namespace Client.MirControls
 
             Highlight();
 
-            for (int i = 0; i < Program.Form.Controls.Count; i++)
+            for (int i = 0; i < CMain.Form.Controls.Count; i++)
             {
-                TextBox T = Program.Form.Controls[i] as TextBox;
+                TextBox T = CMain.Form.Controls[i] as TextBox;
                 if (T != null && T.Tag != null && T.Tag != null)
                     ((MirTextBox)T.Tag).DialogChanged();
             }
@@ -222,7 +223,7 @@ namespace Client.MirControls
         {
             MirMessageBox box = new MirMessageBox(message);
 
-            if (close) box.OKButton.Click += (o, e) => Program.Form.Close();
+            if (close) box.OKButton.Click += (o, e) => CMain.Form.Close();
 
             box.Show();
         }
@@ -243,9 +244,9 @@ namespace Client.MirControls
             YesButton = null;
             Buttons = 0;
 
-            for (int i = 0; i < Program.Form.Controls.Count; i++)
+            for (int i = 0; i < CMain.Form.Controls.Count; i++)
             {
-                TextBox T = (TextBox) Program.Form.Controls[i];
+                TextBox T = (TextBox) CMain.Form.Controls[i];
                 if (T != null && T.Tag != null)
                     ((MirTextBox) T.Tag).DialogChanged();
             }

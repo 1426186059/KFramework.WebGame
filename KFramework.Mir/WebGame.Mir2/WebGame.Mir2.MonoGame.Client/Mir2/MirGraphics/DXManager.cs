@@ -10,6 +10,7 @@ using SlimDX.Direct3D9;
 using Point = MirEngine.Point;
 using Color = MirEngine.Color;
 using Rectangle = MirEngine.Rectangle;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirGraphics
 {

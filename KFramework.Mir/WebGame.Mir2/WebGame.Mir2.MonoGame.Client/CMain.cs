@@ -6,18 +6,20 @@ using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirScenes;
 using Client.MirSounds;
-using KFramework.MonoGame;
+using MG = KFramework.MonoGame;
+using Client;
 
-namespace Client
+namespace WebGame.Mir2.MonoGame.Client
 {
     // 浏览器端游戏主机：替代原 WinForms.Forms/CMain 窗体。
     // 保留 Mir2 代码引用的静态成员（Time/Now/MPoint/Random/DPSCounter/BytesReceived/BytesSent...）
-    // 以及被 Program.Form 引用的"窗体"成员（Controls/ActiveControl/Close/...）。
+    // 以及被 CMain.Form 引用的"窗体"成员（Controls/ActiveControl/Close/...）。
+    // 原 Program 入口类（Init/Frame/Step + 输入桥接）已并入本类。
     public class CMain
     {
         public static long Time;
         public static DateTime Now;
-        public static Point MPoint;
+        public static MG.Point MPoint;
         public static Random Random = new Random();
         public static int DPSCounter;
         public static KeyBindSettings InputKeys = new KeyBindSettings();
@@ -25,14 +27,19 @@ namespace Client
         public static int FPS;
         public static int TotalBytesReceived, TotalBytesSent;
 
+        // 原 Program 入口类的单例窗体及启动状态（已并入 CMain）。
+        public static CMain Form = new CMain();
+        public static bool Launch, Restart;
+        private static bool _bootstrapped;
+
         public static GraphicsStub Graphics = new GraphicsStub();
 
-        // 被 Program.Form 引用的"窗体"成员（交互由 DOM 桥接，这里仅占位）。
+        // 被 CMain.Form 引用的"窗体"成员（交互由 DOM 桥接，这里仅占位）。
         public List<object> Controls = new List<object>();
         public object ActiveControl;
         public string Text = "";
         public Size ClientSize = new Size(1024, 768);
-        public Rectangle ClientRectangle => new Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
+        public MG.Rectangle ClientRectangle => new MG.Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
         public FormBorderStyle FormBorderStyle;
         public bool TopMost;
         // 完全限定 MirEngine.Cursors：本类存在 static Cursor[] Cursors 字段，会遮蔽同名类型。
@@ -41,9 +48,9 @@ namespace Client
         public void Focus() { }
         public void Activate() { }
         public void CenterToScreen() { }
-        public Point PointToClient(Point p) => p;
-        public Point PointToScreen(Point p) => p;
-        public Rectangle RectangleToScreen(Rectangle r) => r;
+        public MG.Point PointToClient(MG.Point p) => p;
+        public MG.Point PointToScreen(MG.Point p) => p;
+        public MG.Rectangle RectangleToScreen(MG.Rectangle r) => r;
         public void CreateScreenShot() { }
 
         // 原 WinForms CMain 中被逻辑代码引用的静态成员（浏览器端用占位/轻量实现）。
@@ -90,18 +97,18 @@ namespace Client
         }
         public static void SetResolution(int width, int height) { }
         public static void ToggleFullScreen() { }
-        public static bool IsKeyLocked(Keys key) => false;
+        public static bool IsKeyLocked(MG.Keys key) => false;
 
         public static void CMain_KeyDown(object sender, KeyEventArgs e)
         {
             Shift = e.Shift; Alt = e.Alt; Ctrl = e.Control;
             if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
-                SpellTargetLock = e.KeyCode == (Keys)Enum.Parse(typeof(Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
+                SpellTargetLock = (MG.Keys)(int)e.KeyCode == (MG.Keys)Enum.Parse(typeof(MG.Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
             else SpellTargetLock = false;
-            if (e.KeyCode == Keys.Oem8) Tilde = true;
+            if ((MG.Keys)(int)e.KeyCode == MG.Keys.Oem8) Tilde = true;
             try
             {
-                if (e.Alt && e.KeyCode == Keys.Enter) { ToggleFullScreen(); return; }
+                if (e.Alt && (MG.Keys)(int)e.KeyCode == MG.Keys.Enter) { ToggleFullScreen(); return; }
                 if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnKeyDown(e);
             }
             catch (Exception ex) { SaveError(ex.ToString()); }
@@ -111,9 +118,9 @@ namespace Client
         {
             Shift = e.Shift; Alt = e.Alt; Ctrl = e.Control;
             if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
-                SpellTargetLock = e.KeyCode == (Keys)Enum.Parse(typeof(Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
+                SpellTargetLock = (MG.Keys)(int)e.KeyCode == (MG.Keys)Enum.Parse(typeof(MG.Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
             else SpellTargetLock = false;
-            if (e.KeyCode == Keys.Oem8) Tilde = false;
+            if ((MG.Keys)(int)e.KeyCode == MG.Keys.Oem8) Tilde = false;
             foreach (KeyBind KeyCheck in CMain.InputKeys.Keylist)
             {
                 if (KeyCheck.function != KeybindOptions.Screenshot) continue;
@@ -122,7 +129,7 @@ namespace Client
                 if ((KeyCheck.RequireShift != 2) && (KeyCheck.RequireShift != (Shift ? 1 : 0))) continue;
                 if ((KeyCheck.RequireCtrl != 2) && (KeyCheck.RequireCtrl != (Ctrl ? 1 : 0))) continue;
                 if ((KeyCheck.RequireTilde != 2) && (KeyCheck.RequireTilde != (Tilde ? 1 : 0))) continue;
-                Program.Form.CreateScreenShot();
+                Form.CreateScreenShot();
                 break;
             }
             try { if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnKeyUp(e); }
@@ -137,7 +144,7 @@ namespace Client
 
         public static void CMain_MouseMove(object sender, MouseEventArgs e)
         {
-            MPoint = e.Location;
+            MPoint = new MG.Point(e.Location.X, e.Location.Y);
             try { if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnMouseMove(e); }
             catch (Exception ex) { SaveError(ex.ToString()); }
         }
@@ -179,21 +186,8 @@ namespace Client
                 }
             }
         }
-    }
 
-    public class GraphicsStub
-    {
-        public float DpiX => 96f;
-        public float DpiY => 96f;
-    }
-
-    // 浏览器入口：替代原 WinForms Program + CMain 窗体。
-    // main.js 在 WASM 启动后调用 Init()，每帧 rAF 调用 Frame()。
-    public static partial class Program
-    {
-        public static CMain Form = new CMain();
-        public static bool Launch, Restart;
-        private static bool _bootstrapped;
+        // ---- 原 Program 入口逻辑（已并入 CMain）----
 
         [JSExport]
         public static async Task Init()
@@ -261,17 +255,17 @@ namespace Client
             Input_Mouse.ButtonDown += (_, _) => AudioMaster.Unlock();
         }
 
-        private static void OnKeyDown(KFramework.MonoGame.Keys k) => CMain.CMain_KeyDown(null, ToKeyEventArgs(k));
-        private static void OnKeyUp(KFramework.MonoGame.Keys k) => CMain.CMain_KeyUp(null, ToKeyEventArgs(k));
+        private static void OnKeyDown(MG.Keys k) => CMain.CMain_KeyDown(null, ToKeyEventArgs(k));
+        private static void OnKeyUp(MG.Keys k) => CMain.CMain_KeyUp(null, ToKeyEventArgs(k));
 
-        private static void OnMouseDown(KFramework.MonoGame.MouseButton b, Vector2 p)
+        private static void OnMouseDown(MG.MouseButton b, MG.Vector2 p)
         {
-            CMain.MPoint = new MirEngine.Point((int)p.X, (int)p.Y);
+            CMain.MPoint = new MG.Point((int)p.X, (int)p.Y);
             MirScene.ActiveScene?.OnMouseDown(ToMouseEventArgs(b, p));
         }
-        private static void OnMouseUp(KFramework.MonoGame.MouseButton b, Vector2 p)
+        private static void OnMouseUp(MG.MouseButton b, MG.Vector2 p)
         {
-            CMain.MPoint = new MirEngine.Point((int)p.X, (int)p.Y);
+            CMain.MPoint = new MG.Point((int)p.X, (int)p.Y);
             var e = ToMouseEventArgs(b, p);
             // 复刻 WinForms 原版 CMain_MouseUp：松开按键必须清掉 MapControl.MapButtons，否则后续点击会错位。
             MapControl.MapButtons &= ~e.Button;
@@ -285,7 +279,7 @@ namespace Client
             MirScene.ActiveScene?.OnMouseWheel(new MouseEventArgs(MouseButtons.None, 0, CMain.MPoint.X, CMain.MPoint.Y, delta));
         }
 
-        private static KeyEventArgs ToKeyEventArgs(KFramework.MonoGame.Keys k)
+        private static KeyEventArgs ToKeyEventArgs(MG.Keys k)
         {
             MirEngine.Keys keyData = (MirEngine.Keys)(int)k;
             if (Input_KeyBoard.Shift) keyData |= MirEngine.Keys.Shift;
@@ -294,12 +288,18 @@ namespace Client
             return new KeyEventArgs(keyData);
         }
 
-        private static MouseEventArgs ToMouseEventArgs(KFramework.MonoGame.MouseButton b, Vector2 p)
+        private static MouseEventArgs ToMouseEventArgs(MG.MouseButton b, MG.Vector2 p)
         {
-            MouseButtons mb = b == KFramework.MonoGame.MouseButton.Right ? MouseButtons.Right
-                                : b == KFramework.MonoGame.MouseButton.Middle ? MouseButtons.Middle
+            MouseButtons mb = b == MG.MouseButton.Right ? MouseButtons.Right
+                                : b == MG.MouseButton.Middle ? MouseButtons.Middle
                                 : MouseButtons.Left;
             return new MouseEventArgs(mb, 1, (int)p.X, (int)p.Y, 0);
         }
+    }
+
+    public class GraphicsStub
+    {
+        public float DpiX => 96f;
+        public float DpiY => 96f;
     }
 }

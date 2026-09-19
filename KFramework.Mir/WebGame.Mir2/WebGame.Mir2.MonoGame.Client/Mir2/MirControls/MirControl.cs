@@ -2,6 +2,7 @@ using Client.MirGraphics;
 using Client.MirSounds;
 using SlimDX;
 using SlimDX.Direct3D9;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirControls
 {
