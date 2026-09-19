@@ -40,9 +40,13 @@ namespace KFramework.MonoGame
         private readonly Dictionary<RenderTargetBinding[], JSObject> _glFramebuffers =
             new Dictionary<RenderTargetBinding[], JSObject>(new RenderTargetBindingArrayComparer());
 
-        /// <summary>画布（后备缓冲）尺寸：切回屏幕时用它恢复视口。</summary>
-        private int _backBufferWidth;
-        private int _backBufferHeight;
+        // 照 MonoGame 的 GraphicsDevice：Intel 集显对「各分量非 0 即 255」的颜色有清屏硬件快路径，
+        // 用紫色会触发性能告警，故 Release 用不透明黑；XNA4 传统的紫色只在 Debug 下保留。
+#if DEBUG
+        private static Color _discardColor = new Color(68, 34, 136, 255);
+#else
+        private static Color _discardColor = new Color(0, 0, 0, 255);
+#endif
 
         private Viewport _viewport;
 
@@ -61,23 +65,29 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 绑定渲染目标时用于清屏的颜色（照 MonoGame 的 GraphicsDevice.DiscardColor）。
+        /// 渲染目标在「被绑定」时清屏所用的颜色（照 MonoGame 的 GraphicsDevice.DiscardColor，静态属性）。
         /// 仅对 <see cref="RenderTargetUsage.DiscardContents"/> 的目标生效。
-        /// </summary>
-        public Color DiscardColor { get; set; } = new Color(0, 0, 0, 0);
-
-        /// <summary>
-        /// 画布（后台缓冲）的内容保留策略，对应 MonoGame 的 <c>PresentationParameters.RenderTargetUsage</c>。
         /// <para>
-        /// 默认 <see cref="RenderTargetUsage.DiscardContents"/>：即 SetRenderTarget(null) 切回画布时
-        /// 会按 <see cref="DiscardColor"/> 清一次屏（XNA 4 为 Xbox 硬件限制引入的行为，MonoGame 原样保留，
-        /// 其 GraphicsDeviceManagerTest 也断言默认值为 DiscardContents）。
-        /// 多个离屏目标轮流回绑画布做合成时（先贴 RT-A，再绑 RT-B，再回画布贴 RT-B），
-        /// 把它设成 <see cref="RenderTargetUsage.PreserveContents"/> 才不会被擦掉已合成的内容，
-        /// 清屏交给每帧显式的 <see cref="Clear"/>。
+        /// 默认值照 MonoGame：Debug 为 XNA4 传统的紫色，Release 为黑色（不透明）——
+        /// MonoGame 的注释说明：Intel 集显对「分量全 0 或全 255」的清屏有硬件快路径，
+        /// 用紫色会触发性能告警，故 Release 改用黑色。
         /// </para>
         /// </summary>
-        public RenderTargetUsage BackBufferRenderTargetUsage { get; set; } = RenderTargetUsage.DiscardContents;
+        public static Color DiscardColor
+        {
+            get { return _discardColor; }
+            set { _discardColor = value; }
+        }
+
+        /// <summary>
+        /// 与本机关联的呈现参数（照 MonoGame 的 <c>GraphicsDevice.PresentationParameters</c>）。
+        /// <para>
+        /// 其中 <see cref="PresentationParameters.BackBufferWidth/Height"/> 由
+        /// <see cref="SyncCanvasSize"/> 同步为真实画布尺寸；<see cref="PresentationParameters.RenderTargetUsage"/>
+        /// 决定 SetRenderTarget(null) 切回画布时是否自动清屏（默认 DiscardContents → 清）。
+        /// </para>
+        /// </summary>
+        public PresentationParameters PresentationParameters { get; private set; }
 
         internal GraphicsMetrics _metrics;
 
@@ -126,6 +136,10 @@ namespace KFramework.MonoGame
 
         public GraphicsDevice(string canvasSelector = "#game")
         {
+            // 照 MonoGame 的无参内部构造：先建一份默认 PP，画布尺寸随后由 SyncCanvasSize 覆盖。
+            // 注：MonoGame 在这里还会把 DepthStencilFormat 设为 Depth24，本后端画布不带深度附件，保持 None。
+            PresentationParameters = new PresentationParameters();
+
             if (!JSBind_GL.InitContext(canvasSelector))
                 throw new InvalidOperationException("无法创建 WebGL 2.0 上下文，请使用支持 WebGL2 的浏览器。");
 
@@ -221,8 +235,8 @@ namespace KFramework.MonoGame
             int height = size[3];
             if (width <= 0 || height <= 0) return false;
 
-            _backBufferWidth = width;
-            _backBufferHeight = height;
+            PresentationParameters.BackBufferWidth = width;
+            PresentationParameters.BackBufferHeight = height;
 
             if (width == Viewport.Width && height == Viewport.Height) return false;
 
@@ -480,11 +494,11 @@ namespace KFramework.MonoGame
                 PlatformApplyDefaultRenderTarget();
 
                 // 照 MonoGame 的 ApplyRenderTargets：切回画布是否清屏由后台缓冲的 RenderTargetUsage 决定
-                //（默认 DiscardContents → 清屏）。想让已合成内容留着，就把 BackBufferRenderTargetUsage
-                // 设为 PreserveContents，而不是在这里写死 false。
-                clearTarget = BackBufferRenderTargetUsage == RenderTargetUsage.DiscardContents;
-                renderTargetWidth = _backBufferWidth;
-                renderTargetHeight = _backBufferHeight;
+                //（默认 DiscardContents → 清屏）。多个离屏目标轮流回绑画布做合成时，把 PP 里的
+                // RenderTargetUsage 设为 PreserveContents，才不会擦掉已合成的内容（清屏交给每帧显式 Clear）。
+                clearTarget = PresentationParameters.RenderTargetUsage == RenderTargetUsage.DiscardContents;
+                renderTargetWidth = PresentationParameters.BackBufferWidth;
+                renderTargetHeight = PresentationParameters.BackBufferHeight;
             }
             else
             {

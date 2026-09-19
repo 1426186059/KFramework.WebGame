@@ -235,7 +235,7 @@ public sealed class RenderTargetTestScene : TestSceneBase
 
         if (_rt == null)
         {
-            // RGBA8 + 无深度 + DiscardContents：2D 离屏的默认选择（绑定时自动按 DiscardColor 清屏）。
+            // RGBA8 + 无深度 + DiscardContents：2D 离屏的默认选择（绑定时自动按 GraphicsDevice.DiscardColor 清屏）。
             _rt = Own(new RenderTarget2D(Device, width, height));
             _rtDirty = true;
             _rtRedraws = 0;
@@ -245,6 +245,10 @@ public sealed class RenderTargetTestScene : TestSceneBase
     protected override void DrawBody(SpriteBatch batch, Vector2 origin)
     {
         // 注意：此处已在 base.Draw() 的 Begin / End 之间，不能再切渲染目标。
+
+        // 全屏底色：默认（DiscardContents）下切回画布会按 GraphicsDevice.DiscardColor 清一次，
+        // 离屏模式若不自己铺满背景，画布就会露出那次清屏的颜色（照 MonoGame 也是这个行为）。
+        DrawRect(batch, new Rectangle(0, 0, Device.Viewport.Width, Device.Viewport.Height), new Color(10, 12, 20));
 
         // 背景框
         DrawRect(batch, _stage, new Color(18, 22, 34));

@@ -151,6 +151,15 @@ namespace SlimDX.Direct3D9
                 g.Clear(new KFramework.MonoGame.Color(c.R, c.G, c.B, c.A));
         }
         public void SetRenderTarget(int i, Surface sf) { Client.MirGraphics.DXManager.SetSurface(sf); }
+
+        // 后台缓冲内容保留策略：嵌套 RT 合成时设成 PreserveContents，避免切回画布时擦掉已合成内容。
+        // 转发到 KFramework.MonoGame.GraphicsDevice.BackBufferRenderTargetUsage
+        //（默认 DiscardContents，保持 XNA/MonoGame 兼容；清屏仍由每帧显式 Clear 负责）。
+        public KFramework.MonoGame.RenderTargetUsage BackBufferRenderTargetUsage
+        {
+            get => Client.MirGraphics.DXManager.GDevice?.BackBufferRenderTargetUsage ?? KFramework.MonoGame.RenderTargetUsage.DiscardContents;
+            set { var g = Client.MirGraphics.DXManager.GDevice; if (g != null) g.BackBufferRenderTargetUsage = value; }
+        }
     }
 
     // 精灵/线条：浏览器端即时模式绘制，Flush/Begin/End 为无操作。
