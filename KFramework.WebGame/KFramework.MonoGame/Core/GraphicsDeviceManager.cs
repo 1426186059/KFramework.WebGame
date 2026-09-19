@@ -67,9 +67,6 @@ namespace KFramework.MonoGame
         // 画布当前是否处于全屏（原生或铺满视口）。
         private bool _canvasFullScreen;
 
-        // MSAA「运行时改不了」的提示是否已打印过（只提示一次，避免刷屏）
-        private bool _multiSamplingWarned;
-
         // ApplyChanges 的脏标记
         private bool _shouldApplyChanges;
 
@@ -342,7 +339,6 @@ namespace KFramework.MonoGame
             pp.MultiSampleCount = source.MultiSampleCount;
 
             ApplyPresentInterval(source);
-            WarnIfMultiSamplingUnavailable();
         }
 
         /// <summary>
@@ -355,20 +351,6 @@ namespace KFramework.MonoGame
         /// </remarks>
         private void ApplyPresentInterval(PresentationParameters pp)
             => JSBind_Platform.SetFrameInterval(pp.PresentationInterval.ToFramesPerPresent());
-
-        /// <summary>
-        /// MSAA 只能在上下文创建前决定，运行时改不了 —— 不一致时提示一次，避免「点了没反应」。
-        /// </summary>
-        private void WarnIfMultiSamplingUnavailable()
-        {
-            if (_multiSamplingWarned || _graphicsDevice == null) return;
-            if (_preferMultiSampling == _graphicsDevice.Antialias) return;
-
-            _multiSamplingWarned = true;
-            PrintTool.Log(_preferMultiSampling
-                ? "[GraphicsDeviceManager] PreferMultiSampling = true，但 WebGL2 上下文创建时 antialias = false：MSAA 只能在创建 Game / GraphicsDevice 时通过 antialias 参数指定，运行时改不了。"
-                : "[GraphicsDeviceManager] WebGL2 上下文创建时启用了 antialias，但 PreferMultiSampling = false：实际是否走 MSAA 取决于上下文参数（启动时决定）。");
-        }
 
         /// <summary>
         /// 把所有挂起的属性改动应用到图形设备。
@@ -591,6 +573,14 @@ namespace KFramework.MonoGame
             get => _preferMultiSampling;
             set
             {
+                // WebGL2 的 antialias 是创建上下文时定死的，运行时改不了（见 GraphicsDevice.Antialias / gl.ts 的 setAntialias）。
+                // 设备已建好后还试图改它属于无效操作 —— 直接抛异常，而不是静默吞掉假装生效。
+                if (_graphicsDevice != null && value != _graphicsDevice.Antialias)
+                    throw new NotSupportedException(
+                        $"PreferMultiSampling 不能在运行时修改：WebGL2 的 antialias 在创建 GraphicsDevice/Game 上下文时就已定死，" +
+                        $"当前上下文 antialias = {_graphicsDevice.Antialias}。请改用 Game/GraphicsDevice 构造函数的 antialias 参数，" +
+                        $"或改 Example1Game.Antialias 后重启对比。");
+
                 _shouldApplyChanges = true;
                 _preferMultiSampling = value;
             }

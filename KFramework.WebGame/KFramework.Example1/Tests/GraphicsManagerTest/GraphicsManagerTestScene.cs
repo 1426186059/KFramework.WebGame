@@ -53,7 +53,9 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
         ClickButtons();
 
         if (Input_KeyBoard.GetKeyDown(Keys.D1)) CycleInterval();
-        if (Input_KeyBoard.GetKeyDown(Keys.D2)) Set(manager => manager.PreferMultiSampling = !manager.PreferMultiSampling);
+        // 多重采样(antialias) 运行时不可切换（WebGL2 限制），PreferMultiSampling 设了会直接抛异常；
+        // 这里只提示限制，不调用 setter。
+        if (Input_KeyBoard.GetKeyDown(Keys.D2)) PrintTool.Log("[GraphicsManagerTest] 按 D2：多重采样(antialias) 只能在 Game 构造时指定，运行时切换会抛 NotSupportedException；改 Example1Game.Antialias 后重启对比。");
         if (Input_KeyBoard.GetKeyDown(Keys.D3)) Set(manager => manager.IsFullScreen = !manager.IsFullScreen);
         if (Input_KeyBoard.GetKeyDown(Keys.D4)) Manager.ToggleFullScreen();
         if (Input_KeyBoard.GetKeyDown(Keys.D5)) ApplyPreset(1280, 720);
@@ -69,10 +71,13 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
         GraphicsDeviceManager g = Manager;
 
         // ① 开关：点一下切换状态并立即 ApplyChanges
-        // 多重采样：对应上下文的 antialias，只在启动时定（改了不会重建上下文）
-        AddUiButton(g.PreferMultiSampling ? "多重采样：开(启动时)" : "多重采样：关(启动时)",
-                    () => Set(manager => manager.PreferMultiSampling = !manager.PreferMultiSampling),
-                    g.PreferMultiSampling);
+        // 多重采样：WebGL2 的 antialias 是「创建上下文」时定死的，运行时改不了（见 GraphicsDeviceManager.PreferMultiSampling 的异常）。
+        // 这里只展示「真实生效状态」（来自 GraphicsDevice.Antialias，由 Example1Game.Antialias 在启动时决定），
+        // 按钮点击只打日志提示限制，不调用 setter —— 否则运行时设 PreferMultiSampling 会直接抛 NotSupportedException。
+        bool msaaOn = Device.Antialias;
+        AddUiButton(msaaOn ? "多重采样(antialias)：开·仅启动时" : "多重采样(antialias)：关·仅启动时",
+                    static () => PrintTool.Log("[GraphicsManagerTest] 多重采样(antialias) 只能在 Game/GraphicsDevice 构造时指定，运行时切换无效；改 Example1Game.Antialias 后重启对比。"),
+                    msaaOn);
         AddUiButton(g.HardwareModeSwitch ? "全屏方式：原生(硬)" : "全屏方式：铺满(软)",
                     () => Set(manager => manager.HardwareModeSwitch = !manager.HardwareModeSwitch),
                     g.HardwareModeSwitch);
@@ -160,6 +165,9 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
         y += DrawLine(batch, Font,
                       $"FPS：{Fps:0.}（真实帧率） / 帧间隔 {KTime.realDeltaTime * 1000f:0.#}ms / 精灵 {_drawn:N0} / DrawCall {Device.Metrics.DrawCount}",
                       new Vector2(x, y), Color.LightGray);
+        y += DrawLine(batch, Font,
+                      $"多重采样(antialias)：{Device.Antialias} —— 仅 Game 构造时由 Example1Game.Antialias 决定，运行时切换无效（WebGL2 限制）",
+                      new Vector2(x, y), new Color(180, 180, 180));
 
         // 剩余空间画几千个精灵：改分辨率 / 全屏后，这里的可视范围与密度会立刻变化。
         DrawSpriteField(batch, y + 12f);

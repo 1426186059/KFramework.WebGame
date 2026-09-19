@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>多重采样(MSAA) 对比 — 左关 / 右开</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #070a12; color: #cbd5f5;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    #wrap { display: flex; flex-wrap: wrap; gap: 18px; padding: 18px; align-items: flex-start; }
+    .panel { background: #0d1322; border: 1px solid #1e293b; border-radius: 10px; padding: 10px; }
+    .panel h2 { margin: 0 0 8px; font-size: 14px; font-weight: 600; }
+    .on h2 { color: #4ade80; }
+    .off h2 { color: #f87171; }
+    canvas { display: block; width: 360px; height: 360px; background: #05070f;
+      image-rendering: pixelated; border-radius: 6px; }
+    #note { padding: 0 18px 18px; max-width: 760px; line-height: 1.6; color: #94a3b8; font-size: 13px; }
+    code { color: #7dd3fc; }
+  </style>
+</head>
+<body>
+  <div id="wrap">
+    <div class="panel off">
+      <h2>antialias: false（MSAA 关）</h2>
+      <canvas id="cvOff"></canvas>
+    </div>
+    <div class="panel on">
+      <h2>antialias: true（MSAA 开）</h2>
+      <canvas id="cvOn"></canvas>
+    </div>
+  </div>
+  <div id="note">
+    两个画布画的是<strong>完全相同的几何</strong>（一组同心圆 + 放射状细线，整体缓慢旋转），
+    唯一区别是 WebGL2 上下文创建时的 <code>antialias</code> 参数。<br>
+    注意边缘：关 MSAA 的左边能看到明显锯齿（尤其旋转的细线）；开 MSAA 的右边边缘被平滑。<br>
+    <em>为什么不在 Game 框架里做这个对比？</em> 本框架的 GL 后端是单例（一个进程一个 WebGL2 上下文），
+    而 <code>antialias</code> 是 <code>getContext</code> 的参数、上下文建好后改不了，
+    所以同一个 <code>Game</code> 无法同时拥有"开/关"两种上下文 —— 必须用两个独立 canvas，各建一个上下文。
+  </div>
+
+  <script>
+    // 完全相同的场景，分别渲染到两个上下文
+    const VERT = `#version 300 es
+      in vec2 aPos; in vec3 aColor;
+      uniform mat3 uRot; out vec3 vColor;
+      void main() {
+        vec3 p = uRot * vec3(aPos, 1.0);
+        gl_Position = vec4(p.xy, 0.0, 1.0);
+        vColor = aColor;
+      }`;
+    const FRAG = `#version 300 es
+      precision mediump float;
+      in vec3 vColor; out vec4 frag;
+      void main() { frag = vec4(vColor, 1.0); }`;
+
+    // 生成几何：同心圆 + 放射线，全部以线段(LINES)绘制，最容易出现锯齿
+    function buildGeometry() {
+      const verts = [];
+      const push = (x, y, r, g, b) => verts.push(x, y, r, g, b);
+      const SEG = 160;
+      // 12 个同心圆
+      for (let c = 1; c <= 12; c++) {
+        const rad = 0.08 * c;
+        for (let i = 0; i < SEG; i++) {
+          const a0 = (i / SEG) * Math.PI * 2;
+          const a1 = ((i + 1) / SEG) * Math.PI * 2;
+          push(Math.cos(a0) * rad, Math.sin(a0) * rad, 0.55, 0.8, 1.0);
+          push(Math.cos(a1) * rad, Math.sin(a1) * rad, 0.55, 0.8, 1.0);
+        }
+      }
+      // 36 条放射细线
+      for (let s = 0; s < 36; s++) {
+        const a = (s / 36) * Math.PI * 2;
+        push(0, 0, 1.0, 0.85, 0.4);
+        push(Math.cos(a) * 0.98, Math.sin(a) * 0.98, 1.0, 0.85, 0.4);
+      }
+      return new Float32Array(verts);
+    }
+
+    const DATA = buildGeometry();
+
+    function makeView(id, antialias) {
+      const canvas = document.getElementById(id);
+      canvas.width = 480; canvas.height = 480; // 显式设绘制缓冲尺寸，否则默认 300x150
+      const gl = canvas.getContext('webgl2', { antialias, alpha: false, depth: false });
+      if (!gl) { console.error('WebGL2 不可用:', id); return null; }
+
+      const compile = (type, src) => {
+        const sh = gl.createShader(type);
+        gl.shaderSource(sh, src); gl.compileShader(sh);
+        if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw gl.getShaderInfoLog(sh);
+        return sh;
+      };
+      const prog = gl.createProgram();
+      gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT));
+      gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG));
+      gl.linkProgram(prog);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw gl.getProgramInfoLog(prog);
+
+      const vao = gl.createVertexArray();
+      gl.bindVertexArray(vao);
+      const vbo = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+      gl.bufferData(gl.ARRAY_BUFFER, DATA, gl.STATIC_DRAW);
+      const stride = 5 * 4;
+      const aPos = gl.getAttribLocation(prog, 'aPos');
+      gl.enableVertexAttribArray(aPos);
+      gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, stride, 0);
+      const aColor = gl.getAttribLocation(prog, 'aColor');
+      gl.enableVertexAttribArray(aColor);
+      gl.vertexAttribPointer(aColor, 3, gl.FLOAT, false, stride, 2 * 4);
+      gl.bindVertexArray(null);
+
+      return {
+        gl, prog, vao, count: DATA.length / 5,
+        uRot: gl.getUniformLocation(prog, 'uRot'),
+      };
+    }
+
+    const off = makeView('cvOff', false);
+    const on = makeView('cvOn', true);
+
+    function render(view, angle) {
+      if (!view) return;
+      const { gl, prog, vao, count, uRot } = view;
+      gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+      gl.clearColor(0.02, 0.03, 0.06, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.useProgram(prog);
+      gl.bindVertexArray(vao);
+      const c = Math.cos(angle), s = Math.sin(angle);
+      // 列主序 mat3
+      gl.uniformMatrix3fv(uRot, false, new Float32Array([
+        c, s, 0,
+        -s, c, 0,
+        0, 0, 1,
+      ]));
+      gl.drawArrays(gl.LINES, 0, count);
+      gl.bindVertexArray(null);
+    }
+
+    let t = 0;
+    function loop() {
+      t += 0.01;
+      render(off, t);
+      render(on, t);
+      requestAnimationFrame(loop);
+    }
+    loop();
+  </script>
+</body>
+</html>
