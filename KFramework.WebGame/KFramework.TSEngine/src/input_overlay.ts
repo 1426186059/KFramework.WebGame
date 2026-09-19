@@ -30,6 +30,14 @@
 // 并在 resize / scroll 时按最近一次 show 参数重新定位当前可见输入框。
 import { getCanvasElement } from './gl.js';
 
+// 模块级设置：DOM 输入覆盖层是否透明。
+//   true  （默认）：本 DOM 元素仅作 IME / 键盘捕获代理，文字与光标均透明，由引擎在 canvas 上自绘
+//                  （见 MirTextBox.CreateTexture → BrowserCanvas.DrawTextBox）；
+//   false         ：由 DOM 直接显示文字与光标（密码掩码仍由 type=password 处理）。
+// 可在 show() 调用时按输入框覆盖；未传时使用本默认值。
+let _transparentInput = true;
+export function setTransparentInput(v: boolean): void { _transparentInput = v; }
+
 /** C# 侧经 setHandlers 注册的回调。 */
 export interface OverlayHandlers {
     onValueChanged(value: string): void;
@@ -49,6 +57,7 @@ interface ShowParams {
     maxLength: number;
     multiline: boolean;
     fontFamily: string; // 与 C# BrowserInputOverlay.Show 的第 11 个参数对齐，用于让覆盖层字体贴近游戏内文本
+    transparent: boolean; // 本 DOM 元素是否透明：true=文字/光标由引擎自绘；false=由 DOM 直接显示
 }
 
 type InputEl = HTMLInputElement | HTMLTextAreaElement;
@@ -129,11 +138,19 @@ function place(el: HTMLElement, p: ShowParams): void {
     el.style.width = p.cw / dpr + 'px';
     el.style.height = p.ch / dpr + 'px';
     el.style.font = p.fontPx / dpr + 'px ' + (p.fontFamily || 'sans-serif');
-    // 文字与光标由引擎在 canvas 上绘制（见 MirTextBox.CreateTexture → BrowserCanvas.DrawTextBox），
-    // 本 DOM 元素仅作 IME / 键盘捕获代理，故颜色与光标均透明，避免与引擎绘制重影。
+    // transparent=true：文字与光标由引擎在 canvas 自绘（见 MirTextBox.CreateTexture → BrowserCanvas.DrawTextBox），
+    // 本 DOM 元素仅作 IME / 键盘捕获代理，颜色与光标均透明，避免与引擎绘制重影。
+    // transparent=false：由 DOM 直接显示文字与光标；密码掩码由上面的 type=password 处理。
     // 注意：透明不影响 IME——候选词窗是浏览器 UI，仍按本元素光标位置弹出；input 事件照常回传合成文本。
-    el.style.color = 'transparent';
-    el.style.caretColor = 'transparent';
+    if (p.transparent) {
+        el.style.color = 'transparent';
+        el.style.caretColor = 'transparent';
+    } else {
+        const r = (p.color >> 16) & 0xff, g = (p.color >> 8) & 0xff, b = p.color & 0xff;
+        const css = `rgb(${r},${g},${b})`;
+        el.style.color = css;
+        el.style.caretColor = css;
+    }
 }
 
 /** C# 侧注册事件回调（由 main.ts 在拿到程序集导出后调用一次）。 */
@@ -141,9 +158,9 @@ export function setHandlers(h: OverlayHandlers): void {
     handlers = h;
 }
 
-export function show(cx: number, cy: number, cw: number, ch: number, fontPx: number, color: number, value: string, password: boolean, maxLength: number, multiline: boolean, fontFamily: string): void {
+export function show(cx: number, cy: number, cw: number, ch: number, fontPx: number, color: number, value: string, password: boolean, maxLength: number, multiline: boolean, fontFamily: string, transparent: boolean = _transparentInput): void {
     const el = ensureEl(multiline);
-    last = { cx, cy, cw, ch, fontPx, color, password, maxLength, multiline, fontFamily };
+    last = { cx, cy, cw, ch, fontPx, color, password, maxLength, multiline, fontFamily, transparent };
     place(el, last);
     el.style.display = 'block';
     el.value = value ?? '';

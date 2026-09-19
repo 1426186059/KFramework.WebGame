@@ -26,7 +26,7 @@ namespace KFramework.MonoGame
 
         /// <summary>在画布上以 cx/cy/cw/ch（后备缓冲像素）为位置显示一个原生输入框并聚焦。</summary>
         [JSImport("show", "input_overlay")]
-        public static partial void Show(double cx, double cy, double cw, double ch, double fontPx, int color, string value, bool password, int maxLength, bool multiline, string fontFamily);
+        public static partial void Show(double cx, double cy, double cw, double ch, double fontPx, int color, string value, bool password, int maxLength, bool multiline, string fontFamily, bool transparent);
 
         /// <summary>隐藏并失焦当前覆盖层输入框。</summary>
         [JSImport("hide", "input_overlay")]
