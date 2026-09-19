@@ -1,4 +1,4 @@
-// 【依赖 C#】由 MirEngine.BrowserInputOverlay 经 [JSImport(module: "input_overlay")] 调用；
+// 【依赖 C#】由 KFramework.MonoGame.JSBind_InputOverlay 经 [JSImport(module: "input_overlay")] 调用；
 // 产物 input_overlay.js 由各示例 / 游戏工程的 SyncJsEngine 从 KFramework.TSEngine/dist/jsengine 复制到 wwwroot/jsengine。
 //
 // 浏览器原生文本输入覆盖层：在 canvas 之上叠加一个 DOM <input>/<textarea>，承接键盘 / IME /
@@ -103,7 +103,7 @@ function place(el, p) {
     el.style.top = top + p.cy / dpr + 'px';
     el.style.width = p.cw / dpr + 'px';
     el.style.height = p.ch / dpr + 'px';
-    el.style.font = p.fontPx / dpr + 'px sans-serif';
+    el.style.font = p.fontPx / dpr + 'px ' + (p.fontFamily || 'sans-serif');
     const css = colorToCss(p.color);
     el.style.color = css;
     el.style.caretColor = css;
@@ -112,9 +112,9 @@ function place(el, p) {
 export function setHandlers(h) {
     handlers = h;
 }
-export function show(cx, cy, cw, ch, fontPx, color, value, password, maxLength, multiline) {
+export function show(cx, cy, cw, ch, fontPx, color, value, password, maxLength, multiline, fontFamily) {
     const el = ensureEl(multiline);
-    last = { cx, cy, cw, ch, fontPx, color, password, maxLength, multiline };
+    last = { cx, cy, cw, ch, fontPx, color, password, maxLength, multiline, fontFamily };
     place(el, last);
     el.style.display = 'block';
     el.value = value ?? '';

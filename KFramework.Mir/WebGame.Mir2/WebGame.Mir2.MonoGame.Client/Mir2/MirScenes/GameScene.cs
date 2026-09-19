@@ -10422,6 +10422,9 @@ namespace Client.MirScenes
         }
 
         public CellInfo[,] M2CellInfo;
+        // 地图异步加载完成前（M2CellInfo 尚未就绪），暂存需要加入地图格的对象，
+        // 待 LoadMapAsync 赋值 M2CellInfo 后再补加，避免登录竞态导致的 NullReferenceException。
+        private readonly List<MapObject> _pendingAdd = new List<MapObject>();
         public List<Door> Doors = new List<Door>();
         public int Width, Height;
 
@@ -10490,6 +10493,7 @@ namespace Client.MirScenes
 
         public void ResetMap()
         {
+            _pendingAdd.Clear();
             GameScene.Scene.NPCDialog.Hide();
 
             MapObject.MouseObjectID = 0;
@@ -10523,6 +10527,9 @@ namespace Client.MirScenes
             MapReader Map = new MapReader(FileName);
             await Map.LoadAsync().ConfigureAwait(false);
             M2CellInfo = Map.MapCells;
+            // 地图就绪后补加竞态窗口内暂存的对象（如登录时先于地图加载完成的 UserObject）
+            foreach (var ob in _pendingAdd) AddObject(ob);
+            _pendingAdd.Clear();
             Width = Map.Width;
             Height = Map.Height;
 
@@ -12634,18 +12641,30 @@ namespace Client.MirScenes
 
         public void RemoveObject(MapObject ob)
         {
+            if (M2CellInfo == null)
+            {
+                _pendingAdd.Remove(ob);
+                return;
+            }
             M2CellInfo[ob.MapLocation.X, ob.MapLocation.Y].RemoveObject(ob);
         }
         public void AddObject(MapObject ob)
         {
+            if (M2CellInfo == null)
+            {
+                _pendingAdd.Add(ob);
+                return;
+            }
             M2CellInfo[ob.MapLocation.X, ob.MapLocation.Y].AddObject(ob);
         }
         public MapObject FindObject(uint ObjectID, int x, int y)
         {
+            if (M2CellInfo == null) return null;
             return M2CellInfo[x, y].FindObject(ObjectID);
         }
         public void SortObject(MapObject ob)
         {
+            if (M2CellInfo == null) return;
             M2CellInfo[ob.MapLocation.X, ob.MapLocation.Y].Sort();
         }
 

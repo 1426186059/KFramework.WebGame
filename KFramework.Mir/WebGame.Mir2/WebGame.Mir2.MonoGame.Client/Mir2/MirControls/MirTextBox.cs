@@ -381,9 +381,20 @@ namespace Client.MirControls
 
             _nativeActive = true;
             int fore = (TextBox.ForeColor != Color.Empty ? TextBox.ForeColor : Color.White).ToArgb();
-            double fontPx = TextBox.Font != null ? TextBox.Font.Size : 10F;
+            // 字号取 FontToCss 解析出的 px（与离屏纹理渲染口径一致，Point 单位已乘 4/3），
+            // 字体族用 TextBox.Font.Name（与 RT 同字体），保证 DOM 叠层与失焦时 RT 渲染完全一致，切换不跳变。
+            double fontPx = 10d;
+            string fontCss = BrowserCanvas.FontToCss(TextBox.Font);
+            int pxIdx = fontCss.IndexOf("px");
+            if (pxIdx > 0) {
+                int s = pxIdx;
+                while (s > 0 && (char.IsDigit(fontCss[s - 1]) || fontCss[s - 1] == '.')) s--;
+                if (double.TryParse(fontCss.Substring(s, pxIdx - s), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double p))
+                    fontPx = p;
+            }
+            string fontFamily = TextBox.Font != null ? TextBox.Font.Name : "Arial";
             BrowserInputOverlay.Show(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height,
-                fontPx, fore, TextBox.Text ?? string.Empty, TextBox.UseSystemPasswordChar, TextBox.MaxLength, TextBox.Multiline);
+                fontPx, fore, TextBox.Text ?? string.Empty, TextBox.UseSystemPasswordChar, TextBox.MaxLength, TextBox.Multiline, fontFamily);
             TextureValid = false;
             Redraw();
         }
@@ -425,11 +436,14 @@ namespace Client.MirControls
 
             string css = TextBox.Font == null ? "10px sans-serif" : BrowserCanvas.FontToCss(TextBox.Font);
             int fore = (TextBox.ForeColor != Color.Empty ? TextBox.ForeColor : Color.White).ToArgb();
-            int back = (TextBox.BackColor != Color.Empty ? TextBox.BackColor : Color.Black).ToArgb();
+            // 文本框纹理作为面板上的透明叠层：无背景色时清成透明（alpha 0），避免盖住面板里的输入框底。
+            int back = (TextBox.BackColor != Color.Empty && TextBox.BackColor.A > 0) ? TextBox.BackColor.ToArgb() : 0;
             int selBack = Color.FromArgb(128, 51, 153, 255).ToArgb();
-            // 原生输入框聚焦时，文本与光标交由 DOM <input> 渲染，这里只在离屏纹理上绘制背景，避免双层文字/光标重叠。
-            string drawText = _nativeActive ? string.Empty : (TextBox.Text ?? "");
-            BrowserCanvas.DrawTextBox(ControlTexture.Handle, Size.Width, Size.Height, drawText,
+            // 聚焦时由 DOM <input> 接管显示，离屏纹理只画背景、不画文字，避免 DOM 与 RT 文字重叠/错位
+            // （即"上下叠一起"）；失焦后 DOM 收起、_nativeActive 置否，此处再画完整文字。
+            // Web 端焦点事件丢失时 OnLostFocus/NativeBlur 已把 _nativeActive 置否并重绘，文字不会丢。
+            string drawText = _nativeActive ? "" : (TextBox.Text ?? "");
+            BrowserCanvas.DrawTextBox(ControlTexture, Size.Width, Size.Height, drawText,
                 css, fore, back, selBack, fore, TextBox.SelectionStart, TextBox.SelectionLength, TextBox.SelectionStart, TextBox.Focused && !_nativeActive, !TextBox.Multiline);
 
             TextureValid = true;

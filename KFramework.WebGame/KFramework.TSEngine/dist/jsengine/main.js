@@ -79,7 +79,7 @@ catch (e) {
 // 原生文本输入覆盖层：把 DOM <input> 的 input / Enter / blur 事件经 [JSExport] 回调推回
 // KFramework.MonoGame.JSBind_InputOverlay，驱动登录/输入框获得焦点、文本同步与回车确认。
 try {
-    const kf = await getAssemblyExports('KFramework.MonoGame');
+    const kf = (await getAssemblyExports('KFramework.MonoGame'));
     const ov = kf?.KFramework?.MonoGame?.JSBind_InputOverlay;
     if (ov) {
         inputOverlay.setHandlers({

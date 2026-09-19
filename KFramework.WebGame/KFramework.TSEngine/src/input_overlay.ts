@@ -42,6 +42,7 @@ interface ShowParams {
     password: boolean;
     maxLength: number;
     multiline: boolean;
+    fontFamily: string; // 与 C# BrowserInputOverlay.Show 的第 11 个参数对齐，用于让覆盖层字体贴近游戏内文本
 }
 
 type InputEl = HTMLInputElement | HTMLTextAreaElement;
@@ -128,7 +129,7 @@ function place(el: HTMLElement, p: ShowParams): void {
     el.style.top = top + p.cy / dpr + 'px';
     el.style.width = p.cw / dpr + 'px';
     el.style.height = p.ch / dpr + 'px';
-    el.style.font = p.fontPx / dpr + 'px sans-serif';
+    el.style.font = p.fontPx / dpr + 'px ' + (p.fontFamily || 'sans-serif');
     const css = colorToCss(p.color);
     el.style.color = css;
     el.style.caretColor = css;
@@ -139,9 +140,9 @@ export function setHandlers(h: OverlayHandlers): void {
     handlers = h;
 }
 
-export function show(cx: number, cy: number, cw: number, ch: number, fontPx: number, color: number, value: string, password: boolean, maxLength: number, multiline: boolean): void {
+export function show(cx: number, cy: number, cw: number, ch: number, fontPx: number, color: number, value: string, password: boolean, maxLength: number, multiline: boolean, fontFamily: string): void {
     const el = ensureEl(multiline);
-    last = { cx, cy, cw, ch, fontPx, color, password, maxLength, multiline };
+    last = { cx, cy, cw, ch, fontPx, color, password, maxLength, multiline, fontFamily };
     place(el, last);
     el.style.display = 'block';
     el.value = value ?? '';
