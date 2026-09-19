@@ -36,11 +36,24 @@ namespace KFramework.MonoGameExtend
         /// <summary>平滑后的 deltaTime（对最近若干帧做加权平均，避免单帧抖动）。</summary>
         public static float smoothDeltaTime;
 
-        /// <summary>已渲染的帧数（Update 每帧 +1）。</summary>
+        /// <summary>逻辑帧计数（每个 Update 步 +1；固定步长下同一渲染帧可能走多步）。</summary>
         public static int frameCount;
 
-        /// <summary>已渲染的帧数（Draw 每帧 +1，同 frameCount）。</summary>
+        /// <summary>已渲染的帧数（每次 Draw +1，统计口径见 <see cref="StepRenderFrame"/>）。</summary>
         public static int renderedFrameCount;
+
+        /// <summary>
+        /// 真实帧率（每秒渲染帧数）：用墙钟时间（Stopwatch）统计，不受固定步长 / timeScale 影响。
+        /// </summary>
+        /// <remarks>
+        /// 别再用 <c>1 / deltaTime</c> 算帧率 —— <see cref="deltaTime"/> 来自
+        /// <see cref="GameTime.ElapsedGameTime"/>，在固定时间步长（<see cref="Game.IsFixedTimeStep"/>）下
+        /// 恒等于 <see cref="Game.TargetElapsedTime"/>（默认 1/60），算出来永远是 60。
+        /// </remarks>
+        public static float realFps;
+
+        /// <summary>上一帧的真实间隔（秒，墙钟测量），与 <see cref="realFps"/> 同期更新。</summary>
+        public static float realDeltaTime;
 
         /// <summary>当前是否处于固定步进阶段（在 StepFixedUpdate 期间为 true）。</summary>
         public static bool inFixedTimeStep;
@@ -80,6 +93,32 @@ namespace KFramework.MonoGameExtend
         private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
         private static int _smoothFrameCount;
 
+        // 真实帧率统计（墙钟）：窗口内累计渲染帧数 / 窗口秒数
+        private static double _fpsWindowStart;
+        private static int _fpsFrames;
+
+        /// <summary>
+        /// 每帧「渲染」调用一次（<see cref="KSceneMgr.Draw"/> 已自动调用）：用墙钟统计真实 FPS。
+        /// 只有真正画出去的帧才计数，因此它反映的就是玩家看到的帧率 ——
+        /// 固定步长下若某帧没走到逻辑步而跳过 Draw，这一帧自然不会被计入。
+        /// </summary>
+        public static void StepRenderFrame()
+        {
+            renderedFrameCount++;
+            _fpsFrames++;
+
+            double now = _stopwatch.Elapsed.TotalSeconds;
+            double span = now - _fpsWindowStart;
+
+            // 0.25 秒一个统计窗口：读数更新够快，也不会因单帧抖动乱跳
+            if (span < 0.25) return;
+
+            realFps = (float)(_fpsFrames / span);
+            realDeltaTime = (float)(span / _fpsFrames);
+            _fpsFrames = 0;
+            _fpsWindowStart = now;
+        }
+
         /// <summary>
         /// 每帧 Update 调用一次（KSceneMgr 已自动调用）。
         /// 依次推进 time/unscaledTime/timeSinceLevelLoad/smoothDeltaTime 等字段。
@@ -89,7 +128,6 @@ namespace KFramework.MonoGameExtend
             float raw = (float)mGameTime.ElapsedGameTime.TotalSeconds;
 
             frameCount++;
-            renderedFrameCount++;
             realtimeSinceStartup = (float)_stopwatch.Elapsed.TotalSeconds;
 
             // 与 Unity 一致：先截断到 maximumDeltaTime，再乘 timeScale

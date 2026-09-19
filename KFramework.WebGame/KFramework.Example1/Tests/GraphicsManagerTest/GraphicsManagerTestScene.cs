@@ -25,7 +25,6 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
     private Texture2D? _ball;
     private int _countIndex = 1;      // 默认 3000
     private float _time;
-    private float _fps = 60f;
     private int _drawn;
 
     public override string Title => "GraphicsDeviceManager：点按钮改参数 + ApplyChanges（下方几千个精灵看效果）";
@@ -42,10 +41,8 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
         base.Update();
         if (!ReferenceEquals(KSceneMgr.Main, this)) return;
 
-        // 动画时间 + FPS（EMA）：改分辨率后能直接看到帧率变化
-        float dt = KTime.unscaledDeltaTime;
-        if (dt > 0f) _fps += (1f / dt - _fps) * 0.1f;
-        _time += dt;
+        // 动画时间用逻辑步长（与帧率无关，动画速度才稳定）；FPS 一律读基类的真实帧率
+        _time += KTime.deltaTime;
 
         Layout();
         ClickButtons();
@@ -138,7 +135,7 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
                       $"画布 CSS：{(int)Device.CssSize.X} x {(int)Device.CssSize.Y}（DPR {Device.DevicePixelRatio:0.##}）→ 后备缓冲 {pp.BackBufferWidth} x {pp.BackBufferHeight}",
                       new Vector2(x, y), new Color(150, 220, 255));
         y += DrawLine(batch, Font,
-                      $"FPS：{_fps:0.} / 精灵 {_drawn:N0} / DrawCall {Device.Metrics.DrawCount}",
+                      $"FPS：{Fps:0.}（真实帧率） / 帧间隔 {KTime.realDeltaTime * 1000f:0.#}ms / 精灵 {_drawn:N0} / DrawCall {Device.Metrics.DrawCount}",
                       new Vector2(x, y), Color.LightGray);
 
         // 剩余空间画几千个精灵：改分辨率 / 全屏后，这里的可视范围与密度会立刻变化。

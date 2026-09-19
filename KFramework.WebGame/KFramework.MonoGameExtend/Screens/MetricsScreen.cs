@@ -43,7 +43,8 @@ namespace KFramework.MonoGameExtend
         public override void Update()
         {
             base.Update();
-            nFPS = (int)Math.Round(1 / KTime.deltaTime);
+            // 用墙钟统计的真实帧率：1 / KTime.deltaTime 在固定步长下恒为 60（deltaTime 是逻辑步长）
+            nFPS = (int)Math.Round(KTime.realFps);
             mLable.Text = $"FPS: {nFPS} DC: {nDrawCount} Sprites: {nSpriteCount} ScreenSize: {KSceneMgr.Game.GraphicsDevice.Viewport.Bounds.Size}";
         }
 

@@ -31,6 +31,12 @@ public abstract class TestSceneBase : KSceneBase
     /// <summary>按钮区之后正文的起始 y（由 <see cref="BeginButtons"/> / <see cref="AddUiButton"/> 算出）。</summary>
     protected float ContentTop => _contentTop;
 
+    /// <summary>
+    /// 真实帧率（每秒渲染帧数，墙钟统计，见 <see cref="KTime.realFps"/>）。
+    /// </summary>
+    /// <remarks>别用 <c>1 / KTime.deltaTime</c>：固定步长下它恒等于 60。</remarks>
+    protected float Fps => KTime.realFps;
+
     /// <summary>开始布置本帧的按钮（会清空上一帧的登记）。</summary>
     /// <param name="top">第一行按钮的顶端 y。</param>
     protected void BeginButtons(int top)

@@ -35,7 +35,6 @@ public sealed class RenderTargetTestScene : TestSceneBase
 
     // ---- 统计 ----
     private readonly Stopwatch _stopwatch = new();
-    private float _fps = 60f;
     private float _drawMs;              // 整帧（离屏 + 屏幕）绘制耗时 EMA
     private float _rtDrawMs;            // 其中离屏那段（不重绘时为 0）
     private float _screenDrawMs;        // 其中屏幕那段
@@ -193,8 +192,7 @@ public sealed class RenderTargetTestScene : TestSceneBase
         _screenSprites = metrics.SpriteCount - beforeScreen;
         _screenDrawCalls = metrics.DrawCount;
 
-        float dt = KTime.unscaledDeltaTime;
-        if (dt > 0f) _fps += (1f / dt - _fps) * 0.1f;
+        // FPS 一律用基类的真实帧率（墙钟统计）；KTime.deltaTime 在固定步长下恒为 1/60，不能拿来算帧率。
         float totalMs = (float)_stopwatch.Elapsed.TotalMilliseconds;
         _rtDrawMs += ((float)rtMs - _rtDrawMs) * 0.1f;
         _screenDrawMs += (totalMs - (float)rtMs - _screenDrawMs) * 0.1f;
@@ -333,7 +331,7 @@ public sealed class RenderTargetTestScene : TestSceneBase
         float x = _stage.X;
 
         y += DrawLine(batch, Font,
-            $"FPS {_fps:F1}    绘制耗时 {_drawMs:F2} ms（离屏 {_rtDrawMs:F2} + 屏幕 {_screenDrawMs:F2}）"
+            $"FPS {Fps:F1}（真实帧率）    绘制耗时 {_drawMs:F2} ms（离屏 {_rtDrawMs:F2} + 屏幕 {_screenDrawMs:F2}）"
             + $"    屏幕阶段精灵 {_screenSprites:N0}    DrawCall {_screenDrawCalls:N0}",
             new Vector2(x, y), new Color(126, 200, 255));
 

@@ -83,6 +83,9 @@ namespace KFramework.MonoGameExtend
 
         public static void Draw(GameTime gameTime)
         {
+            // 真实帧率统计：只有画出去的帧才计数（deltaTime 在固定步长下是恒定的，不能拿来算 FPS）
+            KTime.StepRenderFrame();
+
             LinkedListNode<KSceneBase> mEntry = mSceneList.First;
             while (mEntry != null)
             {
