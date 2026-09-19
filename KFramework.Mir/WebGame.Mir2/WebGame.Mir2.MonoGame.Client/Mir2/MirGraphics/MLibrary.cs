@@ -1090,7 +1090,23 @@ namespace Client.MirGraphics
             int w = Width;
             int h = Height;
 
+            // 防御：库里偶发 0 尺寸（或负）占位图。直接跳过创建，避免 GDevice.CreateTexture
+            // 抛 ArgumentOutOfRangeException；该异常会被 CMain.Loop 的 catch 吞掉，
+            // 导致此后每帧只清黑屏、场景不再上屏（永久黑屏）。标记为已处理以防重入。
+            if (w <= 0 || h <= 0)
+            {
+                TextureValid = true;
+                return;
+            }
+
             byte[] raw = DecompressImage(reader.ReadBytes(Length));
+            // 数据长度不足（库损坏/尺寸不符）时同样跳过，避免越界与创建异常。
+            if (raw == null || raw.Length < (long)w * h * 4)
+            {
+                TextureValid = true;
+                return;
+            }
+
             byte[] rgba = new byte[w * h * 4];
             for (int i = 0; i < w * h; i++)
             {
