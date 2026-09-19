@@ -24,6 +24,12 @@ namespace Client.MirGraphics
         public static List<MirControl> ControlList = new List<MirControl>();
 
         public static float Opacity = 1F;
+
+        // 全屏自适应：场景烘焙时注入的全局缩放变换（按屏幕高度统一缩放，参考 Unity 的
+        // Scale-With-Screen-Size / Match=Height）。仅在 CreateTexture 烘焙期间置位，
+        // PresentToScreen 上屏前必须清空，否则会把整帧再缩放一次（双重缩放/错位）。
+        public static KFramework.MonoGame.Matrix4x4? RenderTransform = null;
+
         public static bool Blending;
         public static float BlendingRate;
         public static BlendMode BlendingMode;
@@ -89,7 +95,7 @@ namespace Client.MirGraphics
             Rectangle src = sourceRect ?? new Rectangle(0, 0, texture.Width, texture.Height);
             SlimDX.Vector3 pos = position ?? SlimDX.Vector3.Zero;
             KFramework.MonoGame.BlendState blend = Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied;
-            Batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred, blend, KFramework.MonoGame.SamplerState.PointClamp);
+            Batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred, blend, KFramework.MonoGame.SamplerState.PointClamp, RenderTransform ?? KFramework.MonoGame.Matrix4x4.Identity);
             try
             {
                 Batch.Draw(texture, new KFramework.MonoGame.Vector2(pos.X, pos.Y), ToRect(src), ToColor(color));
@@ -105,7 +111,7 @@ namespace Client.MirGraphics
         {
             if (texture == null) return;
             KFramework.MonoGame.BlendState blend = Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied;
-            Batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred, blend, KFramework.MonoGame.SamplerState.PointClamp);
+            Batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred, blend, KFramework.MonoGame.SamplerState.PointClamp, RenderTransform ?? KFramework.MonoGame.Matrix4x4.Identity);
             try
             {
                 Batch.Draw(texture,
@@ -198,6 +204,9 @@ namespace Client.MirGraphics
         public static void PresentToScreen(KFramework.MonoGame.Texture2D texture)
         {
             if (texture == null) return;
+            // 上屏必须是 1:1（离屏纹理已按画布原生分辨率烘焙），绝不能再叠加 RenderTransform，
+            // 否则整帧被二次缩放导致错位/黑边。
+            RenderTransform = null;
             var vp = GDevice.Viewport;
             Draw(texture,
                 new Rectangle(0, 0, texture.Width, texture.Height),

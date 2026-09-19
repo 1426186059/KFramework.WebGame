@@ -10699,14 +10699,17 @@ namespace Client.MirScenes
                 DrawFloor();
 
 
-            if (Size != TextureSize)
+            var vp = DXManager.GDevice.Viewport;
+            int rtW = vp.Width, rtH = vp.Height;
+
+            if (TextureSize.Width != rtW || TextureSize.Height != rtH)
                 DisposeTexture();
 
             if (ControlTexture == null || ControlTexture.Disposed)
             {
                 DXManager.ControlList.Add(this);
-                ControlTexture = new Texture(DXManager.Device, Size.Width, Size.Height, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
-                TextureSize = Size;
+                ControlTexture = new Texture(DXManager.Device, rtW, rtH, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+                TextureSize = new Size(rtW, rtH);
             }
 
             Surface oldSurface = DXManager.CurrentSurface;
@@ -10714,11 +10717,16 @@ namespace Client.MirScenes
             DXManager.SetSurface(surface);
             DXManager.Device.Clear(ClearFlags.Target, BackColour, 0, 0);
 
+            // 按屏幕高度统一缩放；宽屏下地图横向铺满（无黑边），玩家可见世界随屏变宽。
+            float s = (float)rtH / Settings.ScreenHeight;
+            DXManager.RenderTransform = KFramework.MonoGame.Matrix4x4.CreateScale(s, s, 1f);
+
             DrawBackground();
 
             if (FloorValid)
             {
-                DXManager.Draw(DXManager.FloorTexture, new Rectangle(0, 0, Settings.ScreenWidth, Settings.ScreenHeight), Vector3.Zero, Color.White);
+                // 地板铺满整块画布（逻辑宽 = 视口宽 / s），避免两侧露底色。
+                DXManager.Draw(DXManager.FloorTexture, new Rectangle(0, 0, (int)(vp.Width / s), (int)(vp.Height / s)), Vector3.Zero, Color.White);
             }
 
             DrawObjects();
@@ -10773,6 +10781,7 @@ namespace Client.MirScenes
             if (MapObject.User.MouseOver(MouseLocation))
                 MapObject.User.DrawName();
 
+            DXManager.RenderTransform = null;
             DXManager.SetSurface(oldSurface);
             surface.Dispose();
             TextureValid = true;
@@ -10816,8 +10825,13 @@ namespace Client.MirScenes
             DXManager.Device.Clear(ClearFlags.Target, Color.Empty, 0, 0);
 
 
-            int startX = User.Movement.X - ViewRangeX;
-            int endX = User.Movement.X + ViewRangeX;
+            // 宽屏适配：横向渲染范围随画布宽高比加宽，使地图铺满（与烘焙时的 aspectFill 一致）。
+            float scaleS = (float)DXManager.GDevice.Viewport.Height / Settings.ScreenHeight;
+            float aspectFill = DXManager.GDevice.Viewport.Width / (1024f * scaleS);
+            int vrX = (int)Math.Round(ViewRangeX * aspectFill);
+
+            int startX = User.Movement.X - vrX;
+            int endX = User.Movement.X + vrX;
             int startY = User.Movement.Y - ViewRangeY;
             int endY = User.Movement.Y + ViewRangeY;
             int endYExtended = endY + 5;

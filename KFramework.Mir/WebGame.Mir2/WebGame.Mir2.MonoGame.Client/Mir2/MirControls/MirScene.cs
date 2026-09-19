@@ -18,7 +18,7 @@ namespace Client.MirControls
         protected MirScene()
         {
             DrawControlTexture = true;
-            BackColour = Color.Magenta;
+            BackColour = Color.Black;
             Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
         }
 
@@ -69,17 +69,23 @@ namespace Client.MirControls
         }
 
         // 烘焙整帧场景到离屏纹理：必须先切渲染目标到本场景纹理，子控件才会合成进它，
-        // 而非直接画到画布；烘焙完恢复渲染目标。场景底色暂用洋红(Magenta)占位。
+        // 而非直接画到画布；烘焙完恢复渲染目标。
+        // 全屏自适应：离屏纹理按画布原生分辨率创建，烘焙时统一按屏幕高度缩放(参考 Unity
+        // Scale-With-Screen-Size / Match=Height)，UI 比例正确、不拉伸变形；随后由
+        // PresentToScreen 以 1:1 上屏（DXManager 已在 present 前清空 RenderTransform）。
         protected override void CreateTexture()
         {
-            if (Size != TextureSize)
+            var vp = DXManager.GDevice.Viewport;
+            int rtW = vp.Width, rtH = vp.Height;
+
+            if (TextureSize.Width != rtW || TextureSize.Height != rtH)
                 DisposeTexture();
 
             if (ControlTexture == null || ControlTexture.Disposed)
             {
                 DXManager.ControlList.Add(this);
-                ControlTexture = new Texture(DXManager.Device, Size.Width, Size.Height, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
-                TextureSize = Size;
+                ControlTexture = new Texture(DXManager.Device, rtW, rtH, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+                TextureSize = new Size(rtW, rtH);
             }
             Surface oldSurface = DXManager.CurrentSurface;
             Surface surface = ControlTexture.GetSurfaceLevel(0);
@@ -87,9 +93,21 @@ namespace Client.MirControls
 
             DXManager.Device.Clear(ClearFlags.Target, BackColour, 0, 0);
 
-            BeforeDrawControl();
-            DrawChildControls();
-            AfterDrawControl();
+            // 按屏幕高度统一缩放：s = 画布高 / 逻辑高(768)。宽屏下 UI 比例不变形，
+            // 内容宽度(1024*s)若小于画布宽，两侧由 BackColour 补齐（登录/选角场景的
+            // 背景通常自身铺满，侧边不明显）。
+            float s = (float)rtH / Settings.ScreenHeight;
+            DXManager.RenderTransform = KFramework.MonoGame.Matrix4x4.CreateScale(s, s, 1f);
+            try
+            {
+                BeforeDrawControl();
+                DrawChildControls();
+                AfterDrawControl();
+            }
+            finally
+            {
+                DXManager.RenderTransform = null;
+            }
 
             DXManager.Sprite.Flush();
 
