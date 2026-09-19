@@ -21,7 +21,7 @@ namespace KFramework.MonoGame
 
         public float DevicePixelRatio => _device.DevicePixelRatio;
 
-        /// <summary>CSS 像素尺寸，用于把鼠标坐标换算到逻辑坐标。</summary>
+        /// <summary>CSS 像素尺寸。输入上报的坐标已经是后备缓冲像素，本属性仅供需要 CSS 语义的场合。</summary>
         public Vector2 CssSize => _device.CssSize;
 
         public string Title

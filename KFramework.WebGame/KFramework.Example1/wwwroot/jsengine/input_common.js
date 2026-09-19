@@ -11,7 +11,9 @@ export function canvasPoint(clientX, clientY) {
     if (!canvas)
         return [0, 0];
     const rect = canvas.getBoundingClientRect();
-    return [Math.round(clientX - rect.left), Math.round(clientY - rect.top)];
+    const scaleX = canvas.width / (rect.width || 1);
+    const scaleY = canvas.height / (rect.height || 1);
+    return [Math.round((clientX - rect.left) * scaleX), Math.round((clientY - rect.top) * scaleY)];
 }
 /** 把本地缓冲写回 C# 传来的目标（MemoryView 或 Uint8Array）。 */
 export function copyOut(target, src) {

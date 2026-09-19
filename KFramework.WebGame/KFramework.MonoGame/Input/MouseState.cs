@@ -12,7 +12,7 @@ namespace KFramework.MonoGame
     /// 滚轮只有本帧增量（无累计值、无横向滚轮）；
     /// 浏览器不允许脚本移动光标，因此没有 SetPosition 能力。</para>
     ///
-    /// <para>坐标单位为<b>画布像素</b>，原点在左上角。</para>
+    /// <para>坐标单位为<b>画布后备缓冲（backing）像素</b>，原点在左上角（dpr 已在 JS 侧换算）。</para>
     /// </summary>
     public struct MouseState(int x, int y, int buttons, int wheel, int previousButtons)
     {

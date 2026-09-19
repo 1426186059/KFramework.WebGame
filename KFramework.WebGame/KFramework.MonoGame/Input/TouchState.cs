@@ -5,7 +5,7 @@ namespace KFramework.MonoGame
     /// <summary>
     /// 单个触点。手机 / 平板等触屏设备的输入单元。
     ///
-    /// <para>座标单位为画布 CSS 像素（dpr 换算由上层按需处理）。
+    /// <para>座标单位为画布后备缓冲（backing）像素（dpr 已在 JS 侧 canvasPoint 换算，C# 不要再乘）。
     /// <see cref="Id"/> 在同一根手指按下期间保持不变。</para>
     ///
     /// <para>阶段（Began / Moved / Ended）由 <see cref="Input"/> 依据事件直接判定，
