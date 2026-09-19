@@ -62,7 +62,7 @@ namespace Client.MirGraphics
 
             // 嵌套 RT 合成：切回画布（SetRenderTarget(null)）时保留已合成内容，避免闪烁。
             // 清屏仍由每帧 RenderFrame 的显式 Clear 负责；默认 DiscardContents 保持 XNA/MonoGame 兼容。
-            Device.BackBufferRenderTargetUsage = RenderTargetUsage.PreserveContents;
+            GDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
         }
 
         public static void Create()

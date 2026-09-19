@@ -36,7 +36,9 @@ public sealed class RenderTargetTestScene : TestSceneBase
     // ---- 统计 ----
     private readonly Stopwatch _stopwatch = new();
     private float _fps = 60f;
-    private float _drawMs;
+    private float _drawMs;              // 整帧（离屏 + 屏幕）绘制耗时 EMA
+    private float _rtDrawMs;            // 其中离屏那段（不重绘时为 0）
+    private float _screenDrawMs;        // 其中屏幕那段
     private long _screenSprites;
     private long _screenDrawCalls;
     private long _rtSprites;        // 上一次离屏重绘提交的精灵数（静态时一直复用，不再重画）
@@ -168,6 +170,10 @@ public sealed class RenderTargetTestScene : TestSceneBase
     {
         Layout();
 
+        // 计时必须覆盖「离屏 + 屏幕」整段：只测屏幕阶段的话，开动画时每帧那次离屏重绘会被漏掉，
+        // 读数会假得离谱（离屏动画看起来和离屏静止一样快，且远胜直接绘制）。
+        _stopwatch.Restart();
+
         // ① 离屏阶段：必须在 SpriteBatch.Begin 之前完成 ——
         //    Begin 会按“当前是否绑了渲染目标”决定投影矩阵（离屏时 Y 不翻转）。
         if (_useRenderTarget)
@@ -177,7 +183,8 @@ public sealed class RenderTargetTestScene : TestSceneBase
         //    metrics 只在 Clear 时归零，而切回画布可能会清一次（默认 DiscardContents），
         //    所以基准值一律在「切回之后、屏幕绘制之前」取，统计才与清屏策略无关。
         long beforeScreen = Device.Metrics.SpriteCount;
-        _stopwatch.Restart();
+        double rtMs = _stopwatch.Elapsed.TotalMilliseconds;   // 离屏段（静态且不重绘时为 0）
+
         base.Draw();
         _stopwatch.Stop();
 
@@ -188,7 +195,10 @@ public sealed class RenderTargetTestScene : TestSceneBase
 
         float dt = KTime.unscaledDeltaTime;
         if (dt > 0f) _fps += (1f / dt - _fps) * 0.1f;
-        _drawMs += ((float)_stopwatch.Elapsed.TotalMilliseconds - _drawMs) * 0.1f;
+        float totalMs = (float)_stopwatch.Elapsed.TotalMilliseconds;
+        _rtDrawMs += ((float)rtMs - _rtDrawMs) * 0.1f;
+        _screenDrawMs += (totalMs - (float)rtMs - _screenDrawMs) * 0.1f;
+        _drawMs += (totalMs - _drawMs) * 0.1f;
     }
 
     /// <summary>把整片画面画进离屏纹理；内容没变（静态且已画过）就直接复用。</summary>
@@ -323,7 +333,8 @@ public sealed class RenderTargetTestScene : TestSceneBase
         float x = _stage.X;
 
         y += DrawLine(batch, Font,
-            $"FPS {_fps:F1}    本帧绘制耗时 {_drawMs:F2} ms    本帧提交精灵 {_screenSprites:N0}     DrawCall {_screenDrawCalls:N0}",
+            $"FPS {_fps:F1}    绘制耗时 {_drawMs:F2} ms（离屏 {_rtDrawMs:F2} + 屏幕 {_screenDrawMs:F2}）"
+            + $"    屏幕阶段精灵 {_screenSprites:N0}    DrawCall {_screenDrawCalls:N0}",
             new Vector2(x, y), new Color(126, 200, 255));
 
         if (_useRenderTarget && _rt != null)
@@ -333,7 +344,8 @@ public sealed class RenderTargetTestScene : TestSceneBase
                 new Vector2(x, y), new Color(150, 255, 180));
             y += DrawLine(batch, Font,
                 _animate
-                    ? "画面在动 → 离屏纹理每帧都要重画，等于「多画一遍再贴图」，这时离屏没有收益。"
+                    ? "画面在动 → 离屏纹理每帧重画 N 个精灵再贴一遍（N+1，多一次全屏贴图）："
+                      + "上面「离屏」那一段就是多出来的开销，看 FPS 比看耗时更准。"
                     : "画面静止 → 只在第一帧画一次，之后每帧只贴 1 个精灵：几千个精灵退化成 1 个。",
                 new Vector2(x, y), new Color(200, 200, 210));
         }
