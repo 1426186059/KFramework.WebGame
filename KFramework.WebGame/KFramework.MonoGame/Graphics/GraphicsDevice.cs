@@ -66,6 +66,19 @@ namespace KFramework.MonoGame
         /// </summary>
         public Color DiscardColor { get; set; } = new Color(0, 0, 0, 0);
 
+        /// <summary>
+        /// 画布（后台缓冲）的内容保留策略，对应 MonoGame 的 <c>PresentationParameters.RenderTargetUsage</c>。
+        /// <para>
+        /// 默认 <see cref="RenderTargetUsage.DiscardContents"/>：即 SetRenderTarget(null) 切回画布时
+        /// 会按 <see cref="DiscardColor"/> 清一次屏（XNA 4 为 Xbox 硬件限制引入的行为，MonoGame 原样保留，
+        /// 其 GraphicsDeviceManagerTest 也断言默认值为 DiscardContents）。
+        /// 多个离屏目标轮流回绑画布做合成时（先贴 RT-A，再绑 RT-B，再回画布贴 RT-B），
+        /// 把它设成 <see cref="RenderTargetUsage.PreserveContents"/> 才不会被擦掉已合成的内容，
+        /// 清屏交给每帧显式的 <see cref="Clear"/>。
+        /// </para>
+        /// </summary>
+        public RenderTargetUsage BackBufferRenderTargetUsage { get; set; } = RenderTargetUsage.DiscardContents;
+
         internal GraphicsMetrics _metrics;
 
         /// <summary>
@@ -466,8 +479,10 @@ namespace KFramework.MonoGame
                 _currentRenderTargetCount = 0;
                 PlatformApplyDefaultRenderTarget();
 
-                // 切回画布按 XNA 行为清屏（MonoGame 取 PresentationParameters.RenderTargetUsage，默认 DiscardContents）。
-                clearTarget = true;
+                // 照 MonoGame 的 ApplyRenderTargets：切回画布是否清屏由后台缓冲的 RenderTargetUsage 决定
+                //（默认 DiscardContents → 清屏）。想让已合成内容留着，就把 BackBufferRenderTargetUsage
+                // 设为 PreserveContents，而不是在这里写死 false。
+                clearTarget = BackBufferRenderTargetUsage == RenderTargetUsage.DiscardContents;
                 renderTargetWidth = _backBufferWidth;
                 renderTargetHeight = _backBufferHeight;
             }

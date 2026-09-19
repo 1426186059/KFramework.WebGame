@@ -57,12 +57,15 @@ namespace SlimDX
 
 namespace SlimDX.Direct3D9
 {
-    // 纹理句柄：浏览器端用 int 句柄（Image 或离屏 canvas）。
+    // 纹理句柄：浏览器端用 int 句柄（普通贴图）或包裹 KFramework.MonoGame 的离屏渲染目标。
     public class Texture
     {
         public int Handle;
         public int Width, Height;
         public bool Disposed;
+
+        // 离屏渲染目标（浏览器端走 KFramework.MonoGame.RenderTarget2D）：非 null 即表示这是一张可烘焙的离屏纹理。
+        internal KFramework.MonoGame.RenderTarget2D? RenderTarget;
 
         public Texture(int handle, int width, int height)
         {
@@ -72,28 +75,44 @@ namespace SlimDX.Direct3D9
 
         public Texture(Device device, int width, int height, int levels, Usage usage, Format format, Pool pool)
         {
-            // 离屏渲染目标（KFramework.MonoGame 的 SpriteBatch 不暴露 RenderTarget）：返回无效占位句柄，
-            // 调用方据此跳过真实离屏合成（地板/光照烘焙暂不生效）。
-            Handle = -1;
             Width = width; Height = height; Disposed = false;
+            if (usage == Usage.RenderTarget && width > 0 && height > 0)
+            {
+                // 离屏渲染目标：用 KFramework.MonoGame 的真·FBO 渲染目标承载。
+                // 用 PreserveContents：嵌套合成时回绑该目标不会丢内容；目标本身的清屏由
+                // ClearControlTexture / Device.Clear 显式完成（避免 ApplyRenderTargets 的 Discard 清屏）。
+                var g = Client.MirGraphics.DXManager.GDevice;
+                if (g != null)
+                    RenderTarget = new KFramework.MonoGame.RenderTarget2D(
+                        g, width, height, false, KFramework.MonoGame.SurfaceFormat.Color,
+                        KFramework.MonoGame.DepthFormat.None, 0, KFramework.MonoGame.RenderTargetUsage.PreserveContents);
+                Handle = -2; // 标记：RenderTarget 包裹（非普通 int 句柄）
+            }
+            else
+            {
+                // 普通贴图在浏览器端走 Texture2D 主路径，这里只给无效占位。
+                Handle = -1;
+            }
         }
 
-        public Surface GetSurfaceLevel(int level) => new Surface(Handle);
+        public Surface GetSurfaceLevel(int level) => new Surface(this);
 
         public void Dispose()
         {
             if (Disposed) return;
+            if (RenderTarget != null) { RenderTarget.Dispose(); RenderTarget = null; }
             Disposed = true; Handle = 0;
         }
     }
 
-    // 离屏渲染目标表面（浏览器端由 CanvasRenderingPipeline 的 CreateRenderTarget 提供）。
+    // 离屏渲染目标表面：持有其所属 Texture，SetSurface 据此取出底层 RenderTarget2D。
     public class Surface
     {
-        public int Handle;
-        public Surface(int handle) { Handle = handle; }
-        public bool Disposed => Handle == 0;
-        public void Dispose() { Handle = 0; }
+        public Texture? Owner;
+        public Surface(int handle) { Owner = null; }   // 占位兼容（不被新路径使用）
+        public Surface(Texture owner) { Owner = owner; }
+        public bool Disposed => Owner == null || Owner.Disposed;
+        public void Dispose() { Owner = null; }
     }
 
     // 仅 DXManager 重写后内部用到的占位类型（供潜在残留引用编译通过）。
@@ -126,9 +145,12 @@ namespace SlimDX.Direct3D9
         public void SetRenderState(RenderState s, object v) { }
         public void Clear(ClearFlags f, Color c, float z, int s)
         {
-            // 清屏由 DXManager.GDevice.Clear 统一负责；离屏目标清屏（地板/光照烘焙）暂不支持。
+            // 清屏作用到当前绑定的渲染目标（离屏 RT 或默认画布），交由 KFramework.MonoGame.GraphicsDevice 下发。
+            var g = Client.MirGraphics.DXManager.GDevice;
+            if (g != null)
+                g.Clear(new KFramework.MonoGame.Color(c.R, c.G, c.B, c.A));
         }
-        public void SetRenderTarget(int i, Surface sf) { CurrentTarget = sf == null ? 0 : sf.Handle; }
+        public void SetRenderTarget(int i, Surface sf) { Client.MirGraphics.DXManager.SetSurface(sf); }
     }
 
     // 精灵/线条：浏览器端即时模式绘制，Flush/Begin/End 为无操作。

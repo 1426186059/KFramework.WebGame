@@ -15,9 +15,9 @@ using WebGame.Mir2.MonoGame.Client;
 namespace Client.MirGraphics
 {
     // KFramework.MonoGame 版 DXManager：主精灵路径走 GraphicsDevice / SpriteBatch（Texture2D 承载），
-    // 离屏渲染目标（地板/光照烘焙）当前 KFramework.MonoGame 的 SpriteBatch 不暴露 RenderTarget，
-    // 暂以无操作桩保留（DXManager.FloorTexture/LightTexture/Lights 等绘制不生效，画面地板/光照暂缺，
-    // 待引擎提供 RenderTarget2D 后重写 GameScene 的烘焙路再补）。不再依赖旧 BrowserCanvas 后端。
+    // 离屏渲染目标由 KFramework.MonoGame.RenderTarget2D（真·FBO）承载——CreateRenderTarget / SetSurface /
+    // DrawOpaque(ControlTexture) 现在都会真正生效，GameScene 的地板 / 光照烘焙可正常合成。
+    // 控制 ControlTexture 的 SlimDX 壳（Shims/SlimDX.cs 的 Texture/Surface）负责把调用转到底层 RenderTarget2D。
     class DXManager
     {
         public static List<MImage> TextureList = new List<MImage>();
@@ -69,6 +69,9 @@ namespace Client.MirGraphics
         static KFramework.MonoGame.Color ToColor(SlimDX.Color4 c) =>
             new KFramework.MonoGame.Color((byte)(c.Red * 255), (byte)(c.Green * 255), (byte)(c.Blue * 255), (byte)(c.Alpha * 255));
 
+        static KFramework.MonoGame.Color ToColor(Color c) =>
+            new KFramework.MonoGame.Color(c.R, c.G, c.B, c.A);
+
         static KFramework.MonoGame.Rectangle ToRect(Rectangle r) =>
             new KFramework.MonoGame.Rectangle(r.X, r.Y, r.Width, r.Height);
 
@@ -117,12 +120,33 @@ namespace Client.MirGraphics
             var c = color; c.Alpha = opacity; Draw(texture, sourceRect, position, c);
         }
 
-        // —— 渲染目标路径（离屏烘焙，KFramework 暂不支持）：无操作，地板/光照不绘制 ——
-        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color) { }
-        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle sourceRect, RectangleF destRect, SlimDX.Color4 color) { }
-        public static void DrawOpaque(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, float opacity) { }
+        // —— 离屏渲染目标路径：ControlTexture 是包裹了 KFramework.MonoGame.RenderTarget2D 的 SlimDX 纹理，
+        //    烘焙完成后当作普通 Texture2D 采样绘制（照 MonoGame 把 RenderTarget2D 当纹理用）。
+        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color)
+        {
+            if (texture?.RenderTarget == null) return;
+            Draw(texture.RenderTarget, sourceRect, position, color);
+        }
 
-        public static void SetSurface(SlimDX.Direct3D9.Surface surface) { }   // 离屏渲染目标暂不支持
+        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle sourceRect, RectangleF destRect, SlimDX.Color4 color)
+        {
+            if (texture?.RenderTarget == null) return;
+            Draw(texture.RenderTarget, sourceRect, destRect, color);
+        }
+
+        public static void DrawOpaque(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, float opacity)
+        {
+            var c = color; c.Alpha = opacity;
+            Draw(texture, sourceRect, position, c);
+        }
+
+        // 离屏渲染目标：把 surface 所属的 RenderTarget2D 绑到设备（null = 回默认画布）。
+        // 嵌套合成时按"保存/恢复 CurrentSurface"的方式调用，保证子控件烘焙后能回到父 RT。
+        public static void SetSurface(SlimDX.Direct3D9.Surface surface)
+        {
+            CurrentSurface = surface;
+            GDevice?.SetRenderTarget(surface?.Owner?.RenderTarget);
+        }
         public static void SetGrayscale(bool value) { GrayScale = value; }
         public static void SetOpacity(float opacity) { Opacity = opacity; }
         public static void SetBlend(bool value, float rate = 1F, BlendMode mode = BlendMode.NORMAL)
@@ -137,14 +161,22 @@ namespace Client.MirGraphics
         public static void ResetDevice() { }
         public static void AttemptRecovery() { }
 
-        // 离屏渲染目标（KFramework.MonoGame 的 SpriteBatch 不暴露 RenderTarget）：返回无效占位纹理，
-        // 调用方（GameScene 烘焙）据此跳过真实离屏合成，地板/光照暂不显示。
+        // 离屏渲染目标：走 KFramework.MonoGame.RenderTarget2D（SlimDX 壳的 Texture 构造里创建）。
         public static SlimDX.Direct3D9.Texture CreateRenderTarget(int w, int h)
         {
-            return new SlimDX.Direct3D9.Texture(-1, w, h);
+            return new SlimDX.Direct3D9.Texture(DXManager.Device, w, h, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
         }
 
-        public static void ClearControlTexture(SlimDX.Direct3D9.Texture tex, Color backColour) { }
+        public static void ClearControlTexture(SlimDX.Direct3D9.Texture tex, Color backColour)
+        {
+            if (tex?.RenderTarget == null) return;
+            // 绑到该离屏目标清屏，随后恢复到"当前渲染目标"——这是嵌套合成的关键：
+            // 场景烘焙子控件时，子控件清屏后必须回到场景 RT，而非默认画布。
+            var saved = CurrentSurface;
+            SetSurface(new SlimDX.Direct3D9.Surface(tex));
+            GDevice?.Clear(ToColor(backColour));
+            SetSurface(saved);
+        }
 
         // 每帧渲染：清主画布 → 场景绘制（各 DXManager.Draw 内部自管 Begin/End）→ 提交。
         public static void RenderFrame(Action draw)

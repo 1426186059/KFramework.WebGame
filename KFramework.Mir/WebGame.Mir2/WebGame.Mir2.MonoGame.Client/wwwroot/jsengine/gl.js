@@ -190,6 +190,34 @@ export function drawElements(mode, count, type, offset) {
     gpu().drawElements(mode, count, type, offset);
 }
 export function drawArrays(mode, first, count) { gpu().drawArrays(mode, first, count); }
+/** 分配一张未初始化的 2D 纹理存储（渲染目标用：内容由 GPU 绘制，不传像素数据）。 */
+export function texImage2DStorage(target, level, internalFormat, width, height, format, type) {
+    gpu().texImage2D(target, level, internalFormat, width, height, 0, format, type, null);
+}
+// ---------- 帧缓冲（离屏渲染 / RenderTarget，照 MonoGame 的 FramebufferHelper） ----------
+export function createFramebuffer() { return gpu().createFramebuffer(); }
+export function bindFramebuffer(target, framebuffer) {
+    gpu().bindFramebuffer(target, framebuffer);
+}
+export function deleteFramebuffer(framebuffer) { gpu().deleteFramebuffer(framebuffer); }
+/** 把一张纹理挂到 FBO 的颜色附着点（attachment = COLOR_ATTACHMENT0 + i）。 */
+export function framebufferTexture2D(target, attachment, texTarget, texture, level) {
+    gpu().framebufferTexture2D(target, attachment, texTarget, texture, level);
+}
+/** 返回 FBO 完整性状态（FRAMEBUFFER_COMPLETE 表示可用）。 */
+export function checkFramebufferStatus(target) { return gpu().checkFramebufferStatus(target); }
+export function createRenderbuffer() { return gpu().createRenderbuffer(); }
+export function bindRenderbuffer(target, renderbuffer) {
+    gpu().bindRenderbuffer(target, renderbuffer);
+}
+export function renderbufferStorage(target, internalFormat, width, height) {
+    gpu().renderbufferStorage(target, internalFormat, width, height);
+}
+/** 把 renderbuffer（深度 / 模板）挂到 FBO 的对应附着点。 */
+export function framebufferRenderbuffer(target, attachment, rbTarget, renderbuffer) {
+    gpu().framebufferRenderbuffer(target, attachment, rbTarget, renderbuffer);
+}
+export function deleteRenderbuffer(renderbuffer) { gpu().deleteRenderbuffer(renderbuffer); }
 // ---------- 剔除 / 深度（照 MonoGame 的 RasterizerState / DepthStencilState 下发） ----------
 export function cullFace(mode) { gpu().cullFace(mode); }
 export function frontFace(mode) { gpu().frontFace(mode); }

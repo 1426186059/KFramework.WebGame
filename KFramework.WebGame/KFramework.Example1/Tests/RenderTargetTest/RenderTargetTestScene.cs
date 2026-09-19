@@ -39,7 +39,7 @@ public sealed class RenderTargetTestScene : TestSceneBase
     private float _drawMs;
     private long _screenSprites;
     private long _screenDrawCalls;
-    private long _rtSprites;
+    private long _rtSprites;        // 上一次离屏重绘提交的精灵数（静态时一直复用，不再重画）
     private int _rtRedraws;
 
     public override string Title => "离屏渲染 RenderTarget2D：开 / 关 对比（几千个精灵）";
@@ -174,13 +174,16 @@ public sealed class RenderTargetTestScene : TestSceneBase
             RenderToTargetIfNeeded();
 
         // ② 屏幕阶段：交给基类 Begin / End（返回按钮 + 标题 + DrawBody）
+        //    metrics 只在 Clear 时归零，而切回画布可能会清一次（默认 DiscardContents），
+        //    所以基准值一律在「切回之后、屏幕绘制之前」取，统计才与清屏策略无关。
+        long beforeScreen = Device.Metrics.SpriteCount;
         _stopwatch.Restart();
         base.Draw();
         _stopwatch.Stop();
 
-        // ③ 统计：切回画布时设备会 Clear 一次并重置 metrics，故这里读到的是「本帧提交到画布」的量。
+        // ③ 统计：屏幕阶段 = 本帧总量 − 屏幕阶段开始前的量；离屏阶段 = 离屏那段自己的差值。
         GraphicsMetrics metrics = Device.Metrics;
-        _screenSprites = metrics.SpriteCount;
+        _screenSprites = metrics.SpriteCount - beforeScreen;
         _screenDrawCalls = metrics.DrawCount;
 
         float dt = KTime.unscaledDeltaTime;
@@ -204,12 +207,14 @@ public sealed class RenderTargetTestScene : TestSceneBase
         Device.SetRenderTarget(_rt);
         Device.Clear(new Color(14, 17, 28));
 
+        // 离屏阶段的提交量取差值：metrics 只在本帧 Game 的 Clear 时归零，切回画布不会再重置。
+        long before = Device.Metrics.SpriteCount;
+
         Batch.Begin();
         DrawCluster(Batch, new Rectangle(0, 0, _rt.Width, _rt.Height));
         Batch.End();
 
-        // 趁还没切回画布（切回会 Clear 并重置 metrics）先记下离屏阶段提交了几个精灵。
-        _rtSprites = Device.Metrics.SpriteCount;
+        _rtSprites = Device.Metrics.SpriteCount - before;
 
         Device.SetRenderTarget(null);
     }
