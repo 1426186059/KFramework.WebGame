@@ -33,8 +33,8 @@ namespace MirEngine
             remove => KFramework.MonoGame.JSBind_InputOverlay.Blur -= value;
         }
 
-        public static void Show(double cx, double cy, double cw, double ch, double fontPx, int color, string value, bool password, int maxLength, bool multiline, string fontFamily)
-            => KFramework.MonoGame.JSBind_InputOverlay.Show(cx, cy, cw, ch, fontPx, color, value, password, maxLength, multiline, fontFamily);
+        public static void Show(double cx, double cy, double cw, double ch, double fontPx, int color, string value, bool password, int maxLength, bool multiline, string fontFamily, bool transparent)
+            => KFramework.MonoGame.JSBind_InputOverlay.Show(cx, cy, cw, ch, fontPx, color, value, password, maxLength, multiline, fontFamily, transparent);
 
         public static void Hide()
             => KFramework.MonoGame.JSBind_InputOverlay.Hide();
