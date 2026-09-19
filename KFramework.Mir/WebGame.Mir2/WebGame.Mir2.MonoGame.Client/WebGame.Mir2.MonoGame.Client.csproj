@@ -16,13 +16,8 @@
     <StaticWebAssetFingerprintPattern Include="JS" Pattern="*.js" Expression="#[.{fingerprint}]!" />
   </ItemGroup>
 
-  <ItemGroup>
-    <!-- 浏览器版入口/窗体由 Host/ 下的 CMain、Program(partial) 与 Shims/BrowserHelperShim.cs 提供，
-         WinForms 原生版本（Forms/**、Mir2/Program.cs、Utils/BrowserHelper.cs）在浏览器里无意义，排除出编译。 -->
-    <Compile Remove="Mir2\Forms\**" />
-    <Compile Remove="Mir2\Program.cs" />
-    <Compile Remove="Mir2\Utils\BrowserHelper.cs" />
-  </ItemGroup>
+  <!-- 原 WinForms 原生版本（Forms/**、Mir2/Program.cs、Utils/BrowserHelper.cs）已彻底移除；
+       浏览器版入口/窗体由 Host/ 下的 CMain、Program(partial) 与 Shims/ 提供。 -->
 
   <ItemGroup>
     <!-- 传奇客户端游戏逻辑（从 Web_Mir2.Client 迁移过来的 Mir2/ + Shared/）。

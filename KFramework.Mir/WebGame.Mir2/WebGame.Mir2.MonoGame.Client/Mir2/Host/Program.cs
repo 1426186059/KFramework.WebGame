@@ -48,9 +48,10 @@ namespace Client
                     GameScene.Scene.MapControl.FloorValid = false;
             };
 
-            // 启动异步资源加载管线（fire-and-forget，不阻塞 Init）：
-            // 首屏库并发优先加载，其余库后台限流加载；未就绪的库在绘制时自动跳过。
-            _ = Libraries.LoadAsync();
+            // 等待首屏库（登录/选角界面立即需要的 ChrSel/Prguse/UI_32bit/Title 等）全部就绪后再继续：
+            // 渲染循环在 LoadContentAsync 完成后才启动，避免首屏库尚未下载完就开画导致的"隔几帧黑屏"闪烁。
+            // 其余库（地图/怪物/装备等）不在启动时加载，绘制时按需 InitializeAsync，就绪后 LibraryLoaded 触发重绘。
+            await Libraries.LoadAsync();
 
             MirScene.ActiveScene = new LoginScene();
             await SoundManager.CreateAsync().ConfigureAwait(false);

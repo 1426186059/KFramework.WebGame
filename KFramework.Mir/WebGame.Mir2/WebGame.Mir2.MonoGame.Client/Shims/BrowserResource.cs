@@ -42,6 +42,8 @@ namespace MirEngine
         {
             if (string.IsNullOrWhiteSpace(path)) return path;
             path = path.Replace('\\', '/');
+            // 折叠多余的连续斜杠（如 "Sound//x.wav"），避免请求路径里出现双斜杠导致 404。
+            while (path.Contains("//")) path = path.Replace("//", "/");
             while (path.StartsWith("./")) path = path.Substring(2);
             return path;
         }
