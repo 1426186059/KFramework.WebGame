@@ -3,6 +3,7 @@ using Client.MirNetwork;
 using Client.MirScenes;
 using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
+using WebGame.Mir2.MonoGame.Client.Mir2._2026New;
 using S = ServerPackets;
 
 namespace Client.MirControls
@@ -352,64 +353,5 @@ namespace Client.MirControls
         }
 
         #endregion
-
-        // 层容器：带自身变换把子控件烘焙到离屏纹理，供 DrawControl 分层上屏。
-        protected sealed class LayerControl : MirControl
-        {
-            // 该层的世界→屏幕变换（视口尺寸驱动），由 MirScene 构造时按角色赋值。
-            public Func<int, int, KFramework.MonoGame.Matrix4x4> LayerTransform;
-
-            public void Bake()
-            {
-                if (TextureValid) return;
-                CreateTexture();
-            }
-
-            public KFramework.MonoGame.Texture2D RenderTargetTexture => ControlTexture?.RenderTarget;
-
-            public void Invalidate() => TextureValid = false;
-
-            public void Add(MirControl control) => AddControl(control);
-            public void Insert(int index, MirControl control) => InsertControl(index, control);
-
-            protected override void CreateTexture()
-            {
-                var vp = DXManager.GDevice.Viewport;
-                int rtW = vp.Width, rtH = vp.Height;
-
-                if (TextureSize.Width != rtW || TextureSize.Height != rtH)
-                    DisposeTexture();
-
-                if (ControlTexture == null || ControlTexture.Disposed)
-                {
-                    DXManager.ControlList.Add(this);
-                    ControlTexture = new Texture(DXManager.Device, rtW, rtH, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
-                    TextureSize = new Size(rtW, rtH);
-                }
-                Surface oldSurface = DXManager.CurrentSurface;
-                Surface surface = ControlTexture.GetSurfaceLevel(0);
-                DXManager.SetSurface(surface);
-
-                DXManager.Device.Clear(ClearFlags.Target, BackColour, 0, 0);
-
-                DXManager.RenderTransform = LayerTransform != null
-                    ? LayerTransform(vp.Width, vp.Height)
-                    : KFramework.MonoGame.Matrix4x4.CreateScaleTranslation((float)vp.Height / Settings.ScreenHeight, (float)vp.Height / Settings.ScreenHeight, 0, 0f);
-                try
-                {
-                    BeforeDrawControl();
-                    DrawChildControls();
-                    AfterDrawControl();
-                }
-                finally
-                {
-                    DXManager.RenderTransform = null;
-                }
-
-                DXManager.SetSurface(oldSurface);
-                TextureValid = true;
-                surface.Dispose();
-            }
-        }
     }
 }
