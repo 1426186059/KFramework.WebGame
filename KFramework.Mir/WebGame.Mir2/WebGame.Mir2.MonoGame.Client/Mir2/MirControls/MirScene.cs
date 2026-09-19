@@ -36,10 +36,11 @@ namespace Client.MirControls
                 float offY = (h - Settings.ScreenHeight * zoom) / 2f;
                 return KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(zoom, zoom, offX, offY);
             };
-            // UI 层：按高度统一缩放并 pinned（逻辑 1024x768），即"UI 映射到相机空间"后的屏幕固定坐标。
+            // UI 层：按高度统一缩放并 pinned（逻辑 = KSetting.UIReferenceHeight），即"UI 映射到相机空间"后的屏幕固定坐标。
+            // UI 参考分辨率集中配置在 KSetting，不再依赖 Settings.ScreenWidth/Height（那只是地图逻辑尺寸）。
             UILayer.LayerTransform = (w, h) =>
             {
-                float s = (float)h / Settings.ScreenHeight;
+                float s = (float)h / KSetting.UIReferenceHeight;
                 return KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(s, s, 0, 0f);
             };
 

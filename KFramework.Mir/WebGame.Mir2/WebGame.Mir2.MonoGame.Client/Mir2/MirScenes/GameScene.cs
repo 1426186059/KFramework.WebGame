@@ -1174,11 +1174,11 @@ namespace Client.MirScenes
                 Size imgSize = Libraries.Items.GetTrueSize(image);
                 Point p = CMain.MPoint.Add(-imgSize.Width / 2, -imgSize.Height / 2);
 
-                if (p.X + imgSize.Width >= Settings.ScreenWidth)
-                    p.X = Settings.ScreenWidth - imgSize.Width;
+                if (p.X + imgSize.Width >= DXManager.GDevice.Viewport.Width)
+                    p.X = DXManager.GDevice.Viewport.Width - imgSize.Width;
 
-                if (p.Y + imgSize.Height >= Settings.ScreenHeight)
-                    p.Y = Settings.ScreenHeight - imgSize.Height;
+                if (p.Y + imgSize.Height >= DXManager.GDevice.Viewport.Height)
+                    p.Y = DXManager.GDevice.Viewport.Height - imgSize.Height;
 
                 Libraries.Items.Draw(image, p.X, p.Y);
             }
@@ -1225,11 +1225,11 @@ namespace Client.MirScenes
                 ItemLabel.BringToFront();
 
                 int x = CMain.MPoint.X + 28, y = CMain.MPoint.Y + 28;
-                if (x + ItemLabel.Size.Width > Settings.ScreenWidth)
-                    x = Settings.ScreenWidth - ItemLabel.Size.Width;
+                if (x + ItemLabel.Size.Width > DXManager.GDevice.Viewport.Width)
+                    x = DXManager.GDevice.Viewport.Width - ItemLabel.Size.Width;
 
-                if (y + ItemLabel.Size.Height > Settings.ScreenHeight)
-                    y = Settings.ScreenHeight - ItemLabel.Size.Height;
+                if (y + ItemLabel.Size.Height > DXManager.GDevice.Viewport.Height)
+                    y = DXManager.GDevice.Viewport.Height - ItemLabel.Size.Height;
                 ItemLabel.Location = new Point(x, y);
             }
 
@@ -1238,11 +1238,11 @@ namespace Client.MirScenes
                 MailLabel.BringToFront();
 
                 int x = CMain.MPoint.X + 15, y = CMain.MPoint.Y;
-                if (x + MailLabel.Size.Width > Settings.ScreenWidth)
-                    x = Settings.ScreenWidth - MailLabel.Size.Width;
+                if (x + MailLabel.Size.Width > DXManager.GDevice.Viewport.Width)
+                    x = DXManager.GDevice.Viewport.Width - MailLabel.Size.Width;
 
-                if (y + MailLabel.Size.Height > Settings.ScreenHeight)
-                    y = Settings.ScreenHeight - MailLabel.Size.Height;
+                if (y + MailLabel.Size.Height > DXManager.GDevice.Viewport.Height)
+                    y = DXManager.GDevice.Viewport.Height - MailLabel.Size.Height;
                 MailLabel.Location = new Point(x, y);
             }
 
@@ -1251,11 +1251,11 @@ namespace Client.MirScenes
                 MemoLabel.BringToFront();
 
                 int x = CMain.MPoint.X + 15, y = CMain.MPoint.Y;
-                if (x + MemoLabel.Size.Width > Settings.ScreenWidth)
-                    x = Settings.ScreenWidth - MemoLabel.Size.Width;
+                if (x + MemoLabel.Size.Width > DXManager.GDevice.Viewport.Width)
+                    x = DXManager.GDevice.Viewport.Width - MemoLabel.Size.Width;
 
-                if (y + MemoLabel.Size.Height > Settings.ScreenHeight)
-                    y = Settings.ScreenHeight - MemoLabel.Size.Height;
+                if (y + MemoLabel.Size.Height > DXManager.GDevice.Viewport.Height)
+                    y = DXManager.GDevice.Viewport.Height - MemoLabel.Size.Height;
                 MemoLabel.Location = new Point(x, y);
             }
 
@@ -1264,11 +1264,11 @@ namespace Client.MirScenes
                 GuildBuffLabel.BringToFront();
 
                 int x = CMain.MPoint.X + 15, y = CMain.MPoint.Y;
-                if (x + GuildBuffLabel.Size.Width > Settings.ScreenWidth)
-                    x = Settings.ScreenWidth - GuildBuffLabel.Size.Width;
+                if (x + GuildBuffLabel.Size.Width > DXManager.GDevice.Viewport.Width)
+                    x = DXManager.GDevice.Viewport.Width - GuildBuffLabel.Size.Width;
 
-                if (y + GuildBuffLabel.Size.Height > Settings.ScreenHeight)
-                    y = Settings.ScreenHeight - GuildBuffLabel.Size.Height;
+                if (y + GuildBuffLabel.Size.Height > DXManager.GDevice.Viewport.Height)
+                    y = DXManager.GDevice.Viewport.Height - GuildBuffLabel.Size.Height;
                 GuildBuffLabel.Location = new Point(x, y);
             }
 
@@ -6187,7 +6187,7 @@ namespace Client.MirScenes
             {
                 Parent = this,
                 Visible = true,
-                Location = new Point(Settings.ScreenWidth - 170, 80),
+                Location = new Point(KSetting.UIReferenceWidth - 170, 80),
                 GetExpandedParameter = () => { return Settings.ExpandedHeroBuffWindow; },
                 SetExpandedParameter = (value) => { Settings.ExpandedHeroBuffWindow = value; }
             };
@@ -10314,6 +10314,25 @@ namespace Client.MirScenes
         public static int ViewRangeX;
         public static int ViewRangeY;
 
+        // 当前地图渲染所用的视口尺寸缓存：仅在视口变化时重算相机、可见范围并重建地板/光照纹理。
+        private static int _vpW, _vpH;
+        /// <summary>
+        /// 让地图相机/可见范围/控件尺寸跟随真实视口：玩家始终居于视口中心，世界坐标 1:1 渲染，
+        /// 视口越大看到的地图越多（分辨率无关）。
+        /// </summary>
+        private void UpdateViewPort(int w, int h)
+        {
+            if (w == _vpW && h == _vpH) return;
+            _vpW = w; _vpH = h;
+            OffSetX = w / 2 / CellWidth;
+            OffSetY = h / 2 / CellHeight - 1;
+            ViewRangeX = OffSetX + 6;
+            ViewRangeY = OffSetY + 6;
+            Size = new Size(w, h);
+            // 视口变化：地板需按新尺寸重新烘焙（DrawFloor 仅在 !FloorValid 时执行）。
+            FloorValid = false;
+        }
+
         private bool _autoPath;
         public bool AutoPath
         {
@@ -10480,13 +10499,13 @@ namespace Client.MirScenes
         {
             MapButtons = MouseButtons.None;
 
-            OffSetX = Settings.ScreenWidth / 2 / CellWidth;
-            OffSetY = Settings.ScreenHeight / 2 / CellHeight - 1;
+            OffSetX = DXManager.GDevice.Viewport.Width / 2 / CellWidth;
+            OffSetY = DXManager.GDevice.Viewport.Height / 2 / CellHeight - 1;
 
             ViewRangeX = OffSetX + 6;
             ViewRangeY = OffSetY + 6;
 
-            Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
+            Size = new Size(DXManager.GDevice.Viewport.Width, DXManager.GDevice.Viewport.Height);
             DrawControlTexture = true;
             BackColour = Color.Black;
 
@@ -10699,12 +10718,14 @@ namespace Client.MirScenes
         {
             if (User == null) return;
 
-            if (!FloorValid)
-                DrawFloor();
-
-
+            // 地图按真实 ViewPort 原生渲染（世界坐标、与分辨率无关）：相机(OffSetX/OffSetY)、
+            // 可见范围与控件尺寸跟随视口，地板/光照纹理也随视口重建；不做任何等比缩放。
             var vp = DXManager.GDevice.Viewport;
             int rtW = vp.Width, rtH = vp.Height;
+            UpdateViewPort(rtW, rtH);
+
+            if (!FloorValid)
+                DrawFloor();
 
             if (TextureSize.Width != rtW || TextureSize.Height != rtH)
                 DisposeTexture();
@@ -10720,24 +10741,14 @@ namespace Client.MirScenes
             Surface surface = ControlTexture.GetSurfaceLevel(0);
             DXManager.SetSurface(surface);
             DXManager.Device.Clear(ClearFlags.Target, BackColour, 0, 0);
-
-            // 全局等比缩放（aspect-fill）：取 max(宽比, 高比) 为缩放因子，按最大边铺满视口，
-            // 避免“按高度缩放”在宽屏下右半边留黑 / 横向拉伸。把逻辑分辨率中心(512,384)平移到
-            // 视口中心；当视口恰好为 1024x768（原生分辨率）时退化为单位变换——无平移、无黑边，
-            // 玩家落在约 (470,384)（原版传奇标准位置）。（参照 ReadMe 第九节与 Unity 思路）
-            float zoom = (float)Math.Max(rtW / (double)Settings.ScreenWidth, rtH / (double)Settings.ScreenHeight);
-            float mapCx = Settings.ScreenWidth / 2f;
-            float mapCy = Settings.ScreenHeight / 2f;
-            float tx = rtW / 2f - mapCx * zoom;
-            float ty = rtH / 2f - mapCy * zoom;
-            DXManager.RenderTransform = KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(zoom, zoom, tx, ty);
+            // 不设置 RenderTransform（保持单位变换）：地图以 1:1 原生分辨率铺满视口。
 
             DrawBackground();
 
             if (FloorValid)
             {
                 // 地板按原生 1024x768 贴图绘制（位置 0,0），由上面的全局变换统一缩放/平移。
-                DXManager.Draw(DXManager.FloorTexture, new Rectangle(0, 0, Settings.ScreenWidth, Settings.ScreenHeight), Vector3.Zero, Color.White);
+                DXManager.Draw(DXManager.FloorTexture, new Rectangle(0, 0, DXManager.GDevice.Viewport.Width, DXManager.GDevice.Viewport.Height), Vector3.Zero, Color.White);
             }
 
             DrawObjects();
@@ -10825,9 +10836,12 @@ namespace Client.MirScenes
 
         private void DrawFloor()
         {
-            if (DXManager.FloorTexture == null || DXManager.FloorTexture.Disposed)
+            var vp = DXManager.GDevice.Viewport;
+            int fw = vp.Width, fh = vp.Height;
+            if (DXManager.FloorTexture == null || DXManager.FloorTexture.Disposed
+                || DXManager.FloorTexture.Width != fw || DXManager.FloorTexture.Height != fh)
             {
-                DXManager.FloorTexture = new Texture(DXManager.Device, Settings.ScreenWidth, Settings.ScreenHeight, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+                DXManager.FloorTexture = new Texture(DXManager.Device, fw, fh, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
                 DXManager.FloorSurface = DXManager.FloorTexture.GetSurfaceLevel(0);
             }
 
@@ -10835,14 +10849,9 @@ namespace Client.MirScenes
             DXManager.SetSurface(DXManager.FloorSurface);
             DXManager.Device.Clear(ClearFlags.Target, Color.Empty, 0, 0);
 
-
-            // 宽屏适配：横向渲染范围随画布宽高比加宽，使地图铺满（与烘焙时的 aspectFill 一致）。
-            float scaleS = (float)DXManager.GDevice.Viewport.Height / Settings.ScreenHeight;
-            float aspectFill = DXManager.GDevice.Viewport.Width / (1024f * scaleS);
-            int vrX = (int)Math.Round(ViewRangeX * aspectFill);
-
-            int startX = User.Movement.X - vrX;
-            int endX = User.Movement.X + vrX;
+            // 地图按 ViewPort 原生渲染，无需缩放：直接以视口可见范围(ViewRangeX/Y，已随视口计算)烘焙地板。
+            int startX = User.Movement.X - ViewRangeX;
+            int endX = User.Movement.X + ViewRangeX;
             int startY = User.Movement.Y - ViewRangeY;
             int endY = User.Movement.Y + ViewRangeY;
             int endYExtended = endY + 5;
@@ -11221,9 +11230,12 @@ namespace Client.MirScenes
         {
             if (DXManager.Lights == null || DXManager.Lights.Count == 0) return;
 
-            if (DXManager.LightTexture == null || DXManager.LightTexture.Disposed)
+            var vp = DXManager.GDevice.Viewport;
+            int lw = vp.Width, lh = vp.Height;
+            if (DXManager.LightTexture == null || DXManager.LightTexture.Disposed
+                || DXManager.LightTexture.Width != lw || DXManager.LightTexture.Height != lh)
             {
-                DXManager.LightTexture = new Texture(DXManager.Device, Settings.ScreenWidth, Settings.ScreenHeight, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+                DXManager.LightTexture = new Texture(DXManager.Device, lw, lh, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
                 DXManager.LightSurface = DXManager.LightTexture.GetSurfaceLevel(0);
             }
 
@@ -11463,7 +11475,7 @@ namespace Client.MirScenes
             DXManager.Device.SetRenderState(RenderState.SourceBlend, Blend.Zero);
             DXManager.Device.SetRenderState(RenderState.DestinationBlend, Blend.SourceColor);
 
-            DXManager.Draw(DXManager.LightTexture, new Rectangle(0, 0, Settings.ScreenWidth, Settings.ScreenHeight), Vector3.Zero, Color.White);
+            DXManager.Draw(DXManager.LightTexture, new Rectangle(0, 0, DXManager.GDevice.Viewport.Width, DXManager.GDevice.Viewport.Height), Vector3.Zero, Color.White);
 
             DXManager.Sprite.End();
             DXManager.Sprite.Begin(SpriteFlags.AlphaBlend);
@@ -12521,8 +12533,8 @@ namespace Client.MirScenes
 
                         ParticleEngine LeavesEngine2 = new ParticleEngine(textures, new Vector2(2f, 0), ParticleType.Leaves);
                         Vector2 lVelocity = new Vector2(0F, 0F);
-                        for (int y = 512 * -1; y < Settings.ScreenHeight + 512; y += 512)
-                            for (int x = 512 * -1; x < Settings.ScreenWidth + 512; x += 512)
+                        for (int y = 512 * -1; y < DXManager.GDevice.Viewport.Height + 512; y += 512)
+                            for (int x = 512 * -1; x < DXManager.GDevice.Viewport.Width + 512; x += 512)
                             {
                                 Particle part = LeavesEngine2.GenerateNewParticle(ParticleType.Leaves);
                                 part.Position = new Vector2(x, y);
@@ -12540,8 +12552,8 @@ namespace Client.MirScenes
 
                         ParticleEngine FLeavesEngine2 = new ParticleEngine(textures, new Vector2(2f, 0), ParticleType.FireyLeaves);
                         Vector2 FlVelocity = new Vector2(0F, 0F);
-                        for (int y = 512 * -1; y < Settings.ScreenHeight + 512; y += 512)
-                            for (int x = 512 * -1; x < Settings.ScreenWidth + 512; x += 512)
+                        for (int y = 512 * -1; y < DXManager.GDevice.Viewport.Height + 512; y += 512)
+                            for (int x = 512 * -1; x < DXManager.GDevice.Viewport.Width + 512; x += 512)
                             {
                                 Particle part = FLeavesEngine2.GenerateNewParticle(ParticleType.FireyLeaves);
                                 part.Position = new Vector2(x, y);
@@ -12560,8 +12572,8 @@ namespace Client.MirScenes
                         Vector2 rsevelocity = new Vector2(0F, 0F);
                         var xVar = 512;
                         var yVar = 512;
-                        for (int y = yVar * -1; y < Settings.ScreenHeight + yVar; y += yVar)
-                            for (int x = xVar * -1; x < Settings.ScreenWidth + xVar; x += xVar)
+                        for (int y = yVar * -1; y < DXManager.GDevice.Viewport.Height + yVar; y += yVar)
+                            for (int x = xVar * -1; x < DXManager.GDevice.Viewport.Width + xVar; x += xVar)
                             {
                                 Particle part = RainEngine2.GenerateNewParticle(ParticleType.Rain);
                                 part.Position = new Vector2(x, y);
@@ -12578,8 +12590,8 @@ namespace Client.MirScenes
                         ParticleEngine RainEngine = new ParticleEngine(textures, new Vector2(0, 0), ParticleType.Snow);
                         Vector2 rsvelocity = new Vector2(1F, -1F);
 
-                        for (int y = -400; y < Settings.ScreenHeight + 400; y += 400)
-                            for (int x = -400; x < Settings.ScreenWidth + 400; x += 400)
+                        for (int y = -400; y < DXManager.GDevice.Viewport.Height + 400; y += 400)
+                            for (int x = -400; x < DXManager.GDevice.Viewport.Width + 400; x += 400)
                             {
                                 Particle part = RainEngine.GenerateNewParticle(ParticleType.Snow);
                                 part.Position = new Vector2(x, y);
@@ -12596,8 +12608,8 @@ namespace Client.MirScenes
                         fengine.UpdateDelay = TimeSpan.FromMilliseconds(20);
 
                         Vector2 fvelocity = new Vector2(2F, -2F);
-                        for (int y = -512; y < Settings.ScreenHeight + 512; y += 512)
-                            for (int x = -512; x < Settings.ScreenWidth + 512; x += 512)
+                        for (int y = -512; y < DXManager.GDevice.Viewport.Height + 512; y += 512)
+                            for (int x = -512; x < DXManager.GDevice.Viewport.Width + 512; x += 512)
                             {
                                 Particle part = fengine.GenerateNewParticle(ParticleType.Fog);
                                 part.Position = new Vector2(x, y);
@@ -12632,8 +12644,8 @@ namespace Client.MirScenes
 
                         var pEmberEngine = new ParticleEngine(textures, new Vector2(0, 0), ParticleType.PurpleLeaves);
 
-                        for (int y = 512 * -1; y < Settings.ScreenHeight + 512; y += 512)
-                            for (int x = 512 * -1; x < Settings.ScreenWidth + 512; x += 512)
+                        for (int y = 512 * -1; y < DXManager.GDevice.Viewport.Height + 512; y += 512)
+                            for (int x = 512 * -1; x < DXManager.GDevice.Viewport.Width + 512; x += 512)
                             {
                                 Particle part = pEmberEngine.GenerateNewParticle(ParticleType.PurpleLeaves);
                                 part.Position = new Vector2(x, y);

@@ -132,14 +132,8 @@ namespace MirEngine
 
     public static class SystemInformation
     {
-        public static Size PrimaryMonitorSize => new Size(1280, 720);
-        public static Rectangle VirtualScreen => new Rectangle(0, 0, 1280, 720);
         public static int MouseButtons => 2;
         public static bool MouseWheelPresent => true;
-        public static int VirtualScreenWidth => 1280;
-        public static int VirtualScreenHeight => 720;
-        public static int PrimaryMonitorMaximizedWindowSizeWidth => 1280;
-        public static int PrimaryMonitorMaximizedWindowSizeHeight => 720;
         public static int BorderSize => 1;
         public static int Border3DSizeWidth => 2;
         public static int Border3DSizeHeight => 2;
