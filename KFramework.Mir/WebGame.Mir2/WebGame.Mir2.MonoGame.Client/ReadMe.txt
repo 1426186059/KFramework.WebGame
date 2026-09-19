@@ -181,3 +181,30 @@ WebGame.Mir2.MonoGame.Client/
 若后续要求“全屏且清晰”，正确做法是借鉴 Mir2_Unity 的思路——按画布原生分辨率渲染
 （ControlTexture 取画布尺寸 + 全局缩放变换），而非放大固定缓冲。该改动较大，
 需评估后再实施。
+
+
+十、世界层/相机原则：等比铺满会放大世界坐标（重要）
+--------------------------------------------------------------------
+世界层(WorldLayer)承载的是【世界坐标】内容（地图/角色/物品，瓦片固定 48x32 世界单位）。
+其投影变换 MirScene.WorldLayer.LayerTransform 严禁用 aspect-fill（等比铺满 / Math.Max）去
+“铺满”窗口——那会把整个世界放大（1280 窗口下放大 1.25×），既违背世界坐标的语义，
+也会与鼠标→世界命中（以 48x32 世界像素计、与屏幕 1:1）错位。
+
+正确做法（参照本仓库兄弟工程 Mir2_Unity_2027 的重制版：
+Assets/KFramework/Rumtime/Tools/SafeAreaFit.cs 的“改相机渲染区域(rect)而非缩放”，
+以及 GameTools.cs 的 Camera.ScreenToWorldPoint/WorldToScreenPoint 同一投影命中）：
+
+  - 世界以【固定比例】映射到屏幕（Unity 正交相机 orthographicSize，不缩放世界内容本身）；
+  - 窗口更大时“渲染更大的世界区域 / 扩展相机视口”以显示更多世界，而非放大世界；
+  - 渲染与命中共用同一投影（KCamera 的 Window↔World 换算）。
+
+当前实现（MapControl 按全屏 / 窗口原生分辨率渲染）：
+  - WorldLayer = 1:1 单位变换（见 MirScene.WorldLayer.LayerTransform），不缩放、不 aspect-fill；
+  - MapControl 按【全屏/窗口原生分辨率】烘焙世界，地板 1:1 铺满、无黑边、无放大；
+  - 窗口更大只是“看到更多世界”（以 48x32 世界像素为单位的视口更大），而非放大世界坐标；
+  - 命中：MapControl 内鼠标即世界像素（与屏幕 1:1），与 OffSetX/Y、ViewRangeX/Y 一致；
+    KCamera.ScreenToWorldPos 的 s=h/768 只服务于【UI 层逻辑坐标】，与世界层无关。
+  - MapControl.Size 保持 1024x768（受 MirControl.Draw 的 Size>ScreenWidth 裁剪守卫约束），
+    只把 ControlTexture 设为窗口原生分辨率，由 DrawControl 1:1 合成，避免触发该守卫。
+  - 关键结论：等比铺满(scale-fill)会放大世界坐标，而世界坐标不应被放大——这是错的。
+

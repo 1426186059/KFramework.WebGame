@@ -28,13 +28,15 @@ namespace Client.MirControls
             BackColour = Color.Black;
             Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
 
-            // 世界层：均匀 aspect-fill 铺满（无偏移、不变形）；跟随玩家/居中由 KCamera 负责，此处先居中。
+            // 世界层 = 相机投影（世界坐标 → 屏幕）。
+            // MapControl 按【全屏/窗口原生分辨率】烘焙世界（地板 1:1 铺满、无黑边、无放大），
+            // 世界层只做 1:1 透传（不缩放、不 aspect-fill）——世界坐标本就不该被放大。
+            // 窗口更大只是“看到更多世界”（以 48x32 世界像素为单位的视口更大），而非放大世界。
+            // 命中：MapControl 内鼠标即世界像素（与屏幕 1:1），WorldLayer 恒为单位变换。
+            // 注意：KCamera.ScreenToWorldPos 的 s=h/768 只服务于【UI 层逻辑坐标】，与世界层无关。
             WorldLayer.LayerTransform = (w, h) =>
             {
-                float zoom = Math.Max((float)w / Settings.ScreenWidth, (float)h / Settings.ScreenHeight);
-                float offX = (w - Settings.ScreenWidth * zoom) / 2f;
-                float offY = (h - Settings.ScreenHeight * zoom) / 2f;
-                return KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(zoom, zoom, offX, offY);
+                return KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(1f, 1f, 0f, 0f);
             };
             // UI 层：按高度统一缩放并 pinned（逻辑 = KSetting.UIReferenceHeight），即"UI 映射到相机空间"后的屏幕固定坐标。
             // UI 参考分辨率集中配置在 KSetting，不再依赖 Settings.ScreenWidth/Height（那只是地图逻辑尺寸）。

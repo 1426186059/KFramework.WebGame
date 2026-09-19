@@ -10718,14 +10718,22 @@ namespace Client.MirScenes
         {
             if (User == null) return;
 
-            // 地图按真实 ViewPort 原生渲染（世界坐标、与分辨率无关）：相机(OffSetX/OffSetY)、
-            // 可见范围与控件尺寸跟随视口，地板/光照纹理也随视口重建；不做任何等比缩放。
+            // MapControl 按【全屏/窗口原生分辨率】烘焙世界（世界坐标），地板 1:1 铺满、无黑边、无放大。
+            // 世界层只做 1:1 透传（见 MirScene.WorldLayer.LayerTransform），所以这里直接用视口像素作为世界区域：
+            // 窗口更大只是看到更多世界（以 48x32 世界像素为单位的视口更大），而非放大世界坐标。
+            // 命中：MapControl 内鼠标即世界像素（与屏幕 1:1），与 OffSetX/Y、ViewRangeX/Y 一致。
+            // 注意：MapControl.Size 必须保持 1024x768（MirControl.Draw 有 Size>ScreenWidth 的裁剪守卫），
+            // 这里只把 ControlTexture 尺寸设为窗口原生分辨率，由 DrawControl 1:1 合成。
             var vp = DXManager.GDevice.Viewport;
             int rtW = vp.Width, rtH = vp.Height;
             UpdateViewPort(rtW, rtH);
 
-            if (!FloorValid)
-                DrawFloor();
+            // 视口尺寸变化（首帧布局未稳 / 窗口缩放 / dpr 变化）时必须重建地板：
+            // 地板纹理随窗口原生分辨率重建，1:1 原尺寸贴图铺满。
+            bool floorNeedsResize = DXManager.FloorTexture == null || DXManager.FloorTexture.Disposed
+                || DXManager.FloorTexture.Width != rtW || DXManager.FloorTexture.Height != rtH;
+            if (!FloorValid || floorNeedsResize)
+                DrawFloor(rtW, rtH);
 
             if (TextureSize.Width != rtW || TextureSize.Height != rtH)
                 DisposeTexture();
@@ -10741,14 +10749,17 @@ namespace Client.MirScenes
             Surface surface = ControlTexture.GetSurfaceLevel(0);
             DXManager.SetSurface(surface);
             DXManager.Device.Clear(ClearFlags.Target, BackColour, 0, 0);
-            // 不设置 RenderTransform（保持单位变换）：地图以 1:1 原生分辨率铺满视口。
+
+            // 内容按全屏(窗口原生分辨率) 1:1 烘焙（不缩放）。世界层为单位变换，DrawControl 直接 1:1 合成。
+            var worldLayerTransform = DXManager.RenderTransform;
+            DXManager.RenderTransform = null;
 
             DrawBackground();
 
             if (FloorValid)
             {
-                // 地板按原生 1024x768 贴图绘制（位置 0,0），由上面的全局变换统一缩放/平移。
-                DXManager.Draw(DXManager.FloorTexture, new Rectangle(0, 0, DXManager.GDevice.Viewport.Width, DXManager.GDevice.Viewport.Height), Vector3.Zero, Color.White);
+                // 地板纹理(世界区域尺寸)与 ControlTexture 同尺寸，1:1 原尺寸贴图。
+                DXManager.Draw(DXManager.FloorTexture, new Rectangle(0, 0, rtW, rtH), Vector3.Zero, Color.White);
             }
 
             DrawObjects();
@@ -10803,7 +10814,8 @@ namespace Client.MirScenes
             if (MapObject.User.MouseOver(MouseLocation))
                 MapObject.User.DrawName();
 
-            DXManager.RenderTransform = null;
+            // 恢复世界层变换，供外层 DrawControl 合成时等比缩放（只缩放一次）。
+            DXManager.RenderTransform = worldLayerTransform;
             DXManager.SetSurface(oldSurface);
             surface.Dispose();
             TextureValid = true;
@@ -10824,20 +10836,23 @@ namespace Client.MirScenes
 
             if (MapObject.User.Dead) DXManager.SetGrayscale(true);
 
-            // 游戏场景同样需要把固定逻辑分辨率(1024x768)烘焙纹理拉伸铺满画布(Viewport)，
-            // 否则只会显示在画布左上角（地图"只显示一半" + 四周洋红底色）。
-            // （拉伸采样用 PointClamp，保持像素锐利、不引入二次模糊。）
-            DXManager.PresentToScreen(ControlTexture.RenderTarget);
+            // 世界纹理(窗口原生分辨率) 1:1 合成到世界层画布：世界层为单位变换，不缩放、不变形、地板铺满；
+            // 窗口更大时看到更多世界，而非放大世界像素（世界坐标本不放大）。
+            // 不能走 PresentToScreen（其内部清空变换 → 1:1 左上角，地图只显示局部/四周洋红）。
+            var tex = ControlTexture.RenderTarget;
+            DXManager.Draw(tex,
+                new Rectangle(0, 0, tex.Width, tex.Height),
+                new RectangleF(0, 0, tex.Width, tex.Height),
+                Color.White);
 
             if (MapObject.User.Dead) DXManager.SetGrayscale(false);
 
             CleanTime = CMain.Time + Settings.CleanDelay;
         }
 
-        private void DrawFloor()
+        private void DrawFloor(int vpW, int vpH)
         {
-            var vp = DXManager.GDevice.Viewport;
-            int fw = vp.Width, fh = vp.Height;
+            int fw = vpW, fh = vpH;
             if (DXManager.FloorTexture == null || DXManager.FloorTexture.Disposed
                 || DXManager.FloorTexture.Width != fw || DXManager.FloorTexture.Height != fh)
             {
