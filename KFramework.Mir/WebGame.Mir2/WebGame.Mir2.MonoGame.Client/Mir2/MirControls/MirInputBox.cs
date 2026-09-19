@@ -119,9 +119,9 @@ namespace Client.MirControls
 
             Highlight();
 
-            for (int i = 0; i < CMain.Form.Controls.Count; i++)
+            for (int i = 0; i < CMain.Instance.Controls.Count; i++)
             {
-                TextBox T = CMain.Form.Controls[i] as TextBox;
+                TextBox T = CMain.Instance.Controls[i] as TextBox;
                 if (T != null && T.Tag != null && T.Tag != null)
                     ((MirTextBox)T.Tag).DialogChanged();
             }
@@ -136,9 +136,9 @@ namespace Client.MirControls
 
             if (!disposing) return;
 
-            for (int i = 0; i < CMain.Form.Controls.Count; i++)
+            for (int i = 0; i < CMain.Instance.Controls.Count; i++)
             {
-                TextBox T = (TextBox)CMain.Form.Controls[i];
+                TextBox T = (TextBox)CMain.Instance.Controls[i];
                 if (T != null && T.Tag != null && T.Tag != null)
                     ((MirTextBox)T.Tag).DialogChanged();
             }

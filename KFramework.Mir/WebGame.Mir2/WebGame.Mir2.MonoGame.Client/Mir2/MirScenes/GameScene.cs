@@ -1130,7 +1130,7 @@ namespace Client.MirScenes
             {
                 //If Last Combat < 10 CANCEL
                 MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExitTip), MirMessageBoxButtons.YesNo);
-                messageBox.YesButton.Click += (o, e) => CMain.Form.Close();
+                messageBox.YesButton.Click += (o, e) => CMain.Instance.Close();
                 messageBox.Show();
             }
             else

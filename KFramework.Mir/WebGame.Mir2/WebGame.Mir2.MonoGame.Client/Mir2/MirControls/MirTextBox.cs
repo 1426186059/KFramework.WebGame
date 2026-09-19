@@ -250,12 +250,12 @@ namespace Client.MirControls
             DialogChanged();
 
             if (TextBox.Visible && TextBox.CanFocus)
-                if (CMain.Form.ActiveControl == null || CMain.Form.ActiveControl == CMain.Form)
-                    CMain.Form.ActiveControl = TextBox;
+                if (CMain.Instance.ActiveControl == null || CMain.Instance.ActiveControl == CMain.Instance)
+                    CMain.Instance.ActiveControl = TextBox;
 
             if (!TextBox.Visible)
-                if (CMain.Form.ActiveControl == TextBox)
-                    CMain.Form.Focus();
+                if (CMain.Instance.ActiveControl == TextBox)
+                    CMain.Instance.Focus();
         }
         private void SetFocus(object sender, EventArgs e)
         {
@@ -266,7 +266,7 @@ namespace Client.MirControls
 
             if (TextBox.CanFocus) TextBox.Focus();
             else if (TextBox.Visible && TextBox.Parent != null)
-                CMain.Form.ActiveControl = TextBox;
+                CMain.Instance.ActiveControl = TextBox;
 
 
         }
@@ -545,7 +545,7 @@ namespace Client.MirControls
 
             if (e.KeyChar == (char)Keys.Escape)
             {
-                CMain.Form.ActiveControl = null;
+                CMain.Instance.ActiveControl = null;
                 e.Handled = true;
             }
         }
@@ -553,7 +553,7 @@ namespace Client.MirControls
 
         void MirTextBox_Shown(object sender, EventArgs e)
         {
-            TextBox.Parent = CMain.Form;
+            TextBox.Parent = CMain.Instance;
             ApplyNativeTextBoxState();
             CMain.Ctrl = false;
             CMain.Shift = false;

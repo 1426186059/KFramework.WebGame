@@ -116,7 +116,7 @@ namespace Client.MirScenes
                 Parent = Background,
                 PressedIndex = 354
             };
-            ExitGame.Click += (o, e) => CMain.Form.Close();
+            ExitGame.Click += (o, e) => CMain.Instance.Close();
 
 
             CharacterDisplay = new MirAnimatedControl

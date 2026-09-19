@@ -1053,7 +1053,7 @@ namespace Client.MirScenes.Dialogs
                         Match = SearchTextBox.Text,
                         MarketType = MarketType
                     });
-                    CMain.Form.ActiveControl = null;
+                    CMain.Instance.ActiveControl = null;
                     break;
                 case (char)Keys.Escape:
                     e.Handled = true;

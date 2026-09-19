@@ -31,7 +31,7 @@ namespace Client.MirNetwork
                 if (ErrorShown) return;
                 ErrorShown = true;
                 MirMessageBox errorBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ErrorConnectingToServer), MirMessageBoxButtons.Cancel);
-                errorBox.CancelButton.Click += (o, e) => CMain.Form.Close();
+                errorBox.CancelButton.Click += (o, e) => CMain.Instance.Close();
                 errorBox.Label.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.MaximumConnectionAttemptsReached), MaxAttempts);
                 errorBox.Show();
                 return;

@@ -114,7 +114,7 @@ namespace Client.MirScenes
             };
 
             _connectBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AttemptingConnectServer), MirMessageBoxButtons.Cancel);
-            _connectBox.CancelButton.Click += (o, e) => CMain.Form.Close();
+            _connectBox.CancelButton.Click += (o, e) => CMain.Instance.Close();
             Shown += (sender, args) =>
                 {
                     Network.Connect();
@@ -176,7 +176,7 @@ namespace Client.MirScenes
             if (!Network.Connected && (_connectBox == null || _connectBox.IsDisposed))
             {
                 _connectBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.AttemptingConnectServer), MirMessageBoxButtons.Cancel);
-                _connectBox.CancelButton.Click += (o, e) => CMain.Form.Close();
+                _connectBox.CancelButton.Click += (o, e) => CMain.Instance.Close();
                 _connectBox.Show();
             }
         }
@@ -479,7 +479,7 @@ namespace Client.MirScenes
                         Parent = this,
                         PressedIndex = 331,
                     };
-                CloseButton.Click += (o, e) => CMain.Form.Close();
+                CloseButton.Click += (o, e) => CMain.Instance.Close();
 
                 PasswordTextBox = new MirTextBox
                 {

@@ -14,7 +14,7 @@ namespace WebGame.Mir2.MonoGame.Client
 {
     // 浏览器端游戏主机：替代原 WinForms.Forms/CMain 窗体。
     // 保留 Mir2 代码引用的静态成员（Time/Now/MPoint/Random/DPSCounter/BytesReceived/BytesSent...）
-    // 以及被 CMain.Form 引用的"窗体"成员（Controls/ActiveControl/Close/...）。
+    // 以及被 CMain.Instance 引用的"窗体"成员（Controls/ActiveControl/Close/...）。
     // 原 Program 入口类（Init/Frame/Step + 输入桥接）已并入本类。
     public partial class CMain
     {
@@ -29,13 +29,13 @@ namespace WebGame.Mir2.MonoGame.Client
         public static int TotalBytesReceived, TotalBytesSent;
 
         // 原 Program 入口类的单例窗体及启动状态（已并入 CMain）。
-        public static CMain Form = new CMain();
+        public static readonly CMain Instance = new CMain();
         public static bool Launch, Restart;
         private static bool _bootstrapped;
 
         public static GraphicsStub Graphics = new GraphicsStub();
 
-        // 被 CMain.Form 引用的"窗体"成员（交互由 DOM 桥接，这里仅占位）。
+        // 被 CMain.Instance 引用的"窗体"成员（交互由 DOM 桥接，这里仅占位）。
         public List<object> Controls = new List<object>();
         public object ActiveControl;
         public string Text = "";
@@ -96,7 +96,45 @@ namespace WebGame.Mir2.MonoGame.Client
 
             MirEngine.BrowserCursor.Set(name);
         }
-        public static void SetResolution(int width, int height) { }
+        // 由 MirGame 注入：返回当前画布（WebGL 后备缓冲）的物理像素尺寸。
+        // 浏览器端画布铺满窗口，分辨率应以画布实际大小为准（见 SetResolution 说明）。
+        public static Func<(int Width, int Height)>? GetCanvasSize;
+
+        // 浏览器端没有 WinForms 窗体，分辨率必须跟随 WebGL 画布（后备缓冲的物理像素尺寸），
+        // 否则游戏内部会一直按默认 1024x768 布局，而 backbuffer 是窗口大小（如 1756x865），
+        // 结果画面只显示在画布左上角、四周留黑——即"没全屏"现象。
+        // 桌面端这里会按传入的 width/height 缩放真实窗口；但浏览器画布无法缩放到任意固定分辨率，
+        // 因此始终以画布实际尺寸作为游戏分辨率（即"全屏"），忽略传入的固定值（选人界面的分辨率下拉亦然）。
+        // 这里把 Settings 屏幕宽高、窗体 ClientSize 一并更新，并让当前场景按新尺寸重新排版；
+        // 游戏内场景的地板/光照是离屏 RenderTarget，要置空让下一帧按新尺寸重建。
+        public static void SetResolution(int width, int height)
+        {
+            // 优先用画布真实尺寸；回调未注入（理论上不会发生）时退回传入值，避免异常尺寸导致黑屏。
+            int w, h;
+            if (GetCanvasSize != null) (w, h) = GetCanvasSize();
+            else { w = width; h = height; }
+
+            if (w <= 0 || h <= 0) return;                          // 画布尚未就绪（如首帧前）时忽略
+            if (Settings.ScreenWidth == w && Settings.ScreenHeight == h) return;
+
+            Settings.ScreenWidth = w;
+            Settings.ScreenHeight = h;
+            Instance.ClientSize = new Size(w, h);   // ClientSize 是单例窗体(Instance)的实例字段，须通过 Instance 设置
+
+            // 在游戏场景中：地板/光照离屏纹理按旧分辨率创建，必须先释放，
+            // DrawFloor/DrawLights 检测到 null/Disposed 后会用新的 Settings 尺寸重建。
+            if (GameScene.Scene != null)
+            {
+                GameScene.Scene.MapControl.FloorValid = false;
+                DXManager.FloorTexture?.Dispose(); DXManager.FloorTexture = null;
+                DXManager.FloorSurface = null;
+                DXManager.LightTexture?.Dispose(); DXManager.LightTexture = null;
+                DXManager.LightSurface = null;
+            }
+
+            // 当前活动场景（登录/选人/游戏）按新分辨率重新排版，控件位置都依赖 Settings.ScreenWidth/Height。
+            MirScene.ActiveScene?.Refresh();
+        }
         public static void ToggleFullScreen() { }
         public static bool IsKeyLocked(MirEngine.Keys key) => false;
 
@@ -130,7 +168,7 @@ namespace WebGame.Mir2.MonoGame.Client
                 if ((KeyCheck.RequireShift != 2) && (KeyCheck.RequireShift != (Shift ? 1 : 0))) continue;
                 if ((KeyCheck.RequireCtrl != 2) && (KeyCheck.RequireCtrl != (Ctrl ? 1 : 0))) continue;
                 if ((KeyCheck.RequireTilde != 2) && (KeyCheck.RequireTilde != (Tilde ? 1 : 0))) continue;
-                Form.CreateScreenShot();
+                Instance.CreateScreenShot();
                 break;
             }
             try { if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnKeyUp(e); }

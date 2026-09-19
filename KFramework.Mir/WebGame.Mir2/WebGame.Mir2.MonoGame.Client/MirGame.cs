@@ -22,6 +22,19 @@ namespace WebGame.Mir2.MonoGame.Client
         {
             // 把 KFramework.MonoGame 的 GraphicsDevice / SpriteBatch 交给 DXManager（渲染后端）。
             DXManager.Initialize(GraphicsDevice, new SpriteBatch(GraphicsDevice));
+
+            // 把"取画布（后备缓冲）物理像素尺寸"的能力注入 CMain：浏览器画布铺满窗口，
+            // CMain.SetResolution 据此把游戏分辨率设为画布实际大小，从而全屏铺满、不再只显示左上角。
+            CMain.GetCanvasSize = () => (Window.Width, Window.Height);
+
+            // 初始即把游戏分辨率设为画布尺寸，铺满整个窗口。
+            // （画布尚未就绪时 Window.Width/Height 可能为 0，SetResolution 内部已做忽略处理，
+            //  真正尺寸会在首帧 GraphicsDevice.SyncCanvasSize 触发 Window.SizeChanged 后纠正。）
+            CMain.SetResolution(Window.Width, Window.Height);
+
+            // 浏览器窗口缩放/旋转时，KFramework.MonoGame 会在每帧 SyncCanvasSize 里让画布自动跟随，
+            // 并通过 GameWindow.SizeChanged 通知；这里同步游戏分辨率，保证 UI 始终铺满窗口。
+            Window.SizeChanged += () => CMain.SetResolution(Window.Width, Window.Height);
         }
 
         protected override async Task LoadContentAsync()
