@@ -73,6 +73,9 @@ namespace Client.MirGraphics
             new KFramework.MonoGame.Rectangle(r.X, r.Y, r.Width, r.Height);
 
         // —— 主精灵路径：Texture2D（KFramework.MonoGame）——
+        // 关键：Batch.Begin/End 必须用 try/finally 配对。否则某次 Batch.Draw 抛异常（如坏贴图、
+        // 非法源矩形）会导致 SpriteBatch 卡在"已 Begin"状态，下一帧首个 Begin 再抛
+        // InvalidOperationException 被 CMain.Loop 吞掉 -> 每帧只清黑屏（永久黑屏，见 MLibrary 注释）。
         public static void Draw(Texture2D texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color)
         {
             if (texture == null) return;
@@ -80,9 +83,15 @@ namespace Client.MirGraphics
             SlimDX.Vector3 pos = position ?? SlimDX.Vector3.Zero;
             KFramework.MonoGame.BlendState blend = Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied;
             Batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred, blend, KFramework.MonoGame.SamplerState.PointClamp);
-            Batch.Draw(texture, new KFramework.MonoGame.Vector2(pos.X, pos.Y), ToRect(src), ToColor(color));
-            Batch.End();
-            CMain.DPSCounter++;
+            try
+            {
+                Batch.Draw(texture, new KFramework.MonoGame.Vector2(pos.X, pos.Y), ToRect(src), ToColor(color));
+                CMain.DPSCounter++;
+            }
+            finally
+            {
+                Batch.End();
+            }
         }
 
         public static void Draw(Texture2D texture, Rectangle sourceRect, RectangleF destRect, SlimDX.Color4 color)
@@ -90,11 +99,17 @@ namespace Client.MirGraphics
             if (texture == null) return;
             KFramework.MonoGame.BlendState blend = Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied;
             Batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred, blend, KFramework.MonoGame.SamplerState.PointClamp);
-            Batch.Draw(texture,
-                new KFramework.MonoGame.Rectangle((int)destRect.X, (int)destRect.Y, (int)destRect.Width, (int)destRect.Height),
-                ToRect(sourceRect), ToColor(color));
-            Batch.End();
-            CMain.DPSCounter++;
+            try
+            {
+                Batch.Draw(texture,
+                    new KFramework.MonoGame.Rectangle((int)destRect.X, (int)destRect.Y, (int)destRect.Width, (int)destRect.Height),
+                    ToRect(sourceRect), ToColor(color));
+                CMain.DPSCounter++;
+            }
+            finally
+            {
+                Batch.End();
+            }
         }
 
         public static void DrawOpaque(Texture2D texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, float opacity)

@@ -57,17 +57,16 @@ WebGame.Mir2 (MonoGame.Client) — 基于 KFramework.MonoGame 重构的传奇客
 核心组件：
 
   - CMain.cs
-        游戏主机 + WASM 入口（static void Main() 创建并启动 MirGame）。
-        承载原 WinForms CMain 的窗体/输入语义（单例 CMain.Form、输入事件桥接、
-        帧循环 Loop()），以及原 Program 入口类的启动逻辑（Init / Frame / Step，带 [JSExport]）。
+        游戏主机（纯 C#，无任何 [JSExport]）。承载原 WinForms CMain 的窗体/输入语义
+        （单例 CMain.Form、输入事件桥接、帧循环 Loop()）。Init() 由 MirGame.LoadContentAsync
+        在 C# 内直接调用；Loop() 由 MirGame.Draw（经框架 Game.TickFrame）调用。
+        原 Program 入口的 JS 导出入口 Init/Frame/Step 已全部移除——本项目不得向 JS 暴露任何入口。
 
   - MirGame.cs
         游戏引导（MonoGame 化的 Game 子类）；LoadContentAsync 中调用 CMain.Init()。
 
   - Mir2/Host/CMain.cs
-        游戏主机。承载原 WinForms CMain 的窗体/输入语义（单例 CMain.Form、
-        输入事件桥接、帧循环 Loop()），以及原 Program 入口类的启动逻辑
-        （Init / Frame / Step，带 [JSExport] 供 JS 层驱动）。
+        历史目录；引导/主机类已上移到项目根 CMain.cs（见上）。同样禁止 [JSExport]。
 
   - Shims/
         浏览器垫片，提供高仿的 System.Windows.Forms / System.Drawing / SlimDX /
@@ -121,6 +120,32 @@ WebGame.Mir2.MonoGame.Client/
 - 引擎层 Web_Mir2.Engine 以及 SlimDX / NAudio 等原生依赖【不再引用】，
   全部由本工程 Shims/ 自提供；
 - 底层图形 / 输入 / 音频 / 资源【统一走 KFramework.MonoGame】。
+
+七、运行约束：彻底不用 Web_Mir2.Engine，且本项目禁止 [JSExport]
+--------------------------------------------------------------------
+1) 引擎层：本项目【彻底抛弃 Web_Mir2.Engine】，浏览器运行时（渲染 / 输入 / 音频 /
+   资源 / 网络 / 帧循环）【完全由 KFramework.MonoGame 提供】。wwwroot/jsengine/ 是
+   KFramework.TSEngine（KFramework.MonoGame 的 JS 引擎层）的编译产物，并非 Web_Mir2.Engine。
+   原 Web_Mir2.Engine/tsengine 的启动器与本工程无关，不要在此引用或混用。
+
+2) 禁止 [JSExport]：WebGame.Mir2.MonoGame.Client 内【不允许出现任何 [JSExport]】。
+   所有 JS 互操作基础设施都由 KFramework.MonoGame 以 JSBind_* 形式提供
+   （如 JSBind_GameHost、JSBind_Net_WebSocket 等）。业务工程只写纯 C#，
+   通过框架注入的 GraphicsDevice / SpriteBatch / Input / Audio 等能力工作，
+   不得自行向 JS 暴露函数入口。
+
+3) 帧驱动路径（单链路，必须经由框架上屏）：
+       index.html → ./jsengine/main.js（KFramework.TSEngine 启动器）
+         → 每帧 requestAnimationFrame 回调 JSBind_GameHost.Frame
+         → Game.TickFrame（KFramework.MonoGame 框架）
+         → MirGame.Update / MirGame.Draw
+         → CMain.Loop()（清屏 + 场景 Process/Draw + 纹理回收）
+         → 框架在本帧末执行上屏（present）。
+   注意：引擎启动器会在多个程序集里查找帧宿主，优先按命名空间
+   KFramework.MonoGame.JSBind_GameHost 精确匹配；游戏程序集内的普通类型
+   （如 CMain）绝不能因为带了 [JSExport] 的 Frame 而被“递归兜底”误判为帧宿主，
+   否则帧回调会绕过 Game.TickFrame / 上屏，表现为“闪几下就黑屏”。
+   因此 CMain 不得导出任何 Frame / Step 之类入口（已移除）。
 
 一句话总结：
   原版用 WinForms/SlimDX/NAudio 把传奇搬到浏览器，本项目则用 KFramework.MonoGame

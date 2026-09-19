@@ -189,8 +189,12 @@ namespace WebGame.Mir2.MonoGame.Client
         }
 
         // ---- 原 Program 入口逻辑（已并入 CMain）----
+        // 约束：本项目禁止任何 [JSExport] —— JS 互操作基础设施全部由 KFramework.MonoGame 提供
+        // （JSBind_GameHost / JSBind_*）。帧循环由引擎的 JSBind_GameHost.Frame → Game.TickFrame
+        // → MirGame.Draw → CMain.Loop 驱动并上屏；CMain 只作为纯 C# 宿主暴露 Loop() 与 Init()，
+        // 不向 JS 暴露任何入口。昔日挂在 CMain 上的 [JSExport] Init/Frame/Step 已移除：Frame/Step
+        // 是纯 JS 入口，会被引擎 findHost 的递归兜底误判为帧宿主，从而绕过 Game.TickFrame/上屏导致黑屏。
 
-        [JSExport]
         public static async Task Init()
         {
             if (_bootstrapped) return;
@@ -232,14 +236,7 @@ namespace WebGame.Mir2.MonoGame.Client
             ConfigureInput();
         }
 
-        [JSExport]
-        public static void Frame(double timeMs)
-        {
-            CMain.Loop();
-        }
 
-        [JSExport]
-        public static void Step() => CMain.Loop();
 
         // WASM 入口：替代原根 Program.cs 的 Main。创建并启动游戏宿主（MirGame 继承自 KFramework.MonoGame.Game）。
         public static void Main()
