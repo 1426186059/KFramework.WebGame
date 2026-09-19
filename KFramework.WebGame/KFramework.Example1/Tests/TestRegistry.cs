@@ -34,5 +34,11 @@ public static class TestRegistry
             Desc = "AssetBundle 整图 / 图集纹理的加载与绘制（待实现，本页只列出现有资源，供后续扩展）",
             Factory = static () => new ImageTest.ImageTestScene(),
         },
+        new TestEntry
+        {
+            Name = "离屏渲染 RenderTarget",
+            Desc = "开 / 关 离屏渲染对比：几千个精灵，直接画 vs 画进 RenderTarget2D 后每帧只贴 1 个（看 FPS 与提交量）",
+            Factory = static () => new RenderTargetTest.RenderTargetTestScene(),
+        },
     ];
 }
