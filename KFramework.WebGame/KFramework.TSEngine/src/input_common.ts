@@ -11,8 +11,12 @@ import { getCanvasElement } from './gl.js';
  *   1. CSS 尺寸（显示尺寸）：页面布局给你的框，即 rect.width / rect.height。
  *      —— 鼠标 / 触摸事件（clientX - rect.left）就落在这个坐标系里，单位是 CSS 像素。
  *   2. Backing 尺寸（绘制缓冲）：canvas.width / canvas.height，即 GPU 真正光栅化的像素。
- *      —— platform.js 设为 Math.round(CSS × dpr)，且 GraphicsDevice 的 Viewport / BackBufferWidth
- *         用的就是它，所以【渲染坐标系用的也是 backing 像素】。
+ *      —— platform.js 的 getCanvasSize 把 backing 尺寸算作 Math.round(CSS尺寸 × dpr)（dpr 取系统
+ *         window.devicePixelRatio，仅被 Math.min 掐到最多 2 这个硬上限；比值本身来自系统，程序设不了），
+ *         写进 size[2]/size[3]（绘制缓冲宽/高，见 JSBind_Platform.GetCanvasSize 的 out 布局注释）；
+ *         之后 GraphicsDevice.SyncCanvasSize 把这两个值直接赋给 PresentationParameters.BackBufferWidth/Height
+ *         和 Viewport(0,0,width,height)，所以【渲染坐标系的原点和范围就是 0..canvas.width × 0..canvas.height，
+ *         单位全是 backing 像素】。
  *
  * 两者的比例就是 DPR（高 DPI 下 backing 是 CSS 的 DPR 倍，典型 1.5 / 2 / 3）。
  * 若直接把 CSS 坐标交给渲染侧，会落在左上角 1/DPR 区域（偏左上），所以这里乘上比例换算过去；

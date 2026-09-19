@@ -16,7 +16,14 @@ import * as inputKeyboard from './input_keyboard.js';
 import * as inputMouse from './input_mouse.js';
 import * as inputTouch from './input_touch.js';
 import * as net from './net_websocket.js';
+import * as inputOverlay from './input_overlay.js';
 import type { NetHandlers } from './net_websocket.js';
+
+interface OverlayExport {
+    OnValueChanged(v: string): void;
+    OnEnter(): void;
+    OnBlur(): void;
+}
 
 interface GameHost {
     Frame(timestampMs: number): void;
@@ -74,6 +81,7 @@ setModuleImports('input_keyboard', inputKeyboard);
 setModuleImports('input_mouse', inputMouse);
 setModuleImports('input_touch', inputTouch);
 setModuleImports('net_websocket', net);
+setModuleImports('input_overlay', inputOverlay);
 
 const config = getConfig();
 
@@ -93,6 +101,26 @@ try {
     wire('JSBind_Net_WebSocket', net);
 } catch (e) {
     console.warn('[main] 网络层导出未就绪:', e);
+}
+
+// 原生文本输入覆盖层：把 DOM <input> 的 input / Enter / blur 事件经 [JSExport] 回调推回
+// KFramework.MonoGame.JSBind_InputOverlay，驱动登录/输入框获得焦点、文本同步与回车确认。
+try {
+    const kf = (await getAssemblyExports('KFramework.MonoGame')) as
+        { KFramework?: { MonoGame?: { JSBind_InputOverlay?: OverlayExport } } } | null;
+    const ov = kf?.KFramework?.MonoGame?.JSBind_InputOverlay;
+    if (ov) {
+        inputOverlay.setHandlers({
+            onValueChanged: (v: string) => ov.OnValueChanged(v),
+            onEnter: () => ov.OnEnter(),
+            onBlur: () => ov.OnBlur(),
+        });
+        console.log('[main] 已接入原生文本输入覆盖层');
+    } else {
+        console.warn('[main] 文本输入覆盖层导出未找到: JSBind_InputOverlay');
+    }
+} catch (e) {
+    console.warn('[main] 文本输入覆盖层导出未就绪:', e);
 }
 
 /**
