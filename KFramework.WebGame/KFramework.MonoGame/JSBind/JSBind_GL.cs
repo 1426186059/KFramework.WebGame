@@ -112,7 +112,7 @@ namespace KFramework.MonoGame
 
         // —— 上下文查询参数 & 错误码（getParameter* 的 pname、getError 返回值） ——
         public const int MAX_TEXTURE_SIZE = 0x0D33;
-        public const int MAX_SAMPLES = 0x8D57;
+        public const int MAX_SAMPLES = 0x8D57;   // 用于钳制 RT 请求的 MSAA 采样数上限（与画布 antialias 无关）
         public const int VERSION = 0x1F02;
         public const int RENDERER = 0x1F01;
         public const int NO_ERROR = 0;
@@ -401,11 +401,11 @@ namespace KFramework.MonoGame
         [JSImport("deleteRenderbuffer", "gl")]
         internal static partial void DeleteRenderbuffer(JSObject renderbuffer);
 
-        /// <summary>分配多重采样 renderbuffer 存储（MSAA 颜色 / 深度附件用）。</summary>
+        /// <summary>分配多重采样 renderbuffer 存储（RT 级 MSAA 颜色 / 深度附件用）。这是离屏 FBO 的多重采样，与画布 getContext 的 antialias 无关。</summary>
         [JSImport("renderbufferStorageMultisample", "gl")]
         internal static partial void RenderbufferStorageMultisample(int target, int samples, int internalFormat, int width, int height);
 
-        /// <summary>把多重采样帧缓冲解析（resolve）到单采样帧缓冲（MSAA 离屏目标解到可采样纹理用）。</summary>
+        /// <summary>把多重采样帧缓冲解析（resolve）到单采样帧缓冲（RT 级 MSAA 离屏目标解到可采样纹理用；与画布 antialias 无关）。</summary>
         [JSImport("blitFramebuffer", "gl")]
         internal static partial void BlitFramebuffer(
             int srcX0, int srcY0, int srcX1, int srcY1,

@@ -120,10 +120,35 @@ public sealed class MSAATestScene : TestSceneBase
 
         // 信息行
         float yy = _panelOff.Bottom + 18f;
-        DrawLine(batch, Font,
+        yy += DrawLine(batch, Font,
             $"同一场景渲染进两张离屏 RT：左(采样0)边缘有锯齿 / 右(采样4)边缘平滑。" +
-            $"FPS {Fps:F0}（出帧率·vsync） CPU {KTime.cpuFrameMs:F2}ms",
+            $"FPS {Fps:F0}（真实帧率·vsync）",
             new Vector2(origin.X, yy), new Color(148, 163, 184));
+
+        // —— 原理说明（核心：画布 antialias ≠ 离屏 RT 的 MultiSampleCount）——
+        yy += DrawSection(batch, "原理说明：antialias（画布上下文）≠ 离屏 RT 的 MultiSampleCount（MSAA）",
+                           new Vector2(origin.X, yy));
+
+        yy += DrawLine(batch, Font,
+            $"① 画布 context 的 antialias 当前 = {(Device.Antialias ? "开" : "关")} —— 它是 getContext('webgl2',{{antialias}}) 的参数，" +
+            "创建后冻结、整画布只有一个值，且只平滑【直接画到画布】的几何体轮廓边缘。",
+            new Vector2(origin.X, yy), new Color(186, 230, 253));
+
+        yy += DrawLine(batch, Font,
+            "② 它够不到离屏纹理【内部】的内容：本例把场景先画进 RT、再当贴图 blit 回画布，画布 antialias 改不了 RT 贴图里的锯齿。",
+            new Vector2(origin.X, yy), new Color(186, 230, 253));
+
+        yy += DrawLine(batch, Font,
+            "③ 左右两块的区别来自 RT 级 MultiSampleCount（0 vs 4）：锯齿在渲染源头被多重采样磨平，与画布 antialias 无关。",
+            new Vector2(origin.X, yy), new Color(186, 230, 253));
+
+        yy += DrawLine(batch, Font,
+            "④ 验证：把 Example1Game.Antialias 改成 false 重启，左(采样0)仍带锯齿、右(采样4)仍平滑 —— 结论不变。",
+            new Vector2(origin.X, yy), new Color(186, 230, 253));
+
+        yy += DrawLine(batch, Font,
+            "⑤ 浏览器里同一 Game 无法同时拥有两种 antialias 上下文，但多重采样渲染目标可在一个上下文内并存多个（正是本例做法）。",
+            new Vector2(origin.X, yy), new Color(186, 230, 253));
     }
 
     private static void Border(SpriteBatch batch, Rectangle r, Color c)

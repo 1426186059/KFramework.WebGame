@@ -231,11 +231,19 @@ export function framebufferRenderbuffer(target, attachment, rbTarget, renderbuff
     gpu().framebufferRenderbuffer(target, attachment, rbTarget, renderbuffer);
 }
 export function deleteRenderbuffer(renderbuffer) { gpu().deleteRenderbuffer(renderbuffer); }
-/** 分配多重采样 renderbuffer 存储（MSAA 颜色 / 深度附件）。samples 为每像素采样数。 */
+/**
+ * 分配多重采样 renderbuffer 存储（MSAA 颜色 / 深度附件）。samples 为每像素采样数。
+ * 这是「离屏 FBO 级别」的多重采样：锯齿在渲染源头被磨平，
+ * 与画布 getContext 的 antialias 无关（画布 antialias 只作用直接画到画布的几何体轮廓，够不到离屏纹理内容）。
+ */
 export function renderbufferStorageMultisample(target, samples, internalFormat, width, height) {
     gpu().renderbufferStorageMultisample(target, samples, internalFormat, width, height);
 }
-/** 把多重采样帧缓冲解析（resolve）到单采样帧缓冲（MSAA 离屏目标解到可采样纹理用）。 */
+/**
+ * 把多重采样帧缓冲解析（resolve）到单采样帧缓冲。
+ * 用途：把 MSAA 离屏目标 resolve 进普通纹理（RenderTarget2D.GLTexture），使其可被采样 / 画到屏幕。
+ * 注意这只是「把多重采样结果拷成单采样纹理」——画布最终的 antialias 设置不会重算这一步的结果。
+ */
 export function blitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter) {
     gpu().blitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 }

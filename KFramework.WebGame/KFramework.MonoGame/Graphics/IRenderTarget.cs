@@ -17,7 +17,11 @@ namespace KFramework.MonoGame
         /// <summary>内容保留策略（决定绑定时是否清屏）。</summary>
         RenderTargetUsage RenderTargetUsage { get; }
 
-        /// <summary>每个像素的采样数；>0 时该目标走「多重采样 FBO → blitFramebuffer 解到纹理」的路径。</summary>
+        /// <summary>
+        /// 每个像素的采样数（<b>渲染目标级别</b>的 MSAA，不是画布 <c>getContext</c> 的 <c>antialias</c>）。
+        /// <para>>0 时该目标走「多重采样 FBO → blitFramebuffer 解到纹理」的路径：锯齿在源头被磨平，
+        /// 与画布上下文自身是否 antialias 无关。</para>
+        /// </summary>
         int MultiSampleCount { get; }
 
         /// <summary>底层的颜色纹理（作为 resolve 后的可采样结果；多重采样时由 <see cref="GLResolveFramebuffer"/> 写入）。</summary>

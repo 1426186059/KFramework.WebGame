@@ -21,6 +21,18 @@ namespace KFramework.MonoGame
     /// 深度 / 模板用 renderbuffer 挂在 DEPTH_ATTACHMENT / STENCIL_ATTACHMENT；
     /// FBO 由 GraphicsDevice 按「绑定组合」缓存复用（PlatformCreateRenderTarget 只建附件）。
     /// </para>
+    /// <para>
+    /// ⚠️ <b>本类的多重采样（<see cref="MultiSampleCount"/>）与画布的 <c>antialias</c> 是两回事：</b>
+    /// <list type="bullet">
+    ///   <item>画布的 <c>antialias</c> 是 <c>getContext('webgl2', {antialias})</c> 的<b>建上下文参数</b>，
+    ///   创建后冻结、只能整画布一个值，且<b>只对直接画到画布的几何体轮廓边缘</b>生效，碰不到离屏内容。</item>
+    ///   <item>本类的 <see cref="MultiSampleCount"/> 是<b>渲染目标（离屏 FBO）级别</b>的 MSAA：
+    ///   在源头用多重采样 renderbuffer 把画面磨平，再 <c>blitFramebuffer</c> 解到本纹理。
+    ///   它决定的是「这张离屏纹理<b>内部内容</b>自己抗不抗锯齿」，与画布 antialias 无关。</item>
+    /// </list>
+    /// 因此即使画布 <c>antialias=false</c>，把 <see cref="MultiSampleCount"/>=4 的 RT 当贴图 blit 到画布，
+    /// 该贴图内部仍是平滑的；而 <see cref="MultiSampleCount"/>=0 的 RT 内部仍带锯齿——画布 antialias 改变不了这个区别。
+    /// </para>
     /// </summary>
     public sealed class RenderTarget2D : Texture2D, IRenderTarget
     {
