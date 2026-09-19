@@ -1,4 +1,4 @@
-using KFramework.MonoGame;
+using WebGame.Mir2.MonoGame.Client;
 
 // 浏览器端入口：WASM 启动后由运行时调用 Main。
 // 真正的每帧循环由 KFramework.MonoGame 的 GameHost（KFramework.TSEngine 的 jsengine/main.js 经
@@ -8,6 +8,6 @@ class Program
 {
     static void Main()
     {
-        _ = new Client.MirGame().RunAsync();
+        _ = new MirGame().RunAsync();
     }
 }
