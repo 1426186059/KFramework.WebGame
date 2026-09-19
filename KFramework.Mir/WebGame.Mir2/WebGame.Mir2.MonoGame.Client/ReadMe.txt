@@ -56,10 +56,12 @@ WebGame.Mir2 (MonoGame.Client) — 基于 KFramework.MonoGame 重构的传奇客
 
 核心组件：
 
-  - Program.cs
-        WASM 入口（static void Main()）→ 创建 Client.MirGame 并 RunAsync()。
+  - CMain.cs
+        游戏主机 + WASM 入口（static void Main() 创建并启动 MirGame）。
+        承载原 WinForms CMain 的窗体/输入语义（单例 CMain.Form、输入事件桥接、
+        帧循环 Loop()），以及原 Program 入口类的启动逻辑（Init / Frame / Step，带 [JSExport]）。
 
-  - Mir2/Host/MirGame.cs
+  - MirGame.cs
         游戏引导（MonoGame 化的 Game 子类）；LoadContentAsync 中调用 CMain.Init()。
 
   - Mir2/Host/CMain.cs
@@ -80,10 +82,11 @@ WebGame.Mir2 (MonoGame.Client) — 基于 KFramework.MonoGame 重构的传奇客
 四、目录结构（节选）
 --------------------------------------------------------------------
 WebGame.Mir2.MonoGame.Client/
-├── Program.cs                  # WASM 入口
+├── CMain.cs                    # 游戏主机 + WASM 入口（Main）
+├── MirGame.cs                  # 游戏引导（MonoGame 化 Game 子类）
 ├── WebGame.Mir2.MonoGame.Client.csproj
 ├── Mir2/
-│   ├── Host/                   # MirGame（引导）、CMain（主机/输入桥接）
+│   ├── Host/                   # （历史目录；引导/主机类已上移到项目根 CMain.cs / MirGame.cs）
 │   ├── MirScenes/              # 登录 / 选角 / 游戏场景
 │   ├── MirControls/            # UI 控件
 │   ├── MirGraphics/            # DXManager、MLibrary、纹理库
