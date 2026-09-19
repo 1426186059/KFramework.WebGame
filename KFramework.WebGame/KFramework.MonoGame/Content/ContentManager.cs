@@ -1,3 +1,6 @@
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices.JavaScript;
 
 namespace KFramework.MonoGame
@@ -38,6 +41,9 @@ namespace KFramework.MonoGame
             }
 
             _http = baseAddress is null ? new HttpClient() : new HttpClient { BaseAddress = baseAddress };
+            // 地图片库可能非常大（如 Tiles.Lib 有数百 MB），必须放宽超时，否则默认的 100 秒会把大文件
+            // 下载打断，导致 InitializeAsync 捕获超时异常后把库标记为 _failed，地板层永久不渲染。
+            _http.Timeout = TimeSpan.FromMinutes(30);
             _manager = new AssetBundleManager(_http, rootUrl, cacheMode);
         }
 
@@ -103,6 +109,57 @@ namespace KFramework.MonoGame
         /// <summary>按页面基址异步下载任意字节流（不走内容包）。</summary>
         public async Task<byte[]> LoadBytesAsync(string relativePath, CancellationToken cancellationToken = default)
             => await _http.GetByteArrayAsync(relativePath, cancellationToken).ConfigureAwait(false);
+
+        /// <summary>
+        /// 分片（Range）下载任意字节流并在托管侧拼接。用于超大地图片库（如数百 MB 的 Tiles.Lib）：
+        /// 浏览器/WASM 端若一次性把超大响应 marshal 成单个 byte[]，会在 JS↔托管边界失败或返回空，
+        /// 导致上层把库误判为“空文件”而永久不渲染（典型表现：同目录小库都正常，唯独最大的 Tiles.Lib 走 empty 分支）。
+        /// 按固定分片（默认 16MB）逐片下载，每片体积都在安全范围内。资源服务器需支持 Range
+        /// （本仓库 Tools/资源服务器/asset-server.js 已支持）；不支持或异常时自动退化为整文件下载。
+        /// </summary>
+        public async Task<byte[]> LoadBytesChunkedAsync(string relativePath, int chunkSize = 16 * 1024 * 1024, CancellationToken cancellationToken = default)
+        {
+            long cs = Math.Max(1, (long)chunkSize);
+            try
+            {
+                using var firstReq = new HttpRequestMessage(HttpMethod.Get, relativePath);
+                firstReq.Headers.Range = new RangeHeaderValue(0, cs - 1);
+                using var firstResp = await _http.SendAsync(firstReq, cancellationToken).ConfigureAwait(false);
+
+                // 服务器不支持 Range：退化为整文件下载。
+                if (firstResp.StatusCode != HttpStatusCode.PartialContent)
+                    return await _http.GetByteArrayAsync(relativePath, cancellationToken).ConfigureAwait(false);
+
+                long total = firstResp.Content.Headers.ContentRange?.Length ?? 0;
+                // 无总大小或超出单个 byte[] 上限（~2GB）：退化为整文件下载。
+                if (total <= 0 || total > int.MaxValue)
+                    return await _http.GetByteArrayAsync(relativePath, cancellationToken).ConfigureAwait(false);
+
+                var result = new byte[(int)total];
+                byte[] first = await firstResp.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                if (first.Length > 0) Buffer.BlockCopy(first, 0, result, 0, first.Length);
+                long pos = first.Length;
+
+                while (pos < total)
+                {
+                    long end = Math.Min(pos + cs, total) - 1;
+                    using var req = new HttpRequestMessage(HttpMethod.Get, relativePath);
+                    req.Headers.Range = new RangeHeaderValue(pos, end);
+                    using var resp = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
+                    if (!resp.IsSuccessStatusCode) break;
+                    byte[] chunk = await resp.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                    if (chunk.Length == 0) break;
+                    Buffer.BlockCopy(chunk, 0, result, (int)pos, chunk.Length);
+                    pos += chunk.Length;
+                }
+                return result;
+            }
+            catch (Exception)
+            {
+                // 分片失败（如 Range 异常）：最后尝试整文件下载兜底。
+                return await _http.GetByteArrayAsync(relativePath, cancellationToken).ConfigureAwait(false);
+            }
+        }
 
         #endregion
 

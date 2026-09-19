@@ -1,8 +1,11 @@
+using KFramework.MonoGame;
 using System;
 using System.IO;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using KFramework.MonoGame;
+using static System.Net.WebRequestMethods;
 
 namespace MirEngine
 {
@@ -16,23 +19,21 @@ namespace MirEngine
         public static async Task<byte[]> GetBytesAsync(string url)
         {
             string path = NormalizePath(url);
-            try
+            if (Content != null)
             {
-                if (Content != null)
-                    return await Content.LoadBytesAsync(path).ConfigureAwait(false);
+                try
+                {
+                    // 分片下载：超大地图片库（Tiles.Lib 数百 MB）若一次性 marshal 成单个 byte[] 会在 WASM 边界失败/返回空。
+                    return await Content.LoadBytesChunkedAsync(path).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Log("[Mir] 分片下载失败，回退整文件: " + path + " " + ex.Message);
+                    try { return await Content.LoadBytesAsync(path).ConfigureAwait(false); }
+                    catch { return null; }
+                }
             }
-            catch (Exception) { }
-
-            // Content 未注入时的兜底（非浏览器/调试场景）：直接走 HttpClient。
-            try
-            {
-                using var client = new HttpClient();
-                return await client.GetByteArrayAsync(path).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            return null;
         }
 
         public static string ResolveUrl(string fileName) => NormalizePath(fileName);
@@ -66,6 +67,50 @@ namespace MirEngine
         {
             try { Console.WriteLine(msg); }
             catch { }
+        }
+        
+        public static async Task<byte[]> LoadBytesChunkedAsync(HttpClient _http, string relativePath, int chunkSize = 16 * 1024 * 1024, CancellationToken cancellationToken = default)
+        {
+            long cs = Math.Max(1, (long)chunkSize);
+            try
+            {
+                using var firstReq = new HttpRequestMessage(HttpMethod.Get, relativePath);
+                firstReq.Headers.Range = new RangeHeaderValue(0, cs - 1);
+                using var firstResp = await _http.SendAsync(firstReq, cancellationToken).ConfigureAwait(false);
+
+                // 服务器不支持 Range：退化为整文件下载。
+                if (firstResp.StatusCode != HttpStatusCode.PartialContent)
+                    return await _http.GetByteArrayAsync(relativePath, cancellationToken).ConfigureAwait(false);
+
+                long total = firstResp.Content.Headers.ContentRange?.Length ?? 0;
+                // 无总大小或超出单个 byte[] 上限（~2GB）：退化为整文件下载。
+                if (total <= 0 || total > int.MaxValue)
+                    return await _http.GetByteArrayAsync(relativePath, cancellationToken).ConfigureAwait(false);
+
+                var result = new byte[(int)total];
+                byte[] first = await firstResp.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                if (first.Length > 0) Buffer.BlockCopy(first, 0, result, 0, first.Length);
+                long pos = first.Length;
+
+                while (pos < total)
+                {
+                    long end = Math.Min(pos + cs, total) - 1;
+                    using var req = new HttpRequestMessage(HttpMethod.Get, relativePath);
+                    req.Headers.Range = new RangeHeaderValue(pos, end);
+                    using var resp = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
+                    if (!resp.IsSuccessStatusCode) break;
+                    byte[] chunk = await resp.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                    if (chunk.Length == 0) break;
+                    Buffer.BlockCopy(chunk, 0, result, (int)pos, chunk.Length);
+                    pos += chunk.Length;
+                }
+                return result;
+            }
+            catch (Exception)
+            {
+                // 分片失败（如 Range 异常）：最后尝试整文件下载兜底。
+                return await _http.GetByteArrayAsync(relativePath, cancellationToken).ConfigureAwait(false);
+            }
         }
     }
 }

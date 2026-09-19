@@ -97,12 +97,16 @@ const server = http.createServer((req, res) => {
           'Content-Range': `bytes ${start}-${last}/${st.size}`,
           'Content-Length': last - start + 1,
         });
-        return fs.createReadStream(filePath, { start, end: last }).pipe(res);
+        const stream = fs.createReadStream(filePath, { start, end: last });
+        stream.on('error', (e) => { if (!res.headersSent) res.writeHead(500, CORS); res.end('read error: ' + e.message); });
+        return stream.pipe(res);
       }
     }
 
     res.writeHead(200, { ...headers, 'Content-Length': st.size });
-    fs.createReadStream(filePath).pipe(res);
+    const stream = fs.createReadStream(filePath);
+    stream.on('error', (e) => { if (!res.headersSent) res.writeHead(500, CORS); res.end('read error: ' + e.message); });
+    stream.pipe(res);
   });
 });
 
