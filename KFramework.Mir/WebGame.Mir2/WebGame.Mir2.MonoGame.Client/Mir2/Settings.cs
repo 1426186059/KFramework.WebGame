@@ -205,13 +205,12 @@ namespace Client
         public static bool P_AutoStart = false;
         public static int P_Concurrency = 1;
 
-        public static void Load()
+        public static async Task Load()
         {
-
-
-            if (!Directory.Exists(DataPath)) Directory.CreateDirectory(DataPath);
-            if (!Directory.Exists(MapPath)) Directory.CreateDirectory(MapPath);
-            if (!Directory.Exists(SoundPath)) Directory.CreateDirectory(SoundPath);
+            // 浏览器端：InIReader 已改为走 IndexedDB，加载为异步，须 await 后再读取。
+            await Reader.LoadAsync().ConfigureAwait(false);
+            await QuestTrackingReader.LoadAsync().ConfigureAwait(false);
+            Reader.AutoPersist = false; // 批量读取期间不逐条落库，结束再统一保存一次;
 
             //Graphics
             FullScreen = Reader.ReadBoolean("Graphics", "FullScreen", FullScreen);
@@ -334,11 +333,15 @@ namespace Client
             {
                 CMain.SaveError($"Load Client Language Error:{ex.Message}");
             }
-            
+
+            Reader.AutoPersist = true;
+            await Reader.SaveAsync().ConfigureAwait(false);
         }
 
-        public static void Save()
+        public static async Task Save()
         {
+            await Reader.LoadAsync().ConfigureAwait(false);
+            Reader.AutoPersist = false; // 批量写入期间不逐条落库
             //Graphics
             Reader.Write("Graphics", "FullScreen", FullScreen);
             Reader.Write("Graphics", "Borderless", Borderless);
@@ -416,6 +419,8 @@ namespace Client
             Reader.Write("Launcher", "Browser", P_BrowserAddress);
             Reader.Write("Launcher", "AutoStart", P_AutoStart);
             Reader.Write("Launcher", "ConcurrentDownloads", P_Concurrency);
+            Reader.AutoPersist = true;
+            await Reader.SaveAsync().ConfigureAwait(false);
         }
 
         public static void LoadTrackedQuests(string charName)

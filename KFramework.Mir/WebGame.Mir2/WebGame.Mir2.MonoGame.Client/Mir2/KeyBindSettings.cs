@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using WebGame.Mir2.MonoGame.Client;
 
 namespace Client
@@ -131,14 +132,22 @@ namespace Client
         {
             New(Keylist);
             New(DefaultKeylist);
+        }
 
-            if (!File.Exists(@".\KeyBinds.ini"))
+        // 浏览器端：InIReader 改为走 IndexedDB，加载为异步。
+        public async Task LoadAsync()
+        {
+            await Reader.LoadAsync().ConfigureAwait(false);
+            if (Reader.IsEmpty)
             {
-                Save(DefaultKeylist);
-                return;
+                Reader.AutoPersist = false;
+                Save(DefaultKeylist); // 仅写入内存（不逐条落库）
+                Reader.AutoPersist = true;
+                Reader.Save();        // 把默认键位持久化到浏览器 DB 一次
             }
-
-            Load();
+            Reader.AutoPersist = false;
+            Load();                  // 从已加载内容填充 Keylist
+            Reader.AutoPersist = true;
         }
 
         public void Load()
@@ -157,6 +166,7 @@ namespace Client
 
         public void Save(List<KeyBind> keyList)
         {
+            Reader.AutoPersist = false; // 批量写入期间不逐条落库
             Reader.Write("Guide", "01", "RequireAlt,RequireShift,RequireTilde,RequireCtrl");
             Reader.Write("Guide", "02", "have 3 options: 0/1/2");
             Reader.Write("Guide", "03", "0 < you cannot have this key pressed to use the function");
@@ -177,6 +187,8 @@ namespace Client
                 Reader.Write(Inputkey.function.ToString(), "RequireCtrl", Inputkey.RequireCtrl);
                 Reader.Write(Inputkey.function.ToString(), "RequireKey", Inputkey.Key.ToString());
             }
+            Reader.AutoPersist = true;
+            Reader.Save(); // 统一落库到浏览器 DB 一次
         }
 
         public void New(List<KeyBind> list)

@@ -51,7 +51,7 @@ namespace WebGame.Mir2.MonoGame.Client
             CMain.ScaleY = s;
 
             CMain.MPoint = new MirEngine.Point(
-                (int)(Input_Mouse.Position.X / s),
+                (int)((Input_Mouse.Position.X - DXManager.RenderOffsetX) / s),
                 (int)(Input_Mouse.Position.Y / s));
             CMain.CMain_MouseMove(null, new MouseEventArgs(MouseButtons.None, 0, CMain.MPoint.X, CMain.MPoint.Y, 0));
             SoundManager.ProcessDelayedSounds();

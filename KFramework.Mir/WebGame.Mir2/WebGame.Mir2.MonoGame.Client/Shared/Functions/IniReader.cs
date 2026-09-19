@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MirEngine;
 
 public class InIReader
@@ -5,38 +6,16 @@ public class InIReader
     #region Fields
     private readonly List<string> _contents;
     private readonly string _fileName;
+    private bool _loaded;
+    private bool _autoPersist = true;
     #endregion
 
     #region Constructor
     public InIReader(string fileName)
     {
         _fileName = fileName;
-
-        // 浏览器 WASM 没有可用的"当前目录"，相对路径（如 .\KeyBinds.ini）解析不出有效目录，
-        // CreateDirectory 会抛 ArgumentException。此处在目录为空/当前目录或创建失败时静默跳过，
-        // 配置文件退化为仅内存/默认值（不影响初始化，后续可在浏览器端用持久化方案替换）。
-        try
-        {
-            string dir = Path.GetDirectoryName(fileName);
-            if (!string.IsNullOrEmpty(dir) && dir != "." && dir != "/" && dir != "\\")
-            {
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-            }
-        }
-        catch
-        {
-        }
-
         _contents = new List<string>();
-        try
-        {
-            if (File.Exists(_fileName))
-                _contents.AddRange(File.ReadAllLines(_fileName));
-        }
-        catch
-        {
-        }
+        // 浏览器端不再读写本地文件：整份 ini 作为文本序列化后存取于 IndexedDB（见 LoadAsync/SaveAsync）。
     }
     #endregion
 
@@ -78,15 +57,54 @@ public class InIReader
         return _contents.Count - 1;
     }
 
-    public void Save()
+    // ---- 浏览器端持久化：整份 ini 作为纯文本存取于 IndexedDB（KFramework.MonoGame.LocalStore） ----
+    // 文件名即 DB 键；加载为异步操作，须 await LoadAsync() 之后才能读取/写入有效数据。
+    private string DbKey => _fileName;
+
+    /// <summary>是否已从浏览器 DB 载入（_contents 是否反映存储内容）。</summary>
+    public bool IsLoaded => _loaded;
+
+    /// <summary>是否自动落库：Write 之后是否立即异步持久化。批量读取/写入期间建议关闭，结束后再显式 SaveAsync 一次以减少写次数。</summary>
+    public bool AutoPersist
     {
+        get => _autoPersist;
+        set => _autoPersist = value;
+    }
+
+    public bool IsEmpty => _contents.Count == 0;
+
+    public async Task LoadAsync()
+    {
+        if (_loaded) return;
         try
         {
-            File.WriteAllLines(_fileName, _contents);
+            string text = await KFramework.MonoGame.LocalStore.GetStringAsync(DbKey).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(text))
+                _contents.AddRange(text.Replace("\r\n", "\n").Split('\n'));
         }
         catch
         {
         }
+        _loaded = true;
+    }
+
+    /// <summary>显式把整份内容持久化到浏览器 DB（等待完成）。</summary>
+    public async Task SaveAsync()
+    {
+        try
+        {
+            await KFramework.MonoGame.LocalStore.SetStringAsync(DbKey, string.Join("\n", _contents)).ConfigureAwait(false);
+        }
+        catch
+        {
+        }
+    }
+
+    /// <summary>同步兼容：触发一次异步落库（不等待）。受 AutoPersist 与已加载状态约束（Write 的自动落库走这里）。</summary>
+    public void Save()
+    {
+        if (!_autoPersist || !_loaded) return;
+        _ = SaveAsync();
     }
     #endregion
 

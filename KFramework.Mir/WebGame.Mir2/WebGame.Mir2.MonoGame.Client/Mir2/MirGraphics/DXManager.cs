@@ -30,6 +30,10 @@ namespace Client.MirGraphics
         // PresentToScreen 上屏前必须清空，否则会把整帧再缩放一次（双重缩放/错位）。
         public static KFramework.MonoGame.Matrix4x4? RenderTransform = null;
 
+        // 居中场景（登录/选人）在画布内的水平偏移（像素），供 MirGame 反算鼠标坐标使用。
+        // PresentToScreen 上屏前无需清除（它是画布空间常量，不是变换矩阵）。
+        public static float RenderOffsetX = 0f;
+
         public static bool Blending;
         public static float BlendingRate;
         public static BlendMode BlendingMode;

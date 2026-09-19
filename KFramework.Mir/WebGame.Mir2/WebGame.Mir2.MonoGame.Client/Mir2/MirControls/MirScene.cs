@@ -22,6 +22,12 @@ namespace Client.MirControls
             Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
         }
 
+        /// <summary>
+        /// UI 类场景（登录/选人）是否在屏幕上水平居中显示（保持按高度缩放、两侧留黑边）；
+        /// 游戏主场景为 false（铺满全屏、宽屏拓宽视野）。
+        /// </summary>
+        protected virtual bool CenterOnScreen => false;
+
         public override sealed Size Size
         {
             get { return base.Size; }
@@ -93,11 +99,14 @@ namespace Client.MirControls
 
             DXManager.Device.Clear(ClearFlags.Target, BackColour, 0, 0);
 
-            // 按屏幕高度统一缩放：s = 画布高 / 逻辑高(768)。宽屏下 UI 比例不变形，
-            // 内容宽度(1024*s)若小于画布宽，两侧由 BackColour 补齐（登录/选角场景的
-            // 背景通常自身铺满，侧边不明显）。
+            // 按屏幕高度统一缩放：s = 画布高 / 逻辑高(768)。宽屏下 UI 比例不变形。
+            // CenterOnScreen 场景额外水平居中（先缩放后平移），两侧由 BackColour 补齐。
             float s = (float)rtH / Settings.ScreenHeight;
-            DXManager.RenderTransform = KFramework.MonoGame.Matrix4x4.CreateScale(s, s, 1f);
+            float offsetX = 0f;
+            if (CenterOnScreen)
+                offsetX = (rtW - Settings.ScreenWidth * s) / 2f;
+            DXManager.RenderOffsetX = offsetX;
+            DXManager.RenderTransform = KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(s, s, offsetX, 0f);
             try
             {
                 BeforeDrawControl();

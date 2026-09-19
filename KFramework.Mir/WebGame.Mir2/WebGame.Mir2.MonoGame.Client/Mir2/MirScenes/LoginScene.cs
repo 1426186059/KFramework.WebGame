@@ -12,6 +12,9 @@ namespace Client.MirScenes
 {
     public sealed class LoginScene : MirScene
     {
+        // 登录界面作为 UI 场景，在屏幕水平居中显示（两侧留黑边），而非拉伸铺满。
+        protected override bool CenterOnScreen => true;
+
         private MirAnimatedControl _background;
         public MirLabel Version;
 
@@ -583,9 +586,13 @@ namespace Client.MirScenes
                 OKButton.Enabled = _accountIDValid && _passwordValid;
             }
             
-            private void Login()
+            private async void Login()
             {
                 OKButton.Enabled = false;
+                // 记住账号密码：写回 Settings 并持久化到浏览器 IndexedDB（下次启动自动预填）。
+                Settings.AccountID = AccountIDTextBox.Text;
+                Settings.Password = PasswordTextBox.Text;
+                await Settings.Save();
                 Network.Enqueue(new C.Login {AccountID = AccountIDTextBox.Text, Password = PasswordTextBox.Text});
             }
 
