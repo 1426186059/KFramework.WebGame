@@ -5,6 +5,8 @@
 // 必须经 toBytes / toFloats 转换后才能交给 WebGL。
 // 另外 C# 侧的 [JSImport] 函数名必须与这里的导出名完全一致，且不能带点号。
 
+import { resolveCanvasElement } from './html_canvas.js';
+
 let canvas: HTMLCanvasElement | null = null;
 let gl: WebGL2RenderingContext | null = null;
 
@@ -13,10 +15,11 @@ function gpu(): WebGL2RenderingContext {
     return gl;
 }
 
+// 画布元素本身由 html_canvas 统一管理：页面里有就用它，没有则自动创建一块全屏默认画布。
 export function initContext(selector: string): boolean {
-    const element = document.querySelector(selector);
-    if (!(element instanceof HTMLCanvasElement)) {
-        console.error('[gl] 找不到画布元素:', selector);
+    const element = resolveCanvasElement(selector);
+    if (!element) {
+        console.error('[gl] 无法创建或找到画布元素:', selector);
         return false;
     }
 

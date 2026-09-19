@@ -5,6 +5,7 @@
 // 因此 _framework 需要用 ../ 回退一级。
 import { dotnet } from '../_framework/dotnet.js';
 import * as gl from './gl.js';
+import * as html5Canvas from './html_canvas.js';
 import * as platform from './platform.js';
 import * as audio from './audio.js';
 import * as text from './text.js';
@@ -45,6 +46,7 @@ const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotne
 // 注册 C# [JSImport] 使用的模块。模块名必须与 C# 中 [JSImport("函数名", "模块名")] 一致，
 // 且函数名不带点号（.NET 会把点号当嵌套路径解析）。
 setModuleImports('gl', gl);
+setModuleImports('canvas', html5Canvas);
 setModuleImports('platform', platform);
 setModuleImports('audio', audio);
 setModuleImports('text', text);

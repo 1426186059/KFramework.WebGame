@@ -36,6 +36,18 @@ public static class TestRegistry
         },
         new TestEntry
         {
+            Name = "GraphicsDeviceManager",
+            Desc = "设备参数管理的标准用法：Preferred* / 垂直同步 / 多重采样 / 全屏 + ApplyChanges，并展示已应用的呈现参数（按 1..4 切换）",
+            Factory = static () => new GraphicsManagerTest.GraphicsManagerTestScene(),
+        },
+        new TestEntry
+        {
+            Name = "画布位置与尺寸",
+            Desc = "C# 控制 <canvas> 的 CSS 位置与尺寸：小窗 / 居中 / 全屏（html_canvas.ts），页面无画布时引擎自动创建全屏画布",
+            Factory = static () => new CanvasTest.CanvasTestScene(),
+        },
+        new TestEntry
+        {
             Name = "离屏渲染 RenderTarget",
             Desc = "开 / 关 离屏渲染对比：几千个精灵，直接画 vs 画进 RenderTarget2D 后每帧只贴 1 个（看 FPS 与提交量）",
             Factory = static () => new RenderTargetTest.RenderTargetTestScene(),

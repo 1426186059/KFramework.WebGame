@@ -12,9 +12,44 @@ namespace MirGame;
 /// </summary>
 public sealed class Example1Game : Game
 {
+    /// <summary>
+    /// 图形设备管理器（MonoGame 的标准用法：每个 Game 在构造函数里创建一个并持有它）。
+    /// 完整演示见 <see cref="MirGame.Tests.GraphicsManagerTest.GraphicsManagerTestScene"/>。
+    /// </summary>
+    public GraphicsDeviceManager Graphics { get; }
+
     public Example1Game() : base("#game", "hot_update_res")
     {
         ClearColor = new Color(10, 12, 20);
+
+        Graphics = new GraphicsDeviceManager(this)
+        {
+            PreferredBackBufferFormat = SurfaceFormat.Color,
+            PreferredDepthStencilFormat = DepthFormat.Depth24,
+            SynchronizeWithVerticalRetrace = true,
+            PreferMultiSampling = false,
+            GraphicsProfile = GraphicsProfile.Reach,
+        };
+
+        // 设备就绪回调：MonoGame 里通常在这里做与设备绑定的初始化（例如重建 RenderTarget、恢复纹理）。
+        Graphics.DeviceCreated += static (sender, _) =>
+        {
+            var manager = (GraphicsDeviceManager)sender!;
+            Console.WriteLine($"[Example1] DeviceCreated：{manager.GraphicsDevice.Viewport.Width} x {manager.GraphicsDevice.Viewport.Height}");
+        };
+
+        // 创建设备前的最后一次改参数机会（例如按设备能力调整 PresentInterval / 后备缓冲格式）。
+        Graphics.PreparingDeviceSettings += static (_, args) =>
+        {
+            args.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.DiscardContents;
+        };
+    }
+
+    protected override void Initialize()
+    {
+        // 把上面设置的偏好应用到设备（Game 在进入 Initialize 之前已让管理器接管 GraphicsDevice）。
+        Graphics.ApplyChanges();
+        base.Initialize();
     }
 
     protected override async Task LoadContentAsync()

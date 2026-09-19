@@ -89,6 +89,12 @@ namespace KFramework.MonoGame
         /// </summary>
         public PresentationParameters PresentationParameters { get; private set; }
 
+        /// <summary>
+        /// 本设备所绘制的那块 <c>&lt;canvas&gt;</c> 的 DOM id。
+        /// 页面里已有该元素就直接用它，没有则由 html_canvas.ts 自动创建一块铺满视口的默认画布。
+        /// </summary>
+        public string CanvasId { get; }
+
         internal GraphicsMetrics _metrics;
 
         /// <summary>
@@ -136,6 +142,8 @@ namespace KFramework.MonoGame
 
         public GraphicsDevice(string canvasSelector = "#game")
         {
+            CanvasId = Html5Canvas.ToCanvasId(canvasSelector);
+
             // 照 MonoGame 的无参内部构造：先建一份默认 PP，画布尺寸随后由 SyncCanvasSize 覆盖。
             // 注：MonoGame 在这里还会把 DepthStencilFormat 设为 Depth24，本后端画布不带深度附件，保持 None。
             PresentationParameters = new PresentationParameters();
