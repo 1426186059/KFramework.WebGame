@@ -21,6 +21,65 @@ public abstract class TestSceneBase : KSceneBase
 
     private readonly Rectangle _backRect = new(20, 16, 96, 34);
 
+    // ---- 按钮（业务页用 BeginButtons + AddUiButton 登记，基类负责命中与绘制） ----
+
+    private readonly List<UiButton> _buttons = [];
+    private int _buttonX;
+    private int _buttonY;
+    private int _contentTop;
+
+    /// <summary>按钮区之后正文的起始 y（由 <see cref="BeginButtons"/> / <see cref="AddUiButton"/> 算出）。</summary>
+    protected float ContentTop => _contentTop;
+
+    /// <summary>开始布置本帧的按钮（会清空上一帧的登记）。</summary>
+    /// <param name="top">第一行按钮的顶端 y。</param>
+    protected void BeginButtons(int top)
+    {
+        _buttons.Clear();
+        _buttonX = 28;
+        _buttonY = top;
+        _contentTop = top;
+    }
+
+    /// <summary>按行排一个按钮；超出画布右边自动换行。<paramref name="active"/> 表示开关处于「开」。</summary>
+    protected void AddUiButton(string label, Action click, bool active = false)
+    {
+        int width = UiButton.MeasureWidth(Font, label);
+        if (_buttonX + width > Device.Viewport.Width - 20 && _buttonX > 28)
+        {
+            _buttonX = 28;
+            _buttonY += UiButton.DefaultHeight + UiButton.Gap;
+        }
+
+        _buttons.Add(new UiButton(new Rectangle(_buttonX, _buttonY, width, UiButton.DefaultHeight), label, click, active));
+        _buttonX += width + UiButton.Gap;
+        _contentTop = _buttonY + UiButton.DefaultHeight + 18;
+    }
+
+    /// <summary>处理鼠标左键点击；应在登记完按钮之后调用，返回是否命中了某个按钮。</summary>
+    protected bool ClickButtons()
+    {
+        if (!Input_Mouse.GetButtonDown(MouseButton.Left)) return false;
+
+        Vector2 p = Input_Mouse.Position;
+        foreach (UiButton button in _buttons)
+        {
+            if (button.Rect.Contains(p))
+            {
+                button.Click();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>绘制已登记的按钮（必须在 SpriteBatch.Begin / End 之间）。</summary>
+    protected void DrawButtons(SpriteBatch batch)
+    {
+        foreach (UiButton button in _buttons)
+            button.Draw(batch, Font, KDefaultRes.DefaultTexture2D);
+    }
+
     public override void Update()
     {
         if (Input_KeyBoard.GetKeyDown(Keys.Escape))

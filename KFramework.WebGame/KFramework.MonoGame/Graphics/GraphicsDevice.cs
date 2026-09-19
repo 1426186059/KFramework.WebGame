@@ -142,7 +142,7 @@ namespace KFramework.MonoGame
 
         public GraphicsDevice(string canvasSelector = "#game")
         {
-            CanvasId = Html5Canvas.ToCanvasId(canvasSelector);
+            CanvasId = HTML_Canvas_Func.ToCanvasId(canvasSelector);
 
             // 照 MonoGame 的无参内部构造：先建一份默认 PP，画布尺寸随后由 SyncCanvasSize 覆盖。
             // 注：MonoGame 在这里还会把 DepthStencilFormat 设为 Depth24，本后端画布不带深度附件，保持 None。

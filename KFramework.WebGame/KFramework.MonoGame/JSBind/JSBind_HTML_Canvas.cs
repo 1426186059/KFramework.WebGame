@@ -27,13 +27,43 @@ namespace KFramework.MonoGame
         [JSImport("create", "canvas")]
         internal static partial bool Create(string id, int x, int y, int width, int height);
 
-        /// <summary>设置已有画布的位置与 CSS 尺寸；画布不存在时返回 false。</summary>
-        [JSImport("setRect", "canvas")]
-        internal static partial bool SetRect(string id, int x, int y, int width, int height);
+        /// <summary>
+        /// 【通用布局入口】对应 TS 的 applyLayout：mode 取 <see cref="HTML_CanvasLayoutMode"/> 的数值，
+        /// 矩形摆位 / 只改尺寸 / 居中 / 铺满四种情况都走这一个导出。
+        /// </summary>
+        [JSImport("applyLayout", "canvas")]
+        internal static partial bool ApplyLayout(string id, int mode, int x, int y, int width, int height);
 
-        /// <summary>把已有画布恢复为铺满视口；画布不存在时返回 false。</summary>
+        /// <summary>读画布当前矩形：view[0]=left，view[1]=top，view[2]=width，view[3]=height（CSS 像素）。</summary>
+        [JSImport("getRect", "canvas")]
+        internal static partial void GetRect(string id, [JSMarshalAs<JSType.MemoryView>] Span<int> view);
+
+        /// <summary>读当前可设置的最大 CSS 尺寸：view[0]=maxWidth，view[1]=maxHeight。</summary>
+        [JSImport("getMaxSize", "canvas")]
+        internal static partial void GetMaxSize([JSMarshalAs<JSType.MemoryView>] Span<int> view);
+
+        /// <summary>
+        /// 请求浏览器原生全屏（<c>canvas.requestFullscreen</c>）。
+        /// 需要用户手势，被拒绝时 JS 侧会回落到「铺满视口」的软全屏。
+        /// </summary>
+        [JSImport("requestFullscreen", "canvas")]
+        internal static partial bool RequestFullscreen(string id);
+
+        /// <summary>退出浏览器原生全屏。</summary>
+        [JSImport("exitFullscreen", "canvas")]
+        internal static partial void ExitFullscreen();
+
+        /// <summary>把已有画布恢复为铺满视口；画布不存在时返回 false（C# 侧已改用 applyLayout 的 Fullscreen 模式）。</summary>
         [JSImport("setFullscreen", "canvas")]
         internal static partial bool SetFullscreen(string id);
+
+        /// <summary>撤销本模块写在画布上的行内样式，恢复页面自身布局；画布不存在时返回 false。</summary>
+        [JSImport("restoreLayout", "canvas")]
+        internal static partial bool RestoreLayout(string id);
+
+        /// <summary>读浏览器视口尺寸：view[0]=innerWidth，view[1]=innerHeight。</summary>
+        [JSImport("getViewportSize", "canvas")]
+        internal static partial void GetViewportSize([JSMarshalAs<JSType.MemoryView>] Span<int> view);
 
         /// <summary>删除画布（从 DOM 移除并注销）；画布不存在时返回 false。</summary>
         [JSImport("destroy", "canvas")]

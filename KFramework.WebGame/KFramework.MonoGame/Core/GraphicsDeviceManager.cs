@@ -9,16 +9,22 @@ namespace KFramework.MonoGame
     /// <see cref="IsFullScreen"/> 等，改完调用 <see cref="ApplyChanges"/>。
     /// </para>
     /// <para>
+    /// 画布由 <see cref="HTML_Canvas"/>（模块 <c>html_canvas.ts</c>）托管，因此下列设置是真生效的：
+    /// <see cref="PreferredBackBufferWidth"/> / <see cref="PreferredBackBufferHeight"/>（换算成画布 CSS 尺寸）、
+    /// <see cref="IsFullScreen"/>（软全屏 = 铺满视口；<see cref="HardwareModeSwitch"/> 为 true 时请求浏览器原生全屏）。
+    /// </para>
+    /// <para>
     /// 与 MonoGame 的差异（均由 Web 平台特性决定）：
     /// ① 浏览器只有一个与画布绑定的 WebGL2 上下文，<see cref="GraphicsDevice"/> 由 <see cref="Game"/>
     /// 在构造时创建，本类只接管它、不会重建（没有 <c>GraphicsDevice.Reset</c>、也没有 DeviceReset 系列事件被触发）；
-    /// ② 后备缓冲尺寸由画布的 CSS 尺寸 × DPR 决定（每帧 <see cref="GraphicsDevice.SyncCanvasSize"/> 同步），
-    /// 故 <see cref="PreferredBackBufferWidth"/> / <see cref="PreferredBackBufferHeight"/> 只作为期望值记录，
-    /// 常用于虚拟分辨率与 UI 布局换算，不会改变画布大小；
-    /// ③ <see cref="IsFullScreen"/> / <see cref="HardwareModeSwitch"/> /
-    /// <see cref="PreferHalfPixelOffset"/> / <see cref="PreferMultiSampling"/> 只写入
-    /// <see cref="PresentationParameters"/>，浏览器侧没有对应的模式切换能力；
-    /// ④ <see cref="Game"/> 没有服务容器（Services），故不注册 IGraphicsDeviceManager/IGraphicsDeviceService 服务，
+    /// ② 后备缓冲尺寸 = 画布 CSS 尺寸 × DPR，所以 <see cref="PreferredBackBufferWidth"/> /
+    /// <see cref="PreferredBackBufferHeight"/> 是「后备缓冲像素」语义，应用时会除以 DPR 换算成 CSS 尺寸；
+    /// ③ 原生全屏必须由用户手势触发（浏览器限制），被拒绝时自动回落到铺满视口的软全屏；
+    /// ④ <see cref="PreferredBackBufferFormat"/> / <see cref="PreferredDepthStencilFormat"/> /
+    /// <see cref="PreferHalfPixelOffset"/> / <see cref="PreferMultiSampling"/> 仍只在
+    /// <see cref="PresentationParameters"/> 上记录：WebGL2 上下文建好后无法改像素格式，
+    /// 画布也没开 <c>antialias</c>（见 <c>html_canvas.ts</c> 的上下文参数）；
+    /// ⑤ <see cref="Game"/> 没有服务容器（Services），故不注册 IGraphicsDeviceManager/IGraphicsDeviceService 服务，
     /// 改为通过 <c>Game.graphicsDeviceManager</c> 内部字段关联。
     /// </para>
     /// </summary>
@@ -40,6 +46,13 @@ namespace KFramework.MonoGame
         private bool _preferHalfPixelOffset = false;
         private bool _wantFullScreen;
         private GraphicsProfile _graphicsProfile;
+
+        // 用户是否显式设置过期望的后备缓冲尺寸：没设置过就不去动画布，
+        // 保留页面自身的布局（例如 index.html 里 <canvas> 的 width:100%），画布继续随浏览器缩放。
+        private bool _preferredSizeSet;
+
+        // 画布当前是否处于全屏（原生或铺满视口）。
+        private bool _canvasFullScreen;
 
         // ApplyChanges 的脏标记
         private bool _shouldApplyChanges;
@@ -131,8 +144,10 @@ namespace KFramework.MonoGame
             _shouldApplyChanges = false;
 
             // MonoGame 是把 gdi.PresentationParameters 传进设备构造函数；本后端的设备早已建好，
-            // 故改为把参数写回设备的 PresentationParameters（宽高除外，见类注释）。
+            // 故改为把参数写回设备的 PresentationParameters（宽高除外，见类注释），
+            // 并按参数摆好画布（尺寸 / 全屏）。
             ApplyPresentationParameters(gdi.PresentationParameters);
+            ApplyCanvas(gdi.PresentationParameters);
 
             OnDeviceCreated(EventArgs.Empty);
         }
@@ -328,9 +343,73 @@ namespace KFramework.MonoGame
             // Web 上画布尺寸与全屏都由浏览器 / CSS 决定，没有对应能力，跳过。
 
             // 用本管理器的设置填充一份 gdi，并允许 PreparingDeviceSettings 事件改写，
-            // 再把这份设置应用到设备。
+            // 再把这份设置应用到设备与画布。
             var gdi = DoPreparingDeviceSettings();
             ApplyPresentationParameters(gdi.PresentationParameters);
+            ApplyCanvas(gdi.PresentationParameters);
+        }
+
+        /// <summary>
+        /// 把期望的后备缓冲设置落实到画布上（照 MonoGame「按 PresentationParameters 准备 / 重置设备」这一步）。
+        /// </summary>
+        /// <remarks>
+        /// 只有「显式设置过期望尺寸」或「要全屏」时才会写画布，否则保留页面自身布局，避免一上来就把画布钉死成固定像素。
+        /// </remarks>
+        /// <remarks>
+        /// 后备缓冲 = 画布 CSS 尺寸 × DPR，所以 CSS 尺寸 = 期望的后备缓冲尺寸 ÷ DPR（四舍五入）。
+        /// 全屏分两种：<paramref name="pp"/> 的 HardwareModeSwitch 为 true 请求浏览器原生全屏（需用户手势，
+        /// 被拒绝时 JS 侧自动回落到铺满视口），false 走「软全屏」—— 只把画布铺满视口，不切换显示模式。
+        /// </remarks>
+        private void ApplyCanvas(PresentationParameters pp)
+        {
+            HTML_Canvas canvas = Canvas;
+
+            if (pp.IsFullScreen)
+            {
+                if (pp.HardwareModeSwitch)
+                    canvas.RequestFullscreen();
+                else
+                    canvas.SetFullscreen();
+
+                _canvasFullScreen = true;
+            }
+            else if (_preferredSizeSet)
+            {
+                // 回到窗口模式：若正处于原生全屏则先退出，再按期望尺寸铺画布。
+                canvas.ExitFullscreen();
+                SetCanvasSize(canvas, pp);
+                _canvasFullScreen = false;
+            }
+            else if (_canvasFullScreen)
+            {
+                // 退出了全屏但没给过期望尺寸：回到「铺满视口」的默认布局。
+                canvas.ExitFullscreen();
+                canvas.SetFullscreen();
+                _canvasFullScreen = false;
+            }
+            else
+            {
+                // 既没显式设置过期望尺寸、也不是全屏：不去碰画布，
+                // 保留页面自身给画布的布局（如 <canvas> 的 width:100%），让它继续随浏览器缩放。
+                canvas.ExitFullscreen();
+                return;
+            }
+
+            // 画布改完立即同步后备缓冲与视口，不等下一帧 Game.TickFrame 里的 SyncCanvasSize。
+            // 与 Game.TickFrame 一样：尺寸真的变了才 RaiseSizeChanged。
+            if (_graphicsDevice.SyncCanvasSize())
+                _game.Window.RaiseSizeChanged();
+        }
+
+        /// <summary>按「CSS 尺寸 = 期望后备缓冲 ÷ DPR」设置画布大小。</summary>
+        private void SetCanvasSize(HTML_Canvas canvas, PresentationParameters pp)
+        {
+            float dpr = _graphicsDevice.DevicePixelRatio;
+            if (dpr <= 0f) dpr = 1f;
+
+            int cssWidth = Math.Max(1, (int)Math.Round(pp.BackBufferWidth / dpr));
+            int cssHeight = Math.Max(1, (int)Math.Round(pp.BackBufferHeight / dpr));
+            canvas.SetSize(cssWidth, cssHeight);
         }
 
         private void Initialize(GraphicsDeviceInformation gdi)
@@ -343,7 +422,11 @@ namespace KFramework.MonoGame
         /// <summary>
         /// 在窗口模式与全屏模式之间切换。
         /// </summary>
-        /// <remarks>Web 上没有可用的全屏切换能力（需要浏览器 requestFullscreen），本方法只切换与记录状态。</remarks>
+        /// <remarks>
+        /// 全屏：<see cref="HardwareModeSwitch"/> 为 true 时走浏览器原生全屏（需用户手势，
+        /// 例如本方法由按键 / 点击触发；被拒绝时回落为铺满视口），false 时只把画布铺满视口。
+        /// 退出全屏则回到 <see cref="PreferredBackBufferWidth"/> × <see cref="PreferredBackBufferHeight"/>。
+        /// </remarks>
         public void ToggleFullScreen()
         {
             IsFullScreen = !IsFullScreen;
@@ -370,9 +453,17 @@ namespace KFramework.MonoGame
         public GraphicsDevice GraphicsDevice => _graphicsDevice;
 
         /// <summary>
+        /// 这块设备所绘制的画布（与 TS 层 <c>html_canvas.ts</c> 一一对应）。
+        /// </summary>
+        public HTML_Canvas Canvas => _game.Window.Canvas;
+
+        /// <summary>
         /// 是否希望切换到全屏模式。
         /// </summary>
-        /// <remarks>Web 上只记录到 <see cref="PresentationParameters.IsFullScreen"/>，不会真的切换。</remarks>
+        /// <remarks>
+        /// 调用 <see cref="ApplyChanges"/>（或 <see cref="ToggleFullScreen"/>）后生效：
+        /// 配合 <see cref="HardwareModeSwitch"/> 决定是请求浏览器原生全屏，还是只铺满视口。
+        /// </remarks>
         public bool IsFullScreen
         {
             get => _wantFullScreen;
@@ -387,7 +478,10 @@ namespace KFramework.MonoGame
         /// 窗口切到全屏时使用「硬」模式（true，真正的显示模式切换，慢但更高效）还是「软」模式（false，无边框最大化窗口）。
         /// 默认 true。
         /// </summary>
-        /// <remarks>Web 上无对应能力，仅记录。</remarks>
+        /// <remarks>
+        /// Web 上对应：true = 请求浏览器原生全屏（<c>canvas.requestFullscreen</c>，必须由用户手势触发，
+        /// 被拒绝时自动回落到软模式）；false = 只把画布铺满视口，不切换显示模式。
+        /// </remarks>
         public bool HardwareModeSwitch
         {
             get => _hardwareModeSwitch;
@@ -440,25 +534,34 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>期望的后备缓冲高度（像素）。</summary>
-        /// <remarks>Web 上不改变画布大小，只作为期望值记录（详见类注释）。</remarks>
+        /// <remarks>
+        /// 应用时按「CSS 尺寸 = 后备缓冲 ÷ DPR」换算后设置画布大小，即后备缓冲会真的变成这个高度
+        /// （受 DPR 取整影响可能差 1~2 像素）。
+        /// 从不显式设置这两个属性，画布就保持页面自身的布局（如 <c>width:100%</c>），可以继续随浏览器缩放。
+        /// </remarks>
         public int PreferredBackBufferHeight
         {
             get => _preferredBackBufferHeight;
             set
             {
                 _shouldApplyChanges = true;
+                _preferredSizeSet = true;
                 _preferredBackBufferHeight = value;
             }
         }
 
         /// <summary>期望的后备缓冲宽度（像素）。</summary>
-        /// <remarks>Web 上不改变画布大小，只作为期望值记录（详见类注释）。</remarks>
+        /// <remarks>
+        /// 应用时按「CSS 尺寸 = 后备缓冲 ÷ DPR」换算后设置画布大小，即后备缓冲会真的变成这个宽度
+        /// （受 DPR 取整影响可能差 1~2 像素）。
+        /// </remarks>
         public int PreferredBackBufferWidth
         {
             get => _preferredBackBufferWidth;
             set
             {
                 _shouldApplyChanges = true;
+                _preferredSizeSet = true;
                 _preferredBackBufferWidth = value;
             }
         }

@@ -47,6 +47,8 @@ KFramework.MonoGame —— 仿 MonoGame 引擎（面向 AI 智能体）
 目录速览
 --------
   Core/      Game、GameTime、GameHost 等生命周期
+  HTML/      HTML_Canvas（一块画布的对象封装）、HTML_Canvas_Func（静态函数入口，带 id）、HTML_CanvasLayoutMode
+             三者对应 KFramework.TSEngine/src/html_canvas.ts 的 "canvas" 模块，绑定见 JSBind/JSBind_HTML_Canvas.cs
   Graphics/  GraphicsDevice、SpriteBatch、Texture2D、效果与状态
   Fonts/     SpriteFont（系统/自定义字体）、KFont（引擎内自绘矢量字体）、BitmapFont（美术字）、BmFontData（.fnt 解析）、FontStyle、IFont
   Audio/     SoundEffect、SoundEffectInstance、MediaPlayer、AudioMaster（通用音频）
