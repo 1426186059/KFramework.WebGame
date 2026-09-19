@@ -36,6 +36,15 @@ namespace MirEngine
         public static Point Truncate(PointF value) => new Point((int)value.X, (int)value.Y);
         public static Point Round(PointF value) => new Point((int)Math.Round(value.X), (int)Math.Round(value.Y));
 
+        // 与 KFramework.MonoGame 的类型互通：边界代码（输入桥接等）可直接以 MG.Vector2 / MG.Point 参与运算，
+        // 无需把全工程的 MirEngine.Point 重写成另一套类型。
+        // （KFramework.MonoGame.Point 是最小 int 点，无 Empty/IsEmpty/Offset/与 Size 的运算符；
+        // 游戏几何层仍用功能更完整的 MirEngine.Point。）
+        public static implicit operator KFramework.MonoGame.Vector2(Point p) => new KFramework.MonoGame.Vector2(p.X, p.Y);
+        public static implicit operator Point(KFramework.MonoGame.Vector2 v) => new Point((int)v.X, (int)v.Y);
+        public static implicit operator KFramework.MonoGame.Point(Point p) => new KFramework.MonoGame.Point(p.X, p.Y);
+        public static implicit operator Point(KFramework.MonoGame.Point p) => new Point(p.X, p.Y);
+
         public override bool Equals(object obj)
         {
             if (!(obj is Point)) return false;

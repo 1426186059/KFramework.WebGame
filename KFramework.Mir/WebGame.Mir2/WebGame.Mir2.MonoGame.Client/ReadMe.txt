@@ -150,3 +150,34 @@ WebGame.Mir2.MonoGame.Client/
 一句话总结：
   原版用 WinForms/SlimDX/NAudio 把传奇搬到浏览器，本项目则用 KFramework.MonoGame
   把同一套传奇业务“重做底座”，并以此作为 KFramework.MonoGame 的商业化验证案例。
+
+
+八、可参考的同源 / 兄弟工程（定位与取舍参考）
+--------------------------------------------------------------------
+本项目在重构与排障时，可对照以下三处源码：
+
+  1. D:\OpenSource\Mir2_Unity_2027\Mir2_Unity_2027_1
+     Unity 重制版。涉及“分辨率 / 全屏缩放 / 相机正交尺寸”等处理方式时优先参考：
+       - Assets\Client\Settings.cs  （Resolution = 1024，按所选分辨率原生渲染，
+         而非把固定缓冲放大铺满窗口）
+       - Assets\Client\Resolution\DisplayResolutions.cs / eSupportedResolution.cs
+         （多分辨率支持枚举与探测）
+     其思路：游戏按“原生分辨率”渲染、UI 随分辨率自适应，从根上避免“低分辨率缓冲放大
+     导致的模糊”。本项目若要做到真正清晰的全屏，应借鉴此思路（见第九节）。
+
+  2. D:\OpenSource\Crystal\Client
+     Crystal 客户端（同源美术/资源）。涉及贴图库、地图库、音效索引等资源结构与命名
+     （如音效索引 index → 文件名的 `index/10 - index%10` 规则）时参考。
+
+  3. D:\OpenSource\KFramework.WebGame\KFramework.Mir\WebGame.Mir2\Web_Mir2.Client
+     原版 Web 客户端（WinForms/SlimDX 底座）。业务逻辑与本工程同源，涉及场景/控件/
+     网络/地图等具体实现细节时直接对照，是最贴近本工程的参考源。
+
+
+九、已知体验取舍：全屏拉伸 vs 清晰度
+--------------------------------------------------------------------
+当前为“固定逻辑分辨率(1024x768)烘焙 → 拉伸铺满画布(Viewport)”实现全屏。
+代价：把 1024 时代素材放大到更大画布，必然出现像素化/柔化（无法凭空变清晰）。
+若后续要求“全屏且清晰”，正确做法是借鉴 Mir2_Unity 的思路——按画布原生分辨率渲染
+（ControlTexture 取画布尺寸 + 全局缩放变换），而非放大固定缓冲。该改动较大，
+需评估后再实施。

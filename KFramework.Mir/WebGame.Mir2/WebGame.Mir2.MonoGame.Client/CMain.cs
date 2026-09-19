@@ -290,15 +290,26 @@ namespace WebGame.Mir2.MonoGame.Client
         private static void OnKeyDown(MG.Keys k) => CMain.CMain_KeyDown(null, ToKeyEventArgs(k));
         private static void OnKeyUp(MG.Keys k) => CMain.CMain_KeyUp(null, ToKeyEventArgs(k));
 
+        // 画布(Viewport)像素 → 逻辑分辨率(Settings.ScreenWidth/Height)坐标（KFramework.MonoGame.Vector2）。
+        // 场景纹理被拉伸铺满画布，命中测试必须在逻辑坐标空间进行，否则点击会错位（按钮无反应）。
+        private static MG.Vector2 ToLogical(MG.Vector2 p)
+        {
+            return new MG.Vector2(
+                p.X / CMain.ScaleX,
+                p.Y / CMain.ScaleY);
+        }
+
         private static void OnMouseDown(MG.MouseButton b, MG.Vector2 p)
         {
-            CMain.MPoint = new MirEngine.Point((int)p.X, (int)p.Y);
-            MirScene.ActiveScene?.OnMouseDown(ToMouseEventArgs(b, p));
+            var lp = ToLogical(p);
+            CMain.MPoint = new MirEngine.Point((int)lp.X, (int)lp.Y);
+            MirScene.ActiveScene?.OnMouseDown(ToMouseEventArgs(b, lp));
         }
         private static void OnMouseUp(MG.MouseButton b, MG.Vector2 p)
         {
-            CMain.MPoint = new MirEngine.Point((int)p.X, (int)p.Y);
-            var e = ToMouseEventArgs(b, p);
+            var lp = ToLogical(p);
+            CMain.MPoint = new MirEngine.Point((int)lp.X, (int)lp.Y);
+            var e = ToMouseEventArgs(b, lp);
             // 复刻 WinForms 原版 CMain_MouseUp：松开按键必须清掉 MapControl.MapButtons，否则后续点击会错位。
             MapControl.MapButtons &= ~e.Button;
             if (e.Button != MouseButtons.Right || !Settings.NewMove)

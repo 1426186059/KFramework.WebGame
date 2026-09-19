@@ -10793,7 +10793,10 @@ namespace Client.MirScenes
 
             if (MapObject.User.Dead) DXManager.SetGrayscale(true);
 
-            DXManager.DrawOpaque(ControlTexture, new Rectangle(0, 0, Settings.ScreenWidth, Settings.ScreenHeight), Vector3.Zero, Color.White, Opacity);
+            // 游戏场景同样需要把固定逻辑分辨率(1024x768)烘焙纹理拉伸铺满画布(Viewport)，
+            // 否则只会显示在画布左上角（地图"只显示一半" + 四周洋红底色）。
+            // （拉伸采样用 PointClamp，保持像素锐利、不引入二次模糊。）
+            DXManager.PresentToScreen(ControlTexture.RenderTarget);
 
             if (MapObject.User.Dead) DXManager.SetGrayscale(false);
 
