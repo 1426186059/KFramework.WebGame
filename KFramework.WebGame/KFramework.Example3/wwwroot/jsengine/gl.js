@@ -231,6 +231,14 @@ export function framebufferRenderbuffer(target, attachment, rbTarget, renderbuff
     gpu().framebufferRenderbuffer(target, attachment, rbTarget, renderbuffer);
 }
 export function deleteRenderbuffer(renderbuffer) { gpu().deleteRenderbuffer(renderbuffer); }
+/** 分配多重采样 renderbuffer 存储（MSAA 颜色 / 深度附件）。samples 为每像素采样数。 */
+export function renderbufferStorageMultisample(target, samples, internalFormat, width, height) {
+    gpu().renderbufferStorageMultisample(target, samples, internalFormat, width, height);
+}
+/** 把多重采样帧缓冲解析（resolve）到单采样帧缓冲（MSAA 离屏目标解到可采样纹理用）。 */
+export function blitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter) {
+    gpu().blitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+}
 // ---------- 剔除 / 深度（照 MonoGame 的 RasterizerState / DepthStencilState 下发） ----------
 export function cullFace(mode) { gpu().cullFace(mode); }
 export function frontFace(mode) { gpu().frontFace(mode); }

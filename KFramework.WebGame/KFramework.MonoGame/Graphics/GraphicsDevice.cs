@@ -512,6 +512,13 @@ namespace KFramework.MonoGame
             int renderTargetWidth;
             int renderTargetHeight;
 
+            // 多重采样：切走之前先把当前绑定的 MSAA 目标 resolve 到纹理（否则离屏结果是未解析的多重采样缓冲）。
+            if (_currentRenderTargetCount > 0)
+            {
+                for (int i = 0; i < _currentRenderTargetCount; i++)
+                    ResolveRenderTarget((IRenderTarget)_currentRenderTargetBindings[i].RenderTarget!);
+            }
+
             Array.Clear(_currentRenderTargetBindings, 0, _currentRenderTargetBindings.Length);
 
             if (renderTargets == null || renderTargets.Length == 0)
@@ -545,16 +552,41 @@ namespace KFramework.MonoGame
             if (clearTarget) Clear(DiscardColor);
         }
 
+        /// <summary>把多重采样帧缓冲解析到可采样纹理（照 MonoGame 的 PlatformResolveRenderTargets）。</summary>
+        private void ResolveRenderTarget(IRenderTarget rt)
+        {
+            if (rt.MultiSampleCount <= 0) return;
+            if (rt.GLMultiSampleFramebuffer is not { } ms || rt.GLResolveFramebuffer is not { } resolve) return;
+
+            JSBind_GL.BindFramebuffer(JSBind_GL.READ_FRAMEBUFFER, ms);
+            JSBind_GL.BindFramebuffer(JSBind_GL.DRAW_FRAMEBUFFER, resolve);
+            JSBind_GL.BlitFramebuffer(0, 0, rt.Width, rt.Height, 0, 0, rt.Width, rt.Height,
+                JSBind_GL.COLOR_BUFFER_BIT, JSBind_GL.LINEAR);
+            JSBind_GL.BindFramebuffer(JSBind_GL.READ_FRAMEBUFFER, null);
+            JSBind_GL.BindFramebuffer(JSBind_GL.DRAW_FRAMEBUFFER, null);
+        }
+
         /// <summary>建 / 复用并绑定当前渲染目标组合的 FBO（照 MonoGame 的 PlatformApplyRenderTargets）。</summary>
         private IRenderTarget PlatformApplyRenderTargets()
         {
+            var first = (IRenderTarget)_currentRenderTargetBindings[0].RenderTarget!;
+
+            // 多重采样：颜色是 multisample renderbuffer，渲染时直接绑 MSAA FBO，不走组合缓存，
+            // 解析后才通过 GLResolveFramebuffer 写入 GLTexture。
+            if (first.MultiSampleCount > 0 && first.GLMultiSampleFramebuffer is { } msFbo)
+            {
+                JSBind_GL.BindFramebuffer(JSBind_GL.FRAMEBUFFER, msFbo);
+                _samplerAppliedKey = 0;
+                Textures.Clear();
+                return first;
+            }
+
             if (!_glFramebuffers.TryGetValue(_currentRenderTargetBindings, out JSObject? framebuffer))
             {
                 framebuffer = JSBind_GL.CreateFramebuffer();
                 JSBind_GL.BindFramebuffer(JSBind_GL.FRAMEBUFFER, framebuffer);
 
                 // 深度 / 模板附件（照 MonoGame：Depth24Stencil8 时二者共用同一个 renderbuffer）。
-                var first = (IRenderTarget)_currentRenderTargetBindings[0].RenderTarget!;
                 if (first.GLDepthBuffer is { } depth)
                     JSBind_GL.FramebufferRenderbuffer(JSBind_GL.FRAMEBUFFER, JSBind_GL.DEPTH_ATTACHMENT,
                         JSBind_GL.RENDERBUFFER, depth);
@@ -606,6 +638,55 @@ namespace KFramework.MonoGame
                 _ => 0,
             };
 
+            // —— 多重采样：颜色用 multisample renderbuffer，解析后写入纹理 ——
+            if (renderTarget.MultiSampleCount > 0)
+            {
+                int samples = renderTarget.MultiSampleCount;
+                int max = JSBind_GL.GetParameterInt(JSBind_GL.MAX_SAMPLES);
+                if (samples > max) samples = Math.Max(1, max);
+                if (samples < 1) samples = 1;
+
+                // MSAA 颜色 renderbuffer（RGBA8）
+                JSObject colorRB = JSBind_GL.CreateRenderbuffer();
+                JSBind_GL.BindRenderbuffer(JSBind_GL.RENDERBUFFER, colorRB);
+                JSBind_GL.RenderbufferStorageMultisample(JSBind_GL.RENDERBUFFER, samples, JSBind_GL.RGBA8, width, height);
+                renderTarget.GLColorRenderbuffer = colorRB;
+
+                // MSAA FBO：颜色挂 multisample renderbuffer
+                JSObject msFbo = JSBind_GL.CreateFramebuffer();
+                JSBind_GL.BindFramebuffer(JSBind_GL.FRAMEBUFFER, msFbo);
+                JSBind_GL.FramebufferRenderbuffer(JSBind_GL.FRAMEBUFFER, JSBind_GL.COLOR_ATTACHMENT0, JSBind_GL.RENDERBUFFER, colorRB);
+
+                if (internalFormat != 0)
+                {
+                    JSObject depthRB = JSBind_GL.CreateRenderbuffer();
+                    JSBind_GL.BindRenderbuffer(JSBind_GL.RENDERBUFFER, depthRB);
+                    JSBind_GL.RenderbufferStorageMultisample(JSBind_GL.RENDERBUFFER, samples, internalFormat, width, height);
+                    JSBind_GL.FramebufferRenderbuffer(JSBind_GL.FRAMEBUFFER, JSBind_GL.DEPTH_ATTACHMENT, JSBind_GL.RENDERBUFFER, depthRB);
+                    renderTarget.GLDepthBuffer = depthRB;
+                    // 照 MonoGame：Depth24Stencil8 时 stencil 与 depth 是同一个 renderbuffer。
+                    renderTarget.GLStencilBuffer = depthFormat == DepthFormat.Depth24Stencil8 ? depthRB : null;
+                }
+
+                int st = JSBind_GL.CheckFramebufferStatus(JSBind_GL.FRAMEBUFFER);
+                if (st != JSBind_GL.FRAMEBUFFER_COMPLETE)
+                    Console.Error.WriteLine($"[KFramework.MonoGame] MSAA 帧缓冲不完整: 0x{st:X4}");
+                renderTarget.GLMultiSampleFramebuffer = msFbo;
+
+                // 解析 FBO：把可采样纹理挂上，resolve 时 blit 进来
+                JSObject resolveFbo = JSBind_GL.CreateFramebuffer();
+                JSBind_GL.BindFramebuffer(JSBind_GL.FRAMEBUFFER, resolveFbo);
+                JSBind_GL.FramebufferTexture2D(JSBind_GL.FRAMEBUFFER, JSBind_GL.COLOR_ATTACHMENT0,
+                    JSBind_GL.TEXTURE_2D, renderTarget.GLTexture, 0);
+                int st2 = JSBind_GL.CheckFramebufferStatus(JSBind_GL.FRAMEBUFFER);
+                if (st2 != JSBind_GL.FRAMEBUFFER_COMPLETE)
+                    Console.Error.WriteLine($"[KFramework.MonoGame] 解析帧缓冲不完整: 0x{st2:X4}");
+                renderTarget.GLResolveFramebuffer = resolveFbo;
+
+                JSBind_GL.BindFramebuffer(JSBind_GL.FRAMEBUFFER, null);
+                return;
+            }
+
             if (internalFormat == 0)
             {
                 renderTarget.GLDepthBuffer = null;
@@ -625,6 +706,22 @@ namespace KFramework.MonoGame
         /// <summary>释放渲染目标的 renderbuffer，并丢弃引用到它的 FBO 缓存（照 MonoGame 的 PlatformDeleteRenderTarget）。</summary>
         internal void PlatformDeleteRenderTarget(IRenderTarget renderTarget)
         {
+            if (renderTarget.GLColorRenderbuffer is { } colorRB)
+            {
+                JSBind_GL.DeleteRenderbuffer(colorRB);
+                renderTarget.GLColorRenderbuffer = null;
+            }
+            if (renderTarget.GLMultiSampleFramebuffer is { } msFbo)
+            {
+                JSBind_GL.DeleteFramebuffer(msFbo);
+                renderTarget.GLMultiSampleFramebuffer = null;
+            }
+            if (renderTarget.GLResolveFramebuffer is { } resolveFbo)
+            {
+                JSBind_GL.DeleteFramebuffer(resolveFbo);
+                renderTarget.GLResolveFramebuffer = null;
+            }
+
             if (renderTarget.GLDepthBuffer is { } depth)
                 JSBind_GL.DeleteRenderbuffer(depth);
             renderTarget.GLDepthBuffer = null;

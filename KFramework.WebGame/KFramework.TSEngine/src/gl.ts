@@ -288,6 +288,22 @@ export function framebufferRenderbuffer(
 }
 export function deleteRenderbuffer(renderbuffer: WebGLRenderbuffer | null): void { gpu().deleteRenderbuffer(renderbuffer); }
 
+/** 分配多重采样 renderbuffer 存储（MSAA 颜色 / 深度附件）。samples 为每像素采样数。 */
+export function renderbufferStorageMultisample(
+    target: number, samples: number, internalFormat: number, width: number, height: number,
+): void {
+    gpu().renderbufferStorageMultisample(target, samples, internalFormat, width, height);
+}
+
+/** 把多重采样帧缓冲解析（resolve）到单采样帧缓冲（MSAA 离屏目标解到可采样纹理用）。 */
+export function blitFramebuffer(
+    srcX0: number, srcY0: number, srcX1: number, srcY1: number,
+    dstX0: number, dstY0: number, dstX1: number, dstY1: number,
+    mask: number, filter: number,
+): void {
+    gpu().blitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+}
+
 // ---------- 剔除 / 深度（照 MonoGame 的 RasterizerState / DepthStencilState 下发） ----------
 
 export function cullFace(mode: number): void { gpu().cullFace(mode); }

@@ -27,13 +27,19 @@ namespace KFramework.MonoGame
         /// <summary>该渲染目标附带的深度 / 模板格式。</summary>
         public DepthFormat DepthStencilFormat { get; }
 
-        /// <summary>每像素采样数；本后端不做 MSAA resolve，恒为 0。</summary>
+        /// <summary>每像素采样数；>0 表示多重采样（由 GraphicsDevice 用 renderbufferStorageMultisample + blitFramebuffer 实现）。</summary>
         public int MultiSampleCount { get; }
 
         /// <summary>内容保留策略（照 MonoGame）。</summary>
         public RenderTargetUsage RenderTargetUsage { get; }
 
         JSObject IRenderTarget.GLTexture => Handle;
+
+        JSObject? IRenderTarget.GLColorRenderbuffer { get; set; }
+
+        JSObject? IRenderTarget.GLMultiSampleFramebuffer { get; set; }
+
+        JSObject? IRenderTarget.GLResolveFramebuffer { get; set; }
 
         JSObject? IRenderTarget.GLDepthBuffer { get; set; }
 
@@ -53,19 +59,19 @@ namespace KFramework.MonoGame
         /// <summary>
         /// 完整参数构造（照 MonoGame）。
         /// </summary>
-        /// <param name="preferredMultiSampleCount">请求的 MSAA 采样数；本后端不做 resolve，一律按 0 处理。</param>
+        /// <param name="preferredMultiSampleCount">请求的 MSAA 采样数；0 表示不多重采样，>0 由 GraphicsDevice 实现 resolve。</param>
         public RenderTarget2D(GraphicsDevice graphicsDevice, int width, int height, bool mipMap,
                               SurfaceFormat preferredFormat, DepthFormat preferredDepthFormat,
                               int preferredMultiSampleCount, RenderTargetUsage usage)
             : base(graphicsDevice, width, height, mipMap, preferredFormat, SurfaceType.RenderTarget)
         {
             DepthStencilFormat = preferredDepthFormat;
-            // 本后端不做 MSAA resolve（MonoGame 需要 blitFramebuffer 把多重采样 FBO 解到纹理），
-            // 因此无论请求多少采样都钳到 0，避免“看起来生效、实际没 resolve”。
-            MultiSampleCount = 0;
+            // 保留请求的采样数；实际能否生效、上限多少由 GraphicsDevice.PlatformCreateRenderTarget 决定。
+            MultiSampleCount = preferredMultiSampleCount;
             RenderTargetUsage = usage;
 
-            // 平台层：建深度 / 模板 renderbuffer（颜色附件就是本纹理自己，FBO 由设备按需缓存）。
+            // 平台层：多重采样时建「MSAA 颜色/深度 renderbuffer + MSAA FBO + 解析 FBO」，
+            // 非多重采样时颜色附件就是本纹理自己（FBO 由设备按需缓存）。
             graphicsDevice.PlatformCreateRenderTarget(this, width, height, preferredDepthFormat);
 
             _sortingKey = graphicsDevice.NextSortingKey();

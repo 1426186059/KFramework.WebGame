@@ -52,5 +52,11 @@ public static class TestRegistry
             Desc = "开 / 关 离屏渲染对比：几千个精灵，直接画 vs 画进 RenderTarget2D 后每帧只贴 1 个（看 FPS 与提交量）",
             Factory = static () => new RenderTargetTest.RenderTargetTestScene(),
         },
+        new TestEntry
+        {
+            Name = "多重采样 MSAA",
+            Desc = "同一场景渲染进两张离屏 RenderTarget2D（MultiSampleCount 0 / 4），并排对比边缘锯齿；WebGL 单上下文内做 MSAA 的正确方式（多重采样 FBO + blitFramebuffer 解析）",
+            Factory = static () => new MSAATest.MSAATestScene(),
+        },
     ];
 }
