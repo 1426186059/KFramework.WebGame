@@ -15,17 +15,62 @@ namespace Client.MirControls
         private static long _lastClickTime;
         private static MirControl _clickedControl;
 
+        // 两层结构：世界层(地图/NPC/怪物/玩家) 与 UI 层(对话框/HUD)。
+        // 场景的直接子控件经 AddControl/InsertControl 路由到对应容器；渲染时分别烘焙、
+        // 各自用自己的相机变换，先上世界层再上 UI 层叠加（UI 层透明背景，不遮挡世界）。
+        protected readonly LayerControl WorldLayer = new LayerControl { BackColour = Color.Black, DrawControlTexture = false };
+        protected readonly LayerControl UILayer = new LayerControl { BackColour = Color.Transparent, DrawControlTexture = false };
+
         protected MirScene()
         {
             DrawControlTexture = true;
             BackColour = Color.Black;
             Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
+
+            // 世界层：均匀 aspect-fill 铺满（无偏移、不变形）；跟随玩家/居中由 KCamera 负责，此处先居中。
+            WorldLayer.LayerTransform = (w, h) =>
+            {
+                float zoom = Math.Max((float)w / Settings.ScreenWidth, (float)h / Settings.ScreenHeight);
+                float offX = (w - Settings.ScreenWidth * zoom) / 2f;
+                float offY = (h - Settings.ScreenHeight * zoom) / 2f;
+                return KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(zoom, zoom, offX, offY);
+            };
+            // UI 层：按高度统一缩放并 pinned（逻辑 1024x768），即"UI 映射到相机空间"后的屏幕固定坐标。
+            UILayer.LayerTransform = (w, h) =>
+            {
+                float s = (float)h / Settings.ScreenHeight;
+                return KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(s, s, 0, 0f);
+            };
+
+            WorldLayer.Parent = this;
+            UILayer.Parent = this;
         }
 
         public override sealed Size Size
         {
             get { return base.Size; }
             set { base.Size = value; }
+        }
+
+        // 统一路由：UI 控件进 UILayer，地图(MapControl)进 WorldLayer，层容器自身直接挂到场景。
+        protected override void AddControl(MirControl control)
+        {
+            if (control == WorldLayer || control == UILayer)
+                base.AddControl(control);
+            else if (control is MapControl)
+                WorldLayer.Add(control);
+            else
+                UILayer.Add(control);
+        }
+
+        public override void InsertControl(int index, MirControl control)
+        {
+            if (control == WorldLayer || control == UILayer)
+                base.InsertControl(index, control);
+            else if (control is MapControl)
+                WorldLayer.Insert(index, control);
+            else
+                UILayer.Insert(index, control);
         }
 
         public override void Draw()
@@ -55,61 +100,20 @@ namespace Client.MirControls
         {
             if (!DrawControlTexture) return;
 
-            // 烘焙：失效时把场景及所有子控件合成进 ControlTexture（复用下方 CreateTexture 逻辑）。
-            if (!TextureValid)
-                CreateTexture();
+            // 分层烘焙：世界层先，UI 层后（UI 透明叠加在世界之上）。
+            WorldLayer.Bake();
+            UILayer.Bake();
 
-            if (ControlTexture == null || ControlTexture.Disposed) return;
+            // 两层渲染目标均为视口分辨率、1:1 上屏；先世界后 UI 叠加。
+            var worldRT = WorldLayer.RenderTargetTexture;
+            if (worldRT != null) DXManager.PresentToScreen(worldRT);
 
-            // ControlTexture 是包裹离屏 RenderTarget2D 的 SlimDX 纹理；
-            // 取出其 RenderTarget2D（KFramework.MonoGame 类型）交给 PresentToScreen 拉伸铺满画布。
-            var rt = ControlTexture.RenderTarget;
-            if (rt == null) return;
-            DXManager.PresentToScreen(rt);
+            var uiRT = UILayer.RenderTargetTexture;
+            if (uiRT != null) DXManager.PresentToScreen(uiRT);
         }
 
-        // 烘焙整帧场景到离屏纹理：必须先切渲染目标到本场景纹理，子控件才会合成进它，
-        // 而非直接画到画布；烘焙完恢复渲染目标。
-        // 全屏自适应：离屏纹理按画布原生分辨率创建，烘焙时统一按屏幕高度缩放(参考 Unity
-        // Scale-With-Screen-Size / Match=Height)，UI 比例正确、不拉伸变形；随后由
-        // PresentToScreen 以 1:1 上屏（DXManager 已在 present 前清空 RenderTransform）。
-        protected override void CreateTexture()
-        {
-            var vp = DXManager.GDevice.Viewport;
-            int rtW = vp.Width, rtH = vp.Height;
-
-            if (TextureSize.Width != rtW || TextureSize.Height != rtH)
-                DisposeTexture();
-
-            if (ControlTexture == null || ControlTexture.Disposed)
-            {
-                DXManager.ControlList.Add(this);
-                ControlTexture = new Texture(DXManager.Device, rtW, rtH, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
-                TextureSize = new Size(rtW, rtH);
-            }
-            Surface oldSurface = DXManager.CurrentSurface;
-            Surface surface = ControlTexture.GetSurfaceLevel(0);
-            DXManager.SetSurface(surface);
-
-            DXManager.Device.Clear(ClearFlags.Target, BackColour, 0, 0);
-            
-            float s = (float)rtH / Settings.ScreenHeight;
-            DXManager.RenderTransform = KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(s, s, 0, 0f);
-            try
-            {
-                BeforeDrawControl();
-                DrawChildControls();
-                AfterDrawControl();
-            }
-            finally
-            {
-                DXManager.RenderTransform = null;
-            }
-
-            DXManager.SetSurface(oldSurface);
-            TextureValid = true;
-            surface.Dispose();
-        }
+        // 烘焙职责已下放到 WorldLayer / UILayer（见下方 LayerControl.CreateTexture），
+        // 由 DrawControl 分别烘焙后叠加上屏，故场景根不再单独烘焙。
 
         public override void OnMouseDown(MouseEventArgs e)
         {
@@ -205,7 +209,8 @@ namespace Client.MirControls
 
         public override void Redraw()
         {
-            TextureValid = false;
+            WorldLayer.Invalidate();
+            UILayer.Invalidate();
         }
         
         public virtual void ProcessPacket(Packet p)
@@ -347,5 +352,64 @@ namespace Client.MirControls
         }
 
         #endregion
+
+        // 层容器：带自身变换把子控件烘焙到离屏纹理，供 DrawControl 分层上屏。
+        protected sealed class LayerControl : MirControl
+        {
+            // 该层的世界→屏幕变换（视口尺寸驱动），由 MirScene 构造时按角色赋值。
+            public Func<int, int, KFramework.MonoGame.Matrix4x4> LayerTransform;
+
+            public void Bake()
+            {
+                if (TextureValid) return;
+                CreateTexture();
+            }
+
+            public KFramework.MonoGame.Texture2D RenderTargetTexture => ControlTexture?.RenderTarget;
+
+            public void Invalidate() => TextureValid = false;
+
+            public void Add(MirControl control) => AddControl(control);
+            public void Insert(int index, MirControl control) => InsertControl(index, control);
+
+            protected override void CreateTexture()
+            {
+                var vp = DXManager.GDevice.Viewport;
+                int rtW = vp.Width, rtH = vp.Height;
+
+                if (TextureSize.Width != rtW || TextureSize.Height != rtH)
+                    DisposeTexture();
+
+                if (ControlTexture == null || ControlTexture.Disposed)
+                {
+                    DXManager.ControlList.Add(this);
+                    ControlTexture = new Texture(DXManager.Device, rtW, rtH, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+                    TextureSize = new Size(rtW, rtH);
+                }
+                Surface oldSurface = DXManager.CurrentSurface;
+                Surface surface = ControlTexture.GetSurfaceLevel(0);
+                DXManager.SetSurface(surface);
+
+                DXManager.Device.Clear(ClearFlags.Target, BackColour, 0, 0);
+
+                DXManager.RenderTransform = LayerTransform != null
+                    ? LayerTransform(vp.Width, vp.Height)
+                    : KFramework.MonoGame.Matrix4x4.CreateScaleTranslation((float)vp.Height / Settings.ScreenHeight, (float)vp.Height / Settings.ScreenHeight, 0, 0f);
+                try
+                {
+                    BeforeDrawControl();
+                    DrawChildControls();
+                    AfterDrawControl();
+                }
+                finally
+                {
+                    DXManager.RenderTransform = null;
+                }
+
+                DXManager.SetSurface(oldSurface);
+                TextureValid = true;
+                surface.Dispose();
+            }
+        }
     }
 }

@@ -296,7 +296,7 @@ namespace WebGame.Mir2.MonoGame.Client
         }
         private static void OnMouseUp(MG.MouseButton b, MG.Vector2 p)
         {
-            var lp = ToLogical(p);
+            var lp = KCamera.ScreenToWorldPos(p);
             CMain.MPoint = new MirEngine.Point((int)lp.X, (int)lp.Y);
             var e = ToMouseEventArgs(b, lp);
             // 复刻 WinForms 原版 CMain_MouseUp：松开按键必须清掉 MapControl.MapButtons，否则后续点击会错位。

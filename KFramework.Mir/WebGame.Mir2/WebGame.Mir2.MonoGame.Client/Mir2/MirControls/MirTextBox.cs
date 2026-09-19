@@ -48,10 +48,9 @@ namespace Client.MirControls
             base.OnLocationChanged();
             ApplyNativeTextBoxState();
 
-            // 文本框随对话框重新居中/移动时，原生输入覆盖层同步跟随（坐标按全屏拉伸缩放反算）。
+            // 文本框随对话框重新居中/移动时，原生输入覆盖层同步跟随（坐标即逻辑空间，与 Unity 移植版一致，无需额外缩放）。
             if (_current == this)
-                BrowserInputOverlay.Reposition(DisplayLocation.X * CMain.ScaleX, DisplayLocation.Y * CMain.ScaleY,
-                    Size.Width * CMain.ScaleX, Size.Height * CMain.ScaleY);
+                BrowserInputOverlay.Reposition(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height);
 
             TextureValid = false;
             Redraw();
@@ -404,12 +403,9 @@ namespace Client.MirControls
                     fontPx = p;
             }
             string fontFamily = TextBox.Font != null ? TextBox.Font.Name : "Arial";
-            // 场景纹理被拉伸铺满画布，DOM 覆盖层坐标/字号需按同一缩放从逻辑(1024x768)空间
-            // 反算到画布后备缓冲像素，否则输入框/光标位置错配（见 CMain.ScaleX/ScaleY）。
-            double sx = CMain.ScaleX, sy = CMain.ScaleY;
-            BrowserInputOverlay.Show(DisplayLocation.X * sx, DisplayLocation.Y * sy,
-                Size.Width * sx, Size.Height * sy,
-                fontPx * sx, fore, TextBox.Text ?? string.Empty, TextBox.UseSystemPasswordChar, TextBox.MaxLength, TextBox.Multiline, fontFamily, TransparentDomInput);
+            // 覆盖层坐标/字号直接采用逻辑(1024x768)空间，与 Unity 移植版一致，由覆盖层自身适配画布缩放。
+            BrowserInputOverlay.Show(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height,
+                fontPx, fore, TextBox.Text ?? string.Empty, TextBox.UseSystemPasswordChar, TextBox.MaxLength, TextBox.Multiline, fontFamily, TransparentDomInput);
             TextureValid = false;
             Redraw();
         }
