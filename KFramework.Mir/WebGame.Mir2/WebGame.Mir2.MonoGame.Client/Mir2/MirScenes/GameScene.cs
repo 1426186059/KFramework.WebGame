@@ -10721,16 +10721,23 @@ namespace Client.MirScenes
             DXManager.SetSurface(surface);
             DXManager.Device.Clear(ClearFlags.Target, BackColour, 0, 0);
 
-            // 按屏幕高度统一缩放；宽屏下地图横向铺满（无黑边），玩家可见世界随屏变宽。
-            float s = (float)rtH / Settings.ScreenHeight;
-            DXManager.RenderTransform = KFramework.MonoGame.Matrix4x4.CreateScale(s, s, 1f);
+            // 全局等比缩放（aspect-fill）：取 max(宽比, 高比) 为缩放因子，按最大边铺满视口，
+            // 避免“按高度缩放”在宽屏下右半边留黑 / 横向拉伸。把逻辑分辨率中心(512,384)平移到
+            // 视口中心；当视口恰好为 1024x768（原生分辨率）时退化为单位变换——无平移、无黑边，
+            // 玩家落在约 (470,384)（原版传奇标准位置）。（参照 ReadMe 第九节与 Unity 思路）
+            float zoom = (float)Math.Max(rtW / (double)Settings.ScreenWidth, rtH / (double)Settings.ScreenHeight);
+            float mapCx = Settings.ScreenWidth / 2f;
+            float mapCy = Settings.ScreenHeight / 2f;
+            float tx = rtW / 2f - mapCx * zoom;
+            float ty = rtH / 2f - mapCy * zoom;
+            DXManager.RenderTransform = KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(zoom, zoom, tx, ty);
 
             DrawBackground();
 
             if (FloorValid)
             {
-                // 地板铺满整块画布（逻辑宽 = 视口宽 / s），避免两侧露底色。
-                DXManager.Draw(DXManager.FloorTexture, new Rectangle(0, 0, (int)(vp.Width / s), (int)(vp.Height / s)), Vector3.Zero, Color.White);
+                // 地板按原生 1024x768 贴图绘制（位置 0,0），由上面的全局变换统一缩放/平移。
+                DXManager.Draw(DXManager.FloorTexture, new Rectangle(0, 0, Settings.ScreenWidth, Settings.ScreenHeight), Vector3.Zero, Color.White);
             }
 
             DrawObjects();

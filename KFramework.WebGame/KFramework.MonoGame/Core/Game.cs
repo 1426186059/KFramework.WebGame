@@ -30,6 +30,12 @@ namespace KFramework.MonoGame
 
         public GameWindow Window { get; }
 
+        /// <summary>
+        /// 与本游戏关联的图形设备管理器（照 MonoGame 的 <c>Game.graphicsDeviceManager</c>）。
+        /// 由 <see cref="GraphicsDeviceManager"/> 的构造函数注册；未使用管理器时为 null。
+        /// </summary>
+        internal GraphicsDeviceManager? graphicsDeviceManager;
+
         public ContentManager Content { get; }
 
         public GameComponentCollection Components { get; }
@@ -60,6 +66,11 @@ namespace KFramework.MonoGame
             {
                 try
                 {
+                    // 照 MonoGame 的 DoInitialize：进入用户 Initialize 之前先让管理器接管设备，
+                    // 这样用户在 Initialize / LoadContent 里就能拿到 GraphicsDevice 与已应用的呈现参数。
+                    if (graphicsDeviceManager != null)
+                        ((IGraphicsDeviceManager)graphicsDeviceManager).CreateDevice();
+
                     Initialize();
                     Components.Initialize();
                     await LoadContentAsync().ConfigureAwait(false);
@@ -185,6 +196,8 @@ namespace KFramework.MonoGame
             if (_disposed) return;
             _disposed = true;
             UnloadContent();
+            graphicsDeviceManager?.Dispose();
+            graphicsDeviceManager = null;
             Content.Dispose();
             GraphicsDevice.Dispose();
             GC.SuppressFinalize(this);

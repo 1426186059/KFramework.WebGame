@@ -506,6 +506,16 @@ namespace Client.MirScenes
                 AccountIDTextBox.TextBox.KeyPress += TextBox_KeyPress;
                 AccountIDTextBox.Text = Settings.AccountID;
 
+                // 账号密码记忆加固：LoginDialog 作为 MirScene.ActiveScene 的静态初始化一部分，
+                // 可能在 CMain.Init 的 await Settings.Load() 完成之前就构造，此时 Settings.AccountID/Password
+                // 还是空，构造期预填会落空。故在首次显示（Draw 触发 OnShown→Shown，必晚于 Settings.Load）
+                // 时再带出一次已保存值，保证“记住账号密码”生效。Shown 仅触发一次，不干扰后续手动输入。
+                Shown += (s, e) =>
+                {
+                    if (AccountIDTextBox != null) AccountIDTextBox.Text = Settings.AccountID;
+                    if (PasswordTextBox != null) PasswordTextBox.Text = Settings.Password;
+                };
+
                 // 资源（贴图库）异步加载：构造时图像尺寸可能为 0，导致初始 Location 偏移到屏幕中心附近。
                 // 订阅库加载完成事件，库就绪后按真实尺寸重新居中；构造与显示时也兜底计算一次。
                 Recenter();

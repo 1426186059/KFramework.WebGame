@@ -29,7 +29,11 @@
 // 本模块用 position:fixed（与 getBoundingClientRect 的视口坐标天然对齐，页面滚动也不漂移），
 // 并在 resize / scroll 时按最近一次 show 参数重新定位当前可见输入框。
 import { getCanvasElement } from './gl.js';
-// 模块级设置：DOM 输入覆盖层是否透明（true=文字/光标由引擎自绘；false=由 DOM 直接显示）。show() 可逐框覆盖。
+// 模块级设置：DOM 输入覆盖层是否透明。
+//   true  （默认）：本 DOM 元素仅作 IME / 键盘捕获代理，文字与光标均透明，由引擎在 canvas 上自绘
+//                  （见 MirTextBox.CreateTexture → BrowserCanvas.DrawTextBox）；
+//   false         ：由 DOM 直接显示文字与光标（密码掩码仍由 type=password 处理）。
+// 可在 show() 调用时按输入框覆盖；未传时使用本默认值。
 let _transparentInput = true;
 export function setTransparentInput(v) { _transparentInput = v; }
 let handlers = null;
@@ -104,13 +108,14 @@ function ensureEl(multiline) {
 // 使 DOM 输入框字形与画布 SpriteFont 完全一致（字重/族/字号均对齐）。
 function scaleFontPx(css, dpr) {
     const c = (css || '').trim();
-    if (!c) return (10 / dpr) + 'px sans-serif';
+    if (!c)
+        return (10 / dpr) + 'px sans-serif';
     const m = c.match(/([\d.]+)\s*px/);
-    if (!m) return c;
+    if (!m)
+        return c;
     const px = parseFloat(m[1]) / dpr;
     return c.replace(/([\d.]+)\s*px/, px.toFixed(2) + 'px');
 }
-
 function place(el, p) {
     const { left, top, dpr } = canvasMetrics();
     el.style.left = left + p.cx / dpr + 'px';
@@ -118,7 +123,8 @@ function place(el, p) {
     el.style.width = p.cw / dpr + 'px';
     el.style.height = p.ch / dpr + 'px';
     el.style.font = scaleFontPx(p.fontFamily, dpr);
-    // transparent=true：文字与光标由引擎在 canvas 自绘，本 DOM 元素仅作 IME / 键盘捕获代理，颜色与光标均透明；
+    // transparent=true：文字与光标由引擎在 canvas 自绘（见 MirTextBox.CreateTexture → BrowserCanvas.DrawTextBox），
+    // 本 DOM 元素仅作 IME / 键盘捕获代理，颜色与光标均透明，避免与引擎绘制重影。
     // transparent=false：由 DOM 直接显示文字与光标；密码掩码由上面的 type=password 处理。
     // 注意：透明不影响 IME——候选词窗是浏览器 UI，仍按本元素光标位置弹出；input 事件照常回传合成文本。
     if (p.transparent) {

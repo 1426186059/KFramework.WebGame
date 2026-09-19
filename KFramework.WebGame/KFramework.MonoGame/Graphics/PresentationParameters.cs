@@ -5,9 +5,9 @@ namespace KFramework.MonoGame
     /// <summary>
     /// 图形呈现参数（照 MonoGame 的 Microsoft.Xna.Framework.Graphics.PresentationParameters）。
     /// <para>
-    /// 与 MonoGame 的差异只有两处：① 去掉了 iOS / Android 的条件编译分支；
-    /// ② 默认宽高取自 MonoGame 的 <c>GraphicsDeviceManager.DefaultBackBufferWidth/Height</c>（800×480），
-    /// 本仓库暂无 <c>GraphicsDeviceManager</c>，先在类内定义同名常量，等移植该类时再改为引用它。
+    /// 与 MonoGame 的差异只有一处：去掉了 iOS / Android 的条件编译分支
+    ///（默认宽高照上游取自 <see cref="GraphicsDeviceManager.DefaultBackBufferWidth"/> /
+    /// <see cref="GraphicsDeviceManager.DefaultBackBufferHeight"/>，800×480）。
     /// </para>
     /// </summary>
     public class PresentationParameters
@@ -17,20 +17,14 @@ namespace KFramework.MonoGame
         /// <summary>默认呈现速率（照 MonoGame 的 DefaultPresentRate）。</summary>
         public const int DefaultPresentRate = 60;
 
-        /// <summary>默认后备缓冲宽度（取自 MonoGame 的 GraphicsDeviceManager.DefaultBackBufferWidth）。</summary>
-        private const int DefaultBackBufferWidth = 800;
-
-        /// <summary>默认后备缓冲高度（取自 MonoGame 的 GraphicsDeviceManager.DefaultBackBufferHeight）。</summary>
-        private const int DefaultBackBufferHeight = 480;
-
         #endregion Constants
 
         #region Private Fields
 
         private DepthFormat depthStencilFormat;
         private SurfaceFormat backBufferFormat;
-        private int backBufferHeight = DefaultBackBufferHeight;
-        private int backBufferWidth = DefaultBackBufferWidth;
+        private int backBufferHeight = GraphicsDeviceManager.DefaultBackBufferHeight;
+        private int backBufferWidth = GraphicsDeviceManager.DefaultBackBufferWidth;
         private IntPtr deviceWindowHandle;
         private int multiSampleCount;
         private bool isFullScreen;
@@ -136,8 +130,8 @@ namespace KFramework.MonoGame
         public void Clear()
         {
             backBufferFormat = SurfaceFormat.Color;
-            backBufferWidth = DefaultBackBufferWidth;
-            backBufferHeight = DefaultBackBufferHeight;
+            backBufferWidth = GraphicsDeviceManager.DefaultBackBufferWidth;
+            backBufferHeight = GraphicsDeviceManager.DefaultBackBufferHeight;
             deviceWindowHandle = IntPtr.Zero;
             depthStencilFormat = DepthFormat.None;
             multiSampleCount = 0;
