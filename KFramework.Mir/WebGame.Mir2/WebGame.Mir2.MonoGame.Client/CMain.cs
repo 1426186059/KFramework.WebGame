@@ -170,7 +170,9 @@ namespace WebGame.Mir2.MonoGame.Client
 
         public static void CMain_MouseMove(object sender, MouseEventArgs e)
         {
-            MPoint = new MirEngine.Point(e.Location.X, e.Location.Y);
+            // 与 OnMouseDown/OnMouseUp 保持一致：把原始画布坐标换算成逻辑 UI 坐标(1024x768)，
+            // 否则命中检测用原始像素对比逻辑 DisplayRectangle 会错位。
+            MPoint = KCamera.ScreenToWorldPos(new MirEngine.Point(e.Location.X, e.Location.Y));
             try { if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnMouseMove(e); }
             catch (Exception ex) { SaveError(ex.ToString()); }
         }
