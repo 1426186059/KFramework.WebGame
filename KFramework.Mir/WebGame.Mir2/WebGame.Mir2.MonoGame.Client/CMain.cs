@@ -20,7 +20,7 @@ namespace WebGame.Mir2.MonoGame.Client
     {
         public static long Time;
         public static DateTime Now;
-        public static Point MPoint;
+        public static MirEngine.Point MPoint;
         public static Random Random = new Random();
         public static int DPSCounter;
         public static KeyBindSettings InputKeys = new KeyBindSettings();
@@ -40,7 +40,7 @@ namespace WebGame.Mir2.MonoGame.Client
         public object ActiveControl;
         public string Text = "";
         public Size ClientSize = new Size(1024, 768);
-        public Rectangle ClientRectangle => new Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
+        public MirEngine.Rectangle ClientRectangle => new MirEngine.Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
         public FormBorderStyle FormBorderStyle;
         public bool TopMost;
         // 完全限定 MirEngine.Cursors：本类存在 static Cursor[] Cursors 字段，会遮蔽同名类型。
@@ -49,9 +49,9 @@ namespace WebGame.Mir2.MonoGame.Client
         public void Focus() { }
         public void Activate() { }
         public void CenterToScreen() { }
-        public Point PointToClient(Point p) => p;
-        public Point PointToScreen(Point p) => p;
-        public Rectangle RectangleToScreen(Rectangle r) => r;
+        public MirEngine.Point PointToClient(MirEngine.Point p) => p;
+        public MirEngine.Point PointToScreen(MirEngine.Point p) => p;
+        public MirEngine.Rectangle RectangleToScreen(MirEngine.Rectangle r) => r;
         public void CreateScreenShot() { }
 
         // 原 WinForms CMain 中被逻辑代码引用的静态成员（浏览器端用占位/轻量实现）。
@@ -98,7 +98,7 @@ namespace WebGame.Mir2.MonoGame.Client
         }
         public static void SetResolution(int width, int height) { }
         public static void ToggleFullScreen() { }
-        public static bool IsKeyLocked(Keys key) => false;
+        public static bool IsKeyLocked(MirEngine.Keys key) => false;
 
         public static void CMain_KeyDown(object sender, KeyEventArgs e)
         {
@@ -106,7 +106,7 @@ namespace WebGame.Mir2.MonoGame.Client
             if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
                 SpellTargetLock = (MG.Keys)(int)e.KeyCode == (MG.Keys)Enum.Parse(typeof(MG.Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
             else SpellTargetLock = false;
-            if (e.KeyCode == Keys.Oem8) Tilde = true;
+            if (e.KeyCode == MirEngine.Keys.Oem8) Tilde = true;
             try
             {
                 if (e.Alt && (MG.Keys)(int)e.KeyCode == MG.Keys.Enter) { ToggleFullScreen(); return; }
@@ -121,7 +121,7 @@ namespace WebGame.Mir2.MonoGame.Client
             if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
                 SpellTargetLock = (MG.Keys)(int)e.KeyCode == (MG.Keys)Enum.Parse(typeof(MG.Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
             else SpellTargetLock = false;
-            if (e.KeyCode == Keys.Oem8) Tilde = false;
+            if (e.KeyCode == MirEngine.Keys.Oem8) Tilde = false;
             foreach (KeyBind KeyCheck in CMain.InputKeys.Keylist)
             {
                 if (KeyCheck.function != KeybindOptions.Screenshot) continue;
@@ -145,7 +145,7 @@ namespace WebGame.Mir2.MonoGame.Client
 
         public static void CMain_MouseMove(object sender, MouseEventArgs e)
         {
-            MPoint = new Point(e.Location.X, e.Location.Y);
+            MPoint = new MirEngine.Point(e.Location.X, e.Location.Y);
             try { if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnMouseMove(e); }
             catch (Exception ex) { SaveError(ex.ToString()); }
         }
@@ -267,12 +267,12 @@ namespace WebGame.Mir2.MonoGame.Client
 
         private static void OnMouseDown(MG.MouseButton b, MG.Vector2 p)
         {
-            CMain.MPoint = new Point((int)p.X, (int)p.Y);
+            CMain.MPoint = new MirEngine.Point((int)p.X, (int)p.Y);
             MirScene.ActiveScene?.OnMouseDown(ToMouseEventArgs(b, p));
         }
         private static void OnMouseUp(MG.MouseButton b, MG.Vector2 p)
         {
-            CMain.MPoint = new Point((int)p.X, (int)p.Y);
+            CMain.MPoint = new MirEngine.Point((int)p.X, (int)p.Y);
             var e = ToMouseEventArgs(b, p);
             // 复刻 WinForms 原版 CMain_MouseUp：松开按键必须清掉 MapControl.MapButtons，否则后续点击会错位。
             MapControl.MapButtons &= ~e.Button;
