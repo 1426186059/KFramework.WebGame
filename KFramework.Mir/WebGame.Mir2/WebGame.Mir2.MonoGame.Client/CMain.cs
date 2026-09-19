@@ -28,6 +28,10 @@ namespace WebGame.Mir2.MonoGame.Client
         public static int FPS;
         public static int TotalBytesReceived, TotalBytesSent;
 
+        // 浏览器端全屏缩放因子：场景以固定逻辑分辨率渲染后由 MirScene 拉伸铺满画布，
+        // 鼠标等输入坐标需按此因子从画布像素反算回逻辑坐标（见 MirGame.Update）。
+        public static float ScaleX = 1f, ScaleY = 1f;
+
         // 原 Program 入口类的单例窗体及启动状态（已并入 CMain）。
         public static readonly CMain Instance = new CMain();
         public static bool Launch, Restart;
@@ -100,29 +104,15 @@ namespace WebGame.Mir2.MonoGame.Client
         // 浏览器端画布铺满窗口，分辨率应以画布实际大小为准（见 SetResolution 说明）。
         public static Func<(int Width, int Height)>? GetCanvasSize;
 
-        // 浏览器端没有 WinForms 窗体，分辨率必须跟随 WebGL 画布（后备缓冲的物理像素尺寸），
-        // 否则游戏内部会一直按默认 1024x768 布局，而 backbuffer 是窗口大小（如 1756x865），
-        // 结果画面只显示在画布左上角、四周留黑——即"没全屏"现象。
-        // 桌面端这里会按传入的 width/height 缩放真实窗口；但浏览器画布无法缩放到任意固定分辨率，
-        // 因此始终以画布实际尺寸作为游戏分辨率（即"全屏"），忽略传入的固定值（选人界面的分辨率下拉亦然）。
-        // 这里把 Settings 屏幕宽高、窗体 ClientSize 一并更新，并让当前场景按新尺寸重新排版；
-        // 游戏内场景的地板/光照是离屏 RenderTarget，要置空让下一帧按新尺寸重建。
+        // 浏览器端全屏方案：游戏以【固定逻辑分辨率】(Settings.ScreenWidth/Height，默认 1024x768)渲染，
+        // 再由 MirScene.DrawControl → DXManager.PresentToScreen 把整帧场景纹理拉伸铺满画布(Viewport)。
+        // 因此这里【不再】把 Settings 改成画布物理尺寸——否则场景离屏纹理与实际显示尺寸脱节、
+        // UI 命中坐标错配；只负责在窗口缩放时刷新地板/光照离屏纹理并令当前场景重烘焙。
+        // （该回调由 MirGame 在 Window.SizeChanged 时触发，传入的 width/height 即画布尺寸，此处不再使用。）
         public static void SetResolution(int width, int height)
         {
-            // 优先用画布真实尺寸；回调未注入（理论上不会发生）时退回传入值，避免异常尺寸导致黑屏。
-            int w, h;
-            if (GetCanvasSize != null) (w, h) = GetCanvasSize();
-            else { w = width; h = height; }
-
-            if (w <= 0 || h <= 0) return;                          // 画布尚未就绪（如首帧前）时忽略
-            if (Settings.ScreenWidth == w && Settings.ScreenHeight == h) return;
-
-            Settings.ScreenWidth = w;
-            Settings.ScreenHeight = h;
-            Instance.ClientSize = new Size(w, h);   // ClientSize 是单例窗体(Instance)的实例字段，须通过 Instance 设置
-
-            // 在游戏场景中：地板/光照离屏纹理按旧分辨率创建，必须先释放，
-            // DrawFloor/DrawLights 检测到 null/Disposed 后会用新的 Settings 尺寸重建。
+            // 游戏内场景的地板/光照是离屏 RenderTarget，分辨率变化时先释放，
+            // DrawFloor/DrawLights 检测到 null/Disposed 后会用逻辑分辨率(Settings)重建。
             if (GameScene.Scene != null)
             {
                 GameScene.Scene.MapControl.FloorValid = false;
@@ -132,7 +122,7 @@ namespace WebGame.Mir2.MonoGame.Client
                 DXManager.LightSurface = null;
             }
 
-            // 当前活动场景（登录/选人/游戏）按新分辨率重新排版，控件位置都依赖 Settings.ScreenWidth/Height。
+            // 当前活动场景（登录/选人/游戏）按逻辑分辨率重烘焙（库加载完成也会触发，见 Init）。
             MirScene.ActiveScene?.Refresh();
         }
         public static void ToggleFullScreen() { }

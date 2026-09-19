@@ -46,6 +46,30 @@ namespace Client.MirControls
             OnShown();
         }
 
+        /// <summary>
+        /// 浏览器端全屏呈现：覆盖基类 1:1 贴图，改为先把整帧场景（含子控件）烘焙进离屏
+        /// 纹理(ControlTexture)，再把它拉伸铺满画布(Viewport)，使固定逻辑分辨率的 UI 等比
+        /// 铺满窗口，消除"只显示在左上角 + 四周洋红底色"问题。
+        /// </summary>
+        protected internal override void DrawControl()
+        {
+            if (!DrawControlTexture) return;
+
+            // 烘焙：失效时把场景及所有子控件合成进 ControlTexture（复用下方 CreateTexture 逻辑）。
+            if (!TextureValid)
+                CreateTexture();
+
+            if (ControlTexture == null || ControlTexture.Disposed) return;
+
+            // ControlTexture 是包裹离屏 RenderTarget2D 的 SlimDX 纹理；
+            // 取出其 RenderTarget2D（KFramework.MonoGame 类型）交给 PresentToScreen 拉伸铺满画布。
+            var rt = ControlTexture.RenderTarget;
+            if (rt == null) return;
+            DXManager.PresentToScreen(rt);
+        }
+
+        // 烘焙整帧场景到离屏纹理：必须先切渲染目标到本场景纹理，子控件才会合成进它，
+        // 而非直接画到画布；烘焙完恢复渲染目标。场景底色暂用洋红(Magenta)占位。
         protected override void CreateTexture()
         {
             if (Size != TextureSize)
@@ -68,7 +92,6 @@ namespace Client.MirControls
             AfterDrawControl();
 
             DXManager.Sprite.Flush();
-
 
             DXManager.SetSurface(oldSurface);
             TextureValid = true;

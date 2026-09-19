@@ -1,5 +1,6 @@
 using Client.MirGraphics;
 using Client.MirSounds;
+using Client;
 using KFramework.MonoGame;
 
 namespace WebGame.Mir2.MonoGame.Client
@@ -23,17 +24,13 @@ namespace WebGame.Mir2.MonoGame.Client
             // 把 KFramework.MonoGame 的 GraphicsDevice / SpriteBatch 交给 DXManager（渲染后端）。
             DXManager.Initialize(GraphicsDevice, new SpriteBatch(GraphicsDevice));
 
-            // 把"取画布（后备缓冲）物理像素尺寸"的能力注入 CMain：浏览器画布铺满窗口，
-            // CMain.SetResolution 据此把游戏分辨率设为画布实际大小，从而全屏铺满、不再只显示左上角。
+            // 把"取画布（后备缓冲）物理像素尺寸"的能力注入 CMain（供需要时查询；
+            // 当前全屏由 MirScene.DrawControl 把固定逻辑分辨率的场景纹理拉伸到画布实现，不再改 Settings）。
             CMain.GetCanvasSize = () => (Window.Width, Window.Height);
 
-            // 初始即把游戏分辨率设为画布尺寸，铺满整个窗口。
-            // （画布尚未就绪时 Window.Width/Height 可能为 0，SetResolution 内部已做忽略处理，
-            //  真正尺寸会在首帧 GraphicsDevice.SyncCanvasSize 触发 Window.SizeChanged 后纠正。）
+            // 初始刷新一次；窗口缩放时同样刷新当前场景（地板/光照离屏纹理重建 + 场景重烘焙）。
+            // 实际"铺满窗口"由 MirScene 将场景纹理拉伸到 Viewport 完成。
             CMain.SetResolution(Window.Width, Window.Height);
-
-            // 浏览器窗口缩放/旋转时，KFramework.MonoGame 会在每帧 SyncCanvasSize 里让画布自动跟随，
-            // 并通过 GameWindow.SizeChanged 通知；这里同步游戏分辨率，保证 UI 始终铺满窗口。
             Window.SizeChanged += () => CMain.SetResolution(Window.Width, Window.Height);
         }
 
@@ -46,8 +43,17 @@ namespace WebGame.Mir2.MonoGame.Client
 
         protected override void Update(GameTime gameTime)
         {
-            // 鼠标移动不提供事件，这里轮询 GL 画布的指针坐标并转发，保持控件命中测试用的 CMain.MPoint 实时。
-            CMain.MPoint = new MirEngine.Point((int)Input_Mouse.Position.X, (int)Input_Mouse.Position.Y);
+            // 鼠标坐标在画布(Viewport)像素空间，而场景纹理被拉伸铺满画布；
+            // 命中测试用的 CMain.MPoint 必须按同一缩放反算回逻辑分辨率坐标，否则鼠标与 UI 错位。
+            var vp = GraphicsDevice.Viewport;
+            float sx = Settings.ScreenWidth > 0 ? vp.Width / (float)Settings.ScreenWidth : 1f;
+            float sy = Settings.ScreenHeight > 0 ? vp.Height / (float)Settings.ScreenHeight : 1f;
+            CMain.ScaleX = sx;
+            CMain.ScaleY = sy;
+
+            CMain.MPoint = new MirEngine.Point(
+                (int)(Input_Mouse.Position.X / sx),
+                (int)(Input_Mouse.Position.Y / sy));
             CMain.CMain_MouseMove(null, new MouseEventArgs(MouseButtons.None, 0, CMain.MPoint.X, CMain.MPoint.Y, 0));
             SoundManager.ProcessDelayedSounds();
         }

@@ -189,6 +189,22 @@ namespace Client.MirGraphics
             draw?.Invoke();
         }
 
+        // 浏览器端全屏呈现：场景（含所有子控件）已在固定逻辑分辨率(Settings.ScreenWidth/Height)
+        // 下烘焙进离屏纹理(ControlTexture)，这里把它拉伸铺满整个画布(Viewport)。
+        // 这样 UI 只需按设计分辨率布局一次即可等比居中铺满窗口，且不会只显示在左上角、
+        // 四周露出 MirScene 的洋红(Magenta)底色。
+        // 参数用 KFramework.MonoGame 的纹理类型（RenderTarget2D : Texture2D），
+        // 避免与 SlimDX.Direct3D9.Texture 产生"不明确的引用"。
+        public static void PresentToScreen(KFramework.MonoGame.Texture2D texture)
+        {
+            if (texture == null) return;
+            var vp = GDevice.Viewport;
+            Draw(texture,
+                new Rectangle(0, 0, texture.Width, texture.Height),
+                new RectangleF(0, 0, vp.Width, vp.Height),
+                Color.White);
+        }
+
         public static void Clean()
         {
             for (int i = TextureList.Count - 1; i >= 0; i--)
