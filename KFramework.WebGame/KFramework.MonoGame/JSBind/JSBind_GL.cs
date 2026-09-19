@@ -116,6 +116,25 @@ namespace KFramework.MonoGame
         public const int RENDERER = 0x1F01;
         public const int NO_ERROR = 0;
 
+        // —— 帧缓冲 / 渲染缓冲（离屏渲染 RenderTarget，照 MonoGame 的 FramebufferHelper） ——
+        public const int FRAMEBUFFER = 0x8D40;
+        public const int READ_FRAMEBUFFER = 0x8CA8;
+        public const int DRAW_FRAMEBUFFER = 0x8CA9;
+        public const int RENDERBUFFER = 0x8D41;
+        public const int COLOR_ATTACHMENT0 = 0x8CE0;
+        public const int DEPTH_ATTACHMENT = 0x8D00;
+        public const int STENCIL_ATTACHMENT = 0x8D20;
+        public const int DEPTH_STENCIL_ATTACHMENT = 0x821A;
+        // 完整性检查返回值：FRAMEBUFFER_COMPLETE 表示 FBO 可用
+        public const int FRAMEBUFFER_COMPLETE = 0x8CD5;
+
+        // —— renderbuffer 的内部格式（深度 / 模板，照 GLES3 的 RenderbufferStorage） ——
+        public const int DEPTH_COMPONENT16 = 0x81A5;
+        public const int DEPTH_COMPONENT24 = 0x81A6;
+        public const int DEPTH_COMPONENT32F = 0x8CAC;
+        public const int DEPTH24_STENCIL8 = 0x88F0;
+        public const int STENCIL_INDEX8 = 0x8D48;
+
         #endregion
 
         #region 上下文
@@ -319,6 +338,55 @@ namespace KFramework.MonoGame
         /// <summary>为当前纹理生成 mipmap。</summary>
         [JSImport("generateMipmap", "gl")]
         internal static partial void GenerateMipmap(int target);
+
+        /// <summary>为 2D 纹理分配未初始化的存储（渲染目标用：内容由 GPU 绘制，不传像素数据）。</summary>
+        [JSImport("texImage2DStorage", "gl")]
+        internal static partial void TexImage2DStorage(int target, int level, int internalFormat,
+            int width, int height, int format, int type);
+
+        #endregion
+
+        #region 帧缓冲（离屏渲染 / RenderTarget）
+
+        /// <summary>创建帧缓冲对象（FBO）。</summary>
+        [JSImport("createFramebuffer", "gl")]
+        internal static partial JSObject CreateFramebuffer();
+
+        /// <summary>绑定 FBO；传 null 表示绑回默认帧缓冲（画布）。</summary>
+        [JSImport("bindFramebuffer", "gl")]
+        internal static partial void BindFramebuffer(int target, JSObject? framebuffer);
+
+        /// <summary>删除 FBO。</summary>
+        [JSImport("deleteFramebuffer", "gl")]
+        internal static partial void DeleteFramebuffer(JSObject framebuffer);
+
+        /// <summary>把一张纹理挂到 FBO 的颜色附着点（attachment = COLOR_ATTACHMENT0 + i）。</summary>
+        [JSImport("framebufferTexture2D", "gl")]
+        internal static partial void FramebufferTexture2D(int target, int attachment, int texTarget, JSObject texture, int level);
+
+        /// <summary>检查 FBO 完整性（返回 FRAMEBUFFER_COMPLETE 表示可用）。</summary>
+        [JSImport("checkFramebufferStatus", "gl")]
+        internal static partial int CheckFramebufferStatus(int target);
+
+        /// <summary>创建渲染缓冲对象（深度 / 模板附件）。</summary>
+        [JSImport("createRenderbuffer", "gl")]
+        internal static partial JSObject CreateRenderbuffer();
+
+        /// <summary>绑定渲染缓冲对象到 RENDERBUFFER 目标。</summary>
+        [JSImport("bindRenderbuffer", "gl")]
+        internal static partial void BindRenderbuffer(int target, JSObject? renderbuffer);
+
+        /// <summary>为当前渲染缓冲分配存储（internalFormat 用 DEPTH_COMPONENT16 / DEPTH24_STENCIL8 等）。</summary>
+        [JSImport("renderbufferStorage", "gl")]
+        internal static partial void RenderbufferStorage(int target, int internalFormat, int width, int height);
+
+        /// <summary>把渲染缓冲挂到 FBO 的指定附着点（DEPTH_ATTACHMENT / STENCIL_ATTACHMENT 等）。</summary>
+        [JSImport("framebufferRenderbuffer", "gl")]
+        internal static partial void FramebufferRenderbuffer(int target, int attachment, int rbTarget, JSObject? renderbuffer);
+
+        /// <summary>删除渲染缓冲对象。</summary>
+        [JSImport("deleteRenderbuffer", "gl")]
+        internal static partial void DeleteRenderbuffer(JSObject renderbuffer);
 
         #endregion
 

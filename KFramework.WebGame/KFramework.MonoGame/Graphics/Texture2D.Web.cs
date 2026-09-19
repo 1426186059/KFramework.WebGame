@@ -18,6 +18,17 @@ namespace KFramework.MonoGame
             int filter = format.IsCompressed() ? JSBind_GL.LINEAR : JSBind_GL.NEAREST;
             JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MIN_FILTER, filter);
             JSBind_GL.TexParameteri(JSBind_GL.TEXTURE_2D, JSBind_GL.TEXTURE_MAG_FILTER, filter);
+
+            // 渲染目标（照 MonoGame 的 RenderTarget2D.PlatformConstruct）：内容由 GPU 绘制产生，
+            // 这里只把存储分配出来（传 null 像素），否则 FBO 挂的是一张没有存储的不完整纹理。
+            if (type == SurfaceType.RenderTarget)
+            {
+                if (format.IsCompressed())
+                    throw new ArgumentException("渲染目标不支持压缩格式。", nameof(format));
+
+                JSBind_GL.TexImage2DStorage(JSBind_GL.TEXTURE_2D, 0, JSBind_GL.RGBA8,
+                    width, height, JSBind_GL.RGBA, JSBind_GL.UNSIGNED_BYTE);
+            }
         }
 
         /// <summary>平台层：整层上传（照 MonoGame 的 PlatformSetData）。</summary>

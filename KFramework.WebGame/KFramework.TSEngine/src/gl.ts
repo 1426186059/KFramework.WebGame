@@ -231,6 +231,46 @@ export function drawElements(mode: number, count: number, type: number, offset: 
 }
 export function drawArrays(mode: number, first: number, count: number): void { gpu().drawArrays(mode, first, count); }
 
+/** 分配一张未初始化的 2D 纹理存储（渲染目标用：内容由 GPU 绘制，不传像素数据）。 */
+export function texImage2DStorage(
+    target: number, level: number, internalFormat: number,
+    width: number, height: number, format: number, type: number,
+): void {
+    gpu().texImage2D(target, level, internalFormat, width, height, 0, format, type, null);
+}
+
+// ---------- 帧缓冲（离屏渲染 / RenderTarget，照 MonoGame 的 FramebufferHelper） ----------
+
+export function createFramebuffer(): WebGLFramebuffer | null { return gpu().createFramebuffer(); }
+export function bindFramebuffer(target: number, framebuffer: WebGLFramebuffer | null): void {
+    gpu().bindFramebuffer(target, framebuffer);
+}
+export function deleteFramebuffer(framebuffer: WebGLFramebuffer | null): void { gpu().deleteFramebuffer(framebuffer); }
+/** 把一张纹理挂到 FBO 的颜色附着点（attachment = COLOR_ATTACHMENT0 + i）。 */
+export function framebufferTexture2D(
+    target: number, attachment: number, texTarget: number,
+    texture: WebGLTexture | null, level: number,
+): void {
+    gpu().framebufferTexture2D(target, attachment, texTarget, texture, level);
+}
+/** 返回 FBO 完整性状态（FRAMEBUFFER_COMPLETE 表示可用）。 */
+export function checkFramebufferStatus(target: number): number { return gpu().checkFramebufferStatus(target); }
+
+export function createRenderbuffer(): WebGLRenderbuffer | null { return gpu().createRenderbuffer(); }
+export function bindRenderbuffer(target: number, renderbuffer: WebGLRenderbuffer | null): void {
+    gpu().bindRenderbuffer(target, renderbuffer);
+}
+export function renderbufferStorage(target: number, internalFormat: number, width: number, height: number): void {
+    gpu().renderbufferStorage(target, internalFormat, width, height);
+}
+/** 把 renderbuffer（深度 / 模板）挂到 FBO 的对应附着点。 */
+export function framebufferRenderbuffer(
+    target: number, attachment: number, rbTarget: number, renderbuffer: WebGLRenderbuffer | null,
+): void {
+    gpu().framebufferRenderbuffer(target, attachment, rbTarget, renderbuffer);
+}
+export function deleteRenderbuffer(renderbuffer: WebGLRenderbuffer | null): void { gpu().deleteRenderbuffer(renderbuffer); }
+
 // ---------- 剔除 / 深度（照 MonoGame 的 RasterizerState / DepthStencilState 下发） ----------
 
 export function cullFace(mode: number): void { gpu().cullFace(mode); }

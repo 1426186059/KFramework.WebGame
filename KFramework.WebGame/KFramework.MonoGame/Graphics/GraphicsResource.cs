@@ -19,11 +19,15 @@ namespace KFramework.MonoGame
         /// <summary>用户自定义附加对象（照 MonoGame 的 GraphicsResource.Tag）。</summary>
         public object? Tag { get; set; }
 
+        /// <summary>资源是否已释放（照 MonoGame 的 GraphicsResource.IsDisposed）。</summary>
+        public bool IsDisposed { get; private set; }
+
         ~GraphicsResource() => Dispose(false);
 
         public void Dispose()
         {
             Dispose(true);
+            IsDisposed = true;
             GC.SuppressFinalize(this);
         }
 

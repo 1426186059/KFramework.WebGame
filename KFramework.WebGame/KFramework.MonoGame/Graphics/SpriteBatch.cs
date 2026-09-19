@@ -53,7 +53,13 @@ namespace KFramework.MonoGame
             _batcher.SetSamplerState(_samplerState);
 
             var viewport = _device.Viewport;
-            _projection = Matrix4x4.CreateOrthographicScreen(viewport.Width, viewport.Height);
+            // 离屏（绑定了渲染目标）时 Y 不翻转：FBO 纹理的原点在左下，纹理采样同样从左下起算，
+            // 「屏幕翻转」与「FBO 翻转」会互相抵消，所以这里改用 Y 向上的投影。
+            // 等价于 MonoGame GL 后端在顶点着色器里对离屏渲染做的 posFixup.y *= -1
+            // （GraphicsDevice.OpenGL.cs: "If we have a render target bound (rendering offscreen) flip vertically"）。
+            _projection = _device.RenderTargetCount > 0
+                ? Matrix4x4.CreateOrthographicOffCenter(0f, viewport.Width, 0f, viewport.Height, 0f, 1f)
+                : Matrix4x4.CreateOrthographicScreen(viewport.Width, viewport.Height);
 
             // Immediate 模式：每次 Draw 立即下发，故提前把渲染状态设好。
             if (sortMode == SpriteSortMode.Immediate) Setup();

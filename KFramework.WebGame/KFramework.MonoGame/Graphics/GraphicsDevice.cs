@@ -26,7 +26,45 @@ namespace KFramework.MonoGame
         private DepthStencilState _depthStencilState = null!;
         private ulong _sortingKeySource = 1;
 
-        public Viewport Viewport { get; private set; }
+        // ---- 渲染目标状态（照 MonoGame 的 GraphicsDevice 渲染目标管理） ----
+
+        /// <summary>当前绑定的渲染目标；长度固定为 4，只有前 RenderTargetCount 项有效（照 MonoGame）。</summary>
+        private readonly RenderTargetBinding[] _currentRenderTargetBindings = new RenderTargetBinding[4];
+
+        /// <summary>SetRenderTarget(单个) 用的临时数组（照 MonoGame，避免每次分配）。</summary>
+        private readonly RenderTargetBinding[] _tempRenderTargetBinding = new RenderTargetBinding[1];
+
+        private int _currentRenderTargetCount;
+
+        /// <summary>FBO 缓存：一组渲染目标绑定组合对应一个 FBO（照 MonoGame 的 glFramebuffers）。</summary>
+        private readonly Dictionary<RenderTargetBinding[], JSObject> _glFramebuffers =
+            new Dictionary<RenderTargetBinding[], JSObject>(new RenderTargetBindingArrayComparer());
+
+        /// <summary>画布（后备缓冲）尺寸：切回屏幕时用它恢复视口。</summary>
+        private int _backBufferWidth;
+        private int _backBufferHeight;
+
+        private Viewport _viewport;
+
+        /// <summary>
+        /// 当前渲染视口（照 MonoGame：切换渲染目标时会被同步为目标尺寸，切回屏幕时恢复为画布尺寸）。
+        /// setter 立即下发 glViewport。
+        /// </summary>
+        public Viewport Viewport
+        {
+            get => _viewport;
+            set
+            {
+                _viewport = value;
+                JSBind_GL.Viewport(value.X, value.Y, value.Width, value.Height);
+            }
+        }
+
+        /// <summary>
+        /// 绑定渲染目标时用于清屏的颜色（照 MonoGame 的 GraphicsDevice.DiscardColor）。
+        /// 仅对 <see cref="RenderTargetUsage.DiscardContents"/> 的目标生效。
+        /// </summary>
+        public Color DiscardColor { get; set; } = new Color(0, 0, 0, 0);
 
         internal GraphicsMetrics _metrics;
 
@@ -169,10 +207,17 @@ namespace KFramework.MonoGame
             int width = size[2];
             int height = size[3];
             if (width <= 0 || height <= 0) return false;
+
+            _backBufferWidth = width;
+            _backBufferHeight = height;
+
             if (width == Viewport.Width && height == Viewport.Height) return false;
 
+            // 正渲染到离屏目标时不能抢视口：否则 RT 的绘制区域会被画布尺寸带偏，
+            // 这里只记录后备缓冲尺寸，等 SetRenderTarget(null) 切回屏幕时再恢复。
+            if (_currentRenderTargetCount > 0) return false;
+
             Viewport = new Viewport(0, 0, width, height);
-            JSBind_GL.Viewport(0, 0, width, height);
             return true;
         }
 
@@ -351,6 +396,209 @@ namespace KFramework.MonoGame
             _metrics._primitiveCount += vRun / 2;
         }
 
+        // ================================================================
+        // 渲染目标 / 离屏渲染（照 MonoGame 的 GraphicsDevice + OpenGL 平台层）
+        // ================================================================
+
+        /// <summary>当前绑定的渲染目标数量；0 表示直接渲染到画布。</summary>
+        public int RenderTargetCount => _currentRenderTargetCount;
+
+        /// <summary>绑定单个渲染目标；传 null 回到画布（照 MonoGame 的 SetRenderTarget）。</summary>
+        public void SetRenderTarget(RenderTarget2D? renderTarget)
+        {
+            if (renderTarget == null)
+            {
+                SetRenderTargets(Array.Empty<RenderTargetBinding>());
+                return;
+            }
+
+            _tempRenderTargetBinding[0] = new RenderTargetBinding(renderTarget);
+            SetRenderTargets(_tempRenderTargetBinding);
+        }
+
+        /// <summary>
+        /// 同时绑定多个渲染目标（MRT，照 MonoGame 的 SetRenderTargets）；传空数组回到画布。
+        /// </summary>
+        public void SetRenderTargets(params RenderTargetBinding[] renderTargets)
+        {
+            ArgumentNullException.ThrowIfNull(renderTargets);
+            if (renderTargets.Length > _currentRenderTargetBindings.Length)
+                throw new ArgumentOutOfRangeException(nameof(renderTargets),
+                    $"最多支持 {_currentRenderTargetBindings.Length} 个渲染目标。");
+
+            // 与当前绑定完全一致则复用（照 MonoGame：避免重复 resolve / 重建绘制批）。
+            if (_currentRenderTargetCount == renderTargets.Length)
+            {
+                bool isEqual = true;
+                for (int i = 0; i < _currentRenderTargetCount; i++)
+                {
+                    if (!ReferenceEquals(_currentRenderTargetBindings[i].RenderTarget, renderTargets[i].RenderTarget))
+                    {
+                        isEqual = false;
+                        break;
+                    }
+                }
+                if (isEqual) return;
+            }
+
+            ApplyRenderTargets(renderTargets);
+        }
+
+        /// <summary>取当前绑定渲染目标的副本（照 MonoGame 的 GetRenderTargets）。</summary>
+        public RenderTargetBinding[] GetRenderTargets()
+        {
+            var bindings = new RenderTargetBinding[_currentRenderTargetCount];
+            Array.Copy(_currentRenderTargetBindings, bindings, _currentRenderTargetCount);
+            return bindings;
+        }
+
+        /// <summary>真正切换渲染目标：解绑 → 重绑 → 同步视口 / 裁剪 → 按需清屏（照 MonoGame 的 ApplyRenderTargets）。</summary>
+        internal void ApplyRenderTargets(RenderTargetBinding[]? renderTargets)
+        {
+            bool clearTarget;
+            int renderTargetWidth;
+            int renderTargetHeight;
+
+            Array.Clear(_currentRenderTargetBindings, 0, _currentRenderTargetBindings.Length);
+
+            if (renderTargets == null || renderTargets.Length == 0)
+            {
+                _currentRenderTargetCount = 0;
+                PlatformApplyDefaultRenderTarget();
+
+                // 切回画布按 XNA 行为清屏（MonoGame 取 PresentationParameters.RenderTargetUsage，默认 DiscardContents）。
+                clearTarget = true;
+                renderTargetWidth = _backBufferWidth;
+                renderTargetHeight = _backBufferHeight;
+            }
+            else
+            {
+                _currentRenderTargetCount = renderTargets.Length;
+                Array.Copy(renderTargets, _currentRenderTargetBindings, renderTargets.Length);
+
+                IRenderTarget platformTarget = PlatformApplyRenderTargets();
+
+                renderTargetWidth = platformTarget.Width;
+                renderTargetHeight = platformTarget.Height;
+                clearTarget = platformTarget.RenderTargetUsage == RenderTargetUsage.DiscardContents;
+            }
+
+            // 视口与裁剪矩形跟随渲染目标尺寸（照 MonoGame）。
+            Viewport = new Viewport(0, 0, renderTargetWidth, renderTargetHeight);
+            JSBind_GL.Scissor(0, 0, renderTargetWidth, renderTargetHeight);
+
+            if (clearTarget) Clear(DiscardColor);
+        }
+
+        /// <summary>建 / 复用并绑定当前渲染目标组合的 FBO（照 MonoGame 的 PlatformApplyRenderTargets）。</summary>
+        private IRenderTarget PlatformApplyRenderTargets()
+        {
+            if (!_glFramebuffers.TryGetValue(_currentRenderTargetBindings, out JSObject? framebuffer))
+            {
+                framebuffer = JSBind_GL.CreateFramebuffer();
+                JSBind_GL.BindFramebuffer(JSBind_GL.FRAMEBUFFER, framebuffer);
+
+                // 深度 / 模板附件（照 MonoGame：Depth24Stencil8 时二者共用同一个 renderbuffer）。
+                var first = (IRenderTarget)_currentRenderTargetBindings[0].RenderTarget!;
+                if (first.GLDepthBuffer is { } depth)
+                    JSBind_GL.FramebufferRenderbuffer(JSBind_GL.FRAMEBUFFER, JSBind_GL.DEPTH_ATTACHMENT,
+                        JSBind_GL.RENDERBUFFER, depth);
+                if (first.GLStencilBuffer is { } stencil)
+                    JSBind_GL.FramebufferRenderbuffer(JSBind_GL.FRAMEBUFFER, JSBind_GL.STENCIL_ATTACHMENT,
+                        JSBind_GL.RENDERBUFFER, stencil);
+
+                for (int i = 0; i < _currentRenderTargetCount; i++)
+                {
+                    var target = (IRenderTarget)_currentRenderTargetBindings[i].RenderTarget!;
+                    JSBind_GL.FramebufferTexture2D(JSBind_GL.FRAMEBUFFER, JSBind_GL.COLOR_ATTACHMENT0 + i,
+                        JSBind_GL.TEXTURE_2D, target.GLTexture, 0);
+                }
+
+                int status = JSBind_GL.CheckFramebufferStatus(JSBind_GL.FRAMEBUFFER);
+                if (status != JSBind_GL.FRAMEBUFFER_COMPLETE)
+                    Console.Error.WriteLine($"[KFramework.MonoGame] Framebuffer 不完整: 0x{status:X4}");
+
+                _glFramebuffers.Add((RenderTargetBinding[])_currentRenderTargetBindings.Clone(), framebuffer);
+            }
+            else
+            {
+                JSBind_GL.BindFramebuffer(JSBind_GL.FRAMEBUFFER, framebuffer);
+            }
+
+            // 目标换了，之前下发的纹理单元与采样参数全部失效（照 MonoGame 的 Textures.Dirty()）。
+            _samplerAppliedKey = 0;
+            Textures.Clear();
+
+            return (IRenderTarget)_currentRenderTargetBindings[0].RenderTarget!;
+        }
+
+        private void PlatformApplyDefaultRenderTarget()
+        {
+            JSBind_GL.BindFramebuffer(JSBind_GL.FRAMEBUFFER, null);
+
+            _samplerAppliedKey = 0;
+            Textures.Clear();
+        }
+
+        /// <summary>创建渲染目标的深度 / 模板 renderbuffer（照 MonoGame 的 PlatformCreateRenderTarget）。</summary>
+        internal void PlatformCreateRenderTarget(IRenderTarget renderTarget, int width, int height, DepthFormat depthFormat)
+        {
+            int internalFormat = depthFormat switch
+            {
+                DepthFormat.Depth16 => JSBind_GL.DEPTH_COMPONENT16,
+                DepthFormat.Depth24 => JSBind_GL.DEPTH_COMPONENT24,
+                DepthFormat.Depth24Stencil8 => JSBind_GL.DEPTH24_STENCIL8,
+                _ => 0,
+            };
+
+            if (internalFormat == 0)
+            {
+                renderTarget.GLDepthBuffer = null;
+                renderTarget.GLStencilBuffer = null;
+                return;
+            }
+
+            JSObject depth = JSBind_GL.CreateRenderbuffer();
+            JSBind_GL.BindRenderbuffer(JSBind_GL.RENDERBUFFER, depth);
+            JSBind_GL.RenderbufferStorage(JSBind_GL.RENDERBUFFER, internalFormat, width, height);
+
+            renderTarget.GLDepthBuffer = depth;
+            // 照 MonoGame：Depth24Stencil8 时 stencil 与 depth 是同一个 renderbuffer（GLES 无独立 stencil 格式）。
+            renderTarget.GLStencilBuffer = depthFormat == DepthFormat.Depth24Stencil8 ? depth : null;
+        }
+
+        /// <summary>释放渲染目标的 renderbuffer，并丢弃引用到它的 FBO 缓存（照 MonoGame 的 PlatformDeleteRenderTarget）。</summary>
+        internal void PlatformDeleteRenderTarget(IRenderTarget renderTarget)
+        {
+            if (renderTarget.GLDepthBuffer is { } depth)
+                JSBind_GL.DeleteRenderbuffer(depth);
+            renderTarget.GLDepthBuffer = null;
+            renderTarget.GLStencilBuffer = null;
+
+            List<RenderTargetBinding[]>? dead = null;
+            foreach (KeyValuePair<RenderTargetBinding[], JSObject> pair in _glFramebuffers)
+            {
+                foreach (RenderTargetBinding binding in pair.Key)
+                {
+                    if (ReferenceEquals(binding.RenderTarget, renderTarget))
+                    {
+                        (dead ??= new List<RenderTargetBinding[]>()).Add(pair.Key);
+                        break;
+                    }
+                }
+            }
+
+            if (dead is null) return;
+            foreach (RenderTargetBinding[] key in dead)
+            {
+                if (_glFramebuffers.TryGetValue(key, out JSObject? framebuffer) && _glFramebuffers.Remove(key))
+                    JSBind_GL.DeleteFramebuffer(framebuffer);
+            }
+        }
+
+        /// <summary>渲染目标等内部资源用的排序键（照 MonoGame 的 sorting key 分配）。</summary>
+        internal ulong NextSortingKey() => _sortingKeySource++;
+
         /// <summary>创建一张空的 RGBA8 纹理（便捷重载）。</summary>
         public Texture2D CreateTexture(int width, int height)
             => CreateTexture(width, height, new byte[width * height * 4], SurfaceFormat.Color);
@@ -393,9 +641,44 @@ namespace KFramework.MonoGame
 
         public void Dispose()
         {
+            // 渲染目标的 FBO 缓存归设备所有，随设备一起释放（单个 RT 的 Dispose 会先摘掉自己的条目）。
+            foreach (JSObject framebuffer in _glFramebuffers.Values)
+                JSBind_GL.DeleteFramebuffer(framebuffer);
+            _glFramebuffers.Clear();
+
             JSBind_GL.DeleteBuffer(VertexBuffer);
             JSBind_GL.DeleteBuffer(IndexBuffer);
             Effect.Dispose();
+        }
+
+        /// <summary>渲染目标绑定组合的比较器（照 MonoGame 的 RenderTargetBindingArrayComparer）。</summary>
+        private sealed class RenderTargetBindingArrayComparer : IEqualityComparer<RenderTargetBinding[]>
+        {
+            public bool Equals(RenderTargetBinding[]? first, RenderTargetBinding[]? second)
+            {
+                if (ReferenceEquals(first, second)) return true;
+                if (first is null || second is null) return false;
+                if (first.Length != second.Length) return false;
+
+                for (int i = 0; i < first.Length; i++)
+                {
+                    // 照 MonoGame：只比渲染目标本身与切片，槽位为 null 的两项也算相等。
+                    if (!ReferenceEquals(first[i].RenderTarget, second[i].RenderTarget)) return false;
+                    if (first[i].ArraySlice != second[i].ArraySlice) return false;
+                }
+                return true;
+            }
+
+            public int GetHashCode(RenderTargetBinding[] array)
+            {
+                var hashCode = new HashCode();
+                foreach (RenderTargetBinding binding in array)
+                {
+                    hashCode.Add(binding.RenderTarget?.GetHashCode() ?? 0);
+                    hashCode.Add(binding.ArraySlice);
+                }
+                return hashCode.ToHashCode();
+            }
         }
     }
 }
