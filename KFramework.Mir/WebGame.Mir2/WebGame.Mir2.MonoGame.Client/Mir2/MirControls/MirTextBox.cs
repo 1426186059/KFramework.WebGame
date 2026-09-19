@@ -146,8 +146,13 @@ namespace Client.MirControls
 
         // 当前由浏览器原生 <input> 覆盖层接管的文本框（全局唯一，输入焦点互斥）。
         private static MirTextBox _current;
-        // 原生输入覆盖层是否正接管本框（接管时不自己绘制文本/光标，避免双层重叠）。
+        // 原生输入覆盖层是否正接管本框（仅作 IME/键盘捕获代理，DOM 透明，不再影响自身绘制）。
         private bool _nativeActive;
+
+        // 光标闪烁（对齐 Web_Mir3 DXTextBox）：聚焦时按固定间隔切换 _caretVisible，切换即触发纹理重绘。
+        private bool _caretVisible;
+        private long _caretToggle;
+        private const long CaretBlinkInterval = 530;
 
         public bool CanLoseFocus;
         public readonly TextBox TextBox;
@@ -418,6 +423,28 @@ namespace Client.MirControls
             Redraw();
         }
 
+        // 每帧由基类 Draw() 调用；在此驱动光标闪烁（与 Web_Mir3 DXTextBox 一致：
+        // 聚焦时到点翻转 _caretVisible 并置 TextureValid=false 触发重绘；失焦时关掉光标）。
+        protected internal override void DrawControl()
+        {
+            if (TextBox != null && TextBox.Focused)
+            {
+                if (CMain.Time - _caretToggle >= CaretBlinkInterval)
+                {
+                    _caretToggle = CMain.Time;
+                    _caretVisible = !_caretVisible;
+                    TextureValid = false;
+                }
+            }
+            else if (_caretVisible)
+            {
+                _caretVisible = false;
+                TextureValid = false;
+            }
+
+            base.DrawControl();
+        }
+
         protected override void CreateTexture()
         {
             if (Size.IsEmpty)
@@ -439,12 +466,11 @@ namespace Client.MirControls
             // 文本框纹理作为面板上的透明叠层：无背景色时清成透明（alpha 0），避免盖住面板里的输入框底。
             int back = (TextBox.BackColor != Color.Empty && TextBox.BackColor.A > 0) ? TextBox.BackColor.ToArgb() : 0;
             int selBack = Color.FromArgb(128, 51, 153, 255).ToArgb();
-            // 聚焦时由 DOM <input> 接管显示，离屏纹理只画背景、不画文字，避免 DOM 与 RT 文字重叠/错位
-            // （即"上下叠一起"）；失焦后 DOM 收起、_nativeActive 置否，此处再画完整文字。
-            // Web 端焦点事件丢失时 OnLostFocus/NativeBlur 已把 _nativeActive 置否并重绘，文字不会丢。
-            string drawText = _nativeActive ? "" : (TextBox.Text ?? "");
+            // DOM 覆盖层已透明，文字与光标统一由引擎自绘：无论聚焦/失焦都画完整文字，
+            // 聚焦时再额外绘制 caret（由 BrowserCanvas.DrawTextBox 根据 focused 处理）。
+            string drawText = TextBox.Text ?? "";
             BrowserCanvas.DrawTextBox(ControlTexture, Size.Width, Size.Height, drawText,
-                css, fore, back, selBack, fore, TextBox.SelectionStart, TextBox.SelectionLength, TextBox.SelectionStart, TextBox.Focused && !_nativeActive, !TextBox.Multiline);
+                css, fore, back, selBack, fore, TextBox.SelectionStart, TextBox.SelectionLength, TextBox.SelectionStart, TextBox.Focused && _caretVisible, !TextBox.Multiline);
 
             TextureValid = true;
         }

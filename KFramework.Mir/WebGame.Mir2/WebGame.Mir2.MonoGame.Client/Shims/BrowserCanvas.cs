@@ -136,8 +136,6 @@ namespace MirEngine
             var saved = BeginOnTexture(texture, backColor);
             try
             {
-                if (string.IsNullOrEmpty(text)) return;
-
                 var font = GetFont(css);
                 if (font == null) return;
 
@@ -151,7 +149,29 @@ namespace MirEngine
                 var pos = new KFramework.MonoGame.Vector2(padLeft, ty);
                 var fore = KFramework.MonoGame.Color.FromArgb((uint)textColor);
 
-                font.Draw(batch, text, pos, fore, 0f, KFramework.MonoGame.Vector2.Zero, 1f, KFramework.MonoGame.SpriteEffects.None, 0f);
+                if (!string.IsNullOrEmpty(text))
+                {
+                    font.Draw(batch, text, pos, fore, 0f, KFramework.MonoGame.Vector2.Zero, 1f, KFramework.MonoGame.SpriteEffects.None, 0f);
+                }
+
+                // DOM 覆盖层透明后，光标必须由引擎自绘：在 caretPos 对应位置画一条竖线。
+                // （单字符宽度用 font.Measure 累加得到，矩形用 1x1 白纹理缩放；多行仅精确首行。）
+                if (focused)
+                {
+                    string prefix = (text != null && caretPos > 0)
+                        ? text.Substring(0, Math.Min(caretPos, text.Length))
+                        : "";
+                    float caretX = padLeft + font.Measure(prefix).X;
+                    float caretW = Math.Max(1f, font.Size * 0.08f);
+                    float caretH = font.LineHeight;
+                    batch.Draw(WhitePixel(),
+                               new KFramework.MonoGame.Rectangle(
+                                   (int)Math.Round(caretX),
+                                   (int)Math.Round(ty),
+                                   (int)Math.Round(caretW),
+                                   (int)Math.Round(caretH)),
+                               fore);
+                }
 
                 batch.End();
             }
@@ -159,6 +179,19 @@ namespace MirEngine
             {
                 EndOnTexture(saved);
             }
+        }
+
+        // 复用的 1x1 白纹理：用于画 caret / 选区等纯色矩形。
+        private static KFramework.MonoGame.Texture2D _whitePixel;
+        private static KFramework.MonoGame.Texture2D WhitePixel()
+        {
+            if (_whitePixel == null)
+            {
+                var dev = Client.MirGraphics.DXManager.GDevice;
+                _whitePixel = dev.CreateTexture(1, 1);
+                _whitePixel.SetData(new byte[] { 255, 255, 255, 255 }, 0, 0, 1, 1);
+            }
+            return _whitePixel;
         }
 
         public static void DrawText(Texture texture, int x, int y, string text, string css, int foreColor, int backColor, int outlineColor, int drawFormat)
