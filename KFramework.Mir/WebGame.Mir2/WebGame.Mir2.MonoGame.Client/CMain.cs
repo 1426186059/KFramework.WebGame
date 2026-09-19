@@ -9,6 +9,7 @@ using Client.MirSounds;
 using MG = KFramework.MonoGame;
 using Client;
 using KFramework.MonoGame;
+using WebGame.Mir2.MonoGame.Client.Mir2._2026New;
 
 namespace WebGame.Mir2.MonoGame.Client
 {
@@ -27,10 +28,6 @@ namespace WebGame.Mir2.MonoGame.Client
         public static long BytesReceived, BytesSent;
         public static int FPS;
         public static int TotalBytesReceived, TotalBytesSent;
-
-        // 浏览器端全屏缩放因子：场景以固定逻辑分辨率渲染后由 MirScene 拉伸铺满画布，
-        // 鼠标等输入坐标需按此因子从画布像素反算回逻辑坐标（见 MirGame.Update）。
-        public static float ScaleX = 1f, ScaleY = 1f;
 
         // 原 Program 入口类的单例窗体及启动状态（已并入 CMain）。
         public static readonly CMain Instance = new CMain();
@@ -291,18 +288,9 @@ namespace WebGame.Mir2.MonoGame.Client
         private static void OnKeyDown(MG.Keys k) => CMain.CMain_KeyDown(null, ToKeyEventArgs(k));
         private static void OnKeyUp(MG.Keys k) => CMain.CMain_KeyUp(null, ToKeyEventArgs(k));
 
-        // 画布(Viewport)像素 → 逻辑分辨率(Settings.ScreenWidth/Height)坐标（KFramework.MonoGame.Vector2）。
-        // 场景纹理被拉伸铺满画布，命中测试必须在逻辑坐标空间进行，否则点击会错位（按钮无反应）。
-        private static MG.Vector2 ToLogical(MG.Vector2 p)
-        {
-            return new MG.Vector2(
-                p.X / CMain.ScaleX,
-                p.Y / CMain.ScaleY);
-        }
-
         private static void OnMouseDown(MG.MouseButton b, MG.Vector2 p)
         {
-            var lp = ToLogical(p);
+            var lp = KCamera.ScreenToWorldPos(p);
             CMain.MPoint = new MirEngine.Point((int)lp.X, (int)lp.Y);
             MirScene.ActiveScene?.OnMouseDown(ToMouseEventArgs(b, lp));
         }

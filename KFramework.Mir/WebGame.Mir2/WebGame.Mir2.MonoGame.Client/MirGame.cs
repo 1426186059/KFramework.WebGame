@@ -43,16 +43,7 @@ namespace WebGame.Mir2.MonoGame.Client
 
         protected override void Update(GameTime gameTime)
         {
-            // 鼠标坐标在画布(Viewport)像素空间，而场景按"屏幕高度"统一缩放烘焙；
-            // 命中测试用的 CMain.MPoint 必须按同一缩放 s 反算回逻辑分辨率坐标，否则鼠标与 UI 错位。
-            var vp = GraphicsDevice.Viewport;
-            float s = Settings.ScreenHeight > 0 ? (float)vp.Height / Settings.ScreenHeight : 1f;
-            CMain.ScaleX = s;
-            CMain.ScaleY = s;
-
-            CMain.MPoint = new MirEngine.Point(
-                (int)((Input_Mouse.Position.X - DXManager.RenderOffsetX) / s),
-                (int)(Input_Mouse.Position.Y / s));
+            CMain.MPoint = Input_Mouse.Position;
             CMain.CMain_MouseMove(null, new MouseEventArgs(MouseButtons.None, 0, CMain.MPoint.X, CMain.MPoint.Y, 0));
             SoundManager.ProcessDelayedSounds();
         }

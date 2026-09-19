@@ -12,9 +12,6 @@ namespace Client.MirScenes
 {
     public sealed class LoginScene : MirScene
     {
-        // 登录界面作为 UI 场景，在屏幕水平居中显示（两侧留黑边），而非拉伸铺满。
-        protected override bool CenterOnScreen => true;
-
         private MirAnimatedControl _background;
         public MirLabel Version;
 
@@ -602,10 +599,11 @@ namespace Client.MirScenes
                 Visible = true;
                 AccountIDTextBox.SetFocus();
 
-                if (Settings.Password != string.Empty && Settings.AccountID != string.Empty)
-                {
-                    Login();
-                }
+                //我现在不让他自动登陆
+                //if (Settings.Password != string.Empty && Settings.AccountID != string.Empty)
+                //{
+                //    Login();
+                //}
             }
             public void Clear()
             {

@@ -10,9 +10,6 @@ namespace Client.MirScenes
 {
     public class SelectScene : MirScene
     {
-        // 选人界面作为 UI 场景，在屏幕水平居中显示（两侧留黑边）。
-        protected override bool CenterOnScreen => true;
-
         public MirImageControl Background, Title;
         private NewCharacterDialog _character;
 

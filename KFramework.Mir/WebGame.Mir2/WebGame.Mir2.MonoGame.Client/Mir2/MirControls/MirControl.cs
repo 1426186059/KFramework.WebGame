@@ -3,6 +3,7 @@ using Client.MirSounds;
 using SlimDX;
 using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
+using WebGame.Mir2.MonoGame.Client.Mir2._2026New;
 
 namespace Client.MirControls
 {
@@ -789,8 +790,11 @@ namespace Client.MirControls
 
         public virtual bool IsMouseOver(Point p)
         {
+            //这里是个p 是屏幕坐标，得转换为 世界坐标
+            Point WorldPos = KCamera.ScreenToWorldPos(p);
             return Visible && (DisplayRectangle.Contains(p) || Moving || Modal) && !NotControl;
         }
+
         protected virtual void OnMouseEnter()
         {
             if (!_enabled && !AllowDisabledMouseOver)

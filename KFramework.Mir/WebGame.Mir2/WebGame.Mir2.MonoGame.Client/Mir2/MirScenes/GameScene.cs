@@ -1,19 +1,16 @@
 using Client.MirControls;
 using Client.MirGraphics;
+using Client.MirGraphics.Particles;
 using Client.MirNetwork;
 using Client.MirObjects;
+using Client.MirScenes.Dialogs;
 using Client.MirSounds;
 using SlimDX;
 using SlimDX.Direct3D9;
-using MirEngine;
-using System.Threading.Tasks;
-using S = ServerPackets;
+using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
 using Effect = Client.MirObjects.Effect;
-using Client.MirScenes.Dialogs;
-using Client.Utils;
-using Client.MirGraphics.Particles;
-using WebGame.Mir2.MonoGame.Client;
+using S = ServerPackets;
 
 namespace Client.MirScenes
 {
@@ -10719,7 +10716,6 @@ namespace Client.MirScenes
 
             // 按屏幕高度统一缩放；宽屏下地图横向铺满（无黑边），玩家可见世界随屏变宽。
             float s = (float)rtH / Settings.ScreenHeight;
-            DXManager.RenderOffsetX = 0f; // 游戏主场景铺满全屏，不使用居中偏移。
             DXManager.RenderTransform = KFramework.MonoGame.Matrix4x4.CreateScale(s, s, 1f);
 
             DrawBackground();
