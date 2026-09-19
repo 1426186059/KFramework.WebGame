@@ -35,8 +35,8 @@ namespace MirEngine
             if (i > 0)
             {
                 int j = i - 1;
-                while (j >= 0 && char.IsDigit(css[j])) j--;
-                if (int.TryParse(css.Substring(j + 1, i - j - 1), out int v)) return v;
+                while (j >= 0 && (char.IsDigit(css[j]) || css[j] == '.')) j--;
+                if (float.TryParse(css.Substring(j + 1, i - j - 1), out float v)) return (int)Math.Round(v);
             }
             return 12;
         }
@@ -56,8 +56,9 @@ namespace MirEngine
             if (pxIdx > 0)
             {
                 int j = pxIdx - 1;
-                while (j >= 0 && char.IsDigit(css[j])) j--;
-                if (int.TryParse(css.Substring(j + 1, pxIdx - j - 1), out int v)) size = v;
+                // 注意：字号可能是小数（如 13.333333），小数点 '.' 也要算作字号的一部分
+                while (j >= 0 && (char.IsDigit(css[j]) || css[j] == '.')) j--;
+                if (float.TryParse(css.Substring(j + 1, pxIdx - j - 1), out float v)) size = v;
                 int after = pxIdx + 2;
                 if (after < css.Length) family = css.Substring(after).Trim();
             }
@@ -131,18 +132,28 @@ namespace MirEngine
 
         public static void DrawTextBox(Texture texture, int w, int h, string text, string css, int foreColor, int backColor, int selBackColor, int textColor, int selectionStart, int selectionLength, int caretPos, bool focused, bool multiline)
         {
-            if (texture?.RenderTarget == null) return;
+            if (texture?.RenderTarget == null)
+            {
+                System.Console.WriteLine($"[DrawTextBox] SKIP rt=null text='{text}' focused={focused}");
+                return;
+            }
+
+            System.Console.WriteLine($"[DrawTextBox] run text='{text}' focused={focused} w={w} h={h} css='{css}'");
 
             var saved = BeginOnTexture(texture, backColor);
+            var batch = Client.MirGraphics.DXManager.Batch;
             try
             {
-                var font = GetFont(css);
-                if (font == null) return;
-
-                var batch = Client.MirGraphics.DXManager.Batch;
                 batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred,
                             KFramework.MonoGame.BlendState.NonPremultiplied,
                             KFramework.MonoGame.SamplerState.PointClamp);
+
+                var font = GetFont(css);
+                if (font == null)
+                {
+                    System.Console.WriteLine($"[DrawTextBox] font null css='{css}'");
+                    return;
+                }
 
                 float padLeft = 3f;
                 float ty = multiline ? 2f : Math.Max(0f, (h - font.LineHeight) / 2f);
@@ -154,29 +165,34 @@ namespace MirEngine
                     font.Draw(batch, text, pos, fore, 0f, KFramework.MonoGame.Vector2.Zero, 1f, KFramework.MonoGame.SpriteEffects.None, 0f);
                 }
 
-                // DOM 覆盖层透明后，光标必须由引擎自绘：在 caretPos 对应位置画一条竖线。
-                // （单字符宽度用 font.Measure 累加得到，矩形用 1x1 白纹理缩放；多行仅精确首行。）
+                // DOM 覆盖层透明后，光标由引擎自绘：focused 时画一条竖线。
+                // caret 绘制若异常绝不能影响上面文字的提交，故单独保护并打印。
                 if (focused)
                 {
-                    string prefix = (text != null && caretPos > 0)
-                        ? text.Substring(0, Math.Min(caretPos, text.Length))
-                        : "";
-                    float caretX = padLeft + font.Measure(prefix).X;
-                    float caretW = Math.Max(1f, font.Size * 0.08f);
-                    float caretH = font.LineHeight;
-                    batch.Draw(WhitePixel(),
-                               new KFramework.MonoGame.Rectangle(
-                                   (int)Math.Round(caretX),
-                                   (int)Math.Round(ty),
-                                   (int)Math.Round(caretW),
-                                   (int)Math.Round(caretH)),
-                               fore);
+                    try
+                    {
+                        string prefix = (text != null && caretPos > 0)
+                            ? text.Substring(0, Math.Min(caretPos, text.Length))
+                            : "";
+                        float caretX = padLeft + font.Measure(prefix).X;
+                        float caretW = Math.Max(1f, font.Size * 0.08f);
+                        float caretH = font.LineHeight;
+                        batch.Draw(WhitePixel(),
+                                   new KFramework.MonoGame.Rectangle(
+                                       (int)Math.Round(caretX), (int)Math.Round(ty),
+                                       (int)Math.Round(caretW), (int)Math.Round(caretH)),
+                                   fore);
+                        System.Console.WriteLine($"[DrawTextBox] caret ok x={caretX:F1} w={caretW:F1}");
+                    }
+                    catch (System.Exception ex)
+                    {
+                        System.Console.WriteLine($"[DrawTextBox] caret EX: {ex}");
+                    }
                 }
-
-                batch.End();
             }
             finally
             {
+                batch.End();
                 EndOnTexture(saved);
             }
         }
@@ -187,9 +203,11 @@ namespace MirEngine
         {
             if (_whitePixel == null)
             {
+                System.Console.WriteLine("[DrawTextBox] WhitePixel creating 1x1");
                 var dev = Client.MirGraphics.DXManager.GDevice;
                 _whitePixel = dev.CreateTexture(1, 1);
                 _whitePixel.SetData(new byte[] { 255, 255, 255, 255 }, 0, 0, 1, 1);
+                System.Console.WriteLine("[DrawTextBox] WhitePixel created");
             }
             return _whitePixel;
         }

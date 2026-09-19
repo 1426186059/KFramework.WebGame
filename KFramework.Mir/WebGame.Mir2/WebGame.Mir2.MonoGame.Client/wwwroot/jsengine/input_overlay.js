@@ -29,6 +29,9 @@
 // 本模块用 position:fixed（与 getBoundingClientRect 的视口坐标天然对齐，页面滚动也不漂移），
 // 并在 resize / scroll 时按最近一次 show 参数重新定位当前可见输入框。
 import { getCanvasElement } from './gl.js';
+// 模块级设置：DOM 输入覆盖层是否透明（true=文字/光标由引擎自绘；false=由 DOM 直接显示）。show() 可逐框覆盖。
+let _transparentInput = true;
+export function setTransparentInput(v) { _transparentInput = v; }
 let handlers = null;
 // 复用两个 DOM 元素：单行用 <input>，多行用 <textarea>（两者互斥显示，避免类型切换异常）。
 let inputEl = null;
@@ -104,19 +107,27 @@ function place(el, p) {
     el.style.width = p.cw / dpr + 'px';
     el.style.height = p.ch / dpr + 'px';
     el.style.font = p.fontPx / dpr + 'px ' + (p.fontFamily || 'sans-serif');
-    // 文字与光标由引擎在 canvas 上绘制（见 MirTextBox.CreateTexture → BrowserCanvas.DrawTextBox），
-    // 本 DOM 元素仅作 IME / 键盘捕获代理，故颜色与光标均透明，避免与引擎绘制重影。
+    // transparent=true：文字与光标由引擎在 canvas 自绘，本 DOM 元素仅作 IME / 键盘捕获代理，颜色与光标均透明；
+    // transparent=false：由 DOM 直接显示文字与光标；密码掩码由上面的 type=password 处理。
     // 注意：透明不影响 IME——候选词窗是浏览器 UI，仍按本元素光标位置弹出；input 事件照常回传合成文本。
-    el.style.color = 'transparent';
-    el.style.caretColor = 'transparent';
+    if (p.transparent) {
+        el.style.color = 'transparent';
+        el.style.caretColor = 'transparent';
+    }
+    else {
+        const r = (p.color >> 16) & 0xff, g = (p.color >> 8) & 0xff, b = p.color & 0xff;
+        const css = `rgb(${r},${g},${b})`;
+        el.style.color = css;
+        el.style.caretColor = css;
+    }
 }
 /** C# 侧注册事件回调（由 main.ts 在拿到程序集导出后调用一次）。 */
 export function setHandlers(h) {
     handlers = h;
 }
-export function show(cx, cy, cw, ch, fontPx, color, value, password, maxLength, multiline, fontFamily) {
+export function show(cx, cy, cw, ch, fontPx, color, value, password, maxLength, multiline, fontFamily, transparent = _transparentInput) {
     const el = ensureEl(multiline);
-    last = { cx, cy, cw, ch, fontPx, color, password, maxLength, multiline, fontFamily };
+    last = { cx, cy, cw, ch, fontPx, color, password, maxLength, multiline, fontFamily, transparent };
     place(el, last);
     el.style.display = 'block';
     el.value = value ?? '';

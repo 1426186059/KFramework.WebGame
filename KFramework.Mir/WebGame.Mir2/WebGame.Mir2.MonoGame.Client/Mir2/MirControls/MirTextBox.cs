@@ -149,6 +149,11 @@ namespace Client.MirControls
         // 原生输入覆盖层是否正接管本框（仅作 IME/键盘捕获代理，DOM 透明，不再影响自身绘制）。
         private bool _nativeActive;
 
+        // 原生输入覆盖层是否透明：true=文字/光标由引擎在 canvas 自绘（避免与 DOM 重影）；
+        // false=由 DOM 直接显示文字/光标（使用浏览器原生光标 / 选区 / IME 候选窗）。
+        // 默认 false：让浏览器托管光标，体验与系统一致。运行时可切换以对比两种渲染方式。
+        public static bool TransparentDomInput { get; set; } = false;
+
         // 光标闪烁（对齐 Web_Mir3 DXTextBox）：聚焦时按固定间隔切换 _caretVisible，切换即触发纹理重绘。
         private bool _caretVisible;
         private long _caretToggle;
@@ -399,7 +404,7 @@ namespace Client.MirControls
             }
             string fontFamily = TextBox.Font != null ? TextBox.Font.Name : "Arial";
             BrowserInputOverlay.Show(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height,
-                fontPx, fore, TextBox.Text ?? string.Empty, TextBox.UseSystemPasswordChar, TextBox.MaxLength, TextBox.Multiline, fontFamily);
+                fontPx, fore, TextBox.Text ?? string.Empty, TextBox.UseSystemPasswordChar, TextBox.MaxLength, TextBox.Multiline, fontFamily, TransparentDomInput);
             TextureValid = false;
             Redraw();
         }
@@ -427,6 +432,13 @@ namespace Client.MirControls
         // 聚焦时到点翻转 _caretVisible 并置 TextureValid=false 触发重绘；失焦时关掉光标）。
         protected internal override void DrawControl()
         {
+            // DOM 不透明显示文字/光标时，由浏览器托管光标，引擎不再自绘，故跳过闪烁逻辑。
+            bool domShowsText = _nativeActive && !TransparentDomInput;
+            if (domShowsText)
+            {
+                base.DrawControl();
+                return;
+            }
             if (TextBox != null && TextBox.Focused)
             {
                 if (CMain.Time - _caretToggle >= CaretBlinkInterval)
@@ -434,12 +446,14 @@ namespace Client.MirControls
                     _caretToggle = CMain.Time;
                     _caretVisible = !_caretVisible;
                     TextureValid = false;
+                    System.Console.WriteLine($"[DrawControl] blink flip caretVisible={_caretVisible}");
                 }
             }
             else if (_caretVisible)
             {
                 _caretVisible = false;
                 TextureValid = false;
+                System.Console.WriteLine("[DrawControl] lost focus, caret off");
             }
 
             base.DrawControl();
@@ -466,11 +480,18 @@ namespace Client.MirControls
             // 文本框纹理作为面板上的透明叠层：无背景色时清成透明（alpha 0），避免盖住面板里的输入框底。
             int back = (TextBox.BackColor != Color.Empty && TextBox.BackColor.A > 0) ? TextBox.BackColor.ToArgb() : 0;
             int selBack = Color.FromArgb(128, 51, 153, 255).ToArgb();
-            // DOM 覆盖层已透明，文字与光标统一由引擎自绘：无论聚焦/失焦都画完整文字，
-            // 聚焦时再额外绘制 caret（由 BrowserCanvas.DrawTextBox 根据 focused 处理）。
+            // DOM 覆盖层不透明（TransparentDomInput=false）且本框正由 DOM 接管时，文字与光标一律交给浏览器
+            // 原生 DOM 显示（浏览器光标、选区、IME 候选窗都更贴合系统），引擎只把纹理清成透明，避免与 DOM 文字重影。
+            // 仅在 DOM 透明（文字由引擎自绘）或本框未接管（失焦/隐藏）时，才在 canvas 上绘制文字与光标。
+            bool domShowsText = _nativeActive && !TransparentDomInput;
             string drawText = TextBox.Text ?? "";
-            BrowserCanvas.DrawTextBox(ControlTexture, Size.Width, Size.Height, drawText,
-                css, fore, back, selBack, fore, TextBox.SelectionStart, TextBox.SelectionLength, TextBox.SelectionStart, TextBox.Focused && _caretVisible, !TextBox.Multiline);
+            System.Console.WriteLine($"[CreateTexture] drawText='{drawText}' ctrlRTnull={ControlTexture?.RenderTarget == null} focused={TextBox.Focused} caretVisible={_caretVisible} size={Size.Width}x{Size.Height} domShowsText={domShowsText}");
+            if (domShowsText)
+                BrowserCanvas.DrawTextBox(ControlTexture, Size.Width, Size.Height, "",
+                    css, fore, back, selBack, fore, 0, 0, 0, false, !TextBox.Multiline);
+            else
+                BrowserCanvas.DrawTextBox(ControlTexture, Size.Width, Size.Height, drawText,
+                    css, fore, back, selBack, fore, TextBox.SelectionStart, TextBox.SelectionLength, TextBox.SelectionStart, TextBox.Focused && _caretVisible, !TextBox.Multiline);
 
             TextureValid = true;
         }
