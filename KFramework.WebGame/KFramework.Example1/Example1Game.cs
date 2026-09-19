@@ -13,12 +13,19 @@ namespace MirGame;
 public sealed class Example1Game : Game
 {
     /// <summary>
+    /// WebGL2 上下文是否开 MSAA（antialias）。
+    /// 它只能在创建上下文时决定（Game / GraphicsDevice 构造），运行时改不了 ——
+    /// 想对比 MSAA 开 / 关，改这里的值重新运行即可。
+    /// </summary>
+    private const bool Antialias = true;
+
+    /// <summary>
     /// 图形设备管理器（MonoGame 的标准用法：每个 Game 在构造函数里创建一个并持有它）。
     /// 完整演示见 <see cref="MirGame.Tests.GraphicsManagerTest.GraphicsManagerTestScene"/>。
     /// </summary>
     public GraphicsDeviceManager Graphics { get; }
 
-    public Example1Game() : base("#game", "hot_update_res")
+    public Example1Game() : base("#game", "hot_update_res", Antialias)
     {
         ClearColor = new Color(10, 12, 20);
 
@@ -26,8 +33,7 @@ public sealed class Example1Game : Game
         {
             PreferredBackBufferFormat = SurfaceFormat.Color,
             PreferredDepthStencilFormat = DepthFormat.Depth24,
-            SynchronizeWithVerticalRetrace = true,
-            PreferMultiSampling = false,
+            PreferMultiSampling = Antialias,
             GraphicsProfile = GraphicsProfile.Reach,
         };
 

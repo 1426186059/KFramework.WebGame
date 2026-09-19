@@ -95,6 +95,15 @@ namespace KFramework.MonoGame
         /// </summary>
         public string CanvasId { get; }
 
+        /// <summary>
+        /// WebGL2 上下文是否带 MSAA（<c>antialias</c>）。
+        /// </summary>
+        /// <remarks>
+        /// 照 MonoGame：MSAA 是「创建设备时」决定的属性（SDL 里在窗口/上下文创建前设 MultiSampleSamples），
+        /// 上下文建好后就改不了 —— 所以只能在 <see cref="Game"/> / 本类构造时指定。
+        /// </remarks>
+        public bool Antialias { get; }
+
         internal GraphicsMetrics _metrics;
 
         /// <summary>
@@ -140,9 +149,18 @@ namespace KFramework.MonoGame
         /// <summary>设备采样器状态槽（照 MonoGame 的 GraphicsDevice.SamplerStates，本 2D 后端只用单元 0）。</summary>
         public SamplerStateCollection SamplerStates { get; } = new SamplerStateCollection(1);
 
-        public GraphicsDevice(string canvasSelector = "#game")
+        /// <summary>
+        /// 创建 WebGL2 上下文。
+        /// </summary>
+        /// <param name="canvasSelector">画布选择器或 DOM id。</param>
+        /// <param name="antialias">是否启用 MSAA（必须在上下文创建前指定，之后改不了）。</param>
+        public GraphicsDevice(string canvasSelector = "#game", bool antialias = false)
         {
             CanvasId = HTML_Canvas_Func.ToCanvasId(canvasSelector);
+
+            // 照 MonoGame：MSAA 属性在上下文创建之前设置
+            JSBind_GL.SetAntialias(antialias);
+            Antialias = antialias;
 
             // 照 MonoGame 的无参内部构造：先建一份默认 PP，画布尺寸随后由 SyncCanvasSize 覆盖。
             // 注：MonoGame 在这里还会把 DepthStencilFormat 设为 Depth24，本后端画布不带深度附件，保持 None。

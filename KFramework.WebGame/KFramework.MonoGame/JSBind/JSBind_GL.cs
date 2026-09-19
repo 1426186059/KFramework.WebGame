@@ -143,6 +143,18 @@ namespace KFramework.MonoGame
         [JSImport("initContext", "gl")]
         internal static partial bool InitContext(string canvasId);
 
+        /// <summary>
+        /// 设置是否启用 MSAA（<c>antialias</c>）。
+        /// 必须在 <see cref="InitContext"/> 之前调用 —— 上下文建好后属性不可改
+        ///（照 MonoGame：MSAA 属性在窗口 / 上下文创建之前设置）。
+        /// </summary>
+        [JSImport("setAntialias", "gl")]
+        internal static partial void SetAntialias(bool enabled);
+
+        /// <summary>当前是否启用 MSAA。</summary>
+        [JSImport("getAntialias", "gl")]
+        internal static partial bool GetAntialias();
+
         /// <summary>上下文是否丢失（丢失需重建）。</summary>
         [JSImport("isContextLost", "gl")]
         internal static partial bool IsContextLost();

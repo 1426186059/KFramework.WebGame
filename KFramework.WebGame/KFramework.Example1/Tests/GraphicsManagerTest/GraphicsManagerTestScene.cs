@@ -6,7 +6,8 @@ namespace MirGame.Tests.GraphicsManagerTest;
 /// <summary>
 /// <see cref="GraphicsDeviceManager"/> 用法演示（照 MonoGame 的标准套路），全部操作都是上面的按钮。
 /// <para>· 创建：<c>graphics = new GraphicsDeviceManager(this);</c>（见 <see cref="Example1Game"/>）；</para>
-/// <para>· 设置：Preferred* / IsFullScreen / HardwareModeSwitch / SynchronizeWithVerticalRetrace / PreferMultiSampling；</para>
+/// <para>· 设置：Preferred* / IsFullScreen / HardwareModeSwitch / PreferMultiSampling / 呈现间隔（限帧）；</para>
+/// <para>· 没有「垂直同步」开关：浏览器强制 VSync（rAF 就是刷新率），WebGL 无此 API。</para>
 /// <para>· 生效：改完必须 <see cref="GraphicsDeviceManager.ApplyChanges"/>（每个按钮里都调了）；</para>
 /// <para>· 事件：<see cref="GraphicsDeviceManager.DeviceCreated"/>、<see cref="GraphicsDeviceManager.PreparingDeviceSettings"/>。</para>
 /// </summary>
@@ -22,8 +23,12 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
 
     private readonly List<IDisposable> _owned = [];
 
+    /// <summary>呈现间隔档位（照 MonoGame：改 PresentationParameters.PresentationInterval 的标准入口是 PreparingDeviceSettings 事件）。</summary>
+    private static readonly PresentInterval[] IntervalOptions = [PresentInterval.One, PresentInterval.Two, PresentInterval.Immediate];
+
     private Texture2D? _ball;
     private int _countIndex = 1;      // 默认 3000
+    private int _intervalIndex;       // 默认 One
     private float _time;
     private int _drawn;
 
@@ -47,7 +52,7 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
         Layout();
         ClickButtons();
 
-        if (Input_KeyBoard.GetKeyDown(Keys.D1)) Set(manager => manager.SynchronizeWithVerticalRetrace = !manager.SynchronizeWithVerticalRetrace);
+        if (Input_KeyBoard.GetKeyDown(Keys.D1)) CycleInterval();
         if (Input_KeyBoard.GetKeyDown(Keys.D2)) Set(manager => manager.PreferMultiSampling = !manager.PreferMultiSampling);
         if (Input_KeyBoard.GetKeyDown(Keys.D3)) Set(manager => manager.IsFullScreen = !manager.IsFullScreen);
         if (Input_KeyBoard.GetKeyDown(Keys.D4)) Manager.ToggleFullScreen();
@@ -64,10 +69,8 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
         GraphicsDeviceManager g = Manager;
 
         // ① 开关：点一下切换状态并立即 ApplyChanges
-        AddUiButton(g.SynchronizeWithVerticalRetrace ? "垂直同步：开" : "垂直同步：关",
-                    () => Set(manager => manager.SynchronizeWithVerticalRetrace = !manager.SynchronizeWithVerticalRetrace),
-                    g.SynchronizeWithVerticalRetrace);
-        AddUiButton(g.PreferMultiSampling ? "多重采样：开" : "多重采样：关",
+        // 多重采样：对应上下文的 antialias，只在启动时定（改了不会重建上下文）
+        AddUiButton(g.PreferMultiSampling ? "多重采样：开(启动时)" : "多重采样：关(启动时)",
                     () => Set(manager => manager.PreferMultiSampling = !manager.PreferMultiSampling),
                     g.PreferMultiSampling);
         AddUiButton(g.HardwareModeSwitch ? "全屏方式：原生(硬)" : "全屏方式：铺满(软)",
@@ -81,11 +84,24 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
         // ② 分辨率：改 PreferredBackBuffer* 后 ApplyChanges
         AddUiButton("1280×720", () => ApplyPreset(1280, 720));
         AddUiButton("800×480", () => ApplyPreset(800, 480));
-        AddUiButton("铺满视口(不钉死)", ReleaseToViewport);
+        // 高亮 = 当前正处于「未指定尺寸、跟随页面布局」的状态
+        AddUiButton("铺满视口(不钉死)", ReleaseToViewport, !g.HasPreferredBackBufferSize);
+        AddUiButton($"呈现间隔 {IntervalOptions[_intervalIndex]}", CycleInterval, IntervalOptions[_intervalIndex] == PresentInterval.Two);
         AddUiButton($"精灵 {CountOptions[_countIndex]:N0}", CycleCount);
     }
 
     private void CycleCount() => _countIndex = (_countIndex + 1) % CountOptions.Length;
+
+    /// <summary>
+    /// 切呈现间隔：Two 会真的限到半刷新率（主循环每 2 个 rAF 才画一帧），看 FPS 就知道。
+    /// 必须走管理器属性的 setter —— 它才会把「待应用」标记置上；
+    /// 只改本页自己的字段再调 ApplyChanges 是没用的（ApplyChanges 会直接返回）。
+    /// </summary>
+    private void CycleInterval()
+    {
+        _intervalIndex = (_intervalIndex + 1) % IntervalOptions.Length;
+        Set(manager => manager.PreferredPresentInterval = IntervalOptions[_intervalIndex]);
+    }
 
     /// <summary>改一个属性然后 ApplyChanges（这就是 MonoGame 的标准顺序）。</summary>
     private void Set(Action<GraphicsDeviceManager> change)
@@ -102,13 +118,11 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
         Manager.ApplyChanges();
     }
 
-    /// <summary>清掉 Preferred* 的影响：把期望尺寸还原成画布当前大小，画布重新随浏览器缩放。</summary>
-    private void ReleaseToViewport()
-    {
-        Manager.PreferredBackBufferWidth = Device.Viewport.Width;
-        Manager.PreferredBackBufferHeight = Device.Viewport.Height;
-        Manager.ApplyChanges();
-    }
+    /// <summary>
+    /// 释放「期望的后备缓冲尺寸」：必须走 <see cref="GraphicsDeviceManager.ReleasePreferredBackBufferSize"/>，
+    /// 直接把 Preferred* 设成当前尺寸只会把画布钉成另一个固定尺寸（之前这个按钮就是这么写的，所以点了没反应）。
+    /// </summary>
+    private void ReleaseToViewport() => Manager.ReleasePreferredBackBufferSize();
 
     // ---------- 绘制 ----------
 
@@ -123,10 +137,19 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
         PresentationParameters pp = Device.PresentationParameters;
 
         y += DrawSection(batch, "① 管理器当前设置（改完要 ApplyChanges）", new Vector2(x, y));
-        y += DrawLine(batch, Font, $"PreferredBackBuffer：{g.PreferredBackBufferWidth} x {g.PreferredBackBufferHeight}（{g.PreferredBackBufferFormat}）",
+        y += DrawLine(batch, Font,
+                      g.HasPreferredBackBufferSize
+                          ? $"PreferredBackBuffer：{g.PreferredBackBufferWidth} x {g.PreferredBackBufferHeight}（已指定 → 画布被钉成这个尺寸）"
+                          : "PreferredBackBuffer：未指定（画布跟随页面布局，随浏览器缩放）",
+                      new Vector2(x, y), g.HasPreferredBackBufferSize ? Color.LightGray : new Color(150, 220, 255));
+        y += DrawLine(batch, Font,
+                      $"呈现间隔：{pp.PresentationInterval} → 主循环每 {g.FramesPerPresent} 个 rAF 画一帧（浏览器强制 VSync，无开关）",
+                      new Vector2(x, y), new Color(150, 220, 255));
+        y += DrawLine(batch, Font,
+                      $"多重采样：{g.PreferMultiSampling} → 上下文 antialias：{Device.Antialias}（只在启动时生效，运行时改不了）",
                       new Vector2(x, y), Color.LightGray);
         y += DrawLine(batch, Font,
-                      $"垂直同步：{g.SynchronizeWithVerticalRetrace} / 多重采样：{g.PreferMultiSampling} / 全屏方式：{(g.HardwareModeSwitch ? "原生" : "铺满")} / IsFullScreen：{g.IsFullScreen}",
+                      $"全屏方式：{(g.HardwareModeSwitch ? "原生" : "铺满")} / IsFullScreen：{g.IsFullScreen}",
                       new Vector2(x, y), Color.LightGray);
 
         y += 16f;

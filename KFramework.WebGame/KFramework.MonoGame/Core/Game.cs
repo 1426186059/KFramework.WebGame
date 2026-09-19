@@ -48,9 +48,18 @@ namespace KFramework.MonoGame
         /// <summary>每帧绘制前的清屏色。</summary>
         public Color ClearColor { get; set; } = new Color(12, 14, 24);
 
-        protected Game(string canvasSelector = "#game", string contentRoot = "hot_update_res")
+        /// <summary>
+        /// 创建游戏宿主。
+        /// </summary>
+        /// <param name="canvasSelector">画布选择器或 DOM id（页面里没有时引擎自动建一块全屏画布）。</param>
+        /// <param name="contentRoot">内容包根路径。</param>
+        /// <param name="antialias">
+        /// 是否启用 MSAA。上下文创建后不可改，只能在构造时决定
+        /// （等价于 MonoGame 里「设备创建前」设置 <c>PreferMultiSampling</c>）。
+        /// </param>
+        protected Game(string canvasSelector = "#game", string contentRoot = "hot_update_res", bool antialias = false)
         {
-            GraphicsDevice = new GraphicsDevice(canvasSelector);
+            GraphicsDevice = new GraphicsDevice(canvasSelector, antialias);
             Window = new GameWindow(GraphicsDevice);
             Content = new ContentManager(contentRoot);
             Components = new GameComponentCollection();

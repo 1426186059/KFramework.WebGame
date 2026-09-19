@@ -13,6 +13,25 @@ function gpu() {
     return gl;
 }
 // 画布元素本身由 html_canvas 统一管理：页面里有就用它，没有则自动创建一块全屏默认画布。
+// 照 MonoGame（Platform/GraphicsDeviceManager.SDL.cs:52-56）：MSAA 必须在**创建上下文之前**设好属性，
+// 建完就改不了。浏览器同理 —— antialias 是 getContext 的参数，所以入口是 Game / GraphicsDevice 的构造参数。
+const contextAttributes = {
+    alpha: false,
+    antialias: false,
+    depth: true,
+    stencil: false,
+    premultipliedAlpha: false,
+    preserveDrawingBuffer: false,
+    powerPreference: 'high-performance',
+};
+/** 设置是否启用 MSAA（必须在 initContext 之前调用，上下文建好后改无效）。 */
+export function setAntialias(enabled) {
+    contextAttributes.antialias = !!enabled;
+}
+/** 当前是否启用 MSAA。 */
+export function getAntialias() {
+    return !!contextAttributes.antialias;
+}
 export function initContext(selector) {
     const element = resolveCanvasElement(selector);
     if (!element) {
@@ -20,15 +39,7 @@ export function initContext(selector) {
         return false;
     }
     canvas = element;
-    gl = canvas.getContext('webgl2', {
-        alpha: false,
-        antialias: false,
-        depth: true,
-        stencil: false,
-        premultipliedAlpha: false,
-        preserveDrawingBuffer: false,
-        powerPreference: 'high-performance',
-    });
+    gl = canvas.getContext('webgl2', contextAttributes);
     if (!gl) {
         console.error('[gl] 当前浏览器不支持 WebGL 2.0');
         return false;

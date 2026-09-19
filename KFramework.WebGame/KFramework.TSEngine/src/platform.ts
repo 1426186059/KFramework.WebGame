@@ -14,14 +14,38 @@ export function setFrameCallback(callback: FrameCallback | null): void {
     frameCallback = callback;
 }
 
+// ---------- 呈现间隔（对应 MonoGame 的 swapInterval） ----------
+
+// 照 MonoGame：PresentationInterval → GL 的 swapInterval（Graphics/GraphicsExtensions.cs 的 GetSwapInterval：
+// Immediate=0 / One=1 / Two=2 / Default=-1）。浏览器没有 swapInterval 可调，但 requestAnimationFrame
+// 本身就是垂直同步，所以等价实现是「每 N 个 rAF 才回调一帧」：1=每个垂直同步都画，2=隔一个（半帧率）。
+let frameInterval = 1;
+let frameCounter = 0;
+
+/**
+ * 设置呈现间隔：每 N 个 rAF 回调一帧（N ≥ 1）。
+ * 由 GraphicsDeviceManager.ApplyChanges 按 PresentationInterval 下发。
+ */
+export function setFrameInterval(interval: number): void {
+    frameInterval = Math.max(1, Math.min(8, Math.round(interval) || 1));
+}
+
+/** 当前呈现间隔（1 = 每个垂直同步都画）。 */
+export function getFrameInterval(): number {
+    return frameInterval;
+}
+
 export function startRenderLoop(): void {
     if (running) return;
     running = true;
 
     const tick = (timestamp: number): void => {
         if (!running) return;
+
         try {
-            frameCallback?.(timestamp);
+            // 跳过的帧仍然继续排队 rAF：只是这一帧不进游戏循环（逻辑时间按 timestamp 差值照常推进）
+            frameCounter++;
+            if (frameCounter % frameInterval === 0) frameCallback?.(timestamp);
         } catch (error) {
             console.error('[platform] 帧回调异常:', error);
         }

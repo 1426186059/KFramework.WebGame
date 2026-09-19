@@ -20,6 +20,17 @@ namespace KFramework.MonoGame
         [JSImport("startRenderLoop", "platform")]
         internal static partial void StartRenderLoop();
 
+        /// <summary>
+        /// 设置呈现间隔：每 N 个垂直同步（rAF）回调一帧（N ≥ 1）。
+        /// 对应 MonoGame 的 swapInterval，浏览器里由主循环跳帧实现。
+        /// </summary>
+        [JSImport("setFrameInterval", "platform")]
+        internal static partial void SetFrameInterval(int interval);
+
+        /// <summary>当前呈现间隔（1 = 每个垂直同步都画）。</summary>
+        [JSImport("getFrameInterval", "platform")]
+        internal static partial int GetFrameInterval();
+
         /// <summary>设置页面标题（浏览器标签页文字）。</summary>
         [JSImport("setTitle", "platform")]
         internal static partial void SetTitle(string title);

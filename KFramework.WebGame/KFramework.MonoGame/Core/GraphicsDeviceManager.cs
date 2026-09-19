@@ -14,6 +14,12 @@ namespace KFramework.MonoGame
     /// <see cref="IsFullScreen"/>（软全屏 = 铺满视口；<see cref="HardwareModeSwitch"/> 为 true 时请求浏览器原生全屏）。
     /// </para>
     /// <para>
+    /// 【没有垂直同步开关】浏览器强制垂直同步：主循环固定由 requestAnimationFrame 驱动，回调频率就是屏幕刷新率，
+    /// WebGL 没有任何 VSync API 可以开 / 关它。所以本类不提供 MonoGame 的 <c>SynchronizeWithVerticalRetrace</c>
+    /// —— 在这里它是个伪开关，硬搬过来只会误导。想降帧率请用
+    /// <see cref="PresentationParameters.PresentationInterval"/>（那是「限帧」，<see cref="PresentInterval.Two"/> = 半刷新率）。
+    /// </para>
+    /// <para>
     /// 与 MonoGame 的差异（均由 Web 平台特性决定）：
     /// ① 浏览器只有一个与画布绑定的 WebGL2 上下文，<see cref="GraphicsDevice"/> 由 <see cref="Game"/>
     /// 在构造时创建，本类只接管它、不会重建（没有 <c>GraphicsDevice.Reset</c>、也没有 DeviceReset 系列事件被触发）；
@@ -21,9 +27,11 @@ namespace KFramework.MonoGame
     /// <see cref="PreferredBackBufferHeight"/> 是「后备缓冲像素」语义，应用时会除以 DPR 换算成 CSS 尺寸；
     /// ③ 原生全屏必须由用户手势触发（浏览器限制），被拒绝时自动回落到铺满视口的软全屏；
     /// ④ <see cref="PreferredBackBufferFormat"/> / <see cref="PreferredDepthStencilFormat"/> /
-    /// <see cref="PreferHalfPixelOffset"/> / <see cref="PreferMultiSampling"/> 仍只在
-    /// <see cref="PresentationParameters"/> 上记录：WebGL2 上下文建好后无法改像素格式，
-    /// 画布也没开 <c>antialias</c>（见 <c>html_canvas.ts</c> 的上下文参数）；
+    /// <see cref="PreferHalfPixelOffset"/> 只在 <see cref="PresentationParameters"/> 上记录：
+    /// WebGL2 上下文建好后无法改像素格式；
+    /// ⑤ <see cref="PreferMultiSampling"/> 对应上下文的 <c>antialias</c>，而它是「创建上下文」时定死的
+    ///（照 MonoGame：MSAA 属性在设备创建前设置），所以只能在 <see cref="Game"/> 构造的 <c>antialias</c> 参数里指定，
+    /// 运行时改不了（不一致时本类会提示一次）；
     /// ⑤ <see cref="Game"/> 没有服务容器（Services），故不注册 IGraphicsDeviceManager/IGraphicsDeviceService 服务，
     /// 改为通过 <c>Game.graphicsDeviceManager</c> 内部字段关联。
     /// </para>
@@ -38,8 +46,13 @@ namespace KFramework.MonoGame
         private SurfaceFormat _preferredBackBufferFormat;
         private DepthFormat _preferredDepthStencilFormat;
         private bool _preferMultiSampling;
+        private PresentInterval _preferredPresentInterval = PresentInterval.Default;
         private DisplayOrientation _supportedOrientations;
-        private bool _synchronizedWithVerticalRetrace = true;
+        // 【没有「垂直同步开关」是有意为之】
+        // WebGL / 浏览器没有 VSync API：主循环固定由 requestAnimationFrame 驱动，
+        // 浏览器强制垂直同步（rAF 的回调频率 = 屏幕刷新率），既关不掉也不用开。
+        // 因此本类不提供 MonoGame 的 SynchronizeWithVerticalRetrace —— 它在这里是个伪开关。
+        // 需要「降帧率」请用 PresentationParameters.PresentationInterval（那是限帧，不是 VSync）。
         private bool _drawBegun;
         private bool _disposed;
         private bool _hardwareModeSwitch = true;
@@ -53,6 +66,9 @@ namespace KFramework.MonoGame
 
         // 画布当前是否处于全屏（原生或铺满视口）。
         private bool _canvasFullScreen;
+
+        // MSAA「运行时改不了」的提示是否已打印过（只提示一次，避免刷屏）
+        private bool _multiSamplingWarned;
 
         // ApplyChanges 的脏标记
         private bool _shouldApplyChanges;
@@ -77,7 +93,6 @@ namespace KFramework.MonoGame
             _supportedOrientations = DisplayOrientation.Default;
             _preferredBackBufferFormat = SurfaceFormat.Color;
             _preferredDepthStencilFormat = DepthFormat.Depth24;
-            _synchronizedWithVerticalRetrace = true;
 
             // 与 MonoGame 一致：以窗口客户区尺寸作为后备缓冲的默认分辨率，横竖屏时取「长边为宽」。
             GameWindow window = _game.Window;
@@ -286,7 +301,9 @@ namespace KFramework.MonoGame
             presentationParameters.DepthStencilFormat = _preferredDepthStencilFormat;
             presentationParameters.IsFullScreen = _wantFullScreen;
             presentationParameters.HardwareModeSwitch = _hardwareModeSwitch;
-            presentationParameters.PresentationInterval = _synchronizedWithVerticalRetrace ? PresentInterval.One : PresentInterval.Immediate;
+            // 浏览器强制垂直同步（rAF 本身就是），所以这里只表达「限帧」：
+            // Default / One / Immediate 都是每个垂直同步画一帧，只有 Two 会限到半刷新率。
+            presentationParameters.PresentationInterval = _preferredPresentInterval;
             // 本后端没有窗口方向概念（GameWindow 不暴露 CurrentOrientation），恒为 Default。
             presentationParameters.DisplayOrientation = DisplayOrientation.Default;
             // 本后端没有 DeviceWindowHandle（Web 无窗口句柄），保持 IntPtr.Zero。
@@ -323,6 +340,34 @@ namespace KFramework.MonoGame
             pp.PresentationInterval = source.PresentationInterval;
             pp.DisplayOrientation = source.DisplayOrientation;
             pp.MultiSampleCount = source.MultiSampleCount;
+
+            ApplyPresentInterval(source);
+            WarnIfMultiSamplingUnavailable();
+        }
+
+        /// <summary>
+        /// 把呈现间隔落实到主循环：每 N 个 requestAnimationFrame 才回调一帧。
+        /// </summary>
+        /// <remarks>
+        /// 这不是 VSync —— 浏览器强制垂直同步（rAF 的回调频率就是刷新率），WebGL 没有任何开关可以改它。
+        /// 这里做的是「限帧」：Default / One / Immediate 都是每个 rAF 都画（N = 1），
+        /// 只有 <see cref="PresentInterval.Two"/> 是隔一个 rAF 画（N = 2，半刷新率），用于省电 / 限帧测试。
+        /// </remarks>
+        private void ApplyPresentInterval(PresentationParameters pp)
+            => JSBind_Platform.SetFrameInterval(pp.PresentationInterval.ToFramesPerPresent());
+
+        /// <summary>
+        /// MSAA 只能在上下文创建前决定，运行时改不了 —— 不一致时提示一次，避免「点了没反应」。
+        /// </summary>
+        private void WarnIfMultiSamplingUnavailable()
+        {
+            if (_multiSamplingWarned || _graphicsDevice == null) return;
+            if (_preferMultiSampling == _graphicsDevice.Antialias) return;
+
+            _multiSamplingWarned = true;
+            PrintTool.Log(_preferMultiSampling
+                ? "[GraphicsDeviceManager] PreferMultiSampling = true，但 WebGL2 上下文创建时 antialias = false：MSAA 只能在创建 Game / GraphicsDevice 时通过 antialias 参数指定，运行时改不了。"
+                : "[GraphicsDeviceManager] WebGL2 上下文创建时启用了 antialias，但 PreferMultiSampling = false：实际是否走 MSAA 取决于上下文参数（启动时决定）。");
         }
 
         /// <summary>
@@ -509,9 +554,38 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
+        /// 主循环当前的呈现间隔：每几个垂直同步（rAF）才画一帧，1 = 每个都画（见 <see cref="ApplyPresentInterval"/>）。
+        /// </summary>
+        public int FramesPerPresent => JSBind_Platform.GetFrameInterval();
+
+        /// <summary>
+        /// 期望的呈现间隔 —— 也就是「限帧」。
+        /// </summary>
+        /// <remarks>
+        /// 这不是垂直同步开关（浏览器强制 VSync，WebGL 无此 API），而是人为降帧率：
+        /// <see cref="PresentInterval.Default"/> / <see cref="PresentInterval.One"/> /
+        /// <see cref="PresentInterval.Immediate"/> 都是每个 rAF 画一帧，
+        /// 只有 <see cref="PresentInterval.Two"/> 是隔一个 rAF 画（半刷新率，省电 / 限帧测试用）。
+        /// 改完要调用 <see cref="ApplyChanges"/>。
+        /// </remarks>
+        public PresentInterval PreferredPresentInterval
+        {
+            get => _preferredPresentInterval;
+            set
+            {
+                _shouldApplyChanges = true;
+                _preferredPresentInterval = value;
+            }
+        }
+
+        /// <summary>
         /// 是否希望后备缓冲启用多重采样。
         /// </summary>
-        /// <remarks>本后端未移植 MSAA resolve，仅记录到 <see cref="PresentationParameters.MultiSampleCount"/>。</remarks>
+        /// <remarks>
+        /// 对应 WebGL2 上下文的 <c>antialias</c>。它必须在创建上下文（<see cref="Game"/> / <see cref="GraphicsDevice"/> 构造）之前决定，
+        /// 所以运行时改这个值不会生效（只写进 <see cref="PresentationParameters.MultiSampleCount"/> 并在日志里提示一次）。
+        /// 想开 MSAA 就 <c>base(..., antialias: true)</c>。
+        /// </remarks>
         public bool PreferMultiSampling
         {
             get => _preferMultiSampling;
@@ -550,6 +624,36 @@ namespace KFramework.MonoGame
             }
         }
 
+        /// <summary>
+        /// 是否已显式设置过期望的后备缓冲尺寸。
+        /// </summary>
+        /// <remarks>
+        /// false 表示「没指定」：画布保持页面自身的布局（如 <c>width:100%</c>），随浏览器缩放，
+        /// <see cref="ApplyChanges"/> 也不会去写画布。
+        /// </remarks>
+        public bool HasPreferredBackBufferSize => _preferredSizeSet;
+
+        /// <summary>
+        /// 取消「期望的后备缓冲尺寸」，把画布交还给页面自身的布局：铺满视口（百分比，不是固定像素），
+        /// 于是它重新随浏览器缩放 —— 也就是从「钉死成固定分辨率」回到响应式。
+        /// </summary>
+        /// <remarks>
+        /// 仅设置 <see cref="PreferredBackBufferWidth"/> / <see cref="PreferredBackBufferHeight"/> 是回不到这个状态的
+        /// （那只会把画布钉成另一个固定尺寸），必须走本方法。
+        /// </remarks>
+        public void ReleasePreferredBackBufferSize()
+        {
+            _preferredSizeSet = false;
+            _shouldApplyChanges = true;
+
+            if (_graphicsDevice == null) return;
+
+            // 铺满视口用的是百分比，不是固定像素，所以浏览器缩放时它会跟着变。
+            Canvas.SetFullscreen();
+            if (_graphicsDevice.SyncCanvasSize())
+                _game.Window.RaiseSizeChanged();
+        }
+
         /// <summary>期望的后备缓冲宽度（像素）。</summary>
         /// <remarks>
         /// 应用时按「CSS 尺寸 = 后备缓冲 ÷ DPR」换算后设置画布大小，即后备缓冲会真的变成这个宽度
@@ -574,20 +678,6 @@ namespace KFramework.MonoGame
             {
                 _shouldApplyChanges = true;
                 _preferredDepthStencilFormat = value;
-            }
-        }
-
-        /// <summary>
-        /// 是否希望呈现时等待垂直回扫（垂直同步）。
-        /// </summary>
-        /// <remarks>Web 的主循环由 requestAnimationFrame 驱动，本身就是按屏幕刷新率回调，本项只记录到参数。</remarks>
-        public bool SynchronizeWithVerticalRetrace
-        {
-            get => _synchronizedWithVerticalRetrace;
-            set
-            {
-                _shouldApplyChanges = true;
-                _synchronizedWithVerticalRetrace = value;
             }
         }
 
