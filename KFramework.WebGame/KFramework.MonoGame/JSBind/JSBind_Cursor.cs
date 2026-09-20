@@ -1,4 +1,3 @@
-using KFramework.MonoGame.Cursor;
 using System.Runtime.InteropServices.JavaScript;
 
 namespace KFramework.MonoGame

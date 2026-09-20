@@ -1,4 +1,4 @@
-﻿namespace KFramework.MonoGame.Content
+﻿namespace KFramework.MonoGame
 {
     internal static class ContentFunc
     {

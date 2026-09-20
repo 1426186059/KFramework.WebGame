@@ -1,6 +1,5 @@
-namespace KFramework.MonoGame.CommonFunc
+namespace KFramework.MonoGame
 {
-
     /// <summary>
     /// 画布 CSS 光标（通用封装，调用 <see cref="JSBind_Cursor"/>）。
     /// 把桌面端「切换 .CUR 文件」的语义改成「切换 canvas 的 style.cursor」，接受任意合法 CSS cursor 值。
