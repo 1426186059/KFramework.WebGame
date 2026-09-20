@@ -22,7 +22,6 @@ namespace WebGame.Mir2.MonoGame.Client
         protected override void Initialize()
         {
             DXManager.Initialize(GraphicsDevice, new SpriteBatch(GraphicsDevice));
-            CMain.GetCanvasSize = () => (Window.Width, Window.Height);
             Window.SizeChanged += () => CMain.OnWindowSizeChanged(Window.Width, Window.Height);
         }
 

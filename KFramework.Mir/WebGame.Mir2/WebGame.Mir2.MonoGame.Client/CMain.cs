@@ -175,9 +175,6 @@ namespace WebGame.Mir2.MonoGame.Client
 
             MirEngine.BrowserCursor.Set(name);
         }
-        // 由 MirGame 注入：返回当前画布（WebGL 后备缓冲）的物理像素尺寸。
-        // 浏览器端画布铺满窗口，分辨率应以画布实际大小为准（见 SetResolution 说明）。
-        public static Func<(int Width, int Height)>? GetCanvasSize;
 
         // 浏览器端全屏方案：游戏以【固定逻辑分辨率】(Settings.ScreenWidth/Height，默认 1024x768)渲染，
         // 再由 MirScene.DrawControl → DXManager.PresentToScreen 把整帧场景纹理拉伸铺满画布(Viewport)。
