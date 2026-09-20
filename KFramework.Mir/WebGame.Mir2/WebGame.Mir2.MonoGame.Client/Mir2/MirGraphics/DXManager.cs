@@ -80,6 +80,21 @@ namespace Client.MirGraphics
             GDevice = device;
             Batch = batch;
 
+            // 浏览器/WebGL 宿主下 GDevice.Viewport 常读到 0 或“逻辑尺寸”，而后备缓冲(BackBuffer)才是真实画布像素
+            // （这也是 FullScreenSize 优先用 BackBuffer 的原因）。Settings.ScreenWidth/Height 直接读 GDevice.Viewport，
+            // 若不校正，控件构造/布局时会拿到 0 → Recenter 把对话框定位到负坐标、且 MirControl.Draw 守卫
+            // （Size.Width > Settings.ScreenWidth）直接跳过绘制 → 整层 UILayer（登录/选人/游戏 UI）全不可见。
+            // 这里把 Viewport 显式校正为后备缓冲尺寸，让全屏值在任何时刻都正确。
+            var pp = GDevice.PresentationParameters;
+            if (pp != null && pp.BackBufferWidth > 0 && pp.BackBufferHeight > 0)
+            {
+                var vp = GDevice.Viewport;
+                vp.X = 0; vp.Y = 0;
+                vp.Width = pp.BackBufferWidth;
+                vp.Height = pp.BackBufferHeight;
+                GDevice.Viewport = vp;
+            }
+
             // 嵌套 RT 合成：切回画布（SetRenderTarget(null)）时保留已合成内容，避免闪烁。
             // 清屏仍由每帧 RenderFrame 的显式 Clear 负责；默认 DiscardContents 保持 XNA/MonoGame 兼容。
             GDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;

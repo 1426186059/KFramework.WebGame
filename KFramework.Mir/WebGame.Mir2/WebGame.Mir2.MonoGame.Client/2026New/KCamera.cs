@@ -7,18 +7,21 @@ namespace WebGame.Mir2.MonoGame.Client
     public class KCamera
     {
         // 把视口(画布)像素坐标转换为 UI 逻辑坐标(Settings.ScreenWidth/Height = 1024x768)。
-        // 渲染端对 UI 层施加 CreateScaleTranslation(s, s, 0, 0)（s = 视口高 / 768，以高为准缩放、平移为 0），
-        // 逻辑(0,0) 对齐屏(0,0)；这里做它的逆变换 logical = screen / s，使鼠标命中检测
+        // 渲染端对 UI 层施加 CreateScaleTranslation(sx, sy, 0, 0) 做非均匀拉伸铺满
+        // （sx = 视口宽/Settings.ScreenWidth、sy = 视口高/Settings.ScreenHeight，逻辑(0,0) 对齐屏(0,0)），
+        // 这里做它的逆变换 logical = (screen - vp.origin) / (sx, sy)，使鼠标命中检测
         // （DisplayRectangle 用逻辑坐标）与可见位置对齐。CMain.MPoint 统一为逻辑坐标，供 UI 命中检测
         // 与各场景（含地图）的鼠标逻辑使用——否则会出现"鼠标不在按钮上却高亮/点击错位"。
+        // 注意：缩放仅作用于 UI 层逻辑坐标；世界层为 1:1 窗口像素、与此无关。
         public static MirEngine.Point ScreenToWorldPos(MirEngine.Point mPoint)
         {
             var vp = DXManager.GDevice.Viewport;
-            if (vp.Height <= 0 || Settings.ScreenHeight <= 0) return mPoint;
+            if (vp.Height <= 0 || Settings.ScreenHeight <= 0 || vp.Width <= 0 || Settings.ScreenWidth <= 0) return mPoint;
 
-            float s = (float)vp.Height / Settings.ScreenHeight;
-            int x = (int)((mPoint.X - vp.X) / s);
-            int y = (int)((mPoint.Y - vp.Y) / s);
+            float sx = (float)vp.Width / Settings.ScreenWidth;
+            float sy = (float)vp.Height / Settings.ScreenHeight;
+            int x = (int)((mPoint.X - vp.X) / sx);
+            int y = (int)((mPoint.Y - vp.Y) / sy);
             return new MirEngine.Point(x, y);
         }
 

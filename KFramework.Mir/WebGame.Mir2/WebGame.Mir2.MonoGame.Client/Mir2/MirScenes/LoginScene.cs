@@ -45,7 +45,7 @@ namespace Client.MirScenes
                     Index = 0,
                     Library = Libraries.ChrSel,
                     Loop = false,
-                    Parent = this,
+                    Parent = this.UILayer,
                 };
 
             // 关键：背景层必须铺满整屏。它作为登录框（_login 等）的父容器，
@@ -53,11 +53,12 @@ namespace Client.MirScenes
             // 而 _background 的尺寸来自 ChrSel 贴图库（异步加载），库未就绪时 Size 为 0，
             // 导致整层 IsMouseOver 恒为 false，登录框内的按钮/输入框永远收不到鼠标与键盘焦点（表现即为“点击/输入无反应”）。
             // 因此显式铺满屏幕并关闭 AutoSize，使其不依赖贴图库加载即可参与命中测试。
-            _background.AutoSize = true;
-            _background.Location = new Point(
-                (DXManager.GDevice.Viewport.Width - _background.Size.Width) / 2,
-                (DXManager.GDevice.Viewport.Height - _background.Size.Height) / 2);
-            _background.Visible = true;
+            _background.AutoSize = false;
+            _background.Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
+            // 背景定位于逻辑空间原点(0,0)，覆盖整块 1024x768 逻辑区域；
+            // 由 UILayer 变换(s=视口高/768)等比映射到屏幕铺满（不要再混入 GDevice.Viewport 像素坐标，
+            // 否则会与缩放变换叠加导致背景连同登录框一起被推出屏幕外）。
+            _background.Location = new Point(0, 0);
 
             _login = new LoginDialog {Parent = _background, Visible = false};
             _login.AccountButton.Click += (o, e) =>
