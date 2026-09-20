@@ -1,3 +1,4 @@
+using Client.MirGraphics;
 using Client.MirSounds;
 using MirEngine;
 using WebGame.Mir2.MonoGame.Client;
@@ -11,7 +12,33 @@ namespace Client
         // 离开屏幕 10 秒的图像即释放像素字节与纹理，内存峰值可控在 2GB 内。
         public const long CleanDelay = 10000;
 
-        public static int ScreenWidth = 1024, ScreenHeight = 768;
+        public static int ScreenWidth
+        {
+            get
+            {
+                return DXManager.GDevice.Viewport.Width;
+            }
+
+        }
+
+        public static int ScreenHeight
+        {
+            get
+            {
+                return DXManager.GDevice.Viewport.Height;
+            }
+
+        }
+
+        public static int Resolution
+        {
+            get
+            {
+                return DXManager.GDevice.Viewport.Width;
+            }
+        }
+
+
         private static InIReader Reader = new InIReader(@".\Mir2Config.ini");
         private static InIReader QuestTrackingReader = new InIReader(Path.Combine(UserDataPath, @".\QuestTracking.ini"));
 
@@ -80,7 +107,7 @@ namespace Client
 
         public static bool FPSCap = true;
         public static int MaxFPS = 100;
-        public static int Resolution = 1024;
+
         public static bool DebugMode = false;
 
         //Network
@@ -218,7 +245,6 @@ namespace Client
             MouseClip = Reader.ReadBoolean("Graphics", "MouseClip", MouseClip);
             TopMost = Reader.ReadBoolean("Graphics", "AlwaysOnTop", TopMost);
             FPSCap = Reader.ReadBoolean("Graphics", "FPSCap", FPSCap);
-            Resolution = Reader.ReadInt32("Graphics", "Resolution", Resolution);
             DebugMode = Reader.ReadBoolean("Graphics", "DebugMode", DebugMode);
             UseMouseCursors = Reader.ReadBoolean("Graphics", "UseMouseCursors", UseMouseCursors);
 

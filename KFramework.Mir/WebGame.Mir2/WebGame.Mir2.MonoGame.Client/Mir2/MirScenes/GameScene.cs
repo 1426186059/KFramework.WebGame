@@ -3173,11 +3173,6 @@ namespace Client.MirScenes
                 SoundManager.StopSound(20000 + 126 * 10 + 5 + i);
 
             User = null;
-            if (Settings.Resolution != 1024)
-            {
-                CMain.SetResolution(1024, 768);
-            }
-
             ActiveScene = new SelectScene(p.Characters);
 
             Dispose();
@@ -3190,9 +3185,6 @@ namespace Client.MirScenes
         private void ReturnToLogin(S.ReturnToLogin p)
         {
             User = null;
-            if (Settings.Resolution != 1024)
-                CMain.SetResolution(1024, 768);
-
             ActiveScene = new LoginScene();
             Dispose();
             MirMessageBox.Show(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ObservedPlayerLoggedOff));

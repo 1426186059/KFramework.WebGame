@@ -57,6 +57,7 @@ namespace Client.MirScenes
             _background.Location = new Point(
                 (DXManager.GDevice.Viewport.Width - _background.Size.Width) / 2,
                 (DXManager.GDevice.Viewport.Height - _background.Size.Height) / 2);
+            _background.Visible = true;
 
             _login = new LoginDialog {Parent = _background, Visible = false};
             _login.AccountButton.Click += (o, e) =>

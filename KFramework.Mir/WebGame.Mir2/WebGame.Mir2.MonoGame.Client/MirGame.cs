@@ -21,17 +21,9 @@ namespace WebGame.Mir2.MonoGame.Client
 
         protected override void Initialize()
         {
-            // 把 KFramework.MonoGame 的 GraphicsDevice / SpriteBatch 交给 DXManager（渲染后端）。
             DXManager.Initialize(GraphicsDevice, new SpriteBatch(GraphicsDevice));
-
-            // 把"取画布（后备缓冲）物理像素尺寸"的能力注入 CMain（供需要时查询；
-            // 当前全屏由 MirScene.DrawControl 把固定逻辑分辨率的场景纹理拉伸到画布实现，不再改 Settings）。
             CMain.GetCanvasSize = () => (Window.Width, Window.Height);
-
-            // 初始刷新一次；窗口缩放时同样刷新当前场景（地板/光照离屏纹理重建 + 场景重烘焙）。
-            // 实际"铺满窗口"由 MirScene 将场景纹理拉伸到 Viewport 完成。
-            CMain.SetResolution(Window.Width, Window.Height);
-            Window.SizeChanged += () => CMain.SetResolution(Window.Width, Window.Height);
+            Window.SizeChanged += () => CMain.OnWindowSizeChanged(Window.Width, Window.Height);
         }
 
         protected override async Task LoadContentAsync()

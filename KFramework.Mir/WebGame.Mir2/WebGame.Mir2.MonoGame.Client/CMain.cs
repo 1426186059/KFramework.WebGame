@@ -64,152 +64,6 @@ namespace WebGame.Mir2.MonoGame.Client
             for (int i = 0; i < Cursors.Length; i++) Cursors[i] = new Cursor();
         }
 
-        // 原版用 Win32 .CUR 文件切换窗体光标；浏览器端无法加载 .CUR，改为切换 canvas 的 CSS cursor。
-        // 之前的空实现会让游戏内光标永远停在 canvas 默认样式（攻击/NPC对话/文本等状态都不变化）。
-        // 传的是语义名，具体图片/样式在 tsengine/src/core/cursor.ts 里定义（改成自己的图片只需改那里）。
-        public static void SetMouseCursor(MouseCursor cursor)
-        {
-            string name;
-            switch (cursor)
-            {
-                case MouseCursor.Attack:
-                case MouseCursor.AttackRed:
-                    name = "attack";
-                    break;
-                case MouseCursor.NPCTalk:
-                case MouseCursor.Upgrade:
-                    name = "npc";
-                    break;
-                case MouseCursor.TextPrompt:
-                    name = "text";
-                    break;
-                case MouseCursor.Trash:
-                    name = "trash";
-                    break;
-                default:
-                    name = "default";
-                    break;
-            }
-
-            MirEngine.BrowserCursor.Set(name);
-        }
-        // 由 MirGame 注入：返回当前画布（WebGL 后备缓冲）的物理像素尺寸。
-        // 浏览器端画布铺满窗口，分辨率应以画布实际大小为准（见 SetResolution 说明）。
-        public static Func<(int Width, int Height)>? GetCanvasSize;
-
-        // 浏览器端全屏方案：游戏以【固定逻辑分辨率】(Settings.ScreenWidth/Height，默认 1024x768)渲染，
-        // 再由 MirScene.DrawControl → DXManager.PresentToScreen 把整帧场景纹理拉伸铺满画布(Viewport)。
-        // 因此这里【不再】把 Settings 改成画布物理尺寸——否则场景离屏纹理与实际显示尺寸脱节、
-        // UI 命中坐标错配；只负责在窗口缩放时刷新地板/光照离屏纹理并令当前场景重烘焙。
-        // （该回调由 MirGame 在 Window.SizeChanged 时触发，传入的 width/height 即画布尺寸，此处不再使用。）
-        public static void SetResolution(int width, int height)
-        {
-            // 游戏内场景的地板/光照是离屏 RenderTarget，分辨率变化时先释放，
-            // DrawFloor/DrawLights 检测到 null/Disposed 后会用逻辑分辨率(Settings)重建。
-            if (GameScene.Scene != null)
-            {
-                GameScene.Scene.MapControl.FloorValid = false;
-                DXManager.FloorTexture?.Dispose(); DXManager.FloorTexture = null;
-                DXManager.FloorSurface = null;
-                DXManager.LightTexture?.Dispose(); DXManager.LightTexture = null;
-                DXManager.LightSurface = null;
-            }
-
-            // 当前活动场景（登录/选人/游戏）按逻辑分辨率重烘焙（库加载完成也会触发，见 Init）。
-            MirScene.ActiveScene?.Refresh();
-        }
-        public static void ToggleFullScreen() { }
-        public static bool IsKeyLocked(MirEngine.Keys key) => false;
-
-        public static void CMain_KeyDown(object sender, KeyEventArgs e)
-        {
-            Shift = e.Shift; Alt = e.Alt; Ctrl = e.Control;
-            if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
-                SpellTargetLock = (MG.Keys)(int)e.KeyCode == (MG.Keys)Enum.Parse(typeof(MG.Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
-            else SpellTargetLock = false;
-            if (e.KeyCode == MirEngine.Keys.Oem8) Tilde = true;
-            try
-            {
-                if (e.Alt && (MG.Keys)(int)e.KeyCode == MG.Keys.Enter) { ToggleFullScreen(); return; }
-                if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnKeyDown(e);
-            }
-            catch (Exception ex) { SaveError(ex.ToString()); }
-        }
-
-        public static void CMain_KeyUp(object sender, KeyEventArgs e)
-        {
-            Shift = e.Shift; Alt = e.Alt; Ctrl = e.Control;
-            if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
-                SpellTargetLock = (MG.Keys)(int)e.KeyCode == (MG.Keys)Enum.Parse(typeof(MG.Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
-            else SpellTargetLock = false;
-            if (e.KeyCode == MirEngine.Keys.Oem8) Tilde = false;
-            foreach (KeyBind KeyCheck in CMain.InputKeys.Keylist)
-            {
-                if (KeyCheck.function != KeybindOptions.Screenshot) continue;
-                if (KeyCheck.Key != e.KeyCode) continue;
-                if ((KeyCheck.RequireAlt != 2) && (KeyCheck.RequireAlt != (Alt ? 1 : 0))) continue;
-                if ((KeyCheck.RequireShift != 2) && (KeyCheck.RequireShift != (Shift ? 1 : 0))) continue;
-                if ((KeyCheck.RequireCtrl != 2) && (KeyCheck.RequireCtrl != (Ctrl ? 1 : 0))) continue;
-                if ((KeyCheck.RequireTilde != 2) && (KeyCheck.RequireTilde != (Tilde ? 1 : 0))) continue;
-                Instance.CreateScreenShot();
-                break;
-            }
-            try { if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnKeyUp(e); }
-            catch (Exception ex) { SaveError(ex.ToString()); }
-        }
-
-        public static void CMain_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            try { if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnKeyPress(e); }
-            catch (Exception ex) { SaveError(ex.ToString()); }
-        }
-
-        public static void CMain_MouseMove(object sender, MouseEventArgs e)
-        {
-            // 与 OnMouseDown/OnMouseUp 保持一致：把原始画布坐标换算成逻辑 UI 坐标(1024x768)，
-            // 否则命中检测用原始像素对比逻辑 DisplayRectangle 会错位。
-            MPoint = KCamera.ScreenToWorldPos(new MirEngine.Point(e.Location.X, e.Location.Y));
-            try { if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnMouseMove(e); }
-            catch (Exception ex) { SaveError(ex.ToString()); }
-        }
-
-        public static void SaveError(string ex)
-        {
-            try { MirEngine.BrowserResource.Log("[Mir][Error] " + ex); }
-            catch { }
-        }
-
-        private static string _lastLoopError;
-
-        public static void Loop()
-        {
-            try
-            {
-                Time = Environment.TickCount & 0x7FFFFFFF;
-                Now = DateTime.Now;
-
-                Network.Process();
-
-                if (MirScene.ActiveScene != null)
-                {
-                    MirScene.ActiveScene.Process();
-                    DXManager.RenderFrame(() => MirScene.ActiveScene.Draw());
-                }
-
-                DXManager.Clean();
-            }
-            catch (Exception ex)
-            {
-                // 帧循环里的未处理异常会终止渲染进程且拿不到堆栈；这里打印完整堆栈（去重）到控制台，
-                // 便于定位真正的出错行（如连接阶段的 NullReferenceException）。
-                string s = ex.ToString();
-                if (s != _lastLoopError)
-                {
-                    _lastLoopError = s;
-                    SaveError(s);
-                }
-            }
-        }
 
         // ---- 原 Program 入口逻辑（已并入 CMain）----
         // 约束：本项目禁止任何 [JSExport] —— JS 互操作基础设施全部由 KFramework.MonoGame 提供
@@ -260,12 +114,146 @@ namespace WebGame.Mir2.MonoGame.Client
             ConfigureInput();
         }
 
+        private static string _lastLoopError;
 
-
-        // WASM 入口：替代原根 Program.cs 的 Main。创建并启动游戏宿主（MirGame 继承自 KFramework.MonoGame.Game）。
-        public static void Main()
+        public static void Loop()
         {
-            _ = new MirGame().RunAsync();
+            try
+            {
+                Time = Environment.TickCount & 0x7FFFFFFF;
+                Now = DateTime.Now;
+
+                Network.Process();
+
+                if (MirScene.ActiveScene != null)
+                {
+                    MirScene.ActiveScene.Process();
+                    DXManager.RenderFrame(() => MirScene.ActiveScene.Draw());
+                }
+
+                DXManager.Clean();
+            }
+            catch (Exception ex)
+            {
+                // 帧循环里的未处理异常会终止渲染进程且拿不到堆栈；这里打印完整堆栈（去重）到控制台，
+                // 便于定位真正的出错行（如连接阶段的 NullReferenceException）。
+                string s = ex.ToString();
+                if (s != _lastLoopError)
+                {
+                    _lastLoopError = s;
+                    SaveError(s);
+                }
+            }
+        }
+
+        // 原版用 Win32 .CUR 文件切换窗体光标；浏览器端无法加载 .CUR，改为切换 canvas 的 CSS cursor。
+        // 之前的空实现会让游戏内光标永远停在 canvas 默认样式（攻击/NPC对话/文本等状态都不变化）。
+        // 传的是语义名，具体图片/样式在 tsengine/src/core/cursor.ts 里定义（改成自己的图片只需改那里）。
+        public static void SetMouseCursor(MouseCursor cursor)
+        {
+            string name;
+            switch (cursor)
+            {
+                case MouseCursor.Attack:
+                case MouseCursor.AttackRed:
+                    name = "attack";
+                    break;
+                case MouseCursor.NPCTalk:
+                case MouseCursor.Upgrade:
+                    name = "npc";
+                    break;
+                case MouseCursor.TextPrompt:
+                    name = "text";
+                    break;
+                case MouseCursor.Trash:
+                    name = "trash";
+                    break;
+                default:
+                    name = "default";
+                    break;
+            }
+
+            MirEngine.BrowserCursor.Set(name);
+        }
+        // 由 MirGame 注入：返回当前画布（WebGL 后备缓冲）的物理像素尺寸。
+        // 浏览器端画布铺满窗口，分辨率应以画布实际大小为准（见 SetResolution 说明）。
+        public static Func<(int Width, int Height)>? GetCanvasSize;
+
+        // 浏览器端全屏方案：游戏以【固定逻辑分辨率】(Settings.ScreenWidth/Height，默认 1024x768)渲染，
+        // 再由 MirScene.DrawControl → DXManager.PresentToScreen 把整帧场景纹理拉伸铺满画布(Viewport)。
+        // 因此这里【不再】把 Settings 改成画布物理尺寸——否则场景离屏纹理与实际显示尺寸脱节、
+        // UI 命中坐标错配；只负责在窗口缩放时刷新地板/光照离屏纹理并令当前场景重烘焙。
+        // （该回调由 MirGame 在 Window.SizeChanged 时触发，传入的 width/height 即画布尺寸，此处不再使用。）
+        public static void OnWindowSizeChanged(int width, int height)
+        {
+            // 游戏内场景的地板/光照是离屏 RenderTarget，分辨率变化时先释放，
+            // DrawFloor/DrawLights 检测到 null/Disposed 后会用逻辑分辨率(Settings)重建。
+            if (GameScene.Scene != null)
+            {
+                GameScene.Scene.MapControl.FloorValid = false;
+                DXManager.FloorTexture?.Dispose(); DXManager.FloorTexture = null;
+                DXManager.FloorSurface = null;
+                DXManager.LightTexture?.Dispose(); DXManager.LightTexture = null;
+                DXManager.LightSurface = null;
+            }
+
+            // 当前活动场景（登录/选人/游戏）按逻辑分辨率重烘焙（库加载完成也会触发，见 Init）。
+            MirScene.ActiveScene?.Refresh();
+        }
+
+        public static void ToggleFullScreen() { }
+        public static bool IsKeyLocked(MirEngine.Keys key) => false;
+
+        public static void CMain_KeyDown(object sender, KeyEventArgs e)
+        {
+            Shift = e.Shift; Alt = e.Alt; Ctrl = e.Control;
+            if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
+                SpellTargetLock = (MG.Keys)(int)e.KeyCode == (MG.Keys)Enum.Parse(typeof(MG.Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
+            else SpellTargetLock = false;
+            if (e.KeyCode == MirEngine.Keys.Oem8) Tilde = true;
+            try
+            {
+                if (e.Alt && (MG.Keys)(int)e.KeyCode == MG.Keys.Enter) { ToggleFullScreen(); return; }
+                if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnKeyDown(e);
+            }
+            catch (Exception ex) { SaveError(ex.ToString()); }
+        }
+
+        public static void CMain_KeyUp(object sender, KeyEventArgs e)
+        {
+            Shift = e.Shift; Alt = e.Alt; Ctrl = e.Control;
+            if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
+                SpellTargetLock = (MG.Keys)(int)e.KeyCode == (MG.Keys)Enum.Parse(typeof(MG.Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
+            else SpellTargetLock = false;
+            if (e.KeyCode == MirEngine.Keys.Oem8) Tilde = false;
+            foreach (KeyBind KeyCheck in CMain.InputKeys.Keylist)
+            {
+                if (KeyCheck.function != KeybindOptions.Screenshot) continue;
+                if (KeyCheck.Key != e.KeyCode) continue;
+                if ((KeyCheck.RequireAlt != 2) && (KeyCheck.RequireAlt != (Alt ? 1 : 0))) continue;
+                if ((KeyCheck.RequireShift != 2) && (KeyCheck.RequireShift != (Shift ? 1 : 0))) continue;
+                if ((KeyCheck.RequireCtrl != 2) && (KeyCheck.RequireCtrl != (Ctrl ? 1 : 0))) continue;
+                if ((KeyCheck.RequireTilde != 2) && (KeyCheck.RequireTilde != (Tilde ? 1 : 0))) continue;
+                Instance.CreateScreenShot();
+                break;
+            }
+            try { if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnKeyUp(e); }
+            catch (Exception ex) { SaveError(ex.ToString()); }
+        }
+
+        public static void CMain_MouseMove(object sender, MouseEventArgs e)
+        {
+            // 与 OnMouseDown/OnMouseUp 保持一致：把原始画布坐标换算成逻辑 UI 坐标(1024x768)，
+            // 否则命中检测用原始像素对比逻辑 DisplayRectangle 会错位。
+            MPoint = KCamera.ScreenToWorldPos(new MirEngine.Point(e.Location.X, e.Location.Y));
+            try { if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnMouseMove(e); }
+            catch (Exception ex) { SaveError(ex.ToString()); }
+        }
+
+        public static void SaveError(string ex)
+        {
+            try { MirEngine.BrowserResource.Log("[Mir][Error] " + ex); }
+            catch { }
         }
 
         private static void ConfigureInput()
