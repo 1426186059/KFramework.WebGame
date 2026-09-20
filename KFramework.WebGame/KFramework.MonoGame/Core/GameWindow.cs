@@ -35,9 +35,9 @@ namespace KFramework.MonoGame
         public bool SetCanvasRect(int x, int y, int width, int height)
             => SyncAfterCanvasChange(Canvas.SetRect(x, y, width, height));
 
-        /// <summary>把画布恢复为铺满视口（启动时的默认状态），不改显示模式。</summary>
+        /// <summary>把画布恢复为填满整个 HTML 页面（启动时的默认状态），不改显示模式。</summary>
         /// <returns>画布存在且设置成功时返回 true。</returns>
-        public bool SetCanvasFullscreen() => SyncAfterCanvasChange(Canvas.SetFullscreen());
+        public bool SetCanvasFullscreen() => SyncAfterCanvasChange(Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen, 0, 0, 0, 0));
 
         /// <summary>把画布摆到浏览器视口正中（给定 CSS 尺寸），并在浏览器缩放时自动保持居中。</summary>
         /// <remarks>等价于 <see cref="HTML_Canvas.SetCentered(int, int)"/>，作用在窗口自己的画布上。</remarks>
@@ -50,19 +50,10 @@ namespace KFramework.MonoGame
         public bool RestoreCanvasLayout() => SyncAfterCanvasChange(Canvas.RestoreLayout());
 
         /// <summary>
-        /// 请求浏览器原生全屏（<c>canvas.requestFullscreen</c>）。
-        /// </summary>
-        /// <remarks>
-        /// 浏览器要求由用户手势触发（点击 / 按键），被拒绝时自动回落到「铺满视口」。
-        /// 退出原生全屏用 <see cref="HTML_Canvas.ExitFullscreen"/>。
-        /// </remarks>
-        public bool RequestCanvasFullscreen() => Canvas.RequestFullscreen();
-
-        /// <summary>
         /// 浏览器视口尺寸（window.innerWidth / innerHeight，CSS 像素）。布局计算请用这个，而不是画布尺寸。
         /// </summary>
         /// <remarks><see cref="Point.X"/> = 视口宽，<see cref="Point.Y"/> = 视口高。</remarks>
-        public Point ViewportSize => HTML_Canvas_Func.GetViewportSize();
+        public Point HTMLPageSize => HTML_Canvas_Func.GetHTMLPageSize();
 
         /// <summary>绘制缓冲宽度（物理像素，已含设备像素比）。</summary>
         public int Width => _device.Viewport.Width;

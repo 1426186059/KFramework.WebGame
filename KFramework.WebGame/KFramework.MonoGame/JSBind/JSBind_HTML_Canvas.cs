@@ -10,22 +10,16 @@ namespace KFramework.MonoGame
     public static partial class JSBind_HTML_Canvas
     {
         /// <summary>
-        /// 创建一块铺满视口的全屏画布。已存在同 id 画布时返回 false。
-        /// </summary>
-        /// <param name="id">画布 DOM id（模块内部会再归一化，允许传 "#id" 形式）。</param>
-        [JSImport("createFullscreen", "canvas")]
-        public static partial bool CreateFullscreen(string id);
-
-        /// <summary>
-        /// 在指定位置创建一块画布。已存在同 id 画布时返回 false。
+        /// 创建一块画布（按 <paramref name="mode"/> 布局：Rect 摆位 / Centered 居中 / Fullscreen 填满整个 HTML 页面 / Size 仅设尺寸）。已存在同 id 画布时返回 false。
         /// </summary>
         /// <param name="id">画布 DOM id。</param>
-        /// <param name="x">左上角 X（CSS 像素）。</param>
-        /// <param name="y">左上角 Y（CSS 像素）。</param>
+        /// <param name="mode">布局方式，取 <see cref="HTML_CanvasLayoutMode"/> 的数值。</param>
+        /// <param name="x">左上角 X（CSS 像素），Rect 模式使用。</param>
+        /// <param name="y">左上角 Y（CSS 像素），Rect 模式使用。</param>
         /// <param name="width">CSS 宽度（像素）。</param>
         /// <param name="height">CSS 高度（像素）。</param>
         [JSImport("create", "canvas")]
-        public static partial bool Create(string id, int x, int y, int width, int height);
+        public static partial bool Create(string id, int mode, int x, int y, int width, int height);
 
         /// <summary>
         /// 【通用布局入口】对应 TS 的 applyLayout：mode 取 <see cref="HTML_CanvasLayoutMode"/> 的数值，
@@ -38,32 +32,13 @@ namespace KFramework.MonoGame
         [JSImport("getRect", "canvas")]
         public static partial void GetRect(string id, [JSMarshalAs<JSType.MemoryView>] Span<int> view);
 
-        /// <summary>读当前可设置的最大 CSS 尺寸：view[0]=maxWidth，view[1]=maxHeight。</summary>
-        [JSImport("getMaxSize", "canvas")]
-        public static partial void GetMaxSize([JSMarshalAs<JSType.MemoryView>] Span<int> view);
-
-        /// <summary>
-        /// 请求浏览器原生全屏（<c>canvas.requestFullscreen</c>）。
-        /// 需要用户手势，被拒绝时 JS 侧会回落到「铺满视口」的软全屏。
-        /// </summary>
-        [JSImport("requestFullscreen", "canvas")]
-        public static partial bool RequestFullscreen(string id);
-
-        /// <summary>退出浏览器原生全屏。</summary>
-        [JSImport("exitFullscreen", "canvas")]
-        public static partial void ExitFullscreen();
-
-        /// <summary>把已有画布恢复为铺满视口；画布不存在时返回 false（C# 侧已改用 applyLayout 的 Fullscreen 模式）。</summary>
-        [JSImport("setFullscreen", "canvas")]
-        public static partial bool SetFullscreen(string id);
-
         /// <summary>撤销本模块写在画布上的行内样式，恢复页面自身布局；画布不存在时返回 false。</summary>
         [JSImport("restoreLayout", "canvas")]
         public static partial bool RestoreLayout(string id);
 
-        /// <summary>读浏览器视口尺寸：view[0]=innerWidth，view[1]=innerHeight。</summary>
-        [JSImport("getViewportSize", "canvas")]
-        public static partial void GetViewportSize([JSMarshalAs<JSType.MemoryView>] Span<int> view);
+        /// <summary>读 HTML 页面尺寸：view[0]=innerWidth，view[1]=innerHeight。</summary>
+        [JSImport("getHTMLPageSize", "canvas")]
+        public static partial void GetHTMLPageSize([JSMarshalAs<JSType.MemoryView>] Span<int> view);
 
         /// <summary>删除画布（从 DOM 移除并注销）；画布不存在时返回 false。</summary>
         [JSImport("destroy", "canvas")]

@@ -60,9 +60,7 @@ public sealed class CanvasTestScene : TestSceneBase
         AddUiButton($"预设 {preset.X}×{preset.Y} [3]", () => CyclePreset(1));
         AddUiButton("居中 [1]", SetCentered);
         AddUiButton("左上角", TopLeft);
-        AddUiButton("铺满视口 [2]", Fullscreen);
-        AddUiButton("浏览器原生全屏", NativeFullscreen);
-        AddUiButton("退出原生全屏", ExitNativeFullscreen);
+        AddUiButton("填满整个 HTML 页面 [2]", Fullscreen);
         AddUiButton("恢复页面布局", Restore);
         AddUiButton("重新读回 Rect", Reread);
     }
@@ -94,21 +92,7 @@ public sealed class CanvasTestScene : TestSceneBase
     {
         bool ok = Window.SetCanvasFullscreen();
         SyncNow();
-        Say(ok ? "铺满视口（软全屏，不改显示模式）" : "设置失败：找不到画布");
-    }
-
-    private void NativeFullscreen()
-    {
-        bool ok = Window.RequestCanvasFullscreen();
-        Say(ok
-            ? "已请求浏览器原生全屏（需用户手势，被拒绝会自动变铺满视口）"
-            : "原生全屏请求失败：找不到画布");
-    }
-
-    private void ExitNativeFullscreen()
-    {
-        Window.Canvas.ExitFullscreen();
-        Say("已请求退出浏览器原生全屏");
+        Say(ok ? "填满整个 HTML 页面（软全屏，不改显示模式）" : "设置失败：找不到画布");
     }
 
     private void Restore()
@@ -145,8 +129,7 @@ public sealed class CanvasTestScene : TestSceneBase
         float x = origin.X;
         float y = Math.Max(origin.Y, ContentTop);
 
-        Point viewport = Window.ViewportSize;
-        Point max = Window.Canvas.MaxSize;
+        Point pageSize = Window.HTMLPageSize;
 
         y += DrawLine(batch, Font, $"提示：{_hint}", new Vector2(x, y), new Color(126, 200, 255));
         y += 10f;
@@ -156,7 +139,7 @@ public sealed class CanvasTestScene : TestSceneBase
         y += DrawLine(batch, Font, $"画布 Rect：({Window.Canvas.Rect.X}, {Window.Canvas.Rect.Y}) {Window.Canvas.Rect.Width}×{Window.Canvas.Rect.Height}（HTML 元素实际矩形）",
                       new Vector2(x, y), new Color(150, 220, 255));
         y += DrawLine(batch, Font, $"浏览器视口：{viewport.X} x {viewport.Y}（居中算法用的就是它）", new Vector2(x, y), Color.LightGray);
-        y += DrawLine(batch, Font, $"可设最大尺寸：{max.X} x {max.Y}（超出就跑到可见区域外了）", new Vector2(x, y), Color.LightGray);
+        y += DrawLine(batch, Font, $"可设最大尺寸：{pageSize.X} x {pageSize.Y}（超出就跑到可见区域外了）", new Vector2(x, y), Color.LightGray);
         y += DrawLine(batch, Font, $"画布 CSS：{(int)Device.CssSize.X} x {(int)Device.CssSize.Y}", new Vector2(x, y), Color.LightGray);
         y += DrawLine(batch, Font,
                       $"后备缓冲：{Device.Viewport.Width} x {Device.Viewport.Height}（= CSS × DPR {Device.DevicePixelRatio:0.##}）",
@@ -166,12 +149,11 @@ public sealed class CanvasTestScene : TestSceneBase
         y += DrawSection(batch, "② 按钮对应的 API", new Vector2(x, y));
         y += DrawLine(batch, Font, "居中 → GameWindow.SetCanvasCentered(w, h)（自动跟随窗口缩放）", new Vector2(x, y), Color.LightGray);
         y += DrawLine(batch, Font, "左上角 → GameWindow.SetCanvasRect(x, y, w, h)", new Vector2(x, y), Color.LightGray);
-        y += DrawLine(batch, Font, "铺满视口 → SetCanvasFullscreen / 原生全屏 → RequestCanvasFullscreen", new Vector2(x, y), Color.LightGray);
+        y += DrawLine(batch, Font, "填满整个 HTML 页面 → SetCanvasFullscreen（软全屏，不改显示模式）", new Vector2(x, y), Color.LightGray);
         y += DrawLine(batch, Font, "恢复页面布局 → GameWindow.RestoreCanvasLayout()", new Vector2(x, y), Color.LightGray);
 
         y += 16f;
         y += DrawSection(batch, "③ 注意", new Vector2(x, y));
         y += DrawLine(batch, Font, "· 改尺寸会重建 backing buffer，别把它放进每帧的 Update / Draw", new Vector2(x, y), new Color(255, 190, 140));
-        y += DrawLine(batch, Font, "· 原生全屏必须由用户手势触发（点按钮 / 按键），脚本自己调用会被拒绝", new Vector2(x, y), new Color(255, 190, 140));
     }
 }

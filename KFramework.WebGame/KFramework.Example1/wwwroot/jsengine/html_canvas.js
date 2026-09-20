@@ -10,10 +10,10 @@
 //   CSS 尺寸（本文件写的 style.width / style.height）
 //     → platform.getCanvasSize 每帧读 rect × DPR 写进 canvas.width / canvas.height（backing）
 //     → C# 侧 GraphicsDevice.SyncCanvasSize 更新 PresentationParameters 与 Viewport，并触发 GameWindow.SizeChanged。
-// 所以本文件只改 CSS，backing / 视口 / 输入坐标（input_common 按 rect 换算）会在下一帧自动跟上。
+// 所以本文件只改 CSS，backing / 窗口 / 输入坐标（input_common 按 rect 换算）会在下一帧自动跟上。
 /** id → 画布元素。由本模块统一持有，删除时同步摘除。 */
 const canvases = new Map();
-/** 处于「居中模式」的画布：视口变化时自动重新居中（浏览器窗口缩放）。 */
+/** 处于「居中模式」的画布：窗口变化时自动重新居中（浏览器窗口缩放）。 */
 const centered = new Map();
 /** 未指定画布时的默认 DOM id（与 C# 侧 Game 的默认选择器 "#game" 对齐）。 */
 export const DEFAULT_CANVAS_ID = 'game';
@@ -35,7 +35,7 @@ function applyCommonStyle(element) {
     element.style.touchAction = 'none';
     element.style.zIndex = '0';
 }
-/** 铺满视口（100% / inset 效果由 left/top=0 + width/height=100% 实现）。 */
+/** 填满整个 HTML 页面（100% / inset 效果由 left/top=0 + width/height=100% 实现）。 */
 function applyFullscreenStyle(element) {
     applyCommonStyle(element);
     element.style.left = '0px';
@@ -51,7 +51,7 @@ function applyRectStyle(element, x, y, width, height) {
     element.style.width = `${Math.max(1, Math.round(width))}px`;
     element.style.height = `${Math.max(1, Math.round(height))}px`;
 }
-/** 把画布摆到视口正中（按 CSS 尺寸），位置取自 window.innerWidth / innerHeight —— 不是画布自己的尺寸。 */
+/** 把画布摆到窗口正中（按 CSS 尺寸），位置取自 window.innerWidth / innerHeight —— 不是画布自己的尺寸。 */
 function applyCentered(element, width, height) {
     const w = Math.max(1, Math.round(width));
     const h = Math.max(1, Math.round(height));
@@ -60,7 +60,7 @@ function applyCentered(element, width, height) {
     element.style.left = `${Math.max(0, Math.round((window.innerWidth - w) / 2))}px`;
     element.style.top = `${Math.max(0, Math.round((window.innerHeight - h) / 2))}px`;
 }
-// 视口变了就把居中画布重新居中：否则浏览器一缩放，原本居中的画布就偏了。
+// 窗口变了就把居中画布重新居中：否则浏览器一缩放，原本居中的画布就偏了。
 window.addEventListener('resize', () => {
     centered.forEach((size, id) => {
         const element = canvases.get(id);
@@ -101,48 +101,10 @@ function lookup(id) {
     return null;
 }
 /**
- * 创建一块全屏画布并插入 <body>。
- * @param idOrSelector 画布 id（可写 "#id" 形式）；已存在同名画布时返回 false。
+ * 把布局方式应用到画布元素上（新建或直接套用共享同一套逻辑）。
+ * @param mode 0 Rect / 1 Size / 2 Centered / 3 Fullscreen。
  */
-export function createFullscreen(idOrSelector) {
-    const id = toId(idOrSelector);
-    if (lookup(id))
-        return false;
-    const element = document.createElement('canvas');
-    element.id = id;
-    applyFullscreenStyle(element);
-    document.body.appendChild(element);
-    canvases.set(id, element);
-    return true;
-}
-/**
- * 在指定位置创建一块画布并插入 <body>。
- * @param idOrSelector 画布 id（可写 "#id" 形式）；已存在同名画布时返回 false。
- * @param x 左上角 X（CSS 像素，相对视口）。
- * @param y 左上角 Y（CSS 像素，相对视口）。
- * @param width CSS 宽度（像素）。
- * @param height CSS 高度（像素）。
- */
-export function create(idOrSelector, x, y, width, height) {
-    const id = toId(idOrSelector);
-    if (lookup(id))
-        return false;
-    const element = document.createElement('canvas');
-    element.id = id;
-    applyRectStyle(element, x, y, width, height);
-    document.body.appendChild(element);
-    canvases.set(id, element);
-    return true;
-}
-/**
- * 【通用布局入口】一次函数覆盖 setRect / setSize / setCentered / setFullscreen 四种情况。
- * 上层（C# 的 HTML_Canvas.SetLayout）只需这一个 channel 就能表达全部摆位需求。
- */
-export function applyLayout(idOrSelector, mode, x, y, width, height) {
-    const id = toId(idOrSelector);
-    const element = lookup(id);
-    if (!element)
-        return false;
+function applyLayoutStyle(element, mode, x, y, width, height, id) {
     switch (mode) {
         case 1 /* LayoutMode.Size */:
             // 只改尺寸：位置保持不动
@@ -160,48 +122,50 @@ export function applyLayout(idOrSelector, mode, x, y, width, height) {
             applyFullscreenStyle(element);
             break;
         default:
-            // LayoutMode.Rect：手动摆位后不再跟随视口居中
+            // LayoutMode.Rect：手动摆位后不再跟随窗口居中
             centered.delete(id);
             applyRectStyle(element, x, y, width, height);
             break;
     }
-    return true;
-}
-/** 设置已有画布的位置与 CSS 尺寸。没有这块画布时返回 false。 */
-export function setRect(idOrSelector, x, y, width, height) {
-    return applyLayout(idOrSelector, 0 /* LayoutMode.Rect */, x, y, width, height);
-}
-/** 只改画布的 CSS 尺寸，保持当前位置（left / top）不动。没有这块画布时返回 false。 */
-export function setSize(idOrSelector, width, height) {
-    return applyLayout(idOrSelector, 1 /* LayoutMode.Size */, 0, 0, width, height);
 }
 /**
- * 请求浏览器原生全屏（canvas.requestFullscreen）。
- * 浏览器要求必须由用户手势触发，否则会拒绝 —— 被拒绝或缺省该 API 时回落到「铺满视口」的软全屏，
- * 保证调用方总能得到一个可用的结果（GraphicsDeviceManager.IsFullScreen 走这条路）。
+ * 创建一块画布并插入 <body>。
+ * @param idOrSelector 画布 id（可写 "#id" 形式）；已存在同名画布时返回 false。
+ * @param mode 布局方式（0 Rect / 1 Size / 2 Centered / 3 Fullscreen）。
+ * @param x 左上角 X（CSS 像素，相对窗口），Rect 模式使用。
+ * @param y 左上角 Y（CSS 像素，相对窗口），Rect 模式使用。
+ * @param width CSS 宽度（像素）。
+ * @param height CSS 高度（像素）。
  */
-export function requestFullscreen(idOrSelector) {
+export function create(idOrSelector, mode, x, y, width, height) {
+    const id = toId(idOrSelector);
+    if (lookup(id))
+        return false;
+    const element = document.createElement('canvas');
+    element.id = id;
+    applyCommonStyle(element);
+    applyLayoutStyle(element, mode, x, y, width, height, id);
+    document.body.appendChild(element);
+    canvases.set(id, element);
+    return true;
+}
+/**
+ * 【通用布局入口】一次函数表达 Rect / Size / Centered / Fullscreen 四种布局。
+ * 上层（C# 的 HTML_Canvas.SetLayout）只需这一个 channel 就能表达全部摆位需求。
+ */
+export function applyLayout(idOrSelector, mode, x, y, width, height) {
     const id = toId(idOrSelector);
     const element = lookup(id);
     if (!element)
         return false;
-    // 先铺满视口：原生全屏下画布尺寸仍受作者样式影响（不先铺满会只占原来那一小块），
-    // 且被拒绝时这个结果本身就是「软全屏」。
-    applyFullscreenStyle(element);
-    centered.delete(id);
-    const request = element.requestFullscreen?.bind(element);
-    if (!request)
-        return true;
-    request().catch(() => undefined);
+    applyLayoutStyle(element, mode, x, y, width, height, id);
     return true;
 }
-/**
- * 把画布摆到视口正中（给定 CSS 尺寸）。
- * 之后浏览器窗口缩放会自动重新居中（本模块监听了 window resize），直到调用 setRect / restoreLayout 解除居中模式。
- */
-export function setCentered(idOrSelector, width, height) {
-    return applyLayout(idOrSelector, 2 /* LayoutMode.Centered */, 0, 0, width, height);
-}
+
+
+
+
+
 /**
  * 撤销本模块写在画布上的行内样式，让页面自己的 CSS（例如 <canvas> 的 width:100%）重新生效。
  * 用于「恢复启动时的默认布局」，同时解除居中模式。
@@ -217,22 +181,13 @@ export function restoreLayout(idOrSelector) {
     }
     return true;
 }
-/** 读浏览器视口尺寸（window.innerWidth / innerHeight），常用于自己算居中位置。写入 [宽, 高]。 */
-export function getViewportSize(view) {
+/** 读 HTML 页面尺寸（window.innerWidth / innerHeight），常用于自己算居中位置。写入 [宽, 高]。 */
+export function getHTMLPageSize(view) {
     writeInts(view, [Math.round(window.innerWidth), Math.round(window.innerHeight)]);
 }
-/** 退出浏览器原生全屏（不管谁处于全屏）。本环境不支持时什么都不做。 */
-export function exitFullscreen() {
-    if (!document.fullscreenElement)
-        return;
-    document.exitFullscreen?.().catch(() => undefined);
-}
-/** 把已有画布恢复为铺满视口。没有这块画布时返回 false。 */
-export function setFullscreen(idOrSelector) {
-    return applyLayout(idOrSelector, 3 /* LayoutMode.Fullscreen */, 0, 0, 0, 0);
-}
+
 /**
- * 读画布当前的实际矩形（不含边框）：写入 [left, top, width, height]，单位 CSS 像素，坐标相对视口左上角。
+ * 读画布当前的实际矩形（不含边框）：写入 [left, top, width, height]，单位 CSS 像素，坐标相对窗口左上角。
  * 画布不存在时写入全 0 —— 调用方可以据此判断「还没这块画布」。
  */
 export function getRect(idOrSelector, view) {
@@ -248,14 +203,6 @@ export function getRect(idOrSelector, view) {
         Math.round(rect.width),
         Math.round(rect.height),
     ]);
-}
-/**
- * 当前能给画布设置的最大 CSS 尺寸：写入 [maxWidth, maxHeight]。
- * 未进入浏览器原生全屏时，上限就是视口（window.innerWidth / innerHeight）——
- * 再大就超出屏幕可见区域了；进入原生全屏后才能真正用到屏幕分辨率的尺寸。
- */
-export function getMaxSize(view) {
-    writeInts(view, [Math.round(window.innerWidth), Math.round(window.innerHeight)]);
 }
 /** 删除画布：从 DOM 移除并注销。没有这块画布时返回 false。 */
 export function destroy(idOrSelector) {
@@ -282,12 +229,12 @@ export function getCanvas(idOrSelector) {
  * @param idOrSelector 画布 id 或选择器（空串 / 缺省 → 默认 id）。
  * @returns 画布元素；无法创建时为 null。
  */
-export function resolveCanvasElement(idOrSelector) {
+export function getOrCreateCanvasElement(idOrSelector) {
     const id = toId(idOrSelector);
     const existing = lookup(id);
     if (existing)
         return existing;
-    if (!createFullscreen(id))
+    if (!create(id, 3 /* LayoutMode.Fullscreen */, 0, 0, 0, 0))
         return null;
     return canvases.get(id) ?? null;
 }

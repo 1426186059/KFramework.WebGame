@@ -6,16 +6,16 @@ namespace KFramework.MonoGame
     /// </summary>
     public enum HTML_CanvasLayoutMode
     {
-        /// <summary>按 (x, y, width, height) 摆放；不再跟随视口居中。</summary>
+        /// <summary>按 (x, y, width, height) 摆放；不再跟随窗口居中。</summary>
         Rect = 0,
 
         /// <summary>只改 CSS 尺寸，保留当前位置（忽略 x / y）。</summary>
         Size = 1,
 
-        /// <summary>按视口居中（忽略 x / y），之后浏览器缩放会自动重新居中。</summary>
+        /// <summary>按窗口居中（忽略 x / y），之后浏览器缩放会自动重新居中。</summary>
         Centered = 2,
 
-        /// <summary>铺满视口（忽略全部尺寸参数），并解除居中模式。</summary>
+        /// <summary>填满整个 HTML 页面（忽略全部尺寸参数），并解除居中模式。</summary>
         Fullscreen = 3,
     }
 }

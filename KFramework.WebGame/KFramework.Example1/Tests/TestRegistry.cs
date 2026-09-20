@@ -37,13 +37,13 @@ public static class TestRegistry
         new TestEntry
         {
             Name = "GraphicsDeviceManager",
-            Desc = "设备参数管理的标准用法：点按钮切垂直同步 / 多重采样 / 全屏方式与 IsFullScreen、切分辨率，每次改动后 ApplyChanges，并展示已应用的呈现参数",
+            Desc = "设备参数管理的标准用法：点按钮切多重采样 / 呈现间隔（限帧）、切分辨率，每次改动后 ApplyChanges，并展示已应用的呈现参数",
             Factory = static () => new GraphicsManagerTest.GraphicsManagerTestScene(),
         },
         new TestEntry
         {
             Name = "画布位置与尺寸",
-            Desc = "C# 控制 <canvas> 的 CSS 位置与尺寸：点按钮切预设分辨率、居中 / 左上角 / 铺满视口 / 浏览器原生全屏 / 恢复页面布局（html_canvas.ts）",
+            Desc = "C# 控制 <canvas> 的 CSS 位置与尺寸：点按钮切预设分辨率、居中 / 左上角 / 填满整个 HTML 页面（软全屏）/ 恢复页面布局（html_canvas.ts）",
             Factory = static () => new CanvasTest.CanvasTestScene(),
         },
         new TestEntry

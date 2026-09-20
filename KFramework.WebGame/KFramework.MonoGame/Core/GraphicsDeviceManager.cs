@@ -11,7 +11,8 @@ namespace KFramework.MonoGame
     /// <para>
     /// 画布由 <see cref="HTML_Canvas"/>（模块 <c>html_canvas.ts</c>）托管，因此下列设置是真生效的：
     /// <see cref="PreferredBackBufferWidth"/> / <see cref="PreferredBackBufferHeight"/>（换算成画布 CSS 尺寸）、
-    /// <see cref="IsFullScreen"/>（软全屏 = 铺满视口；<see cref="HardwareModeSwitch"/> 为 true 时请求浏览器原生全屏）。
+    /// 全屏相关属性（<see cref="IsFullScreen"/> / <see cref="ToggleFullScreen"/> / <see cref="HardwareModeSwitch"/>）已改为「保留签名、直接抛出 NotSupportedException」：
+    /// 浏览器原生全屏是用户交互行为、不应由代码触发；需要填满整个 HTML 页面请用 HTML_Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen)。
     /// </para>
     /// <para>
     /// 【没有垂直同步开关】浏览器强制垂直同步：主循环固定由 requestAnimationFrame 驱动，回调频率就是屏幕刷新率，
@@ -25,7 +26,7 @@ namespace KFramework.MonoGame
     /// 在构造时创建，本类只接管它、不会重建（没有 <c>GraphicsDevice.Reset</c>、也没有 DeviceReset 系列事件被触发）；
     /// ② 后备缓冲尺寸 = 画布 CSS 尺寸 × DPR，所以 <see cref="PreferredBackBufferWidth"/> /
     /// <see cref="PreferredBackBufferHeight"/> 是「后备缓冲像素」语义，应用时会除以 DPR 换算成 CSS 尺寸；
-    /// ③ 原生全屏必须由用户手势触发（浏览器限制），被拒绝时自动回落到铺满视口的软全屏；
+    /// ③ 原生全屏是用户交互行为，本框架不提供代码触发的全屏（IsFullScreen / ToggleFullScreen / HardwareModeSwitch 均抛 NotSupportedException）；需要填满整个 HTML 页面请用 HTML_Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen)；
     /// ④ <see cref="PreferredBackBufferFormat"/> / <see cref="PreferredDepthStencilFormat"/> /
     /// <see cref="PreferHalfPixelOffset"/> 只在 <see cref="PresentationParameters"/> 上记录：
     /// WebGL2 上下文建好后无法改像素格式；
@@ -55,17 +56,12 @@ namespace KFramework.MonoGame
         // 需要「降帧率」请用 PresentationParameters.PresentationInterval（那是限帧，不是 VSync）。
         private bool _drawBegun;
         private bool _disposed;
-        private bool _hardwareModeSwitch = true;
         private bool _preferHalfPixelOffset = false;
-        private bool _wantFullScreen;
         private GraphicsProfile _graphicsProfile;
 
         // 用户是否显式设置过期望的后备缓冲尺寸：没设置过就不去动画布，
         // 保留页面自身的布局（例如 index.html 里 <canvas> 的 width:100%），画布继续随浏览器缩放。
         private bool _preferredSizeSet;
-
-        // 画布当前是否处于全屏（原生或铺满视口）。
-        private bool _canvasFullScreen;
 
         // ApplyChanges 的脏标记
         private bool _shouldApplyChanges;
@@ -103,9 +99,6 @@ namespace KFramework.MonoGame
                 _preferredBackBufferWidth = window.Height;
                 _preferredBackBufferHeight = window.Width;
             }
-
-            // 默认窗口模式（Web 上忽略）。
-            _wantFullScreen = false;
 
             // XNA 从清单读取，默认始终是 Reach，这里同样默认 Reach。
             GraphicsProfile = GraphicsProfile.Reach;
@@ -296,8 +289,10 @@ namespace KFramework.MonoGame
             presentationParameters.BackBufferWidth = _preferredBackBufferWidth;
             presentationParameters.BackBufferHeight = _preferredBackBufferHeight;
             presentationParameters.DepthStencilFormat = _preferredDepthStencilFormat;
-            presentationParameters.IsFullScreen = _wantFullScreen;
-            presentationParameters.HardwareModeSwitch = _hardwareModeSwitch;
+            // 全屏相关属性已从本管理器移除（IsFullScreen / HardwareModeSwitch 改抛 NotSupportedException），
+            // PresentationParameters 上的对应字段保持 false 即可。
+            presentationParameters.IsFullScreen = false;
+            presentationParameters.HardwareModeSwitch = false;
             // 浏览器强制垂直同步（rAF 本身就是），所以这里只表达「限帧」：
             // Default / One / Immediate 都是每个垂直同步画一帧，只有 Two 会限到半刷新率。
             presentationParameters.PresentationInterval = _preferredPresentInterval;
@@ -380,47 +375,21 @@ namespace KFramework.MonoGame
         /// 把期望的后备缓冲设置落实到画布上（照 MonoGame「按 PresentationParameters 准备 / 重置设备」这一步）。
         /// </summary>
         /// <remarks>
-        /// 只有「显式设置过期望尺寸」或「要全屏」时才会写画布，否则保留页面自身布局，避免一上来就把画布钉死成固定像素。
-        /// </remarks>
-        /// <remarks>
-        /// 后备缓冲 = 画布 CSS 尺寸 × DPR，所以 CSS 尺寸 = 期望的后备缓冲尺寸 ÷ DPR（四舍五入）。
-        /// 全屏分两种：<paramref name="pp"/> 的 HardwareModeSwitch 为 true 请求浏览器原生全屏（需用户手势，
-        /// 被拒绝时 JS 侧自动回落到铺满视口），false 走「软全屏」—— 只把画布铺满视口，不切换显示模式。
+        /// 只有「显式设置过期望尺寸」时才会写画布，否则保留页面自身布局，避免一上来就把画布钉死成固定像素。
+        /// 原生全屏已移除（浏览器原生全屏是用户交互行为）；需要填满整个 HTML 页面请用 HTML_Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen)。
         /// </remarks>
         private void ApplyCanvas(PresentationParameters pp)
         {
             HTML_Canvas canvas = Canvas;
 
-            if (pp.IsFullScreen)
+            if (!_preferredSizeSet)
             {
-                if (pp.HardwareModeSwitch)
-                    canvas.RequestFullscreen();
-                else
-                    canvas.SetFullscreen();
-
-                _canvasFullScreen = true;
-            }
-            else if (_preferredSizeSet)
-            {
-                // 回到窗口模式：若正处于原生全屏则先退出，再按期望尺寸铺画布。
-                canvas.ExitFullscreen();
-                SetCanvasSize(canvas, pp);
-                _canvasFullScreen = false;
-            }
-            else if (_canvasFullScreen)
-            {
-                // 退出了全屏但没给过期望尺寸：回到「铺满视口」的默认布局。
-                canvas.ExitFullscreen();
-                canvas.SetFullscreen();
-                _canvasFullScreen = false;
-            }
-            else
-            {
-                // 既没显式设置过期望尺寸、也不是全屏：不去碰画布，
+                // 没显式设置过期望尺寸：不去碰画布，
                 // 保留页面自身给画布的布局（如 <canvas> 的 width:100%），让它继续随浏览器缩放。
-                canvas.ExitFullscreen();
                 return;
             }
+
+            SetCanvasSize(canvas, pp);
 
             // 画布改完立即同步后备缓冲与视口，不等下一帧 Game.TickFrame 里的 SyncCanvasSize。
             // 与 Game.TickFrame 一样：尺寸真的变了才 RaiseSizeChanged。
@@ -450,14 +419,13 @@ namespace KFramework.MonoGame
         /// 在窗口模式与全屏模式之间切换。
         /// </summary>
         /// <remarks>
-        /// 全屏：<see cref="HardwareModeSwitch"/> 为 true 时走浏览器原生全屏（需用户手势，
-        /// 例如本方法由按键 / 点击触发；被拒绝时回落为铺满视口），false 时只把画布铺满视口。
-        /// 退出全屏则回到 <see cref="PreferredBackBufferWidth"/> × <see cref="PreferredBackBufferHeight"/>。
+        /// 浏览器原生全屏是用户交互行为（必须由用户手势触发），不应由代码触发，故本方法保留签名但直接抛出
+        /// <see cref="NotSupportedException"/>。需要填满整个 HTML 页面请用 HTML_Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen)。
         /// </remarks>
         public void ToggleFullScreen()
         {
-            IsFullScreen = !IsFullScreen;
-            ApplyChanges();
+            throw new NotSupportedException(
+                "浏览器原生全屏是用户交互行为，不应由代码触发；需要填满整个 HTML 页面请用 HTML_Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen)。");
         }
 
         /// <summary>
@@ -488,35 +456,32 @@ namespace KFramework.MonoGame
         /// 是否希望切换到全屏模式。
         /// </summary>
         /// <remarks>
-        /// 调用 <see cref="ApplyChanges"/>（或 <see cref="ToggleFullScreen"/>）后生效：
-        /// 配合 <see cref="HardwareModeSwitch"/> 决定是请求浏览器原生全屏，还是只铺满视口。
+        /// 浏览器原生全屏是用户交互行为（必须由用户手势触发），不应由代码触发，
+        /// 故本属性保留签名但读取 / 赋值都直接抛出 <see cref="NotSupportedException"/>。
+        /// 需要填满整个 HTML 页面请用 HTML_Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen)。
         /// </remarks>
         public bool IsFullScreen
         {
-            get => _wantFullScreen;
-            set
-            {
-                _shouldApplyChanges = true;
-                _wantFullScreen = value;
-            }
+            get => throw new NotSupportedException(
+                "浏览器原生全屏是用户交互行为，不应由代码触发；需要填满整个 HTML 页面请用 HTML_Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen)。");
+            set => throw new NotSupportedException(
+                "浏览器原生全屏是用户交互行为，不应由代码触发；需要填满整个 HTML 页面请用 HTML_Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen)。");
         }
 
         /// <summary>
-        /// 窗口切到全屏时使用「硬」模式（true，真正的显示模式切换，慢但更高效）还是「软」模式（false，无边框最大化窗口）。
-        /// 默认 true。
+        /// 窗口切到全屏时使用「硬」模式（原生全屏）还是「软」模式（填满整个 HTML 页面）。
         /// </summary>
         /// <remarks>
-        /// Web 上对应：true = 请求浏览器原生全屏（<c>canvas.requestFullscreen</c>，必须由用户手势触发，
-        /// 被拒绝时自动回落到软模式）；false = 只把画布铺满视口，不切换显示模式。
+        /// 浏览器原生全屏是用户交互行为（必须由用户手势触发），不应由代码触发，
+        /// 故本属性保留签名但读取 / 赋值都直接抛出 <see cref="NotSupportedException"/>。
+        /// 需要填满整个 HTML 页面请用 HTML_Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen)。
         /// </remarks>
         public bool HardwareModeSwitch
         {
-            get => _hardwareModeSwitch;
-            set
-            {
-                _shouldApplyChanges = true;
-                _hardwareModeSwitch = value;
-            }
+            get => throw new NotSupportedException(
+                "浏览器原生全屏是用户交互行为，不应由代码触发；需要填满整个 HTML 页面请用 HTML_Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen)。");
+            set => throw new NotSupportedException(
+                "浏览器原生全屏是用户交互行为，不应由代码触发；需要填满整个 HTML 页面请用 HTML_Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen)。");
         }
 
         /// <summary>
@@ -624,7 +589,7 @@ namespace KFramework.MonoGame
         public bool HasPreferredBackBufferSize => _preferredSizeSet;
 
         /// <summary>
-        /// 取消「期望的后备缓冲尺寸」，把画布交还给页面自身的布局：铺满视口（百分比，不是固定像素），
+        /// 取消「期望的后备缓冲尺寸」，把画布交还给页面自身的布局：填满整个 HTML 页面（百分比，不是固定像素），
         /// 于是它重新随浏览器缩放 —— 也就是从「钉死成固定分辨率」回到响应式。
         /// </summary>
         /// <remarks>
@@ -638,8 +603,8 @@ namespace KFramework.MonoGame
 
             if (_graphicsDevice == null) return;
 
-            // 铺满视口用的是百分比，不是固定像素，所以浏览器缩放时它会跟着变。
-            Canvas.SetFullscreen();
+            // 填满整个 HTML 页面用的是百分比，不是固定像素，所以浏览器缩放时它会跟着变。
+            Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen, 0, 0, 0, 0);
             if (_graphicsDevice.SyncCanvasSize())
                 _game.Window.RaiseSizeChanged();
         }

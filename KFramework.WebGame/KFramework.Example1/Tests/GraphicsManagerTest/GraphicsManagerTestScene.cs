@@ -6,15 +6,15 @@ namespace MirGame.Tests.GraphicsManagerTest;
 /// <summary>
 /// <see cref="GraphicsDeviceManager"/> 用法演示（照 MonoGame 的标准套路），全部操作都是上面的按钮。
 /// <para>· 创建：<c>graphics = new GraphicsDeviceManager(this);</c>（见 <see cref="Example1Game"/>）；</para>
-/// <para>· 设置：Preferred* / IsFullScreen / HardwareModeSwitch / PreferMultiSampling / 呈现间隔（限帧）；</para>
+/// <para>· 设置：Preferred* / PreferMultiSampling / 呈现间隔（限帧）；</para>
 /// <para>· 没有「垂直同步」开关：浏览器强制 VSync（rAF 就是刷新率），WebGL 无此 API。</para>
 /// <para>· 生效：改完必须 <see cref="GraphicsDeviceManager.ApplyChanges"/>（每个按钮里都调了）；</para>
 /// <para>· 事件：<see cref="GraphicsDeviceManager.DeviceCreated"/>、<see cref="GraphicsDeviceManager.PreparingDeviceSettings"/>。</para>
 /// </summary>
 /// <remarks>
-/// <para>下方铺了几千个精灵当「效果图」：改分辨率 / 全屏时画面范围、像素密度与 FPS 会立刻跟着变，
+/// <para>下方铺了几千个精灵当「效果图」：改分辨率时画面范围、像素密度与 FPS 会立刻跟着变，
 /// 比看数字直观得多。精灵数用按钮切（1000 / 3000 / 8000），纹理由代码生成，不依赖任何图片资源。</para>
-/// <para>数字键 1..6 是同样操作的快捷方式。全屏按钮必须在用户手势里触发，点按钮正好满足浏览器的要求。</para>
+/// <para>数字键 1..6 是同样操作的快捷方式。</para>
 /// </remarks>
 public sealed class GraphicsManagerTestScene : TestSceneBase
 {
@@ -56,10 +56,8 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
         // 多重采样(antialias) 运行时不可切换（WebGL2 限制），PreferMultiSampling 设了会直接抛异常；
         // 这里只提示限制，不调用 setter。
         if (Input_KeyBoard.GetKeyDown(Keys.D2)) PrintTool.Log("[GraphicsManagerTest] 按 D2：多重采样(antialias) 只能在 Game 构造时指定，运行时切换会抛 NotSupportedException；改 Example1Game.Antialias 后重启对比。");
-        if (Input_KeyBoard.GetKeyDown(Keys.D3)) Set(manager => manager.IsFullScreen = !manager.IsFullScreen);
-        if (Input_KeyBoard.GetKeyDown(Keys.D4)) Manager.ToggleFullScreen();
-        if (Input_KeyBoard.GetKeyDown(Keys.D5)) ApplyPreset(1280, 720);
-        if (Input_KeyBoard.GetKeyDown(Keys.D6)) ApplyPreset(800, 480);
+        if (Input_KeyBoard.GetKeyDown(Keys.D3)) ApplyPreset(1280, 720);
+        if (Input_KeyBoard.GetKeyDown(Keys.D4)) ApplyPreset(800, 480);
     }
 
     // ---------- 布局与按钮 ----------
@@ -78,19 +76,12 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
         AddUiButton(msaaOn ? "多重采样(antialias)：开·仅启动时" : "多重采样(antialias)：关·仅启动时",
                     static () => PrintTool.Log("[GraphicsManagerTest] 多重采样(antialias) 只能在 Game/GraphicsDevice 构造时指定，运行时切换无效；改 Example1Game.Antialias 后重启对比。"),
                     msaaOn);
-        AddUiButton(g.HardwareModeSwitch ? "全屏方式：原生(硬)" : "全屏方式：铺满(软)",
-                    () => Set(manager => manager.HardwareModeSwitch = !manager.HardwareModeSwitch),
-                    g.HardwareModeSwitch);
-        AddUiButton(g.IsFullScreen ? "IsFullScreen：开" : "IsFullScreen：关",
-                    () => Set(manager => manager.IsFullScreen = !manager.IsFullScreen),
-                    g.IsFullScreen);
-        AddUiButton("ToggleFullScreen()", () => Manager.ToggleFullScreen(), g.IsFullScreen);
 
         // ② 分辨率：改 PreferredBackBuffer* 后 ApplyChanges
         AddUiButton("1280×720", () => ApplyPreset(1280, 720));
         AddUiButton("800×480", () => ApplyPreset(800, 480));
         // 高亮 = 当前正处于「未指定尺寸、跟随页面布局」的状态
-        AddUiButton("铺满视口(不钉死)", ReleaseToViewport, !g.HasPreferredBackBufferSize);
+        AddUiButton("填满整个 HTML 页面(不钉死)", ReleaseToViewport, !g.HasPreferredBackBufferSize);
         AddUiButton($"呈现间隔 {IntervalOptions[_intervalIndex]}", CycleInterval, IntervalOptions[_intervalIndex] == PresentInterval.Two);
         AddUiButton($"精灵 {CountOptions[_countIndex]:N0}", CycleCount);
     }
@@ -117,7 +108,6 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
 
     private void ApplyPreset(int width, int height)
     {
-        Manager.IsFullScreen = false;
         Manager.PreferredBackBufferWidth = width;
         Manager.PreferredBackBufferHeight = height;
         Manager.ApplyChanges();
@@ -152,9 +142,6 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
                       new Vector2(x, y), new Color(150, 220, 255));
         y += DrawLine(batch, Font,
                       $"多重采样：{g.PreferMultiSampling} → 上下文 antialias：{Device.Antialias}（只在启动时生效，运行时改不了）",
-                      new Vector2(x, y), Color.LightGray);
-        y += DrawLine(batch, Font,
-                      $"全屏方式：{(g.HardwareModeSwitch ? "原生" : "铺满")} / IsFullScreen：{g.IsFullScreen}",
                       new Vector2(x, y), Color.LightGray);
 
         y += 16f;

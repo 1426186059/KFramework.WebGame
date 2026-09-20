@@ -5,7 +5,7 @@
 // 必须经 toBytes / toFloats 转换后才能交给 WebGL。
 // 另外 C# 侧的 [JSImport] 函数名必须与这里的导出名完全一致，且不能带点号。
 
-import { resolveCanvasElement } from './html_canvas.js';
+import { getOrCreateCanvasElement } from './html_canvas.js';
 
 let canvas: HTMLCanvasElement | null = null;
 let gl: WebGL2RenderingContext | null = null;
@@ -39,7 +39,7 @@ export function getAntialias(): boolean {
 }
 
 export function initContext(selector: string): boolean {
-    const element = resolveCanvasElement(selector);
+    const element = getOrCreateCanvasElement(selector);
     if (!element) {
         console.error('[gl] 无法创建或找到画布元素:', selector);
         return false;
