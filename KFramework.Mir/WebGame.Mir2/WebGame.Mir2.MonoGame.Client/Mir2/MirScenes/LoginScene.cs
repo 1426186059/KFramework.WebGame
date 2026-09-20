@@ -522,17 +522,12 @@ namespace Client.MirScenes
 
                 // 资源（贴图库）异步加载：构造时图像尺寸可能为 0，导致初始 Location 偏移到屏幕中心附近。
                 // 订阅库加载完成事件，库就绪后按真实尺寸重新居中；构造与显示时也兜底计算一次。
-                Recenter();
+                Anchor = EAnchorType.MiddleCenter;
+                ApplyAnchor();
                 Libraries.LibraryLoaded += Libraries_LibraryLoaded;
             }
 
-            private void Libraries_LibraryLoaded() => Recenter();
-
-            private void Recenter()
-            {
-                if (IsDisposed) return;
-                Location = new Point((Settings.ScreenWidth - Size.Width) / 2, (Settings.ScreenHeight - Size.Height) / 2);
-            }
+            private void Libraries_LibraryLoaded() => ApplyAnchor();
 
             private void AccountIDTextBox_TextChanged(object sender, EventArgs e)
             {
@@ -753,17 +748,13 @@ namespace Client.MirScenes
                     Size = new Size(Math.Max(maxX, 1), Math.Max(maxY, 1));
                 }
 
-                Recenter();
+                Anchor = EAnchorType.MiddleCenter;
+                AnchorPos = new Point(285, 150);
+                ApplyAnchor();
                 Libraries.LibraryLoaded += Libraries_LibraryLoaded;
             }
 
-            private void Libraries_LibraryLoaded() => Recenter();
-
-            private void Recenter()
-            {
-                if (IsDisposed) return;
-                Location = new Point((Settings.ScreenWidth - Size.Width) / 2 + 285, (Settings.ScreenHeight - Size.Height) / 2 + 150);
-            }
+            private void Libraries_LibraryLoaded() => ApplyAnchor();
 
             private void DisposeKeys()
             {
@@ -1063,17 +1054,12 @@ namespace Client.MirScenes
                     Size = new Size(Math.Max(maxX, 1), Math.Max(maxY, 1));
                 }
 
-                Recenter();
+                Anchor = EAnchorType.MiddleCenter;
+                ApplyAnchor();
                 Libraries.LibraryLoaded += Libraries_LibraryLoaded;
             }
 
-            private void Libraries_LibraryLoaded() => Recenter();
-
-            private void Recenter()
-            {
-                if (IsDisposed) return;
-                Location = new Point((Settings.ScreenWidth - Size.Width) / 2, (Settings.ScreenHeight - Size.Height) / 2);
-            }
+            private void Libraries_LibraryLoaded() => ApplyAnchor();
 
 
             private void AccountIDTextBox_TextChanged(object sender, EventArgs e)
@@ -1431,17 +1417,12 @@ namespace Client.MirScenes
                     Size = new Size(Math.Max(maxX, 1), Math.Max(maxY, 1));
                 }
 
-                Recenter();
+                Anchor = EAnchorType.MiddleCenter;
+                ApplyAnchor();
                 Libraries.LibraryLoaded += Libraries_LibraryLoaded;
             }
 
-            private void Libraries_LibraryLoaded() => Recenter();
-
-            private void Recenter()
-            {
-                if (IsDisposed) return;
-                Location = new Point((Settings.ScreenWidth - Size.Width) / 2, (Settings.ScreenHeight - Size.Height) / 2);
-            }
+            private void Libraries_LibraryLoaded() => ApplyAnchor();
 
             void RefreshConfirmButton()
             {

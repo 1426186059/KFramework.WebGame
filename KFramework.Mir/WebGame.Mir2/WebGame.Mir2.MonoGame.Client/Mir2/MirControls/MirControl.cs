@@ -297,6 +297,51 @@ namespace Client.MirControls
         }
         #endregion
 
+        #region Anchor
+
+        /// <summary>
+        /// 九宫格锚点（见 EAnchorType）。默认 None —— 不使用锚点，ApplyAnchor 不做任何事。
+        /// </summary>
+        public EAnchorType Anchor { get; set; } = EAnchorType.None;
+
+        /// <summary>相对锚点的固定偏移，用于"贴边/居中后再偏移"这类布局。</summary>
+        public Point AnchorPos { get; set; } = Point.Empty;
+
+        /// <summary>
+        /// 按 Anchor + AnchorPos 重算 Location。
+        ///
+        /// Anchor 为 None 时【什么都不做】：绝对定位的控件本来就无需变动，
+        /// 所以引入本机制不会改变任何未设置锚点的控件的表现。
+        ///
+        /// 基准位置取自 #region Positions 的九个属性（Center/Top/Bottom/Left/Right/TopLeft/...），
+        /// 它们读的是活的 Settings.ScreenWidth/Height，因此窗口尺寸变化后重新调用即可得到新位置。
+        /// 布局表达式只写一处（Anchor + AnchorPos），构造时与窗口变化后都走这里，不会两处走样。
+        ///
+        /// 九宫格表达不了的布局可覆写本方法，例如"右边距固定 170px"而非"贴右边"。
+        /// </summary>
+        public virtual void ApplyAnchor()
+        {
+            if (Anchor == EAnchorType.None || IsDisposed) return;
+
+            Point anchorPoint;
+            switch (Anchor)
+            {
+                case EAnchorType.TopLeft: anchorPoint = TopLeft; break;
+                case EAnchorType.TopCenter: anchorPoint = Top; break;
+                case EAnchorType.TopRight: anchorPoint = TopRight; break;
+                case EAnchorType.MiddleLeft: anchorPoint = Left; break;
+                case EAnchorType.MiddleCenter: anchorPoint = Center; break;
+                case EAnchorType.MiddleRight: anchorPoint = Right; break;
+                case EAnchorType.BottomLeft: anchorPoint = BottomLeft; break;
+                case EAnchorType.BottomCenter: anchorPoint = Bottom; break;
+                default: anchorPoint = BottomRight; break;
+            }
+
+            Location = new Point(anchorPoint.X + AnchorPos.X, anchorPoint.Y + AnchorPos.Y);
+        }
+
+        #endregion
+
         #region Hint
         private string _hint;
         public string Hint
@@ -799,9 +844,10 @@ namespace Client.MirControls
 
         public virtual bool IsMouseOver(Point p)
         {
-            //这里是个p 是屏幕坐标，得转换为 世界坐标
+            // p 是屏幕(画布)坐标，先转换为 UI 坐标再做命中判断
+            // （修正：此前算了 WorldPos 却在 Contains 里仍用原始 p，该变量形同未使用）。
             Point WorldPos = KCamera.ScreenToWorldPos(p);
-            return Visible && (DisplayRectangle.Contains(p) || Moving || Modal) && !NotControl;
+            return Visible && (DisplayRectangle.Contains(WorldPos) || Moving || Modal) && !NotControl;
         }
 
         protected virtual void OnMouseEnter()

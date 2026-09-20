@@ -176,10 +176,12 @@ namespace WebGame.Mir2.MonoGame.Client
             MirEngine.BrowserCursor.Set(name);
         }
 
-        // 浏览器端全屏方案：游戏以【固定逻辑分辨率】(Settings.ScreenWidth/Height，默认 1024x768)渲染，
-        // 再由 MirScene.DrawControl → DXManager.PresentToScreen 把整帧场景纹理拉伸铺满画布(Viewport)。
-        // 因此这里【不再】把 Settings 改成画布物理尺寸——否则场景离屏纹理与实际显示尺寸脱节、
-        // UI 命中坐标错配；只负责在窗口缩放时刷新地板/光照离屏纹理并令当前场景重烘焙。
+        // 窗口尺寸变化的处理。UI 以画布原生分辨率布局（UI 层恒等变换、不做非等比拉伸），
+        // 世界层用 FullScreenSize 原生渲染，故这里只需三步：
+        //   1) 释放地板/光照离屏纹理，让它们按新尺寸重建（MapControl 每帧用 FullScreenSize
+        //      调 UpdateViewPort，会同步自身 Size 与可视范围）；
+        //   2) RelayoutAll：按锚点重排 UI 顶层控件，内部子控件随父移动；
+        //   3) Refresh：令当前场景重新烘焙。
         // （该回调由 MirGame 在 Window.SizeChanged 时触发，传入的 width/height 即画布尺寸，此处不再使用。）
         public static void OnWindowSizeChanged(int width, int height)
         {
@@ -194,7 +196,11 @@ namespace WebGame.Mir2.MonoGame.Client
                 DXManager.LightSurface = null;
             }
 
-            // 当前活动场景（登录/选人/游戏）按逻辑分辨率重烘焙（库加载完成也会触发，见 Init）。
+            // UI 以原生分辨率布局，窗口变化后已构造控件的位置不会自动更新，
+            // 故先重新结算顶层控件位置，再重新烘焙（库加载完成也会触发 Refresh，见 Init）。
+            MirScene.ActiveScene?.ApplyAnchors();
+
+            // 当前活动场景（登录/选人/游戏）重烘焙。
             MirScene.ActiveScene?.Refresh();
         }
 

@@ -212,7 +212,58 @@ namespace Client.MirControls
             WorldLayer.Invalidate();
             UILayer.Invalidate();
         }
-        
+
+        /// <summary>
+        /// 画布(窗口)尺寸变化后按锚点重算 UI 位置：遍历 UI 层整棵子树调用 ApplyAnchor()。
+        ///
+        /// 从 UI 层往下递归整棵子树，而非只处理顶层：子控件的 DisplayLocation 虽随父累加
+        /// （见 DisplayLocation），但"居中/贴边"是【相对屏幕】算出来的，父动了不代表子仍是居中。
+        ///
+        /// 控件自己决定动不动：默认 Anchor 为 None（绝对定位的控件本就无需变动），
+        /// 只有位置依赖 Settings.ScreenWidth/Height 的控件才设 Anchor，通常一两行即可 ——
+        /// 基准位置复用 MirControl 已有的九宫格定位属性（见 EAnchorType / #region Positions）。
+        ///
+        /// 对应原版 Crystal 的做法：原版窗口不可自由拉伸（FormBorderStyle.FixedDialog），
+        /// 分辨率只在场景切换时改，且改完立即 `ActiveScene = new GameScene(); Dispose();`
+        /// 重建场景，由构造代码按新尺寸重新布局。浏览器端不能重建 GameScene（会掉线），
+        /// 故改为就地重算位置，效果等价。
+        /// </summary>
+        public virtual void ApplyAnchors()
+        {
+            Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
+
+            // UI 层整棵子树（含嵌套对话框，例如登录框嵌在 _background 内）。
+            // 虽然子控件的 DisplayLocation 会随父累加，但"居中/贴边"这类布局是【相对屏幕】算出来的，
+            // 父动了不代表子仍是居中，故需逐个调用；未设锚点的控件不会产生任何变化。
+            ApplyAnchorTree(UILayer);
+
+            // 直接挂在场景根上、未走 AddControl 路由的控件（如调试标签）。
+            if (Controls != null)
+                for (int i = 0; i < Controls.Count; i++)
+                {
+                    var c = Controls[i];
+                    if (c == null || c == WorldLayer || c == UILayer) continue;
+                    ApplyAnchorTree(c);
+                }
+
+            // 位置已变，两层离屏纹理需重新烘焙。
+            WorldLayer.Invalidate();
+            UILayer.Invalidate();
+        }
+
+        // 世界层不参与重算：MapControl 每帧用 FullScreenSize 调 UpdateViewPort，
+        // 自行同步 Size 与可视范围（见 GameScene.MapControl.UpdateViewPort）。
+        private static void ApplyAnchorTree(MirControl control)
+        {
+            if (control == null) return;
+
+            control.ApplyAnchor();
+
+            if (control.Controls == null) return;
+            for (int i = 0; i < control.Controls.Count; i++)
+                ApplyAnchorTree(control.Controls[i]);
+        }
+
         public virtual void ProcessPacket(Packet p)
         {
             switch (p.Index)
