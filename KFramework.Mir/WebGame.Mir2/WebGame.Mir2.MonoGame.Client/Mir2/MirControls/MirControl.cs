@@ -674,29 +674,44 @@ namespace Client.MirControls
 
         #region Positions
 
+        protected Size ParentSize
+        {
+            get
+            {
+                if (Parent != null)
+                {
+                    return Parent.Size;
+                }
+                else
+                {
+                    return new Size(DXManager.GDevice.Viewport.Width, DXManager.GDevice.Viewport.Height);
+                }
+            }
+        }
+
         protected Point Center
         {
-            get { return new Point((Settings.ScreenWidth - Size.Width) / 2, (Settings.ScreenHeight - Size.Height) / 2); }
+            get { return new Point((ParentSize.Width - Size.Width) / 2, (ParentSize.Height - Size.Height) / 2); }
         }
 
         protected Point Left
         {
-            get { return new Point(0, (Settings.ScreenHeight - Size.Height) / 2); }
+            get { return new Point(0, (ParentSize.Height - Size.Height) / 2); }
         }
 
         protected Point Top
         {
-            get { return new Point((Settings.ScreenWidth - Size.Width) / 2, 0); }
+            get { return new Point((ParentSize.Width - Size.Width) / 2, 0); }
         }
 
         protected Point Right
         {
-            get { return new Point(Settings.ScreenWidth - Size.Width, (Settings.ScreenHeight - Size.Height) / 2); }
+            get { return new Point(ParentSize.Width - Size.Width, (ParentSize.Height - Size.Height) / 2); }
         }
 
         protected Point Bottom
         {
-            get { return new Point((Settings.ScreenWidth - Size.Width) / 2, Settings.ScreenHeight - Size.Height); }
+            get { return new Point((ParentSize.Width - Size.Width) / 2, ParentSize.Height - Size.Height); }
         }
 
         protected Point TopLeft
@@ -706,17 +721,17 @@ namespace Client.MirControls
 
         protected Point TopRight
         {
-            get { return new Point(Settings.ScreenWidth - Size.Width, 0); }
+            get { return new Point(ParentSize.Width - Size.Width, 0); }
         }
 
         protected Point BottomRight
         {
-            get { return new Point(Settings.ScreenWidth - Size.Width, Settings.ScreenHeight - Size.Height); }
+            get { return new Point(ParentSize.Width - Size.Width, ParentSize.Height - Size.Height); }
         }
 
         protected Point BottomLeft
         {
-            get { return new Point(0, Settings.ScreenHeight - Size.Height); }
+            get { return new Point(0, ParentSize.Height - Size.Height); }
         }
 
         #endregion

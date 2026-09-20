@@ -48,8 +48,6 @@ namespace Client.MirScenes
                     Parent = this.UILayer,
                 };
 
-            _background.AutoSize = false;
-            _background.Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
             _background.Anchor = EAnchorType.MiddleCenter;
             _background.ApplyAnchor();
 

@@ -37,6 +37,8 @@ namespace Client.MirScenes
                 Library = Libraries.Prguse,
                 Parent = this.UILayer,
             };
+            Background.Anchor = EAnchorType.MiddleCenter;
+            Background.ApplyAnchor();
 
             Title = new MirImageControl
             {
@@ -56,7 +58,7 @@ namespace Client.MirScenes
                 DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter
             };
 
-            var xPoint = ((Settings.ScreenWidth - 200) / 5);
+            var xPoint = ((Background.Size.Width - 200) / 5);
 
             StartGameButton = new MirButton
             {
@@ -64,7 +66,7 @@ namespace Client.MirScenes
                 HoverIndex = 341,
                 Index = 340,
                 Library = Libraries.Title,
-                Location = new Point(100 + (xPoint * 1) - (xPoint / 2) - 50, Settings.ScreenHeight - 32),
+                Location = new Point(100 + (xPoint * 1) - (xPoint / 2) - 50, Background.Size.Height - 32),
                 Parent = Background,
                 PressedIndex = 342
             };
@@ -75,7 +77,7 @@ namespace Client.MirScenes
                 HoverIndex = 344,
                 Index = 343,
                 Library = Libraries.Title,
-                Location = new Point(100 + (xPoint * 2) - (xPoint / 2) - 50, Settings.ScreenHeight - 32),
+                Location = new Point(100 + (xPoint * 2) - (xPoint / 2) - 50, Background.Size.Height - 32),
                 Parent = Background,
                 PressedIndex = 345,
             };
@@ -86,7 +88,7 @@ namespace Client.MirScenes
                 HoverIndex = 347,
                 Index = 346,
                 Library = Libraries.Title,
-                Location = new Point(100 + (xPoint * 3) - (xPoint / 2) - 50, Settings.ScreenHeight - 32),
+                Location = new Point(100 + (xPoint * 3) - (xPoint / 2) - 50, Background.Size.Height - 32),
                 Parent = Background,
                 PressedIndex = 348
             };
@@ -98,7 +100,7 @@ namespace Client.MirScenes
                 HoverIndex = 350,
                 Index = 349,
                 Library = Libraries.Title,
-                Location = new Point(100 + (xPoint * 4) - (xPoint / 2) - 50, Settings.ScreenHeight - 32),
+                Location = new Point(100 + (xPoint * 4) - (xPoint / 2) - 50, Background.Size.Height - 32),
                 Parent = Background,
                 PressedIndex = 351
             };

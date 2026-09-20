@@ -1,4 +1,5 @@
 using Client;
+using Client.MirGraphics;
 
 namespace WebGame.Mir2.MonoGame.Client
 {
@@ -21,5 +22,10 @@ namespace WebGame.Mir2.MonoGame.Client
         {
             return KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(1f, 1f, 0f, 0f);
         }
+
+        public override Size Size { 
+            get => new Size(DXManager.GDevice.Viewport.Width, DXManager.GDevice.Viewport.Height); 
+            set; }
+
     }
 }
