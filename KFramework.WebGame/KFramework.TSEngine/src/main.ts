@@ -18,6 +18,9 @@ import * as inputMouse from './input_mouse.js';
 import * as inputTouch from './input_touch.js';
 import * as net from './net_websocket.js';
 import * as inputOverlay from './input_overlay.js';
+import * as cursor from './cursor.js';
+import * as resource from './resource.js';
+import * as localstorage from './storage_local.js';
 import type { NetHandlers } from './net_websocket.js';
 
 interface OverlayExport {
@@ -84,6 +87,9 @@ setModuleImports('input_mouse', inputMouse);
 setModuleImports('input_touch', inputTouch);
 setModuleImports('net_websocket', net);
 setModuleImports('input_overlay', inputOverlay);
+setModuleImports('cursor', cursor);
+setModuleImports('resource', resource);
+setModuleImports('localstorage', localstorage);
 
 const config = getConfig();
 

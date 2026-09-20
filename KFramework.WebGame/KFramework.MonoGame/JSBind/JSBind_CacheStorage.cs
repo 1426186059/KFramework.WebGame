@@ -13,18 +13,18 @@ namespace KFramework.MonoGame
     /// 探长度，C# 按长度分配 byte[] 后交给 <see cref="LoadIntoAsync"/> 写入，绕开 .NET WASM 不支持 byte[]
     /// 作为返回值的限制（SYSLIB1072）。
     /// </summary>
-    internal static partial class JSBind_CacheStorage
+    public static partial class JSBind_CacheStorage
     {
         /// <summary>返回 Cache Storage 中已存字节长度；不存在返回 -1。</summary>
         [JSImport("size", "cachestorage")]
-        internal static partial Task<int> GetSizeAsync(string name);
+        public static partial Task<int> GetSizeAsync(string name);
 
         /// <summary>把 Cache Storage 中已存字节写入 <paramref name="buffer"/>；返回实际写入长度（缺失返回 -1）。</summary>
         [JSImport("loadInto", "cachestorage")]
-        internal static partial Task<int> LoadIntoAsync(string name, byte[] buffer);
+        public static partial Task<int> LoadIntoAsync(string name, byte[] buffer);
 
         /// <summary>把资源包字节（byte[]）以 Response 形式写入 Cache Storage（按 name 键，覆盖式）。</summary>
         [JSImport("save", "cachestorage")]
-        internal static partial Task SaveAsync(string name, byte[] bytes);
+        public static partial Task SaveAsync(string name, byte[] bytes);
     }
 }

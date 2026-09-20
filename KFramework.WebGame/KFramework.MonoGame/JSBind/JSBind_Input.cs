@@ -11,36 +11,36 @@ namespace KFramework.MonoGame
 /// 编译产物经 SyncJsEngine 复制到 wwwroot/jsengine。
 /// 模块名必须与 main.ts 的 setModuleImports 一致。
     /// </summary>
-    internal static partial class JSBind_Input
+    public static partial class JSBind_Input
     {
         // ===== 键盘（tsengine/src/input_keyboard.ts） =====
 
         /// <summary>把键盘按键状态（按下位图）写入 state（长度 = 键数/8）。</summary>
         [JSImport("pollKeyboard", "input_keyboard")]
-        internal static partial void PollKeyboard([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
+        public static partial void PollKeyboard([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
 
         /// <summary>解绑键盘事件监听（切换输入设备 / 失焦时调用）。</summary>
         [JSImport("unbindKeyboard", "input_keyboard")]
-        internal static partial void UnbindKeyboard();
+        public static partial void UnbindKeyboard();
 
         // ===== 鼠标（tsengine/src/input_mouse.ts） =====
 
         /// <summary>把鼠标状态（位置/按键/滚轮）写入 state。</summary>
         [JSImport("pollMouse", "input_mouse")]
-        internal static partial void PollMouse([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
+        public static partial void PollMouse([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
 
         /// <summary>解绑鼠标事件监听。</summary>
         [JSImport("unbindMouse", "input_mouse")]
-        internal static partial void UnbindMouse();
+        public static partial void UnbindMouse();
 
         // ===== 触摸（tsengine/src/input_touch.ts） =====
 
         /// <summary>把触摸点状态（坐标/压力/接触中）写入 state。</summary>
         [JSImport("pollTouch", "input_touch")]
-        internal static partial void PollTouch([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
+        public static partial void PollTouch([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
 
         /// <summary>解绑触摸事件监听。</summary>
         [JSImport("unbindTouch", "input_touch")]
-        internal static partial void UnbindTouch();
+        public static partial void UnbindTouch();
     }
 }

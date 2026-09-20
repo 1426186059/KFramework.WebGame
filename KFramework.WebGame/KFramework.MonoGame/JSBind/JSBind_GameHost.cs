@@ -15,7 +15,7 @@ namespace KFramework.MonoGame
 
         /// <summary>由 wwwroot/main.js 的渲染循环调用。</summary>
         [JSExport]
-        internal static void Frame(double timestampMs)
+        public static void Frame(double timestampMs)
         {
             Current?.TickFrame(timestampMs);
         }

@@ -7,7 +7,7 @@ namespace KFramework.MonoGame
     /// WebGL 2.0 的底层绑定。所有方法一对一映射到 <c>JSBind_GL.xxx</c>，由 KFramework.TSEngine/src/gl.ts 编译出的 wwwroot/jsengine/gl.js 提供实现（本绑定依赖 KFramework.TSEngine 项目）。
     /// 这只是薄封装，上层请用 <see cref="GraphicsDevice"/> / <see cref="SpriteBatch"/>。
     /// </summary>
-    internal static partial class JSBind_GL
+    public static partial class JSBind_GL
     {
         #region 常量
 
@@ -142,7 +142,7 @@ namespace KFramework.MonoGame
 
         /// <summary>初始化 WebGL2 上下文，绑定到指定 canvas。</summary>
         [JSImport("initContext", "gl")]
-        internal static partial bool InitContext(string canvasId);
+        public static partial bool InitContext(string canvasId);
 
         /// <summary>
         /// 设置是否启用 MSAA（<c>antialias</c>）。
@@ -150,31 +150,31 @@ namespace KFramework.MonoGame
         ///（照 MonoGame：MSAA 属性在窗口 / 上下文创建之前设置）。
         /// </summary>
         [JSImport("setAntialias", "gl")]
-        internal static partial void SetAntialias(bool enabled);
+        public static partial void SetAntialias(bool enabled);
 
         /// <summary>当前是否启用 MSAA。</summary>
         [JSImport("getAntialias", "gl")]
-        internal static partial bool GetAntialias();
+        public static partial bool GetAntialias();
 
         /// <summary>上下文是否丢失（丢失需重建）。</summary>
         [JSImport("isContextLost", "gl")]
-        internal static partial bool IsContextLost();
+        public static partial bool IsContextLost();
 
         /// <summary>读取整数型上下文参数（如 MAX_TEXTURE_SIZE）。</summary>
         [JSImport("getParameterInt", "gl")]
-        internal static partial int GetParameterInt(int pname);
+        public static partial int GetParameterInt(int pname);
 
         /// <summary>读取字符串型上下文参数（如 VERSION / RENDERER）。</summary>
         [JSImport("getParameterString", "gl")]
-        internal static partial string GetParameterString(int pname);
+        public static partial string GetParameterString(int pname);
 
         /// <summary>取并清空当前 GL 错误码。</summary>
         [JSImport("getError", "gl")]
-        internal static partial int GetError();
+        public static partial int GetError();
 
         /// <summary>读取单像素 RGBA8（调试用）。</summary>
         [JSImport("readPixel", "gl")]
-        internal static partial void ReadPixel(int x, int y, [JSMarshalAs<JSType.MemoryView>] Span<byte> rgba);
+        public static partial void ReadPixel(int x, int y, [JSMarshalAs<JSType.MemoryView>] Span<byte> rgba);
 
         #endregion
 
@@ -182,79 +182,79 @@ namespace KFramework.MonoGame
 
         /// <summary>创建着色器对象（VERTEX_SHADER / FRAGMENT_SHADER）。</summary>
         [JSImport("createShader", "gl")]
-        internal static partial JSObject CreateShader(int type);
+        public static partial JSObject CreateShader(int type);
 
         /// <summary>设置着色器 GLSL 源码。</summary>
         [JSImport("shaderSource", "gl")]
-        internal static partial void ShaderSource(JSObject shader, string source);
+        public static partial void ShaderSource(JSObject shader, string source);
 
         /// <summary>编译着色器。</summary>
         [JSImport("compileShader", "gl")]
-        internal static partial void CompileShader(JSObject shader);
+        public static partial void CompileShader(JSObject shader);
 
         /// <summary>取着色器编译状态/参数（如 COMPILE_STATUS）。</summary>
         [JSImport("getShaderParameter", "gl")]
-        internal static partial int GetShaderParameter(JSObject shader, int pname);
+        public static partial int GetShaderParameter(JSObject shader, int pname);
 
         /// <summary>取着色器编译错误日志。</summary>
         [JSImport("getShaderInfoLog", "gl")]
-        internal static partial string GetShaderInfoLog(JSObject shader);
+        public static partial string GetShaderInfoLog(JSObject shader);
 
         /// <summary>删除着色器对象。</summary>
         [JSImport("deleteShader", "gl")]
-        internal static partial void DeleteShader(JSObject shader);
+        public static partial void DeleteShader(JSObject shader);
 
         /// <summary>创建着色器程序。</summary>
         [JSImport("createProgram", "gl")]
-        internal static partial JSObject CreateProgram();
+        public static partial JSObject CreateProgram();
 
         /// <summary>挂载着色器到程序。</summary>
         [JSImport("attachShader", "gl")]
-        internal static partial void AttachShader(JSObject program, JSObject shader);
+        public static partial void AttachShader(JSObject program, JSObject shader);
 
         /// <summary>链接程序（把着色器组合成可执行管线）。</summary>
         [JSImport("linkProgram", "gl")]
-        internal static partial void LinkProgram(JSObject program);
+        public static partial void LinkProgram(JSObject program);
 
         /// <summary>取程序链接状态（如 LINK_STATUS）。</summary>
         [JSImport("getProgramParameter", "gl")]
-        internal static partial int GetProgramParameter(JSObject program, int pname);
+        public static partial int GetProgramParameter(JSObject program, int pname);
 
         /// <summary>取程序链接错误日志。</summary>
         [JSImport("getProgramInfoLog", "gl")]
-        internal static partial string GetProgramInfoLog(JSObject program);
+        public static partial string GetProgramInfoLog(JSObject program);
 
         /// <summary>启用着色器程序。</summary>
         [JSImport("useProgram", "gl")]
-        internal static partial void UseProgram(JSObject program);
+        public static partial void UseProgram(JSObject program);
 
         /// <summary>删除程序。</summary>
         [JSImport("deleteProgram", "gl")]
-        internal static partial void DeleteProgram(JSObject program);
+        public static partial void DeleteProgram(JSObject program);
 
         /// <summary>取 uniform 变量位置（按名查找）。</summary>
         [JSImport("getUniformLocation", "gl")]
-        internal static partial JSObject? GetUniformLocation(JSObject program, string name);
+        public static partial JSObject? GetUniformLocation(JSObject program, string name);
 
         /// <summary>取顶点属性位置（按名查找）。</summary>
         [JSImport("getAttribLocation", "gl")]
-        internal static partial int GetAttribLocation(JSObject program, string name);
+        public static partial int GetAttribLocation(JSObject program, string name);
 
         /// <summary>设置 int uniform。</summary>
         [JSImport("uniform1i", "gl")]
-        internal static partial void Uniform1i(JSObject location, int v);
+        public static partial void Uniform1i(JSObject location, int v);
 
         /// <summary>设置 float uniform。</summary>
         [JSImport("uniform1f", "gl")]
-        internal static partial void Uniform1f(JSObject location, float v);
+        public static partial void Uniform1f(JSObject location, float v);
 
         /// <summary>设置 vec4 uniform。</summary>
         [JSImport("uniform4f", "gl")]
-        internal static partial void Uniform4f(JSObject location, float x, float y, float z, float w);
+        public static partial void Uniform4f(JSObject location, float x, float y, float z, float w);
 
         /// <summary>设置 mat4 uniform（16 个 float 的小端字节流）。</summary>
         [JSImport("uniformMatrix4fv", "gl")]
-        internal static partial void UniformMatrix4fv(JSObject location, int transpose,
+        public static partial void UniformMatrix4fv(JSObject location, int transpose,
             [JSMarshalAs<JSType.MemoryView>] Span<byte> value);
 
         #endregion
@@ -263,43 +263,43 @@ namespace KFramework.MonoGame
 
         /// <summary>创建缓冲对象。</summary>
         [JSImport("createBuffer", "gl")]
-        internal static partial JSObject CreateBuffer();
+        public static partial JSObject CreateBuffer();
 
         /// <summary>绑定缓冲到目标（ARRAY_BUFFER / ELEMENT_ARRAY_BUFFER）。</summary>
         [JSImport("bindBuffer", "gl")]
-        internal static partial void BindBuffer(int target, JSObject buffer);
+        public static partial void BindBuffer(int target, JSObject buffer);
 
         /// <summary>预分配指定字节数的缓冲（不上传数据）。</summary>
         [JSImport("bufferDataSize", "gl")]
-        internal static partial void BufferDataSize(int target, int size, int usage);
+        public static partial void BufferDataSize(int target, int size, int usage);
 
         /// <summary>上传数据到缓冲。</summary>
         [JSImport("bufferData", "gl")]
-        internal static partial void BufferData(int target, [JSMarshalAs<JSType.MemoryView>] Span<byte> data, int usage);
+        public static partial void BufferData(int target, [JSMarshalAs<JSType.MemoryView>] Span<byte> data, int usage);
 
         /// <summary>局部更新缓冲（从 offset 起覆盖）。</summary>
         [JSImport("bufferSubData", "gl")]
-        internal static partial void BufferSubData(int target, int offset, [JSMarshalAs<JSType.MemoryView>] Span<byte> data);
+        public static partial void BufferSubData(int target, int offset, [JSMarshalAs<JSType.MemoryView>] Span<byte> data);
 
         /// <summary>删除缓冲。</summary>
         [JSImport("deleteBuffer", "gl")]
-        internal static partial void DeleteBuffer(JSObject buffer);
+        public static partial void DeleteBuffer(JSObject buffer);
 
         /// <summary>创建 VAO（顶点数组对象）。</summary>
         [JSImport("createVertexArray", "gl")]
-        internal static partial JSObject CreateVertexArray();
+        public static partial JSObject CreateVertexArray();
 
         /// <summary>绑定 VAO（一次保存所有顶点状态）。</summary>
         [JSImport("bindVertexArray", "gl")]
-        internal static partial void BindVertexArray(JSObject vao);
+        public static partial void BindVertexArray(JSObject vao);
 
         /// <summary>启用第 index 个顶点属性。</summary>
         [JSImport("enableVertexAttribArray", "gl")]
-        internal static partial void EnableVertexAttribArray(int index);
+        public static partial void EnableVertexAttribArray(int index);
 
         /// <summary>设置顶点属性指针（格式/是否归一化/步长/偏移）。</summary>
         [JSImport("vertexAttribPointer", "gl")]
-        internal static partial void VertexAttribPointer(int index, int size, int type, bool normalized, int stride, int offset);
+        public static partial void VertexAttribPointer(int index, int size, int type, bool normalized, int stride, int offset);
 
         #endregion
 
@@ -307,54 +307,54 @@ namespace KFramework.MonoGame
 
         /// <summary>创建纹理对象。</summary>
         [JSImport("createTexture", "gl")]
-        internal static partial JSObject CreateTexture();
+        public static partial JSObject CreateTexture();
 
         /// <summary>绑定纹理到目标（TEXTURE_2D）。</summary>
         [JSImport("bindTexture", "gl")]
-        internal static partial void BindTexture(int target, JSObject texture);
+        public static partial void BindTexture(int target, JSObject texture);
 
         /// <summary>上传 RGBA 像素到 2D 纹理（level 0）。</summary>
         [JSImport("texImage2D", "gl")]
-        internal static partial void TexImage2D(int target, int level, int internalFormat, int width, int height, int border, int format, int type,
+        public static partial void TexImage2D(int target, int level, int internalFormat, int width, int height, int border, int format, int type,
             [JSMarshalAs<JSType.MemoryView>] Span<byte> data);
 
         /// <summary>局部更新纹理像素。</summary>
         [JSImport("texSubImage2D", "gl")]
-        internal static partial void TexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
+        public static partial void TexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
             [JSMarshalAs<JSType.MemoryView>] Span<byte> data);
 
         /// <summary>上传 GPU 压缩纹理字节（DXT / ASTC / BC7 等，internalFormat 见 SurfaceFormat）。</summary>
         [JSImport("compressedTexImage2D", "gl")]
-        internal static partial void CompressedTexImage2D(int target, int level, int internalFormat, int width, int height, int border,
+        public static partial void CompressedTexImage2D(int target, int level, int internalFormat, int width, int height, int border,
             [JSMarshalAs<JSType.MemoryView>] Span<byte> data);
 
         /// <summary>设置纹理参数（过滤方式 / 包裹方式）。</summary>
         [JSImport("texParameteri", "gl")]
-        internal static partial void TexParameteri(int target, int pname, int param);
+        public static partial void TexParameteri(int target, int pname, int param);
 
         /// <summary>激活纹理单元（TEXTURE0 + n）。</summary>
         [JSImport("activeTexture", "gl")]
-        internal static partial void ActiveTexture(int unit);
+        public static partial void ActiveTexture(int unit);
 
         /// <summary>删除纹理。</summary>
         [JSImport("deleteTexture", "gl")]
-        internal static partial void DeleteTexture(JSObject texture);
+        public static partial void DeleteTexture(JSObject texture);
 
         /// <summary>查询是否支持某 WebGL 扩展（如 WEBGL_compressed_texture_s3tc）。</summary>
         [JSImport("hasExtension", "gl")]
-        internal static partial bool HasExtension(string name);
+        public static partial bool HasExtension(string name);
 
         /// <summary>设置像素上传参数（对齐 / 翻转 Y / 预乘 alpha）。</summary>
         [JSImport("pixelStorei", "gl")]
-        internal static partial void PixelStorei(int pname, int param);
+        public static partial void PixelStorei(int pname, int param);
 
         /// <summary>为当前纹理生成 mipmap。</summary>
         [JSImport("generateMipmap", "gl")]
-        internal static partial void GenerateMipmap(int target);
+        public static partial void GenerateMipmap(int target);
 
         /// <summary>为 2D 纹理分配未初始化的存储（渲染目标用：内容由 GPU 绘制，不传像素数据）。</summary>
         [JSImport("texImage2DStorage", "gl")]
-        internal static partial void TexImage2DStorage(int target, int level, int internalFormat,
+        public static partial void TexImage2DStorage(int target, int level, int internalFormat,
             int width, int height, int format, int type);
 
         #endregion
@@ -363,51 +363,51 @@ namespace KFramework.MonoGame
 
         /// <summary>创建帧缓冲对象（FBO）。</summary>
         [JSImport("createFramebuffer", "gl")]
-        internal static partial JSObject CreateFramebuffer();
+        public static partial JSObject CreateFramebuffer();
 
         /// <summary>绑定 FBO；传 null 表示绑回默认帧缓冲（画布）。</summary>
         [JSImport("bindFramebuffer", "gl")]
-        internal static partial void BindFramebuffer(int target, JSObject? framebuffer);
+        public static partial void BindFramebuffer(int target, JSObject? framebuffer);
 
         /// <summary>删除 FBO。</summary>
         [JSImport("deleteFramebuffer", "gl")]
-        internal static partial void DeleteFramebuffer(JSObject framebuffer);
+        public static partial void DeleteFramebuffer(JSObject framebuffer);
 
         /// <summary>把一张纹理挂到 FBO 的颜色附着点（attachment = COLOR_ATTACHMENT0 + i）。</summary>
         [JSImport("framebufferTexture2D", "gl")]
-        internal static partial void FramebufferTexture2D(int target, int attachment, int texTarget, JSObject texture, int level);
+        public static partial void FramebufferTexture2D(int target, int attachment, int texTarget, JSObject texture, int level);
 
         /// <summary>检查 FBO 完整性（返回 FRAMEBUFFER_COMPLETE 表示可用）。</summary>
         [JSImport("checkFramebufferStatus", "gl")]
-        internal static partial int CheckFramebufferStatus(int target);
+        public static partial int CheckFramebufferStatus(int target);
 
         /// <summary>创建渲染缓冲对象（深度 / 模板附件）。</summary>
         [JSImport("createRenderbuffer", "gl")]
-        internal static partial JSObject CreateRenderbuffer();
+        public static partial JSObject CreateRenderbuffer();
 
         /// <summary>绑定渲染缓冲对象到 RENDERBUFFER 目标。</summary>
         [JSImport("bindRenderbuffer", "gl")]
-        internal static partial void BindRenderbuffer(int target, JSObject? renderbuffer);
+        public static partial void BindRenderbuffer(int target, JSObject? renderbuffer);
 
         /// <summary>为当前渲染缓冲分配存储（internalFormat 用 DEPTH_COMPONENT16 / DEPTH24_STENCIL8 等）。</summary>
         [JSImport("renderbufferStorage", "gl")]
-        internal static partial void RenderbufferStorage(int target, int internalFormat, int width, int height);
+        public static partial void RenderbufferStorage(int target, int internalFormat, int width, int height);
 
         /// <summary>把渲染缓冲挂到 FBO 的指定附着点（DEPTH_ATTACHMENT / STENCIL_ATTACHMENT 等）。</summary>
         [JSImport("framebufferRenderbuffer", "gl")]
-        internal static partial void FramebufferRenderbuffer(int target, int attachment, int rbTarget, JSObject? renderbuffer);
+        public static partial void FramebufferRenderbuffer(int target, int attachment, int rbTarget, JSObject? renderbuffer);
 
         /// <summary>删除渲染缓冲对象。</summary>
         [JSImport("deleteRenderbuffer", "gl")]
-        internal static partial void DeleteRenderbuffer(JSObject renderbuffer);
+        public static partial void DeleteRenderbuffer(JSObject renderbuffer);
 
         /// <summary>分配多重采样 renderbuffer 存储（RT 级 MSAA 颜色 / 深度附件用）。这是离屏 FBO 的多重采样，与画布 getContext 的 antialias 无关。</summary>
         [JSImport("renderbufferStorageMultisample", "gl")]
-        internal static partial void RenderbufferStorageMultisample(int target, int samples, int internalFormat, int width, int height);
+        public static partial void RenderbufferStorageMultisample(int target, int samples, int internalFormat, int width, int height);
 
         /// <summary>把多重采样帧缓冲解析（resolve）到单采样帧缓冲（RT 级 MSAA 离屏目标解到可采样纹理用；与画布 antialias 无关）。</summary>
         [JSImport("blitFramebuffer", "gl")]
-        internal static partial void BlitFramebuffer(
+        public static partial void BlitFramebuffer(
             int srcX0, int srcY0, int srcX1, int srcY1,
             int dstX0, int dstY0, int dstX1, int dstY1,
             int mask, int filter);
@@ -418,59 +418,59 @@ namespace KFramework.MonoGame
 
         /// <summary>开启 GL 能力（BLEND / DEPTH_TEST / CULL_FACE 等）。</summary>
         [JSImport("enable", "gl")]
-        internal static partial void Enable(int cap);
+        public static partial void Enable(int cap);
 
         /// <summary>关闭 GL 能力。</summary>
         [JSImport("disable", "gl")]
-        internal static partial void Disable(int cap);
+        public static partial void Disable(int cap);
 
         /// <summary>设置 RGB 与 Alpha 各自独立的混合函数。</summary>
         [JSImport("blendFuncSeparate", "gl")]
-        internal static partial void BlendFuncSeparate(int srcRGB, int dstRGB, int srcA, int dstA);
+        public static partial void BlendFuncSeparate(int srcRGB, int dstRGB, int srcA, int dstA);
 
         /// <summary>设置混合方程（FUNC_ADD 等）。</summary>
         [JSImport("blendEquation", "gl")]
-        internal static partial void BlendEquation(int mode);
+        public static partial void BlendEquation(int mode);
 
         /// <summary>设置清屏颜色。</summary>
         [JSImport("clearColor", "gl")]
-        internal static partial void ClearColor(float r, float g, float b, float a);
+        public static partial void ClearColor(float r, float g, float b, float a);
 
         /// <summary>清除缓冲（COLOR / DEPTH / STENCIL_BUFFER_BIT）。</summary>
         [JSImport("clear", "gl")]
-        internal static partial void Clear(int mask);
+        public static partial void Clear(int mask);
 
         /// <summary>设置视口。</summary>
         [JSImport("viewport", "gl")]
-        internal static partial void Viewport(int x, int y, int width, int height);
+        public static partial void Viewport(int x, int y, int width, int height);
 
         /// <summary>设置裁剪矩形（scissor test 生效区域）。</summary>
         [JSImport("scissor", "gl")]
-        internal static partial void Scissor(int x, int y, int width, int height);
+        public static partial void Scissor(int x, int y, int width, int height);
 
         /// <summary>按索引缓冲绘制图元。</summary>
         [JSImport("drawElements", "gl")]
-        internal static partial void DrawElements(int mode, int count, int type, int offset);
+        public static partial void DrawElements(int mode, int count, int type, int offset);
 
         /// <summary>按顶点顺序绘制图元。</summary>
         [JSImport("drawArrays", "gl")]
-        internal static partial void DrawArrays(int mode, int first, int count);
+        public static partial void DrawArrays(int mode, int first, int count);
 
         /// <summary>设置背面剔除模式（FRONT / BACK）。</summary>
         [JSImport("cullFace", "gl")]
-        internal static partial void CullFace(int mode);
+        public static partial void CullFace(int mode);
 
         /// <summary>设置正面绕序（CW / CCW）。</summary>
         [JSImport("frontFace", "gl")]
-        internal static partial void FrontFace(int mode);
+        public static partial void FrontFace(int mode);
 
         /// <summary>是否写入深度缓冲。</summary>
         [JSImport("depthMask", "gl")]
-        internal static partial void DepthMask(bool flag);
+        public static partial void DepthMask(bool flag);
 
         /// <summary>设置深度比较函数。</summary>
         [JSImport("depthFunc", "gl")]
-        internal static partial void DepthFunc(int func);
+        public static partial void DepthFunc(int func);
 
         #endregion
     }

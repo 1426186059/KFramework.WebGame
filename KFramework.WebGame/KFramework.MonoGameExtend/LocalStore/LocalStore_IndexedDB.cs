@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace KFramework.MonoGame
 {
     /// <summary>
@@ -15,7 +17,7 @@ namespace KFramework.MonoGame
     /// string account = await LocalStore.GetStringAsync("account");
     /// </code>
     /// </example>
-    public static class LocalStore
+    public static class LocalStore_IndexedDB
     {
         /// <summary>写入字符串值（账号/密码/设置等）。</summary>
         public static Task SetStringAsync(string key, string value)

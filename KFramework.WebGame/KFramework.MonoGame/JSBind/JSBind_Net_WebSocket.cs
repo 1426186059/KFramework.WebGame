@@ -11,28 +11,28 @@ namespace KFramework.MonoGame
     /// </list>
     /// 事件按连接句柄（handle）路由到对应的 WebSocketClient 实例。
     /// </summary>
-    internal static partial class JSBind_Net_WebSocket
+    public static partial class JSBind_Net_WebSocket
     {
         [JSImport("netCreate", "net_websocket")]
-        internal static partial int NetCreate(string url);
+        public static partial int NetCreate(string url);
 
         [JSImport("netSend", "net_websocket")]
-        internal static partial bool NetSend(int handle, byte[] data);
+        public static partial bool NetSend(int handle, byte[] data);
 
         [JSImport("netClose", "net_websocket")]
-        internal static partial void NetClose(int handle);
+        public static partial void NetClose(int handle);
 
         [JSImport("netState", "net_websocket")]
-        internal static partial int NetState(int handle);
+        public static partial int NetState(int handle);
 
         [JSExport]
-        internal static void OnOpen(int handle)
+        public static void OnOpen(int handle)
         {
             if (Net_WebSocket_Client.s_instances.TryGetValue(handle, out var c)) c.RaiseOpened();
         }
 
         [JSExport]
-        internal static void OnClose(int handle, int code)
+        public static void OnClose(int handle, int code)
         {
             if (Net_WebSocket_Client.s_instances.TryGetValue(handle, out var c))
             {
@@ -42,7 +42,7 @@ namespace KFramework.MonoGame
         }
 
         [JSExport]
-        internal static void OnError(int handle, string message)
+        public static void OnError(int handle, string message)
         {
             if (Net_WebSocket_Client.s_instances.TryGetValue(handle, out var c)) c.RaiseError(message);
         }
@@ -52,7 +52,7 @@ namespace KFramework.MonoGame
         // createMemoryView API），只能走 byte[] 封送：运行时每次调用生成一个新的 byte[]，业务层可长期持有。
         // 注：byte[] 不加 JSMarshalAs —— 生成器对 byte[] 有特化，JS 侧直接给 Uint8Array 即可。
         [JSExport]
-        internal static void OnBinaryMessage(int handle, byte[] data)
+        public static void OnBinaryMessage(int handle, byte[] data)
         {
             if (!Net_WebSocket_Client.s_instances.TryGetValue(handle, out var c)) return;
             c.RaiseMessage(data ?? Array.Empty<byte>());
