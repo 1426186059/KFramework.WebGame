@@ -14,20 +14,19 @@ namespace KFramework.MonoGame.CommonFunc
     /// </example>
     public static class MouseCursorFunc
     {
-        /// <summary>默认画布 id（与 TSEngine 的 DEFAULT_CANVAS_ID 对齐）。</summary>
-        public static string DefaultCanvasId { get; set; } = "game";
-
-        /// <summary>设置光标（作用于默认画布）。</summary>
+        /// <summary>
+        /// 设置光标（作用于默认画布 —— 即 <see cref="GraphicsDevice.CanvasId"/> 那一块）。
+        /// </summary>
         public static void Set(string name)
         {
-            Set(DefaultCanvasId, name);
+            Set(GraphicsDevice.CanvasId, name);
         }
 
         /// <summary>设置光标（作用于指定画布 id 或 "#id" 选择器）。</summary>
         public static void Set(string canvasId, string name) => JSBind_Cursor.SetCursor(canvasId, name);
 
-        /// <summary>复位为默认箭头（默认画布）。</summary>
-        public static void Reset() => Reset(DefaultCanvasId);
+        /// <summary>复位为默认箭头（默认画布 —— 即 <see cref="GraphicsDevice.CanvasId"/> 那一块）。</summary>
+        public static void Reset() => Reset(GraphicsDevice.CanvasId);
 
         /// <summary>复位为默认箭头（指定画布）。</summary>
         public static void Reset(string canvasId) => JSBind_Cursor.ResetCursor(canvasId);

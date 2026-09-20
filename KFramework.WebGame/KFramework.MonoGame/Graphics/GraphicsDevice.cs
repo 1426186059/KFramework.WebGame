@@ -90,10 +90,13 @@ namespace KFramework.MonoGame
         public PresentationParameters PresentationParameters { get; private set; }
 
         /// <summary>
-        /// 本设备所绘制的那块 <c>&lt;canvas&gt;</c> 的 DOM id。
+        /// 本应用所绘制的那块 <c>&lt;canvas&gt;</c> 的 DOM id（全局唯一：一个 WebGL 应用只对应一块画布）。
         /// 页面里已有该元素就直接用它，没有则由 html_canvas.ts 自动创建一块铺满视口的默认画布。
+        /// <para>设计为静态：应用生命周期内只有一块画布，任意模块（光标、GL 初始化等）都能直接读取，
+        /// 不必把 canvasId 层层传参。默认值为 "game"，与 <see cref="Game"/> 的默认选择器 "#game" 对齐；
+        /// 真正的值在 <see cref="GraphicsDevice"/> 构造时由 <c>canvasSelector</c> 归一化后写入。</para>
         /// </summary>
-        public string CanvasId { get; }
+        public static string CanvasId { get; private set; } = "game";
 
         /// <summary>
         /// WebGL2 上下文是否带 MSAA（<c>antialias</c>）。

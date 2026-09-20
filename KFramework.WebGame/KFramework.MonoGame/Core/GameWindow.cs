@@ -8,17 +8,15 @@ namespace KFramework.MonoGame
     public sealed class GameWindow
     {
         private readonly GraphicsDevice _device;
-        private readonly string _canvasId;
 
         internal GameWindow(GraphicsDevice device)
         {
             _device = device;
-            _canvasId = device.CanvasId;
-            Canvas = new HTML_Canvas(_canvasId);
+            Canvas = new HTML_Canvas(GraphicsDevice.CanvasId);
         }
 
         /// <summary>本窗口（画布）的 DOM id，画布管理相关调用都用它定位。</summary>
-        public string CanvasId => _canvasId;
+        public string CanvasId => GraphicsDevice.CanvasId;
 
         /// <summary>
         /// 本窗口那块画布本身（与 TS 层 <c>html_canvas.ts</c> 一一对应）。
