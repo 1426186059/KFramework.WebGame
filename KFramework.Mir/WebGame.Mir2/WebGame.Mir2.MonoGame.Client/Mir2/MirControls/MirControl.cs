@@ -3,7 +3,6 @@ using Client.MirSounds;
 using SlimDX;
 using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
-using WebGame.Mir2.MonoGame.Client.Mir2._2026New;
 
 namespace Client.MirControls
 {

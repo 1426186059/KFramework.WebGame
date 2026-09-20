@@ -1,15 +1,11 @@
-using System;
-using System.Collections.Generic;
-using MirEngine;
+using Client;
 using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirScenes;
 using Client.MirSounds;
-using MG = KFramework.MonoGame;
-using Client;
 using KFramework.MonoGame;
-using WebGame.Mir2.MonoGame.Client.Mir2._2026New;
+using MG = KFramework.MonoGame;
 
 namespace WebGame.Mir2.MonoGame.Client
 {

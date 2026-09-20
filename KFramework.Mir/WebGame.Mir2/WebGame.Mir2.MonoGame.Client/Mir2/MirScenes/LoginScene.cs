@@ -53,8 +53,10 @@ namespace Client.MirScenes
             // 而 _background 的尺寸来自 ChrSel 贴图库（异步加载），库未就绪时 Size 为 0，
             // 导致整层 IsMouseOver 恒为 false，登录框内的按钮/输入框永远收不到鼠标与键盘焦点（表现即为“点击/输入无反应”）。
             // 因此显式铺满屏幕并关闭 AutoSize，使其不依赖贴图库加载即可参与命中测试。
-            _background.AutoSize = false;
-            _background.Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
+            _background.AutoSize = true;
+            _background.Location = new Point(
+                (DXManager.GDevice.Viewport.Width - _background.Size.Width) / 2,
+                (DXManager.GDevice.Viewport.Height - _background.Size.Height) / 2);
 
             _login = new LoginDialog {Parent = _background, Visible = false};
             _login.AccountButton.Click += (o, e) =>

@@ -4,17 +4,17 @@ using Client.MirGraphics;
 using KFramework.MonoGame;
 using SlimDX.Direct3D9;
 
-namespace WebGame.Mir2.MonoGame.Client.Mir2._2026New
+namespace WebGame.Mir2.MonoGame.Client
 {
     // 层容器：带自身变换把子控件烘焙到离屏纹理，供 MirScene.DrawControl 分层上屏；
     // 同时作为 UI 层 / 世界层的统一父节点。
     // 鼠标命中测试委托给子控件，使命中派发能下钻到层内具体控件（按钮 / 文本框等），
     // 并保留“UI 层优先、未命中再回退世界层”的语义。
-    public sealed class LayerControl : MirControl
+    // 层容器基类：把子控件按本层变换烘焙到离屏纹理，供 MirScene 分层上屏。
+    // 世界层 / UI 层各自派生（WorldLayerControl / UILayerControl），通过覆写
+    // GetLayerTransform 提供自己的 世界→屏幕 变换，互不耦合、不再写到一块。
+    public abstract class LayerControl : MirControl
     {
-        // 该层的世界→屏幕变换（视口尺寸驱动），由 MirScene 构造时按角色赋值。
-        public Func<int, int, Matrix4x4> LayerTransform;
-
         public void Bake()
         {
             if (TextureValid) return;
@@ -40,10 +40,26 @@ namespace WebGame.Mir2.MonoGame.Client.Mir2._2026New
             return false;
         }
 
+        private static int _layerDiagFrame = 0;
+        private static string _layerDiagLast = "";
+
         protected override void CreateTexture()
         {
-            var vp = DXManager.GDevice.Viewport;
-            int rtW = vp.Width, rtH = vp.Height;
+            var fs = DXManager.FullScreenSize;
+            int rtW = fs.Width, rtH = fs.Height;
+
+            // [MapDiag] 层 RT 烘焙诊断：打印 RT 尺寸与真实视口/后备缓冲。
+            {
+                var gvp = DXManager.GDevice.Viewport;
+                var pp = DXManager.GDevice.PresentationParameters;
+                string key = $"{GetType().Name}|rt={rtW}x{rtH}|gvp={gvp.Width}x{gvp.Height}|bb={pp.BackBufferWidth}x{pp.BackBufferHeight}";
+                if (_layerDiagFrame < 20 || key != _layerDiagLast)
+                {
+                    PrintTool.Log("[MapDiag]LayerBake", key);
+                    _layerDiagLast = key;
+                    if (_layerDiagFrame < 20) _layerDiagFrame++;
+                }
+            }
 
             if (TextureSize.Width != rtW || TextureSize.Height != rtH)
                 DisposeTexture();
@@ -60,9 +76,8 @@ namespace WebGame.Mir2.MonoGame.Client.Mir2._2026New
 
             DXManager.Device.Clear(ClearFlags.Target, BackColour, 0, 0);
 
-            DXManager.RenderTransform = LayerTransform != null
-                ? LayerTransform(vp.Width, vp.Height)
-                : Matrix4x4.CreateScaleTranslation((float)vp.Height / Settings.ScreenHeight, (float)vp.Height / Settings.ScreenHeight, 0, 0f);
+            // 各派生层通过覆写 GetLayerTransform 提供自己的变换（世界层=单位矩阵，UI 层=按高度缩放）。
+            DXManager.RenderTransform = GetLayerTransform(rtW, rtH);
             try
             {
                 BeforeDrawControl();

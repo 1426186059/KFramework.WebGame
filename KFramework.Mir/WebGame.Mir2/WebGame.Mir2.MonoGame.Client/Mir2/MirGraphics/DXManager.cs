@@ -58,6 +58,20 @@ namespace Client.MirGraphics
 
         public static int DPSCounter;
 
+        // 权威“全屏/窗口原生分辨率”尺寸：所有世界层（地板/地图/光照）与 UI 层渲染目标都以它为准，
+        // 避免各处直接用 GDevice.Viewport 在某些宿主（浏览器/画布）下读到逻辑尺寸导致地图只铺左上角。
+        // 优先用后备缓冲（BackBuffer）尺寸——它是真正的窗口像素，不随烘焙期临时改小的 Viewport 变化。
+        public static Size FullScreenSize
+        {
+            get
+            {
+                var pp = GDevice?.PresentationParameters;
+                int w = pp != null && pp.BackBufferWidth > 0 ? pp.BackBufferWidth : GDevice.Viewport.Width;
+                int h = pp != null && pp.BackBufferHeight > 0 ? pp.BackBufferHeight : GDevice.Viewport.Height;
+                return new Size(w, h);
+            }
+        }
+
         // KFramework.MonoGame 渲染后端（由 MirGame.Initialize 注入）。
         public static GraphicsDevice GDevice;
         public static SpriteBatch Batch;

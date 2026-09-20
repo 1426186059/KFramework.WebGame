@@ -1,9 +1,7 @@
 ﻿using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirScenes;
-using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
-using WebGame.Mir2.MonoGame.Client.Mir2._2026New;
 using S = ServerPackets;
 
 namespace Client.MirControls
@@ -19,8 +17,8 @@ namespace Client.MirControls
         // 两层结构：世界层(地图/NPC/怪物/玩家) 与 UI 层(对话框/HUD)。
         // 场景的直接子控件经 AddControl/InsertControl 路由到对应容器；渲染时分别烘焙、
         // 各自用自己的相机变换，先上世界层再上 UI 层叠加（UI 层透明背景，不遮挡世界）。
-        protected readonly LayerControl WorldLayer = new LayerControl { BackColour = Color.Black, DrawControlTexture = false };
-        protected readonly LayerControl UILayer = new LayerControl { BackColour = Color.Transparent, DrawControlTexture = false };
+        protected readonly WorldLayerControl WorldLayer = new WorldLayerControl { BackColour = Color.Black, DrawControlTexture = false };
+        protected readonly UILayerControl UILayer = new UILayerControl { BackColour = Color.Transparent, DrawControlTexture = false };
 
         protected MirScene()
         {
@@ -34,17 +32,7 @@ namespace Client.MirControls
             // 窗口更大只是“看到更多世界”（以 48x32 世界像素为单位的视口更大），而非放大世界。
             // 命中：MapControl 内鼠标即世界像素（与屏幕 1:1），WorldLayer 恒为单位变换。
             // 注意：KCamera.ScreenToWorldPos 的 s=h/768 只服务于【UI 层逻辑坐标】，与世界层无关。
-            WorldLayer.LayerTransform = (w, h) =>
-            {
-                return KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(1f, 1f, 0f, 0f);
-            };
-            // UI 层：按高度统一缩放并 pinned（逻辑 = KSetting.UIReferenceHeight），即"UI 映射到相机空间"后的屏幕固定坐标。
-            // UI 参考分辨率集中配置在 KSetting，不再依赖 Settings.ScreenWidth/Height（那只是地图逻辑尺寸）。
-            UILayer.LayerTransform = (w, h) =>
-            {
-                float s = (float)h / KSetting.UIReferenceHeight;
-                return KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(s, s, 0, 0f);
-            };
+            // 两层各自的 世界→屏幕 变换见 WorldLayerControl / UILayerControl（覆写 GetLayerTransform）。
 
             WorldLayer.Parent = this;
             UILayer.Parent = this;
@@ -114,6 +102,14 @@ namespace Client.MirControls
 
             var uiRT = UILayer.RenderTargetTexture;
             if (uiRT != null) DXManager.PresentToScreen(uiRT);
+
+            // [MapDiag] 上屏诊断：世界层/UI 层 RT 尺寸，确认两者覆盖整个窗口。
+            {
+                var gvp = DXManager.GDevice.Viewport;
+                var pp = DXManager.GDevice.PresentationParameters;
+                string key = $"worldRT={(worldRT?.Width ?? -1)}x{(worldRT?.Height ?? -1)}|uiRT={(uiRT?.Width ?? -1)}x{(uiRT?.Height ?? -1)}|gvp={gvp.Width}x{gvp.Height}|bb={pp.BackBufferWidth}x{pp.BackBufferHeight}";
+                System.Console.WriteLine("[MapDiag]SceneDraw | " + key);
+            }
         }
 
         // 烘焙职责已下放到 WorldLayer / UILayer（见下方 LayerControl.CreateTexture），

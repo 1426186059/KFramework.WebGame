@@ -10714,19 +10714,36 @@ namespace Client.MirScenes
             //Do nothing.
         }
 
+        private static int _mapDiagFrame = 0;
+        private static string _mapDiagLastCreate = "";
+        private static string _mapDiagLastDraw = "";
+
         protected override void CreateTexture()
         {
             if (User == null) return;
 
             // MapControl 按【全屏/窗口原生分辨率】烘焙世界（世界坐标），地板 1:1 铺满、无黑边、无放大。
-            // 世界层只做 1:1 透传（见 MirScene.WorldLayer.LayerTransform），所以这里直接用视口像素作为世界区域：
+            // 世界层只做 1:1 透传（见 WorldLayerControl 覆写的 GetLayerTransform，单位矩阵），所以这里直接用窗口像素作为世界区域：
             // 窗口更大只是看到更多世界（以 48x32 世界像素为单位的视口更大），而非放大世界坐标。
             // 命中：MapControl 内鼠标即世界像素（与屏幕 1:1），与 OffSetX/Y、ViewRangeX/Y 一致。
-            // 注意：MapControl.Size 必须保持 1024x768（MirControl.Draw 有 Size>ScreenWidth 的裁剪守卫），
-            // 这里只把 ControlTexture 尺寸设为窗口原生分辨率，由 DrawControl 1:1 合成。
-            var vp = DXManager.GDevice.Viewport;
-            int rtW = vp.Width, rtH = vp.Height;
+            // 用 DXManager.FullScreenSize（后备缓冲真实像素）而非 GDevice.Viewport，避免某些宿主下
+            // Viewport 被临时缩小成逻辑尺寸，导致地图只铺左上角。
+            var fs = DXManager.FullScreenSize;
+            int rtW = fs.Width, rtH = fs.Height;
             UpdateViewPort(rtW, rtH);
+
+            // [MapDiag] 诊断地图铺不满：打印真实尺寸/变换，前若干帧 + 尺寸变化时输出（防刷屏）。
+            {
+                var gvp = DXManager.GDevice.Viewport;
+                var pp = DXManager.GDevice.PresentationParameters;
+                string key = $"fs={fs.Width}x{fs.Height}|gvp={gvp.Width}x{gvp.Height}|bb={pp.BackBufferWidth}x{pp.BackBufferHeight}|floor={(DXManager.FloorTexture?.Width ?? -1)}x{(DXManager.FloorTexture?.Height ?? -1)}|off={MapControl.OffSetX},{MapControl.OffSetY}|vr={MapControl.ViewRangeX},{MapControl.ViewRangeY}|rt={rtW}x{rtH}";
+                if (_mapDiagFrame < 30 || key != _mapDiagLastCreate)
+                {
+                    System.Console.WriteLine("[MapDiag]Create | " + key);
+                    _mapDiagLastCreate = key;
+                    if (_mapDiagFrame < 30) _mapDiagFrame++;
+                }
+            }
 
             // 视口尺寸变化（首帧布局未稳 / 窗口缩放 / dpr 变化）时必须重建地板：
             // 地板纹理随窗口原生分辨率重建，1:1 原尺寸贴图铺满。
@@ -10836,14 +10853,32 @@ namespace Client.MirScenes
 
             if (MapObject.User.Dead) DXManager.SetGrayscale(true);
 
-            // 世界纹理(窗口原生分辨率) 1:1 合成到世界层画布：世界层为单位变换，不缩放、不变形、地板铺满；
-            // 窗口更大时看到更多世界，而非放大世界像素（世界坐标本不放大）。
+            // 全屏 1:1 上屏：强制单位变换，保证地板铺满、绝不被任何遗留 RenderTransform 缩放/偏移；
+            // 目标矩形取实时窗口尺寸（DXManager.FullScreenSize），确保铺满整个窗口——
+            // 窗口更大只是看到更多世界，而非放大世界像素（世界坐标本不放大）。
             // 不能走 PresentToScreen（其内部清空变换 → 1:1 左上角，地图只显示局部/四周洋红）。
+            var savedTransform = DXManager.RenderTransform;
+            DXManager.RenderTransform = null;
             var tex = ControlTexture.RenderTarget;
+            var fs = DXManager.FullScreenSize;
+
+            // [MapDiag] 诊断上屏：打印贴图尺寸、目标全屏尺寸、上屏时的变换/视口状态。
+            {
+                var gvp = DXManager.GDevice.Viewport;
+                var pp = DXManager.GDevice.PresentationParameters;
+                string key = $"tex={tex.Width}x{tex.Height}|fs={fs.Width}x{fs.Height}|savedRT={(savedTransform == null ? "null" : "set")}|gvp={gvp.Width}x{gvp.Height}|bb={pp.BackBufferWidth}x{pp.BackBufferHeight}";
+                if (_mapDiagLastDraw != key)
+                {
+                    System.Console.WriteLine("[MapDiag]Draw | " + key);
+                    _mapDiagLastDraw = key;
+                }
+            }
+
             DXManager.Draw(tex,
                 new Rectangle(0, 0, tex.Width, tex.Height),
-                new RectangleF(0, 0, tex.Width, tex.Height),
+                new RectangleF(0, 0, fs.Width, fs.Height),
                 Color.White);
+            DXManager.RenderTransform = savedTransform;
 
             if (MapObject.User.Dead) DXManager.SetGrayscale(false);
 
