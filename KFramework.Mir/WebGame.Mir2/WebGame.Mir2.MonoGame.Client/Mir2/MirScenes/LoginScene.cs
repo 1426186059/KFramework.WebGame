@@ -48,16 +48,11 @@ namespace Client.MirScenes
                     Parent = this.UILayer,
                 };
 
-            // 关键：背景层必须铺满整屏。它作为登录框（_login 等）的父容器，
-            // 命中测试只在“父控件 IsMouseOver 为真”时才会递归到子控件（见 MirControl.OnMouseMove）。
-            // 而 _background 的尺寸来自 ChrSel 贴图库（异步加载），库未就绪时 Size 为 0，
-            // 导致整层 IsMouseOver 恒为 false，登录框内的按钮/输入框永远收不到鼠标与键盘焦点（表现即为“点击/输入无反应”）。
-            // 因此显式铺满屏幕并关闭 AutoSize，使其不依赖贴图库加载即可参与命中测试。
             _background.AutoSize = false;
             _background.Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
             _background.Anchor = EAnchorType.MiddleCenter;
-            _background.AnchorPos = new Point(0, 0);
-            
+            _background.ApplyAnchor();
+
             _login = new LoginDialog {Parent = _background, Visible = false};
             _login.AccountButton.Click += (o, e) =>
                 {
@@ -222,6 +217,19 @@ namespace Client.MirScenes
                     _login.Show();
                     break;
             }
+        }
+
+        /// <summary>
+        /// 画布尺寸变化后：背景必须重新铺满整屏。
+        /// ApplyAnchor 只重算 Location、不改 Size，所以尺寸在这里单独同步；
+        /// 其余 UI 交给基类按锚点重算（base.ApplyAnchors）。
+        /// </summary>
+        public override void ApplyAnchors()
+        {
+            if (_background != null && !_background.IsDisposed)
+                _background.Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
+
+            base.ApplyAnchors();
         }
 
         private void OpenPasswordChangeDialog(string autoFillID, string autoFillPassword)

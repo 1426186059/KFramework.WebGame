@@ -347,7 +347,8 @@ namespace Client.MirControls
                 case EAnchorType.MiddleRight: anchorPoint = Right; break;
                 case EAnchorType.BottomLeft: anchorPoint = BottomLeft; break;
                 case EAnchorType.BottomCenter: anchorPoint = Bottom; break;
-                default: anchorPoint = BottomRight; break;
+                case EAnchorType.BottomRight: anchorPoint = BottomRight; break;
+                default: anchorPoint = Point.Empty; break;
             }
 
             Location = new Point(anchorPoint.X + AnchorPos.X, anchorPoint.Y + AnchorPos.Y);
