@@ -8,7 +8,7 @@ namespace Client.MirControls
     ///   TopCenter  = 原 Top        MiddleLeft  = 原 Left     MiddleCenter = 原 Center
     ///   BottomCenter = 原 Bottom   MiddleRight = 原 Right    其余四角同名。
     ///
-    /// 只做这 9 个位置 + 一个固定偏移（MirControl.AnchorOffset）即可覆盖原版的布局需求：
+    /// 只做这 9 个位置 + 一个固定偏移（MirControl.AnchorPos）即可覆盖原版的布局需求：
     /// 贴边、居中、居中后再偏移。更复杂的布局可覆写 MirControl.ApplyAnchor。
     /// </summary>
     public enum EAnchorType

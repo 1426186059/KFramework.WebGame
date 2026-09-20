@@ -55,11 +55,9 @@ namespace Client.MirScenes
             // 因此显式铺满屏幕并关闭 AutoSize，使其不依赖贴图库加载即可参与命中测试。
             _background.AutoSize = false;
             _background.Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
-            // 背景定位于逻辑空间原点(0,0)，覆盖整块 1024x768 逻辑区域；
-            // 由 UILayer 变换(s=视口高/768)等比映射到屏幕铺满（不要再混入 GDevice.Viewport 像素坐标，
-            // 否则会与缩放变换叠加导致背景连同登录框一起被推出屏幕外）。
-            _background.Location = new Point(0, 0);
-
+            _background.Anchor = EAnchorType.MiddleCenter;
+            _background.AnchorPos = new Point(0, 0);
+            
             _login = new LoginDialog {Parent = _background, Visible = false};
             _login.AccountButton.Click += (o, e) =>
                 {

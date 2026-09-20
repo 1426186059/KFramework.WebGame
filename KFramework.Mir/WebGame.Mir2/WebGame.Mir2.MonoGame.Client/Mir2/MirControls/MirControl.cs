@@ -304,8 +304,21 @@ namespace Client.MirControls
         /// </summary>
         public EAnchorType Anchor { get; set; } = EAnchorType.None;
 
+
+        private Point _AnchorPos;
         /// <summary>相对锚点的固定偏移，用于"贴边/居中后再偏移"这类布局。</summary>
-        public Point AnchorPos { get; set; } = Point.Empty;
+        public Point AnchorPos
+        {
+            get
+            {
+                return _AnchorPos;
+            }
+            set
+            {
+                _AnchorPos = value;
+                ApplyAnchor();
+            }
+        }
 
         /// <summary>
         /// 按 Anchor + AnchorPos 重算 Location。
@@ -844,10 +857,10 @@ namespace Client.MirControls
 
         public virtual bool IsMouseOver(Point p)
         {
-            // p 是屏幕(画布)坐标，先转换为 UI 坐标再做命中判断
-            // （修正：此前算了 WorldPos 却在 Contains 里仍用原始 p，该变量形同未使用）。
-            Point WorldPos = KCamera.ScreenToWorldPos(p);
-            return Visible && (DisplayRectangle.Contains(WorldPos) || Moving || Modal) && !NotControl;
+            // p 已是 UI(逻辑)坐标，不能再做 ScreenToWorldPos —— 所有调用点传的都是 CMain.MPoint，
+            // 而它在输入入口已转换过一次（CMain_MouseMove / OnMouseDown / OnMouseUp），
+            // DisplayRectangle 也是 UI 坐标；此处再转一次会重复扣减视口原点。
+            return Visible && (DisplayRectangle.Contains(p) || Moving || Modal) && !NotControl;
         }
 
         protected virtual void OnMouseEnter()
