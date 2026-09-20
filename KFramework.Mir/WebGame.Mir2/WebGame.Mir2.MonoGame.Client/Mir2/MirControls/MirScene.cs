@@ -45,14 +45,20 @@ namespace Client.MirControls
         }
 
         // 统一路由：UI 控件进 UILayer，地图(MapControl)进 WorldLayer，层容器自身直接挂到场景。
+        // 必须用 Insert(末尾) 而不是 Add：MirControl.AddControl 只把控件塞进层容器的 Controls，
+        // 并不改 control._parent，于是 Parent 仍指向场景根；而置顶/排序逻辑
+        // （TrySort / OnVisibleChanged / BringToFront）写的都是
+        // "Parent.Controls.Remove(this); Parent.Controls.Add(this)"，
+        // Parent 与真实收录容器一旦不一致，控件就被加回场景根、掉出 UILayer：
+        // 层烘焙不到它（窗口画不出、点不动），并触发 [Mir][UIHost] 归属断言。
         protected override void AddControl(MirControl control)
         {
             if (control == WorldLayer || control == UILayer)
                 base.AddControl(control);
             else if (control is MapControl)
-                WorldLayer.Add(control);
+                WorldLayer.Insert(WorldLayer.Controls.Count, control);
             else
-                UILayer.Add(control);
+                UILayer.Insert(UILayer.Controls.Count, control);
         }
 
         public override void InsertControl(int index, MirControl control)
@@ -103,13 +109,6 @@ namespace Client.MirControls
             var uiRT = UILayer.RenderTargetTexture;
             if (uiRT != null) DXManager.PresentToScreen(uiRT);
 
-            // [MapDiag] 上屏诊断：世界层/UI 层 RT 尺寸，确认两者覆盖整个窗口。
-            {
-                var gvp = DXManager.GDevice.Viewport;
-                var pp = DXManager.GDevice.PresentationParameters;
-                string key = $"worldRT={(worldRT?.Width ?? -1)}x{(worldRT?.Height ?? -1)}|uiRT={(uiRT?.Width ?? -1)}x{(uiRT?.Height ?? -1)}|gvp={gvp.Width}x{gvp.Height}|bb={pp.BackBufferWidth}x{pp.BackBufferHeight}";
-                System.Console.WriteLine("[MapDiag]SceneDraw | " + key);
-            }
         }
 
         // 烘焙职责已下放到 WorldLayer / UILayer（见下方 LayerControl.CreateTexture），

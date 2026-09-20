@@ -40,26 +40,10 @@ namespace WebGame.Mir2.MonoGame.Client
             return false;
         }
 
-        private static int _layerDiagFrame = 0;
-        private static string _layerDiagLast = "";
-
         protected override void CreateTexture()
         {
             var fs = DXManager.FullScreenSize;
             int rtW = fs.Width, rtH = fs.Height;
-
-            // [MapDiag] 层 RT 烘焙诊断：打印 RT 尺寸与真实视口/后备缓冲。
-            {
-                var gvp = DXManager.GDevice.Viewport;
-                var pp = DXManager.GDevice.PresentationParameters;
-                string key = $"{GetType().Name}|rt={rtW}x{rtH}|gvp={gvp.Width}x{gvp.Height}|bb={pp.BackBufferWidth}x{pp.BackBufferHeight}";
-                if (_layerDiagFrame < 20 || key != _layerDiagLast)
-                {
-                    PrintTool.Log("[MapDiag]LayerBake", key);
-                    _layerDiagLast = key;
-                    if (_layerDiagFrame < 20) _layerDiagFrame++;
-                }
-            }
 
             if (TextureSize.Width != rtW || TextureSize.Height != rtH)
                 DisposeTexture();

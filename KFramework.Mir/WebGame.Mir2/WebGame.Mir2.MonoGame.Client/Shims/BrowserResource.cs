@@ -1,5 +1,6 @@
 using KFramework.MonoGame;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -16,24 +17,35 @@ namespace MirEngine
         // 指向资源服务器（如 http://127.0.0.1:5080/）的 ContentManager，由 CMain.Init 经 Configure 注入。
         public static ContentManager Content { get; private set; }
 
+        // 确认缺失（404 等）的资源拉黑：同一个文件每次取用都会重发一次请求、再走一遍
+        // "分片失败 → 回退整文件"，控制台与网络面板被同一条错误反复刷屏（典型：Sound/1014-6.wav）。
+        private static readonly HashSet<string> _missing = new HashSet<string>();
+
         public static async Task<byte[]> GetBytesAsync(string url)
         {
             string path = NormalizePath(url);
-            if (Content != null)
+            if (Content == null || _missing.Contains(path)) return null;
+
+            try
             {
-                try
-                {
-                    // 分片下载：超大地图片库（Tiles.Lib 数百 MB）若一次性 marshal 成单个 byte[] 会在 WASM 边界失败/返回空。
-                    return await Content.LoadBytesChunkedAsync(path).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    Log("[Mir] 分片下载失败，回退整文件: " + path + " " + ex.Message);
-                    try { return await Content.LoadBytesAsync(path).ConfigureAwait(false); }
-                    catch { return null; }
-                }
+                // 分片下载：超大地图片库（Tiles.Lib 数百 MB）若一次性 marshal 成单个 byte[] 会在 WASM 边界失败/返回空。
+                return await Content.LoadBytesChunkedAsync(path).ConfigureAwait(false);
             }
-            return null;
+            catch (Exception ex)
+            {
+                Log("[Mir] 分片下载失败，回退整文件: " + path + " " + ex.Message);
+
+                byte[] fallback = null;
+                try { fallback = await Content.LoadBytesAsync(path).ConfigureAwait(false); }
+                catch { }
+
+                if (fallback == null || fallback.Length == 0)
+                {
+                    _missing.Add(path);
+                    Log("[Mir] 资源缺失，后续不再重试: " + path);
+                }
+                return fallback;
+            }
         }
 
         public static string ResolveUrl(string fileName) => NormalizePath(fileName);

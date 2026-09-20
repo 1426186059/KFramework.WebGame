@@ -138,8 +138,6 @@ namespace MirEngine
                 return;
             }
 
-            System.Console.WriteLine($"[DrawTextBox] run text='{text}' focused={focused} w={w} h={h} css='{css}'");
-
             var saved = BeginOnTexture(texture, backColor);
             var batch = Client.MirGraphics.DXManager.Batch;
             try
@@ -182,7 +180,6 @@ namespace MirEngine
                                        (int)Math.Round(caretX), (int)Math.Round(ty),
                                        (int)Math.Round(caretW), (int)Math.Round(caretH)),
                                    fore);
-                        System.Console.WriteLine($"[DrawTextBox] caret ok x={caretX:F1} w={caretW:F1}");
                     }
                     catch (System.Exception ex)
                     {
@@ -203,11 +200,9 @@ namespace MirEngine
         {
             if (_whitePixel == null)
             {
-                System.Console.WriteLine("[DrawTextBox] WhitePixel creating 1x1");
                 var dev = Client.MirGraphics.DXManager.GDevice;
                 _whitePixel = dev.CreateTexture(1, 1);
                 _whitePixel.SetData(new byte[] { 255, 255, 255, 255 }, 0, 0, 1, 1);
-                System.Console.WriteLine("[DrawTextBox] WhitePixel created");
             }
             return _whitePixel;
         }

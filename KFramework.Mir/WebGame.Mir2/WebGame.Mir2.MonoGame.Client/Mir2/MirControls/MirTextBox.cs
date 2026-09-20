@@ -462,14 +462,12 @@ namespace Client.MirControls
                     _caretToggle = CMain.Time;
                     _caretVisible = !_caretVisible;
                     TextureValid = false;
-                    System.Console.WriteLine($"[DrawControl] blink flip caretVisible={_caretVisible}");
                 }
             }
             else if (_caretVisible)
             {
                 _caretVisible = false;
                 TextureValid = false;
-                System.Console.WriteLine("[DrawControl] lost focus, caret off");
             }
 
             base.DrawControl();
@@ -501,7 +499,6 @@ namespace Client.MirControls
             // 仅在 DOM 透明（文字由引擎自绘）或本框未接管（失焦/隐藏）时，才在 canvas 上绘制文字与光标。
             bool domShowsText = _nativeActive && !TransparentDomInput;
             string drawText = TextBox.Text ?? "";
-            System.Console.WriteLine($"[CreateTexture] drawText='{drawText}' ctrlRTnull={ControlTexture?.RenderTarget == null} focused={TextBox.Focused} caretVisible={_caretVisible} size={Size.Width}x{Size.Height} domShowsText={domShowsText}");
             if (domShowsText)
                 BrowserCanvas.DrawTextBox(ControlTexture, Size.Width, Size.Height, "",
                     css, fore, back, selBack, fore, 0, 0, 0, false, !TextBox.Multiline);

@@ -1156,16 +1156,15 @@ namespace Client.MirScenes
 
         protected internal override void DrawControl()
         {
-            if (MapControl != null && !MapControl.IsDisposed)
-                MapControl.DrawControl();
+            // 地图由世界层负责：MapControl 挂在 WorldLayer 里，世界层烘焙它并先上屏，
+            // UI 层透明叠加在世界之上——整条链路交给 base.DrawControl()，这里不再直画 MapControl。
+            // 世界内容只在 MapControl 纹理失效（动画/移动/地板变化）时才需重新烘焙，
+            // 故按 MapControl.TextureValid 精确作废世界层，避免每帧多一张全屏 RT。
+            if (MapControl != null && !MapControl.TextureValid)
+                WorldLayer.Invalidate();
 
-            // 地图已由 MapControl.DrawControl 按高度缩放直接上屏铺满视口。
-            // 不要再走 base.DrawControl() 的世界层烘焙+上屏：世界层是一张整屏 RT，
-            // 其烘焙结果(黑底)被 PresentToScreen 再次覆盖到地图之上，会导致
-            // “只显示 UI 层 / 地图不显示”。这里仅在世界层之上叠加 UI 层。
-            UILayer.Bake();
-            var uiRT = UILayer.RenderTargetTexture;
-            if (uiRT != null) DXManager.PresentToScreen(uiRT);
+            base.DrawControl();
+
 
 
             if (PickedUpGold || (SelectedCell != null && SelectedCell.Item != null))
@@ -10703,12 +10702,50 @@ namespace Client.MirScenes
 
         public override void Draw()
         {
-            //Do nothing.
+            AssertWorldLayerHosted(this);
+
+            // 不走 base.Draw()：base 里有 Size > Settings.ScreenWidth 的超屏裁剪守卫，
+            // 而 MapControl 按窗口原生分辨率(FullScreenSize)铺满，天然等于甚至大于逻辑分辨率，
+            // 走 base 会被直接剔除、世界层只剩黑底。这里由世界层烘焙时调用，画进世界层 RT。
+            OnBeforeShown();
+            BeforeDrawControl();
+            DrawControl();
+            DrawChildControls();
+            DrawBorder();
+            AfterDrawControl();
+            CleanTime = CMain.Time + Settings.CleanDelay;
+            OnShown();
         }
 
-        private static int _mapDiagFrame = 0;
-        private static string _mapDiagLastCreate = "";
-        private static string _mapDiagLastDraw = "";
+        #region 世界层归属断言
+        // MapControl 只允许挂在 MirScene.WorldLayer 上（见 MirScene.InsertControl 的 MapControl → WorldLayer 路由）。
+        // 一旦不在世界层里，世界层烘焙不到任何内容——地图不上屏（黑屏），或被世界层的黑底盖住。
+        // 全部实现收在 AssertWorldLayerHosted 这一个方法里，与本类其它逻辑解耦。
+        private bool _worldHostChecked;
+        private static readonly HashSet<MirControl> _worldHostReported = new HashSet<MirControl>();
+
+        private static void AssertWorldLayerHosted(MapControl self)
+        {
+            if (self._worldHostChecked) return;
+            self._worldHostChecked = true;
+
+            MirControl layer = self.Parent, root = (layer == null) ? null : layer.Parent;
+            if (layer is WorldLayerControl && root is MirScene) return;
+
+            if (!_worldHostReported.Add(self)) return;
+            if (_worldHostReported.Count > 50) return;
+
+            string reason = (layer == null)
+                ? "没有父容器（游离，未被任何层收录）"
+                : !(layer is WorldLayerControl)
+                    ? "父容器不是 WorldLayerControl（" + layer.GetType().FullName + "）"
+                    : "WorldLayer 的父不是 MirScene（" + ((root == null) ? "null" : root.GetType().FullName) + "）";
+
+            MirEngine.BrowserResource.Log(string.Format(
+                "[Mir][WorldHost] MapControl 不在世界层：{0} | Loc=({1},{2}) Size={3}x{4}",
+                reason, self.Location.X, self.Location.Y, self.Size.Width, self.Size.Height));
+        }
+        #endregion
 
         protected override void CreateTexture()
         {
@@ -10723,19 +10760,6 @@ namespace Client.MirScenes
             var fs = DXManager.FullScreenSize;
             int rtW = fs.Width, rtH = fs.Height;
             UpdateViewPort(rtW, rtH);
-
-            // [MapDiag] 诊断地图铺不满：打印真实尺寸/变换，前若干帧 + 尺寸变化时输出（防刷屏）。
-            {
-                var gvp = DXManager.GDevice.Viewport;
-                var pp = DXManager.GDevice.PresentationParameters;
-                string key = $"fs={fs.Width}x{fs.Height}|gvp={gvp.Width}x{gvp.Height}|bb={pp.BackBufferWidth}x{pp.BackBufferHeight}|floor={(DXManager.FloorTexture?.Width ?? -1)}x{(DXManager.FloorTexture?.Height ?? -1)}|off={MapControl.OffSetX},{MapControl.OffSetY}|vr={MapControl.ViewRangeX},{MapControl.ViewRangeY}|rt={rtW}x{rtH}";
-                if (_mapDiagFrame < 30 || key != _mapDiagLastCreate)
-                {
-                    System.Console.WriteLine("[MapDiag]Create | " + key);
-                    _mapDiagLastCreate = key;
-                    if (_mapDiagFrame < 30) _mapDiagFrame++;
-                }
-            }
 
             // 视口尺寸变化（首帧布局未稳 / 窗口缩放 / dpr 变化）时必须重建地板：
             // 地板纹理随窗口原生分辨率重建，1:1 原尺寸贴图铺满。
@@ -10853,18 +10877,6 @@ namespace Client.MirScenes
             DXManager.RenderTransform = null;
             var tex = ControlTexture.RenderTarget;
             var fs = DXManager.FullScreenSize;
-
-            // [MapDiag] 诊断上屏：打印贴图尺寸、目标全屏尺寸、上屏时的变换/视口状态。
-            {
-                var gvp = DXManager.GDevice.Viewport;
-                var pp = DXManager.GDevice.PresentationParameters;
-                string key = $"tex={tex.Width}x{tex.Height}|fs={fs.Width}x{fs.Height}|savedRT={(savedTransform == null ? "null" : "set")}|gvp={gvp.Width}x{gvp.Height}|bb={pp.BackBufferWidth}x{pp.BackBufferHeight}";
-                if (_mapDiagLastDraw != key)
-                {
-                    System.Console.WriteLine("[MapDiag]Draw | " + key);
-                    _mapDiagLastDraw = key;
-                }
-            }
 
             DXManager.Draw(tex,
                 new Rectangle(0, 0, tex.Width, tex.Height),
