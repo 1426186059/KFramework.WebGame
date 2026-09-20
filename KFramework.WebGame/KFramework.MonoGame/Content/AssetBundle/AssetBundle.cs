@@ -1,3 +1,4 @@
+using KFramework.MonoGame.Content;
 using System.IO.Compression;
 using System.Text.Json;
 
@@ -116,7 +117,7 @@ public sealed class AssetBundle : IDisposable
 
     /// <summary>同步读取文本原文（UTF-8，去 BOM）。
     /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个资源。</summary>
-    public string LoadText(string name, bool strict = true) => InnerCommonFunc.DecodeUtf8(LoadAsset(name, strict));
+    public string LoadText(string name, bool strict = true) => ContentFunc.DecodeUtf8(LoadAsset(name, strict));
 
     /// <summary>同步取一张整图纹理（图集请改用 <see cref="KFramework.MonoGameExtend.SpriteSheetLoader"/> 加载）。
     /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个纹理。</summary>

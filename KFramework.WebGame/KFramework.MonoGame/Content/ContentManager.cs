@@ -1,3 +1,4 @@
+using KFramework.MonoGame.Content;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -103,7 +104,7 @@ namespace KFramework.MonoGame
         public async Task<string> LoadTextAsync(string relativePath, bool bUseCache = true, CancellationToken cancellationToken = default)
         {
             byte[] data = await _http.GetByteArrayAsync(relativePath, cancellationToken).ConfigureAwait(false);
-            return InnerCommonFunc.DecodeUtf8(data);
+            return ContentFunc.DecodeUtf8(data);
         }
 
         /// <summary>按页面基址异步下载任意字节流（不走内容包）。</summary>

@@ -1,6 +1,6 @@
-﻿namespace KFramework.MonoGame
+﻿namespace KFramework.MonoGame.Content
 {
-    internal static class InnerCommonFunc
+    internal static class ContentFunc
     {
         public static string DecodeUtf8(byte[] data)
         {

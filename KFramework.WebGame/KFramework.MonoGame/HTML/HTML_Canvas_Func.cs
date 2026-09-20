@@ -66,11 +66,7 @@ namespace KFramework.MonoGame
             Rectangle rect = new(view[0], view[1], view[2], view[3]);
             return rect.Width <= 0 || rect.Height <= 0 ? null : rect;
         }
-
-        /// <summary>
-        /// 当前能给画布设置的最大 CSS 尺寸（未进原生全屏时就是视口大小；进入原生全屏后才能用到屏幕分辨率的尺寸）。
-        /// </summary>
-        /// <returns><see cref="Point.X"/> = 最大宽度，<see cref="Point.Y"/> = 最大高度。</returns>
+        
         public static Point GetMaxSize()
         {
             Span<int> view = stackalloc int[2];
