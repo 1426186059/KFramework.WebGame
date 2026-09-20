@@ -550,6 +550,9 @@ namespace Client.MirGraphics
 
         private readonly string _fileName;
 
+        // 只读暴露库文件名：UI 层归属断言等诊断日志需要它来定位控件取自哪个 .Lib。
+        public string FileName { get { return _fileName; } }
+
         private MImage[] _images;
         private FrameSet _frames;
         private int[] _indexList;
