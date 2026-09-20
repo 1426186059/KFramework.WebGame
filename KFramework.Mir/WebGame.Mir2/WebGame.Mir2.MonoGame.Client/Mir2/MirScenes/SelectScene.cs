@@ -35,14 +35,14 @@ namespace Client.MirScenes
             {
                 Index = 65,
                 Library = Libraries.Prguse,
-                Parent = this,
+                Parent = this.UILayer,
             };
 
             Title = new MirImageControl
             {
                 Index = 40,
                 Library = Libraries.Title,
-                Parent = this,
+                Parent = this.UILayer,
                 Location = new Point(468, 20)
             };
 
