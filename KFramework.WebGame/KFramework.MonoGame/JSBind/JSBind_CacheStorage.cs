@@ -36,8 +36,10 @@ namespace KFramework.MonoGame
         /// 资源文件名带内容哈希（热更一次换一个名字），不 GC 则历史版本无限堆积、最终撑爆 origin 配额。
         /// </summary>
         /// <param name="keep">保留白名单（相对路径或绝对 URL 均可，JS 侧统一归一化后比对）。</param>
-        /// <param name="prefix">可选路径前缀（如 "hot_update_res/"），只清理该前缀下的条目；留空表示整个 Cache 都参与 GC。</param>
+        /// <param name="prefix">可选路径前缀（如 "hot_update_res/"），只清理该前缀下的条目；留空表示不限前缀。</param>
+        /// <param name="suffix">可选后缀（如 ".web.lib"），只清理该后缀的条目；留空表示不限后缀。</param>
+        /// <remarks>前缀与后缀是「与」关系：都给了就必须同时命中，用于只回收资源包而不动同目录下的其它缓存。</remarks>
         [JSImport("prune", "cachestorage")]
-        public static partial Task<int> PruneAsync(string[] keep, string prefix);
+        public static partial Task<int> PruneAsync(string[] keep, string prefix, string suffix);
     }
 }

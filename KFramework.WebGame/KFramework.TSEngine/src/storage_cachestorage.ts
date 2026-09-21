@@ -33,6 +33,14 @@ export async function loadInto(name: string, buffer: Uint8Array): Promise<number
     return buf.byteLength;
 }
 
+// 读出已存字节（供 http_func 等模块复用同一个 Cache，避免各模块各写一份 CACHE_NAME）；不存在返回 null。
+export async function read(name: string): Promise<Uint8Array | null> {
+    const cache = await openCache();
+    const res = await cache.match(name);
+    if (!res) return null;
+    return new Uint8Array(await res.arrayBuffer());
+}
+
 // 把资源包字节（byte[]）以 Response 形式写入 Cache Storage（按 name 键，覆盖式）。
 export async function save(name: string, bytes: Uint8Array): Promise<void> {
     const cache = await openCache();
@@ -70,37 +78,42 @@ export async function remove(name: string): Promise<boolean> {
     return await cache.delete(name);
 }
 
+// 取 URL 的 pathname（去掉 origin 与查询串），用于前缀 / 后缀比对；解析不了就按原串。
+function toPath(url: string): string {
+    try {
+        return new URL(url, document.baseURI).pathname;
+    } catch {
+        return url;
+    }
+}
+
 /**
  * 通用 GC：删除不在白名单里的缓存条目，返回实际删除条数。
  * @param keep 需要保留的键（相对路径或绝对 URL 均可，会归一化后比对）。
- * @param prefix 可选路径前缀（如 "hot_update_res/"），只清理该前缀下的条目；留空表示整个 Cache 都参与 GC。
+ * @param prefix 可选路径前缀（如 "hot_update_res/"），只清理该前缀下的条目；留空表示不限前缀。
+ * @param suffix 可选后缀（如 ".web.lib"），只清理该后缀的条目；留空表示不限后缀。
+ * @remarks 前缀与后缀是「与」关系：两个都给了，必须同时命中才会被清理。
+ *          例如 prefix="hot_update_res/" + suffix=".web.lib" —— 只回收资源包，
+ *          同目录下的 version.manifest、零散图片等其它缓存条目不受影响。
  */
-export async function prune(keep: string[], prefix: string = ''): Promise<number> {
+export async function prune(
+    keep: string[],
+    prefix: string = '',
+    suffix: string = '',
+): Promise<number> {
     const cache = await openCache();
     const keepSet = new Set(keep.map(toAbsoluteUrl));
 
-    let prefixPath = '';
-    if (prefix) {
-        try {
-            prefixPath = new URL(prefix, document.baseURI).pathname;
-        } catch {
-            prefixPath = prefix;
-        }
-    }
+    // 前缀按 pathname 归一（传绝对 URL 或相对目录都行），后缀直接按字符串比对
+    const prefixPath = prefix ? toPath(prefix) : '';
 
     const reqs = await cache.keys();
     let removed = 0;
     for (const req of reqs) {
         if (keepSet.has(req.url)) continue;
-        if (prefixPath) {
-            let path = req.url;
-            try {
-                path = new URL(req.url, document.baseURI).pathname;
-            } catch {
-                // 解析不了就按原串比对
-            }
-            if (!path.startsWith(prefixPath)) continue;
-        }
+        const path = toPath(req.url);
+        if (prefixPath && !path.startsWith(prefixPath)) continue;
+        if (suffix && !path.endsWith(suffix)) continue;
         try {
             // 单条失败（如并发写占用）不中断整体 GC
             if (await cache.delete(req)) removed++;

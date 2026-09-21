@@ -2,6 +2,9 @@ namespace KFramework.MonoGame
 {
     public sealed class AssetBundleManager : IDisposable
     {
+        /// <summary>资源包文件的扩展名（含点）。GC / 过滤时用它圈定"只动资源包"。</summary>
+        public const string BundleFileExtension = ".web.lib";
+
         private readonly HttpClient _http;
         private readonly string _rootDir;
         private AssetBundleManifest? _manifest;
@@ -179,8 +182,9 @@ namespace KFramework.MonoGame
                     foreach (var k in extraKeep)
                         if (!string.IsNullOrWhiteSpace(k)) keep.Add(ResolveRooted(k));
 
-                // 只清理本资源根目录下的条目，避免误删业务自行缓存的其它文件
-                int removed = await JSBind_CacheStorage.PruneAsync(keep.ToArray(), _rootDir).ConfigureAwait(false);
+                // 前缀(资源根目录) + 后缀(.web.lib) 双重限定：只回收资源包，
+                // 同目录下的 version.manifest、零散图片等其它缓存条目不受影响
+                int removed = await JSBind_CacheStorage.PruneAsync(keep.ToArray(), _rootDir, BundleFileExtension).ConfigureAwait(false);
                 if (removed > 0)
                     PrintTool.Log($"[KFramework.MonoGame] 缓存 GC：清理历史版本资源包 {removed} 项（白名单保留 {keep.Count} 项）");
                 return removed;
