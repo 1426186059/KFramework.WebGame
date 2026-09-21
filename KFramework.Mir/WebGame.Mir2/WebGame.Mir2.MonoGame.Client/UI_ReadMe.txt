@@ -144,6 +144,24 @@ UI 是「场景(MirScene) → 两个层(WorldLayerControl / UILayerControl) → 
 [7] 浏览器下对话框跑到负坐标
      → 构造期依赖 Settings.ScreenWidth 读到 0；DXManager.Initialize 已校正，
        但定位优先用锚点而非构造期硬编码。
+[8] 登录按钮「看得见点不动」，MouseControl 停在 LoginScene（场景根）
+     → 根因在背景图 _background 的命中矩形没随窗口变大而变大。
+        _background 是 MirImageControl，Anchor = MiddleCenter；
+        ApplyAnchor 的 MiddleCenter 只设 Location = 屏幕中心、不改 Size
+        （见 MirControl.cs:335-355）。它的 Size 停在构造时图片固定尺寸
+        （ChrSel 首图 1024x768），不随 resize 变大。
+        - 窗口 ≤ 1024x768 时：_background 居中后整块盖住窗口，命中链
+          Scene→UILayer→_background→LoginDialog→按钮 全程通过 → 按钮可点；
+        - 最大化（>1024x768）时：_background 只占屏幕中间一块，LoginDialog/
+          按钮按屏幕中心布局探出它的命中矩形（如按钮在 x≈1489 处），
+          OnMouseMove 子控件循环里 _background.IsMouseOver=false 直接跳过
+          整棵子树 → MouseControl 停在 LoginScene → 点登录无反应。
+        修复：让背景（或承载 UI 的容器）在 resize 时铺满全屏——把 _background.Size
+        设为 Settings.ScreenWidth×Settings.ScreenHeight（或在 ApplyAnchors 里
+        随窗口重设），命中即可穿透到按钮。注意 MirImageControl 绘制走 Library.Draw，
+        不按 Size 缩放，所以把 Size 设大不会拉伸背景图，只是扩大命中/底图矩形。
+        排障线索：浏览器控制台里 [Mir][Down] MC=LoginScene、MP 命中按钮位置、
+        且只有 Down 没有 Click，基本就是命中链断在背景层。
 
 --------------------------------------------------------------------------------
 8. 最小示例
