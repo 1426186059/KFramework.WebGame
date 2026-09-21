@@ -273,7 +273,7 @@ namespace MapExtract2.Services
             {
                 var result = new ExtractResultDto
                 {
-                    DestinationPath = _config.DestinationPath
+                    DestinationPath = ""
                 };
                 var log = result.Log;
 
@@ -301,6 +301,10 @@ namespace MapExtract2.Services
                     : _config.PackRootPath.TrimEnd('\\', '/');
                 Directory.CreateDirectory(root);
                 string rawDir = Path.Combine(root, "raw");
+                // 热更新产物目录：与 raw 同级。kfc 的 outDir 默认即相对 root 的 "hot_update_res"，
+                // 打包工具默认就在 <root>/hot_update_res 生成（见 KFramework.Content.Cli 的 BuildConfig），无需额外配置绝对路径。
+                string hotUpdateDir = Path.Combine(root, "hot_update_res");
+                result.DestinationPath = hotUpdateDir;
                 // 只清掉上一次蒸馏产物，保留 root 本身（含 build.config.json 等）
                 if (Directory.Exists(rawDir)) { try { Directory.Delete(rawDir, true); } catch { } }
                 Directory.CreateDirectory(rawDir);
@@ -359,14 +363,15 @@ namespace MapExtract2.Services
                         AssetBundleDir = mapFolders,
                         splitMode = "whole",
                         autoAtlas = false,
-                        outDir = _config.DestinationPath,
+                        // 相对 root 的默认 outDir（hot_update_res），与 raw 同级；沿用 kfc 默认行为
+                        outDir = "hot_update_res",
                         deploy = "none",
                     };
                     File.WriteAllText(Path.Combine(root, "build.config.json"),
                         JsonSerializer.Serialize(buildCfg, new JsonSerializerOptions { WriteIndented = true }));
 
-                    AppendLog(log, $"调用 kfc 打包 {mapFolders.Count} 张地图 → {_config.DestinationPath}");
-                    RunKfc(root, _config.DestinationPath, log);
+                    AppendLog(log, $"调用 kfc 打包 {mapFolders.Count} 张地图 → {hotUpdateDir}");
+                    RunKfc(root, hotUpdateDir, log);
 
                     // 报告
                     var report = new StringBuilder();
@@ -376,7 +381,7 @@ namespace MapExtract2.Services
                         if (perMap.TryGetValue(m, out var st))
                             report.AppendLine($"{m}, {st.libs}, {st.imgs}, {st.skipped}");
                     }
-                    File.WriteAllText(Path.Combine(_config.DestinationPath, "report.txt"), report.ToString());
+                    File.WriteAllText(Path.Combine(hotUpdateDir, "report.txt"), report.ToString());
 
                     AppendLog(log, $"清单已写出: {ManifestFile}");
 
@@ -400,7 +405,7 @@ namespace MapExtract2.Services
                 result.Success = success;
                 result.Fail = fail;
                 result.Failed = failed;
-                result.Message = $"批量蒸馏 + 打包完成！\n成功: {success} 张, 失败: {fail} 张\n输出目录: {_config.DestinationPath}";
+                result.Message = $"批量蒸馏 + 打包完成！\n成功: {success} 张, 失败: {fail} 张\n输出目录: {hotUpdateDir}";
                 if (failed.Count > 0)
                     result.Message += "\n\n失败列表:\n" + string.Join("\n", failed);
                 return result;
@@ -541,18 +546,22 @@ namespace MapExtract2.Services
 
         private MapResultDto BuildResultForMap(string mapName, int libs, int imgs, string skipped)
         {
+            // 产物目录与 raw 同级：<PackRootPath>/hot_update_res（kfc 默认 outDir）
+            string outDir = string.IsNullOrWhiteSpace(_config.PackRootPath)
+                ? Path.Combine(Path.GetTempPath(), "hot_update_res")
+                : Path.Combine(_config.PackRootPath.TrimEnd('\\', '/'), "hot_update_res");
             var dto = new MapResultDto
             {
                 Map = mapName,
-                OutputDir = _config.DestinationPath,
+                OutputDir = outDir,
                 LibCount = libs,
                 ImageCount = imgs,
                 Skipped = skipped,
-                Manifest = File.Exists(Path.Combine(_config.DestinationPath, ManifestFile)),
+                Manifest = File.Exists(Path.Combine(outDir, ManifestFile)),
             };
-            if (Directory.Exists(_config.DestinationPath))
+            if (Directory.Exists(outDir))
             {
-                foreach (var f in Directory.GetFiles(_config.DestinationPath, mapName + ".*.web.lib", SearchOption.TopDirectoryOnly))
+                foreach (var f in Directory.GetFiles(outDir, mapName + ".*.web.lib", SearchOption.TopDirectoryOnly))
                     dto.Bundles.Add(new BundleInfo { Name = Path.GetFileName(f), Size = new FileInfo(f).Length });
             }
             dto.Exists = dto.Bundles.Count > 0;

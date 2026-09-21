@@ -19,11 +19,12 @@ namespace MapExtract2.Models
         /// <summary>素材 Lib 源目录（探测：{根}\Data\Map），仅用于展示与路径自检</summary>
         public string SourcePath { get; set; } = @"D:\OpenSource\Crystal\Build\Client\Debug\Data\Map";
 
-        /// <summary>蒸馏产物（AssetBundle）输出根目录。需指向 Web 客户端能被 HTTP 访问到的静态根下的 hot_update_res，
-        /// 因为客户端从 &lt;baseUrl&gt;/hot_update_res 拉取 version.manifest 与 *.web.lib（见 WebGame.Mir2.MonoGame.Client 的 MirGame.cs / Shims/BrowserResource.cs）。
-        /// 默认即本客户端工程的 wwwroot/hot_update_res，提取后浏览器端可直接热更加载，无需额外拷贝。</summary>
+        /// <summary>热更新产物目录（仅供参考/UI 展示，实际由 kfc 默认输出到 &lt;PackRootPath&gt;\hot_update_res）。
+        /// kfc 的 outDir 默认即相对内容工程根的 "hot_update_res"，与 raw 子目录同级，所以打包工具默认就在
+        /// &lt;PackRootPath&gt;/raw 的同级生成 &lt;PackRootPath&gt;/hot_update_res，无需在此配置绝对路径。
+        /// 客户端从 &lt;baseUrl&gt;/hot_update_res 拉取 version.manifest 与 *.web.lib（见 WebGame.Mir2.MonoGame.Client 的 MirGame.cs / Shims/BrowserResource.cs）。</summary>
         public string DestinationPath { get; set; } =
-            @"D:\OpenSource\KFramework.WebGame\KFramework.Mir\WebGame.Mir2\WebGame.Mir2.MonoGame.Client\wwwroot\hot_update_res";
+            @"D:\OpenSource\KFramework.WebGame\KFramework.Mir\WebGame.Mir2\Mir2Res\hot_update_res";
 
         public string MinimapLibPath { get; set; } = @"D:\OpenSource\Crystal\Build\Client\Debug\Data\mmap.Lib";
         public string MirDBPath { get; set; } = @"D:\OpenSource\Crystal\Build\Server\Debug\Server.MirDB";

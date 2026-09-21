@@ -27,10 +27,6 @@
     <ProjectReference Include="..\..\..\KFramework.WebGame\KFramework.MonoGame\KFramework.MonoGame.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Content\" />
-  </ItemGroup>
-
   <!-- 全局 using（global using MirEngine; + JSExport/JSImport）由本工程 Shims/GlobalUsings.cs 提供。 -->
 
   <!-- 引擎浏览器层（KFramework.TSEngine）编译产物 dist/jsengine 整目录复制到 wwwroot/jsengine。
