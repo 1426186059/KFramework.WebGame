@@ -156,20 +156,17 @@ namespace WebGame.Mir2.MonoGame.Client
             {
                 case MouseCursor.Attack:
                 case MouseCursor.AttackRed:
-                    name = "attack";
+                    name = MouseCursorFunc.Default;
                     break;
                 case MouseCursor.NPCTalk:
                 case MouseCursor.Upgrade:
-                    name = "npc";
+                    name = MouseCursorFunc.Pointer;
                     break;
                 case MouseCursor.TextPrompt:
-                    name = "text";
-                    break;
-                case MouseCursor.Trash:
-                    name = "trash";
+                    name = MouseCursorFunc.Pointer;
                     break;
                 default:
-                    name = "default";
+                    name = MouseCursorFunc.Default;
                     break;
             }
 

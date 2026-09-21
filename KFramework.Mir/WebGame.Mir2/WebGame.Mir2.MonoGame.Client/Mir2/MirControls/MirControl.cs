@@ -305,7 +305,7 @@ namespace Client.MirControls
         public EAnchorType Anchor { get; set; } = EAnchorType.None;
 
 
-        private Point _AnchorPos;
+        private Point _AnchorPos = Point.Empty;
         /// <summary>相对锚点的固定偏移，用于"贴边/居中后再偏移"这类布局。</summary>
         public Point AnchorPos
         {
