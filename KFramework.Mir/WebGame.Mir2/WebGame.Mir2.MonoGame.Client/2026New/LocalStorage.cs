@@ -1,6 +1,4 @@
 using KFramework.MonoGame;
-using System;
-using System.Threading.Tasks;
 
 /// <summary>
 /// 浏览器 localStorage 键值存储封装（底层走 KFramework.MonoGame.JSBind_LocalStorage，module: "localstorage"）。
