@@ -138,7 +138,7 @@ public sealed class CanvasTestScene : TestSceneBase
         y += DrawLine(batch, Font, $"DOM id：{Window.CanvasId} / 存在：{Window.Canvas.Exists}", new Vector2(x, y), Color.LightGray);
         y += DrawLine(batch, Font, $"画布 Rect：({Window.Canvas.Rect.X}, {Window.Canvas.Rect.Y}) {Window.Canvas.Rect.Width}×{Window.Canvas.Rect.Height}（HTML 元素实际矩形）",
                       new Vector2(x, y), new Color(150, 220, 255));
-        y += DrawLine(batch, Font, $"浏览器视口：{viewport.X} x {viewport.Y}（居中算法用的就是它）", new Vector2(x, y), Color.LightGray);
+        y += DrawLine(batch, Font, $"HTML 页面尺寸：{pageSize.X} x {pageSize.Y}（居中算法用的就是它）", new Vector2(x, y), Color.LightGray);
         y += DrawLine(batch, Font, $"可设最大尺寸：{pageSize.X} x {pageSize.Y}（超出就跑到可见区域外了）", new Vector2(x, y), Color.LightGray);
         y += DrawLine(batch, Font, $"画布 CSS：{(int)Device.CssSize.X} x {(int)Device.CssSize.Y}", new Vector2(x, y), Color.LightGray);
         y += DrawLine(batch, Font,

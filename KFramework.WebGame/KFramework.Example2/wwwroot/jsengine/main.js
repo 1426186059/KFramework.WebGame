@@ -5,6 +5,7 @@
 // 因此 _framework 需要用 ../ 回退一级。
 import { dotnet } from '../_framework/dotnet.js';
 import * as gl from './gl.js';
+import * as html5Canvas from './html_canvas.js';
 import * as platform from './platform.js';
 import * as audio from './audio.js';
 import * as text from './text.js';
@@ -15,6 +16,9 @@ import * as inputKeyboard from './input_keyboard.js';
 import * as inputMouse from './input_mouse.js';
 import * as inputTouch from './input_touch.js';
 import * as net from './net_websocket.js';
+import * as inputOverlay from './input_overlay.js';
+import * as cursor from './cursor.js';
+import * as localstorage from './storage_local.js';
 function findHost(exports) {
     if (!exports)
         return undefined;
@@ -44,6 +48,7 @@ const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotne
 // 注册 C# [JSImport] 使用的模块。模块名必须与 C# 中 [JSImport("函数名", "模块名")] 一致，
 // 且函数名不带点号（.NET 会把点号当嵌套路径解析）。
 setModuleImports('gl', gl);
+setModuleImports('canvas', html5Canvas);
 setModuleImports('platform', platform);
 setModuleImports('audio', audio);
 setModuleImports('text', text);
@@ -54,6 +59,9 @@ setModuleImports('input_keyboard', inputKeyboard);
 setModuleImports('input_mouse', inputMouse);
 setModuleImports('input_touch', inputTouch);
 setModuleImports('net_websocket', net);
+setModuleImports('input_overlay', inputOverlay);
+setModuleImports('cursor', cursor);
+setModuleImports('localstorage', localstorage);
 const config = getConfig();
 // 网络层：把浏览器 WebSocket 事件推回对应的 C# 绑定
 try {
@@ -73,6 +81,26 @@ try {
 }
 catch (e) {
     console.warn('[main] 网络层导出未就绪:', e);
+}
+// 原生文本输入覆盖层：把 DOM <input> 的 input / Enter / blur 事件经 [JSExport] 回调推回
+// KFramework.MonoGame.JSBind_InputOverlay，驱动登录/输入框获得焦点、文本同步与回车确认。
+try {
+    const kf = (await getAssemblyExports('KFramework.MonoGame'));
+    const ov = kf?.KFramework?.MonoGame?.JSBind_InputOverlay;
+    if (ov) {
+        inputOverlay.setHandlers({
+            onValueChanged: (v) => ov.OnValueChanged(v),
+            onEnter: () => ov.OnEnter(),
+            onBlur: () => ov.OnBlur(),
+        });
+        console.log('[main] 已接入原生文本输入覆盖层');
+    }
+    else {
+        console.warn('[main] 文本输入覆盖层导出未找到: JSBind_InputOverlay');
+    }
+}
+catch (e) {
+    console.warn('[main] 文本输入覆盖层导出未就绪:', e);
 }
 /**
  * 帧回调 JSBind_GameHost.Frame 定义在 KFramework.MonoGame 程序集里，
