@@ -8,8 +8,16 @@ namespace MirEngine
     // 不再自行维护 HttpClient，也不再提供会冻结主线程的同步 GetBytes。
     public class BrowserResource
     {
-        // 指向资源服务器（如 http://127.0.0.1:5080/）的 ContentManager，由 CMain.Init 经 Configure 注入。
+        // 默认资源 lib（原始 .Lib 等）走自建 Web 服务器（如 http://127.0.0.1:5080/，根=Crystal Build），
+        // 由 CMain.Init 经 Configure 注入。松加载按 BaseAddress 根取资源，ContentManager.root 仅作占位。
         public static ContentManager Content { get; private set; }
+
+        // 同 Content（默认 lib 通道），保留别名以便旧调用。
+        public static ContentManager LibContent => Content;
+
+        // AssetBundle（hot_update_res，由 kfc 打包）走独立服务器（如 http://127.0.0.1:5081/，其根目录本身就是 hot_update_res），
+        // 经 KFramework.MonoGame 内容加载器（AssetBundleManager）加载。供后续把 .web.lib 接入资源系统时取用。
+        public static ContentManager BundleContent { get; private set; }
 
         // 确认缺失（404 等）的资源拉黑：同一个文件每次取用都会重发一次请求、再走一遍
         // "分片失败 → 回退整文件"，控制台与网络面板被同一条错误反复刷屏（典型：Sound/1014-6.wav）。
@@ -55,18 +63,35 @@ namespace MirEngine
             return path;
         }
 
-        private static string _baseUrl = "/";
-        public static string BaseUrl
+        private static string _libBaseUrl = "/";
+        public static string LibBaseUrl
         {
-            get => _baseUrl;
-            set => _baseUrl = value;
+            get => _libBaseUrl;
+            set => _libBaseUrl = value;
         }
 
-        // 注入资源服务器地址，并创建一个指向它的 ContentManager 供 GetBytesAsync 使用。
-        public static void Configure(string baseUrl)
+        private static string _bundleBaseUrl = "/";
+        public static string BundleBaseUrl
         {
-            BaseUrl = baseUrl;
-            Content = new ContentManager("hot_update_res", baseUrl);
+            get => _bundleBaseUrl;
+            set => _bundleBaseUrl = value;
+        }
+
+        /// <summary>
+        /// 注入两个 HTTP 资源服务器地址：
+        ///   libBaseUrl   —— 默认资源 lib 的自建 Web 服务器（:5080，根=Crystal Build），松加载原始 .Lib；
+        ///   bundleBaseUrl—— AssetBundle(hot_update_res) 的独立服务器（:5081，根=Mir2Res\hot_update_res），内容加载器取包。
+        /// AssetBundle 服务器的根目录本身就是 hot_update_res，因此 BundleContent 的 ContentManager.root 传空串，
+        /// 否则 URL 会变成 /hot_update_res/hot_update_res 双重前缀。
+        /// </summary>
+        public static void Configure(string libBaseUrl, string bundleBaseUrl)
+        {
+            _libBaseUrl = libBaseUrl;
+            _bundleBaseUrl = bundleBaseUrl;
+            // 默认 lib 通道：root 仅占位（松加载忽略），实际按 libBaseUrl 根取资源
+            Content = new ContentManager("hot_update_res", libBaseUrl);
+            // AssetBundle 通道：服务器根已是 hot_update_res，root 必须为空
+            BundleContent = new ContentManager("", bundleBaseUrl);
         }
 
         public static void Log(string msg)

@@ -77,10 +77,10 @@ namespace WebGame.Mir2.MonoGame.Client
             if (_bootstrapped) return;
             _bootstrapped = true;
 
-            // 资源基址：指向 Crystal 客户端资源目录对应的本地 HTTP 服务
-            // （D:\OpenSource\Crystal\Build\Client\Debug），避免把 GB 级资源复制进 wwwroot。
-            // 同时创建一个指向它的 ContentManager，统一经 KFramework.MonoGame 异步加载远程资源。
-            MirEngine.BrowserResource.Configure("http://127.0.0.1:5080/");
+            // 两个 HTTP 资源服务器（见 Tools\资源服务器\start-assets.bat）：
+            //   :5080 -> 默认资源 lib（Crystal 客户端资源目录，原始 .Lib），走自建 Web 服务器（松加载）
+            //   :5081 -> AssetBundle（Mir2Res\hot_update_res，由 kfc 打包），走 KFramework.MonoGame 内容加载器
+            MirEngine.BrowserResource.Configure("http://127.0.0.1:5080/", "http://127.0.0.1:5081/");
 
             await Settings.Load();
             await CMain.InputKeys.LoadAsync().ConfigureAwait(false);
