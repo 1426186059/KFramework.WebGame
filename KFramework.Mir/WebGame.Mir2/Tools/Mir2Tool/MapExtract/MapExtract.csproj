@@ -13,7 +13,6 @@
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="4.152.0" />
     <ProjectReference Include="..\MirLib\MirLib.csproj" />
     <!-- 共享的 .Lib 读取能力（MLibraryV2），用于从客户端资源按需抽素材 -->
-    <ProjectReference Include="..\WebLib\WebLib.csproj" />
   </ItemGroup>
 
 </Project>

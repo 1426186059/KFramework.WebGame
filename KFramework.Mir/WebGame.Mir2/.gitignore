@@ -431,3 +431,7 @@ FodyWeavers.xsd
 /.playwright-cli/
 
 */wwwroot/MyRes/
+
+# 本地蒸馏/打包资源根目录（MapExtract2 的 kfc --root：含 raw 蒸馏产物与生成的内容，
+# 由工具产生、体积大，不入库）
+Mir2Res/
