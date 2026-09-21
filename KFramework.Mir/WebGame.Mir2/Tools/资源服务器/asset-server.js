@@ -5,8 +5,9 @@
 //   node asset-server.js --port 5080 --root "D:\OpenSource\Crystal\Build\Client\Debug"
 //   node asset-server.js --port 5081 --root "D:\OpenSource\Zircon\Debug\Client"
 //
-// 路径映射：客户端请求 "MyRes/Data/xxx.lib"，源目录下直接是 "Data/xxx.lib"，
-// 因此把 /MyRes/ 前缀剥离后再映射到 root。
+// 路径映射（root = Mir2Res）：
+//   /MyRes/...         -> /hot_update_res/...   兼容旧客户端把资源挂 MyRes 前缀的写法
+//   其余路径（/Map/...、/hot_update_res/...、未来 /UI/...）原样相对 root 解析
 // 特性：CORS（跨域必需）、Range（为按需分段加载预留）、防目录穿越。
 
 const http = require('http');
@@ -64,7 +65,7 @@ const server = http.createServer((req, res) => {
     return res.end('bad request');
   }
 
-  pathname = pathname.replace(/^\/MyRes\//i, '/');
+  pathname = pathname.replace(/^\/MyRes\//i, '/hot_update_res/');
   const filePath = path.resolve(rootResolved, '.' + path.normalize(pathname));
 
   if (!filePath.startsWith(rootResolved)) {
@@ -112,5 +113,5 @@ const server = http.createServer((req, res) => {
 
 server.listen(port, '127.0.0.1', () => {
   console.log('[assets] root = ' + rootResolved);
-  console.log('[assets] url  = http://127.0.0.1:' + port + '/   (/MyRes/ -> root)');
+  console.log('[assets] url  = http://127.0.0.1:' + port + '/   (/Map/ -> root/Map, /hot_update_res/ -> root/hot_update_res, /MyRes/ -> /hot_update_res/)');
 });

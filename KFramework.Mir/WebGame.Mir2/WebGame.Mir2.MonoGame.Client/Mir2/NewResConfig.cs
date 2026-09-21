@@ -15,10 +15,11 @@ namespace WebGame.Mir2.MonoGame.Client
     public static class NewResConfig
     {
         /// <summary>地图资源(http)根地址，须以 '/' 结尾。指向“Mir2Res 作为 http 根目录”的地址。
-        /// 例：http://localhost:5081/ → 实际文件 http://localhost:5081/Map/0/WemadeMir2/Tiles.Lib
+        /// 例：http://127.0.0.1:5081/ → 实际文件 http://127.0.0.1:5081/Map/0/WemadeMir2/Tiles.Lib
         /// （其中 "0" 为地图名，"WemadeMir2/Tiles" 为 Lib 在原 Data/Map/ 下的相对子路径）。
-        /// 部署时按实际 http 服务器修改（把 Mir2Res 挂为根目录）。</summary>
-        public static string MapResourceBaseUrl = "http://localhost:5081/";
+        /// 部署时按实际 http 服务器修改（把 Mir2Res 挂为根目录）。注意用 127.0.0.1 而非 localhost，
+        /// 避免浏览器把 localhost 解析成 IPv6(::1) 而资源服务器只绑了 127.0.0.1 导致连不上。</summary>
+        public static string MapResourceBaseUrl = "http://127.0.0.1:5081/";
 
         /// <summary>总开关：false 时全部走默认 lib 通道，便于一键回退。</summary>
         public static bool Enabled = true;
@@ -58,6 +59,11 @@ namespace WebGame.Mir2.MonoGame.Client
         public static async Task<byte[]?> GetRemoteLibAsync(string relPathWithoutExt)
         {
             if (!Enabled || !RemoteLibEnabled) return null;
+            // 仅地图图片库（路径以 data/map/ 开头）才走远程 :5081；该服务器只部署了地图蒸馏产物
+            // （Map/<地图名>/Data/Map/...），界面/角色/物品/音效等库并不在上面。若对非地图库也先试远程，
+            // 会干等几十秒超时（远程服务器无对应文件）再回退本地，反而更慢且大量刷 404。
+            string norm = (relPathWithoutExt ?? "").Replace('\\', '/').ToLowerInvariant();
+            if (!norm.StartsWith("data/map/")) return null;
             try
             {
                 string url = BuildLibUrl(relPathWithoutExt);

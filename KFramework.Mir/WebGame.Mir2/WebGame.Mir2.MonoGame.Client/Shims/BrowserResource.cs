@@ -1,6 +1,4 @@
 using KFramework.MonoGame;
-using System.Net;
-using System.Net.Http.Headers;
 
 namespace MirEngine
 {
@@ -15,8 +13,9 @@ namespace MirEngine
         // 同 Content（默认 lib 通道），保留别名以便旧调用。
         public static ContentManager LibContent => Content;
 
-        // AssetBundle（hot_update_res，由 kfc 打包）走独立服务器（如 http://127.0.0.1:5081/，其根目录本身就是 hot_update_res），
-        // 经 KFramework.MonoGame 内容加载器（AssetBundleManager）加载。供后续把 .web.lib 接入资源系统时取用。
+        // AssetBundle（hot_update_res，由 kfc 打包）走 :5081 服务器（根=Mir2Res），其 URL 已含 /hot_update_res/ 前缀
+        // （bundleBaseUrl=...:5081/hot_update_res/），经 KFramework.MonoGame 内容加载器（AssetBundleManager）加载。
+        // 地图图片 Lib 蒸馏产物（Mir2Res/Map/<地图名>/...）也由同一台 :5081 服务器按 /Map/ 类别提供。
         public static ContentManager BundleContent { get; private set; }
 
         // 确认缺失（404 等）的资源拉黑：同一个文件每次取用都会重发一次请求、再走一遍
@@ -30,23 +29,20 @@ namespace MirEngine
 
             try
             {
-                // 分片下载：超大地图片库（Tiles.Lib 数百 MB）若一次性 marshal 成单个 byte[] 会在 WASM 边界失败/返回空。
-                return await Content.LoadBytesChunkedAsync(path).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                Log("[Mir] 分片下载失败，回退整文件: " + path + " " + ex.Message);
-
-                byte[] fallback = null;
-                try { fallback = await Content.LoadBytesAsync(path).ConfigureAwait(false); }
-                catch { }
-
-                if (fallback == null || fallback.Length == 0)
+                // 直接整文件加载（已无超大 Lib，无需分片下载）。
+                byte[] bytes = await Content.LoadBytesAsync(path).ConfigureAwait(false);
+                if (bytes == null || bytes.Length == 0)
                 {
                     _missing.Add(path);
                     Log("[Mir] 资源缺失，后续不再重试: " + path);
                 }
-                return fallback;
+                return bytes;
+            }
+            catch (Exception ex)
+            {
+                _missing.Add(path);
+                Log("[Mir] 资源缺失，后续不再重试: " + path + " " + ex.Message);
+                return null;
             }
         }
 
@@ -80,8 +76,8 @@ namespace MirEngine
         /// <summary>
         /// 注入两个 HTTP 资源服务器地址：
         ///   libBaseUrl   —— 默认资源 lib 的自建 Web 服务器（:5080，根=Crystal Build），松加载原始 .Lib；
-        ///   bundleBaseUrl—— AssetBundle(hot_update_res) 的独立服务器（:5081，根=Mir2Res\hot_update_res），内容加载器取包。
-        /// AssetBundle 服务器的根目录本身就是 hot_update_res，因此 BundleContent 的 ContentManager.root 传空串，
+        ///   bundleBaseUrl—— AssetBundle(hot_update_res) 的服务器（:5081，根=Mir2Res），client 请求 URL 已含 /hot_update_res/ 前缀。
+        /// :5081 根已是 Mir2Res，bundleBaseUrl 已含 /hot_update_res/ 前缀，因此 BundleContent 的 ContentManager.root 传空串，
         /// 否则 URL 会变成 /hot_update_res/hot_update_res 双重前缀。
         /// </summary>
         public static void Configure(string libBaseUrl, string bundleBaseUrl)
@@ -98,50 +94,6 @@ namespace MirEngine
         {
             try { Console.WriteLine(msg); }
             catch { }
-        }
-        
-        public static async Task<byte[]> LoadBytesChunkedAsync(HttpClient _http, string relativePath, int chunkSize = 16 * 1024 * 1024, CancellationToken cancellationToken = default)
-        {
-            long cs = Math.Max(1, (long)chunkSize);
-            try
-            {
-                using var firstReq = new HttpRequestMessage(HttpMethod.Get, relativePath);
-                firstReq.Headers.Range = new RangeHeaderValue(0, cs - 1);
-                using var firstResp = await _http.SendAsync(firstReq, cancellationToken).ConfigureAwait(false);
-
-                // 服务器不支持 Range：退化为整文件下载。
-                if (firstResp.StatusCode != HttpStatusCode.PartialContent)
-                    return await _http.GetByteArrayAsync(relativePath, cancellationToken).ConfigureAwait(false);
-
-                long total = firstResp.Content.Headers.ContentRange?.Length ?? 0;
-                // 无总大小或超出单个 byte[] 上限（~2GB）：退化为整文件下载。
-                if (total <= 0 || total > int.MaxValue)
-                    return await _http.GetByteArrayAsync(relativePath, cancellationToken).ConfigureAwait(false);
-
-                var result = new byte[(int)total];
-                byte[] first = await firstResp.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                if (first.Length > 0) Buffer.BlockCopy(first, 0, result, 0, first.Length);
-                long pos = first.Length;
-
-                while (pos < total)
-                {
-                    long end = Math.Min(pos + cs, total) - 1;
-                    using var req = new HttpRequestMessage(HttpMethod.Get, relativePath);
-                    req.Headers.Range = new RangeHeaderValue(pos, end);
-                    using var resp = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
-                    if (!resp.IsSuccessStatusCode) break;
-                    byte[] chunk = await resp.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                    if (chunk.Length == 0) break;
-                    Buffer.BlockCopy(chunk, 0, result, (int)pos, chunk.Length);
-                    pos += chunk.Length;
-                }
-                return result;
-            }
-            catch (Exception)
-            {
-                // 分片失败（如 Range 异常）：最后尝试整文件下载兜底。
-                return await _http.GetByteArrayAsync(relativePath, cancellationToken).ConfigureAwait(false);
-            }
         }
     }
 }
