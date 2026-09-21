@@ -293,22 +293,14 @@ namespace MapExtract2.Services
 
                 string clientRoot = _config.ClientRootPath.TrimEnd('\\', '/');
 
-                // 准备 kfc 的内容工程根目录：蒸馏出的文件写入 <root>/raw/<地图名>/...
-                // 默认用稳定的 Mir2Res（便于检查/手动重新打包）；留空则回退到临时目录（用后删除）。
+                // 热更资源根目录：直接落到 Mir2Res/Map/ 下（Mir2Res 作为 http 根时即为 /Map/... 的 URL）。
+                // 工具侧仅把“图片 Lib”蒸馏出来，不打包、不提取 .map。
                 bool isTempRoot = string.IsNullOrWhiteSpace(_config.PackRootPath);
-                string root = isTempRoot
-                    ? Path.Combine(Path.GetTempPath(), "MapExtract2_kfc_" + Guid.NewGuid().ToString("N"))
+                string resRoot = isTempRoot
+                    ? Path.Combine(Path.GetTempPath(), "MapExtract2_res_" + Guid.NewGuid().ToString("N"))
                     : _config.PackRootPath.TrimEnd('\\', '/');
-                Directory.CreateDirectory(root);
-                string rawDir = Path.Combine(root, "raw");
-                // 热更新产物目录：与 raw 同级。kfc 的 outDir 默认即相对 root 的 "hot_update_res"，
-                // 打包工具默认就在 <root>/hot_update_res 生成（见 KFramework.Content.Cli 的 BuildConfig），无需额外配置绝对路径。
-                string hotUpdateDir = Path.Combine(root, "hot_update_res");
-                result.DestinationPath = hotUpdateDir;
-                // 只清掉上一次蒸馏产物，保留 root 本身（含 build.config.json 等）
-                if (Directory.Exists(rawDir)) { try { Directory.Delete(rawDir, true); } catch { } }
-                Directory.CreateDirectory(rawDir);
-                var mapFolders = new List<string>();
+                Directory.CreateDirectory(resRoot);
+                result.DestinationPath = resRoot;
 
                 try
                 {
@@ -323,12 +315,11 @@ namespace MapExtract2.Services
                             continue;
                         }
 
-                        AppendLog(log, $"[{i + 1}/{mapNames.Count}] 开始蒸馏 {mapName}");
+                        AppendLog(log, $"[{i + 1}/{mapNames.Count}] 开始提取 {mapName}");
                         try
                         {
-                            if (DistillOneMapToDisk(clientRoot, mapFile, mapName, rawDir, log, out var stat))
+                            if (DistillOneMapToDisk(clientRoot, mapFile, mapName, resRoot, log, out var stat))
                             {
-                                mapFolders.Add(mapName);
                                 perMap[mapName] = (stat.LibCount, stat.ImageCount, stat.Skipped);
                                 success++;
                             }
@@ -346,66 +337,43 @@ namespace MapExtract2.Services
                         }
                     }
 
-                    if (mapFolders.Count == 0)
+                    if (perMap.Count == 0)
                     {
                         result.Ok = fail == 0;
                         result.Success = success;
                         result.Fail = fail;
                         result.Failed = failed;
-                        result.Message = "没有可蒸馏的地图。";
+                        result.Message = "没有可提取的地图。";
                         return result;
                     }
-
-                    // 写出 kfc 的内容工程配置，并调用 kfc 打包 AssetBundle
-                    var buildCfg = new
-                    {
-                        rawDir = "raw",
-                        AssetBundleDir = mapFolders,
-                        splitMode = "whole",
-                        autoAtlas = false,
-                        // 相对 root 的默认 outDir（hot_update_res），与 raw 同级；沿用 kfc 默认行为
-                        outDir = "hot_update_res",
-                        deploy = "none",
-                    };
-                    File.WriteAllText(Path.Combine(root, "build.config.json"),
-                        JsonSerializer.Serialize(buildCfg, new JsonSerializerOptions { WriteIndented = true }));
-
-                    AppendLog(log, $"调用 kfc 打包 {mapFolders.Count} 张地图 → {hotUpdateDir}");
-                    RunKfc(root, hotUpdateDir, log);
 
                     // 报告
                     var report = new StringBuilder();
                     report.AppendLine("地图, 用到的库数, 用到的图数, 缺失/跳过的库");
-                    foreach (var m in mapFolders)
-                    {
-                        if (perMap.TryGetValue(m, out var st))
-                            report.AppendLine($"{m}, {st.libs}, {st.imgs}, {st.skipped}");
-                    }
-                    File.WriteAllText(Path.Combine(hotUpdateDir, "report.txt"), report.ToString());
+                    foreach (var m in perMap)
+                        report.AppendLine($"{m.Key}, {m.Value.libs}, {m.Value.imgs}, {m.Value.skipped}");
+                    File.WriteAllText(Path.Combine(resRoot, "report.txt"), report.ToString());
+                    AppendLog(log, $"提取完成，图片 Lib 已写入 {resRoot}");
 
-                    AppendLog(log, $"清单已写出: {ManifestFile}");
-
-                    // 缓存每图产物信息供 /api/result
-                    foreach (var m in mapFolders)
-                        if (perMap.TryGetValue(m, out var st))
-                            _lastResults[m] = BuildResultForMap(m, st.libs, st.imgs, st.skipped);
+                    foreach (var m in perMap)
+                        _lastResults[m.Key] = BuildResultForMap(m.Key, m.Value.libs, m.Value.imgs, m.Value.skipped);
                 }
                 catch (Exception ex)
                 {
-                    AppendLog(log, $"[ERROR] 打包失败: {ex.Message}");
+                    AppendLog(log, $"[ERROR] 提取失败: {ex.Message}");
                     fail++;
                 }
                 finally
                 {
-                    // 稳定的 Mir2Res 根保留（含 raw 蒸馏产物，便于检查）；仅临时回退目录用后删除
-                    if (isTempRoot) TryDelete(root);
+                    // 稳定的 Mir2Res 根保留（含 Map/ 下图片 Lib，便于检查）；仅临时回退目录用后删除
+                    if (isTempRoot) TryDelete(resRoot);
                 }
 
                 result.Ok = fail == 0;
                 result.Success = success;
                 result.Fail = fail;
                 result.Failed = failed;
-                result.Message = $"批量蒸馏 + 打包完成！\n成功: {success} 张, 失败: {fail} 张\n输出目录: {hotUpdateDir}";
+                result.Message = $"批量提取完成！\n成功: {success} 张, 失败: {fail} 张\n输出目录: {resRoot}";
                 if (failed.Count > 0)
                     result.Message += "\n\n失败列表:\n" + string.Join("\n", failed);
                 return result;
@@ -420,11 +388,11 @@ namespace MapExtract2.Services
         }
 
         /// <summary>
-        /// 蒸馏单张地图：统计用到的 (库,索引)，蒸馏每个 Lib，把蒸馏版 Lib 按客户端相对路径
-        /// 写到 <paramref name="rawDir"/>/&lt;mapName&gt;/Data/Map/...，并把 .map 写到 Map/。
-        /// 返回统计；真正打包交给 kfc。
+        /// 蒸馏单张地图用到的图片 Lib，按客户端相对路径去掉 "Data/Map/" 前缀后写到
+        /// <paramref name="resRoot"/>/Map/&lt;地图名&gt;/...（即 Mir2Res/Map/0/WemadeMir2/Tiles.Lib）；不写 .map。
+        /// 返回统计。
         /// </summary>
-        private bool DistillOneMapToDisk(string clientRoot, string mapFilePath, string mapName, string rawDir, List<string> log, out DistillStat stat)
+        private bool DistillOneMapToDisk(string clientRoot, string mapFilePath, string mapName, string resRoot, List<string> log, out DistillStat stat)
         {
             stat = new DistillStat();
             if (!File.Exists(mapFilePath))
@@ -455,15 +423,15 @@ namespace MapExtract2.Services
             }
 
             Dictionary<int, SortedSet<int>> used = MapUsageExtractor.Extract(mr, _config.DoorFrameSafety);
-            string mapOutDir = Path.Combine(rawDir, mapName);
 
             int libCount = 0, imageCount = 0;
             var missing = new List<string>();
+            const string mapPrefix = "Data/Map/";
 
             foreach (var kv in used)
             {
                 int libIndex = kv.Key;
-                string? rel = MapLibPathTable.GetRelPath(libIndex);
+                string? rel = MapLibPathTable.GetRelPath(libIndex); // 如 "Data/Map/WemadeMir2/Tiles"
                 if (rel == null) { missing.Add($"lib#{libIndex}(无路径)"); continue; }
 
                 string srcLib = Path.Combine(clientRoot, rel + ".Lib");
@@ -480,25 +448,22 @@ namespace MapExtract2.Services
                     return false;
                 }
 
-                string outPath = Path.Combine(mapOutDir, rel + ".Lib");
+                // 落到 Mir2Res/Map/<地图名>/ 下：resRoot 即 Mir2Res，需显式补一层 "Map"，
+                // 去掉 "Data/Map/" 前缀得到 "WemadeMir2/Tiles"，
+                // 即 Mir2Res/Map/0/WemadeMir2/Tiles.Lib（http 根=Mir2Res 时对应 URL /Map/0/WemadeMir2/Tiles.Lib）。
+                string relNoDataMap = rel.StartsWith(mapPrefix, StringComparison.OrdinalIgnoreCase) ? rel.Substring(mapPrefix.Length) : rel;
+                string outPath = Path.Combine(resRoot, "Map", mapName, relNoDataMap + ".Lib");
                 Directory.CreateDirectory(Path.GetDirectoryName(outPath)!);
                 File.WriteAllBytes(outPath, distilled);
                 libCount++;
                 imageCount += kv.Value.Count;
             }
 
-            if (_config.WriteRawMap)
-            {
-                string mapOut = Path.Combine(mapOutDir, "Map", mapName + ".map");
-                Directory.CreateDirectory(Path.GetDirectoryName(mapOut)!);
-                File.WriteAllBytes(mapOut, mapBytes);
-            }
-
             stat.LibCount = libCount;
             stat.ImageCount = imageCount;
             stat.Skipped = string.Join(";", missing);
 
-            AppendLog(log, $"[{mapName}] 蒸馏完成: {libCount} 库, {imageCount} 图" +
+            AppendLog(log, $"[{mapName}] 提取完成: {libCount} 库, {imageCount} 图" +
                            (missing.Count > 0 ? $"；缺失/跳过: {stat.Skipped}" : ""));
             return true;
         }
@@ -509,60 +474,26 @@ namespace MapExtract2.Services
             catch { }
         }
 
-        /// <summary>调用 kfc (KFramework.Content.Cli) 把临时内容工程打包成 AssetBundle。</summary>
-        private void RunKfc(string stagingRoot, string dest, List<string> log)
-        {
-            Directory.CreateDirectory(dest);
-            string kfc = _config.KfcPath;
-            if (string.IsNullOrWhiteSpace(kfc))
-                throw new InvalidOperationException("未配置 KfcPath（kfc 工具路径）。");
-
-            ProcessStartInfo psi;
-            if (kfc.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
-            {
-                psi = new ProcessStartInfo(kfc, $"--root \"{stagingRoot}\" --out \"{dest}\"");
-            }
-            else
-            {
-                psi = new ProcessStartInfo("dotnet", $"run --project \"{kfc}\" -- --root \"{stagingRoot}\" --out \"{dest}\"");
-            }
-            psi.RedirectStandardOutput = true;
-            psi.RedirectStandardError = true;
-            psi.UseShellExecute = false;
-            psi.CreateNoWindow = true;
-
-            using var p = Process.Start(psi)
-                ?? throw new InvalidOperationException("无法启动 kfc（" + kfc + "）。请确认路径是否正确。");
-            string std = p.StandardOutput.ReadToEnd();
-            string err = p.StandardError.ReadToEnd();
-            p.WaitForExit();
-
-            foreach (var line in std.Split('\n')) if (line.Trim().Length > 0) AppendLog(log, line.Trim());
-            foreach (var line in err.Split('\n')) if (line.Trim().Length > 0) AppendLog(log, "[kfc] " + line.Trim());
-
-            if (p.ExitCode != 0)
-                throw new InvalidOperationException("kfc 退出码 " + p.ExitCode + (err.Length > 0 ? "：\n" + err : ""));
-        }
-
         private MapResultDto BuildResultForMap(string mapName, int libs, int imgs, string skipped)
         {
-            // 产物目录与 raw 同级：<PackRootPath>/hot_update_res（kfc 默认 outDir）
-            string outDir = string.IsNullOrWhiteSpace(_config.PackRootPath)
-                ? Path.Combine(Path.GetTempPath(), "hot_update_res")
-                : Path.Combine(_config.PackRootPath.TrimEnd('\\', '/'), "hot_update_res");
+            // 产物目录：Mir2Res/Map/（图片 Lib 直接平铺在此，按 libName 组织子目录）
+            string resRoot = string.IsNullOrWhiteSpace(_config.PackRootPath)
+                ? Path.Combine(Path.GetTempPath(), "MapExtract2_res")
+                : _config.PackRootPath.TrimEnd('\\', '/');
             var dto = new MapResultDto
             {
                 Map = mapName,
-                OutputDir = outDir,
+                OutputDir = resRoot,
                 LibCount = libs,
                 ImageCount = imgs,
                 Skipped = skipped,
-                Manifest = File.Exists(Path.Combine(outDir, ManifestFile)),
+                Manifest = false,
             };
-            if (Directory.Exists(outDir))
+            string mapDir = Path.Combine(resRoot, "Map");
+            if (Directory.Exists(mapDir))
             {
-                foreach (var f in Directory.GetFiles(outDir, mapName + ".*.web.lib", SearchOption.TopDirectoryOnly))
-                    dto.Bundles.Add(new BundleInfo { Name = Path.GetFileName(f), Size = new FileInfo(f).Length });
+                foreach (var f in Directory.GetFiles(mapDir, "*.Lib", SearchOption.AllDirectories))
+                    dto.Bundles.Add(new BundleInfo { Name = Path.GetRelativePath(resRoot, f), Size = new FileInfo(f).Length });
             }
             dto.Exists = dto.Bundles.Count > 0;
             return dto;

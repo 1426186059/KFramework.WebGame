@@ -1,4 +1,5 @@
 ﻿using WebGame.Mir2.MonoGame.Client;
+using MirEngine;
 
 namespace Client.MirObjects
 {
@@ -147,17 +148,17 @@ namespace Client.MirObjects
         // 与 MLibrary 的按需异步加载一致 —— 调用方等待结果，不阻塞主线程。
         public async Task LoadAsync()
         {
-            // 浏览器端（WASM）没有本地文件系统，File.Exists 恒为 false。
-            // 本地读取失败时改从资源服务器按 URL 异步取字节，
-            // 否则会静默退化成 1000x1000 全空地图 —— 表现为"大地图不显示、点击人物不走"。
-            if (File.Exists(FileName))
-            {
-                Bytes = File.ReadAllBytes(FileName);
-            }
-            else
-            {
-                Bytes = await MirEngine.BrowserResource.GetBytesAsync(FileName).ConfigureAwait(false);
-            }
+            // 纯浏览器环境没有本地文件系统，地图字节统一从资源服务器按 URL 异步取；
+            // 若取不到会静默退化成 1000x1000 全空地图 —— 表现为"大地图不显示、点击人物不走"。
+
+            // 标记该地图的图片 Lib 是否走远程（提取到 Mir2Res/Map/ 的 URL 直链）：
+            // 命中则置开关，后续 PreloadMapLibraries 加载 Lib 时优先从远程 URL 取；.map 本身不提取，仍走默认通道。
+            string mapName = DeriveMapName(FileName);
+            NewResConfig.RemoteLibEnabled = true;
+            NewResConfig.CurrentMapName = mapName;
+            MirEngine.BrowserResource.Log($"[Map] 地图 {mapName} 远程Lib={(NewResConfig.RemoteLibEnabled ? "开" : "关")}");
+
+            Bytes = await MirEngine.BrowserResource.GetBytesAsync(FileName).ConfigureAwait(false);
 
             if (Bytes == null || Bytes.Length == 0)
             {
@@ -177,6 +178,14 @@ namespace Client.MirObjects
 
             MirEngine.BrowserResource.Log("[Map] 地图已读取: " + FileName + " 字节数=" + Bytes.Length);
             Parse();
+        }
+
+        // 从完整 .map 路径反推地图名（取文件名、去 .map 后缀），与 MapExtract2 工具侧
+        // Path.GetFileNameWithoutExtension(mapFile) 得到的 mapName 一致——客户端据此查 NewResConfig.MapLibsRemote
+        // 判断是否走远程 Lib（图片 Lib 已提取到 Mir2Res/Map/<地图名>/ 下）。
+        private static string DeriveMapName(string fileName)
+        {
+            return Path.GetFileNameWithoutExtension(fileName).Replace('\\', '/');
         }
 
         // 已持有字节后按格式解析（原 initiate 的后半段）。

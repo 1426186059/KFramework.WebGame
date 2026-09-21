@@ -602,6 +602,23 @@ namespace Client.MirGraphics
                     return;
                 }
 
+                // 先尝试从远程（Mir2Res/Map/）按 URL 直链取（走远程的地图，其图片 Lib 已提取到该处）；命中则跳过默认通道。
+                if (NewResConfig.RemoteLibEnabled)
+                {
+                    string rel = Path.ChangeExtension(_fileName, null); // 如 "Data/Map/WemadeMir2/Tiles"
+                    byte[]? remote = await NewResConfig.GetRemoteLibAsync(rel);
+                    if (remote != null && remote.Length > 0)
+                    {
+                        BrowserResource.Log($"[Mir][lib] 从远程加载 {_fileName}");
+                        ParseIndex(remote);
+                        _loaded = true;
+                        _initialized = true;
+                        BrowserResource.Log($"[Mir][lib] ok(remote): {_fileName}（{remote.Length} 字节）");
+                        Libraries.OnLibraryLoaded();
+                        return;
+                    }
+                }
+
                 BrowserResource.Log($"[Mir][lib] load {_fileName}");
                 byte[] bytes = await BrowserResource.GetBytesAsync(_fileName);
                 if (bytes == null || bytes.Length == 0)
