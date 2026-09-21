@@ -99,8 +99,10 @@ export function isMobile() {
 export function getBaseUri() {
     return document.baseURI || window.location.href;
 }
-
-/** 在浏览器中打开一个 URL（新标签）。用于跳转支付页、官网等外部链接。 */
+/**
+ * 在浏览器中打开一个 URL（新标签）。用于跳转支付页、官网等外部链接。
+ * 注意：浏览器通常只在「用户手势」（如点击）内允许 window.open，否则会被弹窗拦截。
+ */
 export function openUrl(url) {
     window.open(url, "_blank");
 }

@@ -11,7 +11,7 @@ namespace KFramework.MonoGame
             return System.Text.Encoding.UTF8.GetString(data, start, data.Length - start);
         }
 
-        public static async Task<byte[]> DownloadBytesAsync(HttpClient _http, string relativePath, bool useCache, CancellationToken cancellationToken)
+        public static async Task<byte[]> DownloadBytesAsync(HttpClient _http, string relativePath, bool useCache = true, CancellationToken cancellationToken = default)
         {
             using var req = new HttpRequestMessage(HttpMethod.Get, relativePath);
             if (!useCache)

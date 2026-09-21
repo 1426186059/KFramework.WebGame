@@ -99,14 +99,14 @@ namespace KFramework.MonoGame
         #region 松散文件下载（非 Bundle 内的资源，如关卡文本；属异步加载，但不经 AssetBundle）
 
         /// <summary>按页面基址异步下载任意文本（不走内容包，用于关卡等松散文件）。<paramref name="bUseCache"/> 为 false（默认）时禁用浏览器 HTTP 缓存（强制校验），为 true 时允许浏览器正常缓存。</summary>
-        public async Task<string> LoadTextAsync(string relativePath, bool bUseCache = false, CancellationToken cancellationToken = default)
+        public async Task<string> LoadTextAsync(string relativePath, bool bUseCache = true, CancellationToken cancellationToken = default)
         {
             byte[] data = await ContentFunc.DownloadBytesAsync(_http, relativePath, bUseCache, cancellationToken).ConfigureAwait(false);
             return ContentFunc.DecodeUtf8(data);
         }
 
         /// <summary>按页面基址异步下载任意字节流（不走内容包）。<paramref name="bUseCache"/> 为 false（默认）时禁用浏览器 HTTP 缓存（强制校验），为 true 时允许浏览器正常缓存。</summary>
-        public async Task<byte[]> LoadBytesAsync(string relativePath, CancellationToken cancellationToken = default, bool bUseCache = false)
+        public async Task<byte[]> LoadBytesAsync(string relativePath, bool bUseCache = true, CancellationToken cancellationToken = default)
             => await ContentFunc.DownloadBytesAsync(_http, relativePath, bUseCache, cancellationToken).ConfigureAwait(false);
 
         #endregion
@@ -119,7 +119,7 @@ namespace KFramework.MonoGame
         /// 与 <see cref="AssetBundle"/> 上的取资源方法不同，本方法面向「包外松散图片」。
         /// <paramref name="bUseCache"/> 为 false（默认）时禁用浏览器 HTTP 缓存（强制校验），为 true 时允许浏览器正常缓存。
         /// </summary>
-        public async Task<Texture2D> LoadTexture2DAsync(string relativePath, GraphicsDevice device, CancellationToken cancellationToken = default, bool bUseCache = false)
+        public async Task<Texture2D> LoadTexture2DAsync(string relativePath, GraphicsDevice device, bool bUseCache = true, CancellationToken cancellationToken = default)
         {
             byte[] data = await ContentFunc.DownloadBytesAsync(_http, relativePath, bUseCache, cancellationToken).ConfigureAwait(false);
             return await LoadTexture2DAsync(data, device).ConfigureAwait(false);

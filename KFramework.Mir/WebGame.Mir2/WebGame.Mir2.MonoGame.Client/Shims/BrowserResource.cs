@@ -30,7 +30,7 @@ namespace MirEngine
             try
             {
                 // 直接整文件加载（已无超大 Lib，无需分片下载）。
-                byte[] bytes = await Content.LoadBytesAsync(path).ConfigureAwait(false);
+                byte[] bytes = await Content.LoadBytesAsync(path, false).ConfigureAwait(false);
                 if (bytes == null || bytes.Length == 0)
                 {
                     _missing.Add(path);
