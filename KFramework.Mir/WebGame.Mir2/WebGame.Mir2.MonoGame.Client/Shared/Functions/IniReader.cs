@@ -57,7 +57,7 @@ public class InIReader
         return _contents.Count - 1;
     }
 
-    // ---- 浏览器端持久化：整份 ini 作为纯文本存取于 IndexedDB（KFramework.MonoGame.LocalStore） ----
+    // ---- 浏览器端持久化：整份 ini 作为纯文本存取于 localStorage（MirEngine.LocalStorage → JSBind_LocalStorage） ----
     // 文件名即 DB 键；加载为异步操作，须 await LoadAsync() 之后才能读取/写入有效数据。
     private string DbKey => _fileName;
 
@@ -78,7 +78,7 @@ public class InIReader
         if (_loaded) return;
         try
         {
-            string text = await KFramework.MonoGame.LocalStore.GetStringAsync(DbKey).ConfigureAwait(false);
+            string text = await LocalStorage.GetStringAsync(DbKey).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(text))
                 _contents.AddRange(text.Replace("\r\n", "\n").Split('\n'));
         }
@@ -93,7 +93,7 @@ public class InIReader
     {
         try
         {
-            await KFramework.MonoGame.LocalStore.SetStringAsync(DbKey, string.Join("\n", _contents)).ConfigureAwait(false);
+            await LocalStorage.SetStringAsync(DbKey, string.Join("\n", _contents)).ConfigureAwait(false);
         }
         catch
         {

@@ -17,6 +17,8 @@ import * as inputMouse from './input_mouse.js';
 import * as inputTouch from './input_touch.js';
 import * as net from './net_websocket.js';
 import * as inputOverlay from './input_overlay.js';
+import * as cursor from './cursor.js';
+import * as localstorage from './storage_local.js';
 function findHost(exports) {
     if (!exports)
         return undefined;
@@ -58,6 +60,8 @@ setModuleImports('input_mouse', inputMouse);
 setModuleImports('input_touch', inputTouch);
 setModuleImports('net_websocket', net);
 setModuleImports('input_overlay', inputOverlay);
+setModuleImports('cursor', cursor);
+setModuleImports('localstorage', localstorage);
 const config = getConfig();
 // 网络层：把浏览器 WebSocket 事件推回对应的 C# 绑定
 try {

@@ -1,17 +1,22 @@
+using KFramework.MonoGame;
 using System;
 
-namespace MirEngine
+// 浏览器端光标设置：原版用 Win32 .CUR 文件切换窗体光标；浏览器端无法加载 .CUR，
+// 改为切换 default 画布（GraphicsDevice.CanvasId，默认 "game"）的 CSS cursor。
+// 底层走 KFramework.MonoGame.MouseCursorFunc（进而 JSBind_Cursor → cursor.ts）；
+// name 为合法 CSS cursor 值（业务侧语义名 attack/npc/text/trash/default 由 CMain.SetMouseCursor 传入）。
+public static class BrowserCursor
 {
-    // 浏览器端光标设置（迁移到 KFramework.MonoGame 后由画布 CSS 控制；这里统一为无操作，避免依赖旧 JS）。
-    public static class BrowserCursor
+    public static void Set(string name)
     {
-        public static void Set(string name)
-        {
-            try { SetImpl(name); }
-            catch { }
-        }
+        try { MouseCursorFunc.Set(name); }
+        catch { }
+    }
 
-        // 真实实现应操作 GL 画布的 style.cursor；当前无操作（不影响逻辑流程）。
-        private static void SetImpl(string name) { }
+    // 复位为默认箭头。
+    public static void Reset()
+    {
+        try { MouseCursorFunc.Reset(); }
+        catch { }
     }
 }

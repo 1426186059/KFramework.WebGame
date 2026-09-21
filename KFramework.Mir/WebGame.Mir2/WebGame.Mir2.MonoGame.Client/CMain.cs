@@ -173,7 +173,7 @@ namespace WebGame.Mir2.MonoGame.Client
                     break;
             }
 
-            MirEngine.BrowserCursor.Set(name);
+            BrowserCursor.Set(name);
         }
 
         // 窗口尺寸变化的处理。UI 以画布原生分辨率布局（UI 层恒等变换、不做非等比拉伸），

@@ -47,6 +47,11 @@ namespace KFramework.MonoGame
         [JSImport("getBaseUri", "platform")]
         public static partial string GetBaseUri();
 
+        /// <summary>在浏览器中打开一个 URL（新标签）。用于跳转支付页、官网等外部链接。</summary>
+        /// <remarks>浏览器通常只在用户手势（点击）内允许弹窗，否则会被拦截。</remarks>
+        [JSImport("openUrl", "platform")]
+        public static partial void OpenUrl(string url);
+
         // 输入相关的绑定已移到 JSBind_Input（对应独立的 "input" 模块）
     }
 }
