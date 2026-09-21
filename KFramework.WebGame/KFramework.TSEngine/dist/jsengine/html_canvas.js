@@ -161,7 +161,6 @@ export function applyLayout(idOrSelector, mode, x, y, width, height) {
     applyLayoutStyle(element, mode, x, y, width, height, id);
     return true;
 }
-
 /**
  * 撤销本模块写在画布上的行内样式，让页面自己的 CSS（例如 <canvas> 的 width:100%）重新生效。
  * 用于「恢复启动时的默认布局」，同时解除居中模式。

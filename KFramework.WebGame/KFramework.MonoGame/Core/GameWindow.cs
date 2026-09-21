@@ -53,7 +53,15 @@ namespace KFramework.MonoGame
         /// 浏览器视口尺寸（window.innerWidth / innerHeight，CSS 像素）。布局计算请用这个，而不是画布尺寸。
         /// </summary>
         /// <remarks><see cref="Point.X"/> = 视口宽，<see cref="Point.Y"/> = 视口高。</remarks>
-        public Point HTMLPageSize => HTML_Canvas_Func.GetHTMLPageSize();
+        public Point HTMLPageSize
+        {
+            get
+            {
+                Span<int> view = stackalloc int[2];
+                JSBind_HTML_Canvas.GetHTMLPageSize(view);
+                return new Point(view[0], view[1]);
+            }
+        }
 
         /// <summary>绘制缓冲宽度（物理像素，已含设备像素比）。</summary>
         public int Width => _device.Viewport.Width;

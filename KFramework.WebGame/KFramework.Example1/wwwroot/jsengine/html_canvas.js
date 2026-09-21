@@ -131,7 +131,7 @@ function applyLayoutStyle(element, mode, x, y, width, height, id) {
 /**
  * 创建一块画布并插入 <body>。
  * @param idOrSelector 画布 id（可写 "#id" 形式）；已存在同名画布时返回 false。
- * @param mode 布局方式（0 Rect / 1 Size / 2 Centered / 3 Fullscreen）。
+ * @param mode 布局方式（LayoutMode）：Rect 按 x/y/w/h 摆位；Centered 窗口居中；Fullscreen 填满整个 HTML 页面；Size 仅设尺寸（新建时回落到 0,0）。
  * @param x 左上角 X（CSS 像素，相对窗口），Rect 模式使用。
  * @param y 左上角 Y（CSS 像素，相对窗口），Rect 模式使用。
  * @param width CSS 宽度（像素）。
@@ -161,11 +161,6 @@ export function applyLayout(idOrSelector, mode, x, y, width, height) {
     applyLayoutStyle(element, mode, x, y, width, height, id);
     return true;
 }
-
-
-
-
-
 /**
  * 撤销本模块写在画布上的行内样式，让页面自己的 CSS（例如 <canvas> 的 width:100%）重新生效。
  * 用于「恢复启动时的默认布局」，同时解除居中模式。
@@ -185,7 +180,6 @@ export function restoreLayout(idOrSelector) {
 export function getHTMLPageSize(view) {
     writeInts(view, [Math.round(window.innerWidth), Math.round(window.innerHeight)]);
 }
-
 /**
  * 读画布当前的实际矩形（不含边框）：写入 [left, top, width, height]，单位 CSS 像素，坐标相对窗口左上角。
  * 画布不存在时写入全 0 —— 调用方可以据此判断「还没这块画布」。
