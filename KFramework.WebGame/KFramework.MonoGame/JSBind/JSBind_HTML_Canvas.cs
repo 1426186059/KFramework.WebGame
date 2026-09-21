@@ -36,7 +36,7 @@ namespace KFramework.MonoGame
         [JSImport("restoreLayout", "canvas")]
         public static partial bool RestoreLayout(string id);
 
-        /// <summary>读 HTML 页面尺寸：view[0]=innerWidth，view[1]=innerHeight。</summary>
+        /// <summary>读 Canvas 所在的 HTML 页面尺寸：view[0]=innerWidth，view[1]=innerHeight。</summary>
         [JSImport("getHTMLPageSize", "canvas")]
         public static partial void GetHTMLPageSize([JSMarshalAs<JSType.MemoryView>] Span<int> view);
 
