@@ -409,7 +409,8 @@ namespace Client.MirScenes
                 Index = 1084;
                 Library = Libraries.Prguse;
                 PixelDetect = false;
-                Size = new Size(328, 220);
+                //Size = new Size(328, 220);
+                AutoSize = true;
 
                 TitleLabel = new MirImageControl
                     {
@@ -527,6 +528,7 @@ namespace Client.MirScenes
                 // 资源（贴图库）异步加载：构造时图像尺寸可能为 0，导致初始 Location 偏移到屏幕中心附近。
                 // 订阅库加载完成事件，库就绪后按真实尺寸重新居中；构造与显示时也兜底计算一次。
                 Anchor = EAnchorType.MiddleCenter;
+                AnchorPos = new Point(0, 0);
                 ApplyAnchor();
                 Libraries.LibraryLoaded += Libraries_LibraryLoaded;
             }

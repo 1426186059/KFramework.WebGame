@@ -6,7 +6,7 @@ namespace MirEngine
 
     public struct Point
     {
-        public static readonly Point Empty;
+        public static readonly Point Empty = new Point(0, 0);
 
         private int x;
         private int y;
