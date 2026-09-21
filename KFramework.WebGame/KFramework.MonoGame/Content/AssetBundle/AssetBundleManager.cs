@@ -143,6 +143,9 @@ namespace KFramework.MonoGame
             CancellationToken cancellationToken = default)
         {
             var remote = await FetchManifestAsync(cancellationToken).ConfigureAwait(false);
+            // 拿到远端清单后先做一次缓存 GC：旧版本 / 已下线的包不再保留。
+            // 包文件名带内容哈希，热更一次就多一份旧文件，不清理的话 Cache Storage 会随热更次数单调膨胀直到撑爆配额。
+            await PruneCacheAsync(remote, null, cancellationToken).ConfigureAwait(false);
             var updates = ComputeUpdates(local, remote);
             foreach (var u in updates)
             {
@@ -151,6 +154,42 @@ namespace KFramework.MonoGame
                 await LoadBundleBytesAsync(u.Package, cancellationToken).ConfigureAwait(false);
             }
             return remote;
+        }
+
+        /// <summary>
+        /// 缓存 GC：以 <paramref name="manifest"/> 的包清单为白名单，删除 Cache Storage 里的历史版本 / 已下线资源包。
+        /// 包文件名带内容哈希，热更一次就留下一份旧文件，故每次拿到新清单后都应 GC 一次。
+        /// </summary>
+        /// <param name="manifest">当前生效的清单；为 null 时依次回退到已加载清单 / 远端清单。</param>
+        /// <param name="extraKeep">额外保留的键（相对路径，会拼上资源根），用于保护同目录下非资源包的缓存条目。</param>
+        /// <returns>实际删除的条目数；失败返回 -1（GC 属兜底操作，不抛异常、不阻断加载与热更）。</returns>
+        public async Task<int> PruneCacheAsync(
+            AssetBundleManifest? manifest = null,
+            IEnumerable<string>? extraKeep = null,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                manifest ??= _manifest ?? await FetchManifestAsync(cancellationToken).ConfigureAwait(false);
+
+                var keep = new List<string>(manifest.Packages.Count + 8);
+                foreach (var p in manifest.Packages)
+                    keep.Add(ResolveRooted(p.File));
+                if (extraKeep is not null)
+                    foreach (var k in extraKeep)
+                        if (!string.IsNullOrWhiteSpace(k)) keep.Add(ResolveRooted(k));
+
+                // 只清理本资源根目录下的条目，避免误删业务自行缓存的其它文件
+                int removed = await JSBind_CacheStorage.PruneAsync(keep.ToArray(), _rootDir).ConfigureAwait(false);
+                if (removed > 0)
+                    PrintTool.Log($"[KFramework.MonoGame] 缓存 GC：清理历史版本资源包 {removed} 项（白名单保留 {keep.Count} 项）");
+                return removed;
+            }
+            catch (Exception ex)
+            {
+                PrintTool.LogError($"[KFramework.MonoGame] 缓存 GC 失败（不影响加载）：{ex.Message}");
+                return -1;
+            }
         }
 
         /// <summary>

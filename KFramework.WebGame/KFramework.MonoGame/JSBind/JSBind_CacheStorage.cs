@@ -26,5 +26,18 @@ namespace KFramework.MonoGame
         /// <summary>把资源包字节（byte[]）以 Response 形式写入 Cache Storage（按 name 键，覆盖式）。</summary>
         [JSImport("save", "cachestorage")]
         public static partial Task SaveAsync(string name, byte[] bytes);
+
+        /// <summary>删除单个键；返回是否真的删掉了（原本不存在返回 false）。</summary>
+        [JSImport("remove", "cachestorage")]
+        public static partial Task<bool> RemoveAsync(string name);
+
+        /// <summary>
+        /// 通用 GC：删除不在 <paramref name="keep"/> 白名单里的条目，返回实际删除条数。
+        /// 资源文件名带内容哈希（热更一次换一个名字），不 GC 则历史版本无限堆积、最终撑爆 origin 配额。
+        /// </summary>
+        /// <param name="keep">保留白名单（相对路径或绝对 URL 均可，JS 侧统一归一化后比对）。</param>
+        /// <param name="prefix">可选路径前缀（如 "hot_update_res/"），只清理该前缀下的条目；留空表示整个 Cache 都参与 GC。</param>
+        [JSImport("prune", "cachestorage")]
+        public static partial Task<int> PruneAsync(string[] keep, string prefix);
     }
 }

@@ -41,3 +41,72 @@ export async function save(name: string, bytes: Uint8Array): Promise<void> {
     });
     await cache.put(name, res);
 }
+
+// ==================== 缓存 GC（通用） ====================
+// Cache Storage 没有 LRU，也没有条数上限：put 过的条目会一直留着。而资源文件名带内容哈希
+// （热更一次就换一个文件名），不做清理的话历史版本会无限堆积，直到撑爆 origin 配额（QuotaExceededError）。
+// 做法：以「当前生效的清单」为白名单做一次 GC——白名单外的条目（旧版本 / 已下线的包）一律删除。
+
+// 归一化为绝对 URL：cache.match / cache.put 内部按 document.baseURI 解析相对键，
+// 这里保持一致，才能和 cache.keys() 返回的 Request.url 直接比对。
+function toAbsoluteUrl(name: string): string {
+    try {
+        return new URL(name, document.baseURI).href;
+    } catch {
+        return name;
+    }
+}
+
+// 列出当前 Cache 中所有已存的键（绝对 URL 形式）。
+export async function keys(): Promise<string[]> {
+    const cache = await openCache();
+    const reqs = await cache.keys();
+    return reqs.map((r) => r.url);
+}
+
+// 删除单个键；返回是否真的删掉了（原本不存在返回 false）。
+export async function remove(name: string): Promise<boolean> {
+    const cache = await openCache();
+    return await cache.delete(name);
+}
+
+/**
+ * 通用 GC：删除不在白名单里的缓存条目，返回实际删除条数。
+ * @param keep 需要保留的键（相对路径或绝对 URL 均可，会归一化后比对）。
+ * @param prefix 可选路径前缀（如 "hot_update_res/"），只清理该前缀下的条目；留空表示整个 Cache 都参与 GC。
+ */
+export async function prune(keep: string[], prefix: string = ''): Promise<number> {
+    const cache = await openCache();
+    const keepSet = new Set(keep.map(toAbsoluteUrl));
+
+    let prefixPath = '';
+    if (prefix) {
+        try {
+            prefixPath = new URL(prefix, document.baseURI).pathname;
+        } catch {
+            prefixPath = prefix;
+        }
+    }
+
+    const reqs = await cache.keys();
+    let removed = 0;
+    for (const req of reqs) {
+        if (keepSet.has(req.url)) continue;
+        if (prefixPath) {
+            let path = req.url;
+            try {
+                path = new URL(req.url, document.baseURI).pathname;
+            } catch {
+                // 解析不了就按原串比对
+            }
+            if (!path.startsWith(prefixPath)) continue;
+        }
+        try {
+            // 单条失败（如并发写占用）不中断整体 GC
+            if (await cache.delete(req)) removed++;
+        } catch {
+            // 忽略
+        }
+    }
+    return removed;
+}
