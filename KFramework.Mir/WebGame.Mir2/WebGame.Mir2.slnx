@@ -9,5 +9,6 @@
   <Project Path="WebGame.Mir2.MonoGame.Client/WebGame.Mir2.MonoGame.Client.csproj" />
   <Project Path="Web_Mir2.Client/Web_Mir2.Client.csproj" />
   <Project Path="Web_Mir2.Engine/Web_Mir2.Engine.csproj" />
+  <Project Path="Web_Mir2.Server.WinForms/Server.csproj" />
   <Project Path="Web_Mir2.Server/Web_Mir2.Server.csproj" />
 </Solution>
