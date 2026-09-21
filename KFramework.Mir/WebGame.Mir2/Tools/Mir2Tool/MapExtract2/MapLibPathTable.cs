@@ -21,7 +21,7 @@ public static class MapLibPathTable
         else if (index == 1) p = "Map/WemadeMir2/Smtiles";
         else if (index == 2) p = "Map/WemadeMir2/Objects";
         else if (index >= 3 && index <= 28)
-            p = "Map/WemadeMir2/Objects" + index;          // 3..28 -> Objects2..Objects27
+            p = "Map/WemadeMir2/Objects" + (index - 1);   // 复刻客户端: N -> Objects(N-1)，即 3..28 -> Objects2..Objects27
         else if (index == 90) p = "Map/WemadeMir2/Objects_32bit";
         else if (index == 100) p = "Map/ShandaMir2/Tiles";
         else if (index >= 101 && index <= 109)
