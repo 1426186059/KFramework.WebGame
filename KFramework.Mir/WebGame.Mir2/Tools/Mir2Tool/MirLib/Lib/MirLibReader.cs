@@ -111,4 +111,16 @@ public sealed class MirLibReader : IDisposable
         }
         return size;
     }
+
+    /// <summary>
+    /// 第 index 张图在源文件中声明的总长度是否“装得下”（IndexList[index] + 声明长度 &lt;= 文件尾）。
+    /// 源 Lib 被截断时该图实际数据比声明长度短，<see cref="ReadImageBytes"/> 会返回偏短的 blob；
+    /// 蒸馏器据此把该图降级为 17 字节占位，避免偏移表错位导致产物越界。
+    /// </summary>
+    public bool ImageFits(int index)
+    {
+        if (index < 0 || index >= Count) return false;
+        long end = (long)IndexList[index] + GetImageLength(index);
+        return end <= _stream.Length;
+    }
 }

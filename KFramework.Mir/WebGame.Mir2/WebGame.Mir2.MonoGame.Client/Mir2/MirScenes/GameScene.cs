@@ -10963,12 +10963,18 @@ namespace Client.MirScenes
                     int midIndex = cell.MiddleImage - 1;
                     if (midIndex >= 0 && cell.MiddleIndex != -1)
                     {
-                        var lib = Libraries.MapLibs[cell.MiddleIndex];
-                        Size s = lib.GetSize(midIndex);
-                        if ((s.Width == CellWidth && s.Height == CellHeight) ||
-                            (s.Width == CellWidth * 2 && s.Height == CellHeight * 2))
+                        // 与 Back 层一致：槽位可能未配置或为 null，直接访问会 IndexOutOfRange；
+                        // 缺失时跳过该层中图，避免崩溃。
+                        var lib = (cell.MiddleIndex >= 0 && cell.MiddleIndex < Libraries.MapLibs.Length)
+                            ? Libraries.MapLibs[cell.MiddleIndex] : null;
+                        if (lib != null)
                         {
-                            lib.Draw(midIndex, drawX, drawY);
+                            Size s = lib.GetSize(midIndex);
+                            if ((s.Width == CellWidth && s.Height == CellHeight) ||
+                                (s.Width == CellWidth * 2 && s.Height == CellHeight * 2))
+                            {
+                                lib.Draw(midIndex, drawX, drawY);
+                            }
                         }
                     }
 
@@ -10979,7 +10985,11 @@ namespace Client.MirScenes
                         int fileIndex = cell.FrontIndex;
                         if (fileIndex != -1 && fileIndex != 200)
                         {
-                            var lib = Libraries.MapLibs[fileIndex];
+                            // 防御：Front 库缺失/越界时跳过，避免 IndexOutOfRange（同 Back 层处理）。
+                            var lib = (fileIndex >= 0 && fileIndex < Libraries.MapLibs.Length)
+                                ? Libraries.MapLibs[fileIndex] : null;
+                            if (lib != null)
+                            {
                             Size s = lib.GetSize(frontIndex);
 
                             // door
@@ -11002,6 +11012,7 @@ namespace Client.MirScenes
                                  (s.Width == CellWidth * 2 && s.Height == CellHeight * 2)))
                             {
                                 lib.Draw(frontIndex, drawX, drawY);
+                            }
                             }
                         }
                     }

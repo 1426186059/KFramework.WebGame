@@ -778,6 +778,8 @@ namespace Client.MirGraphics
 
             if (_images[index] == null)
             {
+                if (_indexList[index] + 17 > _stream.Length)
+                    BrowserResource.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
                 _stream.Position = _indexList[index];
                 _images[index] = new MImage(_reader);
             }
@@ -803,6 +805,8 @@ namespace Client.MirGraphics
 
             if (_images[index] == null)
             {
+                if (_indexList[index] + 17 > _stream.Length)
+                    BrowserResource.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
                 _stream.Seek(_indexList[index], SeekOrigin.Begin);
                 _images[index] = new MImage(_reader);
             }
@@ -817,6 +821,8 @@ namespace Client.MirGraphics
 
             if (_images[index] == null)
             {
+                if (_indexList[index] + 17 > _stream.Length)
+                    BrowserResource.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
                 _stream.Seek(_indexList[index], SeekOrigin.Begin);
                 _images[index] = new MImage(_reader);
             }
@@ -832,6 +838,8 @@ namespace Client.MirGraphics
 
             if (_images[index] == null)
             {
+                if (_indexList[index] + 17 > _stream.Length)
+                    BrowserResource.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
                 _stream.Position = _indexList[index];
                 _images[index] = new MImage(_reader);
             }
@@ -1081,26 +1089,55 @@ namespace Client.MirGraphics
 
         public MImage(BinaryReader reader)
         {
-            //read layer 1
-            Width = reader.ReadInt16();
-            Height = reader.ReadInt16();
-            X = reader.ReadInt16();
-            Y = reader.ReadInt16();
-            ShadowX = reader.ReadInt16();
-            ShadowY = reader.ReadInt16();
-            Shadow = reader.ReadByte();
-            Length = reader.ReadInt32();
-
-            //check if there's a second layer and read it
-            HasMask = ((Shadow >> 7) == 1) ? true : false;
-            if (HasMask)
+            try
             {
-                reader.ReadBytes(Length);
-                MaskWidth = reader.ReadInt16();
-                MaskHeight = reader.ReadInt16();
-                MaskX = reader.ReadInt16();
-                MaskY = reader.ReadInt16();
-                MaskLength = reader.ReadInt32();
+                // 防御：图库文件被截断时（索引表完整、但像素数据缺失），reader 读头部途中会
+                // ReadInt16/ReadByte 越界抛 EndOfStreamException；该异常在每帧 DrawFloor->GetSize
+                // 路径上无法被个别 try 捕获，会中断整帧绘制（表现为走着走着卡死/黑屏）。
+                // 读前先确认剩余字节足够容纳最小头部(6*short + 1*byte + 1*int = 17 字节)。
+                if (reader.BaseStream.Position + 17 > reader.BaseStream.Length)
+                {
+                    Width = Height = 0;
+                    return;
+                }
+
+                //read layer 1
+                Width = reader.ReadInt16();
+                Height = reader.ReadInt16();
+                X = reader.ReadInt16();
+                Y = reader.ReadInt16();
+                ShadowX = reader.ReadInt16();
+                ShadowY = reader.ReadInt16();
+                Shadow = reader.ReadByte();
+                Length = reader.ReadInt32();
+
+                //check if there's a second layer and read it
+                HasMask = ((Shadow >> 7) == 1) ? true : false;
+                if (HasMask)
+                {
+                    // 跳过第一层数据；限制读取量，避免 Length 异常时的超大数组分配。
+                    long remaining = reader.BaseStream.Length - reader.BaseStream.Position;
+                    if (Length > 0 && Length <= remaining)
+                        reader.ReadBytes(Length);
+                    else
+                        reader.ReadBytes((int)Math.Max(0, Math.Min(remaining, int.MaxValue)));
+
+                    // 第二层头部(5*short = 10 字节)不足则不再读取，保留已读的 Width/Height。
+                    if (reader.BaseStream.Position + 10 <= reader.BaseStream.Length)
+                    {
+                        MaskWidth = reader.ReadInt16();
+                        MaskHeight = reader.ReadInt16();
+                        MaskX = reader.ReadInt16();
+                        MaskY = reader.ReadInt16();
+                        MaskLength = reader.ReadInt32();
+                    }
+                }
+            }
+            catch (IOException)
+            {
+                // 截断/损坏：标记为 0 尺寸占位图，由 CheckImage(返回 MosaicImage)/CreateTexture
+                // 的 0 尺寸守卫跳过绘制，不再中断渲染帧。
+                Width = Height = 0;
             }
         }
 

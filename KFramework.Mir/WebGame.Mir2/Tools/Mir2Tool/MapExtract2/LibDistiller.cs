@@ -29,6 +29,25 @@ public static class LibDistiller
         int count = lib.Count;
         bool hasFrameSeek = lib.HasFrames;
 
+        // 第一遍：确定每个 index 实际写入长度。
+        // 关键防御：源 Lib 若被截断（某图实际字节 < 头部声明长度），ReadImageBytes 返回的 blob 会偏短，
+        // 若仍按 GetImageLength 推进偏移，会导致蒸馏产物偏移表错位、客户端读取越界崩溃。
+        // 这里把“截断/越界图”降级为 17 字节零尺寸占位（与未用到的图一致），保持偏移表连续一致。
+        int[] writeLen = new int[count];
+        bool[] usedValid = new bool[count];
+        for (int i = 0; i < count; i++)
+        {
+            if (usedIndices.Contains(i) && lib.ImageFits(i))
+            {
+                usedValid[i] = true;
+                writeLen[i] = lib.GetImageLength(i);
+            }
+            else
+            {
+                writeLen[i] = 17; // 未用到 或 源图截断：占位置
+            }
+        }
+
         // 计算输出布局
         int headerSize = 4 + 4 + (hasFrameSeek ? 4 : 0) + count * 4;
         int[] outIndex = new int[count];
@@ -36,7 +55,7 @@ public static class LibDistiller
         for (int i = 0; i < count; i++)
         {
             outIndex[i] = pos;
-            pos += usedIndices.Contains(i) ? lib.GetImageLength(i) : 17;
+            pos += writeLen[i];
         }
 
         using var outMs = new MemoryStream(pos + lib.FrameTable.Length + 16);
@@ -51,8 +70,19 @@ public static class LibDistiller
 
         for (int i = 0; i < count; i++)
         {
-            if (usedIndices.Contains(i))
-                w.Write(lib.ReadImageBytes(i));
+            if (usedValid[i])
+            {
+                byte[] blob = lib.ReadImageBytes(i);
+                int expected = lib.GetImageLength(i);
+                if (blob.Length >= expected)
+                    w.Write(blob, 0, expected);
+                else
+                {
+                    // 极端兜底：实际偏短也照写，并补零到声明长度，保持偏移表一致（不越界）。
+                    w.Write(blob);
+                    w.Write(new byte[expected - blob.Length]);
+                }
+            }
             else
                 w.Write(Zeros17);
         }
@@ -60,9 +90,14 @@ public static class LibDistiller
         int frameSeekValue = (int)outMs.Position;
         if (lib.FrameTable.Length > 0) w.Write(lib.FrameTable);
 
-        // 回填 frameSeek
-        outMs.Position = frameSeekPos;
-        w.Write(frameSeekValue);
+        // 回填 frameSeek（仅 version>=3 有帧表/帧偏移字段）。
+        // version==2 无此字段：frameSeekPos 恰等于 outIndex[0] 的位置，
+        // 若照写会把“文件尾 EOF”覆盖到首张图偏移，导致客户端读 idx0 越界崩溃。
+        if (hasFrameSeek)
+        {
+            outMs.Position = frameSeekPos;
+            w.Write(frameSeekValue);
+        }
         w.Flush();
 
         return outMs.ToArray();

@@ -1,5 +1,3 @@
-using System.Net.Http.Headers;
-
 namespace KFramework.MonoGame;
 
 /// <summary>
@@ -74,17 +72,11 @@ public sealed class AssetBundleManager : IDisposable
 
     #region 清单
 
-    /// <summary>拉取并驻留总清单 version.manifest（单请求带 Cache-Control: no-cache，绕过 HTTP 缓存，确保热更能检测到清单变化）。</summary>
+    /// <summary>拉取并驻留总清单 version.manifest（单请求绕过 HTTP 缓存，确保热更能检测到清单变化）。</summary>
     public async Task<AssetBundleManifest> FetchManifestAsync(CancellationToken cancellationToken = default)
     {
-        var req = new HttpRequestMessage(HttpMethod.Get, _baseUrl + "version.manifest")
-        {
-            Headers = { CacheControl = new CacheControlHeaderValue { NoCache = true } }
-        };
-        using var r = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
-        r.EnsureSuccessStatusCode();
-        await using var s = await r.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        return _manifest = AssetBundleManifest.Parse(s);
+        byte[] data = await ContentFunc.DownloadBytesAsync(_http, _baseUrl + "version.manifest", false, cancellationToken).ConfigureAwait(false);
+        return _manifest = AssetBundleManifest.Parse(ContentFunc.DecodeUtf8(data));
     }
 
     #endregion
