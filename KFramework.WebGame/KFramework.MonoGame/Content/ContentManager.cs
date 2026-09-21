@@ -10,14 +10,14 @@ namespace KFramework.MonoGame
     {
         private readonly HttpClient _http;
         private readonly AssetBundleManager _manager;
+        private readonly string _rootUrl;
 
         public ContentManager(
             string root = "hot_update_res",
-            string BaseURL = null,
-            AssetBundleManager.BundleCacheMode cacheMode = AssetBundleManager.BundleCacheMode.Http)
+            string BaseURL = null)
         {
             ArgumentNullException.ThrowIfNull(root);
-            string rootUrl = root.TrimEnd('/');
+            _rootUrl = root.TrimEnd('/');
 
             string baseUri = BaseURL;
             if (string.IsNullOrWhiteSpace(BaseURL))
@@ -43,11 +43,19 @@ namespace KFramework.MonoGame
             // 地图片库可能非常大（如 Tiles.Lib 有数百 MB），必须放宽超时，否则默认的 100 秒会把大文件
             // 下载打断，导致 InitializeAsync 捕获超时异常后把库标记为 _failed，地板层永久不渲染。
             _http.Timeout = TimeSpan.FromMinutes(30);
-            _manager = new AssetBundleManager(_http, rootUrl, cacheMode);
+            _manager = new AssetBundleManager(_http, _rootUrl);
         }
 
         /// <summary>已加载的 Bundle 逻辑名。</summary>
         public IReadOnlyList<string> LoadedBundles => _manager.LoadedBundles;
+
+        /// <summary>
+        /// 事先探测某个 Bundle 是否已持久化到本地 Cache Storage（无需下载即可知是否有本地缓存）。
+        /// <paramref name="bundleFile"/> 为清单中的包文件名（如 "myres/atlas/characters.web.lib"）。
+        /// 底层用 <see cref="JSBind_CacheStorage.GetSizeAsync"/> 判断（&gt;0 即在）。
+        /// </summary>
+        public Task<bool> HasBundleCacheAsync(string bundleFile, CancellationToken cancellationToken = default)
+            => _manager.IsBundleCachedAsync(bundleFile, cancellationToken);
 
         /// <summary>取一个已加载的 Bundle（同步；包须先经 <see cref="LoadBundleAsync"/> 加载）。
         /// <paramref name="strict"/> 为 true 时按精确逻辑名匹配；为 false 时按关键字（键包含）匹配首个已加载 Bundle。</summary>
@@ -98,16 +106,20 @@ namespace KFramework.MonoGame
 
         #region 松散文件下载（非 Bundle 内的资源，如关卡文本；属异步加载，但不经 AssetBundle）
 
-        /// <summary>按页面基址异步下载任意文本（不走内容包，用于关卡等松散文件）。<paramref name="bUseCache"/> 为 false（默认）时禁用浏览器 HTTP 缓存（强制校验），为 true 时允许浏览器正常缓存。</summary>
-        public async Task<string> LoadTextAsync(string relativePath, bool bUseCache = true, CancellationToken cancellationToken = default)
+        /// <summary>把相对路径统一拼到资源根 <see cref="_rootUrl"/> 下；传入绝对 URL 时原样返回（不走 root）。</summary>
+        private string ResolveRooted(string path)
+            => Uri.TryCreate(path, UriKind.Absolute, out _) ? path : $"{_rootUrl}/{path.TrimStart('/')}";
+
+        /// <summary>按资源根(root)异步加载任意文本（不走内容包，用于关卡等松散文件）。先查本地 Cache Storage，未命中则远程下载并写回，下次直接命中本地缓存。</summary>
+        public async Task<string> LoadTextAsync(string relativePath, CancellationToken cancellationToken = default)
         {
-            byte[] data = await ContentFunc.DownloadBytesAsync(_http, relativePath, bUseCache, cancellationToken).ConfigureAwait(false);
+            byte[] data = await ContentFunc.LoadViaCacheStorageAsync(_http, ResolveRooted(relativePath), cancellationToken).ConfigureAwait(false);
             return ContentFunc.DecodeUtf8(data);
         }
 
-        /// <summary>按页面基址异步下载任意字节流（不走内容包）。<paramref name="bUseCache"/> 为 false（默认）时禁用浏览器 HTTP 缓存（强制校验），为 true 时允许浏览器正常缓存。</summary>
-        public async Task<byte[]> LoadBytesAsync(string relativePath, bool bUseCache = true, CancellationToken cancellationToken = default)
-            => await ContentFunc.DownloadBytesAsync(_http, relativePath, bUseCache, cancellationToken).ConfigureAwait(false);
+        /// <summary>按资源根(root)异步加载任意字节流（不走内容包）。先查本地 Cache Storage，未命中则远程下载并写回，下次直接命中本地缓存。</summary>
+        public async Task<byte[]> LoadBytesAsync(string relativePath, CancellationToken cancellationToken = default)
+            => await ContentFunc.LoadViaCacheStorageAsync(_http, ResolveRooted(relativePath), cancellationToken).ConfigureAwait(false);
 
         #endregion
 
@@ -115,13 +127,12 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// 异步直接加载一张图片（不经内容包）。用于图片未被打包、只是直接复制到站点目录的情形
-        /// （例如 wwwroot 下的 png/jpg/webp）。按页面基址下载后经浏览器原生解码为 RGBA8 并上传 GPU。
-        /// 与 <see cref="AssetBundle"/> 上的取资源方法不同，本方法面向「包外松散图片」。
-        /// <paramref name="bUseCache"/> 为 false（默认）时禁用浏览器 HTTP 缓存（强制校验），为 true 时允许浏览器正常缓存。
+        /// （例如 wwwroot 下的 png/jpg/webp）。先查本地 Cache Storage，未命中则按资源根(root)远程下载并写回，
+        /// 之后经浏览器原生解码为 RGBA8 并上传 GPU。与 <see cref="AssetBundle"/> 上的取资源方法不同，本方法面向「包外松散图片」。
         /// </summary>
-        public async Task<Texture2D> LoadTexture2DAsync(string relativePath, GraphicsDevice device, bool bUseCache = true, CancellationToken cancellationToken = default)
+        public async Task<Texture2D> LoadTexture2DAsync(string relativePath, GraphicsDevice device, CancellationToken cancellationToken = default)
         {
-            byte[] data = await ContentFunc.DownloadBytesAsync(_http, relativePath, bUseCache, cancellationToken).ConfigureAwait(false);
+            byte[] data = await ContentFunc.LoadViaCacheStorageAsync(_http, ResolveRooted(relativePath), cancellationToken).ConfigureAwait(false);
             return await LoadTexture2DAsync(data, device).ConfigureAwait(false);
         }
 
