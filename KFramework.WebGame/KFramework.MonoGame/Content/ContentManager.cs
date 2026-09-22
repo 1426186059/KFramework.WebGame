@@ -24,17 +24,31 @@ namespace KFramework.MonoGame
             Uri? baseAddress = null;
             if (!string.IsNullOrWhiteSpace(baseUri))
             {
-                int cut = baseUri.LastIndexOf('/');
-                if (cut > 0 && !baseUri.EndsWith('/'))
-                {
-                    baseUri = baseUri.Substring(0, cut + 1);
-                }
-
                 if (!Uri.TryCreate(baseUri, UriKind.Absolute, out baseAddress))
                 {
                     PrintTool.LogError($"ContentManager: BaseURL: ori: {BaseURL} now: {baseUri}   is not a valid absolute URI.");
                     throw new Exception();
                 }
+
+                //// 规范化成“以 / 结尾的目录基址”：只用 authority 之后的真实路径段取目录，绝不能切到 http:// 里的斜杠。
+                //string authority = uri.GetLeftPart(UriPartial.Authority);
+                //string absPath = uri.AbsolutePath;
+                //string dir;
+                //if (absPath.Length <= 1)
+                //{
+                //    dir = authority + "/";
+                //}
+                //else if (absPath.EndsWith("/"))
+                //{
+                //    dir = authority + absPath;
+                //}
+                //else
+                //{
+                //    dir = authority + absPath.Substring(0, absPath.LastIndexOf('/') + 1);
+                //}
+
+                //baseUri = dir;
+                //baseAddress = new Uri(baseUri);
             }
 
             _http = new HttpClient { BaseAddress = baseAddress };
