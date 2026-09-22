@@ -13,11 +13,6 @@ namespace MirEngine
         // 同 Content（默认 lib 通道），保留别名以便旧调用。
         public static ContentManager LibContent => Content;
 
-        // AssetBundle（hot_update_res，由 kfc 打包）走 :5081 服务器（根=Mir2Res），其 URL 已含 /hot_update_res/ 前缀
-        // （bundleBaseUrl=...:5081/hot_update_res/），经 KFramework.MonoGame 内容加载器（AssetBundleManager）加载。
-        // 地图图片 Lib 蒸馏产物（Mir2Res/Map/<地图名>/...）也由同一台 :5081 服务器按 /Map/ 类别提供。
-        public static ContentManager BundleContent { get; private set; }
-
         // 确认缺失（404 等）的资源拉黑：同一个文件每次取用都会重发一次请求、再走一遍
         // "分片失败 → 回退整文件"，控制台与网络面板被同一条错误反复刷屏（典型：Sound/1014-6.wav）。
         private static readonly HashSet<string> _missing = new HashSet<string>();
@@ -84,10 +79,7 @@ namespace MirEngine
         {
             _libBaseUrl = libBaseUrl;
             _bundleBaseUrl = bundleBaseUrl;
-            // 默认 lib 通道：root 仅占位（松加载忽略），实际按 libBaseUrl 根取资源
-            Content = new ContentManager("hot_update_res", libBaseUrl);
-            // AssetBundle 通道：服务器根已是 hot_update_res，root 必须为空
-            BundleContent = new ContentManager("", bundleBaseUrl);
+            Content = new ContentManager("",libBaseUrl);
         }
 
         public static void Log(string msg)

@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-using MirEngine;
+using KFramework.MonoGame;
 
 namespace WebGame.Mir2.MonoGame.Client
 {
@@ -14,68 +10,40 @@ namespace WebGame.Mir2.MonoGame.Client
     /// </summary>
     public static class NewResConfig
     {
-        /// <summary>地图资源(http)根地址，须以 '/' 结尾。指向“Mir2Res 作为 http 根目录”的地址。
-        /// 例：http://127.0.0.1:5081/ → 实际文件 http://127.0.0.1:5081/Map/0/WemadeMir2/Tiles.Lib
-        /// （其中 "0" 为地图名，"WemadeMir2/Tiles" 为 Lib 在原 Data/Map/ 下的相对子路径）。
-        /// 部署时按实际 http 服务器修改（把 Mir2Res 挂为根目录）。注意用 127.0.0.1 而非 localhost，
-        /// 避免浏览器把 localhost 解析成 IPv6(::1) 而资源服务器只绑了 127.0.0.1 导致连不上。</summary>
-        public static string MapResourceBaseUrl = "http://127.0.0.1:5081/";
-
-        /// <summary>总开关：false 时全部走默认 lib 通道，便于一键回退。</summary>
+        public static string libBaseUrl = "http://127.0.0.1:5081";
+        public const string MapRoot = "Map/";
         public static bool Enabled = true;
-
-        /// <summary>登记哪些地图的图片 Lib 已提取到 Mir2Res/Map/&lt;地图名&gt;/ 走 URL 直链（.map 仍默认）。
-        /// 键 = 地图名（即 .map 文件名，不含目录/扩展名，与服务端 MapInformation.FileName 及工具侧 mapName 一致）。
-        /// 例：{ "0" } 表示地图 "0" 的图片 Lib 走远程。从 Mir2Res/Map/0/ 目录即可核对。</summary>
-        //public static readonly HashSet<string> MapLibsRemote = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        //{
-        //    "0", "0100", "0101", "0102"
-        //};
-
-        /// <summary>当前是否走远程 Lib（进入登记地图时置 true，进入未登记地图置 false）。</summary>
         public static bool RemoteLibEnabled { get; internal set; }
-
-        /// <summary>当前地图名（进入地图时由 MapReader.LoadAsync 设置）。用于拼远程 Lib 的 URL 路径：
-        /// Mir2Res/Map/&lt;当前地图名&gt;/&lt;lib子路径&gt;.Lib。</summary>
         public static string CurrentMapName { get; internal set; } = "";
 
-        /// <summary>给定工具侧 Lib 相对路径（如 "Data/Map/WemadeMir2/Tiles"，不含扩展名），拼出 Mir2Res 下的 http URL：
-        /// 去掉 "Data/Map/" 前缀得到 "WemadeMir2/Tiles"，再按 Mir2Res/Map/&lt;当前地图名&gt;/&lt;lib子路径&gt;.Lib 组合。</summary>
-        public static string BuildLibUrl(string relPathWithoutExt)
+        private static readonly ContentManager mContentManager;
+
+        static NewResConfig()
+        {
+            mContentManager = new ContentManager("", libBaseUrl);
+        }
+
+        private static string BuildLibPath(string relPathWithoutExt)
         {
             string p = (relPathWithoutExt ?? "").Replace('\\', '/');
             const string mapPrefix = "data/map/";
             if (p.StartsWith(mapPrefix, StringComparison.OrdinalIgnoreCase))
+            {
                 p = p.Substring(mapPrefix.Length); // "WemadeMir2/Tiles"
-            string url = MapResourceBaseUrl;
-            if (!url.EndsWith("/")) url += "/";
-            // Mir2Res/Map/<地图名>/<lib子路径>.Lib
-            return url + "Map/" + CurrentMapName + "/" + p + ".Lib";
+            }
+            return CurrentMapName + "/" + p + ".Lib";
         }
-
-        private static readonly HttpClient HttpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(60) };
-
-        /// <summary>从远程 URL 取 Lib 字节；失败/未开启返回 null（调用方应回退默认 lib 通道）。</summary>
+        
         public static async Task<byte[]?> GetRemoteLibAsync(string relPathWithoutExt)
         {
             if (!Enabled || !RemoteLibEnabled) return null;
-            // 仅地图图片库（路径以 data/map/ 开头）才走远程 :5081；该服务器只部署了地图蒸馏产物
-            // （Map/<地图名>/Data/Map/...），界面/角色/物品/音效等库并不在上面。若对非地图库也先试远程，
-            // 会干等几十秒超时（远程服务器无对应文件）再回退本地，反而更慢且大量刷 404。
             string norm = (relPathWithoutExt ?? "").Replace('\\', '/').ToLowerInvariant();
             if (!norm.StartsWith("data/map/")) return null;
-            try
-            {
-                string url = BuildLibUrl(relPathWithoutExt);
-                BrowserResource.Log($"[Mir][lib] 远程拉取 {url}");
-                byte[] bytes = await HttpClient.GetByteArrayAsync(url).ConfigureAwait(false);
-                if (bytes != null && bytes.Length > 0) return bytes;
-                BrowserResource.Log($"[Mir][lib] 远程空: {url}");
-            }
-            catch (Exception ex)
-            {
-                BrowserResource.Log($"[Mir][lib] 远程拉取失败 {relPathWithoutExt}: {ex.Message}");
-            }
+
+            string path = BuildLibPath(relPathWithoutExt);
+            byte[] bytes = await mContentManager.LoadBytesAsync(MapRoot + path, true).ConfigureAwait(false);
+            if (bytes != null && bytes.Length > 0) return bytes;
+            BrowserResource.Log($"[Mir][lib] 远程空: {path}");
             return null;
         }
     }

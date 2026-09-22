@@ -653,7 +653,7 @@ namespace Client.MirGraphics
             {
                 _initialized = false;
                 _failed = true;
-                BrowserResource.Log($"[Mir] 库加载失败 {_fileName}: {ex.Message}");
+                BrowserResource.Log($"[Mir] 库加载失败 {_fileName}: {ex.Message} {ex.StackTrace}");
             }
             finally
             {
