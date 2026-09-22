@@ -49,10 +49,7 @@ namespace KFramework.MonoGame
             return _manifest = AssetBundleManifest.Parse(json);
         }
 
-        /// <summary>
-        /// 从 IndexedDB 读取上次落盘的 <see cref="AssetBundleManifest"/>。
-        /// 用于冷启动时拿“上一次生效清单”做热更差异比对与缓存 GC；没有 / 损坏时返回 null。
-        /// </summary>
+        /// <summary>从 IndexedDB 读取上次落盘的清单；没有/损坏返回 null，用于冷启动差异比对与缓存 GC。</summary>
         public async Task<AssetBundleManifest?> TryLoadLocalManifestAsync(CancellationToken cancellationToken = default)
         {
             string json = await JSBind_IndexedDB.GetStringAsync(LocalManifestKey).ConfigureAwait(false);
@@ -186,12 +183,7 @@ namespace KFramework.MonoGame
             }
         }
 
-        /// <summary>
-        /// 拉取远端清单 → 与本地清单比对 → 下载并缓存变化的包。
-        /// 返回本次生效的（远端）清单，调用方应将其作为新的本地清单保存。
-        /// </summary>
-        /// <param name="local">上一次成功应用后的本地清单；首跑传 null</param>
-        /// <param name="progress">每下载完一个包时回调（仅报告变化的包）</param>
+        /// <summary>拉远端清单→与本地比对→下载并缓存变化的包，返回本次生效的（远端）清单。</summary>
         public async Task<AssetBundleManifest> UpdateAsync(
             AssetBundleManifest? local = null,
             IProgress<BundleUpdate>? progress = null,
@@ -230,7 +222,9 @@ namespace KFramework.MonoGame
                 }
 
                 if (removed > 0)
-                    PrintTool.Log($"[KFramework.MonoGame] 缓存 GC：清理非生效资源包 {removed} 项");
+                {
+                    PrintTool.Log($"[KFramework.MonoGame] 缓存 GC：删除资源包 {removed} 项, 现有: {await Caching.Default.GetCountAsync().ConfigureAwait(false)} 项");
+                }
                 return removed;
             }
             catch (Exception ex)
@@ -240,11 +234,7 @@ namespace KFramework.MonoGame
             }
         }
 
-        /// <summary>
-        /// 对比本地与远端清单，返回需要下载/更新的包（含其 <see cref="BundlePackage"/>）。
-        /// 判定依据：远端包的文件名（含短哈希）或完整哈希与本地不一致，或本地缺失。
-        /// 对应 Unity 高层“比对 AssetBundleManifest 差异”的逻辑。
-        /// </summary>
+        /// <summary>对比本地/远端清单，返回文件或哈希不一致、或本地缺失的需要更新的包。</summary>
         public static IReadOnlyList<BundleUpdate> ComputeUpdates(AssetBundleManifest? local, AssetBundleManifest remote)
         {
             var localByFile = local?.Packages.ToDictionary(p => p.File, p => p)

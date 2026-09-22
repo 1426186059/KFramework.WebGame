@@ -23,6 +23,10 @@ namespace KFramework.MonoGame
         public Task<int> GetSizeAsync(string key)
             => JSBind_CacheStorage.GetCacheSizeAsync(Name, key);
 
+        /// <summary>当前缓存里的条目数。</summary>
+        public Task<int> GetCountAsync()
+            => JSBind_CacheStorage.GetCacheCountAsync(Name);
+
         /// <summary>把字节以 Response 形式写入该缓存（按 key，覆盖式）。</summary>
         public Task SaveAsync(string key, ArraySegment<byte> bytes)
             => JSBind_CacheStorage.SaveCacheAsync(Name, key, bytes);

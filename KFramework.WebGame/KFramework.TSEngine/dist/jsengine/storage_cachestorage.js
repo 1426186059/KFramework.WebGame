@@ -5,16 +5,14 @@
 // 与 IndexedDB 相比：Cache Storage 以 Response 形式存储，专为二进制资源设计、序列化/反序列化开销更小，
 // 后续若要叠加 Service Worker 拦截 fetch 直接返回缓存响应，可做到“零解析开销”的无缝升级。
 //
-// 与 C# 交换字节采用「预分配缓冲 + 写回」模式（同 decodeImageToRgba）：先 CachingSizeAsync 探长度，
-// C# 按长度分配 byte[] 后交给 CachingLoadIntoAsync 写入，绕开 .NET WASM 不支持 byte[] 作为返回值的限制（SYSLIB1072）。
+// 与 C# 交换字节采用「预分配缓冲 + 写回」模式（同 decodeImageToRgba）：先 GetCacheSizeAsync 探长度，
+// C# 按长度分配 byte[] 后交给 LoadCacheAsync 写入，绕开 .NET WASM 不支持 byte[] 作为返回值的限制（SYSLIB1072）。
 //
 // 对外只暴露两类东西，命名与 C# 侧一一对应：
 //   * export class Caching —— 通用封装（类似 Unity 的 Caching），支持任意命名缓存；实例方法用 TS 习惯的小驼峰。
 //   * CachingXxxAsync(...) 模块函数 —— 供 C# JSBind_CacheStorage 静态绑定，PascalCase + Async 后缀，与 C# 方法同名。
 const DEFAULT_CACHE = 'kframework-bundles';
-// C# 的 ArraySegment<byte> 在 JS 侧是 MemoryView —— 它是 dotnet 的包装对象，**不是** TypedArray，
-// 直接塞进 new Response() 不会被当成 BufferSource，而会按 USVString 转成 "[object Object]"，
-// 于是缓存里存的是这段文本而不是原始字节：下一次命中缓存拿到的就是垃圾（zip 会报 EOCDNotFound）。
+// ArraySegment<byte> 在 JS 侧是 MemoryView（非 TypedArray），必须拷成 Uint8Array 才能当 Response body，否则会被当字符串存成垃圾。
 function toBody(src) {
     const out = new Uint8Array(src.byteLength);
     if (src instanceof Uint8Array)
@@ -133,13 +131,7 @@ export class Caching {
     async remove(key) {
         return await (await this._open()).delete(key);
     }
-    /**
-     * 通用 GC：删除不在白名单里的条目，返回实际删除条数。
-     * @param keep 需要保留的键（相对路径或绝对 URL 均可，会归一化后比对）。
-     * @param prefix 可选路径前缀（如 "hot_update_res/"），只清理该前缀下的条目；留空表示不限前缀。
-     * @param suffix 可选后缀（如 ".web.lib"），只清理该后缀的条目；留空表示不限后缀。
-     * @remarks 前缀与后缀是「与」关系：两个都给了，必须同时命中才会被清理。
-     */
+    /** 通用 GC：保留 keep 白名单中的键、删除其余条目，返回实际删除条数。 */
     async prune(keep, prefix = '', suffix = '') {
         const cache = await this._open();
         const keepSet = new Set(keep.map(toAbsoluteUrl));
@@ -171,22 +163,31 @@ export class Caching {
         Caching._pool.delete(this.name);
     }
 }
-// ==================== 供 C# JSBind_CacheStorage 静态绑定的模块函数（按缓存名操作，与 C# 方法同名） ====================
-export async function CachingSizeAsync(cacheName, key) {
+// ==================== 供 C# JSBind_CacheStorage 静态绑定的模块函数：名字与 C# 侧方法一一对应 ====================
+export async function GetCacheSizeAsync(cacheName, key) {
     return Caching.open(cacheName).size(key);
 }
-export async function CachingLoadIntoAsync(cacheName, key, buffer) {
+export async function GetCacheCountAsync(cacheName) {
+    return (await Caching.open(cacheName).keys()).length;
+}
+export async function LoadCacheAsync(cacheName, key, buffer) {
     return Caching.open(cacheName).loadInto(key, buffer);
 }
-export async function CachingSaveAsync(cacheName, key, bytes) {
+export async function SaveCacheAsync(cacheName, key, bytes) {
     return Caching.open(cacheName).save(key, bytes);
 }
-export async function CachingRemoveAsync(cacheName, key) {
+export async function RemoveCacheAsync(cacheName, key) {
     return Caching.open(cacheName).remove(key);
 }
-export async function CachingRemoveListAsync(cacheName, keep, prefix = '', suffix = '') {
-    return Caching.open(cacheName).prune(keep, prefix, suffix);
+export async function RemoveCacheListAsync(cacheName, removeList) {
+    const c = Caching.open(cacheName);
+    let removed = 0;
+    for (const key of removeList) {
+        if (await c.remove(key))
+            removed++;
+    }
+    return removed;
 }
-export async function CachingClearAsync(cacheName) {
+export async function RemoveAllCacheAsync(cacheName) {
     return Caching.open(cacheName).clear();
 }
