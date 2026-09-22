@@ -22,9 +22,8 @@ namespace KFramework.MonoGameExtend
         public static Game Game { get; set; } = null;
 
 
-#if DEBUG
         private static MetricsScreen _cacheMetricsScreen;
-#endif
+
         private static KSceneBase m_Main;
         public static KSceneBase Main
         {
@@ -57,12 +56,10 @@ namespace KFramework.MonoGameExtend
             m_Main = mainScene;
             AddScene(m_Main);
 
-#if DEBUG
             if (_cacheMetricsScreen == null)
             {
                 _cacheMetricsScreen = new MetricsScreen();
             }
-#endif
 
         }
 
