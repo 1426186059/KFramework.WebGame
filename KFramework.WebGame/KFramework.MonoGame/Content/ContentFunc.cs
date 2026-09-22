@@ -42,18 +42,18 @@
 
             if (bUseCache)
             {
-                int len = await JSBind_CacheStorage.GetSizeAsync(path).ConfigureAwait(false);
+                int len = await JSBind_CacheStorage.GetCacheSizeAsync(path).ConfigureAwait(false);
                 if (len > 0)
                 {
                     var buf = new byte[len];
-                    int written = await JSBind_CacheStorage.LoadIntoAsync(path, new ArraySegment<byte>(buf)).ConfigureAwait(false);
+                    int written = await JSBind_CacheStorage.LoadCacheAsync(path, new ArraySegment<byte>(buf)).ConfigureAwait(false);
                     if (written == len) return buf;
                 }
 
                 using var resp = await http.GetAsync(path, cancellationToken).ConfigureAwait(false);
                 resp.EnsureSuccessStatusCode();
                 var data = await resp.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
-                await JSBind_CacheStorage.SaveAsync(path, new ArraySegment<byte>(data)).ConfigureAwait(false);
+                await JSBind_CacheStorage.SaveCacheAsync(path, new ArraySegment<byte>(data)).ConfigureAwait(false);
                 return data;
             }
             else

@@ -12,26 +12,66 @@ namespace KFramework.MonoGame
 
         public AssetBundleManager(
             HttpClient http,
-            string baseUrl)
+            string baseDir)
         {
             _http = http;
-            _rootDir = baseUrl.TrimEnd('/') + "/";
+            _rootDir = baseDir.TrimEnd('/') + "/";
         }
 
         public IReadOnlyList<string> LoadedBundles => _bundles.Keys.ToArray();
 
         public async Task<bool> IsBundleCachedAsync(string file, CancellationToken cancellationToken = default)
-            => await JSBind_CacheStorage.GetSizeAsync(file).ConfigureAwait(false) > 0;
+            => await JSBind_CacheStorage.GetCacheSizeAsync(file).ConfigureAwait(false) > 0;
 
         private string ResolveRooted(string path)
         {
             return _rootDir + path;
         }
 
+        /// <summary>本地清单在 IndexedDB 里用的键（字符串 KV；清单是 JSON 文本，存字符串最省事、可被可靠持久化）。</summary>
+        private const string LocalManifestKey = "KFramework.AssetBundleManifest";
+
         public async Task<AssetBundleManifest> FetchManifestAsync(CancellationToken cancellationToken = default)
         {
+            AssetBundleManifest old_version = null;
+            string old_json = await JSBind_IndexedDB.GetStringAsync(LocalManifestKey);
+            if (!string.IsNullOrWhiteSpace(old_json))
+            {
+                old_version = AssetBundleManifest.Parse(old_json);
+            }
+
             byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted("version.manifest"), false, cancellationToken).ConfigureAwait(false);
-            return _manifest = AssetBundleManifest.Parse(ContentFunc.DecodeUtf8(data));
+            string json = ContentFunc.DecodeUtf8(data);
+            AssetBundleManifest new_version = AssetBundleManifest.Parse(json);
+            this.UpdateAsync(old_version, null, cancellationToken).ConfigureAwait(false);
+
+            await JSBind_IndexedDB.SetStringAsync(LocalManifestKey, json).ConfigureAwait(false);
+            return _manifest = AssetBundleManifest.Parse(json);
+        }
+
+        /// <summary>
+        /// 从 IndexedDB 读取上次落盘的 <see cref="AssetBundleManifest"/>。
+        /// 用于冷启动时拿“上一次生效清单”做热更差异比对与缓存 GC；没有 / 损坏时返回 null。
+        /// </summary>
+        public async Task<AssetBundleManifest?> TryLoadLocalManifestAsync(CancellationToken cancellationToken = default)
+        {
+            string json = await JSBind_IndexedDB.GetStringAsync(LocalManifestKey).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(json)) return null;
+            try
+            {
+                return AssetBundleManifest.Parse(json);
+            }
+            catch (Exception ex)
+            {
+                PrintTool.LogError($"[KFramework.MonoGame] 本地清单解析失败（已忽略）：{ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>把清单显式落到 IndexedDB（覆盖式）。一般 <see cref="FetchManifestAsync"/> 拉完会自己存一份；此方法是给“本地构造清单”的场景用。</summary>
+        public async Task SaveLocalManifestAsync(AssetBundleManifest manifest, CancellationToken cancellationToken = default)
+        {
+            await JSBind_IndexedDB.SetStringAsync(LocalManifestKey, manifest.Serialize()).ConfigureAwait(false);
         }
 
         public async Task<byte[]?> LoadBundleBytesAsync(BundlePackage package, CancellationToken cancellationToken = default)
@@ -74,7 +114,7 @@ namespace KFramework.MonoGame
 
             if (_manifest is null) await FetchManifestAsync(cancellationToken).ConfigureAwait(false);
 
-            BundlePackage? pkg = AssetBundleManifest.FindPackage(_manifest!.Packages, bundleName, strict);
+            BundlePackage? pkg = _manifest.FindPackage(bundleName, strict);
             if (pkg is null)
                 throw new KeyNotFoundException($"总清单中没有资源包 “{bundleName}”（{(strict ? "精确名" : "关键字")}）。");
 
@@ -157,48 +197,43 @@ namespace KFramework.MonoGame
             IProgress<BundleUpdate>? progress = null,
             CancellationToken cancellationToken = default)
         {
+            AssetBundleManifest? old = local ?? await TryLoadLocalManifestAsync(cancellationToken).ConfigureAwait(false);
             var remote = await FetchManifestAsync(cancellationToken).ConfigureAwait(false);
-            // 拿到远端清单后先做一次缓存 GC：旧版本 / 已下线的包不再保留。
-            // 包文件名带内容哈希，热更一次就多一份旧文件，不清理的话 Cache Storage 会随热更次数单调膨胀直到撑爆配额。
-            await PruneCacheAsync(remote, null, cancellationToken).ConfigureAwait(false);
-            var updates = ComputeUpdates(local, remote);
+            await DeleteCacheAsync(old, remote, cancellationToken).ConfigureAwait(false);
+            var updates = ComputeUpdates(old, remote);
             foreach (var u in updates)
             {
                 progress?.Report(u);
-                // LoadBundleBytesAsync 内部已按缓存策略写回（Memory 模式入 _localCache）
                 await LoadBundleBytesAsync(u.Package, cancellationToken).ConfigureAwait(false);
             }
             return remote;
         }
 
-        /// <summary>
-        /// 缓存 GC：以 <paramref name="manifest"/> 的包清单为白名单，删除 Cache Storage 里的历史版本 / 已下线资源包。
-        /// 包文件名带内容哈希，热更一次就留下一份旧文件，故每次拿到新清单后都应 GC 一次。
-        /// </summary>
-        /// <param name="manifest">当前生效的清单；为 null 时依次回退到已加载清单 / 远端清单。</param>
-        /// <param name="extraKeep">额外保留的键（相对路径，会拼上资源根），用于保护同目录下非资源包的缓存条目。</param>
-        /// <returns>实际删除的条目数；失败返回 -1（GC 属兜底操作，不抛异常、不阻断加载与热更）。</returns>
-        public async Task<int> PruneCacheAsync(
-            AssetBundleManifest? manifest = null,
-            IEnumerable<string>? extraKeep = null,
+        public async Task<int> DeleteCacheAsync(
+            AssetBundleManifest? oldManifest,
+            AssetBundleManifest? newManifest,
             CancellationToken cancellationToken = default)
         {
+            if (oldManifest == null || newManifest == null) return 0;
+
+            var removeList = new List<string>();
             try
             {
-                manifest ??= _manifest ?? await FetchManifestAsync(cancellationToken).ConfigureAwait(false);
+                newManifest ??= _manifest ?? await FetchManifestAsync(cancellationToken).ConfigureAwait(false);
+                foreach (var p in oldManifest.Packages)
+                {
+                    if (newManifest.FindPackage(p.Name) == null)
+                    {
+                        removeList.Add(p.File);
+                    }
+                }
 
-                var keep = new List<string>(manifest.Packages.Count + 8);
-                foreach (var p in manifest.Packages)
-                    keep.Add(ResolveRooted(p.File));
-                if (extraKeep is not null)
-                    foreach (var k in extraKeep)
-                        if (!string.IsNullOrWhiteSpace(k)) keep.Add(ResolveRooted(k));
-
-                // 前缀(资源根目录) + 后缀(.web.lib) 双重限定：只回收资源包，
-                // 同目录下的 version.manifest、零散图片等其它缓存条目不受影响
-                int removed = await JSBind_CacheStorage.PruneAsync(keep.ToArray(), _rootDir, BundleFileExtension).ConfigureAwait(false);
+                int removed = await JSBind_CacheStorage.DeleteCacheListAsync(removeList.ToArray()).ConfigureAwait(false);
                 if (removed > 0)
-                    PrintTool.Log($"[KFramework.MonoGame] 缓存 GC：清理历史版本资源包 {removed} 项（白名单保留 {keep.Count} 项）");
+                {
+                    PrintTool.Log($"[KFramework.MonoGame] 缓存 GC：清理非生效资源包 {removed} 项");
+                }
+
                 return removed;
             }
             catch (Exception ex)

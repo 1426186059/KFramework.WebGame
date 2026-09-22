@@ -85,16 +85,7 @@ namespace KFramework.MonoGame
 
         /// <summary>卸载一个已加载的 Bundle（释放其 zip 流；正在使用的纹理/字节请自行管理）。</summary>
         public void UnloadBundle(string bundleName) => _manager.UnloadBundle(bundleName);
-
-        /// <summary>
-        /// 缓存 GC：清理 Cache Storage 里不在当前清单中的历史版本资源包（返回删除条数；失败返回 -1）。
-        /// 包文件名带内容哈希，热更一次就留一份旧文件，建议每次热更后调用一次。
-        /// </summary>
-        /// <param name="extraKeep">额外保留的相对路径，用于保护资源根目录下非资源包的缓存条目。</param>
-        public Task<int> PruneCacheAsync(IEnumerable<string>? extraKeep = null, CancellationToken cancellationToken = default)
-            => _manager.PruneCacheAsync(null, extraKeep, cancellationToken);
-
-
+        
         private string ResolveRooted(string path)
         { 
             return Uri.TryCreate(path, UriKind.Absolute, out _) ? path : $"{_rootDir}/{path.TrimStart('/')}";
