@@ -9,6 +9,7 @@ using Client.MirObjects;
 using System.Text.RegularExpressions;
 using MirEngine;
 using WebGame.Mir2.MonoGame.Client;
+using KFramework.MonoGame;
 
 namespace Client.MirGraphics
 {
@@ -646,14 +647,14 @@ namespace Client.MirGraphics
                 }
                 catch { }
 
-                BrowserResource.Log($"[Mir][lib] ok: {_fileName}（{bytes.Length} 字节{sizeInfo}）");
+                PrintTool.Log($"[Mir][lib] ok: {_fileName}（{bytes.Length} 字节{sizeInfo}）");
                 Libraries.OnLibraryLoaded();
             }
             catch (Exception ex)
             {
                 _initialized = false;
                 _failed = true;
-                BrowserResource.Log($"[Mir] 库加载失败 {_fileName}: {ex.Message} {ex.StackTrace}");
+                PrintTool.LogError($"[Mir] 库加载失败 {_fileName}: {ex.Message} {ex.StackTrace}");
             }
             finally
             {
