@@ -268,7 +268,7 @@ namespace Client.MirControls
             if (_uiHostReported.Count > 200)
             {
                 if (_uiHostReported.Count == 201)
-                    BrowserResource.Log("[Mir][UIHost] 已达日志上限(200)，后续不再打印。");
+                    KFramework.MonoGame.PrintTool.Log("[Mir][UIHost] 已达日志上限(200)，后续不再打印。");
                 return;
             }
 
@@ -284,7 +284,7 @@ namespace Client.MirControls
             for (int i = 0; i < chain.Count; i++)
                 chainText += (i > 0 ? " <- " : "") + Describe(chain[i]);
 
-            BrowserResource.Log(string.Format("[Mir][UIHost] {0} | 链: {1} | 活动场景: {2}",
+            KFramework.MonoGame.PrintTool.Log(string.Format("[Mir][UIHost] {0} | 链: {1} | 活动场景: {2}",
                 reason, chainText, MirScene.ActiveScene == null ? "null" : MirScene.ActiveScene.GetType().Name));
         }
         #endregion

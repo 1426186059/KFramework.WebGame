@@ -64,7 +64,7 @@ namespace Client.MirScenes
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("[Login] 打开注册对话框失败: " + ex);
+                        KFramework.MonoGame.PrintTool.Log("[Login] 打开注册对话框失败: " + ex);
                         _login.Show();
                     }
                 };
@@ -77,7 +77,7 @@ namespace Client.MirScenes
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("[Login] 打开修改密码对话框失败: " + ex);
+                        KFramework.MonoGame.PrintTool.Log("[Login] 打开修改密码对话框失败: " + ex);
                     }
                 };
 
@@ -392,7 +392,7 @@ namespace Client.MirScenes
             _selectCreated = true;
 
             var p = _pendingLogin;
-            Console.WriteLine("[Login] 切换到选人界面，角色数: " + (p != null && p.Characters != null ? p.Characters.Count : 0));
+            KFramework.MonoGame.PrintTool.Log("[Login] 切换到选人界面，角色数: " + (p != null && p.Characters != null ? p.Characters.Count : 0));
             Dispose();
             ActiveScene = new SelectScene(p != null ? p.Characters : null);
         }

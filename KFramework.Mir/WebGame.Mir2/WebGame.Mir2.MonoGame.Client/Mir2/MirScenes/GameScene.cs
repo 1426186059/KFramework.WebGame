@@ -5227,7 +5227,7 @@ namespace Client.MirScenes
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("[Buff] 添加 buff 特效失败（资源缺失）: " + buff.Type + " -> " + ex.Message);
+                    KFramework.MonoGame.PrintTool.Log("[Buff] 添加 buff 特效失败（资源缺失）: " + buff.Type + " -> " + ex.Message);
                 }
             }
         }
@@ -10353,7 +10353,7 @@ namespace Client.MirScenes
         {
             if (CMain.Time < _lastMoveLog) return;
             _lastMoveLog = CMain.Time + 400;
-            BrowserResource.Log("[Move] " + msg);
+            KFramework.MonoGame.PrintTool.Log("[Move] " + msg);
         }
 
         // 走到鼠标所指的格子（左/右键点空地都会调用）。
@@ -10604,7 +10604,7 @@ namespace Client.MirScenes
                     }
 
                 // 诊断地图数据是否解析正确：正常地图应有大量带底图的格子。
-                BrowserResource.Log("[Map] 尺寸=" + Width + "x" + Height +
+                KFramework.MonoGame.PrintTool.Log("[Map] 尺寸=" + Width + "x" + Height +
                     " 有底图格=" + backCells + " 有中层格=" + midCells + " 有前景格=" + frontCells +
                     " 最大底图号=" + backImageMax);
 
@@ -10619,11 +10619,11 @@ namespace Client.MirScenes
                     count++;
                 }
 
-                BrowserResource.Log("[Map] 预加载地图片库: " + count + " 个，索引=[" + string.Join(",", used) + "]");
+                KFramework.MonoGame.PrintTool.Log("[Map] 预加载地图片库: " + count + " 个，索引=[" + string.Join(",", used) + "]");
             }
             catch (Exception ex)
             {
-                BrowserResource.Log("[Map] 预加载地图片库失败: " + ex.Message);
+                KFramework.MonoGame.PrintTool.Log("[Map] 预加载地图片库失败: " + ex.Message);
             }
         }
 
@@ -10741,7 +10741,7 @@ namespace Client.MirScenes
                     ? "父容器不是 WorldLayerControl（" + layer.GetType().FullName + "）"
                     : "WorldLayer 的父不是 MirScene（" + ((root == null) ? "null" : root.GetType().FullName) + "）";
 
-            BrowserResource.Log(string.Format(
+            KFramework.MonoGame.PrintTool.Log(string.Format(
                 "[Mir][WorldHost] MapControl 不在世界层：{0} | Loc=({1},{2}) Size={3}x{4}",
                 reason, self.Location.X, self.Location.Y, self.Size.Width, self.Size.Height));
         }
@@ -11022,7 +11022,7 @@ namespace Client.MirScenes
             if (CMain.Time > _lastDrawStatTime)
             {
                 if (_lastDrawStatTime > 0)
-                    BrowserResource.Log("[Draw] 底图 绘制=" + _backDrawn + " 偶数格跳过=" + _backSkipped +
+                    KFramework.MonoGame.PrintTool.Log("[Draw] 底图 绘制=" + _backDrawn + " 偶数格跳过=" + _backSkipped +
                         " 库为空=" + _backNoLib + " 无底图数据=" + _backNoImage);
 
                 _lastDrawStatTime = CMain.Time + 3000;

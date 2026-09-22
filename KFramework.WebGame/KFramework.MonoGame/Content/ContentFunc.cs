@@ -14,26 +14,35 @@
         /// </param>
         public static async Task<byte[]> LoadCacheOrDownloadAsync(HttpClient http, string path, bool bUseCache = false, Caching mCacheInstance = null, CancellationToken cancellationToken = default)
         {
-            if (bUseCache)
+            try
             {
-                byte[] buf = await mCacheInstance.LoadAsync(path).ConfigureAwait(false);
-                if (buf != null)
+                if (bUseCache)
                 {
-                    return buf;
-                }
+                    byte[] buf = await mCacheInstance.LoadAsync(path).ConfigureAwait(false);
+                    if (buf != null)
+                    {
+                        return buf;
+                    }
 
-                using var resp = await http.GetAsync(path, cancellationToken).ConfigureAwait(false);
-                resp.EnsureSuccessStatusCode();
-                var data = await resp.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
-                await mCacheInstance.SaveAsync(path, new ArraySegment<byte>(data)).ConfigureAwait(false);
-                return data;
+                    using var resp = await http.GetAsync(path, cancellationToken).ConfigureAwait(false);
+                    resp.EnsureSuccessStatusCode();
+                    var data = await resp.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
+                    await mCacheInstance.SaveAsync(path, new ArraySegment<byte>(data)).ConfigureAwait(false);
+                    return data;
+                }
+                else
+                {
+                    using var resp = await http.GetAsync(path, cancellationToken).ConfigureAwait(false);
+                    resp.EnsureSuccessStatusCode();
+                    return await resp.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
+                }
             }
-            else
+            catch(Exception e)
             {
-                using var resp = await http.GetAsync(path, cancellationToken).ConfigureAwait(false);
-                resp.EnsureSuccessStatusCode();
-                return await resp.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
+                PrintTool.LogError($"LoadCacheOrDownloadAsync: {e.Message} {e.StackTrace}");
             }
+
+            return null;
         }
     }
 }

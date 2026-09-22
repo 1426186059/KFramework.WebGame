@@ -24,14 +24,14 @@ public class BrowserResource
             if (bytes == null || bytes.Length == 0)
             {
                 _missing.Add(path);
-                Log("[Mir] 资源缺失，后续不再重试: " + path);
+                 PrintTool.Log("[Mir] 资源缺失，后续不再重试: " + path);
             }
             return bytes;
         }
         catch (Exception ex)
         {
             _missing.Add(path);
-            Log("[Mir] 资源缺失，后续不再重试: " + path + " " + ex.Message);
+            PrintTool.Log("[Mir] 资源缺失，后续不再重试: " + path + " " + ex.Message);
             return null;
         }
     }
@@ -77,9 +77,4 @@ public class BrowserResource
         Content = new ContentManager("", libBaseUrl);
     }
 
-    public static void Log(string msg)
-    {
-        try { Console.WriteLine(msg); }
-        catch { }
-    }
 }

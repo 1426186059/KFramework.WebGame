@@ -41,7 +41,7 @@ public static class NewResConfig
         string path = BuildLibPath(relPathWithoutExt);
         byte[] bytes = await mContentManager.LoadBytesAsync(MapRoot + path, true, BrowserResource.mCacheInstance).ConfigureAwait(false);
         if (bytes != null && bytes.Length > 0) return bytes;
-        BrowserResource.Log($"[Mir][lib] 远程空: {path}");
+        KFramework.MonoGame.PrintTool.Log($"[Mir][lib] 远程空: {path}");
         return null;
     }
 }

@@ -269,7 +269,7 @@ namespace MirEngine
         }
         public void Select(int start, int length) { SelectionStart = start; SelectionLength = length; }
         public void SelectAll() { SelectionStart = 0; SelectionLength = text.Length; }
-        public void Copy() { if (selectionLength > 0) Console.WriteLine(text.Substring(selectionStart, selectionLength)); }
+        public void Copy() { if (selectionLength > 0) KFramework.MonoGame.PrintTool.Log(text.Substring(selectionStart, selectionLength)); }
 
         public void SimulateKeyDown(Keys keyCode)
         {

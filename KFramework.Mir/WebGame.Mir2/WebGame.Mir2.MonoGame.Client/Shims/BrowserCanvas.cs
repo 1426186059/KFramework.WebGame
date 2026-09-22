@@ -134,7 +134,7 @@ namespace MirEngine
         {
             if (texture?.RenderTarget == null)
             {
-                System.Console.WriteLine($"[DrawTextBox] SKIP rt=null text='{text}' focused={focused}");
+                KFramework.MonoGame.PrintTool.Log($"[DrawTextBox] SKIP rt=null text='{text}' focused={focused}");
                 return;
             }
 
@@ -149,7 +149,7 @@ namespace MirEngine
                 var font = GetFont(css);
                 if (font == null)
                 {
-                    System.Console.WriteLine($"[DrawTextBox] font null css='{css}'");
+                    KFramework.MonoGame.PrintTool.Log($"[DrawTextBox] font null css='{css}'");
                     return;
                 }
 
@@ -183,7 +183,7 @@ namespace MirEngine
                     }
                     catch (System.Exception ex)
                     {
-                        System.Console.WriteLine($"[DrawTextBox] caret EX: {ex}");
+                        KFramework.MonoGame.PrintTool.Log($"[DrawTextBox] caret EX: {ex}");
                     }
                 }
             }

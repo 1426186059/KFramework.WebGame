@@ -252,7 +252,7 @@ namespace WebGame.Mir2.MonoGame.Client
 
         public static void SaveError(string ex)
         {
-            try { BrowserResource.Log("[Mir][Error] " + ex); }
+            try { KFramework.MonoGame.PrintTool.Log("[Mir][Error] " + ex); }
             catch { }
         }
 

@@ -121,7 +121,7 @@ namespace Client.MirControls
 
             // [TEMP-DIAG] 仅用于定位“最大化下点击登录无反应”：打印真实派发目标，行为不变。
             if (this is LoginScene)
-                Console.Error.WriteLine($"[Mir][Down] MC={MouseControl?.GetType().Name} over={MouseControl?.IsMouseOver(CMain.MPoint)} MP=({CMain.MPoint.X},{CMain.MPoint.Y}) loc={MouseControl?.DisplayLocation}");
+                KFramework.MonoGame.PrintTool.LogError($"[Mir][Down] MC={MouseControl?.GetType().Name} over={MouseControl?.IsMouseOver(CMain.MPoint)} MP=({CMain.MPoint.X},{CMain.MPoint.Y}) loc={MouseControl?.DisplayLocation}");
 
             if (MouseControl != null && MouseControl != this)
                 MouseControl.OnMouseDown(e);
@@ -177,7 +177,7 @@ namespace Client.MirControls
             // 故此处改用 MouseControl（鼠标按下时所在控件，松开前不会被清空）来派发 Click，
             // 否则按钮 Click 永远收不到（表现为所有按钮点击无反应）。
             if (this is LoginScene)
-                Console.Error.WriteLine($"[Mir][Click] MC={MouseControl?.GetType().Name} over={MouseControl?.IsMouseOver(CMain.MPoint)} MP=({CMain.MPoint.X},{CMain.MPoint.Y}) loc={MouseControl?.DisplayLocation}");
+                KFramework.MonoGame.PrintTool.LogError($"[Mir][Click] MC={MouseControl?.GetType().Name} over={MouseControl?.IsMouseOver(CMain.MPoint)} MP=({CMain.MPoint.X},{CMain.MPoint.Y}) loc={MouseControl?.DisplayLocation}");
 
             if (MouseControl != null && MouseControl != this && MouseControl.IsMouseOver(CMain.MPoint))
                 MouseControl.OnMouseClick(e);

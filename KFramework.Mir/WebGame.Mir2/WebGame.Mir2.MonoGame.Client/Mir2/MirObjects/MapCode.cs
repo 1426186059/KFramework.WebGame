@@ -156,13 +156,13 @@ namespace Client.MirObjects
             string mapName = DeriveMapName(FileName);
             NewResConfig.RemoteLibEnabled = true;
             NewResConfig.CurrentMapName = mapName;
-            BrowserResource.Log($"[Map] 地图 {mapName} 远程Lib={(NewResConfig.RemoteLibEnabled ? "开" : "关")}");
+            KFramework.MonoGame.PrintTool.Log($"[Map] 地图 {mapName} 远程Lib={(NewResConfig.RemoteLibEnabled ? "开" : "关")}");
 
             Bytes = await BrowserResource.GetBytesAsync(FileName).ConfigureAwait(false);
 
             if (Bytes == null || Bytes.Length == 0)
             {
-                BrowserResource.Log("[Map] 地图文件为空或加载失败，回退空白地图: " + FileName);
+                KFramework.MonoGame.PrintTool.Log("[Map] 地图文件为空或加载失败，回退空白地图: " + FileName);
 
                 Width = 1000;
                 Height = 1000;
@@ -176,7 +176,7 @@ namespace Client.MirObjects
                 return;
             }
 
-            BrowserResource.Log("[Map] 地图已读取: " + FileName + " 字节数=" + Bytes.Length);
+            KFramework.MonoGame.PrintTool.Log("[Map] 地图已读取: " + FileName + " 字节数=" + Bytes.Length);
             Parse();
         }
 
