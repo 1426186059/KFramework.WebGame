@@ -30,9 +30,15 @@ namespace KFramework.MonoGame
         [JSImport("loadInto", "cachestorage")]
         public static partial Task<int> LoadIntoAsync(string name, [JSMarshalAs<JSType.MemoryView>] ArraySegment<byte> buffer);
 
-        /// <summary>把资源包字节（byte[]）以 Response 形式写入 Cache Storage（按 name 键，覆盖式）。</summary>
+        /// <summary>把资源包字节以 Response 形式写入 Cache Storage（按 name 键，覆盖式）。</summary>
+        /// <remarks>
+        /// 必须走 <b>MemoryView</b>：<c>byte[]</c> 默认按 <c>JSType.Array</c> 逐字节复制成 JS 数组
+        ///（大包极慢，且 Array 也不是合法 Response body，会被按字符串存成 “80,75,3,4,...”）。
+        /// 本方法跨 await，故用 ArraySegment（Span 在异步里无效）；JS 侧用完会 dispose 解 pin。
+        /// 调用：<c>SaveAsync(name, new ArraySegment&lt;byte&gt;(data))</c>。
+        /// </remarks>
         [JSImport("save", "cachestorage")]
-        public static partial Task SaveAsync(string name, byte[] bytes);
+        public static partial Task SaveAsync(string name, [JSMarshalAs<JSType.MemoryView>] ArraySegment<byte> bytes);
 
         /// <summary>删除单个键；返回是否真的删掉了（原本不存在返回 false）。</summary>
         [JSImport("remove", "cachestorage")]

@@ -47,13 +47,31 @@ export async function read(name: string): Promise<Uint8Array | null> {
     return new Uint8Array(await res.arrayBuffer());
 }
 
-// 把资源包字节（byte[]）以 Response 形式写入 Cache Storage（按 name 键，覆盖式）。
-export async function save(name: string, bytes: Uint8Array): Promise<void> {
-    const cache = await openCache();
-    const res = new Response(bytes as unknown as BodyInit, {
-        headers: { 'Content-Type': 'application/octet-stream' },
-    });
-    await cache.put(name, res);
+// 把 C# 传进来的字节转成真正的 ArrayBufferView。
+// C# 的 ArraySegment<byte> 在 JS 侧是 MemoryView —— 它是 dotnet 的包装对象，**不是** TypedArray，
+// 直接塞进 new Response() 不会被当成 BufferSource，而会按 USVString 转成 "[object Object]"，
+// 于是缓存里存的是这段文本而不是原始字节：下一次命中缓存拿到的就是垃圾（zip 会报 EOCDNotFound）。
+function toBody(src: Uint8Array | MemoryView): Uint8Array<ArrayBuffer> {
+    // 一律拷进自己新开的 ArrayBuffer：既拿到真正的 BufferSource，也保证类型上就是 Uint8Array<ArrayBuffer>
+    const out = new Uint8Array(src.byteLength);
+    if (src instanceof Uint8Array) out.set(src);
+    else (src as MemoryView).copyTo(out); // MemoryView → 目标 TypedArray（要求 constructor 一致，byte 视图即 Uint8Array）
+    return out;
+}
+
+// 把资源包字节以 Response 形式写入 Cache Storage（按 name 键，覆盖式）。
+// 注意：必须先把参数归一化成 Uint8Array，否则 Response 会把 MemoryView 当字符串存进去。
+export async function save(name: string, bytes: Uint8Array | MemoryView): Promise<void> {
+    try {
+        const cache = await openCache();
+        const res = new Response(toBody(bytes), {
+            headers: { 'Content-Type': 'application/octet-stream' },
+        });
+        await cache.put(name, res);
+    } finally {
+        // ArraySegment 的视图 pin 着托管数组，用完解 pin
+        (bytes as MemoryView).dispose?.();
+    }
 }
 
 // ==================== 缓存 GC（通用） ====================

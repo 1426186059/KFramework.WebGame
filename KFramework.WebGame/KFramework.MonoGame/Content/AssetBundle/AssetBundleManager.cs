@@ -36,7 +36,8 @@ namespace KFramework.MonoGame
 
         public async Task<byte[]?> LoadBundleBytesAsync(BundlePackage package, CancellationToken cancellationToken = default)
         {
-            return await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(package.File), true, cancellationToken).ConfigureAwait(false);
+            // 清单里有准确字节数：顺带当缓存校验用（长度不符的脏缓存会被丢弃重下）
+            return await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(package.File), true, cancellationToken, package.Size).ConfigureAwait(false);
         }
 
         public AssetBundle? GetBundle(string bundleName, bool strict = true)
@@ -81,7 +82,18 @@ namespace KFramework.MonoGame
             if (bytes is null)
                 throw new InvalidOperationException($"资源包 “{bundleName}” 下载失败（{pkg.File}）。");
 
-            var bundle = AssetBundle.LoadFromMemory(bytes);
+            AssetBundle bundle;
+            try
+            {
+                bundle = AssetBundle.LoadFromMemory(bytes);
+            }
+            catch (InvalidDataException ex)
+            {
+                // zip 不合法时把「哪个包 / 多大 / 头部 4 字节」打出来：一眼能看出是下到 HTML、下了半截还是缓存被写坏
+                string head = bytes.Length >= 4 ? BitConverter.ToString(bytes, 0, 4) : "(不足 4 字节)";
+                throw new InvalidDataException(
+                    $"资源包 “{bundleName}” 不是合法 zip：{pkg.File}（{bytes.Length} 字节，头部 {head}，清单 Size {pkg.Size}）。{ex.Message}", ex);
+            }
             // 拉包阶段即把需要解码的纹理（Png 等）解码为 RGBA8 并缓存；传了 device 时 KTX2 也在此阶段转码+上传 GPU，
             // 使后续 LoadTexture 仅做取用、不再做解码/上传。
             await bundle.DecodeTexturesAsync(device).ConfigureAwait(false);
