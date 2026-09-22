@@ -17,20 +17,6 @@
         /// </param>
         public static async Task<byte[]> LoadCacheOrDownloadAsync(HttpClient http, string path, bool bUseCache = false, CancellationToken cancellationToken = default, long expectedSize = 0)
         {
-            for (int attempt = 0; ; attempt++)
-            {
-                byte[] bytes = await LoadCacheOrDownloadOnceAsync(http, path, bUseCache, cancellationToken).ConfigureAwait(false);
-                if (expectedSize <= 0 || bytes.Length == expectedSize) return bytes;
-                // 长度不符：缓存被写坏过（早年版本的 bug / 半截数据）。删掉条目后再来一次，第二次必走网络。
-                if (attempt > 0)
-                    throw new IOException($"[KFramework.MonoGame] 资源长度不符：{path}（期望 {expectedSize}，实际 {bytes.Length}）");
-                PrintTool.Log($"[KFramework.MonoGame] 缓存条目长度不符，已清除重下：{path}（期望 {expectedSize}，实际 {bytes.Length}）");
-                await JSBind_CacheStorage.RemoveAsync(path).ConfigureAwait(false);
-            }
-        }
-
-        private static async Task<byte[]> LoadCacheOrDownloadOnceAsync(HttpClient http, string path, bool bUseCache, CancellationToken cancellationToken)
-        {
             if (bUseJSHttp)
             {
                 int length = await JSBind_Http.LoadCacheOrDownloadAsync(path, bUseCache).ConfigureAwait(false);
