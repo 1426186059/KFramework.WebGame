@@ -39,7 +39,7 @@
             }
             catch(Exception e)
             {
-                PrintTool.LogError($"LoadCacheOrDownloadAsync: BaseURL: {http.BaseAddress}   Path:{path}   {e.Message} {e.StackTrace}");
+                PrintTool.LogError($"LoadCacheOrDownloadAsync: BaseURL: {http.BaseAddress}   Path:{path}  Error: {e.Message}");
             }
 
             return null;
