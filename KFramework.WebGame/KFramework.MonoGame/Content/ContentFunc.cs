@@ -2,7 +2,6 @@
 {
     internal static class ContentFunc
     {
-        public const bool bUseJSHttp = true;
 
         public static string DecodeUtf8(byte[] data)
         {
@@ -10,6 +9,7 @@
             return System.Text.Encoding.UTF8.GetString(data, start, data.Length - start);
         }
 
+        private const bool bUseJSHttp = false;
         public static async Task<byte[]> LoadCacheOrDownloadAsync(HttpClient http, string path, bool bUseCache = false, CancellationToken cancellationToken = default)
         {
             if(bUseJSHttp)
