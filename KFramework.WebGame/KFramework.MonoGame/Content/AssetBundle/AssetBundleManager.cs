@@ -7,6 +7,7 @@ namespace KFramework.MonoGame
         /// <summary>本地清单在 IndexedDB 里用的键（字符串 KV；清单是 JSON 文本，存字符串最省事、可被可靠持久化）。</summary>
         private const string LocalManifestKey = "KFramework.AssetBundleManifest";
 
+
         private readonly HttpClient _http;
         private readonly string _rootDir;
         private AssetBundleManifest? _manifest;

@@ -251,5 +251,6 @@ public sealed class AssetBundle : IDisposable
     {
         // 缓存的是字节（CPU）与 GL 内部格式（int），无 GPU 资源需要显式回收；关闭 zip 流即可。
         _zip.Dispose();
+        this._decodedTextures.Clear();
     }
 }
