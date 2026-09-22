@@ -26,7 +26,7 @@ namespace KFramework.MonoGame
         public IReadOnlyList<string> LoadedBundles => _bundles.Keys.ToArray();
 
         public async Task<bool> IsBundleCachedAsync(string file, CancellationToken cancellationToken = default)
-            => await Caching.Default.GetSizeAsync(file).ConfigureAwait(false) > 0;
+            => await mCacheInstance.GetSizeAsync(file).ConfigureAwait(false) > 0;
 
         private string ResolveRooted(string path)
         {
@@ -42,7 +42,7 @@ namespace KFramework.MonoGame
                 old_version = AssetBundleManifest.Parse(old_json);
             }
 
-            byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted("version.manifest"), false, cancellationToken).ConfigureAwait(false);
+            byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted("version.manifest"), false, null, cancellationToken).ConfigureAwait(false);
             string json = ContentFunc.DecodeUtf8(data);
             AssetBundleManifest new_version = AssetBundleManifest.Parse(json);
             await this.DeleteOldCachesAsync(old_version, new_version, cancellationToken).ConfigureAwait(false);
@@ -77,7 +77,7 @@ namespace KFramework.MonoGame
         private async Task<byte[]?> LoadBundleBytesAsync(BundlePackage package, CancellationToken cancellationToken = default)
         {
             // 清单里有准确字节数：顺带当缓存校验用（长度不符的脏缓存会被丢弃重下）
-            return await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(package.File), true, Caching.Default, cancellationToken, package.Size).ConfigureAwait(false);
+            return await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(package.File), true, mCacheInstance, cancellationToken, package.Size).ConfigureAwait(false);
         }
 
         public AssetBundle? GetBundle(string bundleName, bool strict = true)
@@ -219,12 +219,12 @@ namespace KFramework.MonoGame
                 {
                     if (newManifest.FindPackage(p.Name) == null)
                     {
-                        if (await Caching.Default.RemoveAsync(ResolveRooted(p.File)).ConfigureAwait(false))
+                        if (await mCacheInstance.RemoveAsync(ResolveRooted(p.File)).ConfigureAwait(false))
                             removed++;
                     }
                 }
 
-                PrintTool.Log($"[KFramework.MonoGame] 缓存: {Caching.DefaultName} ：删除资源包 {removed} 项, 现有: {await Caching.Default.GetCountAsync().ConfigureAwait(false)} 项");
+                PrintTool.Log($"[KFramework.MonoGame] 缓存: {mCacheInstance.Name} ：删除资源包 {removed} 项, 现有: {await mCacheInstance.GetCountAsync().ConfigureAwait(false)} 项");
                 return removed;
             }
             catch (Exception ex)
