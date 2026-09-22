@@ -22,20 +22,22 @@ namespace KFramework.MonoGame
             }
 
             Uri? baseAddress = null;
-            if (!string.IsNullOrEmpty(baseUri))
+            if (!string.IsNullOrWhiteSpace(baseUri))
             {
                 int cut = baseUri.LastIndexOf('/');
                 if (cut > 0 && !baseUri.EndsWith('/'))
                 {
                     baseUri = baseUri.Substring(0, cut + 1);
                 }
+
                 if (!Uri.TryCreate(baseUri, UriKind.Absolute, out baseAddress))
                 {
-                    baseAddress = null;
+                    PrintTool.LogError($"ContentManager: BaseURL: ori: {BaseURL} now: {baseUri}   is not a valid absolute URI.");
+                    throw new Exception();
                 }
             }
 
-            _http = baseAddress is null ? new HttpClient() : new HttpClient { BaseAddress = baseAddress };
+            _http = new HttpClient { BaseAddress = baseAddress };
             _http.Timeout = TimeSpan.FromMinutes(5);
             _manager = new AssetBundleManager(_http, _rootDir);
         }
