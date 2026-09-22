@@ -21,7 +21,7 @@ namespace KFramework.MonoGame
         public IReadOnlyList<string> LoadedBundles => _bundles.Keys.ToArray();
 
         public async Task<bool> IsBundleCachedAsync(string file, CancellationToken cancellationToken = default)
-            => await JSBind_CacheStorage.GetCacheSizeAsync(file).ConfigureAwait(false) > 0;
+            => await Caching.Default.GetSizeAsync(file).ConfigureAwait(false) > 0;
 
         private string ResolveRooted(string path)
         {
@@ -114,7 +114,7 @@ namespace KFramework.MonoGame
 
             if (_manifest is null) await FetchManifestAsync(cancellationToken).ConfigureAwait(false);
 
-            BundlePackage? pkg = _manifest.FindPackage(bundleName, strict);
+            BundlePackage? pkg = _manifest!.FindPackage(bundleName, strict);
             if (pkg is null)
                 throw new KeyNotFoundException($"总清单中没有资源包 “{bundleName}”（{(strict ? "精确名" : "关键字")}）。");
 
@@ -216,24 +216,21 @@ namespace KFramework.MonoGame
         {
             if (oldManifest == null || newManifest == null) return 0;
 
-            var removeList = new List<string>();
+            int removed = 0;
             try
             {
-                newManifest ??= _manifest ?? await FetchManifestAsync(cancellationToken).ConfigureAwait(false);
+                // 旧清单里有、但新清单里已下线的包：直接删掉对应缓存条目（走默认缓存，命名与 C# Caching 一致）
                 foreach (var p in oldManifest.Packages)
                 {
                     if (newManifest.FindPackage(p.Name) == null)
                     {
-                        removeList.Add(p.File);
+                        if (await Caching.Default.RemoveAsync(ResolveRooted(p.File)).ConfigureAwait(false))
+                            removed++;
                     }
                 }
 
-                int removed = await JSBind_CacheStorage.DeleteCacheListAsync(removeList.ToArray()).ConfigureAwait(false);
                 if (removed > 0)
-                {
                     PrintTool.Log($"[KFramework.MonoGame] 缓存 GC：清理非生效资源包 {removed} 项");
-                }
-
                 return removed;
             }
             catch (Exception ex)

@@ -33,15 +33,12 @@ namespace KFramework.MonoGame
             Packages = packages;
         }
 
-        /// <summary>序列化为 JSON 字符串（version.manifest 的内容）。</summary>
         public string Serialize() => JsonSerializer.Serialize(this, AppJsonContext.Default.AssetBundleManifest);
 
-        /// <summary>从流解析总清单（version.manifest）。</summary>
         public static AssetBundleManifest Parse(Stream stream)
             => JsonSerializer.Deserialize(stream, AppJsonContext.Default.AssetBundleManifest)
                ?? throw new InvalidDataException("version.manifest 解析失败");
 
-        /// <summary>从 JSON 字符串解析总清单（version.manifest）。</summary>
         public static AssetBundleManifest Parse(string json)
             => JsonSerializer.Deserialize(json, AppJsonContext.Default.AssetBundleManifest)
                ?? throw new InvalidDataException("version.manifest 解析失败");
@@ -65,17 +62,13 @@ namespace KFramework.MonoGame
             return null;
         }
 
-        // ==================== Unity 风格 API ====================
 
-        /// <summary>所有包的逻辑名（对应 Unity GetAllAssetBundles）。</summary>
         public string[] GetAllAssetBundles()
             => Packages.Select(p => p.Name).ToArray();
 
-        /// <summary>取某包的完整内容哈希（对应 Unity GetAssetBundleHash）。用于精确热更比对。</summary>
         public string? GetAssetBundleHash(string bundleName)
             => FindPackage(bundleName)?.Hash;
 
-        /// <summary>取某包直接依赖的其它包逻辑名（对应 Unity GetDirectDependencies）。</summary>
         public string[] GetDirectDependencies(string bundleName)
         {
             var p = FindPackage(bundleName);

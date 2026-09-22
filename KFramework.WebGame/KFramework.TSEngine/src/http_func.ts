@@ -15,7 +15,7 @@
 // 接线：main.ts 里 setModuleImports('http_func', httpFunc)；
 // C# 侧 KFramework.MonoGame.JSBind_Http 用 [JSImport("...", "http_func")] 绑定。
 
-import { read, save } from './storage_cachestorage.js';
+import { Caching } from './storage_cachestorage.js';
 
 // 第一步加载完到第二步取走之间的暂存区。
 // 设上限，避免调用方取完/放弃后长期占着内存（FIFO 淘汰）。
@@ -48,7 +48,7 @@ function stash(name: string, bytes: Uint8Array): void {
 export async function loadCacheOrDownloadAsync(name: string, useCache: boolean): Promise<number> {
     // 缓存命中
     if (useCache) {
-        const hit = await read(name);
+        const hit = await Caching.current.read(name);
         if (hit) {
             stash(name, hit);
             return hit.byteLength;
@@ -69,7 +69,7 @@ export async function loadCacheOrDownloadAsync(name: string, useCache: boolean):
     // 写回缓存（失败只影响下次命中，不影响本次结果：配额满 / 无痕模式等退化为每次走网络）
     if (useCache) {
         try {
-            await save(name, bytes);
+            await Caching.current.save(name, bytes);
         } catch {
             // 忽略
         }
