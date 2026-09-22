@@ -19,9 +19,16 @@ namespace KFramework.MonoGame
         [JSImport("size", "cachestorage")]
         public static partial Task<int> GetSizeAsync(string name);
 
-        /// <summary>把 Cache Storage 中已存字节写入 <paramref name="buffer"/>；返回实际写入长度（缺失返回 -1）。</summary>
+        /// <summary>
+        /// 把 Cache Storage 中已存字节写入 <paramref name="buffer"/>；返回实际写入长度（-1 缺失，&lt;=-2 缓冲不足）。
+        /// </summary>
+        /// <remarks>
+        /// 缓冲必须是 <b>MemoryView</b>：<c>byte[]</c> 走 <c>JSType.Array</c> 是<b>复制</b>语义，JS 写进副本的字节
+        /// 不会回到托管数组（表现就是拿到全 0）；且本方法跨 await，只能用 ArraySegment（Span 在异步里无效）。
+        /// 调用：<c>LoadIntoAsync(name, new ArraySegment&lt;byte&gt;(buf))</c>。
+        /// </remarks>
         [JSImport("loadInto", "cachestorage")]
-        public static partial Task<int> LoadIntoAsync(string name, byte[] buffer);
+        public static partial Task<int> LoadIntoAsync(string name, [JSMarshalAs<JSType.MemoryView>] ArraySegment<byte> buffer);
 
         /// <summary>把资源包字节（byte[]）以 Response 形式写入 Cache Storage（按 name 键，覆盖式）。</summary>
         [JSImport("save", "cachestorage")]

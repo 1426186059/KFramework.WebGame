@@ -130,7 +130,7 @@ namespace KFramework.MonoGame
             // 已知尺寸，预分配像素缓冲后一次性解码（源生成互操作不支持直接回传 byte[]，故走 out 缓冲）。
             int[] size = new int[2];
             byte[] pixels = new byte[w * h * 4];
-            await JSBind_Texture.DecodeImageToRgba(data, size, pixels).ConfigureAwait(false);
+            await JSBind_Texture.DecodeImageToRgba(data, new ArraySegment<int>(size), new ArraySegment<byte>(pixels)).ConfigureAwait(false);
             return device.CreateTexture(w, h, pixels);
         }
 

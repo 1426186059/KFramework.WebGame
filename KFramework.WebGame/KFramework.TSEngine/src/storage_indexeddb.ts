@@ -100,7 +100,8 @@ export async function bytesSize(key: string): Promise<number> {
     });
 }
 
-export async function loadBytesInto(key: string, buffer: Uint8Array): Promise<number> {
+// buffer 是 C# 的 ArraySegment<byte> → MemoryView（零拷贝视图），写完要 dispose 解 pin。
+export async function loadBytesInto(key: string, buffer: MemoryView | Uint8Array): Promise<number> {
     const db = await openDb();
     return new Promise((resolve, reject) => {
         const tx = db.transaction(STORE, 'readonly');
@@ -112,8 +113,15 @@ export async function loadBytesInto(key: string, buffer: Uint8Array): Promise<nu
             else if (v instanceof ArrayBuffer) bytes = new Uint8Array(v);
             else if (typeof v === 'string') bytes = new TextEncoder().encode(v);
             if (!bytes) { resolve(-1); return; }
-            buffer.set(bytes.subarray(0, buffer.length));
-            resolve(bytes.byteLength);
+            try {
+                if (bytes.byteLength > buffer.byteLength) { resolve(-bytes.byteLength); return; }
+                (buffer as Uint8Array).set(bytes, 0);
+                resolve(bytes.byteLength);
+            } catch (e) {
+                reject(e);
+            } finally {
+                (buffer as MemoryView).dispose?.();
+            }
         };
         req.onerror = () => reject(req.error);
     });

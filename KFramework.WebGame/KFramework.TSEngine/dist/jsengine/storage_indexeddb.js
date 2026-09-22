@@ -92,6 +92,7 @@ export async function bytesSize(key) {
         req.onerror = () => reject(req.error);
     });
 }
+// buffer 是 C# 的 ArraySegment<byte> → MemoryView（零拷贝视图），写完要 dispose 解 pin。
 export async function loadBytesInto(key, buffer) {
     const db = await openDb();
     return new Promise((resolve, reject) => {
@@ -110,8 +111,20 @@ export async function loadBytesInto(key, buffer) {
                 resolve(-1);
                 return;
             }
-            buffer.set(bytes.subarray(0, buffer.length));
-            resolve(bytes.byteLength);
+            try {
+                if (bytes.byteLength > buffer.byteLength) {
+                    resolve(-bytes.byteLength);
+                    return;
+                }
+                buffer.set(bytes, 0);
+                resolve(bytes.byteLength);
+            }
+            catch (e) {
+                reject(e);
+            }
+            finally {
+                buffer.dispose?.();
+            }
         };
         req.onerror = () => reject(req.error);
     });

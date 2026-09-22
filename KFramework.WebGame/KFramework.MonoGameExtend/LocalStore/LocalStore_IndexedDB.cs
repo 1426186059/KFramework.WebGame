@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace KFramework.MonoGame
@@ -45,7 +46,7 @@ namespace KFramework.MonoGame
             int len = await JSBind_IndexedDB.BytesSizeAsync(key).ConfigureAwait(false);
             if (len <= 0) return null;
             byte[] buf = new byte[len];
-            int written = await JSBind_IndexedDB.LoadBytesIntoAsync(key, buf).ConfigureAwait(false);
+            int written = await JSBind_IndexedDB.LoadBytesIntoAsync(key, new ArraySegment<byte>(buf)).ConfigureAwait(false);
             return written == len ? buf : null;
         }
     }

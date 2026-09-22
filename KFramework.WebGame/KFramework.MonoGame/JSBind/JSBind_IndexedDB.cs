@@ -38,7 +38,11 @@ namespace KFramework.MonoGame
         public static partial Task<int> BytesSizeAsync(string key);
 
         /// <summary>把已存字节写入 <paramref name="buffer"/>；返回实际写入长度（缺失返回 -1）。</summary>
+        /// <remarks>
+        /// 同 <see cref="JSBind_CacheStorage.LoadIntoAsync"/>：缓冲走 MemoryView（ArraySegment），
+        /// 否则 <c>byte[]</c> 的复制语义会让写回的字节丢在 JS 副本里。
+        /// </remarks>
         [JSImport("loadBytesInto", "indexeddb")]
-        public static partial Task<int> LoadBytesIntoAsync(string key, byte[] buffer);
+        public static partial Task<int> LoadBytesIntoAsync(string key, [JSMarshalAs<JSType.MemoryView>] ArraySegment<byte> buffer);
     }
 }

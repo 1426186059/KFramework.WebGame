@@ -41,7 +41,7 @@
                 if (len > 0)
                 {
                     var buf = new byte[len];
-                    int written = await JSBind_CacheStorage.LoadIntoAsync(path, buf).ConfigureAwait(false);
+                    int written = await JSBind_CacheStorage.LoadIntoAsync(path, new ArraySegment<byte>(buf)).ConfigureAwait(false);
                     if (written == len) return buf;
                 }
 

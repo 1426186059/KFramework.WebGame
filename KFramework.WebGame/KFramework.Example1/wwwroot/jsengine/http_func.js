@@ -94,3 +94,6 @@ export function releasePending(name) {
     else
         pending.clear();
 }
+export function Dispose() {
+    pending.clear();
+}

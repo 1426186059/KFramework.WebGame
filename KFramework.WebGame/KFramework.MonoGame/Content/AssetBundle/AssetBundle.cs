@@ -195,7 +195,7 @@ public sealed class AssetBundle : IDisposable
                 // 按目标格式 + 尺寸在 C# 侧预分配输出缓冲（JSImport 不支持直接返回 byte[]）。
                 int size = Ktx2TranscodeSelector.GetTranscodedSize(glFormat, w, h);
                 byte[] compressed = new byte[size];
-                await JSBind_Texture.TranscodeKtx2Into(raw, basisFormat, compressed).ConfigureAwait(false);
+                await JSBind_Texture.TranscodeKtx2Into(raw, basisFormat, new ArraySegment<byte>(compressed)).ConfigureAwait(false);
                 _decodedTextures[e.Path] = new DecodedTexture(compressed, glFormat);
                 continue;
             }
@@ -209,7 +209,7 @@ public sealed class AssetBundle : IDisposable
                 byte[] raw = LoadAsset(e.Path);
                 var pixels = new byte[w * h * 4];
                 var size = new int[2];
-                await JSBind_Texture.DecodeImageToRgba(raw, size, pixels).ConfigureAwait(false);
+                await JSBind_Texture.DecodeImageToRgba(raw, new ArraySegment<int>(size), new ArraySegment<byte>(pixels)).ConfigureAwait(false);
                 _decodedTextures[e.Path] = new DecodedTexture(pixels, SurfaceFormat.Color);
                 continue;
             }

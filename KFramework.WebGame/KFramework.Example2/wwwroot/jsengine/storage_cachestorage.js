@@ -20,15 +20,23 @@ export async function size(name) {
     const buf = await res.arrayBuffer();
     return buf.byteLength;
 }
-// 把已存字节写入 buffer；返回实际写入长度（正常等于 size），失败/缺失返回 -1。
+// 把已存字节写入 buffer；返回实际写入长度（正常等于 size），失败/缺失返回 -1，缓冲不足返回 -(所需长度)。
+// buffer 是 C# 的 ArraySegment<byte> → MemoryView（零拷贝视图，写入直接落在托管 byte[] 上）。
 export async function loadInto(name, buffer) {
     const cache = await openCache();
     const res = await cache.match(name);
     if (!res)
         return -1;
     const buf = new Uint8Array(await res.arrayBuffer());
-    buffer.set(buf.subarray(0, buffer.length));
-    return buf.byteLength;
+    try {
+        if (buf.byteLength > buffer.byteLength)
+            return -buf.byteLength;
+        buffer.set(buf, 0);
+        return buf.byteLength;
+    }
+    finally {
+        buffer.dispose?.(); // ArraySegment 的视图 pin 着托管数组，用完解 pin
+    }
 }
 // 读出已存字节（供 http_func 等模块复用同一个 Cache，避免各模块各写一份 CACHE_NAME）；不存在返回 null。
 export async function read(name) {

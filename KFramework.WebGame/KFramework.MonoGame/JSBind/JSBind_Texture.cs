@@ -17,8 +17,12 @@ namespace KFramework.MonoGame
         /// <paramref name="outPixels"/> 写入 RGBA8 像素（长度 = 宽*高*4）。
         /// 因 WASM 无托管 WebP 解码器，统一走浏览器原生解码（覆盖 Png / Webp）。
         /// </summary>
+        /// <remarks>
+        /// 两个输出缓冲走 MemoryView：<c>byte[]</c> / <c>int[]</c> 按 <c>JSType.Array</c> 是<b>复制</b>到 JS，
+        /// JS 写进副本的像素 / 宽高回不到托管数组（现象就是像素全 0、宽高全 0）；且调用跨 await，只能用 ArraySegment。
+        /// </remarks>
         [JSImport("decodeImageToRgba", "texture")]
-        public static partial Task DecodeImageToRgba(byte[] bytes, int[] outSize, byte[] outPixels);
+        public static partial Task DecodeImageToRgba(byte[] bytes, [JSMarshalAs<JSType.MemoryView>] ArraySegment<int> outSize, [JSMarshalAs<JSType.MemoryView>] ArraySegment<byte> outPixels);
 
         /// <summary>
         /// 仅取图像尺寸（不解码像素），供内容包之外的松散图片预分配像素缓冲。
@@ -33,7 +37,8 @@ namespace KFramework.MonoGame
         /// CPU 侧、不上传 GPU；C# 缓存字节后待 LoadTexture 经 CreateCompressedTexture 上传。
         /// 用输出缓冲而非返回值，是因为 JSImport 不直接支持返回 byte[]。
         /// </summary>
+        /// <remarks>输出缓冲走 MemoryView（同 <see cref="DecodeImageToRgba"/>），否则转码结果写进 JS 副本、C# 拿到全 0。</remarks>
         [JSImport("transcodeKtx2Into", "texture")]
-        public static partial Task TranscodeKtx2Into(byte[] bytes, int basisFormat, byte[] outBuffer);
+        public static partial Task TranscodeKtx2Into(byte[] bytes, int basisFormat, [JSMarshalAs<JSType.MemoryView>] ArraySegment<byte> outBuffer);
     }
 }
