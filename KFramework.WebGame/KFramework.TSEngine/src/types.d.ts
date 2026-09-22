@@ -8,6 +8,8 @@ interface MemoryView {
     copyTo(target: ArrayBufferView): void;
     slice(start?: number, end?: number): ArrayBufferView;
     set(source: ArrayBufferView, targetOffset?: number): void;
+    /** 仅 ArraySegment 建出的视图有：解 pin 托管数组并释放代理（Span 建出的视图不需要、也没有）。 */
+    dispose?(): void;
 }
 
 // dotnet 运行时由 _framework 提供，没有类型定义，这里补一个宽松声明。

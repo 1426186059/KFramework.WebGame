@@ -2,67 +2,60 @@
 // 产物 http_func.js 由 SyncJsEngine 复制到 wwwroot/jsengine。
 //
 // JS 层版的 ContentFunc.LoadCacheOrDownloadAsync：「先查 Cache Storage，未命中再 fetch，
-// 拿到后写回 Cache」。整条链路都在 JS 侧完成，字节只在最后一刻写进 C# 预分配的缓冲，
-// 省掉 HttpClient 方案里“下载 → 进 WASM byte[] → 再传回 JS 存 Cache”的那次来回搬运。
+// 拿到后写回 Cache」。整条链路都在 JS 侧完成，省掉 HttpClient 方案里
+// “下载 → 进 WASM byte[] → 再传回 JS 存 Cache”的那次来回搬运。
 //
-// 与 C# 交换字节沿用「预分配缓冲 + 写回」模式（同 decodeImageToRgba）：C# 先备好 byte[]，
-// JS 往里写，绕开 .NET WASM 不支持 byte[] 作为返回值的限制（SYSLIB1072）。
+// 与 C# 换字节用「两步走」，而不是「预分配 + 猜大小」：
+//   1. loadCacheOrDownloadAsync(name, useCache) —— 异步，加载完把字节暂存在这里，只把长度回给 C#；
+//   2. takePending(name, buffer) —— 同步，C# 按长度精确分配后，一次拷走并释放暂存。
+// 好处：C# 不需要预先知道文件大小、也不会出现「缓冲不够重分配再来一次」的二次往返，
+// 下载/读缓存始终只发生一次；第二步是同步调用，字节此时已在内存里，没有 await，
+// 因此可以直接用 Span<byte> 的 MemoryView（Span 只在同步调用期间有效，异步必须用 ArraySegment）。
 //
 // 接线：main.ts 里 setModuleImports('http_func', httpFunc)；
-// C# 侧 KFramework.MonoGame.JSBind_Http 用 [JSImport("loadCacheOrDownloadAsync", "http_func")] 绑定。
+// C# 侧 KFramework.MonoGame.JSBind_Http 用 [JSImport("...", "http_func")] 绑定。
 
 import { read, save } from './storage_cachestorage.js';
 
-// 缓冲不足时暂存已取到的字节：调用方按返回的长度重新分配后再调一次即可取回，不会重复下载。
-// 设上限，避免调用方放弃重试后长期占着内存。
+// 第一步加载完到第二步取走之间的暂存区。
+// 设上限，避免调用方取完/放弃后长期占着内存（FIFO 淘汰）。
 const PENDING_MAX = 8;
 const pending = new Map<string, Uint8Array>();
 
-// 写入缓冲；缓冲不够就暂存起来，并返回 -(所需长度)
-function writeInto(name: string, bytes: Uint8Array, buffer: Uint8Array): number {
-    if (bytes.byteLength > buffer.length) {
-        // 先删再插，保证新条目排在队尾（FIFO 淘汰）
-        pending.delete(name);
-        pending.set(name, bytes);
-        while (pending.size > PENDING_MAX) {
-            const oldest = pending.keys().next();
-            if (oldest.done) break;
-            pending.delete(oldest.value);
-        }
-        return -bytes.byteLength;
+// C# 侧传进来的缓冲：同步调用的 Span<byte> 在 JS 侧是 MemoryView，写入方式与 Uint8Array 一致（set(src, offset)）。
+type ByteTarget = MemoryView | Uint8Array;
+
+// 存进 pending 并做上限淘汰
+function stash(name: string, bytes: Uint8Array): void {
+    // 先删再插，保证新条目排在队尾（FIFO 淘汰）
+    pending.delete(name);
+    pending.set(name, bytes);
+    while (pending.size > PENDING_MAX) {
+        const oldest = pending.keys().next();
+        if (oldest.done) break;
+        pending.delete(oldest.value);
     }
-    buffer.set(bytes);
-    return bytes.byteLength;
 }
 
 /**
- * 通用取字节：缓存优先，未命中则下载并写回缓存（对齐 C# ContentFunc.LoadCacheOrDownloadAsync）。
+ * 第一步（异步）：把字节加载好，只把长度回给 C#。
+ * 缓存优先（useCache），未命中则 fetch 下载并写回 Cache Storage；字节暂存在本模块，
+ * 随后由同步的 takePending 取走。
  * @param name 资源的键 / URL（相对路径按 document.baseURI 解析，与 Cache Storage 的存键规则一致）
- * @param buffer C# 预分配的缓冲
  * @param useCache 是否启用 Cache Storage（false = 纯下载，对应 C# 的 bUseCache）
- * @returns >=0 实际写入字节数；-1 失败（非 2xx / 网络错误）；
- *          <=-2 缓冲不足，-(返回值) 即所需长度，本次字节已暂存，
- *          按该长度重新分配后再调一次即可立即取回。
+ * @returns >=0 字节长度（C# 按此值精确分配缓冲）；-1 失败（非 2xx / 网络错误）。
  */
-export async function loadCacheOrDownloadAsync(
-    name: string,
-    buffer: Uint8Array,
-    useCache: boolean = false,
-): Promise<number> {
-    // 1) 上一次「缓冲不足」留下的字节，优先直接交付（不重新下载 / 不重新读缓存）
-    const stashed = pending.get(name);
-    if (stashed) {
-        pending.delete(name);
-        return writeInto(name, stashed, buffer);
-    }
-
-    // 2) 缓存命中
+export async function loadCacheOrDownloadAsync(name: string, useCache: boolean): Promise<number> {
+    // 缓存命中
     if (useCache) {
         const hit = await read(name);
-        if (hit) return writeInto(name, hit, buffer);
+        if (hit) {
+            stash(name, hit);
+            return hit.byteLength;
+        }
     }
 
-    // 3) 下载
+    // 下载
     let res: Response;
     try {
         res = await fetch(name);
@@ -73,20 +66,45 @@ export async function loadCacheOrDownloadAsync(
 
     const bytes = new Uint8Array(await res.arrayBuffer());
 
-    // 4) 写回缓存（失败只影响下次命中，不影响本次结果）
+    // 写回缓存（失败只影响下次命中，不影响本次结果：配额满 / 无痕模式等退化为每次走网络）
     if (useCache) {
         try {
             await save(name, bytes);
         } catch {
-            // 配额满 / 无痕模式等：忽略，退化为「每次走网络」
+            // 忽略
         }
     }
 
-    return writeInto(name, bytes, buffer);
+    stash(name, bytes);
+    return bytes.byteLength;
 }
 
-// 丢弃暂存的字节（调用方放弃重试时释放内存）；不传 name 则清空全部。
+/**
+ * 第二步（同步）：把第一步加载好的字节拷进 C# 的缓冲并释放暂存。
+ * 同步调用期间没有 await，故 Span<byte> 的 MemoryView 是有效的（异步场景必须用 ArraySegment）。
+ * @param buffer C# 按第一步返回的长度分配的缓冲（Span<byte> → MemoryView）
+ * @throws 没有待取字节（未加载过 / 已被取走 / 被淘汰），或缓冲装不下——都是调用方用错了，直接抛。
+ */
+export function takePending(name: string, buffer: ByteTarget): void {
+    const bytes = pending.get(name);
+    if (!bytes) throw new Error(`[http_func] takePending: ${name} 没有待取字节`);
+    if (bytes.byteLength > buffer.byteLength)
+        throw new Error(
+            `[http_func] takePending: ${name} 缓冲不足（需要 ${bytes.byteLength}，实际 ${buffer.byteLength}）`,
+        );
+
+    // 同步调用期间没有 await，直接拷进 C# 的缓冲（MemoryView / Uint8Array 的 set 同签名）
+    (buffer as Uint8Array).set(bytes, 0);
+    pending.delete(name); // 交付完成，释放
+}
+
+// 放弃取字节时释放暂存（如加载成功但业务侧取消）；不传 name 则清空全部。
 export function releasePending(name?: string): void {
     if (name) pending.delete(name);
     else pending.clear();
+}
+
+export function Dispose(): void 
+{
+    pending.clear();
 }
