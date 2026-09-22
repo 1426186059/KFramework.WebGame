@@ -708,7 +708,7 @@ namespace Client.MirGraphics
             if (CMain.Time <= _lastMissingLogTime) return;
 
             _lastMissingLogTime = CMain.Time + 3000;
-            MirEngine.BrowserResource.Log("[Img] 图不存在(不画): " + _fileName +
+            BrowserResource.Log("[Img] 图不存在(不画): " + _fileName +
                 " index=" + index + " 图片数=" + (_images != null ? _images.Length : 0) +
                 " 累计=" + _missingImageCount);
         }

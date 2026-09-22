@@ -80,7 +80,7 @@ namespace WebGame.Mir2.MonoGame.Client
             // 两个 HTTP 资源服务器（见 Tools\资源服务器\start-assets.bat）：
             //   :5080 -> 默认资源 lib（Crystal 客户端资源目录，原始 .Lib），走自建 Web 服务器（松加载）
             //   :5081 -> Mir2Res 作为 http 根（地图蒸馏 /Map/、kfc 打包 /hot_update_res/ 均在其下）
-            MirEngine.BrowserResource.Configure("http://127.0.0.1:5080/", "http://127.0.0.1:5081/hot_update_res/");
+            BrowserResource.Configure("http://127.0.0.1:5080/", "http://127.0.0.1:5081/hot_update_res/");
 
             await Settings.Load();
             await CMain.InputKeys.LoadAsync().ConfigureAwait(false);
@@ -252,7 +252,7 @@ namespace WebGame.Mir2.MonoGame.Client
 
         public static void SaveError(string ex)
         {
-            try { MirEngine.BrowserResource.Log("[Mir][Error] " + ex); }
+            try { BrowserResource.Log("[Mir][Error] " + ex); }
             catch { }
         }
 

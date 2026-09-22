@@ -8,7 +8,7 @@ namespace KFramework.MonoGame
         private const string LocalManifestKey = "KFramework.AssetBundleManifest";
         private const string CacheName = "kframework-bundles";
 
-        public readonly Caching mCacheInstance = new Caching(CacheName);
+        public readonly Caching mCacheInstance = Caching.Open(CacheName);
 
         private readonly HttpClient _http;
         private readonly string _rootDir;

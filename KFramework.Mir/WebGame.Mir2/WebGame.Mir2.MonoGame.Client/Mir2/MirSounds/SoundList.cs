@@ -19,11 +19,11 @@ namespace Client.MirSounds
             // 而实际资源是 "1.wav" / "Login2.wav"（见 SoundList.lst），结果就是永远找不到文件 —— 表现为"完全没有音效"。
             byte[] bytes = null;
             if (File.Exists(fileName)) bytes = File.ReadAllBytes(fileName);
-            else bytes = await MirEngine.BrowserResource.GetBytesAsync(fileName).ConfigureAwait(false);
+            else bytes = await BrowserResource.GetBytesAsync(fileName).ConfigureAwait(false);
 
             if (bytes == null || bytes.Length == 0)
             {
-                MirEngine.BrowserResource.Log("[audio] SoundList.lst 未找到，音效索引表为空: " + fileName);
+                BrowserResource.Log("[audio] SoundList.lst 未找到，音效索引表为空: " + fileName);
                 return;
             }
 
@@ -40,7 +40,7 @@ namespace Client.MirSounds
                     Indexes.Add(index, split[split.Length - 1]);
             }
 
-            MirEngine.BrowserResource.Log($"[audio] SoundList.lst 已加载，音效索引 {Indexes.Count} 条");
+            BrowserResource.Log($"[audio] SoundList.lst 已加载，音效索引 {Indexes.Count} 条");
         }
 
         public static int

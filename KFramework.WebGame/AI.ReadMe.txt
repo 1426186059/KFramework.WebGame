@@ -21,3 +21,15 @@ AI 协作约定（代码注释与命名）
 - C# 的 Caching 封装类只持有“缓存名（string）”，不持有 JS 对象句柄
   （避免句柄泄漏、且能继续走 [JSImport] 的源生成 / AOT）；
   一切调用都经 JSBind_* 的模块函数，由 TS 侧按名池化真正的 Cache 句柄。
+
+【C# 写法】
+- 禁止使用表达式体成员（=> 简写）：属性 getter、方法、lambda 之外的 => 一律展开成
+  带 { } 的语句体。
+  例：
+    // 禁止
+    public int Count => _n;
+    public Task<int> GetAsync() => JSBind.X();
+    // 必须写成
+    public int Count { get { return _n; } }
+    public Task<int> GetAsync() { return JSBind.X(); }
+  原因：统一可读性、避免“每次访问是否执行”“是否为同一引用”这类隐含语义被忽略。
