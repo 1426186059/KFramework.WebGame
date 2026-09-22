@@ -10,6 +10,7 @@
     <!-- CS0436：高仿的 System.Windows.Forms / System.Drawing 类型有意覆盖框架同名类型（去原生依赖），
          该警告会为每个使用点刷屏，属预期行为，统一抑制。 -->
     <NoWarn>$(NoWarn);CS0436</NoWarn>
+	<RunAotCompilation>true</RunAotCompilation>
   </PropertyGroup>
 
   <ItemGroup>

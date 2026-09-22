@@ -211,6 +211,16 @@ namespace WebGame.Mir2.MonoGame.Client
                 SpellTargetLock = (MG.Keys)(int)e.KeyCode == (MG.Keys)Enum.Parse(typeof(MG.Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
             else SpellTargetLock = false;
             if (e.KeyCode == MirEngine.Keys.Oem8) Tilde = true;
+            if (e.KeyCode == MirEngine.Keys.F12)
+            {
+                Settings.DebugMode = !Settings.DebugMode;
+                if (!Settings.DebugMode && CMain.DebugBaseLabel != null)
+                {
+                    CMain.DebugBaseLabel.Dispose();
+                    CMain.DebugBaseLabel = null;
+                }
+                return;
+            }
             try
             {
                 if (e.Alt && (MG.Keys)(int)e.KeyCode == MG.Keys.Enter) { ToggleFullScreen(); return; }

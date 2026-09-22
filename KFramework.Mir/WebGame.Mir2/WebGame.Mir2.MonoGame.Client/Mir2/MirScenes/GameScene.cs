@@ -1185,8 +1185,72 @@ namespace Client.MirScenes
             for (int i = 0; i < OutputLines.Length; i++)
                 OutputLines[i].Draw();
         }
+        private static long _dbgTick;
+        private static int _dbgFrames, _dbgFps;
+
+        // 与原版 CMain.CreateDebugLabel 一致：把字节数格式化成 B/KB/MB/GB。
+        private static string FormatBytes(long bytes)
+        {
+            if (bytes <= 0) return "0 B";
+            string[] units = { "B", "KB", "MB", "GB" };
+            int i = 0;
+            double d = bytes;
+            while (d >= 1024 && i < units.Length - 1) { d /= 1024; i++; }
+            return $"{d:F1} {units[i]}";
+        }
+
         public override void Process()
         {
+            // DEBUG 浮层（左上角 FPS）：由 Settings.DebugMode 或游戏内 F12 开关控制。
+            if (Settings.DebugMode)
+            {
+                _dbgFrames++;
+                if (CMain.Time - _dbgTick >= 1000)
+                {
+                    _dbgFps = _dbgFrames;
+                    _dbgFrames = 0;
+                    _dbgTick = CMain.Time;
+                }
+                if (CMain.DebugBaseLabel == null || CMain.DebugBaseLabel.IsDisposed)
+                {
+                    CMain.DebugBaseLabel = new MirLabel
+                    {
+                        AutoSize = true,
+                        Location = new Point(4, 4),
+                        ForeColour = Color.White,
+                        BackColour = Color.FromArgb(120, 0, 0, 0),
+                        NotControl = true,
+                        Visible = true,
+                        Parent = this,
+                    };
+                }
+                if (CMain.DebugBaseLabel is MirLabel lbl)
+                {
+                    // 对齐原版 CMain.CreateDebugLabel 的调试信息：FPS / 时间 / 坐标 / 对象数 /
+                    // Debug / 目标 / Ping / 收发字节。User/MapControl 初期可能为 null，做空守。
+                    var sb = new System.Text.StringBuilder();
+                    sb.Append("FPS: ").Append(_dbgFps);
+                    sb.Append(", Time: ").Append(CMain.Now.ToString("HH:mm:ss"));
+                    if (User != null)
+                        sb.Append(", Co Ords: ").Append(User.CurrentLocation);
+                    if (MapControl != null)
+                        sb.Append(", Objects: ").Append(MapControl.Objects.Count);
+                    if (!string.IsNullOrEmpty(CMain.DebugText))
+                        sb.Append(", Debug: ").Append(CMain.DebugText);
+                    var mo = MapObject.MouseObject;
+                    sb.Append(", Target: ").Append(mo != null ? mo.Name : "none");
+                    sb.Append(", Ping: ").Append(CMain.PingTime);
+                    sb.Append(", Sent: ").Append(FormatBytes(CMain.BytesSent))
+                      .Append(", Received: ").Append(FormatBytes(CMain.BytesReceived));
+                    lbl.Text = sb.ToString();
+                }
+            }
+            else if (CMain.DebugBaseLabel != null)
+            {
+                CMain.DebugBaseLabel.Dispose();
+                CMain.DebugBaseLabel = null;
+            }
+
             if (MapControl == null || User == null)
                 return;
 
