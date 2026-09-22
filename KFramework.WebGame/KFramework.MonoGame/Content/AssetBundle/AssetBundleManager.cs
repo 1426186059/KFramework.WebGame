@@ -77,7 +77,7 @@ namespace KFramework.MonoGame
         private async Task<byte[]?> LoadBundleBytesAsync(BundlePackage package, CancellationToken cancellationToken = default)
         {
             // 清单里有准确字节数：顺带当缓存校验用（长度不符的脏缓存会被丢弃重下）
-            return await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(package.File), true, mCacheInstance, cancellationToken, package.Size).ConfigureAwait(false);
+            return await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(package.File), true, mCacheInstance, cancellationToken).ConfigureAwait(false);
         }
 
         public AssetBundle? GetBundle(string bundleName, bool strict = true)
