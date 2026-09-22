@@ -43,7 +43,7 @@ namespace KFramework.MonoGame
             byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted("version.manifest"), false, cancellationToken).ConfigureAwait(false);
             string json = ContentFunc.DecodeUtf8(data);
             AssetBundleManifest new_version = AssetBundleManifest.Parse(json);
-            this.UpdateAsync(old_version, null, cancellationToken).ConfigureAwait(false);
+            await this.DeleteOldCachesAsync(old_version, new_version, cancellationToken).ConfigureAwait(false);
 
             await JSBind_IndexedDB.SetStringAsync(LocalManifestKey, json).ConfigureAwait(false);
             return _manifest = AssetBundleManifest.Parse(json);
@@ -191,7 +191,7 @@ namespace KFramework.MonoGame
         {
             AssetBundleManifest? old = local ?? await TryLoadLocalManifestAsync(cancellationToken).ConfigureAwait(false);
             var remote = await FetchManifestAsync(cancellationToken).ConfigureAwait(false);
-            await DeleteCacheAsync(old, remote, cancellationToken).ConfigureAwait(false);
+            await DeleteOldCachesAsync(old, remote, cancellationToken).ConfigureAwait(false);
             var updates = ComputeUpdates(old, remote);
             foreach (var u in updates)
             {
@@ -201,7 +201,7 @@ namespace KFramework.MonoGame
             return remote;
         }
 
-        public async Task<int> DeleteCacheAsync(
+        public async Task<int> DeleteOldCachesAsync(
             AssetBundleManifest? oldManifest,
             AssetBundleManifest? newManifest,
             CancellationToken cancellationToken = default)
