@@ -91,21 +91,21 @@ namespace KFramework.MonoGame
             return Uri.TryCreate(path, UriKind.Absolute, out _) ? path : $"{_rootDir}/{path.TrimStart('/')}";
         }
 
-        public async Task<string> LoadTextAsync(string relativePath, bool bUseCache = false, CancellationToken cancellationToken = default)
+        public async Task<string> LoadTextAsync(string relativePath, bool bUseCache = false, Caching mCacheInstance = null, CancellationToken cancellationToken = default)
         {
-            byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), bUseCache, cancellationToken).ConfigureAwait(false);
+            byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), bUseCache, mCacheInstance, cancellationToken).ConfigureAwait(false);
             return ContentFunc.DecodeUtf8(data);
         }
 
         /// <summary>按资源根(root)异步加载任意字节流（不走内容包）。先查本地 Cache Storage，未命中则远程下载并写回，下次直接命中本地缓存。</summary>
-        public async Task<byte[]> LoadBytesAsync(string relativePath, bool bUseCache = false, CancellationToken cancellationToken = default)
+        public async Task<byte[]> LoadBytesAsync(string relativePath, bool bUseCache = false, Caching mCacheInstance = null, CancellationToken cancellationToken = default)
         { 
-            return await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), bUseCache, cancellationToken).ConfigureAwait(false);
+            return await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), bUseCache, mCacheInstance, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<Texture2D> LoadTexture2DAsync(string relativePath, GraphicsDevice device, bool bUseCache = false, CancellationToken cancellationToken = default)
+        public async Task<Texture2D> LoadTexture2DAsync(string relativePath, GraphicsDevice device, bool bUseCache = false, Caching mCacheInstance = null, CancellationToken cancellationToken = default)
         {
-            byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), bUseCache, cancellationToken).ConfigureAwait(false);
+            byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), bUseCache, mCacheInstance, cancellationToken).ConfigureAwait(false);
             return await LoadTexture2DAsync(data, device).ConfigureAwait(false);
         }
 

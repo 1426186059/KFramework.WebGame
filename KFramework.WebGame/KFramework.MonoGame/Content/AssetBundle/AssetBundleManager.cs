@@ -6,7 +6,9 @@ namespace KFramework.MonoGame
         public const string BundleFileExtension = ".web.lib";
         /// <summary>本地清单在 IndexedDB 里用的键（字符串 KV；清单是 JSON 文本，存字符串最省事、可被可靠持久化）。</summary>
         private const string LocalManifestKey = "KFramework.AssetBundleManifest";
+        private const string CacheName = "kframework-bundles";
 
+        public readonly Caching mCacheInstance = new Caching(CacheName);
 
         private readonly HttpClient _http;
         private readonly string _rootDir;
@@ -72,10 +74,10 @@ namespace KFramework.MonoGame
             await JSBind_IndexedDB.SetStringAsync(LocalManifestKey, manifest.Serialize()).ConfigureAwait(false);
         }
 
-        public async Task<byte[]?> LoadBundleBytesAsync(BundlePackage package, CancellationToken cancellationToken = default)
+        private async Task<byte[]?> LoadBundleBytesAsync(BundlePackage package, CancellationToken cancellationToken = default)
         {
             // 清单里有准确字节数：顺带当缓存校验用（长度不符的脏缓存会被丢弃重下）
-            return await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(package.File), true, cancellationToken, package.Size).ConfigureAwait(false);
+            return await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(package.File), true, Caching.Default, cancellationToken, package.Size).ConfigureAwait(false);
         }
 
         public AssetBundle? GetBundle(string bundleName, bool strict = true)

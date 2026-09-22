@@ -1,15 +1,9 @@
-using SlimDX;
-using SlimDX.Direct3D9;
-using System.IO;
-using System.IO.Compression;
-using System.Threading;
-using System.Threading.Tasks;
-using Frame = Client.MirObjects.Frame;
 using Client.MirObjects;
+using SlimDX;
+using System.IO.Compression;
 using System.Text.RegularExpressions;
-using MirEngine;
 using WebGame.Mir2.MonoGame.Client;
-using KFramework.MonoGame;
+using Frame = Client.MirObjects.Frame;
 
 namespace Client.MirGraphics
 {
@@ -647,14 +641,14 @@ namespace Client.MirGraphics
                 }
                 catch { }
 
-                PrintTool.Log($"[Mir][lib] ok: {_fileName}（{bytes.Length} 字节{sizeInfo}）");
+                KFramework.MonoGame.PrintTool.Log($"[Mir][lib] ok: {_fileName}（{bytes.Length} 字节{sizeInfo}）");
                 Libraries.OnLibraryLoaded();
             }
             catch (Exception ex)
             {
                 _initialized = false;
                 _failed = true;
-                PrintTool.LogError($"[Mir] 库加载失败 {_fileName}: {ex.Message} {ex.StackTrace}");
+                KFramework.MonoGame.PrintTool.LogError($"[Mir] 库加载失败 {_fileName}: {ex.Message} {ex.StackTrace}");
             }
             finally
             {

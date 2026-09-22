@@ -2,22 +2,11 @@ namespace KFramework.MonoGame
 {
     public sealed class Caching : IDisposable
     {
-        /// <summary>默认缓存名（资源包 / 静态资源用这个）。</summary>
-        public const string DefaultName = "kframework-bundles";
-
-        /// <summary>默认缓存（等同 <c>Open(DefaultName)</c>）。</summary>
-        public static Caching Default => Open(DefaultName);
-
-        /// <summary>当前写入缓存（对应 Unity 的 Caching.currentCacheForWriting）；未显式设置时回退到默认缓存。</summary>
-        public static Caching CurrentCacheForWriting { get; set; } = Default;
-
         /// <summary>该缓存的 Cache Storage 名字。</summary>
         public string Name { get; }
 
-        private Caching(string name) => Name = name;
-
         /// <summary>打开（复用）一个命名缓存；同名复用同一 Cache 句柄。</summary>
-        public static Caching Open(string name) => new Caching(name);
+        public Caching(string name) => Name = name;
 
         /// <summary>已存字节长度；不存在返回 0（≤0 视为未缓存）。</summary>
         public Task<int> GetSizeAsync(string key)
