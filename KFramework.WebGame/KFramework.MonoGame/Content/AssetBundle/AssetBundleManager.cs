@@ -4,6 +4,8 @@ namespace KFramework.MonoGame
     {
         /// <summary>资源包文件的扩展名（含点）。GC / 过滤时用它圈定"只动资源包"。</summary>
         public const string BundleFileExtension = ".web.lib";
+        /// <summary>本地清单在 IndexedDB 里用的键（字符串 KV；清单是 JSON 文本，存字符串最省事、可被可靠持久化）。</summary>
+        private const string LocalManifestKey = "KFramework.AssetBundleManifest";
 
         private readonly HttpClient _http;
         private readonly string _rootDir;
@@ -28,9 +30,6 @@ namespace KFramework.MonoGame
             return _rootDir + path;
         }
 
-        /// <summary>本地清单在 IndexedDB 里用的键（字符串 KV；清单是 JSON 文本，存字符串最省事、可被可靠持久化）。</summary>
-        private const string LocalManifestKey = "KFramework.AssetBundleManifest";
-
         public async Task<AssetBundleManifest> FetchManifestAsync(CancellationToken cancellationToken = default)
         {
             AssetBundleManifest old_version = null;
@@ -46,7 +45,8 @@ namespace KFramework.MonoGame
             await this.DeleteOldCachesAsync(old_version, new_version, cancellationToken).ConfigureAwait(false);
 
             await JSBind_IndexedDB.SetStringAsync(LocalManifestKey, json).ConfigureAwait(false);
-            return _manifest = AssetBundleManifest.Parse(json);
+            _manifest = new_version;
+            return _manifest;
         }
 
         /// <summary>从 IndexedDB 读取上次落盘的清单；没有/损坏返回 null，用于冷启动差异比对与缓存 GC。</summary>
