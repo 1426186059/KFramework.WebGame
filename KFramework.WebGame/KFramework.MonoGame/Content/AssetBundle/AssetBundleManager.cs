@@ -221,10 +221,7 @@ namespace KFramework.MonoGame
                     }
                 }
 
-                if (removed > 0)
-                {
-                    PrintTool.Log($"[KFramework.MonoGame] 缓存 GC：删除资源包 {removed} 项, 现有: {await Caching.Default.GetCountAsync().ConfigureAwait(false)} 项");
-                }
+                PrintTool.Log($"[KFramework.MonoGame] 缓存: {Caching.DefaultName} ：删除资源包 {removed} 项, 现有: {await Caching.Default.GetCountAsync().ConfigureAwait(false)} 项");
                 return removed;
             }
             catch (Exception ex)
