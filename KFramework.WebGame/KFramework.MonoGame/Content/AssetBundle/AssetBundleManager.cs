@@ -42,7 +42,7 @@ namespace KFramework.MonoGame
                 old_version = AssetBundleManifest.Parse(old_json);
             }
 
-            byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted("version.manifest"), false, null, cancellationToken).ConfigureAwait(false);
+            byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted("version.manifest"), false, null, 0, cancellationToken).ConfigureAwait(false);
             string json = ContentFunc.DecodeUtf8(data);
             AssetBundleManifest new_version = AssetBundleManifest.Parse(json);
             await this.DeleteOldCachesAsync(old_version, new_version, cancellationToken).ConfigureAwait(false);
@@ -77,7 +77,7 @@ namespace KFramework.MonoGame
         private async Task<byte[]?> LoadBundleBytesAsync(BundlePackage package, CancellationToken cancellationToken = default)
         {
             // 清单里有准确字节数：顺带当缓存校验用（长度不符的脏缓存会被丢弃重下）
-            return await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(package.File), true, mCacheInstance, cancellationToken).ConfigureAwait(false);
+            return await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(package.File), true, mCacheInstance, 0, cancellationToken).ConfigureAwait(false);
         }
 
         public AssetBundle? GetBundle(string bundleName, bool strict = true)

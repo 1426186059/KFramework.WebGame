@@ -87,21 +87,25 @@ namespace KFramework.MonoGame
             return Uri.TryCreate(path, UriKind.Absolute, out _) ? path : $"{_rootDir}/{path.TrimStart('/')}";
         }
 
-        public async Task<string> LoadTextAsync(string relativePath, bool bUseCache = false, Caching mCacheInstance = null, CancellationToken cancellationToken = default)
+        /// <param name="priority">加载优先级（数值越小越先执行，0 最高），经 ContentLoadScheduler 调度，避免并发打满。</param>
+        public async Task<string> LoadTextAsync(string relativePath, bool bUseCache = false, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
         {
-            byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), bUseCache, mCacheInstance, cancellationToken).ConfigureAwait(false);
+            byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), bUseCache, mCacheInstance, priority, cancellationToken).ConfigureAwait(false);
             return ContentFunc.DecodeUtf8(data);
         }
 
         /// <summary>按资源根(root)异步加载任意字节流（不走内容包）。先查本地 Cache Storage，未命中则远程下载并写回，下次直接命中本地缓存。</summary>
-        public async Task<byte[]> LoadBytesAsync(string relativePath, bool bUseCache = false, Caching mCacheInstance = null, CancellationToken cancellationToken = default)
+        /// <param name="priority">加载优先级（数值越小越先执行，0 最高）。底图等关键资源建议给高优先级，避免被大文件堵住。</param>
+        public async Task<byte[]> LoadBytesAsync(string relativePath, bool bUseCache = false, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
         { 
-            return await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), bUseCache, mCacheInstance, cancellationToken).ConfigureAwait(false);
+            // 默认走 JS fetch 链路（绕开 .NET WASM HttpClient 对大响应体极慢的问题），
+            // 内部在模块不可用时自动回退 HttpClient。
+            return await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), bUseCache, mCacheInstance, priority, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<Texture2D> LoadTexture2DAsync(string relativePath, GraphicsDevice device, bool bUseCache = false, Caching mCacheInstance = null, CancellationToken cancellationToken = default)
+        public async Task<Texture2D> LoadTexture2DAsync(string relativePath, GraphicsDevice device, bool bUseCache = false, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
         {
-            byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), bUseCache, mCacheInstance, cancellationToken).ConfigureAwait(false);
+            byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), bUseCache, mCacheInstance, priority, cancellationToken).ConfigureAwait(false);
             return await LoadTexture2DAsync(data, device).ConfigureAwait(false);
         }
 
