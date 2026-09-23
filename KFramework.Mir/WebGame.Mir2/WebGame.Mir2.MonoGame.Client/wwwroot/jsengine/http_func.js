@@ -19,23 +19,11 @@
 // 接线：main.ts 里 setModuleImports('http_func', httpFunc)；
 // C# 侧 KFramework.MonoGame.JSBind_Http 用 [JSImport("...", "http_func")] 绑定。
 
-// 第一步下载完到第二步取走之间的暂存区。
-// 设上限，避免调用方取完/放弃后长期占着内存（FIFO 淘汰）。
-const PENDING_MAX = 8;
+// 第一步下载完到第二步取走之间的暂存区。刻意不做数量上限与淘汰：
+// 条目生命周期极短（fetch 完 → C# 立刻 takePending 取走），设上限淘汰反而可能
+// 误伤「已下载但还没取走」的条目，让 takePending 抛「没有待取字节」。
+// 释放靠三条路径：takePending 交付后删除、releasePending 主动放弃、Dispose 清空。
 const pending = new Map();
-
-// 存进 pending 并做上限淘汰
-function stash(name, bytes) {
-    // 先删再插，保证新条目排在队尾（FIFO 淘汰）
-    pending.delete(name);
-    pending.set(name, bytes);
-    while (pending.size > PENDING_MAX) {
-        const oldest = pending.keys().next();
-        if (oldest.done)
-            break;
-        pending.delete(oldest.value);
-    }
-}
 
 /**
  * 第一步（异步）：只做 fetch，字节暂存在 pending，等 takePending 取走；完全不碰 Cache Storage。
@@ -54,7 +42,7 @@ export async function fetchBytesAsync(name) {
     if (!res.ok)
         return -1;
     const bytes = new Uint8Array(await res.arrayBuffer());
-    stash(name, bytes);
+    pending.set(name, bytes);
     return bytes.byteLength;
 }
 
@@ -62,7 +50,7 @@ export async function fetchBytesAsync(name) {
  * 第二步（同步）：把第一步下载好的字节拷进 C# 的缓冲并释放暂存。
  * 同步调用期间没有 await，故 Span<byte> 的 MemoryView 是有效的（异步场景必须用 ArraySegment）。
  * @param buffer C# 按第一步返回的长度分配的缓冲（Span<byte> → MemoryView）
- * @throws 没有待取字节（未加载过 / 已被取走 / 被淘汰），或缓冲装不下——都是调用方用错了，直接抛。
+ * @throws 没有待取字节（没下载过 / 已被取走），或缓冲装不下——都是调用方用错了，直接抛。
  */
 export function takePending(name, buffer) {
     const bytes = pending.get(name);

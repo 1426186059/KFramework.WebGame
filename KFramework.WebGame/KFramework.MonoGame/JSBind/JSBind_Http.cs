@@ -47,7 +47,7 @@ namespace KFramework.MonoGame
         public static partial void ReleasePending(string name);
 
         //清理所有缓存下载的字节
-        [JSImport("Dispose", "http_func")]
-        public static partial void Dispose();
+        [JSImport("releaseAllPending", "http_func")]
+        public static partial void releaseAllPending();
     }
 }
