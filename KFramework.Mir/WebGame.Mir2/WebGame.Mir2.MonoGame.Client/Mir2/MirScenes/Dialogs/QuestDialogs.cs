@@ -1323,7 +1323,7 @@ namespace Client.MirScenes.Dialogs
                     string[] values = capture.Value.Split('/');
                     currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, values[0]);
                     string text = currentLine.Substring(0, capture.Index - 1 - offSet) + " ";
-                    Size size = TextRenderer.MeasureText(CMain.Graphics, text, _textLabel[i - TopLine].Font, _textLabel[i - TopLine].Size, TextFormatFlags.TextBoxControl);
+                    Size size = BrowserCanvas.MeasureText(text, BrowserCanvas.FontToCss(_textLabel[i - TopLine].Font), _textLabel[i - TopLine].Size.Width);
 
                     if (C.Match(match.Value).Success)
                         NewColour(values[0], values[1], _textLabel[i - TopLine].Location.Add(new Point(size.Width - 10, 0)));

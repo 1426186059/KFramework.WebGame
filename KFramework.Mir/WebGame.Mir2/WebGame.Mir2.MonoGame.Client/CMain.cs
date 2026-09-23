@@ -41,7 +41,6 @@ namespace WebGame.Mir2.MonoGame.Client
         public FormBorderStyle FormBorderStyle;
         public bool TopMost;
         // 完全限定 MirEngine.Cursors：本类存在 static Cursor[] Cursors 字段，会遮蔽同名类型。
-        public Cursor Cursor = MirEngine.Cursors.Default;
         public void Close() { }
         public void Focus() { }
         public void Activate() { }
@@ -53,7 +52,6 @@ namespace WebGame.Mir2.MonoGame.Client
 
         // 原 WinForms CMain 中被逻辑代码引用的静态成员（浏览器端用占位/轻量实现）。
         public static bool Shift, Alt, Ctrl, Tilde, SpellTargetLock;
-        public static Cursor[] Cursors = new Cursor[16];
         public static MirControl DebugBaseLabel, HintBaseLabel;
         public static string DebugText = "";
         public static long PingTime;
@@ -61,7 +59,7 @@ namespace WebGame.Mir2.MonoGame.Client
 
         static CMain()
         {
-            for (int i = 0; i < Cursors.Length; i++) Cursors[i] = new Cursor();
+           
         }
 
 

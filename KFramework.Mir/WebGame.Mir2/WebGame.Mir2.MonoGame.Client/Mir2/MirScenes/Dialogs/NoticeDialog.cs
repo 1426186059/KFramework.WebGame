@@ -296,7 +296,7 @@ namespace Client.MirScenes.Dialogs
 
                     currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, txt);
                     string text = currentLine.Substring(0, capture.Index - 1 - offSet) + " ";
-                    Size size = TextRenderer.MeasureText(CMain.Graphics, text, TextLabel[i].Font, TextLabel[i].Size, TextFormatFlags.TextBoxControl);
+                    Size size = BrowserCanvas.MeasureText(text, BrowserCanvas.FontToCss(TextLabel[i].Font), TextLabel[i].Size.Width);
 
                     if (L.Match(match.Value).Success)
                     {

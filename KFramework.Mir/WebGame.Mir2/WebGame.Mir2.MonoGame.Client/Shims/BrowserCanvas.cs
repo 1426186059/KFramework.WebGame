@@ -15,6 +15,30 @@ namespace MirEngine
             return font.ToCss();
         }
 
+        // 与 DrawLabel 共用同一 SpriteFont 度量，供控件（如 NPC 链接叠层）按 canvas 实际渲染位置定位。
+        public static float MeasureCharWidth(char ch, string css)
+        {
+            if (ch == '\n' || ch == '\r') return 0f;
+            var font = GetFont(css);
+            if (font == null) return 0f;
+            return font.MeasureString(ch.ToString()).X;
+        }
+
+        public static float LineHeight(string css)
+        {
+            var font = GetFont(css);
+            if (font == null) return 0f;
+            return font.LineHeight;
+        }
+
+        public static float MeasureStringWidth(string text, string css)
+        {
+            if (string.IsNullOrEmpty(text)) return 0f;
+            var font = GetFont(css);
+            if (font == null) return 0f;
+            return font.MeasureString(text).X;
+        }
+
         public static Size MeasureText(string text, string css, int maxWidth)
         {
             int px = ParsePx(css);

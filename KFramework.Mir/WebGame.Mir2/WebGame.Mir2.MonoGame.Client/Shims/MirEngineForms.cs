@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MirEngine
 {
-    // 原 Web_Mir2.Engine/MirEngine/Shims/Forms/* 中需要的部分（TextBox 原样；TextRenderer 改为无 Browser* 依赖的桩）
+    // 原 Web_Mir2.Engine/MirEngine/Shims/Forms/* 中需要的部分（TextBox 原样；TextRenderer 已移除，文本度量统一改用 BrowserCanvas.MeasureText）
 
     [Flags]
     public enum TextFormatFlags
@@ -54,37 +54,6 @@ namespace MirEngine
             => new Message { HWnd = hWnd, Msg = msg, WParam = wparam, LParam = lparam };
     }
 
-    public class Cursor
-    {
-        public string Name;
-        public static Cursor Current;
-        public Cursor() { }
-        public Cursor(string name) { Name = name; }
-        public static implicit operator Cursor(string s) => new Cursor(s);
-    }
-
-    public static class Cursors
-    {
-        public static Cursor AppStarting = new Cursor("wait");
-        public static Cursor Arrow = new Cursor("default");
-        public static Cursor Cross = new Cursor("crosshair");
-        public static Cursor Default = new Cursor("default");
-        public static Cursor Hand = new Cursor("pointer");
-        public static Cursor Help = new Cursor("help");
-        public static Cursor HSplit = new Cursor("row-resize");
-        public static Cursor IBeam = new Cursor("text");
-        public static Cursor No = new Cursor("not-allowed");
-        public static Cursor NoMove2D = new Cursor("not-allowed");
-        public static Cursor SizeAll = new Cursor("move");
-        public static Cursor SizeNESW = new Cursor("nesw-resize");
-        public static Cursor SizeNS = new Cursor("ns-resize");
-        public static Cursor SizeNWSE = new Cursor("nwse-resize");
-        public static Cursor SizeWE = new Cursor("ew-resize");
-        public static Cursor UpArrow = new Cursor("n-resize");
-        public static Cursor VSplit = new Cursor("col-resize");
-        public static Cursor WaitCursor = new Cursor("wait");
-    }
-
     public class Timer
     {
         public event EventHandler Tick;
@@ -111,23 +80,6 @@ namespace MirEngine
         public static void EnableVisualStyles() { }
         public static void SetCompatibleTextRenderingDefault(bool defaultValue) { }
         public static void Restart() { }
-    }
-
-    // 文本度量/绘制桩：KFramework.MonoGame 迁移后真实文字绘制需走其文本/纹理通道，这里先保证编译。
-    public static class TextRenderer
-    {
-        public static Size MeasureText(string text, Font font) => Size.Empty;
-        public static Size MeasureText(string text, Font font, Size proposedSize) => Size.Empty;
-        public static Size MeasureText(string text, Font font, Size proposedSize, TextFormatFlags flags) => Size.Empty;
-        public static void DrawText(Graphics g, string text, Font font, Point pt, Color foreColor) { }
-        public static void DrawText(Graphics g, string text, Font font, Point pt, Color foreColor, Color backColor) { }
-        public static void DrawText(Graphics g, string text, Font font, Rectangle bounds, Color foreColor) { }
-        public static void DrawText(Graphics g, string text, Font font, Rectangle bounds, Color foreColor, TextFormatFlags flags) { }
-        public static void DrawText(Graphics g, string text, Font font, Rectangle bounds, Color foreColor, Color backColor, TextFormatFlags flags) { }
-
-        // 带 Graphics 参数的重载（原 Web_Mir2.Engine 的 TextRenderer 首参为 Graphics；CMain.Graphics 为 GraphicsStub，故用 object 兼容）。
-        public static Size MeasureText(object g, string text, Font font) => Size.Empty;
-        public static Size MeasureText(object g, string text, Font font, Size size, TextFormatFlags flags) => Size.Empty;
     }
 
     public static class SystemInformation
@@ -229,7 +181,6 @@ namespace MirEngine
         public BorderStyle BorderStyle { get => borderStyle; set => borderStyle = value; }
         public bool AcceptsReturn { get => acceptsReturn; set => acceptsReturn = value; }
         public bool AcceptsTab { get; set; }
-        public Cursor Cursor { get; set; }
         public int TextLength => (text ?? string.Empty).Length;
         public IntPtr Handle => handle;
         public bool ReadOnly { get => readOnly; set => readOnly = value; }
@@ -267,9 +218,6 @@ namespace MirEngine
         {
             if (!readOnly) { text += value; UpdateLines(); selectionStart = text.Length; }
         }
-        public void Select(int start, int length) { SelectionStart = start; SelectionLength = length; }
-        public void SelectAll() { SelectionStart = 0; SelectionLength = text.Length; }
-        public void Copy() { if (selectionLength > 0) KFramework.MonoGame.PrintTool.Log(text.Substring(selectionStart, selectionLength)); }
 
         public void SimulateKeyDown(Keys keyCode)
         {
@@ -326,10 +274,6 @@ namespace MirEngine
             OnTextChanged(EventArgs.Empty);
         }
 
-        public void SimulateMouseMove(int x, int y, MouseButtons button = MouseButtons.None) => MouseMove?.Invoke(this, new MouseEventArgs(button, 0, x, y, 0));
-        public void SimulateMouseDown(int x, int y, MouseButtons button = MouseButtons.Left) => MouseDown?.Invoke(this, new MouseEventArgs(button, 1, x, y, 0));
-        public void SimulateMouseUp(int x, int y, MouseButtons button = MouseButtons.Left) => MouseUp?.Invoke(this, new MouseEventArgs(button, 1, x, y, 0));
-
         public void Focus()
         {
             if (!CanFocus || !Enabled) return;
@@ -357,18 +301,6 @@ namespace MirEngine
 
         public void Dispose() { Dispose(true); GC.SuppressFinalize(this); }
         protected virtual void Dispose(bool disposing) { if (disposing) isDisposed = true; }
-
-        protected virtual void OnMouseClick(MouseEventArgs e) { }
-        protected virtual void OnMouseUp(MouseEventArgs e) { }
-        protected virtual void OnKeyDown(KeyEventArgs e) { }
-        protected virtual void OnKeyUp(KeyEventArgs e) { }
-        protected virtual void OnPreviewKeyDown(PreviewKeyDownEventArgs e) { }
-        protected virtual void OnSizeChanged(EventArgs e) { }
-        protected virtual void WndProc(ref Message m) { }
-
-        public void Invalidate() { }
-        public Graphics CreateGraphics() => null;
-        public event EventHandler<PreviewKeyDownEventArgs> PreviewKeyDown;
 
         public event EventHandler TextChanged;
         public event EventHandler GotFocus;

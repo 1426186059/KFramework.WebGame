@@ -861,7 +861,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (i - index < 0) continue;
 
-                if (TextRenderer.MeasureText(CMain.Graphics, text.Substring(index, i - index), ChatFont).Width > chatWidth)
+                if (BrowserCanvas.MeasureText(text.Substring(index, i - index), BrowserCanvas.FontToCss(ChatFont), int.MaxValue).Width > chatWidth)
                 {
                     int offset = i - index;
                     int newIndex = i - 1;
@@ -1000,7 +1000,7 @@ namespace Client.MirScenes.Dialogs
                         string[] values = capture.Value.Split('/');
                         currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, values[0]);
                         string text = currentLine.Substring(0, capture.Index - 1 - offSet) + " ";
-                        Size size = TextRenderer.MeasureText(CMain.Graphics, text, temp.Font, temp.Size, TextFormatFlags.TextBoxControl);
+                        Size size = BrowserCanvas.MeasureText(text, BrowserCanvas.FontToCss(temp.Font), temp.Size.Width);
 
                         ChatLink(values[0], ulong.Parse(values[1]), temp.Location.Add(new Point(size.Width - 10, 0)));
                     }

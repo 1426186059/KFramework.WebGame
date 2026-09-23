@@ -487,16 +487,16 @@ namespace Client.MirScenes.Dialogs
 
                         currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, txt);
                         string text2 = currentLine.Substring(0, capture.Index - 1 - offSet) + " ";
-                        Size size2 = TextRenderer.MeasureText(CMain.Graphics, text2, TextLabel[i].Font, TextLabel[i].Size, TextFormatFlags.TextBoxControl);
+                        int w2 = (int)Math.Round(BrowserCanvas.MeasureStringWidth(text2, BrowserCanvas.FontToCss(TextLabel[i].Font)));
 
                         if (R.Match(match.Value).Success)
-                            NewButton(txt, action, TextLabel[i].Location.Add(new Point(size2.Width - 10, 0)));
+                            NewButton(txt, action, TextLabel[i].Location.Add(new Point(w2 - 10, 0)));
 
                         if (C.Match(match.Value).Success)
-                            NewColour(txt, action, TextLabel[i].Location.Add(new Point(size2.Width - 10, 0)));
+                            NewColour(txt, action, TextLabel[i].Location.Add(new Point(w2 - 10, 0)));
 
                         if (L.Match(match.Value).Success)
-                            NewButton(txt, null, TextLabel[i].Location.Add(new Point(size2.Width - 10, 0)), action);
+                            NewButton(txt, null, TextLabel[i].Location.Add(new Point(w2 - 10, 0)), action);
                     }
                 }
                 TextLabel[i].Text = currentLine;
@@ -974,9 +974,13 @@ namespace Client.MirScenes.Dialogs
             if (label == null || string.IsNullOrEmpty(text))
                 return Point.Empty;
 
-            int maxWidth = Math.Max(1, label.Size.Width);
-            int x = 0;
-            int y = 0;
+            // 用与 BrowserCanvas.DrawLabel 完全相同的 canvas 字体度量，避免 GDI(TextRenderer)
+            // 与 canvas(SpriteFont) 宽度不一致导致黄色选项叠层 X 偏移（尤其中文积累偏移明显）。
+            // canvas 渲染只按显式 \n 换行，不做自动换行，故这里只处理 \n。
+            string css = BrowserCanvas.FontToCss(label.Font);
+            float lineH = BrowserCanvas.LineHeight(css);
+            float x = 0;
+            float y = 0;
 
             foreach (char ch in text)
             {
@@ -985,23 +989,14 @@ namespace Client.MirScenes.Dialogs
                 if (ch == '\n')
                 {
                     x = 0;
-                    y += label.Font.Height;
+                    y += lineH;
                     continue;
                 }
 
-                string character = ch.ToString();
-                Size size = TextRenderer.MeasureText(CMain.Graphics, character, label.Font, new Size(int.MaxValue, int.MaxValue), LinkMeasureFlags);
-
-                if (x + size.Width > maxWidth && x > 0)
-                {
-                    x = 0;
-                    y += label.Font.Height;
-                }
-
-                x += size.Width;
+                x += BrowserCanvas.MeasureCharWidth(ch, css);
             }
 
-            return new Point(x, y);
+            return new Point((int)Math.Round(x), (int)Math.Round(y));
         }
 
         public void CheckQuestButtonDisplay()
