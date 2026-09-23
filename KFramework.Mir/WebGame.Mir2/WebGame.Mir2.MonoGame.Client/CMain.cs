@@ -112,6 +112,7 @@ namespace WebGame.Mir2.MonoGame.Client
             // 其余库（地图/怪物/装备等）不在启动时加载，绘制时按需 InitializeAsync，就绪后 LibraryLoaded 触发重绘。
             await Libraries.LoadAsync();
 
+            KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(MirScene.ActiveScene == null ? "null" : MirScene.ActiveScene.GetType().Name)} → LoginScene  时刻={DateTime.Now:HH:mm:ss.fff}");
             MirScene.ActiveScene = new LoginScene();
             await SoundManager.CreateAsync().ConfigureAwait(false);
             ConfigureInput();

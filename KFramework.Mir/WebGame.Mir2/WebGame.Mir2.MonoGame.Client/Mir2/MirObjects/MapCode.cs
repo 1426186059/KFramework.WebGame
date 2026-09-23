@@ -156,7 +156,7 @@ namespace Client.MirObjects
             string mapName = DeriveMapName(FileName);
             NewResConfig.RemoteLibEnabled = true;
             NewResConfig.CurrentMapName = mapName;
-            KFramework.MonoGame.PrintTool.Log($"[Map] 地图 {mapName} 远程Lib={(NewResConfig.RemoteLibEnabled ? "开" : "关")}");
+            KFramework.MonoGame.PrintTool.Log($"[Map] 加载地图: {mapName}  文件={FileName}  远程Lib={(NewResConfig.RemoteLibEnabled ? "开" : "关")}  时刻={DateTime.Now:HH:mm:ss.fff}");
 
             Bytes = await BrowserResource.GetBytesAsync(FileName).ConfigureAwait(false);
 
@@ -176,8 +176,8 @@ namespace Client.MirObjects
                 return;
             }
 
-            KFramework.MonoGame.PrintTool.Log("[Map] 地图已读取: " + FileName + " 字节数=" + Bytes.Length);
             Parse();
+            KFramework.MonoGame.PrintTool.Log($"[Map] 地图就绪: {mapName}  字节={Bytes.Length}  尺寸={Width}x{Height}  时刻={DateTime.Now:HH:mm:ss.fff}");
         }
 
         // 从完整 .map 路径反推地图名（取文件名、去 .map 后缀），与 MapExtract2 工具侧

@@ -3236,6 +3236,7 @@ namespace Client.MirScenes
                 SoundManager.StopSound(20000 + 126 * 10 + 5 + i);
 
             User = null;
+            KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(ActiveScene == null ? "null" : ActiveScene.GetType().Name)} → SelectScene  时刻={DateTime.Now:HH:mm:ss.fff}");
             ActiveScene = new SelectScene(p.Characters);
 
             Dispose();
@@ -3248,6 +3249,7 @@ namespace Client.MirScenes
         private void ReturnToLogin(S.ReturnToLogin p)
         {
             User = null;
+            KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(ActiveScene == null ? "null" : ActiveScene.GetType().Name)} → LoginScene  时刻={DateTime.Now:HH:mm:ss.fff}");
             ActiveScene = new LoginScene();
             Dispose();
             MirMessageBox.Show(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ObservedPlayerLoggedOff));
