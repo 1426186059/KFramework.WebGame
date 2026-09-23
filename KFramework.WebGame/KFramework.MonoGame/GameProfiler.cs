@@ -1,8 +1,7 @@
-﻿using KFramework.MonoGame;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace KFramework.MonoGameExtend
+namespace KFramework.MonoGame
 {
     public static class GameProfiler
     {

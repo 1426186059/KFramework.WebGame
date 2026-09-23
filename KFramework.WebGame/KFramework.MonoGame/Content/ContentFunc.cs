@@ -14,35 +14,38 @@
         /// </param>
         public static async Task<byte[]> LoadCacheOrDownloadAsync(HttpClient http, string path, bool bUseCache = false, Caching mCacheInstance = null, CancellationToken cancellationToken = default)
         {
+            string full = http.BaseAddress + path;
             try
             {
                 if (bUseCache)
                 {
                     long tRead = Environment.TickCount64;
                     byte[] buf = await mCacheInstance.LoadAsync(path).ConfigureAwait(false);
+                    long readMs = Environment.TickCount64 - tRead;
+
                     if (buf != null)
                     {
-                        PrintTool.Log($"[cache] 命中 {http.BaseAddress}{path} {buf.Length / 1024}KB 读取耗时 {Environment.TickCount64 - tRead}ms");
+                        PrintTool.Log($"[cache] 命中 {full} {FmtSize(buf.Length)} | Cache读取 {readMs}ms");
                         return buf;
                     }
 
-                    long tDown = Environment.TickCount64;
-                    using var resp = await http.GetAsync(path, cancellationToken).ConfigureAwait(false);
-                    resp.EnsureSuccessStatusCode();
-                    var data = await resp.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
-                    long downMs = Environment.TickCount64 - tDown;
+                    var dl = await DownloadAsync(http, path, cancellationToken).ConfigureAwait(false);
+                    if (dl.data == null) return null;
 
-                    // 计时诊断：只记录耗时，不改变任何行为（先确认“加载慢”到底慢在下载还是写缓存）
                     long tSave = Environment.TickCount64;
-                    await mCacheInstance.SaveAsync(path, new ArraySegment<byte>(data)).ConfigureAwait(false);
-                    PrintTool.Log($"[cache] 写入 {http.BaseAddress}{path} {data.Length / 1024}KB 下载 {downMs}ms 写缓存 {Environment.TickCount64 - tSave}ms");
-                    return data;
+                    await mCacheInstance.SaveAsync(path, new ArraySegment<byte>(dl.data)).ConfigureAwait(false);
+                    long saveMs = Environment.TickCount64 - tSave;
+
+                    PrintTool.Log($"[cache] 未命中 {full} {FmtSize(dl.data.Length)} | " +
+                                  $"Cache读取(未命中) {readMs}ms | HTTP响应头 {dl.headMs}ms | 读body {dl.bodyMs}ms | Cache保存 {saveMs}ms");
+                    return dl.data;
                 }
                 else
                 {
-                    using var resp = await http.GetAsync(path, cancellationToken).ConfigureAwait(false);
-                    resp.EnsureSuccessStatusCode();
-                    return await resp.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
+                    var dl = await DownloadAsync(http, path, cancellationToken).ConfigureAwait(false);
+                    PrintTool.Log($"[http] {full} {FmtSize(dl.data?.Length ?? 0)} | " +
+                                  $"HTTP响应头 {dl.headMs}ms | 读body {dl.bodyMs}ms");
+                    return dl.data;
                 }
             }
             catch(Exception e)
@@ -51,6 +54,30 @@
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// 下载并分段计时（诊断用，不改变行为）：
+        /// headMs = GetAsync 到拿到响应头（含排队/连接/TTFB）；bodyMs = 读取响应体到字节数组的耗时。
+        /// 分开记是为了分辨“网络慢”还是“wasm 内把字节读进托管堆慢”。
+        /// </summary>
+        private static async Task<(byte[] data, long headMs, long bodyMs)> DownloadAsync(HttpClient http, string path, CancellationToken cancellationToken)
+        {
+            long t0 = Environment.TickCount64;
+            using var resp = await http.GetAsync(path, cancellationToken).ConfigureAwait(false);
+            resp.EnsureSuccessStatusCode();
+            long headMs = Environment.TickCount64 - t0;
+
+            long t1 = Environment.TickCount64;
+            byte[] data = await resp.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
+            long bodyMs = Environment.TickCount64 - t1;
+
+            return (data, headMs, bodyMs);
+        }
+
+        private static string FmtSize(int bytes)
+        {
+            return bytes >= 1048576 ? $"{bytes / 1048576.0:F1}MB" : $"{bytes / 1024}KB";
         }
     }
 }
