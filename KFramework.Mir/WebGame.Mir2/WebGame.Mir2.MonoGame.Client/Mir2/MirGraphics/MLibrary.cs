@@ -820,6 +820,13 @@ namespace Client.MirGraphics
 
             return new Point(_images[index].X, _images[index].Y);
         }
+        // 是否「还在等资源」= 未加载且未失败。
+        // 烘焙侧需要区分三种情况，而 GetSize 对它们一律返回 Empty，无法分辨：
+        //   加载中 → true（将来会有资源，值得再等/再烘一次）
+        //   已失败 → false（永远不会有资源，不必再等）
+        //   已加载 → false（有资源）
+        public bool IsPending => !_loaded && !_failed;
+
         public Size GetSize(int index)
         {
             if (!_loaded) return Size.Empty;

@@ -271,6 +271,7 @@ namespace Client.MirScenes
                     AnimationDelay = 100,
                     Loop = true,
                 };
+
                 loadProgress.AfterDraw += (o, e) =>
                 {
                     if (!Libraries.Loaded) return;

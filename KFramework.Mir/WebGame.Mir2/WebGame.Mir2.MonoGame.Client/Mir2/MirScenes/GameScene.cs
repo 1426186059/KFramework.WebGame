@@ -10776,6 +10776,8 @@ namespace Client.MirScenes
 
         private void DrawFloor(int vpW, int vpH)
         {
+            // 本次烘焙里「库还没加载完」的格子数：>0 表示这份地板是残缺的，末尾据此决定是否缓存。
+            int pendingLib = 0;
             int fw = vpW, fh = vpH;
             if (DXManager.FloorTexture == null || DXManager.FloorTexture.Disposed
                 || DXManager.FloorTexture.Width != fw || DXManager.FloorTexture.Height != fh)
@@ -10837,6 +10839,9 @@ namespace Client.MirScenes
 
                             if (lib != null)
                             {
+                                // 库还在加载（将来会有资源）：这些格子本次画不上，记下来（末尾据此决定是否缓存）
+                                if (lib.IsPending) pendingLib++;
+
                                 // 底图画法取决于地砖尺寸：
                                 // - 大地砖（如 96x64，一张覆盖 2x2 格）：只在 x、y 均为偶数时画一次（与原版一致）；
                                 // - 小地砖（48x32，每格一张）：必须每格都画，否则会丢掉约 3/4 的地砖。
@@ -10924,7 +10929,11 @@ namespace Client.MirScenes
             }
 
             DXManager.SetSurface(oldSurface);
-            FloorValid = true;
+
+            // 有资源就烘焙、没有就不烘焙，不要求「资源完整」：
+            // 本次若仍有库在加载中（有格子因资源没到位而没画上），就不把这份残缺结果缓存住，
+            // 下一帧继续烘焙，随资源到位逐步补全；不再有「还在等资源」的格子时才停止重烘焙。
+            FloorValid = pendingLib == 0;
         }
         private void DrawBackground()
         {
