@@ -13,7 +13,7 @@
         /// 缓存条目长度对不上 = 脏数据（历史版本写坏的缓存），删掉重下一次，自愈。
         /// </param>
         /// <param name="priority">
-        /// 加载优先级（数值越小越先执行，0 最高）。经由 <see cref="ContentLoadScheduler"/> 调度：
+        /// 加载优先级（数值<strong>越大越优先</strong>，0 = 普通）。经由 <see cref="ContentLoadScheduler"/> 调度：
         /// 只有拿到并发槽才会真正发起请求，避免几十个资源同时发起造成的队头阻塞。
         /// </param>
         /// 

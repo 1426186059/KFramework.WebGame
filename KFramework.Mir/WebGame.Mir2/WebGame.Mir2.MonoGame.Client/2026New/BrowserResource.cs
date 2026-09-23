@@ -12,6 +12,17 @@ public class BrowserResource
 
     private static readonly HashSet<string> _missing = new HashSet<string>();
 
+    // 加载优先级（数值越大越优先，见 KFramework.MonoGame.ContentLoadScheduler）：
+    // 地图资源最高 —— 玩家进图 / 传送后第一时间要看到地面；其余（UI、装备、怪物、音效）次之。
+    private const int PriorityMap = 10;
+    private const int PriorityOther = 0;
+
+    // 地图 .map 与地图图片 Lib 都以 "Map/" 开头（Map/0.map、Map/0/WemadeMir2/Tiles.Lib）
+    private static int PriorityOf(string path)
+    {
+        return path.StartsWith("Map/", StringComparison.OrdinalIgnoreCase) ? PriorityMap : PriorityOther;
+    }
+
     public static async Task<byte[]> GetBytesAsync(string url)
     {
         string path = NormalizePath(url);
@@ -19,8 +30,9 @@ public class BrowserResource
 
         try
         {
-            // 直接整文件加载（已无超大 Lib，无需分片下载）。
-            byte[] bytes = await Content.LoadBytesAsync(path, true, mCacheInstance).ConfigureAwait(false);
+            // 直接整文件加载（已无超大 Lib，无需分片下载）；地图资源给最高优先级。
+            byte[] bytes = await Content.LoadBytesAsync(path, true, mCacheInstance, priority: PriorityOf(path))
+                .ConfigureAwait(false);
             if (bytes == null || bytes.Length == 0)
             {
                 _missing.Add(path);

@@ -14,7 +14,7 @@ namespace KFramework.MonoGame
     ///
     /// 本调度器提供：
     /// 1) 统一并发闸门：无论调用方怎么发起，同时进行的加载不超过 MaxConcurrency；
-    /// 2) 优先级：priority 越小越先拿到并发槽（底图等关键资源可先于大块头加载）；
+    /// 2) 优先级：priority 越大越优先（值大的先拿到并发槽，如地图资源可先于 UI/音效加载）；
     /// 3) 请求去重可选：同一路径并发请求时合并为一个（由调用方决定是否启用）。
     /// </summary>
     public sealed class ContentLoadScheduler
@@ -28,12 +28,12 @@ namespace KFramework.MonoGame
         private long _seq;
 
         /// <summary>
-        /// 最大并发加载数。默认 4：浏览器同域连接约 6，留 2 个给页面自身请求（音效、favicon 等），
-        /// 避免把连接打满导致谁都快不了。
+        /// 最大并发加载数。默认 6：浏览器对同一域名约 6 个并发连接，取满以缩短大文件的排队等待。
+        /// （资源走的是专用本地资源服务器 127.0.0.1:5080/5081，与页面自身请求不同域，不会互相抢占。）
         /// </summary>
         public int MaxConcurrency { get; }
 
-        public ContentLoadScheduler(int maxConcurrency = 4)
+        public ContentLoadScheduler(int maxConcurrency = 6)
         {
             MaxConcurrency = Math.Max(1, maxConcurrency);
             _slots = new SemaphoreSlim(MaxConcurrency, MaxConcurrency);
@@ -48,7 +48,7 @@ namespace KFramework.MonoGame
         /// <summary>
         /// 排队执行一个加载任务。
         /// </summary>
-        /// <param name="priority">优先级，数值越小越先执行（0 = 最高）。</param>
+        /// <param name="priority">优先级，数值<b>越大越优先</b>（0 = 普通，值越大越先拿到并发槽）。</param>
         /// <param name="loader">真正的加载逻辑（拿到并发槽后才会被调用）。</param>
         /// <param name="cancellationToken">取消标记。</param>
         public Task<byte[]> EnqueueAsync(int priority, Func<CancellationToken, Task<byte[]>> loader, CancellationToken cancellationToken = default)
@@ -58,7 +58,8 @@ namespace KFramework.MonoGame
             var job = new Job(loader, priority, cancellationToken);
             lock (_sync)
             {
-                _queue.Enqueue(job, (priority, _seq++));
+                // PriorityQueue 是最小堆（数值小的先出队）；对外约定 priority 越大越优先，故取负入队。
+                _queue.Enqueue(job, (-priority, _seq++));
             }
             Pump();
             return job.Completion.Task;

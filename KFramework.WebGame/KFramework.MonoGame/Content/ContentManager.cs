@@ -87,7 +87,7 @@ namespace KFramework.MonoGame
             return Uri.TryCreate(path, UriKind.Absolute, out _) ? path : $"{_rootDir}/{path.TrimStart('/')}";
         }
 
-        /// <param name="priority">加载优先级（数值越小越先执行，0 最高），经 ContentLoadScheduler 调度，避免并发打满。</param>
+        /// <param name="priority">加载优先级（数值越大越优先，0 = 普通），经 ContentLoadScheduler 调度，避免并发打满。</param>
         public async Task<string> LoadTextAsync(string relativePath, bool bUseCache = false, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
         {
             byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), bUseCache, mCacheInstance, priority, cancellationToken).ConfigureAwait(false);
@@ -95,7 +95,7 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>按资源根(root)异步加载任意字节流（不走内容包）。先查本地 Cache Storage，未命中则远程下载并写回，下次直接命中本地缓存。</summary>
-        /// <param name="priority">加载优先级（数值越小越先执行，0 最高）。底图等关键资源建议给高优先级，避免被大文件堵住。</param>
+        /// <param name="priority">加载优先级（数值越大越优先，0 = 普通）。底图等关键资源建议给较大的值，避免被大文件堵住。</param>
         public async Task<byte[]> LoadBytesAsync(string relativePath, bool bUseCache = false, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
         { 
             // 默认走 JS fetch 链路（绕开 .NET WASM HttpClient 对大响应体极慢的问题），
