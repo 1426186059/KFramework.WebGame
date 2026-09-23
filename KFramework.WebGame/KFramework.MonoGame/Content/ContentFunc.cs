@@ -18,16 +18,24 @@
             {
                 if (bUseCache)
                 {
+                    long tRead = Environment.TickCount64;
                     byte[] buf = await mCacheInstance.LoadAsync(path).ConfigureAwait(false);
                     if (buf != null)
                     {
+                        PrintTool.Log($"[cache] 命中 {http.BaseAddress}{path} {buf.Length / 1024}KB 读取耗时 {Environment.TickCount64 - tRead}ms");
                         return buf;
                     }
 
+                    long tDown = Environment.TickCount64;
                     using var resp = await http.GetAsync(path, cancellationToken).ConfigureAwait(false);
                     resp.EnsureSuccessStatusCode();
                     var data = await resp.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
+                    long downMs = Environment.TickCount64 - tDown;
+
+                    // 计时诊断：只记录耗时，不改变任何行为（先确认“加载慢”到底慢在下载还是写缓存）
+                    long tSave = Environment.TickCount64;
                     await mCacheInstance.SaveAsync(path, new ArraySegment<byte>(data)).ConfigureAwait(false);
+                    PrintTool.Log($"[cache] 写入 {http.BaseAddress}{path} {data.Length / 1024}KB 下载 {downMs}ms 写缓存 {Environment.TickCount64 - tSave}ms");
                     return data;
                 }
                 else
