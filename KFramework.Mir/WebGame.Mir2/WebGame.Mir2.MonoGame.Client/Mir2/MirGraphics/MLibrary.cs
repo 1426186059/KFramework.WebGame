@@ -251,7 +251,13 @@ namespace Client.MirGraphics
         // 浏览器端（WASM）没有本地文件系统：Directory.Exists / GetFiles 恒为 false / 空，
         // 会让数组长度退化成 1（NPCs[19]、CHumEffect[5] 等索引全部越界，即使文件其实都在资源服务器上）。
         // 因此本地目录不可用时改用固定容量：槽位先建好，但**只有被访问(绘制)的库才会真正发请求**。
-        private const int BrowserLibraryCapacity = 256;
+        //
+        // 容量必须 >= 服务端可能下发的最大编号，否则裸索引会越界并终止主循环。
+        // 之前写死 256 不够：MonsterObject 里 Libraries.Monsters[(ushort)BaseImage]，
+        // 服务端下发的怪物 ID 超过 256 就 IndexOutOfRange（原版按「最后一个文件编号+1」算，
+        // 磁盘上有多少就是多少，不会撞这个上限）。
+        // 槽位本身只是空 MLibrary 对象（不加载字节），调大不会多发请求，开销可忽略。
+        private const int BrowserLibraryCapacity = 1024;
 
         static void InitLibrary(ref MLibrary[] library, string path, string toStringValue, string suffix = "")
         {
