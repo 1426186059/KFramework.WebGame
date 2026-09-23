@@ -33,10 +33,11 @@ export function bindMouse() {
     const canvas = getCanvasElement();
     if (canvas) {
         // 防止画布在按住拖动时被浏览器当作可拖拽元素/可选文本，进而提前结束“按下”。
-        canvas.draggable = false;
-        canvas.style.userSelect = 'none';
-        canvas.style.webkitUserSelect = 'none';
-        canvas.style.touchAction = 'none';
+        const c = canvas;
+        c.setAttribute('draggable', 'false');
+        c.style.userSelect = 'none';
+        c.style.touchAction = 'none';
+        c.style.webkitUserSelect = 'none';
         on(canvas, 'dragstart', (e) => e.preventDefault());
         on(canvas, 'mousemove', (e) => {
             const ev = e;

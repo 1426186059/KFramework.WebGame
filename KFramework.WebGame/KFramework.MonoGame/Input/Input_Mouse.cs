@@ -82,8 +82,12 @@ namespace KFramework.MonoGame
             for (int b = 0; b < MaxButtons; b++)
             {
                 var btn = ToButton(b);
+                // 同一帧内可能同时出现 按下+抬起（快速拖甩 / 卡顿把两条事件攒进同一帧）。
+                // 必须用两个独立 if：若写成 if/else if，_pressed 为真时会跳过 _released，
+                // 导致 ButtonUp 永不触发，调用方（如面板拖动）的“松手”永远收不到，表现为“松手仍在拖动”。
+                // 原版 WinForms 是离散事件不会批量，此 bug 是 poll/队列模型引入的。
                 if (_pressed[b]) ButtonDown?.Invoke(btn, pos);
-                else if (_released[b]) ButtonUp?.Invoke(btn, pos);
+                if (_released[b]) ButtonUp?.Invoke(btn, pos);
             }
 
             if (_wheelDelta != 0) ScrollWheel?.Invoke(_wheelDelta);

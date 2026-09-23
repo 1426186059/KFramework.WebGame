@@ -58,5 +58,11 @@ public static class TestRegistry
             Desc = "同一场景渲染进两张离屏 RenderTarget2D（MultiSampleCount 0 / 4），并排对比边缘锯齿；WebGL 单上下文内做 MSAA 的正确方式（多重采样 FBO + blitFramebuffer 解析）",
             Factory = static () => new MSAATest.MSAATestScene(),
         },
+        new TestEntry
+        {
+            Name = "输入测试",
+            Desc = "鼠标 / 键盘状态：按下、抬起、持续按住（按帧计数）；以及用鼠标左键拖拽物体（方块 A / B 跟随光标移动）",
+            Factory = static () => new InputTest.InputTestScene(),
+        },
     ];
 }
