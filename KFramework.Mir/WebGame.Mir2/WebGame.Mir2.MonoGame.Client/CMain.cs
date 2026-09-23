@@ -342,7 +342,7 @@ namespace WebGame.Mir2.MonoGame.Client
 
         public static void SaveError(string ex)
         {
-            try { KFramework.MonoGame.PrintTool.Log("[Mir][Error] " + ex); }
+            try { KFramework.MonoGame.PrintTool.LogError("[Mir][Error] " + ex); }
             catch { }
         }
 
