@@ -2215,6 +2215,8 @@ namespace Client.MirScenes
                 Music = p.Music
             };
             MapControl.Weather = p.WeatherParticles;
+            // 登录进游戏的第一张地图（服务器按角色存档下发），随后可能紧跟一个 MapChanged 纠正到实际所在图。
+            KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapInformation: {p.FileName}(Index={p.MapIndex})  时刻={DateTime.Now:HH:mm:ss.fff}");
             _ = MapControl.LoadMapAsync();
             InsertControl(0, MapControl);
         }
@@ -4047,6 +4049,7 @@ namespace Client.MirScenes
                 MapControl.MapDarkLight = p.MapDarkLight;
                 MapControl.Music = p.Music;
                 MapControl.Weather = p.Weather;
+                KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapChanged: {p.FileName}(Index={p.MapIndex})  切到={Path.GetFileNameWithoutExtension(MapControl.FileName)}  时刻={DateTime.Now:HH:mm:ss.fff}");
                 _ = MapControl.LoadMapAsync();
             }
 
@@ -10319,6 +10322,12 @@ namespace Client.MirScenes
         // 地图异步加载完成前（M2CellInfo 尚未就绪），暂存需要加入地图格的对象，
         // 待 LoadMapAsync 赋值 M2CellInfo 后再补加，避免登录竞态导致的 NullReferenceException。
         private readonly List<MapObject> _pendingAdd = new List<MapObject>();
+        // 切图加载代次：LoadMapAsync 是 fire-and-forget 调用的，连续/并发切图时
+        // 只有「最后一次发起」的加载才允许落地，先完成的旧地图必须丢弃（见 LoadMapAsync）。
+        private int _mapLoadGeneration;
+        // 上一次切图加载的取消源：发起新加载时先 Cancel 旧的，让它尽快停下。
+        // 不依赖「后续是否还有 MapChanged 包」——只要再来一次切图请求就中断上一次。
+        private CancellationTokenSource _mapLoadCts;
         public List<Door> Doors = new List<Door>();
         public int Width, Height;
 
@@ -10421,12 +10430,43 @@ namespace Client.MirScenes
         {
             ResetMap();
 
+            // 记录本次加载代次并快照文件名：LoadMapAsync 是 fire-and-forget 调用的，
+            // 连续/并发切图时（如登录时连着收到两张地图包），先完成的旧地图若照常落地，
+            // 会被后完成的覆盖，最终显示成「另一张地图的同一坐标区域」。
+            // 中断上一次尚未完成的加载：新切图一来旧的立即作废，不再继续
+            // 解析 / 建 PathFinder / 预加载库 / 播音乐。
+            _mapLoadCts?.Cancel();
+            _mapLoadCts = new CancellationTokenSource();
+            var token = _mapLoadCts.Token;
+
+            int gen = ++_mapLoadGeneration;
+            string fileName = FileName;
+
             MapObject.MouseObjectID = 0;
             MapObject.TargetObjectID = 0;
             MapObject.MagicObjectID = 0;
 
-            MapReader Map = new MapReader(FileName);
-            await Map.LoadAsync().ConfigureAwait(false);
+            MapReader Map = new MapReader(fileName);
+            try
+            {
+                await Map.LoadAsync(token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                return;   // 被新切图取消，正常退出
+            }
+
+            // 期间已有更新的切图请求：本次结果作废，绝不能覆盖新地图的数据。
+            if (token.IsCancellationRequested || gen != _mapLoadGeneration)
+            {
+                // MapReader 内部会顺带把 NewResConfig.CurrentMapName 设成它自己这张（旧）地图，
+                // 作废时要改回当前最新的那张，否则后续地图片库会按旧地图名去取。
+                string staleName = Path.GetFileNameWithoutExtension(fileName);
+                NewResConfig.CurrentMapName = Path.GetFileNameWithoutExtension(FileName);
+                KFramework.MonoGame.PrintTool.Log($"[Map] 丢弃过期地图加载: {staleName}（已有更新的切图请求，当前={NewResConfig.CurrentMapName}）");
+                return;
+            }
+
             M2CellInfo = Map.MapCells;
             // 地图就绪后补加竞态窗口内暂存的对象（如登录时先于地图加载完成的 UserObject）
             foreach (var ob in _pendingAdd) AddObject(ob);

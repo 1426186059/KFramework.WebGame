@@ -146,7 +146,7 @@ namespace Client.MirObjects
 
         // 异步加载：先按 URL 取字节（远程资源服务器，经 ContentManager），再解析地图格式。
         // 与 MLibrary 的按需异步加载一致 —— 调用方等待结果，不阻塞主线程。
-        public async Task LoadAsync()
+        public async Task LoadAsync(CancellationToken cancellationToken = default)
         {
             // 纯浏览器环境没有本地文件系统，地图字节统一从资源服务器按 URL 异步取；
             // 若取不到会静默退化成 1000x1000 全空地图 —— 表现为"大地图不显示、点击人物不走"。
@@ -158,7 +158,10 @@ namespace Client.MirObjects
             NewResConfig.CurrentMapName = mapName;
             KFramework.MonoGame.PrintTool.Log($"[Map] 加载地图: {mapName}  文件={FileName}  远程Lib={(NewResConfig.RemoteLibEnabled ? "开" : "关")}  时刻={DateTime.Now:HH:mm:ss.fff}");
 
-            Bytes = await BrowserResource.GetBytesAsync(FileName).ConfigureAwait(false);
+            Bytes = await BrowserResource.GetBytesAsync(FileName, cancellationToken).ConfigureAwait(false);
+
+            // 已被新切图请求取消：不再解析、不再产生任何副作用
+            if (cancellationToken.IsCancellationRequested) return;
 
             if (Bytes == null || Bytes.Length == 0)
             {

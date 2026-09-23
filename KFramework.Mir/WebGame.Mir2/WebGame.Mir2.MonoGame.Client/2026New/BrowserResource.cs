@@ -23,7 +23,8 @@ public class BrowserResource
         return path.StartsWith("Map/", StringComparison.OrdinalIgnoreCase) ? PriorityMap : PriorityOther;
     }
 
-    public static async Task<byte[]> GetBytesAsync(string url)
+    /// <param name="cancellationToken">用于中断本次加载（如切图时不必再等旧地图下载完）。</param>
+    public static async Task<byte[]> GetBytesAsync(string url, CancellationToken cancellationToken = default)
     {
         string path = NormalizePath(url);
         if (Content == null || _missing.Contains(path)) return null;
@@ -31,7 +32,7 @@ public class BrowserResource
         try
         {
             // 直接整文件加载（已无超大 Lib，无需分片下载）；地图资源给最高优先级。
-            byte[] bytes = await Content.LoadBytesAsync(path, true, mCacheInstance, priority: PriorityOf(path))
+            byte[] bytes = await Content.LoadBytesAsync(path, true, mCacheInstance, priority: PriorityOf(path), cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
             if (bytes == null || bytes.Length == 0)
             {
@@ -39,6 +40,12 @@ public class BrowserResource
                  PrintTool.Log("[Mir] 资源缺失，后续不再重试: " + path);
             }
             return bytes;
+        }
+        catch (OperationCanceledException)
+        {
+            // 被取消（切图时中断旧地图下载）：绝不能记进 _missing，
+            // 否则该资源会被永久判为「缺失」，之后永远不再去取。
+            return null;
         }
         catch (Exception ex)
         {
