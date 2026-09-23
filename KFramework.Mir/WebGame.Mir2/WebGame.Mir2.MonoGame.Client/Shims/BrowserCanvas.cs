@@ -109,7 +109,9 @@ namespace MirEngine
             Client.MirGraphics.DXManager.SetSurface(saved);
         }
 
-        public static void DrawLabel(Texture texture, int w, int h, string text, string css, int foreColor, int outlineColor, int drawFormat, int backColor, int x, int y, bool shadow)
+        // drawFormat 直接用客户端 Shims/MirEngineForms.cs 的 TextFormatFlags 位定义，
+        // 不再用“Center=1 / Right=2”的硬编码猜测（那套位值和实际枚举对不上，导致对齐全部失效）。
+        public static void DrawLabel(Texture texture, int w, int h, string text, string css, int foreColor, int outlineColor, TextFormatFlags drawFormat, int backColor, int x, int y, bool shadow)
         {
             if (texture?.RenderTarget == null) return;
 
@@ -126,32 +128,100 @@ namespace MirEngine
                             KFramework.MonoGame.BlendState.NonPremultiplied,
                             KFramework.MonoGame.SamplerState.PointClamp);
 
-                // 简单水平对齐：drawFormat 含 Center(1) / Far(2)
-                float tx = x;
-                float ty = y;
-                float textW = font.MeasureString(text).X;
-                if ((drawFormat & 1) != 0) tx = x + Math.Max(0f, (w - textW) / 2f);
-                else if ((drawFormat & 2) != 0) tx = x + Math.Max(0f, w - textW);
+                bool hCenter = (drawFormat & TextFormatFlags.HorizontalCenter) != 0;
+                bool hRight  = (drawFormat & TextFormatFlags.Right) != 0;
+                bool vCenter = (drawFormat & TextFormatFlags.VerticalCenter) != 0;
+                bool vBottom = (drawFormat & TextFormatFlags.Bottom) != 0;
+                bool wordBreak = (drawFormat & TextFormatFlags.WordBreak) != 0;
 
-                var pos = new KFramework.MonoGame.Vector2(tx, ty);
-                var fore = KFramework.MonoGame.Color.FromArgb((uint)foreColor);
+                var lines = WrapLines(text, font, w, wordBreak);
+                float lineH = font.LineHeight;
+                float totalH = lineH * lines.Count;
 
-                if (outlineColor != 0)
+                float startY = y;
+                if (vCenter) startY = y + Math.Max(0f, (h - totalH) / 2f);
+                else if (vBottom) startY = y + Math.Max(0f, h - totalH);
+
+                foreach (var line in lines)
                 {
-                    var outline = KFramework.MonoGame.Color.FromArgb((uint)outlineColor);
-                    font.Draw(batch, text, new KFramework.MonoGame.Vector2(tx - 1, ty), outline, 0f, KFramework.MonoGame.Vector2.Zero, 1f, KFramework.MonoGame.SpriteEffects.None, 0f);
-                    font.Draw(batch, text, new KFramework.MonoGame.Vector2(tx + 1, ty), outline, 0f, KFramework.MonoGame.Vector2.Zero, 1f, KFramework.MonoGame.SpriteEffects.None, 0f);
-                    font.Draw(batch, text, new KFramework.MonoGame.Vector2(tx, ty - 1), outline, 0f, KFramework.MonoGame.Vector2.Zero, 1f, KFramework.MonoGame.SpriteEffects.None, 0f);
-                    font.Draw(batch, text, new KFramework.MonoGame.Vector2(tx, ty + 1), outline, 0f, KFramework.MonoGame.Vector2.Zero, 1f, KFramework.MonoGame.SpriteEffects.None, 0f);
+                    float lineW = font.Measure(line).X;
+                    float tx = x;
+                    if (hCenter) tx = x + Math.Max(0f, (w - lineW) / 2f);
+                    else if (hRight) tx = x + Math.Max(0f, w - lineW);
+
+                    DrawStringWithOutline(batch, font, line, tx, startY, foreColor, outlineColor);
+                    startY += lineH;
                 }
 
-                font.Draw(batch, text, pos, fore, 0f, KFramework.MonoGame.Vector2.Zero, 1f, KFramework.MonoGame.SpriteEffects.None, 0f);
                 batch.End();
             }
             finally
             {
                 EndOnTexture(saved);
             }
+        }
+
+        // 按显式 '\n' 切分；带 WordBreak 时在宽度 w 内按词折行，连续中文/长串退化逐字折行。
+        private static List<string> WrapLines(string text, KFramework.MonoGame.SpriteFont font, int maxWidth, bool wordBreak)
+        {
+            var result = new List<string>();
+            if (string.IsNullOrEmpty(text)) return result;
+
+            foreach (var raw in text.Split('\n'))
+            {
+                var line = raw.Replace("\r", "");
+                if (!wordBreak || maxWidth <= 0)
+                {
+                    result.Add(line);
+                    continue;
+                }
+
+                var words = line.Split(' ');
+                var current = new System.Text.StringBuilder();
+                foreach (var word in words)
+                {
+                    if (current.Length > 0 && font.Measure(current.ToString() + " " + word).X > maxWidth && font.Measure(word).X <= maxWidth)
+                    {
+                        result.Add(current.ToString());
+                        current.Clear();
+                        current.Append(word);
+                    }
+                    else if (font.Measure(word).X > maxWidth)
+                    {
+                        // 单个词（连续中文/长串）仍超宽：逐字折行
+                        foreach (var ch in word)
+                        {
+                            if (current.Length > 0 && font.Measure(current.ToString() + ch).X > maxWidth)
+                            {
+                                result.Add(current.ToString());
+                                current.Clear();
+                            }
+                            current.Append(ch);
+                        }
+                    }
+                    else
+                    {
+                        current.Append(current.Length == 0 ? word : " " + word);
+                    }
+                }
+                if (current.Length > 0) result.Add(current.ToString());
+            }
+            return result;
+        }
+
+        // 带描边文字绘制：描边在四个方向各偏移 1px，最后画前景。
+        private static void DrawStringWithOutline(KFramework.MonoGame.SpriteBatch batch, KFramework.MonoGame.SpriteFont font, string line, float tx, float ty, int foreColor, int outlineColor)
+        {
+            var fore = KFramework.MonoGame.Color.FromArgb((uint)foreColor);
+            if (outlineColor != 0)
+            {
+                var outline = KFramework.MonoGame.Color.FromArgb((uint)outlineColor);
+                font.Draw(batch, line, new KFramework.MonoGame.Vector2(tx - 1, ty), outline, 0f, KFramework.MonoGame.Vector2.Zero, 1f, KFramework.MonoGame.SpriteEffects.None, 0f);
+                font.Draw(batch, line, new KFramework.MonoGame.Vector2(tx + 1, ty), outline, 0f, KFramework.MonoGame.Vector2.Zero, 1f, KFramework.MonoGame.SpriteEffects.None, 0f);
+                font.Draw(batch, line, new KFramework.MonoGame.Vector2(tx, ty - 1), outline, 0f, KFramework.MonoGame.Vector2.Zero, 1f, KFramework.MonoGame.SpriteEffects.None, 0f);
+                font.Draw(batch, line, new KFramework.MonoGame.Vector2(tx, ty + 1), outline, 0f, KFramework.MonoGame.Vector2.Zero, 1f, KFramework.MonoGame.SpriteEffects.None, 0f);
+            }
+            font.Draw(batch, line, new KFramework.MonoGame.Vector2(tx, ty), fore, 0f, KFramework.MonoGame.Vector2.Zero, 1f, KFramework.MonoGame.SpriteEffects.None, 0f);
         }
 
         public static void DrawTextBox(Texture texture, int w, int h, string text, string css, int foreColor, int backColor, int selBackColor, int textColor, int selectionStart, int selectionLength, int caretPos, bool focused, bool multiline)

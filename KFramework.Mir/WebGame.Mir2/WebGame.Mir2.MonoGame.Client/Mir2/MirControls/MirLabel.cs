@@ -189,7 +189,7 @@ namespace Client.MirControls
             int fore = ForeColour.ToArgb();
             int outline = OutLine ? OutLineColour.ToArgb() : 0;
             int back = BackColour.ToArgb();
-            BrowserCanvas.DrawLabel(ControlTexture, Size.Width, Size.Height, Text, BrowserCanvas.FontToCss(Font), fore, outline, (int)DrawFormat, back, 0, 0, false);
+            BrowserCanvas.DrawLabel(ControlTexture, Size.Width, Size.Height, Text, BrowserCanvas.FontToCss(Font), fore, outline, DrawFormat, back, 0, 0, false);
 
             TextureValid = true;
         }
