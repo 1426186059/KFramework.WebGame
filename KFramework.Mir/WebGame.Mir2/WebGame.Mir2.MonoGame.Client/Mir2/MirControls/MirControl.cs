@@ -897,7 +897,10 @@ namespace Client.MirControls
 
             if (Moving)
             {
-                Point tempPoint = CMain.MPoint.Subtract(_movePoint);
+                // 直接用整数分量计算位移（等价于 MirEngine.Point.Subtract 扩展方法）。
+                // 之前“拖不动”的根因不是这里清零，而是父容器 UILayer.TrueSize 恒为 (0,0)，
+                // 导致下面 Parent.TrueSize 钳制把位置钳到 (0,0)。已修正 UILayerControl.TrueSize。
+                Point tempPoint = new Point(CMain.MPoint.X - _movePoint.X, CMain.MPoint.Y - _movePoint.Y);
 
                 if (Parent == null)
                 {
@@ -952,7 +955,7 @@ namespace Client.MirControls
             if (_movable)
             {
                 Moving = true;
-                _movePoint = CMain.MPoint.Subtract(Location);
+                _movePoint = new Point(CMain.MPoint.X - Location.X, CMain.MPoint.Y - Location.Y);
             }
 
             if (MouseDown != null)

@@ -32,10 +32,19 @@ export function bindMouse() {
         return;
     const canvas = getCanvasElement();
     if (canvas) {
+        // 防止画布在按住拖动时被浏览器当作可拖拽元素/可选文本，进而提前结束“按下”。
+        canvas.draggable = false;
+        canvas.style.userSelect = 'none';
+        canvas.style.webkitUserSelect = 'none';
+        canvas.style.touchAction = 'none';
+        on(canvas, 'dragstart', (e) => e.preventDefault());
         on(canvas, 'mousemove', (e) => {
             const ev = e;
             const [x, y] = canvasPoint(ev.clientX, ev.clientY);
             push(5, 0, x, y, 0);
+            // 阻止按住拖动时的原生文本选择/元素拖拽，避免浏览器在首次 mousemove 时
+            // 中断“按下”状态并隐式发出 mouseup，导致 UI 面板无法拖动（单击正常）。
+            ev.preventDefault();
         });
         on(canvas, 'mousedown', (e) => {
             const ev = e;

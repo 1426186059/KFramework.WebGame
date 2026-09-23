@@ -119,10 +119,6 @@ namespace Client.MirControls
             if (!Enabled)
                 return;
 
-            // [TEMP-DIAG] 仅用于定位“最大化下点击登录无反应”：打印真实派发目标，行为不变。
-            if (this is LoginScene)
-                KFramework.MonoGame.PrintTool.LogError($"[Mir][Down] MC={MouseControl?.GetType().Name} over={MouseControl?.IsMouseOver(CMain.MPoint)} MP=({CMain.MPoint.X},{CMain.MPoint.Y}) loc={MouseControl?.DisplayLocation}");
-
             if (MouseControl != null && MouseControl != this)
                 MouseControl.OnMouseDown(e);
             else
@@ -143,7 +139,9 @@ namespace Client.MirControls
                 return;
 
             if (MouseControl != null && MouseControl != this && MouseControl.Moving)
+            {
                 MouseControl.OnMouseMove(e);
+            }
             else
                 base.OnMouseMove(e);
         }

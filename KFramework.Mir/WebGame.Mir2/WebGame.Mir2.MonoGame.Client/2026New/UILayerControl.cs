@@ -27,5 +27,11 @@ namespace WebGame.Mir2.MonoGame.Client
             get => new Size(DXManager.GDevice.Viewport.Width, DXManager.GDevice.Viewport.Height); 
             set; }
 
+        // TrueSize 默认读 _size 字段，而本层从不给它赋值，会恒为 (0,0)。
+        // 对话框的 Parent 是 UILayer，拖拽边界钳制(Parent.TrueSize)会因此把位置钳到 (0,0)。
+        // 让 TrueSize 与 Size 一致返回实时视口，钳制才能按真实屏幕尺寸进行。
+        public override Size TrueSize
+            => new Size(DXManager.GDevice.Viewport.Width, DXManager.GDevice.Viewport.Height);
+
     }
 }
