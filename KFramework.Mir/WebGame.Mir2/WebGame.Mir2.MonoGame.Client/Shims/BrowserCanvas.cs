@@ -269,16 +269,6 @@ namespace MirEngine
             }
         }
 
-        // 兼容其他可能的调用点（DXManager 已不再使用），保留空实现。
-        public static void DrawImage(int handle, int x, int y, int w, int h, int srcX, int srcY, int srcW, int srcH, float opacity = 1f) { }
-        public static void UploadImage(int id, byte[] data, int w, int h) { }
-        public static void Clear(MirEngine.Color color) { }
-        public static void Flush() { }
-        public static void CreateOffscreen(int w, int h) { }
-        public static void DisposeImage(int handle) { }
-        public static void SetTarget(int handle) { }
-        public static void SetBlendProfile(string name) { }
-
         // DrawLabel/DrawTextBox/DrawText 现在走上面基于 KFramework.MonoGame.SpriteFont 的真实绘制。
     }
 }

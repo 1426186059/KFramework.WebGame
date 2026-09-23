@@ -486,17 +486,19 @@ namespace Client.MirScenes.Dialogs
                         string action = match.Groups[3].Captures[0].Value;
 
                         currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, txt);
-                        string text2 = currentLine.Substring(0, capture.Index - 1 - offSet) + " ";
-                        int w2 = (int)Math.Round(BrowserCanvas.MeasureStringWidth(text2, BrowserCanvas.FontToCss(TextLabel[i].Font)));
+                        // 直接量“链接前文本”的真实宽度（与 DrawLabel 同一 SpriteFont.MeasureString）作为
+                        // 叠层起点，去掉原先 -10 的近似补偿，避免中文名越长越往左偏。
+                        string prefixText = currentLine.Substring(0, capture.Index - 1 - offSet);
+                        int prefixWidth = (int)Math.Round(BrowserCanvas.MeasureStringWidth(prefixText, BrowserCanvas.FontToCss(TextLabel[i].Font)));
 
                         if (R.Match(match.Value).Success)
-                            NewButton(txt, action, TextLabel[i].Location.Add(new Point(w2 - 10, 0)));
+                            NewButton(txt, action, TextLabel[i].Location.Add(new Point(prefixWidth, 0)));
 
                         if (C.Match(match.Value).Success)
-                            NewColour(txt, action, TextLabel[i].Location.Add(new Point(w2 - 10, 0)));
+                            NewColour(txt, action, TextLabel[i].Location.Add(new Point(prefixWidth, 0)));
 
                         if (L.Match(match.Value).Success)
-                            NewButton(txt, null, TextLabel[i].Location.Add(new Point(w2 - 10, 0)), action);
+                            NewButton(txt, null, TextLabel[i].Location.Add(new Point(prefixWidth, 0)), action);
                     }
                 }
                 TextLabel[i].Text = currentLine;
@@ -974,27 +976,21 @@ namespace Client.MirScenes.Dialogs
             if (label == null || string.IsNullOrEmpty(text))
                 return Point.Empty;
 
-            // 用与 BrowserCanvas.DrawLabel 完全相同的 canvas 字体度量，避免 GDI(TextRenderer)
-            // 与 canvas(SpriteFont) 宽度不一致导致黄色选项叠层 X 偏移（尤其中文积累偏移明显）。
-            // canvas 渲染只按显式 \n 换行，不做自动换行，故这里只处理 \n。
+            // 与 BrowserCanvas.DrawLabel 使用同一 SpriteFont.MeasureString 量“链接前整串前缀”的宽度，
+            // 而非逐字符累加（MeasureCharWidth 会漏算字间距 Spacing / kerning，中文越长越往左偏）。
+            // canvas 渲染只按显式 \n 换行，不做自动换行：x 取最后一个 \n 之后的前缀宽度，y 按 \n 数累计。
             string css = BrowserCanvas.FontToCss(label.Font);
             float lineH = BrowserCanvas.LineHeight(css);
-            float x = 0;
-            float y = 0;
 
-            foreach (char ch in text)
-            {
-                if (ch == '\r') continue;
+            int lastNl = text.LastIndexOf('\n');
+            string linePrefix = lastNl >= 0 ? text.Substring(lastNl + 1) : text;
+            linePrefix = linePrefix.Replace("\r", "");
 
-                if (ch == '\n')
-                {
-                    x = 0;
-                    y += lineH;
-                    continue;
-                }
+            float x = BrowserCanvas.MeasureStringWidth(linePrefix, css);
 
-                x += BrowserCanvas.MeasureCharWidth(ch, css);
-            }
+            int nl = 0;
+            foreach (char c in text) if (c == '\n') nl++;
+            float y = nl * lineH;
 
             return new Point((int)Math.Round(x), (int)Math.Round(y));
         }
