@@ -123,6 +123,11 @@ namespace WebGame.Mir2.MonoGame.Client
         public static void Update(GameTime gameTime)
         {
             UpdateTime(gameTime);
+
+            CMain.MPoint = Input_Mouse.Position;
+            CMain.CMain_MouseMove(null, new MouseEventArgs(MouseButtons.None, 0, CMain.MPoint.X, CMain.MPoint.Y, 0));
+            SoundManager.ProcessDelayedSounds();
+
             UpdateEnviroment();
         }
 

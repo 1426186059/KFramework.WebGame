@@ -27,23 +27,16 @@ namespace WebGame.Mir2.MonoGame.Client
 
         protected override async Task LoadContentAsync()
         {
-            // 引擎引导：设资源基址、加载设置、建 DXManager、登记库、建登录场景、声音、输入。
-            // 放在异步加载阶段：声音索引表（SoundList）需经资源服务器异步读取，避免同步网络冻结主线程。
             await CMain.Init().ConfigureAwait(false);
         }
 
         protected override void Update(GameTime gameTime)
         {
             CMain.Update(gameTime);
-            CMain.MPoint = Input_Mouse.Position;
-            CMain.CMain_MouseMove(null, new MouseEventArgs(MouseButtons.None, 0, CMain.MPoint.X, CMain.MPoint.Y, 0));
-            SoundManager.ProcessDelayedSounds();
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            // CMain.Loop 内部已做清屏 + 绘制 + 提交；Game.TickFrame 在调用 Draw 前也会清一次屏，
-            // 但 RenderFrame 会再次清成黑色并重绘，最终画面以 DXManager 输出的为准。
             CMain.Draw();
         }
     }
