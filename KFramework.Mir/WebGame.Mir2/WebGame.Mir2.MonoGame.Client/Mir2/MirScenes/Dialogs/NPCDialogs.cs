@@ -3434,11 +3434,8 @@ namespace Client.MirScenes.Dialogs
     }
     public sealed class BigButton : MirButton
     {
-        #region Label
         private MirLabel _shadowLabel;
-        #endregion
 
-        #region CenterText
         public override bool CenterText
         {
             get
@@ -3462,9 +3459,7 @@ namespace Client.MirScenes.Dialogs
                 }
             }
         }
-        #endregion
 
-        #region Font Colour
         public override Color FontColour
         {
             get
@@ -3479,9 +3474,7 @@ namespace Client.MirScenes.Dialogs
                     _label.ForeColour = value;
             }
         }
-        #endregion
 
-        #region Size
         protected override void OnSizeChanged()
         {
             base.OnSizeChanged();
@@ -3489,9 +3482,7 @@ namespace Client.MirScenes.Dialogs
             if (_shadowLabel != null && !_shadowLabel.IsDisposed)
                 _shadowLabel.Size = Size;
         }
-        #endregion
 
-        #region Text
         public override string Text
         {
             set
@@ -3509,7 +3500,6 @@ namespace Client.MirScenes.Dialogs
                 }
             }
         }
-        #endregion
         public BigButton()
         {
             HoverIndex = -1;
@@ -3563,7 +3553,6 @@ namespace Client.MirScenes.Dialogs
             }
         }
 
-        #region Disposable
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
@@ -3574,6 +3563,5 @@ namespace Client.MirScenes.Dialogs
                 _shadowLabel.Dispose();
             _shadowLabel = null;
         }
-        #endregion
     }
 }

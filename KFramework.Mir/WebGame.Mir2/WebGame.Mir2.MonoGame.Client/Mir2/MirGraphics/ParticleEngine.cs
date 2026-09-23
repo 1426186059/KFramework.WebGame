@@ -73,7 +73,6 @@ namespace Client.MirGraphics
             Particle particle = null;
             switch (type)
             {
-                #region Fog
                 case ParticleType.Fog:
                     particle = new FogParticle(this, tex)
                     {
@@ -86,9 +85,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region Sand
                 case ParticleType.Sand:
                     particle = new SandParticle(this, tex)
                     {
@@ -101,9 +98,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region Snow
                 case ParticleType.Snow:
                     particle = new SnowParticle(this, tex)
                     {
@@ -116,9 +111,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region Firey Leaves
                 case ParticleType.FireyLeaves:
                     particle = new FogParticle(this, tex)
                     {
@@ -130,9 +123,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region Leaves
                 case ParticleType.Leaves:
                     particle = new FogParticle(this, tex)
                     {
@@ -146,9 +137,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region Purple Leaves
                 case ParticleType.PurpleLeaves:
                     particle = new FogParticle(this, tex)
                     {
@@ -161,9 +150,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region Rain
                 case ParticleType.Rain:
                     particle = new Particle()
                     {
@@ -179,9 +166,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region FlowersRain
                 case ParticleType.FlowersRain:
                     particle = new FlowerParticle(this, tex)
                     {
@@ -194,9 +179,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region Yellow Fog
                 case ParticleType.YellowFog:
                     particle = new FogParticle(this, tex)
                     {
@@ -209,9 +192,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region Fog Cloud
                 case ParticleType.FogCloud:
                     particle = new FogParticle(this, tex)
                     {
@@ -224,9 +205,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region RedFog
                 case ParticleType.RedFog:
                     particle = new FogParticle(this, tex)
                     {
@@ -238,9 +217,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region FloatingFlower
                 case ParticleType.FloatingFlower:
                     particle = new Particle()
                     {
@@ -256,9 +233,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region BlueFog
                 case ParticleType.BlueFog:
                     particle = new FogParticle(this, tex)
                     {
@@ -271,9 +246,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region Blizzard
                 case ParticleType.Blizzard:
                     particle = new FogParticle(this, tex)
                     {
@@ -284,9 +257,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region Blizzard Frost
                 case ParticleType.BlizzardFrost:
                     particle = new Particle()
                     {
@@ -302,9 +273,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region Red Fog Ember
                 case ParticleType.RedFogEmber:
                     particle = new Particle()
                     {
@@ -320,9 +289,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region White Ember
                 case ParticleType.WhiteEmber:
                     particle = new Particle()
                     {
@@ -339,9 +306,7 @@ namespace Client.MirGraphics
 
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region Yellow Ember
                 case ParticleType.YellowEmber:
                     particle = new Particle()
                     {
@@ -357,9 +322,7 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                #endregion
 
-                #region Bird
                 case ParticleType.Bird:
                     particle = new Particle()
                     {
@@ -375,7 +338,6 @@ namespace Client.MirGraphics
                     };
                     particles.Add(particle);
                     break;
-                    #endregion
             }
             return particle;
         }

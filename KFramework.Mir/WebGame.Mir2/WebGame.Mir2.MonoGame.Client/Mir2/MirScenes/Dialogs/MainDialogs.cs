@@ -1961,7 +1961,6 @@ namespace Client.MirScenes.Dialogs
 
                 DXManager.Draw(DXManager.RadarTexture, new Rectangle(0, 0, 2, 2), new Vector3((float)(x - 0.5), (float)(y - 0.5), 0.0F), colour);
 
-                #region NPC Quest Icons
 
                 if (ob is NPCObject npc && npc.GetAvailableQuests(true).Any())
                 {
@@ -2015,7 +2014,6 @@ namespace Client.MirScenes.Dialogs
                     });
                 }
 
-                #endregion
 
             }
         }
@@ -3968,7 +3966,6 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(3, 3),
             };
 
-            #region Pieces
 
             Helmet = new MirImageControl() { Index = -1, Library = Libraries.Prguse, Parent = Background, Size = new Size(12, 12), Location = new Point(24, 3) };
             Belt = new MirImageControl() { Index = -1, Library = Libraries.Prguse, Parent = Background, Size = new Size(12, 7), Location = new Point(23, 23) };
@@ -3987,7 +3984,6 @@ namespace Client.MirScenes.Dialogs
             Item1 = new MirImageControl() { Index = -1, Library = Libraries.Prguse, Parent = Background, Size = new Size(8, 12), Location = new Point(19, 67) };
             Item2 = new MirImageControl() { Index = -1, Library = Libraries.Prguse, Parent = Background, Size = new Size(8, 12), Location = new Point(31, 67) };
 
-            #endregion
         }
 
         public void GetCharacterDura()

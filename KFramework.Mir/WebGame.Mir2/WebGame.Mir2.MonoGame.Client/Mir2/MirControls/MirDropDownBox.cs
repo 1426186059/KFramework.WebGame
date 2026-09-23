@@ -46,7 +46,6 @@ namespace Client.MirControls
             }
         }
 
-        #region Back Color
 
         protected override void OnBackColourChanged()
         {
@@ -55,9 +54,7 @@ namespace Client.MirControls
                 _label.BackColour = BackColour;
         }
 
-        #endregion
 
-        #region Size
         protected override void OnSizeChanged()
         {
             base.OnSizeChanged();
@@ -79,9 +76,7 @@ namespace Client.MirControls
                 _ScrollPosition.Location = new Point(Size.Width - 11, 22);
  
         }
-        #endregion
 
-        #region Enabled
 
         protected override void OnEnabledChanged()
         {
@@ -96,7 +91,6 @@ namespace Client.MirControls
             }
         }
 
-        #endregion
 
         public MirDropDownBox()
         {
@@ -313,7 +307,6 @@ namespace Client.MirControls
             _ScrollPosition.Location = new Point(x, y);
         }
 
-        #region Disposable
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
@@ -346,6 +339,5 @@ namespace Client.MirControls
                 _Option[i] = null;
             }
         }
-        #endregion
     }
 }

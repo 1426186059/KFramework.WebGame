@@ -91,7 +91,6 @@ namespace Client.MirScenes.Dialogs
             Movable = true;
             Sort = true;
 
-            #region Buttons.
 
             var closeButton = new MirButton
             {
@@ -190,9 +189,7 @@ namespace Client.MirScenes.Dialogs
                 Network.Enqueue(new C.PurchaseGuildTerritory { Owner = GT.GuildOwner.Text });
             };
 
-            #endregion
 
-            #region Labels.
 
             var _titleLabel = new MirImageControl
             {
@@ -295,7 +292,6 @@ namespace Client.MirScenes.Dialogs
                 GTRowList.Add(gt);
             }
 
-            #endregion
         }
 
         public void Reset()

@@ -12,19 +12,14 @@ namespace Client.MirScenes.Dialogs
 
     public sealed class GuildDialog : MirImageControl
     {
-        #region NoticeBase
         public MirLabel GuildName;
         public MirButton CloseButton;
-        #endregion
 
-        #region GuildLeft
         public MirButton NoticeButton, MembersButton, StorageButton, RankButton;
         public MirImageControl NoticePage, MembersPage, StoragePage, RankPage;
         public MirImageControl StoragePageBase, MembersPageBase;
         public MirImageControl TitleLabel;
-        #endregion
 
-        #region GuildRight
         public MirButton BuffButton, StatusButton;
         public MirImageControl BuffPage, StatusPage, StatusPageBase;
 
@@ -36,9 +31,7 @@ namespace Client.MirScenes.Dialogs
         private long LastRequest = 0;
 
         public string ActiveStats = "";
-        #endregion
 
-        #region DataValues
         public byte Level;
         public long Experience;
         public long MaxExperience;
@@ -60,17 +53,13 @@ namespace Client.MirScenes.Dialogs
         {
             return MyOptions;
         }
-        #endregion
 
-        #region NoticePagePub
         public bool NoticeChanged = true;
         public long LastNoticeRequest = 0;
         public int NoticeScrollIndex = 0;
         public MirButton NoticeUpButton, NoticeDownButton, NoticePositionBar, NoticeEditButton, NoticeSaveButton;
         public MirTextBox Notice;
-        #endregion
 
-        #region MembersPagePub
         public int MemberScrollIndex = 0, MembersShowCount = 1;
         public MirButton MembersUpButton, MembersDownButton, MembersPositionBar;
         public MirLabel MembersHeaderRank, MembersHeaderName, MembersHeaderStatus, MembersShowOffline;
@@ -81,9 +70,7 @@ namespace Client.MirScenes.Dialogs
         public MirButton[] MembersDelete;
         public int MemberPageRows = 18;
         public bool MembersShowOfflinesetting = true;
-        #endregion
 
-        #region StatusPagePub
         public MirLabel StatusLevelLabel;
         public MirLabel StatusHeaders;
         public MirLabel StatusGuildName, StatusLevel, StatusMembers;
@@ -91,17 +78,13 @@ namespace Client.MirScenes.Dialogs
         public MirLabel StatusExpLabel, RecruitMemberLabel;
         public MirTextBox MembersRecruitName;
         public MirButton RecruitMemberButton;
-        #endregion
 
-        #region StoragePagePub
         public MirLabel StorageGoldText;
         public MirButton StorageGoldAdd, StorageGoldRemove, StorageGoldIcon;
         public MirItemCell[] StorageGrid;
         public MirButton StorageUpButton, StorageDownButton, StoragePositionBar;
         public int StorageIndex = 1;
-        #endregion
 
-        #region RankPagePub
 
         public MirLabel RanksSelectTextR, RanksSelectTextL, PointsLeft;
         public MirTextBox RanksName;
@@ -110,12 +93,8 @@ namespace Client.MirScenes.Dialogs
         public MirLabel[] RanksOptionsTexts;
         public MirDropDownBox RanksSelectBox;
         public MirButton RanksSaveName, UpButton, DownButton, PositionBar;
-        #endregion
 
-        #region BuffPagePub
-        #endregion
 
-        #region GuildUI
         public GuildDialog()
         {
             Index = 180;
@@ -126,7 +105,6 @@ namespace Client.MirScenes.Dialogs
 
             BeforeDraw += (o, e) => RefreshInterface();
 
-            #region TabUI
 
             TitleLabel = new MirImageControl
             {
@@ -210,9 +188,7 @@ namespace Client.MirScenes.Dialogs
                 Sound = SoundList.ButtonA
             };
             CloseButton.Click += (o, e) => Hide();
-            #endregion
 
-            #region NoticePageUI
             NoticePage = new MirImageControl()
             {
                 Parent = this,
@@ -313,9 +289,7 @@ namespace Client.MirScenes.Dialogs
 
             NoticePage.KeyDown += NoticePanel_KeyDown;
             NoticePage.MouseWheel += NoticePanel_MouseWheel;
-            #endregion
 
-            #region MembersPageUI
             MembersPage = new MirImageControl()
             {
                 Parent = this,
@@ -484,9 +458,7 @@ namespace Client.MirScenes.Dialogs
             MembersPage.KeyDown += MembersPanel_KeyDown;
             MembersPage.MouseWheel += MembersPanel_MouseWheel;
 
-            #endregion
 
-            #region StatusDialogUI 
             StatusPage = new MirImageControl()
             {
                 Parent = this,
@@ -612,9 +584,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(150, 15)
             };
 
-            #endregion
 
-            #region StorageDialogUI 
             StoragePage = new MirImageControl()
             {
                 Parent = this,
@@ -747,9 +717,7 @@ namespace Client.MirScenes.Dialogs
             StoragePage.MouseWheel += StoragePanel_MouseWheel;
             StoragePageBase.MouseWheel += StoragePanel_MouseWheel;
 
-            #endregion
 
-            #region RankDialogUI
             RankPage = new MirImageControl()
             {
                 Parent = this,
@@ -868,9 +836,7 @@ namespace Client.MirScenes.Dialogs
                 };
             }
 
-            #endregion
 
-            #region BuffDialogUI
 
             BuffPage = new MirImageControl()
             {
@@ -952,9 +918,7 @@ namespace Client.MirScenes.Dialogs
             PositionBar.OnMoving += PositionBar_OnMoving;
             PositionBar.MouseUp += (o, e) => RefreshInterface();
 
-            #endregion
         }
-        #endregion
 
         public void RequestBuff(byte Id)
         {
@@ -1270,7 +1234,6 @@ namespace Client.MirScenes.Dialogs
 
         }
 
-        #region ButtonResets
         public void ResetButtonStats()
         {
             if (MyOptions.HasFlag(GuildRankOptions.CanRetrieveItem) || MyOptions.HasFlag(GuildRankOptions.CanStoreItem))
@@ -1290,10 +1253,7 @@ namespace Client.MirScenes.Dialogs
 
             BuffButton.Visible = true;
         }
-        #endregion
 
-        #region NoticeDialogCode
-        #region NoticeButtonStates
         public void EditNotice()
         {
             if (Notice.Enabled == false)
@@ -1322,9 +1282,7 @@ namespace Client.MirScenes.Dialogs
             NoticeChanged = false;
             UpdateNotice();
         }
-        #endregion
 
-        #region AssholeNoticeScroller
         public void UpdateNotice(bool forward = false)
         {
             int NoticeScrollerIndex = NoticeScrollIndex;
@@ -1446,10 +1404,7 @@ namespace Client.MirScenes.Dialogs
             UpdateNotice();
             e.Handled = true;
         }
-        #endregion
-        #endregion
 
-        #region MembersDialogCode
         public void NewMembersList(List<GuildRank> NewRanks)
         {
             Ranks = NewRanks;
@@ -1746,9 +1701,7 @@ namespace Client.MirScenes.Dialogs
             UpdateMembersScrollPosition();
             e.Handled = true;
         }
-        #endregion
 
-        #region StatusDialogCode
         private void StatusExpBar_BeforeDraw(object sender, EventArgs e)
         {
             if (GameScene.Scene.GuildDialog.MaxExperience == 0)
@@ -1772,9 +1725,7 @@ namespace Client.MirScenes.Dialogs
             StatusExpBar.Library.Draw(StatusExpBar.Index, section, StatusExpBar.DisplayLocation, Color.White, false);
 
         }
-        #endregion
 
-        #region RankDialogCode
         public void NewRankRecieved(GuildRank New)
         {
             int NewIndex = Ranks.Count > 1 ? Ranks.Count - 1 : 1;
@@ -1937,9 +1888,7 @@ namespace Client.MirScenes.Dialogs
             }
         }
 
-        #endregion
 
-        #region StorageCode
 
         public void StoragePositionBar_OnMoving(object sender, MouseEventArgs e)
         {
@@ -2047,9 +1996,7 @@ namespace Client.MirScenes.Dialogs
 
             amountBox.Show();
         }
-        #endregion
 
-        #region UpdateNotice
         public void RequestUpdateNotice()
         {
             if ((NoticeChanged) && (LastNoticeRequest < CMain.Time))
@@ -2066,9 +2013,7 @@ namespace Client.MirScenes.Dialogs
                 Network.Enqueue(new C.RequestGuildInfo() { Type = 1 });
             }
         }
-        #endregion
 
-        #region NoticeDialogPages
         public void RightDialog(byte Rpageid)
         {
             StatusPage.Visible = false;
@@ -2150,9 +2095,7 @@ namespace Client.MirScenes.Dialogs
             else BuffButton.Visible = true;
 
         }
-        #endregion
 
-        #region GuildDialogChecks
 
         public override void Show()
         {
@@ -2180,7 +2123,6 @@ namespace Client.MirScenes.Dialogs
 
 
         }
-        #endregion
     }
     public sealed class GuildBuffButton : MirControl
     {

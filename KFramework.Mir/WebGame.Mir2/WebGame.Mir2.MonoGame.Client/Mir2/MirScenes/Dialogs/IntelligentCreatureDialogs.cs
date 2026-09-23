@@ -39,7 +39,6 @@ namespace Client.MirScenes.Dialogs
             Location = Center;
             BeforeDraw += IntelligentCreatureDialog_BeforeDraw;
 
-            #region CreatureButtons
             CloseButton = new MirButton
             {
                 HoverIndex = 361,
@@ -160,9 +159,7 @@ namespace Client.MirScenes.Dialogs
                 }
                 CreatureButtons[i] = new CreatureButton { idx = i, Parent = this, Visible = false, Location = new Point((44 + offsetX), offsetY) };
             }
-            #endregion
 
-            #region CreatureImage
             CreatureImage = new MirAnimatedControl
             {
                 Animated = false,
@@ -258,9 +255,7 @@ namespace Client.MirScenes.Dialogs
             BlackStoneImageFG.MouseEnter += Control_MouseEnter;
             BlackStoneImageFG.MouseLeave += Control_MouseLeave;
 
-            #endregion
 
-            #region CreatureLabels
             CreatureName = new MirLabel
             {
                 Parent = this,
@@ -336,11 +331,9 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(100, 15),
                 NotControl = true,
             };
-            #endregion
 
         }
 
-        #region EventHandlers
         private void IntelligentCreatureDialog_BeforeDraw(object sender, EventArgs e)
         {
             RefreshDialog();
@@ -549,9 +542,7 @@ namespace Client.MirScenes.Dialogs
             }
         }
 
-        #endregion
 
-        #region Process
         public void Update()
         {
             if (!Visible) return;
@@ -719,7 +710,6 @@ namespace Client.MirScenes.Dialogs
             }
         }
 
-        #region CreatureAnimation
         private void DrawCreatureAnimation()
         {
             int selectedCreature = BeforeAfterDraw();
@@ -799,9 +789,7 @@ namespace Client.MirScenes.Dialogs
             }
             return -1;
         }
-        #endregion
 
-        #endregion
 
         public void SaveItemFilter(IntelligentCreatureItemFilter filter)
         {

@@ -7,7 +7,6 @@ namespace Client.MirControls
         public override Point DisplayLocation { get { return UseOffSet ? base.DisplayLocation.Add(Library.GetOffSet(Index)) : base.DisplayLocation; } }
         public Point DisplayLocationWithoutOffSet { get { return base.DisplayLocation; } }
 
-        #region Auto Size
         private bool _autoSize;
         public bool AutoSize
         {
@@ -27,9 +26,7 @@ namespace Client.MirControls
             if (AutoSizeChanged != null)
                 AutoSizeChanged.Invoke(this, e);
         }
-        #endregion
 
-        #region DrawImage
         private bool _drawImage;
         public bool DrawImage
         {
@@ -49,9 +46,7 @@ namespace Client.MirControls
             if (DrawImageChanged != null)
                 DrawImageChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Index
         private int _index;
         public virtual int Index
         {
@@ -71,9 +66,7 @@ namespace Client.MirControls
             if (IndexChanged != null)
                 IndexChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Library
         private MLibrary _library;
         public MLibrary Library
         {
@@ -93,9 +86,7 @@ namespace Client.MirControls
             if (LibraryChanged != null)
                 LibraryChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region PixelDetect
         private bool _pixelDetect;
         protected bool PixelDetect
         {
@@ -114,9 +105,7 @@ namespace Client.MirControls
             if (PixelDetectChanged != null)
                 PixelDetectChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region UseOffset
         private bool _useOffSet;
         public bool UseOffSet
         {
@@ -136,9 +125,7 @@ namespace Client.MirControls
             if (UseOffSetChanged != null)
                 UseOffSetChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Size
         public override Size Size
         {
             set { base.Size = value; }
@@ -160,7 +147,6 @@ namespace Client.MirControls
             }
         }
 
-        #endregion
 
         public MirImageControl()
         {
@@ -197,7 +183,6 @@ namespace Client.MirControls
             return base.IsMouseOver(p) && (!_pixelDetect || Library.VisiblePixel(Index, p.Subtract(DisplayLocation),true) || Moving);
         }
 
-        #region UI 层归属断言
         // MirImageControl（含 MirButton / MirAnimatedControl / MirMessageBox / 各 *Dialog）只允许挂在 UI 层：
         // MirScene.AddControl 的路由规则保证 MapControl → WorldLayer、其余一律 → UILayer；
         // 世界层里唯一的控件就是 MapControl（class MapControl : MirControl），它及其子树不使用图片控件。
@@ -287,9 +272,7 @@ namespace Client.MirControls
             KFramework.MonoGame.PrintTool.Log(string.Format("[Mir][UIHost] {0} | 链: {1} | 活动场景: {2}",
                 reason, chainText, MirScene.ActiveScene == null ? "null" : MirScene.ActiveScene.GetType().Name));
         }
-        #endregion
 
-        #region Disposable
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
@@ -311,6 +294,5 @@ namespace Client.MirControls
             UseOffSetChanged = null;
             _useOffSet = false;
         }
-        #endregion
     }
 }

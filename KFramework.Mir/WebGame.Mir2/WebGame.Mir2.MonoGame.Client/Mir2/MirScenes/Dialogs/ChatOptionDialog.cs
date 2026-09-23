@@ -59,7 +59,6 @@ namespace Client.MirScenes.Dialogs
             };
             CloseButton.Click += (o, e) => Hide();
 
-            #region Filters
 
             AllButton = new MirButton
             {
@@ -184,9 +183,7 @@ namespace Client.MirScenes.Dialogs
                 CheckAllFilters();
             };
 
-            #endregion
 
-            #region Transparency
 
             TransparencyOffButton = new MirButton
             {
@@ -222,7 +219,6 @@ namespace Client.MirScenes.Dialogs
                 UpdateTransparency();
             };
 
-            #endregion
 
             CheckAllFilters();
             UpdateTransparency();

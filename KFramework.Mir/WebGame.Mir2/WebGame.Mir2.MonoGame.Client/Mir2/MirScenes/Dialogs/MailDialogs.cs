@@ -150,7 +150,6 @@ namespace Client.MirScenes.Dialogs
                 UpdateInterface();
             };
 
-            #region Action Buttons
             SendButton = new MirButton
             {
                 Index = 563,
@@ -281,7 +280,6 @@ namespace Client.MirScenes.Dialogs
                 GrayScale = true,
                 Enabled = false
             };
-            #endregion
 
             
         }

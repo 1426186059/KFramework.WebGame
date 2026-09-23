@@ -644,7 +644,6 @@ public class UserItem
         {
             switch (Info.Type)
             {
-                #region Amulet and Poison Stack Image changes
                 case ItemType.Amulet:
                     if (Info.StackSize > 0)
                     {
@@ -670,7 +669,6 @@ public class UserItem
                     break;
             }
 
-            #endregion
 
             return Info.Image;
         }

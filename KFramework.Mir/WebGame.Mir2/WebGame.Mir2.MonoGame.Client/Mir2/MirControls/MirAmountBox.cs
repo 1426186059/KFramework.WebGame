@@ -280,7 +280,6 @@ namespace Client.MirControls
             e.Handled = true;
         }
 
-        #region Disposable
 
         protected override void Dispose(bool disposing)
         {
@@ -296,6 +295,5 @@ namespace Client.MirControls
             }
         }
 
-        #endregion
     }
 }

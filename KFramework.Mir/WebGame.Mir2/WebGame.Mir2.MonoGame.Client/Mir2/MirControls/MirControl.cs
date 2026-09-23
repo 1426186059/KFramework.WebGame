@@ -18,7 +18,6 @@ namespace Client.MirControls
         public float BlendingRate { get; set; }
         public BlendMode BlendMode { get; set; }
 
-        #region Back Colour
         private Color _backColour;
         public Color BackColour
         {
@@ -39,9 +38,7 @@ namespace Client.MirControls
             if (BackColourChanged != null)
                 BackColourChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Border
         protected Rectangle BorderRectangle;
         private bool _border;
         protected Vector2[] _borderInfo;
@@ -89,9 +86,7 @@ namespace Client.MirControls
             if (BorderChanged != null)
                 BorderChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Border Colour
         private Color _borderColour;
         public Color BorderColour
         {
@@ -111,9 +106,7 @@ namespace Client.MirControls
             if (BorderColourChanged != null)
                 BorderColourChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Control Texture
         public long CleanTime;
         protected Texture ControlTexture;
         protected internal bool TextureValid;
@@ -165,9 +158,7 @@ namespace Client.MirControls
 
             DXManager.ControlList.Remove(this);
         }
-        #endregion
 
-        #region Controls
         public List<MirControl> Controls { get; private set; }
         public event EventHandler ControlAdded , ControlRemoved;
         protected virtual void AddControl(MirControl control)
@@ -208,9 +199,7 @@ namespace Client.MirControls
             if (ControlRemoved != null)
                 ControlRemoved.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Enabled
         private bool _enabled;
         public bool Enabled
         {
@@ -239,17 +228,13 @@ namespace Client.MirControls
                     control.OnEnabledChanged();
         }
         public bool AllowDisabledMouseOver;
-        #endregion
 
-        #region Events
         protected bool HasShown;
         public event EventHandler Click , DoubleClick, BeforeDraw , AfterDraw , MouseEnter , MouseLeave , Shown , BeforeShown, Disposing;
         public event MouseEventHandler MouseWheel,MouseMove, MouseDown, MouseUp;
         public event KeyEventHandler KeyDown , KeyUp;
         public event KeyPressEventHandler KeyPress;
-        #endregion
 
-        #region Fore Colour
         private Color _foreColour;
         public Color ForeColour
         {
@@ -269,9 +254,7 @@ namespace Client.MirControls
             if (ForeColourChanged != null)
                 ForeColourChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Location
         private Point _location;
         public Point Location
         {
@@ -295,9 +278,7 @@ namespace Client.MirControls
             if (LocationChanged != null)
                 LocationChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Anchor
 
         /// <summary>
         /// 九宫格锚点（见 EAnchorType）。默认 None —— 不使用锚点，ApplyAnchor 不做任何事。
@@ -354,9 +335,7 @@ namespace Client.MirControls
             Location = new Point(anchorPoint.X + AnchorPos.X, anchorPoint.Y + AnchorPos.Y);
         }
 
-        #endregion
 
-        #region Hint
         private string _hint;
         public string Hint
         {
@@ -377,9 +356,7 @@ namespace Client.MirControls
             if (HintChanged != null)
                 HintChanged.Invoke(this, e);
         }
-        #endregion
 
-        #region Modal
         private bool _modal;
         public bool Modal
         {
@@ -399,9 +376,7 @@ namespace Client.MirControls
             if (ModalChanged != null)
                 ModalChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Movable
         protected internal bool Moving;
         private bool _movable;
         private Point _movePoint;
@@ -427,9 +402,7 @@ namespace Client.MirControls
             if (MovableChanged != null)
                 MovableChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Not Control
         private bool _notControl;
         public bool NotControl
         {
@@ -449,9 +422,7 @@ namespace Client.MirControls
             if (NotControlChanged != null)
                 NotControlChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Opacity
         private float _opacity;
         public float Opacity
         {
@@ -477,9 +448,7 @@ namespace Client.MirControls
             if (OpacityChanged != null)
                 OpacityChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Parent
         private MirControl _parent;
         public MirControl Parent
         {
@@ -503,9 +472,7 @@ namespace Client.MirControls
             if (ParentChanged != null)
                 ParentChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Size
 
 // ReSharper disable InconsistentNaming
         protected Size _size;
@@ -537,9 +504,7 @@ namespace Client.MirControls
             if (SizeChanged != null)
                 SizeChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Sound
         private int _sound;
         public int Sound
         {
@@ -558,9 +523,7 @@ namespace Client.MirControls
             if (SoundChanged != null)
                 SoundChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Sort
         private bool _sort;
         public bool Sort
         {
@@ -597,9 +560,7 @@ namespace Client.MirControls
 
             Redraw();
         }
-        #endregion
 
-        #region Visible
         private bool _visible;
         public virtual bool Visible
         {
@@ -662,17 +623,13 @@ namespace Client.MirControls
             
             HasShown = true;
         }
-        #endregion
 
-        #region MultiLine
 
         public virtual void MultiLine()
         {
         }
 
-        #endregion
 
-        #region Positions
 
         protected Size ParentSize
         {
@@ -734,7 +691,6 @@ namespace Client.MirControls
             get { return new Point(0, ParentSize.Height - Size.Height); }
         }
 
-        #endregion
 
 
         public void BringToFront()
@@ -1093,7 +1049,6 @@ namespace Client.MirControls
                         Controls[i].Refresh();
         }
 
-        #region Font
         public static float FontDpiX
         {
             get { return CMain.Graphics == null ? 96f : CMain.Graphics.DpiX; }
@@ -1106,9 +1061,7 @@ namespace Client.MirControls
             
             return theFont;
         }
-        #endregion
 
-        #region Disposable
         public bool IsDisposed { get; private set; }
 
         public void Dispose()
@@ -1218,7 +1171,6 @@ namespace Client.MirControls
 
             IsDisposed = true;
         }
-        #endregion
 
 
 

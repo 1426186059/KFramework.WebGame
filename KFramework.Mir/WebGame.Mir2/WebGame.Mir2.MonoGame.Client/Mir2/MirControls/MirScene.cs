@@ -392,7 +392,6 @@ namespace Client.MirControls
 
         public abstract void Process();
 
-        #region Disposable
 
         protected override void Dispose(bool disposing)
         {
@@ -408,6 +407,5 @@ namespace Client.MirControls
             _clickedControl = null;
         }
 
-        #endregion
     }
 }

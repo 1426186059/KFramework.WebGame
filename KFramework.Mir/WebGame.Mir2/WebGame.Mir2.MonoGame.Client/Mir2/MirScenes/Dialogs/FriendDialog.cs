@@ -76,7 +76,6 @@ namespace Client.MirScenes.Dialogs
                 DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter
             };
 
-            #region Buttons
 
             PreviousButton = new MirButton
             {
@@ -250,7 +249,6 @@ namespace Client.MirScenes.Dialogs
                 GameScene.Scene.ChatDialog.ChatTextBox.TextBox.SelectionLength = 0;
                 GameScene.Scene.ChatDialog.ChatTextBox.TextBox.SelectionStart = GameScene.Scene.ChatDialog.ChatTextBox.Text.Length;
             };
-            #endregion
         }
 
         private void UpdateDisplay()
@@ -531,7 +529,6 @@ namespace Client.MirScenes.Dialogs
             };
             CancelButton.Click += (o, e) => Hide();
 
-            #region Buttons
 
             CloseButton = new MirButton
             {
@@ -545,7 +542,6 @@ namespace Client.MirScenes.Dialogs
             };
             CloseButton.Click += (o, e) => Hide();
 
-            #endregion
         }
 
         public override void Show()

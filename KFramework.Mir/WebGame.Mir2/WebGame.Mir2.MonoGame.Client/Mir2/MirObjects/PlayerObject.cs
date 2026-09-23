@@ -272,7 +272,6 @@ namespace Client.MirObjects
 
             if (TransformType > -1)
             {
-                #region Transform
                 
                 switch (TransformType)
                 {
@@ -358,17 +357,14 @@ namespace Client.MirObjects
                 WingOffset = 0;
                 MountOffset = 0;
 
-                #endregion
             }
             else
             {
 
                 switch (Class)
                 {
-                    #region Archer
                     case MirClass.Archer:
 
-                        #region WeaponType
                         if (HasClassWeapon)
                         {
                             switch (CurrentAction)
@@ -384,9 +380,7 @@ namespace Client.MirObjects
 
                         if (CurrentAction == MirAction.Jump) altAnim = true;
 
-                        #endregion
 
-                        #region Armours
                         if (altAnim)
                         {
                             BodyLibrary = Armour < Libraries.ARArmours.Length ? Libraries.ARArmours[Armour] : Libraries.ARArmours[0];
@@ -397,9 +391,7 @@ namespace Client.MirObjects
                             BodyLibrary = Armour < Libraries.CArmours.Length ? Libraries.CArmours[Armour] : Libraries.CArmours[0];
                             HairLibrary = Hair < Libraries.CHair.Length ? Libraries.CHair[Hair] : null;
                         }
-                        #endregion
 
-                        #region Weapons
                         if (HasClassWeapon)
                         {
                             int Index = Weapon - 200;
@@ -430,9 +422,7 @@ namespace Client.MirObjects
 								WeaponLibrary2 = null;
 							}
 						}
-                        #endregion
 
-                        #region WingEffects
                         if (WingEffect > 0 && WingEffect < 100)
                         {
                             if (altAnim)
@@ -440,24 +430,18 @@ namespace Client.MirObjects
                             else
                                 WingLibrary = (WingEffect - 1) < Libraries.CHumEffect.Length ? Libraries.CHumEffect[WingEffect - 1] : null;
                         }
-                        #endregion
 
-                        #region Offsets
                         ArmourOffSet = Gender == MirGender.Male ? 0 : altAnim ? 352 : 808;
                         HairOffSet = Gender == MirGender.Male ? 0 : altAnim ? 352 : 808;
                         WeaponOffSet = Gender == MirGender.Male ? 0 : altAnim ? 352 : 416;
                         WingOffset = Gender == MirGender.Male ? 0 : altAnim ? 352 : 840;
                         MountOffset = 0;
-                        #endregion
 
                         break;
-                    #endregion
 
 
-                    #region Assassin
                     case MirClass.Assassin:
 
-                        #region WeaponType
                         if (HasClassWeapon || Weapon < 0)
                         {
                             switch (CurrentAction)
@@ -479,9 +463,7 @@ namespace Client.MirObjects
                                     break;
                             }
                         }
-                        #endregion
 
-                        #region Armours
                         if (altAnim)
                         {
                             BodyLibrary = Armour < Libraries.AArmours.Length ? Libraries.AArmours[Armour] : Libraries.AArmours[0];
@@ -492,9 +474,7 @@ namespace Client.MirObjects
                             BodyLibrary = Armour < Libraries.CArmours.Length ? Libraries.CArmours[Armour] : Libraries.CArmours[0];
                             HairLibrary = Hair < Libraries.CHair.Length ? Libraries.CHair[Hair] : null;
                         }
-                        #endregion
 
-                        #region Weapons
                         if (HasClassWeapon)
                         {
                             int Index = Weapon - 100;
@@ -521,9 +501,7 @@ namespace Client.MirObjects
 								WeaponLibrary2 = null;
 							}
 						}
-                        #endregion
 
-                        #region WingEffects
                         if (WingEffect > 0 && WingEffect < 100)
                         {
                             if (altAnim)
@@ -531,31 +509,23 @@ namespace Client.MirObjects
                             else
                                 WingLibrary = (WingEffect - 1) < Libraries.CHumEffect.Length ? Libraries.CHumEffect[WingEffect - 1] : null;
                         }
-                        #endregion
 
-                        #region Offsets
                         ArmourOffSet = Gender == MirGender.Male ? 0 : altAnim ? 512 : 808;
                         HairOffSet = Gender == MirGender.Male ? 0 : altAnim ? 512 : 808;
                         WeaponOffSet = Gender == MirGender.Male ? 0 : altAnim ? 512 : 416;
                         WingOffset = Gender == MirGender.Male ? 0 : altAnim ? 544 : 840;
                         MountOffset = 0;
-                        #endregion
 
                         break;
-                    #endregion
 
 
-                    #region Others
                     case MirClass.Warrior:
                     case MirClass.Taoist:
                     case MirClass.Wizard:
 
-                        #region Armours
                         BodyLibrary = Armour < Libraries.CArmours.Length ? Libraries.CArmours[Armour] : Libraries.CArmours[0];
                         HairLibrary = Hair < Libraries.CHair.Length ? Libraries.CHair[Hair] : null;
-						#endregion
 
-						#region Weapons
 
 						if (Weapon >= 0)
 						{
@@ -572,29 +542,22 @@ namespace Client.MirObjects
 							WeaponLibrary2 = null;
 						}
 
-						#endregion
 
-						#region WingEffects
 						if (WingEffect > 0 && WingEffect < 100)
                         {
                             WingLibrary = (WingEffect - 1) < Libraries.CHumEffect.Length ? Libraries.CHumEffect[WingEffect - 1] : null;
                         }
-                        #endregion
 
-                        #region Offsets
                         ArmourOffSet = Gender == MirGender.Male ? 0 : 808;
                         HairOffSet = Gender == MirGender.Male ? 0 : 808;
                         WeaponOffSet = Gender == MirGender.Male ? 0 : 416;
                         WingOffset = Gender == MirGender.Male ? 0 : 840;
                         MountOffset = 0;
-                        #endregion
 
                         break;
-                    #endregion
                 }
             }
 
-            #region Common
             //Harvest
             if (CurrentAction == MirAction.Harvest && TransformType < 0)
             {
@@ -624,7 +587,6 @@ namespace Client.MirObjects
 
             DieSound = Gender == MirGender.Male ? SoundList.MaleDie : SoundList.FemaleDie;
             FlinchSound = Gender == MirGender.Male ? SoundList.MaleFlinch : SoundList.FemaleFlinch;
-            #endregion
         }
 
         public virtual void SetEffects()
@@ -763,7 +725,6 @@ namespace Client.MirObjects
                 DrawWingFrame = Frame.EffectStart + (Frame.EffectOffSet * (byte)Direction) + EffectFrameIndex;
             }
 
-            #region Moving OffSet
 
             switch (CurrentAction)
             {
@@ -840,7 +801,6 @@ namespace Client.MirObjects
                     break;
             }
 
-            #endregion
 
 
             DrawY = Movement.Y > CurrentLocation.Y ? Movement.Y : CurrentLocation.Y;
@@ -1641,136 +1601,105 @@ namespace Client.MirObjects
 
                         switch (Spell)
                         {
-                            #region FireBall
 
                             case Spell.FireBall:
                                 Effects.Add(new Effect(Libraries.Magic, 0, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region Healing
 
                             case Spell.Healing:
                                 Effects.Add(new Effect(Libraries.Magic, 200, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region Repulsion
 
                             case Spell.Repulsion:
                                 Effects.Add(new Effect(Libraries.Magic, 900, 6, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region ElectricShock
 
                             case Spell.ElectricShock:
                                 Effects.Add(new Effect(Libraries.Magic, 1560, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region Poisoning
 
                             case Spell.Poisoning:
                                 Effects.Add(new Effect(Libraries.Magic, 600, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region GreatFireBall
 
                             case Spell.GreatFireBall:
                                 Effects.Add(new Effect(Libraries.Magic, 400, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region HellFire
 
                             case Spell.HellFire:
                                 Effects.Add(new Effect(Libraries.Magic, 920, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region ThunderBolt
 
                             case Spell.ThunderBolt:
                                 Effects.Add(new Effect(Libraries.Magic2, 20, 3, 300, this));
                                 break;
 
-                            #endregion
 
-                            #region SoulFireBall
 
                             case Spell.SoulFireBall:
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region SummonSkeleton
 
                             case Spell.SummonSkeleton:
                                 Effects.Add(new Effect(Libraries.Magic, 1500, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
-                            #region StormEscape
                             case Spell.StormEscape:
                                 Effects.Add(new Effect(Libraries.Magic3, 590, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
-                            #endregion
-                            #region Teleport
 
                             case Spell.Teleport:
                                 Effects.Add(new Effect(Libraries.Magic, 1590, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region Blink
 
                             case Spell.Blink:
                                 Effects.Add(new Effect(Libraries.Magic, 1590, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region Hiding
 
                             case Spell.Hiding:
                                 Effects.Add(new Effect(Libraries.Magic, 1520, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region Haste
 
                             case Spell.Haste:
                                 Effects.Add(new Effect(Libraries.Magic2, 2140 + (int)Direction * 10, 6, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region Fury
 
                             case Spell.Fury:
                                 Effects.Add(new Effect(Libraries.Magic3, 200, 8, 8 * FrameInterval, this));
@@ -1779,288 +1708,224 @@ namespace Client.MirObjects
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region ImmortalSkin
                             case Spell.ImmortalSkin:
                                 Effects.Add(new Effect(Libraries.Magic3, 550, 17, Frame.Count * FrameInterval * 4, this));
                                 Effects.Add(new Effect(Libraries.Magic3, 570, 5, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
-                            #endregion
 
-                            #region FireBang
 
                             case Spell.FireBang:
                                 Effects.Add(new Effect(Libraries.Magic, 1650, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region FireWall
 
                             case Spell.FireWall:
                                 Effects.Add(new Effect(Libraries.Magic, 1620, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region HealingCircle
 
                             case Spell.HealingCircle:
                                 Effects.Add(new Effect(Libraries.Magic3, 620, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region MoonMist
 
                             case Spell.MoonMist:
                                 MapControl.Effects.Add(new Effect(Libraries.Magic3, 680, 25, 1800, CurrentLocation));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region TrapHexagon
 
                             case Spell.TrapHexagon:
                                 Effects.Add(new Effect(Libraries.Magic, 1380, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region EnergyRepulsor
 
                             case Spell.EnergyRepulsor:
                                 Effects.Add(new Effect(Libraries.Magic2, 190, 6, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region FireBurst
 
                             case Spell.FireBurst:
                                 Effects.Add(new Effect(Libraries.Magic2, 2320, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region FlameDisruptor
 
                             case Spell.FlameDisruptor:
                                 Effects.Add(new Effect(Libraries.Magic2, 130, 6, Frame.Count * FrameInterval, this));
                                 break;
 
-                            #endregion
 
-                            #region SummonShinsu
 
                             case Spell.SummonShinsu:
                                 Effects.Add(new Effect(Libraries.Magic2, 0, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region UltimateEnchancer
 
                             case Spell.UltimateEnhancer:
                                 Effects.Add(new Effect(Libraries.Magic2, 160, 15, 1000, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region FrostCrunch
 
                             case Spell.FrostCrunch:
                                 Effects.Add(new Effect(Libraries.Magic2, 400, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region Purification
 
                             case Spell.Purification:
                                 Effects.Add(new Effect(Libraries.Magic2, 600, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region FlameField
 
                             case Spell.FlameField:
                                 MapControl.Effects.Add(new Effect(Libraries.Magic2, 910, 23, 1800, CurrentLocation));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region Trap
 
                             case Spell.Trap:
                                 Effects.Add(new Effect(Libraries.Magic2, 2340, 11, 11 * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region MoonLight
 
                             case Spell.MoonLight:
                                 Effects.Add(new Effect(Libraries.Magic2, 2380, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region SwiftFeet
 
                             case Spell.SwiftFeet:
                                 Effects.Add(new Effect(Libraries.Magic2, 2440, 16, 16 * EffectFrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region LightBody
 
                             case Spell.LightBody:
                                 Effects.Add(new Effect(Libraries.Magic2, 2470, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
 
-                            #region PoisonSword
 
                             case Spell.PoisonSword:
                                 Effects.Add(new Effect(Libraries.Magic2, 2490 + ((int)Direction * 10), 10, Frame.Count * FrameInterval + 500, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region DarkBody
 
                             case Spell.DarkBody:
                                 Effects.Add(new Effect(Libraries.Magic2, 2580, 10, 10 * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region ThunderStorm
 
                             case Spell.ThunderStorm:
                                 MapControl.Effects.Add(new Effect(Libraries.Magic, 1680, 10, Frame.Count * FrameInterval, CurrentLocation));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region MassHealing
 
                             case Spell.MassHealing:
                                 Effects.Add(new Effect(Libraries.Magic, 1790, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region IceStorm
 
                             case Spell.IceStorm:
                                 Effects.Add(new Effect(Libraries.Magic, 3840, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region MagicShield
 
                             case Spell.MagicShield:
                                 Effects.Add(new Effect(Libraries.Magic, 3880, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region TurnUndead
 
                             case Spell.TurnUndead:
                                 Effects.Add(new Effect(Libraries.Magic, 3920, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region MagicBooster
 
                             case Spell.MagicBooster:
                                 Effects.Add(new Effect(Libraries.Magic3, 80, 9, 9 * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region PetEnhancer
 
                             case Spell.PetEnhancer:
                                 Effects.Add(new Effect(Libraries.Magic3, 200, 8, 8 * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region Revelation
 
                             case Spell.Revelation:
                                 Effects.Add(new Effect(Libraries.Magic, 3960, 20, 1200, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region ProtectionField
 
                             case Spell.ProtectionField:
                                 Effects.Add(new Effect(Libraries.Magic2, 1520, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region Rage
 
                             case Spell.Rage:
                                 Effects.Add(new Effect(Libraries.Magic2, 1510, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
 
-                            #region Vampirism
 
                             case Spell.Vampirism:
                                 Effects.Add(new Effect(Libraries.Magic2, 1040, 7, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region LionRoar, BattleCry
 
                             case Spell.LionRoar:
                             case Spell.BattleCry:
@@ -2068,36 +1933,28 @@ namespace Client.MirObjects
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10 + (Gender == MirGender.Male ? 0 : 1));
                                 break;
 
-                            #endregion
 
-                            #region TwinDrakeBlade
 
                             case Spell.TwinDrakeBlade:
                                 Effects.Add(new Effect(Libraries.Magic2, 210, 6, 500, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region Entrapment
 
                             case Spell.Entrapment:
                                 Effects.Add(new Effect(Libraries.Magic2, 990, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region BladeAvalanche
 
                             case Spell.BladeAvalanche:
                                 Effects.Add(new Effect(Libraries.Magic2, 740 + (int)Direction * 20, 15, 15 * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region SlashingBurst
 
                             case Spell.SlashingBurst:
                                 MapControl.Effects.Add(new Effect(Libraries.Magic2, 1700 + (int)Direction * 10, 9, 9 * FrameInterval, CurrentLocation, CMain.Time + 300));
@@ -2105,9 +1962,7 @@ namespace Client.MirObjects
                                 SlashingBurstTime = CMain.Time + 2000;
                                 break;
 
-                            #endregion
 
-                            #region CounterAttack
 
                             case Spell.CounterAttack:
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 5);
@@ -2115,9 +1970,7 @@ namespace Client.MirObjects
                                 Effects.Add(new Effect(Libraries.Magic3, 140, 2, 2 * FrameInterval, this));
                                 break;
 
-                            #endregion
 
-                            #region CrescentSlash
 
                             case Spell.CrescentSlash:
                                 Effects.Add(new Effect(Libraries.Magic2, 2620 + (int)Direction * 20, 20, 20 * FrameInterval, this));
@@ -2126,9 +1979,7 @@ namespace Client.MirObjects
                                
                                 break;
 
-                            #endregion
 
-                            #region FlashDash
 
                             case Spell.FlashDash:
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10 + (Gender == MirGender.Male ? 0 : 1));
@@ -2138,18 +1989,14 @@ namespace Client.MirObjects
                                 FrameInterval = FrameInterval * (int)attackRate / 20;
                                 EffectFrameInterval = EffectFrameInterval * (int)attackRate / 20;
                                 break;
-                            #endregion
 
-                            #region Mirroring
 
                             case Spell.Mirroring:
                                 Effects.Add(new Effect(Libraries.Magic2, 650, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region Blizzard
 
                             case Spell.Blizzard:
                                 Effects.Add(new Effect(Libraries.Magic2, 1540, 8, Frame.Count * FrameInterval, this));
@@ -2157,9 +2004,7 @@ namespace Client.MirObjects
                                 BlizzardStopTime = CMain.Time + 3000;
                                 break;
 
-                            #endregion
 
-                            #region MeteorStrike
 
                             case Spell.MeteorStrike:
                                 Effects.Add(new Effect(Libraries.Magic2, 1590, 10, Frame.Count * FrameInterval, this));
@@ -2167,26 +2012,20 @@ namespace Client.MirObjects
                                 BlizzardStopTime = CMain.Time + 3000;
                                 break;
 
-                            #endregion
 
-                            #region Reincarnation
 
                             case Spell.Reincarnation:
                                 ReincarnationStopTime = CMain.Time + 6000;
                                 break;
 
-                            #endregion
 
-                            #region HeavenlySword
 
                             case Spell.HeavenlySword:
                                 Effects.Add(new Effect(Libraries.Magic2, 2230 + ((int)Direction * 10), 8, 800, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                 break;
 
-                            #endregion
 
-                            #region ElementalBarrier
 
                             case Spell.ElementalBarrier:
                                 if (HasElements && !ElementalBarrier)
@@ -2196,39 +2035,30 @@ namespace Client.MirObjects
                                 }
                                 break;
 
-                            #endregion
 
-                            #region PoisonShot
                             case Spell.PoisonShot:
                                 Effects.Add(new Effect(Libraries.Magic3, 2300, 8, 1000, this));
                                 break;
-                            #endregion
 
-                            #region OneWithNature
                             case Spell.OneWithNature:
                                 MapControl.Effects.Add(new Effect(Libraries.Magic3, 2710, 8, 1200, CurrentLocation));
                                 SoundManager.PlaySound(20000 + 139 * 10);
                                 break;
-                            #endregion
 
 
-                            #region FireBounce
 
                             case Spell.FireBounce:
                                 Effects.Add(new Effect(Libraries.Magic, 400, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10);
                                 break;
 
-                            #endregion
 
-                            #region MeteorShower
 
                             case Spell.MeteorShower:
                                 Effects.Add(new Effect(Libraries.Magic, 400, 10, Frame.Count * FrameInterval, this));
                                 SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10);
                                 break;
 
-                            #endregion
 
                         }
 
@@ -2835,7 +2665,6 @@ namespace Client.MirObjects
                                 Effect effect;
                                 switch (Spell)
                                 {
-                                    #region FireBall
 
                                     case Spell.FireBall:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
@@ -2852,9 +2681,7 @@ namespace Client.MirObjects
                                         }
                                         break;
 
-                                    #endregion
 
-                                    #region GreatFireBall
 
                                     case Spell.GreatFireBall:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
@@ -2871,9 +2698,7 @@ namespace Client.MirObjects
                                         }
                                         break;
 
-                                    #endregion
 
-                                    #region Healing
 
                                     case Spell.Healing:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
@@ -2883,9 +2708,7 @@ namespace Client.MirObjects
                                             ob.Effects.Add(new Effect(Libraries.Magic, 370, 10, 800, ob));
                                         break;
 
-                                    #endregion
 
-                                    #region ElectricShock
 
                                     case Spell.ElectricShock:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
@@ -2894,18 +2717,14 @@ namespace Client.MirObjects
                                         else
                                             ob.Effects.Add(new Effect(Libraries.Magic, 1570, 10, 1000, ob));
                                         break;
-                                    #endregion
 
-                                    #region Poisoning
 
                                     case Spell.Poisoning:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                         if (ob != null)
                                             ob.Effects.Add(new Effect(Libraries.Magic, 770, 10, 1000, ob));
                                         break;
-                                    #endregion
 
-                                    #region HellFire
 
                                     case Spell.HellFire:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
@@ -2950,9 +2769,7 @@ namespace Client.MirObjects
                                         }
                                         break;
 
-                                    #endregion
 
-                                    #region ThunderBolt
 
                                     case Spell.ThunderBolt:
 
@@ -2964,9 +2781,7 @@ namespace Client.MirObjects
                                             ob.Effects.Add(new Effect(Libraries.Magic2, 10, 5, 400, ob));
                                         break;
 
-                                    #endregion
 
-                                    #region SoulFireBall
 
                                     case Spell.SoulFireBall:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
@@ -2983,9 +2798,7 @@ namespace Client.MirObjects
                                         }
                                         break;
 
-                                    #endregion
 
-                                    #region EnergyShield
 
                                     case Spell.EnergyShield:
 
@@ -2993,9 +2806,7 @@ namespace Client.MirObjects
                                         //SoundManager.PlaySound(20000 + (ushort)Spell * 9);
                                         break;
 
-                                    #endregion
 
-                                    #region FireBang
 
                                     case Spell.FireBang:
 
@@ -3003,9 +2814,7 @@ namespace Client.MirObjects
                                         MapControl.Effects.Add(new Effect(Libraries.Magic, 1660, 10, 1000, TargetPoint));
                                         break;
 
-                                    #endregion
 
-                                    #region MassHiding
 
                                     case Spell.MassHiding:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10);
@@ -3019,9 +2828,7 @@ namespace Client.MirObjects
                                         };
                                         break;
 
-                                    #endregion
 
-                                    #region SoulShield
 
                                     case Spell.SoulShield:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10);
@@ -3035,9 +2842,7 @@ namespace Client.MirObjects
                                         };
                                         break;
 
-                                    #endregion
 
-                                    #region BlessedArmour
 
                                     case Spell.BlessedArmour:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10);
@@ -3051,27 +2856,21 @@ namespace Client.MirObjects
                                         };
                                         break;
 
-                                    #endregion
 
-                                    #region FireWall
 
                                     case Spell.FireWall:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                         break;
 
-                                    #endregion
 
 
-                                    #region HealingCircle
 
                                     case Spell.HealingCircle:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                         MapControl.Effects.Add(new Effect(Libraries.Magic3, 620, 10, 1200, TargetPoint));
                                         break;
 
-                                    #endregion
 
-                                    #region MassHealing
 
                                     case Spell.MassHealing:
 
@@ -3079,9 +2878,7 @@ namespace Client.MirObjects
                                         MapControl.Effects.Add(new Effect(Libraries.Magic, 1800, 10, 1000, TargetPoint));
                                         break;
 
-                                    #endregion
 
-                                    #region IceStorm
 
                                     case Spell.IceStorm:
 
@@ -3089,9 +2886,7 @@ namespace Client.MirObjects
                                         MapControl.Effects.Add(new Effect(Libraries.Magic, 3850, 20, 1300, TargetPoint));
                                         break;
 
-                                    #endregion
 
-                                    #region TurnUndead
 
                                     case Spell.TurnUndead:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
@@ -3100,9 +2895,7 @@ namespace Client.MirObjects
                                         else
                                             ob.Effects.Add(new Effect(Libraries.Magic, 3930, 15, 1000, ob));
                                         break;
-                                    #endregion
 
-                                    #region IceThrust
 
                                     case Spell.IceThrust:
 
@@ -3112,9 +2905,7 @@ namespace Client.MirObjects
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                         break;
 
-                                    #endregion
 
-                                    #region Revelation
 
                                     case Spell.Revelation:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
@@ -3123,9 +2914,7 @@ namespace Client.MirObjects
                                         else
                                             ob.Effects.Add(new Effect(Libraries.Magic, 3990, 10, 1000, ob));
                                         break;
-                                    #endregion
 
-                                    #region FlameDisruptor
 
                                     case Spell.FlameDisruptor:
 
@@ -3137,9 +2926,7 @@ namespace Client.MirObjects
                                             ob.Effects.Add(new Effect(Libraries.Magic2, 140, 10, 600, ob));
                                         break;
 
-                                    #endregion
 
-                                    #region CatTongue
                                     case Spell.CatTongue:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                         missile = CreateProjectile(260, Libraries.Magic3, true, 6, 30, 4);
@@ -3155,9 +2942,7 @@ namespace Client.MirObjects
                                         }
                                         break;
 
-                                    #endregion
 
-                                    #region FrostCrunch
 
                                     case Spell.FrostCrunch:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
@@ -3174,9 +2959,7 @@ namespace Client.MirObjects
                                         }
                                         break;
 
-                                    #endregion
 
-                                    #region Purification
 
                                     case Spell.Purification:
                                         if (ob == null)
@@ -3185,9 +2968,7 @@ namespace Client.MirObjects
                                             ob.Effects.Add(new Effect(Libraries.Magic2, 620, 10, 800, ob));
                                         break;
 
-                                    #endregion
 
-                                    #region Curse
 
                                     case Spell.Curse:
                                         missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
@@ -3200,9 +2981,7 @@ namespace Client.MirObjects
                                         };
                                         break;
 
-                                    #endregion
 
-                                    #region Hallucination
 
                                     case Spell.Hallucination:
                                         missile = CreateProjectile(1160, Libraries.Magic, true, 3, 48, 7);
@@ -3218,18 +2997,14 @@ namespace Client.MirObjects
                                         }
                                         break;
 
-                                    #endregion
 
-                                    #region Lightning
 
                                     case Spell.Lightning:
                                         Effects.Add(new Effect(Libraries.Magic, 970 + (int)Direction * 20, 6, Frame.Count * FrameInterval, this));
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                         break;
 
-                                    #endregion
 
-                                    #region Vampirism
 
                                     case Spell.Vampirism:
 
@@ -3248,9 +3023,7 @@ namespace Client.MirObjects
                                         }
                                         break;
 
-                                    #endregion
 
-                                    #region PoisonCloud
 
                                     case Spell.PoisonCloud:
                                         missile = CreateProjectile(1160, Libraries.Magic, true, 3, 30, 7);
@@ -3263,18 +3036,14 @@ namespace Client.MirObjects
 
                                         break;
 
-                                    #endregion
 
-                                    #region Blizzard
 
                                     case Spell.Blizzard:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
                                         //BlizzardFreezeTime = CMain.Time + 3000;
                                         break;
 
-                                    #endregion
 
-                                    #region MeteorStrike
 
                                     case Spell.MeteorStrike:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 1);
@@ -3282,35 +3051,27 @@ namespace Client.MirObjects
                                         //BlizzardFreezeTime = CMain.Time + 3000;
                                         break;
 
-                                    #endregion
 
-                                    #region Reincarnation
 
                                     case Spell.Reincarnation:
                                         ReincarnationStopTime = 0;
                                         break;
 
-                                    #endregion
 
-                                    #region SummonHolyDeva
 
                                     case Spell.SummonHolyDeva:
                                         Effects.Add(new Effect(Libraries.Magic, 1500, 10, Frame.Count * FrameInterval, this));
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10);
                                         break;
 
-                                    #endregion
 
-                                    #region UltimateEnhancer
 
                                     case Spell.UltimateEnhancer:
                                         if (ob != null && ob != User)
                                             ob.Effects.Add(new Effect(Libraries.Magic2, 160, 15, 1000, ob));
                                         break;
 
-                                    #endregion
 
-                                    #region Plague
 
                                     case Spell.Plague:
                                         //SoundManager.PlaySound(20000 + (ushort)Spell.SoulShield * 10);
@@ -3324,35 +3085,27 @@ namespace Client.MirObjects
                                         };
                                         break;
 
-                                    #endregion
 
-                                    #region TrapHexagon
 
                                     case Spell.TrapHexagon:
                                         if (ob != null)
                                         SoundManager.PlaySound(20000 + (ushort)Spell.TrapHexagon * 10 + 1);
                                         break;
 
-                                    #endregion
 
-                                    #region Trap
 
                                     case Spell.Trap:
                                         if (ob != null)
                                             SoundManager.PlaySound(20000 + (ushort)Spell.Trap * 10 + 1);
                                         break;
 
-                                    #endregion
 
-                                    #region CrescentSlash
 
                                     case Spell.CrescentSlash:
                                         SoundManager.PlaySound(20000 + (ushort)Spell * 10 + 2);
                                         break;
 
-                                    #endregion
 
-                                    #region NapalmShot
 
                                     case Spell.NapalmShot:
 
@@ -3360,10 +3113,8 @@ namespace Client.MirObjects
                                         MapControl.Effects.Add(new Effect(Libraries.Magic3, 1660, 10, 1000, TargetPoint));
                                         break;
 
-                                    #endregion
 
 
-                                    #region FireBounce
 
                                     case Spell.FireBounce:
                                         SoundManager.PlaySound(20000 + (ushort)Spell.GreatFireBall * 10 + 1);
@@ -3381,9 +3132,7 @@ namespace Client.MirObjects
                                         }
                                         break;
 
-                                    #endregion
 
-                                    #region MeteorShower
 
                                     case Spell.MeteorShower:
 
@@ -3415,7 +3164,6 @@ namespace Client.MirObjects
                                         
                                         break;
 
-                                    #endregion
 
                                 }
 
@@ -3671,7 +3419,6 @@ namespace Client.MirObjects
 
             //CMain.SendDebugMessage(string.Format("BackImage : {0}. BackIndex : {1}. MiddleImage : {2}. MiddleIndex {3}", tt.BackImage, tt.BackIndex, tt.MiddleImage, tt.MiddleIndex));
 
-            #region Back Tiles (Tiles)
             switch (GameScene.Scene.MapControl.M2CellInfo[x, y].BackIndex)
             {
                 case 100:
@@ -4013,11 +3760,9 @@ namespace Client.MirObjects
                     moveSound = SoundList.WalkWaterL;
                     break;
             }
-            #endregion
             
             index = (GameScene.Scene.MapControl.M2CellInfo[x, y].MiddleImage & 0x1FFFF) - 1;
 
-            #region Middle Tiles
             switch (GameScene.Scene.MapControl.M2CellInfo[x, y].MiddleIndex)
             {
                 case 114:
@@ -4084,11 +3829,9 @@ namespace Client.MirObjects
                     }
                     break;
             }
-            #endregion
 
             index = (GameScene.Scene.MapControl.M2CellInfo[x, y].MiddleIndex - 110) * 100000 + index;
 
-            #region Middle Tiles old code method
 
             if (index >= 0 && index <= 99999)
             {
@@ -4207,7 +3950,6 @@ namespace Client.MirObjects
 
             }
 
-            #endregion
 
         }
 
@@ -4219,9 +3961,7 @@ namespace Client.MirObjects
             int midIndex = (GameScene.Scene.MapControl.M2CellInfo[x, y].MiddleIndex);
             int midImage = (GameScene.Scene.MapControl.M2CellInfo[x, y].MiddleImage & 0x7FFF - 1);
 
-            #region Shanda & Wemade Mir 3
             int index = (GameScene.Scene.MapControl.M2CellInfo[x, y].BackImage & 0x1FFFF) - 1; // Back
-            #region Back 300 Tilesc*!
             if (backIndex == 300 || backIndex == 200)
             {   // Lawn
                 if ((index >= 1605 && index <= 1750) || (index >= 1753 && index <= 1759) || (index >= 1763 && index <= 1769)
@@ -4298,8 +4038,6 @@ namespace Client.MirObjects
                 // Ground
                 else moveSound = SoundList.WalkGroundL;
             }
-            #endregion
-            #region Back 315 Wood/Tilesc*
             if (backIndex == 315 || backIndex == 215)
             {   // Stone
                 if ((index == 51) || (index >= 57 && index <= 58) || (index >= 64 && index <= 66) || (index == 74)
@@ -4348,8 +4086,6 @@ namespace Client.MirObjects
                 // Ground
                 else moveSound = SoundList.WalkGroundL;
             }
-            #endregion
-            #region Back 330 Sand/Tilesc*
             if (backIndex == 330 || backIndex == 230)
             {   // Stone
                 if ((index >= 1029 && index <= 1031) || (index >= 1048 && index <= 1053) || (index >= 1070 && index <= 1075)
@@ -4386,8 +4122,6 @@ namespace Client.MirObjects
                 // Ground
                 else moveSound = SoundList.WalkGroundL;
             }
-            #endregion
-            #region Back 345 Snow/Tilesc*!
             if (backIndex == 345 || backIndex == 245)
             {   // Stone
                 if ((index >= 988 && index <= 1116) || (index == 1721) || (index == 1781) || (index == 1801) || (index >= 3051 && index <= 3282)
@@ -4424,8 +4158,6 @@ namespace Client.MirObjects
                 // Ground
                 else moveSound = SoundList.WalkGroundL;
             }
-            #endregion
-            #region Back 360 Forest/Tilesc*!
             if (backIndex == 360 || backIndex == 260)
             {   // Stone
                 if ((index >= 120 && index <= 140) || (index >= 141 && index <= 156) || (index >= 158 && index <= 179)
@@ -4444,10 +4176,8 @@ namespace Client.MirObjects
                 // Lawn
                 else moveSound = SoundList.WalkLawnL;
             }
-            #endregion
 
 
-            #region Back 301 Tiles30c*
             if (backIndex == 301 || backIndex == 201)
             {   // Lawn
                 if ((index == 14) || (index == 19) || (index == 24) || (index == 29) || (index >= 395 && index <= 403)
@@ -4472,10 +4202,8 @@ namespace Client.MirObjects
                 // Ground
                 else moveSound = SoundList.WalkGroundL;
             }
-            #endregion
             //316 = wood/Tiles30c
             //331 = sand/Tiles30c
-            #region Back 346 Snow/Tiles30c*
             if (backIndex == 346 || backIndex == 246)
             {   // Snow
                 if ((index >= 0 && index <= 58) || (index >= 75 && index <= 94) || (index >= 105 && index <= 118)
@@ -4486,8 +4214,6 @@ namespace Client.MirObjects
                     moveSound = SoundList.WalkLawnL;
                 else moveSound = SoundList.WalkGroundL;
             }
-            #endregion
-            #region Back 361 Forest/Tiles30c*
             if (backIndex == 361 || backIndex == 261)
             {   // Lawn
                 if ((index >= 0 && index <= 4) || (index >= 14 && index <= 34) || (index >= 45 && index <= 64)
@@ -4497,10 +4223,8 @@ namespace Client.MirObjects
                 // Ground
                 else moveSound = SoundList.WalkGroundL;
             }
-            #endregion
 
 
-            #region Back 302 Tiles5c*
             if (backIndex == 302 || backIndex == 202)
             {   // Lawn
                 if ((index >= 10330 && index <= 10348) || (index >= 10405 && index <= 10408) || (index >= 10450 && index <= 10454)
@@ -4569,8 +4293,6 @@ namespace Client.MirObjects
                 // Ground
                 else moveSound = SoundList.WalkGroundL;
             }
-            #endregion
-            #region Back 317 Wood/Tiles5c*
             if (backIndex == 317 || backIndex == 217)
             {   // Cave
                 if (index >= 0 && index <= 4)
@@ -4578,8 +4300,6 @@ namespace Client.MirObjects
                 // Stone
                 else moveSound = SoundList.WalkStoneL;
             }
-            #endregion
-            #region Back 332 Sand/Tiles5c*
             if (backIndex == 332 || backIndex == 232)
             {   // Stone
                 if (index >= 5 && index <= 9)
@@ -4589,8 +4309,6 @@ namespace Client.MirObjects
                     moveSound = SoundList.WalkCaveL;
                 else moveSound = SoundList.WalkGroundL;
             }
-            #endregion
-            #region Back 347 Snow/Tiles5c*
             if (backIndex == 347 || backIndex == 247)
             {   // Cave
                 if ((index >= 21 && index <= 24) || (index >= 35 && index <= 44))
@@ -4606,32 +4324,24 @@ namespace Client.MirObjects
                     moveSound = SoundList.WalkSnowL;
                 else moveSound = SoundList.WalkGroundL;
             }
-            #endregion
-            #region Back 362 Forest/Tiles5c*
             if (backIndex == 362 || backIndex == 262)
             {   // Stone
                 if (index >= 0 && index <= 36)
                     moveSound = SoundList.WalkStoneL;
                 else moveSound = SoundList.WalkGroundL;
             }
-            #endregion
 
-            #region Back 304 Housesc || 219 Wood | 234 Sand | 249 Snow | 264 Forest
             if (backIndex == 304 || backIndex == 204)
             {
                 moveSound = SoundList.WalkGroundL;
             }
-            #endregion
 
             index = (GameScene.Scene.MapControl.M2CellInfo[x, y].MiddleImage & 0x7FFF) - 1; // Middle
-            #region Middle 310 smObjectsc
             if (midIndex == 310 || backIndex == 210 && midImage != 0)
                 // Wood
                 if (index >= 7755 && index <= 8300)
                     moveSound = SoundList.WalkWoodL;
                 else moveSound = SoundList.WalkGroundL;
-            #endregion
-            #region Middle 325 Wood/smObjectsc
             if (midIndex == 325 || backIndex == 225 && midImage != 0)
                 // Stone
                 if ((index >= 480 && index <= 624) || (index >= 2459 && index <= 2519))
@@ -4640,14 +4350,10 @@ namespace Client.MirObjects
                 else if (index >= 2539 && index <= 2623)
                     moveSound = SoundList.WalkRoomL;
                 else moveSound = SoundList.WalkGroundL;
-            #endregion
-            #region Middle 340 Sand/smObjectsc
             if (midIndex == 340 || backIndex == 240 && midImage != 0)
                 // Stone
                 if ((index >= 0 && index <= 0) || (index >= 0 && index <= 0))
                     moveSound = SoundList.WalkGroundL;
-            #endregion
-            #region Middle 355 Snow/smObjectsc
             if (midIndex == 355 || backIndex == 255 && midImage != 0)
                 // Wood
                 if ((index >= 939 && index <= 942) || (index >= 960 && index <= 966) || (index >= 986 && index <= 994)
@@ -4665,13 +4371,9 @@ namespace Client.MirObjects
                     || (index >= 6383 && index <= 6387))
                     moveSound = SoundList.WalkStoneL;
                 else moveSound = SoundList.WalkSnowL;
-            #endregion
-            #region Middle 370 Forest/smObjectsc
             if (midIndex == 370 || backIndex == 270 && midImage != 0)
                 // Stone
                 moveSound = SoundList.WalkStoneL;
-            #endregion
-            #endregion Wemade Mir 3
         }
 
 

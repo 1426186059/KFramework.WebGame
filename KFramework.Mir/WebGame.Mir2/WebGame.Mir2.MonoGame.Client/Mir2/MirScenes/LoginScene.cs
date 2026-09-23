@@ -625,7 +625,6 @@ namespace Client.MirScenes
                 PasswordTextBox.Text = string.Empty;
             }
 
-            #region Disposable
 
             protected override void Dispose(bool disposing)
             {
@@ -648,7 +647,6 @@ namespace Client.MirScenes
                 base.Dispose(disposing);
             }
 
-            #endregion
         }
 
         public sealed class InputKeyDialog : MirImageControl
@@ -857,7 +855,6 @@ namespace Client.MirScenes
                     return _loginDialog.PasswordTextBox;
             }
 
-            #region Disposable
             protected override void Dispose(bool disposing)
             {
                 Libraries.LibraryLoaded -= Libraries_LibraryLoaded;
@@ -866,7 +863,6 @@ namespace Client.MirScenes
 
                 DisposeKeys();
             }
-            #endregion
         }
 
         public sealed class NewAccountDialog : MirImageControl
@@ -1281,7 +1277,6 @@ namespace Client.MirScenes
                 AccountIDTextBox.SetFocus();
             }
 
-            #region Disposable
             protected override void Dispose(bool disposing)
             {
                 Libraries.LibraryLoaded -= Libraries_LibraryLoaded;
@@ -1306,7 +1301,6 @@ namespace Client.MirScenes
 
                 base.Dispose(disposing);
             }
-            #endregion
         }
 
         public sealed class ChangePasswordDialog : MirImageControl
@@ -1516,17 +1510,14 @@ namespace Client.MirScenes
                 AccountIDTextBox.SetFocus();
             }
 
-            #region Disposable
             protected override void Dispose(bool disposing)
             {
                 Libraries.LibraryLoaded -= Libraries_LibraryLoaded;
 
                 base.Dispose(disposing);
             }
-            #endregion
         }
 
-        #region Disposable
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -1543,6 +1534,5 @@ namespace Client.MirScenes
 
             base.Dispose(disposing);
         }
-        #endregion
     }
 }

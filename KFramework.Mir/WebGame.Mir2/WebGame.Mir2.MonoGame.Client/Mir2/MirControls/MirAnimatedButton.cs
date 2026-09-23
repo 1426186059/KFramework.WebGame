@@ -6,7 +6,6 @@ namespace Client.MirControls
     {
         public static List<MirAnimatedButton> Animations = new List<MirAnimatedButton>();
 
-        #region Animated
 
         private bool _animated;
         public event EventHandler AnimatedChanged;
@@ -28,9 +27,7 @@ namespace Client.MirControls
                 AnimatedChanged.Invoke(this, e);
         }
 
-        #endregion
 
-        #region Animation Count
 
         private int _animationCount;
         public event EventHandler AnimationCountChanged;
@@ -50,9 +47,7 @@ namespace Client.MirControls
                 AnimationCountChanged.Invoke(this, e);
         }
 
-        #endregion
 
-        #region Animation Delay
 
         private long _animationDelay;
         public event EventHandler AnimationDelayChanged;
@@ -72,9 +67,7 @@ namespace Client.MirControls
                 AnimationDelayChanged.Invoke(this, EventArgs.Empty);
         }
 
-        #endregion
 
-        #region FadeIn
 
         private long _nextFadeTime;
         private bool _fadeIn;
@@ -96,9 +89,7 @@ namespace Client.MirControls
                 FadeInChanged.Invoke(this, e);
         }
 
-        #endregion
 
-        #region FadeIn Rate
 
         private float _fadeInRate;
         public event EventHandler FadeInRateChanged;
@@ -118,9 +109,7 @@ namespace Client.MirControls
                 FadeInRateChanged.Invoke(this, e);
         }
 
-        #endregion
 
-        #region FadeIn Delay
 
         private long _fadeInDelay;
         public event EventHandler FadeInDelayChanged;
@@ -140,13 +129,10 @@ namespace Client.MirControls
                 FadeInDelayChanged.Invoke(this, EventArgs.Empty);
         }
 
-        #endregion
 
-        #region Events
 
         public event EventHandler AfterAnimation;
 
-        #endregion
 
         public override int Index
         {
@@ -166,7 +152,6 @@ namespace Client.MirControls
             set { base.Index = value; }
         }
 
-        #region Loop
 
         private bool _loop;
         public event EventHandler LoopChanged;
@@ -186,9 +171,7 @@ namespace Client.MirControls
                 LoopChanged.Invoke(this, e);
         }
 
-        #endregion
 
-        #region OffSet
 
         private int _offSet;
         public event EventHandler OffSetChanged;
@@ -210,7 +193,6 @@ namespace Client.MirControls
         }
         private long _nextOffSet;
 
-        #endregion
 
         public MirAnimatedButton()
         {
@@ -256,7 +238,6 @@ namespace Client.MirControls
                 temp.Invoke(this, EventArgs.Empty);
         }
 
-        #region Disposable
 
         protected override void Dispose(bool disposing)
         {
@@ -286,6 +267,5 @@ namespace Client.MirControls
             Animations.Remove(this);
         }
 
-        #endregion
     }
 }

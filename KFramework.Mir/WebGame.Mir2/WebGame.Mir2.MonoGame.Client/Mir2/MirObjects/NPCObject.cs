@@ -381,7 +381,6 @@ namespace Client.MirObjects
 
         //Quests
 
-        #region Quest System
         public void UpdateBestQuestIcon()
         {
             ClientQuestProgress quests = GetAvailableQuests(true).FirstOrDefault();
@@ -467,6 +466,5 @@ namespace Client.MirObjects
             return quest.QuestNeeded <= 0 || User.CompletedQuests.Contains(quest.QuestNeeded);
         }
 
-        #endregion
     }
 }

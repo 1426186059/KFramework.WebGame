@@ -8,7 +8,6 @@ namespace Client.MirControls
 {
     public sealed class MirTextBox : MirControl
     {
-        #region Back Color
 
         protected override void OnBackColourChanged()
         {
@@ -17,9 +16,7 @@ namespace Client.MirControls
                 TextBox.BackColor = BackColour;
         }
 
-        #endregion
 
-        #region Enabled
 
         protected override void OnEnabledChanged()
         {
@@ -28,9 +25,7 @@ namespace Client.MirControls
                 TextBox.Enabled = Enabled;
         }
 
-        #endregion
 
-        #region Fore Color
 
         protected override void OnForeColourChanged()
         {
@@ -39,9 +34,7 @@ namespace Client.MirControls
                 TextBox.ForeColor = ForeColour;
         }
 
-        #endregion
 
-        #region Location
 
         protected override void OnLocationChanged()
         {
@@ -63,9 +56,7 @@ namespace Client.MirControls
             Redraw();
         }
 
-        #endregion
 
-        #region Max Length
 
         public int MaxLength
         {
@@ -82,9 +73,7 @@ namespace Client.MirControls
             }
         }
 
-        #endregion
 
-        #region Parent
 
         protected override void OnParentChanged()
         {
@@ -93,9 +82,7 @@ namespace Client.MirControls
                 ApplyNativeTextBoxState();
         }
 
-        #endregion
 
-        #region Password
 
         public bool Password
         {
@@ -112,9 +99,7 @@ namespace Client.MirControls
             }
         }
 
-        #endregion
 
-        #region Font
 
         public Font Font
         {
@@ -131,9 +116,7 @@ namespace Client.MirControls
             }
         }
 
-        #endregion
 
-        #region Size
 
         protected override void OnSizeChanged()
         {
@@ -147,9 +130,7 @@ namespace Client.MirControls
                 base.OnSizeChanged();
         }
 
-        #endregion
         
-        #region TextBox
 
         // 当前由浏览器原生 <input> 覆盖层接管的文本框（全局唯一，输入焦点互斥）。
         private static MirTextBox _current;
@@ -183,9 +164,7 @@ namespace Client.MirControls
             TextBox.Visible = Visible && TextBox.Parent != null;
         }
 
-        #endregion
 
-        #region Label
 
         public string Text
         {
@@ -222,9 +201,7 @@ namespace Client.MirControls
             }
         }
 
-        #endregion
 
-        #region Visible
 
         public override bool Visible
         {
@@ -278,9 +255,7 @@ namespace Client.MirControls
 
         }
 
-        #endregion
 
-        #region MultiLine
 
         public override void MultiLine()
         {
@@ -291,7 +266,6 @@ namespace Client.MirControls
             Redraw();
         }
 
-        #endregion
 
         public MirTextBox()
         {
@@ -592,7 +566,6 @@ namespace Client.MirControls
         }
 
 
-        #region Disposable
 
         protected override void Dispose(bool disposing)
         {
@@ -611,6 +584,5 @@ namespace Client.MirControls
         }
 
 
-        #endregion
     }
 }

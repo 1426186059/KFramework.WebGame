@@ -228,7 +228,6 @@ namespace Client.MirControls
             box.Show();
         }
 
-        #region Disposable
 
         protected override void Dispose(bool disposing)
         {
@@ -252,6 +251,5 @@ namespace Client.MirControls
             }
         }
 
-        #endregion
     }
 }

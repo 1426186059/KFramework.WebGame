@@ -132,7 +132,6 @@ namespace Client.MirControls
 
 
 
-        #region GridType
 
         private MirGridType _gridType;
         public event EventHandler GridTypeChanged;
@@ -152,9 +151,7 @@ namespace Client.MirControls
             if (GridTypeChanged != null)
                 GridTypeChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region ItemSlot
 
         private int _itemSlot;
         public event EventHandler ItemSlotChanged;
@@ -174,13 +171,10 @@ namespace Client.MirControls
             if (ItemSlotChanged != null)
                 ItemSlotChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Count Label
 
         private MirLabel CountLabel { get; set; }
 
-        #endregion
 
         public MirItemCell()
         {
@@ -951,11 +945,9 @@ namespace Client.MirControls
 
                 switch (GridType)
                 {
-                    #region To Inventory
                     case MirGridType.Inventory: // To Inventory
                         switch (GameScene.SelectedCell.GridType)
                         {
-                            #region From Inventory
                             case MirGridType.Inventory: //From Invenotry
                                 if (Item != null)
                                 {
@@ -993,8 +985,6 @@ namespace Client.MirControls
                                 GameScene.SelectedCell.Locked = true;
                                 GameScene.SelectedCell = null;
                                 return;
-                            #endregion
-                            #region From Equipment
                             case MirGridType.Equipment: //From Equipment
                                 if (Item != null && GameScene.SelectedCell.Item.Info.Type == ItemType.Amulet)
                                 {
@@ -1037,8 +1027,6 @@ namespace Client.MirControls
                                         return;
                                     }
                                 break;
-                            #endregion
-                            #region From Storage
                             case MirGridType.Storage: //From Storage
                                 if (Item != null && GameScene.SelectedCell.Item.Info.Type == ItemType.Amulet)
                                 {
@@ -1090,8 +1078,6 @@ namespace Client.MirControls
                                         return;
                                     }
                                 break;
-                            #endregion
-                            #region From Guild Storage
                             case MirGridType.GuildStorage:
                                 if (Item != null)
                                 {
@@ -1108,8 +1094,6 @@ namespace Client.MirControls
                                 GameScene.SelectedCell.Locked = true;
                                 GameScene.SelectedCell = null;
                                 break;
-                            #endregion
-                            #region From Trade
                             case MirGridType.Trade: //From Trade
                                 if (Item != null && GameScene.SelectedCell.Item.Info.Type == ItemType.Amulet)
                                 {
@@ -1161,8 +1145,6 @@ namespace Client.MirControls
                                         return;
                                     }
                                 break;
-                            #endregion
-                            #region From AwakenItem
                             case MirGridType.AwakenItem: //From AwakenItem
                                 Network.Enqueue(new C.MoveItem { Grid = GridType, From = NPCAwakeDialog.ItemsIdx[GameScene.SelectedCell.ItemSlot], To = NPCAwakeDialog.ItemsIdx[GameScene.SelectedCell.ItemSlot] });
                                 GameScene.SelectedCell.Locked = false;
@@ -1173,8 +1155,6 @@ namespace Client.MirControls
                                     GameScene.Scene.NPCAwakeDialog.ItemCell_Click();
                                 GameScene.SelectedCell = null;
                                 break;
-                            #endregion
-                            #region From Refine
                             case MirGridType.Refine: //From AwakenItem
                                 if (Item != null && GameScene.SelectedCell.Item.Info.Type == ItemType.Amulet)
                                 {
@@ -1226,8 +1206,6 @@ namespace Client.MirControls
                                         return;
                                     }
                                 break;
-                            #endregion
-                            #region From Item Renting Dialog
 
                             case MirGridType.Renting:
                                 if (GameScene.User.RentalItemLocked)
@@ -1248,8 +1226,6 @@ namespace Client.MirControls
                                 }
 
                                 break;
-                            #endregion
-                            #region From Hero Inventory
                             case MirGridType.HeroInventory:
                                 if (GameScene.Hero == null || GameScene.Hero.Dead)
                                     return;
@@ -1303,11 +1279,8 @@ namespace Client.MirControls
                                         return;
                                     }
                                 break;
-                                #endregion
                         }
                         break;
-                    #endregion
-                    #region To Equipment
                     case MirGridType.Equipment: //To Equipment
 
                         if (GameScene.SelectedCell.GridType != MirGridType.Inventory && GameScene.SelectedCell.GridType != MirGridType.Storage) return;
@@ -1337,12 +1310,9 @@ namespace Client.MirControls
                             GameScene.SelectedCell = null;
                         }
                         return;
-                    #endregion
-                    #region To Storage
                     case MirGridType.Storage: //To Storage
                         switch (GameScene.SelectedCell.GridType)
                         {
-                            #region From Inventory
                             case MirGridType.Inventory: //From Invenotry
                                 if (Item != null)
                                 {
@@ -1379,8 +1349,6 @@ namespace Client.MirControls
                                         return;
                                     }
                                 break;
-                            #endregion
-                            #region From Equipment
                             case MirGridType.Equipment: //From Equipment
                                 if (Item != null)
                                 {
@@ -1424,8 +1392,6 @@ namespace Client.MirControls
                                         return;
                                     }
                                 break;
-                            #endregion
-                            #region From Storage
                             case MirGridType.Storage:
                                 if (Item != null)
                                 {
@@ -1446,13 +1412,10 @@ namespace Client.MirControls
                                 GameScene.SelectedCell.Locked = true;
                                 GameScene.SelectedCell = null;
                                 return;
-                                #endregion
 
                         }
                         break;
 
-                    #endregion
-                    #region To guild storage
                     case MirGridType.GuildStorage: //To Guild Storage
                         switch (GameScene.SelectedCell.GridType)
                         {
@@ -1502,15 +1465,12 @@ namespace Client.MirControls
                                 return;
                         }
                         break;
-                    #endregion
-                    #region To Trade
 
                     case MirGridType.Trade:
                         if (Item != null && Item.Info.Bind.HasFlag(BindMode.DontTrade)) return;
 
                         switch (GameScene.SelectedCell.GridType)
                         {
-                            #region From Trade
                             case MirGridType.Trade: //From Trade
                                 if (Item != null)
                                 {
@@ -1532,9 +1492,7 @@ namespace Client.MirControls
                                 GameScene.SelectedCell.Locked = true;
                                 GameScene.SelectedCell = null;
                                 return;
-                            #endregion
 
-                            #region From Inventory
                             case MirGridType.Inventory: //From Inventory
                                 if (Item != null)
                                 {
@@ -1571,18 +1529,14 @@ namespace Client.MirControls
                                         return;
                                     }
                                 break;
-                                #endregion
                         }
                         break;
 
-                    #endregion
-                    #region To Refine 
 
                     case MirGridType.Refine:
 
                         switch (GameScene.SelectedCell.GridType)
                         {
-                            #region From Refine
                             case MirGridType.Refine: //From Refine
                                 if (Item != null)
                                 {
@@ -1603,9 +1557,7 @@ namespace Client.MirControls
                                 GameScene.SelectedCell.Locked = true;
                                 GameScene.SelectedCell = null;
                                 return;
-                            #endregion
 
-                            #region From Inventory
                             case MirGridType.Inventory: //From Inventory
                                 if (Item != null)
                                 {
@@ -1625,12 +1577,9 @@ namespace Client.MirControls
                                 GameScene.SelectedCell.Locked = true;
                                 GameScene.SelectedCell = null;
                                 return;
-                                #endregion
                         }
                         break;
 
-                    #endregion
-                    #region To Item Renting Dialog
 
                     case MirGridType.Renting:
                         switch (GameScene.SelectedCell.GridType)
@@ -1651,8 +1600,6 @@ namespace Client.MirControls
 
                         break;
 
-                    #endregion
-                    #region To Awakening
                     case MirGridType.AwakenItem:
                         {
                             int errorCode = 0;
@@ -1780,8 +1727,6 @@ namespace Client.MirControls
                             }
                         }
                         return;
-                    #endregion
-                    #region To Mail
                     case MirGridType.Mail: //To Mail
                         if (GameScene.SelectedCell.GridType == MirGridType.Inventory)
                         {
@@ -1809,14 +1754,11 @@ namespace Client.MirControls
                             }
                         }
                         break;
-                    #endregion
-                    #region To Hero Inventory
                     case MirGridType.HeroInventory:
                         if (GameScene.Hero == null || GameScene.Hero.Dead)
                             return;
                         switch (GameScene.SelectedCell.GridType)
                         {
-                            #region From Hero Inventory
                             case MirGridType.HeroInventory:
                                 if (Item != null)
                                 {
@@ -1854,8 +1796,6 @@ namespace Client.MirControls
                                 GameScene.SelectedCell.Locked = true;
                                 GameScene.SelectedCell = null;
                                 return;
-                            #endregion
-                            #region From Hero Equipment
                             case MirGridType.HeroEquipment:
                                 if (Item != null && GameScene.SelectedCell.Item.Info.Type == ItemType.Amulet)
                                 {
@@ -1898,8 +1838,6 @@ namespace Client.MirControls
                                         return;
                                     }
                                 break;
-                            #endregion
-                            #region From Inventory
                             case MirGridType.Inventory:
                                 if (Item != null && GameScene.SelectedCell.Item.Info.Type == ItemType.Amulet)
                                 {
@@ -1958,11 +1896,8 @@ namespace Client.MirControls
                                         return;
                                     }
                                 break;
-                                #endregion
                         }
                         break;
-                    #endregion
-                    #region To Hero Equipment
                     case MirGridType.HeroEquipment:
 
                         if (GameScene.SelectedCell.GridType != MirGridType.HeroInventory) return;
@@ -1993,8 +1928,6 @@ namespace Client.MirControls
                             GameScene.SelectedCell = null;
                         }
                         return;
-                    #endregion
-                    #region To Hero AutoPot
                     case MirGridType.HeroHPItem:
                     case MirGridType.HeroMPItem:
                         if (GameScene.SelectedCell.GridType != MirGridType.HeroInventory) return;
@@ -2007,7 +1940,6 @@ namespace Client.MirControls
                         GameScene.SelectedCell = null;
 
                         return;
-                        #endregion
                 }
 
                 return;

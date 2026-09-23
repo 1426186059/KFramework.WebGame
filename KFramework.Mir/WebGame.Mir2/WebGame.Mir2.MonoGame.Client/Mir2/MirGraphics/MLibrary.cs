@@ -130,7 +130,6 @@ namespace Client.MirGraphics
             InitLibrary(ref TransformEffect, Settings.TransformEffectPath, "00");
             InitLibrary(ref TransformWeaponEffect, Settings.TransformWeaponEffectPath, "00");
 
-            #region Maplibs
             //wemade mir2 (allowed from 0-99)
             MapLibs[0] = new MLibrary(Settings.DataPath + "Map\\WemadeMir2\\Tiles");
             MapLibs[1] = new MLibrary(Settings.DataPath + "Map\\WemadeMir2\\Smtiles");
@@ -196,7 +195,6 @@ namespace Client.MirGraphics
                 MapLibs[312 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "Object1c" + Mapstate[i]);
                 MapLibs[313 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "Object2c" + Mapstate[i]);
             }
-            #endregion
 
             // 静态构造里不加载任何库：加载统一由 LoadAsync() 在 CMain.Init 之后驱动，
             // 全程走 HTTP 异步，避免同步网络请求冻结主线程（渲染/输入/心跳）。

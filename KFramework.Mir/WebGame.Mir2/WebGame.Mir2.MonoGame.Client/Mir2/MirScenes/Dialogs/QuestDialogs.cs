@@ -48,7 +48,6 @@ namespace Client.MirScenes.Dialogs
                 Parent = this
             };
 
-            #region QuestSelection
 
             MirButton upQuestButton = new MirButton
             {
@@ -99,9 +98,7 @@ namespace Client.MirScenes.Dialogs
 
                 RefreshInterface();
             };
-            #endregion
 
-            #region Buttons
 
             _acceptButton = new MirButton
             {
@@ -159,9 +156,7 @@ namespace Client.MirScenes.Dialogs
             };
             leaveButton.Click += (o, e) => Hide();
 
-            #endregion
 
-            #region Message Area
 
             MirButton upButton = new MirButton
             {
@@ -212,9 +207,7 @@ namespace Client.MirScenes.Dialogs
                 PosMaxY = 263
             };
 
-            #endregion
 
-            #region Rewards
 
             Reward = new QuestRewards
             {
@@ -224,7 +217,6 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(5, 307)
             };
 
-            #endregion
 
             _availableQuestLabel = new MirLabel
             {
@@ -485,7 +477,6 @@ namespace Client.MirScenes.Dialogs
                 Parent = this
             };
 
-            #region Message Area
 
             MirButton upButton = new MirButton
             {
@@ -536,9 +527,7 @@ namespace Client.MirScenes.Dialogs
                 PosMaxY = 261
             };
 
-            #endregion
 
-            #region Rewards
 
             Reward = new QuestRewards
             {
@@ -547,9 +536,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(5, 307)
             };
 
-            #endregion
 
-            #region Buttons
 
             _shareButton = new MirButton
             {
@@ -600,7 +587,6 @@ namespace Client.MirScenes.Dialogs
                 messageBox.Show();
             };
 
-            #endregion
 
             MirButton closeButton = new MirButton
             {

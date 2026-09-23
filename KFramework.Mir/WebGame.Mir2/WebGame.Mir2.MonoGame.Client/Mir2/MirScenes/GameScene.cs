@@ -7150,7 +7150,6 @@ namespace Client.MirScenes
             ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, etcLabel.DisplayRectangle.Right + 4),
                 Math.Max(ItemLabel.Size.Height, etcLabel.DisplayRectangle.Bottom + 4));
 
-            #region OUTLINE
             MirControl outLine = new MirControl
             {
                 BackColour = Color.FromArgb(255, 50, 50, 50),
@@ -7162,7 +7161,6 @@ namespace Client.MirScenes
                 Location = new Point(0, 0)
             };
             outLine.Size = ItemLabel.Size;
-            #endregion
 
             return outLine;
         }
@@ -7228,7 +7226,6 @@ namespace Client.MirScenes
             int addValue = 0;
             string text = "";
 
-            #region Dura gem
             minValue = realItem.Durability;
 
             if (minValue > 0 && realItem.Type == ItemType.Gem)
@@ -7258,9 +7255,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, DuraLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region DC
             minValue = realItem.Stats[Stat.MinDC];
             maxValue = realItem.Stats[Stat.MaxDC];
             addValue = (!hideAdded && (!HoverItem.Info.NeedIdentify || HoverItem.Identified)) ? addedStats[Stat.MaxDC] : 0;
@@ -7286,9 +7281,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, DCLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region MC
 
             minValue = realItem.Stats[Stat.MinMC];
             maxValue = realItem.Stats[Stat.MaxMC];
@@ -7315,9 +7308,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, MCLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region SC
 
             minValue = realItem.Stats[Stat.MinSC];
             maxValue = realItem.Stats[Stat.MaxSC];
@@ -7345,9 +7336,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, SCLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region LUCK / SUCCESS
 
             minValue = realItem.Stats[Stat.Luck];
             maxValue = 0;
@@ -7389,11 +7378,9 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, LUCKLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
 
 
-            #region ACC
 
             minValue = realItem.Stats[Stat.Accuracy];
             maxValue = 0;
@@ -7421,9 +7408,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, ACCLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region HOLY
 
             minValue = realItem.Stats[Stat.Holy];
             maxValue = 0;
@@ -7447,9 +7432,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, HOLYLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region ASPEED
 
             minValue = realItem.Stats[Stat.AttackSpeed];
             maxValue = 0;
@@ -7487,9 +7470,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, ASPEEDLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region FREEZING
 
             minValue = realItem.Stats[Stat.Freezing];
             maxValue = 0;
@@ -7519,9 +7500,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, FREEZINGLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region POISON
 
             minValue = realItem.Stats[Stat.PoisonAttack];
             maxValue = 0;
@@ -7552,9 +7531,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, POISONLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region CRITICALRATE / FLEXIBILITY
 
             minValue = realItem.Stats[Stat.CriticalRate];
             maxValue = 0;
@@ -7584,9 +7561,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, CRITICALRATELabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region CRITICALDAMAGE
 
             minValue = realItem.Stats[Stat.CriticalDamage];
             maxValue = 0;
@@ -7610,9 +7585,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, CRITICALDAMAGELabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region Reflect
 
             minValue = realItem.Stats[Stat.Reflect];
             maxValue = 0;
@@ -7635,9 +7608,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, ReflectLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region Hpdrain
 
             minValue = realItem.Stats[Stat.HPDrainRatePercent];
             maxValue = 0;
@@ -7660,9 +7631,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, HPdrainLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region Exp Rate
 
             minValue = realItem.Stats[Stat.ExpRatePercent];
             maxValue = 0;
@@ -7691,9 +7660,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, expRateLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region Drop Rate
 
             minValue = realItem.Stats[Stat.ItemDropRatePercent];
             maxValue = 0;
@@ -7722,9 +7689,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, dropRateLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region Gold Rate
 
             minValue = realItem.Stats[Stat.GoldDropRatePercent];
             maxValue = 0;
@@ -7753,9 +7718,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, goldRateLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region Hero
 
             if (addedStats[Stat.Hero] > 0)
             {
@@ -7780,13 +7743,11 @@ namespace Client.MirScenes
                 }
             }
 
-            #endregion
 
             if (count > 0)
             {
                 ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
-                #region OUTLINE
                 MirControl outLine = new MirControl
                 {
                     BackColour = Color.FromArgb(255, 50, 50, 50),
@@ -7798,7 +7759,6 @@ namespace Client.MirScenes
                     Location = new Point(0, 0)
                 };
                 outLine.Size = ItemLabel.Size;
-                #endregion
 
                 return outLine;
             }
@@ -7844,7 +7804,6 @@ namespace Client.MirScenes
             int addValue = 0;
 
             string text = "";
-            #region AC
 
             minValue = realItem.Stats[Stat.MinAC];
             maxValue = realItem.Stats[Stat.MaxAC];
@@ -7890,9 +7849,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, ACLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region MAC
 
             minValue = realItem.Stats[Stat.MinMAC];
             maxValue = realItem.Stats[Stat.MaxMAC];
@@ -7925,9 +7882,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, MACLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region MAXHP
 
             if (HoverItem.Info.Type != ItemType.MonsterSpawn)
             {
@@ -7954,9 +7909,7 @@ namespace Client.MirScenes
                 }
             }
 
-            #endregion
 
-            #region MAXMP
 
             minValue = realItem.Stats[Stat.MP];
             maxValue = 0;
@@ -7980,9 +7933,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, MAXMPLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region MAXHPRATE
 
             minValue = realItem.Stats[Stat.HPRatePercent];
             maxValue = 0;
@@ -8005,9 +7956,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, MAXHPRATELabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region MAXMPRATE
 
             minValue = realItem.Stats[Stat.MPRatePercent];
             maxValue = 0;
@@ -8030,9 +7979,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, MAXMPRATELabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region MAXACRATE
 
             minValue = realItem.Stats[Stat.MaxACRatePercent];
             maxValue = 0;
@@ -8055,9 +8002,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, MAXACRATE.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region MAXMACRATE
 
             minValue = realItem.Stats[Stat.MaxMACRatePercent];
             maxValue = 0;
@@ -8080,9 +8025,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, MAXMACRATELabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region HEALTH_RECOVERY
 
             minValue = realItem.Stats[Stat.HealthRecovery];
             maxValue = 0;
@@ -8105,9 +8048,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, HEALTH_RECOVERYLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region MANA_RECOVERY
 
             minValue = realItem.Stats[Stat.SpellRecovery];
             maxValue = 0;
@@ -8131,9 +8072,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, MANA_RECOVERYLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region POISON_RECOVERY
 
             minValue = realItem.Stats[Stat.PoisonRecovery];
             maxValue = 0;
@@ -8157,9 +8096,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, POISON_RECOVERYabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region AGILITY
 
             minValue = realItem.Stats[Stat.Agility];
             maxValue = 0;
@@ -8187,9 +8124,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, AGILITYLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region STRONG
 
             minValue = realItem.Stats[Stat.Strong];
             maxValue = 0;
@@ -8213,9 +8148,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, STRONGLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region POISON_RESIST
 
             minValue = realItem.Stats[Stat.PoisonResist];
             maxValue = 0;
@@ -8242,9 +8175,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, POISON_RESISTLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region MAGIC_RESIST
 
             minValue = realItem.Stats[Stat.MagicResist];
             maxValue = 0;
@@ -8272,9 +8203,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, MAGIC_RESISTLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region MAX_DC_RATE
 
             minValue = realItem.Stats[Stat.MaxDCRatePercent];
             maxValue = 0;
@@ -8296,9 +8225,7 @@ namespace Client.MirScenes
                 ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, MAXDCRATE.DisplayRectangle.Right + 4),
                     Math.Max(ItemLabel.Size.Height, MAXDCRATE.DisplayRectangle.Bottom));
             }
-            #endregion
 
-            #region MAX_MC_RATE
 
             minValue = realItem.Stats[Stat.MaxMCRatePercent];
             maxValue = 0;
@@ -8320,9 +8247,7 @@ namespace Client.MirScenes
                 ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, MAXMCRATE.DisplayRectangle.Right + 4),
                     Math.Max(ItemLabel.Size.Height, MAXMCRATE.DisplayRectangle.Bottom));
             }
-            #endregion
 
-            #region MAX_SC_RATE
 
             minValue = realItem.Stats[Stat.MaxSCRatePercent];
             maxValue = 0;
@@ -8344,9 +8269,7 @@ namespace Client.MirScenes
                 ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, MAXSCRATE.DisplayRectangle.Right + 4),
                     Math.Max(ItemLabel.Size.Height, MAXSCRATE.DisplayRectangle.Bottom));
             }
-            #endregion
 
-            #region DAMAGE_REDUCTION
 
             minValue = realItem.Stats[Stat.DamageReductionPercent];
             maxValue = 0;
@@ -8368,12 +8291,10 @@ namespace Client.MirScenes
                 ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, DAMAGEREDUC.DisplayRectangle.Right + 4),
                     Math.Max(ItemLabel.Size.Height, DAMAGEREDUC.DisplayRectangle.Bottom));
             }
-            #endregion
             if (count > 0)
             {
                 ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
-                #region OUTLINE
                 MirControl outLine = new MirControl
                 {
                     BackColour = Color.FromArgb(255, 50, 50, 50),
@@ -8385,7 +8306,6 @@ namespace Client.MirScenes
                     Location = new Point(0, 0)
                 };
                 outLine.Size = ItemLabel.Size;
-                #endregion
 
                 return outLine;
             }
@@ -8409,7 +8329,6 @@ namespace Client.MirScenes
             int maxValue = 0;
             int addValue = 0;
 
-            #region HANDWEIGHT
 
             minValue = realItem.Stats[Stat.HandWeight];
             maxValue = 0;
@@ -8433,9 +8352,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, HANDWEIGHTLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region WEARWEIGHT
 
             minValue = realItem.Stats[Stat.WearWeight];
             maxValue = 0;
@@ -8459,9 +8376,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, WEARWEIGHTLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region BAGWEIGHT
 
             minValue = realItem.Stats[Stat.BagWeight];
             maxValue = 0;
@@ -8485,9 +8400,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, BAGWEIGHTLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region FASTRUN
 
             minValue = realItem.CanFastRun == true ? 1 : 0;
             maxValue = 0;
@@ -8510,9 +8423,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, BAGWEIGHTLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region TIME & RANGE
             minValue = 0;
             maxValue = 0;
             addValue = 0;
@@ -8551,13 +8462,11 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, TNRLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
             if (count > 0)
             {
                 ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
-                #region OUTLINE
                 MirControl outLine = new MirControl
                 {
                     BackColour = Color.FromArgb(255, 50, 50, 50),
@@ -8569,7 +8478,6 @@ namespace Client.MirScenes
                     Location = new Point(0, 0)
                 };
                 outLine.Size = ItemLabel.Size;
-                #endregion
 
                 return outLine;
             }
@@ -8590,7 +8498,6 @@ namespace Client.MirScenes
 
             int count = 0;
 
-            #region AWAKENAME
             if (HoverItem.Awake.GetAwakeLevel() > 0)
             {
                 count++;
@@ -8608,9 +8515,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, AWAKENAMELabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region AWAKE_TOTAL_VALUE
             if (HoverItem.Awake.GetAwakeValue() > 0)
             {
                 count++;
@@ -8628,9 +8533,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, AWAKE_TOTAL_VALUELabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region AWAKE_LEVEL_VALUE
             if (HoverItem.Awake.GetAwakeLevel() > 0)
             {
                 count++;
@@ -8651,13 +8554,11 @@ namespace Client.MirScenes
                 }
             }
 
-            #endregion
 
             if (count > 0)
             {
                 ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
-                #region OUTLINE
                 MirControl outLine = new MirControl
                 {
                     BackColour = Color.FromArgb(255, 50, 50, 50),
@@ -8669,7 +8570,6 @@ namespace Client.MirScenes
                     Location = new Point(0, 0)
                 };
                 outLine.Size = ItemLabel.Size;
-                #endregion
 
                 return outLine;
             }
@@ -8691,7 +8591,6 @@ namespace Client.MirScenes
 
             int count = 0;
 
-            #region SOCKET
 
             for (int i = 0; i < item.Slots.Length; i++)
             {
@@ -8711,11 +8610,9 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, SOCKETLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
             if (count > 0)
             {
-                #region SOCKET
 
                 count++;
                 MirLabel SOCKETLabel = new MirLabel
@@ -8731,11 +8628,9 @@ namespace Client.MirScenes
                 ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, SOCKETLabel.DisplayRectangle.Right + 4),
                     Math.Max(ItemLabel.Size.Height, SOCKETLabel.DisplayRectangle.Bottom));
 
-                #endregion
 
                 ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
-                #region OUTLINE
                 MirControl outLine = new MirControl
                 {
                     BackColour = Color.FromArgb(255, 50, 50, 50),
@@ -8747,7 +8642,6 @@ namespace Client.MirScenes
                     Location = new Point(0, 0)
                 };
                 outLine.Size = ItemLabel.Size;
-                #endregion
 
                 return outLine;
             }
@@ -8768,7 +8662,6 @@ namespace Client.MirScenes
 
             int count = 0;
 
-            #region LEVEL
             if (realItem.RequiredAmount > 0)
             {
                 count++;
@@ -8855,9 +8748,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, LEVELLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region CLASS
             if (realItem.RequiredClass != RequiredClass.None)
             {
                 count++;
@@ -8901,9 +8792,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, CLASSLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region BUYING - SELLING PRICE
             if (item.Price() > 0)
             {
                 count++;
@@ -8927,13 +8816,11 @@ namespace Client.MirScenes
             }
 
 
-            #endregion
 
             if (count > 0)
             {
                 ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
-                #region OUTLINE
                 MirControl outLine = new MirControl
                 {
                     BackColour = Color.FromArgb(255, 50, 50, 50),
@@ -8945,7 +8832,6 @@ namespace Client.MirScenes
                     Location = new Point(0, 0)
                 };
                 outLine.Size = ItemLabel.Size;
-                #endregion
 
                 return outLine;
             }
@@ -8966,7 +8852,6 @@ namespace Client.MirScenes
 
             int count = 0;
 
-            #region DONT_DEATH_DROP
 
             if (HoverItem.Info.Bind != BindMode.None && HoverItem.Info.Bind.HasFlag(BindMode.DontDeathdrop))
             {
@@ -8985,9 +8870,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, DONT_DEATH_DROPLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region DONT_DROP
 
             if (HoverItem.Info.Bind != BindMode.None && HoverItem.Info.Bind.HasFlag(BindMode.DontDrop))
             {
@@ -9006,9 +8889,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, DONT_DROPLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region DONT_UPGRADE
 
             if (HoverItem.Info.Bind != BindMode.None && HoverItem.Info.Bind.HasFlag(BindMode.DontUpgrade))
             {
@@ -9027,9 +8908,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, DONT_UPGRADELabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region DONT_SELL
 
             if (HoverItem.Info.Bind != BindMode.None && HoverItem.Info.Bind.HasFlag(BindMode.DontSell))
             {
@@ -9048,9 +8927,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, DONT_SELLLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region DONT_TRADE
 
             if (HoverItem.Info.Bind != BindMode.None && HoverItem.Info.Bind.HasFlag(BindMode.DontTrade))
             {
@@ -9069,9 +8946,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, DONT_TRADELabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region DONT_STORE
 
             if (HoverItem.Info.Bind != BindMode.None && HoverItem.Info.Bind.HasFlag(BindMode.DontStore))
             {
@@ -9090,9 +8965,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, DONT_STORELabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region DONT_REPAIR
 
             if (HoverItem.Info.Bind != BindMode.None && HoverItem.Info.Bind.HasFlag(BindMode.DontRepair))
             {
@@ -9111,9 +8984,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, DONT_REPAIRLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region DONT_SPECIALREPAIR
 
             if (HoverItem.Info.Bind != BindMode.None && HoverItem.Info.Bind.HasFlag(BindMode.NoSRepair))
             {
@@ -9132,9 +9003,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, DONT_REPAIRLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region BREAK_ON_DEATH
 
             if (HoverItem.Info.Bind != BindMode.None && HoverItem.Info.Bind.HasFlag(BindMode.BreakOnDeath))
             {
@@ -9153,9 +9022,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, DONT_REPAIRLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region DONT_DESTROY_ON_DROP
 
             if (HoverItem.Info.Bind != BindMode.None && HoverItem.Info.Bind.HasFlag(BindMode.DestroyOnDrop))
             {
@@ -9174,9 +9041,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, DONT_DODLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region NoWeddingRing
 
             if (HoverItem.Info.Bind != BindMode.None && HoverItem.Info.Bind.HasFlag(BindMode.NoWeddingRing))
             {
@@ -9195,9 +9060,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, No_WedLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region NoHero
 
             if (HoverItem.Info.Bind != BindMode.None && HoverItem.Info.Bind.HasFlag(BindMode.NoHero))
             {
@@ -9216,9 +9079,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, No_HeroLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region BIND_ON_EQUIP
 
             if ((HoverItem.Info.Bind.HasFlag(BindMode.BindOnEquip)) & HoverItem.SoulBoundId == -1)
             {
@@ -9253,9 +9114,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, BOELabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region CURSED
 
             if ((!hideAdded && (!HoverItem.Info.NeedIdentify || HoverItem.Identified)) && HoverItem.Cursed)
             {
@@ -9274,13 +9133,10 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, CURSEDLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region Gems
 
             if (HoverItem.Info.Type == ItemType.Gem)
             {
-                #region UseOn text
                 count++;
                 string Text = "";
                 if (HoverItem.Info.Unique == SpecialItemMode.None)
@@ -9303,8 +9159,6 @@ namespace Client.MirScenes
 
                 ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, GemUseOn.DisplayRectangle.Right + 4),
                     Math.Max(ItemLabel.Size.Height, GemUseOn.DisplayRectangle.Bottom));
-                #endregion
-                #region Weapon text
                 count++;
                 if (HoverItem.Info.Unique.HasFlag(SpecialItemMode.Paralize))
                 {
@@ -9321,8 +9175,6 @@ namespace Client.MirScenes
                     ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, GemWeapon.DisplayRectangle.Right + 4),
                         Math.Max(ItemLabel.Size.Height, GemWeapon.DisplayRectangle.Bottom));
                 }
-                #endregion
-                #region Armour text
                 count++;
                 if (HoverItem.Info.Unique.HasFlag(SpecialItemMode.Teleport))
                 {
@@ -9339,8 +9191,6 @@ namespace Client.MirScenes
                     ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, GemArmour.DisplayRectangle.Right + 4),
                         Math.Max(ItemLabel.Size.Height, GemArmour.DisplayRectangle.Bottom));
                 }
-                #endregion
-                #region Helmet text
                 count++;
                 if (HoverItem.Info.Unique.HasFlag(SpecialItemMode.ClearRing))
                 {
@@ -9357,8 +9207,6 @@ namespace Client.MirScenes
                     ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, Gemhelmet.DisplayRectangle.Right + 4),
                         Math.Max(ItemLabel.Size.Height, Gemhelmet.DisplayRectangle.Bottom));
                 }
-                #endregion
-                #region Necklace text
                 count++;
                 if (HoverItem.Info.Unique.HasFlag(SpecialItemMode.Protection))
                 {
@@ -9375,8 +9223,6 @@ namespace Client.MirScenes
                     ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, Gemnecklace.DisplayRectangle.Right + 4),
                         Math.Max(ItemLabel.Size.Height, Gemnecklace.DisplayRectangle.Bottom));
                 }
-                #endregion
-                #region Bracelet text
                 count++;
                 if (HoverItem.Info.Unique.HasFlag(SpecialItemMode.Revival))
                 {
@@ -9393,8 +9239,6 @@ namespace Client.MirScenes
                     ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, GemBracelet.DisplayRectangle.Right + 4),
                         Math.Max(ItemLabel.Size.Height, GemBracelet.DisplayRectangle.Bottom));
                 }
-                #endregion
-                #region Ring text
                 count++;
                 if (HoverItem.Info.Unique.HasFlag(SpecialItemMode.Muscle))
                 {
@@ -9411,8 +9255,6 @@ namespace Client.MirScenes
                     ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, GemRing.DisplayRectangle.Right + 4),
                         Math.Max(ItemLabel.Size.Height, GemRing.DisplayRectangle.Bottom));
                 }
-                #endregion
-                #region Amulet text
                 count++;
                 if (HoverItem.Info.Unique.HasFlag(SpecialItemMode.Flame))
                 {
@@ -9429,8 +9271,6 @@ namespace Client.MirScenes
                     ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, Gemamulet.DisplayRectangle.Right + 4),
                         Math.Max(ItemLabel.Size.Height, Gemamulet.DisplayRectangle.Bottom));
                 }
-                #endregion
-                #region Belt text
                 count++;
                 if (HoverItem.Info.Unique.HasFlag(SpecialItemMode.Healing))
                 {
@@ -9447,8 +9287,6 @@ namespace Client.MirScenes
                     ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, Gembelt.DisplayRectangle.Right + 4),
                         Math.Max(ItemLabel.Size.Height, Gembelt.DisplayRectangle.Bottom));
                 }
-                #endregion
-                #region Boots text
                 count++;
                 if (HoverItem.Info.Unique.HasFlag(SpecialItemMode.Probe))
                 {
@@ -9465,8 +9303,6 @@ namespace Client.MirScenes
                     ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, Gemboots.DisplayRectangle.Right + 4),
                         Math.Max(ItemLabel.Size.Height, Gemboots.DisplayRectangle.Bottom));
                 }
-                #endregion
-                #region Stone text
                 count++;
                 if (HoverItem.Info.Unique.HasFlag(SpecialItemMode.Skill))
                 {
@@ -9483,8 +9319,6 @@ namespace Client.MirScenes
                     ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, Gemstone.DisplayRectangle.Right + 4),
                         Math.Max(ItemLabel.Size.Height, Gemstone.DisplayRectangle.Bottom));
                 }
-                #endregion
-                #region Torch text
                 count++;
                 if (HoverItem.Info.Unique.HasFlag(SpecialItemMode.NoDuraLoss))
                 {
@@ -9501,12 +9335,9 @@ namespace Client.MirScenes
                     ItemLabel.Size = new Size(Math.Max(ItemLabel.Size.Width, Gemtorch.DisplayRectangle.Right + 4),
                         Math.Max(ItemLabel.Size.Height, Gemtorch.DisplayRectangle.Bottom));
                 }
-                #endregion
             }
 
-            #endregion
 
-            #region CANTAWAKEN
 
             //if ((HoverItem.Info.CanAwakening != true) && (HoverItem.Info.Type != ItemType.Gem))
             //{
@@ -9525,9 +9356,7 @@ namespace Client.MirScenes
             //        Math.Max(ItemLabel.Size.Height, CANTAWAKENINGLabel.DisplayRectangle.Bottom));
             //}
 
-            #endregion
 
-            #region EXPIRE
 
             if (HoverItem.ExpireInfo != null)
             {
@@ -9548,9 +9377,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, EXPIRELabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region SEALED
 
             if (HoverItem.SealedInfo != null)
             {
@@ -9574,7 +9401,6 @@ namespace Client.MirScenes
                 }
             }
 
-            #endregion
 
             if (HoverItem.RentalInformation?.RentalLocked == false)
             {
@@ -9632,7 +9458,6 @@ namespace Client.MirScenes
             {
                 ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
-                #region OUTLINE
                 MirControl outLine = new MirControl
                 {
                     BackColour = Color.FromArgb(255, 50, 50, 50),
@@ -9644,7 +9469,6 @@ namespace Client.MirScenes
                     Location = new Point(0, 0)
                 };
                 outLine.Size = ItemLabel.Size;
-                #endregion
 
                 return outLine;
             }
@@ -9666,7 +9490,6 @@ namespace Client.MirScenes
             int count = 0;
 
 
-            #region GEM
 
             if (realItem.Type == ItemType.Gem)
             {
@@ -9711,9 +9534,7 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, GEMLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
-            #region SPLITUP
 
             if (realItem.StackSize > 1 && realItem.Type != ItemType.Gem)
             {
@@ -9732,13 +9553,11 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, SPLITUPLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
             if (count > 0)
             {
                 ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
-                #region OUTLINE
                 MirControl outLine = new MirControl
                 {
                     BackColour = Color.FromArgb(255, 50, 50, 50),
@@ -9750,7 +9569,6 @@ namespace Client.MirScenes
                     Location = new Point(0, 0)
                 };
                 outLine.Size = ItemLabel.Size;
-                #endregion
 
                 return outLine;
             }
@@ -9771,7 +9589,6 @@ namespace Client.MirScenes
 
             int count = 0;
 
-            #region TOOLTIP
 
             if (realItem.Type == ItemType.Scroll && realItem.Shape == 7)//Credit Scroll
             {
@@ -9809,13 +9626,11 @@ namespace Client.MirScenes
                     Math.Max(ItemLabel.Size.Height, TOOLTIPLabel.DisplayRectangle.Bottom));
             }
 
-            #endregion
 
             if (count > 0)
             {
                 ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
-                #region OUTLINE
                 MirControl outLine = new MirControl
                 {
                     BackColour = Color.FromArgb(255, 50, 50, 50),
@@ -9827,7 +9642,6 @@ namespace Client.MirScenes
                     Location = new Point(0, 0)
                 };
                 outLine.Size = ItemLabel.Size;
-                #endregion
 
                 return outLine;
             }
@@ -10265,7 +10079,6 @@ namespace Client.MirScenes
             NoticeDialog.Update(p.Notice);
         }
 
-        #region Disposable
 
         protected override void Dispose(bool disposing)
         {
@@ -10339,7 +10152,6 @@ namespace Client.MirScenes
             base.Dispose(disposing);
         }
 
-        #endregion
 
     }
 
@@ -10790,7 +10602,6 @@ namespace Client.MirScenes
             OnShown();
         }
 
-        #region 世界层归属断言
         // MapControl 只允许挂在 MirScene.WorldLayer 上（见 MirScene.InsertControl 的 MapControl → WorldLayer 路由）。
         // 一旦不在世界层里，世界层烘焙不到任何内容——地图不上屏（黑屏），或被世界层的黑底盖住。
         // 全部实现收在 AssertWorldLayerHosted 这一个方法里，与本类其它逻辑解耦。
@@ -10818,7 +10629,6 @@ namespace Client.MirScenes
                 "[Mir][WorldHost] MapControl 不在世界层：{0} | Loc=({1},{2}) Size={3}x{4}",
                 reason, self.Location.X, self.Location.Y, self.Size.Width, self.Size.Height));
         }
-        #endregion
 
         protected override void CreateTexture()
         {
@@ -11174,7 +10984,6 @@ namespace Client.MirScenes
                     byte animation;
                     bool blend;
                     Size s;
-                    #region Draw shanda's tile animation layer
                     index = M2CellInfo[x, y].TileAnimationImage;
                     animation = M2CellInfo[x, y].TileAnimationFrames;
                     if ((index > 0) & (animation > 0))
@@ -11185,9 +10994,7 @@ namespace Client.MirScenes
                         Libraries.MapLibs[190].DrawUp(index, drawX, drawY);
                     }
 
-                    #endregion
 
-                    #region Draw mir3 middle layer
                     if ((M2CellInfo[x, y].MiddleIndex >= 0) && (M2CellInfo[x, y].MiddleIndex != -1))   //M2P '> 199' changed to '>= 0' to include mir2 libraries. Fixes middle layer tile strips draw. Also changed in 'DrawFloor' above.
                     {
                         index = M2CellInfo[x, y].MiddleImage - 1;
@@ -11224,9 +11031,7 @@ namespace Client.MirScenes
                             }
                         }
                     }
-                    #endregion
 
-                    #region Draw front layer
                     index = (M2CellInfo[x, y].FrontImage & 0x7FFF) - 1;
 
                     if (index < 0) continue;
@@ -11286,7 +11091,6 @@ namespace Client.MirScenes
                         else
                             Libraries.MapLibs[fileIndex].Draw(index, drawX, drawY - s.Height);
                     }
-                    #endregion
                 }
 
                 for (int x = User.Movement.X - ViewRangeX; x <= User.Movement.X + ViewRangeX; x++)
@@ -11389,7 +11193,6 @@ namespace Client.MirScenes
             Surface oldSurface = DXManager.CurrentSurface;
             DXManager.SetSurface(DXManager.LightSurface);
 
-            #region Night Lights
             Color darkness;
 
             switch (setting)
@@ -11433,7 +11236,6 @@ namespace Client.MirScenes
 
             DXManager.Device.Clear(ClearFlags.Target, darkness, 0, 0);
 
-            #endregion
 
             int light;
             Point p;
@@ -11441,7 +11243,6 @@ namespace Client.MirScenes
             DXManager.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
             DXManager.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
 
-            #region Object Lights (Player/Mob/NPC)
             foreach (var ob in Objects.Values)
             {
                 if (ob.Light > 0 && (!ob.Dead || ob == MapObject.User || ob.Race == ObjectType.Spell))
@@ -11494,7 +11295,6 @@ namespace Client.MirScenes
                     }
                 }
 
-                #region Object Effect Lights
                 if (!Settings.Effect) continue;
                 for (int e = 0; e < ob.Effects.Count; e++)
                 {
@@ -11519,11 +11319,8 @@ namespace Client.MirScenes
                     }
 
                 }
-                #endregion
             }
-            #endregion
 
-            #region Map Effect Lights
             if (Settings.Effect)
             {
                 for (int e = 0; e < Effects.Count; e++)
@@ -11550,9 +11347,7 @@ namespace Client.MirScenes
                     }
                 }
             }
-            #endregion
 
-            #region Map Lights
             for (int y = MapObject.User.Movement.Y - ViewRangeY - 24; y <= MapObject.User.Movement.Y + ViewRangeY + 24; y++)
             {
                 if (y < 0) continue;
@@ -11614,7 +11409,6 @@ namespace Client.MirScenes
                     }
                 }
             }
-            #endregion
 
             DXManager.SetBlend(false);
             DXManager.SetSurface(oldSurface);
@@ -12620,7 +12414,6 @@ namespace Client.MirScenes
             return false;
         }
 
-        #region Disposable
 
         protected override void Dispose(bool disposing)
         {
@@ -12655,7 +12448,6 @@ namespace Client.MirScenes
             base.Dispose(disposing);
         }
 
-        #endregion
 
         public void UpdateWeather()
         {

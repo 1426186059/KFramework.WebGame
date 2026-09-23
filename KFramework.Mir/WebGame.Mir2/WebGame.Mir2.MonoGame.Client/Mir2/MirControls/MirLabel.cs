@@ -7,7 +7,6 @@ namespace Client.MirControls
 {
     public class MirLabel : MirControl
     {
-        #region Auto Size
         private bool _autoSize;
         public bool AutoSize
         {
@@ -28,9 +27,7 @@ namespace Client.MirControls
             if (AutoSizeChanged != null)
                 AutoSizeChanged.Invoke(this, e);
         }
-        #endregion
 
-        #region DrawFormat
         private TextFormatFlags _drawFormat;
         public TextFormatFlags DrawFormat
         {
@@ -49,9 +46,7 @@ namespace Client.MirControls
             if (DrawFormatChanged != null)
                 DrawFormatChanged.Invoke(this, e);
         }
-        #endregion
 
-        #region Font
         private Font _font;
         public Font Font
         {
@@ -72,9 +67,7 @@ namespace Client.MirControls
             if (FontChanged != null)
                 FontChanged.Invoke(this, e);
         }
-        #endregion
 
-        #region Out Line
         private bool _outLine;
         public bool OutLine
         {
@@ -96,9 +89,7 @@ namespace Client.MirControls
             if (OutLineChanged != null)
                 OutLineChanged.Invoke(this, e);
         }
-        #endregion
 
-        #region Out Line Colour
         private Color _outLineColour;
         public Color OutLineColour
         {
@@ -119,9 +110,7 @@ namespace Client.MirControls
             if (OutLineColourChanged != null)
                 OutLineColourChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Size
 
         private void GetSize()
         {
@@ -139,9 +128,7 @@ namespace Client.MirControls
                     Size = new Size(Size.Width + 2, Size.Height + 2);
             }
         }
-        #endregion
 
-        #region Label
         private string _text;
         public string Text
         {
@@ -167,7 +154,6 @@ namespace Client.MirControls
             if (TextChanged != null)
                 TextChanged.Invoke(this, e);
         }
-        #endregion
 
         public MirLabel()
         {
@@ -208,7 +194,6 @@ namespace Client.MirControls
             TextureValid = true;
         }
 
-        #region Disposable
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
@@ -237,7 +222,6 @@ namespace Client.MirControls
             TextChanged = null;
             _text = null;
         }
-        #endregion
 
     }
 }

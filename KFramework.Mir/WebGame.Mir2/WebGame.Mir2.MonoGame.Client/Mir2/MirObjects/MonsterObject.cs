@@ -360,7 +360,6 @@ namespace Client.MirObjects
             }
 
 
-            #region Moving OffSet
 
             switch (CurrentAction)
             {
@@ -429,7 +428,6 @@ namespace Client.MirObjects
                     break;
             }
 
-            #endregion
 
             DrawY = Movement.Y > CurrentLocation.Y ? Movement.Y : CurrentLocation.Y;
 

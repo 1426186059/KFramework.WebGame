@@ -4,7 +4,6 @@ namespace Client.MirControls
 {
     public class MirButton : MirImageControl
     {
-        #region Font Colour
         public virtual Color FontColour
         {
             get
@@ -19,9 +18,7 @@ namespace Client.MirControls
                     _label.ForeColour = value;
             }
         }
-        #endregion
 
-        #region Hover Index
         private int _hoverIndex;
         public int HoverIndex
         {
@@ -40,9 +37,7 @@ namespace Client.MirControls
             if (HoverIndexChanged != null)
                 HoverIndexChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Index
         public override int Index
         {
             get
@@ -60,13 +55,9 @@ namespace Client.MirControls
             }
             set { base.Index = value; }
         }
-        #endregion
 
-        #region Label
         protected MirLabel _label;
-        #endregion
 
-        #region CenterText
         protected bool _center;
         public virtual bool CenterText
         {
@@ -86,9 +77,7 @@ namespace Client.MirControls
                     _label.AutoSize = true;
             }
         }
-        #endregion
 
-        #region Pressed Index
         private int _pressedIndex;
         public int PressedIndex
         {
@@ -108,9 +97,7 @@ namespace Client.MirControls
             if (PressedIndexChanged != null)
                 PressedIndexChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Disabled Index
         private int _disabledIndex;
         public int DisabledIndex
         {
@@ -130,9 +117,7 @@ namespace Client.MirControls
             if (DisabledIndexChanged != null)
                 DisabledIndexChanged.Invoke(this, EventArgs.Empty);
         }
-        #endregion
 
-        #region Size
         protected override void OnSizeChanged()
         {
             base.OnSizeChanged();
@@ -140,9 +125,7 @@ namespace Client.MirControls
             if (_label != null && !_label.IsDisposed)
                 _label.Size = Size;
         }
-        #endregion
 
-        #region Text
         public virtual string Text
         {
             set
@@ -153,7 +136,6 @@ namespace Client.MirControls
                 _label.Visible = !string.IsNullOrEmpty(value);
             }
         }
-        #endregion
 
         public bool OnlyDrawWhenActive;
 
@@ -204,7 +186,6 @@ namespace Client.MirControls
         }
 
 
-        #region Disposable
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
@@ -224,6 +205,5 @@ namespace Client.MirControls
             DisabledIndexChanged = null;
             _disabledIndex = 0;
         }
-        #endregion
     }
 }

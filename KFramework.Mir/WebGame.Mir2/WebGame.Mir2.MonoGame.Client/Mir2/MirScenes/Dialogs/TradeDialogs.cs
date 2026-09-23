@@ -21,7 +21,6 @@ namespace Client.MirScenes.Dialogs
             Location = new Point((Settings.ScreenWidth / 2) - Size.Width - 10, Settings.ScreenHeight - 350);
             Sort = true;
 
-            #region Buttons
             ConfirmButton = new MirButton
             {
                 Index = 520,
@@ -56,9 +55,7 @@ namespace Client.MirScenes.Dialogs
                 TradeCancel();
             };
 
-            #endregion
 
-            #region Host labels
             NameLabel = new MirLabel
             {
                 Parent = this,
@@ -98,9 +95,7 @@ namespace Client.MirScenes.Dialogs
                     GameScene.PickedUpGold = false;
                 }
             };
-            #endregion
 
-            #region Grids
             Grid = new MirItemCell[5 * 2];
 
             for (int x = 0; x < 5; x++)
@@ -116,7 +111,6 @@ namespace Client.MirScenes.Dialogs
                     };
                 }
             }
-            #endregion
         }
 
         public void ChangeLockState(bool lockState, bool cancelled = false)
@@ -211,7 +205,6 @@ namespace Client.MirScenes.Dialogs
             Location = new Point((Settings.ScreenWidth / 2) + 10, Settings.ScreenHeight - 350);
             Sort = true;
 
-            #region Host labels
             GuestNameLabel = new MirLabel
             {
                 Parent = this,
@@ -231,9 +224,7 @@ namespace Client.MirScenes.Dialogs
                 Sound = SoundList.Gold,
                 NotControl = true,
             };
-            #endregion
 
-            #region Grids
             GuestGrid = new MirItemCell[5 * 2];
 
             for (int x = 0; x < 5; x++)
@@ -249,7 +240,6 @@ namespace Client.MirScenes.Dialogs
                     };
                 }
             }
-            #endregion
         }
 
         public void RefreshInterface()

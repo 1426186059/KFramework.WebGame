@@ -128,7 +128,6 @@ namespace Client.MirControls
         }
 
 
-        #region Disposable
 
         protected override void Dispose(bool disposing)
         {
@@ -144,7 +143,6 @@ namespace Client.MirControls
             }
         }
 
-        #endregion
 
     }
 }

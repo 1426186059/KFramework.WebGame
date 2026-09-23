@@ -29,7 +29,6 @@ namespace Client.MirScenes.Dialogs
         public MirClass Class;
         public MirGender Gender;
 
-        #region Descriptions
 
         public readonly string WarriorDescription = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.WarriorsDescription);
 
@@ -41,7 +40,6 @@ namespace Client.MirScenes.Dialogs
 
         public readonly string ArcherDescription = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ArchersDescription);
 
-        #endregion
 
         public NewCharacterDialog()
         {

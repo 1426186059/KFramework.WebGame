@@ -11,7 +11,6 @@
 
         switch (job)
         {
-            #region Warrior
             case MirClass.Warrior:
                 Stats.Add(new BaseStat(Stat.HP) { FormulaType = StatFormula.Health, Base = 14, Gain = 4F, GainRate = 4.5F, Max = 0 });
                 Stats.Add(new BaseStat(Stat.MP) { FormulaType = StatFormula.Mana, Base = 11, Gain = 3.5F, GainRate = 0F, Max = 0 });
@@ -25,8 +24,6 @@
                 Stats.Add(new BaseStat(Stat.Agility) { FormulaType = StatFormula.Stat, Base = 15, Gain = 0, GainRate = 0F, Max = 0 });
                 Stats.Add(new BaseStat(Stat.Accuracy) { FormulaType = StatFormula.Stat, Base = 5, Gain = 0, GainRate = 0F, Max = 0 });
                 break;
-            #endregion
-            #region Wizard
             case MirClass.Wizard:
                 Stats.Add(new BaseStat(Stat.HP) { FormulaType = StatFormula.Health, Base = 14, Gain = 15F, GainRate =1.8F, Max = 0 });
                 Stats.Add(new BaseStat(Stat.MP) { FormulaType = StatFormula.Mana, Base = 13, Gain = 5F, GainRate = 0F, Max = 0 });
@@ -40,8 +37,6 @@
                 Stats.Add(new BaseStat(Stat.Agility) { FormulaType = StatFormula.Stat, Base = 15, Gain = 0, GainRate = 0F, Max = 0 });
                 Stats.Add(new BaseStat(Stat.Accuracy) { FormulaType = StatFormula.Stat, Base = 5, Gain = 0, GainRate = 0F, Max = 0 });
                 break;
-            #endregion
-            #region Taoist
             case MirClass.Taoist:
                 Stats.Add(new BaseStat(Stat.HP) { FormulaType = StatFormula.Health, Base = 14, Gain = 6F, GainRate = 2.5F, Max = 0 });
                 Stats.Add(new BaseStat(Stat.MP) { FormulaType = StatFormula.Mana, Base = 13, Gain = 8F, GainRate = 0F, Max = 0 });
@@ -57,8 +52,6 @@
                 Stats.Add(new BaseStat(Stat.Agility) { FormulaType = StatFormula.Stat, Base = 18, Gain = 0, GainRate = 0F, Max = 0 });
                 Stats.Add(new BaseStat(Stat.Accuracy) { FormulaType = StatFormula.Stat, Base = 5, Gain = 0, GainRate = 0F, Max = 0 });
                 break;
-            #endregion
-            #region Assassin
             case MirClass.Assassin:
                 Stats.Add(new BaseStat(Stat.HP) { FormulaType = StatFormula.Health, Base = 14, Gain = 4F, GainRate = 3.25F, Max = 0 });
                 Stats.Add(new BaseStat(Stat.MP) { FormulaType = StatFormula.Mana, Base = 11, Gain = 5F, GainRate = 0F, Max = 0 });
@@ -70,8 +63,6 @@
                 Stats.Add(new BaseStat(Stat.Agility) { FormulaType = StatFormula.Stat, Base = 20, Gain = 0, GainRate = 0F, Max = 0 });
                 Stats.Add(new BaseStat(Stat.Accuracy) { FormulaType = StatFormula.Stat, Base = 5, Gain = 0, GainRate = 0F, Max = 0 });
                 break;
-            #endregion
-            #region Archer
             case MirClass.Archer:
                 Stats.Add(new BaseStat(Stat.HP) { FormulaType = StatFormula.Health, Base = 14, Gain = 4F, GainRate = 3.25F, Max = 0 });
                 Stats.Add(new BaseStat(Stat.MP) { FormulaType = StatFormula.Mana, Base = 11, Gain = 4F, GainRate = 0F, Max = 0 });
@@ -85,7 +76,6 @@
                 Stats.Add(new BaseStat(Stat.Agility) { FormulaType = StatFormula.Stat, Base = 15, Gain = 0, GainRate = 0F, Max = 0 });
                 Stats.Add(new BaseStat(Stat.Accuracy) { FormulaType = StatFormula.Stat, Base = 8, Gain = 0, GainRate = 0F, Max = 0 });
                 break;
-                #endregion
         }
 
         Caps[Stat.MagicResist] = 2;

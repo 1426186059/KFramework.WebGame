@@ -31,7 +31,6 @@
                 { MirAction.Revive, new Frame(144, 10, 0, 100) { Reverse = true } }
             };
 
-            #region DragonStatue
             //DragonStatue 1
             DragonStatue = new List<FrameSet> { (frame = new FrameSet()) };
             frame.Add(MirAction.Standing, new Frame(300, 1, -1, 1000));
@@ -67,9 +66,7 @@
             frame.Add(MirAction.Standing, new Frame(322, 1, -1, 1000));
             frame.Add(MirAction.AttackRange1, new Frame(322, 1, -1, 120));
             frame.Add(MirAction.Struck, new Frame(322, 1, -1, 200));
-            #endregion
 
-            #region GreatFoxSpirit
             //GreatFoxSpirit level 0
             GreatFoxSpirit = new List<FrameSet> { (frame = new FrameSet()) };
             frame.Add(MirAction.Standing, new Frame(0, 20, -20, 100));
@@ -114,9 +111,7 @@
             frame.Add(MirAction.Die, new Frame(300, 18, -18, 120));
             frame.Add(MirAction.Dead, new Frame(317, 1, -1, 1000));
             frame.Add(MirAction.Revive, new Frame(300, 18, -18, 150) { Reverse = true });
-            #endregion
 
-            #region HellBombs
             //HellBomb1
             HellBomb = new List<FrameSet> { (frame = new FrameSet()) };
             frame.Add(MirAction.Standing, new Frame(52, 9, -9, 100) { Blend = true });
@@ -134,9 +129,7 @@
             frame.Add(MirAction.Standing, new Frame(88, 9, -9, 100) { Blend = true });
             frame.Add(MirAction.Attack1, new Frame(999, 1, -1, 120) { Blend = true });
             frame.Add(MirAction.Struck, new Frame(88, 9, -9, 100) { Blend = true });
-            #endregion
 
-            #region CaveStatues
             //CaveStatue1
             CaveStatue = new List<FrameSet> { (frame = new FrameSet()) };
             frame.Add(MirAction.Standing, new Frame(0, 1, -1, 100) { Blend = false });
@@ -150,9 +143,7 @@
             frame.Add(MirAction.Struck, new Frame(18, 1, -1, 100) { Blend = false });
             frame.Add(MirAction.Die, new Frame(20, 8, -8, 100) { Blend = false });
             frame.Add(MirAction.Dead, new Frame(27, 1, -1, 100) { Blend = false });
-            #endregion
 
-            #region Player
             //Common
             Player.Add(MirAction.Standing, new Frame(0, 4, 0, 500, 0, 8, 0, 250));
             Player.Add(MirAction.Walking, new Frame(32, 6, 0, 100, 64, 6, 0, 100));
@@ -196,7 +187,6 @@
             Player.Add(MirAction.FishingWait, new Frame(696, 6, 0, 120));
             Player.Add(MirAction.FishingReel, new Frame(744, 8, 0, 100));
 
-            #endregion
         }
     }
 

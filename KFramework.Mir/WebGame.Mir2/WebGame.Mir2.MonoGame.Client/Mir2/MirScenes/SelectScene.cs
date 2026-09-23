@@ -521,7 +521,6 @@ namespace Client.MirScenes
         }
 
 
-        #region Disposable
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -544,7 +543,6 @@ namespace Client.MirScenes
 
             base.Dispose(disposing);
         }
-        #endregion        
         public sealed class CharacterButton : MirImageControl
         {
             public MirLabel NameLabel, LevelLabel, ClassLabel;

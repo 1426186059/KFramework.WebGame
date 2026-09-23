@@ -442,7 +442,6 @@ namespace Client.MirScenes.Dialogs
                 SearchButton.InvokeMouseClick(null);
         }
 
-        #region Disposable
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -463,7 +462,6 @@ namespace Client.MirScenes.Dialogs
             base.Dispose(disposing);
         }
 
-        #endregion
     }
 
     public class WorldMapImage : MirImageControl

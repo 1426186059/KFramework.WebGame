@@ -92,7 +92,6 @@ namespace Client.MirScenes.Dialogs
             Movable = true;
             Size = new Size(492, 478);
 
-            #region TrustMerchant Buttons
 
             MarketButton = new MirButton
             {
@@ -167,7 +166,6 @@ namespace Client.MirScenes.Dialogs
             };
             CloseButton.Click += (o, e) => Hide();
 
-            #region Page Buttons & Label
 
             HelpLabel = new MirLabel
             {
@@ -298,14 +296,11 @@ namespace Client.MirScenes.Dialogs
 
             PositionBar.OnMoving += PositionBar_OnMoving;
 
-            #endregion
 
-            #endregion
 
 
             SetupFilters();
 
-            #region Market Buttons
 
             MailButton = new MirButton
             {
@@ -480,9 +475,7 @@ namespace Client.MirScenes.Dialogs
                 }
             };
 
-            #endregion
 
-            #region Search
 
             SearchTextBox = new MirTextBox
             {
@@ -525,9 +518,7 @@ namespace Client.MirScenes.Dialogs
                 });
             };
 
-            #endregion
 
-            #region Gold Label
             TotalGold = new MirLabel
             {
                 Size = new Size(120, 16),
@@ -538,9 +529,7 @@ namespace Client.MirScenes.Dialogs
                 Font = new Font(Settings.FontName, Settings.FontSize),
                 Visible = false
             };
-            #endregion
 
-            #region ItemCell
 
             ItemCell = new MirItemCell
             {
@@ -588,9 +577,7 @@ namespace Client.MirScenes.Dialogs
             };
 
 
-            #endregion
 
-            #region Auction Rows
             for (int i = 0; i < Rows.Length; i++)
             {
                 Rows[i] = new AuctionRow
@@ -604,9 +591,7 @@ namespace Client.MirScenes.Dialogs
                     UpdateInterface();
                 };
             }
-            #endregion
 
-            #region Labels
 
             TitleSalePriceLabel = new MirLabel
             {
@@ -669,7 +654,6 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(384, 60)
             };
 
-            #endregion
 
             UpdatePriceFilterIcon();
         }
@@ -1437,7 +1421,6 @@ namespace Client.MirScenes.Dialogs
             GameScene.Scene.InventoryDialog.Show();
         }
 
-        #region AuctionRow
         public sealed class AuctionRow : MirControl
         {
             public ClientAuction Listing = null;
@@ -1624,7 +1607,6 @@ namespace Client.MirScenes.Dialogs
                 GameScene.HoverItem = null;
             }
         }
-        #endregion
 
         public class Filter
         {

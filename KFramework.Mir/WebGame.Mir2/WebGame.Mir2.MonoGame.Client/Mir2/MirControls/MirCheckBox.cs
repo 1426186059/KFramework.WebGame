@@ -5,38 +5,29 @@ namespace Client.MirControls
     public class MirCheckBox : MirButton
     {
 
-        #region TickedIndex
         private int _tickedIndex;
         public int TickedIndex
         {
             get { return _tickedIndex; }
             set { _tickedIndex = value; }
         }
-        #endregion
 
-        #region UnTickedIndex
         private int _untickedIndex;
         public int UnTickedIndex
         {
             get { return _untickedIndex; }
             set { _untickedIndex = value; }
         }
-        #endregion
 
-        #region Checked
         private bool _checked;
         public bool Checked
         {
             get { return _checked; }
             set { _checked = value; Index = value ? TickedIndex : UnTickedIndex; Redraw(); }
         }
-        #endregion
 
-        #region Label
         private new MirLabel _label;
-        #endregion
 
-        #region CenterText
         private new bool _center;
         public bool CenterLabelText
         {
@@ -56,9 +47,7 @@ namespace Client.MirControls
                     _label.AutoSize = true;
             }
         }
-        #endregion
 
-        #region LabelText
         public string LabelText
         {
             set
@@ -69,7 +58,6 @@ namespace Client.MirControls
                 _label.Visible = !string.IsNullOrEmpty(value);
             }
         }
-        #endregion
 
         public MirCheckBox()
         {

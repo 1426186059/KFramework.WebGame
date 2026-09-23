@@ -3,23 +3,18 @@ using MirEngine;
 
 public class InIReader
 {
-    #region Fields
     private readonly List<string> _contents;
     private readonly string _fileName;
     private bool _loaded;
     private bool _autoPersist = true;
-    #endregion
 
-    #region Constructor
     public InIReader(string fileName)
     {
         _fileName = fileName;
         _contents = new List<string>();
         // 浏览器端不再读写本地文件：整份 ini 作为文本序列化后存取于 IndexedDB（见 LoadAsync/SaveAsync）。
     }
-    #endregion
 
-    #region Functions
     private string FindValue(string section, string key)
     {
         for (int a = 0; a < _contents.Count; a++)
@@ -106,9 +101,7 @@ public class InIReader
         if (!_autoPersist || !_loaded) return;
         _ = SaveAsync();
     }
-    #endregion
 
-    #region Read
     public bool ReadBoolean(string section, string key, bool Default, bool writeWhenNull = true)
     {
         bool result;
@@ -359,9 +352,7 @@ public class InIReader
 
         return result;
     }
-    #endregion
 
-    #region Write
     public void Write(string section, string key, bool value)
     {
         _contents[FindIndex(section, key)] = key + "=" + value;
@@ -463,5 +454,4 @@ public class InIReader
         _contents[FindIndex(section, key)] = key + "=" + value;
         Save();
     }
-    #endregion
 }
