@@ -23,8 +23,8 @@ namespace MapExtract.Models
         public string MirDBPath { get; set; } = @"D:\OpenSource\Crystal\Build\Server\Debug\Server.MirDB";
         public bool RecursiveScan { get; set; }
 
-        /// <summary>导出地图时，顺手把产出的 PNG 也转成 WebP（网页游戏用）</summary>
-        public bool ExportWebP { get; set; } = true;
+        /// <summary>导出地图时，顺手把产出的 PNG 也转成 WebP。注意：当前游戏运行时不支持 WebP，默认关闭，只产出 PNG。</summary>
+        public bool ExportWebP { get; set; }
         /// <summary>WebP 无损编码（默认 true）：像素 100% 还原，避免有损压缩的振铃/透明边失真</summary>
         public bool WebPLossless { get; set; } = true;
         /// <summary>WebP 质量/压缩力度 1~100；无损模式下表示压缩力度，有损模式下表示画质</summary>

@@ -223,7 +223,11 @@ namespace Client.MirObjects
                 return;
             }
             //shanda's 2012 format and one of shandas(wemades) older formats share same header info, only difference is the filesize
-            if ((Bytes[4] == 0x0F) || (Bytes[4] == 0x03) && (Bytes[18] == 0x0D) && (Bytes[19] == 0x0A))
+            // 注意：运算符优先级——&& 高于 ||，原写法 "Bytes[4]==0x0F || Bytes[4]==0x03 && CRLF"
+            // 会被解析成 "Bytes[4]==0x0F || (Bytes[4]==0x03 && CRLF)"，即“第5字节=0x0F 就当作 Shanda”，
+            // 会把普通 OldSchool 地图（恰好第5字节=0x0F）误判成 Type2/Type3 → 字节错位、地砖全乱。
+            // 对齐原版编辑器(Crystal.MapEditor)：0x0F 与 0x03 都必须配合 CRLF(0x0D 0x0A) 结尾头才算 Shanda 格式。
+            if (((Bytes[4] == 0x0F) || (Bytes[4] == 0x03)) && (Bytes[18] == 0x0D) && (Bytes[19] == 0x0A))
             {
                 int W = Bytes[0] + (Bytes[1] << 8);
                 int H = Bytes[2] + (Bytes[3] << 8);

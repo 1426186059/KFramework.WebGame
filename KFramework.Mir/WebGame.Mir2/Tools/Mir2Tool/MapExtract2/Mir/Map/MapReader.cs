@@ -81,7 +81,9 @@ namespace Mir.Map
                 return;
             }
             //shanda's 2012 format and one of shandas(wemades) older formats share same header info, only difference is the filesize
-            if ((Bytes[4] == 0x0F) || (Bytes[4] == 0x03) && (Bytes[18] == 0x0D) && (Bytes[19] == 0x0A))
+            // 运算符优先级修复：&& 高于 ||，原写法等价于 "Bytes[4]==0x0F || (Bytes[4]==0x03 && CRLF)"，
+            // 会把第5字节恰好=0x0F 的普通地图误判成 Shanda Type2/Type3。改为 0x0F/0x03 都必须配合 CRLF 结尾头。
+            if (((Bytes[4] == 0x0F) || (Bytes[4] == 0x03)) && (Bytes[18] == 0x0D) && (Bytes[19] == 0x0A))
             {
                 int W = Bytes[0] + (Bytes[1] << 8);
                 int H = Bytes[2] + (Bytes[3] << 8);

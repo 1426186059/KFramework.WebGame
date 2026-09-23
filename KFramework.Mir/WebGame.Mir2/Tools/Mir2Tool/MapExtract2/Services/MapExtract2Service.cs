@@ -435,7 +435,14 @@ namespace MapExtract2.Services
                 if (rel == null) { missing.Add($"lib#{libIndex}(无路径)"); continue; }
 
                 string srcLib = Path.Combine(clientRoot, rel + ".Lib");
-                if (!File.Exists(srcLib)) { missing.Add(rel); continue; }
+                if (!File.Exists(srcLib))
+                {
+                    // 源目录布局可能与客户端请求路径略有差异：例如 WemadeMir3 的 snow/Object1c
+                    // 实际存放在 WemadeMir3/Object1c（父级，无地形子目录）。去掉地形子目录回退到父级再试。
+                    string? alt = TryResolveSourceLib(clientRoot, rel);
+                    if (alt == null) { missing.Add(rel); continue; }
+                    srcLib = alt;
+                }
 
                 byte[] distilled = LibDistiller.Distill(srcLib, new HashSet<int>(kv.Value));
 
@@ -472,6 +479,33 @@ namespace MapExtract2.Services
         {
             try { if (Directory.Exists(dir)) Directory.Delete(dir, true); }
             catch { }
+        }
+
+        // 源文件缺失时的备选解析：客户端按 WemadeMir3/snow/Object1c 请求，但源可能直接放在
+        // WemadeMir3/Object1c（父级，无地形子目录）。去掉已知地形子目录（wood/sand/snow/forest）
+        // 后回退到父级再试一次。返回找到的源路径，找不到返回 null。
+        private static string? TryResolveSourceLib(string clientRoot, string rel)
+        {
+            string src = Path.Combine(clientRoot, rel + ".Lib");
+            if (File.Exists(src)) return src;
+
+            string[] parts = rel.Split('/');
+            for (int i = 0; i < parts.Length - 1; i++)
+            {
+                string seg = parts[i];
+                if (seg.Equals("wood", StringComparison.OrdinalIgnoreCase) ||
+                    seg.Equals("sand", StringComparison.OrdinalIgnoreCase) ||
+                    seg.Equals("snow", StringComparison.OrdinalIgnoreCase) ||
+                    seg.Equals("forest", StringComparison.OrdinalIgnoreCase))
+                {
+                    var altParts = new List<string>(parts);
+                    altParts.RemoveAt(i);
+                    string altRel = string.Join('/', altParts);
+                    string altSrc = Path.Combine(clientRoot, altRel + ".Lib");
+                    if (File.Exists(altSrc)) return altSrc;
+                }
+            }
+            return null;
         }
 
         private MapResultDto BuildResultForMap(string mapName, int libs, int imgs, string skipped)

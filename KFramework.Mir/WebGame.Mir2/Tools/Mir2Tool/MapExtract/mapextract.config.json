@@ -5,5 +5,9 @@
   "DestinationPath": "D:\\OpenSource\\2026Map",
   "MinimapLibPath": "D:\\OpenSource\\Crystal\\Build\\Client\\Debug\\Data\\mmap.Lib",
   "MirDBPath": "D:\\OpenSource\\Crystal\\Build\\Server\\Debug\\Server.MirDB",
-  "RecursiveScan": false
+  "RecursiveScan": false,
+  "ExportWebP": false,
+  "WebPLossless": true,
+  "WebPQuality": 90,
+  "DeletePngAfterWebP": false
 }

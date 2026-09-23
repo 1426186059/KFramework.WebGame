@@ -10426,6 +10426,8 @@ namespace Client.MirScenes
         private void TryAutoPath()
         {
             if (MapObject.User == null) return;
+            // 地图尚未加载完成（M2CellInfo 为空）时忽略寻路点击，避免索引空网格。
+            if (M2CellInfo == null) return;
 
             Point target = MapLocation;
             Point from = MapObject.User.CurrentLocation;
@@ -10581,6 +10583,13 @@ namespace Client.MirScenes
             if (M2CellInfo != null)
                 for (var i = ObjectsList.Count - 1; i >= 0; i--)
                     ObjectsList[i]?.Remove();
+
+            // 切图期间把网格置空：异步加载完成前，新地图的 User/NPC/怪物对象会经由
+            // AddObject/RemoveObject 落入 _pendingAdd 缓冲，待 LoadMapAsync 加载完本图后统一回放，
+            // 避免用“旧地图(可能更小)网格”按“新地图坐标”索引导致 IndexOutOfRangeException。
+            M2CellInfo = null;
+            Width = 0;
+            Height = 0;
 
             Objects.Clear();
             ObjectsList.Clear();
@@ -11000,26 +11009,35 @@ namespace Client.MirScenes
                     var cell = M2CellInfo[x, y];
 
                     // Back
+                    // 注意：MapCode 把原 16 位 BackImage 的 0x8000 位转译成了 0x20000000。
+                    // 在这套地图数据里 0x8000 代表的是“有效地砖（动画/特殊地砖）”，并非无底图(void)；
+                    // 真正的无底图是 BackImage==0。因此不能凭 0x20000000 跳过绘制，否则会把大量有效
+                    // 地砖当作空洞丢弃，导致整图显示不全（两张地图都出现此问题）。
+                    // 取图时用 & 0x1FFFFFFF 去掉高位标志即可得到真实索引。
                     if (y <= endY && cell.BackImage != 0 && cell.BackIndex != -1)
                     {
                         int index = (cell.BackImage & 0x1FFFFFFF) - 1;
-                        // 资源库按需加载：槽位可能未配置(为 null)或索引越界，直接 Draw 会抛异常。
-                        var lib = (cell.BackIndex >= 0 && cell.BackIndex < Libraries.MapLibs.Length)
-                            ? Libraries.MapLibs[cell.BackIndex] : null;
-
-                        if (lib != null)
+                        if (index >= 0)
                         {
-                            // 底图画法取决于地砖尺寸：
-                            // - 大地砖（如 96x64，一张覆盖 2x2 格）：只在 x、y 均为偶数时画一次（与原版一致）；
-                            // - 小地砖（48x32，每格一张）：必须每格都画，否则会丢掉约 3/4 的地砖。
-                            Size bs = lib.GetSize(index);
-                            bool largeTile = bs.Width >= CellWidth * 2 && bs.Height >= CellHeight * 2;
+                            // 资源库按需加载：槽位可能未配置(为 null)或索引越界，直接 Draw 会抛异常。
+                            var lib = (cell.BackIndex >= 0 && cell.BackIndex < Libraries.MapLibs.Length)
+                                ? Libraries.MapLibs[cell.BackIndex] : null;
 
-                            if (!largeTile || (y % 2 == 0 && x % 2 == 0))
-                            { lib.Draw(index, drawX, drawY); _backDrawn++; }
-                            else _backSkipped++;
+                            if (lib != null)
+                            {
+                                // 底图画法取决于地砖尺寸：
+                                // - 大地砖（如 96x64，一张覆盖 2x2 格）：只在 x、y 均为偶数时画一次（与原版一致）；
+                                // - 小地砖（48x32，每格一张）：必须每格都画，否则会丢掉约 3/4 的地砖。
+                                Size bs = lib.GetSize(index);
+                                bool largeTile = bs.Width >= CellWidth * 2 && bs.Height >= CellHeight * 2;
+
+                                if (!largeTile || (y % 2 == 0 && x % 2 == 0))
+                                { lib.Draw(index, drawX, drawY); _backDrawn++; }
+                                else _backSkipped++;
+                            }
+                            else _backNoLib++;
                         }
-                        else _backNoLib++;
+                        else _backNoImage++;
                     }
                     else if (cell.BackImage == 0 || cell.BackIndex == -1) _backNoImage++;
 
@@ -12434,6 +12452,7 @@ namespace Client.MirScenes
 
         public bool EmptyCell(Point p)
         {
+            if (M2CellInfo == null) return false;
             if ((M2CellInfo[p.X, p.Y].BackImage & 0x20000000) != 0 || (M2CellInfo[p.X, p.Y].FrontImage & 0x8000) != 0)
                 return false;
 
@@ -12477,6 +12496,7 @@ namespace Client.MirScenes
 
         private bool CheckDoorOpen(Point p)
         {
+            if (M2CellInfo == null) return false;
             if (M2CellInfo[p.X, p.Y].DoorIndex == 0) return true;
             Door DoorInfo = GetDoor(M2CellInfo[p.X, p.Y].DoorIndex);
             if (DoorInfo == null) return false;//if the door doesnt exist then it isnt even being shown on screen (and cant be open lol)
@@ -12542,7 +12562,7 @@ namespace Client.MirScenes
 
             Point point = Functions.PointMove(User.CurrentLocation, dir, 3);
 
-            if (!M2CellInfo[point.X, point.Y].FishingCell) return false;
+            if (M2CellInfo == null || !M2CellInfo[point.X, point.Y].FishingCell) return false;
 
             return true;
         }
@@ -12567,6 +12587,7 @@ namespace Client.MirScenes
 
         public bool ValidPoint(Point p)
         {
+            if (M2CellInfo == null) return false;
             //GameScene.Scene.ChatDialog.ReceiveChat(string.Format("cell: {0}", (M2CellInfo[p.X, p.Y].BackImage & 0x20000000)), ChatType.Hint);
             return (M2CellInfo[p.X, p.Y].BackImage & 0x20000000) == 0;
         }
@@ -12808,6 +12829,11 @@ namespace Client.MirScenes
 
         }
 
+        private bool InMapBounds(int x, int y)
+        {
+            return M2CellInfo != null && x >= 0 && y >= 0 && x < M2CellInfo.GetLength(0) && y < M2CellInfo.GetLength(1);
+        }
+
         public void RemoveObject(MapObject ob)
         {
             if (M2CellInfo == null)
@@ -12815,6 +12841,7 @@ namespace Client.MirScenes
                 _pendingAdd.Remove(ob);
                 return;
             }
+            if (!InMapBounds(ob.MapLocation.X, ob.MapLocation.Y)) return;
             M2CellInfo[ob.MapLocation.X, ob.MapLocation.Y].RemoveObject(ob);
         }
         public void AddObject(MapObject ob)
@@ -12824,16 +12851,18 @@ namespace Client.MirScenes
                 _pendingAdd.Add(ob);
                 return;
             }
+            if (!InMapBounds(ob.MapLocation.X, ob.MapLocation.Y)) return;
             M2CellInfo[ob.MapLocation.X, ob.MapLocation.Y].AddObject(ob);
         }
         public MapObject FindObject(uint ObjectID, int x, int y)
         {
-            if (M2CellInfo == null) return null;
+            if (!InMapBounds(x, y)) return null;
             return M2CellInfo[x, y].FindObject(ObjectID);
         }
         public void SortObject(MapObject ob)
         {
             if (M2CellInfo == null) return;
+            if (!InMapBounds(ob.MapLocation.X, ob.MapLocation.Y)) return;
             M2CellInfo[ob.MapLocation.X, ob.MapLocation.Y].Sort();
         }
 

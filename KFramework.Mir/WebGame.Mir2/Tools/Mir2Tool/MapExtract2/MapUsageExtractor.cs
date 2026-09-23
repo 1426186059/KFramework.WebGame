@@ -27,8 +27,12 @@ public static class MapUsageExtractor
                 if (c == null) continue;
 
                 // ---- 背景层 (BackIndex / BackImage) ----
+                // 注意：必须与客户端 PreloadMapLibraries 保持一致——只要库索引被设置(>=0)就登记该库，
+                // 不能先看 BackImage 是否非零。否则“索引已设但本格无图(BackImage=0 或 0x8000 标志)”的格子
+                // 会被漏掉，导致该 Lib 不被蒸馏，运行时懒加载即 404（[Mir] 资源缺失，成批崩溃/马赛克）。
                 if (c.BackIndex >= 0)
                 {
+                    EnsureLib(used, c.BackIndex);
                     uint raw = (uint)c.BackImage & 0x1FFFFFFFu;
                     if (raw != 0)
                     {
@@ -38,8 +42,10 @@ public static class MapUsageExtractor
                 }
 
                 // ---- 中层 (MiddleIndex / MiddleImage) ----
+                // 同样：索引一设就登记该库（与客户端 PreloadMapLibraries 一致）。
                 if (c.MiddleIndex >= 0)
                 {
+                    EnsureLib(used, c.MiddleIndex);
                     int idx = (int)c.MiddleImage - 1;
                     if (idx >= 0)
                     {
@@ -50,8 +56,10 @@ public static class MapUsageExtractor
                 }
 
                 // ---- 前层 (FrontIndex / FrontImage)，客户端跳过 200 ----
+                // 同样：索引一设就登记该库（与客户端 PreloadMapLibraries 一致）。
                 if (c.FrontIndex >= 0 && c.FrontIndex != 200)
                 {
+                    EnsureLib(used, c.FrontIndex);
                     uint raw = (uint)c.FrontImage & 0x7FFFu;
                     if (raw != 0)
                     {
@@ -106,5 +114,13 @@ public static class MapUsageExtractor
         if (to < from) (from, to) = (to, from);
         var set = used.TryGetValue(lib, out var s) ? s : (used[lib] = new SortedSet<int>());
         for (int i = from; i <= to; i++) set.Add(i);
+    }
+
+    // 仅登记某个库索引（确保 used 中包含该库），不写入具体图像编号。
+    // 用于“索引已设但本格无图”的情况：客户端 PreloadMapLibraries 仍会按索引加载该库，
+    // 故蒸馏时必须产出该 Lib（即便全是占位图），否则运行时懒加载即 404。
+    private static void EnsureLib(Dictionary<int, SortedSet<int>> used, int lib)
+    {
+        if (!used.ContainsKey(lib)) used[lib] = new SortedSet<int>();
     }
 }

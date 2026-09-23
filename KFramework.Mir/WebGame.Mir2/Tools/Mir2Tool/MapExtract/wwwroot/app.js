@@ -69,7 +69,7 @@ function applyConfigToForm(cfg) {
     $("minimapLibPath").value = cfg.minimapLibPath || "";
     $("mirDBPath").value = cfg.mirDBPath || "";
     $("recursiveScan").checked = !!cfg.recursiveScan;
-    $("exportWebP").checked = cfg.exportWebP !== false;
+    $("exportWebP").checked = cfg.exportWebP === true;
     $("webpLossless").checked = cfg.webpLossless !== false;
     $("webpQuality").value = String(cfg.webpQuality ?? 90);
     $("deletePngAfterWebP").checked = !!cfg.deletePngAfterWebP;
