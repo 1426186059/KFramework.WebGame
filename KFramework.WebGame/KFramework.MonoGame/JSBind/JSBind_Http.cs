@@ -28,6 +28,19 @@ namespace KFramework.MonoGame
         public static partial Task<int> LoadCacheOrDownloadAsync(string name, bool useCache);
 
         /// <summary>
+        /// 纯下载（不碰 Cache Storage）：只做 fetch，字节暂存在 JS 侧，随后用 <see cref="TakePending"/> 取走。
+        ///
+        /// 与 <see cref="LoadCacheOrDownloadAsync"/> 的区别：
+        /// 1) 不做任何缓存读写 —— 缓存统一交给 C# 侧 Caching 管理（JS 的 Caching.current 与 C# 侧开的
+        ///    缓存名不同，这边写只会多占一份磁盘且 C# 读不到）；
+        /// 2) 省掉一次 Cache 写入 IO，大文件下载更快。
+        /// </summary>
+        /// <param name="name">资源 URL（绝对 URL 直接用）。</param>
+        /// <returns>&gt;=0 字节长度——C# 按此值分配后调 <see cref="TakePending"/>；-1 失败（非 2xx / 网络错误）。</returns>
+        [JSImport("fetchBytesAsync", "http_func")]
+        public static partial Task<int> FetchBytesAsync(string name);
+
+        /// <summary>
         /// 第二步（同步）：把 <see cref="LoadCacheOrDownloadAsync"/> 暂存的字节拷进 <paramref name="buffer"/> 并释放暂存。
         /// 同步调用期间没有 await，所以可以直接用 <c>Span&lt;byte&gt;</c> 的 MemoryView（零拷贝、无需 pin）；
         /// 异步场景才必须用 ArraySegment&lt;byte&gt;。

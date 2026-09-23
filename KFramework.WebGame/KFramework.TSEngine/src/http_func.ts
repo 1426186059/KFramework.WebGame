@@ -80,6 +80,33 @@ export async function loadCacheOrDownloadAsync(name: string, useCache: boolean):
 }
 
 /**
+ * 纯下载：只做 fetch，字节暂存在 pending，等 takePending 取走；完全不碰 Cache Storage。
+ *
+ * 与 loadCacheOrDownloadAsync 的区别（两点，都是为了快 + 省磁盘）：
+ * 1) 不做任何缓存读取/写入 —— 缓存统一由 C# 侧 Caching 管理。
+ *    注意 JS 的 Caching.current 与 C# 侧开的缓存（如 "WebGame.Mir2.Cache"）是两个不同的
+ *    Cache Storage 名字，若这边也写，磁盘上会多出一份且 C# 侧读不到，纯属浪费。
+ * 2) 少了一次 Cache 写入 IO —— 大文件（几十 MB）尤其明显，这正是 loadCacheOrDownloadAsync
+ *    即便传 useCache=false 之外仍要付出的额外成本。
+ *
+ * @param name 资源 URL（绝对 URL 直接用；相对路径按 document.baseURI 解析）
+ * @returns >=0 字节长度（C# 按此值分配后调 takePending）；-1 失败（非 2xx / 网络错误）
+ */
+export async function fetchBytesAsync(name: string): Promise<number> {
+    let res: Response;
+    try {
+        res = await fetch(name);
+    } catch {
+        return -1;
+    }
+    if (!res.ok) return -1;
+
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    stash(name, bytes);
+    return bytes.byteLength;
+}
+
+/**
  * 第二步（同步）：把第一步加载好的字节拷进 C# 的缓冲并释放暂存。
  * 同步调用期间没有 await，故 Span<byte> 的 MemoryView 是有效的（异步场景必须用 ArraySegment）。
  * @param buffer C# 按第一步返回的长度分配的缓冲（Span<byte> → MemoryView）
