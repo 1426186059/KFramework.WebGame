@@ -2,17 +2,10 @@ using System.Runtime.InteropServices.JavaScript;
 
 namespace KFramework.MonoGame
 {
-    /// <summary>
-    /// http_func 模块绑定：只做 fetch 下载，字节先留在 JS 堆，再由同步的 <see cref="TakePending"/> 一次拷进 C#。
-    /// 绕开 .NET WASM 自带 HttpClient（http_wasm_fetch）对大响应体断崖式变慢的问题
-    /// （实测 41.6MB 要 19 秒，而 6.8MB 只要 0.09 秒，超过约 8MB 后急剧劣化）。
-    /// 实际逻辑见 KFramework.TSEngine/src/http_func.ts（"http_func" 模块）；产物 http_func.js 随 jsengine 进 wwwroot。
-    ///
     /// 与 C# 交换字节走「两步」：<see cref="FetchBytesAsync"/> 异步下载完只回长度，
     /// C# 按长度精确分配，再用同步的 <see cref="TakePending"/> 一次拷走。
     /// 这样既不需要预先知道文件大小，也绕开了 .NET WASM 不支持 byte[] 作为返回值的限制（SYSLIB1072）。
     /// 业务不要直接调用，请用上层封装（ContentFunc.LoadCacheOrDownloadJsAsync）。
-    /// </summary>
     public static partial class JSBind_Http
     {
         /// <summary>
