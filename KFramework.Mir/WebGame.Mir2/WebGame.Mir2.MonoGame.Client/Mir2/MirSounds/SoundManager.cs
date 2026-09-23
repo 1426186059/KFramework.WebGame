@@ -170,14 +170,44 @@ namespace Client.MirSounds
             _delayList.Clear();
         }
 
+        // 音效字节内存缓存：同一音效只从网络 / Cache Storage 取一次，之后直接内存命中。
+        // 之前每次播放都重新 GetBytesAsync：Cache 读取实测 0.2~7.8s，而且会占满浏览器单域名
+        // 约 6 个并发连接，把 Map/*.map（十几 MB）挤到排队 —— 表现为地图加载不完、画不全。
+        private static readonly Dictionary<string, byte[]> _soundBytes = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+        private static readonly HashSet<string> _soundMissing = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private static readonly object _soundLock = new object();
+
+        /// <summary>
+        /// 取音效字节（带内存缓存）：命中内存则零 I/O；取不到（404/空）也记一笔，避免反复发起注定失败的请求。
+        /// </summary>
+        internal static async Task<byte[]> GetSoundBytesAsync(string file)
+        {
+            string url = BrowserResource.ResolveUrl(file);
+
+            lock (_soundLock)
+            {
+                if (_soundMissing.Contains(url)) return null;
+                if (_soundBytes.TryGetValue(url, out byte[] cached)) return cached;
+            }
+
+            byte[] bytes = await BrowserResource.GetBytesAsync(url);
+            if (bytes == null || bytes.Length == 0)
+            {
+                lock (_soundLock) _soundMissing.Add(url);
+                return null;
+            }
+
+            lock (_soundLock) _soundBytes[url] = bytes;
+            return bytes;
+        }
+
         // 浏览器端用 KFramework.MonoGame 的 SoundEffect：先按资源 URL 异步取字节（fetch），
         // 再按扩展名 mime 构造 SoundEffect 播放（循环用 SoundEffectInstance）。
         private static async Task PlayFileAsync(string file, int vol, bool loop)
         {
             try
             {
-                string url = BrowserResource.ResolveUrl(file);
-                byte[] bytes = await BrowserResource.GetBytesAsync(url);
+                byte[] bytes = await GetSoundBytesAsync(file);
                 if (bytes == null || bytes.Length == 0) return;
                 string mime = file.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase) ? "audio/mpeg" : "audio/wav";
                 var se = await SoundEffect.LoadAsync(bytes, mime);

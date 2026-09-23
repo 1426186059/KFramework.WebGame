@@ -52,8 +52,8 @@ namespace Client.MirSounds.Libraries
 
                 if (_se != null) return;
 
-                string url = BrowserResource.ResolveUrl(_fileName);
-                byte[] bytes = await BrowserResource.GetBytesAsync(url);
+                // 复用 SoundManager 的内存缓存：同一音效不重复走网络 / Cache Storage
+                byte[] bytes = await SoundManager.GetSoundBytesAsync(_fileName);
                 if (bytes == null || bytes.Length == 0) return;
 
                 string mime = _fileName.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase) ? "audio/mpeg" : "audio/wav";
