@@ -29,8 +29,18 @@
                     if (data == null) return null;
 
                     GameProfiler.TestStart();
-                    await mCacheInstance.SaveAsync(path, new ArraySegment<byte>(data)).ConfigureAwait(false);
-                    GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 保存 {tag} {FmtSize(data.Length)}");
+                    try
+                    {
+                        await mCacheInstance.SaveAsync(path, new ArraySegment<byte>(data)).ConfigureAwait(false);
+                        GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 保存 {tag} {FmtSize(data.Length)}");
+                    }
+                    catch (Exception saveEx)
+                    {
+                        // 缓存写入失败绝不能丢掉已下载的字节：之前该异常会一路抛到外层 catch，
+                        // 使函数返回 null —— 明明下载成功的 Lib 被判成"远程空"，地图画不全。
+                        GameProfiler.TestFinishAndLog($"[cache] 保存失败(忽略) {tag}");
+                        PrintTool.Log($"[cache] 保存失败，仍使用已下载数据 {tag}: {saveEx.Message}");
+                    }
                     return data;
                 }
                 else
