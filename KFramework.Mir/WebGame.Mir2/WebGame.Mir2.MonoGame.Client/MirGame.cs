@@ -34,6 +34,7 @@ namespace WebGame.Mir2.MonoGame.Client
 
         protected override void Update(GameTime gameTime)
         {
+            CMain.Update(gameTime);
             CMain.MPoint = Input_Mouse.Position;
             CMain.CMain_MouseMove(null, new MouseEventArgs(MouseButtons.None, 0, CMain.MPoint.X, CMain.MPoint.Y, 0));
             SoundManager.ProcessDelayedSounds();
@@ -43,7 +44,7 @@ namespace WebGame.Mir2.MonoGame.Client
         {
             // CMain.Loop 内部已做清屏 + 绘制 + 提交；Game.TickFrame 在调用 Draw 前也会清一次屏，
             // 但 RenderFrame 会再次清成黑色并重绘，最终画面以 DXManager 输出的为准。
-            CMain.Loop();
+            CMain.Draw();
         }
     }
 }

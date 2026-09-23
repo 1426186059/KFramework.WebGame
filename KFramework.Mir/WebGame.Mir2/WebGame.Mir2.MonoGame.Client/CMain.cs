@@ -15,14 +15,19 @@ namespace WebGame.Mir2.MonoGame.Client
     // 原 Program 入口类（Init/Frame/Step + 输入桥接）已并入本类。
     public partial class CMain
     {
+        public readonly static DateTime StartTime = DateTime.UtcNow;
         public static long Time;
-        public static DateTime Now;
+        public static DateTime Now { get { return StartTime.AddMilliseconds(Time); } }
         public static MirEngine.Point MPoint;
         public static Random Random = new Random();
-        public static int DPSCounter;
         public static KeyBindSettings InputKeys = new KeyBindSettings();
         public static long BytesReceived, BytesSent;
         public static int FPS;
+        private static long _fpsTime;
+        private static int _fps;
+        public static int DPS;
+        public static int DPSCounter;
+
         public static int TotalBytesReceived, TotalBytesSent;
 
         // 原 Program 入口类的单例窗体及启动状态（已并入 CMain）。
@@ -113,35 +118,107 @@ namespace WebGame.Mir2.MonoGame.Client
         }
 
         private static string _lastLoopError;
+        private static long _cleanTime;
+            
+        public static void Update(GameTime gameTime)
+        {
+            UpdateTime(gameTime);
+            UpdateEnviroment();
+        }
 
-        public static void Loop()
+        public static void Draw()
         {
             try
             {
-                Time = Environment.TickCount & 0x7FFFFFFF;
-                Now = DateTime.Now;
-
-                Network.Process();
-
-                if (MirScene.ActiveScene != null)
-                {
-                    MirScene.ActiveScene.Process();
-                    DXManager.RenderFrame(() => MirScene.ActiveScene.Draw());
-                }
-
-                DXManager.Clean();
+                RenderEnvironment();
+                UpdateFrameTime();
             }
             catch (Exception ex)
             {
                 // 帧循环里的未处理异常会终止渲染进程且拿不到堆栈；这里打印完整堆栈（去重）到控制台，
                 // 便于定位真正的出错行（如连接阶段的 NullReferenceException）。
-                string s = ex.ToString();
-                if (s != _lastLoopError)
-                {
-                    _lastLoopError = s;
-                    SaveError(s);
-                }
+                SaveErrorOnce(ex.ToString());
             }
+        }
+
+        private static void UpdateTime(GameTime gameTime)
+        {
+            Time = (long)gameTime.TotalGameTime.TotalMilliseconds;
+        }
+
+        private static void UpdateFrameTime()
+        {
+            if (Time >= _fpsTime)
+            {
+                _fpsTime = Time + 1000;
+                FPS = _fps;
+                _fps = 0;
+
+                DPS = DPSCounter;
+                DPSCounter = 0;
+            }
+            else
+                _fps++;
+        }
+
+        // 原版 CMain.UpdateEnviroment()（Crystal Client/Forms/CMain.cs:357）。
+        // 沿用原版拼写（Enviroment 少了第二个 n），便于与原版逐行对照。
+        private static void UpdateEnviroment()
+        {
+            if (Time >= _cleanTime)
+            {
+                _cleanTime = Time + 1000;
+
+                DXManager.Clean(); // Clean once a second.
+            }
+
+            Network.Process();
+
+            if (MirScene.ActiveScene != null)
+                MirScene.ActiveScene.Process();
+
+            // 每帧推进动画控件/按钮的帧偏移。移植时漏掉这两段会让动画永远停在第一帧
+            //（表现为登录/选人界面动画不播放）。必须在 Draw 之前执行。
+            for (int i = 0; i < MirAnimatedControl.Animations.Count; i++)
+                MirAnimatedControl.Animations[i].UpdateOffSet();
+
+            for (int i = 0; i < MirAnimatedButton.Animations.Count; i++)
+                MirAnimatedButton.Animations[i].UpdateOffSet();
+
+            // 原版此处还有 CreateHintLabel()，以及 Settings.DebugMode 为真时的 CreateDebugLabel()。
+            // 本移植未搬这两个方法：
+            //   - Hint 悬浮提示依赖 HintBaseLabel/HintTextLabel，本移植未实现；
+            //   - Debug 浮层已由 GameScene 负责（见 GameScene.cs 中 CMain.DebugBaseLabel 的处理），此处不重复创建。
+        }
+
+        // 原版 CMain.RenderEnvironment()（Crystal Client/Forms/CMain.cs:385）。
+        private static void RenderEnvironment()
+        {
+            try
+            {
+                // 原版在这里先处理 DXManager.DeviceLost（D3D 设备丢失 → AttemptReset 后返回）。
+                // WebGL 没有「设备丢失」概念，本移植的 DXManager 也没有该成员，故略去。
+
+                // 对应原版的 Device.Clear + BeginScene + Sprite.Begin + ActiveScene.Draw + Sprite.End + EndScene + Present。
+                DXManager.RenderFrame(() =>
+                {
+                    if (MirScene.ActiveScene != null)
+                        MirScene.ActiveScene.Draw();
+                });
+            }
+            catch (Exception ex)
+            {
+                SaveErrorOnce(ex.ToString());
+                DXManager.AttemptRecovery();
+            }
+        }
+
+        // 帧循环里同一异常会每帧重复抛出，去重后再打印，避免刷屏。
+        private static void SaveErrorOnce(string text)
+        {
+            if (text == _lastLoopError) return;
+            _lastLoopError = text;
+            SaveError(text);
         }
 
         // 原版用 Win32 .CUR 文件切换窗体光标；浏览器端无法加载 .CUR，改为切换 canvas 的 CSS cursor。

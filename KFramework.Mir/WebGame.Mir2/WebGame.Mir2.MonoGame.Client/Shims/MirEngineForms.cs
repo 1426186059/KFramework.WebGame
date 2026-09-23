@@ -54,16 +54,6 @@ namespace MirEngine
             => new Message { HWnd = hWnd, Msg = msg, WParam = wparam, LParam = lparam };
     }
 
-    public class Timer
-    {
-        public event EventHandler Tick;
-        public int Interval;
-        public bool Enabled;
-        public void Start() { Enabled = true; }
-        public void Stop() { Enabled = false; }
-        public void Dispose() { }
-    }
-
     public static class Application
     {
         public static void Run() { }
