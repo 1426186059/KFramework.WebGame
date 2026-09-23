@@ -18,13 +18,11 @@
 //
 // 接线：main.ts 里 setModuleImports('http_func', httpFunc)；
 // C# 侧 KFramework.MonoGame.JSBind_Http 用 [JSImport("...", "http_func")] 绑定。
-
 // 第一步下载完到第二步取走之间的暂存区。刻意不做数量上限与淘汰：
 // 条目生命周期极短（fetch 完 → C# 立刻 takePending 取走），设上限淘汰反而可能
 // 误伤「已下载但还没取走」的条目，让 takePending 抛「没有待取字节」。
 // 释放靠三条路径：takePending 交付后删除、releasePending 主动放弃、Dispose 清空。
 const pending = new Map();
-
 /**
  * 第一步（异步）：只做 fetch，字节暂存在 pending，等 takePending 取走；完全不碰 Cache Storage。
  *
@@ -45,7 +43,6 @@ export async function fetchBytesAsync(name) {
     pending.set(name, bytes);
     return bytes.byteLength;
 }
-
 /**
  * 第二步（同步）：把第一步下载好的字节拷进 C# 的缓冲并释放暂存。
  * 同步调用期间没有 await，故 Span<byte> 的 MemoryView 是有效的（异步场景必须用 ArraySegment）。
@@ -62,16 +59,12 @@ export function takePending(name, buffer) {
     buffer.set(bytes, 0);
     pending.delete(name); // 交付完成，释放
 }
-
 // 放弃取字节时释放暂存（如加载成功但业务侧取消）；不传 name 则清空全部。
 export function releasePending(name) {
     if (name)
         pending.delete(name);
-    else
-        pending.clear();
 }
-
 // 清空全部暂存字节（游戏退出 / 释放资源时调用）。
-export function Dispose() {
+export function releaseAllPending() {
     pending.clear();
 }

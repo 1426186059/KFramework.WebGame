@@ -375,41 +375,13 @@ namespace Client.MirScenes
             Enabled = false;
             _login.Dispose();
             if(_ViewKey != null && !_ViewKey.IsDisposed) _ViewKey.Dispose();
-
             SoundManager.PlaySound(SoundList.LoginEffect);
-
-            _pendingLogin = p;
-
-            // 过场动画依赖 ChrSel.Lib（50MB+，即便本地加载也要数秒）。
-            // 它是 Loop=false 的非循环动画：一旦开播，帧偏移 OffSet 就按 AnimationDelay 机械递增，
-            // 与资源是否就绪无关；19 帧在 1.9s 内就"空播"完并 Animated=false（非循环播完即永久停止），
-            // 等资源加载好时动画早已结束 —— 表现为"过场动画没播就直接进了选人界面"。
-            // 所以先等该库就绪，再开播并起兜底计时。
-            _ = PlayIntroAfterChrSelReady();
-        }
-
-        /// <summary>
-        /// 等过场动画所需资源（ChrSel.Lib）就绪后再开播。
-        /// 即便加载失败也照常开播+起兜底计时，保证一定会切到选人界面，不会卡在空场景。
-        /// </summary>
-        private async System.Threading.Tasks.Task PlayIntroAfterChrSelReady()
-        {
-            try
-            {
-                await Libraries.ChrSel.InitializeAsync().ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                KFramework.MonoGame.PrintTool.Log("[Login] ChrSel 加载失败，过场动画无图但仍会切换: " + ex.Message);
-            }
-
-            if (IsDisposed || _selectCreated) return;
-
-            _background.AfterAnimation += (o, e) => SwitchToSelectScene();
             _background.Animated = true;
-
-            // 兜底：即便 AfterAnimation 未触发，到点也直接切换，避免卡在"登录框消失、选人界面不出来"。
-            _switchToSelectAt = CMain.Time + (_background.AnimationCount + 2) * Math.Max(1, _background.AnimationDelay);
+            _background.AfterAnimation += (o, e) =>
+            {
+                Dispose();
+                ActiveScene = new SelectScene(p.Characters);
+            };
         }
 
         // 切到选人界面：销毁登录场景并创建 SelectScene。重入安全（动画回调与到点兜底只会生效一次）。
