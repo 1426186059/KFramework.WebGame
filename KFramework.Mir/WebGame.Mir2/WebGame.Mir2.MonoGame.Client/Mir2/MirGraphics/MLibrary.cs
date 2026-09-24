@@ -263,19 +263,9 @@ namespace Client.MirGraphics
         {
             int count;
 
-            if (Directory.Exists(path))
-            {
-                var allFiles = Directory.GetFiles(path, "*" + suffix + MLibrary.Extention, SearchOption.TopDirectoryOnly)
-                    .OrderBy(x => int.Parse(Regex.Match(x, @"\d+").Value));
-
-                var lastFile = allFiles.Any() ? Path.GetFileName(allFiles.Last()) : "0";
-                count = int.Parse(Regex.Match(lastFile, @"\d+").Value) + 1;
-            }
-            else
-            {
-                // 浏览器端：用固定容量，避免长度退化为 1 造成索引越界。
-                count = BrowserLibraryCapacity;
-            }
+            // 浏览器端（WASM）无本地文件系统：Directory.Exists / GetFiles 恒为 false / 空，
+            // 不再走本地目录探测，统一用固定容量，避免长度退化为 1 造成索引越界（NPCs[19]、CHumEffect[5] 等）。
+            count = BrowserLibraryCapacity;
 
             library = new MLibrary[count];
 

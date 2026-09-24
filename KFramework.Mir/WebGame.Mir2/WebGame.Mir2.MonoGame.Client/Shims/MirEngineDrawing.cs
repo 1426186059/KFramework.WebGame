@@ -111,14 +111,9 @@ namespace MirEngine
         public Bitmap(int width, int height) { Width = width; Height = height; PixelFormat = PixelFormat.Format32bppArgb; }
         public Bitmap(string filename)
         {
-            try
-            {
-                byte[] data = System.IO.File.ReadAllBytes(filename);
-                using var ms = new MemoryStream(data);
-                var bmp = new Bitmap(ms);
-                Width = bmp.Width; Height = bmp.Height;
-            }
-            catch { Width = 1; Height = 1; }
+            // 浏览器端（WASM）无本地文件系统，File.ReadAllBytes 不可用；
+            // 该 shim 仅作占位 mock（不承载真实像素），直接降级为 1x1 占位。
+            Width = 1; Height = 1;
         }
         public Bitmap(Stream stream) { Width = 1; Height = 1; }
 

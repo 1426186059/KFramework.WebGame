@@ -4153,17 +4153,22 @@ public static class GameLanguage
         TypeInfoResolver = TextMapJsonContext.Default
     };
 
-    public static void LoadClientLanguage(string languageJsonPath)
+    public static async Task LoadClientLanguageAsync(string languageJsonPath)
     {
-        if (!File.Exists(languageJsonPath))
+        string key = "lang:client:" + languageJsonPath;
+        if (!await LocalStorage.HasKeyAsync(key).ConfigureAwait(false))
         {
-            SaveClientLanguage(languageJsonPath);
+            await SaveClientLanguageAsync(languageJsonPath).ConfigureAwait(false);
             return;
         }
 
         try
         {
-            var language = JsonSerializer.Deserialize<TextMap>(File.ReadAllText(languageJsonPath), TextMapJsonContext.Default.TextMap);
+            string json = await LocalStorage.GetStringAsync(key).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(json)) return;
+            var language = JsonSerializer.Deserialize<TextMap>(json, TextMapJsonContext.Default.TextMap);
+            if (language == null) return;
+
             foreach (var item in ClientTextMap.Text)
             {
                 if (language.Text.TryGetValue(item.Key, out var value))
@@ -4182,7 +4187,7 @@ public static class GameLanguage
 
             if (language.Text.Count + language.Enum.Count != ClientTextMap.Text.Count + ClientTextMap.Enum.Count)
             {
-                SaveClientLanguage(languageJsonPath);
+                await SaveClientLanguageAsync(languageJsonPath).ConfigureAwait(false);
             }
         }
         catch (Exception)
@@ -4192,26 +4197,32 @@ public static class GameLanguage
     }
 
 
-    public static void SaveClientLanguage(string languageJsonPath)
+    public static async Task SaveClientLanguageAsync(string languageJsonPath)
     {
-        File.Delete(languageJsonPath);
+        string key = "lang:client:" + languageJsonPath;
 #pragma warning disable IL2026 // TypeInfoResolver 已提供源生成元数据，此处不会走反射
-        File.WriteAllText(languageJsonPath, JsonSerializer.Serialize(ClientTextMap, CustomJsonSerializerOptions));
+        string json = JsonSerializer.Serialize(ClientTextMap, CustomJsonSerializerOptions);
 #pragma warning restore IL2026
+        await LocalStorage.SetStringAsync(key, json).ConfigureAwait(false);
     }
 
 
-    public static void LoadServerLanguage(string languageJsonPath)
+    public static async Task LoadServerLanguageAsync(string languageJsonPath)
     {
-        if (!File.Exists(languageJsonPath))
+        string key = "lang:server:" + languageJsonPath;
+        if (!await LocalStorage.HasKeyAsync(key).ConfigureAwait(false))
         {
-            SaveServerLanguage(languageJsonPath);
+            await SaveServerLanguageAsync(languageJsonPath).ConfigureAwait(false);
             return;
         }
 
         try
         {
-            var language = JsonSerializer.Deserialize<TextMap>(File.ReadAllText(languageJsonPath), TextMapJsonContext.Default.TextMap);
+            string json = await LocalStorage.GetStringAsync(key).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(json)) return;
+            var language = JsonSerializer.Deserialize<TextMap>(json, TextMapJsonContext.Default.TextMap);
+            if (language == null) return;
+
             foreach (var item in ServerTextMap.Text)
             {
                 if (language.Text.TryGetValue(item.Key, out var value))
@@ -4230,7 +4241,7 @@ public static class GameLanguage
 
             if (language.Text.Count + language.Enum.Count != ServerTextMap.Text.Count + ServerTextMap.Enum.Count)
             {
-                SaveServerLanguage(languageJsonPath);
+                await SaveServerLanguageAsync(languageJsonPath).ConfigureAwait(false);
             }
         }
         catch (Exception)
@@ -4240,12 +4251,13 @@ public static class GameLanguage
     }
 
 
-    public static void SaveServerLanguage(string languageIniPath)
+    public static async Task SaveServerLanguageAsync(string languageIniPath)
     {
-        File.Delete(languageIniPath);
+        string key = "lang:server:" + languageIniPath;
 #pragma warning disable IL2026 // TypeInfoResolver 已提供源生成元数据，此处不会走反射
-        File.WriteAllText(languageIniPath, JsonSerializer.Serialize(ServerTextMap, CustomJsonSerializerOptions));
+        string json = JsonSerializer.Serialize(ServerTextMap, CustomJsonSerializerOptions);
 #pragma warning restore IL2026
+        await LocalStorage.SetStringAsync(key, json).ConfigureAwait(false);
     }
 
     public static string GetLocalization(this TextMap map, ClientTextKeys key)

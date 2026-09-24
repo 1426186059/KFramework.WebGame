@@ -183,21 +183,9 @@ namespace Client.MirScenes
             _connectBox.Label.Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.SendingClientVersion);
 
             C.ClientVersion p = new C.ClientVersion();
-            try
-            {
-                byte[] sum;
-                // 浏览器 WASM 不支持 MD5.Create()（SubtleCrypto 不含 MD5），改用自包含托管实现。
-                using (FileStream stream = File.OpenRead(Application.ExecutablePath))
-                    sum = ManagedMD5.ComputeHash(stream);
-
-                p.VersionHash = sum;
-            }
-            catch
-            {
-                // 浏览器 WASM 中 Application.ExecutablePath 为空串（shim 返回空），无法做 exe 哈希校验；
-                // 发送 16 字节占位哈希（MD5 长度），由服务器在 VersionHash 未强制时放行。
-                p.VersionHash = new byte[16];
-            }
+            // 浏览器 WASM 无本地 exe（Application.ExecutablePath 为空串），无法做 exe 哈希校验；
+            // 直接发送 16 字节占位哈希（MD5 长度），由服务器在 VersionHash 未强制时放行。
+            p.VersionHash = new byte[16];
 
             Network.Enqueue(p);
         }

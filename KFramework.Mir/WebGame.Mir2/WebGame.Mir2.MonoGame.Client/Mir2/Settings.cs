@@ -347,13 +347,8 @@ namespace Client
 
             try
             {
-                string languageDirectory = @".\Localization\";
-                if (!Directory.Exists(languageDirectory))
-                {
-                    Directory.CreateDirectory(languageDirectory);
-                }
-                string settingLanguageFile = Path.Combine(languageDirectory, Language + ".json");
-                GameLanguage.LoadClientLanguage(settingLanguageFile);
+                string settingLanguageFile = Language + ".json";
+                await GameLanguage.LoadClientLanguageAsync(settingLanguageFile).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
