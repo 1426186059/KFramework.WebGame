@@ -1309,7 +1309,7 @@ namespace Client.MirScenes.Dialogs
                     string[] values = capture.Value.Split('/');
                     currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, values[0]);
                     string text = currentLine.Substring(0, capture.Index - 1 - offSet) + " ";
-                    Size size = TextRenderer.MeasureText(text, _textLabel[i - TopLine].Font, _textLabel[i - TopLine].Size.Width);
+                    Size size = TextRenderer.MeasureText(text, _textLabel[i - TopLine].Font, new MirEngine.Size(_textLabel[i - TopLine].Size.Width, int.MaxValue));
 
                     if (C.Match(match.Value).Success)
                         NewColour(values[0], values[1], _textLabel[i - TopLine].Location.Add(new Point(size.Width - 10, 0)));

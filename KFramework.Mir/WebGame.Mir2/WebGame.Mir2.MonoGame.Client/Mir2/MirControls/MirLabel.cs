@@ -121,7 +121,7 @@ namespace Client.MirControls
                 Size = Size.Empty;
             else
             {
-                Size = TextRenderer.MeasureText(Text, Font, int.MaxValue);
+                Size = TextRenderer.MeasureText(Text, Font);
                 //Size = new Size(Size.Width, Size.Height + 5);
 
                 if (OutLine && Size != Size.Empty)
@@ -189,7 +189,16 @@ namespace Client.MirControls
             int fore = ForeColour.ToArgb();
             int outline = OutLine ? OutLineColour.ToArgb() : 0;
             int back = BackColour.ToArgb();
-            TextRenderer.DrawLabel(ControlTexture, Size.Width, Size.Height, Text, Font, fore, outline, DrawFormat, back, 0, 0, false);
+            TextRenderer.Clear(ControlTexture, back);
+            // 描边对齐原版 MirLabel：四向各偏移 1px 先画轮廓，再画前景。
+            if (outline != 0)
+            {
+                TextRenderer.DrawText(ControlTexture, Text, Font, new MirEngine.Rectangle(1, 0, Size.Width, Size.Height), outline, DrawFormat);
+                TextRenderer.DrawText(ControlTexture, Text, Font, new MirEngine.Rectangle(0, 1, Size.Width, Size.Height), outline, DrawFormat);
+                TextRenderer.DrawText(ControlTexture, Text, Font, new MirEngine.Rectangle(2, 1, Size.Width, Size.Height), outline, DrawFormat);
+                TextRenderer.DrawText(ControlTexture, Text, Font, new MirEngine.Rectangle(1, 2, Size.Width, Size.Height), outline, DrawFormat);
+            }
+            TextRenderer.DrawText(ControlTexture, Text, Font, new MirEngine.Rectangle(1, 1, Size.Width, Size.Height), fore, DrawFormat);
 
             TextureValid = true;
         }

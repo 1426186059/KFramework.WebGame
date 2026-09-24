@@ -486,10 +486,10 @@ namespace Client.MirScenes.Dialogs
                         string action = match.Groups[3].Captures[0].Value;
 
                         currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, txt);
-                        // 直接量“链接前文本”的真实宽度（与 DrawLabel 同一 SpriteFont.MeasureString）作为
+                        // 直接量“链接前文本”的真实宽度（与 TextRenderer.DrawText 同一 SpriteFont.MeasureString）作为
                         // 叠层起点，去掉原先 -10 的近似补偿，避免中文名越长越往左偏。
                         string prefixText = currentLine.Substring(0, capture.Index - 1 - offSet);
-                        int prefixWidth = (int)Math.Round(TextRenderer.MeasureStringWidth(prefixText, TextLabel[i].Font));
+                        int prefixWidth = TextRenderer.MeasureText(prefixText, TextLabel[i].Font).Width;
 
                         if (R.Match(match.Value).Success)
                             NewButton(txt, action, TextLabel[i].Location.Add(new Point(prefixWidth, 0)));
@@ -976,16 +976,16 @@ namespace Client.MirScenes.Dialogs
             if (label == null || string.IsNullOrEmpty(text))
                 return Point.Empty;
 
-            // 与 TextRenderer.DrawLabel 使用同一 SpriteFont 量“链接前整串前缀”的宽度，
-            // 而非逐字符累加（MeasureCharWidth 会漏算字间距 Spacing / kerning，中文越长越往左偏）。
+            // 与 TextRenderer.DrawText 使用同一度量（TextRenderer.MeasureText）量“链接前整串前缀”的宽度，
+            // 而非逐字符累加（逐字符累加会漏算字间距 Spacing / kerning，中文越长越往左偏）。
             // canvas 渲染只按显式 \n 换行，不做自动换行：x 取最后一个 \n 之后的前缀宽度，y 按 \n 数累计。
-            float lineH = label.Font.LineHeight;
+            float lineH = TextRenderer.MeasureText("W", label.Font).Height;
 
             int lastNl = text.LastIndexOf('\n');
             string linePrefix = lastNl >= 0 ? text.Substring(lastNl + 1) : text;
             linePrefix = linePrefix.Replace("\r", "");
 
-            float x = TextRenderer.MeasureStringWidth(linePrefix, label.Font);
+            float x = TextRenderer.MeasureText(linePrefix, label.Font).Width;
 
             int nl = 0;
             foreach (char c in text) if (c == '\n') nl++;

@@ -296,7 +296,7 @@ namespace Client.MirScenes.Dialogs
 
                     currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, txt);
                     string text = currentLine.Substring(0, capture.Index - 1 - offSet) + " ";
-                    Size size = TextRenderer.MeasureText(text, TextLabel[i].Font, TextLabel[i].Size.Width);
+                    Size size = TextRenderer.MeasureText(text, TextLabel[i].Font, new MirEngine.Size(TextLabel[i].Size.Width, int.MaxValue));
 
                     if (L.Match(match.Value).Success)
                     {
