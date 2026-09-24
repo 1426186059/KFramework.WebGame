@@ -1,6 +1,5 @@
 using MirEngine;
 using System.IO.Compression;
-using System.Runtime.Serialization.Formatters.Binary;
 
 public static class Functions
 {
@@ -432,30 +431,6 @@ public static class Functions
         }
         return rv;
     }
-    public static byte[] SerializeToBytes<T>(T item)
-    {
-#pragma warning disable SYSLIB0011
-        var formatter = new BinaryFormatter();
-        using (var stream = new MemoryStream())
-        {
-            formatter.Serialize(stream, item);
-            stream.Seek(0, SeekOrigin.Begin);
-#pragma warning restore SYSLIB0011
-            return stream.ToArray();
-        }
-    }
-    public static object DeserializeFromBytes(byte[] bytes)
-    {
-#pragma warning disable SYSLIB0011
-        var formatter = new BinaryFormatter();
-        using (var stream = new MemoryStream(bytes))
-        {
-            var deserialized = formatter.Deserialize(stream);
-#pragma warning restore SYSLIB0011
-            return deserialized;
-        }
-    }
-
     /// <summary>
     /// Chop a List into chunks
     /// </summary>
