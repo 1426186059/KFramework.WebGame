@@ -462,7 +462,7 @@ namespace Client.MirControls
                 TextureSize = Size;
             }
 
-            string css = TextBox.Font == null ? "10px sans-serif" : TextRenderer.FontToCss(TextBox.Font);
+            Font font = TextBox.Font ?? new Font("Arial", 10f);
             int fore = (TextBox.ForeColor != Color.Empty ? TextBox.ForeColor : Color.White).ToArgb();
             // 文本框纹理作为面板上的透明叠层：无背景色时清成透明（alpha 0），避免盖住面板里的输入框底。
             int back = (TextBox.BackColor != Color.Empty && TextBox.BackColor.A > 0) ? TextBox.BackColor.ToArgb() : 0;
@@ -474,10 +474,10 @@ namespace Client.MirControls
             string drawText = TextBox.Text ?? "";
             if (domShowsText)
                 TextRenderer.DrawTextBox(ControlTexture, Size.Width, Size.Height, "",
-                    css, fore, back, selBack, fore, 0, 0, 0, false, !TextBox.Multiline);
+                    font, fore, back, selBack, fore, 0, 0, 0, false, !TextBox.Multiline);
             else
                 TextRenderer.DrawTextBox(ControlTexture, Size.Width, Size.Height, drawText,
-                    css, fore, back, selBack, fore, TextBox.SelectionStart, TextBox.SelectionLength, TextBox.SelectionStart, TextBox.Focused && _caretVisible, !TextBox.Multiline);
+                    font, fore, back, selBack, fore, TextBox.SelectionStart, TextBox.SelectionLength, TextBox.SelectionStart, TextBox.Focused && _caretVisible, !TextBox.Multiline);
 
             TextureValid = true;
         }

@@ -120,28 +120,28 @@ public class Font : IDisposable
     }
 
     // 对齐原版 TextRenderer.MeasureText(g, text, font) —— 单行、不限宽
-    public Size MeasureText(string text)
+    public MirEngine.Size MeasureText(string text)
     {
-        if (string.IsNullOrEmpty(text)) return Size.Empty;
+        if (string.IsNullOrEmpty(text)) return MirEngine.Size.Empty;
         var sf = GetFont();
-        if (sf == null) return Size.Empty;
+        if (sf == null) return MirEngine.Size.Empty;
         var v = sf.MeasureString(text);
-        return new Size((int)Math.Ceiling(v.X), (int)Math.Ceiling(v.Y));
+        return new MirEngine.Size((int)Math.Ceiling(v.X), (int)Math.Ceiling(v.Y));
     }
 
     // 对齐原版 TextRenderer.MeasureText(g, text, font, proposedSize) —— proposedSize.Width 限制时按词/字折行
-    public Size MeasureText(string text, Size proposedSize)
+    public MirEngine.Size MeasureText(string text, MirEngine.Size proposedSize)
     {
         return MeasureText(text, proposedSize, TextFormatFlags.Default);
     }
 
     // 对齐原版 TextRenderer.MeasureText(g, text, font, proposedSize, flags)
     // flags 含 WordBreak（或 TextBoxControl）时在 proposedSize.Width 内折行，否则按单行度量。
-    public Size MeasureText(string text, Size proposedSize, TextFormatFlags flags)
+    public MirEngine.Size MeasureText(string text, MirEngine.Size proposedSize, TextFormatFlags flags)
     {
-        if (string.IsNullOrEmpty(text)) return Size.Empty;
+        if (string.IsNullOrEmpty(text)) return MirEngine.Size.Empty;
         var sf = GetFont();
-        if (sf == null) return Size.Empty;
+        if (sf == null) return MirEngine.Size.Empty;
 
         bool wordBreak = (flags & TextFormatFlags.WordBreak) != 0;
         int maxWidth = wordBreak ? proposedSize.Width : 0;
@@ -154,7 +154,7 @@ public class Font : IDisposable
                 w = Math.Max(w, (int)Math.Ceiling(sf.MeasureString(line).X));
         }
         int h = (int)Math.Ceiling(lines.Count * sf.LineHeight);
-        return new Size(w, h);
+        return new MirEngine.Size(w, h);
     }
 
     // 按显式 '\n' 切分；带 wordBreak 时在 maxWidth 内按词折行，连续中文/长串退化逐字折行。
