@@ -118,6 +118,11 @@ namespace MirEngine
 
         public static implicit operator SizeF(Size p) => new SizeF(p.Width, p.Height);
 
+        // 引擎通用文本库（KFramework.MonoGame.TextRenderer）的度量结果可直接当作本工程的 Size 使用，
+        // 例如 Size s = TextRenderer.MeasureText(...)，避免调用处逐个字段转换。
+        public static implicit operator Size(KFramework.MonoGame.TextRenderer.Size s)
+            => new Size(s.Width, s.Height);
+
         public static Size operator +(Size sz1, Size sz2) => Add(sz1, sz2);
         public static Size operator -(Size sz1, Size sz2) => Subtract(sz1, sz2);
 

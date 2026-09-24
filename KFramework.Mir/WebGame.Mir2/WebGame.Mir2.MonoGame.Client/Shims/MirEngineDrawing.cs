@@ -5,10 +5,8 @@ using KFramework.MonoGame;
 
 namespace MirEngine
 {
-    public enum GraphicsUnit
-    {
-        World, Display, Pixel, Point, Inch, Document, Millimeter
-    }
+    // GraphicsUnit 已上移到引擎通用库：KFramework.MonoGame.TextRenderer.GraphicsUnit
+    // （见 Shims/GlobalUsings.cs 的全局别名）。
 
     public class Pen : IDisposable
     {

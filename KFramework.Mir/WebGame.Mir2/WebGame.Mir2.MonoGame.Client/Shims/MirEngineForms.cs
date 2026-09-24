@@ -5,43 +5,8 @@ namespace MirEngine
 {
     // 原 Web_Mir2.Engine/MirEngine/Shims/Forms/* 中需要的部分（TextBox 原样；TextRenderer 已移除，文本度量统一改用 TextRenderer.MeasureText）
 
-    [Flags]
-    public enum TextFormatFlags
-    {
-        DirectionRightToLeft = 0x1,
-        DirectionVertical = 0x2,
-        DisplayControlText = 0x4,
-        NoPadding = 0x8,
-        NoClipping = 0x10,
-        ExternalLeading = 0x20,
-        WordBreak = 0x40,
-        SingleLine = 0x80,
-        ExpandTabs = 0x100,
-        TabStop = 0x200,
-        NoPrefix = 0x400,
-        Internal = 0x800,
-        TextBoxControl = 0x1000,
-        PathEllipsis = 0x2000,
-        EndEllipsis = 0x4000,
-        ModifyString = 0x8000,
-        Right = 0x10000,
-        Left = 0x20000,
-        Center = 0x40000,
-        Top = 0x80000,
-        Bottom = 0x100000,
-        VerticalCenter = 0x200000,
-        WordEllipsis = 0x400000,
-        HidePrefix = 0x800000,
-        PrefixOnly = 0x1000000,
-        PreserveGraphicsClipping = 0x2000000,
-        PreserveGraphicsTranslateTransform = 0x4000000,
-        NoWrap = 0x8000000,
-        LeftAndRightPadding = 0x10000000,
-        RightToLeft = 0x20000000,
-        HorizontalCenter = 0x400000,
-        LinkMeasureFlags = 0x2000000,
-        Default = 0x0
-    }
+    // TextFormatFlags 已上移到引擎通用库：KFramework.MonoGame.TextRenderer.TextFormatFlags
+    // （见 Shims/GlobalUsings.cs 的全局别名，位值与此处原定义完全一致）。
 
     public struct Message
     {

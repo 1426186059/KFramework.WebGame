@@ -47,7 +47,7 @@ namespace Client.MirControls
             {
                 var vp = DXManager.GDevice.Viewport;
                 float sScale = vp.Height > 0 ? (float)vp.Height / Client.Settings.ScreenHeight : 1f;
-                BrowserInputOverlay.Reposition(
+                KFramework.MonoGame.TextRenderer.TextInputOverlay.Reposition(
                     DisplayLocation.X * sScale, DisplayLocation.Y * sScale,
                     Size.Width * sScale, Size.Height * sScale);
             }
@@ -137,10 +137,13 @@ namespace Client.MirControls
         // 原生输入覆盖层是否正接管本框（仅作 IME/键盘捕获代理，DOM 透明，不再影响自身绘制）。
         private bool _nativeActive;
 
-        // 原生输入覆盖层是否透明：true=文字/光标由引擎在 canvas 自绘（避免与 DOM 重影）；
-        // false=由 DOM 直接显示文字/光标（使用浏览器原生光标 / 选区 / IME 候选窗）。
-        // 默认 false：让浏览器托管光标，体验与系统一致。运行时可切换以对比两种渲染方式。
-        public static bool TransparentDomInput { get; set; } = false;
+        // 光标 / 输入法模式（引擎 KFramework.MonoGame.TextRenderer.TextCaretMode）：
+        //   Rendered（默认）：DOM <input> 透明，仅作 IME / 键盘捕获代理，文字与光标由引擎在 canvas 自绘。
+        //   Browser          ：由 DOM 直接显示文字与光标（浏览器原生光标 / 选区 / IME 候选窗），引擎画空串。
+        // 默认 Rendered：与 JS 侧 input_overlay.js 的 _transparentInput 默认值及设计意图一致。
+        // Browser 模式下若 DOM 覆盖层未正常弹出/聚焦，输入框会完全空白（无文字无光标）。
+        public static KFramework.MonoGame.TextRenderer.TextCaretMode CaretMode { get; set; }
+            = KFramework.MonoGame.TextRenderer.TextCaretMode.Rendered;
 
         // 光标闪烁（对齐 Web_Mir3 DXTextBox）：聚焦时按固定间隔切换 _caretVisible，切换即触发纹理重绘。
         private bool _caretVisible;
@@ -220,13 +223,21 @@ namespace Client.MirControls
         {
             base.OnVisibleChanged();
 
+            // 登录框等"创建即可见"的文本框，Parent 由 MirTextBox_Shown 在首帧 Draw 时挂上；
+            // 但聊天框这类初始 Visible=false 的框从未被绘制，Shown 不会触发，Parent 一直是 null，
+            // 于是 ApplyNativeTextBoxState 里 TextBox.Visible = Visible && Parent != null 恒为 false，
+            // SetFocus() 转入的延迟链（等待 VisibleChanged）永远等不到，表现为"按 Enter 唤起了却无法输入"。
+            // 故在此补齐 Parent（与 MirTextBox_Shown 一致），使隐藏后再显示也能立即进入可聚焦状态。
+            if (Visible && TextBox != null && !TextBox.IsDisposed && TextBox.Parent == null && CMain.Instance != null)
+                TextBox.Parent = CMain.Instance;
+
             ApplyNativeTextBoxState();
 
             // 文本框隐藏（如所在对话框关闭）时，收起原生输入覆盖层。
             if (!Visible && _current == this)
             {
                 _current = null;
-                BrowserInputOverlay.Hide();
+                KFramework.MonoGame.TextRenderer.TextInputOverlay.Hide();
             }
         }
         private void TextBox_VisibleChanged(object sender, EventArgs e)
@@ -312,19 +323,19 @@ namespace Client.MirControls
         // 原生输入覆盖层事件路由：仅作用于当前获得焦点的文本框。
         static MirTextBox()
         {
-            BrowserInputOverlay.ValueChanged += (s, v) =>
+            KFramework.MonoGame.TextRenderer.TextInputOverlay.ValueChanged += (s, v) =>
             {
                 if (_current != null && !_current.TextBox.IsDisposed)
                     _current.TextBox.Text = v; // 赋值会触发 TextChanged（shim TextBox 的 Text setter 已调用 OnTextChanged），登录校验据此生效
             };
-            BrowserInputOverlay.Enter += (s, e) =>
+            KFramework.MonoGame.TextRenderer.TextInputOverlay.Enter += (s, e) =>
             {
                 // 浏览器端：DOM <input> 收到回车后，通过 shim 的 SimulateKeyDown 触发 TextBox.KeyDown 事件，
                 // 让游戏侧（登录/确认）像真实按键一样响应。SimulateKeyDown 是普通方法（非事件），可在此类外部调用。
                 if (_current != null && !_current.TextBox.IsDisposed)
                     _current.TextBox.SimulateKeyDown(Keys.Return);
             };
-            BrowserInputOverlay.Blur += (s, e) =>
+            KFramework.MonoGame.TextRenderer.TextInputOverlay.Blur += (s, e) =>
             {
                 // 浏览器原生 blur：多为点击了 canvas 上的另一个文本框（游戏侧 OnGotFocus 会重新 Show 它）。
                 // 若此时直接 Hide，会把刚显示的输入框收掉、光标消失（切到密码后无光标）。
@@ -354,7 +365,7 @@ namespace Client.MirControls
                 // 文本已由 OnInput 实时同步回本框 TextBox.Text，切勿在此用共享单例 <input> 的当前值回写，
                 // 否则该 <input> 可能已被复用成对方框的值/空串，从而把本框文本误清空（导致 OK 按钮校验失败无法点击）。
                 _current = null;
-                BrowserInputOverlay.Hide();
+                KFramework.MonoGame.TextRenderer.TextInputOverlay.Hide();
             }
             // 无论 GotFocus / LostFocus 谁先到达（切换时新框可能已先接管 _current），本框既已失去焦点
             // 就必须恢复自身绘制：否则 _nativeActive 会一直残留，DrawControl 恒画空串，
@@ -371,38 +382,20 @@ namespace Client.MirControls
 
             _nativeActive = true;
             int fore = (TextBox.ForeColor != Color.Empty ? TextBox.ForeColor : Color.White).ToArgb();
-            // 完整 CSS 字体串（含字重/族，如 "bold 14px 'Tahoma'"），与离屏纹理渲染口径完全一致；
-            // 直接交给 DOM 覆盖层作为字体（place() 仅对其中的 px 按 dpr 缩放），从而保证 DOM 输入框的
-            // 字形(字重/族/字号)与画布 SpriteFont 渲染的失焦文字完全一致，切换不跳变。
-            double fontPx = 10d;
-            string fontCss = "10px sans-serif";
-            {
-                Font f = TextBox.Font;
-                if (f != null)
-                {
-                    string style = f.Bold ? "bold " : (f.Italic ? "italic " : "");
-                    float px = f.Unit == MirEngine.GraphicsUnit.Point ? f.Size * 4f / 3f : f.Size;
-                    fontCss = $"{style}{px}px {f.Name}";
-                }
-            }
-            int pxIdx = fontCss.IndexOf("px");
-            if (pxIdx > 0) {
-                int s = pxIdx;
-                while (s > 0 && (char.IsDigit(fontCss[s - 1]) || fontCss[s - 1] == '.')) s--;
-                if (double.TryParse(fontCss.Substring(s, pxIdx - s), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double p))
-                    fontPx = p;
-            }
-
             // 覆盖层坐标系是"后备缓冲(绘制)像素"（见 JSBind_InputOverlay.Show 注释），而 DisplayLocation/
             // Size 是逻辑坐标(1024x768)。渲染端 UI 以 s = 视口高/768 按高缩放铺进后备缓冲，这里必须把
             // 逻辑坐标×s 换算成后备缓冲像素，DOM 覆盖层(及其光标)才能与画布文本框严格对齐；否则光标/输入框错位。
+            // 字号同样按 s 缩放：交给引擎 TextInputOverlay 生成 CSS 字体串并换算 fontPx，
+            // 保证 DOM 输入框字形(字重/族/字号)与画布 SpriteFont 渲染一致，切换不跳变。
             var vp = DXManager.GDevice.Viewport;
             float sScale = vp.Height > 0 ? (float)vp.Height / Client.Settings.ScreenHeight : 1f;
 
-            BrowserInputOverlay.Show(
+            // transparent = Rendered 模式（DOM <input> 仅作 IME / 键盘捕获代理，文字与光标由引擎自绘）。
+            KFramework.MonoGame.TextRenderer.TextInputOverlay.Show(
                 DisplayLocation.X * sScale, DisplayLocation.Y * sScale,
                 Size.Width * sScale, Size.Height * sScale,
-                fontPx * sScale, fore, TextBox.Text ?? string.Empty, TextBox.UseSystemPasswordChar, TextBox.MaxLength, TextBox.Multiline, fontCss, TransparentDomInput);
+                TextBox.Font, fore, TextBox.Text ?? string.Empty, TextBox.UseSystemPasswordChar, TextBox.MaxLength, TextBox.Multiline,
+                CaretMode == KFramework.MonoGame.TextRenderer.TextCaretMode.Rendered, sScale);
             TextureValid = false;
             Redraw();
         }
@@ -413,7 +406,7 @@ namespace Client.MirControls
             {
                 // 不在此回写文本：共享单例 <input> 的当前值可能是别的框的，回写会误清空本框（见 OnLostFocus 注释）。
                 _current = null;
-                BrowserInputOverlay.Hide();
+                KFramework.MonoGame.TextRenderer.TextInputOverlay.Hide();
             }
             _nativeActive = false;
             TextureValid = false;
@@ -431,7 +424,7 @@ namespace Client.MirControls
         protected internal override void DrawControl()
         {
             // DOM 不透明显示文字/光标时，由浏览器托管光标，引擎不再自绘，故跳过闪烁逻辑。
-            bool domShowsText = _nativeActive && !TransparentDomInput;
+            bool domShowsText = _nativeActive && CaretMode == KFramework.MonoGame.TextRenderer.TextCaretMode.Browser;
             if (domShowsText)
             {
                 base.DrawControl();
@@ -479,7 +472,7 @@ namespace Client.MirControls
             // DOM 覆盖层不透明（TransparentDomInput=false）且本框正由 DOM 接管时，文字与光标一律交给浏览器
             // 原生 DOM 显示（浏览器光标、选区、IME 候选窗都更贴合系统），引擎只把纹理清成透明，避免与 DOM 文字重影。
             // 仅在 DOM 透明（文字由引擎自绘）或本框未接管（失焦/隐藏）时，才在 canvas 上绘制文字与光标。
-            bool domShowsText = _nativeActive && !TransparentDomInput;
+            bool domShowsText = _nativeActive && CaretMode == KFramework.MonoGame.TextRenderer.TextCaretMode.Browser;
             string drawText = TextBox.Text ?? "";
             TextRenderer.Clear(ControlTexture, back);
             if (domShowsText)
@@ -586,7 +579,7 @@ namespace Client.MirControls
             if (_current == this)
             {
                 _current = null;
-                BrowserInputOverlay.Hide();
+                KFramework.MonoGame.TextRenderer.TextInputOverlay.Hide();
             }
 
             if (!TextBox.IsDisposed)
