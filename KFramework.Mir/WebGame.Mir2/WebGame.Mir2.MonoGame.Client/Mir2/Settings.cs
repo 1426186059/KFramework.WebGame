@@ -345,16 +345,6 @@ namespace Client
             if (P_Concurrency < 1) P_Concurrency = 1;
             if (P_Concurrency > 100) P_Concurrency = 100;
 
-            try
-            {
-                string settingLanguageFile = Language + ".json";
-                await GameLanguage.LoadClientLanguageAsync(settingLanguageFile).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                CMain.SaveError($"Load Client Language Error:{ex.Message}");
-            }
-
             Reader.AutoPersist = true;
             await Reader.SaveAsync().ConfigureAwait(false);
         }

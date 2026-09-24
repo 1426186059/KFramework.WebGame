@@ -1,9 +1,9 @@
 // ReSharper disable InconsistentNaming
 
+using KFramework.MonoGame;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 public enum ClientTextKeys
 {
@@ -1895,15 +1895,6 @@ public class TextMap
 {
     public Dictionary<string, string> Text { get; set; }
     public Dictionary<string, string> Enum { get; set; }
-}
-
-// 浏览器 WASM 构建会裁剪反射元数据，导致基于反射的 System.Text.Json 序列化抛
-// JsonSerializerIsReflectionDisabled。改用源生成的 JsonSerializerContext，
-// 在编译期生成 (反)序列化代码，不依赖运行时反射。
-[JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Default)]
-[JsonSerializable(typeof(TextMap))]
-internal sealed partial class TextMapJsonContext : JsonSerializerContext
-{
 }
 
 
@@ -4145,15 +4136,6 @@ public static class GameLanguage
         }
     }
 
-    private static JsonSerializerOptions CustomJsonSerializerOptions = new JsonSerializerOptions
-    {
-        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-        WriteIndented = true,
-        // 通过源生成的 JsonSerializerContext 提供 (反)序列化元数据，
-        // 避免 WASM 裁剪后基于反射的 JsonSerializer 抛 JsonSerializerIsReflectionDisabled。
-        TypeInfoResolver = TextMapJsonContext.Default
-    };
-
     // 把 src 中已有的 key 合并进 dst（已存在的 key 才覆盖，不会新增 key）
     private static void MergeInto(TextMap dst, TextMap src)
     {
@@ -4184,7 +4166,7 @@ public static class GameLanguage
             if (data == null || data.Length == 0) return;
             string json = Encoding.UTF8.GetString(data);
             if (string.IsNullOrWhiteSpace(json)) return;
-            TextMap? language = JsonSerializer.Deserialize<TextMap>(json, TextMapJsonContext.Default.TextMap);
+            TextMap? language = JsonTool.FromJson(json, AppJsonContext.Default.TextMap);
             if (language == null) return;
             MergeInto(baseMap, language);
         }
@@ -4193,44 +4175,11 @@ public static class GameLanguage
             // 服务器不可达或词库缺失：保留代码内置默认
         }
     }
-
-    public static async Task LoadClientLanguageAsync(string languageJsonPath)
-    {
-        // 1) 优先应用远程默认词库（部署服务器下发；失败回退代码内置默认）
-        await TryApplyRemoteLanguageAsync(ClientTextMap, RemoteWebSetting.LanguageBaseRootDir + languageJsonPath).ConfigureAwait(false);
-
-        string key = "lang:client:" + languageJsonPath;
-        // 2) 本地覆盖层（浏览器端定制，优先级高于远程）
-        if (await LocalStorage.HasKeyAsync(key).ConfigureAwait(false))
-        {
-            try
-            {
-                string json = await LocalStorage.GetStringAsync(key).ConfigureAwait(false);
-                if (!string.IsNullOrEmpty(json))
-                {
-                    var language = JsonSerializer.Deserialize<TextMap>(json, TextMapJsonContext.Default.TextMap);
-                    if (language != null) MergeInto(ClientTextMap, language);
-                }
-            }
-            catch (Exception)
-            {
-                //throw;
-            }
-        }
-        else
-        {
-            // 首次：把「内置+远程」结果缓存到本地，便于离线
-            await SaveClientLanguageAsync(languageJsonPath).ConfigureAwait(false);
-        }
-    }
-
-
+    
     public static async Task SaveClientLanguageAsync(string languageJsonPath)
     {
         string key = "lang:client:" + languageJsonPath;
-#pragma warning disable IL2026 // TypeInfoResolver 已提供源生成元数据，此处不会走反射
-        string json = JsonSerializer.Serialize(ClientTextMap, CustomJsonSerializerOptions);
-#pragma warning restore IL2026
+        string json = JsonTool.ToJson(ClientTextMap, AppJsonContext.Default.TextMap);
         await LocalStorage.SetStringAsync(key, json).ConfigureAwait(false);
     }
 
@@ -4249,7 +4198,7 @@ public static class GameLanguage
                 string json = await LocalStorage.GetStringAsync(key).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(json))
                 {
-                    var language = JsonSerializer.Deserialize<TextMap>(json, TextMapJsonContext.Default.TextMap);
+                    var language = JsonTool.FromJson<TextMap>(json, AppJsonContext.Default.TextMap); 
                     if (language != null) MergeInto(ServerTextMap, language);
                 }
             }
@@ -4261,7 +4210,7 @@ public static class GameLanguage
         else
         {
             // 首次：把「内置+远程」结果缓存到本地，便于离线
-            await SaveServerLanguageAsync(languageJsonPath).ConfigureAwait(false);
+            _ = SaveServerLanguageAsync(languageJsonPath).ConfigureAwait(false);
         }
     }
 
@@ -4269,9 +4218,7 @@ public static class GameLanguage
     public static async Task SaveServerLanguageAsync(string languageIniPath)
     {
         string key = "lang:server:" + languageIniPath;
-#pragma warning disable IL2026 // TypeInfoResolver 已提供源生成元数据，此处不会走反射
-        string json = JsonSerializer.Serialize(ServerTextMap, CustomJsonSerializerOptions);
-#pragma warning restore IL2026
+        string json = JsonTool.ToJson(ServerTextMap, AppJsonContext.Default.TextMap);
         await LocalStorage.SetStringAsync(key, json).ConfigureAwait(false);
     }
 

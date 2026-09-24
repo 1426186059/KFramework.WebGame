@@ -84,6 +84,7 @@ namespace WebGame.Mir2.MonoGame.Client
             BrowserResource.Configure(RemoteWebSetting.LibBaseUrl);
 
             await Settings.Load();
+            await RemoteWebSetting.Load();
             await CMain.InputKeys.LoadAsync().ConfigureAwait(false);
             DXManager.Create();
 

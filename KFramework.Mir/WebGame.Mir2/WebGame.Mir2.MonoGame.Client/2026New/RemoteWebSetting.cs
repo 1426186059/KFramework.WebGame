@@ -22,7 +22,7 @@ public static class RemoteWebSetting
     // 启动时会尝试从此处下载默认词库覆盖代码内置默认；下载失败则保留代码内置默认。
     public const string LanguageBaseRootDir = "Localization/";
 
-    public static async void Init()
+    public static async Task Load()
     {
         await GameLanguage.LoadServerLanguageAsync(Settings.Language);
     }
