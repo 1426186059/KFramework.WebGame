@@ -190,7 +190,7 @@ namespace Client
             DisplayBodyName = false,
             NewMove = true;
 
-        public static string Language = "Chinese";
+        public const string Language = "Chinese";
 
         public static int[,] SkillbarLocation = new int[2, 2] { { 0, 0 }, { 216, 0 } };
 
@@ -292,7 +292,7 @@ namespace Client
             DuraView = Reader.ReadBoolean("Game", "DuraWindow", DuraView);
             DisplayBodyName = Reader.ReadBoolean("Game", "DisplayBodyName", DisplayBodyName);
             NewMove = Reader.ReadBoolean("Game", "NewMove", NewMove);
-            Language = Reader.ReadString("Game", "Language", Language);
+            //Language = Reader.ReadString("Game", "Language", Language); //我们只使用中文啊
 
             for (int i = 0; i < SkillbarLocation.Length / 2; i++)
             {
@@ -391,7 +391,7 @@ namespace Client
             Reader.Write("Game", "DuraWindow", DuraView);
             Reader.Write("Game", "DisplayBodyName", DisplayBodyName);
             Reader.Write("Game", "NewMove", NewMove);
-            Reader.Write("Game", "Language", Language);
+            //Reader.Write("Game", "Language", Language);
 
             for (int i = 0; i < SkillbarLocation.Length / 2; i++)
             {
