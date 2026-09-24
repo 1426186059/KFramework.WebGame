@@ -1,5 +1,6 @@
 // ReSharper disable InconsistentNaming
 
+using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -4153,46 +4154,73 @@ public static class GameLanguage
         TypeInfoResolver = TextMapJsonContext.Default
     };
 
-    public static async Task LoadClientLanguageAsync(string languageJsonPath)
+    // 把 src 中已有的 key 合并进 dst（已存在的 key 才覆盖，不会新增 key）
+    private static void MergeInto(TextMap dst, TextMap src)
     {
-        string key = "lang:client:" + languageJsonPath;
-        if (!await LocalStorage.HasKeyAsync(key).ConfigureAwait(false))
+        foreach (var item in dst.Text)
         {
-            await SaveClientLanguageAsync(languageJsonPath).ConfigureAwait(false);
-            return;
+            if (src.Text.TryGetValue(item.Key, out var value))
+            {
+                dst.Text[item.Key] = value;
+            }
         }
 
+        foreach (var item in dst.Enum)
+        {
+            if (src.Enum.TryGetValue(item.Key, out var value))
+            {
+                dst.Enum[item.Key] = value;
+            }
+        }
+    }
+
+    // 尝试从部署服务器下载语言包并合并进 baseMap；失败（不可达/缺失/解析错）则保留既有值（内置默认或本地覆盖）。
+    private static async Task TryApplyRemoteLanguageAsync(TextMap baseMap, string relativeUrl)
+    {
+        if (string.IsNullOrEmpty(relativeUrl)) return;
         try
         {
-            string json = await LocalStorage.GetStringAsync(key).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(json)) return;
-            var language = JsonSerializer.Deserialize<TextMap>(json, TextMapJsonContext.Default.TextMap);
+            byte[]? data = await BrowserResource.GetBytesAsync(relativeUrl).ConfigureAwait(false);
+            if (data == null || data.Length == 0) return;
+            string json = Encoding.UTF8.GetString(data);
+            if (string.IsNullOrWhiteSpace(json)) return;
+            TextMap? language = JsonSerializer.Deserialize<TextMap>(json, TextMapJsonContext.Default.TextMap);
             if (language == null) return;
-
-            foreach (var item in ClientTextMap.Text)
-            {
-                if (language.Text.TryGetValue(item.Key, out var value))
-                {
-                    ClientTextMap.Text[item.Key] = value;
-                }
-            }
-
-            foreach (var item in ClientTextMap.Enum)
-            {
-                if (language.Enum.TryGetValue(item.Key, out var value))
-                {
-                    ClientTextMap.Enum[item.Key] = value;
-                }
-            }
-
-            if (language.Text.Count + language.Enum.Count != ClientTextMap.Text.Count + ClientTextMap.Enum.Count)
-            {
-                await SaveClientLanguageAsync(languageJsonPath).ConfigureAwait(false);
-            }
+            MergeInto(baseMap, language);
         }
         catch (Exception)
         {
-            //throw;
+            // 服务器不可达或词库缺失：保留代码内置默认
+        }
+    }
+
+    public static async Task LoadClientLanguageAsync(string languageJsonPath)
+    {
+        // 1) 优先应用远程默认词库（部署服务器下发；失败回退代码内置默认）
+        await TryApplyRemoteLanguageAsync(ClientTextMap, RemoteWebSetting.LanguageBaseRootDir + languageJsonPath).ConfigureAwait(false);
+
+        string key = "lang:client:" + languageJsonPath;
+        // 2) 本地覆盖层（浏览器端定制，优先级高于远程）
+        if (await LocalStorage.HasKeyAsync(key).ConfigureAwait(false))
+        {
+            try
+            {
+                string json = await LocalStorage.GetStringAsync(key).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(json))
+                {
+                    var language = JsonSerializer.Deserialize<TextMap>(json, TextMapJsonContext.Default.TextMap);
+                    if (language != null) MergeInto(ClientTextMap, language);
+                }
+            }
+            catch (Exception)
+            {
+                //throw;
+            }
+        }
+        else
+        {
+            // 首次：把「内置+远程」结果缓存到本地，便于离线
+            await SaveClientLanguageAsync(languageJsonPath).ConfigureAwait(false);
         }
     }
 
@@ -4209,44 +4237,31 @@ public static class GameLanguage
 
     public static async Task LoadServerLanguageAsync(string languageJsonPath)
     {
+        // 1) 优先应用远程默认词库（部署服务器下发；失败回退代码内置默认）
+        await TryApplyRemoteLanguageAsync(ServerTextMap, RemoteWebSetting.LanguageBaseRootDir + languageJsonPath).ConfigureAwait(false);
+
         string key = "lang:server:" + languageJsonPath;
-        if (!await LocalStorage.HasKeyAsync(key).ConfigureAwait(false))
+        // 2) 本地覆盖层（浏览器端定制，优先级高于远程）
+        if (await LocalStorage.HasKeyAsync(key).ConfigureAwait(false))
         {
+            try
+            {
+                string json = await LocalStorage.GetStringAsync(key).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(json))
+                {
+                    var language = JsonSerializer.Deserialize<TextMap>(json, TextMapJsonContext.Default.TextMap);
+                    if (language != null) MergeInto(ServerTextMap, language);
+                }
+            }
+            catch (Exception)
+            {
+                //throw;
+            }
+        }
+        else
+        {
+            // 首次：把「内置+远程」结果缓存到本地，便于离线
             await SaveServerLanguageAsync(languageJsonPath).ConfigureAwait(false);
-            return;
-        }
-
-        try
-        {
-            string json = await LocalStorage.GetStringAsync(key).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(json)) return;
-            var language = JsonSerializer.Deserialize<TextMap>(json, TextMapJsonContext.Default.TextMap);
-            if (language == null) return;
-
-            foreach (var item in ServerTextMap.Text)
-            {
-                if (language.Text.TryGetValue(item.Key, out var value))
-                {
-                    ServerTextMap.Text[item.Key] = value;
-                }
-            }
-
-            foreach (var item in ServerTextMap.Enum)
-            {
-                if (language.Enum.TryGetValue(item.Key, out var value))
-                {
-                    ServerTextMap.Enum[item.Key] = value;
-                }
-            }
-
-            if (language.Text.Count + language.Enum.Count != ServerTextMap.Text.Count + ServerTextMap.Enum.Count)
-            {
-                await SaveServerLanguageAsync(languageJsonPath).ConfigureAwait(false);
-            }
-        }
-        catch (Exception)
-        {
-            //throw;
         }
     }
 

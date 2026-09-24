@@ -41,7 +41,11 @@ namespace Client.MirNetwork
 
             try
             {
-                string url = $"ws://{Settings.IPAddress}:{Settings.Port}";
+                // Web 下游戏服务器地址由部署配置决定（RemoteWebSetting.GameServerUrl）；
+                // 仅当本地设置里手动指定了服务器（UseConfig）时，才以本地覆盖为准（本地调试用）。
+                string url = (Settings.UseConfig && !string.IsNullOrWhiteSpace(Settings.IPAddress))
+                    ? $"ws://{Settings.IPAddress}:{Settings.Port}"
+                    : RemoteWebSetting.GameServerUrl;
                 _ws = new Net_WebSocket_Client();
                 _ws.Opened += () => { Connected = true; TimeConnected = CMain.Time; };
                 _ws.Closed += code => { Connected = false; };

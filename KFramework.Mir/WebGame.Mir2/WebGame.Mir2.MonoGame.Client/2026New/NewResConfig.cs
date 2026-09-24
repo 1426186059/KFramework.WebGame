@@ -8,7 +8,7 @@ using KFramework.MonoGame;
 /// </summary>
 public static class NewResConfig
 {
-    public static string libBaseUrl = "http://127.0.0.1:5081";
+    public static string libBaseUrl = RemoteWebSetting.New_LibBaseUrl;
     public const string MapRoot = "Map/";
     public static bool Enabled = true;
     public static bool RemoteLibEnabled { get; internal set; }

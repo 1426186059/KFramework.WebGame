@@ -80,10 +80,8 @@ namespace WebGame.Mir2.MonoGame.Client
             if (_bootstrapped) return;
             _bootstrapped = true;
 
-            // 两个 HTTP 资源服务器（见 Tools\资源服务器\start-assets.bat）：
-            //   :5080 -> 默认资源 lib（Crystal 客户端资源目录，原始 .Lib），走自建 Web 服务器（松加载）
-            //   :5081 -> Mir2Res 作为 http 根（地图蒸馏 /Map/、kfc 打包 /hot_update_res/ 均在其下）
-            BrowserResource.Configure("http://127.0.0.1:5080/", "http://127.0.0.1:5081/hot_update_res/");
+            // 两个 HTTP 资源服务器地址统一从 RemoteWebSetting 取（Web 部署相关配置集中地，无本地概念，写死在该类）
+            BrowserResource.Configure(RemoteWebSetting.LibBaseUrl);
 
             await Settings.Load();
             await CMain.InputKeys.LoadAsync().ConfigureAwait(false);
