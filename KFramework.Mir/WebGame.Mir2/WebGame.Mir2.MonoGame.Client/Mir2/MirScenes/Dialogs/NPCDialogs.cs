@@ -330,7 +330,7 @@ namespace Client.MirScenes.Dialogs
                         if (actionSplit.Length > 1)
                             colourString = actionSplit[1];
 
-                        Color color = Color.FromName(colourString);
+                        Color color = ColorTranslator.FromHtml(colourString);
 
                         BigButton button = new BigButton
                         {
@@ -554,7 +554,7 @@ namespace Client.MirScenes.Dialogs
                
         private void NewColour(string text, string colour, Point p)
         {
-            Color textColour = Color.FromName(colour);
+            Color textColour = ColorTranslator.FromHtml(colour);
 
             MirLabel temp = new MirLabel
             {

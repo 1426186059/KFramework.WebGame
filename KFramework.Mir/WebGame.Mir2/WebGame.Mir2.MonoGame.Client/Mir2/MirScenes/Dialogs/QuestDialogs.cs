@@ -1322,7 +1322,7 @@ namespace Client.MirScenes.Dialogs
 
         private void NewColour(string text, string colour, Point p)
         {
-            Color textColour = Color.FromName(colour);
+            Color textColour = ColorTranslator.FromHtml(colour);
 
             MirLabel temp = new MirLabel
             {
