@@ -76,11 +76,14 @@ namespace MirEngine
         public static Color FromHtml(string htmlColor)
         {
             if (string.IsNullOrEmpty(htmlColor)) return Color.Empty;
-            string h = htmlColor.TrimStart('#');
+            string name = htmlColor.Trim();
+            string h = name;
+            if (h.StartsWith("#")) h = h.Substring(1);
+            if (h.StartsWith("0x", System.StringComparison.OrdinalIgnoreCase)) h = h.Substring(2);
             if (h.Length == 3) h = $"{h[0]}{h[0]}{h[1]}{h[1]}{h[2]}{h[2]}";
             if (h.Length == 6 && int.TryParse(h, System.Globalization.NumberStyles.HexNumber, null, out int v))
                 return Color.FromArgb(255, (v >> 16) & 0xFF, (v >> 8) & 0xFF, v & 0xFF);
-            return Color.FromName(htmlColor);
+            return Color.FromName(name);
         }
 
         public static string ToHtml(Color c) => $"#{c.R:X2}{c.G:X2}{c.B:X2}";
