@@ -24,6 +24,6 @@ public static class RemoteWebSetting
 
     public static async Task Load()
     {
-        await GameLanguage.LoadServerLanguageAsync(Settings.Language);
+        await GameLanguage.LoadServerLanguageAsync(Settings.Language + ".json");
     }
 }
