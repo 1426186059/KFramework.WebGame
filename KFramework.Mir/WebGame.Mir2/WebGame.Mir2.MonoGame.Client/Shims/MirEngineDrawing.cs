@@ -1,56 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using KFramework.MonoGame;
 
 namespace MirEngine
 {
-    // 原 Web_Mir2.Engine/MirEngine/Shims/Font.cs + Pen.cs + Text.cs + ColorTranslator.cs + Gdi.cs（纯托管 shim）
-
-    public enum FontStyle
-    {
-        Regular = 0,
-        Bold = 1,
-        Italic = 2,
-        Underline = 4,
-        Strikeout = 8
-    }
-
     public enum GraphicsUnit
     {
         World, Display, Pixel, Point, Inch, Document, Millimeter
-    }
-
-    public class Font : IDisposable
-    {
-        public string Name;
-        public float Size;
-        public FontStyle Style;
-        public GraphicsUnit Unit;
-
-        public int Height => (int)Math.Ceiling(Size * 4f / 3f);
-        public bool Bold => (Style & FontStyle.Bold) != 0;
-        public bool Italic => (Style & FontStyle.Italic) != 0;
-        public bool Underline => (Style & FontStyle.Underline) != 0;
-        public bool Strikeout => (Style & FontStyle.Strikeout) != 0;
-
-        public Font(string name, float size, FontStyle style = FontStyle.Regular) { Name = name; Size = size; Style = style; Unit = GraphicsUnit.Point; }
-        public Font(string name, float size, GraphicsUnit unit) { Name = name; Size = size; Unit = unit; }
-        public Font(float size) { Name = "Arial"; Size = size; Unit = GraphicsUnit.Point; }
-        public Font(float size, FontStyle style) { Name = "Arial"; Size = size; Style = style; Unit = GraphicsUnit.Point; }
-
-        public static Font FromFont(Font f) => new Font(f.Name, f.Size, f.Style);
-
-        public void Dispose() { }
-
-        public string ToCss()
-        {
-            string s = string.Empty;
-            if ((Style & FontStyle.Bold) != 0) s += "bold ";
-            if ((Style & FontStyle.Italic) != 0) s += "italic ";
-            if ((Style & FontStyle.Underline) != 0) s += "underline ";
-            if ((Style & FontStyle.Strikeout) != 0) s += "line-through ";
-            float px = Unit == GraphicsUnit.Point ? Size * 4f / 3f : Size;
-            return $"{s}{px}px {Name}";
-        }
     }
 
     public class Pen : IDisposable

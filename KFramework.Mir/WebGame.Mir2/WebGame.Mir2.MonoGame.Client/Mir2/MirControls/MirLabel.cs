@@ -121,7 +121,7 @@ namespace Client.MirControls
                 Size = Size.Empty;
             else
             {
-                Size = BrowserCanvas.MeasureText(Text, BrowserCanvas.FontToCss(Font), int.MaxValue);
+                Size = TextRenderer.MeasureText(Text, Font, int.MaxValue);
                 //Size = new Size(Size.Width, Size.Height + 5);
 
                 if (OutLine && Size != Size.Empty)
@@ -189,7 +189,7 @@ namespace Client.MirControls
             int fore = ForeColour.ToArgb();
             int outline = OutLine ? OutLineColour.ToArgb() : 0;
             int back = BackColour.ToArgb();
-            BrowserCanvas.DrawLabel(ControlTexture, Size.Width, Size.Height, Text, BrowserCanvas.FontToCss(Font), fore, outline, DrawFormat, back, 0, 0, false);
+            TextRenderer.DrawLabel(ControlTexture, Size.Width, Size.Height, Text, TextRenderer.FontToCss(Font), fore, outline, DrawFormat, back, 0, 0, false);
 
             TextureValid = true;
         }

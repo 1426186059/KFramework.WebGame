@@ -375,7 +375,7 @@ namespace Client.MirControls
             // 直接交给 DOM 覆盖层作为字体（place() 仅对其中的 px 按 dpr 缩放），从而保证 DOM 输入框的
             // 字形(字重/族/字号)与画布 SpriteFont 渲染的失焦文字完全一致，切换不跳变。
             double fontPx = 10d;
-            string fontCss = BrowserCanvas.FontToCss(TextBox.Font);
+            string fontCss = TextRenderer.FontToCss(TextBox.Font);
             int pxIdx = fontCss.IndexOf("px");
             if (pxIdx > 0) {
                 int s = pxIdx;
@@ -462,7 +462,7 @@ namespace Client.MirControls
                 TextureSize = Size;
             }
 
-            string css = TextBox.Font == null ? "10px sans-serif" : BrowserCanvas.FontToCss(TextBox.Font);
+            string css = TextBox.Font == null ? "10px sans-serif" : TextRenderer.FontToCss(TextBox.Font);
             int fore = (TextBox.ForeColor != Color.Empty ? TextBox.ForeColor : Color.White).ToArgb();
             // 文本框纹理作为面板上的透明叠层：无背景色时清成透明（alpha 0），避免盖住面板里的输入框底。
             int back = (TextBox.BackColor != Color.Empty && TextBox.BackColor.A > 0) ? TextBox.BackColor.ToArgb() : 0;
@@ -473,10 +473,10 @@ namespace Client.MirControls
             bool domShowsText = _nativeActive && !TransparentDomInput;
             string drawText = TextBox.Text ?? "";
             if (domShowsText)
-                BrowserCanvas.DrawTextBox(ControlTexture, Size.Width, Size.Height, "",
+                TextRenderer.DrawTextBox(ControlTexture, Size.Width, Size.Height, "",
                     css, fore, back, selBack, fore, 0, 0, 0, false, !TextBox.Multiline);
             else
-                BrowserCanvas.DrawTextBox(ControlTexture, Size.Width, Size.Height, drawText,
+                TextRenderer.DrawTextBox(ControlTexture, Size.Width, Size.Height, drawText,
                     css, fore, back, selBack, fore, TextBox.SelectionStart, TextBox.SelectionLength, TextBox.SelectionStart, TextBox.Focused && _caretVisible, !TextBox.Multiline);
 
             TextureValid = true;

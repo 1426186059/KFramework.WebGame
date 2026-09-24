@@ -355,7 +355,7 @@ namespace Client.MirObjects
 
             int index = 0;
             for (int i = 1; i < text.Length; i++)
-                if (BrowserCanvas.MeasureText(text.Substring(index, i - index), BrowserCanvas.FontToCss(ChatFont), int.MaxValue).Width > chatWidth)
+                if (TextRenderer.MeasureText(text.Substring(index, i - index), ChatFont, int.MaxValue).Width > chatWidth)
                 {
                     chat.Add(text.Substring(index, i - index - 1));
                     index = i - 1;

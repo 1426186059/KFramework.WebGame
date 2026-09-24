@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MirEngine
 {
-    // 原 Web_Mir2.Engine/MirEngine/Shims/Forms/* 中需要的部分（TextBox 原样；TextRenderer 已移除，文本度量统一改用 BrowserCanvas.MeasureText）
+    // 原 Web_Mir2.Engine/MirEngine/Shims/Forms/* 中需要的部分（TextBox 原样；TextRenderer 已移除，文本度量统一改用 TextRenderer.MeasureText）
 
     [Flags]
     public enum TextFormatFlags

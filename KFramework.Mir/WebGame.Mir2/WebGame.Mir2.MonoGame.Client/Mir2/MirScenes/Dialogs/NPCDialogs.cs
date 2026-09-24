@@ -489,7 +489,7 @@ namespace Client.MirScenes.Dialogs
                         // 直接量“链接前文本”的真实宽度（与 DrawLabel 同一 SpriteFont.MeasureString）作为
                         // 叠层起点，去掉原先 -10 的近似补偿，避免中文名越长越往左偏。
                         string prefixText = currentLine.Substring(0, capture.Index - 1 - offSet);
-                        int prefixWidth = (int)Math.Round(BrowserCanvas.MeasureStringWidth(prefixText, BrowserCanvas.FontToCss(TextLabel[i].Font)));
+                        int prefixWidth = (int)Math.Round(TextRenderer.MeasureStringWidth(prefixText, TextLabel[i].Font));
 
                         if (R.Match(match.Value).Success)
                             NewButton(txt, action, TextLabel[i].Location.Add(new Point(prefixWidth, 0)));
@@ -976,17 +976,16 @@ namespace Client.MirScenes.Dialogs
             if (label == null || string.IsNullOrEmpty(text))
                 return Point.Empty;
 
-            // 与 BrowserCanvas.DrawLabel 使用同一 SpriteFont.MeasureString 量“链接前整串前缀”的宽度，
+            // 与 TextRenderer.DrawLabel 使用同一 SpriteFont 量“链接前整串前缀”的宽度，
             // 而非逐字符累加（MeasureCharWidth 会漏算字间距 Spacing / kerning，中文越长越往左偏）。
             // canvas 渲染只按显式 \n 换行，不做自动换行：x 取最后一个 \n 之后的前缀宽度，y 按 \n 数累计。
-            string css = BrowserCanvas.FontToCss(label.Font);
-            float lineH = BrowserCanvas.LineHeight(css);
+            float lineH = label.Font.LineHeight;
 
             int lastNl = text.LastIndexOf('\n');
             string linePrefix = lastNl >= 0 ? text.Substring(lastNl + 1) : text;
             linePrefix = linePrefix.Replace("\r", "");
 
-            float x = BrowserCanvas.MeasureStringWidth(linePrefix, css);
+            float x = TextRenderer.MeasureStringWidth(linePrefix, label.Font);
 
             int nl = 0;
             foreach (char c in text) if (c == '\n') nl++;

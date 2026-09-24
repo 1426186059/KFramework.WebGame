@@ -102,7 +102,7 @@ namespace Client.MirGraphics
 
         public static void Create()
         {
-            // 旧 BrowserCanvas 的 SetBlendProfile("crystal") 已不再需要：混合语义由下方 Draw 按 Blending 标志选择。
+            // 旧 TextRenderer 的 SetBlendProfile("crystal") 已不再需要：混合语义由下方 Draw 按 Blending 标志选择。
         }
 
         static KFramework.MonoGame.Color ToColor(SlimDX.Color4 c) =>

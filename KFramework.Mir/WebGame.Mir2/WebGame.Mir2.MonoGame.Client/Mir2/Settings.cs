@@ -101,7 +101,7 @@ namespace Client
 
         //Graphics
         public static bool FullScreen = true, Borderless = true, TopMost = true, MouseClip = false;
-        public static string FontName = "Arial"; //"MS Sans Serif"
+        public const string FontName = "Arial"; //"MS Sans Serif"
         public static float FontSize = 8F;
         public static bool UseMouseCursors = true;
 
@@ -282,7 +282,6 @@ namespace Client
             NameView = Reader.ReadBoolean("Game", "NameView", NameView);
             HPView = Reader.ReadBoolean("Game", "HPMPView", HPView);
             ModeView = Reader.ReadBoolean("Game", "ModeView", ModeView);
-            FontName = Reader.ReadString("Game", "FontName", FontName);
             TransparentChat = Reader.ReadBoolean("Game", "TransparentChat", TransparentChat);
             DisplayDamage = Reader.ReadBoolean("Game", "DisplayDamage", DisplayDamage);
             TargetDead = Reader.ReadBoolean("Game", "TargetDead", TargetDead);
@@ -381,7 +380,6 @@ namespace Client
             Reader.Write("Game", "NameView", NameView);
             Reader.Write("Game", "HPMPView", HPView);
             Reader.Write("Game", "ModeView", ModeView);
-            Reader.Write("Game", "FontName", FontName);
             Reader.Write("Game", "TransparentChat", TransparentChat);
             Reader.Write("Game", "DisplayDamage", DisplayDamage);
             Reader.Write("Game", "TargetDead", TargetDead);

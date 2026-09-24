@@ -77,7 +77,7 @@ namespace Client.MirControls
                     string[] values = capture.Value.Split('/');
                     currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, values[0]);
                     string text = currentLine.Substring(0, capture.Index - 1 - offSet) + " ";
-                    Size size = BrowserCanvas.MeasureText(text, BrowserCanvas.FontToCss(_textLabel[i - Index].Font), _textLabel[i - Index].Size.Width);
+                    Size size = TextRenderer.MeasureText(text, _textLabel[i - Index].Font, _textLabel[i - Index].Size.Width);
 
                     //if (R.Match(match.Value).Success)
                     //    NewButton(values[0], values[1], TextLabel[i].Location.Add(new Point(size.Width - 10, 0)));
