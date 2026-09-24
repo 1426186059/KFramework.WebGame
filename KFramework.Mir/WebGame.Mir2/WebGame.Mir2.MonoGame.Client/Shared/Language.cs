@@ -4155,71 +4155,17 @@ public static class GameLanguage
             }
         }
     }
-
-    // 尝试从部署服务器下载语言包并合并进 baseMap；失败（不可达/缺失/解析错）则保留既有值（内置默认或本地覆盖）。
-    private static async Task TryApplyRemoteLanguageAsync(TextMap baseMap, string relativeUrl)
-    {
-        if (string.IsNullOrEmpty(relativeUrl)) return;
-        try
-        {
-            byte[]? data = await BrowserResource.GetBytesAsync(relativeUrl).ConfigureAwait(false);
-            if (data == null || data.Length == 0) return;
-            string json = Encoding.UTF8.GetString(data);
-            if (string.IsNullOrWhiteSpace(json)) return;
-            TextMap? language = JsonTool.FromJson(json, AppJsonContext.Default.TextMap);
-            if (language == null) return;
-            MergeInto(baseMap, language);
-        }
-        catch (Exception)
-        {
-            // 服务器不可达或词库缺失：保留代码内置默认
-        }
-    }
     
-    public static async Task SaveClientLanguageAsync(string languageJsonPath)
-    {
-        string key = "lang:client:" + languageJsonPath;
-        string json = JsonTool.ToJson(ClientTextMap, AppJsonContext.Default.TextMap);
-        await LocalStorage.SetStringAsync(key, json).ConfigureAwait(false);
-    }
-
-
     public static async Task LoadServerLanguageAsync(string languageJsonPath)
     {
-        // 1) 优先应用远程默认词库（部署服务器下发；失败回退代码内置默认）
-        await TryApplyRemoteLanguageAsync(ServerTextMap, RemoteWebSetting.LanguageBaseRootDir + languageJsonPath).ConfigureAwait(false);
-
-        string key = "lang:server:" + languageJsonPath;
-        // 2) 本地覆盖层（浏览器端定制，优先级高于远程）
-        if (await LocalStorage.HasKeyAsync(key).ConfigureAwait(false))
+        // BrowserResource 资源管线默认会保存在本地的
+        byte[] data = await BrowserResource.GetBytesAsync(RemoteWebSetting.LanguageBaseRootDir + languageJsonPath).ConfigureAwait(false);
+        string json = Encoding.UTF8.GetString(data);
+        var language = JsonTool.FromJson<TextMap>(json, AppJsonContext.Default.TextMap);
+        if (language != null)
         {
-            try
-            {
-                string json = await LocalStorage.GetStringAsync(key).ConfigureAwait(false);
-                if (!string.IsNullOrEmpty(json))
-                {
-                    var language = JsonTool.FromJson<TextMap>(json, AppJsonContext.Default.TextMap); 
-                    if (language != null) MergeInto(ServerTextMap, language);
-                }
-            }
-            catch (Exception)
-            {
-                //throw;
-            }
+            MergeInto(ServerTextMap, language);
         }
-        else
-        {
-            // 首次：把「内置+远程」结果缓存到本地，便于离线
-            _ = SaveServerLanguageAsync(languageJsonPath).ConfigureAwait(false);
-        }
-    }
-
-
-    public static async Task SaveServerLanguageAsync(string languageIniPath)
-    {
-        string key = "lang:server:" + languageIniPath;
-        string json = JsonTool.ToJson(ServerTextMap, AppJsonContext.Default.TextMap);
-        await LocalStorage.SetStringAsync(key, json).ConfigureAwait(false);
     }
 
     public static string GetLocalization(this TextMap map, ClientTextKeys key)
