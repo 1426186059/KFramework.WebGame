@@ -2003,7 +2003,7 @@ namespace Client.MirScenes.Dialogs
                     {
                         AutoSize = true,
                         Parent = GameScene.Scene.MiniMapDialog,
-                        Font = new Font(Settings.FontName, 9f, FontStyle.Bold),
+                        Font = new Font(Settings.FontName, 9f, KFramework.MonoGame.FontStyle.Bold),
                         DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
                         Text = text,
                         ForeColour = color,

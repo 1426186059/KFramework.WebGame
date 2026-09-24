@@ -46,7 +46,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Type),
                 Parent = this,
-                Font = new Font(Settings.FontName, Settings.FontSize - 1, FontStyle.Italic),
+                Font = new Font(Settings.FontName, Settings.FontSize - 1, KFramework.MonoGame.FontStyle.Italic),
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
                 Size = new Size(37, 19),
                 Location = new Point(8, 34)
@@ -56,7 +56,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Sender),
                 Parent = this,
-                Font = new Font(Settings.FontName, Settings.FontSize - 1, FontStyle.Italic),
+                Font = new Font(Settings.FontName, Settings.FontSize - 1, KFramework.MonoGame.FontStyle.Italic),
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
                 Size = new Size(132, 19),
                 Location = new Point(47, 34)
@@ -66,7 +66,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Message),
                 Parent = this,
-                Font = new Font(Settings.FontName, Settings.FontSize - 1, FontStyle.Italic),
+                Font = new Font(Settings.FontName, Settings.FontSize - 1, KFramework.MonoGame.FontStyle.Italic),
                 DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
                 Size = new Size(122, 19),
                 Location = new Point(181, 34)

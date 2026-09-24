@@ -70,7 +70,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = "",
                 Parent = this,
-                Font = new Font(Settings.FontName, 10F, FontStyle.Bold),
+                Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
                 ForeColour = Color.BurlyWood,
                 Location = new Point(30, 6),
                 AutoSize = true
@@ -2280,7 +2280,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 Parent = this,
                 Location = new Point(22, 5),
-                Font = new Font(Settings.FontName, 10F, FontStyle.Bold),
+                Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
                 ForeColour = Color.BurlyWood,
                 Visible = true,
                 NotControl = true
@@ -3515,7 +3515,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(237, 20),
                 DrawFormat = TextFormatFlags.HorizontalCenter,
                 ForeColour = Color.Black,
-                Font = ScaleFont(new Font(Settings.FontName, 12F, FontStyle.Bold))
+                Font = ScaleFont(new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold))
             };
 
             _label = new MirLabel
@@ -3526,7 +3526,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = false,
                 Size = new Size(237, 20),
                 DrawFormat = TextFormatFlags.HorizontalCenter,                
-                Font = ScaleFont(new Font(Settings.FontName, 12F, FontStyle.Bold))
+                Font = ScaleFont(new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold))
             };
         }
 

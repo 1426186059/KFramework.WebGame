@@ -386,7 +386,7 @@ namespace Client.MirScenes.Dialogs
             PageTitleLabel = new MirLabel
             {
                 Text = Title,
-                Font = new Font(Settings.FontName, 10F, FontStyle.Bold),
+                Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
                 DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
                 Parent = this,
                 Size = new Size(242, 30),

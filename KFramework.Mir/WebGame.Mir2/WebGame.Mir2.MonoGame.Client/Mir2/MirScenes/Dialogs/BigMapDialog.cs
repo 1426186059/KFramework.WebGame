@@ -230,7 +230,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = false,
                 Size = new Size(699, 20),
                 Location = new Point(19, 6),
-                Font = new Font(Settings.FontName, 9F, FontStyle.Bold),
+                Font = new Font(Settings.FontName, 9F, KFramework.MonoGame.FontStyle.Bold),
                 DrawFormat = TextFormatFlags.HorizontalCenter
             };
 

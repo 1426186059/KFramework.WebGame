@@ -1228,7 +1228,7 @@ namespace Client.MirScenes.Dialogs
 
                 if (i == 0 || lines[i] == TaskTitle || lines[i] == ProgressTitle || lines[i] == ReturnTitle || lines[i] == TimeLimitTitle)
                 {
-                    font = new Font(Settings.FontName, 10F, FontStyle.Bold);
+                    font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold);
                     title = true;
 
                     if (i == 0)

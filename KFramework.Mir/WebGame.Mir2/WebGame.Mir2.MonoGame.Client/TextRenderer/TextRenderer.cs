@@ -42,7 +42,7 @@ public static class TextRenderer
             if (after < css.Length) family = css.Substring(after).Trim();
         }
         var font = new Font(family, size, GraphicsUnit.Pixel);
-        if (bold) font.Style = FontStyle.Bold;
+        if (bold) font.Style = KFramework.MonoGame.FontStyle.Bold;
         return font;
     }
 

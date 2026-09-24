@@ -62,7 +62,19 @@ public class Font : IDisposable
     public string ToCss()
     {
         string s = string.Empty;
-        if ((Style & FontStyle.Bold) != 0) s += "bold ";
+        if ((Style & FontStyle.Bold) != 0)
+        {
+            s += "bold ";
+        }
+        else if ((Style & FontStyle.Italic) != 0)
+        {
+            s += "italic ";
+        }
+        else
+        {
+            PrintTool.Assert(false, $"不支持的 Style={Style}");
+        }
+
         float px = Unit == GraphicsUnit.Point ? Size * 4f / 3f : Size;
         return $"{s}{px}px {Name}";
     }
