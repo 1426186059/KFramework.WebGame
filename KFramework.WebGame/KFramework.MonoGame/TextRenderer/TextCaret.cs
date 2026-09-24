@@ -1,70 +1,71 @@
-namespace KFramework.MonoGame.TextRenderer
+namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 文本输入光标的两种工作模式。
+    /// 输入光标：<b>完全由引擎自绘</b>（浏览器 DOM &lt;input&gt; 只作 IME / 键盘捕获，见
+    /// <see cref="TextInputHtmlIme"/>，不显示任何文字或光标）。
+    ///
+    /// 闪烁由 <see cref="Draw"/> 内部自行驱动——调用方每帧调 <see cref="Draw"/> 即可看到光标闪烁，
+    /// 无需再单独喂时间或推进状态。若控件需要在"亮/灭翻转"那一刻才重建纹理，
+    /// 可用 <see cref="Tick"/> 判断是否变化。
     /// </summary>
-    public enum TextCaretMode
+    internal sealed class TextCaret
     {
-        /// <summary>
-        /// 浏览器模式：文字与光标都由 DOM &lt;input&gt; 覆盖层显示（原生光标、原生选区、原生 IME 候选窗）。
-        /// 引擎侧不绘制光标，且控件纹理通常只保留背景，避免与 DOM 文字重影。
-        /// </summary>
-        Browser = 0,
-
-        /// <summary>
-        /// 自绘模式：DOM &lt;input&gt; 仅作 IME / 键盘捕获代理（透明），文字与光标由引擎在 canvas 上绘制。
-        /// 引擎侧负责光标闪烁与绘制，不依赖浏览器的光标渲染。
-        /// </summary>
-        Rendered = 1
-    }
-
-    /// <summary>
-    /// 输入光标：负责闪烁节拍与（自绘模式下）光标绘制。
-    /// Browser 模式下 <see cref="ShouldDraw"/> 恒为 false，交给浏览器原生光标。
-    /// </summary>
-    public sealed class TextCaret
-    {
-        /// <summary>光标模式，默认自绘（与浏览器 DOM 覆盖层的 transparent 默认值一致）。</summary>
-        public TextCaretMode Mode { get; set; } = TextCaretMode.Rendered;
-
         /// <summary>闪烁间隔（毫秒）。</summary>
         public long BlinkIntervalMs { get; set; } = 530;
 
         /// <summary>当前是否处于"亮"半周期。</summary>
         public bool Visible { get; private set; }
 
-        /// <summary>是否应由引擎绘制光标（Browser 模式下交给浏览器，恒为 false）。</summary>
-        public bool ShouldDraw => Mode == TextCaretMode.Rendered && Visible;
+        /// <summary>是否应由引擎绘制光标（等于 <see cref="Visible"/>：光标一律由引擎自绘）。</summary>
+        public bool ShouldDraw => Visible;
+
+        /// <summary>默认左边距。</summary>
+        public const float DefaultPadLeft = 3f;
 
         private long _lastToggle = long.MinValue;
         private Texture2D _whitePixel;
 
-        /// <summary>按时间推进闪烁；失焦时立即熄灭并把光标置到起点。</summary>
-        public void Update(long nowMs, bool focused)
+        /// <summary>
+        /// 推进闪烁节拍。返回 true 表示可见性发生了翻转（控件可据此决定是否重建纹理）。
+        /// Draw 内部会自动调用；重复调用安全（同一帧内第二次不会再次翻转）。
+        /// </summary>
+        public bool Tick(bool focused)
         {
             if (!focused)
             {
+                bool wasVisible = Visible;
                 Visible = false;
                 _lastToggle = long.MinValue;
-                return;
+                return wasVisible;
             }
 
+            long now = System.Environment.TickCount64;
             if (_lastToggle == long.MinValue)
             {
-                _lastToggle = nowMs;
+                _lastToggle = now;
                 Visible = true;
-                return;
+                return true;
             }
 
-            if (nowMs - _lastToggle >= BlinkIntervalMs)
+            if (now - _lastToggle >= BlinkIntervalMs)
             {
-                _lastToggle = nowMs;
+                _lastToggle = now;
                 Visible = !Visible;
+                return true;
             }
+
+            return false;
         }
 
-        /// <summary>自绘模式下的光标位置（相对 bounds 左上角）。</summary>
-        public Vector2 GetPosition(GraphicsDevice device, IFont font, string text, int caretIndex, Rectangle bounds, bool multiline, float padLeft)
+        /// <summary>重置闪烁节拍（重新聚焦时让光标立即亮起）。</summary>
+        public void Reset()
+        {
+            _lastToggle = long.MinValue;
+            Visible = false;
+        }
+
+        /// <summary>光标位置（相对 bounds 左上角）。</summary>
+        public Vector2 GetPosition(IFont font, string text, int caretIndex, Rectangle bounds, bool multiline, float padLeft = DefaultPadLeft)
         {
             float lineH = font != null ? font.LineSpacing : 0f;
 
@@ -80,22 +81,28 @@ namespace KFramework.MonoGame.TextRenderer
             return new Vector2(x, y);
         }
 
-        /// <summary>自绘模式下绘制光标竖线。Browser 模式下此调用为空操作。</summary>
-        public void Draw(SpriteBatch batch, GraphicsDevice device, IFont font, string text, int caretIndex, Rectangle bounds, Color color, bool multiline, float padLeft = 3f)
+        /// <summary>
+        /// 每帧调用：内部先推进闪烁节拍，再按 <see cref="ShouldDraw"/> 绘制光标竖线。
+        /// 未聚焦时熄灭且不绘制。
+        /// </summary>
+        public void Draw(SpriteBatch batch, GraphicsDevice device, IFont font, string text, int caretIndex,
+                         Rectangle bounds, Color color, bool multiline, bool focused, float padLeft = DefaultPadLeft)
         {
+            Tick(focused);
+
             if (!ShouldDraw || batch == null || device == null || font == null) return;
 
-            Vector2 pos = GetPosition(device, font, text, caretIndex, bounds, multiline, padLeft);
+            Vector2 pos = GetPosition(font, text, caretIndex, bounds, multiline, padLeft);
             float lineH = font.LineSpacing;
-            // 光标宽度：优先用字形行高推算；IFont 无字号概念时退化为 1px。
             float w = System.Math.Max(1f, lineH * 0.06f);
-            Rectangle rect = new Rectangle(
-                bounds.X + (int)System.Math.Round(pos.X),
-                bounds.Y + (int)System.Math.Round(pos.Y),
-                (int)System.Math.Round(w),
-                (int)System.Math.Round(lineH));
 
-            batch.Draw(WhitePixel(device), rect, color);
+            batch.Draw(WhitePixel(device),
+                new Rectangle(
+                    bounds.X + (int)System.Math.Round(pos.X),
+                    bounds.Y + (int)System.Math.Round(pos.Y),
+                    (int)System.Math.Round(w),
+                    (int)System.Math.Round(lineH)),
+                color);
         }
 
         private Texture2D WhitePixel(GraphicsDevice device)

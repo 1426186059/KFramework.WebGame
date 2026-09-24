@@ -1,6 +1,6 @@
 using System;
 
-namespace KFramework.MonoGame.TextRenderer
+namespace KFramework.MonoGame
 {
     /// <summary>
     /// 文本排版标志。位值与 System.Windows.Forms.TextRenderer 使用的 GDI DT_* / WinForms 标志保持一致，

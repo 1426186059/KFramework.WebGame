@@ -17,7 +17,7 @@ import * as inputKeyboard from './input_keyboard.js';
 import * as inputMouse from './input_mouse.js';
 import * as inputTouch from './input_touch.js';
 import * as net from './net_websocket.js';
-import * as inputOverlay from './input_overlay.js';
+import * as inputOverlay from './input_html_ime.js';
 import * as cursor from './cursor.js';
 import * as localstorage from './storage_local.js';
 function findHost(exports) {
@@ -61,7 +61,7 @@ setModuleImports('input_keyboard', inputKeyboard);
 setModuleImports('input_mouse', inputMouse);
 setModuleImports('input_touch', inputTouch);
 setModuleImports('net_websocket', net);
-setModuleImports('input_overlay', inputOverlay);
+setModuleImports('input_html_ime', inputOverlay);
 setModuleImports('cursor', cursor);
 setModuleImports('localstorage', localstorage);
 const config = getConfig();

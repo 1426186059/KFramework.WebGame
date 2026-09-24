@@ -1,4 +1,4 @@
-namespace KFramework.MonoGame.TextRenderer
+namespace KFramework.MonoGame
 {
     /// <summary>
     /// 尺寸（整数像素）。对齐 System.Drawing.Size，供 TextRenderer 的度量结果使用。

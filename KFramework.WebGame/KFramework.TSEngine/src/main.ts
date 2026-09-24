@@ -18,15 +18,18 @@ import * as inputKeyboard from './input_keyboard.js';
 import * as inputMouse from './input_mouse.js';
 import * as inputTouch from './input_touch.js';
 import * as net from './net_websocket.js';
-import * as inputOverlay from './input_overlay.js';
+import * as inputOverlay from './input_html_ime.js';
 import * as cursor from './cursor.js';
 import * as localstorage from './storage_local.js';
-import type { NetHandlers } from './net_websocket.js';
 
 interface OverlayExport {
     OnValueChanged(v: string): void;
     OnEnter(): void;
+    OnFocus(): void;
     OnBlur(): void;
+    OnImeActivate(): void;
+    OnImeUpdate(text: string): void;
+    OnImeDeactivate(text: string): void;
 }
 
 interface GameHost {
@@ -38,6 +41,16 @@ interface NetExport {
     OnBinaryMessage: (handle: number, data: Uint8Array) => void;
     OnClose: (handle: number, code: number) => void;
     OnError: (handle: number, message: string) => void;
+}
+
+// KFramework.MonoGame 程序集导出的 JSBind_* 绑定集合（网络 / 文本输入覆盖层等）。
+interface MonoGameExports {
+    KFramework?: {
+        MonoGame?: {
+            JSBind_Net_WebSocket?: NetExport;
+            JSBind_InputHtmlIme?: OverlayExport;
+        };
+    };
 }
 
 interface AssemblyExports {
@@ -87,48 +100,49 @@ setModuleImports('input_keyboard', inputKeyboard);
 setModuleImports('input_mouse', inputMouse);
 setModuleImports('input_touch', inputTouch);
 setModuleImports('net_websocket', net);
-setModuleImports('input_overlay', inputOverlay);
+setModuleImports('input_html_ime', inputOverlay);
 setModuleImports('cursor', cursor);
 setModuleImports('localstorage', localstorage);
 
 const config = getConfig();
 
-// 网络层：把浏览器 WebSocket 事件推回对应的 C# 绑定
-try {
-    const kf = (await getAssemblyExports('KFramework.MonoGame')) as AssemblyExports | null;
-    const KF = kf as { KFramework?: { MonoGame?: Record<string, NetExport> } } | null;
-    const wire = (name: string, mod: { setHandlers(h: NetHandlers): void }) => {
-        const ns = KF?.KFramework?.MonoGame?.[name];
-        if (ns) mod.setHandlers({
+// KFramework.MonoGame 程序集承载所有 JSBind_* 绑定。这里统一取一次导出，再分发给各模块；
+// 各模块的 DOM 事件经 setHandlers 注册的 [JSExport] 回调推回 C#。
+const mono = (await getAssemblyExports('KFramework.MonoGame')) as MonoGameExports | null;
+const bind = mono?.KFramework?.MonoGame;
+
+if (!bind) {
+    console.warn('[main] KFramework.MonoGame 导出未就绪');
+} else {
+    // 网络层：浏览器 WebSocket 事件 → C#（JSBind_Net_WebSocket）
+    const ns = bind.JSBind_Net_WebSocket;
+    if (ns) {
+        net.setHandlers({
             onOpen: (h) => ns.OnOpen(h),
             onBinaryMessage: (h, d) => ns.OnBinaryMessage(h, d),
             onClose: (h, c) => ns.OnClose(h, c),
             onError: (h, m) => ns.OnError(h, m),
         });
-    };
-    wire('JSBind_Net_WebSocket', net);
-} catch (e) {
-    console.warn('[main] 网络层导出未就绪:', e);
-}
+    } else {
+        console.warn('[main] 网络层导出未找到: JSBind_Net_WebSocket');
+    }
 
-// 原生文本输入覆盖层：把 DOM <input> 的 input / Enter / blur 事件经 [JSExport] 回调推回
-// KFramework.MonoGame.JSBind_InputOverlay，驱动登录/输入框获得焦点、文本同步与回车确认。
-try {
-    const kf = (await getAssemblyExports('KFramework.MonoGame')) as
-        { KFramework?: { MonoGame?: { JSBind_InputOverlay?: OverlayExport } } } | null;
-    const ov = kf?.KFramework?.MonoGame?.JSBind_InputOverlay;
-    if (ov) {
+    // 原生文本输入覆盖层：DOM <input> 的 input / Enter / blur / IME 事件 → C#（JSBind_InputHtmlIme）
+    const ime = bind.JSBind_InputHtmlIme;
+    if (ime) {
         inputOverlay.setHandlers({
-            onValueChanged: (v: string) => ov.OnValueChanged(v),
-            onEnter: () => ov.OnEnter(),
-            onBlur: () => ov.OnBlur(),
+            onValueChanged: (v) => ime.OnValueChanged(v),
+            onEnter: () => ime.OnEnter(),
+            onFocus: () => ime.OnFocus(),
+            onBlur: () => ime.OnBlur(),
+            onImeActivate: () => ime.OnImeActivate(),
+            onImeUpdate: (t) => ime.OnImeUpdate(t),
+            onImeDeactivate: (t) => ime.OnImeDeactivate(t),
         });
         console.log('[main] 已接入原生文本输入覆盖层');
     } else {
-        console.warn('[main] 文本输入覆盖层导出未找到: JSBind_InputOverlay');
+        console.warn('[main] 文本输入覆盖层导出未找到: JSBind_InputHtmlIme');
     }
-} catch (e) {
-    console.warn('[main] 文本输入覆盖层导出未就绪:', e);
 }
 
 /**

@@ -3,11 +3,11 @@
 global using MirEngine;
 global using System.Runtime.InteropServices.JavaScript; // [JSExport]/[JSImport]
 
-// 文本渲染相关类型已上移到引擎通用底层库 KFramework.MonoGame/TextRenderer，
-// 这里用全局别名把 WinForms 风格的类型名映射到引擎实现，使客户端既有代码无需逐处修改：
-//   Font             -> KFramework.MonoGame.TextRenderer.Font             （对齐 System.Drawing.Font）
-//   TextFormatFlags  -> KFramework.MonoGame.TextRenderer.TextFormatFlags  （位值与原 shim 定义一致）
-//   GraphicsUnit     -> KFramework.MonoGame.TextRenderer.GraphicsUnit
-global using Font = KFramework.MonoGame.TextRenderer.Font;
+// 文本渲染分层：
+//   - 引擎基础库 KFramework.MonoGame/TextRenderer 只使用 IFont：TextRenderer / TextCaret /
+//     TextInputOverlay / TextFormatFlags / Size；
+//   - 本工程 Shims/MirEngineFont.cs 提供 WinForms 兼容的字体描述符 Font / GraphicsUnit / FontFactory
+//     （Font 实现 IFont，故可直接传给基础库）。
+// Font / GraphicsUnit 位于 MirEngine 命名空间，由上面的 global using MirEngine; 直接可见，无需别名；
+// TextFormatFlags 在引擎基础库中，用别名映射，使既有代码无需逐处修改。
 global using TextFormatFlags = KFramework.MonoGame.TextRenderer.TextFormatFlags;
-global using GraphicsUnit = KFramework.MonoGame.TextRenderer.GraphicsUnit;

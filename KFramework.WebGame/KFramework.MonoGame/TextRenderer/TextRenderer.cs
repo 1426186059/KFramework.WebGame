@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-
-namespace KFramework.MonoGame.TextRenderer
+namespace KFramework.MonoGame
 {
     /// <summary>
     /// 通用文本渲染底层库：对齐 System.Windows.Forms.TextRenderer 的 API 形态，
@@ -22,45 +19,11 @@ namespace KFramework.MonoGame.TextRenderer
     /// </summary>
     public static class TextRenderer
     {
-        /// <summary>
-        /// 默认设备。<see cref="Font"/> 作为 IFont 解析字形资源时使用；
-        /// 引擎初始化后应设置（客户端在拿到 GraphicsDevice 后赋值一次）。
-        /// </summary>
-        public static GraphicsDevice DefaultDevice { get; set; }
-
-        // Font（描述符）-> SpriteFont 缓存（按 族名|字号|单位|样式）。设备变化则整体失效重建。
-        private static readonly Dictionary<string, SpriteFont> _fontCache = new Dictionary<string, SpriteFont>();
-        private static GraphicsDevice _cacheDevice;
         // 交由 GraphicsDevice 版 DrawText 复用的批（延迟创建，避免每次分配）。
         private static SpriteBatch _sharedBatch;
         private static GraphicsDevice _sharedBatchDevice;
-
-        /// <summary>把字体描述符解析成真实字形资源（带缓存）。设备为空时回退到 <see cref="DefaultDevice"/>。</summary>
-        public static SpriteFont Resolve(GraphicsDevice device, Font font)
-        {
-            if (font == null) return null;
-            device ??= DefaultDevice;
-            if (device == null) return null;
-
-            if (!ReferenceEquals(_cacheDevice, device))
-            {
-                _fontCache.Clear();
-                _cacheDevice = device;
-            }
-
-            string key = $"{font.Name}|{font.Size}|{(int)font.Unit}|{(int)font.Style}";
-            if (_fontCache.TryGetValue(key, out SpriteFont cached)) return cached;
-
-            string family = font.Name;
-            if (family.IndexOf("sans-serif", StringComparison.OrdinalIgnoreCase) < 0 &&
-                family.IndexOf("serif", StringComparison.OrdinalIgnoreCase) < 0 &&
-                family.IndexOf("monospace", StringComparison.OrdinalIgnoreCase) < 0)
-                family += ", sans-serif";
-
-            SpriteFont sf = new SpriteFont(device, font.GetPixelSize(), family, font.Bold);
-            _fontCache[key] = sf;
-            return sf;
-        }
+        // backColor 铺底用的 1x1 白纹。
+        private static Texture2D _whitePixel;
 
         private static SpriteBatch GetSharedBatch(GraphicsDevice device)
         {
@@ -138,6 +101,49 @@ namespace KFramework.MonoGame.TextRenderer
             {
                 batch.End();
             }
+        }
+
+        // ---- 带 backColor 的重载（对齐原版 WinForms：DrawText(..., foreColor, backColor[, flags])） ----
+
+        public static void DrawText(GraphicsDevice dc, string text, IFont font, Point pt, Color foreColor, Color backColor)
+            => DrawText(dc, text, font, pt, foreColor, backColor, TextFormatFlags.Default);
+
+        public static void DrawText(GraphicsDevice dc, string text, IFont font, Point pt, Color foreColor, Color backColor, TextFormatFlags flags)
+        {
+            // 原版以 pt 为文本外接矩形左上角；铺背景时按实际文本尺寸收紧，避免铺满整个 MaxSize。
+            Size sz = MeasureText(text, font, new Size(int.MaxValue, int.MaxValue), flags);
+            DrawText(dc, text, font, new Rectangle(pt.X, pt.Y, sz.Width, sz.Height), foreColor, backColor, flags);
+        }
+
+        public static void DrawText(GraphicsDevice dc, string text, IFont font, Rectangle bounds, Color foreColor, Color backColor)
+            => DrawText(dc, text, font, bounds, foreColor, backColor, TextFormatFlags.Default);
+
+        public static void DrawText(GraphicsDevice dc, string text, IFont font, Rectangle bounds, Color foreColor, Color backColor, TextFormatFlags flags)
+        {
+            if (dc == null) return;
+            SpriteBatch batch = GetSharedBatch(dc);
+            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp);
+            try
+            {
+                FillBackground(batch, dc, bounds, backColor);
+                DrawText(batch, text, font, bounds, foreColor, flags);
+            }
+            finally
+            {
+                batch.End();
+            }
+        }
+
+        /// <summary>backColor 非透明时先用 1x1 白纹铺底（对齐原版 backColor 语义）。</summary>
+        private static void FillBackground(SpriteBatch batch, GraphicsDevice device, Rectangle bounds, Color backColor)
+        {
+            if (backColor.A == 0) return;
+            if (_whitePixel == null)
+            {
+                _whitePixel = device.CreateTexture(1, 1);
+                _whitePixel.SetData(new byte[] { 255, 255, 255, 255 }, 0, 0, 1, 1);
+            }
+            batch.Draw(_whitePixel, bounds, backColor);
         }
 
         /// <summary>调用方已 Begin/End 批次时使用，避免重复开关。</summary>

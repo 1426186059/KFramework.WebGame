@@ -17,7 +17,7 @@ import * as inputKeyboard from './input_keyboard.js';
 import * as inputMouse from './input_mouse.js';
 import * as inputTouch from './input_touch.js';
 import * as net from './net_websocket.js';
-import * as inputOverlay from './input_overlay.js';
+import * as inputOverlay from './input_html_ime.js';
 import * as cursor from './cursor.js';
 import * as localstorage from './storage_local.js';
 function findHost(exports) {
@@ -61,7 +61,7 @@ setModuleImports('input_keyboard', inputKeyboard);
 setModuleImports('input_mouse', inputMouse);
 setModuleImports('input_touch', inputTouch);
 setModuleImports('net_websocket', net);
-setModuleImports('input_overlay', inputOverlay);
+setModuleImports('input_html_ime', inputOverlay);
 setModuleImports('cursor', cursor);
 setModuleImports('localstorage', localstorage);
 const config = getConfig();
@@ -88,17 +88,21 @@ catch (e) {
 // KFramework.MonoGame.JSBind_InputOverlay，驱动登录/输入框获得焦点、文本同步与回车确认。
 try {
     const kf = (await getAssemblyExports('KFramework.MonoGame'));
-    const ov = kf?.KFramework?.MonoGame?.JSBind_InputOverlay;
+    const ov = kf?.KFramework?.MonoGame?.JSBind_InputHtmlIme;
     if (ov) {
         inputOverlay.setHandlers({
             onValueChanged: (v) => ov.OnValueChanged(v),
             onEnter: () => ov.OnEnter(),
+            onFocus: () => ov.OnFocus(),
             onBlur: () => ov.OnBlur(),
+            onImeActivate: () => ov.OnImeActivate(),
+            onImeUpdate: (t) => ov.OnImeUpdate(t),
+            onImeDeactivate: (t) => ov.OnImeDeactivate(t),
         });
         console.log('[main] 已接入原生文本输入覆盖层');
     }
     else {
-        console.warn('[main] 文本输入覆盖层导出未找到: JSBind_InputOverlay');
+        console.warn('[main] 文本输入覆盖层导出未找到: JSBind_InputHtmlIme');
     }
 }
 catch (e) {

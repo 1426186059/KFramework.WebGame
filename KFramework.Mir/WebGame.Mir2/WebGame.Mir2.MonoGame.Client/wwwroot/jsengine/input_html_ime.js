@@ -29,57 +29,30 @@
 // 本模块用 position:fixed（与 getBoundingClientRect 的视口坐标天然对齐，页面滚动也不漂移），
 // 并在 resize / scroll 时按最近一次 show 参数重新定位当前可见输入框。
 import { getCanvasElement } from './gl.js';
-
 // 模块级设置：DOM 输入覆盖层是否透明。
 //   true  （默认）：本 DOM 元素仅作 IME / 键盘捕获代理，文字与光标均透明，由引擎在 canvas 上自绘
 //                  （见 MirTextBox.CreateTexture → BrowserCanvas.DrawTextBox）；
 //   false         ：由 DOM 直接显示文字与光标（密码掩码仍由 type=password 处理）。
 // 可在 show() 调用时按输入框覆盖；未传时使用本默认值。
 let _transparentInput = true;
-export function setTransparentInput(v: boolean): void { _transparentInput = v; }
-
-/** C# 侧经 setHandlers 注册的回调。 */
-export interface OverlayHandlers {
-    onValueChanged(value: string): void;
-    onEnter(): void;
-    onBlur(): void;
-}
-
-/** 最近一次 show 的参数，用于窗口缩放 / 页面滚动时重新定位。 */
-interface ShowParams {
-    cx: number;
-    cy: number;
-    cw: number;
-    ch: number;
-    fontPx: number;
-    color: number;
-    password: boolean;
-    maxLength: number;
-    multiline: boolean;
-    fontFamily: string; // 承载完整 CSS 字体串（含字重/族，如 "bold 14px 'Tahoma'"），由 place() 整体套用（仅缩放 px）
-    transparent: boolean; // 本 DOM 元素是否透明：true=文字/光标由引擎自绘；false=由 DOM 直接显示
-}
-
-type InputEl = HTMLInputElement | HTMLTextAreaElement;
-
-let handlers: OverlayHandlers | null = null;
-
+export function setTransparentInput(v) { _transparentInput = v; }
+let handlers = null;
 // 复用两个 DOM 元素：单行用 <input>，多行用 <textarea>（两者互斥显示，避免类型切换异常）。
-let inputEl: HTMLInputElement | null = null;
-let areaEl: HTMLTextAreaElement | null = null;
-let last: ShowParams | null = null;
-
-function canvasMetrics(): { left: number; top: number; dpr: number } {
+let inputEl = null;
+let areaEl = null;
+let last = null;
+function canvasMetrics() {
     const canvas = getCanvasElement();
-    if (!canvas) return { left: 0, top: 0, dpr: 1 };
+    if (!canvas)
+        return { left: 0, top: 0, dpr: 1 };
     const rect = canvas.getBoundingClientRect();
     const dpr = rect.width > 0 ? canvas.width / rect.width : 1; // backing/CSS 比，与 input_common.canvasPoint 同一算法
     return { left: rect.left, top: rect.top, dpr: dpr > 0 ? dpr : 1 };
 }
-
-function attach(el: InputEl): void {
-    if (el.parentNode) return;
-    el.style.position = 'fixed';          // 视口相对定位，与 getBoundingClientRect 对齐，滚动不漂移
+function attach(el) {
+    if (el.parentNode)
+        return;
+    el.style.position = 'fixed'; // 视口相对定位，与 getBoundingClientRect 对齐，滚动不漂移
     el.style.margin = '0';
     el.style.padding = '0';
     el.style.border = 'none';
@@ -91,20 +64,20 @@ function attach(el: InputEl): void {
     el.setAttribute('autocomplete', 'off');
     el.setAttribute('spellcheck', 'false');
     document.body.appendChild(el);
-
     // input/keydown 等事件会从 DOM 输入框冒泡到 window，被 input_keyboard 再次消费，
     // 导致游戏全局键盘逻辑重复处理字符（如密码里敲字母触发快捷键）。这里 stopPropagation
     // 阻断冒泡；Enter/Escape 还 preventDefault，避免表单提交 / 滚动。
-    const stop = (e: Event) => e.stopPropagation();
-    el.addEventListener('keydown', (e: Event) => {
+    const stop = (e) => e.stopPropagation();
+    el.addEventListener('keydown', (e) => {
         stop(e);
-        const ke = e as KeyboardEvent;
+        const ke = e;
         if (ke.key === 'Enter') {
             if (!last || !last.multiline || !ke.shiftKey) {
                 ke.preventDefault();
                 handlers && handlers.onEnter();
             }
-        } else if (ke.key === 'Escape') {
+        }
+        else if (ke.key === 'Escape') {
             ke.preventDefault();
             handlers && handlers.onBlur();
         }
@@ -112,37 +85,42 @@ function attach(el: InputEl): void {
     el.addEventListener('keyup', stop);
     el.addEventListener('input', () => handlers && handlers.onValueChanged(el.value));
     el.addEventListener('blur', () => handlers && handlers.onBlur());
+    // IME：组字开始=激活，update=实时候选串，end=停用（含最终上屏文本）。
+    el.addEventListener('compositionstart', () => handlers && handlers.onImeActivate && handlers.onImeActivate());
+    el.addEventListener('compositionupdate', (e) => handlers && handlers.onImeUpdate && handlers.onImeUpdate(e.data || ''));
+    el.addEventListener('compositionend', (e) => handlers && handlers.onImeDeactivate && handlers.onImeDeactivate(e.data || ''));
 }
-
-function activeEl(): InputEl | null {
-    if (!last) return null;
+function activeEl() {
+    if (!last)
+        return null;
     const el = last.multiline ? areaEl : inputEl;
     return el && el.style.display !== 'none' ? el : null;
 }
-
-function ensureEl(multiline: boolean): InputEl {
+function ensureEl(multiline) {
     const el = multiline
         ? (areaEl ||= document.createElement('textarea'))
         : (inputEl ||= document.createElement('input'));
     // 隐藏另一种元素，避免两个输入框同时可见。
-    if (inputEl && inputEl !== el) inputEl.style.display = 'none';
-    if (areaEl && areaEl !== el) areaEl.style.display = 'none';
+    if (inputEl && inputEl !== el)
+        inputEl.style.display = 'none';
+    if (areaEl && areaEl !== el)
+        areaEl.style.display = 'none';
     attach(el);
     return el;
 }
-
 // 把完整 CSS 字体串(含字重/族，如 "bold 14px 'Tahoma'")中的 px 按 dpr 缩放到 CSS 像素后整体套用，
 // 使 DOM 输入框字形与画布 SpriteFont 完全一致（字重/族/字号均对齐）。
-function scaleFontPx(css: string | undefined, dpr: number): string {
+function scaleFontPx(css, dpr) {
     const c = (css || '').trim();
-    if (!c) return (10 / dpr) + 'px sans-serif';
+    if (!c)
+        return (10 / dpr) + 'px sans-serif';
     const m = c.match(/([\d.]+)\s*px/);
-    if (!m) return c;
+    if (!m)
+        return c;
     const px = parseFloat(m[1]) / dpr;
     return c.replace(/([\d.]+)\s*px/, px.toFixed(2) + 'px');
 }
-
-function place(el: HTMLElement, p: ShowParams): void {
+function place(el, p) {
     const { left, top, dpr } = canvasMetrics();
     el.style.left = left + p.cx / dpr + 'px';
     el.style.top = top + p.cy / dpr + 'px';
@@ -156,20 +134,19 @@ function place(el: HTMLElement, p: ShowParams): void {
     if (p.transparent) {
         el.style.color = 'transparent';
         el.style.caretColor = 'transparent';
-    } else {
+    }
+    else {
         const r = (p.color >> 16) & 0xff, g = (p.color >> 8) & 0xff, b = p.color & 0xff;
         const css = `rgb(${r},${g},${b})`;
         el.style.color = css;
         el.style.caretColor = css;
     }
 }
-
 /** C# 侧注册事件回调（由 main.ts 在拿到程序集导出后调用一次）。 */
-export function setHandlers(h: OverlayHandlers): void {
+export function setHandlers(h) {
     handlers = h;
 }
-
-export function show(cx: number, cy: number, cw: number, ch: number, fontPx: number, color: number, value: string, password: boolean, maxLength: number, multiline: boolean, fontFamily: string, transparent: boolean = _transparentInput): void {
+export function show(cx, cy, cw, ch, fontPx, color, value, password, maxLength, multiline, fontFamily, transparent = _transparentInput) {
     const el = ensureEl(multiline);
     last = { cx, cy, cw, ch, fontPx, color, password, maxLength, multiline, fontFamily, transparent };
     place(el, last);
@@ -179,48 +156,57 @@ export function show(cx: number, cy: number, cw: number, ch: number, fontPx: num
         el.style.resize = 'none';
         el.style.whiteSpace = 'pre-wrap';
         el.style.overflow = 'hidden';
-    } else {
-        (el as HTMLInputElement).type = password ? 'password' : 'text';
     }
-    if (maxLength > 0 && maxLength < 100000) el.maxLength = maxLength;
-    else el.removeAttribute('maxlength');
+    else {
+        el.type = password ? 'password' : 'text';
+    }
+    if (maxLength > 0 && maxLength < 100000)
+        el.maxLength = maxLength;
+    else
+        el.removeAttribute('maxlength');
     // 延迟聚焦：确保样式/定位已生效后再聚焦，浏览器才会弹出软键盘 / IME。
     setTimeout(() => {
         try {
             el.focus();
             const len = el.value.length;
-            if (typeof el.setSelectionRange === 'function') el.setSelectionRange(len, len);
-        } catch { /* ignore */ }
+            if (typeof el.setSelectionRange === 'function')
+                el.setSelectionRange(len, len);
+        }
+        catch { /* ignore */ }
     }, 0);
 }
-
-export function hide(): void {
+export function hide() {
     last = null;
-    if (inputEl) inputEl.style.display = 'none';
-    if (areaEl) areaEl.style.display = 'none';
+    if (inputEl)
+        inputEl.style.display = 'none';
+    if (areaEl)
+        areaEl.style.display = 'none';
 }
-
-export function reposition(cx: number, cy: number, cw: number, ch: number): void {
-    if (!last) return;
-    last.cx = cx; last.cy = cy; last.cw = cw; last.ch = ch;
+export function reposition(cx, cy, cw, ch) {
+    if (!last)
+        return;
+    last.cx = cx;
+    last.cy = cy;
+    last.cw = cw;
+    last.ch = ch;
     const el = activeEl();
-    if (el) place(el, last);
+    if (el)
+        place(el, last);
 }
-
-export function setValue(v: string): void {
+export function setValue(v) {
     const el = activeEl();
-    if (el) el.value = v ?? '';
+    if (el)
+        el.value = v ?? '';
 }
-
-export function getValue(): string {
+export function getValue() {
     const el = activeEl();
     return el ? el.value : '';
 }
-
 // 窗口缩放 / 页面滚动时，画布 rect 会变，重新按最近一次 show 参数定位当前可见输入框。
-function reflow(): void {
+function reflow() {
     const el = activeEl();
-    if (el && last) place(el, last);
+    if (el && last)
+        place(el, last);
 }
 window.addEventListener('resize', reflow);
 window.addEventListener('scroll', reflow, true);
