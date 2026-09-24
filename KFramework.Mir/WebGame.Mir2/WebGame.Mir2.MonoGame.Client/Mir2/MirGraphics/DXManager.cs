@@ -80,6 +80,9 @@ namespace Client.MirGraphics
             GDevice = device;
             Batch = batch;
 
+            // 引擎通用文本库的默认设备：Font 作为 IFont 时按它解析（缓存）真实字形资源 SpriteFont。
+            KFramework.MonoGame.TextRenderer.TextRenderer.DefaultDevice = device;
+
             // 浏览器/WebGL 宿主下 GDevice.Viewport 常读到 0 或“逻辑尺寸”，而后备缓冲(BackBuffer)才是真实画布像素
             // （这也是 FullScreenSize 优先用 BackBuffer 的原因）。Settings.ScreenWidth/Height 直接读 GDevice.Viewport，
             // 若不校正，控件构造/布局时会拿到 0 → Recenter 把对话框定位到负坐标、且 MirControl.Draw 守卫

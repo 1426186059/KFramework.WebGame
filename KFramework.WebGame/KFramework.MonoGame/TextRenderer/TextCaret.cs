@@ -64,33 +64,31 @@ namespace KFramework.MonoGame.TextRenderer
         }
 
         /// <summary>自绘模式下的光标位置（相对 bounds 左上角）。</summary>
-        public Vector2 GetPosition(GraphicsDevice device, Font font, string text, int caretIndex, Rectangle bounds, bool multiline, float padLeft)
+        public Vector2 GetPosition(GraphicsDevice device, IFont font, string text, int caretIndex, Rectangle bounds, bool multiline, float padLeft)
         {
-            SpriteFont sf = TextRenderer.GetSpriteFont(device, font);
-            float lineH = sf != null ? sf.LineHeight : font.GetPixelSize() * 4f / 3f;
+            float lineH = font != null ? font.LineSpacing : 0f;
 
             string prefix = string.Empty;
             if (!string.IsNullOrEmpty(text) && caretIndex > 0)
                 prefix = text.Substring(0, System.Math.Min(caretIndex, text.Length));
 
             float x = padLeft;
-            if (sf != null && prefix.Length > 0)
-                x += sf.MeasureString(prefix).X;
+            if (font != null && prefix.Length > 0)
+                x += font.MeasureString(prefix).X;
 
             float y = multiline ? 2f : System.Math.Max(0f, (bounds.Height - lineH) / 2f);
             return new Vector2(x, y);
         }
 
         /// <summary>自绘模式下绘制光标竖线。Browser 模式下此调用为空操作。</summary>
-        public void Draw(SpriteBatch batch, GraphicsDevice device, Font font, string text, int caretIndex, Rectangle bounds, Color color, bool multiline, float padLeft = 3f)
+        public void Draw(SpriteBatch batch, GraphicsDevice device, IFont font, string text, int caretIndex, Rectangle bounds, Color color, bool multiline, float padLeft = 3f)
         {
             if (!ShouldDraw || batch == null || device == null || font == null) return;
 
             Vector2 pos = GetPosition(device, font, text, caretIndex, bounds, multiline, padLeft);
-            SpriteFont sf = TextRenderer.GetSpriteFont(device, font);
-            float lineH = sf != null ? sf.LineHeight : font.GetPixelSize() * 4f / 3f;
-
-            float w = System.Math.Max(1f, font.GetPixelSize() * 0.08f);
+            float lineH = font.LineSpacing;
+            // 光标宽度：优先用字形行高推算；IFont 无字号概念时退化为 1px。
+            float w = System.Math.Max(1f, lineH * 0.06f);
             Rectangle rect = new Rectangle(
                 bounds.X + (int)System.Math.Round(pos.X),
                 bounds.Y + (int)System.Math.Round(pos.Y),

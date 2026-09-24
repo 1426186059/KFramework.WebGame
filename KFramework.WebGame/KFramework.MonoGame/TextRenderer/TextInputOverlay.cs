@@ -80,21 +80,18 @@ namespace KFramework.MonoGame.TextRenderer
         /// Browser 模式下本方法只画文本（光标由 DOM 显示）；若调用方希望完全交给 DOM，可自行跳过绘制。
         /// </summary>
         public static void DrawTextBox(
-            SpriteBatch batch, GraphicsDevice device, Font font, string text,
+            SpriteBatch batch, GraphicsDevice device, IFont font, string text,
             Rectangle bounds, Color foreColor, int caretIndex, TextCaret caret,
             bool multiline, float padLeft = 3f)
         {
             if (batch == null || device == null || font == null) return;
 
-            SpriteFont sf = TextRenderer.GetSpriteFont(device, font);
-            if (sf == null) return;
-
-            float lineH = sf.LineHeight;
+            float lineH = font.LineSpacing;
             float y = multiline ? 2f : System.Math.Max(0f, (bounds.Height - lineH) / 2f);
 
             if (!string.IsNullOrEmpty(text))
             {
-                sf.Draw(batch, text, new Vector2(bounds.X + padLeft, bounds.Y + y), foreColor,
+                font.Draw(batch, text, new Vector2(bounds.X + padLeft, bounds.Y + y), foreColor,
                     0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
 
