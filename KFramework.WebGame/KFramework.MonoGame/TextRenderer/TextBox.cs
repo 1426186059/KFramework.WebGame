@@ -168,14 +168,72 @@ namespace KFramework.MonoGame
         public bool Focused { get => focused; set => focused = value; }
         public IFont Font { get => font; set { if (value != null) font = value; } }
 
+        // 原生输入覆盖层（DOM <input>）所需的、由 shim 在聚焦前按当前视口/字体填写的元数据。
+        // 坐标 = 逻辑 Location/Size × OverlayScale（本工程当前为恒等变换，Scale=1）；
+        // 这样上层只需像 WinForms 一样设置 Location/Size/Font/Visible，覆盖层的开关与焦点互斥全部由本引擎负责。
+        public float OverlayScale { get; set; } = 1f;
+        public float OverlayFontPx { get; set; } = 10f;
+        public string OverlayFontCss { get; set; } = "10px sans-serif";
+
         public void AppendText(string value)
         {
             if (string.IsNullOrEmpty(value)) return;
             Text = text + value;
         }
 
-        public void Focus() => focused = true;
-        public void Blur() => focused = false;
+        // 当前聚焦的 TextBox（浏览器 / MonoGame 无真实窗口，需 shim 自行维护焦点链以实现互斥）。
+        // 与 Web_Mir2.Engine 的 MirEngine.TextBox 行为对齐：聚焦时先对旧框触发 LostFocus，再对新框触发 GotFocus，
+        // 上层无需再自行维护 _current / ReleaseFocus 之类的互斥逻辑。
+        private static TextBox _active;
+
+        // 回车确认：DOM 的非组字态 Enter 冒泡到全局键盘（组字选词 Enter 已在 Web 端被 isComposing 吞掉），
+        // 这里在"本框是激活捕获目标"时把它模拟进本框，使原消费方（LoginScene / MirInputBox 等）
+        // 通过 KeyPress / OnKeyDown 拿到的 Enter 与原版 WinForms 一致——焦点互斥同样由 _active 维护。
+        static TextBox()
+        {
+            Input_KeyBoard.KeyDown += OnGlobalKeyDown;
+        }
+
+        private static void OnGlobalKeyDown(Keys key)
+        {
+            if (key == Keys.Enter && _active != null && !_active.isDisposed)
+                _active.SimulateKeyDown(Keys.Enter);
+        }
+
+        public void Focus()
+        {
+            if (_active == this) return;
+
+            // 互斥：先把上一个聚焦的框失焦（触发其 LostFocus 并收起覆盖层）。
+            if (_active != null && !_active.isDisposed)
+                _active.Blur();
+
+            _active = this;
+            focused = true;
+            isFocused = true;
+            GotFocus?.Invoke(this, EventArgs.Empty);
+
+            // 接管原生输入：坐标用逻辑 Location/Size × OverlayScale 换算到后备缓冲像素。
+            if (visible)
+            {
+                Color fc = (foreColor.A == 0) ? Color.White : foreColor;
+                Input_IME.Open(
+                    location.X * OverlayScale, location.Y * OverlayScale,
+                    size.Width * OverlayScale, size.Height * OverlayScale,
+                    overlayFontPx, (int)fc.PackedValue, text,
+                    useSystemPasswordChar, maxLength, multiline, overlayFontCss);
+            }
+        }
+
+        public void Blur()
+        {
+            if (_active == this) _active = null;
+            if (!focused && !isFocused) return;
+            focused = false;
+            isFocused = false;
+            LostFocus?.Invoke(this, EventArgs.Empty);
+            Input_IME.Close();
+        }
 
         public void Dispose()
         {

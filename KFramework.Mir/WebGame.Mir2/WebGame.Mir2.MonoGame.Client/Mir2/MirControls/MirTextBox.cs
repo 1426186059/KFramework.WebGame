@@ -120,11 +120,6 @@ namespace Client.MirControls
 
         
 
-        // 当前由浏览器原生 <input> 覆盖层接管的文本框（全局唯一，输入焦点互斥）。
-        private static MirTextBox _current;
-        // 原生输入覆盖层是否正接管本框（仅作 IME/键盘捕获代理，DOM 透明，不再影响自身绘制）。
-        private bool _nativeActive;
-
         // 文字与光标一律由引擎自绘；浏览器 DOM <input> 仅作 IME / 键盘捕获（TextInputHtmlIme）。
         //   Rendered（默认）：DOM <input> 透明，仅作 IME / 键盘捕获代理，文字与光标由引擎在 canvas 自绘。
         //   Browser          ：由 DOM 直接显示文字与光标（浏览器原生光标 / 选区 / IME 候选窗），引擎画空串。
@@ -137,33 +132,15 @@ namespace Client.MirControls
         public bool CanLoseFocus;
         public readonly TextBox TextBox;
 
-        private static Point HiddenTextBoxLocation
-        {
-            get { return new Point(-32000, -32000); }
-        }
-
         private void ApplyNativeTextBoxState()
         {
             if (TextBox == null || TextBox.IsDisposed) return;
 
-            TextBox.Location = HiddenTextBoxLocation;
+            // 把 shim TextBox 摆到真实显示位置：引擎 Focus() 直接用其 Location/Size 定位原生 <input> 覆盖层
+            // （本工程为恒等变换，逻辑坐标即后备缓冲像素；与 WinForms 把控件放在真实位置同理）。
+            TextBox.Location = DisplayLocation;
             TextBox.Visible = Visible && TextBox.Parent != null;
         }
-
-        // 回车确认：DOM 的非组字态 Enter 会冒泡到全局键盘（组字选词 Enter 已在 Web 端被 isComposing 吞掉），
-        // 这里在"本框是激活捕获目标"时，把它模拟进隐藏的 WinForms TextBox，
-        // 使原消费方（LoginScene / MirInputBox 等）通过 KeyPress / OnKeyDown 拿到的 Enter 与原版一致。
-        static MirTextBox()
-        {
-            KFramework.MonoGame.Input_KeyBoard.KeyDown += OnGlobalKeyDown;
-        }
-
-        private static void OnGlobalKeyDown(KFramework.MonoGame.Keys key)
-        {
-            if (key == KFramework.MonoGame.Keys.Enter && _current != null && _current._nativeActive)
-                _current.TextBox.SimulateKeyDown(Keys.Return);
-        }
-
 
 
         public string Text
@@ -230,12 +207,9 @@ namespace Client.MirControls
 
             ApplyNativeTextBoxState();
 
-            // 文本框隐藏（如所在对话框关闭）时，收起原生输入覆盖层。
-            if (!Visible && _current == this)
-            {
-                _current = null;
-                KFramework.MonoGame.Input_IME.Close();
-            }
+            // 文本框隐藏（如所在对话框关闭）时，收回原生输入覆盖层与焦点（引擎 Blur 收起 IME）。
+            if (!Visible)
+                TextBox.LoseFocus();
         }
         private void TextBox_VisibleChanged(object sender, EventArgs e)
         {
@@ -288,7 +262,7 @@ namespace Client.MirControls
                 BorderStyle = BorderStyle.None,
                 Font = new Font(Settings.FontName, 10F * 96f / FontDpiX),
                 ForeColor = ForeColour,
-                Location = HiddenTextBoxLocation,
+                Location = DisplayLocation,
                 Size = Size,
                 Visible = Visible,
                 Tag = this,
@@ -307,95 +281,14 @@ namespace Client.MirControls
             TextBox.GotFocus += TextBox_NeedRedraw;
             TextBox.MouseWheel += TextBox_NeedRedraw;
 
-            TextBox.GotFocus += OnGotFocus;
-            TextBox.LostFocus += OnLostFocus;
-
             Shown += MirTextBox_Shown;
             TextBox.MouseMove += CMain.CMain_MouseMove;
         }
 
-        // 原生输入覆盖层现在为纯 Pull 模型（见 KFramework.MonoGame.Input_IME）：
+        // 原生输入覆盖层为纯 Pull 模型（见 KFramework.MonoGame.Input_IME）：
         // 引擎每帧经 Input.Poll → Input_IME.Poll 拉取文本到 Input_IME.Text，本类只在 DrawControl 中读取它。
-        // 回车确认不经由 Input_IME：DOM 的非组字态 Enter 冒泡到全局键盘 Input_KeyBoard，
-        // 由本类的静态 OnGlobalKeyDown 在"本框是激活捕获目标"时模拟进隐藏的 WinForms TextBox，
-        // 从而走原消费方（LoginScene / MirInputBox 等）的 KeyPress / OnKeyDown 链路——与原版 WinForms 一致。
-
-        private void OnGotFocus(object sender, EventArgs e)
-        {
-            // 焦点互斥：先把上一个文本框的原生输入关掉，再接管自己。
-            // 直接走 ReleaseFocus（只依赖 _nativeActive / BrowserInputOverlay，跨 WinForm 与 Web 两端均可编译），
-            // 避免引用 shim 专有的 IsFocused/Focused/LoseFocus 等仅在浏览器端存在、桌面端 System.Windows.Forms.TextBox 没有的成员。
-            if (_current == this) return;
-            if (_current != null && !_current.TextBox.IsDisposed)
-                _current.ReleaseFocus();
-
-            _current = this;
-            ShowNativeInput();
-        }
-
-        private void OnLostFocus(object sender, EventArgs e)
-        {
-            if (_current == this)
-            {
-                // 文本已由 OnInput 实时同步回本框 TextBox.Text，切勿在此用共享单例 <input> 的当前值回写，
-                // 否则该 <input> 可能已被复用成对方框的值/空串，从而把本框文本误清空（导致 OK 按钮校验失败无法点击）。
-                _current = null;
-                KFramework.MonoGame.Input_IME.Close();
-            }
-            // 无论 GotFocus / LostFocus 谁先到达（切换时新框可能已先接管 _current），本框既已失去焦点
-            // 就必须恢复自身绘制：否则 _nativeActive 会一直残留，DrawControl 恒画空串，
-            // 表现为"切到密码框后账号文字被隐藏"（内容其实还在，切回来又显示）。
-            // 同时真正失焦隐藏 TextBox（LoseFocus），使光标随之熄灭（本工程引擎不会自动触发 LostFocus 事件）。
-            if (TextBox != null && !TextBox.IsDisposed)
-                TextBox.LoseFocus();
-            _nativeActive = false;
-            TextureValid = false;
-            Redraw();
-        }
-
-        // 让原生 <input> 覆盖层显示在文本框对应的屏幕位置并接管输入。
-        private void ShowNativeInput()
-        {
-            if (TextBox == null || TextBox.IsDisposed) return;
-
-            _nativeActive = true;
-            int fore = (TextBox.ForeColor != Color.Empty ? TextBox.ForeColor : Color.White).ToArgb();
-            // 覆盖层坐标系是"后备缓冲(绘制)像素"（见 JSBind_InputOverlay.Show 注释），而 DisplayLocation/
-            // Size 是逻辑坐标(1024x768)。渲染端 UI 以 s = 视口高/768 按高缩放铺进后备缓冲，这里必须把
-            // 逻辑坐标×s 换算成后备缓冲像素，DOM 覆盖层(及其光标)才能与画布文本框严格对齐；否则光标/输入框错位。
-            // 字号同样按 s 缩放：交给引擎 TextInputOverlay 生成 CSS 字体串并换算 fontPx，
-            // 保证 DOM 输入框字形(字重/族/字号)与画布 SpriteFont 渲染一致，切换不跳变。
-            var vp = DXManager.GDevice.Viewport;
-            float sScale = vp.Height > 0 ? (float)vp.Height / Client.Settings.ScreenHeight : 1f;
-
-            // transparent = Rendered 模式（DOM <input> 仅作 IME / 键盘捕获代理，文字与光标由引擎自绘）。
-            // 与原版一致：文本框获焦即由 Input_IME.Open 接管输入（失焦由 OnLostFocus / ReleaseFocus 调 Close），
-            // IME 开 / 关不挂在绘制类 TextBoxRenderer 上。
-            KFramework.MonoGame.Input_IME.Open(
-                DisplayLocation.X * sScale, DisplayLocation.Y * sScale,
-                Size.Width * sScale, Size.Height * sScale,
-                MirEngine.FontFactory.GetPixelSize(TextBox.Font, sScale),
-                fore, TextBox.Text ?? string.Empty, TextBox.UseSystemPasswordChar, TextBox.MaxLength, TextBox.Multiline,
-                MirEngine.FontFactory.BuildCssFont(TextBox.Font, sScale));
-            TextureValid = false;
-            Redraw();
-        }
-
-        private void ReleaseFocus()
-        {
-            if (_current == this)
-            {
-                // 不在此回写文本：共享单例 <input> 的当前值可能是别的框的，回写会误清空本框（见 OnLostFocus 注释）。
-                _current = null;
-                KFramework.MonoGame.Input_IME.Close();
-            }
-            // 真正失焦：清掉隐藏 TextBox 的 Focused，否则 DrawControl 仍会每帧令纹理失效并重绘光标。
-            if (TextBox != null && !TextBox.IsDisposed)
-                TextBox.LoseFocus();
-            _nativeActive = false;
-            TextureValid = false;
-            Redraw();
-        }
+        // 覆盖层的开 / 关、焦点互斥、回车转发全部由引擎 KFramework.MonoGame.TextBox 在 Focus()/Blur() 内负责
+        // （与原版 WinForms 一致：上层只管设置 Location/Size/Font/Visible 并调用 Focus()）。
 
         private void TextBox_NeedRedraw(object sender, EventArgs e)
         {
@@ -409,16 +302,14 @@ namespace Client.MirControls
         {
             // Pull 模型：每帧从引擎 Input_IME 拉取（引擎已通过 Input.Poll 刷新），仅作用于当前激活框；
             // 不再订阅任何 Input_IME 事件。文本变化会触发 TextChanged → 登录校验 / 重绘。
-            // 回车确认不在这里处理：DOM 的非组字态 Enter 会冒泡到全局键盘 Input_KeyBoard，
-            // 由下方静态 OnGlobalKeyDown 在"本框是激活捕获目标"时模拟进 WinForms TextBox，
-            // 从而走原消费方（LoginScene / MirInputBox 等）的 KeyPress / OnKeyDown 链路——与原版一致。
+            // 覆盖层开 / 关、焦点互斥、回车转发均由引擎在 Focus()/Blur() 内处理（与原版 WinForms 一致）。
 
             // 光标闪烁由引擎 TextBoxRenderer.DrawTextBox 内部自驱；聚焦时每帧令纹理失效，
-            // 使 DrawTextBox 每帧执行、引擎据此推进闪烁节拍。失焦时 OnLostFocus 已重绘一次熄灭光标。
+            // 使 DrawTextBox 每帧执行、引擎据此推进闪烁节拍。
             if (TextBox != null && TextBox.Focused)
                 TextureValid = false;
 
-            if (_current == this && KFramework.MonoGame.Input_IME.Active)
+            if (TextBox.Focused && KFramework.MonoGame.Input_IME.Active)
             {
                 string t = KFramework.MonoGame.Input_IME.Text;
                 if (TextBox.Text != t) TextBox.Text = t;
@@ -547,19 +438,10 @@ namespace Client.MirControls
                 return;
             }
 
-            // 焦点互斥：聚焦本框前，先把上一个激活框失焦（清掉它的光标 / 收起 IME）。
-            // 注意：引擎 TextBox 的获焦 / 失焦（Focus / LoseFocus）不会自动触发 GotFocus/LostFocus 事件
-            // （本工程 shim 直接转发，事件从未被引发），故原挂在事件上的 OnGotFocus/OnLostFocus
-            // 不会执行——焦点互斥必须由这里统一处理。
-            if (_current != this)
-            {
-                if (_current != null && !_current.TextBox.IsDisposed)
-                    _current.ReleaseFocus();
-
-                _current = this;
-                TextBox.Focus();
-                ShowNativeInput();
-            }
+            // 焦点互斥、GotFocus/LostFocus 事件分发、以及原生 <input> 覆盖层的开 / 关与回车转发，
+            // 全部由引擎 KFramework.MonoGame.TextBox.Focus()/Blur() 负责（与原版 WinForms 一致）。
+            // 本方法只负责请求聚焦。
+            TextBox.Focus();
         }
 
         public void DialogChanged()
@@ -590,12 +472,9 @@ namespace Client.MirControls
 
             if (!disposing) return;
 
-            if (_current == this)
-            {
-                _current = null;
-                KFramework.MonoGame.Input_IME.Close();
-            }
-
+            // 若本框正接管输入，失焦以收起 IME（覆盖其他清理）。
+            if (!TextBox.IsDisposed)
+                TextBox.LoseFocus();
             if (!TextBox.IsDisposed)
                 TextBox.Dispose();
         }

@@ -1,4 +1,6 @@
 using System;
+using Client;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace MirEngine
 {
@@ -119,7 +121,21 @@ namespace MirEngine
         public void SimulateKeyDown(Keys keyCode) => _inner.SimulateKeyDown(ToEngineKeys(keyCode));
         public void SimulateKeyPress(char keyChar) => _inner.SimulateKeyPress(keyChar);
 
-        public void Focus() => _inner.Focus();
+        public void Focus()
+        {
+            // 按当前视口计算逻辑→后备缓冲像素缩放（本工程恒等变换下为 1，但保留公式以兼容真实缩放部署）。
+            var vp = DXManager.GDevice.Viewport;
+            float scale = vp.Height > 0 && Client.Settings.ScreenHeight > 0
+                ? (float)vp.Height / Client.Settings.ScreenHeight
+                : 1f;
+            _inner.OverlayScale = scale;
+            if (Font != null)
+            {
+                _inner.OverlayFontCss = FontFactory.BuildCssFont(Font, scale);
+                _inner.OverlayFontPx = (float)FontFactory.GetPixelSize(Font, scale);
+            }
+            _inner.Focus();
+        }
         public void LoseFocus() => _inner.Blur();
         public void Dispose() => _inner.Dispose();
 
