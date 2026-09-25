@@ -22,6 +22,12 @@ namespace KFramework.MonoGame
         /// <summary>最近一次 <see cref="Poll"/> 拉取到的文本（含 IME 组字内容）。未激活时为空串。</summary>
         public static string Text { get; private set; } = string.Empty;
 
+        /// <summary>最近一次 <see cref="Poll"/> 拉取到的光标起始位置（来自 DOM selectionStart）。未激活时为 0。</summary>
+        public static int SelectionStart { get; private set; }
+
+        /// <summary>最近一次 <see cref="Poll"/> 拉取到的选区长度（selectionEnd - selectionStart）。未激活时为 0。</summary>
+        public static int SelectionLength { get; private set; }
+
         /// <summary>在画布指定位置（后备缓冲像素）显示原生输入框并聚焦（transparent 恒为 true：DOM 只作捕获代理）。</summary>
         public static void Open(
             double cx, double cy, double cw, double ch,
@@ -38,14 +44,20 @@ namespace KFramework.MonoGame
         {
             Active = false;
             Text = string.Empty;
+            SelectionStart = 0;
+            SelectionLength = 0;
             JSBind_InputHtmlIme.Hide();
         }
 
-        /// <summary>每帧由 <see cref="Input.Poll"/> 调用一次：仅在激活时从 DOM 覆盖层拉取文本。</summary>
+        /// <summary>每帧由 <see cref="Input.Poll"/> 调用一次：仅在激活时从 DOM 覆盖层拉取文本与光标位置。</summary>
         public static void Poll()
         {
             if (!Active) return;
             Text = JSBind_InputHtmlIme.GetValue() ?? string.Empty;
+            int ss = JSBind_InputHtmlIme.GetSelectionStart();
+            int se = JSBind_InputHtmlIme.GetSelectionEnd();
+            SelectionStart = ss;
+            SelectionLength = System.Math.Max(0, se - ss);
         }
     }
 }

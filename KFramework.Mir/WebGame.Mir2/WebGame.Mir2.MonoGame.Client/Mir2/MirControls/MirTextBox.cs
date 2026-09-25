@@ -313,6 +313,11 @@ namespace Client.MirControls
             {
                 string t = KFramework.MonoGame.Input_IME.Text;
                 if (TextBox.Text != t) TextBox.Text = t;
+                // 同步 DOM 真实光标位置：初始即文字末尾，左右键 / 点击移动后自绘光标跟随。
+                int ss = KFramework.MonoGame.Input_IME.SelectionStart;
+                int sl = KFramework.MonoGame.Input_IME.SelectionLength;
+                if (TextBox.SelectionStart != ss) TextBox.SelectionStart = ss;
+                if (TextBox.SelectionLength != sl) TextBox.SelectionLength = sl;
             }
 
             base.DrawControl();

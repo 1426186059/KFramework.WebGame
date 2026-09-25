@@ -34,5 +34,13 @@ namespace KFramework.MonoGame
         /// <summary>取当前输入框文本（含 IME 组字内容）；由 C# 每帧拉取以同步到游戏侧 TextBox。</summary>
         [JSImport("getValue", "input_html_ime")]
         public static partial string GetValue();
+
+        /// <summary>取当前输入框光标起始位置（DOM <input>.selectionStart）；由 C# 每帧拉取以同步自绘光标。</summary>
+        [JSImport("getSelectionStart", "input_html_ime")]
+        public static partial int GetSelectionStart();
+
+        /// <summary>取当前输入框光标结束位置（DOM <input>.selectionEnd）。</summary>
+        [JSImport("getSelectionEnd", "input_html_ime")]
+        public static partial int GetSelectionEnd();
     }
 }

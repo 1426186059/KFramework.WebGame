@@ -168,6 +168,19 @@ export function getValue(): string {
     return el ? el.value : '';
 }
 
+/** C# 每帧拉取：返回当前输入框光标起始位置（未激活时 0）。
+ *  引擎自绘光标据此定位——初始即文字末尾，左右键 / 点击移动后同步跟随。 */
+export function getSelectionStart(): number {
+    const el = activeEl();
+    return el ? (el.selectionStart ?? 0) : 0;
+}
+
+/** C# 每帧拉取：返回当前输入框光标结束位置（未激活时 0）。 */
+export function getSelectionEnd(): number {
+    const el = activeEl();
+    return el ? (el.selectionEnd ?? 0) : 0;
+}
+
 /** 重新定位当前可见输入框（窗口缩放 / 页面滚动时由 reflow 自动调用，也可由 C# 显式调用）。 */
 export function reposition(cx: number, cy: number, cw: number, ch: number): void {
     if (!last) return;
