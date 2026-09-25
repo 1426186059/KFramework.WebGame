@@ -512,6 +512,11 @@ namespace Client.MirScenes
                 {
                     if (AccountIDTextBox != null) AccountIDTextBox.Text = Settings.AccountID;
                     if (PasswordTextBox != null) PasswordTextBox.Text = Settings.Password;
+                    // 恢复存档后强制按当前文本重算有效性与登录按钮状态：
+                    // Text 赋值在 text==value 时会提前返回、不触发 TextChanged，导致 _valid 仍是初始 false、
+                    // 按钮停留在禁用态（需增删一字再恢复才生效）。这里直接重算一次，保证开局即可点击登录。
+                    AccountIDTextBox_TextChanged(AccountIDTextBox, EventArgs.Empty);
+                    PasswordTextBox_TextChanged(PasswordTextBox, EventArgs.Empty);
                 };
 
                 // 资源（贴图库）异步加载：构造时图像尺寸可能为 0，导致初始 Location 偏移到屏幕中心附近。
@@ -541,6 +546,8 @@ namespace Client.MirScenes
                     AccountIDTextBox.Border = true;
                     AccountIDTextBox.BorderColour = Color.Green;
                 }
+                // 登录按钮可用态取决于账号与密码两者，账号变化也需刷新按钮（之前只在密码框变更时刷新）。
+                RefreshLoginButton();
             }
             private void PasswordTextBox_TextChanged(object sender, EventArgs e)
             {

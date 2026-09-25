@@ -114,7 +114,10 @@ namespace KFramework.MonoGame
                 if (text == value) return;
                 text = value ?? string.Empty;
                 UpdateLines();
-                selectionStart = Math.Min(selectionStart, text.Length);
+                // 文本被外部设置（如打开时恢复存档）时，光标置于末尾并清除选区，对齐 WinForms TextBox 行为；
+                // 否则会出现“开局长度为 0，恢复后光标仍停在开头”的问题。
+                selectionStart = text.Length;
+                selectionLength = 0;
                 compositionString = string.Empty;
                 TextChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -223,6 +226,17 @@ namespace KFramework.MonoGame
             TextBox active = ActiveOrResolved;
             if (active == null || active.isDisposed) return;
 
+            bool ctrl = Input_KeyBoard.Ctrl, alt = Input_KeyBoard.Alt, shift = Input_KeyBoard.Shift;
+
+            // Ctrl+A 全选：DOM 覆盖层未聚焦时的兜底（聚焦时由 TS keydown 已转发的 Ctrl+A 经 ProcessKey -> SimulateKeyDown 处理）。
+            // 直接走引擎 SelectAll，使选区成为唯一真相源，引擎自绘高亮。
+            if (ctrl && !alt && key == Keys.A)
+            {
+                active.SelectAll();
+                active.SyncOverlay();
+                return;
+            }
+
             switch (key)
             {
                 case Keys.Enter:
@@ -243,7 +257,8 @@ namespace KFramework.MonoGame
             // 不会冒泡到 window），全局键盘仍能收到这些字符——此时由引擎把可打印字符补录进激活的 TextBox。
             // DOM 正常聚焦时该分支不会触发（stopPropagation 已拦截，不会到达本全局路径），故不会与 input 事件重复插入；
             // 而删除 / 方向等控制键仍走上面的 SimulateKeyDown，互不影响。IME 中文仍由 DOM 覆盖层经 input 事件回传。
-            if (TryGetPrintableChar(key, Input_KeyBoard.Shift, out char c))
+            // 注意：Ctrl / Alt 组合键（如 Ctrl+A 全选、Ctrl+C/V/X 复制粘贴）不在此作为可打印字符插入，交由浏览器 / 上面的分支处理。
+            if (!ctrl && !alt && TryGetPrintableChar(key, shift, out char c))
                 active.InsertText(c.ToString());
         }
 
