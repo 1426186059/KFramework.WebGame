@@ -193,21 +193,105 @@ namespace KFramework.MonoGame
         // 上层无需再自行维护 _current / ReleaseFocus 之类的互斥逻辑。
         private static TextBox _active;
 
+        /// <summary>
+        /// 退化兜底：当引擎自身的焦点链（<see cref="_active"/>）因某些原因未建立时，
+        /// 由上层（shim）提供"当前激活的 TextBox"。控制键据此仍能被正确路由，
+        /// 避免焦点链异常时整框键盘输入（删除 / 方向 / 选区）全部失效。
+        /// </summary>
+        public static Func<TextBox> ActiveTextBoxResolver;
+
+        /// <summary>当前应接收按键的 TextBox：优先引擎焦点链，退化时回退到上层提供的激活框。</summary>
+        private static TextBox ActiveOrResolved => _active ?? ActiveTextBoxResolver?.Invoke();
+
         /// <summary>当前由引擎接管的文本框（DOM 回传的锚点）。</summary>
         internal static TextBox ActiveTextBox => _active;
 
-        // 回车确认：DOM 的非组字态 Enter 冒泡到全局键盘（组字选词 Enter 已在 Web 端被 isComposing 吞掉），
-        // 这里在"本框是激活捕获目标"时把它模拟进本框，使原消费方（LoginScene / MirInputBox 等）
-        // 通过 KeyPress / OnKeyDown 拿到的 Enter 与原版 WinForms 一致——焦点互斥同样由 _active 维护。
+        // 全局键盘（Input_KeyBoard）兜底：本工程里 DOM <input> 覆盖层主要用于 IME 捕获，
+        // 普通字符与控制键实际都经全局键盘进入引擎（原逻辑只转发了 Enter）。
+        // 这里把回车 / 删除 / 方向 / Home / End 等控制键一并转发给当前激活的 TextBox，
+        // 与 DOM 的 input_html_ime.OnKeyDown 走同一引擎入口（SimulateKeyDown），由 _active 互斥保证唯一目标。
         static TextBox()
         {
             Input_KeyBoard.KeyDown += OnGlobalKeyDown;
+            // DOM 覆盖层经 Input_IME 转发的控制键 / 编辑结果，订阅其事件，与 [JSExport] 解耦。
+            Input_IME.KeyDown += ProcessKey;
+            Input_IME.DomValue += ProcessDomValue;
         }
 
         private static void OnGlobalKeyDown(Keys key)
         {
-            if (key == Keys.Enter && _active != null && !_active.isDisposed)
-                _active.SimulateKeyDown(Keys.Enter);
+            TextBox active = ActiveOrResolved;
+            if (active == null || active.isDisposed) return;
+
+            switch (key)
+            {
+                case Keys.Enter:
+                case Keys.Escape:
+                case Keys.Backspace:
+                case Keys.Delete:
+                case Keys.Left:
+                case Keys.Right:
+                case Keys.Up:
+                case Keys.Down:
+                case Keys.Home:
+                case Keys.End:
+                    active.SimulateKeyDown(key);
+                    break;
+            }
+
+            // 兜底：当 DOM 覆盖层未真正取得键盘焦点时（普通字符的 keydown 被 DOM 的 stopPropagation 拦截，
+            // 不会冒泡到 window），全局键盘仍能收到这些字符——此时由引擎把可打印字符补录进激活的 TextBox。
+            // DOM 正常聚焦时该分支不会触发（stopPropagation 已拦截，不会到达本全局路径），故不会与 input 事件重复插入；
+            // 而删除 / 方向等控制键仍走上面的 SimulateKeyDown，互不影响。IME 中文仍由 DOM 覆盖层经 input 事件回传。
+            if (TryGetPrintableChar(key, Input_KeyBoard.Shift, out char c))
+                active.InsertText(c.ToString());
+        }
+
+        /// <summary>把物理按键映射为可打印字符（基本 ASCII：字母 / 数字 / 空格 / 常用标点）。
+        /// 仅作为 DOM 覆盖层未聚焦时的兜底；中文等 IME 组字仍由 DOM input 事件回传。</summary>
+        private static bool TryGetPrintableChar(Keys key, bool shift, out char c)
+        {
+            c = '\0';
+            int k = (int)key;
+
+            // 字母 A-Z（keyCode 65-90）
+            if (k >= 65 && k <= 90)
+            {
+                c = shift ? (char)k : char.ToLowerInvariant((char)k);
+                return true;
+            }
+            // 数字 0-9（keyCode 48-57，含 Shift 上档符号，US 布局）
+            if (k >= 48 && k <= 57)
+            {
+                if (shift)
+                {
+                    char[] shifted = { ')', '!', '@', '#', '$', '%', '^', '&', '*', '(' };
+                    c = shifted[k - 48];
+                }
+                else
+                {
+                    c = (char)k;
+                }
+                return true;
+            }
+            if (k == 32) { c = ' '; return true; }
+
+            // 常用标点（browser keyCode → 字符，US 布局）
+            switch (k)
+            {
+                case 190: c = shift ? '>' : '.'; return true;   // OEM_PERIOD
+                case 188: c = shift ? '<' : ','; return true;   // OEM_COMMA
+                case 191: c = shift ? '?' : '/'; return true;   // OEM_2 (/?)
+                case 189: c = shift ? '_' : '-'; return true;   // OEM_MINUS
+                case 187: c = shift ? '+' : '='; return true;   // OEM_PLUS
+                case 186: c = shift ? ':' : ';'; return true;   // OEM_1
+                case 222: c = shift ? '"' : '\''; return true;  // OEM_7
+                case 219: c = shift ? '{' : '['; return true;   // OEM_4
+                case 221: c = shift ? '}' : ']'; return true;   // OEM_6
+                case 220: c = shift ? '|' : '\\'; return true;  // OEM_5
+                case 192: c = shift ? '~' : '`'; return true;   // OEM_3
+            }
+            return false;
         }
 
         public void Focus()
@@ -325,7 +409,7 @@ namespace KFramework.MonoGame
 
             if (ctrl && !alt)
             {
-                if (keyCode == Keys.A) { SelectAll(); Input_IME.SyncActive(this); return; }
+                if (keyCode == Keys.A) { SelectAll(); SyncOverlay(); return; }
                 // C / V / X 依赖剪贴板，由浏览器侧处理，这里不拦截。
             }
 
@@ -353,19 +437,22 @@ namespace KFramework.MonoGame
                     selectionStart = text.Length; selectionLength = 0; break;
                 case Keys.Escape:
                     KeyPress?.Invoke(this, new KeyPressEventArgs((char)Keys.Escape));
-                    Input_IME.SyncActive(this);
+                    SyncOverlay();
                     return;
                 case Keys.Enter:
                     KeyPress?.Invoke(this, new KeyPressEventArgs((char)Keys.Enter));
-                    Input_IME.SyncActive(this);
+                    SyncOverlay();
                     return;
             }
-            if (keyCode == Keys.Backspace || keyCode == Keys.Delete)
+            if (keyCode == Keys.Backspace || keyCode == Keys.Delete ||
+                keyCode == Keys.Left || keyCode == Keys.Right ||
+                keyCode == Keys.Up || keyCode == Keys.Down ||
+                keyCode == Keys.Home || keyCode == Keys.End)
             {
                 UpdateLines();
                 TextChanged?.Invoke(this, EventArgs.Empty);
             }
-            Input_IME.SyncActive(this);
+            SyncOverlay();
         }
 
         /// <summary>提交文本（IME 组字结束 / 粘贴 / 程序化输入），在光标处插入并推进光标。</summary>
@@ -380,14 +467,14 @@ namespace KFramework.MonoGame
             compositionString = string.Empty;
             UpdateLines();
             TextChanged?.Invoke(this, EventArgs.Empty);
-            Input_IME.SyncActive(this);
+            SyncOverlay();
         }
 
         /// <summary>设置 IME 组字预览（尚未提交）。</summary>
         public void SetComposition(string value)
         {
             compositionString = value ?? string.Empty;
-            Input_IME.SyncActive(this);
+            SyncOverlay();
         }
 
         /// <summary>提交 IME 组字结果。</summary>
@@ -407,9 +494,11 @@ namespace KFramework.MonoGame
         /// DOM 把原生编辑结果回传：以引擎自身光标为锚点合并差异（保证引擎是文本唯一真相源）。
         /// composing=true 时 value 含组字预览，仅更新预览不落库。
         /// </summary>
-        public void SyncFromDom(string domValue, bool composing)
+        public void SyncFromDom(string domValue, int selStart, int selEnd, bool composing)
         {
             if (domValue == null) domValue = string.Empty;
+            selStart = Math.Max(0, Math.Min(domValue.Length, selStart));
+            selEnd = Math.Max(0, Math.Min(domValue.Length, selEnd));
             if (composing)
             {
                 compositionString = domValue.StartsWith(text) ? domValue.Substring(text.Length) : domValue;
@@ -417,35 +506,41 @@ namespace KFramework.MonoGame
             else
             {
                 compositionString = string.Empty;
-                if (domValue == text) return;
-                int insertLen = domValue.Length - text.Length;
-                if (insertLen > 0 && selectionStart <= text.Length &&
-                    domValue.Substring(0, selectionStart) == text.Substring(0, selectionStart))
-                {
-                    string inserted = domValue.Substring(selectionStart, insertLen);
-                    text = text.Insert(selectionStart, inserted);
-                    selectionStart += insertLen;
-                }
-                else
-                {
-                    text = domValue;
-                    selectionStart = text.Length;
-                }
-                selectionLength = 0;
+                // 直接采纳 DOM 的文本与光标：DOM 是原生编辑的权威来源，按此镜像可保证光标停在正确位置（如末尾）。
+                text = domValue;
+                selectionStart = selStart;
+                selectionLength = Math.Max(0, selEnd - selStart);
                 UpdateLines();
                 TextChanged?.Invoke(this, EventArgs.Empty);
             }
-            Input_IME.SyncActive(this);
+            SyncOverlay();
+        }
+
+        /// <summary>
+        /// 把引擎的 text / 光标区间写回 DOM 覆盖层：对齐 IME 候选窗位置，并在引擎改字（Backspace / 程序化输入）后修正镜像。
+        /// 不走 <see cref="Input_IME"/>（它是共享的、非 TextBox 专属），直接经 JSBind 操作覆盖层。
+        /// 组字进行中由 DOM 自行管理，不回写以免覆盖候选串。
+        /// </summary>
+        private void SyncOverlay()
+        {
+            if (!Input_IME.Active) return;
+            if (!string.IsNullOrEmpty(compositionString)) return;
+            JSBind_InputHtmlIme.SetValue(text ?? string.Empty);
+            JSBind_InputHtmlIme.SetSelectionRange(selectionStart, selectionStart + selectionLength);
         }
 
         // ---- DOM -> 引擎 的桥接入口（供 [JSExport] 调用） ----
         internal static void ProcessKey(string key, bool ctrl, bool shift, bool alt)
         {
             Keys k = ToKey(key);
-            if (k != Keys.None) _active?.SimulateKeyDown(k, shift, ctrl, alt);
+            TextBox active = ActiveOrResolved;
+            if (k != Keys.None && active != null) active.SimulateKeyDown(k, shift, ctrl, alt);
         }
-        internal static void ProcessDomValue(string value, bool composing)
-            => _active?.SyncFromDom(value, composing);
+        internal static void ProcessDomValue(string value, int selStart, int selEnd, bool composing)
+        {
+            TextBox active = ActiveOrResolved;
+            active?.SyncFromDom(value, selStart, selEnd, composing);
+        }
 
         private static Keys ToKey(string key)
         {

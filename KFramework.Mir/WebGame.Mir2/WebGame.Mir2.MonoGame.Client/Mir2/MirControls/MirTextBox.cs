@@ -283,6 +283,10 @@ namespace Client.MirControls
 
             Shown += MirTextBox_Shown;
             TextBox.MouseMove += CMain.CMain_MouseMove;
+
+            // 退化兜底：把"当前激活文本框"提供给引擎，使其在内置焦点链（_active）未建立时
+            // 仍能把控制键（删除 / 方向 / 选区）路由到正确的框，避免整框键盘输入失效。
+            KFramework.MonoGame.TextBox.ActiveTextBoxResolver = () => CMain.Instance.ActiveControl as KFramework.MonoGame.TextBox;
         }
 
         // 原生输入覆盖层为纯 Pull 模型（见 KFramework.MonoGame.Input_IME）：
@@ -352,7 +356,8 @@ namespace Client.MirControls
                         new KFramework.MonoGame.Rectangle(0, 0, Size.Width, Size.Height),
                         KFramework.MonoGame.Color.FromArgb((uint)fore),
                         TextBox.SelectionStart, !TextBox.Multiline, TextBox.Focused,
-                        KFramework.MonoGame.TextBoxRenderer.DefaultPadLeft, drawComp);
+                        KFramework.MonoGame.TextBoxRenderer.DefaultPadLeft, drawComp,
+                        TextBox.SelectionStart, TextBox.SelectionLength);
                     batch.End();
                 }
                 finally
@@ -379,6 +384,9 @@ namespace Client.MirControls
             }
 
             SetFocus();
+
+            if (TextBox.CanFocus)
+                CMain.Instance.ActiveControl = TextBox;
         }
 
         void TextBox_KeyPress(object sender, KeyPressEventArgs e)

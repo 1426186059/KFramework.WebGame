@@ -11,6 +11,30 @@
 //   IME 组字中的回车（选词）通过 isComposing 在 Web 端直接吞掉，不会冒泡误触发确认。
 import { getCanvasElement } from './gl.js';
 
+// 引擎在 main.ts 解析出程序集导出树后，通过 init() 把该对象注入本模块。
+// 覆盖层需要在 JS 侧把原生编辑结果 / 控制键回调给 C# 的 [JSExport]（合并于 JSBind_InputHtmlIme）。
+// 注意：host 并非全局变量，必须显式注入，否则 host.exports... 会抛 ReferenceError，导致 input 事件回传失效。
+let exportRoot: any = null;
+export function init(root: any): void { exportRoot = root; }
+
+// 在导出树里查找 JSBind_InputHtmlIme（[JSExport] 类型，含 OnDomValue / OnKeyDown）。
+// 优先走合并后的直接路径，失败再递归兜底，避免不同 .NET 版本导出结构差异导致找不到。
+function findIme(node: any): any {
+    if (!node || typeof node !== 'object') return null;
+    if (typeof node.OnDomValue === 'function' && typeof node.OnKeyDown === 'function') return node;
+    for (const v of Object.values(node)) {
+        const r = findIme(v);
+        if (r) return r;
+    }
+    return null;
+}
+function ime(): any {
+    if (!exportRoot) return null;
+    const direct = exportRoot?.KFramework?.MonoGame?.JSBind_InputHtmlIme;
+    if (direct && typeof direct.OnDomValue === 'function' && typeof direct.OnKeyDown === 'function') return direct;
+    return findIme(exportRoot);
+}
+
 type InputEl = HTMLInputElement | HTMLTextAreaElement;
 
 interface ShowParams {
@@ -72,16 +96,20 @@ function attach(el: InputEl): void {
         const ke = e as KeyboardEvent;
         const ctrl = ke.ctrlKey || ke.metaKey, shift = ke.shiftKey, alt = ke.altKey;
         const k = ke.key;
+        // IME 组字中的回车用于选词，直接吞掉，避免误触发游戏确认（引擎侧 Enter 由非组字态的回车承担）。
+        if (composing && k === 'Enter') { ke.preventDefault(); ke.stopPropagation(); return; }
         const controlKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'Enter', 'Escape', 'Tab'];
         if (ctrl && (k === 'a' || k === 'A')) {
-            host.exports.MirEngine.BrowserInputIme.OnKeyDown(k, ctrl, shift, alt);
+            ime()?.OnKeyDown(k, ctrl, shift, alt);
             ke.preventDefault();
+            ke.stopPropagation();
             return;
         }
         if (controlKeys.indexOf(k) !== -1) {
             // 控制键转发给引擎，由引擎自行维护光标 / 文本（引擎是唯一真相源）
-            host.exports.MirEngine.BrowserInputIme.OnKeyDown(k, ctrl, shift, alt);
+            ime()?.OnKeyDown(k, ctrl, shift, alt);
             ke.preventDefault();
+            ke.stopPropagation();
             return;
         }
         e.stopPropagation();
@@ -92,15 +120,29 @@ function attach(el: InputEl): void {
         const el2 = activeEl();
         if (!el2) return;
         const ke = e as InputEvent;
-        host.exports.MirEngine.BrowserInputIme.OnDomValue(el2.value, ke.isComposing === true);
+        // 带上 DOM 真实光标位置，让引擎按此镜像 text / 光标，保证光标停在末尾而非开头。
+        ime()?.OnDomValue(el2.value, el2.selectionStart, el2.selectionEnd, ke.isComposing === true);
     });
     // 跟踪 IME 组字状态（比单纯依赖 keydown.isComposing 更稳，覆盖部分浏览器边缘）。
     el.addEventListener('compositionupdate', () => {
         const el2 = activeEl();
-        if (el2) host.exports.MirEngine.BrowserInputIme.OnDomValue(el2.value, true);
+        if (el2) ime()?.OnDomValue(el2.value, el2.selectionStart, el2.selectionEnd, true);
     });
     el.addEventListener('compositionstart', () => { composing = true; });
     el.addEventListener('compositionend', () => { composing = false; });
+
+    // 焦点保活：若覆盖层本应活跃却意外失焦（被 canvas / 其它元素抢走焦点），重新夺回焦点。
+    // 否则普通字符与 IME 组字无法进入输入框，表现为"能删不能打字"。
+    // 仅当覆盖层仍激活（last 未清空）时补救；游戏调用 hide() 会清空 last，不再强抢焦点。
+    el.addEventListener('blur', () => {
+        if (last && el.style.display !== 'none') {
+            setTimeout(() => {
+                if (last && el.style.display !== 'none' && document.activeElement !== el) {
+                    try { el.focus(); } catch { /* ignore */ }
+                }
+            }, 0);
+        }
+    });
 
 }
 

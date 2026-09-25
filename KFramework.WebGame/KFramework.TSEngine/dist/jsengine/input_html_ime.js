@@ -10,6 +10,33 @@
 //   非组字态的回车 / Esc 放行冒泡，由全局键盘（input_keyboard）捕获，供 C# 侧判断确认 / 取消；
 //   IME 组字中的回车（选词）通过 isComposing 在 Web 端直接吞掉，不会冒泡误触发确认。
 import { getCanvasElement } from './gl.js';
+// 引擎在 main.ts 解析出程序集导出树后，通过 init() 把该对象注入本模块。
+// 覆盖层需要在 JS 侧把原生编辑结果 / 控制键回调给 C# 的 [JSExport]（合并于 JSBind_InputHtmlIme）。
+// 注意：host 并非全局变量，必须显式注入，否则 host.exports... 会抛 ReferenceError，导致 input 事件回传失效。
+let exportRoot = null;
+export function init(root) { exportRoot = root; }
+// 在导出树里查找 JSBind_InputHtmlIme（[JSExport] 类型，含 OnDomValue / OnKeyDown）。
+// 优先走合并后的直接路径，失败再递归兜底，避免不同 .NET 版本导出结构差异导致找不到。
+function findIme(node) {
+    if (!node || typeof node !== 'object')
+        return null;
+    if (typeof node.OnDomValue === 'function' && typeof node.OnKeyDown === 'function')
+        return node;
+    for (const v of Object.values(node)) {
+        const r = findIme(v);
+        if (r)
+            return r;
+    }
+    return null;
+}
+function ime() {
+    if (!exportRoot)
+        return null;
+    const direct = exportRoot?.KFramework?.MonoGame?.JSBind_InputHtmlIme;
+    if (direct && typeof direct.OnDomValue === 'function' && typeof direct.OnKeyDown === 'function')
+        return direct;
+    return findIme(exportRoot);
+}
 let inputEl = null;
 let areaEl = null;
 let last = null;
@@ -61,16 +88,24 @@ function attach(el) {
         const ke = e;
         const ctrl = ke.ctrlKey || ke.metaKey, shift = ke.shiftKey, alt = ke.altKey;
         const k = ke.key;
+        // IME 组字中的回车用于选词，直接吞掉，避免误触发游戏确认（引擎侧 Enter 由非组字态的回车承担）。
+        if (composing && k === 'Enter') {
+            ke.preventDefault();
+            ke.stopPropagation();
+            return;
+        }
         const controlKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'Enter', 'Escape', 'Tab'];
         if (ctrl && (k === 'a' || k === 'A')) {
-            host.exports.MirEngine.BrowserInputIme.OnKeyDown(k, ctrl, shift, alt);
+            ime()?.OnKeyDown(k, ctrl, shift, alt);
             ke.preventDefault();
+            ke.stopPropagation();
             return;
         }
         if (controlKeys.indexOf(k) !== -1) {
             // 控制键转发给引擎，由引擎自行维护光标 / 文本（引擎是唯一真相源）
-            host.exports.MirEngine.BrowserInputIme.OnKeyDown(k, ctrl, shift, alt);
+            ime()?.OnKeyDown(k, ctrl, shift, alt);
             ke.preventDefault();
+            ke.stopPropagation();
             return;
         }
         e.stopPropagation();
@@ -79,17 +114,35 @@ function attach(el) {
     // 原生编辑结果回传：以引擎自身光标为锚点合并进 text（引擎是唯一真相源）
     el.addEventListener('input', (e) => {
         const el2 = activeEl();
-        if (!el2) return;
+        if (!el2)
+            return;
         const ke = e;
-        host.exports.MirEngine.BrowserInputIme.OnDomValue(el2.value, ke.isComposing === true);
+        // 带上 DOM 真实光标位置，让引擎按此镜像 text / 光标，保证光标停在末尾而非开头。
+        ime()?.OnDomValue(el2.value, el2.selectionStart, el2.selectionEnd, ke.isComposing === true);
     });
+    // 跟踪 IME 组字状态（比单纯依赖 keydown.isComposing 更稳，覆盖部分浏览器边缘）。
     el.addEventListener('compositionupdate', () => {
         const el2 = activeEl();
-        if (el2) host.exports.MirEngine.BrowserInputIme.OnDomValue(el2.value, true);
+        if (el2)
+            ime()?.OnDomValue(el2.value, el2.selectionStart, el2.selectionEnd, true);
     });
     el.addEventListener('compositionstart', () => { composing = true; });
     el.addEventListener('compositionend', () => { composing = false; });
-
+    // 焦点保活：若覆盖层本应活跃却意外失焦（被 canvas / 其它元素抢走焦点），重新夺回焦点。
+    // 否则普通字符与 IME 组字无法进入输入框，表现为"能删不能打字"。
+    // 仅当覆盖层仍激活（last 未清空）时补救；游戏调用 hide() 会清空 last，不再强抢焦点。
+    el.addEventListener('blur', () => {
+        if (last && el.style.display !== 'none') {
+            setTimeout(() => {
+                if (last && el.style.display !== 'none' && document.activeElement !== el) {
+                    try {
+                        el.focus();
+                    }
+                    catch { /* ignore */ }
+                }
+            }, 0);
+        }
+    });
 }
 // 把完整 CSS 字体串中的 px 按 dpr 缩放到 CSS 像素后整体套用，使 DOM 字形与画布 SpriteFont 一致。
 function scaleFontPx(css, dpr) {
@@ -166,19 +219,24 @@ export function getValue() {
     const el = activeEl();
     return el ? el.value : '';
 }
-
 /** C# 把引擎 text + IME 预览写回 DOM，使镜像与引擎保持一致。 */
 export function setValue(v) {
     const el = activeEl();
-    if (!el) return;
-    if (el.value !== (v ?? '')) el.value = v ?? '';
+    if (!el)
+        return;
+    if (el.value !== (v ?? ''))
+        el.value = v ?? '';
 }
-
 /** C# 把引擎光标区间写回 DOM（对齐 IME 候选窗位置）。 */
 export function setSelectionRange(start, end) {
     const el = activeEl();
-    if (!el) return;
-    try { if (typeof el.setSelectionRange === 'function') el.setSelectionRange(start, end); } catch (e) { /* ignore */ }
+    if (!el)
+        return;
+    try {
+        if (typeof el.setSelectionRange === 'function')
+            el.setSelectionRange(start, end);
+    }
+    catch { /* ignore */ }
 }
 /** 重新定位当前可见输入框（窗口缩放 / 页面滚动时由 reflow 自动调用，也可由 C# 显式调用）。 */
 export function reposition(cx, cy, cw, ch) {

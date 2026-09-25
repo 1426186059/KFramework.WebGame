@@ -101,6 +101,11 @@ const config = getConfig();
 const mono = (await getAssemblyExports('KFramework.MonoGame')) as MonoGameExports | null;
 const bind = mono?.KFramework?.MonoGame;
 
+// 把程序集导出树注入文本输入覆盖层模块，使其能在 JS 侧回调 C# 的 [JSExport]
+//（MirEngine.BrowserInputIme.OnDomValue / OnKeyDown）。host 并非全局变量，必须显式传入，
+// 否则 input_html_ime.js 里 host.exports... 会抛 ReferenceError，导致输入回传失效。
+inputOverlay.init(mono);
+
 if (!bind) {
     console.warn('[main] KFramework.MonoGame 导出未就绪');
 } else {

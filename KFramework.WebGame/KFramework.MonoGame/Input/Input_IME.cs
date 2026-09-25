@@ -12,6 +12,10 @@ namespace KFramework.MonoGame
     /// </list>
     /// 纯 Pull 模型：引擎每帧经 <see cref="Poll"/> 从 DOM 覆盖层拉取文本到 <see cref="Text"/>，并检测回车上升沿到 <see cref="EnterPressed"/>；
     /// 回车 / Esc 由全局键盘（<see cref="Input_KeyBoard"/>）从冒泡事件捕获，本类不暴露输入事件。
+    ///
+    /// <para>DOM 覆盖层经 [JSExport]（JSBind_InputHtmlIme）转发的控制键 / 编辑结果，先汇聚到本类，
+    /// 再以事件形式分发出去（<see cref="KeyDown"/> / <see cref="DomValue"/>），供 TextBox 等订阅方监听，
+    /// 避免 [JSExport] 直接耦合到具体控件。</para>
     /// </summary>
     public static class Input_IME
     {
@@ -20,6 +24,14 @@ namespace KFramework.MonoGame
 
         /// <summary>最近一次 <see cref="Poll"/> 拉取到的文本（含 IME 组字内容）。未激活时为空串。</summary>
         public static string Text { get; private set; } = string.Empty;
+
+        /// <summary>原生覆盖层转发的控制键（来自 JSBind_InputHtmlIme.OnKeyDown）。
+        /// 参数为 (key, ctrl, shift, alt)。TextBox 订阅此事件以维护光标 / 选区。</summary>
+        public static event Action<string, bool, bool, bool> KeyDown;
+
+        /// <summary>原生覆盖层转发的文本编辑结果（来自 JSBind_InputHtmlIme.OnDomValue，含 DOM 真实光标）。
+        /// 参数为 (value, selStart, selEnd, composing)。TextBox 订阅此事件以采纳文本与光标。</summary>
+        public static event Action<string, int, int, bool> DomValue;
 
         /// <summary>在画布指定位置（后备缓冲像素）显示原生输入框并聚焦（transparent 恒为 true：DOM 只作捕获代理）。</summary>
         public static void Open(
@@ -39,6 +51,14 @@ namespace KFramework.MonoGame
             Text = string.Empty;
             JSBind_InputHtmlIme.Hide();
         }
+
+        /// <summary>由 JSBind_InputHtmlIme.OnKeyDown 调用：把控制键以事件形式转发给订阅方。</summary>
+        internal static void RouteKeyDown(string key, bool ctrl, bool shift, bool alt)
+            => KeyDown?.Invoke(key, ctrl, shift, alt);
+
+        /// <summary>由 JSBind_InputHtmlIme.OnDomValue 调用：把文本编辑结果以事件形式转发给订阅方。</summary>
+        internal static void RouteDomValue(string value, int selStart, int selEnd, bool composing)
+            => DomValue?.Invoke(value, selStart, selEnd, composing);
 
         /// <summary>每帧由 <see cref="Input.Poll"/> 调用一次：仅在激活时从 DOM 覆盖层拉取文本，并检测回车上升沿。</summary>
         public static void Poll()
