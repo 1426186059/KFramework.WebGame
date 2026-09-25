@@ -15,14 +15,13 @@ namespace KFramework.MonoGame
         /// <summary>闪烁半周期（毫秒）：亮、灭各占一个半周期。默认 530ms（≈ UGUI 的 0.85Hz）。</summary>
         public long BlinkIntervalMs { get; set; } = 530;
 
-        /// <summary>当前是否处于“亮”半周期（供外部判断是否需要重绘）。</summary>
-        public bool Visible => _focused && alpha > 0f;
+        /// <summary>光标当前是否处于“亮”半周期（供外部判断是否需要重绘）。</summary>
+        public bool CaretVisible => _focused && alpha > 0f;
 
         /// <summary>默认左边距，对齐 UGUI InputField 文本内边距。</summary>
         public const float DefaultPadLeft = 3f;
 
         private DateTime _blinkStartTime = DateTime.Now;
-        private Texture2D _whitePixel;
         private float alpha = 0;
         private bool _focused;
 
@@ -55,9 +54,6 @@ namespace KFramework.MonoGame
                 _blinkStartTime = now;
             }
         }
-
-        private static float Measure(IFont font, string s)
-            => (font != null && !string.IsNullOrEmpty(s)) ? font.MeasureString(s).X : 0f;
 
         private static float YOf(int lineIndex, bool multiline, float lineH, Rectangle bounds)
             => multiline
@@ -107,16 +103,6 @@ namespace KFramework.MonoGame
                     (int)System.Math.Round(w),
                     (int)System.Math.Round(lineH)),
                 color);
-        }
-
-        private Texture2D WhitePixel(GraphicsDevice device)
-        {
-            if (_whitePixel == null)
-            {
-                _whitePixel = device.CreateTexture(1, 1);
-                _whitePixel.SetData(new byte[] { 255, 255, 255, 255 }, 0, 0, 1, 1);
-            }
-            return _whitePixel;
         }
     }
 }
