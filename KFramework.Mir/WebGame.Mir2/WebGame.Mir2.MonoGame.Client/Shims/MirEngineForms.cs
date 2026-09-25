@@ -1,5 +1,6 @@
 using System;
 using Client;
+using Client.MirGraphics;
 using WebGame.Mir2.MonoGame.Client;
 
 namespace MirEngine
@@ -74,6 +75,7 @@ namespace MirEngine
         public bool Multiline { get => _inner.Multiline; set => _inner.Multiline = value; }
         public int SelectionStart { get => _inner.SelectionStart; set => _inner.SelectionStart = value; }
         public int SelectionLength { get => _inner.SelectionLength; set => _inner.SelectionLength = value; }
+        public string CompositionString { get => _inner.CompositionString; }
         public bool UseSystemPasswordChar { get => _inner.UseSystemPasswordChar; set => _inner.UseSystemPasswordChar = value; }
         public bool Visible { get => _inner.Visible; set => _inner.Visible = value; }
         public bool Enabled { get => _inner.Enabled; set => _inner.Enabled = value; }

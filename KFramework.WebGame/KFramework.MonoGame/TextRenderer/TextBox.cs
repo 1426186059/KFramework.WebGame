@@ -68,6 +68,9 @@ namespace KFramework.MonoGame
         private string[] lines = new string[0];
         private int selectionStart;
         private int selectionLength;
+        private int selectionAnchor;
+        // IME 组字预览（尚未提交到 text），仅用于绘制；对齐 UGUI 的 InputField.compositionString。
+        private string compositionString = string.Empty;
         private int maxLength;
         private bool multiline;
         private bool useSystemPasswordChar;
@@ -112,9 +115,13 @@ namespace KFramework.MonoGame
                 text = value ?? string.Empty;
                 UpdateLines();
                 selectionStart = Math.Min(selectionStart, text.Length);
+                compositionString = string.Empty;
                 TextChanged?.Invoke(this, EventArgs.Empty);
             }
         }
+
+        /// <summary>IME 组字预览文本（尚未提交到 Text）。</summary>
+        public string CompositionString => compositionString;
 
         public string[] Lines
         {
@@ -186,6 +193,9 @@ namespace KFramework.MonoGame
         // 上层无需再自行维护 _current / ReleaseFocus 之类的互斥逻辑。
         private static TextBox _active;
 
+        /// <summary>当前由引擎接管的文本框（DOM 回传的锚点）。</summary>
+        internal static TextBox ActiveTextBox => _active;
+
         // 回车确认：DOM 的非组字态 Enter 冒泡到全局键盘（组字选词 Enter 已在 Web 端被 isComposing 吞掉），
         // 这里在"本框是激活捕获目标"时把它模拟进本框，使原消费方（LoginScene / MirInputBox 等）
         // 通过 KeyPress / OnKeyDown 拿到的 Enter 与原版 WinForms 一致——焦点互斥同样由 _active 维护。
@@ -220,8 +230,8 @@ namespace KFramework.MonoGame
                 Input_IME.Open(
                     location.X * OverlayScale, location.Y * OverlayScale,
                     size.Width * OverlayScale, size.Height * OverlayScale,
-                    overlayFontPx, (int)fc.PackedValue, text,
-                    useSystemPasswordChar, maxLength, multiline, overlayFontCss);
+                    OverlayFontPx, (int)fc.PackedValue, text,
+                    useSystemPasswordChar, maxLength, multiline, OverlayFontCss);
             }
         }
 
@@ -302,29 +312,163 @@ namespace KFramework.MonoGame
 
         public void ScrollToCaret() { }
 
-        public void SimulateKeyDown(Keys keyCode)
+        /// <summary>
+        /// 由 DOM 转发来的控制键（对齐 UGUI InputField.KeyPressed）。引擎自行维护 text / 光标 / 选区——
+        /// 这是唯一真相源，绝不反向读取 DOM 的光标位置。
+        /// </summary>
+        public void SimulateKeyDown(Keys keyCode, bool shift = false, bool ctrl = false, bool alt = false)
         {
             var args = new KeyEventArgs(keyCode);
             KeyDown?.Invoke(this, args);
             if (args.Handled) return;
             if (!Enabled || ReadOnly) return;
+
+            if (ctrl && !alt)
+            {
+                if (keyCode == Keys.A) { SelectAll(); Input_IME.SyncActive(this); return; }
+                // C / V / X 依赖剪贴板，由浏览器侧处理，这里不拦截。
+            }
+
             switch (keyCode)
             {
                 case Keys.Backspace:
                     if (selectionLength > 0) { text = text.Remove(selectionStart, selectionLength); selectionLength = 0; }
                     else if (selectionStart > 0) { selectionStart--; text = text.Remove(selectionStart, 1); }
                     break;
+                case Keys.Delete:
+                    if (selectionLength > 0) { text = text.Remove(selectionStart, selectionLength); selectionLength = 0; }
+                    else if (selectionStart < text.Length) { text = text.Remove(selectionStart, 1); }
+                    break;
                 case Keys.Left:
-                    if (selectionLength > 0) selectionLength = 0;
-                    else selectionStart = Math.Max(0, selectionStart - 1);
+                    if (shift) { if (selectionLength == 0) selectionAnchor = selectionStart; selectionStart = Math.Max(0, selectionStart - 1); selectionLength = Math.Abs(selectionStart - selectionAnchor); }
+                    else { selectionStart = Math.Max(0, selectionStart - 1); selectionLength = 0; }
                     break;
                 case Keys.Right:
-                    if (selectionLength > 0) { selectionStart = Math.Min(text.Length, selectionStart + selectionLength); selectionLength = 0; }
-                    else selectionStart = Math.Min(text.Length, selectionStart + 1);
+                    if (shift) { if (selectionLength == 0) selectionAnchor = selectionStart; selectionStart = Math.Min(text.Length, selectionStart + 1); selectionLength = Math.Abs(selectionStart - selectionAnchor); }
+                    else { selectionStart = Math.Min(text.Length, selectionStart + 1); selectionLength = 0; }
                     break;
+                case Keys.Home:
+                    selectionStart = 0; selectionLength = 0; break;
+                case Keys.End:
+                    selectionStart = text.Length; selectionLength = 0; break;
+                case Keys.Escape:
+                    KeyPress?.Invoke(this, new KeyPressEventArgs((char)Keys.Escape));
+                    Input_IME.SyncActive(this);
+                    return;
+                case Keys.Enter:
+                    KeyPress?.Invoke(this, new KeyPressEventArgs((char)Keys.Enter));
+                    Input_IME.SyncActive(this);
+                    return;
             }
-            if (keyCode == Keys.Backspace) { UpdateLines(); TextChanged?.Invoke(this, EventArgs.Empty); }
-            if (keyCode == Keys.Enter) KeyPress?.Invoke(this, new KeyPressEventArgs((char)Keys.Enter));
+            if (keyCode == Keys.Backspace || keyCode == Keys.Delete)
+            {
+                UpdateLines();
+                TextChanged?.Invoke(this, EventArgs.Empty);
+            }
+            Input_IME.SyncActive(this);
+        }
+
+        /// <summary>提交文本（IME 组字结束 / 粘贴 / 程序化输入），在光标处插入并推进光标。</summary>
+        public void InsertText(string value)
+        {
+            if (string.IsNullOrEmpty(value) || !Enabled || ReadOnly) return;
+            if (maxLength > 0 && text.Length - selectionLength >= maxLength) return;
+            if (selectionLength > 0) text = text.Remove(selectionStart, selectionLength);
+            text = text.Insert(selectionStart, value);
+            selectionStart += value.Length;
+            selectionLength = 0;
+            compositionString = string.Empty;
+            UpdateLines();
+            TextChanged?.Invoke(this, EventArgs.Empty);
+            Input_IME.SyncActive(this);
+        }
+
+        /// <summary>设置 IME 组字预览（尚未提交）。</summary>
+        public void SetComposition(string value)
+        {
+            compositionString = value ?? string.Empty;
+            Input_IME.SyncActive(this);
+        }
+
+        /// <summary>提交 IME 组字结果。</summary>
+        public void CommitComposition(string value)
+        {
+            InsertText(value);
+            compositionString = string.Empty;
+        }
+
+        public void SelectAll()
+        {
+            selectionStart = 0;
+            selectionLength = text.Length;
+        }
+
+        /// <summary>
+        /// DOM 把原生编辑结果回传：以引擎自身光标为锚点合并差异（保证引擎是文本唯一真相源）。
+        /// composing=true 时 value 含组字预览，仅更新预览不落库。
+        /// </summary>
+        public void SyncFromDom(string domValue, bool composing)
+        {
+            if (domValue == null) domValue = string.Empty;
+            if (composing)
+            {
+                compositionString = domValue.StartsWith(text) ? domValue.Substring(text.Length) : domValue;
+            }
+            else
+            {
+                compositionString = string.Empty;
+                if (domValue == text) return;
+                int insertLen = domValue.Length - text.Length;
+                if (insertLen > 0 && selectionStart <= text.Length &&
+                    domValue.Substring(0, selectionStart) == text.Substring(0, selectionStart))
+                {
+                    string inserted = domValue.Substring(selectionStart, insertLen);
+                    text = text.Insert(selectionStart, inserted);
+                    selectionStart += insertLen;
+                }
+                else
+                {
+                    text = domValue;
+                    selectionStart = text.Length;
+                }
+                selectionLength = 0;
+                UpdateLines();
+                TextChanged?.Invoke(this, EventArgs.Empty);
+            }
+            Input_IME.SyncActive(this);
+        }
+
+        // ---- DOM -> 引擎 的桥接入口（供 [JSExport] 调用） ----
+        internal static void ProcessKey(string key, bool ctrl, bool shift, bool alt)
+        {
+            Keys k = ToKey(key);
+            if (k != Keys.None) _active?.SimulateKeyDown(k, shift, ctrl, alt);
+        }
+        internal static void ProcessDomValue(string value, bool composing)
+            => _active?.SyncFromDom(value, composing);
+
+        private static Keys ToKey(string key)
+        {
+            if (string.IsNullOrEmpty(key)) return Keys.None;
+            switch (key)
+            {
+                case "ArrowLeft": return Keys.Left;
+                case "ArrowRight": return Keys.Right;
+                case "ArrowUp": return Keys.Up;
+                case "ArrowDown": return Keys.Down;
+                case "Backspace": return Keys.Backspace;
+                case "Delete": return Keys.Delete;
+                case "Home": return Keys.Home;
+                case "End": return Keys.End;
+                case "Enter": return Keys.Enter;
+                case "Return": return Keys.Enter;
+                case "Escape": return Keys.Escape;
+                case "Tab": return Keys.Tab;
+                case " ": return Keys.Space;
+            }
+            if (Enum.TryParse<Keys>(key, true, out Keys p)) return p;
+            if (key.Length == 1) return (Keys)char.ToUpperInvariant(key[0]);
+            return Keys.None;
         }
 
         public void SimulateKeyPress(char keyChar)

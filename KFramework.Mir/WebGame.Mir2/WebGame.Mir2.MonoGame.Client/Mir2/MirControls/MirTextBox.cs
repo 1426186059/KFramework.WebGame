@@ -300,25 +300,11 @@ namespace Client.MirControls
         // 聚焦时到点翻转并置 TextureValid=false 触发重绘；失焦时关掉光标）。
         protected internal override void DrawControl()
         {
-            // Pull 模型：每帧从引擎 Input_IME 拉取（引擎已通过 Input.Poll 刷新），仅作用于当前激活框；
-            // 不再订阅任何 Input_IME 事件。文本变化会触发 TextChanged → 登录校验 / 重绘。
-            // 覆盖层开 / 关、焦点互斥、回车转发均由引擎在 Focus()/Blur() 内处理（与原版 WinForms 一致）。
-
-            // 光标闪烁由引擎 TextBoxRenderer.DrawTextBox 内部自驱；聚焦时每帧令纹理失效，
-            // 使 DrawTextBox 每帧执行、引擎据此推进闪烁节拍。
-            if (TextBox != null && TextBox.Focused)
+            // 引擎 TextBox 持有 text / 光标 / 选区 / IME 预览，是文本与光标的唯一真相源（对齐 UGUI InputField）。
+            // DOM 仅转发控制键 / 回传原生编辑结果，引擎不再从 DOM 读取文本或光标。
+            // 聚焦时每帧令纹理失效，使引擎 TextBoxRenderer 每帧执行并推进光标闪烁节拍。
+            if (TextBox != null && TextBox.Focused && KFramework.MonoGame.Input_IME.Active)
                 TextureValid = false;
-
-            if (TextBox.Focused && KFramework.MonoGame.Input_IME.Active)
-            {
-                string t = KFramework.MonoGame.Input_IME.Text;
-                if (TextBox.Text != t) TextBox.Text = t;
-                // 同步 DOM 真实光标位置：初始即文字末尾，左右键 / 点击移动后自绘光标跟随。
-                int ss = KFramework.MonoGame.Input_IME.SelectionStart;
-                int sl = KFramework.MonoGame.Input_IME.SelectionLength;
-                if (TextBox.SelectionStart != ss) TextBox.SelectionStart = ss;
-                if (TextBox.SelectionLength != sl) TextBox.SelectionLength = sl;
-            }
 
             base.DrawControl();
         }
@@ -344,12 +330,12 @@ namespace Client.MirControls
             // 文本框纹理作为面板上的透明叠层：无背景色时清成透明（alpha 0），避免盖住面板里的输入框底。
             int back = (TextBox.BackColor != Color.Empty && TextBox.BackColor.A > 0) ? TextBox.BackColor.ToArgb() : 0;
             int selBack = Color.FromArgb(128, 51, 153, 255).ToArgb();
-            // DOM 覆盖层不透明（TransparentDomInput=false）且本框正由 DOM 接管时，文字与光标一律交给浏览器
-            // 原生 DOM 显示（浏览器光标、选区、IME 候选窗都更贴合系统），引擎只把纹理清成透明，避免与 DOM 文字重影。
-            // 仅在 DOM 透明（文字由引擎自绘）或本框未接管（失焦/隐藏）时，才在 canvas 上绘制文字与光标。
+            // 文字与光标一律由引擎在 canvas 自绘；DOM 覆盖层仅作 IME / 键盘捕获代理（透明、pointer-events:none）。
             string drawText = TextBox.Text ?? "";
+            if (TextBox.UseSystemPasswordChar) drawText = new string('●', drawText.Length);
+            string drawComp = TextBox.CompositionString ?? "";
+            if (TextBox.UseSystemPasswordChar) drawComp = new string('●', drawComp.Length);
             TextRenderer.Clear(ControlTexture, back);
-            // Browser 模式下文字与光标都交给 DOM，引擎只保留背景（已 Clear）。
             
             {
                 // 渲染目标与批次由本控件绑定，文本 + 光标交给基础库 TextBoxRenderer。
@@ -365,7 +351,8 @@ namespace Client.MirControls
                         batch, DXManager.GDevice, font, drawText,
                         new KFramework.MonoGame.Rectangle(0, 0, Size.Width, Size.Height),
                         KFramework.MonoGame.Color.FromArgb((uint)fore),
-                        TextBox.SelectionStart, !TextBox.Multiline, TextBox.Focused);
+                        TextBox.SelectionStart, !TextBox.Multiline, TextBox.Focused,
+                        KFramework.MonoGame.TextBoxRenderer.DefaultPadLeft, drawComp);
                     batch.End();
                 }
                 finally

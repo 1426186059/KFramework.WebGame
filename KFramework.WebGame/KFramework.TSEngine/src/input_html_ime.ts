@@ -60,6 +60,7 @@ function attach(el: InputEl): void {
     el.style.background = 'transparent';
     el.style.boxSizing = 'border-box';
     el.style.zIndex = '10';
+    el.style.pointerEvents = 'none'; // 点击穿透到 canvas，由引擎按坐标自算光标（对齐 UGUI InputField 自行处理指针）
     el.style.display = 'none';
     el.setAttribute('autocomplete', 'off');
     el.setAttribute('spellcheck', 'false');
@@ -69,33 +70,38 @@ function attach(el: InputEl): void {
     // （例如密码里敲字母触发游戏全局快捷键）。回车 / Esc 的放行策略见下方 keydown。
     el.addEventListener('keydown', (e: Event) => {
         const ke = e as KeyboardEvent;
-        if (ke.key === 'Enter') {
-            // IME 组字中选词用的 Enter（isComposing 或 composing 为真）必须吞掉，
-            // 不能冒泡到全局键盘，否则会误触发游戏“确认”（如打字选词时误提交）。
-            if (ke.isComposing || composing) {
-                ke.preventDefault();
-                ke.stopPropagation();
-                return;
-            }
-            const confirm = !last || !last.multiline || ke.shiftKey;
-            if (confirm) ke.preventDefault();   // 阻止表单提交 / 换行，并放行冒泡
-            else e.stopPropagation();           // 多行换行：不冒泡
+        const ctrl = ke.ctrlKey || ke.metaKey, shift = ke.shiftKey, alt = ke.altKey;
+        const k = ke.key;
+        const controlKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'Enter', 'Escape', 'Tab'];
+        if (ctrl && (k === 'a' || k === 'A')) {
+            host.exports.MirEngine.BrowserInputIme.OnKeyDown(k, ctrl, shift, alt);
+            ke.preventDefault();
             return;
         }
-        if (ke.key === 'Escape') {
+        if (controlKeys.indexOf(k) !== -1) {
+            // 控制键转发给引擎，由引擎自行维护光标 / 文本（引擎是唯一真相源）
+            host.exports.MirEngine.BrowserInputIme.OnKeyDown(k, ctrl, shift, alt);
             ke.preventDefault();
-            return; // 放行冒泡，供游戏检测“取消”
+            return;
         }
         e.stopPropagation();
     });
     // 跟踪 IME 组字状态（比单纯依赖 keydown.isComposing 更稳，覆盖部分浏览器边界）。
+    // 原生编辑结果回传：以引擎自身光标为锚点合并进 text（引擎是唯一真相源）
+    el.addEventListener('input', (e: Event) => {
+        const el2 = activeEl();
+        if (!el2) return;
+        const ke = e as InputEvent;
+        host.exports.MirEngine.BrowserInputIme.OnDomValue(el2.value, ke.isComposing === true);
+    });
+    // 跟踪 IME 组字状态（比单纯依赖 keydown.isComposing 更稳，覆盖部分浏览器边缘）。
+    el.addEventListener('compositionupdate', () => {
+        const el2 = activeEl();
+        if (el2) host.exports.MirEngine.BrowserInputIme.OnDomValue(el2.value, true);
+    });
     el.addEventListener('compositionstart', () => { composing = true; });
     el.addEventListener('compositionend', () => { composing = false; });
-    el.addEventListener('keyup', (e: Event) => {
-        const ke = e as KeyboardEvent;
-        if (ke.key === 'Enter' || ke.key === 'Escape') return; // 与 keydown 一致
-        e.stopPropagation();
-    });
+
 }
 
 // 把完整 CSS 字体串中的 px 按 dpr 缩放到 CSS 像素后整体套用，使 DOM 字形与画布 SpriteFont 一致。
@@ -168,17 +174,18 @@ export function getValue(): string {
     return el ? el.value : '';
 }
 
-/** C# 每帧拉取：返回当前输入框光标起始位置（未激活时 0）。
- *  引擎自绘光标据此定位——初始即文字末尾，左右键 / 点击移动后同步跟随。 */
-export function getSelectionStart(): number {
+/** C# 把引擎 text + IME 预览写回 DOM，使镜像与引擎保持一致。 */
+export function setValue(v: string): void {
     const el = activeEl();
-    return el ? (el.selectionStart ?? 0) : 0;
+    if (!el) return;
+    if (el.value !== (v ?? '')) el.value = v ?? '';
 }
 
-/** C# 每帧拉取：返回当前输入框光标结束位置（未激活时 0）。 */
-export function getSelectionEnd(): number {
+/** C# 把引擎光标区间写回 DOM（对齐 IME 候选窗位置）。 */
+export function setSelectionRange(start: number, end: number): void {
     const el = activeEl();
-    return el ? (el.selectionEnd ?? 0) : 0;
+    if (!el) return;
+    try { if (typeof el.setSelectionRange === 'function') el.setSelectionRange(start, end); } catch { /* ignore */ }
 }
 
 /** 重新定位当前可见输入框（窗口缩放 / 页面滚动时由 reflow 自动调用，也可由 C# 显式调用）。 */

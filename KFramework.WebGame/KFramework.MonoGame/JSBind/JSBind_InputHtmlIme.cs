@@ -31,16 +31,16 @@ namespace KFramework.MonoGame
         [JSImport("hide", "input_html_ime")]
         public static partial void Hide();
 
-        /// <summary>取当前输入框文本（含 IME 组字内容）；由 C# 每帧拉取以同步到游戏侧 TextBox。</summary>
+        /// <summary>取当前输入框文本（含 IME 组字内容）。</summary>
         [JSImport("getValue", "input_html_ime")]
         public static partial string GetValue();
 
-        /// <summary>取当前输入框光标起始位置（DOM <input>.selectionStart）；由 C# 每帧拉取以同步自绘光标。</summary>
-        [JSImport("getSelectionStart", "input_html_ime")]
-        public static partial int GetSelectionStart();
+        /// <summary>设置当前输入框文本（引擎把自身 text + IME 预览写回 DOM，使镜像一致）。</summary>
+        [JSImport("setValue", "input_html_ime")]
+        public static partial void SetValue(string value);
 
-        /// <summary>取当前输入框光标结束位置（DOM <input>.selectionEnd）。</summary>
-        [JSImport("getSelectionEnd", "input_html_ime")]
-        public static partial int GetSelectionEnd();
+        /// <summary>设置当前输入框光标区间（引擎把自身光标写回 DOM，对齐 IME 候选窗位置）。</summary>
+        [JSImport("setSelectionRange", "input_html_ime")]
+        public static partial void SetSelectionRange(int start, int end);
     }
 }

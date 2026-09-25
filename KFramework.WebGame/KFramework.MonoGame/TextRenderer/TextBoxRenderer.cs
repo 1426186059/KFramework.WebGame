@@ -22,21 +22,23 @@ namespace KFramework.MonoGame
         /// </summary>
         public static void DrawTextBox(SpriteBatch batch, GraphicsDevice device, IFont font, string text,
             Rectangle bounds, Color foreColor, int caretIndex,
-            bool multiline, bool focused, float padLeft = DefaultPadLeft)
+            bool multiline, bool focused, float padLeft = DefaultPadLeft, string composition = "")
         {
             if (batch == null || device == null || font == null) return;
 
+            string display = string.IsNullOrEmpty(composition) ? (text ?? string.Empty) : (text ?? string.Empty) + composition;
             float lineH = font.LineSpacing;
             float y = multiline ? 2f : System.Math.Max(0f, (bounds.Height - lineH) / 2f);
 
-            if (!string.IsNullOrEmpty(text))
+            if (!string.IsNullOrEmpty(display))
             {
-                font.Draw(batch, text, new Vector2(bounds.X + padLeft, bounds.Y + y), foreColor,
+                font.Draw(batch, display, new Vector2(bounds.X + padLeft, bounds.Y + y), foreColor,
                     0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
 
-            // 光标闪烁由 TextCaret.Draw 内部自驱（失焦时熄灭），故动画完全在引擎内。
-            _caret.Draw(batch, device, font, text, caretIndex, bounds, foreColor, multiline, focused, padLeft);
+            // 光标闪烁由 TextCaret.Draw 内部自驱（失焦时熄灭）；光标置于 text 之后、IME 预览之后。
+            int caretPos = System.Math.Min(caretIndex + composition.Length, display.Length);
+            _caret.Draw(batch, device, font, display, caretPos, bounds, foreColor, multiline, focused, padLeft);
         }
     }
 }
