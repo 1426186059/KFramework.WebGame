@@ -1,4 +1,5 @@
 using Client.MirGraphics;
+//using KFramework.MonoGame;
 using MirEngine;
 using SlimDX;
 using SlimDX.Direct3D9;
@@ -292,25 +293,56 @@ namespace Client.MirControls
 
         private void TextBox_NeedRedraw(object sender, EventArgs e)
         {
+            // GotFocus/LostFocus 也走这里：用计数维护“是否有文本框聚焦”，
+            // 供 MirScene 在光标闪烁期间按节拍重烘焙 UI 层（不依赖烘焙循环本身，避免死循环）。
+            if (ReferenceEquals(sender, TextBox))
+            {
+                if (TextBox.Focused) s_focusCount++;
+                else s_focusCount = Math.Max(0, s_focusCount - 1);
+            }
             TextureValid = false;
             Redraw();
         }
 
         // 每帧由基类 Draw() 调用；在此推进光标闪烁（与 Web_Mir3 DXTextBox 一致：
-        // 聚焦时到点翻转并置 TextureValid=false 触发重绘；失焦时关掉光标）。
+        private static long _blinkHeartbeatTick;
+
+        // 聚焦计数：由 TextBox.GotFocus/LostFocus 经 TextBox_NeedRedraw 维护（计数器形式，事件顺序无关）。
+        // 供 MirScene 判断“是否有文本框处于聚焦”以驱动光标闪烁期间的按需重烘焙（不依赖烘焙循环本身，避免死循环）。
+        private static int s_focusCount;
+        internal static bool IsCaretAnimating => s_focusCount > 0 && KFramework.MonoGame.Input_IME.Active;
+
+        // 引擎 TextBox 持有 text / 光标 / 选区 / IME 预览（对齐 UGUI InputField），DOM 仅作 IME/键盘捕获。
+        // 聚焦时令本控件纹理失效，使引擎 TextBoxRenderer 在层烘焙时重画本控件（含当前光标相位）；
+        // 但“持续重绘”不能靠在 DrawControl 内 Redraw()：彼时 UILayer 正处于烘焙中，
+        // LayerControl.CreateTexture 末尾会把 TextureValid 复位为 true，覆盖脏标记，导致下一帧 Bake 直接 return、光标冻结。
+        // 正确做法：由 MirScene.DrawControl 在 UILayer.Bake() 之后，按光标闪烁节拍（约 250ms）重新 Invalidate UI 层，
+        // 使下一帧继续烘焙——整层重烘焙频率仅约 4 次/秒（而非 60 次/秒），光标照常闪，相位之间层保持缓存零开销。
         protected internal override void DrawControl()
         {
-            // 引擎 TextBox 持有 text / 光标 / 选区 / IME 预览，是文本与光标的唯一真相源（对齐 UGUI InputField）。
-            // DOM 仅转发控制键 / 回传原生编辑结果，引擎不再从 DOM 读取文本或光标。
-            // 聚焦时每帧令纹理失效，使引擎 TextBoxRenderer 每帧执行并推进光标闪烁节拍。
-            if (TextBox != null && TextBox.Focused && KFramework.MonoGame.Input_IME.Active)
-                TextureValid = false;
+            KFramework.MonoGame.PrintTool.Log($"MirTextBox: DrawControl");
+            //bool focusedActive = TextBox != null && TextBox.Focused;
+            //if (focusedActive)
+            //{
+            //    TextureValid = false;
 
+            //    // [临时验证] 每 500ms 打印，确认“聚焦即持续重绘”闭环在跑（心跳不断=循环成立）。
+            //    long hb = System.Environment.TickCount64 / 500;
+            //    if (hb != _blinkHeartbeatTick)
+            //    {
+            //        _blinkHeartbeatTick = hb;
+            //        int phase = (int)(System.Environment.TickCount64 / 530 % 2);
+            //        Console.WriteLine($"[IME] BlinkHeartbeat focused sel={TextBox.SelectionStart} phase={phase}");
+            //    }
+            //}
             base.DrawControl();
+            TextureValid = false;
+            Redraw();
         }
 
         protected override void CreateTexture()
         {
+            KFramework.MonoGame.PrintTool.Log($"MirTextBox: CreateTexture  00000");
             if (Size.IsEmpty)
                 return;
 
@@ -325,12 +357,12 @@ namespace Client.MirControls
                 TextureSize = Size;
             }
 
+            KFramework.MonoGame.PrintTool.Log($"MirTextBox: CreateTexture 111111");
+
             Font font = TextBox.Font ?? new Font("Arial", 10f);
             int fore = (TextBox.ForeColor != Color.Empty ? TextBox.ForeColor : Color.White).ToArgb();
-            // 文本框纹理作为面板上的透明叠层：无背景色时清成透明（alpha 0），避免盖住面板里的输入框底。
             int back = (TextBox.BackColor != Color.Empty && TextBox.BackColor.A > 0) ? TextBox.BackColor.ToArgb() : 0;
             int selBack = Color.FromArgb(128, 51, 153, 255).ToArgb();
-            // 文字与光标一律由引擎在 canvas 自绘；DOM 覆盖层仅作 IME / 键盘捕获代理（透明、pointer-events:none）。
             string drawText = TextBox.Text ?? "";
             if (TextBox.UseSystemPasswordChar) drawText = new string('●', drawText.Length);
             string drawComp = TextBox.CompositionString ?? "";

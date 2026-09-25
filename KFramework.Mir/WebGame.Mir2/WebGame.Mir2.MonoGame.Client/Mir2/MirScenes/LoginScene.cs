@@ -610,7 +610,7 @@ namespace Client.MirScenes
                 Visible = true;
                 AccountIDTextBox.SetFocus();
 
-                //我现在不让他自动登陆
+                //2026-09-20 我现在不让他自动登陆
                 //if (Settings.Password != string.Empty && Settings.AccountID != string.Empty)
                 //{
                 //    Login();

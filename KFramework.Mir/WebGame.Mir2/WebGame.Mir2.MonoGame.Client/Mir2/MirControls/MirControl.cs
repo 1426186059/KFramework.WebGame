@@ -728,7 +728,8 @@ namespace Client.MirControls
 
         public virtual void Draw()
         {
-            if (IsDisposed || !Visible /*|| Size.Width == 0 || Size.Height == 0*/ || Size.Width > Settings.ScreenWidth || Size.Height > Settings.ScreenHeight)
+            //2026-0--25 超出屏幕，我依然让他显示
+            if (IsDisposed || !Visible)
                 return;
 
             OnBeforeShown();

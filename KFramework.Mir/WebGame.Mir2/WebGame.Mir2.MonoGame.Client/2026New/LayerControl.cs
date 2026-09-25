@@ -77,5 +77,11 @@ namespace WebGame.Mir2.MonoGame.Client
             TextureValid = true;
             surface.Dispose();
         }
+
+        public override void Redraw()
+        {
+            base.Redraw();
+            TextureValid = false;
+        }
     }
 }
