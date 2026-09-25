@@ -284,7 +284,7 @@ namespace WebGame.Mir2.MonoGame.Client
         public static void ToggleFullScreen() { }
         public static bool IsKeyLocked(MirEngine.Keys key) => false;
 
-        public static void CMain_KeyDown(object sender, KeyEventArgs e)
+        public static void CMain_KeyDown(object sender, MirEngine.KeyEventArgs e)
         {
             Shift = e.Shift; Alt = e.Alt; Ctrl = e.Control;
             if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
@@ -309,7 +309,7 @@ namespace WebGame.Mir2.MonoGame.Client
             catch (Exception ex) { SaveError(ex.ToString()); }
         }
 
-        public static void CMain_KeyUp(object sender, KeyEventArgs e)
+        public static void CMain_KeyUp(object sender, MirEngine.KeyEventArgs e)
         {
             Shift = e.Shift; Alt = e.Alt; Ctrl = e.Control;
             if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
@@ -331,7 +331,7 @@ namespace WebGame.Mir2.MonoGame.Client
             catch (Exception ex) { SaveError(ex.ToString()); }
         }
 
-        public static void CMain_MouseMove(object sender, MouseEventArgs e)
+        public static void CMain_MouseMove(object sender, MirEngine.MouseEventArgs e)
         {
             // 与 OnMouseDown/OnMouseUp 保持一致：把原始画布坐标换算成逻辑 UI 坐标(1024x768)，
             // 否则命中检测用原始像素对比逻辑 DisplayRectangle 会错位。
@@ -387,7 +387,7 @@ namespace WebGame.Mir2.MonoGame.Client
             MirScene.ActiveScene?.OnMouseWheel(new MouseEventArgs(MouseButtons.None, 0, CMain.MPoint.X, CMain.MPoint.Y, delta));
         }
 
-        private static KeyEventArgs ToKeyEventArgs(MG.Keys k)
+        private static MirEngine.KeyEventArgs ToKeyEventArgs(MG.Keys k)
         {
             MirEngine.Keys keyData = (MirEngine.Keys)(int)k;
             if (MG.Input_KeyBoard.Shift) keyData |= MirEngine.Keys.Shift;
@@ -396,7 +396,7 @@ namespace WebGame.Mir2.MonoGame.Client
             return new KeyEventArgs(keyData);
         }
 
-        private static MouseEventArgs ToMouseEventArgs(MG.MouseButton b, MG.Vector2 p)
+        private static MirEngine.MouseEventArgs ToMouseEventArgs(MG.MouseButton b, MG.Vector2 p)
         {
             MouseButtons mb = b == MG.MouseButton.Right ? MouseButtons.Right
                                 : b == MG.MouseButton.Middle ? MouseButtons.Middle

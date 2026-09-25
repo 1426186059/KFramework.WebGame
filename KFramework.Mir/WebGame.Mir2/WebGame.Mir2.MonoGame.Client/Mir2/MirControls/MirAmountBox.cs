@@ -238,9 +238,9 @@ namespace Client.MirControls
 
             for (int i = 0; i < CMain.Instance.Controls.Count; i++)
             {
-                TextBox T = CMain.Instance.Controls[i] as TextBox;
-                if (T != null && T.Tag != null && T.Tag != null)
-                    ((MirTextBox)T.Tag).DialogChanged();
+                MirTextBox T = CMain.Instance.Controls[i] as MirTextBox;
+                if (T != null)
+                    T.DialogChanged();
             }
             
             /*

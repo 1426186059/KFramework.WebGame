@@ -339,6 +339,11 @@ namespace MirEngine
         public byte B => (byte)(value & 0xFF);
 
         public int ToArgb() => (int)value;
+
+        // 与引擎 KFramework.MonoGame.Color 互通：边界代码（如 MirTextBox 桥接到引擎 TextBox）可直接赋值，
+        // 无需把全工程的 MirEngine.Color 重写成另一套类型。
+        public static implicit operator KFramework.MonoGame.Color(Color c)
+            => KFramework.MonoGame.Color.FromArgb((uint)c.ToArgb());
         public bool IsEmpty => value == 0;
 
         public static bool operator ==(Color left, Color right) => left.value == right.value;

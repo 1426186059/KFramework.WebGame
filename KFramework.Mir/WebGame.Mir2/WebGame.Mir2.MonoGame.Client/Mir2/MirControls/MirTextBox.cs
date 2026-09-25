@@ -296,9 +296,8 @@ namespace Client.MirControls
 
             TextBox.VisibleChanged += TextBox_VisibleChanged;
             TextBox.ParentChanged += TextBox_VisibleChanged;
-            TextBox.KeyUp += TextBoxOnKeyUp;  
             TextBox.KeyPress += TextBox_KeyPress;
-
+            TextBox.KeyUp += TextBoxOnKeyUp;
             TextBox.KeyPress += TextBox_NeedRedraw;
             TextBox.KeyUp += TextBox_NeedRedraw;
             TextBox.TextChanged += TextBox_NeedRedraw;
@@ -493,17 +492,6 @@ namespace Client.MirControls
             SetFocus();
         }
 
-        private void TextBoxOnKeyUp(object sender, KeyEventArgs e)
-        {
-            switch (e.KeyCode)
-            {
-                case Keys.PrintScreen:
-                    CMain.CMain_KeyUp(sender, e);
-                    break;
-
-            }
-        }
-
         void TextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             base.OnKeyPress(e);
@@ -515,6 +503,17 @@ namespace Client.MirControls
             }
         }
 
+
+        private void TextBoxOnKeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.PrintScreen:
+                    CMain.CMain_KeyUp(sender, e);
+                    break;
+
+            }
+        }
 
         void MirTextBox_Shown(object sender, EventArgs e)
         {

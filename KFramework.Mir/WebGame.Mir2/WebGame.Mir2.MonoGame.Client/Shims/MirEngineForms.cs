@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
 
 namespace MirEngine
 {
-    // 原 Web_Mir2.Engine/MirEngine/Shims/Forms/* 中需要的部分（TextBox 原样；TextRenderer 已移除，文本度量统一改用 TextRenderer.MeasureText）
+    // 原 Web_Mir2.Engine/MirEngine/Shims/Forms/* 中需要的部分（TextRenderer 已移除，文本度量统一改用 TextRenderer.MeasureText）
 
     // TextFormatFlags 已上移到引擎通用库：KFramework.MonoGame.TextFormatFlags
     // （见 Shims/GlobalUsings.cs 的全局别名，位值与此处原定义完全一致）。
@@ -52,7 +51,6 @@ namespace MirEngine
         public static int MouseWheelScrollDelta => 120;
     }
 
-    // ===== TextBox（原 Forms/TextBox.cs 原样；其引用类型均已在本工程 Shims 提供）=====
     public enum BorderStyle
     {
         None,
@@ -60,264 +58,124 @@ namespace MirEngine
         Fixed3D
     }
 
+    // 轻量适配层：把引擎自带的 KFramework.MonoGame.TextBox（位于 KFramework.MonoGame.TextRenderer）
+    // 暴露成本工程既有的 WinForms 风格 API（MirEngine.Color / Font / Point / Size / Keys / 事件参数），
+    // 所有调用方（MirTextBox 及各个对话框处理器）按原签名直接使用，无需改动。
+    // 引擎侧保持自洽（只用引擎类型），类型桥接集中在本适配器内完成。
     public class TextBox : IDisposable
     {
-        private string text = string.Empty;
-        private int selectionStart;
-        private int selectionLength;
-        private bool multiline;
-        private Color backColor;
-        private BorderStyle borderStyle;
-        private Font font;
-        private Color foreColor;
-        private Point location;
-        private Size size;
-        private bool visible;
-        private bool enabled = true;
-        private object tag;
-        private object parent;
-        private List<string> lines = new List<string>();
-        private int maxLines = 10;
-        private bool readOnly = false;
-        private bool acceptsReturn = false;
-        private IntPtr handle = IntPtr.Zero;
-        private int maxLength = int.MaxValue;
-        private bool useSystemPasswordChar = false;
-        private bool isDisposed = false;
-        private bool canFocus = true;
-        private bool isFocused = false;
-        private bool focused;
+        private readonly KFramework.MonoGame.TextBox _inner = new KFramework.MonoGame.TextBox();
 
-        private static TextBox _active;
+        public string Text { get => _inner.Text; set => _inner.Text = value; }
+        public string[] Lines { get => _inner.Lines; set => _inner.Lines = value; }
+        public int MaxLength { get => _inner.MaxLength; set => _inner.MaxLength = value; }
+        public bool Multiline { get => _inner.Multiline; set => _inner.Multiline = value; }
+        public int SelectionStart { get => _inner.SelectionStart; set => _inner.SelectionStart = value; }
+        public int SelectionLength { get => _inner.SelectionLength; set => _inner.SelectionLength = value; }
+        public bool UseSystemPasswordChar { get => _inner.UseSystemPasswordChar; set => _inner.UseSystemPasswordChar = value; }
+        public bool Visible { get => _inner.Visible; set => _inner.Visible = value; }
+        public bool Enabled { get => _inner.Enabled; set => _inner.Enabled = value; }
+        public bool AcceptsReturn { get => _inner.AcceptsReturn; set => _inner.AcceptsReturn = value; }
+        public bool AcceptsTab { get => _inner.AcceptsTab; set => _inner.AcceptsTab = value; }
+        public int TextLength => _inner.TextLength;
+        public IntPtr Handle { get => _inner.Handle; set => _inner.Handle = value; }
+        public bool ReadOnly { get => _inner.ReadOnly; set => _inner.ReadOnly = value; }
+        public object Tag { get => _inner.Tag; set => _inner.Tag = value; }
+        public object Parent { get => _inner.Parent; set => _inner.Parent = value; }
+        public bool CanFocus { get => _inner.CanFocus; set => _inner.CanFocus = value; }
+        public bool IsDisposed => _inner.IsDisposed;
+        public bool IsFocused { get => _inner.IsFocused; set => _inner.IsFocused = value; }
+        public bool Focused { get => _inner.Focused; set => _inner.Focused = value; }
 
-        public string[] Lines
+        public Color BackColor
         {
-            get => lines.ToArray();
-            set { if (value != null) { lines = new List<string>(value); ApplyMaxLines(); } }
+            get => new Color(_inner.BackColor.A, _inner.BackColor.R, _inner.BackColor.G, _inner.BackColor.B);
+            set => _inner.BackColor = value;
         }
+
+        public Color ForeColor
+        {
+            get => new Color(_inner.ForeColor.A, _inner.ForeColor.R, _inner.ForeColor.G, _inner.ForeColor.B);
+            set => _inner.ForeColor = value;
+        }
+
+        public Point Location { get => _inner.Location; set => _inner.Location = value; }
+        public Size Size { get => _inner.Size; set => _inner.Size = value; }
+
         public Font Font
         {
-            get => font;
-            set { if (value != null) font = value; }
-        }
-        public bool UseSystemPasswordChar { get => useSystemPasswordChar; set => useSystemPasswordChar = value; }
-        public string Text
-        {
-            get => text;
-            set
-            {
-                if (!readOnly)
-                {
-                    text = string.IsNullOrEmpty(value) ? string.Empty : (value.Length > maxLength ? value.Substring(0, maxLength) : value);
-                    UpdateLines();
-                    OnTextChanged(EventArgs.Empty);
-                    selectionStart = text.Length;
-                }
-            }
-        }
-        public int MaxLength { get => maxLength; set { if (maxLength != value) { maxLength = value; if (text.Length > maxLength) text = text.Substring(0, maxLength); } } }
-        public bool Multiline { get => multiline; set { multiline = value; UpdateLines(); } }
-        public int SelectionStart { get => selectionStart; set => selectionStart = Math.Clamp(value, 0, text.Length); }
-        public int SelectionLength { get => selectionLength; set => selectionLength = Math.Clamp(value, 0, text.Length - selectionStart); }
-        public Color BackColor { get => backColor; set => backColor = value; }
-        public Color ForeColor { get => foreColor; set => foreColor = value; }
-        public Point Location { get => location; set => location = value; }
-        public Size Size { get => size; set => size = value; }
-        public bool Visible
-        {
-            get => visible;
-            set { if (visible != value) { visible = value; OnVisibleChanged(EventArgs.Empty); } }
-        }
-        public bool Enabled
-        {
-            get => enabled;
-            set { if (enabled != value) { enabled = value; OnEnabledChanged(EventArgs.Empty); } }
-        }
-        public BorderStyle BorderStyle { get => borderStyle; set => borderStyle = value; }
-        public bool AcceptsReturn { get => acceptsReturn; set => acceptsReturn = value; }
-        public bool AcceptsTab { get; set; }
-        public int TextLength => (text ?? string.Empty).Length;
-        public IntPtr Handle => handle;
-        public bool ReadOnly { get => readOnly; set => readOnly = value; }
-        public object Tag { get => tag; set => tag = value; }
-        public object Parent
-        {
-            get => parent;
-            set { if (parent != value) { parent = value; OnParentChanged(EventArgs.Empty); } }
-        }
-        public bool CanFocus { get => canFocus; set => canFocus = value; }
-        public bool IsDisposed { get => isDisposed; private set => isDisposed = value; }
-        public bool IsFocused
-        {
-            get => isFocused;
-            set
-            {
-                if (isFocused != value)
-                {
-                    isFocused = value;
-                    if (isFocused) OnGotFocus(EventArgs.Empty); else OnLostFocus(EventArgs.Empty);
-                }
-            }
-        }
-        public bool Focused
-        {
-            get => focused;
-            set
-            {
-                focused = value;
-                if (focused) OnGotFocus(EventArgs.Empty); else OnLostFocus(EventArgs.Empty);
-            }
+            get => (Font)_inner.Font;
+            set => _inner.Font = value;
         }
 
-        public void AppendText(string value)
+        public BorderStyle BorderStyle
         {
-            if (!readOnly) { text += value; UpdateLines(); selectionStart = text.Length; }
+            get => (BorderStyle)(int)_inner.BorderStyle;
+            set => _inner.BorderStyle = (KFramework.MonoGame.BorderStyle)(int)value;
         }
 
-        public void SimulateKeyDown(Keys keyCode)
-        {
-            var args = new KeyEventArgs(keyCode);
-            KeyDown?.Invoke(this, args);
-            if (args.Handled) return;
-            if (!Enabled || ReadOnly) return;
-            switch (keyCode)
-            {
-                case Keys.Back:
-                    if (selectionLength > 0) { text = text.Remove(selectionStart, selectionLength); selectionLength = 0; }
-                    else if (selectionStart > 0) { selectionStart--; text = text.Remove(selectionStart, 1); }
-                    break;
-                case Keys.Delete:
-                    if (selectionLength > 0) text = text.Remove(selectionStart, selectionLength);
-                    else if (selectionStart < text.Length) text = text.Remove(selectionStart, 1);
-                    selectionLength = 0;
-                    break;
-                case Keys.Left:
-                    if (selectionLength > 0) selectionLength = 0;
-                    else selectionStart = Math.Max(0, selectionStart - 1);
-                    break;
-                case Keys.Right:
-                    if (selectionLength > 0) { selectionStart = Math.Min(text.Length, selectionStart + selectionLength); selectionLength = 0; }
-                    else selectionStart = Math.Min(text.Length, selectionStart + 1);
-                    break;
-                case Keys.Home: selectionStart = 0; selectionLength = 0; break;
-                case Keys.End: selectionStart = text.Length; selectionLength = 0; break;
-            }
-            if (keyCode == Keys.Back || keyCode == Keys.Delete) { UpdateLines(); OnTextChanged(EventArgs.Empty); }
-            if (keyCode == Keys.Return) KeyPress?.Invoke(this, new KeyPressEventArgs((char)Keys.Return));
-        }
+        public void AppendText(string value) => _inner.AppendText(value);
 
-        public void SimulateKeyPress(char keyChar)
-        {
-            var args = new KeyPressEventArgs(keyChar);
-            KeyPress?.Invoke(this, args);
-            if (args.Handled) return;
-            if (!Enabled || ReadOnly) return;
-            InsertText(keyChar.ToString());
-        }
+        public void SimulateKeyDown(Keys keyCode) => _inner.SimulateKeyDown(ToEngineKeys(keyCode));
+        public void SimulateKeyPress(char keyChar) => _inner.SimulateKeyPress(keyChar);
 
-        private void InsertText(string s)
-        {
-            if (string.IsNullOrEmpty(s)) return;
-            int remaining = maxLength - (text.Length - selectionLength);
-            int len = Math.Min(s.Length, Math.Max(0, remaining));
-            if (len <= 0) return;
-            s = s.Substring(0, len);
-            text = text.Remove(selectionStart, selectionLength).Insert(selectionStart, s);
-            selectionStart += s.Length;
-            selectionLength = 0;
-            UpdateLines();
-            OnTextChanged(EventArgs.Empty);
-        }
+        public void Focus() => _inner.Focus();
+        public void Blur() => _inner.Blur();
+        public void Dispose() => _inner.Dispose();
 
-        public void Focus()
-        {
-            if (!CanFocus || !Enabled) return;
-            if (_active == this) return;
-            if (_active != null)
-            {
-                _active.IsFocused = false;
-                _active.Focused = false;
-                _active.LostFocus?.Invoke(_active, EventArgs.Empty);
-            }
-            _active = this;
-            IsFocused = true;
-            Focused = true;
-            GotFocus?.Invoke(this, EventArgs.Empty);
-        }
+        public Point GetPositionFromCharIndex(int index) => _inner.GetPositionFromCharIndex(index);
+        public int GetLineFromCharIndex(int index) => _inner.GetLineFromCharIndex(index);
+        public int GetFirstCharIndexFromLine(int line) => _inner.GetFirstCharIndexFromLine(line);
+        public int GetCharIndexFromPosition(Point pt) => _inner.GetCharIndexFromPosition(pt);
+        public void ScrollToCaret() => _inner.ScrollToCaret();
 
-        public void Blur()
-        {
-            if (_active == this) _active = null;
-            if (!IsFocused && !Focused) return;
-            IsFocused = false;
-            Focused = false;
-            LostFocus?.Invoke(this, EventArgs.Empty);
-        }
+        public event EventHandler TextChanged { add => _inner.TextChanged += value; remove => _inner.TextChanged -= value; }
+        public event EventHandler GotFocus { add => _inner.GotFocus += value; remove => _inner.GotFocus -= value; }
+        public event EventHandler LostFocus { add => _inner.LostFocus += value; remove => _inner.LostFocus -= value; }
+        public event EventHandler VisibleChanged { add => _inner.VisibleChanged += value; remove => _inner.VisibleChanged -= value; }
+        public event EventHandler EnabledChanged { add => _inner.EnabledChanged += value; remove => _inner.EnabledChanged -= value; }
+        public event EventHandler ParentChanged { add => _inner.ParentChanged += value; remove => _inner.ParentChanged -= value; }
 
-        public void Dispose() { Dispose(true); GC.SuppressFinalize(this); }
-        protected virtual void Dispose(bool disposing) { if (disposing) isDisposed = true; }
-
-        public event EventHandler TextChanged;
-        public event EventHandler GotFocus;
-        public event EventHandler LostFocus;
-        public event EventHandler VisibleChanged;
-        public event EventHandler EnabledChanged;
-        public event EventHandler ParentChanged;
         public event KeyPressEventHandler KeyPress;
+        public event KeyEventHandler KeyDown;
+        public event KeyEventHandler KeyUp;
         public event MouseEventHandler MouseMove;
         public event MouseEventHandler MouseDown;
         public event MouseEventHandler MouseUp;
-        public event KeyEventHandler KeyDown;
-        public event KeyEventHandler KeyUp;
         public event MouseEventHandler MouseWheel;
 
-        private void UpdateLines()
+        public TextBox()
         {
-            if (multiline) { lines = new List<string>(text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)); ApplyMaxLines(); }
-            else lines = new List<string> { text };
+            _inner.KeyPress += (s, e) => KeyPress?.Invoke(this, new KeyPressEventArgs(e.KeyChar) { Handled = e.Handled });
+            _inner.KeyDown += (s, e) => KeyDown?.Invoke(this, new KeyEventArgs(ToMirEngineKeys(e.KeyCode)) { Handled = e.Handled, SuppressKeyPress = e.SuppressKeyPress });
+            _inner.KeyUp += (s, e) => KeyUp?.Invoke(this, new KeyEventArgs(ToMirEngineKeys(e.KeyCode)) { Handled = e.Handled, SuppressKeyPress = e.SuppressKeyPress });
+            _inner.MouseMove += (s, e) => MouseMove?.Invoke(this, new MouseEventArgs(ToMirEngineButton(e.Button), e.Clicks, e.X, e.Y, e.Delta));
+            _inner.MouseDown += (s, e) => MouseDown?.Invoke(this, new MouseEventArgs(ToMirEngineButton(e.Button), e.Clicks, e.X, e.Y, e.Delta));
+            _inner.MouseUp += (s, e) => MouseUp?.Invoke(this, new MouseEventArgs(ToMirEngineButton(e.Button), e.Clicks, e.X, e.Y, e.Delta));
+            _inner.MouseWheel += (s, e) => MouseWheel?.Invoke(this, new MouseEventArgs(ToMirEngineButton(e.Button), e.Clicks, e.X, e.Y, e.Delta));
         }
-        private void ApplyMaxLines() { if (lines.Count > maxLines) lines.RemoveRange(maxLines, lines.Count - maxLines); }
 
-        protected virtual void OnTextChanged(EventArgs e) => TextChanged?.Invoke(this, e);
-        protected virtual void OnVisibleChanged(EventArgs e) => VisibleChanged?.Invoke(this, e);
-        protected virtual void OnEnabledChanged(EventArgs e) => EnabledChanged?.Invoke(this, e);
-        protected virtual void OnParentChanged(EventArgs e) => ParentChanged?.Invoke(this, e);
-        protected virtual void OnGotFocus(EventArgs e) => GotFocus?.Invoke(this, e);
-        protected virtual void OnLostFocus(EventArgs e) => LostFocus?.Invoke(this, e);
-
-        public Point GetPositionFromCharIndex(int index)
+        private static KFramework.MonoGame.Keys ToEngineKeys(Keys k)
         {
-            if (index < 0 || index > text.Length) throw new ArgumentOutOfRangeException(nameof(index));
-            int currentIndex = 0;
-            for (int i = 0; i < lines.Count; i++)
+            switch (k)
             {
-                int lineLength = lines[i].Length;
-                if (currentIndex + lineLength >= index)
-                {
-                    int charIndexInLine = index - currentIndex;
-                    int x = charIndexInLine * (int)font.Size;
-                    int y = i * (int)font.Size;
-                    return new Point(x, y);
-                }
-                currentIndex += lineLength + 1;
+                case Keys.Back: return KFramework.MonoGame.Keys.Backspace;
+                case Keys.Return: return KFramework.MonoGame.Keys.Enter;
+                default: return (KFramework.MonoGame.Keys)(int)k;
             }
-            return new Point(0, lines.Count * (int)font.Size);
         }
 
-        public int GetLineFromCharIndex(int index)
+        private static Keys ToMirEngineKeys(KFramework.MonoGame.Keys k)
         {
-            if (index < 0 || index > text.Length) throw new ArgumentOutOfRangeException(nameof(index));
-            int currentIndex = 0;
-            for (int i = 0; i < lines.Count; i++)
+            switch (k)
             {
-                currentIndex += lines[i].Length + 1;
-                if (currentIndex > index) return i;
+                case KFramework.MonoGame.Keys.Backspace: return Keys.Back;
+                case KFramework.MonoGame.Keys.Enter: return Keys.Return;
+                default: return (Keys)(int)k;
             }
-            return lines.Count - 1;
         }
 
-        public int GetCharIndexFromPosition(Point pt) => 0;
-        public int GetFirstCharIndexFromLine(int line) => 0;
-        public void ScrollToCaret() { }
+        private static MouseButtons ToMirEngineButton(KFramework.MonoGame.TextBox.MouseButtons b)
+            => (MouseButtons)(int)b;
     }
 }
