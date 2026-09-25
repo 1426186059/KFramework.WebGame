@@ -15,7 +15,7 @@ namespace KFramework.MonoGame
         Fixed3D
     }
 
-    public class TextBox : IDisposable
+    public sealed partial class TextBox : IDisposable
     {
         [Flags]
         public enum MouseButtons

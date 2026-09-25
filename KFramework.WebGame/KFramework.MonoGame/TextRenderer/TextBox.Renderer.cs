@@ -3,19 +3,18 @@ namespace KFramework.MonoGame
     /// <summary>
     /// 输入框（TextBox）绘制辅助：引擎自绘文字 + 光标 / 选区。
     ///
-    /// 与原版 Crystal / UGUI 一致，本类只负责"画"；IME / 键盘捕获由 <see cref="Input_IME"/> 单独处理——
-    /// 文本框获得焦点时由调用方直接 <see cref="Input_IME.Open"/> 接管，失焦时 <see cref="Input_IME.Close"/>。
+    /// 与原版 Crystal / UGUI 一致，本类只负责“画”；IME / 键盘捕获由 <see cref="Input_IME"/> 单独处理。
     ///
-    /// <para>光标闪烁由内部 <see cref="TextCaret"/> 自驱：每帧调用 <see cref="DrawTextBox"/> 即可看到闪烁，
-    /// 调用方只需传入 <paramref name="focused"/>（失焦时光标自动熄灭），无需自行推进节拍或读取光标状态。</para>
+    /// <para>光标由调用方持有的 <see cref="Pen"/>（每文本框一支）自驱闪烁：传入 <paramref name="pen"/> 与
+    /// <paramref name="focused"/>，本方法会驱动该 Pen 的闪烁状态并绘制光标；失焦时自动熄灭。
+    /// 选区高亮独立于光标，见下方 <see cref="DrawSelection"/>。</para>
     /// </summary>
-    public static class TextBoxRenderer
+    public sealed partial class TextBox
     {
-        public const float DefaultPadLeft = TextCaret.DefaultPadLeft;
-        private static readonly TextCaret _caret = new TextCaret();
-        
+        public const float DefaultPadLeft = Pen.DefaultPadLeft;
+
         public static void DrawTextBox(SpriteBatch batch, GraphicsDevice device, IFont font, string text,
-            Rectangle bounds, Color foreColor, int caretIndex,
+            Pen pen, Rectangle bounds, Color foreColor, int caretIndex,
             bool multiline, bool focused, float padLeft = DefaultPadLeft, string composition = "",
             int selectionStart = 0, int selectionLength = 0)
         {
@@ -24,6 +23,9 @@ namespace KFramework.MonoGame
             string display = string.IsNullOrEmpty(composition) ? (text ?? string.Empty) : (text ?? string.Empty) + composition;
             float lineH = font.LineSpacing;
             float y = multiline ? 2f : System.Math.Max(0f, (bounds.Height - lineH) / 2f);
+
+            if (pen != null)
+                pen.OnFocusChanged(focused);
 
             if (!string.IsNullOrEmpty(display))
             {
@@ -37,18 +39,14 @@ namespace KFramework.MonoGame
                 DrawSelection(batch, device, font, text, selectionStart, selectionStart + selectionLength,
                     bounds, new Color(51, 153, 255, 128), multiline, padLeft);
             }
-            else
+            else if (focused && pen != null)
             {
-                if (focused)
-                {
-                    int caretPos = System.Math.Min(caretIndex + (composition == null ? 0 : composition.Length), display.Length);
-                    _caret.Draw(batch, device, font, display, caretPos, bounds, multiline, padLeft);
-                }
+                int caretPos = System.Math.Min(caretIndex + (composition == null ? 0 : composition.Length), display.Length);
+                pen.Draw(batch, device, font, display, caretPos, bounds, foreColor, multiline, padLeft);
             }
-
         }
 
-        // —— 以下为选区高亮绘制：选区是独立于光标的关注点，故放在本渲染器而非 TextCaret 内 ——
+        // —— 以下为选区高亮绘制：选区是独立于光标的关注点，故放在本渲染器而非 Pen 内 ——
 
         private static float Measure(IFont font, string s)
             => (font != null && !string.IsNullOrEmpty(s)) ? font.MeasureString(s).X : 0f;
@@ -67,7 +65,7 @@ namespace KFramework.MonoGame
         /// <summary>
         /// 选区高亮：对齐 UGUI <c>GenerateHighlight</c>，仅画半透明矩形，<b>不画光标</b>。
         /// 选区与光标是两个独立概念，因此此绘制逻辑放在本渲染器（文本框整体绘制者）内，
-        /// 而不污染只负责光标的 <see cref="TextCaret"/>。
+        /// 而不污染只负责光标的 <see cref="Pen"/>。
         /// </summary>
         private static void DrawSelection(SpriteBatch batch, GraphicsDevice device, IFont font, string text,
             int selStart, int selEnd, Rectangle bounds, Color color, bool multiline, float padLeft = DefaultPadLeft)

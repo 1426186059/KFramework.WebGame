@@ -9,6 +9,8 @@ namespace Client.MirControls
 {
     public sealed class MirTextBox : MirControl
     {
+        // 每个文本框持有自己独立的光标画笔（对齐原版传奇：每个 TextBox 一支 Pen），互不串状态。
+        private readonly KFramework.MonoGame.Pen _caretPen = new KFramework.MonoGame.Pen();
 
         protected override void OnBackColourChanged()
         {
@@ -381,6 +383,7 @@ namespace Client.MirControls
                                 KFramework.MonoGame.SamplerState.PointClamp);
                     KFramework.MonoGame.TextBoxRenderer.DrawTextBox(
                         batch, DXManager.GDevice, font, drawText,
+                        _caretPen,
                         new KFramework.MonoGame.Rectangle(0, 0, Size.Width, Size.Height),
                         KFramework.MonoGame.Color.FromArgb((uint)fore),
                         TextBox.SelectionStart, !TextBox.Multiline, TextBox.Focused,

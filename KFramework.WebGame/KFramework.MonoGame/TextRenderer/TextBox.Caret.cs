@@ -1,21 +1,22 @@
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 输入光标：<b>完全由引擎自绘</b>（与 UGUI <c>InputField</c> 的
-    /// <c>OnPopulateMesh / GenerateCaret</c> 思路一致：以 text 长度为锚点，
-    /// 用字体度量定位光标 x，按字符所在行定位多行 y；浏览器 DOM &lt;input&gt; 仅作 IME / 键盘捕获，
-    /// 其 <c>caretColor</c> 已被置为透明，故屏幕上只有这一枚引擎绘制的光标——不存在"多画一个光标"的问题）。
+    /// 输入光标画笔：命名对齐 WinForms 的 <see cref="System.Drawing.Pen"/>，原版传奇中每个文本框各自持有一支。
     ///
-    /// 闪烁由 <see cref="Draw"/> 内部自行驱动——调用方每帧调 <see cref="Draw"/> 即可看到光标闪烁，
-    /// 无需外部喂时间。若控件只在"亮/灭翻转"那一刻才重建纹理，可用 <see cref="Tick"/> 判断是否变化。
+    /// 负责以 text 长度为锚点、用字体度量定位并绘制光标竖线，并维护<b>自身</b>的闪烁节拍——
+    /// 因此每个 TextBox 持有一支独立的 Pen，彼此的闪烁相位 / 可见性互不干扰
+    /// （不再像旧实现那样多个文本框共用一个静态光标）。
+    ///
+    /// 对齐 UGUI <c>InputField.GenerateCaret</c>：聚焦后光标立即可见，之后按 <see cref="BlinkIntervalMs"/> 周期闪烁。
+    /// 浏览器 DOM &lt;input&gt; 的 caretColor 已置透明，屏幕上只有这枚引擎自绘光标。
     /// </summary>
-    internal sealed class TextCaret
+    public sealed partial class TextBox
     {
         /// <summary>闪烁半周期（毫秒）：亮、灭各占一个半周期。默认 530ms（≈ UGUI 的 0.85Hz）。</summary>
         public long BlinkIntervalMs { get; set; } = 530;
 
-        /// <summary>当前是否处于"亮"半周期。</summary>
-        public bool Visible { get; private set; }
+        /// <summary>当前是否处于“亮”半周期（供外部判断是否需要重绘）。</summary>
+        public bool Visible => _focused && alpha > 0f;
 
         /// <summary>默认左边距，对齐 UGUI InputField 文本内边距。</summary>
         public const float DefaultPadLeft = 3f;
@@ -23,26 +24,36 @@ namespace KFramework.MonoGame
         private DateTime _blinkStartTime = DateTime.Now;
         private Texture2D _whitePixel;
         private float alpha = 0;
+        private bool _focused;
 
         /// <summary>
-        /// 推进闪烁节拍。返回 true 表示可见性发生了翻转（控件可据此决定是否重建纹理）。
-        /// 对齐 UGUI：聚焦后光标立即可见，之后按周期闪烁（前半个周期点亮）。
+        /// 通知画笔焦点状态变化。仅在“切换”那一刻生效（重复调用同一状态会被忽略），
+        /// 因此聚焦时立即点亮并重新开始计时，失焦时熄灭——调用方可每帧放心调用。
         /// </summary>
+        public void OnFocusChanged(bool focused)
+        {
+            if (focused == _focused) return;
+            _focused = focused;
+            if (focused)
+            {
+                _blinkStartTime = DateTime.Now;
+                alpha = 1.0f;
+            }
+            else
+            {
+                alpha = 0f;
+            }
+        }
+
         private void Tick()
         {
+            if (!_focused) { alpha = 0f; return; }
             var now = DateTime.Now;
             if ((now - _blinkStartTime).TotalMilliseconds >= BlinkIntervalMs)
             {
                 alpha = alpha == 0 ? 1 : 0;
                 _blinkStartTime = now;
             }
-        }
-
-        /// <summary>重置闪烁节拍（重新聚焦时让光标立即亮起）。</summary>
-        public void Reset()
-        {
-            _blinkStartTime = DateTime.Now;
-            alpha = 1.0f;
         }
 
         private static float Measure(IFont font, string s)
@@ -77,15 +88,14 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 每帧调用：内部先推进闪烁节拍，再按 <see cref="ShouldDraw"/> 绘制光标竖线。
-        /// 未聚焦时熄灭且不绘制。
+        /// 绘制光标竖线（按当前闪烁相位决定是否可见）。调用方每帧调用即可看到闪烁；未聚焦时光标自动熄灭。
         /// </summary>
         public void Draw(SpriteBatch batch, GraphicsDevice device, IFont font, string text, int caretIndex,
-                         Rectangle bounds, bool multiline, float padLeft = DefaultPadLeft)
+                         Rectangle bounds, Color color, bool multiline, float padLeft = DefaultPadLeft)
         {
             Tick();
+            if (alpha <= 0f) return;
 
-            Color color = alpha > 0 ? Color.White : Color.Transparent;
             Vector2 pos = GetPosition(font, text, caretIndex, bounds, multiline, padLeft);
             float lineH = font.LineSpacing;
             float w = System.Math.Max(1f, lineH * 0.06f);
