@@ -29,7 +29,7 @@ namespace KFramework.MonoGame
         /// 推进闪烁节拍。返回 true 表示可见性发生了翻转（控件可据此决定是否重建纹理）。
         /// Draw 内部会自动调用；重复调用安全（同一帧内第二次不会再次翻转）。
         /// </summary>
-        public bool Tick(bool focused)
+        private bool Tick(bool focused)
         {
             if (!focused)
             {

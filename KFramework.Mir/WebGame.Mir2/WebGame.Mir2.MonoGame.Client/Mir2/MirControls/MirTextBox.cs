@@ -132,7 +132,7 @@ namespace Client.MirControls
         // Browser 模式下若 DOM 覆盖层未正常弹出/聚焦，输入框会完全空白（无文字无光标）。
         // 转发到基础库静态开关：基础库内部据此自动切换 HTML（DOM 显示）与自绘两种光标实现。
 
-        // 光标：闪烁节拍由基础库 TextBoxRenderer 内部持有并每帧推进（CaretTick），本控件只负责喂 focused 状态。
+        // 光标：闪烁由引擎 TextBoxRenderer.DrawTextBox 内部自驱（传入 focused），本控件聚焦时每帧使纹理失效以驱动重绘。
 
         public bool CanLoseFocus;
         public readonly TextBox TextBox;
@@ -367,8 +367,9 @@ namespace Client.MirControls
             float sScale = vp.Height > 0 ? (float)vp.Height / Client.Settings.ScreenHeight : 1f;
 
             // transparent = Rendered 模式（DOM <input> 仅作 IME / 键盘捕获代理，文字与光标由引擎自绘）。
-            // 统一入口：DOM 是否透明由基础库 TextBoxRenderer 内部管理，此处不再自行判断。
-            KFramework.MonoGame.TextBoxRenderer.Show(
+            // 与原版一致：文本框获焦即由 Input_IME.Open 接管输入（失焦由 OnLostFocus / NativeBlur 调 Close），
+            // IME 开 / 关不挂在绘制类 TextBoxRenderer 上。
+            KFramework.MonoGame.Input_IME.Open(
                 DisplayLocation.X * sScale, DisplayLocation.Y * sScale,
                 Size.Width * sScale, Size.Height * sScale,
                 MirEngine.FontFactory.GetPixelSize(TextBox.Font, sScale),
@@ -401,17 +402,17 @@ namespace Client.MirControls
         // 聚焦时到点翻转并置 TextureValid=false 触发重绘；失焦时关掉光标）。
         protected internal override void DrawControl()
         {
-            // DOM 不透明显示文字/光标时，由浏览器托管光标，引擎不再自绘，故跳过闪烁逻辑。
-            // 闪烁节拍由基础库 TextBoxRenderer 内部持有；此处只借 CaretTick 判断是否需重建纹理。
-            bool prevCaretVisible = KFramework.MonoGame.TextBoxRenderer.CaretVisible;
-            if (prevCaretVisible != KFramework.MonoGame.TextBoxRenderer.CaretVisible)
-                TextureValid = false;
-
             // Pull 模型：每帧从引擎 Input_IME 拉取（引擎已通过 Input.Poll 刷新），仅作用于当前激活框；
             // 不再订阅任何 Input_IME 事件。文本变化会触发 TextChanged → 登录校验 / 重绘。
             // 回车确认不在这里处理：DOM 的非组字态 Enter 会冒泡到全局键盘 Input_KeyBoard，
             // 由下方静态 OnGlobalKeyDown 在"本框是激活捕获目标"时模拟进 WinForms TextBox，
             // 从而走原消费方（LoginScene / MirInputBox 等）的 KeyPress / OnKeyDown 链路——与原版一致。
+
+            // 光标闪烁由引擎 TextBoxRenderer.DrawTextBox 内部自驱；聚焦时每帧令纹理失效，
+            // 使 DrawTextBox 每帧执行、引擎据此推进闪烁节拍。失焦时 OnLostFocus 已重绘一次熄灭光标。
+            if (TextBox != null && TextBox.Focused)
+                TextureValid = false;
+
             if (_current == this && KFramework.MonoGame.Input_IME.Active)
             {
                 string t = KFramework.MonoGame.Input_IME.Text;
@@ -463,7 +464,7 @@ namespace Client.MirControls
                         batch, DXManager.GDevice, font, drawText,
                         new KFramework.MonoGame.Rectangle(0, 0, Size.Width, Size.Height),
                         KFramework.MonoGame.Color.FromArgb((uint)fore),
-                        TextBox.SelectionStart, !TextBox.Multiline);
+                        TextBox.SelectionStart, !TextBox.Multiline, TextBox.Focused);
                     batch.End();
                 }
                 finally
