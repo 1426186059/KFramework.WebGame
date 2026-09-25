@@ -11,16 +11,9 @@ namespace KFramework.MonoGame
     /// </summary>
     public static class TextBoxRenderer
     {
-        /// <summary>默认左边距，对齐原版输入框内边距。</summary>
         public const float DefaultPadLeft = TextCaret.DefaultPadLeft;
-
         private static readonly TextCaret _caret = new TextCaret();
-
-        /// <summary>
-        /// 绘制文本框：引擎自绘文字 + 选区高亮 + 光标。
-        /// 光标闪烁由内部 <see cref="TextCaret"/> 自驱，传入 <paramref name="focused"/> 指示是否聚焦（失焦时光标自动熄灭）。
-        /// 对齐 UGUI：存在选区时只画高亮、不画光标。
-        /// </summary>
+        
         public static void DrawTextBox(SpriteBatch batch, GraphicsDevice device, IFont font, string text,
             Rectangle bounds, Color foreColor, int caretIndex,
             bool multiline, bool focused, float padLeft = DefaultPadLeft, string composition = "",
@@ -32,25 +25,89 @@ namespace KFramework.MonoGame
             float lineH = font.LineSpacing;
             float y = multiline ? 2f : System.Math.Max(0f, (bounds.Height - lineH) / 2f);
 
-            // 选区高亮（仅 text 部分；composition 预览不计入选区）。对齐 UGUI：有选区时不画光标。
-            bool hasSelection = selectionLength > 0 && (selectionStart + selectionLength) <= text.Length;
-            if (hasSelection)
-            {
-                _caret.DrawSelection(batch, device, font, text, selectionStart, selectionStart + selectionLength,
-                    bounds, new Color(51, 153, 255, 128), multiline, padLeft);
-            }
-
             if (!string.IsNullOrEmpty(display))
             {
                 font.Draw(batch, display, new Vector2(bounds.X + padLeft, bounds.Y + y), foreColor,
                     0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
 
-            if (!hasSelection)
+            bool hasSelection = selectionLength > 0 && (selectionStart + selectionLength) <= text.Length;
+            if (hasSelection)
             {
-                // 光标置于 text 之后、IME 预览之后（对齐 UGUI：caretPosition 跟随 composition 末尾）。
-                int caretPos = System.Math.Min(caretIndex + (composition == null ? 0 : composition.Length), display.Length);
-                _caret.Draw(batch, device, font, display, caretPos, bounds, foreColor, multiline, focused, padLeft);
+                DrawSelection(batch, device, font, text, selectionStart, selectionStart + selectionLength,
+                    bounds, new Color(51, 153, 255, 128), multiline, padLeft);
+            }
+            else
+            {
+                if (focused)
+                {
+                    int caretPos = System.Math.Min(caretIndex + (composition == null ? 0 : composition.Length), display.Length);
+                    _caret.Draw(batch, device, font, display, caretPos, bounds, multiline, padLeft);
+                }
+            }
+
+        }
+
+        // —— 以下为选区高亮绘制：选区是独立于光标的关注点，故放在本渲染器而非 TextCaret 内 ——
+
+        private static float Measure(IFont font, string s)
+            => (font != null && !string.IsNullOrEmpty(s)) ? font.MeasureString(s).X : 0f;
+
+        private static Texture2D _whitePixel;
+        private static Texture2D WhitePixel(GraphicsDevice device)
+        {
+            if (_whitePixel == null)
+            {
+                _whitePixel = device.CreateTexture(1, 1);
+                _whitePixel.SetData(new byte[] { 255, 255, 255, 255 }, 0, 0, 1, 1);
+            }
+            return _whitePixel;
+        }
+
+        /// <summary>
+        /// 选区高亮：对齐 UGUI <c>GenerateHighlight</c>，仅画半透明矩形，<b>不画光标</b>。
+        /// 选区与光标是两个独立概念，因此此绘制逻辑放在本渲染器（文本框整体绘制者）内，
+        /// 而不污染只负责光标的 <see cref="TextCaret"/>。
+        /// </summary>
+        private static void DrawSelection(SpriteBatch batch, GraphicsDevice device, IFont font, string text,
+            int selStart, int selEnd, Rectangle bounds, Color color, bool multiline, float padLeft = DefaultPadLeft)
+        {
+            if (batch == null || device == null || font == null) return;
+            if (selEnd < selStart) { int tmp = selStart; selStart = selEnd; selEnd = tmp; }
+            if (string.IsNullOrEmpty(text)) return;
+            selStart = System.Math.Max(0, System.Math.Min(selStart, text.Length));
+            selEnd = System.Math.Max(0, System.Math.Min(selEnd, text.Length));
+            if (selEnd <= selStart) return;
+
+            Texture2D px = WhitePixel(device);
+            int lineH = (int)System.Math.Round(font.LineSpacing);
+
+            if (!multiline)
+            {
+                float x0 = padLeft + Measure(font, text.Substring(0, selStart));
+                float x1 = padLeft + Measure(font, text.Substring(0, selEnd));
+                batch.Draw(px, new Rectangle(bounds.X + (int)System.Math.Round(x0), bounds.Y + (int)System.Math.Max(0f, (bounds.Height - font.LineSpacing) / 2f),
+                    (int)System.Math.Max(1, System.Math.Round(x1 - x0)), lineH), color);
+                return;
+            }
+
+            // 多行：逐行绘制选中片段（对齐 UGUI 按行裁剪）。
+            int line = 0, idx = 0;
+            foreach (var ln in text.Split('\n'))
+            {
+                int lineStart = idx;
+                int lineEnd = idx + ln.Length;
+                int s = System.Math.Max(selStart, lineStart);
+                int e = System.Math.Min(selEnd, lineEnd);
+                if (e > s)
+                {
+                    float x0 = padLeft + Measure(font, ln.Substring(0, s - lineStart));
+                    float x1 = padLeft + Measure(font, ln.Substring(0, e - lineStart));
+                    batch.Draw(px, new Rectangle(bounds.X + (int)System.Math.Round(x0), bounds.Y + (int)System.Math.Round(line * font.LineSpacing + 2f),
+                        (int)System.Math.Max(1, System.Math.Round(x1 - x0)), lineH), color);
+                }
+                idx = lineEnd + 1; // 跳过 '\n'
+                line++;
             }
         }
     }
