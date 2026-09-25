@@ -323,11 +323,11 @@ namespace Client.MirControls
         private void OnGotFocus(object sender, EventArgs e)
         {
             // 焦点互斥：先把上一个文本框的原生输入关掉，再接管自己。
-            // 直接走 NativeBlur（只依赖 _nativeActive / BrowserInputOverlay，跨 WinForm 与 Web 两端均可编译），
-            // 避免引用 shim 专有的 IsFocused/Focused/Blur 等仅在浏览器端存在、桌面端 System.Windows.Forms.TextBox 没有的成员。
+            // 直接走 ReleaseFocus（只依赖 _nativeActive / BrowserInputOverlay，跨 WinForm 与 Web 两端均可编译），
+            // 避免引用 shim 专有的 IsFocused/Focused/LoseFocus 等仅在浏览器端存在、桌面端 System.Windows.Forms.TextBox 没有的成员。
             if (_current == this) return;
             if (_current != null && !_current.TextBox.IsDisposed)
-                _current.NativeBlur();
+                _current.ReleaseFocus();
 
             _current = this;
             ShowNativeInput();
@@ -345,6 +345,9 @@ namespace Client.MirControls
             // 无论 GotFocus / LostFocus 谁先到达（切换时新框可能已先接管 _current），本框既已失去焦点
             // 就必须恢复自身绘制：否则 _nativeActive 会一直残留，DrawControl 恒画空串，
             // 表现为"切到密码框后账号文字被隐藏"（内容其实还在，切回来又显示）。
+            // 同时真正失焦隐藏 TextBox（LoseFocus），使光标随之熄灭（本工程引擎不会自动触发 LostFocus 事件）。
+            if (TextBox != null && !TextBox.IsDisposed)
+                TextBox.LoseFocus();
             _nativeActive = false;
             TextureValid = false;
             Redraw();
@@ -366,7 +369,7 @@ namespace Client.MirControls
             float sScale = vp.Height > 0 ? (float)vp.Height / Client.Settings.ScreenHeight : 1f;
 
             // transparent = Rendered 模式（DOM <input> 仅作 IME / 键盘捕获代理，文字与光标由引擎自绘）。
-            // 与原版一致：文本框获焦即由 Input_IME.Open 接管输入（失焦由 OnLostFocus / NativeBlur 调 Close），
+            // 与原版一致：文本框获焦即由 Input_IME.Open 接管输入（失焦由 OnLostFocus / ReleaseFocus 调 Close），
             // IME 开 / 关不挂在绘制类 TextBoxRenderer 上。
             KFramework.MonoGame.Input_IME.Open(
                 DisplayLocation.X * sScale, DisplayLocation.Y * sScale,
@@ -378,7 +381,7 @@ namespace Client.MirControls
             Redraw();
         }
 
-        private void NativeBlur()
+        private void ReleaseFocus()
         {
             if (_current == this)
             {
@@ -386,6 +389,9 @@ namespace Client.MirControls
                 _current = null;
                 KFramework.MonoGame.Input_IME.Close();
             }
+            // 真正失焦：清掉隐藏 TextBox 的 Focused，否则 DrawControl 仍会每帧令纹理失效并重绘光标。
+            if (TextBox != null && !TextBox.IsDisposed)
+                TextBox.LoseFocus();
             _nativeActive = false;
             TextureValid = false;
             Redraw();
@@ -531,11 +537,29 @@ namespace Client.MirControls
         public void SetFocus()
         {
             if (!TextBox.Visible)
+            {
                 TextBox.VisibleChanged += SetFocus;
-            else if (TextBox.Parent == null)
+                return;
+            }
+            if (TextBox.Parent == null)
+            {
                 TextBox.ParentChanged += SetFocus;
-            else
+                return;
+            }
+
+            // 焦点互斥：聚焦本框前，先把上一个激活框失焦（清掉它的光标 / 收起 IME）。
+            // 注意：引擎 TextBox 的获焦 / 失焦（Focus / LoseFocus）不会自动触发 GotFocus/LostFocus 事件
+            // （本工程 shim 直接转发，事件从未被引发），故原挂在事件上的 OnGotFocus/OnLostFocus
+            // 不会执行——焦点互斥必须由这里统一处理。
+            if (_current != this)
+            {
+                if (_current != null && !_current.TextBox.IsDisposed)
+                    _current.ReleaseFocus();
+
+                _current = this;
                 TextBox.Focus();
+                ShowNativeInput();
+            }
         }
 
         public void DialogChanged()

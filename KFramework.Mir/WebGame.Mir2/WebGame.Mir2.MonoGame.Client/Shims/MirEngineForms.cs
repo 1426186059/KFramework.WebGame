@@ -120,7 +120,7 @@ namespace MirEngine
         public void SimulateKeyPress(char keyChar) => _inner.SimulateKeyPress(keyChar);
 
         public void Focus() => _inner.Focus();
-        public void Blur() => _inner.Blur();
+        public void LoseFocus() => _inner.Blur();
         public void Dispose() => _inner.Dispose();
 
         public Point GetPositionFromCharIndex(int index) => _inner.GetPositionFromCharIndex(index);
