@@ -2,7 +2,7 @@ namespace KFramework.MonoGame
 {
     /// <summary>
     /// 输入光标：<b>完全由引擎自绘</b>（浏览器 DOM &lt;input&gt; 只作 IME / 键盘捕获，见
-    /// <see cref="TextInputHtmlIme"/>，不显示任何文字或光标）。
+    /// <see cref="Input_IME"/>，不显示任何文字或光标）。
     ///
     /// 闪烁由 <see cref="Draw"/> 内部自行驱动——调用方每帧调 <see cref="Draw"/> 即可看到光标闪烁，
     /// 无需再单独喂时间或推进状态。若控件需要在"亮/灭翻转"那一刻才重建纹理，
@@ -89,7 +89,22 @@ namespace KFramework.MonoGame
                          Rectangle bounds, Color color, bool multiline, bool focused, float padLeft = DefaultPadLeft)
         {
             Tick(focused);
+            DrawCaret(batch, device, font, text, caretIndex, bounds, color, multiline, padLeft);
+        }
 
+        /// <summary>
+        /// 仅按当前 <see cref="ShouldDraw"/> 绘制光标竖线，<b>不推进</b>闪烁节拍
+        /// （节拍由 <see cref="Tick"/> 控制，便于外部每帧推进、仅在翻转时重建纹理）。
+        /// </summary>
+        public void DrawCaret(SpriteBatch batch, GraphicsDevice device, IFont font, string text, int caretIndex,
+                              Rectangle bounds, Color color, bool multiline, float padLeft = DefaultPadLeft)
+        {
+            DrawCore(batch, device, font, text, caretIndex, bounds, color, multiline, padLeft);
+        }
+
+        private void DrawCore(SpriteBatch batch, GraphicsDevice device, IFont font, string text, int caretIndex,
+                              Rectangle bounds, Color color, bool multiline, float padLeft)
+        {
             if (!ShouldDraw || batch == null || device == null || font == null) return;
 
             Vector2 pos = GetPosition(font, text, caretIndex, bounds, multiline, padLeft);

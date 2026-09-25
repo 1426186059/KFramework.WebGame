@@ -52,7 +52,7 @@ namespace WebGame.Mir2.MonoGame.Client
             {
                 DXManager.ControlList.Add(this);
                 ControlTexture = new SlimDX.Direct3D9.Texture(DXManager.Device, rtW, rtH, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
-                TextureSize = new Size(rtW, rtH);
+                TextureSize = new MirEngine.Size(rtW, rtH);
             }
             Surface oldSurface = DXManager.CurrentSurface;
             Surface surface = ControlTexture.GetSurfaceLevel(0);

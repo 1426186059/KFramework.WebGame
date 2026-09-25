@@ -10,4 +10,4 @@ global using System.Runtime.InteropServices.JavaScript; // [JSExport]/[JSImport]
 //     （Font 实现 IFont，故可直接传给基础库）。
 // Font / GraphicsUnit 位于 MirEngine 命名空间，由上面的 global using MirEngine; 直接可见，无需别名；
 // TextFormatFlags 在引擎基础库中，用别名映射，使既有代码无需逐处修改。
-global using TextFormatFlags = KFramework.MonoGame.TextRenderer.TextFormatFlags;
+global using TextFormatFlags = KFramework.MonoGame.TextFormatFlags;

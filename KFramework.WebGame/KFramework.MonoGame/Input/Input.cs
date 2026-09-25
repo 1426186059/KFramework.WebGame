@@ -22,6 +22,7 @@ namespace KFramework.MonoGame
             Input_KeyBoard.Poll();
             Input_Mouse.Poll();
             Input_Touch.Poll();
+            Input_IME.Poll();
         }
 
         /// <summary>每个固定步结束后由 <see cref="Game"/> 调用：清空键盘/鼠标的按下、抬起边沿，

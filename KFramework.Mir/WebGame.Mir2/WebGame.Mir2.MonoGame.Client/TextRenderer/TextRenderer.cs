@@ -4,8 +4,8 @@ using SlimSurface = SlimDX.Direct3D9.Surface;
 using EngineDevice = KFramework.MonoGame.GraphicsDevice;
 using EngineColor = KFramework.MonoGame.Color;
 using EngineRect = KFramework.MonoGame.Rectangle;
-using EngineText = KFramework.MonoGame.TextRenderer.TextRenderer;
-using EngineSize = KFramework.MonoGame.TextRenderer.Size;
+using EngineText = KFramework.MonoGame.TextRenderer;
+using EngineSize = KFramework.MonoGame.Size;
 
 // 客户端适配层：把引擎通用文本库（KFramework.MonoGame/TextRenderer）与本工程的设备、离屏纹理
 // （SlimDX 壳 SlimDX.Direct3D9.Texture -> RenderTarget2D）接起来。

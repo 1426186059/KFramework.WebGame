@@ -66,7 +66,8 @@ setModuleImports('cursor', cursor);
 setModuleImports('localstorage', localstorage);
 const config = getConfig();
 // KFramework.MonoGame 程序集承载所有 JSBind_* 绑定。这里统一取一次导出，再分发给各模块；
-// 各模块的 DOM 事件经 setHandlers 注册的 [JSExport] 回调推回 C#。
+// 网络层经 setHandlers 注册的 [JSExport] 回调把 WebSocket 事件推回 C#。
+// （文本输入覆盖层 input_html_ime 为纯 Pull：C# 主动 show/hide 并每帧 getValue，无需注册回调。）
 const mono = (await getAssemblyExports('KFramework.MonoGame'));
 const bind = mono?.KFramework?.MonoGame;
 if (!bind) {
@@ -86,23 +87,7 @@ else {
     else {
         console.warn('[main] 网络层导出未找到: JSBind_Net_WebSocket');
     }
-    // 原生文本输入覆盖层：DOM <input> 的 input / Enter / blur / IME 事件 → C#（JSBind_InputHtmlIme）
-    const ime = bind.JSBind_InputHtmlIme;
-    if (ime) {
-        inputOverlay.setHandlers({
-            onValueChanged: (v) => ime.OnValueChanged(v),
-            onEnter: () => ime.OnEnter(),
-            onFocus: () => ime.OnFocus(),
-            onBlur: () => ime.OnBlur(),
-            onImeActivate: () => ime.OnImeActivate(),
-            onImeUpdate: (t) => ime.OnImeUpdate(t),
-            onImeDeactivate: (t) => ime.OnImeDeactivate(t),
-        });
-        console.log('[main] 已接入原生文本输入覆盖层');
-    }
-    else {
-        console.warn('[main] 文本输入覆盖层导出未找到: JSBind_InputHtmlIme');
-    }
+    // 文本输入覆盖层（input_html_ime）为纯 Pull，无需在此注册回调。
 }
 /**
  * 帧回调 JSBind_GameHost.Frame 定义在 KFramework.MonoGame 程序集里，

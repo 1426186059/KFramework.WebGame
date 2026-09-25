@@ -41,7 +41,7 @@ namespace WebGame.Mir2.MonoGame.Client
         public List<object> Controls = new List<object>();
         public object ActiveControl;
         public string Text = "";
-        public Size ClientSize = new Size(1024, 768);
+        public MirEngine.Size ClientSize = new MirEngine.Size(1024, 768);
         public MirEngine.Rectangle ClientRectangle => new MirEngine.Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
         public FormBorderStyle FormBorderStyle;
         public bool TopMost;

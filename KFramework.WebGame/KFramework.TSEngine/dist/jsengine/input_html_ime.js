@@ -1,26 +1,19 @@
 // 浏览器原生文本输入覆盖层（input_html_ime 模块）。
 //
-// 作用：在 canvas 之上叠加一个透明的 DOM <input>/<textarea>，承接键盘 / IME / 密码掩码，
-//       把输入结果经 setHandlers 注册的 C# 回调（[JSExport]）推回 JSBind_InputHtmlIme，驱动登录 / 输入框。
+// 作用：在 canvas 之上叠加一个透明的 DOM <input>/<textarea>，承接键盘 / IME 捕获。
+//       文字一律由引擎在 canvas 自绘（见 TextBoxRenderer / TextCaret），DOM 元素只作输入代理。
 //
-// 为什么用 DOM 覆盖层而不是在 canvas 上自绘：
-//   canvas/WebGL 是位图画布，光标、选区、IME 组字（preedit）、候选窗、软键盘等“活”的输入能力
-//   由操作系统/浏览器维护，canvas 无法等价复刻；热血传奇是中文游戏，IME 是刚需。标准做法
-//   （Unity WebGL / Phaser / PixiJS 皆如此）是浮一个透明 <input> 在画布对应控件位置，只把
-//   “值变化 / 回车 / 失焦 / IME”事件经 [JSExport] 回传 C#，可见文字与光标由引擎在 canvas 自绘。
-//
-// 坐标：游戏侧传入的 cx/cy/cw/ch 是画布后备缓冲像素；canvas 以 CSS 尺寸显示，backing = CSS × dpr，
-//       故 CSS 像素 = backing / dpr，再叠加 canvas 在视口的 rect 偏移即为 DOM 定位（position:fixed）。
+// 数据流向（纯 Pull，无回调）：
+//   C# 主动调用 show / hide 控制覆盖层；每帧调用 getValue 拉取当前文本（含 IME 组字内容，
+//   浏览器在组字过程中已把值写入 <input>.value，无需 composition 事件）。
+//   DOM 不向 C# 推送任何事件。回车 / Esc 仅对普通字符 stopPropagation（避免触发游戏全局快捷键）；
+//   非组字态的回车 / Esc 放行冒泡，由全局键盘（input_keyboard）捕获，供 C# 侧判断确认 / 取消；
+//   IME 组字中的回车（选词）通过 isComposing 在 Web 端直接吞掉，不会冒泡误触发确认。
 import { getCanvasElement } from './gl.js';
-let handlers = null;
 let inputEl = null;
 let areaEl = null;
 let last = null;
-let transparentInput = true; // 模块级默认：DOM 元素仅作 IME/键盘捕获代理
-/** 模块级设置：DOM 输入覆盖层是否透明（见 ShowParams.transparent）。 */
-export function setTransparentInput(v) { transparentInput = v; }
-/** C# 侧注册事件回调（由 main.ts 在拿到程序集导出后调用一次）。 */
-export function setHandlers(h) { handlers = h; }
+let composing = false; // IME 组字中（compositionstart..compositionend），用于拦截选词用的 Enter
 function canvasMetrics() {
     const canvas = getCanvasElement();
     if (!canvas)
@@ -61,32 +54,40 @@ function attach(el) {
     el.setAttribute('autocomplete', 'off');
     el.setAttribute('spellcheck', 'false');
     document.body.appendChild(el);
-    // input/keydown 等事件会从 DOM 输入框冒泡到 window，被 input_keyboard 再次消费，
-    // 导致游戏全局键盘逻辑重复处理字符（如密码里敲字母触发快捷键）。这里 stopPropagation
-    // 阻断冒泡；Enter/Escape 还 preventDefault，避免表单提交 / 滚动。
-    const stop = (e) => e.stopPropagation();
+    // 普通字符 stopPropagation，避免冒泡到 window 被 input_keyboard 再次消费
+    // （例如密码里敲字母触发游戏全局快捷键）。回车 / Esc 的放行策略见下方 keydown。
     el.addEventListener('keydown', (e) => {
-        stop(e);
         const ke = e;
         if (ke.key === 'Enter') {
-            if (!last || !last.multiline || !ke.shiftKey) {
+            // IME 组字中选词用的 Enter（isComposing 或 composing 为真）必须吞掉，
+            // 不能冒泡到全局键盘，否则会误触发游戏“确认”（如打字选词时误提交）。
+            if (ke.isComposing || composing) {
                 ke.preventDefault();
-                handlers?.onEnter();
+                ke.stopPropagation();
+                return;
             }
+            const confirm = !last || !last.multiline || ke.shiftKey;
+            if (confirm)
+                ke.preventDefault(); // 阻止表单提交 / 换行，并放行冒泡
+            else
+                e.stopPropagation(); // 多行换行：不冒泡
+            return;
         }
-        else if (ke.key === 'Escape') {
+        if (ke.key === 'Escape') {
             ke.preventDefault();
-            handlers?.onBlur();
+            return; // 放行冒泡，供游戏检测“取消”
         }
+        e.stopPropagation();
     });
-    el.addEventListener('keyup', stop);
-    el.addEventListener('input', () => handlers?.onValueChanged(el.value));
-    el.addEventListener('focus', () => handlers?.onFocus());
-    el.addEventListener('blur', () => handlers?.onBlur());
-    // IME：组字开始=激活，update=实时候选串，end=停用（含最终上屏文本）。
-    el.addEventListener('compositionstart', () => handlers?.onImeActivate?.());
-    el.addEventListener('compositionupdate', (e) => handlers?.onImeUpdate?.(e.data ?? ''));
-    el.addEventListener('compositionend', (e) => handlers?.onImeDeactivate?.(e.data ?? ''));
+    // 跟踪 IME 组字状态（比单纯依赖 keydown.isComposing 更稳，覆盖部分浏览器边界）。
+    el.addEventListener('compositionstart', () => { composing = true; });
+    el.addEventListener('compositionend', () => { composing = false; });
+    el.addEventListener('keyup', (e) => {
+        const ke = e;
+        if (ke.key === 'Enter' || ke.key === 'Escape')
+            return; // 与 keydown 一致
+        e.stopPropagation();
+    });
 }
 // 把完整 CSS 字体串中的 px 按 dpr 缩放到 CSS 像素后整体套用，使 DOM 字形与画布 SpriteFont 一致。
 function scaleFontPx(css, dpr) {
@@ -107,7 +108,6 @@ function place(el, p) {
     el.style.height = p.ch / dpr + 'px';
     el.style.font = scaleFontPx(p.fontFamily, dpr);
     // transparent=true：文字与光标由引擎在 canvas 自绘，本 DOM 元素仅作捕获代理，颜色/光标透明避免重影。
-    // transparent=false：由 DOM 直接显示；密码掩码由 type=password 处理。
     // 透明不影响 IME——候选窗是浏览器 UI，仍按本元素光标位置弹出。
     if (p.transparent) {
         el.style.color = 'transparent';
@@ -119,7 +119,9 @@ function place(el, p) {
         el.style.caretColor = `rgb(${r},${g},${b})`;
     }
 }
-export function show(cx, cy, cw, ch, fontPx, color, value, password, maxLength, multiline, fontFamily, transparent = transparentInput) {
+/** C# 主动激活覆盖层：在画布上以 cx/cy/cw/ch（后备缓冲像素）显示原生输入框并聚焦。 */
+export function show(cx, cy, cw, ch, fontPx, color, value, password, maxLength, multiline, fontFamily, transparent = true) {
+    composing = false;
     const el = ensureEl(multiline);
     last = { cx, cy, cw, ch, fontPx, color, password, maxLength, multiline, fontFamily, transparent };
     place(el, last);
@@ -148,13 +150,21 @@ export function show(cx, cy, cw, ch, fontPx, color, value, password, maxLength, 
         catch { /* ignore */ }
     }, 0);
 }
+/** C# 主动关闭覆盖层：隐藏并移除输入框（失焦），清空最近一次 show 参数。 */
 export function hide() {
     last = null;
+    composing = false;
     if (inputEl)
         inputEl.style.display = 'none';
     if (areaEl)
         areaEl.style.display = 'none';
 }
+/** C# 每帧拉取：返回当前输入框文本（含 IME 组字内容）；未激活时返回空串。 */
+export function getValue() {
+    const el = activeEl();
+    return el ? el.value : '';
+}
+/** 重新定位当前可见输入框（窗口缩放 / 页面滚动时由 reflow 自动调用，也可由 C# 显式调用）。 */
 export function reposition(cx, cy, cw, ch) {
     if (!last)
         return;
@@ -165,15 +175,6 @@ export function reposition(cx, cy, cw, ch) {
     const el = activeEl();
     if (el)
         place(el, last);
-}
-export function setValue(v) {
-    const el = activeEl();
-    if (el)
-        el.value = v ?? '';
-}
-export function getValue() {
-    const el = activeEl();
-    return el ? el.value : '';
 }
 // 窗口缩放 / 页面滚动时，画布 rect 会变，重新按最近一次 show 参数定位当前可见输入框。
 function reflow() {
