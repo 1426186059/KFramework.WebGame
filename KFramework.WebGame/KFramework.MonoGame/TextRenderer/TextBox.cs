@@ -3,7 +3,7 @@ using System;
 namespace KFramework.MonoGame
 {
     // 自绘文本框的“模型”：保存文本、光标、选择区间与基础外观。
-    // 不依赖任何渲染后端；真正的绘制由 TextBoxRenderer 负责。
+    // 不依赖任何渲染后端；真正的绘制由本类的 TextBox.Renderer 部分负责。
     //
     // 说明：KeyEventArgs / KeyPressEventArgs / MouseEventArgs / BorderStyle / MouseButtons
     // 等支撑类型作为嵌套类型存在，避免污染 KFramework.MonoGame 命名空间顶层，

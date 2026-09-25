@@ -4,8 +4,8 @@ namespace KFramework.MonoGame
     /// 输入光标画笔：命名对齐 WinForms 的 <see cref="System.Drawing.Pen"/>，原版传奇中每个文本框各自持有一支。
     ///
     /// 负责以 text 长度为锚点、用字体度量定位并绘制光标竖线，并维护<b>自身</b>的闪烁节拍——
-    /// 因此每个 TextBox 持有一支独立的 Pen，彼此的闪烁相位 / 可见性互不干扰
-    /// （不再像旧实现那样多个文本框共用一个静态光标）。
+    /// 这些状态（_blinkStartTime / alpha / _focused）都是 TextBox 的实例字段，因此每个 TextBox 各持有一份独立的
+    /// 光标状态，彼此的闪烁相位 / 可见性互不干扰（不再像旧实现那样多个文本框共用一个静态光标）。
     ///
     /// 对齐 UGUI <c>InputField.GenerateCaret</c>：聚焦后光标立即可见，之后按 <see cref="BlinkIntervalMs"/> 周期闪烁。
     /// 浏览器 DOM &lt;input&gt; 的 caretColor 已置透明，屏幕上只有这枚引擎自绘光标。

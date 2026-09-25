@@ -9,8 +9,8 @@ namespace Client.MirControls
 {
     public sealed class MirTextBox : MirControl
     {
-        // 每个文本框持有自己独立的光标画笔（对齐原版传奇：每个 TextBox 一支 Pen），互不串状态。
-        private readonly KFramework.MonoGame.Pen _caretPen = new KFramework.MonoGame.Pen();
+        // 每个文本框持有自己独立的 TextBox 实例：整合后的光标状态（TextBox.Caret 部分）即“每框一支光标”，互不串闪烁相位 / 可见性。
+        private readonly KFramework.MonoGame.TextBox _caretBox = new KFramework.MonoGame.TextBox();
 
         protected override void OnBackColourChanged()
         {
@@ -130,7 +130,7 @@ namespace Client.MirControls
         // Browser 模式下若 DOM 覆盖层未正常弹出/聚焦，输入框会完全空白（无文字无光标）。
         // 转发到基础库静态开关：基础库内部据此自动切换 HTML（DOM 显示）与自绘两种光标实现。
 
-        // 光标：闪烁由引擎 TextBoxRenderer.DrawTextBox 内部自驱（传入 focused），本控件聚焦时每帧使纹理失效以驱动重绘。
+        // 光标：闪烁由 TextBox.DrawTextBox 内部自驱（传入 focused，即本实例持有的光标状态），本控件聚焦时每帧使纹理失效以驱动重绘。
 
         public bool CanLoseFocus;
         public readonly TextBox TextBox;
@@ -315,7 +315,7 @@ namespace Client.MirControls
         internal static bool IsCaretAnimating => s_focusCount > 0 && KFramework.MonoGame.Input_IME.Active;
 
         // 引擎 TextBox 持有 text / 光标 / 选区 / IME 预览（对齐 UGUI InputField），DOM 仅作 IME/键盘捕获。
-        // 聚焦时令本控件纹理失效，使引擎 TextBoxRenderer 在层烘焙时重画本控件（含当前光标相位）；
+        // 聚焦时令本控件纹理失效，使引擎 TextBox 在层烘焙时重画本控件（含当前光标相位）；
         // 但“持续重绘”不能靠在 DrawControl 内 Redraw()：彼时 UILayer 正处于烘焙中，
         // LayerControl.CreateTexture 末尾会把 TextureValid 复位为 true，覆盖脏标记，导致下一帧 Bake 直接 return、光标冻结。
         // 正确做法：由 MirScene.DrawControl 在 UILayer.Bake() 之后，按光标闪烁节拍（约 250ms）重新 Invalidate UI 层，
@@ -372,7 +372,7 @@ namespace Client.MirControls
             TextRenderer.Clear(ControlTexture, back);
             
             {
-                // 渲染目标与批次由本控件绑定，文本 + 光标交给基础库 TextBoxRenderer。
+                // 渲染目标与批次由本控件绑定，文本 + 光标交给基础库 TextBox（DrawTextBox，实例自身持有光标状态）。
                 var saved = DXManager.CurrentSurface;
                 DXManager.SetSurface(new SlimDX.Direct3D9.Surface(ControlTexture));
                 try
@@ -381,13 +381,12 @@ namespace Client.MirControls
                     batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred,
                                 KFramework.MonoGame.BlendState.NonPremultiplied,
                                 KFramework.MonoGame.SamplerState.PointClamp);
-                    KFramework.MonoGame.TextBoxRenderer.DrawTextBox(
+                    _caretBox.DrawTextBox(
                         batch, DXManager.GDevice, font, drawText,
-                        _caretPen,
                         new KFramework.MonoGame.Rectangle(0, 0, Size.Width, Size.Height),
                         KFramework.MonoGame.Color.FromArgb((uint)fore),
                         TextBox.SelectionStart, !TextBox.Multiline, TextBox.Focused,
-                        KFramework.MonoGame.TextBoxRenderer.DefaultPadLeft, drawComp,
+                        KFramework.MonoGame.TextBox.DefaultPadLeft, drawComp,
                         TextBox.SelectionStart, TextBox.SelectionLength);
                     batch.End();
                 }

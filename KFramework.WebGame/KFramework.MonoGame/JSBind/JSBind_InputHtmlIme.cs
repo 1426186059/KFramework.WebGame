@@ -7,7 +7,7 @@ namespace KFramework.MonoGame
     /// 浏览器 HTML IME 输入覆盖层的 JS 绑定。映射 KFramework.TSEngine 的 <c>src/input_html_ime.ts</c>。
     ///
     /// 该覆盖层<b>仅用于 IME / 键盘捕获</b>：DOM 元素始终透明，文字与光标一律由引擎自绘
-    /// （见 <see cref="TextRenderer.TextBoxRenderer"/> 与 <see cref="TextRenderer.TextCaret"/>）。
+    /// （见 <see cref="TextRenderer.TextBox"/> 的 TextBox.Renderer / TextBox.Caret 部分）。
     ///
     /// 数据流向：
     /// <list type="bullet">
