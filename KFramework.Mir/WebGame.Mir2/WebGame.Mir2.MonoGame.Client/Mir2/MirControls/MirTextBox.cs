@@ -323,20 +323,6 @@ namespace Client.MirControls
         protected internal override void DrawControl()
         {
             KFramework.MonoGame.PrintTool.Log($"MirTextBox: DrawControl");
-            //bool focusedActive = TextBox != null && TextBox.Focused;
-            //if (focusedActive)
-            //{
-            //    TextureValid = false;
-
-            //    // [临时验证] 每 500ms 打印，确认“聚焦即持续重绘”闭环在跑（心跳不断=循环成立）。
-            //    long hb = System.Environment.TickCount64 / 500;
-            //    if (hb != _blinkHeartbeatTick)
-            //    {
-            //        _blinkHeartbeatTick = hb;
-            //        int phase = (int)(System.Environment.TickCount64 / 530 % 2);
-            //        Console.WriteLine($"[IME] BlinkHeartbeat focused sel={TextBox.SelectionStart} phase={phase}");
-            //    }
-            //}
             base.DrawControl();
             TextureValid = false;
             Redraw();

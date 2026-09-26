@@ -6,11 +6,12 @@ namespace KFramework.MonoGame
     public static class PrintTool
     {
         private static readonly StringBuilder mStringBuilder = new StringBuilder();
-        private const string ConcatStr = "_";
+        private const string ConcatStr = "  ";
 
         private static string GetStr(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
             mStringBuilder.Clear();
+            mStringBuilder.Append($"[{DateTime.Now.ToString("HH:mm:ss.fff")}]");
             if (data1 != null)
             {
                 mStringBuilder.Append(data1);
