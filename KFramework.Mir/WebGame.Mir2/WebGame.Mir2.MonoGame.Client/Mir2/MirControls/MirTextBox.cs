@@ -1,8 +1,5 @@
 using Client.MirGraphics;
 //using KFramework.MonoGame;
-using MirEngine;
-using SlimDX;
-using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirControls
@@ -124,9 +121,6 @@ namespace Client.MirControls
         public bool CanLoseFocus;
         public readonly TextBox TextBox;
 
-        
-        private bool _initialShowDone;
-
         private static Point HiddenTextBoxLocation
         {
             get { return new Point(-32000, -32000); }
@@ -135,9 +129,6 @@ namespace Client.MirControls
         private void ApplyNativeTextBoxState()
         {
             if (TextBox == null || TextBox.IsDisposed) return;
-
-            // 把 shim TextBox 摆到真实显示位置：引擎 Focus() 直接用其 Location/Size 定位原生 <input> 覆盖层
-            // （本工程为恒等变换，逻辑坐标即后备缓冲像素；与 WinForms 把控件放在真实位置同理）。
             TextBox.Location = HiddenTextBoxLocation;
             TextBox.Visible = Visible && TextBox.Parent != null;
         }
