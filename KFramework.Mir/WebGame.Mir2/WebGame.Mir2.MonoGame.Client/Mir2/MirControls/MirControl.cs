@@ -144,7 +144,7 @@ namespace Client.MirControls
         protected virtual KFramework.MonoGame.Matrix4x4 GetLayerTransform(int viewportWidth, int viewportHeight)
         {
             float s = (float)viewportHeight / Settings.ScreenHeight;
-            return KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(s, s, 0, 0f);
+            return KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(1, 1, 0, 0f);
         }
 
         internal void DisposeTexture()

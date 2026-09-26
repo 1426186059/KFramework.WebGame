@@ -591,6 +591,15 @@ namespace Client.MirScenes.Dialogs
             KeyPress += ChatPanel_KeyPress;
             KeyDown += ChatPanel_KeyDown;
             MouseWheel += ChatPanel_MouseWheel;
+            // 原版输入框是常驻原生控件，点输入行任意处都能聚焦；移植版改成惰性显示后，
+            // 只有聊天记录行挂了“点击→显示并聚焦”，输入行所在的对话框背景没有。
+            // 补上：点对话框输入区域即激活文本框，否则直接点输入行会落空（被 ChatDialog 吃掉、无聚焦逻辑）。
+            MouseDown += (o, e) =>
+            {
+                if (e.Button != MouseButtons.Left) return;
+                ChatTextBox.SetFocus();
+                ChatTextBox.Visible = true;
+            };
 
             ChatTextBox = new MirTextBox
             {
