@@ -29,21 +29,12 @@ namespace KFramework.MonoGame
         private static readonly bool[] _pressed = new bool[KeyCount];
         private static readonly bool[] _released = new bool[KeyCount];
 
-        /// <summary>任意键按下</summary>
+        /// <summary>任意键 刚按下</summary>
         public static event Action<Keys> KeyDown;
 
-        /// <summary>任意键抬起</summary>
+        /// <summary>任意键 刚抬起</summary>
         public static event Action<Keys> KeyUp;
-
-        /// <summary>
-        /// 字符输入 —— 对齐 WinForms 的 KeyPress：紧跟 <see cref="KeyDown"/> 之后触发，
-        /// 且只对能映射出字符的键触发（方向键 / F 键等不触发，见 <see cref="ToChar"/>）。
-        /// </summary>
-        /// <remarks>
-        /// 携带的仍是键码而非字符：本层不认"字符"这个概念，字符由使用方按当前修饰键电平换算
-        /// （<see cref="ToChar"/>）。字符键的长按连发由浏览器重复投递 keydown，本层只在状态跳变时
-        /// 触发一次，因此不会像 WinForms 那样自动重复。
-        /// </remarks>
+        /// <summary>任意键按住</summary>
         public static event Action<Keys> KeyPress;
 
         internal static bool[] Held => _held;
@@ -66,7 +57,7 @@ namespace KFramework.MonoGame
             JSBind_Input.PollKeyboard(_buffer);
 
             int count = ReadInt(0);
-            if (count > 0) Console.WriteLine($"[DBG] Poll count={count} firstKey={(count > 0 ? ReadInt(4 + 4) : -1)}");
+            if (count > 0) PrintTool.Log($"[DBG] Poll count={count} firstKey={(count > 0 ? ReadInt(4 + 4) : -1)}");
             if (count <= 0) return;
             if (count > MaxEvents) count = MaxEvents;
 
