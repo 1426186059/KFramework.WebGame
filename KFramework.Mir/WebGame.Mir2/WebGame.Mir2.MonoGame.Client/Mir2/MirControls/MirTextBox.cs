@@ -296,12 +296,12 @@ namespace Client.MirControls
         
         protected internal override void DrawControl()
         {
-            KFramework.MonoGame.PrintTool.Log($"MirTextBox: DrawControl");
-
-            TextureValid = false;
             base.DrawControl();
-            TextureValid = false;
-            Redraw();
+            if (TextBox.IsFocused)
+            {
+                TextureValid = false;
+                Redraw();
+            }
         }
 
         protected override void CreateTexture()

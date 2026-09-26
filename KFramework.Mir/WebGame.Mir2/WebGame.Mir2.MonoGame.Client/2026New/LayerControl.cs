@@ -15,9 +15,10 @@ namespace WebGame.Mir2.MonoGame.Client
     // GetLayerTransform 提供自己的 世界→屏幕 变换，互不耦合、不再写到一块。
     public abstract class LayerControl : MirControl
     {
-        public void Bake()
+        public virtual void Bake()
         {
             if (TextureValid) return;
+            TextureValid = true; //这里必须写这里，否则 Redraw 不起作用
             CreateTexture();
         }
 
@@ -72,7 +73,6 @@ namespace WebGame.Mir2.MonoGame.Client
             }
 
             DXManager.SetSurface(oldSurface);
-            TextureValid = true;
             surface.Dispose();
         }
 
