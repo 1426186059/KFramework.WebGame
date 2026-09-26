@@ -423,11 +423,11 @@ namespace WebGame.Mir2.MonoGame.Client
 
         private static MirEngine.KeyPressEventArgs ToKeyPressEventArgs(MG.Keys k)
         {
-            MirEngine.Keys keyData = (MirEngine.Keys)(int)k;
-            if (MG.Input_KeyBoard.Shift) keyData |= MirEngine.Keys.Shift;
-            if (MG.Input_KeyBoard.Ctrl) keyData |= MirEngine.Keys.Control;
-            if (MG.Input_KeyBoard.Alt) keyData |= MirEngine.Keys.Alt;
-            return new KeyPressEventArgs(keyData);
+            // 与 KeyEventArgs 不同，KeyPressEventArgs 携带的是"字符"（KeyChar）而不是键码+修饰键位：
+            // 对齐 WinForms，控制键沿用 ASCII 控制码（退格=8 / Tab=9 / 回车=13 / Esc=27），
+            // 字母数字按 Shift 电平给大小写 / 上档符号（聊天框靠 '!' '@' 这种上档字符开前缀）。
+            // Input_KeyBoard.KeyPress 本身只为能映射出字符的键触发，因此这里不会拿到 '\0'。
+            return new MirEngine.KeyPressEventArgs(MG.Input_KeyBoard.ToChar(k));
         }
 
         private static MirEngine.MouseEventArgs ToMouseEventArgs(MG.MouseButton b, MG.Vector2 p)

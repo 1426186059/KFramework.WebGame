@@ -35,6 +35,17 @@ namespace KFramework.MonoGame
         /// <summary>任意键抬起</summary>
         public static event Action<Keys> KeyUp;
 
+        /// <summary>
+        /// 字符输入 —— 对齐 WinForms 的 KeyPress：紧跟 <see cref="KeyDown"/> 之后触发，
+        /// 且只对能映射出字符的键触发（方向键 / F 键等不触发，见 <see cref="ToChar"/>）。
+        /// </summary>
+        /// <remarks>
+        /// 携带的仍是键码而非字符：本层不认"字符"这个概念，字符由使用方按当前修饰键电平换算
+        /// （<see cref="ToChar"/>）。字符键的长按连发由浏览器重复投递 keydown，本层只在状态跳变时
+        /// 触发一次，因此不会像 WinForms 那样自动重复。
+        /// </remarks>
+        public static event Action<Keys> KeyPress;
+
         internal static bool[] Held => _held;
         internal static bool[] Pressed => _pressed;
         internal static bool[] Released => _released;
@@ -87,7 +98,11 @@ namespace KFramework.MonoGame
                 if (!_held[k])
                 {
                     _pressed[k] = true;
-                    KeyDown?.Invoke((Keys)k);
+                    var key = (Keys)k;
+                    KeyDown?.Invoke(key);
+                    // 对齐 WinForms：KeyPress 跟在 KeyDown 之后，且只对能产生字符的键触发。
+                    if (HasChar(key))
+                        KeyPress?.Invoke(key);
                 }
                 _held[k] = true;
             }
@@ -184,6 +199,48 @@ namespace KFramework.MonoGame
         public static bool Shift => GetKey(Keys.LeftShift) || GetKey(Keys.RightShift);
         public static bool Ctrl => GetKey(Keys.LeftControl) || GetKey(Keys.RightControl);
         public static bool Alt => GetKey(Keys.LeftAlt) || GetKey(Keys.RightAlt);
+
+        // 数字键在 Shift 按下时的字符（与 US 布局一致，索引 = 键码 - Keys.D0）。
+        private const string ShiftedDigits = ")!@#$%^&*(";
+
+        /// <summary>
+        /// 键码 → 字符，即 WinForms <c>KeyPressEventArgs.KeyChar</c> 的取值约定：
+        /// 控制键沿用 ASCII 控制码（Backspace=8 / Tab=9 / Enter=13 / Escape=27），
+        /// 字母 / 数字按当前 <see cref="Shift"/> 电平给出字面量，空格给 ' '。
+        /// </summary>
+        /// <returns>映射不出字符的键（方向键、Home/End、修饰键等）返回 '\0'。</returns>
+        /// <remarks>
+        /// 只覆盖 <see cref="Keys"/> 枚举里存在的键：浏览器 keyCode 本身不区分大小写 / 键盘布局，
+        /// 真正的本地化字符输入（含 IME）由 DOM 输入层负责，不经过这里。
+        /// </remarks>
+        public static char ToChar(Keys key)
+        {
+            switch (key)
+            {
+                case Keys.Backspace: return '\b';
+                case Keys.Tab: return '\t';
+                case Keys.Enter: return '\r';
+                case Keys.Escape: return (char)27;
+                case Keys.Space: return ' ';
+            }
+
+            if (key >= Keys.D0 && key <= Keys.D9)
+            {
+                int d = (int)key - (int)Keys.D0;
+                return Shift ? ShiftedDigits[d] : (char)('0' + d);
+            }
+
+            if (key >= Keys.A && key <= Keys.Z)
+            {
+                char c = (char)('a' + ((int)key - (int)Keys.A));
+                return Shift ? char.ToUpperInvariant(c) : c;
+            }
+
+            return '\0';
+        }
+
+        /// <summary>该键是否会产生 <see cref="KeyPress"/>（即能映射出字符）。</summary>
+        public static bool HasChar(Keys key) => ToChar(key) != '\0';
 
         /// <summary>WASD / 方向键组成的二维轴，Y 向下为正。</summary>
         public static Vector2 GetAxis()
