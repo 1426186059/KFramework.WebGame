@@ -23,8 +23,6 @@ namespace WebGame.Mir2.MonoGame.Client
 
         public Texture2D RenderTargetTexture => ControlTexture?.RenderTarget;
 
-        public void Invalidate() => TextureValid = false;
-
         public void Add(MirControl control) => AddControl(control);
         public void Insert(int index, MirControl control) => InsertControl(index, control);
 
@@ -80,7 +78,6 @@ namespace WebGame.Mir2.MonoGame.Client
 
         public override void Redraw()
         {
-            base.Redraw();
             TextureValid = false;
         }
     }

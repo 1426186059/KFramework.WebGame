@@ -1161,7 +1161,7 @@ namespace Client.MirScenes
             // 世界内容只在 MapControl 纹理失效（动画/移动/地板变化）时才需重新烘焙，
             // 故按 MapControl.TextureValid 精确作废世界层，避免每帧多一张全屏 RT。
             if (MapControl != null && !MapControl.TextureValid)
-                WorldLayer.Invalidate();
+                WorldLayer.Redraw();
 
             base.DrawControl();
 

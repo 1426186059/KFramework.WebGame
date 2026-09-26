@@ -213,8 +213,8 @@ namespace Client.MirControls
 
         public override void Redraw()
         {
-            WorldLayer.Invalidate();
-            UILayer.Invalidate();
+            //场景ReDraw，对应的是 世界层
+            WorldLayer.Redraw();
         }
 
         /// <summary>
@@ -250,9 +250,9 @@ namespace Client.MirControls
                     ApplyAnchorTree(c);
                 }
 
-            // 位置已变，两层离屏纹理需重新烘焙。
-            WorldLayer.Invalidate();
-            UILayer.Invalidate();
+            //// 位置已变，两层离屏纹理需重新烘焙。
+            //WorldLayer.Invalidate();
+            UILayer.Redraw();
         }
 
         // 世界层不参与重算：MapControl 每帧用 FullScreenSize 调 UpdateViewPort，
