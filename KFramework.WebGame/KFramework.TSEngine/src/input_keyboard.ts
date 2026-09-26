@@ -64,14 +64,14 @@ const view = new DataView(scratch.buffer);
 
 export function pollKeyboard(target: MemoryView_Span): void {
     if (!bound) bindKeyboard();
-
+    
     view.setInt32(0, count, true);
     for (let i = 0; i < count; i++) {
         const dst = 4 + i * STRIDE;
         view.setInt32(dst, queue[i * 2], true);
         view.setInt32(dst + 4, queue[i * 2 + 1], true);
     }
+
+    target.set(scratch.slice(0, 4 + count * STRIDE));
     count = 0;
-    target.set(scratch);
-    copyOut(target, scratch);
 }
