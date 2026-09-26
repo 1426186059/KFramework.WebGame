@@ -287,42 +287,18 @@ namespace Client.MirControls
             Shown += MirTextBox_Shown;
             TextBox.MouseMove += CMain.CMain_MouseMove;
         }
-
-        // 原生输入覆盖层为纯 Pull 模型（见 KFramework.MonoGame.Input_IME）：
-        // 引擎每帧经 Input.Poll → Input_IME.Poll 拉取文本到 Input_IME.Text，本类只在 DrawControl 中读取它。
-        // 覆盖层的开 / 关、焦点互斥、回车转发全部由引擎 KFramework.MonoGame.TextBox 在 Focus()/Blur() 内负责
-        // （与原版 WinForms 一致：上层只管设置 Location/Size/Font/Visible 并调用 Focus()）。
-
+        
         private void TextBox_NeedRedraw(object sender, EventArgs e)
         {
-            // GotFocus/LostFocus 也走这里：用计数维护“是否有文本框聚焦”，
-            // 供 MirScene 在光标闪烁期间按节拍重烘焙 UI 层（不依赖烘焙循环本身，避免死循环）。
-            if (ReferenceEquals(sender, TextBox))
-            {
-                if (TextBox.Focused) s_focusCount++;
-                else s_focusCount = Math.Max(0, s_focusCount - 1);
-            }
             TextureValid = false;
             Redraw();
         }
-
-        // 每帧由基类 Draw() 调用；在此推进光标闪烁（与 Web_Mir3 DXTextBox 一致：
-        private static long _blinkHeartbeatTick;
-
-        // 聚焦计数：由 TextBox.GotFocus/LostFocus 经 TextBox_NeedRedraw 维护（计数器形式，事件顺序无关）。
-        // 供 MirScene 判断“是否有文本框处于聚焦”以驱动光标闪烁期间的按需重烘焙（不依赖烘焙循环本身，避免死循环）。
-        private static int s_focusCount;
-        internal static bool IsCaretAnimating => s_focusCount > 0 && KFramework.MonoGame.Input_IME.Active;
-
-        // 引擎 TextBox 持有 text / 光标 / 选区 / IME 预览（对齐 UGUI InputField），DOM 仅作 IME/键盘捕获。
-        // 聚焦时令本控件纹理失效，使引擎 TextBox 在层烘焙时重画本控件（含当前光标相位）；
-        // 但“持续重绘”不能靠在 DrawControl 内 Redraw()：彼时 UILayer 正处于烘焙中，
-        // LayerControl.CreateTexture 末尾会把 TextureValid 复位为 true，覆盖脏标记，导致下一帧 Bake 直接 return、光标冻结。
-        // 正确做法：由 MirScene.DrawControl 在 UILayer.Bake() 之后，按光标闪烁节拍（约 250ms）重新 Invalidate UI 层，
-        // 使下一帧继续烘焙——整层重烘焙频率仅约 4 次/秒（而非 60 次/秒），光标照常闪，相位之间层保持缓存零开销。
+        
         protected internal override void DrawControl()
         {
             KFramework.MonoGame.PrintTool.Log($"MirTextBox: DrawControl");
+
+            TextureValid = false;
             base.DrawControl();
             TextureValid = false;
             Redraw();
@@ -330,7 +306,6 @@ namespace Client.MirControls
 
         protected override void CreateTexture()
         {
-            KFramework.MonoGame.PrintTool.Log($"MirTextBox: CreateTexture  00000");
             if (Size.IsEmpty)
                 return;
 
@@ -345,9 +320,7 @@ namespace Client.MirControls
                 TextureSize = Size;
             }
 
-            KFramework.MonoGame.PrintTool.Log($"MirTextBox: CreateTexture 111111");
-
-            Font font = TextBox.Font ?? new Font("Arial", 10f);
+            Font font = TextBox.Font ?? new Font(Settings.FontName, Settings.FontSize);
             int fore = (TextBox.ForeColor != Color.Empty ? TextBox.ForeColor : Color.White).ToArgb();
             int back = (TextBox.BackColor != Color.Empty && TextBox.BackColor.A > 0) ? TextBox.BackColor.ToArgb() : 0;
             int selBack = Color.FromArgb(128, 51, 153, 255).ToArgb();

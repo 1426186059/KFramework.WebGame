@@ -17,8 +17,8 @@ namespace Client.MirControls
         // 两层结构：世界层(地图/NPC/怪物/玩家) 与 UI 层(对话框/HUD)。
         // 场景的直接子控件经 AddControl/InsertControl 路由到对应容器；渲染时分别烘焙、
         // 各自用自己的相机变换，先上世界层再上 UI 层叠加（UI 层透明背景，不遮挡世界）。
-        protected readonly WorldLayerControl WorldLayer = new WorldLayerControl { BackColour = Color.Black, DrawControlTexture = false };
-        protected readonly UILayerControl UILayer = new UILayerControl { BackColour = Color.Transparent, DrawControlTexture = false };
+        protected readonly WorldLayerControl WorldLayer;
+        protected readonly UILayerControl UILayer;
 
         protected MirScene()
         {
@@ -26,16 +26,18 @@ namespace Client.MirControls
             BackColour = Color.Black;
             Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
 
-            // 世界层 = 相机投影（世界坐标 → 屏幕）。
-            // MapControl 按【全屏/窗口原生分辨率】烘焙世界（地板 1:1 铺满、无黑边、无放大），
-            // 世界层只做 1:1 透传（不缩放、不 aspect-fill）——世界坐标本就不该被放大。
-            // 窗口更大只是“看到更多世界”（以 48x32 世界像素为单位的视口更大），而非放大世界。
-            // 命中：MapControl 内鼠标即世界像素（与屏幕 1:1），WorldLayer 恒为单位变换。
-            // 注意：KCamera.ScreenToWorldPos 的 s=h/768 只服务于【UI 层逻辑坐标】，与世界层无关。
-            // 两层各自的 世界→屏幕 变换见 WorldLayerControl / UILayerControl（覆写 GetLayerTransform）。
-
-            WorldLayer.Parent = this;
-            UILayer.Parent = this;
+            WorldLayer = new WorldLayerControl 
+            {
+                Parent = this,  
+                BackColour = Color.Black, 
+                DrawControlTexture = false 
+            };
+            UILayer = new UILayerControl 
+            { 
+                Parent = this, 
+                BackColour = Color.Transparent, 
+                DrawControlTexture = false 
+            };
         }
 
         public override sealed Size Size

@@ -10,7 +10,8 @@ namespace Client
         // 浏览器端 WASM 堆上限仅 2GB：原桌面端 600000(10分钟) 的纹理超时过长，会导致已绘制图像的
         // 原始像素字节(Data)与 WebGL 纹理几乎不释放、持续累积直至撑破堆。改为 10000(10秒)：
         // 离开屏幕 10 秒的图像即释放像素字节与纹理，内存峰值可控在 2GB 内。
-        public const long CleanDelay = 10000;
+        //public const long CleanDelay = 10000;
+        public const long CleanDelay = 600000;
 
         public static int ScreenWidth
         {
