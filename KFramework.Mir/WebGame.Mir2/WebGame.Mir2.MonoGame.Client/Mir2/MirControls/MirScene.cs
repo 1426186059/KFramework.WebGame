@@ -14,9 +14,6 @@ namespace Client.MirControls
         private static long _lastClickTime;
         private static MirControl _clickedControl;
 
-        // 两层结构：世界层(地图/NPC/怪物/玩家) 与 UI 层(对话框/HUD)。
-        // 场景的直接子控件经 AddControl/InsertControl 路由到对应容器；渲染时分别烘焙、
-        // 各自用自己的相机变换，先上世界层再上 UI 层叠加（UI 层透明背景，不遮挡世界）。
         protected readonly WorldLayerControl WorldLayer;
         protected readonly UILayerControl UILayer;
 
@@ -26,18 +23,21 @@ namespace Client.MirControls
             BackColour = Color.Black;
             Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
 
-            WorldLayer = new WorldLayerControl 
+
+            WorldLayer = new WorldLayerControl
             {
-                Parent = this,  
-                BackColour = Color.Black, 
-                DrawControlTexture = false 
+                BackColour = Color.Black,
+                DrawControlTexture = false,
             };
-            UILayer = new UILayerControl 
-            { 
-                Parent = this, 
-                BackColour = Color.Transparent, 
-                DrawControlTexture = false 
+
+            UILayer = new UILayerControl
+            {
+                BackColour = Color.Transparent,
+                DrawControlTexture = false,
             };
+
+            WorldLayer.Parent = this;
+            UILayer.Parent = this;
         }
 
         public override sealed Size Size
@@ -216,7 +216,10 @@ namespace Client.MirControls
         public override void Redraw()
         {
             //场景ReDraw，对应的是 世界层
-            WorldLayer.Redraw();
+            if (WorldLayer != null)
+            {
+                WorldLayer.Redraw();
+            }
         }
 
         /// <summary>
