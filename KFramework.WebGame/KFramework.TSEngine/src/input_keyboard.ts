@@ -42,8 +42,6 @@ export function bindKeyboard(): void {
     on(window, 'keydown', (e: Event) => {
         const ev = e as KeyboardEvent;
         push(1, ev.keyCode);
-        // 阻止空格 / 方向键滚动页面（默认行为只能在 JS 侧拦）
-        if (ev.keyCode === 32 || (ev.keyCode >= 37 && ev.keyCode <= 40)) ev.preventDefault();
     });
 
     on(window, 'keyup', (e: Event) => push(2, (e as KeyboardEvent).keyCode));
@@ -64,7 +62,7 @@ export function unbindKeyboard(): void {
 const scratch = new Uint8Array(SIZE);
 const view = new DataView(scratch.buffer);
 
-export function pollKeyboard(target: MemoryView | Uint8Array): void {
+export function pollKeyboard(target: MemoryView_Span): void {
     if (!bound) bindKeyboard();
 
     view.setInt32(0, count, true);
@@ -74,6 +72,6 @@ export function pollKeyboard(target: MemoryView | Uint8Array): void {
         view.setInt32(dst + 4, queue[i * 2 + 1], true);
     }
     count = 0;
-
+    target.set(scratch);
     copyOut(target, scratch);
 }

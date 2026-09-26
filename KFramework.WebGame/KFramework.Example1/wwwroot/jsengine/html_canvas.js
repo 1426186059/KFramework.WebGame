@@ -70,7 +70,7 @@ window.addEventListener('resize', () => {
             centered.delete(id);
     });
 });
-/** 写回整数缓冲（与 platform.js 同一套 MemoryView 处理）。 */
+/** 写回整数缓冲（与 platform.js 同一套 MemoryView_Span 处理）。 */
 let _int32Scratch = new Int32Array(8);
 function writeInts(view, values) {
     if (_int32Scratch.length < values.length)

@@ -1,7 +1,7 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Texture 经 [JSImport(module: "texture")] 调用（含 KTX2/Basis 转码）；产物 texture.js 由 SyncJsEngine 复制。
 // 纹理解码：借浏览器原生解码器把图像字节（PNG / WebP 等）解码为 RGBA8。
 // 因 WASM 无托管 WebP 解码器，统一走 createImageBitmap（浏览器原生，覆盖 Png / Webp）。
-// outSize / outPixels 是 C# 的 ArraySegment → MemoryView：零拷贝视图，写入直接落在托管数组上
+// outSize / outPixels 是 C# 的 ArraySegment → MemoryView_ArraySegment：零拷贝视图，写入直接落在托管数组上
 // （若按 byte[]/int[] 的 Array 语义传进来，JS 只会写到副本里，C# 拿到的是全 0）。
 export async function decodeImageToRgba(bytes, outSize, outPixels) {
     try {
@@ -70,7 +70,7 @@ async function loadBasis() {
  * @param glFormat 对应的 WebGL 内部格式枚举（cTFRGBA32 回退时为 RGBA8）
  * @returns 新建的 WebGLTexture
  */
-// outBuffer 是 C# 的 ArraySegment<byte> → MemoryView：转码器要 Uint8Array，先转码到临时缓冲再拷回视图。
+// outBuffer 是 C# 的 ArraySegment<byte> → MemoryView_ArraySegment：转码器要 Uint8Array，先转码到临时缓冲再拷回视图。
 export async function transcodeKtx2Into(bytes, basisFormat, outBuffer) {
     const mod = await loadBasis();
     const src = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);

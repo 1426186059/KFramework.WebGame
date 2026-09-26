@@ -71,7 +71,7 @@ export function render(text, font, letterSpacing, x, y, width, height, rgba) {
     c.textBaseline = 'alphabetic';
     c.fillStyle = '#ffffff';
     c.fillText(text, x, y);
-    // getImageData 返回的是 Uint8ClampedArray，而 .NET 的 MemoryView 只接受 Uint8Array
+    // getImageData 返回的是 Uint8ClampedArray，而 .NET 的 MemoryView_Span 只接受 Uint8Array
     const image = c.getImageData(0, 0, width, height).data;
     const bytes = new Uint8Array(image.length);
     bytes.set(image);

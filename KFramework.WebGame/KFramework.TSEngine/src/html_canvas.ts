@@ -79,10 +79,10 @@ window.addEventListener('resize', () => {
     });
 });
 
-/** 写回整数缓冲（与 platform.js 同一套 MemoryView 处理）。 */
+/** 写回整数缓冲（与 platform.js 同一套 MemoryView_Span 处理）。 */
 let _int32Scratch = new Int32Array(8);
 
-function writeInts(view: MemoryView | Int32Array, values: number[]): void {
+function writeInts(view: MemoryView_Span | Int32Array, values: number[]): void {
     if (_int32Scratch.length < values.length) _int32Scratch = new Int32Array(values.length);
     _int32Scratch.set(values);
     const slice = _int32Scratch.subarray(0, values.length);
@@ -223,7 +223,7 @@ export function restoreLayout(idOrSelector: string): boolean {
 }
 
 /** 读 HTML 页面尺寸（window.innerWidth / innerHeight），常用于自己算居中位置。写入 [宽, 高]。 */
-export function getHTMLPageSize(view: MemoryView | Int32Array): void {
+export function getHTMLPageSize(view: MemoryView_Span | Int32Array): void {
     writeInts(view, [Math.round(window.innerWidth), Math.round(window.innerHeight)]);
 }
 
@@ -231,7 +231,7 @@ export function getHTMLPageSize(view: MemoryView | Int32Array): void {
  * 读画布当前的实际矩形（不含边框）：写入 [left, top, width, height]，单位 CSS 像素，坐标相对窗口左上角。
  * 画布不存在时写入全 0 —— 调用方可以据此判断「还没这块画布」。
  */
-export function getRect(idOrSelector: string, view: MemoryView | Int32Array): void {
+export function getRect(idOrSelector: string, view: MemoryView_Span | Int32Array): void {
     const element = lookup(toId(idOrSelector));
     if (!element) {
         writeInts(view, [0, 0, 0, 0]);

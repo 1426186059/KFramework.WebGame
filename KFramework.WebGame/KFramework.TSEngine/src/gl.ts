@@ -1,7 +1,7 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_GL 经 [JSImport(module: "gl")] 调用；编译产物 gl.js 由各示例 SyncJsEngine 复制到 wwwroot/jsengine。
 // WebGL 2.0 绑定层。C# 侧通过 [JSImport("函数名", "gl")] 调用这里的导出函数。
 //
-// 重要：.NET 传入的 Span<T> 在 JS 侧是 MemoryView（不是 TypedArray），
+// 重要：.NET 传入的 Span<T> 在 JS 侧是 MemoryView_Span（不是 TypedArray），
 // 必须经 toBytes / toFloats 转换后才能交给 WebGL。
 // 另外 C# 侧的 [JSImport] 函数名必须与这里的导出名完全一致，且不能带点号。
 
@@ -78,7 +78,7 @@ export function getError(): number {
 }
 
 /** 读取一个像素（x/y 为 WebGL 坐标，原点在左下角），用于自检"到底画出来没有"。 */
-export function readPixel(x: number, y: number, out: MemoryView | Uint8Array): void {
+export function readPixel(x: number, y: number, out: MemoryView_Span | Uint8Array): void {
     const pixels = new Uint8Array(4);
     gpu().readPixels(x, y, 1, 1, gpu().RGBA, gpu().UNSIGNED_BYTE, pixels);
 
@@ -91,11 +91,11 @@ export function readPixel(x: number, y: number, out: MemoryView | Uint8Array): v
 
 // ---------- 字节视图转换 ----------
 
-function toBytes(view: MemoryView | Uint8Array | null): Uint8Array | null {
+function toBytes(view: MemoryView_Span | Uint8Array | null): Uint8Array | null {
     if (view == null) return null;
     if (view instanceof Uint8Array) return view;
 
-    const memory = view as MemoryView;
+    const memory = view as MemoryView_Span;
     if (typeof memory.copyTo === 'function') {
         const buffer = new Uint8Array(memory.byteLength);
         memory.copyTo(buffer);
@@ -145,9 +145,9 @@ export function uniform4f(location: WebGLUniformLocation | null, x: number, y: n
 let _matrixBytes: Uint8Array | null = null;
 let _matrixF32: Float32Array | null = null;
 
-export function uniformMatrix4fv(location: WebGLUniformLocation | null, transpose: number, value: MemoryView | Float32Array): void {
+export function uniformMatrix4fv(location: WebGLUniformLocation | null, transpose: number, value: MemoryView_Span | Float32Array): void {
     // C# 侧以 16 个 float 的小端字节流传入，这里拷一份对齐的缓冲再还原
-    const bytes = toBytes(value as MemoryView);
+    const bytes = toBytes(value as MemoryView_Span);
     if (!bytes) return;
 
     let matrix: Float32Array;
@@ -176,10 +176,10 @@ let uniformLogged = false;
 export function createBuffer(): WebGLBuffer | null { return gpu().createBuffer(); }
 export function bindBuffer(target: number, buffer: WebGLBuffer | null): void { gpu().bindBuffer(target, buffer); }
 export function bufferDataSize(target: number, size: number, usage: number): void { gpu().bufferData(target, size, usage); }
-export function bufferData(target: number, data: MemoryView | Uint8Array, usage: number): void {
+export function bufferData(target: number, data: MemoryView_Span | Uint8Array, usage: number): void {
     gpu().bufferData(target, toBytes(data), usage);
 }
-export function bufferSubData(target: number, offset: number, data: MemoryView | Uint8Array): void {
+export function bufferSubData(target: number, offset: number, data: MemoryView_Span | Uint8Array): void {
     gpu().bufferSubData(target, offset, toBytes(data) ?? new Uint8Array(0));
 }
 export function deleteBuffer(buffer: WebGLBuffer | null): void { gpu().deleteBuffer(buffer); }
@@ -198,14 +198,14 @@ export function bindTexture(target: number, texture: WebGLTexture | null): void 
 export function texImage2D(
     target: number, level: number, internalFormat: number,
     width: number, height: number, border: number,
-    format: number, type: number, data: MemoryView | Uint8Array | null,
+    format: number, type: number, data: MemoryView_Span | Uint8Array | null,
 ): void {
     gpu().texImage2D(target, level, internalFormat, width, height, border, format, type, toBytes(data) ?? new Uint8Array(0));
 }
 export function texSubImage2D(
     target: number, level: number, xoffset: number, yoffset: number,
     width: number, height: number, format: number, type: number,
-    data: MemoryView | Uint8Array,
+    data: MemoryView_Span | Uint8Array,
 ): void {
     gpu().texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, toBytes(data));
 }
@@ -221,7 +221,7 @@ export function hasExtension(name: string): unknown {
 export function compressedTexImage2D(
     target: number, level: number, internalFormat: number,
     width: number, height: number, border: number,
-    data: MemoryView | Uint8Array | null,
+    data: MemoryView_Span | Uint8Array | null,
 ): void {
     gpu().compressedTexImage2D(target, level, internalFormat, width, height, border, toBytes(data) ?? new Uint8Array(0));
 }

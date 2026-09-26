@@ -30,9 +30,6 @@ export function bindKeyboard() {
     on(window, 'keydown', (e) => {
         const ev = e;
         push(1, ev.keyCode);
-        // 阻止空格 / 方向键滚动页面（默认行为只能在 JS 侧拦）
-        if (ev.keyCode === 32 || (ev.keyCode >= 37 && ev.keyCode <= 40))
-            ev.preventDefault();
     });
     on(window, 'keyup', (e) => push(2, e.keyCode));
     on(window, 'blur', () => push(10, 0));
@@ -58,5 +55,6 @@ export function pollKeyboard(target) {
         view.setInt32(dst + 4, queue[i * 2 + 1], true);
     }
     count = 0;
+    target.set(scratch);
     copyOut(target, scratch);
 }

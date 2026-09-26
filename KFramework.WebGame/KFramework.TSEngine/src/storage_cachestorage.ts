@@ -14,11 +14,11 @@
 
 const DEFAULT_CACHE = 'kframework-bundles';
 
-// ArraySegment<byte> 在 JS 侧是 MemoryView（非 TypedArray），必须拷成 Uint8Array 才能当 Response body，否则会被当字符串存成垃圾。
-function toBody(src: Uint8Array | MemoryView): Uint8Array<ArrayBuffer> {
+// ArraySegment<byte> 在 JS 侧是 MemoryView_ArraySegment（非 TypedArray），必须拷成 Uint8Array 才能当 Response body，否则会被当字符串存成垃圾。
+function toBody(src: Uint8Array | MemoryView_ArraySegment): Uint8Array<ArrayBuffer> {
     const out = new Uint8Array(src.byteLength);
     if (src instanceof Uint8Array) out.set(src);
-    else (src as MemoryView).copyTo(out);
+    else (src as MemoryView_ArraySegment).copyTo(out);
     return out;
 }
 
@@ -83,7 +83,7 @@ export class Caching {
     }
 
     /** 把已存字节写入 buffer；返回实际写入长度（正常等于 size），缺失返回 -1，缓冲不足返回 -(所需长度)。 */
-    async loadInto(key: string, buffer: MemoryView | Uint8Array): Promise<number> {
+    async loadInto(key: string, buffer: MemoryView_ArraySegment | Uint8Array): Promise<number> {
         const res = await (await this._open()).match(key);
         if (!res) return -1;
         const buf = new Uint8Array(await res.arrayBuffer());
@@ -92,7 +92,7 @@ export class Caching {
             (buffer as Uint8Array).set(buf, 0);
             return buf.byteLength;
         } finally {
-            (buffer as MemoryView).dispose?.(); // ArraySegment 的视图 pin 着托管数组，用完解 pin
+            (buffer as MemoryView_ArraySegment).dispose?.(); // ArraySegment 的视图 pin 着托管数组，用完解 pin
         }
     }
 
@@ -103,13 +103,13 @@ export class Caching {
         return new Uint8Array(await res.arrayBuffer());
     }
 
-    /** 把字节以 Response 形式写入（覆盖式）。MemoryView 必须归一化成 Uint8Array，否则会被当字符串存。 */
-    async save(key: string, bytes: Uint8Array | MemoryView): Promise<void> {
+    /** 把字节以 Response 形式写入（覆盖式）。MemoryView_ArraySegment 必须归一化成 Uint8Array，否则会被当字符串存。 */
+    async save(key: string, bytes: Uint8Array | MemoryView_ArraySegment): Promise<void> {
         try {
             const res = new Response(toBody(bytes), { headers: { 'Content-Type': 'application/octet-stream' } });
             await (await this._open()).put(key, res);
         } finally {
-            (bytes as MemoryView).dispose?.(); // ArraySegment 的视图 pin 着托管数组，用完解 pin
+            (bytes as MemoryView_ArraySegment).dispose?.(); // ArraySegment 的视图 pin 着托管数组，用完解 pin
         }
     }
 
@@ -160,10 +160,10 @@ export async function GetCacheSizeAsync(cacheName: string, key: string): Promise
 export async function GetCacheCountAsync(cacheName: string): Promise<number> {
     return (await Caching.open(cacheName).keys()).length;
 }
-export async function LoadCacheAsync(cacheName: string, key: string, buffer: MemoryView | Uint8Array): Promise<number> {
+export async function LoadCacheAsync(cacheName: string, key: string, buffer: MemoryView_ArraySegment | Uint8Array): Promise<number> {
     return Caching.open(cacheName).loadInto(key, buffer);
 }
-export async function SaveCacheAsync(cacheName: string, key: string, bytes: Uint8Array | MemoryView): Promise<void> {
+export async function SaveCacheAsync(cacheName: string, key: string, bytes: Uint8Array | MemoryView_ArraySegment): Promise<void> {
     return Caching.open(cacheName).save(key, bytes);
 }
 export async function RemoveCacheAsync(cacheName: string, key: string): Promise<boolean> {

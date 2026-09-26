@@ -10,7 +10,7 @@
 //   2. takePending(name, buffer) —— 同步，C# 按长度精确分配后，一次拷走并释放暂存。
 // 好处：C# 不需要预先知道文件大小、也不会出现「缓冲不够重分配再来一次」的二次往返，
 // 下载始终只发生一次；第二步是同步调用，字节此时已在内存里，没有 await，
-// 因此可以直接用 Span<byte> 的 MemoryView（Span 只在同步调用期间有效，异步必须用 ArraySegment）。
+// 因此可以直接用 Span<byte> 的 MemoryView_Span（Span 只在同步调用期间有效，异步必须用 ArraySegment）。
 //
 // 缓存刻意不在 JS 侧读写：JS 的 Caching.current 与 C# 侧开的缓存（如 "WebGame.Mir2.Cache"）
 // 是两个不同的 Cache Storage 名字，这边写只会多占一份磁盘且 C# 读不到，纯属浪费。
@@ -45,8 +45,8 @@ export async function fetchBytesAsync(name) {
 }
 /**
  * 第二步（同步）：把第一步下载好的字节拷进 C# 的缓冲并释放暂存。
- * 同步调用期间没有 await，故 Span<byte> 的 MemoryView 是有效的（异步场景必须用 ArraySegment）。
- * @param buffer C# 按第一步返回的长度分配的缓冲（Span<byte> → MemoryView）
+ * 同步调用期间没有 await，故 Span<byte> 的 MemoryView_Span 是有效的（异步场景必须用 ArraySegment）。
+ * @param buffer C# 按第一步返回的长度分配的缓冲（Span<byte> → MemoryView_Span）
  * @throws 没有待取字节（没下载过 / 已被取走），或缓冲装不下——都是调用方用错了，直接抛。
  */
 export function takePending(name, buffer) {
@@ -55,7 +55,7 @@ export function takePending(name, buffer) {
         throw new Error(`[http_func] takePending: ${name} 没有待取字节`);
     if (bytes.byteLength > buffer.byteLength)
         throw new Error(`[http_func] takePending: ${name} 缓冲不足（需要 ${bytes.byteLength}，实际 ${buffer.byteLength}）`);
-    // 同步调用期间没有 await，直接拷进 C# 的缓冲（MemoryView / Uint8Array 的 set 同签名）
+    // 同步调用期间没有 await，直接拷进 C# 的缓冲（MemoryView_Span / Uint8Array 的 set 同签名）
     buffer.set(bytes, 0);
     pending.delete(name); // 交付完成，释放
 }

@@ -12,7 +12,7 @@
 //   * export class Caching —— 通用封装（类似 Unity 的 Caching），支持任意命名缓存；实例方法用 TS 习惯的小驼峰。
 //   * CachingXxxAsync(...) 模块函数 —— 供 C# JSBind_CacheStorage 静态绑定，PascalCase + Async 后缀，与 C# 方法同名。
 const DEFAULT_CACHE = 'kframework-bundles';
-// ArraySegment<byte> 在 JS 侧是 MemoryView（非 TypedArray），必须拷成 Uint8Array 才能当 Response body，否则会被当字符串存成垃圾。
+// ArraySegment<byte> 在 JS 侧是 MemoryView_ArraySegment（非 TypedArray），必须拷成 Uint8Array 才能当 Response body，否则会被当字符串存成垃圾。
 function toBody(src) {
     const out = new Uint8Array(src.byteLength);
     if (src instanceof Uint8Array)
@@ -112,7 +112,7 @@ export class Caching {
             return null;
         return new Uint8Array(await res.arrayBuffer());
     }
-    /** 把字节以 Response 形式写入（覆盖式）。MemoryView 必须归一化成 Uint8Array，否则会被当字符串存。 */
+    /** 把字节以 Response 形式写入（覆盖式）。MemoryView_ArraySegment 必须归一化成 Uint8Array，否则会被当字符串存。 */
     async save(key, bytes) {
         try {
             const res = new Response(toBody(bytes), { headers: { 'Content-Type': 'application/octet-stream' } });

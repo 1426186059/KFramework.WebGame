@@ -77,7 +77,7 @@ export function unbindTouch(): void {
 const scratch = new Uint8Array(SIZE);
 const view = new DataView(scratch.buffer);
 
-export function pollTouch(target: MemoryView | Uint8Array): void {
+export function pollTouch(target: MemoryView_Span): void {
     if (!bound) bindTouch();
 
     view.setInt32(0, count, true);

@@ -99,7 +99,7 @@ export function unbindMouse(): void {
 const scratch = new Uint8Array(SIZE);
 const view = new DataView(scratch.buffer);
 
-export function pollMouse(target: MemoryView | Uint8Array): void {
+export function pollMouse(target: MemoryView_Span | Uint8Array): void {
     if (!bound) bindMouse();
 
     view.setInt32(0, count, true);

@@ -9,7 +9,7 @@ function ctx2d(): CanvasRenderingContext2D {
     return context;
 }
 
-function writeInts(view: MemoryView | Int32Array, values: number[]): void {
+function writeInts(view: MemoryView_Span | Int32Array, values: number[]): void {
     const array = new Int32Array(values);
     if (view instanceof Int32Array) {
         view.set(array);
@@ -23,7 +23,7 @@ function writeInts(view: MemoryView | Int32Array, values: number[]): void {
     for (let i = 0; i < values.length; i++) fallback[i] = values[i];
 }
 
-function writeBytes(view: MemoryView | Uint8Array, data: Uint8Array): void {
+function writeBytes(view: MemoryView_Span | Uint8Array, data: Uint8Array): void {
     if (view instanceof Uint8Array) {
         view.set(data);
         return;
@@ -44,7 +44,7 @@ function applyLetterSpacing(c: CanvasRenderingContext2D, letterSpacing: number):
 }
 
 // out: [0]=advance(宽) [1]=总高 [2]=基线以上高度(ascent)
-export function measure(text: string, font: string, letterSpacing: number, out: MemoryView | Int32Array): void {
+export function measure(text: string, font: string, letterSpacing: number, out: MemoryView_Span | Int32Array): void {
     const c = ctx2d();
     c.font = font;
     applyLetterSpacing(c, letterSpacing);
@@ -68,7 +68,7 @@ export function measure(text: string, font: string, letterSpacing: number, out: 
 // 在 (x, y) 处（y 为基线）绘制白色文字，结果写入 rgba
 export function render(
     text: string, font: string, letterSpacing: number, x: number, y: number,
-    width: number, height: number, rgba: MemoryView | Uint8Array,
+    width: number, height: number, rgba: MemoryView_Span | Uint8Array,
 ): void {
     canvas.width = width;
     canvas.height = height;
@@ -82,7 +82,7 @@ export function render(
     c.fillStyle = '#ffffff';
     c.fillText(text, x, y);
 
-    // getImageData 返回的是 Uint8ClampedArray，而 .NET 的 MemoryView 只接受 Uint8Array
+    // getImageData 返回的是 Uint8ClampedArray，而 .NET 的 MemoryView_Span 只接受 Uint8Array
     const image = c.getImageData(0, 0, width, height).data;
     const bytes = new Uint8Array(image.length);
     bytes.set(image);

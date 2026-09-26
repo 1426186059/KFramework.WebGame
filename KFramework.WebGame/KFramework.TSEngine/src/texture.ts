@@ -2,10 +2,10 @@
 
 // 纹理解码：借浏览器原生解码器把图像字节（PNG / WebP 等）解码为 RGBA8。
 // 因 WASM 无托管 WebP 解码器，统一走 createImageBitmap（浏览器原生，覆盖 Png / Webp）。
-// outSize / outPixels 是 C# 的 ArraySegment → MemoryView：零拷贝视图，写入直接落在托管数组上
+// outSize / outPixels 是 C# 的 ArraySegment → MemoryView_ArraySegment：零拷贝视图，写入直接落在托管数组上
 // （若按 byte[]/int[] 的 Array 语义传进来，JS 只会写到副本里，C# 拿到的是全 0）。
 export async function decodeImageToRgba(
-    bytes: Uint8Array, outSize: MemoryView | Int32Array, outPixels: MemoryView | Uint8Array,
+    bytes: Uint8Array, outSize: MemoryView_ArraySegment | Int32Array, outPixels: MemoryView_ArraySegment | Uint8Array,
 ): Promise<void> {
     try {
         const blob = new Blob([bytes as BlobPart]);
@@ -23,8 +23,8 @@ export async function decodeImageToRgba(
         (outSize as Int32Array).set(new Int32Array([w, h]), 0);
         if (bitmap.close) bitmap.close();
     } finally {
-        (outSize as MemoryView).dispose?.();
-        (outPixels as MemoryView).dispose?.();
+        (outSize as MemoryView_ArraySegment).dispose?.();
+        (outPixels as MemoryView_ArraySegment).dispose?.();
     }
 }
 
@@ -76,11 +76,11 @@ async function loadBasis(): Promise<any> {
  * @param glFormat 对应的 WebGL 内部格式枚举（cTFRGBA32 回退时为 RGBA8）
  * @returns 新建的 WebGLTexture
  */
-// outBuffer 是 C# 的 ArraySegment<byte> → MemoryView：转码器要 Uint8Array，先转码到临时缓冲再拷回视图。
+// outBuffer 是 C# 的 ArraySegment<byte> → MemoryView_ArraySegment：转码器要 Uint8Array，先转码到临时缓冲再拷回视图。
 export async function transcodeKtx2Into(
     bytes: Uint8Array,
     basisFormat: number,
-    outBuffer: MemoryView | Uint8Array,
+    outBuffer: MemoryView_ArraySegment | Uint8Array,
 ): Promise<void> {
     const mod = await loadBasis();
     const src = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
@@ -102,6 +102,6 @@ export async function transcodeKtx2Into(
     } finally {
         ktx2File.close();
         ktx2File.delete();
-        (outBuffer as MemoryView).dispose?.();
+        (outBuffer as MemoryView_ArraySegment).dispose?.();
     }
 }

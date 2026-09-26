@@ -1,7 +1,7 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_GL 经 [JSImport(module: "gl")] 调用；编译产物 gl.js 由各示例 SyncJsEngine 复制到 wwwroot/jsengine。
 // WebGL 2.0 绑定层。C# 侧通过 [JSImport("函数名", "gl")] 调用这里的导出函数。
 //
-// 重要：.NET 传入的 Span<T> 在 JS 侧是 MemoryView（不是 TypedArray），
+// 重要：.NET 传入的 Span<T> 在 JS 侧是 MemoryView_Span（不是 TypedArray），
 // 必须经 toBytes / toFloats 转换后才能交给 WebGL。
 // 另外 C# 侧的 [JSImport] 函数名必须与这里的导出名完全一致，且不能带点号。
 import { getOrCreateCanvasElement } from './html_canvas.js';

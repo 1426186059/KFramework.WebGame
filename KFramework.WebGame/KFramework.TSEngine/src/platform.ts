@@ -64,7 +64,7 @@ export function stopRenderLoop(): void {
 // 复用的整数缓冲，避免每帧 getCanvasSize 都 new Int32Array（减少 GC 抖动）。
 let _int32Scratch = new Int32Array(8);
 
-function writeInts(view: MemoryView | Int32Array, values: number[]): void {
+function writeInts(view: MemoryView_Span | Int32Array, values: number[]): void {
     if (_int32Scratch.length < values.length) _int32Scratch = new Int32Array(values.length);
     _int32Scratch.set(values);
     const slice = _int32Scratch.subarray(0, values.length);
@@ -80,7 +80,7 @@ function writeInts(view: MemoryView | Int32Array, values: number[]): void {
     for (let i = 0; i < values.length; i++) fallback[i] = values[i];
 }
 
-export function getCanvasSize(view: MemoryView | Int32Array): void {
+export function getCanvasSize(view: MemoryView_Span | Int32Array): void {
     const canvas = getCanvasElement();
     if (!canvas) {
         writeInts(view, [1, 1, 1, 1, 1000]);
