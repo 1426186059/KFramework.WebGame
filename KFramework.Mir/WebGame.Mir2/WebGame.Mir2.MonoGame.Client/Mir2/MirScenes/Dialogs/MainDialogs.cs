@@ -600,7 +600,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(Settings.Resolution != 800 ? 627 : 403, 13),
                 Location = new Point(1, 54),
                 MaxLength = Globals.MaxChatLength,
-                Visible = true,
+                Visible = false,
                 Font = ChatFont,
             };
             ChatTextBox.TextBox.KeyPress += ChatTextBox_KeyPress;
