@@ -331,6 +331,19 @@ namespace WebGame.Mir2.MonoGame.Client
             catch (Exception ex) { SaveError(ex.ToString()); }
         }
 
+        public static void CMain_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            try
+            {
+                if (MirScene.ActiveScene != null)
+                    MirScene.ActiveScene.OnKeyPress(e);
+            }
+            catch (Exception ex)
+            {
+                SaveError(ex.ToString());
+            }
+        }
+
         public static void CMain_MouseMove(object sender, MirEngine.MouseEventArgs e)
         {
             // 与 OnMouseDown/OnMouseUp 保持一致：把原始画布坐标换算成逻辑 UI 坐标(1024x768)，
@@ -356,6 +369,8 @@ namespace WebGame.Mir2.MonoGame.Client
             MG.Input_Mouse.ScrollWheel += OnScrollWheel;
             MG.Input_KeyBoard.KeyDown += OnKeyDown;
             MG.Input_KeyBoard.KeyUp += OnKeyUp;
+            MG.Input_KeyBoard.KeyPress += OnKeyPress;
+
             // 首次任意输入即解锁 WebAudio（浏览器自动播放策略要求用户手势）。
             MG.Input_KeyBoard.KeyDown += _ => AudioMaster.Unlock();
             MG.Input_Mouse.ButtonDown += (_, _) => AudioMaster.Unlock();
@@ -372,6 +387,7 @@ namespace WebGame.Mir2.MonoGame.Client
 
         private static void OnKeyDown(MG.Keys k) => CMain.CMain_KeyDown(null, ToKeyEventArgs(k));
         private static void OnKeyUp(MG.Keys k) => CMain.CMain_KeyUp(null, ToKeyEventArgs(k));
+        private static void OnKeyPress(MG.Keys k) => CMain.CMain_KeyPress(null, ToKeyPressEventArgs(k));
 
         private static void OnMouseDown(MG.MouseButton b, MG.Vector2 p)
         {
@@ -403,6 +419,15 @@ namespace WebGame.Mir2.MonoGame.Client
             if (MG.Input_KeyBoard.Ctrl) keyData |= MirEngine.Keys.Control;
             if (MG.Input_KeyBoard.Alt) keyData |= MirEngine.Keys.Alt;
             return new KeyEventArgs(keyData);
+        }
+
+        private static MirEngine.KeyPressEventArgs ToKeyPressEventArgs(MG.Keys k)
+        {
+            MirEngine.Keys keyData = (MirEngine.Keys)(int)k;
+            if (MG.Input_KeyBoard.Shift) keyData |= MirEngine.Keys.Shift;
+            if (MG.Input_KeyBoard.Ctrl) keyData |= MirEngine.Keys.Control;
+            if (MG.Input_KeyBoard.Alt) keyData |= MirEngine.Keys.Alt;
+            return new KeyPressEventArgs(keyData);
         }
 
         private static MirEngine.MouseEventArgs ToMouseEventArgs(MG.MouseButton b, MG.Vector2 p)
