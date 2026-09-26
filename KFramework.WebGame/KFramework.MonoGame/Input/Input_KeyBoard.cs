@@ -31,7 +31,6 @@ namespace KFramework.MonoGame
 
         /// <summary>任意键 刚按下</summary>
         public static event Action<Keys> KeyDown;
-
         /// <summary>任意键 刚抬起</summary>
         public static event Action<Keys> KeyUp;
         /// <summary>任意键按住</summary>
