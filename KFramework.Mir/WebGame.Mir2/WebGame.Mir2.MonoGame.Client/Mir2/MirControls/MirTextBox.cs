@@ -121,24 +121,16 @@ namespace Client.MirControls
                 base.OnSizeChanged();
         }
 
-        
-
-        // 文字与光标一律由引擎自绘；浏览器 DOM <input> 仅作 IME / 键盘捕获（TextInputHtmlIme）。
-        //   Rendered（默认）：DOM <input> 透明，仅作 IME / 键盘捕获代理，文字与光标由引擎在 canvas 自绘。
-        //   Browser          ：由 DOM 直接显示文字与光标（浏览器原生光标 / 选区 / IME 候选窗），引擎画空串。
-        // 默认 Rendered：与 JS 侧 input_overlay.js 的 _transparentInput 默认值及设计意图一致。
-        // Browser 模式下若 DOM 覆盖层未正常弹出/聚焦，输入框会完全空白（无文字无光标）。
-        // 转发到基础库静态开关：基础库内部据此自动切换 HTML（DOM 显示）与自绘两种光标实现。
-
-        // 光标：闪烁由 TextBox.DrawTextBox 内部自驱（传入 focused，即本实例持有的光标状态），本控件聚焦时每帧使纹理失效以驱动重绘。
-
         public bool CanLoseFocus;
         public readonly TextBox TextBox;
 
-        // 首帧显示（Shown）时是否自动聚焦。聊天框这类“始终可见但初始不应抢焦点”的框设为 false，
-        // 避免游戏一启动就陷进聊天输入模式（原版用 Visible=false 规避 Shown 聚焦，此处等价处理）。
-        public bool FocusOnShown = true;
+        
         private bool _initialShowDone;
+
+        private static Point HiddenTextBoxLocation
+        {
+            get { return new Point(-32000, -32000); }
+        }
 
         private void ApplyNativeTextBoxState()
         {
@@ -146,7 +138,7 @@ namespace Client.MirControls
 
             // 把 shim TextBox 摆到真实显示位置：引擎 Focus() 直接用其 Location/Size 定位原生 <input> 覆盖层
             // （本工程为恒等变换，逻辑坐标即后备缓冲像素；与 WinForms 把控件放在真实位置同理）。
-            TextBox.Location = DisplayLocation;
+            TextBox.Location = HiddenTextBoxLocation;
             TextBox.Visible = Visible && TextBox.Parent != null;
         }
 
@@ -223,7 +215,7 @@ namespace Client.MirControls
         {
             DialogChanged();
 
-            if (_initialShowDone && TextBox.Visible && TextBox.CanFocus)
+            if (TextBox.Visible && TextBox.CanFocus)
                 if (CMain.Instance.ActiveControl == null || CMain.Instance.ActiveControl == CMain.Instance)
                     CMain.Instance.ActiveControl = TextBox;
 
@@ -416,27 +408,17 @@ namespace Client.MirControls
             CMain.Tilde = false;
 
             TextureValid = false;
-            if (FocusOnShown) SetFocus();
-            _initialShowDone = true;
+            SetFocus();
         }
 
         public void SetFocus()
         {
             if (!TextBox.Visible)
-            {
                 TextBox.VisibleChanged += SetFocus;
-                return;
-            }
-            if (TextBox.Parent == null)
-            {
+            else if (TextBox.Parent == null)
                 TextBox.ParentChanged += SetFocus;
-                return;
-            }
-
-            // 焦点互斥、GotFocus/LostFocus 事件分发、以及原生 <input> 覆盖层的开 / 关与回车转发，
-            // 全部由引擎 KFramework.MonoGame.TextBox.Focus()/Blur() 负责（与原版 WinForms 一致）。
-            // 本方法只负责请求聚焦。
-            TextBox.Focus();
+            else
+                TextBox.Focus();
         }
 
         public void DialogChanged()

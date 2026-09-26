@@ -603,7 +603,6 @@ namespace Client.MirScenes.Dialogs
                 Visible = true,
                 Font = ChatFont,
             };
-            ChatTextBox.FocusOnShown = false;
             ChatTextBox.TextBox.KeyPress += ChatTextBox_KeyPress;
             ChatTextBox.TextBox.KeyDown += ChatTextBox_KeyDown;
             ChatTextBox.TextBox.KeyUp += ChatTextBox_KeyUp;
