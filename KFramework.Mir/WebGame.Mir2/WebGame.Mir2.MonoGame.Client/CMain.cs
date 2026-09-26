@@ -359,6 +359,15 @@ namespace WebGame.Mir2.MonoGame.Client
             // 首次任意输入即解锁 WebAudio（浏览器自动播放策略要求用户手势）。
             MG.Input_KeyBoard.KeyDown += _ => AudioMaster.Unlock();
             MG.Input_Mouse.ButtonDown += (_, _) => AudioMaster.Unlock();
+
+            // 对齐原版 Program.Form.ActiveControl：原版靠 WinForms 表单级焦点登记表把按键路由到
+            // 当前聚焦的原生 TextBox（Crystal MirTextBox.cs:225-227）。移植版无真实窗口，引擎用
+            // TextBox.ActiveOrResolved 决定回车/退格等控制键的目标框：优先引擎焦点链 _active，
+            // 退化时回退到本 resolver。这里把“当前激活的文本框”登记到引擎，使聊天框等惰性显示的
+            // 框在 _active 因 Blur/焦点互斥被清空、而 MirControl 层 ActiveControl 仍指向它时，
+            // 回车仍能正确送达 ChatTextBox_KeyPress 发送（否则输入完回车没反应）。
+            KFramework.MonoGame.TextBox.ActiveTextBoxResolver =
+                () => CMain.Instance?.ActiveControl as KFramework.MonoGame.TextBox;
         }
 
         private static void OnKeyDown(MG.Keys k) => CMain.CMain_KeyDown(null, ToKeyEventArgs(k));

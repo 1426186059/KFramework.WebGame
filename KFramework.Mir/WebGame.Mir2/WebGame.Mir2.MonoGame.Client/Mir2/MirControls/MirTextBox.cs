@@ -135,6 +135,11 @@ namespace Client.MirControls
         public bool CanLoseFocus;
         public readonly TextBox TextBox;
 
+        // 首帧显示（Shown）时是否自动聚焦。聊天框这类“始终可见但初始不应抢焦点”的框设为 false，
+        // 避免游戏一启动就陷进聊天输入模式（原版用 Visible=false 规避 Shown 聚焦，此处等价处理）。
+        public bool FocusOnShown = true;
+        private bool _initialShowDone;
+
         private void ApplyNativeTextBoxState()
         {
             if (TextBox == null || TextBox.IsDisposed) return;
@@ -218,7 +223,7 @@ namespace Client.MirControls
         {
             DialogChanged();
 
-            if (TextBox.Visible && TextBox.CanFocus)
+            if (_initialShowDone && TextBox.Visible && TextBox.CanFocus)
                 if (CMain.Instance.ActiveControl == null || CMain.Instance.ActiveControl == CMain.Instance)
                     CMain.Instance.ActiveControl = TextBox;
 
@@ -411,7 +416,8 @@ namespace Client.MirControls
             CMain.Tilde = false;
 
             TextureValid = false;
-            SetFocus();
+            if (FocusOnShown) SetFocus();
+            _initialShowDone = true;
         }
 
         public void SetFocus()
