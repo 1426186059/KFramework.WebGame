@@ -12,6 +12,10 @@ public sealed class MarioGame : Game
     {
         // MonoGameExtend 的输入总调度（键盘/鼠标/触摸/指针事件分发）
         KInputMgr.Init();
+        // 激活本例需要的输入装置：引擎按各装置的 Active 开关决定是否真正采集；不需要的可不激活。
+        Input_KeyBoard.Activate();
+        Input_Mouse.Activate();
+        Input_Touch.Activate();
         // 场景管理器：创建共享 SpriteBatch 并接管 Update/Draw 的遍历
         KSceneMgr.Init(this);
         // 节点树 UI 文本需要默认字体（程序化生成，避免依赖 .spritefont 内容文件）
@@ -25,12 +29,9 @@ public sealed class MarioGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-        // 本例子选择 Input 门面模式：引擎不再代劳，由游戏自行每步取回键盘/鼠标/触摸/IME 事件
-        Input.Update();
+        // 输入由引擎在 TickFrame 内统一驱动（Input.Update / Input.LateUpdate）；本例只负责激活所需装置。
         KInputMgr.Update(gameTime);
         KSceneMgr.Update(gameTime);
-        // 固定步长下每步结束清空按下/抬起边沿，确保一次按键 / 一次点击只触发一次
-        Input.LateUpdate();
     }
 
     protected override void Draw(GameTime gameTime)

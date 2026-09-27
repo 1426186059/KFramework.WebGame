@@ -40,6 +40,9 @@ namespace KFramework.MonoGame
         internal static bool[] Pressed => _pressed;
         internal static bool[] Released => _released;
 
+        /// <summary>本装置是否处于激活状态；未激活时 <see cref="Update"/> / <see cref="LateUpdate"/> 直接跳过。由 <see cref="Activate"/> / <see cref="Unbind"/> 维护。</summary>
+        public static bool Active { get; private set; }
+
         private static int ReadInt(int offset)
             => BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(offset, 4));
 
@@ -53,6 +56,7 @@ namespace KFramework.MonoGame
         /// </remarks>
         public static void Update()
         {
+            if (!Active) return;
             JSBind_Input_Keyboard.PollKeyboard(_buffer);
 
             int count = ReadInt(0);
@@ -120,15 +124,17 @@ namespace KFramework.MonoGame
         /// 下一帧 <see cref="Update"/> 时边沿重新产生。</summary>
         public static void LateUpdate()
         {
+            if (!Active) return;
             Array.Clear(_pressed);
             Array.Clear(_released);
         }
 
-        /// <summary>解绑 JS 侧监听。</summary>
+        /// <summary>解绑 JS 侧监听，并置 <see cref="Active"/> 为 false（关闭本装置采集）。</summary>
         public static void Deactivate()
         {
             JSBind_Input_Keyboard.UnbindKeyboard();
             Reset();
+            Active = false;
         }
 
         /// <summary>激活装置：建立 / 恢复 JS 侧键盘监听（重新绑定到画布）。</summary>
@@ -136,6 +142,7 @@ namespace KFramework.MonoGame
         {
             Reset();
             JSBind_Input_Keyboard.BindKeyboard();
+            Active = true;
         }
 
         // ===== 查询 =====
@@ -149,6 +156,9 @@ namespace KFramework.MonoGame
         }
 
         public static bool GetKeyUp(Keys key) => key != Keys.None && _released[(int)key];
+
+        /// <summary>构造当前帧的键盘快照（含电平 / 按下 / 抬起）。</summary>
+        public static KeyboardState GetKeyboardState() => new(Held, Pressed, Released);
 
         public static bool AnyKey
         {

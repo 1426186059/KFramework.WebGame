@@ -98,7 +98,7 @@ namespace KFramework.MonoGameExtend
                 _sortDirty = false;
             }
 
-            if (!Input.IsMobileDevice) UpdateMouse();
+            if (!System.OperatingSystem.IsAndroid() && !System.OperatingSystem.IsIOS()) UpdateMouse();
             UpdateTouch();
         }
 

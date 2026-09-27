@@ -12,7 +12,7 @@ internal sealed class PlayerTank : TankBase
 
     public override Shell? Update(float dt, TankLevel level)
     {
-        var keyboard = Input.GetKeyboardState();
+        var keyboard = Input_KeyBoard.GetKeyboardState();
 
         if (keyboard.IsKeyDown(Keys.Up) || keyboard.IsKeyDown(Keys.W)) Move(Dir.Up, dt, level);
         else if (keyboard.IsKeyDown(Keys.Right) || keyboard.IsKeyDown(Keys.D)) Move(Dir.Right, dt, level);

@@ -36,8 +36,8 @@ namespace KFramework.MonoGameExtend
 
         /// <summary>
         /// 每帧调用一次，放在其它逻辑 Update 之前。
-        /// 注意：键盘 / 鼠标 / 触摸的事件由 <see cref="Input.Update"/> 各模块自行取回（引擎 <see cref="Game"/> 不再代劳，
-        /// 需由外部游戏在自己的 Update 里调用），这里只驱动指针分发。
+        /// 注意：键盘 / 鼠标 / 触摸的事件由 Input.Update 各模块自行取回（引擎 <see cref="Game"/> 在 TickFrame 统一调用
+        /// Input.Update / Input.LateUpdate，各装置按自身 Active 开关决定是否响应），这里只驱动指针分发。
         /// </summary>
         public static void Update(GameTime gameTime)
         {

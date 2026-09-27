@@ -31,6 +31,9 @@ namespace KFramework.MonoGame
         private static readonly bool[] _pressed = new bool[MaxButtons];
         private static readonly bool[] _released = new bool[MaxButtons];
 
+        /// <summary>本装置是否处于激活状态；未激活时 <see cref="Update"/> / <see cref="LateUpdate"/> 直接跳过。由 <see cref="Activate"/> / <see cref="Deactivate"/> 维护。</summary>
+        public static bool Active { get; private set; }
+
         /// <summary>按键按下（参数：按键、坐标）</summary>
         public static event Action<MouseButton, Vector2> ButtonDown;
 
@@ -46,6 +49,7 @@ namespace KFramework.MonoGame
         /// <summary>每帧调用一次：取回本模块的事件队列并更新状态。</summary>
         public static void Update()
         {
+            if (!Active) return;
             Array.Clear(_pressed);
             Array.Clear(_released);
             _wheelDelta = 0;
@@ -124,6 +128,7 @@ namespace KFramework.MonoGame
         /// 确保一次点击只被识别一次（否则边沿会在多个步里重复触发）。下一帧 <see cref="Update"/> 时边沿重新产生。</summary>
         public static void LateUpdate()
         {
+            if (!Active) return;
             Array.Clear(_pressed);
             Array.Clear(_released);
         }
@@ -133,10 +138,11 @@ namespace KFramework.MonoGame
         {
             JSBind_Input_Mouse.UnbindMouse();
             Reset();
+            Active = false;
         }
 
-        /// <summary>激活装置：鼠标 JS 模块在脚本加载时即自动绑定监听，无需显式 Bind（空实现）。</summary>
-        public static void Activate() { }
+        /// <summary>激活装置：鼠标 JS 模块在脚本加载时即自动绑定监听，无需显式 Bind。空实现，仅置 <see cref="Active"/> 标记。</summary>
+        public static void Activate() { Active = true; }
 
         // ===== 查询 =====
 

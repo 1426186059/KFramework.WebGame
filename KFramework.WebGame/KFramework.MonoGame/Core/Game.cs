@@ -134,6 +134,9 @@ namespace KFramework.MonoGame
                 _lastTimestamp = timestampMs;
                 if (elapsed < 0d) elapsed = 0d;
 
+                // 引擎统一驱动输入门面：各输入装置按自身 Active 开关决定是否真正采集（参见各 Input_X 类）。
+                Input.Update();
+
                 double target = TargetElapsedTime.TotalSeconds;
                 if (target <= 0d) target = 1d / 60d;
 
@@ -153,6 +156,7 @@ namespace KFramework.MonoGame
                         var stepTime = new GameTime(_totalGameTime, TimeSpan.FromSeconds(target));
                         Update(stepTime);
                         Components.Update(stepTime);
+                        Input.LateUpdate();
                         _accumulator -= target;
                         steps++;
                     }

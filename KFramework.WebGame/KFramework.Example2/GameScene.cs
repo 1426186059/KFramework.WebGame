@@ -97,7 +97,7 @@ public sealed class GameScene : KSceneBase
     // 与 PixiJS GameScene.update() 一致：每帧轮询输入并推进关卡（仅 Playing 时）。
     public void update()
     {
-        var kb = Input.GetKeyboardState();
+        var kb = Input_KeyBoard.GetKeyboardState();
 
         // Tab：精灵表检视；检视模式下不再推进关卡
         if (kb.IsKeyPressed(Keys.Tab)) { _inspectSprites = !_inspectSprites; return; }

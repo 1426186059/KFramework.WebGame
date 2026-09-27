@@ -136,12 +136,16 @@ namespace KFramework.MonoGame
         public static event Action<KTouch> LongPress;
         public static event Action<KSwipeGesture> Swipe;
 
+        /// <summary>本装置是否处于激活状态；未激活时 <see cref="Update"/> 直接跳过。由 <see cref="Activate"/> / <see cref="Deactivate"/> 维护。</summary>
+        public static bool Active { get; private set; }
+
         private static int ReadInt(int offset)
             => BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(offset, 4));
 
         /// <summary>每帧调用一次：取回本模块的事件队列并更新状态。</summary>
         public static void Update()
         {
+            if (!Active) return;
             _elapsed = (Environment.TickCount64 - _startTicks) / 1000f;
 
             _began.Clear();
@@ -317,10 +321,11 @@ namespace KFramework.MonoGame
         {
             JSBind_Input_Touch.UnbindTouch();
             Reset();
+            Active = false;
         }
 
-        /// <summary>激活装置：触摸 JS 模块在脚本加载时即自动绑定监听，无需显式 Bind（空实现）。</summary>
-        public static void Activate() { }
+        /// <summary>激活装置：触摸 JS 模块在脚本加载时即自动绑定监听，无需显式 Bind。空实现，仅置 <see cref="Active"/> 标记。</summary>
+        public static void Activate() { Active = true; }
 
         // ===== 查询 =====
 
