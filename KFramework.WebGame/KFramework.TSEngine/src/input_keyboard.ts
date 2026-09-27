@@ -1,5 +1,5 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Keyboard 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
-import { getCanvas } from './html_canvas.js';
+import { getCanvas, focusCanvas } from './html_canvas.js';
 
 // 浏览器 KeyboardEvent.code → KFramework.MonoGame.Keys 枚举数值。
 // 必须与 Input/Keys.cs 的枚举值严格一致：字母/数字沿用 ASCII，方向键 37..40，修饰键 16/17/18…。
@@ -38,7 +38,10 @@ const MAX_EVENTS = 32;
 const STRIDE = 2;
 const SIZE = 1 + MAX_EVENTS * STRIDE;
 
-let m_Canvas:HTMLCanvasElement | null = null;
+let m_Canvas: HTMLCanvasElement | null = null;
+let m_CanvasId: string | null = null;
+let m_RefocusHandler: (() => void) | null = null;
+
 const pending = new Map<string, number>();
 
 const scratch = new Uint8Array(SIZE);
@@ -53,16 +56,24 @@ function Process_KeyUp(e: KeyboardEvent): void
     pending.set(e.code, 2)
 }
 
-export function bindKeyboard(mCanvasId:string): void
+// 键盘监听绑在 canvas 上（依赖画布获焦才会收到 key 事件）。
+// <canvas> 默认不可获焦，所以绑监听前必须先 focusCanvas 让它可获焦并聚焦；同时挂一个 pointerdown 重新聚焦，
+// 这样切走窗口 / 在输入框打字后点回游戏，键盘依然有效。IME 输入框获焦时不会触发 canvas 的 key 事件，不会误报游戏键。
+export function bindKeyboard(canvasId?: string): void
 {
-    m_Canvas = getCanvas(mCanvasId);
-    if(m_Canvas)
+    m_Canvas = getCanvas(canvasId);
+    m_CanvasId = canvasId ?? null;
+    if (m_Canvas)
     {
+        focusCanvas(m_CanvasId);
         m_Canvas.addEventListener('keydown', Process_KeyDown);
         m_Canvas.addEventListener('keyup', Process_KeyUp);
+        m_RefocusHandler = () => { m_Canvas?.focus(); };
+        m_Canvas.addEventListener('pointerdown', m_RefocusHandler);
     }
     else
     {
+        // 找不到画布（极少见）才回落到 window，保证至少有输入。
         window.addEventListener('keydown', Process_KeyDown);
         window.addEventListener('keyup', Process_KeyUp);
     }
@@ -70,10 +81,12 @@ export function bindKeyboard(mCanvasId:string): void
 
 export function unbindKeyboard(): void 
 {
-    if(m_Canvas)
+    if (m_Canvas)
     {
         m_Canvas.removeEventListener('keydown', Process_KeyDown);
         m_Canvas.removeEventListener('keyup', Process_KeyUp);
+        if (m_RefocusHandler) m_Canvas.removeEventListener('pointerdown', m_RefocusHandler);
+        focusCanvas(m_CanvasId, false);
     }
     else
     {

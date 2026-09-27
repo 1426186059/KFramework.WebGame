@@ -25,7 +25,7 @@ export const DEFAULT_CANVAS_ID = 'game';
  * 把 "#game" 这类选择器归一化成 DOM id；空串回落到默认 id。
  * C# 侧传进来的永远是选择器或 id 字符串，这里做一次统一处理。
  */
-function toId(idOrSelector: string): string {
+function toId(idOrSelector?: string | null): string {
     const trimmed = (idOrSelector ?? '').trim().replace(/^#/, '');
     return trimmed.length > 0 ? trimmed : DEFAULT_CANVAS_ID;
 }
@@ -264,8 +264,8 @@ export function exists(idOrSelector: string): boolean {
     return lookup(toId(idOrSelector)) !== null;
 }
 
-/** 取画布元素本身（给 gl.ts 初始化上下文用，不由 C# 直接调用）。 */
-export function getCanvas(idOrSelector: string): HTMLCanvasElement | null {
+/** 取画布元素本身（给 gl.ts 初始化上下文用，不由 C# 直接调用）。空 / 缺省 / null 回落到默认 id。 */
+export function getCanvas(idOrSelector?: string | null): HTMLCanvasElement | null {
     return lookup(toId(idOrSelector));
 }
 
@@ -282,4 +282,26 @@ export function getOrCreateCanvasElement(idOrSelector: string): HTMLCanvasElemen
 
     if (!create(id, LayoutMode.Fullscreen, 0, 0, 0, 0)) return null;
     return canvases.get(id) ?? null;
+}
+
+/**
+ * 让画布可获焦 / 取消获焦：绑在 <canvas> 上的 keydown/keyup 只有在画布获焦时才会触发，
+ * 而 <canvas> 默认 tabindex 为 -1（不可获焦），所以监听键盘前要 focusCanvas(id, true)。
+ * @param idOrSelector 画布 id（空 / 缺省 / null → 默认 id）。
+ * @param focus true（默认）：设 tabindex=0 并聚焦（键盘事件派发到画布）；false：失焦并移除 tabindex。
+ */
+export function focusCanvas(idOrSelector?: string | null, focus: boolean = true): void
+{
+    const c = getCanvas(idOrSelector);
+    if (!c) return;
+    if (focus)
+    {
+        c.tabIndex = 0;
+        c.focus();
+    }
+    else
+    {
+        c.blur();
+        c.removeAttribute('tabindex');
+    }
 }

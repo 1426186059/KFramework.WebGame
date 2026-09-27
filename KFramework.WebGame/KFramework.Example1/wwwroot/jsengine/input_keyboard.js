@@ -1,6 +1,5 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Keyboard 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
-import { copyOut } from './input_common.js';
-import { getCanvas } from './html_canvas.js';
+import { getCanvas, focusCanvas } from './html_canvas.js';
 // 浏览器 KeyboardEvent.code → KFramework.MonoGame.Keys 枚举数值。
 // 必须与 Input/Keys.cs 的枚举值严格一致：字母/数字沿用 ASCII，方向键 37..40，修饰键 16/17/18…。
 // 不在表内的键返回 0（= Keys.None），C# 侧 SetKey 会直接忽略（k<=0）。
@@ -28,15 +27,16 @@ const CODE_TO_KEYS = {
     'ControlLeft': 17, 'ControlRight': 17,
     'AltLeft': 18, 'AltRight': 18,
 };
-
 // KeyboardEvent.code → Keys 数值（仅查表；未列出的键返回 0，C# 侧忽略）。
 function codeToKeys(code) {
     return CODE_TO_KEYS[code] ?? 0;
 }
-const MAX_EVENTS = 64;
+const MAX_EVENTS = 32;
 const STRIDE = 2;
 const SIZE = 1 + MAX_EVENTS * STRIDE;
 let m_Canvas = null;
+let m_CanvasId = null;
+let m_RefocusHandler = null;
 const pending = new Map();
 const scratch = new Uint8Array(SIZE);
 function Process_KeyDown(e) {
@@ -45,13 +45,21 @@ function Process_KeyDown(e) {
 function Process_KeyUp(e) {
     pending.set(e.code, 2);
 }
-export function bindKeyboard(mCanvasId) {
-    m_Canvas = getCanvas(mCanvasId);
+// 键盘监听绑在 canvas 上（依赖画布获焦才会收到 key 事件）。
+// <canvas> 默认不可获焦，所以绑监听前必须先 focusCanvas 让它可获焦并聚焦；同时挂一个 pointerdown 重新聚焦，
+// 这样切走窗口 / 在输入框打字后点回游戏，键盘依然有效。IME 输入框获焦时不会触发 canvas 的 key 事件，不会误报游戏键。
+export function bindKeyboard(canvasId) {
+    m_Canvas = getCanvas(canvasId);
+    m_CanvasId = canvasId ?? null;
     if (m_Canvas) {
+        focusCanvas(m_CanvasId);
         m_Canvas.addEventListener('keydown', Process_KeyDown);
         m_Canvas.addEventListener('keyup', Process_KeyUp);
+        m_RefocusHandler = () => { m_Canvas?.focus(); };
+        m_Canvas.addEventListener('pointerdown', m_RefocusHandler);
     }
     else {
+        // 找不到画布（极少见）才回落到 window，保证至少有输入。
         window.addEventListener('keydown', Process_KeyDown);
         window.addEventListener('keyup', Process_KeyUp);
     }
@@ -60,6 +68,9 @@ export function unbindKeyboard() {
     if (m_Canvas) {
         m_Canvas.removeEventListener('keydown', Process_KeyDown);
         m_Canvas.removeEventListener('keyup', Process_KeyUp);
+        if (m_RefocusHandler)
+            m_Canvas.removeEventListener('pointerdown', m_RefocusHandler);
+        focusCanvas(m_CanvasId, false);
     }
     else {
         window.removeEventListener('keydown', Process_KeyDown);
@@ -70,18 +81,14 @@ export function pollKeyboard(target) {
     // 先写入真正的 Uint8Array（scratch），再经由 MemoryView.set 写回 C# 缓冲。
     // 注意：MemoryView_Span 不是 Uint8Array、没有 [] 索引器，不能直接 target[i]=x。
     let nByteCount = 0;
-    scratch[0] = pending.size;
-    let nIndex = 0;
+    scratch[nByteCount++] = pending.size;
     for (const [key, flag] of pending) {
         if (nByteCount >= SIZE) {
             break;
         }
-        const dst = 1 + nIndex * STRIDE;
-        scratch[dst] = codeToKeys(key);
-        scratch[dst + 1] = flag;
-        nIndex++;
-        nByteCount = dst + STRIDE;
+        scratch[nByteCount++] = codeToKeys(key);
+        scratch[nByteCount++] = flag;
     }
     pending.clear();
-    copyOut(target, scratch.subarray(0, 1 + nIndex * STRIDE));
+    target.set(scratch.subarray(0, nByteCount));
 }

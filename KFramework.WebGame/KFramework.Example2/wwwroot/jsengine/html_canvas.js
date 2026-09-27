@@ -213,7 +213,7 @@ export function destroy(idOrSelector) {
 export function exists(idOrSelector) {
     return lookup(toId(idOrSelector)) !== null;
 }
-/** 取画布元素本身（给 gl.ts 初始化上下文用，不由 C# 直接调用）。 */
+/** 取画布元素本身（给 gl.ts 初始化上下文用，不由 C# 直接调用）。空 / 缺省 / null 回落到默认 id。 */
 export function getCanvas(idOrSelector) {
     return lookup(toId(idOrSelector));
 }
@@ -231,4 +231,23 @@ export function getOrCreateCanvasElement(idOrSelector) {
     if (!create(id, 3 /* LayoutMode.Fullscreen */, 0, 0, 0, 0))
         return null;
     return canvases.get(id) ?? null;
+}
+/**
+ * 让画布可获焦 / 取消获焦：绑在 <canvas> 上的 keydown/keyup 只有在画布获焦时才会触发，
+ * 而 <canvas> 默认 tabindex 为 -1（不可获焦），所以监听键盘前要 focusCanvas(id, true)。
+ * @param idOrSelector 画布 id（空 / 缺省 / null → 默认 id）。
+ * @param focus true（默认）：设 tabindex=0 并聚焦（键盘事件派发到画布）；false：失焦并移除 tabindex。
+ */
+export function focusCanvas(idOrSelector, focus = true) {
+    const c = getCanvas(idOrSelector);
+    if (!c)
+        return;
+    if (focus) {
+        c.tabIndex = 0;
+        c.focus();
+    }
+    else {
+        c.blur();
+        c.removeAttribute('tabindex');
+    }
 }
