@@ -67,10 +67,9 @@ namespace KFramework.MonoGame
             for (int i = 0; i < count; i++)
             {
                 int off = 1 + i * Stride;
-                int type = ReadByte(off);
-                int keyCode = ReadByte(off + 1);
-
-                switch (type)
+                int keyCode = ReadByte(off);
+                int flag = ReadByte(off + 1);
+                switch (flag)
                 {
                     case EvKeyDown: SetKey(keyCode, true); break;
                     case EvKeyUp: SetKey(keyCode, false); break;
