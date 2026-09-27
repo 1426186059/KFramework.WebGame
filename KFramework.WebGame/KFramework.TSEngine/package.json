@@ -4,7 +4,8 @@
   "private": true,
   "description": "KFramework 浏览器引擎的 TypeScript 源码。编译产物输出到 dist/jsengine（含依赖），供各示例直接复制到 wwwroot/jsengine。",
   "scripts": {
-    "build": "tsc && node copy_deps.mjs",
+    "lint": "node check-esm-imports.mjs",
+    "build": "node check-esm-imports.mjs && tsc && node copy_deps.mjs",
     "watch": "tsc --watch",
     "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\""
   },

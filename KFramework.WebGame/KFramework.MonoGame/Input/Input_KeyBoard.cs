@@ -18,12 +18,12 @@ namespace KFramework.MonoGame
         private const int EvKeyUp = 2;
         private const int EvBlur = 10;
 
-        private const int Stride = 8;            // 每条 2 个 i32
+        private const int Stride = 2;            // 每条 2 个 i32
         private const int MaxEvents = 64;
 
         public const int KeyCount = 256;
 
-        private static readonly byte[] _buffer = new byte[4 + MaxEvents * Stride];
+        private static readonly byte[] _buffer = new byte[1 + MaxEvents * Stride];
 
         private static readonly bool[] _held = new bool[KeyCount];
         private static readonly bool[] _pressed = new bool[KeyCount];
@@ -43,8 +43,8 @@ namespace KFramework.MonoGame
         /// <summary>本装置是否处于激活状态；未激活时 <see cref="Update"/> / <see cref="LateUpdate"/> 直接跳过。由 <see cref="Activate"/> / <see cref="Unbind"/> 维护。</summary>
         public static bool Active { get; private set; }
 
-        private static int ReadInt(int offset)
-            => BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(offset, 4));
+        private static byte ReadInt(int offset)
+            => _buffer[offset];
 
         /// <summary>每帧调用一次：取回本模块的事件队列并更新状态。</summary>
         /// <remarks>
@@ -66,9 +66,9 @@ namespace KFramework.MonoGame
 
             for (int i = 0; i < count; i++)
             {
-                int off = 4 + i * Stride;
+                int off = 1 + i * Stride;
                 int type = ReadInt(off);
-                int keyCode = ReadInt(off + 4);
+                int keyCode = ReadInt(off + 1);
 
                 switch (type)
                 {

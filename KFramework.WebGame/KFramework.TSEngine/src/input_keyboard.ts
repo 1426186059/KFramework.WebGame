@@ -1,6 +1,6 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Keyboard 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
-import { copyOut } from './input_common';
-import { getCanvas } from './html_canvas';
+import { copyOut } from './input_common.js';
+import { getCanvas } from './html_canvas.js';
 
 const CODE_TO_INDEX:{ [key: string]: number}= {
     'KeyW': 0, 
