@@ -19,9 +19,9 @@ namespace KFramework.MonoGame
         private const int EvBlur = 10;
 
         private const int Stride = 2;            // 每条 2 个 i32
-        private const int MaxEvents = 64;
+        private const int MaxEvents = 32;
 
-        public const int KeyCount = 256;
+        public const int KeyCount = MaxEvents;
 
         private static readonly byte[] _buffer = new byte[1 + MaxEvents * Stride];
 

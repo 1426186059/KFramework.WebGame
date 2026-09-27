@@ -35,7 +35,7 @@ function codeToKeys(code: string): number {
     return CODE_TO_KEYS[code] ?? 0;
 }
 
-const MAX_EVENTS = 64;
+const MAX_EVENTS = 32;
 const STRIDE = 2;
 const SIZE = 1 + MAX_EVENTS * STRIDE;
 
