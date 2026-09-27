@@ -1026,9 +1026,9 @@ namespace Client.MirScenes.Dialogs
                 return;
             }
 
-            switch (e.KeyChar)
+            switch (e.KeyCode)
             {
-                case (char)Keys.Enter:
+                case Keys.Enter:
                     e.Handled = true;
                     if (string.IsNullOrEmpty(SearchTextBox.Text)) return;
                     SearchTime = CMain.Time + Globals.SearchDelay;
@@ -1039,7 +1039,7 @@ namespace Client.MirScenes.Dialogs
                     });
                     CMain.Instance.ActiveControl = null;
                     break;
-                case (char)Keys.Escape:
+                case Keys.Escape:
                     e.Handled = true;
                     break;
             }
@@ -1353,8 +1353,12 @@ namespace Client.MirScenes.Dialogs
 
         private void MirInputBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar)
-                && !char.IsDigit(e.KeyChar))
+            // 原版按"字符"判定：控制键 + 数字键放行，价格框只吃数字。
+            Keys k = e.KeyCode;
+            bool control = k == Keys.Back || k == Keys.Tab || k == Keys.Return || k == Keys.Escape;
+            bool digit = (k >= Keys.D0 && k <= Keys.D9) || (k >= Keys.NumPad0 && k <= Keys.NumPad9);
+            if (!control
+                && !digit)
             {
                 e.Handled = true;
             }

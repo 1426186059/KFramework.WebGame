@@ -246,8 +246,15 @@ namespace MirEngine
 
     public class KeyPressEventArgs : EventArgs
     {
-        public KeyPressEventArgs(char keyChar) { KeyChar = keyChar; }
-        public char KeyChar { get; set; }
+        public KeyPressEventArgs(Keys keyData) { KeyData = keyData; }
+        public Keys KeyData { get; }
+        /// <summary>剥掉修饰键位的键码（与 KeyEventArgs.KeyCode 同义）：比较具体按键时用它，
+        /// 需要区分上档字符（'@' = D2 + Shift）时再用 KeyData / Shift。</summary>
+        public Keys KeyCode => (KeyData & Keys.Modifiers) == 0 ? KeyData : KeyData & ~Keys.Modifiers;
+        public Keys Modifiers => KeyData & Keys.Modifiers;
+        public bool Alt => (KeyData & Keys.Alt) != 0;
+        public bool Control => (KeyData & Keys.Control) != 0;
+        public bool Shift => (KeyData & Keys.Shift) != 0;
         public bool Handled { get; set; }
     }
 

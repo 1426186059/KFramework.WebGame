@@ -196,19 +196,23 @@ namespace Client.MirControls
 
         void MirInputBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar)
-                && !char.IsDigit(e.KeyChar))
+            // 原版按"字符"判定：控制键 + 数字键放行，其余一律吞掉（金额框只吃数字）。
+            Keys k = e.KeyCode;
+            bool control = k == Keys.Back || k == Keys.Tab || k == Keys.Return || k == Keys.Escape;
+            bool digit = (k >= Keys.D0 && k <= Keys.D9) || (k >= Keys.NumPad0 && k <= Keys.NumPad9);
+            if (!control
+                && !digit)
             {
                 e.Handled = true;
             }
 
-            if (e.KeyChar == (char)Keys.Enter)
+            if (k == Keys.Enter)
             {
                 if (OKButton != null && !OKButton.IsDisposed)
                     OKButton.InvokeMouseClick(EventArgs.Empty);
                 e.Handled = true;
             }
-            else if (e.KeyChar == (char)Keys.Escape)
+            else if (k == Keys.Escape)
             {
                 if (CancelButton != null && !CancelButton.IsDisposed)
                     CancelButton.InvokeMouseClick(EventArgs.Empty);
@@ -273,9 +277,9 @@ namespace Client.MirControls
         {
             base.OnKeyPress(e);
 
-            if (e.KeyChar == (char)Keys.Escape)
+            if (e.KeyCode == Keys.Escape)
                 CancelButton.InvokeMouseClick(EventArgs.Empty);
-            else if (e.KeyChar == (char)Keys.Enter)
+            else if (e.KeyCode == Keys.Enter)
                 OKButton.InvokeMouseClick(EventArgs.Empty);
             e.Handled = true;
         }

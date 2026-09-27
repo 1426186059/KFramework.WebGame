@@ -247,7 +247,7 @@ namespace Client.MirScenes.Dialogs
         private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (sender == null) return;
-            if (e.KeyChar != (char)Keys.Enter) return;
+            if (e.KeyCode != Keys.Enter) return;
             e.Handled = true;
 
             if (OKButton.Enabled)

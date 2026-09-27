@@ -5850,8 +5850,11 @@ namespace Client.MirScenes
             MirInputBox inputBox = new MirInputBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.EnterGuildNameLengthLimit));
             inputBox.InputTextBox.TextBox.KeyPress += (o, e) =>
             {
-                string Allowed = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                if (!Allowed.Contains(e.KeyChar) && e.KeyChar != (char)Keys.Back)
+                // 只允许字母 / 数字 / 退格（KeyPress 现在给键码，大小写由 Shift 位体现，故按键码放行全部字母）
+                Keys k = e.KeyCode;
+                bool letter = k >= Keys.A && k <= Keys.Z;
+                bool digit = (k >= Keys.D0 && k <= Keys.D9) || (k >= Keys.NumPad0 && k <= Keys.NumPad9);
+                if (!letter && !digit && k != Keys.Back)
                     e.Handled = true;
             };
             inputBox.OKButton.Click += (o, e) =>

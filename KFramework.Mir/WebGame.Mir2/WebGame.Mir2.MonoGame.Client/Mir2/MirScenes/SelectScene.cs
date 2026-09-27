@@ -221,7 +221,7 @@ namespace Client.MirScenes
 
         private void SelectScene_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar != (char)Keys.Enter) return;
+            if (e.KeyCode != Keys.Enter) return;
             if (StartGameButton.Enabled)
                 StartGame();
             e.Handled = true;

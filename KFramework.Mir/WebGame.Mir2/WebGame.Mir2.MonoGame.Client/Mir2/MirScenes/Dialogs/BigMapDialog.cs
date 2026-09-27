@@ -434,7 +434,7 @@ namespace Client.MirScenes.Dialogs
 
         public void SearchTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (sender == null || e.KeyChar != (char)Keys.Enter) return;
+            if (sender == null || e.KeyCode != Keys.Enter) return;
 
             e.Handled = true;
 

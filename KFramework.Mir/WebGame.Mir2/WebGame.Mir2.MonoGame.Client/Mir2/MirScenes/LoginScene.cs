@@ -571,7 +571,7 @@ namespace Client.MirScenes
             }
             public void TextBox_KeyPress(object sender, KeyPressEventArgs e)
             {
-                if (sender == null || e.KeyChar != (char) Keys.Enter) return;
+                if (sender == null || e.KeyCode != Keys.Enter) return;
 
                 e.Handled = true;
 
@@ -705,7 +705,7 @@ namespace Client.MirScenes
                 };
                 KeyEnterButton.Click += (o, e) =>
                 {
-                    KeyPressEventArgs arg = new KeyPressEventArgs((char)Keys.Enter);
+                    KeyPressEventArgs arg = new KeyPressEventArgs(Keys.Enter);
 
                     _loginDialog.TextBox_KeyPress(o, arg);
                 };

@@ -1858,16 +1858,16 @@ namespace Client.MirScenes.Dialogs
         }
         public void RanksName_KeyPress(object sender, KeyPressEventArgs e)
         {
-            switch (e.KeyChar)
+            switch (e.KeyCode)
             {
-                case (char)'\\':
+                case Keys.OemPipe:          // '\'：WinForms 里 '\' 键即 OemPipe(220)
                     e.Handled = true;
                     break;
-                case (char)Keys.Enter:
+                case Keys.Enter:
                     e.Handled = true;
                     RanksChangeName();
                     break;
-                case (char)Keys.Escape:
+                case Keys.Escape:
                     e.Handled = true;
                     UpdateRanks();
                     break;

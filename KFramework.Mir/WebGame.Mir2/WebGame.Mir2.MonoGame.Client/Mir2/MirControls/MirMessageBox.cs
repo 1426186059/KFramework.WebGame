@@ -182,7 +182,7 @@ namespace Client.MirControls
 
             if (AllowKeyPress)
             {
-                if (e.KeyChar == (char)Keys.Escape)
+                if (e.KeyCode == Keys.Escape)
                 {
                     switch (Buttons)
                     {
@@ -199,7 +199,7 @@ namespace Client.MirControls
                     }
                 }
 
-                else if (e.KeyChar == (char)Keys.Enter)
+                else if (e.KeyCode == Keys.Enter)
                 {
                     switch (Buttons)
                     {

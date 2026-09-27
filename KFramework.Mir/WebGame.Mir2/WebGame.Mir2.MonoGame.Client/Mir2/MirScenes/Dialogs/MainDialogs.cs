@@ -716,9 +716,9 @@ namespace Client.MirScenes.Dialogs
 
         private void ChatTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            switch (e.KeyChar)
+            switch (e.KeyCode)
             {
-                case (char)Keys.Enter:
+                case Keys.Enter:
                     e.Handled = true;
                     if (!string.IsNullOrEmpty(ChatTextBox.Text))
                     {
@@ -751,7 +751,7 @@ namespace Client.MirScenes.Dialogs
                     ChatTextBox.Text = string.Empty;
                     LinkedItems.Clear();
                     break;
-                case (char)Keys.Escape:
+                case Keys.Escape:
                     e.Handled = true;
                     ChatTextBox.Visible = false;
                     ChatTextBox.Text = string.Empty;
@@ -1096,15 +1096,18 @@ namespace Client.MirScenes.Dialogs
         }
         private void ChatPanel_KeyPress(object sender, KeyPressEventArgs e)
         {
-            switch (e.KeyChar)
+            // KeyPress 现在给的是键码：'@' / '!' 是上档字符，靠 Shift 位与 '2' / '1' 区分；'/' 是 Oem 键(191)。
+            switch (e.KeyCode)
             {
-                case '@':
-                case '!':
-                case ' ':
-                case (char)Keys.Enter:
+                case Keys.D2:               // '@' = Shift + 2
+                case Keys.D1:               // '!' = Shift + 1
+                case Keys.Space:
+                case Keys.Enter:
+                    if (!e.Shift && (e.KeyCode == Keys.D1 || e.KeyCode == Keys.D2))
+                        break;              // 没按 Shift 的 1 / 2 只是数字，不是聊天前缀
                     ChatTextBox.SetFocus();
-                    if (e.KeyChar == '!') ChatTextBox.Text = "!";
-                    if (e.KeyChar == '@') ChatTextBox.Text = "@";
+                    if (e.KeyCode == Keys.D1) ChatTextBox.Text = "!";
+                    if (e.KeyCode == Keys.D2) ChatTextBox.Text = "@";
                     if (ChatPrefix != "") ChatTextBox.Text = ChatPrefix;
 
                     ChatTextBox.Visible = true;
@@ -1112,7 +1115,7 @@ namespace Client.MirScenes.Dialogs
                     ChatTextBox.TextBox.SelectionStart = ChatTextBox.Text.Length;
                     e.Handled = true;
                     break;
-                case '/':
+                case Keys.OemQuestion:      // '/'
                     ChatTextBox.SetFocus();
                     ChatTextBox.Text = LastPM + " ";
                     ChatTextBox.Visible = true;

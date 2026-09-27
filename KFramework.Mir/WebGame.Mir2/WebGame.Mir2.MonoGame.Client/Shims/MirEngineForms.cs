@@ -164,7 +164,7 @@ namespace MirEngine
 
         public TextBox()
         {
-            _inner.KeyPress += (s, e) => KeyPress?.Invoke(this, new KeyPressEventArgs(e.KeyChar) { Handled = e.Handled });
+            _inner.KeyPress += (s, e) => KeyPress?.Invoke(this, new KeyPressEventArgs(ToMirEngineKeys(e.KeyChar)) { Handled = e.Handled });
             _inner.KeyDown += (s, e) => KeyDown?.Invoke(this, new KeyEventArgs(ToMirEngineKeys(e.KeyCode)) { Handled = e.Handled, SuppressKeyPress = e.SuppressKeyPress });
             _inner.KeyUp += (s, e) => KeyUp?.Invoke(this, new KeyEventArgs(ToMirEngineKeys(e.KeyCode)) { Handled = e.Handled, SuppressKeyPress = e.SuppressKeyPress });
             _inner.MouseMove += (s, e) => MouseMove?.Invoke(this, new MouseEventArgs(ToMirEngineButton(e.Button), e.Clicks, e.X, e.Y, e.Delta));
@@ -191,6 +191,58 @@ namespace MirEngine
                 case KFramework.MonoGame.Keys.Enter: return Keys.Return;
                 default: return (Keys)(int)k;
             }
+        }
+
+        // 引擎文本框的 KeyPress 携带的是"字符"（DOM/IME 上屏），而 MirEngine 侧统一用 Keys 表达按键。
+        // 这里按 US 布局把字符还原成"键码（+Shift 位）"：'@' → D2|Shift、'A' → A|Shift。
+        // 还原不出来的字符（如 IME 上屏的汉字）返回 Keys.None，交由各处理方自行决定。
+        private static Keys ToMirEngineKeys(char keyChar)
+        {
+            switch (keyChar)
+            {
+                case '\b': return Keys.Back;
+                case '\t': return Keys.Tab;
+                case '\r':
+                case '\n': return Keys.Return;
+                case (char)27: return Keys.Escape;
+                case ' ': return Keys.Space;
+            }
+
+            if (keyChar >= '0' && keyChar <= '9') return (Keys)(int)keyChar;              // D0..D9 与 ASCII 一致
+            if (keyChar >= 'a' && keyChar <= 'z') return (Keys)(int)char.ToUpperInvariant(keyChar);
+            if (keyChar >= 'A' && keyChar <= 'Z') return (Keys)(int)keyChar | Keys.Shift;
+
+            const string shiftedDigits = ")!@#$%^&*(";                                    // Shift + D0..D9
+            int d = shiftedDigits.IndexOf(keyChar);
+            if (d >= 0) return (Keys)((int)Keys.D0 + d) | Keys.Shift;
+
+            switch (keyChar)                                                              // 常见标点（Oem 编码沿用 WinForms）
+            {
+                case ';': return Keys.OemSemicolon;
+                case ':': return Keys.OemSemicolon | Keys.Shift;
+                case '=': return Keys.Oemplus;
+                case '+': return Keys.Oemplus | Keys.Shift;
+                case '-': return Keys.OemMinus;
+                case '_': return Keys.OemMinus | Keys.Shift;
+                case ',': return Keys.Oemcomma;
+                case '<': return Keys.Oemcomma | Keys.Shift;
+                case '.': return Keys.OemPeriod;
+                case '>': return Keys.OemPeriod | Keys.Shift;
+                case '/': return Keys.OemQuestion;
+                case '?': return Keys.OemQuestion | Keys.Shift;
+                case '`': return Keys.OemTilde;
+                case '~': return Keys.OemTilde | Keys.Shift;
+                case '[': return Keys.OemOpenBrackets;
+                case '{': return Keys.OemOpenBrackets | Keys.Shift;
+                case '\\': return Keys.OemPipe;
+                case '|': return Keys.OemPipe | Keys.Shift;
+                case ']': return Keys.OemCloseBrackets;
+                case '}': return Keys.OemCloseBrackets | Keys.Shift;
+                case '\'': return Keys.OemQuotes;
+                case '"': return Keys.OemQuotes | Keys.Shift;
+            }
+
+            return Keys.None;
         }
 
         private static MouseButtons ToMirEngineButton(KFramework.MonoGame.TextBox.MouseButtons b)

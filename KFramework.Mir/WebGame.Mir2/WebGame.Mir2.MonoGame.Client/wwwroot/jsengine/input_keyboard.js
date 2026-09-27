@@ -1,62 +1,121 @@
-// 【依赖 C#】由 KFramework.MonoGame.JSBind_Input 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
-// 键盘模块：只注册监听 + 事件入队。
-// 键码映射、按下/抬起状态、边沿全在 C# 侧（KFramework.MonoGame.Input_KeyBoard）实现。
-//
-// 事件格式：每条 2 个 i32（type, keyCode）= 8 字节。
-// type: 1=KeyDown  2=KeyUp  10=Blur（失焦，C# 据此清空状态）
-import { copyOut } from './input_common.js';
-const MAX_EVENTS = 64;
-const STRIDE = 8;
-const SIZE = 4 + MAX_EVENTS * STRIDE;
-const queue = new Int32Array(MAX_EVENTS * 2);
-let count = 0;
-const registrations = [];
-let bound = false;
-function on(target, name, handler) {
-    target.addEventListener(name, handler);
-    registrations.push({ target, name, handler });
+// 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Keyboard 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
+import { getCanvas, focusCanvas } from './html_canvas.js';
+// 浏览器 KeyboardEvent.code → KFramework.MonoGame.Keys 枚举数值。
+// 必须与 Input/Keys.cs 的枚举值严格一致：字母/数字沿用 ASCII，方向键 37..40，修饰键 16/17/18…。
+// 不在表内的键返回 0（= Keys.None），C# 侧 SetKey 会直接忽略（k<=0）。
+// 全部键显式列出，不靠规律计算（保持与 C# Keys 枚举一一对应、易对照）。
+const CODE_TO_KEYS = {
+    // 字母 A..Z
+    'KeyA': 65, 'KeyB': 66, 'KeyC': 67, 'KeyD': 68, 'KeyE': 69, 'KeyF': 70,
+    'KeyG': 71, 'KeyH': 72, 'KeyI': 73, 'KeyJ': 74, 'KeyK': 75, 'KeyL': 76,
+    'KeyM': 77, 'KeyN': 78, 'KeyO': 79, 'KeyP': 80, 'KeyQ': 81, 'KeyR': 82,
+    'KeyS': 83, 'KeyT': 84, 'KeyU': 85, 'KeyV': 86, 'KeyW': 87, 'KeyX': 88,
+    'KeyY': 89, 'KeyZ': 90,
+    // 主键盘数字 0..9
+    'Digit0': 48, 'Digit1': 49, 'Digit2': 50, 'Digit3': 51, 'Digit4': 52,
+    'Digit5': 53, 'Digit6': 54, 'Digit7': 55, 'Digit8': 56, 'Digit9': 57,
+    // 小键盘数字（回落到主键盘数字，Keys 枚举未单独定义 NumPad）
+    'Numpad0': 48, 'Numpad1': 49, 'Numpad2': 50, 'Numpad3': 51, 'Numpad4': 52,
+    'Numpad5': 53, 'Numpad6': 54, 'Numpad7': 55, 'Numpad8': 56, 'Numpad9': 57,
+    // 方向键
+    'ArrowLeft': 37, 'ArrowUp': 38, 'ArrowRight': 39, 'ArrowDown': 40,
+    // 控制 / 编辑键
+    'Backspace': 8, 'Tab': 9, 'Enter': 13, 'Escape': 27, 'Space': 32,
+    'Home': 36, 'End': 35, 'Delete': 46,
+    // 修饰键（左右别名同值，见 Keys.cs：LeftShift = Shift 等）
+    'ShiftLeft': 16, 'ShiftRight': 16,
+    'ControlLeft': 17, 'ControlRight': 17,
+    'AltLeft': 18, 'AltRight': 18,
+};
+// KeyboardEvent.code → Keys 数值（仅查表；未列出的键返回 0，C# 侧忽略）。
+function codeToKeys(code) {
+    return CODE_TO_KEYS[code] ?? 0;
 }
-function push(type, keyCode) {
-    if (count >= MAX_EVENTS)
-        return; // 队列满则丢弃
-    const o = count * 2;
-    queue[o] = type;
-    queue[o + 1] = keyCode;
-    count++;
-}
-export function bindKeyboard() {
-    if (bound)
-        return;
-    on(window, 'keydown', (e) => {
-        const ev = e;
-        push(1, ev.keyCode);
-        // 阻止空格 / 方向键滚动页面（默认行为只能在 JS 侧拦）
-        if (ev.keyCode === 32 || (ev.keyCode >= 37 && ev.keyCode <= 40))
-            ev.preventDefault();
-    });
-    on(window, 'keyup', (e) => push(2, e.keyCode));
-    on(window, 'blur', () => push(10, 0));
-    bound = true;
-}
-/** 解绑键盘监听并清空队列（切场景 / 销毁时调用）。 */
-export function unbindKeyboard() {
-    for (const r of registrations)
-        r.target.removeEventListener(r.name, r.handler);
-    registrations.length = 0;
-    count = 0;
-    bound = false;
-}
+const MAX_EVENTS = 32;
+const STRIDE = 2;
+const SIZE = 1 + MAX_EVENTS * STRIDE;
+const EvBlur = 10; // 与 C# Input_KeyBoard.EvBlur 一致：失焦事件
+let m_Canvas = null;
+let m_CanvasId = null;
+// 失焦标记：canvas 失去焦点时置 true，下一次 pollKeyboard 写入一条 Blur 事件（flag=EvBlur），
+// 让 C# 侧清空键盘状态，避免“按住键在窗外松手 → 卡住”。
+let m_Blurred = false;
+const pending = new Map();
 const scratch = new Uint8Array(SIZE);
-const view = new DataView(scratch.buffer);
-export function pollKeyboard(target) {
-    if (!bound)
-        bindKeyboard();
-    view.setInt32(0, count, true);
-    for (let i = 0; i < count; i++) {
-        const dst = 4 + i * STRIDE;
-        view.setInt32(dst, queue[i * 2], true);
-        view.setInt32(dst + 4, queue[i * 2 + 1], true);
+function Process_KeyDown(e) {
+    pending.set(e.code, 1);
+}
+function Process_KeyUp(e) {
+    pending.set(e.code, 2);
+}
+// 失焦：仅置标记。真正清空延到 pollKeyboard 随 Blur 事件发往 C#，保证与一次 poll 时序对齐，
+// 且能顺带丢弃失焦前残留的“按下”事件（否则会卡成一直按住）。
+function Process_Blur() {
+    m_Blurred = true;
+}
+//失焦后，点击屏幕恢复焦点
+function Process_Pointerdown() {
+    m_Canvas?.focus();
+}
+// 键盘监听绑在 canvas 上（依赖画布获焦才会收到 key 事件）。
+// <canvas> 默认不可获焦，所以绑监听前必须先 focusCanvas 让它可获焦并聚焦；同时挂一个 pointerdown 重新聚焦，
+// 这样切走窗口 / 在输入框打字后点回游戏，键盘依然有效。IME 输入框获焦时不会触发 canvas 的 key 事件，不会误报游戏键。
+export function bindKeyboard(canvasId) {
+    m_Canvas = getCanvas(canvasId);
+    m_CanvasId = canvasId ?? null;
+    if (m_Canvas) {
+        focusCanvas(m_CanvasId);
+        m_Canvas.addEventListener('keydown', Process_KeyDown);
+        m_Canvas.addEventListener('keyup', Process_KeyUp);
+        m_Canvas.addEventListener('blur', Process_Blur);
+        m_Canvas.addEventListener('pointerdown', Process_Pointerdown);
     }
-    count = 0;
-    copyOut(target, scratch);
+    else {
+        // 找不到画布（极少见）才回落到 window，保证至少有输入。
+        window.addEventListener('keydown', Process_KeyDown);
+        window.addEventListener('keyup', Process_KeyUp);
+        window.addEventListener('blur', Process_Blur);
+    }
+}
+export function unbindKeyboard() {
+    if (m_Canvas) {
+        m_Canvas.removeEventListener('keydown', Process_KeyDown);
+        m_Canvas.removeEventListener('keyup', Process_KeyUp);
+        m_Canvas.removeEventListener('blur', Process_Blur);
+        m_Canvas.removeEventListener('pointerdown', Process_Pointerdown);
+        focusCanvas(m_CanvasId, false);
+    }
+    else {
+        window.removeEventListener('keydown', Process_KeyDown);
+        window.removeEventListener('keyup', Process_KeyUp);
+        window.removeEventListener('blur', Process_Blur);
+    }
+}
+export function pollKeyboard(target) {
+    // 先写入真正的 Uint8Array（scratch），再经由 MemoryView.set 写回 C# 缓冲。
+    // 注意：MemoryView_Span 不是 Uint8Array、没有 [] 索引器，不能直接 target[i]=x。
+    //
+    // 布局：scratch[0] = 事件条数；其后每 2 字节一对 (keyCode, flag)，flag 1=按下 / 2=抬起 / 10=失焦。
+    // 失焦时先写入一条 Blur 事件，并丢弃失焦前残留的“按下”事件，避免“卡键”。
+    let off = 1;
+    let nEvents = 0;
+    if (m_Blurred) {
+        m_Blurred = false;
+        scratch[off++] = 0; // keyCode 对 Blur 无意义
+        scratch[off++] = EvBlur; // 10
+        nEvents++;
+    }
+    else {
+        for (const [key, flag] of pending) {
+            if (off + STRIDE > SIZE) {
+                break;
+            }
+            scratch[off++] = codeToKeys(key);
+            scratch[off++] = flag;
+            nEvents++;
+        }
+    }
+    pending.clear();
+    scratch[0] = nEvents;
+    target.set(scratch.subarray(0, off));
 }

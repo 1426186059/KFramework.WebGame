@@ -65,13 +65,13 @@ namespace Client.MirControls
 
         void MirInputBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char)Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
             {
                 if (OKButton != null && !OKButton.IsDisposed)
                     OKButton.InvokeMouseClick(EventArgs.Empty);
                 e.Handled = true;
             }
-            else if (e.KeyChar == (char)Keys.Escape)
+            else if (e.KeyCode == Keys.Escape)
             {
                 if (CancelButton != null && !CancelButton.IsDisposed)
                     CancelButton.InvokeMouseClick(EventArgs.Empty);
@@ -97,12 +97,12 @@ namespace Client.MirControls
         {
             base.OnKeyPress(e);
 
-            if (e.KeyChar == (char)Keys.Escape)
+            if (e.KeyCode == Keys.Escape)
             {
                 if (CancelButton != null && !CancelButton.IsDisposed)
                     CancelButton.InvokeMouseClick(EventArgs.Empty);
             }
-            else if (e.KeyChar == (char)Keys.Enter)
+            else if (e.KeyCode == Keys.Enter)
             {
                 if (OKButton != null && !OKButton.IsDisposed)
                     OKButton.InvokeMouseClick(EventArgs.Empty);

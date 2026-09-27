@@ -370,7 +370,7 @@ namespace Client.MirControls
         {
             base.OnKeyPress(e);
 
-            if (e.KeyChar == (char)Keys.Escape)
+            if (e.KeyCode == Keys.Escape)
             {
                 CMain.Instance.ActiveControl = null;
                 e.Handled = true;
