@@ -41,20 +41,21 @@ namespace KFramework.MonoGame
             if (!Active) return;
             JSBind_Input_Keyboard.PollKeyboard(_buffer);
 
-            int count = ReadByte(0);
-            if (count <= 0) return;
-            if (count > MaxEvents)
-            {
-                count = MaxEvents;
-            }
-
             _NewKeyState.AsSpan().Clear();
-            for (int i = 0; i < count; i++)
+            int count = ReadByte(0);
+            if (count > 0)
             {
-                int off = 1 + i * Stride;
-                byte keyCode = ReadByte(off);
-                byte flag = ReadByte(off + 1);
-                _NewKeyState[keyCode] = flag == EvKeyDown;
+                if (count > MaxEvents)
+                {
+                    count = MaxEvents;
+                }
+                for (int i = 0; i < count; i++)
+                {
+                    int off = 1 + i * Stride;
+                    byte keyCode = ReadByte(off);
+                    byte flag = ReadByte(off + 1);
+                    _NewKeyState[keyCode] = flag == EvKeyDown;
+                }
             }
 
             for(int i = 0; i < byte.MaxValue; i++)
