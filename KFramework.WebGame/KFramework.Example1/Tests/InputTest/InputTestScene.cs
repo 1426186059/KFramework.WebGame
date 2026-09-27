@@ -16,6 +16,9 @@ public sealed class InputTestScene : TestSceneBase
     [
         (Keys.W, "W"), (Keys.A, "A"), (Keys.S, "S"), (Keys.D, "D"),
         (Keys.Space, "Space"), (Keys.Enter, "Enter"), (Keys.LeftShift, "Shift"), (Keys.Escape, "Esc"),
+        (Keys.F1, "F1"), (Keys.F2, "F2"), (Keys.F3, "F3"), (Keys.F4, "F4"),
+        (Keys.F5, "F5"), (Keys.F6, "F6"), (Keys.F7, "F7"), (Keys.F8, "F8"),
+        (Keys.F9, "F9"), (Keys.F10, "F10"), (Keys.F11, "F11"), (Keys.F12, "F12"),
     ];
 
     private static readonly MouseButton[] _buttonsList = [MouseButton.Left, MouseButton.Right, MouseButton.Middle];
