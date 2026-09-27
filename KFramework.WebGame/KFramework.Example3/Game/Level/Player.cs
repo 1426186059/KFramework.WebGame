@@ -102,6 +102,8 @@ namespace KFramework.Example3
 
         // 物理恒定以 1/60 步长推进，与渲染帧率解耦（替代直接拿可变 KTime.deltaTime 积分导致的忽快忽慢）。
         private readonly FixedUpdteFunc _physicsStepper = new FixedUpdteFunc { FixedDeltaTime = 1f / 60f };
+        // 上一固定步“开始前”的位置，供 Draw 渲染插值（消除高刷屏的停-跳抖动）。
+        private Vector2 _renderPrevPos;
         bool isJumping;
         private float previousBottom;
         private float previousTop;
@@ -220,6 +222,7 @@ namespace KFramework.Example3
         public void Reset(Vector2 position)
         {
             WorldPosition = BeginPos = position;
+            _renderPrevPos = WorldPosition;
             Velocity = Vector2.Zero;
             mPlayerState =  EPlayerState.Normal;
             this.nPlayerType = EPlayerType.Player;
@@ -396,10 +399,16 @@ namespace KFramework.Example3
 
             if (activeSelf)
             {
-                mAniPlayer.Draw(KSceneMgr.SpriteBatch, 
+                // 渲染插值：把精灵画在"上一步位置 ↔ 当前物理位置"之间，因子用 FixedUpdteFunc.InterpolationAlpha
+                // （剩余累加时间 / 固定步长）。这样逻辑仍按 1/60 固定步进，但高刷屏（120/144Hz）上画面平滑、无"停-跳"抖动。
+                // IsFixedTimeStep=true 时 Draw 已被压到固定率、与物理同频，无需插值（否则会恒定落后一帧），故直接画当前位置。
+                float interpAlpha = KSceneMgr.Game.IsFixedTimeStep ? 1f : _physicsStepper.InterpolationAlpha;
+                Vector2 savedPos = WorldPosition;
+                WorldPosition = Vector2.Lerp(_renderPrevPos, savedPos, interpAlpha);
+                mAniPlayer.Draw(KSceneMgr.SpriteBatch,
                     direction == FaceDirection.Right ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
-
                 DrawCollider2DZone();
+                WorldPosition = savedPos;
             }
         }
 
@@ -536,6 +545,9 @@ namespace KFramework.Example3
 
         public void ApplyPhysics(float dt)
         {
+            // 记录本固定步“开始前”的位置，Draw 用它和当前位置做插值
+            _renderPrevPos = WorldPosition;
+
             float elapsed = dt;
             Velocity.X += movement * MoveAcceleration * elapsed;
             Velocity.Y = MathHelper.Clamp(Velocity.Y + GravityAcceleration * elapsed, -MaxFallSpeed, MaxFallSpeed);
