@@ -1,5 +1,4 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Keyboard 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
-import { copyOut } from './input_common.js';
 import { getCanvas } from './html_canvas.js';
 // 浏览器 KeyboardEvent.code → KFramework.MonoGame.Keys 枚举数值。
 // 必须与 Input/Keys.cs 的枚举值严格一致：字母/数字沿用 ASCII，方向键 37..40，修饰键 16/17/18…。
@@ -32,7 +31,7 @@ const CODE_TO_KEYS = {
 function codeToKeys(code) {
     return CODE_TO_KEYS[code] ?? 0;
 }
-const MAX_EVENTS = 64;
+const MAX_EVENTS = 32;
 const STRIDE = 2;
 const SIZE = 1 + MAX_EVENTS * STRIDE;
 let m_Canvas = null;
@@ -69,18 +68,14 @@ export function pollKeyboard(target) {
     // 先写入真正的 Uint8Array（scratch），再经由 MemoryView.set 写回 C# 缓冲。
     // 注意：MemoryView_Span 不是 Uint8Array、没有 [] 索引器，不能直接 target[i]=x。
     let nByteCount = 0;
-    scratch[0] = pending.size;
-    let nIndex = 0;
+    scratch[nByteCount++] = pending.size;
     for (const [key, flag] of pending) {
         if (nByteCount >= SIZE) {
             break;
         }
-        const dst = 1 + nIndex * STRIDE;
-        scratch[dst] = codeToKeys(key);
-        scratch[dst + 1] = flag;
-        nIndex++;
-        nByteCount = dst + STRIDE;
+        scratch[nByteCount++] = codeToKeys(key);
+        scratch[nByteCount++] = flag;
     }
     pending.clear();
-    copyOut(target, scratch.subarray(0, 1 + nIndex * STRIDE));
+    target.set(scratch.subarray(0, nByteCount));
 }

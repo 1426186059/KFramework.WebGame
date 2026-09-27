@@ -21,7 +21,7 @@ namespace KFramework.MonoGame
         private const int Stride = 2;            // 每条 2 个 i32
         private const int MaxEvents = 32;
 
-        public const int KeyCount = MaxEvents;
+        public const int KeyCount = byte.MaxValue;
 
         private static readonly byte[] _buffer = new byte[1 + MaxEvents * Stride];
 
@@ -43,7 +43,7 @@ namespace KFramework.MonoGame
         /// <summary>本装置是否处于激活状态；未激活时 <see cref="Update"/> / <see cref="LateUpdate"/> 直接跳过。由 <see cref="Activate"/> / <see cref="Unbind"/> 维护。</summary>
         public static bool Active { get; private set; }
 
-        private static byte ReadInt(int offset)
+        private static byte ReadByte(int offset)
             => _buffer[offset];
 
         /// <summary>每帧调用一次：取回本模块的事件队列并更新状态。</summary>
@@ -59,16 +59,16 @@ namespace KFramework.MonoGame
             if (!Active) return;
             JSBind_Input_Keyboard.PollKeyboard(_buffer);
 
-            int count = ReadInt(0);
-            if (count > 0) PrintTool.Log($"[DBG] Poll count={count} firstKey={(count > 0 ? ReadInt(4 + 4) : -1)}");
+            int count = ReadByte(0);
+            if (count > 0) PrintTool.Log($"[DBG] Poll count={count} firstKey={(count > 0 ? ReadByte(4 + 4) : -1)}");
             if (count <= 0) return;
             if (count > MaxEvents) count = MaxEvents;
 
             for (int i = 0; i < count; i++)
             {
                 int off = 1 + i * Stride;
-                int type = ReadInt(off);
-                int keyCode = ReadInt(off + 1);
+                int type = ReadByte(off);
+                int keyCode = ReadByte(off + 1);
 
                 switch (type)
                 {

@@ -1,5 +1,4 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Keyboard 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
-import { copyOut } from './input_common.js';
 import { getCanvas } from './html_canvas.js';
 
 // 浏览器 KeyboardEvent.code → KFramework.MonoGame.Keys 枚举数值。
@@ -89,20 +88,16 @@ export function pollKeyboard(target: MemoryView_Span): void
     // 注意：MemoryView_Span 不是 Uint8Array、没有 [] 索引器，不能直接 target[i]=x。
     
     let nByteCount = 0;
-    scratch[0] = pending.size;
-    let nIndex = 0;
+    scratch[nByteCount++] = pending.size;
     for (const [key, flag] of pending) 
     {
         if (nByteCount >= SIZE) 
         {
             break;
         }
-        const dst = 1 + nIndex * STRIDE;
-        scratch[dst] = codeToKeys(key);
-        scratch[dst + 1] = flag;
-        nIndex++;
-        nByteCount = dst + STRIDE;
+        scratch[nByteCount++] = codeToKeys(key);
+        scratch[nByteCount++] = flag;
     }
     pending.clear();
-    copyOut(target, scratch.subarray(0, 1 + nIndex * STRIDE));
+    target.set(scratch.subarray(0, nByteCount));
 }
