@@ -324,8 +324,13 @@ namespace KFramework.MonoGame
             Active = false;
         }
 
-        /// <summary>激活装置：触摸 JS 模块在脚本加载时即自动绑定监听，无需显式 Bind。空实现，仅置 <see cref="Active"/> 标记。</summary>
-        public static void Activate() { Active = true; }
+        /// <summary>激活装置：建立/恢复 JS 侧触摸监听（绑定到画布），并清空状态。与 <see cref="Input_KeyBoard.Activate"/> 一致。</summary>
+        public static void Activate()
+        {
+            Reset();
+            JSBind_Input_Touch.BindTouch();
+            Active = true;
+        }
 
         // ===== 查询 =====
 

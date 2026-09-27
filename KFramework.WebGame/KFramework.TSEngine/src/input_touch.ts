@@ -78,8 +78,6 @@ const scratch = new Uint8Array(SIZE);
 const view = new DataView(scratch.buffer);
 
 export function pollTouch(target: MemoryView_Span): void {
-    if (!bound) bindTouch();
-
     view.setInt32(0, count, true);
     for (let i = 0; i < count; i++) {
         const src = i * 4;

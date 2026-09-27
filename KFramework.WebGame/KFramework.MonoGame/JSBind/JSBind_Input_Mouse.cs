@@ -9,11 +9,15 @@ namespace KFramework.MonoGame
     /// </summary>
     public static partial class JSBind_Input_Mouse
     {
+        /// <summary>激活装置：建立/恢复鼠标事件监听（绑定到画布）。由 <see cref="Input_Mouse.Activate"/> 调用。</summary>
+        [JSImport("bindMouse", "input_mouse")]
+        public static partial void BindMouse();
+
         /// <summary>把鼠标状态（位置/按键/滚轮）写入 state。</summary>
         [JSImport("pollMouse", "input_mouse")]
         public static partial void PollMouse([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
 
-        /// <summary>解绑鼠标事件监听。</summary>
+        /// <summary>关闭装置：解绑鼠标事件监听。由 <see cref="Input_Mouse.Deactivate"/> 调用。</summary>
         [JSImport("unbindMouse", "input_mouse")]
         public static partial void UnbindMouse();
     }

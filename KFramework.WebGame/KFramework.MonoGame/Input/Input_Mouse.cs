@@ -12,21 +12,18 @@ namespace KFramework.MonoGame
     public static class Input_Mouse
     {
         // 事件类型（与 input_mouse.ts 一致）
-        private const int EvMousePos = 5;
-        private const int EvMouseDown = 3;
-        private const int EvMouseUp = 4;
-        private const int EvWheel = 6;
+        private const int EvMousePos = 0;
+        private const int EvMouseButton = 1;   // payload = button(低7位) | 按下(0x80)
+        private const int EvWheel = 2;
 
-        private const int MaxEvents = 64;
         private const int MaxButtons = 8;
-
-        // 紧凑协议（与 input_mouse.ts 对齐）：全事件驱动、变长记录。
-        //   [0]        nEvents(1B)
-        //   [1..]      事件流：EvMousePos=5B(type + x:short + y:short)；其余=2B(type + payload)
         private const int CountSize = 1;
-        private const int PosRec = 5;
-        private const int EvRec = 2;
-        private static readonly byte[] _buffer = new byte[CountSize + PosRec + MaxEvents * EvRec];
+        private const int EvMousePos_ByteCount = 5;
+        private const int EvMouseButton_ByteCount = 2;
+        private const int EvMouseWheel_ByteCount = 2;
+
+        private const int MaxByteCount = CountSize + EvMousePos_ByteCount + EvMouseWheel_ByteCount + MaxButtons * EvMouseButton_ByteCount;
+        private static readonly byte[] _buffer = new byte[MaxByteCount];
 
         private static int _x, _y;
         private static int _prevX, _prevY;
@@ -63,8 +60,6 @@ namespace KFramework.MonoGame
 
             // 事件流：按类型变长跳步（EvMousePos=5B，其余=2B）
             int count = _buffer[0];
-            if (count > MaxEvents) count = MaxEvents;
-
             int off = CountSize;
             for (int i = 0; i < count; i++)
             {
@@ -74,23 +69,21 @@ namespace KFramework.MonoGame
                     case EvMousePos:
                         _x = BinaryPrimitives.ReadInt16LittleEndian(_buffer.AsSpan(off + 1, 2));
                         _y = BinaryPrimitives.ReadInt16LittleEndian(_buffer.AsSpan(off + 3, 2));
-                        off += PosRec;
+                        off += EvMousePos_ByteCount;
                         break;
-                    case EvMouseDown:
-                        SetButton(_buffer[off + 1], true);
-                        off += EvRec;
-                        break;
-                    case EvMouseUp:
-                        SetButton(_buffer[off + 1], false);
-                        off += EvRec;
+                    case EvMouseButton:
+                        {
+                            int raw = _buffer[off + 1];
+                            SetButton(raw & 0x7F, (raw & 0x80) != 0);   // 低7位=button，最高位=是否按下
+                            off += EvMouseButton_ByteCount;
+                        }
                         break;
                     case EvWheel:
                         _wheelDelta += (sbyte)_buffer[off + 1];   // 按 sbyte 解读累计增量
-                        off += EvRec;
+                        off += EvMouseWheel_ByteCount;
                         break;
                     default:
-                        off += EvRec;   // 未知类型按最小记录跳过，避免越界死循环
-                        break;
+                        throw new NotSupportedException();
                 }
             }
 
@@ -145,7 +138,7 @@ namespace KFramework.MonoGame
             Array.Clear(_released);
         }
 
-        /// <summary>解绑 JS 侧监听。</summary>
+        /// <summary>关闭装置：解绑 JS 侧鼠标监听，并清空状态。</summary>
         public static void Deactivate()
         {
             JSBind_Input_Mouse.UnbindMouse();
@@ -153,8 +146,13 @@ namespace KFramework.MonoGame
             Active = false;
         }
 
-        /// <summary>激活装置：鼠标 JS 模块在脚本加载时即自动绑定监听，无需显式 Bind。空实现，仅置 <see cref="Active"/> 标记。</summary>
-        public static void Activate() { Active = true; }
+        /// <summary>激活装置：建立/恢复 JS 侧鼠标监听（绑定到画布），并清空状态。与 <see cref="Input_KeyBoard.Activate"/> 一致。</summary>
+        public static void Activate()
+        {
+            Reset();
+            JSBind_Input_Mouse.BindMouse();
+            Active = true;
+        }
 
         // ===== 查询 =====
 
