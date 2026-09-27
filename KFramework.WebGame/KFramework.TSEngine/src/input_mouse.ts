@@ -1,15 +1,5 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Mouse 经 [JSImport(module: "input_mouse")] 调用；产物 input_mouse.js 由 SyncJsEngine 复制。
 // 鼠标模块：只注册监听 + 维护"当前状态/变化"。状态与边沿在 C# 侧（Input_Mouse）实现。
-//
-// 紧凑二进制协议（与 Input_Mouse.cs 严格对齐）：能 byte 用 byte、能 short 用 short，全事件驱动。
-//  偏移 0      nEvents   (byte)   事件条数
-//  偏移 1 起   变长事件流（事件类型决定自身长度）：
-//    EvMousePos  =5   5 字节：type(1) + posX(short) + posY(short)   仅鼠标移动时发一次（最新位置）
-//    EvMouseButton=3  2 字节：type(1) + (button 低7位 | 按下 0x80)
-//    EvWheel     =6   2 字节：type(1) + wheelDelta(sbyte, 范围 ±127)
-//
-// 玩家没收到移动、没按键、没滚轮 → nEvents=0，什么都不填；位置由 C# 维持上一帧状态。
-
 import { getCanvasElement } from './gl.js';
 import { canvasPoint, copyOut } from './input_common.js';
 
