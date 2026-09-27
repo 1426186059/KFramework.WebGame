@@ -64,5 +64,11 @@ public static class TestRegistry
             Desc = "鼠标 / 键盘状态：按下、抬起、持续按住（按帧计数）；以及用鼠标左键拖拽物体（方块 A / B 跟随光标移动）",
             Factory = static () => new InputTest.InputTestScene(),
         },
+        new TestEntry
+        {
+            Name = "触摸测试",
+            Desc = "多触点状态（按下/移动/静止/抬起）、位置与位移、双指 Pinch 缩放，以及手势 Tap / LongPress / Swipe；电脑上用浏览器设备模拟（Ctrl+Shift+M）产生触摸事件",
+            Factory = static () => new TouchTest.TouchTestScene(),
+        },
     ];
 }
