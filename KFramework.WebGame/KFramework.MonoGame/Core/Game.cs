@@ -19,6 +19,12 @@ namespace KFramework.MonoGame
         private double _lastTimestamp = -1;
         private TimeSpan _totalGameTime;
 
+        /// <summary>固定步长模式下累计的“未消费时间”，达到一个 TargetElapsedTime 就跑一次 Update。</summary>
+        private double _accumulator;
+
+        /// <summary>固定步长模式下单帧最多模拟次数，防止卡顿后螺旋死亡（一次性补太多步拖死主线程）。</summary>
+        private const int MaxStepsPerFrame = 5;
+
         /// <summary>主循环限帧：每 _frameInterval 个 rAF 才真正推进一帧（C# 层实现，供 captureFramerate 使用）。</summary>
         private int _frameInterval = 1;
         private int _frameSkipCounter;
@@ -42,17 +48,19 @@ namespace KFramework.MonoGame
         public GameComponentCollection Components { get; }
 
         /// <summary>
-        /// 【已废弃】固定时间步长。Web 上主循环由 requestAnimationFrame 锁帧（频率即刷新率），
-        /// 固定步长既不再承担“限帧”（那是 rAF 的活），也不再提供“稳定 dt”——
-        /// 引擎现在始终按可变 <see cref="GameTime.ElapsedGameTime"/> 缩放 dt 运行。
-        /// 本属性仅保留作兼容，设置无效。
-        /// 需要“固定步长逻辑”（如物理）请用引擎提供的 <see cref="FixedUpdteFunc"/>。
+        /// 是否使用固定时间步长（经典 MonoGame 行为）。
+        /// <list type="bullet">
+        /// <item><description>true：主循环按 <see cref="TargetElapsedTime"/> 恒定间隔跑 Update，攒够一个间隔跑一次（可一帧多次），
+        /// 不足一个间隔则跳过本帧渲染——Draw 被压到固定率，渲染与逻辑天然同频，因此无需渲染插值。</description></item>
+        /// <item><description>false（本引擎默认，推荐用于 Web）：每渲染帧跑一次 Update，dt 用两次 rAF 的真实间隔（可变 dt）。
+        /// 需要“稳定步长的物理”时在 Update 里用 <see cref="FixedUpdteFunc"/> 自行固定步进，
+        /// 并可用其 <see cref="FixedUpdteFunc.InterpolationAlpha"/> 做渲染插值消除高刷屏抖动。</description></item>
+        /// </list>
+        /// 注：本引擎默认 false，与 MonoGame 默认 true 不同——Web 上更推荐“可变 dt + FixedUpdteFunc”的组合。
         /// </summary>
-        [Obsolete("Web 上固定步长多余：主循环由 requestAnimationFrame 锁帧。需要固定步长逻辑请用 FixedUpdteFunc。")]
         public bool IsFixedTimeStep { get; set; } = true;
 
-        /// <summary>【已废弃】见 <see cref="IsFixedTimeStep"/>。引擎忽略此值，始终按可变 dt 运行。</summary>
-        [Obsolete("Web 上固定步长多余：引擎忽略 TargetElapsedTime，始终按可变 dt 运行。")]
+        /// <summary>固定步长模式下单次 Update 的间隔（默认 1/60 秒）。仅当 <see cref="IsFixedTimeStep"/> 为 true 时生效。</summary>
         public TimeSpan TargetElapsedTime { get; set; } = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 60);
 
         /// <summary>每帧绘制前的清屏色。</summary>
@@ -159,23 +167,54 @@ namespace KFramework.MonoGame
                 _lastTimestamp = timestampMs;
                 if (elapsed < 0d) elapsed = 0d;
 
-                // Web 上始终按可变 dt 运行：requestAnimationFrame 已把帧率锁在刷新率，
-                // 固定步长（IsFixedTimeStep）在 Web 上既多余也会让高刷屏被强行节流到逻辑率，故废弃。
-                // dt 直接用两次 rAF 的真实间隔（被 MaxElapsedSeconds 截断，避免切后台回来时一次性模拟过多）。
-                var span = TimeSpan.FromSeconds(Math.Min(elapsed, MaxElapsedSeconds));
-                _totalGameTime += span;
-                var frameTime = new GameTime(_totalGameTime, span);
+                double target = TargetElapsedTime.TotalSeconds;
+                if (target <= 0d) target = 1d / 60d;
 
-                //开始更新
-                Input.Update();
-                Update(frameTime);
-                Components.Update(frameTime);
-                Input.LateUpdate();
+                if (IsFixedTimeStep)
+                {
+                    // 经典 MonoGame 固定步长：累加真实间隔，攒够一个 target 就跑一次 Update（可一帧多次）。
+                    _accumulator += elapsed;
+                    // 螺旋死亡保护：单帧累计不超过 MaxElapsedSeconds，避免切后台回来一次性补爆。
+                    if (_accumulator > MaxElapsedSeconds) _accumulator = MaxElapsedSeconds;
 
-                //开始渲染
-                GraphicsDevice.Clear(ClearColor);
-                Draw(frameTime);
-                Components.Draw(frameTime);
+                    int steps = 0;
+                    while (_accumulator >= target && steps < MaxStepsPerFrame)
+                    {
+                        _totalGameTime += TimeSpan.FromSeconds(target);
+                        var stepTime = new GameTime(_totalGameTime, TimeSpan.FromSeconds(target));
+                        Input.Update();
+                        Update(stepTime);
+                        Components.Update(stepTime);
+                        Input.LateUpdate();
+                        _accumulator -= target;
+                        steps++;
+                    }
+
+                    // 本帧没攒够一个固定步：跳过渲染（对齐 MonoGame，Draw 被压到固定率，渲染/逻辑同频）。
+                    if (steps == 0) return;
+
+                    var drawElapsed = TimeSpan.FromSeconds(target * steps);
+                    GraphicsDevice.Clear(ClearColor);
+                    var drawTime = new GameTime(_totalGameTime, drawElapsed);
+                    Draw(drawTime);
+                    Components.Draw(drawTime);
+                }
+                else
+                {
+                    // 可变 dt：dt 用两次 rAF 的真实间隔（被 MaxElapsedSeconds 截断，避免切后台回来时一次性模拟过多）。
+                    var span = TimeSpan.FromSeconds(Math.Min(elapsed, MaxElapsedSeconds));
+                    _totalGameTime += span;
+                    var frameTime = new GameTime(_totalGameTime, span);
+
+                    Input.Update();
+                    Update(frameTime);
+                    Components.Update(frameTime);
+                    Input.LateUpdate();
+
+                    GraphicsDevice.Clear(ClearColor);
+                    Draw(frameTime);
+                    Components.Draw(frameTime);
+                }
 
             }
             catch (Exception ex)

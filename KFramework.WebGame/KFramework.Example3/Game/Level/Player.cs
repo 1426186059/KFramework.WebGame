@@ -99,6 +99,9 @@ namespace KFramework.Example3
         bool IsOnGround;
         public Vector2 Velocity;
         public float movement;
+
+        // 物理恒定以 1/60 步长推进，与渲染帧率解耦（替代直接拿可变 KTime.deltaTime 积分导致的忽快忽慢）。
+        private readonly FixedUpdteFunc _physicsStepper = new FixedUpdteFunc { FixedDeltaTime = 1f / 60f };
         bool isJumping;
         private float previousBottom;
         private float previousTop;
@@ -505,7 +508,9 @@ namespace KFramework.Example3
         public void Move()
         {
 
-            ApplyPhysics();
+            // 用 FixedUpdteFunc 把可变帧时长切成恒定 1/60 的逻辑步：回调里 ApplyPhysics 拿到的 dt 永远恒定，
+            // 因此加速度/重力/逐帧阻力都与帧率无关，马里奥不再忽快忽慢。
+            _physicsStepper.Update(KTime.deltaTime, ApplyPhysics);
             if (IsOnGround)
             {
                 if (BigPlayer && (KInputMgr.GetKey(Keys.Down) || KInputMgr.GetKey(Keys.S)))
@@ -529,12 +534,12 @@ namespace KFramework.Example3
             isJumping = false;
         }
 
-        public void ApplyPhysics()
+        public void ApplyPhysics(float dt)
         {
-            float elapsed = KTime.deltaTime;
+            float elapsed = dt;
             Velocity.X += movement * MoveAcceleration * elapsed;
             Velocity.Y = MathHelper.Clamp(Velocity.Y + GravityAcceleration * elapsed, -MaxFallSpeed, MaxFallSpeed);
-            Velocity.Y = DoJump(Velocity.Y);
+            Velocity.Y = DoJump(Velocity.Y, dt);
 
             if (IsOnGround)
             {
@@ -566,11 +571,11 @@ namespace KFramework.Example3
             float fixedTime = Math.Min(fixedTime1, fixedTime2);
             while (spendTime > 0)
             {
-                var dt = Math.Min(spendTime, fixedTime);
+                var dt2 = Math.Min(spendTime, fixedTime);
                 spendTime -= fixedTime;
 
                 Vector2 previousPosition = WorldPosition;
-                WorldPosition += Velocity * dt;
+                WorldPosition += Velocity * dt2;
                 WorldPosition = new Vector2((float)Math.Round(WorldPosition.X), (float)Math.Round(WorldPosition.Y));
 
                 HandleCollisions();
@@ -589,7 +594,7 @@ namespace KFramework.Example3
 
         }
 
-        private float DoJump(float velocityY)
+        private float DoJump(float velocityY, float dt)
         {
             // 起跳：仅“按下那一帧 + 在地面”触发一次。
             if (isJumping && !wasJumping && IsOnGround)
@@ -626,7 +631,7 @@ namespace KFramework.Example3
                 }
                 else
                 {
-                    jumpTime += KTime.deltaTime;
+                    jumpTime += dt;
                     if (jumpTime >= MaxJumpTime)
                     {
                         jumpTime = 0.0f; // 全力跳满，达到高度上限，交回重力
