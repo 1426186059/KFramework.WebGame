@@ -1,5 +1,5 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Keyboard 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
-import { getCanvas, focusCanvas, blurCanvas } from './html_canvas.js';
+import { getCanvas, focusCanvas } from './html_canvas.js';
 // 浏览器 KeyboardEvent.code → KFramework.MonoGame.Keys 枚举数值。
 // 必须与 Input/Keys.cs 的枚举值严格一致：字母/数字沿用 ASCII，方向键 37..40，修饰键 16/17/18…。
 // 不在表内的键返回 0（= Keys.None），C# 侧 SetKey 会直接忽略（k<=0）。
@@ -70,7 +70,7 @@ export function unbindKeyboard() {
         m_Canvas.removeEventListener('keyup', Process_KeyUp);
         if (m_RefocusHandler)
             m_Canvas.removeEventListener('pointerdown', m_RefocusHandler);
-        blurCanvas(m_CanvasId);
+        focusCanvas(m_CanvasId, false);
     }
     else {
         window.removeEventListener('keydown', Process_KeyDown);
