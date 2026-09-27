@@ -63,15 +63,16 @@ export function bindKeyboard(canvasId?: string): void
 {
     m_Canvas = getCanvas(canvasId);
     m_CanvasId = canvasId ?? null;
-    if (m_Canvas)
-    {
-        focusCanvas(m_CanvasId);
-        m_Canvas.addEventListener('keydown', Process_KeyDown);
-        m_Canvas.addEventListener('keyup', Process_KeyUp);
-        m_RefocusHandler = () => { m_Canvas?.focus(); };
-        m_Canvas.addEventListener('pointerdown', m_RefocusHandler);
-    }
-    else
+    m_Canvas = null;
+    // if (m_Canvas)
+    // {
+    //     focusCanvas(m_CanvasId);
+    //     m_Canvas.addEventListener('keydown', Process_KeyDown);
+    //     m_Canvas.addEventListener('keyup', Process_KeyUp);
+    //     m_RefocusHandler = () => { m_Canvas?.focus(); };
+    //     m_Canvas.addEventListener('pointerdown', m_RefocusHandler);
+    // }
+    // else
     {
         // 找不到画布（极少见）才回落到 window，保证至少有输入。
         window.addEventListener('keydown', Process_KeyDown);

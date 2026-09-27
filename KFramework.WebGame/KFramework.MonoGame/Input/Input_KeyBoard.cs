@@ -58,6 +58,8 @@ namespace KFramework.MonoGame
                 }
             }
 
+
+
             for(int i = 0; i < byte.MaxValue; i++)
             {
                 if (_LastKeyState[i] != _NewKeyState[i])

@@ -9,15 +9,12 @@ namespace KFramework.MonoGame
     /// </summary>
     public static partial class JSBind_Input_Keyboard
     {
-        /// <summary>把键盘按键事件队列写入 state（布局见 Input_KeyBoard.cs：count + 成对 (type, keyCode) 的 int32）。</summary>
         [JSImport("pollKeyboard", "input_keyboard")]
         public static partial void PollKeyboard([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
 
-
-        /// <summary>解绑键盘事件监听（切换输入设备 / 失焦时调用）。</summary>
         [JSImport("bindKeyboard", "input_keyboard")]
         public static partial void BindKeyboard(string canvasId = null);
-        /// <summary>解绑键盘事件监听（切换输入设备 / 失焦时调用）。</summary>
+
         [JSImport("unbindKeyboard", "input_keyboard")]
         public static partial void UnbindKeyboard();
     }

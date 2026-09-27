@@ -137,6 +137,7 @@ namespace KFramework.MonoGame
                 double target = TargetElapsedTime.TotalSeconds;
                 if (target <= 0d) target = 1d / 60d;
 
+                Input.Update();
                 if (IsFixedTimeStep)
                 {
                     _accumulator += elapsed;
@@ -151,7 +152,6 @@ namespace KFramework.MonoGame
                     {
                         _totalGameTime += TimeSpan.FromSeconds(target);
                         var stepTime = new GameTime(_totalGameTime, TimeSpan.FromSeconds(target));
-                        Input.Update();
                         Update(stepTime);
                         Components.Update(stepTime);
                         Input.LateUpdate();
@@ -180,7 +180,6 @@ namespace KFramework.MonoGame
                     var span = TimeSpan.FromSeconds(Math.Min(elapsed, MaxElapsedSeconds));
                     _totalGameTime += span;
                     var frameTime = new GameTime(_totalGameTime, span);
-                    Input.Update();
                     Update(frameTime);
                     Components.Update(frameTime);
                     Input.LateUpdate();
