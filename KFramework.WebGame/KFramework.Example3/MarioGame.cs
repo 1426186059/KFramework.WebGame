@@ -25,8 +25,12 @@ public sealed class MarioGame : Game
 
     protected override void Update(GameTime gameTime)
     {
+        // 本例子选择 Input 门面模式：引擎不再代劳，由游戏自行每步取回键盘/鼠标/触摸/IME 事件
+        Input.Update();
         KInputMgr.Update(gameTime);
         KSceneMgr.Update(gameTime);
+        // 固定步长下每步结束清空按下/抬起边沿，确保一次按键 / 一次点击只触发一次
+        Input.LateUpdate();
     }
 
     protected override void Draw(GameTime gameTime)

@@ -341,7 +341,7 @@ namespace KFramework.MonoGame
             focused = false;
             isFocused = false;
             LostFocus?.Invoke(this, EventArgs.Empty);
-            Input_IME.Close();
+            Input_IME.Deactivate();
         }
 
         public void Dispose()
@@ -540,8 +540,8 @@ namespace KFramework.MonoGame
         {
             if (!Input_IME.Active) return;
             if (!string.IsNullOrEmpty(compositionString)) return;
-            JSBind_InputHtmlIme.SetValue(text ?? string.Empty);
-            JSBind_InputHtmlIme.SetSelectionRange(selectionStart, selectionStart + selectionLength);
+            JSBind_Input_IME.SetValue(text ?? string.Empty);
+            JSBind_Input_IME.SetSelectionRange(selectionStart, selectionStart + selectionLength);
         }
 
         // ---- DOM -> 引擎 的桥接入口（供 [JSExport] 调用） ----

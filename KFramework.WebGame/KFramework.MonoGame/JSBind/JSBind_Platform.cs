@@ -52,6 +52,6 @@ namespace KFramework.MonoGame
         [JSImport("openUrl", "platform")]
         public static partial void OpenUrl(string url);
 
-        // 输入相关的绑定已移到 JSBind_Input（对应独立的 "input" 模块）
+        // 输入相关的绑定已拆到 JSBind_Input_Keyboard / JSBind_Input_Mouse / JSBind_Input_Touch，分别映射 "input_keyboard" / "input_mouse" / "input_touch" 模块
     }
 }

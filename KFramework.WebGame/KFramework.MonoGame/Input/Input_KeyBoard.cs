@@ -11,7 +11,7 @@ namespace KFramework.MonoGame
     ///
     /// <para>用事件而不是"电平差分"算边沿，因此同一帧内按下又抬起也能被正确识别。</para>
     /// </summary>
-    public sealed class Input_KeyBoard : IDisposable
+    public static class Input_KeyBoard
     {
         // 事件类型（与 input_keyboard.ts 一致）
         private const int EvKeyDown = 1;
@@ -46,14 +46,14 @@ namespace KFramework.MonoGame
         /// <summary>每帧调用一次：取回本模块的事件队列并更新状态。</summary>
         /// <remarks>
         /// 注意：<b>不要在开头清空按下/抬起边沿</b>。边沿（<see cref="_pressed"/> / <see cref="_released"/>）
-        /// 由 <see cref="ConsumeEdges"/> 在固定步长的每个 Update 步结束后清空，因此会跨帧保留，
+        /// 由 <see cref="LateUpdate"/> 在固定步长的每个 Update 步结束后清空，因此会跨帧保留，
         /// 直到被某个真正运行的 Update 步消费。若在此处清空，则在 <c>steps==0</c> 的帧（高刷新率或
-        /// 时序抖动导致 accumulator 不足一步）里读到的按键边沿会被下一帧的 Poll 抹掉，造成按键丢失——
+        /// 时序抖动导致 accumulator 不足一步）里读到的按键边沿会被下一帧的 Update 抹掉，造成按键丢失——
         /// 尤其表现为“跳跃/确认”等边沿触发的操作偶发或完全失灵、相应音效不播放。
         /// </remarks>
-        public static void Poll()
+        public static void Update()
         {
-            JSBind_Input.PollKeyboard(_buffer);
+            JSBind_Input_Keyboard.PollKeyboard(_buffer);
 
             int count = ReadInt(0);
             if (count > 0) PrintTool.Log($"[DBG] Poll count={count} firstKey={(count > 0 ? ReadInt(4 + 4) : -1)}");
@@ -117,33 +117,25 @@ namespace KFramework.MonoGame
 
         /// <summary>固定步长下，一个渲染帧可能跑多个 Update 步；在每个步结束后清空按下/抬起边沿，
         /// 确保一次按键只被识别一次（否则边沿会在多个步里重复触发，导致"按一次"的逻辑随帧时序抖动）。
-        /// 下一帧 <see cref="Poll"/> 时边沿重新产生。</summary>
-        public static void ConsumeEdges()
+        /// 下一帧 <see cref="Update"/> 时边沿重新产生。</summary>
+        public static void LateUpdate()
         {
             Array.Clear(_pressed);
             Array.Clear(_released);
         }
 
-        /// <summary>解绑 JS 侧监听（切场景 / 销毁时调用）。</summary>
-        public static void Unbind()
+        /// <summary>解绑 JS 侧监听。</summary>
+        public static void Deactivate()
         {
-            JSBind_Input.UnbindKeyboard();
+            JSBind_Input_Keyboard.UnbindKeyboard();
             Reset();
         }
 
-        private bool _disposed;
-
-        /// <summary>供生命周期统一管理的单例实例（实现了 <see cref="IDisposable"/>）。</summary>
-        public static Input_KeyBoard Instance { get; } = new Input_KeyBoard();
-
-        /// <summary>
-        /// 释放底层资源：解绑 JS 侧键盘监听并清空状态。幂等，可安全重复调用。
-        /// </summary>
-        public void Dispose()
+        /// <summary>激活装置：建立 / 恢复 JS 侧键盘监听（重新绑定到画布）。</summary>
+        public static void Activate()
         {
-            if (_disposed) return;
-            _disposed = true;
-            Unbind();
+            Reset();
+            JSBind_Input_Keyboard.BindKeyboard();
         }
 
         // ===== 查询 =====

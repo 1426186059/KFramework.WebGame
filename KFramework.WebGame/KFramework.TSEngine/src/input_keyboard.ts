@@ -1,4 +1,4 @@
-// 【依赖 C#】由 KFramework.MonoGame.JSBind_Input 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
+// 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Keyboard 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
 import { copyOut } from './input_common';
 import { getCanvas } from './html_canvas';
 

@@ -1,0 +1,20 @@
+using System.Runtime.InteropServices.JavaScript;
+
+namespace KFramework.MonoGame
+{
+    /// <summary>
+    /// 触摸输入的 JS 绑定。映射到 tsengine/src/input_touch.ts 的 "input_touch" 模块；
+    /// 编译产物 input_touch.js 由各示例 SyncJsEngine 复制到 wwwroot/jsengine。
+    /// 模块名必须与 main.ts 的 setModuleImports 一致。
+    /// </summary>
+    public static partial class JSBind_Input_Touch
+    {
+        /// <summary>把触摸点状态（坐标/压力/接触中）写入 state。</summary>
+        [JSImport("pollTouch", "input_touch")]
+        public static partial void PollTouch([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
+
+        /// <summary>解绑触摸事件监听。</summary>
+        [JSImport("unbindTouch", "input_touch")]
+        public static partial void UnbindTouch();
+    }
+}

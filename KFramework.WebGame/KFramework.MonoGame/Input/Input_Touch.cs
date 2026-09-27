@@ -88,7 +88,7 @@ namespace KFramework.MonoGame
     /// 自己 poll 自己的事件队列（<c>input_touch</c> 模块），维护触点表与 Began/Moved/Ended 阶段，
     /// 并识别手势：Tap / LongPress / Swipe / Pinch。所有容器复用，运行期零 GC。
     /// </summary>
-    public sealed class Input_Touch : IDisposable
+    public static class Input_Touch
     {
         // 事件类型（与 input_touch.ts 一致）
         private const int EvStart = 7;
@@ -140,7 +140,7 @@ namespace KFramework.MonoGame
             => BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(offset, 4));
 
         /// <summary>每帧调用一次：取回本模块的事件队列并更新状态。</summary>
-        public static void Poll()
+        public static void Update()
         {
             _elapsed = (Environment.TickCount64 - _startTicks) / 1000f;
 
@@ -149,7 +149,7 @@ namespace KFramework.MonoGame
             _ended.Clear();
             _frame.Clear();
 
-            JSBind_Input.PollTouch(_buffer);
+            JSBind_Input_Touch.PollTouch(_buffer);
 
             int count = ReadInt(0);
             if (count > 0)
@@ -313,26 +313,14 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>解绑 JS 侧监听。</summary>
-        public static void Unbind()
+        public static void Deactivate()
         {
-            JSBind_Input.UnbindTouch();
+            JSBind_Input_Touch.UnbindTouch();
             Reset();
         }
 
-        private bool _disposed;
-
-        /// <summary>供生命周期统一管理的单例实例（实现了 <see cref="IDisposable"/>）。</summary>
-        public static Input_Touch Instance { get; } = new Input_Touch();
-
-        /// <summary>
-        /// 释放底层资源：解绑 JS 侧触摸监听并清空状态。幂等，可安全重复调用。
-        /// </summary>
-        public void Dispose()
-        {
-            if (_disposed) return;
-            _disposed = true;
-            Unbind();
-        }
+        /// <summary>激活装置：触摸 JS 模块在脚本加载时即自动绑定监听，无需显式 Bind（空实现）。</summary>
+        public static void Activate() { }
 
         // ===== 查询 =====
 

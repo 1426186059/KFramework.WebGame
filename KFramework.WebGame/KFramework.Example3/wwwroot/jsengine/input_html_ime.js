@@ -11,11 +11,11 @@
 //   IME 组字中的回车（选词）通过 isComposing 在 Web 端直接吞掉，不会冒泡误触发确认。
 import { getCanvasElement } from './gl.js';
 // 引擎在 main.ts 解析出程序集导出树后，通过 init() 把该对象注入本模块。
-// 覆盖层需要在 JS 侧把原生编辑结果 / 控制键回调给 C# 的 [JSExport]（合并于 JSBind_InputHtmlIme）。
+// 覆盖层需要在 JS 侧把原生编辑结果 / 控制键回调给 C# 的 [JSExport]（合并于 JSBind_Input_IME）。
 // 注意：host 并非全局变量，必须显式注入，否则 host.exports... 会抛 ReferenceError，导致 input 事件回传失效。
 let exportRoot = null;
 export function init(root) { exportRoot = root; }
-// 在导出树里查找 JSBind_InputHtmlIme（[JSExport] 类型，含 OnDomValue / OnKeyDown）。
+// 在导出树里查找 JSBind_Input_IME（[JSExport] 类型，含 OnDomValue / OnKeyDown）。
 // 优先走合并后的直接路径，失败再递归兜底，避免不同 .NET 版本导出结构差异导致找不到。
 function findIme(node) {
     if (!node || typeof node !== 'object')
@@ -32,7 +32,7 @@ function findIme(node) {
 function ime() {
     if (!exportRoot)
         return null;
-    const direct = exportRoot?.KFramework?.MonoGame?.JSBind_InputHtmlIme;
+    const direct = exportRoot?.KFramework?.MonoGame?.JSBind_Input_IME;
     if (direct && typeof direct.OnDomValue === 'function' && typeof direct.OnKeyDown === 'function')
         return direct;
     return findIme(exportRoot);

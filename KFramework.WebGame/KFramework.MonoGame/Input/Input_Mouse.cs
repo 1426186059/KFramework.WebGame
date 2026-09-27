@@ -9,7 +9,7 @@ namespace KFramework.MonoGame
     /// 自己 poll 自己的事件队列（<c>input_mouse</c> 模块），维护位置 / 按键 / 滚轮增量。
     /// 查询返回的是值类型快照，可以安全跨帧比较。
     /// </summary>
-    public sealed class Input_Mouse : IDisposable
+    public static class Input_Mouse
     {
         // 事件类型（与 input_mouse.ts 一致）
         private const int EvMouseDown = 3;
@@ -44,7 +44,7 @@ namespace KFramework.MonoGame
             => BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(offset, 4));
 
         /// <summary>每帧调用一次：取回本模块的事件队列并更新状态。</summary>
-        public static void Poll()
+        public static void Update()
         {
             Array.Clear(_pressed);
             Array.Clear(_released);
@@ -53,7 +53,7 @@ namespace KFramework.MonoGame
             _prevX = _x;
             _prevY = _y;
 
-            JSBind_Input.PollMouse(_buffer);
+            JSBind_Input_Mouse.PollMouse(_buffer);
 
             int count = ReadInt(0);
             if (count <= 0) return;
@@ -121,34 +121,22 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>固定步长下，一个渲染帧可能跑多个 Update 步；在每个步结束后清空按下/抬起边沿，
-        /// 确保一次点击只被识别一次（否则边沿会在多个步里重复触发）。下一帧 <see cref="Poll"/> 时边沿重新产生。</summary>
-        public static void ConsumeEdges()
+        /// 确保一次点击只被识别一次（否则边沿会在多个步里重复触发）。下一帧 <see cref="Update"/> 时边沿重新产生。</summary>
+        public static void LateUpdate()
         {
             Array.Clear(_pressed);
             Array.Clear(_released);
         }
 
         /// <summary>解绑 JS 侧监听。</summary>
-        public static void Unbind()
+        public static void Deactivate()
         {
-            JSBind_Input.UnbindMouse();
+            JSBind_Input_Mouse.UnbindMouse();
             Reset();
         }
 
-        private bool _disposed;
-
-        /// <summary>供生命周期统一管理的单例实例（实现了 <see cref="IDisposable"/>）。</summary>
-        public static Input_Mouse Instance { get; } = new Input_Mouse();
-
-        /// <summary>
-        /// 释放底层资源：解绑 JS 侧鼠标监听并清空状态。幂等，可安全重复调用。
-        /// </summary>
-        public void Dispose()
-        {
-            if (_disposed) return;
-            _disposed = true;
-            Unbind();
-        }
+        /// <summary>激活装置：鼠标 JS 模块在脚本加载时即自动绑定监听，无需显式 Bind（空实现）。</summary>
+        public static void Activate() { }
 
         // ===== 查询 =====
 
