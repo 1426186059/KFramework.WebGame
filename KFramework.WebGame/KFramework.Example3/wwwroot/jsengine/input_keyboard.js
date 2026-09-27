@@ -37,7 +37,6 @@ const SIZE = 1 + MAX_EVENTS * STRIDE;
 const EvBlur = 10; // 与 C# Input_KeyBoard.EvBlur 一致：失焦事件
 let m_Canvas = null;
 let m_CanvasId = null;
-let m_RefocusHandler = null;
 // 失焦标记：canvas 失去焦点时置 true，下一次 pollKeyboard 写入一条 Blur 事件（flag=EvBlur），
 // 让 C# 侧清空键盘状态，避免“按住键在窗外松手 → 卡住”。
 let m_Blurred = false;
@@ -54,6 +53,10 @@ function Process_KeyUp(e) {
 function Process_Blur() {
     m_Blurred = true;
 }
+//失焦后，点击屏幕恢复焦点
+function Process_Pointerdown() {
+    m_Canvas?.focus();
+}
 // 键盘监听绑在 canvas 上（依赖画布获焦才会收到 key 事件）。
 // <canvas> 默认不可获焦，所以绑监听前必须先 focusCanvas 让它可获焦并聚焦；同时挂一个 pointerdown 重新聚焦，
 // 这样切走窗口 / 在输入框打字后点回游戏，键盘依然有效。IME 输入框获焦时不会触发 canvas 的 key 事件，不会误报游戏键。
@@ -65,8 +68,7 @@ export function bindKeyboard(canvasId) {
         m_Canvas.addEventListener('keydown', Process_KeyDown);
         m_Canvas.addEventListener('keyup', Process_KeyUp);
         m_Canvas.addEventListener('blur', Process_Blur);
-        m_RefocusHandler = () => { m_Canvas?.focus(); };
-        m_Canvas.addEventListener('pointerdown', m_RefocusHandler);
+        m_Canvas.addEventListener('pointerdown', Process_Pointerdown);
     }
     else {
         // 找不到画布（极少见）才回落到 window，保证至少有输入。
@@ -80,8 +82,7 @@ export function unbindKeyboard() {
         m_Canvas.removeEventListener('keydown', Process_KeyDown);
         m_Canvas.removeEventListener('keyup', Process_KeyUp);
         m_Canvas.removeEventListener('blur', Process_Blur);
-        if (m_RefocusHandler)
-            m_Canvas.removeEventListener('pointerdown', m_RefocusHandler);
+        m_Canvas.removeEventListener('pointerdown', Process_Pointerdown);
         focusCanvas(m_CanvasId, false);
     }
     else {

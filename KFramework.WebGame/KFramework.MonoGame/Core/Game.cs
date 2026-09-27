@@ -12,16 +12,17 @@ namespace KFramework.MonoGame
     /// </summary>
     public abstract class Game : IDisposable
     {
-        /// <summary>单帧最大推进时间，防止切后台回来时一次性模拟过多。</summary>
-        private const double MaxElapsedSeconds = 0.25;
-
-        /// <summary>固定步长模式下单帧最多模拟次数。</summary>
-        private const int MaxStepsPerFrame = 5;
+        /// <summary>单帧最大推进时间，防止切后台回来时一次性模拟过多（大 dt 截断，避免穿模 / 螺旋死亡）。</summary>
+        private const double MaxElapsedSeconds = 0.333;
 
         private readonly TaskCompletionSource _exitSignal = new(TaskCreationOptions.RunContinuationsAsynchronously);
         private double _lastTimestamp = -1;
-        private double _accumulator;
         private TimeSpan _totalGameTime;
+
+        /// <summary>主循环限帧：每 _frameInterval 个 rAF 才真正推进一帧（C# 层实现，供 captureFramerate 使用）。</summary>
+        private int _frameInterval = 1;
+        private int _frameSkipCounter;
+
         private bool _initialized;
         private bool _frameFaulted;
         private bool _disposed;
@@ -40,9 +41,18 @@ namespace KFramework.MonoGame
 
         public GameComponentCollection Components { get; }
 
-        /// <summary>是否使用固定时间步长（默认 60Hz 逻辑帧，渲染仍是每帧一次）。</summary>
+        /// <summary>
+        /// 【已废弃】固定时间步长。Web 上主循环由 requestAnimationFrame 锁帧（频率即刷新率），
+        /// 固定步长既不再承担“限帧”（那是 rAF 的活），也不再提供“稳定 dt”——
+        /// 引擎现在始终按可变 <see cref="GameTime.ElapsedGameTime"/> 缩放 dt 运行。
+        /// 本属性仅保留作兼容，设置无效。
+        /// 需要“固定步长逻辑”（如物理）请用引擎提供的 <see cref="FixedUpdteFunc"/>。
+        /// </summary>
+        [Obsolete("Web 上固定步长多余：主循环由 requestAnimationFrame 锁帧。需要固定步长逻辑请用 FixedUpdteFunc。")]
         public bool IsFixedTimeStep { get; set; } = true;
 
+        /// <summary>【已废弃】见 <see cref="IsFixedTimeStep"/>。引擎忽略此值，始终按可变 dt 运行。</summary>
+        [Obsolete("Web 上固定步长多余：引擎忽略 TargetElapsedTime，始终按可变 dt 运行。")]
         public TimeSpan TargetElapsedTime { get; set; } = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 60);
 
         /// <summary>每帧绘制前的清屏色。</summary>
@@ -101,6 +111,16 @@ namespace KFramework.MonoGame
         /// <summary>结束主循环。</summary>
         public void Exit() => _exitSignal.TrySetResult();
 
+        /// <summary>
+        /// 设置主循环限帧（C# 层实现）：每 <paramref name="framesPerPresent"/> 个 requestAnimationFrame 才真正推进一帧。
+        /// 不再下发给 TS——rAF 由 TS 驱动，但“是否跳过本帧”的判定在这里做（见 <see cref="TickFrame"/>），
+        /// 供 KTime.ApplyCaptureFramerate 等 C# 侧需求使用。
+        /// 注意：与 PresentationInterval 的限帧（GraphicsDeviceManager → TS 的 frameInterval）是两条独立路径，
+        /// 通常不同时设；逻辑仍按可变 dt 走，这与已废弃的 IsFixedTimeStep 不同。
+        /// </summary>
+        public void SetFrameInterval(int framesPerPresent)
+            => _frameInterval = Math.Max(1, framesPerPresent);
+
         protected virtual void Initialize() { }
 
         /// <summary>同步加载（无异步需求时重写它即可）。</summary>
@@ -126,6 +146,11 @@ namespace KFramework.MonoGame
         {
             if (_disposed || !_initialized || _frameFaulted) return;
 
+            // C# 层限帧（captureFramerate 等）：每 _frameInterval 个 rAF 才真正推进一帧。
+            // requestAnimationFrame 本身在 TS 层（浏览器 API），TS 仍按 PresentationInterval 做“每 N 个 rAF 画一帧”
+            // 的标准限帧；这里的跳帧只服务于 capture 这类 C# 侧需求，不依赖 TS。默认 _frameInterval=1 即不跳帧。
+            if (_frameSkipCounter++ % _frameInterval != 0) return;
+
             try
             {
                 if (GraphicsDevice.SyncCanvasSize()) Window.RaiseSizeChanged();
@@ -134,59 +159,24 @@ namespace KFramework.MonoGame
                 _lastTimestamp = timestampMs;
                 if (elapsed < 0d) elapsed = 0d;
 
-                double target = TargetElapsedTime.TotalSeconds;
-                if (target <= 0d) target = 1d / 60d;
+                // Web 上始终按可变 dt 运行：requestAnimationFrame 已把帧率锁在刷新率，
+                // 固定步长（IsFixedTimeStep）在 Web 上既多余也会让高刷屏被强行节流到逻辑率，故废弃。
+                // dt 直接用两次 rAF 的真实间隔（被 MaxElapsedSeconds 截断，避免切后台回来时一次性模拟过多）。
+                var span = TimeSpan.FromSeconds(Math.Min(elapsed, MaxElapsedSeconds));
+                _totalGameTime += span;
+                var frameTime = new GameTime(_totalGameTime, span);
 
+                //开始更新
                 Input.Update();
-                if (IsFixedTimeStep)
-                {
-                    _accumulator += elapsed;
+                Update(frameTime);
+                Components.Update(frameTime);
+                Input.LateUpdate();
 
-                    // 螺旋死亡保护：对齐 MonoGame，用 clamp 限制上限，而不是清零丢弃时间。
-                    // 官方 Game.cs:553-554
-                    //   if (_accumulatedElapsedTime > _maxElapsedTime) _accumulatedElapsedTime = _maxElapsedTime;
-                    if (_accumulator > MaxElapsedSeconds) _accumulator = MaxElapsedSeconds;
+                //开始渲染
+                GraphicsDevice.Clear(ClearColor);
+                Draw(frameTime);
+                Components.Draw(frameTime);
 
-                    int steps = 0;
-                    while (_accumulator >= target && steps < MaxStepsPerFrame)
-                    {
-                        _totalGameTime += TimeSpan.FromSeconds(target);
-                        var stepTime = new GameTime(_totalGameTime, TimeSpan.FromSeconds(target));
-                        Update(stepTime);
-                        Components.Update(stepTime);
-                        Input.LateUpdate();
-                        _accumulator -= target;
-                        steps++;
-                    }
-
-                    // 剩下的 accumulator 留到下一帧继续补，不要清零（旧实现清零会丢弃时间）。
-
-                    // 对齐 MonoGame「每次 Tick 至少 Update 一次」的保证（官方注释 Game.cs:505-512）。
-                    // 官方在 Game.cs:537-550 用 Sleep + goto RetryTick 等待到时间够为止；
-                    // 浏览器不能阻塞 rAF 线程，故改成「逻辑没推进就跳过本帧渲染」，
-                    // 效果同样是渲染与逻辑同频，消除高刷屏上"一帧不动、一帧走两格"造成的跳动。
-                    if (steps == 0) return;
-
-                    // Draw 使用逻辑时间：对齐官方 Game.cs:592
-                    //   _gameTime.ElapsedGameTime = TimeSpan.FromTicks(TargetElapsedTime.Ticks * stepCount);
-                    var drawElapsed = TimeSpan.FromSeconds(target * steps);
-                    GraphicsDevice.Clear(ClearColor);
-                    var drawTime = new GameTime(_totalGameTime, drawElapsed);
-                    Draw(drawTime);
-                    Components.Draw(drawTime);
-                }
-                else
-                {
-                    var span = TimeSpan.FromSeconds(Math.Min(elapsed, MaxElapsedSeconds));
-                    _totalGameTime += span;
-                    var frameTime = new GameTime(_totalGameTime, span);
-                    Update(frameTime);
-                    Components.Update(frameTime);
-                    Input.LateUpdate();
-                    GraphicsDevice.Clear(ClearColor);
-                    Draw(frameTime);
-                    Components.Draw(frameTime);
-                }
             }
             catch (Exception ex)
             {

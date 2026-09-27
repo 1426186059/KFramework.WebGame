@@ -112,8 +112,8 @@ namespace KFramework.MonoGame
         /// <summary>解绑 JS 侧监听，并置 <see cref="Active"/> 为 false（关闭本装置采集）。</summary>
         public static void Deactivate()
         {
-            JSBind_Input_Keyboard.UnbindKeyboard();
             Reset();
+            JSBind_Input_Keyboard.UnbindKeyboard();
             Active = false;
         }
 

@@ -36,7 +36,7 @@ namespace KFramework.MonoGameExtend
         /// <summary>平滑后的 deltaTime（对最近若干帧做加权平均，避免单帧抖动）。</summary>
         public static float smoothDeltaTime;
 
-        /// <summary>逻辑帧计数（每个 Update 步 +1；固定步长下同一渲染帧可能走多步）。</summary>
+        /// <summary>逻辑帧计数（每渲染帧 Update 一次，+1；可变步长下与渲染帧基本一致）。</summary>
         public static int frameCount;
 
         /// <summary>已渲染的帧数（每次 Draw +1，统计口径见 <see cref="StepRenderFrame"/>）。</summary>
@@ -46,9 +46,9 @@ namespace KFramework.MonoGameExtend
         /// 真实帧率（每秒渲染帧数）：用墙钟时间（Stopwatch）统计，不受固定步长 / timeScale 影响。
         /// </summary>
         /// <remarks>
-        /// 别再用 <c>1 / deltaTime</c> 算帧率 —— <see cref="deltaTime"/> 来自
-        /// <see cref="GameTime.ElapsedGameTime"/>，在固定时间步长（<see cref="Game.IsFixedTimeStep"/>）下
-        /// 恒等于 <see cref="Game.TargetElapsedTime"/>（默认 1/60），算出来永远是 60。
+        /// 别用 <c>1 / deltaTime</c> 算实时帧率：<see cref="deltaTime"/> 是受 timeScale、maximumDeltaTime
+        /// 截断后的“逻辑 dt”，且 Web 上本就是可变 dt（固定步长已废弃），用它反推不出真实渲染帧率。
+        /// 要看玩家实际看到的帧率请用 <see cref="realFps"/>（墙钟统计）。
         /// </remarks>
         public static float realFps;
 
@@ -160,13 +160,18 @@ namespace KFramework.MonoGameExtend
             inFixedTimeStep = false;
         }
 
-        /// <summary>按 captureFramerate 应用固定帧率到 Game（仅 captureFramerate &gt; 0 时生效）。</summary>
+        /// <summary>
+        /// 按 captureFramerate 强制固定帧率（仅 captureFramerate &gt; 0 时生效）。
+        /// Web 上无 VSync / 固定步长开关，强制帧率只能限制渲染帧率：
+        /// 按 60Hz 名义刷新率把 captureFramerate 折算成“每 N 个 rAF 画一帧”（JS 端 frameInterval 上限 8）。
+        /// 非 60Hz 显示屏上结果是近似值（Web 无法可靠查询刷新率，属固有局限）。
+        /// </summary>
         public static void ApplyCaptureFramerate(Game game)
         {
             if (captureFramerate > 0)
             {
-                game.IsFixedTimeStep = true;
-                game.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / captureFramerate);
+                int frameInterval = Math.Max(1, Math.Min(8, (int)Math.Round(60.0 / captureFramerate)));
+                game.SetFrameInterval(frameInterval);
             }
         }
 

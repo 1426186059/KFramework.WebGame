@@ -103,7 +103,7 @@ namespace KFramework.Example3
         private float previousBottom;
         private float previousTop;
         // ==================== Movement Constants ====================
-        private const float MoveAcceleration = 13000.0f;
+        private const float MoveAcceleration = 6000.0f;
         private const float MaxMoveSpeed = 1750.0f;
         private const float GroundDragFactor = 0.48f;
         private const float AirDragFactor = 0.58f;
@@ -431,7 +431,7 @@ namespace KFramework.Example3
             {
                 direction = FaceDirection.Left;
             }
-            else if (Velocity.X > 0)
+            else
             {
                 direction = FaceDirection.Right;
             }
@@ -566,18 +566,20 @@ namespace KFramework.Example3
             float fixedTime = Math.Min(fixedTime1, fixedTime2);
             while (spendTime > 0)
             {
+                var dt = Math.Min(spendTime, fixedTime);
                 spendTime -= fixedTime;
 
                 Vector2 previousPosition = WorldPosition;
-                WorldPosition += Velocity * fixedTime;
+                WorldPosition += Velocity * dt;
                 WorldPosition = new Vector2((float)Math.Round(WorldPosition.X), (float)Math.Round(WorldPosition.Y));
 
                 HandleCollisions();
                 
-                if (WorldPosition.X == previousPosition.X)
-                {
-                    Velocity.X = 0;
-                }
+                //if (WorldPosition.X == previousPosition.X)
+                //{
+                //    PrintTool.Log("WorldPosition.X == previousPosition.X: " + dt);
+                //    Velocity.X = 0;
+                //}
 
                 if (WorldPosition.Y == previousPosition.Y)
                 {
