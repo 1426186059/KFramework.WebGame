@@ -137,7 +137,8 @@ export function pollMouse(target: MemoryView_Span | Uint8Array): void {
         scratch[off] = EvMousePos;
         view.setInt16(off + 1, posX, true);
         view.setInt16(off + 3, posY, true);
-        off += EvMousePos_ByteCount; nEvents++;
+        off += EvMousePos_ByteCount; 
+        nEvents++;
         moved = false;
     }
     
