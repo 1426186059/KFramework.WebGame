@@ -12,16 +12,21 @@ namespace KFramework.MonoGame
     public static class Input_Mouse
     {
         // 事件类型（与 input_mouse.ts 一致）
+        private const int EvMousePos = 5;
         private const int EvMouseDown = 3;
         private const int EvMouseUp = 4;
-        private const int EvMouseMove = 5;
         private const int EvWheel = 6;
 
-        private const int Stride = 20;           // 每条 5 个 i32
         private const int MaxEvents = 64;
         private const int MaxButtons = 8;
 
-        private static readonly byte[] _buffer = new byte[4 + MaxEvents * Stride];
+        // 紧凑协议（与 input_mouse.ts 对齐）：全事件驱动、变长记录。
+        //   [0]        nEvents(1B)
+        //   [1..]      事件流：EvMousePos=5B(type + x:short + y:short)；其余=2B(type + payload)
+        private const int CountSize = 1;
+        private const int PosRec = 5;
+        private const int EvRec = 2;
+        private static readonly byte[] _buffer = new byte[CountSize + PosRec + MaxEvents * EvRec];
 
         private static int _x, _y;
         private static int _prevX, _prevY;
@@ -43,9 +48,6 @@ namespace KFramework.MonoGame
         /// <summary>滚轮滚动（本帧增量）</summary>
         public static event Action<int> ScrollWheel;
 
-        private static int ReadInt(int offset)
-            => BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(offset, 4));
-
         /// <summary>每帧调用一次：取回本模块的事件队列并更新状态。</summary>
         public static void Update()
         {
@@ -59,26 +61,36 @@ namespace KFramework.MonoGame
 
             JSBind_Input_Mouse.PollMouse(_buffer);
 
-            int count = ReadInt(0);
-            if (count <= 0) return;
+            // 事件流：按类型变长跳步（EvMousePos=5B，其余=2B）
+            int count = _buffer[0];
             if (count > MaxEvents) count = MaxEvents;
 
+            int off = CountSize;
             for (int i = 0; i < count; i++)
             {
-                int off = 4 + i * Stride;
-                int type = ReadInt(off);
-                int button = ReadInt(off + 4);
-                int x = ReadInt(off + 8);
-                int y = ReadInt(off + 12);
-                int wheel = ReadInt(off + 16);
-
-                _x = x; _y = y;
-
+                int type = _buffer[off];
                 switch (type)
                 {
-                    case EvMouseDown: SetButton(button, true); break;
-                    case EvMouseUp: SetButton(button, false); break;
-                    case EvWheel: _wheelDelta += wheel; break;
+                    case EvMousePos:
+                        _x = BinaryPrimitives.ReadInt16LittleEndian(_buffer.AsSpan(off + 1, 2));
+                        _y = BinaryPrimitives.ReadInt16LittleEndian(_buffer.AsSpan(off + 3, 2));
+                        off += PosRec;
+                        break;
+                    case EvMouseDown:
+                        SetButton(_buffer[off + 1], true);
+                        off += EvRec;
+                        break;
+                    case EvMouseUp:
+                        SetButton(_buffer[off + 1], false);
+                        off += EvRec;
+                        break;
+                    case EvWheel:
+                        _wheelDelta += (sbyte)_buffer[off + 1];   // 按 sbyte 解读累计增量
+                        off += EvRec;
+                        break;
+                    default:
+                        off += EvRec;   // 未知类型按最小记录跳过，避免越界死循环
+                        break;
                 }
             }
 

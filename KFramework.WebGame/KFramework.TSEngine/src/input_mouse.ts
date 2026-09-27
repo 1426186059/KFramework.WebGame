@@ -1,24 +1,28 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Mouse 经 [JSImport(module: "input_mouse")] 调用；产物 input_mouse.js 由 SyncJsEngine 复制。
 // 鼠标模块：只注册监听 + 维护"当前状态/变化"。状态与边沿在 C# 侧（Input_Mouse）实现。
 //
-// 与 input_keyboard 一致，采用"字典 + 变化上报"模型（不再把每个 DOM 事件 push 进队列）：
-//   - 按键：Map<button, flag> 记录自上次 poll 以来的最新变化（按下=1 / 抬起=2），按下+抬起合并为抬起；
-//   - 位置：只保留最新坐标（posX/posY），移动事件每 poll 最多报一次；
-//   - 滚轮：累加增量（wheelDelta），poll 时上报一次后清零。
-// 线协议完全不变（与 Input_Mouse.cs 对齐）：count(4B) + N×5×i32，每条为 (type, button, x, y, wheel)。
+// 紧凑二进制协议（与 Input_Mouse.cs 严格对齐）：能 byte 用 byte、能 short 用 short，全事件驱动。
+//  偏移 0      nEvents   (byte)   事件条数
+//  偏移 1 起   变长事件流（事件类型决定自身长度）：
+//    EvMousePos  =5   5 字节：type(1) + posX(short) + posY(short)   仅鼠标移动时发一次（最新位置）
+//    EvMouseDown =3   2 字节：type(1) + button(1)
+//    EvMouseUp   =4   2 字节：type(1) + button(1)
+//    EvWheel     =6   2 字节：type(1) + wheelDelta(sbyte, 范围 ±127)
 //
-// 事件类型：3=MouseDown  4=MouseUp  5=MouseMove  6=Wheel
+// 玩家没收到移动、没按键、没滚轮 → nEvents=0，什么都不填；位置由 C# 维持上一帧状态。
 
 import { getCanvasElement } from './gl.js';
 import { canvasPoint, copyOut } from './input_common.js';
 
 const MAX_EVENTS = 64;
-const STRIDE = 20;
-const SIZE = 4 + MAX_EVENTS * STRIDE;
+const COUNT = 1;          // nEvents 字节
+const POS_REC = 5;        // EvMousePos：type + x(short) + y(short)
+const EV_REC = 2;         // 其余事件：type + payload
+const SIZE = COUNT + POS_REC + MAX_EVENTS * EV_REC;
 
+const EvMousePos = 5;
 const EvMouseDown = 3;
 const EvMouseUp = 4;
-const EvMouseMove = 5;
 const EvWheel = 6;
 
 interface Registration {
@@ -30,13 +34,11 @@ interface Registration {
 const registrations: Registration[] = [];
 let bound = false;
 
-// ===== 状态（字典 + 当前值）=====
-// 按键变化：button → 1(按下) / 2(抬起)，仅记上次 poll 以来的最新值（按下+抬起合并为抬起，与键盘同语义）。
-const buttons = new Map<number, number>();
+const buttons = new Map<number, number>();   // button → 1(按下) / 2(抬起)，上次 poll 以来最新值
 let posX = 0;
 let posY = 0;
-let moved = false;        // 自上次 poll 以来是否发生过移动
-let wheelDelta = 0;      // 自上次 poll 以来累计的滚轮增量
+let moved = false;                            // 上次 poll 以来是否发生过移动
+let wheelDelta = 0;                            // 上次 poll 以来累计滚轮增量
 
 function on(target: EventTarget, name: string, handler: EventListener,
             options?: AddEventListenerOptions): void {
@@ -111,43 +113,47 @@ const view = new DataView(scratch.buffer);
 export function pollMouse(target: MemoryView_Span | Uint8Array): void {
     if (!bound) bindMouse();
 
-    let off = 4;
+    let off = COUNT;
     let nEvents = 0;
-
-    // 1) 按键变化（字典）：每项一次事件，携带最新坐标。
-    for (const [button, flag] of buttons) {
-        if (off + STRIDE > SIZE) break;
-        view.setInt32(off, flag === 1 ? EvMouseDown : EvMouseUp, true);
-        view.setInt32(off + 4, button, true);
-        view.setInt32(off + 8, posX, true);
-        view.setInt32(off + 12, posY, true);
-        view.setInt32(off + 16, 0, true);
-        off += STRIDE; nEvents++;
-    }
-    buttons.clear();
-
-    // 2) 移动：仅报最新位置一次（无移动则不发，C# 侧位置保持不变）。
-    if (moved) {
-        view.setInt32(off, EvMouseMove, true);
-        view.setInt32(off + 4, 0, true);
-        view.setInt32(off + 8, posX, true);
-        view.setInt32(off + 12, posY, true);
-        view.setInt32(off + 16, 0, true);
-        off += STRIDE; nEvents++;
+    let bSetPos = false
+    if(moved)
+    {
+        bSetPos = true;
         moved = false;
     }
 
-    // 3) 滚轮：累加增量上报一次后清零。
-    if (wheelDelta !== 0) {
-        view.setInt32(off, EvWheel, true);
-        view.setInt32(off + 4, 0, true);
-        view.setInt32(off + 8, posX, true);
-        view.setInt32(off + 12, posY, true);
-        view.setInt32(off + 16, wheelDelta, true);
-        off += STRIDE; nEvents++;
+    // 1) 按键变化：每项 2 字节（type, button）
+    for (const [button, flag] of buttons) {
+        if (off + EV_REC > SIZE) break;
+        scratch[off] = flag === 1 ? EvMouseDown : EvMouseUp;
+        scratch[off + 1] = button & 0xff;
+        off += EV_REC; nEvents++;
+        bSetPos = true;
+    }
+    buttons.clear();
+
+    // 2) 滚轮：累计增量上报一次；夹紧到 sbyte 范围再按 byte 写入，C# 侧按 sbyte 解读
+    if (wheelDelta !== 0 && off + EV_REC <= SIZE) {
+        let d = wheelDelta;
+        if (d > 127) d = 127; else if (d < -128) d = -128;
+        scratch[off] = EvWheel;
+        scratch[off + 1] = d;        // Uint8Array 自动按 0xff 取模，-1 → 255，C# 读回 -1
+        off += EV_REC; nEvents++;
         wheelDelta = 0;
+        bSetPos = true;
+    }
+    
+    //只要 鼠标移动/点击/滚轮转动 都要设置位置
+    if (bSetPos) 
+    {
+        scratch[off] = EvMousePos;
+        view.setInt16(off + 1, posX, true);
+        view.setInt16(off + 3, posY, true);
+        off += POS_REC; nEvents++;
+        moved = false;
     }
 
-    view.setInt32(0, nEvents, true);
-    target.set(scratch);
+    // 玩家无任何输入 → nEvents=0，scratch 只有一个 0 字节，什么都不填
+    scratch[0] = nEvents & 0xff;
+    copyOut(target, scratch);
 }
