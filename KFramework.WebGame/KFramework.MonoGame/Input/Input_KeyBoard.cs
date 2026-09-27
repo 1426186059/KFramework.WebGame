@@ -41,12 +41,11 @@ namespace KFramework.MonoGame
             if (!Active) return;
             JSBind_Input_Keyboard.PollKeyboard(_buffer);
 
-            // 不要把电平清零重建：主循环帧率快于 JS 键盘事件分发频率时，某次 poll 期间可能
-            // 没有该键的新事件，若清零会把“仍按住”的键误判为抬起（闪烁 / 误触 KeyUp）。
-            // 改为先把上一帧的电平带下来作基准，再只在本帧事件上做增量更新；
-            // 这样按住中的键在没有任何新事件的帧里也保持为按下。
+            //在LateUpdate里已经拷贝过了,这里不再拷贝
             //_NewKeyState.AsSpan().CopyTo(_LastKeyState);
+
             int count = ReadByte(0);
+            bool sawBlur = false;
             if (count > 0)
             {
                 if (count > MaxEvents)
@@ -56,13 +55,22 @@ namespace KFramework.MonoGame
                 for (int i = 0; i < count; i++)
                 {
                     int off = 1 + i * Stride;
-                    byte keyCode = ReadByte(off);
                     byte flag = ReadByte(off + 1);
-                    _NewKeyState[keyCode] = flag == EvKeyDown;
+                    if (flag == EvBlur)
+                    {
+                        sawBlur = true;
+                        break;
+                    }
+                    _NewKeyState[ReadByte(off)] = flag == EvKeyDown;
                 }
             }
 
-
+            // 失焦：清空全部键盘状态（注释见 Reset），避免按住中的键在窗外松手后“卡住”。
+            if (sawBlur)
+            {
+                Reset();
+                return;
+            }
 
             for(int i = 0; i < byte.MaxValue; i++)
             {

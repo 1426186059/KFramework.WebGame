@@ -34,9 +34,13 @@ function codeToKeys(code) {
 const MAX_EVENTS = 32;
 const STRIDE = 2;
 const SIZE = 1 + MAX_EVENTS * STRIDE;
+const EvBlur = 10; // 与 C# Input_KeyBoard.EvBlur 一致：失焦事件
 let m_Canvas = null;
 let m_CanvasId = null;
 let m_RefocusHandler = null;
+// 失焦标记：canvas 失去焦点时置 true，下一次 pollKeyboard 写入一条 Blur 事件（flag=EvBlur），
+// 让 C# 侧清空键盘状态，避免“按住键在窗外松手 → 卡住”。
+let m_Blurred = false;
 const pending = new Map();
 const scratch = new Uint8Array(SIZE);
 function Process_KeyDown(e) {
@@ -44,6 +48,11 @@ function Process_KeyDown(e) {
 }
 function Process_KeyUp(e) {
     pending.set(e.code, 2);
+}
+// 失焦：仅置标记。真正清空延到 pollKeyboard 随 Blur 事件发往 C#，保证与一次 poll 时序对齐，
+// 且能顺带丢弃失焦前残留的“按下”事件（否则会卡成一直按住）。
+function Process_Blur() {
+    m_Blurred = true;
 }
 // 键盘监听绑在 canvas 上（依赖画布获焦才会收到 key 事件）。
 // <canvas> 默认不可获焦，所以绑监听前必须先 focusCanvas 让它可获焦并聚焦；同时挂一个 pointerdown 重新聚焦，
@@ -55,6 +64,7 @@ export function bindKeyboard(canvasId) {
         focusCanvas(m_CanvasId);
         m_Canvas.addEventListener('keydown', Process_KeyDown);
         m_Canvas.addEventListener('keyup', Process_KeyUp);
+        m_Canvas.addEventListener('blur', Process_Blur);
         m_RefocusHandler = () => { m_Canvas?.focus(); };
         m_Canvas.addEventListener('pointerdown', m_RefocusHandler);
     }
@@ -62,12 +72,14 @@ export function bindKeyboard(canvasId) {
         // 找不到画布（极少见）才回落到 window，保证至少有输入。
         window.addEventListener('keydown', Process_KeyDown);
         window.addEventListener('keyup', Process_KeyUp);
+        window.addEventListener('blur', Process_Blur);
     }
 }
 export function unbindKeyboard() {
     if (m_Canvas) {
         m_Canvas.removeEventListener('keydown', Process_KeyDown);
         m_Canvas.removeEventListener('keyup', Process_KeyUp);
+        m_Canvas.removeEventListener('blur', Process_Blur);
         if (m_RefocusHandler)
             m_Canvas.removeEventListener('pointerdown', m_RefocusHandler);
         focusCanvas(m_CanvasId, false);
@@ -75,20 +87,39 @@ export function unbindKeyboard() {
     else {
         window.removeEventListener('keydown', Process_KeyDown);
         window.removeEventListener('keyup', Process_KeyUp);
+        window.removeEventListener('blur', Process_Blur);
     }
 }
 export function pollKeyboard(target) {
     // 先写入真正的 Uint8Array（scratch），再经由 MemoryView.set 写回 C# 缓冲。
     // 注意：MemoryView_Span 不是 Uint8Array、没有 [] 索引器，不能直接 target[i]=x。
-    let nByteCount = 0;
-    scratch[nByteCount++] = pending.size;
+    //
+    // 布局：scratch[0] = 事件条数；其后每 2 字节一对 (keyCode, flag)，flag 1=按下 / 2=抬起 / 10=失焦。
+    // 失焦时先写入一条 Blur 事件，并丢弃失焦前残留的“按下”事件，避免“卡键”。
+
+    let off = 1;
+    let nEvents = 0;
+
+    if (m_Blurred) {
+        if (off + STRIDE <= SIZE) {
+            scratch[off++] = 0;      // keyCode 对 Blur 无意义
+            scratch[off++] = EvBlur; // 10
+            nEvents++;
+        }
+        m_Blurred = false;
+        pending.clear();
+    }
+
     for (const [key, flag] of pending) {
-        if (nByteCount >= SIZE) {
+        if (off + STRIDE > SIZE) {
             break;
         }
-        scratch[nByteCount++] = codeToKeys(key);
-        scratch[nByteCount++] = flag;
+        scratch[off++] = codeToKeys(key);
+        scratch[off++] = flag;
+        nEvents++;
     }
     pending.clear();
-    target.set(scratch.subarray(0, nByteCount));
+
+    scratch[0] = nEvents;
+    target.set(scratch.subarray(0, off));
 }
