@@ -43,7 +43,10 @@ namespace KFramework.MonoGame
 
             int count = ReadByte(0);
             if (count <= 0) return;
-            if (count > MaxEvents) count = MaxEvents;
+            if (count > MaxEvents)
+            {
+                count = MaxEvents;
+            }
 
             _NewKeyState.AsSpan().Clear();
             for (int i = 0; i < count; i++)
@@ -54,7 +57,7 @@ namespace KFramework.MonoGame
                 _NewKeyState[keyCode] = flag == EvKeyDown;
             }
 
-            for(int i = 0; i < _LastKeyState.Length; i++)
+            for(int i = 0; i < byte.MaxValue; i++)
             {
                 if (_LastKeyState[i] != _NewKeyState[i])
                 {
