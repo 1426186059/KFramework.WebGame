@@ -1,60 +1,64 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
-// 键盘模块：只注册监听 + 事件入队。
-// 键码映射、按下/抬起状态、边沿全在 C# 侧（KFramework.MonoGame.Input_KeyBoard）实现。
-//
-// 事件格式：每条 2 个 i32（type, keyCode）= 8 字节。
-// type: 1=KeyDown  2=KeyUp  10=Blur（失焦，C# 据此清空状态）
-import { copyOut } from './input_common.js';
+import { copyOut } from './input_common';
+import { getCanvas } from './html_canvas';
+const CODE_TO_INDEX = {
+    'KeyW': 0,
+    'KeyA': 1,
+    'KeyS': 2,
+    'KeyD': 3,
+    'ArrowUp': 4, 'ArrowDown': 5, 'ArrowLeft': 6, 'ArrowRight': 7,
+    'Space': 8, 'ShiftLeft': 9, 'Escape': 10,
+    // ... 按需扩充
+};
 const MAX_EVENTS = 64;
-const STRIDE = 8;
-const SIZE = 4 + MAX_EVENTS * STRIDE;
-const queue = new Int32Array(MAX_EVENTS * 2);
-let count = 0;
-const registrations = [];
-let bound = false;
-function on(target, name, handler) {
-    target.addEventListener(name, handler);
-    registrations.push({ target, name, handler });
-}
-function push(type, keyCode) {
-    if (count >= MAX_EVENTS)
-        return; // 队列满则丢弃
-    const o = count * 2;
-    queue[o] = type;
-    queue[o + 1] = keyCode;
-    count++;
-}
-export function bindKeyboard() {
-    if (bound)
-        return;
-    on(window, 'keydown', (e) => {
-        const ev = e;
-        push(1, ev.keyCode);
-    });
-    on(window, 'keyup', (e) => push(2, e.keyCode));
-    on(window, 'blur', () => push(10, 0));
-    bound = true;
-}
-/** 解绑键盘监听并清空队列（切场景 / 销毁时调用）。 */
-export function unbindKeyboard() {
-    for (const r of registrations)
-        r.target.removeEventListener(r.name, r.handler);
-    registrations.length = 0;
-    count = 0;
-    bound = false;
-}
+const STRIDE = 2;
+const SIZE = 1 + MAX_EVENTS * STRIDE;
+let m_Canvas = null;
+const pending = new Map();
 const scratch = new Uint8Array(SIZE);
-const view = new DataView(scratch.buffer);
-export function pollKeyboard(target) {
-    if (!bound)
-        bindKeyboard();
-    view.setInt32(0, count, true);
-    for (let i = 0; i < count; i++) {
-        const dst = 4 + i * STRIDE;
-        view.setInt32(dst, queue[i * 2], true);
-        view.setInt32(dst + 4, queue[i * 2 + 1], true);
+function Process_KeyDown(e) {
+    pending.set(e.code, 1);
+}
+function Process_KeyUp(e) {
+    pending.set(e.code, 2);
+}
+export function bindKeyboard(mCanvasId) {
+    m_Canvas = getCanvas(mCanvasId);
+    if (m_Canvas) {
+        m_Canvas.addEventListener('keydown', Process_KeyDown);
+        m_Canvas.addEventListener('keyup', Process_KeyUp);
     }
-    count = 0;
-    target.set(scratch);
-    copyOut(target, scratch);
+    else {
+        window.addEventListener('keydown', Process_KeyDown);
+        window.addEventListener('keyup', Process_KeyUp);
+    }
+}
+export function unbindKeyboard() {
+    if (m_Canvas) {
+        m_Canvas.removeEventListener('keydown', Process_KeyDown);
+        m_Canvas.removeEventListener('keyup', Process_KeyUp);
+    }
+    else {
+        window.removeEventListener('keydown', Process_KeyDown);
+        window.removeEventListener('keyup', Process_KeyUp);
+    }
+}
+export function pollKeyboard(target) {
+    // 先写入真正的 Uint8Array（scratch），再经由 MemoryView.set 写回 C# 缓冲。
+    // 注意：MemoryView_Span 不是 Uint8Array、没有 [] 索引器，不能直接 target[i]=x。
+    let nByteCount = 0;
+    scratch[0] = pending.size;
+    let nIndex = 0;
+    for (const [key, flag] of pending) {
+        if (nByteCount >= SIZE) {
+            break;
+        }
+        const dst = 1 + nIndex * STRIDE;
+        scratch[dst] = CODE_TO_INDEX[key] ?? 0;
+        scratch[dst + 1] = flag;
+        nIndex++;
+        nByteCount = dst + STRIDE;
+    }
+    pending.clear();
+    copyOut(target, scratch.subarray(0, 1 + nIndex * STRIDE));
 }

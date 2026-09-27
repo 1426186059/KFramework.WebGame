@@ -5,35 +5,37 @@
 // 选哪个看 C# 侧该 [JSImport] 参数声明的是 Span 还是 ArraySegment（见各 JSBind_*.cs）。
 
 // 对应 .NET Span<T>：同步调用期间有效，无 dispose。
-// 底层即 .NET 运行时 (System.Runtime.InteropServices.JavaScript.MemoryView) 暴露给 JS 的对象，API 如下。
+// 底层即 .NET WASM 运行时的 MemoryView（来自 dotnet/runtime src/mono/browser/runtime/marshal.ts）暴露给 JS 的对象，API 如下。
+// 权威定义见 KFramework.TSEngine/reference/MemoryView.ts。
+//
+// 注意：MemoryView 既不是 TypedArray、也不是 array-like，【没有 [] 索引器，也没有单元素的 get(i)/set(i,v)】，
+// 也没有 getTypedArray（那是内部 _unsafe_create_view，不对外）。
+// 按索引读单个元素：用 slice() 取得 TypedArray【副本】后下标访问（副本写入不会回写 C#）。
 interface MemoryView_Span {
     /** 字节数 */
     readonly byteLength: number;
     /** 元素个数（按视图的元素类型计算，不是字节数） */
     readonly length: number;
 
-    // 把【本视图】从 sourceOffset 起的 count 个元素，拷进 JS 的 target（从 targetOffset 开始）。
-    // 方向：视图 → target（读出，用来把 C# 缓冲的数据搬到 JS）。4 个参数。
-    copyTo(target: ArrayBufferView, targetOffset?: number, sourceOffset?: number, count?: number): void;
-    // 把 source（整段）写入【本视图】，从 targetOffset（元素偏移）开始。
-    // 方向：source → 视图（写入，用来把 JS 数据写进 C# 的 Span/缓冲）。只有 2 个参数，不能指定 source 偏移/长度（需要则先 source.subarray 切片）。
+    // 把 source（TypedArray）写入【本视图】，从 targetOffset（元素偏移）开始。只有 2 个参数。
+    // 强约束：source 的构造函数必须与视图元素类型一致（Byte 视图→Uint8Array，Int32→Int32Array…），否则抛异常。
     set(source: ArrayBufferView, targetOffset?: number): void;
-    // 返回本视图 [start, end) 的【独立副本】（JS 自己的 ArrayBufferView，不再关联 C# 缓冲）。
+    // 把【本视图】从 sourceOffset 起到末尾的整段拷进 target（TypedArray）。只有 2 个参数（无 targetOffset / count）；
+    // target 须有足够长度容纳剩余元素。方向：视图 → target（读出，把 C# 缓冲数据搬到 JS）。
+    copyTo(target: ArrayBufferView, sourceOffset?: number): void;
+    // 返回本视图 [start, end) 的 TypedArray【副本】（元素类型与视图一致；是副本，写入不会回写 C# 缓冲）。可下标读。
     slice(start?: number, end?: number): ArrayBufferView;
-    // 把本视图的某段直接包装成对应类型的 TypedArray（零拷贝视图，仍指向 C# 缓冲）。type 如 "Uint8"/"Int8"/"Int32"/"Float32"/"Float64" 等。
-    getTypedArray(type: string, start?: number, end?: number): ArrayBufferView;
 }
 
-// 对应 .NET ArraySegment<T>：可跨 await 持有，用完 dispose 解 pin 托管数组。
+// 对应 .NET ArraySegment<T>：可跨 await 持有，会 pin 托管数组，用完 dispose 解 pin。
 // 数据传输 API 与 Span 完全一致（同样基于 .NET MemoryView），只是多了跨 await 的生命周期与 dispose。
 interface MemoryView_ArraySegment {
     readonly byteLength: number;
     /** 元素个数（按视图的元素类型计算，不是字节数） */
     readonly length: number;
-    copyTo(target: ArrayBufferView, targetOffset?: number, sourceOffset?: number, count?: number): void;
-    slice(start?: number, end?: number): ArrayBufferView;
     set(source: ArrayBufferView, targetOffset?: number): void;
-    getTypedArray(type: string, start?: number, end?: number): ArrayBufferView;
+    copyTo(target: ArrayBufferView, sourceOffset?: number): void;
+    slice(start?: number, end?: number): ArrayBufferView;
     /** 解 pin 托管数组并释放代理（仅 ArraySegment 建出的视图有，Span 视图没有、也不需要）。 */
     dispose?(): void;
 }
