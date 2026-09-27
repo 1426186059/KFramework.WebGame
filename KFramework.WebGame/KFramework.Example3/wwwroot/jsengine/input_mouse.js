@@ -1,31 +1,25 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Mouse 经 [JSImport(module: "input_mouse")] 调用；产物 input_mouse.js 由 SyncJsEngine 复制。
-// 鼠标模块：只注册监听 + 事件入队。状态与边沿在 C# 侧（Input_Mouse）实现。
-//
-// 事件格式：每条 5 个 i32（type, button, x, y, wheel）= 20 字节。
-// type: 3=MouseDown  4=MouseUp  5=MouseMove  6=Wheel
+// 鼠标模块：只注册监听 + 维护"当前状态/变化"。状态与边沿在 C# 侧（Input_Mouse）实现。
 import { getCanvasElement } from './gl.js';
 import { canvasPoint, copyOut } from './input_common.js';
-const MAX_EVENTS = 64;
-const STRIDE = 20;
-const SIZE = 4 + MAX_EVENTS * STRIDE;
-const queue = new Int32Array(MAX_EVENTS * 5);
-let count = 0;
+const MaxButtons = 8;
+const EvMousePos_ByteCount = 5; // EvMousePos：type + x(short) + y(short)
+const EvMouseButton_ByteCount = 2; // 其余事件：type + payload
+const EvWheel_ByteCount = 2; // 其余事件：type + payload
+const SIZE = EvMouseButton_ByteCount * MaxButtons + EvMousePos_ByteCount + EvWheel_ByteCount;
+const EvMousePos = 0;
+const EvMouseButton = 1; // 按键变化：payload = button(低7位) | 按下(0x80)
+const EvWheel = 2;
 const registrations = [];
 let bound = false;
+const buttons = new Map(); // button → 1(按下) / 0(抬起)，上次 poll 以来最新值
+let posX = 0;
+let posY = 0;
+let moved = false; // 上次 poll 以来是否发生过移动
+let wheelDelta = 0; // 上次 poll 以来累计滚轮增量
 function on(target, name, handler, options) {
     target.addEventListener(name, handler, options);
     registrations.push({ target, name, handler });
-}
-function push(type, button, x, y, wheel) {
-    if (count >= MAX_EVENTS)
-        return;
-    const o = count * 5;
-    queue[o] = type;
-    queue[o + 1] = button;
-    queue[o + 2] = x;
-    queue[o + 3] = y;
-    queue[o + 4] = wheel;
-    count++;
 }
 export function bindMouse() {
     if (bound)
@@ -42,7 +36,9 @@ export function bindMouse() {
         on(canvas, 'mousemove', (e) => {
             const ev = e;
             const [x, y] = canvasPoint(ev.clientX, ev.clientY);
-            push(5, 0, x, y, 0);
+            posX = x;
+            posY = y;
+            moved = true;
             // 阻止按住拖动时的原生文本选择/元素拖拽，避免浏览器在首次 mousemove 时
             // 中断“按下”状态并隐式发出 mouseup，导致 UI 面板无法拖动（单击正常）。
             ev.preventDefault();
@@ -50,13 +46,17 @@ export function bindMouse() {
         on(canvas, 'mousedown', (e) => {
             const ev = e;
             const [x, y] = canvasPoint(ev.clientX, ev.clientY);
-            push(3, ev.button, x, y, 0);
+            posX = x;
+            posY = y;
+            buttons.set(ev.button, 1);
             ev.preventDefault();
         });
         on(canvas, 'wheel', (e) => {
             const ev = e;
             const [x, y] = canvasPoint(ev.clientX, ev.clientY);
-            push(6, 0, x, y, Math.sign(ev.deltaY));
+            posX = x;
+            posY = y;
+            wheelDelta += Math.sign(ev.deltaY);
             ev.preventDefault();
         }, { passive: false });
         on(canvas, 'contextmenu', (e) => e.preventDefault());
@@ -65,33 +65,67 @@ export function bindMouse() {
     on(window, 'mouseup', (e) => {
         const ev = e;
         const [x, y] = canvasPoint(ev.clientX, ev.clientY);
-        push(4, ev.button, x, y, 0);
+        posX = x;
+        posY = y;
+        buttons.set(ev.button, 0);
     });
     bound = true;
 }
-/** 解绑鼠标监听并清空队列。 */
+/** 解绑鼠标监听并清空状态。 */
 export function unbindMouse() {
     for (const r of registrations)
         r.target.removeEventListener(r.name, r.handler);
     registrations.length = 0;
-    count = 0;
+    buttons.clear();
+    moved = false;
+    wheelDelta = 0;
     bound = false;
 }
 const scratch = new Uint8Array(SIZE);
 const view = new DataView(scratch.buffer);
 export function pollMouse(target) {
-    if (!bound)
-        bindMouse();
-    view.setInt32(0, count, true);
-    for (let i = 0; i < count; i++) {
-        const src = i * 5;
-        const dst = 4 + i * STRIDE;
-        view.setInt32(dst, queue[src], true);
-        view.setInt32(dst + 4, queue[src + 1], true);
-        view.setInt32(dst + 8, queue[src + 2], true);
-        view.setInt32(dst + 12, queue[src + 3], true);
-        view.setInt32(dst + 16, queue[src + 4], true);
+    let off = 1;
+    let nEvents = 0;
+    let bSetPos = false;
+    if (moved) {
+        bSetPos = true;
+        moved = false;
     }
-    count = 0;
-    copyOut(target, scratch);
+    // 1) 按键变化：每项 2 字节（EvMouseButton + 位打包：低7位=button，最高位=是否按下）
+    for (const [button, down] of buttons) {
+        if (off + EvMouseButton_ByteCount > SIZE)
+            break;
+        scratch[off] = EvMouseButton;
+        scratch[off + 1] = (button & 0x7f) | (down ? 0x80 : 0);
+        off += EvMouseButton_ByteCount;
+        nEvents++;
+        bSetPos = true;
+    }
+    buttons.clear();
+    // 2) 滚轮：累计增量上报一次；夹紧到 sbyte 范围再按 byte 写入，C# 侧按 sbyte 解读
+    if (wheelDelta !== 0 && off + EvWheel_ByteCount <= SIZE) {
+        let d = wheelDelta;
+        if (d > 127)
+            d = 127;
+        else if (d < -128)
+            d = -128;
+        scratch[off] = EvWheel;
+        scratch[off + 1] = d; // Uint8Array 自动按 0xff 取模，-1 → 255，C# 读回 -1
+        off += EvWheel_ByteCount;
+        nEvents++;
+        wheelDelta = 0;
+        bSetPos = true;
+    }
+    //只要 鼠标移动/点击/滚轮转动 都要设置位置
+    if (bSetPos && off + EvMousePos_ByteCount <= SIZE) {
+        scratch[off] = EvMousePos;
+        view.setInt16(off + 1, posX, true);
+        view.setInt16(off + 3, posY, true);
+        off += EvMousePos_ByteCount;
+        nEvents++;
+        moved = false;
+    }
+    // 玩家无任何输入 → nEvents=0，scratch 只有一个 0 字节，什么都不填
+    scratch[0] = nEvents & 0xff;
+    copyOut(target, scratch.subarray(0, off));
 }

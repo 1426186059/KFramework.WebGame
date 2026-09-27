@@ -73,13 +73,6 @@ namespace KFramework.MonoGameExtend
         public static bool GetMouseButtonDown(MouseButton button) => Input_Mouse.GetButtonDown(button);
         public static bool GetMouseButtonUp(MouseButton button) => Input_Mouse.GetButtonUp(button);
 
-        // Unity 风格重载：0=左键 1=右键 2=中键
-        public static bool GetMouseButton(int index) => GetMouseButton(ToButton(index));
-        public static bool GetMouseButtonDown(int index) => GetMouseButtonDown(ToButton(index));
-        public static bool GetMouseButtonUp(int index) => GetMouseButtonUp(ToButton(index));
-
-        // ===== 触摸 =====
-
         public static int TouchCount => Input_Touch.TouchCount;
         public static KTouch GetTouch(int index) => Input_Touch.GetTouch(index);
 
@@ -96,17 +89,5 @@ namespace KFramework.MonoGameExtend
         /// <summary>退出键：Esc</summary>
         public static bool GetQuitPressed() => Input_KeyBoard.GetKeyDown(Keys.Escape);
 
-        private static MouseButton ToButton(int index)
-        {
-            return index switch
-            {
-                0 => MouseButton.Left,
-                1 => MouseButton.Right,
-                2 => MouseButton.Middle,
-                3 => MouseButton.XButton1,
-                4 => MouseButton.XButton2,
-                _ => MouseButton.Left,
-            };
-        }
     }
 }

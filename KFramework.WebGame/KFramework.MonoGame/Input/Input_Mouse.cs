@@ -6,8 +6,9 @@ namespace KFramework.MonoGame
     /// <summary>
     /// 鼠标 —— 对原始输入事件的封装。
     ///
-    /// 自己 poll 自己的事件队列（<c>input_mouse</c> 模块），维护位置 / 按键 / 滚轮增量。
-    /// 查询返回的是值类型快照，可以安全跨帧比较。
+    /// <para>自己 poll 自己的事件队列（<c>input_mouse</c> 模块），维护位置 / 按键电平 / 滚轮增量。
+    /// 状态管理完全对齐 <see cref="Input_KeyBoard"/>：两份电平缓冲（<c>_btnNew</c> / <c>_btnLast</c>），
+    /// 按下 / 抬起边沿由两帧电平差分得出，不再堆零散变量，避免边沿状态算错。</para>
     /// </summary>
     public static class Input_Mouse
     {
@@ -17,21 +18,22 @@ namespace KFramework.MonoGame
         private const int EvWheel = 2;
 
         private const int MaxButtons = 8;
+        private const int MaxEvents = MaxButtons + 2;   // 最坏：全部按键 + 位置 + 滚轮
         private const int CountSize = 1;
         private const int EvMousePos_ByteCount = 5;
         private const int EvMouseButton_ByteCount = 2;
-        private const int EvMouseWheel_ByteCount = 2;
-
-        private const int MaxByteCount = CountSize + EvMousePos_ByteCount + EvMouseWheel_ByteCount + MaxButtons * EvMouseButton_ByteCount;
+        private const int EvWheel_ByteCount = 2;
+        private const int MaxByteCount = CountSize + MaxEvents * EvMouseButton_ByteCount + EvMousePos_ByteCount;
         private static readonly byte[] _buffer = new byte[MaxByteCount];
 
+        // 与键盘一致：两份电平缓冲 + 差分算边沿
+        private static readonly bool[] _btnNew = new bool[MaxButtons];
+        private static readonly bool[] _btnLast = new bool[MaxButtons];
+
         private static int _x, _y;
-        private static int _prevX, _prevY;
-        private static int _buttons, _prevButtons;
-        private static int _wheelDelta;
-        private static int _scrollValue;
-        private static readonly bool[] _pressed = new bool[MaxButtons];
-        private static readonly bool[] _released = new bool[MaxButtons];
+        private static int _lastX, _lastY;
+        private static int _wheelDelta;     // 本帧滚轮增量
+        private static int _scrollValue;    // 滚轮累计值
 
         /// <summary>本装置是否处于激活状态；未激活时 <see cref="Update"/> / <see cref="LateUpdate"/> 直接跳过。由 <see cref="Activate"/> / <see cref="Deactivate"/> 维护。</summary>
         public static bool Active { get; private set; }
@@ -49,93 +51,88 @@ namespace KFramework.MonoGame
         public static void Update()
         {
             if (!Active) return;
-            Array.Clear(_pressed);
-            Array.Clear(_released);
             _wheelDelta = 0;
-            _prevButtons = _buttons;
-            _prevX = _x;
-            _prevY = _y;
 
             JSBind_Input_Mouse.PollMouse(_buffer);
 
             // 事件流：按类型变长跳步（EvMousePos=5B，其余=2B）
             int count = _buffer[0];
-            int off = CountSize;
-            for (int i = 0; i < count; i++)
+            if (count > 0)
             {
-                int type = _buffer[off];
-                switch (type)
+                int off = CountSize;
+                for (int i = 0; i < count; i++)
                 {
-                    case EvMousePos:
-                        _x = BinaryPrimitives.ReadInt16LittleEndian(_buffer.AsSpan(off + 1, 2));
-                        _y = BinaryPrimitives.ReadInt16LittleEndian(_buffer.AsSpan(off + 3, 2));
-                        off += EvMousePos_ByteCount;
-                        break;
-                    case EvMouseButton:
-                        {
-                            int raw = _buffer[off + 1];
-                            SetButton(raw & 0x7F, (raw & 0x80) != 0);   // 低7位=button，最高位=是否按下
-                            off += EvMouseButton_ByteCount;
-                        }
-                        break;
-                    case EvWheel:
-                        _wheelDelta += (sbyte)_buffer[off + 1];   // 按 sbyte 解读累计增量
-                        off += EvMouseWheel_ByteCount;
-                        break;
-                    default:
-                        throw new NotSupportedException();
+                    int type = _buffer[off];
+                    switch (type)
+                    {
+                        case EvMousePos:
+                            _x = BinaryPrimitives.ReadInt16LittleEndian(_buffer.AsSpan(off + 1, 2));
+                            _y = BinaryPrimitives.ReadInt16LittleEndian(_buffer.AsSpan(off + 3, 2));
+                            off += EvMousePos_ByteCount;
+                            break;
+                        case EvMouseButton:
+                            {
+                                int raw = _buffer[off + 1];
+                                int btn = raw & 0x7F;          // 低7位 = button（DOM 序号：0左/1中/2右）
+                                if (btn >= 0 && btn < MaxButtons) _btnNew[btn] = (raw & 0x80) != 0;
+                                off += EvMouseButton_ByteCount;
+                            }
+                            break;
+                        case EvWheel:
+                            _wheelDelta += (sbyte)_buffer[off + 1];   // 按 sbyte 解读累计增量
+                            off += EvWheel_ByteCount;
+                            break;
+                        default:
+                            throw new NotSupportedException();
+                    }
                 }
             }
 
+            // 边沿 = 本帧电平 与 上帧电平 的差分（与键盘 KeyDown/KeyUp 完全一致）
             var pos = Position;
             for (int b = 0; b < MaxButtons; b++)
             {
-                var btn = ToButton(b);
-                // 同一帧内可能同时出现 按下+抬起（快速拖甩 / 卡顿把两条事件攒进同一帧）。
-                // 必须用两个独立 if：若写成 if/else if，_pressed 为真时会跳过 _released，
-                // 导致 ButtonUp 永不触发，调用方（如面板拖动）的“松手”永远收不到，表现为“松手仍在拖动”。
-                // 原版 WinForms 是离散事件不会批量，此 bug 是 poll/队列模型引入的。
-                if (_pressed[b]) ButtonDown?.Invoke(btn, pos);
-                if (_released[b]) ButtonUp?.Invoke(btn, pos);
+                if (_btnNew[b] != _btnLast[b])
+                {
+                    var btn = ToButton(b);
+                    if (_btnNew[b])
+                    {
+                        ButtonDown?.Invoke(btn, pos);
+                    }
+                    else
+                    {
+                        ButtonUp?.Invoke(btn, pos);
+                    }
+                }
+
+                if(_btnNew[b])
+                {
+                   //持续按住鼠标，暂无TOOD
+                }
             }
 
             if (_wheelDelta != 0) ScrollWheel?.Invoke(_wheelDelta);
             _scrollValue += _wheelDelta;
         }
 
-        private static void SetButton(int button, bool down)
-        {
-            if (button < 0 || button >= MaxButtons) return;
-
-            int bit = 1 << button;
-            if (down)
-            {
-                if ((_buttons & bit) == 0) _pressed[button] = true;
-                _buttons |= bit;
-            }
-            else
-            {
-                if ((_buttons & bit) != 0) _released[button] = true;
-                _buttons &= ~bit;
-            }
-        }
-
+        /// <summary>清空鼠标状态（失焦 / 解绑时调用）。</summary>
         public static void Reset()
         {
-            _buttons = 0;
-            _prevButtons = 0;
+            Array.Clear(_btnNew);
+            Array.Clear(_btnLast);
             _wheelDelta = 0;
-            Array.Clear(_pressed);
-            Array.Clear(_released);
+            _scrollValue = 0;
+            _x = _y = _lastX = _lastY = 0;
         }
 
-        /// <summary>固定步长下，一个渲染帧可能跑多个 Update 步；在每个步结束后清空按下/抬起边沿，
-        /// 确保一次点击只被识别一次（否则边沿会在多个步里重复触发）。下一帧 <see cref="Update"/> 时边沿重新产生。</summary>
+        /// <summary>固定步长下，一个渲染帧可能跑多个 Update 步；在每个步结束后把本帧电平存为“上帧”，
+        /// 并刷新位置基准，确保一次点击只被识别一次（与 <see cref="Input_KeyBoard.LateUpdate"/> 一致）。</summary>
         public static void LateUpdate()
         {
             if (!Active) return;
-            Array.Clear(_pressed);
-            Array.Clear(_released);
+            _btnNew.AsSpan().CopyTo(_btnLast);
+            _lastX = _x;
+            _lastY = _y;
         }
 
         /// <summary>关闭装置：解绑 JS 侧鼠标监听，并清空状态。</summary>
@@ -159,10 +156,10 @@ namespace KFramework.MonoGame
         public static Vector2 Position => new Vector2(_x, _y);
 
         /// <summary>本帧位移</summary>
-        public static Vector2 Delta => new Vector2(_x - _prevX, _y - _prevY);
+        public static Vector2 Delta => new Vector2(_x - _lastX, _y - _lastY);
 
         /// <summary>本帧是否移动过</summary>
-        public static bool Moved => _x != _prevX || _y != _prevY;
+        public static bool Moved => _x != _lastX || _y != _lastY;
 
         public static int X => _x;
         public static int Y => _y;
@@ -176,18 +173,18 @@ namespace KFramework.MonoGame
         /// <summary>横向滚轮 —— 浏览器不支持，恒为 0</summary>
         public static int HorizontalScrollDelta => 0;
 
-        public static bool GetButton(MouseButton button) => (Buttons & (1 << (int)button)) != 0;
+        public static bool GetButton(MouseButton button) => _btnNew[ToIndex(button)];
 
         public static bool GetButtonDown(MouseButton button)
         {
-            int b = (int)button;
-            return b >= 0 && b < MaxButtons && _pressed[b];
+            int b = ToIndex(button);
+            return _btnNew[b] && !_btnLast[b];
         }
 
         public static bool GetButtonUp(MouseButton button)
         {
-            int b = (int)button;
-            return b >= 0 && b < MaxButtons && _released[b];
+            int b = ToIndex(button);
+            return !_btnNew[b] && _btnLast[b];
         }
 
         public static KPressState GetButtonState(MouseButton button)
@@ -199,10 +196,10 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>本帧按键位图（供快照用）</summary>
-        public static int Buttons => _buttons;
+        public static int Buttons => ToBitmap(_btnNew);
 
         /// <summary>上一帧按键位图（供快照用）</summary>
-        public static int PreviousButtons => _prevButtons;
+        public static int PreviousButtons => ToBitmap(_btnLast);
 
         /// <summary>是否在指定区域内</summary>
         public static bool IsInside(int width, int height)
@@ -213,13 +210,38 @@ namespace KFramework.MonoGame
         {
         }
 
+        private static int ToBitmap(bool[] src)
+        {
+            int v = 0;
+            for (int b = 0; b < MaxButtons; b++) if (src[b]) v |= 1 << b;
+            return v;
+        }
+
+        /// <summary>MouseButton 枚举 → DOM 按键序号（左=0，中=1，右=2，侧键=3/4）。
+        /// 项目自定义枚举顺序为 Left/Right/Middle（Right=1，Middle=2），与浏览器
+        /// MouseEvent.button（Right=2，Middle=1）相反，因此所有“枚举→内部下标”都必须走这里，
+        /// 绝不能再用 (int)button，否则右键/中键会反。</summary>
+        private static int ToIndex(MouseButton button)
+        {
+            return button switch
+            {
+                MouseButton.Left => 0,
+                MouseButton.Middle => 1,
+                MouseButton.Right => 2,
+                MouseButton.XButton1 => 3,
+                MouseButton.XButton2 => 4,
+                _ => 0,
+            };
+        }
+
+        /// <summary>DOM 按键序号 → MouseButton 枚举（0=左，1=中，2=右，3/4=侧键）。与 <see cref="ToIndex"/> 互逆。</summary>
         private static MouseButton ToButton(int index)
         {
             return index switch
             {
                 0 => MouseButton.Left,
-                1 => MouseButton.Right,
-                2 => MouseButton.Middle,
+                1 => MouseButton.Middle,
+                2 => MouseButton.Right,
                 3 => MouseButton.XButton1,
                 4 => MouseButton.XButton2,
                 _ => MouseButton.Left,
