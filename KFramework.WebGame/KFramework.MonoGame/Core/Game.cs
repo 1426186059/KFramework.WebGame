@@ -58,7 +58,7 @@ namespace KFramework.MonoGame
         /// </list>
         /// 注：本引擎默认 false，与 MonoGame 默认 true 不同——Web 上更推荐“可变 dt + FixedUpdteFunc”的组合。
         /// </summary>
-        public bool IsFixedTimeStep { get; set; } = false;
+        public bool IsFixedTimeStep { get; set; } = true;
 
         /// <summary>固定步长模式下单次 Update 的间隔（默认 1/60 秒）。仅当 <see cref="IsFixedTimeStep"/> 为 true 时生效。</summary>
         public TimeSpan TargetElapsedTime { get; set; } = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 60);
