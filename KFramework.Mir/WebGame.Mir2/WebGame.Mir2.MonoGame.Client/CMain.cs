@@ -563,7 +563,9 @@ namespace WebGame.Mir2.MonoGame.Client
             CMain.MPoint = new MirEngine.Point((int)lp.X, (int)lp.Y);
             var e = ToMouseEventArgs(b, lp);
             // 复刻 WinForms 原版 CMain_MouseUp：松开按键必须清掉 MapControl.MapButtons，否则后续点击会错位。
-            MapControl.MapButtons &= ~e.Button;
+            // MouseButtons 现在是对齐 HTML MouseEvent.button 的顺序枚举，不再用 &=~ 位运算清除，
+            // 直接在该键释放时把它清空即可（== 比较即可，无需位操作）。
+            if (MapControl.MapButtons == e.Button) MapControl.MapButtons = MouseButtons.None;
             if (e.Button != MouseButtons.Right || !Settings.NewMove)
                 GameScene.CanRun = false;
             MirScene.ActiveScene?.OnMouseUp(e);

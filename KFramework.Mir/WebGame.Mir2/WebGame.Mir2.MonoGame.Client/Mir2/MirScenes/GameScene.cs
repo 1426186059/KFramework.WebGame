@@ -11516,7 +11516,9 @@ namespace Client.MirScenes
             // MouseLocation 会停留在旧位置，导致 MapLocation 算到别的格子上。
             MouseLocation = e.Location;
 
-            MapButtons |= e.Button;
+            // MouseButtons 现在是对齐 HTML MouseEvent.button 的顺序枚举（Left=0），不再是 WinForms 那种标志位枚举，
+            // 因此不能再做 |= / &=~ 位运算（位运算在 Left=0 时根本置不上位）。直接记录当前按下的键即可。
+            MapButtons = e.Button;
             if (e.Button != MouseButtons.Right || !Settings.NewMove)
                 GameScene.CanRun = false;
 
@@ -12429,7 +12431,7 @@ namespace Client.MirScenes
             {
                 Objects.Clear();
 
-                MapButtons = 0;
+                MapButtons = MouseButtons.None;
                 MouseLocation = Point.Empty;
                 InputDelay = 0;
                 NextAction = 0;
