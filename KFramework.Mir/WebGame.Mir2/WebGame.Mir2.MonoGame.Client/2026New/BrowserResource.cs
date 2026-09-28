@@ -75,13 +75,6 @@ public class BrowserResource
         set => _libBaseUrl = value;
     }
 
-    /// <summary>
-    /// 注入两个 HTTP 资源服务器地址：
-    ///   libBaseUrl   —— 默认资源 lib 的自建 Web 服务器（:5080，根=Crystal Build），松加载原始 .Lib；
-    ///   bundleBaseUrl—— AssetBundle(hot_update_res) 的服务器（:5081，根=Mir2Res），client 请求 URL 已含 /hot_update_res/ 前缀。
-    /// :5081 根已是 Mir2Res，bundleBaseUrl 已含 /hot_update_res/ 前缀，因此 BundleContent 的 ContentManager.root 传空串，
-    /// 否则 URL 会变成 /hot_update_res/hot_update_res 双重前缀。
-    /// </summary>
     public static void Configure(string libBaseUrl)
     {
         _libBaseUrl = libBaseUrl;

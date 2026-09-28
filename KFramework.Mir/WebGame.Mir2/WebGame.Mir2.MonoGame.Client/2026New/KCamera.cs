@@ -1,5 +1,4 @@
-﻿using Client;
-using Client.MirGraphics;
+﻿using Client.MirGraphics;
 
 namespace WebGame.Mir2.MonoGame.Client
 {
