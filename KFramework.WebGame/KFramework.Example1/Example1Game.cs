@@ -63,7 +63,9 @@ public sealed class Example1Game : Game
         // MonoGameExtend 的输入总调度（键盘 / 鼠标 / 触摸 / 指针事件分发）
         KInputMgr.Init();
         // 激活本例需要的输入装置：引擎按各装置的 Active 开关决定是否真正采集；不需要的可不激活。
-        Input_KeyBoard.Activate();
+        // 键盘默认绑到画布（bUseCanvas: true，需画布聚焦才收键）；传 false 则绑到 window 全局捕获。
+        // 运行时可在输入测试页点“键盘绑定”开关切换，直观对比两种模式的差异。
+        Input_KeyBoard.Activate(bUseCanvasListener: true);
         Input_Mouse.Activate();
         Input_Touch.Activate();
         // 场景管理器：创建共享 SpriteBatch 并接管 Update / Draw 的遍历

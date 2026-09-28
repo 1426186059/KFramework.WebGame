@@ -60,6 +60,10 @@ public sealed class InputTestScene : TestSceneBase
     private bool _draggingA;
     private bool _draggingB;
 
+    // 键盘绑定模式开关：true=绑画布(需聚焦) / false=绑 window(全局)。对应 Input_KeyBoard.Activate(bUseCanvas)。
+    private bool _keyboardUseCanvas = true;
+    private Rectangle _bindBtn = Rectangle.Empty;
+
     public override string Title
     {
         get { return "输入测试（鼠标 / 键盘）"; }
@@ -68,6 +72,8 @@ public sealed class InputTestScene : TestSceneBase
     public override void Update()
     {
         base.Update();
+
+        HandleBindToggle();
 
         foreach ((Keys key, _) in _keys)
         {
@@ -174,12 +180,43 @@ public sealed class InputTestScene : TestSceneBase
         }
 
         DrawDragArea(batch);
+        DrawBindToggle(batch);
+    }
+
+    /// <summary>键盘绑定模式开关（体现 <see cref="Input_KeyBoard.Activate(bool)"/> 的 bUseCanvas 参数）：
+    /// 画布模式需画布聚焦才收键；窗口模式全局捕获。点击按钮实时切换并重新激活。</summary>
+    private void DrawBindToggle(SpriteBatch batch)
+    {
+        if (_bindBtn.IsEmpty) return;
+        bool hover = _bindBtn.Contains(Input_Mouse.Position);
+        DrawRect(batch, _bindBtn, hover ? new Color(40, 60, 90) : new Color(28, 36, 56));
+        string mode = _keyboardUseCanvas ? "画布(需聚焦)" : "窗口(全局)";
+        string label = $"[点击切换] 键盘绑定: {mode}";
+        float tx = _bindBtn.X + 8f;
+        float ty = _bindBtn.Y + (_bindBtn.Height - Font.LineSpacing) / 2f;
+        batch.DrawString(Font, label, new Vector2(tx, ty), Color.White);
+        batch.DrawString(Font,
+            "画布：点游戏区外再点回会暂失焦收不到键 / 窗口：始终全局捕获",
+            new Vector2(_bindBtn.X, _bindBtn.Y + _bindBtn.Height + 4f), new Color(150, 160, 180));
+    }
+
+    private void HandleBindToggle()
+    {
+        int w = Device.Viewport.Width;
+        if (_bindBtn.IsEmpty) _bindBtn = new Rectangle(w - 360, 20, 340, 30);
+        if (Input_Mouse.GetButtonDown(MouseButton.Left) && _bindBtn.Contains(Input_Mouse.Position))
+        {
+            _keyboardUseCanvas = !_keyboardUseCanvas;
+            Input_KeyBoard.Deactivate();
+            Input_KeyBoard.Activate(_keyboardUseCanvas);
+            LogEvent("键盘绑定 → " + (_keyboardUseCanvas ? "画布(需聚焦)" : "窗口(全局)"));
+        }
     }
 
     private void DrawDragArea(SpriteBatch batch)
     {
         int w = Device.Viewport.Width;
-        Rectangle panel = new Rectangle(w - 380, 300, 360, 280);
+        Rectangle panel = new Rectangle(w - 380, 500, 360, 280);
         DrawRect(batch, panel, new Color(20, 26, 40));
         batch.DrawString(Font, "拖拽区域：左键按住方块拖动", new Vector2(panel.X + 10f, panel.Y + 8f), Color.LightGray);
         DrawBox(batch, _boxA, _draggingA, "方块 A");

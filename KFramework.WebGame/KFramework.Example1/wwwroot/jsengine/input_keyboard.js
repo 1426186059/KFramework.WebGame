@@ -47,6 +47,13 @@ let m_Blurred = false;
 const pending = new Map();
 const scratch = new Uint8Array(SIZE);
 function Process_KeyDown(e) {
+    // 阻止浏览器默认行为，否则游戏收不到这些键：
+    //   Tab → 移走焦点（画布随即 blur，下一次 poll 发 Blur 清空按键，表现为“Tab 抓不到”）；
+    //   Space / 方向键 → 滚动页面。
+    // 仅在按键确实在映射表内时拦截；带 Ctrl/Alt/Meta 的组合键不拦，保留 Ctrl+R / Ctrl+Shift+I 等浏览器快捷键。
+    if (!e.ctrlKey && !e.altKey && !e.metaKey && codeToKeys(e.code) !== 0) {
+        e.preventDefault();
+    }
     pending.set(e.code, 1);
 }
 function Process_KeyUp(e) {
@@ -65,18 +72,21 @@ function Process_Pointerdown() {
 // <canvas> 默认不可获焦，所以绑监听前必须先 focusCanvas 让它可获焦并聚焦；同时挂一个 pointerdown 重新聚焦，
 // 这样切走窗口 / 在输入框打字后点回游戏，键盘依然有效。IME 输入框获焦时不会触发 canvas 的 key 事件，不会误报游戏键。
 export function bindKeyboard(canvasId) {
-    m_Canvas = getCanvas(canvasId);
-    m_CanvasId = canvasId ?? null;
-    // if (m_Canvas)
-    // {
-    //     focusCanvas(m_CanvasId);
-    //     m_Canvas.addEventListener('keydown', Process_KeyDown);
-    //     m_Canvas.addEventListener('keyup', Process_KeyUp);
-    //     m_Canvas.addEventListener('blur', Process_Blur);
-    //     m_Canvas.addEventListener('pointerdown', Process_Pointerdown);
-    // }
-    // else
-    {
+    if (canvasId) {
+        m_Canvas = getCanvas(canvasId);
+        m_CanvasId = canvasId ?? null;
+        if (m_Canvas) {
+            focusCanvas(m_CanvasId);
+            m_Canvas.addEventListener('keydown', Process_KeyDown);
+            m_Canvas.addEventListener('keyup', Process_KeyUp);
+            m_Canvas.addEventListener('blur', Process_Blur);
+            m_Canvas.addEventListener('pointerdown', Process_Pointerdown);
+        }
+        else {
+            console.error("bindKeyboard canvas Find Error");
+        }
+    }
+    else {
         // 找不到画布（极少见）才回落到 window，保证至少有输入。
         window.addEventListener('keydown', Process_KeyDown);
         window.addEventListener('keyup', Process_KeyUp);
