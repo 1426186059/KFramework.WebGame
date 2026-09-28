@@ -250,7 +250,6 @@ namespace Client.MirControls
             TextBox = new TextBox
             {
                 BackColor = BackColour,
-                BorderStyle = BorderStyle.None,
                 Font = new Font(Settings.FontName, 10F * 96f / FontDpiX),
                 ForeColor = ForeColour,
                 Location = DisplayLocation,

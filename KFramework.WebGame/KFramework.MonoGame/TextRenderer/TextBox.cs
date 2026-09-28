@@ -1,20 +1,5 @@
-using System;
-
 namespace KFramework.MonoGame
 {
-    // 自绘文本框的“模型”：保存文本、光标、选择区间与基础外观。
-    // 不依赖任何渲染后端；真正的绘制由本类的 TextBox.Renderer 部分负责。
-    //
-    // 说明：KeyEventArgs / KeyPressEventArgs / MouseEventArgs / BorderStyle / MouseButtons
-    // 等支撑类型作为嵌套类型存在，避免污染 KFramework.MonoGame 命名空间顶层，
-    // 防止与客户端 MirEngine 的同名 shim 类型产生歧义。
-    public enum BorderStyle
-    {
-        None,
-        FixedSingle,
-        Fixed3D
-    }
-
     public sealed partial class TextBox : IDisposable
     {
         [Flags]
@@ -38,9 +23,9 @@ namespace KFramework.MonoGame
 
         public class KeyPressEventArgs : EventArgs
         {
-            public char KeyChar { get; }
+            public Keys KeyCode { get; }
             public bool Handled { get; set; }
-            public KeyPressEventArgs(char keyChar) { KeyChar = keyChar; }
+            public KeyPressEventArgs(Keys key) { KeyCode = key; }
         }
 
         public class MouseEventArgs : EventArgs
@@ -79,7 +64,6 @@ namespace KFramework.MonoGame
         private bool focused;
         private bool canFocus = true;
         private bool readOnly;
-        private BorderStyle borderStyle = BorderStyle.None;
         private bool visible = true;
         private bool enabled = true;
         private bool acceptsReturn;
@@ -162,7 +146,6 @@ namespace KFramework.MonoGame
         public Size Size { get => size; set => size = value; }
         public bool Visible { get => visible; set { if (visible != value) { visible = value; VisibleChanged?.Invoke(this, EventArgs.Empty); } } }
         public bool Enabled { get => enabled; set { if (enabled != value) { enabled = value; EnabledChanged?.Invoke(this, EventArgs.Empty); } } }
-        public BorderStyle BorderStyle { get => borderStyle; set => borderStyle = value; }
         public bool AcceptsReturn { get => acceptsReturn; set => acceptsReturn = value; }
         public bool AcceptsTab { get => acceptsTab; set => acceptsTab = value; }
 
@@ -452,11 +435,11 @@ namespace KFramework.MonoGame
                 case Keys.End:
                     selectionStart = text.Length; selectionLength = 0; break;
                 case Keys.Escape:
-                    KeyPress?.Invoke(this, new KeyPressEventArgs('\x1B')); // ESC
+                    KeyPress?.Invoke(this, new KeyPressEventArgs(Keys.Escape)); // ESC
                     SyncOverlay();
                     return;
                 case Keys.Enter:
-                    KeyPress?.Invoke(this, new KeyPressEventArgs('\r')); // CR
+                    KeyPress?.Invoke(this, new KeyPressEventArgs(Keys.Enter)); // CR
                     SyncOverlay();
                     return;
             }
@@ -580,24 +563,6 @@ namespace KFramework.MonoGame
             if (Enum.TryParse<Keys>(key, true, out Keys p)) return p;
             if (key.Length == 1) return (Keys)char.ToUpperInvariant(key[0]);
             return Keys.None;
-        }
-
-        public void SimulateKeyPress(char keyChar)
-        {
-            if (keyChar == '\b' || keyChar == '\r' || keyChar == '\n') return;
-            var args = new KeyPressEventArgs(keyChar);
-            KeyPress?.Invoke(this, args);
-            if (args.Handled) return;
-            if (!Enabled || ReadOnly) return;
-            if (keyChar == '\t' && !AcceptsTab) return;
-            if (maxLength > 0 && text.Length - selectionLength >= maxLength) return;
-            string insert = useSystemPasswordChar ? new string('*', 1) : keyChar.ToString();
-            if (selectionLength > 0) text = text.Remove(selectionStart, selectionLength);
-            text = text.Insert(selectionStart, insert);
-            selectionStart += insert.Length;
-            selectionLength = 0;
-            UpdateLines();
-            TextChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void UpdateLines()

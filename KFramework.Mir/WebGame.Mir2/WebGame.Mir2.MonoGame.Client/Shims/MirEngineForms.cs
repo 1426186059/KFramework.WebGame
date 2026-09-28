@@ -54,13 +54,6 @@ namespace MirEngine
         public static int MouseWheelScrollDelta => 120;
     }
 
-    public enum BorderStyle
-    {
-        None,
-        FixedSingle,
-        Fixed3D
-    }
-
     // 轻量适配层：把引擎自带的 KFramework.MonoGame.TextBox（位于 KFramework.MonoGame.TextRenderer）
     // 暴露成本工程既有的 WinForms 风格 API（MirEngine.Color / Font / Point / Size / Keys / 事件参数），
     // 所有调用方（MirTextBox 及各个对话框处理器）按原签名直接使用，无需改动。
@@ -112,16 +105,9 @@ namespace MirEngine
             set => _inner.Font = value;
         }
 
-        public BorderStyle BorderStyle
-        {
-            get => (BorderStyle)(int)_inner.BorderStyle;
-            set => _inner.BorderStyle = (KFramework.MonoGame.BorderStyle)(int)value;
-        }
-
         public void AppendText(string value) => _inner.AppendText(value);
 
-        public void SimulateKeyDown(Keys keyCode) => _inner.SimulateKeyDown(ToEngineKeys(keyCode));
-        public void SimulateKeyPress(char keyChar) => _inner.SimulateKeyPress(keyChar);
+        public void SimulateKeyDown(Keys keyCode) => _inner.SimulateKeyDown(keyCode);
 
         public void Focus()
         {
@@ -164,85 +150,13 @@ namespace MirEngine
 
         public TextBox()
         {
-            _inner.KeyPress += (s, e) => KeyPress?.Invoke(this, new KeyPressEventArgs(ToMirEngineKeys(e.KeyChar)) { Handled = e.Handled });
-            _inner.KeyDown += (s, e) => KeyDown?.Invoke(this, new KeyEventArgs(ToMirEngineKeys(e.KeyCode)) { Handled = e.Handled, SuppressKeyPress = e.SuppressKeyPress });
-            _inner.KeyUp += (s, e) => KeyUp?.Invoke(this, new KeyEventArgs(ToMirEngineKeys(e.KeyCode)) { Handled = e.Handled, SuppressKeyPress = e.SuppressKeyPress });
+            _inner.KeyPress += (s, e) => KeyPress?.Invoke(this, new KeyPressEventArgs(e.KeyCode) { Handled = e.Handled });
+            _inner.KeyDown += (s, e) => KeyDown?.Invoke(this, new KeyEventArgs(e.KeyCode) { Handled = e.Handled, SuppressKeyPress = e.SuppressKeyPress });
+            _inner.KeyUp += (s, e) => KeyUp?.Invoke(this, new KeyEventArgs(e.KeyCode) { Handled = e.Handled, SuppressKeyPress = e.SuppressKeyPress });
             _inner.MouseMove += (s, e) => MouseMove?.Invoke(this, new MouseEventArgs(ToMirEngineButton(e.Button), e.Clicks, e.X, e.Y, e.Delta));
             _inner.MouseDown += (s, e) => MouseDown?.Invoke(this, new MouseEventArgs(ToMirEngineButton(e.Button), e.Clicks, e.X, e.Y, e.Delta));
             _inner.MouseUp += (s, e) => MouseUp?.Invoke(this, new MouseEventArgs(ToMirEngineButton(e.Button), e.Clicks, e.X, e.Y, e.Delta));
             _inner.MouseWheel += (s, e) => MouseWheel?.Invoke(this, new MouseEventArgs(ToMirEngineButton(e.Button), e.Clicks, e.X, e.Y, e.Delta));
-        }
-
-        private static KFramework.MonoGame.Keys ToEngineKeys(Keys k)
-        {
-            switch (k)
-            {
-                case Keys.Backspace: return KFramework.MonoGame.Keys.Backspace;
-                case Keys.Enter: return KFramework.MonoGame.Keys.Enter;
-                default: return (KFramework.MonoGame.Keys)(int)k;
-            }
-        }
-
-        private static Keys ToMirEngineKeys(KFramework.MonoGame.Keys k)
-        {
-            switch (k)
-            {
-                case KFramework.MonoGame.Keys.Backspace: return Keys.Backspace;
-                case KFramework.MonoGame.Keys.Enter: return Keys.Enter;
-                default: return (Keys)(int)k;
-            }
-        }
-
-        // 引擎文本框的 KeyPress 携带的是"字符"（DOM/IME 上屏），而 MirEngine 侧统一用 Keys 表达按键。
-        // 这里按 US 布局把字符还原成"键码（+Shift 位）"：'@' → D2|Shift、'A' → A|Shift。
-        // 还原不出来的字符（如 IME 上屏的汉字）返回 Keys.None，交由各处理方自行决定。
-        private static Keys ToMirEngineKeys(char keyChar)
-        {
-            switch (keyChar)
-            {
-                case '\b': return Keys.Backspace;
-                case '\t': return Keys.Tab;
-                case '\r':
-                case '\n': return Keys.Enter;
-                case (char)27: return Keys.Escape;
-                case ' ': return Keys.Space;
-            }
-
-            if (keyChar >= '0' && keyChar <= '9') return (Keys)((int)Keys.Digit0 + (keyChar - '0'));
-            if (keyChar >= 'a' && keyChar <= 'z') return (Keys)((int)Keys.KeyA + (char.ToUpperInvariant(keyChar) - 'A'));
-            if (keyChar >= 'A' && keyChar <= 'Z') return (Keys)((int)Keys.KeyA + (keyChar - 'A'));
-
-            const string shiftedDigits = ")!@#$%^&*(";                                    // Shift + D0..D9
-            int d = shiftedDigits.IndexOf(keyChar);
-            if (d >= 0) return (Keys)((int)Keys.Digit0 + d);
-
-            switch (keyChar)                                                              // 常见标点（Oem 编码沿用 WinForms）
-            {
-                case ';': return Keys.Semicolon;
-                case ':': return Keys.Semicolon;
-                case '=': return Keys.Equal;
-                case '+': return Keys.Equal;
-                case '-': return Keys.Minus;
-                case '_': return Keys.Minus;
-                case ',': return Keys.Comma;
-                case '<': return Keys.Comma;
-                case '.': return Keys.Period;
-                case '>': return Keys.Period;
-                case '/': return Keys.Slash;
-                case '?': return Keys.Slash;
-                case '`': return Keys.Backquote;
-                case '~': return Keys.Backquote;
-                case '[': return Keys.BracketLeft;
-                case '{': return Keys.BracketLeft;
-                case '\\': return Keys.Backslash;
-                case '|': return Keys.Backslash;
-                case ']': return Keys.BracketRight;
-                case '}': return Keys.BracketRight;
-                case '\'': return Keys.Quote;
-                case '"': return Keys.Quote;
-            }
-
-            return Keys.None;
         }
 
         private static MouseButtons ToMirEngineButton(KFramework.MonoGame.TextBox.MouseButtons b)

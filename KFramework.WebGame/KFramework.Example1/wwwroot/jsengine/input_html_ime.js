@@ -1,14 +1,8 @@
 // 浏览器原生文本输入覆盖层（input_html_ime 模块）。
 //
 // 作用：在 canvas 之上叠加一个透明的 DOM <input>/<textarea>，承接键盘 / IME 捕获。
-//       文字一律由引擎在 canvas 自绘（见 TextBoxRenderer / TextCaret），DOM 元素只作输入代理。
+// 文字一律由引擎在 canvas 自绘（见 TextBoxRenderer / TextCaret），DOM 元素只作输入代理。
 //
-// 数据流向（纯 Pull，无回调）：
-//   C# 主动调用 show / hide 控制覆盖层；每帧调用 getValue 拉取当前文本（含 IME 组字内容，
-//   浏览器在组字过程中已把值写入 <input>.value，无需 composition 事件）。
-//   DOM 不向 C# 推送任何事件。回车 / Esc 仅对普通字符 stopPropagation（避免触发游戏全局快捷键）；
-//   非组字态的回车 / Esc 放行冒泡，由全局键盘（input_keyboard）捕获，供 C# 侧判断确认 / 取消；
-//   IME 组字中的回车（选词）通过 isComposing 在 Web 端直接吞掉，不会冒泡误触发确认。
 import { getCanvasElement } from './gl.js';
 // 引擎在 main.ts 解析出程序集导出树后，通过 init() 把该对象注入本模块。
 // 覆盖层需要在 JS 侧把原生编辑结果 / 控制键回调给 C# 的 [JSExport]（合并于 JSBind_Input_IME）。
@@ -57,15 +51,28 @@ function activeEl() {
 }
 // 复用两个 DOM 元素：单行 <input> / 多行 <textarea>（互斥显示，避免类型切换异常）。
 function ensureEl(multiline) {
-    const el = multiline
-        ? (areaEl ||= document.createElement('textarea'))
-        : (inputEl ||= document.createElement('input'));
-    if (inputEl && inputEl !== el)
+    let el = null;
+    if (multiline) {
+        if (areaEl == null) {
+            areaEl = document.createElement('textarea');
+        }
+        el = areaEl;
+    }
+    else {
+        if (inputEl == null) {
+            inputEl = document.createElement('input');
+        }
+        el = inputEl;
+    }
+    if (inputEl && inputEl !== el) {
         inputEl.style.display = 'none';
-    if (areaEl && areaEl !== el)
+    }
+    if (areaEl && areaEl !== el) {
         areaEl.style.display = 'none';
-    if (!el.parentNode)
+    }
+    if (!el.parentNode) {
         attach(el);
+    }
     return el;
 }
 function attach(el) {
@@ -82,13 +89,10 @@ function attach(el) {
     el.setAttribute('autocomplete', 'off');
     el.setAttribute('spellcheck', 'false');
     document.body.appendChild(el);
-    // 普通字符 stopPropagation，避免冒泡到 window 被 input_keyboard 再次消费
-    // （例如密码里敲字母触发游戏全局快捷键）。回车 / Esc 的放行策略见下方 keydown。
     el.addEventListener('keydown', (e) => {
         const ke = e;
         const ctrl = ke.ctrlKey || ke.metaKey, shift = ke.shiftKey, alt = ke.altKey;
         const k = ke.key;
-        // IME 组字中的回车用于选词，直接吞掉，避免误触发游戏确认（引擎侧 Enter 由非组字态的回车承担）。
         if (composing && k === 'Enter') {
             ke.preventDefault();
             ke.stopPropagation();
@@ -102,16 +106,13 @@ function attach(el) {
             return;
         }
         if (controlKeys.indexOf(k) !== -1) {
-            // 控制键转发给引擎，由引擎自行维护光标 / 文本（引擎是唯一真相源）
             ime()?.OnKeyDown(k, ctrl, shift, alt);
             ke.preventDefault();
             ke.stopPropagation();
             return;
         }
-        e.stopPropagation();
+        ke.stopPropagation();
     });
-    // 跟踪 IME 组字状态（比单纯依赖 keydown.isComposing 更稳，覆盖部分浏览器边界）。
-    // 原生编辑结果回传：以引擎自身光标为锚点合并进 text（引擎是唯一真相源）
     el.addEventListener('input', (e) => {
         const el2 = activeEl();
         if (!el2)
@@ -128,9 +129,6 @@ function attach(el) {
     });
     el.addEventListener('compositionstart', () => { composing = true; });
     el.addEventListener('compositionend', () => { composing = false; });
-    // 焦点保活：若覆盖层本应活跃却意外失焦（被 canvas / 其它元素抢走焦点），重新夺回焦点。
-    // 否则普通字符与 IME 组字无法进入输入框，表现为"能删不能打字"。
-    // 仅当覆盖层仍激活（last 未清空）时补救；游戏调用 hide() 会清空 last，不再强抢焦点。
     el.addEventListener('blur', () => {
         if (last && el.style.display !== 'none') {
             setTimeout(() => {
