@@ -1,14 +1,23 @@
 namespace KFramework.MonoGame
 {
-    /// <summary>鼠标按键</summary>
+    /// <summary>
+    /// 鼠标按键。枚举的<b>数值</b>直接对应 HTML <see cref="MouseEvent.button"/> 的取值
+    /// 即 DOM 鼠标事件里 <c>event.button</c> 的原始序号），因此在浏览器实现中可直接转换
+    /// </summary>
     public enum MouseButton
     {
-        None,
-        Left,
-        Right,
-        Middle,
-        XButton1,
-        XButton2,
+        /// <summary>无按键 / 未变化（HTML <c>MouseEvent.button === -1</c>）。</summary>
+        None = -1,
+        /// <summary>主键（左键），HTML <c>MouseEvent.button === 0</c>。</summary>
+        Left = 0,
+        /// <summary>中键，HTML <c>MouseEvent.button === 1</c>。</summary>
+        Middle = 1,
+        /// <summary>次键（右键），HTML <c>MouseEvent.button === 2</c>。</summary>
+        Right = 2,
+        /// <summary>侧键后退（X1），HTML <c>MouseEvent.button === 3</c>。</summary>
+        XButton1 = 3,
+        /// <summary>侧键前进（X2），HTML <c>MouseEvent.button === 4</c>。</summary>
+        XButton2 = 4,
     }
 
     /// <summary>按键的瞬时状态</summary>

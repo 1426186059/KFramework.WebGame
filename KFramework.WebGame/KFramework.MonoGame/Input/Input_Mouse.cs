@@ -94,7 +94,7 @@ namespace KFramework.MonoGame
             {
                 if (_btnNew[b] != _btnLast[b])
                 {
-                    var btn = ToButton(b);
+                    MouseButton btn = (MouseButton)(b);
                     if (_btnNew[b])
                     {
                         ButtonDown?.Invoke(btn, pos);
@@ -173,17 +173,17 @@ namespace KFramework.MonoGame
         /// <summary>横向滚轮 —— 浏览器不支持，恒为 0</summary>
         public static int HorizontalScrollDelta => 0;
 
-        public static bool GetButton(MouseButton button) => _btnNew[ToIndex(button)];
+        public static bool GetButton(MouseButton button) => _btnNew[(int)button];
 
         public static bool GetButtonDown(MouseButton button)
         {
-            int b = ToIndex(button);
+            int b = (int)(button);
             return _btnNew[b] && !_btnLast[b];
         }
 
         public static bool GetButtonUp(MouseButton button)
         {
-            int b = ToIndex(button);
+            int b = (int)(button);
             return !_btnNew[b] && _btnLast[b];
         }
 
@@ -215,37 +215,6 @@ namespace KFramework.MonoGame
             int v = 0;
             for (int b = 0; b < MaxButtons; b++) if (src[b]) v |= 1 << b;
             return v;
-        }
-
-        /// <summary>MouseButton 枚举 → DOM 按键序号（左=0，中=1，右=2，侧键=3/4）。
-        /// 项目自定义枚举顺序为 Left/Right/Middle（Right=1，Middle=2），与浏览器
-        /// MouseEvent.button（Right=2，Middle=1）相反，因此所有“枚举→内部下标”都必须走这里，
-        /// 绝不能再用 (int)button，否则右键/中键会反。</summary>
-        private static int ToIndex(MouseButton button)
-        {
-            return button switch
-            {
-                MouseButton.Left => 0,
-                MouseButton.Middle => 1,
-                MouseButton.Right => 2,
-                MouseButton.XButton1 => 3,
-                MouseButton.XButton2 => 4,
-                _ => 0,
-            };
-        }
-
-        /// <summary>DOM 按键序号 → MouseButton 枚举（0=左，1=中，2=右，3/4=侧键）。与 <see cref="ToIndex"/> 互逆。</summary>
-        private static MouseButton ToButton(int index)
-        {
-            return index switch
-            {
-                0 => MouseButton.Left,
-                1 => MouseButton.Middle,
-                2 => MouseButton.Right,
-                3 => MouseButton.XButton1,
-                4 => MouseButton.XButton2,
-                _ => MouseButton.Left,
-            };
         }
     }
 }
