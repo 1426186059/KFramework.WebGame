@@ -153,13 +153,10 @@ namespace MirEngine
             _inner.KeyPress += (s, e) => KeyPress?.Invoke(this, new KeyPressEventArgs(e.KeyCode) { Handled = e.Handled });
             _inner.KeyDown += (s, e) => KeyDown?.Invoke(this, new KeyEventArgs(e.KeyCode) { Handled = e.Handled, SuppressKeyPress = e.SuppressKeyPress });
             _inner.KeyUp += (s, e) => KeyUp?.Invoke(this, new KeyEventArgs(e.KeyCode) { Handled = e.Handled, SuppressKeyPress = e.SuppressKeyPress });
-            _inner.MouseMove += (s, e) => MouseMove?.Invoke(this, new MouseEventArgs(ToMirEngineButton(e.Button), e.Clicks, e.X, e.Y, e.Delta));
-            _inner.MouseDown += (s, e) => MouseDown?.Invoke(this, new MouseEventArgs(ToMirEngineButton(e.Button), e.Clicks, e.X, e.Y, e.Delta));
-            _inner.MouseUp += (s, e) => MouseUp?.Invoke(this, new MouseEventArgs(ToMirEngineButton(e.Button), e.Clicks, e.X, e.Y, e.Delta));
-            _inner.MouseWheel += (s, e) => MouseWheel?.Invoke(this, new MouseEventArgs(ToMirEngineButton(e.Button), e.Clicks, e.X, e.Y, e.Delta));
+            _inner.MouseMove += (s, e) => MouseMove?.Invoke(this, new MouseEventArgs(e.Button, e.Clicks, e.X, e.Y, e.Delta));
+            _inner.MouseDown += (s, e) => MouseDown?.Invoke(this, new MouseEventArgs(e.Button, e.Clicks, e.X, e.Y, e.Delta));
+            _inner.MouseUp += (s, e) => MouseUp?.Invoke(this, new MouseEventArgs(e.Button, e.Clicks, e.X, e.Y, e.Delta));
+            _inner.MouseWheel += (s, e) => MouseWheel?.Invoke(this, new MouseEventArgs(e.Button, e.Clicks, e.X, e.Y, e.Delta));
         }
-
-        private static MouseButtons ToMirEngineButton(KFramework.MonoGame.TextBox.MouseButtons b)
-            => (MouseButtons)(int)b;
     }
 }

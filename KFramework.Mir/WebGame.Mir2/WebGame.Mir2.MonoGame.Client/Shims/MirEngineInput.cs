@@ -7,16 +7,6 @@ namespace MirEngine
     // 修饰键不再走 65536 高位掩码，改为独立 bool（来源：MG.Input_KeyBoard.Shift/Ctrl/Alt）。
     // KeyEventHandler / MouseEventHandler / KeyPressEventHandler 委托由本工程 WinFormsExtra.cs 统一提供。
 
-    public enum MouseButtons
-    {
-        None = 0,
-        Left = 1048576,
-        Right = 2097152,
-        Middle = 4194304,
-        XButton1 = 8388608,
-        XButton2 = 16777216
-    }
-
     public class MouseEventArgs : EventArgs
     {
         public MouseEventArgs(MouseButtons button, int clicks, int x, int y, int delta)
