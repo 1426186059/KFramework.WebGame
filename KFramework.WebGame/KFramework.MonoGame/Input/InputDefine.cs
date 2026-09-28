@@ -34,23 +34,11 @@ namespace KFramework.MonoGame
     {
         // ===== 编辑 / 控制键 =====
         None,
-        Backspace,
-        Tab,
-        Enter,
-        Escape,
-        Space,
-        Delete,
-        Insert,
-        Home,
-        End,
-        PageUp,
-        PageDown,
-        ContextMenu,
-        PrintScreen,
-        Pause,
-        CapsLock,
-        NumLock,
-        ScrollLock,
+
+        // 编辑/控制键
+        Backspace, Tab, Enter, Escape, Space, Delete, 
+        Insert, Home, End, PageUp, PageDown, ContextMenu,
+        PrintScreen,Pause,CapsLock,NumLock,ScrollLock,
 
         // ===== 字母键（code: "KeyA".."KeyZ"）=====
         KeyA, KeyB, KeyC, KeyD, KeyE, KeyF, KeyG, KeyH, KeyI, KeyJ, KeyK, KeyL, KeyM,
