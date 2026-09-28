@@ -1,5 +1,6 @@
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
+using System;
 using System.Collections.Generic;
 
 namespace MirGame.Tests.InputTest;
@@ -11,15 +12,34 @@ namespace MirGame.Tests.InputTest;
 /// </summary>
 public sealed class InputTestScene : TestSceneBase
 {
-    // 要展示的键（带显示名）
-    private static readonly (Keys key, string label)[] _keys =
-    [
-        (Keys.W, "W"), (Keys.A, "A"), (Keys.S, "S"), (Keys.D, "D"),
-        (Keys.Space, "Space"), (Keys.Enter, "Enter"), (Keys.LeftShift, "Shift"), (Keys.Escape, "Esc"),
-        (Keys.F1, "F1"), (Keys.F2, "F2"), (Keys.F3, "F3"), (Keys.F4, "F4"),
-        (Keys.F5, "F5"), (Keys.F6, "F6"), (Keys.F7, "F7"), (Keys.F8, "F8"),
-        (Keys.F9, "F9"), (Keys.F10, "F10"), (Keys.F11, "F11"), (Keys.F12, "F12"),
-    ];
+    // 要展示的键：由 Keys 枚举自动生成（排除 None；按数值升序；别名合并显示首个名字 + 数值）
+    private static readonly (Keys key, string label)[] _keys = BuildAllKeys();
+
+    /// <summary>枚举全量生成按键表，避免手写遗漏（F1..F12 / Tab 等曾在手写表里缺失）。
+    /// Shift/Ctrl/Alt 的 Left/Right 与其同名键数值相同（浏览器不区分左右），故按数值合并。</summary>
+    private static (Keys, string)[] BuildAllKeys()
+    {
+        var names = new Dictionary<byte, List<string>>();
+        foreach (string name in Enum.GetNames<Keys>())
+        {
+            if (name == nameof(Keys.None)) continue;
+            byte v = (byte)Enum.Parse<Keys>(name);
+            if (!names.TryGetValue(v, out List<string>? list))
+            {
+                list = new List<string>();
+                names[v] = list;
+            }
+            list.Add(name);
+        }
+
+        var result = new List<(Keys, string)>();
+        for (int v = 0; v <= byte.MaxValue; v++)
+        {
+            if (!names.TryGetValue((byte)v, out List<string>? list)) continue;
+            result.Add(((Keys)v, list[0] + "(" + v + ")"));
+        }
+        return result.ToArray();
+    }
 
     private static readonly MouseButton[] _buttonsList = [MouseButton.Left, MouseButton.Right, MouseButton.Middle];
 
@@ -99,22 +119,32 @@ public sealed class InputTestScene : TestSceneBase
     private void LogEvent(string s)
     {
         _log.Insert(0, s);
-        if (_log.Count > 7) _log.RemoveAt(_log.Count - 1);
+        if (_log.Count > 10) _log.RemoveAt(_log.Count - 1);
     }
 
     protected override void DrawBody(SpriteBatch batch, Vector2 origin)
     {
         float y = origin.Y;
 
-        y += DrawSection(batch, "一、键盘 Keyboard：按下(黄) / 持续按住(绿) / 抬起(红) / 无(灰)", new Vector2(origin.X, y));
-        foreach ((Keys key, string label) in _keys)
+        y += DrawSection(batch, "一、键盘全键表（枚举全量 " + _keys.Length + " 键）：按下=黄 / 按住=绿 / 抬起=红 / 无=灰", new Vector2(origin.X, y));
+        // 键很多，按列铺开，列数随画布宽度自适应
+        float gridTop = y;
+        float colW = 190f;
+        int cols = Math.Max(1, (int)((Device.Viewport.Width - 40f) / colW));
+        int rows = (_keys.Length + cols - 1) / cols;
+        float lineH = Font.LineSpacing + 4f;
+        for (int i = 0; i < _keys.Length; i++)
         {
+            (Keys key, string label) = _keys[i];
+            float px = origin.X + (i / rows) * colW;
+            float py = gridTop + (i % rows) * lineH;
+            if (py > Device.Viewport.Height - 8) continue;
             KPressState st = Input_KeyBoard.GetKeyState(key);
-            int frames = _keyFrames.GetValueOrDefault(key);
-            string suffix = st == KPressState.Held ? $" (按住 {frames} 帧)" : "";
-            batch.DrawString(Font, $"{label,-6} {StateText(st)}{suffix}", new Vector2(origin.X, y), StateColor(st));
-            y += Font.LineSpacing + 4f;
+            string txt = st == KPressState.None ? label : label + " " + StateText(st);
+            batch.DrawString(Font, txt, new Vector2(px, py), StateColor(st));
         }
+        y = gridTop + rows * lineH + 6f;
+        y += DrawLine(batch, null, "注：Shift/Ctrl/Alt 的 Left/Right 与其同名键共用同一数值（浏览器 keyCode 不区分左右）", new Vector2(origin.X, y), new Color(150, 160, 180));
 
         Vector2 axis = Input_KeyBoard.GetAxis();
         batch.DrawString(Font, $"WASD / 方向键 轴: ({axis.X:+0.##;-0.##;0}, {axis.Y:+0.##;-0.##;0})", new Vector2(origin.X, y), Color.LightGray);

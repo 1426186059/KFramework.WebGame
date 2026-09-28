@@ -118,10 +118,10 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>激活装置：建立 / 恢复 JS 侧键盘监听（重新绑定到画布）。</summary>
-        public static void Activate()
+        public static void Activate(bool bUseCanvas = true)
         {
             Reset();
-            JSBind_Input_Keyboard.BindKeyboard();
+            JSBind_Input_Keyboard.BindKeyboard(bUseCanvas ? GraphicsDevice.CanvasId : null);
             Active = true;
         }
 

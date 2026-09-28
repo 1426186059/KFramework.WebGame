@@ -2,6 +2,7 @@ using Client;
 using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
+using Client.MirObjects;
 using Client.MirScenes;
 using Client.MirSounds;
 using KFramework.MonoGame;
@@ -58,6 +59,7 @@ namespace WebGame.Mir2.MonoGame.Client
         // 原 WinForms CMain 中被逻辑代码引用的静态成员（浏览器端用占位/轻量实现）。
         public static bool Shift, Alt, Ctrl, Tilde, SpellTargetLock;
         public static MirControl DebugBaseLabel, HintBaseLabel;
+        public static MirLabel DebugTextLabel, HintTextLabel;
         public static string DebugText = "";
         public static long PingTime;
         public static long NextPing = 10000;
@@ -190,10 +192,171 @@ namespace WebGame.Mir2.MonoGame.Client
             for (int i = 0; i < MirAnimatedButton.Animations.Count; i++)
                 MirAnimatedButton.Animations[i].UpdateOffSet();
 
-            // 原版此处还有 CreateHintLabel()，以及 Settings.DebugMode 为真时的 CreateDebugLabel()。
-            // 本移植未搬这两个方法：
-            //   - Hint 悬浮提示依赖 HintBaseLabel/HintTextLabel，本移植未实现；
-            //   - Debug 浮层已由 GameScene 负责（见 GameScene.cs 中 CMain.DebugBaseLabel 的处理），此处不重复创建。
+            // 原版 CreateHintLabel() / CreateDebugLabel()（Crystal Client/Forms/CMain.cs:514 / :421）。
+            // 逐帧刷新：Hint 浮层跟随鼠标所在控件的 Hint 文本；Debug 浮层由 Settings.DebugMode（F12）开关，
+            // 两个浮层都无 Parent，由 MirScene.Draw() 在场景上屏之后单独 Draw（与 MirScene.cs:85-89 对应）。
+            CreateHintLabel();
+
+            if (Settings.DebugMode || Input_KeyBoard.GetKey(MG.Keys.Tab))
+                CreateDebugLabel();
+            else if (DebugBaseLabel != null)
+                DisposeDebugLabel();
+        }
+
+        // 原版 CMain.CreateDebugLabel()（Crystal Client/Forms/CMain.cs:421）。
+        // 原版在"全屏"时建浮层、窗口模式时把文本写进窗体标题；浏览器端没有窗体标题，一律建浮层。
+        private static void CreateDebugLabel()
+        {
+            string text;
+
+            if (MirControl.MouseControl != null)
+            {
+                text = string.Format("FPS: {0}", FPS);
+
+                text += string.Format(", DPS: {0}", DPS);
+
+                text += string.Format(", Time: {0:HH:mm:ss UTC}", Now);
+
+                if (MirControl.MouseControl is MapControl)
+                    text += string.Format(", Co Ords: {0}", MapControl.MapLocation);
+
+                if (MirControl.MouseControl is MirImageControl)
+                    text += string.Format(", Control: {0}", MirControl.MouseControl.GetType().Name);
+
+                if (MirScene.ActiveScene is GameScene)
+                    text += string.Format(", Objects: {0}", MapControl.Objects.Count);
+
+                if (MirScene.ActiveScene is GameScene && !string.IsNullOrEmpty(DebugText))
+                    text += string.Format(", Debug: {0}", DebugText);
+
+                text += MapObject.MouseObject != null
+                    ? string.Format(", Target: {0}", MapObject.MouseObject.Name)
+                    : string.Format(", Target: none");
+            }
+            else
+                text = string.Format("FPS: {0}", FPS);
+
+            text += string.Format(", Ping: {0}", PingTime);
+
+            text += string.Format(", Sent: {0}, Received: {1}", Functions.ConvertByteSize(BytesSent), Functions.ConvertByteSize(BytesReceived));
+
+            text += string.Format(", TLC: {0}", DXManager.TextureList.Count(x => x.TextureValid));
+            text += string.Format(", CLC: {0}", DXManager.ControlList.Count(x => !x.IsDisposed));
+
+            if (DebugBaseLabel == null || DebugBaseLabel.IsDisposed)
+            {
+                DebugBaseLabel = new MirControl
+                {
+                    BackColour = MirEngine.Color.FromArgb(50, 50, 50),
+                    Border = true,
+                    BorderColour = MirEngine.Color.Black,
+                    DrawControlTexture = true,
+                    Location = new MirEngine.Point(5, 5),
+                    NotControl = true,
+                    Opacity = 0.5F
+                };
+            }
+
+            if (DebugTextLabel == null || DebugTextLabel.IsDisposed)
+            {
+                DebugTextLabel = new MirLabel
+                {
+                    AutoSize = true,
+                    BackColour = MirEngine.Color.Transparent,
+                    ForeColour = MirEngine.Color.White,
+                    Parent = DebugBaseLabel,
+                };
+
+                DebugTextLabel.SizeChanged += (o, e) => ResizeBaseToText(DebugBaseLabel, DebugTextLabel);
+            }
+
+            DebugTextLabel.Text = text;
+        }
+
+        // 原版 CMain.CreateHintLabel()（Crystal Client/Forms/CMain.cs:514）：鼠标悬停控件的 Hint 浮层。
+        // 原版把 HintBaseLabel 挂在 MirScene.ActiveScene 上；本移植刻意不挂父节点——场景的子控件会被
+        // 烘焙进 UI 层纹理（MirScene.DrawControl → UILayer.Bake），再叠加一次 MirScene.Draw 里的显式
+        // Draw 就会画两遍，故保持无父、只由 MirScene.Draw 画一次（UI 层是单位变换，屏幕坐标即 UI 坐标）。
+        private static void CreateHintLabel()
+        {
+            if (HintBaseLabel == null || HintBaseLabel.IsDisposed)
+            {
+                HintBaseLabel = new MirControl
+                {
+                    BackColour = MirEngine.Color.FromArgb(255, 0, 0, 0),
+                    Border = true,
+                    DrawControlTexture = true,
+                    BorderColour = MirEngine.Color.FromArgb(255, 144, 144, 0),
+                    ForeColour = MirEngine.Color.Yellow,
+                    NotControl = true,
+                    Opacity = 0.5F
+                };
+            }
+
+            if (HintTextLabel == null || HintTextLabel.IsDisposed)
+            {
+                HintTextLabel = new MirLabel
+                {
+                    AutoSize = true,
+                    BackColour = MirEngine.Color.Transparent,
+                    ForeColour = MirEngine.Color.Yellow,
+                    Parent = HintBaseLabel,
+                };
+
+                HintTextLabel.SizeChanged += (o, e) => ResizeBaseToText(HintBaseLabel, HintTextLabel);
+            }
+
+            if (MirControl.MouseControl == null || string.IsNullOrEmpty(MirControl.MouseControl.Hint))
+            {
+                HintBaseLabel.Visible = false;
+                return;
+            }
+
+            HintBaseLabel.Visible = true;
+
+            HintTextLabel.Text = MirControl.MouseControl.Hint;
+
+            MirEngine.Point point = MPoint.Add(-HintTextLabel.Size.Width, 20);
+
+            if (point.X + HintBaseLabel.Size.Width >= Settings.ScreenWidth)
+                point.X = Settings.ScreenWidth - HintBaseLabel.Size.Width - 1;
+            if (point.Y + HintBaseLabel.Size.Height >= Settings.ScreenHeight)
+                point.Y = Settings.ScreenHeight - HintBaseLabel.Size.Height - 1;
+
+            if (point.X < 0)
+                point.X = 0;
+            if (point.Y < 0)
+                point.Y = 0;
+
+            HintBaseLabel.Location = point;
+        }
+
+        // 文本标签是 AutoSize 的，底板要跟着文本尺寸走（原版 HintTextLabel.SizeChanged += ...）。
+        // 额外一步 DisposeTexture：MirControl.CreateTexture 只在 ControlTexture 为 null 时建 RT，
+        // 尺寸变了不会重建，不显式释放的话底板会一直沿用首次的纹理尺寸。
+        private static void ResizeBaseToText(MirControl baseLabel, MirLabel textLabel)
+        {
+            if (baseLabel == null || baseLabel.IsDisposed || textLabel == null) return;
+            if (baseLabel.Size == textLabel.Size) return;
+
+            baseLabel.Size = textLabel.Size;
+            baseLabel.DisposeTexture();
+        }
+
+        // 关闭 DebugMode（再按一次 F12）时销毁调试浮层；原版只在全屏分支里建、窗口模式里不建，
+        // 没有对应的销毁，本移植必须显式销毁，否则关掉后浮层会一直留在屏幕上。
+        private static void DisposeDebugLabel()
+        {
+            if (DebugTextLabel != null)
+            {
+                if (!DebugTextLabel.IsDisposed) DebugTextLabel.Dispose();
+                DebugTextLabel = null;
+            }
+            if (DebugBaseLabel != null)
+            {
+                if (!DebugBaseLabel.IsDisposed) DebugBaseLabel.Dispose();
+                DebugBaseLabel = null;
+            }
         }
 
         // 原版 CMain.RenderEnvironment()（Crystal Client/Forms/CMain.cs:385）。
@@ -293,12 +456,9 @@ namespace WebGame.Mir2.MonoGame.Client
             if (e.KeyCode == MirEngine.Keys.Oem8) Tilde = true;
             if (e.KeyCode == MirEngine.Keys.F12)
             {
+                // 原版：Settings.DebugMode 取反，浮层由 UpdateEnviroment 里的 CreateDebugLabel 逐帧维护。
                 Settings.DebugMode = !Settings.DebugMode;
-                if (!Settings.DebugMode && CMain.DebugBaseLabel != null)
-                {
-                    CMain.DebugBaseLabel.Dispose();
-                    CMain.DebugBaseLabel = null;
-                }
+                if (!Settings.DebugMode) DisposeDebugLabel();
                 return;
             }
             try

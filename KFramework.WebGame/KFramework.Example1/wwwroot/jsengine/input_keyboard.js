@@ -17,6 +17,10 @@ const CODE_TO_KEYS = {
     // 小键盘数字（回落到主键盘数字，Keys 枚举未单独定义 NumPad）
     'Numpad0': 48, 'Numpad1': 49, 'Numpad2': 50, 'Numpad3': 51, 'Numpad4': 52,
     'Numpad5': 53, 'Numpad6': 54, 'Numpad7': 55, 'Numpad8': 56, 'Numpad9': 57,
+    // 功能键 F1..F12（code 为 'F1'..'F12'，数值沿用 KeyboardEvent.keyCode 112..123，须与 Keys.cs 一致）
+    'F1': 112, 'F2': 113, 'F3': 114, 'F4': 115, 'F5': 116,
+    'F6': 117, 'F7': 118, 'F8': 119, 'F9': 120, 'F10': 121,
+    'F11': 122, 'F12': 123,
     // 方向键
     'ArrowLeft': 37, 'ArrowUp': 38, 'ArrowRight': 39, 'ArrowDown': 40,
     // 控制 / 编辑键
@@ -63,14 +67,16 @@ function Process_Pointerdown() {
 export function bindKeyboard(canvasId) {
     m_Canvas = getCanvas(canvasId);
     m_CanvasId = canvasId ?? null;
-    if (m_Canvas) {
-        focusCanvas(m_CanvasId);
-        m_Canvas.addEventListener('keydown', Process_KeyDown);
-        m_Canvas.addEventListener('keyup', Process_KeyUp);
-        m_Canvas.addEventListener('blur', Process_Blur);
-        m_Canvas.addEventListener('pointerdown', Process_Pointerdown);
-    }
-    else {
+    // if (m_Canvas)
+    // {
+    //     focusCanvas(m_CanvasId);
+    //     m_Canvas.addEventListener('keydown', Process_KeyDown);
+    //     m_Canvas.addEventListener('keyup', Process_KeyUp);
+    //     m_Canvas.addEventListener('blur', Process_Blur);
+    //     m_Canvas.addEventListener('pointerdown', Process_Pointerdown);
+    // }
+    // else
+    {
         // 找不到画布（极少见）才回落到 window，保证至少有输入。
         window.addEventListener('keydown', Process_KeyDown);
         window.addEventListener('keyup', Process_KeyUp);
