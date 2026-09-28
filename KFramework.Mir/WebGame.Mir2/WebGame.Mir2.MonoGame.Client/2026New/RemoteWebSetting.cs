@@ -16,7 +16,7 @@ public static class RemoteWebSetting
     public const string New_LibBaseUrl = "http://127.0.0.1:5081/";
 
     // 游戏 WS 网关（原 Settings.IPAddress:Port）。Web 下连接地址由部署决定，不从本地 ini 取。
-    public const string GameServerUrl = "ws://127.0.0.1:7000";
+    public const string GameServerUrl = "ws://127.0.0.1:8000";
 
     // 语言包相对地址（相对 LibBaseUrl）。例如 Chinese.json -> <LibBaseUrl>i18n/Chinese.json。
     // 启动时会尝试从此处下载默认词库覆盖代码内置默认；下载失败则保留代码内置默认。
