@@ -1,7 +1,7 @@
 // 浏览器工程不再引用 WinForms，原本由 <UseWindowsForms> 隐式引入的命名空间在此补齐。
 // System.Windows.Forms 的真实类型由本工程 Shims/SystemWindowsForms.cs 提供（含 Keys/Application/MessageBox/Form 等）。
 global using MirEngine;
-// Mir2 适配 MonoGame：让客户端既有 `Keys.X` 代码直接落到引擎键枚举，不再依赖 WinForms 兼容层 MirEngine.Keys。
+// Mir2 适配 MonoGame：让客户端既有 `Keys.KeyX` 代码直接落到引擎键枚举，不再依赖 WinForms 兼容层 MirEngine.Keys。
 global using Keys = KFramework.MonoGame.Keys;
 global using System.Runtime.InteropServices.JavaScript; // [JSExport]/[JSImport]
 

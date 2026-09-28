@@ -301,7 +301,7 @@ namespace Client.MirScenes.Dialogs
 
         public void CheckNewInput(KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.ControlKey || e.KeyCode == Keys.Menu || e.KeyCode == Keys.ShiftKey || e.KeyCode == Keys.Oem8 || e.KeyCode == Keys.None) return;
+            if (e.KeyCode == Keys.ControlLeft || e.KeyCode == Keys.AltLeft || e.KeyCode == Keys.ShiftLeft || e.KeyCode == Keys.Backquote || e.KeyCode == Keys.None) return;
 
             KeyBind bind = CMain.InputKeys.Keylist.Single(x => x.function == WaitingForBind.function);
 

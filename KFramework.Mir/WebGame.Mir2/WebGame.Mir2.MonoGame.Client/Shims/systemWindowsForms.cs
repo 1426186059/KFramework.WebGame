@@ -14,11 +14,10 @@ namespace MirEngine
         {
             get
             {
-                Keys k = 0;
-                if (CMain.Shift) k |= Keys.Shift;
-                if (CMain.Ctrl) k |= Keys.Control;
-                if (CMain.Alt) k |= Keys.Alt;
-                return k;
+                if (CMain.Ctrl) return Keys.ControlLeft;
+                if (CMain.Shift) return Keys.ShiftLeft;
+                if (CMain.Alt) return Keys.AltLeft;
+                return Keys.None;
             }
         }
     }

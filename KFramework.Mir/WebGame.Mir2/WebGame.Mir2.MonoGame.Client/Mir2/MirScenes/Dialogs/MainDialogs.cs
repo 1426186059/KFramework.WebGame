@@ -1064,7 +1064,7 @@ namespace Client.MirScenes.Dialogs
         {
             switch (e.KeyCode)
             {
-                case Keys.Up:
+                case Keys.ArrowUp:
                     if (StartIndex == 0) return;
                     StartIndex--;
                     break;
@@ -1072,7 +1072,7 @@ namespace Client.MirScenes.Dialogs
                     if (StartIndex == 0) return;
                     StartIndex = 0;
                     break;
-                case Keys.Down:
+                case Keys.ArrowDown:
                     if (StartIndex == History.Count - 1) return;
                     StartIndex++;
                     break;
@@ -1099,15 +1099,15 @@ namespace Client.MirScenes.Dialogs
             // KeyPress 现在给的是键码：'@' / '!' 是上档字符，靠 Shift 位与 '2' / '1' 区分；'/' 是 Oem 键(191)。
             switch (e.KeyCode)
             {
-                case Keys.D2:               // '@' = Shift + 2
-                case Keys.D1:               // '!' = Shift + 1
+                case Keys.Digit2:               // '@' = Shift + 2
+                case Keys.Digit1:               // '!' = Shift + 1
                 case Keys.Space:
                 case Keys.Enter:
-                    if (!e.Shift && (e.KeyCode == Keys.D1 || e.KeyCode == Keys.D2))
+                    if (!e.Shift && (e.KeyCode == Keys.Digit1 || e.KeyCode == Keys.Digit2))
                         break;              // 没按 Shift 的 1 / 2 只是数字，不是聊天前缀
                     ChatTextBox.SetFocus();
-                    if (e.KeyCode == Keys.D1) ChatTextBox.Text = "!";
-                    if (e.KeyCode == Keys.D2) ChatTextBox.Text = "@";
+                    if (e.KeyCode == Keys.Digit1) ChatTextBox.Text = "!";
+                    if (e.KeyCode == Keys.Digit2) ChatTextBox.Text = "@";
                     if (ChatPrefix != "") ChatTextBox.Text = ChatPrefix;
 
                     ChatTextBox.Visible = true;
@@ -1115,7 +1115,7 @@ namespace Client.MirScenes.Dialogs
                     ChatTextBox.TextBox.SelectionStart = ChatTextBox.Text.Length;
                     e.Handled = true;
                     break;
-                case Keys.OemQuestion:      // '/'
+                case Keys.Slash:      // '/'
                     ChatTextBox.SetFocus();
                     ChatTextBox.Text = LastPM + " ";
                     ChatTextBox.Visible = true;

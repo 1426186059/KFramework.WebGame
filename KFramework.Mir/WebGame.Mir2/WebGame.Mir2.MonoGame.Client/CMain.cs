@@ -453,7 +453,7 @@ namespace WebGame.Mir2.MonoGame.Client
             if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
                 SpellTargetLock = (MG.Keys)(int)e.KeyCode == (MG.Keys)Enum.Parse(typeof(MG.Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
             else SpellTargetLock = false;
-            if (e.KeyCode == Keys.Oem8) Tilde = true;
+            if (e.KeyCode == Keys.Backquote) Tilde = true;
             if (e.KeyCode == Keys.F12)
             {
                 // 原版：Settings.DebugMode 取反，浮层由 UpdateEnviroment 里的 CreateDebugLabel 逐帧维护。
@@ -475,7 +475,7 @@ namespace WebGame.Mir2.MonoGame.Client
             if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
                 SpellTargetLock = (MG.Keys)(int)e.KeyCode == (MG.Keys)Enum.Parse(typeof(MG.Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
             else SpellTargetLock = false;
-            if (e.KeyCode == Keys.Oem8) Tilde = false;
+            if (e.KeyCode == Keys.Backquote) Tilde = false;
             foreach (KeyBind KeyCheck in CMain.InputKeys.Keylist)
             {
                 if (KeyCheck.function != KeybindOptions.Screenshot) continue;

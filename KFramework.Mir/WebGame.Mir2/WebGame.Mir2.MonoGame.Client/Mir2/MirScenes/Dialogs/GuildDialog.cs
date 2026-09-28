@@ -1372,7 +1372,7 @@ namespace Client.MirScenes.Dialogs
         {
             switch (e.KeyCode)
             {
-                case Keys.Up:
+                case Keys.ArrowUp:
                     if (NoticeScrollIndex == 0) break;
                     if (NoticeScrollIndex >= 25) NoticeScrollIndex -= 24;
                     NoticeScrollIndex--;
@@ -1381,7 +1381,7 @@ namespace Client.MirScenes.Dialogs
                     if (NoticeScrollIndex == 0) break;
                     NoticeScrollIndex = 0;
                     break;
-                case Keys.Down:
+                case Keys.ArrowDown:
                     if (NoticeScrollIndex == Notice.MultiText.Length - 1) break;
                     if (NoticeScrollIndex < 25) NoticeScrollIndex = 24;
                     NoticeScrollIndex++;
@@ -1665,7 +1665,7 @@ namespace Client.MirScenes.Dialogs
         {
             switch (e.KeyCode)
             {
-                case Keys.Up:
+                case Keys.ArrowUp:
                     if (MemberScrollIndex == 0) break;
                     MemberScrollIndex--;
                     break;
@@ -1673,7 +1673,7 @@ namespace Client.MirScenes.Dialogs
                     if (MemberScrollIndex == 0) break;
                     MemberScrollIndex = 0;
                     break;
-                case Keys.Down:
+                case Keys.ArrowDown:
                     if (MembersShowCount < MemberPageRows) break;
                     if (MemberScrollIndex == MembersShowCount - MemberPageRows) break;
                     MemberScrollIndex++;
@@ -1860,7 +1860,7 @@ namespace Client.MirScenes.Dialogs
         {
             switch (e.KeyCode)
             {
-                case Keys.OemPipe:          // '\'：WinForms 里 '\' 键即 OemPipe(220)
+                case Keys.Backslash:          // '\'：WinForms 里 '\' 键即 OemPipe(220)
                     e.Handled = true;
                     break;
                 case Keys.Enter:

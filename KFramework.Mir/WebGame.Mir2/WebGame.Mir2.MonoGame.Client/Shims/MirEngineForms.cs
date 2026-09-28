@@ -177,8 +177,8 @@ namespace MirEngine
         {
             switch (k)
             {
-                case Keys.Back: return KFramework.MonoGame.Keys.Backspace;
-                case Keys.Return: return KFramework.MonoGame.Keys.Enter;
+                case Keys.Backspace: return KFramework.MonoGame.Keys.Backspace;
+                case Keys.Enter: return KFramework.MonoGame.Keys.Enter;
                 default: return (KFramework.MonoGame.Keys)(int)k;
             }
         }
@@ -187,8 +187,8 @@ namespace MirEngine
         {
             switch (k)
             {
-                case KFramework.MonoGame.Keys.Backspace: return Keys.Back;
-                case KFramework.MonoGame.Keys.Enter: return Keys.Return;
+                case KFramework.MonoGame.Keys.Backspace: return Keys.Backspace;
+                case KFramework.MonoGame.Keys.Enter: return Keys.Enter;
                 default: return (Keys)(int)k;
             }
         }
@@ -200,46 +200,46 @@ namespace MirEngine
         {
             switch (keyChar)
             {
-                case '\b': return Keys.Back;
+                case '\b': return Keys.Backspace;
                 case '\t': return Keys.Tab;
                 case '\r':
-                case '\n': return Keys.Return;
+                case '\n': return Keys.Enter;
                 case (char)27: return Keys.Escape;
                 case ' ': return Keys.Space;
             }
 
-            if (keyChar >= '0' && keyChar <= '9') return (Keys)(int)keyChar;              // D0..D9 与 ASCII 一致
-            if (keyChar >= 'a' && keyChar <= 'z') return (Keys)(int)char.ToUpperInvariant(keyChar);
-            if (keyChar >= 'A' && keyChar <= 'Z') return (Keys)(int)keyChar | Keys.Shift;
+            if (keyChar >= '0' && keyChar <= '9') return (Keys)((int)Keys.Digit0 + (keyChar - '0'));
+            if (keyChar >= 'a' && keyChar <= 'z') return (Keys)((int)Keys.KeyA + (char.ToUpperInvariant(keyChar) - 'A'));
+            if (keyChar >= 'A' && keyChar <= 'Z') return (Keys)((int)Keys.KeyA + (keyChar - 'A'));
 
             const string shiftedDigits = ")!@#$%^&*(";                                    // Shift + D0..D9
             int d = shiftedDigits.IndexOf(keyChar);
-            if (d >= 0) return (Keys)((int)Keys.D0 + d) | Keys.Shift;
+            if (d >= 0) return (Keys)((int)Keys.Digit0 + d);
 
             switch (keyChar)                                                              // 常见标点（Oem 编码沿用 WinForms）
             {
-                case ';': return Keys.OemSemicolon;
-                case ':': return Keys.OemSemicolon | Keys.Shift;
-                case '=': return Keys.Oemplus;
-                case '+': return Keys.Oemplus | Keys.Shift;
-                case '-': return Keys.OemMinus;
-                case '_': return Keys.OemMinus | Keys.Shift;
-                case ',': return Keys.Oemcomma;
-                case '<': return Keys.Oemcomma | Keys.Shift;
-                case '.': return Keys.OemPeriod;
-                case '>': return Keys.OemPeriod | Keys.Shift;
-                case '/': return Keys.OemQuestion;
-                case '?': return Keys.OemQuestion | Keys.Shift;
-                case '`': return Keys.OemTilde;
-                case '~': return Keys.OemTilde | Keys.Shift;
-                case '[': return Keys.OemOpenBrackets;
-                case '{': return Keys.OemOpenBrackets | Keys.Shift;
-                case '\\': return Keys.OemPipe;
-                case '|': return Keys.OemPipe | Keys.Shift;
-                case ']': return Keys.OemCloseBrackets;
-                case '}': return Keys.OemCloseBrackets | Keys.Shift;
-                case '\'': return Keys.OemQuotes;
-                case '"': return Keys.OemQuotes | Keys.Shift;
+                case ';': return Keys.Semicolon;
+                case ':': return Keys.Semicolon;
+                case '=': return Keys.Equal;
+                case '+': return Keys.Equal;
+                case '-': return Keys.Minus;
+                case '_': return Keys.Minus;
+                case ',': return Keys.Comma;
+                case '<': return Keys.Comma;
+                case '.': return Keys.Period;
+                case '>': return Keys.Period;
+                case '/': return Keys.Slash;
+                case '?': return Keys.Slash;
+                case '`': return Keys.Backquote;
+                case '~': return Keys.Backquote;
+                case '[': return Keys.BracketLeft;
+                case '{': return Keys.BracketLeft;
+                case '\\': return Keys.Backslash;
+                case '|': return Keys.Backslash;
+                case ']': return Keys.BracketRight;
+                case '}': return Keys.BracketRight;
+                case '\'': return Keys.Quote;
+                case '"': return Keys.Quote;
             }
 
             return Keys.None;

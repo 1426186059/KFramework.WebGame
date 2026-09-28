@@ -1355,8 +1355,8 @@ namespace Client.MirScenes.Dialogs
         {
             // 原版按"字符"判定：控制键 + 数字键放行，价格框只吃数字。
             Keys k = e.KeyCode;
-            bool control = k == Keys.Back || k == Keys.Tab || k == Keys.Return || k == Keys.Escape;
-            bool digit = (k >= Keys.D0 && k <= Keys.D9) || (k >= Keys.NumPad0 && k <= Keys.NumPad9);
+            bool control = k == Keys.Backspace || k == Keys.Tab || k == Keys.Enter || k == Keys.Escape;
+            bool digit = (k >= Keys.Digit0 && k <= Keys.Digit9) || (k >= Keys.Numpad0 && k <= Keys.Numpad9);
             if (!control
                 && !digit)
             {

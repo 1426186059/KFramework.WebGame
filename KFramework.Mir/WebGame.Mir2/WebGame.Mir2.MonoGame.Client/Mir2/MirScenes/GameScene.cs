@@ -5788,9 +5788,9 @@ namespace Client.MirScenes
             {
                 // 只允许字母 / 数字 / 退格（KeyPress 现在给键码，大小写由 Shift 位体现，故按键码放行全部字母）
                 Keys k = e.KeyCode;
-                bool letter = k >= Keys.A && k <= Keys.Z;
-                bool digit = (k >= Keys.D0 && k <= Keys.D9) || (k >= Keys.NumPad0 && k <= Keys.NumPad9);
-                if (!letter && !digit && k != Keys.Back)
+                bool letter = k >= Keys.KeyA && k <= Keys.KeyZ;
+                bool digit = (k >= Keys.Digit0 && k <= Keys.Digit9) || (k >= Keys.Numpad0 && k <= Keys.Numpad9);
+                if (!letter && !digit && k != Keys.Backspace)
                     e.Handled = true;
             };
             inputBox.OKButton.Click += (o, e) =>
