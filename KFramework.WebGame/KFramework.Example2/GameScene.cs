@@ -102,8 +102,8 @@ public sealed class GameScene : KSceneBase
         if (_inspectSprites) return;
 
         // R：重开本关；N：跳下一关（调试用）
-        if (Input_KeyBoard.GetKeyDown(Keys.R)) { _level.LoadLevel(_level.LevelIndex); return; }
-        if (Input_KeyBoard.GetKeyDown(Keys.N) && _level.LevelIndex + 1 < TankLevel.LevelCount)
+        if (Input_KeyBoard.GetKeyDown(Keys.KeyR)) { _level.LoadLevel(_level.LevelIndex); return; }
+        if (Input_KeyBoard.GetKeyDown(Keys.KeyN) && _level.LevelIndex + 1 < TankLevel.LevelCount)
         {
             _level.LoadLevel(_level.LevelIndex + 1);
             return;

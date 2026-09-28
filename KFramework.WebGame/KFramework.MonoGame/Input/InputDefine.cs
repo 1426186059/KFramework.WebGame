@@ -23,48 +23,90 @@ namespace KFramework.MonoGame
         Up,
     }
 
+    /// <summary>
+    /// 按键枚举。成员名与浏览器 <see href="https://www.w3.org/TR/uievents-code/">KeyboardEvent.code</see>
+    /// 一一对应（KeyA / Digit0 / ArrowLeft / ShiftLeft / Numpad0 / F1 …），即"用 HTML code 的字符串作为键名"。
+    /// C# 枚举不能赋字符串，故此处不写 <c>=</c> 后的数值，成员按声明顺序从 0 自动编号；
+    /// TS 层 input_keyboard.ts 的 CODE_TO_KEYS 按相同顺序把 e.code 字符串映射到这里的序号，供 C# 索引按键状态。
+    /// 想看某个键对应哪个 HTML code，直接读成员名即可（如 Keys.KeyA ⇔ "KeyA"）。
+    /// </summary>
     public enum Keys : byte
     {
-        None = 0,
+        // ===== 编辑 / 控制键 =====
+        None,
+        Backspace,
+        Tab,
+        Enter,
+        Escape,
+        Space,
+        Delete,
+        Insert,
+        Home,
+        End,
+        PageUp,
+        PageDown,
+        ContextMenu,
+        PrintScreen,
+        Pause,
+        CapsLock,
+        NumLock,
+        ScrollLock,
 
-        Backspace = 8,
-        Tab = 9,
-        Enter = 13,
-        Shift = 16,
-        Control = 17,
-        Alt = 18,
-        Escape = 27,
+        // ===== 字母键（code: "KeyA".."KeyZ"）=====
+        KeyA, KeyB, KeyC, KeyD, KeyE, KeyF, KeyG, KeyH, KeyI, KeyJ, KeyK, KeyL, KeyM,
+        KeyN, KeyO, KeyP, KeyQ, KeyR, KeyS, KeyT, KeyU, KeyV, KeyW, KeyX, KeyY, KeyZ,
 
-        Space = 32,
+        // ===== 数字键（主键盘，code: "Digit0".."Digit9"）=====
+        Digit0, Digit1, Digit2, Digit3, Digit4, Digit5, Digit6, Digit7, Digit8, Digit9,
 
-        Left = 37,
-        Up = 38,
-        Right = 39,
-        Down = 40,
+        // ===== 标点 / 符号键（code 同名）=====
+        Minus, Equal, BracketLeft, BracketRight, Backslash, Semicolon, Quote, Backquote, Comma, Period, Slash,
 
-        Delete = 46,
-        Home = 36,
-        End = 35,
+        // ===== 方向键 =====
+        ArrowUp, ArrowDown, ArrowLeft, ArrowRight,
 
-        D0 = 48, D1 = 49, D2 = 50, D3 = 51, D4 = 52,
-        D5 = 53, D6 = 54, D7 = 55, D8 = 56, D9 = 57,
+        // ===== 修饰键（左右区分）=====
+        ShiftLeft, ShiftRight, ControlLeft, ControlRight, AltLeft, AltRight, MetaLeft, MetaRight,
 
-        // 功能键 F1..F12：沿用 KeyboardEvent.keyCode 112..123，需与 input_keyboard.ts 的 CODE_TO_KEYS 一致
-        F1 = 112, F2 = 113, F3 = 114, F4 = 115, F5 = 116,
-        F6 = 117, F7 = 118, F8 = 119, F9 = 120, F10 = 121,
-        F11 = 122, F12 = 123,
+        // ===== 功能键 F1..F24 =====
+        F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
+        F13, F14, F15, F16, F17, F18, F19, F20, F21, F22, F23, F24,
 
-        A = 65, B = 66, C = 67, D = 68, E = 69, F = 70, G = 71, H = 72, I = 73,
-        J = 74, K = 75, L = 76, M = 77, N = 78, O = 79, P = 80, Q = 81, R = 82,
-        S = 83, T = 84, U = 85, V = 86, W = 87, X = 88, Y = 89, Z = 90,
+        // ===== 小键盘数字 =====
+        Numpad0, Numpad1, Numpad2, Numpad3, Numpad4, Numpad5, Numpad6, Numpad7, Numpad8, Numpad9,
 
-        // 左右修饰键：浏览器的 KeyboardEvent.keyCode 不区分左右（Shift 恒为 16），
-        // 因此这里作为同名别名存在，便于沿用 XNA/MonoGame 命名的代码直接编译。
-        LeftShift = Shift,
-        RightShift = Shift,
-        LeftControl = Control,
-        RightControl = Control,
-        LeftAlt = Alt,
-        RightAlt = Alt,
+        // ===== 小键盘运算键 =====
+        NumpadMultiply, NumpadAdd, NumpadSubtract, NumpadDecimal, NumpadDivide, NumpadEnter,
+        NumpadEqual, NumpadComma, NumpadParenLeft, NumpadParenRight, NumpadSign, NumpadClear, NumpadClearEntry, NumpadBackspace,
+
+        // ===== 浏览器键 =====
+        BrowserBack, BrowserForward, BrowserHome, BrowserRefresh, BrowserSearch, BrowserStop, BrowserFavorites,
+
+        // ===== 媒体键 =====
+        MediaTrackNext, MediaTrackPrevious, MediaPlayPause, MediaStop, MediaSelect, MediaEject,
+
+        // ===== 音频键 =====
+        AudioVolumeMute, AudioVolumeDown, AudioVolumeUp,
+
+        // ===== 启动键 =====
+        LaunchApp1, LaunchApp2, LaunchApp3, LaunchMail, LaunchMediaPlayer, LaunchMusicPlayer,
+        LaunchCalculator, LaunchFileBrowser, LaunchInternet, LaunchContacts, LaunchPhone,
+        LaunchSpellChecker, LaunchWordProcessor, LaunchApplication1, LaunchApplication2,
+
+        // ===== 电源键 =====
+        Power, Sleep, WakeUp, Hibernate,
+
+        // ===== IME / 各国键 =====
+        IntlBackslash, IntlRo, IntlYen, Convert, NonConvert, KanaMode, KanjiMode,
+        Hankaku, Zenkaku, Eisu, Lang1, Lang2, Lang3, Lang4, Lang5,
+        Romaji, CodeInput, Compose, PrevCandidate, RomanCharacters,
+
+        // ===== 杂项编辑键 =====
+        Again, Copy, Cut, Paste, Undo, Redo, Find, Close, New, Open, Print, Save,
+        SpellCheck, MailForward, MailReply, MailSend, Separator, Props, Select, Execute,
+        Clear, Help, Cancel, CrSel, ExSel, EraseEof, Accept,
+
+        // ===== Fn / 符号锁 =====
+        Fn, FnLock, Symbol, SymbolLock, Hyper, Super,
     }
 }

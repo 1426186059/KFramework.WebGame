@@ -486,11 +486,11 @@ namespace KFramework.Example3
 
         private void HandleInput()
         {
-            if (KInputMgr.GetKey(Keys.A) || KInputMgr.GetKey(Keys.Left))
+            if (KInputMgr.GetKey(Keys.KeyA) || KInputMgr.GetKey(Keys.ArrowLeft))
             {
                 movement = -1.0f;
             }
-            else if (KInputMgr.GetKey(Keys.D) || KInputMgr.GetKey(Keys.Right))
+            else if (KInputMgr.GetKey(Keys.KeyD) || KInputMgr.GetKey(Keys.ArrowRight))
             {
                 movement = 1.0f;
             }
@@ -498,8 +498,8 @@ namespace KFramework.Example3
             // 跳跃：用 GetKeyDown（边沿）在“按下那一帧”发起一次起跳；
             // 同时用 GetKey（按住）记录 jumpKeyHeld，供 DoJump 判断上升中是否仍在按住
             // （按住=大跳，松手=截断成小跳），从而实现马里奥式可变跳跃高度。
-            jumpKeyHeld = KInputMgr.GetKey(Keys.Up) || KInputMgr.GetKey(Keys.W);
-            if (KInputMgr.GetKeyDown(Keys.Up) || KInputMgr.GetKeyDown(Keys.W))
+            jumpKeyHeld = KInputMgr.GetKey(Keys.ArrowUp) || KInputMgr.GetKey(Keys.KeyW);
+            if (KInputMgr.GetKeyDown(Keys.ArrowUp) || KInputMgr.GetKeyDown(Keys.KeyW))
             {
                 isJumping = true;
                 PlayAnimation(EAniType.Jump);
@@ -522,7 +522,7 @@ namespace KFramework.Example3
             _physicsStepper.Update(KTime.deltaTime, ApplyPhysics);
             if (IsOnGround)
             {
-                if (BigPlayer && (KInputMgr.GetKey(Keys.Down) || KInputMgr.GetKey(Keys.S)))
+                if (BigPlayer && (KInputMgr.GetKey(Keys.ArrowDown) || KInputMgr.GetKey(Keys.KeyS)))
                 {
                     PlayAnimation(EAniType.Crouch);
                 }

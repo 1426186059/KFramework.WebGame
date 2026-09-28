@@ -62,13 +62,13 @@ public sealed class RenderTargetTestScene : TestSceneBase
         Layout();
 
         if (Input_KeyBoard.GetKeyDown(Keys.Space)) ToggleRenderTarget();
-        if (Input_KeyBoard.GetKeyDown(Keys.A)) ToggleAnimate();
-        if (Input_KeyBoard.GetKeyDown(Keys.Left) || Input_KeyBoard.GetKeyDown(Keys.Down)) ChangeCount(-1);
-        if (Input_KeyBoard.GetKeyDown(Keys.Right) || Input_KeyBoard.GetKeyDown(Keys.Up)) ChangeCount(1);
+        if (Input_KeyBoard.GetKeyDown(Keys.KeyA)) ToggleAnimate();
+        if (Input_KeyBoard.GetKeyDown(Keys.ArrowLeft) || Input_KeyBoard.GetKeyDown(Keys.ArrowDown)) ChangeCount(-1);
+        if (Input_KeyBoard.GetKeyDown(Keys.ArrowRight) || Input_KeyBoard.GetKeyDown(Keys.ArrowUp)) ChangeCount(1);
 
         for (int i = 0; i < CountOptions.Length && i < 5; i++)
         {
-            if (Input_KeyBoard.GetKeyDown((Keys)((int)Keys.D1 + i)))
+            if (Input_KeyBoard.GetKeyDown(new[] { Keys.Digit1, Keys.Digit2, Keys.Digit3, Keys.Digit4, Keys.Digit5 }[i]))
             {
                 _countIndex = i;
                 _rtDirty = true;

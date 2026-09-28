@@ -230,7 +230,7 @@ namespace KFramework.MonoGame
 
             // Ctrl+A 全选：DOM 覆盖层未聚焦时的兜底（聚焦时由 TS keydown 已转发的 Ctrl+A 经 ProcessKey -> SimulateKeyDown 处理）。
             // 直接走引擎 SelectAll，使选区成为唯一真相源，引擎自绘高亮。
-            if (ctrl && !alt && key == Keys.A)
+            if (ctrl && !alt && key == Keys.KeyA)
             {
                 active.SelectAll();
                 active.SyncOverlay();
@@ -243,10 +243,10 @@ namespace KFramework.MonoGame
                 case Keys.Escape:
                 case Keys.Backspace:
                 case Keys.Delete:
-                case Keys.Left:
-                case Keys.Right:
-                case Keys.Up:
-                case Keys.Down:
+                case Keys.ArrowLeft:
+                case Keys.ArrowRight:
+                case Keys.ArrowUp:
+                case Keys.ArrowDown:
                 case Keys.Home:
                 case Keys.End:
                     active.SimulateKeyDown(key);
@@ -267,44 +267,45 @@ namespace KFramework.MonoGame
         private static bool TryGetPrintableChar(Keys key, bool shift, out char c)
         {
             c = '\0';
-            int k = (int)key;
 
-            // 字母 A-Z（keyCode 65-90）
-            if (k >= 65 && k <= 90)
+            // 字母 KeyA-KeyZ
+            if (key >= Keys.KeyA && key <= Keys.KeyZ)
             {
+                int k = (int)key - (int)Keys.KeyA + 'A';
                 c = shift ? (char)k : char.ToLowerInvariant((char)k);
                 return true;
             }
-            // 数字 0-9（keyCode 48-57，含 Shift 上档符号，US 布局）
-            if (k >= 48 && k <= 57)
+            // 数字 Digit0-Digit9（含 Shift 上档符号，US 布局）
+            if (key >= Keys.Digit0 && key <= Keys.Digit9)
             {
+                int k = (int)key - (int)Keys.Digit0;
                 if (shift)
                 {
                     char[] shifted = { ')', '!', '@', '#', '$', '%', '^', '&', '*', '(' };
-                    c = shifted[k - 48];
+                    c = shifted[k];
                 }
                 else
                 {
-                    c = (char)k;
+                    c = (char)('0' + k);
                 }
                 return true;
             }
-            if (k == 32) { c = ' '; return true; }
+            if (key == Keys.Space) { c = ' '; return true; }
 
-            // 常用标点（browser keyCode → 字符，US 布局）
-            switch (k)
+            // 常用标点（code 同名，US 布局）
+            switch (key)
             {
-                case 190: c = shift ? '>' : '.'; return true;   // OEM_PERIOD
-                case 188: c = shift ? '<' : ','; return true;   // OEM_COMMA
-                case 191: c = shift ? '?' : '/'; return true;   // OEM_2 (/?)
-                case 189: c = shift ? '_' : '-'; return true;   // OEM_MINUS
-                case 187: c = shift ? '+' : '='; return true;   // OEM_PLUS
-                case 186: c = shift ? ':' : ';'; return true;   // OEM_1
-                case 222: c = shift ? '"' : '\''; return true;  // OEM_7
-                case 219: c = shift ? '{' : '['; return true;   // OEM_4
-                case 221: c = shift ? '}' : ']'; return true;   // OEM_6
-                case 220: c = shift ? '|' : '\\'; return true;  // OEM_5
-                case 192: c = shift ? '~' : '`'; return true;   // OEM_3
+                case Keys.Period: c = shift ? '>' : '.'; return true;
+                case Keys.Comma: c = shift ? '<' : ','; return true;
+                case Keys.Slash: c = shift ? '?' : '/'; return true;
+                case Keys.Minus: c = shift ? '_' : '-'; return true;
+                case Keys.Equal: c = shift ? '+' : '='; return true;
+                case Keys.Semicolon: c = shift ? ':' : ';'; return true;
+                case Keys.Quote: c = shift ? '"' : '\''; return true;
+                case Keys.BracketLeft: c = shift ? '{' : '['; return true;
+                case Keys.BracketRight: c = shift ? '}' : ']'; return true;
+                case Keys.Backslash: c = shift ? '|' : '\\'; return true;
+                case Keys.Backquote: c = shift ? '~' : '`'; return true;
             }
             return false;
         }
@@ -424,7 +425,7 @@ namespace KFramework.MonoGame
 
             if (ctrl && !alt)
             {
-                if (keyCode == Keys.A) { SelectAll(); SyncOverlay(); return; }
+                if (keyCode == Keys.KeyA) { SelectAll(); SyncOverlay(); return; }
                 // C / V / X 依赖剪贴板，由浏览器侧处理，这里不拦截。
             }
 
@@ -438,11 +439,11 @@ namespace KFramework.MonoGame
                     if (selectionLength > 0) { text = text.Remove(selectionStart, selectionLength); selectionLength = 0; }
                     else if (selectionStart < text.Length) { text = text.Remove(selectionStart, 1); }
                     break;
-                case Keys.Left:
+                case Keys.ArrowLeft:
                     if (shift) { if (selectionLength == 0) selectionAnchor = selectionStart; selectionStart = Math.Max(0, selectionStart - 1); selectionLength = Math.Abs(selectionStart - selectionAnchor); }
                     else { selectionStart = Math.Max(0, selectionStart - 1); selectionLength = 0; }
                     break;
-                case Keys.Right:
+                case Keys.ArrowRight:
                     if (shift) { if (selectionLength == 0) selectionAnchor = selectionStart; selectionStart = Math.Min(text.Length, selectionStart + 1); selectionLength = Math.Abs(selectionStart - selectionAnchor); }
                     else { selectionStart = Math.Min(text.Length, selectionStart + 1); selectionLength = 0; }
                     break;
@@ -451,17 +452,17 @@ namespace KFramework.MonoGame
                 case Keys.End:
                     selectionStart = text.Length; selectionLength = 0; break;
                 case Keys.Escape:
-                    KeyPress?.Invoke(this, new KeyPressEventArgs((char)Keys.Escape));
+                    KeyPress?.Invoke(this, new KeyPressEventArgs('\x1B')); // ESC
                     SyncOverlay();
                     return;
                 case Keys.Enter:
-                    KeyPress?.Invoke(this, new KeyPressEventArgs((char)Keys.Enter));
+                    KeyPress?.Invoke(this, new KeyPressEventArgs('\r')); // CR
                     SyncOverlay();
                     return;
             }
             if (keyCode == Keys.Backspace || keyCode == Keys.Delete ||
-                keyCode == Keys.Left || keyCode == Keys.Right ||
-                keyCode == Keys.Up || keyCode == Keys.Down ||
+                keyCode == Keys.ArrowLeft || keyCode == Keys.ArrowRight ||
+                keyCode == Keys.ArrowUp || keyCode == Keys.ArrowDown ||
                 keyCode == Keys.Home || keyCode == Keys.End)
             {
                 UpdateLines();
@@ -562,10 +563,10 @@ namespace KFramework.MonoGame
             if (string.IsNullOrEmpty(key)) return Keys.None;
             switch (key)
             {
-                case "ArrowLeft": return Keys.Left;
-                case "ArrowRight": return Keys.Right;
-                case "ArrowUp": return Keys.Up;
-                case "ArrowDown": return Keys.Down;
+                case "ArrowLeft": return Keys.ArrowLeft;
+                case "ArrowRight": return Keys.ArrowRight;
+                case "ArrowUp": return Keys.ArrowUp;
+                case "ArrowDown": return Keys.ArrowDown;
                 case "Backspace": return Keys.Backspace;
                 case "Delete": return Keys.Delete;
                 case "Home": return Keys.Home;

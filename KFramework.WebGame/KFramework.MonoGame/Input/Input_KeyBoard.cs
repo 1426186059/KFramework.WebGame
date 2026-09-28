@@ -168,18 +168,18 @@ namespace KFramework.MonoGame
             return KPressState.None;
         }
 
-        public static bool Shift => GetKey(Keys.LeftShift) || GetKey(Keys.RightShift);
-        public static bool Ctrl => GetKey(Keys.LeftControl) || GetKey(Keys.RightControl);
-        public static bool Alt => GetKey(Keys.LeftAlt) || GetKey(Keys.RightAlt);
+        public static bool Shift => GetKey(Keys.ShiftLeft) || GetKey(Keys.ShiftRight);
+        public static bool Ctrl => GetKey(Keys.ControlLeft) || GetKey(Keys.ControlRight);
+        public static bool Alt => GetKey(Keys.AltLeft) || GetKey(Keys.AltRight);
 
         /// <summary>WASD / 方向键组成的二维轴，Y 向下为正。</summary>
         public static Vector2 GetAxis()
         {
             float x = 0f, y = 0f;
-            if (GetKey(Keys.A) || GetKey(Keys.Left)) x -= 1f;
-            if (GetKey(Keys.D) || GetKey(Keys.Right)) x += 1f;
-            if (GetKey(Keys.W) || GetKey(Keys.Up)) y -= 1f;
-            if (GetKey(Keys.S) || GetKey(Keys.Down)) y += 1f;
+            if (GetKey(Keys.KeyA) || GetKey(Keys.ArrowLeft)) x -= 1f;
+            if (GetKey(Keys.KeyD) || GetKey(Keys.ArrowRight)) x += 1f;
+            if (GetKey(Keys.KeyW) || GetKey(Keys.ArrowUp)) y -= 1f;
+            if (GetKey(Keys.KeyS) || GetKey(Keys.ArrowDown)) y += 1f;
             return new Vector2(x, y);
         }
     }

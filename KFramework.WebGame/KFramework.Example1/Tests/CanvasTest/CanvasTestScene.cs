@@ -45,9 +45,9 @@ public sealed class CanvasTestScene : TestSceneBase
         Layout();
         ClickButtons();
 
-        if (Input_KeyBoard.GetKeyDown(Keys.D1)) SetCentered();
-        if (Input_KeyBoard.GetKeyDown(Keys.D2)) Fullscreen();
-        if (Input_KeyBoard.GetKeyDown(Keys.D3)) CyclePreset(1);
+        if (Input_KeyBoard.GetKeyDown(Keys.Digit1)) SetCentered();
+        if (Input_KeyBoard.GetKeyDown(Keys.Digit2)) Fullscreen();
+        if (Input_KeyBoard.GetKeyDown(Keys.Digit3)) CyclePreset(1);
     }
 
     // ---------- 布局与按钮 ----------

@@ -32,7 +32,7 @@ public sealed class TestMainScene : KSceneBase
 
         for (int i = 0; i < TestRegistry.Entries.Count && i < 9; i++)
         {
-            if (Input_KeyBoard.GetKeyDown((Keys)((int)Keys.D1 + i)))
+            if (Input_KeyBoard.GetKeyDown(new[] { Keys.Digit1, Keys.Digit2, Keys.Digit3, Keys.Digit4, Keys.Digit5, Keys.Digit6, Keys.Digit7, Keys.Digit8, Keys.Digit9 }[i]))
             {
                 Enter(i);
                 return;

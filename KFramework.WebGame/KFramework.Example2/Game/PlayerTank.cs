@@ -12,10 +12,10 @@ internal sealed class PlayerTank : TankBase
 
     public override Shell? Update(float dt, TankLevel level)
     {
-        if (Input_KeyBoard.GetKeyDown(Keys.Up) || Input_KeyBoard.GetKeyDown(Keys.W)) Move(Dir.Up, dt, level);
-        else if (Input_KeyBoard.GetKeyDown(Keys.Right) || Input_KeyBoard.GetKeyDown(Keys.D)) Move(Dir.Right, dt, level);
-        else if (Input_KeyBoard.GetKeyDown(Keys.Down) || Input_KeyBoard.GetKeyDown(Keys.S)) Move(Dir.Down, dt, level);
-        else if (Input_KeyBoard.GetKeyDown(Keys.Left) || Input_KeyBoard.GetKeyDown(Keys.A)) Move(Dir.Left, dt, level);
+        if (Input_KeyBoard.GetKeyDown(Keys.ArrowUp) || Input_KeyBoard.GetKeyDown(Keys.KeyW)) Move(Dir.Up, dt, level);
+        else if (Input_KeyBoard.GetKeyDown(Keys.ArrowRight) || Input_KeyBoard.GetKeyDown(Keys.KeyD)) Move(Dir.Right, dt, level);
+        else if (Input_KeyBoard.GetKeyDown(Keys.ArrowDown) || Input_KeyBoard.GetKeyDown(Keys.KeyS)) Move(Dir.Down, dt, level);
+        else if (Input_KeyBoard.GetKeyDown(Keys.ArrowLeft) || Input_KeyBoard.GetKeyDown(Keys.KeyA)) Move(Dir.Left, dt, level);
 
         FireTimer -= dt;
         if (Input_KeyBoard.GetKeyDown(Keys.Space) && FireTimer <= 0f)

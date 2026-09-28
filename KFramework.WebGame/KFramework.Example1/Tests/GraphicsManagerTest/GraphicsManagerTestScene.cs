@@ -52,12 +52,12 @@ public sealed class GraphicsManagerTestScene : TestSceneBase
         Layout();
         ClickButtons();
 
-        if (Input_KeyBoard.GetKeyDown(Keys.D1)) CycleInterval();
+        if (Input_KeyBoard.GetKeyDown(Keys.Digit1)) CycleInterval();
         // 多重采样(antialias) 运行时不可切换（WebGL2 限制），PreferMultiSampling 设了会直接抛异常；
         // 这里只提示限制，不调用 setter。
-        if (Input_KeyBoard.GetKeyDown(Keys.D2)) PrintTool.Log("[GraphicsManagerTest] 按 D2：多重采样(antialias) 只能在 Game 构造时指定，运行时切换会抛 NotSupportedException；改 Example1Game.Antialias 后重启对比。");
-        if (Input_KeyBoard.GetKeyDown(Keys.D3)) ApplyPreset(1280, 720);
-        if (Input_KeyBoard.GetKeyDown(Keys.D4)) ApplyPreset(800, 480);
+        if (Input_KeyBoard.GetKeyDown(Keys.Digit2)) PrintTool.Log("[GraphicsManagerTest] 按 Digit2：多重采样(antialias) 只能在 Game 构造时指定，运行时切换会抛 NotSupportedException；改 Example1Game.Antialias 后重启对比。");
+        if (Input_KeyBoard.GetKeyDown(Keys.Digit3)) ApplyPreset(1280, 720);
+        if (Input_KeyBoard.GetKeyDown(Keys.Digit4)) ApplyPreset(800, 480);
     }
 
     // ---------- 布局与按钮 ----------

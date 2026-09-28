@@ -445,7 +445,7 @@ namespace WebGame.Mir2.MonoGame.Client
         }
 
         public static void ToggleFullScreen() { }
-        public static bool IsKeyLocked(MirEngine.Keys key) => false;
+        public static bool IsKeyLocked(Keys key) => false;
 
         public static void CMain_KeyDown(object sender, MirEngine.KeyEventArgs e)
         {
@@ -453,8 +453,8 @@ namespace WebGame.Mir2.MonoGame.Client
             if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
                 SpellTargetLock = (MG.Keys)(int)e.KeyCode == (MG.Keys)Enum.Parse(typeof(MG.Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
             else SpellTargetLock = false;
-            if (e.KeyCode == MirEngine.Keys.Oem8) Tilde = true;
-            if (e.KeyCode == MirEngine.Keys.F12)
+            if (e.KeyCode == Keys.Oem8) Tilde = true;
+            if (e.KeyCode == Keys.F12)
             {
                 // 原版：Settings.DebugMode 取反，浮层由 UpdateEnviroment 里的 CreateDebugLabel 逐帧维护。
                 Settings.DebugMode = !Settings.DebugMode;
@@ -475,7 +475,7 @@ namespace WebGame.Mir2.MonoGame.Client
             if (!string.IsNullOrEmpty(InputKeys.GetKey(KeybindOptions.TargetSpellLockOn)))
                 SpellTargetLock = (MG.Keys)(int)e.KeyCode == (MG.Keys)Enum.Parse(typeof(MG.Keys), InputKeys.GetKey(KeybindOptions.TargetSpellLockOn), true);
             else SpellTargetLock = false;
-            if (e.KeyCode == MirEngine.Keys.Oem8) Tilde = false;
+            if (e.KeyCode == Keys.Oem8) Tilde = false;
             foreach (KeyBind KeyCheck in CMain.InputKeys.Keylist)
             {
                 if (KeyCheck.function != KeybindOptions.Screenshot) continue;
@@ -574,25 +574,16 @@ namespace WebGame.Mir2.MonoGame.Client
             MirScene.ActiveScene?.OnMouseWheel(new MouseEventArgs(MouseButtons.None, 0, CMain.MPoint.X, CMain.MPoint.Y, delta));
         }
 
-        private static MirEngine.KeyEventArgs ToKeyEventArgs(MG.Keys k)
+        private static KeyEventArgs ToKeyEventArgs(MG.Keys k)
         {
-            MirEngine.Keys keyData = (MirEngine.Keys)(int)k;
-            if (MG.Input_KeyBoard.Shift) keyData |= MirEngine.Keys.Shift;
-            if (MG.Input_KeyBoard.Ctrl) keyData |= MirEngine.Keys.Control;
-            if (MG.Input_KeyBoard.Alt) keyData |= MirEngine.Keys.Alt;
-            return new KeyEventArgs(keyData);
+            return new KeyEventArgs(k, MG.Input_KeyBoard.Shift, MG.Input_KeyBoard.Ctrl, MG.Input_KeyBoard.Alt);
         }
 
-        private static MirEngine.KeyPressEventArgs ToKeyPressEventArgs(MG.Keys k)
+        private static KeyPressEventArgs ToKeyPressEventArgs(MG.Keys k)
         {
-            // KeyPressEventArgs 现在携带 Keys（键码 + 修饰键位），与 KeyEventArgs 同构。
-            // 修饰键电平必须并进 KeyData：浏览器 keyCode 不区分上档（Shift+2 与 2 都是 50），
-            // 否则聊天框无从判断 '@'（Shift+D2）/ '!'（Shift+D1）这类前缀字符。
-            MirEngine.Keys keyData = (MirEngine.Keys)(int)k;
-            if (MG.Input_KeyBoard.Shift) keyData |= MirEngine.Keys.Shift;
-            if (MG.Input_KeyBoard.Ctrl) keyData |= MirEngine.Keys.Control;
-            if (MG.Input_KeyBoard.Alt) keyData |= MirEngine.Keys.Alt;
-            return new MirEngine.KeyPressEventArgs(keyData);
+            // 浏览器 keyCode 不区分上档（Shift+2 与 2 都是 50），修饰键电平由 MG.Input_KeyBoard 单独给出，
+            // 直接作为 bool 传入事件参数，不再用 65536 高位掩码打包进 KeyData。
+            return new KeyPressEventArgs(k, MG.Input_KeyBoard.Shift, MG.Input_KeyBoard.Ctrl, MG.Input_KeyBoard.Alt);
         }
 
         private static MirEngine.MouseEventArgs ToMouseEventArgs(MG.MouseButton b, MG.Vector2 p)

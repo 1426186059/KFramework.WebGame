@@ -78,11 +78,11 @@ public sealed class StartScreen : KWidget
     {
         if (Parent == null) return;
 
-        if (KInputMgr.GetKeyDown(Keys.W) || KInputMgr.GetKeyDown(Keys.Up))
+        if (KInputMgr.GetKeyDown(Keys.KeyW) || KInputMgr.GetKeyDown(Keys.ArrowUp))
         {
             this.m_Tank.AnchorPosition = this.opt1Pos;
         }
-        else if (KInputMgr.GetKeyDown(Keys.S) || KInputMgr.GetKeyDown(Keys.Down))
+        else if (KInputMgr.GetKeyDown(Keys.KeyS) || KInputMgr.GetKeyDown(Keys.ArrowDown))
         {
             this.m_Tank.AnchorPosition = this.opt2Pos;
         }
