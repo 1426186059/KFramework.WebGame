@@ -14,4 +14,4 @@ global using System.Runtime.InteropServices.JavaScript; // [JSExport]/[JSImport]
 // TextFormatFlags 在引擎基础库中，用别名映射，使既有代码无需逐处修改。
 global using TextFormatFlags = KFramework.MonoGame.TextFormatFlags;
 // MouseButtons 同理：让既有代码直接用引擎枚举，去掉 WinForms 兼容层 MirEngine.MouseButtons。
-global using MouseButtons = KFramework.MonoGame.TextBox.MouseButtons;
+global using MouseButtons = KFramework.MonoGame.MouseButton;

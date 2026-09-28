@@ -1,5 +1,4 @@
 using Client.MirGraphics;
-//using KFramework.MonoGame;
 using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirControls
@@ -347,9 +346,11 @@ namespace Client.MirControls
 
         public override void OnMouseDown(MouseEventArgs e)
         {
+            KFramework.MonoGame.PrintTool.Log("MirTextBox OnMouseDown 00000000");
             base.OnMouseDown(e);
 
             if (!Enabled || TextBox == null || TextBox.IsDisposed || !TextBox.Visible) return;
+            KFramework.MonoGame.PrintTool.Log("MirTextBox OnMouseDown 111111111");
 
             if (e.Button == MouseButtons.Left)
             {

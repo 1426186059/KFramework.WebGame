@@ -2,17 +2,6 @@ namespace KFramework.MonoGame
 {
     public sealed partial class TextBox : IDisposable
     {
-        [Flags]
-        public enum MouseButtons
-        {
-            None = 0,
-            Left = 1,
-            Right = 2,
-            Middle = 4,
-            XButton1 = 8,
-            XButton2 = 16
-        }
-
         public class KeyEventArgs : EventArgs
         {
             public Keys KeyCode { get; }
@@ -30,12 +19,12 @@ namespace KFramework.MonoGame
 
         public class MouseEventArgs : EventArgs
         {
-            public MouseButtons Button { get; }
+            public MouseButton Button { get; }
             public int Clicks { get; }
             public int X { get; }
             public int Y { get; }
             public int Delta { get; }
-            public MouseEventArgs(MouseButtons button, int clicks, int x, int y, int delta)
+            public MouseEventArgs(MouseButton button, int clicks, int x, int y, int delta)
             {
                 Button = button;
                 Clicks = clicks;

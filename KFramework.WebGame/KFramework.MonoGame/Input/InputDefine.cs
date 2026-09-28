@@ -3,6 +3,7 @@ namespace KFramework.MonoGame
     /// <summary>鼠标按键</summary>
     public enum MouseButton
     {
+        None,
         Left,
         Right,
         Middle,
