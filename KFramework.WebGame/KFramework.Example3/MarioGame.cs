@@ -14,7 +14,7 @@ public sealed class MarioGame : Game
         KInputMgr.Init();
         // 激活本例需要的输入装置：引擎按各装置的 Active 开关决定是否真正采集；不需要的可不激活。
         // 键盘默认绑到画布（bUseCanvas: true，需画布聚焦才收键）；传 false 则绑到 window 全局捕获。
-        Input_KeyBoard.Activate(bUseCanvas: true);
+        Input_KeyBoard.Activate();
         Input_Mouse.Activate();
         Input_Touch.Activate();
         // 场景管理器：创建共享 SpriteBatch 并接管 Update/Draw 的遍历

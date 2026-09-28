@@ -17,6 +17,10 @@ const CODE_TO_KEYS = {
     // 小键盘数字（回落到主键盘数字，Keys 枚举未单独定义 NumPad）
     'Numpad0': 48, 'Numpad1': 49, 'Numpad2': 50, 'Numpad3': 51, 'Numpad4': 52,
     'Numpad5': 53, 'Numpad6': 54, 'Numpad7': 55, 'Numpad8': 56, 'Numpad9': 57,
+    // 功能键 F1..F12（code 为 'F1'..'F12'，数值沿用 KeyboardEvent.keyCode 112..123，须与 Keys.cs 一致）
+    'F1': 112, 'F2': 113, 'F3': 114, 'F4': 115, 'F5': 116,
+    'F6': 117, 'F7': 118, 'F8': 119, 'F9': 120, 'F10': 121,
+    'F11': 122, 'F12': 123,
     // 方向键
     'ArrowLeft': 37, 'ArrowUp': 38, 'ArrowRight': 39, 'ArrowDown': 40,
     // 控制 / 编辑键
@@ -43,6 +47,13 @@ let m_Blurred = false;
 const pending = new Map();
 const scratch = new Uint8Array(SIZE);
 function Process_KeyDown(e) {
+    // 阻止浏览器默认行为，否则游戏收不到这些键：
+    //   Tab → 移走焦点（画布随即 blur，下一次 poll 发 Blur 清空按键，表现为“Tab 抓不到”）；
+    //   Space / 方向键 → 滚动页面。
+    // 仅在按键确实在映射表内时拦截；带 Ctrl/Alt/Meta 的组合键不拦，保留 Ctrl+R / Ctrl+Shift+I 等浏览器快捷键。
+    if (!e.ctrlKey && !e.altKey && !e.metaKey && codeToKeys(e.code) !== 0) {
+        e.preventDefault();
+    }
     pending.set(e.code, 1);
 }
 function Process_KeyUp(e) {
@@ -61,14 +72,19 @@ function Process_Pointerdown() {
 // <canvas> 默认不可获焦，所以绑监听前必须先 focusCanvas 让它可获焦并聚焦；同时挂一个 pointerdown 重新聚焦，
 // 这样切走窗口 / 在输入框打字后点回游戏，键盘依然有效。IME 输入框获焦时不会触发 canvas 的 key 事件，不会误报游戏键。
 export function bindKeyboard(canvasId) {
-    m_Canvas = getCanvas(canvasId);
-    m_CanvasId = canvasId ?? null;
-    if (m_Canvas) {
-        focusCanvas(m_CanvasId);
-        m_Canvas.addEventListener('keydown', Process_KeyDown);
-        m_Canvas.addEventListener('keyup', Process_KeyUp);
-        m_Canvas.addEventListener('blur', Process_Blur);
-        m_Canvas.addEventListener('pointerdown', Process_Pointerdown);
+    if (canvasId) {
+        m_Canvas = getCanvas(canvasId);
+        m_CanvasId = canvasId ?? null;
+        if (m_Canvas) {
+            focusCanvas(m_CanvasId);
+            m_Canvas.addEventListener('keydown', Process_KeyDown);
+            m_Canvas.addEventListener('keyup', Process_KeyUp);
+            m_Canvas.addEventListener('blur', Process_Blur);
+            m_Canvas.addEventListener('pointerdown', Process_Pointerdown);
+        }
+        else {
+            console.error("bindKeyboard canvas Find Error");
+        }
     }
     else {
         // 找不到画布（极少见）才回落到 window，保证至少有输入。
