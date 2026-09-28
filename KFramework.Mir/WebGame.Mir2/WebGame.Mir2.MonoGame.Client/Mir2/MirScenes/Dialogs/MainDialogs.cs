@@ -719,6 +719,7 @@ namespace Client.MirScenes.Dialogs
             switch (e.KeyCode)
             {
                 case Keys.Enter:
+                    KFramework.MonoGame.PrintTool.Log($"[Chat] ChatTextBox_KeyPress Enter Visible={ChatTextBox.Visible} Active={CMain.Instance?.ActiveControl?.GetType().Name}");
                     e.Handled = true;
                     if (!string.IsNullOrEmpty(ChatTextBox.Text))
                     {
@@ -1096,6 +1097,7 @@ namespace Client.MirScenes.Dialogs
         }
         private void ChatPanel_KeyPress(object sender, KeyPressEventArgs e)
         {
+            KFramework.MonoGame.PrintTool.Log($"[Chat] ChatPanel_KeyPress KeyCode={e.KeyCode} Visible={ChatTextBox.Visible} Active={CMain.Instance?.ActiveControl?.GetType().Name}");
             // KeyPress 现在给的是键码：'@' / '!' 是上档字符，靠 Shift 位与 '2' / '1' 区分；'/' 是 Oem 键(191)。
             switch (e.KeyCode)
             {

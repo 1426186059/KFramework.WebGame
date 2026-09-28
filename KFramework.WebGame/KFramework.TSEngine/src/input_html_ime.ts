@@ -238,6 +238,16 @@ export function hide(): void {
     composing = false;
     if (inputEl) inputEl.style.display = 'none';
     if (areaEl) areaEl.style.display = 'none';
+    // 覆盖层隐藏后，原本被其抢走的画布焦点没有自动归还：浏览器会把焦点退到 body，
+    // 导致画布 keydown 监听收不到键（表现为“关掉聊天后再按 Enter/打字没反应，点一下屏幕又好了”）。
+    // 这里把焦点还给画布，恢复键盘输入。复用本模块已导入的 getCanvasElement 取画布，无需依赖画布 id。
+    const c = getCanvasElement();
+    if (c) {
+        c.tabIndex = 0;
+        if (document.activeElement !== c) {
+            try { c.focus(); } catch { /* ignore */ }
+        }
+    }
 }
 
 /** C# 每帧拉取：返回当前输入框文本（含 IME 组字内容）；未激活时返回空串。 */

@@ -210,8 +210,14 @@ namespace Client.MirControls
                     CMain.Instance.ActiveControl = TextBox;
 
             if (!TextBox.Visible)
-                if (CMain.Instance.ActiveControl == TextBox)
-                    CMain.Instance.Focus();
+            {
+                // 关闭（隐藏）时把激活框交还窗体：无论 ActiveControl 之前指向什么（本框/其它文本框/其它控件），
+                // 只要不是窗体自身（CMain.Instance）就清回窗体。否则引擎 ActiveTextBoxResolver 会持续把 Enter
+                // 转发给残留的隐藏框，导致“第三次按 Enter 唤不醒聊天框”。改用类型无关判法，避免漏掉同名非 MG.TextBox。
+                var ac = CMain.Instance.ActiveControl;
+                if (ac != null && ac != CMain.Instance)
+                    CMain.Instance.ActiveControl = CMain.Instance;
+            }
         }
         private void SetFocus(object sender, EventArgs e)
         {
@@ -346,11 +352,9 @@ namespace Client.MirControls
 
         public override void OnMouseDown(MouseEventArgs e)
         {
-            KFramework.MonoGame.PrintTool.Log("MirTextBox OnMouseDown 00000000");
             base.OnMouseDown(e);
 
             if (!Enabled || TextBox == null || TextBox.IsDisposed || !TextBox.Visible) return;
-            KFramework.MonoGame.PrintTool.Log("MirTextBox OnMouseDown 111111111");
 
             if (e.Button == MouseButtons.Left)
             {
