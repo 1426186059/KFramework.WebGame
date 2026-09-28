@@ -90,6 +90,7 @@ export function bindKeyboard(canvasId?: string): void
 {
     if (canvasId)
     {
+        console.log("Canvas bindKeyboard ");
         m_Canvas = getCanvas(canvasId);
         m_CanvasId = canvasId ?? null;
         if(m_Canvas)
@@ -107,6 +108,7 @@ export function bindKeyboard(canvasId?: string): void
     }
     else
     {
+        console.log("window bindKeyboard ");
         // 找不到画布（极少见）才回落到 window，保证至少有输入。
         window.addEventListener('keydown', Process_KeyDown);
         window.addEventListener('keyup', Process_KeyUp);
@@ -130,6 +132,10 @@ export function unbindKeyboard(): void
         window.removeEventListener('keyup', Process_KeyUp);
         window.removeEventListener('blur', Process_Blur);
     }
+    
+    m_Canvas = null
+    m_CanvasId = null
+    pending.clear();
 }
 
 export function pollKeyboard(target: MemoryView_Span): void 

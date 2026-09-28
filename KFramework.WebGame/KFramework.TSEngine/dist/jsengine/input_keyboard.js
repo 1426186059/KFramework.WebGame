@@ -73,6 +73,7 @@ function Process_Pointerdown() {
 // 这样切走窗口 / 在输入框打字后点回游戏，键盘依然有效。IME 输入框获焦时不会触发 canvas 的 key 事件，不会误报游戏键。
 export function bindKeyboard(canvasId) {
     if (canvasId) {
+        console.log("Canvas bindKeyboard ");
         m_Canvas = getCanvas(canvasId);
         m_CanvasId = canvasId ?? null;
         if (m_Canvas) {
@@ -87,6 +88,7 @@ export function bindKeyboard(canvasId) {
         }
     }
     else {
+        console.log("window bindKeyboard ");
         // 找不到画布（极少见）才回落到 window，保证至少有输入。
         window.addEventListener('keydown', Process_KeyDown);
         window.addEventListener('keyup', Process_KeyUp);
@@ -106,6 +108,9 @@ export function unbindKeyboard() {
         window.removeEventListener('keyup', Process_KeyUp);
         window.removeEventListener('blur', Process_Blur);
     }
+    m_Canvas = null;
+    m_CanvasId = null;
+    pending.clear();
 }
 export function pollKeyboard(target) {
     // 先写入真正的 Uint8Array（scratch），再经由 MemoryView.set 写回 C# 缓冲。
