@@ -128,7 +128,15 @@ function attach(el) {
             ime()?.OnDomValue(el2.value, el2.selectionStart, el2.selectionEnd, true);
     });
     el.addEventListener('compositionstart', () => { composing = true; });
-    el.addEventListener('compositionend', () => { composing = false; });
+    el.addEventListener('compositionend', () => {
+        composing = false;
+        // 组字结束：把最终文本作为「已提交」回传引擎（composing=false），
+        // 否则在启用输入法（即使处于英文模式，每次按键也走 composition）时，引擎侧组字状态会卡死，
+        // 导致退格 / 回车永远被当作组字中而失效。
+        const el2 = activeEl();
+        if (el2)
+            ime()?.OnDomValue(el2.value, el2.selectionStart, el2.selectionEnd, false);
+    });
     el.addEventListener('blur', () => {
         if (last && el.style.display !== 'none') {
             setTimeout(() => {

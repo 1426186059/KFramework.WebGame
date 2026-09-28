@@ -110,6 +110,10 @@ namespace KFramework.MonoGame
         /// <summary>IME 组字预览文本（尚未提交到 Text）。</summary>
         public string CompositionString => compositionString;
 
+        /// <summary>是否正处于 IME 组字中（组字预览未提交）。组字期间引擎忽略键盘控制键，交由 DOM/IME 处理。
+        /// 由实际待提交的组字预览（compositionString）推导，组字被提交/取消后自动回到 false，避免状态卡死。</summary>
+        public bool IsComposing => !string.IsNullOrEmpty(compositionString);
+
         public string[] Lines
         {
             get => lines;
@@ -208,6 +212,8 @@ namespace KFramework.MonoGame
         {
             TextBox active = ActiveOrResolved;
             if (active == null || active.isDisposed) return;
+            // 组字中把键交还 DOM/IME（退格删组字、回车确认候选等），引擎不插手。
+            if (active.IsComposing) return;
 
             bool ctrl = Input_KeyBoard.Ctrl, alt = Input_KeyBoard.Alt, shift = Input_KeyBoard.Shift;
 
@@ -405,6 +411,9 @@ namespace KFramework.MonoGame
             KeyDown?.Invoke(this, args);
             if (args.Handled) return;
             if (!Enabled || ReadOnly) return;
+            // IME 组字中：组字预览尚未提交，所有键（含退格 / 回车）交由 DOM/IME 处理，引擎不抢键，
+            // 否则会出现「输入中文后必须按空格提交才能删除 / 发送」的问题。
+            if (IsComposing) return;
 
             if (ctrl && !alt)
             {
