@@ -10221,12 +10221,23 @@ namespace Client.MirScenes
             GameScene.Scene.MapControl.AutoPath = true;
             LogMove("开始寻路: " + from + " -> " + target + "，路径点数=" + path.Count);
 
-            // 落点特效。Magic3 可能尚未加载完成（异步），为 null 时直接跳过，不能让它拖垮整个点击。
-            if (Libraries.Magic3 != null)
-            {
-                var offset = MouseLocation.Subtract(ToMouseLocation(target));
-                Effects.Add(new Effect(Libraries.Magic3, 500, 10, 600, target) { DrawOffset = offset.Subtract(8, 15) });
-            }
+            ShowClickEffect(target);
+        }
+
+        // 落点特效（原版 Crystal Client/MirScenes/GameScene.cs:11319：Magic3 第 500 帧起的 10 帧动画，
+        // 画在鼠标所指格子上）。原版只在"右键 + Settings.NewMove 为真"的寻路分支里放；本移植把它抽出来，
+        // 让点空地（不论是否真正起寻路）都有落点反馈。
+        public void ShowClickEffect(Point target)
+        {
+            if (M2CellInfo == null) return;
+            // 越界格子 ToMouseLocation 会算出屏幕外的坐标，特效画出去看不见，且毫无意义。
+            if (target.X < 0 || target.Y < 0 || target.X >= Width || target.Y >= Height) return;
+            // Magic3 是"绘制时按需异步加载"的库：未就绪时 CheckImage 会画马赛克占位（首次点击常见），
+            // 加载完成后再点即为真实特效。库对象本身恒不为 null，这里的判断只是兜底防 NRE。
+            if (Libraries.Magic3 == null) return;
+
+            var offset = MouseLocation.Subtract(ToMouseLocation(target));
+            Effects.Add(new Effect(Libraries.Magic3, 500, 10, 600, target) { DrawOffset = offset.Subtract(8, 15) });
         }
 
         public PathFinder PathFinder;
@@ -11427,10 +11438,17 @@ namespace Client.MirScenes
                     {
                         AutoRun = false;
                         // 左键 = 按住不放持续走/跑（真正的连续移动在 CheckInput 的 MouseButtons.Left 分支里）。
-                        // 这里不再对空地调用 TryAutoPath()：寻路是"到点即停"的有界移动，一次点击只走一小段，
-                        // 会被误认为"按住走一会儿就停住了"。点空地寻路保留给右键（见 MouseButtons.Right 分支）。
+                        // 这里不再对空地启动寻路（寻路是"到点即停"的有界移动，一次点击只走一小段，
+                        // 会被误认为"按住走一会儿就停住了"）。点空地寻路保留给右键（见 MouseButtons.Right 分支）。
                         GameScene.Scene.MapControl.AutoPath = false;
-                        if (MapObject.MouseObject == null) return;
+                        if (MapObject.MouseObject == null)
+                        {
+                            // 但落点特效要照放：原版这个特效挂在"右键 + Settings.NewMove"的寻路分支里，
+                            // 而 NewMove 默认 false，等于平时点地面完全没有反馈；网页版靠它确认"点到了哪一格"。
+                            if (GameScene.Scene != null && GameScene.Scene.MapControl != null)
+                                GameScene.Scene.MapControl.ShowClickEffect(MapLocation);
+                            return;
+                        }
                         NPCObject npc = MapObject.MouseObject as NPCObject;
                         if (npc != null)
                         {
