@@ -101,9 +101,9 @@ public sealed class InputTestScene : TestSceneBase
 
         if (_boxA.IsEmpty)
         {
-            int w = Device.Viewport.Width;
-            _boxA = new Rectangle(w - 360, 330, 130, 86);
-            _boxB = new Rectangle(w - 190, 450, 110, 110);
+            int h = Device.Viewport.Height;
+            _boxA = new Rectangle(48, h - 218, 120, 70);
+            _boxB = new Rectangle(184, h - 190, 96, 96);
         }
 
         Drag(ref _boxA, ref _offsetA, ref _draggingA);
@@ -130,56 +130,70 @@ public sealed class InputTestScene : TestSceneBase
 
     protected override void DrawBody(SpriteBatch batch, Vector2 origin)
     {
-        float y = origin.Y;
+        int w = Device.Viewport.Width;
+        int h = Device.Viewport.Height;
+        float gridRight = w - 400f;   // 键盘区右边界（右侧留给鼠标 / 日志面板）
 
-        y += DrawSection(batch, "一、键盘全键表（枚举全量 " + _keys.Length + " 键）：按下=黄 / 按住=绿 / 抬起=红 / 无=灰", new Vector2(origin.X, y));
-        // 键很多，按列铺开，列数随画布宽度自适应
-        float gridTop = y;
-        float colW = 190f;
-        int cols = Math.Max(1, (int)((Device.Viewport.Width - 40f) / colW));
-        int rows = (_keys.Length + cols - 1) / cols;
-        float lineH = Font.LineSpacing + 4f;
+        // ===== 左：键盘全键表（缩小字号 + 自动换行铺满，键再多也放得下） =====
+        float ky = origin.Y;
+        batch.DrawString(Font,
+            "一、键盘全键表（枚举全量 " + _keys.Length + " 键：按下=黄 / 按住=绿 / 抬起=红 / 无=灰）",
+            new Vector2(origin.X, ky), Color.LightGray);
+        ky += Font.LineSpacing + 8f;
+
+        float scale = 0.72f;
+        float lineH = Font.LineSpacing * scale + 2f;
+        const float gap = 8f;
+        float x = origin.X;
         for (int i = 0; i < _keys.Length; i++)
         {
             (Keys key, string label) = _keys[i];
-            float px = origin.X + (i / rows) * colW;
-            float py = gridTop + (i % rows) * lineH;
-            if (py > Device.Viewport.Height - 8) continue;
             KPressState st = Input_KeyBoard.GetKeyState(key);
             string txt = st == KPressState.None ? label : label + " " + StateText(st);
-            batch.DrawString(Font, txt, new Vector2(px, py), StateColor(st));
+            // 按基础标签宽度 + 预留状态文本宽度来推进，按下时整行不抖动
+            float wItem = Font.Measure(label).X * scale + 40f * scale + gap;
+            if (x + wItem > gridRight && x > origin.X)
+            {
+                x = origin.X;
+                ky += lineH;
+            }
+            if (ky > h - 8) break;     // 极端小窗时截断，不溢出
+            batch.DrawString(Font, txt, new Vector2(x, ky), StateColor(st), 0f, Vector2.Zero, scale);
+            x += wItem;
         }
-        y = gridTop + rows * lineH + 6f;
-        y += DrawLine(batch, null, "注：Shift/Ctrl/Alt 的 Left/Right 与其同名键共用同一数值（浏览器 keyCode 不区分左右）", new Vector2(origin.X, y), new Color(150, 160, 180));
 
+        // 轴信息放在键盘区下方
         Vector2 axis = Input_KeyBoard.GetAxis();
-        batch.DrawString(Font, $"WASD / 方向键 轴: ({axis.X:+0.##;-0.##;0}, {axis.Y:+0.##;-0.##;0})", new Vector2(origin.X, y), Color.LightGray);
-        y += Font.LineSpacing + 10f;
-
-        y += DrawSection(batch, "二、鼠标 Mouse", new Vector2(origin.X, y));
         batch.DrawString(Font,
-            $"位置: ({Input_Mouse.X}, {Input_Mouse.Y})   位移: ({Input_Mouse.Delta.X}, {Input_Mouse.Delta.Y})   滚轮累计: {Input_Mouse.ScrollValue}",
-            new Vector2(origin.X, y), Color.LightGray);
-        y += Font.LineSpacing + 4f;
+            $"WASD / 方向键 轴: ({axis.X:+0.##;-0.##;0}, {axis.Y:+0.##;-0.##;0})",
+            new Vector2(origin.X, ky + lineH + 6f), Color.LightGray);
+
+        DrawDragArea(batch);
+
+        // ===== 右：鼠标 / 事件日志 =====
+        float rx = w - 372f;
+        float ry = Math.Max(origin.Y, 96f);
+        ry += DrawSection(batch, "二、鼠标 Mouse", new Vector2(rx, ry));
+        batch.DrawString(Font, $"位置: ({Input_Mouse.X}, {Input_Mouse.Y})", new Vector2(rx, ry), Color.LightGray);
+        ry += Font.LineSpacing + 4f;
+        batch.DrawString(Font, $"位移: ({Input_Mouse.Delta.X}, {Input_Mouse.Delta.Y}) 滚轮: {Input_Mouse.ScrollValue}", new Vector2(rx, ry), Color.LightGray);
+        ry += Font.LineSpacing + 4f;
         foreach (MouseButton btn in _buttonsList)
         {
             KPressState st = Input_Mouse.GetButtonState(btn);
             int frames = _btnFrames.GetValueOrDefault(btn);
             string suffix = st == KPressState.Held ? $" (按住 {frames} 帧)" : "";
-            batch.DrawString(Font, $"{btn}  {StateText(st)}{suffix}", new Vector2(origin.X, y), StateColor(st));
-            y += Font.LineSpacing + 4f;
+            batch.DrawString(Font, $"{btn}  {StateText(st)}{suffix}", new Vector2(rx, ry), StateColor(st));
+            ry += Font.LineSpacing + 4f;
         }
-        y += 8f;
-
-        batch.DrawString(Font, "本帧事件日志（按下 / 抬起，由状态差分得出）:", new Vector2(origin.X, y), Color.LightGray);
-        y += Font.LineSpacing + 4f;
+        ry += 8f;
+        ry += DrawSection(batch, "三、本帧事件日志", new Vector2(rx, ry));
         for (int i = 0; i < _log.Count; i++)
         {
-            batch.DrawString(Font, _log[i], new Vector2(origin.X, y), new Color(200, 210, 230));
-            y += Font.LineSpacing + 3f;
+            batch.DrawString(Font, _log[i], new Vector2(rx, ry), new Color(200, 210, 230));
+            ry += Font.LineSpacing + 3f;
         }
 
-        DrawDragArea(batch);
         DrawBindToggle(batch);
     }
 
@@ -215,8 +229,8 @@ public sealed class InputTestScene : TestSceneBase
 
     private void DrawDragArea(SpriteBatch batch)
     {
-        int w = Device.Viewport.Width;
-        Rectangle panel = new Rectangle(w - 380, 500, 360, 280);
+        int h = Device.Viewport.Height;
+        Rectangle panel = new Rectangle(28, h - 230, 360, 220);
         DrawRect(batch, panel, new Color(20, 26, 40));
         batch.DrawString(Font, "拖拽区域：左键按住方块拖动", new Vector2(panel.X + 10f, panel.Y + 8f), Color.LightGray);
         DrawBox(batch, _boxA, _draggingA, "方块 A");
