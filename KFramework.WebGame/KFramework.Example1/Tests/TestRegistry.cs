@@ -70,5 +70,11 @@ public static class TestRegistry
             Desc = "多触点状态（按下/移动/静止/抬起）、位置与位移、双指 Pinch 缩放，以及手势 Tap / LongPress / Swipe；电脑上用浏览器设备模拟（Ctrl+Shift+M）产生触摸事件",
             Factory = static () => new TouchTest.TouchTestScene(),
         },
+        new TestEntry
+        {
+            Name = "文本渲染 / 输入框",
+            Desc = "TextRenderer（对齐 WinForms GDI 的 MeasureText/DrawText：WordBreak 折行、对齐、backColor）与 TextBox（点击聚焦、键入/IME 中文、密码、多行）",
+            Factory = static () => new TextRenderTest.TextRenderTestScene(),
+        },
     ];
 }
