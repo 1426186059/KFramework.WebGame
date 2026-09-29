@@ -203,8 +203,7 @@ namespace Client.MirSounds
             {
                 byte[] bytes = await GetSoundBytesAsync(file);
                 if (bytes == null || bytes.Length == 0) return;
-                string mime = file.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase) ? "audio/mpeg" : "audio/wav";
-                var se = await SoundEffect.LoadAsync(bytes, mime);
+                var se = await SoundEffect.LoadAsync(bytes);
                 if (se == null) return;
                 if (loop)
                 {
