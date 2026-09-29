@@ -25,7 +25,7 @@ public sealed class Example1Game : Game
     /// </summary>
     public GraphicsDeviceManager Graphics { get; }
 
-    public Example1Game() : base("#game", "hot_update_res", Antialias)
+    public Example1Game() : base("#game", Antialias)
     {
         ClearColor = new Color(10, 12, 20);
 
@@ -74,7 +74,7 @@ public sealed class Example1Game : Game
         KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 20f);
 
         // 加载全部 AssetBundle（含 Content/raw/Bundles/fonts 下的 ttf 字体）
-        await Content.LoadAsync().ConfigureAwait(false);
+        await ContentManager.Default.LoadAsync().ConfigureAwait(false);
 
         KSceneMgr.SetMainScene(new TestMainScene());
     }

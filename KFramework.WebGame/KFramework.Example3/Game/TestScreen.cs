@@ -16,7 +16,7 @@
 
         public TestScreen()
         {
-            contentManager = KSceneMgr.Game.Content;
+            contentManager = ContentManager.Default;
 
             Parent = KUIRoot.Instance.GetCanvas(0);
             AnchorPosition = Vector2.Zero;

@@ -64,9 +64,8 @@ public sealed class FontTestScene : TestSceneBase
     {
         try
         {
-            Game game = KSceneMgr.Game;
-            AssetBundle? bundle = game.Content.GetBundle(BundleKeyword, strict: false)
-                                  ?? await game.Content.LoadBundleAsync(BundlePath).ConfigureAwait(false);
+            AssetBundle? bundle = ContentManager.Default.GetBundle(BundleKeyword, strict: false)
+                                  ?? await ContentManager.Default.LoadBundleAsync(BundlePath).ConfigureAwait(false);
 
             LoadBytes(bundle, "arial.ttf");
             LoadBytes(bundle, "arialbd.ttf");

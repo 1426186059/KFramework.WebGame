@@ -43,8 +43,6 @@ namespace KFramework.MonoGame
         /// </summary>
         internal GraphicsDeviceManager? graphicsDeviceManager;
 
-        public ContentManager Content { get; }
-
         public GameComponentCollection Components { get; }
 
         /// <summary>
@@ -75,11 +73,10 @@ namespace KFramework.MonoGame
         /// 是否启用 MSAA。上下文创建后不可改，只能在构造时决定
         /// （等价于 MonoGame 里「设备创建前」设置 <c>PreferMultiSampling</c>）。
         /// </param>
-        protected Game(string canvasSelector = "#game", string contentRoot = "hot_update_res", bool antialias = false)
+        protected Game(string canvasSelector = "#game", bool antialias = false)
         {
             GraphicsDevice = new GraphicsDevice(canvasSelector, antialias);
             Window = new GameWindow(GraphicsDevice);
-            Content = new ContentManager(contentRoot);
             Components = new GameComponentCollection();
             JSBind_GameHost.Current = this;
         }
@@ -136,7 +133,7 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// 异步加载入口，默认转发到 <see cref="LoadContent"/>。
-        /// 需要下载内容包时重写它：<c>await Content.LoadAsync(progress)</c>。
+        /// 需要下载内容包时重写它：<c>await ContentManager.Default.LoadAsync(progress)</c>。
         /// </summary>
         protected virtual Task LoadContentAsync()
         {
@@ -233,7 +230,6 @@ namespace KFramework.MonoGame
             UnloadContent();
             graphicsDeviceManager?.Dispose();
             graphicsDeviceManager = null;
-            Content.Dispose();
             GraphicsDevice.Dispose();
             GC.SuppressFinalize(this);
         }

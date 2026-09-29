@@ -38,7 +38,7 @@ namespace KFramework.Example3
         {
             if (contentManager == null)
             {
-                contentManager = KSceneMgr.Game.Content;
+                contentManager = ContentManager.Default;
             }
 
             // 异步加载：先加载 atlas Bundle，再从其中取出 SpriteSheet（KUIBase.Init 为同步，这里 fire-and-forget）

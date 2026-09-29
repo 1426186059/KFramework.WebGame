@@ -6,7 +6,7 @@ namespace KFramework.Example3;
 /// </summary>
 public sealed class MarioGame : Game
 {
-    public MarioGame() : base("#game", "hot_update_res") { }
+    public MarioGame() : base("#game") { }
 
     protected override async Task LoadContentAsync()
     {
@@ -22,7 +22,7 @@ public sealed class MarioGame : Game
         // 节点树 UI 文本需要默认字体（程序化生成，避免依赖 .spritefont 内容文件）
         KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 18f);
 
-        await Content.LoadAsync().ConfigureAwait(false);
+        await ContentManager.Default.LoadAsync().ConfigureAwait(false);
 
         var scene = new MainScene();
         KSceneMgr.SetMainScene(scene);

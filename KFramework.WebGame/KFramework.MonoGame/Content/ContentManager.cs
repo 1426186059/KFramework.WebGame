@@ -4,6 +4,21 @@ namespace KFramework.MonoGame
 {
     public sealed class ContentManager : IDisposable
     {
+        /// <summary>全局默认实例。通常由 <see cref="Game"/> 在构造时创建并赋值，退出时释放；
+        /// 业务侧（如 <c>KSceneMgr.Game.Content</c> 旧写法）应改用本静态字段访问。</summary>
+        private static ContentManager _Default;
+        public static ContentManager Default 
+        {
+            get
+            {
+                if (_Default == null)
+                {
+                    _Default = new ContentManager();
+                }
+                return _Default;
+            }
+        }
+
         private readonly HttpClient _http;
         private readonly AssetBundleManager _manager;
         private readonly string _rootDir;

@@ -36,6 +36,44 @@
             return effect;
         }
 
+        /// <summary>
+        /// 通过指定的 <see cref="ContentManager"/> 从 URL 下载音频并加载
+        /// （同步阻塞下载；解码仍异步进行，同 <see cref="FromBytes"/>）。
+        /// 复用 <paramref name="mContentManager"/> 的下载/缓存链路（<c>LoadBytesAsync</c>），
+        /// 走引擎统一的下载调度与 Cache Storage 缓存，不另建 HttpClient。
+        /// MIME 按扩展名推断：.wav→audio/wav，.mp3→audio/mpeg，.ogg→audio/ogg，
+        /// .m4a→audio/mp4，其余回退 application/octet-stream。
+        /// 若需非阻塞加载，请自行 <c>await mContentManager.LoadBytesAsync(...)</c> 后调用 <see cref="FromBytes"/>。
+        /// </summary>
+        /// <param name="mContentManager">用于下载的 <see cref="ContentManager"/> 实例（如 <c>ContentManager.Default</c>）。</param>
+        /// <param name="url">音频地址（绝对 URL 会被原样透传；相对路径则按 ContentManager 的 root 解析）。</param>
+        public static SoundEffect FromURL(
+            string url, 
+            ContentManager mContentManager = null)
+        {
+            if(mContentManager == null)
+            {
+                mContentManager = ContentManager.Default;
+            }
+
+            byte[] data = mContentManager.LoadBytesAsync(url).GetAwaiter().GetResult();
+            return FromBytes(data, MimeFromUrl(url));
+        }
+
+        private static string MimeFromUrl(string url)
+        {
+            int dot = url.LastIndexOf('.');
+            string ext = dot >= 0 ? url.Substring(dot).ToLowerInvariant() : string.Empty;
+            return ext switch
+            {
+                ".wav" => "audio/wav",
+                ".mp3" => "audio/mpeg",
+                ".ogg" => "audio/ogg",
+                ".m4a" => "audio/mp4",
+                _ => "application/octet-stream",
+            };
+        }
+
         internal int Handle => _handle;
 
         /// <summary>一次性播放。未解码或缓冲缺失时返回 false。</summary>

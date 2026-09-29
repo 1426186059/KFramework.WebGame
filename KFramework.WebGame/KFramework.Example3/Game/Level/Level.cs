@@ -33,7 +33,7 @@
         private Level(int nLevelIndex, Stream levelStream,
                       SpriteSheet charactersAtlas, SpriteSheet misc3Atlas)
         {
-            this.mContentInstace = KSceneMgr.Game.Content.GetBundle("MyRes/Sounds")
+            this.mContentInstace = ContentManager.Default.GetBundle("MyRes/Sounds")
                 ?? throw new InvalidOperationException("内容包 content 尚未加载");
             mSpriteSheet_charactersAtlas = charactersAtlas;
             mSpriteSheet_misc3Atlas = misc3Atlas;
@@ -70,7 +70,7 @@
         /// </summary>
         public static async Task<Level> LoadAsync(int nLevelIndex, CancellationToken cancellationToken = default)
         {
-            ContentManager content = KSceneMgr.Game.Content;
+            ContentManager content = ContentManager.Default;
 
             // 异步加载本关卡依赖的 Bundle（资源全部从 Bundle 中读取）
             await content.LoadBundleAsync("MyRes/Atlas", cancellationToken).ConfigureAwait(false);
@@ -361,7 +361,7 @@
         {
             KSceneMgr.ScreenSizeChanged -= OnWindowSizeChanged;
 
-            // 注意：mContentInstace 就是 KSceneMgr.Game.Content，是整个游戏共享、由
+            // 注意：mContentInstace 就是 ContentManager.Default，是整个游戏共享、由
             // Game.Dispose() 在退出时统一释放的 ContentManager。Player / 各类方块 / 敌人
             // 在游戏运行中都会通过它 LoadSound(...)，因此它绝不能在此处被 Dispose——
             // 否则窗口缩放重建 Level 时会释放掉共享的 HttpClient，导致后续关卡 HTTP 下载

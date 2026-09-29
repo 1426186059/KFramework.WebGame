@@ -16,7 +16,7 @@ namespace KFramework.Example3
         ContentManager mContentManager;
         public GameScreen(Level mLevel)
         {
-            mContentManager = KSceneMgr.Game.Content;
+            mContentManager = ContentManager.Default;
 
             Parent = KUIRoot.Instance.GetCanvas(0);
             Pivot = Vector2.One * 0.5f;

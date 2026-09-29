@@ -7,7 +7,7 @@ namespace KFramework.Example2;
 public sealed class GameScene : KSceneBase
 {
     // 依赖（来自框架全局，对应 PixiJS 的 engine() 单例；TankGame.LoadContentAsync 里先 Init 再 new GameScene，故构造时均已就绪）
-    private readonly ContentManager _content = KSceneMgr.Game.Content;
+    private readonly ContentManager _content = ContentManager.Default;
     private readonly GraphicsDevice _gd = KSceneMgr.Game.GraphicsDevice;
     private readonly SpriteBatch _batch = KSceneMgr.SpriteBatch;
 

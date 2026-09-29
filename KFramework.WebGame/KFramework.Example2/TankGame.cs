@@ -10,7 +10,7 @@ namespace KFramework.Example2;
 /// </summary>
 public sealed class TankGame : Game
 {
-    public TankGame() : base("#game", "hot_update_res") { }
+    public TankGame() : base("#game") { }
 
     protected override async Task LoadContentAsync()
     {
@@ -26,7 +26,7 @@ public sealed class TankGame : Game
         // 节点树 UI 文本需要默认字体
         KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 40f);
 
-        await Content.LoadAsync().ConfigureAwait(false);
+        await ContentManager.Default.LoadAsync().ConfigureAwait(false);
 
         var scene = new GameScene();
         KSceneMgr.SetMainScene(scene);
