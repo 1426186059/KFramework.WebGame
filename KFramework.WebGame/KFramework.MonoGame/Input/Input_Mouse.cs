@@ -18,12 +18,14 @@ namespace KFramework.MonoGame
         private const int EvWheel = 2;
 
         private const int MaxButtons = 8;
-        private const int MaxEvents = MaxButtons + 2;   // 最坏：全部按键 + 位置 + 滚轮
-        private const int CountSize = 1;
         private const int EvMousePos_ByteCount = 5;
         private const int EvMouseButton_ByteCount = 2;
         private const int EvWheel_ByteCount = 2;
-        private const int MaxByteCount = CountSize + MaxEvents * EvMouseButton_ByteCount + EvMousePos_ByteCount;
+        private const int MaxByteCount = 
+            1 + 
+            MaxButtons * EvMouseButton_ByteCount + 
+            EvMousePos_ByteCount +
+            EvWheel_ByteCount;
         private static readonly byte[] _buffer = new byte[MaxByteCount];
 
         // 与键盘一致：两份电平缓冲 + 差分算边沿

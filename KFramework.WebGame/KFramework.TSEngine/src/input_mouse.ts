@@ -7,7 +7,7 @@ const MaxButtons = 8;
 const EvMousePos_ByteCount = 5;        // EvMousePos：type + x(short) + y(short)
 const EvMouseButton_ByteCount = 2;         // 其余事件：type + payload
 const EvWheel_ByteCount = 2;         // 其余事件：type + payload
-const SIZE = EvMouseButton_ByteCount * MaxButtons + EvMousePos_ByteCount + EvWheel_ByteCount;
+const SIZE = 1 + EvMouseButton_ByteCount * MaxButtons + EvMousePos_ByteCount + EvWheel_ByteCount;
 
 const EvMousePos = 0;
 const EvMouseButton = 1;   // 按键变化：payload = button(低7位) | 按下(0x80)
