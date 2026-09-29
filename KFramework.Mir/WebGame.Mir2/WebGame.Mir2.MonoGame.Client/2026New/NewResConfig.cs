@@ -40,7 +40,7 @@ public static class NewResConfig
 
         string path = BuildLibPath(relPathWithoutExt);
         // 远程地图 Lib 用最高优先级（priority 越大越优先，取 10）：进图后先出地面，其它资源排在其后
-        byte[] bytes = await mContentManager.LoadBytesAsync(MapRoot + path, true, BrowserResource.mCacheInstance, priority: 10).ConfigureAwait(false);
+        byte[] bytes = await mContentManager.LoadBytesAsync(MapRoot + path, BrowserResource.mCacheInstance, priority: 10).ConfigureAwait(false);
         if (bytes != null && bytes.Length > 0) return bytes;
         KFramework.MonoGame.PrintTool.Log($"[Mir][lib] 远程空: {path}");
         return null;

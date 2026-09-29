@@ -43,7 +43,7 @@
                 if (mCacheInstance != null)
                 {
                     GameProfiler.TestStart();
-                    byte[] buf = await mCacheInstance.LoadAsync(url, cancellationToken).ConfigureAwait(false);
+                    byte[]? buf = await mCacheInstance.LoadAsync(url, cancellationToken).ConfigureAwait(false);
                     GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 读取 {url}");
                     if (buf != null) return buf;
                 }
@@ -72,10 +72,6 @@
                     }
 
                     await Task.Delay(nNextAttemptTime * attempt, cancellationToken);
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        break;
-                    }
                 }
 
                 if (data == null) return data;
@@ -83,18 +79,8 @@
                 if (mCacheInstance != null)
                 {
                     GameProfiler.TestStart();
-                    try
-                    {
-                        await mCacheInstance.SaveAsync(url, new ArraySegment<byte>(data)).ConfigureAwait(false);
-                        GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 保存 {url} {FmtSize(data.Length)}");
-                    }
-                    catch (Exception saveEx)
-                    {
-                        // 缓存写入失败绝不能丢掉已下载的字节：之前该异常会一路抛到外层 catch，
-                        // 使函数返回 null —— 明明下载成功的 Lib 被判成"远程空"，地图画不全。
-                        GameProfiler.TestFinishAndLog($"[cache] 保存失败(忽略) {url}");
-                        PrintTool.LogError($"[cache] 保存失败，仍使用已下载数据 {url}: {saveEx.Message}");
-                    }
+                    await mCacheInstance.SaveAsync(url, new ArraySegment<byte>(data)).ConfigureAwait(false);
+                    GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 保存 {url} {FmtSize(data.Length)}");
                 }
                 return data;
             }
@@ -123,66 +109,71 @@
             int priority = 0, 
             CancellationToken cancellationToken = default)
         {
-            // 1) 缓存命中（与 HttpClient 版同 key，完全复用）
-            if (mCacheInstance != null)
-            {
-                GameProfiler.TestStart();
-                byte[] cached = await mCacheInstance.LoadAsync(url).ConfigureAwait(false);
-                GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 读取 {url}");
-                if (cached != null) return cached;
-            }
-
-            // 2) 下载：走 JS fetch（useCache=false，缓存由本方法统一写，避免 JS 侧另存一份）
-            byte[] data = null;
             try
             {
-                data = await ContentLoadScheduler.Default.EnqueueAsync(priority, async _ =>
+                // 1) 缓存命中（与 HttpClient 版同 key，完全复用）
+                if (mCacheInstance != null)
                 {
                     GameProfiler.TestStart();
-                    // 纯 fetch：不碰 Cache Storage（缓存统一由下方 C# Caching 写），省掉一次缓存写入 IO
-                    int len = await JSBind_Http.FetchBytesAsync(url).ConfigureAwait(false);
-                    GameProfiler.TestFinishAndLog($"[js] fetch {url} len={len}");
+                    byte[] cached = await mCacheInstance.LoadAsync(url).ConfigureAwait(false);
+                    GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 读取 {url}");
+                    if (cached != null) return cached;
+                }
 
-                    if (len < 0) return null;   // -1 = 非 2xx / 网络错误，属真实失败，不回退
-
-                    var buf = new byte[len];
-                    try
-                    {
-                        JSBind_Http.TakePending(url, buf);
-                    }
-                    catch (Exception takeEx)
-                    {
-                        PrintTool.Log($"[js] takePending 失败 {url}: {takeEx.Message}");
-                        JSBind_Http.ReleasePending(url);
-                        return null;
-                    }
-                    return buf;
-                }, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception jsEx)
-            {
-                PrintTool.Log($"[js] 链路不可用，回退 HttpClient {url}: {jsEx.Message}");
-            }
-
-            if (data == null) return data;
-
-            // 3) 写回缓存（失败不影响本次结果：磁盘紧张 / 配额满时退化为每次走网络）
-            if (mCacheInstance != null)
-            {
-                GameProfiler.TestStart();
-                try
+                // 2) 下载：走 JS fetch（useCache=false，缓存由本方法统一写，避免 JS 侧另存一份）
+                byte[] data = null;
+                const int MaxAttempts = 3;
+                int nNextAttemptTime = 1000;
+                for (int attempt = 0; attempt < MaxAttempts; attempt++)
                 {
+                    data = await ContentLoadScheduler.Default.EnqueueAsync(priority, async _ =>
+                    {
+                        GameProfiler.TestStart();
+                        int len = await JSBind_Http.FetchBytesAsync(url).ConfigureAwait(false);
+                        GameProfiler.TestFinishAndLog($"[js] fetch {url} len={len}");
+
+                        if (len < 0) return null;   // -1 = 非 2xx / 网络错误，属真实失败，不回退
+
+                        var buf = new byte[len];
+                        try
+                        {
+                            JSBind_Http.TakePending(url, buf);
+                        }
+                        catch (Exception takeEx)
+                        {
+                            PrintTool.Log($"[js] takePending 失败 {url}: {takeEx.Message}");
+                            JSBind_Http.ReleasePending(url);
+                            return null;
+                        }
+                        return buf;
+                    }, cancellationToken).ConfigureAwait(false);
+
+                    if(data != null)
+                    {
+                        break;
+                    }
+
+                    await Task.Delay(nNextAttemptTime * attempt, cancellationToken);
+                }
+
+                if (data == null) return data;
+
+                // 3) 写回缓存（失败不影响本次结果：磁盘紧张 / 配额满时退化为每次走网络）
+                if (mCacheInstance != null)
+                {
+                    GameProfiler.TestStart();
                     await mCacheInstance.SaveAsync(url, new ArraySegment<byte>(data)).ConfigureAwait(false);
                     GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 保存 {url} {FmtSize(data.Length)}");
                 }
-                catch (Exception saveEx)
-                {
-                    GameProfiler.TestFinishAndLog($"[cache] 保存失败(忽略) {url}");
-                    PrintTool.LogError($"[cache] 保存失败，仍使用已下载数据 {url}: {saveEx.Message}");
-                }
+
+                return data;
+            }
+            catch(Exception e)
+            {
+                PrintTool.LogError($"LoadCacheOrDownloadJsAsync: BaseURL: {url}  Error: {e.Message}");
             }
 
-            return data;
+            return null;
         }
 
         private static string FmtSize(int bytes)

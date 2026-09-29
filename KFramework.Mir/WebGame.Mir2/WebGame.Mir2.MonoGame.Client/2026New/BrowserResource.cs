@@ -23,36 +23,53 @@ public class BrowserResource
         return path.StartsWith("Map/", StringComparison.OrdinalIgnoreCase) ? PriorityMap : PriorityOther;
     }
 
+    /// <summary>某资源是否已被确认「永久缺失」（多次重试仍失败）。绘制路径据此决定是否重试，避免每帧重试风暴。</summary>
+    public static bool IsMissing(string url)
+    {
+        string path = NormalizePath(url);
+        lock (_missing) return _missing.Contains(path);
+    }
+
     /// <param name="cancellationToken">用于中断本次加载（如切图时不必再等旧地图下载完）。</param>
     public static async Task<byte[]> GetBytesAsync(string url, CancellationToken cancellationToken = default)
     {
         string path = NormalizePath(url);
-        if (Content == null || _missing.Contains(path)) return null;
+        if (Content == null) return null;
+        if (_missing.Contains(path)) return null;
 
-        try
+        // 浏览器端资源走专用本地服务器。AOT 下进图/切图会在极短时间内突发几十个并发请求，
+        // 服务器或浏览器 6 连接上限在尖峰下偶发瞬时失败（连接被拒/超时/fetch 非 2xx）。
+        // 这类失败是「暂时的」——资源其实都在——若一次失败就判缺失会永久拉黑，地板/物件整片变黑。
+        // 因此失败时退避重试数次，尖峰过后通常能成功；只有多次重试仍失败才视为真正缺失。
+        const int MaxAttempts = 3;
+        for (int attempt = 1; attempt <= MaxAttempts; attempt++)
         {
-            // 直接整文件加载（已无超大 Lib，无需分片下载）；地图资源给最高优先级。
-            byte[] bytes = await Content.LoadBytesAsync(path, true, mCacheInstance, priority: PriorityOf(path), cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
-            if (bytes == null || bytes.Length == 0)
+            try
             {
-                _missing.Add(path);
-                 PrintTool.Log("[Mir] 资源缺失，后续不再重试: " + path);
+                // 直接整文件加载（已无超大 Lib，无需分片下载）；地图资源给最高优先级。
+                byte[] bytes = await Content.LoadBytesAsync(path, mCacheInstance, priority: PriorityOf(path), cancellationToken: cancellationToken)
+                    .ConfigureAwait(false);
+                if (bytes != null && bytes.Length > 0)
+                    return bytes;
             }
-            return bytes;
+            catch (OperationCanceledException)
+            {
+                // 被取消（切图时中断旧地图下载）：不记缺失、不重试，交由上层处理。
+                throw;
+            }
+            catch (Exception ex)
+            {
+                PrintTool.Log($"[Mir] 资源加载异常(第{attempt}次) {path}: {ex.Message}");
+            }
+
+            if (attempt < MaxAttempts)
+                await Task.Delay(80 * attempt, cancellationToken).ConfigureAwait(false);
         }
-        catch (OperationCanceledException)
-        {
-            // 被取消（切图时中断旧地图下载）：绝不能记进 _missing，
-            // 否则该资源会被永久判为「缺失」，之后永远不再去取。
-            return null;
-        }
-        catch (Exception ex)
-        {
-            _missing.Add(path);
-            PrintTool.Log("[Mir] 资源缺失，后续不再重试: " + path + " " + ex.Message);
-            return null;
-        }
+
+        // 多次重试仍失败 → 视为真正缺失，永久拉黑避免每帧重试风暴。
+        _missing.Add(path);
+        PrintTool.Log("[Mir] 资源缺失，后续不再重试: " + path);
+        return null;
     }
 
     public static string ResolveUrl(string fileName) => NormalizePath(fileName);

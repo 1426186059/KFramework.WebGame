@@ -627,7 +627,10 @@ namespace Client.MirGraphics
                 {
                     KFramework.MonoGame.PrintTool.Log($"[Mir][lib] empty: {_fileName}");
                     _initialized = false;
-                    _failed = true;
+                    // 仅当资源确属缺失（BrowserResource 多次重试后仍失败）才永久失败；
+                    // 瞬时失败在 GetBytesAsync 内已重试自愈，不会走这里，故不标记 _failed，
+                    // 下次 CheckImage 会重新触发加载，避免 AOT 突发并发下整片黑地板。
+                    _failed = BrowserResource.IsMissing(_fileName);
                     return;
                 }
 
@@ -655,7 +658,8 @@ namespace Client.MirGraphics
             catch (Exception ex)
             {
                 _initialized = false;
-                _failed = true;
+                // 同上：仅确属缺失才永久失败；瞬时异常（连接尖峰下的偶发失败）不拉黑，留待重试。
+                _failed = BrowserResource.IsMissing(_fileName);
                 KFramework.MonoGame.PrintTool.LogError($"[Mir] 库加载失败 {_fileName}: {ex.Message} {ex.StackTrace}");
             }
             finally
