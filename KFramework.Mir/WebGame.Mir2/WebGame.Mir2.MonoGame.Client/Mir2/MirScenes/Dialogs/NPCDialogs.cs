@@ -488,6 +488,8 @@ namespace Client.MirScenes.Dialogs
                         currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, txt);
                         // 直接量“链接前文本”的真实宽度（与 TextRenderer.DrawText 同一 SpriteFont.MeasureString）作为
                         // 叠层起点，去掉原先 -10 的近似补偿，避免中文名越长越往左偏。
+                        // 行首空格由 shim（KFramework.MonoGame/TextRenderer.WrapLines）保留为缩进，与 MeasureText 一致
+                        // （对齐 GDI：度量与绘制都含行首空格），故此处无需 TrimStart，链接按钮即可对齐底层文字。
                         string prefixText = currentLine.Substring(0, capture.Index - 1 - offSet);
                         int prefixWidth = TextRenderer.MeasureText(prefixText, TextLabel[i].Font).Width;
 
@@ -972,9 +974,10 @@ namespace Client.MirScenes.Dialogs
             if (label == null || string.IsNullOrEmpty(text))
                 return Point.Empty;
 
-            // 与 TextRenderer.DrawText 使用同一度量（TextRenderer.MeasureText）量“链接前整串前缀”的宽度，
-            // 而非逐字符累加（逐字符累加会漏算字间距 Spacing / kerning，中文越长越往左偏）。
+            // 用整串前缀 MeasureText 量“链接前”宽度（与 TextRenderer.DrawText 同一度量），
+            // 而非逐字符累加（逐字符会漏算字间距/kerning，中文越长越往左偏）。
             // canvas 渲染只按显式 \n 换行，不做自动换行：x 取最后一个 \n 之后的前缀宽度，y 按 \n 数累计。
+            // shim（TextRenderer.WrapLines）已保留行首空格为缩进，Measure 与 Draw 一致，故不 TrimStart。
             float lineH = TextRenderer.MeasureText("W", label.Font).Height;
 
             int lastNl = text.LastIndexOf('\n');

@@ -179,7 +179,11 @@ namespace KFramework.MonoGame
             }
         }
 
-        /// <summary>按显式 '\n' 切分；带 WordBreak 时在 maxWidth 内按词折行，连续中文/长串退化逐字折行。</summary>
+        /// <summary>按显式 '\n' 切分；带 WordBreak 时在 maxWidth 内按词折行，连续中文/长串退化逐字折行。
+        /// 必须保留每段首行的行首空白（缩进）：WinForms 的 TextRenderer.MeasureText / DrawText 底层同走 GDI
+        /// DrawText（度量仅加 DT_CALCRECT），对行首空格度量与绘制一致；移植层若在此剥掉行首空格，会导致
+        /// Measure（含空格宽）与 Draw（无缩进）错位，进而使 NPC 对话框黄色链接按钮与底层文字重叠
+        /// （如赏金公告板的缩进行）。故此处把行首空格作为缩进贴回“本段第一个产出行”前，续行从 x=0 起。</summary>
         public static List<string> WrapLines(string text, IFont font, int maxWidth)
         {
             List<string> result = new List<string>();
@@ -190,15 +194,22 @@ namespace KFramework.MonoGame
                 string line = raw.Replace("\r", "");
                 if (maxWidth <= 0) { result.Add(line); continue; }
 
+                // 记录行首空白，仅贴到本段“第一个产出行”前面作为缩进；续行从 x=0 起（与 GDI 一致）。
+                int lead = 0;
+                while (lead < line.Length && line[lead] == ' ') lead++;
+                string leadStr = lead > 0 ? new string(' ', lead) : string.Empty;
+
                 string[] words = line.Split(' ');
                 System.Text.StringBuilder current = new System.Text.StringBuilder();
+                bool firstLine = true;
                 foreach (string word in words)
                 {
                     if (current.Length > 0 &&
                         font.MeasureString(current.ToString() + " " + word).X > maxWidth &&
                         font.MeasureString(word).X <= maxWidth)
                     {
-                        result.Add(current.ToString());
+                        result.Add(firstLine ? leadStr + current.ToString() : current.ToString());
+                        firstLine = false;
                         current.Clear();
                         current.Append(word);
                     }
@@ -208,7 +219,8 @@ namespace KFramework.MonoGame
                         {
                             if (current.Length > 0 && font.MeasureString(current.ToString() + ch).X > maxWidth)
                             {
-                                result.Add(current.ToString());
+                                result.Add(firstLine ? leadStr + current.ToString() : current.ToString());
+                                firstLine = false;
                                 current.Clear();
                             }
                             current.Append(ch);
@@ -219,7 +231,8 @@ namespace KFramework.MonoGame
                         current.Append(current.Length == 0 ? word : " " + word);
                     }
                 }
-                if (current.Length > 0) result.Add(current.ToString());
+                if (current.Length > 0)
+                    result.Add(firstLine ? leadStr + current.ToString() : current.ToString());
             }
             return result;
         }

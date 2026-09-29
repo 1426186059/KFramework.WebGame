@@ -301,12 +301,12 @@ namespace Client.MirScenes.Dialogs
 
                     if (L.Match(match.Value).Success)
                     {
-                        NewLink(txt, action, TextLabel[i].Location.Add(new Point(size.Width - 11, 0)));
+                        NewLink(txt, action, TextLabel[i].Location.Add(new Point(size.Width - 5, 0)));
                     }
 
                     if (C.Match(match.Value).Success)
                     {
-                        NewColour(txt, action, TextLabel[i].Location.Add(new Point(size.Width - 11, 0)));
+                        NewColour(txt, action, TextLabel[i].Location.Add(new Point(size.Width - 5, 0)));
                     }
                 }
 
