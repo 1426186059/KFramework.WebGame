@@ -61,7 +61,7 @@ namespace KFramework.MonoGame
             int count = _buffer[0];
             if (count > 0)
             {
-                int off = CountSize;
+                int off = 1;
                 for (int i = 0; i < count; i++)
                 {
                     int type = _buffer[off];
