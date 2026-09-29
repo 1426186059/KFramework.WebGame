@@ -20,57 +20,62 @@
         public const bool bUseJSHttp = true;
         public static async Task<byte[]> LoadCacheOrDownloadAsync(HttpClient http, string path, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
         {
+            string url = http.BaseAddress + path;
             if (bUseJSHttp)
             {
-                string url = http.BaseAddress + path;
                 return  await LoadCacheOrDownloadJsAsync(url, mCacheInstance, priority, cancellationToken);
             }
             else
             {
-                return await LoadCacheOrDownloadAsync_Default(http, path, mCacheInstance, priority, cancellationToken);
+                return await LoadCacheOrDownloadAsync_Default(http, url, mCacheInstance, priority, cancellationToken);
             }
         }
 
-        public static async Task<byte[]> LoadCacheOrDownloadAsync_Default(HttpClient http, string path, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
-        { 
-            string tag = http.BaseAddress + path;
+        public static async Task<byte[]> LoadCacheOrDownloadAsync_Default(
+            HttpClient http, 
+            string url, 
+            Caching mCacheInstance = null, 
+            int priority = 0, 
+            CancellationToken cancellationToken = default)
+        {
             try
             {
                 if (mCacheInstance != null)
                 {
                     GameProfiler.TestStart();
-                    byte[] buf = await mCacheInstance.LoadAsync(path).ConfigureAwait(false);
-                    GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 读取 {tag}");
+                    byte[] buf = await mCacheInstance.LoadAsync(url, cancellationToken).ConfigureAwait(false);
+                    GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 读取 {url}");
                     if (buf != null) return buf;
                 }
 
                 byte[] data = null;
                 const int MaxAttempts = 3;
                 int nNextAttemptTime = 1000;
-                for (int attempt = 1; attempt <= MaxAttempts; attempt++)
+                for (int attempt = 0; attempt < MaxAttempts; attempt++)
                 {
-                    try
+                    data = await ContentLoadScheduler.Default.EnqueueAsync(priority, async _ =>
                     {
-                        data = await ContentLoadScheduler.Default.EnqueueAsync(priority, async _ =>
-                        {
-                            GameProfiler.TestStart();
-                            using var resp = await http.GetAsync(path, cancellationToken).ConfigureAwait(false);
-                            resp.EnsureSuccessStatusCode();
-                            GameProfiler.TestFinishAndLog($"[http] 下载 GetAsync耗时: {tag}");
+                        GameProfiler.TestStart();
+                        using var resp = await http.GetAsync(url, cancellationToken).ConfigureAwait(false);
+                        resp.EnsureSuccessStatusCode();
+                        GameProfiler.TestFinishAndLog($"[http] 下载 GetAsync耗时: {url}");
 
-                            GameProfiler.TestStart();
-                            var buffer = await resp.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
-                            GameProfiler.TestFinishAndLog($"[http] 下载 ReadAsByteArrayAsync 耗时 {tag} {FmtSize(buffer.Length)}");
-                            return buffer;
-                        }, cancellationToken).ConfigureAwait(false);
+                        GameProfiler.TestStart();
+                        var buffer = await resp.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
+                        GameProfiler.TestFinishAndLog($"[http] 下载 ReadAsByteArrayAsync 耗时 {url} {FmtSize(buffer.Length)}");
+                        return buffer;
+                    }, cancellationToken).ConfigureAwait(false);
 
-                        if (data != null)
-                        {
-                            break;
-                        }
+                    if (data != null)
+                    {
+                        break;
                     }
-                    catch { }
-                    await Task.Delay(nNextAttemptTime * attempt);
+
+                    await Task.Delay(nNextAttemptTime * attempt, cancellationToken);
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        break;
+                    }
                 }
 
                 if (data == null) return data;
@@ -80,22 +85,22 @@
                     GameProfiler.TestStart();
                     try
                     {
-                        await mCacheInstance.SaveAsync(path, new ArraySegment<byte>(data)).ConfigureAwait(false);
-                        GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 保存 {tag} {FmtSize(data.Length)}");
+                        await mCacheInstance.SaveAsync(url, new ArraySegment<byte>(data)).ConfigureAwait(false);
+                        GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 保存 {url} {FmtSize(data.Length)}");
                     }
                     catch (Exception saveEx)
                     {
                         // 缓存写入失败绝不能丢掉已下载的字节：之前该异常会一路抛到外层 catch，
                         // 使函数返回 null —— 明明下载成功的 Lib 被判成"远程空"，地图画不全。
-                        GameProfiler.TestFinishAndLog($"[cache] 保存失败(忽略) {tag}");
-                        PrintTool.LogError($"[cache] 保存失败，仍使用已下载数据 {tag}: {saveEx.Message}");
+                        GameProfiler.TestFinishAndLog($"[cache] 保存失败(忽略) {url}");
+                        PrintTool.LogError($"[cache] 保存失败，仍使用已下载数据 {url}: {saveEx.Message}");
                     }
                 }
                 return data;
             }
             catch(Exception e)
             {
-                PrintTool.LogError($"LoadCacheOrDownloadAsync: BaseURL: {tag}  Error: {e.Message}");
+                PrintTool.LogError($"LoadCacheOrDownloadAsync: BaseURL: {url}  Error: {e.Message}");
             }
 
             return null;

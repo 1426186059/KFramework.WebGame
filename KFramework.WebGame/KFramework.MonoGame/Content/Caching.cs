@@ -35,10 +35,24 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>读出已存字节；不存在返回 null。内部用 size + loadInto（byte[] 不能直接从 JS 返回）。</summary>
-        public async Task<byte[]?> LoadAsync(string key)
+        public async Task<byte[]?> LoadAsync(string key, CancellationToken cancellationToken = default)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return null;
+            }
+
             int len = await JSBind_CacheStorage.GetCacheSizeAsync(Name, key).ConfigureAwait(false);
-            if (len <= 0) return null;
+            if (len <= 0)
+            {
+                return null;
+            }
+
+            if(cancellationToken.IsCancellationRequested)
+            {
+                return null;
+            }
+
             var buf = new byte[len];
             int written = await JSBind_CacheStorage.LoadCacheAsync(Name, key, new ArraySegment<byte>(buf)).ConfigureAwait(false);
             return written == len ? buf : null;
