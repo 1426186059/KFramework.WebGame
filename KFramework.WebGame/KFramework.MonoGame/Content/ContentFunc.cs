@@ -18,25 +18,25 @@
         /// </param>
         /// 
         public const bool bUseJSHttp = true;
-        public static async Task<byte[]> LoadCacheOrDownloadAsync(HttpClient http, string path, bool bUseCache = false, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
+        public static async Task<byte[]> LoadCacheOrDownloadAsync(HttpClient http, string path, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
         {
             if (bUseJSHttp)
             {
                 string url = http.BaseAddress + path;
-                return  await LoadCacheOrDownloadJsAsync(url, bUseCache, mCacheInstance, priority, cancellationToken);
+                return  await LoadCacheOrDownloadJsAsync(url, mCacheInstance, priority, cancellationToken);
             }
             else
             {
-                return await LoadCacheOrDownloadAsync_Default(http, path, bUseCache, mCacheInstance, priority, cancellationToken);
+                return await LoadCacheOrDownloadAsync_Default(http, path, mCacheInstance, priority, cancellationToken);
             }
         }
 
-        public static async Task<byte[]> LoadCacheOrDownloadAsync_Default(HttpClient http, string path, bool bUseCache = false, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
+        public static async Task<byte[]> LoadCacheOrDownloadAsync_Default(HttpClient http, string path, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
         { 
             string tag = http.BaseAddress + path;
             try
             {
-                if (bUseCache && mCacheInstance != null)
+                if (mCacheInstance != null)
                 {
                     GameProfiler.TestStart();
                     byte[] buf = await mCacheInstance.LoadAsync(path).ConfigureAwait(false);
@@ -91,11 +91,14 @@
         /// 用同一个 key（完整 URL）。这样不会在 JS 侧另存一份（JS 的 Caching.current 与本缓存名不同），
         /// 磁盘不翻倍、缓存也能完全复用。
         /// </summary>
-        public static async Task<byte[]> LoadCacheOrDownloadJsAsync(string url, bool bUseCache,
-            Caching mCacheInstance, int priority = 0, CancellationToken cancellationToken = default)
+        public static async Task<byte[]> LoadCacheOrDownloadJsAsync(
+            string url,
+            Caching mCacheInstance, 
+            int priority = 0, 
+            CancellationToken cancellationToken = default)
         {
             // 1) 缓存命中（与 HttpClient 版同 key，完全复用）
-            if (bUseCache && mCacheInstance != null)
+            if (mCacheInstance != null)
             {
                 GameProfiler.TestStart();
                 byte[] cached = await mCacheInstance.LoadAsync(url).ConfigureAwait(false);
@@ -138,7 +141,7 @@
             if (data == null) return data;
 
             // 3) 写回缓存（失败不影响本次结果：磁盘紧张 / 配额满时退化为每次走网络）
-            if (bUseCache && mCacheInstance != null)
+            if (mCacheInstance != null)
             {
                 GameProfiler.TestStart();
                 try
