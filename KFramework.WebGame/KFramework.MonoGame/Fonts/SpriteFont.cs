@@ -180,7 +180,8 @@
             Rectangle bounds = Rectangle.Empty;
             Vector2 drawOffset = new(-Padding, 0f);
 
-            int cellWidth = advance + Padding * 2;
+            // 仅格子留白加 1px 防裁切；布局 advance 不再额外 +1（见 text.ts measure），文字宽度才与 GDI 一致。
+            int cellWidth = advance + Padding * 2 + 1;
             int cellHeight = height + Padding * 2;
 
             if (cellWidth > 0 && cellHeight > 0 && !char.IsWhiteSpace(c))

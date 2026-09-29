@@ -53,7 +53,10 @@ export function measure(text, font, letterSpacing, out) {
     const ascent = Math.max(metrics.actualBoundingBoxAscent || 0, size * 0.80);
     const descent = Math.max(metrics.actualBoundingBoxDescent || 0, size * 0.25);
     writeInts(out, [
-        Math.max(1, Math.ceil(metrics.width) + 1),
+        // advance 是文字布局用的字形推进宽度，必须贴近 Canvas2D 真实 metrics.width，
+        // 绝不能额外 +1——否则每个字符都多出 1px 推进（约等于全局 1px 字距），
+        // 长行会显著比 GDI 宽、撑爆 UI。格子额外留白由 SpriteFont 的 Padding/cellWidth 负责，与布局 advance 解耦。
+        Math.max(1, Math.ceil(metrics.width)),
         Math.max(1, Math.ceil(ascent + descent) + 4),
         Math.max(1, Math.ceil(ascent) + 2),
         0,
