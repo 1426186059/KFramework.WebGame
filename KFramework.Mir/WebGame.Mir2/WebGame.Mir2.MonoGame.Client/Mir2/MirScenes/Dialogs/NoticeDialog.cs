@@ -341,11 +341,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (link.StartsWith("http://", true, CultureInfo.InvariantCulture))
                 {
-                    System.Diagnostics.Process.Start(new ProcessStartInfo
-                    {
-                        FileName = link,
-                        UseShellExecute = true
-                    });
+                    BrowserHelper.OpenDefaultBrowser(link);
                 }
             };
             temp.MouseWheel += LoginNoticeDialog_MouseWheel;
