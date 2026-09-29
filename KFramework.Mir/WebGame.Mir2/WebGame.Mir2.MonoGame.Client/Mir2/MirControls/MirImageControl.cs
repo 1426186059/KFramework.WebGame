@@ -246,7 +246,7 @@ namespace Client.MirControls
             }
             MirControl root = cur, layer = below;
 
-            if (root is MirScene && layer is WebGame.Mir2.MonoGame.Client.UILayerControl) return;
+            if (root is MirScene && layer is UILayerControl) return;
 
             // 第二遍才拼详细日志：同一控件只报一次，总数超过 200 条后收口。
             if (!_uiHostReported.Add(self)) return;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using KFramework.MonoGame;
-using MirEngine;
+﻿using KFramework.MonoGame;
 using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirSounds.Libraries
@@ -11,7 +8,7 @@ namespace Client.MirSounds.Libraries
     /// 浏览器端改用 KFramework.MonoGame 的 SoundEffect / SoundEffectInstance（底层 WebAudio），
     /// 这里持有 SoundEffect 与循环实例句柄。
     /// </summary>
-    internal class LoopProvider : ISoundLibrary, IDisposable
+    public class LoopProvider : IDisposable
     {
         public int Index { get; set; }
         public long ExpireTime { get; set; }

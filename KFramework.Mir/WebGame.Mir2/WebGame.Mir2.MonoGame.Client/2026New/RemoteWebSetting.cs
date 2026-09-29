@@ -5,7 +5,6 @@
 // 不需要 remote-config.json。
 //
 // 各字段即是「内置默认」；语言包等需要运行时拉取的内容，下载失败时回退到代码内置值。
-using Client;
 
 public static class RemoteWebSetting
 {
@@ -24,6 +23,6 @@ public static class RemoteWebSetting
 
     public static async Task Load()
     {
-        await GameLanguage.LoadLanguageAsync(Settings.Language + ".json");
+        await GameLanguage.LoadLanguageAsync(Client.Settings.Language + ".json");
     }
 }

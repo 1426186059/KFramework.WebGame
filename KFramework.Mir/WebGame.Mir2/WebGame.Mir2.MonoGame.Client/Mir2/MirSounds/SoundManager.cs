@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Client.MirSounds.Libraries;
+﻿using Client.MirSounds.Libraries;
 using KFramework.MonoGame;
-using MirEngine;
 using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirSounds
@@ -32,7 +26,7 @@ namespace Client.MirSounds
             ".mp3"
         };
 
-        public static ISoundLibrary Music => _music;
+        public static LoopProvider Music => _music;
 
         public static int Vol
         {

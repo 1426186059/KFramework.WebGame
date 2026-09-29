@@ -1,6 +1,5 @@
 ﻿namespace KFramework.MonoGame
 {
-
     /// <summary>
     /// 背景音乐播放器（对齐 MonoGame 的 Microsoft.Xna.Framework.Media.MediaPlayer）。
     /// 简化自 MonoGame：直接播放一个循环 <see cref="SoundEffect"/>，不做 XACT/Song 库。

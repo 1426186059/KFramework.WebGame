@@ -1,15 +1,5 @@
-﻿using System.Threading;
-using KFramework.MonoGame;
-
-namespace KFramework.MonoGame
+﻿namespace KFramework.MonoGame
 {
-
-    /// <summary>
-    /// 音效资源（对齐 MonoGame 的 <c>SoundEffect</c>）。
-    /// 支持从 wav/mp3/ogg 等编码字节创建，浏览器侧经 decodeAudioData 解码成 AudioBuffer。
-    /// 解码是异步的，<see cref="LoadAsync"/> 会等待就绪；<see cref="Play"/> 在解码未完成时直接忽略。
-    /// 跨语言调用统一走 <see cref="JSBind_Audio"/>。
-    /// </summary>
     public sealed class SoundEffect : IDisposable
     {
         private static int _nextHandle = 1;
