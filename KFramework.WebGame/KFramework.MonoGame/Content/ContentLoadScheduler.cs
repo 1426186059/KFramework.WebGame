@@ -64,7 +64,7 @@ namespace KFramework.MonoGame
         /// 尝试驱动队列：只要还有空闲并发槽就取任务执行。
         /// 允许多处并发调用 Pump —— 真正的并发上限由信号量保证，不会超额。
         /// </summary>
-        private void Pump()
+        private async void Pump()
         {
             while (true)
             {
@@ -75,7 +75,7 @@ namespace KFramework.MonoGame
                 }
 
                 // 非阻塞抢一个槽；抢不到说明并发已满，直接返回（任务留在队列里）
-                if (!_slots.Wait(0)) return;
+                if (!await _slots.WaitAsync(0)) return;
 
                 Job job;
                 lock (_sync)
@@ -88,11 +88,11 @@ namespace KFramework.MonoGame
                     }
                 }
 
-                _ = RunAsync(job);
+                RunAsync(job);
             }
         }
 
-        private async Task RunAsync(Job job)
+        private async void RunAsync(Job job)
         {
             try
             {
