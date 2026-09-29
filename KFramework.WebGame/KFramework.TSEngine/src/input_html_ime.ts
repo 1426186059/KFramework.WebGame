@@ -108,6 +108,8 @@ function attach(el: InputEl): void {
     el.style.zIndex = '10';
     el.style.pointerEvents = 'none'; // 点击穿透到 canvas，由引擎按坐标自算光标（对齐 UGUI InputField 自行处理指针）
     el.style.display = 'none';
+    // 覆盖层永远不暴露为密码框：本游戏自行渲染/持久化凭据，不需要浏览器密码管理器介入。
+    // autocomplete=off 仅作兜底；真正“不触发自动填充/保存提示”靠 show() 里始终 type=text（无 password 框）。
     el.setAttribute('autocomplete', 'off');
     el.setAttribute('spellcheck', 'false');
     document.body.appendChild(el);
@@ -218,7 +220,9 @@ export function show(cx: number, cy: number, cw: number, ch: number, fontPx: num
         el.style.whiteSpace = 'pre-wrap';
         el.style.overflow = 'hidden';
     } else {
-        (el as HTMLInputElement).type = password ? 'password' : 'text';
+        // 始终用 text：密码掩码由引擎在 canvas 自绘（DOM 输入框透明），无需 type=password。
+        // 一旦存在 password 框，浏览器会把登录/聊天等任意文本框当成凭据框，触发“保存密码”提示与用户名自动填充。
+        (el as HTMLInputElement).type = 'text';
     }
     if (maxLength > 0 && maxLength < 100000) el.maxLength = maxLength;
     else el.removeAttribute('maxlength');
