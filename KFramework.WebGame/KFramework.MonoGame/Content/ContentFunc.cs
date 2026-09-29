@@ -41,15 +41,42 @@
                     GameProfiler.TestStart();
                     byte[] buf = await mCacheInstance.LoadAsync(path).ConfigureAwait(false);
                     GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 读取 {tag}");
-
                     if (buf != null) return buf;
+                }
 
-                    // 下载统一走调度器排队，避免同时打满浏览器连接
-                    byte[] data = await ContentLoadScheduler.Default
-                        .EnqueueAsync(priority, ct => DownloadAsync(http, path, tag, ct), cancellationToken)
-                        .ConfigureAwait(false);
-                    if (data == null) return null;
+                byte[] data = null;
+                const int MaxAttempts = 3;
+                int nNextAttemptTime = 1000;
+                for (int attempt = 1; attempt <= MaxAttempts; attempt++)
+                {
+                    try
+                    {
+                        data = await ContentLoadScheduler.Default.EnqueueAsync(priority, async _ =>
+                        {
+                            GameProfiler.TestStart();
+                            using var resp = await http.GetAsync(path, cancellationToken).ConfigureAwait(false);
+                            resp.EnsureSuccessStatusCode();
+                            GameProfiler.TestFinishAndLog($"[http] 下载 GetAsync耗时: {tag}");
 
+                            GameProfiler.TestStart();
+                            var buffer = await resp.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
+                            GameProfiler.TestFinishAndLog($"[http] 下载 ReadAsByteArrayAsync 耗时 {tag} {FmtSize(buffer.Length)}");
+                            return buffer;
+                        }, cancellationToken).ConfigureAwait(false);
+
+                        if (data != null)
+                        {
+                            break;
+                        }
+                    }
+                    catch { }
+                    await Task.Delay(nNextAttemptTime * attempt);
+                }
+
+                if (data == null) return data;
+
+                if (mCacheInstance != null)
+                {
                     GameProfiler.TestStart();
                     try
                     {
@@ -61,16 +88,10 @@
                         // 缓存写入失败绝不能丢掉已下载的字节：之前该异常会一路抛到外层 catch，
                         // 使函数返回 null —— 明明下载成功的 Lib 被判成"远程空"，地图画不全。
                         GameProfiler.TestFinishAndLog($"[cache] 保存失败(忽略) {tag}");
-                        PrintTool.Log($"[cache] 保存失败，仍使用已下载数据 {tag}: {saveEx.Message}");
+                        PrintTool.LogError($"[cache] 保存失败，仍使用已下载数据 {tag}: {saveEx.Message}");
                     }
-                    return data;
                 }
-                else
-                {
-                    return await ContentLoadScheduler.Default
-                        .EnqueueAsync(priority, ct => DownloadAsync(http, path, tag, ct), cancellationToken)
-                        .ConfigureAwait(false);
-                }
+                return data;
             }
             catch(Exception e)
             {
@@ -152,29 +173,10 @@
                 catch (Exception saveEx)
                 {
                     GameProfiler.TestFinishAndLog($"[cache] 保存失败(忽略) {url}");
-                    PrintTool.Log($"[cache] 保存失败，仍使用已下载数据 {url}: {saveEx.Message}");
+                    PrintTool.LogError($"[cache] 保存失败，仍使用已下载数据 {url}: {saveEx.Message}");
                 }
             }
 
-            return data;
-        }
-
-        /// <summary>
-        /// 下载并分段计时（诊断用，不改变行为）。耗时一律用 GameProfiler 输出（单位：秒）。
-        /// [http] 响应头 = GetAsync 到拿到响应头（含排队/连接/TTFB）；
-        /// [http] 读body = 读取响应体到字节数组的耗时。
-        /// 分开记是为了分辨“网络慢”还是“wasm 内把字节读进托管堆慢”。
-        /// </summary>
-        private static async Task<byte[]> DownloadAsync(HttpClient http, string path, string tag, CancellationToken cancellationToken)
-        {
-            GameProfiler.TestStart();
-            using var resp = await http.GetAsync(path, cancellationToken).ConfigureAwait(false);
-            resp.EnsureSuccessStatusCode();
-            GameProfiler.TestFinishAndLog($"[http] 下载 GetAsync耗时: {tag}");
-
-            GameProfiler.TestStart();
-            byte[] data = await resp.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
-            GameProfiler.TestFinishAndLog($"[http] 下载 ReadAsByteArrayAsync 耗时 {tag} {FmtSize(data.Length)}");
             return data;
         }
 
