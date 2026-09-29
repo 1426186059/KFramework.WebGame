@@ -226,7 +226,10 @@ export function hide() {
     if (c) {
         c.tabIndex = 0;
         if (document.activeElement !== c) {
-            try { c.focus(); } catch { /* ignore */ }
+            try {
+                c.focus();
+            }
+            catch { /* ignore */ }
         }
     }
 }
