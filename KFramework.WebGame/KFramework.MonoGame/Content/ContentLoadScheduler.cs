@@ -18,6 +18,8 @@ namespace KFramework.MonoGame
         public static readonly ContentLoadScheduler Default = new ContentLoadScheduler();
 
         private readonly object _sync = new object();
+
+        //只有 1个 int Priority，不能保证 FIFO 队列，所以加了个 Seq
         private readonly PriorityQueue<Job, (int Priority, long Seq)> _queue = new PriorityQueue<Job, (int, long)>();
         private readonly SemaphoreSlim _slots;
         private long _seq;
