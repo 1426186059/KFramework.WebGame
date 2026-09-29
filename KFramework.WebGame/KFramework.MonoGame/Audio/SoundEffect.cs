@@ -7,7 +7,10 @@
         private readonly int _handle;
         private bool _loaded;
 
-        private SoundEffect(int handle) => _handle = handle;
+        private SoundEffect(int handle)
+        {
+            this._handle = handle;
+        }
 
         /// <summary>解码完成后的时长；未解码时为 <see cref="TimeSpan.Zero"/>。</summary>
         public TimeSpan Duration { get; private set; }
@@ -16,18 +19,18 @@
         public bool IsLoaded => _loaded;
 
         /// <summary>提交编码字节给浏览器解码，立即返回（解码在后台进行）。</summary>
-        /// <param name="mime">MIME 类型，如 "audio/wav"、"audio/mpeg"、"audio/ogg"。</param>
-        public static SoundEffect FromBytes(byte[] data, string mime)
+        /// <remarks>浏览器 <c>decodeAudioData</c> 按字节自动识别格式，无需 MIME 提示。</remarks>
+        public static SoundEffect FromBytes(byte[] data)
         {
             var effect = new SoundEffect(Interlocked.Increment(ref _nextHandle));
-            JSBind_Audio.LoadAudio(effect._handle, data, mime);
+            JSBind_Audio.LoadAudio(effect._handle, data);
             return effect;
         }
 
         /// <summary>提交字节并等待浏览器解码完成。</summary>
-        public static async Task<SoundEffect> LoadAsync(byte[] data, string mime)
+        public static async Task<SoundEffect> LoadAsync(byte[] data)
         {
-            var effect = FromBytes(data, mime);
+            var effect = FromBytes(data);
             while (!JSBind_Audio.IsLoaded(effect._handle))
                 await Task.Yield();
 
@@ -41,37 +44,18 @@
         /// （同步阻塞下载；解码仍异步进行，同 <see cref="FromBytes"/>）。
         /// 复用 <paramref name="mContentManager"/> 的下载/缓存链路（<c>LoadBytesAsync</c>），
         /// 走引擎统一的下载调度与 Cache Storage 缓存，不另建 HttpClient。
-        /// MIME 按扩展名推断：.wav→audio/wav，.mp3→audio/mpeg，.ogg→audio/ogg，
-        /// .m4a→audio/mp4，其余回退 application/octet-stream。
+        /// 浏览器 <c>decodeAudioData</c> 按字节自动识别格式，无需 MIME 提示。
         /// 若需非阻塞加载，请自行 <c>await mContentManager.LoadBytesAsync(...)</c> 后调用 <see cref="FromBytes"/>。
         /// </summary>
-        /// <param name="mContentManager">用于下载的 <see cref="ContentManager"/> 实例（如 <c>ContentManager.Default</c>）。</param>
         /// <param name="url">音频地址（绝对 URL 会被原样透传；相对路径则按 ContentManager 的 root 解析）。</param>
+        /// <param name="mContentManager">用于下载的 <see cref="ContentManager"/> 实例（缺省取 <c>ContentManager.Default</c>）。</param>
         public static SoundEffect FromURL(
-            string url, 
+            string url,
             ContentManager mContentManager = null)
         {
-            if(mContentManager == null)
-            {
-                mContentManager = ContentManager.Default;
-            }
-
+            mContentManager ??= ContentManager.Default;
             byte[] data = mContentManager.LoadBytesAsync(url).GetAwaiter().GetResult();
-            return FromBytes(data, MimeFromUrl(url));
-        }
-
-        private static string MimeFromUrl(string url)
-        {
-            int dot = url.LastIndexOf('.');
-            string ext = dot >= 0 ? url.Substring(dot).ToLowerInvariant() : string.Empty;
-            return ext switch
-            {
-                ".wav" => "audio/wav",
-                ".mp3" => "audio/mpeg",
-                ".ogg" => "audio/ogg",
-                ".m4a" => "audio/mp4",
-                _ => "application/octet-stream",
-            };
+            return FromBytes(data);
         }
 
         internal int Handle => _handle;

@@ -39,9 +39,9 @@ namespace KFramework.MonoGame
 
         // ===== 音频缓冲 =====
 
-        /// <summary>提交编码后的音频字节，JS 侧异步解码；用 IsLoaded 查询结果。</summary>
+        /// <summary>提交编码后的音频字节，JS 侧异步解码；用 IsLoaded 查询结果。浏览器按字节自动识别格式，无需 MIME。</summary>
         [JSImport("loadAudio", "audio")]
-        public static partial void LoadAudio(int handle, [JSMarshalAs<JSType.MemoryView>] Span<byte> data, string mime);
+        public static partial void LoadAudio(int handle, [JSMarshalAs<JSType.MemoryView>] Span<byte> data);
 
         [JSImport("isLoaded", "audio")]
         public static partial bool IsLoaded(int handle);

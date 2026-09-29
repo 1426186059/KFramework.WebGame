@@ -142,7 +142,7 @@ export function playNoise(duration: number, volume: number, cutoffFrom: number, 
 
 // ===== 真实音频缓冲 =====
 
-export function loadAudio(handle: number, data: Uint8Array, _mime: string): void {
+export function loadAudio(handle: number, data: Uint8Array): void {
     const ctx = ensureContext();
     if (!ctx) return;
 

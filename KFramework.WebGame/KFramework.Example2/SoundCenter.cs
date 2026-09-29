@@ -31,7 +31,7 @@ internal sealed class SoundCenter
         foreach (var kv in AudioPaths)
         {
             if (bundle.TryGetAsset(kv.Value, out byte[]? bytes) && bytes is not null)
-                center._effects[kv.Key] = SoundEffect.FromBytes(bytes, "audio/wav");
+                center._effects[kv.Key] = SoundEffect.FromBytes(bytes);
             else
                 PrintTool.Log($"[KFramework.MonoGame] 缺少音效资源：{kv.Value}（逻辑键 {kv.Key}）");
         }
