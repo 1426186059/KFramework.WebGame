@@ -78,7 +78,7 @@ namespace KFramework.MonoGame
             GraphicsDevice = new GraphicsDevice(canvasSelector, antialias);
             Window = new GameWindow(GraphicsDevice);
             Components = new GameComponentCollection();
-            JSBind_GameHost.Current = this;
+            JSBind_GameUpdate.Current = this;
         }
 
         /// <summary>启动主循环；返回的 Task 在 <see cref="Exit"/> 后完成。</summary>
@@ -109,20 +109,13 @@ namespace KFramework.MonoGame
                 _initialized = true;
             }
 
-            JSBind_Platform.StartRenderLoop();
+            JSBind_GameUpdate.StartRenderLoop();
             await _exitSignal.Task;
         }
 
         /// <summary>结束主循环。</summary>
         public void Exit() => _exitSignal.TrySetResult();
 
-        /// <summary>
-        /// 设置主循环限帧（C# 层实现）：每 <paramref name="framesPerPresent"/> 个 requestAnimationFrame 才真正推进一帧。
-        /// 不再下发给 TS——rAF 由 TS 驱动，但“是否跳过本帧”的判定在这里做（见 <see cref="TickFrame"/>），
-        /// 供 KTime.ApplyCaptureFramerate 等 C# 侧需求使用。
-        /// 注意：与 PresentationInterval 的限帧（GraphicsDeviceManager → TS 的 frameInterval）是两条独立路径，
-        /// 通常不同时设；逻辑仍按可变 dt 走，这与已废弃的 IsFixedTimeStep 不同。
-        /// </summary>
         public void SetFrameInterval(int framesPerPresent)
             => _frameInterval = Math.Max(1, framesPerPresent);
 

@@ -345,7 +345,7 @@ namespace KFramework.MonoGame
         /// 只有 <see cref="PresentInterval.Two"/> 是隔一个 rAF 画（N = 2，半刷新率），用于省电 / 限帧测试。
         /// </remarks>
         private void ApplyPresentInterval(PresentationParameters pp)
-            => JSBind_Platform.SetFrameInterval(pp.PresentationInterval.ToFramesPerPresent());
+            => JSBind_GameUpdate.SetFrameInterval(pp.PresentationInterval.ToFramesPerPresent());
 
         /// <summary>
         /// 把所有挂起的属性改动应用到图形设备。
@@ -503,7 +503,7 @@ namespace KFramework.MonoGame
         /// <summary>
         /// 主循环当前的呈现间隔：每几个垂直同步（rAF）才画一帧，1 = 每个都画（见 <see cref="ApplyPresentInterval"/>）。
         /// </summary>
-        public int FramesPerPresent => JSBind_Platform.GetFrameInterval();
+        public int FramesPerPresent => JSBind_GameUpdate.GetFrameInterval();
 
         /// <summary>
         /// 期望的呈现间隔 —— 也就是「限帧」。

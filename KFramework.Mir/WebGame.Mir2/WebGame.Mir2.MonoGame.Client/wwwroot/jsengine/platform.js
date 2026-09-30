@@ -25,25 +25,40 @@ export function setFrameInterval(interval) {
 export function getFrameInterval() {
     return frameInterval;
 }
+let frameErrorCount = 0;
+const maxFrameErrors = 10;
+function renderLoopTick(timestamp) {
+    if (!running)
+        return;
+    // 帧回调已异常达上限：停止帧回调，避免无限刷屏拖死主线程
+    if (frameErrorCount >= maxFrameErrors)
+        return;
+    try {
+        // 跳过的帧仍然继续排队 rAF：只是这一帧不进游戏循环（逻辑时间按 timestamp 差值照常推进）
+        frameCounter++;
+        if (frameCounter % frameInterval === 0)
+            frameCallback?.(timestamp);
+    }
+    catch (error) {
+        frameErrorCount++;
+        if (frameErrorCount <= maxFrameErrors) {
+            console.error(`[platform] 帧回调异常 (${frameErrorCount}/${maxFrameErrors}):`, error);
+        }
+        // 达到上限后不再帧回调，并停止主循环
+        if (frameErrorCount >= maxFrameErrors) {
+            running = false;
+            console.error(`[platform] 帧回调连续异常 ${maxFrameErrors} 次，已停止主循环。`);
+            return;
+        }
+    }
+    requestAnimationFrame(renderLoopTick);
+}
 export function startRenderLoop() {
     if (running)
         return;
     running = true;
-    const tick = (timestamp) => {
-        if (!running)
-            return;
-        try {
-            // 跳过的帧仍然继续排队 rAF：只是这一帧不进游戏循环（逻辑时间按 timestamp 差值照常推进）
-            frameCounter++;
-            if (frameCounter % frameInterval === 0)
-                frameCallback?.(timestamp);
-        }
-        catch (error) {
-            console.error('[platform] 帧回调异常:', error);
-        }
-        requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
+    frameErrorCount = 0;
+    requestAnimationFrame(renderLoopTick);
 }
 export function stopRenderLoop() {
     running = false;

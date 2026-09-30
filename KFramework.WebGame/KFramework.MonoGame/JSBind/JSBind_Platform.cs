@@ -4,9 +4,10 @@ namespace KFramework.MonoGame
 {
 
     /// <summary>
-/// 浏览器平台服务（画布尺寸、主循环驱动、地址栏参数等）。
+/// 浏览器平台服务（画布尺寸、页面标题、地址栏参数、环境查询、外链打开等）。
 /// 依赖 KFramework.TSEngine 项目：本类 JSImport 全部映射到 src/platform.ts 的 "platform" 模块；
 /// 编译产物 platform.js 由各示例 SyncJsEngine 复制到 wwwroot/jsengine。
+/// 帧循环驱动（startRenderLoop / setFrameInterval / getFrameInterval）已拆到 JSBind_GameUpdate（对应 game_update 模块）。
 /// </summary>
     public static partial class JSBind_Platform
     {
@@ -15,21 +16,6 @@ namespace KFramework.MonoGame
         /// </summary>
         [JSImport("getCanvasSize", "platform")]
         public static partial void GetCanvasSize([JSMarshalAs<JSType.MemoryView>] Span<int> size);
-
-        /// <summary>启动 requestAnimationFrame 主循环，之后每帧回调 <c>KFramework.MonoGame.Frame</c>。</summary>
-        [JSImport("startRenderLoop", "platform")]
-        public static partial void StartRenderLoop();
-
-        /// <summary>
-        /// 设置呈现间隔：每 N 个垂直同步（rAF）回调一帧（N ≥ 1）。
-        /// 对应 MonoGame 的 swapInterval，浏览器里由主循环跳帧实现。
-        /// </summary>
-        [JSImport("setFrameInterval", "platform")]
-        public static partial void SetFrameInterval(int interval);
-
-        /// <summary>当前呈现间隔（1 = 每个垂直同步都画）。</summary>
-        [JSImport("getFrameInterval", "platform")]
-        public static partial int GetFrameInterval();
 
         /// <summary>设置页面标题（浏览器标签页文字）。</summary>
         [JSImport("setTitle", "platform")]

@@ -1,4 +1,4 @@
-// 【依赖 C#】本文件编译出的 main.js 每帧回调 KFramework.MonoGame.JSBind_GameHost.Frame（类名/命名空间被其硬编码查找）。
+// 【依赖 C#】本文件编译出的 main.js 每帧回调 KFramework.MonoGame.JSBind_GameUpdate.Frame（类名/命名空间被其硬编码查找）。
 // 引擎的浏览器启动器。
 //
 // 它是 TypeScript 源码，编译产物由 tsconfig 直接输出到 MirGame/wwwroot/jsengine/，
@@ -21,6 +21,7 @@ import * as net from './net_websocket.js';
 import * as inputOverlay from './input_html_ime.js';
 import * as cursor from './cursor.js';
 import * as localstorage from './storage_local.js';
+import * as gameUpdate from './game_update.js';
 
 interface GameHost {
     Frame(timestampMs: number): void;
@@ -50,14 +51,14 @@ function findHost(exports: AssemblyExports | null): GameHost | undefined {
     if (!exports) return undefined;
 
     // 引擎的 JS 绑定统一放在 KFramework.MonoGame 命名空间，类名以 JSBind_ 开头。
-    // 帧回调的完整路径是 KFramework.MonoGame.JSBind_GameHost。
+    // 帧回调的完整路径是 KFramework.MonoGame.JSBind_GameUpdate。
     const byNamespace = (
-        exports as { KFramework?: { MonoGame?: { JSBind_GameHost?: GameHost } } }
-    ).KFramework?.MonoGame?.JSBind_GameHost;
+        exports as { KFramework?: { MonoGame?: { JSBind_GameUpdate?: GameHost } } }
+    ).KFramework?.MonoGame?.JSBind_GameUpdate;
     if (byNamespace) return byNamespace;
 
-    const direct = exports as { JSBind_GameHost?: GameHost };
-    if (direct.JSBind_GameHost) return direct.JSBind_GameHost;
+    const direct = exports as { JSBind_GameUpdate?: GameHost };
+    if (direct.JSBind_GameUpdate) return direct.JSBind_GameUpdate;
 
     // 兜底：递归下钻整棵导出树找带 Frame 的类型，避免 C# 侧改名后这里静默失效。
     const stack: unknown[] = [exports];
@@ -92,6 +93,7 @@ setModuleImports('net_websocket', net);
 setModuleImports('input_html_ime', inputOverlay);
 setModuleImports('cursor', cursor);
 setModuleImports('localstorage', localstorage);
+setModuleImports('game_update', gameUpdate);
 
 const config = getConfig();
 
@@ -126,7 +128,7 @@ if (!bind) {
 }
 
 /**
- * 帧回调 JSBind_GameHost.Frame 定义在 KFramework.MonoGame 程序集里，
+ * 帧回调 JSBind_GameUpdate.Frame 定义在 KFramework.MonoGame 程序集里，
  * 而 config.mainAssemblyName 是游戏程序集，因此需要在多个程序集中查找。
  */
 async function resolveGameHost(): Promise<GameHost | undefined> {
@@ -149,9 +151,9 @@ async function resolveGameHost(): Promise<GameHost | undefined> {
 const host = await resolveGameHost();
 
 if (!host) {
-    console.error('[main] 找不到 JSBind_GameHost 导出，画面不会刷新');
+    console.error('[main] 找不到 JSBind_GameUpdate 导出，画面不会刷新');
 } else {
-    platform.setFrameCallback((timestamp: number) => host.Frame(timestamp));
+    gameUpdate.setFrameCallback((timestamp: number) => host.Frame(timestamp));
 }
 
 // 浏览器要求用户手势后才能启动音频
