@@ -10474,21 +10474,50 @@ namespace Client.MirScenes
                 long backImageMax = 0;
 
                 for (int x = 0; x < Width; x++)
+                {
                     for (int y = 0; y < Height; y++)
                     {
                         var c = M2CellInfo[x, y];
-                        if (c == null) continue;
+                        if (c == null)
+                        {
+                            continue;
+                        }
 
-                        if (c.BackImage != 0) { backCells++; if (c.BackImage > backImageMax) backImageMax = c.BackImage; }
-                        if (c.MiddleImage != 0) midCells++;
-                        if (c.FrontImage != 0) frontCells++;
+                        if (c.BackImage != 0)
+                        {
+                            backCells++;
+                            if (c.BackImage > backImageMax)
+                            {
+                                backImageMax = c.BackImage;
+                            }
+                        }
+
+                        if (c.MiddleImage != 0)
+                        {
+                            midCells++;
+                        }
+
+                        if (c.FrontImage != 0)
+                        {
+                            frontCells++;
+                        }
 
                         // 注意：0 是合法索引（MapLibs[0] = Tiles 底图），绝不能用 "> 0" 过滤，
                         // 否则底图库永远进不了预加载，只能等绘制时按需去取（表现为地图大片不全）。
-                        if (c.BackIndex >= 0) used.Add(c.BackIndex);
-                        if (c.MiddleIndex >= 0) used.Add(c.MiddleIndex);
-                        if (c.FrontIndex >= 0 && c.FrontIndex != 200) used.Add(c.FrontIndex);
+                        if (c.BackIndex >= 0)
+                        {
+                            used.Add(c.BackIndex);
+                        }
+                        if (c.MiddleIndex >= 0)
+                        {
+                            used.Add(c.MiddleIndex);
+                        }
+                        if (c.FrontIndex >= 0 && c.FrontIndex != 200)
+                        {
+                            used.Add(c.FrontIndex);
+                        }
                     }
+                }
 
                 // 记录本图用到的地图片库索引，供切图时整体 Dispose 释放。
                 _usedMapLibs = used;
