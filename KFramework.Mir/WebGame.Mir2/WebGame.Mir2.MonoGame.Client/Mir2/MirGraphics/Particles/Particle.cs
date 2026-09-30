@@ -1,12 +1,5 @@
-using Client.MirObjects;
 using Client.MirScenes;
 using SlimDX;
-using System;
-using System.Collections.Generic;
-using MirEngine;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirGraphics.Particles
