@@ -244,20 +244,35 @@ namespace Client.MirGraphics
                 Color.White);
         }
 
+        //这个方法是每秒刷新一次
         public static void Clean()
         {
             for (int i = TextureList.Count - 1; i >= 0; i--)
             {
                 MImage m = TextureList[i];
-                if (m == null) { TextureList.RemoveAt(i); continue; }
-                if (CMain.Time <= m.CleanTime) continue;
+                if (m == null) 
+                { 
+                    TextureList.RemoveAt(i); 
+                    continue; 
+                }
+                if (CMain.Time <= m.CleanTime) //自身还有一个清理时间
+                {
+                    continue;
+                }
                 m.DisposeTexture();
             }
             for (int i = ControlList.Count - 1; i >= 0; i--)
             {
                 MirControl c = ControlList[i];
-                if (c == null) { ControlList.RemoveAt(i); continue; }
-                if (CMain.Time <= c.CleanTime) continue;
+                if (c == null) 
+                { 
+                    ControlList.RemoveAt(i); 
+                    continue; 
+                }
+                if (CMain.Time <= c.CleanTime) //自身还有一个清理时间
+                {
+                    continue;
+                }
                 c.DisposeTexture();
             }
         }

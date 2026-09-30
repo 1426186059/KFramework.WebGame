@@ -28,6 +28,8 @@ namespace WebGame.Mir2.MonoGame.Client
         private static int _fps;
         public static int DPS;
         public static int DPSCounter;
+        private static long _cleanTime;
+        private static long _drawTime;
 
         public static int TotalBytesReceived, TotalBytesSent;
 
@@ -120,8 +122,7 @@ namespace WebGame.Mir2.MonoGame.Client
         }
 
         private static string _lastLoopError;
-        private static long _cleanTime;
-            
+        
         public static void Update(GameTime gameTime)
         {
             UpdateTime(gameTime);
@@ -137,8 +138,11 @@ namespace WebGame.Mir2.MonoGame.Client
         {
             try
             {
-                RenderEnvironment();
-                UpdateFrameTime();
+                if (IsDrawTime())
+                {
+                    RenderEnvironment();
+                    UpdateFrameTime();
+                }
             }
             catch (Exception ex)
             {
@@ -151,6 +155,18 @@ namespace WebGame.Mir2.MonoGame.Client
         private static void UpdateTime(GameTime gameTime)
         {
             Time = (long)gameTime.TotalGameTime.TotalMilliseconds;
+        }
+
+        private static bool IsDrawTime()
+        {
+            int targetUpdates = 1000 / Math.Max(1, Settings.MaxFPS);
+
+            if (Time >= _drawTime)
+            {
+                _drawTime = Time + targetUpdates;
+                return true;
+            }
+            return false;
         }
 
         private static void UpdateFrameTime()
@@ -175,7 +191,6 @@ namespace WebGame.Mir2.MonoGame.Client
             if (Time >= _cleanTime)
             {
                 _cleanTime = Time + 1000;
-
                 DXManager.Clean(); // Clean once a second.
             }
 
