@@ -3973,7 +3973,7 @@ namespace Client.MirScenes
             var isCurrentMap = (MapControl.Index == p.MapIndex);
 
             if (isCurrentMap)
-                MapControl.ResetMap();
+                MapControl.ResetMap(false);
             else
             {
                 MapControl.Index = p.MapIndex;
@@ -10344,25 +10344,19 @@ namespace Client.MirScenes
             Click += OnMouseClick;
         }
 
-        public void ResetMap()
+        public void ResetMap(bool bResetCell = true)
         {
-            _pendingAdd.Clear();
             GameScene.Scene.NPCDialog.Hide();
 
             MapObject.MouseObjectID = 0;
             MapObject.TargetObjectID = 0;
             MapObject.MagicObjectID = 0;
 
+            // 先卸载旧地图上的全部对象：Remove 需要从当前网格移除对象，
+            // 必须在本方法置空 M2CellInfo 之前执行，否则旧 NPC/怪物残留导致重影跟随玩家。
             if (M2CellInfo != null)
                 for (var i = ObjectsList.Count - 1; i >= 0; i--)
                     ObjectsList[i]?.Remove();
-
-            // 切图期间把网格置空：异步加载完成前，新地图的 User/NPC/怪物对象会经由
-            // AddObject/RemoveObject 落入 _pendingAdd 缓冲，待 LoadMapAsync 加载完本图后统一回放，
-            // 避免用“旧地图(可能更小)网格”按“新地图坐标”索引导致 IndexOutOfRangeException。
-            M2CellInfo = null;
-            Width = 0;
-            Height = 0;
 
             Objects.Clear();
             ObjectsList.Clear();
@@ -10373,6 +10367,17 @@ namespace Client.MirScenes
             {
                 Objects[User.ObjectID] = User;
                 ObjectsList.Add(User);
+            }
+
+            // 切图置空网格（须在对象卸载之后）：异步加载完成前，新地图的 User/NPC/怪物对象
+            // 会经由 AddObject/RemoveObject 落入 _pendingAdd 缓冲，待 LoadMapAsync 加载完本图后统一回放，
+            // 避免用“旧地图(可能更小)网格”按“新地图坐标”索引导致 IndexOutOfRangeException。
+            if (bResetCell)
+            {
+                M2CellInfo = null;
+                Width = 0;
+                Height = 0;
+                _pendingAdd.Clear();
             }
         }
 
@@ -12650,6 +12655,13 @@ namespace Client.MirScenes
         {
             if (M2CellInfo == null)
             {
+                // 异步加载期间同一 ObjectID 的包可能多次到达（重连/重发）。此刻对象尚未进入
+                // MapControl.Objects 字典，MapObject 构造函数的去重（按 Objects 字典命中）不会触发，
+                // 直接缓冲会累积多份，待 LoadMapAsync 回放时全部加入地图 → NPC 重影且跟随玩家移动。
+                // 故在缓冲阶段即按 ObjectID 去重，只保留最后一次，对齐原版同步加载下的“单实例”语义。
+                for (int i = _pendingAdd.Count - 1; i >= 0; i--)
+                    if (_pendingAdd[i].ObjectID == ob.ObjectID)
+                        _pendingAdd.RemoveAt(i);
                 _pendingAdd.Add(ob);
                 return;
             }
