@@ -41,26 +41,44 @@ namespace Client.MirNetwork
 
             try
             {
-                // Web 下游戏服务器地址由部署配置决定（RemoteWebSetting.GameServerUrl）；
-                // 仅当本地设置里手动指定了服务器（UseConfig）时，才以本地覆盖为准（本地调试用）。
                 string url = RemoteWebSetting.GameServerUrl;
                 _ws = new Net_WebSocket_Client();
-                _ws.Opened += () => { Connected = true; TimeConnected = CMain.Time; };
-                _ws.Closed += code => { Connected = false; };
-                _ws.Error += msg => { if (Settings.LogErrors) CMain.SaveError(msg); };
-                _ws.MessageReceived += m =>
-                {
-                    byte[] data = m.ToArray();
-                    if (data.Length > 0) _rawQueue.Enqueue(data);
-                };
+                _ws.Opened += OnNet_OpenFunc;
+                _ws.Closed += OnNet_ClosedFunc;
+                _ws.Error += OnNet_ErrorFunc;
+                _ws.MessageReceived += OnNet_MessageReceivedFunc;
                 _ws.Connect(url);
                 TimeOutTime = CMain.Time + Settings.TimeOut;
             }
             catch (System.Exception ex)
             {
-                if (Settings.LogErrors) CMain.SaveError(ex.ToString());
-                Disconnect();
+                OnNet_ErrorFunc(ex.Message);
             }
+        }
+
+        private static void OnNet_OpenFunc()
+        {
+            Connected = true; TimeConnected = CMain.Time;
+        }
+
+        private static void OnNet_ClosedFunc(int code)
+        {
+            Connected = false;
+        }
+
+        private static void OnNet_ErrorFunc(string msg)
+        {
+            if (Settings.LogErrors)
+            {
+                CMain.SaveError(msg);
+            }
+            Disconnect();
+        }
+
+        private static void OnNet_MessageReceivedFunc(ReadOnlyMemory<byte> m)
+        {
+            byte[] data = m.ToArray();
+            if (data.Length > 0) _rawQueue.Enqueue(data);
         }
 
         public static void Disconnect()
