@@ -107,7 +107,7 @@ export function playNoise(duration, volume, cutoffFrom, cutoffTo) {
     source.stop(start + duration);
 }
 // ===== 真实音频缓冲 =====
-export function loadAudio(handle, data, _mime) {
+export function loadAudio(handle, data) {
     const ctx = ensureContext();
     if (!ctx)
         return;

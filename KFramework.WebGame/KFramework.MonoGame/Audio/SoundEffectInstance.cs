@@ -1,8 +1,5 @@
-﻿using KFramework.MonoGame;
-
-namespace KFramework.MonoGame
+﻿namespace KFramework.MonoGame
 {
-
     /// <summary>
     /// 音效的可控播放实例（对齐 MonoGame 的 <c>SoundEffectInstance</c>）。
     /// 由 <see cref="SoundEffect.CreateInstance"/> 创建，可独立控制播放/循环/音量/音高/声相。
