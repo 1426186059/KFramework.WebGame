@@ -3,66 +3,6 @@
 //
 // 输入已独立成 ./input.ts（薄绑定层），由 C# 侧 JSBind_Input 单独对接模块名 "input"。
 import { getCanvasElement } from './gl.js';
-let frameCallback = null;
-let running = false;
-export function setFrameCallback(callback) {
-    frameCallback = callback;
-}
-// ---------- 呈现间隔（对应 MonoGame 的 swapInterval） ----------
-// 照 MonoGame：PresentationInterval → GL 的 swapInterval（Graphics/GraphicsExtensions.cs 的 GetSwapInterval：
-// Immediate=0 / One=1 / Two=2 / Default=-1）。浏览器没有 swapInterval 可调，但 requestAnimationFrame
-// 本身就是垂直同步，所以等价实现是「每 N 个 rAF 才回调一帧」：1=每个垂直同步都画，2=隔一个（半帧率）。
-let frameInterval = 1;
-let frameCounter = 0;
-/**
- * 设置呈现间隔：每 N 个 rAF 回调一帧（N ≥ 1）。
- * 由 GraphicsDeviceManager.ApplyChanges 按 PresentationInterval 下发。
- */
-export function setFrameInterval(interval) {
-    frameInterval = Math.max(1, Math.min(8, Math.round(interval) || 1));
-}
-/** 当前呈现间隔（1 = 每个垂直同步都画）。 */
-export function getFrameInterval() {
-    return frameInterval;
-}
-let frameErrorCount = 0;
-const maxFrameErrors = 10;
-function renderLoopTick(timestamp) {
-    if (!running)
-        return;
-    // 帧回调已异常达上限：停止帧回调，避免无限刷屏拖死主线程
-    if (frameErrorCount >= maxFrameErrors)
-        return;
-    try {
-        // 跳过的帧仍然继续排队 rAF：只是这一帧不进游戏循环（逻辑时间按 timestamp 差值照常推进）
-        frameCounter++;
-        if (frameCounter % frameInterval === 0)
-            frameCallback?.(timestamp);
-    }
-    catch (error) {
-        frameErrorCount++;
-        if (frameErrorCount <= maxFrameErrors) {
-            console.error(`[platform] 帧回调异常 (${frameErrorCount}/${maxFrameErrors}):`, error);
-        }
-        // 达到上限后不再帧回调，并停止主循环
-        if (frameErrorCount >= maxFrameErrors) {
-            running = false;
-            console.error(`[platform] 帧回调连续异常 ${maxFrameErrors} 次，已停止主循环。`);
-            return;
-        }
-    }
-    requestAnimationFrame(renderLoopTick);
-}
-export function startRenderLoop() {
-    if (running)
-        return;
-    running = true;
-    frameErrorCount = 0;
-    requestAnimationFrame(renderLoopTick);
-}
-export function stopRenderLoop() {
-    running = false;
-}
 // ---------- 画布尺寸 ----------
 // 复用的整数缓冲，避免每帧 getCanvasSize 都 new Int32Array（减少 GC 抖动）。
 let _int32Scratch = new Int32Array(8);
