@@ -6,6 +6,7 @@
     <Project Path="Tools/Mir2Tool/MirLib/MirLib.csproj" />
     <Project Path="Tools/Mir2Tool/TextureToWebP/TextureToWebP.csproj" />
   </Folder>
+  <Project Path="../../KFramework.WebGame/KFramework.MonoGame/KFramework.MonoGame.csproj" />
   <Project Path="WebGame.Mir2.MonoGame.Client/WebGame.Mir2.MonoGame.Client.csproj" />
   <Project Path="Web_Mir2.Server.WinForms/Server.csproj" />
   <Project Path="Web_Mir2.Server/Web_Mir2.Server.csproj" />
