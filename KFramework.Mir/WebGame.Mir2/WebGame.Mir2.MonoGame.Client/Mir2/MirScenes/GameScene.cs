@@ -10283,6 +10283,10 @@ namespace Client.MirScenes
 
         public int Index;
         public string FileName = String.Empty;
+
+        /// <summary>当前已加载地图「用到」的地图片库索引集合（Libraries.MapLibs 下标）。
+        /// 切图时据此把旧地图的库全部 Dispose 掉，释放贴图内存。</summary>
+        private HashSet<int> _usedMapLibs = new HashSet<int>();
         public string Title = String.Empty;
         public ushort MiniMap, BigMap, Music, SetMusic;
         public LightSetting Lights;
@@ -10384,6 +10388,7 @@ namespace Client.MirScenes
         public async Task LoadMapAsync()
         {
             ResetMap();
+            DisposeOldMapLibraries();
 
             // 记录本次加载代次并快照文件名：LoadMapAsync 是 fire-and-forget 调用的，
             // 连续/并发切图时（如登录时连着收到两张地图包），先完成的旧地图若照常落地，
@@ -10485,6 +10490,9 @@ namespace Client.MirScenes
                         if (c.FrontIndex >= 0 && c.FrontIndex != 200) used.Add(c.FrontIndex);
                     }
 
+                // 记录本图用到的地图片库索引，供切图时整体 Dispose 释放。
+                _usedMapLibs = used;
+
                 // 诊断地图数据是否解析正确：正常地图应有大量带底图的格子。
                 KFramework.MonoGame.PrintTool.Log("[Map] 尺寸=" + Width + "x" + Height +
                     " 有底图格=" + backCells + " 有中层格=" + midCells + " 有前景格=" + frontCells +
@@ -10507,6 +10515,32 @@ namespace Client.MirScenes
             {
                 KFramework.MonoGame.PrintTool.Log("[Map] 预加载地图片库失败: " + ex.Message);
             }
+        }
+
+        /// <summary>
+        /// 切换地图时，把「上一张地图」用到的所有地图片库 Dispose 掉，释放其纹理与字节流，
+        /// 避免 WASM 堆被历次地图的贴图持续堆积（堆上限仅 2GB）。
+        /// 仅在 ResetMap 之后（M2CellInfo 已置空、绘制不再引用这些库）调用。
+        /// 释放后库的 _loaded 复位，新地图访问时会自动重新 InitializeAsync 拉取属于它的那份 Lib。
+        /// 仅对远程地图（内容随地图名变化）生效；本地共享库内容跨地图一致，保留缓存避免重复下载。
+        /// </summary>
+        private void DisposeOldMapLibraries()
+        {
+            if (!NewResConfig.RemoteLibEnabled) return;   // 本地共享库跨地图内容一致，不释放
+            if (_usedMapLibs == null || _usedMapLibs.Count == 0) return;
+
+            int n = _usedMapLibs.Count;
+            foreach (int i in _usedMapLibs)
+            {
+                if (i < 0 || i >= Libraries.MapLibs.Length) continue;
+                var lib = Libraries.MapLibs[i];
+                if (lib == null) continue;
+                if (lib.IsLoading) continue;   // 仍在上一张地图的异步加载中：交给新地图的 staleForOtherMap 重载处理，避免打断在途请求
+                try { lib.Dispose(); }
+                catch (Exception ex) { KFramework.MonoGame.PrintTool.Log("[Map] 释放旧地图库失败 idx=" + i + ": " + ex.Message); }
+            }
+            _usedMapLibs.Clear();
+            KFramework.MonoGame.PrintTool.Log("[Map] 已释放旧地图用到的地图片库: " + n + " 个");
         }
 
 

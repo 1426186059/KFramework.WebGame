@@ -6,7 +6,7 @@ using Frame = Client.MirObjects.Frame;
 
 namespace Client.MirGraphics
 {
-    public sealed class MLibrary
+    public sealed class MLibrary : IDisposable
     {
         public const string Extention = ".Lib";
         public const int LibVersion = 3;
@@ -551,6 +551,35 @@ namespace Client.MirGraphics
                         return true;
 
             return false;
+        }
+
+        /// <summary>是否正在异步加载（绘制路径外用于判断能否安全 Dispose）。</summary>
+        public bool IsLoading => _loading;
+
+        /// <summary>
+        /// 释放本库持有的全部贴图（MImage）与解析用的字节流/读取器，复位加载状态，
+        /// 以便切换地图后本库能被重新 InitializeAsync 拉取属于新地图的那份 Lib。
+        /// 仅释放、不销毁库对象本身（_fileName 保留，供按需重载）。幂等。
+        /// </summary>
+        public void Dispose()
+        {
+            if (_images != null)
+            {
+                for (int i = 0; i < _images.Length; i++)
+                    _images[i]?.Dispose();
+            }
+            _images = null;
+            _indexList = null;
+            _frames = null;
+
+            if (_reader != null) { _reader.Dispose(); _reader = null; }
+            if (_stream != null) { _stream.Dispose(); _stream = null; }
+
+            _loaded = false;
+            _initialized = false;
+            _loading = false;
+            _failed = false;
+            _loadedForMap = string.Empty;
         }
 
     }

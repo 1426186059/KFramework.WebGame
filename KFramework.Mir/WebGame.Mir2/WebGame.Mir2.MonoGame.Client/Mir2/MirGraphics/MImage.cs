@@ -6,7 +6,7 @@ using Frame = Client.MirObjects.Frame;
 
 namespace Client.MirGraphics
 {
-    public sealed class MImage
+    public sealed class MImage : IDisposable
     {
         public short Width, Height, X, Y, ShadowX, ShadowY;
         public byte Shadow;
@@ -155,6 +155,12 @@ namespace Client.MirGraphics
             Image = null;
             MaskImage = null;
             Data = null;
+        }
+
+        public void Dispose()
+        {
+            // MImage 本身不持有非托管资源，统一交给 DisposeTexture 释放贴图与像素数据。
+            DisposeTexture();
         }
 
         public bool VisiblePixel(Point p)
