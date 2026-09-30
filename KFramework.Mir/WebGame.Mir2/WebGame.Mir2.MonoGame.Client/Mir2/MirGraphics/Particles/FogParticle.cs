@@ -52,6 +52,12 @@ namespace Client.MirGraphics.Particles
 
         protected override void OnPositionChanged()
         {
+            if (ImageInfo.Size.Height == 0 || ImageInfo.Size.Width == 0)
+            {
+                //还没Load完成，所以取得的大小为 0;
+                return;
+            }
+
             if (Position.Y < -ImageInfo.Size.Height * 2)
                 Position += yreset;
             else if (Position.Y > Settings.ScreenHeight + ImageInfo.Size.Height)
@@ -85,6 +91,12 @@ namespace Client.MirGraphics.Particles
 
         protected override void OnPositionChanged()
         {
+            if (ImageInfo.Size.Height == 0 || ImageInfo.Size.Width == 0)
+            {
+                //还没Load完成，所以取得的大小为 0;
+                return;
+            }
+
             if (Position.Y < -ImageInfo.Size.Height * 2)
                 Position += yreset;
             else if (Position.Y > Settings.ScreenHeight + ImageInfo.Size.Height)
@@ -118,6 +130,12 @@ namespace Client.MirGraphics.Particles
 
         protected override void OnPositionChanged()
         {
+            if (ImageInfo.Size.Height == 0 || ImageInfo.Size.Width == 0)
+            {
+                //还没Load完成，所以取得的大小为 0;
+                return;
+            }
+
             if (Position.Y < -ImageInfo.Size.Height * 2)
                 Position += yreset;
             else if (Position.Y > Settings.ScreenHeight + ImageInfo.Size.Height)
