@@ -3196,6 +3196,7 @@ namespace Client.MirScenes
         private void TimeOfDay(S.TimeOfDay p)
         {
             Lights = p.Lights;
+            KFramework.MonoGame.PrintTool.Log($"[DayNight] 收到 TimeOfDay 包: Lights={p.Lights}({(int)p.Lights})");
             switch (Lights)
             {
                 case LightSetting.Day:
@@ -10387,6 +10388,12 @@ namespace Client.MirScenes
             }
 
         }
+        // [DayNight] 诊断日志节流：仅状态变化时打印，避免每帧刷屏
+        internal static LightSetting _dnLastGlobal = (LightSetting)0xFF;
+        internal static LightSetting _dnLastMap = (LightSetting)0xFF;
+        internal static LightSetting _dnLastSetting = (LightSetting)0xFF;
+        internal static LightSetting _dnLastDraw = (LightSetting)0xFF;
+
         public static bool AutoHit;
 
         public int AnimationCount;
@@ -10813,6 +10820,13 @@ namespace Client.MirScenes
             //Render Death, 
 
             LightSetting setting = Lights == LightSetting.Normal ? GameScene.Scene.Lights : Lights;
+
+            if (_dnLastGlobal != GameScene.Scene.Lights || _dnLastMap != Lights || _dnLastSetting != setting)
+            {
+                _dnLastGlobal = GameScene.Scene.Lights; _dnLastMap = Lights; _dnLastSetting = setting;
+                bool willDraw = setting != LightSetting.Day || GameScene.User.Poison.HasFlag(PoisonType.Blindness);
+                KFramework.MonoGame.PrintTool.Log($"[DayNight] Draw: setting={setting}({(int)setting})  globalLights(TimeOfDay)={GameScene.Scene.Lights}({(int)GameScene.Scene.Lights})  mapLights={Lights}({(int)Lights})  进DrawLights={willDraw}");
+            }
 
             if (setting != LightSetting.Day || GameScene.User.Poison.HasFlag(PoisonType.Blindness))
             {
@@ -11319,7 +11333,7 @@ namespace Client.MirScenes
 
         private void DrawLights(LightSetting setting)
         {
-            if (DXManager.Lights == null || DXManager.Lights.Count == 0) return;
+            if (DXManager.Lights == null) return;
 
             var vp = DXManager.GDevice.Viewport;
             int lw = vp.Width, lh = vp.Height;
@@ -11332,6 +11346,11 @@ namespace Client.MirScenes
 
             Surface oldSurface = DXManager.CurrentSurface;
             DXManager.SetSurface(DXManager.LightSurface);
+
+            // DrawLights 全部在屏幕空间绘制（光照 RT 与合成全屏矩形都不应被世界相机变换影响）。
+            // DXManager.Draw 会把 RenderTransform 套到顶点，故此处临时清空，方法结束再恢复。
+            var _savedRT = DXManager.RenderTransform;
+            DXManager.RenderTransform = null;
 
             Color darkness;
 
@@ -11374,11 +11393,21 @@ namespace Client.MirScenes
                 darkness = GetBlindLight(darkness);
             }
 
-            // 光照 RT 只承载"发光体"（火把/法术/地图灯）的叠加发光，清空为全透明（而非原版的暗度色）。
-            // 环境昼夜压暗改由末尾的黑色全屏叠加近似实现（见下方合成段说明）。
-            DXManager.Device.Clear(ClearFlags.Target, Color.FromArgb(0, 0, 0, 0), 0, 0);
+            if (_dnLastDraw != setting)
+            {
+                _dnLastDraw = setting;
+                int lightCount = DXManager.Lights == null ? 0 : DXManager.Lights.Count;
+                KFramework.MonoGame.PrintTool.Log($"[DayNight] DrawLights 进入: setting={setting}({(int)setting})  darkness=({darkness.R},{darkness.G},{darkness.B})  lights.Count={lightCount}");
+            }
 
+            // 光照 RT：照原版传奇，先清空为「暗度色」darkness（而非全透明）；
+            // 下面的发光体（火把/法术/地图灯）再以加法叠加到这层暗度之上。
+            DXManager.Device.Clear(ClearFlags.Target, darkness, 0, 0);
 
+            // 灯贴图（火把/法术/地图灯）在浏览器端暂未加载（DXManager.Lights 为空）。此时仍要执行上面的环境昼夜压暗，
+            // 仅跳过下面的"发光体"绘制以免 Lights[-1] 越界崩溃；日后补齐灯光资源后这段会自动生效。
+            if (DXManager.Lights.Count > 0)
+            {
             int light;
             Point p;
             DXManager.SetBlend(true);
@@ -11551,38 +11580,21 @@ namespace Client.MirScenes
                     }
                 }
             }
+            } // 关闭 if (DXManager.Lights.Count > 0)
 
             DXManager.SetBlend(false);
             DXManager.SetSurface(oldSurface);
 
-            // —— 合成（适配 MonoGame 的近似实现）——
-            // 原版用 D3D9 固定功能混合(SourceBlend=Zero, DestBlend=SourceColor)把"暗度色 + 发光体"的光照图
-            // 逐像素乘法压暗回主画面：Final = 主画面 * 光照图。KFramework.MonoGame.BlendState 不支持 Multiply，
-            // 也无法自定义混合，故用两步近似：
-            //   1) 环境压暗：黑色全屏叠加，alpha = 1 - 暗度亮度。NonPremultiplied 下
-            //      Final = 黑*alpha + 主画面*(1-alpha) = 主画面*(1-alpha)，等价于对灰度暗度做乘法压暗；
-            //   2) 动态光源：把"仅含发光体"的光照 RT 以 Additive 加法叠加回主画面，局部提亮（火把/法术/地图灯）。
+            // —— 合成（照原版传奇）——
+            // 光照 RT 此刻 = 暗度色 darkness + 加法叠加的发光体（火把/法术/地图灯）。
+            // 原版用 D3D9 固定功能混合 SourceBlend=Zero, DestinationBlend=SourceColor，即
+            // Final = 主画面 × 光照图，逐像素乘法压暗回主画面；这里用等价的 BlendState.Multiply。
             var vpSize = DXManager.GDevice.Viewport;
-            float lum = (darkness.R + darkness.G + darkness.B) / (3f * 255f);
-            float ambient = Math.Max(0f, 1f - lum);
-            if (ambient > 0.001f)
-            {
-                bool oldB = DXManager.Blending;
-                DXManager.SetBlend(false);
-                DXManager.Draw(DXManager.WhitePixel,
-                    new Rectangle(0, 0, 1, 1),
-                    new RectangleF(0, 0, vpSize.Width, vpSize.Height),
-                    new SlimDX.Color4(ambient, 0f, 0f, 0f));
-                DXManager.SetBlend(oldB);
-            }
-
-            bool oldB2 = DXManager.Blending;
-            DXManager.SetBlend(true);
-            DXManager.Draw(DXManager.LightTexture, new Rectangle(0, 0, vpSize.Width, vpSize.Height), Vector3.Zero, Color.White);
-            DXManager.SetBlend(oldB2);
+            DXManager.Draw(DXManager.LightTexture, new Rectangle(0, 0, vpSize.Width, vpSize.Height), Vector3.Zero, Color.White, KFramework.MonoGame.BlendState.Multiply);
 
             DXManager.Sprite.End();
             DXManager.Sprite.Begin(SpriteFlags.AlphaBlend);
+            DXManager.RenderTransform = _savedRT;
         }
 
         private static void OnMouseClick(object sender, EventArgs e)
