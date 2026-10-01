@@ -11408,178 +11408,178 @@ namespace Client.MirScenes
             // 仅跳过下面的"发光体"绘制以免 Lights[-1] 越界崩溃；日后补齐灯光资源后这段会自动生效。
             if (DXManager.Lights.Count > 0)
             {
-            int light;
-            Point p;
-            DXManager.SetBlend(true);
-            DXManager.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-            DXManager.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
+                int light;
+                Point p;
+                DXManager.SetBlend(true);
+                DXManager.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+                DXManager.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
 
-            foreach (var ob in Objects.Values)
-            {
-                if (ob.Light > 0 && (!ob.Dead || ob == MapObject.User || ob.Race == ObjectType.Spell))
+                foreach (var ob in Objects.Values)
                 {
-                    light = ob.Light;
-
-                    int lightRange = light % 15;
-                    if (lightRange >= DXManager.Lights.Count)
-                        lightRange = DXManager.Lights.Count - 1;
-
-                    p = ob.DrawLocation;
-
-                    Color lightColour = ob.LightColour;
-
-                    if (ob.Race == ObjectType.Player)
+                    if (ob.Light > 0 && (!ob.Dead || ob == MapObject.User || ob.Race == ObjectType.Spell))
                     {
-                        switch (light / 15)
+                        light = ob.Light;
+
+                        int lightRange = light % 15;
+                        if (lightRange >= DXManager.Lights.Count)
+                            lightRange = DXManager.Lights.Count - 1;
+
+                        p = ob.DrawLocation;
+
+                        Color lightColour = ob.LightColour;
+
+                        if (ob.Race == ObjectType.Player)
                         {
-                            case 0://no light source
-                                lightColour = Color.FromArgb(255, 60, 60, 60);
-                                break;
-                            case 1:
-                                lightColour = Color.FromArgb(255, 120, 120, 120);
-                                break;
-                            case 2://Candle
-                                lightColour = Color.FromArgb(255, 180, 180, 180);
-                                break;
-                            case 3://Torch
-                                lightColour = Color.FromArgb(255, 240, 240, 240);
-                                break;
-                            default://Peddler Torch
-                                lightColour = Color.FromArgb(255, 255, 255, 255);
-                                break;
+                            switch (light / 15)
+                            {
+                                case 0://no light source
+                                    lightColour = Color.FromArgb(255, 60, 60, 60);
+                                    break;
+                                case 1:
+                                    lightColour = Color.FromArgb(255, 120, 120, 120);
+                                    break;
+                                case 2://Candle
+                                    lightColour = Color.FromArgb(255, 180, 180, 180);
+                                    break;
+                                case 3://Torch
+                                    lightColour = Color.FromArgb(255, 240, 240, 240);
+                                    break;
+                                default://Peddler Torch
+                                    lightColour = Color.FromArgb(255, 255, 255, 255);
+                                    break;
+                            }
+                        }
+                        else if (ob.Race == ObjectType.Merchant)
+                        {
+                            lightColour = Color.FromArgb(255, 120, 120, 120);
+                        }
+
+                        if (MapObject.User.Poison.HasFlag(PoisonType.Blindness))
+                        {
+                            lightColour = GetBlindLight(lightColour);
+                        }
+
+                        if (DXManager.Lights[lightRange] != null && !DXManager.Lights[lightRange].Disposed)
+                        {
+                            p.Offset(-(DXManager.LightSizes[lightRange].X / 2) - (CellWidth / 2), -(DXManager.LightSizes[lightRange].Y / 2) - (CellHeight / 2) - 5);
+                            DXManager.Draw(DXManager.Lights[lightRange], null, new Vector3((float)p.X, (float)p.Y, 0.0F), lightColour);
                         }
                     }
-                    else if (ob.Race == ObjectType.Merchant)
-                    {
-                        lightColour = Color.FromArgb(255, 120, 120, 120);
-                    }
 
-                    if (MapObject.User.Poison.HasFlag(PoisonType.Blindness))
+                    if (!Settings.Effect) continue;
+                    for (int e = 0; e < ob.Effects.Count; e++)
                     {
-                        lightColour = GetBlindLight(lightColour);
-                    }
+                        Effect effect = ob.Effects[e];
+                        if (!effect.Blend || CMain.Time < effect.Start || (!(effect is Missile) && effect.Light < ob.Light)) continue;
 
-                    if (DXManager.Lights[lightRange] != null && !DXManager.Lights[lightRange].Disposed)
-                    {
-                        p.Offset(-(DXManager.LightSizes[lightRange].X / 2) - (CellWidth / 2), -(DXManager.LightSizes[lightRange].Y / 2) - (CellHeight / 2) - 5);
-                        DXManager.Draw(DXManager.Lights[lightRange], null, new Vector3((float)p.X, (float)p.Y, 0.0F), lightColour);
+                        light = effect.Light;
+
+                        p = effect.DrawLocation;
+
+                        var lightColour = effect.LightColour;
+
+                        if (MapObject.User.Poison.HasFlag(PoisonType.Blindness))
+                        {
+                            lightColour = GetBlindLight(lightColour);
+                        }
+
+                        if (DXManager.Lights[light] != null && !DXManager.Lights[light].Disposed)
+                        {
+                            p.Offset(-(DXManager.LightSizes[light].X / 2) - (CellWidth / 2), -(DXManager.LightSizes[light].Y / 2) - (CellHeight / 2) - 5);
+                            DXManager.Draw(DXManager.Lights[light], null, new Vector3((float)p.X, (float)p.Y, 0.0F), lightColour);
+                        }
+
                     }
                 }
 
-                if (!Settings.Effect) continue;
-                for (int e = 0; e < ob.Effects.Count; e++)
+                if (Settings.Effect)
                 {
-                    Effect effect = ob.Effects[e];
-                    if (!effect.Blend || CMain.Time < effect.Start || (!(effect is Missile) && effect.Light < ob.Light)) continue;
-
-                    light = effect.Light;
-
-                    p = effect.DrawLocation;
-
-                    var lightColour = effect.LightColour;
-
-                    if (MapObject.User.Poison.HasFlag(PoisonType.Blindness))
+                    for (int e = 0; e < Effects.Count; e++)
                     {
-                        lightColour = GetBlindLight(lightColour);
-                    }
+                        Effect effect = Effects[e];
+                        if (!effect.Blend || CMain.Time < effect.Start) continue;
 
-                    if (DXManager.Lights[light] != null && !DXManager.Lights[light].Disposed)
-                    {
-                        p.Offset(-(DXManager.LightSizes[light].X / 2) - (CellWidth / 2), -(DXManager.LightSizes[light].Y / 2) - (CellHeight / 2) - 5);
-                        DXManager.Draw(DXManager.Lights[light], null, new Vector3((float)p.X, (float)p.Y, 0.0F), lightColour);
-                    }
+                        light = effect.Light;
+                        if (light == 0) continue;
 
+                        p = effect.DrawLocation;
+
+                        var lightColour = Color.White;
+
+                        if (MapObject.User.Poison.HasFlag(PoisonType.Blindness))
+                        {
+                            lightColour = GetBlindLight(lightColour);
+                        }
+
+                        if (DXManager.Lights[light] != null && !DXManager.Lights[light].Disposed)
+                        {
+                            p.Offset(-(DXManager.LightSizes[light].X / 2) - (CellWidth / 2), -(DXManager.LightSizes[light].Y / 2) - (CellHeight / 2) - 5);
+                            DXManager.Draw(DXManager.Lights[light], null, new Vector3((float)p.X, (float)p.Y, 0.0F), lightColour);
+                        }
+                    }
                 }
-            }
 
-            if (Settings.Effect)
-            {
-                for (int e = 0; e < Effects.Count; e++)
+                for (int y = MapObject.User.Movement.Y - ViewRangeY - 24; y <= MapObject.User.Movement.Y + ViewRangeY + 24; y++)
                 {
-                    Effect effect = Effects[e];
-                    if (!effect.Blend || CMain.Time < effect.Start) continue;
-
-                    light = effect.Light;
-                    if (light == 0) continue;
-
-                    p = effect.DrawLocation;
-
-                    var lightColour = Color.White;
-
-                    if (MapObject.User.Poison.HasFlag(PoisonType.Blindness))
+                    if (y < 0) continue;
+                    if (y >= Height) break;
+                    for (int x = MapObject.User.Movement.X - ViewRangeX - 24; x < MapObject.User.Movement.X + ViewRangeX + 24; x++)
                     {
-                        lightColour = GetBlindLight(lightColour);
-                    }
+                        if (x < 0) continue;
+                        if (x >= Width) break;
+                        int imageIndex = (M2CellInfo[x, y].FrontImage & 0x7FFF) - 1;
+                        if (imageIndex == -1) continue;
+                        int fileIndex = M2CellInfo[x, y].FrontIndex;
+                        if (fileIndex == -1) continue;
+                        if (M2CellInfo[x, y].Light <= 0 || M2CellInfo[x, y].Light >= 10) continue;
+                        if (M2CellInfo[x, y].Light == 0) continue;
 
-                    if (DXManager.Lights[light] != null && !DXManager.Lights[light].Disposed)
-                    {
-                        p.Offset(-(DXManager.LightSizes[light].X / 2) - (CellWidth / 2), -(DXManager.LightSizes[light].Y / 2) - (CellHeight / 2) - 5);
-                        DXManager.Draw(DXManager.Lights[light], null, new Vector3((float)p.X, (float)p.Y, 0.0F), lightColour);
-                    }
-                }
-            }
+                        Color lightIntensity;
 
-            for (int y = MapObject.User.Movement.Y - ViewRangeY - 24; y <= MapObject.User.Movement.Y + ViewRangeY + 24; y++)
-            {
-                if (y < 0) continue;
-                if (y >= Height) break;
-                for (int x = MapObject.User.Movement.X - ViewRangeX - 24; x < MapObject.User.Movement.X + ViewRangeX + 24; x++)
-                {
-                    if (x < 0) continue;
-                    if (x >= Width) break;
-                    int imageIndex = (M2CellInfo[x, y].FrontImage & 0x7FFF) - 1;
-                    if (imageIndex == -1) continue;
-                    int fileIndex = M2CellInfo[x, y].FrontIndex;
-                    if (fileIndex == -1) continue;
-                    if (M2CellInfo[x, y].Light <= 0 || M2CellInfo[x, y].Light >= 10) continue;
-                    if (M2CellInfo[x, y].Light == 0) continue;
+                        light = (M2CellInfo[x, y].Light % 10) * 3;
 
-                    Color lightIntensity;
+                        switch (M2CellInfo[x, y].Light / 10)
+                        {
+                            case 1:
+                                lightIntensity = Color.FromArgb(255, 255, 255, 255);
+                                break;
+                            case 2:
+                                lightIntensity = Color.FromArgb(255, 120, 180, 255);
+                                break;
+                            case 3:
+                                lightIntensity = Color.FromArgb(255, 255, 180, 120);
+                                break;
+                            case 4:
+                                lightIntensity = Color.FromArgb(255, 22, 160, 5);
+                                break;
+                            default:
+                                lightIntensity = Color.FromArgb(255, 255, 255, 255);
+                                break;
+                        }
 
-                    light = (M2CellInfo[x, y].Light % 10) * 3;
+                        if (MapObject.User.Poison.HasFlag(PoisonType.Blindness))
+                        {
+                            lightIntensity = GetBlindLight(lightIntensity);
+                        }
 
-                    switch (M2CellInfo[x, y].Light / 10)
-                    {
-                        case 1:
-                            lightIntensity = Color.FromArgb(255, 255, 255, 255);
-                            break;
-                        case 2:
-                            lightIntensity = Color.FromArgb(255, 120, 180, 255);
-                            break;
-                        case 3:
-                            lightIntensity = Color.FromArgb(255, 255, 180, 120);
-                            break;
-                        case 4:
-                            lightIntensity = Color.FromArgb(255, 22, 160, 5);
-                            break;
-                        default:
-                            lightIntensity = Color.FromArgb(255, 255, 255, 255);
-                            break;
-                    }
-
-                    if (MapObject.User.Poison.HasFlag(PoisonType.Blindness))
-                    {
-                        lightIntensity = GetBlindLight(lightIntensity);
-                    }
-
-                    p = new Point(
-                        (x + OffSetX - MapObject.User.Movement.X) * CellWidth + MapObject.User.OffSetMove.X,
-                        (y + OffSetY - MapObject.User.Movement.Y) * CellHeight + MapObject.User.OffSetMove.Y + 32);
+                        p = new Point(
+                            (x + OffSetX - MapObject.User.Movement.X) * CellWidth + MapObject.User.OffSetMove.X,
+                            (y + OffSetY - MapObject.User.Movement.Y) * CellHeight + MapObject.User.OffSetMove.Y + 32);
 
 
-                    if (M2CellInfo[x, y].FrontAnimationFrame > 0)
-                        p.Offset(Libraries.MapLibs[fileIndex].GetOffSet(imageIndex));
+                        if (M2CellInfo[x, y].FrontAnimationFrame > 0)
+                            p.Offset(Libraries.MapLibs[fileIndex].GetOffSet(imageIndex));
 
-                    if (light >= DXManager.Lights.Count)
-                        light = DXManager.Lights.Count - 1;
+                        if (light >= DXManager.Lights.Count)
+                            light = DXManager.Lights.Count - 1;
 
-                    if (DXManager.Lights[light] != null && !DXManager.Lights[light].Disposed)
-                    {
-                        p.Offset(-(DXManager.LightSizes[light].X / 2) - (CellWidth / 2) + 10, -(DXManager.LightSizes[light].Y / 2) - (CellHeight / 2) - 5);
-                        DXManager.Draw(DXManager.Lights[light], null, new Vector3((float)p.X, (float)p.Y, 0.0F), lightIntensity);
+                        if (DXManager.Lights[light] != null && !DXManager.Lights[light].Disposed)
+                        {
+                            p.Offset(-(DXManager.LightSizes[light].X / 2) - (CellWidth / 2) + 10, -(DXManager.LightSizes[light].Y / 2) - (CellHeight / 2) - 5);
+                            DXManager.Draw(DXManager.Lights[light], null, new Vector3((float)p.X, (float)p.Y, 0.0F), lightIntensity);
+                        }
                     }
                 }
-            }
             } // 关闭 if (DXManager.Lights.Count > 0)
 
             DXManager.SetBlend(false);
