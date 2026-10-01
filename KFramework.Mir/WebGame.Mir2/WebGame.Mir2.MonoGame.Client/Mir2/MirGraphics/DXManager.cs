@@ -182,6 +182,21 @@ namespace Client.MirGraphics
             Draw(texture, sourceRect, position, c);
         }
 
+        // 1×1 白色像素贴图，用于全屏纯色叠加（如昼夜环境压暗）。
+        private static Texture2D _whitePixel;
+        public static Texture2D WhitePixel
+        {
+            get
+            {
+                if (_whitePixel == null)
+                {
+                    byte[] rgba = { 255, 255, 255, 255 };
+                    _whitePixel = GDevice.CreateTexture(1, 1, rgba);
+                }
+                return _whitePixel;
+            }
+        }
+
         // 离屏渲染目标：把 surface 所属的 RenderTarget2D 绑到设备（null = 回默认画布）。
         // 嵌套合成时按"保存/恢复 CurrentSurface"的方式调用，保证子控件烘焙后能回到父 RT。
         public static void SetSurface(SlimDX.Direct3D9.Surface surface)

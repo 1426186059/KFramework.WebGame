@@ -3213,6 +3213,7 @@ namespace Client.MirScenes
                     break;
             }
         }
+
         private void ChangeAMode(S.ChangeAMode p)
         {
             AMode = p.Mode;
@@ -10119,6 +10120,69 @@ namespace Client.MirScenes
         public const int CellWidth = 48;
         public const int CellHeight = 32;
 
+        /// <summary>选中目标脚下显示的「选择环」贴图（程序化生成的白色圆环，绘制时染色）。
+        /// 原版 Crystal 客户端没有此特效，这里按传奇经典风格新增：在所选敌人/玩家脚底画一个等距椭圆环。</summary>
+        private static KFramework.MonoGame.Texture2D _selectionRingTex;
+        private static KFramework.MonoGame.Texture2D SelectionRingTexture
+        {
+            get
+            {
+                if (_selectionRingTex == null)
+                    _selectionRingTex = CreateSelectionRingTexture();
+                return _selectionRingTex;
+            }
+        }
+
+        /// <summary>程序化生成一张正方形白色圆环贴图（透明底），绘制时按比例压扁成地面等距椭圆。</summary>
+        private static KFramework.MonoGame.Texture2D CreateSelectionRingTexture()
+        {
+            const int size = 64;
+            byte[] rgba = new byte[size * size * 4];
+            float cx = (size - 1) / 2f;
+            float cy = (size - 1) / 2f;
+            float radius = size / 2f - 3f;
+            float thickness = 4f;
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = x - cx;
+                    float dy = y - cy;
+                    float d = (float)Math.Sqrt(dx * dx + dy * dy);
+                    if (d <= radius && d >= radius - thickness)
+                    {
+                        int i = (y * size + x) * 4;
+                        rgba[i] = 255; rgba[i + 1] = 255; rgba[i + 2] = 255; rgba[i + 3] = 255;
+                    }
+                }
+            }
+            return DXManager.GDevice.CreateTexture(size, size, rgba);
+        }
+
+        /// <summary>在指定对象脚底绘制等距椭圆选中环（不随 HighlightTarget 开关，选中即显示）。</summary>
+        private void DrawSelectionRing(MapObject obj)
+        {
+            if (obj == null || obj.Dead) return;
+            var tex = SelectionRingTexture;
+            if (tex == null) return;
+
+            // 脚底世界屏幕坐标：对象所在格左下中心（角色站立点）。
+            int footX = obj.DrawLocation.X + CellWidth / 2;
+            int footY = obj.DrawLocation.Y + CellHeight;
+
+            // 等距椭圆半轴：地面圆环宽:高 = CellWidth:CellHeight。
+            float semiW = CellWidth * 0.9f;
+            float semiH = CellHeight * 0.9f;
+
+            bool oldBlend = DXManager.Blending;
+            DXManager.SetBlend(false);
+            DXManager.Draw(tex,
+                new Rectangle(0, 0, tex.Width, tex.Height),
+                new RectangleF(footX - semiW, footY - semiH, semiW * 2, semiH * 2),
+                new SlimDX.Color4(0.9f, 1f, 0.15f, 0.15f)); // 经典红色，90% 不透明
+            DXManager.SetBlend(oldBlend);
+        }
+
         public static int OffSetX;
         public static int OffSetY;
 
@@ -11204,6 +11268,13 @@ namespace Client.MirScenes
                     MapObject.TargetObject.DrawBlend();
             }
 
+            // 选中目标脚下显示经典选择环（敌人/玩家均可，不依赖 HighlightTarget 开关）。
+            // 走位时左键点地面会清空 TargetObject，但雷电术等远程攻击仍走 MagicObject，
+            // 因此这里以"实际战斗目标"= TargetObject ?? MagicObject 作为环的载体，保证边走边打时环不丢。
+            var sel = MapObject.TargetObject;
+            if (sel == null || sel.Dead) sel = MapObject.MagicObject;
+            if (sel != null && !sel.Dead) DrawSelectionRing(sel);
+
             if (Settings.Effect)
             {
                 for (int i = Effects.Count - 1; i >= 0; i--)
@@ -11303,7 +11374,9 @@ namespace Client.MirScenes
                 darkness = GetBlindLight(darkness);
             }
 
-            DXManager.Device.Clear(ClearFlags.Target, darkness, 0, 0);
+            // 光照 RT 只承载"发光体"（火把/法术/地图灯）的叠加发光，清空为全透明（而非原版的暗度色）。
+            // 环境昼夜压暗改由末尾的黑色全屏叠加近似实现（见下方合成段说明）。
+            DXManager.Device.Clear(ClearFlags.Target, Color.FromArgb(0, 0, 0, 0), 0, 0);
 
 
             int light;
@@ -11482,10 +11555,31 @@ namespace Client.MirScenes
             DXManager.SetBlend(false);
             DXManager.SetSurface(oldSurface);
 
-            DXManager.Device.SetRenderState(RenderState.SourceBlend, Blend.Zero);
-            DXManager.Device.SetRenderState(RenderState.DestinationBlend, Blend.SourceColor);
+            // —— 合成（适配 MonoGame 的近似实现）——
+            // 原版用 D3D9 固定功能混合(SourceBlend=Zero, DestBlend=SourceColor)把"暗度色 + 发光体"的光照图
+            // 逐像素乘法压暗回主画面：Final = 主画面 * 光照图。KFramework.MonoGame.BlendState 不支持 Multiply，
+            // 也无法自定义混合，故用两步近似：
+            //   1) 环境压暗：黑色全屏叠加，alpha = 1 - 暗度亮度。NonPremultiplied 下
+            //      Final = 黑*alpha + 主画面*(1-alpha) = 主画面*(1-alpha)，等价于对灰度暗度做乘法压暗；
+            //   2) 动态光源：把"仅含发光体"的光照 RT 以 Additive 加法叠加回主画面，局部提亮（火把/法术/地图灯）。
+            var vpSize = DXManager.GDevice.Viewport;
+            float lum = (darkness.R + darkness.G + darkness.B) / (3f * 255f);
+            float ambient = Math.Max(0f, 1f - lum);
+            if (ambient > 0.001f)
+            {
+                bool oldB = DXManager.Blending;
+                DXManager.SetBlend(false);
+                DXManager.Draw(DXManager.WhitePixel,
+                    new Rectangle(0, 0, 1, 1),
+                    new RectangleF(0, 0, vpSize.Width, vpSize.Height),
+                    new SlimDX.Color4(ambient, 0f, 0f, 0f));
+                DXManager.SetBlend(oldB);
+            }
 
-            DXManager.Draw(DXManager.LightTexture, new Rectangle(0, 0, DXManager.GDevice.Viewport.Width, DXManager.GDevice.Viewport.Height), Vector3.Zero, Color.White);
+            bool oldB2 = DXManager.Blending;
+            DXManager.SetBlend(true);
+            DXManager.Draw(DXManager.LightTexture, new Rectangle(0, 0, vpSize.Width, vpSize.Height), Vector3.Zero, Color.White);
+            DXManager.SetBlend(oldB2);
 
             DXManager.Sprite.End();
             DXManager.Sprite.Begin(SpriteFlags.AlphaBlend);
