@@ -1,6 +1,6 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Mouse 经 [JSImport(module: "input_mouse")] 调用；产物 input_mouse.js 由 SyncJsEngine 复制。
 // 鼠标模块：只注册监听 + 维护"当前状态/变化"。状态与边沿在 C# 侧（Input_Mouse）实现。
-import { getCanvasElement } from './gl.js';
+import { getCanvasElement } from './render_webgl20.js';
 import { canvasPoint, copyOut } from './input_common.js';
 
 const MaxButtons = 8;

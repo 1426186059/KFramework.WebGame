@@ -3,7 +3,7 @@
 // 作用：在 canvas 之上叠加一个透明的 DOM <input>/<textarea>，承接键盘 / IME 捕获。
 // 文字一律由引擎在 canvas 自绘（见 TextBoxRenderer / TextCaret），DOM 元素只作输入代理。
 //
-import { getCanvasElement } from './gl.js';
+import { getCanvasElement } from './render_webgl20.js';
 
 // 引擎在 main.ts 解析出程序集导出树后，通过 init() 把该对象注入本模块。
 // 覆盖层需要在 JS 侧把原生编辑结果 / 控制键回调给 C# 的 [JSExport]（合并于 JSBind_Input_IME）。

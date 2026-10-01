@@ -2,7 +2,7 @@
 // 输入模块的公共工具：坐标换算 + 缓冲写回。
 // 键盘 / 鼠标 / 触摸三个模块共用，本文件自身不注册任何监听、不持有状态。
 
-import { getCanvasElement } from './gl.js';
+import { getCanvasElement } from './render_webgl20.js';
 
 /**
  * 浏览器客户端坐标（CSS 像素）→ 画布后备缓冲（backing）像素坐标。

@@ -3,7 +3,7 @@
 //
 // 输入已独立成 ./input.ts（薄绑定层），由 C# 侧 JSBind_Input 单独对接模块名 "input"。
 
-import { getCanvasElement } from './gl.js';
+import { getCanvasElement } from './render_webgl20.js';
 
 // ---------- 画布尺寸 ----------
 

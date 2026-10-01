@@ -2,7 +2,7 @@
 // 平台层：画布尺寸自适应、requestAnimationFrame 主循环、浏览器环境查询。
 //
 // 输入已独立成 ./input.ts（薄绑定层），由 C# 侧 JSBind_Input 单独对接模块名 "input"。
-import { getCanvasElement } from './gl.js';
+import { getCanvasElement } from './render_webgl20.js';
 // ---------- 画布尺寸 ----------
 // 复用的整数缓冲，避免每帧 getCanvasSize 都 new Int32Array（减少 GC 抖动）。
 let _int32Scratch = new Int32Array(8);

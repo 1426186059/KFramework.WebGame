@@ -4,7 +4,8 @@
 // 它是 TypeScript 源码，编译产物由 tsconfig 直接输出到 MirGame/wwwroot/jsengine/，
 // 因此 _framework 需要用 ../ 回退一级。
 import { dotnet } from '../_framework/dotnet.js';
-import * as gl from './gl.js';
+import * as gl from './render_webgl20.js';
+import * as webgpu from './render_webgpu.js';
 import * as html5Canvas from './html_canvas.js';
 import * as platform from './platform.js';
 import * as audio from './audio.js';
@@ -49,7 +50,8 @@ const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotne
     .create();
 // 注册 C# [JSImport] 使用的模块。模块名必须与 C# 中 [JSImport("函数名", "模块名")] 一致，
 // 且函数名不带点号（.NET 会把点号当嵌套路径解析）。
-setModuleImports('gl', gl);
+setModuleImports('render_webgl20', gl);
+setModuleImports('render_webgpu', webgpu);
 setModuleImports('canvas', html5Canvas);
 setModuleImports('platform', platform);
 setModuleImports('audio', audio);
