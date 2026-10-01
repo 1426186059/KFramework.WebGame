@@ -121,12 +121,12 @@ namespace Client.MirGraphics
         // 关键：Batch.Begin/End 必须用 try/finally 配对。否则某次 Batch.Draw 抛异常（如坏贴图、
         // 非法源矩形）会导致 SpriteBatch 卡在"已 Begin"状态，下一帧首个 Begin 再抛
         // InvalidOperationException 被 CMain.Loop 吞掉 -> 每帧只清黑屏（永久黑屏，见 MLibrary 注释）。
-        public static void Draw(Texture2D texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color)
+        public static void Draw(Texture2D texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
         {
             if (texture == null) return;
             Rectangle src = sourceRect ?? new Rectangle(0, 0, texture.Width, texture.Height);
             SlimDX.Vector3 pos = position ?? SlimDX.Vector3.Zero;
-            KFramework.MonoGame.BlendState blend = Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied;
+            KFramework.MonoGame.BlendState blend = blendState ?? (Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied);
             Batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred, blend, KFramework.MonoGame.SamplerState.PointClamp, RenderTransform ?? KFramework.MonoGame.Matrix4x4.Identity);
             try
             {
@@ -139,10 +139,10 @@ namespace Client.MirGraphics
             }
         }
 
-        public static void Draw(Texture2D texture, Rectangle sourceRect, RectangleF destRect, SlimDX.Color4 color)
+        public static void Draw(Texture2D texture, Rectangle sourceRect, RectangleF destRect, SlimDX.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
         {
             if (texture == null) return;
-            KFramework.MonoGame.BlendState blend = Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied;
+            KFramework.MonoGame.BlendState blend = blendState ?? (Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied);
             Batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred, blend, KFramework.MonoGame.SamplerState.PointClamp, RenderTransform ?? KFramework.MonoGame.Matrix4x4.Identity);
             try
             {
@@ -164,16 +164,16 @@ namespace Client.MirGraphics
 
         // —— 离屏渲染目标路径：ControlTexture 是包裹了 KFramework.MonoGame.RenderTarget2D 的 SlimDX 纹理，
         //    烘焙完成后当作普通 Texture2D 采样绘制（照 MonoGame 把 RenderTarget2D 当纹理用）。
-        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color)
+        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
         {
             if (texture?.RenderTarget == null) return;
-            Draw(texture.RenderTarget, sourceRect, position, color);
+            Draw(texture.RenderTarget, sourceRect, position, color, blendState);
         }
 
-        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle sourceRect, RectangleF destRect, SlimDX.Color4 color)
+        public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle sourceRect, RectangleF destRect, SlimDX.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
         {
             if (texture?.RenderTarget == null) return;
-            Draw(texture.RenderTarget, sourceRect, destRect, color);
+            Draw(texture.RenderTarget, sourceRect, destRect, color, blendState);
         }
 
         public static void DrawOpaque(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, float opacity)
