@@ -76,5 +76,11 @@ public static class TestRegistry
             Desc = "TextRenderer（对齐 WinForms GDI 的 MeasureText/DrawText：WordBreak 折行、对齐、backColor）与 TextBox（点击聚焦、键入/IME 中文、密码、多行）",
             Factory = static () => new TextRenderTest.TextRenderTestScene(),
         },
+        new TestEntry
+        {
+            Name = "混合模式 Blend",
+            Desc = "BlendState 各混合模式可视化对比：半透明 / 加法发光 / 覆盖 / 乘法压暗，以及传奇昼夜用的 Multiply(Zero, SourceColor)；并演示用公开构造传自定义混合参数",
+            Factory = static () => new BlendTest.BlendTestScene(),
+        },
     ];
 }
