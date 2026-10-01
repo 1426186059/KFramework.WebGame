@@ -61,37 +61,37 @@ namespace KFramework.MonoGame
 
         internal SpriteEffect()
         {
-            _program = JSBind_GL.CreateProgram();
+            _program = JSBind_WEBGL20.CreateProgram();
 
-            JSObject vertexShader = Compile(JSBind_GL.VERTEX_SHADER, VertexSource);
-            JSObject fragmentShader = Compile(JSBind_GL.FRAGMENT_SHADER, FragmentSource);
+            JSObject vertexShader = Compile(JSBind_WEBGL20.VERTEX_SHADER, VertexSource);
+            JSObject fragmentShader = Compile(JSBind_WEBGL20.FRAGMENT_SHADER, FragmentSource);
 
-            JSBind_GL.AttachShader(_program, vertexShader);
-            JSBind_GL.AttachShader(_program, fragmentShader);
-            JSBind_GL.LinkProgram(_program);
+            JSBind_WEBGL20.AttachShader(_program, vertexShader);
+            JSBind_WEBGL20.AttachShader(_program, fragmentShader);
+            JSBind_WEBGL20.LinkProgram(_program);
 
-            if (JSBind_GL.GetProgramParameter(_program, JSBind_GL.LINK_STATUS) == 0)
-                throw new InvalidOperationException("着色器链接失败: " + JSBind_GL.GetProgramInfoLog(_program));
+            if (JSBind_WEBGL20.GetProgramParameter(_program, JSBind_WEBGL20.LINK_STATUS) == 0)
+                throw new InvalidOperationException("着色器链接失败: " + JSBind_WEBGL20.GetProgramInfoLog(_program));
 
-            JSBind_GL.DeleteShader(vertexShader);
-            JSBind_GL.DeleteShader(fragmentShader);
+            JSBind_WEBGL20.DeleteShader(vertexShader);
+            JSBind_WEBGL20.DeleteShader(fragmentShader);
 
-            _projectionLocation = JSBind_GL.GetUniformLocation(_program, "uProjection");
-            _textureLocation = JSBind_GL.GetUniformLocation(_program, "uTexture");
-            PositionLocation = JSBind_GL.GetAttribLocation(_program, "aPosition");
-            TexCoordLocation = JSBind_GL.GetAttribLocation(_program, "aTexCoord");
-            ColorLocation = JSBind_GL.GetAttribLocation(_program, "aColor");
+            _projectionLocation = JSBind_WEBGL20.GetUniformLocation(_program, "uProjection");
+            _textureLocation = JSBind_WEBGL20.GetUniformLocation(_program, "uTexture");
+            PositionLocation = JSBind_WEBGL20.GetAttribLocation(_program, "aPosition");
+            TexCoordLocation = JSBind_WEBGL20.GetAttribLocation(_program, "aTexCoord");
+            ColorLocation = JSBind_WEBGL20.GetAttribLocation(_program, "aColor");
         }
 
         private static JSObject Compile(int type, string source)
         {
-            JSObject shader = JSBind_GL.CreateShader(type);
-            JSBind_GL.ShaderSource(shader, source);
-            JSBind_GL.CompileShader(shader);
-            if (JSBind_GL.GetShaderParameter(shader, JSBind_GL.COMPILE_STATUS) == 0)
+            JSObject shader = JSBind_WEBGL20.CreateShader(type);
+            JSBind_WEBGL20.ShaderSource(shader, source);
+            JSBind_WEBGL20.CompileShader(shader);
+            if (JSBind_WEBGL20.GetShaderParameter(shader, JSBind_WEBGL20.COMPILE_STATUS) == 0)
             {
-                string log = JSBind_GL.GetShaderInfoLog(shader);
-                JSBind_GL.DeleteShader(shader);
+                string log = JSBind_WEBGL20.GetShaderInfoLog(shader);
+                JSBind_WEBGL20.DeleteShader(shader);
                 throw new InvalidOperationException($"着色器编译失败: {log}");
             }
             return shader;
@@ -99,13 +99,13 @@ namespace KFramework.MonoGame
 
         internal void Apply(Matrix4x4 projection)
         {
-            JSBind_GL.UseProgram(_program);
+            JSBind_WEBGL20.UseProgram(_program);
             if (_projectionLocation is not null)
             {
                 WriteMatrix(projection, _matrixBuffer);
-                JSBind_GL.UniformMatrix4fv(_projectionLocation, 0, _matrixBuffer);
+                JSBind_WEBGL20.UniformMatrix4fv(_projectionLocation, 0, _matrixBuffer);
             }
-            if (_textureLocation is not null) JSBind_GL.Uniform1i(_textureLocation, 0);
+            if (_textureLocation is not null) JSBind_WEBGL20.Uniform1i(_textureLocation, 0);
 
             if (!_locationsLogged)
             {
@@ -143,6 +143,6 @@ namespace KFramework.MonoGame
         private static void Write(Span<byte> destination, int index, float value)
             => BinaryPrimitives.WriteSingleLittleEndian(destination.Slice(index * 4, 4), value);
 
-        public void Dispose() => JSBind_GL.DeleteProgram(_program);
+        public void Dispose() => JSBind_WEBGL20.DeleteProgram(_program);
     }
 }

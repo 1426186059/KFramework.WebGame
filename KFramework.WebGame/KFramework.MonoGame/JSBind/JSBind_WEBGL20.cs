@@ -4,10 +4,10 @@ namespace KFramework.MonoGame
 {
 
     /// <summary>
-    /// WebGL 2.0 的底层绑定。所有方法一对一映射到 <c>JSBind_GL.xxx</c>，由 KFramework.TSEngine/src/gl.ts 编译出的 wwwroot/jsengine/gl.js 提供实现（本绑定依赖 KFramework.TSEngine 项目）。
+    /// WebGL 2.0 的底层绑定。所有方法一对一映射到 <c>JSBind_WEBGL20.xxx</c>，由 KFramework.TSEngine/src/gl.ts 编译出的 wwwroot/jsengine/gl.js 提供实现（本绑定依赖 KFramework.TSEngine 项目）。
     /// 这只是薄封装，上层请用 <see cref="GraphicsDevice"/> / <see cref="SpriteBatch"/>。
     /// </summary>
-    public static partial class JSBind_GL
+    public static partial class JSBind_WEBGL20
     {
 
         // —— 基础布尔 / 空值：GL 以 0/1 表示 false/true，NONE 即 0（pname 缺省值） ——
@@ -26,6 +26,11 @@ namespace KFramework.MonoGame
         public const int ONE_MINUS_DST_ALPHA = 0x0305;
 
         // —— 混合方程（blendEquation 的参数） ——
+        // 参考文档：WebGL 2.0 规范 / MDN WebGL2RenderingContext.blendEquation
+        //   https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext/blendEquation
+        // 各枚举值与 OpenGL ES 3.0 一致：FUNC_ADD=0x8006，FUNC_SUBTRACT=0x800A，
+        // FUNC_REVERSE_SUBTRACT=0x800B，MIN=0x8007，MAX=0x8008
+        // （MIN/MAX 在 WebGL2 原生支持；WebGL1 需先启用 EXT_blend_minmax 扩展）。
         public const int BLEND_FUNC_ADD = 0x8006;
         public const int BLEND_FUNC_SUBTRACT = 0x800A;
         public const int BLEND_FUNC_REVERSE_SUBTRACT = 0x800B;

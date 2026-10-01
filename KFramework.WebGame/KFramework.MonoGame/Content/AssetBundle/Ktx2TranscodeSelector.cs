@@ -24,15 +24,15 @@ namespace KFramework.MonoGame
         // 返回的 glFormat 即 <see cref="SurfaceFormat"/>（其取值就是对应的 GL 内部格式，无需再映射）。
         public static (int basisFormat, SurfaceFormat glFormat) Pick()
         {
-            if (JSBind_GL.HasExtension("WEBGL_compressed_texture_astc"))
+            if (JSBind_WEBGL20.HasExtension("WEBGL_compressed_texture_astc"))
                 return (ASTC_4x4, SurfaceFormat.Astc4X4);
-            if (JSBind_GL.HasExtension("EXT_texture_compression_bptc"))
+            if (JSBind_WEBGL20.HasExtension("EXT_texture_compression_bptc"))
                 return (BC7_M5, SurfaceFormat.Bc7);
-            if (JSBind_GL.HasExtension("WEBGL_compressed_texture_etc"))
+            if (JSBind_WEBGL20.HasExtension("WEBGL_compressed_texture_etc"))
                 return (ETC2, SurfaceFormat.Etc2Rgba8);
-            if (JSBind_GL.HasExtension("WEBGL_compressed_texture_s3tc"))
+            if (JSBind_WEBGL20.HasExtension("WEBGL_compressed_texture_s3tc"))
                 return (BC3, SurfaceFormat.Dxt5);
-            if (JSBind_GL.HasExtension("WEBGL_compressed_texture_pvrtc"))
+            if (JSBind_WEBGL20.HasExtension("WEBGL_compressed_texture_pvrtc"))
                 return (PVRTC1_4_RGBA, SurfaceFormat.PvrtcRgba4Bpp);
             // 兜底：转码为裸 RGBA8，按普通纹理上传（体积/显存吃亏，但保证能显示）。
             return (RGBA32, SurfaceFormat.Color);
