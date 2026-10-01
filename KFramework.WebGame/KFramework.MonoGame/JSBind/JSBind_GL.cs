@@ -26,7 +26,11 @@ namespace KFramework.MonoGame
         public const int ONE_MINUS_DST_ALPHA = 0x0305;
 
         // —— 混合方程（blendEquation 的参数） ——
-        public const int FUNC_ADD = 0x8006;
+        public const int BLEND_FUNC_ADD = 0x8006;
+        public const int BLEND_FUNC_SUBTRACT = 0x800A;
+        public const int BLEND_FUNC_REVERSE_SUBTRACT = 0x800B;
+        public const int BLEND_FUNC_MIN = 0x8007;
+        public const int BLEND_FUNC_MAX = 0x8008;
 
         // —— 渲染状态开关 & 面/绕序（enable/disable、cullFace、frontFace） ——
         public const int BLEND = 0x0BE2;
@@ -415,7 +419,7 @@ namespace KFramework.MonoGame
         [JSImport("blendFuncSeparate", "gl")]
         public static partial void BlendFuncSeparate(int srcRGB, int dstRGB, int srcA, int dstA);
 
-        /// <summary>设置混合方程（FUNC_ADD 等）。</summary>
+        /// <summary>设置混合方程（BLEND_FUNC_ADD 等）。</summary>
         [JSImport("blendEquation", "gl")]
         public static partial void BlendEquation(int mode);
 

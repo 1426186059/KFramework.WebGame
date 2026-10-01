@@ -205,7 +205,7 @@ namespace KFramework.MonoGame
             ApplyDepthStencilState();
 
             JSBind_GL.Enable(JSBind_GL.BLEND);
-            JSBind_GL.BlendEquation(JSBind_GL.FUNC_ADD);
+            JSBind_GL.BlendEquation(JSBind_GL.BLEND_FUNC_ADD);
             SetBlendState(BlendState.NonPremultiplied);
 
             PrintTool.Log($"[KFramework.MonoGame] WebGL2 就绪 | {Renderer} | 画布 {Viewport.Width}x{Viewport.Height} | 最大纹理 {MaxTextureSize}");
