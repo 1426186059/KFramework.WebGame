@@ -10301,6 +10301,8 @@ namespace Client.MirScenes
             if (Libraries.Magic3 == null) return;
 
             var offset = MouseLocation.Subtract(ToMouseLocation(target));
+            // 原版落点环（Magic3#500）默认 Light=6，会被 DrawLights 当成光源画光晕进光照 RT，
+            // 使点击区域被照亮——这是原版既有行为，故保留默认发光，不做改动。
             Effects.Add(new Effect(Libraries.Magic3, 500, 10, 600, target) { DrawOffset = offset.Subtract(8, 15) });
         }
 
