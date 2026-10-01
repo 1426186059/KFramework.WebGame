@@ -62,7 +62,7 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>排序 + 按纹理分组，每组一次 draw call；总精灵数累加到 _metrics。</summary>
-        public void DrawBatch(SpriteSortMode sortMode, SpriteEffect effect)
+        public void DrawBatch(SpriteSortMode sortMode, ISpriteProgram effect)
         {
             // effect 已在 SpriteBatch.Setup 中 Apply，这里保持与官方一致的签名即可。
             if (_batchItemCount == 0) return;

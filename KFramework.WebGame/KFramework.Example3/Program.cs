@@ -1,12 +1,15 @@
-namespace KFramework.Example3;
-
-internal static class Program
+namespace KFramework.Example3
 {
-    private static async Task Main(string[] args)
+
+    internal static class Program
     {
+        private static async Task Main(string[] args)
+        {
 
-        using var game = new MarioGame();
-        await game.RunAsync();
+            using var game = new MarioGame();
+            await game.RunAsync();
 
+        }
     }
+
 }

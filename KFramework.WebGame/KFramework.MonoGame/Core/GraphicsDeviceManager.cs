@@ -179,13 +179,18 @@ namespace KFramework.MonoGame
         /// 结束绘制过程。
         /// </summary>
         /// <remarks>
-        /// MonoGame 在这里调用 <c>GraphicsDevice.Present()</c>；Web 上画面由浏览器在
-        /// requestAnimationFrame 回调结束时自动合成，没有显式 Present，故只复位标记。
+        /// MonoGame 在这里调用 <c>GraphicsDevice.Present()</c>。WebGL 后端画面由浏览器在
+        /// requestAnimationFrame 回调结束时自动合成，本无需动作；但 <b>WebGPU 必须在此提交命令缓冲</b>，
+        /// 否则渲染通道永不结束、画面不会呈现。故统一转发到 <see cref="GraphicsDevice.EndFrame"/>，
+        /// 由各后端自行决定是否需要动作。
         /// </remarks>
         public void EndDraw()
         {
             if (_graphicsDevice != null && _drawBegun)
+            {
                 _drawBegun = false;
+                _graphicsDevice.EndFrame();
+            }
         }
 
 

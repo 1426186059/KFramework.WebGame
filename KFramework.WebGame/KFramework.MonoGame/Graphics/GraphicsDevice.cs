@@ -13,10 +13,11 @@ namespace KFramework.MonoGame
         /// <summary>单批最大精灵数，决定顶点/索引缓冲大小。</summary>
         public const int MaxBatchSize = 4096;
 
-        internal readonly SpriteEffect Effect;
-        internal readonly JSObject VertexBuffer;
-        internal readonly JSObject IndexBuffer;
-        internal readonly JSObject VertexArray;
+        /// <summary>渲染后端（WebGL 2.0 / WebGPU 二选一）。所有平台层调用都经它下发，本类不再直接碰具体图形 API。</summary>
+        internal readonly IGraphicsBackend Backend;
+
+        /// <summary>精灵着色器程序（由后端创建并持有）。</summary>
+        internal readonly ISpriteProgram Effect;
 
         // 初值必须为 null：SetBlendState 用引用相等做短路，若初值就等于目标值，
         // 首次调用会被跳过，glBlendFunc 永远不下发（表现为画面全黑）。
@@ -35,10 +36,6 @@ namespace KFramework.MonoGame
         private readonly RenderTargetBinding[] _tempRenderTargetBinding = new RenderTargetBinding[1];
 
         private int _currentRenderTargetCount;
-
-        /// <summary>FBO 缓存：一组渲染目标绑定组合对应一个 FBO（照 MonoGame 的 glFramebuffers）。</summary>
-        private readonly Dictionary<RenderTargetBinding[], JSObject> _glFramebuffers =
-            new Dictionary<RenderTargetBinding[], JSObject>(new RenderTargetBindingArrayComparer());
 
         // 照 MonoGame 的 GraphicsDevice：Intel 集显对「各分量非 0 即 255」的颜色有清屏硬件快路径，
         // 用紫色会触发性能告警，故 Release 用不透明黑；XNA4 传统的紫色只在 Debug 下保留。
@@ -60,7 +57,7 @@ namespace KFramework.MonoGame
             set
             {
                 _viewport = value;
-                JSBind_WEBGL20.Viewport(value.X, value.Y, value.Width, value.Height);
+                Backend.SetViewport(value.X, value.Y, value.Width, value.Height);
             }
         }
 
@@ -153,107 +150,98 @@ namespace KFramework.MonoGame
         public SamplerStateCollection SamplerStates { get; } = new SamplerStateCollection(1);
 
         /// <summary>
-        /// 创建 WebGL2 上下文。
+        /// 创建图形设备（同步，固定使用 WebGL 2.0 后端）。
         /// </summary>
         /// <param name="canvasSelector">画布选择器或 DOM id。</param>
         /// <param name="antialias">是否启用 MSAA（必须在上下文创建前指定，之后改不了）。</param>
         public GraphicsDevice(string canvasSelector = "#game", bool antialias = false)
+            : this(CreateInitializedBackend(new WebGl20Backend(), canvasSelector, antialias), canvasSelector, antialias)
+        {
+        }
+
+        /// <summary>
+        /// 异步创建图形设备：优先 WebGPU，不可用时回落 WebGL 2.0。
+        /// <para>
+        /// WebGPU 的 requestAdapter / requestDevice 是<b>异步</b>的，因此必须走本工厂，
+        /// 不能像 WebGL 那样在构造函数里同步建好上下文。
+        /// </para>
+        /// </summary>
+        /// <param name="canvasSelector">画布选择器或 DOM id。</param>
+        /// <param name="antialias">是否启用 MSAA。</param>
+        /// <param name="preferWebGpu">true（默认）：先试 WebGPU，失败则回落 WebGL 2.0。</param>
+        public static async Task<GraphicsDevice> CreateAsync(string canvasSelector = "#game", bool antialias = false, bool preferWebGpu = true)
+        {
+            IGraphicsBackend backend = new WebGl20Backend();
+
+            if (preferWebGpu)
+            {
+                var webgpu = new WebGpuBackend();
+                try
+                {
+                    await webgpu.InitializeAsync(canvasSelector, antialias).ConfigureAwait(false);
+                    backend = webgpu;
+                }
+                catch (Exception ex)
+                {
+                    PrintTool.Log($"[KFramework.MonoGame] WebGPU 不可用，回落 WebGL 2.0：{ex.Message}");
+                    await backend.InitializeAsync(canvasSelector, antialias).ConfigureAwait(false);
+                }
+            }
+            else
+            {
+                await backend.InitializeAsync(canvasSelector, antialias).ConfigureAwait(false);
+            }
+
+            return new GraphicsDevice(backend, canvasSelector, antialias);
+        }
+
+        /// <summary>
+        /// 同步初始化后端（仅供 WebGL 构造函数使用）：WebGL 的 InitializeAsync 返回的是已完成的 Task，
+        /// 因此这里不会真正阻塞。WebGPU 必须走 <see cref="CreateAsync"/>。
+        /// </summary>
+        private static IGraphicsBackend CreateInitializedBackend(IGraphicsBackend backend, string canvasSelector, bool antialias)
+        {
+            backend.InitializeAsync(canvasSelector, antialias).GetAwaiter().GetResult();
+            return backend;
+        }
+
+        /// <summary>后端已初始化完毕后的构造入口（WebGL / WebGPU 共用）。</summary>
+        private GraphicsDevice(IGraphicsBackend backend, string canvasSelector, bool antialias)
         {
             CanvasId = HTML_Canvas_Func.ToCanvasId(canvasSelector);
-
-            // 照 MonoGame：MSAA 属性在上下文创建之前设置
-            JSBind_WEBGL20.SetAntialias(antialias);
             Antialias = antialias;
 
             // 照 MonoGame 的无参内部构造：先建一份默认 PP，画布尺寸随后由 SyncCanvasSize 覆盖。
             // 注：MonoGame 在这里还会把 DepthStencilFormat 设为 Depth24，本后端画布不带深度附件，保持 None。
             PresentationParameters = new PresentationParameters();
 
-            if (!JSBind_WEBGL20.InitContext(canvasSelector))
-                throw new InvalidOperationException("无法创建 WebGL 2.0 上下文，请使用支持 WebGL2 的浏览器。");
+            Backend = backend;
+            MaxTextureSize = Backend.MaxTextureSize;
+            Renderer = Backend.Renderer;
 
-            MaxTextureSize = JSBind_WEBGL20.GetParameterInt(JSBind_WEBGL20.MAX_TEXTURE_SIZE);
-            Renderer = JSBind_WEBGL20.GetParameterString(JSBind_WEBGL20.RENDERER);
-
-            Effect = new SpriteEffect();
-
-            VertexBuffer = JSBind_WEBGL20.CreateBuffer();
-            IndexBuffer = JSBind_WEBGL20.CreateBuffer();
-            VertexArray = JSBind_WEBGL20.CreateVertexArray();
-
-            JSBind_WEBGL20.BindVertexArray(VertexArray);
-
-            JSBind_WEBGL20.BindBuffer(JSBind_WEBGL20.ARRAY_BUFFER, VertexBuffer);
-            JSBind_WEBGL20.BufferDataSize(JSBind_WEBGL20.ARRAY_BUFFER, MaxBatchSize * 4 * VertexPositionColorTexture.SizeInBytes, JSBind_WEBGL20.DYNAMIC_DRAW);
-
-            JSBind_WEBGL20.BindBuffer(JSBind_WEBGL20.ELEMENT_ARRAY_BUFFER, IndexBuffer);
-            JSBind_WEBGL20.BufferData(JSBind_WEBGL20.ELEMENT_ARRAY_BUFFER, BuildQuadIndices(MaxBatchSize), JSBind_WEBGL20.STATIC_DRAW);
-
-            ConfigureAttributes();
+            Effect = Backend.CreateSpriteProgram();
 
             SyncCanvasSize();
 
-            // 与 MonoGame 一致：正面 = 逆时针（CCW），供 3D 渲染使用。
-            // 注意：本后端的正交投影会翻转 Y，2D 精灵四边形在窗口空间是顺时针绕序，
-            // 若按 CCW 正面 + 背面剔除会把所有精灵判为背面而整批剔除（表现为“啥都不渲染”），
-            // 因此 2D 精灵管线默认用 CullNone 关闭剔除（见 SpriteBatch）。
-            JSBind_WEBGL20.FrontFace(JSBind_WEBGL20.CCW);
-
+            // 照 MonoGame：绘制前把状态强制下发一次，保证 2D 绘制不受外部遗留状态影响。
             _rasterizerState = RasterizerState.CullNone;
             ApplyRasterizerState();
             _depthStencilState = DepthStencilState.None;
             ApplyDepthStencilState();
-
-            JSBind_WEBGL20.Enable(JSBind_WEBGL20.BLEND);
-            JSBind_WEBGL20.BlendEquation(JSBind_WEBGL20.BLEND_FUNC_ADD);
             SetBlendState(BlendState.NonPremultiplied);
 
-            PrintTool.Log($"[KFramework.MonoGame] WebGL2 就绪 | {Renderer} | 画布 {Viewport.Width}x{Viewport.Height} | 最大纹理 {MaxTextureSize}");
+            PrintTool.Log($"[KFramework.MonoGame] {Backend.Name} 就绪 | {Renderer} | 画布 {Viewport.Width}x{Viewport.Height} | 最大纹理 {MaxTextureSize}");
         }
 
-        private void ConfigureAttributes()
-        {
-            int stride = VertexPositionColorTexture.SizeInBytes;
-            if (Effect.PositionLocation >= 0)
-            {
-                JSBind_WEBGL20.EnableVertexAttribArray(Effect.PositionLocation);
-                JSBind_WEBGL20.VertexAttribPointer(Effect.PositionLocation, 2, JSBind_WEBGL20.FLOAT, false, stride, 0);
-            }
-            if (Effect.TexCoordLocation >= 0)
-            {
-                JSBind_WEBGL20.EnableVertexAttribArray(Effect.TexCoordLocation);
-                JSBind_WEBGL20.VertexAttribPointer(Effect.TexCoordLocation, 2, JSBind_WEBGL20.FLOAT, false, stride, 8);
-            }
-            if (Effect.ColorLocation >= 0)
-            {
-                JSBind_WEBGL20.EnableVertexAttribArray(Effect.ColorLocation);
-                JSBind_WEBGL20.VertexAttribPointer(Effect.ColorLocation, 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, stride, 16);
-            }
-        }
+        /// <summary>
+        /// 收帧（照 MonoGame 的 GraphicsDevice.Present）。
+        /// WebGL 后端无需动作（画面由浏览器在 rAF 回调结束时自动合成）；
+        /// WebGPU 后端在此结束渲染通道并提交命令缓冲，不调则画面永不呈现。
+        /// </summary>
+        public void EndFrame() => Backend.EndFrame();
 
-        private static byte[] BuildQuadIndices(int spriteCount)
-        {
-            // 每个精灵 2 个三角形：0,1,2 / 0,2,3（顶点顺序 TL,TR,BR,BL）
-            byte[] data = new byte[spriteCount * 6 * sizeof(ushort)];
-            Span<ushort> indices = System.Runtime.InteropServices.MemoryMarshal.Cast<byte, ushort>(data.AsSpan());
-            for (int i = 0; i < spriteCount; i++)
-            {
-                int v = i * 4;
-                int o = i * 6;
-                // 与官方 MonoGame 完全一致的三角剖分：两个三角形绕向相同（都为 +1）。
-                // 三角1 = (TL, TR, BL)，三角2 = (TR, BR, BL)。
-                // 注意：本仓库早期版本用过 (TL, BL, BR) 写第二个三角形，绕向与三角1相反；
-                // 一旦外部代码（如 3D 渲染）开启了背面剔除而没关，绕向相反的那个三角形就会被剔掉，
-                // 表现为“每个四边形缺一个三角”。这里改回与 MonoGame 一致，使两个三角形绕向相同。
-                indices[o + 0] = (ushort)(v + 0);
-                indices[o + 1] = (ushort)(v + 1);
-                indices[o + 2] = (ushort)(v + 2);
-                indices[o + 3] = (ushort)(v + 1);
-                indices[o + 4] = (ushort)(v + 3);
-                indices[o + 5] = (ushort)(v + 2);
-            }
-            return data;
-        }
+        /// <summary>当前渲染后端名（"WebGL2" / "WebGPU"）。</summary>
+        public string BackendName => Backend.Name;
 
         /// <summary>把视口同步为画布当前的绘制缓冲尺寸，返回是否发生了变化。</summary>
         public bool SyncCanvasSize()
@@ -299,13 +287,13 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 读取画布上的一个像素。坐标以**左上角为原点**（与精灵坐标系一致），
-        /// 内部会自动换算成 WebGL 的左下原点。用于截图式自检。
+        /// 读取画布上的一个像素。坐标以**左上角为原点**（与精灵坐标系一致）；
+        /// 是否需要换算 Y 轴由后端决定（WebGL 帧缓冲原点在左下）。用于截图式自检。
         /// </summary>
         public Color ReadPixel(int x, int y)
         {
             Span<byte> rgba = stackalloc byte[4];
-            JSBind_WEBGL20.ReadPixel(x, Viewport.Height - 1 - y, rgba);
+            Backend.ReadPixel(x, y, Viewport.Height, rgba);
             return new Color(rgba[0], rgba[1], rgba[2], rgba[3]);
         }
 
@@ -314,94 +302,35 @@ namespace KFramework.MonoGame
             // 每帧清一次渲染统计，照 MonoGame 在 Present 里 _graphicsMetrics = new GraphicsMetrics()（跨所有 SpriteBatch 批次累计）。
             _metrics = new GraphicsMetrics();
             _metrics._clearCount++;
-            JSBind_WEBGL20.ClearColor(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
-            JSBind_WEBGL20.Clear(JSBind_WEBGL20.COLOR_BUFFER_BIT | JSBind_WEBGL20.DEPTH_BUFFER_BIT);
+            Backend.Clear(color);
         }
 
         internal void SetBlendState(BlendState state)
         {
             if (ReferenceEquals(_blendState, state)) return;
             _blendState = state;
-            JSBind_WEBGL20.Enable(JSBind_WEBGL20.BLEND);
-            JSBind_WEBGL20.BlendFuncSeparate(state.SourceBlend, state.DestinationBlend,
-                                 state.SourceAlphaBlend, state.DestinationAlphaBlend);
+            Backend.SetBlendState(state);
         }
 
         /// <summary>
-        /// 把当前 <see cref="RasterizerState"/> 下发给 WebGL。
-        /// 本 2D 后端只用 CullCounterClockwiseFace（与 WebGL 默认 BACK 剔除一致），
-        /// 故只切 Enable/Disable(CULL_FACE)，不调 glCullFace；CullNone 即关闭剔除。
-        /// 每次 <see cref="SpriteBatch.Setup"/> 都会重新设置，因此绘制前状态始终被强制回 2D 设定，
-        /// 不受外部 GL 状态（如 3D 渲染遗留的 CULL_FACE）影响。
-        /// </summary>
-        /// <summary>
-        /// 把当前 <see cref="RasterizerState"/> 下发给 WebGL（照 MonoGame 的 RasterizerState.Apply）。
-        /// CullMode.None 关闭剔除；否则开启 CULL_FACE 并按绕向选 FRONT/BACK，
-        /// 配合构造函数里设定的 CCW 正面，CullCounterClockwiseFace 即“剔除逆时针背面”。
-        /// 每次 <see cref="SpriteBatch.Setup"/> 都会重新设置，因此绘制前状态始终被强制回 2D 设定，
-        /// 不受外部 GL 状态（如 3D 渲染遗留）影响。
+        /// 把当前 <see cref="RasterizerState"/> 下发给后端（照 MonoGame 的 RasterizerState.Apply）。
+        /// CullMode.None 关闭剔除；否则按绕向剔除。每次 <see cref="SpriteBatch.Setup"/> 都会重新设置，
+        /// 因此绘制前状态始终被强制回 2D 设定，不受外部遗留状态影响。
         /// </summary>
         private void ApplyRasterizerState()
         {
-            switch (_rasterizerState.CullMode)
-            {
-                case CullMode.None:
-                    JSBind_WEBGL20.Disable(JSBind_WEBGL20.CULL_FACE);
-                    break;
-                case CullMode.CullClockwiseFace:
-                    JSBind_WEBGL20.Enable(JSBind_WEBGL20.CULL_FACE);
-                    JSBind_WEBGL20.CullFace(JSBind_WEBGL20.FRONT);
-                    break;
-                case CullMode.CullCounterClockwiseFace:
-                    JSBind_WEBGL20.Enable(JSBind_WEBGL20.CULL_FACE);
-                    JSBind_WEBGL20.CullFace(JSBind_WEBGL20.BACK);
-                    break;
-                default:
-                    JSBind_WEBGL20.Enable(JSBind_WEBGL20.CULL_FACE);
-                    JSBind_WEBGL20.CullFace(JSBind_WEBGL20.BACK);
-                    break;
-            }
-
-            if (_rasterizerState.ScissorTestEnable)
-                JSBind_WEBGL20.Enable(JSBind_WEBGL20.SCISSOR_TEST);
-            else
-                JSBind_WEBGL20.Disable(JSBind_WEBGL20.SCISSOR_TEST);
+            Backend.ApplyRasterizerState(_rasterizerState);
         }
 
         /// <summary>
-        /// 把当前 <see cref="DepthStencilState"/> 下发给 WebGL。
-        /// 深度测试关闭时 glDepthMask / glDepthFunc 无影响，故只切 Enable/Disable(DEPTH_TEST)；
-        /// SpriteBatch 默认用 <see cref="DepthStencilState.None"/>（关闭深度测试）。
-        /// 同样在每次 Setup 被强制下发，保证 2D 绘制不受外部状态干扰。
-        /// </summary>
-        /// <summary>
-        /// 把当前 <see cref="DepthStencilState"/> 下发给 WebGL（照 MonoGame 的 DepthStencilState.Apply）。
-        /// 切换 DEPTH_TEST 开关，并下发深度写入掩码与比较函数；SpriteBatch 默认用
+        /// 把当前 <see cref="DepthStencilState"/> 下发给后端（照 MonoGame 的 DepthStencilState.Apply）。
+        /// 切换深度测试开关并下发写入掩码与比较函数；SpriteBatch 默认用
         /// <see cref="DepthStencilState.None"/>（关闭深度测试）。
-        /// 同样在每次 Setup 被强制下发，保证 2D 绘制不受外部状态干扰。
         /// </summary>
         private void ApplyDepthStencilState()
         {
-            if (_depthStencilState.DepthBufferEnable)
-                JSBind_WEBGL20.Enable(JSBind_WEBGL20.DEPTH_TEST);
-            else
-                JSBind_WEBGL20.Disable(JSBind_WEBGL20.DEPTH_TEST);
-
-            JSBind_WEBGL20.DepthMask(_depthStencilState.DepthBufferWriteEnable);
-            JSBind_WEBGL20.DepthFunc(ToGLDepthFunc(_depthStencilState.DepthBufferFunction));
+            Backend.ApplyDepthStencilState(_depthStencilState);
         }
-
-        private static int ToGLDepthFunc(CompareFunction func) => func switch
-        {
-            CompareFunction.Never => JSBind_WEBGL20.NEVER,
-            CompareFunction.Less => JSBind_WEBGL20.LESS,
-            CompareFunction.Equal => JSBind_WEBGL20.EQUAL,
-            CompareFunction.LessEqual => JSBind_WEBGL20.LEQUAL,
-            CompareFunction.Greater => JSBind_WEBGL20.GREATER,
-            CompareFunction.NotEqual => JSBind_WEBGL20.NOTEQUAL,
-            CompareFunction.GreaterEqual => JSBind_WEBGL20.GEQUAL,
-            _ => JSBind_WEBGL20.ALWAYS,
-        };
 
         internal void SetSamplerState(SamplerState state, Texture2D? current)
         {
@@ -411,25 +340,21 @@ namespace KFramework.MonoGame
             _samplerAppliedKey = current.SortingKey;
             SamplerStates[0] = state;
 
-            JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_MIN_FILTER, state.MinFilter);
-            JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_MAG_FILTER, state.MagFilter);
-            JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_WRAP_S, state.WrapMode);
-            JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_WRAP_T, state.WrapMode);
+            Backend.SetSamplerState(state);
         }
 
         private ulong _samplerAppliedKey;
 
         internal void BindTexture(Texture2D texture)
         {
-            JSBind_WEBGL20.ActiveTexture(JSBind_WEBGL20.TEXTURE0);
-            JSBind_WEBGL20.BindTexture(JSBind_WEBGL20.TEXTURE_2D, texture.Handle);
+            Backend.BindTexture(texture);
             Textures[0] = texture;
             _samplerAppliedKey = 0;   // 换纹理后采样参数需要重新下发
         }
 
         /// <summary>
-        /// 把若干顶点上传到动态顶点缓冲并发起一次索引绘制（照 MonoGame 的 DrawUserIndexedPrimitives）。
-        /// 索引来自初始化时建好的静态 ELEMENT_ARRAY_BUFFER（已绑进 VertexArray）。
+        /// 把若干顶点上传并发起一次索引绘制（照 MonoGame 的 DrawUserIndexedPrimitives）。
+        /// 顶点缓冲 / 索引缓冲的绑定与上传由后端负责。
         /// 每调用一次累加一次 DrawCount；PrimitiveCount 同步累加（每个四边形 = 2 三角形）。
         /// SpriteCount 由 SpriteBatcher.DrawBatch 整批累加一次，这里不再加。
         /// </summary>
@@ -438,15 +363,7 @@ namespace KFramework.MonoGame
             int vRun = end - start;
             if (vRun <= 0) return;
 
-            JSBind_WEBGL20.BindVertexArray(VertexArray);
-            JSBind_WEBGL20.BindBuffer(JSBind_WEBGL20.ARRAY_BUFFER, VertexBuffer);
-            // 索引缓冲是[0, MaxBatchSize*4)的绝对下标：第 i 个四边形占 6 个索引，起始字节 i*6*2。
-            // 因此把本批顶点（从 start 顶点起）上传到顶点缓冲的 start*SizeInBytes 处，
-            // 并让 DrawElements 从 (start/4)*6*2 字节处读取索引，即可精确引用到本批顶点——
-            // 多纹理切批后，后面的 run 不会再串到前一批的几何（否则会丢失/错位三角形）。
-            JSBind_WEBGL20.BufferSubData(JSBind_WEBGL20.ARRAY_BUFFER, start * VertexPositionColorTexture.SizeInBytes,
-                                    MemoryMarshal.AsBytes(vertices.AsSpan(start, vRun)));
-            JSBind_WEBGL20.DrawElements(JSBind_WEBGL20.TRIANGLES, vRun / 4 * 6, JSBind_WEBGL20.UNSIGNED_SHORT, (start / 4) * 6 * 2);
+            Backend.DrawUserIndexedPrimitives(vertices, start, end);
 
             _metrics._drawCount++;
             _metrics._primitiveCount += vRun / 2;
@@ -519,7 +436,7 @@ namespace KFramework.MonoGame
             if (_currentRenderTargetCount > 0)
             {
                 for (int i = 0; i < _currentRenderTargetCount; i++)
-                    ResolveRenderTarget((IRenderTarget)_currentRenderTargetBindings[i].RenderTarget!);
+                    Backend.ResolveRenderTarget((IRenderTarget)_currentRenderTargetBindings[i].RenderTarget!);
             }
 
             Array.Clear(_currentRenderTargetBindings, 0, _currentRenderTargetBindings.Length);
@@ -527,7 +444,11 @@ namespace KFramework.MonoGame
             if (renderTargets == null || renderTargets.Length == 0)
             {
                 _currentRenderTargetCount = 0;
-                PlatformApplyDefaultRenderTarget();
+                Backend.ApplyDefaultRenderTarget();
+
+                // 目标换了，之前下发的纹理单元与采样参数全部失效（照 MonoGame 的 Textures.Dirty()）。
+                _samplerAppliedKey = 0;
+                Textures.Clear();
 
                 // 照 MonoGame 的 ApplyRenderTargets：切回画布是否清屏由后台缓冲的 RenderTargetUsage 决定
                 //（默认 DiscardContents → 清屏）。多个离屏目标轮流回绑画布做合成时，把 PP 里的
@@ -541,7 +462,11 @@ namespace KFramework.MonoGame
                 _currentRenderTargetCount = renderTargets.Length;
                 Array.Copy(renderTargets, _currentRenderTargetBindings, renderTargets.Length);
 
-                IRenderTarget platformTarget = PlatformApplyRenderTargets();
+                IRenderTarget platformTarget = Backend.ApplyRenderTargets(_currentRenderTargetBindings, _currentRenderTargetCount);
+
+                // 目标换了，之前下发的纹理单元与采样参数全部失效（照 MonoGame 的 Textures.Dirty()）。
+                _samplerAppliedKey = 0;
+                Textures.Clear();
 
                 renderTargetWidth = platformTarget.Width;
                 renderTargetHeight = platformTarget.Height;
@@ -550,205 +475,21 @@ namespace KFramework.MonoGame
 
             // 视口与裁剪矩形跟随渲染目标尺寸（照 MonoGame）。
             Viewport = new Viewport(0, 0, renderTargetWidth, renderTargetHeight);
-            JSBind_WEBGL20.Scissor(0, 0, renderTargetWidth, renderTargetHeight);
+            Backend.SetScissor(0, 0, renderTargetWidth, renderTargetHeight);
 
             if (clearTarget) Clear(DiscardColor);
         }
 
-        /// <summary>把多重采样帧缓冲解析到可采样纹理（照 MonoGame 的 PlatformResolveRenderTargets）。</summary>
-        private void ResolveRenderTarget(IRenderTarget rt)
-        {
-            if (rt.MultiSampleCount <= 0) return;
-            if (rt.GLMultiSampleFramebuffer is not { } ms || rt.GLResolveFramebuffer is not { } resolve) return;
-
-            JSBind_WEBGL20.BindFramebuffer(JSBind_WEBGL20.READ_FRAMEBUFFER, ms);
-            JSBind_WEBGL20.BindFramebuffer(JSBind_WEBGL20.DRAW_FRAMEBUFFER, resolve);
-            JSBind_WEBGL20.BlitFramebuffer(0, 0, rt.Width, rt.Height, 0, 0, rt.Width, rt.Height,
-                JSBind_WEBGL20.COLOR_BUFFER_BIT, JSBind_WEBGL20.LINEAR);
-            JSBind_WEBGL20.BindFramebuffer(JSBind_WEBGL20.READ_FRAMEBUFFER, null);
-            JSBind_WEBGL20.BindFramebuffer(JSBind_WEBGL20.DRAW_FRAMEBUFFER, null);
-        }
-
-        /// <summary>建 / 复用并绑定当前渲染目标组合的 FBO（照 MonoGame 的 PlatformApplyRenderTargets）。</summary>
-        private IRenderTarget PlatformApplyRenderTargets()
-        {
-            var first = (IRenderTarget)_currentRenderTargetBindings[0].RenderTarget!;
-
-            // 多重采样：颜色是 multisample renderbuffer，渲染时直接绑 MSAA FBO，不走组合缓存，
-            // 解析后才通过 GLResolveFramebuffer 写入 GLTexture。
-            if (first.MultiSampleCount > 0 && first.GLMultiSampleFramebuffer is { } msFbo)
-            {
-                JSBind_WEBGL20.BindFramebuffer(JSBind_WEBGL20.FRAMEBUFFER, msFbo);
-                _samplerAppliedKey = 0;
-                Textures.Clear();
-                return first;
-            }
-
-            if (!_glFramebuffers.TryGetValue(_currentRenderTargetBindings, out JSObject? framebuffer))
-            {
-                framebuffer = JSBind_WEBGL20.CreateFramebuffer();
-                JSBind_WEBGL20.BindFramebuffer(JSBind_WEBGL20.FRAMEBUFFER, framebuffer);
-
-                // 深度 / 模板附件（照 MonoGame：Depth24Stencil8 时二者共用同一个 renderbuffer）。
-                if (first.GLDepthBuffer is { } depth)
-                    JSBind_WEBGL20.FramebufferRenderbuffer(JSBind_WEBGL20.FRAMEBUFFER, JSBind_WEBGL20.DEPTH_ATTACHMENT,
-                        JSBind_WEBGL20.RENDERBUFFER, depth);
-                if (first.GLStencilBuffer is { } stencil)
-                    JSBind_WEBGL20.FramebufferRenderbuffer(JSBind_WEBGL20.FRAMEBUFFER, JSBind_WEBGL20.STENCIL_ATTACHMENT,
-                        JSBind_WEBGL20.RENDERBUFFER, stencil);
-
-                for (int i = 0; i < _currentRenderTargetCount; i++)
-                {
-                    var target = (IRenderTarget)_currentRenderTargetBindings[i].RenderTarget!;
-                    JSBind_WEBGL20.FramebufferTexture2D(JSBind_WEBGL20.FRAMEBUFFER, JSBind_WEBGL20.COLOR_ATTACHMENT0 + i,
-                        JSBind_WEBGL20.TEXTURE_2D, target.GLTexture, 0);
-                }
-
-                int status = JSBind_WEBGL20.CheckFramebufferStatus(JSBind_WEBGL20.FRAMEBUFFER);
-                if (status != JSBind_WEBGL20.FRAMEBUFFER_COMPLETE)
-                    Console.Error.WriteLine($"[KFramework.MonoGame] Framebuffer 不完整: 0x{status:X4}");
-
-                _glFramebuffers.Add((RenderTargetBinding[])_currentRenderTargetBindings.Clone(), framebuffer);
-            }
-            else
-            {
-                JSBind_WEBGL20.BindFramebuffer(JSBind_WEBGL20.FRAMEBUFFER, framebuffer);
-            }
-
-            // 目标换了，之前下发的纹理单元与采样参数全部失效（照 MonoGame 的 Textures.Dirty()）。
-            _samplerAppliedKey = 0;
-            Textures.Clear();
-
-            return (IRenderTarget)_currentRenderTargetBindings[0].RenderTarget!;
-        }
-
-        private void PlatformApplyDefaultRenderTarget()
-        {
-            JSBind_WEBGL20.BindFramebuffer(JSBind_WEBGL20.FRAMEBUFFER, null);
-
-            _samplerAppliedKey = 0;
-            Textures.Clear();
-        }
-
-        /// <summary>创建渲染目标的深度 / 模板 renderbuffer（照 MonoGame 的 PlatformCreateRenderTarget）。</summary>
+        /// <summary>创建渲染目标的深度 / 模板附件（转发给后端，照 MonoGame 的 PlatformCreateRenderTarget）。</summary>
         internal void PlatformCreateRenderTarget(IRenderTarget renderTarget, int width, int height, DepthFormat depthFormat)
         {
-            int internalFormat = depthFormat switch
-            {
-                DepthFormat.Depth16 => JSBind_WEBGL20.DEPTH_COMPONENT16,
-                DepthFormat.Depth24 => JSBind_WEBGL20.DEPTH_COMPONENT24,
-                DepthFormat.Depth24Stencil8 => JSBind_WEBGL20.DEPTH24_STENCIL8,
-                _ => 0,
-            };
-
-            // —— 多重采样：颜色用 multisample renderbuffer，解析后写入纹理 ——
-            if (renderTarget.MultiSampleCount > 0)
-            {
-                int samples = renderTarget.MultiSampleCount;
-                int max = JSBind_WEBGL20.GetParameterInt(JSBind_WEBGL20.MAX_SAMPLES);
-                if (samples > max) samples = Math.Max(1, max);
-                if (samples < 1) samples = 1;
-
-                // MSAA 颜色 renderbuffer（RGBA8）
-                JSObject colorRB = JSBind_WEBGL20.CreateRenderbuffer();
-                JSBind_WEBGL20.BindRenderbuffer(JSBind_WEBGL20.RENDERBUFFER, colorRB);
-                JSBind_WEBGL20.RenderbufferStorageMultisample(JSBind_WEBGL20.RENDERBUFFER, samples, JSBind_WEBGL20.RGBA8, width, height);
-                renderTarget.GLColorRenderbuffer = colorRB;
-
-                // MSAA FBO：颜色挂 multisample renderbuffer
-                JSObject msFbo = JSBind_WEBGL20.CreateFramebuffer();
-                JSBind_WEBGL20.BindFramebuffer(JSBind_WEBGL20.FRAMEBUFFER, msFbo);
-                JSBind_WEBGL20.FramebufferRenderbuffer(JSBind_WEBGL20.FRAMEBUFFER, JSBind_WEBGL20.COLOR_ATTACHMENT0, JSBind_WEBGL20.RENDERBUFFER, colorRB);
-
-                if (internalFormat != 0)
-                {
-                    JSObject depthRB = JSBind_WEBGL20.CreateRenderbuffer();
-                    JSBind_WEBGL20.BindRenderbuffer(JSBind_WEBGL20.RENDERBUFFER, depthRB);
-                    JSBind_WEBGL20.RenderbufferStorageMultisample(JSBind_WEBGL20.RENDERBUFFER, samples, internalFormat, width, height);
-                    JSBind_WEBGL20.FramebufferRenderbuffer(JSBind_WEBGL20.FRAMEBUFFER, JSBind_WEBGL20.DEPTH_ATTACHMENT, JSBind_WEBGL20.RENDERBUFFER, depthRB);
-                    renderTarget.GLDepthBuffer = depthRB;
-                    // 照 MonoGame：Depth24Stencil8 时 stencil 与 depth 是同一个 renderbuffer。
-                    renderTarget.GLStencilBuffer = depthFormat == DepthFormat.Depth24Stencil8 ? depthRB : null;
-                }
-
-                int st = JSBind_WEBGL20.CheckFramebufferStatus(JSBind_WEBGL20.FRAMEBUFFER);
-                if (st != JSBind_WEBGL20.FRAMEBUFFER_COMPLETE)
-                    Console.Error.WriteLine($"[KFramework.MonoGame] MSAA 帧缓冲不完整: 0x{st:X4}");
-                renderTarget.GLMultiSampleFramebuffer = msFbo;
-
-                // 解析 FBO：把可采样纹理挂上，resolve 时 blit 进来
-                JSObject resolveFbo = JSBind_WEBGL20.CreateFramebuffer();
-                JSBind_WEBGL20.BindFramebuffer(JSBind_WEBGL20.FRAMEBUFFER, resolveFbo);
-                JSBind_WEBGL20.FramebufferTexture2D(JSBind_WEBGL20.FRAMEBUFFER, JSBind_WEBGL20.COLOR_ATTACHMENT0,
-                    JSBind_WEBGL20.TEXTURE_2D, renderTarget.GLTexture, 0);
-                int st2 = JSBind_WEBGL20.CheckFramebufferStatus(JSBind_WEBGL20.FRAMEBUFFER);
-                if (st2 != JSBind_WEBGL20.FRAMEBUFFER_COMPLETE)
-                    Console.Error.WriteLine($"[KFramework.MonoGame] 解析帧缓冲不完整: 0x{st2:X4}");
-                renderTarget.GLResolveFramebuffer = resolveFbo;
-
-                JSBind_WEBGL20.BindFramebuffer(JSBind_WEBGL20.FRAMEBUFFER, null);
-                return;
-            }
-
-            if (internalFormat == 0)
-            {
-                renderTarget.GLDepthBuffer = null;
-                renderTarget.GLStencilBuffer = null;
-                return;
-            }
-
-            JSObject depth = JSBind_WEBGL20.CreateRenderbuffer();
-            JSBind_WEBGL20.BindRenderbuffer(JSBind_WEBGL20.RENDERBUFFER, depth);
-            JSBind_WEBGL20.RenderbufferStorage(JSBind_WEBGL20.RENDERBUFFER, internalFormat, width, height);
-
-            renderTarget.GLDepthBuffer = depth;
-            // 照 MonoGame：Depth24Stencil8 时 stencil 与 depth 是同一个 renderbuffer（GLES 无独立 stencil 格式）。
-            renderTarget.GLStencilBuffer = depthFormat == DepthFormat.Depth24Stencil8 ? depth : null;
+            Backend.CreateRenderTarget(renderTarget, width, height, depthFormat);
         }
 
-        /// <summary>释放渲染目标的 renderbuffer，并丢弃引用到它的 FBO 缓存（照 MonoGame 的 PlatformDeleteRenderTarget）。</summary>
+        /// <summary>释放渲染目标的附件，并丢弃引用到它的 FBO 缓存（转发给后端，照 MonoGame 的 PlatformDeleteRenderTarget）。</summary>
         internal void PlatformDeleteRenderTarget(IRenderTarget renderTarget)
         {
-            if (renderTarget.GLColorRenderbuffer is { } colorRB)
-            {
-                JSBind_WEBGL20.DeleteRenderbuffer(colorRB);
-                renderTarget.GLColorRenderbuffer = null;
-            }
-            if (renderTarget.GLMultiSampleFramebuffer is { } msFbo)
-            {
-                JSBind_WEBGL20.DeleteFramebuffer(msFbo);
-                renderTarget.GLMultiSampleFramebuffer = null;
-            }
-            if (renderTarget.GLResolveFramebuffer is { } resolveFbo)
-            {
-                JSBind_WEBGL20.DeleteFramebuffer(resolveFbo);
-                renderTarget.GLResolveFramebuffer = null;
-            }
-
-            if (renderTarget.GLDepthBuffer is { } depth)
-                JSBind_WEBGL20.DeleteRenderbuffer(depth);
-            renderTarget.GLDepthBuffer = null;
-            renderTarget.GLStencilBuffer = null;
-
-            List<RenderTargetBinding[]>? dead = null;
-            foreach (KeyValuePair<RenderTargetBinding[], JSObject> pair in _glFramebuffers)
-            {
-                foreach (RenderTargetBinding binding in pair.Key)
-                {
-                    if (ReferenceEquals(binding.RenderTarget, renderTarget))
-                    {
-                        (dead ??= new List<RenderTargetBinding[]>()).Add(pair.Key);
-                        break;
-                    }
-                }
-            }
-
-            if (dead is null) return;
-            foreach (RenderTargetBinding[] key in dead)
-            {
-                if (_glFramebuffers.TryGetValue(key, out JSObject? framebuffer) && _glFramebuffers.Remove(key))
-                    JSBind_WEBGL20.DeleteFramebuffer(framebuffer);
-            }
+            Backend.DeleteRenderTarget(renderTarget);
         }
 
         /// <summary>渲染目标等内部资源用的排序键（照 MonoGame 的 sorting key 分配）。</summary>
@@ -787,7 +528,7 @@ namespace KFramework.MonoGame
             var texture = new Texture2D(this, width, height, mipmap: false, format);
             texture.SetData(data);
 
-            int error = JSBind_WEBGL20.GetError();
+            int error = Backend.GetError();
             if (error != 0) Console.Error.WriteLine($"[KFramework.MonoGame] 纹理上传失败 0x{error:X4}（{(format.IsCompressed() ? "压缩" : "RGBA8")} {width}x{height}，{data.Length} 字节）");
 
             texture._sortingKey = _sortingKeySource++;
@@ -796,44 +537,9 @@ namespace KFramework.MonoGame
 
         public void Dispose()
         {
-            // 渲染目标的 FBO 缓存归设备所有，随设备一起释放（单个 RT 的 Dispose 会先摘掉自己的条目）。
-            foreach (JSObject framebuffer in _glFramebuffers.Values)
-                JSBind_WEBGL20.DeleteFramebuffer(framebuffer);
-            _glFramebuffers.Clear();
-
-            JSBind_WEBGL20.DeleteBuffer(VertexBuffer);
-            JSBind_WEBGL20.DeleteBuffer(IndexBuffer);
-            Effect.Dispose();
-        }
-
-        /// <summary>渲染目标绑定组合的比较器（照 MonoGame 的 RenderTargetBindingArrayComparer）。</summary>
-        private sealed class RenderTargetBindingArrayComparer : IEqualityComparer<RenderTargetBinding[]>
-        {
-            public bool Equals(RenderTargetBinding[]? first, RenderTargetBinding[]? second)
-            {
-                if (ReferenceEquals(first, second)) return true;
-                if (first is null || second is null) return false;
-                if (first.Length != second.Length) return false;
-
-                for (int i = 0; i < first.Length; i++)
-                {
-                    // 照 MonoGame：只比渲染目标本身与切片，槽位为 null 的两项也算相等。
-                    if (!ReferenceEquals(first[i].RenderTarget, second[i].RenderTarget)) return false;
-                    if (first[i].ArraySlice != second[i].ArraySlice) return false;
-                }
-                return true;
-            }
-
-            public int GetHashCode(RenderTargetBinding[] array)
-            {
-                var hashCode = new HashCode();
-                foreach (RenderTargetBinding binding in array)
-                {
-                    hashCode.Add(binding.RenderTarget?.GetHashCode() ?? 0);
-                    hashCode.Add(binding.ArraySlice);
-                }
-                return hashCode.ToHashCode();
-            }
+            // FBO 缓存、常驻缓冲与着色器程序都归后端所有，随设备一起释放
+            //（单个 RT 的 Dispose 会先摘掉自己的条目）。
+            Backend.Dispose();
         }
     }
 }

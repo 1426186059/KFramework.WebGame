@@ -222,7 +222,7 @@ namespace KFramework.MonoGame
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && OwnsHandle) JSBind_WEBGL20.DeleteTexture(Handle);
+            if (disposing && OwnsHandle) graphicsDevice.Backend.DeleteTexture(this);
         }
     }
 }

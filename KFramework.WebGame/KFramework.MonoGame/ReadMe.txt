@@ -29,6 +29,14 @@ KFramework.MonoGame —— 仿 MonoGame 引擎（面向 AI 智能体）
    图片走 Texture2D，文本/JSON 走 LoadText/LoadJson，
    原始字节（如 wav/mp3）走 LoadBytes，再交给 SoundEffect.FromBytes 解码。
 
+5. （硬性规定）禁止使用 #region / #endregion。
+   本仓库全库不得出现 #region 宏：它折叠后会让代码“看起来很短”，实则掩盖过长的方法与过大的类，
+   评审时极易漏掉问题。需要分节就用注释分隔，例如：
+       // ================================================================
+       // 渲染目标 / 离屏渲染
+       // ================================================================
+   真正需要分节时，说明该文件已经过大，应按职责拆成多个文件（如 Texture2D.cs / Texture2D.Web.cs）。
+
 命名空间约定
 ------------
 - 本库源码统一使用单一命名空间 KFramework.MonoGame（不再细分 Graphics / JSBind / Content / CoroutineIEnumerator 等子命名空间，所有类型都直接位于 KFramework.MonoGame 之下），

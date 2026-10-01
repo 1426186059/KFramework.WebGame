@@ -502,10 +502,16 @@ export function draw(vertexCount, instanceCount) {
         return;
     pass.draw(vertexCount | 0, instanceCount | 0);
 }
-export function drawIndexed(indexCount, instanceCount) {
+/**
+ * 按索引缓冲绘制。
+ * firstIndex / baseVertex 是批处理的关键：同一帧内多次 queue.writeBuffer 到同一个缓冲时，
+ * 后排队的操作会先于本帧任何 submit 生效，因此顶点必须【累加分区】写入，靠这两个参数把
+ * 相对索引偏移到本次写入区间的起点（firstIndex 恒为 0，因为静态索引是每个四边形内部编号）。
+ */
+export function drawIndexed(indexCount, instanceCount, firstIndex, baseVertex) {
     if (!pass || !curPipeline)
         return;
-    pass.drawIndexed(indexCount | 0, instanceCount | 0);
+    pass.drawIndexed(indexCount | 0, instanceCount | 0, firstIndex | 0, baseVertex | 0);
 }
 /** 收帧：结束渲染通道并提交命令缓冲区到队列。 */
 export function endFrame() {

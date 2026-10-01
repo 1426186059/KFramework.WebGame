@@ -166,8 +166,13 @@ namespace KFramework.MonoGame
         public static partial void Draw(int vertexCount, int instanceCount);
 
         /// <summary>按索引缓冲绘制。</summary>
+        /// <param name="indexCount">本次绘制的索引个数（每个精灵 6 个）。</param>
+        /// <param name="instanceCount">实例数（非实例化绘制传 1）。</param>
+        /// <param name="firstIndex">起始索引下标。批处理里恒为 0：静态索引是每个四边形内部编号为基准的。</param>
+        /// <param name="baseVertex">GPU 会把它加到每个索引值上。批处理中顶点是【累加分区】写入动态顶点缓冲的，
+        /// 用该参数把相对索引偏移到本次写入的顶点区间起点。</param>
         [JSImport("drawIndexed", "render_webgpu")]
-        public static partial void DrawIndexed(int indexCount, int instanceCount);
+        public static partial void DrawIndexed(int indexCount, int instanceCount, int firstIndex, int baseVertex);
 
         /// <summary>收帧：结束渲染通道并提交命令缓冲区。</summary>
         [JSImport("endFrame", "render_webgpu")]
