@@ -3196,7 +3196,6 @@ namespace Client.MirScenes
         private void TimeOfDay(S.TimeOfDay p)
         {
             Lights = p.Lights;
-            KFramework.MonoGame.PrintTool.Log($"[DayNight] 收到 TimeOfDay 包: Lights={p.Lights}({(int)p.Lights})");
             switch (Lights)
             {
                 case LightSetting.Day:
@@ -10388,11 +10387,8 @@ namespace Client.MirScenes
             }
 
         }
-        // [DayNight] 诊断日志节流：仅状态变化时打印，避免每帧刷屏
-        internal static LightSetting _dnLastGlobal = (LightSetting)0xFF;
-        internal static LightSetting _dnLastMap = (LightSetting)0xFF;
+        // [DayNight] 当前地图昼夜状态（仅变化时打印，避免每帧刷屏）
         internal static LightSetting _dnLastSetting = (LightSetting)0xFF;
-        internal static LightSetting _dnLastDraw = (LightSetting)0xFF;
 
         public static bool AutoHit;
 
@@ -10821,11 +10817,19 @@ namespace Client.MirScenes
 
             LightSetting setting = Lights == LightSetting.Normal ? GameScene.Scene.Lights : Lights;
 
-            if (_dnLastGlobal != GameScene.Scene.Lights || _dnLastMap != Lights || _dnLastSetting != setting)
+            if (_dnLastSetting != setting)
             {
-                _dnLastGlobal = GameScene.Scene.Lights; _dnLastMap = Lights; _dnLastSetting = setting;
-                bool willDraw = setting != LightSetting.Day || GameScene.User.Poison.HasFlag(PoisonType.Blindness);
-                KFramework.MonoGame.PrintTool.Log($"[DayNight] Draw: setting={setting}({(int)setting})  globalLights(TimeOfDay)={GameScene.Scene.Lights}({(int)GameScene.Scene.Lights})  mapLights={Lights}({(int)Lights})  进DrawLights={willDraw}");
+                _dnLastSetting = setting;
+                string dnName = setting switch
+                {
+                    LightSetting.Day => "白天",
+                    LightSetting.Normal => "白天",
+                    LightSetting.Night => "黑夜",
+                    LightSetting.Evening => "黄昏",
+                    LightSetting.Dawn => "黎明",
+                    _ => setting.ToString()
+                };
+                KFramework.MonoGame.PrintTool.Log($"[DayNight] 当前地图: {dnName}");
             }
 
             if (setting != LightSetting.Day || GameScene.User.Poison.HasFlag(PoisonType.Blindness))
@@ -11333,7 +11337,8 @@ namespace Client.MirScenes
 
         private void DrawLights(LightSetting setting)
         {
-            if (DXManager.Lights == null) return;
+            // 灯贴图（DXManager.Lights）未就绪时直接跳过昼夜压暗，避免整屏黑；CreateLights 填充后自然走原版压暗+火把逻辑。
+            if (DXManager.Lights == null || DXManager.Lights.Count == 0) return;
 
             var vp = DXManager.GDevice.Viewport;
             int lw = vp.Width, lh = vp.Height;
@@ -11391,13 +11396,6 @@ namespace Client.MirScenes
             if (MapObject.User.Poison.HasFlag(PoisonType.Blindness))
             {
                 darkness = GetBlindLight(darkness);
-            }
-
-            if (_dnLastDraw != setting)
-            {
-                _dnLastDraw = setting;
-                int lightCount = DXManager.Lights == null ? 0 : DXManager.Lights.Count;
-                KFramework.MonoGame.PrintTool.Log($"[DayNight] DrawLights 进入: setting={setting}({(int)setting})  darkness=({darkness.R},{darkness.G},{darkness.B})  lights.Count={lightCount}");
             }
 
             // 光照 RT：照原版传奇，先清空为「暗度色」darkness（而非全透明）；

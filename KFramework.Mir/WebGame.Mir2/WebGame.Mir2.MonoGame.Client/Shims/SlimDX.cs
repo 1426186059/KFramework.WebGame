@@ -67,6 +67,9 @@ namespace SlimDX.Direct3D9
         // 离屏渲染目标（浏览器端走 KFramework.MonoGame.RenderTarget2D）：非 null 即表示这是一张可烘焙的离屏纹理。
         internal KFramework.MonoGame.RenderTarget2D? RenderTarget;
 
+        // 普通贴图（浏览器端走 KFramework.MonoGame.Texture2D 主路径）：用于程序化生成的光晕等静态纹理。
+        internal KFramework.MonoGame.Texture2D? PlainTexture;
+
         public Texture(int handle, int width, int height)
         {
             Handle = handle; Width = width; Height = height; Disposed = false;
@@ -101,6 +104,7 @@ namespace SlimDX.Direct3D9
         {
             if (Disposed) return;
             if (RenderTarget != null) { RenderTarget.Dispose(); RenderTarget = null; }
+            if (PlainTexture != null) { PlainTexture.Dispose(); PlainTexture = null; }
             Disposed = true; Handle = 0;
         }
     }

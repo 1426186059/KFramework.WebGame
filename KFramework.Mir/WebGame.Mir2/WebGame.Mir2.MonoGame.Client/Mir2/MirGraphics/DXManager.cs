@@ -101,6 +101,63 @@ namespace Client.MirGraphics
             // 嵌套 RT 合成：切回画布（SetRenderTarget(null)）时保留已合成内容，避免闪烁。
             // 清屏仍由每帧 RenderFrame 的显式 Clear 负责；默认 DiscardContents 保持 XNA/MonoGame 兼容。
             GDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
+
+            // 浏览器端程序化生成灯贴图（光晕），填充 DXManager.Lights，使昼夜系统的蜡烛/火把/地图灯能照亮。
+            CreateLights();
+        }
+
+        // 程序化生成灯贴图（光晕）填充 Lights：原版 Crystal 用 GDI+ PathGradientBrush 绘制径向渐变，
+        // 浏览器端 WebGL 无 GDI+，改为 CPU 逐像素生成等价光晕（中心白→边缘透明），按 LightSizes 的 15 档生成 14 张。
+        public static void CreateLights()
+        {
+            if (GDevice == null) return;
+            for (int i = Lights.Count - 1; i >= 0; i--)
+                Lights[i]?.Dispose();
+            Lights.Clear();
+
+            float[] positions = { 0f, .20f, .40f, .60f, .80f, 1.0f };
+            // 径向渐变停靠色（A,R,G,B），中心白、边缘透明，与原版 Crystal 的 PathGradientBrush 一致。
+            byte[][] swatches = new byte[][]
+            {
+                new byte[] { 255, 255, 255, 255 },
+                new byte[] { 255, 210, 210, 210 },
+                new byte[] { 255, 160, 160, 160 },
+                new byte[] { 255, 70, 70, 70 },
+                new byte[] { 255, 40, 40, 40 },
+                new byte[] { 0, 0, 0, 0 },
+            };
+
+            for (int i = 1; i < LightSizes.Length; i++)
+            {
+                int w = LightSizes[i].X, h = LightSizes[i].Y;
+                byte[] data = new byte[w * h * 4];
+                float cx = w / 2f, cy = h / 2f;
+                float rx = w / 2f, ry = h / 2f;
+                for (int y = 0; y < h; y++)
+                {
+                    for (int x = 0; x < w; x++)
+                    {
+                        float nx = (x + 0.5f - cx) / rx;
+                        float ny = (y + 0.5f - cy) / ry;
+                        float r = (float)System.Math.Sqrt(nx * nx + ny * ny);
+                        int idx = (y * w + x) * 4;
+                        if (r > 1f) continue; // 椭圆外保持透明
+
+                        int k = 0;
+                        while (k < positions.Length - 1 && r > positions[k + 1]) k++;
+                        float t = (r - positions[k]) / (positions[k + 1] - positions[k]);
+                        byte[] a = swatches[k], b = swatches[k + 1];
+                        data[idx]     = (byte)(a[1] + (b[1] - a[1]) * t); // R
+                        data[idx + 1] = (byte)(a[2] + (b[2] - a[2]) * t); // G
+                        data[idx + 2] = (byte)(a[3] + (b[3] - a[3]) * t); // B
+                        data[idx + 3] = (byte)(a[0] + (b[0] - a[0]) * t); // A
+                    }
+                }
+
+                var tex = new SlimDX.Direct3D9.Texture(Device, w, h, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+                tex.PlainTexture = GDevice.CreateTexture(w, h, data);
+                Lights.Add(tex);
+            }
         }
 
         public static void Create()
@@ -166,14 +223,14 @@ namespace Client.MirGraphics
         //    烘焙完成后当作普通 Texture2D 采样绘制（照 MonoGame 把 RenderTarget2D 当纹理用）。
         public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
         {
-            if (texture?.RenderTarget == null) return;
-            Draw(texture.RenderTarget, sourceRect, position, color, blendState);
+            if (texture?.RenderTarget != null) { Draw(texture.RenderTarget, sourceRect, position, color, blendState); return; }
+            if (texture?.PlainTexture != null) { Draw(texture.PlainTexture, sourceRect, position, color, blendState); return; }
         }
 
         public static void Draw(SlimDX.Direct3D9.Texture texture, Rectangle sourceRect, RectangleF destRect, SlimDX.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
         {
-            if (texture?.RenderTarget == null) return;
-            Draw(texture.RenderTarget, sourceRect, destRect, color, blendState);
+            if (texture?.RenderTarget != null) { Draw(texture.RenderTarget, sourceRect, destRect, color, blendState); return; }
+            if (texture?.PlainTexture != null) { Draw(texture.PlainTexture, sourceRect, destRect, color, blendState); return; }
         }
 
         public static void DrawOpaque(SlimDX.Direct3D9.Texture texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, float opacity)
