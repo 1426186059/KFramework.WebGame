@@ -51,7 +51,6 @@ public sealed class RenderTargetTestScene : TestSceneBase
         _ball = Own(TestSpriteTexture.MakeBall(Device, 32));
     }
 
-    #region 交互
 
     public override void Update()
     {
@@ -112,9 +111,7 @@ public sealed class RenderTargetTestScene : TestSceneBase
         _rtRedraws = 0;
     }
 
-    #endregion
 
-    #region 布局
 
     private void Layout()
     {
@@ -161,9 +158,7 @@ public sealed class RenderTargetTestScene : TestSceneBase
         public Action Click { get; }
     }
 
-    #endregion
 
-    #region 绘制
 
     public override void Draw()
     {
@@ -366,9 +361,7 @@ public sealed class RenderTargetTestScene : TestSceneBase
             new Vector2(x, y), new Color(150, 165, 190));
     }
 
-    #endregion
 
-    #region 资源
 
     /// <summary>球纹理与 HSV 配色已抽到 <see cref="TestSpriteTexture"/>，供多个测试页共用。</summary>
     private T Own<T>(T resource) where T : IDisposable
@@ -385,5 +378,4 @@ public sealed class RenderTargetTestScene : TestSceneBase
         base.Dispose();
     }
 
-    #endregion
 }

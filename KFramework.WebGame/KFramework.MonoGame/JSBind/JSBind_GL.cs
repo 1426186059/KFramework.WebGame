@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace KFramework.MonoGame
 {
@@ -9,7 +9,6 @@ namespace KFramework.MonoGame
     /// </summary>
     public static partial class JSBind_GL
     {
-        #region 常量
 
         // —— 基础布尔 / 空值：GL 以 0/1 表示 false/true，NONE 即 0（pname 缺省值） ——
         public const int FALSE = 0;
@@ -136,9 +135,7 @@ namespace KFramework.MonoGame
         public const int DEPTH24_STENCIL8 = 0x88F0;
         public const int STENCIL_INDEX8 = 0x8D48;
 
-        #endregion
 
-        #region 上下文
 
         /// <summary>初始化 WebGL2 上下文，绑定到指定 canvas。</summary>
         [JSImport("initContext", "gl")]
@@ -176,9 +173,7 @@ namespace KFramework.MonoGame
         [JSImport("readPixel", "gl")]
         public static partial void ReadPixel(int x, int y, [JSMarshalAs<JSType.MemoryView>] Span<byte> rgba);
 
-        #endregion
 
-        #region 着色器 / 程序
 
         /// <summary>创建着色器对象（VERTEX_SHADER / FRAGMENT_SHADER）。</summary>
         [JSImport("createShader", "gl")]
@@ -257,9 +252,7 @@ namespace KFramework.MonoGame
         public static partial void UniformMatrix4fv(JSObject location, int transpose,
             [JSMarshalAs<JSType.MemoryView>] Span<byte> value);
 
-        #endregion
 
-        #region 缓冲 / 顶点数组
 
         /// <summary>创建缓冲对象。</summary>
         [JSImport("createBuffer", "gl")]
@@ -301,9 +294,7 @@ namespace KFramework.MonoGame
         [JSImport("vertexAttribPointer", "gl")]
         public static partial void VertexAttribPointer(int index, int size, int type, bool normalized, int stride, int offset);
 
-        #endregion
 
-        #region 纹理
 
         /// <summary>创建纹理对象。</summary>
         [JSImport("createTexture", "gl")]
@@ -357,9 +348,7 @@ namespace KFramework.MonoGame
         public static partial void TexImage2DStorage(int target, int level, int internalFormat,
             int width, int height, int format, int type);
 
-        #endregion
 
-        #region 帧缓冲（离屏渲染 / RenderTarget）
 
         /// <summary>创建帧缓冲对象（FBO）。</summary>
         [JSImport("createFramebuffer", "gl")]
@@ -412,9 +401,7 @@ namespace KFramework.MonoGame
             int dstX0, int dstY0, int dstX1, int dstY1,
             int mask, int filter);
 
-        #endregion
 
-        #region 状态 / 绘制
 
         /// <summary>开启 GL 能力（BLEND / DEPTH_TEST / CULL_FACE 等）。</summary>
         [JSImport("enable", "gl")]
@@ -472,6 +459,5 @@ namespace KFramework.MonoGame
         [JSImport("depthFunc", "gl")]
         public static partial void DepthFunc(int func);
 
-        #endregion
     }
 }

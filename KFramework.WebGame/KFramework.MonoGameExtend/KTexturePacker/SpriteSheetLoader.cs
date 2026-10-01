@@ -1,4 +1,4 @@
-﻿using KFramework.MonoGame;
+using KFramework.MonoGame;
 using KTexturePacker.Parser;
 using System.IO;
 using System.Threading.Tasks;

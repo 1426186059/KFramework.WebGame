@@ -1,4 +1,4 @@
-﻿namespace KFramework.MonoGame
+namespace KFramework.MonoGame
 {
     public sealed class SoundEffect : IDisposable
     {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 
@@ -92,7 +92,6 @@ namespace KFramework.MonoGame
         /// <summary>纹理像素高度（照 MonoGame）。</summary>
         public int Height => height;
 
-        #region SetData（照 MonoGame 的 4 个重载）
 
         /// <summary>把数据复制到指定 mip 层级、数组切片与区域（照 MonoGame）。</summary>
         public void SetData<T>(int level, int arraySlice, Rectangle? rect, T[] data, int startIndex, int elementCount) where T : struct
@@ -129,9 +128,7 @@ namespace KFramework.MonoGame
             PlatformSetData(0, data, 0, data.Length);
         }
 
-        #endregion
 
-        #region GetData（照 MonoGame 的 4 个重载；WebGL 后端不支持 GPU 读回）
 
         /// <summary>把纹理数据读入数组（照 MonoGame）。当前 WebGL 后端不支持，调用会抛 NotSupportedException。</summary>
         public void GetData<T>(int level, int arraySlice, Rectangle? rect, T[] data, int startIndex, int elementCount) where T : struct
@@ -156,9 +153,7 @@ namespace KFramework.MonoGame
             GetData(0, null, data, 0, data.Length);
         }
 
-        #endregion
 
-        #region 兼容旧调用方的便捷重载（非 MonoGame API，保留以支持 SpriteFont 等局部更新）
 
         /// <summary>上传 RGBA8 像素数据到整张纹理。</summary>
         public void SetData(byte[] rgba) => SetData(rgba, 0, 0, width, height);
@@ -170,7 +165,6 @@ namespace KFramework.MonoGame
             SetData(0, new Rectangle(x, y, w, h), rgba, 0, w * h * Format.GetSize());
         }
 
-        #endregion
 
         /// <summary>计算给定宽高下的 mip 层级数（照 MonoGame 的 Texture2D.CalculateMipLevels）。</summary>
         internal static int CalculateMipLevels(int width, int height)

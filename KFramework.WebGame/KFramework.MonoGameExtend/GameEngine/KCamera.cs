@@ -1,4 +1,4 @@
-﻿using KFramework.MonoGameExtend;
+using KFramework.MonoGameExtend;
 using KFramework.MonoGame;
 
 public class KCamera : KTransform

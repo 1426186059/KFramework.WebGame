@@ -51,7 +51,6 @@ namespace KFramework.MonoGame
             public Table(int offset, int length) { Offset = offset; Length = length; }
         }
 
-        #region 常量
 
         private const uint TagTtcf = 0x74746366; // 'ttcf' 字体集合
         private const uint TagOtto = 0x4F54544F; // 'OTTO' CFF 轮廓
@@ -78,7 +77,6 @@ namespace KFramework.MonoGame
 
         private const int MaxCompositeDepth = 5;
 
-        #endregion
 
         private readonly byte[] _data;
         private readonly Dictionary<uint, Table> _tables = new();
@@ -176,7 +174,6 @@ namespace KFramework.MonoGame
             return new TrueTypeFace(sfnt);
         }
 
-        #region 字符映射与度量
 
         /// <summary>取字符对应的字形索引；0 表示该字体没有这个字形。</summary>
         public int LookupGlyph(char c)
@@ -201,9 +198,7 @@ namespace KFramework.MonoGame
             return U16(_hmtxOffset + index * 4);
         }
 
-        #endregion
 
-        #region 字形轮廓
 
         /// <summary>取字形轮廓（字体单位）；复合字形已展开，空字形返回 <see cref="GlyphShape.IsEmpty"/>。</summary>
         public GlyphShape GetShape(int glyphIndex)
@@ -380,9 +375,7 @@ namespace KFramework.MonoGame
             shape.YMax = yMax;
         }
 
-        #endregion
 
-        #region cmap
 
         private void PickCmapSubtable(out int offset, out int format)
         {
@@ -473,9 +466,7 @@ namespace KFramework.MonoGame
             return 0;
         }
 
-        #endregion
 
-        #region name 表
 
         private string ReadFamilyName()
         {
@@ -515,9 +506,7 @@ namespace KFramework.MonoGame
             return "<unnamed>";
         }
 
-        #endregion
 
-        #region WOFF 解包
 
         /// <summary>把 woff 还原成 sfnt：表目录重建 + 各表 zlib 解压（未压缩的表原样拷贝）。</summary>
         private static byte[] UnpackWoff(byte[] data)
@@ -601,9 +590,7 @@ namespace KFramework.MonoGame
         private static void WriteU32(byte[] buffer, int offset, uint value)
             => BinaryPrimitives.WriteUInt32BigEndian(buffer.AsSpan(offset, 4), value);
 
-        #endregion
 
-        #region 字节读取
 
         private Table Require(uint tag, string name)
         {
@@ -638,6 +625,5 @@ namespace KFramework.MonoGame
 
         private float F2Dot14(int offset) => I16(offset) / 16384f;
 
-        #endregion
     }
 }

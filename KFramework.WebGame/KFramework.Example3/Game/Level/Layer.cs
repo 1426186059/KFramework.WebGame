@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace FCGame_MonoGame2.Core
 {

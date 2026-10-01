@@ -72,7 +72,6 @@ namespace KFramework.MonoGame
                 _pages[i] = pages[i] ?? throw new ArgumentNullException(nameof(pages), $"图集页 {i} 为空。");
         }
 
-        #region 构造入口
 
         /// <summary>从 .fnt 文本 + 单张图集页构造（图集页纹理由调用方自行加载）。</summary>
         public static BitmapFont FromFnt(string fntText, Texture2D page)
@@ -118,7 +117,6 @@ namespace KFramework.MonoGame
             return cut < 0 ? file : string.Concat(fntPath.AsSpan(0, cut + 1), file);
         }
 
-        #endregion
 
         /// <summary>Measure 的 MonoGame 命名别名。</summary>
         public Vector2 MeasureString(string text) => Measure(text);

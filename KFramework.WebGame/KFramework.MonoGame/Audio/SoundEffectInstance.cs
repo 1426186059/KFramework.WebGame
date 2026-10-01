@@ -1,4 +1,4 @@
-﻿namespace KFramework.MonoGame
+namespace KFramework.MonoGame
 {
     /// <summary>
     /// 音效的可控播放实例（对齐 MonoGame 的 <c>SoundEffectInstance</c>）。

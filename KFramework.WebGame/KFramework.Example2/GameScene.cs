@@ -1,4 +1,4 @@
-﻿using KFramework.Example2.Screens;
+using KFramework.Example2.Screens;
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 

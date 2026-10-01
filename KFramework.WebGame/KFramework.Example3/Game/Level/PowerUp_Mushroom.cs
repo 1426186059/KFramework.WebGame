@@ -1,4 +1,4 @@
-﻿
+
 namespace KFramework.Example3
 {
     internal class PowerUp_Mushroom : PowerUpObject

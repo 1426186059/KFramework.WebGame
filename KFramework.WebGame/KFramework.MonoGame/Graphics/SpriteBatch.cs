@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using KFramework.MonoGame;
 
@@ -88,7 +88,6 @@ namespace KFramework.MonoGame
             _device.Effect.Apply(_transform * _projection);
         }
 
-        #region Draw 重载
 
         public void Draw(Texture2D texture, Vector2 position, Color color)
             => Draw(texture, position, null, color, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
@@ -181,9 +180,7 @@ namespace KFramework.MonoGame
                     new Vector2(texture.Width / 2f, texture.Height / 2f),
                     new Vector2(scale, scale), SpriteEffects.None, layerDepth);
 
-        #endregion
 
-        #region 文字
 
         public void DrawString(IFont font, string text, Vector2 position, Color color)
             => font.Draw(this, text, position, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
@@ -192,7 +189,6 @@ namespace KFramework.MonoGame
                                float rotation, Vector2 origin, float scale, float layerDepth = 0f)
             => font.Draw(this, text, position, color, rotation, origin, scale, SpriteEffects.None, layerDepth);
 
-        #endregion
 
         private void CheckValid(Texture2D texture)
         {

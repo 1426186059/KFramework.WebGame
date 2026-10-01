@@ -115,7 +115,6 @@ namespace KFramework.MonoGame
             row[ix1 - 1] += 1f - rightGap;
         }
 
-        #region 轮廓展平
 
         /// <summary>把一条闭合轮廓（点下标 [start, end]）展平成像素坐标的线段。</summary>
         private static void FlattenContour(GlyphShape shape, int start, int end, float scale, float skewTan,
@@ -223,9 +222,7 @@ namespace KFramework.MonoGame
             }
         }
 
-        #endregion
 
-        #region 加粗
 
         /// <summary>对 alpha 通道做半径 <paramref name="radius"/> 的膨胀（水平 + 垂直两次滑动最大值）。</summary>
         private static void Dilate(byte[] rgba, int width, int height, int radius)
@@ -281,6 +278,5 @@ namespace KFramework.MonoGame
             }
         }
 
-        #endregion
     }
 }

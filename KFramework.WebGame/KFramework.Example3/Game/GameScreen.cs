@@ -1,4 +1,4 @@
-﻿
+
 namespace KFramework.Example3
 {
     internal class GameScreen : KUIBase

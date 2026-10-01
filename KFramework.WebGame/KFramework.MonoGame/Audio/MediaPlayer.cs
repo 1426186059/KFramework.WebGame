@@ -1,4 +1,4 @@
-﻿namespace KFramework.MonoGame
+namespace KFramework.MonoGame
 {
     /// <summary>
     /// 背景音乐播放器（对齐 MonoGame 的 Microsoft.Xna.Framework.Media.MediaPlayer）。

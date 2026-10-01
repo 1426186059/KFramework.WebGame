@@ -1,4 +1,4 @@
-﻿namespace KFramework.MonoGameExtend
+namespace KFramework.MonoGameExtend
 {
     /// <summary>
     /// 全局设置中心。KTime 等引擎类只读/写这里的值，运行时改立即生效。

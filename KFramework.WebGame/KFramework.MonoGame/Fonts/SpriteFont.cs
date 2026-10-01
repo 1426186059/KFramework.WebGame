@@ -1,4 +1,4 @@
-﻿namespace KFramework.MonoGame
+namespace KFramework.MonoGame
 {
 
     /// <summary>
@@ -99,7 +99,6 @@
             PrintTool.Log($"[SpriteFont] {Family} 字号 {Size} | 样式 {Style} | 字重 {Weight} | 基线 {Ascent} | 行高 {LineHeight}");
         }
 
-        #region 自定义字体（ttf / otf / woff）
 
         /// <summary>
         /// 注册自定义字体：从 <paramref name="url"/>（相对页面基址或绝对地址）下载字体文件并加入 document.fonts。
@@ -143,7 +142,6 @@
             return new SpriteFont(device, size, family, style, weight, stretch, letterSpacing);
         }
 
-        #endregion
 
         /// <summary>Measure 的 MonoGame 命名别名。</summary>
         public Vector2 MeasureString(string text) => Measure(text);

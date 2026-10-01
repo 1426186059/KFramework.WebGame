@@ -1,4 +1,4 @@
-﻿namespace MirGame;
+namespace MirGame;
 
 internal static class Program
 {

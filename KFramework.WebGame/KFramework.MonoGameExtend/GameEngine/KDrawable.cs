@@ -1,4 +1,4 @@
-﻿namespace KFramework.MonoGameExtend
+namespace KFramework.MonoGameExtend
 {
     public interface KDrawable
     {

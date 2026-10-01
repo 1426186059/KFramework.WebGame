@@ -12,14 +12,11 @@ namespace KFramework.MonoGame
     /// </summary>
     public class PresentationParameters
     {
-        #region Constants
 
         /// <summary>默认呈现速率（照 MonoGame 的 DefaultPresentRate）。</summary>
         public const int DefaultPresentRate = 60;
 
-        #endregion Constants
 
-        #region Private Fields
 
         private DepthFormat depthStencilFormat;
         private SurfaceFormat backBufferFormat;
@@ -30,9 +27,7 @@ namespace KFramework.MonoGame
         private bool isFullScreen;
         private bool hardwareModeSwitch = true;
 
-        #endregion Private Fields
 
-        #region Constructors
 
         /// <summary>创建一份全部为默认值的呈现参数（照 MonoGame 的构造函数会先 Clear）。</summary>
         public PresentationParameters()
@@ -40,9 +35,7 @@ namespace KFramework.MonoGame
             Clear();
         }
 
-        #endregion Constructors
 
-        #region Properties
 
         /// <summary>后备缓冲的像素格式。</summary>
         public SurfaceFormat BackBufferFormat
@@ -122,9 +115,7 @@ namespace KFramework.MonoGame
         /// </summary>
         public RenderTargetUsage RenderTargetUsage { get; set; }
 
-        #endregion Properties
 
-        #region Methods
 
         /// <summary>把所有属性重置为默认值（照 MonoGame 的 Clear）。</summary>
         public void Clear()
@@ -157,6 +148,5 @@ namespace KFramework.MonoGame
             return clone;
         }
 
-        #endregion Methods
     }
 }

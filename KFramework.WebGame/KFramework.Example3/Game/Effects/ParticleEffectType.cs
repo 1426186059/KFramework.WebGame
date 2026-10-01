@@ -1,4 +1,4 @@
-﻿namespace KFramework.Example3
+namespace KFramework.Example3
 {
     /// <summary>
     /// Enum describes the type of particle effects we support.

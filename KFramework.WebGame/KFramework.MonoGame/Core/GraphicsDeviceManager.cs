@@ -188,7 +188,6 @@ namespace KFramework.MonoGame
                 _drawBegun = false;
         }
 
-        #region Events
 
         /// <summary>创建了 <see cref="GraphicsDevice"/> 后触发。</summary>
         public event EventHandler<EventArgs>? DeviceCreated;
@@ -249,9 +248,7 @@ namespace KFramework.MonoGame
             return gdi;
         }
 
-        #endregion Events
 
-        #region IDisposable Members
 
         /// <inheritdoc cref="IDisposable.Dispose()"/>
         public void Dispose()
@@ -281,7 +278,6 @@ namespace KFramework.MonoGame
             EventHelpers.Raise(this, Disposed, EventArgs.Empty);
         }
 
-        #endregion IDisposable Members
 
         private void PreparePresentationParameters(PresentationParameters presentationParameters)
         {

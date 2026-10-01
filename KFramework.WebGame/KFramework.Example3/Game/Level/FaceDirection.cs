@@ -1,4 +1,4 @@
-﻿namespace KFramework.Example3
+namespace KFramework.Example3
 {
     /// <summary>
     /// Facing direction along the X axis.

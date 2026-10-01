@@ -121,7 +121,6 @@ internal sealed class WsEchoServer
         get { lock (_gate) return _clients.Count; }
     }
 
-    #region 握手
 
     private static async Task<bool> HandshakeAsync(NetworkStream stream, CancellationToken token)
     {
@@ -180,9 +179,7 @@ internal sealed class WsEchoServer
         return true;
     }
 
-    #endregion
 
-    #region 帧收发
 
     private readonly record struct WsFrame(bool Fin, int Opcode, byte[] Payload);
 
@@ -295,5 +292,4 @@ internal sealed class WsEchoServer
         }
     }
 
-    #endregion
 }
