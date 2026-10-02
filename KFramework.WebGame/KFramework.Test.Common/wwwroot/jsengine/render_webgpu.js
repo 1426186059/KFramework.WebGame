@@ -108,7 +108,11 @@ export async function init(canvasId, antialias) {
             console.error('[webgpu] getContext("webgpu") 返回 null');
             return false;
         }
-        format = navigator.gpu.getPreferredCanvasFormat();
+        // 画布格式【不用】getPreferredCanvasFormat()（多数平台是 bgra8unorm），固定用 rgba8unorm：
+        // 实测 bgra8unorm 的画布/屏幕缓冲在"切走再切回、用 loadOp:'load' 续画"时保不住内容
+        //（同样的顺序画在 rgba8unorm 的离屏上就正常 —— 见测试页「实际(离屏) vs 实际(画布)」）。
+        // 统一成 rgba8unorm 后，屏幕缓冲与所有离屏 RT 同格式，拷回画布的 copyTextureToTexture 也仍然合法。
+        format = 'rgba8unorm';
         configureContext();
         return true;
     }
@@ -139,6 +143,9 @@ function ensureAttachments() {
     const w = canvas.width || 1;
     const h = canvas.height || 1;
     // 【屏幕缓冲】画布的内容先画在这里，通道结束再拷回真正的画布纹理 —— 详见 beginFrame 的注释。
+    // 用途标志要和普通离屏纹理【完全一致】（见 createTexture 的 0x04|0x10|0x02），
+    // 额外加 COPY_SRC 供拷回画布用。若少了 TEXTURE_BINDING / COPY_DST，
+    // 这张纹理与离屏纹理在"切走再切回、用 load 续画"时的表现就可能不一致。
     if (screenTexture) {
         screenTexture.destroy?.();
         screenTexture = null;
@@ -146,7 +153,7 @@ function ensureAttachments() {
     screenTexture = device.createTexture({
         size: [w, h],
         format,
-        usage: 0x10 | 0x01, // RENDER_ATTACHMENT | COPY_SRC
+        usage: 0x04 | 0x10 | 0x02 | 0x01, // TEXTURE_BINDING | RENDER_ATTACHMENT | COPY_DST | COPY_SRC
     });
     if (msaaTexture) {
         msaaTexture.destroy?.();
@@ -171,11 +178,30 @@ function ensureAttachments() {
     });
 }
 /** 把画布尺寸设为 width×height 并重建附件（WebGPU 上下文会随画布尺寸自动调整后备缓冲）。 */
+/**
+ * 【关键】尺寸没变就必须直接返回，一步都不要做：
+ *   - `canvas.width = ...` 赋值本身就会重置绘制缓冲区；
+ *   - `ensureAttachments()` 更会【销毁并重建】屏幕缓冲 screenTexture，内容全部归零。
+ * 而本函数会在【每次切换渲染目标】时被间接调用 —— GraphicsDevice.Viewport 的 setter 会下发
+ * SetViewport，后者转调本函数；切回画布（colorTarget=0）时正好放行。
+ * 于是一帧内每切回一次画布，就把画布上已画好的内容抹掉一次，只剩最后一次绘制
+ * （表现：来回切换渲染目标做合成时内容丢失，且 loadOp:'load' 明明发对了也无效）。
+ */
 export function resize(width, height) {
     if (!canvas)
         return;
-    canvas.width = Math.max(1, width | 0);
-    canvas.height = Math.max(1, height | 0);
+    const w = Math.max(1, width | 0);
+    const h = Math.max(1, height | 0);
+    // 判断依据是【屏幕缓冲自身】的尺寸，而不是 canvas.width —— 真正决定渲染区域的是
+    // screenTexture，两者可能不同步（例如 canvas 已被外部改成目标尺寸，而缓冲仍是旧尺寸），
+    // 若拿 canvas.width 去比对就会误判为"无需重建"，画面便只渲染到那一小块（缩在左上角）。
+    if (screenTexture && screenTexture.width === w && screenTexture.height === h)
+        return;
+    // 确实要改尺寸：canvas.width 赋值本身就会重置绘制缓冲区，故仅在必要时才做。
+    if (canvas.width !== w)
+        canvas.width = w;
+    if (canvas.height !== h)
+        canvas.height = h;
     ensureAttachments();
 }
 // ---------- 纯状态 / 查询 ----------

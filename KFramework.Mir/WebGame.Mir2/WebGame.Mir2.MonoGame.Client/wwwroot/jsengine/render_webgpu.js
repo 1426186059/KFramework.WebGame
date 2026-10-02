@@ -23,9 +23,12 @@ let canvas = null;
 let format = 'bgra8unorm'; // 画布首选格式（GPUTextureFormat）
 let antialiasEnabled = false;
 let sampleCount = 1;
-// 深度 / 多重采样附件（随画布尺寸变化，由 ensureAttachments 维护）
+// 深度 / 多重采样 / 屏幕缓冲附件（随画布尺寸变化，由 ensureAttachments 维护）
 let depthTexture = null;
 let msaaTexture = null;
+let screenTexture = null;
+// 当前通道是不是"画向画布"的（endFrame 时据此决定要不要拷回画布纹理）
+let passIsCanvas = false;
 // ---- GPU 对象句柄表（整数 id → GPU 对象）----
 const shaders = new Map();
 const pipelines = new Map();
@@ -105,7 +108,11 @@ export async function init(canvasId, antialias) {
             console.error('[webgpu] getContext("webgpu") 返回 null');
             return false;
         }
-        format = navigator.gpu.getPreferredCanvasFormat();
+        // 画布格式【不用】getPreferredCanvasFormat()（多数平台是 bgra8unorm），固定用 rgba8unorm：
+        // 实测 bgra8unorm 的画布/屏幕缓冲在"切走再切回、用 loadOp:'load' 续画"时保不住内容
+        //（同样的顺序画在 rgba8unorm 的离屏上就正常 —— 见测试页「实际(离屏) vs 实际(画布)」）。
+        // 统一成 rgba8unorm 后，屏幕缓冲与所有离屏 RT 同格式，拷回画布的 copyTextureToTexture 也仍然合法。
+        format = 'rgba8unorm';
         configureContext();
         return true;
     }
@@ -117,15 +124,37 @@ export async function init(canvasId, antialias) {
 function configureContext() {
     if (!context || !device || !canvas)
         return;
-    context.configure({ device, format, alphaMode: 'premultiplied' });
+    // usage 必须带上 COPY_DST：画布通道画在自建的屏幕缓冲里，通道结束要【拷贝】回画布纹理。
+    // GPUCanvasConfiguration.usage 默认只有 RENDER_ATTACHMENT(0x10)，不显式加 COPY_DST 就拷不进去。
+    // 注意别用 0x08 —— 那是 STORAGE_BINDING，且 bgra8unorm 不支持 storage binding，
+    // 配上去会让交换链纹理直接变 invalid（Dawn 报 ValidateTextureUsageConstraints）。
+    context.configure({
+        device,
+        format,
+        alphaMode: 'premultiplied',
+        usage: 0x10 | 0x02, // RENDER_ATTACHMENT | COPY_DST
+    });
     ensureAttachments();
 }
-// 依当前画布尺寸重建深度 / 多重采样附件。画布尺寸变化（resize）后必须调用。
+// 依当前画布尺寸重建屏幕缓冲 / 深度 / 多重采样附件。画布尺寸变化（resize）后必须调用。
 function ensureAttachments() {
     if (!device || !canvas)
         return;
     const w = canvas.width || 1;
     const h = canvas.height || 1;
+    // 【屏幕缓冲】画布的内容先画在这里，通道结束再拷回真正的画布纹理 —— 详见 beginFrame 的注释。
+    // 用途标志要和普通离屏纹理【完全一致】（见 createTexture 的 0x04|0x10|0x02），
+    // 额外加 COPY_SRC 供拷回画布用。若少了 TEXTURE_BINDING / COPY_DST，
+    // 这张纹理与离屏纹理在"切走再切回、用 load 续画"时的表现就可能不一致。
+    if (screenTexture) {
+        screenTexture.destroy?.();
+        screenTexture = null;
+    }
+    screenTexture = device.createTexture({
+        size: [w, h],
+        format,
+        usage: 0x04 | 0x10 | 0x02 | 0x01, // TEXTURE_BINDING | RENDER_ATTACHMENT | COPY_DST | COPY_SRC
+    });
     if (msaaTexture) {
         msaaTexture.destroy?.();
         msaaTexture = null;
@@ -149,11 +178,30 @@ function ensureAttachments() {
     });
 }
 /** 把画布尺寸设为 width×height 并重建附件（WebGPU 上下文会随画布尺寸自动调整后备缓冲）。 */
+/**
+ * 【关键】尺寸没变就必须直接返回，一步都不要做：
+ *   - `canvas.width = ...` 赋值本身就会重置绘制缓冲区；
+ *   - `ensureAttachments()` 更会【销毁并重建】屏幕缓冲 screenTexture，内容全部归零。
+ * 而本函数会在【每次切换渲染目标】时被间接调用 —— GraphicsDevice.Viewport 的 setter 会下发
+ * SetViewport，后者转调本函数；切回画布（colorTarget=0）时正好放行。
+ * 于是一帧内每切回一次画布，就把画布上已画好的内容抹掉一次，只剩最后一次绘制
+ * （表现：来回切换渲染目标做合成时内容丢失，且 loadOp:'load' 明明发对了也无效）。
+ */
 export function resize(width, height) {
     if (!canvas)
         return;
-    canvas.width = Math.max(1, width | 0);
-    canvas.height = Math.max(1, height | 0);
+    const w = Math.max(1, width | 0);
+    const h = Math.max(1, height | 0);
+    // 判断依据是【屏幕缓冲自身】的尺寸，而不是 canvas.width —— 真正决定渲染区域的是
+    // screenTexture，两者可能不同步（例如 canvas 已被外部改成目标尺寸，而缓冲仍是旧尺寸），
+    // 若拿 canvas.width 去比对就会误判为"无需重建"，画面便只渲染到那一小块（缩在左上角）。
+    if (screenTexture && screenTexture.width === w && screenTexture.height === h)
+        return;
+    // 确实要改尺寸：canvas.width 赋值本身就会重置绘制缓冲区，故仅在必要时才做。
+    if (canvas.width !== w)
+        canvas.width = w;
+    if (canvas.height !== h)
+        canvas.height = h;
     ensureAttachments();
 }
 // ---------- 纯状态 / 查询 ----------
@@ -458,36 +506,60 @@ export function destroySampler(id) { samplers.delete(id); }
  * @param resolveTarget 解析目标句柄（0 = 不解析）
  * @param depthTarget   深度附件句柄（0 = 用画布自带的深度纹理，或不用）
  */
-export function beginFrame(r, g, b, a, depthClear, colorTarget, resolveTarget, depthTarget) {
+/**
+ * 开帧。
+ * @param loadMode 通道的载入方式：0 = clear（用 clearValue 清屏），1 = load（沿用目标里已有的内容）。
+ *   —— 切换渲染目标后继续绘制时必须用 1：目标切换会结束当前通道，若新通道再走 clear，
+ *      就会擦掉已经画好的部分。传奇那种「画布 ↔ 多个离屏 RT 来回切换做合成」的模式正是靠 load 保住内容。
+ */
+export function beginFrame(r, g, b, a, depthClear, colorTarget, resolveTarget, depthTarget, loadMode) {
     if (!device || !context) {
         console.error('[webgpu] 未初始化');
         return;
     }
     encoder = device.createCommandEncoder();
     const toCanvas = colorTarget === 0;
-    const canvasView = toCanvas ? context.getCurrentTexture().createView() : null;
-    // 多重采样时渲染进 MSAA 纹理，画布本身作为解析目标。
+    // 【画布不直接画】画向画布时，一律先画进我们自建的屏幕缓冲 screenTexture，通道结束再拷回画布纹理。
+    // 原因：交换链纹理（getCurrentTexture）在每次提交后不保证保留内容，
+    // 于是"切去离屏再切回画布继续画"时用 loadOp:'load' 取不到先前画的东西 ——
+    // 表现就是切换前画的内容凭空消失（传奇那种一帧内来回切很多次的用法会整屏发黑）。
+    // 换成自己的缓冲后，load / store 完全由我们掌控，跨通道续画才可靠。
     let view;
-    if (toCanvas)
-        view = sampleCount > 1 && msaaTexture ? msaaTexture.createView() : canvasView;
-    else
+    let resolved = null;
+    if (toCanvas) {
+        if (!screenTexture) {
+            console.error('[webgpu] 屏幕缓冲未就绪');
+            return;
+        }
+        const screenView = screenTexture.createView();
+        if (sampleCount > 1 && msaaTexture) {
+            view = msaaTexture.createView(); // 多重采样：渲染进 MSAA 纹理
+            resolved = screenView; // 解析进屏幕缓冲
+        }
+        else {
+            view = screenView;
+        }
+    }
+    else {
         view = textures.get(colorTarget)?.createView();
+        if (resolveTarget !== 0)
+            resolved = textures.get(resolveTarget)?.createView();
+    }
     if (!view) {
         console.error('[webgpu] beginFrame: 颜色目标句柄无效: ' + colorTarget);
         return;
     }
-    // 解析目标：离屏时由调用方给出；画布 MSAA 时就是交换链纹理。
-    let resolved = null;
-    if (resolveTarget !== 0)
-        resolved = textures.get(resolveTarget)?.createView();
-    else if (toCanvas && sampleCount > 1)
-        resolved = canvasView;
+    const load = loadMode === 1;
     const colorAttachment = {
         view,
         clearValue: { r, g, b, a },
-        loadOp: 'clear',
-        // 有解析目标时多重采样附件本身无需保留（照 Vulkan 的 STORE_OP_DONT_CARE，省带宽）。
-        storeOp: resolved ? 'discard' : 'store',
+        loadOp: load ? 'load' : 'clear',
+        // 必须 store，不能因为有解析目标就 discard：
+        // 多重采样附件的解析结果写进了 resolveTarget，但【附件自身】仍是下一次 load 的来源 ——
+        // 一旦 discard，后续以 load 方式开帧就会载入到已被丢弃的内容（表现为整屏变黑）。
+        // 这里用 store 换正确性：切换渲染目标后要接着画，靠的就是附件里还留着上一通道的内容。
+        // 代价是少了 "resolve 后丢弃 MSAA 附件" 这点带宽优化。
+        storeOp: 'store',
     };
     if (resolved)
         colorAttachment.resolveTarget = resolved;
@@ -501,11 +573,12 @@ export function beginFrame(r, g, b, a, depthClear, colorTarget, resolveTarget, d
         passDesc.depthStencilAttachment = {
             view: depthView,
             depthClearValue: depthClear >= 0 ? depthClear : 1,
-            depthLoadOp: 'clear',
+            depthLoadOp: load ? 'load' : 'clear',
             depthStoreOp: 'store',
         };
     }
     pass = encoder.beginRenderPass(passDesc);
+    passIsCanvas = toCanvas;
     curPipeline = null;
 }
 export function setPipeline(id) {
@@ -550,8 +623,15 @@ export function endFrame() {
     if (!pass || !encoder || !device)
         return;
     pass.end();
+    // 画向画布的通道：把屏幕缓冲拷回真正的画布纹理，这一帧画的东西才会呈现出来。
+    // 每次画布通道结束都拷一次，故一帧内多次来回切也没问题 —— 最后一次拷的就是最终结果。
+    if (passIsCanvas && screenTexture && context) {
+        const dst = context.getCurrentTexture();
+        encoder.copyTextureToTexture({ texture: screenTexture }, { texture: dst }, [screenTexture.width, screenTexture.height]);
+    }
     device.queue.submit([encoder.finish()]);
     pass = null;
     encoder = null;
+    passIsCanvas = false;
     curPipeline = null;
 }

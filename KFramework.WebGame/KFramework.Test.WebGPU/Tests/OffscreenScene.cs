@@ -10,10 +10,11 @@ namespace KFramework.Test.WebGPU.Tests
     ///   <item><description><b>测试离屏</b>：内容画进离屏1，再把它当纹理贴到屏幕（离屏基本通路）。</description></item>
     ///   <item><description><b>测试离屏 MSAA</b>：MSAA=0 与 =4 并排，并说明"画布 MSAA"与"离屏 MSAA"在
     ///   WebGL / WebGPU 下的差别。</description></item>
-    ///   <item><description><b>测试 RT→RT 合成</b>：离屏1 与离屏2 一起画进合成目标
-    ///   （传奇的地板图 + 光照图合成就是这一步）。</description></item>
-    ///   <item><description><b>测试嵌套（画布↔RT）</b>：先在画布画 → 切离屏 → 切回继续画，
-    ///   看画布上先前的内容还在不在（传奇每帧的用法）。</description></item>
+    ///   <item><description><b>测试纹理合成 A-F</b>：A 底 / B 红块 / C 球阵 / D 绿块 /
+    ///   E = B+C+D / F = A+E 六张纹理按顺序铺开。E 的构造中途要【切走再切回】，故 E 即是判据。
+    ///   </description></item>
+    ///   <item><description><b>测试画布来回切</b>：把目标换成<b>画布</b>，做 3 轮「切去离屏 → 切回画布」，
+    ///   每轮回画布补画一个编号方块。画布即屏幕，结果直接可见，不再显示成面板。</description></item>
     ///   <item><description><b>测试累积</b>：只在首帧清一次，之后每帧加一条横杠，
     ///   验证 <c>PreserveContents</c> 是否真的保留内容。</description></item>
     /// </list>
@@ -33,16 +34,20 @@ namespace KFramework.Test.WebGPU.Tests
             Offscreen,
             Msaa,
             Composite,
-            Nested,
+            Pipeline,
+            CanvasRoundTrip,
             Accumulate,
         }
 
+        // 「测试画布切换」已并入「测试画布来回切」：两者测的是同一件事（目标=画布时，切走再切回
+        // 内容是否保留），后者是前者的多轮版本，判据更清晰（能数出保住了几轮），留一个即可。
         private static readonly (string Name, Screen Value)[] Screens =
         [
             ("测试离屏", Screen.Offscreen),
             ("测试离屏MSAA", Screen.Msaa),
             ("测试RT→RT合成", Screen.Composite),
-            ("测试来回切(屏幕↔离屏)", Screen.Nested),
+            ("测试纹理合成A-F", Screen.Pipeline),
+            ("测试画布来回切", Screen.CanvasRoundTrip),
             ("测试累积", Screen.Accumulate),
         ];
 
@@ -51,13 +56,44 @@ namespace KFramework.Test.WebGPU.Tests
 
         private const int BtnH = 30;
         private const int BtnGap = 8;
-        private const int BodyTop = 118;
         private const int BarsTotal = 25;
 
-        // 流水线式对照区：4 列 × 2 行。按最窄的画布（约 1032）留余量：4*220 + 3*20 + 28 = 968。
-        private const int PanelW = 220;
-        private const int PanelH = 138;     // 保持 320:200 的比例（1.6:1）
-        private const int PanelGap = 20;
+        /// <summary>
+        /// 正文区顶边 = 最后一行按钮的底边 + 间距。做成动态是为了让按钮能自由换行
+        /// （按钮数量随测试项增加，写死 118 会在按钮占两行时与正文重叠）。
+        /// </summary>
+        private float BodyTop => _buttons.Count > 0 ? _buttons[^1].Bottom + 20f : 118f;
+
+        // 流水线式对照区：3 列 × 2 行（A B C / D E F）。
+        // 间距要给标题留位置（标题从面板左端起，宽度 = PanelW + PanelGap），故 gap 取 30：
+        // 3*290 + 2*30 + 56 = 986，在最窄的画布（约 1032）内仍有余量。
+        private const int PanelW = 290;
+        private const int PanelH = 181;     // 保持 320:200 的比例（1.6:1）
+        private const int PanelGap = 30;
+
+        // 「测试画布来回切」：三组并排，逐层剥离变量 —— 哪一组开始缺，问题就出在哪一层。
+        //   ① 一个批次画完 6 个：既不切换、也不分批（最干净的基准）
+        //   ② 分多个批次画完：不切换，只比 ① 多了"批次"
+        //   ③ 分多个批次 + 每轮切走再切回：再比 ② 多了"切换"
+        private const float CellW = 110f;
+        private const float CellH = 110f;
+        private const float CellGap = 18f;
+        private const float RowGap = 44f;      // 同组内上下两排的间距
+        private const float GroupPad = 14f;    // 组外框内边距
+        private const float GroupGap = 40f;    // 两组之间的空白
+
+        private const float GroupW = CellW * 3 + CellGap * 2;
+        private const float GroupBoxW = GroupW + GroupPad * 2;
+        private const float GroupBoxH = CellH * 2 + RowGap + GroupPad * 2;
+
+        private const float OneX = 28f;                            // ① 单批基准
+        private const float ManyX = OneX + GroupBoxW + GroupGap;   // ② 分批不切换
+        private const float SwapX = ManyX + GroupBoxW + GroupGap;  // ③ 分批 + 切换
+
+        // 上排顶边比正文区再低 42：给上方那一行【组名】留位置，否则组名会压到按钮区里。
+        private float TripBaseY => BodyTop + 42f;
+        private float TripY => TripBaseY + CellH + RowGap;
+        private static float CellX(float groupX, int i) => groupX + i * (CellW + CellGap);
 
         private Screen _screen = Screen.Offscreen;
         private readonly List<Rectangle> _buttons = [];
@@ -66,11 +102,13 @@ namespace KFramework.Test.WebGPU.Tests
         private RenderTarget2D? _rt2;      // 离屏2（无 MSAA）
         private RenderTarget2D? _rtMsaa;   // 离屏 MSAA=4
         private RenderTarget2D? _rtComp;   // 合成目标
-        private RenderTarget2D? _rtA;      // A：① 阶段单独画出来（背景 + 红块）
-        private RenderTarget2D? _rtC;      // C：③ 阶段单独画出来（绿块）
-        private RenderTarget2D? _rtRef;    // 参考：不切目标，一次把 ①②③ 画完（应有的样子）
-        private RenderTarget2D? _rtMix;    // 合成：把 A + B + C 依次合成进一张
-        private RenderTarget2D? _rtE;      // 实际(离屏)：同样的顺序，但切走再切回同一个目标继续画
+        // 流水线：A 起始底 → B/C/D 三段叠加 → E = B+C+D 合成 → F = A + E
+        private RenderTarget2D? _rtA;      // A 纹理：起始底（不透明）
+        private RenderTarget2D? _rtB;      // B 纹理：红块（透明底）
+        private RenderTarget2D? _rtC;      // C 纹理：球阵（透明底，中途要切去画的那张）
+        private RenderTarget2D? _rtD;      // D 纹理：绿块（透明底）
+        private RenderTarget2D? _rtE;      // E 纹理：合成纹理 = B + C + D（不切换，一次叠完）
+        private RenderTarget2D? _rtF;      // F 纹理：最终 = A + E（A 取一张离屏纹理时）
         private RenderTarget2D? _accum;    // 累积
 
         // 首次 RenderOffscreen 时创建（离屏阶段早于任何 Draw），故声明为非空。
@@ -94,11 +132,21 @@ namespace KFramework.Test.WebGPU.Tests
         {
             _buttons.Clear();
 
+            // 横排放不下就换行（按钮数量会随测试项增加，写死单行会溢出窄画布）。
+            // BodyTop 会跟着最后一行的底部走，所以下方布局无需关心按钮占了几行。
             float x = 28f;
+            float y = 76f;
+            float limit = Math.Max(240f, Device.Viewport.Width - 28f);
+
             for (int i = 0; i < Screens.Length; i++)
             {
                 int w = 28 + EstimateWidth(Screens[i].Name);
-                _buttons.Add(new Rectangle((int)x, 76, w, BtnH));
+                if (x + w > limit && x > 28f)
+                {
+                    x = 28f;
+                    y += BtnH + 6f;
+                }
+                _buttons.Add(new Rectangle((int)x, (int)y, w, BtnH));
                 x += w + BtnGap;
             }
         }
@@ -126,9 +174,9 @@ namespace KFramework.Test.WebGPU.Tests
                 {
                     _screen = Screens[i].Value;
 
-                    // 嵌套模式要保住画布上已画的内容：与传奇 DXManager 的做法一致
-                    //（PresentationParameters 默认是 DiscardContents，切回画布本来就会清屏）。
-                    Device.PresentationParameters.RenderTargetUsage = _screen == Screen.Nested
+                    // 只有以画布为目标的测试才需要保住画布上已画的内容
+                    //（PresentationParameters 默认是 DiscardContents，切回画布本来就会清屏，属设计行为）。
+                    Device.PresentationParameters.RenderTargetUsage = _screen == Screen.CanvasRoundTrip
                         ? RenderTargetUsage.PreserveContents
                         : RenderTargetUsage.DiscardContents;
                 }
@@ -175,70 +223,125 @@ namespace KFramework.Test.WebGPU.Tests
                     DrawComposite(batch);
                     break;
 
-                case Screen.Nested:
-                    _rt1 ??= NewTarget(0);      // B（透明底，供各处合成用）
+                case Screen.Pipeline:
+                    // A~F 全是纹理（画布不参与编号，它是另一个独立目标，单独一个画面测）。
                     _rtA ??= NewTarget(0);
+                    _rtB ??= NewTarget(0);
                     _rtC ??= NewTarget(0);
-                    _rtRef ??= NewTarget(0);
-                    _rtMix ??= NewTarget(0);
+                    _rtD ??= NewTarget(0);
                     _rtE ??= NewTarget(0, RenderTargetUsage.PreserveContents);
+                    _rtF ??= NewTarget(0);
 
-                    // —— A / B / C：三个阶段各自单独画出来的离屏 ——
-                    RenderStageAlone(_rtA, batch, 0);
-                    RenderStageTransparent(_rt1, batch, 1);
-                    RenderStageAlone(_rtC, batch, 2);
+                    // —— A / B / C / D：四张基础纹理，各自单独画出来 ——
+                    RenderStageAlone(_rtA, batch, 0);           // A：底（不透明）
+                    RenderStageTransparent(_rtB, batch, 1);     // B：红块（透明底）
+                    RenderStageTransparent(_rtC, batch, 2);     // C：球阵（透明底）
+                    RenderStageTransparent(_rtD, batch, 3);     // D：绿块（透明底）
 
-                    // —— 参考：不切换目标，一口气把 ①②③ 画完（应有的样子） ——
-                    Device.SetRenderTarget(_rtRef);
-                    Device.Clear(new Color(12, 15, 24));
-                    batch.Begin();
-                    DrawStage(batch, 0, 0, 0, RtW, RtH);
-                    DrawStage(batch, 1, 0, 0, RtW, RtH);
-                    DrawStage(batch, 2, 0, 0, RtW, RtH);
-                    batch.End();
-                    Device.SetRenderTarget(null);
-
-                    // —— 合成：A → B → C 依次叠进一张（全程在同一张离屏内，不切走再切回） ——
-                    Device.SetRenderTarget(_rtMix);
-                    Device.Clear(new Color(12, 15, 24));
-                    batch.Begin();
-                    DrawStage(batch, 0, 0, 0, RtW, RtH);
-                    batch.Draw(_rt1, new Rectangle(0, 0, RtW, RtH), Color.White);
-                    DrawStage(batch, 2, 0, 0, RtW, RtH);
-                    batch.End();
-                    Device.SetRenderTarget(null);
-
-                    // —— 实际(离屏)：同样顺序，但中间要【切走再切回同一个目标】 ——
+                    // —— E = B + C + D ——
+                    // 关键：这一步【中途要切走再切回】，正是对"跨通道"的测试。
+                    //   ① 绑定 E，画 B 红块
+                    //   ② 切去 C（另一张纹理）画球阵
+                    //   ③ 切回 E，把 C 贴上去，再画 D 绿块
+                    // 判据：E 应当同时有 红块 + 球阵 + 绿块；
+                    //       若"切回 E"时内容被清掉，红块（①画的）就会消失。
                     Device.SetRenderTarget(_rtE);
-                    Device.Clear(new Color(12, 15, 24));
-                    batch.Begin();
-                    DrawStage(batch, 0, 0, 0, RtW, RtH);      // ①
-                    batch.End();
-
-                    Device.SetRenderTarget(_rt1);              // ② 切去画 B
                     Device.Clear(new Color(0, 0, 0, 0));
                     batch.Begin();
-                    DrawStage(batch, 1, 0, 0, RtW, RtH);
+                    DrawStage(batch, 1, 0, 0, RtW, RtH);        // ① 画 B 红块
                     batch.End();
 
-                    Device.SetRenderTarget(_rtE);              // ③ 切回 E，接着画
+                    Device.SetRenderTarget(_rtC);               // ② 切去 C（跨通道）
+                    Device.Clear(new Color(0, 0, 0, 0));
                     batch.Begin();
-                    batch.Draw(_rt1, new Rectangle(0, 0, RtW, RtH), Color.White);
                     DrawStage(batch, 2, 0, 0, RtW, RtH);
+                    batch.End();
+
+                    Device.SetRenderTarget(_rtE);               // ③ 切回 E，接着画
+                    batch.Begin();
+                    batch.Draw(_rtC, new Rectangle(0, 0, RtW, RtH), Color.White);
+                    DrawStage(batch, 3, 0, 0, RtW, RtH);        // 画 D 绿块
                     batch.End();
                     Device.SetRenderTarget(null);
 
-                    // —— 实际(画布)：① 先画在真实屏幕上，再切离屏画 ②，切回后由 DrawBody 补 ③ ——
-                    batch.Begin();
-                    DrawStage(batch, 0, PanelX(1), Row2Y, PanelW, PanelH);
-                    batch.End();
-
-                    Device.SetRenderTarget(_rt1);              // ② 切去离屏
+                    // —— F = A + E：把底与合成结果叠到一起（不涉及跨通道）——
+                    Device.SetRenderTarget(_rtF);
                     Device.Clear(new Color(0, 0, 0, 0));
                     batch.Begin();
-                    DrawStage(batch, 1, 0, 0, RtW, RtH);
+                    DrawStage(batch, 0, 0, 0, RtW, RtH);        // 画 A 底
+                    batch.Draw(_rtE, new Rectangle(0, 0, RtW, RtH), Color.White);
                     batch.End();
-                    Device.SetRenderTarget(null);              // 切回屏幕
+                    Device.SetRenderTarget(null);
+                    break;
+
+                case Screen.CanvasRoundTrip:
+                    // 画布来回切：内容直接画在画布（屏幕）上，不做成面板。
+                    // 三组并排、逐层加变量，故绘制顺序必须【由最脏到最干净】：
+                    // 会切换目标的 ③ 先画，否则它造成的清屏会连带擦掉后画的组，对照就失真了。
+                    _rtC ??= NewTarget(0);
+
+                    // —— ③ 分批 + 每轮切走再切回（变量最多）——
+                    batch.Begin();
+                    for (int i = 0; i < 3; i++)
+                        DrawCell(batch, i, CellX(SwapX, i), TripBaseY);
+                    batch.End();
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Device.SetRenderTarget(_rtC);           // 切去离屏（跨通道）
+                        Device.Clear(new Color(0, 0, 0, 0));
+                        batch.Begin();
+                        DrawStage(batch, 2, 0, 0, RtW, RtH);    // 离屏上画什么不重要，只为制造"切走"
+                        batch.End();
+
+                        Device.SetRenderTarget(null);           // 切回画布
+                        batch.Begin();
+                        DrawCell(batch, i, CellX(SwapX, i), TripY);
+                        batch.End();
+                    }
+
+                    // —— ② 分批，但从不切换目标（只比 ① 多了"批次"）——
+                    batch.Begin();
+                    for (int i = 0; i < 3; i++)
+                        DrawCell(batch, i, CellX(ManyX, i), TripBaseY);
+                    batch.End();
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        batch.Begin();
+                        DrawCell(batch, i, CellX(ManyX, i), TripY);
+                        batch.End();
+                    }
+
+                    // —— ① 一个批次画完 6 个（既不切换也不分批，最干净的基准）——
+                    batch.Begin();
+                    for (int i = 0; i < 3; i++)
+                    {
+                        DrawCell(batch, i, CellX(OneX, i), TripBaseY);
+                        DrawCell(batch, i, CellX(OneX, i), TripY);
+                    }
+                    batch.End();
+
+                    // —— 最后统一画槽位框与组外框：内容即便被抹掉，也看得见"缺了哪几个"——
+                    batch.Begin();
+                    for (int i = 0; i < 3; i++)
+                    {
+                        DrawSlot(batch, i, CellX(OneX, i), TripBaseY);
+                        DrawSlot(batch, i, CellX(OneX, i), TripY);
+                        DrawSlot(batch, i, CellX(ManyX, i), TripBaseY);
+                        DrawSlot(batch, i, CellX(ManyX, i), TripY);
+                        DrawSlot(batch, i, CellX(SwapX, i), TripBaseY);
+                        DrawSlot(batch, i, CellX(SwapX, i), TripY);
+                    }
+
+                    // 三组各一个大边框，组界一眼分明
+                    Frame(batch, OneX - GroupPad, TripBaseY - GroupPad,
+                        GroupBoxW, GroupBoxH, new Color(126, 200, 255));
+                    Frame(batch, ManyX - GroupPad, TripBaseY - GroupPad,
+                        GroupBoxW, GroupBoxH, new Color(150, 220, 170));
+                    Frame(batch, SwapX - GroupPad, TripBaseY - GroupPad,
+                        GroupBoxW, GroupBoxH, new Color(255, 206, 110));
+                    batch.End();
                     break;
 
                 case Screen.Accumulate:
@@ -408,7 +511,7 @@ namespace KFramework.Test.WebGPU.Tests
         private static float PanelX(int index) => 28f + index * (PanelW + PanelGap);
 
         /// <summary>第二行的 y（D / E 所在行）。</summary>
-        private static float Row2Y => BodyTop + PanelH + 36f;
+        private float Row2Y => BodyTop + PanelH + 36f;
 
         /// <summary>把一个阶段单独画进离屏（不透明底），用来当"这一段长什么样"的参考。</summary>
         private void RenderStageAlone(RenderTarget2D target, SpriteBatch batch, int stage)
@@ -445,15 +548,17 @@ namespace KFramework.Test.WebGPU.Tests
         {
             switch (stage)
             {
-                case 0:
+                case 0:     // A：底（不透明）
                     batch.Draw(_bgCool, new Rectangle((int)x, (int)y, (int)w, (int)h), Color.White);
-                    // 红块贴着顶部：合成图内缩后，顶部这条边缘带仍能看到它们
+                    break;
+
+                case 1:     // B：红块，贴顶部
                     for (int i = 0; i < 4; i++)
                         batch.Draw(KDefaultRes.DefaultTexture2D,
                             new Rectangle((int)(x + 8 + i * 30), (int)(y + 3), 18, 18), new Color(220, 70, 70));
                     break;
 
-                case 1:
+                case 2:     // C：球阵
                     for (int r = 0; r < 2; r++)
                     {
                         for (int c = 0; c < 4; c++)
@@ -466,8 +571,7 @@ namespace KFramework.Test.WebGPU.Tests
                     }
                     break;
 
-                case 2:
-                    // 绿块贴着底部：与红块分居上下，便于一眼看出"少了哪一段"
+                case 3:     // D：绿块，贴底部（与红块分居上下，一眼看出少了哪一段）
                     for (int i = 0; i < 4; i++)
                         batch.Draw(KDefaultRes.DefaultTexture2D,
                             new Rectangle((int)(x + 8 + i * 30), (int)(y + h - 21), 18, 18), new Color(70, 200, 120));
@@ -541,39 +645,48 @@ namespace KFramework.Test.WebGPU.Tests
                         x, cy, new Color(150, 165, 195));
                     break;
 
-                case Screen.Nested:
-                    if (_rt1 is not { } rt1 || _rtA is not { } rtA || _rtC is not { } rtC
-                        || _rtRef is not { } rtRef || _rtMix is not { } rtMix || _rtE is not { } rtE) return;
+                case Screen.Pipeline:
+                    if (_rtA is not { } rtA || _rtB is not { } rtB || _rtC is not { } rtC
+                        || _rtD is not { } rtD || _rtE is not { } rtE || _rtF is not { } rtF) return;
 
-                    // 第一行：参考 + 三个阶段各自的离屏
-                    Panel(batch, rtRef, PanelX(0), BodyTop, "参考：一次画完");
-                    Panel(batch, rtA, PanelX(1), BodyTop, "A ① 背景+红块");
-                    Panel(batch, rt1, PanelX(2), BodyTop, "B ② 球阵(透明底)");
-                    Panel(batch, rtC, PanelX(3), BodyTop, "C ③ 绿块");
+                    // 第一行：A → B → C
+                    Panel(batch, rtA, PanelX(0), BodyTop, "A 底");
+                    Panel(batch, rtB, PanelX(1), BodyTop, "B 红块");
+                    Panel(batch, rtC, PanelX(2), BodyTop, "C 球阵");
 
-                    // 第二行：合成 → 实际(画布) → 实际(离屏)
-                    Panel(batch, rtMix, PanelX(0), Row2Y, "合成：A+B+C");
+                    // 第二行：D → E → F（E 是本页的判据：它经过"切走再切回"）
+                    Panel(batch, rtD, PanelX(0), Row2Y, "D 绿块");
+                    Panel(batch, rtE, PanelX(1), Row2Y, "E=B+C+D(含切换)");
+                    Panel(batch, rtF, PanelX(2), Row2Y, "F=A+E");
 
-                    // 实际(画布)：① 已在离屏阶段画在真实屏幕上，这里补 ③ 合成 + 绿块
-                    batch.Draw(rt1, new Rectangle((int)PanelX(1), (int)Row2Y, PanelW, PanelH), Color.White);
-                    DrawStage(batch, 2, PanelX(1), Row2Y, PanelW, PanelH);
-                    Frame(batch, PanelX(1), Row2Y, PanelW, PanelH, new Color(255, 206, 110));
-                    batch.DrawString(Font, "实际(画布)：屏幕↔离屏",
-                        new Vector2(PanelX(1), Row2Y + PanelH + 6f), new Color(255, 206, 110));
+                    float py = Row2Y + PanelH + 34f;
+                    py = DrawLine(batch, "流水线：A 底 → B 红块 → C 球阵 → D 绿块 → E = B+C+D → F = A+E（全是纹理）",
+                        x, py, new Color(255, 206, 110));
+                    py = DrawLine(batch, "E 的构造经过【切走再切回】：画 B 红块 → 切去 C 画球阵 → 切回 E 贴上 C 并画 D 绿块",
+                        x, py, new Color(255, 206, 110));
+                    py = DrawLine(batch, "判据：E 应同时含 红块 + 球阵 + 绿块。若红块缺失 → 切回 E 时内容被清掉了",
+                        x, py, new Color(255, 150, 150));
+                    DrawLine(batch, "F = A + E 只是把底叠上去，不涉切换；F 缺什么取决于 E 缺什么",
+                        x, py, new Color(150, 165, 195));
+                    break;
 
-                    Panel(batch, rtE, PanelX(2), Row2Y, "实际(离屏)：切走再切回");
+                case Screen.CanvasRoundTrip:
+                    // 组名单独占正文区第一行（BodyTop 那行），位于大边框上方且不压按钮
+                    batch.DrawString(Font, "① 一批画完（基准）",
+                        new Vector2(OneX, BodyTop), new Color(126, 200, 255));
+                    batch.DrawString(Font, "② 分批，不切目标",
+                        new Vector2(ManyX, BodyTop), new Color(150, 220, 170));
+                    batch.DrawString(Font, "③ 分批 + 切目标",
+                        new Vector2(SwapX, BodyTop), new Color(255, 206, 110));
 
-                    float ny = Row2Y + PanelH + 34f;
-                    ny = DrawLine(batch, "【应当一致】参考 = 合成 = 实际(画布) = 实际(离屏)：背景 + 顶部红块 + 球阵 + 底部绿块",
-                        x, ny, new Color(255, 206, 110));
-                    ny = DrawLine(batch, "【关键判定】实际(离屏)有红块、实际(画布)没有 → 切换逻辑没问题，是【画布】保不住内容",
-                        x, ny, new Color(255, 206, 110));
-                    ny = DrawLine(batch, "            两个都没有红块 → 是【切走再切回同一目标继续画】这条逻辑的问题",
-                        x, ny, new Color(255, 150, 150));
-                    ny = DrawLine(batch, "好比画画：先在纸上画背景(A) → 去另一张纸画球(B) → 回来补画绿块(C)。回来时背景还在吗？",
-                        x, ny, new Color(150, 165, 195));
-                    DrawLine(batch, "传奇每帧都这么来回切很多次。本画面已设为「保留内容」模式（默认「丢弃内容」会清屏，属设计行为不是 bug）。",
-                        x, ny, new Color(150, 165, 195));
+                    float rty = TripY + CellH + 30f;
+                    rty = DrawLine(batch, "三组各 6 个槽：① 最干净作基准，② 只多【批次】，③ 再多【切换】",
+                        x, rty, new Color(255, 206, 110));
+                    rty = DrawLine(batch, "哪组开始缺 → 问题就在那一层：①缺=绘制本身；②缺=批次清屏；③缺=切换清屏",
+                        x, rty, new Color(255, 150, 150));
+                    DrawLine(batch, $"后台缓冲策略={Device.PresentationParameters.RenderTargetUsage}"
+                        + $"    视口 {Device.Viewport.Width}x{Device.Viewport.Height}",
+                        x, rty, new Color(150, 165, 195));
                     break;
 
                 case Screen.Accumulate:
@@ -598,6 +711,34 @@ namespace KFramework.Test.WebGPU.Tests
             batch.Draw(texture, new Rectangle((int)x, (int)y, PanelW, PanelH), Color.White);
             batch.DrawString(Font, caption, new Vector2(x, y + PanelH + 6f), new Color(150, 165, 195));
         }
+
+        /// <summary>画一个编号方块的<b>内容</b>（实心色块，不含边框）。</summary>
+        private void DrawCell(SpriteBatch batch, int index, float x, float y)
+        {
+            batch.Draw(KDefaultRes.DefaultTexture2D,
+                new Rectangle((int)x, (int)y, (int)CellW, (int)CellH), CellColor(index));
+        }
+
+        /// <summary>
+        /// 画<b>槽位</b>（边框 + 编号）。
+        /// <para>
+        /// 必须在所有内容绘制【之后】统一画一遍：内容一旦被清屏抹掉，剩下的是一片空白，
+        /// 光看空白无从判断"那里本该有什么"。槽位框留着，缺哪几个一眼就能数出来。
+        /// </para>
+        /// </summary>
+        private void DrawSlot(SpriteBatch batch, int index, float x, float y)
+        {
+            Frame(batch, x, y, CellW, CellH, new Color(205, 218, 240));
+            batch.DrawString(Font, (index + 1).ToString(),
+                new Vector2(x + 8f, y + 6f), new Color(255, 255, 255));
+        }
+
+        private static Color CellColor(int index) => index switch
+        {
+            0 => new Color(200, 80, 80),
+            1 => new Color(70, 190, 110),
+            _ => new Color(90, 140, 220),
+        };
 
         /// <summary>给一块区域描一圈 2px 边框（用来标出"这块是直接画在屏幕上的"）。</summary>
         private void Frame(SpriteBatch batch, float x, float y, float w, float h, Color color)
