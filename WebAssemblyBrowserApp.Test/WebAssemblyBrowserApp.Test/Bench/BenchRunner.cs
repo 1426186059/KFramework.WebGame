@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices.JavaScript;
+using System.Text;
 using System.Threading.Tasks;
 
 /// <summary>
@@ -7,6 +8,13 @@ using System.Threading.Tasks;
 /// </summary>
 public static partial class BenchRunner
 {
+    /// <summary>
+    /// 当前页面的文件名（由 main.js 从 <c>location.pathname</c> 取得，不含扩展名）。
+    /// 它决定：进入某个测试的独立页面后，自动运行哪个模块；总纲页（index）则不自动运行。
+    /// </summary>
+    [JSImport("bench.currentPage", "main.js")]
+    private static partial string CurrentPage();
+
     /// <summary>显示总纲（不跑任何测试）。</summary>
     [JSExport]
     public static void ShowMenu()
@@ -25,20 +33,14 @@ public static partial class BenchRunner
             BenchKit.SetStatus("序号越界：" + index);
             return;
         }
-
-        BenchKit.SetStatus("运行中：" + m.Name + " ...");
-        await Task.Delay(16);           // 让浏览器先把状态渲染出来，再进入同步计时
-        string html = await m.RunAsync();
-
-        BenchKit.SetResults(BenchCatalog.RenderMenu() + html);
-        BenchKit.SetStatus("完成 ✓ — " + m.Name);
+        await RunModule(m);
     }
 
     /// <summary>按顺序运行全部测试。</summary>
     [JSExport]
     public static async Task RunAll()
     {
-        var sb = new System.Text.StringBuilder(BenchCatalog.RenderMenu());
+        var sb = new StringBuilder(BenchCatalog.RenderMenu());
 
         for (int i = 0; i < BenchCatalog.Modules.Count; i++)
         {
@@ -50,5 +52,30 @@ public static partial class BenchRunner
         }
 
         BenchKit.SetStatus("全部完成 ✓");
+    }
+
+    /// <summary>
+    /// 程序入口调用：处在某个测试的独立页面上就自动运行它；处在总纲页则只显示目录。
+    /// </summary>
+    public static async Task RunCurrentPageAsync()
+    {
+        IBenchModule? m = BenchCatalog.FindByPage(CurrentPage());
+        if (m == null)
+        {
+            ShowMenu();
+            return;
+        }
+
+        await RunModule(m);
+    }
+
+    private static async Task RunModule(IBenchModule m)
+    {
+        BenchKit.SetStatus("运行中：" + m.Name + " ...");
+        await Task.Delay(16);           // 让浏览器先把状态渲染出来，再进入同步计时
+        string html = await m.RunAsync();
+
+        BenchKit.SetResults(BenchCatalog.RenderMenu() + html);
+        BenchKit.SetStatus("完成 ✓ — " + m.Name);
     }
 }

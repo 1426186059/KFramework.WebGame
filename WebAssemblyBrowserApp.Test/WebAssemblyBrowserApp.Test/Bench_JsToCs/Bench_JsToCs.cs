@@ -1,23 +1,30 @@
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 /// <summary>
-/// 模块：JS 调用 C#（<c>[JSExport]</c>）的跨界开销。
+/// 模块：JS 调用 C#（<c>[JSExport]</c>）的跨界开销，按
+/// <b>int / string / byte[] / MemoryView</b> 四类<b>分组</b>给出。
 /// <para>
 /// 计时只能在调用方（JS）侧做，所以这里是"让 JS 连打 N 次并回报耗时"。
 /// 同样以 <b>C# 调用自身方法</b>为基线 —— 两个方向的基线一致，横向对比才有意义。
 /// </para>
+/// <para>
+/// 四类并不都能走通：<b>MemoryView 在 JS→C# 方向没有对应物</b>（C# 侧可以声明
+/// <c>Span&lt;byte&gt;</c>，但 JS 给不出运行时要的 MemoryView 对象）。
+/// 这一格照样摆进表里、并标明"不可用 + 原因" —— 空白会让人以为没测，写清楚才有对照价值。
+/// </para>
 /// </summary>
 public sealed class Bench_JsToCs : IBenchModule
 {
-    public string Name => "JS → C# 跨界（含 C#→C# 基线）";
+    public string Name => "JS → C# 跨界（int / string / byte[] / MemoryView 四组对照）";
 
     public string Summary =>
-        "JS 连续调用 C# 的导出方法并回报耗时。按 int / string / byte[] 三组给出，每组都以 C# 调用自身方法为基线；" +
-        "byte[] 按 16/256/2048 分档。全部按耗时升序排列。";
+        "JS 连续调用 C# 的导出方法并回报耗时。四类各一组：int（含无参数下限）、string（256 字符）、" +
+        "byte[]（16/256/2048）、MemoryView（同三档 —— 实测走不通，表里按“不可用”标出原因）。" +
+        "每组都以 C# 调用自身方法为基线，末尾附一张四类混排总表。";
 
-    private const int Times = 20000;        // 标量类：单次便宜，多打几次
-    private const int TimesBytes = 2000;    // byte[]：单次较贵，相应减少次数
+    public string Page => "jstocs";
 
     public Task<string> RunAsync()
     {
@@ -26,56 +33,108 @@ public sealed class Bench_JsToCs : IBenchModule
         BenchInterop.CallIntN(2000);
         BenchInterop.CallStringN(500, 16);
         BenchInterop.CallBytesN(200, 16);
+        BenchInterop.CallSpanN(1, 16);      // 这一格会抛错，但首次调用仍会解析绑定；JS 侧已 try/catch
 
-        var rows = new List<BenchRow>();
+        var all = new List<BenchRow>();
+        var sb = new StringBuilder();
 
-        // ================= int =================
-        // 基线在 C# 侧计时（调用方是 C#），与下面 JS 侧计时的行并列展示
-        rows.Add(new BenchRow(
-            "基线：C#→C# EchoInt", "C# 调用自身方法，零跨界 —— 成本参照",
-            BenchKit.Measure(() => { for (int i = 0; i < Times; i++) BenchKit.LocalEchoInt(i); }, Times), Times));
+        // ================= ① int =================
+        var intRows = new List<BenchRow>
+        {
+            // 基线在 C# 侧计时（调用方是 C#）；与下面 JS 侧计时的行跑【同一个 BenchKit.Times】，
+            // 否则同一张表里的毫秒数根本不能横比
+            new("基线：C#→C# EchoInt", "C# 调用自身方法，零跨界 —— 成本参照",
+                BenchKit.MeasureFixed(() => BenchKit.LocalEchoInt(1), BenchKit.Times), 1),
 
-        rows.Add(Row("JS→C# CsTick()", "无参数、返回常量 int —— 纯跨界下限",
-            BenchInterop.CallTickN(Times), Times));
+            BenchKit.FromJs(() => BenchInterop.CallTickN(BenchKit.Times),
+                "JS→C# CsTick()", "无参数、返回常量 int —— 纯跨界下限", BenchKit.Times),
 
-        rows.Add(Row("JS→C# CsEchoInt(int)", "一个 int 进、一个 int 出",
-            BenchInterop.CallIntN(Times), Times));
+            BenchKit.FromJs(() => BenchInterop.CallIntN(BenchKit.Times),
+                "JS→C# CsEchoInt(int)", "一个 int 进、一个 int 出 —— 与 CsTick 的差即标量封送", BenchKit.Times),
+        };
 
-        // ================= string =================
+        all.AddRange(intRows);
+        sb.Append(BenchKit.Section("① int — JS → C#",
+            "基线由 C# 侧计时、跨界行由 JS 侧计时，两行跑同一个 " + BenchKit.Fmt(BenchKit.Times) + " 次，可直接比",
+            intRows,
+            "看点：这个方向每帧必然发生（帧回调本身就是 JS→C#），所以它的地板价决定了该不该合并调用。"));
+
+        // ================= ② string =================
         string text = BenchKit.MakeText(BenchKit.TextLength);
 
-        rows.Add(new BenchRow(
-            "基线：C#→C# EchoString", "C# 调用自身方法，零跨界",
-            BenchKit.Measure(() => { for (int i = 0; i < Times; i++) BenchKit.LocalEchoString(text); }, Times), Times));
+        var stringRows = new List<BenchRow>
+        {
+            new("基线：C#→C# EchoString", "C# 调用自身方法，零跨界",
+                BenchKit.MeasureFixed(() => BenchKit.LocalEchoString(text), BenchKit.Times), 1),
 
-        rows.Add(Row("JS→C# CsEchoString(" + BenchKit.TextLength + " 字符)",
-            "JS 字符串 → 托管字符串，需编码转换",
-            BenchInterop.CallStringN(Times, BenchKit.TextLength), Times));
+            BenchKit.FromJs(() => BenchInterop.CallStringN(BenchKit.Times, BenchKit.TextLength),
+                "JS→C# CsEchoString(" + BenchKit.TextLength + " 字符)",
+                "JS 字符串 → 托管字符串，需做一次编码转换并分配托管字符串", BenchKit.Times),
+        };
 
-        // ================= byte[]：基线 + 跨界，按长度分档 =================
+        all.AddRange(stringRows);
+        sb.Append(BenchKit.Section("② string — JS → C#",
+            "载荷固定为 " + BenchKit.TextLength + " 个字符",
+            stringRows,
+            "看点：文本从 DOM 回传（如输入框的值）走的就是这条路 —— 高频回传时值得先攒一批再送。"));
+
+        // ================= ③ byte[] =================
+        var bytesRows = new List<BenchRow>();
+
         foreach (int len in BenchKit.PayloadSizes)
         {
             var buffer = new byte[len];
 
-            rows.Add(new BenchRow(
+            bytesRows.Add(new BenchRow(
                 "基线：C#→C# EchoBytes(" + len + " B)", "C# 调用自身方法，零跨界（且不复制）",
-                BenchKit.Measure(() => { for (int i = 0; i < TimesBytes; i++) BenchKit.LocalEchoBytes(buffer); }, TimesBytes), TimesBytes));
+                BenchKit.MeasureFixed(() => BenchKit.LocalEchoBytes(buffer), BenchKit.TimesBytes), 1));
 
-            rows.Add(Row("JS→C# CsEchoBytes(" + len + " B)",
-                "ArrayBuffer → 托管 byte[]，封送时复制一次",
-                BenchInterop.CallBytesN(TimesBytes, len), TimesBytes));
+            bytesRows.Add(BenchKit.FromJs(() => BenchInterop.CallBytesN(BenchKit.TimesBytes, len),
+                "JS→C# CsEchoBytes(" + len + " B)",
+                "Uint8Array → 托管 byte[]，封送时复制一次，C# 每收到一份新数组（可长期持有）", BenchKit.TimesBytes));
         }
 
-        return Task.FromResult(BenchKit.Section(
-            "JS → C# 单次跨界耗时（基线 = C# 调用自身方法）",
-            "标量各连打 " + BenchKit.Fmt(Times) + " 次，byte[] 各连打 " + BenchKit.Fmt(TimesBytes) + " 次；" +
-            "基线行由 C# 侧计时，跨界行由 JS 侧计时，两者都是「单次调用的耗时」，可直接比",
-            rows,
-            "看点：基线（C#→C#）应排最前；它与 JS→C# 各行的倍数就是 JS 调进来的代价。" +
-            "这个方向每帧必然发生（帧回调本身就是 JS→C#），所以它的绝对开销决定了该不该合并调用。"));
-    }
+        all.AddRange(bytesRows);
+        sb.Append(BenchKit.Section("③ byte[] — JS → C#",
+            "按 " + string.Join(" / ", BenchKit.PayloadSizes) + " 分档，看固定成本与拷贝成本谁主导",
+            bytesRows,
+            "看点：这是 JS→C# 方向传大块数据的唯一路线（见 ④ 组），" +
+            "所以它的绝对开销决定了“一帧能收多少字节”。" +
+            "注：裸 ArrayBuffer 传不进去，必须给 Uint8Array（运行时只认 Array / TypedArray）。"));
 
-    // 计时发生在 JS 侧，这里只是把回报的毫秒换算成统一的行格式
-    private static BenchRow Row(string name, string note, double ms, int times)
-        => new(name, note, new BenchTiming(ms, times), 1);
+        // ================= ④ MemoryView：实测走不通 =================
+        var spanRows = new List<BenchRow>();
+
+        foreach (int len in BenchKit.PayloadSizes)
+        {
+            var buffer = new byte[len];
+
+            spanRows.Add(new BenchRow(
+                "基线：C#→C# FillSpan(" + len + " B)", "C# 自己往数组里写同样多的字节，零跨界",
+                BenchKit.MeasureFixed(() => BenchKit.LocalFillSpan(buffer, len), BenchKit.TimesBytes), 1));
+
+            // JS 侧回报 "最快|最慢|错误"：错误为空说明支持；否则这一格记为"不可用"并带上原因
+            spanRows.Add(BenchKit.FromJs(() => BenchInterop.CallSpanN(BenchKit.TimesBytes, len),
+                "JS→C# CsFillSpan(" + len + " B) — MemoryView",
+                "JS 传 Uint8Array 给 C# 的 Span<byte> 参数（由 JS 侧计时）", BenchKit.TimesBytes));
+        }
+
+        all.AddRange(spanRows);
+        sb.Append(BenchKit.Section("④ MemoryView — JS → C#（实测不可用）",
+            "C# 侧入口：BenchInterop.CsFillSpan（参数 Span<byte> + JSMarshalAs<MemoryView>）；" +
+            "JS 侧只能给出 Uint8Array",
+            spanRows,
+            "结论：这个方向没有 MemoryView —— 运行时要求的是它内部的 MemoryView 对象" +
+            "（断言 Expected MemoryViewType.Byte），而浏览器端没有公开的 createMemoryView，给 Uint8Array 会被直接拒绝。" +
+            "于是 JS→C# 要传大块数据，只有 ③ 组那条 byte[]（每次一份新数组，业务层可长期持有）。" +
+            "反方向（C#→JS）的 MemoryView 是可用的，见 Bench_CsToJs 的 ④ 组 —— 两个方向并不对称。"));
+
+        // ================= 总表：四类混排 =================
+        sb.Append(BenchKit.Section("总表：四类 × 全部走法（按 ns/操作 升序，不可用行沉底）",
+            "把四组并回一张表，专看跨类型的量级差。各行总次数不同，故以 ns/操作 排序、也只比这一列",
+            all,
+            "用法：组内对比看上面四张分组卡（同一基线才好比）；跨类型的量级差看这张总表。"));
+
+        return Task.FromResult(sb.ToString());
+    }
 }

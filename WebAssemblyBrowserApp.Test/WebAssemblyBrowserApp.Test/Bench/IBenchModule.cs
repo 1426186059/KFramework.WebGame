@@ -12,6 +12,12 @@ public interface IBenchModule
     /// <summary>总纲上的一句话说明（测的是什么、为什么值得测）。</summary>
     string Summary { get; }
 
+    /// <summary>
+    /// 独立页面的文件名（不含扩展名），例如 <c>reflection</c>。
+    /// 总纲据此生成跳转链接，对应页面加载后也据此自动运行本模块 —— 一个模块一个 HTML 页面。
+    /// </summary>
+    string Page { get; }
+
     /// <summary>运行本模块，返回要插入结果区的 HTML 片段。</summary>
     Task<string> RunAsync();
 }

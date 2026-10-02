@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 /// <para>
 /// 覆盖自研 ORM / 网络封包序列化框架最常见的几类反射热点：
 /// 属性逐个读写、对象创建、按特性反射调用、特性查询。
-/// 每组内部都按耗时升序排列，最快的一行排在首位。
+/// 每组内部都按 ns/操作 升序排列，最快的一行排在首位（不是按计时窗口排 —— 各行总次数不同）。
 /// </para>
 /// </summary>
 public sealed class Bench_Reflection : IBenchModule
@@ -20,6 +20,8 @@ public sealed class Bench_Reflection : IBenchModule
     public string Summary =>
         "模拟 ORM 的 Load/Save 与封包的 Write/Read。四个场景各自出表：" +
         "属性读写、对象创建、方法调用、特性查询。结论通常是缓存元数据 + 编译访问器能快 5~50 倍。";
+
+    public string Page => "reflection";
 
     public async Task<string> RunAsync()
     {

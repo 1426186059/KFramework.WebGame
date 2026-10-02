@@ -1,0 +1,58 @@
+/* 各测试页面与总纲页共用。只写结构与配色，不引入任何框架。 */
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  margin: 2rem;
+  color: #222;
+}
+
+h1 { margin-bottom: .25rem; }
+h2 { margin-top: 1.5rem; }
+h3 { margin: 0 0 .25rem; }
+
+.muted { color: #777; font-size: .85rem; margin: .25rem 0 .75rem; }
+
+#status { font-weight: 600; color: #0a7; }
+
+.card {
+  background: #f7f7fa;
+  border: 1px solid #e3e3e8;
+  border-radius: 8px;
+  padding: .75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { text-align: left; padding: .35rem .6rem; border-bottom: 1px solid #e3e3e8; }
+th { background: #ececf2; }
+td:not(:first-child) { font-variant-numeric: tabular-nums; }
+
+/* 走不通的路线：不参与快慢比较，淡出以免被误读成"最快的一行" */
+tr.blocked td { color: #a00; background: #fdf3f3; }
+
+/* 计时窗口里发生过 GC 的行：这一行的数字被回收拖过，别当真 */
+td.gc { color: #b06a00; font-weight: 600; }
+
+/* 顶部工具条 */
+.bar { display: flex; gap: .5rem; align-items: center; margin: .5rem 0 1rem; }
+
+button, .btn {
+  font: inherit;
+  padding: .3rem .7rem;
+  border: 1px solid #cfcfd8;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #222;
+  text-decoration: none;
+  display: inline-block;
+}
+button:hover, .btn:hover { background: #eef; border-color: #9aa; }
+
+/* 总纲条目 */
+ol.menu { list-style: decimal; padding-left: 1.4rem; margin: .25rem 0; }
+ol.menu li { margin-bottom: .7rem; }
+ol.menu button.run { margin-right: .5rem; }
+ol.menu a { color: #146; text-decoration: none; }
+ol.menu a:hover { text-decoration: underline; }
+ol.menu .muted { margin: .1rem 0 0; }

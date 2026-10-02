@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C# → JS 跨界 — WASM 基准测试</title>
+  <link rel="preload" id="webassembly" />
+  <script type="importmap"></script>
+  <script type='module' src="main#[.{fingerprint}].js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>C# → JS 跨界（[JSImport]）</h1>
+  <p class="muted">C# 连续调用 JS 函数的耗时，按 int / string / byte[] / MemoryView <b>四类分组</b>：
+    byte[] 组并列"传入 JS"与"JS 返回"两条路线，MemoryView 组为零拷贝直写，两者都按 16/256/2048 分档并可直接对读。
+    每组都以 C# 调用自身方法为基线。进入本页会自动开始运行。</p>
+
+  <div class="bar">
+    <a class="btn" href="index.html">← 返回总纲</a>
+    <button id="runAll">运行全部测试</button>
+    <span id="status">加载中...</span>
+  </div>
+
+  <div id="results"><i>loading...</i></div>
+</body>
+
+</html>

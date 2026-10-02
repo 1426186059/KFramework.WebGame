@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS → C# 跨界 — WASM 基准测试</title>
+  <link rel="preload" id="webassembly" />
+  <script type="importmap"></script>
+  <script type='module' src="main#[.{fingerprint}].js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>JS → C# 跨界（[JSExport]）</h1>
+  <p class="muted">JS 连续调用 C# 导出方法的耗时，按 int / string / byte[] / MemoryView <b>四类分组</b>；byte[] 按 16/256/2048 分档。
+    MemoryView 这一类实测<b>走不通</b>（表里标为红色并给出原因）—— 摆在这里正是为了让"JS→C# 有没有零拷贝"有结论。
+    每组都以 C# 调用自身方法为基线。进入本页会自动开始运行。</p>
+
+  <div class="bar">
+    <a class="btn" href="index.html">← 返回总纲</a>
+    <button id="runAll">运行全部测试</button>
+    <span id="status">加载中...</span>
+  </div>
+
+  <div id="results"><i>loading...</i></div>
+</body>
+
+</html>

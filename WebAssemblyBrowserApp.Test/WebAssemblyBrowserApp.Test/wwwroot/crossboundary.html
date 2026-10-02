@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>跨界方向对比 — WASM 基准测试</title>
+  <link rel="preload" id="webassembly" />
+  <script type="importmap"></script>
+  <script type='module' src="main#[.{fingerprint}].js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>跨界方向对比</h1>
+  <p class="muted">同一操作的三种走法：基线（C# 调自身）、C#→JS、JS→C#。载荷按 int / string / byte[] / MemoryView <b>四类分组</b>，
+    后两类再按 16/256/2048 分档。其中 MemoryView 只有 C#→JS 这半边 —— JS→C# 那一行标为红色并给出原因。进入本页会自动开始运行。</p>
+
+  <div class="bar">
+    <a class="btn" href="index.html">← 返回总纲</a>
+    <button id="runAll">运行全部测试</button>
+    <span id="status">加载中...</span>
+  </div>
+
+  <div id="results"><i>loading...</i></div>
+</body>
+
+</html>

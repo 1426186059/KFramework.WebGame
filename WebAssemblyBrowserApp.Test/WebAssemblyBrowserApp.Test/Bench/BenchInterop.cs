@@ -8,6 +8,10 @@ using System.Runtime.InteropServices.JavaScript;
 ///   <item><description>其余：[JSImport]，C# 调用 main.js 里的 <c>bench.*</c> —— 测 <b>C# → JS</b>。</description></item>
 /// </list>
 /// 命名上用 Cs 前缀区分方向，是因为同一个类里 [JSExport] 与 [JSImport] 的方法不能同名。
+/// <para>
+/// 两个方向都按 <b>int / string / byte[] / MemoryView</b> 四类各备一份入口，好让"哪个类型在哪个方向
+/// 走得通、各自多贵"能逐格对照（见 <see cref="Bench_CsToJs"/> 与 <see cref="Bench_JsToCs"/>）。
+/// </para>
 /// </summary>
 public static partial class BenchInterop
 {
@@ -26,6 +30,22 @@ public static partial class BenchInterop
     /// <summary>原样返回传入的字节数组，用于测 JS→C# 的 byte[] 封送。</summary>
     [JSExport]
     public static byte[] CsEchoBytes(byte[] data) => data;
+
+    /// <summary>
+    /// JS→C# 方向的 MemoryView 尝试：参数声明为 <c>Span&lt;byte&gt;</c> + <c>JSMarshalAs&lt;MemoryView&gt;</c>。
+    /// <para>
+    /// 预期<b>走不通</b>：浏览器端 JS 只能给出 Uint8Array，而运行时要求的是它内部的 MemoryView 对象
+    /// （断言 <c>Expected MemoryViewType.Byte</c>），浏览器也没有公开的 createMemoryView。
+    /// 留着它正是为了让"JS→C# 有没有 MemoryView"有实测结论 —— 结论是<b>没有</b>，大块数据只能走 byte[]。
+    /// </para>
+    /// </summary>
+    [JSExport]
+    public static int CsFillSpan([JSMarshalAs<JSType.MemoryView>] Span<byte> buffer, int length)
+    {
+        int n = Math.Min(length, buffer.Length);
+        for (int i = 0; i < n; i++) buffer[i] = (byte)(i & 0xFF);
+        return n;
+    }
 
     // ================= C# → JS（[JSImport]，调用 main.js 的 bench.*）=================
 
@@ -53,17 +73,32 @@ public static partial class BenchInterop
     [JSImport("bench.makeArray", "main.js")]
     public static partial byte[] MakeArray(int length);
 
-    // ---- 让 JS 连打 C# 并回报耗时（毫秒），用于测 JS→C# ----
+    /// <summary>
+    /// 反向的一条 byte[] 路线：C# 把数组传给 JS（封送时复制一次，JS 拿到的是副本），
+    /// 与 <see cref="MakeArray"/> 的"JS 建数组交回来"正好相反，两档并列才看得出方向差异。
+    /// </summary>
+    [JSImport("bench.sendBytes", "main.js")]
+    public static partial int SendBytes(byte[] data);
+
+    // ---- 让 JS 连打 C# 并回报 "最快ms|最慢ms|错误"，用于测 JS→C# ----
+    // 统一返回字符串：一次要带回三个值（耗时、抖动、是否可用），
+    // 而源生成式 interop 不支持 JSType.Object，只能拼串过界。
 
     [JSImport("bench.callTickN", "main.js")]
-    public static partial double CallTickN(int times);
+    public static partial string CallTickN(int times);
 
     [JSImport("bench.callIntN", "main.js")]
-    public static partial double CallIntN(int times);
+    public static partial string CallIntN(int times);
 
     [JSImport("bench.callStringN", "main.js")]
-    public static partial double CallStringN(int times, int textLength);
+    public static partial string CallStringN(int times, int textLength);
 
     [JSImport("bench.callBytesN", "main.js")]
-    public static partial double CallBytesN(int times, int byteLength);
+    public static partial string CallBytesN(int times, int byteLength);
+
+    /// <summary>
+    /// 让 JS 连打 <see cref="CsFillSpan"/>；错误段为空表示这条路线走得通，否则带回被拒的原因。
+    /// </summary>
+    [JSImport("bench.callSpanN", "main.js")]
+    public static partial string CallSpanN(int times, int byteLength);
 }

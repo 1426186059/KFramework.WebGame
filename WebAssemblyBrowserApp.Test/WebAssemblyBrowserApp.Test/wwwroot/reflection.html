@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WASM 基准测试总纲</title>
+  <title>C# 反射性能 — WASM 基准测试</title>
   <link rel="preload" id="webassembly" />
   <script type="importmap"></script>
   <script type='module' src="main#[.{fingerprint}].js"></script>
@@ -12,15 +12,12 @@
 </head>
 
 <body>
-  <h1>WASM 基准测试总纲</h1>
-  <p class="muted">
-    C# 反射与互操作（JS↔C# 跨界、MemoryView）性能测试。
-    每个测试都有<b>独立页面</b>，点标题进入会自动运行；也可直接点「运行」在本页查看结果。
-  </p>
+  <h1>C# 反射性能</h1>
+  <p class="muted">模拟 ORM 的 Load/Save 与封包的 Write/Read：属性读写、对象创建、方法调用、特性查询。进入本页会自动开始运行。</p>
 
   <div class="bar">
-    <button id="runAll">运行全部</button>
-    <button id="showMenu">回到总纲</button>
+    <a class="btn" href="index.html">← 返回总纲</a>
+    <button id="runAll">运行全部测试</button>
     <span id="status">加载中...</span>
   </div>
 
