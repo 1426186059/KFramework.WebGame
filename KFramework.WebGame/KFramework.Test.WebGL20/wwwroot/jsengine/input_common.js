@@ -19,6 +19,10 @@ export function setCanvasId(id) {
 export function getInputCanvas() {
     return getCanvas(currentCanvasId);
 }
+// 复用的坐标对象：canvasPoint 每次写入同一个实例。
+// 早先返回 [x, y] 元组 —— 每次调用都要新建一个数组，而鼠标移动 / 触摸移动是每帧高频路径，
+// 那是实打实的每帧分配（见 ReadMe：本目录每帧零分配、禁止匿名函数）。
+const pointOut = { x: 0, y: 0 };
 /**
  * 浏览器客户端坐标（CSS 像素）→ 画布后备缓冲（backing）像素坐标。
  *
@@ -36,43 +40,20 @@ export function getInputCanvas() {
  * 两者的比例就是 DPR（高 DPI 下 backing 是 CSS 的 DPR 倍，典型 1.5 / 2 / 3）。
  * 若直接把 CSS 坐标交给渲染侧，会落在左上角 1/DPR 区域（偏左上），所以这里乘上比例换算过去；
  * DPR=1 时比例就是 1，行为与不加这层完全一致。
+ *
+ * <b>返回的是复用的同一个对象</b>：调用方必须【立即取值】，不能持有引用 —— 下一次调用会覆盖它。
  */
 export function canvasPoint(clientX, clientY) {
     const canvas = getInputCanvas();
-    if (!canvas)
-        return [0, 0];
+    if (!canvas) {
+        pointOut.x = 0;
+        pointOut.y = 0;
+        return pointOut;
+    }
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / (rect.width || 1);
     const scaleY = canvas.height / (rect.height || 1);
-    return [Math.round((clientX - rect.left) * scaleX), Math.round((clientY - rect.top) * scaleY)];
+    pointOut.x = Math.round((clientX - rect.left) * scaleX);
+    pointOut.y = Math.round((clientY - rect.top) * scaleY);
+    return pointOut;
 }
-/** 把本地缓冲写回 C# 传来的目标（MemoryView_Span 或 Uint8Array）。 */
-export function copyOut(target, src) {
-    if (target instanceof Uint8Array) {
-        target.set(src);
-        return;
-    }
-    if (typeof target.set === 'function') {
-        target.set(src, 0);
-        return;
-    }
-    const fallback = target;
-    for (let i = 0; i < src.length; i++)
-        fallback[i] = src[i];
-}
-// ================================================================
-// 每帧统一事件流
-// ================================================================
-/**
- * 事件来源模块编号。C# 每帧只跨界【一次】取回整条事件流，再按这个编号路由给对应的
- * Input_* 类 —— 各模块依旧独立维护自己的状态与对外 API，合并的只是"取数据"这一步。
- */
-export const ModuleId = {
-    System: 0, // 全局/系统：失焦、获得焦点、页面可见性
-    Keyboard: 1,
-    Mouse: 2,
-    Touch: 3,
-    // IME 走 [JSExport] 由 JS 主动推给 C#（OnDomValue / OnKeyDown），本来就不占这条拉取流，
-    // 这里保留编号以便将来若改为拉取制即可直接接入。
-    Ime: 4,
-};

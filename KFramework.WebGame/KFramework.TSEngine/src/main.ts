@@ -26,9 +26,10 @@ import * as gameUpdate from './game_update.js';
 import * as gameFrameData from './game_frame_take_js_data.js';
 
 interface GameHost {
-    // 第二个参数是本帧所有输入模块的事件流（由 game_frame_take_js_data 汇总），
-    // 随帧回调一并送入 C#，省掉一次"C# 回头去 JS 取数据"的跨界。
-    Frame(timestampMs: number, events: Uint8Array): void;
+    // 只推帧、<b>不带</b>事件数据：事件由 C# 在本帧的 Update 里调 takeFrameData 回头取（一推一拉）。
+    // 取的那个方向是 C#→JS，能走 MemoryView 零拷贝，每帧零分配；
+    // 而随帧一并送来是 JS→C# 的 byte[]，每帧都要新建一个托管数组。
+    Frame(timestampMs: number): void;
 }
 
 interface NetExport {
@@ -36,6 +37,25 @@ interface NetExport {
     OnBinaryMessage: (handle: number, data: Uint8Array) => void;
     OnClose: (handle: number, code: number) => void;
     OnError: (handle: number, message: string) => void;
+}
+
+// 网络回调的转发目标：存成模块级变量，好让下面的回调写成具名函数（不产生闭包）
+let netNs: NetExport | null = null;
+
+function onNetOpen(handle: number): void {
+    if (netNs) netNs.OnOpen(handle);
+}
+
+function onNetBinaryMessage(handle: number, data: Uint8Array): void {
+    if (netNs) netNs.OnBinaryMessage(handle, data);
+}
+
+function onNetClose(handle: number, code: number): void {
+    if (netNs) netNs.OnClose(handle, code);
+}
+
+function onNetError(handle: number, message: string): void {
+    if (netNs) netNs.OnError(handle, message);
 }
 
 // KFramework.MonoGame 程序集导出的 JSBind_* 绑定集合（网络层等）。
@@ -119,13 +139,16 @@ if (!bind) {
     console.warn('[main] KFramework.MonoGame 导出未就绪');
 } else {
     // 网络层：浏览器 WebSocket 事件 → C#（JSBind_Net_WebSocket）
+    // C# 那侧的对象存进模块级变量，回调才能用具名函数 —— 用具名函数去捕获局部的 ns
+    // 就是一个闭包（本目录禁止匿名函数与闭包，见 ReadMe）。
     const ns = bind.JSBind_Net_WebSocket;
     if (ns) {
+        netNs = ns;
         net.setHandlers({
-            onOpen: (h) => ns.OnOpen(h),
-            onBinaryMessage: (h, d) => ns.OnBinaryMessage(h, d),
-            onClose: (h, c) => ns.OnClose(h, c),
-            onError: (h, m) => ns.OnError(h, m),
+            onOpen: onNetOpen,
+            onBinaryMessage: onNetBinaryMessage,
+            onClose: onNetClose,
+            onError: onNetError,
         });
     } else {
         console.warn('[main] 网络层导出未找到: JSBind_Net_WebSocket');
@@ -155,22 +178,35 @@ async function resolveGameHost(): Promise<GameHost | undefined> {
     return undefined;
 }
 
+// 帧回调的宿主存成模块级变量：回调必须是【具名函数】，而具名函数不能去捕获局部的 host ——
+// 那会构成一个每帧都要重建的闭包（本目录禁止匿名函数与闭包，见 ReadMe）。
+let frameHost: GameHost | null = null;
+
+/**
+ * 每帧回调：只推帧，不带事件数据。
+ * 事件由 C# 在本帧的 Update 里调 takeFrameData 回头取（一推一拉）——
+ * 那个方向是 C#→JS，能走 MemoryView 零拷贝，每帧零分配；
+ * 若随帧一并送来，JS→C# 的 byte[] 每帧都要新建一个托管数组。
+ */
+function onFrame(timestampMs: number): void {
+    if (frameHost) frameHost.Frame(timestampMs);
+}
+
 const host = await resolveGameHost();
 
 if (!host) {
     console.error('[main] 找不到 JSBind_GameUpdate 导出，画面不会刷新');
 } else {
-    gameUpdate.setFrameCallback((timestamp: number) => {
-        host.Frame(timestamp, gameFrameData.takeFrameData());
-    });
+    frameHost = host;
+    gameUpdate.setFrameCallback(onFrame);
 }
 
-// 浏览器要求用户手势后才能启动音频
-const unlockAudio = (): void => {
+// 浏览器要求用户手势后才能启动音频（具名函数：内部自引用解绑，用函数声明即可）
+function unlockAudio(): void {
     audio.unlock();
     window.removeEventListener('pointerdown', unlockAudio);
     window.removeEventListener('keydown', unlockAudio);
-};
+}
 window.addEventListener('pointerdown', unlockAudio);
 window.addEventListener('keydown', unlockAudio);
 

@@ -48,41 +48,53 @@ export function bindTouch(): void {
     const canvas = getInputCanvas();
     if (!canvas) return;
 
-    // 用 changedTouches：只报本帧发生变化的触点，抬手与按下同帧也不会丢
-    const handle = (e: TouchEvent, type: number): void => {
-        const list = e.changedTouches;
-        for (let i = 0; i < list.length; i++) {
-            const t = list[i];
-            const [x, y] = canvasPoint(t.clientX, t.clientY);
-            const id = t.identifier;
-
-            if (type === E_HTML_Event_Type.TouchBegin) {
-                active.set(id, { x, y, dirty: E_HTML_Event_Type.TouchBegin });
-                ended.delete(id);
-            } else if (type === E_HTML_Event_Type.TouchMove) {
-                const s = active.get(id);
-                if (s) {
-                    s.x = x; s.y = y;
-                    // 本帧已刚按下则保持 Begin（首帧只报一次按下）
-                    if (s.dirty !== E_HTML_Event_Type.TouchBegin) s.dirty = E_HTML_Event_Type.TouchMove;
-                } else {
-                    active.set(id, { x, y, dirty: E_HTML_Event_Type.TouchBegin });   // 缺失的按下（防御）
-                }
-            } else { // End / Cancel
-                active.delete(id);
-                ended.set(id, { x, y });
-            }
-        }
-        e.preventDefault();
-    };
-
+    // 四种 touch 事件共用一个【具名】处理函数：相位由事件自身的 type 推断 ——
+    // 既免掉为每种事件各建一个闭包（本目录禁止匿名函数，见 ReadMe），也省掉一层包装。
     const touchOptions: AddEventListenerOptions = { passive: false };
-    on(canvas, 'touchstart', (e: Event) => handle(e as TouchEvent, E_HTML_Event_Type.TouchBegin), touchOptions);
-    on(canvas, 'touchmove', (e: Event) => handle(e as TouchEvent, E_HTML_Event_Type.TouchMove), touchOptions);
-    on(canvas, 'touchend', (e: Event) => handle(e as TouchEvent, E_HTML_Event_Type.TouchEnd), touchOptions);
-    on(canvas, 'touchcancel', (e: Event) => handle(e as TouchEvent, E_HTML_Event_Type.TouchCancel), touchOptions);
+    on(canvas, 'touchstart', onTouch, touchOptions);
+    on(canvas, 'touchmove', onTouch, touchOptions);
+    on(canvas, 'touchend', onTouch, touchOptions);
+    on(canvas, 'touchcancel', onTouch, touchOptions);
 
     bound = true;
+}
+
+/**
+ * 触摸事件处理：用 changedTouches 只报发生变化的触点，抬手与按下同帧也不会丢。
+ * 相位从 <c>ev.type</c> 推断，故四个事件共用一个函数。
+ */
+function onTouch(e: Event): void {
+    const ev = e as TouchEvent;
+    const type = ev.type === 'touchstart' ? E_HTML_Event_Type.TouchBegin
+        : ev.type === 'touchmove' ? E_HTML_Event_Type.TouchMove
+            : ev.type === 'touchend' ? E_HTML_Event_Type.TouchEnd
+                : E_HTML_Event_Type.TouchCancel;      // touchcancel：手势被系统接管
+
+    const list = ev.changedTouches;
+    for (let i = 0; i < list.length; i++) {
+        const t = list[i];
+        const p = canvasPoint(t.clientX, t.clientY);   // 复用对象，立即取值
+        const x = p.x, y = p.y;
+        const id = t.identifier;
+
+        if (type === E_HTML_Event_Type.TouchBegin) {
+            active.set(id, { x, y, dirty: E_HTML_Event_Type.TouchBegin });
+            ended.delete(id);
+        } else if (type === E_HTML_Event_Type.TouchMove) {
+            const s = active.get(id);
+            if (s) {
+                s.x = x; s.y = y;
+                // 本帧已刚按下则保持 Begin（首帧只报一次按下）
+                if (s.dirty !== E_HTML_Event_Type.TouchBegin) s.dirty = E_HTML_Event_Type.TouchMove;
+            } else {
+                active.set(id, { x, y, dirty: E_HTML_Event_Type.TouchBegin });   // 缺失的按下（防御）
+            }
+        } else { // End / Cancel
+            active.delete(id);
+            ended.set(id, { x, y });
+        }
+    }
+    ev.preventDefault();
 }
 
 /** 解绑触摸监听并清空状态。 */

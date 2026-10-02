@@ -13,14 +13,8 @@ namespace KFramework.MonoGame
     /// </summary>
     public static class Input_KeyBoard
     {
-        // 事件类型（与 input_keyboard.ts 一致）
-        private const int EvKeyDown = 1;
-        private const int EvKeyUp = 2;
-        private const int EvBlur = 10;
-        private const int Stride = 2;            // 每条 2 个 i32
-        private const int MaxEvents = 32;
-        // 事件数据不再由本模块自己 poll，而是每帧由 GameFrameData 统一取回后以 payload 形式转交，
-        // 故这里不再需要本地缓冲（1 + MaxEvents * Stride 仍作为 payload 长度的文档性上限）。
+        // 事件类型与字节布局统一在 Input_GameFrameData.EvType（镜像 TS 的 html_event_type），
+        // 本模块不再自己解析字节流，故这里没有本地的事件编号与缓冲尺寸常量。
         private static readonly bool[] _LastKeyState = new bool[byte.MaxValue];
         private static readonly bool[] _NewKeyState = new bool[byte.MaxValue];
 
@@ -34,42 +28,31 @@ namespace KFramework.MonoGame
         /// <summary>本装置是否处于激活状态；未激活时 <see cref="Update"/> / <see cref="LateUpdate"/> 直接跳过。由 <see cref="Activate"/> / <see cref="Unbind"/> 维护。</summary>
         public static bool Active { get; private set; }
 
+        /// <summary>收到一次按键电平变化（由 <see cref="Input_GameFrameData"/> 按事件类型分发）。</summary>
+        internal static void OnKey(byte keys, bool down)
+        {
+            if (!Active) return;
+            _NewKeyState[keys] = down;
+        }
+
+        /// <summary>失焦：清空全部键盘状态（由 <see cref="Input_GameFrameData"/> 分发 Blur 事件）。
+        /// 窗外松手收不到 keyup，不清就会一直卡在"按住"。</summary>
+        internal static void OnBlur()
+        {
+            if (!Active) return;
+            Reset();
+        }
+
         /// <summary>
-        /// 消费本帧分发的键盘事件（由 <see cref="GameFrameData"/> 转交）。
-        /// <para>
-        /// payload 沿用本模块<b>原有</b>的格式：第 0 字节 = 条数，其后每 2 字节一对 (keyCode, flag)，
-        /// flag 1=按下 / 2=抬起 / 10=失焦。因此这里只是把"自己 poll"换成"收 payload"，
-        /// 解析逻辑一字未改 —— 键盘模块依旧独立。
-        /// </para>
+        /// 边沿计算：本帧电平与上帧电平的差分产生按下 / 抬起，电平为真的持续触发 KeyPress。
+        /// 由 <see cref="Input_GameFrameData.Update"/> 在分发完本帧事件后调用一次。
         /// </summary>
-        internal static void Consume(ReadOnlySpan<byte> payload)
+        internal static void EndFrame()
         {
             if (!Active) return;
 
             //在LateUpdate里已经拷贝过了,这里不再拷贝
             //_NewKeyState.AsSpan().CopyTo(_LastKeyState);
-
-            if (payload.Length > 0)
-            {
-                int count = payload[0];
-                if (count > MaxEvents)
-                {
-                    count = MaxEvents;
-                }
-                for (int i = 0; i < count; i++)
-                {
-                    int off = 1 + i * Stride;
-                    if (off + 1 >= payload.Length) break;      // 越界即停，绝不解析半截事件
-                    byte flag = payload[off + 1];
-                    if (flag == EvBlur)
-                    {
-                        // 失焦：清空全部键盘状态（注释见 Reset），避免按住中的键在窗外松手后“卡住”。
-                        Reset();
-                        return;
-                    }
-                    _NewKeyState[payload[off]] = flag == EvKeyDown;
-                }
-            }
 
             for(int i = 0; i < byte.MaxValue; i++)
             {

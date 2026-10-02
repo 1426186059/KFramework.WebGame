@@ -1,7 +1,6 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Mouse 经 [JSImport(module: "input_mouse")] 调用；产物 input_mouse.js 由 SyncJsEngine 复制。
 // 鼠标模块：只注册监听 + 维护"当前状态/变化"。状态与边沿在 C# 侧（Input_Mouse）实现。
-import { getInputCanvas, setCanvasId } from './input_common.js';
-import { canvasPoint } from './input_common.js';
+import { canvasPoint, getInputCanvas, setCanvasId } from './input_common.js';
 import { E_HTML_Event_Type } from './html_event_type.js';
 const registrations = [];
 let bound = false;
@@ -41,59 +40,72 @@ export function bindMouse(canvasId) {
         c.style.userSelect = 'none';
         c.style.touchAction = 'none';
         c.style.webkitUserSelect = 'none';
-        on(canvas, 'dragstart', (e) => e.preventDefault());
-        on(canvas, 'mousemove', (e) => {
-            const ev = e;
-            const [x, y] = canvasPoint(ev.clientX, ev.clientY);
-            posX = x;
-            posY = y;
-            moved = true;
-            // 阻止按住拖动时的原生文本选择/元素拖拽，避免浏览器在首次 mousemove 时
-            // 中断“按下”状态并隐式发出 mouseup，导致 UI 面板无法拖动（单击正常）。
-            ev.preventDefault();
-        });
-        on(canvas, 'mousedown', (e) => {
-            const ev = e;
-            const [x, y] = canvasPoint(ev.clientX, ev.clientY);
-            posX = x;
-            posY = y;
-            buttons.set(ev.button, 1);
-            held.add(ev.button);
-            ev.preventDefault();
-        });
-        on(canvas, 'wheel', (e) => {
-            const ev = e;
-            const [x, y] = canvasPoint(ev.clientX, ev.clientY);
-            posX = x;
-            posY = y;
-            wheelDelta += Math.sign(ev.deltaY);
-            ev.preventDefault();
-        }, { passive: false });
-        on(canvas, 'contextmenu', (e) => e.preventDefault());
+        // 全部用具名函数（ReadMe：本目录禁止匿名函数 —— 移动是每帧高频路径，闭包就是每帧垃圾）
+        on(canvas, 'dragstart', preventDefault);
+        on(canvas, 'mousemove', onMouseMove);
+        on(canvas, 'mousedown', onMouseDown);
+        on(canvas, 'wheel', onMouseWheel, { passive: false });
+        on(canvas, 'contextmenu', preventDefault);
     }
     // 抬起挂 window：在画布外松手也能收到
-    on(window, 'mouseup', (e) => {
-        const ev = e;
-        const [x, y] = canvasPoint(ev.clientX, ev.clientY);
-        posX = x;
-        posY = y;
-        buttons.set(ev.button, 0);
-        held.delete(ev.button);
-    });
+    on(window, 'mouseup', onMouseUp);
     // 【手势被接管】浏览器/系统接管指针（右键手势、拖拽、长按菜单等）时【不会】再派发 mouseup，
     // 只给 pointercancel —— 少了这一步，被接管的那个键就永远卡在"按住"，
     // 表现为松开后 UI 仍显示 Left/Right 按住不放。
-    on(window, 'pointercancel', (e) => {
-        const ev = e;
-        // 只入队，真正上报延到 pollMouse（照键盘 Process_Blur 只置标记）。
-        if (held.delete(ev.button))
-            canceled.push(ev.button);
-    });
+    on(window, 'pointercancel', onPointerCancel);
     // 【失焦兜底】切走窗口（Alt+Tab）或切到别的标签页同样收不到抬起，补发一次全量抬起。
     on(window, 'blur', releaseAll);
-    on(document, 'visibilitychange', () => { if (document.hidden)
-        releaseAll(); });
+    on(document, 'visibilitychange', onVisibility);
     bound = true;
+}
+/** 通用：拦掉浏览器默认行为（拖拽起始、右键菜单）。 */
+function preventDefault(e) {
+    e.preventDefault();
+}
+function onMouseMove(e) {
+    const ev = e;
+    const p = canvasPoint(ev.clientX, ev.clientY);
+    posX = p.x;
+    posY = p.y;
+    moved = true;
+    // 阻止按住拖动时的原生文本选择/元素拖拽，避免浏览器在首次 mousemove 时
+    // 中断“按下”状态并隐式发出 mouseup，导致 UI 面板无法拖动（单击正常）。
+    ev.preventDefault();
+}
+function onMouseDown(e) {
+    const ev = e;
+    const p = canvasPoint(ev.clientX, ev.clientY);
+    posX = p.x;
+    posY = p.y;
+    buttons.set(ev.button, 1);
+    held.add(ev.button);
+    ev.preventDefault();
+}
+function onMouseWheel(e) {
+    const ev = e;
+    const p = canvasPoint(ev.clientX, ev.clientY);
+    posX = p.x;
+    posY = p.y;
+    wheelDelta += Math.sign(ev.deltaY);
+    ev.preventDefault();
+}
+function onMouseUp(e) {
+    const ev = e;
+    const p = canvasPoint(ev.clientX, ev.clientY);
+    posX = p.x;
+    posY = p.y;
+    buttons.set(ev.button, 0);
+    held.delete(ev.button);
+}
+function onPointerCancel(e) {
+    const ev = e;
+    // 只入队，真正上报延到 writeMouseEvents（照键盘 Process_Blur 只置标记）。
+    if (held.delete(ev.button))
+        canceled.push(ev.button);
+}
+function onVisibility() {
+    if (document.hidden)
+        releaseAll();
 }
 /** 解绑鼠标监听并清空状态。 */
 export function unbindMouse() {

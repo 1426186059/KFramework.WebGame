@@ -1,6 +1,6 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Keyboard 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
 import { getCanvas, focusCanvas } from './html_canvas.js';
-import { ModuleId } from './input_common.js';
+import { E_HTML_Event_Type } from './html_event_type.js';
 // 浏览器 KeyboardEvent.code → C# Keys 枚举序号。
 // 必须与 Input/InputDefine.cs 的 Keys 声明顺序严格一致（成员名即 HTML code，顺序自动编号：
 // None=0, Backspace=1, Tab=2 … Super=212）。C# 侧按此序号索引按键状态。
@@ -74,16 +74,13 @@ function codeToKeys(code) {
     return CODE_TO_KEYS[code] ?? 0;
 }
 const MAX_EVENTS = 32;
-const STRIDE = 2;
-const SIZE = 1 + MAX_EVENTS * STRIDE;
-const EvBlur = 10; // 与 C# Input_KeyBoard.EvBlur 一致：失焦事件
 let m_Canvas = null;
 let m_CanvasId = null;
 // 失焦标记：canvas 失去焦点时置 true，下一次 pollKeyboard 写入一条 Blur 事件（flag=EvBlur），
 // 让 C# 侧清空键盘状态，避免“按住键在窗外松手 → 卡住”。
 let m_Blurred = false;
 const pending = new Map();
-const scratch = new Uint8Array(SIZE);
+const scratch = new Uint8Array(1); // 每条事件的 data 只有 1 字节（Keys 序号），逐条 put
 function Process_KeyDown(e) {
     // 阻止浏览器默认行为，否则游戏收不到这些键：
     //   Tab → 移走焦点（画布随即 blur，下一次 poll 发 Blur 清空按键，表现为“Tab 抓不到”）；
@@ -152,34 +149,24 @@ export function unbindKeyboard() {
 }
 /**
  * 把本帧的键盘事件写入【统一事件流】（由 game_frame_take_js_data 每帧调用）。
- *
- * 本模块依旧独立：监听、状态、以及 payload 格式都保持原样 ——
- * 只是不再自己跨界回传，改为交给总入口的 sink。payload 沿用原有布局：
- * 若干 (keyCode, flag) 对，flag 1=按下 / 2=抬起 / 10=失焦。
+ * 每条 = EvType（KeyDown / KeyUp / KeyBlur）+ 1 字节 Keys 序号，条数由总入口统计。
  */
 export function writeKeyboardEvents(w) {
-    // payload 布局与原来的 pollKeyboard【完全一致】：scratch[0] = 条数，其后 (keyCode, flag) 对。
-    // 保住这一字节，C# 侧 Input_KeyBoard 的解析逻辑就一行都不用改。
-    let off = 1;
-    let nEvents = 0;
+    // 失焦单独成一条、且清空本帧残留的按下事件：窗外松手收不到 keyup，
+    // 若照常上报，那些键会一直卡在"按住"。
     if (m_Blurred) {
         m_Blurred = false;
-        scratch[off++] = 0; // keyCode 对 Blur 无意义
-        scratch[off++] = EvBlur; // 10
-        nEvents++;
+        pending.clear();
+        w.put(E_HTML_Event_Type.KeyBlur, scratch, 0); // 只靠 type，无 data
+        return;
     }
-    else {
-        for (const [key, flag] of pending) {
-            if (off + STRIDE > scratch.length)
-                break;
-            scratch[off++] = codeToKeys(key);
-            scratch[off++] = flag;
-            nEvents++;
-        }
+    let n = 0;
+    for (const [code, flag] of pending) {
+        if (n >= MAX_EVENTS)
+            break;
+        scratch[0] = codeToKeys(code);
+        w.put(flag === 2 ? E_HTML_Event_Type.KeyUp : E_HTML_Event_Type.KeyDown, scratch, 1);
+        n++;
     }
     pending.clear();
-    if (nEvents > 0) {
-        scratch[0] = nEvents;
-        w.put(ModuleId.Keyboard, scratch, off); // 最多 32×2+1 = 65B，远低于 len 的 255 上限
-    }
 }

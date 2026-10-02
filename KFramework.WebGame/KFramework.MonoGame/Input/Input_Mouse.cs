@@ -12,23 +12,11 @@ namespace KFramework.MonoGame
     /// </summary>
     public static class Input_Mouse
     {
-        // 事件类型（与 input_mouse.ts 一致）
-        private const int EvMousePos = 0;
-        private const int EvMouseButton = 1;   // payload = button(低7位) | 按下(0x80)
-        private const int EvWheel = 2;
-        private const int EvPointerCancel = 3; // payload = button（指针被接管/失焦，并非用户松手）
-
+        // 事件类型与字节布局统一在 Input_GameFrameData.EvType（镜像 TS 的 html_event_type），
+        // 本模块不再自己解析字节流，故这里只保留"键位数"这一个与状态数组有关的常量。
         private const int MaxButtons = 8;
-        private const int EvMousePos_ByteCount = 5;
-        private const int EvMouseButton_ByteCount = 2;
-        private const int EvWheel_ByteCount = 2;
-        private const int MaxByteCount = 
-            1 + 
-            MaxButtons * EvMouseButton_ByteCount + 
-            EvMousePos_ByteCount +
-            EvWheel_ByteCount;
-        // 事件数据不再由本模块自己 poll，而是每帧由 GameFrameData 统一取回后以 payload 形式转交，
-        // 故这里不再需要本地缓冲。MaxByteCount 保留作为 payload 长度的文档性上限。
+        // 事件数据不再由本模块自己 poll，而是每帧由 Input_GameFrameData 统一取回后按事件类型逐条分发，
+        // 故这里不再需要本地缓冲与字节布局常量。
 
         // 与键盘一致：两份电平缓冲 + 差分算边沿
         private static readonly bool[] _btnNew = new bool[MaxButtons];
@@ -63,66 +51,57 @@ namespace KFramework.MonoGame
         /// <summary>滚轮滚动（本帧增量）</summary>
         public static event Action<int> ScrollWheel;
 
-        /// <summary>每帧调用一次：取回本模块的事件队列并更新状态。</summary>
-        /// <summary>
-        /// 消费本帧分发的鼠标事件（由 <see cref="GameFrameData"/> 转交）。
-        /// <para>
-        /// payload 沿用本模块<b>原有</b>的格式（第 0 字节 = 条数，其后按类型变长跳步），
-        /// 因此只是把"自己 poll"换成"收 payload"，解析逻辑一字未改 —— 鼠标模块依旧独立。
-        /// </para>
-        /// </summary>
-        internal static void Consume(ReadOnlySpan<byte> payload)
+        /// <summary>每帧清理（由 <see cref="Input_GameFrameData"/> 在取数据前调用）：
+        /// 滚轮增量归零 —— 即便本帧一条事件都没有也要清，否则上帧的增量会残留。</summary>
+        internal static void BeginFrame()
         {
             if (!Active) return;
-            _wheelDelta = 0;      // 每帧清理：即便本帧无事件也要归零，否则上帧增量会残留
+            _wheelDelta = 0;
+        }
 
-            // 事件流：按类型变长跳步（EvMousePos=5B，其余=2B）
-            int count = payload.Length > 0 ? payload[0] : 0;
-            if (count > 0)
-            {
-                int off = 1;
-                for (int i = 0; i < count; i++)
-                {
-                    if (off >= payload.Length) break;      // 越界即停，绝不解析半截事件
-                    int type = payload[off];
-                    switch (type)
-                    {
-                        case EvMousePos:
-                            _x = BinaryPrimitives.ReadInt16LittleEndian(payload.Slice(off + 1, 2));
-                            _y = BinaryPrimitives.ReadInt16LittleEndian(payload.Slice(off + 3, 2));
-                            off += EvMousePos_ByteCount;
-                            break;
-                        case EvMouseButton:
-                            {
-                                int raw = payload[off + 1];
-                                int btn = raw & 0x7F;          // 低7位 = button（DOM 序号：0左/1中/2右）
-                                if (btn >= 0 && btn < MaxButtons) _btnNew[btn] = (raw & 0x80) != 0;
-                                off += EvMouseButton_ByteCount;
-                            }
-                            break;
-                        case EvWheel:
-                            _wheelDelta += (sbyte)payload[off + 1];   // 按 sbyte 解读累计增量
-                            off += EvWheel_ByteCount;
-                            break;
-                        case EvPointerCancel:
-                            {
-                                int btn = payload[off + 1] & 0x7F;
-                                if (btn >= 0 && btn < MaxButtons)
-                                {
-                                    // 电平退回抬起，但【两帧都置 false】使差分无边沿 ——
-                                    // 否则会被当成一次正常松手，把中断的交互错误地确认掉。
-                                    _btnNew[btn] = false;
-                                    _btnLast[btn] = false;
-                                    PointerCancel?.Invoke((MouseButton)btn, Position);
-                                }
-                                off += EvMouseButton_ByteCount;
-                            }
-                            break;
-                        default:
-                            throw new NotSupportedException();
-                    }
-                }
-            }
+        /// <summary>收到一次按键电平变化：btn 为 DOM 序号（0左 / 1中 / 2右）。</summary>
+        internal static void OnButton(int btn, bool down)
+        {
+            if (!Active) return;
+            if (btn < 0 || btn >= MaxButtons) return;
+            _btnNew[btn] = down;
+        }
+
+        /// <summary>收到一次滚轮增量（按 sbyte 解读，同帧多条会累加）。</summary>
+        internal static void OnWheel(int delta)
+        {
+            if (!Active) return;
+            _wheelDelta += delta;
+        }
+
+        /// <summary>收到本帧的最终指针位置（backing 像素坐标）。</summary>
+        internal static void OnMove(int x, int y)
+        {
+            if (!Active) return;
+            _x = x;
+            _y = y;
+        }
+
+        /// <summary>指针被系统 / 浏览器接管（右键手势、拖拽、长按菜单），不会再有 mouseup。</summary>
+        internal static void OnPointerCancel(int btn)
+        {
+            if (!Active) return;
+            if (btn < 0 || btn >= MaxButtons) return;
+
+            // 电平退回抬起，但【两帧都置 false】使差分无边沿 ——
+            // 否则会被当成一次正常松手，把一次被中断的交互错误地确认掉（拖动被误判为完成）。
+            _btnNew[btn] = false;
+            _btnLast[btn] = false;
+            PointerCancel?.Invoke((MouseButton)btn, Position);
+        }
+
+        /// <summary>
+        /// 边沿计算：本帧电平与上帧电平的差分产生按下 / 抬起，并结算滚轮。
+        /// 由 <see cref="Input_GameFrameData.Update"/> 在分发完本帧事件后调用一次。
+        /// </summary>
+        internal static void EndFrame()
+        {
+            if (!Active) return;
 
             // 边沿 = 本帧电平 与 上帧电平 的差分（与键盘 KeyDown/KeyUp 完全一致）
             var pos = Position;

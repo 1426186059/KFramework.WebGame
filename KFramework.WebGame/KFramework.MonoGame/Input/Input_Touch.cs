@@ -90,16 +90,9 @@ namespace KFramework.MonoGame
     /// </summary>
     public static class Input_Touch
     {
-        // 事件类型（与 input_touch.ts 一致）
-        private const int EvStart = 7;
-        private const int EvMove = 8;
-        private const int EvEnd = 9;
-
-        private const int Stride = 16;           // 每条 4 个 i32
-        private const int MaxEvents = 64;
-
-        // 事件数据不再由本模块自己 poll，而是每帧由 GameFrameData 统一取回后以 payload 形式转交，
-        // 故这里不再需要本地缓冲（MaxEvents * Stride 仍作为 payload 长度的文档性上限）。
+        // 事件类型与字节布局统一在 Input_GameFrameData.EvType（镜像 TS 的 html_event_type）：
+        // 触摸每条 = type + id(1) + x i16 + y i16 = 6 字节（原先是 4×i32 共 16 字节）。
+        // 本模块不再自己解析字节流，故这里没有本地的事件编号与缓冲尺寸常量。
 
         private static readonly List<TouchPoint> _touches = new List<TouchPoint>();
         private static readonly List<TouchPoint> _began = new List<TouchPoint>();
@@ -140,17 +133,9 @@ namespace KFramework.MonoGame
         /// <summary>本装置是否处于激活状态；未激活时 <see cref="Update"/> 直接跳过。由 <see cref="Activate"/> / <see cref="Deactivate"/> 维护。</summary>
         public static bool Active { get; private set; }
 
-        private static int ReadInt(ReadOnlySpan<byte> payload, int offset)
-            => BinaryPrimitives.ReadInt32LittleEndian(payload.Slice(offset, 4));
-
-        /// <summary>
-        /// 消费本帧分发的触摸事件（由 <see cref="GameFrameData"/> 转交）。
-        /// <para>
-        /// payload 沿用本模块<b>原有</b>的格式（前 4 字节 = 条数 i32，其后每条 4×i32：type / id / x / y），
-        /// 因此只是把"自己 poll"换成"收 payload"，解析逻辑一字未改 —— 触摸模块依旧独立。
-        /// </para>
-        /// </summary>
-        internal static void Consume(ReadOnlySpan<byte> payload)
+        /// <summary>每帧清理（由 <see cref="Input_GameFrameData"/> 在取数据前调用）：
+        /// 刷新计时基准并清空本帧的四个触点列表 —— 本帧没有触摸事件也要清，否则上帧的结果会残留。</summary>
+        internal static void BeginFrame()
         {
             if (!Active) return;
             _elapsed = (Environment.TickCount64 - _startTicks) / 1000f;
@@ -159,31 +144,33 @@ namespace KFramework.MonoGame
             _moved.Clear();
             _ended.Clear();
             _frame.Clear();
+        }
 
-            if (payload.Length >= 4)
+        /// <summary>
+        /// 收到一条触摸事件（由 <see cref="Input_GameFrameData"/> 按类型分发）。
+        /// <paramref name="type"/> 见 <see cref="Input_GameFrameData.EvType"/> 的 Touch* 四个。
+        /// </summary>
+        internal static void OnTouch(int type, int id, int x, int y)
+        {
+            if (!Active) return;
+
+            switch (type)
             {
-                int count = ReadInt(payload, 0);
-                if (count > MaxEvents) count = MaxEvents;
-
-                for (int i = 0; i < count; i++)
-                {
-                    int off = 4 + i * Stride;
-                    if (off + Stride > payload.Length) break;      // 越界即停，绝不解析半截事件
-
-                    int type = ReadInt(payload, off);
-                    int id = ReadInt(payload, off + 4);
-                    int x = ReadInt(payload, off + 8);
-                    int y = ReadInt(payload, off + 12);
-
-                    switch (type)
-                    {
-                        case EvStart: AddTouch(id, x, y); break;
-                        case EvMove: MoveTouch(id, x, y); break;
-                        case EvEnd: RemoveTouch(id); break;
-                    }
-                }
+                case Input_GameFrameData.EvType.TouchBegin: AddTouch(id, x, y); break;
+                case Input_GameFrameData.EvType.TouchMove: MoveTouch(id, x, y); break;
+                // 抬起与被系统取消都按"移除触点"处理：取消同样收不到后续事件，
+                // 不移除就会留下一个永远不动的幽灵触点。
+                case Input_GameFrameData.EvType.TouchEnd:
+                case Input_GameFrameData.EvType.TouchCancel:
+                    RemoveTouch(id);
+                    break;
             }
+        }
 
+        /// <summary>汇总本帧触点集合（由 <see cref="Input_GameFrameData.Update"/> 在分发完后调用一次）。</summary>
+        internal static void EndFrame()
+        {
+            if (!Active) return;
             BuildFrame();
         }
 

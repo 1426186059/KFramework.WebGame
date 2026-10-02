@@ -18,19 +18,18 @@ namespace KFramework.MonoGame
         /// <summary>当前在跑的游戏实例；JS 每帧回调 Frame 时据此转发到 TickFrame。</summary>
         internal static Game? Current;
 
-        /// <summary>由 wwwroot/main.js 的渲染循环调用。</summary>
         /// <summary>
         /// 由 wwwroot/main.js 的渲染循环每帧调用。
         /// <para>
-        /// <paramref name="events"/> 是本帧所有输入模块的事件流（由 game_frame_take_js_data 汇总，
-        /// 布局见 <see cref="GameFrameData"/>）。数据随帧回调<b>一并送入</b>，于是每帧只需
-        /// 【一次】跨界（JS→C#），不必再让 C# 回头去 JS 取 —— 原先是两次。
+        /// <b>只带时间戳</b>，不带事件数据：事件由 C# 在本帧的 Update 里用
+        /// <see cref="JSBind_GameFrameData.TakeFrameData"/> 回头取（一推一拉）。
+        /// 之所以不随帧一并送来：JS→C# 的 byte[] 每帧都要新建一个托管数组，
+        /// 而 C#→JS 能走 MemoryView 零拷贝 —— 每帧零分配，比省那一次跨界值钱得多。
         /// </para>
         /// </summary>
         [JSExport]
-        public static void Frame(double timestampMs, byte[]? events)
+        public static void Frame(double timestampMs)
         {
-            GameFrameData.Receive(events);
             Current?.TickFrame(timestampMs);
         }
 
