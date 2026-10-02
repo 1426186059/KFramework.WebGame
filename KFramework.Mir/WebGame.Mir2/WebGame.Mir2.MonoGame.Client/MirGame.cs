@@ -14,7 +14,7 @@ namespace WebGame.Mir2.MonoGame.Client
     /// </summary>
     public sealed class MirGame : Game
     {
-        public MirGame() : base("#game")
+        public MirGame(GraphicsDevice mDevice) : base(mDevice)
         {
             IsFixedTimeStep = false;
         }

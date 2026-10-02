@@ -33,8 +33,8 @@ namespace KFramework.Test.WebGPU.Tests
             },
             new TestEntry
             {
-                Name = "离屏渲染 + MSAA 解析",
-                Desc = "同一内容分别渲染进 MultiSampleCount=0 与 =4 的 RenderTarget2D 并排对比；解析走通道的 resolveTarget（Vulkan 语义）",
+                Name = "渲染目标（RenderTarget2D）专项",
+                Desc = "A 基本离屏 · B MSAA 解析 · C 嵌套合成（先画画布→切RT→切回继续画，传奇每帧的用法）· D PreserveContents 累积",
                 Factory = static () => new OffscreenScene(),
             },
         ];
@@ -112,26 +112,21 @@ namespace KFramework.Test.WebGPU.Tests
             batch.DrawString(Font, $"当前后端：{Device.BackendName}    （点条目或按数字键进入；各页内 Esc 返回本页）",
                 new Vector2(28f, 48f), new Color(150, 165, 195));
 
-            float y = 92f;
-            float x = 28f;
-            float width = Math.Max(240f, Device.Viewport.Width - 56f);
-
             for (int i = 0; i < TestRegistry.Entries.Count; i++)
             {
                 TestEntry entry = TestRegistry.Entries[i];
 
-                // 先量出两行文字的高度，再按实际高度画底板，避免文字溢出。
-                float rowHeight = (Font.LineSpacing + 6f) * 2 + 18f;
-                var rect = new Rectangle((int)x, (int)y, (int)width, (int)rowHeight);
-                _rows.Add(rect);
+                // 直接用 LayoutRows 算出的矩形，保证"画在哪"与"判定在哪"严格一致
+                // （早先这里另算一份并再 Add 一次，结果 _rows 被加了两遍，且两份矩形因浮点累加会有偏差）。
+                Rectangle rect = _rows[i];
 
                 bool hover = rect.Contains(Input_Mouse.Position);
                 batch.Draw(KDefaultRes.DefaultTexture2D, rect, hover ? new Color(46, 66, 104) : new Color(30, 38, 58));
 
-                batch.DrawString(Font, $"{i + 1}. {entry.Name}", new Vector2(x + 16f, y + 10f), new Color(210, 230, 255));
-                batch.DrawString(Font, entry.Desc, new Vector2(x + 16f, y + 10f + Font.LineSpacing + 6f), new Color(140, 158, 190));
-
-                y += rowHeight + 10f;
+                batch.DrawString(Font, $"{i + 1}. {entry.Name}",
+                    new Vector2(rect.X + 16f, rect.Y + 10f), new Color(210, 230, 255));
+                batch.DrawString(Font, entry.Desc,
+                    new Vector2(rect.X + 16f, rect.Y + 10f + Font.LineSpacing + 6f), new Color(140, 158, 190));
             }
 
             batch.End();

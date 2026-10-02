@@ -29,6 +29,9 @@ namespace KFramework.MonoGame
 
         public string Name => "WebGL2";
 
+    /// <summary>WebGL 的 FBO 与纹理原点在左下，离屏渲染需要改用 Y 向上投影来抵消（详见接口注释）。</summary>
+    public bool NeedsOffscreenYFlip => true;
+
         /// <summary>WebGL 后端无显式收帧动作：画面由浏览器在 rAF 回调结束时自动合成。</summary>
         public void EndFrame() { }
 

@@ -447,8 +447,15 @@ export function destroySampler(id: number): void { samplers.delete(id); }
  * @param resolveTarget 解析目标句柄（0 = 不解析）
  * @param depthTarget   深度附件句柄（0 = 用画布自带的深度纹理，或不用）
  */
+/**
+ * 开帧。
+ * @param loadMode 通道的载入方式：0 = clear（用 clearValue 清屏），1 = load（沿用目标里已有的内容）。
+ *   —— 切换渲染目标后继续绘制时必须用 1：目标切换会结束当前通道，若新通道再走 clear，
+ *      就会擦掉已经画好的部分。传奇那种「画布 ↔ 多个离屏 RT 来回切换做合成」的模式正是靠 load 保住内容。
+ */
 export function beginFrame(r: number, g: number, b: number, a: number, depthClear: number,
-                           colorTarget: number, resolveTarget: number, depthTarget: number): void {
+                           colorTarget: number, resolveTarget: number, depthTarget: number,
+                           loadMode: number): void {
     if (!device || !context) { console.error('[webgpu] 未初始化'); return; }
     encoder = device.createCommandEncoder();
 
@@ -470,12 +477,18 @@ export function beginFrame(r: number, g: number, b: number, a: number, depthClea
     if (resolveTarget !== 0) resolved = textures.get(resolveTarget)?.createView();
     else if (toCanvas && sampleCount > 1) resolved = canvasView;
 
+    const load = loadMode === 1;
+
     const colorAttachment: GPU = {
         view,
         clearValue: { r, g, b, a },
-        loadOp: 'clear',
-        // 有解析目标时多重采样附件本身无需保留（照 Vulkan 的 STORE_OP_DONT_CARE，省带宽）。
-        storeOp: resolved ? 'discard' : 'store',
+        loadOp: load ? 'load' : 'clear',
+        // 必须 store，不能因为有解析目标就 discard：
+        // 多重采样附件的解析结果写进了 resolveTarget，但【附件自身】仍是下一次 load 的来源 ——
+        // 一旦 discard，后续以 load 方式开帧就会载入到已被丢弃的内容（表现为整屏变黑）。
+        // 这里用 store 换正确性：切换渲染目标后要接着画，靠的就是附件里还留着上一通道的内容。
+        // 代价是少了 "resolve 后丢弃 MSAA 附件" 这点带宽优化。
+        storeOp: 'store',
     };
     if (resolved) colorAttachment.resolveTarget = resolved;
 
@@ -489,7 +502,7 @@ export function beginFrame(r: number, g: number, b: number, a: number, depthClea
         passDesc.depthStencilAttachment = {
             view: depthView,
             depthClearValue: depthClear >= 0 ? depthClear : 1,
-            depthLoadOp: 'clear',
+            depthLoadOp: load ? 'load' : 'clear',
             depthStoreOp: 'store',
         };
     }

@@ -158,9 +158,13 @@ namespace KFramework.MonoGame
         /// WebGPU 的 resolveTarget 必须在通道创建时指定，不能像 GL 的 blitFramebuffer 那样事后解析。
         /// </param>
         /// <param name="depthTarget">深度附件句柄；0 = 用画布自带的深度纹理。</param>
+        /// <param name="loadMode">
+        /// 通道载入方式：0 = clear（按 clearValue 清屏），1 = load（沿用目标里已有的内容）。
+        /// 切换渲染目标会结束当前通道，之后继续绘制<b>必须</b>用 1，否则会擦掉已画好的部分。
+        /// </param>
         [JSImport("beginFrame", "render_webgpu")]
         public static partial void BeginFrame(float r, float g, float b, float a, float depthClear,
-            int colorTarget, int resolveTarget, int depthTarget);
+            int colorTarget, int resolveTarget, int depthTarget, int loadMode);
 
         /// <summary>绑定渲染管线。</summary>
         [JSImport("setPipeline", "render_webgpu")]

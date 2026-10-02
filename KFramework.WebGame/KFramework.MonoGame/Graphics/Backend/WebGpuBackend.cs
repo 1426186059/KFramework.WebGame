@@ -69,6 +69,9 @@ namespace KFramework.MonoGame
 
         public string Name => "WebGPU";
 
+        /// <summary>WebGPU 的附件与纹理原点都在左上，与屏幕一致，离屏渲染<b>不需要</b>额外翻转（详见接口注释）。</summary>
+        public bool NeedsOffscreenYFlip => false;
+
         public int MaxTextureSize { get; private set; }
 
         public string Renderer { get; private set; } = string.Empty;
@@ -115,14 +118,25 @@ namespace KFramework.MonoGame
         /// 开帧并清屏。WebGPU 没有独立的 clear：clearValue 必须在 beginRenderPass 时给出，
         /// 所以本方法即"开帧"。若上一帧的通道还开着，先提交掉。
         /// </summary>
-        public void Clear(Color color)
+        public void Clear(Color color) => BeginPass(color, clear: true);
+
+        /// <summary>
+        /// 开一个通道。
+        /// </summary>
+        /// <param name="clear">
+        /// true = 按 clearValue 清屏（游戏显式调 <c>Clear</c>）；
+        /// false = <b>沿用目标里已有的内容</b>。切换渲染目标会结束当前通道，之后继续绘制必须走 false，
+        /// 否则会擦掉已画好的部分 —— 传奇那种「画布 ↔ 多个离屏 RT 来回切换做合成」正是这个模式。
+        /// </param>
+        private void BeginPass(Color clearColor, bool clear)
         {
             if (_frameActive) EndFrame();
 
             JSBind_WebGPU.BeginFrame(
-                color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f,
+                clearColor.R / 255f, clearColor.G / 255f, clearColor.B / 255f, clearColor.A / 255f,
                 _depthTarget != 0 ? 1f : -1f,   // depthClear < 0 → 不带深度附件（2D 精灵不需要）
-                _colorTarget, _resolveTarget, _depthTarget);
+                _colorTarget, _resolveTarget, _depthTarget,
+                clear ? 0 : 1);                 // 0 = clear，1 = load
 
             _frameActive = true;
             _vertexBump = 0;
@@ -220,8 +234,14 @@ namespace KFramework.MonoGame
         private void EnsureFrameActive()
         {
             if (_frameActive) return;
-            // 没显式 Clear 就开画（照 WebGL 的宽容行为）：开一个透明清屏的通道。
-            Clear(new Color(0, 0, 0, 255));
+
+            // 没显式 Clear 就开画：<b>沿用目标里已有的内容</b>（load），绝不清屏。
+            // 这里曾无条件走 Clear()，于是每次切换渲染目标都会擦掉目标里已画好的东西 ——
+            // 表现为离屏 RT 永远只剩最后一次绘制（PreserveContents 形同虚设）、
+            // 以及"画布画一半 → 切 RT → 切回"时前半段凭空消失。
+            // 需要清屏时上层会显式调 Clear()，或由 GraphicsDevice 按
+            // RenderTargetUsage.DiscardContents 自动清（见 GraphicsDevice.ApplyRenderTargets）。
+            BeginPass(default, clear: false);
         }
 
 

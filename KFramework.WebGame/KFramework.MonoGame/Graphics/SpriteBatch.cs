@@ -53,11 +53,14 @@ namespace KFramework.MonoGame
             _batcher.SetSamplerState(_samplerState);
 
             var viewport = _device.Viewport;
-            // 离屏（绑定了渲染目标）时 Y 不翻转：FBO 纹理的原点在左下，纹理采样同样从左下起算，
-            // 「屏幕翻转」与「FBO 翻转」会互相抵消，所以这里改用 Y 向上的投影。
-            // 等价于 MonoGame GL 后端在顶点着色器里对离屏渲染做的 posFixup.y *= -1
+            // 离屏时是否改用 Y 向上投影，取决于后端的坐标系原点（详见 IGraphicsBackend.NeedsOffscreenYFlip）：
+            //   WebGL  —— FBO 原点在左下，"屏幕翻转"与"FBO 翻转"抵消后才对，故需要；
+            //   WebGPU —— 附件原点与屏幕一致（都在左上），再翻一次就会上下颠倒，故不需要。
+            // WebGL 这条等价于 MonoGame GL 后端在顶点着色器里对离屏渲染做的 posFixup.y *= -1
             // （GraphicsDevice.OpenGL.cs: "If we have a render target bound (rendering offscreen) flip vertically"）。
-            _projection = _device.RenderTargetCount > 0
+            // 注意：这里曾把 WebGL 的事实当成通用真理硬编码，导致 WebGPU 的离屏画面上下颠倒
+            //（症状：渲染目标里的文字是倒的）。
+            _projection = _device.RenderTargetCount > 0 && _device.Backend.NeedsOffscreenYFlip
                 ? Matrix4x4.CreateOrthographicOffCenter(0f, viewport.Width, 0f, viewport.Height, 0f, 1f)
                 : Matrix4x4.CreateOrthographicScreen(viewport.Width, viewport.Height);
 

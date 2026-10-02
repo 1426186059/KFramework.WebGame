@@ -5,7 +5,11 @@ namespace KFramework.Test.WebGPU.Tests
 {
 
     /// <summary>
-    /// 测试页基类：统一画标题 / 页内自述 / 底部切换提示，并提供「返回总纲」（Esc 或点左上按钮）。
+    /// 测试页基类：统一画标题 / 页内自述 / 底部提示。
+    /// <para>
+    /// 返回总纲统一用 <b>Esc</b>（由宿主 WebGpuTestGame 全局处理，任何页都能用），
+    /// 页内不再摆返回按钮 —— 那一行既占版面又与各页自己的按钮区挤在一起。
+    /// </para>
     /// <para>
     /// 子类重写 <see cref="DrawBody"/> 画正文；需要多批不同状态（例如逐个混合模式）的页面
     /// 可直接重写 <see cref="Draw"/>，复用 <see cref="DrawHeader"/> / <see cref="DrawFooter"/>。
@@ -29,29 +33,19 @@ namespace KFramework.Test.WebGPU.Tests
         protected virtual string Description => string.Empty;
 
         /// <summary>底部提示文字。</summary>
-        protected virtual string Hint => "按 1 / 2 / 3 直接切换，Esc 或点左上「← 总纲」返回";
-
-        private readonly Rectangle _backRect = new(20, 16, 104, 34);
+        protected virtual string Hint => "按 1 / 2 / 3 直接切换测试页，Esc 返回总纲";
 
         /// <summary>
-        /// 页内更新。<b>密封</b>：返回按钮的命中处理必须无条件执行。
+        /// 页内更新。<b>密封</b>：保证子类的扩展点一定会被调到。
         /// <para>
         /// 踩过的坑：子类直接重写 <c>Update()</c> 且不调 <c>base.Update()</c>，
-        /// 于是该页的「← 总纲」按钮（以及原先写在基类里的 Esc）全部失灵 ——
-        /// 症状只在某一页出现，很难联想到是重写没调基类。改为密封后子类只能重写
-        /// <see cref="UpdateBody"/>，基类行为再也绕不过去。
+        /// 于是基类里的输入处理全部失灵 —— 症状只在某一页出现，很难联想到是重写没调基类。
+        /// 密封后子类只能重写 <see cref="UpdateBody"/>，基类行为再也绕不过去。
         /// </para>
         /// </summary>
-        public sealed override void Update()
-        {
-            // Esc 的全局切换由宿主 WebGpuTestGame 统一处理（在任何测试页都能回总纲），这里只管按钮点击。
-            if (Input_Mouse.GetButtonDown(MouseButton.Left) && _backRect.Contains(Input_Mouse.Position))
-                MainScene.Open();
+        public sealed override void Update() => UpdateBody();
 
-            UpdateBody();
-        }
-
-        /// <summary>页内自定义逻辑的扩展点（计帧、切模式等）。基类已在 Update 里先处理完返回按钮。</summary>
+        /// <summary>页内自定义逻辑的扩展点（计帧、切换显示画面等）。</summary>
         protected virtual void UpdateBody() { }
 
         public override void Draw()
@@ -62,22 +56,15 @@ namespace KFramework.Test.WebGPU.Tests
             RenderOffscreen(batch);
 
             batch.Begin();
-            DrawBack(batch);
             DrawHeader(batch);
             DrawBody(batch, 84f);
             DrawFooter(batch);
             batch.End();
         }
 
-        private void DrawBack(SpriteBatch batch)
-        {
-            batch.Draw(KDefaultRes.DefaultTexture2D, _backRect, new Color(38, 52, 92));
-            batch.DrawString(Font, "← 总纲", new Vector2(_backRect.X + 12, _backRect.Y + 6), new Color(170, 210, 255));
-        }
-
         protected void DrawHeader(SpriteBatch batch)
         {
-            batch.DrawString(Font, Title, new Vector2(_backRect.Right + 18, 20f), new Color(126, 200, 255));
+            batch.DrawString(Font, Title, new Vector2(28f, 20f), new Color(126, 200, 255));
             if (Description.Length > 0)
                 batch.DrawString(Font, Description, new Vector2(28f, 48f), new Color(150, 165, 195));
         }
@@ -103,6 +90,96 @@ namespace KFramework.Test.WebGPU.Tests
         // ================================================================
         // 参考图案生成（不依赖任何资源文件，纯程序化）
         // ================================================================
+
+        /// <summary>
+        /// 程序化生成一张带光照 + 高光的球（白色，绘制时用 Color 着色），RGBA8。
+        /// 照 Test.Common 的 <c>TestSpriteTexture.MakeBall</c>（两个测试工程各自独立，直接移植一份）。
+        /// <para>
+        /// 曲线边缘是检验 MSAA 最理想的形状；高光固定在<b>左上</b>，所以离屏画面若上下颠倒，
+        /// 高光会跑到左下 —— 不用额外标记也能看出来。
+        /// </para>
+        /// </summary>
+        protected Texture2D MakeBall(int size)
+        {
+            var pixels = new byte[size * size * 4];
+
+            // 光方向（左上前）与 Blinn 半程向量
+            var light = Vector3.Normalize(new Vector3(-0.45f, -0.55f, 0.70f));
+            var half = Vector3.Normalize(light + new Vector3(0f, 0f, 1f));
+
+            float radius = size / 2f;
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float nx = (x + 0.5f - radius) / radius;
+                    float ny = (y + 0.5f - radius) / radius;
+                    float dist = MathF.Sqrt(nx * nx + ny * ny);
+
+                    // 边缘一个像素的抗锯齿
+                    float alpha = Math.Clamp((1f - dist) * size * 0.5f, 0f, 1f);
+
+                    float nz = MathF.Sqrt(MathF.Max(0f, 1f - MathF.Min(dist, 1f) * MathF.Min(dist, 1f)));
+                    var normal = Vector3.Normalize(new Vector3(nx, ny, nz));
+
+                    float diffuse = MathF.Max(0f, Vector3.Dot(normal, light));
+                    float specular = MathF.Pow(MathF.Max(0f, Vector3.Dot(normal, half)), 28f);
+                    float v = 0.28f + 0.68f * diffuse + 0.85f * specular;
+
+                    int offset = (y * size + x) * 4;
+                    byte c = (byte)Math.Clamp(v * 255f, 0f, 255f);
+                    pixels[offset + 0] = c;
+                    pixels[offset + 1] = c;
+                    pixels[offset + 2] = c;
+                    pixels[offset + 3] = (byte)(alpha * 255f);
+                }
+            }
+
+            return Device.CreateTexture(size, size, pixels);
+        }
+
+        /// <summary>HSV → Color（h: 0..360，s / v: 0..1）。照 Test.Common 的实现，用于给球批量着色。</summary>
+        protected static Color Hsv(float h, float s, float v)
+        {
+            float c = v * s;
+            float x2 = c * (1f - MathF.Abs(h / 60f % 2f - 1f));
+            float m = v - c;
+            float r = 0f, g = 0f, b = 0f;
+
+            if (h < 60f) { r = c; g = x2; }
+            else if (h < 120f) { r = x2; g = c; }
+            else if (h < 180f) { g = c; b = x2; }
+            else if (h < 240f) { g = x2; b = c; }
+            else if (h < 300f) { r = x2; b = c; }
+            else { r = c; b = x2; }
+
+            return new Color((int)((r + m) * 255f), (int)((g + m) * 255f), (int)((b + m) * 255f));
+        }
+
+        /// <summary>
+        /// 纵向明暗渐变（宽只需几像素，横向拉伸时按列复制即可）。
+        /// 比棋盘格柔和，作为面板底色不会干扰对球体边缘的观察。
+        /// </summary>
+        protected Texture2D MakeVGradient(int width, int height, Color top, Color bottom)
+        {
+            var pixels = new byte[width * height * 4];
+
+            for (int y = 0; y < height; y++)
+            {
+                float t = height <= 1 ? 0f : y / (float)(height - 1);
+                byte r = (byte)(top.R + (bottom.R - top.R) * t);
+                byte g = (byte)(top.G + (bottom.G - top.G) * t);
+                byte b = (byte)(top.B + (bottom.B - top.B) * t);
+
+                for (int x = 0; x < width; x++)
+                {
+                    int i = (y * width + x) * 4;
+                    pixels[i] = r; pixels[i + 1] = g; pixels[i + 2] = b; pixels[i + 3] = 255;
+                }
+            }
+
+            return Device.CreateTexture(width, height, pixels);
+        }
 
         /// <summary>
         /// 综合参考图：一张图同时检验颜色、灰阶、过滤/走样、曲线边缘、方向与混合。

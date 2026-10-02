@@ -36,6 +36,24 @@ namespace KFramework.MonoGame
         /// <summary>取当前错误码（0 表示无错误）。</summary>
         int GetError();
 
+        /// <summary>
+        /// 渲染到<b>离屏目标</b>时，是否需要改用 Y 向上的投影
+        /// （<c>CreateOrthographicOffCenter(0, w, 0, h)</c>，与屏幕的 Y 向下相反）。
+        /// <para>
+        /// 这不是偏好，而是两个后端的<b>坐标系原点不同</b>决定的，取错值会让离屏画面上下颠倒：
+        /// <list type="bullet">
+        ///   <item><description><b>WebGL：需要（true）</b>。FBO 与纹理原点在<b>左下</b>：
+        ///   渲染时 NDC y=-1 落在纹理第 0 行，而采样时 UV v=0 也取第 0 行 ——
+        ///   于是"屏幕翻转"与"FBO 翻转"正好抵消，必须改用 Y 向上投影，离屏内容画出来才是正的。
+        ///   （等价于 MonoGame GL 后端在顶点着色器里对离屏渲染做的 <c>posFixup.y *= -1</c>。）</description></item>
+        ///   <item><description><b>WebGPU：不需要（false）</b>。附件与纹理原点都在<b>左上</b>：
+        ///   NDC y=+1 落在第 0 行，采样 v=0 也取第 0 行 —— 与屏幕完全一致。
+        ///   若再翻一次，离屏内容就会上下颠倒。</description></item>
+        /// </list>
+        /// </para>
+        /// </summary>
+        bool NeedsOffscreenYFlip { get; }
+
         // ============ 视口 / 裁剪 / 清屏 / 读像素 ============
 
         void SetViewport(int x, int y, int width, int height);
