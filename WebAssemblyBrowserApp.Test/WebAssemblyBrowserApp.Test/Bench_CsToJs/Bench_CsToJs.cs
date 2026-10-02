@@ -39,10 +39,10 @@ public sealed class Bench_CsToJs : IBenchModule
                 BenchKit.MeasureFixed(() => BenchKit.LocalEchoInt(1), BenchKit.Times), 1),
 
             new("C#→JS Noop()", "调用空的 JS 函数 —— 纯跨界下限（无载荷）",
-                BenchKit.MeasureFixed(() => BenchInterop.Noop(), BenchKit.Times), 1),
+                BenchKit.MeasureFixed(() => JSBind_CsToJs.Noop(), BenchKit.Times), 1),
 
             new("C#→JS EchoInt(int)", "一个 int 进、一个 int 出 —— 比 Noop 多出的就是标量封送",
-                BenchKit.MeasureFixed(() => _ = BenchInterop.EchoInt(1), BenchKit.Times), 1),
+                BenchKit.MeasureFixed(() => _ = JSBind_CsToJs.EchoInt(1), BenchKit.Times), 1),
         };
 
         all.AddRange(intRows);
@@ -60,7 +60,7 @@ public sealed class Bench_CsToJs : IBenchModule
                 BenchKit.MeasureFixed(() => BenchKit.LocalEchoString(text), BenchKit.Times), 1),
 
             new("C#→JS EchoString(" + BenchKit.TextLength + " 字符)", "托管字符串 → JS 字符串，需做一次编码转换并分配 JS 字符串",
-                BenchKit.MeasureFixed(() => _ = BenchInterop.EchoString(text), BenchKit.Times), 1),
+                BenchKit.MeasureFixed(() => _ = JSBind_CsToJs.EchoString(text), BenchKit.Times), 1),
         };
 
         all.AddRange(stringRows);
@@ -82,11 +82,11 @@ public sealed class Bench_CsToJs : IBenchModule
 
             bytesRows.Add(new BenchRow(
                 "C#→JS SendBytes(" + len + " B) — 传入", "C# 把数组交给 JS：封送时复制一次，JS 拿到的是副本",
-                BenchKit.MeasureFixed(() => _ = BenchInterop.SendBytes(buffer), BenchKit.TimesBytes), 1));
+                BenchKit.MeasureFixed(() => _ = JSBind_CsToJs.SendBytes(buffer), BenchKit.TimesBytes), 1));
 
             bytesRows.Add(new BenchRow(
                 "C#→JS MakeArray(" + len + " B) — 返回", "JS 新建数组交回 C#：一次分配 + 一次复制，C# 收成新 byte[]",
-                BenchKit.MeasureFixed(() => _ = BenchInterop.MakeArray(len), BenchKit.TimesBytes), 1));
+                BenchKit.MeasureFixed(() => _ = JSBind_CsToJs.MakeArray(len), BenchKit.TimesBytes), 1));
         }
 
         all.AddRange(bytesRows);
@@ -110,7 +110,7 @@ public sealed class Bench_CsToJs : IBenchModule
 
             spanRows.Add(new BenchRow(
                 "C#→JS FillSpan(" + len + " B) — MemoryView", "零拷贝：C# 提供缓冲，JS 用 view.set() 直接写进托管内存",
-                BenchKit.MeasureFixed(() => _ = BenchInterop.FillSpan(buffer, len), BenchKit.TimesBytes), 1));
+                BenchKit.MeasureFixed(() => _ = JSBind_CsToJs.FillSpan(buffer, len), BenchKit.TimesBytes), 1));
         }
 
         all.AddRange(spanRows);
@@ -140,13 +140,13 @@ public sealed class Bench_CsToJs : IBenchModule
     /// </summary>
     private static string VerifyBytes()
     {
-        string fill = BenchKit.VerifyFillSpan(static (b, n) => BenchInterop.FillSpan(b, n));
+        string fill = BenchKit.VerifyFillSpan(static (b, n) => JSBind_CsToJs.FillSpan(b, n));
 
-        byte[] got = BenchInterop.MakeArray(256);
+        byte[] got = JSBind_CsToJs.MakeArray(256);
         bool arrayOk = got.Length == 256 && got[255] == 255;
 
         var send = new byte[] { 1, 2, 3, 4 };
-        _ = BenchInterop.SendBytes(send);
+        _ = JSBind_CsToJs.SendBytes(send);
         bool sendIntact = send[0] == 1 && send[3] == 4;
 
         return " 抽验：" + fill +

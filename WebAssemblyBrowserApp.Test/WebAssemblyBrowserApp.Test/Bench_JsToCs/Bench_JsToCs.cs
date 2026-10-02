@@ -29,11 +29,11 @@ public sealed class Bench_JsToCs : IBenchModule
     public Task<string> RunAsync()
     {
         // 预热：首次跨界含 JIT 与绑定解析，不应计入稳定态
-        BenchInterop.CallTickN(2000);
-        BenchInterop.CallIntN(2000);
-        BenchInterop.CallStringN(500, 16);
-        BenchInterop.CallBytesN(200, 16);
-        BenchInterop.CallSpanN(1, 16);      // 这一格会抛错，但首次调用仍会解析绑定；JS 侧已 try/catch
+        JSBind_JsToCs.CallTickN(2000);
+        JSBind_JsToCs.CallIntN(2000);
+        JSBind_JsToCs.CallStringN(500, 16);
+        JSBind_JsToCs.CallBytesN(200, 16);
+        JSBind_JsToCs.CallSpanN(1, 16);      // 这一格会抛错，但首次调用仍会解析绑定；JS 侧已 try/catch
 
         var all = new List<BenchRow>();
         var sb = new StringBuilder();
@@ -46,10 +46,10 @@ public sealed class Bench_JsToCs : IBenchModule
             new("基线：C#→C# EchoInt", "C# 调用自身方法，零跨界 —— 成本参照",
                 BenchKit.MeasureFixed(() => BenchKit.LocalEchoInt(1), BenchKit.Times), 1),
 
-            BenchKit.FromJs(() => BenchInterop.CallTickN(BenchKit.Times),
+            BenchKit.FromJs(() => JSBind_JsToCs.CallTickN(BenchKit.Times),
                 "JS→C# CsTick()", "无参数、返回常量 int —— 纯跨界下限", BenchKit.Times),
 
-            BenchKit.FromJs(() => BenchInterop.CallIntN(BenchKit.Times),
+            BenchKit.FromJs(() => JSBind_JsToCs.CallIntN(BenchKit.Times),
                 "JS→C# CsEchoInt(int)", "一个 int 进、一个 int 出 —— 与 CsTick 的差即标量封送", BenchKit.Times),
         };
 
@@ -67,7 +67,7 @@ public sealed class Bench_JsToCs : IBenchModule
             new("基线：C#→C# EchoString", "C# 调用自身方法，零跨界",
                 BenchKit.MeasureFixed(() => BenchKit.LocalEchoString(text), BenchKit.Times), 1),
 
-            BenchKit.FromJs(() => BenchInterop.CallStringN(BenchKit.Times, BenchKit.TextLength),
+            BenchKit.FromJs(() => JSBind_JsToCs.CallStringN(BenchKit.Times, BenchKit.TextLength),
                 "JS→C# CsEchoString(" + BenchKit.TextLength + " 字符)",
                 "JS 字符串 → 托管字符串，需做一次编码转换并分配托管字符串", BenchKit.Times),
         };
@@ -89,7 +89,7 @@ public sealed class Bench_JsToCs : IBenchModule
                 "基线：C#→C# EchoBytes(" + len + " B)", "C# 调用自身方法，零跨界（且不复制）",
                 BenchKit.MeasureFixed(() => BenchKit.LocalEchoBytes(buffer), BenchKit.TimesBytes), 1));
 
-            bytesRows.Add(BenchKit.FromJs(() => BenchInterop.CallBytesN(BenchKit.TimesBytes, len),
+            bytesRows.Add(BenchKit.FromJs(() => JSBind_JsToCs.CallBytesN(BenchKit.TimesBytes, len),
                 "JS→C# CsEchoBytes(" + len + " B)",
                 "Uint8Array → 托管 byte[]，封送时复制一次，C# 每收到一份新数组（可长期持有）", BenchKit.TimesBytes));
         }
@@ -114,14 +114,14 @@ public sealed class Bench_JsToCs : IBenchModule
                 BenchKit.MeasureFixed(() => BenchKit.LocalFillSpan(buffer, len), BenchKit.TimesBytes), 1));
 
             // JS 侧回报 "最快|最慢|错误"：错误为空说明支持；否则这一格记为"不可用"并带上原因
-            spanRows.Add(BenchKit.FromJs(() => BenchInterop.CallSpanN(BenchKit.TimesBytes, len),
+            spanRows.Add(BenchKit.FromJs(() => JSBind_JsToCs.CallSpanN(BenchKit.TimesBytes, len),
                 "JS→C# CsFillSpan(" + len + " B) — MemoryView",
                 "JS 传 Uint8Array 给 C# 的 Span<byte> 参数（由 JS 侧计时）", BenchKit.TimesBytes));
         }
 
         all.AddRange(spanRows);
         sb.Append(BenchKit.Section("④ MemoryView — JS → C#（实测不可用）",
-            "C# 侧入口：BenchInterop.CsFillSpan（参数 Span<byte> + JSMarshalAs<MemoryView>）；" +
+            "C# 侧入口：JSBind_JsToCs.CsFillSpan（参数 Span<byte> + JSMarshalAs<MemoryView>）；" +
             "JS 侧只能给出 Uint8Array",
             spanRows,
             "结论：这个方向没有 MemoryView —— 运行时要求的是它内部的 MemoryView 对象" +

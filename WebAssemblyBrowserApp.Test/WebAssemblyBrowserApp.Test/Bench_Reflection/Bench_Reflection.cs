@@ -23,6 +23,17 @@ public sealed class Bench_Reflection : IBenchModule
 
     public string Page => "reflection";
 
+    /// <summary>
+    /// 固定次数：每轮执行 action <b>一次</b>（action 内部自带 ops 次操作），跑 <see cref="FixedRounds"/> 轮取最快。
+    /// <para>
+    /// 反射里单次 action 本身就很贵（"未缓存元数据"那行一轮就近秒级），所以预热只做 1 次、轮数也只取 3。
+    /// 关键仍与跨界模块一致：<b>同组各行的轮数与每轮操作量完全相同</b> —— 总次数一致，毫秒数才能横比。
+    /// </para>
+    /// </summary>
+    private const int FixedWarmup = 1;
+
+    private const int FixedRounds = 3;
+
     public async Task<string> RunAsync()
     {
         var sb = new StringBuilder();
@@ -43,33 +54,33 @@ public sealed class Bench_Reflection : IBenchModule
         // 单次 action 内的操作数：passes × 样本数 × 属性数 × 2（get + set）
         long ops = (long)passes * BenchModels.Samples.Length * BenchModels.PropCount * 2;
 
-        BenchTiming direct = BenchKit.Measure(() =>
+        BenchTiming direct = BenchKit.MeasureFixed(() =>
         {
             for (int p = 0; p < passes; p++)
                 for (int i = 0; i < BenchModels.Samples.Length; i++)
                     DirectIo(BenchModels.Samples[i]);
-        }, ops);
+        }, 1, FixedWarmup, FixedRounds);
 
-        BenchTiming uncached = BenchKit.Measure(() =>
+        BenchTiming uncached = BenchKit.MeasureFixed(() =>
         {
             for (int p = 0; p < passes; p++)
                 for (int i = 0; i < BenchModels.Samples.Length; i++)
                     ReflectionUncached(BenchModels.Samples[i]);
-        }, ops);
+        }, 1, FixedWarmup, FixedRounds);
 
-        BenchTiming cached = BenchKit.Measure(() =>
+        BenchTiming cached = BenchKit.MeasureFixed(() =>
         {
             for (int p = 0; p < passes; p++)
                 for (int i = 0; i < BenchModels.Samples.Length; i++)
                     ReflectionCached(BenchModels.Samples[i]);
-        }, ops);
+        }, 1, FixedWarmup, FixedRounds);
 
-        BenchTiming compiled = BenchKit.Measure(() =>
+        BenchTiming compiled = BenchKit.MeasureFixed(() =>
         {
             for (int p = 0; p < passes; p++)
                 for (int i = 0; i < BenchModels.Samples.Length; i++)
                     CompiledIo(BenchModels.Samples[i]);
-        }, ops);
+        }, 1, FixedWarmup, FixedRounds);
 
         var rows = new List<BenchRow>
         {
@@ -130,21 +141,21 @@ public sealed class Bench_Reflection : IBenchModule
     {
         int n = 5000;
 
-        BenchTiming direct = BenchKit.Measure(() =>
+        BenchTiming direct = BenchKit.MeasureFixed(() =>
         {
             for (int i = 0; i < n; i++) _ = new BenchModels.Sample();
-        }, n);
+        }, 1, FixedWarmup, FixedRounds);
 
-        BenchTiming activator = BenchKit.Measure(() =>
+        BenchTiming activator = BenchKit.MeasureFixed(() =>
         {
             for (int i = 0; i < n; i++)
                 _ = (BenchModels.Sample)Activator.CreateInstance(typeof(BenchModels.Sample))!;
-        }, n);
+        }, 1, FixedWarmup, FixedRounds);
 
-        BenchTiming factory = BenchKit.Measure(() =>
+        BenchTiming factory = BenchKit.MeasureFixed(() =>
         {
             for (int i = 0; i < n; i++) _ = (BenchModels.Sample)BenchModels.Factory();
-        }, n);
+        }, 1, FixedWarmup, FixedRounds);
 
         var rows = new List<BenchRow>
         {
@@ -166,26 +177,26 @@ public sealed class Bench_Reflection : IBenchModule
         int passes = 2000;
         long ops = (long)passes * BenchModels.Samples.Length;
 
-        BenchTiming direct = BenchKit.Measure(() =>
+        BenchTiming direct = BenchKit.MeasureFixed(() =>
         {
             for (int p = 0; p < passes; p++)
                 for (int i = 0; i < BenchModels.Samples.Length; i++)
                     BenchModels.Samples[i].Finish();
-        }, ops);
+        }, 1, FixedWarmup, FixedRounds);
 
-        BenchTiming invoke = BenchKit.Measure(() =>
+        BenchTiming invoke = BenchKit.MeasureFixed(() =>
         {
             for (int p = 0; p < passes; p++)
                 for (int i = 0; i < BenchModels.Samples.Length; i++)
                     BenchModels.FinishMethod.Invoke(BenchModels.Samples[i], null);
-        }, ops);
+        }, 1, FixedWarmup, FixedRounds);
 
-        BenchTiming del = BenchKit.Measure(() =>
+        BenchTiming del = BenchKit.MeasureFixed(() =>
         {
             for (int p = 0; p < passes; p++)
                 for (int i = 0; i < BenchModels.Samples.Length; i++)
                     BenchModels.FinishDelegate(BenchModels.Samples[i]);
-        }, ops);
+        }, 1, FixedWarmup, FixedRounds);
 
         var rows = new List<BenchRow>
         {
@@ -209,21 +220,21 @@ public sealed class Bench_Reflection : IBenchModule
         int passes = 500;
         long ops = (long)passes * BenchModels.Samples.Length * BenchModels.PropCount;
 
-        BenchTiming perCall = BenchKit.Measure(() =>
+        BenchTiming perCall = BenchKit.MeasureFixed(() =>
         {
             for (int p = 0; p < passes; p++)
                 for (int i = 0; i < BenchModels.Samples.Length; i++)
                     foreach (PropertyInfo pr in BenchModels.Samples[i].GetType().GetProperties())
                         _ = pr.GetCustomAttribute<BenchModels.IgnoreAttribute>();
-        }, ops);
+        }, 1, FixedWarmup, FixedRounds);
 
-        BenchTiming cached = BenchKit.Measure(() =>
+        BenchTiming cached = BenchKit.MeasureFixed(() =>
         {
             for (int p = 0; p < passes; p++)
                 for (int i = 0; i < BenchModels.Samples.Length; i++)
                     foreach (PropertyInfo pr in BenchModels.Props)
                         _ = pr.GetCustomAttribute<BenchModels.IgnoreAttribute>();
-        }, ops);
+        }, 1, FixedWarmup, FixedRounds);
 
         var rows = new List<BenchRow>
         {

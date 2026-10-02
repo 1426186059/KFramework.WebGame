@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>帧循环：一趟推 vs 两趟拉 — WASM 基准测试</title>
+  <link rel="preload" id="webassembly" />
+  <script type="importmap"></script>
+  <script type='module' src="main#[.{fingerprint}].js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>帧循环：一趟推 vs 两趟拉</h1>
+  <p class="muted">
+    模拟引擎宿主那行 <code>host.Frame(timestamp, gameFrameData.takeFrameData())</code> 的取舍：
+    <b>A 一趟推</b>（JS→C# 顺带把一帧的输入事件字节流带进来 —— 这个方向只能带 byte[]）、
+    <b>B 两趟拉</b>（先推帧不带数据，C# 再回头调 JS，用 MemoryView 零拷贝直写自己的缓冲）。
+    两条路线都由 JS 侧整体计时 —— 一次调用 = 一帧的工作量，所以「ns/操作」就是 <b>ns/帧</b>。
+    载荷按每帧 0 / 16 / 256 / 1024 字节分档，其中 <b>0 B = 这一帧没有输入</b>，用来单独量"多一趟"要付多少。
+    进入本页会自动开始运行。
+  </p>
+
+  <div class="bar">
+    <a class="btn" href="index.html">← 返回总纲</a>
+    <button id="runAll">运行全部测试</button>
+    <span id="status">加载中...</span>
+  </div>
+
+  <div id="results"><i>loading...</i></div>
+</body>
+
+</html>

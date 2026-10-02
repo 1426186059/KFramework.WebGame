@@ -24,6 +24,8 @@ public static class BenchCatalog
         new Bench_CsToJs(),
         // 横向对比：同一操作在 基线 / C#→JS / JS→C# 三种走法下的耗时（同样四类分组）
         new Bench_CrossBoundary(),
+        // 帧循环的取舍：一帧的输入事件是"随帧回调一起推进来"还是"C# 回头去取"（引擎宿主那行的依据）
+        new Bench_FrameLoop(),
     };
 
     /// <summary>按序号取模块，越界返回 null。</summary>

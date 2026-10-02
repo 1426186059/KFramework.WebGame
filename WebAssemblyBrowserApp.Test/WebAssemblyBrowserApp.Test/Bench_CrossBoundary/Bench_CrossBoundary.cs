@@ -35,10 +35,10 @@ public sealed class Bench_CrossBoundary : IBenchModule
     public Task<string> RunAsync()
     {
         // 预热（首次跨界含 JIT 与绑定解析）
-        BenchInterop.CallIntN(2000);
-        BenchInterop.CallStringN(500, 16);
-        BenchInterop.CallBytesN(200, 16);
-        BenchInterop.CallSpanN(1, 16);
+        JSBind_CrossBoundary.CallIntN(2000);
+        JSBind_CrossBoundary.CallStringN(500, 16);
+        JSBind_CrossBoundary.CallBytesN(200, 16);
+        JSBind_CrossBoundary.CallSpanN(1, 16);
 
         var all = new List<BenchRow>();
         var sb = new StringBuilder();
@@ -51,9 +51,9 @@ public sealed class Bench_CrossBoundary : IBenchModule
                 BenchKit.MeasureFixed(() => BenchKit.LocalEchoInt(1), BenchKit.Times), 1),
 
             Row("int — C#→JS", "[JSImport] C# 主动调过去",
-                BenchKit.MeasureFixed(() => _ = BenchInterop.EchoInt(1), BenchKit.Times), 1),
+                BenchKit.MeasureFixed(() => _ = JSBind_CrossBoundary.EchoInt(1), BenchKit.Times), 1),
 
-            BenchKit.FromJs(() => BenchInterop.CallIntN(BenchKit.Times),
+            BenchKit.FromJs(() => JSBind_CrossBoundary.CallIntN(BenchKit.Times),
                 "int — JS→C#", "[JSExport] JS 主动调进来（由 JS 侧计时）", BenchKit.Times),
         };
 
@@ -73,9 +73,9 @@ public sealed class Bench_CrossBoundary : IBenchModule
                 BenchKit.MeasureFixed(() => BenchKit.LocalEchoString(text), BenchKit.Times), 1),
 
             Row("string(" + BenchKit.TextLength + ") — C#→JS", "[JSImport]，需编码转换",
-                BenchKit.MeasureFixed(() => _ = BenchInterop.EchoString(text), BenchKit.Times), 1),
+                BenchKit.MeasureFixed(() => _ = JSBind_CrossBoundary.EchoString(text), BenchKit.Times), 1),
 
-            BenchKit.FromJs(() => BenchInterop.CallStringN(BenchKit.Times, BenchKit.TextLength),
+            BenchKit.FromJs(() => JSBind_CrossBoundary.CallStringN(BenchKit.Times, BenchKit.TextLength),
                 "string(" + BenchKit.TextLength + ") — JS→C#", "[JSExport]，需编码转换（由 JS 侧计时）", BenchKit.Times),
         };
 
@@ -96,9 +96,9 @@ public sealed class Bench_CrossBoundary : IBenchModule
                 BenchKit.MeasureFixed(() => BenchKit.LocalEchoBytes(buffer), BenchKit.TimesBytes), 1));
 
             bytesRows.Add(Row("byte[" + len + "] — C#→JS", "[JSImport] JS 建数组返回，C# 侧接收（一次复制）",
-                BenchKit.MeasureFixed(() => _ = BenchInterop.MakeArray(len), BenchKit.TimesBytes), 1));
+                BenchKit.MeasureFixed(() => _ = JSBind_CrossBoundary.MakeArray(len), BenchKit.TimesBytes), 1));
 
-            bytesRows.Add(BenchKit.FromJs(() => BenchInterop.CallBytesN(BenchKit.TimesBytes, len),
+            bytesRows.Add(BenchKit.FromJs(() => JSBind_CrossBoundary.CallBytesN(BenchKit.TimesBytes, len),
                 "byte[" + len + "] — JS→C#", "[JSExport] JS 传数组进 C#（一次复制，由 JS 侧计时）", BenchKit.TimesBytes));
         }
 
@@ -119,9 +119,9 @@ public sealed class Bench_CrossBoundary : IBenchModule
                 BenchKit.MeasureFixed(() => BenchKit.LocalFillSpan(buffer, len), BenchKit.TimesBytes), 1));
 
             spanRows.Add(Row("MemoryView " + len + " B — C#→JS", "[JSImport] 零拷贝：C# 备好缓冲，JS 直写",
-                BenchKit.MeasureFixed(() => _ = BenchInterop.FillSpan(buffer, len), BenchKit.TimesBytes), 1));
+                BenchKit.MeasureFixed(() => _ = JSBind_CrossBoundary.FillSpan(buffer, len), BenchKit.TimesBytes), 1));
 
-            spanRows.Add(BenchKit.FromJs(() => BenchInterop.CallSpanN(BenchKit.TimesBytes, len),
+            spanRows.Add(BenchKit.FromJs(() => JSBind_CrossBoundary.CallSpanN(BenchKit.TimesBytes, len),
                 "MemoryView " + len + " B — JS→C#", "[JSExport] 由 JS 侧计时", BenchKit.TimesBytes));
         }
 
@@ -131,7 +131,7 @@ public sealed class Bench_CrossBoundary : IBenchModule
             spanRows,
             "看点：两个方向不对称 —— C# 能把缓冲借给 JS 写，JS 却造不出运行时所需的 MemoryView 对象。" +
             "所以“让 JS 直接填 C# 的缓冲”是可行的（如每帧输入事件），反过来则只能靠 byte[] 复制。" +
-            BenchKit.VerifyFillSpan(static (b, n) => BenchInterop.FillSpan(b, n))));
+            BenchKit.VerifyFillSpan(static (b, n) => JSBind_CrossBoundary.FillSpan(b, n))));
 
         // ================= 总表 =================
         sb.Append(BenchKit.Section("总表：四类 × 三种走法（按 ns/操作 升序，不可用行沉底）",

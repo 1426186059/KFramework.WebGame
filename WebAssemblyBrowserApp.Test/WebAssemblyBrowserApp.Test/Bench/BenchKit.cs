@@ -100,40 +100,13 @@ public static class BenchKit
     }
 
     /// <summary>
-    /// 自适应校准计时：先 warmup，再以 2 倍放大迭代次数，直到耗时超过 targetMs 或达到上限。
-    /// <para>
-    /// 之所以不固定迭代次数：不同场景的单次开销可能相差几个数量级，
-    /// 固定次数要么快到测不准、要么慢到让人以为卡死。
-    /// </para>
-    /// </summary>
-    public static BenchTiming Measure(Action action, long opsPerAction = 1, int warmup = 3,
-                                      int targetMs = 60, int maxIters = 1 << 18)
-    {
-        for (int i = 0; i < warmup; i++) action();
-
-        int iters = 1;
-        long ticks = 0;
-        while (true)
-        {
-            var sw = Stopwatch.StartNew();
-            for (int i = 0; i < iters; i++) action();
-            sw.Stop();
-            ticks = sw.ElapsedTicks;
-            if (iters >= maxIters || sw.ElapsedMilliseconds >= targetMs) break;
-            iters *= 2;
-        }
-
-        double ms = (ticks / (double)Stopwatch.Frequency) * 1000.0;
-        return new BenchTiming(ms, iters);
-    }
-
-    /// <summary>
     /// <b>固定次数</b>计时：预热 <paramref name="warmup"/> 次（不计入）后，跑 <paramref name="rounds"/> 轮、
     /// 每轮恰好 <paramref name="times"/> 次，取<b>最快的一轮</b>并记下最慢的一轮。
     /// <para>
-    /// 与 <see cref="Measure"/> 的差别是不自适应放大 —— 快的方法不会因此自动跑更多次。
-    /// 跨界基准必须用它：同组里<b>每一行都跑同一个 times</b>，各行的"耗时(ms)"才能直接横比；
-    /// 用自适应时，最快的一行会被放大到几十万次、窗口反而最大（基线因此被排到末尾，整张表的结论都是反的）。
+    /// 全程<b>不自适应放大</b> —— 快的方法不会因此自动跑更多次。
+    /// 本工程<b>所有模块</b>（跨界四组、帧循环、反射）都必须用它：同组里<b>每一行都跑同一个 times</b>，
+    /// 各行的"耗时(ms)"才能直接横比；用自适应时，最快的一行会被放大到几十万次、窗口反而最大
+    /// （基线因此被排到末尾，整张表的结论都是反的）。
     /// </para>
     /// <para>
     /// 取最快轮而不是平均值，是因为浏览器里的干扰（GC、主线程被调度走、首次绑定解析）只会让某一轮<b>变慢</b>，

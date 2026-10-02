@@ -12,7 +12,7 @@ public static partial class BenchRunner
     /// 当前页面的文件名（由 main.js 从 <c>location.pathname</c> 取得，不含扩展名）。
     /// 它决定：进入某个测试的独立页面后，自动运行哪个模块；总纲页（index）则不自动运行。
     /// </summary>
-    [JSImport("bench.currentPage", "main.js")]
+    [JSImport("currentPage", "main.js")]
     private static partial string CurrentPage();
 
     /// <summary>显示总纲（不跑任何测试）。</summary>
