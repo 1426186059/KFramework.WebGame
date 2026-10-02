@@ -59,7 +59,31 @@ namespace KFramework.Test.WebGPU
         protected override void Update(GameTime gameTime)
         {
             KInputMgr.Update(gameTime);
+            HandleGlobalKeys();
             KSceneMgr.Update(gameTime);
+        }
+
+        /// <summary>
+        /// 全局按键：在任何测试页都能切换，不必先退回总纲。
+        /// 数字 1..3 直达对应测试页，Esc 回总纲（各页左上角的「← 总纲」按钮同样有效）。
+        /// </summary>
+        private void HandleGlobalKeys()
+        {
+            if (Input_KeyBoard.GetKeyDown(Keys.Escape))
+            {
+                KSceneMgr.SetMainScene(new Tests.MainScene());
+                return;
+            }
+
+            Keys[] digits = [Keys.Digit1, Keys.Digit2, Keys.Digit3];
+            for (int i = 0; i < Tests.TestRegistry.Entries.Count && i < digits.Length; i++)
+            {
+                if (Input_KeyBoard.GetKeyDown(digits[i]))
+                {
+                    KSceneMgr.SetMainScene(Tests.TestRegistry.Entries[i].Factory());
+                    return;
+                }
+            }
         }
 
         protected override void Draw(GameTime gameTime)

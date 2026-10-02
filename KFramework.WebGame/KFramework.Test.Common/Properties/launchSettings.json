@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "KFramework.Example1": {
+    "KFramework.Test.Common": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

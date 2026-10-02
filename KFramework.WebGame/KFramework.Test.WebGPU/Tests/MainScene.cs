@@ -61,7 +61,6 @@ namespace KFramework.Test.WebGPU.Tests
             // 命中矩形必须在这里也布一次：Update 先于 Draw 执行，
             // 若只在 Draw 里填充，首帧的点击会落空（_rows 还是空的）。
             LayoutRows();
-            Diagnostic();
 
             if (Input_Mouse.GetButtonDown(MouseButton.Left))
             {
@@ -86,30 +85,6 @@ namespace KFramework.Test.WebGPU.Tests
                     return;
                 }
             }
-        }
-
-        /// <summary>
-        /// 诊断：首帧打一次、之后每秒打一次（共 20 次）。
-        /// 用于区分「键盘/鼠标事件根本没到」与「判定逻辑写错了」——
-        /// 看 GetKey（持续按住）是否随按键变化即可判定事件是否到达。
-        /// </summary>
-        private int _diagTicks = -1;
-
-        private void Diagnostic()
-        {
-            _diagTicks++;
-            if (_diagTicks > 0 && _diagTicks % 60 != 0) return;
-            if (_diagTicks / 60 > 20) return;
-
-            PrintTool.Log(
-                "[Test.WebGPU 诊断] 键盘Active=" + Input_KeyBoard.Active
-                + " | D1 按住/本帧=" + Input_KeyBoard.GetKey(Keys.Digit1) + "/" + Input_KeyBoard.GetKeyDown(Keys.Digit1)
-                + " | D2=" + Input_KeyBoard.GetKey(Keys.Digit2) + "/" + Input_KeyBoard.GetKeyDown(Keys.Digit2)
-                + " | D3=" + Input_KeyBoard.GetKey(Keys.Digit3) + "/" + Input_KeyBoard.GetKeyDown(Keys.Digit3)
-                + " | Esc=" + Input_KeyBoard.GetKey(Keys.Escape) + "/" + Input_KeyBoard.GetKeyDown(Keys.Escape)
-                + " | 鼠标=(" + Input_Mouse.Position.X.ToString("0") + "," + Input_Mouse.Position.Y.ToString("0") + ")"
-                + " 左键=" + Input_Mouse.GetButtonDown(MouseButton.Left)
-                + " | 条目行=" + _rows.Count);
         }
 
         /// <summary>按当前视口算出每个条目的命中矩形（Update 与 Draw 共用，保证点击判定与画面一致）。</summary>

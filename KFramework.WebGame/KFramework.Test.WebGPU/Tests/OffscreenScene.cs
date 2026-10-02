@@ -30,7 +30,7 @@ namespace KFramework.Test.WebGPU.Tests
         private Texture2D? _tex;
         private int _frame;
 
-        public override void Update() => _frame++;
+        protected override void UpdateBody() => _frame++;
 
         protected override void RenderOffscreen(SpriteBatch batch)
         {

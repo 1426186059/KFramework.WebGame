@@ -33,17 +33,26 @@ namespace KFramework.Test.WebGPU.Tests
 
         private readonly Rectangle _backRect = new(20, 16, 104, 34);
 
-        public override void Update()
+        /// <summary>
+        /// 页内更新。<b>密封</b>：返回按钮的命中处理必须无条件执行。
+        /// <para>
+        /// 踩过的坑：子类直接重写 <c>Update()</c> 且不调 <c>base.Update()</c>，
+        /// 于是该页的「← 总纲」按钮（以及原先写在基类里的 Esc）全部失灵 ——
+        /// 症状只在某一页出现，很难联想到是重写没调基类。改为密封后子类只能重写
+        /// <see cref="UpdateBody"/>，基类行为再也绕不过去。
+        /// </para>
+        /// </summary>
+        public sealed override void Update()
         {
-            if (Input_KeyBoard.GetKeyDown(Keys.Escape))
-            {
-                MainScene.Open();
-                return;
-            }
-
+            // Esc 的全局切换由宿主 WebGpuTestGame 统一处理（在任何测试页都能回总纲），这里只管按钮点击。
             if (Input_Mouse.GetButtonDown(MouseButton.Left) && _backRect.Contains(Input_Mouse.Position))
                 MainScene.Open();
+
+            UpdateBody();
         }
+
+        /// <summary>页内自定义逻辑的扩展点（计帧、切模式等）。基类已在 Update 里先处理完返回按钮。</summary>
+        protected virtual void UpdateBody() { }
 
         public override void Draw()
         {
