@@ -11,7 +11,7 @@
 import { FrameDataStream, MAX_EVENTS_PER_FRAME, MAX_FRAME_BYTES, evDataBytes } from './html_event_type.js';
 import { bindWindowEvents, drainWindowEvents, pollFocus, hadFocusLost } from './input_window_event.js';
 import { discardKeyboardEvents, writeKeyboardEvents } from './input_keyboard.js';
-import { discardMouseEvents, writeMouseEvents } from './input_mouse.js';
+import { tickMouseWatchdog, writeMouseEvents } from './input_mouse.js';
 import { discardTouchEvents, writeTouchEvents } from './input_touch.js';
 
 const scratch = new Uint8Array(MAX_FRAME_BYTES);
@@ -55,21 +55,36 @@ export function bindFrameEvents(canvasId?: string | null): void {
 export function takeFrameData(target: MemoryView_Span): number {
     pollFocus();                // 焦点兜底（替代 window 的 focus / blur 监听）
 
+    // 必须在取失焦判定<b>之前</b>：看门狗上报的 SysPointerCancel 要让本帧就生效。
+    tickMouseWatchdog();
+
     count = 0;
     off = 1;                    // 第 0 字节留给条数
 
-    // 【本帧是否失焦过】只有两个走向，各自口径单一，不会"一半数据作废、一半照发"：
-    //   失焦 → 只上报一条 SysFocusLost，键盘 / 鼠标 / 触摸攒的待发数据全部作废
+    // 【本帧是否失焦过】两个走向，各自口径单一，不会"一半作废、一半照发"：
+    //   失焦 → 系统事件照发（尺寸 / 焦点必须始终同步），键盘 / 鼠标 / 触摸的待发数据全部作废
     //           （窗外松手收不到 keyup、被接管的指针收不到 mouseup，留到下一帧就是"一直按住"）；
-    //   没失焦 → 照常汇总。尺寸事件不参与作废，见 drainFocusLostOnly。
+    //   没失焦 → 照常汇总。
+    //
+    // 【lost 是 boolean，不是 number | null】早先是 focusLostType() 返回事件类型、用 !== null 判空；
+    // 改成 hadFocusLost() 后返回的是 boolean，而 boolean 永远不等于 null ——
+    // 那行判断会恒为 true，结果是【每一帧都把输入丢光】（鼠标点击全失效）。
     const lost = hadFocusLost();
 
     drainWindowEvents(sink); //窗口系统事件，必须保留
-    if (lost !== null) 
+    if (lost) 
     {
+        // 【键盘 / 触摸作废】失焦后它们的 keyup / touchend 确实收不到了，
+        // 把"按下"留到下一帧发出去就是永远按住 —— 必须丢。
         discardKeyboardEvents();
-        discardMouseEvents();
         discardTouchEvents();
+
+        // 【鼠标照常写，绝不作废】mousedown / mouseup 是可靠送达的（日志里每次 down 都跟到了 up）。
+        // 若在失焦帧把鼠标数据丢掉：松开那一下的 mouseup 正好落进来就被吞，
+        // 而 SysFocusLost 分支已经不再复位鼠标（否则会取消右键拖拽）——
+        // 按下留着、抬起丢了、复位也没有，那只键必然一直显示按住。
+        // "按下的 up 永远不来"由 input_mouse 的看门狗兜底，不靠丢弃。
+        writeMouseEvents(sink);
     }
     else 
     {

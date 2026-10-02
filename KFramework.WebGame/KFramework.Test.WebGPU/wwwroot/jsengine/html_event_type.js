@@ -10,10 +10,13 @@
 /** 事件类型编号：1 字节。高 4 位 = 模块：0x0_ 系统 / 0x1_ 键盘 / 0x2_ 鼠标 / 0x3_ 触摸。 */
 export const E_HTML_Event_Type = {
     // ---- 系统 0x0_ ----
-    SysFocusLost: 0x00, // 窗口失焦（data 0 字节）
+    SysFocusLost: 0x00, // 窗口失焦（data 0 字节）—— 只复位键盘 / 触摸，<b>不动鼠标</b>
     SysFocusGained: 0x01,
-    SysPageHidden: 0x02, // 页面切到后台
+    SysPageHidden: 0x02, // 页面切到后台 —— 鼠标事件也不会再来了，这时才释放按键
     SysPageVisible: 0x03,
+    // 指针被系统 / 浏览器接管（pointercancel）：mouseup 不会再来，必须释放按住的键。
+    // 与 SysFocusLost 分开的理由见 input_window_event 的 reportPointerCancel。
+    SysPointerCancel: 0x05,
     // 画布尺寸变化：data 10 字节 = 5 个 i16（CSS 宽 / CSS 高 / 绘制缓冲宽 / 绘制缓冲高 / DPR×1000）
     // 与 platform.getCanvasSize 的 out 布局同序（那边是 i32，这里压成 i16 —— 画布尺寸上限远小于 32767，
     // DPR×1000 也不过 2000，用 i32 是白占一倍带宽）。
@@ -49,8 +52,8 @@ export function evDataBytes(type) {
         return 4; // x i16 + y i16
     if (type === E_HTML_Event_Type.CanvasResized)
         return 10; // 5 × i16
-    if (type <= E_HTML_Event_Type.SysPageVisible)
-        return 0; // 失焦 / 可见性只靠 type
+    if (type <= E_HTML_Event_Type.SysPointerCancel)
+        return 0; // 失焦 / 可见性 / 指针接管只靠 type
     return 1; // 键盘 / 鼠标按键 / 滚轮 / 取消
 }
 /** 本帧事件流的最大字节数：触摸每触点 6B（type+data）、最多 64 条 ≈ 384B，2048 留足余量。 */

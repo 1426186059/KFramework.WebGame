@@ -28,6 +28,12 @@ namespace KFramework.MonoGame
             public const int SysPageVisible = 0x03;
 
             /// <summary>
+            /// 指针被系统 / 浏览器接管（<c>pointercancel</c>）：mouseup 不会再派发，必须释放按住的键。
+            /// 与 <see cref="SysFocusLost"/> 分开的理由见 TS 的 <c>reportPointerCancel</c>。
+            /// </summary>
+            public const int SysPointerCancel = 0x05;
+
+            /// <summary>
             /// 画布尺寸变化：data 10 字节 = 5 个 i16（CSS 宽 / CSS 高 / 绘制缓冲宽 / 绘制缓冲高 / DPR×1000），
             /// 与 <c>platform.getCanvasSize</c> 的 out 布局同序（那边是 i32，这里压成 i16：画布尺寸上限远小于 short.MaxValue）。
             /// <para>
@@ -79,7 +85,7 @@ namespace KFramework.MonoGame
             => type >= EvType.TouchBegin && type <= EvType.TouchCancel ? 5
              : type == EvType.MouseMove ? 4
              : type == EvType.CanvasResized ? 10
-             : type <= EvType.SysPageVisible ? 0
+             : type <= EvType.SysPointerCancel ? 0      // 失焦 / 可见性 / 指针接管只靠 type
              : 1;
 
         /// <summary>
@@ -151,13 +157,29 @@ namespace KFramework.MonoGame
 
                     // ---- 系统：只靠 type，没有 data ----
                     case EvType.SysFocusLost:
+                        // 失焦：本帧要作废各输入模块攒下的数据。
+                        // 【不动鼠标】实测右键按住拖动时浏览器会为手势把焦点拿走，
+                        // document.hasFocus() 真的变 false —— 据此释放会让正在进行的右键拖拽被取消。
+                        // 而 mouseup 是可靠送达的，鼠标交给 mousedown / mouseup 自己即可；
+                        // 键盘 / 触摸则必须清：它们的 keyup / touchend 确实收不到了。
+
+                        PrintTool.Log("EvType.SysFocusLost Canvas 失去焦点");
+                        Input_KeyBoard.Reset();
+                        Input_Touch.Reset();
+                        Input_Mouse.Reset();
+                        FocusChanged?.Invoke(false);
+                        break;
+
                     case EvType.SysPageHidden:
-                        // 失焦 / 切后台：这是本帧<b>唯一</b>的一条事件 ——
-                        // JS 侧判定失焦后只上报它，键盘 / 鼠标 / 触摸的待发数据已在那边全部作废。
-                        // 先让鼠标把按住的键逐个上报"被中断"（上层据此取消拖拽 / 不确认点击），再统一清空。
+                        // 页面切后台：鼠标事件也不会再来了，这时才需要释放按住的键
                         Input_Mouse.ReleaseAll();
                         ResetAll();
                         FocusChanged?.Invoke(false);
+                        break;
+
+                    case EvType.SysPointerCancel:
+                        // 指针被系统接管：mouseup 不会再来，释放按住的键（上层据此取消进行中的交互）
+                        Input_Mouse.ReleaseAll();
                         break;
 
                     case EvType.SysFocusGained:
