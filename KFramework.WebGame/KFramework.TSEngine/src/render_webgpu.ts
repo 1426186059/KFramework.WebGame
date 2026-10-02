@@ -387,7 +387,13 @@ export function createTexture(width: number, height: number, formatStr: string):
 }
 
 /** 上传 RGBA8 像素到纹理（queue.writeTexture，按 rgba8unorm 假设 bytesPerRow = width*4）。 */
-export function uploadTexture(id: number, data: MemoryView_Span | ArrayBufferView, width: number, height: number, formatStr: string): void {
+/**
+ * 上传 RGBA8 像素到纹理（queue.writeTexture）。
+ * x / y 为写入原点的左上角（用于 SpriteFont 字形图集这类「逐块局部更新」的场景）：
+ * 数据只含本块的 w×h×4 字节，故 bytesPerRow 按块宽计算，配合 origin 即可精确写进子区域。
+ */
+export function uploadTexture(id: number, data: MemoryView_Span | ArrayBufferView,
+                              x: number, y: number, width: number, height: number, formatStr: string): void {
     const tex = textures.get(id);
     const bytes = toUint8Array(data);
     if (!tex || !bytes || !device) return;
@@ -399,7 +405,7 @@ export function uploadTexture(id: number, data: MemoryView_Span | ArrayBufferVie
         console.warn('[webgpu] uploadTexture 当前按 rgba8 假设处理，收到格式: ' + fmt);
     }
     device.queue.writeTexture(
-        { texture: tex, mipLevel: 0, origin: { x: 0, y: 0, z: 0 } },
+        { texture: tex, mipLevel: 0, origin: { x: x | 0, y: y | 0, z: 0 } },
         bytes,
         { offset: 0, bytesPerRow: w * 4, rowsPerImage: h },
         { width: w, height: h, depthOrArrayLayers: 1 },

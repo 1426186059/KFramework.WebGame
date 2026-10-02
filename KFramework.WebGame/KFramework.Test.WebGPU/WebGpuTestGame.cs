@@ -14,6 +14,13 @@ namespace KFramework.Test.WebGPU
     /// </summary>
     public sealed class WebGpuTestGame : Game
     {
+        /// <summary>
+        /// 图形设备管理器。它不只是"管参数"：<see cref="GraphicsDeviceManager.ApplyChanges"/>
+        /// 会按呈现参数摆放画布（尺寸 / 全屏 / 居中）。少了它画布不会被布局，
+        /// 实测会停在 1x1 —— 画面什么都看不到。
+        /// </summary>
+        private readonly GraphicsDeviceManager _graphics;
+
         private readonly Func<KSceneBase>[] _scenes;
         private int _current;
 
@@ -21,12 +28,26 @@ namespace KFramework.Test.WebGPU
         {
             ClearColor = new Color(10, 12, 20);
 
+            _graphics = new GraphicsDeviceManager(this)
+            {
+                PreferredBackBufferFormat = SurfaceFormat.Color,
+                PreferredDepthStencilFormat = DepthFormat.Depth24,
+                GraphicsProfile = GraphicsProfile.Reach,
+            };
+
             _scenes =
             [
                 static () => new Tests.BackendInfoScene(),
                 static () => new Tests.SpriteBlendScene(),
                 static () => new Tests.UnsupportedScene(),
             ];
+        }
+
+        protected override void Initialize()
+        {
+            // 应用呈现参数并摆放画布（与 WebGL 例子一致）。
+            _graphics.ApplyChanges();
+            base.Initialize();
         }
 
         protected override Task LoadContentAsync()

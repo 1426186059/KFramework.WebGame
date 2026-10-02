@@ -123,9 +123,13 @@ namespace KFramework.MonoGame
         [JSImport("createTexture", "render_webgpu")]
         public static partial int CreateTexture(int width, int height, string format);
 
-        /// <summary>上传 RGBA8 像素到纹理（queue.writeTexture）。</summary>
+        /// <summary>
+        /// 上传 RGBA8 像素到纹理（queue.writeTexture）。
+        /// x / y 为写入原点的左上角：SpriteFont 的字形图集靠它逐个字形局部更新。
+        /// </summary>
         [JSImport("uploadTexture", "render_webgpu")]
-        public static partial void UploadTexture(int id, [JSMarshalAs<JSType.MemoryView>] Span<byte> data, int width, int height, string format);
+        public static partial void UploadTexture(int id, [JSMarshalAs<JSType.MemoryView>] Span<byte> data,
+            int x, int y, int width, int height, string format);
 
         /// <summary>销毁纹理。</summary>
         [JSImport("destroyTexture", "render_webgpu")]

@@ -289,20 +289,18 @@ namespace KFramework.MonoGame
             _textures[texture] = handle;
         }
 
+        /// <summary>整张上传（origin 为 0,0）。</summary>
         public void SetTextureData(Texture2D texture, int level, byte[] bytes)
-            => JSBind_WebGPU.UploadTexture(RequireTexture(texture), bytes, texture.Width, texture.Height, "rgba8unorm");
+            => JSBind_WebGPU.UploadTexture(RequireTexture(texture), bytes,
+                0, 0, texture.Width, texture.Height, "rgba8unorm");
 
+        /// <summary>
+        /// 区域上传。WebGPU 的 queue.writeTexture 原生支持写入原点，故子区域直接走 origin 即可
+        /// —— SpriteFont 的字形图集正是靠它逐块填充的，这里是 2D 文本渲染的必经路径。
+        /// </summary>
         public void SetTextureData(Texture2D texture, int level, Rectangle rect, byte[] bytes)
-        {
-            // WebGPU 的 writeTexture 支持子区域，但本绑定的 uploadTexture 目前按整张上传
-            //（bytesPerRow 按整宽计算），故仅整张更新可直接走通，子区域留待扩展。
-            if (rect.X == 0 && rect.Y == 0 && rect.Width == texture.Width && rect.Height == texture.Height)
-            {
-                SetTextureData(texture, level, bytes);
-                return;
-            }
-            throw new NotSupportedException("WebGPU 后端暂不支持纹理局部更新（步骤④）。");
-        }
+            => JSBind_WebGPU.UploadTexture(RequireTexture(texture), bytes,
+                rect.X, rect.Y, rect.Width, rect.Height, "rgba8unorm");
 
         public void DeleteTexture(Texture2D texture)
         {
@@ -450,12 +448,19 @@ namespace KFramework.MonoGame
             }
             """;
 
-        /// <summary>顶点布局，与 VertexPositionColorTexture 严格对应（步长 20 字节）。</summary>
+        /// <summary>
+        /// 顶点布局，与 VertexPositionColorTexture 严格对应（步长 20 字节）。
+        /// <para>
+        /// 格式名必须用 WebGPU 的 <c>GPUVertexFormat</c> 枚举值：颜色是 4 个【无符号归一化字节】，
+        /// 对应 <c>unorm8x4</c>（不是 wgpu / Dawn 里的 <c>uchar4norm</c>，那个名字在浏览器会直接报
+        /// "not a valid enum value of type GPUVertexFormat"）。
+        /// </para>
+        /// </summary>
         private const string VertexLayoutJson =
             "[{\"arrayStride\":20,\"stepMode\":\"vertex\",\"attributes\":[" +
             "{\"shaderLocation\":0,\"offset\":0,\"format\":\"float32x2\"}," +
             "{\"shaderLocation\":1,\"offset\":8,\"format\":\"float32x2\"}," +
-            "{\"shaderLocation\":2,\"offset\":16,\"format\":\"uchar4norm\"}]}]";
+            "{\"shaderLocation\":2,\"offset\":16,\"format\":\"unorm8x4\"}]}]";
 
         /// <summary>WebGPU 的精灵程序：Apply 时把投影矩阵写进一个新的 uniform 槽位。</summary>
         private sealed class WebGpuSpriteProgram : ISpriteProgram
