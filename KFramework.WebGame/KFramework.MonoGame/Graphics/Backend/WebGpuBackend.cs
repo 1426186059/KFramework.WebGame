@@ -70,6 +70,10 @@ namespace KFramework.MonoGame
         private int _nextUniformSlot;
         private int _uniformSlot;
 
+        // 最近一次写入 uniform 的变换矩阵，用于复用槽位（见 AllocateTransform）。
+        private Matrix4x4 _lastTransform;
+        private bool _hasTransform;
+
         public string Name => "WebGPU";
 
         /// <summary>WebGPU 的附件与纹理原点都在左上，与屏幕一致，离屏渲染<b>不需要</b>额外翻转（详见接口注释）。</summary>
@@ -158,6 +162,9 @@ namespace KFramework.MonoGame
             JSBind_WebGPU.WriteBuffer(_uniformBuffer, 0, _matrixBuffer);
             _uniformSlot = 0;
             _nextUniformSlot = 1;
+            // 0 号槽刚写入单位矩阵，记录下来以便首个批次直接复用它。
+            _lastTransform = Matrix4x4.Identity;
+            _hasTransform = true;
         }
 
         /// <summary>收帧：结束渲染通道并提交命令缓冲。GraphicsDeviceManager.EndDraw 会调用它。</summary>
@@ -400,17 +407,36 @@ namespace KFramework.MonoGame
             return bindGroup;
         }
 
-        /// <summary>分配一个新的 uniform 槽位并写入矩阵（由精灵程序的 Apply 调用）。</summary>
+        /// <summary>
+        /// 分配 uniform 槽位并写入矩阵（由精灵程序的 Apply 调用）。
+        /// <para>
+        /// 【矩阵相同则复用槽位】同一渲染目标、同一视口下，一帧内大量 <c>SpriteBatch.Begin/End</c>
+        /// 用的其实是<b>同一个投影矩阵</b>。重 2D 游戏（每个图元一次 Begin/End）一帧能有几百个批次，
+        /// 逐个占槽就等于往 uniform 缓冲里写几百份完全相同的数据，白白耗尽上限。
+        /// 这里只在矩阵真的变化时才占新槽 —— 于是槽位消耗从"批次数"降为"投影变化次数"。
+        /// </para>
+        /// </summary>
         internal void AllocateTransform(in Matrix4x4 matrix)
         {
+            if (_hasTransform && SameTransform(matrix, _lastTransform)) return;
+
             if (_nextUniformSlot >= UniformSlotCount)
                 throw new InvalidOperationException(
                     $"[webgpu] 单帧 uniform 槽位耗尽（上限 {UniformSlotCount}）：SpriteBatch 的 Begin/End 次数过多，请合并批次。");
 
             _uniformSlot = _nextUniformSlot++;
+            _lastTransform = matrix;
+            _hasTransform = true;
             WriteMatrix(matrix, _matrixBuffer);
             JSBind_WebGPU.WriteBuffer(_uniformBuffer, _uniformSlot * UniformSlotStride, _matrixBuffer);
         }
+
+        /// <summary>逐元素判等（Matrix4x4 未定义 == 运算符，且 Equals 走装箱，不适合每帧数百次的比较）。</summary>
+        private static bool SameTransform(in Matrix4x4 a, in Matrix4x4 b)
+            => a.M11 == b.M11 && a.M12 == b.M12 && a.M13 == b.M13 && a.M14 == b.M14
+            && a.M21 == b.M21 && a.M22 == b.M22 && a.M23 == b.M23 && a.M24 == b.M24
+            && a.M31 == b.M31 && a.M32 == b.M32 && a.M33 == b.M33 && a.M34 == b.M34
+            && a.M41 == b.M41 && a.M42 == b.M42 && a.M43 == b.M43 && a.M44 == b.M44;
 
 
         // ================================================================
