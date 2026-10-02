@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <!--  Licensed to the .NET Foundation under one or more agreements. -->
-<!-- The .NET Foundation licenses this file to you under the MIT license. -->
+<!--  The .NET Foundation licenses this file to you under the MIT license. -->
 <html>
 
 <head>
-  <title>WebAssemblyBrowserApp.Test</title>
+  <title>WASM 基准测试总纲</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preload" id="webassembly" />
@@ -22,12 +22,31 @@
     th, td { text-align: left; padding: .35rem .6rem; border-bottom: 1px solid #e3e3e8; }
     th { background: #ececf2; }
     td:not(:first-child) { font-variant-numeric: tabular-nums; }
+
+    /* 顶部工具条 */
+    .bar { display: flex; gap: .5rem; align-items: center; margin: .5rem 0 1rem; }
+    button { font: inherit; padding: .3rem .7rem; border: 1px solid #cfcfd8;
+             background: #fff; border-radius: 6px; cursor: pointer; }
+    button:hover { background: #eef; border-color: #9aa; }
+
+    /* 总纲条目 */
+    ol.menu { list-style: decimal; padding-left: 1.4rem; margin: .25rem 0; }
+    ol.menu li { margin-bottom: .7rem; }
+    ol.menu button.run { margin-right: .5rem; }
+    ol.menu .muted { margin: .1rem 0 0; }
   </style>
 </head>
 
 <body>
-  <h1>C# 反射性能测试</h1>
-  <p id="status">加载中...</p>
+  <h1>WASM 基准测试总纲</h1>
+  <p class="muted">C# 反射 / 互操作（MemoryView、JS↔C# 跨界）性能测试。每个测试一个独立模块。</p>
+
+  <div class="bar">
+    <button id="runAll">运行全部</button>
+    <button id="showMenu">回到总纲</button>
+    <span id="status">加载中...</span>
+  </div>
+
   <div id="results"><i>loading...</i></div>
 </body>
 
