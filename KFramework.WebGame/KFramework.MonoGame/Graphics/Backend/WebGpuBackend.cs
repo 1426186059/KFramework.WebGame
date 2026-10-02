@@ -28,7 +28,10 @@ namespace KFramework.MonoGame
 
         /// <summary>uniform 槽位步长：WebGPU 的 minUniformBufferOffsetAlignment = 256。</summary>
         private const int UniformSlotStride = 256;
-        private const int UniformSlotCount = 64;
+
+        // 槽位只在"清屏开帧"时重置，故一帧内切换 PreserveContents 目标（走 load，不重置）会持续消耗槽位。
+        // 传奇那种一帧内多次在画布与离屏之间来回切的用法需要足够余量，256 个（64KB）留足空间。
+        private const int UniformSlotCount = 256;
 
         /// <summary>mat4x4&lt;f32&gt; 的字节数。</summary>
         private const int TransformSizeInBytes = 64;
@@ -140,9 +143,16 @@ namespace KFramework.MonoGame
 
             _frameActive = true;
             _vertexBump = 0;
+
+            // 【关键】只有"清屏开帧"才重置 uniform 槽位。
+            // "沿用内容开帧"（load）绝不能动槽位：它是在【本批次第一次绘制】时才被触发的，
+            // 此时 SpriteBatch.Begin 早已经 Effect.Apply 分配好槽位并写入投影矩阵；
+            // 一重置就会让本批次退回 0 号槽（单位矩阵），画面整体塌进右上角（看着像黑屏）。
+            if (!clear) return;
+
             _bindGroups.Clear();
 
-            // 槽位每帧重置；先占 0 号槽写单位矩阵，避免未 Apply 就绘制时取到无效槽位。
+            // 槽位重置；先占 0 号槽写单位矩阵，避免未 Apply 就绘制时取到无效槽位。
             _nextUniformSlot = 0;
             WriteMatrix(Matrix4x4.Identity, _matrixBuffer);
             JSBind_WebGPU.WriteBuffer(_uniformBuffer, 0, _matrixBuffer);
@@ -171,8 +181,8 @@ namespace KFramework.MonoGame
     private int _resolveTarget;
     private int _depthTarget;
 
-    /// <summary>当前目标集合的颜色格式（画布可能是 bgra8unorm，离屏 RT 是 rgba8unorm）。</summary>
-    private string _targetFormat;
+    /// <summary>当前目标集合的颜色格式（画布可能是 bgra8unorm，离屏 RT 是 rgba8unorm）。初始化时填入画布格式。</summary>
+    private string _targetFormat = string.Empty;
 
     /// <summary>当前目标集合的采样数（离屏 RT 的 MSAA 与画布 antialias 是两回事）。</summary>
     private int _targetSampleCount = 1;
