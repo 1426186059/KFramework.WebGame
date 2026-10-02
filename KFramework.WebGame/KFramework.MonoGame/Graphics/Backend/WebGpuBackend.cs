@@ -436,7 +436,16 @@ namespace KFramework.MonoGame
             @vertex
             fn vs_main(input : VertexInput) -> VertexOutput {
                 var output : VertexOutput;
-                output.clipPosition = uTransform.proj * vec4<f32>(input.position, 0.0, 1.0);
+                var clip : vec4<f32> = uTransform.proj * vec4<f32>(input.position, 0.0, 1.0);
+            // 【WebGPU 与 WebGL 的裁剪空间差异】
+            // WebGL 的 NDC z ∈ [-1,1]，WebGPU 的 NDC z ∈ [0,1]。
+            // 而本引擎的投影矩阵是按 OpenGL 约定生成的：CreateOrthographicScreen(w,h)
+            // = CreateOrthographicOffCenter(0, w, h, 0, 0, 1)，其中 M33=-2、M43=-1，
+            // 精灵 z=0 按行向量约定算出 z_ndc = 0*(-2) + 1*(-1) = -1。
+            // 这个值在 WebGL 下正好落在近裁剪面上（可见），但在 WebGPU 下 < 0 会被引擎直接裁掉 ——
+            // 症状是「不报任何错误、画面全黑」。故这里做标准换算 [-1,1] → [0,1]：(z + w) / 2。
+            clip.z = (clip.z + clip.w) * 0.5;
+            output.clipPosition = clip;
                 output.texCoord = input.texCoord;
                 output.color = input.color;
                 return output;

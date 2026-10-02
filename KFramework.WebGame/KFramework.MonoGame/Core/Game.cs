@@ -210,6 +210,10 @@ namespace KFramework.MonoGame
                     var drawTime = new GameTime(_totalGameTime, drawElapsed);
                     Draw(drawTime);
                     Components.Draw(drawTime);
+                    // 收帧（照 MonoGame 在 Draw 结束后的 Present）。WebGL 后端无需动作；
+                    // WebGPU 后端必须在此提交命令缓冲 —— 交换链纹理只在当前帧有效，
+                    // 拖到下一帧再提交就会报 "Destroyed texture used in a submit" 且画面全黑。
+                    GraphicsDevice.EndFrame();
                 }
                 else
                 {
@@ -226,6 +230,8 @@ namespace KFramework.MonoGame
                     GraphicsDevice.Clear(ClearColor);
                     Draw(frameTime);
                     Components.Draw(frameTime);
+                    // 同上：帧内必须收帧提交。
+                    GraphicsDevice.EndFrame();
                 }
 
             }
