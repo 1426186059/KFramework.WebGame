@@ -6,7 +6,7 @@
 // （刚按下=Began、移动过=Moved、抬起=Ended），静止的触点不上报，省掉大量冗余 move。
 // 线协议保持兼容：每条仍是 (type,id,x,y) 四个 i32，type 7/8/9 = Start/Move/End。
 import { getInputCanvas } from './input_common.js';
-import { canvasPoint, copyOut } from './input_common.js';
+import { canvasPoint, ModuleId } from './input_common.js';
 const MAX_EVENTS = 64;
 const STRIDE = 16;
 const SIZE = 4 + MAX_EVENTS * STRIDE;
@@ -77,7 +77,11 @@ export function unbindTouch() {
 }
 const scratch = new Uint8Array(SIZE);
 const view = new DataView(scratch.buffer);
-export function pollTouch(target) {
+/**
+ * 采集本帧触摸事件到本地 scratch，返回已用字节数（前 4 字节已填好条数 i32）。
+ * 由 pollTouch 与 writeTouchEvents 共用，避免两份采集逻辑日后走偏。
+ */
+function collectTouchEvents() {
     let off = 4; // 跳过 count
     let n = 0;
     // 1) 活跃触点：只上报本 poll 区间内有变化的（Began / Moved）
@@ -113,5 +117,15 @@ export function pollTouch(target) {
     }
     ended.clear();
     view.setInt32(0, n, true);
-    copyOut(target, scratch.subarray(0, off)); // 只发送用到的字节
+    return off;
+}
+/**
+ * 把本帧的触摸事件写入【统一事件流】（由 game_frame_take_js_data 每帧调用）。
+ * 本模块依旧独立：监听、触点表、以及 payload 格式（前 4 字节条数 i32 + 每触点 4×i32）
+ * 全部保持原样，只是不再自己跨界回传 —— 故 C# 侧 Input_Touch 的解析无需改动。
+ */
+export function writeTouchEvents(w) {
+    const off = collectTouchEvents();
+    if (view.getInt32(0, true) > 0)
+        w.put(ModuleId.Touch, scratch, off);
 }

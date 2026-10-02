@@ -22,6 +22,7 @@ import * as inputOverlay from './input_html_ime.js';
 import * as cursor from './cursor.js';
 import * as localstorage from './storage_local.js';
 import * as gameUpdate from './game_update.js';
+import * as gameFrameData from './game_frame_take_js_data.js';
 function findHost(exports) {
     if (!exports)
         return undefined;
@@ -68,6 +69,8 @@ setModuleImports('input_html_ime', inputOverlay);
 setModuleImports('cursor', cursor);
 setModuleImports('localstorage', localstorage);
 setModuleImports('game_update', gameUpdate);
+// 每帧统一事件入口：C# 每帧只调它一次，取回键盘/鼠标/触摸/系统事件（取代三者各自 poll）。
+setModuleImports('game_frame_take_js_data', gameFrameData);
 const config = getConfig();
 // KFramework.MonoGame 程序集承载所有 JSBind_* 绑定。这里统一取一次导出，再分发给各模块；
 // 网络层经 setHandlers 注册的 [JSExport] 回调把 WebSocket 事件推回 C#。
@@ -122,7 +125,9 @@ if (!host) {
     console.error('[main] 找不到 JSBind_GameUpdate 导出，画面不会刷新');
 }
 else {
-    gameUpdate.setFrameCallback((timestamp) => host.Frame(timestamp));
+    gameUpdate.setFrameCallback((timestamp) => {
+        host.Frame(timestamp, gameFrameData.takeFrameData());
+    });
 }
 // 浏览器要求用户手势后才能启动音频
 const unlockAudio = () => {

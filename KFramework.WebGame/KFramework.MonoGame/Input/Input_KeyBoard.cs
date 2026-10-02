@@ -19,7 +19,8 @@ namespace KFramework.MonoGame
         private const int EvBlur = 10;
         private const int Stride = 2;            // 每条 2 个 i32
         private const int MaxEvents = 32;
-        private static readonly byte[] _buffer = new byte[1 + MaxEvents * Stride];
+        // 事件数据不再由本模块自己 poll，而是每帧由 GameFrameData 统一取回后以 payload 形式转交，
+        // 故这里不再需要本地缓冲（1 + MaxEvents * Stride 仍作为 payload 长度的文档性上限）。
         private static readonly bool[] _LastKeyState = new bool[byte.MaxValue];
         private static readonly bool[] _NewKeyState = new bool[byte.MaxValue];
 
@@ -33,21 +34,24 @@ namespace KFramework.MonoGame
         /// <summary>本装置是否处于激活状态；未激活时 <see cref="Update"/> / <see cref="LateUpdate"/> 直接跳过。由 <see cref="Activate"/> / <see cref="Unbind"/> 维护。</summary>
         public static bool Active { get; private set; }
 
-        private static byte ReadByte(int offset)
-            => _buffer[offset];
-        
-        public static void Update()
+        /// <summary>
+        /// 消费本帧分发的键盘事件（由 <see cref="GameFrameData"/> 转交）。
+        /// <para>
+        /// payload 沿用本模块<b>原有</b>的格式：第 0 字节 = 条数，其后每 2 字节一对 (keyCode, flag)，
+        /// flag 1=按下 / 2=抬起 / 10=失焦。因此这里只是把"自己 poll"换成"收 payload"，
+        /// 解析逻辑一字未改 —— 键盘模块依旧独立。
+        /// </para>
+        /// </summary>
+        internal static void Consume(ReadOnlySpan<byte> payload)
         {
             if (!Active) return;
-            JSBind_Input_Keyboard.PollKeyboard(_buffer);
 
             //在LateUpdate里已经拷贝过了,这里不再拷贝
             //_NewKeyState.AsSpan().CopyTo(_LastKeyState);
 
-            int count = ReadByte(0);
-            bool sawBlur = false;
-            if (count > 0)
+            if (payload.Length > 0)
             {
+                int count = payload[0];
                 if (count > MaxEvents)
                 {
                     count = MaxEvents;
@@ -55,21 +59,16 @@ namespace KFramework.MonoGame
                 for (int i = 0; i < count; i++)
                 {
                     int off = 1 + i * Stride;
-                    byte flag = ReadByte(off + 1);
+                    if (off + 1 >= payload.Length) break;      // 越界即停，绝不解析半截事件
+                    byte flag = payload[off + 1];
                     if (flag == EvBlur)
                     {
-                        sawBlur = true;
-                        break;
+                        // 失焦：清空全部键盘状态（注释见 Reset），避免按住中的键在窗外松手后“卡住”。
+                        Reset();
+                        return;
                     }
-                    _NewKeyState[ReadByte(off)] = flag == EvKeyDown;
+                    _NewKeyState[payload[off]] = flag == EvKeyDown;
                 }
-            }
-
-            // 失焦：清空全部键盘状态（注释见 Reset），避免按住中的键在窗外松手后“卡住”。
-            if (sawBlur)
-            {
-                Reset();
-                return;
             }
 
             for(int i = 0; i < byte.MaxValue; i++)

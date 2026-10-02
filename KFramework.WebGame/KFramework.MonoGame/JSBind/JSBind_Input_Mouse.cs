@@ -17,9 +17,8 @@ namespace KFramework.MonoGame
         [JSImport("bindMouse", "input_mouse")]
         public static partial void BindMouse(string canvasId);
 
-        /// <summary>把鼠标状态（位置/按键/滚轮）写入 state。</summary>
-        [JSImport("pollMouse", "input_mouse")]
-        public static partial void PollMouse([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
+        // 事件不再由本模块单独 poll：统一由 JSBind_GameFrameData.TakeFrameData 每帧取回后分发，
+        // 模块只负责提供事件（见 input_mouse.ts 的 writeMouseEvents）。
 
         /// <summary>关闭装置：解绑鼠标事件监听。由 <see cref="Input_Mouse.Deactivate"/> 调用。</summary>
         [JSImport("unbindMouse", "input_mouse")]

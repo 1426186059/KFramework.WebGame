@@ -1,5 +1,6 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Keyboard 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
 import { getCanvas, focusCanvas } from './html_canvas.js';
+import { ModuleId } from './input_common.js';
 // 浏览器 KeyboardEvent.code → C# Keys 枚举序号。
 // 必须与 Input/InputDefine.cs 的 Keys 声明顺序严格一致（成员名即 HTML code，顺序自动编号：
 // None=0, Backspace=1, Tab=2 … Super=212）。C# 侧按此序号索引按键状态。
@@ -149,12 +150,16 @@ export function unbindKeyboard() {
     m_CanvasId = null;
     pending.clear();
 }
-export function pollKeyboard(target) {
-    // 先写入真正的 Uint8Array（scratch），再经由 MemoryView.set 写回 C# 缓冲。
-    // 注意：MemoryView_Span 不是 Uint8Array、没有 [] 索引器，不能直接 target[i]=x。
-    //
-    // 布局：scratch[0] = 事件条数；其后每 2 字节一对 (keyCode, flag)，flag 1=按下 / 2=抬起 / 10=失焦。
-    // 失焦时先写入一条 Blur 事件，并丢弃失焦前残留的“按下”事件，避免“卡键”。
+/**
+ * 把本帧的键盘事件写入【统一事件流】（由 game_frame_take_js_data 每帧调用）。
+ *
+ * 本模块依旧独立：监听、状态、以及 payload 格式都保持原样 ——
+ * 只是不再自己跨界回传，改为交给总入口的 sink。payload 沿用原有布局：
+ * 若干 (keyCode, flag) 对，flag 1=按下 / 2=抬起 / 10=失焦。
+ */
+export function writeKeyboardEvents(w) {
+    // payload 布局与原来的 pollKeyboard【完全一致】：scratch[0] = 条数，其后 (keyCode, flag) 对。
+    // 保住这一字节，C# 侧 Input_KeyBoard 的解析逻辑就一行都不用改。
     let off = 1;
     let nEvents = 0;
     if (m_Blurred) {
@@ -165,15 +170,16 @@ export function pollKeyboard(target) {
     }
     else {
         for (const [key, flag] of pending) {
-            if (off + STRIDE > SIZE) {
+            if (off + STRIDE > scratch.length)
                 break;
-            }
             scratch[off++] = codeToKeys(key);
             scratch[off++] = flag;
             nEvents++;
         }
     }
     pending.clear();
-    scratch[0] = nEvents;
-    target.set(scratch.subarray(0, off));
+    if (nEvents > 0) {
+        scratch[0] = nEvents;
+        w.put(ModuleId.Keyboard, scratch, off); // 最多 32×2+1 = 65B，远低于 len 的 255 上限
+    }
 }

@@ -50,17 +50,3 @@ export function canvasPoint(clientX: number, clientY: number): [number, number] 
     const scaleY = canvas.height / (rect.height || 1);
     return [Math.round((clientX - rect.left) * scaleX), Math.round((clientY - rect.top) * scaleY)];
 }
-
-/** 把本地缓冲写回 C# 传来的目标（MemoryView_Span 或 Uint8Array）。 */
-export function copyOut(target: MemoryView_Span | Uint8Array, src: Uint8Array): void {
-    if (target instanceof Uint8Array) {
-        target.set(src);
-        return;
-    }
-    if (typeof target.set === 'function') {
-        target.set(src, 0);
-        return;
-    }
-    const fallback = target as unknown as Record<number, number>;
-    for (let i = 0; i < src.length; i++) fallback[i] = src[i];
-}

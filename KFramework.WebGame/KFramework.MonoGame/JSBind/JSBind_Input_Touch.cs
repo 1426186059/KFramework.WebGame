@@ -14,8 +14,8 @@ namespace KFramework.MonoGame
         public static partial void BindTouch();
 
         /// <summary>把触摸点状态（坐标/压力/接触中）写入 state。</summary>
-        [JSImport("pollTouch", "input_touch")]
-        public static partial void PollTouch([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
+        // 事件不再由本模块单独 poll：统一由 JSBind_GameFrameData.TakeFrameData 每帧取回后分发
+        //（见 input_touch.ts 的 writeTouchEvents）。
 
         /// <summary>关闭装置：解绑触摸事件监听。由 <see cref="Input_Touch.Deactivate"/> 调用。</summary>
         [JSImport("unbindTouch", "input_touch")]

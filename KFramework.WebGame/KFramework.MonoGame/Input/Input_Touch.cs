@@ -98,7 +98,8 @@ namespace KFramework.MonoGame
         private const int Stride = 16;           // 每条 4 个 i32
         private const int MaxEvents = 64;
 
-        private static readonly byte[] _buffer = new byte[4 + MaxEvents * Stride];
+        // 事件数据不再由本模块自己 poll，而是每帧由 GameFrameData 统一取回后以 payload 形式转交，
+        // 故这里不再需要本地缓冲（MaxEvents * Stride 仍作为 payload 长度的文档性上限）。
 
         private static readonly List<TouchPoint> _touches = new List<TouchPoint>();
         private static readonly List<TouchPoint> _began = new List<TouchPoint>();
@@ -139,11 +140,17 @@ namespace KFramework.MonoGame
         /// <summary>本装置是否处于激活状态；未激活时 <see cref="Update"/> 直接跳过。由 <see cref="Activate"/> / <see cref="Deactivate"/> 维护。</summary>
         public static bool Active { get; private set; }
 
-        private static int ReadInt(int offset)
-            => BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(offset, 4));
+        private static int ReadInt(ReadOnlySpan<byte> payload, int offset)
+            => BinaryPrimitives.ReadInt32LittleEndian(payload.Slice(offset, 4));
 
-        /// <summary>每帧调用一次：取回本模块的事件队列并更新状态。</summary>
-        public static void Update()
+        /// <summary>
+        /// 消费本帧分发的触摸事件（由 <see cref="GameFrameData"/> 转交）。
+        /// <para>
+        /// payload 沿用本模块<b>原有</b>的格式（前 4 字节 = 条数 i32，其后每条 4×i32：type / id / x / y），
+        /// 因此只是把"自己 poll"换成"收 payload"，解析逻辑一字未改 —— 触摸模块依旧独立。
+        /// </para>
+        /// </summary>
+        internal static void Consume(ReadOnlySpan<byte> payload)
         {
             if (!Active) return;
             _elapsed = (Environment.TickCount64 - _startTicks) / 1000f;
@@ -153,20 +160,20 @@ namespace KFramework.MonoGame
             _ended.Clear();
             _frame.Clear();
 
-            JSBind_Input_Touch.PollTouch(_buffer);
-
-            int count = ReadInt(0);
-            if (count > 0)
+            if (payload.Length >= 4)
             {
+                int count = ReadInt(payload, 0);
                 if (count > MaxEvents) count = MaxEvents;
 
                 for (int i = 0; i < count; i++)
                 {
                     int off = 4 + i * Stride;
-                    int type = ReadInt(off);
-                    int id = ReadInt(off + 4);
-                    int x = ReadInt(off + 8);
-                    int y = ReadInt(off + 12);
+                    if (off + Stride > payload.Length) break;      // 越界即停，绝不解析半截事件
+
+                    int type = ReadInt(payload, off);
+                    int id = ReadInt(payload, off + 4);
+                    int x = ReadInt(payload, off + 8);
+                    int y = ReadInt(payload, off + 12);
 
                     switch (type)
                     {

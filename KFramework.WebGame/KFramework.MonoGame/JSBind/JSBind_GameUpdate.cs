@@ -19,9 +19,18 @@ namespace KFramework.MonoGame
         internal static Game? Current;
 
         /// <summary>由 wwwroot/main.js 的渲染循环调用。</summary>
+        /// <summary>
+        /// 由 wwwroot/main.js 的渲染循环每帧调用。
+        /// <para>
+        /// <paramref name="events"/> 是本帧所有输入模块的事件流（由 game_frame_take_js_data 汇总，
+        /// 布局见 <see cref="GameFrameData"/>）。数据随帧回调<b>一并送入</b>，于是每帧只需
+        /// 【一次】跨界（JS→C#），不必再让 C# 回头去 JS 取 —— 原先是两次。
+        /// </para>
+        /// </summary>
         [JSExport]
-        public static void Frame(double timestampMs)
+        public static void Frame(double timestampMs, byte[]? events)
         {
+            GameFrameData.Receive(events);
             Current?.TickFrame(timestampMs);
         }
 

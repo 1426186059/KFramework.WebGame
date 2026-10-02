@@ -9,8 +9,8 @@ namespace KFramework.MonoGame
     /// </summary>
     public static partial class JSBind_Input_Keyboard
     {
-        [JSImport("pollKeyboard", "input_keyboard")]
-        public static partial void PollKeyboard([JSMarshalAs<JSType.MemoryView>] Span<byte> state);
+        // 事件不再由本模块单独 poll：统一由 JSBind_GameFrameData.TakeFrameData 每帧取回后分发
+        //（见 input_keyboard.ts 的 writeKeyboardEvents）。该模块只保留 BindKeyboard / UnbindKeyboard。
 
         [JSImport("bindKeyboard", "input_keyboard")]
         public static partial void BindKeyboard(string canvasId = null);

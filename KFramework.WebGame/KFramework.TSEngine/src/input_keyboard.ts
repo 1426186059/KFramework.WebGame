@@ -1,5 +1,6 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Keyboard 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
 import { getCanvas, focusCanvas } from './html_canvas.js';
+import { E_HTML_Event_Type,FrameDataStream } from './html_event_type.js';
 
 // 浏览器 KeyboardEvent.code → C# Keys 枚举序号。
 // 必须与 Input/InputDefine.cs 的 Keys 声明顺序严格一致（成员名即 HTML code，顺序自动编号：
@@ -92,9 +93,6 @@ function codeToKeys(code: string): number {
 }
 
 const MAX_EVENTS = 32;
-const STRIDE = 2;
-const SIZE = 1 + MAX_EVENTS * STRIDE;
-const EvBlur = 10; // 与 C# Input_KeyBoard.EvBlur 一致：失焦事件
 
 let m_Canvas: HTMLCanvasElement | null = null;
 let m_CanvasId: string | null = null;
@@ -103,7 +101,7 @@ let m_CanvasId: string | null = null;
 let m_Blurred = false;
 
 const pending = new Map<string, number>();
-const scratch = new Uint8Array(SIZE);
+const scratch = new Uint8Array(1);      // 每条事件的 data 只有 1 字节（Keys 序号），逐条 put
 
 function Process_KeyDown(e: KeyboardEvent): void
 {
@@ -191,40 +189,30 @@ export function unbindKeyboard(): void
     pending.clear();
 }
 
-export function pollKeyboard(target: MemoryView_Span): void 
+/**
+ * 把本帧的键盘事件写入【统一事件流】（由 game_frame_take_js_data 每帧调用）。
+ * 每条 = EvType（KeyDown / KeyUp / KeyBlur）+ 1 字节 Keys 序号，条数由总入口统计。
+ */
+export function writeKeyboardEvents(w: FrameDataStream): void
 {
-    // 先写入真正的 Uint8Array（scratch），再经由 MemoryView.set 写回 C# 缓冲。
-    // 注意：MemoryView_Span 不是 Uint8Array、没有 [] 索引器，不能直接 target[i]=x。
-    //
-    // 布局：scratch[0] = 事件条数；其后每 2 字节一对 (keyCode, flag)，flag 1=按下 / 2=抬起 / 10=失焦。
-    // 失焦时先写入一条 Blur 事件，并丢弃失焦前残留的“按下”事件，避免“卡键”。
-
-    let off = 1;
-    let nEvents = 0;
-
+    // 失焦单独成一条、且清空本帧残留的按下事件：窗外松手收不到 keyup，
+    // 若照常上报，那些键会一直卡在"按住"。
     if (m_Blurred)
     {
         m_Blurred = false;
-
-        scratch[off++] = 0;      // keyCode 对 Blur 无意义
-        scratch[off++] = EvBlur; // 10
-        nEvents++;
+        pending.clear();
+        w.put(E_HTML_Event_Type.KeyBlur, scratch, 0);      // 只靠 type，无 data
+        return;
     }
-    else
+
+    let n = 0;
+    for (const [code, flag] of pending)
     {
-        for (const [key, flag] of pending) 
-        {
-            if (off + STRIDE > SIZE) 
-            {
-                break;
-            }
-            scratch[off++] = codeToKeys(key);
-            scratch[off++] = flag;
-            nEvents++;
-        }
+        if (n >= MAX_EVENTS) break;
+        scratch[0] = codeToKeys(code);
+        w.put(flag === 2 ? E_HTML_Event_Type.KeyUp : E_HTML_Event_Type.KeyDown, scratch, 1);
+        n++;
     }
 
     pending.clear();
-    scratch[0] = nEvents;
-    target.set(scratch.subarray(0, off));
 }

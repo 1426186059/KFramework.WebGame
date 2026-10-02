@@ -15,9 +15,13 @@ namespace KFramework.MonoGame
     {
         public static void Update()
         {
-            Input_KeyBoard.Update();
-            Input_Mouse.Update();
-            Input_Touch.Update();
+            // 键盘 / 鼠标 / 触摸的事件由 GameFrameData 每帧【一次】跨界取回，再按模块分发到
+            // 各自的 Consume —— 原先三者各 poll 一次（一帧 3 次跨界），现在合并为 1 次。
+            // 各模块依旧独立：监听、状态、payload 格式都没动，只是"取数据"的通道统一了。
+            GameFrameData.Update();
+
+            // IME 走 [JSExport] 由 JS 主动推给 C#（OnDomValue / OnKeyDown），
+            // 本来就不占这条拉取流，仍走自己的 Update。
             Input_IME.Update();
         }
         
