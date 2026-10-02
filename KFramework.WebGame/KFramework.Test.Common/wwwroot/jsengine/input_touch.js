@@ -5,7 +5,7 @@
 // 而是用 Map<id, 触点> 维护当前状态，poll 时只上报自上次 poll 以来的变化
 // （刚按下=Began、移动过=Moved、抬起=Ended），静止的触点不上报，省掉大量冗余 move。
 // 线协议保持兼容：每条仍是 (type,id,x,y) 四个 i32，type 7/8/9 = Start/Move/End。
-import { getCanvasElement } from './render_webgl20.js';
+import { getInputCanvas } from './input_common.js';
 import { canvasPoint, copyOut } from './input_common.js';
 const MAX_EVENTS = 64;
 const STRIDE = 16;
@@ -25,7 +25,7 @@ function on(target, name, handler, options) {
 export function bindTouch() {
     if (bound)
         return;
-    const canvas = getCanvasElement();
+    const canvas = getInputCanvas();
     if (!canvas)
         return;
     // 用 changedTouches：只报本帧发生变化的触点，抬手与按下同帧也不会丢

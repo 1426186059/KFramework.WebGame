@@ -149,7 +149,9 @@ namespace KFramework.MonoGame
         public static void Activate()
         {
             Reset();
-            JSBind_Input_Mouse.BindMouse();
+            // 画布 id 以 GraphicsDevice.CanvasId 为准（与键盘绑定一致）；
+            // 不能让输入模块去问 WebGL 后端要画布 —— 纯 WebGPU 应用下那会是 null，事件根本绑不上。
+            JSBind_Input_Mouse.BindMouse(GraphicsDevice.CanvasId);
             Active = true;
         }
 

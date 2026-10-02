@@ -3,7 +3,7 @@
 // 作用：在 canvas 之上叠加一个透明的 DOM <input>/<textarea>，承接键盘 / IME 捕获。
 // 文字一律由引擎在 canvas 自绘（见 TextBoxRenderer / TextCaret），DOM 元素只作输入代理。
 //
-import { getCanvasElement } from './render_webgl20.js';
+import { getInputCanvas } from './input_common.js';
 
 // 引擎在 main.ts 解析出程序集导出树后，通过 init() 把该对象注入本模块。
 // 覆盖层需要在 JS 侧把原生编辑结果 / 控制键回调给 C# 的 [JSExport]（合并于 JSBind_Input_IME）。
@@ -45,7 +45,7 @@ let last: ShowParams | null = null;
 let composing = false; // IME 组字中（compositionstart..compositionend），用于拦截选词用的 Enter
 
 function canvasMetrics(): { left: number; top: number; dpr: number } {
-    const canvas = getCanvasElement();
+    const canvas = getInputCanvas();
     if (!canvas) return { left: 0, top: 0, dpr: 1 };
     const rect = canvas.getBoundingClientRect();
     const dpr = rect.width > 0 ? canvas.width / rect.width : 1; // backing/CSS 比
@@ -245,7 +245,7 @@ export function hide(): void {
     // 覆盖层隐藏后，原本被其抢走的画布焦点没有自动归还：浏览器会把焦点退到 body，
     // 导致画布 keydown 监听收不到键（表现为“关掉聊天后再按 Enter/打字没反应，点一下屏幕又好了”）。
     // 这里把焦点还给画布，恢复键盘输入。复用本模块已导入的 getCanvasElement 取画布，无需依赖画布 id。
-    const c = getCanvasElement();
+    const c = getInputCanvas();
     if (c) {
         c.tabIndex = 0;
         if (document.activeElement !== c) {

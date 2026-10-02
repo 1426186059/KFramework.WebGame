@@ -9,9 +9,13 @@ namespace KFramework.MonoGame
     /// </summary>
     public static partial class JSBind_Input_Mouse
     {
-        /// <summary>激活装置：建立/恢复鼠标事件监听（绑定到画布）。由 <see cref="Input_Mouse.Activate"/> 调用。</summary>
+        /// <summary>
+        /// 激活装置：建立/恢复鼠标事件监听（绑定到画布）。由 <see cref="Input_Mouse.Activate"/> 调用。
+        /// 显式传画布 id —— 与 <see cref="JSBind_Input_Keyboard.BindKeyboard"/> 一致，
+        /// 这样输入模块不必依赖某个具体渲染后端（WebGL / WebGPU）已初始化。
+        /// </summary>
         [JSImport("bindMouse", "input_mouse")]
-        public static partial void BindMouse();
+        public static partial void BindMouse(string canvasId);
 
         /// <summary>把鼠标状态（位置/按键/滚轮）写入 state。</summary>
         [JSImport("pollMouse", "input_mouse")]

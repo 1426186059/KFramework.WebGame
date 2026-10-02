@@ -1,6 +1,6 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Mouse 经 [JSImport(module: "input_mouse")] 调用；产物 input_mouse.js 由 SyncJsEngine 复制。
 // 鼠标模块：只注册监听 + 维护"当前状态/变化"。状态与边沿在 C# 侧（Input_Mouse）实现。
-import { getCanvasElement } from './render_webgl20.js';
+import { getInputCanvas, setCanvasId } from './input_common.js';
 import { canvasPoint, copyOut } from './input_common.js';
 const MaxButtons = 8;
 const EvMousePos_ByteCount = 5; // EvMousePos：type + x(short) + y(short)
@@ -21,10 +21,13 @@ function on(target, name, handler, options) {
     target.addEventListener(name, handler, options);
     registrations.push({ target, name, handler });
 }
-export function bindMouse() {
+export function bindMouse(canvasId) {
     if (bound)
         return;
-    const canvas = getCanvasElement();
+    // 记下画布 id，后续 canvasPoint 的坐标换算才能用同一块画布。
+    if (canvasId)
+        setCanvasId(canvasId);
+    const canvas = getInputCanvas();
     if (canvas) {
         // 防止画布在按住拖动时被浏览器当作可拖拽元素/可选文本，进而提前结束“按下”。
         const c = canvas;

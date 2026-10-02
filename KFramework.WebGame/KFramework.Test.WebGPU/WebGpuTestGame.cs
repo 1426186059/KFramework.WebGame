@@ -44,7 +44,9 @@ namespace KFramework.Test.WebGPU
         protected override Task LoadContentAsync()
         {
             KInputMgr.Init();
-            Input_KeyBoard.Activate(bUseCanvasListener: true);
+            // 绑到 window 全局捕获（而非画布）：画布监听要求画布处于焦点，
+            // 一旦焦点被页面或开发者工具抢走，键盘就完全收不到事件。
+            Input_KeyBoard.Activate(bUseCanvasListener: false);
             // 总纲页与各页的「← 总纲」都要用鼠标点击，必须激活鼠标。
             Input_Mouse.Activate();
             KSceneMgr.Init(this);

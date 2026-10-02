@@ -2,7 +2,27 @@
 // 输入模块的公共工具：坐标换算 + 缓冲写回。
 // 键盘 / 鼠标 / 触摸三个模块共用，本文件自身不注册任何监听、不持有状态。
 
-import { getCanvasElement } from './render_webgl20.js';
+// 画布的权威来源是 html_canvas（它持有 id → 元素的注册表，且会回退到 document.getElementById）。
+// 早先这里从 render_webgl20 取画布 —— 那意味着【所有输入模块都依赖 WebGL 上下文已初始化】：
+// 纯 WebGPU 的应用从不建 WebGL 上下文，getCanvasElement() 恒为 null，
+// 于是 bindMouse 绑不上事件（点击全失效），canvasPoint 也换算不出坐标。
+import { getCanvas } from './html_canvas.js';
+
+/**
+ * 当前输入画布的 id（由 bindMouse / bindTouch 在绑定时写入，空串表示用默认 id）。
+ * 之所以要单独记：C# 侧 GraphicsDevice.CanvasId 才是权威值，而鼠标 / 触摸绑定需要知道绑到哪块画布。
+ */
+let currentCanvasId = '';
+
+/** 记录当前输入画布 id（空串回落到默认 id）。 */
+export function setCanvasId(id: string): void {
+    currentCanvasId = id;
+}
+
+/** 取当前输入画布（供各输入模块与坐标换算共用）。 */
+export function getInputCanvas(): HTMLCanvasElement | null {
+    return getCanvas(currentCanvasId);
+}
 
 /**
  * 浏览器客户端坐标（CSS 像素）→ 画布后备缓冲（backing）像素坐标。
@@ -23,7 +43,7 @@ import { getCanvasElement } from './render_webgl20.js';
  * DPR=1 时比例就是 1，行为与不加这层完全一致。
  */
 export function canvasPoint(clientX: number, clientY: number): [number, number] {
-    const canvas = getCanvasElement();
+    const canvas = getInputCanvas();
     if (!canvas) return [0, 0];
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / (rect.width || 1);
