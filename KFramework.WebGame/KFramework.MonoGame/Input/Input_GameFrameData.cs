@@ -38,15 +38,16 @@ namespace KFramework.MonoGame
             public const int CanvasResized = 0x04;
 
             // ---- 键盘 0x1_：data 1 字节 = Keys 序号（0..212）----
+            // 不再有 KeyBlur：键盘失焦与"指针被系统接管"都并进 SysFocusLost，
+            // 由 JS 侧判定后单独上报一条（见 input_window_event.ts 的 focusLostType）。
             public const int KeyDown = 0x10;
             public const int KeyUp = 0x11;
-            public const int KeyBlur = 0x12;
 
             // ---- 鼠标 0x2_ ----
+            // 不再有 PointerCancel：改由收到 SysFocusLost 时调 Input_Mouse.ReleaseAll() 逐个键发起。
             public const int MouseButton = 0x20;     // 1B：低 7 位键号 | 最高位是否按下
             public const int MouseWheel = 0x21;      // 1B：按 sbyte 解读的增量
             public const int MouseMove = 0x22;       // 4B：x i16 + y i16
-            public const int PointerCancel = 0x23;   // 1B：键号
 
             // ---- 触摸 0x3_：data 5 字节 = id(1) + x i16 + y i16 ----
             public const int TouchBegin = 0x30;
@@ -151,8 +152,9 @@ namespace KFramework.MonoGame
                     // ---- 系统：只靠 type，没有 data ----
                     case EvType.SysFocusLost:
                     case EvType.SysPageHidden:
-                        // 失焦 / 切后台：按键会在窗外松手后收不到 keyup、指针会被系统手势接管而收不到 mouseup。
-                        // 先让鼠标把按住的键上报成"指针取消"（上层据此取消拖拽 / 不确认点击），再统一清空。
+                        // 失焦 / 切后台：这是本帧<b>唯一</b>的一条事件 ——
+                        // JS 侧判定失焦后只上报它，键盘 / 鼠标 / 触摸的待发数据已在那边全部作废。
+                        // 先让鼠标把按住的键逐个上报"被中断"（上层据此取消拖拽 / 不确认点击），再统一清空。
                         Input_Mouse.ReleaseAll();
                         ResetAll();
                         FocusChanged?.Invoke(false);
@@ -166,7 +168,6 @@ namespace KFramework.MonoGame
                     // ---- 键盘 ----
                     case EvType.KeyDown: Input_KeyBoard.OnKey(data[0], true); break;
                     case EvType.KeyUp: Input_KeyBoard.OnKey(data[0], false); break;
-                    case EvType.KeyBlur: Input_KeyBoard.OnBlur(); break;
 
                     // ---- 鼠标 ----
                     case EvType.MouseButton:
@@ -184,10 +185,6 @@ namespace KFramework.MonoGame
                         Input_Mouse.OnMove(
                             BinaryPrimitives.ReadInt16LittleEndian(data),
                             BinaryPrimitives.ReadInt16LittleEndian(data.Slice(2, 2)));
-                        break;
-
-                    case EvType.PointerCancel:
-                        Input_Mouse.OnPointerCancel(data[0] & 0x7F);
                         break;
 
                     // ---- 触摸：data = id + x i16 + y i16 ----

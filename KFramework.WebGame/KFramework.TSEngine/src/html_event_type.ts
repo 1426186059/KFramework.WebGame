@@ -22,15 +22,19 @@ export const E_HTML_Event_Type = {
     CanvasResized: 0x04,
 
     // ---- 键盘 0x1_：data 1 字节 = Keys 序号（0..212，见 input_keyboard 的 CODE_TO_KEYS）----
+    // 不再有 KeyBlur：键盘失焦与"指针被系统接管"一律并进系统的 SysFocusLost，
+    // 由 takeFrameData 判定后【单独】上报一条 —— 见 input_window_event 的说明。
     KeyDown: 0x10,
     KeyUp: 0x11,
-    KeyBlur: 0x12,           // 失焦：C# 侧清空按键状态（窗外松手收不到 keyup，不报就会卡住）
 
     // ---- 鼠标 0x2_ ----
+    // 不再有 PointerCancel：手势被接管（pointercancel）并进 SysFocusLost。
+    // contextmenu 不在此列 —— 它只拦掉浏览器菜单，见 input_window_event 的 onContextMenu。
+    // 上层仍能收到"被中断"的通知 —— 改由 C# 侧在分发 SysFocusLost 时用 Input_Mouse.ReleaseAll() 发起，
+    // 不再需要占用一个独立事件号。
     MouseButton: 0x20,       // [button|down<<7] 1B —— 低 7 位键号、最高位是否按下
     MouseWheel: 0x21,        // [delta] 1B —— 按 sbyte 解读
     MouseMove: 0x22,         // [x i16][y i16] 4B
-    PointerCancel: 0x23,     // [button] 1B —— 手势被系统接管；不是抬起，冒充抬起会让上层误判为完成
 
     // ---- 触摸 0x3_：data 5 字节 = id(1) + x i16 + y i16 ----
     TouchBegin: 0x30,

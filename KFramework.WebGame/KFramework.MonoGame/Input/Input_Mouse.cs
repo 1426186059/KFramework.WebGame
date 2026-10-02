@@ -37,13 +37,18 @@ namespace KFramework.MonoGame
         public static event Action<MouseButton, Vector2> ButtonUp;
 
         /// <summary>
-        /// 指针被<b>系统 / 浏览器接管</b>（右键手势、拖拽、长按菜单等）或窗口失焦，交互被中断。
+        /// 交互被<b>中断</b>：窗口失焦、页面切后台，或浏览器接管了指针（右键菜单 / 拖拽 / 长按手势
+        /// —— 这些情况浏览器不会再派发 mouseup）。
         /// <para>
-        /// 与 <see cref="ButtonUp"/> 的区别：这里根本没有"用户松手"这个动作 ——
-        /// 浏览器接管指针后不会再派发 mouseup，只给 <c>pointercancel</c>。
+        /// 与 <see cref="ButtonUp"/> 的区别：这里根本没有"用户松手"这个动作。
         /// 上层收到它应当<b>取消</b>进行中的交互（拖动回滚、不触发点击）；
         /// 而 <see cref="ButtonUp"/> 才表示正常松手、可以确认这次交互。
         /// 因此下面会把该键电平退回抬起（避免状态卡住），但<b>不产生</b> ButtonUp 边沿。
+        /// </para>
+        /// <para>
+        /// 触发源只有一处：<see cref="Input_GameFrameData"/> 分发 SysFocusLost / SysPageHidden 时的
+        /// <see cref="ReleaseAll"/>。JS 侧那条 PointerCancel 事件已取消 ——
+        /// 它原先一次只报一个键号，而"被中断的往往是整次交互"，由本侧电平统一遍历反而更全。
         /// </para>
         /// </summary>
         public static event Action<MouseButton, Vector2> PointerCancel;
@@ -82,18 +87,9 @@ namespace KFramework.MonoGame
             _y = y;
         }
 
-        /// <summary>指针被系统 / 浏览器接管（右键手势、拖拽、长按菜单），不会再有 mouseup。</summary>
-        internal static void OnPointerCancel(int btn)
-        {
-            if (!Active) return;
-            if (btn < 0 || btn >= MaxButtons) return;
-
-            // 电平退回抬起，但【两帧都置 false】使差分无边沿 ——
-            // 否则会被当成一次正常松手，把一次被中断的交互错误地确认掉（拖动被误判为完成）。
-            _btnNew[btn] = false;
-            _btnLast[btn] = false;
-            PointerCancel?.Invoke((MouseButton)btn, Position);
-        }
+        // 不再有 OnPointerCancel(btn)：单个键的"指针取消"事件已从流里去掉 ——
+        // 手势被接管（pointercancel / 右键菜单）与键盘失焦并成同一条 SysFocusLost，
+        // 由 ReleaseAll 统一处理（它遍历的是本侧电平，不需要 JS 逐个报键号）。
 
         /// <summary>
         /// 边沿计算：本帧电平与上帧电平的差分产生按下 / 抬起，并结算滚轮。
@@ -136,7 +132,12 @@ namespace KFramework.MonoGame
         /// 与 <see cref="Reset"/> 的区别：Reset 只是静默清空，这里会先发事件，
         /// 让上层知道"这次交互是被中断的"（拖动要取消、点击不能算完成）。
         /// 由 <see cref="Input_GameFrameData"/> 在分发失焦事件时调用 ——
-        /// JS 侧不再监听 window 的 blur，这个语义就靠它保住。
+        /// JS 侧既不监听 window 的 blur、也不再单发"指针取消"，这个语义全靠它保住。
+        /// </para>
+        /// <para>
+        /// 遍历的是<b>本侧电平</b>（<c>_btnNew</c> / <c>_btnLast</c>）而不是某个键号清单：
+        /// 手势被接管时浏览器只给 pointercancel、不给键号清单，
+        /// 原先靠 JS 逐个上报键号反而可能漏掉同时按住的其它键。
         /// </para>
         /// </summary>
         internal static void ReleaseAll()

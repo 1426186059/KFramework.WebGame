@@ -35,13 +35,8 @@ namespace KFramework.MonoGame
             _NewKeyState[keys] = down;
         }
 
-        /// <summary>失焦：清空全部键盘状态（由 <see cref="Input_GameFrameData"/> 分发 Blur 事件）。
-        /// 窗外松手收不到 keyup，不清就会一直卡在"按住"。</summary>
-        internal static void OnBlur()
-        {
-            if (!Active) return;
-            Reset();
-        }
+        // 不再有 OnBlur：键盘失焦已并进 SysFocusLost，由 Input_GameFrameData 分发时调 ResetAll 统一清空
+        // （本类的 Reset 已在 ResetAll 里）。JS 侧那条 KeyBlur 事件也已取消。
 
         /// <summary>
         /// 边沿计算：本帧电平与上帧电平的差分产生按下 / 抬起，电平为真的持续触发 KeyPress。
@@ -75,7 +70,7 @@ namespace KFramework.MonoGame
             }
         }
 
-        /// <summary>清空键盘状态（失焦时由 Blur 事件触发）。</summary>
+        /// <summary>清空键盘状态（失焦时由 <see cref="Input_GameFrameData"/> 的 ResetAll 触发）。</summary>
         public static void Reset()
         {
             _NewKeyState.AsSpan().Clear();

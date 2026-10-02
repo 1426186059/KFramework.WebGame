@@ -22,7 +22,22 @@ interface Registration {
 }
 
 const registrations: Registration[] = [];
-let bound = false;
+
+/**
+ * 装置是否<b>激活</b>（= 是否绑着监听在采集）：由 bindTouch / unbindTouch 维护，
+ * 与 C# 侧 <c>Input_Touch.Active</c> 一一对应。
+ *
+ * 写入前必须先看它 —— 未激活时不仅不写，还要把攒下的清空：
+ * 停用期间残留的触点到重新激活时<b>早已陈旧</b>（抬手收不到 touchend），
+ * 留着就会在激活后的第一帧一次性涌出，表现为"刚启用就有个触点一直按着"。
+ *
+ * 只有这一个开关：C# 的 Activate / Deactivate 与这里的
+ * bind / unbind 成对调用，"绑着监听"就是"在采集"，两个标志表达同一件事，迟早有一处忘了同步。
+ * 它同时兼作重复绑定的守卫。
+ *
+ * 不叫 active 是因为本模块已有同名的触点表（<c>active: Map&lt;id, TouchState&gt;</c>）。
+ */
+let enabled = false;
 
 // 当前活跃触点：id -> 最新位置 + 自上次 poll 以来是否变化
 // dirty: 0=无变化 / EvStart=本区间刚按下 / EvMove=本区间移动过
@@ -43,7 +58,7 @@ function on(target: EventTarget, name: string, handler: EventListener,
 }
 
 export function bindTouch(): void {
-    if (bound) return;
+    if (enabled) return;
 
     const canvas = getInputCanvas();
     if (!canvas) return;
@@ -56,7 +71,7 @@ export function bindTouch(): void {
     on(canvas, 'touchend', onTouch, touchOptions);
     on(canvas, 'touchcancel', onTouch, touchOptions);
 
-    bound = true;
+    enabled = true;                 // 监听全部挂上了才算激活（画布找不到时保持未激活）
 }
 
 /**
@@ -99,11 +114,11 @@ function onTouch(e: Event): void {
 
 /** 解绑触摸监听并清空状态。 */
 export function unbindTouch(): void {
+    enabled = false;                // 先置未激活：此后攒下的触点一律不再上报
     for (const r of registrations) r.target.removeEventListener(r.name, r.handler);
     registrations.length = 0;
     active.clear();
     ended.clear();
-    bound = false;
 }
 
 /** 单条事件的 data：id(1) + x i16 + y i16 = 5 字节。 */
@@ -115,6 +130,12 @@ const view = new DataView(scratch.buffer);
  * 每条 = E_HTML_Event_Type.Touch* + data(id, x i16, y i16)，共 6 字节。
  */
 export function writeTouchEvents(w: FrameDataStream): void {
+    if (!enabled)
+    {
+        discardTouchEvents();       // 未激活：不采集，也不留陈旧触点（理由见 enabled 的注释）
+        return;
+    }
+
     let n = 0;
 
     // 1) 活跃触点：只上报本帧有变化的（Begin / Move），静止的触点不上报
@@ -138,5 +159,16 @@ export function writeTouchEvents(w: FrameDataStream): void {
         w.put(E_HTML_Event_Type.TouchEnd, scratch, 5);
         n++;
     }
+    ended.clear();
+}
+
+/**
+ * 作废本帧攒下的触摸事件（失焦帧由 game_frame_take_js_data 调用）。
+ *
+ * 监听仍挂着，只丢数据。必须丢：窗口失焦 / 页面切后台时，抬手收不到 touchend，
+ * 把"按下"留到下一帧发出去，C# 侧就会一直显示按住。
+ */
+export function discardTouchEvents(): void {
+    active.clear();
     ended.clear();
 }

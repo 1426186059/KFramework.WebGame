@@ -2,16 +2,22 @@
 // 鼠标模块：只注册监听 + 维护"当前状态/变化"。状态与边沿在 C# 侧（Input_Mouse）实现。
 import { canvasPoint, getInputCanvas, setCanvasId } from './input_common.js';
 import { E_HTML_Event_Type } from './html_event_type.js';
+import { reportFocusLost } from './input_window_event.js';
 const registrations = [];
-let bound = false;
+/**
+ * 装置是否<b>激活</b>（= 是否绑着监听在采集）：由 bindMouse / unbindMouse 维护，
+ * 与 C# 侧 <c>Input_Mouse.Active</c> 一一对应。
+ *
+ * 只有这一个开关：C# 的 Activate / Deactivate 与这里的
+ * bind / unbind 成对调用，"绑着监听"就是"在采集"，两个标志表达同一件事，
+ * 迟早会有一处忘了同步。它同时兼作重复绑定的守卫。
+ */
+let enabled = false;
 const buttons = new Map(); // button → 1(按下) / 0(抬起)，上次 poll 以来最新值
 // 当前按住的键。buttons 每次 poll 后就被清空，而 C# 侧是"收到变化才更新状态"，
 // 所以必须另留一份"当前按住"的记录：手势被接管 / 窗口失焦时收不到 mouseup，
 // 要靠它补发抬起 —— 否则那一次抬起永远丢在 JS 侧，C# 侧就一直显示按住不放。
 const held = new Set();
-// 待上报的"指针取消"键（pointercancel / 失焦）。照键盘 m_Blurred 的做法：
-// handler 只入队，真正上报延到 pollMouse，保证与一次 poll 的时序对齐。
-const canceled = [];
 let posX = 0;
 let posY = 0;
 let moved = false; // 上次 poll 以来是否发生过移动
@@ -20,12 +26,11 @@ function on(target, name, handler, options) {
     target.addEventListener(name, handler, options);
     registrations.push({ target, name, handler });
 }
-// 失焦时"把按住的键记为指针取消"这件事改由 C# 侧统一处理：
-// 系统事件（SysFocusLost / SysPageHidden）分发时，Input_GameFrameData 会先调
-// Input_Mouse.ReleaseAll() 上报 PointerCancel，再 ResetAll 清空 ——
-// 这样不用在 JS 侧监听 window 的 blur，也能保住"被中断的交互要通知上层"这个语义。
+// 失焦一律交给 input_window_event 的 SysFocusLost（画布 blur + hasFocus 兜底）：
+// C# 侧分发该事件时先调 Input_Mouse.ReleaseAll() 逐个键上报"被中断"，再 ResetAll 清空 ——
+// 所以本模块既不用监听 window 的 blur，也不用再为"手势被接管"单列一个事件。
 export function bindMouse(canvasId) {
-    if (bound)
+    if (enabled)
         return;
     // 记下画布 id，后续 canvasPoint 的坐标换算才能用同一块画布。
     if (canvasId)
@@ -43,8 +48,9 @@ export function bindMouse(canvasId) {
         on(canvas, 'mousemove', onMouseMove);
         on(canvas, 'mousedown', onMouseDown);
         on(canvas, 'wheel', onMouseWheel, { passive: false });
-        on(canvas, 'contextmenu', onContextMenu);
     }
+    // contextmenu（右键菜单 / 长按手势）不在这里 —— 它只拦掉浏览器菜单，不判失焦，
+    // 已统一交给 input_window_event 监听（挂 window，见那里的 onContextMenu）。
     // 抬起挂 window：在画布外松手也能收到
     on(window, 'mouseup', onMouseUp);
     // 【手势被接管】浏览器/系统接管指针（右键手势、拖拽、长按菜单等）时【不会】再派发 mouseup，
@@ -52,28 +58,14 @@ export function bindMouse(canvasId) {
     // 表现为松开后 UI 仍显示 Left/Right 按住不放。
     on(window, 'pointercancel', onPointerCancel);
     // 【失焦】不再自己监听 window 的 blur / document 的 visibilitychange ——
-    // 焦点一律以画布为准（bindFrameEvents 绑在 canvas 上，外加 document.hasFocus() 每帧兜底），
-    // 由系统事件统一分发后 Reset。这里保留的 window 监听只有 mouseup（画布外松手也要收到）
-    // 与 pointercancel（手势被接管），它们处理的不是"失焦"这件事。
-    bound = true;
+    // 焦点一律以画布为准（bindFrameEvents 绑在 canvas 上，外加 document.hasFocus() 每帧兜底）。
+    // 这里保留的两个 window 监听各自有别的职责：mouseup 是画布外松手也要收到；
+    // pointercancel 是手势被接管 —— 它现在也归到"失焦"，但触发源不是焦点，不能靠 blur 替代。
+    enabled = true; // 监听全部挂上了才算激活
 }
 /** 拦掉浏览器默认行为（拖拽起始）。 */
 function preventDefault(e) {
     e.preventDefault();
-}
-/**
- * 右键菜单（含触摸板的右键手势）：先拦掉浏览器菜单，再把按住的键记为"指针取消"。
- *
- * 为什么必须处理：菜单一弹出，浏览器就<b>不会再派发 mouseup</b> ——
- * 少了这一步，右键会永远卡在"按住"，表现为松开后 UI 仍显示 Right 按住不放。
- * 这与 {@link onPointerCancel} 是同一类兜底，但覆盖的是不同的触发源：
- * contextmenu 不一定伴随 pointercancel（尤其右键长按 / 触摸板手势），所以要单独接一次。
- */
-function onContextMenu(e) {
-    e.preventDefault(); // 阻止浏览器默认菜单
-    for (const button of held)
-        canceled.push(button); // 随本帧上报为 PointerCancel
-    held.clear();
 }
 function onMouseMove(e) {
     const ev = e;
@@ -112,22 +104,24 @@ function onMouseUp(e) {
 }
 function onPointerCancel(e) {
     const ev = e;
-    // 只入队，真正上报延到 writeMouseEvents（照键盘 Process_Blur 只置标记）。
-    if (held.delete(ev.button))
-        canceled.push(ev.button);
+    // 只置标记，真正上报延到 takeFrameData（与键盘失焦走同一条 SysFocusLost）。
+    // 确有按住的键被中断才上报 —— 空跑一次 pointercancel 不该连带作废整帧输入。
+    if (!held.delete(ev.button))
+        return;
+    held.clear(); // C# 侧会 ReleaseAll 全部键，本侧不必再逐个记
+    reportFocusLost();
 }
 //（visibilitychange 与 window.blur 的监听已移除，统一由 canvas 焦点 + hasFocus 兜底接管）
 /** 解绑鼠标监听并清空状态。 */
 export function unbindMouse() {
+    enabled = false; // 先置未激活：此后攒下的数据一律不再上报
     for (const r of registrations)
         r.target.removeEventListener(r.name, r.handler);
     registrations.length = 0;
     buttons.clear();
     held.clear();
-    canceled.length = 0;
     moved = false;
     wheelDelta = 0;
-    bound = false;
 }
 /** 单条事件的 data：最长的是 MouseMove（x i16 + y i16 = 4 字节）。 */
 const scratch = new Uint8Array(4);
@@ -136,20 +130,15 @@ const view = new DataView(scratch.buffer);
  * 把本帧鼠标事件写入【统一事件流】（由 game_frame_take_js_data 每帧调用），逐条 put。
  */
 export function writeMouseEvents(w) {
+    if (!enabled) {
+        discardMouseEvents(); // 未激活：不采集，也不留陈旧数据（理由见 enabled 的注释）
+        return;
+    }
     let bSetPos = moved;
     moved = false;
-    // 【指针被接管 / 失焦】手势被接管时浏览器不会再派发 mouseup，只给 pointercancel ——
-    // 上报【独立的取消事件】而不是伪装成 mouseup：用户松手与被系统中断是两回事，
-    // 冒充抬起会让上层把一次被中断的交互当成正常松手确认掉（拖动被误判为完成、点击被误触发）。
-    if (canceled.length > 0) {
-        for (const button of canceled) {
-            scratch[0] = button & 0x7f;
-            w.put(E_HTML_Event_Type.PointerCancel, scratch, 1);
-        }
-        canceled.length = 0;
-        buttons.clear(); // 被接管的键不再上报变化，免得"松手后又跳回按下"
-        bSetPos = true;
-    }
+    // 【指针被接管 / 失焦】不再在这里单发一条取消事件 ——
+    // 那些来源已并进 input_window_event 的 SysFocusLost，由 takeFrameData 判定：
+    // 一旦失焦，本帧【只上报那一条】，这里的按键 / 滚轮 / 坐标一律作废（见 discardMouseEvents）。
     // 按键变化：data 1 字节 = 低 7 位键号 | 最高位是否按下
     for (const [button, down] of buttons) {
         scratch[0] = (button & 0x7f) | (down ? 0x80 : 0);
@@ -175,4 +164,17 @@ export function writeMouseEvents(w) {
         view.setInt16(2, posY, true);
         w.put(E_HTML_Event_Type.MouseMove, scratch, 4);
     }
+}
+/**
+ * 作废本帧攒下的鼠标事件（失焦帧由 game_frame_take_js_data 调用）。
+ *
+ * 与 {@link unbindMouse} 的清空不同：监听仍挂着，只丢数据。
+ * 必须丢的原因同键盘 —— 被接管的指针收不到 mouseup，
+ * 把那条"按下"留到下一帧发出去，C# 侧就会一直显示按住。
+ */
+export function discardMouseEvents() {
+    buttons.clear();
+    held.clear();
+    moved = false;
+    wheelDelta = 0;
 }
