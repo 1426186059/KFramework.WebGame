@@ -1,8 +1,5 @@
-using KFramework.MonoGame;
-
 namespace KFramework.MonoGame
 {
-
     /// <summary>
     /// 全局音频控制：对应浏览器 AudioContext 的全局状态（解锁 / 主音量 / 静音）。
     /// 与 MonoGame 不同，浏览器要求用户手势后才能启动音频上下文，故提供 <see cref="Unlock"/>。
