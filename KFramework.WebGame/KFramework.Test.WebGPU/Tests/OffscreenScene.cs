@@ -54,10 +54,10 @@ namespace KFramework.Test.WebGPU.Tests
         private const int BodyTop = 118;
         private const int BarsTotal = 25;
 
-        // 三块并排对照区（参考 / 离屏 / 实际）
-        private const int PanelW = 240;
-        private const int PanelH = 150;
-        private const int PanelGap = 40;
+        // 流水线式对照区：4 列 × 2 行。按最窄的画布（约 1032）留余量：4*220 + 3*20 + 28 = 968。
+        private const int PanelW = 220;
+        private const int PanelH = 138;     // 保持 320:200 的比例（1.6:1）
+        private const int PanelGap = 20;
 
         private Screen _screen = Screen.Offscreen;
         private readonly List<Rectangle> _buttons = [];
@@ -66,7 +66,11 @@ namespace KFramework.Test.WebGPU.Tests
         private RenderTarget2D? _rt2;      // 离屏2（无 MSAA）
         private RenderTarget2D? _rtMsaa;   // 离屏 MSAA=4
         private RenderTarget2D? _rtComp;   // 合成目标
-        private RenderTarget2D? _rtRef;    // 参考图：不切目标一口气画完（用来对照"实际"）
+        private RenderTarget2D? _rtA;      // A：① 阶段单独画出来（背景 + 红块）
+        private RenderTarget2D? _rtC;      // C：③ 阶段单独画出来（绿块）
+        private RenderTarget2D? _rtRef;    // 参考：不切目标，一次把 ①②③ 画完（应有的样子）
+        private RenderTarget2D? _rtMix;    // 合成：把 A + B + C 依次合成进一张
+        private RenderTarget2D? _rtE;      // 实际(离屏)：同样的顺序，但切走再切回同一个目标继续画
         private RenderTarget2D? _accum;    // 累积
 
         // 首次 RenderOffscreen 时创建（离屏阶段早于任何 Draw），故声明为非空。
@@ -172,12 +176,21 @@ namespace KFramework.Test.WebGPU.Tests
                     break;
 
                 case Screen.Nested:
-                    _rt1 ??= NewTarget(0);
+                    _rt1 ??= NewTarget(0);      // B（透明底，供各处合成用）
+                    _rtA ??= NewTarget(0);
+                    _rtC ??= NewTarget(0);
                     _rtRef ??= NewTarget(0);
+                    _rtMix ??= NewTarget(0);
+                    _rtE ??= NewTarget(0, RenderTargetUsage.PreserveContents);
 
-                    // —— 参考图：不切换目标，一口气把 ①②③ 画完（应有的样子） ——
+                    // —— A / B / C：三个阶段各自单独画出来的离屏 ——
+                    RenderStageAlone(_rtA, batch, 0);
+                    RenderStageTransparent(_rt1, batch, 1);
+                    RenderStageAlone(_rtC, batch, 2);
+
+                    // —— 参考：不切换目标，一口气把 ①②③ 画完（应有的样子） ——
                     Device.SetRenderTarget(_rtRef);
-                    Device.Clear(new Color(10, 13, 22));
+                    Device.Clear(new Color(12, 15, 24));
                     batch.Begin();
                     DrawStage(batch, 0, 0, 0, RtW, RtH);
                     DrawStage(batch, 1, 0, 0, RtW, RtH);
@@ -185,19 +198,47 @@ namespace KFramework.Test.WebGPU.Tests
                     batch.End();
                     Device.SetRenderTarget(null);
 
-                    // —— 实际：在【屏幕】上走一遍传奇的顺序 ——
-                    // ① 先画在屏幕上（此时画布通道已由 TickFrame 的 Clear 打开）
+                    // —— 合成：A → B → C 依次叠进一张（全程在同一张离屏内，不切走再切回） ——
+                    Device.SetRenderTarget(_rtMix);
+                    Device.Clear(new Color(12, 15, 24));
                     batch.Begin();
-                    DrawStage(batch, 0, PanelX(2), BodyTop, PanelW, PanelH);
+                    DrawStage(batch, 0, 0, 0, RtW, RtH);
+                    batch.Draw(_rt1, new Rectangle(0, 0, RtW, RtH), Color.White);
+                    DrawStage(batch, 2, 0, 0, RtW, RtH);
+                    batch.End();
+                    Device.SetRenderTarget(null);
+
+                    // —— 实际(离屏)：同样顺序，但中间要【切走再切回同一个目标】 ——
+                    Device.SetRenderTarget(_rtE);
+                    Device.Clear(new Color(12, 15, 24));
+                    batch.Begin();
+                    DrawStage(batch, 0, 0, 0, RtW, RtH);      // ①
                     batch.End();
 
-                    // ② 切去离屏画。清成【透明】，这样合成回屏幕时不会盖住第 ① 步画的东西。
-                    Device.SetRenderTarget(_rt1);
+                    Device.SetRenderTarget(_rt1);              // ② 切去画 B
                     Device.Clear(new Color(0, 0, 0, 0));
                     batch.Begin();
                     DrawStage(batch, 1, 0, 0, RtW, RtH);
                     batch.End();
-                    Device.SetRenderTarget(null);   // 切回屏幕（③ 由 DrawBody 接着画）
+
+                    Device.SetRenderTarget(_rtE);              // ③ 切回 E，接着画
+                    batch.Begin();
+                    batch.Draw(_rt1, new Rectangle(0, 0, RtW, RtH), Color.White);
+                    DrawStage(batch, 2, 0, 0, RtW, RtH);
+                    batch.End();
+                    Device.SetRenderTarget(null);
+
+                    // —— 实际(画布)：① 先画在真实屏幕上，再切离屏画 ②，切回后由 DrawBody 补 ③ ——
+                    batch.Begin();
+                    DrawStage(batch, 0, PanelX(1), Row2Y, PanelW, PanelH);
+                    batch.End();
+
+                    Device.SetRenderTarget(_rt1);              // ② 切去离屏
+                    Device.Clear(new Color(0, 0, 0, 0));
+                    batch.Begin();
+                    DrawStage(batch, 1, 0, 0, RtW, RtH);
+                    batch.End();
+                    Device.SetRenderTarget(null);              // 切回屏幕
                     break;
 
                 case Screen.Accumulate:
@@ -363,8 +404,33 @@ namespace KFramework.Test.WebGPU.Tests
             Device.SetRenderTarget(null);
         }
 
-        /// <summary>三块对照区的 x（0=参考 1=离屏 2=实际）。</summary>
+        /// <summary>对照区的 x（0..2）。</summary>
         private static float PanelX(int index) => 28f + index * (PanelW + PanelGap);
+
+        /// <summary>第二行的 y（D / E 所在行）。</summary>
+        private static float Row2Y => BodyTop + PanelH + 36f;
+
+        /// <summary>把一个阶段单独画进离屏（不透明底），用来当"这一段长什么样"的参考。</summary>
+        private void RenderStageAlone(RenderTarget2D target, SpriteBatch batch, int stage)
+        {
+            Device.SetRenderTarget(target);
+            Device.Clear(new Color(12, 15, 24));
+            batch.Begin();
+            DrawStage(batch, stage, 0, 0, RtW, RtH);
+            batch.End();
+            Device.SetRenderTarget(null);
+        }
+
+        /// <summary>把一个阶段画进离屏（<b>透明底</b>）：合成到别处时不会盖住底下已画的内容。</summary>
+        private void RenderStageTransparent(RenderTarget2D target, SpriteBatch batch, int stage)
+        {
+            Device.SetRenderTarget(target);
+            Device.Clear(new Color(0, 0, 0, 0));
+            batch.Begin();
+            DrawStage(batch, stage, 0, 0, RtW, RtH);
+            batch.End();
+            Device.SetRenderTarget(null);
+        }
 
         /// <summary>
         /// 画一个阶段的内容。三个阶段叠起来才是完整画面，分开画才能看出"切回来时少了几段"：
@@ -476,32 +542,35 @@ namespace KFramework.Test.WebGPU.Tests
                     break;
 
                 case Screen.Nested:
-                    if (_rt1 is not { } rt1 || _rtRef is not { } rtRef) return;
-                    // 左：参考（不切目标一次画完）  中：离屏内容  右：实际（屏幕↔离屏来回切）
-                    Panel(batch, rtRef, PanelX(0), BodyTop, "参考：不切换，一次画完");
-                    Panel(batch, rt1, PanelX(1), BodyTop, "离屏里画的（透明底）");
+                    if (_rt1 is not { } rt1 || _rtA is not { } rtA || _rtC is not { } rtC
+                        || _rtRef is not { } rtRef || _rtMix is not { } rtMix || _rtE is not { } rtE) return;
 
-                    // 右块就是【真实的屏幕】：③ 把离屏合成回来，再补画绿色标记。
-                    // 合成图【内缩 24px】摆放，故意露出一圈边缘：
-                    //   边缘能看到背景 + 顶部红块 → ① 留下了，之前是被合成图盖住的（合成图不是真透明）
-                    //   边缘空空如也           → ① 在切回屏幕时就被擦掉了
-                    batch.Draw(rt1, new Rectangle((int)PanelX(2) + 24, BodyTop + 24, PanelW - 48, PanelH - 48), Color.White);
-                    DrawStage(batch, 2, PanelX(2), BodyTop, PanelW, PanelH);
-                    // 外框：标出这块是直接画在屏幕上的
-                    Frame(batch, PanelX(2), BodyTop, PanelW, PanelH, new Color(255, 206, 110));
-                    batch.DrawString(Font, "实际：屏幕↔离屏来回切",
-                        new Vector2(PanelX(2), BodyTop + PanelH + 6f), new Color(255, 206, 110));
+                    // 第一行：参考 + 三个阶段各自的离屏
+                    Panel(batch, rtRef, PanelX(0), BodyTop, "参考：一次画完");
+                    Panel(batch, rtA, PanelX(1), BodyTop, "A ① 背景+红块");
+                    Panel(batch, rt1, PanelX(2), BodyTop, "B ② 球阵(透明底)");
+                    Panel(batch, rtC, PanelX(3), BodyTop, "C ③ 绿块");
 
-                    float ny = BodyTop + PanelH + 34f;
-                    ny = DrawLine(batch, "【怎么比】左边「参考」与右边「实际」应当一模一样：背景 + 顶部红块 + 球阵 + 底部绿块",
+                    // 第二行：合成 → 实际(画布) → 实际(离屏)
+                    Panel(batch, rtMix, PanelX(0), Row2Y, "合成：A+B+C");
+
+                    // 实际(画布)：① 已在离屏阶段画在真实屏幕上，这里补 ③ 合成 + 绿块
+                    batch.Draw(rt1, new Rectangle((int)PanelX(1), (int)Row2Y, PanelW, PanelH), Color.White);
+                    DrawStage(batch, 2, PanelX(1), Row2Y, PanelW, PanelH);
+                    Frame(batch, PanelX(1), Row2Y, PanelW, PanelH, new Color(255, 206, 110));
+                    batch.DrawString(Font, "实际(画布)：屏幕↔离屏",
+                        new Vector2(PanelX(1), Row2Y + PanelH + 6f), new Color(255, 206, 110));
+
+                    Panel(batch, rtE, PanelX(2), Row2Y, "实际(离屏)：切走再切回");
+
+                    float ny = Row2Y + PanelH + 34f;
+                    ny = DrawLine(batch, "【应当一致】参考 = 合成 = 实际(画布) = 实际(离屏)：背景 + 顶部红块 + 球阵 + 底部绿块",
                         x, ny, new Color(255, 206, 110));
-                    ny = DrawLine(batch, "合成图故意【内缩】摆放，露出一圈边缘 —— 请看边缘：",
+                    ny = DrawLine(batch, "【关键判定】实际(离屏)有红块、实际(画布)没有 → 切换逻辑没问题，是【画布】保不住内容",
                         x, ny, new Color(255, 206, 110));
-                    ny = DrawLine(batch, "  边缘有背景+红块 → ①留下了，只是被合成图盖住（合成图不是真透明）",
-                        x, ny, new Color(255, 206, 110));
-                    ny = DrawLine(batch, "  边缘空空如也   → ①在切回屏幕时就被擦掉了",
+                    ny = DrawLine(batch, "            两个都没有红块 → 是【切走再切回同一目标继续画】这条逻辑的问题",
                         x, ny, new Color(255, 150, 150));
-                    ny = DrawLine(batch, "好比画画：先在纸上画背景(红) → 去另一张纸画球(离屏) → 回来补画(绿)。回来时背景还在吗？",
+                    ny = DrawLine(batch, "好比画画：先在纸上画背景(A) → 去另一张纸画球(B) → 回来补画绿块(C)。回来时背景还在吗？",
                         x, ny, new Color(150, 165, 195));
                     DrawLine(batch, "传奇每帧都这么来回切很多次。本画面已设为「保留内容」模式（默认「丢弃内容」会清屏，属设计行为不是 bug）。",
                         x, ny, new Color(150, 165, 195));
