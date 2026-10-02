@@ -35,6 +35,12 @@ namespace KFramework.MonoGame
 
         private static readonly int VertexSizeInBytes = VertexPositionColorTexture.SizeInBytes; // 20
 
+    /// <summary>离屏渲染目标的纹理格式（画布格式可能不同，二者管线不可混用）。</summary>
+    private const string RtColorFormat = "rgba8unorm";
+
+    /// <summary>深度附件格式（通道的 depthStencil 与管线的 depthStencil 必须一致）。</summary>
+    private const string RtDepthFormat = "depth24plus";
+
         /// <summary>单帧顶点容量（按精灵数）。uint16 索引上限决定了不能超过 16384 个精灵。</summary>
         private static readonly int MaxSpritesPerFrame = GraphicsDevice.MaxBatchSize * 4;
 
@@ -76,6 +82,12 @@ namespace KFramework.MonoGame
             MaxTextureSize = JSBind_WebGPU.GetParameterInt(JSBind_WebGPU.MAX_TEXTURE_SIZE);
             Renderer = JSBind_WebGPU.GetParameterString(JSBind_WebGPU.RENDERER);
 
+            _canvasFormat = JSBind_WebGPU.GetPreferredFormat();
+        _targetFormat = _canvasFormat;
+        // 画布 MSAA 采样数由 render_webgpu.ts 按 antialias 决定（4 或 1），这里保持一致。
+        _canvasSampleCount = antialias ? 4 : 1;
+        _targetSampleCount = _canvasSampleCount;
+
             _shaderModule = JSBind_WebGPU.CreateShaderModule(WgslSource);
             if (_shaderModule == 0) throw new InvalidOperationException("[webgpu] 创建着色器模块失败。");
 
@@ -109,7 +121,8 @@ namespace KFramework.MonoGame
 
             JSBind_WebGPU.BeginFrame(
                 color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f,
-                -1f); // depthClear < 0 → 不带深度附件（2D 精灵不需要）
+                _depthTarget != 0 ? 1f : -1f,   // depthClear < 0 → 不带深度附件（2D 精灵不需要）
+                _colorTarget, _resolveTarget, _depthTarget);
 
             _frameActive = true;
             _vertexBump = 0;
@@ -137,6 +150,27 @@ namespace KFramework.MonoGame
         public void SetSamplerState(SamplerState state) => _sampler = state;
 
         public void BindTexture(Texture2D texture) => _boundTexture = texture;
+
+    // ---- 当前渲染目标集合（0 = 画布交换链）----
+    // 通道附件在【通道创建时】就固定下来，所以切换目标必须先结束当前通道。
+    private int _colorTarget;
+    private int _resolveTarget;
+    private int _depthTarget;
+
+    /// <summary>当前目标集合的颜色格式（画布可能是 bgra8unorm，离屏 RT 是 rgba8unorm）。</summary>
+    private string _targetFormat;
+
+    /// <summary>当前目标集合的采样数（离屏 RT 的 MSAA 与画布 antialias 是两回事）。</summary>
+    private int _targetSampleCount = 1;
+
+    /// <summary>画布首选格式（切回画布时恢复用）。</summary>
+    private string _canvasFormat = "rgba8unorm";
+
+    /// <summary>画布 MSAA 采样数（切回画布时恢复用）。</summary>
+    private int _canvasSampleCount = 1;
+
+    /// <summary>离屏渲染目标的额外附件（多重采样颜色 + 深度）；颜色纹理本身走 _textures。</summary>
+    private readonly Dictionary<IRenderTarget, (int Msaa, int Depth)> _renderTargetExtras = new();
 
         /// <summary>
         /// 光栅化 / 深度状态在 WebGPU 里是<b>管线对象的属性</b>，不能像 WebGL 那样随时切换。
@@ -194,7 +228,13 @@ namespace KFramework.MonoGame
 
         private int GetOrCreatePipeline(BlendState blend)
         {
-            string key = blend.SourceBlend + "|" + blend.DestinationBlend + "|" + blend.SourceAlphaBlend + "|" + blend.DestinationAlphaBlend;
+            // PSO 缓存键 = 完整状态的内容键（照 DX12 的 PipelineStateManager：对管线描述做内容哈希）。
+            // 不能用 Vulkan 那种"指针身份哈希"—— JS/TS 侧没有稳定的指针身份。
+            // WebGPU 的管线必须与通道附件严格匹配，故颜色格式 / 采样数 / 是否有深度附件都得进键，
+            // 否则切换到不同目标时会因管线与附件不匹配而报错。
+            string key = _targetFormat + "|" + _targetSampleCount + "|" + (_depthTarget != 0 ? "d" : "-") + "|"
+                + blend.SourceBlend + "|" + blend.DestinationBlend + "|"
+                + blend.SourceAlphaBlend + "|" + blend.DestinationAlphaBlend;
             if (_pipelines.TryGetValue(key, out int pipeline)) return pipeline;
 
             // 注：BlendState 目前仍存 GL 枚举值（步骤② 会把它中和为中立枚举）。
@@ -205,6 +245,11 @@ namespace KFramework.MonoGame
                           ",\"vertex\":{\"entryPoint\":\"vs_main\",\"buffers\":" + VertexLayoutJson + "}" +
                           ",\"fragment\":{\"entryPoint\":\"fs_main\"}" +
                           ",\"primitive\":{\"topology\":\"triangle-list\",\"cullMode\":\"none\",\"frontFace\":\"ccw\"}" +
+                          ",\"colorFormat\":\"" + _targetFormat + "\"" +
+                          ",\"sampleCount\":" + _targetSampleCount +
+                          (_depthTarget != 0
+                              ? ",\"depthStencil\":{\"format\":\"" + RtDepthFormat + "\",\"depthWriteEnabled\":true,\"depthCompare\":\"less\"}"
+                              : string.Empty) +
                           ",\"blend\":{\"color\":{\"srcFactor\":" + blend.SourceBlend +
                           ",\"dstFactor\":" + blend.DestinationBlend +
                           ",\"operation\":\"add\"},\"alpha\":{\"srcFactor\":" + blend.SourceAlphaBlend +
@@ -237,7 +282,15 @@ namespace KFramework.MonoGame
         private static string FilterName(int glFilter)
             => glFilter == JSBind_WEBGL20.NEAREST ? "nearest" : "linear";
 
-        private static string AddressName(int glWrap)
+        /// <summary>DepthFormat → WebGPU 的 GPUTextureFormat；None 返回空串（不建深度附件）。</summary>
+    private static string DepthFormatName(DepthFormat format)
+        => format switch
+        {
+            DepthFormat.None => string.Empty,
+            _ => RtDepthFormat,
+        };
+
+    private static string AddressName(int glWrap)
             => glWrap switch
             {
                 JSBind_WEBGL20.REPEAT => "repeat",
@@ -281,10 +334,9 @@ namespace KFramework.MonoGame
 
         public void CreateTexture(Texture2D texture, int width, int height, bool mipmap, SurfaceFormat format, Texture2D.SurfaceType type)
         {
-            if (type == Texture2D.SurfaceType.RenderTarget)
-                throw new NotSupportedException("WebGPU 后端暂不支持渲染目标（步骤④）。");
-
-            int handle = JSBind_WebGPU.CreateTexture(width, height, "rgba8unorm");
+            // 渲染目标也是一张普通纹理（单采样、可采样），额外附件（MSAA / 深度）在
+            // CreateRenderTarget 里补建，与 MonoGame 各后端的分工一致。
+            int handle = JSBind_WebGPU.CreateTexture(width, height, "rgba8unorm", 1);
             if (handle == 0) throw new InvalidOperationException("[webgpu] 创建纹理失败。");
             _textures[texture] = handle;
         }
@@ -323,28 +375,119 @@ namespace KFramework.MonoGame
         public void ReadPixel(int x, int y, int viewportHeight, Span<byte> rgba)
             => throw new NotSupportedException("WebGPU 后端暂不支持读像素（步骤④）。");
 
-        public void SetScissor(int x, int y, int width, int height) { }
+        public void SetScissor(int x, int y, int width, int height)
+        {
+            // WebGPU 的 scissor 永远生效（没有 enable 位）。未设置时通道默认用整个附件范围，
+            // 因此"不启用裁剪"的行为天然正确；要支持真正的裁剪矩形需另加 setScissorRect 绑定（待办）。
+        }
 
+        /// <summary>
+        /// 创建渲染目标的额外附件（照 MonoGame 各后端的分工）：多重采样颜色纹理 + 深度纹理。
+        /// 可采样的单采样颜色纹理已由 <see cref="CreateTexture"/> 建好。
+        /// </summary>
         public void CreateRenderTarget(IRenderTarget renderTarget, int width, int height, DepthFormat depthFormat)
-            => throw new NotSupportedException("WebGPU 后端暂不支持渲染目标（步骤④）。");
+        {
+            int msaa = 0;
+            if (renderTarget.MultiSampleCount > 0)
+            {
+                // 多重采样颜色附件：只用于渲染，最后解析进单采样纹理。
+                msaa = JSBind_WebGPU.CreateTexture(width, height, RtColorFormat, renderTarget.MultiSampleCount);
+                if (msaa == 0) throw new InvalidOperationException("[webgpu] 创建多重采样附件失败。");
+            }
+
+            int depth = 0;
+            string depthName = DepthFormatName(depthFormat);
+            if (depthName.Length > 0)
+            {
+                depth = JSBind_WebGPU.CreateTexture(width, height, depthName, renderTarget.MultiSampleCount);
+                if (depth == 0) throw new InvalidOperationException("[webgpu] 创建深度附件失败。");
+            }
+
+            _renderTargetExtras[renderTarget] = (msaa, depth);
+        }
 
         public void DeleteRenderTarget(IRenderTarget renderTarget)
         {
-            // 未创建过就没有资源可释放。
+            if (!_renderTargetExtras.TryGetValue(renderTarget, out (int Msaa, int Depth) extras)) return;
+
+            if (extras.Msaa != 0) JSBind_WebGPU.DestroyTexture(extras.Msaa);
+            if (extras.Depth != 0) JSBind_WebGPU.DestroyTexture(extras.Depth);
+            _renderTargetExtras.Remove(renderTarget);
         }
 
+        /// <summary>
+        /// 绑定渲染目标集合。
+        /// <para>
+        /// 关键：WebGPU 的通道附件（含 <c>resolveTarget</c>）在通道创建时就固定，
+        /// 因此切换目标<b>必须先结束当前通道</b> —— 这与 MonoGame 里
+        /// <c>ApplyRenderTargets</c> 开头先调 <c>PlatformResolveRenderTargets</c> 是同一个契约。
+        /// </para>
+        /// <para>MSAA 走 Vulkan 的 pResolveAttachments 语义：渲染进多重采样纹理，
+        /// 解析目标指向 RT 自己的单采样纹理，通道结束时自动完成解析。</para>
+        /// </summary>
         public IRenderTarget ApplyRenderTargets(RenderTargetBinding[] bindings, int count)
-            => throw new NotSupportedException("WebGPU 后端暂不支持渲染目标（步骤④）。");
+        {
+            var first = (IRenderTarget)bindings[0].RenderTarget!;
 
-        public void ApplyDefaultRenderTarget() { }
+            int color = RequireTexture((Texture2D)first);
+            _renderTargetExtras.TryGetValue(first, out (int Msaa, int Depth) extras);
 
-        public void ResolveRenderTarget(IRenderTarget renderTarget) { }
+            if (extras.Msaa != 0)
+            {
+                _colorTarget = extras.Msaa;   // 渲染进多重采样附件
+                _resolveTarget = color;       // 解析回可采样的单采样纹理
+            }
+            else
+            {
+                _colorTarget = color;
+                _resolveTarget = 0;
+            }
+            _depthTarget = extras.Depth;
+
+            _targetFormat = RtColorFormat;
+            _targetSampleCount = first.MultiSampleCount > 0 ? first.MultiSampleCount : 1;
+
+            // 附件变了，已经开始绘制的通道必须收掉重开。
+            if (_frameActive) EndFrame();
+            return first;
+        }
+
+        public void ApplyDefaultRenderTarget()
+        {
+            _colorTarget = 0;
+            _resolveTarget = 0;
+            _depthTarget = 0;
+            _targetFormat = _canvasFormat;
+            _targetSampleCount = _canvasSampleCount;
+
+            if (_frameActive) EndFrame();
+        }
+
+        /// <summary>
+        /// 解析渲染目标。WebGPU 的解析由通道的 resolveTarget 在<b>通道结束时自动完成</b>
+        /// （等价 Vulkan 的 pResolveAttachments，而非 GL 的 blitFramebuffer），
+        /// 所以这里只需保证通道已经结束 —— 上层正是在切换 / 解绑目标前调用它。
+        /// </summary>
+        public void ResolveRenderTarget(IRenderTarget renderTarget)
+        {
+            if (_frameActive) EndFrame();
+        }
 
 
         public int GetError() => 0;
 
+        /// <summary>
+        /// 设置视口。
+        /// <para>
+        /// 渲染到<b>离屏目标</b>时不能去动画布尺寸：WebGPU 的绘制区域默认就是通道附件的整个范围，
+        /// 而改画布尺寸会连带重新配置交换链（作废当前帧纹理）。故离屏时这里只记尺寸、不下发。
+        /// </para>
+        /// </summary>
         public void SetViewport(int x, int y, int width, int height)
-            => JSBind_WebGPU.Resize(width, height);
+        {
+            if (_colorTarget != 0) return;
+            JSBind_WebGPU.Resize(width, height);
+        }
 
         public void Dispose()
         {

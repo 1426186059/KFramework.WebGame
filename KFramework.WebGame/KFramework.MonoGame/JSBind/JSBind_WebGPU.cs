@@ -119,9 +119,12 @@ namespace KFramework.MonoGame
 
 
 
-        /// <summary>创建空 GPUTexture（默认 usage 含 TEXTURE_BINDING | RENDER_ATTACHMENT | COPY_DST）。返回整数句柄。</summary>
+        /// <summary>
+        /// 创建 GPUTexture。sampleCount = 1 时 usage 含 TEXTURE_BINDING | RENDER_ATTACHMENT | COPY_DST（可采样、可上传）；
+        /// &gt; 1 时创建的是多重采样附件（只含 RENDER_ATTACHMENT，不可采样、不可上传）。返回整数句柄。
+        /// </summary>
         [JSImport("createTexture", "render_webgpu")]
-        public static partial int CreateTexture(int width, int height, string format);
+        public static partial int CreateTexture(int width, int height, string format, int sampleCount);
 
         /// <summary>
         /// 上传 RGBA8 像素到纹理（queue.writeTexture）。
@@ -145,9 +148,19 @@ namespace KFramework.MonoGame
 
 
 
-        /// <summary>开帧：建立命令编码器并 begin 渲染通道到画布。depthClear &gt;= 0 时附带深度附件。</summary>
+        /// <summary>
+        /// 开帧：建立命令编码器并 begin 一个渲染通道。
+        /// </summary>
+        /// <param name="depthClear">深度清屏值；&lt; 0 表示不带深度附件。</param>
+        /// <param name="colorTarget">颜色附件句柄；0 = 画布交换链。</param>
+        /// <param name="resolveTarget">
+        /// 解析目标句柄（多重采样时必填）：渲染进 colorTarget，通道结束时自动解析到这里。
+        /// WebGPU 的 resolveTarget 必须在通道创建时指定，不能像 GL 的 blitFramebuffer 那样事后解析。
+        /// </param>
+        /// <param name="depthTarget">深度附件句柄；0 = 用画布自带的深度纹理。</param>
         [JSImport("beginFrame", "render_webgpu")]
-        public static partial void BeginFrame(float r, float g, float b, float a, float depthClear);
+        public static partial void BeginFrame(float r, float g, float b, float a, float depthClear,
+            int colorTarget, int resolveTarget, int depthTarget);
 
         /// <summary>绑定渲染管线。</summary>
         [JSImport("setPipeline", "render_webgpu")]

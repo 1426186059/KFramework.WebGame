@@ -39,7 +39,7 @@ namespace KFramework.Test.WebGPU
             [
                 static () => new Tests.BackendInfoScene(),
                 static () => new Tests.SpriteBlendScene(),
-                static () => new Tests.UnsupportedScene(),
+                static () => new Tests.OffscreenScene(),
             ];
         }
 

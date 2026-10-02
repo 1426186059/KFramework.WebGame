@@ -28,12 +28,18 @@ namespace KFramework.Test.WebGPU.Tests
         {
             SpriteBatch batch = Batch;
 
+            // 离屏渲染阶段（自行 Begin / End）：切换渲染目标必须在批次的 Begin / End 之外。
+            RenderOffscreen(batch);
+
             batch.Begin();
             DrawHeader(batch);
             DrawBody(batch, 84f);
             DrawFooter(batch);
             batch.End();
         }
+
+        /// <summary>离屏渲染阶段（默认不做）。</summary>
+        protected virtual void RenderOffscreen(SpriteBatch batch) { }
 
         protected void DrawHeader(SpriteBatch batch)
         {

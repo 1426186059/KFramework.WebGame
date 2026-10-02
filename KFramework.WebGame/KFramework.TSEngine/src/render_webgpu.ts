@@ -286,7 +286,10 @@ export function createPipeline(descriptorJson: string): number {
     const fs = shaders.get(desc?.fragmentShader);
     if (!vs || !fs) { console.error('[webgpu] createPipeline: 着色器缺失'); return 0; }
 
-    const target: GPU = { format };
+    // 管线必须与通道的颜色附件【格式 + 采样数】完全一致，否则 WebGPU 报错。
+    // 画布格式（bgra8unorm）与离屏 RT（rgba8unorm）可能不同，故格式要能按目标指定。
+    const targetFormat = desc?.colorFormat ?? format;
+    const target: GPU = { format: targetFormat };
     if (desc?.blend) target.blend = buildBlend(desc.blend);
 
     const pipelineDesc: GPU = {
@@ -306,7 +309,7 @@ export function createPipeline(descriptorJson: string): number {
             cullMode: desc?.primitive?.cullMode ?? 'none',
             frontFace: desc?.primitive?.frontFace ?? 'ccw',
         },
-        multisample: { count: sampleCount },
+        multisample: { count: desc?.sampleCount ?? sampleCount },
     };
 
     if (desc?.depthStencil) {
@@ -375,13 +378,22 @@ export function destroyBindGroup(id: number): void { bindGroups.delete(id); }
 // ---------- 纹理 / 采样器 ----------
 
 /** 创建空 GPUTexture（默认 usage 含 TEXTURE_BINDING | RENDER_ATTACHMENT | COPY_DST）。 */
-export function createTexture(width: number, height: number, formatStr: string): number {
+/**
+ * 创建纹理。
+ * sampleCount > 1 时创建的是【多重采样附件】：只用于渲染（RENDER_ATTACHMENT），
+ * 不能被 shader 采样、也不能由 CPU 上传 —— 内容靠通道的 resolveTarget 解析进单采样纹理。
+ */
+export function createTexture(width: number, height: number, formatStr: string, sampleCount: number): number {
     if (!device) { console.error('[webgpu] device 未就绪'); return 0; }
+    const samples = Math.max(1, sampleCount | 0);
     const id = allocId();
     textures.set(id, device.createTexture({
         size: [width | 0, height | 0],
+        sampleCount: samples,
         format: formatStr || 'rgba8unorm',
-        usage: 0x04 | 0x10 | 0x02, // TEXTURE_BINDING | RENDER_ATTACHMENT | COPY_DST
+        usage: samples > 1
+            ? 0x10                      // RENDER_ATTACHMENT（多重采样附件）
+            : (0x04 | 0x10 | 0x02),     // TEXTURE_BINDING | RENDER_ATTACHMENT | COPY_DST
     }));
     return id;
 }
@@ -441,28 +453,67 @@ export function destroySampler(id: number): void { samplers.delete(id); }
  * 开帧：建立命令编码器并 begin 一个渲染通道到画布。
  * depthClear >= 0 时附带深度附件（clear 到该值）；此时所用管线必须带匹配的 depthStencil。
  */
-export function beginFrame(r: number, g: number, b: number, a: number, depthClear: number): void {
+/**
+ * 开帧（开始一个渲染通道）。
+ *
+ * 句柄语义：colorTarget = 0 表示画布交换链；非 0 用离屏纹理（需先由 createTexture 创建）。
+ *
+ * MSAA 解析采用【Vulkan 的 pResolveAttachments 语义】：渲染进 colorTarget（多重采样纹理），
+ * resolveTarget 指向单采样纹理，通道结束时由实现自动解析。
+ * 注意：WebGPU 的 resolveTarget 必须在【通道创建时】指定，不能像 GL 的 blitFramebuffer 那样事后解析 ——
+ * 这正是它与 WebGL 后端最大的建模差异。
+ *
+ * @param colorTarget   颜色附件句柄（0 = 画布）
+ * @param resolveTarget 解析目标句柄（0 = 不解析）
+ * @param depthTarget   深度附件句柄（0 = 用画布自带的深度纹理，或不用）
+ */
+export function beginFrame(r: number, g: number, b: number, a: number, depthClear: number,
+                           colorTarget: number, resolveTarget: number, depthTarget: number): void {
     if (!device || !context) { console.error('[webgpu] 未初始化'); return; }
     encoder = device.createCommandEncoder();
-    const canvasView = context.getCurrentTexture().createView();
+
+    const toCanvas = colorTarget === 0;
+    const canvasView = toCanvas ? context.getCurrentTexture().createView() : null;
+
+    // 多重采样时渲染进 MSAA 纹理，画布本身作为解析目标。
+    let view: GPU;
+    if (toCanvas) view = sampleCount > 1 && msaaTexture ? msaaTexture.createView() : canvasView;
+    else view = textures.get(colorTarget)?.createView();
+
+    if (!view) {
+        console.error('[webgpu] beginFrame: 颜色目标句柄无效: ' + colorTarget);
+        return;
+    }
+
+    // 解析目标：离屏时由调用方给出；画布 MSAA 时就是交换链纹理。
+    let resolved: GPU = null;
+    if (resolveTarget !== 0) resolved = textures.get(resolveTarget)?.createView();
+    else if (toCanvas && sampleCount > 1) resolved = canvasView;
 
     const colorAttachment: GPU = {
-        view: sampleCount > 1 ? msaaTexture.createView() : canvasView,
+        view,
         clearValue: { r, g, b, a },
         loadOp: 'clear',
-        storeOp: 'store',
+        // 有解析目标时多重采样附件本身无需保留（照 Vulkan 的 STORE_OP_DONT_CARE，省带宽）。
+        storeOp: resolved ? 'discard' : 'store',
     };
-    if (sampleCount > 1) colorAttachment.resolveTarget = canvasView;
+    if (resolved) colorAttachment.resolveTarget = resolved;
 
     const passDesc: GPU = { colorAttachments: [colorAttachment] };
-    if (depthClear >= 0 && depthTexture) {
+
+    let depthView: GPU = null;
+    if (depthTarget !== 0) depthView = textures.get(depthTarget)?.createView();
+    else if (depthClear >= 0 && depthTexture) depthView = depthTexture.createView();
+
+    if (depthView) {
         passDesc.depthStencilAttachment = {
-            view: depthTexture.createView(),
-            depthClearValue: depthClear,
+            view: depthView,
+            depthClearValue: depthClear >= 0 ? depthClear : 1,
             depthLoadOp: 'clear',
             depthStoreOp: 'store',
         };
     }
+
     pass = encoder.beginRenderPass(passDesc);
     curPipeline = null;
 }

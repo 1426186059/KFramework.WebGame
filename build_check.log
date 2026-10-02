@@ -1,0 +1,6 @@
+MSBUILD : error MSB1008: 只能指定一个项目。
+    完整命令行:“C:\Program Files\dotnet\sdk\10.0.401\MSBuild.exe -maxcpucount --verbosity:m -tlp:default=auto --property:NuGetInteractive=false --restoreProperty:NuGetInteractive=false --restoreProperty:EnableDefaultCompileItems=false --restoreProperty:EnableDefaultEmbeddedResourceItems=false --restoreProperty:EnableDefaultNoneItems=false --verbosity:q --nologo D:\OpenSource\KFramework.WebGame\KFramework.WebGame\KFramework.MonoGame\KFramework.MonoGame.csproj ; findstr /I /C:错误 /C:error D:\OpenSource\KFramework.WebGame\build_check.log; cmd /c del D:\OpenSource\KFramework.WebGame\build_check.log D:\OpenSource\KFramework.WebGame\rename_webgl.ps1 D:\OpenSource\KFramework.WebGame\move_webgl.ps1 D:\OpenSource\KFramework.WebGame\gen_webgpu.ps1 -consoleloggerparameters:Summary -restore -distributedlogger:Microsoft.DotNet.Cli.Commands.MSBuild.MSBuildLogger,C:\Program Files\dotnet\sdk\10.0.401\dotnet.dll*Microsoft.DotNet.Cli.Commands.MSBuild.MSBuildForwardingLogger,C:\Program Files\dotnet\sdk\10.0.401\dotnet.dll”
+  响应文件追加的开关: 
+开关:;
+
+若要显示开关的语法，请键入“MSBuild -help”
