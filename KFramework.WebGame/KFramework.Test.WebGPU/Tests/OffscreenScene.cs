@@ -42,7 +42,7 @@ namespace KFramework.Test.WebGPU.Tests
             ("测试离屏", Screen.Offscreen),
             ("测试离屏MSAA", Screen.Msaa),
             ("测试RT→RT合成", Screen.Composite),
-            ("测试嵌套(画布↔RT)", Screen.Nested),
+            ("测试来回切(屏幕↔离屏)", Screen.Nested),
             ("测试累积", Screen.Accumulate),
         ];
 
@@ -54,6 +54,11 @@ namespace KFramework.Test.WebGPU.Tests
         private const int BodyTop = 118;
         private const int BarsTotal = 25;
 
+        // 三块并排对照区（参考 / 离屏 / 实际）
+        private const int PanelW = 240;
+        private const int PanelH = 150;
+        private const int PanelGap = 40;
+
         private Screen _screen = Screen.Offscreen;
         private readonly List<Rectangle> _buttons = [];
 
@@ -61,6 +66,7 @@ namespace KFramework.Test.WebGPU.Tests
         private RenderTarget2D? _rt2;      // 离屏2（无 MSAA）
         private RenderTarget2D? _rtMsaa;   // 离屏 MSAA=4
         private RenderTarget2D? _rtComp;   // 合成目标
+        private RenderTarget2D? _rtRef;    // 参考图：不切目标一口气画完（用来对照"实际"）
         private RenderTarget2D? _accum;    // 累积
 
         // 首次 RenderOffscreen 时创建（离屏阶段早于任何 Draw），故声明为非空。
@@ -167,8 +173,31 @@ namespace KFramework.Test.WebGPU.Tests
 
                 case Screen.Nested:
                     _rt1 ??= NewTarget(0);
-                    DrawCanvasBefore(batch);      // ① 先在画布上画
-                    DrawInto(_rt1, batch, kind: 0);   // ② 切离屏画，末尾切回画布
+                    _rtRef ??= NewTarget(0);
+
+                    // —— 参考图：不切换目标，一口气把 ①②③ 画完（应有的样子） ——
+                    Device.SetRenderTarget(_rtRef);
+                    Device.Clear(new Color(10, 13, 22));
+                    batch.Begin();
+                    DrawStage(batch, 0, 0, 0, RtW, RtH);
+                    DrawStage(batch, 1, 0, 0, RtW, RtH);
+                    DrawStage(batch, 2, 0, 0, RtW, RtH);
+                    batch.End();
+                    Device.SetRenderTarget(null);
+
+                    // —— 实际：在【屏幕】上走一遍传奇的顺序 ——
+                    // ① 先画在屏幕上（此时画布通道已由 TickFrame 的 Clear 打开）
+                    batch.Begin();
+                    DrawStage(batch, 0, PanelX(2), BodyTop, PanelW, PanelH);
+                    batch.End();
+
+                    // ② 切去离屏画。清成【透明】，这样合成回屏幕时不会盖住第 ① 步画的东西。
+                    Device.SetRenderTarget(_rt1);
+                    Device.Clear(new Color(0, 0, 0, 0));
+                    batch.Begin();
+                    DrawStage(batch, 1, 0, 0, RtW, RtH);
+                    batch.End();
+                    Device.SetRenderTarget(null);   // 切回屏幕（③ 由 DrawBody 接着画）
                     break;
 
                 case Screen.Accumulate:
@@ -334,15 +363,50 @@ namespace KFramework.Test.WebGPU.Tests
             Device.SetRenderTarget(null);
         }
 
-        private void DrawCanvasBefore(SpriteBatch batch)
-        {
-            float y = NestedVerdictY;
+        /// <summary>三块对照区的 x（0=参考 1=离屏 2=实际）。</summary>
+        private static float PanelX(int index) => 28f + index * (PanelW + PanelGap);
 
-            batch.Begin();
-            for (int i = 0; i < 5; i++)
-                batch.Draw(KDefaultRes.DefaultTexture2D,
-                    new Rectangle(28 + i * 44, (int)y, 36, 36), new Color(220, 70, 70));
-            batch.End();
+        /// <summary>
+        /// 画一个阶段的内容。三个阶段叠起来才是完整画面，分开画才能看出"切回来时少了几段"：
+        /// <list type="bullet">
+        ///   <item><description>0：背景 + 顶部红色标记（切去离屏<b>之前</b>画在屏幕上的）</description></item>
+        ///   <item><description>1：球阵（在<b>离屏</b>里画的，透明底）</description></item>
+        ///   <item><description>2：底部绿色标记（<b>切回</b>屏幕之后接着画的）</description></item>
+        /// </list>
+        /// 三个阶段的相对布局固定，故画在离屏(0,0,RtW,RtH) 与画在屏幕某块区域 的构图完全一致，可直接比对。
+        /// </summary>
+        private void DrawStage(SpriteBatch batch, int stage, float x, float y, float w, float h)
+        {
+            switch (stage)
+            {
+                case 0:
+                    batch.Draw(_bgCool, new Rectangle((int)x, (int)y, (int)w, (int)h), Color.White);
+                    // 红块贴着顶部：合成图内缩后，顶部这条边缘带仍能看到它们
+                    for (int i = 0; i < 4; i++)
+                        batch.Draw(KDefaultRes.DefaultTexture2D,
+                            new Rectangle((int)(x + 8 + i * 30), (int)(y + 3), 18, 18), new Color(220, 70, 70));
+                    break;
+
+                case 1:
+                    for (int r = 0; r < 2; r++)
+                    {
+                        for (int c = 0; c < 4; c++)
+                        {
+                            float hue = (c * 45f + r * 30f + _frame * 0.5f) % 360f;
+                            batch.Draw(_ball,
+                                new Vector2(x + w * 0.24f + c * w * 0.19f, y + h * 0.46f + r * h * 0.22f),
+                                Hsv(hue, 0.55f, 1f), 0f, new Vector2(32f, 32f), 0.62f);
+                        }
+                    }
+                    break;
+
+                case 2:
+                    // 绿块贴着底部：与红块分居上下，便于一眼看出"少了哪一段"
+                    for (int i = 0; i < 4; i++)
+                        batch.Draw(KDefaultRes.DefaultTexture2D,
+                            new Rectangle((int)(x + 8 + i * 30), (int)(y + h - 21), 18, 18), new Color(70, 200, 120));
+                    break;
+            }
         }
 
         // ================================================================
@@ -387,7 +451,7 @@ namespace KFramework.Test.WebGPU.Tests
                     Panel(batch, _rtMsaa, x + RtW + 48f, BodyTop, "离屏 MSAA=4（通道结束时自动解析）");
                     float my = BodyTop + 260f;
                     my = DrawLine(batch, "判定：右侧细棒/方块的斜边应明显比左侧平滑（阶梯感消失）", x, my, new Color(255, 206, 110));
-                    my = DrawLine(batch, "注意：球的圆边是【纹理 alpha】形成的，MSAA 抗不到它 —— 故本画面改用旋转实心块（几何边缘）",
+                    my = DrawLine(batch, "注意：球的圆边是图片自带的透明边，MSAA 管不到 —— 故本画面改用旋转色块（真正的图形边缘）",
                         x, my, new Color(150, 165, 195));
                     my = DrawLine(batch, "【画布 MSAA】WebGL：getContext({antialias}) 建上下文时定死，之后改不了；",
                         x, my, new Color(150, 165, 195));
@@ -400,10 +464,10 @@ namespace KFramework.Test.WebGPU.Tests
                     break;
 
                 case Screen.Composite:
-                    if (_rt1 is null || _rt2 is null || _rtComp is null) return;
-                    Panel(batch, _rt1, x, BodyTop, "离屏1");
-                    Panel(batch, _rt2, x + RtW + 48f, BodyTop, "离屏2");
-                    Panel(batch, _rtComp, x + 2f * (RtW + 48f), BodyTop, "合成结果（1 铺满 + 2 叠右下）");
+                    if (_rt1 is not { } c1 || _rt2 is not { } c2 || _rtComp is not { } cComp) return;
+                    Panel(batch, c1, PanelX(0), BodyTop, "离屏1");
+                    Panel(batch, c2, PanelX(1), BodyTop, "离屏2");
+                    Panel(batch, cComp, PanelX(2), BodyTop, "合成结果（1 铺满 + 2 叠右下）");
                     float cy = BodyTop + 260f;
                     cy = DrawLine(batch, "判定：合成图应同时含离屏1 的冷色底球阵与离屏2 的暖色底球阵（右下角叠加）",
                         x, cy, new Color(255, 206, 110));
@@ -412,23 +476,34 @@ namespace KFramework.Test.WebGPU.Tests
                     break;
 
                 case Screen.Nested:
-                    if (_rt1 is null) return;
-                    Panel(batch, _rt1, x, BodyTop, "离屏1（嵌套模式下先画画布，再切它，再切回画布）");
+                    if (_rt1 is not { } rt1 || _rtRef is not { } rtRef) return;
+                    // 左：参考（不切目标一次画完）  中：离屏内容  右：实际（屏幕↔离屏来回切）
+                    Panel(batch, rtRef, PanelX(0), BodyTop, "参考：不切换，一次画完");
+                    Panel(batch, rt1, PanelX(1), BodyTop, "离屏里画的（透明底）");
 
-                    float vy = NestedVerdictY;
-                    for (int i = 0; i < 5; i++)
-                        batch.Draw(KDefaultRes.DefaultTexture2D,
-                            new Rectangle((int)(x + 380f + i * 44), (int)vy, 36, 36), new Color(70, 200, 120));
+                    // 右块就是【真实的屏幕】：③ 把离屏合成回来，再补画绿色标记。
+                    // 合成图【内缩 24px】摆放，故意露出一圈边缘：
+                    //   边缘能看到背景 + 顶部红块 → ① 留下了，之前是被合成图盖住的（合成图不是真透明）
+                    //   边缘空空如也           → ① 在切回屏幕时就被擦掉了
+                    batch.Draw(rt1, new Rectangle((int)PanelX(2) + 24, BodyTop + 24, PanelW - 48, PanelH - 48), Color.White);
+                    DrawStage(batch, 2, PanelX(2), BodyTop, PanelW, PanelH);
+                    // 外框：标出这块是直接画在屏幕上的
+                    Frame(batch, PanelX(2), BodyTop, PanelW, PanelH, new Color(255, 206, 110));
+                    batch.DrawString(Font, "实际：屏幕↔离屏来回切",
+                        new Vector2(PanelX(2), BodyTop + PanelH + 6f), new Color(255, 206, 110));
 
-                    batch.DrawString(Font, "BEFORE 红（切 RT 前画在画布上）",
-                        new Vector2(x, vy + 40f), new Color(255, 150, 150));
-                    batch.DrawString(Font, "AFTER 绿（切回画布后画）",
-                        new Vector2(x + 380f, vy + 40f), new Color(150, 255, 190));
-
-                    float ny = vy + 68f;
-                    ny = DrawLine(batch, "判定：红 BEFORE 与绿 AFTER 应同时可见；缺红＝切回画布时画布被清空",
+                    float ny = BodyTop + PanelH + 34f;
+                    ny = DrawLine(batch, "【怎么比】左边「参考」与右边「实际」应当一模一样：背景 + 顶部红块 + 球阵 + 底部绿块",
                         x, ny, new Color(255, 206, 110));
-                    DrawLine(batch, "本画面会自动把后台缓冲设为 PreserveContents（与传奇一致）；默认 DiscardContents 时切回画布本来就会清屏，属设计行为。",
+                    ny = DrawLine(batch, "合成图故意【内缩】摆放，露出一圈边缘 —— 请看边缘：",
+                        x, ny, new Color(255, 206, 110));
+                    ny = DrawLine(batch, "  边缘有背景+红块 → ①留下了，只是被合成图盖住（合成图不是真透明）",
+                        x, ny, new Color(255, 206, 110));
+                    ny = DrawLine(batch, "  边缘空空如也   → ①在切回屏幕时就被擦掉了",
+                        x, ny, new Color(255, 150, 150));
+                    ny = DrawLine(batch, "好比画画：先在纸上画背景(红) → 去另一张纸画球(离屏) → 回来补画(绿)。回来时背景还在吗？",
+                        x, ny, new Color(150, 165, 195));
+                    DrawLine(batch, "传奇每帧都这么来回切很多次。本画面已设为「保留内容」模式（默认「丢弃内容」会清屏，属设计行为不是 bug）。",
                         x, ny, new Color(150, 165, 195));
                     break;
 
@@ -436,13 +511,13 @@ namespace KFramework.Test.WebGPU.Tests
                     if (_accum is null) return;
                     Panel(batch, _accum, x, BodyTop, "累积（首帧清一次，之后每帧加一条横杠）");
                     float ay = BodyTop + 260f;
-                    ay = DrawLine(batch, "判定：黄杠 y 逐帧下移，25 帧内应铺满并保持稳定（＝PreserveContents 生效）",
+                    ay = DrawLine(batch, "黄杠：每帧画一条、位置逐帧下移。留得住的话，25 帧内会铺满并一直保持",
                         x, ay, new Color(255, 206, 110));
-                    ay = DrawLine(batch, "【关键】顶部那条红杠只在首帧画：红杠还在＝内容跨帧保留（load 生效）；",
+                    ay = DrawLine(batch, "红杠：只在第一帧画过一次。它还在 ＝ 离屏里的内容能跨帧留住（正常）",
                         x, ay, new Color(255, 150, 150));
-                    ay = DrawLine(batch, "        红杠消失只剩黄杠＝每次切进 RT 都被清屏（load 未生效）；全黑＝RT 不可用",
+                    ay = DrawLine(batch, "        红杠没了、只剩黄杠 ＝ 每次切进离屏都被清掉重来；整块全黑 ＝ 离屏根本没画上",
                         x, ay, new Color(255, 150, 150));
-                    DrawLine(batch, $"帧: {_frame}    本帧黄杠 y: {(_frame % BarsTotal) * (RtH / BarsTotal)}",
+                    DrawLine(batch, $"帧: {_frame}    本帧黄杠位置 y: {(_frame % BarsTotal) * (RtH / BarsTotal)}",
                         x, ay, new Color(150, 165, 195));
                     break;
             }
@@ -451,8 +526,18 @@ namespace KFramework.Test.WebGPU.Tests
         /// <summary>画一块面板（RT 内容 + 下方标题）。</summary>
         private void Panel(SpriteBatch batch, Texture2D texture, float x, float y, string caption)
         {
-            batch.Draw(texture, new Rectangle((int)x, (int)y, RtW, RtH), Color.White);
-            batch.DrawString(Font, caption, new Vector2(x, y + RtH + 6f), new Color(150, 165, 195));
+            batch.Draw(texture, new Rectangle((int)x, (int)y, PanelW, PanelH), Color.White);
+            batch.DrawString(Font, caption, new Vector2(x, y + PanelH + 6f), new Color(150, 165, 195));
+        }
+
+        /// <summary>给一块区域描一圈 2px 边框（用来标出"这块是直接画在屏幕上的"）。</summary>
+        private void Frame(SpriteBatch batch, float x, float y, float w, float h, Color color)
+        {
+            int ix = (int)x, iy = (int)y, iw = (int)w, ih = (int)h, t = 2;
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix, iy, iw, t), color);
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix, iy + ih - t, iw, t), color);
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix, iy, t, ih), color);
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix + iw - t, iy, t, ih), color);
         }
     }
 
