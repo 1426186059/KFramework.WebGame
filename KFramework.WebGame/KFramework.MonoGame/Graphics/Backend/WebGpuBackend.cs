@@ -38,11 +38,11 @@ namespace KFramework.MonoGame
 
         private static readonly int VertexSizeInBytes = VertexPositionColorTexture.SizeInBytes; // 20
 
-    /// <summary>离屏渲染目标的纹理格式（画布格式可能不同，二者管线不可混用）。</summary>
-    private const string RtColorFormat = "rgba8unorm";
+        /// <summary>离屏渲染目标的纹理格式（画布格式可能不同，二者管线不可混用）。</summary>
+        private const string RtColorFormat = "rgba8unorm";
 
-    /// <summary>深度附件格式（通道的 depthStencil 与管线的 depthStencil 必须一致）。</summary>
-    private const string RtDepthFormat = "depth24plus";
+        /// <summary>深度附件格式（通道的 depthStencil 与管线的 depthStencil 必须一致）。</summary>
+        private const string RtDepthFormat = "depth24plus";
 
         /// <summary>单帧顶点容量（按精灵数）。uint16 索引上限决定了不能超过 16384 个精灵。</summary>
         private static readonly int MaxSpritesPerFrame = GraphicsDevice.MaxBatchSize * 4;
@@ -93,10 +93,10 @@ namespace KFramework.MonoGame
             Renderer = JSBind_WebGPU.GetParameterString(JSBind_WebGPU.RENDERER);
 
             _canvasFormat = JSBind_WebGPU.GetPreferredFormat();
-        _targetFormat = _canvasFormat;
-        // 画布 MSAA 采样数由 render_webgpu.ts 按 antialias 决定（4 或 1），这里保持一致。
-        _canvasSampleCount = antialias ? 4 : 1;
-        _targetSampleCount = _canvasSampleCount;
+            _targetFormat = _canvasFormat;
+            // 画布 MSAA 采样数由 render_webgpu.ts 按 antialias 决定（4 或 1），这里保持一致。
+            _canvasSampleCount = antialias ? 4 : 1;
+            _targetSampleCount = _canvasSampleCount;
 
             _shaderModule = JSBind_WebGPU.CreateShaderModule(WgslSource);
             if (_shaderModule == 0) throw new InvalidOperationException("[webgpu] 创建着色器模块失败。");
@@ -182,26 +182,26 @@ namespace KFramework.MonoGame
 
         public void BindTexture(Texture2D texture) => _boundTexture = texture;
 
-    // ---- 当前渲染目标集合（0 = 画布交换链）----
-    // 通道附件在【通道创建时】就固定下来，所以切换目标必须先结束当前通道。
-    private int _colorTarget;
-    private int _resolveTarget;
-    private int _depthTarget;
+        // ---- 当前渲染目标集合（0 = 画布交换链）----
+        // 通道附件在【通道创建时】就固定下来，所以切换目标必须先结束当前通道。
+        private int _colorTarget;
+        private int _resolveTarget;
+        private int _depthTarget;
 
-    /// <summary>当前目标集合的颜色格式（画布可能是 bgra8unorm，离屏 RT 是 rgba8unorm）。初始化时填入画布格式。</summary>
-    private string _targetFormat = string.Empty;
+        /// <summary>当前目标集合的颜色格式（画布可能是 bgra8unorm，离屏 RT 是 rgba8unorm）。初始化时填入画布格式。</summary>
+        private string _targetFormat = string.Empty;
 
-    /// <summary>当前目标集合的采样数（离屏 RT 的 MSAA 与画布 antialias 是两回事）。</summary>
-    private int _targetSampleCount = 1;
+        /// <summary>当前目标集合的采样数（离屏 RT 的 MSAA 与画布 antialias 是两回事）。</summary>
+        private int _targetSampleCount = 1;
 
-    /// <summary>画布首选格式（切回画布时恢复用）。</summary>
-    private string _canvasFormat = "rgba8unorm";
+        /// <summary>画布首选格式（切回画布时恢复用）。</summary>
+        private string _canvasFormat = "rgba8unorm";
 
-    /// <summary>画布 MSAA 采样数（切回画布时恢复用）。</summary>
-    private int _canvasSampleCount = 1;
+        /// <summary>画布 MSAA 采样数（切回画布时恢复用）。</summary>
+        private int _canvasSampleCount = 1;
 
-    /// <summary>离屏渲染目标的额外附件（多重采样颜色 + 深度）；颜色纹理本身走 _textures。</summary>
-    private readonly Dictionary<IRenderTarget, (int Msaa, int Depth)> _renderTargetExtras = new();
+        /// <summary>离屏渲染目标的额外附件（多重采样颜色 + 深度）；颜色纹理本身走 _textures。</summary>
+        private readonly Dictionary<IRenderTarget, (int Msaa, int Depth)> _renderTargetExtras = new();
 
         /// <summary>当前深度/模板状态。WebGPU 里它是管线的烘焙属性，故先记下来，建管线时一起编进去。</summary>
         private DepthStencilState _depthStencil = DepthStencilState.None;
@@ -375,12 +375,12 @@ namespace KFramework.MonoGame
             => filter == TextureFilter.Point ? "nearest" : "linear";
 
         /// <summary>DepthFormat → WebGPU 的 GPUTextureFormat；None 返回空串（不建深度附件）。</summary>
-    private static string DepthFormatName(DepthFormat format)
-        => format switch
-        {
-            DepthFormat.None => string.Empty,
-            _ => RtDepthFormat,
-        };
+        private static string DepthFormatName(DepthFormat format)
+            => format switch
+            {
+                DepthFormat.None => string.Empty,
+                _ => RtDepthFormat,
+            };
 
         private static string AddressName(TextureAddressMode mode)
             => mode switch
@@ -649,11 +649,11 @@ namespace KFramework.MonoGame
         /// </summary>
         private static void WriteMatrix(in Matrix4x4 value, Span<byte> destination)
         {
-            Write(destination, 0, value.M11);  Write(destination, 1, value.M12);
-            Write(destination, 2, value.M13);  Write(destination, 3, value.M14);
-            Write(destination, 4, value.M21);  Write(destination, 5, value.M22);
-            Write(destination, 6, value.M23);  Write(destination, 7, value.M24);
-            Write(destination, 8, value.M31);  Write(destination, 9, value.M32);
+            Write(destination, 0, value.M11); Write(destination, 1, value.M12);
+            Write(destination, 2, value.M13); Write(destination, 3, value.M14);
+            Write(destination, 4, value.M21); Write(destination, 5, value.M22);
+            Write(destination, 6, value.M23); Write(destination, 7, value.M24);
+            Write(destination, 8, value.M31); Write(destination, 9, value.M32);
             Write(destination, 10, value.M33); Write(destination, 11, value.M34);
             Write(destination, 12, value.M41); Write(destination, 13, value.M42);
             Write(destination, 14, value.M43); Write(destination, 15, value.M44);
