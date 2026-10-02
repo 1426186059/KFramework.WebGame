@@ -20,12 +20,10 @@ function on(target, name, handler, options) {
     target.addEventListener(name, handler, options);
     registrations.push({ target, name, handler });
 }
-/** 失焦兜底：把当前按住的键记为"指针取消"，随下一次 poll 上报（照键盘 Process_Blur 只置标记）。 */
-function releaseAll() {
-    for (const button of held)
-        canceled.push(button);
-    held.clear();
-}
+// 失焦时"把按住的键记为指针取消"这件事改由 C# 侧统一处理：
+// 系统事件（SysFocusLost / SysPageHidden）分发时，Input_GameFrameData 会先调
+// Input_Mouse.ReleaseAll() 上报 PointerCancel，再 ResetAll 清空 ——
+// 这样不用在 JS 侧监听 window 的 blur，也能保住"被中断的交互要通知上层"这个语义。
 export function bindMouse(canvasId) {
     if (bound)
         return;
@@ -45,7 +43,7 @@ export function bindMouse(canvasId) {
         on(canvas, 'mousemove', onMouseMove);
         on(canvas, 'mousedown', onMouseDown);
         on(canvas, 'wheel', onMouseWheel, { passive: false });
-        on(canvas, 'contextmenu', preventDefault);
+        on(canvas, 'contextmenu', onContextMenu);
     }
     // 抬起挂 window：在画布外松手也能收到
     on(window, 'mouseup', onMouseUp);
@@ -53,14 +51,29 @@ export function bindMouse(canvasId) {
     // 只给 pointercancel —— 少了这一步，被接管的那个键就永远卡在"按住"，
     // 表现为松开后 UI 仍显示 Left/Right 按住不放。
     on(window, 'pointercancel', onPointerCancel);
-    // 【失焦兜底】切走窗口（Alt+Tab）或切到别的标签页同样收不到抬起，补发一次全量抬起。
-    on(window, 'blur', releaseAll);
-    on(document, 'visibilitychange', onVisibility);
+    // 【失焦】不再自己监听 window 的 blur / document 的 visibilitychange ——
+    // 焦点一律以画布为准（bindFrameEvents 绑在 canvas 上，外加 document.hasFocus() 每帧兜底），
+    // 由系统事件统一分发后 Reset。这里保留的 window 监听只有 mouseup（画布外松手也要收到）
+    // 与 pointercancel（手势被接管），它们处理的不是"失焦"这件事。
     bound = true;
 }
-/** 通用：拦掉浏览器默认行为（拖拽起始、右键菜单）。 */
+/** 拦掉浏览器默认行为（拖拽起始）。 */
 function preventDefault(e) {
     e.preventDefault();
+}
+/**
+ * 右键菜单（含触摸板的右键手势）：先拦掉浏览器菜单，再把按住的键记为"指针取消"。
+ *
+ * 为什么必须处理：菜单一弹出，浏览器就<b>不会再派发 mouseup</b> ——
+ * 少了这一步，右键会永远卡在"按住"，表现为松开后 UI 仍显示 Right 按住不放。
+ * 这与 {@link onPointerCancel} 是同一类兜底，但覆盖的是不同的触发源：
+ * contextmenu 不一定伴随 pointercancel（尤其右键长按 / 触摸板手势），所以要单独接一次。
+ */
+function onContextMenu(e) {
+    e.preventDefault(); // 阻止浏览器默认菜单
+    for (const button of held)
+        canceled.push(button); // 随本帧上报为 PointerCancel
+    held.clear();
 }
 function onMouseMove(e) {
     const ev = e;
@@ -103,10 +116,7 @@ function onPointerCancel(e) {
     if (held.delete(ev.button))
         canceled.push(ev.button);
 }
-function onVisibility() {
-    if (document.hidden)
-        releaseAll();
-}
+//（visibilitychange 与 window.blur 的监听已移除，统一由 canvas 焦点 + hasFocus 兜底接管）
 /** 解绑鼠标监听并清空状态。 */
 export function unbindMouse() {
     for (const r of registrations)

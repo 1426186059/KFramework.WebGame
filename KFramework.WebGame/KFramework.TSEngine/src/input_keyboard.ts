@@ -1,6 +1,6 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Keyboard 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
 import { getCanvas, focusCanvas } from './html_canvas.js';
-import { E_HTML_Event_Type,FrameDataStream } from './html_event_type.js';
+import { E_HTML_Event_Type, FrameDataStream } from './html_event_type.js';
 
 // 浏览器 KeyboardEvent.code → C# Keys 枚举序号。
 // 必须与 Input/InputDefine.cs 的 Keys 声明顺序严格一致（成员名即 HTML code，顺序自动编号：

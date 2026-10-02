@@ -87,14 +87,13 @@ namespace KFramework.MonoGame
         internal void RaiseSizeChanged() => SizeChanged?.Invoke();
 
         /// <summary>
-        /// 画布改动后把后备缓冲与视口同步到新尺寸（不用等下一帧），并把 JS 侧的结果透传回去。
-        /// 只有尺寸真的变了才触发 <see cref="SizeChanged"/>，与 Game.TickFrame 的处理保持一致。
+        /// 只透传画布操作的结果，<b>不再</b>顺手同步尺寸。
+        /// <para>
+        /// 原先这里会在每次改完画布后手动 SyncCanvasSize 一次（一次跨界 + 立即 RaiseSizeChanged）。
+        /// 现在尺寸由 input_window_event 监听布局变化后上报（CanvasResized 事件），
+        /// 由 Game 应用并触发 <see cref="SizeChanged"/> —— 手动同步既重复、又可能抢在布局稳定前取到中间值。
+        /// </para>
         /// </summary>
-        private bool SyncAfterCanvasChange(bool ok)
-        {
-            if (ok && _device.SyncCanvasSize())
-                RaiseSizeChanged();
-            return ok;
-        }
+        private bool SyncAfterCanvasChange(bool ok) => ok;
     }
 }

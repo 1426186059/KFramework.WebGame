@@ -248,6 +248,13 @@ namespace KFramework.MonoGame
         {
             Span<int> size = stackalloc int[5];
             JSBind_Platform.GetCanvasSize(size);
+
+            // 顺手刷新缓存：这一版是跨界查的，之后 CssSize / DevicePixelRatio 就能直接读缓存，
+            // 直到下一次尺寸事件把它覆盖。
+            _cssWidth = size[0];
+            _cssHeight = size[1];
+            if (size[4] > 0) _dpr1000 = size[4];
+
             int width = size[2];
             int height = size[3];
             if (width <= 0 || height <= 0) return false;
@@ -265,24 +272,57 @@ namespace KFramework.MonoGame
             return true;
         }
 
-        /// <summary>CSS 像素尺寸（不含设备像素比）。</summary>
+        // 画布尺寸由 input_window_event 在变化时上报（CanvasResized 事件），
+        // 这里缓存下来供 CssSize / DevicePixelRatio 读取 —— 不必每帧为它们跨界查一次。
+        private int _cssWidth;
+        private int _cssHeight;
+        private int _dpr1000 = 1000;
+
+        /// <summary>
+        /// 用画布尺寸事件带来的数据同步后备缓冲与视口，返回是否发生了变化。
+        /// <para>
+        /// 与 <see cref="SyncCanvasSize"/> 的区别：这一版的数据已经随事件过界送到了，
+        /// <b>不再为它跨界调一次 <c>GetCanvasSize</c></b> —— 这正是把尺寸改成事件的收益。
+        /// </para>
+        /// </summary>
+        public bool ApplyCanvasSize(int cssWidth, int cssHeight, int backingWidth, int backingHeight, int dpr1000)
+        {
+            _cssWidth = cssWidth;
+            _cssHeight = cssHeight;
+            if (dpr1000 > 0) _dpr1000 = dpr1000;
+
+            if (backingWidth <= 0 || backingHeight <= 0) return false;
+
+            PresentationParameters.BackBufferWidth = backingWidth;
+            PresentationParameters.BackBufferHeight = backingHeight;
+
+            if (backingWidth == Viewport.Width && backingHeight == Viewport.Height) return false;
+
+            // 正渲染到离屏目标时不能抢视口：否则 RT 的绘制区域会被画布尺寸带偏，
+            // 这里只记录后备缓冲尺寸，等 SetRenderTarget(null) 切回屏幕时再恢复。
+            if (_currentRenderTargetCount > 0) return false;
+
+            Viewport = new Viewport(0, 0, backingWidth, backingHeight);
+            return true;
+        }
+
+        /// <summary>CSS 像素尺寸（不含设备像素比）。取自最近一次画布尺寸事件；事件还没来过则跨界查一次。</summary>
         public Vector2 CssSize
         {
             get
             {
-                Span<int> size = stackalloc int[5];
-                JSBind_Platform.GetCanvasSize(size);
-                return new Vector2(size[0], size[1]);
+                if (_cssWidth <= 0 || _cssHeight <= 0) SyncCanvasSize();
+                return new Vector2(_cssWidth, _cssHeight);
             }
         }
 
+        /// <summary>设备像素比。取自最近一次画布尺寸事件；事件还没来过则跨界查一次。</summary>
         public float DevicePixelRatio
         {
             get
             {
-                Span<int> size = stackalloc int[5];
-                JSBind_Platform.GetCanvasSize(size);
-                return size[4] / 1000f;
+                if (_cssWidth <= 0) SyncCanvasSize();
+                return _dpr1000 / 1000f;
             }
         }
 

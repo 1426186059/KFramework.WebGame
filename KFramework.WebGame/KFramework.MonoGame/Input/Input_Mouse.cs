@@ -130,6 +130,31 @@ namespace KFramework.MonoGame
             _scrollValue += _wheelDelta;
         }
 
+        /// <summary>
+        /// 失焦 / 页面隐藏时调用：把当前按住的键逐个上报 <see cref="PointerCancel"/>，再退回抬起电平。
+        /// <para>
+        /// 与 <see cref="Reset"/> 的区别：Reset 只是静默清空，这里会先发事件，
+        /// 让上层知道"这次交互是被中断的"（拖动要取消、点击不能算完成）。
+        /// 由 <see cref="Input_GameFrameData"/> 在分发失焦事件时调用 ——
+        /// JS 侧不再监听 window 的 blur，这个语义就靠它保住。
+        /// </para>
+        /// </summary>
+        internal static void ReleaseAll()
+        {
+            if (!Active) return;
+
+            for (int b = 0; b < MaxButtons; b++)
+            {
+                if (!_btnNew[b] && !_btnLast[b]) continue;
+
+                // 两帧都置 false 使差分无边沿 —— 不被误判成一次正常松手，
+                // 同时 PointerCancel 事件把"被中断"这件事单独告知上层。
+                _btnNew[b] = false;
+                _btnLast[b] = false;
+                PointerCancel?.Invoke((MouseButton)b, Position);
+            }
+        }
+
         /// <summary>清空鼠标状态（失焦 / 解绑时调用）。</summary>
         public static void Reset()
         {

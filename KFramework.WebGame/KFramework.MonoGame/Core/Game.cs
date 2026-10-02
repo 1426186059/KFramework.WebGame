@@ -101,6 +101,17 @@ namespace KFramework.MonoGame
             Window = new GameWindow(device);
             Components = new GameComponentCollection();
             JSBind_GameUpdate.Current = this;
+
+            // 画布尺寸改为事件驱动：input_window_event 在尺寸真变化时上报一次，
+            // 数据随事件一起过来，这里直接应用即可（不必每帧跨界去查）。
+            Input_GameFrameData.CanvasResized += OnCanvasResized;
+        }
+
+        /// <summary>收到画布尺寸事件：应用新尺寸，变了才通知 Window（与原先每帧同步的行为一致）。</summary>
+        private void OnCanvasResized(int cssWidth, int cssHeight, int backingWidth, int backingHeight, int dpr1000)
+        {
+            if (GraphicsDevice.ApplyCanvasSize(cssWidth, cssHeight, backingWidth, backingHeight, dpr1000))
+                Window.RaiseSizeChanged();
         }
 
         /// <summary>启动主循环；返回的 Task 在 <see cref="Exit"/> 后完成。</summary>
@@ -173,7 +184,9 @@ namespace KFramework.MonoGame
 
             try
             {
-                if (GraphicsDevice.SyncCanvasSize()) Window.RaiseSizeChanged();
+                // 画布尺寸【不再每帧查】：原先这里每帧调 SyncCanvasSize()（内含一次跨界获取），
+                // 现在由 input_window_event 在尺寸真变化时上报，经 Input_GameFrameData.CanvasResized
+                // 事件回调到 OnCanvasResized 应用。初始化与手动改尺寸时仍会同步一次，见 GraphicsDeviceManager。
 
                 double elapsed = _lastTimestamp < 0 ? 0d : (timestampMs - _lastTimestamp) / 1000d;
                 _lastTimestamp = timestampMs;
@@ -248,6 +261,7 @@ namespace KFramework.MonoGame
         {
             if (_disposed) return;
             _disposed = true;
+            Input_GameFrameData.CanvasResized -= OnCanvasResized;
             UnloadContent();
             graphicsDeviceManager?.Dispose();
             graphicsDeviceManager = null;

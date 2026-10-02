@@ -21,11 +21,21 @@ namespace KFramework.MonoGame
         /// <summary>事件类型（镜像 TS 的 <c>EvType</c>）：高 4 位即模块，data 长度由类型定长。</summary>
         public static class EvType
         {
-            // ---- 系统 0x0_：data 0 字节，只靠 type ----
+            // ---- 系统 0x0_：失焦 / 可见性只靠 type，无 data ----
             public const int SysFocusLost = 0x00;
             public const int SysFocusGained = 0x01;
             public const int SysPageHidden = 0x02;
             public const int SysPageVisible = 0x03;
+
+            /// <summary>
+            /// 画布尺寸变化：data 10 字节 = 5 个 i16（CSS 宽 / CSS 高 / 绘制缓冲宽 / 绘制缓冲高 / DPR×1000），
+            /// 与 <c>platform.getCanvasSize</c> 的 out 布局同序（那边是 i32，这里压成 i16：画布尺寸上限远小于 short.MaxValue）。
+            /// <para>
+            /// 它取代了原先"每帧跨界查一次画布尺寸"的做法：尺寸只在真变化时才上报，
+            /// 且数据随事件一起过来，C# 侧不必再为它跨界。
+            /// </para>
+            /// </summary>
+            public const int CanvasResized = 0x04;
 
             // ---- 键盘 0x1_：data 1 字节 = Keys 序号（0..212）----
             public const int KeyDown = 0x10;
@@ -48,6 +58,15 @@ namespace KFramework.MonoGame
         /// <summary>焦点变化（true = 获得焦点）。触发时各输入模块已先行清空 / 复位。</summary>
         public static event Action<bool> FocusChanged;
 
+        /// <summary>
+        /// 画布尺寸变化（参数：CSS 宽、CSS 高、绘制缓冲宽、绘制缓冲高、DPR×1000）。
+        /// <para>
+        /// 由 <see cref="Game"/> 订阅后交给 <see cref="GraphicsDevice"/> 应用 ——
+        /// 本类不直接持有设备，避免输入层与图形层互相依赖。
+        /// </para>
+        /// </summary>
+        public static event Action<int, int, int, int, int> CanvasResized;
+
         // 与 TS 侧 MAX_FRAME_BYTES 对齐：触摸每触点 6B × 64 ≈ 384B，2048 留足余量。
         private const int MaxBytes = 2048;
 
@@ -58,6 +77,7 @@ namespace KFramework.MonoGame
         private static int DataBytes(int type)
             => type >= EvType.TouchBegin && type <= EvType.TouchCancel ? 5
              : type == EvType.MouseMove ? 4
+             : type == EvType.CanvasResized ? 10
              : type <= EvType.SysPageVisible ? 0
              : 1;
 
@@ -115,11 +135,25 @@ namespace KFramework.MonoGame
 
                 switch (type)
                 {
+                    // ---- 画布尺寸：数据随事件一起来，不必再为它跨界查一次 ----
+                    case EvType.CanvasResized:
+                        if (data.Length >= 10)
+                        {
+                            CanvasResized?.Invoke(
+                                BinaryPrimitives.ReadInt16LittleEndian(data),
+                                BinaryPrimitives.ReadInt16LittleEndian(data.Slice(2, 2)),
+                                BinaryPrimitives.ReadInt16LittleEndian(data.Slice(4, 2)),
+                                BinaryPrimitives.ReadInt16LittleEndian(data.Slice(6, 2)),
+                                BinaryPrimitives.ReadInt16LittleEndian(data.Slice(8, 2)));
+                        }
+                        break;
+
                     // ---- 系统：只靠 type，没有 data ----
                     case EvType.SysFocusLost:
                     case EvType.SysPageHidden:
-                        // 失焦 / 切后台：按键会在窗外松手后收不到 keyup、指针会被系统手势接管而收不到 mouseup，
-                        // 与其每个模块各自监听 window.blur，不如在这里统一清空一次。
+                        // 失焦 / 切后台：按键会在窗外松手后收不到 keyup、指针会被系统手势接管而收不到 mouseup。
+                        // 先让鼠标把按住的键上报成"指针取消"（上层据此取消拖拽 / 不确认点击），再统一清空。
+                        Input_Mouse.ReleaseAll();
                         ResetAll();
                         FocusChanged?.Invoke(false);
                         break;

@@ -75,6 +75,13 @@ KFramework.TSEngine（浏览器层 TypeScript）开发规范
     浏览器端造不出来，传 Uint8Array 会被断言 "Expected MemoryViewType.Byte" 拒绝。
     这个方向要传字节就只能用 byte[]（每次一份新数组，C# 侧可长期持有）。
 
+  * **改跨界的函数签名，C# 与 TS 必须同时改**（参数个数 / 类型 / 返回值）。
+    这类不匹配<b>编译期不报错</b>，要等运行时 marshal 才炸，而且报错信息指不到源头：
+    例 —— C# 声明 `int TakeFrameData(Span<byte> buffer)`，TS 侧却沿用了旧的
+    `takeFrameData(): Uint8Array`，运行时就会抛
+    "Assert failed: Value is not an integer: 0 (object)"（0 是那个 Uint8Array 转字符串的结果），
+    从字面上完全看不出是哪个函数。改一侧之前先搜另一侧的对应声明。
+
 
 四、事件编码
 ------------

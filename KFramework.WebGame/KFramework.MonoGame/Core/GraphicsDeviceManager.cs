@@ -149,10 +149,9 @@ namespace KFramework.MonoGame
             _shouldApplyChanges = false;
 
             // MonoGame 是把 gdi.PresentationParameters 传进设备构造函数；本后端的设备早已建好，
-            // 故改为把参数写回设备的 PresentationParameters（宽高除外，见类注释），
-            // 并按参数摆好画布（尺寸 / 全屏）。
+            // 故改为把参数写回设备的 PresentationParameters（宽高除外，见类注释）。
+            // 画布不再由这里设置 —— 它归页面布局管，尺寸变化走事件上来。
             ApplyPresentationParameters(gdi.PresentationParameters);
-            ApplyCanvas(gdi.PresentationParameters);
 
             OnDeviceCreated(EventArgs.Empty);
         }
@@ -366,48 +365,15 @@ namespace KFramework.MonoGame
             // Web 上画布尺寸与全屏都由浏览器 / CSS 决定，没有对应能力，跳过。
 
             // 用本管理器的设置填充一份 gdi，并允许 PreparingDeviceSettings 事件改写，
-            // 再把这份设置应用到设备与画布。
+            // 再把这份设置应用到设备（画布尺寸不在此设置，见上面的说明）。
             var gdi = DoPreparingDeviceSettings();
             ApplyPresentationParameters(gdi.PresentationParameters);
-            ApplyCanvas(gdi.PresentationParameters);
         }
 
-        /// <summary>
-        /// 把期望的后备缓冲设置落实到画布上（照 MonoGame「按 PresentationParameters 准备 / 重置设备」这一步）。
-        /// </summary>
-        /// <remarks>
-        /// 只有「显式设置过期望尺寸」时才会写画布，否则保留页面自身布局，避免一上来就把画布钉死成固定像素。
-        /// 原生全屏已移除（浏览器原生全屏是用户交互行为）；需要填满整个 HTML 页面请用 HTML_Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen)。
-        /// </remarks>
-        private void ApplyCanvas(PresentationParameters pp)
-        {
-            HTML_Canvas canvas = Canvas;
-
-            if (!_preferredSizeSet)
-            {
-                // 没显式设置过期望尺寸：不去碰画布，
-                // 保留页面自身给画布的布局（如 <canvas> 的 width:100%），让它继续随浏览器缩放。
-                return;
-            }
-
-            SetCanvasSize(canvas, pp);
-
-            // 画布改完立即同步后备缓冲与视口，不等下一帧 Game.TickFrame 里的 SyncCanvasSize。
-            // 与 Game.TickFrame 一样：尺寸真的变了才 RaiseSizeChanged。
-            if (_graphicsDevice.SyncCanvasSize())
-                _game.Window.RaiseSizeChanged();
-        }
-
-        /// <summary>按「CSS 尺寸 = 期望后备缓冲 ÷ DPR」设置画布大小。</summary>
-        private void SetCanvasSize(HTML_Canvas canvas, PresentationParameters pp)
-        {
-            float dpr = _graphicsDevice.DevicePixelRatio;
-            if (dpr <= 0f) dpr = 1f;
-
-            int cssWidth = Math.Max(1, (int)Math.Round(pp.BackBufferWidth / dpr));
-            int cssHeight = Math.Max(1, (int)Math.Round(pp.BackBufferHeight / dpr));
-            canvas.SetSize(cssWidth, cssHeight);
-        }
+        // 【已移除】原先这里有 ApplyCanvas / SetCanvasSize：按「CSS 尺寸 = 期望后备缓冲 ÷ DPR」去写画布，
+        // 写完再手动 SyncCanvasSize 同步一次。现在画布尺寸完全由<b>页面布局 + DPR</b> 决定，
+        // 变化由 input_window_event 的 ResizeObserver 上报（CanvasResized 事件），C# 侧只负责应用 ——
+        // 主动去设画布尺寸既没有必要，还会和页面自己的布局（如 width:100%）打架，故整段去掉。
 
         private void Initialize(GraphicsDeviceInformation gdi)
         {
@@ -594,8 +560,9 @@ namespace KFramework.MonoGame
         /// 于是它重新随浏览器缩放 —— 也就是从「钉死成固定分辨率」回到响应式。
         /// </summary>
         /// <remarks>
-        /// 仅设置 <see cref="PreferredBackBufferWidth"/> / <see cref="PreferredBackBufferHeight"/> 是回不到这个状态的
-        /// （那只会把画布钉成另一个固定尺寸），必须走本方法。
+        /// 因为 <see cref="PreferredBackBufferWidth"/> / <see cref="PreferredBackBufferHeight"/> 现在只记录、
+        /// 不再写画布，本方法的作用是<b>清掉这份记录并把画布布局恢复成百分比</b>（重新随浏览器缩放），
+        /// 而不是"从固定尺寸切回响应式" —— 画布本来就是响应式的。
         /// </remarks>
         public void ReleasePreferredBackBufferSize()
         {
@@ -605,15 +572,17 @@ namespace KFramework.MonoGame
             if (_graphicsDevice == null) return;
 
             // 填满整个 HTML 页面用的是百分比，不是固定像素，所以浏览器缩放时它会跟着变。
+            // 改完不用在这里手动同步尺寸：布局变化会由 input_window_event 的 ResizeObserver 捕获，
+            // 随下一帧的 CanvasResized 事件上来，届时再应用并触发 SizeChanged。
             Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen, 0, 0, 0, 0);
-            if (_graphicsDevice.SyncCanvasSize())
-                _game.Window.RaiseSizeChanged();
         }
 
-        /// <summary>期望的后备缓冲宽度（像素）。</summary>
+        /// <summary>期望的后备缓冲宽度（像素）。<b>仅记录，不影响画布。</b></summary>
         /// <remarks>
-        /// 应用时按「CSS 尺寸 = 后备缓冲 ÷ DPR」换算后设置画布大小，即后备缓冲会真的变成这个宽度
-        /// （受 DPR 取整影响可能差 1~2 像素）。
+        /// 画布尺寸现在完全由<b>页面布局 + DPR</b> 决定：C# 侧不再按这个值去写画布
+        /// （原先的 SetCanvasSize 已移除），真实尺寸随 CanvasResized 事件上来。
+        /// 要固定分辨率请直接设画布的 CSS 尺寸 —— <see cref="GameWindow.SetCanvasCentered(int, int)"/>
+        /// 或 <see cref="HTML_Canvas.SetSize(int, int)"/>。
         /// </remarks>
         public int PreferredBackBufferWidth
         {
