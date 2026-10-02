@@ -208,7 +208,7 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// 光栅化状态在 WebGPU 里是<b>管线对象的属性</b>，不能像 WebGL 那样随时切换。
-        /// 当前精灵管线固定为「不剔除」，故这里暂不下发（2D 主链路不受影响）。
+        /// 当前精灵管线固定为「不剔除」（<see cref="CullMode.Off"/>），故这里暂不下发（2D 主链路不受影响）。
         /// </summary>
         public void ApplyRasterizerState(RasterizerState state) { }
 

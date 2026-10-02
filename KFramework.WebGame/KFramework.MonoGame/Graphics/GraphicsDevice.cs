@@ -314,7 +314,7 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// 把当前 <see cref="RasterizerState"/> 下发给后端（照 MonoGame 的 RasterizerState.Apply）。
-        /// CullMode.None 关闭剔除；否则按绕向剔除。每次 <see cref="SpriteBatch.Setup"/> 都会重新设置，
+        /// <see cref="CullMode.Off"/> 关闭剔除；Front / Back 剔除对应朝向的面。每次 <see cref="SpriteBatch.Setup"/> 都会重新设置，
         /// 因此绘制前状态始终被强制回 2D 设定，不受外部遗留状态影响。
         /// </summary>
         private void ApplyRasterizerState()

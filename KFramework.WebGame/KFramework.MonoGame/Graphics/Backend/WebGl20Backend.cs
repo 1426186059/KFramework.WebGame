@@ -181,22 +181,23 @@ namespace KFramework.MonoGame
         };
 
         /// <summary>
-        /// 把光栅化状态下发给 WebGL（照 MonoGame 的 RasterizerState.Apply）。
-        /// CullMode.None 关闭剔除；否则开启 CULL_FACE 并按绕向选 FRONT/BACK，
-        /// 配合初始化时设定的 CCW 正面，CullCounterClockwiseFace 即“剔除逆时针背面”。
+        /// 把光栅化状态下发给 WebGL。
+        /// <see cref="CullMode.Off"/> 关闭剔除；Front / Back 开启 CULL_FACE 后直接对应
+        /// GL 的 FRONT / BACK —— 因为初始化时已固定 CCW 为正面，
+        /// “面朝向”与 GL 的剔除面正好同名同义，无需再按绕序换算。
         /// </summary>
         public void ApplyRasterizerState(RasterizerState state)
         {
             switch (state.CullMode)
             {
-                case CullMode.None:
+                case CullMode.Off:
                     JSBind_WEBGL20.Disable(JSBind_WEBGL20.CULL_FACE);
                     break;
-                case CullMode.CullClockwiseFace:
+                case CullMode.Front:
                     JSBind_WEBGL20.Enable(JSBind_WEBGL20.CULL_FACE);
                     JSBind_WEBGL20.CullFace(JSBind_WEBGL20.FRONT);
                     break;
-                case CullMode.CullCounterClockwiseFace:
+                case CullMode.Back:
                     JSBind_WEBGL20.Enable(JSBind_WEBGL20.CULL_FACE);
                     JSBind_WEBGL20.CullFace(JSBind_WEBGL20.BACK);
                     break;
