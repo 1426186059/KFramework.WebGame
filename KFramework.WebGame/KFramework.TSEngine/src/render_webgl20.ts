@@ -22,7 +22,9 @@ const contextAttributes: WebGLContextAttributes = {
     alpha: false,
     antialias: false,
     depth: true,
-    stencil: false,
+    // 模板缓冲必须在建上下文时申请，之后改不了（与 antialias 同理）。
+    // 默认帧缓冲没有模板缓冲时，STENCIL_TEST 开了也无处可写，StencilState 形同虚设。
+    stencil: true,
     premultipliedAlpha: false,
     preserveDrawingBuffer: false,
     powerPreference: 'high-performance',
@@ -239,6 +241,9 @@ export function blendFuncSeparate(srcRGB: number, dstRGB: number, srcA: number, 
     gpu().blendFuncSeparate(srcRGB, dstRGB, srcA, dstA);
 }
 export function blendEquation(mode: number): void { gpu().blendEquation(mode); }
+
+// RGB 与 Alpha 各自独立的混合方程（BlendOp 按下发需要它：颜色与 Alpha 的运算可能不同）。
+export function blendEquationSeparate(modeRGB: number, modeAlpha: number): void { gpu().blendEquationSeparate(modeRGB, modeAlpha); }
 export function clearColor(r: number, g: number, b: number, a: number): void { gpu().clearColor(r, g, b, a); }
 export function clear(mask: number): void { gpu().clear(mask); }
 export function viewport(x: number, y: number, width: number, height: number): void { gpu().viewport(x, y, width, height); }
@@ -318,3 +323,11 @@ export function cullFace(mode: number): void { gpu().cullFace(mode); }
 export function frontFace(mode: number): void { gpu().frontFace(mode); }
 export function depthMask(flag: boolean): void { gpu().depthMask(flag); }
 export function depthFunc(func: number): void { gpu().depthFunc(func); }
+
+// ---------- 模板（StencilState 下发） ----------
+// 比较函数复用 depthFunc 那批常量：GL 的 stencilFunc 与 depthFunc 用的是同一组（NEVER/LESS/…/ALWAYS）。
+export function stencilMask(mask: number): void { gpu().stencilMask(mask); }
+export function stencilFunc(func: number, reference: number, mask: number): void { gpu().stencilFunc(func, reference, mask); }
+export function stencilOp(fail: number, zfail: number, zpass: number): void { gpu().stencilOp(fail, zfail, zpass); }
+export function stencilFuncSeparate(face: number, func: number, reference: number, mask: number): void { gpu().stencilFuncSeparate(face, func, reference, mask); }
+export function stencilOpSeparate(face: number, fail: number, zfail: number, zpass: number): void { gpu().stencilOpSeparate(face, fail, zfail, zpass); }

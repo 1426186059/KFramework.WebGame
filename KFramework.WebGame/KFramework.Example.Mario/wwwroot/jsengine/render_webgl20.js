@@ -19,7 +19,9 @@ const contextAttributes = {
     alpha: false,
     antialias: false,
     depth: true,
-    stencil: false,
+    // 模板缓冲必须在建上下文时申请，之后改不了（与 antialias 同理）。
+    // 默认帧缓冲没有模板缓冲时，STENCIL_TEST 开了也无处可写，StencilState 形同虚设。
+    stencil: true,
     premultipliedAlpha: false,
     preserveDrawingBuffer: false,
     powerPreference: 'high-performance',
@@ -195,6 +197,8 @@ export function blendFuncSeparate(srcRGB, dstRGB, srcA, dstA) {
     gpu().blendFuncSeparate(srcRGB, dstRGB, srcA, dstA);
 }
 export function blendEquation(mode) { gpu().blendEquation(mode); }
+// RGB 与 Alpha 各自独立的混合方程（BlendOp 按下发需要它：颜色与 Alpha 的运算可能不同）。
+export function blendEquationSeparate(modeRGB, modeAlpha) { gpu().blendEquationSeparate(modeRGB, modeAlpha); }
 export function clearColor(r, g, b, a) { gpu().clearColor(r, g, b, a); }
 export function clear(mask) { gpu().clear(mask); }
 export function viewport(x, y, width, height) { gpu().viewport(x, y, width, height); }
@@ -252,3 +256,10 @@ export function cullFace(mode) { gpu().cullFace(mode); }
 export function frontFace(mode) { gpu().frontFace(mode); }
 export function depthMask(flag) { gpu().depthMask(flag); }
 export function depthFunc(func) { gpu().depthFunc(func); }
+// ---------- 模板（StencilState 下发） ----------
+// 比较函数复用 depthFunc 那批常量：GL 的 stencilFunc 与 depthFunc 用的是同一组（NEVER/LESS/…/ALWAYS）。
+export function stencilMask(mask) { gpu().stencilMask(mask); }
+export function stencilFunc(func, reference, mask) { gpu().stencilFunc(func, reference, mask); }
+export function stencilOp(fail, zfail, zpass) { gpu().stencilOp(fail, zfail, zpass); }
+export function stencilFuncSeparate(face, func, reference, mask) { gpu().stencilFuncSeparate(face, func, reference, mask); }
+export function stencilOpSeparate(face, fail, zfail, zpass) { gpu().stencilOpSeparate(face, fail, zfail, zpass); }

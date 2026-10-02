@@ -97,7 +97,7 @@ namespace KFramework.Test.Common.Tests.BlendTest
                 new("传奇Multiply\n暗度+火把光池", BlendState.Multiply, _mirLightTex, Color.White),
                 // 用公开构造把混合参数直接传进来：Final = Dest*SrcColor + Src*(1-SrcColor)
                 new("自定义混合\nSrcColor/1-SrcColor",
-                    new BlendState(JSBind_WEBGL20.SRC_COLOR, JSBind_WEBGL20.ONE_MINUS_SRC_COLOR, JSBind_WEBGL20.ONE, JSBind_WEBGL20.ONE_MINUS_SRC_ALPHA),
+                    new BlendState(BlendMode.SrcColor, BlendMode.OneMinusSrcColor, BlendMode.One, BlendMode.OneMinusSrcAlpha),
                     _whiteTex, new Color(255, 140, 0, 255)),
             };
             return list;

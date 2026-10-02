@@ -24,6 +24,19 @@ namespace KFramework.MonoGame
         public const int ONE_MINUS_SRC_ALPHA = 0x0303;
         public const int DST_ALPHA = 0x0304;
         public const int ONE_MINUS_DST_ALPHA = 0x0305;
+        public const int DST_COLOR = 0x0306;
+        public const int ONE_MINUS_DST_COLOR = 0x0307;
+        public const int SRC_ALPHA_SATURATE = 0x0308;
+
+        // —— 模板操作（stencilOp 的参数，OpenGL ES 3.0 标准值） ——
+        // 比较函数复用上面那组 NEVER / LESS / … / ALWAYS：GL 的 stencilFunc 与 depthFunc 用的是同一批常量。
+        public const int STENCIL_KEEP = 0x1E00;
+        public const int STENCIL_REPLACE = 0x1E01;
+        public const int STENCIL_INCR = 0x1E02;          // 饱和加 1
+        public const int STENCIL_DECR = 0x1E03;          // 饱和减 1
+        public const int STENCIL_INVERT = 0x150A;
+        public const int STENCIL_INCR_WRAP = 0x8507;
+        public const int STENCIL_DECR_WRAP = 0x8508;
 
         // —— 混合方程（blendEquation 的参数） ——
         // 参考文档：WebGL 2.0 规范 / MDN WebGL2RenderingContext.blendEquation
@@ -428,6 +441,13 @@ namespace KFramework.MonoGame
         [JSImport("blendEquation", "render_webgl20")]
         public static partial void BlendEquation(int mode);
 
+        /// <summary>
+        /// 分别设置 RGB 与 Alpha 的混合方程（BLEND_FUNC_ADD / SUBTRACT / REVERSE_SUBTRACT / MIN / MAX）。
+        /// WebGL2 原生支持 MIN / MAX（WebGL1 需 EXT_blend_minmax 扩展）。
+        /// </summary>
+        [JSImport("blendEquationSeparate", "render_webgl20")]
+        public static partial void BlendEquationSeparate(int modeRGB, int modeAlpha);
+
         /// <summary>设置清屏颜色。</summary>
         [JSImport("clearColor", "render_webgl20")]
         public static partial void ClearColor(float r, float g, float b, float a);
@@ -467,6 +487,26 @@ namespace KFramework.MonoGame
         /// <summary>设置深度比较函数。</summary>
         [JSImport("depthFunc", "render_webgl20")]
         public static partial void DepthFunc(int func);
+
+        /// <summary>设置模板写入掩码（哪些位可写）。</summary>
+        [JSImport("stencilMask", "render_webgl20")]
+        public static partial void StencilMask(int mask);
+
+        /// <summary>设置正反面共用的模板比较函数（func + 参考值 + 读掩码）。</summary>
+        [JSImport("stencilFunc", "render_webgl20")]
+        public static partial void StencilFunc(int func, int reference, int mask);
+
+        /// <summary>设置正反面共用的模板操作（fail / zfail / zpass）。</summary>
+        [JSImport("stencilOp", "render_webgl20")]
+        public static partial void StencilOp(int fail, int zfail, int zpass);
+
+        /// <summary>按面设置模板比较函数（face 用 FRONT / BACK / FRONT_AND_BACK）。</summary>
+        [JSImport("stencilFuncSeparate", "render_webgl20")]
+        public static partial void StencilFuncSeparate(int face, int func, int reference, int mask);
+
+        /// <summary>按面设置模板操作（face 用 FRONT / BACK / FRONT_AND_BACK）。</summary>
+        [JSImport("stencilOpSeparate", "render_webgl20")]
+        public static partial void StencilOpSeparate(int face, int fail, int zfail, int zpass);
 
     }
 }

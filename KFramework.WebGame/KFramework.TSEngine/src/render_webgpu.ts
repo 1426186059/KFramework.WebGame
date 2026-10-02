@@ -222,33 +222,13 @@ export function destroyShaderModule(id: number): void {
 
 // ---------- 管线 ----------
 
-// 把混合因子（WebGPU 字符串或由 WebGL 枚举兼容传入）映射为 GPUBlendFactor。
+// 混合因子 / 混合运算：C# 侧的中立枚举（Blend）已由 WebGpuBackend 映射为
+// WebGPU 原生字符串，这里只做非法值的兜底（混合状态不带 GL 常量，无需再兼容数字）。
 function blendFactor(v: unknown): string {
-    if (typeof v === 'string') return v;
-    switch (v as number) {
-        case 0x0: return 'zero';
-        case 0x1: return 'one';
-        case 0x0300: return 'src';
-        case 0x0301: return 'one-minus-src';
-        case 0x0302: return 'src-alpha';
-        case 0x0303: return 'one-minus-src-alpha';
-        case 0x0304: return 'dst-alpha';
-        case 0x0305: return 'one-minus-dst-alpha';
-        case 0x0306: return 'dst';
-        case 0x0307: return 'one-minus-dst';
-        default: return 'one';
-    }
+    return typeof v === 'string' ? v : 'one';
 }
 function blendOp(v: unknown): string {
-    if (typeof v === 'string') return v;
-    switch (v as number) {
-        case 0x8006: return 'add';
-        case 0x800A: return 'subtract';
-        case 0x800B: return 'reverse-subtract';
-        case 0x8007: return 'min';
-        case 0x8008: return 'max';
-        default: return 'add';
-    }
+    return typeof v === 'string' ? v : 'add';
 }
 function buildBlend(b: GPU): GPU {
     return {

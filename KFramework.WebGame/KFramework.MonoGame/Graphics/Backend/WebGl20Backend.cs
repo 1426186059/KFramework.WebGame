@@ -129,7 +129,9 @@ namespace KFramework.MonoGame
         public void Clear(Color color)
         {
             JSBind_WEBGL20.ClearColor(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
-            JSBind_WEBGL20.Clear(JSBind_WEBGL20.COLOR_BUFFER_BIT | JSBind_WEBGL20.DEPTH_BUFFER_BIT);
+            // 模板一并清：上下文已申请了模板缓冲（stencil:true），不清会留着上一帧的残值，
+            // 一旦有页开启模板测试就会读到脏数据。
+            JSBind_WEBGL20.Clear(JSBind_WEBGL20.COLOR_BUFFER_BIT | JSBind_WEBGL20.DEPTH_BUFFER_BIT | JSBind_WEBGL20.STENCIL_BUFFER_BIT);
         }
 
         /// <summary>读像素。WebGL 的帧缓冲原点在左下，故这里做 Y 换算（上层按左上原点传入）。</summary>
@@ -139,9 +141,41 @@ namespace KFramework.MonoGame
         public void SetBlendState(BlendState state)
         {
             JSBind_WEBGL20.Enable(JSBind_WEBGL20.BLEND);
-            JSBind_WEBGL20.BlendFuncSeparate(state.SourceBlend, state.DestinationBlend,
-                                 state.SourceAlphaBlend, state.DestinationAlphaBlend);
+            JSBind_WEBGL20.BlendFuncSeparate(ToGLBlendMode(state.SourceColorBlendFactor),
+                                 ToGLBlendMode(state.DestinationColorBlendFactor),
+                                 ToGLBlendMode(state.SourceAlphaBlendFactor),
+                                 ToGLBlendMode(state.DestinationAlphaBlendFactor));
+            // 运算（BlendOp）与因子分离：RGB 与 Alpha 各下一条方程。
+            JSBind_WEBGL20.BlendEquationSeparate(ToGLBlendOp(state.ColorBlendOperation),
+                                        ToGLBlendOp(state.AlphaBlendOperation));
         }
+
+        /// <summary>中立混合因子 → GL 常量（GL 常量只应出现在后端里，公共状态类保持后端无关）。</summary>
+        private static int ToGLBlendMode(BlendMode mode) => mode switch
+        {
+            BlendMode.Zero => JSBind_WEBGL20.ZERO,
+            BlendMode.One => JSBind_WEBGL20.ONE,
+            BlendMode.DstColor => JSBind_WEBGL20.DST_COLOR,
+            BlendMode.SrcColor => JSBind_WEBGL20.SRC_COLOR,
+            BlendMode.OneMinusDstColor => JSBind_WEBGL20.ONE_MINUS_DST_COLOR,
+            BlendMode.SrcAlpha => JSBind_WEBGL20.SRC_ALPHA,
+            BlendMode.OneMinusSrcColor => JSBind_WEBGL20.ONE_MINUS_SRC_COLOR,
+            BlendMode.DstAlpha => JSBind_WEBGL20.DST_ALPHA,
+            BlendMode.OneMinusDstAlpha => JSBind_WEBGL20.ONE_MINUS_DST_ALPHA,
+            BlendMode.SrcAlphaSaturate => JSBind_WEBGL20.SRC_ALPHA_SATURATE,
+            BlendMode.OneMinusSrcAlpha => JSBind_WEBGL20.ONE_MINUS_SRC_ALPHA,
+            _ => JSBind_WEBGL20.ONE,
+        };
+
+        /// <summary>中立混合运算 → GL 混合方程常量。</summary>
+        private static int ToGLBlendOp(BlendOp op) => op switch
+        {
+            BlendOp.Sub => JSBind_WEBGL20.BLEND_FUNC_SUBTRACT,
+            BlendOp.RevSub => JSBind_WEBGL20.BLEND_FUNC_REVERSE_SUBTRACT,
+            BlendOp.Min => JSBind_WEBGL20.BLEND_FUNC_MIN,
+            BlendOp.Max => JSBind_WEBGL20.BLEND_FUNC_MAX,
+            _ => JSBind_WEBGL20.BLEND_FUNC_ADD,
+        };
 
         /// <summary>
         /// 把光栅化状态下发给 WebGL（照 MonoGame 的 RasterizerState.Apply）。
@@ -181,16 +215,69 @@ namespace KFramework.MonoGame
         /// </summary>
         public void ApplyDepthStencilState(DepthStencilState state)
         {
-            if (state.DepthBufferEnable)
+            ApplyDepth(state.Depth);
+            ApplyStencil(state.Stencil);
+        }
+
+        /// <summary>
+        /// 深度部分。Unity 语义：<see cref="CompareFunction.Disabled"/> 即关闭深度测试，
+        /// 不再单独看一个 bool 开关。
+        /// </summary>
+        private void ApplyDepth(DepthState depth)
+        {
+            if (depth.DepthCompare != CompareFunction.Disabled)
                 JSBind_WEBGL20.Enable(JSBind_WEBGL20.DEPTH_TEST);
             else
                 JSBind_WEBGL20.Disable(JSBind_WEBGL20.DEPTH_TEST);
 
-            JSBind_WEBGL20.DepthMask(state.DepthBufferWriteEnable);
-            JSBind_WEBGL20.DepthFunc(ToGLDepthFunc(state.DepthBufferFunction));
+            JSBind_WEBGL20.DepthMask(depth.DepthWrite);
+            JSBind_WEBGL20.DepthFunc(ToGLCompareFunction(depth.DepthCompare));
         }
 
-        private static int ToGLDepthFunc(CompareFunction func) => func switch
+        /// <summary>
+        /// 模板部分。正反面各下发一组「比较函数 + 三种结果的操作」；
+        /// 关闭时直接 disable(STENCIL_TEST)，不碰其余模板状态。
+        /// </summary>
+        private void ApplyStencil(StencilState stencil)
+        {
+            if (!stencil.Enabled)
+            {
+                JSBind_WEBGL20.Disable(JSBind_WEBGL20.STENCIL_TEST);
+                return;
+            }
+
+            JSBind_WEBGL20.Enable(JSBind_WEBGL20.STENCIL_TEST);
+            JSBind_WEBGL20.StencilMask(stencil.WriteMask);
+
+            JSBind_WEBGL20.StencilFuncSeparate(JSBind_WEBGL20.FRONT,
+                ToGLCompareFunction(stencil.CompareFunctionFront), stencil.Reference, stencil.ReadMask);
+            JSBind_WEBGL20.StencilOpSeparate(JSBind_WEBGL20.FRONT,
+                ToGLStencilOp(stencil.FailOperationFront),
+                ToGLStencilOp(stencil.ZFailOperationFront),
+                ToGLStencilOp(stencil.PassOperationFront));
+
+            JSBind_WEBGL20.StencilFuncSeparate(JSBind_WEBGL20.BACK,
+                ToGLCompareFunction(stencil.CompareFunctionBack), stencil.Reference, stencil.ReadMask);
+            JSBind_WEBGL20.StencilOpSeparate(JSBind_WEBGL20.BACK,
+                ToGLStencilOp(stencil.FailOperationBack),
+                ToGLStencilOp(stencil.ZFailOperationBack),
+                ToGLStencilOp(stencil.PassOperationBack));
+        }
+
+        /// <summary>中立模板操作 → GL 常量。</summary>
+        private static int ToGLStencilOp(StencilOp op) => op switch
+        {
+            StencilOp.Zero => JSBind_WEBGL20.ZERO,
+            StencilOp.Replace => JSBind_WEBGL20.STENCIL_REPLACE,
+            StencilOp.IncrementSaturate => JSBind_WEBGL20.STENCIL_INCR,
+            StencilOp.DecrementSaturate => JSBind_WEBGL20.STENCIL_DECR,
+            StencilOp.Invert => JSBind_WEBGL20.STENCIL_INVERT,
+            StencilOp.IncrementWrap => JSBind_WEBGL20.STENCIL_INCR_WRAP,
+            StencilOp.DecrementWrap => JSBind_WEBGL20.STENCIL_DECR_WRAP,
+            _ => JSBind_WEBGL20.STENCIL_KEEP,
+        };
+
+        private static int ToGLCompareFunction(CompareFunction func) => func switch
         {
             CompareFunction.Never => JSBind_WEBGL20.NEVER,
             CompareFunction.Less => JSBind_WEBGL20.LESS,
@@ -199,16 +286,30 @@ namespace KFramework.MonoGame
             CompareFunction.Greater => JSBind_WEBGL20.GREATER,
             CompareFunction.NotEqual => JSBind_WEBGL20.NOTEQUAL,
             CompareFunction.GreaterEqual => JSBind_WEBGL20.GEQUAL,
-            _ => JSBind_WEBGL20.ALWAYS,
+            _ => JSBind_WEBGL20.ALWAYS,     // Always 与 Disabled
         };
 
         public void SetSamplerState(SamplerState state)
         {
-            JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_MIN_FILTER, state.MinFilter);
-            JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_MAG_FILTER, state.MagFilter);
-            JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_WRAP_S, state.WrapMode);
-            JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_WRAP_T, state.WrapMode);
+            int minFilter = ToGLFilter(state.MinFilter);
+            int magFilter = ToGLFilter(state.MagFilter);
+            int wrap = ToGLAddressMode(state.WrapMode);
+
+            JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_MIN_FILTER, minFilter);
+            JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_MAG_FILTER, magFilter);
+            JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_WRAP_S, wrap);
+            JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_WRAP_T, wrap);
         }
+
+        private static int ToGLFilter(TextureFilter filter)
+            => filter == TextureFilter.Point ? JSBind_WEBGL20.NEAREST : JSBind_WEBGL20.LINEAR;
+
+        private static int ToGLAddressMode(TextureAddressMode mode) => mode switch
+        {
+            TextureAddressMode.Wrap => JSBind_WEBGL20.REPEAT,
+            TextureAddressMode.Mirror => JSBind_WEBGL20.MIRRORED_REPEAT,
+            _ => JSBind_WEBGL20.CLAMP_TO_EDGE,
+        };
 
         public void BindTexture(Texture2D texture)
         {

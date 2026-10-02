@@ -172,13 +172,16 @@ namespace KFramework.MonoGame
     /// <summary>离屏渲染目标的额外附件（多重采样颜色 + 深度）；颜色纹理本身走 _textures。</summary>
     private readonly Dictionary<IRenderTarget, (int Msaa, int Depth)> _renderTargetExtras = new();
 
+        /// <summary>当前深度/模板状态。WebGPU 里它是管线的烘焙属性，故先记下来，建管线时一起编进去。</summary>
+        private DepthStencilState _depthStencil = DepthStencilState.None;
+
         /// <summary>
-        /// 光栅化 / 深度状态在 WebGPU 里是<b>管线对象的属性</b>，不能像 WebGL 那样随时切换。
-        /// 当前精灵管线固定为「不剔除 + 无深度」，故这两个方法暂不下发（2D 主链路不受影响）。
+        /// 光栅化状态在 WebGPU 里是<b>管线对象的属性</b>，不能像 WebGL 那样随时切换。
+        /// 当前精灵管线固定为「不剔除」，故这里暂不下发（2D 主链路不受影响）。
         /// </summary>
         public void ApplyRasterizerState(RasterizerState state) { }
 
-        public void ApplyDepthStencilState(DepthStencilState state) { }
+        public void ApplyDepthStencilState(DepthStencilState state) => _depthStencil = state;
 
         public void DrawUserIndexedPrimitives(VertexPositionColorTexture[] vertices, int start, int end)
         {
@@ -190,7 +193,7 @@ namespace KFramework.MonoGame
             if (_boundTexture is null || !_textures.TryGetValue(_boundTexture, out int textureHandle))
                 return; // 没有绑定纹理就无从采样，跳过（WebGL 侧会绑到 0 号纹理，行为不同但 2D 链路必先绑纹理）
 
-            int pipeline = GetOrCreatePipeline(_blend);
+            int pipeline = GetOrCreatePipeline(_blend, _depthStencil);
             int samplerHandle = GetOrCreateSampler(_sampler);
             int bindGroup = GetOrCreateBindGroup(pipeline, textureHandle, samplerHandle, _uniformSlot);
 
@@ -226,20 +229,26 @@ namespace KFramework.MonoGame
         // 资源：管线 / 采样器 / 绑定组
         // ================================================================
 
-        private int GetOrCreatePipeline(BlendState blend)
+        private int GetOrCreatePipeline(BlendState blend, DepthStencilState depthStencil)
         {
+            // 模板尚未接入 WebGPU 后端：需要把 RT 深度格式换成 depth24plus-stencil8，
+            // 并在 beginRenderPass 里补上 stencilAttachment / stencilClearValue。与其静默失效，宁可报错。
+            if (depthStencil.Stencil.Enabled)
+                throw new NotSupportedException(
+                    "[webgpu] 模板缓冲尚未接入 WebGPU 后端（需 depth24plus-stencil8 格式 + 通道的模板附件）。当前请用 WebGL 后端。");
+
+            DepthState depth = depthStencil.Depth;
             // PSO 缓存键 = 完整状态的内容键（照 DX12 的 PipelineStateManager：对管线描述做内容哈希）。
             // 不能用 Vulkan 那种"指针身份哈希"—— JS/TS 侧没有稳定的指针身份。
             // WebGPU 的管线必须与通道附件严格匹配，故颜色格式 / 采样数 / 是否有深度附件都得进键，
             // 否则切换到不同目标时会因管线与附件不匹配而报错。
+            // 混合运算（BlendOp）与深度状态同样是烘焙进管线的，也必须进键。
             string key = _targetFormat + "|" + _targetSampleCount + "|" + (_depthTarget != 0 ? "d" : "-") + "|"
-                + blend.SourceBlend + "|" + blend.DestinationBlend + "|"
-                + blend.SourceAlphaBlend + "|" + blend.DestinationAlphaBlend;
+                + blend.SourceColorBlendFactor + "|" + blend.DestinationColorBlendFactor + "|" + blend.ColorBlendOperation + "|"
+                + blend.SourceAlphaBlendFactor + "|" + blend.DestinationAlphaBlendFactor + "|" + blend.AlphaBlendOperation + "|"
+                + depth.DepthWrite + "|" + depth.DepthCompare;
             if (_pipelines.TryGetValue(key, out int pipeline)) return pipeline;
 
-            // 注：BlendState 目前仍存 GL 枚举值（步骤② 会把它中和为中立枚举）。
-            // render_webgpu.ts 的 blendFactor() 同时接受 GL 枚举数字与 WebGPU 字符串，
-            // 这里直接把 GL 值透传过去，由 JS 侧统一映射——迁移期省一份重复映射表。
             string json = "{\"vertexShader\":" + _shaderModule +
                           ",\"fragmentShader\":" + _shaderModule +
                           ",\"vertex\":{\"entryPoint\":\"vs_main\",\"buffers\":" + VertexLayoutJson + "}" +
@@ -248,13 +257,19 @@ namespace KFramework.MonoGame
                           ",\"colorFormat\":\"" + _targetFormat + "\"" +
                           ",\"sampleCount\":" + _targetSampleCount +
                           (_depthTarget != 0
-                              ? ",\"depthStencil\":{\"format\":\"" + RtDepthFormat + "\",\"depthWriteEnabled\":true,\"depthCompare\":\"less\"}"
+                              // 深度测试关闭时用 always 比较 + 禁止写入，等价于 GL 的 disable(DEPTH_TEST)；
+                              // WebGPU 没有独立的深度开关，只能这样表达。
+                              ? ",\"depthStencil\":{\"format\":\"" + RtDepthFormat +
+                                "\",\"depthWriteEnabled\":" + (depth.DepthWrite ? "true" : "false") +
+                                ",\"depthCompare\":\"" + CompareFunctionName(depth.DepthCompare) + "\"}"
                               : string.Empty) +
-                          ",\"blend\":{\"color\":{\"srcFactor\":" + blend.SourceBlend +
-                          ",\"dstFactor\":" + blend.DestinationBlend +
-                          ",\"operation\":\"add\"},\"alpha\":{\"srcFactor\":" + blend.SourceAlphaBlend +
-                          ",\"dstFactor\":" + blend.DestinationAlphaBlend +
-                          ",\"operation\":\"add\"}}}";
+                          ",\"blend\":{\"color\":{\"srcFactor\":\"" + BlendModeName(blend.SourceColorBlendFactor) +
+                          "\",\"dstFactor\":\"" + BlendModeName(blend.DestinationColorBlendFactor) +
+                          "\",\"operation\":\"" + BlendOpName(blend.ColorBlendOperation) +
+                          "\"},\"alpha\":{\"srcFactor\":\"" + BlendModeName(blend.SourceAlphaBlendFactor) +
+                          "\",\"dstFactor\":\"" + BlendModeName(blend.DestinationAlphaBlendFactor) +
+                          "\",\"operation\":\"" + BlendOpName(blend.AlphaBlendOperation) +
+                          "\"}}}";
 
             pipeline = JSBind_WebGPU.CreatePipeline(json);
             if (pipeline == 0) throw new InvalidOperationException("[webgpu] 创建渲染管线失败。");
@@ -279,8 +294,48 @@ namespace KFramework.MonoGame
             return handle;
         }
 
-        private static string FilterName(int glFilter)
-            => glFilter == JSBind_WEBGL20.NEAREST ? "nearest" : "linear";
+        /// <summary>中立混合因子 → WebGPU 的 GPUBlendFactor 字符串。</summary>
+        private static string BlendModeName(BlendMode mode) => mode switch
+        {
+            BlendMode.Zero => "zero",
+            BlendMode.One => "one",
+            BlendMode.DstColor => "dst",
+            BlendMode.SrcColor => "src",
+            BlendMode.OneMinusDstColor => "one-minus-dst",
+            BlendMode.SrcAlpha => "src-alpha",
+            BlendMode.OneMinusSrcColor => "one-minus-src",
+            BlendMode.DstAlpha => "dst-alpha",
+            BlendMode.OneMinusDstAlpha => "one-minus-dst-alpha",
+            BlendMode.SrcAlphaSaturate => "src-alpha-saturated",
+            BlendMode.OneMinusSrcAlpha => "one-minus-src-alpha",
+            _ => "one",
+        };
+
+        /// <summary>中立混合运算 → WebGPU 的 GPUBlendOperation 字符串。</summary>
+        private static string BlendOpName(BlendOp op) => op switch
+        {
+            BlendOp.Sub => "subtract",
+            BlendOp.RevSub => "reverse-subtract",
+            BlendOp.Min => "min",
+            BlendOp.Max => "max",
+            _ => "add",
+        };
+
+        /// <summary>中立比较函数 → WebGPU 的 GPUCompareFunction 字符串。</summary>
+        private static string CompareFunctionName(CompareFunction func) => func switch
+        {
+            CompareFunction.Never => "never",
+            CompareFunction.Less => "less",
+            CompareFunction.Equal => "equal",
+            CompareFunction.LessEqual => "less-equal",
+            CompareFunction.Greater => "greater",
+            CompareFunction.NotEqual => "not-equal",
+            CompareFunction.GreaterEqual => "greater-equal",
+            _ => "always",     // Always 与 Disabled
+        };
+
+        private static string FilterName(TextureFilter filter)
+            => filter == TextureFilter.Point ? "nearest" : "linear";
 
         /// <summary>DepthFormat → WebGPU 的 GPUTextureFormat；None 返回空串（不建深度附件）。</summary>
     private static string DepthFormatName(DepthFormat format)
@@ -290,11 +345,11 @@ namespace KFramework.MonoGame
             _ => RtDepthFormat,
         };
 
-    private static string AddressName(int glWrap)
-            => glWrap switch
+        private static string AddressName(TextureAddressMode mode)
+            => mode switch
             {
-                JSBind_WEBGL20.REPEAT => "repeat",
-                JSBind_WEBGL20.MIRRORED_REPEAT => "mirror-repeat",
+                TextureAddressMode.Wrap => "repeat",
+                TextureAddressMode.Mirror => "mirror-repeat",
                 _ => "clamp-to-edge",
             };
 
