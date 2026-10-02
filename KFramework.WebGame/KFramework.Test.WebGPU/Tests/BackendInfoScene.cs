@@ -25,7 +25,7 @@ namespace KFramework.Test.WebGPU.Tests
 
         protected override void DrawBody(SpriteBatch batch, float top)
         {
-            _tex ??= MakeChecker(32, new Color(130, 200, 255), new Color(28, 42, 78));
+            _tex ??= MakeTestChart(64);
 
             float y = top;
             y = DrawLine(batch, $"后端 BackendName : {Device.BackendName}", 28f, y, new Color(255, 206, 110));

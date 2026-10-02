@@ -33,7 +33,8 @@ namespace KFramework.Test.WebGPU.Tests
         public override void Draw()
         {
             SpriteBatch batch = Batch;
-            _tex ??= MakeChecker(48, new Color(240, 240, 240), new Color(60, 90, 160));
+            // 用 alpha 渐变图：不透明度从左到右递减，各混合模式的差异一眼可辨。
+            _tex ??= MakeAlphaChart(48);
 
             batch.Begin();
             DrawHeader(batch);

@@ -34,7 +34,9 @@ namespace KFramework.Test.WebGPU.Tests
 
         protected override void RenderOffscreen(SpriteBatch batch)
         {
-            _tex ??= MakeChecker(24, new Color(120, 235, 170), new Color(24, 60, 48));
+            // 用综合参考图：圆环的曲线硬边缘最能体现 MSAA 差异，
+            // 四角标记还能顺带验证离屏渲染没有发生翻转。
+            _tex ??= MakeTestChart(64);
 
             _plain ??= new RenderTarget2D(Device, TargetWidth, TargetHeight, false,
                 SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
