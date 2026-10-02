@@ -545,7 +545,7 @@ namespace KFramework.MonoGame
                     throw new NotSupportedException(
                         $"PreferMultiSampling 不能在运行时修改：WebGL2 的 antialias 在创建 GraphicsDevice/Game 上下文时就已定死，" +
                         $"当前上下文 antialias = {_graphicsDevice.Antialias}。请改用 Game/GraphicsDevice 构造函数的 antialias 参数，" +
-                        $"或改 Example1Game.Antialias 后重启对比。");
+                        $"或改 CommonTestGame.Antialias 后重启对比。");
 
                 _shouldApplyChanges = true;
                 _preferMultiSampling = value;

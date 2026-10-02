@@ -81,6 +81,28 @@ namespace KFramework.MonoGame
             JSBind_GameUpdate.Current = this;
         }
 
+        /// <summary>
+        /// 用「外部已创建好的」图形设备创建游戏宿主。
+        /// <para>
+        /// WebGPU 的设备初始化是异步的（requestAdapter / requestDevice），在 wasm 单线程下
+        /// <b>不能</b>阻塞等待（JS Promise 要回到事件循环才 resolve，阻塞会死锁），
+        /// 因此无法在构造函数里同步建好设备。用法：
+        /// <code>
+        /// var device = await GraphicsDevice.CreateAsync("#game", antialias, preferWebGpu: true);
+        /// var game = new MyGame(device);
+        /// await game.RunAsync();
+        /// </code>
+        /// </para>
+        /// </summary>
+        protected Game(GraphicsDevice device)
+        {
+            ArgumentNullException.ThrowIfNull(device);
+            GraphicsDevice = device;
+            Window = new GameWindow(device);
+            Components = new GameComponentCollection();
+            JSBind_GameUpdate.Current = this;
+        }
+
         /// <summary>启动主循环；返回的 Task 在 <see cref="Exit"/> 后完成。</summary>
         public async Task RunAsync()
         {

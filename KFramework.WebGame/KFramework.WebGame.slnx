@@ -3,9 +3,11 @@
     <Project Path="TestTool/WebSocketTestServer/WebSocketTestServer.csproj" />
   </Folder>
   <Project Path="KFramework.Content.Cli/KFramework.Content.Cli.csproj" />
-  <Project Path="KFramework.Example1/KFramework.Example1.csproj" />
-  <Project Path="KFramework.Example2/KFramework.Example2.csproj" />
-  <Project Path="KFramework.Example3/KFramework.Example3.csproj" />
+  <Project Path="KFramework.Test.Common/KFramework.Test.Common.csproj" />
+  <Project Path="KFramework.Test.WebGL20/KFramework.Test.WebGL20.csproj" />
+  <Project Path="KFramework.Test.WebGPU/KFramework.Test.WebGPU.csproj" />
+  <Project Path="KFramework.Example.Tank/KFramework.Example.Tank.csproj" />
+  <Project Path="KFramework.Example.Mario/KFramework.Example.Mario.csproj" />
   <Project Path="KFramework.MonoGame/KFramework.MonoGame.csproj" />
   <Project Path="KFramework.MonoGameExtend/KFramework.MonoGameExtend.csproj" />
   <Project Path="KFramework.TSEngine/KFramework.TSEngine.esproj">

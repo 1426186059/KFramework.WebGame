@@ -24,7 +24,7 @@ KFramework.MonoGame 之上的“扩展层”，提供更贴近上层游戏的丰
 --------
 把“基础引擎”与“扩展层”分离后，KFramework.MonoGame 可以适配更多不同的游戏框架，例如：
 - 传奇类游戏（MMORPG 客户端，如 WebGame.Mir2）；
-- 坦克大战这类基于关卡 / 实体的休闲游戏（见 KFramework.Example2）。
+- 坦克大战这类基于关卡 / 实体的休闲游戏（见 KFramework.Example.Tank）。
 
 两者关系
 --------
