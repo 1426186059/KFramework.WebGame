@@ -1,5 +1,6 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Keyboard 经 [JSImport(module: "input_keyboard")] 调用；产物 input_keyboard.js 由 SyncJsEngine 复制。
 import { getCanvas, focusCanvas } from './html_canvas.js';
+import { E_HTML_Event_Type } from './html_event_type.js';
 // 浏览器 KeyboardEvent.code → C# Keys 枚举序号。
 // 必须与 Input/InputDefine.cs 的 Keys 声明顺序严格一致（成员名即 HTML code，顺序自动编号：
 // None=0, Backspace=1, Tab=2 … Super=212）。C# 侧按此序号索引按键状态。
@@ -73,16 +74,25 @@ function codeToKeys(code) {
     return CODE_TO_KEYS[code] ?? 0;
 }
 const MAX_EVENTS = 32;
-const STRIDE = 2;
-const SIZE = 1 + MAX_EVENTS * STRIDE;
-const EvBlur = 10; // 与 C# Input_KeyBoard.EvBlur 一致：失焦事件
 let m_Canvas = null;
 let m_CanvasId = null;
-// 失焦标记：canvas 失去焦点时置 true，下一次 pollKeyboard 写入一条 Blur 事件（flag=EvBlur），
-// 让 C# 侧清空键盘状态，避免“按住键在窗外松手 → 卡住”。
-let m_Blurred = false;
+/**
+ * 装置是否<b>激活</b>（= 是否绑着监听在采集）：由 bindKeyboard / unbindKeyboard 维护，
+ * 与 C# 侧 <c>Input_KeyBoard.Active</c> 一一对应。
+ *
+ * 写入前必须先看它 —— 未激活时不仅不写，还要把攒下的清空：
+ * 停用期间残留的按键数据到重新激活时<b>早已陈旧</b>（窗外按下的键，keyup 永远收不到），
+ * 留着就会在激活后的第一帧一次性涌出，表现为"刚启用就有个键卡在按住"。
+ *
+ * 只有这一个开关：C# 的 Activate / Deactivate 与这里的
+ * bind / unbind 成对调用，"绑着监听"就是"在采集"，两个标志表达同一件事，迟早有一处忘了同步。
+ */
+let enabled = false;
+// 失焦不再由本模块处理：一律汇到 input_window_event 的 SysFocusLost，
+// 由 takeFrameData 判定后单独上报一条，并调本模块的 discardKeyboardEvents 清空这里。
+// 本模块因此不再监听 blur —— 与画布 blur 重复（那边已监听），window 失焦也有 hasFocus 每帧兜底。
 const pending = new Map();
-const scratch = new Uint8Array(SIZE);
+const scratch = new Uint8Array(1); // 每条事件的 data 只有 1 字节（Keys 序号），逐条 put
 function Process_KeyDown(e) {
     // 阻止浏览器默认行为，否则游戏收不到这些键：
     //   Tab → 移走焦点（画布随即 blur，下一次 poll 发 Blur 清空按键，表现为“Tab 抓不到”）；
@@ -95,11 +105,6 @@ function Process_KeyDown(e) {
 }
 function Process_KeyUp(e) {
     pending.set(e.code, 2);
-}
-// 失焦：仅置标记。真正清空延到 pollKeyboard 随 Blur 事件发往 C#，保证与一次 poll 时序对齐，
-// 且能顺带丢弃失焦前残留的“按下”事件（否则会卡成一直按住）。
-function Process_Blur() {
-    m_Blurred = true;
 }
 //失焦后，点击屏幕恢复焦点
 function Process_Pointerdown() {
@@ -117,8 +122,8 @@ export function bindKeyboard(canvasId) {
             focusCanvas(m_CanvasId);
             m_Canvas.addEventListener('keydown', Process_KeyDown);
             m_Canvas.addEventListener('keyup', Process_KeyUp);
-            m_Canvas.addEventListener('blur', Process_Blur);
             m_Canvas.addEventListener('pointerdown', Process_Pointerdown);
+            enabled = true; // 监听真正挂上了才算激活
         }
         else {
             console.error("bindKeyboard canvas Find Error");
@@ -129,51 +134,50 @@ export function bindKeyboard(canvasId) {
         // 找不到画布（极少见）才回落到 window，保证至少有输入。
         window.addEventListener('keydown', Process_KeyDown);
         window.addEventListener('keyup', Process_KeyUp);
-        window.addEventListener('blur', Process_Blur);
+        enabled = true;
     }
 }
 export function unbindKeyboard() {
+    enabled = false; // 先置未激活：此后攒下的数据一律不再上报
     if (m_Canvas) {
         m_Canvas.removeEventListener('keydown', Process_KeyDown);
         m_Canvas.removeEventListener('keyup', Process_KeyUp);
-        m_Canvas.removeEventListener('blur', Process_Blur);
         m_Canvas.removeEventListener('pointerdown', Process_Pointerdown);
         focusCanvas(m_CanvasId, false);
     }
     else {
         window.removeEventListener('keydown', Process_KeyDown);
         window.removeEventListener('keyup', Process_KeyUp);
-        window.removeEventListener('blur', Process_Blur);
     }
     m_Canvas = null;
     m_CanvasId = null;
     pending.clear();
 }
-export function pollKeyboard(target) {
-    // 先写入真正的 Uint8Array（scratch），再经由 MemoryView.set 写回 C# 缓冲。
-    // 注意：MemoryView_Span 不是 Uint8Array、没有 [] 索引器，不能直接 target[i]=x。
-    //
-    // 布局：scratch[0] = 事件条数；其后每 2 字节一对 (keyCode, flag)，flag 1=按下 / 2=抬起 / 10=失焦。
-    // 失焦时先写入一条 Blur 事件，并丢弃失焦前残留的“按下”事件，避免“卡键”。
-    let off = 1;
-    let nEvents = 0;
-    if (m_Blurred) {
-        m_Blurred = false;
-        scratch[off++] = 0; // keyCode 对 Blur 无意义
-        scratch[off++] = EvBlur; // 10
-        nEvents++;
+/**
+ * 把本帧的键盘事件写入【统一事件流】（由 game_frame_take_js_data 每帧调用）。
+ * 每条 = EvType（KeyDown / KeyUp）+ 1 字节 Keys 序号，条数由总入口统计。
+ */
+export function writeKeyboardEvents(w) {
+    if (!enabled) {
+        discardKeyboardEvents(); // 未激活：不采集，也不留陈旧数据（理由见 active 的注释）
+        return;
     }
-    else {
-        for (const [key, flag] of pending) {
-            if (off + STRIDE > SIZE) {
-                break;
-            }
-            scratch[off++] = codeToKeys(key);
-            scratch[off++] = flag;
-            nEvents++;
-        }
+    let n = 0;
+    for (const [code, flag] of pending) {
+        if (n >= MAX_EVENTS)
+            break;
+        scratch[0] = codeToKeys(code);
+        w.put(flag === 2 ? E_HTML_Event_Type.KeyUp : E_HTML_Event_Type.KeyDown, scratch, 1);
+        n++;
     }
     pending.clear();
-    scratch[0] = nEvents;
-    target.set(scratch.subarray(0, off));
+}
+/**
+ * 作废本帧攒下的键盘事件（失焦帧由 game_frame_take_js_data 调用）。
+ *
+ * 必须真丢掉、不能留到下一帧：失焦前按下的键若在窗外松手，keyup 永远收不到，
+ * 把那条"按下"留到下一帧发出去，C# 侧就会在没有 keyup 的情况下一直显示按住。
+ */
+export function discardKeyboardEvents() {
+    pending.clear();
 }

@@ -32,22 +32,6 @@ function on(target, name, handler, options) {
 export function bindMouse() {
     if (enabled)
         return;
-    // // 记下画布 id，后续 canvasPoint 的坐标换算才能用同一块画布。
-    // if (canvasId) setCanvasId(canvasId);
-    // const canvas = getInputCanvas();
-    // if (canvas) {
-    //     // 防止画布在按住拖动时被浏览器当作可拖拽元素/可选文本，进而提前结束“按下”。
-    //     const c = canvas as HTMLElement;
-    //     c.setAttribute('draggable', 'false');
-    //     c.style.userSelect = 'none';
-    //     c.style.touchAction = 'none';
-    //     (c.style as any).webkitUserSelect = 'none';
-    //     // 全部用具名函数（ReadMe：本目录禁止匿名函数 —— 移动是每帧高频路径，闭包就是每帧垃圾）
-    //     on(canvas, 'dragstart', preventDefault);
-    //     on(canvas, 'mousemove', onMouseMove);
-    //     on(canvas, 'mousedown', onMouseDown);
-    //     on(canvas, 'wheel', onMouseWheel, { passive: false });
-    // }
     on(window, 'mousemove', onMouseMove);
     on(window, 'mousedown', onMouseDown);
     on(window, 'mouseup', onMouseUp);

@@ -27,7 +27,7 @@ namespace KFramework.MonoGame
         /// 需要新建时调用 <see cref="Create(HTML_CanvasLayoutMode, int, int, int, int)"/>。
         /// </summary>
         /// <param name="idOrSelector">画布 DOM id，可写 "#id" 形式；空串回落到默认 id。</param>
-        public HTML_Canvas(string idOrSelector)
+        public HTML_Canvas(string idOrSelector = "#game")
         {
             if(Current != null)
             {

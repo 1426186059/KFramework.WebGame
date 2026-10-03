@@ -93,7 +93,6 @@ namespace KFramework.MonoGame
         /// 不必把 canvasId 层层传参。默认值为 "game"，与 <see cref="Game"/> 的默认选择器 "#game" 对齐；
         /// 真正的值在 <see cref="GraphicsDevice"/> 构造时由 <c>canvasSelector</c> 归一化后写入。</para>
         /// </summary>
-        public static string CanvasId { get; private set; } = "game";
         public static HTML_Canvas Canvas { get; private set; } = null;
         /// <summary>
         /// WebGL2 上下文是否带 MSAA（<c>antialias</c>）。
@@ -201,8 +200,7 @@ namespace KFramework.MonoGame
         /// <summary>后端已初始化完毕后的构造入口（WebGL / WebGPU 共用）。</summary>
         private GraphicsDevice(IGraphicsBackend backend, string canvasSelector, bool antialias)
         {
-            CanvasId = HTML_Canvas_Func.ToCanvasId(canvasSelector);
-            Canvas = new HTML_Canvas(CanvasId);
+            Canvas = new HTML_Canvas();
             Antialias = antialias;
 
             // 照 MonoGame 的无参内部构造：先建一份默认 PP，画布尺寸随后由 SyncCanvasSize 覆盖。
