@@ -29,7 +29,7 @@ function on(target, name, handler, options) {
 // 失焦一律交给 input_window_event 的 SysFocusLost（画布 blur + hasFocus 兜底）：
 // C# 侧分发该事件时先调 Input_Mouse.ReleaseAll() 逐个键上报"被中断"，再 ResetAll 清空 ——
 // 所以本模块既不用监听 window 的 blur，也不用再为"手势被接管"单列一个事件。
-export function bindMouse(canvasId) {
+export function bindMouse() {
     if (enabled)
         return;
     // // 记下画布 id，后续 canvasPoint 的坐标换算才能用同一块画布。
@@ -54,10 +54,6 @@ export function bindMouse(canvasId) {
     on(window, 'wheel', onMouseWheel, { passive: false });
     on(window, 'pointercancel', onPointerCancel);
     enabled = true; // 监听全部挂上了才算激活
-}
-/** 拦掉浏览器默认行为（拖拽起始）。 */
-function preventDefault(e) {
-    e.preventDefault();
 }
 function onMouseMove(e) {
     const ev = e;

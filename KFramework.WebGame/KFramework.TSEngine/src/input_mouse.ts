@@ -1,6 +1,6 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Mouse 经 [JSImport(module: "input_mouse")] 调用；产物 input_mouse.js 由 SyncJsEngine 复制。
 // 鼠标模块：只注册监听 + 维护"当前状态/变化"。状态与边沿在 C# 侧（Input_Mouse）实现。
-import { canvasPoint, getInputCanvas, setCanvasId } from './input_common.js';
+import { canvasPoint} from './input_common.js';
 import { E_HTML_Event_Type,FrameDataStream } from './html_event_type.js';
 import { reportPointerCancel } from './input_window_event.js';
 
@@ -43,7 +43,7 @@ function on(target: EventTarget, name: string, handler: EventListener,
 // C# 侧分发该事件时先调 Input_Mouse.ReleaseAll() 逐个键上报"被中断"，再 ResetAll 清空 ——
 // 所以本模块既不用监听 window 的 blur，也不用再为"手势被接管"单列一个事件。
 
-export function bindMouse(canvasId?: string): void {
+export function bindMouse(): void {
     if (enabled) return;
 
     // // 记下画布 id，后续 canvasPoint 的坐标换算才能用同一块画布。
@@ -70,11 +70,6 @@ export function bindMouse(canvasId?: string): void {
     on(window, 'pointercancel', onPointerCancel);
 
     enabled = true;                 // 监听全部挂上了才算激活
-}
-
-/** 拦掉浏览器默认行为（拖拽起始）。 */
-function preventDefault(e: Event): void {
-    e.preventDefault();
 }
 
 function onMouseMove(e: Event): void {

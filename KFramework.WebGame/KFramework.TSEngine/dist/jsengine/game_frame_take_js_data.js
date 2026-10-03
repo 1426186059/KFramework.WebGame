@@ -40,7 +40,6 @@ export function bindFrameEvents(canvasId) {
     bindWindowEvents(canvasId);
 }
 export function takeFrameData(target) {
-    pollFocus();
     count = 0;
     off = 1;
     const lost = hadFocusLost();

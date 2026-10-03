@@ -13,10 +13,10 @@ function clampI16(v) {
 function onDocumentVisibility() {
     pending.set(document.hidden ? E_HTML_Event_Type.SysPageHidden : E_HTML_Event_Type.SysPageVisible, noData);
 }
-function onWindowFocus(ev) {
+function onWindowFocus() {
     console.log('窗口 聚焦');
 }
-function onWindowBlur(ev) {
+function onWindowBlur() {
     console.log('窗口 失焦');
 }
 function onWindowContextMenu(e) {

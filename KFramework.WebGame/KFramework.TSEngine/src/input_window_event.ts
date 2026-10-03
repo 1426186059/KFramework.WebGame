@@ -1,6 +1,5 @@
 import { E_HTML_Event_Type, FrameDataStream } from './html_event_type.js';
-import { getInputCanvas, setCanvasId } from './input_common.js';
-import { focusCanvas, getCanvas } from './html_canvas.js';
+import { getCanvas } from './html_canvas.js';
 import { Point } from './Point.js';
 
 const pending = new Map<number, Uint8Array>();
@@ -22,12 +21,12 @@ function onDocumentVisibility(): void
     pending.set(document.hidden ? E_HTML_Event_Type.SysPageHidden : E_HTML_Event_Type.SysPageVisible, noData);
 }
 
-function onWindowFocus(ev:FocusEvent): void 
+function onWindowFocus(): void 
 {
     console.log('窗口 聚焦');
 }
 
-function onWindowBlur(ev:FocusEvent): void 
+function onWindowBlur(): void 
 {
      console.log('窗口 失焦');
 }
@@ -38,7 +37,7 @@ function onWindowContextMenu(e: PointerEvent): void
     console.log("onWindow ContextMenu");
 }
 
-export function bindWindowEvents(canvasId: string): void 
+export function bindWindowEvents(canvasId: string | null): void 
 {
     canvas = getCanvas(canvasId)
     console.assert(canvas != null, "bindWindowEvents Error")

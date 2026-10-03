@@ -38,8 +38,8 @@ const sink: FrameDataStream = {
 // 没有 unbindFrameEvents：系统监听在游戏生命周期内始终需要（画布尺寸一旦漏同步，
 // 渲染分辨率就一直错下去），C# 侧也只有 BindFrameEvents、没有对应的 Unbind ——
 // 留一个没人调用的解绑出口，只会让人以为"解绑后还能正常收尺寸"。
-export function bindFrameEvents(canvasId?: string | null): void {
-    bindWindowEvents();
+export function bindFrameEvents(canvasId: string | null): void {
+    bindWindowEvents(canvasId);
 }
 
 

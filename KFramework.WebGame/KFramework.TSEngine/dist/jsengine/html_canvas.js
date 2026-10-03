@@ -100,7 +100,7 @@ function lookup(id) {
  * 把布局方式应用到画布元素上（新建或直接套用共享同一套逻辑）。
  * @param mode 0 Rect / 1 Size / 2 Centered / 3 Fullscreen。
  */
-function applyLayoutStyle(element, mode, x, y, width, height, id) {
+function applyLayoutStyle(element, mode, x, y, width, height) {
     switch (mode) {
         case 1 /* LayoutMode.Size */:
             // 只改尺寸：位置保持不动
@@ -140,7 +140,7 @@ export function create(idOrSelector, mode, x, y, width, height) {
     const element = document.createElement('canvas');
     element.id = id;
     applyCommonStyle(element);
-    applyLayoutStyle(element, mode, x, y, width, height, id);
+    applyLayoutStyle(element, mode, x, y, width, height);
     document.body.appendChild(element);
     canvas = element;
     return true;
@@ -154,7 +154,7 @@ export function applyLayout(idOrSelector, mode, x, y, width, height) {
     const element = lookup(id);
     if (!element)
         return false;
-    applyLayoutStyle(element, mode, x, y, width, height, id);
+    applyLayoutStyle(element, mode, x, y, width, height);
     return true;
 }
 /**

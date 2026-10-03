@@ -116,8 +116,7 @@ function applyLayoutStyle(
     x: number,
     y: number,
     width: number,
-    height: number,
-    id: string,
+    height: number
 ): void {
     switch (mode) {
         case LayoutMode.Size:
@@ -162,7 +161,7 @@ export function create(idOrSelector: string, mode: number, x: number, y: number,
     const element = document.createElement('canvas');
     element.id = id;
     applyCommonStyle(element);
-    applyLayoutStyle(element, mode, x, y, width, height, id);
+    applyLayoutStyle(element, mode, x, y, width, height);
     document.body.appendChild(element);
     canvas = element;
     return true;
@@ -198,7 +197,7 @@ export function applyLayout(
     const element = lookup(id);
     if (!element) return false;
 
-    applyLayoutStyle(element, mode, x, y, width, height, id);
+    applyLayoutStyle(element, mode, x, y, width, height);
     return true;
 }
 
