@@ -117,9 +117,15 @@ namespace KFramework.MonoGame
         /// <inheritdoc />
         public override string ToString() => $"HTML_Canvas(id={Id}, rect={Rect})";
 
+        /// <summary>
+        /// 从浏览器同步一次画布尺寸信息（CSS 尺寸 / 后备缓冲尺寸 / DPR），并刷新 <see cref="CssSize"/>、<see cref="DrawSize"/> 与 <see cref="HTML_Window.DevicePixelRatio"/>。
+        /// 底层走 <see cref="JSBind_HTML_Canvas.SyncJSCanvasInfo"/>（对应 TS 的 <c>SyncJSCanvasInfo</c>）。
+        /// </summary>
         public void SyncJSInfo()
         {
-
+            Span<int> view = stackalloc int[5];
+            JSBind_HTML_Canvas.SyncJSCanvasInfo(view);
+            UpdateInfo(view[0], view[1], view[2], view[3], view[4]);
         }
 
         public void UpdateInfo(int cssWidth, int cssHeight, int backingWidth, int backingHeight, int dpr1000)
