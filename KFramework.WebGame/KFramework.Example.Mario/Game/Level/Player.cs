@@ -100,15 +100,11 @@ namespace KFramework.Example.Mario
         public Vector2 Velocity;
         public float movement;
 
-        // 物理恒定以 1/60 步长推进，与渲染帧率解耦（替代直接拿可变 KTime.deltaTime 积分导致的忽快忽慢）。
-        private readonly FixedUpdteFunc _physicsStepper = new FixedUpdteFunc { FixedDeltaTime = 1f / 60f };
-        // 上一固定步“开始前”的位置，供 Draw 渲染插值（消除高刷屏的停-跳抖动）。
-        private Vector2 _renderPrevPos;
         bool isJumping;
         private float previousBottom;
         private float previousTop;
         // ==================== Movement Constants ====================
-        private const float MoveAcceleration = 6000.0f;
+        private const float MoveAcceleration = 9000.0f;
         private const float MaxMoveSpeed = 1750.0f;
         private const float GroundDragFactor = 0.48f;
         private const float AirDragFactor = 0.58f;
@@ -222,7 +218,6 @@ namespace KFramework.Example.Mario
         public void Reset(Vector2 position)
         {
             WorldPosition = BeginPos = position;
-            _renderPrevPos = WorldPosition;
             Velocity = Vector2.Zero;
             mPlayerState =  EPlayerState.Normal;
             this.nPlayerType = EPlayerType.Player;
@@ -399,16 +394,9 @@ namespace KFramework.Example.Mario
 
             if (activeSelf)
             {
-                // 渲染插值：把精灵画在"上一步位置 ↔ 当前物理位置"之间，因子用 FixedUpdteFunc.InterpolationAlpha
-                // （剩余累加时间 / 固定步长）。这样逻辑仍按 1/60 固定步进，但高刷屏（120/144Hz）上画面平滑、无"停-跳"抖动。
-                // IsFixedTimeStep=true 时 Draw 已被压到固定率、与物理同频，无需插值（否则会恒定落后一帧），故直接画当前位置。
-                float interpAlpha = KSceneMgr.Game.IsFixedTimeStep ? 1f : _physicsStepper.InterpolationAlpha;
-                Vector2 savedPos = WorldPosition;
-                WorldPosition = Vector2.Lerp(_renderPrevPos, savedPos, interpAlpha);
                 mAniPlayer.Draw(KSceneMgr.SpriteBatch,
                     direction == FaceDirection.Right ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
                 DrawCollider2DZone();
-                WorldPosition = savedPos;
             }
         }
 
@@ -519,7 +507,7 @@ namespace KFramework.Example.Mario
 
             // 用 FixedUpdteFunc 把可变帧时长切成恒定 1/60 的逻辑步：回调里 ApplyPhysics 拿到的 dt 永远恒定，
             // 因此加速度/重力/逐帧阻力都与帧率无关，马里奥不再忽快忽慢。
-            _physicsStepper.Update(KTime.deltaTime, ApplyPhysics);
+            ApplyPhysics(KTime.deltaTime);
             if (IsOnGround)
             {
                 if (BigPlayer && (KInputMgr.GetKey(Keys.ArrowDown) || KInputMgr.GetKey(Keys.KeyS)))
@@ -545,9 +533,6 @@ namespace KFramework.Example.Mario
 
         public void ApplyPhysics(float dt)
         {
-            // 记录本固定步“开始前”的位置，Draw 用它和当前位置做插值
-            _renderPrevPos = WorldPosition;
-
             float elapsed = dt;
             Velocity.X += movement * MoveAcceleration * elapsed;
             Velocity.Y = MathHelper.Clamp(Velocity.Y + GravityAcceleration * elapsed, -MaxFallSpeed, MaxFallSpeed);
