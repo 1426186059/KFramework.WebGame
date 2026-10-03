@@ -222,11 +222,18 @@ namespace KFramework.MonoGame
             EnsureFrameActive();
 
             if (_boundTexture is null || !_textures.TryGetValue(_boundTexture, out int textureHandle))
-                return; // 没有绑定纹理就无从采样，跳过（WebGL 侧会绑到 0 号纹理，行为不同但 2D 链路必先绑纹理）
+            {
+                Console.WriteLine($"[wgpu-diag] SKIP(无纹理) tgt={(_colorTarget == 0 ? "canvas" : "rt")} bound={(_boundTexture is null ? "null" : "不在表中")}");
+                return;
+            }
 
             int pipeline = GetOrCreatePipeline(_blend, _depthStencil);
             int samplerHandle = GetOrCreateSampler(_sampler);
             int bindGroup = GetOrCreateBindGroup(pipeline, textureHandle, samplerHandle, _uniformSlot);
+
+            // ==== 临时诊断（定位离屏 RT 显示异常用，跑完即删）====
+            Console.WriteLine($"[wgpu-diag] tgt={(_colorTarget == 0 ? "canvas" : "rt")} fmt={_targetFormat} sc={_targetSampleCount} " +
+                $"slot={_uniformSlot} bv={_vertexBump} start={start} end={end} vRun={vRun} pipe={pipeline} bg={bindGroup} tex={textureHandle}");
 
             if (_vertexBump + vRun > MaxSpritesPerFrame * VerticesPerSprite)
                 throw new InvalidOperationException(
@@ -491,6 +498,10 @@ namespace KFramework.MonoGame
 
         public async Task ReadPixels(int x, int y, int width, int height, byte[] rgba)
         {
+            // 读回前必须先把通道提交掉：pass 还开着时，本通道的写入尚未落进纹理，
+            // 此时 copyTextureToBuffer（另一个 encoder 提交）拷到的是【本通道之前】的内容。
+            if (_frameActive) EndFrame();
+
             // 取当前绑定的单采样颜色纹理（MSAA 时取解析目标）；它须带 COPY_SRC 用途（createTexture 已加）。
             int srcTex = _resolveTarget != 0 ? _resolveTarget : _colorTarget;
             if (srcTex == 0) return;

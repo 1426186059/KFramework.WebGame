@@ -211,16 +211,21 @@ namespace KFramework.MonoGame
                 batch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp, Matrix4x4.Identity);
                 batch.Draw(this, new Rectangle(0, 0, rect.Width, rect.Height), rect, Color.White);
                 batch.End();
+
+                // 【读回必须发生在同一次绑定内】中转 rt 是 DiscardContents：按 MonoGame 语义，
+                // 一旦切走再重绑，GraphicsDevice.ApplyRenderTargets 会自动 Clear 一次 ——
+                // Blit 的内容当场被擦掉，读回来就是一片透明（例子 4 报"像素偏差拉满"的根因）。
+                // SetRenderTargets 对"重复绑到同一个目标"是提前返回的（不重绑、不触发清屏），
+                // 故保持绑定直接读是安全的：ReadPixels 内部的 SetRenderTarget(this) 不会再清屏。
+                int bpp = SurfaceFormat.Color.GetSize();
+                byte[] pixels = new byte[rect.Width * rect.Height * bpp];
+                await rt.ReadPixels(new Rectangle(0, 0, rect.Width, rect.Height), pixels).ConfigureAwait(false);
+                rt._cpuData = pixels;   // 使返回的 RT 可直接 GetData
             }
             finally
             {
                 device.SetRenderTargets(prev);
             }
-
-            int bpp = SurfaceFormat.Color.GetSize();
-            byte[] pixels = new byte[rect.Width * rect.Height * bpp];
-            await rt.ReadPixels(new Rectangle(0, 0, rect.Width, rect.Height), pixels).ConfigureAwait(false);
-            rt._cpuData = pixels;   // 使返回的 RT 可直接 GetData
             return rt;
         }
 

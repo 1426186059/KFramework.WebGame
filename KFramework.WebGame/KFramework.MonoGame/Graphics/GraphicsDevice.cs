@@ -284,7 +284,32 @@ namespace KFramework.MonoGame
             // 每帧清一次渲染统计，照 MonoGame 在 Present 里 _graphicsMetrics = new GraphicsMetrics()（跨所有 SpriteBatch 批次累计）。
             _metrics = new GraphicsMetrics();
             _metrics._clearCount++;
+
+            // 【必须与后端的新通道同步失效材质去重缓存】
+            // 开新通道（Backend.Clear → BeginPass）时后端会重置 uniform 槽位编号，并把 0 号槽
+            // 回填成单位矩阵、让"当前槽"重新指向它。而上方 ApplyMaterial 是按「材质内容 + 变换」
+            // 去重的：缓存里留着上一帧的值，就会判定"配置和上次一样"而直接跳过 effect.Apply ——
+            // 本批次的 draw 于是仍旧绑在 0 号槽上，也就是【用单位矩阵代替正交投影】。
+            // 精灵坐标被当成 NDC 原样送出，几乎全部落在 [-1,1] 之外被裁掉：
+            // 离屏 RT 变成一块纯背景色的死矩形，画布上也只残留下零星内容。
+            // 这里同步清掉去重标记，保证每个新通道都真正下发一次状态与变换矩阵。
+            InvalidateMaterialCache();
+
             Backend.Clear(color);
+        }
+
+        /// <summary>
+        /// 让下一次 <see cref="ApplyMaterial"/> 必定完整下发（只失效去重标记，不改真状态）。
+        /// 用于"后端侧的状态已被重置、而本类的去重缓存还以为没变"的场合（见 <see cref="Clear"/>）。
+        /// </summary>
+        private void InvalidateMaterialCache()
+        {
+            _appliedBlend = null!;
+            _appliedSampler = null!;
+            _appliedDepth = null!;
+            _appliedRasterizer = null!;
+            _appliedEffect = null!;
+            _appliedTransform = Matrix4x4.Identity;
         }
 
         internal void SetBlendState(BlendState state)
