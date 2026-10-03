@@ -34,7 +34,6 @@ namespace KFramework.MonoGame
 
         public const string DefaultCanvasId = "game";
         public static HTML_Canvas Current = null;
-        private Rectangle? _rect;
         public Point CssSize;
         public Point DrawSize;
         public string Id { get; }
@@ -51,7 +50,6 @@ namespace KFramework.MonoGame
             {
                 throw new Exception("创建Canvas失败");
             }
-            Refresh();
             SyncJSInfo();
             Current = this;
         }
@@ -71,10 +69,7 @@ namespace KFramework.MonoGame
         /// 若画布被页面自己的 CSS / 脚本改动过，调 <see cref="Refresh"/> 重新拉取。
         /// 画布不存在时为 <see cref="Rectangle.Empty"/>。
         /// </remarks>
-        public Rectangle Rect => _rect ??= ReadRect() ?? Rectangle.Empty;
-
-        /// <summary>重新从浏览器读回 <see cref="Rect"/>（画布被外部改动后调用）。</summary>
-        public void Refresh() => _rect = ReadRect();
+        public Rectangle Rect => ReadRect();
 
         /// <summary>创建这块画布：按 <paramref name="mode"/> 布局（Rect 摆位 / Centered 居中 / Fullscreen 填满整个 HTML 页面 / Size 仅设尺寸）。已存在时返回 false。</summary>
         public bool Create(LayoutMode mode, int x, int y, int width, int height)
@@ -93,7 +88,7 @@ namespace KFramework.MonoGame
         /// <param name="height">CSS 高度（同上）。</param>
         /// <returns>画布存在且设置成功时返回 true。</returns>
         public bool SetLayout(LayoutMode mode, int x, int y, int width, int height)
-            => Refresh(JSBind_HTML_Canvas.ApplyLayout((int)mode, x, y, width, height));
+            => JSBind_HTML_Canvas.ApplyLayout((int)mode, x, y, width, height);
 
         /// <summary>设置画布位置与 CSS 尺寸（像素，相对窗口左上角）。</summary>
         public bool SetRect(int x, int y, int width, int height)
@@ -108,23 +103,14 @@ namespace KFramework.MonoGame
             => SetLayout(LayoutMode.Centered, 0, 0, width, height);
 
         /// <summary>撤销引擎写在这块画布上的行内样式，恢复页面自身布局，并解除居中跟随。</summary>
-        public bool RestoreLayout() => Refresh(JSBind_HTML_Canvas.RestoreLayout());
-
-        /// <summary>写操作成功后顺带回读一次真实矩形，保证 <see cref="Rect"/> 与浏览器一致。</summary>
-        private bool Refresh(bool ok)
-        {
-            if (ok) Refresh();
-            return ok;
-        }
+        public bool RestoreLayout() => JSBind_HTML_Canvas.RestoreLayout();
 
         /// <summary>从浏览器读回画布矩形；画布不存在或尺寸非法时返回 <c>null</c>。</summary>
-        private Rectangle? ReadRect()
+        private Rectangle ReadRect()
         {
             Span<int> view = stackalloc int[4];
             JSBind_HTML_Canvas.GetRect(view);
-
-            Rectangle rect = new(view[0], view[1], view[2], view[3]);
-            return rect.Width <= 0 || rect.Height <= 0 ? null : rect;
+            return new Rectangle(view[0], view[1], view[2], view[3]);
         }
 
         /// <inheritdoc />

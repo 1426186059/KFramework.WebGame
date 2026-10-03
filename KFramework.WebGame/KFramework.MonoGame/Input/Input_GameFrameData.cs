@@ -34,7 +34,7 @@ namespace KFramework.MonoGame
         };
 
         public static event Action<bool> WindowFocusChanged;
-        public static event Action<int, int, int, int, int> WindowSizeChanged;
+        public static event Action WindowSizeChanged;
         private const int MaxBytes = 2048;
         private static readonly byte[] _buffer = new byte[MaxBytes];   // 每帧复用，零分配
         private static bool _bound;
@@ -124,15 +124,14 @@ namespace KFramework.MonoGame
                             int canvasHeight = BinaryPrimitives.ReadInt16LittleEndian(data.Slice(6, 2));
                             int dpr = BinaryPrimitives.ReadInt16LittleEndian(data.Slice(8, 2));
 
-                            HTML_Canvas.Current.UpdateInfo(cssWidth, cssHeight, canvasWidth, canvasHeight, dpr);
-
-                            WindowSizeChanged?.Invoke(
-                                cssWidth,
-                                cssHeight,
-                                canvasWidth,
-                                canvasHeight,
+                            HTML_Canvas.Current.UpdateInfo(
+                                cssWidth, 
+                                cssHeight, 
+                                canvasWidth, 
+                                canvasHeight, 
                                 dpr);
 
+                            WindowSizeChanged?.Invoke();
                         }
                         break;
                     // ---- 系统：只靠 type，没有 data ----
