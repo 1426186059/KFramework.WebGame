@@ -44,10 +44,10 @@ export function bindTouch() {
     // 四种 touch 事件共用一个【具名】处理函数：相位由事件自身的 type 推断 ——
     // 既免掉为每种事件各建一个闭包（本目录禁止匿名函数，见 ReadMe），也省掉一层包装。
     const touchOptions = { passive: false };
-    on(canvas, 'touchstart', onTouch, touchOptions);
-    on(canvas, 'touchmove', onTouch, touchOptions);
-    on(canvas, 'touchend', onTouch, touchOptions);
-    on(canvas, 'touchcancel', onTouch, touchOptions);
+    on(window, 'touchstart', onTouch, touchOptions);
+    on(window, 'touchmove', onTouch, touchOptions);
+    on(window, 'touchend', onTouch, touchOptions);
+    on(window, 'touchcancel', onTouch, touchOptions);
     enabled = true; // 监听全部挂上了才算激活（画布找不到时保持未激活）
 }
 /**

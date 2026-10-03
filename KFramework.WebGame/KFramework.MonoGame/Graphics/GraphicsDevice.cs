@@ -149,11 +149,7 @@ namespace KFramework.MonoGame
         /// <summary>设备采样器状态槽（照 MonoGame 的 GraphicsDevice.SamplerStates，本 2D 后端只用单元 0）。</summary>
         public SamplerStateCollection SamplerStates { get; } = new SamplerStateCollection(1);
 
-        /// <summary>
-        /// 创建图形设备（同步，固定使用 WebGL 2.0 后端）。
-        /// </summary>
-        /// <param name="canvasSelector">画布选择器或 DOM id。</param>
-        /// <param name="antialias">是否启用 MSAA（必须在上下文创建前指定，之后改不了）。</param>
+
         public GraphicsDevice(string canvasSelector = "#game", bool antialias = false)
             : this(CreateInitializedBackend(new WebGl20Backend(), canvasSelector, antialias), canvasSelector, antialias)
         {
@@ -171,27 +167,24 @@ namespace KFramework.MonoGame
         /// <param name="preferWebGpu">true（默认）：先试 WebGPU，失败则回落 WebGL 2.0。</param>
         public static async Task<GraphicsDevice> CreateAsync(string canvasSelector = "#game", bool antialias = false, bool preferWebGpu = true)
         {
-            IGraphicsBackend backend = new WebGl20Backend();
-
+            IGraphicsBackend backend = null;
             if (preferWebGpu)
             {
-                var webgpu = new WebGpuBackend();
                 try
                 {
+                    var webgpu = new WebGpuBackend();
                     await webgpu.InitializeAsync(canvasSelector, antialias).ConfigureAwait(false);
                     backend = webgpu;
+                    return new GraphicsDevice(backend, canvasSelector, antialias);
                 }
                 catch (Exception ex)
                 {
                     PrintTool.Log($"[KFramework.MonoGame] WebGPU 不可用，回落 WebGL 2.0：{ex.Message}");
-                    await backend.InitializeAsync(canvasSelector, antialias).ConfigureAwait(false);
                 }
             }
-            else
-            {
-                await backend.InitializeAsync(canvasSelector, antialias).ConfigureAwait(false);
-            }
 
+            backend = new WebGl20Backend();
+            await backend.InitializeAsync(canvasSelector, antialias).ConfigureAwait(false);
             return new GraphicsDevice(backend, canvasSelector, antialias);
         }
 
