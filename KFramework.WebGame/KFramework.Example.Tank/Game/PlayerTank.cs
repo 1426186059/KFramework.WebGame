@@ -13,11 +13,23 @@ namespace KFramework.Example.Tank
 
         public override Shell? Update(float dt, TankLevel level)
         {
-            if (Input_KeyBoard.GetKeyDown(Keys.ArrowUp) || Input_KeyBoard.GetKeyDown(Keys.KeyW)) Move(Dir.Up, dt, level);
-            else if (Input_KeyBoard.GetKeyDown(Keys.ArrowRight) || Input_KeyBoard.GetKeyDown(Keys.KeyD)) Move(Dir.Right, dt, level);
-            else if (Input_KeyBoard.GetKeyDown(Keys.ArrowDown) || Input_KeyBoard.GetKeyDown(Keys.KeyS)) Move(Dir.Down, dt, level);
-            else if (Input_KeyBoard.GetKeyDown(Keys.ArrowLeft) || Input_KeyBoard.GetKeyDown(Keys.KeyA)) Move(Dir.Left, dt, level);
-
+            if (Input_KeyBoard.GetKey(Keys.ArrowUp) || Input_KeyBoard.GetKey(Keys.KeyW))
+            {
+                Move(Dir.Up, dt, level);
+            }
+            else if (Input_KeyBoard.GetKey(Keys.ArrowRight) || Input_KeyBoard.GetKey(Keys.KeyD))
+            {
+                Move(Dir.Right, dt, level);
+            }
+            else if (Input_KeyBoard.GetKey(Keys.ArrowDown) || Input_KeyBoard.GetKey(Keys.KeyS))
+            {
+                Move(Dir.Down, dt, level);
+            }
+            else if (Input_KeyBoard.GetKey(Keys.ArrowLeft) || Input_KeyBoard.GetKey(Keys.KeyA))
+            {
+                Move(Dir.Left, dt, level);
+            }
+            
             FireTimer -= dt;
             if (Input_KeyBoard.GetKeyDown(Keys.Space) && FireTimer <= 0f)
             {
