@@ -33,7 +33,7 @@ namespace KFramework.MonoGame
             string baseUri = BaseURL;
             if (string.IsNullOrWhiteSpace(BaseURL))
             {
-                baseUri = JSBind_Platform.GetBaseUri();
+                baseUri = HTML_Window.GetBaseUri();
             }
 
             Uri? baseAddress = null;

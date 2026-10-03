@@ -4,24 +4,21 @@
 // 设置画布的 CSS 光标（把原桌面端 .CUR 资源切换改为切换 canvas 的 style.cursor）。
 // 接受任意合法 CSS cursor 值：default / crosshair / pointer / wait / text / move /
 // not-allowed / grab / zoom-in / none，以及 url(...) 形式。
-
 import { getCanvas } from "./html_canvas.js";
-
-function target(): HTMLCanvasElement | null 
-{
+function target() {
     return getCanvas();
 }
-
 /** 设置光标；name 为空或 "default" 时复位为默认箭头。 */
-export function setCursor(name: string): void {
+export function setCursor(name) {
     const el = target();
-    if (!el) return;
+    if (!el)
+        return;
     el.style.cursor = (name && name.length > 0) ? name : 'default';
 }
-
 /** 复位为默认光标。 */
-export function resetCursor(): void {
+export function resetCursor() {
     const el = target();
-    if (!el) return;
+    if (!el)
+        return;
     el.style.cursor = 'default';
 }

@@ -45,7 +45,7 @@ namespace KFramework.MonoGame
             get
             {
                 Span<int> view = stackalloc int[2];
-                JSBind_HTML_Canvas.GetHTMLPageSize(view);
+                JSBind_HTML_Window.GetPageSize(view);
                 return new Point(view[0], view[1]);
             }
         }
@@ -62,7 +62,7 @@ namespace KFramework.MonoGame
 
         public string Title
         {
-            set => JSBind_Platform.SetTitle(value);
+            set => HTML_Window.SetTitle(value);
         }
 
         //窗口 尺寸改变

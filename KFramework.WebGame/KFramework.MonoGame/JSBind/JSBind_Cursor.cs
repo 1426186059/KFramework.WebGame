@@ -11,10 +11,10 @@ namespace KFramework.MonoGame
     {
         /// <summary>设置画布 CSS 光标（name 为合法 CSS cursor 值）。</summary>
         [JSImport("setCursor", "cursor")]
-        public static partial void SetCursor(string canvasId, string name);
+        public static partial void SetCursor(string name);
 
         /// <summary>复位为默认光标。</summary>
         [JSImport("resetCursor", "cursor")]
-        public static partial void ResetCursor(string canvasId);
+        public static partial void ResetCursor();
     }
 }

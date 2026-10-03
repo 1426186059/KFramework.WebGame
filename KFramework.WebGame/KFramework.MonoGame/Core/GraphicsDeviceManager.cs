@@ -23,7 +23,8 @@ namespace KFramework.MonoGame
     /// <para>
     /// 与 MonoGame 的差异（均由 Web 平台特性决定）：
     /// ① 浏览器只有一个与画布绑定的 WebGL2 上下文，<see cref="GraphicsDevice"/> 由 <see cref="Game"/>
-    /// 在构造时创建，本类只接管它、不会重建（没有 <c>GraphicsDevice.Reset</c>、也没有 DeviceReset 系列事件被触发）；
+    /// 在 Run 进入 Initialize 之前创建（照 MonoGame 的 DoInitialize），本类只接管它、不会重建
+    /// （没有 <c>GraphicsDevice.Reset</c>、也没有 DeviceReset 系列事件被触发）；
     /// ② 后备缓冲尺寸 = 画布 CSS 尺寸 × DPR，所以 <see cref="PreferredBackBufferWidth"/> /
     /// <see cref="PreferredBackBufferHeight"/> 是「后备缓冲像素」语义，应用时会除以 DPR 换算成 CSS 尺寸；
     /// ③ 原生全屏是用户交互行为，本框架不提供代码触发的全屏（IsFullScreen / ToggleFullScreen / HardwareModeSwitch 均抛 NotSupportedException）；需要填满整个 HTML 页面请用 HTML_Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen)；
@@ -88,16 +89,26 @@ namespace KFramework.MonoGame
             _preferredDepthStencilFormat = DepthFormat.Depth24;
 
             // 与 MonoGame 一致：以窗口客户区尺寸作为后备缓冲的默认分辨率，横竖屏时取「长边为宽」。
-            GameWindow window = _game.Window;
-            if (window.Width >= window.Height)
+            // 注意：本端口的设备在 Game.Run 时才创建（照 MonoGame 的 DoInitialize），
+            // 构造本管理器时 Window 可能尚未建立，此时退回默认分辨率（800x480）。
+            GameWindow? window = _game.Window;
+            if (window != null)
             {
-                _preferredBackBufferWidth = window.Width;
-                _preferredBackBufferHeight = window.Height;
+                if (window.Width >= window.Height)
+                {
+                    _preferredBackBufferWidth = window.Width;
+                    _preferredBackBufferHeight = window.Height;
+                }
+                else
+                {
+                    _preferredBackBufferWidth = window.Height;
+                    _preferredBackBufferHeight = window.Width;
+                }
             }
             else
             {
-                _preferredBackBufferWidth = window.Height;
-                _preferredBackBufferHeight = window.Width;
+                _preferredBackBufferWidth = DefaultBackBufferWidth;
+                _preferredBackBufferHeight = DefaultBackBufferHeight;
             }
 
             // XNA 从清单读取，默认始终是 Reach，这里同样默认 Reach。

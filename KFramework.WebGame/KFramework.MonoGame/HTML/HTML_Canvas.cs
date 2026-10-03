@@ -30,7 +30,7 @@ namespace KFramework.MonoGame
             }
 
             Id = HTML_Canvas_Func.ToCanvasId(idOrSelector);
-            if(!Create(HTML_CanvasLayoutMode.Fullscreen, 0, 0, 0, 0))
+            if(Create(HTML_CanvasLayoutMode.Fullscreen, 0, 0, 0, 0))
             {
 
             }
@@ -41,9 +41,6 @@ namespace KFramework.MonoGame
 
         /// <summary>本实例对应的 DOM id（已归一化，无 "#" 前缀）。</summary>
         public string Id { get; }
-
-        /// <summary>页面上这块画布是否已存在（含引擎曾创建过的）。</summary>
-        public bool Exists => JSBind_HTML_Canvas.Exists(Id);
 
         /// <summary>
         /// 画布当前的实际矩形（相对窗口左上角，单位 CSS 像素）—— 对应 HTML 里这块元素的 rect。
@@ -75,7 +72,7 @@ namespace KFramework.MonoGame
         /// <param name="height">CSS 高度（同上）。</param>
         /// <returns>画布存在且设置成功时返回 true。</returns>
         public bool SetLayout(HTML_CanvasLayoutMode mode, int x, int y, int width, int height)
-            => Refresh(JSBind_HTML_Canvas.ApplyLayout(Id, (int)mode, x, y, width, height));
+            => Refresh(JSBind_HTML_Canvas.ApplyLayout((int)mode, x, y, width, height));
 
         /// <summary>设置画布位置与 CSS 尺寸（像素，相对窗口左上角）。</summary>
         public bool SetRect(int x, int y, int width, int height)
@@ -90,15 +87,7 @@ namespace KFramework.MonoGame
             => SetLayout(HTML_CanvasLayoutMode.Centered, 0, 0, width, height);
 
         /// <summary>撤销引擎写在这块画布上的行内样式，恢复页面自身布局，并解除居中跟随。</summary>
-        public bool RestoreLayout() => Refresh(JSBind_HTML_Canvas.RestoreLayout(Id));
-
-        /// <summary>从 DOM 移除这块画布。</summary>
-        public bool Destroy()
-        {
-            bool ok = JSBind_HTML_Canvas.Destroy(Id);
-            if (ok) _rect = null;
-            return ok;
-        }
+        public bool RestoreLayout() => Refresh(JSBind_HTML_Canvas.RestoreLayout());
 
         /// <summary>写操作成功后顺带回读一次真实矩形，保证 <see cref="Rect"/> 与浏览器一致。</summary>
         private bool Refresh(bool ok)
@@ -111,7 +100,7 @@ namespace KFramework.MonoGame
         private Rectangle? ReadRect()
         {
             Span<int> view = stackalloc int[4];
-            JSBind_HTML_Canvas.GetRect(Id, view);
+            JSBind_HTML_Canvas.GetRect(view);
 
             Rectangle rect = new(view[0], view[1], view[2], view[3]);
             return rect.Width <= 0 || rect.Height <= 0 ? null : rect;

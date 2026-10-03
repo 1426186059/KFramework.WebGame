@@ -26,19 +26,15 @@ namespace KFramework.MonoGame
         /// 矩形摆位 / 只改尺寸 / 居中 / 铺满四种情况都走这一个导出。
         /// </summary>
         [JSImport("applyLayout", "canvas")]
-        public static partial bool ApplyLayout(string id, int mode, int x, int y, int width, int height);
+        public static partial bool ApplyLayout(int mode, int x, int y, int width, int height);
 
         /// <summary>读画布当前矩形：view[0]=left，view[1]=top，view[2]=width，view[3]=height（CSS 像素）。</summary>
         [JSImport("getRect", "canvas")]
-        public static partial void GetRect(string id, [JSMarshalAs<JSType.MemoryView>] Span<int> view);
+        public static partial void GetRect([JSMarshalAs<JSType.MemoryView>] Span<int> view);
 
         /// <summary>撤销本模块写在画布上的行内样式，恢复页面自身布局；画布不存在时返回 false。</summary>
         [JSImport("restoreLayout", "canvas")]
-        public static partial bool RestoreLayout(string id);
-
-        /// <summary>读 Canvas 所在的 HTML 页面尺寸：view[0]=innerWidth，view[1]=innerHeight。</summary>
-        [JSImport("getHTMLPageSize", "canvas")]
-        public static partial void GetHTMLPageSize([JSMarshalAs<JSType.MemoryView>] Span<int> view);
+        public static partial bool RestoreLayout();
 
         /// <summary>
         /// 同步读取画布当前尺寸信息，写入 [cssWidth, cssHeight, drawWidth, drawHeight, dpr1000]（单位：CSS 像素 / backing 像素 / DPR×1000）。
@@ -46,13 +42,5 @@ namespace KFramework.MonoGame
         /// </summary>
         [JSImport("SyncJSCanvasInfo", "canvas")]
         public static partial void SyncJSCanvasInfo([JSMarshalAs<JSType.MemoryView>] Span<int> view);
-
-        /// <summary>删除画布（从 DOM 移除并注销）；画布不存在时返回 false。</summary>
-        [JSImport("destroy", "canvas")]
-        public static partial bool Destroy(string id);
-
-        /// <summary>画布是否已存在（页面上已有，或曾由本模块创建）。</summary>
-        [JSImport("exists", "canvas")]
-        public static partial bool Exists(string id);
     }
 }

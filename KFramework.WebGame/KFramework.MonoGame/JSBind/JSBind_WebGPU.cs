@@ -45,9 +45,9 @@ namespace KFramework.MonoGame
 
 
 
-        /// <summary>初始化 WebGPU：异步 requestAdapter → requestDevice → configure 画布上下文。返回是否成功。</summary>
+        /// <summary>初始化 WebGPU：异步 requestAdapter → requestDevice → configure 画布上下文（单画布模型，无需传 id）。返回是否成功。</summary>
         [JSImport("init", "render_webgpu")]
-        public static partial Task<bool> Init(string canvasId, bool antialias);
+        public static partial Task<bool> Init(bool antialias);
 
         /// <summary>设置是否启用 MSAA（影响管线 sampleCount，须在 Init 之前调用）。</summary>
         [JSImport("setAntialias", "render_webgpu")]

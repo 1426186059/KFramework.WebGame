@@ -33,9 +33,9 @@ namespace KFramework.MonoGame
         private bool _frameFaulted;
         private bool _disposed;
 
-        public GraphicsDevice GraphicsDevice { get; }
+        public GraphicsDevice GraphicsDevice { get; private set; }
 
-        public GameWindow Window { get; }
+        public GameWindow Window { get; private set; }
 
         /// <summary>
         /// 与本游戏关联的图形设备管理器（照 MonoGame 的 <c>Game.graphicsDeviceManager</c>）。
@@ -65,30 +65,45 @@ namespace KFramework.MonoGame
         public Color ClearColor { get; set; } = new Color(12, 14, 24);
 
         /// <summary>
-        /// 创建游戏宿主。
+        /// 创建游戏宿主（设备不在构造里建，照 MonoGame 在 Run 进入 Initialize 之前建）。
         /// </summary>
         /// <param name="canvasSelector">画布选择器或 DOM id（页面里没有时引擎自动建一块全屏画布）。</param>
-        /// <param name="contentRoot">内容包根路径。</param>
         /// <param name="antialias">
         /// 是否启用 MSAA。上下文创建后不可改，只能在构造时决定
         /// （等价于 MonoGame 里「设备创建前」设置 <c>PreferMultiSampling</c>）。
         /// </param>
-        protected Game(string canvasSelector = "#game", bool antialias = false)
-            :this(new GraphicsDevice(canvasSelector, antialias))
+        /// <param name="preferWebGpu">
+        /// true（默认 false）：先试 WebGPU，失败回落 WebGL 2.0。开启时设备为<b>异步</b>创建，
+        /// 因此必须在 <see cref="RunAsync"/> 里 await（不能在构造里）。false 则为纯 WebGL 2.0 同步创建。
+        /// </param>
+        protected Game(string canvasSelector = "#game", bool antialias = false, bool preferWebGpu = false)
         {
-            
-        }
-        
-        protected Game(GraphicsDevice device)
-        {
-            ArgumentNullException.ThrowIfNull(device);
-            GraphicsDevice = device;
+            _canvasSelector = canvasSelector;
+            _antialias = antialias;
+            _preferWebGpu = preferWebGpu;
 
-            Window = new GameWindow(device);
             Components = new GameComponentCollection();
             JSBind_GameUpdate.Current = this;
             Input_GameFrameData.WindowSizeChanged += OnWindowSizeChanged;
             Input_GameFrameData.WindowFocusChanged += OnWindowFocusChanged;
+        }
+
+        // 设备创建参数（照 MonoGame：设备不在构造里建，Run 时在 Initialize 之前建）。
+        private readonly string _canvasSelector;
+        private readonly bool _antialias;
+        private readonly bool _preferWebGpu;
+
+        /// <summary>
+        /// 异步创建设备并搭建窗口（照 MonoGame 的 DoInitialize：Run 进入 Initialize 之前建好设备）。
+        /// preferWebGpu 时走 <see cref="GraphicsDevice.CreateAsync"/>（WebGPU 优先、不支持回落 WebGL 2.0），
+        /// 否则走同步的 <see cref="GraphicsDevice"/> 构造（纯 WebGL 2.0）。
+        /// </summary>
+        private async Task CreateDeviceAsync()
+        {
+            GraphicsDevice = _preferWebGpu
+                ? await GraphicsDevice.CreateAsync(_canvasSelector, _antialias, preferWebGpu: true)
+                : new GraphicsDevice(_canvasSelector, _antialias);
+            Window = new GameWindow(GraphicsDevice);
         }
 
         /// <summary>收到画布尺寸事件：应用新尺寸，变了才通知 Window（与原先每帧同步的行为一致）。</summary>
@@ -113,8 +128,12 @@ namespace KFramework.MonoGame
             {
                 try
                 {
-                    // 照 MonoGame 的 DoInitialize：进入用户 Initialize 之前先让管理器接管设备，
+                    // 照 MonoGame 的 DoInitialize：进入用户 Initialize 之前先建好设备并让管理器接管，
                     // 这样用户在 Initialize / LoadContent 里就能拿到 GraphicsDevice 与已应用的呈现参数。
+                    // 设备创建（含 WebGPU 的异步取设备）在 Game 内部完成，不再由外部先建好再注入。
+                    if (GraphicsDevice == null)
+                        await CreateDeviceAsync();
+
                     if (graphicsDeviceManager != null)
                         ((IGraphicsDeviceManager)graphicsDeviceManager).CreateDevice();
 
@@ -257,7 +276,7 @@ namespace KFramework.MonoGame
             UnloadContent();
             graphicsDeviceManager?.Dispose();
             graphicsDeviceManager = null;
-            GraphicsDevice.Dispose();
+            GraphicsDevice?.Dispose();
             GC.SuppressFinalize(this);
         }
     }

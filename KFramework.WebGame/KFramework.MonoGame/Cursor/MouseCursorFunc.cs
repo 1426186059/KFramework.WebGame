@@ -25,12 +25,12 @@ namespace KFramework.MonoGame
 
         public static void Set(string name)
         {
-            JSBind_Cursor.SetCursor(GraphicsDevice.Canvas.Id, name);
+            JSBind_Cursor.SetCursor(name);
         }
 
         public static void Reset()
         {
-            JSBind_Cursor.ResetCursor(GraphicsDevice.Canvas.Id);
+            JSBind_Cursor.ResetCursor();
         }
     }
 }

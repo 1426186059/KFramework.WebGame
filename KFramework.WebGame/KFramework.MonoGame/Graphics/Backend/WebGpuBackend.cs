@@ -85,7 +85,7 @@ namespace KFramework.MonoGame
 
         public async Task InitializeAsync(string canvasSelector, bool antialias)
         {
-            bool ok = await JSBind_WebGPU.Init(canvasSelector, antialias).ConfigureAwait(false);
+            bool ok = await JSBind_WebGPU.Init(antialias).ConfigureAwait(false);
             if (!ok)
                 throw new InvalidOperationException("无法创建 WebGPU 上下文，请使用支持 WebGPU 的浏览器。");
 

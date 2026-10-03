@@ -166,6 +166,10 @@ namespace KFramework.MonoGame
         /// <param name="preferWebGpu">true（默认）：先试 WebGPU，失败则回落 WebGL 2.0。</param>
         public static async Task<GraphicsDevice> CreateAsync(string canvasSelector = "#game", bool antialias = false, bool preferWebGpu = true)
         {
+            // 画布（窗口）必须先于后端初始化存在，照 MonoGame：先有 GameWindow，再有 GraphicsDevice。
+            // 异步的只是 WebGPU 取设备（requestAdapter / requestDevice），画布本身是同步创建的。
+            EnsureCanvas();
+
             IGraphicsBackend backend = null;
             if (preferWebGpu)
             {
@@ -193,14 +197,31 @@ namespace KFramework.MonoGame
         /// </summary>
         private static IGraphicsBackend CreateInitializedBackend(IGraphicsBackend backend, string canvasSelector, bool antialias)
         {
+            EnsureCanvas();
             backend.InitializeAsync(canvasSelector, antialias).GetAwaiter().GetResult();
             return backend;
+        }
+
+        /// <summary>
+        /// 画布（= 窗口）必须先于后端初始化存在：照 MonoGame 先建 GameWindow、再建 GraphicsDevice 的顺序。
+        /// 此处只负责“确保画布已创建”，真正的 GPU 上下文 / 设备（WebGL 同步、WebGPU 异步 requestAdapter / requestDevice）
+        /// 由后端 <c>InitializeAsync</c> 完成。
+        /// </summary>
+        private static void EnsureCanvas()
+        {
+            if (Canvas == null)
+                Canvas = new HTML_Canvas();
         }
 
         /// <summary>后端已初始化完毕后的构造入口（WebGL / WebGPU 共用）。</summary>
         private GraphicsDevice(IGraphicsBackend backend, string canvasSelector, bool antialias)
         {
-            Canvas = new HTML_Canvas();
+            // 画布必须在进入本构造前已创建（CreateAsync / 同步构造路径都会先 EnsureCanvas），
+            // 照 MonoGame：先有 GameWindow，再有 GraphicsDevice——后端 Initialize 只认已存在的画布。
+            if (Canvas == null)
+                throw new InvalidOperationException(
+                    "画布尚未创建：GraphicsDevice 构造前必须先创建画布（照 MonoGame 先窗口后设备的顺序）。");
+
             Antialias = antialias;
 
             // 照 MonoGame 的无参内部构造：先建一份默认 PP，画布尺寸随后由 SyncCanvasSize 覆盖。

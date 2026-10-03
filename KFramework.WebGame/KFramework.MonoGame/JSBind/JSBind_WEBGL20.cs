@@ -159,9 +159,9 @@ namespace KFramework.MonoGame
 
 
 
-        /// <summary>初始化 WebGL2 上下文，绑定到指定 canvas。</summary>
+        /// <summary>初始化 WebGL2 上下文（单画布模型，无需传 id）。</summary>
         [JSImport("initContext", "render_webgl20")]
-        public static partial bool InitContext(string canvasId);
+        public static partial bool InitContext();
 
         /// <summary>
         /// 设置是否启用 MSAA（<c>antialias</c>）。

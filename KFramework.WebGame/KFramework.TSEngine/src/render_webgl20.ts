@@ -40,10 +40,10 @@ export function getAntialias(): boolean {
     return !!contextAttributes.antialias;
 }
 
-export function initContext(selector: string): boolean {
+export function initContext(): boolean {
     const element = getCanvas();
     if (!element) {
-        console.error('[gl] 无法创建或找到画布元素:', selector);
+        console.error('[gl] 无法创建或找到画布元素');
         return false;
     }
 

@@ -40,7 +40,7 @@ namespace KFramework.MonoGame
             // 照 MonoGame：MSAA 属性在上下文创建之前设置
             JSBind_WEBGL20.SetAntialias(antialias);
 
-            if (!JSBind_WEBGL20.InitContext(canvasSelector))
+            if (!JSBind_WEBGL20.InitContext())
                 throw new InvalidOperationException("无法创建 WebGL 2.0 上下文，请使用支持 WebGL2 的浏览器。");
 
             MaxTextureSize = JSBind_WEBGL20.GetParameterInt(JSBind_WEBGL20.MAX_TEXTURE_SIZE);
