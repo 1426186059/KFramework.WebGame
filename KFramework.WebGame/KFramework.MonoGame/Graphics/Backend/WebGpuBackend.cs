@@ -222,18 +222,11 @@ namespace KFramework.MonoGame
             EnsureFrameActive();
 
             if (_boundTexture is null || !_textures.TryGetValue(_boundTexture, out int textureHandle))
-            {
-                Console.WriteLine($"[wgpu-diag] SKIP(无纹理) tgt={(_colorTarget == 0 ? "canvas" : "rt")} bound={(_boundTexture is null ? "null" : "不在表中")}");
-                return;
-            }
+                return; // 没有绑定纹理就无从采样，跳过（WebGL 侧会绑到 0 号纹理，行为不同但 2D 链路必先绑纹理）
 
             int pipeline = GetOrCreatePipeline(_blend, _depthStencil);
             int samplerHandle = GetOrCreateSampler(_sampler);
             int bindGroup = GetOrCreateBindGroup(pipeline, textureHandle, samplerHandle, _uniformSlot);
-
-            // ==== 临时诊断（定位离屏 RT 显示异常用，跑完即删）====
-            Console.WriteLine($"[wgpu-diag] tgt={(_colorTarget == 0 ? "canvas" : "rt")} fmt={_targetFormat} sc={_targetSampleCount} " +
-                $"slot={_uniformSlot} bv={_vertexBump} start={start} end={end} vRun={vRun} pipe={pipeline} bg={bindGroup} tex={textureHandle}");
 
             if (_vertexBump + vRun > MaxSpritesPerFrame * VerticesPerSprite)
                 throw new InvalidOperationException(
