@@ -184,6 +184,46 @@ namespace KFramework.MonoGame
         }
 
 
+        /// <summary>
+        /// 通用取像素（异步）：当纹理本身不可读（压缩格式，或未开启 <c>readable</c>）时，用「渲染目标中转」绕开限制——
+        /// 把本纹理 Blit 到一张可读的临时 RenderTarget，再 ReadPixels 读回。等价于 Unity 的
+        /// Graphics.Blit + RenderTexture.ReadPixels。返回的 RenderTarget2D 已开启 readable，可直接调用 GetData。
+        /// <para>开销：一次离屏绘制 + 一次 GPU→CPU 拷贝（readPixels），比直接 GetData 昂贵，仅必要时使用。
+        /// WebGPU 的读回是异步的（copyTextureToBuffer + mapAsync），故本方法返回 Task，调用方需 await。</para>
+        /// </summary>
+        public async Task<Texture2D> GetPixelsViaRenderTargetAsync(GraphicsDevice device, Rectangle? sourceRect = null)
+        {
+            if (device == null) throw new ArgumentNullException(nameof(device));
+            Rectangle rect = sourceRect ?? Bounds;
+            if (rect.X < 0 || rect.Y < 0 || rect.X + rect.Width > width || rect.Y + rect.Height > height)
+                throw new ArgumentOutOfRangeException(nameof(sourceRect), "区域超出纹理范围。");
+
+            // 中转 RT：非压缩 RGBA8、不开 MSAA（MSAA 需先 resolve 才能读）、可读。
+            var rt = new RenderTarget2D(device, rect.Width, rect.Height, false, SurfaceFormat.Color,
+                                        DepthFormat.None, 0, RenderTargetUsage.DiscardContents, readable: true);
+
+            var prev = device.GetRenderTargets();
+            try
+            {
+                device.SetRenderTarget(rt);
+                device.Clear(Color.Transparent);
+                var batch = new SpriteBatch(device);
+                batch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp, Matrix4x4.Identity);
+                batch.Draw(this, new Rectangle(0, 0, rect.Width, rect.Height), rect, Color.White);
+                batch.End();
+            }
+            finally
+            {
+                device.SetRenderTargets(prev);
+            }
+
+            int bpp = SurfaceFormat.Color.GetSize();
+            byte[] pixels = new byte[rect.Width * rect.Height * bpp];
+            await rt.ReadPixels(new Rectangle(0, 0, rect.Width, rect.Height), pixels).ConfigureAwait(false);
+            rt._cpuData = pixels;   // 使返回的 RT 可直接 GetData
+            return rt;
+        }
+
 
         /// <summary>上传 RGBA8 像素数据到整张纹理。</summary>
         public void SetData(byte[] rgba) => SetData(rgba, 0, 0, width, height);

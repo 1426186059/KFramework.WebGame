@@ -91,6 +91,13 @@ export function readPixel(x: number, y: number, out: MemoryView_Span | Uint8Arra
     out.set(pixels, 0);
 }
 
+/** 读取矩形区域像素（x/y 为 WebGL 坐标，原点在左下角），写入 out（Uint8Array，长度需 w*h*4）。 */
+export function readPixels(x: number, y: number, w: number, h: number, out: MemoryView_Span | Uint8Array): void {
+    const dst = new Uint8Array(w * h * 4);
+    gpu().readPixels(x, y, w, h, gpu().RGBA, gpu().UNSIGNED_BYTE, dst);
+    out.set(dst);
+}
+
 // ---------- 字节视图转换 ----------
 
 function toBytes(view: MemoryView_Span | Uint8Array | null): Uint8Array | null {

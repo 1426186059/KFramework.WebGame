@@ -1,7 +1,8 @@
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
+using System.Collections.Generic;
 
-namespace KFramework.Test.WebGPU.Tests
+namespace KFramework.Test.WebGL20.Tests
 {
 
     /// <summary>一个测试项：名称、说明、以及创建对应场景的工厂。</summary>
@@ -21,26 +22,26 @@ namespace KFramework.Test.WebGPU.Tests
         [
             new TestEntry
             {
-                Name = "后端信息 / 精灵绘制通路",
-                Desc = "显示当前生效的渲染后端（WebGPU 或回落后的 WebGL2）、Renderer、视口与 FPS，并跑一次精灵批绘制验证画面通路",
-                Factory = static () => new BackendInfoScene(),
+                Name = "精灵批绘制 / 旋转",
+                Desc = "连续同纹理的精灵合并为一次 draw call；旋转 / 缩放都在 CPU 侧算好顶点",
+                Factory = static () => new SpriteBatchScene(),
             },
             new TestEntry
             {
-                Name = "混合模式",
-                Desc = "BlendState 各预设对比。WebGPU 把混合因子固化在管线里，故每种混合对应一条独立管线",
-                Factory = static () => new SpriteBlendScene(),
+                Name = "离屏渲染 RenderTarget2D",
+                Desc = "先渲染进离屏纹理，再把它贴回屏幕；FBO 由 GraphicsDevice 按绑定组合缓存复用",
+                Factory = static () => new RenderTargetScene(),
             },
             new TestEntry
             {
-                Name = "渲染目标（RenderTarget2D）专项",
-                Desc = "A 基本离屏 · B MSAA 解析 · C 嵌套合成（先画画布→切RT→切回继续画，传奇每帧的用法）· D PreserveContents 累积",
-                Factory = static () => new OffscreenScene(),
+                Name = "MSAA 多重采样",
+                Desc = "离屏 MSAA=4 与 MSAA=0 并排，对比几何边缘抗锯齿（画布 MSAA 由上下文决定）",
+                Factory = static () => new MsaaScene(),
             },
             new TestEntry
             {
                 Name = "Texture2D 取像素（中转读回 / 同步往返）",
-                Desc = "A 中转读回验证 WebGPU 的 copyTextureToBuffer+mapAsync 与 WebGL 的 readPixels；B 验证可读纹理同步往返",
+                Desc = "A 中转读回验证 WebGL 的 glReadPixels 与 WebGPU 的读回；B 验证可读纹理同步往返",
                 Factory = static () => new Texture2DScene(),
             },
         ];
@@ -64,8 +65,7 @@ namespace KFramework.Test.WebGPU.Tests
 
         public override void Update()
         {
-            // 命中矩形必须在这里也布一次：Update 先于 Draw 执行，
-            // 若只在 Draw 里填充，首帧的点击会落空（_rows 还是空的）。
+            // 命中矩形必须在这里也布一次：Update 先于 Draw 执行，若只在 Draw 里填充，首帧点击会落空。
             LayoutRows();
 
             if (Input_Mouse.GetButtonDown(MouseButton.Left))
@@ -81,8 +81,7 @@ namespace KFramework.Test.WebGPU.Tests
                 }
             }
 
-            // 数字键直达（1..3）。Keys 是枚举，不能做 +i 算术，故显式列出。
-            Keys[] digits = [Keys.Digit1, Keys.Digit2, Keys.Digit3];
+            Keys[] digits = [Keys.Digit1, Keys.Digit2, Keys.Digit3, Keys.Digit4];
             for (int i = 0; i < TestRegistry.Entries.Count && i < digits.Length; i++)
             {
                 if (Input_KeyBoard.GetKeyDown(digits[i]))
@@ -104,7 +103,7 @@ namespace KFramework.Test.WebGPU.Tests
             float rowHeight = (Font.LineSpacing + 6f) * 2 + 18f;
 
             for (int i = 0; i < TestRegistry.Entries.Count; i++)
-                _rows.Add(new Rectangle((int)x, (int)y + i * (int)(rowHeight + 10f), (int)width, (int)rowHeight));
+                _rows.Add(new Rectangle((int)x, (int)(y + i * (rowHeight + 10f)), (int)width, (int)rowHeight));
         }
 
         public override void Draw()
@@ -114,16 +113,13 @@ namespace KFramework.Test.WebGPU.Tests
 
             batch.Begin();
 
-            batch.DrawString(Font, "KFramework 例子3 — WebGPU 渲染测试", new Vector2(28f, 20f), new Color(126, 200, 255));
+            batch.DrawString(Font, "KFramework 例子2 — WebGL2 渲染测试", new Vector2(28f, 20f), new Color(126, 200, 255));
             batch.DrawString(Font, $"当前后端：{Device.BackendName}    （点条目或按数字键进入；各页内 Esc 返回本页）",
                 new Vector2(28f, 48f), new Color(150, 165, 195));
 
             for (int i = 0; i < TestRegistry.Entries.Count; i++)
             {
                 TestEntry entry = TestRegistry.Entries[i];
-
-                // 直接用 LayoutRows 算出的矩形，保证"画在哪"与"判定在哪"严格一致
-                // （早先这里另算一份并再 Add 一次，结果 _rows 被加了两遍，且两份矩形因浮点累加会有偏差）。
                 Rectangle rect = _rows[i];
 
                 bool hover = rect.Contains(Input_Mouse.Position);

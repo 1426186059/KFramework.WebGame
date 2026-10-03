@@ -447,7 +447,10 @@ namespace KFramework.MonoGame
         {
             // 渲染目标也是一张普通纹理（单采样、可采样），额外附件（MSAA / 深度）在
             // CreateRenderTarget 里补建，与 MonoGame 各后端的分工一致。
-            int handle = JSBind_WebGPU.CreateTexture(width, height, "rgba8unorm", 1);
+            // 仅渲染目标（RenderTarget 类型）需要 COPY_SRC 用途，供 readPixels 中转读回；
+            // 普通纹理（字体图集、白色像素、加载的贴图等）一律不加，避免污染用途组合导致闪烁。
+            int handle = JSBind_WebGPU.CreateTexture(width, height, "rgba8unorm", 1,
+                type == Texture2D.SurfaceType.RenderTarget ? 0x01 : 0);
             if (handle == 0) throw new InvalidOperationException("[webgpu] 创建纹理失败。");
             _textures[texture] = handle;
         }
@@ -486,6 +489,16 @@ namespace KFramework.MonoGame
         public void ReadPixel(int x, int y, int viewportHeight, Span<byte> rgba)
             => throw new NotSupportedException("WebGPU 后端暂不支持读像素（步骤④）。");
 
+        public async Task ReadPixels(int x, int y, int width, int height, byte[] rgba)
+        {
+            // 取当前绑定的单采样颜色纹理（MSAA 时取解析目标）；它须带 COPY_SRC 用途（createTexture 已加）。
+            int srcTex = _resolveTarget != 0 ? _resolveTarget : _colorTarget;
+            if (srcTex == 0) return;
+            // 异步发起（copyTextureToBuffer + mapAsync），结果暂存 JS 模块；再同步拷回 rgba。
+            await JSBind_WebGPU.ReadPixels(srcTex, x, y, width, height).ConfigureAwait(false);
+            JSBind_WebGPU.ReadPixelsGet(rgba);
+        }
+
         public void SetScissor(int x, int y, int width, int height)
         {
             // WebGPU 的 scissor 永远生效（没有 enable 位）。未设置时通道默认用整个附件范围，
@@ -502,7 +515,7 @@ namespace KFramework.MonoGame
             if (renderTarget.MultiSampleCount > 0)
             {
                 // 多重采样颜色附件：只用于渲染，最后解析进单采样纹理。
-                msaa = JSBind_WebGPU.CreateTexture(width, height, RtColorFormat, renderTarget.MultiSampleCount);
+                msaa = JSBind_WebGPU.CreateTexture(width, height, RtColorFormat, renderTarget.MultiSampleCount, 0);
                 if (msaa == 0) throw new InvalidOperationException("[webgpu] 创建多重采样附件失败。");
             }
 
@@ -510,7 +523,7 @@ namespace KFramework.MonoGame
             string depthName = DepthFormatName(depthFormat);
             if (depthName.Length > 0)
             {
-                depth = JSBind_WebGPU.CreateTexture(width, height, depthName, renderTarget.MultiSampleCount);
+                depth = JSBind_WebGPU.CreateTexture(width, height, depthName, renderTarget.MultiSampleCount, 0);
                 if (depth == 0) throw new InvalidOperationException("[webgpu] 创建深度附件失败。");
             }
 

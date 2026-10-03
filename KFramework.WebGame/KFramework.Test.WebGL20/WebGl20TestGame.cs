@@ -17,12 +17,11 @@ namespace KFramework.Test.WebGL20
         private const bool Antialias = true;
 
         private readonly GraphicsDeviceManager _graphics;
-        private readonly Func<KSceneBase>[] _scenes;
-        private int _current;
 
         public WebGl20TestGame() : base("#game", Antialias, preferWebGpu: false)
         {
             ClearColor = new Color(10, 12, 20);
+            IsFixedTimeStep = false;
 
             _graphics = new GraphicsDeviceManager(this)
             {
@@ -31,13 +30,6 @@ namespace KFramework.Test.WebGL20
                 PreferMultiSampling = Antialias,
                 GraphicsProfile = GraphicsProfile.Reach,
             };
-
-            _scenes =
-            [
-                static () => new Tests.SpriteBatchScene(),
-                static () => new Tests.RenderTargetScene(),
-                static () => new Tests.MsaaScene(),
-            ];
         }
 
         protected override void Initialize()
@@ -50,32 +42,43 @@ namespace KFramework.Test.WebGL20
         {
             KInputMgr.Init();
             Input_KeyBoard.Activate(bUseCanvasListener: true);
+            Input_Mouse.Activate();   // 总纲页与各页的「← 总纲」都要用鼠标点击，必须激活
             KSceneMgr.Init(this);
             // 测试界面用程序化生成的系统字体，不依赖任何字体资源。
             KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 20f);
 
-            KSceneMgr.SetMainScene(_scenes[0]());
+            KSceneMgr.SetMainScene(new Tests.MainScene());
             return Task.CompletedTask;
         }
 
         protected override void Update(GameTime gameTime)
         {
             KInputMgr.Update(gameTime);
-            SwitchScene();
+            HandleGlobalKeys();
             KSceneMgr.Update(gameTime);
         }
 
-        private void SwitchScene()
+        /// <summary>
+        /// 全局按键：在任何测试页都能切换，不必先退回总纲。
+        /// 数字 1..4 直达对应测试页，Esc 回总纲（各页左上角的返回逻辑同样有效）。
+        /// </summary>
+        private void HandleGlobalKeys()
         {
-            int target = -1;
-            // 键名照浏览器 KeyboardEvent.code 命名（Digit1 / Digit2 / Digit3 …）。
-            if (Input_KeyBoard.GetKeyDown(Keys.Digit1)) target = 0;
-            else if (Input_KeyBoard.GetKeyDown(Keys.Digit2)) target = 1;
-            else if (Input_KeyBoard.GetKeyDown(Keys.Digit3)) target = 2;
+            if (Input_KeyBoard.GetKeyDown(Keys.Escape))
+            {
+                KSceneMgr.SetMainScene(new Tests.MainScene());
+                return;
+            }
 
-            if (target < 0 || target == _current) return;
-            _current = target;
-            KSceneMgr.SetMainScene(_scenes[target]());
+            Keys[] digits = [Keys.Digit1, Keys.Digit2, Keys.Digit3, Keys.Digit4];
+            for (int i = 0; i < Tests.TestRegistry.Entries.Count && i < digits.Length; i++)
+            {
+                if (Input_KeyBoard.GetKeyDown(digits[i]))
+                {
+                    KSceneMgr.SetMainScene(Tests.TestRegistry.Entries[i].Factory());
+                    return;
+                }
+            }
         }
 
         protected override void Draw(GameTime gameTime)

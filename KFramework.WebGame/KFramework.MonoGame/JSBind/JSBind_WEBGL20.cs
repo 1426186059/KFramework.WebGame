@@ -195,6 +195,9 @@ namespace KFramework.MonoGame
         [JSImport("readPixel", "render_webgl20")]
         public static partial void ReadPixel(int x, int y, [JSMarshalAs<JSType.MemoryView>] Span<byte> rgba);
 
+        [JSImport("readPixels", "render_webgl20")]
+        public static partial void ReadPixels(int x, int y, int width, int height, [JSMarshalAs<JSType.MemoryView>] Span<byte> rgba);
+
 
 
         /// <summary>创建着色器对象（VERTEX_SHADER / FRAGMENT_SHADER）。</summary>

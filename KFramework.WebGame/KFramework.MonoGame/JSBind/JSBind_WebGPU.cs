@@ -124,7 +124,7 @@ namespace KFramework.MonoGame
         /// &gt; 1 时创建的是多重采样附件（只含 RENDER_ATTACHMENT，不可采样、不可上传）。返回整数句柄。
         /// </summary>
         [JSImport("createTexture", "render_webgpu")]
-        public static partial int CreateTexture(int width, int height, string format, int sampleCount);
+        public static partial int CreateTexture(int width, int height, string format, int sampleCount, int extraUsage);
 
         /// <summary>
         /// 上传 RGBA8 像素到纹理（queue.writeTexture）。
@@ -212,6 +212,18 @@ namespace KFramework.MonoGame
         /// <summary>读取字符串型上下文参数（VERSION / RENDERER 等）。</summary>
         [JSImport("getParameterString", "render_webgpu")]
         public static partial string GetParameterString(int pname);
+
+        /// <summary>
+        /// 异步读回纹理区域像素（copyTextureToBuffer + mapAsync）：结果暂存于 JS 模块，随后调用
+        /// <see cref="ReadPixelsGet"/> 同步拷出。textureId 为 createTexture 返回的整数句柄；纹理须带 COPY_SRC
+        /// 用途（离屏 RT 已具备）。（JSImport 生成器不支持「异步 + 数组/MemoryView」，故拆成「异步发起 + 同步取回」两步。）
+        /// </summary>
+        [JSImport("readPixels", "render_webgpu")]
+        public static partial Task ReadPixels(int textureId, int x, int y, int width, int height);
+
+        /// <summary>把上一次 <see cref="ReadPixels"/> 异步读回的 RGBA8 像素（自上而下、长度 width*height*4）同步拷进 rgba。</summary>
+        [JSImport("readPixelsGet", "render_webgpu")]
+        public static partial void ReadPixelsGet([JSMarshalAs<JSType.MemoryView>] Span<byte> rgba);
 
     }
 }

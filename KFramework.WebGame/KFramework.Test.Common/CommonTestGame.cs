@@ -29,6 +29,7 @@ namespace KFramework.Test.Common
         public CommonTestGame() : base("#game", Antialias, preferWebGpu: false)
         {
             ClearColor = new Color(10, 12, 20);
+            IsFixedTimeStep = false;
 
             Graphics = new GraphicsDeviceManager(this)
             {

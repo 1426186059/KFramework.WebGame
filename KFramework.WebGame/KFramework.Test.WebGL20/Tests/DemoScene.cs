@@ -49,7 +49,7 @@ namespace KFramework.Test.WebGL20.Tests
 
         protected void DrawFooter(SpriteBatch batch)
         {
-            batch.DrawString(Font, "按 1 / 2 / 3 切换测试页",
+            batch.DrawString(Font, "按数字键切换测试页，Esc 返回总纲",
                 new Vector2(28f, Device.Viewport.Height - 38f), new Color(110, 130, 170));
         }
 

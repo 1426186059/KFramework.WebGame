@@ -132,6 +132,12 @@ namespace KFramework.MonoGame
         public void ReadPixel(int x, int y, int viewportHeight, Span<byte> rgba)
             => JSBind_WEBGL20.ReadPixel(x, viewportHeight - 1 - y, rgba);
 
+        public Task ReadPixels(int x, int y, int width, int height, byte[] rgba)
+        {
+            JSBind_WEBGL20.ReadPixels(x, y, width, height, rgba);
+            return Task.CompletedTask;
+        }
+
         public void SetBlendState(BlendState state)
         {
             JSBind_WEBGL20.Enable(JSBind_WEBGL20.BLEND);

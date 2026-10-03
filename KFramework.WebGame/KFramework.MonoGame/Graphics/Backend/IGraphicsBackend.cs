@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace KFramework.MonoGame
 {
 
@@ -62,6 +64,10 @@ namespace KFramework.MonoGame
 
         /// <summary>读取一个像素。传入视口高度是为了让后端自行做 Y 轴换算（WebGL 原点在左下）。</summary>
         void ReadPixel(int x, int y, int viewportHeight, Span<byte> rgba);
+
+        /// <summary>从当前绑定的帧缓冲读取矩形区域像素（x/y 为坐标，原点在左上）。WebGL 由调用方负责 Y 翻转；
+        /// WebGPU 为异步（copyTextureToBuffer + mapAsync），故返回 Task。</summary>
+        Task ReadPixels(int x, int y, int width, int height, byte[] rgba);
 
         // ============ 状态 ============
 

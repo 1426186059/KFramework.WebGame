@@ -30,6 +30,7 @@ namespace KFramework.Test.WebGPU
         public WebGpuTestGame() : base("#game", antialias: false, preferWebGpu: true)
         {
             ClearColor = new Color(10, 12, 20);
+            IsFixedTimeStep = false;
 
             _graphics = new GraphicsDeviceManager(this)
             {
@@ -80,7 +81,7 @@ namespace KFramework.Test.WebGPU
                 return;
             }
 
-            Keys[] digits = [Keys.Digit1, Keys.Digit2, Keys.Digit3];
+            Keys[] digits = [Keys.Digit1, Keys.Digit2, Keys.Digit3, Keys.Digit4];
             for (int i = 0; i < Tests.TestRegistry.Entries.Count && i < digits.Length; i++)
             {
                 if (Input_KeyBoard.GetKeyDown(digits[i]))

@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices.JavaScript;
 
 namespace KFramework.MonoGame
@@ -74,8 +75,8 @@ namespace KFramework.MonoGame
         /// <param name="preferredMultiSampleCount">请求的 MSAA 采样数；0 表示不多重采样，>0 由 GraphicsDevice 实现 resolve。</param>
         public RenderTarget2D(GraphicsDevice graphicsDevice, int width, int height, bool mipMap,
                               SurfaceFormat preferredFormat, DepthFormat preferredDepthFormat,
-                              int preferredMultiSampleCount, RenderTargetUsage usage)
-            : base(graphicsDevice, width, height, mipMap, preferredFormat, SurfaceType.RenderTarget)
+                              int preferredMultiSampleCount, RenderTargetUsage usage, bool readable = false)
+            : base(graphicsDevice, width, height, mipMap, preferredFormat, SurfaceType.RenderTarget, readable)
         {
             DepthStencilFormat = preferredDepthFormat;
             // 保留请求的采样数；实际能否生效、上限多少由 GraphicsDevice.PlatformCreateRenderTarget 决定。
@@ -87,6 +88,52 @@ namespace KFramework.MonoGame
             graphicsDevice.PlatformCreateRenderTarget(this, width, height, preferredDepthFormat);
 
             _sortingKey = graphicsDevice.NextSortingKey();
+        }
+
+        /// <summary>
+        /// 把本渲染目标当前内容读回 CPU 字节（RGBA8，自上而下、原点左上，与 SetData/GetData 约定一致）。
+        /// 内部临时绑定本目标、从帧缓冲读回。WebGL 帧缓冲原点在左下，会自动翻转；WebGPU 纹理原点在左上，不翻转。
+        /// 仅非多重采样（MultiSampleCount = 0）目标保证正确。
+        /// </summary>
+        public async Task ReadPixels(Rectangle rect, byte[] pixels)
+        {
+            if (pixels == null) throw new ArgumentNullException(nameof(pixels));
+            int bpp = Format.GetSize();
+            int need = rect.Width * rect.Height * bpp;
+            if (pixels.Length < need) throw new ArgumentException($"pixels 数组太小：需 {need} 字节。", nameof(pixels));
+
+            // WebGPU 纹理原点在左上、无需翻转；WebGL 帧缓冲原点在左下，读取时需翻转为自上而下。
+            bool flip = graphicsDevice.Backend.NeedsOffscreenYFlip;
+            int readY = flip ? (height - rect.Y - rect.Height) : rect.Y;
+
+            // 堆分配：WebGPU 路径是异步的，不能 stackalloc 跨 await。
+            byte[] raw = new byte[need];
+            var prev = graphicsDevice.GetRenderTargets();
+            try
+            {
+                graphicsDevice.SetRenderTarget(this);
+                await graphicsDevice.Backend.ReadPixels(rect.X, readY, rect.Width, rect.Height, raw)
+                    .ConfigureAwait(false);
+            }
+            finally
+            {
+                graphicsDevice.SetRenderTargets(prev);
+            }
+
+            int rowBytes = rect.Width * bpp;
+            if (flip)
+            {
+                // GL 读出为自下而上；翻转为自上而下写入 pixels（与纹理像素行序一致）。
+                for (int r = 0; r < rect.Height; r++)
+                {
+                    int srcRow = rect.Height - 1 - r;
+                    raw.AsSpan(srcRow * rowBytes, rowBytes).CopyTo(pixels.AsSpan(r * rowBytes, rowBytes));
+                }
+            }
+            else
+            {
+                raw.CopyTo(pixels);
+            }
         }
 
         protected override void Dispose(bool disposing)
