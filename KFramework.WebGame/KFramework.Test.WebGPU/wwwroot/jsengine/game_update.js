@@ -1,9 +1,9 @@
 // 帧循环：requestAnimationFrame 主循环、呈现间隔（限帧）、帧回调注册。
 //
-// 这些符号由 KFramework.MonoGame.JSBind_Platform 经 [JSImport(module: "platform")] 调用；
-// 本文件导出的符号经 ./platform.ts 的 `export * from` 转发，因此对外模块名仍为 "platform"，C# 侧无需改动。
+// 本文件编译为 game_update.js，经 main.ts 注册为 "game_update" 模块，
+// 由 KFramework.MonoGame.JSBind_GameUpdate 经 [JSImport(module: "game_update")] 调用，C# 侧无需改动。
 //
-// 输入 / 画布 / 环境查询等其余平台绑定见 ./platform.ts。
+// 画布相关见 ./html_canvas.ts（对应 C# 侧 HTML_Canvas）；窗口 / 环境查询见 ./html_window.ts（对应 HTML_Window）。
 let frameCallback = null;
 let running = false;
 export function setFrameCallback(callback) {

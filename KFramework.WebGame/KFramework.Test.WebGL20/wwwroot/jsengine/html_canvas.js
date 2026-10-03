@@ -6,7 +6,7 @@
 //   · gl.ts 只管 **WebGL2 上下文**（从本文件给出的元素上 getContext('webgl2')）。
 // 因此 gl.ts 不再自己 querySelector，避免出现两套查找 / 创建规则。
 //
-// 尺寸链路（改动这里之前请先读 platform.js 的 SyncJSCanvasInfo 注释）：
+// 尺寸链路（改动这里之前请先读本文件 SyncJSCanvasInfo 的注释）：
 //   CSS 尺寸（本文件写的 style.width / style.height）
 //     → SyncJSCanvasInfo 每帧读 rect × DPR 写进 canvas.width / canvas.height（backing）
 //     → C# 侧 GraphicsDevice.SyncCanvasSize 更新 PresentationParameters 与 Viewport，并触发 GameWindow.SizeChanged。
@@ -26,7 +26,8 @@ function toId(idOrSelector) {
     return trimmed.length > 0 ? trimmed : DEFAULT_CANVAS_ID;
 }
 /** 所有画布共用的样式（全屏与矩形定位只有 left / top / width / height 不同）。 */
-function applyCommonStyle(element) {
+function applyCommonStyle() {
+    let element = canvas;
     element.style.position = 'fixed';
     element.style.display = 'block';
     element.style.margin = '0';
@@ -36,23 +37,26 @@ function applyCommonStyle(element) {
     element.style.zIndex = '0';
 }
 /** 填满整个 HTML 页面（100% / inset 效果由 left/top=0 + width/height=100% 实现）。 */
-function applyFullscreenStyle(element) {
-    applyCommonStyle(element);
+function applyFullscreenStyle() {
+    let element = canvas;
+    applyCommonStyle();
     element.style.left = '0px';
     element.style.top = '0px';
     element.style.width = '100%';
     element.style.height = '100%';
 }
 /** 绝对定位到 (x, y)，CSS 尺寸为 width × height（单位：CSS 像素，最小 1px）。 */
-function applyRectStyle(element, x, y, width, height) {
-    applyCommonStyle(element);
+function applyRectStyle(x, y, width, height) {
+    let element = canvas;
+    applyCommonStyle();
     element.style.left = `${Math.round(x)}px`;
     element.style.top = `${Math.round(y)}px`;
     element.style.width = `${Math.max(1, Math.round(width))}px`;
     element.style.height = `${Math.max(1, Math.round(height))}px`;
 }
 /** 把画布摆到窗口正中（按 CSS 尺寸），位置取自 window.innerWidth / innerHeight —— 不是画布自己的尺寸。 */
-function applyCentered(element, width, height) {
+function applyCentered(width, height) {
+    let element = canvas;
     const w = Math.max(1, Math.round(width));
     const h = Math.max(1, Math.round(height));
     element.style.width = `${w}px`;
@@ -63,11 +67,10 @@ function applyCentered(element, width, height) {
 // 窗口变了就把居中画布重新居中：否则浏览器一缩放，原本居中的画布就偏了。
 window.addEventListener('resize', () => {
     if (centered && canvas?.isConnected)
-        applyCentered(canvas, centered.width, centered.height);
+        applyCentered(centered.width, centered.height);
     else
         centered = null;
 });
-/** 写回整数缓冲（与 platform.js 同一套 MemoryView_Span 处理）。 */
 let _int32Scratch = new Int32Array(8);
 function writeInts(view, values) {
     if (_int32Scratch.length < values.length)
@@ -86,84 +89,58 @@ function writeInts(view, values) {
     for (let i = 0; i < values.length; i++)
         fallback[i] = values[i];
 }
-function lookup(id) {
+function lookup() {
     if (canvas)
         return canvas;
-    const byDom = document.getElementById(id);
+    const byDom = document.getElementById(DEFAULT_CANVAS_ID);
     if (byDom instanceof HTMLCanvasElement) {
         canvas = byDom;
         return byDom;
     }
     return null;
 }
-/**
- * 把布局方式应用到画布元素上（新建或直接套用共享同一套逻辑）。
- * @param mode 0 Rect / 1 Size / 2 Centered / 3 Fullscreen。
- */
-function applyLayoutStyle(element, mode, x, y, width, height) {
+export function applyLayout(mode, x, y, width, height) {
+    let element = canvas;
     switch (mode) {
         case 1 /* LayoutMode.Size */:
-            // 只改尺寸：位置保持不动
             centered = null;
             element.style.width = `${Math.max(1, Math.round(width))}px`;
             element.style.height = `${Math.max(1, Math.round(height))}px`;
             break;
         case 2 /* LayoutMode.Centered */:
-            applyCommonStyle(element);
-            applyCentered(element, width, height);
+            applyCommonStyle();
+            applyCentered(width, height);
             centered = { width: Math.max(1, Math.round(width)), height: Math.max(1, Math.round(height)) };
             break;
         case 3 /* LayoutMode.Fullscreen */:
             centered = null;
-            applyFullscreenStyle(element);
+            applyFullscreenStyle();
             break;
         default:
-            // LayoutMode.Rect：手动摆位后不再跟随窗口居中
             centered = null;
-            applyRectStyle(element, x, y, width, height);
+            applyRectStyle(x, y, width, height);
             break;
     }
 }
-/**
- * 创建一块画布并插入 <body>。
- * @param idOrSelector 画布 id（可写 "#id" 形式）；已存在同名画布时返回 false。
- * @param mode 布局方式（LayoutMode）：Rect 按 x/y/w/h 摆位；Centered 窗口居中；Fullscreen 填满整个 HTML 页面；Size 仅设尺寸（新建时回落到 0,0）。
- * @param x 左上角 X（CSS 像素，相对窗口），Rect 模式使用。
- * @param y 左上角 Y（CSS 像素，相对窗口），Rect 模式使用。
- * @param width CSS 宽度（像素）。
- * @param height CSS 高度（像素）。
- */
 export function create(idOrSelector, mode, x, y, width, height) {
     const id = toId(idOrSelector);
-    if (lookup(id))
-        return false;
-    const element = document.createElement('canvas');
-    element.id = id;
-    applyCommonStyle(element);
-    applyLayoutStyle(element, mode, x, y, width, height);
-    document.body.appendChild(element);
-    canvas = element;
-    return true;
-}
-/**
- * 【通用布局入口】一次函数表达 Rect / Size / Centered / Fullscreen 四种布局。
- * 上层（C# 的 HTML_Canvas.SetLayout）只需这一个 channel 就能表达全部摆位需求。
- */
-export function applyLayout(idOrSelector, mode, x, y, width, height) {
-    const id = toId(idOrSelector);
-    const element = lookup(id);
-    if (!element)
-        return false;
-    applyLayoutStyle(element, mode, x, y, width, height);
+    canvas = lookup();
+    if (canvas == null) {
+        const element = document.createElement('canvas');
+        element.id = id;
+        document.body.appendChild(element);
+        canvas = element;
+    }
+    applyCommonStyle();
+    applyLayout(mode, x, y, width, height);
     return true;
 }
 /**
  * 撤销本模块写在画布上的行内样式，让页面自己的 CSS（例如 <canvas> 的 width:100%）重新生效。
  * 用于「恢复启动时的默认布局」，同时解除居中模式。
  */
-export function restoreLayout(idOrSelector) {
-    const id = toId(idOrSelector);
-    const element = lookup(id);
+export function restoreLayout() {
+    const element = canvas;
     if (!element)
         return false;
     centered = null;
@@ -172,16 +149,8 @@ export function restoreLayout(idOrSelector) {
     }
     return true;
 }
-/** 读 HTML 页面尺寸（window.innerWidth / innerHeight），常用于自己算居中位置。写入 [宽, 高]。 */
-export function getHTMLPageSize(view) {
-    writeInts(view, [Math.round(window.innerWidth), Math.round(window.innerHeight)]);
-}
-/**
- * 读画布当前的实际矩形（不含边框）：写入 [left, top, width, height]，单位 CSS 像素，坐标相对窗口左上角。
- * 画布不存在时写入全 0 —— 调用方可以据此判断「还没这块画布」。
- */
-export function getRect(idOrSelector, view) {
-    const element = lookup(toId(idOrSelector));
+export function getRect(view) {
+    const element = canvas;
     if (!element) {
         writeInts(view, [0, 0, 0, 0]);
         return;
@@ -194,48 +163,16 @@ export function getRect(idOrSelector, view) {
         Math.round(rect.height),
     ]);
 }
-/** 删除画布：从 DOM 移除并注销。没有这块画布时返回 false。 */
-export function destroy(idOrSelector) {
-    const id = toId(idOrSelector);
-    const element = lookup(id);
-    if (!element)
-        return false;
-    element.remove();
-    canvas = null;
-    centered = null;
-    return true;
-}
-/** 该画布是否存在（页面上已有、或由本模块创建过）。 */
-export function exists(idOrSelector) {
-    return lookup(toId(idOrSelector)) !== null;
-}
-/** 取画布元素本身（给 gl.ts 初始化上下文用，不由 C# 直接调用）。空 / 缺省 / null 回落到默认 id。 */
-export function getCanvas(idOrSelector) {
-    return lookup(toId(idOrSelector));
-}
-/**
- * 解析「游戏要用哪块画布」：页面里已有同 id 的元素就直接用；
- * 没有则由引擎自建一块全屏默认画布——这就是「游戏启动时自动创建默认全屏画布」的入口。
- * @param idOrSelector 画布 id 或选择器（空串 / 缺省 → 默认 id）。
- * @returns 画布元素；无法创建时为 null。
- */
-export function getOrCreateCanvasElement(idOrSelector) {
-    const id = toId(idOrSelector);
-    const existing = lookup(id);
-    if (existing)
-        return existing;
-    if (!create(id, 3 /* LayoutMode.Fullscreen */, 0, 0, 0, 0))
-        return null;
+export function getCanvas() {
     return canvas;
 }
 /**
  * 让画布可获焦 / 取消获焦：绑在 <canvas> 上的 keydown/keyup 只有在画布获焦时才会触发，
- * 而 <canvas> 默认 tabindex 为 -1（不可获焦），所以监听键盘前要 focusCanvas(id, true)。
- * @param idOrSelector 画布 id（空 / 缺省 / null → 默认 id）。
+ * 而 <canvas> 默认 tabindex 为 -1（不可获焦），所以监听键盘前要 focusCanvas(true)。
  * @param focus true（默认）：设 tabindex=0 并聚焦（键盘事件派发到画布）；false：失焦并移除 tabindex。
  */
-export function focusCanvas(idOrSelector, focus = true) {
-    const c = getCanvas(idOrSelector);
+export function focusCanvas(focus = true) {
+    const c = getCanvas();
     if (!c)
         return;
     if (focus) {
@@ -247,8 +184,8 @@ export function focusCanvas(idOrSelector, focus = true) {
         c.removeAttribute('tabindex');
     }
 }
-export function IsFocus(idOrSelector) {
-    const c = getCanvas(idOrSelector);
+export function IsFocus() {
+    const c = getCanvas();
     console.assert(c != null, "canvas == null");
     return document.activeElement === c;
 }

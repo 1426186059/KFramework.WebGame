@@ -23,8 +23,8 @@ function onWindowContextMenu(e) {
     e.preventDefault();
     console.log("onWindow ContextMenu");
 }
-export function bindWindowEvents(canvasId) {
-    canvas = getCanvas(canvasId);
+export function bindWindowEvents() {
+    canvas = getCanvas();
     console.assert(canvas != null, "bindWindowEvents Error");
     document.addEventListener('visibilitychange', onDocumentVisibility);
     window.addEventListener('contextmenu', onWindowContextMenu);
