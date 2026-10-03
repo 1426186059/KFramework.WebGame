@@ -47,16 +47,22 @@ export function reportWindowFocus() {
 }
 function reportCanvasSize() {
     const c = canvas;
-    const rect = c.getBoundingClientRect();
-    if (rect.width != _cacheCanvasSize.x || rect.height != _cacheCanvasSize.y) {
-        _cacheCanvasSize = { x: rect.width, y: rect.height };
+    //游戏中 禁止使用 canvas.getBoundingClientRect();
+    if (c.clientWidth != _cacheCanvasSize.x || c.clientHeight != _cacheCanvasSize.y) {
+        _cacheCanvasSize = { x: c.clientWidth, y: c.clientHeight };
         const devicePixelRatio = window.devicePixelRatio || 1;
-        const bw = Math.max(1, Math.round((rect.width || 1) * devicePixelRatio));
-        const bh = Math.max(1, Math.round((rect.height || 1) * devicePixelRatio));
-        sizeView.setInt16(0, clampI16(Math.round(rect.width || 1)), true);
-        sizeView.setInt16(2, clampI16(Math.round(rect.height || 1)), true);
-        sizeView.setInt16(4, clampI16(bw), true);
-        sizeView.setInt16(6, clampI16(bh), true);
+        const cssWidth = Math.max(1, Math.round(c.clientWidth || 1));
+        const cssHeight = Math.max(1, Math.round(c.clientHeight || 1));
+        const drawWidth = Math.max(1, Math.round(cssWidth * devicePixelRatio));
+        const drawHeight = Math.max(1, Math.round(cssHeight * devicePixelRatio));
+        if (c.width !== drawWidth || c.height !== drawHeight) {
+            c.width = drawWidth;
+            c.height = drawHeight;
+        }
+        sizeView.setInt16(0, clampI16(cssWidth), true);
+        sizeView.setInt16(2, clampI16(cssHeight), true);
+        sizeView.setInt16(4, clampI16(drawWidth), true);
+        sizeView.setInt16(6, clampI16(drawHeight), true);
         sizeView.setInt16(8, clampI16(Math.round(devicePixelRatio * 1000)), true);
         pending.set(E_HTML_Event_Type.CanvasResized, sizeData);
     }
