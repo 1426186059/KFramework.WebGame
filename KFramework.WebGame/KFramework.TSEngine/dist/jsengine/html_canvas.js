@@ -251,3 +251,8 @@ export function focusCanvas(idOrSelector, focus = true) {
         c.removeAttribute('tabindex');
     }
 }
+export function IsFocus(idOrSelector) {
+    const c = getCanvas(idOrSelector);
+    console.assert(c != null, "canvas == null");
+    return document.activeElement === c;
+}

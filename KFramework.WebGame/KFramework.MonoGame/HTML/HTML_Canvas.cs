@@ -19,6 +19,10 @@ namespace KFramework.MonoGame
     {
         private Rectangle? _rect;
 
+        public int _cssWidth;
+        public int _cssHeight;
+        public float devicePixelRatio = 1000;
+
         /// <summary>
         /// 用 DOM id（或 "#id" 选择器）关联一块画布。构造本身不创建 DOM 元素，
         /// 需要新建时调用 <see cref="Create(HTML_CanvasLayoutMode, int, int, int, int)"/>。

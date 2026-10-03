@@ -150,7 +150,7 @@ namespace KFramework.MonoGame
         /// 收到一条触摸事件（由 <see cref="Input_GameFrameData"/> 按类型分发）。
         /// <paramref name="type"/> 见 <see cref="Input_GameFrameData.EvType"/> 的 Touch* 四个。
         /// </summary>
-        internal static void OnTouch(int type, int id, int x, int y)
+        internal static void OnTouch(Input_GameFrameData.EvType type, int id, int x, int y)
         {
             if (!Active) return;
 

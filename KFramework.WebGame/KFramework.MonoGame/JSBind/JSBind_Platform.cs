@@ -11,12 +11,6 @@ namespace KFramework.MonoGame
 /// </summary>
     public static partial class JSBind_Platform
     {
-        /// <summary>
-        /// 读取画布尺寸。out 布局：[0]=CSS 宽 [1]=CSS 高 [2]=绘制缓冲宽 [3]=绘制缓冲高 [4]=DPR*1000
-        /// </summary>
-        [JSImport("getCanvasSize", "platform")]
-        public static partial void GetCanvasSize([JSMarshalAs<JSType.MemoryView>] Span<int> size);
-
         /// <summary>设置页面标题（浏览器标签页文字）。</summary>
         [JSImport("setTitle", "platform")]
         public static partial void SetTitle(string title);

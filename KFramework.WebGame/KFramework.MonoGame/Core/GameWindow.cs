@@ -1,4 +1,5 @@
 using KFramework.MonoGame;
+using System.Diagnostics;
 
 
 namespace KFramework.MonoGame
@@ -8,6 +9,10 @@ namespace KFramework.MonoGame
     public sealed class GameWindow
     {
         private readonly GraphicsDevice _device;
+        public HTML_Canvas Canvas { get; }
+        public string CanvasId => Canvas.Id;
+        public event Action? SizeChanged;
+        public event Action<bool>? FocusChanged;
 
         internal GameWindow(GraphicsDevice device)
         {
@@ -15,44 +20,26 @@ namespace KFramework.MonoGame
             Canvas = new HTML_Canvas(GraphicsDevice.CanvasId);
         }
 
-        /// <summary>本窗口（画布）的 DOM id，画布管理相关调用都用它定位。</summary>
-        public string CanvasId => Canvas.Id;
+        public void SetCanvasRect(int x, int y, int width, int height)
+        { 
+            Canvas.SetRect(x, y, width, height);
+        }
+        
+        public void SetCanvasFullscreen()
+        {
+            Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen, 0, 0, 0, 0);
+        }
+        
+        public void SetCanvasCentered(int width, int height)
+        { 
+            Canvas.SetCentered(width, height);
+        }
 
-        /// <summary>
-        /// 本窗口那块画布本身（与 TS 层 <c>html_canvas.ts</c> 一一对应）。
-        /// 想做 <see cref="HTML_Canvas_Func"/> 里没有的组合操作，直接拿它即可。
-        /// </summary>
-        public HTML_Canvas Canvas { get; }
-
-        /// <summary>
-        /// 设置画布在页面中的位置与 CSS 尺寸（单位：CSS 像素，坐标相对视口左上角）。
-        /// </summary>
-        /// <remarks>
-        /// 只改 CSS：后备缓冲尺寸、渲染视口与输入坐标会在下一帧自动跟上（见 <see cref="GraphicsDevice.SyncCanvasSize"/>）。
-        /// 频繁改动会导致画布反复重建 backing buffer，别放在每帧的 Update / Draw 里调。
-        /// </remarks>
-        /// <returns>画布存在且设置成功时返回 true。</returns>
-        public bool SetCanvasRect(int x, int y, int width, int height)
-            => SyncAfterCanvasChange(Canvas.SetRect(x, y, width, height));
-
-        /// <summary>把画布恢复为填满整个 HTML 页面（启动时的默认状态），不改显示模式。</summary>
-        /// <returns>画布存在且设置成功时返回 true。</returns>
-        public bool SetCanvasFullscreen() => SyncAfterCanvasChange(Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen, 0, 0, 0, 0));
-
-        /// <summary>把画布摆到浏览器视口正中（给定 CSS 尺寸），并在浏览器缩放时自动保持居中。</summary>
-        /// <remarks>等价于 <see cref="HTML_Canvas.SetCentered(int, int)"/>，作用在窗口自己的画布上。</remarks>
-        public bool SetCanvasCentered(int width, int height)
-            => SyncAfterCanvasChange(Canvas.SetCentered(width, height));
-
-        /// <summary>撤销引擎写在画布上的行内样式，恢复页面自身给画布的布局（如 <c>width:100%</c>），
-        /// 之后画布重新随浏览器缩放。
-        /// </summary>
-        public bool RestoreCanvasLayout() => SyncAfterCanvasChange(Canvas.RestoreLayout());
-
-        /// <summary>
-        /// 浏览器视口尺寸（window.innerWidth / innerHeight，CSS 像素）。布局计算请用这个，而不是画布尺寸。
-        /// </summary>
-        /// <remarks><see cref="Point.X"/> = 视口宽，<see cref="Point.Y"/> = 视口高。</remarks>
+        public void RestoreCanvasLayout()
+        {
+            Canvas.RestoreLayout();
+        }
+        
         public Point HTMLPageSize
         {
             get
@@ -81,19 +68,18 @@ namespace KFramework.MonoGame
             set => JSBind_Platform.SetTitle(value);
         }
 
-        /// <summary>画布尺寸变化时触发（含浏览器缩放、手机旋转）。</summary>
-        public event Action? SizeChanged;
-
-        internal void RaiseSizeChanged() => SizeChanged?.Invoke();
-
-        /// <summary>
-        /// 只透传画布操作的结果，<b>不再</b>顺手同步尺寸。
-        /// <para>
-        /// 原先这里会在每次改完画布后手动 SyncCanvasSize 一次（一次跨界 + 立即 RaiseSizeChanged）。
-        /// 现在尺寸由 input_window_event 监听布局变化后上报（CanvasResized 事件），
-        /// 由 Game 应用并触发 <see cref="SizeChanged"/> —— 手动同步既重复、又可能抢在布局稳定前取到中间值。
-        /// </para>
-        /// </summary>
-        private bool SyncAfterCanvasChange(bool ok) => ok;
+        //窗口 尺寸改变
+        internal void OnWindowSizeChanged()
+        {
+            PrintTool.Log("OnWindow Size Changed");
+            SizeChanged?.Invoke();
+        }
+            
+        //窗口 焦点改变
+        internal void OnWindowFocusChanged(bool bFocus)
+        {
+            PrintTool.Log("OnWindow Focus Changed");
+            FocusChanged?.Invoke(bFocus);
+        }
     }
 }

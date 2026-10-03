@@ -94,7 +94,7 @@ namespace KFramework.MonoGame
         /// 真正的值在 <see cref="GraphicsDevice"/> 构造时由 <c>canvasSelector</c> 归一化后写入。</para>
         /// </summary>
         public static string CanvasId { get; private set; } = "game";
-
+        public static HTML_Canvas Canvas { get; private set; } = null;
         /// <summary>
         /// WebGL2 上下文是否带 MSAA（<c>antialias</c>）。
         /// </summary>
@@ -209,6 +209,7 @@ namespace KFramework.MonoGame
         private GraphicsDevice(IGraphicsBackend backend, string canvasSelector, bool antialias)
         {
             CanvasId = HTML_Canvas_Func.ToCanvasId(canvasSelector);
+            Canvas = new HTML_Canvas(CanvasId);
             Antialias = antialias;
 
             // 照 MonoGame 的无参内部构造：先建一份默认 PP，画布尺寸随后由 SyncCanvasSize 覆盖。
@@ -221,7 +222,7 @@ namespace KFramework.MonoGame
 
             Effect = Backend.CreateSpriteProgram();
 
-            SyncCanvasSize();
+            ApplyCanvasSize();
 
             // 照 MonoGame：绘制前把状态强制下发一次，保证 2D 绘制不受外部遗留状态影响。
             _rasterizerState = RasterizerState.CullNone;
@@ -243,35 +244,6 @@ namespace KFramework.MonoGame
         /// <summary>当前渲染后端名（"WebGL2" / "WebGPU"）。</summary>
         public string BackendName => Backend.Name;
 
-        /// <summary>把视口同步为画布当前的绘制缓冲尺寸，返回是否发生了变化。</summary>
-        public bool SyncCanvasSize()
-        {
-            Span<int> size = stackalloc int[5];
-            JSBind_Platform.GetCanvasSize(size);
-
-            // 顺手刷新缓存：这一版是跨界查的，之后 CssSize / DevicePixelRatio 就能直接读缓存，
-            // 直到下一次尺寸事件把它覆盖。
-            _cssWidth = size[0];
-            _cssHeight = size[1];
-            if (size[4] > 0) _dpr1000 = size[4];
-
-            int width = size[2];
-            int height = size[3];
-            if (width <= 0 || height <= 0) return false;
-
-            PresentationParameters.BackBufferWidth = width;
-            PresentationParameters.BackBufferHeight = height;
-
-            if (width == Viewport.Width && height == Viewport.Height) return false;
-
-            // 正渲染到离屏目标时不能抢视口：否则 RT 的绘制区域会被画布尺寸带偏，
-            // 这里只记录后备缓冲尺寸，等 SetRenderTarget(null) 切回屏幕时再恢复。
-            if (_currentRenderTargetCount > 0) return false;
-
-            Viewport = new Viewport(0, 0, width, height);
-            return true;
-        }
-
         // 画布尺寸由 input_window_event 在变化时上报（CanvasResized 事件），
         // 这里缓存下来供 CssSize / DevicePixelRatio 读取 —— 不必每帧为它们跨界查一次。
         private int _cssWidth;
@@ -285,6 +257,28 @@ namespace KFramework.MonoGame
         /// <b>不再为它跨界调一次 <c>GetCanvasSize</c></b> —— 这正是把尺寸改成事件的收益。
         /// </para>
         /// </summary>
+
+        public bool ApplyCanvasSize()
+        {
+            _cssWidth = cssWidth;
+            _cssHeight = cssHeight;
+            if (dpr1000 > 0) _dpr1000 = dpr1000;
+
+            if (backingWidth <= 0 || backingHeight <= 0) return false;
+
+            PresentationParameters.BackBufferWidth = backingWidth;
+            PresentationParameters.BackBufferHeight = backingHeight;
+
+            if (backingWidth == Viewport.Width && backingHeight == Viewport.Height) return false;
+
+            // 正渲染到离屏目标时不能抢视口：否则 RT 的绘制区域会被画布尺寸带偏，
+            // 这里只记录后备缓冲尺寸，等 SetRenderTarget(null) 切回屏幕时再恢复。
+            if (_currentRenderTargetCount > 0) return false;
+
+            Viewport = new Viewport(0, 0, backingWidth, backingHeight);
+            return true;
+        }
+
         public bool ApplyCanvasSize(int cssWidth, int cssHeight, int backingWidth, int backingHeight, int dpr1000)
         {
             _cssWidth = cssWidth;

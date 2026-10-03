@@ -101,17 +101,20 @@ namespace KFramework.MonoGame
             Window = new GameWindow(device);
             Components = new GameComponentCollection();
             JSBind_GameUpdate.Current = this;
-
-            // 画布尺寸改为事件驱动：input_window_event 在尺寸真变化时上报一次，
-            // 数据随事件一起过来，这里直接应用即可（不必每帧跨界去查）。
-            Input_GameFrameData.CanvasResized += OnCanvasResized;
+            Input_GameFrameData.WindowSizeChanged += OnWindowSizeChanged;
+            Input_GameFrameData.WindowFocusChanged += OnWindowFocusChanged;
         }
 
         /// <summary>收到画布尺寸事件：应用新尺寸，变了才通知 Window（与原先每帧同步的行为一致）。</summary>
-        private void OnCanvasResized(int cssWidth, int cssHeight, int backingWidth, int backingHeight, int dpr1000)
+        private void OnWindowSizeChanged(int cssWidth, int cssHeight, int backingWidth, int backingHeight, int dpr1000)
         {
             if (GraphicsDevice.ApplyCanvasSize(cssWidth, cssHeight, backingWidth, backingHeight, dpr1000))
-                Window.RaiseSizeChanged();
+                Window.OnWindowSizeChanged();
+        }
+
+        private void OnWindowFocusChanged(bool bFocus)
+        {
+            Window.OnWindowFocusChanged(bFocus);
         }
 
         /// <summary>启动主循环；返回的 Task 在 <see cref="Exit"/> 后完成。</summary>

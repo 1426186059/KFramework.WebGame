@@ -305,3 +305,32 @@ export function focusCanvas(idOrSelector?: string | null, focus: boolean = true)
         c.removeAttribute('tabindex');
     }
 }
+
+export function IsFocus(idOrSelector?: string | null) 
+{
+    const c = getCanvas(idOrSelector);
+    console.assert(c != null, "canvas == null")
+    return document.activeElement === c
+}
+
+export function getCanvasSize(view: MemoryView_Span | Int32Array): void {
+    const canvas = getCanvas();
+    if (!canvas) {
+        writeInts(view, [1, 1, 1, 1, 1000]);
+        return;
+    }
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    const cssWidth = Math.max(1, Math.round(canvas.clientWidth || 1));
+    const cssHeight = Math.max(1, Math.round(canvas.clientHeight || 1));
+    const drawWidth = Math.max(1, Math.round(cssWidth * dpr));
+    const drawHeight = Math.max(1, Math.round(cssHeight * dpr));
+
+    if (canvas.width !== drawWidth || canvas.height !== drawHeight) {
+        canvas.width = drawWidth;
+        canvas.height = drawHeight;
+    }
+
+    writeInts(view, [cssWidth, cssHeight, drawWidth, drawHeight, Math.round(dpr * 1000)]);
+}

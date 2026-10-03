@@ -30,28 +30,6 @@ function writeInts(view: MemoryView_Span | Int32Array, values: number[]): void {
     for (let i = 0; i < values.length; i++) fallback[i] = values[i];
 }
 
-export function getCanvasSize(view: MemoryView_Span | Int32Array): void {
-    const canvas = getCanvas();
-    if (!canvas) {
-        writeInts(view, [1, 1, 1, 1, 1000]);
-        return;
-    }
-
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const rect = canvas.getBoundingClientRect();
-    const cssWidth = Math.max(1, Math.round(rect.width || canvas.clientWidth || 1));
-    const cssHeight = Math.max(1, Math.round(rect.height || canvas.clientHeight || 1));
-    const drawWidth = Math.max(1, Math.round(cssWidth * dpr));
-    const drawHeight = Math.max(1, Math.round(cssHeight * dpr));
-
-    if (canvas.width !== drawWidth || canvas.height !== drawHeight) {
-        canvas.width = drawWidth;
-        canvas.height = drawHeight;
-    }
-
-    writeInts(view, [cssWidth, cssHeight, drawWidth, drawHeight, Math.round(dpr * 1000)]);
-}
-
 // ---------- 浏览器环境 ----------
 
 export function setTitle(title: string): void {

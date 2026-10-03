@@ -11,7 +11,7 @@
 import { MAX_EVENTS_PER_FRAME, MAX_FRAME_BYTES, evDataBytes } from './html_event_type.js';
 import { bindWindowEvents, drainWindowEvents, pollFocus, hadFocusLost } from './input_window_event.js';
 import { discardKeyboardEvents, writeKeyboardEvents } from './input_keyboard.js';
-import { tickMouseWatchdog, writeMouseEvents } from './input_mouse.js';
+import { discardMouseEvents, writeMouseEvents } from './input_mouse.js';
 import { discardTouchEvents, writeTouchEvents } from './input_touch.js';
 const scratch = new Uint8Array(MAX_FRAME_BYTES);
 let count = 0;
@@ -39,43 +39,16 @@ const sink = {
 export function bindFrameEvents(canvasId) {
     bindWindowEvents(canvasId);
 }
-/**
- * 取本帧全部输入模块的事件流：<b>写进 C# 传来的缓冲</b>，返回写入的字节数。
- *
- * 布局：<c>[count(1)][ [type(1)][data] × count ]</c>，类型与字节数见 html_event_type。
- *
- * 【签名必须与 C# 对齐】<c>int TakeFrameData(Span&lt;byte&gt; buffer)</c> ——
- * 返回值是<b>字节数</b>（不是数组）：C# 侧声明的返回类型是 int，若这里交回一个 Uint8Array，
- * 运行时会在 marshal 时断言失败（"Value is not an integer: 0 (object)"）。
- * 写入走 MemoryView 零拷贝，每帧不分配。
- */
 export function takeFrameData(target) {
-    pollFocus(); // 焦点兜底（替代 window 的 focus / blur 监听）
-    // 必须在取失焦判定<b>之前</b>：看门狗上报的 SysPointerCancel 要让本帧就生效。
-    tickMouseWatchdog();
+    pollFocus();
     count = 0;
-    off = 1; // 第 0 字节留给条数
-    // 【本帧是否失焦过】两个走向，各自口径单一，不会"一半作废、一半照发"：
-    //   失焦 → 系统事件照发（尺寸 / 焦点必须始终同步），键盘 / 鼠标 / 触摸的待发数据全部作废
-    //           （窗外松手收不到 keyup、被接管的指针收不到 mouseup，留到下一帧就是"一直按住"）；
-    //   没失焦 → 照常汇总。
-    //
-    // 【lost 是 boolean，不是 number | null】早先是 focusLostType() 返回事件类型、用 !== null 判空；
-    // 改成 hadFocusLost() 后返回的是 boolean，而 boolean 永远不等于 null ——
-    // 那行判断会恒为 true，结果是【每一帧都把输入丢光】（鼠标点击全失效）。
+    off = 1;
     const lost = hadFocusLost();
     drainWindowEvents(sink); //窗口系统事件，必须保留
     if (lost) {
-        // 【键盘 / 触摸作废】失焦后它们的 keyup / touchend 确实收不到了，
-        // 把"按下"留到下一帧发出去就是永远按住 —— 必须丢。
         discardKeyboardEvents();
         discardTouchEvents();
-        // 【鼠标照常写，绝不作废】mousedown / mouseup 是可靠送达的（日志里每次 down 都跟到了 up）。
-        // 若在失焦帧把鼠标数据丢掉：松开那一下的 mouseup 正好落进来就被吞，
-        // 而 SysFocusLost 分支已经不再复位鼠标（否则会取消右键拖拽）——
-        // 按下留着、抬起丢了、复位也没有，那只键必然一直显示按住。
-        // "按下的 up 永远不来"由 input_mouse 的看门狗兜底，不靠丢弃。
-        writeMouseEvents(sink);
+        discardMouseEvents();
     }
     else {
         writeKeyboardEvents(sink);
@@ -83,8 +56,6 @@ export function takeFrameData(target) {
         writeTouchEvents(sink);
     }
     scratch[0] = count;
-    // 直写 C# 的缓冲：同步调用期间没有 await，Span 的 MemoryView 有效，
-    // 且它的 set(源, 偏移) 与 Uint8Array 同签名（见 http_func.ts 的同样写法）。
     target.set(scratch.subarray(0, off), 0);
     return off;
 }

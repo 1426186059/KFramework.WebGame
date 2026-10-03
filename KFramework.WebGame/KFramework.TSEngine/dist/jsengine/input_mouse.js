@@ -1,8 +1,8 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Mouse 经 [JSImport(module: "input_mouse")] 调用；产物 input_mouse.js 由 SyncJsEngine 复制。
 // 鼠标模块：只注册监听 + 维护"当前状态/变化"。状态与边沿在 C# 侧（Input_Mouse）实现。
-import { canvasPoint, getInputCanvas, setCanvasId } from './input_common.js';
+import { canvasPoint } from './input_common.js';
 import { E_HTML_Event_Type } from './html_event_type.js';
-import { isFocusAway, reportPointerCancel } from './input_window_event.js';
+import { reportPointerCancel } from './input_window_event.js';
 const registrations = [];
 /**
  * 装置是否<b>激活</b>（= 是否绑着监听在采集）：由 bindMouse / unbindMouse 维护，
@@ -32,35 +32,27 @@ function on(target, name, handler, options) {
 export function bindMouse(canvasId) {
     if (enabled)
         return;
-    // 记下画布 id，后续 canvasPoint 的坐标换算才能用同一块画布。
-    if (canvasId)
-        setCanvasId(canvasId);
-    const canvas = getInputCanvas();
-    if (canvas) {
-        // 防止画布在按住拖动时被浏览器当作可拖拽元素/可选文本，进而提前结束“按下”。
-        const c = canvas;
-        c.setAttribute('draggable', 'false');
-        c.style.userSelect = 'none';
-        c.style.touchAction = 'none';
-        c.style.webkitUserSelect = 'none';
-        // 全部用具名函数（ReadMe：本目录禁止匿名函数 —— 移动是每帧高频路径，闭包就是每帧垃圾）
-        on(canvas, 'dragstart', preventDefault);
-        on(canvas, 'mousemove', onMouseMove);
-        on(canvas, 'mousedown', onMouseDown);
-        on(canvas, 'wheel', onMouseWheel, { passive: false });
-    }
-    // contextmenu（右键菜单 / 长按手势）不在这里 —— 它只拦掉浏览器菜单，不判失焦，
-    // 已统一交给 input_window_event 监听（挂 window，见那里的 onContextMenu）。
-    // 抬起挂 window：在画布外松手也能收到
+    // // 记下画布 id，后续 canvasPoint 的坐标换算才能用同一块画布。
+    // if (canvasId) setCanvasId(canvasId);
+    // const canvas = getInputCanvas();
+    // if (canvas) {
+    //     // 防止画布在按住拖动时被浏览器当作可拖拽元素/可选文本，进而提前结束“按下”。
+    //     const c = canvas as HTMLElement;
+    //     c.setAttribute('draggable', 'false');
+    //     c.style.userSelect = 'none';
+    //     c.style.touchAction = 'none';
+    //     (c.style as any).webkitUserSelect = 'none';
+    //     // 全部用具名函数（ReadMe：本目录禁止匿名函数 —— 移动是每帧高频路径，闭包就是每帧垃圾）
+    //     on(canvas, 'dragstart', preventDefault);
+    //     on(canvas, 'mousemove', onMouseMove);
+    //     on(canvas, 'mousedown', onMouseDown);
+    //     on(canvas, 'wheel', onMouseWheel, { passive: false });
+    // }
+    on(window, 'mousemove', onMouseMove);
+    on(window, 'mousedown', onMouseDown);
     on(window, 'mouseup', onMouseUp);
-    // 【手势被接管】浏览器/系统接管指针（右键手势、拖拽、长按菜单等）时【不会】再派发 mouseup，
-    // 只给 pointercancel —— 少了这一步，被接管的那个键就永远卡在"按住"，
-    // 表现为松开后 UI 仍显示 Left/Right 按住不放。
+    on(window, 'wheel', onMouseWheel, { passive: false });
     on(window, 'pointercancel', onPointerCancel);
-    // 【失焦】不再自己监听 window 的 blur / document 的 visibilitychange ——
-    // 焦点一律以画布为准（bindFrameEvents 绑在 canvas 上，外加 document.hasFocus() 每帧兜底）。
-    // 这里保留的两个 window 监听各自有别的职责：mouseup 是画布外松手也要收到；
-    // pointercancel 是手势被接管 —— 它现在也归到"失焦"，但触发源不是焦点，不能靠 blur 替代。
     enabled = true; // 监听全部挂上了才算激活
 }
 /** 拦掉浏览器默认行为（拖拽起始）。 */
@@ -73,23 +65,8 @@ function onMouseMove(e) {
     posX = p.x;
     posY = p.y;
     moved = true;
-    sawMouseEvent = true; // 看门狗：交互还活着
-    // 阻止按住拖动时的原生文本选择/元素拖拽，避免浏览器在首次 mousemove 时
-    // 中断“按下”状态并隐式发出 mouseup，导致 UI 面板无法拖动（单击正常）。
     ev.preventDefault();
 }
-// ============ 卡键看门狗 ============
-// 背景：失焦不再释放鼠标（右键按住时浏览器会为手势瞬时把焦点拿走，据此释放会取消正在进行的拖拽），
-// 于是出现了另一种卡法 —— 菜单 / 手势真的弹出来时浏览器会<b>吞掉 mouseup</b>，那只键再也没人到。
-//
-// 判据不是"等多久"，而是<b>"交互还活着吗"</b>：
-//   * 拖拽还活着 → mousemove 会不断到达，等得到事件，永不触发；
-//   * 被菜单挡住 → 一个鼠标事件都收不到，等不到，达到时限就判定 mouseup 不会再来。
-// 因此只统计"文档失焦 <b>且</b> 本帧零鼠标事件"的连续帧数。
-const AWAY_FRAMES_LIMIT = 30; // 约 0.5 秒 @60fps；误伤"按住不动的蓄力"时才需要调大
-let watching = false; // 是否已进入"等 mouseup"观察
-let idleFrames = 0; // 观察期内连续无鼠标事件的帧数
-let sawMouseEvent = false;
 function onMouseDown(e) {
     const ev = e;
     const p = canvasPoint(ev.clientX, ev.clientY);
@@ -97,7 +74,6 @@ function onMouseDown(e) {
     posY = p.y;
     buttons.set(ev.button, 1);
     held.add(ev.button);
-    sawMouseEvent = true;
     ev.preventDefault();
 }
 function onMouseWheel(e) {
@@ -106,7 +82,6 @@ function onMouseWheel(e) {
     posX = p.x;
     posY = p.y;
     wheelDelta += Math.sign(ev.deltaY);
-    sawMouseEvent = true;
     ev.preventDefault();
 }
 function onMouseUp(e) {
@@ -116,19 +91,14 @@ function onMouseUp(e) {
     posY = p.y;
     buttons.set(ev.button, 0);
     held.delete(ev.button);
-    sawMouseEvent = true;
 }
 function onPointerCancel(e) {
     const ev = e;
-    // 只置标记，真正上报延到 takeFrameData 的 SysPointerCancel。
-    // 确有按住的键被中断才上报 —— 空跑一次 pointercancel 不该连带作废整帧输入。
     if (!held.delete(ev.button))
         return;
     held.clear(); // C# 侧会 ReleaseAll 全部键，本侧不必再逐个记
     reportPointerCancel();
 }
-//（visibilitychange 与 window.blur 的监听已移除，统一由 canvas 焦点 + hasFocus 兜底接管）
-/** 解绑鼠标监听并清空状态。 */
 export function unbindMouse() {
     enabled = false; // 先置未激活：此后攒下的数据一律不再上报
     for (const r of registrations)
@@ -181,47 +151,7 @@ export function writeMouseEvents(w) {
         w.put(E_HTML_Event_Type.MouseMove, scratch, 4);
     }
 }
-/**
- * 每帧跑一次（由 game_frame_take_js_data 在取失焦判定<b>之前</b>调用）：
- * 按住的键若一直等不到 mouseup 且收不到任何鼠标事件，判定被浏览器吞掉，上报释放。
- *
- * 必须在 hadFocusLost() 之前调用 —— 它上报的 SysPointerCancel 要让<b>本帧</b>就生效。
- */
-export function tickMouseWatchdog() {
-    // 没有按住的键，或本帧收到过鼠标事件 —— 交互正常，收工
-    if (held.size === 0 || sawMouseEvent) {
-        watching = false;
-        idleFrames = 0;
-        sawMouseEvent = false;
-        return;
-    }
-    sawMouseEvent = false;
-    // 【观察只在"文档失焦"时启动】焦点正常时按住不动是合法的（蓄力 / 长按），不该被打扰；
-    // 失焦才是"浏览器可能把这次 press 取消了"的信号。
-    if (!watching) {
-        if (!isFocusAway())
-            return;
-        watching = true;
-        idleFrames = 0;
-        return;
-    }
-    // 【一旦启动就一路数下去，不因焦点回来而中断】
-    // 菜单被关掉后焦点会恢复，但那次 mouseup 早就被吞了、再也不会来 ——
-    // 若此时停下观察，那只键就永远卡住。
-    if (++idleFrames < AWAY_FRAMES_LIMIT)
-        return;
-    watching = false;
-    idleFrames = 0;
-    held.clear();
-    reportPointerCancel();
-}
-/**
- * 作废本帧攒下的鼠标事件（装置未激活时由 {@link writeMouseEvents} 自己调用）。
- *
- * 与 {@link unbindMouse} 的清空不同：监听仍挂着，只丢数据。
- * <b>失焦帧不调它</b> —— 那时鼠标数据照常写，理由见 writeMouseEvents 里的注释。
- */
-function discardMouseEvents() {
+export function discardMouseEvents() {
     buttons.clear();
     held.clear();
     moved = false;
