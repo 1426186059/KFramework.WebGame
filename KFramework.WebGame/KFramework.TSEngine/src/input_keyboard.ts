@@ -149,7 +149,7 @@ export function bindKeyboard(canvasId?: string): void
     if (canvasId)
     {
         console.log("Canvas bindKeyboard ");
-        m_Canvas = getCanvas(canvasId);
+        m_Canvas = getCanvas();
         m_CanvasId = canvasId ?? null;
         if(m_Canvas)
         {

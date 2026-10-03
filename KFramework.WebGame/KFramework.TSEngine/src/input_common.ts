@@ -10,7 +10,7 @@ export function setCanvasId(id: string): void {
 
 /** 取当前输入画布（供各输入模块与坐标换算共用）。 */
 export function getInputCanvas(): HTMLCanvasElement | null {
-    return getCanvas(currentCanvasId);
+    return getCanvas();
 }
 
 const pointOut: Point = { x: 0, y: 0 };

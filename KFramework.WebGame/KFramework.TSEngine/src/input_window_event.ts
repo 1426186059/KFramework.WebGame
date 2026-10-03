@@ -39,7 +39,7 @@ function onWindowContextMenu(e: PointerEvent): void
 
 export function bindWindowEvents(canvasId: string | null): void 
 {
-    canvas = getCanvas(canvasId)
+    canvas = getCanvas()
     console.assert(canvas != null, "bindWindowEvents Error")
 
     document.addEventListener('visibilitychange', onDocumentVisibility);

@@ -5,29 +5,23 @@
 // 接受任意合法 CSS cursor 值：default / crosshair / pointer / wait / text / move /
 // not-allowed / grab / zoom-in / none，以及 url(...) 形式。
 
-/** 默认画布 id（与 html_canvas.ts 的 DEFAULT_CANVAS_ID 对齐）。 */
-const DEFAULT_CANVAS_ID = 'game';
+import { getCanvas } from "./html_canvas";
 
-function toId(idOrSelector: string): string {
-    const trimmed = (idOrSelector ?? '').trim().replace(/^#/, '');
-    return trimmed.length > 0 ? trimmed : DEFAULT_CANVAS_ID;
-}
-
-function target(idOrSelector: string): HTMLCanvasElement | null {
-    const el = document.getElementById(toId(idOrSelector));
-    return el instanceof HTMLCanvasElement ? el : null;
+function target(): HTMLCanvasElement | null 
+{
+    return getCanvas();
 }
 
 /** 设置光标；name 为空或 "default" 时复位为默认箭头。 */
 export function setCursor(idOrSelector: string, name: string): void {
-    const el = target(idOrSelector);
+    const el = target();
     if (!el) return;
     el.style.cursor = (name && name.length > 0) ? name : 'default';
 }
 
 /** 复位为默认光标。 */
 export function resetCursor(idOrSelector: string): void {
-    const el = target(idOrSelector);
+    const el = target();
     if (!el) return;
     el.style.cursor = 'default';
 }

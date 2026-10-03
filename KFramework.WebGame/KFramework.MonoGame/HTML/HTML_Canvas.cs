@@ -21,12 +21,7 @@ namespace KFramework.MonoGame
         private Rectangle? _rect;
         public Point CssSize;
         public Point DrawSize;
-
-        /// <summary>
-        /// 用 DOM id（或 "#id" 选择器）关联一块画布。构造本身不创建 DOM 元素，
-        /// 需要新建时调用 <see cref="Create(HTML_CanvasLayoutMode, int, int, int, int)"/>。
-        /// </summary>
-        /// <param name="idOrSelector">画布 DOM id，可写 "#id" 形式；空串回落到默认 id。</param>
+        
         public HTML_Canvas(string idOrSelector = "#game")
         {
             if(Current != null)
@@ -35,6 +30,12 @@ namespace KFramework.MonoGame
             }
 
             Id = HTML_Canvas_Func.ToCanvasId(idOrSelector);
+            if(!Create(HTML_CanvasLayoutMode.Fullscreen, 0, 0, 0, 0))
+            {
+
+            }
+            Refresh();
+            SyncJSInfo();
             Current = this;
         }
 
@@ -59,7 +60,9 @@ namespace KFramework.MonoGame
 
         /// <summary>创建这块画布：按 <paramref name="mode"/> 布局（Rect 摆位 / Centered 居中 / Fullscreen 填满整个 HTML 页面 / Size 仅设尺寸）。已存在时返回 false。</summary>
         public bool Create(HTML_CanvasLayoutMode mode, int x, int y, int width, int height)
-            => Refresh(JSBind_HTML_Canvas.Create(Id, (int)mode, x, y, width, height));
+        { 
+            return JSBind_HTML_Canvas.Create(Id, (int)mode, x, y, width, height);
+        }
 
         /// <summary>
         /// 【通用布局入口】一次调用表达四种摆位需求，对应 TS 的 applyLayout。

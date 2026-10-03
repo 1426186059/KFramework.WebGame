@@ -15,7 +15,7 @@
 //
 // 重要：.NET 侧 Span<T> 在 JS 侧是 MemoryView（不是 TypedArray），必须经 toUint8Array 转换后才能交给 WebGPU。
 
-import { getOrCreateCanvasElement } from './html_canvas.js';
+import { getCanvas } from './html_canvas.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type GPU = any;
@@ -82,7 +82,7 @@ function parseJson(s: string): GPU {
  * 成功返回 true；浏览器不支持 / 取设备失败返回 false 并在控制台报错。
  */
 export async function init(canvasId: string, antialias: boolean): Promise<boolean> {
-    const element = getOrCreateCanvasElement(canvasId);
+    const element = getCanvas();
     if (!element) {
         console.error('[webgpu] 无法创建或找到画布:', canvasId);
         return false;
