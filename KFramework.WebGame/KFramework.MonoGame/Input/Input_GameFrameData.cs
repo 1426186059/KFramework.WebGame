@@ -122,14 +122,16 @@ namespace KFramework.MonoGame
                             int cssHeight = BinaryPrimitives.ReadInt16LittleEndian(data.Slice(2, 2));
                             int canvasWidth = BinaryPrimitives.ReadInt16LittleEndian(data.Slice(4, 2));
                             int canvasHeight = BinaryPrimitives.ReadInt16LittleEndian(data.Slice(6, 2));
-                            int dpi = BinaryPrimitives.ReadInt16LittleEndian(data.Slice(8, 2));
+                            int dpr = BinaryPrimitives.ReadInt16LittleEndian(data.Slice(8, 2));
+
+                            HTML_Canvas.Current.UpdateInfo(cssWidth, cssHeight, canvasWidth, canvasHeight, dpr);
 
                             WindowSizeChanged?.Invoke(
                                 cssWidth,
                                 cssHeight,
                                 canvasWidth,
                                 canvasHeight,
-                                dpi);
+                                dpr);
 
                         }
                         break;

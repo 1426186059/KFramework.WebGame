@@ -103,7 +103,6 @@ namespace KFramework.MonoGame
         /// <summary>收到画布尺寸事件：应用新尺寸，变了才通知 Window（与原先每帧同步的行为一致）。</summary>
         private void OnWindowSizeChanged(int cssWidth, int cssHeight, int backingWidth, int backingHeight, int dpr1000)
         {
-            HTML_Canvas.Current.UpdateInfo(cssWidth, cssHeight, backingWidth, backingHeight, dpr1000);
             if (GraphicsDevice.ApplyCanvasSize())
                 Window.OnWindowSizeChanged();
         }
