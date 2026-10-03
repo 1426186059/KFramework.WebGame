@@ -17,11 +17,10 @@ namespace KFramework.MonoGame
     /// </remarks>
     public sealed class HTML_Canvas
     {
+        public static HTML_Canvas Current = null;
         private Rectangle? _rect;
-
-        public int _cssWidth;
-        public int _cssHeight;
-        public float devicePixelRatio = 1000;
+        public Point CssSize;
+        public Point DrawSize;
 
         /// <summary>
         /// 用 DOM id（或 "#id" 选择器）关联一块画布。构造本身不创建 DOM 元素，
@@ -30,7 +29,13 @@ namespace KFramework.MonoGame
         /// <param name="idOrSelector">画布 DOM id，可写 "#id" 形式；空串回落到默认 id。</param>
         public HTML_Canvas(string idOrSelector)
         {
+            if(Current != null)
+            {
+                throw new InvalidOperationException("HTML_Canvas.Current 已存在，不能重复创建。");
+            }
+
             Id = HTML_Canvas_Func.ToCanvasId(idOrSelector);
+            Current = this;
         }
 
         /// <summary>本实例对应的 DOM id（已归一化，无 "#" 前缀）。</summary>
@@ -111,5 +116,19 @@ namespace KFramework.MonoGame
 
         /// <inheritdoc />
         public override string ToString() => $"HTML_Canvas(id={Id}, rect={Rect})";
+
+        public void SyncJSInfo()
+        {
+
+        }
+
+        public void UpdateInfo(int cssWidth, int cssHeight, int backingWidth, int backingHeight, int dpr1000)
+        {
+            this.CssSize.X = cssWidth;
+            this.CssSize.Y = cssHeight;
+            this.DrawSize.X = backingWidth;
+            this.DrawSize.Y = backingHeight;
+            HTML_Window.DevicePixelRatio = dpr1000 / 1000.0f;
+        }
     }
 }

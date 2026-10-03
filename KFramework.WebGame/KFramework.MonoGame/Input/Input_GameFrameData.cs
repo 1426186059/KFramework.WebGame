@@ -39,6 +39,16 @@ namespace KFramework.MonoGame
         private static readonly byte[] _buffer = new byte[MaxBytes];   // 每帧复用，零分配
         private static bool _bound;
 
+        /// <summary>
+        /// 取某类型的 data 字节数（<b>不含</b> type 那 1 字节）。
+        /// <para>
+        /// <b>必须与 TS 的 <c>evDataBytes</c> 逐条一致</b>（html_event_type.ts）——
+        /// TS 的判据是 <c>type &lt;= SysPointerCancel(5) → 0</c>，
+        /// 所以 SysFocusLost / SysFocusGained / SysPageHidden / SysPageVisible / SysPointerCancel
+        /// 这五条<b>都是 0 字节</b>。早先只把 SysPointerCancel 列进 0，其余落到 default 返回 1，
+        /// 于是 C# 每读到一条失焦事件就多吞一个字节 —— 从那一条起整条流全部错位。
+        /// </para>
+        /// </summary>
         private static int DataBytes(EvType type)
         {
             switch(type)
@@ -52,8 +62,15 @@ namespace KFramework.MonoGame
                     return 4;
                 case EvType.CanvasResized:
                     return 10;
+
+                // 只靠 type、不带 data 的五条（与 TS 的 type <= SysPointerCancel 对应）
+                case EvType.SysFocusLost:
+                case EvType.SysFocusGained:
+                case EvType.SysPageHidden:
+                case EvType.SysPageVisible:
                 case EvType.SysPointerCancel:
                     return 0;
+
                 default: 
                     return 1;
             }

@@ -222,7 +222,7 @@ namespace KFramework.MonoGame
 
             Effect = Backend.CreateSpriteProgram();
 
-            ApplyCanvasSize();
+            ApplyCanvasSize(true);
 
             // 照 MonoGame：绘制前把状态强制下发一次，保证 2D 绘制不受外部遗留状态影响。
             _rasterizerState = RasterizerState.CullNone;
@@ -244,12 +244,6 @@ namespace KFramework.MonoGame
         /// <summary>当前渲染后端名（"WebGL2" / "WebGPU"）。</summary>
         public string BackendName => Backend.Name;
 
-        // 画布尺寸由 input_window_event 在变化时上报（CanvasResized 事件），
-        // 这里缓存下来供 CssSize / DevicePixelRatio 读取 —— 不必每帧为它们跨界查一次。
-        private int _cssWidth;
-        private int _cssHeight;
-        private int _dpr1000 = 1000;
-
         /// <summary>
         /// 用画布尺寸事件带来的数据同步后备缓冲与视口，返回是否发生了变化。
         /// <para>
@@ -257,67 +251,22 @@ namespace KFramework.MonoGame
         /// <b>不再为它跨界调一次 <c>GetCanvasSize</c></b> —— 这正是把尺寸改成事件的收益。
         /// </para>
         /// </summary>
-
-        public bool ApplyCanvasSize()
+        public bool ApplyCanvasSize(bool bSync = false)
         {
-            _cssWidth = cssWidth;
-            _cssHeight = cssHeight;
-            if (dpr1000 > 0) _dpr1000 = dpr1000;
+            if (bSync) Canvas.SyncJSInfo();
 
-            if (backingWidth <= 0 || backingHeight <= 0) return false;
+            if (Canvas.DrawSize.X <= 0 || Canvas.DrawSize.Y <= 0) return false;
 
-            PresentationParameters.BackBufferWidth = backingWidth;
-            PresentationParameters.BackBufferHeight = backingHeight;
-
-            if (backingWidth == Viewport.Width && backingHeight == Viewport.Height) return false;
-
-            // 正渲染到离屏目标时不能抢视口：否则 RT 的绘制区域会被画布尺寸带偏，
-            // 这里只记录后备缓冲尺寸，等 SetRenderTarget(null) 切回屏幕时再恢复。
-            if (_currentRenderTargetCount > 0) return false;
-
-            Viewport = new Viewport(0, 0, backingWidth, backingHeight);
-            return true;
-        }
-
-        public bool ApplyCanvasSize(int cssWidth, int cssHeight, int backingWidth, int backingHeight, int dpr1000)
-        {
-            _cssWidth = cssWidth;
-            _cssHeight = cssHeight;
-            if (dpr1000 > 0) _dpr1000 = dpr1000;
-
-            if (backingWidth <= 0 || backingHeight <= 0) return false;
-
-            PresentationParameters.BackBufferWidth = backingWidth;
-            PresentationParameters.BackBufferHeight = backingHeight;
-
-            if (backingWidth == Viewport.Width && backingHeight == Viewport.Height) return false;
-
-            // 正渲染到离屏目标时不能抢视口：否则 RT 的绘制区域会被画布尺寸带偏，
-            // 这里只记录后备缓冲尺寸，等 SetRenderTarget(null) 切回屏幕时再恢复。
-            if (_currentRenderTargetCount > 0) return false;
-
-            Viewport = new Viewport(0, 0, backingWidth, backingHeight);
-            return true;
-        }
-
-        /// <summary>CSS 像素尺寸（不含设备像素比）。取自最近一次画布尺寸事件；事件还没来过则跨界查一次。</summary>
-        public Vector2 CssSize
-        {
-            get
+            PresentationParameters.BackBufferWidth = Canvas.DrawSize.X;
+            PresentationParameters.BackBufferHeight = Canvas.DrawSize.Y;
+            if (Canvas.DrawSize.X == Viewport.Width && Canvas.DrawSize.Y == Viewport.Height)
             {
-                if (_cssWidth <= 0 || _cssHeight <= 0) SyncCanvasSize();
-                return new Vector2(_cssWidth, _cssHeight);
+                return false;
             }
-        }
 
-        /// <summary>设备像素比。取自最近一次画布尺寸事件；事件还没来过则跨界查一次。</summary>
-        public float DevicePixelRatio
-        {
-            get
-            {
-                if (_cssWidth <= 0) SyncCanvasSize();
-                return _dpr1000 / 1000f;
-            }
+            if (_currentRenderTargetCount > 0) return false;
+            Viewport = new Viewport(0, 0, Canvas.DrawSize.X, Canvas.DrawSize.Y);
+            return true;
         }
 
         /// <summary>

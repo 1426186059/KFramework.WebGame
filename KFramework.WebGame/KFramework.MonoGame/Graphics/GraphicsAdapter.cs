@@ -46,16 +46,10 @@ namespace KFramework.MonoGame
         {
             get
             {
-                Span<int> size = stackalloc int[5];
-                JSBind_Platform.GetCanvasSize(size);
-                int width = size[2];
-                int height = size[3];
-                if (width <= 0 || height <= 0)
-                {
-                    width = GraphicsDeviceManager.DefaultBackBufferWidth;
-                    height = GraphicsDeviceManager.DefaultBackBufferHeight;
-                }
-                return new DisplayMode(width, height, SurfaceFormat.Color);
+                return new DisplayMode(
+                    GraphicsDevice.Canvas.DrawSize.X, 
+                    GraphicsDevice.Canvas.DrawSize.Y, 
+                    SurfaceFormat.Color);
             }
         }
 

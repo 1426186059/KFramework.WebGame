@@ -58,10 +58,7 @@ namespace KFramework.MonoGame
 
         public Vector2 Size => new(Width, Height);
 
-        public float DevicePixelRatio => _device.DevicePixelRatio;
-
-        /// <summary>CSS 像素尺寸。输入上报的坐标已经是后备缓冲像素，本属性仅供需要 CSS 语义的场合。</summary>
-        public Vector2 CssSize => _device.CssSize;
+        public float DevicePixelRatio => HTML_Window.DevicePixelRatio;
 
         public string Title
         {
