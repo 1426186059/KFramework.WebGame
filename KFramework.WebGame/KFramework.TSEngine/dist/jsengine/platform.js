@@ -1,27 +1,9 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Platform 经 [JSImport(module: "platform")] 调用；产物 platform.js 由 SyncJsEngine 复制。
-// 平台层：画布尺寸自适应、requestAnimationFrame 主循环、浏览器环境查询。
+// 平台层：页面标题 / 地址栏参数 / 环境查询 / 外链打开。
 //
-// 输入已独立成 ./input.ts（薄绑定层），由 C# 侧 JSBind_Input 单独对接模块名 "input"。
-// ---------- 画布尺寸 ----------
-// 复用的整数缓冲，避免每帧 getCanvasSize 都 new Int32Array（减少 GC 抖动）。
-let _int32Scratch = new Int32Array(8);
-function writeInts(view, values) {
-    if (_int32Scratch.length < values.length)
-        _int32Scratch = new Int32Array(values.length);
-    _int32Scratch.set(values);
-    const slice = _int32Scratch.subarray(0, values.length);
-    if (view instanceof Int32Array) {
-        view.set(slice);
-        return;
-    }
-    if (typeof view.set === 'function') {
-        view.set(slice, 0);
-        return;
-    }
-    const fallback = view;
-    for (let i = 0; i < values.length; i++)
-        fallback[i] = values[i];
-}
+// 画布元素与尺寸已搬到 ./html_canvas.ts（对应 C# 侧 HTML_Canvas）；
+// 帧循环已搬到 ./game_update.ts（对应 C# 侧 JSBind_GameUpdate）；
+// 输入已独立成 input_keyboard / input_mouse / input_touch / input_window_event。
 // ---------- 浏览器环境 ----------
 export function setTitle(title) {
     document.title = title;

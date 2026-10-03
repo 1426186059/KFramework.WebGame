@@ -6,15 +6,15 @@
 //   · gl.ts 只管 **WebGL2 上下文**（从本文件给出的元素上 getContext('webgl2')）。
 // 因此 gl.ts 不再自己 querySelector，避免出现两套查找 / 创建规则。
 //
-// 尺寸链路（改动这里之前请先读 platform.js 的 getCanvasSize 注释）：
+// 尺寸链路（改动这里之前请先读 platform.js 的 SyncJSCanvasInfo 注释）：
 //   CSS 尺寸（本文件写的 style.width / style.height）
-//     → platform.getCanvasSize 每帧读 rect × DPR 写进 canvas.width / canvas.height（backing）
+//     → SyncJSCanvasInfo 每帧读 rect × DPR 写进 canvas.width / canvas.height（backing）
 //     → C# 侧 GraphicsDevice.SyncCanvasSize 更新 PresentationParameters 与 Viewport，并触发 GameWindow.SizeChanged。
 // 所以本文件只改 CSS，backing / 窗口 / 输入坐标（input_common 按 rect 换算）会在下一帧自动跟上。
-/** id → 画布元素。由本模块统一持有，删除时同步摘除。 */
-const canvases = new Map();
-/** 处于「居中模式」的画布：窗口变化时自动重新居中（浏览器窗口缩放）。 */
-const centered = new Map();
+/** 唯一的画布元素（单画布模型）。由本模块统一持有，删除时置空。 */
+let canvas = null;
+/** 处于「居中模式」时的画布尺寸：窗口变化时自动重新居中（浏览器窗口缩放）。 */
+let centered = null;
 /** 未指定画布时的默认 DOM id（与 C# 侧 Game 的默认选择器 "#game" 对齐）。 */
 export const DEFAULT_CANVAS_ID = 'game';
 /**
@@ -62,13 +62,10 @@ function applyCentered(element, width, height) {
 }
 // 窗口变了就把居中画布重新居中：否则浏览器一缩放，原本居中的画布就偏了。
 window.addEventListener('resize', () => {
-    centered.forEach((size, id) => {
-        const element = canvases.get(id);
-        if (element?.isConnected)
-            applyCentered(element, size.width, size.height);
-        else
-            centered.delete(id);
-    });
+    if (centered && canvas?.isConnected)
+        applyCentered(canvas, centered.width, centered.height);
+    else
+        centered = null;
 });
 /** 写回整数缓冲（与 platform.js 同一套 MemoryView_Span 处理）。 */
 let _int32Scratch = new Int32Array(8);
@@ -90,12 +87,11 @@ function writeInts(view, values) {
         fallback[i] = values[i];
 }
 function lookup(id) {
-    const known = canvases.get(id);
-    if (known)
-        return known;
+    if (canvas)
+        return canvas;
     const byDom = document.getElementById(id);
     if (byDom instanceof HTMLCanvasElement) {
-        canvases.set(id, byDom);
+        canvas = byDom;
         return byDom;
     }
     return null;
@@ -108,22 +104,22 @@ function applyLayoutStyle(element, mode, x, y, width, height, id) {
     switch (mode) {
         case 1 /* LayoutMode.Size */:
             // 只改尺寸：位置保持不动
-            centered.delete(id);
+            centered = null;
             element.style.width = `${Math.max(1, Math.round(width))}px`;
             element.style.height = `${Math.max(1, Math.round(height))}px`;
             break;
         case 2 /* LayoutMode.Centered */:
             applyCommonStyle(element);
             applyCentered(element, width, height);
-            centered.set(id, { width: Math.max(1, Math.round(width)), height: Math.max(1, Math.round(height)) });
+            centered = { width: Math.max(1, Math.round(width)), height: Math.max(1, Math.round(height)) };
             break;
         case 3 /* LayoutMode.Fullscreen */:
-            centered.delete(id);
+            centered = null;
             applyFullscreenStyle(element);
             break;
         default:
             // LayoutMode.Rect：手动摆位后不再跟随窗口居中
-            centered.delete(id);
+            centered = null;
             applyRectStyle(element, x, y, width, height);
             break;
     }
@@ -146,7 +142,7 @@ export function create(idOrSelector, mode, x, y, width, height) {
     applyCommonStyle(element);
     applyLayoutStyle(element, mode, x, y, width, height, id);
     document.body.appendChild(element);
-    canvases.set(id, element);
+    canvas = element;
     return true;
 }
 /**
@@ -170,7 +166,7 @@ export function restoreLayout(idOrSelector) {
     const element = lookup(id);
     if (!element)
         return false;
-    centered.delete(id);
+    centered = null;
     for (const property of ['position', 'left', 'top', 'width', 'height', 'display', 'margin', 'padding', 'outline', 'touch-action', 'z-index']) {
         element.style.removeProperty(property);
     }
@@ -205,8 +201,8 @@ export function destroy(idOrSelector) {
     if (!element)
         return false;
     element.remove();
-    canvases.delete(id);
-    centered.delete(id);
+    canvas = null;
+    centered = null;
     return true;
 }
 /** 该画布是否存在（页面上已有、或由本模块创建过）。 */
@@ -230,7 +226,7 @@ export function getOrCreateCanvasElement(idOrSelector) {
         return existing;
     if (!create(id, 3 /* LayoutMode.Fullscreen */, 0, 0, 0, 0))
         return null;
-    return canvases.get(id) ?? null;
+    return canvas;
 }
 /**
  * 让画布可获焦 / 取消获焦：绑在 <canvas> 上的 keydown/keyup 只有在画布获焦时才会触发，
@@ -256,14 +252,13 @@ export function IsFocus(idOrSelector) {
     console.assert(c != null, "canvas == null");
     return document.activeElement === c;
 }
-export function getCanvasSize(view) {
+export function SyncJSCanvasInfo(view) {
     const canvas = getCanvas();
     if (!canvas) {
         writeInts(view, [1, 1, 1, 1, 1000]);
         return;
     }
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const rect = canvas.getBoundingClientRect();
     const cssWidth = Math.max(1, Math.round(canvas.clientWidth || 1));
     const cssHeight = Math.max(1, Math.round(canvas.clientHeight || 1));
     const drawWidth = Math.max(1, Math.round(cssWidth * dpr));
