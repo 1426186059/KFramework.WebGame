@@ -75,7 +75,6 @@ function codeToKeys(code) {
 }
 const MAX_EVENTS = 32;
 let m_Canvas = null;
-let m_CanvasId = null;
 /**
  * 装置是否<b>激活</b>（= 是否绑着监听在采集）：由 bindKeyboard / unbindKeyboard 维护，
  * 与 C# 侧 <c>Input_KeyBoard.Active</c> 一一对应。
@@ -116,10 +115,9 @@ function Process_Pointerdown() {
 export function bindKeyboard(canvasId) {
     if (canvasId) {
         console.log("Canvas bindKeyboard ");
-        m_Canvas = getCanvas(canvasId);
-        m_CanvasId = canvasId ?? null;
+        m_Canvas = getCanvas();
         if (m_Canvas) {
-            focusCanvas(m_CanvasId);
+            focusCanvas(true);
             m_Canvas.addEventListener('keydown', Process_KeyDown);
             m_Canvas.addEventListener('keyup', Process_KeyUp);
             m_Canvas.addEventListener('pointerdown', Process_Pointerdown);
@@ -143,14 +141,13 @@ export function unbindKeyboard() {
         m_Canvas.removeEventListener('keydown', Process_KeyDown);
         m_Canvas.removeEventListener('keyup', Process_KeyUp);
         m_Canvas.removeEventListener('pointerdown', Process_Pointerdown);
-        focusCanvas(m_CanvasId, false);
+        focusCanvas(false);
     }
     else {
         window.removeEventListener('keydown', Process_KeyDown);
         window.removeEventListener('keyup', Process_KeyUp);
     }
     m_Canvas = null;
-    m_CanvasId = null;
     pending.clear();
 }
 /**

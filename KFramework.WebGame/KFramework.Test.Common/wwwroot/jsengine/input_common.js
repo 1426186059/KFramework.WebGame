@@ -1,11 +1,7 @@
 import { getCanvas } from './html_canvas.js';
-let currentCanvasId = '';
-export function setCanvasId(id) {
-    currentCanvasId = id;
-}
 /** 取当前输入画布（供各输入模块与坐标换算共用）。 */
 export function getInputCanvas() {
-    return getCanvas(currentCanvasId);
+    return getCanvas();
 }
 const pointOut = { x: 0, y: 0 };
 export function canvasPoint(clientX, clientY) {

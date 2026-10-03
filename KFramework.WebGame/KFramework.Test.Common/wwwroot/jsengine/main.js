@@ -7,7 +7,7 @@ import { dotnet } from '../_framework/dotnet.js';
 import * as gl from './render_webgl20.js';
 import * as webgpu from './render_webgpu.js';
 import * as html5Canvas from './html_canvas.js';
-import * as platform from './platform.js';
+import * as htmlWindow from './html_window.js';
 import * as audio from './audio.js';
 import * as text from './text.js';
 import * as texture from './texture.js';
@@ -72,7 +72,7 @@ const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotne
 setModuleImports('render_webgl20', gl);
 setModuleImports('render_webgpu', webgpu);
 setModuleImports('canvas', html5Canvas);
-setModuleImports('platform', platform);
+setModuleImports('window', htmlWindow);
 setModuleImports('audio', audio);
 setModuleImports('text', text);
 setModuleImports('texture', texture);

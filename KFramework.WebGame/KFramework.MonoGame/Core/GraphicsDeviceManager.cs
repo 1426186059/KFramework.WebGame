@@ -585,7 +585,7 @@ namespace KFramework.MonoGame
             // 填满整个 HTML 页面用的是百分比，不是固定像素，所以浏览器缩放时它会跟着变。
             // 改完不用在这里手动同步尺寸：布局变化会由 input_window_event 的 ResizeObserver 捕获，
             // 随下一帧的 CanvasResized 事件上来，届时再应用并触发 SizeChanged。
-            Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen, 0, 0, 0, 0);
+            Canvas.SetLayout(HTML_Canvas.LayoutMode.Fullscreen, 0, 0, 0, 0);
         }
 
         /// <summary>期望的后备缓冲宽度（像素）。<b>仅记录，不影响画布。</b></summary>

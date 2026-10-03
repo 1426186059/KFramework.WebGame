@@ -9,7 +9,7 @@
         public static HTML_Window Current = null;
 
         /// <summary>设备像素比（window.devicePixelRatio）。由 <see cref="HTML_Canvas.SyncJSInfo"/> 回写，供画布尺寸换算使用。</summary>
-        public static float DevicePixelRatio = 1000;
+        public static float DevicePixelRatio = 1.0f;
 
         public HTML_Window()
         {

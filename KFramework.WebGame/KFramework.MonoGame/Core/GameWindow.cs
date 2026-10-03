@@ -27,7 +27,7 @@ namespace KFramework.MonoGame
         
         public void SetCanvasFullscreen()
         {
-            Canvas.SetLayout(HTML_CanvasLayoutMode.Fullscreen, 0, 0, 0, 0);
+            Canvas.SetLayout(HTML_Canvas.LayoutMode.Fullscreen, 0, 0, 0, 0);
         }
         
         public void SetCanvasCentered(int width, int height)

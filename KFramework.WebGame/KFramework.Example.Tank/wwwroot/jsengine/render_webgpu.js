@@ -14,7 +14,7 @@
 //   * 所有 GPU 对象以整数句柄返回（不再用 JSObject），避免跨边界持有 JS 对象带来的生命周期问题。
 //
 // 重要：.NET 侧 Span<T> 在 JS 侧是 MemoryView（不是 TypedArray），必须经 toUint8Array 转换后才能交给 WebGPU。
-import { getOrCreateCanvasElement } from './html_canvas.js';
+import { getCanvas } from './html_canvas.js';
 // ---- 全局 WebGPU 状态 ----
 let device = null; // GPUDevice
 let adapter = null; // GPUAdapter
@@ -74,10 +74,10 @@ function parseJson(s) {
  * 异步初始化 WebGPU：requestAdapter → requestDevice → 配置画布上下文。
  * 成功返回 true；浏览器不支持 / 取设备失败返回 false 并在控制台报错。
  */
-export async function init(canvasId, antialias) {
-    const element = getOrCreateCanvasElement(canvasId);
+export async function init(antialias) {
+    const element = getCanvas();
     if (!element) {
-        console.error('[webgpu] 无法创建或找到画布:', canvasId);
+        console.error('[webgpu] 无法创建或找到画布');
         return false;
     }
     canvas = element;
