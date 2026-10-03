@@ -1,6 +1,4 @@
 using Client.MirGraphics;
-using Client.MirSounds;
-using Client;
 using KFramework.MonoGame;
 
 namespace WebGame.Mir2.MonoGame.Client
@@ -14,7 +12,7 @@ namespace WebGame.Mir2.MonoGame.Client
     /// </summary>
     public sealed class MirGame : Game
     {
-        public MirGame(GraphicsDevice mDevice) : base(mDevice)
+        public MirGame() : base("#game", false, true)
         {
             IsFixedTimeStep = false;
         }

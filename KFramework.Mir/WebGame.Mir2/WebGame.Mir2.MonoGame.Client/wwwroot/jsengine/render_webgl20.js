@@ -4,7 +4,7 @@
 // 重要：.NET 传入的 Span<T> 在 JS 侧是 MemoryView_Span（不是 TypedArray），
 // 必须经 toBytes / toFloats 转换后才能交给 WebGL。
 // 另外 C# 侧的 [JSImport] 函数名必须与这里的导出名完全一致，且不能带点号。
-import { getOrCreateCanvasElement } from './html_canvas.js';
+import { getCanvas } from './html_canvas.js';
 let canvas = null;
 let gl = null;
 function gpu() {
@@ -34,10 +34,10 @@ export function setAntialias(enabled) {
 export function getAntialias() {
     return !!contextAttributes.antialias;
 }
-export function initContext(selector) {
-    const element = getOrCreateCanvasElement(selector);
+export function initContext() {
+    const element = getCanvas();
     if (!element) {
-        console.error('[gl] 无法创建或找到画布元素:', selector);
+        console.error('[gl] 无法创建或找到画布元素');
         return false;
     }
     canvas = element;

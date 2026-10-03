@@ -9,7 +9,7 @@ namespace Client
     {
         public static void OpenDefaultBrowser(string url)
         {
-            try { JSBind_Platform.OpenUrl(url); }
+            try { HTML_Window.OpenUrl(url); }
             catch { }
         }
     }

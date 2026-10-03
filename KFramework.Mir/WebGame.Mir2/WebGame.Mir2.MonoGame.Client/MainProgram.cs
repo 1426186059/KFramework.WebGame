@@ -1,5 +1,4 @@
-﻿using KFramework.MonoGame;
-using WebGame.Mir2.MonoGame.Client;
+﻿using WebGame.Mir2.MonoGame.Client;
 
 internal static class MainProgram
 {
@@ -7,8 +6,7 @@ internal static class MainProgram
     // 各测试模块见 Tests/ 目录（一个模块一个文件夹）。
     private static async Task Main(string[] args)
     {
-        GraphicsDevice device = await GraphicsDevice.CreateAsync("#game", antialias: true, preferWebGpu: true);
-        var game = new MirGame(device);
+        var game = new MirGame();
         await game.RunAsync();
     }
 }
