@@ -113,7 +113,7 @@ namespace KFramework.MonoGame
                 ReadOnlySpan<byte> data = s.Slice(off, len);
                 off += len;
 
-                PrintTool.Log("Input_GameFrameData: " + type.ToString());
+                //PrintTool.Log("Input_GameFrameData: " + type.ToString());
                 switch (type)
                 {
                     case EvType.CanvasResized:
