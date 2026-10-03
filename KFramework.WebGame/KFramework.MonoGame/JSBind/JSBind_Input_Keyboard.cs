@@ -13,7 +13,7 @@ namespace KFramework.MonoGame
         //（见 input_keyboard.ts 的 writeKeyboardEvents）。该模块只保留 BindKeyboard / UnbindKeyboard。
 
         [JSImport("bindKeyboard", "input_keyboard")]
-        public static partial void BindKeyboard(string canvasId = null);
+        public static partial void BindKeyboard(bool bUseCanvasListener);
 
         [JSImport("unbindKeyboard", "input_keyboard")]
         public static partial void UnbindKeyboard();

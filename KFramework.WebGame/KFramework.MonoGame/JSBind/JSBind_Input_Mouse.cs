@@ -15,7 +15,7 @@ namespace KFramework.MonoGame
         /// 这样输入模块不必依赖某个具体渲染后端（WebGL / WebGPU）已初始化。
         /// </summary>
         [JSImport("bindMouse", "input_mouse")]
-        public static partial void BindMouse(string canvasId);
+        public static partial void BindMouse(bool bUseCanvasListener);
 
         // 事件不再由本模块单独 poll：统一由 JSBind_GameFrameData.TakeFrameData 每帧取回后分发，
         // 模块只负责提供事件（见 input_mouse.ts 的 writeMouseEvents）。

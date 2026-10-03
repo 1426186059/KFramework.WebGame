@@ -22,7 +22,7 @@ namespace KFramework.MonoGame
         /// WebGPU 的初始化是异步的（requestAdapter / requestDevice），故统一返回 Task；
         /// WebGL 后端同步完成，返回的是已完成的 Task。
         /// </summary>
-        Task InitializeAsync(string canvasSelector, bool antialias);
+        Task InitializeAsync(bool antialias);
 
         int MaxTextureSize { get; }
         string Renderer { get; }

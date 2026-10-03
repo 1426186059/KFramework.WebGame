@@ -47,8 +47,8 @@ namespace KFramework.MonoGame
             get
             {
                 return new DisplayMode(
-                    GraphicsDevice.Canvas.DrawSize.X, 
-                    GraphicsDevice.Canvas.DrawSize.Y, 
+                    HTML_Canvas.Current.DrawSize.X,
+                    HTML_Canvas.Current.DrawSize.Y, 
                     SurfaceFormat.Color);
             }
         }

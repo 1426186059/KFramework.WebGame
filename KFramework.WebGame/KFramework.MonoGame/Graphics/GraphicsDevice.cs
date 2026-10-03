@@ -85,15 +85,6 @@ namespace KFramework.MonoGame
         /// </para>
         /// </summary>
         public PresentationParameters PresentationParameters { get; private set; }
-
-        /// <summary>
-        /// 本应用所绘制的那块 <c>&lt;canvas&gt;</c> 的 DOM id（全局唯一：一个 WebGL 应用只对应一块画布）。
-        /// 页面里已有该元素就直接用它，没有则由 html_canvas.ts 自动创建一块填满整个 HTML 页面的默认画布。
-        /// <para>设计为静态：应用生命周期内只有一块画布，任意模块（光标、GL 初始化等）都能直接读取，
-        /// 不必把 canvasId 层层传参。默认值为 "game"，与 <see cref="Game"/> 的默认选择器 "#game" 对齐；
-        /// 真正的值在 <see cref="GraphicsDevice"/> 构造时由 <c>canvasSelector</c> 归一化后写入。</para>
-        /// </summary>
-        public static HTML_Canvas Canvas { get; private set; } = null;
         /// <summary>
         /// WebGL2 上下文是否带 MSAA（<c>antialias</c>）。
         /// </summary>
@@ -149,8 +140,8 @@ namespace KFramework.MonoGame
         public SamplerStateCollection SamplerStates { get; } = new SamplerStateCollection(1);
 
 
-        public GraphicsDevice(string canvasSelector = "#game", bool antialias = false)
-            : this(CreateInitializedBackend(new WebGl20Backend(), canvasSelector, antialias), canvasSelector, antialias)
+        public GraphicsDevice(bool antialias = false)
+            : this(CreateInitializedBackend(new WebGl20Backend(), antialias), antialias)
         {
         }
 
@@ -164,21 +155,17 @@ namespace KFramework.MonoGame
         /// <param name="canvasSelector">画布选择器或 DOM id。</param>
         /// <param name="antialias">是否启用 MSAA。</param>
         /// <param name="preferWebGpu">true（默认）：先试 WebGPU，失败则回落 WebGL 2.0。</param>
-        public static async Task<GraphicsDevice> CreateAsync(string canvasSelector = "#game", bool antialias = false, bool preferWebGpu = true)
+        public static async Task<GraphicsDevice> CreateAsync(bool antialias = false, bool preferWebGpu = true)
         {
-            // 画布（窗口）必须先于后端初始化存在，照 MonoGame：先有 GameWindow，再有 GraphicsDevice。
-            // 异步的只是 WebGPU 取设备（requestAdapter / requestDevice），画布本身是同步创建的。
-            EnsureCanvas();
-
             IGraphicsBackend backend = null;
             if (preferWebGpu)
             {
                 try
                 {
                     var webgpu = new WebGpuBackend();
-                    await webgpu.InitializeAsync(canvasSelector, antialias).ConfigureAwait(false);
+                    await webgpu.InitializeAsync(antialias).ConfigureAwait(false);
                     backend = webgpu;
-                    return new GraphicsDevice(backend, canvasSelector, antialias);
+                    return new GraphicsDevice(backend, antialias);
                 }
                 catch (Exception ex)
                 {
@@ -187,38 +174,26 @@ namespace KFramework.MonoGame
             }
 
             backend = new WebGl20Backend();
-            await backend.InitializeAsync(canvasSelector, antialias).ConfigureAwait(false);
-            return new GraphicsDevice(backend, canvasSelector, antialias);
+            await backend.InitializeAsync(antialias).ConfigureAwait(false);
+            return new GraphicsDevice(backend, antialias);
         }
 
         /// <summary>
         /// 同步初始化后端（仅供 WebGL 构造函数使用）：WebGL 的 InitializeAsync 返回的是已完成的 Task，
         /// 因此这里不会真正阻塞。WebGPU 必须走 <see cref="CreateAsync"/>。
         /// </summary>
-        private static IGraphicsBackend CreateInitializedBackend(IGraphicsBackend backend, string canvasSelector, bool antialias)
+        private static IGraphicsBackend CreateInitializedBackend(IGraphicsBackend backend, bool antialias)
         {
-            EnsureCanvas();
-            backend.InitializeAsync(canvasSelector, antialias).GetAwaiter().GetResult();
+            backend.InitializeAsync(antialias).GetAwaiter().GetResult();
             return backend;
         }
 
-        /// <summary>
-        /// 画布（= 窗口）必须先于后端初始化存在：照 MonoGame 先建 GameWindow、再建 GraphicsDevice 的顺序。
-        /// 此处只负责“确保画布已创建”，真正的 GPU 上下文 / 设备（WebGL 同步、WebGPU 异步 requestAdapter / requestDevice）
-        /// 由后端 <c>InitializeAsync</c> 完成。
-        /// </summary>
-        private static void EnsureCanvas()
-        {
-            if (Canvas == null)
-                Canvas = new HTML_Canvas();
-        }
-
         /// <summary>后端已初始化完毕后的构造入口（WebGL / WebGPU 共用）。</summary>
-        private GraphicsDevice(IGraphicsBackend backend, string canvasSelector, bool antialias)
+        private GraphicsDevice(IGraphicsBackend backend, bool antialias)
         {
             // 画布必须在进入本构造前已创建（CreateAsync / 同步构造路径都会先 EnsureCanvas），
             // 照 MonoGame：先有 GameWindow，再有 GraphicsDevice——后端 Initialize 只认已存在的画布。
-            if (Canvas == null)
+            if (HTML_Canvas.Current == null)
                 throw new InvalidOperationException(
                     "画布尚未创建：GraphicsDevice 构造前必须先创建画布（照 MonoGame 先窗口后设备的顺序）。");
 
@@ -265,19 +240,23 @@ namespace KFramework.MonoGame
         /// </summary>
         public bool ApplyCanvasSize(bool bSync = false)
         {
-            if (bSync) Canvas.SyncJSInfo();
+            if (bSync) HTML_Canvas.Current.SyncJSInfo();
 
-            if (Canvas.DrawSize.X <= 0 || Canvas.DrawSize.Y <= 0) return false;
+            if (HTML_Canvas.Current.DrawSize.X <= 0 || HTML_Canvas.Current.DrawSize.Y <= 0) return false;
 
-            PresentationParameters.BackBufferWidth = Canvas.DrawSize.X;
-            PresentationParameters.BackBufferHeight = Canvas.DrawSize.Y;
-            if (Canvas.DrawSize.X == Viewport.Width && Canvas.DrawSize.Y == Viewport.Height)
+            PresentationParameters.BackBufferWidth = HTML_Canvas.Current.DrawSize.X;
+            PresentationParameters.BackBufferHeight = HTML_Canvas.Current.DrawSize.Y;
+            if (HTML_Canvas.Current.DrawSize.X == Viewport.Width && HTML_Canvas.Current.DrawSize.Y == Viewport.Height)
             {
                 return false;
             }
 
             if (_currentRenderTargetCount > 0) return false;
-            Viewport = new Viewport(0, 0, Canvas.DrawSize.X, Canvas.DrawSize.Y);
+            Viewport = new Viewport(
+                0, 
+                0, 
+                HTML_Canvas.Current.DrawSize.X, 
+                HTML_Canvas.Current.DrawSize.Y);
             return true;
         }
 

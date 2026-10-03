@@ -3,15 +3,6 @@ using System.Runtime.InteropServices.JavaScript;
 
 namespace KFramework.MonoGame
 {
-
-    /// <summary>
-    /// WebGL 2.0 渲染后端。
-    /// <para>
-    /// 本文件是 <see cref="GraphicsDevice"/> 原先平台层代码的<b>原样搬迁</b>：调用顺序、参数、
-    /// 错误处理均与搬迁前一致，仅把分散在 GraphicsDevice / Texture2D.Web.cs 里的 WebGL 调用收拢到一处，
-    /// 以便与 WebGPU 后端并列实现 <see cref="IGraphicsBackend"/>。
-    /// </para>
-    /// </summary>
     internal sealed class WebGl20Backend : IGraphicsBackend
     {
         /// <summary>FBO 缓存：一组渲染目标绑定组合对应一个 FBO（照 MonoGame 的 glFramebuffers）。</summary>
@@ -35,7 +26,7 @@ namespace KFramework.MonoGame
         /// <summary>WebGL 后端无显式收帧动作：画面由浏览器在 rAF 回调结束时自动合成。</summary>
         public void EndFrame() { }
 
-        public Task InitializeAsync(string canvasSelector, bool antialias)
+        public Task InitializeAsync(bool antialias)
         {
             // 照 MonoGame：MSAA 属性在上下文创建之前设置
             JSBind_WEBGL20.SetAntialias(antialias);

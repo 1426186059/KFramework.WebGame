@@ -78,7 +78,8 @@ namespace KFramework.MonoGame
         /// </param>
         protected Game(string canvasSelector = "#game", bool antialias = false, bool preferWebGpu = false)
         {
-            _canvasSelector = canvasSelector;
+            HTML_Canvas.Current = new HTML_Canvas(canvasSelector);
+
             _antialias = antialias;
             _preferWebGpu = preferWebGpu;
 
@@ -88,8 +89,6 @@ namespace KFramework.MonoGame
             Input_GameFrameData.WindowFocusChanged += OnWindowFocusChanged;
         }
 
-        // 设备创建参数（照 MonoGame：设备不在构造里建，Run 时在 Initialize 之前建）。
-        private readonly string _canvasSelector;
         private readonly bool _antialias;
         private readonly bool _preferWebGpu;
 
@@ -101,15 +100,15 @@ namespace KFramework.MonoGame
         private async Task CreateDeviceAsync()
         {
             GraphicsDevice = _preferWebGpu
-                ? await GraphicsDevice.CreateAsync(_canvasSelector, _antialias, preferWebGpu: true)
-                : new GraphicsDevice(_canvasSelector, _antialias);
+                ? await GraphicsDevice.CreateAsync(_antialias, preferWebGpu: true)
+                : new GraphicsDevice(_antialias);
             Window = new GameWindow(GraphicsDevice);
         }
 
         /// <summary>收到画布尺寸事件：应用新尺寸，变了才通知 Window（与原先每帧同步的行为一致）。</summary>
         private void OnWindowSizeChanged(int cssWidth, int cssHeight, int backingWidth, int backingHeight, int dpr1000)
         {
-            GraphicsDevice.Canvas.UpdateInfo(cssWidth, cssHeight, backingWidth, backingHeight, dpr1000);
+            HTML_Canvas.Current.UpdateInfo(cssWidth, cssHeight, backingWidth, backingHeight, dpr1000);
             if (GraphicsDevice.ApplyCanvasSize())
                 Window.OnWindowSizeChanged();
         }

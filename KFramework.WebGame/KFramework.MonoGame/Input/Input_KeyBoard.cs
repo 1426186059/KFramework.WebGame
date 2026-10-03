@@ -98,7 +98,7 @@ namespace KFramework.MonoGame
         public static void Activate(bool bUseCanvasListener = true)
         {
             Reset();
-            JSBind_Input_Keyboard.BindKeyboard(bUseCanvasListener ? GraphicsDevice.Canvas.Id : null);
+            JSBind_Input_Keyboard.BindKeyboard(bUseCanvasListener);
             Active = true;
         }
 

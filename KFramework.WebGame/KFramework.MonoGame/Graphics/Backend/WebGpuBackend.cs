@@ -83,7 +83,7 @@ namespace KFramework.MonoGame
 
         public string Renderer { get; private set; } = string.Empty;
 
-        public async Task InitializeAsync(string canvasSelector, bool antialias)
+        public async Task InitializeAsync(bool antialias)
         {
             bool ok = await JSBind_WebGPU.Init(antialias).ConfigureAwait(false);
             if (!ok)
