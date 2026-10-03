@@ -76,31 +76,31 @@ namespace KFramework.Test.Common.Tests.CanvasTest
         private void SetCentered()
         {
             Point size = Preset;
-            bool ok = Window.SetCanvasCentered(size.X, size.Y);
+            Window.SetCanvasCentered(size.X, size.Y);
             SyncNow();
-            Say(ok ? $"居中 {size.X}×{size.Y}（CSS 像素，窗口缩放会自动重新居中）" : "居中失败：找不到画布");
+            Say($"居中 {size.X}×{size.Y}（CSS 像素，窗口缩放会自动重新居中）");
         }
 
         private void TopLeft()
         {
             Point size = Preset;
-            bool ok = Window.SetCanvasRect(24, 96, size.X, size.Y);
+            Window.SetCanvasRect(24, 96, size.X, size.Y);
             SyncNow();
-            Say(ok ? $"摆到左上角 (24, 96)，{size.X}×{size.Y}" : "设置失败：找不到画布");
+            Say($"摆到左上角 (24, 96)，{size.X}×{size.Y}");
         }
 
         private void Fullscreen()
         {
-            bool ok = Window.SetCanvasFullscreen();
+            Window.SetCanvasFullscreen();
             SyncNow();
-            Say(ok ? "填满整个 HTML 页面（软全屏，不改显示模式）" : "设置失败：找不到画布");
+            Say("填满整个 HTML 页面（软全屏，不改显示模式）");
         }
 
         private void Restore()
         {
-            bool ok = Window.RestoreCanvasLayout();
+            Window.RestoreCanvasLayout();
             SyncNow();
-            Say(ok ? "已清掉引擎写的内联样式，恢复页面自带的 CSS 布局" : "恢复失败：找不到画布");
+            Say("已清掉引擎写的内联样式，恢复页面自带的 CSS 布局");
         }
 
         /// <summary>画布 CSS 改完后立即同步后备缓冲 / 视口，不用等下一帧。</summary>
@@ -116,7 +116,7 @@ namespace KFramework.Test.Common.Tests.CanvasTest
         /// </summary>
         private void SyncNow()
         {
-            _ = Device.SyncCanvasSize();
+           HTML_Canvas.Current.SyncJSInfo();
         }
 
         private void Say(string text) => _hint = text;
@@ -141,9 +141,9 @@ namespace KFramework.Test.Common.Tests.CanvasTest
                           new Vector2(x, y), new Color(150, 220, 255));
             y += DrawLine(batch, Font, $"HTML 页面尺寸：{pageSize.X} x {pageSize.Y}（居中算法用的就是它）", new Vector2(x, y), Color.LightGray);
             y += DrawLine(batch, Font, $"可设最大尺寸：{pageSize.X} x {pageSize.Y}（超出就跑到可见区域外了）", new Vector2(x, y), Color.LightGray);
-            y += DrawLine(batch, Font, $"画布 CSS：{(int)Device.CssSize.X} x {(int)Device.CssSize.Y}", new Vector2(x, y), Color.LightGray);
+            y += DrawLine(batch, Font, $"画布 CSS：{(int)HTML_Canvas.Current.CssSize.X} x {(int)HTML_Canvas.Current.CssSize.Y}", new Vector2(x, y), Color.LightGray);
             y += DrawLine(batch, Font,
-                          $"后备缓冲：{Device.Viewport.Width} x {Device.Viewport.Height}（= CSS × DPR {Device.DevicePixelRatio:0.##}）",
+                          $"后备缓冲：{Device.Viewport.Width} x {Device.Viewport.Height}（= CSS × DPR {HTML_Window.DevicePixelRatio:0.##}）",
                           new Vector2(x, y), new Color(150, 220, 255));
 
             y += 16f;

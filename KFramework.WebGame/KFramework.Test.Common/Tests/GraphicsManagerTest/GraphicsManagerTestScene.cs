@@ -148,7 +148,8 @@ namespace KFramework.Test.Common.Tests.GraphicsManagerTest
             y += 16f;
             y += DrawSection(batch, "② 已应用到设备与画布的值", new Vector2(x, y));
             y += DrawLine(batch, Font,
-                          $"画布 CSS：{(int)Device.CssSize.X} x {(int)Device.CssSize.Y}（DPR {Device.DevicePixelRatio:0.##}）→ 后备缓冲 {pp.BackBufferWidth} x {pp.BackBufferHeight}",
+                          $"画布 CSS：{(int)GraphicsDevice.Canvas.CssSize.X} x {(int)GraphicsDevice.Canvas.CssSize.Y}（DPR {HTML_Window
+                          .DevicePixelRatio:0.##}）→ 后备缓冲 {pp.BackBufferWidth} x {pp.BackBufferHeight}",
                           new Vector2(x, y), new Color(150, 220, 255));
             y += DrawLine(batch, Font,
                           $"FPS：{Fps:0.}（真实帧率） / 帧间隔 {KTime.realDeltaTime * 1000f:0.#}ms / 精灵 {_drawn:N0} / DrawCall {Device.Metrics.DrawCount}",

@@ -1,6 +1,6 @@
 ﻿namespace KFramework.MonoGame
 {
-    internal class HTML_Window
+    public class HTML_Window
     {
         public static HTML_Window Current = null;
         public static float DevicePixelRatio = 1000;

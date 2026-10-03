@@ -17,7 +17,7 @@ namespace KFramework.MonoGame
         internal GameWindow(GraphicsDevice device)
         {
             _device = device;
-            Canvas = new HTML_Canvas(GraphicsDevice.CanvasId);
+            Canvas = GraphicsDevice.Canvas;
         }
 
         public void SetCanvasRect(int x, int y, int width, int height)
