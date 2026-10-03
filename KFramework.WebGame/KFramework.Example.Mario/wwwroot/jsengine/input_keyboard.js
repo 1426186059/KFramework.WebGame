@@ -112,8 +112,8 @@ function Process_Pointerdown() {
 // 键盘监听绑在 canvas 上（依赖画布获焦才会收到 key 事件）。
 // <canvas> 默认不可获焦，所以绑监听前必须先 focusCanvas 让它可获焦并聚焦；同时挂一个 pointerdown 重新聚焦，
 // 这样切走窗口 / 在输入框打字后点回游戏，键盘依然有效。IME 输入框获焦时不会触发 canvas 的 key 事件，不会误报游戏键。
-export function bindKeyboard(canvasId) {
-    if (canvasId) {
+export function bindKeyboard(bUseCanvasListener) {
+    if (bUseCanvasListener) {
         console.log("Canvas bindKeyboard ");
         m_Canvas = getCanvas();
         if (m_Canvas) {
@@ -129,7 +129,7 @@ export function bindKeyboard(canvasId) {
     }
     else {
         console.log("window bindKeyboard ");
-        // 找不到画布（极少见）才回落到 window，保证至少有输入。
+        // bUseCanvasListener=false 时回落到 window，保证至少有输入。
         window.addEventListener('keydown', Process_KeyDown);
         window.addEventListener('keyup', Process_KeyUp);
         enabled = true;

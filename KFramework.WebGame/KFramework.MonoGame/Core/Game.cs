@@ -79,14 +79,9 @@ namespace KFramework.MonoGame
         protected Game(string canvasSelector = "#game", bool antialias = false, bool preferWebGpu = false)
         {
             HTML_Canvas.Current = new HTML_Canvas(canvasSelector);
-
             _antialias = antialias;
             _preferWebGpu = preferWebGpu;
-
             Components = new GameComponentCollection();
-            JSBind_GameUpdate.Current = this;
-            Input_GameFrameData.WindowSizeChanged += OnWindowSizeChanged;
-            Input_GameFrameData.WindowFocusChanged += OnWindowFocusChanged;
         }
 
         private readonly bool _antialias;
@@ -136,6 +131,11 @@ namespace KFramework.MonoGame
                     if (graphicsDeviceManager != null)
                         ((IGraphicsDeviceManager)graphicsDeviceManager).CreateDevice();
 
+
+                    JSBind_GameUpdate.Current = this;
+                    Input_GameFrameData.WindowSizeChanged += OnWindowSizeChanged;
+                    Input_GameFrameData.WindowFocusChanged += OnWindowFocusChanged;
+
                     Initialize();
                     Components.Initialize();
                     await LoadContentAsync().ConfigureAwait(false);
@@ -161,17 +161,12 @@ namespace KFramework.MonoGame
             => _frameInterval = Math.Max(1, framesPerPresent);
 
         protected virtual void Initialize() { }
-
-        /// <summary>同步加载（无异步需求时重写它即可）。</summary>
-        protected virtual void LoadContent() { }
-
         /// <summary>
         /// 异步加载入口，默认转发到 <see cref="LoadContent"/>。
         /// 需要下载内容包时重写它：<c>await ContentManager.Default.LoadAsync(progress)</c>。
         /// </summary>
         protected virtual Task LoadContentAsync()
         {
-            LoadContent();
             return Task.CompletedTask;
         }
 

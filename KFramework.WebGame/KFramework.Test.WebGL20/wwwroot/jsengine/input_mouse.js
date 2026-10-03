@@ -1,6 +1,7 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Input_Mouse 经 [JSImport(module: "input_mouse")] 调用；产物 input_mouse.js 由 SyncJsEngine 复制。
 // 鼠标模块：只注册监听 + 维护"当前状态/变化"。状态与边沿在 C# 侧（Input_Mouse）实现。
 import { canvasPoint } from './input_common.js';
+import { getCanvas, focusCanvas } from './html_canvas.js';
 import { E_HTML_Event_Type } from './html_event_type.js';
 import { reportPointerCancel } from './input_window_event.js';
 const registrations = [];
@@ -13,6 +14,7 @@ const registrations = [];
  * 迟早会有一处忘了同步。它同时兼作重复绑定的守卫。
  */
 let enabled = false;
+let m_Canvas = null;
 const buttons = new Map(); // button → 1(按下) / 0(抬起)，上次 poll 以来最新值
 // 当前按住的键。buttons 每次 poll 后就被清空，而 C# 侧是"收到变化才更新状态"，
 // 所以必须另留一份"当前按住"的记录：手势被接管 / 窗口失焦时收不到 mouseup，
@@ -29,14 +31,21 @@ function on(target, name, handler, options) {
 // 失焦一律交给 input_window_event 的 SysFocusLost（画布 blur + hasFocus 兜底）：
 // C# 侧分发该事件时先调 Input_Mouse.ReleaseAll() 逐个键上报"被中断"，再 ResetAll 清空 ——
 // 所以本模块既不用监听 window 的 blur，也不用再为"手势被接管"单列一个事件。
-export function bindMouse() {
+export function bindMouse(bUseCanvasListener) {
     if (enabled)
         return;
-    on(window, 'mousemove', onMouseMove);
-    on(window, 'mousedown', onMouseDown);
-    on(window, 'mouseup', onMouseUp);
-    on(window, 'wheel', onMouseWheel, { passive: false });
-    on(window, 'pointercancel', onPointerCancel);
+    const target = bUseCanvasListener ? (m_Canvas = getCanvas()) : window;
+    if (bUseCanvasListener && !m_Canvas) {
+        console.error("bindMouse canvas Find Error");
+        return;
+    }
+    if (bUseCanvasListener)
+        focusCanvas(true);
+    on(target, 'mousemove', onMouseMove);
+    on(target, 'mousedown', onMouseDown);
+    on(target, 'mouseup', onMouseUp);
+    on(target, 'wheel', onMouseWheel, { passive: false });
+    on(target, 'pointercancel', onPointerCancel);
     enabled = true; // 监听全部挂上了才算激活
 }
 function onMouseMove(e) {
@@ -84,6 +93,10 @@ export function unbindMouse() {
     for (const r of registrations)
         r.target.removeEventListener(r.name, r.handler);
     registrations.length = 0;
+    if (m_Canvas) {
+        focusCanvas(false);
+        m_Canvas = null;
+    }
     buttons.clear();
     held.clear();
     moved = false;
