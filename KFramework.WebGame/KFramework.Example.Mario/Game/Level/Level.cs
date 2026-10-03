@@ -27,6 +27,16 @@ namespace KFramework.Example.Mario
         public bool Paused { get; set; }
         public ParticleManager mParticleManager { get; set; }
 
+        // 共享材质：所有 Begin 复用同一实例，相机静止的帧可让 GraphicsDevice.ApplyMaterial 整体短路
+        // （跳过 blend/depth/rasterizer/采样器/矩阵上传这一整串跨 JS），同时避免旧 Begin 每帧 new Material 造成 GC。
+        private static readonly Material s_levelMaterial = new Material
+        {
+            Blend = BlendState.NonPremultiplied,
+            Sampler = SamplerState.PointClamp,
+            DepthStencil = DepthStencilState.None,
+            Rasterizer = RasterizerState.CullNone,
+        };
+
         private StartScreen mStartScreen;
         private GameScreen mGameScreen;
 
@@ -468,14 +478,14 @@ namespace KFramework.Example.Mario
         {
             Matrix4x4 viewMatrix = mPlayer.World_To_View_Matrix;
             var mSpriteBatch = KSceneMgr.SpriteBatch;
+            // 复用共享材质：相机静止时 ApplyMaterial 会整体短路，不再重复下发跨 JS 状态。
             mSpriteBatch.Begin(
-                transformMatrix: viewMatrix,
+                s_levelMaterial,
                 // 暂保持 Deferred：目前所有精灵的 layerDepth 均为 0，
                 // 若切到 Texture 会退化为"只按纹理分组"，导致敌人/道具/粒子被地形遮挡。
                 // 待给各类对象设置 layerDepth（或改为按类别分组 Begin/End）后再切换，见说明。
-                sortMode: SpriteSortMode.Deferred,
-                samplerState: SamplerState.PointClamp,
-                blendState: BlendState.NonPremultiplied);
+                SpriteSortMode.Deferred,
+                viewMatrix);
 
             DrawLevel();
             mSpriteBatch.End();

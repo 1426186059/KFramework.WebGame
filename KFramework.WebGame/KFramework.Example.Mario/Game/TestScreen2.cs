@@ -13,6 +13,15 @@ namespace KFramework.Example.Mario
         KTransform playerTransform;
         KSpriteInfo _sprite;
 
+        // 共享材质：与关卡一致，复用同一实例以触发 GraphicsDevice.ApplyMaterial 的跨帧短路，并避免每帧分配 Material。
+        private static readonly Material s_screenMaterial = new Material
+        {
+            Blend = BlendState.NonPremultiplied,
+            Sampler = SamplerState.PointClamp,
+            DepthStencil = DepthStencilState.None,
+            Rasterizer = RasterizerState.CullNone,
+        };
+
         public TestScreen2()
         {
             _root = new KTransform();
@@ -87,11 +96,11 @@ namespace KFramework.Example.Mario
             KSceneMgr.Game.GraphicsDevice.Clear(Color.CornflowerBlue);
             var _spriteBatch = KSceneMgr.SpriteBatch;
 
-            // 关键：传入 ViewMatrix，SpriteBatch 自动处理所有世界→屏幕转换
+            // 关键：传入 ViewMatrix，SpriteBatch 自动处理所有世界→屏幕转换；复用共享材质以触发去重。
             _spriteBatch.Begin(
-                transformMatrix: _camera.ViewMatrix,
-                sortMode: SpriteSortMode.Deferred,
-                samplerState: SamplerState.PointClamp);
+                s_screenMaterial,
+                SpriteSortMode.Deferred,
+                _camera.ViewMatrix);
 
             // 图集尚未异步加载完成时跳过绘制
             if (_sprite != null)

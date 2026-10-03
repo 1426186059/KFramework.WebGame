@@ -32,6 +32,17 @@ namespace KFramework.MonoGame
         internal int height;
         internal int ArraySize;
 
+        /// <summary>本纹理上次应用的采样器（WebGL2 采样参数写在纹理对象上）。用于 BindTexture 时惰性去重，
+        /// 避免每次换纹理都重发 texParameteri（每纹理至多下发一次）。</summary>
+        internal SamplerState? _appliedSampler;
+
+        /// <summary>CPU 侧像素副本（等价于 Unity 的 Read/Write Enabled）：SetData 上传后保留 mip0 的一份字节，
+        /// 使 GetData 无需昂贵的 GPU 读回（readPixels）即可同步拿回像素；与平台无关，WebGL / WebGPU 通用。</summary>
+        private byte[]? _cpuData;
+
+        /// <summary>是否可读写（等价于 Unity 的 Read/Write Enabled）。为 true 时 SetData 才保留 CPU 副本以支持 GetData；默认 false。</summary>
+        internal readonly bool _readable;
+
         internal float TexelWidth { get; private set; }
         internal float TexelHeight { get; private set; }
 
@@ -46,22 +57,32 @@ namespace KFramework.MonoGame
         /// 创建未初始化的 <see cref="Texture2D"/>（默认 RGBA8、不生成 mipmap，照 MonoGame）。
         /// 数据须随后通过 <see cref="SetData{T}(T[])"/> 上传。
         /// </summary>
-        public Texture2D(GraphicsDevice graphicsDevice, int width, int height)
-            : this(graphicsDevice, width, height, false, SurfaceFormat.Color) { }
+        /// <summary>创建未初始化的 <see cref="Texture2D"/>（默认不可读写；如需 GetData 请传 readable: true）。</summary>
+        public Texture2D(GraphicsDevice graphicsDevice, int width, int height, bool readable = false)
+            : this(graphicsDevice, width, height, false, SurfaceFormat.Color, readable) { }
 
-        /// <summary>创建未初始化的 <see cref="Texture2D"/>，可指定 mipmap 与像素格式（照 MonoGame）。</summary>
-        public Texture2D(GraphicsDevice graphicsDevice, int width, int height, bool mipmap, SurfaceFormat format)
-            : this(graphicsDevice, width, height, mipmap, format, SurfaceType.Texture, false, 1) { }
+        /// <summary>创建未初始化的 <see cref="Texture2D"/>，可指定 mipmap 与像素格式（照 MonoGame）。readable 为 true 时保留 CPU 副本以支持 GetData。</summary>
+        public Texture2D(GraphicsDevice graphicsDevice, int width, int height, bool mipmap, SurfaceFormat format, bool readable = false)
+            : this(graphicsDevice, width, height, mipmap, format, SurfaceType.Texture, false, 1, readable) { }
 
-        /// <summary>创建未初始化的 <see cref="Texture2D"/>，可指定纹理数组大小（照 MonoGame；当前 WebGL 后端仅支持 arraySize = 1）。</summary>
-        public Texture2D(GraphicsDevice graphicsDevice, int width, int height, bool mipmap, SurfaceFormat format, int arraySize)
-            : this(graphicsDevice, width, height, mipmap, format, SurfaceType.Texture, false, arraySize) { }
+        /// <summary>创建未初始化的 <see cref="Texture2D"/>，可指定纹理数组大小（照 MonoGame；当前 WebGL 后端仅支持 arraySize = 1）。readable 默认 false。</summary>
+        public Texture2D(GraphicsDevice graphicsDevice, int width, int height, bool mipmap, SurfaceFormat format, int arraySize, bool readable = false)
+            : this(graphicsDevice, width, height, mipmap, format, SurfaceType.Texture, false, arraySize, readable) { }
 
-        internal Texture2D(GraphicsDevice graphicsDevice, int width, int height, bool mipmap, SurfaceFormat format, SurfaceType type)
-            : this(graphicsDevice, width, height, mipmap, format, type, false, 1) { }
+        internal Texture2D(GraphicsDevice graphicsDevice, int width, int height, bool mipmap, SurfaceFormat format, SurfaceType type, bool readable = false)
+            : this(graphicsDevice, width, height, mipmap, format, type, false, 1, readable) { }
 
         /// <summary>真正的构造入口（照 MonoGame 的 protected 构造），负责校验、赋值并交由平台层 PlatformConstruct 创建 GL 纹理。</summary>
-        protected Texture2D(GraphicsDevice graphicsDevice, int width, int height, bool mipmap, SurfaceFormat format, SurfaceType type, bool shared, int arraySize)
+        protected Texture2D(
+            GraphicsDevice graphicsDevice, 
+            int width, 
+            int height, 
+            bool mipmap, 
+            SurfaceFormat format, 
+            SurfaceType type, 
+            bool shared, 
+            int arraySize, 
+            bool readable = false)
         {
             if (graphicsDevice == null) throw new ArgumentNullException(nameof(graphicsDevice), "graphicsDevice 不能为空。");
             if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width), "纹理宽度必须大于零。");
@@ -79,6 +100,10 @@ namespace KFramework.MonoGame
             ArraySize = arraySize;
             IsCompressed = format.IsCompressed();
             OwnsHandle = true;
+            // 压缩纹理不支持 CPU 可读写（与 Unity 一致）：保留像素副本没有意义，故禁止开启 readable。
+            if (readable && IsCompressed)
+                throw new NotSupportedException("压缩纹理不支持 CPU 可读写（readable），与 Unity 一致；如需 GetData 请使用非压缩格式（如 SurfaceFormat.Color）。");
+            _readable = readable;
 
             // Swap chain 渲染目标的纹理由外部赋值，这里跳过 GL 创建。
             if (type == SurfaceType.SwapChainRenderTarget) return;
@@ -91,6 +116,9 @@ namespace KFramework.MonoGame
 
         /// <summary>纹理像素高度（照 MonoGame）。</summary>
         public int Height => height;
+
+        /// <summary>是否可读写（等价于 Unity 的 Read/Write Enabled）。为 true 时 SetData 才在 CPU 侧保留像素副本以支持 GetData。</summary>
+        public bool IsReadable => _readable;
 
 
         /// <summary>把数据复制到指定 mip 层级、数组切片与区域（照 MonoGame）。</summary>
@@ -130,7 +158,9 @@ namespace KFramework.MonoGame
 
 
 
-        /// <summary>把纹理数据读入数组（照 MonoGame）。当前 WebGL 后端不支持，调用会抛 NotSupportedException。</summary>
+        /// <summary>把纹理数据读入数组（照 MonoGame）。本框架在 SetData 上传时保留一份 CPU 副本（等价于 Unity 的 Read/Write Enabled），
+        /// GetData 据此同步读回，与后端无关（WebGL / WebGPU 通用），无需昂贵的 GPU readPixels 读回；
+        /// 若从未通过 SetData 上传过数据则无副本，调用会抛 InvalidOperationException。</summary>
         public void GetData<T>(int level, int arraySlice, Rectangle? rect, T[] data, int startIndex, int elementCount) where T : struct
         {
             Rectangle checkedRect;

@@ -102,8 +102,8 @@ namespace KFramework.MonoGame
                         tex = item.Texture;
                         startIndex = index;
 
+                        _device.SetSamplerState(_samplerState);
                         _device.BindTexture(tex);
-                        _device.SetSamplerState(_samplerState, tex);
                     }
 
                     _vertexArray[index] = item.vertexTL;

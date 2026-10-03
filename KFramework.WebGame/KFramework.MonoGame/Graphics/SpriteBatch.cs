@@ -1,7 +1,3 @@
-using System;
-
-using KFramework.MonoGame;
-
 namespace KFramework.MonoGame
 {
     /// <summary>
@@ -15,17 +11,11 @@ namespace KFramework.MonoGame
         private readonly SpriteBatcher _batcher;
 
         private SpriteSortMode _sortMode;
-        private BlendState _blendState = BlendState.AlphaBlend;
-        private SamplerState _samplerState = SamplerState.Point;
         private Matrix4x4 _transform = Matrix4x4.Identity;
         private Matrix4x4 _projection;
+        private Material _material = null!;
 
         private bool _beginCalled;
-
-        // 2D 精灵默认不剔除：本后端的正交投影翻转 Y，使四边形绕序与 MonoGame 默认的 CCW 正面相反，
-        // 开启背面剔除会把精灵整批剔掉。需要剔除的 3D 渲染可显式设置 GraphicsDevice.RasterizerState。
-        private RasterizerState _rasterizerState = RasterizerState.CullNone;
-        private DepthStencilState _depthStencilState = DepthStencilState.None;
 
         public SpriteBatch(GraphicsDevice device)
         {
@@ -36,21 +26,42 @@ namespace KFramework.MonoGame
 
         public GraphicsDevice GraphicsDevice => _device;
 
+        /// <summary>
+        /// 用材质配置开启一批绘制。材质打包了着色器 + 混合/采样/深度/剔除状态，
+        /// GraphicsDevice 按「材质内容 + 变换」做去重，相同配置不再重复下发跨 JS 状态。
+        /// </summary>
+        public void Begin(Material material, SpriteSortMode sortMode = SpriteSortMode.Deferred,
+                          Matrix4x4? transformMatrix = null)
+            => BeginInternal(material, sortMode, transformMatrix);
+
+        /// <summary>
+        /// 兼容旧签名的重载：把散装的 Blend / Sampler 状态包成一个默认材质（Effect 用设备默认精灵着色器）。
+        /// 新增代码建议直接用 <see cref="Begin(Material, SpriteSortMode, Matrix4x4?)"/>。
+        /// </summary>
         public void Begin(SpriteSortMode sortMode = SpriteSortMode.Deferred,
                           BlendState? blendState = null,
                           SamplerState? samplerState = null,
                           Matrix4x4? transformMatrix = null)
         {
+            var material = new Material
+            {
+                Effect = null,
+                Blend = blendState ?? BlendState.NonPremultiplied,
+                Sampler = samplerState ?? SamplerState.Point,
+                DepthStencil = DepthStencilState.None,
+                Rasterizer = RasterizerState.CullNone,
+            };
+            BeginInternal(material, sortMode, transformMatrix);
+        }
+
+        private void BeginInternal(Material material, SpriteSortMode sortMode, Matrix4x4? transformMatrix)
+        {
             if (_beginCalled) throw new InvalidOperationException("上一次 Begin 还没有对应的 End。");
 
             _sortMode = sortMode;
-            // 纹理数据是非预乘的，默认用 NonPremultiplied（SRC_ALPHA, ONE_MINUS_SRC_ALPHA）
-            _blendState = blendState ?? BlendState.NonPremultiplied;
-            _samplerState = samplerState ?? SamplerState.Point;
+            _material = material;
             _transform = transformMatrix ?? Matrix4x4.Identity;
-            _rasterizerState = RasterizerState.CullNone;
-            _depthStencilState = DepthStencilState.None;
-            _batcher.SetSamplerState(_samplerState);
+            _batcher.SetSamplerState(material.Sampler);
 
             var viewport = _device.Viewport;
             // 离屏时是否改用 Y 向上投影，取决于后端的坐标系原点（详见 IGraphicsBackend.NeedsOffscreenYFlip）：
@@ -76,19 +87,14 @@ namespace KFramework.MonoGame
             _beginCalled = false;
 
             if (_sortMode != SpriteSortMode.Immediate) Setup();
-            _batcher.DrawBatch(_sortMode, _device.Effect);
+            _batcher.DrawBatch(_sortMode, _material.Effect ?? _device.Effect);
         }
 
-        /// <summary>下发混合状态 + 把 (变换 × 正交投影) 写入着色器。照 MonoGame 的 Setup()。</summary>
+        /// <summary>下发混合/深度/剔除/采样状态 + 把 (变换 × 正交投影) 写入着色器。照 MonoGame 的 Setup()。</summary>
         private void Setup()
         {
-            _device.SetBlendState(_blendState);
-            // 照 MonoGame 的 Setup()：把光栅化/深度状态交给 GraphicsDevice 统一管理（绘制前强制下发，
-            // 不受外部 GL 状态影响），确保 2D 绘制用一致的状态：剔除逆时针背面 + 关闭深度测试。
-            _device.DepthStencilState = _depthStencilState;
-            _device.RasterizerState = _rasterizerState;
-            // 行向量约定（p' = p × M）：变换在左、投影在右，故 transform 先发生。
-            _device.Effect.Apply(_transform * _projection);
+            // 材质级去重：相同材质 + 相同变换时，GraphicsDevice 内部整体跳过状态下发与矩阵上传。
+            _device.ApplyMaterial(_material, _transform * _projection);
         }
 
 
@@ -148,7 +154,7 @@ namespace KFramework.MonoGame
             else
                 item.Set(position.X, position.Y, -origin.X, -origin.Y, w, h, s, c, color, uvTL, uvBR, layerDepth);
 
-            if (_sortMode == SpriteSortMode.Immediate) _batcher.DrawBatch(_sortMode, _device.Effect);
+            if (_sortMode == SpriteSortMode.Immediate) _batcher.DrawBatch(_sortMode, _material.Effect ?? _device.Effect);
         }
 
         /// <summary>目标矩形既决定位置也决定缩放（照 MonoGame 的带目标矩形重载）。</summary>

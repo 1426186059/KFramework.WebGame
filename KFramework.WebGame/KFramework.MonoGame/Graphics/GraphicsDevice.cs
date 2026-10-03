@@ -27,6 +27,14 @@ namespace KFramework.MonoGame
         private DepthStencilState _depthStencilState = null!;
         private ulong _sortingKeySource = 1;
 
+        // 材质级状态去重缓存：ApplyMaterial 按「材质内容 + 变换」短路，相同配置不重复跨 JS 下发。
+        private BlendState _appliedBlend = null!;
+        private SamplerState _appliedSampler = null!;
+        private DepthStencilState _appliedDepth = null!;
+        private RasterizerState _appliedRasterizer = null!;
+        private ISpriteProgram _appliedEffect = null!;
+        private Matrix4x4 _appliedTransform = Matrix4x4.Identity;
+
         // ---- 渲染目标状态（照 MonoGame 的 GraphicsDevice 渲染目标管理） ----
 
         /// <summary>当前绑定的渲染目标；长度固定为 4，只有前 RenderTargetCount 项有效（照 MonoGame）。</summary>
@@ -306,24 +314,60 @@ namespace KFramework.MonoGame
             Backend.ApplyDepthStencilState(_depthStencilState);
         }
 
-        internal void SetSamplerState(SamplerState state, Texture2D? current)
+        /// <summary>
+        /// 记录当前期望的采样参数（不再直接下发：实际 texParameteri 在 <see cref="BindTexture"/> 里
+        /// 按「每张纹理记住自己已应用的采样器」惰性下发，避免每次换纹理重发 4 次 texParameteri）。
+        /// </summary>
+        internal void SetSamplerState(SamplerState state)
         {
-            if (current is null) return;
-            if (ReferenceEquals(_samplerState, state) && _samplerAppliedKey == current.SortingKey) return;
             _samplerState = state;
-            _samplerAppliedKey = current.SortingKey;
-            SamplerStates[0] = state;
-
-            Backend.SetSamplerState(state);
         }
-
-        private ulong _samplerAppliedKey;
 
         internal void BindTexture(Texture2D texture)
         {
             Backend.BindTexture(texture);
             Textures[0] = texture;
-            _samplerAppliedKey = 0;   // 换纹理后采样参数需要重新下发
+            // WebGL2 无独立 sampler 对象：采样参数写在当前绑定的纹理上。
+            // 每张纹理记住自己上次应用的采样器，仅当与期望不一致才重发 texParameteri（每纹理至多一次，跨帧也复用）。
+            if (!ReferenceEquals(texture._appliedSampler, _samplerState))
+            {
+                Backend.SetSamplerState(_samplerState);
+                texture._appliedSampler = _samplerState;
+                SamplerStates[0] = _samplerState;
+            }
+        }
+
+        /// <summary>
+        /// 按「材质内容 + 变换」下发渲染状态。与上次完全一致则整体跳过（省去 blend / depth / rasterizer /
+        /// 着色器切换与矩阵上传这一串跨 JS 调用）。材质正是 Unity 的 Material：打包着色器 + 采样/混合/深度/剔除状态。
+        /// </summary>
+        internal void ApplyMaterial(Material material, Matrix4x4 transform)
+        {
+            ISpriteProgram effect = material.Effect ?? Effect;
+            if (ReferenceEquals(_appliedBlend, material.Blend)
+                && ReferenceEquals(_appliedSampler, material.Sampler)
+                && ReferenceEquals(_appliedDepth, material.DepthStencil)
+                && ReferenceEquals(_appliedRasterizer, material.Rasterizer)
+                && ReferenceEquals(_appliedEffect, effect)
+                && _appliedTransform.Equals(transform))
+            {
+                return;
+            }
+
+            _appliedBlend = material.Blend;
+            _appliedSampler = material.Sampler;
+            _appliedDepth = material.DepthStencil;
+            _appliedRasterizer = material.Rasterizer;
+            _appliedEffect = effect;
+            _appliedTransform = transform;
+
+            SetBlendState(material.Blend);
+            _depthStencilState = material.DepthStencil;
+            ApplyDepthStencilState();
+            _rasterizerState = material.Rasterizer;
+            ApplyRasterizerState();
+            _samplerState = material.Sampler;
+            effect.Apply(transform);
         }
 
         /// <summary>
@@ -420,8 +464,8 @@ namespace KFramework.MonoGame
                 _currentRenderTargetCount = 0;
                 Backend.ApplyDefaultRenderTarget();
 
-                // 目标换了，之前下发的纹理单元与采样参数全部失效（照 MonoGame 的 Textures.Dirty()）。
-                _samplerAppliedKey = 0;
+                // 目标换了，纹理单元绑定失效（照 MonoGame 的 Textures.Dirty()）；
+                // 采样参数写在纹理对象上、随纹理存活，切 FBO 不会失效，无需重发。
                 Textures.Clear();
 
                 // 照 MonoGame 的 ApplyRenderTargets：切回画布是否清屏由后台缓冲的 RenderTargetUsage 决定
@@ -438,8 +482,8 @@ namespace KFramework.MonoGame
 
                 IRenderTarget platformTarget = Backend.ApplyRenderTargets(_currentRenderTargetBindings, _currentRenderTargetCount);
 
-                // 目标换了，之前下发的纹理单元与采样参数全部失效（照 MonoGame 的 Textures.Dirty()）。
-                _samplerAppliedKey = 0;
+                // 目标换了，纹理单元绑定失效（照 MonoGame 的 Textures.Dirty()）；
+                // 采样参数写在纹理对象上、随纹理存活，切 FBO 不会失效，无需重发。
                 Textures.Clear();
 
                 renderTargetWidth = platformTarget.Width;
