@@ -71,7 +71,7 @@ export function reportPointerCancel() {
     pending.set(E_HTML_Event_Type.SysPointerCancel, noData);
 }
 export function hadFocusLost() {
-    return document.activeElement != canvas;
+    return !document.hasFocus();
 }
 export function drainWindowEvents(w) {
     reportCanvasSize();

@@ -9,9 +9,9 @@
 //
 // 注：IME 走 [JSExport] 由 JS 主动推给 C#（OnDomValue / OnKeyDown），本来就不占这条拉取流。
 import { FrameDataStream, MAX_EVENTS_PER_FRAME, MAX_FRAME_BYTES, evDataBytes } from './html_event_type.js';
-import { bindWindowEvents, drainWindowEvents, pollFocus, hadFocusLost } from './input_window_event.js';
+import { bindWindowEvents, drainWindowEvents, hadFocusLost } from './input_window_event.js';
 import { discardKeyboardEvents, writeKeyboardEvents } from './input_keyboard.js';
-import { discardMouseEvents, tickMouseWatchdog, writeMouseEvents } from './input_mouse.js';
+import { discardMouseEvents, writeMouseEvents } from './input_mouse.js';
 import { discardTouchEvents, writeTouchEvents } from './input_touch.js';
 
 const scratch = new Uint8Array(MAX_FRAME_BYTES);
@@ -39,13 +39,12 @@ const sink: FrameDataStream = {
 // 渲染分辨率就一直错下去），C# 侧也只有 BindFrameEvents、没有对应的 Unbind ——
 // 留一个没人调用的解绑出口，只会让人以为"解绑后还能正常收尺寸"。
 export function bindFrameEvents(canvasId?: string | null): void {
-    bindWindowEvents(canvasId);
+    bindWindowEvents();
 }
 
 
-export function takeFrameData(target: MemoryView_Span): number {
-    pollFocus();
-
+export function takeFrameData(target: MemoryView_Span): number
+{
     count = 0;
     off = 1;
     

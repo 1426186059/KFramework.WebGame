@@ -9,7 +9,7 @@
 //
 // 注：IME 走 [JSExport] 由 JS 主动推给 C#（OnDomValue / OnKeyDown），本来就不占这条拉取流。
 import { MAX_EVENTS_PER_FRAME, MAX_FRAME_BYTES, evDataBytes } from './html_event_type.js';
-import { bindWindowEvents, drainWindowEvents, pollFocus, hadFocusLost } from './input_window_event.js';
+import { bindWindowEvents, drainWindowEvents, hadFocusLost } from './input_window_event.js';
 import { discardKeyboardEvents, writeKeyboardEvents } from './input_keyboard.js';
 import { discardMouseEvents, writeMouseEvents } from './input_mouse.js';
 import { discardTouchEvents, writeTouchEvents } from './input_touch.js';

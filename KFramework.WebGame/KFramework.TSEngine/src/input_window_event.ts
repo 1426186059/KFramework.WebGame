@@ -106,7 +106,7 @@ export function reportPointerCancel(): void
 
 export function hadFocusLost(): boolean 
 {
-    return document.activeElement != canvas
+    return !document.hasFocus();
 }
 
 export function drainWindowEvents(w: FrameDataStream): void 
