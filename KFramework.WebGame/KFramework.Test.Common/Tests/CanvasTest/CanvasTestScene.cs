@@ -106,7 +106,6 @@ namespace KFramework.Test.Common.Tests.CanvasTest
         /// <summary>画布 CSS 改完后立即同步后备缓冲 / 视口，不用等下一帧。</summary>
         private void Reread()
         {
-            Window.Canvas.Refresh();
             Say($"已从浏览器读回 Rect：{Window.Canvas.Rect.X}, {Window.Canvas.Rect.Y} {Window.Canvas.Rect.Width}×{Window.Canvas.Rect.Height}");
         }
 

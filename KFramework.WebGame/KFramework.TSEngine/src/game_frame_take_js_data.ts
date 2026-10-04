@@ -14,9 +14,14 @@ import { discardKeyboardEvents, writeKeyboardEvents } from './input_keyboard.js'
 import { discardMouseEvents, writeMouseEvents } from './input_mouse.js';
 import { discardTouchEvents, writeTouchEvents } from './input_touch.js';
 
-const scratch = new Uint8Array(MAX_FRAME_BYTES);
 let count = 0;
 let off = 0;
+
+// 复用的 1 字节临时缓冲：MemoryView 没有 [] 索引器（types.d.ts:15），单个 type 字节只能经 .set() 写入。
+const _typeByte = new Uint8Array(1);
+// 本帧的目标缓冲（C# 传进来的 MemoryView_Span）。sink 直接写进它，
+// 避免先攒到 scratch 再整体 .set 一遍 —— 那一次 memcpy 正是当初"零拷贝"设计想消灭的。
+let _target: MemoryView_Span | null = null;
 
 const sink: FrameDataStream = {
     put(type: number, data: Uint8Array, len: number): void {
@@ -24,8 +29,11 @@ const sink: FrameDataStream = {
         // 所以解析端查表推进即可 —— 流里无需再带长度，也不会解析错位。
         const n = len > 0 ? len : evDataBytes(type);
         if (count >= MAX_EVENTS_PER_FRAME || off + 1 + n > MAX_FRAME_BYTES) return;   // 放不下就整条丢弃，绝不写半截
-        scratch[off++] = type;
-        scratch.set(data.subarray(0, n), off);
+        const t = _target!;
+        _typeByte[0] = type;
+        t.set(_typeByte, off);            // 单字节 type 直写 MemoryView（无索引器，只能 .set）
+        off += 1;
+        t.set(data.subarray(0, n), off);  // data 已是 Uint8Array，直接 .set 进目标（源在事件对象里，这次拷贝不可避免）
         off += n;
         count++;
     },
@@ -45,6 +53,7 @@ export function bindFrameEvents(): void {
 
 export function takeFrameData(target: MemoryView_Span): number
 {
+    _target = target;
     count = 0;
     off = 1;
     
@@ -63,7 +72,8 @@ export function takeFrameData(target: MemoryView_Span): number
         writeTouchEvents(sink);
     }
 
-    scratch[0] = count;
-    target.set(scratch.subarray(0, off), 0);
+    _typeByte[0] = count;
+    target.set(_typeByte, 0);   // count 写回 0 号位（MemoryView，无索引器）
+    _target = null;
     return off;
 }

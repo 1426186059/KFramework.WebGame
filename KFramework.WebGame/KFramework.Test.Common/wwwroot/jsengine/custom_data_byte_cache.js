@@ -56,8 +56,12 @@ function assertPowerOfTwo(name, n) {
 export function sharedBytesOf(view) {
     if (view == null)
         return null;
-    // 已是 JS 侧的 TypedArray：直接建一个共享同一段内存的字节视图
+    const kind = view?.constructor?.name ?? typeof view;
+    // 已是 JS 侧的 TypedArray：直接建一个共享同一段内存的字节视图。
+    // ⚠️ 但要注意：走到这里说明入参【不是】MemoryView —— 它多半是跨界封送出来的副本，
+    // 那次拷贝在跨界时已经发生，本函数省不掉。
     if (ArrayBuffer.isView(view)) {
+        console.log('[ByteCache] 零拷贝【未】生效：入参已是 TypedArray（' + kind + '）—— 它是跨界封送的副本，不是共享内存。');
         return new Uint8Array(view.buffer, view.byteOffset, view.byteLength);
     }
     const memory = view;
@@ -68,6 +72,7 @@ export function sharedBytesOf(view) {
             const shared = createSharedView.call(memory);
             // 长度对得上才敢用：对不上说明拿到的不是本视图的共享内存
             if (shared && shared.byteLength === memory.byteLength) {
+                //console.log('[ByteCache] 零拷贝生效 ✓：入参 ' + kind + ' → _unsafe_create_view() 拿到共享托管内存的视图，无 memcpy。');
                 return new Uint8Array(shared.buffer, shared.byteOffset, shared.byteLength);
             }
         }
@@ -75,6 +80,7 @@ export function sharedBytesOf(view) {
             // 拿不到就返回 null，交给调用方兜底
         }
     }
+    console.log('[ByteCache] 零拷贝【未】生效：入参 ' + kind + ' 上找不到可用的 _unsafe_create_view，将退回拷贝。');
     return null;
 }
 export class ByteCache {
@@ -153,8 +159,6 @@ export class ByteCache {
         const shared = sharedBytesOf(view);
         if (shared)
             return shared;
-        // 兜底：拷进本缓冲（一次 memcpy）。走到这里说明拿不到共享视图，
-        // 此时本类仍有用 —— 省掉的是"每次 new Uint8Array"的分配。
         const memory = view;
         const buf = this.ensure(memory.byteLength);
         if (typeof memory.copyTo === 'function') {
