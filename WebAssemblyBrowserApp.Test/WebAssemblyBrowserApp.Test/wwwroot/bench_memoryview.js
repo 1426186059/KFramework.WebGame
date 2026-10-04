@@ -114,7 +114,7 @@ export function probeHeap() {
  * ⑩ _unsafe_create_view() 返回值的身份细节。
  *
  * ⑦ 已证明"写入会回写 C#"，但还不知道它返回的到底是个什么：是不是真的 Uint8Array、有没有 .buffer。
- * 按 reference/MemoryView.ts，它内部是
+ * 按 dotnet/runtime 的 marshal.ts（_unsafe_create_view 的实现，见 marshal.ts:481），它内部是
  *   new Uint8Array(localHeapViewU8().buffer, this._pointer, this._length)
  * —— 那么 .buffer 就应当是【WASM 线性内存】的那块 ArrayBuffer。这条要是成立，HeapView 方案里最难的
  * getWasmMemoryBuffer() 就有了正解：不用扫全局，从一个 MemoryView 身上取即可。
@@ -176,7 +176,7 @@ export function probeHeapBridge(view, ptr, length) {
 
 /**
  * 写法⑦ view._unsafe_create_view() —— 运行时内部方法。
- * 按 reference/MemoryView.ts 的定义，它才是真正返回"共享托管内存视图"的那个，
+ * 按 dotnet/runtime 的 marshal.ts 的定义，它才是真正返回"共享托管内存视图"的那个，
  * 但带 _unsafe 前缀、不对外。实测能不能调、写入会不会回写 C#。
  */
 export function probeUnsafe(view) {

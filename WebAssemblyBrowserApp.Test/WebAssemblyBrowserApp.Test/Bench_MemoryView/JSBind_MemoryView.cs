@@ -45,8 +45,13 @@ public static partial class JSBind_MemoryView
     public static partial string ProbeBuffer([JSMarshalAs<JSType.MemoryView>] Span<byte> buffer);
 
     /// <summary>
-    /// 写法⑦ <c>view._unsafe_create_view()</c> —— 运行时内部方法（见 KFramework.TSEngine/reference/MemoryView.ts）。
-    /// 按定义它才是<b>真正返回共享托管内存视图</b>的那个，但带 _unsafe 前缀、不对外。实测能否调用、写入是否回写。
+    /// 写法⑦ <c>view._unsafe_create_view()</c> —— 运行时内部方法。
+    /// <para>
+    /// 实现见 dotnet/runtime 的 <c>src/mono/browser/runtime/marshal.ts:481</c>。
+    /// 官方类型声明已复制到 <c>KFramework.TSEngine/src/dotnet-runtime.d.ts</c>（从 runtime 源码原样复制），
+    /// 但 <c>_unsafe_create_view</c> 不在公开的 <c>IMemoryView</c> 上 —— 这正是它"带 _unsafe 前缀"的含义。
+    /// 实测能否调用、写入是否回写。
+    /// </para>
     /// </summary>
     [JSImport("probeUnsafe", "bench_memoryview")]
     public static partial string ProbeUnsafe([JSMarshalAs<JSType.MemoryView>] Span<byte> buffer);

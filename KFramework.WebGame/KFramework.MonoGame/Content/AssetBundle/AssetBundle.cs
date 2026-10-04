@@ -210,7 +210,8 @@ namespace KFramework.MonoGame
                     byte[] raw = LoadAsset(e.Path);
                     var pixels = new byte[w * h * 4];
                     var size = new int[2];
-                    await JSBind_Texture.DecodeImageToRgba(raw, new ArraySegment<int>(size), new ArraySegment<byte>(pixels)).ConfigureAwait(false);
+                    // 源字节包成 ArraySegment：走 MemoryView 后跨界不再整块拷贝（理由见 JSBind_Texture 的注释）。
+                    await JSBind_Texture.DecodeImageToRgba(new ArraySegment<byte>(raw), new ArraySegment<int>(size), new ArraySegment<byte>(pixels)).ConfigureAwait(false);
                     _decodedTextures[e.Path] = new DecodedTexture(pixels, SurfaceFormat.Color);
                     continue;
                 }

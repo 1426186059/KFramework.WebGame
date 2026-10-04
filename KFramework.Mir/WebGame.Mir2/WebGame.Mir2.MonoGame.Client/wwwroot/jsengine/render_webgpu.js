@@ -13,8 +13,9 @@
 //   * 着色器是 WGSL（GPUShaderModule），不是 GLSL；
 //   * 所有 GPU 对象以整数句柄返回（不再用 JSObject），避免跨边界持有 JS 对象带来的生命周期问题。
 //
-// 重要：.NET 侧 Span<T> 在 JS 侧是 MemoryView（不是 TypedArray），必须经 toUint8Array 转换后才能交给 WebGPU。
+// 重要：.NET 侧 Span<T> 在 JS 侧是 MemoryView（不是 TypedArray），必须经 ByteCache 转换后才能交给 WebGPU。
 import { getCanvas } from './html_canvas.js';
+import { ByteCache } from './custom_data_byte_cache.js';
 // ---- 全局 WebGPU 状态 ----
 let device = null; // GPUDevice
 let adapter = null; // GPUAdapter
@@ -38,26 +39,19 @@ const samplers = new Map();
 const bindGroups = new Map();
 let nextId = 1;
 function allocId() { return nextId++; }
+// ---- 复用的字节缓冲（见 custom_data_byte_cache.ts）----
+// .NET 的 MemoryView 没有 .buffer，只能 copyTo / slice 出副本交给 WebGPU：拷贝免不掉，
+// 但"每次调用都 new Uint8Array"的分配可以免。按用途分开 —— 两者量级差太远，不该共用。
+// 上限默认 65535（ushort 最大值）对这两类都不够，需显式放宽：顶点单批约 320KB，
+// 纹理 1024² RGBA 就是 4MB。
+const _cacheBuffer = new ByteCache(64 * 1024, 1024 * 1024); // queue.writeBuffer：每帧高频
+const _cacheTexels = new ByteCache(2048, 32 * 1024 * 1024); // queue.writeTexture：块大但低频
 // ---- 当前帧状态（命令编码器 / 渲染通道）----
 let encoder = null;
 let pass = null;
 let curPipeline = null;
-// 把 .NET MemoryView（Span<T>）或 TypedArray 统一转成 Uint8Array（字节视图）交给 WebGPU。
-// MemoryView 只有 slice()（返回 ArrayBufferView 副本），没有 .buffer，故与 TypedArray 分开处理。
-function toUint8Array(view) {
-    if (view === null || view === undefined)
-        return null;
-    if (ArrayBuffer.isView(view)) {
-        const v = view;
-        return new Uint8Array(v.buffer, v.byteOffset, v.byteLength);
-    }
-    const mv = view;
-    if (typeof mv.slice === 'function') {
-        const copy = mv.slice();
-        return new Uint8Array(copy.buffer, copy.byteOffset, copy.byteLength);
-    }
-    return null;
-}
+// MemoryView → Uint8Array 的转换统一走 ByteCache（见 custom_data_byte_cache.ts），
+// 按用途分流到 _cacheBuffer / _cacheTexels。
 // 把 C# 侧序列化好的描述对象（JSON 字符串）解析回 JS 对象。
 // 原因：本项目的 .NET 源码生成式 JS interop 不支持 JSMarshalAs<JSType.Object>/object，
 // 复杂描述只能以 JSON 字符串跨边界传递（见 JSBind_WebGPU.cs 的 CreatePipeline/CreateBindGroup/CreateSampler）。
@@ -244,7 +238,7 @@ export function createBuffer(size, usage) {
 /** 上传字节到缓冲（queue.writeBuffer）。data 可为 TypedArray 或 .NET MemoryView。 */
 export function writeBuffer(id, offset, data) {
     const buf = buffers.get(id);
-    const bytes = toUint8Array(data);
+    const bytes = _cacheBuffer.copyFrom(data);
     if (!buf || !bytes || !device)
         return;
     device.queue.writeBuffer(buf, offset | 0, bytes);
@@ -424,7 +418,7 @@ export function destroyBindGroup(id) { bindGroups.delete(id); }
  * sampleCount > 1 时创建的是【多重采样附件】：只用于渲染（RENDER_ATTACHMENT），
  * 不能被 shader 采样、也不能由 CPU 上传 —— 内容靠通道的 resolveTarget 解析进单采样纹理。
  */
-export function createTexture(width, height, formatStr, sampleCount) {
+export function createTexture(width, height, formatStr, sampleCount, extraUsage = 0) {
     if (!device) {
         console.error('[webgpu] device 未就绪');
         return 0;
@@ -437,7 +431,7 @@ export function createTexture(width, height, formatStr, sampleCount) {
         format: formatStr || 'rgba8unorm',
         usage: samples > 1
             ? 0x10 // RENDER_ATTACHMENT（多重采样附件）
-            : (0x04 | 0x10 | 0x02), // TEXTURE_BINDING | RENDER_ATTACHMENT | COPY_DST
+            : (0x04 | 0x10 | 0x02 | (extraUsage & 0x01)), // TEXTURE_BINDING | RENDER_ATTACHMENT | COPY_DST | (extraUsage：仅 RenderTarget 传 COPY_SRC)
     }));
     return id;
 }
@@ -449,7 +443,7 @@ export function createTexture(width, height, formatStr, sampleCount) {
  */
 export function uploadTexture(id, data, x, y, width, height, formatStr) {
     const tex = textures.get(id);
-    const bytes = toUint8Array(data);
+    const bytes = _cacheTexels.copyFrom(data);
     if (!tex || !bytes || !device)
         return;
     const w = width | 0;
@@ -459,7 +453,17 @@ export function uploadTexture(id, data, x, y, width, height, formatStr) {
     if (fmt !== 'rgba8unorm' && fmt !== 'bgra8unorm') {
         console.warn('[webgpu] uploadTexture 当前按 rgba8 假设处理，收到格式: ' + fmt);
     }
-    device.queue.writeTexture({ texture: tex, mipLevel: 0, origin: { x: x | 0, y: y | 0, z: 0 } }, bytes, { offset: 0, bytesPerRow: w * 4, rowsPerImage: h }, { width: w, height: h, depthOrArrayLayers: 1 });
+    const bytesPerRow = w * 4;
+    // WebGPU 硬规定：多行 writeTexture 的 bytesPerRow 必须 256 字节对齐，否则整次写入静默失败。
+    // 字体图集的字形细胞宽度仅几十像素（bytesPerRow 远小于 256），直接写会整块丢失 → 文字全透明（黑屏）。
+    // 故非对齐的多行情况改逐行写入：单行 writeTexture 不受 256 限制，origin.y 逐行推进即可精确填进子区域。
+    if (h <= 1 || bytesPerRow % 256 === 0) {
+        device.queue.writeTexture({ texture: tex, mipLevel: 0, origin: { x: x | 0, y: y | 0, z: 0 } }, bytes, { offset: 0, bytesPerRow, rowsPerImage: h }, { width: w, height: h, depthOrArrayLayers: 1 });
+        return;
+    }
+    for (let r = 0; r < h; r++) {
+        device.queue.writeTexture({ texture: tex, mipLevel: 0, origin: { x: x | 0, y: (y + r) | 0, z: 0 } }, bytes.subarray(r * bytesPerRow, (r + 1) * bytesPerRow), { offset: 0, bytesPerRow, rowsPerImage: 1 }, { width: w, height: 1, depthOrArrayLayers: 1 });
+    }
 }
 export function destroyTexture(id) {
     const t = textures.get(id);
@@ -634,4 +638,44 @@ export function endFrame() {
     encoder = null;
     passIsCanvas = false;
     curPipeline = null;
+}
+let pendingReadback = null;
+/**
+ * 读取纹理区域像素（x/y 为纹理坐标，原点在左上；WebGPU 纹理原点即左上，无需翻转）。
+ * 走 copyTextureToBuffer + mapAsync（异步），结果存到模块级 pendingReadback，待 readPixelsGet 同步拷出。
+ * textureId 为 createTexture 返回的整数句柄；该纹理须带 COPY_SRC 用途（离屏 RT 已具备）。
+ */
+export async function readPixels(textureId, x, y, w, h) {
+    if (!device)
+        return;
+    const tex = textures.get(textureId);
+    if (!tex)
+        return;
+    const wi = w | 0, hi = h | 0;
+    if (wi <= 0 || hi <= 0)
+        return;
+    const bytesPerRow = Math.ceil((wi * 4) / 256) * 256; // WebGPU 要求 256 字节对齐
+    const buffer = device.createBuffer({
+        size: bytesPerRow * hi,
+        usage: 0x0001 | 0x0008, // GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
+    });
+    const enc = device.createCommandEncoder();
+    enc.copyTextureToBuffer({ texture: tex, mipLevel: 0, origin: { x: x | 0, y: y | 0, z: 0 } }, { buffer, bytesPerRow, rowsPerImage: hi }, { width: wi, height: hi, depthOrArrayLayers: 1 });
+    device.queue.submit([enc.finish()]);
+    await buffer.mapAsync(0x0001); // GPUMapMode.READ
+    const mapped = new Uint8Array(buffer.getMappedRange());
+    const out = new Uint8Array(wi * hi * 4);
+    for (let r = 0; r < hi; r++) {
+        out.set(mapped.subarray(r * bytesPerRow, r * bytesPerRow + wi * 4), r * wi * 4);
+    }
+    buffer.unmap();
+    buffer.destroy();
+    pendingReadback = out;
+}
+/** 把上一次 readPixels 异步读回的像素（RGBA8 自上而下）同步拷进 out（MemoryView，长度需 w*h*4）。 */
+export function readPixelsGet(out) {
+    if (pendingReadback) {
+        out.set(pendingReadback);
+        pendingReadback = null;
+    }
 }

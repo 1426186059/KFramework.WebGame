@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 /// 模块：MemoryView 在 JS 侧到底有哪几种写法，以及每种是不是真的动到了 C# 的托管内存。
 /// <para>
 /// 起因是一句猜测：「MemoryView 用 slice() 拿到的就是 Uint8Array 视图，可以零拷贝」。
-/// 而权威定义（KFramework.TSEngine/reference/MemoryView.ts，摘自 dotnet/runtime 的 marshal.ts）写着：
+/// 而权威定义（dotnet/runtime 的 <c>src/mono/browser/runtime/marshal.ts</c>；
+/// 其官方类型声明已复制到 <c>KFramework.TSEngine/src/dotnet-runtime.d.ts</c>）写着：
 /// <c>slice()</c> 内部走的是标准 <c>TypedArray.prototype.slice()</c>，返回的<b>是副本</b>；
 /// 真正返回共享内存视图的 <c>_unsafe_create_view()</c> 是内部方法、不对外。
 /// 猜测到底成不成立，跑一遍就知道 —— 本模块就是干这个的。

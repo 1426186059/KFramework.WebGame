@@ -1,8 +1,12 @@
 // 【共享】可增长的字节缓冲，封装一块复用中的 Uint8Array，供各渲染模块（及后续新增模块）共用。
 //
-// 存在的理由：.NET 侧传进来的 MemoryView_Span 不是 TypedArray，而且【没有 .buffer】，
-// 要交给 WebGL / WebGPU 前必须先 copyTo 或 slice 出一份 JS 侧字节。这次拷贝免不掉，
-// 但"每次调用都 new Uint8Array"的分配可以免 —— 本类就是干这个的。
+// 【存在的理由已更新 —— 原先那句"这次拷贝免不掉"是错的】
+// .NET 侧传进来的 MemoryView_Span 不是 TypedArray、也没有公开的 .buffer，
+// 但它的 _unsafe_create_view() 能给出【共享托管内存】的 TypedArray —— 那是零拷贝的，
+// 可直接喂给 WebGL / WebGPU（细节见 copyFrom 的注释）。所以本类现在的角色是【兜底】：
+//   * 拿得到共享视图 → 零拷贝，根本用不到本缓冲；
+//   * 拿不到，或异步用途必须固化一份 JS 自有字节 → 才拷进本缓冲，
+//     此时省掉的是"每次 new Uint8Array"的分配，拷贝本身仍在。
 //
 // 用法：每个用途各持一个实例（矩阵 / 顶点 / 纹理…），【不要混用】。
 // 不同用途的数据量级差得远（几十 B vs 数 MB），共用一个实例会互相把对方撑到自己的量级。
@@ -33,6 +37,54 @@ function assertPowerOfTwo(name: string, n: number): number {
     if (v <= 0 || (v & (v - 1)) !== 0)
         throw new Error(`[ByteCache] ${name} 必须是 2 的整数次幂（1/2/4/8…），收到 ${n}`);
     return v;
+}
+
+/**
+ * 把 .NET 传进来的字节（MemoryView 或 TypedArray）取成【共享内存】的 Uint8Array —— 零拷贝。
+ *
+ * 两条路都能拿到共享视图：
+ *   - 已是 TypedArray：直接建字节视图，共享同一段内存。
+ *   - MemoryView：_unsafe_create_view() 返回的正是共享托管内存的 TypedArray。
+ *     它内部就是 new Uint8Array(localHeapViewU8().buffer, ptr, len)（marshal.ts:481）；
+ *     与公开 API runtime.localHeapViewU8() 是同一块内存 —— Bench_RuntimeApi ⑤⑥ 已实测。
+ *     它带 _unsafe 前缀属内部方法，故拿不到时本函数返回 null，由调用方自己兜底。
+ *
+ * ⚠️ 返回的视图【只在当前同步调用期间有效】：别存起来、别跨 await。
+ *    堆一增长（memory.grow），底层 buffer 被 detach，视图会【静默失效】
+ *    —— 读写既不抛错也不生效，是最难查的一类 bug。
+ *    同步用途安全：gl.bufferData / gl.texImage2D / new Blob(...) 这些 API 都是【同步读取】的，
+ *    数据在调用返回前就已固化。异步用途（要先 await 才用到字节）必须先自己固化一份。
+ *
+ * @returns 共享视图；拿不到（或传 null）时返回 null。
+ */
+export function sharedBytesOf(view: MemoryView_Span | ArrayBufferView | null): Uint8Array | null {
+    if (view == null) return null;
+
+    // 已是 JS 侧的 TypedArray：直接建一个共享同一段内存的字节视图
+    if (ArrayBuffer.isView(view)) {
+        return new Uint8Array(view.buffer, view.byteOffset, view.byteLength);
+    }
+
+    const memory = view as MemoryView_Span;
+
+    // MemoryView：要共享内存的那份视图。_unsafe_create_view 不在官方 IMemoryView 类型里，故强转。
+    const createSharedView = (memory as unknown as {
+        _unsafe_create_view?: () => ArrayBufferView;
+    })._unsafe_create_view;
+
+    if (typeof createSharedView === 'function') {
+        try {
+            const shared = createSharedView.call(memory);
+            // 长度对得上才敢用：对不上说明拿到的不是本视图的共享内存
+            if (shared && shared.byteLength === memory.byteLength) {
+                return new Uint8Array(shared.buffer, shared.byteOffset, shared.byteLength);
+            }
+        } catch {
+            // 拿不到就返回 null，交给调用方兜底
+        }
+    }
+
+    return null;
 }
 
 export class ByteCache {
@@ -91,19 +143,35 @@ export class ByteCache {
 
     /**
      * 把 MemoryView / TypedArray 取成一份可直接交给图形 API 的 Uint8Array。
-     * - 已是 TypedArray（Uint8Array / Float32Array…）：零拷贝地转成字节视图直返，不占用本缓冲。
-     * - MemoryView：拷进本缓冲，返回只含本次数据的 subarray 视图。
+     *
+     * 【零拷贝优先 —— 两种情况都能拿到共享内存的视图，一次 memcpy 都没有】
+     * - 已是 TypedArray（Uint8Array / Float32Array…）：直接建字节视图，共享同一段内存。
+     * - MemoryView：_unsafe_create_view() 返回的正是【共享托管内存】的 TypedArray。
+     *   它内部就是 new Uint8Array(localHeapViewU8().buffer, ptr, len)
+     *   （见 dotnet-runtime.d.ts 旁的 reference 与 marshal.ts:481；
+     *    Bench_RuntimeApi ⑤⑥ 已实测它与公开 API runtime.localHeapViewU8() 是同一块内存）。
+     *   带 _unsafe 前缀属内部方法，故拿不到时才退回下面的拷贝。
+     *
+     * ⚠️ 零拷贝返回的视图【只在当前同步调用期间有效】：
+     *   别存起来、别跨 await —— 堆一增长（memory.grow），底层 buffer 被 detach，
+     *   视图会【静默失效】（读写既不抛错也不生效）。
+     *   本类现有的调用点（bufferData / bufferSubData / texImage2D / texSubImage2D /
+     *   compressedTexImage2D / writeBuffer / uploadTexture / uniformMatrix4fv）
+     *   都是同步提交给图形 API 的，故安全。
+     *   异步用途（音频解码、写 CacheStorage / IndexedDB、图片解码）【不能】走本方法，
+     *   必须拷一份 JS 自有的字节 —— 否则数据会在 await 之后失效。
      *
      * @param view MemoryView_Span（.NET Span<byte>）或任意 TypedArray；传 null 直接返回 null。
      */
     copyFrom(view: MemoryView_Span | ArrayBufferView | null): Uint8Array | null {
         if (view == null) return null;
 
-        // 已是 JS 侧的 TypedArray：直接建一个共享同一段内存的字节视图，零拷贝
-        if (ArrayBuffer.isView(view)) {
-            return new Uint8Array(view.buffer, view.byteOffset, view.byteLength);
-        }
+        // 先要共享视图（零拷贝）—— 这是首选路径
+        const shared = sharedBytesOf(view);
+        if (shared) return shared;
 
+        // 兜底：拷进本缓冲（一次 memcpy）。走到这里说明拿不到共享视图，
+        // 此时本类仍有用 —— 省掉的是"每次 new Uint8Array"的分配。
         const memory = view as MemoryView_Span;
         const buf = this.ensure(memory.byteLength);
 

@@ -126,7 +126,11 @@ else {
  * 而 config.mainAssemblyName 是游戏程序集，因此需要在多个程序集中查找。
  */
 async function resolveGameHost() {
-    const candidates = [config.mainAssemblyName, 'KFramework.MonoGame', 'KFramework.MonoGame.dll'].filter(Boolean);
+    // 官方类型里 MonoConfig.mainAssemblyName 是可选的（string | undefined），
+    // 所以这里必须把空值滤掉 —— 早先手写的宽松声明把它写成必有，才一直没暴露。
+    // 注意不能只写 .filter(Boolean)：TS 认不出 Boolean 会滤掉 undefined，类型收窄不了。
+    const candidates = [config.mainAssemblyName, 'KFramework.MonoGame', 'KFramework.MonoGame.dll']
+        .filter((name) => typeof name === 'string' && name.length > 0);
     for (const assemblyName of candidates) {
         try {
             const host = findHost(await getAssemblyExports(assemblyName));
