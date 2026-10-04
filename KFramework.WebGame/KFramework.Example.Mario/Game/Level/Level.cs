@@ -24,6 +24,10 @@ namespace KFramework.Example.Mario
         public readonly LinkedList<TileBlock> mBackgroundObjectList = new LinkedList<TileBlock>();
         public readonly LinkedList<PowerUpObject> mPowerUpObjectList = new LinkedList<PowerUpObject>();
         public readonly LinkedList<EnemyBase> mEnemyObjectList = new LinkedList<EnemyBase>();
+
+        // 仅登记"重写了 Update 的动态瓦片"（问号块/金币块/可碎砖/管道/城堡/敌人发射器等）。
+        // 静态 TileBlock（地面/墙）不重写 Update，不参与逐帧更新，从而跳过整张网格的遍历（数千格）。
+        private readonly List<TileBase> mDynamicTiles = new List<TileBase>();
         public bool Paused { get; set; }
         public ParticleManager mParticleManager { get; set; }
 
@@ -143,7 +147,20 @@ namespace KFramework.Example.Mario
                     tiles[x, y] = LoadTile(tileType, x, y);
                 }
             }
-            
+
+            // 收集需要逐帧更新的动态瓦片：跳过整张网格遍历的关键。
+            // 静态 TileBlock（地面/墙）不重写 Update，无需登记；其余动态瓦片数量极少。
+            for (int y = 0; y < Height; ++y)
+            {
+                for (int x = 0; x < Width; ++x)
+                {
+                    TileBase t = tiles[x, y].Target;
+                    if (t != null && t is not TileBlock)
+                    {
+                        mDynamicTiles.Add(t);
+                    }
+                }
+            }
         }
 
         private Tile LoadTile(char tileType, int x, int y)
@@ -425,13 +442,19 @@ namespace KFramework.Example.Mario
 
         public void Update()
         {
-            for (int i = 0; i < Width; i++)
+#if DEBUG
+            KFramework.MonoGame.GameProfiler.TestStart();
+#endif
+            // 只更新动态瓦片（问号块/金币块/可碎砖/管道/城堡/敌人发射器），不再遍历整张网格（数千格）
+            foreach (var t in mDynamicTiles)
             {
-                for (int j = 0; j < Height; j++)
-                {
-                    tiles[i, j].Update();
-                }
+                t.Update();
             }
+#if DEBUG
+            var __tileUpd = KFramework.MonoGame.GameProfiler.GetTestFinishSpendTime();
+            if (__tileUpd > 0.005) KFramework.MonoGame.PrintTool.Log($"GameProfiler [Level.Update/DynamicTiles]: {__tileUpd * 1000:F2}ms count={mDynamicTiles.Count}");
+            KFramework.MonoGame.GameProfiler.TestStart();
+#endif
 
             if (mPlayer != null)
             {
@@ -472,6 +495,10 @@ namespace KFramework.Example.Mario
 
             mParticleManager.Update();
             PlayerData.Instance.AddTime(KTime.deltaTime);
+#if DEBUG
+            var __entUpd = KFramework.MonoGame.GameProfiler.GetTestFinishSpendTime();
+            if (__entUpd > 0.005) KFramework.MonoGame.PrintTool.Log($"GameProfiler [Level.Update/Entities]: {__entUpd * 1000:F2}ms");
+#endif
         }
 
         public void Draw()
@@ -505,13 +532,29 @@ namespace KFramework.Example.Mario
                 v.Draw();
             }
 
-            for (int i = 0; i < Width; i++)
+#if DEBUG
+            KFramework.MonoGame.GameProfiler.TestStart();
+#endif
+            // 相机可见列裁剪：只画 [colMin, colMax]（左右各留 2 列 margin），不再遍历整张地图（数千格）
+            float viewW = KSceneMgr.Game.GraphicsDevice.Viewport.Width;
+            float camLeft = mPlayer.cameraPosX;
+            float camRight = camLeft + viewW;
+            float marginW = 2f * Tile.TileWidth;
+            int colMin = (int)Math.Floor((camLeft - marginW) / Tile.TileWidth);
+            int colMax = (int)Math.Ceiling((camRight + marginW) / Tile.TileWidth);
+            if (colMin < 0) colMin = 0;
+            if (colMax > Width - 1) colMax = Width - 1;
+            for (int i = colMin; i <= colMax; i++)
             {
                 for (int j = 0; j < Height; j++)
                 {
                     tiles[i, j].Draw();
                 }
             }
+#if DEBUG
+            var __tileDraw = KFramework.MonoGame.GameProfiler.GetTestFinishSpendTime();
+            if (__tileDraw > 0.005) KFramework.MonoGame.PrintTool.Log($"GameProfiler [DrawLevel/VisibleTiles]: {__tileDraw * 1000:F2}ms cols={colMax - colMin + 1} totalW={Width}");
+#endif
 
             foreach (var v in mEnemyObjectList)
             {
