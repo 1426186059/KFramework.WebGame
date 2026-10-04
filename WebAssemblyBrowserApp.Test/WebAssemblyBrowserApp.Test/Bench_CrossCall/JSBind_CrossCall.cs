@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices.JavaScript;
 
 /// <summary>
@@ -23,4 +24,24 @@ public static partial class JSBind_CrossCall
     /// </summary>
     [JSImport("noop", "bench_crosscall")]
     public static partial int Noop();
+
+    /// <summary>
+    /// <c>[JSExport]</c>：供页面滑块 / 数值框调用，测指定的每帧次数。
+    /// <para>注意：本工程 [JSExport] 源码生成不支持 <c>Task&lt;T&gt;</c> 返回值（与 JSImport 的 SYSLIB1072 同理，
+    /// 仓库内也没有其它 [JSExport] 返回 Task&lt;T&gt; 的先例），故同步返回 string
+    /// （与 JsToCs_String / Cb_String 同款）。调用前的"运行中…"提示由 JS 侧（bench_crosscall.js）在 await 前设置。</para>
+    /// </summary>
+    [JSExport]
+    public static string CcRun(int count)
+    {
+        int n = Math.Clamp(count, 0, Bench_CrossCall.MaxN);
+        return Bench_CrossCall.SingleCard(n);
+    }
+
+    /// <summary><c>[JSExport]</c>：供页面按钮调用，跑全套预设档位（大档较慢）。</summary>
+    [JSExport]
+    public static string CcRunAll()
+    {
+        return Bench_CrossCall.BuildTable("全套预设档位（0 → 1,000,000）", Bench_CrossCall.Presets, withConclusion: true);
+    }
 }

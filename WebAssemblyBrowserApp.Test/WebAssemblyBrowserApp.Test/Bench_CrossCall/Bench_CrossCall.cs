@@ -36,13 +36,13 @@ public sealed class Bench_CrossCall : IBenchModule
     public string Page => "crosscall";
 
     /// <summary>N 的上限。再大就不是"每帧"能承受的量级了。</summary>
-    private const int MaxN = 1_000_000;
+    internal const int MaxN = 1_000_000;
 
     /// <summary>60fps 的帧预算（毫秒）。</summary>
     private const double FrameBudgetMs = 1000.0 / 60.0;
 
     /// <summary>全套预设档位：跨六个数量级，用来找"每帧跨界的天花板"落在哪。</summary>
-    private static readonly int[] Presets = [0, 1, 10, 100, 1000, 5000, 10000, 50000, 100000, 1000000];
+    internal static readonly int[] Presets = [0, 1, 10, 100, 1000, 5000, 10000, 50000, 100000, 1000000];
 
     /// <summary>自动进入页面时只跑这几个小档 —— 快，不至于一进页面就卡住。</summary>
     private static readonly int[] QuickSet = [0, 10, 100, 1000];
@@ -55,26 +55,7 @@ public sealed class Bench_CrossCall : IBenchModule
         return Task.FromResult(sb.ToString());
     }
 
-    /// <summary>
-    /// <c>[JSExport]</c>：供页面滑块 / 数值框调用，测指定的每帧次数。
-    /// <para>先 <c>await Task.Delay(16)</c> 是为了让浏览器先把"运行中…"渲染出来 ——
-    /// 大 N 的计算是同步的，不先让一帧就会整个页面卡住看不到提示。</para>
-    /// </summary>
-    [JSExport]
-    public static async Task<string> CcRun(int count)
-    {
-        int n = Math.Clamp(count, 0, MaxN);
-        await Task.Delay(16);
-        return SingleCard(n);
-    }
 
-    /// <summary><c>[JSExport]</c>：供页面按钮调用，跑全套预设档位（大档较慢）。</summary>
-    [JSExport]
-    public static async Task<string> CcRunAll()
-    {
-        await Task.Delay(16);
-        return BuildTable("全套预设档位（0 → 1,000,000）", Presets, withConclusion: true);
-    }
 
     // ---------------------------------------------------------------- 测量
 
@@ -125,7 +106,7 @@ public sealed class Bench_CrossCall : IBenchModule
     }
 
     /// <summary>单个 N 的结果卡片（滑块调用时返回这个）。</summary>
-    private static string SingleCard(int n)
+    internal static string SingleCard(int n)
     {
         BenchTiming t = MeasureFrame(n);
         double perCall = n > 0 ? t.Ms * 1_000_000.0 / n : 0;
@@ -149,7 +130,7 @@ public sealed class Bench_CrossCall : IBenchModule
     }
 
     /// <summary>多档对比表。</summary>
-    private static string BuildTable(string title, int[] counts, bool withConclusion)
+    internal static string BuildTable(string title, int[] counts, bool withConclusion)
     {
         var sb = new StringBuilder();
         sb.Append("<div class='card'><h3>").Append(title).Append("</h3>");
