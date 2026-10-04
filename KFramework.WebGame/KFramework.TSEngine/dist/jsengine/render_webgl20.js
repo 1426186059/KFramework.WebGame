@@ -6,10 +6,6 @@
 // 另外 C# 侧的 [JSImport] 函数名必须与这里的导出名完全一致，且不能带点号。
 import { getCanvas } from './html_canvas.js';
 import { ByteCache } from './custom_data_byte_cache.js';
-// 把零拷贝统计透出给 C#：本模块已注册（setModuleImports('render_webgl20', ...)）。
-// copyFromStats 是纯函数、不依赖 GL 上下文，所以即使当前跑的是 WebGPU 后端，
-// 从这儿取到的也是同一份模块级统计。
-export { copyFromStats } from './custom_data_byte_cache.js';
 // ============ 模块级字段（本模块持有的全部可变状态，集中放在文件开头便于一眼看全）============
 let canvas = null;
 let gl = null;

@@ -16,8 +16,6 @@
 // 重要：.NET 侧 Span<T> 在 JS 侧是 MemoryView（不是 TypedArray），必须经 ByteCache 转换后才能交给 WebGPU。
 import { getCanvas } from './html_canvas.js';
 import { ByteCache } from './custom_data_byte_cache.js';
-// 把零拷贝统计透出给 C#（与 render_webgl20 同一份模块级统计，取哪个都一样）。
-export { copyFromStats } from './custom_data_byte_cache.js';
 // ---- 全局 WebGPU 状态 ----
 let device = null; // GPUDevice
 let adapter = null; // GPUAdapter

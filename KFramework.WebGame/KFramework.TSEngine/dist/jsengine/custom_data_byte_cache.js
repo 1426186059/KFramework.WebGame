@@ -53,56 +53,15 @@ function assertPowerOfTwo(name, n) {
  *
  * @returns 共享视图；拿不到（或传 null）时返回 null。
  */
-// ============================================================ 零拷贝到底生效没有？可观测的统计
-//
-// 为什么需要这个：按 dotnet/runtime 的 marshal-to-js.ts（Span<byte> → JS 侧 new Span(...)），
-// C# 传进来的应当是 MemoryView 实例、不是 TypedArray，于是会走 _unsafe_create_view() 拿到共享内存。
-// 但"运行时到底给了什么"只有跑起来才知道 —— 万一哪天 .NET 把它封送成了 TypedArray，
-// 下面 isView 分支就会命中，而那份 TypedArray 其实是跨界封送时的【副本】，
-// "零拷贝"就名存实亡。这些计数就是照妖镜：
-//   shared 高 → 真的零拷贝；
-//   isView 高 → 入参已是副本，跨界时就已经拷过一次（此时零拷贝无从谈起）。
-const _zc = {
-    total: 0,
-    shared: 0, // 拿到共享内存视图（零拷贝）
-    isView: 0, // 入参已是 TypedArray（跨界封送的产物，不是共享内存）
-    missView: 0, // 是 MemoryView，但没有可用的 _unsafe_create_view
-    copied: 0, // 最终退回拷贝的次数（由 ByteCache.copyFrom 记）
-    kinds: {},
-};
-const _warned = new Set();
-/** 每种情况只在控制台报一次，避免刷屏。 */
-function warnOnce(key, text) {
-    if (_warned.has(key))
-        return;
-    _warned.add(key);
-    console.warn('[ByteCache] ' + text);
-}
-/**
- * 零拷贝统计，返回一段可读文本（供 C# 侧经已注册的模块取回显示）。
- * 只想看一眼的话，控制台里也有各分支首次命中时的 warn。
- */
-export function copyFromStats() {
-    const kinds = Object.entries(_zc.kinds)
-        .map(([k, v]) => k + '×' + v)
-        .join('，') || '（无）';
-    return '零拷贝 ' + _zc.shared + ' / 入参已是副本 ' + _zc.isView +
-        ' / 无共享视图 ' + _zc.missView + ' / 退回拷贝 ' + _zc.copied +
-        '（共 ' + _zc.total + ' 次；入参类型：' + kinds + '）';
-}
 export function sharedBytesOf(view) {
     if (view == null)
         return null;
-    _zc.total++;
     const kind = view?.constructor?.name ?? typeof view;
-    _zc.kinds[kind] = (_zc.kinds[kind] ?? 0) + 1;
     // 已是 JS 侧的 TypedArray：直接建一个共享同一段内存的字节视图。
     // ⚠️ 但要注意：走到这里说明入参【不是】MemoryView —— 它多半是跨界封送出来的副本，
     // 那次拷贝在跨界时已经发生，本函数省不掉。
     if (ArrayBuffer.isView(view)) {
-        _zc.isView++;
-        warnOnce('isView:' + kind, `零拷贝【未】生效：入参已是 TypedArray（${kind}）—— 它是跨界封送的副本，不是共享内存。` +
-            `按 marshal-to-js.ts，Span<byte> 应以 Span 实例传入才对，请查该调用点的 [JSMarshalAs]。`);
+        console.log('[ByteCache] 零拷贝【未】生效：入参已是 TypedArray（' + kind + '）—— 它是跨界封送的副本，不是共享内存。');
         return new Uint8Array(view.buffer, view.byteOffset, view.byteLength);
     }
     const memory = view;
@@ -113,8 +72,7 @@ export function sharedBytesOf(view) {
             const shared = createSharedView.call(memory);
             // 长度对得上才敢用：对不上说明拿到的不是本视图的共享内存
             if (shared && shared.byteLength === memory.byteLength) {
-                _zc.shared++;
-                warnOnce('shared:' + kind, `零拷贝生效 ✓：入参 ${kind} → _unsafe_create_view() 拿到共享托管内存的视图，无 memcpy。`);
+                //console.log('[ByteCache] 零拷贝生效 ✓：入参 ' + kind + ' → _unsafe_create_view() 拿到共享托管内存的视图，无 memcpy。');
                 return new Uint8Array(shared.buffer, shared.byteOffset, shared.byteLength);
             }
         }
@@ -122,8 +80,7 @@ export function sharedBytesOf(view) {
             // 拿不到就返回 null，交给调用方兜底
         }
     }
-    _zc.missView++;
-    warnOnce('miss:' + kind, `零拷贝【未】生效：入参 ${kind} 上找不到可用的 _unsafe_create_view，将退回拷贝。`);
+    console.log('[ByteCache] 零拷贝【未】生效：入参 ' + kind + ' 上找不到可用的 _unsafe_create_view，将退回拷贝。');
     return null;
 }
 export class ByteCache {
@@ -202,9 +159,6 @@ export class ByteCache {
         const shared = sharedBytesOf(view);
         if (shared)
             return shared;
-        // 兜底：拷进本缓冲（一次 memcpy）。走到这里说明拿不到共享视图，
-        // 此时本类仍有用 —— 省掉的是"每次 new Uint8Array"的分配。
-        _zc.copied++;
         const memory = view;
         const buf = this.ensure(memory.byteLength);
         if (typeof memory.copyTo === 'function') {
@@ -219,7 +173,3 @@ export class ByteCache {
         return buf.subarray(0, memory.byteLength);
     }
 }
-// 暴露到全局，方便控制台实时查看零拷贝累计次数。
-// 注：sharedBytesOf 里的 warnOnce 每种情况只报一次（避免刷屏），想知道累计跑了多少次
-// 零拷贝 / 退回拷贝，在控制台调：__byteCacheStats()
-globalThis.__byteCacheStats = copyFromStats;
