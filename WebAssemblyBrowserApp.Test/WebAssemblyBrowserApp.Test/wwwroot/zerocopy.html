@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>零拷贝 vs 非零拷贝 — 性能对比</title>
+  <link rel="preload" id="webassembly" />
+  <script type="importmap"></script>
+  <script type='module' src="main#[.{fingerprint}].js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>零拷贝 vs 非零拷贝</h1>
+  <p class="muted">场景：C# 手里有一块 4 MB 的 <code>byte[]</code>（引擎里最常见的形态：纹理 / 帧数据 / 顶点），
+    JS 要<b>读</b>它。把这份数据交到 JS 手上，有两条路：</p>
+  <p class="muted">
+    <b>零拷贝</b> —— <code>GCHandle</code> 钉住数组，把「地址 + 长度」交给 JS，
+    JS 用公开 API <code>runtime.localHeapViewU8().buffer</code> 建出指向同一块内存的视图，<b>零 memcpy</b>；<br>
+    <b>非零拷贝</b> —— C# 把 <code>Span&lt;byte&gt;</code> 传过去（运行时封送成 MemoryView），
+    JS 用 <code>copyTo</code>（拷进复用缓冲）或 <code>slice()</code>（每次新分配一份），<b>一次 memcpy</b>。</p>
+
+  <h3>为什么只测一个体积档</h3>
+  <p class="muted">早先是 4 KB → 4 MB 四档，结果小档完全没法看：每次调用都在 JS 侧 <code>new</code> 一个视图，
+    几千次下来喂给 V8 的新生代回收，<b>抖动比要测的差异还大好几倍</b> ——
+    4 KB 档两行相差 200 ns，抖动却是 2500～4150 ns，根本分辨不出来。
+    而「拷贝成本随体积线性增长」属于 memcpy 的<b>物理性质</b>（它是 O(n) 的），本就不必靠多档去验证。
+    所以只留一个大档：差异远超噪声、JS 垃圾也少，一次测干净。
+    「多大的数据才值得」改由页末的<b>临界体积</b>直接回答。</p>
+
+  <h3>八条路线</h3>
+  <p class="muted">
+    <b>①② 基线</b>：C# 自己读（不跨界）、空跨界调用（过一次界的底噪），用来把共同成本扣掉；<br>
+    <b>③④⑤ 零拷贝</b>：每次建视图 / <b>缓存视图</b>（指针不变就复用，零分配）/ 每次都 pin；<br>
+    <b>⑥⑦ 非零拷贝</b>：<code>copyTo</code>（拷进复用缓冲）、<code>slice()</code>（每次新分配）；<br>
+    <b>⑧ 基线</b>：JS 内部 <code>dst.set(src)</code>，量出 memcpy 本身的价钱。</p>
+  <p class="muted">两个讲究：其一，各路线在 JS 侧<b>只读首末各一个字节</b>（O(1)）——
+    若改成整块求和，那个 O(n) 的 JS 循环会把 memcpy 的 O(n) 成本完全淹没，几条路线会测出几乎一样快；
+    其二，每行都会<b>对账校验值</b>，读到的数据不对会在说明里标出来。</p>
+
+  <div class="bar">
+    <a class="btn" href="index.html">← 返回总纲</a>
+    <button id="runAll">运行全部测试</button>
+    <span id="status">加载中...</span>
+  </div>
+
+  <div id="results"><i>loading...</i></div>
+</body>
+
+</html>

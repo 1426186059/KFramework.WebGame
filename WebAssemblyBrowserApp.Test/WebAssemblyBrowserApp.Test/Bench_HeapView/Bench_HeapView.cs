@@ -21,10 +21,12 @@ using System.Threading.Tasks;
 /// <b>③ 地址还得按视图元素宽度对齐</b>（Uint32Array 之类要求 byteOffset 是宽度的整数倍）。
 /// </para>
 /// <para>
-/// 【① 的入口已经改过一次，别再退回扫全局】
-/// Bench_MemoryView 的 ⑨ 实测：.NET 的 BrowserApp 不把 wasmMemory / HEAPU8 挂在全局，扫全局必然一无所获；
-/// ⑩⑪ 实测：任意一个 MemoryView 的 <c>_unsafe_create_view().buffer</c> 才是<b>整块 WASM 线性内存</b>。
-/// 所以本模块把入口换成"借引子 MemoryView 取 buffer"，①-a 只保留扫全局作对照。
+/// 【① 的入口换过两次，别再退回扫全局】
+/// 第一版扫全局（<c>wasmMemory</c>/<c>HEAPU8</c>）：⑨ 实测一无所获，于是 ③④⑤ 全是假阴性；
+/// 第二版借引子 MemoryView 的 <c>_unsafe_create_view().buffer</c>：能用，但那是 _unsafe 内部方法；
+/// 现在用<b>公开 API</b> <c>runtime.localHeapViewU8().buffer</c>（见 <c>export-api.ts:51</c>、
+/// <c>dotnet.d.ts:629</c>；Bench_RuntimeApi ②⑤⑥ 已实测它可用、且与 _unsafe 那版是同一块内存）。
+/// ①-a 扫全局与 ①-c 引子绕道都降级为对照项，只为把"三条路的差别"摆在同一页上。
 /// </para>
 /// <para>
 /// 判据一律是<b>C# 回读自己的数组</b>：交给 JS 用某条路线写，再看自己这边字节动没动。
@@ -36,15 +38,23 @@ public sealed class Bench_HeapView : IBenchModule
     public string Name => "HeapView 零拷贝方案（GCHandle pin + 裸地址 → TypedArray）";
 
     public string Summary =>
-        "先看 JS 用什么途径拿到 WASM memory.buffer（扫全局 vs 借 MemoryView 引子），" +
+        "先看 JS 用什么途径拿到 WASM memory.buffer（扫全局 / 公开 API localHeapViewU8() / 引子绕道，三条并列），" +
         "再校验 pin 到的地址是否落在 buffer 内、是否对齐；然后 As() 建共享视图让 JS 写入、" +
-        "To() 拿副本让 JS 改，各自回读 C# 数组；最后实测堆增长会不会让视图失效 —— " +
+        "To() 拿副本让 JS 改，各自回读 C# 数组；最后用 emscripten 的 _malloc 把堆撑大，" +
+        "实测视图会不会随 buffer detach 而静默失效 —— " +
         "回答「这套零拷贝在本工程到底能不能用、能用到什么程度」。";
 
     public string Page => "heapview";
 
     /// <summary>探测用的数组长度。8 字节足够看出"写没写"。</summary>
     private const int Len = 8;
+
+    /// <summary>
+    /// ①-c 对照用的引子：一个 1 字节的托管数组，传过去就是个 MemoryView。
+    /// <b>全模块只有这一条还用得上它</b> —— 建视图早已改用公开 API，
+    /// 留它只为把"两条路拿到的是同一块 buffer"摆在同一页上（Bench_RuntimeApi ⑤ 已实测三路同一）。
+    /// </summary>
+    private static readonly byte[] s_key = new byte[1];
 
     /// <summary>⑦ 里每次胁迫堆增长的块大小（8MB）。</summary>
     private const int GrowChunk = 8 * 1024 * 1024;
@@ -60,7 +70,8 @@ public sealed class Bench_HeapView : IBenchModule
         var rows = new List<(string Way, string Seen, string Verdict)>
         {
             ProbeGlobal(),      // ①-a 对照：扫全局（已被 ⑨ 判定为必然失败）
-            ProbeViaKey(),      // ①-b 正解：借引子 MemoryView 取 buffer
+            ProbeViaPublic(),   // ①-b 正解：公开 API runtime.localHeapViewU8()
+            ProbeViaKey(),      // ①-c 对照：前一版的引子绕道（_unsafe_create_view）
             ProbePin(),         // ② 钉得住吗、地址落在 buffer 内吗
             ProbeZeroCopy(),    // ③ 核心：As() 的视图写入，C# 看不看得到
             ProbeCopy(),        // ④ 兜底：To() 的副本，改了不影响 C#
@@ -119,15 +130,15 @@ public sealed class Bench_HeapView : IBenchModule
                 : "扫不到 ✓（符合预期）—— .NET 不暴露裸堆入口，这条路不通，得看 ①-b");
     }
 
-    /// <summary>①-b 正解：借引子 MemoryView 取 buffer —— 本方案真正的入口。</summary>
-    private static (string, string, string) ProbeViaKey()
+    /// <summary>①-b 正解：公开 API <c>runtime.localHeapViewU8().buffer</c> —— 本方案现在的入口。</summary>
+    private static (string, string, string) ProbeViaPublic()
     {
-        const string way = "①-b 借 MemoryView 引子取 buffer（正解）";
+        const string way = "①-b 公开 API localHeapViewU8()（正解）";
 
         string seen;
         try
         {
-            seen = JSBind_HeapView.ProbeViaKey(HeapView<byte>.Key);
+            seen = JSBind_HeapView.ProbeViaPublic();
         }
         catch (Exception e)
         {
@@ -138,7 +149,32 @@ public sealed class Bench_HeapView : IBenchModule
         return (way, seen,
             ok
                 ? "拿得到 ✓ → 可以往下建视图"
-                : "连引子这条路都拿不到 ✘ —— 整套零拷贝方案在本工程不成立");
+                : "连公开 API 这条路都拿不到 ✘ —— 整套零拷贝方案在本工程不成立");
+    }
+
+    /// <summary>
+    /// ①-c 对照：前一版用过的引子绕道 <c>MemoryView._unsafe_create_view()</c>（_unsafe 内部方法）。
+    /// 它<b>不再是必须</b>的，留着只为与 ①-b 摆在一起看 —— 两条路拿到的应当是同一块 buffer。
+    /// </summary>
+    private static (string, string, string) ProbeViaKey()
+    {
+        const string way = "①-c 引子绕道 _unsafe_create_view()（对照）";
+
+        string seen;
+        try
+        {
+            seen = JSBind_HeapView.ProbeViaKey(s_key);
+        }
+        catch (Exception e)
+        {
+            return (way, "不可用：" + e.GetType().Name + "：" + e.Message, "无法执行");
+        }
+
+        bool ok = seen.Contains("引子拿到 memory.buffer", StringComparison.Ordinal);
+        return (way, seen,
+            ok
+                ? "引子也能拿到 ✓（与 ①-b 是同一块，Bench_RuntimeApi ⑤ 已实测三路同一）—— 但已不是必需路径"
+                : "引子这条路拿不到 —— 不影响：主路是 ①-b 的公开 API");
     }
 
     /// <summary>
@@ -161,7 +197,7 @@ public sealed class Bench_HeapView : IBenchModule
             using var heap = new HeapView<byte>(buf);
             ptr = heap.Pointer;
             range = ptr != 0
-                ? JSBind_HeapView.CheckRange(HeapView<byte>.Key, ptr, heap.ByteLength)
+                ? JSBind_HeapView.CheckRange(ptr, heap.ByteLength)
                 : "ptr 为 0，无从校验";
         }
         catch (Exception e)
@@ -349,33 +385,48 @@ public sealed class Bench_HeapView : IBenchModule
         var target = new byte[Len];
         string seen;
         bool detached = false;
+        bool grew = false;
 
         try
         {
             using var heap = new HeapView<byte>(target);
 
-            string kept = JSBind_HeapView.KeepForGrow(HeapView<byte>.Key, heap.Pointer, Len);
+            string kept = JSBind_HeapView.KeepForGrow(heap.Pointer, Len);
             if (kept.StartsWith("存不下", StringComparison.Ordinal))
             {
                 return (way, kept, "视图没能存下来 ✘ —— 生存期无从验证");
             }
 
-            // 胁迫堆增长：不断分配 8MB 并【一直持有】，每分配一块就回头查一次状态。
-            // 必须持有，否则 GC 一回收，压力就不存在了。
+            // 先探一次胁迫手段。
+            // Module._malloc 走的是 emscripten 自己的堆，耗尽时 emscripten_resize_heap → sbrk
+            // → memory.grow → updateMemoryViews() 重建 Module.HEAPU8，于是旧视图【必然】detach。
+            // 而 .NET 的 new byte[] 走 GC 堆，GC 向 wasm 堆要内存有自己的策略，未必触发 grow ——
+            // 上一轮压了 96MB 也没逼出来，就是这个原因。所以这一轮改用 _malloc 做确定性复现，
+            // _malloc 不可用时才退回托管分配。
+            string probe = JSBind_HeapView.MallocPressure(GrowChunk);
+            bool useMalloc = probe.StartsWith("OK", StringComparison.Ordinal);
+            string how = useMalloc
+                ? "Module._malloc（走 emscripten 堆，耗尽即触发 memory.grow）"
+                : "退回 .NET 托管分配（" + probe + "）";
+
+            // 胁迫：不断占住 8MB 不放，每占一块就回头查一次状态。
+            // 必须持有 —— 一释放，压力就不存在了。
             var ballast = new List<byte[]>();
-            int rounds = 0;
-            string inspect = kept;
-            string oom = "";
+            int rounds = useMalloc ? 1 : 0;
+            string inspect = useMalloc ? JSBind_HeapView.InspectKept() : kept;
+            string stop = "";
+
             while (rounds < GrowMaxRounds)
             {
-                try
+                if (useMalloc)
                 {
-                    ballast.Add(new byte[GrowChunk]);
+                    string press = JSBind_HeapView.MallocPressure(GrowChunk);
+                    if (!press.StartsWith("OK", StringComparison.Ordinal)) { stop = press; break; }
                 }
-                catch (OutOfMemoryException)
+                else
                 {
-                    oom = "分配第 " + (rounds + 1) + " 块时 OOM，提前收手";
-                    break;
+                    try { ballast.Add(new byte[GrowChunk]); }
+                    catch (OutOfMemoryException) { stop = "第 " + (rounds + 1) + " 块托管分配 OOM"; break; }
                 }
 
                 rounds++;
@@ -387,13 +438,19 @@ public sealed class Bench_HeapView : IBenchModule
                 }
             }
 
-            detached = inspect.Contains("detach", StringComparison.Ordinal);
-            string pressure = (oom.Length > 0 ? oom + "；" : "")
-                + "共分配 " + rounds + " × " + (GrowChunk / 1024 / 1024) + "MB";
+            // 判据要精确：JS 的"已增长且【未】detach"里也含 detach 二字，
+            // 只查 "detach" 会把"涨了但没 detach"误判成"已 detach"。
+            detached = inspect.Contains("已 detach", StringComparison.Ordinal);
+            grew = inspect.Contains("已增长", StringComparison.Ordinal);
 
-            // 真正写一次 —— 只有这一步能证明视图是活是死
+            string pressure = how + "，共 " + rounds + " × " + (GrowChunk / 1024 / 1024) + "MB"
+                + (stop.Length > 0 ? "（" + stop + "）" : "");
+
+            // 真正写一次 —— 只有这一步能证明视图是活是死。
+            // 顺序要紧：先写、再释放胁迫，否则测的就不是"堆被撑大时"的状态了。
             string wrote = JSBind_HeapView.WriteKept(0x2c);
-            seen = pressure + " → " + inspect + " → " + wrote;
+            string freed = JSBind_HeapView.ReleasePressure();
+            seen = pressure + " → " + inspect + " → " + wrote + " → " + freed;
 
             // 写完之后才允许 ballast 变成可回收
             GC.KeepAlive(ballast);
@@ -401,8 +458,9 @@ public sealed class Bench_HeapView : IBenchModule
         }
         catch (Exception e)
         {
-            // 中途炸了也要把 JS 侧跨调用持有的引用放掉，别让它活到下一轮
-            try { JSBind_HeapView.ReleaseKept(); } catch { /* 清理失败不影响报错 */ }
+            // 中途炸了也要把 JS 侧跨调用持有的引用与胁迫分配放掉，别让它们活到下一轮
+            try { JSBind_HeapView.ReleasePressure(); } catch { /* 清理失败不影响报错 */ }
+            try { JSBind_HeapView.ReleaseKept(); } catch { /* 同上 */ }
             return (way, "不可用：" + e.GetType().Name + "：" + e.Message, "无法执行 ✘");
         }
 
@@ -413,12 +471,15 @@ public sealed class Bench_HeapView : IBenchModule
         }
 
         return (way, seen,
-            alive
-                ? "堆增长后视图仍可写 ✓ —— 本次没触发 detach；但这是“没撞上”，不等于跨 await / 跨帧安全"
-                : detached
-                    ? "buffer 已 detach，写入<b>静默失效</b> ✘ —— 坐实了这套方案的硬伤：" +
-                      "视图绝不能跨堆增长持有，用完即弃"
-                    : "写不进去了 ✘ —— 视图已失效，但 buffer 并未 detach，需进一步查");
+            detached
+                ? "buffer 已 detach，写入<b>静默失效</b> ✘ —— 坐实了这套方案的硬伤：" +
+                  "视图绝不能跨堆增长持有，用完即弃"
+                : alive && grew
+                    ? "堆确实涨了，旧视图却仍可写 ✓ —— 这与非 SAB 的预期不符，值得深查"
+                    : alive
+                        ? "视图仍可写 ✓ —— 但期间<b>没能把堆逼到 grow</b>，" +
+                          "这只是“没逼出来”，不是“不会涨”，不等于跨 await / 跨帧安全"
+                        : "写不进去了 ✘ —— 视图已失效，但并未 detach，需进一步查");
     }
 
     /// <summary>
@@ -431,7 +492,7 @@ public sealed class Bench_HeapView : IBenchModule
     /// </summary>
     private static (string, string, string) ProbeOtherArray()
     {
-        const string way = "⑧ 引子的 buffer 能访问【另一个】数组吗";
+        const string way = "⑧ 公开 API 的 buffer 能访问【另一个】数组吗";
 
         var other = new byte[Len];
         GCHandle handle = default;
@@ -439,7 +500,7 @@ public sealed class Bench_HeapView : IBenchModule
         try
         {
             handle = GCHandle.Alloc(other, GCHandleType.Pinned);
-            seen = JSBind_HeapView.WriteOther(HeapView<byte>.Key, handle.AddrOfPinnedObject(), Len, 0x7e);
+            seen = JSBind_HeapView.WriteOther(handle.AddrOfPinnedObject(), Len, 0x7e);
         }
         catch (Exception e)
         {
@@ -474,25 +535,27 @@ public sealed class Bench_HeapView : IBenchModule
 
         if (memory.Verdict.Contains("不成立", StringComparison.Ordinal))
         {
-            sb.Append("连「借引子 MemoryView 取 buffer」这条路都拿不到 WASM 的 memory.buffer —— " +
-                      "⑪ 在 Bench_MemoryView 里测通过，这里却失败，多半是本模块的引子传参出了问题，" +
+            sb.Append("连公开 API <code>localHeapViewU8()</code> 这条路都拿不到 WASM 的 memory.buffer —— " +
+                      "Bench_RuntimeApi 里它是通的，这里却失败，多半是 main.js 的 setRuntimeApi 没接上，" +
                       "先回那一页对照。若确实拿不到，则<b>这套方案在本工程不成立</b>（建视图只能抛错），" +
                       "能用仍然只有运行时给的 MemoryView：写入用 set、读出用 copyTo，而 slice() 是副本。");
             return sb.ToString();
         }
 
-        sb.Append("buffer 的入口是「借引子 MemoryView 的 <code>_unsafe_create_view().buffer</code>」" +
-                  "（扫全局那条路已被 ⑨ 证伪，本页 ①-a 是同页对照）。");
+        sb.Append("buffer 的入口已换成【公开 API】<code>runtime.localHeapViewU8().buffer</code>" +
+                  "（扫全局那条路已被 ⑨ 证伪，本页 ①-a 是同页对照；①-c 保留了前一版的 " +
+                  "<code>_unsafe_create_view</code> 引子绕道，只为证明两条路拿到的是同一块）。");
 
         sb.Append(zero.Verdict.Contains("成立", StringComparison.Ordinal)
             ? " <b>As() 的视图写入确实回写到了 C# 数组 —— 零拷贝【成立】</b>：" +
               "JS 与 .NET 直接读写同一块内存，一次 memcpy 都没有。"
             : " 但 As() 的写入没有回写到 C# 数组 —— 零拷贝【不成立】，只能退到 To() 拷一份。");
 
-        sb.Append(" 生存期方面：").Append(grow.Verdict.Contains('✘')
-            ? "⑦ <b>实测到了 detach</b> —— 堆一增长，旧 buffer 就被摘掉，视图随之静默失效。" +
-              "所以视图<b>只能在一次同步调用内用完</b>：别存字段、别跨 await、别跨帧。"
-            : "⑦ 本次没撞上 detach，但这只是\"没撞上\"，不是\"不会撞\" —— " +
+        sb.Append(" 生存期方面：").Append(grow.Verdict.Contains("detach", StringComparison.Ordinal)
+            ? "⑦ 用 <code>Module._malloc</code> <b>确定性复现了 detach</b> —— 堆一增长，旧 buffer 就被摘掉，" +
+              "视图随之静默失效。所以视图<b>只能在一次同步调用内用完</b>：别存字段、别跨 await、别跨帧。"
+            : "⑦ 本次没能让它 detach —— 这只是“没逼出来”，不是“不会涨”：" +
+              "<code>memory.grow</code> 一旦发生，旧 buffer 必被摘掉。" +
               "风险依旧存在，视图仍应当用完即弃。");
 
         sb.Append(" 需要长期持有就用 To() 拷一份。另外 ③ 之外还有两处容易踩空、本页已一并验证：" +

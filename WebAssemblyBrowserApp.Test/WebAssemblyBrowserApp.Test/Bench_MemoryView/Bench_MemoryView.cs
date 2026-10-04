@@ -173,15 +173,21 @@ public sealed class Bench_MemoryView : IBenchModule
             return (way, "不可用：" + e.GetType().Name, "无法执行", false);
         }
 
-        // JS 侧一个入口都找不到，就意味着那条"直接建视图"的零拷贝路线在本工程里不成立
-        bool hasEntry = !seen.Contains("一个都没有", StringComparison.Ordinal);
+        // 判据拆成两个：【裸堆符号】有没有、【官方全局入口】有没有。
+        // 混成一句正是当初出错的地方 —— 扫不到那几个符号，不等于本工程没有入口。
+        bool hasHeapSymbol = !seen.Contains("一个都没有", StringComparison.Ordinal);
+        bool hasGlobalFn = seen.Contains("getDotnetRuntime()：有", StringComparison.Ordinal);
 
         return (way, seen,
-            hasEntry
-                ? "全局能摸到堆视图 → 可以零拷贝建视图"
-                : "全局没有堆视图入口 → 【直接零拷贝访问 WASM 内存这条路在本工程不成立】，" +
-                  "能用的只有 MemoryView 那几个方法",
-            hasEntry);
+            hasHeapSymbol
+                ? "全局能摸到裸堆符号 → 可以直接建视图"
+                : hasGlobalFn
+                    ? "那几个裸堆符号一个都没有，但【官方全局入口 getDotnetRuntime() 在】—— " +
+                      "所以正确的说法是「入口不在那几个全局符号上」，<b>而不是「本工程没有入口」</b>。" +
+                      "真正的入口是 RuntimeAPI 上的公开 API <code>localHeapViewU8()</code>，" +
+                      "详见 Bench_RuntimeApi 的 ①②"
+                    : "两条全局路都没扫到 —— 入口只在 RuntimeAPI 对象上（见 Bench_RuntimeApi ①-b 注入）",
+            hasHeapSymbol || hasGlobalFn);
     }
 
     /// <summary>
@@ -272,9 +278,13 @@ public sealed class Bench_MemoryView : IBenchModule
             ? "_unsafe_create_view() 能拿到共享视图（写入确实回写），"
             : "_unsafe_create_view() 要么不存在、要么写入也没回写，");
 
-        sb.Append("但它带 _unsafe 前缀、属于运行时内部方法，公开 API 里<b>给不出零拷贝视图</b>。");
-        sb.Append("所以要避免每帧分配，只能像 ByteCache 那样：先用 copyTo 把字节拷进一块<b>自己复用的</b>缓冲，");
-        sb.Append("拷这一步免不掉，免掉的是每次新建 Uint8Array 的那次分配。");
+        sb.Append("它带 _unsafe 前缀、属于运行时内部方法 —— <b>但公开 API 里其实是有的</b>：" +
+                  "<code>runtime.localHeapViewU8()</code> 就返回整块 WASM 线性内存的视图" +
+                  "（dotnet/runtime 的 export-api.ts:51、dotnet.d.ts:629；Bench_RuntimeApi ② 已实测），" +
+                  "而按 marshal.ts:481 这个 _unsafe 方法内部正是它的一层包装。想零拷贝，直接用公开那个即可。");
+        sb.Append("不过即便用公开 API 建视图，也躲不开它的<b>生存期约束</b>（官方注释原话：" +
+                  "Don't store the reference, don't use it after await）—— 视图用完即弃，" +
+                  "别存字段、别跨 await；需要长期持有就拷一份（slice / copyTo）。");
 
         // ⑧ 跨 await：决定"想长期持有这份数据，到底能不能不拷"
         var spanKeep = rows.First(r => r.Way.StartsWith("⑧-a", StringComparison.Ordinal));
@@ -290,21 +300,25 @@ public sealed class Bench_MemoryView : IBenchModule
             : "ArraySegment 版 await 之后同样失效 —— 那就只能先拷成自己的 byte[] 再长期持有。");
 
         sb.Append(" <b>裸内存入口：</b>").Append(heap.Changed
-            ? "全局能摸到 WASM 堆视图，那套直接建 Uint8Array 视图的零拷贝写法在此可用。"
-            : "全局【没有】HEAPU8 之类的堆入口 —— 「new Uint8Array(wasmMemory.buffer, ptr, len) 即可零拷贝」" +
-              "那是 Emscripten 的做法，.NET 的 WASM 运行时并不把裸堆暴露给 JS，本工程里这条路走不通；" +
-              "能用的只有 MemoryView 提供的 set / copyTo / slice。");
+            ? "那套直接建 Uint8Array 视图的写法在此可用。"
+            : "那几个裸堆符号（HEAPU8 / wasmMemory / Module）全局【确实没有】—— " +
+              "「new Uint8Array(wasmMemory.buffer, ptr, len) 即可零拷贝」那是 Emscripten 的做法，" +
+              ".NET 的 WASM 运行时并不把它们挂到全局。<b>但这不等于本工程没有入口</b>：" +
+              "入口在 <code>create()</code> 返回的 RuntimeAPI 上（<code>localHeapViewU8()</code>、" +
+              "<code>Module</code>），另还有官方全局入口 <code>getDotnetRuntime(runtimeId)</code> —— " +
+              "详见 Bench_RuntimeApi。");
 
         // ⑩⑪：_unsafe_create_view 的身份，以及它的 .buffer 是不是整块线性内存
         var detail = rows.First(r => r.Way.StartsWith("⑩", StringComparison.Ordinal));
         var bridge = rows.First(r => r.Way.StartsWith("⑪", StringComparison.Ordinal));
 
-        sb.Append(" <b>但真正的零拷贝入口是它：</b>");
-        sb.Append("_unsafe_create_view() 返回的就是共享内存的 TypedArray（⑦ 写入确实回写）。");
+        sb.Append(" <b>⑪ 的意义：</b>");
         sb.Append(bridge.Changed
-            ? "而且它的 <b>.buffer 就是整块 WASM 线性内存</b>（⑪ 已写通）：配上 GCHandle 钉住的地址，" +
-              "就能零拷贝访问任意 .NET 数组。于是 HeapView 那套方案可行 —— 而且不必再扫全局找 wasmMemory，" +
-              "从任意一个 MemoryView 身上取 buffer 即可。"
+            ? "_unsafe_create_view() 的 <b>.buffer 就是整块 WASM 线性内存</b>（配上 GCHandle 钉住的地址，" +
+              "能零拷贝访问任意 .NET 数组）。它真正的价值是<b>反证了公开 API 那条路</b>：" +
+              "按 marshal.ts:481 它内部就是 <code>new Uint8Array(localHeapViewU8().buffer, …)</code>，" +
+              "Bench_RuntimeApi ⑤ 实测三条来路取到的是同一块 buffer —— 所以直接用公开 API 就够，" +
+              "这条 _unsafe 绕道并非必需。"
             : "不过它的 .buffer 没能用来访问另一个数组（⑪ 未写通）：要么该运行时不支持 GCHandleType.Pinned，" +
               "要么 .buffer 只覆盖视图自身那一小段。这种情况下仍只能按公开 API 走 —— set 写入、" +
               "copyTo 读出（拷进一块复用的缓冲）。");

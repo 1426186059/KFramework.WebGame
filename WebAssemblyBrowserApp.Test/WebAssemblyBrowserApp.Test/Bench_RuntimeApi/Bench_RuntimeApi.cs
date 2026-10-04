@@ -413,7 +413,9 @@ public sealed class Bench_RuntimeApi : IBenchModule
                 }
             }
 
-            detached = check.Contains("detach", StringComparison.Ordinal);
+            // 判据要精确：JS 的"确实增长了，但旧 buffer【未】detach"里也含 detach 二字，
+            // 只查 "detach" 会把"涨了但没 detach"误判成"已 detach"。
+            detached = check.Contains("已 detach", StringComparison.Ordinal);
             grew = check.Contains("确实增长了", StringComparison.Ordinal);
 
             // 真正写一次 —— 只有这一步能证明视图是活是死

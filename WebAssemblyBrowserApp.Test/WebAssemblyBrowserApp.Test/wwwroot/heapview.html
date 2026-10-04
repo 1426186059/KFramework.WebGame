@@ -16,13 +16,15 @@
   <p class="muted">用 <code>GCHandle.Alloc(array, Pinned)</code> 把 .NET 数组钉在 WASM 线性内存上，
     再把<b>内存地址 + 长度</b>交给 JS，由 JS 用
     <code>new Uint8Array(wasmMemory.buffer, ptr, len)</code> 建出指向同一块内存的 TypedArray。</p>
-  <p class="muted">关键是 buffer 从哪来：<b>①-a</b> 扫全局（<code>wasmMemory</code> / <code>HEAPU8</code>）
-    已被 Bench_MemoryView 的 ⑨ 证伪 —— .NET 不暴露裸堆入口；<b>①-b</b> 借任意一个 MemoryView 的
-    <code>_unsafe_create_view().buffer</code>，才是本工程唯一可靠的入口。此后逐一验证：
+  <p class="muted">关键是 buffer 从哪来，本模块换过两版，三条路现在并列在页面上：
+    <b>①-a</b> 扫全局（<code>wasmMemory</code> / <code>HEAPU8</code>，已被 ⑨ 证伪）；
+    <b>①-b</b> <b>公开 API</b> <code>runtime.localHeapViewU8().buffer</code>（现在的正解）；
+    <b>①-c</b> 前一版的引子绕道 <code>_unsafe_create_view()</code>（降为对照，两者是同一块内存）。
+    此后逐一验证：
     <b>② pin 到的地址是否落在 buffer 内</b>（不只是非零）、
     <b>③ As() 的视图写入会不会回写到 C# 数组</b>（零拷贝是否成立）、<b>④ To() 副本的隔离性</b>、
     <b>⑤ 跨一次同步调用是否仍有效</b>、<b>⑥ 4 字节视图的对齐与宽度校验</b>、
-    <b>⑦ 堆增长（memory.grow）会不会让 buffer detach、视图静默失效</b>（本方案的硬伤）、
+    <b>⑦ 用 <code>Module._malloc</code> 把堆撑大，看视图会不会随 buffer detach 而静默失效</b>（本方案的硬伤）、
     <b>⑧ 那块 buffer 是不是整块线性内存</b>（跨数组验证）。进入本页会自动开始运行。</p>
 
   <div class="bar">

@@ -12,11 +12,14 @@ using System.Runtime.InteropServices.JavaScript;
 /// 读写都不经过拷贝。
 /// </para>
 /// <para>
-/// 【buffer 从哪来 —— 本类最容易踩空的一处】
-/// 建视图需要 WASM 的 <c>memory.buffer</c>，而 .NET 的 BrowserApp 不像 Emscripten 那样把它挂在全局
-/// （Bench_MemoryView 的 ⑨ 已实测：扫全局一个入口都没有）。
-/// 正解是借任意一个 MemoryView 的 <c>_unsafe_create_view().buffer</c>（⑩⑪ 已实测：那就是整块线性内存）。
-/// 所以本类内置一个 <see cref="Key"/> 引子，每次建视图时一并传给 JS，由 JS 从它身上换出 buffer。
+/// 【buffer 从哪来 —— 本类最容易踩空的一处，换过三版】
+/// 建视图需要 WASM 的 <c>memory.buffer</c>。
+/// 第一版扫全局（<c>wasmMemory</c>/<c>HEAPU8</c>），⑨ 实测一个入口都没有；
+/// 第二版借 MemoryView 的 <c>_unsafe_create_view().buffer</c>，能用，但那是 _unsafe 内部方法；
+/// 现在用<b>公开 API</b> <c>runtime.localHeapViewU8().buffer</c> —— 它写在 <c>export-api.ts</c> 里、
+/// 在 <c>dotnet.d.ts</c> 有正式类型声明，且 <c>marshal.ts:481</c> 显示 _unsafe 那版内部就是它的包装
+/// （Bench_RuntimeApi ⑤ 已实测两条路拿到的是同一块内存）。
+/// buffer 由 JS 侧自行取用，因此本类<b>不再需要引子</b>。
 /// </para>
 /// </summary>
 /// <remarks>
@@ -25,13 +28,6 @@ using System.Runtime.InteropServices.JavaScript;
 /// </remarks>
 public sealed class HeapView<T> : IDisposable where T : unmanaged
 {
-    /// <summary>
-    /// 引子：一个 1 字节的托管数组，内容无关紧要。
-    /// 它以 <c>Span&lt;byte&gt;</c> 跨界传过去就是个 MemoryView，JS 侧从它身上取 WASM 的 memory.buffer。
-    /// 之所以要"引子"，是因为 .NET 不暴露裸堆入口，而 buffer 又必须有个来处。
-    /// </summary>
-    private static readonly byte[] s_key = new byte[1];
-
     private GCHandle _handle;
     private bool _disposed;
 
@@ -51,9 +47,6 @@ public sealed class HeapView<T> : IDisposable where T : unmanaged
 
     /// <summary>是否已经成功钉住（地址非 0）。</summary>
     public bool IsPinned => Pointer != 0;
-
-    /// <summary>取引子（跨界传过去就是一个 MemoryView），供需要 buffer 的调用使用。</summary>
-    public static Span<byte> Key => s_key;
 
     public HeapView(T[] array)
     {
@@ -94,7 +87,7 @@ public sealed class HeapView<T> : IDisposable where T : unmanaged
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         RequireWidthMatch(typedArrayName);
-        return JSBind_HeapView.CreateView(Key, Pointer, Length, typedArrayName);
+        return JSBind_HeapView.CreateView(Pointer, Length, typedArrayName);
     }
 
     /// <summary>
@@ -105,7 +98,7 @@ public sealed class HeapView<T> : IDisposable where T : unmanaged
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         RequireWidthMatch(typedArrayName);
-        return JSBind_HeapView.CopyArray(Key, Pointer, Length, typedArrayName);
+        return JSBind_HeapView.CopyArray(Pointer, Length, typedArrayName);
     }
 
     /// <summary>视图类型宽度必须与 T 一致，否则视图会按错的步长覆盖内存。</summary>

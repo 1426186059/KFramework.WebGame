@@ -37,6 +37,9 @@ public static class BenchCatalog
         // ⑨ 那句"全局扫不到裸堆"其实只是候选名单没扫到 getDotnetRuntime —— 本模块把它们逐个实测，
         // 并回答 HeapView 那条 _unsafe_create_view 绕道能不能换成公开 API。
         new Bench_RuntimeApi(),
+        // 前面几页回答的是"能不能零拷贝"，这一页回答"值不值"：
+        // 把那一次 memcpy 的价钱量成数字，按 4KB→4MB 分档看它是固定成本还是随体积线性增长。
+        new Bench_ZeroCopy(),
     };
 
     /// <summary>按序号取模块，越界返回 null。</summary>

@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 
 /// <summary>
@@ -9,25 +8,35 @@ using System.Runtime.InteropServices.JavaScript;
 /// C# 把数组钉住后，把【内存地址 + 长度】交给 JS，由 JS 建出指向同一块内存的视图。
 /// </para>
 /// <para>
-/// 【为什么几乎每个函数都要多收一个 key 参数】
-/// Bench_MemoryView 的 ⑨ 已实测：.NET 的 BrowserApp 不把 wasmMemory / HEAPU8 挂在全局，
-/// 扫全局【必然一无所获】；而 ⑩⑪ 实测：任意一个 MemoryView 的
-/// <c>_unsafe_create_view().buffer</c> 就是<b>整块 WASM 线性内存</b>。
-/// 所以这里的 key 就是那个"引子" —— 一个内容无关紧要的 <c>Span&lt;byte&gt;</c>，
-/// 传过去只为让 JS 侧换出一个 MemoryView，进而从它身上取到 buffer。
+/// 【为什么这里不再有引子参数】
+/// 取 WASM 的 <c>memory.buffer</c> 换过三版入口：扫全局（⑨ 证明必然失败）→
+/// 借 MemoryView 的 <c>_unsafe_create_view()</c>（能用，但是 _unsafe 内部方法）→
+/// 现在直接用<b>公开 API</b> <c>runtime.localHeapViewU8().buffer</c>。
+/// 按 <c>export-api.ts:51</c> 与 <c>dotnet.d.ts:629</c> 它是正式公开接口，
+/// 而 <c>marshal.ts:481</c> 显示 <c>_unsafe_create_view()</c> 内部就是它的一层包装
+/// （Bench_RuntimeApi ⑤ 已实测两条路拿到的是同一块内存）。
+/// 所以建视图的这几个函数<b>都不再收引子</b> —— 只有一个对照项 <see cref="ProbeViaKey"/> 还留着，
+/// 用来把"两条路同一块"这件事摆在同一页上。
 /// </para>
 /// </summary>
 public static partial class JSBind_HeapView
 {
     /// <summary>
     /// ①-a 对照：只扫全局找 WASM memory.buffer。<b>预期一无所获</b>（⑨ 的结论）。
-    /// 保留它是为了给"必须借道 MemoryView"提供同页对照证据，而不是靠记忆。
+    /// 保留它是为了给"入口不在那几个全局符号上"提供同页对照证据，而不是靠记忆。
     /// </summary>
     [JSImport("probeGlobal", "bench_heapview")]
     public static partial string ProbeGlobal();
 
     /// <summary>
-    /// ①-b 正解：借引子 MemoryView 取 WASM memory.buffer —— 本方案真正的入口。
+    /// ①-b 正解：公开 API <c>runtime.localHeapViewU8().buffer</c> —— 本方案现在的入口。
+    /// </summary>
+    [JSImport("probeViaPublic", "bench_heapview")]
+    public static partial string ProbeViaPublic();
+
+    /// <summary>
+    /// ①-c 对照：前一版用过的引子绕道 <c>MemoryView._unsafe_create_view()</c>（_unsafe 内部方法）。
+    /// 它<b>不再是必须</b>的，留着只为与 ①-b 摆在一起看：两条路拿到的是同一块 buffer。
     /// </summary>
     [JSImport("probeViaKey", "bench_heapview")]
     public static partial string ProbeViaKey([JSMarshalAs<JSType.MemoryView>] Span<byte> key);
@@ -38,18 +47,18 @@ public static partial class JSBind_HeapView
     /// 而那种失败极易被读成"零拷贝不成立"。
     /// </summary>
     [JSImport("checkRange", "bench_heapview")]
-    public static partial string CheckRange([JSMarshalAs<JSType.MemoryView>] Span<byte> key, nint ptr, int byteLength);
+    public static partial string CheckRange(nint ptr, int byteLength);
 
     /// <summary>
-    /// 零拷贝：把「引子 + 内存地址 + 元素个数 + 视图类型」交给 JS，建出指向同一块内存的 TypedArray。
+    /// 零拷贝：把「内存地址 + 元素个数 + 视图类型」交给 JS，建出指向同一块内存的 TypedArray。
     /// <para>JS 侧会先校验地址非 0、不越界、且按元素宽度对齐，三者任一不满足都会抛错。</para>
     /// </summary>
     [JSImport("createView", "bench_heapview")]
-    public static partial JSObject CreateView([JSMarshalAs<JSType.MemoryView>] Span<byte> key, nint ptr, int length, string typedArrayName);
+    public static partial JSObject CreateView(nint ptr, int length, string typedArrayName);
 
     /// <summary>拷贝：让 JS 先建视图再 slice() 一份出来，脱离 WASM 内存（多一次 memcpy）。</summary>
     [JSImport("copyArray", "bench_heapview")]
-    public static partial JSObject CopyArray([JSMarshalAs<JSType.MemoryView>] Span<byte> key, nint ptr, int length, string typedArrayName);
+    public static partial JSObject CopyArray(nint ptr, int length, string typedArrayName);
 
     /// <summary>
     /// 让 JS 往指定视图里写入固定值（按视图元素宽度决定写法）。
@@ -63,18 +72,18 @@ public static partial class JSBind_HeapView
     public static partial string ReadView(JSObject view, int count);
 
     /// <summary>
-    /// ⑧ 跨数组验证：用引子的 buffer 去访问<b>另一个</b>被 pin 住的数组并写入。
-    /// 写成功就证明那块 buffer 是整块线性内存，而不是引子自己那一小段。
+    /// ⑧ 跨数组验证：用公开 API 的 buffer 去访问<b>另一个</b>被 pin 住的数组并写入。
+    /// 写成功就证明那块 buffer 是整块线性内存，而不只是某个视图的私有区域。
     /// </summary>
     [JSImport("writeOther", "bench_heapview")]
-    public static partial string WriteOther([JSMarshalAs<JSType.MemoryView>] Span<byte> key, nint ptr, int length, int value);
+    public static partial string WriteOther(nint ptr, int length, int value);
 
     /// <summary>
     /// ⑦-a 把 buffer 与视图<b>跨调用</b>存在 JS 侧，回报初始状态。
     /// 存下来才谈得上"下一步让堆增长，再回来看它死没死"。
     /// </summary>
     [JSImport("keepForGrow", "bench_heapview")]
-    public static partial string KeepForGrow([JSMarshalAs<JSType.MemoryView>] Span<byte> key, nint ptr, int length);
+    public static partial string KeepForGrow(nint ptr, int length);
 
     /// <summary>
     /// ⑦-b 只查询、不写入：存的 buffer / 视图有没有因为堆增长而 detach 或失效。
@@ -93,4 +102,23 @@ public static partial class JSBind_HeapView
     /// <summary>⑦-d 收尾：放掉 JS 侧跨调用持有的引用，别让它活到下一轮。</summary>
     [JSImport("releaseKept", "bench_heapview")]
     public static partial string ReleaseKept();
+
+    /// <summary>
+    /// ⑦-e 胁迫堆增长：调 emscripten 的 <c>Module._malloc</c> 占一块并<b>保持不放</b>。
+    /// <para>
+    /// 为什么不用 .NET 的 <c>new byte[]</c>：那走的是 .NET 的 GC 堆，
+    /// GC 向 wasm 堆要内存有自己的策略，未必走到 <c>sbrk</c>/<c>memory.grow</c>
+    /// （上一轮 96MB 都没逼出来，就是这个原因）。
+    /// 而 <c>_malloc</c> 走 emscripten 自己的堆，耗尽时 <c>emscripten_resize_heap</c> →
+    /// <c>sbrk</c> → <c>memory.grow</c> → <c>updateMemoryViews()</c> 重建 <c>Module.HEAPU8</c>，
+    /// 于是<b>旧视图必然 detach</b> —— 这样才是确定性复现，而不是看运气。
+    /// </para>
+    /// <para>返回值以 "OK ——" 开头才算成功，否则 C# 侧会退回托管分配。</para>
+    /// </summary>
+    [JSImport("mallocPressure", "bench_heapview")]
+    public static partial string MallocPressure(int bytes);
+
+    /// <summary>⑦-f 放掉所有胁迫分配（必须在写完、回读完之后调用）。</summary>
+    [JSImport("releasePressure", "bench_heapview")]
+    public static partial string ReleasePressure();
 }

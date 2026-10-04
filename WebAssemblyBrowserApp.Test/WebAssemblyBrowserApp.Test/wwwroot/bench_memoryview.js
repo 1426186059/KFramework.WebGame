@@ -91,15 +91,23 @@ export function probeUseStored() {
  *
  * 有一种说法是"直接 new Uint8Array(wasmMemory.buffer, ptr, len) 就是零拷贝"。
  * 那套做法依赖运行时把堆视图挂在全局 —— Emscripten 会，【.NET 的 WASM 运行时不会】。
- * 实测全局里到底有没有这些入口：没有的话，"零拷贝访问 WASM 内存"这条路在本工程里就不成立，
- * 能用的只有 MemoryView 给的那几个方法。
+ *
+ * 【这一条当初的结论被 Bench_RuntimeApi 修正过】
+ * 本函数原先只扫 HEAPU8 / Module / wasmMemory 那几个符号，扫不到就下结论说
+ * "零拷贝这条路在本工程不成立" —— 那是【候选名单不全】，不是真的没有入口：
+ * dotnet/runtime 的 exports.ts:71-77 专门留了 globalThis.getDotnetRuntime(runtimeId)，
+ * 而公开的内存 API（localHeapViewU8 / Module）都在 create() 返回的 RuntimeAPI 上。
+ * 所以这里把两类分开报：裸堆符号有没有、官方全局入口有没有 —— 别再混成一句话。
  */
 export function probeHeap() {
-    const found = [];
-    for (const k of ['HEAPU8', 'HEAP32', 'Module', 'wasmMemory', 'memory']) {
-        if (typeof globalThis[k] !== 'undefined') found.push(k);
-    }
-    return "全局入口：" + (found.length > 0 ? found.join(", ") : "一个都没有（.NET 不暴露裸堆视图）");
+    const legacy = ['HEAPU8', 'HEAP32', 'Module', 'wasmMemory', 'memory']
+        .filter(k => typeof globalThis[k] !== 'undefined');
+
+    const hasGlobalFn = typeof globalThis.getDotnetRuntime === 'function';
+
+    return "裸堆符号（HEAPU8/HEAP32/Module/wasmMemory/memory）：" +
+        (legacy.length > 0 ? "有 " + legacy.join(", ") : "一个都没有") +
+        "；官方全局入口 getDotnetRuntime()：" + (hasGlobalFn ? "有" : "也没有");
 }
 
 /**

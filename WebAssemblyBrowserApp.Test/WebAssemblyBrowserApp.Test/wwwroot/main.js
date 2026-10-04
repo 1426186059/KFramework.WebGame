@@ -15,6 +15,7 @@ import * as frameLoop from './bench_frameloop.js';
 import * as memoryView from './bench_memoryview.js';
 import * as heapView from './bench_heapview.js';
 import * as runtimeApi from './bench_runtimeapi.js';
+import * as zeroCopy from './bench_zerocopy.js';
 
 // 先整体接住再解构：create() 返回的是 RuntimeAPI，它身上除了下面这四个之外，
 // 还挂着 Module 与 localHeapViewU8 等【公开内存 API】—— 后者正是 bench_runtimeapi 要探测的东西，
@@ -74,9 +75,12 @@ jsToCs.setCs(jsToCsExp);
 crossBoundary.setCs(cbExp);
 frameLoop.setCs(flExp);
 
-// bench_runtimeapi 要的不是 C# 的导出，而是 RuntimeAPI 本身 ——
-// 它探测的正是这套公开内存 API（localHeapViewU8 / Module / getDotnetRuntime），只能从这儿给。
+// 这三个模块要的不是 C# 的导出，而是 RuntimeAPI 本身：
+// 它们取 WASM 的 memory.buffer 靠的是其上那套【公开内存 API】（localHeapViewU8 / Module / _malloc），
+// 只能从这儿给。heapview 用它建视图，runtimeapi 专门探测它，zerocopy 拿它跟拷贝路线比快慢。
+heapView.setRuntimeApi(runtime);
 runtimeApi.setRuntimeApi(runtime);
+zeroCopy.setRuntimeApi(runtime);
 
 // 注册 C# [JSImport] 使用的模块。模块名必须与 C# 里 [JSImport("函数名", "模块名")] 一致。
 setModuleImports('main.js', {
@@ -94,7 +98,7 @@ setModuleImports('main.js', {
     },
 });
 
-// 六个测试模块，各自的 js 文件（Reflection 是纯 C# 反射，不需要 js）
+// 七个测试模块，各自的 js 文件（Reflection 是纯 C# 反射，不需要 js）
 setModuleImports('bench_cstojs', csToJs);
 setModuleImports('bench_jstocs', jsToCs);
 setModuleImports('bench_crossboundary', crossBoundary);
@@ -102,6 +106,7 @@ setModuleImports('bench_frameloop', frameLoop);
 setModuleImports('bench_memoryview', memoryView);
 setModuleImports('bench_heapview', heapView);
 setModuleImports('bench_runtimeapi', runtimeApi);
+setModuleImports('bench_zerocopy', zeroCopy);
 
 // 统一包一层：C# 侧 [JSExport] 是 async，异常会变成 rejected Promise，
 // 不 catch 的话控制台看不到，表现就是"点了没反应"。
