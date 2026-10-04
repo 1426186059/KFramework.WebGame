@@ -24,6 +24,8 @@ namespace WebGame.Mir2.MonoGame.Client
         public static KeyBindSettings InputKeys = new KeyBindSettings();
         public static long BytesReceived, BytesSent;
         public static int FPS;
+        public static long DC;
+        public static long SpriteCount;
         private static long _fpsTime;
         private static int _fps;
         public static int DPS;
@@ -60,8 +62,9 @@ namespace WebGame.Mir2.MonoGame.Client
 
         // 原 WinForms CMain 中被逻辑代码引用的静态成员（浏览器端用占位/轻量实现）。
         public static bool Shift, Alt, Ctrl, Tilde, SpellTargetLock;
-        public static MirControl DebugBaseLabel, HintBaseLabel;
-        public static MirLabel DebugTextLabel, HintTextLabel;
+        public static MirControl HintBaseLabel;
+        public static MirLabel HintTextLabel;
+        public static FPSDialog DebugDialog;
         public static string DebugText = "";
         public static long PingTime;
         public static long NextPing = 10000;
@@ -179,6 +182,15 @@ namespace WebGame.Mir2.MonoGame.Client
 
                 DPS = DPSCounter;
                 DPSCounter = 0;
+
+                // 每秒采样一次真实 Draw Call 数（与 FPS 同节奏），避免 debug 文本每帧跳动。
+                // 此时本帧 RenderEnvironment 已执行，Metrics.DrawCount 为本帧值。
+                DC = DXManager.GDevice != null ? DXManager.GDevice.Metrics.DrawCount : 0;
+                SpriteCount = DXManager.GDevice != null ? DXManager.GDevice.Metrics.SpriteCount : 0;
+
+                // 每秒（与 FPS/DC 同节奏）重建一次 debug 文本：字符串只在这里构建一次，
+                // 不再每帧分配，FPSDialog 仅在文本变化时重烘焙离屏纹理。
+                UpdateDebugDialogText();
             }
             else
                 _fps++;
@@ -197,7 +209,9 @@ namespace WebGame.Mir2.MonoGame.Client
             Network.Process();
 
             if (MirScene.ActiveScene != null)
+            {
                 MirScene.ActiveScene.Process();
+            }
 
             // 每帧推进动画控件/按钮的帧偏移。移植时漏掉这两段会让动画永远停在第一帧
             //（表现为登录/选人界面动画不播放）。必须在 Draw 之前执行。
@@ -213,20 +227,44 @@ namespace WebGame.Mir2.MonoGame.Client
             CreateHintLabel();
 
             if (Settings.DebugMode || Input_KeyBoard.GetKey(MG.Keys.Tab))
-                CreateDebugLabel();
-            else if (DebugBaseLabel != null)
-                DisposeDebugLabel();
+                EnsureDebugDialog();
+            else if (DebugDialog != null)
+                HideDebugDialog();
         }
 
-        // 原版 CMain.CreateDebugLabel()（Crystal Client/Forms/CMain.cs:421）。
-        // 原版在"全屏"时建浮层、窗口模式时把文本写进窗体标题；浏览器端没有窗体标题，一律建浮层。
-        private static void CreateDebugLabel()
+        // 原版 CMain.CreateDebugLabel()（Crystal Client/Forms/CMain.cs:421）收敛成独立 FPSDialog 控件。
+        // 文本构建只发生在 UpdateDebugDialogText()，由每秒采样点（UpdateFrameTime）与首次创建时调用，
+        // 因此不会每帧重建字符串（消除问题 B 的每帧分配 / GC 尖峰）；FPSDialog 自身走离屏纹理缓存，
+        // 文本不变时每帧只贴缓存纹理，不重绘文本。
+        private static void EnsureDebugDialog()
         {
+            if (DebugDialog == null || DebugDialog.IsDisposed)
+            {
+                DebugDialog = new FPSDialog { Location = new MirEngine.Point(5, 5) };
+                UpdateDebugDialogText(); // 立即填一次，避免空窗
+            }
+        }
+
+        // 关闭 DebugMode（再按一次 F12）时销毁调试浮层，否则关掉后浮层会一直留在屏幕上。
+        private static void HideDebugDialog()
+        {
+            if (DebugDialog != null)
+            {
+                if (!DebugDialog.IsDisposed) DebugDialog.Dispose();
+                DebugDialog = null;
+            }
+        }
+
+        // 构建 debug 文本并交给 FPSDialog（其 Text setter 仅在文本变化时重烘焙离屏纹理）。
+        private static void UpdateDebugDialogText()
+        {
+            if (DebugDialog == null || DebugDialog.IsDisposed) return;
+
             string text;
 
             if (MirControl.MouseControl != null)
             {
-                text = string.Format("FPS: {0}", FPS);
+                text = string.Format("FPS: {0}, DC: {1}, Sprites: {2}", FPS, DC, SpriteCount);
 
                 text += string.Format(", DPS: {0}", DPS);
 
@@ -249,7 +287,7 @@ namespace WebGame.Mir2.MonoGame.Client
                     : string.Format(", Target: none");
             }
             else
-                text = string.Format("FPS: {0}", FPS);
+                text = string.Format("FPS: {0}, DC: {1}, Sprites: {2}", FPS, DC, SpriteCount);
 
             text += string.Format(", Ping: {0}", PingTime);
 
@@ -258,34 +296,7 @@ namespace WebGame.Mir2.MonoGame.Client
             text += string.Format(", TLC: {0}", DXManager.TextureList.Count(x => x.TextureValid));
             text += string.Format(", CLC: {0}", DXManager.ControlList.Count(x => !x.IsDisposed));
 
-            if (DebugBaseLabel == null || DebugBaseLabel.IsDisposed)
-            {
-                DebugBaseLabel = new MirControl
-                {
-                    BackColour = MirEngine.Color.FromArgb(50, 50, 50),
-                    Border = true,
-                    BorderColour = MirEngine.Color.Black,
-                    DrawControlTexture = true,
-                    Location = new MirEngine.Point(5, 5),
-                    NotControl = true,
-                    Opacity = 0.5F
-                };
-            }
-
-            if (DebugTextLabel == null || DebugTextLabel.IsDisposed)
-            {
-                DebugTextLabel = new MirLabel
-                {
-                    AutoSize = true,
-                    BackColour = MirEngine.Color.Transparent,
-                    ForeColour = MirEngine.Color.White,
-                    Parent = DebugBaseLabel,
-                };
-
-                DebugTextLabel.SizeChanged += (o, e) => ResizeBaseToText(DebugBaseLabel, DebugTextLabel);
-            }
-
-            DebugTextLabel.Text = text;
+            DebugDialog.Text = text;
         }
 
         // 原版 CMain.CreateHintLabel()（Crystal Client/Forms/CMain.cs:514）：鼠标悬停控件的 Hint 浮层。
@@ -358,21 +369,7 @@ namespace WebGame.Mir2.MonoGame.Client
             baseLabel.DisposeTexture();
         }
 
-        // 关闭 DebugMode（再按一次 F12）时销毁调试浮层；原版只在全屏分支里建、窗口模式里不建，
-        // 没有对应的销毁，本移植必须显式销毁，否则关掉后浮层会一直留在屏幕上。
-        private static void DisposeDebugLabel()
-        {
-            if (DebugTextLabel != null)
-            {
-                if (!DebugTextLabel.IsDisposed) DebugTextLabel.Dispose();
-                DebugTextLabel = null;
-            }
-            if (DebugBaseLabel != null)
-            {
-                if (!DebugBaseLabel.IsDisposed) DebugBaseLabel.Dispose();
-                DebugBaseLabel = null;
-            }
-        }
+        // 原 DisposeDebugLabel 已更名为 HideDebugDialog（见上方），此处不再保留。
 
         // 原版 CMain.RenderEnvironment()（Crystal Client/Forms/CMain.cs:385）。
         private static void RenderEnvironment()
@@ -471,9 +468,9 @@ namespace WebGame.Mir2.MonoGame.Client
             if (e.KeyCode == Keys.Backquote) Tilde = true;
             if (e.KeyCode == Keys.F12)
             {
-                // 原版：Settings.DebugMode 取反，浮层由 UpdateEnviroment 里的 CreateDebugLabel 逐帧维护。
+                // 原版：Settings.DebugMode 取反，浮层由 UpdateEnviroment 里的 EnsureDebugDialog 维护，
                 Settings.DebugMode = !Settings.DebugMode;
-                if (!Settings.DebugMode) DisposeDebugLabel();
+                if (!Settings.DebugMode) HideDebugDialog();
                 return;
             }
             try

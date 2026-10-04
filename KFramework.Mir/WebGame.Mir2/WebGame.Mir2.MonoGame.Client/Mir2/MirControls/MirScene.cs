@@ -82,8 +82,8 @@ namespace Client.MirControls
 
             DrawControl();
 
-            if (CMain.DebugBaseLabel != null && !CMain.DebugBaseLabel.IsDisposed)
-                CMain.DebugBaseLabel.Draw();
+            if (CMain.DebugDialog != null && !CMain.DebugDialog.IsDisposed)
+                CMain.DebugDialog.Draw();
 
             if (CMain.HintBaseLabel != null && !CMain.HintBaseLabel.IsDisposed)
                 CMain.HintBaseLabel.Draw();
