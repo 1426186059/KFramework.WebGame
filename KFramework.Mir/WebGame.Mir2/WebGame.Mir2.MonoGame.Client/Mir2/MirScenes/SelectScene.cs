@@ -38,13 +38,14 @@ namespace Client.MirScenes
                 Parent = this.UILayer,
             };
             Background.Anchor = EAnchorType.MiddleCenter;
+            Background.AnchorPos = new Point(0, 0);
             Background.ApplyAnchor();
 
             Title = new MirImageControl
             {
                 Index = 40,
                 Library = Libraries.Title,
-                Parent = this.UILayer,
+                Parent = Background,
                 Location = new Point(468, 20)
             };
 

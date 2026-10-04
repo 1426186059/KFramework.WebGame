@@ -462,6 +462,8 @@ namespace Client.MirControls
                 _parent = value;
                 if (_parent != null)
                     _parent.AddControl(this);
+
+                ApplyAnchor();
                 OnParentChanged();
             }
         }
