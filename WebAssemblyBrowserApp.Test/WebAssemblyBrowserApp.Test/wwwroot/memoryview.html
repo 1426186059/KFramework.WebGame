@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MemoryView 写法探测 — WASM 互操作测试</title>
+  <link rel="preload" id="webassembly" />
+  <script type="importmap"></script>
+  <script type='module' src="main#[.{fingerprint}].js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>MemoryView 写法探测</h1>
+  <p class="muted">C# 把同一份已知内容的 <b>byte[8]</b>（0,1,2…7）以 <code>Span&lt;byte&gt;</code> 交给 JS，
+    JS 用某一种写法操作它，<b>C# 再回读自己的数组</b>看字节有没有被写 ——
+    逐一试 <code>view.set</code> / <code>copyTo</code> / <code>slice</code> /
+    <code>length·byteLength</code> / 索引读写 / <code>.buffer</code> / <code>_unsafe_create_view()</code>，
+    回答「slice() 拿到的是不是共享内存的零拷贝视图」。进入本页会自动开始运行。</p>
+
+  <div class="bar">
+    <a class="btn" href="index.html">← 返回总纲</a>
+    <button id="runAll">运行全部测试</button>
+    <span id="status">加载中...</span>
+  </div>
+
+  <div id="results"><i>loading...</i></div>
+</body>
+
+</html>

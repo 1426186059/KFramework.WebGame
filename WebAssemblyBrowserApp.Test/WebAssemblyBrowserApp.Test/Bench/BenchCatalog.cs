@@ -26,6 +26,17 @@ public static class BenchCatalog
         new Bench_CrossBoundary(),
         // 帧循环的取舍：一帧的输入事件是"随帧回调一起推进来"还是"C# 回头去取"（引擎宿主那行的依据）
         new Bench_FrameLoop(),
+        // MemoryView 在 JS 侧究竟有哪几种写法、每种是不是真动到托管内存 —— 不计时，只做行为探测。
+        // 起因是"slice() 拿到的是零拷贝视图"这个猜测：副本还是视图，跑一遍就知道。
+        new Bench_MemoryView(),
+        // 另一条零拷贝路线：GCHandle 钉住数组 + 把裸地址交给 JS 建 TypedArray。
+        // 前提是 JS 拿得到 WASM 的 memory.buffer —— .NET 不像 Emscripten 那样把堆挂全局，实测到底行不行。
+        new Bench_HeapView(),
+        // 按 dotnet/runtime 源码找出来的一整套【公开】内存 API：
+        // localHeapViewU8() 系列、setHeapU8/getHeapU8 系列、以及 create() 返回值上挂着的 Module。
+        // ⑨ 那句"全局扫不到裸堆"其实只是候选名单没扫到 getDotnetRuntime —— 本模块把它们逐个实测，
+        // 并回答 HeapView 那条 _unsafe_create_view 绕道能不能换成公开 API。
+        new Bench_RuntimeApi(),
     };
 
     /// <summary>按序号取模块，越界返回 null。</summary>

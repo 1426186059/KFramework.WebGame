@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>运行时公开内存 API — WASM 互操作测试</title>
+  <link rel="preload" id="webassembly" />
+  <script type="importmap"></script>
+  <script type='module' src="main#[.{fingerprint}].js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>运行时公开内存 API 探测</h1>
+  <p class="muted">Bench_MemoryView 的 ⑨ 扫全局找 <code>wasmMemory</code> / <code>HEAPU8</code> 一无所获，
+    于是 Bench_HeapView 绕道去用 <code>MemoryView._unsafe_create_view()</code>（带 <code>_unsafe</code> 前缀，属内部方法）。
+    而 dotnet/runtime 源码里其实有一整套<b>公开</b>的内存 API：</p>
+  <p class="muted">
+    <code>export-api.ts</code> 导出 <code>localHeapViewU8()</code> 系列与 <code>setHeapU8</code>/<code>getHeapU8</code> 系列；
+    <code>exports.ts</code> 把 <code>Module</code> 连同这套 API 一起挂在 <code>create()</code> 的返回值上，
+    并另留了全局入口 <code>globalThis.getDotnetRuntime(runtimeId)</code>。
+    换句话说，⑨ 不是「没有入口」，而是<b>候选名单没扫到它</b>。</p>
+  <p class="muted">本页逐条实测：<b>①-a</b> 全局 <code>getDotnetRuntime</code>、<b>①-b</b> main.js 注入的 RuntimeAPI（主路）、
+    <b>①-c</b> 老办法扫全局（同页对照）、<b>②</b> <code>localHeapViewU8()</code> 本身（含 buffer 是否为 SharedArrayBuffer）、
+    <b>③</b> 九个 <code>localHeapViewXxx()</code>、<b>④</b> <code>api.Module</code> 上的 <code>HEAPU8</code> 与 <code>wasmMemory</code>、
+    <b>⑤</b> 三条来路的 buffer 是否同一块、<b>⑥</b> 用公开 API 直写 C# 钉住的数组（<b>不需要引子</b>）、
+    <b>⑦</b> <code>setHeapU8</code>/<code>getHeapU8</code> 单值读写、<b>⑧</b> 借 <code>wasmMemory</code> 精确观测堆增长。
+    凡涉及写入的，判据都是 C# 回读自己的数组。进入本页会自动开始运行。</p>
+
+  <div class="bar">
+    <a class="btn" href="index.html">← 返回总纲</a>
+    <button id="runAll">运行全部测试</button>
+    <span id="status">加载中...</span>
+  </div>
+
+  <div id="results"><i>loading...</i></div>
+</body>
+
+</html>

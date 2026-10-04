@@ -4,7 +4,7 @@
 // 浏览器启动器：<b>只做引导</b> —— 启动 dotnet、取出 C# 的导出、分发给各测试模块的 js、然后跑 Main。
 //
 // 这里<b>不写任何测试逻辑</b>：每个测试模块一个 js 文件（bench_cstojs / bench_jstocs /
-// bench_crossboundary / bench_frameloop），各自自带数据源与计时、互不 import。
+// bench_crossboundary / bench_frameloop / bench_memoryview），各自自带数据源与计时、互不 import。
 // 只有宿主设施（dom 读写、当前页面名）留在本文件，它们不属于任何测试模块。
 
 import { dotnet } from './_framework/dotnet.js';
@@ -12,10 +12,17 @@ import * as csToJs from './bench_cstojs.js';
 import * as jsToCs from './bench_jstocs.js';
 import * as crossBoundary from './bench_crossboundary.js';
 import * as frameLoop from './bench_frameloop.js';
+import * as memoryView from './bench_memoryview.js';
+import * as heapView from './bench_heapview.js';
+import * as runtimeApi from './bench_runtimeapi.js';
 
-const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotnet
+// 先整体接住再解构：create() 返回的是 RuntimeAPI，它身上除了下面这四个之外，
+// 还挂着 Module 与 localHeapViewU8 等【公开内存 API】—— 后者正是 bench_runtimeapi 要探测的东西，
+// 只解构这四个会把它们丢掉（Bench_MemoryView ⑨ 那句"全局扫不到裸堆"，根源就在这儿）。
+const runtime = await dotnet
     .withApplicationArguments("start")
     .create();
+const { setModuleImports, getAssemblyExports, getConfig, runMain } = runtime;
 
 const config = getConfig();
 const exports = await getAssemblyExports(config.mainAssemblyName);
@@ -67,6 +74,10 @@ jsToCs.setCs(jsToCsExp);
 crossBoundary.setCs(cbExp);
 frameLoop.setCs(flExp);
 
+// bench_runtimeapi 要的不是 C# 的导出，而是 RuntimeAPI 本身 ——
+// 它探测的正是这套公开内存 API（localHeapViewU8 / Module / getDotnetRuntime），只能从这儿给。
+runtimeApi.setRuntimeApi(runtime);
+
 // 注册 C# [JSImport] 使用的模块。模块名必须与 C# 里 [JSImport("函数名", "模块名")] 一致。
 setModuleImports('main.js', {
     // 宿主设施：结果区渲染。不属于任何测试模块，故留在启动器里。
@@ -83,11 +94,14 @@ setModuleImports('main.js', {
     },
 });
 
-// 四个测试模块，各自的 js 文件（Reflection 是纯 C# 反射，不需要 js）
+// 六个测试模块，各自的 js 文件（Reflection 是纯 C# 反射，不需要 js）
 setModuleImports('bench_cstojs', csToJs);
 setModuleImports('bench_jstocs', jsToCs);
 setModuleImports('bench_crossboundary', crossBoundary);
 setModuleImports('bench_frameloop', frameLoop);
+setModuleImports('bench_memoryview', memoryView);
+setModuleImports('bench_heapview', heapView);
+setModuleImports('bench_runtimeapi', runtimeApi);
 
 // 统一包一层：C# 侧 [JSExport] 是 async，异常会变成 rejected Promise，
 // 不 catch 的话控制台看不到，表现就是"点了没反应"。

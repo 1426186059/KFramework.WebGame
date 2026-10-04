@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeapView 零拷贝方案 — WASM 互操作测试</title>
+  <link rel="preload" id="webassembly" />
+  <script type="importmap"></script>
+  <script type='module' src="main#[.{fingerprint}].js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>HeapView 零拷贝方案探测</h1>
+  <p class="muted">用 <code>GCHandle.Alloc(array, Pinned)</code> 把 .NET 数组钉在 WASM 线性内存上，
+    再把<b>内存地址 + 长度</b>交给 JS，由 JS 用
+    <code>new Uint8Array(wasmMemory.buffer, ptr, len)</code> 建出指向同一块内存的 TypedArray。</p>
+  <p class="muted">关键是 buffer 从哪来：<b>①-a</b> 扫全局（<code>wasmMemory</code> / <code>HEAPU8</code>）
+    已被 Bench_MemoryView 的 ⑨ 证伪 —— .NET 不暴露裸堆入口；<b>①-b</b> 借任意一个 MemoryView 的
+    <code>_unsafe_create_view().buffer</code>，才是本工程唯一可靠的入口。此后逐一验证：
+    <b>② pin 到的地址是否落在 buffer 内</b>（不只是非零）、
+    <b>③ As() 的视图写入会不会回写到 C# 数组</b>（零拷贝是否成立）、<b>④ To() 副本的隔离性</b>、
+    <b>⑤ 跨一次同步调用是否仍有效</b>、<b>⑥ 4 字节视图的对齐与宽度校验</b>、
+    <b>⑦ 堆增长（memory.grow）会不会让 buffer detach、视图静默失效</b>（本方案的硬伤）、
+    <b>⑧ 那块 buffer 是不是整块线性内存</b>（跨数组验证）。进入本页会自动开始运行。</p>
+
+  <div class="bar">
+    <a class="btn" href="index.html">← 返回总纲</a>
+    <button id="runAll">运行全部测试</button>
+    <span id="status">加载中...</span>
+  </div>
+
+  <div id="results"><i>loading...</i></div>
+</body>
+
+</html>
