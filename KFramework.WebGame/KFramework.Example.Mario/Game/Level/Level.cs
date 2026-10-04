@@ -442,19 +442,11 @@ namespace KFramework.Example.Mario
 
         public void Update()
         {
-#if DEBUG
-            KFramework.MonoGame.GameProfiler.TestStart();
-#endif
             // 只更新动态瓦片（问号块/金币块/可碎砖/管道/城堡/敌人发射器），不再遍历整张网格（数千格）
             foreach (var t in mDynamicTiles)
             {
                 t.Update();
             }
-#if DEBUG
-            var __tileUpd = KFramework.MonoGame.GameProfiler.GetTestFinishSpendTime();
-            if (__tileUpd > 0.005) KFramework.MonoGame.PrintTool.Log($"GameProfiler [Level.Update/DynamicTiles]: {__tileUpd * 1000:F2}ms count={mDynamicTiles.Count}");
-            KFramework.MonoGame.GameProfiler.TestStart();
-#endif
 
             if (mPlayer != null)
             {
@@ -495,10 +487,6 @@ namespace KFramework.Example.Mario
 
             mParticleManager.Update();
             PlayerData.Instance.AddTime(KTime.deltaTime);
-#if DEBUG
-            var __entUpd = KFramework.MonoGame.GameProfiler.GetTestFinishSpendTime();
-            if (__entUpd > 0.005) KFramework.MonoGame.PrintTool.Log($"GameProfiler [Level.Update/Entities]: {__entUpd * 1000:F2}ms");
-#endif
         }
 
         public void Draw()
@@ -532,9 +520,6 @@ namespace KFramework.Example.Mario
                 v.Draw();
             }
 
-#if DEBUG
-            KFramework.MonoGame.GameProfiler.TestStart();
-#endif
             // 相机可见列裁剪：只画 [colMin, colMax]（左右各留 2 列 margin），不再遍历整张地图（数千格）
             float viewW = KSceneMgr.Game.GraphicsDevice.Viewport.Width;
             float camLeft = mPlayer.cameraPosX;
@@ -551,10 +536,6 @@ namespace KFramework.Example.Mario
                     tiles[i, j].Draw();
                 }
             }
-#if DEBUG
-            var __tileDraw = KFramework.MonoGame.GameProfiler.GetTestFinishSpendTime();
-            if (__tileDraw > 0.005) KFramework.MonoGame.PrintTool.Log($"GameProfiler [DrawLevel/VisibleTiles]: {__tileDraw * 1000:F2}ms cols={colMax - colMin + 1} totalW={Width}");
-#endif
 
             foreach (var v in mEnemyObjectList)
             {
