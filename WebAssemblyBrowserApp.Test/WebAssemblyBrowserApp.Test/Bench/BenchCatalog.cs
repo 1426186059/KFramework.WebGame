@@ -40,6 +40,10 @@ public static class BenchCatalog
         // 前面几页回答的是"能不能零拷贝"，这一页回答"值不值"：
         // 把那一次 memcpy 的价钱量成数字，按 4KB→4MB 分档看它是固定成本还是随体积线性增长。
         new Bench_ZeroCopy(),
+        // 前面几页回答"能不能零拷贝、值不值"，这一页回答"那帧率到底被什么吃掉"：
+        // 只测频率 —— 每帧做 N 次空跨界调用（滑块可调 0 → 100 万），
+        // 因为一次空跨界 ≈ 拷贝 47 KB，次数往往比数据量更决定帧率。
+        new Bench_CrossCall(),
     };
 
     /// <summary>按序号取模块，越界返回 null。</summary>

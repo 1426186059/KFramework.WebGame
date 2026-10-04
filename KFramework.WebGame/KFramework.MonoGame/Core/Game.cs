@@ -1,4 +1,5 @@
 using KFramework.MonoGame;
+using System.Diagnostics;
 
 
 namespace KFramework.MonoGame
@@ -28,6 +29,7 @@ namespace KFramework.MonoGame
         /// <summary>主循环限帧：每 _frameInterval 个 rAF 才真正推进一帧（C# 层实现，供 captureFramerate 使用）。</summary>
         private int _frameInterval = 1;
         private int _frameSkipCounter;
+        private int _frameProfileCounter;
 
         private bool _initialized;
         private bool _frameFaulted;
@@ -186,6 +188,8 @@ namespace KFramework.MonoGame
 
             try
             {
+                long frameStart = Stopwatch.GetTimestamp();
+
                 // 画布尺寸【不再每帧查】：原先这里每帧调 SyncCanvasSize()（内含一次跨界获取），
                 // 现在由 input_window_event 在尺寸真变化时上报，经 Input_GameFrameData.CanvasResized
                 // 事件回调到 OnCanvasResized 应用。初始化与手动改尺寸时仍会同步一次，见 GraphicsDeviceManager。
@@ -223,12 +227,22 @@ namespace KFramework.MonoGame
                     var drawElapsed = TimeSpan.FromSeconds(target * steps);
                     GraphicsDevice.Clear(ClearColor);
                     var drawTime = new GameTime(_totalGameTime, drawElapsed);
+#if DEBUG
+                    long drawStart = Stopwatch.GetTimestamp();
+#endif
                     Draw(drawTime);
                     Components.Draw(drawTime);
+#if DEBUG
+                    GraphicsDevice.AddFrameDrawTicks(Stopwatch.GetTimestamp() - drawStart);
+#endif
                     // 收帧（照 MonoGame 在 Draw 结束后的 Present）。WebGL 后端无需动作；
                     // WebGPU 后端必须在此提交命令缓冲 —— 交换链纹理只在当前帧有效，
                     // 拖到下一帧再提交就会报 "Destroyed texture used in a submit" 且画面全黑。
                     GraphicsDevice.EndFrame();
+#if DEBUG
+                    GraphicsDevice.AddFrameTotalTicks(Stopwatch.GetTimestamp() - frameStart);
+                    if ((++_frameProfileCounter % 120) == 0) PrintFrameProfile();
+#endif
                 }
                 else
                 {
@@ -243,10 +257,20 @@ namespace KFramework.MonoGame
                     Input.LateUpdate();
 
                     GraphicsDevice.Clear(ClearColor);
+#if DEBUG
+                    long drawStart = Stopwatch.GetTimestamp();
+#endif
                     Draw(frameTime);
                     Components.Draw(frameTime);
+#if DEBUG
+                    GraphicsDevice.AddFrameDrawTicks(Stopwatch.GetTimestamp() - drawStart);
+#endif
                     // 同上：帧内必须收帧提交。
                     GraphicsDevice.EndFrame();
+#if DEBUG
+                    GraphicsDevice.AddFrameTotalTicks(Stopwatch.GetTimestamp() - frameStart);
+                    if ((++_frameProfileCounter % 120) == 0) PrintFrameProfile();
+#endif
                 }
 
             }
@@ -258,6 +282,39 @@ namespace KFramework.MonoGame
                 Exit();
             }
         }
+
+#if DEBUG
+        /// <summary>
+        /// 每 120 帧打印一次帧时间分解，定位 Mario 瓶颈：
+        ///  - 帧CPU 逼近 16.7ms → CPU 瓶颈（看下面三项拆因）；
+        ///  - C#计算 大 → SpriteBatch 排序/分组/游戏逻辑；
+        ///  - 顶点上传/绘制 大且 drawCalls 多 → 跨界次数瓶颈（应合批）；
+        ///  - 三者都小仍掉帧 → 瓶颈在浏览器合成 / GC / 非 CPU 侧。
+        /// </summary>
+        private void PrintFrameProfile()
+        {
+            var m = GraphicsDevice.Metrics;
+            double frameTotal = m.FrameTotalMilliseconds;
+            double frameDraw = m.FrameDrawMilliseconds;
+            double drawSubmit = m.DrawSubmitMilliseconds;
+            double compute = Math.Max(0.0, frameDraw - drawSubmit);
+            double perDrawUs = m.DrawCount > 0 ? drawSubmit / m.DrawCount * 1000.0 : 0.0;
+            string zc;
+            try
+            {
+                zc = " | 零拷贝:" + JSBind_ByteCache.CopyFromStats();
+            }
+            catch (Exception e)
+            {
+                zc = " | 零拷贝:统计不可用(" + e.GetType().Name + ")";
+            }
+            Console.WriteLine(
+                $"[FrameProfiler] 帧CPU={frameTotal:F2}ms Draw段={frameDraw:F2}ms " +
+                $"(顶点上传/绘制含跨界={drawSubmit:F2}ms; C#计算≈{compute:F2}ms) | " +
+                $"sprites={m.SpriteCount} drawCalls={m.DrawCount} prims={m.PrimitiveCount} | " +
+                $"单次draw≈{perDrawUs:F1}μs 估算每draw跨界≈{perDrawUs / 2:F1}μs(BufferSubData+DrawElements)" + zc);
+        }
+#endif
 
         public virtual void Dispose()
         {

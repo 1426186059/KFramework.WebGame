@@ -17,6 +17,14 @@ namespace KFramework.MonoGame
         internal long _textureCount;
         internal long _vertexShaderCount;
 
+        // —— 帧时间分解（时间戳字段，单位 Stopwatch ticks；照 MonoGame Metrics 之外额外补充）——
+        /// <summary>所有 DrawUserIndexedPrimitives 内部「顶点上传 + 绘制（含 C#→JS 跨界 + JS 侧 WebGL 执行）」耗时的累计 ticks。</summary>
+        internal long _drawSubmitTicks;
+        /// <summary>整段 Draw（C# 计算 + 所有跨界调用）耗时的累计 ticks，由 Game 测量后写入。</summary>
+        internal long _frameDrawTicks;
+        /// <summary>整帧（Update + Draw + EndFrame + 所有跨界）CPU 侧耗时的累计 ticks，由 Game 测量后写入。</summary>
+        internal long _frameTotalTicks;
+
         /// <summary>Clear 被调用的次数。</summary>
         public long ClearCount => _clearCount;
 
@@ -41,6 +49,16 @@ namespace KFramework.MonoGame
         /// <summary>顶点着色器在 GPU 上被切换的次数。</summary>
         public long VertexShaderCount => _vertexShaderCount;
 
+        /// <summary>顶点上传 + 绘制（含跨界 + JS WebGL 执行）耗时（毫秒）。</summary>
+        public double DrawSubmitMilliseconds => ToMilliseconds(_drawSubmitTicks);
+        /// <summary>整段 Draw（C# 计算 + 所有跨界调用）耗时（毫秒）。</summary>
+        public double FrameDrawMilliseconds => ToMilliseconds(_frameDrawTicks);
+        /// <summary>整帧 CPU 耗时（毫秒）。与 16.7ms（60fps 预算）对比即可判断是否 CPU 瓶颈。</summary>
+        public double FrameTotalMilliseconds => ToMilliseconds(_frameTotalTicks);
+
+        private static double ToMilliseconds(long ticks)
+            => ticks / (double)System.Diagnostics.Stopwatch.Frequency * 1000.0;
+
         /// <summary>两组 metrics 的差值。</summary>
         public static GraphicsMetrics operator -(GraphicsMetrics value1, GraphicsMetrics value2)
         {
@@ -53,7 +71,10 @@ namespace KFramework.MonoGame
                 _spriteCount = value1._spriteCount - value2._spriteCount,
                 _targetCount = value1._targetCount - value2._targetCount,
                 _textureCount = value1._textureCount - value2._textureCount,
-                _vertexShaderCount = value1._vertexShaderCount - value2._vertexShaderCount
+                _vertexShaderCount = value1._vertexShaderCount - value2._vertexShaderCount,
+                _drawSubmitTicks = value1._drawSubmitTicks - value2._drawSubmitTicks,
+                _frameDrawTicks = value1._frameDrawTicks - value2._frameDrawTicks,
+                _frameTotalTicks = value1._frameTotalTicks - value2._frameTotalTicks
             };
         }
 
@@ -69,7 +90,10 @@ namespace KFramework.MonoGame
                 _spriteCount = value1._spriteCount + value2._spriteCount,
                 _targetCount = value1._targetCount + value2._targetCount,
                 _textureCount = value1._textureCount + value2._textureCount,
-                _vertexShaderCount = value1._vertexShaderCount + value2._vertexShaderCount
+                _vertexShaderCount = value1._vertexShaderCount + value2._vertexShaderCount,
+                _drawSubmitTicks = value1._drawSubmitTicks + value2._drawSubmitTicks,
+                _frameDrawTicks = value1._frameDrawTicks + value2._frameDrawTicks,
+                _frameTotalTicks = value1._frameTotalTicks + value2._frameTotalTicks
             };
         }
     }

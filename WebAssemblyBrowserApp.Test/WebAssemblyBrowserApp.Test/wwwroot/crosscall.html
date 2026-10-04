@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>跨 JS 调用频率 — 每帧 N 次的代价</title>
+  <link rel="preload" id="webassembly" />
+  <script type="importmap"></script>
+  <script type='module' src="main#[.{fingerprint}].js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>跨 JS 调用频率</h1>
+  <p class="muted">每帧连续做 <b>N 次空跨界调用</b>（<code>C# → JS → C#</code>，什么都不做立刻返回），
+    量 N 与每帧耗时的关系。调用体刻意不带负载，测的纯粹是<b>跨界这个动作的固定成本 × 次数</b>。</p>
+  <p class="muted"><b>为什么要单独测它：</b>Bench_ZeroCopy 实测一次空跨界 ≈ 3333 ns，而拷贝 4 MB 才 287 μs ——
+    换算下来<b>一次空跨界 ≈ 拷贝 47 KB</b>。引擎每帧传的数据常常只有几十 KB（拷贝成本几 μs），
+    却可能跨几十上百次界（上百 μs）。所以在这个量级上，
+    <b>“每帧跨了多少次界”比“每帧拷了多少字节”更决定帧率</b> —— 这正是零拷贝在马里奥上看不出提升的原因。</p>
+
+  <div class="card">
+    <h3>设定每帧的跨界次数 N</h3>
+    <div class="bar">
+      <label for="ccSlider">拖动：</label>
+      <input type="range" id="ccSlider" min="0" max="1000000" step="1" value="100" style="width:360px">
+      <label for="ccInput">直接设：</label>
+      <input type="number" id="ccInput" min="0" max="1000000" step="1" value="100" style="width:110px">
+      <button id="ccRun">测这个次数</button>
+      <button id="ccRunAll">跑全部预设档位</button>
+    </div>
+    <div class="bar">
+      <span class="muted">快捷档位：</span>
+      <button data-cc="0">0</button>
+      <button data-cc="1">1</button>
+      <button data-cc="10">10</button>
+      <button data-cc="100">100</button>
+      <button data-cc="1000">1 000</button>
+      <button data-cc="10000">1 万</button>
+      <button data-cc="100000">10 万</button>
+      <button data-cc="1000000">100 万</button>
+    </div>
+    <p class="muted">预估：<span id="ccEstimate">—</span></p>
+    <p class="muted">说明：N 越大单轮越贵，模块会自动减少轮数（≤1000 跑 5 轮取最快，≤10 万跑 3 轮，
+      100 万只跑 1 轮），并在表里如实标出轮数与抖动。100 万次约需几秒，属正常。</p>
+  </div>
+
+  <div class="bar">
+    <a class="btn" href="index.html">← 返回总纲</a>
+    <button id="runAll">运行全部测试</button>
+    <span id="status">加载中...</span>
+  </div>
+
+  <div id="results"><i>loading...</i></div>
+  <div id="ccOut"></div>
+</body>
+
+</html>

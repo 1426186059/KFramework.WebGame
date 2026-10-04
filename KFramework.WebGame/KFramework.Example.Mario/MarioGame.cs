@@ -7,6 +7,17 @@ namespace KFramework.Example.Mario
     /// </summary>
     public sealed class MarioGame : Game
     {
+        /// <summary>
+        /// 帧耗时 HUD 的开关。马里奥是测试工程，默认开着；
+        /// 想看纯净画面（或对比 HUD 自身的开销）把它改成 false 重新运行即可。
+        /// </summary>
+        private const bool ShowPerfHud = true;
+
+        /// <summary>HUD 专用的 SpriteBatch：独立于 <see cref="KSceneMgr"/> 那一个，互不干扰。</summary>
+        private SpriteBatch _hud = null!;
+
+        private PerfHud _perf = null!;
+
         public MarioGame() : base("#game") { }
 
         protected override async Task LoadContentAsync()
@@ -25,6 +36,9 @@ namespace KFramework.Example.Mario
 
             await ContentManager.Default.LoadAsync().ConfigureAwait(false);
 
+            _hud = new SpriteBatch(GraphicsDevice);
+            _perf = new PerfHud();
+
             var scene = new MainScene();
             KSceneMgr.SetMainScene(scene);
         }
@@ -32,14 +46,21 @@ namespace KFramework.Example.Mario
         protected override void Update(GameTime gameTime)
         {
             // 输入由引擎在 TickFrame 内统一驱动（Input.Update / Input.LateUpdate）；本例只负责激活所需装置。
+            _perf.BeginUpdate();
             KInputMgr.Update(gameTime);
             KSceneMgr.Update(gameTime);
+            _perf.EndUpdate();
         }
 
         protected override void Draw(GameTime gameTime)
         {
+            _perf.BeginDraw();
             GraphicsDevice.Clear(Color.CornflowerBlue);
             KSceneMgr.Draw(gameTime);
+
+            // Metrics 每帧由 Clear 重置，故在 Draw 末尾读到的是本帧累计值
+            _perf.EndDraw(GraphicsDevice.Metrics);
+            _perf.Render(_hud, KDefaultRes.DefaultSpriteFont, ShowPerfHud);
         }
     }
 

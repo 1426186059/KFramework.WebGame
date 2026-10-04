@@ -16,6 +16,7 @@ import * as memoryView from './bench_memoryview.js';
 import * as heapView from './bench_heapview.js';
 import * as runtimeApi from './bench_runtimeapi.js';
 import * as zeroCopy from './bench_zerocopy.js';
+import * as crossCall from './bench_crosscall.js';
 
 // 先整体接住再解构：create() 返回的是 RuntimeAPI，它身上除了下面这四个之外，
 // 还挂着 Module 与 localHeapViewU8 等【公开内存 API】—— 后者正是 bench_runtimeapi 要探测的东西，
@@ -58,6 +59,7 @@ const runner = findExport(exports, 'RunOne');
 const jsToCsExp = findExport(exports, 'JsToCs_Int');
 const cbExp = findExport(exports, 'Cb_Int');
 const flExp = findExport(exports, 'Fl_Push');
+const ccExp = findExport(exports, 'CcRun');
 
 console.log("[bench] 顶层导出键:", Object.keys(exports));
 console.log("[bench] BenchRunner:", runner ? "已找到" : "未找到");
@@ -69,6 +71,7 @@ if (!runner) console.error("[bench] 找不到 RunOne 导出，总纲按钮将无
 if (!jsToCsExp) console.error("[bench] 找不到 JsToCs_Int 导出，JS→C# 测试会拿不到数据");
 if (!cbExp) console.error("[bench] 找不到 Cb_Int 导出，跨界方向对比会拿不到数据");
 if (!flExp) console.error("[bench] 找不到 Fl_Push 导出，帧循环测试会拿不到数据");
+if (!ccExp) console.error("[bench] 找不到 CcRun 导出，跨界频率测试的滑块将不可用");
 
 // C# 的导出不是全局变量，需要回调 C# 的模块必须显式拿到自己那份
 jsToCs.setCs(jsToCsExp);
@@ -81,6 +84,10 @@ frameLoop.setCs(flExp);
 heapView.setRuntimeApi(runtime);
 runtimeApi.setRuntimeApi(runtime);
 zeroCopy.setRuntimeApi(runtime);
+
+// bench_crosscall 的滑块要回调 C#（CcRun / CcRunAll），并自己绑 DOM 事件。
+crossCall.setCs(ccExp);
+crossCall.bindUI();
 
 // 注册 C# [JSImport] 使用的模块。模块名必须与 C# 里 [JSImport("函数名", "模块名")] 一致。
 setModuleImports('main.js', {
@@ -98,7 +105,7 @@ setModuleImports('main.js', {
     },
 });
 
-// 七个测试模块，各自的 js 文件（Reflection 是纯 C# 反射，不需要 js）
+// 八个测试模块，各自的 js 文件（Reflection 是纯 C# 反射，不需要 js）
 setModuleImports('bench_cstojs', csToJs);
 setModuleImports('bench_jstocs', jsToCs);
 setModuleImports('bench_crossboundary', crossBoundary);
@@ -107,6 +114,7 @@ setModuleImports('bench_memoryview', memoryView);
 setModuleImports('bench_heapview', heapView);
 setModuleImports('bench_runtimeapi', runtimeApi);
 setModuleImports('bench_zerocopy', zeroCopy);
+setModuleImports('bench_crosscall', crossCall);
 
 // 统一包一层：C# 侧 [JSExport] 是 async，异常会变成 rejected Promise，
 // 不 catch 的话控制台看不到，表现就是"点了没反应"。
