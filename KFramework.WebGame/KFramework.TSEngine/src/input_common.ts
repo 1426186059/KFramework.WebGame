@@ -1,6 +1,6 @@
 
 import { getCanvas } from './html_canvas.js';
-import { Point } from './Point.js';
+import { Point } from './custom_data_point.js';
 
 /** 取当前输入画布（供各输入模块与坐标换算共用）。 */
 export function getInputCanvas(): HTMLCanvasElement | null {

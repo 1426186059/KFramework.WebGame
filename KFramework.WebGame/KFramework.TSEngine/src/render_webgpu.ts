@@ -13,9 +13,10 @@
 //   * 着色器是 WGSL（GPUShaderModule），不是 GLSL；
 //   * 所有 GPU 对象以整数句柄返回（不再用 JSObject），避免跨边界持有 JS 对象带来的生命周期问题。
 //
-// 重要：.NET 侧 Span<T> 在 JS 侧是 MemoryView（不是 TypedArray），必须经 toUint8Array 转换后才能交给 WebGPU。
+// 重要：.NET 侧 Span<T> 在 JS 侧是 MemoryView（不是 TypedArray），必须经 ByteCache 转换后才能交给 WebGPU。
 
 import { getCanvas } from './html_canvas.js';
+import { ByteCache } from './custom_data_byte_cache.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type GPU = any;
@@ -47,26 +48,21 @@ const bindGroups = new Map<number, GPU>();
 let nextId = 1;
 function allocId(): number { return nextId++; }
 
+// ---- 复用的字节缓冲（见 custom_data_byte_cache.ts）----
+// .NET 的 MemoryView 没有 .buffer，只能 copyTo / slice 出副本交给 WebGPU：拷贝免不掉，
+// 但"每次调用都 new Uint8Array"的分配可以免。按用途分开 —— 两者量级差太远，不该共用。
+// 上限默认 65535（ushort 最大值）对这两类都不够，需显式放宽：顶点单批约 320KB，
+// 纹理 1024² RGBA 就是 4MB。
+const _cacheBuffer = new ByteCache(64 * 1024, 1024 * 1024);   // queue.writeBuffer：每帧高频
+const _cacheTexels = new ByteCache(2048, 32 * 1024 * 1024);   // queue.writeTexture：块大但低频
+
 // ---- 当前帧状态（命令编码器 / 渲染通道）----
 let encoder: GPU = null;
 let pass: GPU = null;
 let curPipeline: GPU = null;
 
-// 把 .NET MemoryView（Span<T>）或 TypedArray 统一转成 Uint8Array（字节视图）交给 WebGPU。
-// MemoryView 只有 slice()（返回 ArrayBufferView 副本），没有 .buffer，故与 TypedArray 分开处理。
-function toUint8Array(view: MemoryView_Span | ArrayBufferView | null): Uint8Array | null {
-    if (view === null || view === undefined) return null;
-    if (ArrayBuffer.isView(view)) {
-        const v = view as ArrayBufferView;
-        return new Uint8Array(v.buffer, v.byteOffset, v.byteLength);
-    }
-    const mv = view as { slice?: (s?: number, e?: number) => ArrayBufferView };
-    if (typeof mv.slice === 'function') {
-        const copy = mv.slice() as ArrayBufferView;
-        return new Uint8Array(copy.buffer, copy.byteOffset, copy.byteLength);
-    }
-    return null;
-}
+// MemoryView → Uint8Array 的转换统一走 ByteCache（见 custom_data_byte_cache.ts），
+// 按用途分流到 _cacheBuffer / _cacheTexels。
 
 // 把 C# 侧序列化好的描述对象（JSON 字符串）解析回 JS 对象。
 // 原因：本项目的 .NET 源码生成式 JS interop 不支持 JSMarshalAs<JSType.Object>/object，
@@ -236,7 +232,7 @@ export function createBuffer(size: number, usage: number): number {
 /** 上传字节到缓冲（queue.writeBuffer）。data 可为 TypedArray 或 .NET MemoryView。 */
 export function writeBuffer(id: number, offset: number, data: MemoryView_Span | ArrayBufferView): void {
     const buf = buffers.get(id);
-    const bytes = toUint8Array(data);
+    const bytes = _cacheBuffer.copyFrom(data);
     if (!buf || !bytes || !device) return;
     device.queue.writeBuffer(buf, offset | 0, bytes);
 }
@@ -433,7 +429,7 @@ export function createTexture(width: number, height: number, formatStr: string, 
 export function uploadTexture(id: number, data: MemoryView_Span | ArrayBufferView,
                               x: number, y: number, width: number, height: number, formatStr: string): void {
     const tex = textures.get(id);
-    const bytes = toUint8Array(data);
+    const bytes = _cacheTexels.copyFrom(data);
     if (!tex || !bytes || !device) return;
     const w = width | 0;
     const h = height | 0;

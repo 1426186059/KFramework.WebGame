@@ -1,6 +1,6 @@
 import { E_HTML_Event_Type, FrameDataStream } from './html_event_type.js';
 import { getCanvas } from './html_canvas.js';
-import { Point } from './Point.js';
+import { Point } from './custom_data_point.js';
 
 const pending = new Map<number, Uint8Array>();
 const sizeData = new Uint8Array(10);

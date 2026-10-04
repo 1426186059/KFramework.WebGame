@@ -5,6 +5,7 @@
 // 必须经 copyIntoCache（复用缓冲）转换后才能交给 WebGL。
 // 另外 C# 侧的 [JSImport] 函数名必须与这里的导出名完全一致，且不能带点号。
 import { getCanvas } from './html_canvas.js';
+import { ByteCache } from './custom_data_byte_cache.js';
 // ============ 模块级字段（本模块持有的全部可变状态，集中放在文件开头便于一眼看全）============
 let canvas = null;
 let gl = null;
@@ -22,14 +23,18 @@ const contextAttributes = {
     preserveDrawingBuffer: false,
     powerPreference: 'high-performance',
 };
-// 复用的字节缓冲：MemoryView 不暴露 .buffer，只能 copyTo 出副本 —— 拷贝免不掉，但【分配】可以免。
-// 刻意【按用途分开】而不是共用一块：三者大小差异极大（矩阵固定 64B / 顶点每帧几十 KB / 纹理可达数 MB），
-// 共用会让一次大纹理上传把顶点那块撑到 MB 级并一直占着，反之矩阵那块也会被反复撑大；
-// 分开才能各自稳定在自己该有的量级。均只增不减，稳定后分配次数归零。
-let _cacheMatrixBytes = null; // uniformMatrix4fv（固定 64 字节）
-let _cacheVertexBytes = null; // bufferData / bufferSubData（每帧高频）
-let _cacheTextureBytes = null; // texImage2D / texSubImage2D / compressedTexImage2D（大块低频）
-let _cacheMatrixF32 = null; // 矩阵还原用的 Float32Array 视图（建在 _cacheMatrixBytes 上）
+// 复用的字节缓冲：统一用 ByteCache（见 custom_data_byte_cache.ts）。
+// MemoryView 不暴露 .buffer，只能 copyTo 出副本 —— 拷贝免不掉，但【分配】可以免。
+// 刻意【按用途分开】而不是共用一个实例：三者大小差异极大（矩阵固定 64B / 顶点每帧几十 KB /
+// 纹理可达数 MB），共用会让一次大纹理上传把顶点那块撑到 MB 级并一直占着，反之亦然；
+// 分开才能各自稳定在自己该有的量级。
+// 容量上限默认 65535（ushort 最大值），小用途够用；但顶点 / 纹理远超它，必须显式放宽：
+//   顶点 —— 单批上限 = MaxBatchSize(4096) × 4 顶点 × 20 字节 ≈ 320KB，放宽到 1MB；
+//   纹理 —— 1024² RGBA 就是 4MB，放宽到 32MB（覆盖到 2048²）。
+const _cacheMatrix = new ByteCache(64); // uniformMatrix4fv：16 个 float，用默认上限
+const _cacheVertex = new ByteCache(64 * 1024, 1024 * 1024); // bufferData / bufferSubData
+const _cacheTexture = new ByteCache(2048, 32 * 1024 * 1024); // texImage2D / texSubImage2D / compressedTexImage2D
+let _cacheMatrixF32 = null; // 矩阵还原用的 Float32Array 视图（建在 _cacheMatrix 的缓冲上）
 let uniformLogged = false; // 矩阵上传只在首次打一条日志
 // ============ 模块级字段结束 ============
 function gpu() {
@@ -92,55 +97,14 @@ export function readPixels(x, y, w, h, out) {
     out.set(dst);
 }
 // ---------- 字节视图转换 ----------
-// 本节用到的复用缓冲 _cacheMatrixBytes / _cacheVertexBytes / _cacheTextureBytes 声明在文件开头。
-/**
- * 容量足够就复用，不够才新分配（slot 为 null 表示还没建过）。
- *
- * ⚠️ JS 按值传参，本函数【改不了调用方那个变量】，所以新缓冲只能靠返回值交回去，
- * 由调用方自己赋回字段（见 toVertexBytes / toTextureBytes / uniformMatrix4fv 里的 `_cacheXxx = buf`）。
- * 别在别处单调用它却忘了赋值 —— 那样每次都新建，复用就完全失效了。
- */
-function ensureCapacity(slot, byteLength) {
-    return slot !== null && slot.length >= byteLength ? slot : new Uint8Array(byteLength);
-}
-/**
- * 把 MemoryView 的字节拷进 slot 对应的复用缓冲（容量不够才新分配）。
- * 恒定返回一块有效缓冲 —— 这样调用方才能写成 `_cacheXxx = copyIntoCache(_cacheXxx, view)`，
- * 赋值一眼可见，也不会漏（返回 null 会把已分配的缓冲清掉，下次又得重新分配）。
- */
-function copyIntoCache(slot, view) {
-    const buf = ensureCapacity(slot, view.byteLength);
-    const memory = view;
-    if (typeof memory.copyTo === 'function') {
-        memory.copyTo(buf);
-    }
-    else if (typeof memory.slice === 'function') {
-        // 非常规 MemoryView：没有 copyTo，slice() 本身就是一份副本
-        const sliced = memory.slice();
-        buf.set(new Uint8Array(sliced.buffer, sliced.byteOffset, sliced.byteLength));
-    }
-    else {
-        throw new Error('[gl] 无法把参数转换为 Uint8Array');
-    }
-    return buf;
-}
-/** 顶点 / 索引缓冲用：拷进 _cacheVertexBytes。 */
+// 转换逻辑统一在 ByteCache（custom_data_byte_cache.ts）里，本节只按用途分流到对应的实例。
+/** 顶点 / 索引缓冲用。 */
 function toVertexBytes(view) {
-    if (view == null)
-        return null;
-    if (view instanceof Uint8Array)
-        return view; // 已是 TypedArray，零开销
-    _cacheVertexBytes = copyIntoCache(_cacheVertexBytes, view);
-    return _cacheVertexBytes.subarray(0, view.byteLength); // 缓冲可能比本次大，只返回用到的长度
+    return _cacheVertex.copyFrom(view);
 }
-/** 纹理上传用：拷进 _cacheTextureBytes。 */
+/** 纹理上传用。 */
 function toTextureBytes(view) {
-    if (view == null)
-        return null;
-    if (view instanceof Uint8Array)
-        return view;
-    _cacheTextureBytes = copyIntoCache(_cacheTextureBytes, view);
-    return _cacheTextureBytes.subarray(0, view.byteLength);
+    return _cacheTexture.copyFrom(view);
 }
 // ---------- 着色器 ----------
 export function createShader(type) { return gpu().createShader(type); }
@@ -181,16 +145,18 @@ export function uniformMatrix4fv(location, transpose, value) {
     }
     else {
         const n = value.byteLength;
-        _cacheMatrixBytes = copyIntoCache(_cacheMatrixBytes, value);
+        const buf = _cacheMatrix.copyFrom(value);
+        if (buf === null)
+            return;
         if (n === 64) {
             // 唯一实际会用到的尺寸：复用 Float32Array 视图，不必每次 new
-            if (_cacheMatrixF32 === null || _cacheMatrixF32.buffer !== _cacheMatrixBytes.buffer)
-                _cacheMatrixF32 = new Float32Array(_cacheMatrixBytes.buffer, 0, 16);
+            if (_cacheMatrixF32 === null || _cacheMatrixF32.buffer !== buf.buffer)
+                _cacheMatrixF32 = new Float32Array(buf.buffer, buf.byteOffset, 16);
             matrix = _cacheMatrixF32;
         }
         else {
             // 非常规尺寸（不会出现）：老老实实拷一份对齐的
-            const aligned = new Uint8Array(_cacheMatrixBytes.subarray(0, n));
+            const aligned = new Uint8Array(buf.subarray(0, n));
             matrix = new Float32Array(aligned.buffer);
         }
     }
