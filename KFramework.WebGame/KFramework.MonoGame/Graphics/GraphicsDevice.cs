@@ -413,17 +413,9 @@ namespace KFramework.MonoGame
             long t0 = Stopwatch.GetTimestamp();
             Backend.DrawUserIndexedPrimitives(vertices, start, end);
             long t1 = Stopwatch.GetTimestamp();
-            _metrics._drawSubmitTicks += t1 - t0;
-
             _metrics._drawCount++;
             _metrics._primitiveCount += vRun / 2;
         }
-
-        /// <summary>由 Game 在 Draw 段前后测量后写入（整段 Draw = C# 计算 + 所有跨界）。</summary>
-        internal void AddFrameDrawTicks(long ticks) => _metrics._frameDrawTicks += ticks;
-
-        /// <summary>由 Game 在整帧处理前后测量后写入（整帧 = Update + Draw + EndFrame + 所有跨界）。</summary>
-        internal void AddFrameTotalTicks(long ticks) => _metrics._frameTotalTicks += ticks;
 
         // ================================================================
         // 渲染目标 / 离屏渲染（照 MonoGame 的 GraphicsDevice + OpenGL 平台层）

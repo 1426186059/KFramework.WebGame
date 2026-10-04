@@ -1,10 +1,5 @@
-using KFramework.MonoGame;
-using System.Diagnostics;
-
-
 namespace KFramework.MonoGame
 {
-
     /// <summary>
     /// 游戏宿主。用法与 MonoGame 完全一致：继承它，重写 <see cref="Initialize"/> /
     /// <see cref="LoadContent"/> / <see cref="Update"/> / <see cref="Draw"/>，
@@ -29,7 +24,6 @@ namespace KFramework.MonoGame
         /// <summary>主循环限帧：每 _frameInterval 个 rAF 才真正推进一帧（C# 层实现，供 captureFramerate 使用）。</summary>
         private int _frameInterval = 1;
         private int _frameSkipCounter;
-        private int _frameProfileCounter;
 
         private bool _initialized;
         private bool _frameFaulted;
