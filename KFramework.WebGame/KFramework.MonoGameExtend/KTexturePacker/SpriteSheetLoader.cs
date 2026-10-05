@@ -18,7 +18,7 @@ namespace KFramework.MonoGameExtend
 
         /// <summary>
         /// 同步加载图集。严格（默认）按精确路径查找 JSON 与整页纹理；<paramref name="strict"/> 为 false 时按关键字（Path 包含）匹配。
-        /// 含 KTX2 页的图集需在 LoadBundleAsync 阶段传入 GraphicsDevice 把页纹理转码+上传 GPU，本方法随后同步取用。
+        /// 含 KTX2 页的图集在 LoadBundleAsync 阶段已借全局 WebGL2 上下文把页纹理转码为设备原生压缩字节，本方法随后同步取用（GPU 上传在 <see cref="AssetBundle.LoadTexture"/>）。
         /// </summary>
         public SpriteSheet Load(string jsonPath, bool strict = true)
         {
@@ -51,7 +51,7 @@ namespace KFramework.MonoGameExtend
 
         /// <summary>
         /// 异步加载图集（符合异步 API 约定）。行为与 <see cref="Load"/> 一致：整页纹理在 LoadBundleAsync 阶段
-        /// 已随包上传 GPU，此处同步取用即可；因而同样兼容 KTX2。
+        /// 已随包转码为设备原生压缩字节（KTX2 依赖全局 WebGL2 上下文），此处同步取用即可；因而同样兼容 KTX2。
         /// </summary>
         public Task<SpriteSheet> LoadAsync(string jsonPath, bool strict = true)
             => Task.FromResult(Load(jsonPath, strict));

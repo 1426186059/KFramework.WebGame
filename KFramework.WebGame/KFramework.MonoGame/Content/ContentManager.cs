@@ -69,29 +69,27 @@ namespace KFramework.MonoGame
             await _manager.FetchManifestAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task LoadAsync(IProgress<float>? progress = null, CancellationToken cancellationToken = default, GraphicsDevice? device = null)
+        public async Task LoadAsync(IProgress<float>? progress = null, CancellationToken cancellationToken = default)
         { 
-             await _manager.LoadAllAsync(progress, cancellationToken, device).ConfigureAwait(false);
+             await _manager.LoadAllAsync(progress, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<AssetBundle> LoadBundleAsync(
             string bundleName,
             CancellationToken cancellationToken = default,
             IProgress<float>? progress = null,
-            bool strict = true,
-            GraphicsDevice? device = null)
+            bool strict = true)
         { 
-            return await _manager.LoadBundleAsync(bundleName, cancellationToken, progress, strict, device).ConfigureAwait(false);
+            return await _manager.LoadBundleAsync(bundleName, cancellationToken, progress, strict).ConfigureAwait(false);
         }
 
         /// <summary>异步并发加载多个 AssetBundle（单个失败不影响其余，逐包上报进度 0~1）。</summary>
         public async Task<IReadOnlyList<AssetBundle>> LoadBundlesAsync(
             IEnumerable<string> bundleNames,
             CancellationToken cancellationToken = default,
-            IProgress<float>? progress = null,
-            GraphicsDevice? device = null)
+            IProgress<float>? progress = null)
         {
-            return await _manager.LoadBundlesAsync(bundleNames, cancellationToken, progress, device).ConfigureAwait(false);
+            return await _manager.LoadBundlesAsync(bundleNames, cancellationToken, progress).ConfigureAwait(false);
         }
 
         /// <summary>卸载一个已加载的 Bundle（释放其 zip 流；正在使用的纹理/字节请自行管理）。</summary>
