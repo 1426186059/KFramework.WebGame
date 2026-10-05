@@ -195,7 +195,7 @@ export function texSubImage2D(target, level, xoffset, yoffset, width, height, fo
 // ---------- 压缩纹理（KTX2 / Basis Universal） ----------
 /** 查询 WebGL 扩展是否可用（如 'WEBGL_compressed_texture_astc'）。返回扩展对象或 null。 */
 export function hasExtension(name) {
-    return gpu().getExtension(name);
+    return gpu().getExtension(name) != null;
 }
 /** 上传一块 GPU 压缩纹理数据（WebGL2 compressedTexImage2D）。 */
 export function compressedTexImage2D(target, level, internalFormat, width, height, border, data) {

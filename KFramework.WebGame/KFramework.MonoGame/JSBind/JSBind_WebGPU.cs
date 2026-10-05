@@ -69,6 +69,10 @@ namespace KFramework.MonoGame
         [JSImport("isContextLost", "render_webgpu")]
         public static partial bool IsContextLost();
 
+        /// <summary>WebGPU 设备是否已就绪（requestDevice 成功后为真）。用于判断当前后端是否为 WebGPU。</summary>
+        [JSImport("isActive", "render_webgpu")]
+        public static partial bool IsActive();
+
         /// <summary>取当前画布元素（调试用，返回 JSObject 代理）。</summary>
         [JSImport("getCanvasElement", "render_webgpu")]
         public static partial JSObject? GetCanvasElement();

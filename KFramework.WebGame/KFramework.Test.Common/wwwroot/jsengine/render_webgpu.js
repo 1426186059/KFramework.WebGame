@@ -206,6 +206,8 @@ export function setAntialias(enabled) {
 export function getAntialias() { return antialiasEnabled; }
 export function getCanvasElement() { return canvas; }
 export function isContextLost() { return !device; }
+/** WebGPU 设备是否已就绪（已成功 requestDevice）。用于判断当前后端是否为 WebGPU（KTX2 格式选择用）。 */
+export function isActive() { return device !== null; }
 export function getPreferredFormat() { return format; }
 /** WebGPU 无全局错误码，恒返回 0（错误走 device.lost / uncapturederror 异步事件）。 */
 export function getError() { return 0; }

@@ -1,9 +1,9 @@
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 依据设备支持的 WebGL2 压缩纹理扩展，为 KTX2（Basis Universal 超压缩）挑选
-    /// “目标转码格式 + 对应 GL 内部格式”。
-    /// 优先级（质量 / 压缩比从高到低，对齐 three.js）：ASTC → BC7(BPTC) → ETC2/EAC → S3TC(DXT) → PVRTC → RGBA32（回退，不压缩）。
+    /// 依据当前渲染后端支持的压缩纹理能力，为 KTX2（Basis Universal 超压缩）挑选“目标转码格式 + 对应 GL 内部格式”。
+    /// WebGPU 后端当前仅支持 rgba8 上传（render_webgpu.uploadTexture 未实现压缩格式），故统一转码为 RGBA32（裸 RGBA8，不压缩）；
+    /// WebGL2 后端则按扩展支持度在 ASTC → BC7(BPTC) → ETC2/EAC → S3TC(DXT) → PVRTC → RGBA32 间择优。
     /// 始终选带 alpha 的变体（BC3 / ETC2 EAC RGBA / PVRTC RGBA），对不透明图也安全。
     /// </summary>
     /// <remarks>
@@ -24,6 +24,11 @@ namespace KFramework.MonoGame
         // 返回的 glFormat 即 <see cref="SurfaceFormat"/>（其取值就是对应的 GL 内部格式，无需再映射）。
         public static (int basisFormat, SurfaceFormat glFormat) Pick()
         {
+            // WebGPU 后端当前只支持 rgba8 上传（render_webgpu.uploadTexture 仅实现 rgba8unorm / bgra8unorm），
+            // 且 WebGPU 画布上取不到 WebGL2 上下文（hasExtension 会直接崩），故 KTX2 直接转码为裸 RGBA8（不压缩）。
+            // 待 WebGPU 支持 texture-compression-* 后，再在此分支按 adapter.features 选压缩格式。
+            if (JSBind_WebGPU.IsActive())
+                return (RGBA32, SurfaceFormat.Color);
             if (JSBind_WEBGL20.HasExtension("WEBGL_compressed_texture_astc"))
                 return (ASTC_4x4, SurfaceFormat.Astc4X4);
             if (JSBind_WEBGL20.HasExtension("EXT_texture_compression_bptc"))

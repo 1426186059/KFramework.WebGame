@@ -239,9 +239,9 @@ export function texSubImage2D(
 
 // ---------- 压缩纹理（KTX2 / Basis Universal） ----------
 
-/** 查询 WebGL 扩展是否可用（如 'WEBGL_compressed_texture_astc'）。返回扩展对象或 null。 */
-export function hasExtension(name: string): unknown {
-    return gpu().getExtension(name);
+/** 查询 WebGL 扩展是否可用（如 'WEBGL_compressed_texture_astc'）。返回是否存在（boolean）。 */
+export function hasExtension(name: string): boolean {
+    return gpu().getExtension(name) != null;
 }
 
 /** 上传一块 GPU 压缩纹理数据（WebGL2 compressedTexImage2D）。 */
