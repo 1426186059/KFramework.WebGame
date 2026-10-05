@@ -6,7 +6,7 @@
     "Bundles"
   ],
   "autoAtlas": false,
-  "BundleSplitMode": "whole",
+  "BundleSplitMode": "Whole",
   "TextureSwitchTarget": "None",
   "basisuPath": null,
   "copy_to_wwwroot": true

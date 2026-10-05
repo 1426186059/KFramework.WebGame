@@ -7,8 +7,8 @@
     "MyRes"
   ],
   "autoAtlas": false,
-  "BundleSplitMode": "whole",
-  "TextureSwitchTarget": "none",
+  "BundleSplitMode": "Whole",
+  "TextureSwitchTarget": "None",
   "basisuPath": null,
   "copy_to_wwwroot": true
 }

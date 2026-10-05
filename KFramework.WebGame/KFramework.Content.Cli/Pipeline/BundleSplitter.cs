@@ -1,6 +1,8 @@
+using System.Text.Json.Serialization;
+
 namespace KFramework.Content.Cli
 {
-
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum BundleSplitMode
     {
         Whole,

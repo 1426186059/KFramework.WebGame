@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "KFramework.Content.Cli": {
+      "commandName": "Project",
+      "workingDirectory": "D:\\OpenSource\\KFramework.WebGame\\KFramework.WebGame\\KFramework.Test.Common\\Content"
+    }
+  }
+}
