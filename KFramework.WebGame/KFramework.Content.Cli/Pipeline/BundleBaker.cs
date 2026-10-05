@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Diagnostics;
 using System.Text.Json.Nodes;
+using System.IO;
 
 namespace KFramework.Content.Build
 {
