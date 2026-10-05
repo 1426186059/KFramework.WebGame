@@ -14,6 +14,7 @@ namespace KFramework.MonoGame
         private Matrix4x4 _transform = Matrix4x4.Identity;
         private Matrix4x4 _projection;
         private Material _material = null!;
+        private readonly Material _cahce_Mat = new Material();
 
         private bool _beginCalled;
 
@@ -43,14 +44,12 @@ namespace KFramework.MonoGame
                           SamplerState? samplerState = null,
                           Matrix4x4? transformMatrix = null)
         {
-            var material = new Material
-            {
-                Effect = null,
-                Blend = blendState ?? BlendState.NonPremultiplied,
-                Sampler = samplerState ?? SamplerState.Point,
-                DepthStencil = DepthStencilState.None,
-                Rasterizer = RasterizerState.CullNone,
-            };
+            _cahce_Mat.Reset();
+            _cahce_Mat.Effect = null;
+            _cahce_Mat.Blend = blendState ?? BlendState.NonPremultiplied;
+            _cahce_Mat.Sampler = samplerState ?? SamplerState.Point;
+            _cahce_Mat.DepthStencil = DepthStencilState.None;
+            _cahce_Mat.Rasterizer = RasterizerState.CullNone;
             BeginInternal(material, sortMode, transformMatrix);
         }
 

@@ -30,5 +30,14 @@ namespace KFramework.MonoGame
 
         /// <summary>光栅化状态（对应 Unity 的 Cull 命令）。</summary>
         public RasterizerState Rasterizer = RasterizerState.CullNone;
+
+        public void Reset()
+        {
+            Effect = null;
+            Blend = BlendState.NonPremultiplied;
+            Sampler = SamplerState.Point;
+            DepthStencil = DepthStencilState.None;
+            Rasterizer = RasterizerState.CullNone;
+        }
     }
 }
