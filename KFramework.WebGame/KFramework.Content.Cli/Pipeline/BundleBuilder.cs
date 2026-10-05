@@ -12,7 +12,7 @@ namespace KFramework.Content.Cli
     {
         /// <summary>逻辑包名（对应 Unity 的 assetBundleName，全相对路径含 '/'，如 myres/group/atlas）。</summary>
         public string AssetBundleName { get; set; } = "";
-
+        public string FullDir { get; set; } = "";
         /// <summary>包内资源。</summary>
         public List<AssetBundleAsset> Assets { get; set; } = new();
     }

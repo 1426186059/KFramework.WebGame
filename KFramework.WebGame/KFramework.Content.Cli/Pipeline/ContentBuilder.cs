@@ -34,9 +34,8 @@ namespace KFramework.Content.Cli
 
     public sealed class ContentBuilder
     {
-        public BuildReport Build(string rawDirectory, BuildOptions? options = null)
+        public BuildReport Build(string rawDirectory)
         {
-            options ??= new BuildOptions();
             var watch = Stopwatch.StartNew();
             var warnings = new List<string>();
 
@@ -85,16 +84,16 @@ namespace KFramework.Content.Cli
                 var usedNames = new HashSet<string>(StringComparer.Ordinal);
                 foreach (string bundlesRoot in bundleRoots)
                 {
-                    foreach (var (bundleName, files) in BundleSplitter.Enumerate(bundlesRoot, rawDirectory, mode))
+                    foreach (var (bundleName, fullDir, files) in BundleSplitter.Enumerate(bundlesRoot, rawDirectory, mode))
                     {
                         if (!usedNames.Add(bundleName))
                             throw new InvalidOperationException(
                                 $"发现重复的 AssetBundle 名「{bundleName}」：配置的打包目录（{string.Join(", ", bundleDirs)}）下存在同名子文件夹，请保证各打包目录内的子文件夹名唯一。");
 
                         AssetBundleBuild build = BundleBaker.BuildBundle(
-                            bundleName, files, rawDirectory, options,
+                            bundleName, fullDir, files, rawDirectory,
                             BuildConfigResult.AutoAtlas, warnings,
-                            ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, tempDirectory);
+                            ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount);
                         builds.Add(build);
                         bundleCount++;
                     }

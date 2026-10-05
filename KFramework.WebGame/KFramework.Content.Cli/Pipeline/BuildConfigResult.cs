@@ -1,6 +1,4 @@
 using KFramework.MonoGame;
-using System.Collections.Generic;
-using System.IO;
 
 namespace KFramework.Content.Cli
 {

@@ -9,6 +9,16 @@ namespace KFramework.Content.Cli
             ".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif"
         };
 
+        public static readonly HashSet<string> supportAudioFileType = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ".wav", ".mp3", ".ogg", ".flac", ".aac", ".m4a"
+        };
+
+        public static readonly HashSet<string> supportVideoFileType = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ".mp4", ".webm", ".mov", ".avi"
+        };
+
         /// <summary>
         /// 返回指定纹理数据格式落库时的默认文件后缀名（含点，小写）。
         /// 用于构建端在不指定具体输出名时，按格式生成默认扩展名。

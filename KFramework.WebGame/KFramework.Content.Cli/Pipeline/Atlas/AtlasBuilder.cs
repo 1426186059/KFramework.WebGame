@@ -1,67 +1,76 @@
 using KFramework.MonoGame;
 using KTexturePacker.Core;
+using SkiaSharp;
+using System.Text;
 using System.Text.Json.Nodes;
 
 namespace KFramework.Content.Cli
 {
     public static class AtlasBuilder
     {
+        /// <summary>
+        /// 模块一（抽取）：从「剩余资源列表」<paramref name="remainAssetPathList"/> 中抽出全部纹理，
+        /// 解码为 <see cref="SpriteInput"/>，并从列表中移除（避免主流程重复导入），再交给 <see cref="BuildAtlas2"/> 装箱。
+        /// 返回所有图集页的 AtlasData 节点（供调用方写入 atlas.json）。
+        /// 已切好的 .atlas 整页图不在此抽取（由 BundleBaker 原样入库）。
+        /// </summary>
         internal static void BuildAtlas(
-            AssetBundleBuild mBundle,
-            List<string> remainAssetPathList,
-            BuildOptions options)
+            AssetBundleBuild bundle,
+            List<string> remainAssetPathList)
         {
-            List<SpriteInput> mSpriteList = new List<SpriteInput>();
-            for(int i = remainAssetPathList.Count - 1; i >= 0; i--)
+            List<SpriteInput> sprites = new List<SpriteInput>();
+            for (int i = remainAssetPathList.Count - 1; i >= 0; i--)
             {
                 string path = remainAssetPathList[i];
-                if(Global.supportTextureFileType.Contains(Path.GetExtension(path)))
+                if (!Global.supportTextureFileType.Contains(Path.GetExtension(path)))
+                    continue;
+
+                SKBitmap bitmap = SKBitmap.Decode(path);
+                // 解码失败或空串纹理都从列表移除，避免主流程再次尝试
+                if (bitmap is null)
                 {
-                    SkiaSharp.SKBitmap bitmap = SkiaSharp.SKBitmap.Decode(path);
-                    mSpriteList.Add(new SpriteInput(path, bitmap));
                     remainAssetPathList.RemoveAt(i);
+                    continue;
                 }
+
+                sprites.Add(new SpriteInput(path, bitmap));
+                remainAssetPathList.RemoveAt(i);
             }
 
-            BuildAtlas2(mBundle, mSpriteList, options);
+             BuildAtlas2(bundle, sprites);
         }
 
         /// <summary>
-        /// 把需要自动装箱的散图 inputs 打包成图集，直接把整图纹理页写入 <paramref name="bundle"/>，并返回 AtlasData pages 节点。
-        /// 已切好的 .atlas 图集不参与此流程（由 BundleBaker 原样入库）。
+        /// 模块二（装箱）：把已准备好的散图 inputs 交给上游 KTexturePacker 共享核心自动装箱，
+        /// 逐页按 <see cref="BuildConfigResult.TextureSwitchTarget"/> 编码为纹理写入 <paramref name="bundle"/>，
+        /// 并返回 AtlasData 的 pages 节点。
         /// </summary>
-        private static JsonArray BuildAtlas2(
+        private static void BuildAtlas2(
             AssetBundleBuild bundle,
-            List<SpriteInput> inputs,
-            BuildOptions options)
+            List<SpriteInput> inputs)
         {
-            // 交给上游 KTexturePacker 共享核心自动装箱（已切 .atlas 图集不在此合并，保持用户打包好的布局）。
+            if (inputs.Count == 0)
+            {
+                return;
+            }
+
             var imported = new List<ImportedAtlasPage>();
-            int atlasPageCount = 0;
             AtlasBaker.AtlasBakeResult result = AtlasBaker.Bake(
                 inputs,
                 imported,
                 new PackerSettings
                 {
-                    MaxSize = options.AtlasMaxSize,
-                    Padding = options.AtlasPadding,
+                    MaxSize = BuildOptions.AtlasMaxSize,
+                    Padding = BuildOptions.AtlasPadding,
                     AllowRotation = true,
                 },
                 new AtlasBakeOptions { BaseName = "atlas" });
 
-            atlasPageCount += result.Pages.Count;
-
+            string AtlasPrefix = "Atlas";
             foreach (AtlasPageOutput page in result.Pages)
             {
-                string pageName = page.Name + Global.GetTextureFormat_Default_SuffixName(ContentTextureDataFormat.Webp);
-                
-                var bytes = BundleBaker.EncodeWebpFromRgba(page.RgbaPixels, page.Width, page.Height);
-                (bytes, ContentTextureDataFormat fmt) = BundleBaker.EncodeTexture(
-                    page.Width, 
-                    page.Height,
-                    bytes,
-                    ContentTextureDataFormat.Webp);
-
+                (byte[] bytes, ContentTextureDataFormat fmt) = EncodePage(page);
+                string pageName = AtlasPrefix + "_" + page.Name + Global.GetTextureFormat_Default_SuffixName(fmt);
                 bundle.Assets.Add(new AssetBundleAsset
                 {
                     Path = pageName,
@@ -72,19 +81,58 @@ namespace KFramework.Content.Cli
                     Format = fmt,
                 });
 
-                if (options.WritePreviewPng)
+                if (BuildOptions.WritePreviewPng)
                 {
                     File.WriteAllBytes(Path.Combine(BuildConfigResult.TempDirFull, pageName), page.ToPng());
                 }
             }
 
-            // 运行端按 GetFileName(image) 取纹理名（含 .png 后缀，与包内资源名 Path.Combine(bundleName, page.Name + ".png") 对应），
-            // 故 AtlasData 中 image 的扩展名需与包内页纹理名一致（仅作可读提示与查找键，无需因编码格式改写内容）。
-            var root = JsonNode.Parse(result.AtlasJson)!.AsObject();
-            // DeepClone 返回脱离父节点的副本：否则 root["pages"] 仍挂着 root，
-            // 被调用方再挂到自己的 JsonObject 时会抛 "The node already has a parent"。
-            return (JsonArray)root["pages"]!.DeepClone();
+            if (result.Pages.Count > 0)
+            {
+                string atlasJsonName = AtlasPrefix + ".atlas.json";
+                bundle.Assets.Add(new AssetBundleAsset
+                {
+                    Path = Path.Combine(bundle.FullDir, atlasJsonName).Replace('\\', '/'),
+                    Type = ContentAssetType.Text,
+                    Bytes = Encoding.UTF8.GetBytes(result.AtlasJson),
+                });
+
+                if (BuildOptions.WritePreviewPng)
+                {
+                    File.WriteAllText(
+                        Path.Combine(BuildConfigResult.TempDirFull, atlasJsonName), 
+                        result.AtlasJson);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 按 BuildConfigResult.TextureSwitchTarget 把图集页（无原图，仅 RGBA 像素）编码为目标格式：
+        /// <list type="bullet">
+        ///   <item><see cref="ContentTextureSwitchTarget.None"/> / <see cref="ContentTextureSwitchTarget.Rgba"/>：保留烘焙出的原始 RGBA 裸像素。</item>
+        ///   <item><see cref="ContentTextureSwitchTarget.Webp"/>：编码为 Webp。</item>
+        ///   <item><see cref="ContentTextureSwitchTarget.Ktx2"/>：宽高皆 4 倍数 → 编码为 KTX2，否则回退为 Webp。</item>
+        /// </list>
+        /// </summary>
+        private static (byte[] Bytes, ContentTextureDataFormat Format) EncodePage(
+            AtlasPageOutput page)
+        {
+            byte[] rgba = page.RgbaPixels;
+            switch (BuildConfigResult.TextureSwitchTarget)
+            {
+                case ContentTextureSwitchTarget.Webp:
+                    return (BundleBaker.EncodeWebpFromRgba(rgba, page.Width, page.Height), ContentTextureDataFormat.Webp);
+
+                case ContentTextureSwitchTarget.Ktx2:
+                    if (BundleBaker.IsSuitableForKtx2(page.Width, page.Height))
+                        return (BundleBaker.EncodeKtx2FromRgba(rgba, page.Width, page.Height, BuildConfigResult.BasisuPathFull, BuildOptions.Ktx2Quality), ContentTextureDataFormat.Ktx2);
+                    return (BundleBaker.EncodeWebpFromRgba(rgba, page.Width, page.Height), ContentTextureDataFormat.Webp);
+
+                case ContentTextureSwitchTarget.Rgba:
+                case ContentTextureSwitchTarget.None:
+                default:
+                    return (rgba, ContentTextureDataFormat.Rgba);
+            }
         }
     }
-
 }

@@ -136,7 +136,7 @@ namespace KFramework.Test.Common.Tests.ImageTest
                 if (bundle == null) continue;
                 foreach (var e in bundle.Content.Entries)
                 {
-                    if (!string.Equals(e.Type, "texture", StringComparison.OrdinalIgnoreCase)) continue;
+                    if (e.Type != ContentAssetType.Texture) continue;
                     try
                     {
                         Texture2D tex = bundle.LoadTexture(e.Path, Device);

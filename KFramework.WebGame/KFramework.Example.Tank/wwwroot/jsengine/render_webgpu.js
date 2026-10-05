@@ -87,7 +87,15 @@ export async function init(antialias) {
             console.error('[webgpu] requestAdapter 返回 null');
             return false;
         }
-        device = await adapter.requestDevice();
+        // 按需启用压缩纹理特性：仅当 adapter 支持时才请求（否则 requestDevice 会抛错），
+        // 启用后 device.features 才含这些特性，Ktx2TranscodeSelector 才能在 WebGPU 下选压缩格式。
+        const FEATURES = ['texture-compression-bc', 'texture-compression-etc2', 'texture-compression-astc'];
+        const requiredFeatures = [];
+        for (const f of FEATURES) {
+            if (adapter.features.has(f))
+                requiredFeatures.push(f);
+        }
+        device = await adapter.requestDevice({ requiredFeatures });
         if (!device) {
             console.error('[webgpu] requestDevice 返回 null');
             return false;
@@ -208,6 +216,27 @@ export function getCanvasElement() { return canvas; }
 export function isContextLost() { return !device; }
 /** WebGPU 设备是否已就绪（已成功 requestDevice）。用于判断当前后端是否为 WebGPU（KTX2 格式选择用）。 */
 export function isActive() { return device !== null; }
+/** 查询 WebGPU 设备是否已启用某特性（如 'texture-compression-bc'）。用于 KTX2 压缩格式选择。 */
+export function hasFeature(flag) {
+    return !!device && device.features.has(flag);
+}
+// 压缩纹理格式 → { 每块字节数 bpp, 块宽 bx, 块高 by }。WebGPU 的 GPUTextureFormat 名与块参数。
+// 仅列入本引擎实际会用到的格式（KTX2 转码产物为 4x4 / 16 字节的 BC3/BC7/ETC2/ASTC4x4）。
+const COMPRESSED_INFO = {
+    'bc1-rgba-unorm': { bpp: 8, bx: 4, by: 4 },
+    'bc2-rgba-unorm': { bpp: 16, bx: 4, by: 4 },
+    'bc3-rgba-unorm': { bpp: 16, bx: 4, by: 4 },
+    'bc7-rgba-unorm': { bpp: 16, bx: 4, by: 4 },
+    'etc2-rgb8unorm': { bpp: 8, bx: 4, by: 4 },
+    'etc2-rgba8unorm': { bpp: 16, bx: 4, by: 4 },
+    'astc-4x4-rgba-unorm': { bpp: 16, bx: 4, by: 4 },
+    'astc-5x5-rgba-unorm': { bpp: 16, bx: 5, by: 5 },
+    'astc-6x6-rgba-unorm': { bpp: 16, bx: 6, by: 6 },
+    'astc-8x8-rgba-unorm': { bpp: 16, bx: 8, by: 8 },
+    'astc-10x10-rgba-unorm': { bpp: 16, bx: 10, by: 10 },
+    'astc-12x12-rgba-unorm': { bpp: 16, bx: 12, by: 12 },
+};
+function isCompressedFormat(f) { return Object.prototype.hasOwnProperty.call(COMPRESSED_INFO, f); }
 export function getPreferredFormat() { return format; }
 /** WebGPU 无全局错误码，恒返回 0（错误走 device.lost / uncapturederror 异步事件）。 */
 export function getError() { return 0; }
@@ -425,15 +454,22 @@ export function createTexture(width, height, formatStr, sampleCount, extraUsage 
         console.error('[webgpu] device 未就绪');
         return 0;
     }
-    const samples = Math.max(1, sampleCount | 0);
+    const fmt = formatStr || 'rgba8unorm';
+    const comp = isCompressedFormat(fmt);
+    // 压缩纹理不能做渲染目标（无 RENDER_ATTACHMENT），也不可多重采样（sampleCount 强制 1）；
+    // usage 只需 TEXTURE_BINDING | COPY_DST（上传 + 采样）。
+    const samples = comp ? 1 : Math.max(1, sampleCount | 0);
+    const usage = comp
+        ? (0x04 | 0x02 | (extraUsage & 0x01)) // TEXTURE_BINDING | COPY_DST | (RenderTarget 才有的 COPY_SRC)
+        : (samples > 1
+            ? 0x10 // RENDER_ATTACHMENT（多重采样附件）
+            : (0x04 | 0x10 | 0x02 | (extraUsage & 0x01))); // TEXTURE_BINDING | RENDER_ATTACHMENT | COPY_DST | COPY_SRC
     const id = allocId();
     textures.set(id, device.createTexture({
         size: [width | 0, height | 0],
         sampleCount: samples,
-        format: formatStr || 'rgba8unorm',
-        usage: samples > 1
-            ? 0x10 // RENDER_ATTACHMENT（多重采样附件）
-            : (0x04 | 0x10 | 0x02 | (extraUsage & 0x01)), // TEXTURE_BINDING | RENDER_ATTACHMENT | COPY_DST | (extraUsage：仅 RenderTarget 传 COPY_SRC)
+        format: fmt,
+        usage,
     }));
     return id;
 }
@@ -452,8 +488,29 @@ export function uploadTexture(id, data, x, y, width, height, formatStr) {
     const h = height | 0;
     // 当前仅实现 rgba8unorm / bgra8unorm（bytesPerRow = width*4）；其余格式暂按 4 字节/像素处理并提示。
     const fmt = formatStr || 'rgba8unorm';
+    // 压缩纹理：按格式查块参数，整张贴图一次 writeTexture（origin 0,0）。KTX2 走此分支。
+    if (isCompressedFormat(fmt)) {
+        const info = COMPRESSED_INFO[fmt];
+        const wb = Math.ceil(w / info.bx);
+        const hb = Math.ceil(h / info.by);
+        const rowBytes = wb * info.bpp;
+        // WebGPU 硬规定：多行 writeTexture 的 bytesPerRow 必须 256 字节对齐，否则整次写入静默失败。
+        const bytesPerRow = Math.ceil(rowBytes / 256) * 256;
+        if (bytesPerRow === rowBytes) {
+            device.queue.writeTexture({ texture: tex, mipLevel: 0, origin: { x: x | 0, y: y | 0, z: 0 } }, bytes, { offset: 0, bytesPerRow, rowsPerImage: hb }, { width: w, height: h, depthOrArrayLayers: 1 });
+        }
+        else {
+            // 行字节需 256 对齐：补一帧带 padding 的中间缓冲（逐行拷贝），再整张写入。
+            const padded = new Uint8Array(bytesPerRow * hb);
+            for (let r = 0; r < hb; r++) {
+                padded.set(bytes.subarray(r * rowBytes, (r + 1) * rowBytes), r * bytesPerRow);
+            }
+            device.queue.writeTexture({ texture: tex, mipLevel: 0, origin: { x: x | 0, y: y | 0, z: 0 } }, padded, { offset: 0, bytesPerRow, rowsPerImage: hb }, { width: w, height: h, depthOrArrayLayers: 1 });
+        }
+        return;
+    }
     if (fmt !== 'rgba8unorm' && fmt !== 'bgra8unorm') {
-        console.warn('[webgpu] uploadTexture 当前按 rgba8 假设处理，收到格式: ' + fmt);
+        console.warn('[webgpu] uploadTexture 收到未知格式，按 rgba8 假设处理: ' + fmt);
     }
     const bytesPerRow = w * 4;
     // WebGPU 硬规定：多行 writeTexture 的 bytesPerRow 必须 256 字节对齐，否则整次写入静默失败。

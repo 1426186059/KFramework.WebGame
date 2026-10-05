@@ -3,6 +3,8 @@
     public enum ContentAssetType
     {
         Texture,
-        Text
+        Text,
+        Audio,
+        Video,
     }
 }

@@ -22,15 +22,16 @@ namespace KFramework.Content.Cli
         /// <summary>
         /// 枚举 <paramref name="bundlesRoot"/> 下的所有 Bundle。
         /// <paramref name="rawDirectory"/> 仅用于把文件路径换算成相对路径（资源名/包名都基于此计算）。
+        /// 每个 Bundle 返回：包名、相对 raw 的完整源目录（<c>FullDir</c>）、其直接归属的文件列表。
         /// </summary>
-        public static IEnumerable<(string BundleName, string[] Files)> Enumerate(
+        public static IEnumerable<(string BundleName, string FullDir, string[] Files)> Enumerate(
             string bundlesRoot, string rawDirectory, BundleSplitMode mode)
         {
             if (mode == BundleSplitMode.Whole)
             {
                 string[] files = EnumerateAll(bundlesRoot, rawDirectory).ToArray();
                 if (files.Length > 0)
-                    yield return (RootBundleName(bundlesRoot, rawDirectory), files);
+                    yield return (RootBundleName(bundlesRoot, rawDirectory), RelativeDir(rawDirectory, bundlesRoot), files);
                 yield break;
             }
 
@@ -38,7 +39,7 @@ namespace KFramework.Content.Cli
             string rootName = RootBundleName(bundlesRoot, rawDirectory);
             string[] rootFiles = DirectFiles(bundlesRoot, rawDirectory).ToArray();
             if (rootFiles.Length > 0)
-                yield return (rootName, rootFiles);
+                yield return (rootName, RelativeDir(rawDirectory, bundlesRoot), rootFiles);
 
             foreach (string folder in Directory.EnumerateDirectories(bundlesRoot, "*", SearchOption.AllDirectories)
                          .OrderBy(f => f, StringComparer.Ordinal))
@@ -47,8 +48,16 @@ namespace KFramework.Content.Cli
                 if (files.Length == 0) continue;
                 yield return (
                     AssetName.Normalize(Path.GetRelativePath(rawDirectory, folder).Replace('\\', '/')),
+                    RelativeDir(rawDirectory, folder),
                     files);
             }
+        }
+
+        /// <summary>把 <paramref name="dir"/> 换算成相对 <paramref name="rawDirectory"/> 的目录路径（'/' 分隔）；dir 即 raw 根本身时返回空串。</summary>
+        private static string RelativeDir(string rawDirectory, string dir)
+        {
+            string rel = Path.GetRelativePath(rawDirectory, dir).Replace('\\', '/');
+            return rel == "." ? "" : rel;
         }
 
         /// <summary>根目录对应的包名：相对 raw 根目录的路径；空（raw 自身为根）时用 raw 最后一级文件夹名。</summary>

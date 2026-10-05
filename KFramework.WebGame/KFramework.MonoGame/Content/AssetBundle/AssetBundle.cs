@@ -148,7 +148,7 @@ namespace KFramework.MonoGame
         {
             foreach (var e in Content.Entries)
             {
-                if (!string.Equals(e.Type, "texture", StringComparison.OrdinalIgnoreCase))
+                if (e.Type != ContentAssetType.Texture)
                 {
                     continue;
                 }

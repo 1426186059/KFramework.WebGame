@@ -56,13 +56,9 @@ namespace KFramework.Content.Cli
             try
             {
                 var builder = new ContentBuilder();
-                BuildReport report = builder.Build(rawDir, new BuildOptions
-                {
-                    AtlasMaxSize = 2048,
-                    WritePreviewPng = true,
-                    TextureSwitchTarget = BuildConfigResult.TextureSwitchTarget,
-                    BasisuPath = BuildConfigResult.BasisuPathFull,
-                });
+                BuildOptions.AtlasMaxSize = 2048;
+                BuildOptions.WritePreviewPng = true;
+                BuildReport report = builder.Build(rawDir);
 
                 PrintTool.Log($"[kfc] raw     : {rawDir}");
                 PrintTool.Log($"[kfc] content : {report.OutputDirectory}");

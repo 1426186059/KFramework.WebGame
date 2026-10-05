@@ -18,29 +18,21 @@ namespace KFramework.Content.Cli
     public static class BundleBaker
     {
         public static AssetBundleBuild BuildBundle(
-            string bundleName, 
-            string[] files, 
+            string bundleName,
+            string fullDir,
+            string[] files,
             string assetBaseDir,
-            BuildOptions options, 
             bool autoAtlas,
-            List<string> warnings, 
-            ref long rawBytes, 
-            ref int textureCount, 
-            ref int dataCount, 
-            ref int atlasPageCount,
-            string tempDirectory)
+            List<string> warnings,
+            ref long rawBytes,
+            ref int textureCount,
+            ref int dataCount,
+            ref int atlasPageCount)
         {
-            //剩余可用的文件资源列表
+            //剩余可用的文件资源列表（BuildAtlas 会从中抽出纹理并移除，避免主流程重复导入）
             List<string> remainAssetPathList = new List<string>(files);
-            //预扫描所有资源，收集已切图集的整页图(不再自动装箱)
 
-            if (BuildConfigResult.AutoAtlas)
-            {
-                AtlasBuilder.BuildAtlas(remainAssetPathList, options);
-            }
-
-            List<SpriteInput> inputs = new List<SpriteInput>();
-            AssetBundleBuild bundle = new AssetBundleBuild { AssetBundleName = bundleName };
+            AssetBundleBuild bundle = new AssetBundleBuild { AssetBundleName = bundleName, FullDir = fullDir };
             HashSet<string> names = new HashSet<string>(StringComparer.Ordinal);
             HashSet<string> atlasPageRelatives = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -90,7 +82,7 @@ namespace KFramework.Content.Cli
                         bundle.Assets.Add(new AssetBundleAsset
                         {
                             Path = name,
-                            Type = "atlas",
+                            Type = ContentAssetType.Text,
                             Bytes = bytes,
                         });
                         dataCount++;
@@ -106,11 +98,11 @@ namespace KFramework.Content.Cli
                             warnings.Add($"解码纹理失败：{relative}");
                             continue;
                         }
-                        (byte[] encoded, ContentTextureDataFormat fmt) = EncodeTexture(skImage, bytes, relative, options);
+                        (byte[] encoded, ContentTextureDataFormat fmt) = EncodeTexture(skImage, bytes, relative);
                         bundle.Assets.Add(new AssetBundleAsset
                         {
                             Path = name,
-                            Type = "texture",
+                            Type = ContentAssetType.Texture,
                             Bytes = encoded,
                             Width = skImage.Width,
                             Height = skImage.Height,
@@ -123,41 +115,37 @@ namespace KFramework.Content.Cli
 
                     if (Global.supportTextureFileType.Contains(Path.GetExtension(relative)))
                     {
+                        // 自动装箱模式：散图交给 AtlasBuilder 从 remainAssetPathList 抽取并装箱，主循环跳过
+                        if (autoAtlas)
+                            continue;
+
                         SKBitmap skImage = DecodeToRgba(bytes);
                         if (skImage is null)
                         {
                             warnings.Add($"解码纹理失败：{relative}");
                             continue;
                         }
-                        if (autoAtlas)
+                        // 不装箱：整图原样入包，按 BuildOptions.TextureFormat 编码（与已切图集整页图同一编码路径）。
+                        (byte[] encoded, ContentTextureDataFormat fmt) = EncodeTexture(skImage, bytes, relative);
+                        bundle.Assets.Add(new AssetBundleAsset
                         {
-                            if (options.TrimSprites) skImage = Trim(skImage);
-                            inputs.Add(new SpriteInput(name, skImage));
-                        }
-                        else
-                        {
-                            // 不装箱：整图原样入包，按 BuildOptions.TextureFormat 编码（与已切图集整页图同一编码路径）。
-                            (byte[] encoded, ContentTextureDataFormat fmt) = EncodeTexture(skImage, bytes, relative, options);
-                            bundle.Assets.Add(new AssetBundleAsset
-                            {
-                                Path = name,
-                                Type = "texture",
-                                Bytes = encoded,
-                                Width = skImage.Width,
-                                Height = skImage.Height,
-                                Format = fmt,
-                            });
-                            skImage.Dispose();
-                        }
+                            Path = name,
+                            Type = ContentAssetType.Texture,
+                            Bytes = encoded,
+                            Width = skImage.Width,
+                            Height = skImage.Height,
+                            Format = fmt,
+                        });
+                        skImage.Dispose();
                         textureCount++;
                     }
                     else
                     {
-                        // 文本 / JSON / 音效 / 任意字节 —— 全部原样作为 Bundle 内资源
+                        // 文本 / JSON / 音效 / 视频 / 任意字节 —— 按扩展名归类为 Audio / Video / Text，原样作为 Bundle 内资源
                         bundle.Assets.Add(new AssetBundleAsset
                         {
                             Path = name,
-                            Type = MimeOf(relative),
+                            Type = AssetTypeOf(relative),
                             Bytes = bytes,
                         });
                         dataCount++;
@@ -169,61 +157,14 @@ namespace KFramework.Content.Cli
                 }
             }
 
-            // 仅当存在需要自动装箱的散图时才生成 atlas.json；已切好的 .atlas 图集不参与此处打包（前述预扫描已原样入库）。
-            if (inputs.Count > 0)
+            // 自动装箱模式：把 remainAssetPathList 中剩余的散图交给 AtlasBuilder 抽取并装箱；
+            // 已切好的 .atlas 图集不参与此处打包（前述已在主流程原样入库）。
+            if (autoAtlas)
             {
-                JsonArray allPages = AtlasBuilder.BuildAtlas(bundle, inputs, options, bundleName, tempDirectory, ref atlasPageCount);
-                if (allPages.Count > 0)
-                {
-                    var rootNode = new JsonObject { ["Pages"] = allPages };
-                    bundle.Assets.Add(new AssetBundleAsset
-                    {
-                        // 图集描述 JSON 的路径按 raw 根目录计算，保留 .json 后缀（如 myres/atlas/atlas.json），与包内其它资源名保持一致
-                        Path = Path.Combine(bundleName, "atlas.json").Replace('\\', '/'),
-                        Type = "atlas",
-                        Bytes = Encoding.UTF8.GetBytes(rootNode.ToJsonString()),
-                    });
-                }
+                AtlasBuilder.BuildAtlas(bundle, remainAssetPathList);
             }
 
             return bundle;
-        }
-
-        /// <summary>裁掉四周完全透明的行列，减小图集占用（替代原 Bitmap.Trim）。</summary>
-        private static SKBitmap Trim(SKBitmap bmp)
-        {
-            using var pixmap = bmp.PeekPixels();
-            ReadOnlySpan<byte> span = pixmap.GetPixelSpan();
-            int w = bmp.Width, h = bmp.Height;
-            int rowBytes = pixmap.RowBytes;
-            int left = w, top = h, right = -1, bottom = -1;
-
-            for (int y = 0; y < h; y++)
-            {
-                int row = y * rowBytes;
-                for (int x = 0; x < w; x++)
-                {
-                    if (span[row + x * 4 + 3] != 0)
-                    {
-                        if (x < left) left = x;
-                        if (x > right) right = x;
-                        if (y < top) top = y;
-                        if (y > bottom) bottom = y;
-                    }
-                }
-            }
-
-            if (right < left)
-            {
-                bmp.Dispose();
-                return new SKBitmap(1, 1);
-            }
-
-            int tw = right - left + 1, th = bottom - top + 1;
-            var trimmed = new SKBitmap(tw, th, SKColorType.Rgba8888, SKAlphaType.Unpremul);
-            bmp.ExtractSubset(trimmed, new SKRectI(left, top, left + tw, top + th));
-            bmp.Dispose();
-            return trimmed;
         }
 
         /// <summary>把任意图片字节解码并规范化为「Rgba8888」位图。
@@ -283,9 +224,9 @@ namespace KFramework.Content.Cli
         ///   <item><see cref="ContentTextureSwitchTarget.Rgba"/> / <see cref="ContentTextureSwitchTarget.Webp"/>：直接编码为对应 <see cref="ContentTextureDataFormat"/>，无尺寸限制。</item>
         /// </list></summary>
         private static (byte[] Bytes, ContentTextureDataFormat Format) EncodeTexture(
-            SKBitmap skImage, byte[] originalBytes, string relative, BuildOptions options)
+            SKBitmap skImage, byte[] originalBytes, string relative)
         {
-            if (options.TextureSwitchTarget == ContentTextureSwitchTarget.None)
+            if (BuildConfigResult.TextureSwitchTarget == ContentTextureSwitchTarget.None)
             {
                 ContentTextureDataFormat cpu = ContentTextureDataFormatHelper.FromExtension(relative);
                 (ContentTextureDataFormat stored, bool keepBytes) = cpu.ToStored();
@@ -294,9 +235,9 @@ namespace KFramework.Content.Cli
                 return (outBytes, stored);
             }
 
-            if (options.TextureSwitchTarget != ContentTextureSwitchTarget.Ktx2)
+            if (BuildConfigResult.TextureSwitchTarget != ContentTextureSwitchTarget.Ktx2)
             {
-                ContentTextureDataFormat fmt = options.TextureSwitchTarget switch
+                ContentTextureDataFormat fmt = BuildConfigResult.TextureSwitchTarget switch
                 {
                     ContentTextureSwitchTarget.Rgba => ContentTextureDataFormat.Rgba,
                     ContentTextureSwitchTarget.Webp => ContentTextureDataFormat.Webp,
@@ -315,63 +256,11 @@ namespace KFramework.Content.Cli
             if (IsSuitableForKtx2(skImage.Width, skImage.Height))
             {
                 PrintTool.Log($"[kfc] KTX2 适配检查 {relative} {skImage.Width}x{skImage.Height}：适合（宽高均为 4 倍数），编码为 KTX2");
-                return (EncodeKtx2(skImage, options.BasisuPath, options.Ktx2Quality), ContentTextureDataFormat.Ktx2);
+                return (EncodeKtx2(skImage, BuildConfigResult.BasisuPathFull, BuildOptions.Ktx2Quality), ContentTextureDataFormat.Ktx2);
             }
 
             PrintTool.Log($"[kfc] KTX2 适配检查 {relative} {skImage.Width}x{skImage.Height}：不适合（宽高非 4 倍数），回退为 Webp");
             return (EncodeWebp(skImage), ContentTextureDataFormat.Webp);
-        }
-
-        /// <summary>RGBA8 像素（行优先 W*H*4）版本：供图集页复用。图集页为烘焙产物、无原图。
-        /// <see cref="ContentTextureSwitchTarget.None"/> → 保留烘焙出的原始 RGBA 裸像素；
-        /// <see cref="ContentTextureSwitchTarget.Ktx2"/> 宽高皆 4 倍数 → KTX2，否则回退为 Webp；
-        /// <see cref="ContentTextureSwitchTarget.Rgba"/> / <see cref="ContentTextureSwitchTarget.Webp"/> 直接编码为对应 <see cref="ContentTextureDataFormat"/>。</summary>
-        internal static (byte[] Bytes, ContentTextureDataFormat Format) EncodeTexture(
-            int width, 
-            int height, 
-            byte[] oriData,
-            ContentTextureDataFormat oriFormat)
-        {
-            BuildOptions options = Global.mBuildOptions;
-            if (options.TextureSwitchTarget == ContentTextureSwitchTarget.None)
-            {
-                return (oriData, oriFormat);
-            }
-            else if (options.TextureSwitchTarget == ContentTextureSwitchTarget.Rgba)
-            {
-                var bmp = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
-                try
-                {
-                    using var pixmap = bmp.PeekPixels();
-                    Marshal.Copy(rgba, 0, pixmap.GetPixels(), rgba.Length);
-                    return EncodeWebp(bmp);
-                }
-                finally
-                {
-                    bmp.Dispose();
-                }
-            }
-            else if (options.TextureSwitchTarget == ContentTextureSwitchTarget.Webp)
-            {
-
-            }
-            else if (options.TextureSwitchTarget == ContentTextureSwitchTarget.Ktx2)
-            {
-                
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
-
-            if (IsSuitableForKtx2(width, height))
-            {
-                PrintTool.Log($"[kfc] KTX2 适配检查 {assetName} {width}x{height}：适合（宽高均为 4 倍数），编码为 KTX2");
-                return (EncodeKtx2FromRgba(rgba, width, height, options.BasisuPath, options.Ktx2Quality), ContentTextureDataFormat.Ktx2);
-            }
-
-            PrintTool.Log($"[kfc] KTX2 适配检查 {assetName} {width}x{height}：不适合（宽高非 4 倍数），回退为 Webp");
-            return (EncodeWebpFromRgba(rgba, width, height), ContentTextureDataFormat.Webp);
         }
 
         /// <summary>把 SKBitmap 编码为 PNG 字节（整图非装箱模式下 TextureFormat=Png 时使用）。</summary>
@@ -422,7 +311,6 @@ namespace KFramework.Content.Cli
 
 
 
-        /// <summary>构建产物、隐藏文件、content 输出目录都不属于原始资源；打包配置文件也不该进包。</summary>
         /// <summary>把 RGBA8 字节（行优先 W*H*4）编码为 KTX2（Basis Universal 超压缩）。</summary>
         /// <remarks>
         /// 经临时 PNG 调用 <c>basisu</c> 命令行编码为 KTX2（UASTC）：<c>basisu -file x.png -ktx2 -uastc -uastc_level &lt;q&gt; -mipmap -output_file y.ktx2</c>。需预先安装 Basis Universal 工具
@@ -472,7 +360,7 @@ namespace KFramework.Content.Cli
                 catch (Exception ex)
                 {
                     throw new InvalidOperationException(
-                        $"无法启动 basisu（{exe}）。请安装 Basis Universal 命令行工具并配置 BuildOptions.BasisuPath。原因：{ex.Message}");
+                        $"无法启动 basisu（{exe}）。请安装 Basis Universal 命令行工具并配置 BuildConfigResult.BasisuPathFull。原因：{ex.Message}");
                 }
 
                 string err = proc.StandardError.ReadToEnd();
@@ -509,16 +397,13 @@ namespace KFramework.Content.Cli
         private static string AssetNameOf(string relativePath)
             => AssetName.Normalize(relativePath);
 
-        /// <summary>按扩展名推断资源 MIME（仅作为包内元数据，不影响实际字节）。</summary>
-        private static string MimeOf(string relative)
+        /// <summary>按扩展名把资源归类为 Audio / Video / Text 之一（仅控制包内 Type 元数据，不影响实际字节）。</summary>
+        private static ContentAssetType AssetTypeOf(string relative)
         {
-            if (relative.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) return "json";
-            if (relative.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) ||
-                relative.EndsWith(".csv", StringComparison.OrdinalIgnoreCase)) return "text";
-            if (relative.EndsWith(".wav", StringComparison.OrdinalIgnoreCase)) return "audio/wav";
-            if (relative.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase)) return "audio/mpeg";
-            if (relative.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase)) return "audio/ogg";
-            return "application/octet-stream";
+            string ext = Path.GetExtension(relative);
+            if (Global.supportAudioFileType.Contains(ext)) return ContentAssetType.Audio;
+            if (Global.supportVideoFileType.Contains(ext)) return ContentAssetType.Video;
+            return ContentAssetType.Text;
         }
     }
 
