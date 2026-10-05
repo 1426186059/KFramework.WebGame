@@ -72,15 +72,19 @@ namespace KFramework.Content.Cli
 
         /// <summary>递归收集目录下全部资源文件（跳过忽略项）。</summary>
         private static IEnumerable<string> EnumerateAll(string dir, string rawDirectory)
-            => Directory.EnumerateFiles(dir, "*", SearchOption.AllDirectories)
+        {
+            return Directory.EnumerateFiles(dir, "*", SearchOption.AllDirectories)
                 .Where(f => !BundleBaker.IsIgnored(Path.GetRelativePath(rawDirectory, f).Replace('\\', '/')))
                 .OrderBy(f => f, StringComparer.Ordinal);
+        }
 
         /// <summary>只收集目录的「直接」资源文件（跳过忽略项与子目录）。</summary>
         private static IEnumerable<string> DirectFiles(string dir, string rawDirectory)
-            => Directory.EnumerateFiles(dir, "*", SearchOption.TopDirectoryOnly)
+        {
+            return Directory.EnumerateFiles(dir, "*", SearchOption.TopDirectoryOnly)
                 .Where(f => !BundleBaker.IsIgnored(Path.GetRelativePath(rawDirectory, f).Replace('\\', '/')))
                 .OrderBy(f => f, StringComparer.Ordinal);
+        }
     }
 
 }

@@ -14,7 +14,9 @@ namespace KFramework.Content.Cli
 
         /// <summary>判断给定路径是否为 BMFont 描述文件。</summary>
         public static bool IsFont(string path)
-            => path.EndsWith(".fnt", StringComparison.OrdinalIgnoreCase);
+        {
+            return path.EndsWith(".fnt", StringComparison.OrdinalIgnoreCase);
+        }
 
         /// <summary>
         /// 取 .fnt 引用的全部图集页文件名（<c>page id=0 file="xxx.png"</c>）。

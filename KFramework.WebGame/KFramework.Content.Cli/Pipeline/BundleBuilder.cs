@@ -112,8 +112,10 @@ namespace KFramework.Content.Cli
         }
 
         // 固定时间戳，保证相同内容产出逐字节一致的 zip（跨进程/跨次运行哈希稳定）
-        private static void PinTime(ZipArchiveEntry e) =>
+        private static void PinTime(ZipArchiveEntry e)
+        {
             e.LastWriteTime = new DateTimeOffset(1980, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        }
 
         private static string Sanitize(string name)
         {

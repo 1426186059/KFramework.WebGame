@@ -2,7 +2,6 @@ using KFramework.MonoGame;
 using KTexturePacker.Core;
 using SkiaSharp;
 using System.Text;
-using System.Text.Json.Nodes;
 
 namespace KFramework.Content.Cli
 {
@@ -107,10 +106,11 @@ namespace KFramework.Content.Cli
         }
 
         /// <summary>
-        /// 按 BuildConfigResult.TextureSwitchTarget 把图集页（无原图，仅 RGBA 像素）编码为目标格式：
+        /// 把图集页（无原图，仅 RGBA 像素）编码为目标格式，遵循统一 <see cref="BuildConfigResult.TextureSwitchTarget"/>：
         /// <list type="bullet">
-        ///   <item><see cref="ContentTextureSwitchTarget.None"/> / <see cref="ContentTextureSwitchTarget.Rgba"/>：保留烘焙出的原始 RGBA 裸像素。</item>
+        ///   <item><see cref="ContentTextureSwitchTarget.None"/>：未指定统一目标时，自动图集默认以 <b>Webp</b> 装箱（图集不保留裸 RGBA）。</item>
         ///   <item><see cref="ContentTextureSwitchTarget.Webp"/>：编码为 Webp。</item>
+        ///   <item><see cref="ContentTextureSwitchTarget.Rgba"/>：保留烘焙出的原始 RGBA 裸像素。</item>
         ///   <item><see cref="ContentTextureSwitchTarget.Ktx2"/>：宽高皆 4 倍数 → 编码为 KTX2，否则回退为 Webp。</item>
         /// </list>
         /// </summary>
@@ -118,7 +118,12 @@ namespace KFramework.Content.Cli
             AtlasPageOutput page)
         {
             byte[] rgba = page.RgbaPixels;
-            switch (BuildConfigResult.TextureSwitchTarget)
+            // 自动图集默认以 Webp 装箱；仅当统一目标显式指定 Rgba / Ktx2 / Webp 时才覆盖默认。
+            ContentTextureSwitchTarget target = BuildConfigResult.TextureSwitchTarget == ContentTextureSwitchTarget.None
+                ? ContentTextureSwitchTarget.Webp
+                : BuildConfigResult.TextureSwitchTarget;
+
+            switch (target)
             {
                 case ContentTextureSwitchTarget.Webp:
                     return (BundleBaker.EncodeWebpFromRgba(rgba, page.Width, page.Height), ContentTextureDataFormat.Webp);
@@ -129,7 +134,6 @@ namespace KFramework.Content.Cli
                     return (BundleBaker.EncodeWebpFromRgba(rgba, page.Width, page.Height), ContentTextureDataFormat.Webp);
 
                 case ContentTextureSwitchTarget.Rgba:
-                case ContentTextureSwitchTarget.None:
                 default:
                     return (rgba, ContentTextureDataFormat.Rgba);
             }

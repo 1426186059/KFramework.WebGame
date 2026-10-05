@@ -15,7 +15,10 @@ namespace KFramework.Content.Cli
         public TimeSpan Elapsed { get; init; }
         public IReadOnlyList<string> Warnings { get; init; } = Array.Empty<string>();
 
-        public double CompressionRatio => RawBytes <= 0 ? 0 : PackedBytes / (double)RawBytes;
+        public double CompressionRatio
+        {
+            get { return RawBytes <= 0 ? 0 : PackedBytes / (double)RawBytes; }
+        }
 
         public override string ToString()
         {

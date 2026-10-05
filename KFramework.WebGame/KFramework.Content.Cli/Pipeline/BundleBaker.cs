@@ -98,7 +98,7 @@ namespace KFramework.Content.Cli
                             warnings.Add($"解码纹理失败：{relative}");
                             continue;
                         }
-                        (byte[] encoded, ContentTextureDataFormat fmt) = EncodeTexture(skImage, bytes, relative);
+                        (byte[] encoded, ContentTextureDataFormat fmt) = EncodeTextureToTarget(bytes, ContentTextureDataFormatHelper.FromExtension(relative), relative);
                         bundle.Assets.Add(new AssetBundleAsset
                         {
                             Path = name,
@@ -126,7 +126,7 @@ namespace KFramework.Content.Cli
                             continue;
                         }
                         // 不装箱：整图原样入包，按 BuildOptions.TextureFormat 编码（与已切图集整页图同一编码路径）。
-                        (byte[] encoded, ContentTextureDataFormat fmt) = EncodeTexture(skImage, bytes, relative);
+                        (byte[] encoded, ContentTextureDataFormat fmt) = EncodeTextureToTarget(bytes, ContentTextureDataFormatHelper.FromExtension(relative), relative);
                         bundle.Assets.Add(new AssetBundleAsset
                         {
                             Path = name,
@@ -171,7 +171,7 @@ namespace KFramework.Content.Cli
         /// 关键点：
         /// 1) jpg/bmp 经 <see cref="SKBitmap.Decode"/> 后 AlphaType 常为 Unknown，下游 KTX2 编码会把它当全透明→黑图，这里强制为 Opaque（像素 alpha 写 255）；
         /// 2) 尺寸不做强制 pad：是否适合块压缩（KTX2/S3TC 等，要求宽高 4 的倍数）由 <see cref="IsSuitableForKtx2"/> 在编码阶段判断，
-        ///    不适合的纹理会在 <see cref="EncodeTexture"/> 中回退为 Png 等非压缩格式，而不是悄悄把尺寸改大（篡改纹理坐标）。</summary>
+        ///    不适合的纹理会在 <see cref="EncodeTextureToTarget"/> 中回退为 Png 等非压缩格式，而不是悄悄把尺寸改大（篡改纹理坐标）。</summary>
         private static SKBitmap DecodeToRgba(byte[] bytes)
         {
             SKBitmap src = SKBitmap.Decode(bytes);
@@ -215,41 +215,57 @@ namespace KFramework.Content.Cli
         /// 否则运行端无论转码成哪种压缩格式，都会因「基级尺寸非 4 倍数」而 glCompressedTexImage2D 失败（黑图）。
         /// 因此 <see cref="ContentTextureSwitchTarget.Ktx2"/> 仅对 <paramref name="width"/>/<paramref name="height"/> 都是 4 倍数的纹理适用。</summary>
         internal static bool IsSuitableForKtx2(int width, int height)
-            => (width & 3) == 0 && (height & 3) == 0;
+        {
+            return (width & 3) == 0 && (height & 3) == 0;
+        }
 
-        /// <summary>按 BuildOptions.TextureFormat 把整图纹理（来自磁盘原图）编码为目标格式字节 + 实际数据格式标记（整图纹理与已切图集整页图共用）。
+        /// <summary>按 BuildConfigResult.TextureSwitchTarget 把整图纹理（来自磁盘原图）编码为目标格式字节 + 实际数据格式标记（整图纹理与已切图集整页图共用）。
+        /// 入参为<b>源文件原始字节（原像素数据）</b>与<b>源图自身的 <see cref="ContentTextureDataFormat"/>（由扩展名推断）</b>：
         /// <list type="bullet">
         ///   <item><see cref="ContentTextureSwitchTarget.None"/>：不转码，按源图自身的 <see cref="ContentTextureDataFormat"/> 原样保留（png/webp/jpg… 直接存源文件字节）。</item>
         ///   <item><see cref="ContentTextureSwitchTarget.Ktx2"/>：宽高皆 4 倍数 → 编码为 KTX2；否则回退为 Webp。</item>
         ///   <item><see cref="ContentTextureSwitchTarget.Rgba"/> / <see cref="ContentTextureSwitchTarget.Webp"/>：直接编码为对应 <see cref="ContentTextureDataFormat"/>，无尺寸限制。</item>
         /// </list></summary>
-        private static (byte[] Bytes, ContentTextureDataFormat Format) EncodeTexture(
-            SKBitmap skImage, byte[] originalBytes, string relative)
+        private static (byte[] Bytes, ContentTextureDataFormat Format) EncodeTextureToTarget(
+            byte[] originalBytes, ContentTextureDataFormat sourceFormat, string relative)
         {
             if (BuildConfigResult.TextureSwitchTarget == ContentTextureSwitchTarget.None)
             {
-                ContentTextureDataFormat cpu = ContentTextureDataFormatHelper.FromExtension(relative);
-                (ContentTextureDataFormat stored, bool keepBytes) = cpu.ToStored();
-                PrintTool.Log($"[kfc] 纹理格式=None（原图处理） {relative} {skImage.Width}x{skImage.Height}：源图格式 {cpu} → 入库 {stored}");
-                byte[] outBytes = keepBytes ? originalBytes : GetPixels(skImage);
-                return (outBytes, stored);
+                return (originalBytes, sourceFormat);
             }
 
+            using var skImage = DecodeToRgba(originalBytes);
             if (BuildConfigResult.TextureSwitchTarget != ContentTextureSwitchTarget.Ktx2)
             {
-                ContentTextureDataFormat fmt = BuildConfigResult.TextureSwitchTarget switch
+                ContentTextureDataFormat fmt;
+                switch (BuildConfigResult.TextureSwitchTarget)
                 {
-                    ContentTextureSwitchTarget.Rgba => ContentTextureDataFormat.Rgba,
-                    ContentTextureSwitchTarget.Webp => ContentTextureDataFormat.Webp,
-                    _ => ContentTextureDataFormat.Rgba,
-                };
-                byte[] bytes = fmt switch
+                    case ContentTextureSwitchTarget.Rgba:
+                        fmt = ContentTextureDataFormat.Rgba;
+                        break;
+                    case ContentTextureSwitchTarget.Webp:
+                        fmt = ContentTextureDataFormat.Webp;
+                        break;
+                    default:
+                        fmt = ContentTextureDataFormat.Rgba;
+                        break;
+                }
+                byte[] bytes;
+                switch (fmt)
                 {
-                    ContentTextureDataFormat.Rgba => GetPixels(skImage),
-                    ContentTextureDataFormat.Webp => EncodeWebp(skImage),
-                    ContentTextureDataFormat.Png  => EncodePng(skImage),
-                    _ => GetPixels(skImage),
-                };
+                    case ContentTextureDataFormat.Rgba:
+                        bytes = GetPixels(skImage);
+                        break;
+                    case ContentTextureDataFormat.Webp:
+                        bytes = EncodeWebp(skImage);
+                        break;
+                    case ContentTextureDataFormat.Png:
+                        bytes = EncodePng(skImage);
+                        break;
+                    default:
+                        bytes = GetPixels(skImage);
+                        break;
+                }
                 return (bytes, fmt);
             }
 
@@ -395,7 +411,9 @@ namespace KFramework.Content.Cli
         /// <summary>文件路径 → 资源名：保留原始扩展名（如 .png/.json/.txt），仅小写化、统一用 / 分隔。
         /// 保留扩展名可让资源名携带更多类型信息，配合模糊/精确查找更易区分同名不同型的资源。</summary>
         private static string AssetNameOf(string relativePath)
-            => AssetName.Normalize(relativePath);
+        {
+            return AssetName.Normalize(relativePath);
+        }
 
         /// <summary>按扩展名把资源归类为 Audio / Video / Text 之一（仅控制包内 Type 元数据，不影响实际字节）。</summary>
         private static ContentAssetType AssetTypeOf(string relative)
