@@ -5,11 +5,6 @@
   "AssetBundleDir": [
     "Bundles"
   ],
-  "autoAtlas": false,
-  "splitMode": "folder",
   "textureFormat": "Ktx2",
-  "basisuPath": "../../Need_DLL/basisu.exe",
-  "deploy": "none",
-  "wwwDir": "www",
-  "port": 8080
+  "basisuPath": "../../Need_DLL/basisu.exe"
 }

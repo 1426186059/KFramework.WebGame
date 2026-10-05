@@ -17,6 +17,13 @@ namespace KFramework.Content.Build
     /// </summary>
     public static class BundleBaker
     {
+        /// <summary>被直接当「整图纹理」入包的图片扩展名；其余按原始字节入库。
+        /// 之前只认 .png，导致 .jpg/.webp 等被当普通字节流，运行端无法作为纹理加载（ImageTest 的 Bundle 区只显示 4 张图）。</summary>
+        private static readonly HashSet<string> s_imageExtensions = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif",
+        };
+
         public static AssetBundleBuild BuildBundle(
             string bundleName, string[] files, string assetBaseDir, ContentBuilder.BuildOptions options, bool autoAtlas,
             List<string> warnings, ref long rawBytes, ref int textureCount, ref int dataCount, ref int atlasPageCount,
@@ -131,7 +138,7 @@ namespace KFramework.Content.Build
                         continue;
                     }
 
-                    if (relative.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+                    if (s_imageExtensions.Contains(Path.GetExtension(relative)))
                     {
                         SKBitmap skImage = SKBitmap.Decode(bytes);
                         if (skImage is null)

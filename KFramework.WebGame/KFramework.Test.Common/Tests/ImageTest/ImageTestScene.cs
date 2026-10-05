@@ -61,7 +61,12 @@ namespace KFramework.Test.Common.Tests.ImageTest
 
         private float DrawItems(SpriteBatch batch, float x, float y, List<ImgItem> items)
         {
-            const float cell = 120f, size = 96f, rowH = 134f;
+            const float cell = 176f, size = 120f;
+            float lineH = Font.LineSpacing;
+            float labelDY = size + 6f;
+            float statusDY = labelDY + lineH + 2f;
+            // 行高 = 图 + label 行 + status 行 + 底部留白，确保下一行图不会压到本行 status 文字
+            float rowH = statusDY + lineH + 16f;
             float cx = x, cy = y;
             foreach (var it in items)
             {
@@ -73,13 +78,26 @@ namespace KFramework.Test.Common.Tests.ImageTest
                 var rect = new Rectangle((int)cx, (int)cy, (int)size, (int)size);
                 if (it.Tex != null) batch.Draw(it.Tex, rect, Color.White);
                 else DrawRect(batch, rect, new Color(120, 44, 44));
-                float ty = cy + size + 4f;
-                DrawLine(batch, Font, it.Label, new Vector2(cx, ty), Color.LightGray);
-                DrawLine(batch, Font, it.Status, new Vector2(cx, ty + 22f),
+                DrawLine(batch, Font, Fit(Font, it.Label, cell), new Vector2(cx, cy + labelDY), Color.LightGray);
+                DrawLine(batch, Font, Fit(Font, it.Status, cell), new Vector2(cx, cy + statusDY),
                     it.Tex != null ? new Color(130, 235, 150) : new Color(255, 150, 150));
                 cx += cell;
             }
             return (items.Count == 0 ? cy : cy + rowH);
+        }
+
+        /// <summary>把文本截断到 <paramref name="maxW"/> 像素宽（超出加省略号），避免单元格间文字横向重叠。</summary>
+        private static string Fit(IFont font, string text, float maxW)
+        {
+            if (string.IsNullOrEmpty(text) || font.Measure(text).X <= maxW) return text;
+            int lo = 0, hi = text.Length;
+            while (lo < hi)
+            {
+                int mid = (lo + hi + 1) >> 1;
+                if (font.Measure(text.Substring(0, mid) + "…").X <= maxW) lo = mid;
+                else hi = mid - 1;
+            }
+            return text.Substring(0, lo) + "…";
         }
 
         private async Task RunRemoteAsync()
