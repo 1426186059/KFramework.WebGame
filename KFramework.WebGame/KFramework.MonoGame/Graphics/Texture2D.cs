@@ -207,7 +207,7 @@ namespace KFramework.MonoGame
                 device.SetRenderTarget(rt);
                 device.Clear(Color.Transparent);
                 var batch = new SpriteBatch(device);
-                batch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp, Matrix4x4.Identity);
+                batch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp, transformMatrix: Matrix4x4.Identity);
                 batch.Draw(this, new Rectangle(0, 0, rect.Width, rect.Height), rect, Color.White);
                 batch.End();
 

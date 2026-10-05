@@ -14,7 +14,7 @@ namespace KFramework.MonoGame
         private Matrix4x4 _transform = Matrix4x4.Identity;
         private Matrix4x4 _projection;
         private Material _material = null!;
-        private readonly Material _cahce_Mat = new Material();
+        private readonly Material _cache_Mat = new Material();
 
         private bool _beginCalled;
 
@@ -33,24 +33,30 @@ namespace KFramework.MonoGame
         /// </summary>
         public void Begin(Material material, SpriteSortMode sortMode = SpriteSortMode.Deferred,
                           Matrix4x4? transformMatrix = null)
-            => BeginInternal(material, sortMode, transformMatrix);
+        {
+            BeginInternal(material, sortMode, transformMatrix);
+        }
 
         /// <summary>
-        /// 兼容旧签名的重载：把散装的 Blend / Sampler 状态包成一个默认材质（Effect 用设备默认精灵着色器）。
+        /// 兼容旧签名的重载：把散装的 Blend / Sampler / DepthStencil / Rasterizer 状态包成一个默认材质
+        /// （Effect 用设备默认精灵着色器）。参数对齐原版 MonoGame SpriteBatch.Begin 的散装签名。
         /// 新增代码建议直接用 <see cref="Begin(Material, SpriteSortMode, Matrix4x4?)"/>。
         /// </summary>
         public void Begin(SpriteSortMode sortMode = SpriteSortMode.Deferred,
                           BlendState? blendState = null,
                           SamplerState? samplerState = null,
+                          DepthStencilState? depthStencilState = null,
+                          RasterizerState? rasterizerState = null,
                           Matrix4x4? transformMatrix = null)
         {
-            _cahce_Mat.Reset();
-            _cahce_Mat.Effect = null;
-            _cahce_Mat.Blend = blendState ?? BlendState.NonPremultiplied;
-            _cahce_Mat.Sampler = samplerState ?? SamplerState.Point;
-            _cahce_Mat.DepthStencil = DepthStencilState.None;
-            _cahce_Mat.Rasterizer = RasterizerState.CullNone;
-            BeginInternal(material, sortMode, transformMatrix);
+            // 复用本批材质快照 _cache_Mat（避免每次 Begin 都 new），填好参数后交给 BeginInternal。
+            _cache_Mat.Reset();
+            _cache_Mat.Effect = null;
+            _cache_Mat.Blend = blendState ?? BlendState.NonPremultiplied;
+            _cache_Mat.Sampler = samplerState ?? SamplerState.Point;
+            _cache_Mat.DepthStencil = depthStencilState ?? DepthStencilState.None;
+            _cache_Mat.Rasterizer = rasterizerState ?? RasterizerState.CullNone;
+            BeginInternal(_cache_Mat, sortMode, transformMatrix);
         }
 
         private void BeginInternal(Material material, SpriteSortMode sortMode, Matrix4x4? transformMatrix)
