@@ -88,7 +88,9 @@ namespace KFramework.Content.Cli
                     if (atlasPageRelatives.Contains(relative))
                     {
                         (int w, int h) = GetImageDimensions(bytes);
-                        bundle.Assets.Add(EncodeRgbaToTarget(w, h, bytes, ContentTextureDataFormatHelper.FromExtension(relative)));
+                        AssetBundleAsset asset = EncodeRgbaToTarget(w, h, bytes, ContentTextureDataFormatHelper.FromExtension(relative));
+                        asset.Path = name;
+                        bundle.Assets.Add(asset);
                         textureCount++;
                         continue;
                     }
@@ -99,7 +101,9 @@ namespace KFramework.Content.Cli
                             continue;
 
                         (int w, int h) = GetImageDimensions(bytes);
-                        bundle.Assets.Add(EncodeRgbaToTarget(w, h, bytes, ContentTextureDataFormatHelper.FromExtension(relative)));
+                        AssetBundleAsset asset = EncodeRgbaToTarget(w, h, bytes, ContentTextureDataFormatHelper.FromExtension(relative));
+                        asset.Path = name;
+                        bundle.Assets.Add(asset);
                         textureCount++;
                     }
                     else

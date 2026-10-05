@@ -32,6 +32,7 @@ namespace KFramework.Content.Cli
             string outDirFull  = Path.GetFullPath(Path.Combine(root, config.OutDir));
             string tempDirFull = Path.GetFullPath(Path.Combine(root, config.TempDir));
 
+            config.BundleDirsResolved = config.AssetBundleDir ?? new List<string>();
             var bundleDirsFull = new List<string>();
             foreach (var d in config.BundleDirsResolved)
             {
