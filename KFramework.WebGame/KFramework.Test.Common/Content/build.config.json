@@ -7,7 +7,7 @@
   ],
   "autoAtlas": false,
   "BundleSplitMode": "Whole",
-  "TextureSwitchTarget": "None",
+  "TextureSwitchTarget": "Ktx2",
   "basisuPath": null,
   "copy_to_wwwroot": true
 }
