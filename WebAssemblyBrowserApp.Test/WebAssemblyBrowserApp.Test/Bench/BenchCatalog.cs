@@ -29,6 +29,9 @@ public static class BenchCatalog
         // MemoryView 在 JS 侧究竟有哪几种写法、每种是不是真动到托管内存 —— 不计时，只做行为探测。
         // 起因是"slice() 拿到的是零拷贝视图"这个猜测：副本还是视图，跑一遍就知道。
         new Bench_MemoryView(),
+        // 异步（await）期间 MemoryView 的内存会不会变：用「存视图 → 强制 GC 间隙 → 读回」的同步手段实测，
+        // 对比默认 Span（unpinned，调用结束即解除 pin）与 ArraySegment（pinned）两种。
+        new Bench_MemoryViewAsync(),
         // 另一条零拷贝路线：GCHandle 钉住数组 + 把裸地址交给 JS 建 TypedArray。
         // 前提是 JS 拿得到 WASM 的 memory.buffer —— .NET 不像 Emscripten 那样把堆挂全局，实测到底行不行。
         new Bench_HeapView(),

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MemoryView 异步内存稳定性 — WASM 互操作测试</title>
+  <link rel="preload" id="webassembly" />
+  <script type="importmap"></script>
+  <script type='module' src="main#[.{fingerprint}].js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>MemoryView 异步内存稳定性</h1>
+  <p class="muted">验证「异步（await）期间 MemoryView 的内存会不会变」：C# 把已知内容（<b>i*7</b>）的
+    <code>byte[64]</code> 交给 JS 存下，再（实验组）<b>真等 3 秒 + 强制 GC</b>（模拟真实 await 把控制权交还事件循环的时间窗），
+    让 JS 把视图读回来，<b>C# 比对字节</b>。对比 <b>unpinned(Span)</b> 与 <b>pinned(ArraySegment)</b> 两种；
+    另加「不 GC 立即读」对照，用来区分是「调用一返回就释放」还是「被 GC 搬走才失效」。实测结论：
+    <b>unpinned 在调用结束即抛 ObjectDisposedException</b>（活不过一次调用，更别提跨 await），
+    <b>pinned 则钉住不变</b>。进入本页会自动开始运行。</p>
+
+  <div class="bar">
+    <a class="btn" href="index.html">← 返回总纲</a>
+    <button id="runAll">运行全部测试</button>
+    <span id="status">加载中...</span>
+  </div>
+
+  <div id="results"><i>loading...</i></div>
+</body>
+
+</html>
