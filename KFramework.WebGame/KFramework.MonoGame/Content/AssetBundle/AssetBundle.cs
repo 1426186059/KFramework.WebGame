@@ -124,82 +124,53 @@ namespace KFramework.MonoGame
         /// <remarks>解码已在 <see cref="DecodeTexturesAsync"/>（LoadBundle 异步阶段）完成并缓存；此处仅做 GPU 上传。</remarks>
         public Texture2D LoadTexture(string name, GraphicsDevice device, bool strict = true)
         {
-            AssetBundleEntry? info = GetAssetInfo(name, strict)
-                ?? throw new KeyNotFoundException($"资源不存在: {name}");
-            if (info.Page >= 0)
-                throw new InvalidOperationException(
-                    $"资源「{name}」是旧格式的子图条目，请改用 SpriteSheetLoader 加载图集（整页纹理 + source rect）。");
-            if (info.Format == ContentTextureDataFormat.Ktx2)
+            AssetBundleEntry? info = GetAssetInfo(name, strict);
+            if (info == null)
             {
-                // 解包阶段已转码为压缩字节并缓存；此处才上传 GPU（与 Png/Webp/Rgba 同一上传路径）。
-                if (!_decodedTextures.TryGetValue(info.Path, out var decodedKtx2))
-                    throw new InvalidOperationException(
-                        $"资源「{name}」为 KTX2（GPU 压缩纹理）：需在 LoadBundleAsync 阶段先经 DecodeTexturesAsync 预转码，再于 LoadTexture 上传 GPU。");
-                int w = info.Width, h = info.Height;
-                if (w <= 0 || h <= 0)
-                    throw new InvalidOperationException($"纹理 “{name}” 缺少像素尺寸，无法上传 GPU。");
-                // RGBA32 回退（GlFormat == RGBA8）走普通 RGBA8 上传；其余走压缩纹理上传。
-                return device.CreateTexture(w, h, decodedKtx2.Data, decodedKtx2.GlFormat);
+                throw new KeyNotFoundException($"资源不存在: {name}");
             }
 
-            // 优先用加载阶段预解码的缓存；未命中（如直接 LoadFromMemory 而未调 DecodeTexturesAsync）则按格式兜底解码。
-            // 缓存键用真实路径（info.Path），严格/宽松模式下 name 可能只是关键字。
-            string path = info.Path;
-            if (!_decodedTextures.TryGetValue(path, out var decoded))
-                decoded = new DecodedTexture(DecodeEntryPixels(path, info), SurfaceFormat.Color);
+            if (!_decodedTextures.TryGetValue(info.Path, out var decodedKtx2))
+            {
+                throw new InvalidOperationException(
+                    $"资源「{name}」需在 LoadBundleAsync 阶段先经 DecodeTexturesAsync 预转码");
+            }
 
-            int width = info.Width;
-            int height = info.Height;
-            if (width <= 0 || height <= 0)
+            int w = info.Width, h = info.Height;
+            if (w <= 0 || h <= 0)
+            {
                 throw new InvalidOperationException($"纹理 “{name}” 缺少像素尺寸，无法上传 GPU。");
-            return device.CreateTexture(width, height, decoded.Data);
+            }
+            return device.CreateTexture(w, h, decodedKtx2.Data, decodedKtx2.GlFormat);
         }
-
-        // ============ 加载阶段异步解码（对齐 PixiJS：bundle 拉取/解包/解码异步，取资源同步） ============
-        // 把需要解码的纹理（如 Png）在 LoadBundleAsync 阶段提前解码为 RGBA8 并缓存，
-        // 使 LoadTexture 只负责 GPU 上传、不再做图像解码。解码本身为 CPU 同步（WASM 单线程），
-        // 但被安排在异步加载阶段完成，逐资源取用时保持同步、零解码。Rgba 格式本身已是像素，无需预解码。
-
-        /// <summary>
-        /// 在包已驻留内存后、取资源之前，把需要解码的纹理（Png / Webp / Jpg / Bmp / Gif / Tiff 等 CPU 格式 / Ktx2）提前解码/转码为字节并缓存；
-        /// GPU 上统一推迟到 <see cref="LoadTexture"/>（KTX2 走 CreateTexture 压缩格式重载，其余走 CreateTexture 的 RGBA8 路径）。
-        /// KTX2 在此阶段借浏览器 Basis 转码器转码为设备原生压缩字节并缓存（目标格式由全局 WebGL2 上下文的扩展支持度决定，无需传入 <see cref="GraphicsDevice"/>）；
-        /// 真正的 GPU 上传由 <see cref="LoadTexture"/> 完成，使四种格式取用逻辑一致（避免一次性把所有纹理灌进显存）。
-        /// </summary>
-        /// <remarks>
-        /// Rgba 本身已是像素，直接上传无需预解码；Png / Webp 均无托管解码器，统一借浏览器原生
-        /// <c>createImageBitmap</c> 异步解码（WASM/浏览器目标），需清单中的宽高来预分配像素缓冲。
-        /// KTX2 的转码需要 GL 上下文（用于选择目标压缩格式），故须在游戏初始化、GL 上下文就绪后再加载包；上传 GPU 仍在 <see cref="LoadTexture"/>。
-        /// </remarks>
+        
         public async Task DecodeTexturesAsync()
         {
             foreach (var e in Content.Entries)
             {
-                if (!string.Equals(e.Type, "texture", StringComparison.OrdinalIgnoreCase)) continue;
-                if (e.Format == ContentTextureDataFormat.Rgba) continue;
+                if (!string.Equals(e.Type, "texture", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
 
-                // KTX2 是 GPU 压缩纹理：在解包阶段只做 CPU 转码（Basis 超压缩 → 设备原生压缩字节），
-                // 缓存为字节；真正的 GPU 上传推迟到 LoadTexture（与 Png/Webp/Rgba 同一模型），
-                // 这样未被实际引用的纹理不会占用显存。目标格式由全局 WebGL2 上下文扩展选择，无需传入 GraphicsDevice。
-                if (e.Format == ContentTextureDataFormat.Ktx2)
+                if (e.Format == ContentTextureDataFormat.Rgba)
+                {
+                    byte[] raw = LoadAsset(e.Path);
+                    _decodedTextures[e.Path] = new DecodedTexture(raw, SurfaceFormat.Color);
+                }
+                else if (e.Format == ContentTextureDataFormat.Ktx2)
                 {
                     int w = e.Width, h = e.Height;
                     if (w <= 0 || h <= 0)
                         throw new InvalidOperationException($"纹理 “{e.Path}” 缺少像素尺寸，无法转码 KTX2。");
                     byte[] raw = LoadAsset(e.Path);
                     (int basisFormat, SurfaceFormat glFormat) = Ktx2TranscodeSelector.Pick();
-                    // 仅转码为压缩字节（不上传 GPU），与 Png 解码为 RGBA8 一样缓存为 byte[]。
-                    // 按目标格式 + 尺寸在 C# 侧预分配输出缓冲（JSImport 不支持直接返回 byte[]）。
                     int size = Ktx2TranscodeSelector.GetTranscodedSize(glFormat, w, h);
                     byte[] compressed = new byte[size];
                     await JSBind_Texture.TranscodeKtx2Into(raw, basisFormat, new ArraySegment<byte>(compressed)).ConfigureAwait(false);
                     _decodedTextures[e.Path] = new DecodedTexture(compressed, glFormat);
-                    continue;
                 }
-
-                // 其余 CPU 压缩 / 无压缩格式（Png / Webp / Jpg / Bmp / Gif / Tiff 等）：均无托管解码器，
-                // 统一借浏览器原生 createImageBitmap 解码（清单已带宽高，用以预分配像素缓冲）。
-                if (e.Format != ContentTextureDataFormat.Ktx2)
+                else
                 {
                     int w = e.Width, h = e.Height;
                     if (w <= 0 || h <= 0)
@@ -207,27 +178,11 @@ namespace KFramework.MonoGame
                     byte[] raw = LoadAsset(e.Path);
                     var pixels = new byte[w * h * 4];
                     var size = new int[2];
-                    // 已知尺寸：直接解码进预分配缓冲（MemoryView 零拷贝写入），返回成功与否。
                     if (!await JSBind_Texture.DecodeImageToRgbaAsync2(new ArraySegment<byte>(raw), new ArraySegment<int>(size), new ArraySegment<byte>(pixels)).ConfigureAwait(false))
                         throw new InvalidOperationException($"纹理 “{e.Path}” 解码失败。");
                     _decodedTextures[e.Path] = new DecodedTexture(pixels, SurfaceFormat.Color);
-                    continue;
                 }
             }
-        }
-
-        /// <summary>按条目声明的格式把包内纹理字节解码为 RGBA8（供预解码缓存与 LoadTexture 兜底共用）。</summary>
-        private byte[] DecodeEntryPixels(string name, AssetBundleEntry e)
-        {
-            byte[] raw = LoadAsset(name);
-            return e.Format switch
-            {
-                ContentTextureDataFormat.Rgba => raw,
-                ContentTextureDataFormat.Ktx2 => throw new NotSupportedException(
-                    $"纹理 “{name}” 为 KTX2（GPU 压缩纹理）：请在 LoadBundleAsync 阶段先经 DecodeTexturesAsync 预解码，不要走同步兜底。"),
-                _ => throw new InvalidOperationException(
-                    $"纹理 “{name}” 为 {e.Format}：必须在 LoadBundleAsync 阶段（DecodeTexturesAsync）经浏览器原生解码，请先调用 LoadBundleAsync，不要走同步兜底。"),
-            };
         }
 
         /// <summary>同步尝试取一张纹理；找不到返回 false。

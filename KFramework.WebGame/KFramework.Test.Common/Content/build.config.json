@@ -6,10 +6,8 @@
     "Bundles"
   ],
   "autoAtlas": false,
-  "splitMode": "whole",
+  "BundleSplitMode": "whole",
   "TextureSwitchTarget": "Webp",
   "basisuPath": null,
-  "deploy": "none",
-  "wwwDir": "www",
-  "port": 8080
+  "copy_to_wwwroot": true
 }

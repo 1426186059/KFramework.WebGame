@@ -16,6 +16,39 @@ function sourceBytes(view: MemoryView_ArraySegment | Uint8Array): Uint8Array {
     return new Uint8Array(sliced.buffer, sliced.byteOffset, sliced.byteLength);
 }
 
+// 从 magic 字节推断图像 MIME 类型。
+// 关键：createImageBitmap 对「无 type 的 Blob」在部分浏览器（尤其 WebP）无法嗅探而抛异常，
+// 显式设置 type 可保证解码成功；否则统一在 catch 中返回「解码失败」。
+function mimeFromBytes(b: Uint8Array): string {
+    if (b.length >= 8 &&
+        b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4E && b[3] === 0x47 &&
+        b[4] === 0x0D && b[5] === 0x0A && b[6] === 0x1A && b[7] === 0x0A) {
+        return 'image/png';
+    }
+    if (b.length >= 3 && b[0] === 0xFF && b[1] === 0xD8 && b[2] === 0xFF) {
+        return 'image/jpeg';
+    }
+    if (b.length >= 12 && b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 &&
+        b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50) {
+        return 'image/webp';
+    }
+    if (b.length >= 6 &&
+        b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46 &&
+        b[3] === 0x38 && (b[4] === 0x37 || b[4] === 0x39) && b[5] === 0x61) {
+        return 'image/gif';
+    }
+    if (b.length >= 2 && b[0] === 0x42 && b[1] === 0x4D) {
+        return 'image/bmp';
+    }
+    // TIFF：小端 "II*\0" 或大端 "MM\0*"
+    if (b.length >= 4 &&
+        ((b[0] === 0x49 && b[1] === 0x49 && b[2] === 0x2A && b[3] === 0x00) ||
+         (b[0] === 0x4D && b[1] === 0x4D && b[2] === 0x00 && b[3] === 0x2A))) {
+        return 'image/tiff';
+    }
+    return '';
+}
+
 // 未知尺寸解码的像素缓存：decodeImageToRgbaAsync1 入缓存，getImageData 取回后清空。
 let _lastDecoded: { width: number; height: number; data: Uint8Array } | null = null;
 
@@ -29,7 +62,8 @@ export async function decodeImageToRgbaAsync1(
     bytes: MemoryView_ArraySegment | Uint8Array,
 ): Promise<number> {
     try {
-        const blob = new Blob([sourceBytes(bytes) as BlobPart]);
+        const raw = sourceBytes(bytes) as Uint8Array;
+        const blob = new Blob([raw as BlobPart], { type: mimeFromBytes(raw) });
         const bitmap = await createImageBitmap(blob);
         const w = bitmap.width, h = bitmap.height;
         // 断言：宽高均不得大于 short 的最大值（32767），即 ≤ 32767；否则 (w<<16)|h 打包会失真/越界。
@@ -63,7 +97,8 @@ export async function decodeImageToRgbaAsync2(
     outPixels: MemoryView_ArraySegment | Uint8Array,
 ): Promise<boolean> {
     try {
-        const blob = new Blob([sourceBytes(bytes) as BlobPart]);
+        const raw = sourceBytes(bytes) as Uint8Array;
+        const blob = new Blob([raw as BlobPart], { type: mimeFromBytes(raw) });
         const bitmap = await createImageBitmap(blob);
         const w = bitmap.width, h = bitmap.height;
         const cv = document.createElement('canvas');
