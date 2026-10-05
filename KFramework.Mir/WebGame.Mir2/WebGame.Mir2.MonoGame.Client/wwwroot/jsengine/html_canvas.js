@@ -1,3 +1,4 @@
+import { assert } from './cusotm_func.js';
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_HTML_Canvas 经 [JSImport(module: "canvas")] 调用；产物 html_canvas.js 由 SyncJsEngine 复制。
 // 画布元素管理层（HTML5 <canvas>）：创建、设置位置与尺寸、删除，以及「页面里没有画布时自动建一块全屏默认画布」。
 //
@@ -186,7 +187,7 @@ export function focusCanvas(focus = true) {
 }
 export function IsFocus() {
     const c = getCanvas();
-    console.assert(c != null, "canvas == null");
+    assert(c != null, "canvas == null");
     return document.activeElement === c;
 }
 export function SyncJSCanvasInfo(view) {

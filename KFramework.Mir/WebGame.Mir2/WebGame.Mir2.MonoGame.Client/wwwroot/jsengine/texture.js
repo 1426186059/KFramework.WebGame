@@ -1,5 +1,6 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Texture 经 [JSImport(module: "texture")] 调用（含 KTX2/Basis 转码）；产物 texture.js 由 SyncJsEngine 复制。
 import { sharedBytesOf } from './custom_data_byte_cache.js';
+import { assert } from './cusotm_func.js';
 // 取图像源字节：优先【零拷贝】拿共享托管内存的视图；拿不到才退回 slice() 拷一份。
 //
 // 为什么这里敢用共享视图：new Blob(...) 是【同步读取】的 —— 数据在 Blob 构造函数返回前
@@ -13,18 +14,54 @@ function sourceBytes(view) {
     const sliced = view.slice();
     return new Uint8Array(sliced.buffer, sliced.byteOffset, sliced.byteLength);
 }
+// 从 magic 字节推断图像 MIME 类型。
+// 关键：createImageBitmap 对「无 type 的 Blob」在部分浏览器（尤其 WebP）无法嗅探而抛异常，
+// 显式设置 type 可保证解码成功；若真失败，catch 会打印真实异常（不再静默 return）。
+function mimeFromBytes(b) {
+    if (b.length >= 8 &&
+        b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4E && b[3] === 0x47 &&
+        b[4] === 0x0D && b[5] === 0x0A && b[6] === 0x1A && b[7] === 0x0A) {
+        return 'image/png';
+    }
+    if (b.length >= 3 && b[0] === 0xFF && b[1] === 0xD8 && b[2] === 0xFF) {
+        return 'image/jpeg';
+    }
+    if (b.length >= 12 && b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 &&
+        b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50) {
+        return 'image/webp';
+    }
+    if (b.length >= 6 &&
+        b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46 &&
+        b[3] === 0x38 && (b[4] === 0x37 || b[4] === 0x39) && b[5] === 0x61) {
+        return 'image/gif';
+    }
+    if (b.length >= 2 && b[0] === 0x42 && b[1] === 0x4D) {
+        return 'image/bmp';
+    }
+    // TIFF：小端 "II*\0" 或大端 "MM\0*"
+    if (b.length >= 4 &&
+        ((b[0] === 0x49 && b[1] === 0x49 && b[2] === 0x2A && b[3] === 0x00) ||
+            (b[0] === 0x4D && b[1] === 0x4D && b[2] === 0x00 && b[3] === 0x2A))) {
+        return 'image/tiff';
+    }
+    return '';
+}
 // 未知尺寸解码的像素缓存：decodeImageToRgbaAsync1 入缓存，getImageData 取回后清空。
 let _lastDecoded = null;
 // 纹理解码：借浏览器原生解码器把图像字节（PNG / WebP 等）解码为 RGBA8。
 // 因 WASM 无托管 WebP 解码器，统一走 createImageBitmap（浏览器原生，覆盖 Png / Webp）。
 // bytes 走 ArraySegment + MemoryView：C# 侧跨界（await createImageBitmap）时不再整块拷贝（理由见 JSBind_Texture 的注释）。
-// 未知尺寸（松散图片）：解码成功后把 RGBA8 像素暂存进 _lastDecoded 缓存，返回打包宽高的 int（width*65536+height）；
+// 未知尺寸（松散图片）：解码成功后把 RGBA8 像素暂存进 _lastDecoded 缓存，返回打包宽高的 int（(w << 16) | h：高 16 位宽、低 16 位高）；
 // 调用方解出宽高后，用 getImageData 取回像素。失败（解码失败）返回 -1，不抛。
 export async function decodeImageToRgbaAsync1(bytes) {
     try {
-        const blob = new Blob([sourceBytes(bytes)]);
+        const raw = sourceBytes(bytes);
+        const blob = new Blob([raw], { type: mimeFromBytes(raw) });
         const bitmap = await createImageBitmap(blob);
         const w = bitmap.width, h = bitmap.height;
+        // 断言：宽高均不得大于 short 的最大值（32767），即 ≤ 32767；否则 (w<<16)|h 打包会失真/越界。
+        // 用不依赖 console 的硬断言（throw），以免 Release 剥离 console 时把断言一并删掉。
+        assert(w <= 32767 && h <= 32767, `decodeImageToRgbaAsync1 尺寸越界：w=${w} h=${h}（须 ≤ 32767 / short.MaxValue）`);
         const cv = document.createElement('canvas');
         cv.width = w;
         cv.height = h;
@@ -35,10 +72,12 @@ export async function decodeImageToRgbaAsync1(bytes) {
             bitmap.close();
         // 未知尺寸：缓存像素，供 getImageData 取回
         _lastDecoded = { width: w, height: h, data: new Uint8Array(image) };
-        // 打包宽高：width*65536+height，两维均 ≤ 65535 时必然为非负 int；解码失败返回 -1。
-        return w * 65536 + h;
+        // 打包宽高：高 16 位存 w、低 16 位存 h，即 (w << 16) | h（每维 < 65536 时位不重叠；本函数断言已限制更严 < 32767）；解码失败返回 -1。
+        return (w << 16) | h;
     }
-    catch {
+    catch (e) {
+        // 不再静默 return -1：把真实异常（如 MemoryView.set 构造器不匹配）打到控制台，便于定位根因
+        console.error('[texture] decodeImageToRgbaAsync1 解码失败：', e);
         return -1;
     }
     finally {
@@ -50,7 +89,8 @@ export async function decodeImageToRgbaAsync1(bytes) {
 // 缓冲不足返回 false。失败（解码失败）返回 false，不抛。
 export async function decodeImageToRgbaAsync2(bytes, outSize, outPixels) {
     try {
-        const blob = new Blob([sourceBytes(bytes)]);
+        const raw = sourceBytes(bytes);
+        const blob = new Blob([raw], { type: mimeFromBytes(raw) });
         const bitmap = await createImageBitmap(blob);
         const w = bitmap.width, h = bitmap.height;
         const cv = document.createElement('canvas');
@@ -64,11 +104,18 @@ export async function decodeImageToRgbaAsync2(bytes, outSize, outPixels) {
         // 已知尺寸：直接写入预分配缓冲
         if (image.byteLength > outPixels.byteLength)
             return false;
-        outPixels.set(image, 0);
+        // image 是 Uint8ClampedArray（getImageData 返回），而 outPixels 是 ArraySegment<byte> 经
+        // JSType.MemoryView 传进来的 MemoryView（viewType=Uint8Array）。MemoryView.set 严格校验
+        // e.constructor === n.constructor，Uint8ClampedArray !== Uint8Array 会抛 "Assert failed" 被
+        // 外层 catch 吞掉返回 false，表现为"纹理解码失败"。故先转成 Uint8Array 再写。
+        outPixels.set(new Uint8Array(image), 0);
         outSize.set(new Int32Array([w, h]), 0);
         return true;
     }
-    catch {
+    catch (e) {
+        // 不再静默 return false：真实异常（如 MemoryView.set 构造器不匹配：Uint8ClampedArray !== Uint8Array）
+        // 必须打到控制台，否则 C# 侧只会看到一句误导性的"纹理解码失败"。
+        console.error('[texture] decodeImageToRgbaAsync2 解码失败：', e);
         return false;
     }
     finally {
@@ -108,7 +155,9 @@ async function loadBasis() {
     if (!factory)
         throw new Error('[ktx2] basis_transcoder.js 未暴露 BASIS 全局');
     const mod = await factory({
-        locateFile: (p) => new URL(p, import.meta.url).href,
+        // wasm 与 basis_transcoder.js 同目录（deps/ktx2/），必须相对 jsUrl 解析；
+        // 若相对 import.meta.url（本模块 texture.js 在 /jsengine/）会导致 wasm 404。
+        locateFile: (p) => new URL(p, jsUrl).href,
     });
     mod.initializeBasis();
     _basis = mod;

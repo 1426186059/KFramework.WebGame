@@ -7,7 +7,7 @@
   ],
   "autoAtlas": false,
   "BundleSplitMode": "Whole",
-  "TextureSwitchTarget": "Webp",
+  "TextureSwitchTarget": "Ktx2",
   "Ktx2ExePath": "D:\\OpenSource\\KFramework.WebGame\\KFramework.WebGame\\Need_DLL\\basisu.exe",
   "copy_to_wwwroot": true
 }
