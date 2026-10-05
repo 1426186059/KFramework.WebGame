@@ -16,7 +16,7 @@ function sourceBytes(view) {
 }
 // 从 magic 字节推断图像 MIME 类型。
 // 关键：createImageBitmap 对「无 type 的 Blob」在部分浏览器（尤其 WebP）无法嗅探而抛异常，
-// 显式设置 type 可保证解码成功；否则统一在 catch 中返回「解码失败」。
+// 显式设置 type 可保证解码成功；若真失败，catch 会打印真实异常（不再静默 return）。
 function mimeFromBytes(b) {
     if (b.length >= 8 &&
         b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4E && b[3] === 0x47 &&
@@ -75,7 +75,9 @@ export async function decodeImageToRgbaAsync1(bytes) {
         // 打包宽高：高 16 位存 w、低 16 位存 h，即 (w << 16) | h（每维 < 65536 时位不重叠；本函数断言已限制更严 < 32767）；解码失败返回 -1。
         return (w << 16) | h;
     }
-    catch {
+    catch (e) {
+        // 不再静默 return -1：把真实异常（如 MemoryView.set 构造器不匹配）打到控制台，便于定位根因
+        console.error('[texture] decodeImageToRgbaAsync1 解码失败：', e);
         return -1;
     }
     finally {
@@ -102,11 +104,18 @@ export async function decodeImageToRgbaAsync2(bytes, outSize, outPixels) {
         // 已知尺寸：直接写入预分配缓冲
         if (image.byteLength > outPixels.byteLength)
             return false;
-        outPixels.set(image, 0);
+        // image 是 Uint8ClampedArray（getImageData 返回），而 outPixels 是 ArraySegment<byte> 经
+        // JSType.MemoryView 传进来的 MemoryView（viewType=Uint8Array）。MemoryView.set 严格校验
+        // e.constructor === n.constructor，Uint8ClampedArray !== Uint8Array 会抛 "Assert failed" 被
+        // 外层 catch 吞掉返回 false，表现为"纹理解码失败"。故先转成 Uint8Array 再写。
+        outPixels.set(new Uint8Array(image), 0);
         outSize.set(new Int32Array([w, h]), 0);
         return true;
     }
-    catch {
+    catch (e) {
+        // 不再静默 return false：真实异常（如 MemoryView.set 构造器不匹配：Uint8ClampedArray !== Uint8Array）
+        // 必须打到控制台，否则 C# 侧只会看到一句误导性的"纹理解码失败"。
+        console.error('[texture] decodeImageToRgbaAsync2 解码失败：', e);
         return false;
     }
     finally {
