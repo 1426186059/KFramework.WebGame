@@ -45,20 +45,12 @@ namespace KFramework.Content.Cli
                 throw new DirectoryNotFoundException($"原始资源目录不存在：{rawDirectory}");
             }
 
-            List<string> bundleDirs = Global.mBuildConfig.BundleDirsResolved;
+            List<string> bundleDirs = BuildConfigResult.BundleDirsFull;
             string root = Path.GetDirectoryName(Path.GetFullPath(rawDirectory)) ?? rawDirectory;
-            string outputDirectory = Global.mBuildConfig.OutDir;
-            if (!Path.IsPathFullyQualified(outputDirectory))
-            {
-                outputDirectory = Path.Combine(root, Global.mBuildConfig.OutDir);
-            }
+            string outputDirectory = BuildConfigResult.OutDirFull;
 
             // 打包中间产物目录（atlas 预览 PNG 等）：与 raw 同级，由配置 tempDir 指定（默认 temp），不随 outDir 发布
-            string tempDirectory = Global.mBuildConfig.TempDir;
-            if (!Path.IsPathFullyQualified(tempDirectory))
-            {
-                tempDirectory = Path.Combine(root, Global.mBuildConfig.TempDir);
-            }
+            string tempDirectory = BuildConfigResult.TempDirFull;
             Directory.CreateDirectory(tempDirectory);
 
             // 目录可能不存在（首次构建 / 清理后），删之前先判存在，否则 Directory.Delete 会抛 DirectoryNotFoundException
@@ -79,14 +71,14 @@ namespace KFramework.Content.Cli
                 // 收集真实存在的打包根目录（供后续原样复制时跳过已打包文件）
                 foreach (string dir in bundleDirs)
                 {
-                    string dirRoot = Path.Combine(rawDirectory, dir);
+                    string dirRoot = dir;
                     if (Directory.Exists(dirRoot))
                         bundleRoots.Add(dirRoot);
                     else
                         warnings.Add($"打包目录未找到，已忽略：{dir}");
                 }
 
-                BundleSplitMode mode = Global.mBuildConfig.SplitMode;
+                BundleSplitMode mode = BuildConfigResult.SplitMode;
                 PrintTool.Log($"[kfc] 分包模式：{mode}（打包目录 = {string.Join(", ", bundleDirs)}）");
 
                 // 各根目录产出的包名必须唯一（保证运行端 GetBundle(name) 无歧义）
@@ -101,7 +93,7 @@ namespace KFramework.Content.Cli
 
                         AssetBundleBuild build = BundleBaker.BuildBundle(
                             bundleName, files, rawDirectory, options,
-                            Global.mBuildConfig.AutoAtlas, warnings,
+                            BuildConfigResult.AutoAtlas, warnings,
                             ref rawBytes, ref textureCount, ref dataCount, ref atlasPageCount, tempDirectory);
                         builds.Add(build);
                         bundleCount++;
@@ -126,7 +118,7 @@ namespace KFramework.Content.Cli
             }
             File.WriteAllText(Path.Combine(outputDirectory, "version.manifest"), result.Manifest.Serialize());
 
-            Deployer.Deploy(Global.mBuildConfig, root, outputDirectory, warnings);
+            Deployer.Deploy(BuildConfigResult.copy_to_wwwroot, root, outputDirectory, warnings);
 
             long totalBundleBytes = result.Manifest.Packages.Sum(p => p.Size);
             watch.Stop();

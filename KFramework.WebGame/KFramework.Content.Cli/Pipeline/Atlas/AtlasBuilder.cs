@@ -9,7 +9,7 @@ namespace KFramework.Content.Cli
         internal static void BuildAtlas(
             AssetBundleBuild mBundle,
             List<string> remainAssetPathList,
-            ContentBuilder.BuildOptions options)
+            BuildOptions options)
         {
             List<SpriteInput> mSpriteList = new List<SpriteInput>();
             for(int i = remainAssetPathList.Count - 1; i >= 0; i--)
@@ -53,7 +53,8 @@ namespace KFramework.Content.Cli
 
             foreach (AtlasPageOutput page in result.Pages)
             {
-                string pageName = page.Name + ".png";
+                string pageName = page.Name + Global.GetTextureFormat_Default_SuffixName(ContentTextureDataFormat.Webp);
+                
                 var bytes = BundleBaker.EncodeWebpFromRgba(page.RgbaPixels, page.Width, page.Height);
                 (bytes, ContentTextureDataFormat fmt) = BundleBaker.EncodeTexture(
                     page.Width, 
@@ -72,9 +73,9 @@ namespace KFramework.Content.Cli
                 });
 
                 if (options.WritePreviewPng)
-                    File.WriteAllBytes(
-                        Path.Combine(Global.mBuildConfig.TempDir, $"{pageName}.png"),
-                        page.ToPng());
+                {
+                    File.WriteAllBytes(Path.Combine(BuildConfigResult.TempDirFull, pageName), page.ToPng());
+                }
             }
 
             // 运行端按 GetFileName(image) 取纹理名（含 .png 后缀，与包内资源名 Path.Combine(bundleName, page.Name + ".png") 对应），

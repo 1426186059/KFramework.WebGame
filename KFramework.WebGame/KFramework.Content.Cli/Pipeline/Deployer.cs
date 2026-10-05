@@ -4,9 +4,9 @@ namespace KFramework.Content.Cli
 {
     public static class Deployer
     {
-        public static void Deploy(BuildConfig config, string root, string outputDirectory, List<string> warnings)
+        public static void Deploy(bool copyToWwwroot, string root, string outputDirectory, List<string> warnings)
         {
-            if (config.copy_to_wwwroot)
+            if (copyToWwwroot)
             {
                 string targetDirName = outputDirectory.Substring(outputDirectory.LastIndexOf(Path.DirectorySeparatorChar) + 1);
                 string wwwDir = Path.Combine(Path.GetDirectoryName(root) ?? root, "wwwroot");

@@ -70,55 +70,18 @@ namespace KFramework.Content.Cli
             BuildConfig config;
             if (File.Exists(configPath))
             {
-                try
-                {
-                    config = JsonSerializer.Deserialize<BuildConfig>(File.ReadAllText(configPath)) ?? new BuildConfig();
-                }
-                catch
-                {
-                    config = new BuildConfig();
-                }
+                config = JsonSerializer.Deserialize<BuildConfig>(File.ReadAllText(configPath)) ?? new BuildConfig();
             }
             else
             {
                 config = new BuildConfig();
-                try
-                {
-                    // 配置文件不存在：自动生成一份默认 build.config.json，方便后续按目录分别打包
-                    File.WriteAllText(configPath, GetDefaultJson(), new UTF8Encoding(false));
-                }
-                catch
-                {
-                    // 无法写入也不影响本次打包
-                }
+                File.WriteAllText(configPath, GetDefaultJson(config), new UTF8Encoding(false));
             }
-
-            var dirs = new List<string>();
-            if (config.AssetBundleDir is not null) dirs.AddRange(ResolveDirs(config.AssetBundleDir));
-            config.BundleDirsResolved = dirs;
-
-            config.OutDir = config.OutDir.Replace('\\', '/').Trim('/');
-            config.TempDir = config.TempDir.Replace('\\', '/').Trim('/');
-            // basisu 由 EncodeKtx2 直接 Process.Start，需绝对路径；相对则按 Content 根解析。
-            if (!string.IsNullOrWhiteSpace(config.BasisuPath))
-                config.BasisuPath = Path.GetFullPath(Path.Combine(contentRoot, config.BasisuPath));
             return config;
         }
 
-        private static IEnumerable<string> ResolveDirs(List<string> list)
+        private static string GetDefaultJson(BuildConfig mConfig)
         {
-            foreach (var raw in list)
-            {
-                if (raw is null) continue;
-                // 空字符串表示「打包根目录（Content/raw）自身」作为打包目录
-                if (string.IsNullOrWhiteSpace(raw)) yield return "";
-                else yield return raw.Replace('\\', '/').Trim('/');
-            }
-        }
-
-        private static string GetDefaultJson()
-        {
-            BuildConfig mConfig = new BuildConfig();
             return JsonSerializer.Serialize(mConfig, new JsonSerializerOptions { WriteIndented = true });
         }
     }

@@ -21,7 +21,7 @@ namespace KFramework.Content.Cli
             string bundleName, 
             string[] files, 
             string assetBaseDir,
-            ContentBuilder.BuildOptions options, 
+            BuildOptions options, 
             bool autoAtlas,
             List<string> warnings, 
             ref long rawBytes, 
@@ -33,31 +33,16 @@ namespace KFramework.Content.Cli
             //剩余可用的文件资源列表
             List<string> remainAssetPathList = new List<string>(files);
             //预扫描所有资源，收集已切图集的整页图(不再自动装箱)
-            AtlasBuilder.BuildAtlas(remainAssetPathList, options);
 
+            if (BuildConfigResult.AutoAtlas)
+            {
+                AtlasBuilder.BuildAtlas(remainAssetPathList, options);
+            }
 
             List<SpriteInput> inputs = new List<SpriteInput>();
             AssetBundleBuild bundle = new AssetBundleBuild { AssetBundleName = bundleName };
             HashSet<string> names = new HashSet<string>(StringComparer.Ordinal);
             HashSet<string> atlasPageRelatives = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (string fontFile in files)
-            {
-                string fontRel = Path.GetRelativePath(assetBaseDir, fontFile).Replace('\\', '/');
-                if (!FontFile.IsFont(fontRel)) continue;
-                try
-                {
-                    foreach (string pageFile in FontFile.PageImages(fontFile))
-                    {
-                        string pagePath = Path.Combine(Path.GetDirectoryName(fontFile)!, pageFile);
-                        atlasPageRelatives.Add(Path.GetRelativePath(assetBaseDir, pagePath).Replace('\\', '/'));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    warnings.Add($"解析美术字失败 {fontRel}：{ex.Message}");
-                }
-            }
 
             foreach (string atlasFile in files)
             {
@@ -298,7 +283,7 @@ namespace KFramework.Content.Cli
         ///   <item><see cref="ContentTextureSwitchTarget.Rgba"/> / <see cref="ContentTextureSwitchTarget.Webp"/>：直接编码为对应 <see cref="ContentTextureDataFormat"/>，无尺寸限制。</item>
         /// </list></summary>
         private static (byte[] Bytes, ContentTextureDataFormat Format) EncodeTexture(
-            SKBitmap skImage, byte[] originalBytes, string relative, ContentBuilder.BuildOptions options)
+            SKBitmap skImage, byte[] originalBytes, string relative, BuildOptions options)
         {
             if (options.TextureSwitchTarget == ContentTextureSwitchTarget.None)
             {

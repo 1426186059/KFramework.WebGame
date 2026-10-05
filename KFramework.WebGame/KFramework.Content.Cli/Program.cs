@@ -5,8 +5,9 @@ namespace KFramework.Content.Cli
 {
     /// <summary>
     /// kfc —— KFramework.MonoGame 内容管线命令行工具
-    /// 用法：kfc --root &lt;内容项目目录&gt; [--out &lt;发布目录&gt;] [--atlas-size 2048] [--no-preview]
-    /// 约定：&lt;root&gt;/raw 是开发者维护的原始资源，&lt;root&gt;/content 是工具生成的发布资源。
+    /// 用法：kfc [--root &lt;内容项目目录&gt;]
+    /// 约定：&lt;root&gt; 下需有 build.config.json（不存在则自动生成默认配置）；
+    /// 不传任何参数时，以「当前执行目录」作为 &lt;root&gt; 查找 build.config.json。
     /// </summary>
     internal static class Program
     {
@@ -28,12 +29,8 @@ namespace KFramework.Content.Cli
                 // 某些重定向环境不允许修改控制台编码，忽略即可。
             }
 
+            // 仅保留 --root / -r；无参数时以当前执行目录作为内容项目根目录
             string root = Directory.GetCurrentDirectory();
-            string? output = null;
-            int atlasSize = 2048;
-            bool preview = true;
-            string? split = null;
-
             for (int i = 0; i < args.Length; i++)
             {
                 switch (args[i])
@@ -41,33 +38,14 @@ namespace KFramework.Content.Cli
                     case "--root" or "-r" when i + 1 < args.Length:
                         root = args[++i];
                         break;
-                    case "--out" or "-o" when i + 1 < args.Length:
-                        output = args[++i];
-                        break;
-                    case "--atlas-size" when i + 1 < args.Length:
-                        atlasSize = int.Parse(args[++i]);
-                        break;
-                    case "--format" when i + 1 < args.Length:
-                        if (Enum.TryParse<ContentTextureSwitchTarget>(args[++i], ignoreCase: true, out var fmt))
-                            Global.mBuildConfig.TextureSwitchTarget = fmt;
-                        break;
-                    case "--split" when i + 1 < args.Length:
-                        split = args[++i];
-                        break;
-                    case "--no-preview":
-                        preview = false;
-                        break;
-                    case "--help" or "-h":
-                        PrintTool.Log("用法: kfc --root <内容项目目录> [--out <输出目录>] [--atlas-size 2048] [--format Rgba|Webp|Ktx2|None] [--split folder|whole] [--no-preview]");
-                        return ExitSuccess;
                 }
             }
 
-            Global.mBuildConfig = BuildConfig.Load(root);
-            if (split is not null && Enum.TryParse<BundleSplitMode>(split, ignoreCase: true, out var sm))
-                Global.mBuildConfig.SplitMode = sm;
-            string ContentDir = Path.GetFullPath(root);
-            string rawDir = Path.Combine(ContentDir, Global.mBuildConfig.RawDir);
+            // 加载 build.config.json（不存在则自动生成默认配置），并解析为完整路径结果
+            BuildConfig config = BuildConfig.Load(root);
+            BuildConfigResult.Parse(config, root);
+
+            string rawDir = BuildConfigResult.RawDirFull;
 
             if (!Directory.Exists(rawDir))
             {
@@ -78,12 +56,12 @@ namespace KFramework.Content.Cli
             try
             {
                 var builder = new ContentBuilder();
-                BuildReport report = builder.Build(rawDir, new ContentBuilder.BuildOptions
+                BuildReport report = builder.Build(rawDir, new BuildOptions
                 {
-                    AtlasMaxSize = atlasSize,
-                    WritePreviewPng = preview,
-                    TextureSwitchTarget = Global.mBuildConfig.TextureSwitchTarget,
-                    BasisuPath = Global.mBuildConfig.BasisuPath,
+                    AtlasMaxSize = 2048,
+                    WritePreviewPng = true,
+                    TextureSwitchTarget = BuildConfigResult.TextureSwitchTarget,
+                    BasisuPath = BuildConfigResult.BasisuPathFull,
                 });
 
                 PrintTool.Log($"[kfc] raw     : {rawDir}");

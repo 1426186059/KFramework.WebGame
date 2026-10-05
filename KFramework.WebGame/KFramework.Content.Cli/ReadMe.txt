@@ -73,3 +73,28 @@ KFramework.Content.Cli（kfc）— 资源打包工具：外部工具与依赖说
 ----------------------------------------------------------------------
 Web 运行端通过浏览器原生 Basis 转码器（basis_transcoder.js / .wasm）
 将 KTX2 转码为设备原生压缩格式（ASTC / BC7 / DXT 等），无需再安装任何工具。
+
+----------------------------------------------------------------------
+六、代码规范（C# 编码约定）
+----------------------------------------------------------------------
+禁止使用 C# 的「switch 表达式」写法（即 `x switch { A => ..., B => ... }`
+这种带箭头 `=>` 的简化语法），一律改用传统的 `switch` 语句
+（`case ...: return ...;` 或 `case ...: ...; break;`）。
+
+禁止（✗）：
+    return mFormat switch
+    {
+        ContentTextureDataFormat.Png  => ".png",
+        ContentTextureDataFormat.Webp => ".webp",
+        _ => ".png",
+    };
+
+允许（✓）：
+    switch (mFormat)
+    {
+        case ContentTextureDataFormat.Png:  return ".png";
+        case ContentTextureDataFormat.Webp: return ".webp";
+        default: return ".png";
+    }
+
+原因：保持代码风格统一、可读性一致，避免表达式与语句两种风格混用。
