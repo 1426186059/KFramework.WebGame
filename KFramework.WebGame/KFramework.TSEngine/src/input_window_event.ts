@@ -1,6 +1,7 @@
 import { E_HTML_Event_Type, FrameDataStream } from './html_event_type.js';
 import { getCanvas } from './html_canvas.js';
 import { Point } from './custom_data_point.js';
+import { assert } from './cusotm_func.js';
 
 const pending = new Map<number, Uint8Array>();
 const sizeData = new Uint8Array(10);
@@ -40,7 +41,7 @@ function onWindowContextMenu(e: PointerEvent): void
 export function bindWindowEvents(): void 
 {
     canvas = getCanvas()
-    console.assert(canvas != null, "bindWindowEvents Error")
+    assert(canvas != null, "bindWindowEvents Error");
 
     document.addEventListener('visibilitychange', onDocumentVisibility);
     window.addEventListener('contextmenu', onWindowContextMenu);
@@ -51,7 +52,7 @@ export function bindWindowEvents(): void
 
 export function reportWindowFocus(): void 
 {
-    console.assert(canvas != null, "reportCanvasFocus error")
+    assert(canvas != null, "reportCanvasFocus error");
     const now = document.hasFocus();
     if (wasFocused != now) 
     {

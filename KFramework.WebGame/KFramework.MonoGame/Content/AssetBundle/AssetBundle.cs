@@ -203,15 +203,16 @@ namespace KFramework.MonoGame
 
                 if (e.Format is AssetTextureFormat.Webp or AssetTextureFormat.Png)
                 {
-                    // Webp / Png 均无托管解码器：统一借浏览器原生解码（需清单中的宽高来预分配像素缓冲）。
+                    // Webp / Png 均无托管解码器：统一借浏览器原生解码（清单已带宽高，用以预分配像素缓冲）。
                     int w = e.Width, h = e.Height;
                     if (w <= 0 || h <= 0)
                         throw new InvalidOperationException($"纹理 “{e.Path}” 缺少像素尺寸，无法解码 {e.Format}。");
                     byte[] raw = LoadAsset(e.Path);
                     var pixels = new byte[w * h * 4];
                     var size = new int[2];
-                    // 源字节包成 ArraySegment：走 MemoryView 后跨界不再整块拷贝（理由见 JSBind_Texture 的注释）。
-                    await JSBind_Texture.DecodeImageToRgba(new ArraySegment<byte>(raw), new ArraySegment<int>(size), new ArraySegment<byte>(pixels)).ConfigureAwait(false);
+                    // 已知尺寸：直接解码进预分配缓冲（MemoryView 零拷贝写入），返回成功与否。
+                    if (!await JSBind_Texture.DecodeImageToRgbaAsync2(new ArraySegment<byte>(raw), new ArraySegment<int>(size), new ArraySegment<byte>(pixels)).ConfigureAwait(false))
+                        throw new InvalidOperationException($"纹理 “{e.Path}” 解码失败。");
                     _decodedTextures[e.Path] = new DecodedTexture(pixels, SurfaceFormat.Color);
                     continue;
                 }

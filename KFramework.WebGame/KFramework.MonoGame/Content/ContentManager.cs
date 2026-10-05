@@ -126,18 +126,15 @@ namespace KFramework.MonoGame
 
         public async Task<Texture2D> LoadTexture2DAsync(byte[] data, GraphicsDevice device)
         {
-            int w, h;
-            using (JSObject sizeObj = await JSBind_Texture.GetImageSize(new ArraySegment<byte>(data)).ConfigureAwait(false))
-            {
-                w = sizeObj.GetPropertyAsInt32("width");
-                h = sizeObj.GetPropertyAsInt32("height");
-            }
+            // 未知尺寸：解码入缓存，返回按位打包的「(宽<<16)|高」（高 16 位宽、低 16 位高；-1 表示失败）。
+            int packed = await JSBind_Texture.DecodeImageToRgbaAsync1(new ArraySegment<byte>(data)).ConfigureAwait(false);
+            if (packed < 0)
+                throw new InvalidOperationException("图片解码失败：浏览器原生解码器返回失败。");
+            int w = packed >> 16;
+            int h = packed & 0xFFFF;
             if (w <= 0 || h <= 0) throw new InvalidOperationException("图片解码失败：尺寸无效。");
-            // 已知尺寸，预分配像素缓冲后一次性解码（源生成互操作不支持直接回传 byte[]，故走 out 缓冲）。
-            // 源字节同样包成 ArraySegment：走 MemoryView 后跨界不再整块拷贝（理由见 JSBind_Texture 的注释）。
-            int[] size = new int[2];
-            byte[] pixels = new byte[w * h * 4];
-            await JSBind_Texture.DecodeImageToRgba(new ArraySegment<byte>(data), new ArraySegment<int>(size), new ArraySegment<byte>(pixels)).ConfigureAwait(false);
+            // 像素由 GetImageData 同步返回（byte[] 封送复制成托管数组）。
+            byte[] pixels = JSBind_Texture.GetImageData();
             return device.CreateTexture(w, h, pixels);
         }
 

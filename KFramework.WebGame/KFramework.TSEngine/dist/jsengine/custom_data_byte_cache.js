@@ -1,3 +1,4 @@
+import { assert } from './cusotm_func.js';
 // 【共享】可增长的字节缓冲，封装一块复用中的 Uint8Array，供各渲染模块（及后续新增模块）共用。
 //
 // 【存在的理由已更新 —— 原先那句"这次拷贝免不掉"是错的】
@@ -31,8 +32,7 @@ const GROWTH_FACTOR = 2;
  */
 function assertPowerOfTwo(name, n) {
     const v = n | 0;
-    if (v <= 0 || (v & (v - 1)) !== 0)
-        throw new Error(`[ByteCache] ${name} 必须是 2 的整数次幂（1/2/4/8…），收到 ${n}`);
+    assert(v > 0 && (v & (v - 1)) === 0, `${name} 必须是 2 的整数次幂（1/2/4/8…），收到 ${n}`);
     return v;
 }
 /**

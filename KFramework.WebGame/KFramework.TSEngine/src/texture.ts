@@ -1,6 +1,7 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Texture 经 [JSImport(module: "texture")] 调用（含 KTX2/Basis 转码）；产物 texture.js 由 SyncJsEngine 复制。
 
 import { sharedBytesOf } from './custom_data_byte_cache.js';
+import { assert } from './cusotm_func.js';
 
 // 取图像源字节：优先【零拷贝】拿共享托管内存的视图；拿不到才退回 slice() 拷一份。
 //
@@ -15,14 +16,52 @@ function sourceBytes(view: MemoryView_ArraySegment | Uint8Array): Uint8Array {
     return new Uint8Array(sliced.buffer, sliced.byteOffset, sliced.byteLength);
 }
 
+// 未知尺寸解码的像素缓存：decodeImageToRgbaAsync1 入缓存，getImageData 取回后清空。
+let _lastDecoded: { width: number; height: number; data: Uint8Array } | null = null;
+
 // 纹理解码：借浏览器原生解码器把图像字节（PNG / WebP 等）解码为 RGBA8。
 // 因 WASM 无托管 WebP 解码器，统一走 createImageBitmap（浏览器原生，覆盖 Png / Webp）。
-// outSize / outPixels 是 C# 的 ArraySegment → MemoryView_ArraySegment：零拷贝视图，写入直接落在托管数组上
-// （若按 byte[]/int[] 的 Array 语义传进来，JS 只会写到副本里，C# 拿到的是全 0）。
-// bytes 同样走 ArraySegment + MemoryView：C# 侧跨界时不再整块拷贝（理由见 JSBind_Texture 的注释）。
-export async function decodeImageToRgba(
-    bytes: MemoryView_ArraySegment | Uint8Array, outSize: MemoryView_ArraySegment | Int32Array, outPixels: MemoryView_ArraySegment | Uint8Array,
-): Promise<void> {
+// bytes 走 ArraySegment + MemoryView：C# 侧跨界（await createImageBitmap）时不再整块拷贝（理由见 JSBind_Texture 的注释）。
+
+// 未知尺寸（松散图片）：解码成功后把 RGBA8 像素暂存进 _lastDecoded 缓存，返回打包宽高的 int（(w << 16) | h：高 16 位宽、低 16 位高）；
+// 调用方解出宽高后，用 getImageData 取回像素。失败（解码失败）返回 -1，不抛。
+export async function decodeImageToRgbaAsync1(
+    bytes: MemoryView_ArraySegment | Uint8Array,
+): Promise<number> {
+    try {
+        const blob = new Blob([sourceBytes(bytes) as BlobPart]);
+        const bitmap = await createImageBitmap(blob);
+        const w = bitmap.width, h = bitmap.height;
+        // 断言：宽高均不得大于 short 的最大值（32767），即 ≤ 32767；否则 (w<<16)|h 打包会失真/越界。
+        // 用不依赖 console 的硬断言（throw），以免 Release 剥离 console 时把断言一并删掉。
+        assert(w <= 32767 && h <= 32767,
+            `decodeImageToRgbaAsync1 尺寸越界：w=${w} h=${h}（须 ≤ 32767 / short.MaxValue）`);
+        const cv = document.createElement('canvas');
+        cv.width = w;
+        cv.height = h;
+        const c = cv.getContext('2d')!;
+        c.drawImage(bitmap, 0, 0);
+        const image = c.getImageData(0, 0, w, h).data;
+        if (bitmap.close) bitmap.close();
+        // 未知尺寸：缓存像素，供 getImageData 取回
+        _lastDecoded = { width: w, height: h, data: new Uint8Array(image) };
+        // 打包宽高：高 16 位存 w、低 16 位存 h，即 (w << 16) | h（每维 < 65536 时位不重叠；本函数断言已限制更严 < 32767）；解码失败返回 -1。
+        return (w << 16) | h;
+    } catch {
+        return -1;
+    } finally {
+        // 视图是 ArraySegment 版，pin 了托管数组，用完必须解 pin
+        (bytes as MemoryView_ArraySegment).dispose?.();
+    }
+}
+
+// 已知尺寸（资源包已带宽高）：解码后直接零拷贝写入 outSize(int[2]) 与 outPixels(长度 = 宽*高*4)，返回 true；
+// 缓冲不足返回 false。失败（解码失败）返回 false，不抛。
+export async function decodeImageToRgbaAsync2(
+    bytes: MemoryView_ArraySegment | Uint8Array,
+    outSize: MemoryView_ArraySegment | Int32Array,
+    outPixels: MemoryView_ArraySegment | Uint8Array,
+): Promise<boolean> {
     try {
         const blob = new Blob([sourceBytes(bytes) as BlobPart]);
         const bitmap = await createImageBitmap(blob);
@@ -33,34 +72,32 @@ export async function decodeImageToRgba(
         const c = cv.getContext('2d')!;
         c.drawImage(bitmap, 0, 0);
         const image = c.getImageData(0, 0, w, h).data;
-        if (image.byteLength > outPixels.byteLength)
-            throw new Error(`[texture] 像素缓冲不足（需要 ${image.byteLength}，实际 ${outPixels.byteLength}）`);
+        if (bitmap.close) bitmap.close();
+        // 已知尺寸：直接写入预分配缓冲
+        if (image.byteLength > outPixels.byteLength) return false;
         (outPixels as Uint8Array).set(image, 0);
         (outSize as Int32Array).set(new Int32Array([w, h]), 0);
-        if (bitmap.close) bitmap.close();
+        return true;
+    } catch {
+        return false;
     } finally {
-        // 三个参数都是 ArraySegment 版视图，各自 pin 了托管数组，用完必须解 pin
+        // 视图是 ArraySegment 版，pin 了托管数组，用完必须解 pin
         (bytes as MemoryView_ArraySegment).dispose?.();
-        (outSize as MemoryView_ArraySegment).dispose?.();
-        (outPixels as MemoryView_ArraySegment).dispose?.();
+        (outSize as MemoryView_ArraySegment)?.dispose?.();
+        (outPixels as MemoryView_ArraySegment)?.dispose?.();
     }
 }
 
-// 仅取图像尺寸（不解码像素），用于「直接复制、未打包」的松散图片——
-// 调用方据此预分配像素缓冲后，再调 decodeImageToRgba 一次性解码上传。
-// 返回 { width, height }（JSObject，C# 经 GetPropertyAsInt32 读取）。
-export async function getImageSize(
-    bytes: MemoryView_ArraySegment | Uint8Array,
-): Promise<{ width: number; height: number }> {
-    try {
-        const blob = new Blob([sourceBytes(bytes) as BlobPart]);
-        const bitmap = await createImageBitmap(blob);
-        const w = bitmap.width, h = bitmap.height;
-        if (bitmap.close) bitmap.close();
-        return { width: w, height: h };
-    } finally {
-        (bytes as MemoryView_ArraySegment).dispose?.();
-    }
+// 取回「未知尺寸解码」缓存的 RGBA8 像素字节（C# 侧以同步 byte[] 导入）。
+// 必须在 decodeImageToRgbaAsync1(bytes) 返回 ≥ 0 之后调用；否则抛错（上一步解码失败或未调用）。
+// 直接返回缓存的 Uint8Array：C# 封送复制成新 byte[]，取走即清空缓存，避免多次加载堆积。
+// 不再 async / 不再包 JSObject —— 同步返回 byte[] 在本互操作下可行（byte[] 同步封送 = 复制成新数组）。
+export function getImageData(): Uint8Array {
+    if (!_lastDecoded)
+        throw new Error('[texture] getImageData 前必须先成功调用 decodeImageToRgbaAsync1（未知尺寸）');
+    const cached = _lastDecoded;
+    _lastDecoded = null;
+    return cached.data;
 }
 
 // ---------- KTX2（Basis Universal 超压缩）纹理上传 ----------
