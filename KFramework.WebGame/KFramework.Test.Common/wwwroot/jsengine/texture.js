@@ -112,7 +112,9 @@ async function loadBasis() {
     if (!factory)
         throw new Error('[ktx2] basis_transcoder.js 未暴露 BASIS 全局');
     const mod = await factory({
-        locateFile: (p) => new URL(p, import.meta.url).href,
+        // wasm 与 basis_transcoder.js 同目录（deps/ktx2/），必须相对 jsUrl 解析；
+        // 若相对 import.meta.url（本模块 texture.js 在 /jsengine/）会导致 wasm 404。
+        locateFile: (p) => new URL(p, jsUrl).href,
     });
     mod.initializeBasis();
     _basis = mod;

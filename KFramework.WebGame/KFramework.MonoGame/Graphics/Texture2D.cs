@@ -236,7 +236,11 @@ namespace KFramework.MonoGame
         public void SetData(byte[] rgba, int x, int y, int w, int h)
         {
             if (rgba == null) throw new ArgumentNullException(nameof(rgba));
-            SetData(0, new Rectangle(x, y, w, h), rgba, 0, w * h * Format.GetSize());
+            // 压缩纹理：rgba 已是整块字节流，elementCount 必须等于缓冲实际长度；
+            // 不能套用 w*h*Format.GetSize()（后者对压缩格式返回块字节 16，会算出远大于缓冲的
+            // elementCount，触发 Texture2D.ValidateParams 的“data 数组太小”）。
+            int elementCount = Format.IsCompressed() ? rgba.Length : w * h * Format.GetSize();
+            SetData(0, new Rectangle(x, y, w, h), rgba, 0, elementCount);
         }
 
 

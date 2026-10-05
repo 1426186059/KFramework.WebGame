@@ -90,6 +90,9 @@ namespace KFramework.Test.Common.Tests.ImageTest
                 ("jpg", "test.jpg"),
                 ("png", "test.png"),
                 ("webp", "test.webp"),
+                ("jpg", "test2.jpg"),
+                ("png", "test2.png"),
+                ("webp", "test2.webp"),
             };
             foreach (var f in files)
             {
