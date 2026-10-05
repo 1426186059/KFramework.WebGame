@@ -8,7 +8,7 @@ namespace KFramework.MonoGame
     /// </summary>
     public abstract class Game : IDisposable
     {
-        public static Game? Current { get; private set; }
+        public static Game Current { get; private set; }
         /// <summary>单帧最大推进时间，防止切后台回来时一次性模拟过多（大 dt 截断，避免穿模 / 螺旋死亡）。</summary>
         private const double MaxElapsedSeconds = 0.333;
 
