@@ -7,7 +7,8 @@
   ],
   "autoAtlas": true,
   "splitMode": "folder",
-  "textureFormat": "Rgba",
+  "textureFormat": "Ktx2",
+  "basisuPath": "../../Need_DLL/basisu.exe",
   "deploy": "none",
   "wwwDir": "www",
   "port": 8080

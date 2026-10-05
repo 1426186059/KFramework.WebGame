@@ -45,6 +45,10 @@ namespace KFramework.Content.Build
         [JsonPropertyName("textureFormat")]
         public AssetTextureFormat TextureFormat { get; set; } = AssetTextureFormat.Rgba;
 
+        /// <summary>basisu 可执行文件路径（<c>Ktx2</c> 编码用）。为空则用 PATH 中的 "basisu"。可相对 Content 根目录（在 <see cref="Load"/> 中按 Content 根解析为绝对路径）。</summary>
+        [JsonPropertyName("basisuPath")]
+        public string? BasisuPath { get; set; }
+
         /// <summary>发布方式：www / serve / none，缺省 none（由各示例 csproj 的 BuildGameContent 负责复制到 wwwroot/hot_update_res）。</summary>
         [JsonPropertyName("deploy")]
         public string Deploy { get; set; } = "none";
@@ -105,6 +109,9 @@ namespace KFramework.Content.Build
             config.TempDir = config.TempDir.Replace('\\', '/').Trim('/');
             config.WwwDir = config.WwwDir.Replace('\\', '/').Trim('/');
             config.Deploy = config.Deploy.ToLowerInvariant();
+            // basisu 由 EncodeKtx2 直接 Process.Start，需绝对路径；相对则按 Content 根解析。
+            if (!string.IsNullOrWhiteSpace(config.BasisuPath))
+                config.BasisuPath = Path.GetFullPath(Path.Combine(contentRoot, config.BasisuPath));
             return config;
         }
 

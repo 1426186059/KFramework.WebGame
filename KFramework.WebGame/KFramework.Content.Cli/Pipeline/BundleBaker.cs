@@ -304,7 +304,7 @@ namespace KFramework.Content.Build
         /// <summary>构建产物、隐藏文件、content 输出目录都不属于原始资源；打包配置文件也不该进包。</summary>
         /// <summary>把 RGBA8 字节（行优先 W*H*4）编码为 KTX2（Basis Universal 超压缩）。</summary>
         /// <remarks>
-        /// 经临时 PNG 调用 <c>basisu</c> 命令行编码为 KTX2（UASTC）。需预先安装 Basis Universal 工具
+        /// 经临时 PNG 调用 <c>basisu</c> 命令行编码为 KTX2（UASTC）：<c>basisu -file x.png -ktx2 -uastc -uastc_level &lt;q&gt; -mipmap -output_file y.ktx2</c>。需预先安装 Basis Universal 工具
         /// （https://github.com/BinomialLLC/basis_universal），并配置 <paramref name="basisuPath"/>（为空则用 PATH 中的 basisu）。
         /// 编码失败时抛出明确异常，提示安装/配置 basisu。
         /// </remarks>
@@ -336,7 +336,7 @@ namespace KFramework.Content.Build
 
                 string exe = string.IsNullOrWhiteSpace(basisuPath) ? "basisu" : basisuPath;
                 var psi = new ProcessStartInfo(exe,
-                    $"-file \"{tmpPng}\" -format ktx2 -uastc {quality} -mipmap -o \"{outKtx}\"")
+                    $"-file \"{tmpPng}\" -ktx2 -uastc -uastc_level {quality} -mipmap -output_file \"{outKtx}\"")
                 {
                     RedirectStandardError = true,
                     UseShellExecute = false,

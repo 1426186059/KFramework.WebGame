@@ -84,6 +84,7 @@ namespace KFramework.Content.Build
                     AtlasMaxSize = atlasSize,
                     WritePreviewPng = preview,
                     TextureFormat = Global.mBuildConfig.TextureFormat,
+                    BasisuPath = Global.mBuildConfig.BasisuPath,
                 });
 
                 PrintTool.Log($"[kfc] raw     : {rawDir}");
