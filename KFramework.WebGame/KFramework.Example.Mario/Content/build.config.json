@@ -1,12 +1,14 @@
 {
   "rawDir": "raw",
   "outDir": "hot_update_res",
+  "tempDir": "temp",
   "AssetBundleDir": [
     "MyBundle2",
     "MyRes"
   ],
-  "autoAtlas": true,
-  "textureFormat": "Rgba",
-  "deploy": "none",
-  "port": 8080
+  "autoAtlas": false,
+  "BundleSplitMode": "whole",
+  "TextureSwitchTarget": "none",
+  "basisuPath": null,
+  "copy_to_wwwroot": true
 }

@@ -193,7 +193,7 @@ export function texSubImage2D(target, level, xoffset, yoffset, width, height, fo
     gpu().texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, toTextureBytes(data));
 }
 // ---------- 压缩纹理（KTX2 / Basis Universal） ----------
-/** 查询 WebGL 扩展是否可用（如 'WEBGL_compressed_texture_astc'）。返回扩展对象或 null。 */
+/** 查询 WebGL 扩展是否可用（如 'WEBGL_compressed_texture_astc'）。返回是否存在（boolean）。 */
 export function hasExtension(name) {
     return gpu().getExtension(name) != null;
 }
