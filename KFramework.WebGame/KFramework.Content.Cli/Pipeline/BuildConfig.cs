@@ -29,8 +29,8 @@ namespace KFramework.Content.Cli
         [JsonPropertyName("TextureSwitchTarget")]
         public ContentTextureSwitchTarget TextureSwitchTarget { get; set; } = ContentTextureSwitchTarget.Webp;
 
-        [JsonPropertyName("basisuPath")]
-        public string? BasisuPath { get; set; }
+        [JsonPropertyName("Ktx2ExePath")]
+        public string? Ktx2ExePath { get; set; }
 
         //默认拷贝到 wwwroot 目录，方便浏览器访问
         [JsonPropertyName("copy_to_wwwroot")]

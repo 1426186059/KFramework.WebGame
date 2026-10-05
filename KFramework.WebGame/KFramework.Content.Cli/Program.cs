@@ -37,18 +37,19 @@ namespace KFramework.Content.Cli
 
             // 加载 build.config.json（不存在则自动生成默认配置），并解析为完整路径结果
             BuildConfig config = BuildConfig.Load(root);
-            BuildConfigResult.Parse(config, root);
-
-            string rawDir = BuildConfigResult.RawDirFull;
-
-            if (!Directory.Exists(rawDir))
-            {
-                //原始资源目录不存在，那就直接成功就行了啊
-                return ExitSuccess;
-            }
 
             try
             {
+                BuildConfigResult.Parse(config, root);
+
+                string rawDir = BuildConfigResult.RawDirFull;
+
+                if (!Directory.Exists(rawDir))
+                {
+                    //原始资源目录不存在，那就直接成功就行了啊
+                    return ExitSuccess;
+                }
+
                 var builder = new ContentBuilder();
                 BuildOptions.AutoAtlasMaxSize = 2048;
                 BuildOptions.AutoAtlasWritePreviewPng = true;

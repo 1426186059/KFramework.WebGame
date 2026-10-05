@@ -1,4 +1,4 @@
-﻿{
+{
   "rawDir": "raw",
   "outDir": "hot_update_res",
   "tempDir": "temp",
@@ -7,7 +7,7 @@
   ],
   "autoAtlas": false,
   "BundleSplitMode": "Whole",
-  "TextureSwitchTarget": "None",
+  "TextureSwitchTarget": "Webp",
   "Ktx2ExePath": "D:\\OpenSource\\KFramework.WebGame\\KFramework.WebGame\\Need_DLL\\basisu.exe",
   "copy_to_wwwroot": true
 }

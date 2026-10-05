@@ -40,9 +40,9 @@ namespace KFramework.Content.Cli
                 bundleDirsFull.Add(string.IsNullOrEmpty(d) ? rawDirFull : Path.GetFullPath(Path.Combine(rawDirFull, d)));
             }
 
-            string? basisuPathFull = string.IsNullOrWhiteSpace(config.BasisuPath)
+            string? basisuPathFull = string.IsNullOrWhiteSpace(config.Ktx2ExePath)
                 ? null
-                : Path.GetFullPath(config.BasisuPath);
+                : Path.GetFullPath(config.Ktx2ExePath);
 
             ContentRoot          = root;
             RawDirFull           = rawDirFull;
@@ -54,6 +54,17 @@ namespace KFramework.Content.Cli
             TextureSwitchTarget = config.TextureSwitchTarget;
             BasisuPathFull       = basisuPathFull;
             copy_to_wwwroot      = config.copy_to_wwwroot;
+
+            // KTX2 目标要求 basisu 可执行文件真实存在：路径未配置或文件不存在都应立即报错，
+            // 而不是在打包时静默回退（那样会悄悄丢失 KTX2 压缩，且难以察觉）。
+            if (TextureSwitchTarget == ContentTextureSwitchTarget.Ktx2 &&
+                (string.IsNullOrWhiteSpace(BasisuPathFull) || !File.Exists(BasisuPathFull)))
+            {
+                throw new InvalidOperationException(
+                    $"TextureSwitchTarget 已设为 Ktx2，但 basisu 可执行文件不存在或路径未配置" +
+                    $"（Ktx2ExePath={config.Ktx2ExePath ?? "<未设置>"}，解析后={BasisuPathFull ?? "<空>"}）。" +
+                    "请安装 Basis Universal 命令行工具，并在 build.config.json 中将 \"Ktx2ExePath\" 设置为该可执行文件的有效路径。");
+            }
         }
     }
 }

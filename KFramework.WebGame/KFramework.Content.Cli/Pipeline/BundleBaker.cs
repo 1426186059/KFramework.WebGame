@@ -220,9 +220,21 @@ namespace KFramework.Content.Cli
             {
                 if (!IsSuitableForKtx2(width, height))
                 {
+                    // 尺寸不满足 KTX2（非 4 的倍数）：保留原始格式落库，运行时走浏览器原生解码
                     return new AssetBundleAsset { Width = width, Height = height, Bytes = originalPixels, Format = oriFormat, Type = ContentAssetType.Texture };
                 }
-                return new AssetBundleAsset { Width = width, Height = height, Bytes = EncodeKtx2FromRgba(rgba, width, height, BuildConfigResult.BasisuPathFull, BuildOptions.Ktx2Quality), Format = target, Type = ContentAssetType.Texture };
+                try
+                {
+                    byte[] ktx2 = EncodeKtx2FromRgba(rgba, width, height, BuildConfigResult.BasisuPathFull, BuildOptions.Ktx2Quality);
+                    return new AssetBundleAsset { Width = width, Height = height, Bytes = ktx2, Format = target, Type = ContentAssetType.Texture };
+                }
+                catch (Exception ex)
+                {
+                    // basisu 未安装 / 编码失败：绝不能丢资源，回退为原始格式落库（运行时经 decodeImageToRgbaAsync 解码，已兼容）。
+                    // 否则这些纹理会被 BuildBundle 的 catch 静默丢弃，导致 AssetBundle 条目变少。
+                    Console.Error.WriteLine($"[BundleBaker] 纹理 {oriFormat} 转 KTX2 失败，回退为原始格式（不丢资源）：{ex.Message}");
+                    return new AssetBundleAsset { Width = width, Height = height, Bytes = originalPixels, Format = oriFormat, Type = ContentAssetType.Texture };
+                }
             }
 
             return new AssetBundleAsset { Width = width, Height = height, Bytes = rgba, Format = target, Type = ContentAssetType.Texture };
