@@ -32,7 +32,7 @@ namespace KFramework.Test.Common.Tests
             new TestEntry
             {
                 Name = "图片测试",
-                Desc = "AssetBundle 整图 / 图集纹理的加载与绘制（待实现，本页只列出现有资源，供后续扩展）",
+                Desc = "图片解析两种路径：① 远程加载 ContentManager.LoadTexture2DAsync（jpg/png/webp）；② AssetBundle.LoadTexture 遍历已加载包纹理（Rgba/Png/Webp/Ktx2 按构建格式覆盖）。资源在 Content/raw。",
                 Factory = static () => new ImageTest.ImageTestScene(),
             },
             new TestEntry

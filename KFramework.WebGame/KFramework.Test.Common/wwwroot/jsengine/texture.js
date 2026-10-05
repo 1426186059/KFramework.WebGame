@@ -1,5 +1,6 @@
 // 【依赖 C#】由 KFramework.MonoGame.JSBind_Texture 经 [JSImport(module: "texture")] 调用（含 KTX2/Basis 转码）；产物 texture.js 由 SyncJsEngine 复制。
 import { sharedBytesOf } from './custom_data_byte_cache.js';
+import { assert } from './cusotm_func.js';
 // 取图像源字节：优先【零拷贝】拿共享托管内存的视图；拿不到才退回 slice() 拷一份。
 //
 // 为什么这里敢用共享视图：new Blob(...) 是【同步读取】的 —— 数据在 Blob 构造函数返回前
@@ -18,13 +19,16 @@ let _lastDecoded = null;
 // 纹理解码：借浏览器原生解码器把图像字节（PNG / WebP 等）解码为 RGBA8。
 // 因 WASM 无托管 WebP 解码器，统一走 createImageBitmap（浏览器原生，覆盖 Png / Webp）。
 // bytes 走 ArraySegment + MemoryView：C# 侧跨界（await createImageBitmap）时不再整块拷贝（理由见 JSBind_Texture 的注释）。
-// 未知尺寸（松散图片）：解码成功后把 RGBA8 像素暂存进 _lastDecoded 缓存，返回打包宽高的 int（width*65536+height）；
+// 未知尺寸（松散图片）：解码成功后把 RGBA8 像素暂存进 _lastDecoded 缓存，返回打包宽高的 int（(w << 16) | h：高 16 位宽、低 16 位高）；
 // 调用方解出宽高后，用 getImageData 取回像素。失败（解码失败）返回 -1，不抛。
 export async function decodeImageToRgbaAsync1(bytes) {
     try {
         const blob = new Blob([sourceBytes(bytes)]);
         const bitmap = await createImageBitmap(blob);
         const w = bitmap.width, h = bitmap.height;
+        // 断言：宽高均不得大于 short 的最大值（32767），即 ≤ 32767；否则 (w<<16)|h 打包会失真/越界。
+        // 用不依赖 console 的硬断言（throw），以免 Release 剥离 console 时把断言一并删掉。
+        assert(w <= 32767 && h <= 32767, `decodeImageToRgbaAsync1 尺寸越界：w=${w} h=${h}（须 ≤ 32767 / short.MaxValue）`);
         const cv = document.createElement('canvas');
         cv.width = w;
         cv.height = h;
@@ -35,8 +39,8 @@ export async function decodeImageToRgbaAsync1(bytes) {
             bitmap.close();
         // 未知尺寸：缓存像素，供 getImageData 取回
         _lastDecoded = { width: w, height: h, data: new Uint8Array(image) };
-        // 打包宽高：width*65536+height，两维均 ≤ 65535 时必然为非负 int；解码失败返回 -1。
-        return w * 65536 + h;
+        // 打包宽高：高 16 位存 w、低 16 位存 h，即 (w << 16) | h（每维 < 65536 时位不重叠；本函数断言已限制更严 < 32767）；解码失败返回 -1。
+        return (w << 16) | h;
     }
     catch {
         return -1;

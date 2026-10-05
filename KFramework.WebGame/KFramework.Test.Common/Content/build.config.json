@@ -6,6 +6,7 @@
     "Bundles"
   ],
   "autoAtlas": true,
+  "splitMode": "folder",
   "textureFormat": "Rgba",
   "deploy": "none",
   "wwwDir": "www",

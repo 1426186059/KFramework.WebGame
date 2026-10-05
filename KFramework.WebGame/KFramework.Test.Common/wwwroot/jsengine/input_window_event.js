@@ -1,5 +1,6 @@
 import { E_HTML_Event_Type } from './html_event_type.js';
 import { getCanvas } from './html_canvas.js';
+import { assert } from './cusotm_func.js';
 const pending = new Map();
 const sizeData = new Uint8Array(10);
 const sizeView = new DataView(sizeData.buffer);
@@ -25,7 +26,7 @@ function onWindowContextMenu(e) {
 }
 export function bindWindowEvents() {
     canvas = getCanvas();
-    console.assert(canvas != null, "bindWindowEvents Error");
+    assert(canvas != null, "bindWindowEvents Error");
     document.addEventListener('visibilitychange', onDocumentVisibility);
     window.addEventListener('contextmenu', onWindowContextMenu);
     window.addEventListener('blur', onWindowBlur);
@@ -33,7 +34,7 @@ export function bindWindowEvents() {
     wasFocused = document.hasFocus();
 }
 export function reportWindowFocus() {
-    console.assert(canvas != null, "reportCanvasFocus error");
+    assert(canvas != null, "reportCanvasFocus error");
     const now = document.hasFocus();
     if (wasFocused != now) {
         wasFocused = now;
