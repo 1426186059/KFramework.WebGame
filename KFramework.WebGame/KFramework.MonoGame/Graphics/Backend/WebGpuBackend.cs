@@ -390,6 +390,20 @@ namespace KFramework.MonoGame
                 _ => "clamp-to-edge",
             };
 
+        /// <summary>SurfaceFormat → WebGPU 的 GPUTextureFormat 字符串（压缩格式须与 Ktx2TranscodeSelector 选中的一致）。</summary>
+        private static string SurfaceFormatToWebGpu(SurfaceFormat format)
+        {
+            switch (format)
+            {
+                case SurfaceFormat.Color: return "rgba8unorm";
+                case SurfaceFormat.Bc7: return "bc7-rgba-unorm";
+                case SurfaceFormat.Dxt5: return "bc3-rgba-unorm";   // BC3 = DXT5
+                case SurfaceFormat.Etc2Rgba8: return "etc2-rgba8unorm";
+                case SurfaceFormat.Astc4X4: return "astc-4x4-rgba-unorm";
+                default: return "rgba8unorm";   // 兜底：PVRTC 等 WebGPU 不支持的格式不应到达此处
+            }
+        }
+
         private int GetOrCreateBindGroup(int pipeline, int textureHandle, int samplerHandle, int uniformSlot)
         {
             var key = (pipeline, textureHandle, samplerHandle, uniformSlot);
@@ -449,7 +463,7 @@ namespace KFramework.MonoGame
             // CreateRenderTarget 里补建，与 MonoGame 各后端的分工一致。
             // 仅渲染目标（RenderTarget 类型）需要 COPY_SRC 用途，供 readPixels 中转读回；
             // 普通纹理（字体图集、白色像素、加载的贴图等）一律不加，避免污染用途组合导致闪烁。
-            int handle = JSBind_WebGPU.CreateTexture(width, height, "rgba8unorm", 1,
+            int handle = JSBind_WebGPU.CreateTexture(width, height, SurfaceFormatToWebGpu(format), 1,
                 type == Texture2D.SurfaceType.RenderTarget ? 0x01 : 0);
             if (handle == 0) throw new InvalidOperationException("[webgpu] 创建纹理失败。");
             _textures[texture] = handle;
@@ -458,7 +472,7 @@ namespace KFramework.MonoGame
         /// <summary>整张上传（origin 为 0,0）。</summary>
         public void SetTextureData(Texture2D texture, int level, byte[] bytes)
             => JSBind_WebGPU.UploadTexture(RequireTexture(texture), bytes,
-                0, 0, texture.Width, texture.Height, "rgba8unorm");
+                0, 0, texture.Width, texture.Height, SurfaceFormatToWebGpu(texture.Format));
 
         /// <summary>
         /// 区域上传。WebGPU 的 queue.writeTexture 原生支持写入原点，故子区域直接走 origin 即可
@@ -466,7 +480,7 @@ namespace KFramework.MonoGame
         /// </summary>
         public void SetTextureData(Texture2D texture, int level, Rectangle rect, byte[] bytes)
             => JSBind_WebGPU.UploadTexture(RequireTexture(texture), bytes,
-                rect.X, rect.Y, rect.Width, rect.Height, "rgba8unorm");
+                rect.X, rect.Y, rect.Width, rect.Height, SurfaceFormatToWebGpu(texture.Format));
 
         public void DeleteTexture(Texture2D texture)
         {

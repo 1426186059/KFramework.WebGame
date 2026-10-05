@@ -8,6 +8,7 @@ namespace KFramework.MonoGame
     /// </summary>
     public abstract class Game : IDisposable
     {
+        public static Game? Current { get; private set; }
         /// <summary>单帧最大推进时间，防止切后台回来时一次性模拟过多（大 dt 截断，避免穿模 / 螺旋死亡）。</summary>
         private const double MaxElapsedSeconds = 0.333;
 
@@ -74,6 +75,12 @@ namespace KFramework.MonoGame
         /// </param>
         protected Game(string canvasSelector = "#game", bool antialias = false, bool preferWebGpu = false)
         {
+            if (Current != null)
+            {
+                throw new InvalidOperationException("Game.Current 已存在，不能重复创建 Game 实例。");
+            }
+
+            Current = this;
             HTML_Canvas.Current = new HTML_Canvas(canvasSelector);
             _antialias = antialias;
             _preferWebGpu = preferWebGpu;

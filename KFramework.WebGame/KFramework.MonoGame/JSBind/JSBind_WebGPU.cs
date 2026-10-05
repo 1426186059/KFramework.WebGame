@@ -73,6 +73,10 @@ namespace KFramework.MonoGame
         [JSImport("isActive", "render_webgpu")]
         public static partial bool IsActive();
 
+        /// <summary>查询当前 WebGPU 设备是否支持某可选特性（如 "texture-compression-bc" / "texture-compression-astc" / "texture-compression-etc2"）。device 未就绪时返回 false。</summary>
+        [JSImport("hasFeature", "render_webgpu")]
+        public static partial bool HasFeature(string flag);
+
         /// <summary>取当前画布元素（调试用，返回 JSObject 代理）。</summary>
         [JSImport("getCanvasElement", "render_webgpu")]
         public static partial JSObject? GetCanvasElement();
@@ -131,7 +135,8 @@ namespace KFramework.MonoGame
         public static partial int CreateTexture(int width, int height, string format, int sampleCount, int extraUsage);
 
         /// <summary>
-        /// 上传 RGBA8 像素到纹理（queue.writeTexture）。
+        /// 上传像素到纹理（queue.writeTexture）。支持 RGBA8（rgba8unorm / bgra8unorm）与压缩格式
+        /// （bc1/bc2/bc3/bc7、etc2、astc，详见 render_webgpu.ts 的 COMPRESSED_INFO）。
         /// x / y 为写入原点的左上角：SpriteFont 的字形图集靠它逐个字形局部更新。
         /// </summary>
         [JSImport("uploadTexture", "render_webgpu")]

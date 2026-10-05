@@ -2,7 +2,7 @@ namespace KFramework.MonoGame
 {
     /// <summary>
     /// 依据当前渲染后端支持的压缩纹理能力，为 KTX2（Basis Universal 超压缩）挑选“目标转码格式 + 对应 GL 内部格式”。
-    /// WebGPU 后端当前仅支持 rgba8 上传（render_webgpu.uploadTexture 未实现压缩格式），故统一转码为 RGBA32（裸 RGBA8，不压缩）；
+    /// WebGPU 后端按 adapter.features（经 render_webgpu.hasFeature 暴露）在 ASTC → BC7(BPTC) → ETC2/EAC → RGBA32 间择优；
     /// WebGL2 后端则按扩展支持度在 ASTC → BC7(BPTC) → ETC2/EAC → S3TC(DXT) → PVRTC → RGBA32 间择优。
     /// 始终选带 alpha 的变体（BC3 / ETC2 EAC RGBA / PVRTC RGBA），对不透明图也安全。
     /// </summary>
@@ -24,22 +24,32 @@ namespace KFramework.MonoGame
         // 返回的 glFormat 即 <see cref="SurfaceFormat"/>（其取值就是对应的 GL 内部格式，无需再映射）。
         public static (int basisFormat, SurfaceFormat glFormat) Pick()
         {
-            // WebGPU 后端当前只支持 rgba8 上传（render_webgpu.uploadTexture 仅实现 rgba8unorm / bgra8unorm），
-            // 且 WebGPU 画布上取不到 WebGL2 上下文（hasExtension 会直接崩），故 KTX2 直接转码为裸 RGBA8（不压缩）。
-            // 待 WebGPU 支持 texture-compression-* 后，再在此分支按 adapter.features 选压缩格式。
-            if (JSBind_WebGPU.IsActive())
-                return (RGBA32, SurfaceFormat.Color);
-            if (JSBind_WEBGL20.HasExtension("WEBGL_compressed_texture_astc"))
-                return (ASTC_4x4, SurfaceFormat.Astc4X4);
-            if (JSBind_WEBGL20.HasExtension("EXT_texture_compression_bptc"))
-                return (BC7_M5, SurfaceFormat.Bc7);
-            if (JSBind_WEBGL20.HasExtension("WEBGL_compressed_texture_etc"))
-                return (ETC2, SurfaceFormat.Etc2Rgba8);
-            if (JSBind_WEBGL20.HasExtension("WEBGL_compressed_texture_s3tc"))
-                return (BC3, SurfaceFormat.Dxt5);
-            if (JSBind_WEBGL20.HasExtension("WEBGL_compressed_texture_pvrtc"))
-                return (PVRTC1_4_RGBA, SurfaceFormat.PvrtcRgba4Bpp);
-            // 兜底：转码为裸 RGBA8，按普通纹理上传（体积/显存吃亏，但保证能显示）。
+            // WebGPU 后端：按 adapter.features（render_webgpu.hasFeature 暴露）选压缩格式。
+            // 优先级参考 three.js：ASTC → BC7(BPTC) → ETC2/EAC → RGBA32。
+            // 注意 WebGPU 规范不含 PVRTC，故此处不列 PVRTC 分支；特性全不支持时退回裸 RGBA8（不压缩，但保证能显示）。
+            if (Game.Current.GraphicsDevice.Backend is WebGpuBackend)
+            {
+                if (JSBind_WebGPU.HasFeature("texture-compression-astc"))
+                    return (ASTC_4x4, SurfaceFormat.Astc4X4);
+                if (JSBind_WebGPU.HasFeature("texture-compression-bc"))
+                    return (BC7_M5, SurfaceFormat.Bc7);
+                if (JSBind_WebGPU.HasFeature("texture-compression-etc2"))
+                    return (ETC2, SurfaceFormat.Etc2Rgba8);
+            }
+            else
+            {
+                if (JSBind_WEBGL20.HasExtension("WEBGL_compressed_texture_astc"))
+                    return (ASTC_4x4, SurfaceFormat.Astc4X4);
+                if (JSBind_WEBGL20.HasExtension("EXT_texture_compression_bptc"))
+                    return (BC7_M5, SurfaceFormat.Bc7);
+                if (JSBind_WEBGL20.HasExtension("WEBGL_compressed_texture_etc"))
+                    return (ETC2, SurfaceFormat.Etc2Rgba8);
+                if (JSBind_WEBGL20.HasExtension("WEBGL_compressed_texture_s3tc"))
+                    return (BC3, SurfaceFormat.Dxt5);
+                if (JSBind_WEBGL20.HasExtension("WEBGL_compressed_texture_pvrtc"))
+                    return (PVRTC1_4_RGBA, SurfaceFormat.PvrtcRgba4Bpp);
+                // 兜底：转码为裸 RGBA8，按普通纹理上传（体积/显存吃亏，但保证能显示）。
+            }
             return (RGBA32, SurfaceFormat.Color);
         }
 
