@@ -5,7 +5,7 @@
   "AssetBundleDir": [
     "Bundles"
   ],
-  "autoAtlas": true,
+  "autoAtlas": false,
   "splitMode": "folder",
   "textureFormat": "Ktx2",
   "basisuPath": "../../Need_DLL/basisu.exe",
