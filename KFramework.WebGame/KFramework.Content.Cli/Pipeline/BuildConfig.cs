@@ -27,10 +27,10 @@ namespace KFramework.Content.Build
         [JsonPropertyName("AssetBundleDir")]
         [JsonConverter(typeof(StringOrStringArrayConverter))]
         public List<string>? AssetBundleDir { get; set; } = new List<string> { "Bundles" };
-
+        
         /// <summary>是否自动图集打包（默认 true）。</summary>
         [JsonPropertyName("autoAtlas")]
-        public bool AutoAtlas { get; set; } = true;
+        public bool AutoAtlas { get; set; } = false;
 
         /// <summary>
         /// AssetBundle 分包模式（默认 Folder）：
@@ -39,11 +39,11 @@ namespace KFramework.Content.Build
         /// </summary>
         [JsonPropertyName("splitMode")]
         [JsonConverter(typeof(BundleSplitModeConverter))]
-        public BundleSplitMode SplitMode { get; set; } = BundleSplitMode.Folder;
+        public BundleSplitMode SplitMode { get; set; } = BundleSplitMode.Whole;
 
         /// <summary>图集页 / 整图纹理的最终编码格式（见 <see cref="AssetTextureFormat"/>）：Rgba（默认）/ Png / Ktx2。</summary>
         [JsonPropertyName("textureFormat")]
-        public AssetTextureFormat TextureFormat { get; set; } = AssetTextureFormat.Rgba;
+        public AssetTextureFormat TextureFormat { get; set; } = AssetTextureFormat.Webp;
 
         /// <summary>basisu 可执行文件路径（<c>Ktx2</c> 编码用）。为空则用 PATH 中的 "basisu"。可相对 Content 根目录（在 <see cref="Load"/> 中按 Content 根解析为绝对路径）。</summary>
         [JsonPropertyName("basisuPath")]
