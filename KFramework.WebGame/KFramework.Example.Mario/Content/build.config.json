@@ -7,7 +7,7 @@
     "MyRes"
   ],
   "autoAtlas": false,
-  "BundleSplitMode": "Whole",
+  "BundleSplitMode": "Folder",
   "TextureSwitchTarget": "Webp",
   "Ktx2ExePath": null,
   "copy_to_wwwroot": true

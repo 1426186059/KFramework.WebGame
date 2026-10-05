@@ -124,7 +124,15 @@ namespace KFramework.Content.Cli
                 }
             }
 
-            // 自动装箱模式：把 remainAssetPathList 中剩余的散图交给 AtlasBuilder 抽取并装箱；
+            // 已切好的 .atlas 图集（.atlas.txt 描述文件 + 其引用的 .png 页）已在主流程按原样入库，
+        // 必须从「待自动装箱列表」中剔除，否则会被自动图集打包器再次合并，造成重复打包/错乱。
+        remainAssetPathList.RemoveAll(f =>
+        {
+            string rel = Path.GetRelativePath(assetBaseDir, f).Replace('\\', '/');
+            return AtlasFile.IsAtlas(rel) || atlasPageRelatives.Contains(rel);
+        });
+
+        // 自动装箱模式：把 remainAssetPathList 中剩余的散图交给 AtlasBuilder 抽取并装箱；
             // 已切好的 .atlas 图集不参与此处打包（前述已在主流程原样入库）。
             if (autoAtlas)
             {
