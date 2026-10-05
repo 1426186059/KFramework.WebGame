@@ -34,8 +34,8 @@ namespace KFramework.Content.Build
         /// <summary>子图在图集页中的 Y 偏移。</summary>
         public int Y { get; set; }
 
-        /// <summary>纹理编码格式（仅 Type=="texture" 有意义）：Rgba / Png / Ktx2。运行端按此在加载阶段解码。</summary>
-        public AssetTextureFormat Format { get; set; } = AssetTextureFormat.Rgba;
+        /// <summary>纹理数据格式（仅 Type=="texture" 有意义，类型 ContentTextureDataFormat）：Rgba / Png / Webp / Jpg / Bmp / Gif / Tiff / Ktx2。运行端按此在加载阶段解码。</summary>
+        public ContentTextureDataFormat Format { get; set; } = ContentTextureDataFormat.Rgba;
     }
 
     /// <summary>

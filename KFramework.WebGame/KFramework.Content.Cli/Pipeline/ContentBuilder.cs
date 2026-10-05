@@ -1,4 +1,4 @@
-using KFramework.MonoGame;
+﻿using KFramework.MonoGame;
 using System.Diagnostics;
 using System.Text;
 
@@ -72,11 +72,13 @@ namespace KFramework.Content.Build
             /// <summary>是否裁掉精灵四周的透明边。</summary>
             public bool TrimSprites { get; set; } = true;
 
-            /// <summary>图集页（整图纹理）的最终编码格式（见 <see cref="AssetTextureFormat"/>）：
-            /// <c>Rgba</c>（默认，裸 RGBA8，运行端零解码、直接上传 GPU）/ <c>Png</c>（编码 PNG，体积更小，运行端在 LoadBundle 阶段解码）/
-            /// <c>Webp</c>（编码 WebP，体积更小，运行端借浏览器原生解码）/ <c>Ktx2</c>（KTX2/Basis 超压缩 GPU 纹理，显存与上传开销最低，构建端需 basisu，运行端需浏览器 Basis 转码器）。
+            /// <summary>图集页（整图纹理）的统一转换目标（见 <see cref="ContentTextureSwitchTarget"/>）：
+            /// <c>Rgba</c>（默认，裸 RGBA8，运行端零解码、直接上传 GPU）/ <c>Webp</c>（编码 WebP，体积更小，运行端借浏览器原生解码）/
+            /// <c>Ktx2</c>（KTX2/Basis 超压缩 GPU 纹理，显存与上传开销最低，构建端需 basisu，运行端需浏览器 Basis 转码器）/
+            /// <c>None</c>（不转码，保留每张图自身的 <see cref="ContentTextureDataFormat"/> 原图格式）。
+            /// Png 等具体数据格式不作为统一目标，而是 <see cref="ContentTextureDataFormat"/> 中的可原样保留格式。
             /// 可在 build.config.json 的 <c>textureFormat</c> 配置，或用 kfc --format 覆盖。</summary>
-            public AssetTextureFormat TextureFormat { get; set; } = AssetTextureFormat.Rgba;
+            public ContentTextureSwitchTarget TextureFormat { get; set; } = ContentTextureSwitchTarget.Rgba;
 
             /// <summary>basisu 可执行文件路径（<c>Ktx2</c> 编码用）。为空则用 PATH 中的 "basisu"。</summary>
             public string? BasisuPath { get; set; }
@@ -177,7 +179,6 @@ namespace KFramework.Content.Build
             }
             File.WriteAllText(Path.Combine(outputDirectory, "version.manifest"), result.Manifest.Serialize());
 
-            // 发布阶段（部署）：复制到其他目录 / 本地 HTTP 服务 / 不发布
             Deployer.Deploy(Global.mBuildConfig, root, outputDirectory, warnings);
 
             long totalBundleBytes = result.Manifest.Packages.Sum(p => p.Size);

@@ -15,7 +15,7 @@ namespace KFramework.MonoGame
     /// <param name="Page">所属图集页索引（≥0 表示该资源是某图集页上的子图，运行时据此切片；-1 表示独立纹理/数据）</param>
     /// <param name="X">子图在图集页中的 X 偏移（Page≥0 时有效）</param>
     /// <param name="Y">子图在图集页中的 Y 偏移</param>
-    /// <param name="Format">纹理编码格式（仅 Type=="texture" 有意义）：Rgba / Png / Ktx2。不兼容旧包，缺省为新默认 Rgba。</param>
+    /// <param name="Format">纹理数据格式（仅 Type=="texture" 有意义，类型为 <see cref="ContentTextureDataFormat"/>）：Rgba / Png / Webp / Jpg / Bmp / Gif / Tiff / Ktx2。不兼容旧包，缺省为 Rgba。</param>
     public sealed record AssetBundleEntry(
         string Path,
         string Type,
@@ -27,6 +27,6 @@ namespace KFramework.MonoGame
         int Page = -1,
         int X = 0,
         int Y = 0,
-        AssetTextureFormat Format = AssetTextureFormat.Rgba);
+        ContentTextureDataFormat Format = ContentTextureDataFormat.Rgba);
 
 }

@@ -129,7 +129,7 @@ namespace KFramework.MonoGame
             if (info.Page >= 0)
                 throw new InvalidOperationException(
                     $"资源「{name}」是旧格式的子图条目，请改用 SpriteSheetLoader 加载图集（整页纹理 + source rect）。");
-            if (info.Format == AssetTextureFormat.Ktx2)
+            if (info.Format == ContentTextureDataFormat.Ktx2)
             {
                 // 解包阶段已转码为压缩字节并缓存；此处才上传 GPU（与 Png/Webp/Rgba 同一上传路径）。
                 if (!_decodedTextures.TryGetValue(info.Path, out var decodedKtx2))
@@ -161,7 +161,7 @@ namespace KFramework.MonoGame
         // 但被安排在异步加载阶段完成，逐资源取用时保持同步、零解码。Rgba 格式本身已是像素，无需预解码。
 
         /// <summary>
-        /// 在包已驻留内存后、取资源之前，把需要解码的纹理（Png / Webp / Ktx2）提前解码/转码为字节并缓存；
+        /// 在包已驻留内存后、取资源之前，把需要解码的纹理（Png / Webp / Jpg / Bmp / Gif / Tiff 等 CPU 格式 / Ktx2）提前解码/转码为字节并缓存；
         /// GPU 上统一推迟到 <see cref="LoadTexture"/>（KTX2 走 CreateTexture 压缩格式重载，其余走 CreateTexture 的 RGBA8 路径）。
         /// KTX2 在此阶段借浏览器 Basis 转码器转码为设备原生压缩字节并缓存（目标格式由全局 WebGL2 上下文的扩展支持度决定，无需传入 <see cref="GraphicsDevice"/>）；
         /// 真正的 GPU 上传由 <see cref="LoadTexture"/> 完成，使四种格式取用逻辑一致（避免一次性把所有纹理灌进显存）。
@@ -176,12 +176,12 @@ namespace KFramework.MonoGame
             foreach (var e in Content.Entries)
             {
                 if (!string.Equals(e.Type, "texture", StringComparison.OrdinalIgnoreCase)) continue;
-                if (e.Format == AssetTextureFormat.Rgba) continue;
+                if (e.Format == ContentTextureDataFormat.Rgba) continue;
 
                 // KTX2 是 GPU 压缩纹理：在解包阶段只做 CPU 转码（Basis 超压缩 → 设备原生压缩字节），
                 // 缓存为字节；真正的 GPU 上传推迟到 LoadTexture（与 Png/Webp/Rgba 同一模型），
                 // 这样未被实际引用的纹理不会占用显存。目标格式由全局 WebGL2 上下文扩展选择，无需传入 GraphicsDevice。
-                if (e.Format == AssetTextureFormat.Ktx2)
+                if (e.Format == ContentTextureDataFormat.Ktx2)
                 {
                     int w = e.Width, h = e.Height;
                     if (w <= 0 || h <= 0)
@@ -197,9 +197,10 @@ namespace KFramework.MonoGame
                     continue;
                 }
 
-                if (e.Format is AssetTextureFormat.Webp or AssetTextureFormat.Png)
+                // 其余 CPU 压缩 / 无压缩格式（Png / Webp / Jpg / Bmp / Gif / Tiff 等）：均无托管解码器，
+                // 统一借浏览器原生 createImageBitmap 解码（清单已带宽高，用以预分配像素缓冲）。
+                if (e.Format != ContentTextureDataFormat.Ktx2)
                 {
-                    // Webp / Png 均无托管解码器：统一借浏览器原生解码（清单已带宽高，用以预分配像素缓冲）。
                     int w = e.Width, h = e.Height;
                     if (w <= 0 || h <= 0)
                         throw new InvalidOperationException($"纹理 “{e.Path}” 缺少像素尺寸，无法解码 {e.Format}。");
@@ -212,8 +213,6 @@ namespace KFramework.MonoGame
                     _decodedTextures[e.Path] = new DecodedTexture(pixels, SurfaceFormat.Color);
                     continue;
                 }
-
-                _decodedTextures[e.Path] = new DecodedTexture(DecodeEntryPixels(e.Path, e), SurfaceFormat.Color);
             }
         }
 
@@ -223,12 +222,11 @@ namespace KFramework.MonoGame
             byte[] raw = LoadAsset(name);
             return e.Format switch
             {
-                AssetTextureFormat.Rgba => raw,
-                AssetTextureFormat.Webp or AssetTextureFormat.Png => throw new InvalidOperationException(
-                    $"纹理 “{name}” 为 {e.Format}：必须在 LoadBundleAsync 阶段（DecodeTexturesAsync）经浏览器原生解码，请先调用 LoadBundleAsync，不要走同步兜底。"),
-                AssetTextureFormat.Ktx2 => throw new NotSupportedException(
+                ContentTextureDataFormat.Rgba => raw,
+                ContentTextureDataFormat.Ktx2 => throw new NotSupportedException(
                     $"纹理 “{name}” 为 KTX2（GPU 压缩纹理）：请在 LoadBundleAsync 阶段先经 DecodeTexturesAsync 预解码，不要走同步兜底。"),
-                _ => raw,
+                _ => throw new InvalidOperationException(
+                    $"纹理 “{name}” 为 {e.Format}：必须在 LoadBundleAsync 阶段（DecodeTexturesAsync）经浏览器原生解码，请先调用 LoadBundleAsync，不要走同步兜底。"),
             };
         }
 

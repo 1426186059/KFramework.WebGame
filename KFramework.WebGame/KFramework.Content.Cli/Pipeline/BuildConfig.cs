@@ -37,29 +37,23 @@ namespace KFramework.Content.Build
         /// <c>Folder</c> = 按文件夹拆分（顶级根目录自身及其每个含资源的子文件夹各自成包）；
         /// <c>Whole</c> = 整包不拆分（根目录含所有子目录整体打成一个包）。
         /// </summary>
-        [JsonPropertyName("splitMode")]
+        [JsonPropertyName("BundleSplitMode")]
         [JsonConverter(typeof(BundleSplitModeConverter))]
         public BundleSplitMode SplitMode { get; set; } = BundleSplitMode.Whole;
 
-        /// <summary>图集页 / 整图纹理的最终编码格式（见 <see cref="AssetTextureFormat"/>）：Rgba（默认）/ Png / Ktx2。</summary>
-        [JsonPropertyName("textureFormat")]
-        public AssetTextureFormat TextureFormat { get; set; } = AssetTextureFormat.Webp;
+        /// <summary>图集页 / 整图纹理的统一转换目标（见 <see cref="ContentTextureSwitchTarget"/>）：Rgba / Webp（默认）/ Ktx2 / None（不转码，原图处理）。Png 等非统一目标的具体数据格式见 <see cref="ContentTextureDataFormat"/>。</summary>
+        [JsonPropertyName("TextureSwitchTarget")]
+        public ContentTextureSwitchTarget TextureSwitchTarget { get; set; } = ContentTextureSwitchTarget.Webp;
 
         /// <summary>basisu 可执行文件路径（<c>Ktx2</c> 编码用）。为空则用 PATH 中的 "basisu"。可相对 Content 根目录（在 <see cref="Load"/> 中按 Content 根解析为绝对路径）。</summary>
         [JsonPropertyName("basisuPath")]
         public string? BasisuPath { get; set; }
 
-        /// <summary>发布方式：www / serve / none，缺省 none（由各示例 csproj 的 BuildGameContent 负责复制到 wwwroot/hot_update_res）。</summary>
-        [JsonPropertyName("deploy")]
-        public string Deploy { get; set; } = "none";
+        //默认拷贝到 wwwroot 目录，方便浏览器访问
+        [JsonPropertyName("copy_to_wwwroot")]
+        public bool copy_to_wwwroot { get; set; } = true;
 
-        /// <summary>本地静态服务器根目录（相对 Content 根），缺省 www。</summary>
-        [JsonPropertyName("wwwDir")]
-        public string WwwDir { get; set; } = "www";
 
-        /// <summary>deploy=serve 时的端口，缺省 8080。</summary>
-        [JsonPropertyName("port")]
-        public int Port { get; set; } = 8080;
 
         /// <summary>解析后的打包目录列表（合并 bundlesDir / bundleDirs / AssetBundleDir；
         /// 其中的空字符串元素表示 Content/raw 自身）。</summary>
@@ -107,8 +101,6 @@ namespace KFramework.Content.Build
 
             config.OutDir = config.OutDir.Replace('\\', '/').Trim('/');
             config.TempDir = config.TempDir.Replace('\\', '/').Trim('/');
-            config.WwwDir = config.WwwDir.Replace('\\', '/').Trim('/');
-            config.Deploy = config.Deploy.ToLowerInvariant();
             // basisu 由 EncodeKtx2 直接 Process.Start，需绝对路径；相对则按 Content 根解析。
             if (!string.IsNullOrWhiteSpace(config.BasisuPath))
                 config.BasisuPath = Path.GetFullPath(Path.Combine(contentRoot, config.BasisuPath));

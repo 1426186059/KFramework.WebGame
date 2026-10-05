@@ -49,8 +49,8 @@ namespace KFramework.Content.Build
                         atlasSize = int.Parse(args[++i]);
                         break;
                     case "--format" when i + 1 < args.Length:
-                        if (Enum.TryParse<AssetTextureFormat>(args[++i], ignoreCase: true, out var fmt))
-                            Global.mBuildConfig.TextureFormat = fmt;
+                        if (Enum.TryParse<ContentTextureSwitchTarget>(args[++i], ignoreCase: true, out var fmt))
+                            Global.mBuildConfig.TextureSwitchTarget = fmt;
                         break;
                     case "--split" when i + 1 < args.Length:
                         split = args[++i];
@@ -59,7 +59,7 @@ namespace KFramework.Content.Build
                         preview = false;
                         break;
                     case "--help" or "-h":
-                        PrintTool.Log("用法: kfc --root <内容项目目录> [--out <输出目录>] [--atlas-size 2048] [--format Rgba|Png|Ktx2] [--split folder|whole] [--no-preview]");
+                        PrintTool.Log("用法: kfc --root <内容项目目录> [--out <输出目录>] [--atlas-size 2048] [--format Rgba|Webp|Ktx2|None] [--split folder|whole] [--no-preview]");
                         return ExitSuccess;
                 }
             }
@@ -83,7 +83,7 @@ namespace KFramework.Content.Build
                 {
                     AtlasMaxSize = atlasSize,
                     WritePreviewPng = preview,
-                    TextureFormat = Global.mBuildConfig.TextureFormat,
+                    TextureFormat = Global.mBuildConfig.TextureSwitchTarget,
                     BasisuPath = Global.mBuildConfig.BasisuPath,
                 });
 
