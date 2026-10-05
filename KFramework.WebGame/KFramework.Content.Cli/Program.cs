@@ -58,20 +58,16 @@ namespace KFramework.Content.Cli
                 var builder = new ContentBuilder();
                 BuildOptions.AtlasMaxSize = 2048;
                 BuildOptions.WritePreviewPng = true;
-                BuildReport report = builder.Build(rawDir);
+                builder.Build(rawDir);
 
-                PrintTool.Log($"[kfc] raw     : {rawDir}");
-                PrintTool.Log($"[kfc] content : {report.OutputDirectory}");
-                PrintTool.Log($"[kfc] {report}");
-
-                foreach (string warning in report.Warnings)
-                    PrintTool.Log($"[kfc] 警告: {warning}");
+                PrintTool.Log("资源生成成功");
 
                 return ExitSuccess;
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"[kfc] 构建失败: {ex}");
+                PrintTool.Log("资源生成失败");
+                Console.Error.WriteLine(ex);
                 return ExitFailure;
             }
         }

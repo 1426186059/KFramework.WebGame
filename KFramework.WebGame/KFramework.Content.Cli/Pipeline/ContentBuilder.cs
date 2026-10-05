@@ -81,7 +81,6 @@ namespace KFramework.Content.Cli
                 }
 
                 BundleSplitMode mode = BuildConfigResult.SplitMode;
-                PrintTool.Log($"[kfc] 分包模式：{mode}（打包目录 = {string.Join(", ", bundleDirs)}）");
 
                 // 各根目录产出的包名必须唯一（保证运行端 GetBundle(name) 无歧义）
                 var usedNames = new HashSet<string>(StringComparer.Ordinal);
@@ -107,8 +106,7 @@ namespace KFramework.Content.Cli
             }
 
 
-            int copied = CopyRawAssets(rawDirectory, outputDirectory, bundleRoots);
-            PrintTool.Log($"[kfc] 其余 {copied} 个文件已原样复制到 content/（未打包）");
+            CopyRawAssets(rawDirectory, outputDirectory, bundleRoots);
 
             BuildResult result = BundleBuilder.BuildAssetBundles(builds);
             foreach (var pkg in result.Manifest.Packages)
@@ -116,7 +114,6 @@ namespace KFramework.Content.Cli
                 string pkgPath = Path.Combine(outputDirectory, pkg.File);
                 Directory.CreateDirectory(Path.GetDirectoryName(pkgPath)!);
                 File.WriteAllBytes(pkgPath, result.Bundles[pkg.Name]);
-                PrintTool.Log($"[kfc] 资源包 {pkg.Name} -> {pkg.File}（{pkg.Size} 字节，哈希 {pkg.Hash}）");
             }
             File.WriteAllText(Path.Combine(outputDirectory, "version.manifest"), result.Manifest.Serialize());
 

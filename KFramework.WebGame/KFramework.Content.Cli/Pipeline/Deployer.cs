@@ -1,6 +1,4 @@
-﻿using KFramework.MonoGame;
-
-namespace KFramework.Content.Cli
+﻿namespace KFramework.Content.Cli
 {
     public static class Deployer
     {
@@ -12,7 +10,6 @@ namespace KFramework.Content.Cli
                 string wwwDir = Path.Combine(Path.GetDirectoryName(root) ?? root, "wwwroot");
                 string targetDir = Path.Combine(wwwDir, targetDirName);
                 CopyDirectory(outputDirectory, targetDir);
-                PrintTool.Log($"Deployer CopyTo: {targetDir}");
             }
         }
 

@@ -98,7 +98,7 @@ namespace KFramework.Content.Cli
                             warnings.Add($"解码纹理失败：{relative}");
                             continue;
                         }
-                        (byte[] encoded, ContentTextureDataFormat fmt) = EncodeTextureToTarget(bytes, ContentTextureDataFormatHelper.FromExtension(relative), relative);
+                        (byte[] encoded, ContentTextureDataFormat fmt) = EncodeTextureToTarget(GetPixels(skImage), skImage.Width, skImage.Height, ContentTextureDataFormatHelper.FromExtension(relative), relative);
                         bundle.Assets.Add(new AssetBundleAsset
                         {
                             Path = name,
@@ -126,7 +126,7 @@ namespace KFramework.Content.Cli
                             continue;
                         }
                         // 不装箱：整图原样入包，按 BuildOptions.TextureFormat 编码（与已切图集整页图同一编码路径）。
-                        (byte[] encoded, ContentTextureDataFormat fmt) = EncodeTextureToTarget(bytes, ContentTextureDataFormatHelper.FromExtension(relative), relative);
+                        (byte[] encoded, ContentTextureDataFormat fmt) = EncodeTextureToTarget(GetPixels(skImage), skImage.Width, skImage.Height, ContentTextureDataFormatHelper.FromExtension(relative), relative);
                         bundle.Assets.Add(new AssetBundleAsset
                         {
                             Path = name,
@@ -227,14 +227,13 @@ namespace KFramework.Content.Cli
         ///   <item><see cref="ContentTextureSwitchTarget.Rgba"/> / <see cref="ContentTextureSwitchTarget.Webp"/>：直接编码为对应 <see cref="ContentTextureDataFormat"/>，无尺寸限制。</item>
         /// </list></summary>
         private static (byte[] Bytes, ContentTextureDataFormat Format) EncodeTextureToTarget(
-            byte[] originalBytes, ContentTextureDataFormat sourceFormat, string relative)
+            byte[] originalPixels, int width, int height, ContentTextureDataFormat sourceFormat, string relative)
         {
             if (BuildConfigResult.TextureSwitchTarget == ContentTextureSwitchTarget.None)
             {
-                return (originalBytes, sourceFormat);
+                return (originalPixels, ContentTextureDataFormat.Rgba);
             }
 
-            using var skImage = DecodeToRgba(originalBytes);
             if (BuildConfigResult.TextureSwitchTarget != ContentTextureSwitchTarget.Ktx2)
             {
                 ContentTextureDataFormat fmt;
@@ -254,29 +253,27 @@ namespace KFramework.Content.Cli
                 switch (fmt)
                 {
                     case ContentTextureDataFormat.Rgba:
-                        bytes = GetPixels(skImage);
+                        bytes = originalPixels;
                         break;
                     case ContentTextureDataFormat.Webp:
-                        bytes = EncodeWebp(skImage);
+                        bytes = EncodeWebpFromRgba(originalPixels, width, height);
                         break;
                     case ContentTextureDataFormat.Png:
-                        bytes = EncodePng(skImage);
+                        bytes = EncodePngFromRgba(originalPixels, width, height);
                         break;
                     default:
-                        bytes = GetPixels(skImage);
+                        bytes = originalPixels;
                         break;
                 }
                 return (bytes, fmt);
             }
 
-            if (IsSuitableForKtx2(skImage.Width, skImage.Height))
+            if (IsSuitableForKtx2(width, height))
             {
-                PrintTool.Log($"[kfc] KTX2 适配检查 {relative} {skImage.Width}x{skImage.Height}：适合（宽高均为 4 倍数），编码为 KTX2");
-                return (EncodeKtx2(skImage, BuildConfigResult.BasisuPathFull, BuildOptions.Ktx2Quality), ContentTextureDataFormat.Ktx2);
+                return (EncodeKtx2FromRgba(originalPixels, width, height, BuildConfigResult.BasisuPathFull, BuildOptions.Ktx2Quality), ContentTextureDataFormat.Ktx2);
             }
 
-            PrintTool.Log($"[kfc] KTX2 适配检查 {relative} {skImage.Width}x{skImage.Height}：不适合（宽高非 4 倍数），回退为 Webp");
-            return (EncodeWebp(skImage), ContentTextureDataFormat.Webp);
+            return (EncodeWebpFromRgba(originalPixels, width, height), ContentTextureDataFormat.Webp);
         }
 
         /// <summary>把 SKBitmap 编码为 PNG 字节（整图非装箱模式下 TextureFormat=Png 时使用）。</summary>
