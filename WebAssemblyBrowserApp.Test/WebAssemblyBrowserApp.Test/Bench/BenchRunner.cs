@@ -75,7 +75,7 @@ public static partial class BenchRunner
         await Task.Delay(16);           // 让浏览器先把状态渲染出来，再进入同步计时
         string html = await m.RunAsync();
 
-        BenchKit.SetResults(BenchCatalog.RenderMenu() + html);
+        BenchKit.SetResults(html);
         BenchKit.SetStatus("完成 ✓ — " + m.Name);
     }
 }

@@ -68,6 +68,9 @@ public static class BenchKit
     private static string? _sinkString;
     private static byte[]? _sinkBytes;
 
+    // 复用的全局计时器：本工程只此一个 Stopwatch，每次计时 Restart()，避免到处 new。
+    private static Stopwatch _sw = new();
+
     /// <summary>
     /// 基线（int）：C# 内部调用，不跨任何边界。
     /// <para>
@@ -134,11 +137,11 @@ public static class BenchKit
             // 所以还要把窗口内的次数记下来一起显示（GcCount 列）。
             GC.Collect();
 
-            var sw = Stopwatch.StartNew();
+            _sw.Restart();
             for (long i = 0; i < times; i++) action();
-            sw.Stop();
+            _sw.Stop();
 
-            double ms = (sw.ElapsedTicks / (double)Stopwatch.Frequency) * 1000.0;
+            double ms = (_sw.ElapsedTicks / (double)Stopwatch.Frequency) * 1000.0;
             if (ms < best) best = ms;
             if (ms > worst) worst = ms;
         }

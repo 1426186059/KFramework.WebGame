@@ -47,6 +47,10 @@ public static class BenchCatalog
         // 只测频率 —— 每帧做 N 次空跨界调用（滑块可调 0 → 100 万），
         // 因为一次空跨界 ≈ 拷贝 47 KB，次数往往比数据量更决定帧率。
         new Bench_CrossCall(),
+        // JS → C# 的“返回值能力”探测：同步/异步各能返回什么类型，以及多值怎么传。
+        new Bench_JsReturn(),
+        // 像素回传性能：MemoryView 写入 vs 直接返回 byte[]。
+        new Bench_ByteArrayReturn(),
     };
 
     /// <summary>按序号取模块，越界返回 null。</summary>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>byte[] 返回 vs MemoryView 写入 — WASM 基准测试</title>
+  <link rel="preload" id="webassembly" />
+  <script type="importmap"></script>
+  <script type='module' src="main#[.{fingerprint}].js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>byte[] 返回 vs MemoryView 写入（像素回传性能）</h1>
+  <p class="muted">对比把 RGBA 像素字节交回 C# 的两条路线：A) JS 写入 C# 预分配的 MemoryView（零拷贝）；
+    B) JS 直接 return Uint8Array，C# 同步收到 byte[]（复制一次）。进入本页会自动开始运行。</p>
+
+  <div class="bar">
+    <a class="btn" href="index.html">← 返回总纲</a>
+    <button id="runAll">运行全部测试</button>
+    <span id="status">加载中...</span>
+  </div>
+
+  <div id="results"><i>loading...</i></div>
+</body>
+
+</html>

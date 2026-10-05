@@ -18,6 +18,8 @@ import * as heapView from './bench_heapview.js';
 import * as runtimeApi from './bench_runtimeapi.js';
 import * as zeroCopy from './bench_zerocopy.js';
 import * as crossCall from './bench_crosscall.js';
+import * as jsReturn from './bench_jsreturn.js';
+import * as byteArrayReturn from './bench_bytearrayreturn.js';
 
 // 先整体接住再解构：create() 返回的是 RuntimeAPI，它身上除了下面这四个之外，
 // 还挂着 Module 与 localHeapViewU8 等【公开内存 API】—— 后者正是 bench_runtimeapi 要探测的东西，
@@ -117,6 +119,8 @@ setModuleImports('bench_heapview', heapView);
 setModuleImports('bench_runtimeapi', runtimeApi);
 setModuleImports('bench_zerocopy', zeroCopy);
 setModuleImports('bench_crosscall', crossCall);
+setModuleImports('bench_jsreturn', jsReturn);
+setModuleImports('bench_bytearrayreturn', byteArrayReturn);
 
 // 统一包一层：C# 侧 [JSExport] 是 async，异常会变成 rejected Promise，
 // 不 catch 的话控制台看不到，表现就是"点了没反应"。
