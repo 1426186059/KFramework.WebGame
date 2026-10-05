@@ -83,7 +83,7 @@ namespace KFramework.Content.Build
                 {
                     AtlasMaxSize = atlasSize,
                     WritePreviewPng = preview,
-                    TextureFormat = Global.mBuildConfig.TextureSwitchTarget,
+                    TextureSwitchTarget = Global.mBuildConfig.TextureSwitchTarget,
                     BasisuPath = Global.mBuildConfig.BasisuPath,
                 });
 

@@ -303,7 +303,7 @@ namespace KFramework.Content.Build
         private static (byte[] Bytes, ContentTextureDataFormat Format) EncodeTexture(
             SKBitmap skImage, byte[] originalBytes, string relative, ContentBuilder.BuildOptions options)
         {
-            if (options.TextureFormat == ContentTextureSwitchTarget.None)
+            if (options.TextureSwitchTarget == ContentTextureSwitchTarget.None)
             {
                 ContentTextureDataFormat cpu = ContentTextureDataFormatHelper.FromExtension(relative);
                 (ContentTextureDataFormat stored, bool keepBytes) = cpu.ToStored();
@@ -312,9 +312,9 @@ namespace KFramework.Content.Build
                 return (outBytes, stored);
             }
 
-            if (options.TextureFormat != ContentTextureSwitchTarget.Ktx2)
+            if (options.TextureSwitchTarget != ContentTextureSwitchTarget.Ktx2)
             {
-                ContentTextureDataFormat fmt = options.TextureFormat switch
+                ContentTextureDataFormat fmt = options.TextureSwitchTarget switch
                 {
                     ContentTextureSwitchTarget.Rgba => ContentTextureDataFormat.Rgba,
                     ContentTextureSwitchTarget.Webp => ContentTextureDataFormat.Webp,
@@ -347,15 +347,15 @@ namespace KFramework.Content.Build
         internal static (byte[] Bytes, ContentTextureDataFormat Format) EncodeTexture(
             byte[] rgba, int width, int height, ContentBuilder.BuildOptions options, string assetName)
         {
-            if (options.TextureFormat == ContentTextureSwitchTarget.None)
+            if (options.TextureSwitchTarget == ContentTextureSwitchTarget.None)
             {
                 PrintTool.Log($"[kfc] 纹理格式=None（原图处理） {assetName} {width}x{height}：保留原始 RGBA 裸像素");
                 return (rgba, ContentTextureDataFormat.Rgba);
             }
 
-            if (options.TextureFormat != ContentTextureSwitchTarget.Ktx2)
+            if (options.TextureSwitchTarget != ContentTextureSwitchTarget.Ktx2)
             {
-                ContentTextureDataFormat fmt = options.TextureFormat switch
+                ContentTextureDataFormat fmt = options.TextureSwitchTarget switch
                 {
                     ContentTextureSwitchTarget.Rgba => ContentTextureDataFormat.Rgba,
                     ContentTextureSwitchTarget.Webp => ContentTextureDataFormat.Webp,

@@ -78,7 +78,7 @@ namespace KFramework.Content.Build
             /// <c>None</c>（不转码，保留每张图自身的 <see cref="ContentTextureDataFormat"/> 原图格式）。
             /// Png 等具体数据格式不作为统一目标，而是 <see cref="ContentTextureDataFormat"/> 中的可原样保留格式。
             /// 可在 build.config.json 的 <c>textureFormat</c> 配置，或用 kfc --format 覆盖。</summary>
-            public ContentTextureSwitchTarget TextureFormat { get; set; } = ContentTextureSwitchTarget.Rgba;
+            public ContentTextureSwitchTarget TextureSwitchTarget { get; set; } = ContentTextureSwitchTarget.Webp;
 
             /// <summary>basisu 可执行文件路径（<c>Ktx2</c> 编码用）。为空则用 PATH 中的 "basisu"。</summary>
             public string? BasisuPath { get; set; }
