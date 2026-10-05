@@ -98,3 +98,31 @@ Web 运行端通过浏览器原生 Basis 转码器（basis_transcoder.js / .wasm
     }
 
 原因：保持代码风格统一、可读性一致，避免表达式与语句两种风格混用。
+
+----------------------------------------------------------------------
+七、控制语句必须加大括号
+----------------------------------------------------------------------
+if / else / for / foreach / while 等控制语句，哪怕只有一行代码，也必须使用大括号 `{}`
+包裹，禁止省略大括号的「单行 if」写法（如 `if (x) Do();`）。
+
+禁止（✗）：
+    if (target == oriFormat) return original;
+    if (bmp is null) return fallback;
+    if (sw == ContentTextureSwitchTarget.Webp) target = Webp;
+
+允许（✓）：
+    if (target == oriFormat)
+    {
+        return original;
+    }
+    if (bmp is null)
+    {
+        return fallback;
+    }
+    if (sw == ContentTextureSwitchTarget.Webp)
+    {
+        target = Webp;
+    }
+
+原因：统一风格、降低误改风险；后续在大括号内追加语句时，不会因漏加大括号而
+把本应属于 if 的代码变成始终执行。

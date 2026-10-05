@@ -31,7 +31,6 @@ namespace KFramework.Content.Cli
 
         public int AtlasCount { get; init; }
 
-        /// <summary>实际发布（打包产物）目录，供命令行回显。</summary>
         public string OutputDirectory { get; init; } = "";
     }
 
@@ -137,10 +136,6 @@ namespace KFramework.Content.Cli
             };
         }
         
-        /// <summary>
-        /// 在「按目录打包」模式下，把不在任何打包根目录内的 raw 文件原样复制到 content/（不做打包/压缩，保持原样）。
-        /// 属于打包根目录的文件已被打成 AssetBundle，跳过；打包配置文件（build.config.json）也跳过。
-        /// </summary>
         private static int CopyRawAssets(string rawDirectory, string outputDirectory, List<string> bundleRoots)
         {
             int copied = 0;

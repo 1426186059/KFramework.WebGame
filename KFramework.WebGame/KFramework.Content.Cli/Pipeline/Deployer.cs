@@ -13,7 +13,6 @@
             }
         }
 
-        /// <summary>把 source 目录整体镜像复制到 dest（先清空 dest 再复制，保证不含残留旧文件）。</summary>
         private static void CopyDirectory(string source, string dest)
         {
             if (Directory.Exists(dest)) Directory.Delete(dest, recursive: true);

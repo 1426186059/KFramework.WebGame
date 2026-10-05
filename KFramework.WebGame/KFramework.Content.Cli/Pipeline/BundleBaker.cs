@@ -3,6 +3,7 @@ using KTexturePacker.Core;
 using SkiaSharp;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -10,11 +11,6 @@ using System.Text.Json.Nodes;
 namespace KFramework.Content.Cli
 {
 
-    /// <summary>
-    /// 构建单个 AssetBundle：把给定文件夹的直接资源文件打包——纹理进图集，其余原样入包。
-    /// 图集页与子图索引都写入同一个包，因此每个包自带其纹理（运行端按 Page 切片）。
-    /// 复用外部 KTexturePacker 工具核心（MaxRects 摆放 + 整页合成 + AtlasData 导出）。
-    /// </summary>
     public static class BundleBaker
     {
         public static AssetBundleBuild BuildBundle(
@@ -91,52 +87,19 @@ namespace KFramework.Content.Cli
 
                     if (atlasPageRelatives.Contains(relative))
                     {
-                        // 已切图集的整页图：原样入库为整图纹理，跳过自动装箱（不再重排/重切）
-                        SKBitmap skImage = DecodeToRgba(bytes);
-                        if (skImage is null)
-                        {
-                            warnings.Add($"解码纹理失败：{relative}");
-                            continue;
-                        }
-                        (byte[] encoded, ContentTextureDataFormat fmt) = EncodeTextureToTarget(GetPixels(skImage), skImage.Width, skImage.Height, ContentTextureDataFormatHelper.FromExtension(relative), relative);
-                        bundle.Assets.Add(new AssetBundleAsset
-                        {
-                            Path = name,
-                            Type = ContentAssetType.Texture,
-                            Bytes = encoded,
-                            Width = skImage.Width,
-                            Height = skImage.Height,
-                            Format = fmt,
-                        });
-                        skImage.Dispose();
+                        (int w, int h) = GetImageDimensions(bytes);
+                        bundle.Assets.Add(EncodeRgbaToTarget(w, h, bytes, ContentTextureDataFormatHelper.FromExtension(relative)));
                         textureCount++;
                         continue;
                     }
 
                     if (Global.supportTextureFileType.Contains(Path.GetExtension(relative)))
                     {
-                        // 自动装箱模式：散图交给 AtlasBuilder 从 remainAssetPathList 抽取并装箱，主循环跳过
                         if (autoAtlas)
                             continue;
 
-                        SKBitmap skImage = DecodeToRgba(bytes);
-                        if (skImage is null)
-                        {
-                            warnings.Add($"解码纹理失败：{relative}");
-                            continue;
-                        }
-                        // 不装箱：整图原样入包，按 BuildOptions.TextureFormat 编码（与已切图集整页图同一编码路径）。
-                        (byte[] encoded, ContentTextureDataFormat fmt) = EncodeTextureToTarget(GetPixels(skImage), skImage.Width, skImage.Height, ContentTextureDataFormatHelper.FromExtension(relative), relative);
-                        bundle.Assets.Add(new AssetBundleAsset
-                        {
-                            Path = name,
-                            Type = ContentAssetType.Texture,
-                            Bytes = encoded,
-                            Width = skImage.Width,
-                            Height = skImage.Height,
-                            Format = fmt,
-                        });
-                        skImage.Dispose();
+                        (int w, int h) = GetImageDimensions(bytes);
+                        bundle.Assets.Add(EncodeRgbaToTarget(w, h, bytes, ContentTextureDataFormatHelper.FromExtension(relative)));
                         textureCount++;
                     }
                     else
@@ -167,11 +130,6 @@ namespace KFramework.Content.Cli
             return bundle;
         }
 
-        /// <summary>把任意图片字节解码并规范化为「Rgba8888」位图。
-        /// 关键点：
-        /// 1) jpg/bmp 经 <see cref="SKBitmap.Decode"/> 后 AlphaType 常为 Unknown，下游 KTX2 编码会把它当全透明→黑图，这里强制为 Opaque（像素 alpha 写 255）；
-        /// 2) 尺寸不做强制 pad：是否适合块压缩（KTX2/S3TC 等，要求宽高 4 的倍数）由 <see cref="IsSuitableForKtx2"/> 在编码阶段判断，
-        ///    不适合的纹理会在 <see cref="EncodeTextureToTarget"/> 中回退为 Png 等非压缩格式，而不是悄悄把尺寸改大（篡改纹理坐标）。</summary>
         private static SKBitmap DecodeToRgba(byte[] bytes)
         {
             SKBitmap src = SKBitmap.Decode(bytes);
@@ -191,12 +149,6 @@ namespace KFramework.Content.Cli
             return dst;
         }
 
-        /// <summary>取出 Rgba8888 直 alpha 像素字节（整图纹理上传与装箱产物均依赖此格式）。</summary>
-        /// <remarks>
-        /// <see cref="SKBitmap.Decode"/> 在 Windows 上默认解成 Bgra8888（平台色彩类型），
-        /// 直接取字节会把 BGRA 当 RGBA 入库，导致运行端 R/B 通道互换（红砖变蓝）。
-        /// 这里统一转换成 Rgba8888 再取字节。
-        /// </remarks>
         private static byte[] GetPixels(SKBitmap bmp)
         {
             if (bmp.ColorType != SKColorType.Rgba8888)
@@ -211,72 +163,67 @@ namespace KFramework.Content.Cli
             return pixmap.GetPixelSpan().ToArray();
         }
 
-        /// <summary>全部块压缩格式（S3TC/DXT、ASTC、BC7、ETC2）均为 4×4 块，要求宽高均为 4 的倍数；
-        /// 否则运行端无论转码成哪种压缩格式，都会因「基级尺寸非 4 倍数」而 glCompressedTexImage2D 失败（黑图）。
-        /// 因此 <see cref="ContentTextureSwitchTarget.Ktx2"/> 仅对 <paramref name="width"/>/<paramref name="height"/> 都是 4 倍数的纹理适用。</summary>
         internal static bool IsSuitableForKtx2(int width, int height)
         {
             return (width & 3) == 0 && (height & 3) == 0;
         }
 
-        /// <summary>按 BuildConfigResult.TextureSwitchTarget 把整图纹理（来自磁盘原图）编码为目标格式字节 + 实际数据格式标记（整图纹理与已切图集整页图共用）。
-        /// 入参为<b>源文件原始字节（原像素数据）</b>与<b>源图自身的 <see cref="ContentTextureDataFormat"/>（由扩展名推断）</b>：
-        /// <list type="bullet">
-        ///   <item><see cref="ContentTextureSwitchTarget.None"/>：不转码，按源图自身的 <see cref="ContentTextureDataFormat"/> 原样保留（png/webp/jpg… 直接存源文件字节）。</item>
-        ///   <item><see cref="ContentTextureSwitchTarget.Ktx2"/>：宽高皆 4 倍数 → 编码为 KTX2；否则回退为 Webp。</item>
-        ///   <item><see cref="ContentTextureSwitchTarget.Rgba"/> / <see cref="ContentTextureSwitchTarget.Webp"/>：直接编码为对应 <see cref="ContentTextureDataFormat"/>，无尺寸限制。</item>
-        /// </list></summary>
-        private static (byte[] Bytes, ContentTextureDataFormat Format) EncodeTextureToTarget(
-            byte[] originalPixels, int width, int height, ContentTextureDataFormat sourceFormat, string relative)
+        private static (int Width, int Height) GetImageDimensions(byte[] bytes)
         {
-            if (BuildConfigResult.TextureSwitchTarget == ContentTextureSwitchTarget.None)
-            {
-                return (originalPixels, ContentTextureDataFormat.Rgba);
-            }
-
-            if (BuildConfigResult.TextureSwitchTarget != ContentTextureSwitchTarget.Ktx2)
-            {
-                ContentTextureDataFormat fmt;
-                switch (BuildConfigResult.TextureSwitchTarget)
-                {
-                    case ContentTextureSwitchTarget.Rgba:
-                        fmt = ContentTextureDataFormat.Rgba;
-                        break;
-                    case ContentTextureSwitchTarget.Webp:
-                        fmt = ContentTextureDataFormat.Webp;
-                        break;
-                    default:
-                        fmt = ContentTextureDataFormat.Rgba;
-                        break;
-                }
-                byte[] bytes;
-                switch (fmt)
-                {
-                    case ContentTextureDataFormat.Rgba:
-                        bytes = originalPixels;
-                        break;
-                    case ContentTextureDataFormat.Webp:
-                        bytes = EncodeWebpFromRgba(originalPixels, width, height);
-                        break;
-                    case ContentTextureDataFormat.Png:
-                        bytes = EncodePngFromRgba(originalPixels, width, height);
-                        break;
-                    default:
-                        bytes = originalPixels;
-                        break;
-                }
-                return (bytes, fmt);
-            }
-
-            if (IsSuitableForKtx2(width, height))
-            {
-                return (EncodeKtx2FromRgba(originalPixels, width, height, BuildConfigResult.BasisuPathFull, BuildOptions.Ktx2Quality), ContentTextureDataFormat.Ktx2);
-            }
-
-            return (EncodeWebpFromRgba(originalPixels, width, height), ContentTextureDataFormat.Webp);
+            using var codec = SKCodec.Create(new MemoryStream(bytes));
+            if (codec is null) return (0, 0);
+            return (codec.Info.Width, codec.Info.Height);
         }
 
-        /// <summary>把 SKBitmap 编码为 PNG 字节（整图非装箱模式下 TextureFormat=Png 时使用）。</summary>
+        public static AssetBundleAsset EncodeRgbaToTarget(
+            int width,
+            int height,
+            byte[] originalPixels,
+            ContentTextureDataFormat oriFormat)
+        {
+            ContentTextureDataFormat target = oriFormat;
+            if (BuildConfigResult.TextureSwitchTarget == ContentTextureSwitchTarget.Webp) { target = ContentTextureDataFormat.Webp; }
+            else if (BuildConfigResult.TextureSwitchTarget == ContentTextureSwitchTarget.Rgba) { target = ContentTextureDataFormat.Rgba; }
+            else if (BuildConfigResult.TextureSwitchTarget == ContentTextureSwitchTarget.Ktx2) { target = ContentTextureDataFormat.Ktx2; }
+
+            if (target == oriFormat)
+            {
+                return new AssetBundleAsset { Width = width, Height = height, Bytes = originalPixels, Format = oriFormat, Type = ContentAssetType.Texture };
+            }
+
+            byte[] rgba;
+            if (oriFormat == ContentTextureDataFormat.Rgba) { rgba = originalPixels; }
+            else
+            {
+                SKBitmap bmp = DecodeToRgba(originalPixels);
+                if (bmp is null)
+                {
+                    return new AssetBundleAsset { Width = width, Height = height, Bytes = originalPixels, Format = oriFormat, Type = ContentAssetType.Texture };
+                }
+                rgba = GetPixels(bmp);
+                bmp.Dispose();
+            }
+
+            if (target == ContentTextureDataFormat.Webp)
+            {
+                return new AssetBundleAsset { Width = width, Height = height, Bytes = EncodeWebpFromRgba(rgba, width, height), Format = target, Type = ContentAssetType.Texture };
+            }
+            if (target == ContentTextureDataFormat.Png)
+            {
+                return new AssetBundleAsset { Width = width, Height = height, Bytes = EncodePngFromRgba(rgba, width, height), Format = target, Type = ContentAssetType.Texture };
+            }
+            if (target == ContentTextureDataFormat.Ktx2)
+            {
+                if (!IsSuitableForKtx2(width, height))
+                {
+                    return new AssetBundleAsset { Width = width, Height = height, Bytes = originalPixels, Format = oriFormat, Type = ContentAssetType.Texture };
+                }
+                return new AssetBundleAsset { Width = width, Height = height, Bytes = EncodeKtx2FromRgba(rgba, width, height, BuildConfigResult.BasisuPathFull, BuildOptions.Ktx2Quality), Format = target, Type = ContentAssetType.Texture };
+            }
+
+            return new AssetBundleAsset { Width = width, Height = height, Bytes = rgba, Format = target, Type = ContentAssetType.Texture };
+        }
+
         private static byte[] EncodePng(SKBitmap bmp)
         {
             using var img = SKImage.FromBitmap(bmp);
@@ -306,7 +253,6 @@ namespace KFramework.Content.Cli
             }
         }
 
-        /// <summary>把 RGBA8 字节（行优先 W*H*4）编码为 PNG（供图集页回退复用，因上游 KTexturePacker 不提供 ToPng）。</summary>
         internal static byte[] EncodePngFromRgba(byte[] rgba, int width, int height)
         {
             var bmp = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
@@ -324,12 +270,6 @@ namespace KFramework.Content.Cli
 
 
 
-        /// <summary>把 RGBA8 字节（行优先 W*H*4）编码为 KTX2（Basis Universal 超压缩）。</summary>
-        /// <remarks>
-        /// 经临时 PNG 调用 <c>basisu</c> 命令行编码为 KTX2（UASTC）：<c>basisu -file x.png -ktx2 -uastc -uastc_level &lt;q&gt; -mipmap -output_file y.ktx2</c>。需预先安装 Basis Universal 工具
-        /// （https://github.com/BinomialLLC/basis_universal），并配置 <paramref name="basisuPath"/>（为空则用 PATH 中的 basisu）。
-        /// 编码失败时抛出明确异常，提示安装/配置 basisu。
-        /// </remarks>
         internal static byte[] EncodeKtx2FromRgba(byte[] rgba, int width, int height, string? basisuPath, int quality)
         {
             var bmp = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
@@ -345,7 +285,6 @@ namespace KFramework.Content.Cli
             }
         }
 
-        /// <summary>把 SKBitmap 编码为 KTX2（Basis Universal 超压缩），借外部 <c>basisu</c> 命令行完成。</summary>
         internal static byte[] EncodeKtx2(SKBitmap bmp, string? basisuPath, int quality)
         {
             string tmpPng = Path.Combine(Path.GetTempPath(), $"kf_{Guid.NewGuid():N}.png");
@@ -405,14 +344,11 @@ namespace KFramework.Content.Cli
             return false;
         }
 
-        /// <summary>文件路径 → 资源名：保留原始扩展名（如 .png/.json/.txt），仅小写化、统一用 / 分隔。
-        /// 保留扩展名可让资源名携带更多类型信息，配合模糊/精确查找更易区分同名不同型的资源。</summary>
         private static string AssetNameOf(string relativePath)
         {
             return AssetName.Normalize(relativePath);
         }
 
-        /// <summary>按扩展名把资源归类为 Audio / Video / Text 之一（仅控制包内 Type 元数据，不影响实际字节）。</summary>
         private static ContentAssetType AssetTypeOf(string relative)
         {
             string ext = Path.GetExtension(relative);

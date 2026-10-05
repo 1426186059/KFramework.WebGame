@@ -3,12 +3,6 @@ using System.Text;
 
 namespace KFramework.Content.Cli
 {
-    /// <summary>
-    /// kfc —— KFramework.MonoGame 内容管线命令行工具
-    /// 用法：kfc [--root &lt;内容项目目录&gt;]
-    /// 约定：&lt;root&gt; 下需有 build.config.json（不存在则自动生成默认配置）；
-    /// 不传任何参数时，以「当前执行目录」作为 &lt;root&gt; 查找 build.config.json。
-    /// </summary>
     internal static class Program
     {
         private const int ExitSuccess = 0;
@@ -56,8 +50,8 @@ namespace KFramework.Content.Cli
             try
             {
                 var builder = new ContentBuilder();
-                BuildOptions.AtlasMaxSize = 2048;
-                BuildOptions.WritePreviewPng = true;
+                BuildOptions.AutoAtlasMaxSize = 2048;
+                BuildOptions.AutoAtlasWritePreviewPng = true;
                 builder.Build(rawDir);
 
                 PrintTool.Log("资源生成成功");

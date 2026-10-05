@@ -4,48 +4,27 @@ using System.Text.Json;
 
 namespace KFramework.Content.Cli
 {
-    /// <summary>
-    /// 描述一个待构建的资源包（对齐 Unity <c>AssetBundleBuild</c>）。
-    /// 在 <see cref="BundleBuilder.BuildAssetBundles"/> 中作为构建单元。
-    /// </summary>
     public sealed class AssetBundleBuild
     {
-        /// <summary>逻辑包名（对应 Unity 的 assetBundleName，全相对路径含 '/'，如 myres/group/atlas）。</summary>
         public string AssetBundleName { get; set; } = "";
         public string FullDir { get; set; } = "";
-        /// <summary>包内资源。</summary>
         public List<AssetBundleAsset> Assets { get; set; } = new();
     }
 
-    /// <summary>包内一条待写入的资源。</summary>
     public sealed class AssetBundleAsset
     {
         public string Path { get; set; } = "";
         public ContentAssetType Type { get; set; } =  ContentAssetType.Text;
         public byte[] Bytes { get; set; } = Array.Empty<byte>();
-        /// <summary>原始像素宽（仅 atlas / 纹理类资源有意义，用于运行时直接上传 GPU）。</summary>
         public int Width { get; set; }
-        /// <summary>原始像素高。</summary>
         public int Height { get; set; }
-        /// <summary>所属图集页索引（≥0 表示子图；-1 表示独立资源）。</summary>
         public int Page { get; set; } = -1;
-        /// <summary>子图在图集页中的 X 偏移。</summary>
         public int X { get; set; }
-        /// <summary>子图在图集页中的 Y 偏移。</summary>
         public int Y { get; set; }
 
-        /// <summary>纹理数据格式（仅 Type=="texture" 有意义，类型 ContentTextureDataFormat）：Rgba / Png / Webp / Jpg / Bmp / Gif / Tiff / Ktx2。运行端按此在加载阶段解码。</summary>
         public ContentTextureDataFormat Format { get; set; } = ContentTextureDataFormat.Rgba;
     }
 
-    /// <summary>
-    /// 资源打包管线（对齐 Unity <c>BuildPipeline.BuildAssetBundles</c>）。
-    /// 把所有 <see cref="AssetBundleBuild"/> 构建成一组 .web.lib，并汇总出总清单 <see cref="AssetBundleManifest"/>。
-    /// 纯流式、无文件系统依赖——产物是字节，由调用方自行落地（工具写盘 / 引擎存 IndexedDB）。
-    ///
-    /// 每个 .web.lib 都带上完整内容哈希（MD5），包文件名含短哈希，
-    /// 因此运行端能按哈希做精确的增量热更。
-    /// </summary>
     public static class BundleBuilder
     {
         private static readonly JsonSerializerOptions s_opts = new() { WriteIndented = true };
@@ -53,10 +32,6 @@ namespace KFramework.Content.Cli
         private const string SetFormat = "web.lib.bundle";
         private const int Version = 1;
 
-        /// <summary>
-        /// 构建资源包（对齐 Unity BuildPipeline.BuildAssetBundles）。
-        /// 返回总清单与“逻辑名 → 包字节”的字典，调用方按需持久化。
-        /// </summary>
         public static BuildResult BuildAssetBundles(IReadOnlyList<AssetBundleBuild> builds)
         {
             var bundles = new Dictionary<string, byte[]>();
@@ -150,7 +125,6 @@ namespace KFramework.Content.Cli
         }
     }
 
-    /// <summary><see cref="BundleBuilder.BuildAssetBundles"/> 的产物：总清单 + 各包字节。</summary>
     public sealed class BuildResult
     {
         public AssetBundleManifest Manifest { get; }
