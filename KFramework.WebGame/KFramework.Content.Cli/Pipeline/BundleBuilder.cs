@@ -21,7 +21,7 @@ namespace KFramework.Content.Cli
     public sealed class AssetBundleAsset
     {
         public string Path { get; set; } = "";
-        public string Type { get; set; } = "";
+        public ContentAssetType Type { get; set; } =  ContentAssetType.Text;
         public byte[] Bytes { get; set; } = Array.Empty<byte>();
         /// <summary>原始像素宽（仅 atlas / 纹理类资源有意义，用于运行时直接上传 GPU）。</summary>
         public int Width { get; set; }

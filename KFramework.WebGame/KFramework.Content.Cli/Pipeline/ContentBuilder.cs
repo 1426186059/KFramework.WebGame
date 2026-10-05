@@ -4,7 +4,6 @@ using System.Text;
 
 namespace KFramework.Content.Cli
 {
-    /// <summary>一次构建的结果统计。</summary>
     public sealed class BuildReport
     {
         public int AssetCount { get; init; }
@@ -33,60 +32,8 @@ namespace KFramework.Content.Cli
         public string OutputDirectory { get; init; } = "";
     }
 
-    /// <summary>
-    /// 内容管线：<c>raw/</c>（原始资源）→ <c>content/</c>（发布资源）。
-    /// 与 PixiJS assetpack 的思路一致：开发者只维护 raw，content 全部由工具生成。
-    ///
-    /// <para>打包目录约定：</para>
-    /// <list type="bullet">
-    ///   <item>在 Content 根目录放置一个打包配置文件 <c>build.config.json</c> 指定打包根目录：
-    ///         字段 <c>bundlesDir</c> / <c>bundleDirs</c> / <c>AssetBundleDir</c> 可填字符串或字符串数组，例如
-    ///         <c>{ "bundlesDir": ["Bundles", "UI"] }</c>；未配置或字段缺失时缺省为 <c>Bundles</c>。
-    ///         字段值为空字符串 <c>""</c> 表示「打包根目录（Content/raw）自身」作为打包目录，其下每个含资源的子文件夹各自成包。</item>
-    ///   <item>打包根目录自身若直接含资源，也会打成一个以根目录（相对 raw 的路径，如 MyRes）命名的 AssetBundle；其下「每一个含资源的子文件夹」再各自打成一个 AssetBundle（包名 = 子文件夹相对 raw 根目录的全路径，如 MyRes/atlas）。根目录包只含自身直接资源，不含子目录资源。</item>
-    ///   <item>多个根目录下的子文件夹包名必须唯一，出现同名会直接报错（请保证各根目录内子文件夹名不重复）。</item>
-    ///   <item>每个文件夹只打包其「直接」资源，不含子目录资源（子目录自身也是独立的 AssetBundle）。</item>
-    ///   <item>是否自动图集打包由 <c>autoAtlas</c> 控制（默认 true）：true 时独立 <c>.png</c> 经图集打包器装箱成图集；
-    ///        false 时 <c>.png</c> 原样整图入包（适合已用 <c>.atlas</c> 预切好的图集，运行端按整张页图切片）。</item>
-    ///   <item>资源分包方式由 <c>splitMode</c> 控制（默认 folder）：<c>folder</c> = 按文件夹拆分（顶级根目录自身及其每个含资源的子文件夹各自成包）；
-    ///        <c>whole</c> = 整包不拆分（根目录含所有子目录整体打成一个包）。</item>
-    ///   <item>除「指定打包目录」外，其余 raw 文件（如静态资源、配置文件等）原封不动地复制到 <c>content/</c>，不做打包/压缩。</item>
-    ///   <item>配置里指定的打包根目录必须真实存在；若不存在则直接报错（不再支持把整个 raw 打成单个 content 整包的“兼容模式”）。</item>
-    ///   <item>输出目录由配置 <c>outDir</c> 指定（相对 root，默认 <c>content</c>）；发布方式由 <c>deploy</c> 决定：
-    ///         <c>www</c>（把产物整体镜像复制到 <c>wwwDir</c>，默认 www）/ <c>serve</c>（在产物目录上启动本地 HTTP 服务，端口 <c>port</c> 默认 8080）/ <c>none</c>。</item>
-    /// </list>
-    /// </summary>
     public sealed class ContentBuilder
     {
-        public sealed class BuildOptions
-        {
-            /// <summary>单张图集的边长上限。</summary>
-            public int AtlasMaxSize { get; set; } = 2048;
-
-            /// <summary>图集内相邻精灵的间隔。</summary>
-            public int AtlasPadding { get; set; } = 2;
-
-            /// <summary>是否额外输出 atlas_N.png 预览图，方便用看图工具检查发布结果；预览图写到配置 tempDir 指定的临时目录（默认 Content/temp），不随 outDir 发布。</summary>
-            public bool WritePreviewPng { get; set; } = true;
-
-            /// <summary>是否裁掉精灵四周的透明边。</summary>
-            public bool TrimSprites { get; set; } = true;
-
-            /// <summary>图集页（整图纹理）的统一转换目标（见 <see cref="ContentTextureSwitchTarget"/>）：
-            /// <c>Rgba</c>（默认，裸 RGBA8，运行端零解码、直接上传 GPU）/ <c>Webp</c>（编码 WebP，体积更小，运行端借浏览器原生解码）/
-            /// <c>Ktx2</c>（KTX2/Basis 超压缩 GPU 纹理，显存与上传开销最低，构建端需 basisu，运行端需浏览器 Basis 转码器）/
-            /// <c>None</c>（不转码，保留每张图自身的 <see cref="ContentTextureDataFormat"/> 原图格式）。
-            /// Png 等具体数据格式不作为统一目标，而是 <see cref="ContentTextureDataFormat"/> 中的可原样保留格式。
-            /// 可在 build.config.json 的 <c>textureFormat</c> 配置，或用 kfc --format 覆盖。</summary>
-            public ContentTextureSwitchTarget TextureSwitchTarget { get; set; } = ContentTextureSwitchTarget.Webp;
-
-            /// <summary>basisu 可执行文件路径（<c>Ktx2</c> 编码用）。为空则用 PATH 中的 "basisu"。</summary>
-            public string? BasisuPath { get; set; }
-
-            /// <summary>KTX2（Basis UASTC）质量等级 0~4，越大越好越慢。仅 <c>TextureFormat=Ktx2</c> 时生效。</summary>
-            public int Ktx2Quality { get; set; } = 2;
-        }
-
         public BuildReport Build(string rawDirectory, BuildOptions? options = null)
         {
             options ??= new BuildOptions();

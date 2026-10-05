@@ -1,3 +1,5 @@
+using KFramework.MonoGame;
+
 namespace KFramework.Content.Cli
 {
     public static class Global
@@ -8,6 +10,28 @@ namespace KFramework.Content.Cli
         };
 
         public static BuildConfig mBuildConfig;
+        public static BuildOptions mBuildOptions;
+
+        public static void GetTextureFormat_Default_SuffixName(ContentTextureDataFormat mFormat)
+        {
+            switch(mFormat)
+            {
+                case ContentTextureDataFormat.Png:
+                    return ".png";
+                case ContentTextureDataFormat.Png:
+                    return ".png";
+                case ContentTextureDataFormat.Png:
+                    return ".png";
+                case ContentTextureDataFormat.Png:
+                    return ".png";
+                case ContentTextureDataFormat.Png:
+                    return ".png";
+                case ContentTextureDataFormat.Png:
+                    return ".png";
+                case ContentTextureDataFormat.Png:
+                    return ".png";
+            }
+        }
     }
 
 

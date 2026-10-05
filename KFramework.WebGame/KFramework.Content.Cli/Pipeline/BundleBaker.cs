@@ -342,30 +342,41 @@ namespace KFramework.Content.Cli
         /// <see cref="ContentTextureSwitchTarget.Ktx2"/> 宽高皆 4 倍数 → KTX2，否则回退为 Webp；
         /// <see cref="ContentTextureSwitchTarget.Rgba"/> / <see cref="ContentTextureSwitchTarget.Webp"/> 直接编码为对应 <see cref="ContentTextureDataFormat"/>。</summary>
         internal static (byte[] Bytes, ContentTextureDataFormat Format) EncodeTexture(
-            byte[] rgba, int width, int height, ContentBuilder.BuildOptions options, string assetName)
+            int width, 
+            int height, 
+            byte[] oriData,
+            ContentTextureDataFormat oriFormat)
         {
+            BuildOptions options = Global.mBuildOptions;
             if (options.TextureSwitchTarget == ContentTextureSwitchTarget.None)
             {
-                PrintTool.Log($"[kfc] 纹理格式=None（原图处理） {assetName} {width}x{height}：保留原始 RGBA 裸像素");
-                return (rgba, ContentTextureDataFormat.Rgba);
+                return (oriData, oriFormat);
             }
-
-            if (options.TextureSwitchTarget != ContentTextureSwitchTarget.Ktx2)
+            else if (options.TextureSwitchTarget == ContentTextureSwitchTarget.Rgba)
             {
-                ContentTextureDataFormat fmt = options.TextureSwitchTarget switch
+                var bmp = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+                try
                 {
-                    ContentTextureSwitchTarget.Rgba => ContentTextureDataFormat.Rgba,
-                    ContentTextureSwitchTarget.Webp => ContentTextureDataFormat.Webp,
-                    _ => ContentTextureDataFormat.Rgba,
-                };
-                byte[] bytes = fmt switch
+                    using var pixmap = bmp.PeekPixels();
+                    Marshal.Copy(rgba, 0, pixmap.GetPixels(), rgba.Length);
+                    return EncodeWebp(bmp);
+                }
+                finally
                 {
-                    ContentTextureDataFormat.Rgba => rgba,
-                    ContentTextureDataFormat.Webp => EncodeWebpFromRgba(rgba, width, height),
-                    ContentTextureDataFormat.Png  => EncodePngFromRgba(rgba, width, height),
-                    _ => rgba,
-                };
-                return (bytes, fmt);
+                    bmp.Dispose();
+                }
+            }
+            else if (options.TextureSwitchTarget == ContentTextureSwitchTarget.Webp)
+            {
+
+            }
+            else if (options.TextureSwitchTarget == ContentTextureSwitchTarget.Ktx2)
+            {
+                
+            }
+            else
+            {
+                throw new NotSupportedException();
             }
 
             if (IsSuitableForKtx2(width, height))
@@ -386,7 +397,6 @@ namespace KFramework.Content.Cli
             return data.ToArray();
         }
 
-        /// <summary>把 SKBitmap 编码为 WebP 字节（q90，整图非装箱模式下 TextureFormat=Webp 时使用）。</summary>
         private static byte[] EncodeWebp(SKBitmap bmp)
         {
             using var img = SKImage.FromBitmap(bmp);
@@ -394,7 +404,6 @@ namespace KFramework.Content.Cli
             return data.ToArray();
         }
 
-        /// <summary>把 RGBA8 字节（行优先 W*H*4）编码为 WebP（供图集页复用，因上游 KTexturePacker 不提供 ToWebp）。</summary>
         internal static byte[] EncodeWebpFromRgba(byte[] rgba, int width, int height)
         {
             var bmp = new SKBitmap(width, height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
