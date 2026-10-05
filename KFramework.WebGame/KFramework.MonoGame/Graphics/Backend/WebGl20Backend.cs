@@ -59,9 +59,6 @@ namespace KFramework.MonoGame
             // 因此 2D 精灵管线默认用 CullNone 关闭剔除（见 SpriteBatch）。
             JSBind_WEBGL20.FrontFace(JSBind_WEBGL20.CCW);
 
-            JSBind_WEBGL20.Enable(JSBind_WEBGL20.BLEND);
-            JSBind_WEBGL20.BlendEquation(JSBind_WEBGL20.BLEND_FUNC_ADD);
-
             // WebGL 初始化是同步的，故返回已完成的 Task（与 WebGPU 的异步初始化统一签名）。
             return Task.CompletedTask;
         }
@@ -140,14 +137,23 @@ namespace KFramework.MonoGame
 
         public void SetBlendState(BlendState state)
         {
-            JSBind_WEBGL20.Enable(JSBind_WEBGL20.BLEND);
-            JSBind_WEBGL20.BlendFuncSeparate(ToGLBlendMode(state.SourceColorBlendFactor),
-                                 ToGLBlendMode(state.DestinationColorBlendFactor),
-                                 ToGLBlendMode(state.SourceAlphaBlendFactor),
-                                 ToGLBlendMode(state.DestinationAlphaBlendFactor));
-            // 运算（BlendOp）与因子分离：RGB 与 Alpha 各下一条方程。
-            JSBind_WEBGL20.BlendEquationSeparate(ToGLBlendOp(state.ColorBlendOperation),
-                                        ToGLBlendOp(state.AlphaBlendOperation));
+            if (state.Enabled)
+            {
+                // BLEND 开：下发因子 + 混合方程（RGB 与 Alpha 各一条方程）。
+                JSBind_WEBGL20.Enable(JSBind_WEBGL20.BLEND);
+                JSBind_WEBGL20.BlendFuncSeparate(
+                    ToGLBlendMode(state.SourceColorBlendFactor),
+                    ToGLBlendMode(state.DestinationColorBlendFactor),
+                    ToGLBlendMode(state.SourceAlphaBlendFactor),
+                    ToGLBlendMode(state.DestinationAlphaBlendFactor));
+                JSBind_WEBGL20.BlendEquationSeparate(ToGLBlendOp(state.ColorBlendOperation),
+                                            ToGLBlendOp(state.AlphaBlendOperation));
+            }
+            else
+            {
+                // Enabled=false（如 Opaque）：彻底关闭混合单元，整像素直接覆盖，省去一次混合开销。
+                JSBind_WEBGL20.Disable(JSBind_WEBGL20.BLEND);
+            }
         }
 
         /// <summary>中立混合因子 → GL 常量（GL 常量只应出现在后端里，公共状态类保持后端无关）。</summary>

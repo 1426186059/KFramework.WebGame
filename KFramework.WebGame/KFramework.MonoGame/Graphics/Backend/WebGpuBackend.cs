@@ -281,10 +281,22 @@ namespace KFramework.MonoGame
             // 否则切换到不同目标时会因管线与附件不匹配而报错。
             // 混合运算（BlendOp）与深度状态同样是烘焙进管线的，也必须进键。
             string key = _targetFormat + "|" + _targetSampleCount + "|" + (_depthTarget != 0 ? "d" : "-") + "|"
+                + blend.Enabled + "|"
                 + blend.SourceColorBlendFactor + "|" + blend.DestinationColorBlendFactor + "|" + blend.ColorBlendOperation + "|"
                 + blend.SourceAlphaBlendFactor + "|" + blend.DestinationAlphaBlendFactor + "|" + blend.AlphaBlendOperation + "|"
                 + depth.DepthWrite + "|" + depth.DepthCompare;
             if (_pipelines.TryGetValue(key, out int pipeline)) return pipeline;
+
+            // Enabled=false（如 Opaque）：WebGPU 管线不带 blend 字段 = 直接覆盖，等价于关闭混合。
+            string blendField = blend.Enabled
+                ? ",\"blend\":{\"color\":{\"srcFactor\":\"" + BlendModeName(blend.SourceColorBlendFactor) +
+                  "\",\"dstFactor\":\"" + BlendModeName(blend.DestinationColorBlendFactor) +
+                  "\",\"operation\":\"" + BlendOpName(blend.ColorBlendOperation) +
+                  "\"},\"alpha\":{\"srcFactor\":\"" + BlendModeName(blend.SourceAlphaBlendFactor) +
+                  "\",\"dstFactor\":\"" + BlendModeName(blend.DestinationAlphaBlendFactor) +
+                  "\",\"operation\":\"" + BlendOpName(blend.AlphaBlendOperation) +
+                  "\"}}"
+                : string.Empty;
 
             string json = "{\"vertexShader\":" + _shaderModule +
                           ",\"fragmentShader\":" + _shaderModule +
@@ -300,13 +312,7 @@ namespace KFramework.MonoGame
                                 "\",\"depthWriteEnabled\":" + (depth.DepthWrite ? "true" : "false") +
                                 ",\"depthCompare\":\"" + CompareFunctionName(depth.DepthCompare) + "\"}"
                               : string.Empty) +
-                          ",\"blend\":{\"color\":{\"srcFactor\":\"" + BlendModeName(blend.SourceColorBlendFactor) +
-                          "\",\"dstFactor\":\"" + BlendModeName(blend.DestinationColorBlendFactor) +
-                          "\",\"operation\":\"" + BlendOpName(blend.ColorBlendOperation) +
-                          "\"},\"alpha\":{\"srcFactor\":\"" + BlendModeName(blend.SourceAlphaBlendFactor) +
-                          "\",\"dstFactor\":\"" + BlendModeName(blend.DestinationAlphaBlendFactor) +
-                          "\",\"operation\":\"" + BlendOpName(blend.AlphaBlendOperation) +
-                          "\"}}}";
+                          blendField + "}";
 
             pipeline = JSBind_WebGPU.CreatePipeline(json);
             if (pipeline == 0) throw new InvalidOperationException("[webgpu] 创建渲染管线失败。");

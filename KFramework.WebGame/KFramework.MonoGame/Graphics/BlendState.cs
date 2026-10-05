@@ -10,6 +10,8 @@ namespace KFramework.MonoGame
     /// </summary>
     public sealed class BlendState
     {
+        /// <summary>是否开启混合。false（如 Opaque）时后端直接关闭混合单元，整像素覆盖。</summary>
+        public readonly bool Enabled;
         public readonly BlendMode SourceColorBlendFactor;
         public readonly BlendMode DestinationColorBlendFactor;
         public readonly BlendOp ColorBlendOperation;
@@ -18,23 +20,30 @@ namespace KFramework.MonoGame
         public readonly BlendMode DestinationAlphaBlendFactor;
         public readonly BlendOp AlphaBlendOperation;
 
-        /// <summary>
-        /// 只指定四个因子，颜色与 Alpha 的运算都取 <see cref="BlendOp.Add"/>（绝大多数情况）。
-        /// </summary>
-        public BlendState(BlendMode srcColor, BlendMode dstColor, BlendMode srcAlpha, BlendMode dstAlpha)
-            : this(srcColor, dstColor, BlendOp.Add, srcAlpha, dstAlpha, BlendOp.Add)
+        public BlendState(BlendMode srcColor, BlendMode dstColor, BlendMode srcAlpha, BlendMode dstAlpha, bool enabled = true)
+            : this(srcColor, dstColor, BlendOp.Add, srcAlpha, dstAlpha, BlendOp.Add, enabled)
         {
         }
 
         /// <summary>完整指定：颜色 / Alpha 各自的因子与运算。</summary>
         public BlendState(BlendMode srcColor, BlendMode dstColor, BlendOp colorOp,
-                          BlendMode srcAlpha, BlendMode dstAlpha, BlendOp alphaOp)
+                          BlendMode srcAlpha, BlendMode dstAlpha, BlendOp alphaOp,
+                          bool enabled)
         {
+            Enabled = enabled;
             SourceColorBlendFactor = srcColor; DestinationColorBlendFactor = dstColor;
             ColorBlendOperation = colorOp;
             SourceAlphaBlendFactor = srcAlpha; DestinationAlphaBlendFactor = dstAlpha;
             AlphaBlendOperation = alphaOp;
         }
+
+        public static readonly BlendState NoneBlend =
+            new(BlendMode.Zero, 
+                BlendMode.Zero, 
+                BlendMode.Zero, 
+                BlendMode.Zero, 
+                enabled: false);
+
 
         public static readonly BlendState AlphaBlend =
             new(BlendMode.One, BlendMode.OneMinusSrcAlpha, BlendMode.One, BlendMode.OneMinusSrcAlpha);
@@ -46,8 +55,9 @@ namespace KFramework.MonoGame
         public static readonly BlendState Additive =
             new(BlendMode.SrcAlpha, BlendMode.One, BlendMode.SrcAlpha, BlendMode.One);
 
+        /// <summary>完全不混合：整像素覆盖（等价于关闭 BLEND）。</summary>
         public static readonly BlendState Opaque =
-            new(BlendMode.One, BlendMode.Zero, BlendMode.One, BlendMode.Zero);
+            new(BlendMode.One, BlendMode.Zero, BlendOp.Add, BlendMode.One, BlendMode.Zero, BlendOp.Add, enabled: false);
 
         /// <summary>
         /// 乘法混合：Final = Dest × SrcColor。传奇 / 传奇昼夜系统用它把「暗度色 + 发光体」的光照图
