@@ -8,7 +8,7 @@
   ],
   "autoAtlas": false,
   "BundleSplitMode": "Whole",
-  "TextureSwitchTarget": "None",
-  "basisuPath": null,
+  "TextureSwitchTarget": "Webp",
+  "Ktx2ExePath": null,
   "copy_to_wwwroot": true
 }
