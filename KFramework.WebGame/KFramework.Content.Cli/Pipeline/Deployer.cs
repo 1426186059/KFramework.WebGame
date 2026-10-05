@@ -1,6 +1,6 @@
 ﻿using KFramework.MonoGame;
 
-namespace KFramework.Content.Build
+namespace KFramework.Content.Cli
 {
     public static class Deployer
     {

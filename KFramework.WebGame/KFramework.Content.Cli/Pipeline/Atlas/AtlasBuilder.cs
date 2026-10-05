@@ -1,21 +1,34 @@
 using KFramework.MonoGame;
 using KTexturePacker.Core;
-using SkiaSharp;
-using System.IO;
 using System.Text.Json.Nodes;
 
-namespace KFramework.Content.Build
+namespace KFramework.Content.Cli
 {
-
-    /// <summary>
-    /// 图集打包（下游）：把需要自动装箱的散图（SpriteInput）打包成 AtlasData。已切好的 .atlas 图集由 BundleBaker 原样入库，不参与此流程。
-    /// 复用上游 KTexturePacker 的共享核心（<see cref="AtlasBaker"/>：MaxRects 摆放 + 整页合成 + 导出），
-    /// 核心只产出 RGBA8 中间格式；每张图集页作为独立整图纹理写入包，并在本层（下游）按
-    /// <see cref="ContentBuilder.BuildOptions.TextureFormat"/> 把 RGBA 转成目标格式（默认 Rgba，可选 Webp / Ktx2，或 None 原图处理）再入库。
-    /// 即：上游 KTexturePacker 只产出 RGBA 中间格式，PNG 是其默认交付物，其它格式由下游任取 RGBA 自行转换。
-    /// </summary>
     public static class AtlasBuilder
     {
+        internal static void BuildAtlas(
+            List<string> remainAssetPathList,
+            ContentBuilder.BuildOptions options)
+        {
+            List<SpriteInput> mList = new List<SpriteInput>();
+            for(int i = remainAssetPathList.Count - 1; i >= 0; i--)
+            {
+                string path = remainAssetPathList[i];
+                if (path.EndsWith(".atlas", StringComparison.OrdinalIgnoreCase))
+                {
+                    // 已切好的 .atlas 图集不参与自动装箱，保持用户打包好的布局。
+                    remainAssetPathList.RemoveAt(i);
+                    continue;
+                }
+                if (path.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                    path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                    path.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase))
+                {
+                   // mList.Add(new SpriteInput(path));
+                }
+            }
+        }
+
         /// <summary>
         /// 把需要自动装箱的散图 inputs 打包成图集，直接把整图纹理页写入 <paramref name="bundle"/>，并返回 AtlasData pages 节点。
         /// 已切好的 .atlas 图集不参与此流程（由 BundleBaker 原样入库）。
@@ -44,13 +57,6 @@ namespace KFramework.Content.Build
 
             atlasPageCount += result.Pages.Count;
 
-            // 下游按 BuildOptions.TextureFormat 把上游 RGBA 中间格式转成目标编码入库，
-            // 其中 KTX2 会经 BundleBaker.EncodeTexture 做「宽高非 4 倍数则回退」的适配判断（见其注释）：
-            //   Rgba（默认）：直接存裸 RGBA8，运行端零解码、直接上传 GPU，体积由 .web.lib 的 zip 承担；
-            //   Webp        ：用上游 RGBA 编码 WebP，体积更小，运行端借浏览器原生解码；
-            //   Ktx2        ：GPU 压缩纹理（Basis 超压缩），构建端用 basisu 编码（仅宽高 4 倍数），运行端借浏览器 Basis 转码器直传 GPU；
-            //                 但宽高非 4 倍数的页不适合块压缩，会回退为 Webp 并打印日志；
-            //   None        ：不转码，保留烘焙出的 RGBA 裸像素。
             foreach (AtlasPageOutput page in result.Pages)
             {
                 string pageName = Path.Combine(bundleName, page.Name + ".png").Replace('\\', '/');

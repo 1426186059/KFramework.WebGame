@@ -1,8 +1,7 @@
-using System;
-using System.Text;
 using KFramework.MonoGame;
+using System.Text;
 
-namespace KFramework.Content.Build
+namespace KFramework.Content.Cli
 {
     /// <summary>
     /// kfc —— KFramework.MonoGame 内容管线命令行工具

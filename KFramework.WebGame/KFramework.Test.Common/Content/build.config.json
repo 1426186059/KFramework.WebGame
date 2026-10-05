@@ -7,7 +7,7 @@
   ],
   "autoAtlas": false,
   "BundleSplitMode": "whole",
-  "TextureSwitchTarget": "Webp",
+  "TextureSwitchTarget": "None",
   "basisuPath": null,
   "copy_to_wwwroot": true
 }

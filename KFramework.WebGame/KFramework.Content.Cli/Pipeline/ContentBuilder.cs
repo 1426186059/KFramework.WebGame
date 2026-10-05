@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 
-namespace KFramework.Content.Build
+namespace KFramework.Content.Cli
 {
     /// <summary>一次构建的结果统计。</summary>
     public sealed class BuildReport

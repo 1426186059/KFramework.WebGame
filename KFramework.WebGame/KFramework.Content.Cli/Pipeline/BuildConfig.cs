@@ -1,9 +1,9 @@
+using KFramework.MonoGame;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using KFramework.MonoGame;
 
-namespace KFramework.Content.Build
+namespace KFramework.Content.Cli
 {
 
     /// <summary>
@@ -25,7 +25,6 @@ namespace KFramework.Content.Build
 
         /// <summary>打包目录（字符串或数组）；空字符串表示 Content/raw 自身为打包目录。</summary>
         [JsonPropertyName("AssetBundleDir")]
-        [JsonConverter(typeof(StringOrStringArrayConverter))]
         public List<string>? AssetBundleDir { get; set; } = new List<string> { "Bundles" };
         
         /// <summary>是否自动图集打包（默认 true）。</summary>
@@ -38,7 +37,6 @@ namespace KFramework.Content.Build
         /// <c>Whole</c> = 整包不拆分（根目录含所有子目录整体打成一个包）。
         /// </summary>
         [JsonPropertyName("BundleSplitMode")]
-        [JsonConverter(typeof(BundleSplitModeConverter))]
         public BundleSplitMode SplitMode { get; set; } = BundleSplitMode.Whole;
 
         /// <summary>图集页 / 整图纹理的统一转换目标（见 <see cref="ContentTextureSwitchTarget"/>）：Rgba / Webp（默认）/ Ktx2 / None（不转码，原图处理）。Png 等非统一目标的具体数据格式见 <see cref="ContentTextureDataFormat"/>。</summary>
@@ -122,50 +120,6 @@ namespace KFramework.Content.Build
         {
             BuildConfig mConfig = new BuildConfig();
             return JsonSerializer.Serialize(mConfig, new JsonSerializerOptions { WriteIndented = true });
-        }
-    }
-
-    /// <summary>允许 JSON 字段既可以是单个字符串，也可以是字符串数组，统一反序列化为 <see cref="List{T}"/>（T=string）。</summary>
-    public sealed class StringOrStringArrayConverter : JsonConverter<List<string>>
-    {
-        public override List<string>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            var list = new List<string>();
-            if (reader.TokenType == JsonTokenType.String)
-            {
-                list.Add(reader.GetString() ?? "");
-            }
-            else if (reader.TokenType == JsonTokenType.StartArray)
-            {
-                while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
-                {
-                    if (reader.TokenType == JsonTokenType.String) list.Add(reader.GetString() ?? "");
-                }
-            }
-            return list;
-        }
-
-        public override void Write(Utf8JsonWriter writer, List<string> value, JsonSerializerOptions options)
-        {
-            writer.WriteStartArray();
-            foreach (var s in value) writer.WriteStringValue(s);
-            writer.WriteEndArray();
-        }
-    }
-
-    /// <summary>把 <see cref="BundleSplitMode"/> 序列化为小写字符串（folder/whole），反序列化时大小写不敏感，兼容旧配置。</summary>
-    public sealed class BundleSplitModeConverter : JsonConverter<BundleSplitMode>
-    {
-        public override BundleSplitMode Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            string? s = reader.GetString();
-            if (s is null) return BundleSplitMode.Folder;
-            return Enum.TryParse<BundleSplitMode>(s, ignoreCase: true, out var value) ? value : BundleSplitMode.Folder;
-        }
-
-        public override void Write(Utf8JsonWriter writer, BundleSplitMode value, JsonSerializerOptions options)
-        {
-            writer.WriteStringValue(value.ToString().ToLowerInvariant());
         }
     }
 }

@@ -1,4 +1,4 @@
-namespace KFramework.Content.Build
+namespace KFramework.Content.Cli
 {
 
     /// <summary>资源名规范化：统一小写、反斜杠转正斜杠，保证跨平台 / 跨大小写一致。

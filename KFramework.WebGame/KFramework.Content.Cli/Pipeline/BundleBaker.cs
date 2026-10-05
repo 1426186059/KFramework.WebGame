@@ -1,14 +1,13 @@
 using KFramework.MonoGame;
 using KTexturePacker.Core;
 using SkiaSharp;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
-using System.Diagnostics;
 using System.Text.Json.Nodes;
-using System.IO;
 
-namespace KFramework.Content.Build
+namespace KFramework.Content.Cli
 {
 
     /// <summary>
@@ -18,32 +17,30 @@ namespace KFramework.Content.Build
     /// </summary>
     public static class BundleBaker
     {
-        /// <summary>被直接当「整图纹理」入包的图片扩展名；其余按原始字节入库。
-        /// 之前只认 .png，导致 .jpg/.webp 等被当普通字节流，运行端无法作为纹理加载（ImageTest 的 Bundle 区只显示 4 张图）。</summary>
-        private static readonly HashSet<string> s_imageExtensions = new(StringComparer.OrdinalIgnoreCase)
-        {
-            ".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif",
-        };
-
         public static AssetBundleBuild BuildBundle(
-            string bundleName, string[] files, string assetBaseDir, ContentBuilder.BuildOptions options, bool autoAtlas,
-            List<string> warnings, ref long rawBytes, ref int textureCount, ref int dataCount, ref int atlasPageCount,
+            string bundleName, 
+            string[] files, 
+            string assetBaseDir,
+            ContentBuilder.BuildOptions options, 
+            bool autoAtlas,
+            List<string> warnings, 
+            ref long rawBytes, 
+            ref int textureCount, 
+            ref int dataCount, 
+            ref int atlasPageCount,
             string tempDirectory)
         {
-            // 图集打包统一复用外部 KTexturePacker 工具的核心（MaxRects 摆放 + 整页合成 + AtlasData 导出）。
-            // 自动装箱的散图合成整页纹理（atlas_{i}）+ 一份 AtlasData JSON（资源名固定为 "atlas.json"）；
-            // 已切好的 .atlas 图集（以 .atlas 结尾）由前述预扫描原样入库，不参与此处自动打包。
-            // 运行时由 SpriteSheetLoader 读取 JSON 并提供 source rect，从而同一张图集页可合批。
-            var inputs = new List<SpriteInput>();
-            var bundle = new AssetBundleBuild { AssetBundleName = bundleName };
-            var names = new HashSet<string>(StringComparer.Ordinal);
+            //剩余可用的文件资源列表
+            List<string> remainAssetPathList = new List<string>(files);
+            //预扫描所有资源，收集已切图集的整页图(不再自动装箱)
+            AtlasBuilder.BuildAtlas(remainAssetPathList, options);
 
-            // 预扫描：识别 .atlas 预切图集（通用判定：以 .atlas 结尾），以及 .fnt 美术字引用的图集页。
-            // 已切好的图集（描述文件 + 整页图）直接原样入库，不再走自动装箱，保留用户打包好的布局。
-            var atlasPageRelatives = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            // 美术字（BMFont）：.fnt 里的字形坐标绑定在美术排好的图集页上，页图也必须原样入包，
-            // 否则自动装箱会重排像素、字形矩形全部失效。
+            List<SpriteInput> inputs = new List<SpriteInput>();
+            AssetBundleBuild bundle = new AssetBundleBuild { AssetBundleName = bundleName };
+            HashSet<string> names = new HashSet<string>(StringComparer.Ordinal);
+            HashSet<string> atlasPageRelatives = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
             foreach (string fontFile in files)
             {
                 string fontRel = Path.GetRelativePath(assetBaseDir, fontFile).Replace('\\', '/');
@@ -139,7 +136,7 @@ namespace KFramework.Content.Build
                         continue;
                     }
 
-                    if (s_imageExtensions.Contains(Path.GetExtension(relative)))
+                    if (Global.supportTextureFileType.Contains(Path.GetExtension(relative)))
                     {
                         SKBitmap skImage = DecodeToRgba(bytes);
                         if (skImage is null)
