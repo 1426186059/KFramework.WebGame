@@ -21,7 +21,6 @@ namespace KFramework.MonoGame
         public const int RGBA32 = 13;         // TranscoderFormat.RGBA32        -> 裸 RGBA8（不压缩，兜底）
 
         // 优先级（参考 three.js：质量从高到低）ASTC → BC7(BPTC) → ETC2/EAC → S3TC(DXT) → PVRTC → RGBA32。
-        // 返回的 glFormat 即 <see cref="SurfaceFormat"/>（其取值就是对应的 GL 内部格式，无需再映射）。
         // 返回的 glFormat 即 <see cref="SurfaceFormat"/>（后端中立枚举，不再等于 GL 常量）：
         // WebGL2 侧经 SurfaceFormatGL.ToInternalFormat 翻译成 GL 内部格式，WebGPU 侧经 SurfaceFormatToWebGpu 翻译成 GPUTextureFormat。
         public static (int basisFormat, SurfaceFormat glFormat) Pick()
