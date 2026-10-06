@@ -152,13 +152,15 @@ namespace KFramework.MonoGame
 
             // 照 MonoGame：origin 先乘以 scale，再参与定位。
             origin = origin * scale;
-            float c = MathF.Cos(rotation), s = MathF.Sin(rotation);
-
             if (rotation == 0f)
+            {
                 item.Set(position.X - origin.X, position.Y - origin.Y, w, h, color, uvTL, uvBR, layerDepth);
+            }
             else
+            {
+                float c = MathF.Cos(rotation), s = MathF.Sin(rotation);
                 item.Set(position.X, position.Y, -origin.X, -origin.Y, w, h, s, c, color, uvTL, uvBR, layerDepth);
-
+            }
             if (_sortMode == SpriteSortMode.Immediate) _batcher.DrawBatch(_sortMode, _material.Effect ?? _device.Effect);
         }
 
