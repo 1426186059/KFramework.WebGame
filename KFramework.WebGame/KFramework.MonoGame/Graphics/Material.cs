@@ -1,10 +1,8 @@
-using System;
-
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 材质：把「着色器 + 一组渲染状态 + 纹理采样参数」打包成可复用的绘制配置，
-    /// 对应 Unity 的 Material（引用 Shader，并携带 Blend / 采样 / 深度 / 剔除等渲染状态）。
+    /// 材质：把「着色器 + 一组渲染状态 + 纹理采样参数 + 一组着色器属性」打包成可复用的绘制配置，
+    /// 对应 Unity 的 Material（引用 Shader，携带 Blend / 采样 / 深度 / 剔除等渲染状态，以及往着色器里设的变量）。
     /// <para>
     /// SpriteBatch.Begin 直接吃一个 Material，不再把 BlendState / SamplerState 当散参传。
     /// 其中 SamplerState 即 Unity 片元着色器里 <c>sampler2D</c> 绑定的「采样方式」（filter/wrap）：
@@ -12,8 +10,15 @@ namespace KFramework.MonoGame
     /// 等价于 Unity 把一个 Texture2D 属性按 filterMode/wrapMode（或 SRP 的 SamplerState）绑定给 sampler2D。
     /// WebGL2 无独立 sampler 对象，采样参数经 texParameteri 写到当前绑定的纹理上。
     /// </para>
+    /// <para>
+    /// 属性（uniform）用法与 Unity 一致：<c>material.SetFloat("uTime", t)</c> / <c>SetVector("uParams", v)</c> /
+    /// <c>SetColor("_Tint", Color.White)</c> / <c>SetMatrix("_M", m)</c> / <c>SetTexture("_Mask", tex)</c>，
+    /// 绘制时由后端的精灵程序按属性名找到对应 uniform 灌入（名字在着色器里不存在就忽略，同 Unity）。
+    /// 这里设的是「该材质的基线值」，会被传入的 <see cref="MaterialPropertyBlock"/> 覆盖（照 Unity）。
+    /// 改属性会推进 <see cref="MaterialProperties.PropertiesVersion"/>，让材质去重短路失效、下一批绘制重新下发。
+    /// </para>
     /// </summary>
-    public sealed class Material
+    public sealed class Material : MaterialProperties
     {
         /// <summary>着色器程序（片元里的 sampler 即对应本引擎的 Texture2D + SamplerState）。
         /// 为 null 表示用 GraphicsDevice 的默认精灵着色器。</summary>
@@ -31,6 +36,7 @@ namespace KFramework.MonoGame
         /// <summary>光栅化状态（对应 Unity 的 Cull 命令）。</summary>
         public RasterizerState Rasterizer = RasterizerState.CullNone;
 
+        /// <summary>恢复成一个「默认精灵材质」（渲染状态回默认 + 清空着色器属性）。</summary>
         public void Reset()
         {
             Effect = null;
@@ -38,6 +44,7 @@ namespace KFramework.MonoGame
             Sampler = SamplerState.Point;
             DepthStencil = DepthStencilState.None;
             Rasterizer = RasterizerState.CullNone;
+            ClearProperties();
         }
     }
 }

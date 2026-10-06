@@ -66,6 +66,20 @@ namespace KFramework.Test.WebGL20.Tests
             return y + Font.LineSpacing + 6f;
         }
 
+        /// <summary>绕 UV 中心 (0.5, 0.5) 旋转的矩阵（行向量约定：p' = p × M，平移在 M41 / M42）。</summary>
+        protected static Matrix4x4 RotationAboutCenter(float angle)
+        {
+            float cs = MathF.Cos(angle);
+            float sn = MathF.Sin(angle);
+
+            Matrix4x4 m = Matrix4x4.Identity;
+            m.M11 = cs; m.M12 = sn;
+            m.M21 = -sn; m.M22 = cs;
+            m.M41 = 0.5f - (0.5f * cs - 0.5f * sn);
+            m.M42 = 0.5f - (0.5f * sn + 0.5f * cs);
+            return m;
+        }
+
         /// <summary>程序化生成一张棋盘格纹理（不依赖任何资源文件）。</summary>
         protected Texture2D MakeChecker(int size, Color a, Color b)
         {

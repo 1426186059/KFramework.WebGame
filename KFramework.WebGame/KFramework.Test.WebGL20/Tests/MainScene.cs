@@ -50,6 +50,18 @@ namespace KFramework.Test.WebGL20.Tests
                 Desc = "SpriteBatch.Begin(effect: 自定义 GLSL 片元着色器) 套用效果；WebGL2 真实编译生效，空格键总览⇄单图",
                 Factory = static () => new EffectScene(),
             },
+            new TestEntry
+            {
+                Name = "材质属性（Material.SetXXX：Unity 风格）",
+                Desc = "6 个格子共用一段片元着色器，各自只改一类材质属性：SetFloat / SetColor / SetInt / SetMatrix / SetTexture / SetVector",
+                Factory = static () => new MaterialScene(),
+            },
+            new TestEntry
+            {
+                Name = "材质属性块（MaterialPropertyBlock：每次绘制覆盖）",
+                Desc = "1 个共享 Material + 1 个重复使用的 MaterialPropertyBlock 画出 8 种外观：Clear 后 SetXXX 覆盖，不 new 材质",
+                Factory = static () => new MaterialPropertyBlockScene(),
+            },
         ];
     }
 
@@ -87,7 +99,7 @@ namespace KFramework.Test.WebGL20.Tests
                 }
             }
 
-            Keys[] digits = [Keys.Digit1, Keys.Digit2, Keys.Digit3, Keys.Digit4, Keys.Digit5];
+            Keys[] digits = [Keys.Digit1, Keys.Digit2, Keys.Digit3, Keys.Digit4, Keys.Digit5, Keys.Digit6, Keys.Digit7];
             for (int i = 0; i < TestRegistry.Entries.Count && i < digits.Length; i++)
             {
                 if (Input_KeyBoard.GetKeyDown(digits[i]))

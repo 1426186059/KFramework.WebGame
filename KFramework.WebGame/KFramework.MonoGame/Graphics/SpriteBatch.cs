@@ -14,6 +14,7 @@ namespace KFramework.MonoGame
         private Matrix4x4 _transform = Matrix4x4.Identity;
         private Matrix4x4 _projection;
         private Material _material = null!;
+        private MaterialPropertyBlock? _properties;
         private readonly Material _cache_Mat = new Material();
 
         private bool _beginCalled;
@@ -34,7 +35,18 @@ namespace KFramework.MonoGame
         public void Begin(Material material, SpriteSortMode sortMode = SpriteSortMode.Deferred,
                           Matrix4x4? transformMatrix = null)
         {
-            BeginInternal(material, sortMode, transformMatrix);
+            BeginInternal(material, null, sortMode, transformMatrix);
+        }
+
+        /// <summary>
+        /// 用材质 + 每次绘制的属性覆盖块开启一批绘制（照 Unity 的 Material + MaterialPropertyBlock：
+        /// 共用材质，只把这一批要改的少数属性放进 <paramref name="properties"/>，不必为每个实例 new 材质）。
+        /// </summary>
+        public void Begin(Material material, MaterialPropertyBlock? properties,
+                          SpriteSortMode sortMode = SpriteSortMode.Deferred,
+                          Matrix4x4? transformMatrix = null)
+        {
+            BeginInternal(material, properties, sortMode, transformMatrix);
         }
 
         /// <summary>
@@ -58,15 +70,16 @@ namespace KFramework.MonoGame
             _cache_Mat.Sampler = samplerState ?? SamplerState.Point;
             _cache_Mat.DepthStencil = depthStencilState ?? DepthStencilState.None;
             _cache_Mat.Rasterizer = rasterizerState ?? RasterizerState.CullNone;
-            BeginInternal(_cache_Mat, sortMode, transformMatrix);
+            BeginInternal(_cache_Mat, null, sortMode, transformMatrix);
         }
 
-        private void BeginInternal(Material material, SpriteSortMode sortMode, Matrix4x4? transformMatrix)
+        private void BeginInternal(Material material, MaterialPropertyBlock? properties, SpriteSortMode sortMode, Matrix4x4? transformMatrix)
         {
             if (_beginCalled) throw new InvalidOperationException("上一次 Begin 还没有对应的 End。");
 
             _sortMode = sortMode;
             _material = material;
+            _properties = properties;
             _transform = transformMatrix ?? Matrix4x4.Identity;
             _batcher.SetSamplerState(material.Sampler);
 
@@ -100,8 +113,8 @@ namespace KFramework.MonoGame
         /// <summary>下发混合/深度/剔除/采样状态 + 把 (变换 × 正交投影) 写入着色器。照 MonoGame 的 Setup()。</summary>
         private void Setup()
         {
-            // 材质级去重：相同材质 + 相同变换时，GraphicsDevice 内部整体跳过状态下发与矩阵上传。
-            _device.ApplyMaterial(_material, _transform * _projection);
+            // 材质级去重：相同材质（含属性）+ 相同属性块 + 相同变换时，GraphicsDevice 内部整体跳过状态下发与矩阵上传。
+            _device.ApplyMaterial(_material, _transform * _projection, _properties);
         }
 
 

@@ -311,10 +311,11 @@ namespace KFramework.MonoGame
             JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_WRAP_T, wrap);
         }
 
-        private static int ToGLFilter(TextureFilter filter)
+        // 供材质纹理绑定复用（CustomWebGlSpriteProgram 把材质纹理绑到 1 号单元时也要下发同样的 filter/wrap）。
+        internal static int ToGLFilter(TextureFilter filter)
             => filter == TextureFilter.Point ? JSBind_WEBGL20.NEAREST : JSBind_WEBGL20.LINEAR;
 
-        private static int ToGLAddressMode(TextureAddressMode mode) => mode switch
+        internal static int ToGLAddressMode(TextureAddressMode mode) => mode switch
         {
             TextureAddressMode.Wrap => JSBind_WEBGL20.REPEAT,
             TextureAddressMode.Mirror => JSBind_WEBGL20.MIRRORED_REPEAT,

@@ -790,7 +790,12 @@ namespace KFramework.MonoGame
 
             internal WebGpuSpriteProgram(WebGpuBackend backend) => _backend = backend;
 
-            public void Apply(Matrix4x4 projection) => _backend.AllocateTransform(projection);
+            public void Apply(Matrix4x4 projection, Material material, MaterialPropertyBlock? properties)
+            {
+                // WebGPU 目前只有默认精灵管线（自定义着色器回落为它），材质属性没有对应的 uniform 槽位，
+                // 故 material 与 MaterialPropertyBlock 都忽略。
+                _backend.AllocateTransform(projection);
+            }
 
             public bool IsAnimated => false;
 
