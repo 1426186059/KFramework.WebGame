@@ -86,6 +86,12 @@ namespace KFramework.MonoGame
         /// <summary>创建本后端的精灵程序（须在 <see cref="Initialize"/> 之后调用）。</summary>
         ISpriteProgram CreateSpriteProgram();
 
+        /// <summary>
+        /// 用自定义 GLSL 顶点/片元源码创建精灵程序（仅 WebGL 后端真正实现；WebGPU 回落默认精灵着色器）。
+        /// 自定义程序支持 uTime / uParams 两个额外 uniform，详见 <see cref="ShaderEffect"/>。
+        /// </summary>
+        ISpriteProgram CreateCustomSpriteProgram(string vertexSource, string fragmentSource);
+
         // ============ 纹理资源（由 Texture2D 的平台层调用） ============
 
         void CreateTexture(Texture2D texture, int width, int height, bool mipmap, SurfaceFormat format, Texture2D.SurfaceType type);

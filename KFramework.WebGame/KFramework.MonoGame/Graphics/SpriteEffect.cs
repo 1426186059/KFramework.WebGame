@@ -98,6 +98,8 @@ namespace KFramework.MonoGame
         }
 
         // 实现 ISpriteProgram：接口成员需为 public（接口本身与其实现类都是 internal，对外仍不可见）。
+        public bool IsAnimated => false;
+
         public void Apply(Matrix4x4 projection)
         {
             JSBind_WEBGL20.UseProgram(_program);

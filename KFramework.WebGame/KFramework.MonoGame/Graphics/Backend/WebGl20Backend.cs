@@ -65,6 +65,9 @@ namespace KFramework.MonoGame
 
         public ISpriteProgram CreateSpriteProgram() => _effect;
 
+        public ISpriteProgram CreateCustomSpriteProgram(string vertexSource, string fragmentSource)
+            => new CustomWebGlSpriteProgram(fragmentSource);
+
         private void ConfigureAttributes()
         {
             int stride = VertexPositionColorTexture.SizeInBytes;

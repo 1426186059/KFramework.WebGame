@@ -43,6 +43,12 @@ namespace KFramework.Test.WebGPU.Tests
                 Desc = "A 中转读回验证 WebGPU 的 copyTextureToBuffer+mapAsync 与 WebGL 的 readPixels；B 验证可读纹理同步往返",
                 Factory = static () => new Texture2DScene(),
             },
+            new TestEntry
+            {
+                Name = "自定义 Effect（高斯模糊 / 描边发光 / 水波 / Metaball / 阴影 / 马赛克 / 反相 / 扫描线）",
+                Desc = "SpriteBatch.Begin(effect: 自定义 GLSL 片元着色器) 套用效果；WebGL 下生效，WebGPU 回落默认精灵着色器",
+                Factory = static () => new EffectScene(),
+            },
         ];
     }
 

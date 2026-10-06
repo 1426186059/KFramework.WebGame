@@ -163,7 +163,7 @@ namespace KFramework.MonoGame
                 float c = MathF.Cos(rotation), s = MathF.Sin(rotation);
                 item.Set(position.X, position.Y, -origin.X, -origin.Y, w, h, s, c, color, uvTL, uvBR, layerDepth);
             }
-            if (_sortMode == SpriteSortMode.Immediate) _batcher.DrawBatch(_sortMode, _material.Effect ?? _device.Effect);
+            if (_sortMode == SpriteSortMode.Immediate) _batcher.DrawBatch(_sortMode, (_material.Effect ?? _device.Effect).Program);
         }
 
         /// <summary>目标矩形既决定位置也决定缩放（照 MonoGame 的带目标矩形重载）。</summary>

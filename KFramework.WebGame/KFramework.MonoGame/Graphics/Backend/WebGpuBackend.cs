@@ -117,6 +117,10 @@ namespace KFramework.MonoGame
 
         public ISpriteProgram CreateSpriteProgram() => new WebGpuSpriteProgram(this);
 
+        // WebGPU 暂未实现自定义 WGSL 程序，回落默认精灵着色器（ShaderEffect 在 WebGL 下才生效）。
+        public ISpriteProgram CreateCustomSpriteProgram(string vertexSource, string fragmentSource)
+            => new WebGpuSpriteProgram(this);
+
         // ================================================================
         // 主链路：清屏 / 状态 / 绘制 / 收帧
         // ================================================================
@@ -787,6 +791,8 @@ namespace KFramework.MonoGame
             internal WebGpuSpriteProgram(WebGpuBackend backend) => _backend = backend;
 
             public void Apply(Matrix4x4 projection) => _backend.AllocateTransform(projection);
+
+            public bool IsAnimated => false;
 
             public void Dispose() { }
         }

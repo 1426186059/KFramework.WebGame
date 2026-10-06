@@ -13,6 +13,13 @@ namespace KFramework.MonoGame
     {
         /// <summary>绑定本程序并把投影矩阵写入 uniform。</summary>
         void Apply(Matrix4x4 projection);
+
+        /// <summary>
+        /// 是否为"逐帧动画"效果：为 true 时 GraphicsDevice 不对其做材质去重短路，
+        /// 每帧都重新 Apply，以便把 uTime / 自定义参数等随时间变化的 uniform 灌入 GPU。
+        /// 默认精灵着色器返回 false；自定义 <see cref="ShaderEffect"/> 返回 true。
+        /// </summary>
+        bool IsAnimated { get; }
     }
 
 }

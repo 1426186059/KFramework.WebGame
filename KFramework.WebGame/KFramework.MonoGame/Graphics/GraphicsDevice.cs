@@ -231,6 +231,19 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
+        /// 用一段自定义 GLSL 片元着色器源码创建一个可被 <see cref="SpriteBatch.Begin"/> 使用的 <see cref="ShaderEffect"/>。
+        /// 返回的 Effect 每帧应在场景中写入 <see cref="ShaderEffect.Time"/> / <see cref="ShaderEffect.Params"/> 以驱动动画。
+        /// <para>当前仅 WebGL 后端真正编译自定义着色器；WebGPU 回落默认精灵着色器（效果不生效，但页面照常运行）。</para>
+        /// </summary>
+        public Effect CreateShaderEffect(string fragmentSource, string? vertexSource = null)
+        {
+            ISpriteProgram program = Backend.CreateCustomSpriteProgram(vertexSource ?? string.Empty, fragmentSource);
+            var effect = new ShaderEffect(program);
+            if (program is ICustomSpriteProgram csp) csp.SetOwner(effect);
+            return effect;
+        }
+
+        /// <summary>
         /// 收帧（照 MonoGame 的 GraphicsDevice.Present）。
         /// WebGL 后端无需动作（画面由浏览器在 rAF 回调结束时自动合成）；
         /// WebGPU 后端在此结束渲染通道并提交命令缓冲，不调则画面永不呈现。
@@ -370,7 +383,10 @@ namespace KFramework.MonoGame
         internal void ApplyMaterial(Material material, Matrix4x4 transform)
         {
             ISpriteProgram effect = (material.Effect ?? Effect).Program;
-            if (ReferenceEquals(_appliedBlend, material.Blend)
+            // 动画效果（如自定义 ShaderEffect）每帧都要重灌 uTime / 自定义参数，不做材质去重短路。
+            bool animated = effect.IsAnimated;
+            if (!animated
+                && ReferenceEquals(_appliedBlend, material.Blend)
                 && ReferenceEquals(_appliedSampler, material.Sampler)
                 && ReferenceEquals(_appliedDepth, material.DepthStencil)
                 && ReferenceEquals(_appliedRasterizer, material.Rasterizer)

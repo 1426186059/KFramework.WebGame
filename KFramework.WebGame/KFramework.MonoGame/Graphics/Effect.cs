@@ -9,7 +9,7 @@ namespace KFramework.MonoGame
     /// </para>
     /// <para>传 null（或不设置）时回落到 <see cref="GraphicsDevice.Effect"/> 的默认精灵着色器。</para>
     /// </summary>
-    public sealed class Effect : IDisposable
+    public class Effect : IDisposable
     {
         /// <summary>底层着色器程序，仅供 SpriteBatch / 后端内部使用。</summary>
         public ISpriteProgram Program { get; }
