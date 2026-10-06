@@ -184,7 +184,7 @@ namespace Client.MirGraphics
             Rectangle src = sourceRect ?? new Rectangle(0, 0, texture.Width, texture.Height);
             SlimDX.Vector3 pos = position ?? SlimDX.Vector3.Zero;
             KFramework.MonoGame.BlendState blend = blendState ?? (Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied);
-            Batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred, blend, KFramework.MonoGame.SamplerState.PointClamp, RenderTransform ?? KFramework.MonoGame.Matrix4x4.Identity);
+            Batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred, blend, KFramework.MonoGame.SamplerState.PointClamp, null, null, transformMatrix: RenderTransform ?? KFramework.MonoGame.Matrix4x4.Identity);
             try
             {
                 Batch.Draw(texture, new KFramework.MonoGame.Vector2(pos.X, pos.Y), ToRect(src), ToColor(color));
@@ -200,7 +200,7 @@ namespace Client.MirGraphics
         {
             if (texture == null) return;
             KFramework.MonoGame.BlendState blend = blendState ?? (Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied);
-            Batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred, blend, KFramework.MonoGame.SamplerState.PointClamp, RenderTransform ?? KFramework.MonoGame.Matrix4x4.Identity);
+            Batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred, blend, KFramework.MonoGame.SamplerState.PointClamp, null, null, transformMatrix: RenderTransform ?? KFramework.MonoGame.Matrix4x4.Identity);
             try
             {
                 Batch.Draw(texture,

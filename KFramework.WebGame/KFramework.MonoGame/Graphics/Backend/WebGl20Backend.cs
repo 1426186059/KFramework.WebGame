@@ -379,7 +379,7 @@ namespace KFramework.MonoGame
             JSBind_WEBGL20.PixelStorei(JSBind_WEBGL20.UNPACK_ALIGNMENT, 1);
 
             if (texture.Format.IsCompressed())
-                JSBind_WEBGL20.CompressedTexImage2D(JSBind_WEBGL20.TEXTURE_2D, level, (int)texture.Format, levelWidth, levelHeight, 0, bytes.AsSpan());
+                JSBind_WEBGL20.CompressedTexImage2D(JSBind_WEBGL20.TEXTURE_2D, level, SurfaceFormatGL.ToInternalFormat(texture.Format), levelWidth, levelHeight, 0, bytes.AsSpan());
             else
                 JSBind_WEBGL20.TexImage2D(JSBind_WEBGL20.TEXTURE_2D, level, JSBind_WEBGL20.RGBA8, levelWidth, levelHeight, 0, JSBind_WEBGL20.RGBA, JSBind_WEBGL20.UNSIGNED_BYTE, bytes.AsSpan());
         }
@@ -396,7 +396,7 @@ namespace KFramework.MonoGame
             {
                 if (rect.X != 0 || rect.Y != 0 || rect.Width != levelWidth || rect.Height != levelHeight)
                     throw new InvalidOperationException("压缩纹理为不可变 GPU 数据，不支持 SetData 局部更新；如需更新请整张重建。");
-                JSBind_WEBGL20.CompressedTexImage2D(JSBind_WEBGL20.TEXTURE_2D, level, (int)texture.Format, levelWidth, levelHeight, 0, bytes.AsSpan());
+                JSBind_WEBGL20.CompressedTexImage2D(JSBind_WEBGL20.TEXTURE_2D, level, SurfaceFormatGL.ToInternalFormat(texture.Format), levelWidth, levelHeight, 0, bytes.AsSpan());
             }
             else if (rect.X == 0 && rect.Y == 0 && rect.Width == levelWidth && rect.Height == levelHeight)
                 JSBind_WEBGL20.TexImage2D(JSBind_WEBGL20.TEXTURE_2D, level, JSBind_WEBGL20.RGBA8, levelWidth, levelHeight, 0, JSBind_WEBGL20.RGBA, JSBind_WEBGL20.UNSIGNED_BYTE, bytes.AsSpan());
@@ -633,6 +633,54 @@ namespace KFramework.MonoGame
                 return hashCode.ToHashCode();
             }
         }
+    }
+
+    /// <summary>
+    /// WebGL2 的 GL 内部格式常量（= compressedTexImage2D 的 internalFormat），以及
+    /// <see cref="SurfaceFormat"/>（后端中立枚举）→ GL 内部格式的映射表。
+    /// 仅 WebGL2 后端使用；压缩块/字节数等后端无关信息见共享层的 <see cref="SurfaceFormatInfo"/>。
+    /// </summary>
+    internal static class SurfaceFormatGL
+    {
+        public const int RGBA8 = 0x8058;
+        public const int COMPRESSED_RGBA_S3TC_DXT1_EXT = 0x83F0;
+        public const int COMPRESSED_RGBA_S3TC_DXT3_EXT = 0x83F2;
+        public const int COMPRESSED_RGBA_S3TC_DXT5_EXT = 0x83F3;
+        public const int COMPRESSED_RGBA_BPTC_UNORM_EXT = 0x8E8C;   // BC7，需 EXT_texture_compression_bptc
+        public const int COMPRESSED_RGBA_ASTC_4X4_KHR = 0x93B0;
+        public const int COMPRESSED_RGBA_ASTC_5X5_KHR = 0x93B1;
+        public const int COMPRESSED_RGBA_ASTC_6X6_KHR = 0x93B2;
+        public const int COMPRESSED_RGBA_ASTC_8X8_KHR = 0x93B3;
+        public const int COMPRESSED_RGBA_ASTC_10X10_KHR = 0x93B4;
+        public const int COMPRESSED_RGBA_ASTC_12X12_KHR = 0x93B5;
+        public const int COMPRESSED_RGB8_ETC2 = 0x9274;
+        public const int COMPRESSED_RGBA8_ETC2_EAC = 0x9278;
+        public const int COMPRESSED_RGBA_PVRTC_2BPPV1_IMG = 0x8C03;
+        public const int COMPRESSED_RGBA_PVRTC_4BPPV1_IMG = 0x8C02;
+
+        /// <summary>
+        /// <see cref="SurfaceFormat"/>（后端中立枚举）→ GL 内部格式常量。
+        /// WebGL2 的 compressedTexImage2D 的 internalFormat 即取此值；未压缩（<see cref="SurfaceFormat.Color"/>）返回 RGBA8。
+        /// </summary>
+        public static int ToInternalFormat(SurfaceFormat format) => format switch
+        {
+            SurfaceFormat.Color => RGBA8,
+            SurfaceFormat.Dxt1 => COMPRESSED_RGBA_S3TC_DXT1_EXT,
+            SurfaceFormat.Dxt3 => COMPRESSED_RGBA_S3TC_DXT3_EXT,
+            SurfaceFormat.Dxt5 => COMPRESSED_RGBA_S3TC_DXT5_EXT,
+            SurfaceFormat.Bc7 => COMPRESSED_RGBA_BPTC_UNORM_EXT,
+            SurfaceFormat.Astc4X4 => COMPRESSED_RGBA_ASTC_4X4_KHR,
+            SurfaceFormat.Astc5X5 => COMPRESSED_RGBA_ASTC_5X5_KHR,
+            SurfaceFormat.Astc6X6 => COMPRESSED_RGBA_ASTC_6X6_KHR,
+            SurfaceFormat.Astc8X8 => COMPRESSED_RGBA_ASTC_8X8_KHR,
+            SurfaceFormat.Astc10X10 => COMPRESSED_RGBA_ASTC_10X10_KHR,
+            SurfaceFormat.Astc12X12 => COMPRESSED_RGBA_ASTC_12X12_KHR,
+            SurfaceFormat.Etc2Rgb8 => COMPRESSED_RGB8_ETC2,
+            SurfaceFormat.Etc2Rgba8 => COMPRESSED_RGBA8_ETC2_EAC,
+            SurfaceFormat.PvrtcRgba2Bpp => COMPRESSED_RGBA_PVRTC_2BPPV1_IMG,
+            SurfaceFormat.PvrtcRgba4Bpp => COMPRESSED_RGBA_PVRTC_4BPPV1_IMG,
+            _ => RGBA8,
+        };
     }
 
 }

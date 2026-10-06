@@ -38,8 +38,9 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 兼容旧签名的重载：把散装的 Blend / Sampler / DepthStencil / Rasterizer 状态包成一个默认材质
-        /// （Effect 用设备默认精灵着色器）。参数对齐原版 MonoGame SpriteBatch.Begin 的散装签名。
+        /// 兼容旧签名的重载：把散装的 Blend / Sampler / DepthStencil / Rasterizer / Effect 状态包成一个材质，
+        /// 交给 BeginInternal。effect 为 null 时使用设备默认精灵着色器（<see cref="GraphicsDevice.Effect"/>）。
+        /// 参数顺序对齐原版 MonoGame SpriteBatch.Begin 的散装签名（effect 位于 rasterizerState 与 transformMatrix 之间）。
         /// 新增代码建议直接用 <see cref="Begin(Material, SpriteSortMode, Matrix4x4?)"/>。
         /// </summary>
         public void Begin(SpriteSortMode sortMode = SpriteSortMode.Deferred,
@@ -47,11 +48,12 @@ namespace KFramework.MonoGame
                           SamplerState? samplerState = null,
                           DepthStencilState? depthStencilState = null,
                           RasterizerState? rasterizerState = null,
+                          Effect? effect = null,
                           Matrix4x4? transformMatrix = null)
         {
             // 复用本批材质快照 _cache_Mat（避免每次 Begin 都 new），填好参数后交给 BeginInternal。
             _cache_Mat.Reset();
-            _cache_Mat.Effect = null;
+            _cache_Mat.Effect = effect?.Program;
             _cache_Mat.Blend = blendState ?? BlendState.NonPremultiplied;
             _cache_Mat.Sampler = samplerState ?? SamplerState.Point;
             _cache_Mat.DepthStencil = depthStencilState ?? DepthStencilState.None;

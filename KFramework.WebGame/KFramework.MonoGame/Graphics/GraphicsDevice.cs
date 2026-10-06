@@ -565,7 +565,7 @@ namespace KFramework.MonoGame
             // 压缩格式：先按宽高 × 块大小校验长度（上传前的兜底，避免创建无效 GL 纹理）。
             if (format.IsCompressed())
             {
-                int expected = SurfaceFormatGL.GetExpectedCompressedBytes(format, width, height);
+                int expected = SurfaceFormatInfo.GetExpectedCompressedBytes(format, width, height);
                 if (expected > 0 && data.Length != expected)
                     throw new ArgumentException(
                         $"压缩数据长度 {data.Length} 与格式 {format} 预期的 {expected} 字节不一致（宽高 {width}x{height}）。",

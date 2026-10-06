@@ -22,6 +22,8 @@ namespace KFramework.MonoGame
 
         // 优先级（参考 three.js：质量从高到低）ASTC → BC7(BPTC) → ETC2/EAC → S3TC(DXT) → PVRTC → RGBA32。
         // 返回的 glFormat 即 <see cref="SurfaceFormat"/>（其取值就是对应的 GL 内部格式，无需再映射）。
+        // 返回的 glFormat 即 <see cref="SurfaceFormat"/>（后端中立枚举，不再等于 GL 常量）：
+        // WebGL2 侧经 SurfaceFormatGL.ToInternalFormat 翻译成 GL 内部格式，WebGPU 侧经 SurfaceFormatToWebGpu 翻译成 GPUTextureFormat。
         public static (int basisFormat, SurfaceFormat glFormat) Pick()
         {
             // WebGPU 后端：按 adapter.features（render_webgpu.hasFeature 暴露）选压缩格式。
@@ -54,7 +56,7 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 计算某目标格式、给定尺寸下的转码后字节数（与 <c>SurfaceFormatGL.GetExpectedCompressedBytes</c> 一致），
+        /// 计算某目标格式、给定尺寸下的转码后字节数（与 <c>SurfaceFormatInfo.GetExpectedCompressedBytes</c> 一致），
         /// 用于解包阶段在 C# 侧预分配转码输出缓冲（JSImport 不直接支持返回 byte[]）。
         /// 与 <see cref="GraphicsDevice.CreateTexture"/> 上传前的校验共用同一套公式，保证分配 = 校验。
         /// </summary>
@@ -62,7 +64,7 @@ namespace KFramework.MonoGame
         {
             if (format == SurfaceFormat.Color)
                 return width * height * 4; // 裸 RGBA8 兜底
-            int expected = SurfaceFormatGL.GetExpectedCompressedBytes(format, width, height);
+            int expected = SurfaceFormatInfo.GetExpectedCompressedBytes(format, width, height);
             return expected > 0 ? expected : width * height * 4;
         }
     }

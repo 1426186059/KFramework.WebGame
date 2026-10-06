@@ -1,27 +1,56 @@
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// <see cref="SurfaceFormat"/> 各成员对应的 WebGL2 GL 内部格式常量（= compressedTexImage2D 的 internalFormat）。
-    /// 这些常量直接作为 <see cref="SurfaceFormat"/> 枚举成员的取值，拿到格式即拿到 GL 内部格式，无需额外映射函数。
+    /// 纹理表面格式（对齐 MonoGame 的 <c>SurfaceFormat</c>，取 WebGL2 / WebGPU 都用到、且两边都支持的子集）。
+    /// <para>
+    /// 枚举成员取值为<b>后端中立</b>的连续整数，不再等于任何一端的原生常量。
+    /// 各后端通过自己的映射表翻译成本地格式：
+    /// WebGL2 经 <see cref="SurfaceFormatGL.ToInternalFormat"/>（GL internalFormat 常量，定义于 WebGL 后端）翻译，
+    /// WebGPU 经 <see cref="WebGpuBackend.SurfaceFormatToWebGpu"/>（GPUTextureFormat 字符串）翻译。
+    /// 这样 <see cref="SurfaceFormat"/> 与具体图形 API 解耦，新增格式只需在两端映射表里各加一项。
+    /// </para>
     /// </summary>
-    internal static class SurfaceFormatGL
+    public enum SurfaceFormat : int
     {
-        public const int RGBA8 = 0x8058;
-        public const int COMPRESSED_RGBA_S3TC_DXT1_EXT = 0x83F0;
-        public const int COMPRESSED_RGBA_S3TC_DXT3_EXT = 0x83F2;
-        public const int COMPRESSED_RGBA_S3TC_DXT5_EXT = 0x83F3;
-        public const int COMPRESSED_RGBA_BPTC_UNORM_EXT = 0x8E8C;   // BC7，需 EXT_texture_compression_bptc
-        public const int COMPRESSED_RGBA_ASTC_4X4_KHR = 0x93B0;
-        public const int COMPRESSED_RGBA_ASTC_5X5_KHR = 0x93B1;
-        public const int COMPRESSED_RGBA_ASTC_6X6_KHR = 0x93B2;
-        public const int COMPRESSED_RGBA_ASTC_8X8_KHR = 0x93B3;
-        public const int COMPRESSED_RGBA_ASTC_10X10_KHR = 0x93B4;
-        public const int COMPRESSED_RGBA_ASTC_12X12_KHR = 0x93B5;
-        public const int COMPRESSED_RGB8_ETC2 = 0x9274;
-        public const int COMPRESSED_RGBA8_ETC2_EAC = 0x9278;
-        public const int COMPRESSED_RGBA_PVRTC_2BPPV1_IMG = 0x8C03;
-        public const int COMPRESSED_RGBA_PVRTC_4BPPV1_IMG = 0x8C02;
+        /// <summary>无压缩 RGBA8（每像素 4 字节）。WebGL2 = RGBA8；WebGPU = rgba8unorm。</summary>
+        Color = 0,
+        /// <summary>DXT1 / BC1（4x4 块，每块 8 字节）。</summary>
+        Dxt1 = 1,
+        /// <summary>DXT3 / BC2（4x4 块，每块 16 字节）。</summary>
+        Dxt3 = 2,
+        /// <summary>DXT5 / BC3（4x4 块，每块 16 字节）。</summary>
+        Dxt5 = 3,
+        /// <summary>BC7（4x4 块，每块 16 字节）。</summary>
+        Bc7 = 4,
+        /// <summary>ASTC 4x4（每块 16 字节）。</summary>
+        Astc4X4 = 5,
+        /// <summary>ASTC 5x5（每块 16 字节）。</summary>
+        Astc5X5 = 6,
+        /// <summary>ASTC 6x6（每块 16 字节）。</summary>
+        Astc6X6 = 7,
+        /// <summary>ASTC 8x8（每块 16 字节）。</summary>
+        Astc8X8 = 8,
+        /// <summary>ASTC 10x10（每块 16 字节）。</summary>
+        Astc10X10 = 9,
+        /// <summary>ASTC 12x12（每块 16 字节）。</summary>
+        Astc12X12 = 10,
+        /// <summary>ETC2 RGB8（4x4 块，每块 8 字节）。</summary>
+        Etc2Rgb8 = 11,
+        /// <summary>ETC2 RGBA8 (EAC)（4x4 块，每块 16 字节）。</summary>
+        Etc2Rgba8 = 12,
+        /// <summary>PVRTC RGBA 2bpp（4x4 块，每块 8 字节）。仅 WebGL2（需 IMG_texture_compression_pvrtc）；WebGPU 不支持。</summary>
+        PvrtcRgba2Bpp = 13,
+        /// <summary>PVRTC RGBA 4bpp（4x4 块，每块 16 字节）。仅 WebGL2（需 IMG_texture_compression_pvrtc）；WebGPU 不支持。</summary>
+        PvrtcRgba4Bpp = 14,
+    }
 
+    /// <summary>
+    /// 与具体图形 API 无关的 <see cref="SurfaceFormat"/> 辅助信息：压缩判定、块尺寸、字节数等。
+    /// 这些只描述“格式本身的布局”，WebGL2 与 WebGPU 一致，故留在共享层；
+    /// GL 内部格式常量与翻译（专属 WebGL2）见 WebGL 后端的 <c>SurfaceFormatGL</c>。
+    /// </summary>
+    internal static class SurfaceFormatInfo
+    {
         /// <summary>
         /// 该格式是否为 GPU 压缩格式（照 MonoGame 的 <c>SurfaceFormat.IsCompressedFormat</c>）。
         /// 本子集里只有 <see cref="SurfaceFormat.Color"/> 是未压缩的 RGBA8。
@@ -82,44 +111,5 @@ namespace KFramework.MonoGame
         {
             (blockWidth, blockHeight, _) = BlockInfo(format);
         }
-    }
-
-    /// <summary>
-    /// 纹理表面格式（对齐 MonoGame 的 <c>SurfaceFormat</c>，取 WebGL2 用得到的子集）。
-    /// 枚举成员的取值即其 GL 内部格式常量（= compressedTexImage2D 的 internalFormat），
-    /// 因此直接用 (int)format 即可得到 GL 内部格式，省去额外的映射函数（如 MonoGame 各平台后端的格式转换表）。
-    /// </summary>
-    public enum SurfaceFormat : int
-    {
-        /// <summary>无压缩 RGBA8（每像素 4 字节）。</summary>
-        Color = SurfaceFormatGL.RGBA8,
-        /// <summary>DXT1 / BC1（4x4 块，每块 8 字节）。</summary>
-        Dxt1 = SurfaceFormatGL.COMPRESSED_RGBA_S3TC_DXT1_EXT,
-        /// <summary>DXT3 / BC2（4x4 块，每块 16 字节）。</summary>
-        Dxt3 = SurfaceFormatGL.COMPRESSED_RGBA_S3TC_DXT3_EXT,
-        /// <summary>DXT5 / BC3（4x4 块，每块 16 字节）。</summary>
-        Dxt5 = SurfaceFormatGL.COMPRESSED_RGBA_S3TC_DXT5_EXT,
-        /// <summary>BC7（4x4 块，每块 16 字节，需 EXT_texture_compression_bptc）。</summary>
-        Bc7 = SurfaceFormatGL.COMPRESSED_RGBA_BPTC_UNORM_EXT,
-        /// <summary>ASTC 4x4（每块 16 字节）。</summary>
-        Astc4X4 = SurfaceFormatGL.COMPRESSED_RGBA_ASTC_4X4_KHR,
-        /// <summary>ASTC 5x5（每块 16 字节）。</summary>
-        Astc5X5 = SurfaceFormatGL.COMPRESSED_RGBA_ASTC_5X5_KHR,
-        /// <summary>ASTC 6x6（每块 16 字节）。</summary>
-        Astc6X6 = SurfaceFormatGL.COMPRESSED_RGBA_ASTC_6X6_KHR,
-        /// <summary>ASTC 8x8（每块 16 字节）。</summary>
-        Astc8X8 = SurfaceFormatGL.COMPRESSED_RGBA_ASTC_8X8_KHR,
-        /// <summary>ASTC 10x10（每块 16 字节）。</summary>
-        Astc10X10 = SurfaceFormatGL.COMPRESSED_RGBA_ASTC_10X10_KHR,
-        /// <summary>ASTC 12x12（每块 16 字节）。</summary>
-        Astc12X12 = SurfaceFormatGL.COMPRESSED_RGBA_ASTC_12X12_KHR,
-        /// <summary>ETC2 RGB8（4x4 块，每块 8 字节）。</summary>
-        Etc2Rgb8 = SurfaceFormatGL.COMPRESSED_RGB8_ETC2,
-        /// <summary>ETC2 RGBA8 (EAC)（4x4 块，每块 16 字节）。</summary>
-        Etc2Rgba8 = SurfaceFormatGL.COMPRESSED_RGBA8_ETC2_EAC,
-        /// <summary>PVRTC RGBA 2bpp（4x4 块，每块 8 字节，需 IMG_texture_compression_pvrtc）。</summary>
-        PvrtcRgba2Bpp = SurfaceFormatGL.COMPRESSED_RGBA_PVRTC_2BPPV1_IMG,
-        /// <summary>PVRTC RGBA 4bpp（4x4 块，每块 16 字节，需 IMG_texture_compression_pvrtc）。</summary>
-        PvrtcRgba4Bpp = SurfaceFormatGL.COMPRESSED_RGBA_PVRTC_4BPPV1_IMG,
     }
 }

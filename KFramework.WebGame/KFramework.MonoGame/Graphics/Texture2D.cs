@@ -280,7 +280,7 @@ namespace KFramework.MonoGame
                 throw new ArgumentException("类型 T 的大小与该纹理格式不兼容。", nameof(T));
 
             int dataByteSize = Format.IsCompressed()
-                ? SurfaceFormatGL.GetExpectedCompressedBytes(Format, checkedRect.Width, checkedRect.Height)
+                ? SurfaceFormatInfo.GetExpectedCompressedBytes(Format, checkedRect.Width, checkedRect.Height)
                 : checkedRect.Width * checkedRect.Height * fSize;
 
             if (dataByteSize <= 0)

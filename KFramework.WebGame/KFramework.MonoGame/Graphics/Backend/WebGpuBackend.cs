@@ -396,18 +396,35 @@ namespace KFramework.MonoGame
                 _ => "clamp-to-edge",
             };
 
-        /// <summary>SurfaceFormat → WebGPU 的 GPUTextureFormat 字符串（压缩格式须与 Ktx2TranscodeSelector 选中的一致）。</summary>
+        /// <summary>
+        /// <see cref="SurfaceFormat"/>（后端中立枚举）→ WebGPU 的 GPUTextureFormat 字符串映射表。
+        /// 覆盖本子集里 WebGPU 支持的格式（与 render_webgpu.ts 的 COMPRESSED_INFO 对齐）。
+        /// PVRTC 为 WebGL2-only（WebGPU 不支持），故意不入表；查不到即抛错，而非静默兜底成 rgba8unorm 造成数据错乱。
+        /// </summary>
+        private static readonly Dictionary<SurfaceFormat, string> SurfaceFormatToWebGpuMap = new()
+        {
+            [SurfaceFormat.Color] = "rgba8unorm",
+            [SurfaceFormat.Dxt1] = "bc1-rgba-unorm",
+            [SurfaceFormat.Dxt3] = "bc2-rgba-unorm",
+            [SurfaceFormat.Dxt5] = "bc3-rgba-unorm",   // BC3 = DXT5
+            [SurfaceFormat.Bc7] = "bc7-rgba-unorm",
+            [SurfaceFormat.Astc4X4] = "astc-4x4-rgba-unorm",
+            [SurfaceFormat.Astc5X5] = "astc-5x5-rgba-unorm",
+            [SurfaceFormat.Astc6X6] = "astc-6x6-rgba-unorm",
+            [SurfaceFormat.Astc8X8] = "astc-8x8-rgba-unorm",
+            [SurfaceFormat.Astc10X10] = "astc-10x10-rgba-unorm",
+            [SurfaceFormat.Astc12X12] = "astc-12x12-rgba-unorm",
+            [SurfaceFormat.Etc2Rgb8] = "etc2-rgb8unorm",
+            [SurfaceFormat.Etc2Rgba8] = "etc2-rgba8unorm",
+        };
+
         private static string SurfaceFormatToWebGpu(SurfaceFormat format)
         {
-            switch (format)
-            {
-                case SurfaceFormat.Color: return "rgba8unorm";
-                case SurfaceFormat.Bc7: return "bc7-rgba-unorm";
-                case SurfaceFormat.Dxt5: return "bc3-rgba-unorm";   // BC3 = DXT5
-                case SurfaceFormat.Etc2Rgba8: return "etc2-rgba8unorm";
-                case SurfaceFormat.Astc4X4: return "astc-4x4-rgba-unorm";
-                default: return "rgba8unorm";   // 兜底：PVRTC 等 WebGPU 不支持的格式不应到达此处
-            }
+            if (!SurfaceFormatToWebGpuMap.TryGetValue(format, out string gpuFormat))
+                throw new NotSupportedException(
+                    $"[webgpu] 不支持的 SurfaceFormat: {format}（WebGPU 不支持 PVRTC 等 WebGL2-only 格式；" +
+                    "压缩格式须由 Ktx2TranscodeSelector 在 WebGPU 后端下选择 ASTC / BC7 / ETC2）。");
+            return gpuFormat;
         }
 
         private int GetOrCreateBindGroup(int pipeline, int textureHandle, int samplerHandle, int uniformSlot)
