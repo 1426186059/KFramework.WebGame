@@ -321,13 +321,13 @@ namespace KFramework.MonoGame
 
 
 
-        /// <summary>创建纹理对象。</summary>
+        /// <summary>创建纹理对象（返回整数句柄，与 WebGPU 一致；JS 侧维护 id → WebGLTexture 映射）。</summary>
         [JSImport("createTexture", "render_webgl20")]
-        public static partial JSObject CreateTexture();
+        public static partial int CreateTexture();
 
         /// <summary>绑定纹理到目标（TEXTURE_2D）。</summary>
         [JSImport("bindTexture", "render_webgl20")]
-        public static partial void BindTexture(int target, JSObject texture);
+        public static partial void BindTexture(int target, int texture);
 
         /// <summary>上传 RGBA 像素到 2D 纹理（level 0）。</summary>
         [JSImport("texImage2D", "render_webgl20")]
@@ -352,9 +352,9 @@ namespace KFramework.MonoGame
         [JSImport("activeTexture", "render_webgl20")]
         public static partial void ActiveTexture(int unit);
 
-        /// <summary>删除纹理。</summary>
+        /// <summary>删除纹理（参数为整数句柄）。</summary>
         [JSImport("deleteTexture", "render_webgl20")]
-        public static partial void DeleteTexture(JSObject texture);
+        public static partial void DeleteTexture(int texture);
 
         /// <summary>查询是否支持某 WebGL 扩展（如 WEBGL_compressed_texture_s3tc）。</summary>
         [JSImport("hasExtension", "render_webgl20")]
@@ -387,9 +387,9 @@ namespace KFramework.MonoGame
         [JSImport("deleteFramebuffer", "render_webgl20")]
         public static partial void DeleteFramebuffer(JSObject framebuffer);
 
-        /// <summary>把一张纹理挂到 FBO 的颜色附着点（attachment = COLOR_ATTACHMENT0 + i）。</summary>
+        /// <summary>把一张纹理挂到 FBO 的颜色附着点（attachment = COLOR_ATTACHMENT0 + i）；texture 为整数句柄。</summary>
         [JSImport("framebufferTexture2D", "render_webgl20")]
-        public static partial void FramebufferTexture2D(int target, int attachment, int texTarget, JSObject texture, int level);
+        public static partial void FramebufferTexture2D(int target, int attachment, int texTarget, int texture, int level);
 
         /// <summary>检查 FBO 完整性（返回 FRAMEBUFFER_COMPLETE 表示可用）。</summary>
         [JSImport("checkFramebufferStatus", "render_webgl20")]

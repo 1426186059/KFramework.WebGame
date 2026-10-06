@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.JavaScript;
 
 namespace KFramework.MonoGame
 {
@@ -18,8 +17,9 @@ namespace KFramework.MonoGame
             SwapChainRenderTarget,
         }
 
-        /// <summary>底层 WebGL 纹理对象（照 MonoGame 平台层的 gl 纹理句柄，存放在 .Web.cs 的 PlatformConstruct 中创建）。</summary>
-        internal JSObject Handle = default;
+        /// <summary>底层纹理句柄（与 WebGPU 一致的整数 id；WebGL 侧由 render_webgl20.ts 维护 id → WebGLTexture 的映射，
+        /// 存放在 .Web.cs 的 PlatformConstruct 中创建）。</summary>
+        internal int Handle = default;
 
         /// <summary>是否负责释放底层纹理。</summary>
         internal readonly bool OwnsHandle;

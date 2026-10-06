@@ -46,7 +46,7 @@ namespace KFramework.MonoGame
         /// <summary>内容保留策略（照 MonoGame）。</summary>
         public RenderTargetUsage RenderTargetUsage { get; }
 
-        JSObject IRenderTarget.GLTexture => Handle;
+        int IRenderTarget.GLTexture => Handle;
 
         JSObject? IRenderTarget.GLColorRenderbuffer { get; set; }
 

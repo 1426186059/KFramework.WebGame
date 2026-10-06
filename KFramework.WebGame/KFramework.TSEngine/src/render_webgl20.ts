@@ -220,8 +220,20 @@ export function vertexAttribPointer(index: number, size: number, type: number, n
 
 // ---------- 纹理 ----------
 
-export function createTexture(): WebGLTexture | null { return gpu().createTexture(); }
-export function bindTexture(target: number, texture: WebGLTexture | null): void { gpu().bindTexture(target, texture); }
+// 整数句柄映射：原生 WebGL 的 createTexture 返回的是 WebGLTexture 对象而非整数，
+// 但 C# 侧 Texture2D.Handle 现已统一为 int（与 WebGPU 一致），故这里维护 id → WebGLTexture 的映射。
+let _texId = 0;
+const _texByInt = new Map<number, WebGLTexture | null>();
+
+export function createTexture(): number {
+    const t = gpu().createTexture();
+    const id = ++_texId;
+    _texByInt.set(id, t);
+    return id;
+}
+export function bindTexture(target: number, texture: number): void {
+    gpu().bindTexture(target, texture ? (_texByInt.get(texture) ?? null) : null);
+}
 export function texImage2D(
     target: number, level: number, internalFormat: number,
     width: number, height: number, border: number,
@@ -254,7 +266,13 @@ export function compressedTexImage2D(
 }
 export function texParameteri(target: number, pname: number, param: number): void { gpu().texParameteri(target, pname, param); }
 export function activeTexture(unit: number): void { gpu().activeTexture(unit); }
-export function deleteTexture(texture: WebGLTexture | null): void { gpu().deleteTexture(texture); }
+export function deleteTexture(texture: number): void {
+    if (texture) {
+        const t = _texByInt.get(texture);
+        if (t) gpu().deleteTexture(t);
+        _texByInt.delete(texture);
+    }
+}
 export function pixelStorei(pname: number, param: number): void { gpu().pixelStorei(pname, param); }
 export function generateMipmap(target: number): void { gpu().generateMipmap(target); }
 
@@ -293,12 +311,13 @@ export function bindFramebuffer(target: number, framebuffer: WebGLFramebuffer | 
     gpu().bindFramebuffer(target, framebuffer);
 }
 export function deleteFramebuffer(framebuffer: WebGLFramebuffer | null): void { gpu().deleteFramebuffer(framebuffer); }
-/** 把一张纹理挂到 FBO 的颜色附着点（attachment = COLOR_ATTACHMENT0 + i）。 */
+/** 把一张纹理挂到 FBO 的颜色附着点（attachment = COLOR_ATTACHMENT0 + i）。texture 为整数句柄（id），0 表示解挂。 */
 export function framebufferTexture2D(
     target: number, attachment: number, texTarget: number,
-    texture: WebGLTexture | null, level: number,
+    texture: number, level: number,
 ): void {
-    gpu().framebufferTexture2D(target, attachment, texTarget, texture, level);
+    const t = texture ? (_texByInt.get(texture) ?? null) : null;
+    gpu().framebufferTexture2D(target, attachment, texTarget, t, level);
 }
 /** 返回 FBO 完整性状态（FRAMEBUFFER_COMPLETE 表示可用）。 */
 export function checkFramebufferStatus(target: number): number { return gpu().checkFramebufferStatus(target); }

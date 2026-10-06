@@ -184,8 +184,19 @@ export function vertexAttribPointer(index, size, type, normalized, stride, offse
     gpu().vertexAttribPointer(index, size, type, !!normalized, stride, offset);
 }
 // ---------- 纹理 ----------
-export function createTexture() { return gpu().createTexture(); }
-export function bindTexture(target, texture) { gpu().bindTexture(target, texture); }
+// 整数句柄映射：原生 WebGL 的 createTexture 返回的是 WebGLTexture 对象而非整数，
+// 但 C# 侧 Texture2D.Handle 现已统一为 int（与 WebGPU 一致），故这里维护 id → WebGLTexture 的映射。
+let _texId = 0;
+const _texByInt = new Map();
+export function createTexture() {
+    const t = gpu().createTexture();
+    const id = ++_texId;
+    _texByInt.set(id, t);
+    return id;
+}
+export function bindTexture(target, texture) {
+    gpu().bindTexture(target, texture ? (_texByInt.get(texture) ?? null) : null);
+}
 export function texImage2D(target, level, internalFormat, width, height, border, format, type, data) {
     gpu().texImage2D(target, level, internalFormat, width, height, border, format, type, toTextureBytes(data) ?? new Uint8Array(0));
 }
@@ -203,7 +214,14 @@ export function compressedTexImage2D(target, level, internalFormat, width, heigh
 }
 export function texParameteri(target, pname, param) { gpu().texParameteri(target, pname, param); }
 export function activeTexture(unit) { gpu().activeTexture(unit); }
-export function deleteTexture(texture) { gpu().deleteTexture(texture); }
+export function deleteTexture(texture) {
+    if (texture) {
+        const t = _texByInt.get(texture);
+        if (t)
+            gpu().deleteTexture(t);
+        _texByInt.delete(texture);
+    }
+}
 export function pixelStorei(pname, param) { gpu().pixelStorei(pname, param); }
 export function generateMipmap(target) { gpu().generateMipmap(target); }
 // ---------- 状态与绘制 ----------
@@ -233,9 +251,10 @@ export function bindFramebuffer(target, framebuffer) {
     gpu().bindFramebuffer(target, framebuffer);
 }
 export function deleteFramebuffer(framebuffer) { gpu().deleteFramebuffer(framebuffer); }
-/** 把一张纹理挂到 FBO 的颜色附着点（attachment = COLOR_ATTACHMENT0 + i）。 */
+/** 把一张纹理挂到 FBO 的颜色附着点（attachment = COLOR_ATTACHMENT0 + i）。texture 为整数句柄（id），0 表示解挂。 */
 export function framebufferTexture2D(target, attachment, texTarget, texture, level) {
-    gpu().framebufferTexture2D(target, attachment, texTarget, texture, level);
+    const t = texture ? (_texByInt.get(texture) ?? null) : null;
+    gpu().framebufferTexture2D(target, attachment, texTarget, t, level);
 }
 /** 返回 FBO 完整性状态（FRAMEBUFFER_COMPLETE 表示可用）。 */
 export function checkFramebufferStatus(target) { return gpu().checkFramebufferStatus(target); }

@@ -25,7 +25,7 @@ namespace KFramework.MonoGame
         int MultiSampleCount { get; }
 
         /// <summary>底层的颜色纹理（作为 resolve 后的可采样结果；多重采样时由 <see cref="GLResolveFramebuffer"/> 写入）。</summary>
-        JSObject GLTexture { get; }
+        int GLTexture { get; }
 
         /// <summary>多重采样颜色 renderbuffer（RenderbufferStorageMultisample 分配）；非多重采样时为 null。</summary>
         JSObject? GLColorRenderbuffer { get; set; }
