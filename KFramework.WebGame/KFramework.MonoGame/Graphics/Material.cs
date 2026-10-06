@@ -17,7 +17,7 @@ namespace KFramework.MonoGame
     {
         /// <summary>着色器程序（片元里的 sampler 即对应本引擎的 Texture2D + SamplerState）。
         /// 为 null 表示用 GraphicsDevice 的默认精灵着色器。</summary>
-        public ISpriteProgram? Effect;
+        public Effect? Effect;
 
         /// <summary>混合状态（照 MonoGame 的 BlendState，对应 Unity Shader 的 Blend 命令）。</summary>
         public BlendState Blend = BlendState.NonPremultiplied;

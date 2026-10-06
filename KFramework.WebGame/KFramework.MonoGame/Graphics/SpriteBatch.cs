@@ -53,7 +53,7 @@ namespace KFramework.MonoGame
         {
             // 复用本批材质快照 _cache_Mat（避免每次 Begin 都 new），填好参数后交给 BeginInternal。
             _cache_Mat.Reset();
-            _cache_Mat.Effect = effect?.Program;
+            _cache_Mat.Effect = effect;
             _cache_Mat.Blend = blendState ?? BlendState.NonPremultiplied;
             _cache_Mat.Sampler = samplerState ?? SamplerState.Point;
             _cache_Mat.DepthStencil = depthStencilState ?? DepthStencilState.None;
@@ -94,7 +94,7 @@ namespace KFramework.MonoGame
             _beginCalled = false;
 
             if (_sortMode != SpriteSortMode.Immediate) Setup();
-            _batcher.DrawBatch(_sortMode, _material.Effect ?? _device.Effect);
+            _batcher.DrawBatch(_sortMode, (_material.Effect ?? _device.Effect).Program);
         }
 
         /// <summary>下发混合/深度/剔除/采样状态 + 把 (变换 × 正交投影) 写入着色器。照 MonoGame 的 Setup()。</summary>

@@ -18,7 +18,7 @@ namespace KFramework.MonoGame
         internal readonly IGraphicsBackend Backend;
 
         /// <summary>精灵着色器程序（由后端创建并持有）。</summary>
-        internal readonly ISpriteProgram Effect;
+        internal readonly Effect Effect;
 
         // 初值必须为 null：SetBlendState 用引用相等做短路，若初值就等于目标值，
         // 首次调用会被跳过，glBlendFunc 永远不下发（表现为画面全黑）。
@@ -216,7 +216,7 @@ namespace KFramework.MonoGame
             MaxTextureSize = Backend.MaxTextureSize;
             Renderer = Backend.Renderer;
 
-            Effect = Backend.CreateSpriteProgram();
+            Effect = new Effect(Backend.CreateSpriteProgram());
 
             ApplyCanvasSize(true);
 
@@ -369,7 +369,7 @@ namespace KFramework.MonoGame
         /// </summary>
         internal void ApplyMaterial(Material material, Matrix4x4 transform)
         {
-            ISpriteProgram effect = material.Effect ?? Effect;
+            ISpriteProgram effect = (material.Effect ?? Effect).Program;
             if (ReferenceEquals(_appliedBlend, material.Blend)
                 && ReferenceEquals(_appliedSampler, material.Sampler)
                 && ReferenceEquals(_appliedDepth, material.DepthStencil)
