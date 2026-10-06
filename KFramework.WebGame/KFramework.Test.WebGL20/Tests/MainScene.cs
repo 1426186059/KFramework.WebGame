@@ -44,6 +44,12 @@ namespace KFramework.Test.WebGL20.Tests
                 Desc = "A 中转读回验证 WebGL 的 glReadPixels 与 WebGPU 的读回；B 验证可读纹理同步往返",
                 Factory = static () => new Texture2DScene(),
             },
+            new TestEntry
+            {
+                Name = "自定义 Effect（高斯模糊 / 描边发光 / 水波 / Metaball / 阴影 / 马赛克 / 反相 / 扫描线）",
+                Desc = "SpriteBatch.Begin(effect: 自定义 GLSL 片元着色器) 套用效果；WebGL2 真实编译生效，空格键总览⇄单图",
+                Factory = static () => new EffectScene(),
+            },
         ];
     }
 
@@ -81,7 +87,7 @@ namespace KFramework.Test.WebGL20.Tests
                 }
             }
 
-            Keys[] digits = [Keys.Digit1, Keys.Digit2, Keys.Digit3, Keys.Digit4];
+            Keys[] digits = [Keys.Digit1, Keys.Digit2, Keys.Digit3, Keys.Digit4, Keys.Digit5];
             for (int i = 0; i < TestRegistry.Entries.Count && i < digits.Length; i++)
             {
                 if (Input_KeyBoard.GetKeyDown(digits[i]))

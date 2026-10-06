@@ -16,8 +16,7 @@ namespace KFramework.MonoGame
     /// </summary>
     internal sealed class CustomWebGlSpriteProgram : ISpriteProgram, ICustomSpriteProgram
     {
-        private const string VertexSource = @"
-#version 300 es
+        private const string VertexSource = @"#version 300 es
 in vec2 aPosition;
 in vec2 aTexCoord;
 in vec4 aColor;

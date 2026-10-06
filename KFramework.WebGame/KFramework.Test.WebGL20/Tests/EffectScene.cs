@@ -4,13 +4,13 @@ using System.Diagnostics;
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 
-namespace KFramework.Test.WebGPU.Tests
+namespace KFramework.Test.WebGL20.Tests
 {
     /// <summary>
     /// 自定义 Effect 测试：用 SpriteBatch.Begin(effect: 自定义着色器) 把一段 GLSL 片元着色器套到精灵上。
     /// <para>
     /// 每个 Effect 都是 <see cref="ShaderEffect"/>：场景每帧写入 <see cref="ShaderEffect.Time"/> / <see cref="ShaderEffect.Params"/>，
-    /// 绘制时由后端的自定义精灵程序灌入 uTime / uParams uniform。WebGL 下真正生效；WebGPU 当前回落默认精灵着色器（画面照常，效果不套用）。
+    /// 绘制时由 WebGL 后端的自定义精灵程序灌入 uTime / uParams uniform。本测试固定走 WebGL 2.0，效果真实生效。
     /// </para>
     /// <para>空格键：网格总览 ⇄ 单图查看。共 8 个效果：高斯模糊 / 发光描边 / 水波 / Metaball / 阴影 / 马赛克 / 反相 / 扫描线。</para>
     /// </summary>
@@ -19,7 +19,7 @@ namespace KFramework.Test.WebGPU.Tests
         public override string Title => "自定义 Effect 测试（高斯模糊 / 描边发光 / 水波 / Metaball / 阴影 / 马赛克 / 反相 / 扫描线）";
 
         protected override string Description =>
-            "用 SpriteBatch.Begin(effect: 自定义 GLSL 片元着色器) 套用效果；WebGL 下生效，WebGPU 回落默认精灵着色器。" +
+            "用 SpriteBatch.Begin(effect: 自定义 GLSL 片元着色器) 套用效果（WebGL2 真实编译生效）。" +
             "每帧写入 Effect.Time 驱动动画。空格键：网格总览 ⇄ 单图查看。";
 
         private Texture2D? _tex;
@@ -35,7 +35,7 @@ namespace KFramework.Test.WebGPU.Tests
             public System.Numerics.Vector4 BaseParams;
         }
 
-        protected override void UpdateBody()
+        public override void Update()
         {
             if (Input_KeyBoard.GetKeyDown(Keys.Space))
             {
@@ -45,34 +45,69 @@ namespace KFramework.Test.WebGPU.Tests
             }
         }
 
-        protected override void DrawBody(SpriteBatch batch, float top)
-        {
-            _tex ??= MakeTestChart(256);
-            if (_effects.Count == 0) BuildEffects();
+        private bool _drawFaultLogged;
 
+        public override void Draw()
+        {
+            // 外层兜底：任何漏网的异常都就地吞掉并只记录一次，避免主循环因单个效果崩溃而整屏黑掉。
+            try
+            {
+                DrawCore();
+            }
+            catch (Exception ex)
+            {
+                if (!_drawFaultLogged)
+                {
+                    _drawFaultLogged = true;
+                    Console.Error.WriteLine($"[EffectScene] Draw 异常（已抑制，主循环继续）：{ex}");
+                }
+            }
+        }
+
+        private void DrawCore()
+        {
+            SpriteBatch batch = Batch;
+            RenderOffscreen(batch);
+
+            if (_tex == null) _tex = MakeChart(256);
+            if (_effects.Count == 0) BuildEffects();
             float t = (float)_sw.Elapsed.TotalSeconds;
+
+            // 页眉 / 页脚用默认材质（独立的 Begin/End，不与下方自定义 Effect 的 Begin 嵌套）
+            batch.Begin();
+            DrawHeader(batch);
+            DrawFooter(batch);
+            batch.End();
 
             if (_solo && _effects.Count > 0)
             {
                 EffectEntry e = _effects[_soloIndex];
                 float size = Math.Min(Device.Viewport.Width, Device.Viewport.Height) - 200f;
                 float x = (Device.Viewport.Width - size) / 2f;
-                float y = top + 16f;
-                e.Effect.Time = t;
-                e.Effect.Params = e.BaseParams;
-                batch.Begin(SpriteSortMode.Deferred, null, null, null, null, e.Effect);
-                batch.Draw(_tex, new Rectangle((int)x, (int)y, (int)size, (int)size), Color.White);
-                batch.End();
+                float y = 84f + 16f;
+                try
+                {
+                    e.Effect.Time = t;
+                    e.Effect.Params = e.BaseParams;
+                    batch.Begin(SpriteSortMode.Deferred, null, null, null, null, e.Effect);
+                    batch.Draw(_tex, new Rectangle((int)x, (int)y, (int)size, (int)size), Color.White);
+                    batch.End();
 
-                batch.Begin();
-                batch.DrawString(Font, $"{e.Name}（空格返回总览）", new Vector2(x, y - 28f), new Color(220, 235, 255));
-                batch.End();
+                    batch.Begin();
+                    batch.DrawString(Font, $"{e.Name}（空格返回总览）", new Vector2(x, y - 28f), new Color(220, 235, 255));
+                    batch.End();
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine($"[EffectScene] 效果「{e.Name}」绘制异常：{ex}");
+                    try { batch.End(); } catch { }
+                }
                 return;
             }
 
             const float cell = 200f, gap = 24f;
             int cols = Math.Max(1, (int)((Device.Viewport.Width - 56f) / (cell + gap)));
-            float x0 = 28f, y0 = top + 8f;
+            float x0 = 28f, y0 = 84f + 8f;
 
             for (int i = 0; i < _effects.Count; i++)
             {
@@ -86,15 +121,24 @@ namespace KFramework.Test.WebGPU.Tests
 
         private void DrawCell(SpriteBatch batch, EffectEntry e, float t, float x, float y, float size)
         {
-            e.Effect.Time = t;
-            e.Effect.Params = e.BaseParams;
-            batch.Begin(SpriteSortMode.Deferred, null, null, null, null, e.Effect);
-            batch.Draw(_tex, new Rectangle((int)x, (int)y, (int)size, (int)size), Color.White);
-            batch.End();
+            try
+            {
+                e.Effect.Time = t;
+                e.Effect.Params = e.BaseParams;
+                batch.Begin(SpriteSortMode.Deferred, null, null, null, null, e.Effect);
+                batch.Draw(_tex, new Rectangle((int)x, (int)y, (int)size, (int)size), Color.White);
+                batch.End();
 
-            batch.Begin();
-            batch.DrawString(Font, e.Name, new Vector2(x, y + size + 4f), new Color(200, 220, 255));
-            batch.End();
+                batch.Begin();
+                batch.DrawString(Font, e.Name, new Vector2(x, y + size + 4f), new Color(200, 220, 255));
+                batch.End();
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"[EffectScene] 效果「{e.Name}」绘制异常：{ex}");
+                // 失败时把批处理状态复位，避免 _beginCalled 卡死导致后续所有 Begin 连环报错。
+                try { batch.End(); } catch { }
+            }
         }
 
         private void BuildEffects()
@@ -105,8 +149,15 @@ namespace KFramework.Test.WebGPU.Tests
 
             void Add(string name, string frag, System.Numerics.Vector4 p)
             {
-                var eff = (ShaderEffect)Device.CreateShaderEffect(frag);
-                _effects.Add(new EffectEntry { Name = name, Effect = eff, BaseParams = p });
+                try
+                {
+                    var eff = (ShaderEffect)Device.CreateShaderEffect(frag);
+                    _effects.Add(new EffectEntry { Name = name, Effect = eff, BaseParams = p });
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine($"[EffectScene] 效果「{name}」着色器编译失败：{ex.Message}");
+                }
             }
 
             Add("高斯模糊", FragBlur, V4(w, h, 2f, 0f));
@@ -119,14 +170,45 @@ namespace KFramework.Test.WebGPU.Tests
             Add("扫描线/CRT", FragScanline, V4(220f, 0f, 0f, 0f));
         }
 
+        /// <summary>程序化生成一张带软边、带彩色渐变的圆盘图（不依赖任何资源文件），便于演示各类效果。</summary>
+        private Texture2D MakeChart(int size)
+        {
+            var tex = Device.CreateTexture(size, size);
+            var data = new byte[size * size * 4];
+            float cx = size / 2f, cy = size / 2f;
+            float radius = size * 0.42f;
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = x - cx, dy = y - cy;
+                    float dist = MathF.Sqrt(dx * dx + dy * dy);
+                    int idx = (y * size + x) * 4;
+
+                    // 软边：外圈 15% 半径内 alpha 渐隐，方便发光描边 / 阴影检测边缘
+                    float a = Math.Clamp(1f - (dist - radius * 0.85f) / (radius * 0.15f), 0f, 1f);
+                    if (a <= 0f) { data[idx + 3] = 0; continue; }
+
+                    float t = dist / radius; // 0 中心 → 1 边缘
+                    data[idx] = (byte)(255 * (1f - t));
+                    data[idx + 1] = (byte)(120f + 120f * (1f - t));
+                    data[idx + 2] = (byte)(255 * t);
+                    data[idx + 3] = (byte)(255 * a);
+                }
+            }
+
+            tex.SetData(data);
+            return tex;
+        }
+
         // ============================================================
         // 自定义片元着色器（GLSL ES 3.00）
         // 约定：顶点复用标准精灵顶点（aPosition / aTexCoord / aColor + uProjection）；
         // 片元可用 vTexCoord / vColor / uTexture，外加 uTime（动画时间）与 uParams（vec4）。
         // ============================================================
 
-        private const string FragBlur = @"
-#version 300 es
+        private const string FragBlur = @"#version 300 es
 precision highp float;
 in vec2 vTexCoord;
 in vec4 vColor;
@@ -150,8 +232,7 @@ void main(){
   fragColor = sum / wsum * vColor;
 }";
 
-        private const string FragGlow = @"
-#version 300 es
+        private const string FragGlow = @"#version 300 es
 precision highp float;
 in vec2 vTexCoord;
 in vec4 vColor;
@@ -176,8 +257,7 @@ void main(){
   fragColor = vec4(base.rgb + glow * g, max(base.a, g));
 }";
 
-        private const string FragWater = @"
-#version 300 es
+        private const string FragWater = @"#version 300 es
 precision highp float;
 in vec2 vTexCoord;
 in vec4 vColor;
@@ -194,8 +274,7 @@ void main(){
   fragColor = texture(uTexture, uv) * vColor;
 }";
 
-        private const string FragMetaball = @"
-#version 300 es
+        private const string FragMetaball = @"#version 300 es
 precision highp float;
 in vec2 vTexCoord;
 in vec4 vColor;
@@ -220,8 +299,7 @@ void main(){
   fragColor = vec4(col * vColor.rgb, tex.a);
 }";
 
-        private const string FragShadow = @"
-#version 300 es
+        private const string FragShadow = @"#version 300 es
 precision highp float;
 in vec2 vTexCoord;
 in vec4 vColor;
@@ -235,8 +313,7 @@ void main(){
   fragColor = vec4(0.0, 0.0, 0.0, a * 0.6);
 }";
 
-        private const string FragPixelate = @"
-#version 300 es
+        private const string FragPixelate = @"#version 300 es
 precision highp float;
 in vec2 vTexCoord;
 in vec4 vColor;
@@ -250,8 +327,7 @@ void main(){
   fragColor = texture(uTexture, uv) * vColor;
 }";
 
-        private const string FragInvert = @"
-#version 300 es
+        private const string FragInvert = @"#version 300 es
 precision highp float;
 in vec2 vTexCoord;
 in vec4 vColor;
@@ -264,8 +340,7 @@ void main(){
   fragColor = vec4(1.0 - c.rgb, c.a);
 }";
 
-        private const string FragScanline = @"
-#version 300 es
+        private const string FragScanline = @"#version 300 es
 precision highp float;
 in vec2 vTexCoord;
 in vec4 vColor;
