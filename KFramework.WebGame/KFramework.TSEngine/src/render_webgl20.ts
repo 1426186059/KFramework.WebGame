@@ -76,6 +76,17 @@ export function initContext(): boolean {
         return false;
     }
 
+    // 上下文丢失 / 恢复日志：丢失时 preventDefault 以便浏览器能派发 restored 事件（本框架不自动重建资源，
+    // 丢失后由用户刷新页面恢复）。
+    const c = canvas; // 闭包捕获非 null 引用，避开 TS 对“可能为 null”的窄化报错
+    c.addEventListener('webglcontextlost', (e: Event) => {
+        e.preventDefault();
+        console.error('[gl] WebGL 上下文已丢失，渲染将暂停（刷新页面可恢复）。');
+    });
+    c.addEventListener('webglcontextrestored', () => {
+        console.log('[gl] WebGL 上下文已恢复。');
+    });
+
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
     return true;
 }

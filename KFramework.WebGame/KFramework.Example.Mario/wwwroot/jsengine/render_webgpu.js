@@ -101,7 +101,7 @@ export async function init(antialias) {
             return false;
         }
         device.lost.then((info) => {
-            console.warn('[webgpu] device lost:', info?.reason, info?.message);
+            console.error('[webgpu] WebGPU 设备已丢失（上下文丢失），渲染将暂停（刷新页面可恢复）。reason:', info?.reason, 'message:', info?.message);
             device = null;
             context = null;
         });

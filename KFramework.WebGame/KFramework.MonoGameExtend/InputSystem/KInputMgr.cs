@@ -28,6 +28,9 @@ namespace KFramework.MonoGameExtend
         {
             if (Inited) return;
 
+            Input_KeyBoard.Activate();
+            Input_Mouse.Activate();   // 总纲页与各页的「← 总纲」都要用鼠标点击，必须激活
+            Input_Touch.Activate();
             Pointer = new KPointerDispatcher();
             Pointer.Init();
 
