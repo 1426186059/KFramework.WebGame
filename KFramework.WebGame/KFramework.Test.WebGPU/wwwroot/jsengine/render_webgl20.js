@@ -159,8 +159,15 @@ export function uniformMatrix4fv(location, transpose, value) {
         if (buf === null)
             return;
         if (n === 64) {
-            // 唯一实际会用到的尺寸：复用 Float32Array 视图，不必每次 new
-            if (_cacheMatrixF32 === null || _cacheMatrixF32.buffer !== buf.buffer)
+            // 唯一实际会用到的尺寸：复用 Float32Array 视图，不必每次 new。
+            // 【必须连 byteOffset 一起比对】C# 侧传进来的是托管数组（SpriteEffect._matrixBuffer = new byte[64]），
+            // 只在本次 JSImport 调用期间被固定，GC 一搬动它，下次的指针就变了；
+            // 只比 .buffer 会让视图一直盯着【第一次的地址】，之后每次上传读的都是那块已经被释放/挪走的内存
+            // —— 表现是投影矩阵逐渐变成垃圾（≈全 0），顶点全退化，整屏只剩清屏色（Release 下尤其明显，
+            // 因为 GC 行为与 Debug 不同，且各 app 的分配节奏不同）。
+            if (_cacheMatrixF32 === null
+                || _cacheMatrixF32.buffer !== buf.buffer
+                || _cacheMatrixF32.byteOffset !== buf.byteOffset)
                 _cacheMatrixF32 = new Float32Array(buf.buffer, buf.byteOffset, 16);
             matrix = _cacheMatrixF32;
         }
