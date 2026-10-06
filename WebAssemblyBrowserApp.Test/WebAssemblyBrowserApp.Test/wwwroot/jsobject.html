@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSObject 跨边界代价 — WASM 基准测试</title>
+  <link rel="preload" id="webassembly" />
+  <script type="importmap"></script>
+  <script type='module' src="main#[.{fingerprint}].js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>JSObject 跨边界代价</h1>
+  <p class="muted">Texture2D.Handle 当前是 <b>JSObject</b>（WebGL 的 WebGLTexture 对象），WebGPU 后端用 <b>int</b> 句柄。本页把它和 int 摆在一起比，
+    在「创建 / 复用传参 / JS→C# 接收 / 每帧新建 vs 建一次复用」四个场景测 ns/操作，差额即 JSObject 的托管分配与跨边界句柄表成本。进入本页会自动开始运行。</p>
+
+  <div class="bar">
+    <a class="btn" href="index.html">← 返回总纲</a>
+    <button id="runAll">运行全部测试</button>
+    <span id="status">加载中...</span>
+  </div>
+
+  <div id="results"><i>loading...</i></div>
+</body>
+
+</html>

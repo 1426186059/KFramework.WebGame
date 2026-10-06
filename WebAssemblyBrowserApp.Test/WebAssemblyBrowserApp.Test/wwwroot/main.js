@@ -20,6 +20,7 @@ import * as zeroCopy from './bench_zerocopy.js';
 import * as crossCall from './bench_crosscall.js';
 import * as jsReturn from './bench_jsreturn.js';
 import * as byteArrayReturn from './bench_bytearrayreturn.js';
+import * as jsObject from './bench_jsobject.js';
 
 // 先整体接住再解构：create() 返回的是 RuntimeAPI，它身上除了下面这四个之外，
 // 还挂着 Module 与 localHeapViewU8 等【公开内存 API】—— 后者正是 bench_runtimeapi 要探测的东西，
@@ -63,6 +64,7 @@ const jsToCsExp = findExport(exports, 'JsToCs_Int');
 const cbExp = findExport(exports, 'Cb_Int');
 const flExp = findExport(exports, 'Fl_Push');
 const ccExp = findExport(exports, 'CcRun');
+const joExp = findExport(exports, 'Js_TakeObj');
 
 console.log("[bench] 顶层导出键:", Object.keys(exports));
 console.log("[bench] BenchRunner:", runner ? "已找到" : "未找到");
@@ -91,6 +93,7 @@ zeroCopy.setRuntimeApi(runtime);
 // bench_crosscall 的滑块要回调 C#（CcRun / CcRunAll），并自己绑 DOM 事件。
 crossCall.setCs(ccExp);
 crossCall.bindUI();
+jsObject.setCs(joExp);
 
 // 注册 C# [JSImport] 使用的模块。模块名必须与 C# 里 [JSImport("函数名", "模块名")] 一致。
 setModuleImports('main.js', {
@@ -121,6 +124,7 @@ setModuleImports('bench_zerocopy', zeroCopy);
 setModuleImports('bench_crosscall', crossCall);
 setModuleImports('bench_jsreturn', jsReturn);
 setModuleImports('bench_bytearrayreturn', byteArrayReturn);
+setModuleImports('bench_jsobject', jsObject);
 
 // 统一包一层：C# 侧 [JSExport] 是 async，异常会变成 rejected Promise，
 // 不 catch 的话控制台看不到，表现就是"点了没反应"。

@@ -51,6 +51,8 @@ public static class BenchCatalog
         new Bench_JsReturn(),
         // 像素回传性能：MemoryView 写入 vs 直接返回 byte[]。
         new Bench_ByteArrayReturn(),
+        // JSObject 的跨边界代价：与 int 句柄对照，回答「JSObject 会不会严重拖性能、WebGL 能不能换成 int」。
+        new Bench_JSObject(),
     };
 
     /// <summary>按序号取模块，越界返回 null。</summary>
