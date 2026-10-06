@@ -14,17 +14,23 @@ namespace KFramework.MonoGame
             in vec2 aPosition;
             in vec2 aTexCoord;
             in vec4 aColor;
+            in vec4 aParams0;
+            in vec4 aParams1;
 
             uniform mat4 uProjection;
 
             out vec2 vTexCoord;
             out vec4 vColor;
+            out vec4 vParams0;
+            out vec4 vParams1;
 
             void main()
             {
                 gl_Position = uProjection * vec4(aPosition, 0.0, 1.0);
                 vTexCoord = aTexCoord;
                 vColor = aColor;
+                vParams0 = aParams0;
+                vParams1 = aParams1;
             }
             """;
 
@@ -55,6 +61,10 @@ namespace KFramework.MonoGame
         internal readonly int TexCoordLocation;
         internal readonly int ColorLocation;
 
+        /// <summary>逐精灵参数的两个顶点属性槽位（对应 VertexPositionColorTexture.Params 的 8 个字节）。</summary>
+        internal readonly int Params0Location;
+        internal readonly int Params1Location;
+
         internal JSObject Program => _program;
 
         internal SpriteEffect()
@@ -79,6 +89,8 @@ namespace KFramework.MonoGame
             PositionLocation = JSBind_WEBGL20.GetAttribLocation(_program, "aPosition");
             TexCoordLocation = JSBind_WEBGL20.GetAttribLocation(_program, "aTexCoord");
             ColorLocation = JSBind_WEBGL20.GetAttribLocation(_program, "aColor");
+            Params0Location = JSBind_WEBGL20.GetAttribLocation(_program, "aParams0");
+            Params1Location = JSBind_WEBGL20.GetAttribLocation(_program, "aParams1");
         }
 
         private static JSObject Compile(int type, string source)
@@ -113,7 +125,8 @@ namespace KFramework.MonoGame
             if (!_locationsLogged)
             {
                 _locationsLogged = true;
-                PrintTool.Log($"[SpriteEffect] attribute: pos={PositionLocation} uv={TexCoordLocation} color={ColorLocation} | " +
+                PrintTool.Log($"[SpriteEffect] attribute: pos={PositionLocation} uv={TexCoordLocation} color={ColorLocation} " +
+                                  $"params0={Params0Location} params1={Params1Location} | " +
                                   $"uniform: proj={(_projectionLocation is null ? "null" : "ok")} tex={(_textureLocation is null ? "null" : "ok")}");
             }
         }

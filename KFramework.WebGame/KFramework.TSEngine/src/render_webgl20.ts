@@ -236,6 +236,12 @@ export function vertexAttribPointer(index: number, size: number, type: number, n
     gpu().vertexAttribPointer(index, size, type, !!normalized, stride, offset);
 }
 
+// 顶点属性的推进步长：0 = 每个顶点推进一条记录（普通属性），1 = 每个实例推进一条（GPU 实例化）。
+// divisor 属于 VAO 状态，必须在绑定 VAO 之后设置。
+export function vertexAttribDivisor(index: number, divisor: number): void {
+    gpu().vertexAttribDivisor(index, divisor | 0);
+}
+
 // ---------- 纹理 ----------
 
 // 整数句柄映射：原生 WebGL 的 createTexture 返回的是 WebGLTexture 对象而非整数，
@@ -311,6 +317,10 @@ export function viewport(x: number, y: number, width: number, height: number): v
 export function scissor(x: number, y: number, width: number, height: number): void { gpu().scissor(x, y, width, height); }
 export function drawElements(mode: number, count: number, type: number, offset: number): void {
     gpu().drawElements(mode, count, type, offset);
+}
+// 实例化索引绘制：一次 draw 画 instanceCount 个实例（配合 divisor=1 的逐实例属性）。
+export function drawElementsInstanced(mode: number, count: number, type: number, offset: number, instanceCount: number): void {
+    gpu().drawElementsInstanced(mode, count, type, offset, instanceCount | 0);
 }
 export function drawArrays(mode: number, first: number, count: number): void { gpu().drawArrays(mode, first, count); }
 

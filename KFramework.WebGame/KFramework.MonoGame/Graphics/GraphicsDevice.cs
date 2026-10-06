@@ -20,6 +20,15 @@ namespace KFramework.MonoGame
         /// <summary>精灵着色器程序（由后端创建并持有）。</summary>
         internal readonly Effect Effect;
 
+        /// <summary>实例化绘制器（设备级，懒创建一次后复用；后端不支持实例化时为 null）。</summary>
+        private ISpriteInstancer? _instancer;
+
+        /// <summary>
+        /// GPU 实例化的绘制器，由 <see cref="SpriteBatch"/> 在 <c>Begin(..., instanced: true)</c> 时使用。
+        /// 一次 <c>drawElementsInstanced</c> 画一批实例；容量即单次 draw 的实例上限（超出自动分块）。
+        /// </summary>
+        internal ISpriteInstancer? Instancer => _instancer ??= Backend.CreateInstancer(null, MaxBatchSize);
+
         // 初值必须为 null：SetBlendState 用引用相等做短路，若初值就等于目标值，
         // 首次调用会被跳过，glBlendFunc 永远不下发（表现为画面全黑）。
         private BlendState _blendState = null!;
@@ -452,6 +461,39 @@ namespace KFramework.MonoGame
             long t1 = Stopwatch.GetTimestamp();
             _metrics._drawCount++;
             _metrics._primitiveCount += vRun / 2;
+        }
+
+        /// <summary>
+        /// 实例化绘制：下发材质状态（混合/深度/剔除/采样）→ 绑定纹理 → 后端发起一次实例化绘制 → 计入渲染统计。
+        /// 与 <see cref="DrawUserIndexedPrimitives"/> 的区别：这里一份数据对应一个实例，
+        /// 每个实例都算 1 个精灵、2 个三角形、而整批只算 1 次 DrawCall。
+        /// </summary>
+        internal void DrawInstanced(ISpriteInstancer instancer, Material material, in Matrix4x4 transform,
+                                    Span<SpriteInstance> instances, int count, Texture2D texture)
+        {
+            ArgumentNullException.ThrowIfNull(instancer);
+            if (count <= 0) return;
+
+            SetBlendState(material.Blend);
+            _depthStencilState = material.DepthStencil;
+            ApplyDepthStencilState();
+            _rasterizerState = material.Rasterizer;
+            ApplyRasterizerState();
+            _samplerState = material.Sampler;
+            SetSamplerState(material.Sampler);
+            BindTexture(texture);
+
+            instancer.Draw(transform, instances, count, texture);
+
+            // 实例化程序会自己 UseProgram / 绑定自己的 VAO，绕过了 ApplyMaterial 维护的「材质级去重」缓存。
+            // 这里必须把缓存作废，否则紧接着的 SpriteBatch 批次会因为"材质/变换都没变"被去重短路，
+            // 从而不重新 UseProgram —— 于是后续精灵继续用着实例化程序绘制，表现是"实例化之后的文字/精灵全都不显示"。
+            _appliedEffect = null!;
+            _appliedMaterial = null!;
+
+            _metrics._drawCount++;
+            _metrics._primitiveCount += count * 2;
+            _metrics._spriteCount += count;
         }
 
         // ================================================================

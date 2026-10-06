@@ -68,6 +68,12 @@ namespace KFramework.MonoGame
         public ISpriteProgram CreateCustomSpriteProgram(string vertexSource, string fragmentSource)
             => new CustomWebGlSpriteProgram(fragmentSource);
 
+        /// <summary>WebGL2 原生支持 GPU 实例化（drawElementsInstanced + vertexAttribDivisor）。</summary>
+        public bool SupportsInstancing => true;
+
+        public ISpriteInstancer CreateInstancer(string? fragmentSource, int capacity)
+            => new WebGlInstancedSpriteProgram(fragmentSource, capacity);
+
         private void ConfigureAttributes()
         {
             int stride = VertexPositionColorTexture.SizeInBytes;
@@ -85,6 +91,19 @@ namespace KFramework.MonoGame
             {
                 JSBind_WEBGL20.EnableVertexAttribArray(_effect.ColorLocation);
                 JSBind_WEBGL20.VertexAttribPointer(_effect.ColorLocation, 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, stride, 16);
+            }
+            // 逐精灵参数：2 组 unorm8x4，紧跟颜色之后（offset 20 / 24）。
+            // 槽位取自默认精灵程序的 aParams0 / aParams1：自定义程序必须按同样顺序声明这两个输入，
+            // 才能与这里配置好的 VAO 对齐（三个顶点源都以 aPosition/aTexCoord/aColor/aParams0/aParams1 顺序声明）。
+            if (_effect.Params0Location >= 0)
+            {
+                JSBind_WEBGL20.EnableVertexAttribArray(_effect.Params0Location);
+                JSBind_WEBGL20.VertexAttribPointer(_effect.Params0Location, 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, stride, 20);
+            }
+            if (_effect.Params1Location >= 0)
+            {
+                JSBind_WEBGL20.EnableVertexAttribArray(_effect.Params1Location);
+                JSBind_WEBGL20.VertexAttribPointer(_effect.Params1Location, 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, stride, 24);
             }
         }
 

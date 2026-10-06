@@ -61,10 +61,17 @@ namespace KFramework.MonoGame
             _vertexArray = new VertexPositionColorTexture[Math.Max(needed, 4 * GraphicsDevice.MaxBatchSize)];
         }
 
-        /// <summary>排序 + 按纹理分组，每组一次 draw call；总精灵数累加到 _metrics。</summary>
-        public void DrawBatch(SpriteSortMode sortMode, ISpriteProgram effect)
+        /// <summary>
+        /// 排序 + 分批（按纹理 + 属性块），每批一次 draw call；总精灵数累加到 _metrics。
+        /// <para>
+        /// 分批键 = 纹理引用 + 属性块（引用 + 版本号）：一次 draw 只能有一份 uniform 值，
+        /// 所以块一变（含"同一个块被改过"这种情况，版本号会变）就必须另起一批。
+        /// 带块的绘制由 <see cref="SpriteBatch"/> 在 Draw 时当场提交（块是可变的，值必须当场生效），
+        /// 因此这里看到的通常是「一段不带块 + 末尾一个带块项」。
+        /// </para>
+        /// </summary>
+        public void DrawBatch(SpriteSortMode sortMode, Material material, Matrix4x4 transform)
         {
-            // effect 已在 SpriteBatch.Setup 中 Apply，这里保持与官方一致的签名即可。
             if (_batchItemCount == 0) return;
 
             switch (sortMode)
@@ -88,22 +95,35 @@ namespace KFramework.MonoGame
                 int startIndex = 0;
                 int index = 0;
                 Texture2D? tex = null;
+                MaterialPropertyBlock? block = null;
+                int blockVersion = -1;
+                bool batchStarted = false;
 
                 int numBatchesToProcess = Math.Min(batchCount, maxBatchSize);
 
                 for (int i = 0; i < numBatchesToProcess; i++, batchIndex++, index += 4)
                 {
                     SpriteBatchItem item = _batchItemList[batchIndex];
-                    // 照 MonoGame：用引用相等判断纹理是否变化来决定是否换批。
-                    if (!ReferenceEquals(item.Texture, tex))
+
+                    // 换批：纹理变了（照 MonoGame 用引用相等判断），或属性块变了。
+                    if (!batchStarted
+                        || !ReferenceEquals(item.Texture, tex)
+                        || !ReferenceEquals(item.Properties, block)
+                        || item.BlockVersion != blockVersion)
                     {
+                        // 先把上一段画掉（用的是上一段自己的状态），再为本段下发状态。
                         FlushVertexArray(startIndex, index);
 
                         tex = item.Texture;
+                        block = item.Properties;
+                        blockVersion = item.BlockVersion;
                         startIndex = index;
+                        batchStarted = true;
 
+                        // 每段都要下发：材质 + 属性块（块盖在材质之上）→ 采样状态 → 纹理。
+                        _device.ApplyMaterial(material, transform, block);
                         _device.SetSamplerState(_samplerState);
-                        _device.BindTexture(tex);
+                        _device.BindTexture(tex!);
                     }
 
                     _vertexArray[index] = item.vertexTL;
@@ -111,7 +131,8 @@ namespace KFramework.MonoGame
                     _vertexArray[index + 2] = item.vertexBL;
                     _vertexArray[index + 3] = item.vertexBR;
 
-                    item.Texture = null; // 释放纹理引用，便于 GC
+                    item.Texture = null;      // 释放引用，便于 GC
+                    item.Properties = null;
                 }
 
                 FlushVertexArray(startIndex, index);

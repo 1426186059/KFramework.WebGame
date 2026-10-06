@@ -200,6 +200,11 @@ export function enableVertexAttribArray(index) { gpu().enableVertexAttribArray(i
 export function vertexAttribPointer(index, size, type, normalized, stride, offset) {
     gpu().vertexAttribPointer(index, size, type, !!normalized, stride, offset);
 }
+// 顶点属性的推进步长：0 = 每个顶点推进一条记录（普通属性），1 = 每个实例推进一条（GPU 实例化）。
+// divisor 属于 VAO 状态，必须在绑定 VAO 之后设置。
+export function vertexAttribDivisor(index, divisor) {
+    gpu().vertexAttribDivisor(index, divisor | 0);
+}
 // ---------- 纹理 ----------
 // 整数句柄映射：原生 WebGL 的 createTexture 返回的是 WebGLTexture 对象而非整数，
 // 但 C# 侧 Texture2D.Handle 现已统一为 int（与 WebGPU 一致），故这里维护 id → WebGLTexture 的映射。
@@ -256,6 +261,10 @@ export function viewport(x, y, width, height) { gpu().viewport(x, y, width, heig
 export function scissor(x, y, width, height) { gpu().scissor(x, y, width, height); }
 export function drawElements(mode, count, type, offset) {
     gpu().drawElements(mode, count, type, offset);
+}
+// 实例化索引绘制：一次 draw 画 instanceCount 个实例（配合 divisor=1 的逐实例属性）。
+export function drawElementsInstanced(mode, count, type, offset, instanceCount) {
+    gpu().drawElementsInstanced(mode, count, type, offset, instanceCount | 0);
 }
 export function drawArrays(mode, first, count) { gpu().drawArrays(mode, first, count); }
 /** 分配一张未初始化的 2D 纹理存储（渲染目标用：内容由 GPU 绘制，不传像素数据）。 */

@@ -19,14 +19,20 @@ namespace KFramework.MonoGame
 in vec2 aPosition;
 in vec2 aTexCoord;
 in vec4 aColor;
+in vec4 aParams0;
+in vec4 aParams1;
 uniform mat4 uProjection;
 out vec2 vTexCoord;
 out vec4 vColor;
+out vec4 vParams0;
+out vec4 vParams1;
 void main()
 {
     gl_Position = uProjection * vec4(aPosition, 0.0, 1.0);
     vTexCoord = aTexCoord;
     vColor = aColor;
+    vParams0 = aParams0;
+    vParams1 = aParams1;
 }";
 
         /// <summary>动画时间（秒），作用于片元着色器的 uTime。</summary>

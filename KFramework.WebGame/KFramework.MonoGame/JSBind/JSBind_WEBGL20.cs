@@ -319,6 +319,10 @@ namespace KFramework.MonoGame
         [JSImport("vertexAttribPointer", "render_webgl20")]
         public static partial void VertexAttribPointer(int index, int size, int type, bool normalized, int stride, int offset);
 
+        /// <summary>设置顶点属性的实例化步长（0 = 逐顶点，1 = 逐实例）。属于 VAO 状态。</summary>
+        [JSImport("vertexAttribDivisor", "render_webgl20")]
+        public static partial void VertexAttribDivisor(int index, int divisor);
+
 
 
         /// <summary>创建纹理对象（返回整数句柄，与 WebGPU 一致；JS 侧维护 id → WebGLTexture 映射）。</summary>
@@ -470,6 +474,10 @@ namespace KFramework.MonoGame
         /// <summary>按索引缓冲绘制图元。</summary>
         [JSImport("drawElements", "render_webgl20")]
         public static partial void DrawElements(int mode, int count, int type, int offset);
+
+        /// <summary>按索引缓冲做实例化绘制：一次画 instanceCount 个实例。</summary>
+        [JSImport("drawElementsInstanced", "render_webgl20")]
+        public static partial void DrawElementsInstanced(int mode, int count, int type, int offset, int instanceCount);
 
         /// <summary>按顶点顺序绘制图元。</summary>
         [JSImport("drawArrays", "render_webgl20")]

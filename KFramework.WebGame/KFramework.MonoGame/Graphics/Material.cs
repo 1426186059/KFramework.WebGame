@@ -36,7 +36,35 @@ namespace KFramework.MonoGame
         /// <summary>光栅化状态（对应 Unity 的 Cull 命令）。</summary>
         public RasterizerState Rasterizer = RasterizerState.CullNone;
 
-        /// <summary>恢复成一个「默认精灵材质」（渲染状态回默认 + 清空着色器属性）。</summary>
+        /// <summary>「属性块 → 顶点通道」映射表（null / 空 = 没声明，块只能走 uniform 路径）。</summary>
+        internal SpriteChannelMap? SpriteChannels;
+
+        /// <summary>
+        /// 是否声明了「属性块 → 顶点通道」的映射。
+        /// 声明后，块里被映射的属性会随顶点走 → 同一材质、每个物体属性不同，也能合并成一次 DrawCall
+        /// （这是 <see cref="MaterialPropertyBlock"/> 存在的意义，详见该类注释）。
+        /// </summary>
+        public bool HasSpriteChannels => SpriteChannels is { IsEmpty: false };
+
+        /// <summary>
+        /// 声明「属性块的哪些属性按顺序进 8 个顶点通道」。
+        /// 每项形如 <c>"uTint.rgb"</c>（3 个分量占 3 个通道）或 <c>"uPulse"</c>（1 个通道，取 x）；
+        /// 最多 8 个通道，按声明顺序填 <c>aParams0.xyzw</c> → <c>aParams1.xyzw</c>。
+        /// <para>
+        /// 通道是 0~1 的 8 位数值：颜色天然合适，枚举 / 角度这类标量请在着色器里按比例还原。
+        /// <b>没有列进来的属性只能走 uniform</b>（矩阵、纹理也属于这一类）—— 含这类属性的块，该次绘制会切批。
+        /// </para>
+        /// </summary>
+        public void SetSpriteChannels(params string[] paths)
+        {
+            SpriteChannels ??= new SpriteChannelMap();
+            SpriteChannels.Set(paths);
+        }
+
+        /// <summary>该属性名是否在通道映射里（同一属性名只要有任一分量被映射就算）。</summary>
+        public bool IsSpriteChannelProperty(string name) => SpriteChannels?.IsMapped(name) ?? false;
+
+        /// <summary>恢复成一个「默认精灵材质」（渲染状态回默认 + 清空着色器属性 + 清掉通道映射）。</summary>
         public void Reset()
         {
             Effect = null;
@@ -44,6 +72,7 @@ namespace KFramework.MonoGame
             Sampler = SamplerState.Point;
             DepthStencil = DepthStencilState.None;
             Rasterizer = RasterizerState.CullNone;
+            SpriteChannels = null;
             ClearProperties();
         }
     }

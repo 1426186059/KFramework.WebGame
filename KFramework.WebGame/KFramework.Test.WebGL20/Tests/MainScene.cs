@@ -58,9 +58,21 @@ namespace KFramework.Test.WebGL20.Tests
             },
             new TestEntry
             {
-                Name = "材质属性块（MaterialPropertyBlock：每次绘制覆盖）",
-                Desc = "1 个共享 Material + 1 个重复使用的 MaterialPropertyBlock 画出 8 种外观：Clear 后 SetXXX 覆盖，不 new 材质",
+                Name = "材质属性块（MaterialPropertyBlock：同材质 + 每物体不同 + 合批）",
+                Desc = "块作为 Draw 的参数逐次给；材质用 SetSpriteChannels 把块属性映射进顶点通道 → 8 格合并成 1 次 DrawCall，只有矩阵那格退回 uniform",
                 Factory = static () => new MaterialPropertyBlockScene(),
+            },
+            new TestEntry
+            {
+                Name = "逐精灵参数（顶点通道：同材质逐精灵不同仍合批）",
+                Desc = "8 格共用 1 个材质、只 Begin/End 一次：参数走顶点属性不参与分批键 → 整批 1 次 DrawCall（对照第 7 页的 8 次）",
+                Factory = static () => new SpriteParamScene(),
+            },
+            new TestEntry
+            {
+                Name = "GPU 实例化（一次 DrawCall 画 N 个精灵）",
+                Desc = "单位四边形 + 逐实例缓冲（divisor=1）+ drawElementsInstanced：N 个各有外观的精灵只产生 1 次 submit",
+                Factory = static () => new InstancingScene(),
             },
         ];
     }
@@ -99,7 +111,7 @@ namespace KFramework.Test.WebGL20.Tests
                 }
             }
 
-            Keys[] digits = [Keys.Digit1, Keys.Digit2, Keys.Digit3, Keys.Digit4, Keys.Digit5, Keys.Digit6, Keys.Digit7];
+            Keys[] digits = [Keys.Digit1, Keys.Digit2, Keys.Digit3, Keys.Digit4, Keys.Digit5, Keys.Digit6, Keys.Digit7, Keys.Digit8, Keys.Digit9];
             for (int i = 0; i < TestRegistry.Entries.Count && i < digits.Length; i++)
             {
                 if (Input_KeyBoard.GetKeyDown(digits[i]))
@@ -110,18 +122,39 @@ namespace KFramework.Test.WebGL20.Tests
             }
         }
 
-        /// <summary>按当前视口算出每个条目的命中矩形（Update 与 Draw 共用，保证点击判定与画面一致）。</summary>
+        /// <summary>
+        /// 按当前视口算出每个条目的命中矩形（Update 与 Draw 共用，保证点击判定与画面一致）。
+        /// 条目多于 6 个时自动分两列，并把行高压缩到视口装得下 —— 否则后面的条目会落到屏幕外，既看不见也点不到。
+        /// </summary>
         private void LayoutRows()
         {
             _rows.Clear();
 
-            float y = 92f;
-            float x = 28f;
-            float width = Math.Max(240f, Device.Viewport.Width - 56f);
-            float rowHeight = (Font.LineSpacing + 6f) * 2 + 18f;
+            const float x0 = 28f;
+            const float y0 = 92f;
+            const float gapX = 16f;
+            const float gapY = 10f;
 
-            for (int i = 0; i < TestRegistry.Entries.Count; i++)
-                _rows.Add(new Rectangle((int)x, (int)(y + i * (rowHeight + 10f)), (int)width, (int)rowHeight));
+            int count = TestRegistry.Entries.Count;
+            float availableWidth = Math.Max(240f, Device.Viewport.Width - 56f);
+            float availableHeight = Math.Max(120f, Device.Viewport.Height - y0 - 56f);
+
+            int columns = count <= 6 ? 1 : 2;
+            int rowsPerColumn = (int)MathF.Ceiling(count / (float)columns);
+
+            float naturalHeight = (Font.LineSpacing + 6f) * 2 + 18f;
+            float minHeight = (Font.LineSpacing + 6f) * 2 + 4f;
+            float rowHeight = Math.Clamp(availableHeight / rowsPerColumn - gapY, minHeight, naturalHeight);
+            float rowWidth = (availableWidth - gapX * (columns - 1)) / columns;
+
+            for (int i = 0; i < count; i++)
+            {
+                int column = i / rowsPerColumn;   // 先填满第一列再换列
+                int row = i % rowsPerColumn;
+                float x = x0 + column * (rowWidth + gapX);
+                float y = y0 + row * (rowHeight + gapY);
+                _rows.Add(new Rectangle((int)x, (int)y, (int)rowWidth, (int)rowHeight));
+            }
         }
 
         public override void Draw()

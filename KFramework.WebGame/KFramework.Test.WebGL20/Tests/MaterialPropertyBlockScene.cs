@@ -6,27 +6,29 @@ using KFramework.MonoGameExtend;
 namespace KFramework.Test.WebGL20.Tests
 {
     /// <summary>
-    /// MaterialPropertyBlock 测试：<b>一个共享材质 + 一个重复使用的属性块</b> 画出 8 种不同外观。
+    /// MaterialPropertyBlock 测试：<b>同一个材质 + 每个物体不同属性 + DrawCall 合并</b>。
     /// <para>
-    /// 对应 Unity 的做法：不要为了改几个 uniform 就给每个实例 new 一个 Material，
-    /// 而是共用 Material（着色器 + 渲染状态 + 属性基线），每次绘制前把要盖的属性写进一个
-    /// <see cref="MaterialPropertyBlock"/>（<c>Clear()</c> → <c>SetXXX</c>），再
-    /// <c>batch.Begin(material, block)</c> —— 绘制时先下发材质属性、再下发 Block 的覆盖值。
+    /// 属性块挂在"这一次绘制"上（<see cref="SpriteBatch.Draw(Texture2D, Rectangle, Color, MaterialPropertyBlock?)"/>），
+    /// 材质上用 <see cref="Material.SetSpriteChannels"/> 声明「块的哪些属性进顶点通道」：
+    /// 被映射的属性值随顶点走 → 不参与分批键 → 整批合并成 1 次 DrawCall。
+    /// 这就是 MaterialPropertyBlock 存在的意义（同材质 + 每物体不同 + 仍然合批）。
     /// </para>
     /// <para>
-    /// 8 个格子逐个演示：第 1 格不打 Block（看材质基线），其余每格只改 Block 的一类属性
-    /// （SetColor / SetFloat / SetVector / SetMatrix / SetInt / SetTexture），最后一格演示
-    /// <see cref="MaterialPropertyBlock.CopyFrom"/>（从模板块整体拷贝后再追加覆盖）。
-    /// 底部读数是块上的 GetXXX（值确实存在块上）+ 块的状态（IsEmpty / 属性条数 / 版本号）。
+    /// 边界对照：第 8 格故意往块里放了 <c>uUvMatrix</c>（矩阵）—— 通道只有 8 个 8 位数值，装不下矩阵，
+    /// 所以那一次绘制退回 uniform 覆盖路径：语义正确，但会切批（多出 1 次 DrawCall）。页面底部会显示实测值。
     /// </para>
-    /// <para>交互：空格暂停动画；鼠标悬停某格时给那一格再盖一条白色 tint —— 只影响这一格（证明覆盖是逐次绘制的）。</para>
+    /// <para>
+    /// 8 个格子逐个演示：第 1 格不打块（吃材质基线），第 2~7 格各改一类<b>可映射</b>属性
+    /// （SetColor / SetFloat ×5），第 8 格改<b>不可映射</b>的矩阵。底部读数是块上的 GetXXX + 块状态。
+    /// </para>
+    /// <para>交互：空格暂停动画；鼠标悬停某格时给那一格再盖一条白色 tint —— 只影响这一格。</para>
     /// </summary>
     public sealed class MaterialPropertyBlockScene : DemoScene
     {
-        public override string Title => "MaterialPropertyBlock 测试（每次绘制覆盖材质属性）";
+        public override string Title => "7) MaterialPropertyBlock（同材质 + 每物体不同 + DrawCall 合并）";
 
         protected override string Description =>
-            "8 个格子共用同一个 Material，只用一个重复使用的 MaterialPropertyBlock 逐格 Clear → SetXXX 覆盖。";
+            "8 格共用同一材质：块里被 SetSpriteChannels 映射的属性编码进顶点 → 整批合并；只有矩阵这种通道装不下的退回 uniform。";
 
         private const int TileCount = 8;
         private const float TileSize = 165f;
@@ -43,23 +45,23 @@ namespace KFramework.Test.WebGL20.Tests
         private ShaderEffect? _fx;
         private Material? _material;
         private MaterialPropertyBlock? _block;
-        private MaterialPropertyBlock? _template;
         private string _error = string.Empty;
 
         private float _time;
         private bool _paused;
+        private long _tileDrawCalls = -1;
 
-        /// <summary>格子标题（第 1 格是材质基线，其余是块上改的那一类属性）。</summary>
+        /// <summary>格子标题：前 7 格改的都是「能进通道」的属性，最后一格改的是「进不了通道」的矩阵。</summary>
         private static readonly string[] TileTitles =
         [
-            "不打 Block（材质基线）",
-            "block.SetColor",
-            "block.SetFloat",
-            "block.SetVector",
-            "block.SetMatrix",
-            "block.SetInt",
-            "block.SetTexture",
-            "CopyFrom + SetMatrix",
+            "不打 Block（基线）",
+            "SetColor(uTint)",
+            "SetFloat(uPulse)",
+            "SetFloat(uHue)",
+            "SetFloat(uMaskAmount)",
+            "SetFloat(uFlip)",
+            "SetFloat(uAngle)",
+            "SetMatrix(uUvMatrix) ← 切批",
         ];
 
         public override void LoadContent()
@@ -79,21 +81,27 @@ namespace KFramework.Test.WebGL20.Tests
                 return;
             }
 
-            // 共享材质：着色器 + 渲染状态 + 属性基线（基线只设一次，之后靠 Block 覆盖）。
             _material = new Material { Effect = _fx };
-            _material.SetFloat("uTime", 0f);
+
+            // 关键的一步：声明「块的哪些属性按顺序进 8 个顶点通道」——3+1+1+1+1+1 = 8 个槽位。
+            // 声明之后，块里这些属性的值就随顶点走，不再需要 uniform，于是整批能合并成一次 DrawCall。
+            _material.SetSpriteChannels("uTint.rgb", "uPulse", "uHue", "uFlip", "uMaskAmount", "uAngle");
+
+            // 材质基线：块里没设的属性由这里兜底（通道编码取不到块里的值就用基线）。
             _material.SetColor("uTint", Color.White);
             _material.SetFloat("uPulse", 1f);
-            _material.SetInt("uOrientation", 0);
-            _material.SetMatrix("uUvMatrix", Matrix4x4.Identity);
-            _material.SetTexture("uMask", null);
-            _material.SetVector("uParams", new System.Numerics.Vector4(_chart.Width, _chart.Height, 0f, 0f));
+            _material.SetFloat("uHue", 0f);
+            _material.SetFloat("uFlip", 0f);
+            _material.SetFloat("uMaskAmount", 0f);
+            _material.SetFloat("uAngle", 0f);
 
-            // 重复使用的那个块（8 格共用）与一个模板块（演示 CopyFrom）。
+            // 通道装不下的属性：只能走 uniform（矩阵、纹理、枚举都算这类）。
+            _material.SetMatrix("uUvMatrix", Matrix4x4.Identity);
+            _material.SetInt("uOrientation", 0);
+            _material.SetTexture("uMask", _mask);
+
+            // 重复使用的那个块：每次绘制前 Clear → SetXXX。
             _block = new MaterialPropertyBlock();
-            _template = new MaterialPropertyBlock();
-            _template.SetColor("uTint", new Color(255, 205, 120));
-            _template.SetFloat("uPulse", 0.9f);
         }
 
         public override void Update()
@@ -118,17 +126,18 @@ namespace KFramework.Test.WebGL20.Tests
             LayoutTiles();
             Vector2 mouse = Input_Mouse.Position;
 
+            // ---- 块挂在 Draw 上，整批只 Begin/End 一次 ----
+            // 块里被映射的属性进顶点（合批）；含未映射属性（第 8 格的矩阵）的那一次才切批。
+            long before = Device.Metrics.DrawCount;
+            batch.Begin(_material);
             for (int i = 0; i < TileCount; i++)
             {
                 bool useBlock = ConfigureBlock(i, t, _tiles[i].Contains(mouse));
                 _values[i] = DescribeBlock(i);
-
-                // 同一个材质实例 + 同一个块实例：只有块里的值在变（第 1 格不打块，走材质基线）。
-                if (useBlock) batch.Begin(_material, _block);
-                else batch.Begin(_material);
-                batch.Draw(_chart, _tiles[i], Color.White);
-                batch.End();
+                batch.Draw(_chart!, _tiles[i], Color.White, useBlock ? _block : null);
             }
+            batch.End();
+            _tileDrawCalls = Device.Metrics.DrawCount - before;
 
             batch.Begin();
             for (int i = 0; i < TileCount; i++)
@@ -142,58 +151,48 @@ namespace KFramework.Test.WebGL20.Tests
             batch.End();
         }
 
-        /// <summary>按格子把「这一绘制要盖的属性」写进共享块；返回 false 表示这一格故意不打块（看材质基线）。</summary>
+        /// <summary>按格子把「这一绘制要盖的属性」写进共享块；返回 false 表示这一格不打块（吃材质基线）。</summary>
         private bool ConfigureBlock(int index, float t, bool hover)
         {
-            // 复用同一个块：先清空，再设这一格要盖的（照 Unity 的高效写法）。
             _block!.Clear();
 
-            if (index == 0) return false;   // 不打块：直接看材质基线（白 tint / pulse 1 / 无旋转）
-
-            int w = _chart?.Width ?? 256;
-            int h = _chart?.Height ?? 256;
+            if (index == 0) return false;   // 不打块：通道值全部来自材质基线
 
             switch (index)
             {
                 case 1:
                     _block.SetColor("uTint", new Color(255, 140, 140));
                     break;
-
                 case 2:
                     _block.SetFloat("uPulse", 0.45f);
                     break;
-
                 case 3:
-                    _block.SetVector("uParams", new System.Numerics.Vector4(w, h, 0.33f, 0f));
+                    _block.SetFloat("uHue", 0.33f);
                     break;
-
                 case 4:
-                    _block.SetMatrix("uUvMatrix", RotationAboutCenter(MathF.PI * 0.25f));
+                    _block.SetFloat("uMaskAmount", 1f);   // 用材质基线上绑的遮罩纹理，逐物体控制强度
                     break;
-
                 case 5:
-                    _block.SetInt("uOrientation", 1);
+                    _block.SetFloat("uFlip", 1f);
                     break;
-
                 case 6:
-                    _block.SetTexture("uMask", _mask);
-                    _block.SetVector("uParams", new System.Numerics.Vector4(w, h, 0f, 1f));
+                    _block.SetFloat("uAngle", 0.125f);    // 0~1 通道值 → 着色器里 ×2π ≈ 45°
                     break;
-
                 default:
-                    // CopyFrom：整体拷贝模板块的属性（tint / pulse），再追加一条旋转矩阵。
-                    _block.CopyFrom(_template!);
+                    // 第 8 格：矩阵进不了通道 → 这一次绘制只能挂 uniform，于是切批。
+                    _block.SetColor("uTint", new Color(255, 205, 120));
                     _block.SetMatrix("uUvMatrix", RotationAboutCenter(t * 0.8f));
+                    _block.SetInt("uOrientation", 1);
                     break;
             }
 
-            // 悬停：再往这个块上盖一条 tint —— 因为块一清一设、只作用于本次 Begin/End，所以只影响这一格。
+            // 悬停：再往这个块上盖一条 tint —— 因为块只作用于本次 Draw，所以只影响这一格。
             if (hover) _block.SetColor("uTint", Color.White);
 
             return true;
         }
 
-        /// <summary>直接从块上读回值（证明这些值确实存在块里，而材质本身没变）。</summary>
+        /// <summary>直接从块上读回值（证明值确实存在块里，而材质本身没变）。</summary>
         private string DescribeBlock(int index)
         {
             MaterialPropertyBlock b = _block!;
@@ -201,7 +200,7 @@ namespace KFramework.Test.WebGL20.Tests
             {
                 case 0:
                     Color baseTint = _material!.GetColor("uTint");
-                    return $"材质: uTint=#{baseTint.R:X2}{baseTint.G:X2}{baseTint.B:X2}";
+                    return $"材质基线 uTint=#{baseTint.R:X2}{baseTint.G:X2}{baseTint.B:X2}";
                 case 1:
                 {
                     Color c = b.GetColor("uTint");
@@ -210,35 +209,36 @@ namespace KFramework.Test.WebGL20.Tests
                 case 2:
                     return $"Get uPulse = {b.GetFloat("uPulse"):F2}";
                 case 3:
-                    return $"Get uParams.z = {b.GetVector("uParams").Z:F2}";
+                    return $"Get uHue = {b.GetFloat("uHue"):F2}";
                 case 4:
-                    return $"Get uUvMatrix = 旋转";
+                    return $"Get uMaskAmount = {b.GetFloat("uMaskAmount"):F2}";
                 case 5:
-                    return $"Get uOrientation = {b.GetInt("uOrientation")}";
+                    return $"Get uFlip = {b.GetFloat("uFlip"):F2}";
                 case 6:
-                    return $"Get uMask = {(b.GetTexture("uMask") is null ? "null" : "棋盘")}";
+                    return $"Get uAngle = {b.GetFloat("uAngle"):F3}";
                 default:
-                {
-                    Color c = b.GetColor("uTint");
-                    return $"CopyFrom → #{c.R:X2}{c.G:X2}{c.B:X2} + 旋转";
-                }
+                    return $"uUvMatrix = 旋转 / uOrientation = {b.GetInt("uOrientation")}";
             }
         }
 
-        /// <summary>底部说明与块状态：强调「一个材质 + 一个块」与块的复用状态。</summary>
+        /// <summary>底部说明与实测 DrawCall：这是本页最有说服力的两行数字。</summary>
         private void DrawReadBack(SpriteBatch batch)
         {
             MaterialPropertyBlock b = _block!;
-            float y = Device.Viewport.Height - 92f;
+            float y = Device.Viewport.Height - 116f;
 
-            string line1 = "1 个 Material（属性基线：uTint=白 / uPulse=1 / 无旋转）+ 1 个重复使用的 MaterialPropertyBlock → 8 种外观；" +
-                           "Block 每次绘制都是先 Clear() 再 SetXXX，不 new 材质";
+            string line0 = $"8 格共用 1 个材质 + 1 次 Begin/End → DrawCall 增量 = {_tileDrawCalls}" +
+                           "（前 7 格：块属性全部映射进顶点 → 合并成 1 次；第 8 格含 uUvMatrix → 另 1 次）";
+
+            string line1 = "材质上声明的通道：uTint.rgb | uPulse | uHue | uFlip | uMaskAmount | uAngle（共 8 个，" +
+                           "顶点里 aParams0/aParams1）";
 
             string line2 = $"块状态：IsEmpty={b.IsEmpty}  属性条数={b.Properties.Count}  块版本={b.PropertiesVersion}  " +
-                           $"材质属性条数={_material!.Properties.Count}  模板块（CopyFrom 用）属性条数={_template!.Properties.Count}";
+                           $"材质属性条数={_material!.Properties.Count}";
 
-            batch.DrawString(_small!, line1, new Vector2(28f, y), new Color(120, 200, 160));
-            batch.DrawString(_small!, line2, new Vector2(28f, y + 22f), new Color(120, 200, 160));
+            batch.DrawString(_small!, line0, new Vector2(28f, y), new Color(255, 206, 110));
+            batch.DrawString(_small!, line1, new Vector2(28f, y + 22f), new Color(120, 200, 160));
+            batch.DrawString(_small!, line2, new Vector2(28f, y + 44f), new Color(120, 200, 160));
         }
 
         /// <summary>把 8 个格子排成 4 列 2 行。</summary>
@@ -246,15 +246,17 @@ namespace KFramework.Test.WebGL20.Tests
         {
             const int cols = 4;
             float x0 = 28f;
-            float y0 = 92f;
+            float y0 = 128f;
 
             for (int i = 0; i < TileCount; i++)
             {
                 int c = i % cols;
                 int r = i / cols;
-                float x = x0 + c * (TileSize + TileGap);
-                float y = y0 + r * RowPitch;
-                _tiles[i] = new Rectangle((int)x, (int)y, (int)TileSize, (int)TileSize);
+                _tiles[i] = new Rectangle(
+                    (int)(x0 + c * (TileSize + TileGap)),
+                    (int)(y0 + r * RowPitch),
+                    (int)TileSize,
+                    (int)TileSize);
             }
         }
 
@@ -309,21 +311,21 @@ namespace KFramework.Test.WebGL20.Tests
             return tex;
         }
 
-        /// <summary>演示用的片元着色器：uTint / uPulse / uOrientation / uUvMatrix / uMask 都会被 MaterialPropertyBlock 覆盖。</summary>
+        /// <summary>
+        /// 本页片元着色器：逐物体差异全部来自顶点通道
+        /// （vParams0 = 色调.rgb + 亮度乘子.a，vParams1 = 色相 / 翻转 / 遮罩量 / UV 旋转），
+        /// 通道装不下的（矩阵、朝向、纹理）仍从 uniform 取。
+        /// </summary>
         private const string FragmentSource = @"#version 300 es
 precision highp float;
 in vec2 vTexCoord;
 in vec4 vColor;
-
-uniform sampler2D uTexture;   // 精灵纹理（0 号单元）
-uniform sampler2D uMask;      // 材质属性里的纹理（1 号单元）
-uniform float uTime;          // 内置：动画时间
-uniform vec4  uParams;        // 内置：x=W y=H z=色相偏移 w=是否启用遮罩
-uniform vec4  uTint;          // 材质基线 + Block 覆盖
-uniform float uPulse;         // 材质基线 + Block 覆盖
-uniform int   uOrientation;   // 材质基线 + Block 覆盖
-uniform mat4  uUvMatrix;      // 材质基线 + Block 覆盖
-
+in vec4 vParams0;   // 通道 0~3：rgb = 色调, a = 亮度乘子
+in vec4 vParams1;   // 通道 4~7：x = 色相, y = 翻转(0/0.5/1), z = 遮罩量, w = UV 旋转(0~1 → 0~2π)
+uniform sampler2D uTexture;
+uniform sampler2D uMask;      // 材质基线（批级）
+uniform mat4  uUvMatrix;      // uniform 路径：通道装不下的矩阵
+uniform int   uOrientation;   // uniform 路径：通道装不下的枚举
 out vec4 fragColor;
 
 vec3 hueShift(vec3 c, float h){
@@ -332,19 +334,36 @@ vec3 hueShift(vec3 c, float h){
   return c * cos(a) + cross(k, c) * sin(a) + k * dot(k, c) * (1.0 - cos(a));
 }
 
-void main(){
-  vec2 uv = (uUvMatrix * vec4(vTexCoord, 0.0, 1.0)).xy;
-  if (uOrientation == 1) uv.y = 1.0 - uv.y;
-  else if (uOrientation == 2) uv.x = 1.0 - uv.x;
-  if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) { fragColor = vec4(0.0); return; }
+void main()
+{
+    vec2 uv = vTexCoord;
 
-  vec4 c = texture(uTexture, uv) * vColor;
-  c.rgb = hueShift(c.rgb, uParams.z);
-  c.rgb *= uTint.rgb * uTint.a;
-  c.rgb *= uPulse;
+    // ---- 顶点通道来的逐物体差异（这部分能合批）----
+    float flip = vParams1.y;
+    if (flip > 0.7) uv.x = 1.0 - uv.x;
+    else if (flip > 0.2) uv.y = 1.0 - uv.y;
 
-  float m = mix(1.0, texture(uMask, vTexCoord).r, uParams.w);
-  fragColor = vec4(c.rgb * m, c.a);
+    float angle = vParams1.w * 6.2831853;
+    if (angle != 0.0)
+    {
+        float cs = cos(angle), sn = sin(angle);
+        vec2 p = uv - vec2(0.5);
+        uv = vec2(p.x * cs - p.y * sn, p.x * sn + p.y * cs) + vec2(0.5);
+    }
+
+    // ---- uniform 路径来的（通道装不下的属性）----
+    uv = (uUvMatrix * vec4(uv, 0.0, 1.0)).xy;
+    if (uOrientation == 1) uv.y = 1.0 - uv.y;
+    else if (uOrientation == 2) uv.x = 1.0 - uv.x;
+
+    if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) { fragColor = vec4(0.0); return; }
+
+    vec4 c = texture(uTexture, uv) * vColor;
+    c.rgb = hueShift(c.rgb, vParams1.x);
+    c.rgb *= vParams0.rgb * vParams0.a;
+
+    float m = mix(1.0, texture(uMask, vTexCoord).r, vParams1.z);
+    fragColor = vec4(c.rgb * m, c.a);
 }";
     }
 }
