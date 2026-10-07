@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using KFramework.MonoGame;
-using KFramework.MonoGameExtend;
+using System.Diagnostics;
 
 namespace KFramework.Test.WebGL20.Tests
 {
