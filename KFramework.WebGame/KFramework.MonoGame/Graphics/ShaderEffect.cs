@@ -43,7 +43,7 @@ void main()
         /// </summary>
         public Vector4 Params;
 
-        public ShaderEffect(ISpriteProgram program) : base(program) { }
+        public ShaderEffect(IShaderProgram program) : base(program) { }
     }
 
     /// <summary>自定义精灵程序需要回指其 <see cref="ShaderEffect"/>，以读取每帧的 <see cref="ShaderEffect.Time"/> / <see cref="ShaderEffect.Params"/>。</summary>

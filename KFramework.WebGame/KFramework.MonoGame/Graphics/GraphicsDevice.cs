@@ -40,7 +40,7 @@ namespace KFramework.MonoGame
         private SamplerState _appliedSampler = null!;
         private DepthStencilState _appliedDepth = null!;
         private RasterizerState _appliedRasterizer = null!;
-        private ISpriteProgram _appliedEffect = null!;
+        private IShaderProgram _appliedEffect = null!;
         private Matrix4x4 _appliedTransform = Matrix4x4.Identity;
         // 材质上的着色器属性（SetFloat / SetVector / …）：按「材质实例 + 属性版本号」判断内容有没有变。
         private Material _appliedMaterial = null!;
@@ -250,7 +250,7 @@ namespace KFramework.MonoGame
         /// </summary>
         public Effect CreateShaderEffect(string fragmentSource, string? vertexSource = null)
         {
-            ISpriteProgram program = Backend.CreateCustomSpriteProgram(vertexSource ?? string.Empty, fragmentSource);
+            IShaderProgram program = Backend.CreateCustomSpriteProgram(vertexSource ?? string.Empty, fragmentSource);
             var effect = new ShaderEffect(program);
             if (program is ICustomSpriteProgram csp) csp.SetOwner(effect);
             return effect;
@@ -402,7 +402,7 @@ namespace KFramework.MonoGame
             Matrix4x4 transform, 
             MaterialPropertyBlock? properties)
         {
-            ISpriteProgram effect = (material.Effect ?? Effect).Program;
+            IShaderProgram effect = (material.Effect ?? Effect).Program;
             // 动画效果（如自定义 ShaderEffect）每帧都要重灌 uTime / 自定义参数，不做材质去重短路。
             bool animated = effect.IsAnimated;
             // 材质上的着色器属性一旦被改（PropertiesVersion 变了）也必须重发，故把它并进去重键；

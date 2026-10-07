@@ -36,6 +36,10 @@ const _cacheVertex = new ByteCache(64 * 1024, 1024 * 1024); // bufferData / buff
 const _cacheTexture = new ByteCache(2048, 32 * 1024 * 1024); // texImage2D / texSubImage2D / compressedTexImage2D
 let _cacheMatrixF32 = null; // 矩阵还原用的 Float32Array 视图（建在 _cacheMatrix 的缓冲上）
 let uniformLogged = false; // 矩阵上传只在首次打一条日志
+// 整数句柄映射：原生 WebGL 的 createTexture 返回的是 WebGLTexture 对象而非整数，
+// 但 C# 侧 Texture2D.Handle 现已统一为 int（与 WebGPU 一致），故这里维护 id → WebGLTexture 的映射。
+let _texId = 0;
+const _texByInt = new Map();
 // ============ 模块级字段结束 ============
 function gpu() {
     if (!gl)
@@ -205,11 +209,6 @@ export function vertexAttribPointer(index, size, type, normalized, stride, offse
 export function vertexAttribDivisor(index, divisor) {
     gpu().vertexAttribDivisor(index, divisor | 0);
 }
-// ---------- 纹理 ----------
-// 整数句柄映射：原生 WebGL 的 createTexture 返回的是 WebGLTexture 对象而非整数，
-// 但 C# 侧 Texture2D.Handle 现已统一为 int（与 WebGPU 一致），故这里维护 id → WebGLTexture 的映射。
-let _texId = 0;
-const _texByInt = new Map();
 export function createTexture() {
     const t = gpu().createTexture();
     const id = ++_texId;

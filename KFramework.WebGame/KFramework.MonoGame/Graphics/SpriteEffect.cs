@@ -7,7 +7,7 @@ namespace KFramework.MonoGame
     /// <summary>
     /// SpriteBatch 使用的内置着色器（GLSL ES 3.00）。顶点为 位置(float4)+颜色+UV，片元做一次纹理采样与颜色相乘。
     /// </summary>
-    internal sealed class SpriteEffect : ISpriteProgram
+    internal sealed class SpriteEffect : IShaderProgram
     {
         private const string VertexSource = """
             #version 300 es
@@ -103,7 +103,7 @@ namespace KFramework.MonoGame
             return shader;
         }
 
-        // 实现 ISpriteProgram：接口成员需为 public（接口本身与其实现类都是 internal，对外仍不可见）。
+        // 实现 IShaderProgram：接口成员需为 public（接口本身与其实现类都是 internal，对外仍不可见）。
         public bool IsAnimated => false;
 
         public void Apply(Matrix4x4 projection, Material material, MaterialPropertyBlock? properties)

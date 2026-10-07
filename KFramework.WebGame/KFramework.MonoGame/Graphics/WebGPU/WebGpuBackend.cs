@@ -122,10 +122,10 @@ namespace KFramework.MonoGame
                 JSBind_WebGPU.BUFFER_USAGE_UNIFORM | JSBind_WebGPU.BUFFER_USAGE_COPY_DST);
         }
 
-        public ISpriteProgram CreateSpriteProgram() => new WebGpuSpriteProgram(this);
+        public IShaderProgram CreateSpriteProgram() => new WebGpuSpriteProgram(this);
 
         // WebGPU 暂未实现自定义 WGSL 程序，回落默认精灵着色器（ShaderEffect 在 WebGL 下才生效）。
-        public ISpriteProgram CreateCustomSpriteProgram(string vertexSource, string fragmentSource)
+        public IShaderProgram CreateCustomSpriteProgram(string vertexSource, string fragmentSource)
             => new WebGpuSpriteProgram(this);
 
         // ================================================================
@@ -798,7 +798,7 @@ namespace KFramework.MonoGame
             "{\"shaderLocation\":2,\"offset\":20,\"format\":\"float32x2\"}]}]";
 
         /// <summary>WebGPU 的精灵程序：Apply 时把投影矩阵写进一个新的 uniform 槽位。</summary>
-        private sealed class WebGpuSpriteProgram : ISpriteProgram
+        private sealed class WebGpuSpriteProgram : IShaderProgram
         {
             private readonly WebGpuBackend _backend;
 

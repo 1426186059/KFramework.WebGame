@@ -2,14 +2,15 @@ namespace KFramework.MonoGame
 {
 
     /// <summary>
-    /// 精灵着色器程序的后端抽象。
+    /// 着色器程序的后端抽象。
     /// <para>
     /// WebGL 后端 = GLSL Program（<see cref="SpriteEffect"/>）；WebGPU 后端 = WGSL 模块 + 渲染管线。
     /// 上层（<see cref="SpriteBatch"/> / <see cref="SpriteBatcher"/>）只依赖本接口，不感知具体后端，
     /// 因此两种后端可以互换而不用改任何绘制代码。
+    /// </para>
     /// </summary>
     /// <remarks>声明为 public 以便 <see cref="Material"/>（public）能暴露 Effect 字段，且外部程序集（示例工程）可使用。</remarks>
-    public interface ISpriteProgram : IDisposable
+    public interface IShaderProgram : IDisposable
     {
         /// <summary>
         /// 绑定本程序，写入投影矩阵与内置 uniform，并把 <paramref name="material"/> 上的着色器属性

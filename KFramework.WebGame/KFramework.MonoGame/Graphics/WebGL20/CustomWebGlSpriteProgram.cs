@@ -13,7 +13,7 @@ namespace KFramework.MonoGame
     /// </para>
     /// <para>配合 <see cref="ShaderEffect"/> 使用：场景每帧写入 <see cref="ShaderEffect.Time"/> / <see cref="ShaderEffect.Params"/>，Apply 时随材质下发。</para>
     /// </summary>
-    internal sealed class CustomWebGlSpriteProgram : ISpriteProgram, ICustomSpriteProgram
+    internal sealed class CustomWebGlSpriteProgram : IShaderProgram, ICustomSpriteProgram
     {
         private const string VertexSource = @"#version 300 es
 // 顶点输入对齐 Unity 精灵着色器的 appdata_t：aPosition ↔ float4 vertex : POSITION，
