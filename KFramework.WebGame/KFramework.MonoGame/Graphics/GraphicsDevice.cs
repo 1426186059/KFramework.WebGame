@@ -17,7 +17,7 @@ namespace KFramework.MonoGame
         private ISpriteInstancer? _instancer;
 
         /// <summary>
-        /// GPU 实例化的绘制器，由 <see cref="SpriteBatch"/> 在 <c>Begin(..., instanced: true)</c> 时使用。
+        /// GPU 实例化的绘制器，由 <see cref="SpriteBatch"/> 在批材质开启 <see cref="Material.EnableInstancing"/> 时使用。
         /// 一次 <c>drawElementsInstanced</c> 画一批实例；容量即单次 draw 的实例上限（超出自动分块）。
         /// </summary>
         internal ISpriteInstancer? Instancer => _instancer ??= Backend.CreateInstancer(null, MaxBatchSize);

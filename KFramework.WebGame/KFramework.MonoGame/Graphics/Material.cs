@@ -34,7 +34,14 @@ namespace KFramework.MonoGame
         /// <summary>光栅化状态（对应 Unity 的 Cull 命令）。</summary>
         public RasterizerState Rasterizer = RasterizerState.CullNone;
 
-        /// <summary>恢复成一个「默认精灵材质」（渲染状态回默认 + 效果置空）。</summary>
+        /// <summary>
+        /// 是否启用 GPU 实例化（照 Unity 的 <c>Material.enableInstancing</c>）：一次 <c>drawElementsInstanced</c>
+        /// 画一批同纹理精灵，逐物体数据随实例缓冲走（见 <see cref="SpriteInstance"/>）。
+        /// 需要后端支持：WebGPU 尚未接入，开启后绘制会抛 <see cref="NotSupportedException"/>。
+        /// </summary>
+        public bool EnableInstancing;
+
+        /// <summary>恢复成一个「默认精灵材质」（渲染状态回默认 + 效果置空 + 关掉实例化）。</summary>
         public void Reset()
         {
             Effect = null;
@@ -42,6 +49,7 @@ namespace KFramework.MonoGame
             Sampler = SamplerState.Point;
             DepthStencil = DepthStencilState.None;
             Rasterizer = RasterizerState.CullNone;
+            EnableInstancing = false;
         }
     }
 }

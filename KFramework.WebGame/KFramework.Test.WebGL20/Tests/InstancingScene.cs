@@ -16,7 +16,7 @@ namespace KFramework.Test.WebGL20.Tests
     /// <list type="bullet">
     ///   <item><description><b>A) SpriteInstancer 直连</b>：显式 Begin → Add × N → End；
     ///   可以传自定义片元着色器（本页用它做了逐实例明暗脉冲）。</description></item>
-    ///   <item><description><b>B) SpriteBatch.Begin(..., instanced: true)</b>：把实例化接进常规 SpriteBatch 流程，
+    ///   <item><description><b>B) SpriteBatch + 材质的 EnableInstancing</b>：把实例化接进常规 SpriteBatch 流程，
     ///   逐实例数据取自 Draw 的位置/尺寸/旋转/颜色；用的是引擎内置实例化着色器（纹理 × 逐实例颜色），
     ///   所以 B 比 A 少一个脉冲动画，这是两条 API 目前唯一的差别。</description></item>
     /// </list>
@@ -45,7 +45,7 @@ namespace KFramework.Test.WebGL20.Tests
         private static readonly string[] ApiNames =
         {
             "A) SpriteInstancer 直连",
-            "B) SpriteBatch.Begin(instanced: true)",
+            "B) SpriteBatch（材质 EnableInstancing）",
         };
 
         /// <summary>实例方阵的左上角（正文起点：让开标题、描述与 API 按钮）。</summary>
@@ -76,11 +76,12 @@ namespace KFramework.Test.WebGL20.Tests
             _chart = MakeChecker(64, Color.White, new Color(36, 46, 66));
             _small = new SpriteFont(Device, 13f);
 
-            // B 路：逐实例数据全部取自 Draw 的参数（位置/尺寸/旋转/颜色），材质只定渲染状态。
+            // B 路：逐实例数据全部取自 Draw 的参数（位置/尺寸/旋转/颜色），材质定渲染状态 + 打开实例化。
             _batchMaterial = new Material
             {
                 Blend = BlendState.NonPremultiplied,
                 Sampler = SamplerState.Point,
+                EnableInstancing = true,
             };
 
             try
@@ -186,7 +187,7 @@ namespace KFramework.Test.WebGL20.Tests
             var origin = new Vector2(chart.Width / 2f, chart.Height / 2f);   // 以精灵中心为锚点，语义与 A 路的 center 对齐
             var scale = new Vector2(size / chart.Width, size / chart.Height);
 
-            Batch.Begin(_batchMaterial!, SpriteSortMode.Deferred, null, instanced: true);
+            Batch.Begin(_batchMaterial!, SpriteSortMode.Deferred, null);
             for (int i = 0; i < count; i++)
             {
                 int c = i % cols;

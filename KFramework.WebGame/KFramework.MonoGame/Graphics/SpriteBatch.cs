@@ -17,7 +17,7 @@ namespace KFramework.MonoGame
 
         // ---- 实例化（GPU Instancing）路径的排队状态 ----
 
-        /// <summary>本批是否走实例化提交（由 Begin 的 instanced 参数决定）。</summary>
+        /// <summary>本批是否走实例化提交（由批材质的 <see cref="Material.EnableInstancing"/> 决定）。</summary>
         private bool _instanced;
 
         /// <summary>本批已排队的实例（按绘制顺序；排序模式非 Deferred 时在提交前排序）。</summary>
@@ -47,11 +47,13 @@ namespace KFramework.MonoGame
 
         public GraphicsDevice GraphicsDevice => _device;
 
+        //这是本引擎的主力API，允许直接传入材质（Material）对象。
+        //是否走 GPU 实例化由材质的 Material.EnableInstancing 决定
         //这个是本引擎自定义的 API，允许直接传入材质（Material）对象
         public void Begin(Material material, SpriteSortMode sortMode = SpriteSortMode.Deferred,
-                          Matrix4x4? transformMatrix = null, bool instanced = false)
+                          Matrix4x4? transformMatrix = null)
         {
-            BeginInternal(material, sortMode, transformMatrix, instanced);
+            BeginInternal(material, sortMode, transformMatrix);
         }
 
         //这个API 是对齐 MonoGame,不再增加新字段和删除字段。不要修改任何参数签名，避免破坏兼容性。 
@@ -70,22 +72,22 @@ namespace KFramework.MonoGame
             _cache_Mat.Sampler = samplerState ?? SamplerState.Point;
             _cache_Mat.DepthStencil = depthStencilState ?? DepthStencilState.None;
             _cache_Mat.Rasterizer = rasterizerState ?? RasterizerState.CullNone;
-            BeginInternal(_cache_Mat, sortMode, transformMatrix, false);
+            BeginInternal(_cache_Mat, sortMode, transformMatrix);
         }
 
-        private void BeginInternal(Material material, SpriteSortMode sortMode, Matrix4x4? transformMatrix, bool instanced)
+        private void BeginInternal(Material material, SpriteSortMode sortMode, Matrix4x4? transformMatrix)
         {
             if (_beginCalled) throw new InvalidOperationException("上一次 Begin 还没有对应的 End。");
-            if (instanced && !_device.Backend.SupportsInstancing)
+            if (material.EnableInstancing && !_device.Backend.SupportsInstancing)
                 throw new NotSupportedException(
-                    $"后端「{_device.Backend.Name}」尚未接入 GPU 实例化：Begin(..., instanced: true) 目前只在 WebGL2 上可用。");
+                    $"后端「{_device.Backend.Name}」尚未接入 GPU 实例化：请把该材质的 EnableInstancing 设为 false，或改用 WebGL2 后端。");
 
             // 材质没指定效果就在【开批】时落到设备默认效果（写回字段）：此后 ApplyMaterial 与着色器程序
             // 都只认 material.Effect，不必在更晚的地方再判一次空。
             material.Effect ??= ShaderEffect.Default;
 
             _sortMode = sortMode;
-            _instanced = instanced;
+            _instanced = material.EnableInstancing;
             _instances.Clear();
             _material = material;
             _transform = transformMatrix ?? Matrix4x4.Identity;
