@@ -252,7 +252,7 @@ namespace KFramework.MonoGame
         {
             IShaderProgram program = Backend.CreateCustomShaderProgram(vertexSource ?? string.Empty, fragmentSource);
             var effect = new ShaderEffect(program);
-            if (program is ICustomSpriteProgram csp) csp.SetOwner(effect);
+            if (program is ICustomShaderProgram csp) csp.SetOwner(effect);
             return effect;
         }
 

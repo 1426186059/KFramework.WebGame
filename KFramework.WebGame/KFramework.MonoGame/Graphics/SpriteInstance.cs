@@ -6,7 +6,7 @@ namespace KFramework.MonoGame
     /// <summary>
     /// GPU 实例化（Instancing）的逐实例数据，40 字节。
     /// <para>
-    /// 布局与 <see cref="WebGlInstancedSpriteProgram"/> 的顶点属性一一对应：
+    /// 布局与 <see cref="WebGL_ShaderProgram_2D_Instanced"/> 的顶点属性一一对应：
     /// Rect float32x4（xy = 中心点，zw = 尺寸）→ Rotation float32（弧度）
     /// → Tint unorm8x4 → UvRect float32x4（xy = UV 起点，zw = UV 尺寸，均已归一化）。
     /// </para>

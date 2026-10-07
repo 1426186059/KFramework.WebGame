@@ -9,7 +9,7 @@ namespace KFramework.MonoGame
         private readonly Dictionary<RenderTargetBinding[], JSObject> _glFramebuffers =
             new Dictionary<RenderTargetBinding[], JSObject>(new RenderTargetBindingArrayComparer());
 
-        private WebGL_ShaderProgram_2D_Default _effect = null!;
+        private WebGL_ShaderProgram_2D_Default _default2D = null!;
         private JSObject _vertexBuffer = default!;
         private JSObject _indexBuffer = default!;
         private JSObject _vertexArray = default!;
@@ -37,7 +37,7 @@ namespace KFramework.MonoGame
             MaxTextureSize = JSBind_WEBGL20.GetParameterInt(JSBind_WEBGL20.MAX_TEXTURE_SIZE);
             Renderer = JSBind_WEBGL20.GetParameterString(JSBind_WEBGL20.RENDERER);
 
-            _effect = new WebGL_ShaderProgram_2D_Default();
+            _default2D = new WebGL_ShaderProgram_2D_Default();
 
             _vertexBuffer = JSBind_WEBGL20.CreateBuffer();
             _indexBuffer = JSBind_WEBGL20.CreateBuffer();
@@ -63,38 +63,38 @@ namespace KFramework.MonoGame
             return Task.CompletedTask;
         }
 
-        public IShaderProgram CreateShaderProgram() => _effect;
+        public IShaderProgram CreateShaderProgram() => _default2D;
 
         public IShaderProgram CreateCustomShaderProgram(string vertexSource, string fragmentSource)
-            => new CustomWebGlSpriteProgram(fragmentSource);
+            => new WebGL_ShaderProgram_2D_Custom(fragmentSource);
 
         /// <summary>WebGL2 原生支持 GPU 实例化（drawElementsInstanced + vertexAttribDivisor）。</summary>
         public bool SupportsInstancing => true;
 
         public ISpriteInstancer CreateInstancer(string? fragmentSource, int capacity)
-            => new WebGlInstancedSpriteProgram(fragmentSource, capacity);
+            => new WebGL_ShaderProgram_2D_Instanced(fragmentSource, capacity);
 
         private void ConfigureAttributes()
         {
             // 槽位顺序 = 顶点着色器的声明顺序（位置 → 颜色 → UV），
             // 与 VertexPositionColorTexture 的 28 字节布局（0 / 16 / 20）严格对应。
-            // 三个顶点源（WebGL_ShaderProgram_2D_Default / CustomWebGlSpriteProgram / ShaderEffect.DefaultVertexSource）必须同序声明：
+            // 三个顶点源（WebGL_ShaderProgram_2D_Default / WebGL_ShaderProgram_2D_Custom / ShaderEffect.DefaultVertexSource）必须同序声明：
             // 属性位置由链接期分配，顺序不一致就会拿到与这里配置的槽位不同的编号。
             int stride = VertexPositionColorTexture.SizeInBytes;
-            if (_effect.PositionLocation >= 0)
+            if (_default2D.PositionLocation >= 0)
             {
-                JSBind_WEBGL20.EnableVertexAttribArray(_effect.PositionLocation);
-                JSBind_WEBGL20.VertexAttribPointer(_effect.PositionLocation, 4, JSBind_WEBGL20.FLOAT, false, stride, 0);
+                JSBind_WEBGL20.EnableVertexAttribArray(_default2D.PositionLocation);
+                JSBind_WEBGL20.VertexAttribPointer(_default2D.PositionLocation, 4, JSBind_WEBGL20.FLOAT, false, stride, 0);
             }
-            if (_effect.ColorLocation >= 0)
+            if (_default2D.ColorLocation >= 0)
             {
-                JSBind_WEBGL20.EnableVertexAttribArray(_effect.ColorLocation);
-                JSBind_WEBGL20.VertexAttribPointer(_effect.ColorLocation, 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, stride, 16);
+                JSBind_WEBGL20.EnableVertexAttribArray(_default2D.ColorLocation);
+                JSBind_WEBGL20.VertexAttribPointer(_default2D.ColorLocation, 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, stride, 16);
             }
-            if (_effect.TexCoordLocation >= 0)
+            if (_default2D.TexCoordLocation >= 0)
             {
-                JSBind_WEBGL20.EnableVertexAttribArray(_effect.TexCoordLocation);
-                JSBind_WEBGL20.VertexAttribPointer(_effect.TexCoordLocation, 2, JSBind_WEBGL20.FLOAT, false, stride, 20);
+                JSBind_WEBGL20.EnableVertexAttribArray(_default2D.TexCoordLocation);
+                JSBind_WEBGL20.VertexAttribPointer(_default2D.TexCoordLocation, 2, JSBind_WEBGL20.FLOAT, false, stride, 20);
             }
         }
 
@@ -325,7 +325,7 @@ namespace KFramework.MonoGame
             JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_WRAP_T, wrap);
         }
 
-        // 供材质纹理绑定复用（CustomWebGlSpriteProgram 把材质纹理绑到 1 号单元时也要下发同样的 filter/wrap）。
+        // 供材质纹理绑定复用（WebGL_ShaderProgram_2D_Custom 把材质纹理绑到 1 号单元时也要下发同样的 filter/wrap）。
         internal static int ToGLFilter(TextureFilter filter)
             => filter == TextureFilter.Point ? JSBind_WEBGL20.NEAREST : JSBind_WEBGL20.LINEAR;
 
@@ -619,7 +619,7 @@ namespace KFramework.MonoGame
 
             JSBind_WEBGL20.DeleteBuffer(_vertexBuffer);
             JSBind_WEBGL20.DeleteBuffer(_indexBuffer);
-            _effect.Dispose();
+            _default2D.Dispose();
         }
 
         /// <summary>渲染目标绑定组合的比较器（照 MonoGame 的 RenderTargetBindingArrayComparer）。</summary>

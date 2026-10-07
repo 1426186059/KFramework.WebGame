@@ -122,11 +122,11 @@ namespace KFramework.MonoGame
                 JSBind_WebGPU.BUFFER_USAGE_UNIFORM | JSBind_WebGPU.BUFFER_USAGE_COPY_DST);
         }
 
-        public IShaderProgram CreateShaderProgram() => new WebGpuSpriteProgram(this);
+        public IShaderProgram CreateShaderProgram() => new WebGPU_ShaderProgram_2D_Default(this);
 
         // WebGPU 暂未实现自定义 WGSL 程序，回落默认精灵着色器（ShaderEffect 在 WebGL 下才生效）。
         public IShaderProgram CreateCustomShaderProgram(string vertexSource, string fragmentSource)
-            => new WebGpuSpriteProgram(this);
+            => new WebGPU_ShaderProgram_2D_Default(this);
 
         // ================================================================
         // 主链路：清屏 / 状态 / 绘制 / 收帧
@@ -798,11 +798,11 @@ namespace KFramework.MonoGame
             "{\"shaderLocation\":2,\"offset\":20,\"format\":\"float32x2\"}]}]";
 
         /// <summary>WebGPU 的精灵程序：Apply 时把投影矩阵写进一个新的 uniform 槽位。</summary>
-        private sealed class WebGpuSpriteProgram : IShaderProgram
+        private sealed class WebGPU_ShaderProgram_2D_Default : IShaderProgram
         {
             private readonly WebGpuBackend _backend;
 
-            internal WebGpuSpriteProgram(WebGpuBackend backend) => _backend = backend;
+            internal WebGPU_ShaderProgram_2D_Default(WebGpuBackend backend) => _backend = backend;
 
             public void Apply(Matrix4x4 projection, Material material, MaterialPropertyBlock? properties)
             {

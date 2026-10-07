@@ -110,7 +110,7 @@ namespace KFramework.MonoGame
         public void Apply(Matrix4x4 projection, Material material, MaterialPropertyBlock? properties)
         {
             // 内置精灵程序只声明了 uProjection / uTexture：材质与属性块的属性都无处可写，故这里两者都忽略
-            //（要往着色器设变量请用 ShaderEffect / 自定义程序，见 CustomWebGlSpriteProgram）。
+            //（要往着色器设变量请用 ShaderEffect / 自定义程序，见 WebGL_ShaderProgram_2D_Custom）。
             JSBind_WEBGL20.UseProgram(_program);
             if (_projectionLocation is not null)
             {

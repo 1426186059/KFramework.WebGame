@@ -5,15 +5,15 @@ using System.Runtime.InteropServices.JavaScript;
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 自定义精灵着色器程序（WebGL 2.0 / GLSL ES 3.00）。
+    /// WebGL 2D 的自定义着色器程序（GLSL ES 3.00）：片元着色器由外部传入。
     /// <para>
     /// 顶点着色器复用标准精灵顶点格式（aPosition / aColor / aTexCoord + uProjection），
     /// 声明顺序与默认 <see cref="WebGL_ShaderProgram_2D_Default"/> 完全一致，因此可直接套用后端已配置好的 VAO。
-    /// 片元着色器由外部传入，并额外暴露 <c>uTime</c>（动画时间）与 <c>uParams</c>（vec4，可携带分辨率/参数）两个 uniform。
+    /// 片元着色器额外暴露 <c>uTime</c>（动画时间）与 <c>uParams</c>（vec4，可携带分辨率/参数）两个 uniform。
     /// </para>
     /// <para>配合 <see cref="ShaderEffect"/> 使用：场景每帧写入 <see cref="ShaderEffect.Time"/> / <see cref="ShaderEffect.Params"/>，Apply 时随材质下发。</para>
     /// </summary>
-    internal sealed class CustomWebGlSpriteProgram : IShaderProgram, ICustomSpriteProgram
+    internal sealed class WebGL_ShaderProgram_2D_Custom : IShaderProgram, ICustomShaderProgram
     {
         private const string VertexSource = @"#version 300 es
 // 顶点输入对齐 Unity 精灵着色器的 appdata_t：aPosition ↔ float4 vertex : POSITION，
@@ -52,7 +52,7 @@ void main()
 
         private ShaderEffect? _owner;
 
-        internal CustomWebGlSpriteProgram(string fragmentSource)
+        internal WebGL_ShaderProgram_2D_Custom(string fragmentSource)
         {
             _program = JSBind_WEBGL20.CreateProgram();
 
@@ -89,7 +89,7 @@ void main()
             return shader;
         }
 
-        void ICustomSpriteProgram.SetOwner(ShaderEffect owner) => _owner = owner;
+        void ICustomShaderProgram.SetOwner(ShaderEffect owner) => _owner = owner;
 
         public bool IsAnimated => true;
 

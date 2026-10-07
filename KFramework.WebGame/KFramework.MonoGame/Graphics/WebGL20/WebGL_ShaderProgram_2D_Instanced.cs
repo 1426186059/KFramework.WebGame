@@ -4,7 +4,7 @@ using System.Runtime.InteropServices.JavaScript;
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// WebGL 2.0 的实例化精灵程序（GPU Instancing）：一次 <c>drawElementsInstanced</c> 画 N 个实例。
+    /// WebGL 2D 的实例化着色器程序（GPU Instancing）：一次 <c>drawElementsInstanced</c> 画 N 个实例。
     /// <para>
     /// 与 <see cref="SpriteBatch"/> 的路子对照：
     /// <list type="bullet">
@@ -16,7 +16,7 @@ namespace KFramework.MonoGame
     /// 并且把 DrawCall 压到"1 / 缓冲容量"。代价是一次 draw 只能一张纹理（图集同一页可以，跨页要分多次）。
     /// </para>
     /// </summary>
-    internal sealed class WebGlInstancedSpriteProgram : ISpriteInstancer
+    internal sealed class WebGL_ShaderProgram_2D_Instanced : ISpriteInstancer
     {
         /// <summary>单位四边形（逐顶点，divisor=0）：位置 0~1 + UV 0~1，16 字节/顶点。</summary>
         private const int QuadVertexBytes = 16;
@@ -72,7 +72,7 @@ void main()
 
         public int Capacity { get; }
 
-        internal WebGlInstancedSpriteProgram(string? fragmentSource, int capacity)
+        internal WebGL_ShaderProgram_2D_Instanced(string? fragmentSource, int capacity)
         {
             Capacity = capacity > 0 ? capacity : 256;
 

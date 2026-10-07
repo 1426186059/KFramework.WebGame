@@ -7,7 +7,7 @@ namespace KFramework.MonoGame
     /// 自定义着色器效果：用一段片元着色器源码（GLSL ES 3.00）包装出一个可被 <see cref="SpriteBatch.Begin"/> 使用的 <see cref="Effect"/>。
     /// <para>
     /// 配合 <see cref="GraphicsDevice.CreateShaderEffect"/> 创建；每帧由场景写入 <see cref="Time"/> / <see cref="Params"/>，
-    /// 绘制时随材质下发给 GPU（由后端的 <see cref="ICustomSpriteProgram"/> 读取并灌入 uTime / uParams）。
+    /// 绘制时随材质下发给 GPU（由后端的 <see cref="ICustomShaderProgram"/> 读取并灌入 uTime / uParams）。
     /// </para>
     /// <para>注：当前仅 WebGL 后端真正编译自定义着色器；WebGPU 后端回落到默认精灵着色器（效果不生效，但页面照常运行）。</para>
     /// </summary>
@@ -47,7 +47,7 @@ void main()
     }
 
     /// <summary>自定义精灵程序需要回指其 <see cref="ShaderEffect"/>，以读取每帧的 <see cref="ShaderEffect.Time"/> / <see cref="ShaderEffect.Params"/>。</summary>
-    internal interface ICustomSpriteProgram
+    internal interface ICustomShaderProgram
     {
         void SetOwner(ShaderEffect owner);
     }
