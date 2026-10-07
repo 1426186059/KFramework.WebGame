@@ -1,6 +1,5 @@
 using System.Buffers.Binary;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.JavaScript;
 
 namespace KFramework.MonoGame
 {
