@@ -450,13 +450,7 @@ namespace KFramework.MonoGame
         {
             int vRun = end - start;
             if (vRun <= 0) return;
-
-            // 顶点上传 + 绘制计时：Backend 调用是 C#→JS 同步跨界，JS 侧 WebGL 的执行时间
-            // 会算进这次 Stopwatch —— 所以它等于「跨界 + JS WebGL 执行」的总耗时，
-            // 是判断「瓶颈在跨界/JS 还是 C# 计算」的关键卡。
-            long t0 = Stopwatch.GetTimestamp();
             Backend.DrawUserIndexedPrimitives(vertices, start, end);
-            long t1 = Stopwatch.GetTimestamp();
             _metrics._drawCount++;
             _metrics._primitiveCount += vRun / 2;
         }
