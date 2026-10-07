@@ -47,53 +47,21 @@ namespace KFramework.MonoGame
 
         public GraphicsDevice GraphicsDevice => _device;
 
-        /// <summary>
-        /// 用材质配置开启一批绘制。材质打包了着色器效果 + 混合/采样/深度/剔除状态，
-        /// GraphicsDevice 按「材质内容 + 变换」做去重，相同配置不再重复下发跨 JS 状态。
-        /// <para>
-        /// 材质没指定 <see cref="Material.Effect"/> 时，在<b>开批</b>时就落到设备默认效果
-        /// （<see cref="ShaderEffect.Default"/>）并写回材质：后续状态下发与着色器程序都只认这一个字段。
-        /// </para>
-        /// <para>
-        /// 想在某一次绘制上临时覆盖着色器属性，用 <see cref="Draw(Texture2D, Rectangle, Color, ShaderPropertyBlock?)"/>
-        /// 的 block 参数 —— 属性块的归属是「这一次绘制」（照 Unity 的 <c>renderer.SetPropertyBlock</c>），不是这一批。
-        /// </para>
-        /// <para>
-        /// <paramref name="instanced"/> = true 时走 GPU 实例化提交：每个精灵只写一条 40 字节实例数据，
-        /// 一批（同一纹理）一次 <c>drawElementsInstanced</c>。逐物体数据来自 Draw 的位置/尺寸/旋转/颜色。
-        /// 目前仅 WebGL2 支持；WebGPU 上会抛 <see cref="NotSupportedException"/>。
-        /// </para>
-        /// <para>
-        /// <b>实例化模式的两条约定</b>（都是"照 Unity"）：
-        /// <list type="number">
-        ///   <item><description>带 <see cref="ShaderPropertyBlock"/> 的绘制会退回逐顶点路径单独画
-        ///   （块是可变 uniform，实例数据里没有它的容身之处；等同 Unity 的"非实例化属性把物体踢出实例化"）。</description></item>
-        ///   <item><description>本模式用<b>内置实例化着色器</b>（纹理 × 逐实例颜色），<see cref="Material.Effect"/>
-        ///   里的自定义片元着色器<b>不参与</b>；需要自定义时请用逐实例化的
-        ///   <see cref="SpriteInstancer"/>（可传自定义片元着色器），或用逐顶点模式。</description></item>
-        /// </list>
-        /// </para>
-        /// </summary>
+        //这个是本引擎自定义的 API，允许直接传入材质（Material）对象
         public void Begin(Material material, SpriteSortMode sortMode = SpriteSortMode.Deferred,
                           Matrix4x4? transformMatrix = null, bool instanced = false)
         {
             BeginInternal(material, sortMode, transformMatrix, instanced);
         }
 
-        /// <summary>
-        /// 兼容旧签名的重载：把散装的 Blend / Sampler / DepthStencil / Rasterizer / Effect 状态包成一个材质，
-        /// 交给 BeginInternal。effect 为 null 时使用设备默认效果（<see cref="ShaderEffect.Default"/>）。
-        /// 参数顺序对齐原版 MonoGame SpriteBatch.Begin 的散装签名（effect 位于 rasterizerState 与 transformMatrix 之间）。
-        /// 新增代码建议直接用 <see cref="Begin(Material, SpriteSortMode, Matrix4x4?)"/>。
-        /// </summary>
+        //这个API 是对齐 MonoGame,不再增加新字段和删除字段。不要修改任何参数签名，避免破坏兼容性。 
         public void Begin(SpriteSortMode sortMode = SpriteSortMode.Deferred,
                           BlendState? blendState = null,
                           SamplerState? samplerState = null,
                           DepthStencilState? depthStencilState = null,
                           RasterizerState? rasterizerState = null,
                           ShaderEffect? effect = null,
-                          Matrix4x4? transformMatrix = null,
-                          bool instanced = false)
+                          Matrix4x4? transformMatrix = null)
         {
             // 复用本批材质快照 _cache_Mat（避免每次 Begin 都 new），填好参数后交给 BeginInternal。
             _cache_Mat.Reset();
@@ -102,7 +70,7 @@ namespace KFramework.MonoGame
             _cache_Mat.Sampler = samplerState ?? SamplerState.Point;
             _cache_Mat.DepthStencil = depthStencilState ?? DepthStencilState.None;
             _cache_Mat.Rasterizer = rasterizerState ?? RasterizerState.CullNone;
-            BeginInternal(_cache_Mat, sortMode, transformMatrix, instanced);
+            BeginInternal(_cache_Mat, sortMode, transformMatrix, false);
         }
 
         private void BeginInternal(Material material, SpriteSortMode sortMode, Matrix4x4? transformMatrix, bool instanced)
