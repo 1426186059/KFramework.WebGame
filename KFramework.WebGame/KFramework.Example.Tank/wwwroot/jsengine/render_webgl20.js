@@ -36,6 +36,10 @@ const _cacheVertex = new ByteCache(64 * 1024, 1024 * 1024); // bufferData / buff
 const _cacheTexture = new ByteCache(2048, 32 * 1024 * 1024); // texImage2D / texSubImage2D / compressedTexImage2D
 let _cacheMatrixF32 = null; // 矩阵还原用的 Float32Array 视图（建在 _cacheMatrix 的缓冲上）
 let uniformLogged = false; // 矩阵上传只在首次打一条日志
+// 整数句柄映射：原生 WebGL 的 createTexture 返回的是 WebGLTexture 对象而非整数，
+// 但 C# 侧 Texture2D.Handle 现已统一为 int（与 WebGPU 一致），故这里维护 id → WebGLTexture 的映射。
+let _texId = 0;
+const _texByInt = new Map();
 // ============ 模块级字段结束 ============
 function gpu() {
     if (!gl)
@@ -160,7 +164,7 @@ export function uniformMatrix4fv(location, transpose, value) {
             return;
         if (n === 64) {
             // 唯一实际会用到的尺寸：复用 Float32Array 视图，不必每次 new。
-            // 【必须连 byteOffset 一起比对】C# 侧传进来的是托管数组（SpriteEffect._matrixBuffer = new byte[64]），
+            // 【必须连 byteOffset 一起比对】C# 侧传进来的是托管数组（WebGL_ShaderProgram_2D_Default._matrixBuffer = new byte[64]），
             // 只在本次 JSImport 调用期间被固定，GC 一搬动它，下次的指针就变了；
             // 只比 .buffer 会让视图一直盯着【第一次的地址】，之后每次上传读的都是那块已经被释放/挪走的内存
             // —— 表现是投影矩阵逐渐变成垃圾（≈全 0），顶点全退化，整屏只剩清屏色（Release 下尤其明显，
@@ -205,11 +209,6 @@ export function vertexAttribPointer(index, size, type, normalized, stride, offse
 export function vertexAttribDivisor(index, divisor) {
     gpu().vertexAttribDivisor(index, divisor | 0);
 }
-// ---------- 纹理 ----------
-// 整数句柄映射：原生 WebGL 的 createTexture 返回的是 WebGLTexture 对象而非整数，
-// 但 C# 侧 Texture2D.Handle 现已统一为 int（与 WebGPU 一致），故这里维护 id → WebGLTexture 的映射。
-let _texId = 0;
-const _texByInt = new Map();
 export function createTexture() {
     const t = gpu().createTexture();
     const id = ++_texId;

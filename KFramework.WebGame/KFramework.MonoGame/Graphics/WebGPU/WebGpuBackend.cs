@@ -728,7 +728,7 @@ namespace KFramework.MonoGame
             => BinaryPrimitives.WriteSingleLittleEndian(destination.Slice(index * 4, 4), value);
 
         /// <summary>
-        /// 精灵着色器（WGSL）。与 WebGL 侧的 GLSL SpriteEffect 语义一致：
+        /// 精灵着色器（WGSL）。与 WebGL 侧的 GLSL WebGL_ShaderProgram_2D_Default 语义一致：
         /// 顶点 = 位置(float4)+颜色+UV，片元 = 纹理采样 × 顶点色。
         /// </summary>
         private const string WgslSource = """

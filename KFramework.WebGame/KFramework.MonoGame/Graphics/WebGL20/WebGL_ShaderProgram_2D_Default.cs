@@ -5,9 +5,10 @@ namespace KFramework.MonoGame
 {
 
     /// <summary>
-    /// SpriteBatch 使用的内置着色器（GLSL ES 3.00）。顶点为 位置(float4)+颜色+UV，片元做一次纹理采样与颜色相乘。
+    /// WebGL 2D 的默认着色器程序（GLSL ES 3.00）：SpriteBatch 未指定自定义 Effect 时用它。
+    /// 顶点为 位置(float4)+颜色+UV，片元做一次纹理采样与颜色相乘。
     /// </summary>
-    internal sealed class SpriteEffect : IShaderProgram
+    internal sealed class WebGL_ShaderProgram_2D_Default : IShaderProgram
     {
         private const string VertexSource = """
             #version 300 es
@@ -65,7 +66,7 @@ namespace KFramework.MonoGame
 
         internal JSObject Program => _program;
 
-        internal SpriteEffect()
+        internal WebGL_ShaderProgram_2D_Default()
         {
             _program = JSBind_WEBGL20.CreateProgram();
 
@@ -116,12 +117,16 @@ namespace KFramework.MonoGame
                 WriteMatrix(projection, _matrixBuffer);
                 JSBind_WEBGL20.UniformMatrix4fv(_projectionLocation, 0, _matrixBuffer);
             }
-            if (_textureLocation is not null) JSBind_WEBGL20.Uniform1i(_textureLocation, 0);
+
+            if (_textureLocation is not null)
+            {
+                JSBind_WEBGL20.Uniform1i(_textureLocation, 0);
+            }
 
             if (!_locationsLogged)
             {
                 _locationsLogged = true;
-                PrintTool.Log($"[SpriteEffect] attribute: pos={PositionLocation} color={ColorLocation} uv={TexCoordLocation} | " +
+                PrintTool.Log($"[WebGL_ShaderProgram_2D_Default] attribute: pos={PositionLocation} color={ColorLocation} uv={TexCoordLocation} | " +
                                   $"uniform: proj={(_projectionLocation is null ? "null" : "ok")} tex={(_textureLocation is null ? "null" : "ok")}");
             }
         }

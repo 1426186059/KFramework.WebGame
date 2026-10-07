@@ -9,7 +9,7 @@ namespace KFramework.MonoGame
         private readonly Dictionary<RenderTargetBinding[], JSObject> _glFramebuffers =
             new Dictionary<RenderTargetBinding[], JSObject>(new RenderTargetBindingArrayComparer());
 
-        private SpriteEffect _effect = null!;
+        private WebGL_ShaderProgram_2D_Default _effect = null!;
         private JSObject _vertexBuffer = default!;
         private JSObject _indexBuffer = default!;
         private JSObject _vertexArray = default!;
@@ -37,7 +37,7 @@ namespace KFramework.MonoGame
             MaxTextureSize = JSBind_WEBGL20.GetParameterInt(JSBind_WEBGL20.MAX_TEXTURE_SIZE);
             Renderer = JSBind_WEBGL20.GetParameterString(JSBind_WEBGL20.RENDERER);
 
-            _effect = new SpriteEffect();
+            _effect = new WebGL_ShaderProgram_2D_Default();
 
             _vertexBuffer = JSBind_WEBGL20.CreateBuffer();
             _indexBuffer = JSBind_WEBGL20.CreateBuffer();
@@ -78,7 +78,7 @@ namespace KFramework.MonoGame
         {
             // 槽位顺序 = 顶点着色器的声明顺序（位置 → 颜色 → UV），
             // 与 VertexPositionColorTexture 的 28 字节布局（0 / 16 / 20）严格对应。
-            // 三个顶点源（SpriteEffect / CustomWebGlSpriteProgram / ShaderEffect.DefaultVertexSource）必须同序声明：
+            // 三个顶点源（WebGL_ShaderProgram_2D_Default / CustomWebGlSpriteProgram / ShaderEffect.DefaultVertexSource）必须同序声明：
             // 属性位置由链接期分配，顺序不一致就会拿到与这里配置的槽位不同的编号。
             int stride = VertexPositionColorTexture.SizeInBytes;
             if (_effect.PositionLocation >= 0)

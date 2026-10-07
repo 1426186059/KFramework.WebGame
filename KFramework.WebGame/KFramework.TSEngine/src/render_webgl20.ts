@@ -196,7 +196,7 @@ export function uniformMatrix4fv(location: WebGLUniformLocation | null, transpos
         if (buf === null) return;
         if (n === 64) {
             // 唯一实际会用到的尺寸：复用 Float32Array 视图，不必每次 new。
-            // 【必须连 byteOffset 一起比对】C# 侧传进来的是托管数组（SpriteEffect._matrixBuffer = new byte[64]），
+            // 【必须连 byteOffset 一起比对】C# 侧传进来的是托管数组（WebGL_ShaderProgram_2D_Default._matrixBuffer = new byte[64]），
             // 只在本次 JSImport 调用期间被固定，GC 一搬动它，下次的指针就变了；
             // 只比 .buffer 会让视图一直盯着【第一次的地址】，之后每次上传读的都是那块已经被释放/挪走的内存
             // —— 表现是投影矩阵逐渐变成垃圾（≈全 0），顶点全退化，整屏只剩清屏色（Release 下尤其明显，

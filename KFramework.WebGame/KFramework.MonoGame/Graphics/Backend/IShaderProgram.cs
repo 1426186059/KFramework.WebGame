@@ -4,7 +4,7 @@ namespace KFramework.MonoGame
     /// <summary>
     /// 着色器程序的后端抽象。
     /// <para>
-    /// WebGL 后端 = GLSL Program（<see cref="SpriteEffect"/>）；WebGPU 后端 = WGSL 模块 + 渲染管线。
+    /// WebGL 后端 = GLSL Program（<see cref="WebGL_ShaderProgram_2D_Default"/>）；WebGPU 后端 = WGSL 模块 + 渲染管线。
     /// 上层（<see cref="SpriteBatch"/> / <see cref="SpriteBatcher"/>）只依赖本接口，不感知具体后端，
     /// 因此两种后端可以互换而不用改任何绘制代码。
     /// </para>

@@ -66,7 +66,7 @@ namespace KFramework.MonoGame
     ///    false。行主序矩阵需要转置一次——但转置只是 16 个 float 的排布，而且行主序内存
     ///    【按原样发出去】恰好就是"转置矩阵的列主序"，GLSL 里 v' = Mᵀ × v 与行向量 p' = p × M
     ///    完全等价，所以实际是零成本直发，每帧也只有一次矩阵上传。
-    ///    见 <c>SpriteEffect.WriteMatrix</c>。
+    ///    见 <c>WebGL_ShaderProgram_2D_Default.WriteMatrix</c>。
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct Matrix4x4

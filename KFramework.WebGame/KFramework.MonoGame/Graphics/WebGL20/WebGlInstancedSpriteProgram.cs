@@ -194,7 +194,7 @@ void main()
             return shader;
         }
 
-        /// <summary>矩阵写法与 SpriteEffect 一致（行主序直写 = GLSL 期望的列主序）。</summary>
+        /// <summary>矩阵写法与 WebGL_ShaderProgram_2D_Default 一致（行主序直写 = GLSL 期望的列主序）。</summary>
         private static void WriteMatrix(in Matrix4x4 value, Span<byte> destination)
         {
             Write(destination, 0, value.M11); Write(destination, 1, value.M12);

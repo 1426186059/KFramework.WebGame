@@ -8,7 +8,7 @@ namespace KFramework.MonoGame
     /// 自定义精灵着色器程序（WebGL 2.0 / GLSL ES 3.00）。
     /// <para>
     /// 顶点着色器复用标准精灵顶点格式（aPosition / aColor / aTexCoord + uProjection），
-    /// 声明顺序与默认 <see cref="SpriteEffect"/> 完全一致，因此可直接套用后端已配置好的 VAO。
+    /// 声明顺序与默认 <see cref="WebGL_ShaderProgram_2D_Default"/> 完全一致，因此可直接套用后端已配置好的 VAO。
     /// 片元着色器由外部传入，并额外暴露 <c>uTime</c>（动画时间）与 <c>uParams</c>（vec4，可携带分辨率/参数）两个 uniform。
     /// </para>
     /// <para>配合 <see cref="ShaderEffect"/> 使用：场景每帧写入 <see cref="ShaderEffect.Time"/> / <see cref="ShaderEffect.Params"/>，Apply 时随材质下发。</para>
@@ -197,7 +197,7 @@ void main()
         public void Dispose() => JSBind_WEBGL20.DeleteProgram(_program);
 
         /// <summary>
-        /// 把矩阵写成 16 个 float 的小端字节流交给 WebGL（列主序 + 转置抵消，见 <see cref="SpriteEffect"/> 说明）。
+        /// 把矩阵写成 16 个 float 的小端字节流交给 WebGL（列主序 + 转置抵消，见 <see cref="WebGL_ShaderProgram_2D_Default"/> 说明）。
         /// </summary>
         private static void WriteMatrix(in Matrix4x4 value, Span<byte> destination)
         {
