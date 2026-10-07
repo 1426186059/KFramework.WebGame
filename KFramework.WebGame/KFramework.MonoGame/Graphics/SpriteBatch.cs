@@ -56,6 +56,7 @@ namespace KFramework.MonoGame
             BeginInternal(material, sortMode, transformMatrix);
         }
 
+        //这是老API，后续不再推荐使用，建议改用上面的 Begin(Material, ...) 版本。
         //这个API 是对齐 MonoGame,不再增加新字段和删除字段。不要修改任何参数签名，避免破坏兼容性。 
         public void Begin(SpriteSortMode sortMode = SpriteSortMode.Deferred,
                           BlendState? blendState = null,
