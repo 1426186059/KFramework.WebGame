@@ -315,9 +315,13 @@ namespace KFramework.MonoGame
             int magFilter = ToGLFilter(state.MagFilter);
             int wrap = ToGLAddressMode(state.WrapMode);
 
+            //纹理缩小过滤（纹理比屏幕像素大时怎么采样）
             JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_MIN_FILTER, minFilter);
+            //纹理放大过滤（纹理比屏幕像素小时怎么采样）
             JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_MAG_FILTER, magFilter);
+            //S 方向（U / 水平）环绕方式
             JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_WRAP_S, wrap);
+            //T 方向（V / 垂直）环绕方式
             JSBind_WEBGL20.TexParameteri(JSBind_WEBGL20.TEXTURE_2D, JSBind_WEBGL20.TEXTURE_WRAP_T, wrap);
         }
 
