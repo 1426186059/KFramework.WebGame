@@ -76,8 +76,8 @@ namespace KFramework.MonoGame
 
         private void ConfigureAttributes()
         {
-            // 槽位顺序 = 顶点着色器的声明顺序（位置 → 颜色 → UV → 参数），
-            // 与 VertexPositionColorTexture 的 36 字节布局（0 / 16 / 20 / 28 / 32）严格对应。
+            // 槽位顺序 = 顶点着色器的声明顺序（位置 → 颜色 → UV），
+            // 与 VertexPositionColorTexture 的 28 字节布局（0 / 16 / 20）严格对应。
             // 三个顶点源（SpriteEffect / CustomWebGlSpriteProgram / ShaderEffect.DefaultVertexSource）必须同序声明：
             // 属性位置由链接期分配，顺序不一致就会拿到与这里配置的槽位不同的编号。
             int stride = VertexPositionColorTexture.SizeInBytes;
@@ -95,17 +95,6 @@ namespace KFramework.MonoGame
             {
                 JSBind_WEBGL20.EnableVertexAttribArray(_effect.TexCoordLocation);
                 JSBind_WEBGL20.VertexAttribPointer(_effect.TexCoordLocation, 2, JSBind_WEBGL20.FLOAT, false, stride, 20);
-            }
-            // 逐精灵参数：2 组 unorm8x4，紧跟 UV 之后（offset 28 / 32），槽位取自默认精灵程序的 aParams0 / aParams1。
-            if (_effect.Params0Location >= 0)
-            {
-                JSBind_WEBGL20.EnableVertexAttribArray(_effect.Params0Location);
-                JSBind_WEBGL20.VertexAttribPointer(_effect.Params0Location, 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, stride, 28);
-            }
-            if (_effect.Params1Location >= 0)
-            {
-                JSBind_WEBGL20.EnableVertexAttribArray(_effect.Params1Location);
-                JSBind_WEBGL20.VertexAttribPointer(_effect.Params1Location, 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, stride, 32);
             }
         }
 

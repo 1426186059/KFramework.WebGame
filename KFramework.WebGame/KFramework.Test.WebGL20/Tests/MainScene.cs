@@ -58,18 +58,6 @@ namespace KFramework.Test.WebGL20.Tests
             },
             new TestEntry
             {
-                Name = "材质属性块（MaterialPropertyBlock：同材质 + 每物体不同 + 合批）",
-                Desc = "块作为 Draw 的参数逐次给；材质用 SetSpriteChannels 把块属性映射进顶点通道 → 8 格合并成 1 次 DrawCall，只有矩阵那格退回 uniform",
-                Factory = static () => new MaterialPropertyBlockScene(),
-            },
-            new TestEntry
-            {
-                Name = "逐精灵参数（顶点通道：同材质逐精灵不同仍合批）",
-                Desc = "8 格共用 1 个材质、只 Begin/End 一次：参数走顶点属性不参与分批键 → 整批 1 次 DrawCall（对照第 7 页的 8 次）",
-                Factory = static () => new SpriteParamScene(),
-            },
-            new TestEntry
-            {
                 Name = "GPU 实例化（一次 DrawCall 画 N 个精灵）",
                 Desc = "单位四边形 + 逐实例缓冲（divisor=1）+ drawElementsInstanced：N 个各有外观的精灵只产生 1 次 submit",
                 Factory = static () => new InstancingScene(),

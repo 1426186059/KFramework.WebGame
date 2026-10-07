@@ -8,11 +8,11 @@ namespace KFramework.MonoGame
     /// <para>
     /// 与 <see cref="SpriteBatch"/> 的路子对照：
     /// <list type="bullet">
-    ///   <item><description>SpriteBatch：几何在 CPU 侧展开（每精灵 4 个顶点、每个顶点 36 字节），按纹理分批，逐批一次 drawElements。</description></item>
-    ///   <item><description>本类：几何只有 4 个顶点的单位四边形（静态，一次上传），位置/尺寸/旋转/颜色/参数/UV 矩形全部按实例放进第二根缓冲
-    ///   （<c>vertexAttribDivisor = 1</c>，每实例 48 字节），一次 draw 覆盖整个实例列表。</description></item>
+    ///   <item><description>SpriteBatch：几何在 CPU 侧展开（每精灵 4 个顶点、每个顶点 28 字节），按纹理分批，逐批一次 drawElements。</description></item>
+    ///   <item><description>本类：几何只有 4 个顶点的单位四边形（静态，一次上传），位置/尺寸/旋转/颜色/UV 矩形全部按实例放进第二根缓冲
+    ///   （<c>vertexAttribDivisor = 1</c>，每实例 40 字节），一次 draw 覆盖整个实例列表。</description></item>
     /// </list>
-    /// 因此和"逐精灵参数走顶点通道"相比，实例化进一步把 CPU 侧每精灵的开销从 4×36 字节降到 48 字节，
+    /// 因此和"几何在 CPU 侧按精灵展开"相比，实例化把 CPU 侧每精灵的开销从 4×28 字节降到 40 字节，
     /// 并且把 DrawCall 压到"1 / 缓冲容量"。代价是一次 draw 只能一张纹理（图集同一页可以，跨页要分多次）。
     /// </para>
     /// </summary>
@@ -30,14 +30,12 @@ in vec2 aQuadUv;
 in vec4 aRect;
 in float aRotation;
 in vec4 aTint;
-in vec4 aParams0;
-in vec4 aParams1;
 in vec4 aUvRect;
 uniform mat4 uProjection;
 out vec2 vTexCoord;
 out vec4 vColor;
-out vec4 vParams0;
-out vec4 vParams1;
+// UNITY_VERTEX_INPUT_INSTANCE_ID 在 GLSL 里的等价物：实例号是内置输入，不占顶点布局。
+flat out int vInstanceID;
 void main()
 {
     vec2 local = (aQuadPos - vec2(0.5)) * aRect.zw;
@@ -47,17 +45,14 @@ void main()
     gl_Position = uProjection * vec4(world, 0.0, 1.0);
     vTexCoord = aUvRect.xy + aQuadUv * aUvRect.zw;
     vColor = aTint;
-    vParams0 = aParams0;
-    vParams1 = aParams1;
+    vInstanceID = gl_InstanceID;
 }";
 
-        /// <summary>默认片元着色器：纹理 × 逐实例颜色（不使用逐实例参数）。</summary>
+        /// <summary>默认片元着色器：纹理 × 逐实例颜色。</summary>
         private const string DefaultFragmentSource = @"#version 300 es
 precision highp float;
 in vec2 vTexCoord;
 in vec4 vColor;
-in vec4 vParams0;
-in vec4 vParams1;
 uniform sampler2D uTexture;
 out vec4 fragColor;
 void main()
@@ -124,10 +119,8 @@ void main()
             BindVertexAttribute("aRect", 4, JSBind_WEBGL20.FLOAT, false, InstanceStride, 0, 1);
             BindVertexAttribute("aRotation", 1, JSBind_WEBGL20.FLOAT, false, InstanceStride, 16, 1);
             BindVertexAttribute("aTint", 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, InstanceStride, 20, 1);
-            BindVertexAttribute("aParams0", 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, InstanceStride, 24, 1);
-            BindVertexAttribute("aParams1", 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, InstanceStride, 28, 1);
-            // 逐实例 UV 矩形：offsets 与 SpriteInstance 的字段顺序严格对应（32 = Rect16 + Rotation4 + Tint4 + Params8）。
-            BindVertexAttribute("aUvRect", 4, JSBind_WEBGL20.FLOAT, false, InstanceStride, 32, 1);
+            // 逐实例 UV 矩形：offsets 与 SpriteInstance 的字段顺序严格对应（24 = Rect16 + Rotation4 + Tint4）。
+            BindVertexAttribute("aUvRect", 4, JSBind_WEBGL20.FLOAT, false, InstanceStride, 24, 1);
 
             // 收尾：把顶点数组解绑，避免污染其它绘制（SpriteBatch 每次绘制都会绑自己的 VAO）。
             JSBind_WEBGL20.BindVertexArray(null!);

@@ -5,13 +5,12 @@ namespace KFramework.MonoGame
 {
     /// <summary>
     /// GPU 实例化绘制器：<b>一次 DrawCall 画出 N 个"同材质 + 同纹理"的精灵</b>，每个实例可以有自己的
-    /// 位置、尺寸、旋转、颜色和 8 个逐实例参数。
+    /// 位置、尺寸、旋转、颜色与 UV 矩形。
     /// <para>
-    /// 与既有两条路的关系（三者都是"同材质"，但代价不同）：
+    /// 与 SpriteBatch 的关系（两者都是"同材质"，但代价不同）：
     /// <list type="table">
-    ///   <item><term>SpriteBatch + MaterialPropertyBlock（块属性映射进顶点通道）</term><description>同样 1 次 DrawCall，但几何在 CPU 侧按精灵展开（每精灵 4 顶点 × 36 字节）。</description></item>
-    ///   <item><term>SpriteBatch + SpriteParams（逐顶点参数）</term><description>几何在 CPU 侧展开，按纹理分批；参数随顶点走，不打断合批。每精灵 4×36 字节。</description></item>
-    ///   <item><term>SpriteInstancer（本类，GPU 实例化）</term><description>几何只有 4 个顶点的单位四边形；每实例 48 字节；一次 draw 覆盖整批。DrawCall 与 CPU 带宽都最省。</description></item>
+    ///   <item><term>SpriteBatch（逐顶点）</term><description>几何在 CPU 侧按精灵展开（每精灵 4 顶点 × 28 字节），按纹理分批，逐批一次 drawElements。</description></item>
+    ///   <item><term>SpriteInstancer（本类，GPU 实例化）</term><description>几何只有 4 个顶点的单位四边形；每实例 40 字节；一次 draw 覆盖整批。DrawCall 与 CPU 带宽都最省。</description></item>
     /// </list>
     /// </para>
     /// <para>
@@ -23,7 +22,7 @@ namespace KFramework.MonoGame
     /// using var instancer = new SpriteInstancer(Device, atlas);
     /// instancer.Begin();
     /// for (int i = 0; i &lt; 512; i++)
-    ///     instancer.Add(center, size, rotation, Color.White, SpriteParams.FromColor(tint));
+    ///     instancer.Add(center, size, rotation, tint);
     /// int drawCalls = instancer.End();   // 512 个精灵 → 1 次 draw
     /// </code>
     /// </para>
@@ -47,7 +46,7 @@ namespace KFramework.MonoGame
         /// <param name="texture">本批实例共用的纹理（图集子区域视图也可以，UV 自动取其 Bounds）。</param>
         /// <param name="material">材质（绑定/采样/深度/剔除状态与着色器）；为 null 时用精灵默认状态。</param>
         /// <param name="fragmentSource">自定义片元着色器（GLSL ES 3.00）。为 null 时用默认的"纹理 × 逐实例颜色"。
-        /// 自定义着色器可以读 <c>vParams0</c> / <c>vParams1</c>（即每实例的 8 个参数）与 <c>vColor</c>。</param>
+        /// 自定义着色器可以读 <c>vColor</c>（逐实例颜色）、<c>vTexCoord</c> 与 <c>vInstanceID</c>（实例号）。</param>
         /// <param name="capacity">实例缓冲容量（超出时按容量分批绘制）。</param>
         public SpriteInstancer(GraphicsDevice device, Texture2D texture, Material? material = null,
                                string? fragmentSource = null, int capacity = 1024)
@@ -104,16 +103,16 @@ namespace KFramework.MonoGame
             _begun = true;
         }
 
-        public void Add(Vector2 center, Vector2 size, SpriteParams parameters = default)
-            => Add(center, size, 0f, Color.White, parameters);
+        public void Add(Vector2 center, Vector2 size)
+            => Add(center, size, 0f, Color.White);
 
-        public void Add(Vector2 center, Vector2 size, float rotation, SpriteParams parameters = default)
-            => Add(center, size, rotation, Color.White, parameters);
+        public void Add(Vector2 center, Vector2 size, float rotation)
+            => Add(center, size, rotation, Color.White);
 
-        public void Add(Vector2 center, Vector2 size, float rotation, Color tint, SpriteParams parameters = default)
+        public void Add(Vector2 center, Vector2 size, float rotation, Color tint)
         {
             if (!_begun) throw new InvalidOperationException("Add 必须在 Begin / End 之间调用。");
-            _instances.Add(new SpriteInstance(center, size, rotation, tint, parameters, _uvRect));
+            _instances.Add(new SpriteInstance(center, size, rotation, tint, _uvRect));
         }
 
         /// <summary>提交并按容量分批发起实例化绘制，返回本次的 DrawCall 数。</summary>

@@ -34,52 +34,44 @@ namespace KFramework.MonoGame
             vertexBR = new VertexPositionColorTexture();
         }
 
-        /// <summary>轴对齐（无旋转）：位置即 (x, y)，尺寸 (w, h)。<paramref name="parameters"/> 逐精灵参数写进 4 个顶点（同值，插值后整片相同）。</summary>
-        public void Set(float x, float y, float w, float h, Color color, Vector2 texCoordTL, Vector2 texCoordBR, float depth, SpriteParams parameters = default)
+        /// <summary>轴对齐（无旋转）：位置即 (x, y)，尺寸 (w, h)。</summary>
+        public void Set(float x, float y, float w, float h, Color color, Vector2 texCoordTL, Vector2 texCoordBR, float depth)
         {
             vertexTL.Position = new Vector4(x, y, 0f, 1f);
             vertexTL.Color = color;
             vertexTL.TexCoord = texCoordTL;
-            vertexTL.Params = parameters;
 
             vertexTR.Position = new Vector4(x + w, y, 0f, 1f);
             vertexTR.Color = color;
             vertexTR.TexCoord = new Vector2(texCoordBR.X, texCoordTL.Y);
-            vertexTR.Params = parameters;
 
             vertexBL.Position = new Vector4(x, y + h, 0f, 1f);
             vertexBL.Color = color;
             vertexBL.TexCoord = new Vector2(texCoordTL.X, texCoordBR.Y);
-            vertexBL.Params = parameters;
 
             vertexBR.Position = new Vector4(x + w, y + h, 0f, 1f);
             vertexBR.Color = color;
             vertexBR.TexCoord = texCoordBR;
-            vertexBR.Params = parameters;
         }
 
         /// <summary>带旋转：以 (x, y) 为锚点，dx/dy 为相对锚点的偏移（通常 dx=-origin.X, dy=-origin.Y）。</summary>
-        public void Set(float x, float y, float dx, float dy, float w, float h, float sin, float cos, Color color, Vector2 texCoordTL, Vector2 texCoordBR, float depth, SpriteParams parameters = default)
+        public void Set(float x, float y, float dx, float dy, float w, float h, float sin, float cos, Color color, Vector2 texCoordTL, Vector2 texCoordBR, float depth)
         {
             vertexTL.Position = new Vector4(x + dx * cos - dy * sin, y + dx * sin + dy * cos, 0f, 1f);
             vertexTL.Color = color;
             vertexTL.TexCoord = texCoordTL;
-            vertexTL.Params = parameters;
 
             vertexTR.Position = new Vector4(x + (dx + w) * cos - dy * sin, y + (dx + w) * sin + dy * cos, 0f, 1f);
             vertexTR.Color = color;
             vertexTR.TexCoord = new Vector2(texCoordBR.X, texCoordTL.Y);
-            vertexTR.Params = parameters;
 
             vertexBL.Position = new Vector4(x + dx * cos - (dy + h) * sin, y + dx * sin + (dy + h) * cos, 0f, 1f);
             vertexBL.Color = color;
             vertexBL.TexCoord = new Vector2(texCoordTL.X, texCoordBR.Y);
-            vertexBL.Params = parameters;
 
             vertexBR.Position = new Vector4(x + (dx + w) * cos - (dy + h) * sin, y + (dx + w) * sin + (dy + h) * cos, 0f, 1f);
             vertexBR.Color = color;
             vertexBR.TexCoord = texCoordBR;
-            vertexBR.Params = parameters;
         }
 
         public int CompareTo(SpriteBatchItem other) => SortKey.CompareTo(other.SortKey);

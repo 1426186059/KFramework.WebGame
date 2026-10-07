@@ -13,9 +13,8 @@ namespace KFramework.MonoGame
     ///     UNITY_VERTEX_INPUT_INSTANCE_ID   // 不占顶点字节：实例号是内置输入（GLSL 的 gl_InstanceID / WGSL 的 @builtin(instance_index)）
     /// };
     /// </code>
-    /// 之后是本引擎扩展的两组逐精灵参数通道（Unity 的 appdata_t 没有，见 <see cref="SpriteParams"/>）。
     /// <para>
-    /// 布局（步长 36 字节）：0 位置（float32x4）/ 16 颜色（unorm8x4）/ 20 UV（float32x2）/ 28、32 逐精灵参数（unorm8x4 ×2）。
+    /// 布局（步长 28 字节）：0 位置（float32x4）/ 16 颜色（unorm8x4）/ 20 UV（float32x2）。
     /// WebGL20 的 VAO 与 WebGPU 的 <c>vertex.buffers</c> 与此严格一一对应，改这里必须同步改那两个后端。
     /// </para>
     /// </summary>
@@ -31,21 +30,14 @@ namespace KFramework.MonoGame
         /// <summary>纹理坐标。</summary>
         public Vector2 TexCoord;
 
-        /// <summary>逐精灵参数（8 通道 × 1 字节），语义完全由着色器决定，引擎不做解释。</summary>
-        public SpriteParams Params;
-
         /// <summary>顶点步长：后端顶点布局的 arrayStride / VAO stride 必须取它。</summary>
-        public const int SizeInBytes = 36;
+        public const int SizeInBytes = 28;
 
         public VertexPositionColorTexture(Vector4 position, Color color, Vector2 texCoord)
-            : this(position, color, texCoord, default) { }
-
-        public VertexPositionColorTexture(Vector4 position, Color color, Vector2 texCoord, SpriteParams parameters)
         {
             Position = position;
             Color = color;
             TexCoord = texCoord;
-            Params = parameters;
         }
     }
 }

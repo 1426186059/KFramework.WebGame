@@ -35,7 +35,7 @@ namespace KFramework.MonoGame
         /// <summary>mat4x4&lt;f32&gt; 的字节数。</summary>
         private const int TransformSizeInBytes = 64;
 
-        private static readonly int VertexSizeInBytes = VertexPositionColorTexture.SizeInBytes; // 36
+        private static readonly int VertexSizeInBytes = VertexPositionColorTexture.SizeInBytes; // 28
 
         /// <summary>
         /// WebGPU 后端的实例化尚未接入（需要另一套「带实例属性」的 WGSL 与管线，stepMode=instance 的第二根顶点缓冲），
@@ -729,7 +729,7 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// 精灵着色器（WGSL）。与 WebGL 侧的 GLSL SpriteEffect 语义一致：
-        /// 顶点 = 位置(float4)+颜色+UV（+逐精灵参数），片元 = 纹理采样 × 顶点色。
+        /// 顶点 = 位置(float4)+颜色+UV，片元 = 纹理采样 × 顶点色。
         /// </summary>
         private const string WgslSource = """
             struct Transform {
@@ -746,10 +746,6 @@ namespace KFramework.MonoGame
                 @location(0) position : vec4<f32>,
                 @location(1) color : vec4<f32>,
                 @location(2) texCoord : vec2<f32>,
-                // 逐精灵参数：与 VertexPositionColorTexture.Params 的 8 个字节对应（unorm8x4 ×2）。
-                // 默认精灵着色器不使用它们，但必须声明：WebGPU 会校验顶点布局里的每条属性都与着色器输入一一对应。
-                @location(3) params0 : vec4<f32>,
-                @location(4) params1 : vec4<f32>,
                 // UNITY_VERTEX_INPUT_INSTANCE_ID 在 WGSL 里的等价物：实例号是内置输入，不占顶点布局。
                 @builtin(instance_index) instanceIndex : u32,
             };
@@ -788,20 +784,18 @@ namespace KFramework.MonoGame
             """;
 
         /// <summary>
-        /// 顶点布局，与 VertexPositionColorTexture 严格对应（步长 36 字节：0 位置 / 16 颜色 / 20 UV / 28、32 逐精灵参数）。
+        /// 顶点布局，与 VertexPositionColorTexture 严格对应（步长 28 字节：0 位置 / 16 颜色 / 20 UV）。
         /// <para>
-        /// 格式名必须用 WebGPU 的 <c>GPUVertexFormat</c> 枚举值：颜色与逐精灵参数都是 4 个【无符号归一化字节】，
+        /// 格式名必须用 WebGPU 的 <c>GPUVertexFormat</c> 枚举值：颜色是 4 个【无符号归一化字节】，
         /// 对应 <c>unorm8x4</c>（不是 wgpu / Dawn 里的 <c>uchar4norm</c>，那个名字在浏览器会直接报
         /// "not a valid enum value of type GPUVertexFormat"）。
         /// </para>
         /// </summary>
         private const string VertexLayoutJson =
-            "[{\"arrayStride\":36,\"stepMode\":\"vertex\",\"attributes\":[" +
+            "[{\"arrayStride\":28,\"stepMode\":\"vertex\",\"attributes\":[" +
             "{\"shaderLocation\":0,\"offset\":0,\"format\":\"float32x4\"}," +
             "{\"shaderLocation\":1,\"offset\":16,\"format\":\"unorm8x4\"}," +
-            "{\"shaderLocation\":2,\"offset\":20,\"format\":\"float32x2\"}," +
-            "{\"shaderLocation\":3,\"offset\":28,\"format\":\"unorm8x4\"}," +
-            "{\"shaderLocation\":4,\"offset\":32,\"format\":\"unorm8x4\"}]}]";
+            "{\"shaderLocation\":2,\"offset\":20,\"format\":\"float32x2\"}]}]";
 
         /// <summary>WebGPU 的精灵程序：Apply 时把投影矩阵写进一个新的 uniform 槽位。</summary>
         private sealed class WebGpuSpriteProgram : ISpriteProgram

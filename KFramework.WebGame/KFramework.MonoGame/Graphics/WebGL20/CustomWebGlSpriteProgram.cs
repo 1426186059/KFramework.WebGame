@@ -7,7 +7,7 @@ namespace KFramework.MonoGame
     /// <summary>
     /// 自定义精灵着色器程序（WebGL 2.0 / GLSL ES 3.00）。
     /// <para>
-    /// 顶点着色器复用标准精灵顶点格式（aPosition / aColor / aTexCoord / aParams0 / aParams1 + uProjection），
+    /// 顶点着色器复用标准精灵顶点格式（aPosition / aColor / aTexCoord + uProjection），
     /// 声明顺序与默认 <see cref="SpriteEffect"/> 完全一致，因此可直接套用后端已配置好的 VAO。
     /// 片元着色器由外部传入，并额外暴露 <c>uTime</c>（动画时间）与 <c>uParams</c>（vec4，可携带分辨率/参数）两个 uniform。
     /// </para>
@@ -17,20 +17,15 @@ namespace KFramework.MonoGame
     {
         private const string VertexSource = @"#version 300 es
 // 顶点输入对齐 Unity 精灵着色器的 appdata_t：aPosition ↔ float4 vertex : POSITION，
-// aColor ↔ float4 color : COLOR，aTexCoord ↔ float2 texcoord : TEXCOORD0；
-// aParams0 / aParams1 是本引擎扩展的两组逐精灵参数通道。
-// 声明顺序必须与 WebGl20Backend.ConfigureAttributes 的槽位顺序一致（位置 → 颜色 → UV → 参数），
+// aColor ↔ float4 color : COLOR，aTexCoord ↔ float2 texcoord : TEXCOORD0。
+// 声明顺序必须与 WebGl20Backend.ConfigureAttributes 的槽位顺序一致（位置 → 颜色 → UV），
 // 否则链接期分配到的属性位置会与后端配置好的 VAO 槽位错开。
 in vec4 aPosition;
 in vec4 aColor;
 in vec2 aTexCoord;
-in vec4 aParams0;
-in vec4 aParams1;
 uniform mat4 uProjection;
 out vec2 vTexCoord;
 out vec4 vColor;
-out vec4 vParams0;
-out vec4 vParams1;
 // UNITY_VERTEX_INPUT_INSTANCE_ID 在 GLSL 里的等价物：实例号是内置输入，不占顶点布局。
 flat out int vInstanceID;
 void main()
@@ -38,8 +33,6 @@ void main()
     gl_Position = uProjection * aPosition;
     vTexCoord = aTexCoord;
     vColor = aColor;
-    vParams0 = aParams0;
-    vParams1 = aParams1;
     vInstanceID = gl_InstanceID;
 }";
 
