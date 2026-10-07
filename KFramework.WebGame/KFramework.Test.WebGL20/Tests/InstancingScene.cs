@@ -8,47 +8,88 @@ namespace KFramework.Test.WebGL20.Tests
     /// <summary>
     /// GPU 实例化（GPU Instancing）测试：<b>一次 DrawCall 画出成百上千个各有外观的精灵</b>。
     /// <para>
-    /// 做法：几何只有 4 个顶点的单位四边形（静态），位置/尺寸/旋转/颜色/参数按实例放进第二根缓冲
-    /// （<c>vertexAttribDivisor = 1</c>，每实例 32 字节），一次 <c>drawElementsInstanced</c> 全画完。
+    /// 几何只有 4 个顶点的单位四边形（静态），位置/尺寸/旋转/颜色/参数按实例放进第二根缓冲
+    /// （<c>vertexAttribDivisor = 1</c>，每实例 48 字节），一次 <c>drawElementsInstanced</c> 全画完。
     /// </para>
     /// <para>
-    /// 与另外两条路的对照：
+    /// <b>同一份实例数据有两条提交 API，用页面上的按钮（或 I 键）切换</b>，DrawCall 增量都应该是 1：
     /// <list type="bullet">
-    ///   <item><description>MaterialPropertyBlock / SpriteParams：逐物体值进顶点通道（1 次 DrawCall），但 CPU 侧每精灵要写 4 顶点 × 28 字节 = 112 字节；</description></item>
-    ///   <item><description>本页实例化：1 次 DrawCall，且每实例只要 32 字节。</description></item>
+    ///   <item><description><b>A) SpriteInstancer 直连</b>：显式 Begin → Add × N → End；
+    ///   可以传自定义片元着色器（本页用它做了 uTime 脉冲 + 逐实例色调/相位）。</description></item>
+    ///   <item><description><b>B) SpriteBatch.Begin(..., instanced: true)</b>：把实例化接进常规 SpriteBatch 流程；
+    ///   逐物体数据来自 Draw 参数与 <see cref="MaterialPropertyBlock"/>（材质上用 <see cref="Material.SetSpriteChannels"/> 声明映射）。
+    ///   用的是引擎内置实例化着色器（纹理 × 逐实例颜色）—— 8 个参数照样送进 <c>vParams0</c> / <c>vParams1</c>，
+    ///   但内置片元着色器不读它们，所以 B 比 A 少一个脉冲动画，这是两条 API 目前唯一的差别。</description></item>
     /// </list>
     /// </para>
+    /// <para>交互：<b>按钮 / I 键切换 API</b>；<b>空格</b>切换实例数量档位（256 / 1024 / 4096）。</para>
     /// </summary>
     public sealed class InstancingScene : DemoScene
     {
         public override string Title => "9) GPU 实例化：一次 DrawCall 画 N 个精灵";
 
         protected override string Description
-            => "单位四边形 + 逐实例缓冲（divisor=1）+ drawElementsInstanced：每实例只写 32 字节，空格键切换数量";
+            => "两条实例化 API 共用同一份逐实例数据（48 字节/实例）：A) SpriteInstancer，B) SpriteBatch 实例化模式";
 
         /// <summary>可切换的实例数量档位（空格键循环）。</summary>
         private static readonly int[] CountPresets = [256, 1024, 4096];
+
+        /// <summary>实例化的两条提交 API。</summary>
+        private enum SubmissionApi
+        {
+            /// <summary>直接 new SpriteInstancer，显式 Begin / Add / End。</summary>
+            Instancer,
+            /// <summary>常规 SpriteBatch，开实例化开关，逐物体数据走 MaterialPropertyBlock。</summary>
+            SpriteBatch,
+        }
+
+        private static readonly string[] ApiNames =
+        {
+            "A) SpriteInstancer 直连",
+            "B) SpriteBatch.Begin(instanced: true)",
+        };
+
+        /// <summary>实例方阵的左上角（正文起点：让开标题、描述与 API 按钮）。</summary>
+        private const float GridLeft = 28f;
+        private const float GridTop = 116f;
 
         private readonly Stopwatch _sw = Stopwatch.StartNew();
 
         private Texture2D? _chart;
         private SpriteFont? _small;
         private SpriteInstancer? _instancer;
+
+        /// <summary>B 路的材质：声明「属性块的哪些属性进实例通道」（与第 7/8 页的顶点通道共用同一套映射）。</summary>
+        private Material? _batchMaterial;
+        private MaterialPropertyBlock? _block;
+
         private string _error = string.Empty;
 
         private float _time;
         private int _presetIndex = 1;
+        private SubmissionApi _api = SubmissionApi.Instancer;
         private long _lastDrawCalls = -1;
         private int _lastInstances;
+
+        private Rectangle _button;
 
         public override void LoadContent()
         {
             _chart = MakeChecker(64, Color.White, new Color(36, 46, 66));
             _small = new SpriteFont(Device, 13f);
 
+            // B 路：逐物体数据走 MaterialPropertyBlock，所以先在材质上声明通道映射
+            // （块里只放被映射的属性 —— 放了没映射的属性，这一笔会退回逐顶点路径，实例化就白开了）。
+            _batchMaterial = new Material
+            {
+                Blend = BlendState.NonPremultiplied,
+                Sampler = SamplerState.Point,
+            };
+            _batchMaterial.SetSpriteChannels("uTint.rgb", "uPhase");
+            _block = new MaterialPropertyBlock();
+
             try
             {
-                // 逐实例参数（vParams0 / vParams1）在本页着色器里参与计算，用来证明"每个实例真的不一样"。
                 _instancer = new SpriteInstancer(Device, _chart, fragmentSource: FragmentSource, capacity: 4096);
             }
             catch (Exception ex)
@@ -61,9 +102,16 @@ namespace KFramework.Test.WebGL20.Tests
         public override void Update()
         {
             _time = (float)_sw.Elapsed.TotalSeconds;
+            LayoutButton();
 
             if (Input_KeyBoard.GetKeyDown(Keys.Space))
                 _presetIndex = (_presetIndex + 1) % CountPresets.Length;
+
+            // 按钮点击 / I 键：在两条实例化 API 之间切换。
+            // （不用 Tab：Tab 会让画布失焦，随即被清空按键状态，实测抓不稳。）
+            bool clicked = Input_Mouse.GetButtonDown(MouseButton.Left) && _button.Contains(Input_Mouse.Position);
+            if (clicked || Input_KeyBoard.GetKeyDown(Keys.KeyI))
+                _api = _api == SubmissionApi.Instancer ? SubmissionApi.SpriteBatch : SubmissionApi.Instancer;
         }
 
         public override void Draw()
@@ -72,63 +120,49 @@ namespace KFramework.Test.WebGL20.Tests
 
             batch.Begin();
             DrawHeader(batch);
+            DrawApiButton(batch);
             DrawFooter(batch);
             batch.End();
 
-            if (_instancer is null || _chart is null || _small is null)
-            {
-                batch.Begin();
-                DrawLine(batch, $"实例化初始化失败：{_error}", 28f, 96f, new Color(255, 150, 150));
-                batch.End();
-                return;
-            }
+            if (_chart is null || _small is null) return;
 
-            if (!_instancer.IsSupported)
+            if (_instancer is null || !_instancer.IsSupported)
             {
                 batch.Begin();
-                DrawLine(batch, $"当前后端（{Device.BackendName}）尚未接入 GPU 实例化。", 28f, 96f, new Color(255, 206, 110));
-                DrawLine(batch, "WebGL2 后端支持；WebGPU 需要另一套带实例属性的管线，见 SpriteInstancer 注释。",
-                    28f, 122f, new Color(150, 165, 195));
+                DrawLine(batch, $"实例化初始化失败：{_error}", 28f, GridTop, new Color(255, 150, 150));
+                DrawLine(batch, $"当前后端（{Device.BackendName}）尚未接入 GPU 实例化。", 28f, GridTop + 24f, new Color(255, 206, 110));
+                DrawLine(batch, "WebGL2 后端支持；WebGPU 需要另一套带实例属性的管线。", 28f, GridTop + 48f, new Color(150, 165, 195));
                 batch.End();
                 return;
             }
 
             int count = CountPresets[_presetIndex];
 
-            // ---- 关键：N 个实例一次提交 ----
+            // ---- 关键：N 个实例一次提交（两条 API 的读数应当一致）----
             long before = Device.Metrics.DrawCount;
-            SubmitInstances(count);
+            if (_api == SubmissionApi.Instancer) SubmitViaInstancer(count);
+            else SubmitViaSpriteBatch(count);
             _lastDrawCalls = Device.Metrics.DrawCount - before;
             _lastInstances = count;
 
             // ---- 读数 ----
             batch.Begin();
 
-            float readoutY = Device.Viewport.Height - 132f;
-            DrawLine(batch, $"实例数 = {_lastInstances} → DrawCall 增量 = {_lastDrawCalls}（缓冲容量 {_instancer.Capacity}，超出自动分批）",
+            float readoutY = Device.Viewport.Height - 152f;
+            DrawLine(batch, $"当前 API = {ApiNames[(int)_api]}    实例数 = {_lastInstances} → DrawCall 增量 = {_lastDrawCalls}（单次上限 4096，超出自动分批）",
                 28f, readoutY, new Color(120, 200, 160));
-            DrawLine(batch, $"CPU 侧带宽/精灵：实例化 32 字节（本页 = {_lastInstances * 32 / 1024} KB）   对照 SpriteBatch 逐顶点 4×28 = 112 字节（= {_lastInstances * 112 / 1024} KB）",
+            DrawLine(batch, $"CPU 侧带宽/精灵：实例化 48 字节（本页 = {_lastInstances * 48 / 1024} KB）   对照 SpriteBatch 逐顶点 4×28 = 112 字节（= {_lastInstances * 112 / 1024} KB）",
                 28f, readoutY + 20f, new Color(255, 206, 110));
-            DrawLine(batch, "对照 SpriteBatch + 属性块（第 7/8 页）：同为 1 次 DrawCall，但逐顶点路径每精灵要写 4 顶点 × 28 字节",
+            DrawLine(batch, "两条 API 都是一次 drawElementsInstanced；差别只在着色器：A 用本页自定义片元着色器（uTime 脉冲），B 用引擎内置实例化着色器（纹理 × 逐实例颜色）",
                 28f, readoutY + 40f, new Color(150, 165, 195));
 
             batch.End();
         }
 
-        /// <summary>把 count 个实例排成方阵提交：位置/旋转/色调/相位都各不相同。</summary>
-        private void SubmitInstances(int count)
+        /// <summary>A 路：直连 SpriteInstancer（显式 Begin / Add / End）。</summary>
+        private void SubmitViaInstancer(int count)
         {
-            int cols = (int)MathF.Ceiling(MathF.Sqrt(count));
-            int rows = (int)MathF.Ceiling(count / (float)cols);
-
-            float left = 28f;
-            float top = 88f;
-            float width = Math.Max(64f, Device.Viewport.Width - 56f);
-            float height = Math.Max(64f, Device.Viewport.Height - 88f - 156f);
-
-            float cellW = width / cols;
-            float cellH = height / rows;
-            float size = MathF.Max(3f, MathF.Min(cellW, cellH) * 0.92f);
+            ComputeLayout(count, out int cols, out float cellW, out float cellH, out float size);
 
             _instancer!.Begin();
             for (int i = 0; i < count; i++)
@@ -136,7 +170,7 @@ namespace KFramework.Test.WebGL20.Tests
                 int c = i % cols;
                 int r = i / cols;
 
-                var center = new Vector2(left + (c + 0.5f) * cellW, top + (r + 0.5f) * cellH);
+                var center = new Vector2(GridLeft + (c + 0.5f) * cellW, GridTop + (r + 0.5f) * cellH);
                 float rotation = _time * 1.2f + (r + c) * 0.06f;
                 float phase = (i % 16) / 16f;
 
@@ -145,6 +179,68 @@ namespace KFramework.Test.WebGL20.Tests
                 _instancer.Add(center, new Vector2(size, size), rotation, Color.White, parameters);
             }
             _instancer.End();
+        }
+
+        /// <summary>
+        /// B 路：走常规 SpriteBatch 的实例化模式 —— Begin 时打开开关，逐物体数据用 MaterialPropertyBlock 给。
+        /// 一个 Begin / End 之间排队的全部实例，到 End 时按纹理分段、一次实例化 draw 提交。
+        /// </summary>
+        private void SubmitViaSpriteBatch(int count)
+        {
+            ComputeLayout(count, out int cols, out float cellW, out float cellH, out float size);
+
+            Texture2D chart = _chart!;
+            var origin = new Vector2(chart.Width / 2f, chart.Height / 2f);   // 以精灵中心为锚点，语义与 A 路的 center 对齐
+            var scale = new Vector2(size / chart.Width, size / chart.Height);
+
+            Batch.Begin(_batchMaterial!, SpriteSortMode.Deferred, null, instanced: true);
+            for (int i = 0; i < count; i++)
+            {
+                int c = i % cols;
+                int r = i / cols;
+
+                var center = new Vector2(GridLeft + (c + 0.5f) * cellW, GridTop + (r + 0.5f) * cellH);
+                float rotation = _time * 1.2f + (r + c) * 0.06f;
+                float phase = (i % 16) / 16f;
+                Color tint = Hue(i * 0.013f);
+
+                // 逐物体数据：色调 + 相位写进块（两个属性都已被 SetSpriteChannels 映射进实例通道）。
+                _block!.Clear();
+                _block.SetColor("uTint", tint);
+                _block.SetFloat("uPhase", phase);
+
+                Batch.Draw(chart, center, null, tint, rotation, origin, scale,
+                           SpriteEffects.None, 0f, default, _block);
+            }
+            Batch.End();
+        }
+
+        /// <summary>方阵布局：两条 API 共用，保证画出来的位置、尺寸完全一致。</summary>
+        private void ComputeLayout(int count, out int cols, out float cellW, out float cellH, out float size)
+        {
+            cols = (int)MathF.Ceiling(MathF.Sqrt(count));
+            int rows = (int)MathF.Ceiling(count / (float)cols);
+
+            float width = Math.Max(64f, Device.Viewport.Width - GridLeft * 2f);
+            float height = Math.Max(64f, Device.Viewport.Height - GridTop - 168f);
+
+            cellW = width / cols;
+            cellH = height / rows;
+            size = MathF.Max(3f, MathF.Min(cellW, cellH) * 0.92f);
+        }
+
+        // ================= 按钮 =================
+
+        private void LayoutButton() => _button = new Rectangle(28, 74, 470, 30);
+
+        private void DrawApiButton(SpriteBatch batch)
+        {
+            LayoutButton();
+
+            bool hover = _button.Contains(Input_Mouse.Position);
+            batch.Draw(KDefaultRes.DefaultTexture2D, _button, hover ? new Color(58, 84, 130) : new Color(34, 46, 72));
+            batch.DrawString(Font, $"当前 API：{ApiNames[(int)_api]}    ← 点击按钮 / I 键切换",
+                new Vector2(_button.X + 14f, _button.Y + 6f), Color.White);
         }
 
         /// <summary>HSV → RGB（h 取 0~1），用于给每个实例一个明显不同的色调。</summary>
@@ -176,7 +272,7 @@ namespace KFramework.Test.WebGL20.Tests
         }
 
         /// <summary>
-        /// 本页片元着色器：几何（四边形、UV）由单位四边形提供，外观全部来自逐实例数据。
+        /// A 路（SpriteInstancer）的片元着色器：几何（四边形、UV）由单位四边形提供，外观全部来自逐实例数据。
         /// vColor 是逐实例颜色，vParams0/vParams1 是逐实例的 8 个参数（这里 P0..P3 = 色调、P4 = 脉冲相位）。
         /// </summary>
         private const string FragmentSource = @"#version 300 es

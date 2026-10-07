@@ -2,23 +2,6 @@ using System.Numerics;
 
 namespace KFramework.MonoGame
 {
-    /// <summary>
-    /// 2D 精灵批处理器。用法与 MonoGame 一致：Begin() → 若干 Draw() → End()。
-    /// 合批逻辑全部委托给 <see cref="SpriteBatcher"/>（照 MonoGame 的 SpriteBatch / SpriteBatcher 拆分）。
-    /// 同一张纹理（用 source rect 绘制的图集页）会被合并为一次 draw call；分组按引用相等判断。
-    /// <para>
-    /// <b>两条提交路径</b>（由 <see cref="Begin(Material, SpriteSortMode, Matrix4x4?, bool)"/> 的
-    /// <c>instanced</c> 开关选）：
-    /// <list type="bullet">
-    ///   <item><description><b>逐顶点</b>（默认）：CPU 侧把每个精灵展开成 4 个顶点（28 字节/顶点），按纹理分批，
-    ///   每批一次 <c>drawElements</c>。逐精灵参数走顶点通道（<see cref="SpriteParams"/>）。</description></item>
-    ///   <item><description><b>实例化</b>：几何只有单位四边形，每个精灵写一条 48 字节实例数据，
-    ///   一次 <c>drawElementsInstanced</c> 画完一批。逐物体数据来自 <see cref="MaterialPropertyBlock"/> 与 Draw 参数
-    ///   —— 这就是本引擎版的"MaterialPropertyBlock 承载不同物体的数据 + 实例化合并 DrawCall"。
-    ///   <b>目前仅 WebGL2 可用</b>（WebGPU 未接入，会明确抛异常）。</description></item>
-    /// </list>
-    /// </para>
-    /// </summary>
     public sealed class SpriteBatch
     {
         private readonly GraphicsDevice _device;
