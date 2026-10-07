@@ -397,7 +397,10 @@ namespace KFramework.MonoGame
         /// 按「材质内容 + 变换」下发渲染状态。与上次完全一致则整体跳过（省去 blend / depth / rasterizer /
         /// 着色器切换与矩阵上传这一串跨 JS 调用）。材质正是 Unity 的 Material：打包着色器 + 采样/混合/深度/剔除状态。
         /// </summary>
-        internal void ApplyMaterial(Material material, Matrix4x4 transform, MaterialPropertyBlock? properties)
+        internal void ApplyMaterial(
+            Material material, 
+            Matrix4x4 transform, 
+            MaterialPropertyBlock? properties)
         {
             ISpriteProgram effect = (material.Effect ?? Effect).Program;
             // 动画效果（如自定义 ShaderEffect）每帧都要重灌 uTime / 自定义参数，不做材质去重短路。
