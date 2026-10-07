@@ -14,15 +14,16 @@ namespace KFramework.MonoGame
     /// 属性（uniform）用法与 Unity 一致：<c>material.SetFloat("uTime", t)</c> / <c>SetVector("uParams", v)</c> /
     /// <c>SetColor("_Tint", Color.White)</c> / <c>SetMatrix("_M", m)</c> / <c>SetTexture("_Mask", tex)</c>，
     /// 绘制时由后端的精灵程序按属性名找到对应 uniform 灌入（名字在着色器里不存在就忽略，同 Unity）。
-    /// 这里设的是「该材质的基线值」，会被传入的 <see cref="MaterialPropertyBlock"/> 覆盖（照 Unity）。
-    /// 改属性会推进 <see cref="MaterialProperties.PropertiesVersion"/>，让材质去重短路失效、下一批绘制重新下发。
+    /// 这里设的是「该材质的基线值」，会被 <see cref="ShaderEffect"/> 自带值盖住、又盖住效果自带值；
+    /// 传入的 <see cref="MaterialPropertyBlock"/> 再覆盖这两者（照 Unity：越靠"这一次绘制"越优先）。
+    /// 改属性会推进 <see cref="ShaderProperties.PropertiesVersion"/>，让材质去重短路失效、下一批绘制重新下发。
     /// </para>
     /// </summary>
-    public sealed class Material : MaterialProperties
+    public sealed class Material : ShaderProperties
     {
-        /// <summary>着色器程序（片元里的 sampler 即对应本引擎的 Texture2D + SamplerState）。
-        /// 为 null 表示用 GraphicsDevice 的默认精灵着色器。</summary>
-        public Effect? Effect;
+        /// <summary>着色器效果（= 后端着色器程序 + 效果自带属性；片元里的 sampler 即对应本引擎的 Texture2D + SamplerState）。
+        /// 为 null 表示用 GraphicsDevice 的默认效果。</summary>
+        public ShaderEffect? Effect;
 
         /// <summary>混合状态（照 MonoGame 的 BlendState，对应 Unity Shader 的 Blend 命令）。</summary>
         public BlendState Blend = BlendState.NonPremultiplied;

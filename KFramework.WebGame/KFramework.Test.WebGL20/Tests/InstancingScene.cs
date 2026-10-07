@@ -15,7 +15,7 @@ namespace KFramework.Test.WebGL20.Tests
     /// <b>同一份实例数据有两条提交 API，用页面上的按钮（或 I 键）切换</b>，DrawCall 增量都应该是 1：
     /// <list type="bullet">
     ///   <item><description><b>A) SpriteInstancer 直连</b>：显式 Begin → Add × N → End；
-    ///   可以传自定义片元着色器（本页用它做了 uTime 脉冲）。</description></item>
+    ///   可以传自定义片元着色器（本页用它做了逐实例明暗脉冲）。</description></item>
     ///   <item><description><b>B) SpriteBatch.Begin(..., instanced: true)</b>：把实例化接进常规 SpriteBatch 流程，
     ///   逐实例数据取自 Draw 的位置/尺寸/旋转/颜色；用的是引擎内置实例化着色器（纹理 × 逐实例颜色），
     ///   所以 B 比 A 少一个脉冲动画，这是两条 API 目前唯一的差别。</description></item>
@@ -38,7 +38,7 @@ namespace KFramework.Test.WebGL20.Tests
         {
             /// <summary>直接 new SpriteInstancer，显式 Begin / Add / End。</summary>
             Instancer,
-            /// <summary>常规 SpriteBatch，开实例化开关，逐物体数据走 MaterialPropertyBlock。</summary>
+            /// <summary>常规 SpriteBatch，开实例化开关，逐物体数据取自 Draw 的参数。</summary>
             SpriteBatch,
         }
 
@@ -148,7 +148,7 @@ namespace KFramework.Test.WebGL20.Tests
                 28f, readoutY, new Color(120, 200, 160));
             DrawLine(batch, $"CPU 侧带宽/精灵：实例化 40 字节（本页 = {_lastInstances * 40 / 1024} KB）   对照 SpriteBatch 逐顶点 4×28 = 112 字节（= {_lastInstances * 112 / 1024} KB）",
                 28f, readoutY + 20f, new Color(255, 206, 110));
-            DrawLine(batch, "两条 API 都是一次 drawElementsInstanced；差别只在着色器：A 用本页自定义片元着色器（uTime 脉冲），B 用引擎内置实例化着色器（纹理 × 逐实例颜色）",
+            DrawLine(batch, "两条 API 都是一次 drawElementsInstanced；差别只在着色器：A 用本页自定义片元着色器（逐实例明暗脉冲），B 用引擎内置实例化着色器（纹理 × 逐实例颜色）",
                 28f, readoutY + 40f, new Color(150, 165, 195));
 
             batch.End();
@@ -259,19 +259,19 @@ namespace KFramework.Test.WebGL20.Tests
 
         /// <summary>
         /// A 路（SpriteInstancer）的片元着色器：几何（四边形、UV）由单位四边形提供，色调来自逐实例颜色 vColor，
-        /// 脉冲来自整批共用的 uTime（逐实例差异只有色调与变换）。
+        /// 明暗脉冲用实例号 vInstanceID 做相位（实例化程序没有 uTime 这类 uniform，实例号是唯一可用的逐实例标量）。
         /// </summary>
         private const string FragmentSource = @"#version 300 es
 precision highp float;
 in vec2 vTexCoord;
-in vec4 vColor;   // 逐实例：色调
+in vec4 vColor;                 // 逐实例：色调
+flat in int vInstanceID;        // 逐实例：实例号（内置 gl_InstanceID 经顶点着色器透传）
 uniform sampler2D uTexture;
-uniform float uTime;
 out vec4 fragColor;
 void main()
 {
     vec4 c = texture(uTexture, vTexCoord) * vColor;
-    float pulse = 0.70 + 0.30 * sin(uTime * 3.0);
+    float pulse = 0.70 + 0.30 * sin(float(vInstanceID) * 0.7);
     fragColor = vec4(c.rgb * pulse, c.a);
 }";
     }

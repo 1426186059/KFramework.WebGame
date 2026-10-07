@@ -33,7 +33,7 @@ namespace KFramework.MonoGame
     /// </code>
     /// </para>
     /// </summary>
-    public sealed class MaterialPropertyBlock : MaterialProperties
+    public sealed class MaterialPropertyBlock : ShaderProperties
     {
         /// <summary>清空全部属性（照 Unity 的 MaterialPropertyBlock.Clear，重复使用同一个 block 时先清再设）。</summary>
         public void Clear()
@@ -47,7 +47,7 @@ namespace KFramework.MonoGame
             ArgumentNullException.ThrowIfNull(source);
 
             ClearProperties();
-            foreach (KeyValuePair<string, MaterialProperty> pair in source.Properties)
+            foreach (KeyValuePair<string, ShaderProperty> pair in source.Properties)
                 Set(pair.Key, pair.Value);
         }
     }

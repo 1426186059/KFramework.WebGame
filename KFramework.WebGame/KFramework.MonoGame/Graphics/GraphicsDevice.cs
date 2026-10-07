@@ -13,8 +13,8 @@ namespace KFramework.MonoGame
         /// <summary>渲染后端（WebGL 2.0 / WebGPU 二选一）。所有平台层调用都经它下发，本类不再直接碰具体图形 API。</summary>
         internal readonly IGraphicsBackend Backend;
 
-        /// <summary>精灵着色器程序（由后端创建并持有）。</summary>
-        internal readonly Effect Effect;
+        /// <summary>设备默认效果（由后端创建并持有）：<see cref="Material.Effect"/> 为 null 时用它。</summary>
+        internal readonly ShaderEffect Effect;
 
         /// <summary>实例化绘制器（设备级，懒创建一次后复用；后端不支持实例化时为 null）。</summary>
         private ISpriteInstancer? _instancer;
@@ -38,7 +38,9 @@ namespace KFramework.MonoGame
         private SamplerState _appliedSampler = null!;
         private DepthStencilState _appliedDepth = null!;
         private RasterizerState _appliedRasterizer = null!;
-        private IShaderProgram _appliedEffect = null!;
+        private ShaderEffect _appliedEffect = null!;
+        // 效果自带属性（ShaderEffect.SetFloat / Time / Params 等）也要并进去重键：改了值必须重发。
+        private int _appliedEffectPropertiesVersion = -1;
         private Matrix4x4 _appliedTransform = Matrix4x4.Identity;
         // 材质上的着色器属性（SetFloat / SetVector / …）：按「材质实例 + 属性版本号」判断内容有没有变。
         private Material _appliedMaterial = null!;
@@ -227,7 +229,7 @@ namespace KFramework.MonoGame
             MaxTextureSize = Backend.MaxTextureSize;
             Renderer = Backend.Renderer;
 
-            Effect = new Effect(Backend.CreateShaderProgram());
+            Effect = new ShaderEffect(Backend.CreateShaderProgram());
 
             ApplyCanvasSize(true);
 
@@ -243,15 +245,13 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// 用一段自定义 GLSL 片元着色器源码创建一个可被 <see cref="SpriteBatch.Begin"/> 使用的 <see cref="ShaderEffect"/>。
-        /// 返回的 Effect 每帧应在场景中写入 <see cref="ShaderEffect.Time"/> / <see cref="ShaderEffect.Params"/> 以驱动动画。
+        /// 返回的效果每帧应写入 <see cref="ShaderEffect.Time"/> / <see cref="ShaderEffect.Params"/>（或任意自定义属性）以驱动动画。
         /// <para>当前仅 WebGL 后端真正编译自定义着色器；WebGPU 回落默认精灵着色器（效果不生效，但页面照常运行）。</para>
         /// </summary>
-        public Effect CreateShaderEffect(string fragmentSource, string? vertexSource = null)
+        public ShaderEffect CreateShaderEffect(string fragmentSource, string? vertexSource = null)
         {
             IShaderProgram program = Backend.CreateCustomShaderProgram(vertexSource ?? string.Empty, fragmentSource);
-            var effect = new ShaderEffect(program);
-            if (program is ICustomShaderProgram csp) csp.SetOwner(effect);
-            return effect;
+            return new ShaderEffect(program);
         }
 
         /// <summary>
@@ -334,6 +334,7 @@ namespace KFramework.MonoGame
             _appliedDepth = null!;
             _appliedRasterizer = null!;
             _appliedEffect = null!;
+            _appliedEffectPropertiesVersion = -1;
             _appliedTransform = Matrix4x4.Identity;
             _appliedMaterial = null!;
             _appliedPropertiesVersion = -1;
@@ -400,13 +401,14 @@ namespace KFramework.MonoGame
             Matrix4x4 transform, 
             MaterialPropertyBlock? properties)
         {
-            IShaderProgram effect = (material.Effect ?? Effect).Program;
-            // 动画效果（如自定义 ShaderEffect）每帧都要重灌 uTime / 自定义参数，不做材质去重短路。
+            ShaderEffect effect = material.Effect ?? Effect;
+            // 动画效果每帧都要重灌 uTime / 自定义参数，不做材质去重短路。
             bool animated = effect.IsAnimated;
             // 材质上的着色器属性一旦被改（PropertiesVersion 变了）也必须重发，故把它并进去重键；
-            // 每次绘制的属性覆盖块（MaterialPropertyBlock）同理：块换了、或块里的值被改了都要重发。
+            // 效果自带属性、每次绘制的属性覆盖块（MaterialPropertyBlock）同理：换实例或改值都要重发。
             bool sameProperties = ReferenceEquals(_appliedMaterial, material)
                                   && _appliedPropertiesVersion == material.PropertiesVersion
+                                  && _appliedEffectPropertiesVersion == effect.PropertiesVersion
                                   && ReferenceEquals(_appliedPropertyBlock, properties)
                                   && _appliedBlockVersion == (properties?.PropertiesVersion ?? -1);
             if (!animated
@@ -426,6 +428,7 @@ namespace KFramework.MonoGame
             _appliedDepth = material.DepthStencil;
             _appliedRasterizer = material.Rasterizer;
             _appliedEffect = effect;
+            _appliedEffectPropertiesVersion = effect.PropertiesVersion;
             _appliedTransform = transform;
             _appliedMaterial = material;
             _appliedPropertiesVersion = material.PropertiesVersion;
@@ -482,6 +485,7 @@ namespace KFramework.MonoGame
             // 这里必须把缓存作废，否则紧接着的 SpriteBatch 批次会因为"材质/变换都没变"被去重短路，
             // 从而不重新 UseProgram —— 于是后续精灵继续用着实例化程序绘制，表现是"实例化之后的文字/精灵全都不显示"。
             _appliedEffect = null!;
+            _appliedEffectPropertiesVersion = -1;
             _appliedMaterial = null!;
 
             _metrics._drawCount++;

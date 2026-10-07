@@ -161,7 +161,7 @@ namespace KFramework.MonoGame
 
             // 【关键】只有"清屏开帧"才重置 uniform 槽位。
             // "沿用内容开帧"（load）绝不能动槽位：它是在【本批次第一次绘制】时才被触发的，
-            // 此时 SpriteBatch.Begin 早已经 Effect.Apply 分配好槽位并写入投影矩阵；
+            // 此时 SpriteBatch.Begin 早已经 ApplyMaterial → ShaderEffect.Apply 分配好槽位并写入投影矩阵；
             // 一重置就会让本批次退回 0 号槽（单位矩阵），画面整体塌进右上角（看着像黑屏）。
             if (!clear) return;
 
@@ -804,10 +804,10 @@ namespace KFramework.MonoGame
 
             internal WebGPU_ShaderProgram_2D_Default(WebGpuBackend backend) => _backend = backend;
 
-            public void Apply(Matrix4x4 projection, Material material, MaterialPropertyBlock? properties)
+            public void Apply(Matrix4x4 projection, Material material, MaterialPropertyBlock? properties, ShaderProperties effect)
             {
-                // WebGPU 目前只有默认精灵管线（自定义着色器回落为它），材质属性没有对应的 uniform 槽位，
-                // 故 material 与 MaterialPropertyBlock 都忽略。
+                // WebGPU 目前只有默认精灵管线（自定义着色器回落为它），着色器属性没有对应的 uniform 槽位，
+                // 故 effect / material / properties 三者都忽略。
                 _backend.AllocateTransform(projection);
             }
 

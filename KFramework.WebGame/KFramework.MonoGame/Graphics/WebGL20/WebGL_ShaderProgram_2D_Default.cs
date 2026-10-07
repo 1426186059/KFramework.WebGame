@@ -107,10 +107,10 @@ namespace KFramework.MonoGame
         // 实现 IShaderProgram：接口成员需为 public（接口本身与其实现类都是 internal，对外仍不可见）。
         public bool IsAnimated => false;
 
-        public void Apply(Matrix4x4 projection, Material material, MaterialPropertyBlock? properties)
+        public void Apply(Matrix4x4 projection, Material material, MaterialPropertyBlock? properties, ShaderProperties effect)
         {
-            // 内置精灵程序只声明了 uProjection / uTexture：材质与属性块的属性都无处可写，故这里两者都忽略
-            //（要往着色器设变量请用 ShaderEffect / 自定义程序，见 WebGL_ShaderProgram_2D_Custom）。
+            // 内置精灵程序只声明了 uProjection / uTexture：着色器属性无处可写，故 effect / material / properties 三者都忽略
+            //（要往着色器设变量请用自定义程序，见 WebGL_ShaderProgram_2D_Custom）。
             JSBind_WEBGL20.UseProgram(_program);
             if (_projectionLocation is not null)
             {
