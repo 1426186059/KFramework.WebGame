@@ -229,7 +229,7 @@ namespace KFramework.MonoGame
             MaxTextureSize = Backend.MaxTextureSize;
             Renderer = Backend.Renderer;
 
-            Effect = new Effect(Backend.CreateSpriteProgram());
+            Effect = new Effect(Backend.CreateShaderProgram());
 
             ApplyCanvasSize(true);
 
@@ -250,7 +250,7 @@ namespace KFramework.MonoGame
         /// </summary>
         public Effect CreateShaderEffect(string fragmentSource, string? vertexSource = null)
         {
-            IShaderProgram program = Backend.CreateCustomSpriteProgram(vertexSource ?? string.Empty, fragmentSource);
+            IShaderProgram program = Backend.CreateCustomShaderProgram(vertexSource ?? string.Empty, fragmentSource);
             var effect = new ShaderEffect(program);
             if (program is ICustomSpriteProgram csp) csp.SetOwner(effect);
             return effect;

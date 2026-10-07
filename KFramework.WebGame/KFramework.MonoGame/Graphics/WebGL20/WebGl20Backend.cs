@@ -63,9 +63,9 @@ namespace KFramework.MonoGame
             return Task.CompletedTask;
         }
 
-        public IShaderProgram CreateSpriteProgram() => _effect;
+        public IShaderProgram CreateShaderProgram() => _effect;
 
-        public IShaderProgram CreateCustomSpriteProgram(string vertexSource, string fragmentSource)
+        public IShaderProgram CreateCustomShaderProgram(string vertexSource, string fragmentSource)
             => new CustomWebGlSpriteProgram(fragmentSource);
 
         /// <summary>WebGL2 原生支持 GPU 实例化（drawElementsInstanced + vertexAttribDivisor）。</summary>

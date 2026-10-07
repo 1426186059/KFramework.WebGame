@@ -84,13 +84,13 @@ namespace KFramework.MonoGame
         // ============ 精灵着色器程序 ============
 
         /// <summary>创建本后端的精灵程序（须在 <see cref="Initialize"/> 之后调用）。</summary>
-        IShaderProgram CreateSpriteProgram();
+        IShaderProgram CreateShaderProgram();
 
         /// <summary>
         /// 用自定义 GLSL 顶点/片元源码创建精灵程序（仅 WebGL 后端真正实现；WebGPU 回落默认精灵着色器）。
         /// 自定义程序支持 uTime / uParams 两个额外 uniform，详见 <see cref="ShaderEffect"/>。
         /// </summary>
-        IShaderProgram CreateCustomSpriteProgram(string vertexSource, string fragmentSource);
+        IShaderProgram CreateCustomShaderProgram(string vertexSource, string fragmentSource);
 
         // ============ GPU 实例化 ============
 
