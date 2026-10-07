@@ -96,9 +96,9 @@ void main()
             }
             if (_textureLocation is not null) JSBind_WEBGL20.Uniform1i(_textureLocation, 0);
 
-            // 先发效果上的默认材质属性（material.Effect 由 GraphicsDevice 保证非空），
+            // 先发效果上的默认材质属性（SpriteBatch.Begin 已把空效果落到 ShaderEffect.Default），
             // 再发这一次绘制的覆盖块：同名 uniform 后写的赢（照 Unity 的 SetPropertyBlock）。
-            if (material.Effect is not null) ApplyProperties(material.Effect, material.Sampler);
+            ApplyProperties(material.Effect!, material.Sampler);
             if (block is not null) ApplyProperties(block, material.Sampler);
         }
 

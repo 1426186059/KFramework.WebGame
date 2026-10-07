@@ -48,8 +48,12 @@ namespace KFramework.MonoGame
         public GraphicsDevice GraphicsDevice => _device;
 
         /// <summary>
-        /// 用材质配置开启一批绘制。材质打包了着色器 + 混合/采样/深度/剔除状态，
+        /// 用材质配置开启一批绘制。材质打包了着色器效果 + 混合/采样/深度/剔除状态，
         /// GraphicsDevice 按「材质内容 + 变换」做去重，相同配置不再重复下发跨 JS 状态。
+        /// <para>
+        /// 材质没指定 <see cref="Material.Effect"/> 时，在<b>开批</b>时就落到设备默认效果
+        /// （<see cref="ShaderEffect.Default"/>）并写回材质：后续状态下发与着色器程序都只认这一个字段。
+        /// </para>
         /// <para>
         /// 想在某一次绘制上临时覆盖着色器属性，用 <see cref="Draw(Texture2D, Rectangle, Color, ShaderPropertyBlock?)"/>
         /// 的 block 参数 —— 属性块的归属是「这一次绘制」（照 Unity 的 <c>renderer.SetPropertyBlock</c>），不是这一批。
@@ -78,7 +82,7 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// 兼容旧签名的重载：把散装的 Blend / Sampler / DepthStencil / Rasterizer / Effect 状态包成一个材质，
-        /// 交给 BeginInternal。effect 为 null 时使用设备默认效果（<see cref="GraphicsDevice.Effect"/>）。
+        /// 交给 BeginInternal。effect 为 null 时使用设备默认效果（<see cref="ShaderEffect.Default"/>）。
         /// 参数顺序对齐原版 MonoGame SpriteBatch.Begin 的散装签名（effect 位于 rasterizerState 与 transformMatrix 之间）。
         /// 新增代码建议直接用 <see cref="Begin(Material, SpriteSortMode, Matrix4x4?)"/>。
         /// </summary>
@@ -107,6 +111,10 @@ namespace KFramework.MonoGame
             if (instanced && !_device.Backend.SupportsInstancing)
                 throw new NotSupportedException(
                     $"后端「{_device.Backend.Name}」尚未接入 GPU 实例化：Begin(..., instanced: true) 目前只在 WebGL2 上可用。");
+
+            // 材质没指定效果就在【开批】时落到设备默认效果（写回字段）：此后 ApplyMaterial 与着色器程序
+            // 都只认 material.Effect，不必在更晚的地方再判一次空。
+            material.Effect ??= ShaderEffect.Default;
 
             _sortMode = sortMode;
             _instanced = instanced;

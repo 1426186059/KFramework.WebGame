@@ -16,12 +16,18 @@ namespace KFramework.MonoGame
     /// 需要"每个物体不同"时用 <see cref="ShaderPropertyBlock"/> 覆盖，或各自创建效果实例。
     /// </para>
     /// <para>
-    /// 传 null（或不设置 <see cref="Material.Effect"/>）时回落到 <see cref="GraphicsDevice.Effect"/> 的默认效果。
+    /// 传 null（或不设置 <see cref="Material.Effect"/>）时回落到 <see cref="ShaderEffect.Default"/>。
     /// 自定义效果由 <see cref="GraphicsDevice.CreateShaderEffect"/> 创建。
     /// </para>
     /// </summary>
     public sealed class ShaderEffect : ShaderProperties, IDisposable
     {
+        /// <summary>
+        /// 设备默认效果：由 <see cref="GraphicsDevice"/> 在后端就绪时创建并写入
+        /// （WebGL = 默认 2D GLSL 程序，WebGPU = 默认 WGSL 管线）。<see cref="Material.Effect"/> 为 null 时用它。
+        /// </summary>
+        public static ShaderEffect Default { get; internal set; } = null!;
+
         /// <summary>标准精灵顶点着色器源码（aPosition / aColor / aTexCoord + uProjection）。自定义片元着色器复用它以保证顶点属性位置与默认一致。</summary>
         public const string DefaultVertexSource = @"
 #version 300 es

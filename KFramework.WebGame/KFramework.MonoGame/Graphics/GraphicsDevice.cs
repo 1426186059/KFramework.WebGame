@@ -13,9 +13,6 @@ namespace KFramework.MonoGame
         /// <summary>渲染后端（WebGL 2.0 / WebGPU 二选一）。所有平台层调用都经它下发，本类不再直接碰具体图形 API。</summary>
         internal readonly IGraphicsBackend Backend;
 
-        /// <summary>设备默认效果（由后端创建并持有）：<see cref="Material.Effect"/> 为 null 时用它。</summary>
-        internal readonly ShaderEffect Effect;
-
         /// <summary>实例化绘制器（设备级，懒创建一次后复用；后端不支持实例化时为 null）。</summary>
         private ISpriteInstancer? _instancer;
 
@@ -227,7 +224,9 @@ namespace KFramework.MonoGame
             MaxTextureSize = Backend.MaxTextureSize;
             Renderer = Backend.Renderer;
 
-            Effect = new ShaderEffect(Backend.CreateShaderProgram());
+            // 设备默认效果写进静态字段（<see cref="ShaderEffect.Default"/>）：材质没指定效果时由程序自己去取它，
+            // 因此本类不再持有该字段。
+            ShaderEffect.Default = new ShaderEffect(Backend.CreateShaderProgram());
 
             ApplyCanvasSize(true);
 
@@ -398,10 +397,8 @@ namespace KFramework.MonoGame
             Matrix4x4 transform, 
             ShaderPropertyBlock? properties)
         {
-            // 材质没指定效果时填上设备默认效果（写回字段）：程序统一从 material.Effect 取效果与默认属性，
-            // 不必再多传一个参数。
-            material.Effect ??= Effect;
-            ShaderEffect effect = material.Effect;
+            // SpriteBatch.Begin 已把空效果落到设备默认效果，这里直接取。
+            ShaderEffect effect = material.Effect!;
             IShaderProgram program = effect.Program;
 
             // 动画效果每帧都要重灌 uTime / 自定义参数，不做材质去重短路。
