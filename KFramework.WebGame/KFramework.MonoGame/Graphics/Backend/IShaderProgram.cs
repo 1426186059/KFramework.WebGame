@@ -13,12 +13,13 @@ namespace KFramework.MonoGame
     public interface IShaderProgram : IDisposable
     {
         /// <summary>
-        /// 绑定本程序，写入投影矩阵与内置 uniform，并把三层着色器属性按「后者覆盖前者」灌入对应 uniform：
-        /// <paramref name="effect"/>（效果自带值）→ <paramref name="material"/>（材质基线值）→
-        /// <paramref name="properties"/>（本次绘制的覆盖块，MaterialPropertyBlock）。
+        /// 绑定本程序，写入投影矩阵与内置 uniform，并把着色器属性逐个灌入对应 uniform：
+        /// 先发 <c>material.Effect</c> 上的<b>默认材质属性</b>，再发 <paramref name="block"/> 里的<b>覆盖值</b>
+        /// （这一次绘制的 ShaderPropertyBlock，同名以它为准，照 Unity 的 SetPropertyBlock）。
+        /// <paramref name="material"/> 同时提供采样器等绘制状态。
         /// 属性名在着色器里不存在时忽略该属性（同 Unity 的行为）。
         /// </summary>
-        void Apply(Matrix4x4 projection, Material material, MaterialPropertyBlock? properties, ShaderProperties effect);
+        void Apply(Matrix4x4 projection, Material material, ShaderPropertyBlock? block);
 
         /// <summary>
         /// 是否为"逐帧动画"效果：为 true 时 GraphicsDevice 不对其做材质去重短路，

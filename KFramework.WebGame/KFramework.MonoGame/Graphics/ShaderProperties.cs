@@ -5,16 +5,16 @@ using System.Numerics;
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 着色器属性表（uniform 的「名字 → 值」集合），三处持有者的共用基类：
-    /// <see cref="ShaderEffect"/>（效果自带的值）、<see cref="Material"/>（材质基线值）、
-    /// <see cref="MaterialPropertyBlock"/>（每一次绘制的临时覆盖值）。
-    /// 对应 Unity 里 Material 与 MaterialPropertyBlock 都提供的那组
+    /// 着色器属性表（uniform 的「名字 → 值」集合），两处持有者的共用基类：
+    /// <see cref="ShaderEffect"/>（效果自带的值，可被多个材质共用）与
+    /// <see cref="ShaderPropertyBlock"/>（每一次绘制的临时覆盖值）。
+    /// 对应 Unity 里 Material / MaterialPropertyBlock 提供的那组
     /// SetFloat / SetInt / SetVector / SetColor / SetMatrix / SetTexture / HasProperty / GetXXX。
     /// <para>
-    /// 三者的区别只在用途与优先级（越靠"这一次绘制"越优先）：
-    /// ShaderEffect 上是「这个效果自带的值」→ Material 上是「这个材质的基线值」→ Block 上是「这一次绘制临时覆盖的值」。
-    /// 矩阵下发时按这个顺序依次灌入同名 uniform，后写的覆盖先写的，因此一个材质 + 一个重复使用的 Block
-    /// 就能画出 N 种外观，而不必给每个实例 new 一个材质。
+    /// 两者按用途与优先级区分（越靠"这一次绘制"越优先）：
+    /// ShaderEffect 上是「这个效果的默认材质属性」→ Block 上是「这一次绘制临时覆盖的值」。
+    /// 绘制时先发效果的默认值、再发块里的覆盖值（同名以块为准，照 Unity 的 SetPropertyBlock），
+    /// 因此一份共享效果 + 一个重复使用的 Block 就能画出 N 种外观，而不必给每个实例 new 一个效果。
     /// </para>
     /// <para>
     /// 属性值按名字索引（<see cref="StringComparer.Ordinal"/>），名字要与着色器里声明的 uniform 完全一致；

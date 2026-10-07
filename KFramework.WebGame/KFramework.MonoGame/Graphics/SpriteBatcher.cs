@@ -95,7 +95,7 @@ namespace KFramework.MonoGame
                 int startIndex = 0;
                 int index = 0;
                 Texture2D? tex = null;
-                MaterialPropertyBlock? block = null;
+                ShaderPropertyBlock? block = null;
                 int blockVersion = -1;
                 bool batchStarted = false;
 

@@ -9,8 +9,9 @@ namespace KFramework.MonoGame
     /// <para>
     /// 顶点着色器复用标准精灵顶点格式（aPosition / aColor / aTexCoord + uProjection），
     /// 声明顺序与默认 <see cref="WebGL_ShaderProgram_2D_Default"/> 完全一致，因此可直接套用后端已配置好的 VAO。
-    /// 片元着色器里任意 uniform // 都能被设置：把属性名写进 <see cref="ShaderEffect"/> / <see cref="Material"/> /
-    /// <see cref="MaterialPropertyBlock"/> 任意一层即可（约定名 <c>uTime</c> / <c>uParams</c> 只是常用写法，引擎不做特殊处理）。
+    /// 片元着色器里任意 uniform 都能被设置：把属性名写进 <c>material.Effect</c>（默认材质属性）或
+    /// <see cref="ShaderPropertyBlock"/>（这一次绘制的覆盖值）即可，绘制时按这个先后顺序灌 uniform
+    /// （约定名 <c>uTime</c> / <c>uParams</c> 只是常用写法，引擎不做特殊处理）。
     /// </para>
     /// </summary>
     internal sealed class WebGL_ShaderProgram_2D_Custom : IShaderProgram
@@ -85,7 +86,7 @@ void main()
 
         public bool IsAnimated => true;
 
-        public void Apply(Matrix4x4 projection, Material material, MaterialPropertyBlock? properties, ShaderProperties effect)
+        public void Apply(Matrix4x4 projection, Material material, ShaderPropertyBlock? block)
         {
             JSBind_WEBGL20.UseProgram(_program);
             if (_projectionLocation is not null)
@@ -95,15 +96,14 @@ void main()
             }
             if (_textureLocation is not null) JSBind_WEBGL20.Uniform1i(_textureLocation, 0);
 
-            // 三层属性按「后者覆盖前者」下发（越靠"这一次绘制"越优先），同名 uniform 后写的赢：
-            //   效果自带值（ShaderEffect.SetFloat / Time / Params）→ 材质基线值 → 本次绘制的属性块覆盖值。
-            ApplyProperties(effect, material.Sampler);
-            ApplyProperties(material, material.Sampler);
-            if (properties is not null) ApplyProperties(properties, material.Sampler);
+            // 先发效果上的默认材质属性（material.Effect 由 GraphicsDevice 保证非空），
+            // 再发这一次绘制的覆盖块：同名 uniform 后写的赢（照 Unity 的 SetPropertyBlock）。
+            if (material.Effect is not null) ApplyProperties(material.Effect, material.Sampler);
+            if (block is not null) ApplyProperties(block, material.Sampler);
         }
 
         /// <summary>
-        /// 把属性表（效果 / 材质 / 属性块）里的着色器属性逐个灌入本程序的 uniform（按属性类型选接口：1f / 1i / 4f / Matrix4fv / 纹理单元）。
+        /// 把属性表里的着色器属性逐个灌入本程序的 uniform（按属性类型选接口：1f / 1i / 4f / Matrix4fv / 纹理单元）。
         /// 属性名在本着色器里不存在就跳过（照 Unity：设了没用到的属性不报错也不生效）。
         /// </summary>
         private void ApplyProperties(ShaderProperties source, SamplerState sampler)

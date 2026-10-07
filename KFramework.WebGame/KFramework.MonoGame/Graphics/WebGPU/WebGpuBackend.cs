@@ -804,10 +804,10 @@ namespace KFramework.MonoGame
 
             internal WebGPU_ShaderProgram_2D_Default(WebGpuBackend backend) => _backend = backend;
 
-            public void Apply(Matrix4x4 projection, Material material, MaterialPropertyBlock? properties, ShaderProperties effect)
+            public void Apply(Matrix4x4 projection, Material material, ShaderPropertyBlock? block)
             {
                 // WebGPU 目前只有默认精灵管线（自定义着色器回落为它），着色器属性没有对应的 uniform 槽位，
-                // 故 effect / material / properties 三者都忽略。
+                // 故 material / block 都忽略。
                 _backend.AllocateTransform(projection);
             }
 

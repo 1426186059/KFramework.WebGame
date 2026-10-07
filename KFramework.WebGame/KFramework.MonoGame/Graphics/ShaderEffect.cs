@@ -7,9 +7,13 @@ namespace KFramework.MonoGame
     /// 着色器效果：把一个后端着色器程序（<see cref="IShaderProgram"/>：WebGL = GLSL Program，WebGPU = WGSL 模块 + 渲染管线）
     /// 与它自带的一组属性值打包在一起，对应原版 MonoGame 的 <c>Effect</c>（程序 + EffectParameterCollection）。
     /// <para>
-    /// 它同时是一种 <see cref="ShaderProperties"/>，所以效果自己可以携带 uniform（<c>effect.SetFloat("uCustom", v)</c>）；
-    /// 绘制时的取值优先级是「越靠这一次绘制越优先」：
-    /// <see cref="ShaderEffect"/> 自带值 → <see cref="Material"/> 基线值 → <see cref="MaterialPropertyBlock"/> 覆盖值。
+    /// 它同时是一种 <see cref="ShaderProperties"/>：效果自带的是这组 uniform 的<b>默认材质属性</b>
+    /// （<c>effect.SetFloat("uCustom", v)</c>）。绘制时先发这份默认值，再由
+    /// <see cref="ShaderPropertyBlock"/> 覆盖（同名以块为准，照 Unity 的 SetPropertyBlock）。
+    /// </para>
+    /// <para>
+    /// 效果是<b>共享</b>的：多个 <see cref="Material"/> 可以引用同一个效果（也就共用同一份自带值），
+    /// 需要"每个物体不同"时用 <see cref="ShaderPropertyBlock"/> 覆盖，或各自创建效果实例。
     /// </para>
     /// <para>
     /// 传 null（或不设置 <see cref="Material.Effect"/>）时回落到 <see cref="GraphicsDevice.Effect"/> 的默认效果。
@@ -68,15 +72,6 @@ void main()
         public bool IsAnimated
         {
             get { return Program.IsAnimated; }
-        }
-
-        /// <summary>
-        /// 下发本效果：把投影矩阵、三层属性（效果自带 → 材质基线 → 属性块覆盖）转交给底层程序。
-        /// 效果实例自己作为「取值优先级最低的一档」一并传入（程序因此不需要回指效果）。
-        /// </summary>
-        internal void Apply(Matrix4x4 projection, Material material, MaterialPropertyBlock? properties)
-        {
-            Program.Apply(projection, material, properties, this);
         }
 
         public void Dispose()

@@ -51,7 +51,7 @@ namespace KFramework.MonoGame
         /// 用材质配置开启一批绘制。材质打包了着色器 + 混合/采样/深度/剔除状态，
         /// GraphicsDevice 按「材质内容 + 变换」做去重，相同配置不再重复下发跨 JS 状态。
         /// <para>
-        /// 想在某一次绘制上临时覆盖材质属性，用 <see cref="Draw(Texture2D, Rectangle, Color, MaterialPropertyBlock?)"/>
+        /// 想在某一次绘制上临时覆盖着色器属性，用 <see cref="Draw(Texture2D, Rectangle, Color, ShaderPropertyBlock?)"/>
         /// 的 block 参数 —— 属性块的归属是「这一次绘制」（照 Unity 的 <c>renderer.SetPropertyBlock</c>），不是这一批。
         /// </para>
         /// <para>
@@ -62,7 +62,7 @@ namespace KFramework.MonoGame
         /// <para>
         /// <b>实例化模式的两条约定</b>（都是"照 Unity"）：
         /// <list type="number">
-        ///   <item><description>带 <see cref="MaterialPropertyBlock"/> 的绘制会退回逐顶点路径单独画
+        ///   <item><description>带 <see cref="ShaderPropertyBlock"/> 的绘制会退回逐顶点路径单独画
         ///   （块是可变 uniform，实例数据里没有它的容身之处；等同 Unity 的"非实例化属性把物体踢出实例化"）。</description></item>
         ///   <item><description>本模式用<b>内置实例化着色器</b>（纹理 × 逐实例颜色），<see cref="Material.Effect"/>
         ///   里的自定义片元着色器<b>不参与</b>；需要自定义时请用逐实例化的
@@ -162,14 +162,14 @@ namespace KFramework.MonoGame
         /// <summary>
         /// 完整参数的绘制（照 MonoGame 的 Draw，UV 计算兼容本引擎的图集 Bounds 偏移）。
         /// <para>
-        /// <paramref name="properties"/>：这一次绘制的材质属性覆盖块（照 Unity 的 <c>renderer.SetPropertyBlock</c>）。
+        /// <paramref name="properties"/>：这一次绘制的着色器属性覆盖块（照 Unity 的 <c>renderer.SetPropertyBlock</c>）。
         /// 块是可变 uniform，只有"这一批只画这一个物体"时才等价，故带块的绘制会当场提交（切批）；
         /// 实例化模式下带块的绘制退回逐顶点路径（照 Unity：非实例化属性会把该物体踢出实例化）。
         /// </para>
         /// </summary>
         public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color,
                          float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth = 0f,
-                         MaterialPropertyBlock? properties = null)
+                         ShaderPropertyBlock? properties = null)
         {
             CheckValid(texture);
 
@@ -196,7 +196,7 @@ namespace KFramework.MonoGame
         /// <param name="uniformBlock">需要在本段下发 uniform 的属性块（可空；非空时这一笔当场提交、切批）。</param>
         private void DrawVertexPath(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color,
                                     float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth,
-                                    MaterialPropertyBlock? uniformBlock)
+                                    ShaderPropertyBlock? uniformBlock)
         {
             SpriteBatchItem item = _batcher.CreateBatchItem();
             item.Texture = texture;
@@ -378,13 +378,13 @@ namespace KFramework.MonoGame
         /// 属性块重载（照 Unity 的 <c>renderer.SetPropertyBlock</c>）：块挂在<b>这一次绘制</b>上，
         /// 能覆盖任意条数、任意类型的属性（float / int / 向量 / 矩阵 / 纹理），代价是块变即切批。
         /// </summary>
-        public void Draw(Texture2D texture, Vector2 position, Color color, MaterialPropertyBlock? properties)
+        public void Draw(Texture2D texture, Vector2 position, Color color, ShaderPropertyBlock? properties)
             => Draw(texture, position, null, color, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f, properties);
 
-        public void Draw(Texture2D texture, Rectangle destination, Color color, MaterialPropertyBlock? properties)
+        public void Draw(Texture2D texture, Rectangle destination, Color color, ShaderPropertyBlock? properties)
             => Draw(texture, destination, null, color, properties);
 
-        public void Draw(Texture2D texture, Rectangle destination, Rectangle? sourceRectangle, Color color, MaterialPropertyBlock? properties)
+        public void Draw(Texture2D texture, Rectangle destination, Rectangle? sourceRectangle, Color color, ShaderPropertyBlock? properties)
         {
             ArgumentNullException.ThrowIfNull(texture);
             Draw(texture, new Vector2(destination.X, destination.Y), sourceRectangle, color,

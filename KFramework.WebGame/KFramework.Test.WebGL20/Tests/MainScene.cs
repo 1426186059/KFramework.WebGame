@@ -52,8 +52,8 @@ namespace KFramework.Test.WebGL20.Tests
             },
             new TestEntry
             {
-                Name = "材质属性（Material.SetXXX：Unity 风格）",
-                Desc = "6 个格子共用一段片元着色器，各自只改一类材质属性：SetFloat / SetColor / SetInt / SetMatrix / SetTexture / SetVector",
+                Name = "效果属性（ShaderEffect.SetXXX：Unity 风格）",
+                Desc = "6 个格子各自一个效果实例（同一段片元着色器源码），各自只改一类属性：SetFloat / SetColor / SetInt / SetMatrix / SetTexture / SetVector",
                 Factory = static () => new MaterialScene(),
             },
             new TestEntry

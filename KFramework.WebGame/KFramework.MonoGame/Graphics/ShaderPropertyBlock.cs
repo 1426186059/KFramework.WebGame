@@ -4,10 +4,15 @@ using System.Collections.Generic;
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 每次绘制的材质属性「覆盖块」（照 Unity 的 <c>MaterialPropertyBlock</c>）。
+    /// 每一次绘制的着色器属性「覆盖块」：本引擎里对应 Unity 的 <c>MaterialPropertyBlock</c>。
     /// <para>
-    /// <b>它解决的问题</b>：多个物体<b>共用同一个材质</b>，但每个物体要能覆盖<b>不同的颜色 / 不同的 shader 变量</b>，
-    /// 而不必给每个物体复制一份材质 —— 块挂在「这一次绘制」上，用完即弃（复制材质则是每个物体各自持有一份属性表）。
+    /// <b>它解决的问题</b>：多个物体共用同一份绘制配置（同一个 <see cref="ShaderEffect"/>、同一套渲染状态），
+    /// 但每个物体要能覆盖<b>不同的颜色 / 不同的 shader 变量</b>，而不必给每个物体复制一份效果或材质 ——
+    /// 块挂在「这一次绘制」上，用完即弃。
+    /// </para>
+    /// <para>
+    /// <b>与效果的关系</b>：<see cref="ShaderEffect"/> 上是"默认属性值"，块上是"这一次绘制的覆盖值" ——
+    /// 绘制时先发效果的默认值、再发块里的值，同名以块为准（照 Unity 的 <c>SetPropertyBlock</c>）。
     /// </para>
     /// <para>
     /// <b>代价（必须知道）</b>：块是<b>可变 uniform</b>，值必须当场生效；一次 draw 只有一份 uniform 值，
@@ -18,8 +23,8 @@ namespace KFramework.MonoGame
     /// </para>
     /// <para>
     /// 与 Unity 的对应关系：Unity 里是 <c>renderer.SetPropertyBlock(block)</c>，本引擎里"渲染者"就是一次
-    /// <see cref="SpriteBatch.Draw(Texture2D, Rectangle, Color, MaterialPropertyBlock?)"/>，块作为该次绘制的参数传入。
-    /// 典型用法（一个共享材质 + 一个重复使用的块）：
+    /// <see cref="SpriteBatch.Draw(Texture2D, Rectangle, Color, ShaderPropertyBlock?)"/>，块作为该次绘制的参数传入。
+    /// 典型用法（共享效果 + 一个重复使用的块）：
     /// <code>
     /// batch.Begin(_sharedMaterial);
     /// foreach (var item in items)
@@ -33,16 +38,16 @@ namespace KFramework.MonoGame
     /// </code>
     /// </para>
     /// </summary>
-    public sealed class MaterialPropertyBlock : ShaderProperties
+    public sealed class ShaderPropertyBlock : ShaderProperties
     {
-        /// <summary>清空全部属性（照 Unity 的 MaterialPropertyBlock.Clear，重复使用同一个 block 时先清再设）。</summary>
+        /// <summary>清空全部属性（重复使用同一个块时先清再设）。</summary>
         public void Clear()
         {
             ClearProperties();
         }
 
-        /// <summary>从另一个 block 整体拷贝（照 Unity 的 MaterialPropertyBlock.CopyFrom，先清空再逐条覆盖）。</summary>
-        public void CopyFrom(MaterialPropertyBlock source)
+        /// <summary>从另一个块整体拷贝（先清空再逐条覆盖）。</summary>
+        public void CopyFrom(ShaderPropertyBlock source)
         {
             ArgumentNullException.ThrowIfNull(source);
 

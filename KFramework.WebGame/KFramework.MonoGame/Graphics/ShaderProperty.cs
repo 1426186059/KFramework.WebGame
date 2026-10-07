@@ -5,7 +5,7 @@ namespace KFramework.MonoGame
     /// <summary>
     /// 着色器属性类型：对应 Unity Shader 里声明的属性种类，决定绘制时用哪个 uniform 接口下发。
     /// <para>
-    /// Color 与 Vector 都按 vec4 下发，区别只在 <see cref="Material.SetColor"/> 传入的是 0~255 的
+    /// Color 与 Vector 都按 vec4 下发，区别只在 <see cref="ShaderProperties.SetColor"/> 传入的是 0~255 的
     /// <see cref="Color"/>、写入前会归一化成 0~1（照 Unity 的 SetColor 语义：着色器拿到的是 0~1 的 float4）。
     /// </para>
     /// </summary>

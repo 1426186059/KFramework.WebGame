@@ -4,30 +4,29 @@ using System.Diagnostics;
 namespace KFramework.Test.WebGL20.Tests
 {
     /// <summary>
-    /// 材质属性测试：一个自定义片元着色器 + 6 个 <see cref="Material"/>，每个格子只改一类材质属性，
-    /// 直接对比「<c>material.SetXXX</c> 到底改了什么」。
+    /// 效果属性测试：6 个格子各自一个 <see cref="ShaderEffect"/>（同一段片元着色器源码）+ 一个 <see cref="Material"/>
+    /// （材质只带渲染状态），每格只改一类效果属性，直接对比「<c>ShaderEffect.SetXXX</c> 到底改了什么」。
     /// <para>
     /// 演示的 Unity 风格接口（全部映射到同一段着色器里的 uniform）：
-    /// <see cref="Material.SetFloat"/> → uPulse（亮度脉动）、
-    /// <see cref="Material.SetColor"/> → uTint（颜色）、
-    /// <see cref="Material.SetInt"/> → uOrientation（采样朝向）、
-    /// <see cref="Material.SetMatrix"/> → uUvMatrix（UV 旋转）、
-    /// <see cref="Material.SetTexture"/> → uMask（棋盘遮罩，绑 1 号纹理单元）、
-    /// <see cref="Material.SetVector"/> → uParams（色相偏移等）。
+    /// <see cref="ShaderProperties.SetFloat"/> → uPulse（亮度脉动）、
+    /// <see cref="ShaderProperties.SetColor"/> → uTint（颜色）、
+    /// <see cref="ShaderProperties.SetInt"/> → uOrientation（采样朝向）、
+    /// <see cref="ShaderProperties.SetMatrix"/> → uUvMatrix（UV 旋转）、
+    /// <see cref="ShaderProperties.SetTexture"/> → uMask（棋盘遮罩，绑 1 号纹理单元）、
+    /// <see cref="ShaderProperties.SetVector"/> → uParams（色相偏移等）。
     /// </para>
     /// <para>
-    /// 每个 Material 都把自己那份属性设全（没演示到的设成中性值）—— 因为 6 个格子共用同一个着色器程序，
-    /// uniform 是程序级状态，漏设就会串到上一格的值。底部那行是 <c>GetFloat / GetColor / GetInt / GetVector</c>
-    /// 的读数，用来验证写入确实落到了材质上。
+    /// 每格都把自己那份属性设全（没演示到的设成中性值）—— 属性是"程序级状态"，漏设就会串到上一格留下的值。
+    /// 底部那行是 <c>GetFloat / GetColor / GetInt / GetVector</c> 的读数，用来验证写入确实落到了效果上。
     /// </para>
     /// <para>交互：空格暂停 / 继续动画；鼠标点格子切换采样朝向（SetInt）；鼠标悬停换色（SetColor）。</para>
     /// </summary>
     public sealed class MaterialScene : DemoScene
     {
-        public override string Title => "材质属性测试（Unity 风格 Material.SetXXX）";
+        public override string Title => "效果属性测试（ShaderEffect.SetXXX）";
 
         protected override string Description =>
-            "6 个格子共用同一段片元着色器，各自只改一类材质属性；空格暂停动画，点格子切采样朝向，悬停换色。";
+            "6 个格子各自一个效果实例（同一段片元着色器源码）+ 一个材质（只带状态），各自只改一类效果属性；空格暂停动画，点格子切采样朝向，悬停换色。";
 
         private const int TileCount = 6;
         private const float TileSize = 185f;
@@ -37,13 +36,18 @@ namespace KFramework.Test.WebGL20.Tests
         private const float TileRowPitch = TileSize + TileGap + 62f;
 
         private readonly Stopwatch _sw = Stopwatch.StartNew();
+
+        /// <summary>每格一个效果实例（同一段片元着色器源码）：属性值挂在效果上（材质只描述"怎么画"）。</summary>
+        private readonly ShaderEffect[] _effects = new ShaderEffect[TileCount];
+
+        /// <summary>每格一个材质：只带渲染状态 + 引用该格的效果。</summary>
         private readonly Material[] _materials = new Material[TileCount];
+
         private readonly Rectangle[] _tiles = new Rectangle[TileCount];
         private readonly int[] _orientations = new int[TileCount];
 
         private Texture2D? _chart;
         private Texture2D? _mask;
-        private ShaderEffect? _fx;
         private string? _shaderError;
 
         private float _time;
@@ -67,16 +71,17 @@ namespace KFramework.Test.WebGL20.Tests
 
             try
             {
-                _fx = (ShaderEffect)Device.CreateShaderEffect(FragmentSource);
+                for (int i = 0; i < TileCount; i++)
+                {
+                    _effects[i] = Device.CreateShaderEffect(FragmentSource);
+                    _materials[i] = new Material { Effect = _effects[i] };
+                }
             }
             catch (Exception ex)
             {
                 _shaderError = ex.Message;
                 Console.Error.WriteLine($"[MaterialScene] 着色器创建失败：{ex.Message}");
             }
-
-            for (int i = 0; i < TileCount; i++)
-                _materials[i] = new Material { Effect = _fx };
         }
 
         public override void Update()
@@ -104,7 +109,7 @@ namespace KFramework.Test.WebGL20.Tests
             DrawFooter(batch);
             batch.End();
 
-            if (_fx is null)
+            if (_shaderError is not null)
             {
                 batch.Begin();
                 DrawLine(batch, $"着色器不可用：{_shaderError}", 28f, 96f, new Color(255, 150, 150));
@@ -117,9 +122,9 @@ namespace KFramework.Test.WebGL20.Tests
             for (int i = 0; i < TileCount; i++)
             {
                 Material material = _materials[i];
-                ConfigureMaterial(i, material, t, _tiles[i].Contains(Input_Mouse.Position));
+                ConfigureMaterial(i, _effects[i], t, _tiles[i].Contains(Input_Mouse.Position));
 
-                // 一个格子一个材质 = 一个独立的 Begin/End（同一着色器，不同属性）。
+                // 一个格子一个材质（各自引用自己的效果）= 一个独立的 Begin/End（同一段着色器源码，不同属性值）。
                 batch.Begin(material);
                 batch.Draw(_chart, _tiles[i], Color.White);
                 batch.End();
@@ -138,45 +143,45 @@ namespace KFramework.Test.WebGL20.Tests
             batch.End();
         }
 
-        /// <summary>按格子的演示重点配置材质：先全部设成中性值，再把这一格要演示的那一项改成"有差异"的值。</summary>
-        private void ConfigureMaterial(int index, Material material, float t, bool hover)
+        /// <summary>按格子的演示重点配置这一格的效果属性：先全部设成中性值，再把这一格要演示的那一项改成"有差异"的值。</summary>
+        private void ConfigureMaterial(int index, ShaderEffect effect, float t, bool hover)
         {
             int w = _chart?.Width ?? 256;
             int h = _chart?.Height ?? 256;
 
-            // 中性默认值（每格都设全：6 格共用同一个着色器程序，uniform 是程序级状态，漏设会串值）。
-            material.SetVector("uParams", new System.Numerics.Vector4(w, h, 0f, 0f));
-            material.SetColor("uTint", Color.White);
-            material.SetFloat("uPulse", 1f);
-            material.SetInt("uOrientation", _orientations[index]);
-            material.SetMatrix("uUvMatrix", Matrix4x4.Identity);
-            material.SetTexture("uMask", null);
-            material.SetFloat("uTime", t);
+            // 中性默认值（每格都设全：属性是效果级状态，漏设会串到这一格上一次画的值）。
+            effect.SetVector("uParams", new System.Numerics.Vector4(w, h, 0f, 0f));
+            effect.SetColor("uTint", Color.White);
+            effect.SetFloat("uPulse", 1f);
+            effect.SetInt("uOrientation", _orientations[index]);
+            effect.SetMatrix("uUvMatrix", Matrix4x4.Identity);
+            effect.SetTexture("uMask", null);
+            effect.SetFloat("uTime", t);
 
             switch (index)
             {
                 case 0: // SetFloat：亮度脉动
-                    material.SetFloat("uPulse", 0.65f + 0.35f * MathF.Sin(t * 2.2f) + 0.35f);
+                    effect.SetFloat("uPulse", 0.65f + 0.35f * MathF.Sin(t * 2.2f) + 0.35f);
                     break;
 
                 case 1: // SetColor：颜色循环
-                    material.SetColor("uTint", hover ? new Color(255, 255, 255) : CycleTint(t));
+                    effect.SetColor("uTint", hover ? new Color(255, 255, 255) : CycleTint(t));
                     break;
 
                 case 2: // SetInt：采样朝向（点一下换一档）
                     break;
 
                 case 3: // SetMatrix：UV 绕中心缓慢旋转
-                    material.SetMatrix("uUvMatrix", RotationAboutCenter(t * 0.6f));
+                    effect.SetMatrix("uUvMatrix", RotationAboutCenter(t * 0.6f));
                     break;
 
                 case 4: // SetTexture：棋盘遮罩（uParams.w = 1 启用；材质纹理走 1 号单元）
-                    material.SetTexture("uMask", _mask);
-                    material.SetVector("uParams", new System.Numerics.Vector4(w, h, 0f, 1f));
+                    effect.SetTexture("uMask", _mask);
+                    effect.SetVector("uParams", new System.Numerics.Vector4(w, h, 0f, 1f));
                     break;
 
                 case 5: // SetVector：色相偏移（随时间循环）
-                    material.SetVector("uParams", new System.Numerics.Vector4(w, h, (t * 0.15f) % 1f, 0f));
+                    effect.SetVector("uParams", new System.Numerics.Vector4(w, h, (t * 0.15f) % 1f, 0f));
                     break;
             }
         }
@@ -184,37 +189,37 @@ namespace KFramework.Test.WebGL20.Tests
         /// <summary>每格的当前值文本（用 SetXXX 设的、再用 GetXXX 读回来，顺便验证属性是可读可写的）。</summary>
         private string TileValueText(int index)
         {
-            Material m = _materials[index];
+            ShaderEffect e = _effects[index];
             switch (index)
             {
-                case 0: return $"SetFloat = {m.GetFloat("uPulse"):F2}";
+                case 0: return $"SetFloat = {e.GetFloat("uPulse"):F2}";
                 case 1:
-                    Color c = m.GetColor("uTint");
+                    Color c = e.GetColor("uTint");
                     return $"SetColor = #{c.R:X2}{c.G:X2}{c.B:X2}";
-                case 2: return $"SetInt = {m.GetInt("uOrientation")}";
+                case 2: return $"SetInt = {e.GetInt("uOrientation")}";
                 case 3: return $"SetMatrix = 旋转";
-                case 4: return $"SetTexture = {(m.GetTexture("uMask") is null ? "null" : "棋盘")}";
+                case 4: return $"SetTexture = {(e.GetTexture("uMask") is null ? "null" : "棋盘")}";
                 default:
-                    System.Numerics.Vector4 p = m.GetVector("uParams");
+                    System.Numerics.Vector4 p = e.GetVector("uParams");
                     return $"SetVector = {p.Z:F2}";
             }
         }
 
-        /// <summary>底部读数：直接验证写入的值确实存在材质上（GetXXX / HasProperty）。</summary>
+        /// <summary>底部读数：直接验证写入的值确实存在效果上（GetXXX / HasProperty）。</summary>
         private void DrawReadBack(SpriteBatch batch)
         {
-            Material m = _materials[0];
-            Color tint = m.GetColor("uTint");
-            System.Numerics.Vector4 p = m.GetVector("uParams");
+            ShaderEffect e = _effects[0];
+            Color tint = e.GetColor("uTint");
+            System.Numerics.Vector4 p = e.GetVector("uParams");
 
             float y = Device.Viewport.Height - 100f;
-            string line1 = $"GetXXX 读数（材质 1）：HasProperty(\"uPulse\")={m.HasProperty("uPulse")}  " +
-                           $"GetFloat(\"uPulse\")={m.GetFloat("uPulse"):F2}  " +
+            string line1 = $"GetXXX 读数（效果 1）：HasProperty(\"uPulse\")={e.HasProperty("uPulse")}  " +
+                           $"GetFloat(\"uPulse\")={e.GetFloat("uPulse"):F2}  " +
                            $"GetColor(\"uTint\")=#{tint.R:X2}{tint.G:X2}{tint.B:X2}  " +
-                           $"GetInt(\"uOrientation\")={m.GetInt("uOrientation")}";
+                           $"GetInt(\"uOrientation\")={e.GetInt("uOrientation")}";
             string line2 = $"GetVector(\"uParams\")=({p.X:F0},{p.Y:F0},{p.Z:F2},{p.W:F0})  " +
-                           $"GetTexture(\"uMask\")={(m.GetTexture("uMask") is null ? "null" : "棋盘")}  " +
-                           $"属性条数={m.Properties.Count}  属性版本={m.PropertiesVersion}";
+                           $"GetTexture(\"uMask\")={(e.GetTexture("uMask") is null ? "null" : "棋盘")}  " +
+                           $"属性条数={e.Properties.Count}  属性版本={e.PropertiesVersion}";
 
             batch.DrawString(Font, line1, new Vector2(28f, y), new Color(120, 200, 160));
             batch.DrawString(Font, line2, new Vector2(28f, y + Font.LineSpacing + 6f), new Color(120, 200, 160));
@@ -305,9 +310,9 @@ namespace KFramework.Test.WebGL20.Tests
         }
 
         /// <summary>
-        /// 演示用的片元着色器：把材质能设的每一类属性都用上一遍。
-        /// uTexture / uTime / uParams 是引擎内置约定，其余 uTint / uPulse / uOrientation / uUvMatrix / uMask
-        /// 就是 <c>material.SetXXX("名字", …)</c> 直接写进去的 uniform。
+        /// 演示用的片元着色器：把能设的每一类属性都用上一遍。
+        /// uTexture 是精灵纹理，其余 uniform 全部由 <c>effect.SetXXX("名字", …)</c> 写进来
+        /// （uTime / uParams 只是约定名，引擎不做特殊处理）。
         /// </summary>
         private const string FragmentSource = @"#version 300 es
 precision highp float;
@@ -315,13 +320,13 @@ in vec2 vTexCoord;
 in vec4 vColor;
 
 uniform sampler2D uTexture;   // 精灵纹理（0 号单元，SpriteBatch 绑）
-uniform sampler2D uMask;      // 材质纹理（1 号单元，material.SetTexture 绑）
-uniform float uTime;          // 内置：动画时间
-uniform vec4  uParams;        // 内置：x=W y=H z=色相偏移 w=是否启用遮罩
-uniform vec4  uTint;          // material.SetColor
-uniform float uPulse;         // material.SetFloat
-uniform int   uOrientation;   // material.SetInt
-uniform mat4  uUvMatrix;      // material.SetMatrix
+uniform sampler2D uMask;      // 第二张纹理（1 号单元，effect.SetTexture 绑）
+uniform float uTime;          // effect.SetFloat
+uniform vec4  uParams;        // effect.SetVector：x=W y=H z=色相偏移 w=是否启用遮罩
+uniform vec4  uTint;          // effect.SetColor
+uniform float uPulse;         // effect.SetFloat
+uniform int   uOrientation;   // effect.SetInt
+uniform mat4  uUvMatrix;      // effect.SetMatrix
 
 out vec4 fragColor;
 

@@ -15,8 +15,8 @@ namespace KFramework.MonoGame
         public Texture2D Texture;
         public float SortKey;
 
-        /// <summary>这一次绘制要覆盖的材质属性块（可空；见 <see cref="SpriteBatch.Draw"/> 的 block 重载）。</summary>
-        public MaterialPropertyBlock? Properties;
+        /// <summary>这一次绘制要覆盖的着色器属性块（可空；见 <see cref="SpriteBatch.Draw"/> 的 block 重载）。</summary>
+        public ShaderPropertyBlock? Properties;
 
         /// <summary>取块值那一刻的块版本号：块被改过（版本变了）就必须另起一批，否则会用到过期的 uniform 值。</summary>
         public int BlockVersion = -1;

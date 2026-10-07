@@ -38,15 +38,13 @@ namespace KFramework.MonoGame
         private SamplerState _appliedSampler = null!;
         private DepthStencilState _appliedDepth = null!;
         private RasterizerState _appliedRasterizer = null!;
-        private ShaderEffect _appliedEffect = null!;
+        private IShaderProgram _appliedEffect = null!;
         // 效果自带属性（ShaderEffect.SetFloat / Time / Params 等）也要并进去重键：改了值必须重发。
         private int _appliedEffectPropertiesVersion = -1;
         private Matrix4x4 _appliedTransform = Matrix4x4.Identity;
-        // 材质上的着色器属性（SetFloat / SetVector / …）：按「材质实例 + 属性版本号」判断内容有没有变。
         private Material _appliedMaterial = null!;
-        private int _appliedPropertiesVersion = -1;
-        // 每次绘制的属性覆盖块（MaterialPropertyBlock）：按「块实例 + 块的属性版本号」判断有没有变。
-        private MaterialPropertyBlock? _appliedPropertyBlock;
+        // 每次绘制的属性覆盖块（ShaderPropertyBlock）：按「块实例 + 块的属性版本号」判断有没有变。
+        private ShaderPropertyBlock? _appliedPropertyBlock;
         private int _appliedBlockVersion = -1;
 
         // ---- 渲染目标状态（照 MonoGame 的 GraphicsDevice 渲染目标管理） ----
@@ -337,7 +335,6 @@ namespace KFramework.MonoGame
             _appliedEffectPropertiesVersion = -1;
             _appliedTransform = Matrix4x4.Identity;
             _appliedMaterial = null!;
-            _appliedPropertiesVersion = -1;
             _appliedPropertyBlock = null;
             _appliedBlockVersion = -1;
         }
@@ -394,20 +391,24 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// 按「材质内容 + 变换」下发渲染状态。与上次完全一致则整体跳过（省去 blend / depth / rasterizer /
-        /// 着色器切换与矩阵上传这一串跨 JS 调用）。材质正是 Unity 的 Material：打包着色器 + 采样/混合/深度/剔除状态。
+        /// 着色器切换与矩阵上传这一串跨 JS 调用）。材质正是 Unity 的 Material：打包效果 + 采样/混合/深度/剔除状态。
         /// </summary>
         internal void ApplyMaterial(
             Material material, 
             Matrix4x4 transform, 
-            MaterialPropertyBlock? properties)
+            ShaderPropertyBlock? properties)
         {
-            ShaderEffect effect = material.Effect ?? Effect;
+            // 材质没指定效果时填上设备默认效果（写回字段）：程序统一从 material.Effect 取效果与默认属性，
+            // 不必再多传一个参数。
+            material.Effect ??= Effect;
+            ShaderEffect effect = material.Effect;
+            IShaderProgram program = effect.Program;
+
             // 动画效果每帧都要重灌 uTime / 自定义参数，不做材质去重短路。
-            bool animated = effect.IsAnimated;
-            // 材质上的着色器属性一旦被改（PropertiesVersion 变了）也必须重发，故把它并进去重键；
-            // 效果自带属性、每次绘制的属性覆盖块（MaterialPropertyBlock）同理：换实例或改值都要重发。
+            bool animated = program.IsAnimated;
+            // 效果自带属性（PropertiesVersion 变了）、每次绘制的属性覆盖块（换实例或改值）都必须重发，
+            // 故把它们一起并进去重键。
             bool sameProperties = ReferenceEquals(_appliedMaterial, material)
-                                  && _appliedPropertiesVersion == material.PropertiesVersion
                                   && _appliedEffectPropertiesVersion == effect.PropertiesVersion
                                   && ReferenceEquals(_appliedPropertyBlock, properties)
                                   && _appliedBlockVersion == (properties?.PropertiesVersion ?? -1);
@@ -417,7 +418,7 @@ namespace KFramework.MonoGame
                 && ReferenceEquals(_appliedSampler, material.Sampler)
                 && ReferenceEquals(_appliedDepth, material.DepthStencil)
                 && ReferenceEquals(_appliedRasterizer, material.Rasterizer)
-                && ReferenceEquals(_appliedEffect, effect)
+                && ReferenceEquals(_appliedEffect, program)
                 && _appliedTransform.Equals(transform))
             {
                 return;
@@ -427,11 +428,10 @@ namespace KFramework.MonoGame
             _appliedSampler = material.Sampler;
             _appliedDepth = material.DepthStencil;
             _appliedRasterizer = material.Rasterizer;
-            _appliedEffect = effect;
+            _appliedEffect = program;
             _appliedEffectPropertiesVersion = effect.PropertiesVersion;
             _appliedTransform = transform;
             _appliedMaterial = material;
-            _appliedPropertiesVersion = material.PropertiesVersion;
             _appliedPropertyBlock = properties;
             _appliedBlockVersion = properties?.PropertiesVersion ?? -1;
 
@@ -441,7 +441,7 @@ namespace KFramework.MonoGame
             _rasterizerState = material.Rasterizer;
             ApplyRasterizerState();
             _samplerState = material.Sampler;
-            effect.Apply(transform, material, properties);
+            program.Apply(transform, material, properties);
         }
 
         /// <summary>
