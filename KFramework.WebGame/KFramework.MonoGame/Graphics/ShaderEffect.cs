@@ -13,12 +13,15 @@ namespace KFramework.MonoGame
     /// </summary>
     public sealed class ShaderEffect : Effect
     {
-        /// <summary>标准精灵顶点着色器源码（aPosition / aTexCoord / aColor + uProjection）。自定义程序复用它以保证顶点属性位置与默认一致。</summary>
+        /// <summary>标准精灵顶点着色器源码（aPosition / aColor / aTexCoord + 逐精灵参数 + uProjection）。自定义程序复用它以保证顶点属性位置与默认一致。</summary>
         public const string DefaultVertexSource = @"
 #version 300 es
-in vec2 aPosition;
-in vec2 aTexCoord;
+// 顶点输入对齐 Unity 精灵着色器的 appdata_t：aPosition ↔ float4 vertex : POSITION，
+// aColor ↔ float4 color : COLOR，aTexCoord ↔ float2 texcoord : TEXCOORD0；
+// aParams0 / aParams1 是本引擎扩展的两组逐精灵参数通道。
+in vec4 aPosition;
 in vec4 aColor;
+in vec2 aTexCoord;
 in vec4 aParams0;
 in vec4 aParams1;
 uniform mat4 uProjection;
@@ -26,13 +29,16 @@ out vec2 vTexCoord;
 out vec4 vColor;
 out vec4 vParams0;
 out vec4 vParams1;
+// UNITY_VERTEX_INPUT_INSTANCE_ID 在 GLSL 里的等价物：实例号是内置输入，不占顶点布局。
+flat out int vInstanceID;
 void main()
 {
-    gl_Position = uProjection * vec4(aPosition, 0.0, 1.0);
+    gl_Position = uProjection * aPosition;
     vTexCoord = aTexCoord;
     vColor = aColor;
     vParams0 = aParams0;
     vParams1 = aParams1;
+    vInstanceID = gl_InstanceID;
 }";
 
         /// <summary>动画时间（秒），作用于片元着色器的 uTime。</summary>

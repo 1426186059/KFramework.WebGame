@@ -76,34 +76,36 @@ namespace KFramework.MonoGame
 
         private void ConfigureAttributes()
         {
+            // 槽位顺序 = 顶点着色器的声明顺序（位置 → 颜色 → UV → 参数），
+            // 与 VertexPositionColorTexture 的 36 字节布局（0 / 16 / 20 / 28 / 32）严格对应。
+            // 三个顶点源（SpriteEffect / CustomWebGlSpriteProgram / ShaderEffect.DefaultVertexSource）必须同序声明：
+            // 属性位置由链接期分配，顺序不一致就会拿到与这里配置的槽位不同的编号。
             int stride = VertexPositionColorTexture.SizeInBytes;
             if (_effect.PositionLocation >= 0)
             {
                 JSBind_WEBGL20.EnableVertexAttribArray(_effect.PositionLocation);
-                JSBind_WEBGL20.VertexAttribPointer(_effect.PositionLocation, 2, JSBind_WEBGL20.FLOAT, false, stride, 0);
-            }
-            if (_effect.TexCoordLocation >= 0)
-            {
-                JSBind_WEBGL20.EnableVertexAttribArray(_effect.TexCoordLocation);
-                JSBind_WEBGL20.VertexAttribPointer(_effect.TexCoordLocation, 2, JSBind_WEBGL20.FLOAT, false, stride, 8);
+                JSBind_WEBGL20.VertexAttribPointer(_effect.PositionLocation, 4, JSBind_WEBGL20.FLOAT, false, stride, 0);
             }
             if (_effect.ColorLocation >= 0)
             {
                 JSBind_WEBGL20.EnableVertexAttribArray(_effect.ColorLocation);
                 JSBind_WEBGL20.VertexAttribPointer(_effect.ColorLocation, 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, stride, 16);
             }
-            // 逐精灵参数：2 组 unorm8x4，紧跟颜色之后（offset 20 / 24）。
-            // 槽位取自默认精灵程序的 aParams0 / aParams1：自定义程序必须按同样顺序声明这两个输入，
-            // 才能与这里配置好的 VAO 对齐（三个顶点源都以 aPosition/aTexCoord/aColor/aParams0/aParams1 顺序声明）。
+            if (_effect.TexCoordLocation >= 0)
+            {
+                JSBind_WEBGL20.EnableVertexAttribArray(_effect.TexCoordLocation);
+                JSBind_WEBGL20.VertexAttribPointer(_effect.TexCoordLocation, 2, JSBind_WEBGL20.FLOAT, false, stride, 20);
+            }
+            // 逐精灵参数：2 组 unorm8x4，紧跟 UV 之后（offset 28 / 32），槽位取自默认精灵程序的 aParams0 / aParams1。
             if (_effect.Params0Location >= 0)
             {
                 JSBind_WEBGL20.EnableVertexAttribArray(_effect.Params0Location);
-                JSBind_WEBGL20.VertexAttribPointer(_effect.Params0Location, 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, stride, 20);
+                JSBind_WEBGL20.VertexAttribPointer(_effect.Params0Location, 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, stride, 28);
             }
             if (_effect.Params1Location >= 0)
             {
                 JSBind_WEBGL20.EnableVertexAttribArray(_effect.Params1Location);
-                JSBind_WEBGL20.VertexAttribPointer(_effect.Params1Location, 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, stride, 24);
+                JSBind_WEBGL20.VertexAttribPointer(_effect.Params1Location, 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, stride, 32);
             }
         }
 

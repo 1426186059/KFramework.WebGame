@@ -151,7 +151,7 @@ namespace KFramework.Test.WebGL20.Tests
             float readoutY = Device.Viewport.Height - 152f;
             DrawLine(batch, $"当前 API = {ApiNames[(int)_api]}    实例数 = {_lastInstances} → DrawCall 增量 = {_lastDrawCalls}（单次上限 4096，超出自动分批）",
                 28f, readoutY, new Color(120, 200, 160));
-            DrawLine(batch, $"CPU 侧带宽/精灵：实例化 48 字节（本页 = {_lastInstances * 48 / 1024} KB）   对照 SpriteBatch 逐顶点 4×28 = 112 字节（= {_lastInstances * 112 / 1024} KB）",
+            DrawLine(batch, $"CPU 侧带宽/精灵：实例化 48 字节（本页 = {_lastInstances * 48 / 1024} KB）   对照 SpriteBatch 逐顶点 4×36 = 144 字节（= {_lastInstances * 144 / 1024} KB）",
                 28f, readoutY + 20f, new Color(255, 206, 110));
             DrawLine(batch, "两条 API 都是一次 drawElementsInstanced；差别只在着色器：A 用本页自定义片元着色器（uTime 脉冲），B 用引擎内置实例化着色器（纹理 × 逐实例颜色）",
                 28f, readoutY + 40f, new Color(150, 165, 195));

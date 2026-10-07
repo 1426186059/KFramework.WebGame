@@ -9,9 +9,9 @@ namespace KFramework.MonoGame
     /// <para>
     /// 与既有两条路的关系（三者都是"同材质"，但代价不同）：
     /// <list type="table">
-    ///   <item><term>SpriteBatch + MaterialPropertyBlock（块属性映射进顶点通道）</term><description>同样 1 次 DrawCall，但几何在 CPU 侧按精灵展开（每精灵 4 顶点 × 28 字节）。</description></item>
-    ///   <item><term>SpriteBatch + SpriteParams（逐顶点参数）</term><description>几何在 CPU 侧展开，按纹理分批；参数随顶点走，不打断合批。每精灵 4×28 字节。</description></item>
-    ///   <item><term>SpriteInstancer（本类，GPU 实例化）</term><description>几何只有 4 个顶点的单位四边形；每实例 32 字节；一次 draw 覆盖整批。DrawCall 与 CPU 带宽都最省。</description></item>
+    ///   <item><term>SpriteBatch + MaterialPropertyBlock（块属性映射进顶点通道）</term><description>同样 1 次 DrawCall，但几何在 CPU 侧按精灵展开（每精灵 4 顶点 × 36 字节）。</description></item>
+    ///   <item><term>SpriteBatch + SpriteParams（逐顶点参数）</term><description>几何在 CPU 侧展开，按纹理分批；参数随顶点走，不打断合批。每精灵 4×36 字节。</description></item>
+    ///   <item><term>SpriteInstancer（本类，GPU 实例化）</term><description>几何只有 4 个顶点的单位四边形；每实例 48 字节；一次 draw 覆盖整批。DrawCall 与 CPU 带宽都最省。</description></item>
     /// </list>
     /// </para>
     /// <para>

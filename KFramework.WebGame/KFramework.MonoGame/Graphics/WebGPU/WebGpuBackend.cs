@@ -35,7 +35,7 @@ namespace KFramework.MonoGame
         /// <summary>mat4x4&lt;f32&gt; 的字节数。</summary>
         private const int TransformSizeInBytes = 64;
 
-        private static readonly int VertexSizeInBytes = VertexPositionColorTexture.SizeInBytes; // 28
+        private static readonly int VertexSizeInBytes = VertexPositionColorTexture.SizeInBytes; // 36
 
         /// <summary>
         /// WebGPU 后端的实例化尚未接入（需要另一套「带实例属性」的 WGSL 与管线，stepMode=instance 的第二根顶点缓冲），
@@ -729,7 +729,7 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// 精灵着色器（WGSL）。与 WebGL 侧的 GLSL SpriteEffect 语义一致：
-        /// 顶点 = 位置+UV+颜色，片元 = 纹理采样 × 顶点色。
+        /// 顶点 = 位置(float4)+颜色+UV（+逐精灵参数），片元 = 纹理采样 × 顶点色。
         /// </summary>
         private const string WgslSource = """
             struct Transform {
@@ -740,37 +740,44 @@ namespace KFramework.MonoGame
             @group(0) @binding(1) var uTexture : texture_2d<f32>;
             @group(0) @binding(2) var uSampler : sampler;
 
+            // 顶点输入对齐 Unity 精灵着色器的 appdata_t：position ↔ float4 vertex : POSITION，
+            // color ↔ float4 color : COLOR，texCoord ↔ float2 texcoord : TEXCOORD0。
             struct VertexInput {
-                @location(0) position : vec2<f32>,
-                @location(1) texCoord : vec2<f32>,
-                @location(2) color : vec4<f32>,
+                @location(0) position : vec4<f32>,
+                @location(1) color : vec4<f32>,
+                @location(2) texCoord : vec2<f32>,
                 // 逐精灵参数：与 VertexPositionColorTexture.Params 的 8 个字节对应（unorm8x4 ×2）。
                 // 默认精灵着色器不使用它们，但必须声明：WebGPU 会校验顶点布局里的每条属性都与着色器输入一一对应。
                 @location(3) params0 : vec4<f32>,
                 @location(4) params1 : vec4<f32>,
+                // UNITY_VERTEX_INPUT_INSTANCE_ID 在 WGSL 里的等价物：实例号是内置输入，不占顶点布局。
+                @builtin(instance_index) instanceIndex : u32,
             };
 
             struct VertexOutput {
                 @builtin(position) clipPosition : vec4<f32>,
                 @location(0) texCoord : vec2<f32>,
                 @location(1) color : vec4<f32>,
+                @location(2) @interpolate(flat) instanceIndex : u32,
             };
 
             @vertex
             fn vs_main(input : VertexInput) -> VertexOutput {
                 var output : VertexOutput;
-                var clip : vec4<f32> = uTransform.proj * vec4<f32>(input.position, 0.0, 1.0);
-            // 【WebGPU 与 WebGL 的裁剪空间差异】
-            // WebGL 的 NDC z ∈ [-1,1]，WebGPU 的 NDC z ∈ [0,1]。
-            // 而本引擎的投影矩阵是按 OpenGL 约定生成的：CreateOrthographicScreen(w,h)
-            // = CreateOrthographicOffCenter(0, w, h, 0, 0, 1)，其中 M33=-2、M43=-1，
-            // 精灵 z=0 按行向量约定算出 z_ndc = 0*(-2) + 1*(-1) = -1。
-            // 这个值在 WebGL 下正好落在近裁剪面上（可见），但在 WebGPU 下 < 0 会被引擎直接裁掉 ——
-            // 症状是「不报任何错误、画面全黑」。故这里做标准换算 [-1,1] → [0,1]：(z + w) / 2。
-            clip.z = (clip.z + clip.w) * 0.5;
-            output.clipPosition = clip;
+                // 位置自带 w = 1，直接就是裁剪空间齐次坐标（照 D3D9 的 XYZRHW）。
+                var clip : vec4<f32> = uTransform.proj * input.position;
+                // 【WebGPU 与 WebGL 的裁剪空间差异】
+                // WebGL 的 NDC z ∈ [-1,1]，WebGPU 的 NDC z ∈ [0,1]。
+                // 而本引擎的投影矩阵是按 OpenGL 约定生成的：CreateOrthographicScreen(w,h)
+                // = CreateOrthographicOffCenter(0, w, h, 0, 0, 1)，其中 M33=-2、M43=-1，
+                // 精灵 z=0 按行向量约定算出 z_ndc = 0*(-2) + 1*(-1) = -1。
+                // 这个值在 WebGL 下正好落在近裁剪面上（可见），但在 WebGPU 下 < 0 会被引擎直接裁掉 ——
+                // 症状是「不报任何错误、画面全黑」。故这里做标准换算 [-1,1] → [0,1]：(z + w) / 2。
+                clip.z = (clip.z + clip.w) * 0.5;
+                output.clipPosition = clip;
                 output.texCoord = input.texCoord;
                 output.color = input.color;
+                output.instanceIndex = input.instanceIndex;
                 return output;
             }
 
@@ -781,7 +788,7 @@ namespace KFramework.MonoGame
             """;
 
         /// <summary>
-        /// 顶点布局，与 VertexPositionColorTexture 严格对应（步长 28 字节）。
+        /// 顶点布局，与 VertexPositionColorTexture 严格对应（步长 36 字节：0 位置 / 16 颜色 / 20 UV / 28、32 逐精灵参数）。
         /// <para>
         /// 格式名必须用 WebGPU 的 <c>GPUVertexFormat</c> 枚举值：颜色与逐精灵参数都是 4 个【无符号归一化字节】，
         /// 对应 <c>unorm8x4</c>（不是 wgpu / Dawn 里的 <c>uchar4norm</c>，那个名字在浏览器会直接报
@@ -789,12 +796,12 @@ namespace KFramework.MonoGame
         /// </para>
         /// </summary>
         private const string VertexLayoutJson =
-            "[{\"arrayStride\":28,\"stepMode\":\"vertex\",\"attributes\":[" +
-            "{\"shaderLocation\":0,\"offset\":0,\"format\":\"float32x2\"}," +
-            "{\"shaderLocation\":1,\"offset\":8,\"format\":\"float32x2\"}," +
-            "{\"shaderLocation\":2,\"offset\":16,\"format\":\"unorm8x4\"}," +
-            "{\"shaderLocation\":3,\"offset\":20,\"format\":\"unorm8x4\"}," +
-            "{\"shaderLocation\":4,\"offset\":24,\"format\":\"unorm8x4\"}]}]";
+            "[{\"arrayStride\":36,\"stepMode\":\"vertex\",\"attributes\":[" +
+            "{\"shaderLocation\":0,\"offset\":0,\"format\":\"float32x4\"}," +
+            "{\"shaderLocation\":1,\"offset\":16,\"format\":\"unorm8x4\"}," +
+            "{\"shaderLocation\":2,\"offset\":20,\"format\":\"float32x2\"}," +
+            "{\"shaderLocation\":3,\"offset\":28,\"format\":\"unorm8x4\"}," +
+            "{\"shaderLocation\":4,\"offset\":32,\"format\":\"unorm8x4\"}]}]";
 
         /// <summary>WebGPU 的精灵程序：Apply 时把投影矩阵写进一个新的 uniform 槽位。</summary>
         private sealed class WebGpuSpriteProgram : ISpriteProgram

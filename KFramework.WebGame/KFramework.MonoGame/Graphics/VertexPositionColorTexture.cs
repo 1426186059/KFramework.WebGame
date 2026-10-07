@@ -1,35 +1,50 @@
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// SpriteBatch 的顶点：位置(vec2) + 纹理坐标(vec2) + 颜色(rgba8) + 逐精灵参数(8×u8)，共 28 字节。
+    /// SpriteBatch 的顶点，语义与字节布局对齐 Unity 精灵着色器的 appdata_t（Sprites-Default）：
+    /// <code>
+    /// struct appdata_t {
+    ///     float4 vertex   : POSITION;      // 16 字节（x, y, z, w），w 固定为 1
+    ///     float4 color    : COLOR;         // 4 字节 unorm8x4（照 Unity 的 Color32，着色器里仍按 float4 取用）
+    ///     float2 texcoord : TEXCOORD0;     // 8 字节
+    ///     UNITY_VERTEX_INPUT_INSTANCE_ID   // 不占顶点字节：实例号是内置输入（GLSL 的 gl_InstanceID / WGSL 的 @builtin(instance_index)）
+    /// };
+    /// </code>
+    /// 之后是本引擎扩展的两组逐精灵参数通道（Unity 的 appdata_t 没有，见 <see cref="SpriteParams"/>）。
     /// <para>
-    /// 布局：offset 0/8 是浮点（位置、UV），16 是颜色（unorm8x4），20/24 是逐精灵参数（两组 unorm8x4）。
-    /// 参数通道的存在，使"一批内每个精灵外观不同"不必依赖 MaterialPropertyBlock —— 后者挂在每一次
-    /// 绘制上、按块切分 DrawCall，而顶点数据不参与分批键。
+    /// 布局（步长 36 字节）：0 位置（float32x4）/ 16 颜色（unorm8x4）/ 20 UV（float32x2）/ 28、32 逐精灵参数（unorm8x4 ×2）。
+    /// WebGL20 的 VAO 与 WebGPU 的 <c>vertex.buffers</c> 与此严格一一对应，改这里必须同步改那两个后端。
     /// </para>
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct VertexPositionColorTexture
     {
-        public Vector2 Position;
-        public Vector2 TexCoord;
+        /// <summary>位置（x, y, z, w）：w 固定为 1，可当裁剪空间坐标直传（照 D3D9 的 XYZRHW）。</summary>
+        public Vector4 Position;
+
+        /// <summary>顶点色（顶点里是 4 个归一化字节，着色器按 float4 取用）。</summary>
         public Color Color;
+
+        /// <summary>纹理坐标。</summary>
+        public Vector2 TexCoord;
 
         /// <summary>逐精灵参数（8 通道 × 1 字节），语义完全由着色器决定，引擎不做解释。</summary>
         public SpriteParams Params;
 
-        public const int SizeInBytes = 28;
+        /// <summary>顶点步长：后端顶点布局的 arrayStride / VAO stride 必须取它。</summary>
+        public const int SizeInBytes = 36;
 
-        public VertexPositionColorTexture(Vector2 position, Vector2 texCoord, Color color)
-            : this(position, texCoord, color, default) { }
+        public VertexPositionColorTexture(Vector4 position, Color color, Vector2 texCoord)
+            : this(position, color, texCoord, default) { }
 
-        public VertexPositionColorTexture(Vector2 position, Vector2 texCoord, Color color, SpriteParams parameters)
+        public VertexPositionColorTexture(Vector4 position, Color color, Vector2 texCoord, SpriteParams parameters)
         {
             Position = position;
-            TexCoord = texCoord;
             Color = color;
+            TexCoord = texCoord;
             Params = parameters;
         }
     }

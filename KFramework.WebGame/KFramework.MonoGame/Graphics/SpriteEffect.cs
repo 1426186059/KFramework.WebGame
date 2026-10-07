@@ -5,15 +5,19 @@ namespace KFramework.MonoGame
 {
 
     /// <summary>
-    /// SpriteBatch 使用的内置着色器（GLSL ES 3.00）。顶点为 位置+UV+颜色，片元做一次纹理采样与颜色相乘。
+    /// SpriteBatch 使用的内置着色器（GLSL ES 3.00）。顶点为 位置(float4)+颜色+UV（+逐精灵参数），片元做一次纹理采样与颜色相乘。
     /// </summary>
     internal sealed class SpriteEffect : ISpriteProgram
     {
         private const string VertexSource = """
             #version 300 es
-            in vec2 aPosition;
-            in vec2 aTexCoord;
+            // 顶点输入对齐 Unity 精灵着色器的 appdata_t：aPosition ↔ float4 vertex : POSITION，
+            // aColor ↔ float4 color : COLOR，aTexCoord ↔ float2 texcoord : TEXCOORD0；
+            // aParams0 / aParams1 是本引擎扩展的两组逐精灵参数通道。
+            // 声明顺序必须与 WebGl20Backend.ConfigureAttributes 的槽位顺序一致（位置 → 颜色 → UV → 参数）。
+            in vec4 aPosition;
             in vec4 aColor;
+            in vec2 aTexCoord;
             in vec4 aParams0;
             in vec4 aParams1;
 
@@ -23,14 +27,19 @@ namespace KFramework.MonoGame
             out vec4 vColor;
             out vec4 vParams0;
             out vec4 vParams1;
+            // UNITY_VERTEX_INPUT_INSTANCE_ID 在 GLSL 里的等价物：实例号是内置输入，不占顶点布局。
+            // 片元着色器要用它的话，声明 flat in int vInstanceID; 即可。
+            flat out int vInstanceID;
 
             void main()
             {
-                gl_Position = uProjection * vec4(aPosition, 0.0, 1.0);
+                // 位置自带 w = 1，直接就是裁剪空间齐次坐标（照 D3D9 的 XYZRHW）。
+                gl_Position = uProjection * aPosition;
                 vTexCoord = aTexCoord;
                 vColor = aColor;
                 vParams0 = aParams0;
                 vParams1 = aParams1;
+                vInstanceID = gl_InstanceID;
             }
             """;
 
@@ -125,7 +134,7 @@ namespace KFramework.MonoGame
             if (!_locationsLogged)
             {
                 _locationsLogged = true;
-                PrintTool.Log($"[SpriteEffect] attribute: pos={PositionLocation} uv={TexCoordLocation} color={ColorLocation} " +
+                PrintTool.Log($"[SpriteEffect] attribute: pos={PositionLocation} color={ColorLocation} uv={TexCoordLocation} " +
                                   $"params0={Params0Location} params1={Params1Location} | " +
                                   $"uniform: proj={(_projectionLocation is null ? "null" : "ok")} tex={(_textureLocation is null ? "null" : "ok")}");
             }

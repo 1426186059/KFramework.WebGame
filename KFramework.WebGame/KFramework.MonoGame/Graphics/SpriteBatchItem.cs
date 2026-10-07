@@ -1,3 +1,4 @@
+using System.Numerics;
 using KFramework.MonoGame;
 
 namespace KFramework.MonoGame
@@ -7,7 +8,7 @@ namespace KFramework.MonoGame
     ///  - 顶点在【提交期】就算好（item.Set），Flush 时只做内存拷贝，降低 flush 开销；
     ///  - 用一个 float SortKey 参与排序，并实现 IComparable 让 Array.Sort 直接排；
     ///  - 由 SpriteBatcher 以对象池方式复用，每帧零分配。
-    /// 顶点只存 vec2 位置（2D 无深度缓冲），与 KFramework 的 VertexPositionColorTexture 一致。
+    /// 顶点位置是 float4（x, y, 0, 1，w 固定 1），与 Unity appdata_t 的 <c>float4 vertex : POSITION</c> 一致。
     /// </summary>
     internal sealed class SpriteBatchItem : IComparable<SpriteBatchItem>
     {
@@ -36,22 +37,22 @@ namespace KFramework.MonoGame
         /// <summary>轴对齐（无旋转）：位置即 (x, y)，尺寸 (w, h)。<paramref name="parameters"/> 逐精灵参数写进 4 个顶点（同值，插值后整片相同）。</summary>
         public void Set(float x, float y, float w, float h, Color color, Vector2 texCoordTL, Vector2 texCoordBR, float depth, SpriteParams parameters = default)
         {
-            vertexTL.Position = new Vector2(x, y);
+            vertexTL.Position = new Vector4(x, y, 0f, 1f);
             vertexTL.Color = color;
             vertexTL.TexCoord = texCoordTL;
             vertexTL.Params = parameters;
 
-            vertexTR.Position = new Vector2(x + w, y);
+            vertexTR.Position = new Vector4(x + w, y, 0f, 1f);
             vertexTR.Color = color;
             vertexTR.TexCoord = new Vector2(texCoordBR.X, texCoordTL.Y);
             vertexTR.Params = parameters;
 
-            vertexBL.Position = new Vector2(x, y + h);
+            vertexBL.Position = new Vector4(x, y + h, 0f, 1f);
             vertexBL.Color = color;
             vertexBL.TexCoord = new Vector2(texCoordTL.X, texCoordBR.Y);
             vertexBL.Params = parameters;
 
-            vertexBR.Position = new Vector2(x + w, y + h);
+            vertexBR.Position = new Vector4(x + w, y + h, 0f, 1f);
             vertexBR.Color = color;
             vertexBR.TexCoord = texCoordBR;
             vertexBR.Params = parameters;
@@ -60,22 +61,22 @@ namespace KFramework.MonoGame
         /// <summary>带旋转：以 (x, y) 为锚点，dx/dy 为相对锚点的偏移（通常 dx=-origin.X, dy=-origin.Y）。</summary>
         public void Set(float x, float y, float dx, float dy, float w, float h, float sin, float cos, Color color, Vector2 texCoordTL, Vector2 texCoordBR, float depth, SpriteParams parameters = default)
         {
-            vertexTL.Position = new Vector2(x + dx * cos - dy * sin, y + dx * sin + dy * cos);
+            vertexTL.Position = new Vector4(x + dx * cos - dy * sin, y + dx * sin + dy * cos, 0f, 1f);
             vertexTL.Color = color;
             vertexTL.TexCoord = texCoordTL;
             vertexTL.Params = parameters;
 
-            vertexTR.Position = new Vector2(x + (dx + w) * cos - dy * sin, y + (dx + w) * sin + dy * cos);
+            vertexTR.Position = new Vector4(x + (dx + w) * cos - dy * sin, y + (dx + w) * sin + dy * cos, 0f, 1f);
             vertexTR.Color = color;
             vertexTR.TexCoord = new Vector2(texCoordBR.X, texCoordTL.Y);
             vertexTR.Params = parameters;
 
-            vertexBL.Position = new Vector2(x + dx * cos - (dy + h) * sin, y + dx * sin + (dy + h) * cos);
+            vertexBL.Position = new Vector4(x + dx * cos - (dy + h) * sin, y + dx * sin + (dy + h) * cos, 0f, 1f);
             vertexBL.Color = color;
             vertexBL.TexCoord = new Vector2(texCoordTL.X, texCoordBR.Y);
             vertexBL.Params = parameters;
 
-            vertexBR.Position = new Vector2(x + (dx + w) * cos - (dy + h) * sin, y + (dx + w) * sin + (dy + h) * cos);
+            vertexBR.Position = new Vector4(x + (dx + w) * cos - (dy + h) * sin, y + (dx + w) * sin + (dy + h) * cos, 0f, 1f);
             vertexBR.Color = color;
             vertexBR.TexCoord = texCoordBR;
             vertexBR.Params = parameters;

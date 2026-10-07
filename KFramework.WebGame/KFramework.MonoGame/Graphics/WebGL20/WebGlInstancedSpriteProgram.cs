@@ -8,11 +8,11 @@ namespace KFramework.MonoGame
     /// <para>
     /// 与 <see cref="SpriteBatch"/> 的路子对照：
     /// <list type="bullet">
-    ///   <item><description>SpriteBatch：几何在 CPU 侧展开（每精灵 4 个顶点、每个顶点 28 字节），按纹理分批，逐批一次 drawElements。</description></item>
+    ///   <item><description>SpriteBatch：几何在 CPU 侧展开（每精灵 4 个顶点、每个顶点 36 字节），按纹理分批，逐批一次 drawElements。</description></item>
     ///   <item><description>本类：几何只有 4 个顶点的单位四边形（静态，一次上传），位置/尺寸/旋转/颜色/参数/UV 矩形全部按实例放进第二根缓冲
     ///   （<c>vertexAttribDivisor = 1</c>，每实例 48 字节），一次 draw 覆盖整个实例列表。</description></item>
     /// </list>
-    /// 因此和"逐精灵参数走顶点通道"相比，实例化进一步把 CPU 侧每精灵的开销从 4×28 字节降到 48 字节，
+    /// 因此和"逐精灵参数走顶点通道"相比，实例化进一步把 CPU 侧每精灵的开销从 4×36 字节降到 48 字节，
     /// 并且把 DrawCall 压到"1 / 缓冲容量"。代价是一次 draw 只能一张纹理（图集同一页可以，跨页要分多次）。
     /// </para>
     /// </summary>
