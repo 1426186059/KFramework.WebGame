@@ -18,7 +18,7 @@ namespace KFramework.MonoGame
         // ---- 实例化（GPU Instancing）路径的排队状态 ----
 
         /// <summary>本批是否走实例化提交（由批材质的 <see cref="Material.EnableInstancing"/> 决定）。</summary>
-        private bool _instanced;
+        private bool EnableGPUInstance;
 
         /// <summary>本批已排队的实例（按绘制顺序；排序模式非 Deferred 时在提交前排序）。</summary>
         private readonly List<InstanceEntry> _instances = new();
@@ -88,7 +88,7 @@ namespace KFramework.MonoGame
             material.Effect ??= ShaderEffect.Default;
 
             _sortMode = sortMode;
-            _instanced = material.EnableInstancing;
+            EnableGPUInstance = material.EnableInstancing;
             _instances.Clear();
             _material = material;
             _transform = transformMatrix ?? Matrix4x4.Identity;
@@ -117,7 +117,7 @@ namespace KFramework.MonoGame
 
             // 实例化模式：把排队的实例按纹理分组、一次 drawElementsInstanced 提交；
             // 逐顶点模式：交给 SpriteBatcher 排序 + 分批。
-            if (_instanced) FlushInstances();
+            if (EnableGPUInstance) FlushInstances();
             else FlushBatch();
         }
 
@@ -152,7 +152,7 @@ namespace KFramework.MonoGame
         {
             CheckValid(texture);
 
-            if (_instanced)
+            if (EnableGPUInstance)
             {
                 if (properties is null)
                 {
