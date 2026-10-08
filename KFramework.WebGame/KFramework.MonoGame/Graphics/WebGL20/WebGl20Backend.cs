@@ -68,8 +68,8 @@ namespace KFramework.MonoGame
         public IShaderProgram CreateCustomShaderProgram(string vertexSource, string fragmentSource)
             => new WebGL_ShaderProgram_2D_Custom(fragmentSource);
 
-        /// <summary>创建 GPU 实例化绘制器：WebGL2 原生支持（drawElementsInstanced + vertexAttribDivisor）。</summary>
-        public ISpriteInstancer CreateInstancer(string? fragmentSource, int capacity)
+        /// <summary>创建 GPU 实例化程序：WebGL2 原生支持（drawElementsInstanced + vertexAttribDivisor）。</summary>
+        public IGpuInstanceProgram CreateGpuInstanceProgram(string? fragmentSource, int capacity)
             => new WebGL_ShaderProgram_2D_Instanced(fragmentSource, capacity);
 
         private void ConfigureAttributes()

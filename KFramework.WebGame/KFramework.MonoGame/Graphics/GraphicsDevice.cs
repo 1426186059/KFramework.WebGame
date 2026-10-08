@@ -448,14 +448,14 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 实例化绘制：下发材质状态（混合/深度/剔除/采样）→ 绑定纹理 → 后端发起一次实例化绘制 → 计入渲染统计。
-        /// 与 <see cref="DrawUserIndexedPrimitives"/> 的区别：这里一份数据对应一个实例，
+        /// 实例化绘制（GPU 实例化路径）：下发材质状态（混合/深度/剔除/采样）→ 绑定纹理 → 后端发起一次实例化绘制 → 计入渲染统计。
+        /// 与 <see cref="DrawUserIndexedPrimitives"/> 的区别：这里一份数据（<see cref="GpuInstance"/>）对应一个实例，
         /// 每个实例都算 1 个精灵、2 个三角形、而整批只算 1 次 DrawCall。
         /// </summary>
-        internal void DrawInstanced(ISpriteInstancer instancer, Material material, in Matrix4x4 transform,
-                                    Span<SpriteInstance> instances, int count, Texture2D texture)
+        internal void DrawGpuInstances(IGpuInstanceProgram program, Material material, in Matrix4x4 transform,
+                                       Span<GpuInstance> instances, int count, Texture2D texture)
         {
-            ArgumentNullException.ThrowIfNull(instancer);
+            ArgumentNullException.ThrowIfNull(program);
             if (count <= 0) return;
 
             SetBlendState(material.Blend);
@@ -467,7 +467,7 @@ namespace KFramework.MonoGame
             SetSamplerState(material.Sampler);
             BindTexture(texture);
 
-            instancer.Draw(transform, instances, count, texture);
+            program.Draw(transform, instances, count, texture);
 
             // 实例化程序会自己 UseProgram / 绑定自己的 VAO，绕过了 ApplyMaterial 维护的「材质级去重」缓存。
             // 这里必须把缓存作废，否则紧接着的 SpriteBatch 批次会因为"材质/变换都没变"被去重短路，

@@ -5,8 +5,8 @@ using System.Numerics;
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 「着色器属性 → 实例通道」的映射表：由 <see cref="Material.SetInstanceChannels"/> 声明，
-    /// 决定哪些属性值被打进 <see cref="SpriteInstance.Inst0"/> / <see cref="SpriteInstance.Inst1"/>
+    /// 「着色器属性 → 实例通道」的映射表：由 <see cref="Material.SetGpuInstanceChannels"/> 声明，
+    /// 决定哪些属性值被打进 <see cref="GpuInstance.Inst0"/> / <see cref="GpuInstance.Inst1"/>
     /// 这 8 个 float 槽（着色器里是 <c>aInst0/aInst1</c> → <c>vInst0/vInst1</c>）。
     /// <para>
     /// 这是 Unity「实例化属性」的等价物：Unity 在 shader 的 <c>UNITY_INSTANCING_BUFFER</c> 里声明，
@@ -15,13 +15,14 @@ namespace KFramework.MonoGame
     /// </para>
     /// <para>
     /// 只有 float / int / 向量 / 颜色能进通道；矩阵与纹理进不去 ——
-    /// <see cref="SpriteBatchGPUInstance.Add"/> 传进来的块里出现没被声明的属性时会直接抛异常
-    /// （实例化路径没有 uniform 覆盖层，装不下的东西无处可去；早失败好过静默画错）。
+    /// <see cref="GpuInstanceBatch.Add(in Matrix4x4, Color, ShaderPropertyBlock?)"/> 传进来的块里
+    /// 出现没被声明的属性时会直接抛异常（实例化路径没有 uniform 覆盖层，装不下的东西无处可去；
+    /// 早失败好过静默画错）。
     /// </para>
     /// </summary>
-    internal sealed class InstanceChannelMap
+    internal sealed class GpuInstanceChannelMap
     {
-        private const int ChannelCount = SpriteInstance.InstanceChannelCount;
+        private const int ChannelCount = GpuInstance.InstanceChannelCount;
 
         /// <summary>每个通道对应的属性名（null = 该通道未映射）。</summary>
         private readonly string?[] _names = new string?[ChannelCount];

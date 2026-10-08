@@ -20,10 +20,10 @@ namespace KFramework.MonoGame
     /// 换来的覆盖能力是：任意条数、任意属性名、任意类型（float / int / 向量 / 矩阵 / 纹理）。
     /// </para>
     /// <para>
-    /// <b>GPU 实例化路径（<see cref="SpriteBatchGPUInstance"/>）里不切批</b>：先用
-    /// <see cref="Material.SetInstanceChannels"/> 把属性声明成"实例通道"（照 Unity 的实例化属性；
+    /// <b>GPU 实例化路径（<see cref="GpuInstanceBatch"/>）里不切批</b>：先用
+    /// <see cref="Material.SetGpuInstanceChannels"/> 把属性声明成"实例通道"（照 Unity 的实例化属性；
     /// Unity 声明在 shader 的 <c>UNITY_INSTANCING_BUFFER</c> 里），再把这个块传给
-    /// <see cref="SpriteBatchGPUInstance.Add(Vector2, Vector2, float, Color, ShaderPropertyBlock?)"/> ——
+    /// <see cref="GpuInstanceBatch.Add(Vector2, Vector2, float, Color, ShaderPropertyBlock?)"/> ——
     /// 块里的值被编码进逐实例数据，<b>每个实例各自持有自己的属性值</b>，逐精灵不同也仍然只 1 次 DrawCall。
     /// 那条路没有 uniform 覆盖层，所以块里出现没被声明的属性时是直接抛异常（装不下的东西无处可去）。
     /// </para>

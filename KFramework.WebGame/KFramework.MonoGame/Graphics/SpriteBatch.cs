@@ -25,7 +25,7 @@ namespace KFramework.MonoGame
         public GraphicsDevice GraphicsDevice => _device;
 
         //这是本引擎的主力API，允许直接传入材质（Material）对象。
-        //本 API 只做 CPU 合批（逐顶点路径）；GPU 实例化请用 SpriteBatchGPUInstance（另一条独立的路）。
+        //本 API 只做 CPU 合批（逐顶点路径）；GPU 实例化请用 GpuInstanceBatch（另一条独立的路）。
         public void Begin(Material material, SpriteSortMode sortMode = SpriteSortMode.Deferred,
                           Matrix4x4? transformMatrix = null)
         {
@@ -112,7 +112,7 @@ namespace KFramework.MonoGame
         /// <para>
         /// <paramref name="properties"/>：这一次绘制的着色器属性覆盖块（照 Unity 的 <c>renderer.SetPropertyBlock</c>）。
         /// 块是可变 uniform，只有"这一批只画这一个物体"时才等价，故带块的绘制会当场提交（切批）。
-        /// 想让"逐精灵不同"仍然只一次 DrawCall，请改用 GPU 实例化（<see cref="SpriteBatchGPUInstance"/>，另一条路）。
+        /// 想让"逐精灵不同"仍然只一次 DrawCall，请改用 GPU 实例化（<see cref="GpuInstanceBatch"/>，另一条路）。
         /// </para>
         /// </summary>
         public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color,

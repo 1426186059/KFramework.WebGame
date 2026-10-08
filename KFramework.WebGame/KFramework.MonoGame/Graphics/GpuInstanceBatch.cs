@@ -4,34 +4,35 @@ using System.Runtime.InteropServices;
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// GPU 实例化绘制器：<b>一次 DrawCall 画出 N 个"同材质 + 同纹理"的精灵</b>，每个实例可以有自己的
-    /// 位置、尺寸、旋转、颜色与 UV 矩形。
+    /// GPU 实例化绘制器：<b>一次 DrawCall 画出 N 个"同材质 + 同纹理"的精灵</b>，每个实例带自己的
+    /// <b>对象→世界矩阵</b>（照 Unity 的 <c>unity_ObjectToWorld</c>）、颜色、UV 矩形与逐实例属性。
     /// <para>
     /// <b>它和 <see cref="SpriteBatch"/> 是两条互不相干的路子</b>，不要混用：
     /// <list type="table">
     ///   <item><term>SpriteBatch（CPU 合批）</term><description>几何在 CPU 侧按精灵展开（每精灵 4 顶点 × 28 字节），按纹理/属性块分批，逐批一次 drawElements。
     ///   逐物体差异靠顶点数据（颜色/UV）与 <see cref="ShaderPropertyBlock"/>（覆盖 uniform，代价是切批）。</description></item>
-    ///   <item><term>SpriteBatchGPUInstance（本类，GPU 实例化）</term><description>几何只有 4 个顶点的单位四边形（静态），
-    ///   位置/尺寸/旋转/颜色/UV 矩形按实例放进第二根缓冲（<c>vertexAttribDivisor = 1</c>）；一次 draw 覆盖整批。
+    ///   <item><term>GpuInstanceBatch（本类，GPU 实例化）</term><description>几何只有 4 个顶点的单位四边形（静态），
+    ///   逐实例矩阵/颜色/UV矩形按实例放进第二根缓冲（<c>vertexAttribDivisor = 1</c>）；一次 draw 覆盖整批。
     ///   DrawCall 与 CPU 带宽都最省，但一次 draw 只能一张纹理、逐实例不能改渲染状态。</description></item>
     /// </list>
     /// 选型：同屏同纹理的精灵数量大 → 用本类；需要逐批换材质状态、或用属性块覆盖任意 uniform → 用 <see cref="SpriteBatch"/>。
     /// </para>
     /// <para>
-    /// <b>逐实例属性</b>（照 Unity 的实例化属性）：本类不能用 uniform 覆盖属性块，但可以用
-    /// <see cref="Material.SetInstanceChannels"/> 声明若干属性进 8 个实例通道，然后给
-    /// <see cref="Add(Vector2, Vector2, float, Color, ShaderPropertyBlock?)"/> 传一个块 ——
-    /// 值会被编码进逐实例数据（<c>aInst0/aInst1</c> → <c>vInst0/vInst1</c>），
-    /// <b>每个实例各自持有自己的属性值，而整批仍然只有一次 DrawCall</b>。
-    /// 注意：内置片元着色器不读这两个 varying，要在自定义片元着色器里读才看得见效果。
+    /// <b>与 Unity 的对应关系</b>：Unity 是
+    /// <c>Graphics.DrawMeshInstanced(mesh, submesh, material, Matrix4x4[] matrices, count, properties)</c>，
+    /// 传的是矩阵数组；本类则是 <see cref="Begin"/> → <see cref="Add(in Matrix4x4, Color, ShaderPropertyBlock?)"/> × N →
+    /// <see cref="End"/>，单位四边形（(0,0)-(1,1)）由引擎内置，逐实例属性走
+    /// <see cref="Material.SetGpuInstanceChannels"/> + <see cref="ShaderPropertyBlock"/>（= Unity 的实例化属性）。
+    /// 位置 / 尺寸 / 旋转只是矩阵的一种填法，<see cref="Add(Vector2, Vector2, float, Color, ShaderPropertyBlock?)"/>
+    /// 是它的便捷重载（等价于 <see cref="GpuInstance.CreateObjectToWorld"/>）。
     /// </para>
     /// <para>
     /// 用法：
     /// <code>
     /// var material = new Material();
-    /// material.SetInstanceChannels("uPhase");        // 声明哪些属性进实例通道（8 个槽）
+    /// material.SetGpuInstanceChannels("uPhase");     // 声明哪些属性进实例通道（8 个槽）
     ///
-    /// using var instances = new SpriteBatchGPUInstance(Device, atlas, material, fragmentSource);
+    /// using var instances = new GpuInstanceBatch(Device, atlas, material, fragmentSource);
     /// instances.Begin();
     /// for (int i = 0; i &lt; 512; i++)
     /// {
@@ -43,13 +44,13 @@ namespace KFramework.MonoGame
     /// </code>
     /// </para>
     /// </summary>
-    public sealed class SpriteBatchGPUInstance : IDisposable
+    public sealed class GpuInstanceBatch : IDisposable
     {
         private readonly GraphicsDevice _device;
         private readonly Texture2D _texture;
         private readonly Material _material;
-        private readonly ISpriteInstancer? _impl;
-        private readonly List<SpriteInstance> _instances = new();
+        private readonly IGpuInstanceProgram? _impl;
+        private readonly List<GpuInstance> _instances = new();
 
         /// <summary>本批实例共用的 UV 矩形（取自纹理的 <see cref="Texture2D.Bounds"/>，图集子区域视图也能取到自己那一块）。</summary>
         private readonly Vector4 _uvRect;
@@ -62,10 +63,11 @@ namespace KFramework.MonoGame
         /// <param name="texture">本批实例共用的纹理（图集子区域视图也可以，UV 自动取其 Bounds）。</param>
         /// <param name="material">材质（绑定/采样/深度/剔除状态 + 实例通道声明）；为 null 时用精灵默认状态、且不能下发逐实例属性。</param>
         /// <param name="fragmentSource">自定义片元着色器（GLSL ES 3.00）。为 null 时用默认的"纹理 × 逐实例颜色"。
-        /// 自定义着色器可以读 <c>vColor</c>（逐实例颜色）、<c>vTexCoord</c> 与 <c>vInstanceID</c>（实例号）。</param>
+        /// 自定义着色器可以读 <c>vColor</c>（逐实例颜色）、<c>vTexCoord</c>、<c>vInstanceID</c>（实例号）
+        /// 与 <c>vInst0/vInst1</c>（逐实例属性槽）。</param>
         /// <param name="capacity">实例缓冲容量（超出时按容量分批绘制）。</param>
-        public SpriteBatchGPUInstance(GraphicsDevice device, Texture2D texture, Material? material = null,
-                                      string? fragmentSource = null, int capacity = 1024)
+        public GpuInstanceBatch(GraphicsDevice device, Texture2D texture, Material? material = null,
+                                string? fragmentSource = null, int capacity = 1024)
         {
             ArgumentNullException.ThrowIfNull(device);
             ArgumentNullException.ThrowIfNull(texture);
@@ -82,7 +84,7 @@ namespace KFramework.MonoGame
                 _material.DepthStencil = material.DepthStencil;
                 _material.Rasterizer = material.Rasterizer;
                 // 实例通道声明随材质一起带走（照 Unity：声明属于材质），否则 Add(..., block) 无法编码。
-                _material.InstanceChannels = material.InstanceChannels;
+                _material.GpuInstanceChannels = material.GpuInstanceChannels;
             }
             else
             {
@@ -92,7 +94,7 @@ namespace KFramework.MonoGame
                 _material.Rasterizer = RasterizerState.CullNone;
             }
 
-            _impl = device.Backend.CreateInstancer(fragmentSource, capacity);
+            _impl = device.Backend.CreateGpuInstanceProgram(fragmentSource, capacity);
             _uvRect = ComputeUvRect(texture);
         }
 
@@ -131,9 +133,11 @@ namespace KFramework.MonoGame
             => Add(center, size, rotation, tint, null);
 
         /// <summary>
-        /// 加入一个实例，并可选地带上「逐实例属性」（照 Unity 的实例化属性）。
+        /// 便捷重载：按「中心点 / 尺寸 / 旋转弧度 / 颜色」加入一个实例
+        /// （内部用 <see cref="GpuInstance.CreateObjectToWorld"/> 组出对象→世界矩阵），
+        /// 并可选地带「逐实例属性」（照 Unity 的实例化属性）。
         /// <para>
-        /// <paramref name="properties"/> 里被 <see cref="Material.SetInstanceChannels"/> 声明过的属性会被编码进
+        /// <paramref name="properties"/> 里被 <see cref="Material.SetGpuInstanceChannels"/> 声明过的属性会被编码进
         /// 逐实例数据（<c>aInst0/aInst1</c> → 片元着色器里的 <c>vInst0/vInst1</c>），
         /// 于是<b>每个实例各自持有自己的属性值，而整批仍然只有一次 DrawCall</b>。
         /// 内置片元着色器不读这两个 varying，要用自定义 <c>fragmentSource</c> 读才看得见。
@@ -144,24 +148,35 @@ namespace KFramework.MonoGame
         /// </para>
         /// </summary>
         public void Add(Vector2 center, Vector2 size, float rotation, Color tint, ShaderPropertyBlock? properties = null)
+            => Add(GpuInstance.CreateObjectToWorld(center, size, rotation), tint, properties);
+
+        /// <summary>
+        /// 直接给「对象→世界矩阵」（照 Unity 的 <c>Graphics.DrawMeshInstanced(..., Matrix4x4[] matrices, ...)</c>）。
+        /// <para>
+        /// 矩阵把<b>单位四边形 (0,0)-(1,1)</b> 变换到屏幕，约定与本引擎一致（行主序 + 行向量 p' = p × M）：
+        /// 想让精灵以 <paramref name="center"/> 为中心、按 size 缩放并旋转，用
+        /// <see cref="GpuInstance.CreateObjectToWorld"/>；要做斜切 / 镜像等任意仿射，自己乘出来即可。
+        /// </para>
+        /// </summary>
+        public void Add(in Matrix4x4 objectToWorld, Color tint, ShaderPropertyBlock? properties = null)
         {
             if (!_begun) throw new InvalidOperationException("Add 必须在 Begin / End 之间调用。");
 
-            SpriteInstance instance = new SpriteInstance(center, size, rotation, tint, _uvRect);
+            GpuInstance instance = new GpuInstance(objectToWorld, tint, _uvRect);
 
             if (properties is not null)
             {
-                if (!_material.HasInstanceChannels)
+                if (!_material.HasGpuInstanceChannels)
                     throw new InvalidOperationException(
-                        "要按实例下发属性块的值，必须先在材质上用 SetInstanceChannels 声明通道" +
+                        "要按实例下发属性块的值，必须先在材质上用 SetGpuInstanceChannels 声明通道" +
                         "（照 Unity 的实例化属性：shader 里要有对应的 UNITY_INSTANCING_BUFFER 字段）。");
 
-                InstanceChannelMap channels = _material.InstanceChannels!;
+                GpuInstanceChannelMap channels = _material.GpuInstanceChannels!;
                 foreach (var pair in properties.Properties)
                 {
                     if (!channels.IsDeclared(pair.Key))
                         throw new InvalidOperationException(
-                            $"属性「{pair.Key}」没有声明进实例通道（{nameof(Material.SetInstanceChannels)}）：" +
+                            $"属性「{pair.Key}」没有声明进实例通道（{nameof(Material.SetGpuInstanceChannels)}）：" +
                             "实例化路径只能下发被声明进 8 个通道的属性，矩阵 / 纹理装不下。");
                 }
 
@@ -184,13 +199,13 @@ namespace KFramework.MonoGame
             if (_instances.Count == 0) return 0;
 
             Matrix4x4 projection = CurrentProjection();
-            Span<SpriteInstance> span = CollectionsMarshal.AsSpan(_instances);
+            Span<GpuInstance> span = CollectionsMarshal.AsSpan(_instances);
 
             int draws = 0;
             for (int offset = 0; offset < span.Length; offset += _impl.Capacity)
             {
                 int count = Math.Min(_impl.Capacity, span.Length - offset);
-                _device.DrawInstanced(_impl, _material, projection, span.Slice(offset, count), count, _texture);
+                _device.DrawGpuInstances(_impl, _material, projection, span.Slice(offset, count), count, _texture);
                 draws++;
             }
 

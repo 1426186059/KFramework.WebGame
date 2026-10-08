@@ -93,12 +93,12 @@ namespace KFramework.MonoGame
         // ============ GPU 实例化 ============
 
         /// <summary>
-        /// 创建实例化绘制器；后端不支持时返回 null（上层 <see cref="SpriteBatchGPUInstance"/> 以此为准：
+        /// 创建 GPU 实例化程序；后端不支持时返回 null（上层 <see cref="GpuInstanceBatch"/> 以此为准：
         /// <c>IsSupported</c> 为 false、绘制时给出明确提示）。WebGL2 已接入；WebGPU 尚未接入。
         /// </summary>
         /// <param name="fragmentSource">自定义片元着色器源码（null = 默认"纹理 × 逐实例颜色"）。</param>
         /// <param name="capacity">单次绘制的实例上限。</param>
-        ISpriteInstancer? CreateInstancer(string? fragmentSource, int capacity);
+        IGpuInstanceProgram? CreateGpuInstanceProgram(string? fragmentSource, int capacity);
 
         // ============ 纹理资源（由 Texture2D 的平台层调用） ============
 

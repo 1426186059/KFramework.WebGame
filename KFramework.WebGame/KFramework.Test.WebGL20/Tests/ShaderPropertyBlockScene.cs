@@ -17,8 +17,8 @@ namespace KFramework.Test.WebGL20.Tests
     ///   （Unity 里带 MaterialPropertyBlock 的物体同样不满足 SRP Batcher 的兼容条件，也会断合批。）</description></item>
     /// </list>
     /// 想让"逐精灵不同"仍然只一次 DrawCall，就得让差异随实例数据走 ——
-    /// 那是另一条路子：<see cref="SpriteBatchGPUInstance"/>（第 7 页）；那条路上块值也能用，
-    /// 但必须先用 <see cref="Material.SetInstanceChannels"/> 声明成实例通道（值编码进实例数据，不占 uniform）。
+    /// 那是另一条路子：<see cref="GpuInstanceBatch"/>（第 7 页）；那条路上块值也能用，
+    /// 但必须先用 <see cref="Material.SetGpuInstanceChannels"/> 声明成实例通道（值编码进实例数据，不占 uniform）。
     /// </para>
     /// <para>交互：<b>按钮 / I 键</b>切换 3 种提交方式，画面完全一致、只有 DrawCall 不同。</para>
     /// </summary>
@@ -266,7 +266,7 @@ namespace KFramework.Test.WebGL20.Tests
                 new Vector2(28f, y), new Color(150, 165, 195));
             batch.DrawString(font, "· 块的代价：一次 draw 只带一份 uniform，所以带块的绘制当场提交 → 24 个精灵 = 24 次 DC（与值变不变无关）。",
                 new Vector2(28f, y + step), new Color(255, 206, 110));
-            batch.DrawString(font, "· 想「逐精灵不同 + 只 1 次 DC」请走另一条路：第 7 页的 SpriteBatchGPUInstance（属性用 SetInstanceChannels 声明成实例通道后，块值随实例数据走）。",
+            batch.DrawString(font, "· 想「逐精灵不同 + 只 1 次 DC」请走另一条路：第 7 页的 GpuInstanceBatch（属性用 SetGpuInstanceChannels 声明成实例通道后，块值随实例数据走）。",
                 new Vector2(28f, y + step * 2f), new Color(120, 200, 160));
         }
 
