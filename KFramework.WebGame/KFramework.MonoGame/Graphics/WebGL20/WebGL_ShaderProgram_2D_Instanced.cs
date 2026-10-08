@@ -24,7 +24,8 @@ namespace KFramework.MonoGame
         /// <summary>逐实例属性（divisor=1）的步长（= <see cref="SpriteInstance.SizeInBytes"/>）。</summary>
         private const int InstanceStride = SpriteInstance.SizeInBytes;
 
-        private const string VertexSource = @"#version 300 es
+        private const string VertexSource = 
+@"#version 300 es
 in vec2 aQuadPos;
 in vec2 aQuadUv;
 in vec4 aRect;
@@ -49,7 +50,8 @@ void main()
 }";
 
         /// <summary>默认片元着色器：纹理 × 逐实例颜色。</summary>
-        private const string DefaultFragmentSource = @"#version 300 es
+        private const string DefaultFragmentSource = 
+@"#version 300 es
 precision highp float;
 in vec2 vTexCoord;
 in vec4 vColor;
