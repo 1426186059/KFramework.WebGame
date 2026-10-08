@@ -42,8 +42,6 @@ const _cacheTexture = new ByteCache(2048, 32 * 1024 * 1024);  // texImage2D / te
 
 let _cacheMatrixF32: Float32Array | null = null;   // 矩阵还原用的 Float32Array 视图（建在 _cacheMatrix 的缓冲上）
 
-let uniformLogged = false;   // 矩阵上传只在首次打一条日志
-
 // 整数句柄映射：原生 WebGL 的 createTexture 返回的是 WebGLTexture 对象而非整数，
 // 但 C# 侧 Texture2D.Handle 现已统一为 int（与 WebGPU 一致），故这里维护 id → WebGLTexture 的映射。
 let _texId = 0;
@@ -228,11 +226,6 @@ export function uniformMatrix4fv(location: WebGLUniformLocation | null, transpos
             const aligned = new Uint8Array(buf.subarray(0, n));
             matrix = new Float32Array(aligned.buffer);
         }
-    }
-
-    if (!uniformLogged) {
-        uniformLogged = true;
-        console.log('[gl] 上传矩阵:', Array.from(matrix).map((n) => n.toFixed(4)).join(','));
     }
 
     gpu().uniformMatrix4fv(location, transpose !== 0, matrix);

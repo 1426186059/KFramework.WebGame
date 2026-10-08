@@ -64,7 +64,6 @@ namespace KFramework.MonoGame
         private readonly JSObject? _projectionLocation;
         private readonly JSObject? _textureLocation;
         private readonly byte[] _matrixBuffer = new byte[16 * sizeof(float)];
-        private bool _locationsLogged;
 
         internal readonly int PositionLocation;
         internal readonly int TexCoordLocation;
@@ -127,13 +126,6 @@ namespace KFramework.MonoGame
             if (_textureLocation is not null)
             {
                 JSBind_WEBGL20.Uniform1i(_textureLocation, 0);
-            }
-
-            if (!_locationsLogged)
-            {
-                _locationsLogged = true;
-                PrintTool.Log($"[WebGL_ShaderProgram_2D_Default] attribute: pos={PositionLocation} color={ColorLocation} uv={TexCoordLocation} | " +
-                                  $"uniform: proj={(_projectionLocation is null ? "null" : "ok")} tex={(_textureLocation is null ? "null" : "ok")}");
             }
         }
 
