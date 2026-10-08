@@ -58,14 +58,14 @@ namespace KFramework.Test.WebGL20.Tests
             },
             new TestEntry
             {
-                Name = "GPU 实例化（一次 DrawCall 画 N 个精灵）",
-                Desc = "单位四边形 + 逐实例缓冲（divisor=1）+ drawElementsInstanced：N 个各有外观的精灵只产生 1 次 submit",
+                Name = "GPU 实例化（SpriteBatchGPUInstance：一次 DrawCall 画 N 个精灵）",
+                Desc = "单位四边形 + 逐实例缓冲（divisor=1）+ drawElementsInstanced：N 个各有外观的精灵只产生 1 次 submit；逐实例属性（块值经 SetInstanceChannels 声明）也随实例数据走",
                 Factory = static () => new InstancingScene(),
             },
             new TestEntry
             {
-                Name = "ShaderPropertyBlock（块的用法 + 实例化下的 DrawCall 对比）",
-                Desc = "6 种提交方式各画 24 个精灵：逐顶点/实例化 × 无块/共用块/逐精灵改块值，画面一致、DC 从 1 到 24 不等",
+                Name = "ShaderPropertyBlock（覆盖 uniform 的用法与 DrawCall 对比）",
+                Desc = "3 种提交方式各画 24 个精灵：无块 1 次 DC，带块逐笔提交（共用块 / 逐精灵改值都是 24 次）——块是可变 uniform 的必然代价",
                 Factory = static () => new ShaderPropertyBlockScene(),
             },
         ];

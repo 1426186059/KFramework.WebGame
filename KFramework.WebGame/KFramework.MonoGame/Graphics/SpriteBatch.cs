@@ -15,29 +15,6 @@ namespace KFramework.MonoGame
 
         private bool _beginCalled;
 
-        // ---- 实例化（GPU Instancing）路径的排队状态 ----
-
-        /// <summary>本批是否走实例化提交（由批材质的 <see cref="Material.EnableInstancing"/> 决定）。</summary>
-        private bool EnableGPUInstance;
-
-        /// <summary>本批已排队的实例（按绘制顺序；排序模式非 Deferred 时在提交前排序）。</summary>
-        private readonly List<InstanceEntry> _instances = new();
-
-        /// <summary>提交时把 <see cref="_instances"/> 拷成连续数组（实例缓冲要的是连续内存）。</summary>
-        private SpriteInstance[] _instanceScratch = Array.Empty<SpriteInstance>();
-
-        /// <summary>缓存比较委托，避免每次排序分配（List.Sort 会持有一个 Comparison）。</summary>
-        private static readonly Comparison<InstanceEntry> EntryComparison = CompareEntries;
-
-        /// <summary>实例化路径里排队的一条绘制：纹理 + 逐实例数据 + 排序键。</summary>
-        private struct InstanceEntry
-        {
-            public Texture2D Texture;
-            public SpriteInstance Data;
-            public float SortKey;
-            public int Order;
-        }
-
         public SpriteBatch(GraphicsDevice device)
         {
             ArgumentNullException.ThrowIfNull(device);
@@ -48,8 +25,7 @@ namespace KFramework.MonoGame
         public GraphicsDevice GraphicsDevice => _device;
 
         //这是本引擎的主力API，允许直接传入材质（Material）对象。
-        //是否走 GPU 实例化由材质的 Material.EnableInstancing 决定
-        //这个是本引擎自定义的 API，允许直接传入材质（Material）对象
+        //本 API 只做 CPU 合批（逐顶点路径）；GPU 实例化请用 SpriteBatchGPUInstance（另一条独立的路）。
         public void Begin(Material material, SpriteSortMode sortMode = SpriteSortMode.Deferred,
                           Matrix4x4? transformMatrix = null)
         {
@@ -79,17 +55,12 @@ namespace KFramework.MonoGame
         private void BeginInternal(Material material, SpriteSortMode sortMode, Matrix4x4? transformMatrix)
         {
             if (_beginCalled) throw new InvalidOperationException("上一次 Begin 还没有对应的 End。");
-            if (material.EnableInstancing && !_device.Backend.SupportsInstancing)
-                throw new NotSupportedException(
-                    $"后端「{_device.Backend.Name}」尚未接入 GPU 实例化：请把该材质的 EnableInstancing 设为 false，或改用 WebGL2 后端。");
 
             // 材质没指定效果就在【开批】时落到设备默认效果（写回字段）：此后 ApplyMaterial 与着色器程序
             // 都只认 material.Effect，不必在更晚的地方再判一次空。
             material.Effect ??= ShaderEffect.Default;
 
             _sortMode = sortMode;
-            EnableGPUInstance = material.EnableInstancing;
-            _instances.Clear();
             _material = material;
             _transform = transformMatrix ?? Matrix4x4.Identity;
             _batcher.SetSamplerState(material.Sampler);
@@ -115,10 +86,8 @@ namespace KFramework.MonoGame
             if (!_beginCalled) throw new InvalidOperationException("End 必须在 Begin 之后调用。");
             _beginCalled = false;
 
-            // 实例化模式：把排队的实例按纹理分组、一次 drawElementsInstanced 提交；
-            // 逐顶点模式：交给 SpriteBatcher 排序 + 分批。
-            if (EnableGPUInstance) FlushInstances();
-            else FlushBatch();
+            // 交给 SpriteBatcher 排序 + 分批提交（按纹理与属性块切段）。
+            FlushBatch();
         }
 
         /// <summary>
@@ -142,8 +111,8 @@ namespace KFramework.MonoGame
         /// 完整参数的绘制（照 MonoGame 的 Draw，UV 计算兼容本引擎的图集 Bounds 偏移）。
         /// <para>
         /// <paramref name="properties"/>：这一次绘制的着色器属性覆盖块（照 Unity 的 <c>renderer.SetPropertyBlock</c>）。
-        /// 块是可变 uniform，只有"这一批只画这一个物体"时才等价，故带块的绘制会当场提交（切批）；
-        /// 实例化模式下带块的绘制退回逐顶点路径（照 Unity：非实例化属性会把该物体踢出实例化）。
+        /// 块是可变 uniform，只有"这一批只画这一个物体"时才等价，故带块的绘制会当场提交（切批）。
+        /// 想让"逐精灵不同"仍然只一次 DrawCall，请改用 GPU 实例化（<see cref="SpriteBatchGPUInstance"/>，另一条路）。
         /// </para>
         /// </summary>
         public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color,
@@ -151,21 +120,6 @@ namespace KFramework.MonoGame
                          ShaderPropertyBlock? properties = null)
         {
             CheckValid(texture);
-
-            if (EnableGPUInstance)
-            {
-                if (properties is null)
-                {
-                    // 实例化路径：只排队一条 40 字节的实例数据，不碰顶点缓冲。
-                    AddInstance(texture, position, sourceRectangle, color, rotation, origin, scale, effects, layerDepth);
-                    return;
-                }
-
-                // 块是可变 uniform，实例数据里没有它的容身之处，这一笔退回逐顶点路径单独画。
-                // 先把已排队的实例提交掉，保证绘制顺序不乱。
-                FlushInstances();
-            }
-
             DrawVertexPath(texture, position, sourceRectangle, color, rotation, origin, scale, effects, layerDepth, properties);
         }
 
@@ -209,94 +163,6 @@ namespace KFramework.MonoGame
             }
         }
 
-        /// <summary>
-        /// 实例化路径的一次绘制：把这次绘制的「中心点 / 尺寸 / 旋转 / 颜色 / UV 矩形」记成一条实例数据，
-        /// 到 <see cref="End"/>（或中途需要切批时）再按纹理分组、一次 <c>drawElementsInstanced</c> 提交。
-        /// <para>
-        /// 几何语义与逐顶点路径一致：origin 先乘 scale、旋转绕 <paramref name="position"/> 锚点；
-        /// 区别只是这里存"中心点 + 尺寸 + 弧度"，四边形由顶点着色器从单位四边形展开。
-        /// </para>
-        /// </summary>
-        private void AddInstance(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color,
-                                 float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth)
-        {
-            ComputeUv(texture, sourceRectangle, effects, out Vector2 uvTL, out Vector2 uvBR);
-            Rectangle source = sourceRectangle ?? new Rectangle(0, 0, texture.Width, texture.Height);
-            float w = source.Width * scale.X;
-            float h = source.Height * scale.Y;
-
-            // 中心点：origin 先按 scale 缩放；旋转时中心绕 position 转（等价于逐顶点路径绕锚点转四个角）。
-            origin = origin * scale;
-            float dx = w * 0.5f - origin.X;
-            float dy = h * 0.5f - origin.Y;
-            Vector2 center = rotation == 0f
-                ? new Vector2(position.X + dx, position.Y + dy)
-                : new Vector2(position.X + dx * MathF.Cos(rotation) - dy * MathF.Sin(rotation),
-                              position.Y + dx * MathF.Sin(rotation) + dy * MathF.Cos(rotation));
-
-            // 翻转（FlipX / FlipY）已经在 uvTL / uvBR 的交换里体现：UV 尺寸写成负值即可让着色器插值到正确方向。
-            Vector4 uvRect = new Vector4(uvTL.X, uvTL.Y, uvBR.X - uvTL.X, uvBR.Y - uvTL.Y);
-
-            _instances.Add(new InstanceEntry
-            {
-                Texture = texture,
-                Data = new SpriteInstance(center, new Vector2(w, h), rotation, color, uvRect),
-                SortKey = SortKeyFor(texture, layerDepth),
-                Order = _instances.Count,
-            });
-
-            if (_sortMode == SpriteSortMode.Immediate) FlushInstances();
-        }
-
-        /// <summary>
-        /// 提交实例化批次：排序（非 Deferred / Immediate 时）→ 按纹理引用相等切段 → 每段按实例上限分块 → 一次实例化 draw。
-        /// <para>
-        /// 一次 <c>drawElementsInstanced</c> 只能绑一张纹理，所以"按纹理切段"是有意义的；
-        /// 段内实例数与缓冲容量的关系由后端决定（超出即分块，照 <see cref="ISpriteInstancer.Capacity"/>）。
-        /// </para>
-        /// </summary>
-        private void FlushInstances()
-        {
-            if (_instances.Count == 0) return;
-
-            if (_sortMode != SpriteSortMode.Deferred && _sortMode != SpriteSortMode.Immediate)
-                _instances.Sort(EntryComparison);
-
-            ISpriteInstancer? instancer = _device.Instancer;
-            if (instancer is null)
-            {
-                // Begin 已经拦过不支持的后端（直接抛异常），这里只是兜底，避免静默丢绘制。
-                _instances.Clear();
-                return;
-            }
-
-            if (_instanceScratch.Length < _instances.Count)
-                _instanceScratch = new SpriteInstance[Math.Max(_instances.Count, GraphicsDevice.MaxBatchSize)];
-
-            Matrix4x4 transform = _transform * _projection;
-            int start = 0;
-
-            while (start < _instances.Count)
-            {
-                Texture2D texture = _instances[start].Texture;
-                int end = start + 1;
-                while (end < _instances.Count && ReferenceEquals(_instances[end].Texture, texture)) end++;
-
-                for (int offset = start; offset < end; offset += instancer.Capacity)
-                {
-                    int count = Math.Min(instancer.Capacity, end - offset);
-                    for (int i = 0; i < count; i++) _instanceScratch[i] = _instances[offset + i].Data;
-
-                    _device.DrawInstanced(instancer, _material, transform,
-                                          _instanceScratch.AsSpan(0, count), count, texture);
-                }
-
-                start = end;
-            }
-
-            _instances.Clear();
-        }
-
         /// <summary>排序键：照 MonoGame。Texture 模式用 Texture.SortingKey（纹理内在序号），前后排序用 layerDepth。</summary>
         private float SortKeyFor(Texture2D texture, float layerDepth) => _sortMode switch
         {
@@ -306,7 +172,7 @@ namespace KFramework.MonoGame
             _ => 0f,
         };
 
-        /// <summary>UV 计算（含图集 Bounds 偏移与翻转）：两条提交路径共用同一份，避免实现走偏。</summary>
+        /// <summary>UV 计算（含图集 Bounds 偏移与翻转）。</summary>
         private static void ComputeUv(Texture2D texture, Rectangle? sourceRectangle, SpriteEffects effects,
                                       out Vector2 uvTL, out Vector2 uvBR)
         {
@@ -319,13 +185,6 @@ namespace KFramework.MonoGame
 
             if ((effects & SpriteEffects.FlipVertically) != 0) (uvTL.Y, uvBR.Y) = (uvBR.Y, uvTL.Y);
             if ((effects & SpriteEffects.FlipHorizontally) != 0) (uvTL.X, uvBR.X) = (uvBR.X, uvTL.X);
-        }
-
-        /// <summary>实例排序：先按排序键，键相同再按原始次序（等价于稳定排序，保持同深度精灵的相对顺序）。</summary>
-        private static int CompareEntries(InstanceEntry a, InstanceEntry b)
-        {
-            int byKey = a.SortKey.CompareTo(b.SortKey);
-            return byKey != 0 ? byKey : a.Order.CompareTo(b.Order);
         }
 
         /// <summary>目标矩形既决定位置也决定缩放（照 MonoGame 的带目标矩形重载）。</summary>
@@ -355,7 +214,8 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// 属性块重载（照 Unity 的 <c>renderer.SetPropertyBlock</c>）：块挂在<b>这一次绘制</b>上，
-        /// 能覆盖任意条数、任意类型的属性（float / int / 向量 / 矩阵 / 纹理），代价是块变即切批。
+        /// 能覆盖任意条数、任意类型的属性（float / int / 向量 / 矩阵 / 纹理），代价是块变即切批
+        /// （一次 draw 只带一份 uniform，给每个物体不同值 = 每个物体一次 DrawCall）。
         /// </summary>
         public void Draw(Texture2D texture, Vector2 position, Color color, ShaderPropertyBlock? properties)
             => Draw(texture, position, null, color, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f, properties);

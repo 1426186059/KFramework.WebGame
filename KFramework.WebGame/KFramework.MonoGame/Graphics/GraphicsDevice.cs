@@ -13,15 +13,6 @@ namespace KFramework.MonoGame
         /// <summary>渲染后端（WebGL 2.0 / WebGPU 二选一）。所有平台层调用都经它下发，本类不再直接碰具体图形 API。</summary>
         internal readonly IGraphicsBackend Backend;
 
-        /// <summary>实例化绘制器（设备级，懒创建一次后复用；后端不支持实例化时为 null）。</summary>
-        private ISpriteInstancer? _instancer;
-
-        /// <summary>
-        /// GPU 实例化的绘制器，由 <see cref="SpriteBatch"/> 在批材质开启 <see cref="Material.EnableInstancing"/> 时使用。
-        /// 一次 <c>drawElementsInstanced</c> 画一批实例；容量即单次 draw 的实例上限（超出自动分块）。
-        /// </summary>
-        internal ISpriteInstancer? Instancer => _instancer ??= Backend.CreateInstancer(null, MaxBatchSize);
-
         // 初值必须为 null：SetBlendState 用引用相等做短路，若初值就等于目标值，
         // 首次调用会被跳过，glBlendFunc 永远不下发（表现为画面全黑）。
         private BlendState _blendState = null!;

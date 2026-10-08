@@ -15,11 +15,17 @@ namespace KFramework.MonoGame
     /// 绘制时先发效果的默认值、再发块里的值，同名以块为准（照 Unity 的 <c>SetPropertyBlock</c>）。
     /// </para>
     /// <para>
-    /// <b>代价（必须知道）</b>：块是<b>可变 uniform</b>，值必须当场生效；一次 draw 只有一份 uniform 值，
-    /// 所以它<b>会切批</b> —— N 个各不相同的块就是 N 次 DrawCall。换来的覆盖能力是：
-    /// 任意条数、任意属性名、任意类型（float / int / 向量 / 矩阵 / 纹理）。
-    /// 若需要"逐精灵不同、而且仍然只一次 DrawCall"，请改用 GPU 实例化
-    /// （<see cref="SpriteInstancer"/>，逐实例数据随实例缓冲走，不占 uniform）。
+    /// <b>代价（CPU 合批路径，<see cref="SpriteBatch"/> 的逐顶点路径）</b>：块是<b>可变 uniform</b>，
+    /// 值必须当场生效；一次 draw 只有一份 uniform 值，所以它<b>会切批</b> —— N 个各不相同的块就是 N 次 DrawCall。
+    /// 换来的覆盖能力是：任意条数、任意属性名、任意类型（float / int / 向量 / 矩阵 / 纹理）。
+    /// </para>
+    /// <para>
+    /// <b>GPU 实例化路径（<see cref="SpriteBatchGPUInstance"/>）里不切批</b>：先用
+    /// <see cref="Material.SetInstanceChannels"/> 把属性声明成"实例通道"（照 Unity 的实例化属性；
+    /// Unity 声明在 shader 的 <c>UNITY_INSTANCING_BUFFER</c> 里），再把这个块传给
+    /// <see cref="SpriteBatchGPUInstance.Add(Vector2, Vector2, float, Color, ShaderPropertyBlock?)"/> ——
+    /// 块里的值被编码进逐实例数据，<b>每个实例各自持有自己的属性值</b>，逐精灵不同也仍然只 1 次 DrawCall。
+    /// 那条路没有 uniform 覆盖层，所以块里出现没被声明的属性时是直接抛异常（装不下的东西无处可去）。
     /// </para>
     /// <para>
     /// 与 Unity 的对应关系：Unity 里是 <c>renderer.SetPropertyBlock(block)</c>，本引擎里"渲染者"就是一次

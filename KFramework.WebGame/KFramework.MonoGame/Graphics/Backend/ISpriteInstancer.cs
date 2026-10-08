@@ -1,9 +1,9 @@
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 后端侧的实例化绘制器：由 <see cref="SpriteInstancer"/> 驱动。
+    /// 后端侧的实例化绘制器：由 <see cref="SpriteBatchGPUInstance"/> 驱动。
     /// <para>
-    /// 分工：材质状态、纹理绑定、渲染统计、分批、投影计算都在引擎侧（<see cref="GraphicsDevice"/> / <see cref="SpriteInstancer"/>），
+    /// 分工：材质状态、纹理绑定、渲染统计、分批、投影计算都在引擎侧（<see cref="GraphicsDevice"/> / <see cref="SpriteBatchGPUInstance"/>），
     /// 后端只负责「程序 + 缓冲 + 一次实例化 draw」这部分平台相关的工作。
     /// </para>
     /// </summary>

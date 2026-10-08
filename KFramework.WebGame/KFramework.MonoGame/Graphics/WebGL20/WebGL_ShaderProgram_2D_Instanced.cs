@@ -9,11 +9,17 @@ namespace KFramework.MonoGame
     /// 与 <see cref="SpriteBatch"/> 的路子对照：
     /// <list type="bullet">
     ///   <item><description>SpriteBatch：几何在 CPU 侧展开（每精灵 4 个顶点、每个顶点 28 字节），按纹理分批，逐批一次 drawElements。</description></item>
-    ///   <item><description>本类：几何只有 4 个顶点的单位四边形（静态，一次上传），位置/尺寸/旋转/颜色/UV 矩形全部按实例放进第二根缓冲
-    ///   （<c>vertexAttribDivisor = 1</c>，每实例 40 字节），一次 draw 覆盖整个实例列表。</description></item>
+    ///   <item><description>本类：几何只有 4 个顶点的单位四边形（静态，一次上传），位置/尺寸/旋转/颜色/UV 矩形
+    ///   以及两个逐实例属性槽全部按实例放进第二根缓冲（<c>vertexAttribDivisor = 1</c>，每实例 72 字节），
+    ///   一次 draw 覆盖整个实例列表。</description></item>
     /// </list>
-    /// 因此和"几何在 CPU 侧按精灵展开"相比，实例化把 CPU 侧每精灵的开销从 4×28 字节降到 40 字节，
+    /// 因此和"几何在 CPU 侧按精灵展开"相比，实例化把 CPU 侧每精灵的顶点开销从 4×28 字节降到一份实例数据，
     /// 并且把 DrawCall 压到"1 / 缓冲容量"。代价是一次 draw 只能一张纹理（图集同一页可以，跨页要分多次）。
+    /// </para>
+    /// <para>
+    /// 逐实例属性槽（<c>aInst0/aInst1</c> → <c>vInst0/vInst1</c>）是"每个实例各自持有自己的属性值"的落点，
+    /// 由 <see cref="Material.SetInstanceChannels"/> 声明内容、<see cref="SpriteBatchGPUInstance.Add"/> 写值；
+    /// 内置片元着色器不读它们，自定义片元着色器直接读这两个 varying 即可。
     /// </para>
     /// </summary>
     internal sealed class WebGL_ShaderProgram_2D_Instanced : ISpriteInstancer
@@ -32,9 +38,14 @@ in vec4 aRect;
 in float aRotation;
 in vec4 aTint;
 in vec4 aUvRect;
+// 逐实例属性槽：每个实例各自持有自己的属性值，内容由 Material.SetInstanceChannels 声明后编码进实例数据。
+in vec4 aInst0;
+in vec4 aInst1;
 uniform mat4 uProjection;
 out vec2 vTexCoord;
 out vec4 vColor;
+out vec4 vInst0;
+out vec4 vInst1;
 // UNITY_VERTEX_INPUT_INSTANCE_ID 在 GLSL 里的等价物：实例号是内置输入，不占顶点布局。
 flat out int vInstanceID;
 void main()
@@ -46,6 +57,8 @@ void main()
     gl_Position = uProjection * vec4(world, 0.0, 1.0);
     vTexCoord = aUvRect.xy + aQuadUv * aUvRect.zw;
     vColor = aTint;
+    vInst0 = aInst0;
+    vInst1 = aInst1;
     vInstanceID = gl_InstanceID;
 }";
 
@@ -123,6 +136,9 @@ void main()
             BindVertexAttribute("aTint", 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, InstanceStride, 20, 1);
             // 逐实例 UV 矩形：offsets 与 SpriteInstance 的字段顺序严格对应（24 = Rect16 + Rotation4 + Tint4）。
             BindVertexAttribute("aUvRect", 4, JSBind_WEBGL20.FLOAT, false, InstanceStride, 24, 1);
+            // 逐实例属性槽：40 = Rect16 + Rotation4 + Tint4 + UvRect16；内容由 Material.SetInstanceChannels 声明。
+            BindVertexAttribute("aInst0", 4, JSBind_WEBGL20.FLOAT, false, InstanceStride, 40, 1);
+            BindVertexAttribute("aInst1", 4, JSBind_WEBGL20.FLOAT, false, InstanceStride, 56, 1);
 
             // 收尾：把顶点数组解绑，避免污染其它绘制（SpriteBatch 每次绘制都会绑自己的 VAO）。
             JSBind_WEBGL20.BindVertexArray(null!);

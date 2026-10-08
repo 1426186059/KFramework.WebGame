@@ -39,10 +39,8 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// WebGPU 后端的实例化尚未接入（需要另一套「带实例属性」的 WGSL 与管线，stepMode=instance 的第二根顶点缓冲），
-        /// 故这里如实返回 false；<see cref="SpriteInstancer"/> 会据此给出明确提示，而不是静默画错。
+        /// 故这里如实返回 null：<see cref="SpriteBatchGPUInstance.IsSupported"/> 会为 false，绘制时给出明确提示而不是静默画错。
         /// </summary>
-        public bool SupportsInstancing => false;
-
         public ISpriteInstancer? CreateInstancer(string? fragmentSource, int capacity) => null;
 
         /// <summary>离屏渲染目标的纹理格式（画布格式可能不同，二者管线不可混用）。</summary>
