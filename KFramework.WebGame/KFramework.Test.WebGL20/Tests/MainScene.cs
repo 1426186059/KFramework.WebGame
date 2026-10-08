@@ -62,6 +62,12 @@ namespace KFramework.Test.WebGL20.Tests
                 Desc = "单位四边形 + 逐实例缓冲（divisor=1）+ drawElementsInstanced：N 个各有外观的精灵只产生 1 次 submit",
                 Factory = static () => new InstancingScene(),
             },
+            new TestEntry
+            {
+                Name = "ShaderPropertyBlock（块的用法 + 实例化下的 DrawCall 对比）",
+                Desc = "6 种提交方式各画 24 个精灵：逐顶点/实例化 × 无块/共用块/逐精灵改块值，画面一致、DC 从 1 到 24 不等",
+                Factory = static () => new ShaderPropertyBlockScene(),
+            },
         ];
     }
 
