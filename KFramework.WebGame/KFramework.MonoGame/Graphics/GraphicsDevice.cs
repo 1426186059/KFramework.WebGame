@@ -440,7 +440,7 @@ namespace KFramework.MonoGame
         /// 把若干顶点上传并发起一次索引绘制（照 MonoGame 的 DrawUserIndexedPrimitives）。
         /// 顶点缓冲 / 索引缓冲的绑定与上传由后端负责。
         /// 每调用一次累加一次 DrawCount；PrimitiveCount 同步累加（每个四边形 = 2 三角形）。
-        /// SpriteCount 由 SpriteBatcher.DrawBatch 整批累加一次，这里不再加。
+        /// SpriteCount 由 <see cref="SpriteBatch"/> 提交时整批累加一次，这里不再加。
         /// </summary>
         internal void DrawUserIndexedPrimitives(VertexPositionColorTexture[] vertices, int start, int end)
         {

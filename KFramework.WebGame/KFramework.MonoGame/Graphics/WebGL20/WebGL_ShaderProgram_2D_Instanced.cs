@@ -187,7 +187,7 @@ void main()
             return System.Runtime.InteropServices.MemoryMarshal.AsBytes(data.AsSpan()).ToArray();
         }
 
-        /// <summary>两个三角形：0,1,2 / 1,3,2（与 SpriteBatcher 的四边形剖分一致）。</summary>
+        /// <summary>两个三角形：0,1,2 / 1,3,2（与 <see cref="SpriteBatch"/> 的四边形剖分一致）。</summary>
         private static byte[] BuildQuadIndices()
         {
             ushort[] indices = [0, 1, 2, 1, 3, 2];

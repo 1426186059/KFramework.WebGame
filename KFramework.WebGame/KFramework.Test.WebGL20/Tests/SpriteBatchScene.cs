@@ -5,7 +5,7 @@ namespace KFramework.Test.WebGL20.Tests
 {
 
     /// <summary>
-    /// 精灵批绘制：连续使用同一张纹理的精灵会被 SpriteBatcher 合并为一次 draw call。
+    /// 精灵批绘制：连续使用同一张纹理的精灵会被 <see cref="SpriteBatch"/> 合并为一次 draw call。
     /// WebGL2 后端走「动态顶点缓冲 BufferSubData + 静态四边形索引 DrawElements」。
     /// </summary>
     public sealed class SpriteBatchScene : DemoScene

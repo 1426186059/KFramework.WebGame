@@ -1,11 +1,32 @@
-using System.Numerics;
-
 namespace KFramework.MonoGame
 {
+    /// <summary>
+    /// CPU 合批的精灵绘制器（本引擎的主力 API）：把待绘制的精灵排队 → 排序 → 按纹理/属性块分批，
+    /// 每批一次 draw call（几何在 CPU 侧展开成四边形顶点）。
+    /// <para>
+    /// 原来的 <c>SpriteBatcher</c> 已并入本类（它的职责只有"给 SpriteBatch 排队与提交"这一件事）：
+    /// <list type="bullet">
+    ///   <item><description><see cref="SpriteBatchItem"/> 以对象池复用（1.5 倍增长、按 64 对齐），只重置计数，零每帧分配；</description></item>
+    ///   <item><description>排序用 float SortKey + <c>Array.Sort</c>；</description></item>
+    ///   <item><description>单次 draw 最多 <see cref="GraphicsDevice.MaxBatchSize"/> 个四边形，超出自动分块（绕开 short 索引上限）。</description></item>
+    /// </list>
+    /// 分组与排序完全照官方 MonoGame：按纹理引用相等（<c>ReferenceEquals</c>）换批，Texture 排序模式用
+    /// <see cref="Texture2D.SortingKey"/>。要让同一张图集页合批，必须用单个 <see cref="Texture2D"/> + source rect 绘制
+    /// （KTexturePacker、SpriteFont 都是这种官方用法）；直接 LoadTexture 拿到的子图区域视图各自是独立
+    /// <see cref="Texture2D"/>，按官方语义各自成批。
+    /// </para>
+    /// <para>
+    /// 本类只做 CPU 合批（逐顶点路径）。另外两条路各有自己的类：
+    /// <see cref="GpuInstanceBatch"/>（GPU 实例化，几何只有一份单位四边形）与
+    /// <see cref="UrpBatch"/>（SRP-Batcher 式 UBO，DrawCall 不降但换物体极便宜）。
+    /// </para>
+    /// </summary>
     public sealed class SpriteBatch
     {
+        /// <summary>对象池初始容量。</summary>
+        private const int InitialBatchSize = 256;
+
         private readonly GraphicsDevice _device;
-        private readonly SpriteBatcher _batcher;
 
         private SpriteSortMode _sortMode;
         private Matrix4x4 _transform = Matrix4x4.Identity;
@@ -15,11 +36,29 @@ namespace KFramework.MonoGame
 
         private bool _beginCalled;
 
+        // ---- 对象池 + 顶点数组（原 SpriteBatcher 的成员）----
+
+        /// <summary>可复用的绘制项池（1.5 倍增长、按 64 对齐）；下标 &lt; <see cref="_batchItemCount"/> 的项属于本批。</summary>
+        private SpriteBatchItem[] _batchItemList;
+
+        /// <summary>本批已排队的绘制项数（提交后清零）。</summary>
+        private int _batchItemCount;
+
+        /// <summary>本批的采样状态（<see cref="Begin(Material, SpriteSortMode, Matrix4x4?)"/> 时从材质取，提交时逐段下发）。</summary>
+        private SamplerState _samplerState;
+
+        /// <summary>逐顶点数组（提交前把绘制项展开成四边形写在这里，再整段上传）。</summary>
+        private VertexPositionColorTexture[] _vertexArray;
+
         public SpriteBatch(GraphicsDevice device)
         {
             ArgumentNullException.ThrowIfNull(device);
             _device = device;
-            _batcher = new SpriteBatcher(device);
+
+            _batchItemList = new SpriteBatchItem[InitialBatchSize];
+            for (int i = 0; i < InitialBatchSize; i++) _batchItemList[i] = new SpriteBatchItem();
+
+            EnsureVertexArrayCapacity(InitialBatchSize);
         }
 
         public GraphicsDevice GraphicsDevice => _device;
@@ -63,12 +102,12 @@ namespace KFramework.MonoGame
             _sortMode = sortMode;
             _material = material;
             _transform = transformMatrix ?? Matrix4x4.Identity;
-            _batcher.SetSamplerState(material.Sampler);
+            _samplerState = material.Sampler;
 
             // 投影矩阵：与 GpuInstanceBatch / UrpBatch 共用同一份（见 GraphicsDevice.CreateSpriteProjection）。
             _projection = _device.CreateSpriteProjection();
 
-            // Immediate 模式与「带属性块」的绘制，都由 batcher 在提交时逐段下发状态（见 Draw / End），这里不提前设。
+            // Immediate 模式与「带属性块」的绘制，都在提交时逐段下发状态（见 Draw / End），这里不提前设。
             _beginCalled = true;
         }
 
@@ -77,16 +116,122 @@ namespace KFramework.MonoGame
             if (!_beginCalled) throw new InvalidOperationException("End 必须在 Begin 之后调用。");
             _beginCalled = false;
 
-            // 交给 SpriteBatcher 排序 + 分批提交（按纹理与属性块切段）。
             FlushBatch();
         }
 
         /// <summary>
-        /// 提交当前累积的绘制：分批与「每段下发材质 + 属性块」都在 <see cref="SpriteBatcher.DrawBatch"/> 里做。
-        /// Immediate 模式与带属性块的绘制会中途调用它（属性块是可变 uniform，值必须当场生效）。
+        /// 提交当前累积的绘制：排序 → 按「纹理 + 属性块」切段 → 每段下发一次状态（材质 + 属性块 → 采样 → 纹理）
+        /// 并把段内绘制项展开成四边形顶点 → 整段一次 <c>drawElements</c>；精灵总数累加到渲染统计。
+        /// <para>
+        /// 分批键 = 纹理引用 + 属性块（引用 + 版本号）：一次 draw 只能有一份 uniform 值，
+        /// 所以块一变（含"同一个块被改过"这种情况，版本号会变）就必须另起一段。
+        /// 带属性块的绘制会在 <see cref="Draw"/> 里当场调用它（块是可变的，值必须当场生效），
+        /// 因此这里看到的通常是「一段不带块 + 末尾一个带块项」；Immediate 模式同理每笔当场提交。
+        /// </para>
         /// </summary>
         private void FlushBatch()
-            => _batcher.DrawBatch(_sortMode, _material, _transform * _projection);
+        {
+            if (_batchItemCount == 0) return;
+
+            switch (_sortMode)
+            {
+                case SpriteSortMode.Texture:
+                case SpriteSortMode.FrontToBack:
+                case SpriteSortMode.BackToFront:
+                    Array.Sort(_batchItemList, 0, _batchItemCount);
+                    break;
+            }
+
+            // 整批精灵总数（照 MonoGame：spriteCount 只在提交时累加一次）。
+            _device._metrics._spriteCount += _batchItemCount;
+
+            Matrix4x4 transform = _transform * _projection;
+            int batchIndex = 0;
+            int batchCount = _batchItemCount;
+            int maxBatchSize = GraphicsDevice.MaxBatchSize;
+
+            while (batchCount > 0)
+            {
+                int startIndex = 0;
+                int index = 0;
+                Texture2D? tex = null;
+                ShaderPropertyBlock? block = null;
+                int blockVersion = -1;
+                bool batchStarted = false;
+
+                int numBatchesToProcess = Math.Min(batchCount, maxBatchSize);
+
+                for (int i = 0; i < numBatchesToProcess; i++, batchIndex++, index += 4)
+                {
+                    SpriteBatchItem item = _batchItemList[batchIndex];
+
+                    // 换批：纹理变了（照 MonoGame 用引用相等判断），或属性块变了。
+                    if (!batchStarted
+                        || !ReferenceEquals(item.Texture, tex)
+                        || !ReferenceEquals(item.Properties, block)
+                        || item.BlockVersion != blockVersion)
+                    {
+                        // 先把上一段画掉（用的是上一段自己的状态），再为本段下发状态。
+                        FlushVertexArray(startIndex, index);
+
+                        tex = item.Texture;
+                        block = item.Properties;
+                        blockVersion = item.BlockVersion;
+                        startIndex = index;
+                        batchStarted = true;
+
+                        // 每段都要下发：材质 + 属性块（块盖在材质之上）→ 采样状态 → 纹理。
+                        _device.ApplyMaterial(_material, transform, block);
+                        _device.SetSamplerState(_samplerState);
+                        _device.BindTexture(tex!);
+                    }
+
+                    _vertexArray[index] = item.vertexTL;
+                    _vertexArray[index + 1] = item.vertexTR;
+                    _vertexArray[index + 2] = item.vertexBL;
+                    _vertexArray[index + 3] = item.vertexBR;
+
+                    item.Texture = null;      // 释放引用，便于 GC
+                    item.Properties = null;
+                }
+
+                FlushVertexArray(startIndex, index);
+                batchCount -= numBatchesToProcess;
+            }
+
+            _batchItemCount = 0;
+        }
+
+        /// <summary>从对象池取一个可复用的绘制项；池满了就按 1.5 倍扩容（并按 64 对齐）。</summary>
+        private SpriteBatchItem CreateBatchItem()
+        {
+            if (_batchItemCount >= _batchItemList.Length)
+            {
+                int oldSize = _batchItemList.Length;
+                int newSize = (oldSize + oldSize / 2 + 63) & (~63);
+                Array.Resize(ref _batchItemList, newSize);
+                for (int i = oldSize; i < newSize; i++) _batchItemList[i] = new SpriteBatchItem();
+
+                EnsureVertexArrayCapacity(Math.Min(newSize, GraphicsDevice.MaxBatchSize));
+            }
+            return _batchItemList[_batchItemCount++];
+        }
+
+        /// <summary>保证顶点数组能装下 <paramref name="numBatchItems"/> 个四边形（每个 4 顶点）。</summary>
+        private void EnsureVertexArrayCapacity(int numBatchItems)
+        {
+            int needed = 4 * numBatchItems;
+            if (_vertexArray != null && needed <= _vertexArray.Length) return;
+            // 顶点缓冲按 MaxBatchSize 一块的容量准备，单次 draw 绝不会超出。
+            _vertexArray = new VertexPositionColorTexture[Math.Max(needed, 4 * GraphicsDevice.MaxBatchSize)];
+        }
+
+        /// <summary>把顶点数组的一段交给设备绘制（一次 draw call）。</summary>
+        private void FlushVertexArray(int start, int end)
+        {
+            if (start == end) return;
+            _device.DrawUserIndexedPrimitives(_vertexArray, start, end);
+        }
 
 
         public void Draw(Texture2D texture, Vector2 position, Color color)
@@ -115,14 +260,14 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 逐顶点路径的一次绘制：把精灵展开成 4 个顶点交给 <see cref="SpriteBatcher"/> 排队/提交。
+        /// 逐顶点路径的一次绘制：把精灵展开成 4 个顶点交给本类的排队/提交。
         /// </summary>
         /// <param name="uniformBlock">需要在本段下发 uniform 的属性块（可空；非空时这一笔当场提交、切批）。</param>
         private void DrawVertexPath(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color,
                                     float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth,
                                     ShaderPropertyBlock? uniformBlock)
         {
-            SpriteBatchItem item = _batcher.CreateBatchItem();
+            SpriteBatchItem item = CreateBatchItem();
             item.Texture = texture;
             item.Properties = uniformBlock;
             item.BlockVersion = uniformBlock?.PropertiesVersion ?? -1;

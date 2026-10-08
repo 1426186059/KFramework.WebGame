@@ -7,7 +7,7 @@ namespace KFramework.MonoGame
     /// 单个待绘制精灵。照 MonoGame 的 SpriteBatchItem：
     ///  - 顶点在【提交期】就算好（item.Set），Flush 时只做内存拷贝，降低 flush 开销；
     ///  - 用一个 float SortKey 参与排序，并实现 IComparable 让 Array.Sort 直接排；
-    ///  - 由 SpriteBatcher 以对象池方式复用，每帧零分配。
+    ///  - 由 <see cref="SpriteBatch"/> 以对象池方式复用，每帧零分配。
     /// 顶点位置是 float4（x, y, 0, 1，w 固定 1），与 Unity appdata_t 的 <c>float4 vertex : POSITION</c> 一致。
     /// </summary>
     internal sealed class SpriteBatchItem : IComparable<SpriteBatchItem>
