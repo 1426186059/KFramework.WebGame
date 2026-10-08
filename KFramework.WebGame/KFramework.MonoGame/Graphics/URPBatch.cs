@@ -77,6 +77,10 @@ namespace KFramework.MonoGame
         private SpriteSortMode _sortMode;
         private Matrix4x4 _transform = Matrix4x4.Identity;
         private Matrix4x4 _projection;
+
+        /// <summary>「世界 → 屏幕」矩阵（= 相机矩阵 × 投影）：批内不变，开批时算一次。</summary>
+        private Matrix4x4 _transformProjection;
+
         private bool _begun;
 
         /// <summary>材质常量（<c>UnityPerMaterial</c> 里的 uColorScale）：改了才在下次提交时重传一次。</summary>
@@ -148,6 +152,14 @@ namespace KFramework.MonoGame
             _sortMode = sortMode;
             _transform = transformMatrix ?? Matrix4x4.Identity;
             _projection = _device.CreateSpriteProjection();
+            _transformProjection = _transform * _projection;
+
+            // ---- 批内不变的渲染状态，在这里一次性下发 ----
+            // 混合 / 深度 / 剔除 / 采样在整个 Begin/End 期间都不会变（一个批只有一个材质），
+            // 所以不必每段（更不必每个物体）重复下发；提交时每段只换纹理（见 FlushQueued）。
+            // 本路的着色器程序由 _impl 自己管理（它不在 Material.Effect 上），故此处的职责只是状态。
+            _device.ApplyRenderStates(_material);
+
             _entries.Clear();
             _begun = true;
         }
@@ -216,7 +228,13 @@ namespace KFramework.MonoGame
             return FlushQueued();
         }
 
-        /// <summary>把已排队的物体提交掉（Immediate 模式下每笔 Draw 都会调它）。</summary>
+        /// <summary>
+        /// 把已排队的物体提交掉（Immediate 模式下每笔 Draw 都会调它）。
+        /// <para>
+        /// <b>每段只换纹理</b>：渲染状态已在 <see cref="Begin"/> 里下发过一次（批内不变），
+        /// 这里不再重复 —— 这正是"一个批一个材质"的红利。
+        /// </para>
+        /// </summary>
         private int FlushQueued()
         {
             if (_entries.Count == 0) return 0;
@@ -237,7 +255,12 @@ namespace KFramework.MonoGame
             if (_scratch.Length < _entries.Count)
                 _scratch = new UrpDrawData[Math.Max(_entries.Count, GraphicsDevice.MaxBatchSize)];
 
-            Matrix4x4 transform = _transform * _projection;
+            // 多批交错使用时补发：Begin 之后若有别的批处理改过设备状态，本批的状态就得补回来。
+            // 顺序使用时这里只是 4 次引用比较。
+            if (!_device.IsRenderStatesCurrent(_material))
+                _device.ApplyRenderStates(_material);
+
+            Matrix4x4 transform = _transformProjection;
             Vector4 color = MaterialColor;
             int draws = 0;
 
@@ -253,7 +276,7 @@ namespace KFramework.MonoGame
                 for (int i = 0; i < runLength; i++) _scratch[i] = _entries[start + i].Data;
 
                 // 逐物体缓冲在后端按需增长，所以这里不分块：一段一次性上传 + N 次 drawElements。
-                draws += _device.DrawUrpSegment(_impl, _material, transform, _scratch.AsSpan(0, runLength), runLength,
+                draws += _device.DrawUrpSegment(_impl, transform, _scratch.AsSpan(0, runLength), runLength,
                                                 texture, color, uploadMaterial);
                 uploadMaterial = false;   // 材质常量整批只传一次，后续段共用同一份常驻缓冲
 

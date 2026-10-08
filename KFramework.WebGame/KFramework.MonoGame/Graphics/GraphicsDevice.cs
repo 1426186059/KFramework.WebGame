@@ -433,14 +433,61 @@ namespace KFramework.MonoGame
             _appliedPropertyBlock = properties;
             _appliedBlockVersion = properties?.PropertiesVersion ?? -1;
 
-            SetBlendState(material.Blend);
+            ApplyRenderStates(material);
+            program.Apply(transform, material, properties);
+        }
+
+        /// <summary>
+        /// 只下发渲染状态（混合 / 深度 / 剔除 / 采样），<b>不动着色器程序与 uniform</b>。
+        /// <para>
+        /// 供 <see cref="GpuInstanceBatch"/> / <see cref="UrpBatch"/> 在 <c>Begin</c> 里调用一次：
+        /// 一个批只有一个材质，这些状态在整批内不变，所以不必每段（甚至每个物体）前重复下发
+        /// —— 它们各自的着色器程序由自己的程序对象管理，不走 <see cref="ApplyMaterial"/>。
+        /// </para>
+        /// </summary>
+        internal void ApplyRenderStates(Material material)
+        {
+            SetBlendState(material.Blend);      // 内部按引用去重：状态没变就不发跨 JS 调用
             _depthStencilState = material.DepthStencil;
             ApplyDepthStencilState();
             _rasterizerState = material.Rasterizer;
             ApplyRasterizerState();
             _samplerState = material.Sampler;
-            program.Apply(transform, material, properties);
+
+            // 记下"设备上此刻的状态来自哪个材质"：批处理据此判断提交前要不要补发
+            //（批是类、可以 new 多个实例，交错使用时设备状态可能已被别的批改掉，见 IsRenderStatesCurrent）。
+            _appliedBlend = material.Blend;
+            _appliedSampler = material.Sampler;
+            _appliedDepth = material.DepthStencil;
+            _appliedRasterizer = material.Rasterizer;
+
+            // 但这条路的"程序 / uniform / 投影"并不是本方法下发的（实例化 / URP 的程序各自管理），
+            // 所以材质身份必须作废：否则 SpriteBatch 的 IsMaterialCurrent 会误判成"还是我的材质"而跳过补发。
+            _appliedMaterial = null!;
         }
+
+        /// <summary>
+        /// 设备上此刻的材质是否就是 <paramref name="material"/> 这一份（含变换）。
+        /// <para>
+        /// 给批处理在提交前判断"要不要补发"用：批是类、可以并存多个实例，若两次提交之间
+        /// 有别的批处理改过设备状态（交错 Begin/Draw/End），本批就得把自己的材质补回去。
+        /// 顺序使用时这里只是一次引用比较 + 一次矩阵比较。
+        /// </para>
+        /// </summary>
+        internal bool IsMaterialCurrent(Material material, in Matrix4x4 transform)
+            => ReferenceEquals(_appliedMaterial, material)
+               && _appliedTransform.Equals(transform);
+
+        /// <summary>
+        /// 设备上此刻的渲染状态（混合 / 采样 / 深度 / 剔除）是否来自 <paramref name="material"/>。
+        /// 给 <see cref="GpuInstanceBatch"/> / <see cref="UrpBatch"/> 用：它们各自的着色器程序在程序对象里绑定，
+        /// 只有这几项状态需要在提交前判断要不要补发（见 <see cref="ApplyRenderStates"/>）。
+        /// </summary>
+        internal bool IsRenderStatesCurrent(Material material)
+            => ReferenceEquals(_appliedBlend, material.Blend)
+               && ReferenceEquals(_appliedSampler, material.Sampler)
+               && ReferenceEquals(_appliedDepth, material.DepthStencil)
+               && ReferenceEquals(_appliedRasterizer, material.Rasterizer);
 
         /// <summary>
         /// 把若干顶点上传并发起一次索引绘制（照 MonoGame 的 DrawUserIndexedPrimitives）。
@@ -458,23 +505,20 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 实例化绘制（GPU 实例化路径）：下发材质状态（混合/深度/剔除/采样）→ 绑定纹理 → 后端发起一次实例化绘制 → 计入渲染统计。
+        /// 实例化绘制（GPU 实例化路径）：绑定本段纹理 → 后端发起一次实例化绘制 → 计入渲染统计。
+        /// 渲染状态（混合 / 深度 / 剔除 / 采样）已在 <see cref="GpuInstanceBatch.Begin"/> 里下发过一次
+        /// （见 <see cref="ApplyRenderStates"/>），这里只处理批内唯一会变的东西 —— 纹理。
+        /// <para>
         /// 与 <see cref="DrawUserIndexedPrimitives"/> 的区别：这里一份数据（<see cref="GpuInstance"/>）对应一个实例，
         /// 每个实例都算 1 个精灵、2 个三角形、而整批只算 1 次 DrawCall。
+        /// </para>
         /// </summary>
-        internal void DrawGpuInstances(IGpuInstanceProgram program, Material material, in Matrix4x4 transform,
+        internal void DrawGpuInstances(IGpuInstanceProgram program, in Matrix4x4 transform,
                                        Span<GpuInstance> instances, int count, Texture2D texture)
         {
             ArgumentNullException.ThrowIfNull(program);
             if (count <= 0) return;
 
-            SetBlendState(material.Blend);
-            _depthStencilState = material.DepthStencil;
-            ApplyDepthStencilState();
-            _rasterizerState = material.Rasterizer;
-            ApplyRasterizerState();
-            _samplerState = material.Sampler;
-            SetSamplerState(material.Sampler);
             BindTexture(texture);
 
             program.Draw(transform, instances, count, texture);
@@ -512,27 +556,21 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// SRP-Batcher 式的一段绘制（见 <see cref="UrpBatch"/>）：下发材质状态（混合/深度/剔除/采样）→ 绑定纹理 →
+        /// SRP-Batcher 式的一段绘制（见 <see cref="UrpBatch"/>）：绑定本段纹理 →
         /// 后端"整段上传逐物体常量 + 逐个 drawElements（每次只重绑一次 UBO 范围）" → 计入渲染统计。
+        /// 渲染状态已在 <see cref="UrpBatch.Begin"/> 里下发过一次（见 <see cref="ApplyRenderStates"/>）。
         /// <para>
         /// 统计口径与其它路径一致：每个物体算 1 个精灵、2 个三角形，而 <b>DrawCall 就是物体数</b>
         /// —— SRP Batcher 本来就不减少 DrawCall，它省的是每次 draw 前的状态与数据上传。
         /// </para>
         /// </summary>
-        internal int DrawUrpSegment(IUrpProgram program, Material material, in Matrix4x4 transform,
+        internal int DrawUrpSegment(IUrpProgram program, in Matrix4x4 transform,
                                     Span<UrpDrawData> draws, int count, Texture2D texture,
                                     in Vector4 materialColor, bool uploadMaterial)
         {
             ArgumentNullException.ThrowIfNull(program);
             if (count <= 0) return 0;
 
-            SetBlendState(material.Blend);
-            _depthStencilState = material.DepthStencil;
-            ApplyDepthStencilState();
-            _rasterizerState = material.Rasterizer;
-            ApplyRasterizerState();
-            _samplerState = material.Sampler;
-            SetSamplerState(material.Sampler);
             BindTexture(texture);
 
             int drawCalls = program.DrawSegment(transform, draws, count, texture, materialColor, uploadMaterial);

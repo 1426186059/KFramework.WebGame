@@ -71,6 +71,10 @@ namespace KFramework.MonoGame
         private SpriteSortMode _sortMode;
         private Matrix4x4 _transform = Matrix4x4.Identity;
         private Matrix4x4 _projection;
+
+        /// <summary>「世界 → 屏幕」矩阵（= 相机矩阵 × 投影）：批内不变，开批时算一次。</summary>
+        private Matrix4x4 _transformProjection;
+
         private bool _begun;
 
         /// <summary>排队的一条绘制：逐实例数据 + 纹理 + 排序键 + 原始次序（同键时保持稳定排序）。</summary>
@@ -132,6 +136,14 @@ namespace KFramework.MonoGame
             _sortMode = sortMode;
             _transform = transformMatrix ?? Matrix4x4.Identity;
             _projection = _device.CreateSpriteProjection();
+            _transformProjection = _transform * _projection;
+
+            // ---- 批内不变的渲染状态，在这里一次性下发 ----
+            // 混合 / 深度 / 剔除 / 采样在整个 Begin/End 期间都不会变（一个批只有一个材质），
+            // 所以不必在每段纹理前重复下发；提交时每段只换纹理（见 FlushQueued）。
+            // 本路的着色器程序由 _impl 自己管理（它不在 Material.Effect 上），故此处的职责只是状态。
+            _device.ApplyRenderStates(_material);
+
             _entries.Clear();
             _begun = true;
         }
@@ -225,7 +237,12 @@ namespace KFramework.MonoGame
             if (_scratch.Length < _entries.Count)
                 _scratch = new GpuInstance[Math.Max(_entries.Count, GraphicsDevice.MaxBatchSize)];
 
-            Matrix4x4 transform = _transform * _projection;
+            // 多批交错使用时补发：Begin 之后若有别的批处理改过设备状态，本批的状态就得补回来。
+            // 顺序使用时这里只是 4 次引用比较。
+            if (!_device.IsRenderStatesCurrent(_material))
+                _device.ApplyRenderStates(_material);
+
+            Matrix4x4 transform = _transformProjection;
             int draws = 0;
 
             int start = 0;
@@ -242,7 +259,7 @@ namespace KFramework.MonoGame
                 for (int offset = 0; offset < runLength; offset += _impl.Capacity)
                 {
                     int count = Math.Min(_impl.Capacity, runLength - offset);
-                    _device.DrawGpuInstances(_impl, _material, transform, _scratch.AsSpan(offset, count), count, texture);
+                    _device.DrawGpuInstances(_impl, transform, _scratch.AsSpan(offset, count), count, texture);
                     draws++;
                 }
 
