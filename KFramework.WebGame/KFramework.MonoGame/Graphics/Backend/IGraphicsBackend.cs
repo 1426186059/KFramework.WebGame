@@ -92,25 +92,32 @@ namespace KFramework.MonoGame
 
         // ============ GPU 实例化 ============
 
+        /// <summary>后端是否支持 GPU 实例化（纯能力查询，不创建任何资源）。
+        /// 必须与 <see cref="CreateGpuInstanceProgram"/> 返回是否为 null 一致。WebGL2 支持；WebGPU 尚未接入。</summary>
+        bool SupportsGpuInstancing { get; }
+
         /// <summary>
-        /// 创建 GPU 实例化程序；后端不支持时返回 null（上层 <see cref="GpuInstanceBatch"/> 以此为准：
-        /// <c>IsSupported</c> 为 false、绘制时给出明确提示）。WebGL2 已接入；WebGPU 尚未接入。
+        /// 创建 GPU 实例化程序；后端不支持时返回 null。
         /// </summary>
-        /// <param name="fragmentSource">自定义片元着色器源码（null = 默认"纹理 × 逐实例颜色"）。</param>
-        /// <param name="capacity">单次绘制的实例上限。</param>
+        /// <param name="fragmentSource">片元着色器源码（null = 后端内置的"纹理 × 逐实例颜色"）。
+        /// 来源是 <see cref="ShaderEffect.FragmentSource"/> —— 调用方通过 <see cref="Material.Effect"/> 指定自定义着色器。</param>
+        /// <param name="capacity">实例缓冲容量（单次 draw 的实例上限）。</param>
         IGpuInstanceProgram? CreateGpuInstanceProgram(string? fragmentSource, int capacity);
 
         // ============ SRP Batcher 式（uniform buffer）============
 
+        /// <summary>后端是否支持 SRP-Batcher 式的 UBO 绘制（uniform buffer + bindBufferRange，纯能力查询）。
+        /// 必须与 <see cref="CreateUrpProgram"/> 返回是否为 null 一致。WebGL2 支持；WebGPU 尚未接入。</summary>
+        bool SupportsUrpBatching { get; }
+
         /// <summary>
-        /// 创建 SRP-Batcher 式程序（用 uniform buffer 传逐物体 / 逐材质常量）；
-        /// 后端不支持时返回 null（上层 <see cref="UrpBatch"/> 以此为准）。
-        /// 需要 WebGL2 的 uniform buffer 与 <c>bindBufferRange</c>：WebGL2 已接入；WebGPU 尚未接入。
+        /// 创建 SRP-Batcher 式程序；后端不支持时返回 null。
+        /// <para>逐物体 / 逐材质常量都走 uniform buffer，逐物体缓冲按需增长，故不需要容量参数。</para>
         /// </summary>
-        /// <param name="fragmentSource">自定义片元着色器源码（null = 内置的"纹理 × 逐物体颜色 × 材质常量"）。
-        /// 自定义着色器必须声明 <c>UnityPerMaterial</c> 常量块。</param>
-        /// <param name="capacity">单段物体数上限。</param>
-        IUrpProgram? CreateUrpProgram(string? fragmentSource, int capacity);
+        /// <param name="fragmentSource">片元着色器源码（null = 后端内置的"纹理 × 逐物体颜色 × 材质常量"）。
+        /// 来源是 <see cref="ShaderEffect.FragmentSource"/>。自定义着色器必须声明 <c>UnityPerMaterial</c> 常量块
+        /// （照 Unity 的 SRP Batcher 兼容要求）。</param>
+        IUrpProgram? CreateUrpProgram(string? fragmentSource);
 
         // ============ 纹理资源（由 Texture2D 的平台层调用） ============
 

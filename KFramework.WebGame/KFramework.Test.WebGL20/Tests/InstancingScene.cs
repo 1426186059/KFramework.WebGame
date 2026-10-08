@@ -16,13 +16,13 @@ namespace KFramework.Test.WebGL20.Tests
     /// <para>
     /// 这条路与本引擎的 CPU 合批（<see cref="SpriteBatch"/> 的逐顶点路径）是<b>两条互不相干的路子</b>：
     /// SpriteBatch 按纹理/属性块分批、逐批一次 drawElements，几何在 CPU 侧展开；
-    /// 本页走 <see cref="GpuInstanceBatch"/>（显式 Begin → Add × N → End），几何只有一份单位四边形。
+    /// 本页走 <see cref="GpuInstanceBatch"/>（显式 Begin → Draw × N → End），几何只有一份单位四边形。
     /// 想省 DrawCall 与 CPU 带宽 ⇒ 用本页这条；需要逐批换材质状态或覆盖任意 uniform ⇒ 回到 SpriteBatch。
     /// </para>
     /// <para>
     /// <b>逐实例属性</b>（照 Unity 的实例化属性）：材质用 <see cref="Material.SetGpuInstanceChannels"/> 声明
     /// <c>uPhase</c> 占 1 个实例通道，每笔把相位写进 <see cref="ShaderPropertyBlock"/> 再传给
-    /// <see cref="GpuInstanceBatch.Add(Vector2, Vector2, float, Color, ShaderPropertyBlock?)"/> ——
+    /// <see cref="GpuInstanceBatch.Draw(Texture2D, Rectangle?, Rectangle?, Color, float, Vector2, Vector2, SpriteEffects, float, ShaderPropertyBlock?)"/> ——
     /// 值随实例数据走（<c>aInst0 → vInst0</c>），片元着色器读 <c>vInst0.x</c> 得到逐实例脉冲相位，
     /// <b>每个实例各自持有自己的属性值，而整批仍然只有一次 DrawCall</b>。
     /// </para>
@@ -50,6 +50,9 @@ namespace KFramework.Test.WebGL20.Tests
         private Texture2D? _chart;
         private SpriteFont? _small;
         private GpuInstanceBatch? _instances;
+
+        /// <summary>本批材质：实例通道声明（<c>uPhase</c>）挂在它身上，<see cref="GpuInstanceBatch.Begin"/> 时传入。</summary>
+        private Material? _material;
         private ShaderPropertyBlock? _block;
         private string _error = string.Empty;
 
@@ -77,15 +80,18 @@ namespace KFramework.Test.WebGL20.Tests
             _small = new SpriteFont(Device, 13f);
 
             // 声明「哪些属性进 8 个实例通道」：uPhase 占 1 个槽（照 Unity 的实例化属性声明）。
-            var material = new Material();
-            material.SetGpuInstanceChannels(PhaseProperty);
+            // 材质与 SpriteBatch 一样在 Begin 里给，不再进构造函数。
+            _material = new Material();
+            _material.SetGpuInstanceChannels(PhaseProperty);
+            // 自定义着色器走 Material.Effect（与 SpriteBatch 同一条路子，不另开参数）：
+            // 本页用它做"逐实例明暗脉冲"（读 vInstanceID 与逐实例属性 vInst0.x）。
+            _material.Effect = Device.CreateShaderEffect(FragmentSource);
 
             _block = new ShaderPropertyBlock();
 
             try
             {
-                // 传入自定义片元着色器：本页用它做"逐实例明暗脉冲"（读 vInstanceID 与逐实例属性 vInst0.x）。
-                _instances = new GpuInstanceBatch(Device, _chart, material, FragmentSource, capacity: 4096);
+                _instances = new GpuInstanceBatch(Device);
             }
             catch (Exception ex)
             {
@@ -153,7 +159,7 @@ namespace KFramework.Test.WebGL20.Tests
                 28f, readoutY, new Color(120, 200, 160));
             DrawLine(batch, $"CPU 侧带宽/精灵：实例化 116 字节（本页 = {_lastInstances * 116 / 1024} KB）   对照 SpriteBatch 逐顶点 4×28 = 112 字节（= {_lastInstances * 112 / 1024} KB）",
                 28f, readoutY + 20f, new Color(255, 206, 110));
-            DrawLine(batch, "GpuInstanceBatch：Begin → Add × N → End；逐实例矩阵即 Unity 的 unity_ObjectToWorld，逐实例属性 uPhase 随实例数据走（aInst0 → vInst0），整批仍 1 次 DC",
+            DrawLine(batch, "GpuInstanceBatch：Begin → Draw × N → End；逐实例矩阵即 Unity 的 unity_ObjectToWorld，逐实例属性 uPhase 随实例数据走（aInst0 → vInst0），整批仍 1 次 DC",
                 28f, readoutY + 40f, new Color(150, 165, 195));
             DrawLine(batch, $"提交拆分：组数据(Begin+Add×N) = {_addMs:F2} ms　GL 提交(End) = {_endMs:F2} ms　合计 {_submitMs:F2} ms　帧间隔 = {_frameMs:F1} ms（≈ {(_frameMs > 0 ? 1000.0 / _frameMs : 0):F0} FPS）",
                 28f, readoutY + 60f, new Color(180, 220, 255));
@@ -162,7 +168,7 @@ namespace KFramework.Test.WebGL20.Tests
         }
 
         /// <summary>
-        /// 显式 Begin / Add / End：N 个实例一次 drawElementsInstanced。
+        /// 显式 Begin / Draw × N / End：N 个实例一次 drawElementsInstanced。
         /// 顺手把两段耗时分别带出来 —— 这是分辨"到底哪一侧慢"的关键数据：
         /// <list type="bullet">
         ///   <item><description><paramref name="addMs"/>：纯 C# 组数据（组矩阵 + 写实例数据 + 编码逐实例属性），不碰 GL。</description></item>
@@ -174,9 +180,14 @@ namespace KFramework.Test.WebGL20.Tests
         {
             ComputeLayout(count, out int cols, out float cellW, out float cellH, out float size);
 
+            Texture2D chart = _chart!;
+            // 锚点放在纹理中心；目标矩形给位置与尺寸，origin 会按 源尺寸 → 矩形尺寸 自动放大（照 SpriteBatch）。
+            var origin = new Vector2(chart.Width / 2f, chart.Height / 2f);
+            int side = (int)MathF.Round(size);
+
             long t0 = Stopwatch.GetTimestamp();
 
-            _instances!.Begin();
+            _instances!.Begin(_material);
             for (int i = 0; i < count; i++)
             {
                 int c = i % cols;
@@ -190,8 +201,12 @@ namespace KFramework.Test.WebGL20.Tests
                 _block!.Clear();
                 _block.SetFloat(PhaseProperty, (i % 16) / 16f);
 
-                // 逐实例色调：直接作为实例数据里的 tint（着色器的 vColor）。
-                _instances.Add(center, new Vector2(size, size), rotation, Hue(i * 0.013f), _block);
+                // 目标矩形：X/Y 是"锚点落点"（origin 给了纹理中心，所以就是精灵中心落在 center），Width/Height 是尺寸
+                // —— 语义与 SpriteBatch 的目标矩形重载一致。
+                var target = new Rectangle((int)center.X, (int)center.Y, side, side);
+
+                // Draw 的参数与 SpriteBatch 的「目标矩形」重载逐参数对应（纹理也在这里给）。
+                _instances.Draw(chart, target, null, Hue(i * 0.013f), rotation, origin, Vector2.One, SpriteEffects.None, 0f, _block);
             }
 
             long t1 = Stopwatch.GetTimestamp();

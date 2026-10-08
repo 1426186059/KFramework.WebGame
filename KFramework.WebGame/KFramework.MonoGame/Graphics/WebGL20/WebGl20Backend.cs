@@ -68,11 +68,17 @@ namespace KFramework.MonoGame
         public IShaderProgram CreateCustomShaderProgram(string vertexSource, string fragmentSource)
             => new WebGL_ShaderProgram_2D_Custom(fragmentSource);
 
-        /// <summary>创建 SRP-Batcher 式程序：WebGL2 原生支持 uniform buffer + bindBufferRange。</summary>
-        public IUrpProgram CreateUrpProgram(string? fragmentSource, int capacity)
-            => new WebGL_ShaderProgram_2D_Urp(fragmentSource, capacity);
+        /// <summary>WebGL2 支持 SRP-Batcher 式的 UBO 绘制（uniform buffer + bindBufferRange）。</summary>
+        public bool SupportsUrpBatching => true;
 
-        /// <summary>创建 GPU 实例化程序：WebGL2 原生支持（drawElementsInstanced + vertexAttribDivisor）。</summary>
+        /// <summary>WebGL2 原生支持 GPU 实例化（drawElementsInstanced + vertexAttribDivisor）。</summary>
+        public bool SupportsGpuInstancing => true;
+
+        /// <summary>创建 SRP-Batcher 式程序：逐物体缓冲按需增长，不需要容量参数。</summary>
+        public IUrpProgram CreateUrpProgram(string? fragmentSource)
+            => new WebGL_ShaderProgram_2D_Urp(fragmentSource);
+
+        /// <summary>创建 GPU 实例化程序。</summary>
         public IGpuInstanceProgram CreateGpuInstanceProgram(string? fragmentSource, int capacity)
             => new WebGL_ShaderProgram_2D_Instanced(fragmentSource, capacity);
 

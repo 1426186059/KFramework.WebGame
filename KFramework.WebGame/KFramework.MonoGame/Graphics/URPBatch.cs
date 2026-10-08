@@ -1,11 +1,26 @@
 using System.Numerics;
-using System.Runtime.InteropServices;
 
 namespace KFramework.MonoGame
 {
     /// <summary>
     /// SRP-Batcher 式的批处理器（照 Unity 的 URP / SRP Batcher）：<b>不减少 DrawCall</b>，
     /// 而是把"换物体"的 CPU 开销压到只剩<b>一次绑定</b>。
+    /// <para>
+    /// <b>API 形态与 <see cref="SpriteBatch"/> 一致</b>：构造只给设备，<see cref="Begin"/> 里给
+    /// 材质 / 渲染顺序 / 相机矩阵，<see cref="Draw"/> 的参数（texture / targetRectangle / sourceRectangle / color /
+    /// rotation / origin / scale / effects / layerDepth）与
+    /// <see cref="SpriteBatch.Draw(Texture2D, Rectangle, Rectangle?, Color, float, Vector2, SpriteEffects, float)"/>
+    /// 逐参数对应，三个批处理之间换用不必改调用代码。
+    /// <b>纹理走 <see cref="Draw"/> 而不是构造</b> —— 因为每个物体本来就是一次独立 draw，
+    /// 每条记录可以带自己的纹理（同纹理连着的会拼成一段，避免重复绑定）。
+    /// </para>
+    /// <para>
+    /// <b>自定义着色器走 <see cref="Material.Effect"/></b>（和 <see cref="SpriteBatch"/> 同一条路子）：
+    /// <c>var effect = Device.CreateShaderEffect(fragmentSource); material.Effect = effect;</c>
+    /// 引擎从 <see cref="ShaderEffect.FragmentSource"/> 取回源码，为这条路创建对应的程序，并按源码缓存
+    /// —— <b>同一个源码只编译一次</b>，所以把它放在 <see cref="Begin"/> 里不会每帧重编译。
+    /// 自定义片元着色器必须声明 <c>UnityPerMaterial</c> 常量块（照 Unity 的 SRP Batcher 兼容要求）。
+    /// </para>
     /// <para>
     /// <b>Unity 的 SRP Batcher 到底省什么</b>（三条硬性机制，本类一一对应）：
     /// <list type="number">
@@ -17,37 +32,52 @@ namespace KFramework.MonoGame
     ///   要求所有材质属性都声明在同一个 CBUFFER 里 —— 用 <see cref="ShaderPropertyBlock"/> 的物体会被踢出 SRP Batcher，正是这条。</description></item>
     /// </list>
     /// 结果是：<b>DrawCall 数量不变</b>，但每物体之间的 CPU 成本从"设一堆 uniform + 可能切程序"变成"改一次绑定"。
-    /// 它和 GPU 实例化是<b>互补</b>的两条路：实例化能把 DrawCall 压到 1，但受顶点属性槽/格式限制；
-    /// 这条路不压 DrawCall，却什么数据都装得下（矩阵、整型、任意分量），而且不依赖实例化支持。
+    /// 它和 GPU 实例化是<b>互补</b>的两条路：实例化能把 DrawCall 压到 1（但一次 Begin 只能一张纹理、且受顶点属性槽/格式限制）；
+    /// 这条路不压 DrawCall，却什么数据都装得下（矩阵、整型、任意分量），还能逐笔换纹理。
     /// </para>
     /// <para>
     /// 三条路的选型（都能"同材质画 N 个精灵"）：
     /// <list type="table">
     ///   <item><term><see cref="SpriteBatch"/>（CPU 合批）</term><description>按纹理分批，DrawCall 少；每帧重传整批顶点几何。</description></item>
-    ///   <item><term><see cref="GpuInstanceBatch"/>（GPU 实例化）</term><description>DrawCall = 1/缓冲；逐物体数据走顶点属性通道（受格式与槽数限制）。</description></item>
-    ///   <item><term>UrpBatch（本类，SRP Batcher 式）</term><description>DrawCall = 物体数；换物体成本 ≈ 一次 <c>bindBufferRange</c>，数据走 UBO（不受顶点格式限制）。</description></item>
+    ///   <item><term><see cref="GpuInstanceBatch"/>（GPU 实例化）</term><description>DrawCall = 1/缓冲；逐物体数据走顶点属性通道（受格式与槽数限制），一次 Begin 一张纹理。</description></item>
+    ///   <item><term>UrpBatch（本类，SRP Batcher 式）</term><description>DrawCall = 物体数；换物体成本 ≈ 一次 <c>bindBufferRange</c>，数据走 UBO（不受顶点格式限制），可逐笔换纹理。</description></item>
     /// </list>
     /// </para>
     /// <para>用法：</para>
     /// <code>
-    /// using var urp = new UrpBatch(Device, atlas, material);
+    /// using var urp = new UrpBatch(Device);
     /// urp.MaterialColor = new Vector4(1f, 0.9f, 0.8f, 1f);   // 材质常量：一段只传一次
-    /// urp.Begin();
+    /// urp.Begin(material);                                  // 材质（含 Material.Effect 自定义着色器）/ 排序 / 相机矩阵
     /// for (int i = 0; i &lt; 512; i++)
-    ///     urp.Add(center, size, rotation, tint);            // 逐物体：进逐物体常量缓冲
+    ///     urp.Draw(atlas, targetRect, sourceRect, tint, rotation, origin, scale, SpriteEffects.None, layerDepth);
     /// int drawCalls = urp.End();                            // = 512（不降 DrawCall），材质上传仍只有 1 次
     /// </code>
+    /// </para>
     /// </summary>
     public sealed class UrpBatch : IDisposable
     {
         private readonly GraphicsDevice _device;
-        private readonly Texture2D _texture;
-        private readonly Material _material;
-        private readonly IUrpProgram? _impl;
-        private readonly List<UrpDrawData> _objects = new();
 
-        /// <summary>本批物体共用的 UV 矩形（取自纹理的 <see cref="Texture2D.Bounds"/>）。</summary>
-        private readonly Vector4 _uvRect;
+        /// <summary>本批的材质快照（照 <see cref="SpriteBatch"/> 的 <c>_cache_Mat</c>：复用同一个材质，每帧零分配）。</summary>
+        private readonly Material _material = new();
+
+        /// <summary>按片元源码缓存的后端程序：同一个源码只创建（编译）一次。</summary>
+        private readonly Dictionary<string, IUrpProgram?> _programs = new();
+
+        /// <summary>本批已排队的物体（按绘制顺序；排序模式非 Deferred 时在提交前排序）。</summary>
+        private readonly List<Entry> _entries = new();
+
+        /// <summary>提交时把物体拷成连续数组（逐物体常量缓冲要连续内存）。</summary>
+        private UrpDrawData[] _scratch = Array.Empty<UrpDrawData>();
+
+        /// <summary>缓存比较委托，避免每次排序分配。</summary>
+        private static readonly Comparison<Entry> EntryComparison = CompareEntries;
+
+        private IUrpProgram? _impl;
+        private SpriteSortMode _sortMode;
+        private Matrix4x4 _transform = Matrix4x4.Identity;
+        private Matrix4x4 _projection;
+        private bool _begun;
 
         /// <summary>材质常量（<c>UnityPerMaterial</c> 里的 uColorScale）：改了才在下次提交时重传一次。</summary>
         public Vector4 MaterialColor = Vector4.One;
@@ -57,27 +87,49 @@ namespace KFramework.MonoGame
 
         private bool _materialUploaded;
         private Vector4 _uploadedColor;
-        private bool _begun;
 
-        /// <summary>
-        /// 创建 SRP-Batcher 式批处理器。
-        /// </summary>
-        /// <param name="device">图形设备。</param>
-        /// <param name="texture">本批共用的纹理（图集子区域视图也可以，UV 自动取其 Bounds）。</param>
-        /// <param name="material">材质（混合 / 采样 / 深度 / 剔除状态）；为 null 时用精灵默认状态。</param>
-        /// <param name="fragmentSource">自定义片元着色器（GLSL ES 3.00）。为 null 时用内置的
-        /// "纹理 × 逐物体颜色 × 材质常量"。注意：它必须声明 <c>UnityPerMaterial</c> 常量块（照 Unity 的 SRP Batcher 兼容要求）。</param>
-        /// <param name="capacity">单段能画的物体上限（超出自动分段）。</param>
-        public UrpBatch(GraphicsDevice device, Texture2D texture, Material? material = null,
-                        string? fragmentSource = null, int capacity = 1024)
+        /// <summary>排队的一条绘制：逐物体常量 + 纹理 + 排序键 + 原始次序（同键时保持稳定排序）。</summary>
+        private struct Entry
+        {
+            public UrpDrawData Data;
+            public Texture2D Texture;
+            public float SortKey;
+            public int Order;
+        }
+
+        /// <summary>创建 SRP-Batcher 式批处理器（只给设备；材质 / 排序 / 相机矩阵在 <see cref="Begin"/> 里给）。</summary>
+        public UrpBatch(GraphicsDevice device)
         {
             ArgumentNullException.ThrowIfNull(device);
-            ArgumentNullException.ThrowIfNull(texture);
-
             _device = device;
-            _texture = texture;
+        }
 
-            _material = new Material();
+        /// <summary>当前后端是否支持 SRP-Batcher 式的 UBO 绘制（WebGL2 支持；WebGPU 尚未接入）。</summary>
+        public bool IsSupported => _device.Backend.SupportsUrpBatching;
+
+        /// <summary>单段能画的物体上限（逐物体缓冲按需增长，Begin 之后可读当前值）。</summary>
+        public int Capacity => _impl?.Capacity ?? 0;
+
+        /// <summary>本次 Begin 之后已加入的物体数。</summary>
+        public int ObjectCount => _entries.Count;
+
+        /// <summary>
+        /// 开一批（与 <see cref="SpriteBatch.Begin(Material, SpriteSortMode, Matrix4x4?)"/> 对应）：
+        /// 材质、渲染顺序与相机矩阵都在这里给。
+        /// </summary>
+        /// <param name="material">材质（混合 / 采样 / 深度 / 剔除状态 + <see cref="Material.Effect"/> 自定义着色器）；
+        /// 为 null 时用精灵默认状态与内置片元着色器。逐材质常量请用 <see cref="MaterialColor"/>（它进 <c>UnityPerMaterial</c> 常量块）。</param>
+        /// <param name="sortMode">渲染顺序（<see cref="SpriteSortMode"/>）：Deferred = 保持 Draw 调用顺序；
+        /// Texture = 按纹理排序（让同纹理的物体连在一起，减少绑定切换）；FrontToBack / BackToFront = 按 layerDepth 排序；
+        /// Immediate = 每笔当场提交。</param>
+        /// <param name="transformMatrix">相机矩阵（世界 → 屏幕的变换），null = 单位矩阵；与投影矩阵相乘后下发。</param>
+        public void Begin(Material? material = null, SpriteSortMode sortMode = SpriteSortMode.Deferred,
+                          Matrix4x4? transformMatrix = null)
+        {
+            if (_begun) throw new InvalidOperationException("上一次 Begin 还没有对应的 End。");
+
+            // 材质快照：复用同一个 Material 实例（照 SpriteBatch 的 _cache_Mat），逐批零分配。
+            _material.Reset();
             if (material is not null)
             {
                 _material.Effect = material.Effect;
@@ -86,86 +138,92 @@ namespace KFramework.MonoGame
                 _material.DepthStencil = material.DepthStencil;
                 _material.Rasterizer = material.Rasterizer;
             }
-            else
-            {
-                _material.Blend = BlendState.NonPremultiplied;
-                _material.Sampler = SamplerState.Point;
-                _material.DepthStencil = DepthStencilState.None;
-                _material.Rasterizer = RasterizerState.CullNone;
-            }
 
-            _impl = device.Backend.CreateUrpProgram(fragmentSource, capacity);
-            _uvRect = ComputeUvRect(texture);
-        }
+            // 着色器：来自 Material.Effect 的片元源码（null = 内置默认）。按源码缓存，故每帧 Begin 不会重编译。
+            _impl = ResolveProgram(material?.Effect?.FragmentSource);
+            if (_impl is null)
+                throw new NotSupportedException(
+                    $"后端「{_device.Backend.Name}」尚未接入 SRP-Batcher 式的 UBO 绘制。");
 
-        /// <summary>纹理的 UV 矩形（归一化到 0~1）：xy = 起点，zw = 尺寸。</summary>
-        private static Vector4 ComputeUvRect(Texture2D texture)
-        {
-            float tw = Math.Max(1, texture.TextureWidth);
-            float th = Math.Max(1, texture.TextureHeight);
-            Rectangle bounds = texture.Bounds;
-            return new Vector4(bounds.X / tw, bounds.Y / th, bounds.Width / tw, bounds.Height / th);
-        }
-
-        /// <summary>当前后端是否支持 SRP-Batcher 式的 UBO 绘制（WebGL2 支持；WebGPU 尚未接入）。</summary>
-        public bool IsSupported => _impl is not null;
-
-        /// <summary>单段的物体上限。</summary>
-        public int Capacity => _impl?.Capacity ?? 0;
-
-        /// <summary>本次 Begin 之后已加入的物体数。</summary>
-        public int ObjectCount => _objects.Count;
-
-        /// <summary>开一段：之后 <see cref="Add"/> 的物体共用同一份材质与纹理。</summary>
-        public void Begin()
-        {
-            if (_begun) throw new InvalidOperationException("上一次 Begin 还没有对应的 End。");
-            _objects.Clear();
+            _sortMode = sortMode;
+            _transform = transformMatrix ?? Matrix4x4.Identity;
+            _projection = _device.CreateSpriteProjection();
+            _entries.Clear();
             _begun = true;
         }
 
-        public void Add(Vector2 center, Vector2 size)
-            => Add(center, size, 0f, Color.White);
-
-        public void Add(Vector2 center, Vector2 size, float rotation)
-            => Add(center, size, rotation, Color.White);
-
-        /// <summary>
-        /// 便捷重载：按「中心点 / 尺寸 / 旋转弧度 / 颜色」加入一个物体
-        /// （内部用 <see cref="GpuInstance.CreateObjectToWorld"/> 组出对象→世界矩阵）。
-        /// </summary>
-        public void Add(Vector2 center, Vector2 size, float rotation, Color tint)
-            => Add(GpuInstance.CreateObjectToWorld(center, size, rotation), tint);
-
-        /// <summary>
-        /// 直接给「对象→世界矩阵」（照 Unity 的 per-object <c>unity_ObjectToWorld</c>）：
-        /// 矩阵把单位四边形 (0,0)-(1,1) 变换到屏幕，约定与本引擎一致（行主序 + 行向量 p' = p × M）。
-        /// </summary>
-        public void Add(in Matrix4x4 objectToWorld, Color tint)
+        /// <summary>取（必要时创建）指定片元源码对应的 URP 程序；同一个源码只创建一次。</summary>
+        private IUrpProgram? ResolveProgram(string? fragmentSource)
         {
-            if (!_begun) throw new InvalidOperationException("Add 必须在 Begin / End 之间调用。");
-
-            _objects.Add(new UrpDrawData
+            string key = fragmentSource ?? string.Empty;
+            if (!_programs.TryGetValue(key, out IUrpProgram? program))
             {
-                ObjectToWorld = objectToWorld,
-                UvRect = _uvRect,
-                Tint = new Vector4(tint.R / 255f, tint.G / 255f, tint.B / 255f, tint.A / 255f),
-            });
+                program = _device.Backend.CreateUrpProgram(fragmentSource);
+                _programs.Add(key, program);
+            }
+            return program;
         }
 
         /// <summary>
-        /// 提交本段：先（必要时）上传一次材质常量，再整段上传逐物体常量，
-        /// 然后逐个 <c>drawElements</c>（每次只重绑一次 UBO 范围）。返回本次的 DrawCall 数（= 物体数）。
+        /// 加入一个物体（本类唯一的 Draw 重载）。参数语义与
+        /// <see cref="SpriteBatch.Draw(Texture2D, Rectangle, Rectangle?, Color, float, Vector2, SpriteEffects, float)"/>
+        /// 完全一致（targetRectangle 的 X/Y 是锚点落点、Width/Height 是基准尺寸，null = 落点在原点、尺寸取源尺寸；scale 在矩形尺寸之上再做额外缩放）。
+        /// </summary>
+        public void Draw(Texture2D texture, Rectangle? targetRectangle, Rectangle? sourceRectangle, Color color, float rotation,
+                         Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth = 0f)
+        {
+            ArgumentNullException.ThrowIfNull(texture);
+            if (!_begun) throw new InvalidOperationException("Draw 必须在 Begin / End 之间调用。");
+
+            Rectangle source = sourceRectangle ?? new Rectangle(0, 0, texture.Width, texture.Height);
+            Vector2 position = targetRectangle.HasValue ? new Vector2(targetRectangle.Value.X, targetRectangle.Value.Y) : Vector2.Zero;
+            float w = (targetRectangle?.Width ?? source.Width) * scale.X;
+            float h = (targetRectangle?.Height ?? source.Height) * scale.Y;
+
+            // 照 SpriteBatch：origin 是源纹理上的像素锚点，按 源尺寸 → 实际尺寸 的比例放大后再定位。
+            origin = new Vector2(source.Width == 0 ? 0f : origin.X * w / source.Width, source.Height == 0 ? 0f : origin.Y * h / source.Height);
+
+            // UV（含图集 Bounds 偏移与翻转）：与 SpriteBatch 共用同一份实现。
+            SpriteBatch.ComputeUv(texture, sourceRectangle, effects, out Vector2 uvTL, out Vector2 uvBR);
+
+            _entries.Add(new Entry
+            {
+                Data = new UrpDrawData
+                {
+                    ObjectToWorld = GpuInstance.CreateObjectToWorld(position, origin, new Vector2(w, h), rotation),
+                    // 翻转已体现在 uvTL / uvBR 的交换里：UV 尺寸写成负值，着色器插值方向自然就反了。
+                    UvRect = new Vector4(uvTL.X, uvTL.Y, uvBR.X - uvTL.X, uvBR.Y - uvTL.Y),
+                    Tint = new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f),
+                },
+                Texture = texture,
+                SortKey = SortKeyFor(texture, layerDepth),
+                Order = _entries.Count,
+            });
+
+            if (_sortMode == SpriteSortMode.Immediate) FlushQueued();
+        }
+
+        /// <summary>
+        /// 提交本批：先（必要时）上传一次材质常量，然后按"连续同一张纹理"切段，
+        /// 每段整段上传逐物体常量 + 逐个 <c>drawElements</c>（每次只重绑一次 UBO 范围）。
+        /// 返回本次的 DrawCall 数（= 物体数）。
         /// </summary>
         public int End()
         {
             if (!_begun) throw new InvalidOperationException("End 必须在 Begin 之后调用。");
             _begun = false;
 
-            if (_impl is null)
-                throw new InvalidOperationException(
-                    $"当前后端（{_device.Backend.Name}）尚未接入 SRP-Batcher 式的 UBO 绘制。");
-            if (_objects.Count == 0) return 0;
+            return FlushQueued();
+        }
+
+        /// <summary>把已排队的物体提交掉（Immediate 模式下每笔 Draw 都会调它）。</summary>
+        private int FlushQueued()
+        {
+            if (_entries.Count == 0) return 0;
+            if (_impl is null) { _entries.Clear(); return 0; }
+
+            if (_sortMode != SpriteSortMode.Deferred && _sortMode != SpriteSortMode.Immediate)
+                _entries.Sort(EntryComparison);
 
             // 材质常量：材质/值没变就一次都不传（这就是"每材质一份常驻常量缓冲"）。
             bool uploadMaterial = !_materialUploaded || MaterialColor != _uploadedColor;
@@ -176,34 +234,57 @@ namespace KFramework.MonoGame
                 MaterialUploads++;
             }
 
-            Matrix4x4 projection = CurrentProjection();
-            Span<UrpDrawData> span = CollectionsMarshal.AsSpan(_objects);
-            Vector4 color = MaterialColor;
+            if (_scratch.Length < _entries.Count)
+                _scratch = new UrpDrawData[Math.Max(_entries.Count, GraphicsDevice.MaxBatchSize)];
 
+            Matrix4x4 transform = _transform * _projection;
+            Vector4 color = MaterialColor;
             int draws = 0;
-            for (int offset = 0; offset < span.Length; offset += _impl.Capacity)
+
+            int start = 0;
+            while (start < _entries.Count)
             {
-                int count = Math.Min(_impl.Capacity, span.Length - offset);
-                draws += _device.DrawUrpSegment(_impl, _material, projection, span.Slice(offset, count), count,
-                                                _texture, color, uploadMaterial);
-                uploadMaterial = false;   // 后续分段共用同一份常驻材质缓冲，不必再传
+                // 连续同一张纹理拼成一段：段内只需绑定一次纹理。
+                Texture2D texture = _entries[start].Texture;
+                int end = start + 1;
+                while (end < _entries.Count && ReferenceEquals(_entries[end].Texture, texture)) end++;
+
+                int runLength = end - start;
+                for (int i = 0; i < runLength; i++) _scratch[i] = _entries[start + i].Data;
+
+                // 逐物体缓冲在后端按需增长，所以这里不分块：一段一次性上传 + N 次 drawElements。
+                draws += _device.DrawUrpSegment(_impl, _material, transform, _scratch.AsSpan(0, runLength), runLength,
+                                                texture, color, uploadMaterial);
+                uploadMaterial = false;   // 材质常量整批只传一次，后续段共用同一份常驻缓冲
+
+                start = end;
             }
 
-            _objects.Clear();
+            _entries.Clear();
             return draws;
         }
 
-        /// <summary>
-        /// 投影矩阵：与 SpriteBatch 完全一致（世界坐标就是屏幕坐标；离屏渲染时是否翻 Y 取决于后端坐标系原点）。
-        /// </summary>
-        private Matrix4x4 CurrentProjection()
+        /// <summary>排序键：与 <see cref="SpriteBatch"/> 一致。Texture 模式用 Texture.SortingKey，前后排序用 layerDepth。</summary>
+        private float SortKeyFor(Texture2D texture, float layerDepth) => _sortMode switch
         {
-            var viewport = _device.Viewport;
-            return _device.RenderTargetCount > 0 && _device.Backend.NeedsOffscreenYFlip
-                ? Matrix4x4.CreateOrthographicOffCenter(0f, viewport.Width, 0f, viewport.Height, 0f, 1f)
-                : Matrix4x4.CreateOrthographicScreen(viewport.Width, viewport.Height);
+            SpriteSortMode.Texture => texture.SortingKey,
+            SpriteSortMode.FrontToBack => layerDepth,
+            SpriteSortMode.BackToFront => -layerDepth,
+            _ => 0f,
+        };
+
+        /// <summary>物体排序：先按排序键，键相同再按原始次序（等价于稳定排序）。</summary>
+        private static int CompareEntries(Entry a, Entry b)
+        {
+            int byKey = a.SortKey.CompareTo(b.SortKey);
+            return byKey != 0 ? byKey : a.Order.CompareTo(b.Order);
         }
 
-        public void Dispose() => _impl?.Dispose();
+        public void Dispose()
+        {
+            foreach (IUrpProgram? program in _programs.Values) program?.Dispose();
+            _programs.Clear();
+            _impl = null;
+        }
     }
 }

@@ -65,17 +65,8 @@ namespace KFramework.MonoGame
             _transform = transformMatrix ?? Matrix4x4.Identity;
             _batcher.SetSamplerState(material.Sampler);
 
-            var viewport = _device.Viewport;
-            // 离屏时是否改用 Y 向上投影，取决于后端的坐标系原点（详见 IGraphicsBackend.NeedsOffscreenYFlip）：
-            //   WebGL  —— FBO 原点在左下，"屏幕翻转"与"FBO 翻转"抵消后才对，故需要；
-            //   WebGPU —— 附件原点与屏幕一致（都在左上），再翻一次就会上下颠倒，故不需要。
-            // WebGL 这条等价于 MonoGame GL 后端在顶点着色器里对离屏渲染做的 posFixup.y *= -1
-            // （GraphicsDevice.OpenGL.cs: "If we have a render target bound (rendering offscreen) flip vertically"）。
-            // 注意：这里曾把 WebGL 的事实当成通用真理硬编码，导致 WebGPU 的离屏画面上下颠倒
-            //（症状：渲染目标里的文字是倒的）。
-            _projection = _device.RenderTargetCount > 0 && _device.Backend.NeedsOffscreenYFlip
-                ? Matrix4x4.CreateOrthographicOffCenter(0f, viewport.Width, 0f, viewport.Height, 0f, 1f)
-                : Matrix4x4.CreateOrthographicScreen(viewport.Width, viewport.Height);
+            // 投影矩阵：与 GpuInstanceBatch / UrpBatch 共用同一份（见 GraphicsDevice.CreateSpriteProjection）。
+            _projection = _device.CreateSpriteProjection();
 
             // Immediate 模式与「带属性块」的绘制，都由 batcher 在提交时逐段下发状态（见 Draw / End），这里不提前设。
             _beginCalled = true;
@@ -172,9 +163,15 @@ namespace KFramework.MonoGame
             _ => 0f,
         };
 
-        /// <summary>UV 计算（含图集 Bounds 偏移与翻转）。</summary>
-        private static void ComputeUv(Texture2D texture, Rectangle? sourceRectangle, SpriteEffects effects,
-                                      out Vector2 uvTL, out Vector2 uvBR)
+        /// <summary>
+        /// UV 计算（含图集 Bounds 偏移与翻转）。
+        /// <para>
+        /// <c>internal</c>：<see cref="GpuInstanceBatch"/> / <see cref="UrpBatch"/> 与这里共用同一份，
+        /// 保证三个批处理的 sourceRectangle / SpriteEffects 语义完全一致（换批处理不用改调用代码）。
+        /// </para>
+        /// </summary>
+        internal static void ComputeUv(Texture2D texture, Rectangle? sourceRectangle, SpriteEffects effects,
+                                       out Vector2 uvTL, out Vector2 uvBR)
         {
             Rectangle source = sourceRectangle ?? new Rectangle(0, 0, texture.Width, texture.Height);
 

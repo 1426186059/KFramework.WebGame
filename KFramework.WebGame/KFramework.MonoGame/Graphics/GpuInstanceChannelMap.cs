@@ -15,7 +15,7 @@ namespace KFramework.MonoGame
     /// </para>
     /// <para>
     /// 只有 float / int / 向量 / 颜色能进通道；矩阵与纹理进不去 ——
-    /// <see cref="GpuInstanceBatch.Add(in Matrix4x4, Color, ShaderPropertyBlock?)"/> 传进来的块里
+    /// <see cref="GpuInstanceBatch.Draw(Texture2D, Rectangle?, Rectangle?, Color, float, Vector2, Vector2, SpriteEffects, float, ShaderPropertyBlock?)"/> 传进来的块里
     /// 出现没被声明的属性时会直接抛异常（实例化路径没有 uniform 覆盖层，装不下的东西无处可去；
     /// 早失败好过静默画错）。
     /// </para>

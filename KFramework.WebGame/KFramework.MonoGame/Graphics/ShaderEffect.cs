@@ -52,9 +52,20 @@ void main()
         /// <summary>底层的后端着色器程序（WebGL = GLSL Program，WebGPU = WGSL 模块 + 渲染管线）。</summary>
         public IShaderProgram Program { get; }
 
-        public ShaderEffect(IShaderProgram program)
+        /// <summary>
+        /// 创建这个效果时用的片元着色器源码（<see cref="GraphicsDevice.CreateShaderEffect"/> 传进来的那份）。
+        /// <para>
+        /// 用途：<see cref="GpuInstanceBatch"/> / <see cref="UrpBatch"/> 需要"用户这份片元 + 它们各自的顶点着色器"
+        /// （实例化 / UBO 两条路的顶点输入与 SpriteBatch 不同），所以要从效果里取回源码，创建对应种类的程序。
+        /// 为 null 表示这是后端内置的默认程序（如 <see cref="Default"/>），批处理就用各自内置的默认片元着色器。
+        /// </para>
+        /// </summary>
+        public string? FragmentSource { get; }
+
+        public ShaderEffect(IShaderProgram program, string? fragmentSource = null)
         {
             Program = program ?? throw new ArgumentNullException(nameof(program));
+            FragmentSource = fragmentSource;
         }
 
         /// <summary>动画时间（秒）：即片元着色器的 <c>uTime</c> 属性（没设过时为 0）。</summary>

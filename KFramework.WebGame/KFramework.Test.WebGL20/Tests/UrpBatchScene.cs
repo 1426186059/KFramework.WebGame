@@ -49,6 +49,9 @@ namespace KFramework.Test.WebGL20.Tests
         private Texture2D? _chart;
         private SpriteFont? _small;
         private UrpBatch? _urp;
+
+        /// <summary>本批材质（混合 / 采样）；与 SpriteBatch 一样在 <see cref="UrpBatch.Begin"/> 里给。</summary>
+        private Material? _material;
         private string _error = string.Empty;
 
         private float _time;
@@ -70,7 +73,8 @@ namespace KFramework.Test.WebGL20.Tests
             _chart = MakeChecker(64, Color.White, new Color(36, 46, 66));
             _small = new SpriteFont(Device, 13f);
 
-            var material = new Material
+            // 材质与 SpriteBatch 一样在 Begin 里给（不占构造函数）。
+            _material = new Material
             {
                 Blend = BlendState.NonPremultiplied,
                 Sampler = SamplerState.Point,
@@ -78,7 +82,7 @@ namespace KFramework.Test.WebGL20.Tests
 
             try
             {
-                _urp = new UrpBatch(Device, _chart, material, capacity: 4096);
+                _urp = new UrpBatch(Device);
             }
             catch (Exception ex)
             {
@@ -156,7 +160,7 @@ namespace KFramework.Test.WebGL20.Tests
                 28f, readoutY + 20f, new Color(255, 206, 110));
             DrawLine(batch, "每个物体只做：bindBufferRange（换偏移）+ drawElements —— 不切程序、不设 uniform、不传数据",
                 28f, readoutY + 40f, new Color(180, 220, 255));
-            DrawLine(batch, $"提交拆分：组数据(Add×N) = {_addMs:F2} ms　GL 提交(End) = {_endMs:F2} ms　帧间隔 = {_frameMs:F1} ms（≈ {(_frameMs > 0 ? 1000.0 / _frameMs : 0):F0} FPS）",
+            DrawLine(batch, $"提交拆分：组数据(Draw×N) = {_addMs:F2} ms　GL 提交(End) = {_endMs:F2} ms　帧间隔 = {_frameMs:F1} ms（≈ {(_frameMs > 0 ? 1000.0 / _frameMs : 0):F0} FPS）",
                 28f, readoutY + 60f, new Color(180, 220, 255));
             DrawLine(batch, "注：逐物体常量按 UNIFORM_BUFFER_OFFSET_ALIGNMENT（常见 256 字节）对齐占位，所以每条记录实际占位比 96 字节大",
                 28f, readoutY + 80f, new Color(150, 165, 195));
@@ -171,7 +175,12 @@ namespace KFramework.Test.WebGL20.Tests
         {
             ComputeLayout(count, out int cols, out cellW, out cellH, out size);
 
-            _urp!.Begin();
+            Texture2D chart = _chart!;
+            // 锚点放在纹理中心；目标矩形给位置与尺寸，origin 会按 源尺寸 → 矩形尺寸 自动放大（照 SpriteBatch）。
+            var origin = new Vector2(chart.Width / 2f, chart.Height / 2f);
+            int side = (int)MathF.Round(size);
+
+            _urp!.Begin(_material);
             for (int i = 0; i < count; i++)
             {
                 int c = i % cols;
@@ -180,7 +189,12 @@ namespace KFramework.Test.WebGL20.Tests
                 var center = new Vector2(GridLeft + (c + 0.5f) * cellW, GridTop + (r + 0.5f) * cellH);
                 float rotation = _time * 1.2f + (r + c) * 0.06f;
 
-                _urp.Add(center, new Vector2(size, size), rotation, Hue(i * 0.013f));
+                // 目标矩形：X/Y 是"锚点落点"（origin 给了纹理中心，所以就是精灵中心落在 center），Width/Height 是尺寸
+                // —— 语义与 SpriteBatch 的目标矩形重载一致。
+                var target = new Rectangle((int)center.X, (int)center.Y, side, side);
+
+                // Draw 的参数与 SpriteBatch 的「目标矩形」重载逐参数对应（纹理也在这里给，可以逐笔换纹理）。
+                _urp.Draw(chart, target, null, Hue(i * 0.013f), rotation, origin, Vector2.One, SpriteEffects.None, 0f);
             }
         }
 

@@ -25,7 +25,7 @@ namespace KFramework.MonoGame
     /// <see cref="Inst0"/> / <see cref="Inst1"/> 是"每个实例各自持有自己的属性值"的落点：由
     /// <see cref="Material.SetGpuInstanceChannels"/> 声明哪些着色器属性进这 8 个槽
     /// （照 Unity 的实例化属性 <c>UNITY_INSTANCING_BUFFER</c>），值由
-    /// <see cref="GpuInstanceBatch.Add(in Matrix4x4, Color, ShaderPropertyBlock?)"/> 从属性块编码进来 ——
+    /// <see cref="GpuInstanceBatch.Draw(Texture2D, Rectangle?, Rectangle?, Color, float, Vector2, Vector2, SpriteEffects, float, ShaderPropertyBlock?)"/> 从属性块编码进来 ——
     /// 逐精灵不同的属性值随实例缓冲走、不占 uniform，整批仍然只有一次 DrawCall。
     /// </para>
     /// <para>
@@ -79,35 +79,43 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 便捷构造「对象→世界」矩阵：等价于 Unity 的 <c>Matrix4x4.TRS(position, rotation, scale)</c>
-        /// 再加上一步"单位四边形居中"（Unity 的四边形网格是居中的，我们的是 (0,0)-(1,1)）。
-        /// <para>
-        /// 顺序（行向量约定：先发生的写在左边）：
-        /// 平移 -0.5 居中 → 按 <paramref name="size"/> 缩放 → 绕中心旋转 <paramref name="rotation"/> 弧度 → 平移到 <paramref name="center"/>。
-        /// </para>
-        /// <para>
-        /// 实现是上面那条链的<b>展开式</b>：2D 仿射只有 6 个非平凡分量（M11/M12/M21/M22/M41/M42），
-        /// 一次三角函数 + 约 10 次浮点运算即可，不必做三次通用 4×4 乘法
-        /// （逐实例路径每帧要算 N 次，这是热路径；通用乘法每次 112 次运算外加 64 字节中间结果拷贝）。
-        /// </para>
+        /// 便捷构造「对象→世界」矩阵（按中心点）：等价于 <see cref="CreateObjectToWorld(Vector2, Vector2, Vector2, float)"/>
+        /// 取 <paramref name="origin"/> = 半个尺寸 —— 即"单位四边形居中到 <paramref name="center"/>、按 size 缩放、绕中心旋转"。
         /// </summary>
         public static Matrix4x4 CreateObjectToWorld(Vector2 center, Vector2 size, float rotation)
+            => CreateObjectToWorld(center, new Vector2(size.X * 0.5f, size.Y * 0.5f), size, rotation);
+
+        /// <summary>
+        /// 通用「对象→世界」矩阵：<b>语义与 <see cref="SpriteBatch.Draw(Texture2D, Vector2, Rectangle?, Color, float, Vector2, Vector2, SpriteEffects, float, ShaderPropertyBlock?)"/> 完全一致</b>
+        /// （照 MonoGame 的 origin / scale 约定），所以三个批处理之间换用不需要改调用代码。
+        /// <para>
+        /// 行向量约定下的等价变换链：<c>按 size 缩放 → 平移 -origin → 绕 (0,0) 旋转 → 平移到 position</c>，
+        /// 即 <c>p' = position + R(rotation) · (p ⊙ size − origin)</c>，其中 p 是单位四边形 (0,0)-(1,1) 上的点。
+        /// </para>
+        /// <para>
+        /// 注意 <paramref name="origin"/> 与 <see cref="SpriteBatch"/> 一样是<b>已乘过 scale</b> 的像素值（调用方乘好）。
+        /// </para>
+        /// <para>
+        /// 实现是展开式：2D 仿射只有 6 个非平凡分量（M11/M12/M21/M22/M41/M42），一次三角函数 + 约 10 次浮点运算，
+        /// 不必做三次通用 4×4 乘法（逐物体路径每帧要算 N 次，通用乘法每次 112 次运算外加 64 字节中间结果拷贝）。
+        /// </para>
+        /// </summary>
+        public static Matrix4x4 CreateObjectToWorld(Vector2 position, Vector2 origin, Vector2 size, float rotation)
         {
             float c = MathF.Cos(rotation), s = MathF.Sin(rotation);
             float w = size.X, h = size.Y;
 
-            // p' = p × [居中平移 × 缩放 × 旋转 × 平移到中心] 展开后：
-            //   [ w·c   w·s  0  0 ]        x' = x·w·c − y·h·s + M41
-            //   [ −h·s  h·c  0  0 ]   →
-            //   [  0     0   1  0 ]        M41 = cx − ½(w·c − h·s)，M42 = cy − ½(w·s + h·c)
-            //   [ M41   M42  0  1 ]        即"居中平移"也被旋转带偏后的结果
+            // [  w·c   w·s  0  0 ]     x' = x·w·c − y·h·s + M41
+            // [ −h·s   h·c  0  0 ]  →  y' = x·w·s + y·h·c + M42
+            // [   0     0   1  0 ]     M41 = px − ox·c + oy·s
+            // [  M41   M42  0  1 ]     M42 = py − ox·s − oy·c
             return new Matrix4x4
             {
                 M11 = w * c, M12 = w * s,
                 M21 = -h * s, M22 = h * c,
                 M33 = 1f,
-                M41 = center.X - 0.5f * (w * c - h * s),
-                M42 = center.Y - 0.5f * (w * s + h * c),
+                M41 = position.X - origin.X * c + origin.Y * s,
+                M42 = position.Y - origin.X * s - origin.Y * c,
                 M44 = 1f,
             };
         }

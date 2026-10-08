@@ -241,7 +241,9 @@ namespace KFramework.MonoGame
         public ShaderEffect CreateShaderEffect(string fragmentSource, string? vertexSource = null)
         {
             IShaderProgram program = Backend.CreateCustomShaderProgram(vertexSource ?? string.Empty, fragmentSource);
-            return new ShaderEffect(program);
+            // 源码一并存进效果：GpuInstanceBatch / UrpBatch 要拿它去创建"它们那一路"的程序
+            //（顶点输入不同，不能复用这个普通精灵程序）。
+            return new ShaderEffect(program, fragmentSource);
         }
 
         /// <summary>
@@ -481,6 +483,26 @@ namespace KFramework.MonoGame
             _metrics._drawCount++;
             _metrics._primitiveCount += count * 2;
             _metrics._spriteCount += count;
+        }
+
+        /// <summary>
+        /// 精灵类绘制共用的投影矩阵（<see cref="SpriteBatch"/> / <see cref="GpuInstanceBatch"/> / <see cref="UrpBatch"/> 三家一致）。
+        /// <para>
+        /// 离屏时是否改用 Y 向上投影，取决于后端的坐标系原点（详见 <see cref="IGraphicsBackend.NeedsOffscreenYFlip"/>）：
+        /// <list type="bullet">
+        ///   <item><description>WebGL —— FBO 原点在左下，"屏幕翻转"与"FBO 翻转"抵消后才对，故需要；</description></item>
+        ///   <item><description>WebGPU —— 附件原点与屏幕一致（都在左上），再翻一次就会上下颠倒，故不需要。</description></item>
+        /// </list>
+        /// WebGL 这条等价于 MonoGame GL 后端在顶点着色器里对离屏渲染做的 <c>posFixup.y *= -1</c>。
+        /// 注意：曾把 WebGL 的事实当成通用真理硬编码，导致 WebGPU 的离屏画面上下颠倒（症状：渲染目标里的文字是倒的）。
+        /// </para>
+        /// </summary>
+        internal Matrix4x4 CreateSpriteProjection()
+        {
+            var viewport = Viewport;
+            return RenderTargetCount > 0 && Backend.NeedsOffscreenYFlip
+                ? Matrix4x4.CreateOrthographicOffCenter(0f, viewport.Width, 0f, viewport.Height, 0f, 1f)
+                : Matrix4x4.CreateOrthographicScreen(viewport.Width, viewport.Height);
         }
 
         /// <summary>

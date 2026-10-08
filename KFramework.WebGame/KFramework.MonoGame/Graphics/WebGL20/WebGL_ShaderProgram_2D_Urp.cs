@@ -41,6 +41,9 @@ namespace KFramework.MonoGame
         /// <summary>逐材质常量块的绑定点（片元着色器里的 <c>UnityPerMaterial</c>）。</summary>
         private const int PerMaterialBindingPoint = 1;
 
+        /// <summary>逐物体缓冲的初始容量（不够会自动增长，故只是个起步值）。</summary>
+        private const int InitialCapacity = 256;
+
         /// <summary>逐材质常量块的字节数（std140：一个 vec4）。</summary>
         private const int MaterialBlockBytes = 16;
 
@@ -106,8 +109,8 @@ void main()
         /// <summary>每条逐物体记录的实际占位（96 向上取整到 <c>UNIFORM_BUFFER_OFFSET_ALIGNMENT</c>）。</summary>
         private readonly int _stride;
 
-        /// <summary>逐物体常量的上传暂存（按 <see cref="_stride"/> 摆位，整段一次上传）。</summary>
-        private readonly byte[] _staging;
+        /// <summary>逐物体常量的上传暂存（按 <see cref="_stride"/> 摆位，整段一次上传）；容量不够时整块换新。</summary>
+        private byte[] _staging;
 
         /// <summary>逐材质常量的上传暂存。</summary>
         private readonly byte[] _materialBytes = new byte[MaterialBlockBytes];
@@ -115,11 +118,12 @@ void main()
         /// <summary>逐材质常量块按对齐取整后的字节数（<c>bindBufferRange</c> 的 size 用它，稳妥些）。</summary>
         private readonly int _materialSize;
 
-        public int Capacity { get; }
+        /// <summary>逐物体缓冲当前能放的物体数（不够就按 2 倍增长，调用方不需要关心）。</summary>
+        public int Capacity { get; private set; }
 
-        internal WebGL_ShaderProgram_2D_Urp(string? fragmentSource, int capacity)
+        internal WebGL_ShaderProgram_2D_Urp(string? fragmentSource)
         {
-            Capacity = capacity > 0 ? capacity : 256;
+            Capacity = InitialCapacity;
 
             _program = JSBind_WEBGL20.CreateProgram();
             JSObject vertexShader = Compile(JSBind_WEBGL20.VERTEX_SHADER, VertexSource);
@@ -261,6 +265,8 @@ void main()
         /// </summary>
         private void UploadPerDraw(Span<UrpDrawData> draws, int count)
         {
+            EnsureCapacity(count);
+
             Span<byte> packed = MemoryMarshal.AsBytes(draws.Slice(0, count));
             Span<byte> staging = _staging;
 
@@ -270,6 +276,21 @@ void main()
 
             JSBind_WEBGL20.BindBuffer(JSBind_WEBGL20.UNIFORM_BUFFER, _perDrawBuffer);
             JSBind_WEBGL20.BufferSubData(JSBind_WEBGL20.UNIFORM_BUFFER, 0, staging[..(count * _stride)]);
+        }
+
+        /// <summary>
+        /// 确保逐物体缓冲放得下 <paramref name="count"/> 条记录，不够就按 2 倍增长（摊还 O(1)）。
+        /// 缓冲重分配是安全的：每个物体在绘制时都会现做一次 <c>bindBufferRange</c>，不存在"记住旧缓冲"的状态。
+        /// </summary>
+        private void EnsureCapacity(int count)
+        {
+            if (count <= Capacity) return;
+
+            Capacity = Math.Max(count, Capacity * 2);
+            _staging = new byte[Capacity * _stride];
+
+            JSBind_WEBGL20.BindBuffer(JSBind_WEBGL20.UNIFORM_BUFFER, _perDrawBuffer);
+            JSBind_WEBGL20.BufferDataSize(JSBind_WEBGL20.UNIFORM_BUFFER, Capacity * _stride, JSBind_WEBGL20.DYNAMIC_DRAW);
         }
 
         /// <summary>上传逐材质常量并绑定到它的绑定点。</summary>

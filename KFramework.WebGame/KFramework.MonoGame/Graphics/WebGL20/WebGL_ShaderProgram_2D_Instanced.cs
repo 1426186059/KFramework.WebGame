@@ -24,7 +24,7 @@ namespace KFramework.MonoGame
     /// <para>
     /// 逐实例属性槽（<c>aInst0/aInst1</c> → <c>vInst0/vInst1</c>）是"每个实例各自持有自己的属性值"的落点，
     /// 由 <see cref="Material.SetGpuInstanceChannels"/> 声明内容、
-    /// <see cref="GpuInstanceBatch.Add(in Matrix4x4, Color, ShaderPropertyBlock?)"/> 写值；
+    /// <see cref="GpuInstanceBatch.Draw(Texture2D, Rectangle?, Rectangle?, Color, float, Vector2, Vector2, SpriteEffects, float, ShaderPropertyBlock?)"/> 写值；
     /// 内置片元着色器不读它们，自定义片元着色器直接读这两个 varying 即可。
     /// </para>
     /// </summary>

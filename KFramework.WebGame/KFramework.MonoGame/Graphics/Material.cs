@@ -48,7 +48,7 @@ namespace KFramework.MonoGame
         /// <para>
         /// 只对 GPU 实例化路径（<see cref="GpuInstanceBatch"/>）有意义：声明过的属性可以用
         /// <see cref="ShaderPropertyBlock"/> 逐精灵给不同值，而值随实例数据走、<b>整批仍然只一次 DrawCall</b>。
-        /// 传给 <see cref="GpuInstanceBatch.Add(in Matrix4x4, Color, ShaderPropertyBlock?)"/> 的块里
+        /// 传给 <see cref="GpuInstanceBatch.Draw(Texture2D, Rectangle?, Rectangle?, Color, float, Vector2, Vector2, SpriteEffects, float, ShaderPropertyBlock?)"/> 的块里
         /// 出现<b>没被声明</b>的属性会直接抛异常 —— 实例化路径没有 uniform 覆盖层，
         /// 未声明的属性（矩阵 / 纹理等）无处可去。
         /// </para>
