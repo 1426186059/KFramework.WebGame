@@ -39,6 +39,15 @@ namespace KFramework.MonoGame
             get { return _properties ?? EmptyProperties; }
         }
 
+        /// <summary>
+        /// 内部用：属性表的原始字典（null = 一条都没设）。
+        /// <para>
+        /// 给渲染热路径用：对 <c>IReadOnlyDictionary</c> 做 <c>foreach</c> 会把字典的枚举器<b>装箱</b>（一次堆分配），
+        /// 而逐实例路径每帧要跑 N 次 —— 直接遍历这个字段用的是结构体枚举器，零分配。
+        /// </para>
+        /// </summary>
+        internal Dictionary<string, ShaderProperty>? RawProperties => _properties;
+
         /// <summary>是否一条属性都没设（照 Unity 的 MaterialPropertyBlock.isEmpty）。</summary>
         public bool IsEmpty
         {

@@ -172,12 +172,19 @@ namespace KFramework.MonoGame
                         "（照 Unity 的实例化属性：shader 里要有对应的 UNITY_INSTANCING_BUFFER 字段）。");
 
                 GpuInstanceChannelMap channels = _material.GpuInstanceChannels!;
-                foreach (var pair in properties.Properties)
+
+                // 校验块里没有"装不下的属性"。走 RawProperties（原始字典）而不是 Properties（IReadOnlyDictionary）：
+                // 后者 foreach 会装箱字典枚举器 → 每实例一次堆分配，而这里是每帧跑 N 次的热路径。
+                Dictionary<string, ShaderProperty>? raw = properties.RawProperties;
+                if (raw is not null)
                 {
-                    if (!channels.IsDeclared(pair.Key))
-                        throw new InvalidOperationException(
-                            $"属性「{pair.Key}」没有声明进实例通道（{nameof(Material.SetGpuInstanceChannels)}）：" +
-                            "实例化路径只能下发被声明进 8 个通道的属性，矩阵 / 纹理装不下。");
+                    foreach (KeyValuePair<string, ShaderProperty> pair in raw)
+                    {
+                        if (!channels.IsDeclared(pair.Key))
+                            throw new InvalidOperationException(
+                                $"属性「{pair.Key}」没有声明进实例通道（{nameof(Material.SetGpuInstanceChannels)}）：" +
+                                "实例化路径只能下发被声明进 8 个通道的属性，矩阵 / 纹理装不下。");
+                    }
                 }
 
                 channels.Encode(properties, _material.Effect, out Vector4 inst0, out Vector4 inst1);

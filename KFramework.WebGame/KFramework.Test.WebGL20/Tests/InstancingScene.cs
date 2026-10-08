@@ -58,6 +58,19 @@ namespace KFramework.Test.WebGL20.Tests
         private long _lastDrawCalls = -1;
         private int _lastInstances;
 
+        /// <summary>CPU 侧提交耗时（毫秒，EMA 平滑）：C# 里组矩阵 + 写实例数据 + 上传那一段。</summary>
+        private double _submitMs;
+
+        /// <summary>提交里"纯 C# 组数据"那半段（Begin + N×Add）的耗时，EMA 平滑。</summary>
+        private double _addMs;
+
+        /// <summary>提交里"GL 提交"那半段（End：上传实例数据 + 一次 drawElementsInstanced）的耗时，EMA 平滑。</summary>
+        private double _endMs;
+
+        /// <summary>帧间隔（毫秒，EMA 平滑）≈ 整帧耗时，用来分辨掉帧到底在 CPU 还是 GPU。</summary>
+        private double _frameMs;
+        private long _lastFrameTicks;
+
         public override void LoadContent()
         {
             _chart = MakeChecker(64, Color.White, new Color(36, 46, 66));
@@ -113,9 +126,22 @@ namespace KFramework.Test.WebGL20.Tests
 
             int count = CountPresets[_presetIndex];
 
+            // 帧间隔：Draw 每帧调一次，两次之间的间隔 ≈ 整帧耗时（含 C# 逻辑、渲染与浏览器合成）。
+            long now = Stopwatch.GetTimestamp();
+            if (_lastFrameTicks != 0)
+            {
+                _frameMs = Ema(_frameMs, (now - _lastFrameTicks) * 1000.0 / Stopwatch.Frequency);
+            }
+            _lastFrameTicks = now;
+
             // ---- 关键：N 个实例一次提交 ----
             long before = Device.Metrics.DrawCount;
-            Submit(count);
+            long submitStart = Stopwatch.GetTimestamp();
+            Submit(count, out double addMs, out double endMs);
+            double submit = (Stopwatch.GetTimestamp() - submitStart) * 1000.0 / Stopwatch.Frequency;
+            _addMs = Ema(_addMs, addMs);
+            _endMs = Ema(_endMs, endMs);
+            _submitMs = Ema(_submitMs, submit);
             _lastDrawCalls = Device.Metrics.DrawCount - before;
             _lastInstances = count;
 
@@ -129,14 +155,26 @@ namespace KFramework.Test.WebGL20.Tests
                 28f, readoutY + 20f, new Color(255, 206, 110));
             DrawLine(batch, "GpuInstanceBatch：Begin → Add × N → End；逐实例矩阵即 Unity 的 unity_ObjectToWorld，逐实例属性 uPhase 随实例数据走（aInst0 → vInst0），整批仍 1 次 DC",
                 28f, readoutY + 40f, new Color(150, 165, 195));
+            DrawLine(batch, $"提交拆分：组数据(Begin+Add×N) = {_addMs:F2} ms　GL 提交(End) = {_endMs:F2} ms　合计 {_submitMs:F2} ms　帧间隔 = {_frameMs:F1} ms（≈ {(_frameMs > 0 ? 1000.0 / _frameMs : 0):F0} FPS）",
+                28f, readoutY + 60f, new Color(180, 220, 255));
 
             batch.End();
         }
 
-        /// <summary>显式 Begin / Add / End：N 个实例一次 drawElementsInstanced。</summary>
-        private void Submit(int count)
+        /// <summary>
+        /// 显式 Begin / Add / End：N 个实例一次 drawElementsInstanced。
+        /// 顺手把两段耗时分别带出来 —— 这是分辨"到底哪一侧慢"的关键数据：
+        /// <list type="bullet">
+        ///   <item><description><paramref name="addMs"/>：纯 C# 组数据（组矩阵 + 写实例数据 + 编码逐实例属性），不碰 GL。</description></item>
+        ///   <item><description><paramref name="endMs"/>：GL 提交（上传实例缓冲 + 一次 drawElementsInstanced）。这一侧变慢通常意味着
+        ///   GPU / 驱动队列积压（WebGL 调用会把 CPU 阻塞到队列有位置为止），而不是 C# 慢。</description></item>
+        /// </list>
+        /// </summary>
+        private void Submit(int count, out double addMs, out double endMs)
         {
             ComputeLayout(count, out int cols, out float cellW, out float cellH, out float size);
+
+            long t0 = Stopwatch.GetTimestamp();
 
             _instances!.Begin();
             for (int i = 0; i < count; i++)
@@ -155,8 +193,18 @@ namespace KFramework.Test.WebGL20.Tests
                 // 逐实例色调：直接作为实例数据里的 tint（着色器的 vColor）。
                 _instances.Add(center, new Vector2(size, size), rotation, Hue(i * 0.013f), _block);
             }
+
+            long t1 = Stopwatch.GetTimestamp();
             _instances.End();
+            long t2 = Stopwatch.GetTimestamp();
+
+            addMs = (t1 - t0) * 1000.0 / Stopwatch.Frequency;
+            endMs = (t2 - t1) * 1000.0 / Stopwatch.Frequency;
         }
+
+        /// <summary>指数滑动平均（0.9/0.1），让读数不被单帧抖动带偏。</summary>
+        private static double Ema(double previous, double value)
+            => previous <= 0 ? value : previous * 0.9 + value * 0.1;
 
         /// <summary>方阵布局。</summary>
         private void ComputeLayout(int count, out int cols, out float cellW, out float cellH, out float size)

@@ -85,11 +85,31 @@ namespace KFramework.MonoGame
         /// 顺序（行向量约定：先发生的写在左边）：
         /// 平移 -0.5 居中 → 按 <paramref name="size"/> 缩放 → 绕中心旋转 <paramref name="rotation"/> 弧度 → 平移到 <paramref name="center"/>。
         /// </para>
+        /// <para>
+        /// 实现是上面那条链的<b>展开式</b>：2D 仿射只有 6 个非平凡分量（M11/M12/M21/M22/M41/M42），
+        /// 一次三角函数 + 约 10 次浮点运算即可，不必做三次通用 4×4 乘法
+        /// （逐实例路径每帧要算 N 次，这是热路径；通用乘法每次 112 次运算外加 64 字节中间结果拷贝）。
+        /// </para>
         /// </summary>
         public static Matrix4x4 CreateObjectToWorld(Vector2 center, Vector2 size, float rotation)
-            => Matrix4x4.CreateTranslation(-0.5f, -0.5f)
-             * Matrix4x4.CreateScale(size.X, size.Y)
-             * Matrix4x4.CreateRotationZ(rotation)
-             * Matrix4x4.CreateTranslation(center.X, center.Y);
+        {
+            float c = MathF.Cos(rotation), s = MathF.Sin(rotation);
+            float w = size.X, h = size.Y;
+
+            // p' = p × [居中平移 × 缩放 × 旋转 × 平移到中心] 展开后：
+            //   [ w·c   w·s  0  0 ]        x' = x·w·c − y·h·s + M41
+            //   [ −h·s  h·c  0  0 ]   →
+            //   [  0     0   1  0 ]        M41 = cx − ½(w·c − h·s)，M42 = cy − ½(w·s + h·c)
+            //   [ M41   M42  0  1 ]        即"居中平移"也被旋转带偏后的结果
+            return new Matrix4x4
+            {
+                M11 = w * c, M12 = w * s,
+                M21 = -h * s, M22 = h * c,
+                M33 = 1f,
+                M41 = center.X - 0.5f * (w * c - h * s),
+                M42 = center.Y - 0.5f * (w * s + h * c),
+                M44 = 1f,
+            };
+        }
     }
 }
