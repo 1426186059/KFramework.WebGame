@@ -45,7 +45,7 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// WebGPU 侧的 SRP-Batcher 式绘制尚未接入（需要另一套「带 dynamic offset 的 uniform buffer」的 WGSL 与管线绑定），
-        /// 故如实返回 null：<see cref="URPBatch.IsSupported"/> 会为 false，绘制时给出明确提示而不是静默画错。
+        /// 故如实返回 null：<see cref="UrpBatch.IsSupported"/> 会为 false，绘制时给出明确提示而不是静默画错。
         /// </summary>
         public IUrpProgram? CreateUrpProgram(string? fragmentSource, int capacity) => null;
 

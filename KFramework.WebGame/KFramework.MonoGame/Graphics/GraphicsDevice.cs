@@ -484,7 +484,7 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// SRP-Batcher 式的一段绘制（见 <see cref="URPBatch"/>）：下发材质状态（混合/深度/剔除/采样）→ 绑定纹理 →
+        /// SRP-Batcher 式的一段绘制（见 <see cref="UrpBatch"/>）：下发材质状态（混合/深度/剔除/采样）→ 绑定纹理 →
         /// 后端"整段上传逐物体常量 + 逐个 drawElements（每次只重绑一次 UBO 范围）" → 计入渲染统计。
         /// <para>
         /// 统计口径与其它路径一致：每个物体算 1 个精灵、2 个三角形，而 <b>DrawCall 就是物体数</b>

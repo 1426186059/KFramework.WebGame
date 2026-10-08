@@ -26,14 +26,14 @@ namespace KFramework.Test.WebGL20.Tests
     /// <list type="table">
     ///   <item><term>第 7 页 <see cref="GpuInstanceBatch"/></term><description>GPU 实例化：DrawCall = 1 / 缓冲容量；逐物体数据走顶点属性（受槽位与格式限制）。</description></item>
     ///   <item><term>第 8 页 <see cref="ShaderPropertyBlock"/></term><description>CPU 合批 + 可变 uniform：块一变就切批，N 个不同块 = N 次 DrawCall。</description></item>
-    ///   <item><term>本页 <see cref="URPBatch"/></term><description>DrawCall = N（不降），但每个物体只重绑一次 UBO 范围；数据走 uniform buffer，矩阵 / 整型 / 任意分量都装得下。</description></item>
+    ///   <item><term>本页 <see cref="UrpBatch"/></term><description>DrawCall = N（不降），但每个物体只重绑一次 UBO 范围；数据走 uniform buffer，矩阵 / 整型 / 任意分量都装得下。</description></item>
     /// </list>
     /// </para>
     /// <para>交互：<b>空格</b>切换物体数量档位（256 / 1024 / 4096）。</para>
     /// </summary>
     public sealed class UrpBatchScene : DemoScene
     {
-        public override string Title => "9) SRP Batcher 式批处理（URPBatch）：换物体只剩一次绑定";
+        public override string Title => "9) SRP Batcher 式批处理（UrpBatch）：换物体只剩一次绑定";
 
         protected override string Description
             => "同纹理 N 个物体：逐物体常量整段一次上传，之后每个物体只 bindBufferRange 换偏移 + drawElements —— DrawCall 不降，换物体的 CPU 开销 ≈ 一次绑定";
@@ -48,7 +48,7 @@ namespace KFramework.Test.WebGL20.Tests
 
         private Texture2D? _chart;
         private SpriteFont? _small;
-        private URPBatch? _urp;
+        private UrpBatch? _urp;
         private string _error = string.Empty;
 
         private float _time;
@@ -78,7 +78,7 @@ namespace KFramework.Test.WebGL20.Tests
 
             try
             {
-                _urp = new URPBatch(Device, _chart, material, capacity: 4096);
+                _urp = new UrpBatch(Device, _chart, material, capacity: 4096);
             }
             catch (Exception ex)
             {

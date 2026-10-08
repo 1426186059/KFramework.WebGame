@@ -25,12 +25,12 @@ namespace KFramework.MonoGame
     /// <list type="table">
     ///   <item><term><see cref="SpriteBatch"/>（CPU 合批）</term><description>按纹理分批，DrawCall 少；每帧重传整批顶点几何。</description></item>
     ///   <item><term><see cref="GpuInstanceBatch"/>（GPU 实例化）</term><description>DrawCall = 1/缓冲；逐物体数据走顶点属性通道（受格式与槽数限制）。</description></item>
-    ///   <item><term>URPBatch（本类，SRP Batcher 式）</term><description>DrawCall = 物体数；换物体成本 ≈ 一次 <c>bindBufferRange</c>，数据走 UBO（不受顶点格式限制）。</description></item>
+    ///   <item><term>UrpBatch（本类，SRP Batcher 式）</term><description>DrawCall = 物体数；换物体成本 ≈ 一次 <c>bindBufferRange</c>，数据走 UBO（不受顶点格式限制）。</description></item>
     /// </list>
     /// </para>
     /// <para>用法：</para>
     /// <code>
-    /// using var urp = new URPBatch(Device, atlas, material);
+    /// using var urp = new UrpBatch(Device, atlas, material);
     /// urp.MaterialColor = new Vector4(1f, 0.9f, 0.8f, 1f);   // 材质常量：一段只传一次
     /// urp.Begin();
     /// for (int i = 0; i &lt; 512; i++)
@@ -38,7 +38,7 @@ namespace KFramework.MonoGame
     /// int drawCalls = urp.End();                            // = 512（不降 DrawCall），材质上传仍只有 1 次
     /// </code>
     /// </summary>
-    public sealed class URPBatch : IDisposable
+    public sealed class UrpBatch : IDisposable
     {
         private readonly GraphicsDevice _device;
         private readonly Texture2D _texture;
@@ -68,7 +68,7 @@ namespace KFramework.MonoGame
         /// <param name="fragmentSource">自定义片元着色器（GLSL ES 3.00）。为 null 时用内置的
         /// "纹理 × 逐物体颜色 × 材质常量"。注意：它必须声明 <c>UnityPerMaterial</c> 常量块（照 Unity 的 SRP Batcher 兼容要求）。</param>
         /// <param name="capacity">单段能画的物体上限（超出自动分段）。</param>
-        public URPBatch(GraphicsDevice device, Texture2D texture, Material? material = null,
+        public UrpBatch(GraphicsDevice device, Texture2D texture, Material? material = null,
                         string? fragmentSource = null, int capacity = 1024)
         {
             ArgumentNullException.ThrowIfNull(device);

@@ -70,7 +70,7 @@ namespace KFramework.Test.WebGL20.Tests
             },
             new TestEntry
             {
-                Name = "SRP Batcher 式批处理（URPBatch：换物体只剩一次绑定）",
+                Name = "SRP Batcher 式批处理（UrpBatch：换物体只剩一次绑定）",
                 Desc = "照 Unity 的 URP / SRP Batcher：逐材质常量进常驻 UBO（材质不变不重传）、逐物体常量整段一次上传，每个物体只 bindBufferRange 换偏移 + drawElements —— DrawCall 不降，换物体的开销 ≈ 一次绑定",
                 Factory = static () => new UrpBatchScene(),
             },

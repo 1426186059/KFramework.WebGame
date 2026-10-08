@@ -104,7 +104,7 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// 创建 SRP-Batcher 式程序（用 uniform buffer 传逐物体 / 逐材质常量）；
-        /// 后端不支持时返回 null（上层 <see cref="URPBatch"/> 以此为准）。
+        /// 后端不支持时返回 null（上层 <see cref="UrpBatch"/> 以此为准）。
         /// 需要 WebGL2 的 uniform buffer 与 <c>bindBufferRange</c>：WebGL2 已接入；WebGPU 尚未接入。
         /// </summary>
         /// <param name="fragmentSource">自定义片元着色器源码（null = 内置的"纹理 × 逐物体颜色 × 材质常量"）。

@@ -88,7 +88,7 @@ namespace KFramework.MonoGame
         public const int STATIC_DRAW = 0x88E4;
         public const int DYNAMIC_DRAW = 0x88E8;
 
-        /// <summary>uniform buffer（UBO）目标：SRP Batcher 式的常量缓冲用它（见 <see cref="URPBatch"/>）。</summary>
+        /// <summary>uniform buffer（UBO）目标：SRP Batcher 式的常量缓冲用它（见 <see cref="UrpBatch"/>）。</summary>
         public const int UNIFORM_BUFFER = 0x8A11;
 
         /// <summary><c>bindBufferRange</c> 的偏移必须是它的整数倍（取参数名同名的常量查上限）。</summary>
@@ -306,7 +306,7 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// 把缓冲的一段范围绑到某个 UBO 绑定点。
-        /// <c>offset</c> 必须是 <c>UNIFORM_BUFFER_OFFSET_ALIGNMENT</c> 的整数倍（见 <see cref="URPBatch"/>）。
+        /// <c>offset</c> 必须是 <c>UNIFORM_BUFFER_OFFSET_ALIGNMENT</c> 的整数倍（见 <see cref="UrpBatch"/>）。
         /// </summary>
         [JSImport("bindBufferRange", "render_webgl20")]
         public static partial void BindBufferRange(int target, int index, JSObject buffer, int offset, int size);

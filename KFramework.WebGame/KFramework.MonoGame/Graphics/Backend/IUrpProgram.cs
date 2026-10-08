@@ -3,7 +3,7 @@ using System.Numerics;
 namespace KFramework.MonoGame
 {
     /// <summary>
-    /// 后端侧的 SRP-Batcher 式程序：由 <see cref="URPBatch"/> 驱动。
+    /// 后端侧的 SRP-Batcher 式程序：由 <see cref="UrpBatch"/> 驱动。
     /// <para>
     /// 与另两种后端程序的区别（三条路的数据通道完全不同）：
     /// <list type="bullet">
