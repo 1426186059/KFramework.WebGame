@@ -34,36 +34,7 @@ namespace KFramework.MonoGame
         /// <summary>光栅化状态（对应 Unity 的 Cull 命令）。</summary>
         public RasterizerState Rasterizer = RasterizerState.CullNone;
 
-        /// <summary>「着色器属性 → 实例通道」的映射表（null / 空 = 没声明，实例化路径不能下发块值）。</summary>
-        internal GpuInstanceChannelMap? GpuInstanceChannels;
-
-        /// <summary>是否声明了实例通道（声明后，Add 传入的块值随实例数据走）。</summary>
-        public bool HasGpuInstanceChannels { get { return GpuInstanceChannels is { IsEmpty: false }; } }
-
-        /// <summary>
-        /// 声明「哪些着色器属性按顺序进实例通道」——本引擎的实例化属性声明（Unity 写在 shader 的
-        /// <c>UNITY_INSTANCING_BUFFER</c> 里，本引擎的实例化着色器固定，故声明在材质上）。
-        /// 每项形如 <c>"uTint.rgb"</c>（3 个分量占 3 个槽）或 <c>"uPhase"</c>（1 个槽，取 x）；
-        /// 共 8 个 float 槽，按声明顺序填 <c>aInst0.xyzw</c> → <c>aInst1.xyzw</c>。
-        /// <para>
-        /// 只对 GPU 实例化路径（<see cref="GpuInstanceBatch"/>）有意义：声明过的属性可以用
-        /// <see cref="ShaderPropertyBlock"/> 逐精灵给不同值，而值随实例数据走、<b>整批仍然只一次 DrawCall</b>。
-        /// 传给 <see cref="GpuInstanceBatch.Draw(Texture2D, Rectangle?, Rectangle?, Color, float, Vector2, Vector2, SpriteEffects, float, ShaderPropertyBlock?)"/> 的块里
-        /// 出现<b>没被声明</b>的属性会直接抛异常 —— 实例化路径没有 uniform 覆盖层，
-        /// 未声明的属性（矩阵 / 纹理等）无处可去。
-        /// </para>
-        /// <para>
-        /// 本声明也随材质一起被 <see cref="GpuInstanceBatch"/> 复制（照 Unity：声明属于材质）。
-        /// CPU 合批路径（<see cref="SpriteBatch"/>）不使用它，那里的属性块只能是可变 uniform（块变即切批）。
-        /// </para>
-        /// </summary>
-        public void SetGpuInstanceChannels(params string[] paths)
-        {
-            GpuInstanceChannels ??= new GpuInstanceChannelMap();
-            GpuInstanceChannels.Set(paths);
-        }
-
-        /// <summary>恢复成一个「默认精灵材质」（渲染状态回默认 + 效果置空 + 清掉实例通道声明）。</summary>
+        /// <summary>恢复成一个「默认精灵材质」（渲染状态回默认 + 效果置空）。</summary>
         public void Reset()
         {
             Effect = null;
@@ -71,7 +42,6 @@ namespace KFramework.MonoGame
             Sampler = SamplerState.Point;
             DepthStencil = DepthStencilState.None;
             Rasterizer = RasterizerState.CullNone;
-            GpuInstanceChannels = null;
         }
     }
 }

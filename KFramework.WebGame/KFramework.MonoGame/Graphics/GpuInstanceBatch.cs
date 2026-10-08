@@ -24,8 +24,8 @@ namespace KFramework.MonoGame
     /// <c>var effect = Device.CreateShaderEffect(fragmentSource); material.Effect = effect;</c>
     /// 引擎从 <see cref="ShaderEffect.FragmentSource"/> 取回源码，为这条路创建对应的程序
     /// （顶点输入与 SpriteBatch 不同，不能复用普通精灵程序），并按源码缓存 —— <b>同一个源码只编译一次</b>。
-    /// 注意：本路的片元着色器只能用到 varyings（<c>vColor</c> / <c>vTexCoord</c> / <c>vInst0</c> / <c>vInst1</c> /
-    /// <c>vInstanceID</c>）与纹理，效果的 uniform 属性在这里不生效。
+    /// 注意：本路的片元着色器只能用到 varyings（<c>vColor</c> / <c>vTexCoord</c> / <c>vInstanceID</c>）与纹理，
+    /// 效果的 uniform 属性在这里不生效（逐实例数据只带矩阵 / 颜色 / UV 矩形，装不下任意属性）。
     /// </para>
     /// <para>
     /// <b>三条路的对照</b>：
@@ -33,16 +33,10 @@ namespace KFramework.MonoGame
     ///   <item><term><see cref="SpriteBatch"/>（CPU 合批）</term><description>几何在 CPU 侧展开（每精灵 4 顶点 × 28 字节），DrawCall = 纹理批数。</description></item>
     ///   <item><term>GpuInstanceBatch（本类，GPU 实例化）</term><description>几何只有 4 个顶点的单位四边形，逐实例数据走
     ///   <c>vertexAttribDivisor = 1</c> 的第二根缓冲：<b>DrawCall = 纹理段数</b>，CPU 带宽最省；
-    ///   逐实例数据受顶点属性槽/格式限制（所以带了 <see cref="Material.SetGpuInstanceChannels"/> 那 8 个通道）。</description></item>
+    ///   代价是逐实例数据只有固定几个字段（矩阵 / 颜色 / UV 矩形），装不下任意属性。</description></item>
     ///   <item><term><see cref="UrpBatch"/>（SRP Batcher 式）</term><description>数据走 uniform buffer，什么格式都装得下、可逐笔换纹理，
     ///   但 DrawCall = 物体数（不降），换物体的开销 ≈ 一次 <c>bindBufferRange</c>。</description></item>
     /// </list>
-    /// </para>
-    /// <para>
-    /// <b>逐实例属性</b>（照 Unity 的实例化属性）：材质上先用
-    /// <see cref="Material.SetGpuInstanceChannels"/> 声明若干属性进 8 个实例通道，再给 <see cref="Draw"/>
-    /// 传一个 <see cref="ShaderPropertyBlock"/> —— 值会被编码进逐实例数据，
-    /// <b>每个实例各自持有自己的属性值，而不打断这一段实例化绘制</b>。
     /// </para>
     /// <para>用法：</para>
     /// <code>
@@ -108,8 +102,8 @@ namespace KFramework.MonoGame
         /// 开一批（与 <see cref="SpriteBatch.Begin(Material, SpriteSortMode, Matrix4x4?)"/> 对应）：
         /// 材质、渲染顺序与相机矩阵都在这里给。
         /// </summary>
-        /// <param name="material">材质（混合 / 采样 / 深度 / 剔除状态 + 实例通道声明 +
-        /// <see cref="Material.Effect"/> 自定义着色器）；为 null 时用精灵默认状态与内置片元着色器。</param>
+        /// <param name="material">材质（混合 / 采样 / 深度 / 剔除状态 + <see cref="Material.Effect"/> 自定义着色器）；
+        /// 为 null 时用精灵默认状态与内置片元着色器。</param>
         /// <param name="sortMode">渲染顺序（<see cref="SpriteSortMode"/>）：Deferred = 保持 Draw 调用顺序；
         /// Texture = 按纹理排序键（让同纹理的物体连在一起，减少实例化 draw 次数）；FrontToBack / BackToFront = 按 layerDepth 排序；
         /// Immediate = 每笔当场提交。</param>
@@ -128,8 +122,6 @@ namespace KFramework.MonoGame
                 _material.Sampler = material.Sampler;
                 _material.DepthStencil = material.DepthStencil;
                 _material.Rasterizer = material.Rasterizer;
-                // 实例通道声明随材质走（否则 Draw(..., block) 无法编码）。
-                _material.GpuInstanceChannels = material.GpuInstanceChannels;
             }
 
             // 着色器：来自 Material.Effect 的片元源码（null = 内置默认）。按源码缓存，故每帧 Begin 不会重编译。
@@ -163,17 +155,14 @@ namespace KFramework.MonoGame
         /// <paramref name="scale"/> 在矩形尺寸之上再做额外缩放（默认 (1,1) 即精确落进矩形），
         /// <paramref name="origin"/> 是源纹理上的像素锚点（按 源尺寸 → 实际尺寸 的比例放大后定位）。
         /// <para>
-        /// <paramref name="properties"/>：逐实例属性（照 Unity 的实例化属性）。里面被
-        /// <see cref="Material.SetGpuInstanceChannels"/> 声明过的属性会被编码进逐实例数据
-        /// （<c>aInst0/aInst1</c> → 片元着色器里的 <c>vInst0/vInst1</c>），于是
-        /// <b>每个实例各自持有自己的属性值，而不打断这一段实例化绘制</b>。
-        /// 块里出现<b>没被声明</b>的属性会抛 <see cref="InvalidOperationException"/>
-        /// —— 实例化路径没有 uniform 覆盖层，装不下的属性无处可去（早失败好过静默画错）。
+        /// 本路不接受 <see cref="ShaderPropertyBlock"/>：一次实例化 draw 只有一份 uniform，
+        /// 装不下"逐实例不同"的任意属性 —— 逐实例差异只能体现在实例数据的固定字段里
+        /// （<see cref="GpuInstance.ObjectToWorld"/> / <see cref="GpuInstance.Tint"/> / <see cref="GpuInstance.UvRect"/>）。
+        /// 想按物体覆盖 uniform 请用 <see cref="SpriteBatch"/> 或 <see cref="UrpBatch"/>。
         /// </para>
         /// </summary>
         public void Draw(Texture2D texture, Rectangle? targetRectangle, Rectangle? sourceRectangle, Color color,
-                         float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth = 0f,
-                         ShaderPropertyBlock? properties = null)
+                         float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth = 0f)
         {
             ArgumentNullException.ThrowIfNull(texture);
             if (!_begun) throw new InvalidOperationException("Draw 必须在 Begin / End 之间调用。");
@@ -200,34 +189,6 @@ namespace KFramework.MonoGame
                 color,
                 // 翻转已体现在 uvTL / uvBR 的交换里：UV 尺寸写成负值，着色器插值方向自然就反了。
                 new Vector4(uvTL.X, uvTL.Y, uvBR.X - uvTL.X, uvBR.Y - uvTL.Y));
-
-            if (properties is not null)
-            {
-                if (!_material.HasGpuInstanceChannels)
-                    throw new InvalidOperationException(
-                        "要按实例下发属性块的值，必须先在材质上用 SetGpuInstanceChannels 声明通道" +
-                        "（照 Unity 的实例化属性：shader 里要有对应的 UNITY_INSTANCING_BUFFER 字段）。");
-
-                GpuInstanceChannelMap channels = _material.GpuInstanceChannels!;
-
-                // 校验块里没有"装不下的属性"。走 RawProperties（原始字典）而不是 Properties（IReadOnlyDictionary）：
-                // 后者 foreach 会装箱字典枚举器 → 每实例一次堆分配，而这里是每帧跑 N 次的热路径。
-                Dictionary<string, ShaderProperty>? raw = properties.RawProperties;
-                if (raw is not null)
-                {
-                    foreach (KeyValuePair<string, ShaderProperty> pair in raw)
-                    {
-                        if (!channels.IsDeclared(pair.Key))
-                            throw new InvalidOperationException(
-                                $"属性「{pair.Key}」没有声明进实例通道（{nameof(Material.SetGpuInstanceChannels)}）：" +
-                                "实例化路径只能下发被声明进 8 个通道的属性，矩阵 / 纹理装不下。");
-                    }
-                }
-
-                channels.Encode(properties, _material.Effect, out Vector4 inst0, out Vector4 inst1);
-                instance.Inst0 = inst0;
-                instance.Inst1 = inst1;
-            }
 
             _entries.Add(new Entry
             {

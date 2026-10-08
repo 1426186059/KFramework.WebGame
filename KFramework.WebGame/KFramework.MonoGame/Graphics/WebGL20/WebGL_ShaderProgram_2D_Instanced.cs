@@ -9,8 +9,8 @@ namespace KFramework.MonoGame
     /// 与 <see cref="SpriteBatch"/> 的路子对照：
     /// <list type="bullet">
     ///   <item><description>SpriteBatch：几何在 CPU 侧展开（每精灵 4 个顶点、每个顶点 28 字节），按纹理分批，逐批一次 drawElements。</description></item>
-    ///   <item><description>本类：几何只有 4 个顶点的单位四边形（静态，一次上传），逐实例的「对象→世界矩阵 / 颜色 / UV 矩形 /
-    ///   两个属性槽」全部按实例放进第二根缓冲（<c>vertexAttribDivisor = 1</c>，每实例 116 字节），
+    ///   <item><description>本类：几何只有 4 个顶点的单位四边形（静态，一次上传），逐实例的「对象→世界矩阵 / 颜色 / UV 矩形」
+    ///   按实例放进第二根缓冲（<c>vertexAttribDivisor = 1</c>，每实例 84 字节），
     ///   一次 draw 覆盖整个实例列表。</description></item>
     /// </list>
     /// 因此和"几何在 CPU 侧按精灵展开"相比，实例化把 CPU 侧每精灵的顶点开销从 4×28 字节降到一份实例数据，
@@ -22,10 +22,9 @@ namespace KFramework.MonoGame
     /// 行主序直发、GLSL 按列读，恰好等价于本引擎的行向量约定 p×M（见 <see cref="Matrix4x4"/> 的说明）。
     /// </para>
     /// <para>
-    /// 逐实例属性槽（<c>aInst0/aInst1</c> → <c>vInst0/vInst1</c>）是"每个实例各自持有自己的属性值"的落点，
-    /// 由 <see cref="Material.SetGpuInstanceChannels"/> 声明内容、
-    /// <see cref="GpuInstanceBatch.Draw(Texture2D, Rectangle?, Rectangle?, Color, float, Vector2, Vector2, SpriteEffects, float, ShaderPropertyBlock?)"/> 写值；
-    /// 内置片元着色器不读它们，自定义片元着色器直接读这两个 varying 即可。
+    /// 逐实例数据只有固定字段（矩阵 / 颜色 / UV 矩形，见 <see cref="GpuInstance"/>），
+    /// 不提供「逐实例属性槽」：一次实例化 draw 只有一份 uniform，装不下任意属性，
+    /// 要按物体覆盖 uniform 请走 <see cref="SpriteBatch"/> 或 <see cref="UrpBatch"/>。
     /// </para>
     /// </summary>
     internal sealed class WebGL_ShaderProgram_2D_Instanced : IGpuInstanceProgram
@@ -39,8 +38,6 @@ namespace KFramework.MonoGame
         // 逐实例字段的偏移直接问结构体本身，避免"改了字段顺序忘了改这里"（历史上踩过两次）。
         private static readonly int TintOffset = (int)Marshal.OffsetOf<GpuInstance>(nameof(GpuInstance.Tint));
         private static readonly int UvRectOffset = (int)Marshal.OffsetOf<GpuInstance>(nameof(GpuInstance.UvRect));
-        private static readonly int Inst0Offset = (int)Marshal.OffsetOf<GpuInstance>(nameof(GpuInstance.Inst0));
-        private static readonly int Inst1Offset = (int)Marshal.OffsetOf<GpuInstance>(nameof(GpuInstance.Inst1));
 
         private const string VertexSource = 
 @"#version 300 es
@@ -50,14 +47,12 @@ in vec2 aQuadUv;
 in mat4 aObjectToWorld;
 in vec4 aTint;              // 逐实例：颜色
 in vec4 aUvRect;            // 逐实例：UV 矩形（xy = 起点，zw = 尺寸）
-// 逐实例属性槽：每个实例各自持有自己的属性值，内容由 Material.SetGpuInstanceChannels 声明后编码进实例数据。
-in vec4 aInst0;
-in vec4 aInst1;
 uniform mat4 uProjection;
+// ---- 顶点 → 片元的 varying 接口 ----
+// 【契约】必须与 WebGL_ShaderProgram_2D_Default / _Custom / _Urp 声明完全一致，
+// 否则同一份片元源码换条路就编不过（典型报错：FRAGMENT varying xxx does not match any VERTEX varying）。
 out vec2 vTexCoord;
 out vec4 vColor;
-out vec4 vInst0;
-out vec4 vInst1;
 // UNITY_VERTEX_INPUT_INSTANCE_ID 在 GLSL 里的等价物：实例号是内置输入，不占顶点布局。
 flat out int vInstanceID;
 void main()
@@ -67,8 +62,6 @@ void main()
     gl_Position = uProjection * (aObjectToWorld * vec4(aQuadPos, 0.0, 1.0));
     vTexCoord = aUvRect.xy + aQuadUv * aUvRect.zw;
     vColor = aTint;
-    vInst0 = aInst0;
-    vInst1 = aInst1;
     vInstanceID = gl_InstanceID;
 }";
 
@@ -145,9 +138,6 @@ void main()
             BindMatrixAttribute("aObjectToWorld", InstanceStride, 0, 1);
             BindVertexAttribute("aTint", 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, InstanceStride, TintOffset, 1);
             BindVertexAttribute("aUvRect", 4, JSBind_WEBGL20.FLOAT, false, InstanceStride, UvRectOffset, 1);
-            // 逐实例属性槽：内容由 Material.SetGpuInstanceChannels 声明。
-            BindVertexAttribute("aInst0", 4, JSBind_WEBGL20.FLOAT, false, InstanceStride, Inst0Offset, 1);
-            BindVertexAttribute("aInst1", 4, JSBind_WEBGL20.FLOAT, false, InstanceStride, Inst1Offset, 1);
 
             // 收尾：把顶点数组解绑，避免污染其它绘制（SpriteBatch 每次绘制都会绑自己的 VAO）。
             JSBind_WEBGL20.BindVertexArray(null!);

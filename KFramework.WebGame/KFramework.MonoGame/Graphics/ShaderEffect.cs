@@ -43,9 +43,6 @@ uniform mat4 uProjection;
 //（这也是 Unity 用一个 shader 兼顾传统与实例化的等价物）。
 out vec2 vTexCoord;
 out vec4 vColor;
-// 逐实例属性槽（照 Unity 的 UNITY_INSTANCING_BUFFER）：非实例化路径恒为 0。
-out vec4 vInst0;
-out vec4 vInst1;
 // UNITY_VERTEX_INPUT_INSTANCE_ID 在 GLSL 里的等价物：实例号是内置输入，不占顶点布局。
 flat out int vInstanceID;
 void main()
@@ -53,8 +50,6 @@ void main()
     gl_Position = uProjection * aPosition;
     vTexCoord = aTexCoord;
     vColor = aColor;
-    vInst0 = vec4(0.0);
-    vInst1 = vec4(0.0);
     vInstanceID = gl_InstanceID;
 }";
 

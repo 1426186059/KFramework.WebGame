@@ -59,7 +59,7 @@ namespace KFramework.Test.WebGL20.Tests
             new TestEntry
             {
                 Name = "GPU 实例化（GpuInstanceBatch：一次 DrawCall 画 N 个精灵）",
-                Desc = "单位四边形 + 逐实例缓冲（divisor=1）+ drawElementsInstanced：逐实例矩阵（= Unity 的 unity_ObjectToWorld）决定位置/尺寸/旋转，逐实例属性（块值经 SetGpuInstanceChannels 声明）也随实例数据走，N 个精灵只 1 次 submit",
+                Desc = "单位四边形 + 逐实例缓冲（divisor=1，84 字节/精灵）+ drawElementsInstanced：逐实例矩阵（= Unity 的 unity_ObjectToWorld）决定位置/尺寸/旋转，N 个精灵只 1 次 submit",
                 Factory = static () => new InstancingScene(),
             },
             new TestEntry

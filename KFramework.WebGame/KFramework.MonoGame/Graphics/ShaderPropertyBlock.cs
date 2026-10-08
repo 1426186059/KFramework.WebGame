@@ -20,12 +20,10 @@ namespace KFramework.MonoGame
     /// 换来的覆盖能力是：任意条数、任意属性名、任意类型（float / int / 向量 / 矩阵 / 纹理）。
     /// </para>
     /// <para>
-    /// <b>GPU 实例化路径（<see cref="GpuInstanceBatch"/>）里不切批</b>：先用
-    /// <see cref="Material.SetGpuInstanceChannels"/> 把属性声明成"实例通道"（照 Unity 的实例化属性；
-    /// Unity 声明在 shader 的 <c>UNITY_INSTANCING_BUFFER</c> 里），再把这个块传给
-    /// <see cref="GpuInstanceBatch.Draw(Texture2D, Rectangle?, Rectangle?, Color, float, Vector2, Vector2, SpriteEffects, float, ShaderPropertyBlock?)"/> ——
-    /// 块里的值被编码进逐实例数据，<b>每个实例各自持有自己的属性值</b>，逐精灵不同也仍然只 1 次 DrawCall。
-    /// 那条路没有 uniform 覆盖层，所以块里出现没被声明的属性时是直接抛异常（装不下的东西无处可去）。
+    /// <b>GPU 实例化路径（<see cref="GpuInstanceBatch"/>）不接受块</b>：那条路的一次 draw 不是"一个物体一次 uniform"
+    /// 而是"N 个实例共享一份 uniform + 逐实例缓冲"，而逐实例缓冲只有固定字段（矩阵 / 颜色 / UV 矩形），
+    /// 装不下任意属性。想按物体覆盖 uniform 请用 <see cref="SpriteBatch"/>（代价是切批）或
+    /// <see cref="UrpBatch"/>（数据走 uniform buffer，不切批但 DrawCall = 物体数）。
     /// </para>
     /// <para>
     /// 与 Unity 的对应关系：Unity 里是 <c>renderer.SetPropertyBlock(block)</c>，本引擎里"渲染者"就是一次
