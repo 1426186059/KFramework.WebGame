@@ -44,8 +44,11 @@ namespace KFramework.MonoGame
         /// <summary>本批已排队的绘制项数（提交后清零）。</summary>
         private int _batchItemCount;
 
-        /// <summary>本批的采样状态（<see cref="Begin(Material, SpriteSortMode, Matrix4x4?)"/> 时从材质取，提交时逐段下发）。</summary>
-        private SamplerState _samplerState;
+        /// <summary>本批的「世界 → 屏幕」矩阵（= 相机矩阵 × 投影）：批内不变，开批时算一次。</summary>
+        private Matrix4x4 _transformProjection;
+
+        /// <summary>设备上此刻是否挂着某个属性块的 uniform 值（为 true 时，遇不带块的段要先把材质默认值发回去）。</summary>
+        private bool _blockApplied;
 
         /// <summary>逐顶点数组（提交前把绘制项展开成四边形写在这里，再整段上传）。</summary>
         private VertexPositionColorTexture[] _vertexArray;
@@ -56,8 +59,10 @@ namespace KFramework.MonoGame
             _device = device;
 
             _batchItemList = new SpriteBatchItem[InitialBatchSize];
-            for (int i = 0; i < InitialBatchSize; i++) _batchItemList[i] = new SpriteBatchItem();
-
+            for (int i = 0; i < InitialBatchSize; i++)
+            {
+                _batchItemList[i] = new SpriteBatchItem();
+            }
             EnsureVertexArrayCapacity(InitialBatchSize);
         }
 
@@ -102,12 +107,18 @@ namespace KFramework.MonoGame
             _sortMode = sortMode;
             _material = material;
             _transform = transformMatrix ?? Matrix4x4.Identity;
-            _samplerState = material.Sampler;
 
             // 投影矩阵：与 GpuInstanceBatch / UrpBatch 共用同一份（见 GraphicsDevice.CreateSpriteProjection）。
             _projection = _device.CreateSpriteProjection();
+            _transformProjection = _transform * _projection;
 
-            // Immediate 模式与「带属性块」的绘制，都在提交时逐段下发状态（见 Draw / End），这里不提前设。
+            // ---- 批内不变的渲染状态，在这里一次性下发 ----
+            // 材质（混合 / 深度 / 剔除 / 采样）与效果（着色器程序 + uProjection + 材质属性）在整个 Begin/End
+            // 期间都不会变（一个批只有一个材质），所以只在开批时下发一次；提交时每段只需换纹理。
+            // 「带属性块」的段例外：块的 uniform 值必须逐段下发/还原（见 FlushBatch），那是可变 uniform 的代价。
+            _device.ApplyMaterial(_material, _transformProjection, null);
+            _blockApplied = false;
+
             _beginCalled = true;
         }
 
@@ -120,13 +131,18 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 提交当前累积的绘制：排序 → 按「纹理 + 属性块」切段 → 每段下发一次状态（材质 + 属性块 → 采样 → 纹理）
-        /// 并把段内绘制项展开成四边形顶点 → 整段一次 <c>drawElements</c>；精灵总数累加到渲染统计。
+        /// 提交当前累积的绘制：排序 → 按「纹理 + 属性块」切段 → 把段内绘制项展开成四边形顶点 →
+        /// 整段一次 <c>drawElements</c>；精灵总数累加到渲染统计。
         /// <para>
-        /// 分批键 = 纹理引用 + 属性块（引用 + 版本号）：一次 draw 只能有一份 uniform 值，
-        /// 所以块一变（含"同一个块被改过"这种情况，版本号会变）就必须另起一段。
-        /// 带属性块的绘制会在 <see cref="Draw"/> 里当场调用它（块是可变的，值必须当场生效），
-        /// 因此这里看到的通常是「一段不带块 + 末尾一个带块项」；Immediate 模式同理每笔当场提交。
+        /// <b>每段只换纹理</b>：材质状态 / 效果程序 / uProjection / 材质属性这些批内不变的东西，已在
+        /// <see cref="BeginInternal"/> 里下发过一次，这里不再重复 —— 这正是"一个批一个材质"的红利
+        /// （不打图集时"一张图一段"，若每段都重设一遍状态，开销就按精灵数走了）。
+        /// </para>
+        /// <para>
+        /// 例外是<b>属性块</b>：块是可变 uniform，值必须逐段生效 —— 带块的段下发块值（盖住材质默认值），
+        /// 之后遇到不带块的段要把材质默认值发回去（<see cref="_blockApplied"/>）。
+        /// 分批键 = 纹理引用 + 属性块（引用 + 版本号），所以块一变（含"同一个块被改过"）就另起一段；
+        /// 带块的绘制会在 <see cref="Draw"/> 里当场调用它，因此这里通常是「一段不带块 + 末尾一个带块项」。
         /// </para>
         /// </summary>
         private void FlushBatch()
@@ -145,7 +161,7 @@ namespace KFramework.MonoGame
             // 整批精灵总数（照 MonoGame：spriteCount 只在提交时累加一次）。
             _device._metrics._spriteCount += _batchItemCount;
 
-            Matrix4x4 transform = _transform * _projection;
+            Matrix4x4 transform = _transformProjection;
             int batchIndex = 0;
             int batchCount = _batchItemCount;
             int maxBatchSize = GraphicsDevice.MaxBatchSize;
@@ -180,9 +196,20 @@ namespace KFramework.MonoGame
                         startIndex = index;
                         batchStarted = true;
 
-                        // 每段都要下发：材质 + 属性块（块盖在材质之上）→ 采样状态 → 纹理。
-                        _device.ApplyMaterial(_material, transform, block);
-                        _device.SetSamplerState(_samplerState);
+                        // 材质状态 / 效果 / 投影已在 Begin 里下发过（批内不变），这里只处理"变的"：
+                        //   1) 属性块：块值必须逐段下发；块结束后要还原材质默认值（否则后续精灵会沿用块值）；
+                        //   2) 纹理：每段必然不同（分段键之一）。
+                        if (block is not null)
+                        {
+                            _device.ApplyMaterial(_material, transform, block);
+                            _blockApplied = true;
+                        }
+                        else if (_blockApplied)
+                        {
+                            _device.ApplyMaterial(_material, transform, null);
+                            _blockApplied = false;
+                        }
+
                         _device.BindTexture(tex!);
                     }
 
@@ -221,8 +248,10 @@ namespace KFramework.MonoGame
         private void EnsureVertexArrayCapacity(int numBatchItems)
         {
             int needed = 4 * numBatchItems;
-            if (_vertexArray != null && needed <= _vertexArray.Length) return;
-            // 顶点缓冲按 MaxBatchSize 一块的容量准备，单次 draw 绝不会超出。
+            if (_vertexArray != null && needed <= _vertexArray.Length)
+            {
+                return;
+            }
             _vertexArray = new VertexPositionColorTexture[Math.Max(needed, 4 * GraphicsDevice.MaxBatchSize)];
         }
 

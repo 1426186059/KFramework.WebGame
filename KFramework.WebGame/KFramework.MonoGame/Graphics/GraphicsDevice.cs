@@ -342,8 +342,9 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// 把当前 <see cref="RasterizerState"/> 下发给后端（照 MonoGame 的 RasterizerState.Apply）。
-        /// <see cref="CullMode.Off"/> 关闭剔除；Front / Back 剔除对应朝向的面。每次 <see cref="SpriteBatch.Setup"/> 都会重新设置，
-        /// 因此绘制前状态始终被强制回 2D 设定，不受外部遗留状态影响。
+        /// <see cref="CullMode.Off"/> 关闭剔除；Front / Back 剔除对应朝向的面。
+        /// 每次 <see cref="SpriteBatch.Begin"/> / <see cref="GpuInstanceBatch.Begin"/> / <see cref="UrpBatch.Begin"/>
+        /// 都会重新设置，因此绘制前状态始终被强制回 2D 设定，不受外部遗留状态影响。
         /// </summary>
         private void ApplyRasterizerState()
         {
@@ -386,6 +387,11 @@ namespace KFramework.MonoGame
         /// <summary>
         /// 按「材质内容 + 变换」下发渲染状态。与上次完全一致则整体跳过（省去 blend / depth / rasterizer /
         /// 着色器切换与矩阵上传这一串跨 JS 调用）。材质正是 Unity 的 Material：打包效果 + 采样/混合/深度/剔除状态。
+        /// <para>
+        /// <b>调用时机</b>：一个批（Begin/End）只有一个材质，所以 <see cref="SpriteBatch"/> 在 <c>Begin</c> 里
+        /// 调它一次即可，提交时每段不再重复调用；只有「带属性块」的段才需要再调一次（块值必须逐段生效，
+        /// 块结束后还要再用 <paramref name="properties"/> = null 调一次把材质默认值发回去）。
+        /// </para>
         /// </summary>
         internal void ApplyMaterial(
             Material material, 
