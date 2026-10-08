@@ -454,40 +454,18 @@ namespace KFramework.MonoGame
             ApplyRasterizerState();
             _samplerState = material.Sampler;
 
-            // 记下"设备上此刻的状态来自哪个材质"：批处理据此判断提交前要不要补发
-            //（批是类、可以 new 多个实例，交错使用时设备状态可能已被别的批改掉，见 IsRenderStatesCurrent）。
+            // 记下"设备上此刻的渲染状态来自哪个材质"：这几项本就是 ApplyMaterial 去重键的一部分，
+            // 与实际下发值保持一致，后续 ApplyMaterial 才不会误判成"状态没变"而跳过。
             _appliedBlend = material.Blend;
             _appliedSampler = material.Sampler;
             _appliedDepth = material.DepthStencil;
             _appliedRasterizer = material.Rasterizer;
 
-            // 但这条路的"程序 / uniform / 投影"并不是本方法下发的（实例化 / URP 的程序各自管理），
-            // 所以材质身份必须作废：否则 SpriteBatch 的 IsMaterialCurrent 会误判成"还是我的材质"而跳过补发。
+            // 但这条路的"程序 / uniform / 投影"不由本方法下发（实例化 / URP 的程序各自管理自己的程序与 VAO），
+            // 所以材质身份作废：下一次 ApplyMaterial 必须完整下发（含 UseProgram），
+            // 否则会延续上一个程序绘制 —— 与 DrawGpuInstances / DrawUrpSegment 末尾那处作废同一个道理。
             _appliedMaterial = null!;
         }
-
-        /// <summary>
-        /// 设备上此刻的材质是否就是 <paramref name="material"/> 这一份（含变换）。
-        /// <para>
-        /// 给批处理在提交前判断"要不要补发"用：批是类、可以并存多个实例，若两次提交之间
-        /// 有别的批处理改过设备状态（交错 Begin/Draw/End），本批就得把自己的材质补回去。
-        /// 顺序使用时这里只是一次引用比较 + 一次矩阵比较。
-        /// </para>
-        /// </summary>
-        internal bool IsMaterialCurrent(Material material, in Matrix4x4 transform)
-            => ReferenceEquals(_appliedMaterial, material)
-               && _appliedTransform.Equals(transform);
-
-        /// <summary>
-        /// 设备上此刻的渲染状态（混合 / 采样 / 深度 / 剔除）是否来自 <paramref name="material"/>。
-        /// 给 <see cref="GpuInstanceBatch"/> / <see cref="UrpBatch"/> 用：它们各自的着色器程序在程序对象里绑定，
-        /// 只有这几项状态需要在提交前判断要不要补发（见 <see cref="ApplyRenderStates"/>）。
-        /// </summary>
-        internal bool IsRenderStatesCurrent(Material material)
-            => ReferenceEquals(_appliedBlend, material.Blend)
-               && ReferenceEquals(_appliedSampler, material.Sampler)
-               && ReferenceEquals(_appliedDepth, material.DepthStencil)
-               && ReferenceEquals(_appliedRasterizer, material.Rasterizer);
 
         /// <summary>
         /// 把若干顶点上传并发起一次索引绘制（照 MonoGame 的 DrawUserIndexedPrimitives）。

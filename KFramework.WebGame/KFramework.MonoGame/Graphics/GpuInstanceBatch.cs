@@ -237,11 +237,6 @@ namespace KFramework.MonoGame
             if (_scratch.Length < _entries.Count)
                 _scratch = new GpuInstance[Math.Max(_entries.Count, GraphicsDevice.MaxBatchSize)];
 
-            // 多批交错使用时补发：Begin 之后若有别的批处理改过设备状态，本批的状态就得补回来。
-            // 顺序使用时这里只是 4 次引用比较。
-            if (!_device.IsRenderStatesCurrent(_material))
-                _device.ApplyRenderStates(_material);
-
             Matrix4x4 transform = _transformProjection;
             int draws = 0;
 

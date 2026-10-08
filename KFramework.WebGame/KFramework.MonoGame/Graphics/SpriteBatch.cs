@@ -161,15 +161,6 @@ namespace KFramework.MonoGame
             // 整批精灵总数（照 MonoGame：spriteCount 只在提交时累加一次）。
             _device._metrics._spriteCount += _batchItemCount;
 
-            // 多批交错使用时补发：Begin 之后若有别的批处理（另一个 SpriteBatch / GpuInstanceBatch / UrpBatch）
-            // 改过设备状态，本批的材质 + 变换就得补回来（批是类，可以 new 多个、彼此交错）。
-            // 顺序使用时这里只是一次引用比较 + 一次矩阵比较。
-            if (!_device.IsMaterialCurrent(_material, _transformProjection))
-            {
-                _device.ApplyMaterial(_material, _transformProjection, null);
-                _blockApplied = false;
-            }
-
             Matrix4x4 transform = _transformProjection;
             int batchIndex = 0;
             int batchCount = _batchItemCount;
