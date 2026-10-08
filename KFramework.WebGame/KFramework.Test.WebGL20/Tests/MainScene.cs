@@ -74,6 +74,12 @@ namespace KFramework.Test.WebGL20.Tests
                 Desc = "照 Unity 的 URP / SRP Batcher：逐材质常量进常驻 UBO（材质不变不重传）、逐物体常量整段一次上传，每个物体只 bindBufferRange 换偏移 + drawElements —— DrawCall 不降，换物体的开销 ≈ 一次绑定",
                 Factory = static () => new UrpBatchScene(),
             },
+            new TestEntry
+            {
+                Name = "SpriteBatch 大批量（1000 / 5000 / 9000 精灵）",
+                Desc = "CPU 合批的规模测试：空格切换精灵数，读数给出 DrawCall 增量（同一张纹理也受「单次 4096 个四边形」限制）、CPU 侧带宽与提交耗时拆分；可与第 7 页 GPU 实例化对照",
+                Factory = static () => new SpriteBatchPerfScene(),
+            },
         ];
     }
 
@@ -111,7 +117,8 @@ namespace KFramework.Test.WebGL20.Tests
                 }
             }
 
-            Keys[] digits = [Keys.Digit1, Keys.Digit2, Keys.Digit3, Keys.Digit4, Keys.Digit5, Keys.Digit6, Keys.Digit7, Keys.Digit8, Keys.Digit9];
+            // 数字键 1-9 对应前 9 个条目，第 10 个用 Digit0（0 键）—— 条目多于 9 个时鼠标点击始终可用。
+            Keys[] digits = [Keys.Digit1, Keys.Digit2, Keys.Digit3, Keys.Digit4, Keys.Digit5, Keys.Digit6, Keys.Digit7, Keys.Digit8, Keys.Digit9, Keys.Digit0];
             for (int i = 0; i < TestRegistry.Entries.Count && i < digits.Length; i++)
             {
                 if (Input_KeyBoard.GetKeyDown(digits[i]))
