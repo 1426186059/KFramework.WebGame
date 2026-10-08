@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace KFramework.MonoGame
 {
 
@@ -479,6 +481,45 @@ namespace KFramework.MonoGame
             _metrics._drawCount++;
             _metrics._primitiveCount += count * 2;
             _metrics._spriteCount += count;
+        }
+
+        /// <summary>
+        /// SRP-Batcher 式的一段绘制（见 <see cref="URPBatch"/>）：下发材质状态（混合/深度/剔除/采样）→ 绑定纹理 →
+        /// 后端"整段上传逐物体常量 + 逐个 drawElements（每次只重绑一次 UBO 范围）" → 计入渲染统计。
+        /// <para>
+        /// 统计口径与其它路径一致：每个物体算 1 个精灵、2 个三角形，而 <b>DrawCall 就是物体数</b>
+        /// —— SRP Batcher 本来就不减少 DrawCall，它省的是每次 draw 前的状态与数据上传。
+        /// </para>
+        /// </summary>
+        internal int DrawUrpSegment(IUrpProgram program, Material material, in Matrix4x4 transform,
+                                    Span<UrpDrawData> draws, int count, Texture2D texture,
+                                    in Vector4 materialColor, bool uploadMaterial)
+        {
+            ArgumentNullException.ThrowIfNull(program);
+            if (count <= 0) return 0;
+
+            SetBlendState(material.Blend);
+            _depthStencilState = material.DepthStencil;
+            ApplyDepthStencilState();
+            _rasterizerState = material.Rasterizer;
+            ApplyRasterizerState();
+            _samplerState = material.Sampler;
+            SetSamplerState(material.Sampler);
+            BindTexture(texture);
+
+            int drawCalls = program.DrawSegment(transform, draws, count, texture, materialColor, uploadMaterial);
+
+            // 与实例化路径同理：URP 程序自己 UseProgram / 绑自己的 VAO / 改 UBO 绑定，
+            // 绕过了 ApplyMaterial 的「材质级去重」缓存 —— 必须作废，否则紧接着的 SpriteBatch 批次
+            // 会因为"材质/变换都没变"被短路，不重新 UseProgram，画面会整个错掉。
+            _appliedEffect = null!;
+            _appliedEffectPropertiesVersion = -1;
+            _appliedMaterial = null!;
+
+            _metrics._drawCount += drawCalls;
+            _metrics._primitiveCount += drawCalls * 2;
+            _metrics._spriteCount += drawCalls;
+            return drawCalls;
         }
 
         // ================================================================

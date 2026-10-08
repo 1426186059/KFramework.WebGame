@@ -177,6 +177,23 @@ export function getAttribLocation(program: WebGLProgram, name: string): number {
     return gpu().getAttribLocation(program, name);
 }
 
+// ---------- Uniform Buffer（UBO） ----------
+
+// SRP Batcher 式"常量缓冲常驻 + 逐物体只改绑定"靠这三件事：
+//   1) 着色器里声明 layout(std140) uniform 块（GLSL ES 3.00 没有 layout(binding=)，绑定点只能显式指定）；
+//   2) uniformBlockBinding 把块绑到一个绑定点（一次即可）；
+//   3) bindBufferRange 把缓冲的一段绑到该绑定点 —— 逐物体只是换个偏移，不上传任何字节。
+
+/** 取 uniform block 的索引；块名不存在时返回 0xFFFFFFFF（C# 侧读到的就是 -1）。 */
+export function getUniformBlockIndex(program: WebGLProgram, blockName: string): number {
+    return gpu().getUniformBlockIndex(program, blockName);
+}
+
+/** 把一个 uniform block 绑定到指定绑定点（同一程序只需调用一次）。 */
+export function uniformBlockBinding(program: WebGLProgram, blockIndex: number, bindingPoint: number): void {
+    gpu().uniformBlockBinding(program, blockIndex, bindingPoint);
+}
+
 export function uniform1i(location: WebGLUniformLocation | null, v: number): void { gpu().uniform1i(location, v); }
 export function uniform1f(location: WebGLUniformLocation | null, v: number): void { gpu().uniform1f(location, v); }
 export function uniform4f(location: WebGLUniformLocation | null, x: number, y: number, z: number, w: number): void {
@@ -225,6 +242,15 @@ export function uniformMatrix4fv(location: WebGLUniformLocation | null, transpos
 
 export function createBuffer(): WebGLBuffer | null { return gpu().createBuffer(); }
 export function bindBuffer(target: number, buffer: WebGLBuffer | null): void { gpu().bindBuffer(target, buffer); }
+
+/**
+ * 把缓冲的一段范围绑到某个 UBO 绑定点。
+ * ⚠️ offset 必须是 UNIFORM_BUFFER_OFFSET_ALIGNMENT 的整数倍（常见 256），
+ * 所以"逐物体记录"的实际占位要按该值向上取整，不能直接用结构体大小。
+ */
+export function bindBufferRange(target: number, index: number, buffer: WebGLBuffer | null, offset: number, size: number): void {
+    gpu().bindBufferRange(target, index, buffer, offset, size);
+}
 export function bufferDataSize(target: number, size: number, usage: number): void { gpu().bufferData(target, size, usage); }
 export function bufferData(target: number, data: MemoryView_Span | Uint8Array, usage: number): void {
     gpu().bufferData(target, toVertexBytes(data), usage);

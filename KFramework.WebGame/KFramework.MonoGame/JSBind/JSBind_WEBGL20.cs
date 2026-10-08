@@ -87,6 +87,15 @@ namespace KFramework.MonoGame
         public const int ELEMENT_ARRAY_BUFFER = 0x8893;
         public const int STATIC_DRAW = 0x88E4;
         public const int DYNAMIC_DRAW = 0x88E8;
+
+        /// <summary>uniform buffer（UBO）目标：SRP Batcher 式的常量缓冲用它（见 <see cref="URPBatch"/>）。</summary>
+        public const int UNIFORM_BUFFER = 0x8A11;
+
+        /// <summary><c>bindBufferRange</c> 的偏移必须是它的整数倍（取参数名同名的常量查上限）。</summary>
+        public const int UNIFORM_BUFFER_OFFSET_ALIGNMENT = 0x8A34;
+
+        /// <summary>GL 的 <c>INVALID_INDEX</c>（0xFFFFFFFF）：C# 侧按 int 读就是 -1。</summary>
+        public const int INVALID_INDEX = -1;
         public const int STREAM_DRAW = 0x88E0;
 
         // —— 元素数据类型（顶点属性 / 像素数据的单个元素类型） ——
@@ -260,6 +269,14 @@ namespace KFramework.MonoGame
         [JSImport("getAttribLocation", "render_webgl20")]
         public static partial int GetAttribLocation(JSObject program, string name);
 
+        /// <summary>取 uniform block 的索引；块名不存在时返回 <see cref="INVALID_INDEX"/>（-1）。</summary>
+        [JSImport("getUniformBlockIndex", "render_webgl20")]
+        public static partial int GetUniformBlockIndex(JSObject program, string blockName);
+
+        /// <summary>把 uniform block 绑定到指定绑定点（同一程序调一次即可；GLSL ES 3.00 没有 layout(binding=)）。</summary>
+        [JSImport("uniformBlockBinding", "render_webgl20")]
+        public static partial void UniformBlockBinding(JSObject program, int blockIndex, int bindingPoint);
+
         /// <summary>设置 int uniform。</summary>
         [JSImport("uniform1i", "render_webgl20")]
         public static partial void Uniform1i(JSObject location, int v);
@@ -283,9 +300,16 @@ namespace KFramework.MonoGame
         [JSImport("createBuffer", "render_webgl20")]
         public static partial JSObject CreateBuffer();
 
-        /// <summary>绑定缓冲到目标（ARRAY_BUFFER / ELEMENT_ARRAY_BUFFER）。</summary>
+        /// <summary>绑定缓冲到目标（ARRAY_BUFFER / ELEMENT_ARRAY_BUFFER / UNIFORM_BUFFER）。</summary>
         [JSImport("bindBuffer", "render_webgl20")]
         public static partial void BindBuffer(int target, JSObject buffer);
+
+        /// <summary>
+        /// 把缓冲的一段范围绑到某个 UBO 绑定点。
+        /// <c>offset</c> 必须是 <c>UNIFORM_BUFFER_OFFSET_ALIGNMENT</c> 的整数倍（见 <see cref="URPBatch"/>）。
+        /// </summary>
+        [JSImport("bindBufferRange", "render_webgl20")]
+        public static partial void BindBufferRange(int target, int index, JSObject buffer, int offset, int size);
 
         /// <summary>预分配指定字节数的缓冲（不上传数据）。</summary>
         [JSImport("bufferDataSize", "render_webgl20")]
