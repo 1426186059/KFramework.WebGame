@@ -64,14 +64,26 @@ layout(std140) uniform UnityPerDraw
 // 逐帧数据：一段只设一次（URP 里它在 UnityPerFrame 缓冲里）
 uniform mat4 uProjection;
 
+// ---- 顶点 → 片元的 varying 接口 ----
+// 【契约】必须与 WebGL_ShaderProgram_2D_Default / _Custom / _Instanced 声明完全一致，
+// 否则同一份片元源码换条路就编不过（典型报错：FRAGMENT varying vInst0 does not match any VERTEX varying）。
 out vec2 vTexCoord;
 out vec4 vColor;
+// 逐实例属性槽（照 Unity 的 UNITY_INSTANCING_BUFFER）：本路径的逐物体数据在 UBO 里，这里恒为 0
+//（留着是为了让读 vInst0/vInst1 的片元源码在三路上都能编译）。
+out vec4 vInst0;
+out vec4 vInst1;
+// UNITY_VERTEX_INPUT_INSTANCE_ID 的等价物：本路径是逐个 drawElements，gl_InstanceID 恒为 0。
+flat out int vInstanceID;
 
 void main()
 {
     gl_Position = uProjection * (unity_ObjectToWorld * vec4(aQuadPos, 0.0, 1.0));
     vTexCoord = uUvRect.xy + aQuadUv * uUvRect.zw;
     vColor = uTint;
+    vInst0 = vec4(0.0);
+    vInst1 = vec4(0.0);
+    vInstanceID = gl_InstanceID;
 }";
 
         /// <summary>默认片元着色器：纹理 × 逐物体颜色 × 材质常量。</summary>

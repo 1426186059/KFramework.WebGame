@@ -25,8 +25,14 @@ in vec4 aPosition;
 in vec4 aColor;
 in vec2 aTexCoord;
 uniform mat4 uProjection;
+// ---- 顶点 → 片元的 varying 接口 ----
+// 【契约】必须与 WebGL_ShaderProgram_2D_Default / _Instanced / _Urp 声明完全一致，
+// 否则同一份片元源码换条路就编不过（典型报错：FRAGMENT varying vInst0 does not match any VERTEX varying）。
 out vec2 vTexCoord;
 out vec4 vColor;
+// 逐实例属性槽（照 Unity 的 UNITY_INSTANCING_BUFFER）：本路径没有实例数据，恒为 0。
+out vec4 vInst0;
+out vec4 vInst1;
 // UNITY_VERTEX_INPUT_INSTANCE_ID 在 GLSL 里的等价物：实例号是内置输入，不占顶点布局。
 flat out int vInstanceID;
 void main()
@@ -34,6 +40,8 @@ void main()
     gl_Position = uProjection * aPosition;
     vTexCoord = aTexCoord;
     vColor = aColor;
+    vInst0 = vec4(0.0);
+    vInst1 = vec4(0.0);
     vInstanceID = gl_InstanceID;
 }";
 
