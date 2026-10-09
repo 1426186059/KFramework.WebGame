@@ -23,19 +23,6 @@ function writeInts(view: MemoryView_Span | Int32Array, values: number[]): void {
     for (let i = 0; i < values.length; i++) fallback[i] = values[i];
 }
 
-function writeBytes(view: MemoryView_Span | Uint8Array, data: Uint8Array): void {
-    if (view instanceof Uint8Array) {
-        view.set(data);
-        return;
-    }
-    if (typeof view.set === 'function') {
-        view.set(data, 0);
-        return;
-    }
-    const fallback = view as unknown as Record<number, number>;
-    for (let i = 0; i < data.length; i++) fallback[i] = data[i];
-}
-
 // 字距（Canvas2D 的 letterSpacing 是较新属性，不支持的浏览器直接忽略，退回默认字距）
 function applyLetterSpacing(c: CanvasRenderingContext2D, letterSpacing: number): void {
     if (!('letterSpacing' in c)) return;
@@ -75,7 +62,7 @@ export function render(
 ): void {
     canvas.width = width;
     canvas.height = height;
-
+    
     const c = ctx2d();
     c.clearRect(0, 0, width, height);
     c.font = font;
@@ -87,9 +74,8 @@ export function render(
 
     // getImageData 返回的是 Uint8ClampedArray，而 .NET 的 MemoryView_Span 只接受 Uint8Array
     const image = c.getImageData(0, 0, width, height).data;
-    const bytes = new Uint8Array(image.length);
-    bytes.set(image);
-    writeBytes(rgba, bytes);
+    const bytes = new Uint8Array(image.buffer, image.byteOffset, image.byteLength);
+    rgba.set(bytes);
 }
 
 // 自定义字体：把 ttf/otf/woff 注册进 document.fonts，之后即可像系统字体那样用 family 名光栅化。

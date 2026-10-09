@@ -1,16 +1,5 @@
 namespace KFramework.MonoGame
 {
-
-    /// <summary>
-    /// 位图字体：字形在首次使用时通过 Canvas2D 光栅化并写入一张动态字形图集，
-    /// 之后所有文字共用同一张纹理，和精灵一起合并进批次，不需要任何字体资源文件。
-    ///
-    /// 字体来源有两类：
-    /// 1) 系统字体——浏览器已可用的 family（默认 "system-ui, sans-serif"），直接构造即可；
-    /// 2) 自定义字体——ttf / otf / woff，先经 <see cref="RegisterFontAsync(string, byte[])"/> 注册到
-    ///    document.fonts，再按注册时用的 family 名构造（见 <see cref="FromFontAsync(GraphicsDevice, string, float, byte[], FontStyle, int, FontStretch, float)"/>）。
-    /// 美术字（预先排好的位图字体）见 <see cref="BitmapFont"/>。
-    /// </summary>
     public sealed class SpriteFont : IFont, IDisposable
     {
         private readonly struct Glyph
@@ -98,12 +87,7 @@ namespace KFramework.MonoGame
 
             PrintTool.Log($"[SpriteFont] {Family} 字号 {Size} | 样式 {Style} | 字重 {Weight} | 基线 {Ascent} | 行高 {LineHeight}");
         }
-
-
-        /// <summary>
-        /// 注册自定义字体：从 <paramref name="url"/>（相对页面基址或绝对地址）下载字体文件并加入 document.fonts。
-        /// 注册成功后即可用 <paramref name="family"/> 构造 <see cref="SpriteFont"/>。字体须在光栅化之前注册完成，故为异步。
-        /// </summary>
+            
         public static Task<bool> RegisterFontAsync(string family, string url)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(family);
@@ -111,10 +95,6 @@ namespace KFramework.MonoGame
             return JSBind_Text.LoadFontFromUrl(family, url);
         }
 
-        /// <summary>
-        /// 注册自定义字体：直接用字体文件字节（ttf / otf / woff，可来自 AssetBundle）构造 FontFace 并加入 document.fonts。
-        /// 注册成功后即可用 <paramref name="family"/> 构造 <see cref="SpriteFont"/>。
-        /// </summary>
         public static Task<bool> RegisterFontAsync(string family, byte[] bytes)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(family);
@@ -123,9 +103,15 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>注册自定义字体（字节）并直接产出可绘制的 <see cref="SpriteFont"/>；注册失败抛 <see cref="InvalidOperationException"/>。</summary>
-        public static async Task<SpriteFont> FromFontAsync(GraphicsDevice device, string family, float size, byte[] bytes,
-                                                           FontStyle style = FontStyle.Regular, int weight = 0,
-                                                           FontStretch stretch = FontStretch.Normal, float letterSpacing = 0f)
+        public static async Task<SpriteFont> FromFontAsync(
+            GraphicsDevice device, 
+            string family, 
+            float size, 
+            byte[] bytes,
+            FontStyle style = FontStyle.Regular, 
+            int weight = 0,
+            FontStretch stretch = FontStretch.Normal, 
+            float letterSpacing = 0f)
         {
             bool ok = await RegisterFontAsync(family, bytes).ConfigureAwait(false);
             if (!ok) throw new InvalidOperationException($"自定义字体注册失败（字节不是合法字体或格式不支持）：{family}");
@@ -133,9 +119,15 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>注册自定义字体（URL）并直接产出可绘制的 <see cref="SpriteFont"/>；注册失败抛 <see cref="InvalidOperationException"/>。</summary>
-        public static async Task<SpriteFont> FromFontAsync(GraphicsDevice device, string family, float size, string url,
-                                                           FontStyle style = FontStyle.Regular, int weight = 0,
-                                                           FontStretch stretch = FontStretch.Normal, float letterSpacing = 0f)
+        public static async Task<SpriteFont> FromFontAsync(
+            GraphicsDevice device, 
+            string family, 
+            float size, 
+            string url,
+            FontStyle style = FontStyle.Regular, 
+            int weight = 0,
+            FontStretch stretch = FontStretch.Normal, 
+            float letterSpacing = 0f)
         {
             bool ok = await RegisterFontAsync(family, url).ConfigureAwait(false);
             if (!ok) throw new InvalidOperationException($"自定义字体加载失败（URL 不可达或格式不支持）：{url}");
@@ -215,14 +207,24 @@ namespace KFramework.MonoGame
             return glyph;
         }
 
-        public void Draw(SpriteBatch batch, string text, Vector2 position, Color color,
-                         float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth)
+        public void Draw(
+            SpriteBatch batch, 
+            string text, 
+            Vector2 position, 
+            Color color,
+            float rotation, 
+            Vector2 origin, 
+            float scale, 
+            SpriteEffects effects, 
+            float layerDepth)
         {
-            if (string.IsNullOrEmpty(text)) return;
+            if (string.IsNullOrEmpty(text))
+            {
+                return;
+            }
 
             Vector2 cursor = position - origin * scale;
             float startX = cursor.X;
-
             foreach (char c in text)
             {
                 if (c == '\n')
@@ -235,15 +237,27 @@ namespace KFramework.MonoGame
                 Glyph glyph = GetGlyph(c);
                 if (glyph.Bounds.Width > 0)
                 {
-                    Vector2 drawAt = new(cursor.X + glyph.DrawOffset.X * scale,
-                                         cursor.Y + (Ascent + glyph.DrawOffset.Y) * scale);
-                    batch.DrawGlyph(_atlas, drawAt, glyph.Bounds, color, 0f, Vector2.Zero,
-                                    new Vector2(scale, scale), SpriteEffects.None, layerDepth);
+                    Vector2 drawAt = new Vector2(
+                        cursor.X + glyph.DrawOffset.X * scale,
+                        cursor.Y + (Ascent + glyph.DrawOffset.Y) * scale);
+                    batch.DrawGlyph(
+                        _atlas, 
+                        drawAt, 
+                        glyph.Bounds, 
+                        color, 
+                        0f, 
+                        Vector2.Zero,
+                        new Vector2(scale, scale), SpriteEffects.None, layerDepth);
                 }
                 cursor.X += glyph.Advance * scale;
             }
+
         }
 
-        public void Dispose() => _atlas.Dispose();
+        public void Dispose()
+        {
+            _atlas.Dispose();
+        }
+
     }
 }

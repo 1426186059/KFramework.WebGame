@@ -187,7 +187,10 @@ namespace KFramework.MonoGame
         public static List<string> WrapLines(string text, IFont font, int maxWidth)
         {
             List<string> result = new List<string>();
-            if (string.IsNullOrEmpty(text) || font == null) return result;
+            if (string.IsNullOrEmpty(text) || font == null)
+            {
+                return result;
+            }
 
             foreach (string raw in text.Split('\n'))
             {
