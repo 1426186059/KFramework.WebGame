@@ -80,7 +80,7 @@ namespace KFramework.MonoGame
             _fontCss = FontCss.Build(size, family, style, weight, stretch);
             _atlas = device.CreateTexture(AtlasSize, AtlasSize);
 
-            Span<int> metrics = stackalloc int[4];
+            Span<short> metrics = stackalloc short[4];
             JSBind_Text.Measure("Hg", _fontCss, _letterSpacing, metrics);
             Ascent = metrics[2];
             LineHeight = metrics[1];
@@ -159,7 +159,7 @@ namespace KFramework.MonoGame
             if (_glyphs.TryGetValue(c, out Glyph glyph)) return glyph;
 
             string text = c.ToString();
-            Span<int> metrics = stackalloc int[4];
+            Span<short> metrics = stackalloc short[4];
             JSBind_Text.Measure(text, _fontCss, _letterSpacing, metrics);
             int advance = metrics[0];
 

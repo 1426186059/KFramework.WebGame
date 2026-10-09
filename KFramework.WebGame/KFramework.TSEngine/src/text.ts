@@ -9,19 +9,15 @@ function ctx2d(): CanvasRenderingContext2D {
     return context;
 }
 
-function writeInts(view: MemoryView_Span | Int32Array, values: number[]): void {
-    const array = new Int32Array(values);
-    if (view instanceof Int32Array) {
-        view.set(array);
-        return;
-    }
-    if (typeof view.set === 'function') {
-        view.set(array, 0);
-        return;
-    }
-    const fallback = view as unknown as Record<number, number>;
-    for (let i = 0; i < values.length; i++) fallback[i] = values[i];
-}
+// 度量结果的 short 暂存 + 它的字节视图（复用同一块，零分配）。
+// 为什么绕一层 byte：MemoryView 既没有 [] 索引器、也没有单元素 set(i, v)，只能 set(TypedArray, offset)；
+// 而 .NET 的 MemoryView 编组只支持 Span<byte> / Span<int>（Span<short> 过不了 source generator），
+// 所以这里把 4 个 short 拼成 8 字节再整体拷过去（WASM 是小端，与 C# 侧 MemoryMarshal.Cast 一致）。
+const _metrics = new Int16Array(4);
+const _metricBytes = new Uint8Array(_metrics.buffer);
+
+/** short 上限：像素量到这个量级已是病态字号，夹住即可（避免静默截断破坏字形盒子）。 */
+const SHORT_MAX = 32767;
 
 // 字距（Canvas2D 的 letterSpacing 是较新属性，不支持的浏览器直接忽略，退回默认字距）
 function applyLetterSpacing(c: CanvasRenderingContext2D, letterSpacing: number): void {
@@ -30,8 +26,9 @@ function applyLetterSpacing(c: CanvasRenderingContext2D, letterSpacing: number):
         letterSpacing !== 0 ? `${letterSpacing}px` : '0px';
 }
 
-// out: [0]=advance(宽) [1]=总高 [2]=基线以上高度(ascent)
-export function measure(text: string, font: string, letterSpacing: number, out: MemoryView_Span | Int32Array): void {
+// out: [0]=advance(宽) [1]=总高 [2]=基线以上高度(ascent) [3]=保留
+// 四个值都是像素量（与 SpriteFont.Size 同量纲），故用 short 传递即可；写入见下方 out.set。
+export function measure(text: string, font: string, letterSpacing: number, out: MemoryView_Span): void {
     const c = ctx2d();
     c.font = font;
     applyLetterSpacing(c, letterSpacing);
@@ -44,15 +41,15 @@ export function measure(text: string, font: string, letterSpacing: number, out: 
     const ascent = Math.max(metrics.actualBoundingBoxAscent || 0, size * 0.80);
     const descent = Math.max(metrics.actualBoundingBoxDescent || 0, size * 0.25);
 
-    writeInts(out, [
-        // advance 是文字布局用的字形推进宽度，必须贴近 Canvas2D 真实 metrics.width，
-        // 绝不能额外 +1——否则每个字符都多出 1px 推进（约等于全局 1px 字距），
-        // 长行会显著比 GDI 宽、撑爆 UI。格子额外留白由 SpriteFont 的 Padding/cellWidth 负责，与布局 advance 解耦。
-        Math.max(1, Math.ceil(metrics.width)),
-        Math.max(1, Math.ceil(ascent + descent) + 4),
-        Math.max(1, Math.ceil(ascent) + 2),
-        0,
-    ]);
+    // advance 是文字布局用的字形推进宽度，必须贴近 Canvas2D 真实 metrics.width，
+    // 绝不能额外 +1——否则每个字符都多出 1px 推进（约等于全局 1px 字距），
+    // 长行会显著比 GDI 宽、撑爆 UI。格子额外留白由 SpriteFont 的 Padding/cellWidth 负责，与布局 advance 解耦。
+    _metrics[0] = Math.min(SHORT_MAX, Math.max(1, Math.ceil(metrics.width)));
+    _metrics[1] = Math.min(SHORT_MAX, Math.max(1, Math.ceil(ascent + descent) + 4));
+    _metrics[2] = Math.min(SHORT_MAX, Math.max(1, Math.ceil(ascent) + 2));
+    _metrics[3] = 0;
+
+    out.set(_metricBytes, 0);
 }
 
 // 在 (x, y) 处（y 为基线）绘制白色文字，结果写入 rgba

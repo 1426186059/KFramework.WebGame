@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 
@@ -11,9 +12,27 @@ namespace KFramework.MonoGame
     /// </summary>
     public static partial class JSBind_Text
     {
-        /// <summary>测量文本尺寸，结果写入 [宽, 高, 基线以上高度(ascent), 0]。</summary>
+        /// <summary>
+        /// 测量文本尺寸（JS 侧入口）：4 项度量以小端 int16 写进 8 字节缓冲。
+        /// <para>
+        /// 为什么是 <c>Span&lt;byte&gt;</c> 而不是 <c>Span&lt;short&gt;</c>：.NET 的 <c>JSType.MemoryView</c> 编组
+        /// 只支持 <c>byte</c> / <c>int</c> 两类元素，<c>Span&lt;short&gt;</c> 过不了 source generator
+        /// （报 <c>JSMarshalerType 未包含 None</c>）。故由 <see cref="Measure"/> 负责重新解释成 short。
+        /// </para>
+        /// </summary>
         [JSImport("measure", "text")]
-        public static partial void Measure(string text, string font, float letterSpacing, [JSMarshalAs<JSType.MemoryView>] Span<int> result);
+        private static partial void MeasureRaw(string text, string font, float letterSpacing, [JSMarshalAs<JSType.MemoryView>] Span<byte> result);
+
+        /// <summary>
+        /// 测量文本尺寸，结果写入 [advance(宽), 总高, 基线以上高度(ascent), 0]，四项均为 short（像素量）。
+        /// JS 侧写的是 8 字节小端 int16，这里零拷贝重新解释（WASM 为小端，与 JS 侧 Int16Array 一致）。
+        /// </summary>
+        public static void Measure(string text, string font, float letterSpacing, Span<short> result)
+        {
+            Span<byte> bytes = stackalloc byte[8];
+            MeasureRaw(text, font, letterSpacing, bytes);
+            MemoryMarshal.Cast<byte, short>(bytes).CopyTo(result);
+        }
 
         /// <summary>把文本渲染成 RGBA8 像素。</summary>
         [JSImport("render", "text")]
