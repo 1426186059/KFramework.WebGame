@@ -83,7 +83,7 @@ namespace KFramework.MonoGame
                 float x0 = padLeft + Measure(font, text.Substring(0, selStart));
                 float x1 = padLeft + Measure(font, text.Substring(0, selEnd));
                 batch.Draw(px, new Rectangle(bounds.X + (int)System.Math.Round(x0), bounds.Y + (int)System.Math.Max(0f, (bounds.Height - font.LineSpacing) / 2f),
-                    (int)System.Math.Max(1, System.Math.Round(x1 - x0)), lineH), color);
+                    (int)System.Math.Max(1, System.Math.Round(x1 - x0)), lineH), null, color);
                 return;
             }
 
@@ -100,7 +100,7 @@ namespace KFramework.MonoGame
                     float x0 = padLeft + Measure(font, ln.Substring(0, s - lineStart));
                     float x1 = padLeft + Measure(font, ln.Substring(0, e - lineStart));
                     batch.Draw(px, new Rectangle(bounds.X + (int)System.Math.Round(x0), bounds.Y + (int)System.Math.Round(line * font.LineSpacing + 2f),
-                        (int)System.Math.Max(1, System.Math.Round(x1 - x0)), lineH), color);
+                        (int)System.Math.Max(1, System.Math.Round(x1 - x0)), lineH), null, color);
                 }
                 idx = lineEnd + 1; // 跳过 '\n'
                 line++;

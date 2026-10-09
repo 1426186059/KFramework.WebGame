@@ -189,7 +189,7 @@ namespace KFramework.MonoGameExtend
                 worldPos.ToPoint(),
                 (m_Size * WorldScale).ToPoint());
 
-            batch.Draw(
+            batch.DrawRect(
                 m_Sprite.Texture,
                 target,
                 m_Sprite.Rectangle,
@@ -283,7 +283,7 @@ namespace KFramework.MonoGameExtend
 
                     Rectangle dstRect = new Rectangle(rotated.ToPoint(), new Point(w, h));
 
-                    batch.Draw(
+                    batch.DrawRect(
                         m_Sprite.Texture,
                         dstRect,
                         srcCells[r * 3 + c],
@@ -339,7 +339,7 @@ namespace KFramework.MonoGameExtend
                             (int)Math.Round(h / WorldScale.Y));
                     }
 
-                    batch.Draw(
+                    batch.DrawRect(
                         m_Sprite.Texture,
                         dstRect,
                         sRect,

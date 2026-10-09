@@ -168,18 +168,18 @@ namespace KFramework.Test.WebGL20.Tests
                 {
                     case SubmitMode.NoBlock:
                         // 差异随顶点数据走：不参与分批键 → 整批合并。
-                        Batch.Draw(_chart!, rect, tint);
+                        Batch.Draw(_chart!, rect, null, tint);
                         break;
 
                     case SubmitMode.SharedBlock:
-                        Batch.Draw(_chart!, rect, tint, _block);
+                        Batch.Draw(_chart!, rect, null, tint, properties: _block);
                         break;
 
                     default:
                         // 逐精灵改块值：每笔的块版本号都变。
                         _block!.Clear();
                         _block.SetColor(BlockProperty, tint);
-                        Batch.Draw(_chart!, rect, tint, _block);
+                        Batch.Draw(_chart!, rect, null, tint, properties: _block);
                         break;
                 }
             }
@@ -221,7 +221,7 @@ namespace KFramework.Test.WebGL20.Tests
         private void DrawModeButton(SpriteBatch batch)
         {
             bool hover = _button.Contains(Input_Mouse.Position);
-            batch.Draw(KDefaultRes.DefaultTexture2D, _button, hover ? new Color(58, 84, 130) : new Color(34, 46, 72));
+            batch.Draw(KDefaultRes.DefaultTexture2D, _button, null, hover ? new Color(58, 84, 130) : new Color(34, 46, 72));
             batch.DrawString(Font, $"当前方式：{ModeNames[(int)_mode]}    ← 点击按钮 / I 键切换",
                 new Vector2(_button.X + 14f, _button.Y + 6f), Color.White);
         }
@@ -236,7 +236,7 @@ namespace KFramework.Test.WebGL20.Tests
                 bool current = m == (int)_mode;
 
                 if (current)
-                    batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(row.X - 6, row.Y - 2, row.Width + 12, row.Height + 4),
+                    batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(row.X - 6, row.Y - 2, row.Width + 12, row.Height + 4), null,
                                new Color(34, 46, 72));
 
                 batch.DrawString(font, $"{ModeNames[m]}    期望 DC = {ExpectedDrawCalls[m]}",

@@ -128,7 +128,7 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
 
         private static void DrawBand(SpriteBatch batch, string text, Rectangle band, Color fore, TextFormatFlags flags, Color back)
         {
-            batch.Draw(KDefaultRes.DefaultTexture2D, band, back);
+            batch.Draw(KDefaultRes.DefaultTexture2D, band, null, back);
             TextRenderer.DrawText(batch, text, KDefaultRes.DefaultSpriteFont, band, fore, flags);
         }
 
@@ -149,10 +149,10 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
         private void DrawChatLog(SpriteBatch batch, Rectangle panel)
         {
             // 面板底 + 内底
-            batch.Draw(KDefaultRes.DefaultTexture2D, panel, new Color(110, 150, 210));
+            batch.Draw(KDefaultRes.DefaultTexture2D, panel, null, new Color(110, 150, 210));
             batch.Draw(KDefaultRes.DefaultTexture2D,
                        new Rectangle(panel.X + 2, panel.Y + 2, panel.Width - 4, panel.Height - 4),
-                       new Color(14, 18, 30));
+                       null, new Color(14, 18, 30));
 
             int availW = panel.Width - 20;
             float x = panel.X + 10f;
@@ -175,10 +175,10 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
         /// <summary>画一个带边框的输入框底，并调用 TextBox 自绘（文字 + 光标 / 选区）。</summary>
         private void DrawBox(SpriteBatch batch, TextBox box, Rectangle rect, string shown, bool multiline)
         {
-            batch.Draw(KDefaultRes.DefaultTexture2D, rect, new Color(110, 150, 210));
+            batch.Draw(KDefaultRes.DefaultTexture2D, rect, null, new Color(110, 150, 210));
             batch.Draw(KDefaultRes.DefaultTexture2D,
                        new Rectangle(rect.X + 2, rect.Y + 2, rect.Width - 4, rect.Height - 4),
-                       box.Focused ? new Color(30, 38, 58) : new Color(20, 26, 40));
+                       null, box.Focused ? new Color(30, 38, 58) : new Color(20, 26, 40));
 
             box.DrawTextBox(batch, Device, box.Font, shown, rect, Color.White,
                             box.SelectionStart, multiline, box.Focused,

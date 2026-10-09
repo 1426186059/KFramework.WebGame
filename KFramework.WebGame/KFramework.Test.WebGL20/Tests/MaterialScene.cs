@@ -126,7 +126,7 @@ namespace KFramework.Test.WebGL20.Tests
 
                 // 一个格子一个材质（各自引用自己的效果）= 一个独立的 Begin/End（同一段着色器源码，不同属性值）。
                 batch.Begin(material);
-                batch.Draw(_chart, _tiles[i], Color.White);
+                batch.Draw(_chart, _tiles[i], null, Color.White);
                 batch.End();
             }
 

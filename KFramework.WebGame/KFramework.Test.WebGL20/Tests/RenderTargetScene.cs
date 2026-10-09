@@ -36,8 +36,7 @@ namespace KFramework.Test.WebGL20.Tests
                 for (int c = 0; c < 12; c++)
                 {
                     float rotation = (r + c) * 0.08f + _frame * 0.012f;
-                    batch.Draw(_tex, new Vector2(20f + c * 38f, 20f + r * 38f),
-                        Color.White, rotation, new Vector2(16f, 16f), 1f);
+                    batch.DrawCentered(_tex, new Vector2(20f + c * 38f, 20f + r * 38f), Color.White, rotation, 1f);
                 }
             }
             batch.End();
@@ -49,7 +48,7 @@ namespace KFramework.Test.WebGL20.Tests
         {
             if (_rt is null) return;
 
-            batch.Draw(_rt, new Rectangle(28, (int)top, 480, 320), Color.White);
+            batch.Draw(_rt, new Rectangle(28, (int)top, 480, 320), null, Color.White);
             DrawLine(batch, $"离屏尺寸 {_rt.Width}x{_rt.Height} | FPS {KTime.realFps:0.0}",
                 28f, top + 336f, new Color(255, 206, 110));
         }

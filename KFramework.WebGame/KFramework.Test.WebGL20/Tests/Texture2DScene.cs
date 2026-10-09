@@ -193,7 +193,7 @@ namespace KFramework.Test.WebGL20.Tests
                     ? _rtResult is not null
                     : _gdResult is not null;
                 bool hover = rect.Contains(Input_Mouse.Position);
-                batch.Draw(KDefaultRes.DefaultTexture2D, rect,
+                batch.Draw(KDefaultRes.DefaultTexture2D, rect, null,
                     done ? new Color(58, 92, 150) : hover ? new Color(52, 76, 120) : new Color(34, 44, 68));
                 batch.DrawString(Font, Actions[i].Name, new Vector2(rect.X + 28f, rect.Y + 8f),
                     done ? Color.White : new Color(190, 208, 235));
@@ -208,7 +208,7 @@ namespace KFramework.Test.WebGL20.Tests
 
             // ① 原图
             if (_srcTex is not null)
-                batch.Draw(_srcTex, new Rectangle((int)x1, (int)by, Show, Show), Color.White);
+                batch.Draw(_srcTex, new Rectangle((int)x1, (int)by, Show, Show), null, Color.White);
             batch.DrawString(Font, "原图（不可读）", new Vector2(x1, by + Show + 6f), new Color(150, 165, 195));
 
             // ② 中转读回读出来的
@@ -233,7 +233,7 @@ namespace KFramework.Test.WebGL20.Tests
                                 string err, int diff, int runs, string caption)
         {
             if (tex is not null)
-                batch.Draw(tex, new Rectangle((int)x, (int)y, Show, Show), Color.White);
+                batch.Draw(tex, new Rectangle((int)x, (int)y, Show, Show), null, Color.White);
             else
                 Frame(batch, x, y, Show, Show, new Color(90, 104, 132));
 
@@ -269,10 +269,10 @@ namespace KFramework.Test.WebGL20.Tests
         private void Frame(SpriteBatch batch, float x, float y, float w, float h, Color color)
         {
             int ix = (int)x, iy = (int)y, iw = (int)w, ih = (int)h, t = 2;
-            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix, iy, iw, t), color);
-            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix, iy + ih - t, iw, t), color);
-            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix, iy, t, ih), color);
-            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix + iw - t, iy, t, ih), color);
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix, iy, iw, t), null, color);
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix, iy + ih - t, iw, t), null, color);
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix, iy, t, ih), null, color);
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix + iw - t, iy, t, ih), null, color);
         }
 
         // ================================================================

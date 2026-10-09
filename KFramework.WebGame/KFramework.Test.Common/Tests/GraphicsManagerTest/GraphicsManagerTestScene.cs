@@ -188,7 +188,7 @@ namespace KFramework.Test.Common.Tests.GraphicsManagerTest
                 for (int c = 0; c < cols && _drawn < want; c++)
                 {
                     var dest = new Rectangle(area.X + c * cell, area.Y + r * cell + (int)wave, cell - 1, cell - 1);
-                    batch.Draw(_ball, dest, TestSpriteTexture.Hsv((_drawn * 5 + _time * 30f) % 360f, 0.55f, 0.95f));
+                    batch.Draw(_ball, dest, null, TestSpriteTexture.Hsv((_drawn * 5 + _time * 30f) % 360f, 0.55f, 0.95f));
                     _drawn++;
                 }
             }

@@ -53,8 +53,7 @@ namespace KFramework.Test.WebGL20.Tests
                 for (int c = 0; c < 10; c++)
                 {
                     float rotation = (r + c) * 0.12f + _frame * 0.008f;
-                    batch.Draw(_tex, new Vector2(24f + c * 38f, 24f + r * 38f),
-                        Color.White, rotation, new Vector2(12f, 12f), 1f);
+                    batch.DrawCentered(_tex, new Vector2(24f + c * 38f, 24f + r * 38f), Color.White, rotation, 1f);
                 }
             }
             batch.End();
@@ -66,8 +65,8 @@ namespace KFramework.Test.WebGL20.Tests
         {
             if (_plain is null || _msaa is null) return;
 
-            batch.Draw(_plain, new Rectangle(28, (int)top, TargetWidth, TargetHeight), Color.White);
-            batch.Draw(_msaa, new Rectangle(28 + TargetWidth + 24, (int)top, TargetWidth, TargetHeight), Color.White);
+            batch.Draw(_plain, new Rectangle(28, (int)top, TargetWidth, TargetHeight), null, Color.White);
+            batch.Draw(_msaa, new Rectangle(28 + TargetWidth + 24, (int)top, TargetWidth, TargetHeight), null, Color.White);
 
             DrawLine(batch, $"FPS: {KTime.realFps:0.0}",
                 28f, top + TargetHeight + 16f, new Color(255, 206, 110));

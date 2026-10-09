@@ -127,10 +127,6 @@ namespace KFramework.Test.WebGL20.Tests
             SpriteBatch batch = Batch;
             Texture2D tex = _tex!;
 
-            // 锚点放纹理中心、再按 scale 缩到格子尺寸：等价于"精灵中心落在 center"（照 SpriteBatch 的 origin 语义）。
-            var origin = new Vector2(tex.Width / 2f, tex.Height / 2f);
-            var scale = new Vector2(size / tex.Width, size / tex.Height);
-
             long t0 = Stopwatch.GetTimestamp();
 
             batch.Begin();
@@ -143,7 +139,7 @@ namespace KFramework.Test.WebGL20.Tests
                 float rotation = _time * 0.6f + (r + c) * 0.05f;
 
                 // 逐精灵色调 / 旋转都随顶点数据走（不参与分批键），所以整批只按 4096 上限分批。
-                batch.Draw(tex, center, null, Hue(i * 0.013f), rotation, origin, scale, SpriteEffects.None, 0f);
+                batch.DrawCentered(tex, center, Hue(i * 0.013f), rotation, size / tex.Width);
             }
 
             long t1 = Stopwatch.GetTimestamp();

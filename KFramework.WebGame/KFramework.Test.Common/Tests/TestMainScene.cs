@@ -79,9 +79,9 @@ namespace KFramework.Test.Common.Tests
                 Rectangle rect = _cards[i];
 
                 bool hover = rect.Contains(Input_Mouse.Position);
-                batch.Draw(KDefaultRes.DefaultTexture2D, rect, hover ? new Color(40, 62, 104) : new Color(26, 32, 48));
+                batch.Draw(KDefaultRes.DefaultTexture2D, rect, null, hover ? new Color(40, 62, 104) : new Color(26, 32, 48));
                 // 左侧色条
-                batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(rect.X, rect.Y, 6, rect.Height), new Color(72, 150, 230));
+                batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(rect.X, rect.Y, 6, rect.Height), null, new Color(72, 150, 230));
 
                 batch.DrawString(font, $"[{i + 1}] {entry.Name}", new Vector2(rect.X + 20, rect.Y + 9), Color.White);
                 batch.DrawString(_descFont, entry.Desc, new Vector2(rect.X + 20, rect.Y + 9 + font.LineSpacing + 3), new Color(150, 165, 190));

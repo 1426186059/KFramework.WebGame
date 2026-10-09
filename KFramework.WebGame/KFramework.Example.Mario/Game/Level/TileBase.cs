@@ -42,6 +42,7 @@ namespace KFramework.Example.Mario
                     mColor,
                     WorldRotation,
                     origin,
+                    null,
                     SpriteEffects.None,
                     0);
             }

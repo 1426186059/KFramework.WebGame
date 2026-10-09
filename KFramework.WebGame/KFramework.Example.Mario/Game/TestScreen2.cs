@@ -108,25 +108,30 @@ namespace KFramework.Example.Mario
             // 直接用世界坐标绘制，无需手动转换。
             // 注意：_sprite.Texture 是整张图集页，必须配合 SourceRectangle 只画“characters_256”这一格，
             // 否则 source=null 会把整页（含大量透明空隙）画上去，看起来像“缺了一块三角形”。
+            // 位置（浮点）与缩放折进目标矩形：矩形尺寸 = 源尺寸 × WorldScale。
             _spriteBatch.Draw(
                 _sprite.Texture,
-                _root.WorldPosition,
+                new Rectangle((int)MathF.Round(_root.WorldPosition.X), (int)MathF.Round(_root.WorldPosition.Y),
+                              (int)MathF.Round(_sprite.SourceRectangle.Width * _root.WorldScale.X),
+                              (int)MathF.Round(_sprite.SourceRectangle.Height * _root.WorldScale.Y)),
                 _sprite.SourceRectangle,
                 Color.White,
                 _root.WorldRotation,
                 Vector2.Zero,        // origin
-                _root.WorldScale,
+                null,
                 SpriteEffects.None,
                 0f);
 
             _spriteBatch.Draw(
                 _sprite.Texture,
-                _child.WorldPosition,
+                new Rectangle((int)MathF.Round(_child.WorldPosition.X), (int)MathF.Round(_child.WorldPosition.Y),
+                              (int)MathF.Round(_sprite.SourceRectangle.Width * _child.WorldScale.X),
+                              (int)MathF.Round(_sprite.SourceRectangle.Height * _child.WorldScale.Y)),
                 _sprite.SourceRectangle,
                 Color.Red,
                 _child.WorldRotation,
                 Vector2.Zero,
-                _child.WorldScale,
+                null,
                 SpriteEffects.None,
                 0f);
             }

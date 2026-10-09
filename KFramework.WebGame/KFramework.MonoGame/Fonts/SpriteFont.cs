@@ -237,8 +237,8 @@ namespace KFramework.MonoGame
                 {
                     Vector2 drawAt = new(cursor.X + glyph.DrawOffset.X * scale,
                                          cursor.Y + (Ascent + glyph.DrawOffset.Y) * scale);
-                    batch.Draw(_atlas, drawAt, glyph.Bounds, color, 0f, Vector2.Zero,
-                               new Vector2(scale, scale), SpriteEffects.None, layerDepth);
+                    batch.DrawGlyph(_atlas, drawAt, glyph.Bounds, color, 0f, Vector2.Zero,
+                                    new Vector2(scale, scale), SpriteEffects.None, layerDepth);
                 }
                 cursor.X += glyph.Advance * scale;
             }

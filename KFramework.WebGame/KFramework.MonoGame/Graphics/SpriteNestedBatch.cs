@@ -33,17 +33,17 @@ namespace KFramework.MonoGame
     /// var nested = new SpriteNestedBatch(Device);
     ///
     /// nested.Begin(materialUi);                        // 外层材质
-    /// nested.Draw(panel, panelRect, Color.White);      // 用外层材质画
+    /// nested.Draw(panel, panelPos, Color.White);       // 用外层材质画（位置形态）
     ///
     /// nested.Begin(materialGlow);                      // 叠一层：冲刷外层 → 换发光材质
-    /// nested.Draw(glow, glowRect, Color.White);        // 用发光材质画
+    /// nested.Draw(glow, glowPos, Color.White);         // 用发光材质画
     ///
     /// nested.Begin(materialMask);                      // 想嵌多深就再 Begin
-    /// nested.Draw(mask, maskRect, Color.White);
+    /// nested.Draw(mask, maskPos, Color.White);
     /// nested.End();                                    // 退到发光层（外层材质被重新下发）
     ///
     /// nested.End();                                    // 退到外层
-    /// nested.Draw(panel2, panel2Rect, Color.White);    // 继续用外层材质
+    /// nested.Draw(panel2, panel2Pos, Color.White);     // 继续用外层材质
     ///
     /// int drawCalls = nested.End();                    // 最外层 End：整批结束，返回最后一段的 DrawCall
     /// </code>
@@ -160,40 +160,19 @@ namespace KFramework.MonoGame
             return (int)(_device.Metrics.DrawCount - before);
         }
 
-        // ============ 绘制透传（签名与 SpriteBatch 逐一对应，换用不必改调用代码）============
+        // ============ 绘制透传（与 SpriteBatch 的那两个 Draw 一一对应，换用不必改调用代码）============
 
-        public void Draw(Texture2D texture, Vector2 position, Color color)
-            => _batch.Draw(texture, position, color);
-
-        public void Draw(Texture2D texture, Vector2 position, Color color, float rotation, Vector2 origin, float scale, float layerDepth = 0f)
-            => _batch.Draw(texture, position, color, rotation, origin, scale, layerDepth);
-
-        public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color)
-            => _batch.Draw(texture, position, sourceRectangle, color);
-
-        public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color,
-                         float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth = 0f,
+        public void Draw(Texture2D texture, Vector2 position, Color color,
+                         float rotation = 0f, Vector2 origin = default, Vector2? scale = null,
+                         SpriteEffects effects = SpriteEffects.None, float layerDepth = 0f,
                          ShaderPropertyBlock? properties = null)
-            => _batch.Draw(texture, position, sourceRectangle, color, rotation, origin, scale, effects, layerDepth, properties);
+            => _batch.Draw(texture, position, color, rotation, origin, scale, effects, layerDepth, properties);
 
-        public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color,
-                         float rotation, Vector2 origin, SpriteEffects effects, float layerDepth)
-            => _batch.Draw(texture, destinationRectangle, sourceRectangle, color, rotation, origin, effects, layerDepth);
-
-        public void Draw(Texture2D texture, Rectangle destination, Color color)
-            => _batch.Draw(texture, destination, color);
-
-        public void Draw(Texture2D texture, Rectangle destination, Rectangle? sourceRectangle, Color color)
-            => _batch.Draw(texture, destination, sourceRectangle, color);
-
-        public void Draw(Texture2D texture, Vector2 position, Color color, ShaderPropertyBlock? properties)
-            => _batch.Draw(texture, position, color, properties);
-
-        public void Draw(Texture2D texture, Rectangle destination, Color color, ShaderPropertyBlock? properties)
-            => _batch.Draw(texture, destination, color, properties);
-
-        public void Draw(Texture2D texture, Rectangle destination, Rectangle? sourceRectangle, Color color, ShaderPropertyBlock? properties)
-            => _batch.Draw(texture, destination, sourceRectangle, color, properties);
+        public void Draw(Texture2D texture, Rectangle? targetRectangle, Rectangle? sourceRectangle, Color color,
+                         float rotation = 0f, Vector2 origin = default, Vector2? scale = null,
+                         SpriteEffects effects = SpriteEffects.None, float layerDepth = 0f,
+                         ShaderPropertyBlock? properties = null)
+            => _batch.Draw(texture, targetRectangle, sourceRectangle, color, rotation, origin, scale, effects, layerDepth, properties);
 
         public void DrawCentered(Texture2D texture, Vector2 center, Color color,
                                  float rotation = 0f, float scale = 1f, float layerDepth = 0f)

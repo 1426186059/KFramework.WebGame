@@ -39,8 +39,9 @@ namespace KFramework.Test.WebGPU.Tests
                 for (int c = 0; c < 14; c++)
                 {
                     float rotation = (r + c) * 0.06f + _frame * 0.01f;
-                    batch.Draw(_tex, new Vector2(28f + c * 40f, y + r * 40f),
-                        Color.White, rotation, new Vector2(16f, 16f), 1f);
+                    // 目标矩形 = (位置, 纹理尺寸)，锚点保持原来的 (16,16)（本页的图是 64²，锚点不是正中，照旧）。
+                    batch.Draw(_tex, new Rectangle((int)(28f + c * 40f), (int)(y + r * 40f), _tex.Width, _tex.Height),
+                        null, Color.White, rotation, new Vector2(16f, 16f), null, SpriteEffects.None, 0f);
                 }
             }
         }

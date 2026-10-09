@@ -259,7 +259,7 @@ namespace KFramework.Test.WebGPU.Tests
 
                     Device.SetRenderTarget(_rtE);               // ③ 切回 E，接着画
                     batch.Begin();
-                    batch.Draw(_rtC, new Rectangle(0, 0, RtW, RtH), Color.White);
+                    batch.Draw(_rtC, new Rectangle(0, 0, RtW, RtH), null, Color.White);
                     DrawStage(batch, 3, 0, 0, RtW, RtH);        // 画 D 绿块
                     batch.End();
                     Device.SetRenderTarget(null);
@@ -269,7 +269,7 @@ namespace KFramework.Test.WebGPU.Tests
                     Device.Clear(new Color(0, 0, 0, 0));
                     batch.Begin();
                     DrawStage(batch, 0, 0, 0, RtW, RtH);        // 画 A 底
-                    batch.Draw(_rtE, new Rectangle(0, 0, RtW, RtH), Color.White);
+                    batch.Draw(_rtE, new Rectangle(0, 0, RtW, RtH), null, Color.White);
                     batch.End();
                     Device.SetRenderTarget(null);
                     break;
@@ -372,7 +372,7 @@ namespace KFramework.Test.WebGPU.Tests
             batch.Begin();
 
             // ① 柔和的纵向渐变底（不抢眼，也不干扰对球边缘的观察）
-            batch.Draw(kind == 0 ? _bgCool : _bgWarm, new Rectangle(0, 0, RtW, RtH), Color.White);
+            batch.Draw(kind == 0 ? _bgCool : _bgWarm, new Rectangle(0, 0, RtW, RtH), null, Color.White);
 
             // ② 彩色球阵：色相随时间流动 + 轻微呼吸缩放，画面不至于呆板
             float originX = (RtW - (cols - 1) * cell) * 0.5f;
@@ -383,10 +383,10 @@ namespace KFramework.Test.WebGPU.Tests
                 {
                     float hue = (c * 34f + r * 22f + _frame * 0.5f) % 360f;
                     float pulse = 1f + 0.07f * MathF.Sin((_frame + c * 4 + r * 6) * 0.05f);
-                    batch.Draw(_ball,
+                    batch.DrawCentered(_ball,
                         new Vector2(originX + c * cell, originY + r * cell),
                         Hsv(hue, 0.55f, 1f),
-                        0f, new Vector2(32f, 32f), ballScale * pulse);
+                        0f, ballScale * pulse);
                 }
             }
 
@@ -401,10 +401,10 @@ namespace KFramework.Test.WebGPU.Tests
         /// <summary>四角方位标记（左上红 / 右上绿 / 左下蓝 / 右下黄）。上下翻转或左右镜像会立刻暴露。</summary>
         private void DrawCornerMarks(SpriteBatch batch, int w, int h, int m)
         {
-            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(2, 2, m, m), new Color(220, 70, 70));
-            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(w - m - 2, 2, m, m), new Color(70, 200, 120));
-            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(2, h - m - 2, m, m), new Color(70, 140, 220));
-            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(w - m - 2, h - m - 2, m, m), new Color(230, 200, 80));
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(2, 2, m, m), null, new Color(220, 70, 70));
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(w - m - 2, 2, m, m), null, new Color(70, 200, 120));
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(2, h - m - 2, m, m), null, new Color(70, 140, 220));
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(w - m - 2, h - m - 2, m, m), null, new Color(230, 200, 80));
         }
 
         /// <summary>
@@ -442,9 +442,9 @@ namespace KFramework.Test.WebGPU.Tests
             {
                 float a = i / (float)bars * MathF.PI * 2f + spin;
                 float len = MathF.Min(w, h) * 0.47f;
-                batch.Draw(KDefaultRes.DefaultTexture2D, new Vector2(cx, cy), null,
+                batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle((int)cx, (int)cy, (int)len, 9), null,
                     Hsv((i * 360f / bars + spin * 40f) % 360f, 0.85f, 1f), a,
-                    new Vector2(0.5f, 0.5f), new Vector2(len, 9f), SpriteEffects.None, 0f);
+                    new Vector2(0.5f, 0.5f), null, SpriteEffects.None, 0f);
             }
 
             // 几个旋转方块，强化边缘锯齿观感
@@ -452,9 +452,9 @@ namespace KFramework.Test.WebGPU.Tests
             {
                 float a = i / 5f * MathF.PI + spin * 0.7f;
                 float s = 44f + i * 18f;
-                batch.Draw(KDefaultRes.DefaultTexture2D, new Vector2(cx, cy), null,
+                batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle((int)cx, (int)cy, (int)s, (int)s), null,
                     Hsv((i * 70f) % 360f, 0.6f, 1f), a,
-                    new Vector2(0.5f, 0.5f), new Vector2(s, s), SpriteEffects.None, 0f);
+                    new Vector2(0.5f, 0.5f), null, SpriteEffects.None, 0f);
             }
         }
 
@@ -467,8 +467,8 @@ namespace KFramework.Test.WebGPU.Tests
             Device.Clear(new Color(8, 10, 16));
 
             batch.Begin();
-            batch.Draw(_rt1, new Rectangle(0, 0, RtW, RtH), Color.White);                       // 离屏1 铺满
-            batch.Draw(_rt2, new Rectangle(RtW / 2, RtH / 2, RtW / 2, RtH / 2), Color.White);   // 离屏2 叠在右下
+            batch.Draw(_rt1, new Rectangle(0, 0, RtW, RtH), null, Color.White);                // 离屏1 铺满
+            batch.Draw(_rt2, new Rectangle(RtW / 2, RtH / 2, RtW / 2, RtH / 2), null, Color.White);   // 离屏2 叠在右下
             batch.End();
 
             Device.SetRenderTarget(null);
@@ -497,11 +497,11 @@ namespace KFramework.Test.WebGPU.Tests
             // 【决定性判据】只在首帧画一条红杠。它若一直看得见，说明纹理内容真的跨帧保留了
             //（load 生效），"铺不满"就得往别处查；若它消失、只剩黄杠，说明每次切进 RT 都被清屏。
             if (seed)
-                batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(0, 0, RtW, 6), new Color(220, 70, 70));
+                batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(0, 0, RtW, 6), null, new Color(220, 70, 70));
 
             // 每帧画一条黄杠，y 逐帧下移（(帧 % 25) * 8），保留得住就会 25 帧内铺满。
             batch.Draw(KDefaultRes.DefaultTexture2D,
-                new Rectangle(0, (_frame % BarsTotal) * barH, RtW, barH - 1), new Color(255, 200, 90));
+                new Rectangle(0, (_frame % BarsTotal) * barH, RtW, barH - 1), null, new Color(255, 200, 90));
             batch.End();
 
             Device.SetRenderTarget(null);
@@ -549,13 +549,13 @@ namespace KFramework.Test.WebGPU.Tests
             switch (stage)
             {
                 case 0:     // A：底（不透明）
-                    batch.Draw(_bgCool, new Rectangle((int)x, (int)y, (int)w, (int)h), Color.White);
+                    batch.Draw(_bgCool, new Rectangle((int)x, (int)y, (int)w, (int)h), null, Color.White);
                     break;
 
                 case 1:     // B：红块，贴顶部
                     for (int i = 0; i < 4; i++)
                         batch.Draw(KDefaultRes.DefaultTexture2D,
-                            new Rectangle((int)(x + 8 + i * 30), (int)(y + 3), 18, 18), new Color(220, 70, 70));
+                            new Rectangle((int)(x + 8 + i * 30), (int)(y + 3), 18, 18), null, new Color(220, 70, 70));
                     break;
 
                 case 2:     // C：球阵
@@ -564,9 +564,9 @@ namespace KFramework.Test.WebGPU.Tests
                         for (int c = 0; c < 4; c++)
                         {
                             float hue = (c * 45f + r * 30f + _frame * 0.5f) % 360f;
-                            batch.Draw(_ball,
+                            batch.DrawCentered(_ball,
                                 new Vector2(x + w * 0.24f + c * w * 0.19f, y + h * 0.46f + r * h * 0.22f),
-                                Hsv(hue, 0.55f, 1f), 0f, new Vector2(32f, 32f), 0.62f);
+                                Hsv(hue, 0.55f, 1f), 0f, 0.62f);
                         }
                     }
                     break;
@@ -574,7 +574,7 @@ namespace KFramework.Test.WebGPU.Tests
                 case 3:     // D：绿块，贴底部（与红块分居上下，一眼看出少了哪一段）
                     for (int i = 0; i < 4; i++)
                         batch.Draw(KDefaultRes.DefaultTexture2D,
-                            new Rectangle((int)(x + 8 + i * 30), (int)(y + h - 21), 18, 18), new Color(70, 200, 120));
+                            new Rectangle((int)(x + 8 + i * 30), (int)(y + h - 21), 18, 18), null, new Color(70, 200, 120));
                     break;
             }
         }
@@ -595,7 +595,7 @@ namespace KFramework.Test.WebGPU.Tests
                 bool current = Screens[i].Value == _screen;
                 bool hover = rect.Contains(Input_Mouse.Position);
 
-                batch.Draw(KDefaultRes.DefaultTexture2D, rect,
+                batch.Draw(KDefaultRes.DefaultTexture2D, rect, null,
                     current ? new Color(58, 92, 150) : hover ? new Color(52, 76, 120) : new Color(34, 44, 68));
                 batch.DrawString(Font, Screens[i].Name, new Vector2(rect.X + 12f, rect.Y + 5f),
                     current ? Color.White : new Color(190, 208, 235));
@@ -708,7 +708,7 @@ namespace KFramework.Test.WebGPU.Tests
         /// <summary>画一块面板（RT 内容 + 下方标题）。</summary>
         private void Panel(SpriteBatch batch, Texture2D texture, float x, float y, string caption)
         {
-            batch.Draw(texture, new Rectangle((int)x, (int)y, PanelW, PanelH), Color.White);
+            batch.Draw(texture, new Rectangle((int)x, (int)y, PanelW, PanelH), null, Color.White);
             batch.DrawString(Font, caption, new Vector2(x, y + PanelH + 6f), new Color(150, 165, 195));
         }
 
@@ -716,7 +716,7 @@ namespace KFramework.Test.WebGPU.Tests
         private void DrawCell(SpriteBatch batch, int index, float x, float y)
         {
             batch.Draw(KDefaultRes.DefaultTexture2D,
-                new Rectangle((int)x, (int)y, (int)CellW, (int)CellH), CellColor(index));
+                new Rectangle((int)x, (int)y, (int)CellW, (int)CellH), null, CellColor(index));
         }
 
         /// <summary>
@@ -744,10 +744,10 @@ namespace KFramework.Test.WebGPU.Tests
         private void Frame(SpriteBatch batch, float x, float y, float w, float h, Color color)
         {
             int ix = (int)x, iy = (int)y, iw = (int)w, ih = (int)h, t = 2;
-            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix, iy, iw, t), color);
-            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix, iy + ih - t, iw, t), color);
-            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix, iy, t, ih), color);
-            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix + iw - t, iy, t, ih), color);
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix, iy, iw, t), null, color);
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix, iy + ih - t, iw, t), null, color);
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix, iy, t, ih), null, color);
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(ix + iw - t, iy, t, ih), null, color);
         }
     }
 

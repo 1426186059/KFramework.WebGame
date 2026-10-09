@@ -260,7 +260,7 @@ namespace KFramework.Test.Common.Tests.RenderTargetTest
             if (_useRenderTarget && _rt != null)
             {
                 // 离屏：整片画面 = 1 个精灵
-                batch.Draw(_rt, _stage, Color.White);
+                batch.Draw(_rt, _stage, null, Color.White);
             }
             else if (_ball != null)
             {
@@ -307,9 +307,12 @@ namespace KFramework.Test.Common.Tests.RenderTargetTest
                 float x = cx + MathF.Cos(angle) * radius;
                 float y = cy + MathF.Sin(angle) * radius;
 
-                batch.Draw(ball, new Vector2(x, y), null,
+                batch.Draw(ball,
+                           new Rectangle((int)x, (int)y,
+                                         (int)MathF.Round(ball.Width * scale.X), (int)MathF.Round(ball.Height * scale.Y)),
+                           null,
                            TestSpriteTexture.Hsv((t * 360f + hueShift) % 360f, 0.85f, 1f),
-                           0f, originOffset, scale, SpriteEffects.None, 0f);
+                           0f, originOffset, null, SpriteEffects.None, 0f);
             }
         }
 

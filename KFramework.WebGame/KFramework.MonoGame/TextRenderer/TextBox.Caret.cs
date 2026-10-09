@@ -102,6 +102,7 @@ namespace KFramework.MonoGame
                     bounds.Y + (int)System.Math.Round(pos.Y),
                     (int)System.Math.Round(w),
                     (int)System.Math.Round(lineH)),
+                null,
                 color);
         }
     }

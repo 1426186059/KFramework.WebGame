@@ -58,14 +58,14 @@ namespace KFramework.Test.Common.Tests.BlendTest
 
                 // 底图：始终用 Opaque 画出真实图像作为参照
                 batch.Begin();
-                batch.Draw(_baseTex, img, Color.White);
+                batch.Draw(_baseTex, img, null, Color.White);
                 batch.End();
 
                 // 叠加层：用该 demo 指定的混合模式
                 if (d.Overlay != null)
                 {
                     batch.Begin(SpriteSortMode.Deferred, d.Blend);
-                    batch.Draw(d.Overlay, img, d.Tint);
+                    batch.Draw(d.Overlay, img, null, d.Tint);
                     batch.End();
                 }
 

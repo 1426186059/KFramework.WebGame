@@ -263,26 +263,64 @@ namespace KFramework.MonoGame
         }
 
 
-        public void Draw(Texture2D texture, Vector2 position, Color color)
-            => Draw(texture, position, null, color, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
-
-        public void Draw(Texture2D texture, Vector2 position, Color color, float rotation, Vector2 origin, float scale, float layerDepth = 0f)
-            => Draw(texture, position, null, color, rotation, origin, new Vector2(scale, scale), SpriteEffects.None, layerDepth);
-
-        public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color)
-            => Draw(texture, position, sourceRectangle, color, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f);
+        /// <summary>
+        /// 绘制（位置形态，浮点）：按浮点位置画整幅纹理，带旋转 / 锚点 / 缩放 / 翻转 / 深度 [+ 属性块]。
+        /// <paramref name="position"/> 是锚点落点（即 <paramref name="origin"/> 落在哪）；
+        /// <paramref name="origin"/> 是源纹理上的像素锚点（按 源尺寸 → 实际尺寸 的比例放大后再定位）；
+        /// <paramref name="scale"/> 传 null = 不缩放。
+        /// </summary>
+        public void Draw(
+            Texture2D texture,
+            Color color,
+            Vector2 position, 
+            float rotation = 0f,
+            Vector2? scale = null,
+            Vector2 origin = default, 
+            ShaderPropertyBlock? properties = null)
+        {
+            CheckValid(texture);
+            DrawVertexPath(texture, position, null, color, rotation, origin, scale ?? Vector2.One,
+                           effects, layerDepth, properties);
+        }
 
         /// <summary>
-        /// 完整参数的绘制（照 MonoGame 的 Draw，UV 计算兼容本引擎的图集 Bounds 偏移）。
-        /// <para>
-        /// <paramref name="properties"/>：这一次绘制的着色器属性覆盖块（照 Unity 的 <c>renderer.SetPropertyBlock</c>）。
-        /// 块是可变 uniform，只有"这一批只画这一个物体"时才等价，故带块的绘制会当场提交（切批）。
-        /// 想让"逐精灵不同"仍然只一次 DrawCall，请改用 GPU 实例化（<see cref="GpuInstanceBatch"/>，另一条路）。
-        /// </para>
+        /// 绘制（完整形态）：与 <see cref="GpuInstanceBatch"/> / <see cref="UrpBatch"/> 的那个 Draw 逐参数对应。
+        /// <paramref name="targetRectangle"/> 的 X/Y 是锚点落点、Width/Height 是基准尺寸（null = 落点在原点、尺寸取源尺寸）；
+        /// <paramref name="scale"/> 在矩形尺寸之上再缩放（null = 不额外缩放）；<paramref name="origin"/> 是源纹理上的像素锚点。
         /// </summary>
-        public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color,
-                         float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth = 0f,
-                         ShaderPropertyBlock? properties = null)
+        public void Draw(
+            Texture2D texture, 
+            Rectangle? targetRectangle, 
+            Rectangle? sourceRectangle, 
+            Color color,
+            float rotation = 0f, 
+            Vector2 origin = default, 
+            Vector2? scale = null,
+            SpriteEffects effects = SpriteEffects.None, 
+            float layerDepth = 0f,
+            ShaderPropertyBlock? properties = null)
+        {
+            CheckValid(texture);
+
+            Rectangle source = sourceRectangle ?? new Rectangle(0, 0, texture.Width, texture.Height);
+            Vector2 position = targetRectangle.HasValue
+                ? new Vector2(targetRectangle.Value.X, targetRectangle.Value.Y)
+                : Vector2.Zero;
+
+            // 实际尺寸 =（目标矩形 / 源尺寸）× 额外缩放 → 换算成逐顶点路径要的缩放系数。
+            float w = (targetRectangle?.Width ?? source.Width) * (scale?.X ?? 1f);
+            float h = (targetRectangle?.Height ?? source.Height) * (scale?.Y ?? 1f);
+            var effectiveScale = new Vector2(source.Width == 0 ? 0f : w / source.Width,
+                                             source.Height == 0 ? 0f : h / source.Height);
+
+            DrawVertexPath(texture, position, sourceRectangle, color, rotation, origin, effectiveScale,
+                           effects, layerDepth, properties);
+        }
+
+        /// <summary>引擎内部用（字体排字）：按浮点位置画字形 —— 公开面只有两个 Draw（位置形态 / 目标矩形形态），字体用这条保留浮点精度。</summary>
+        internal void DrawGlyph(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color,
+                                float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth,
+                                ShaderPropertyBlock? properties = null)
         {
             CheckValid(texture);
             DrawVertexPath(texture, position, sourceRectangle, color, rotation, origin, scale, effects, layerDepth, properties);
@@ -358,58 +396,17 @@ namespace KFramework.MonoGame
             if ((effects & SpriteEffects.FlipHorizontally) != 0) (uvTL.X, uvBR.X) = (uvBR.X, uvTL.X);
         }
 
-        /// <summary>目标矩形既决定位置也决定缩放（照 MonoGame 的带目标矩形重载）。</summary>
-        public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color,
-                         float rotation, Vector2 origin, SpriteEffects effects, float layerDepth)
-        {
-            int sw = sourceRectangle?.Width ?? texture.Width;
-            int sh = sourceRectangle?.Height ?? texture.Height;
-            var scale = new Vector2(sw == 0 ? 0f : destinationRectangle.Width / (float)sw,
-                                    sh == 0 ? 0f : destinationRectangle.Height / (float)sh);
-            Draw(texture, new Vector2(destinationRectangle.X, destinationRectangle.Y), sourceRectangle, color,
-                 rotation, origin, scale, effects, layerDepth);
-        }
-
-        public void Draw(Texture2D texture, Rectangle destination, Color color)
-            => Draw(texture, destination, null, color);
-
-        public void Draw(Texture2D texture, Rectangle destination, Rectangle? sourceRectangle, Color color)
-        {
-            ArgumentNullException.ThrowIfNull(texture);
-            Draw(texture, new Vector2(destination.X, destination.Y), sourceRectangle, color,
-                 0f, Vector2.Zero,
-                 new Vector2(destination.Width / (float)(sourceRectangle?.Width ?? texture.Width),
-                             destination.Height / (float)(sourceRectangle?.Height ?? texture.Height)),
-                 SpriteEffects.None, 0f);
-        }
-
-        /// <summary>
-        /// 属性块重载（照 Unity 的 <c>renderer.SetPropertyBlock</c>）：块挂在<b>这一次绘制</b>上，
-        /// 能覆盖任意条数、任意类型的属性（float / int / 向量 / 矩阵 / 纹理），代价是块变即切批
-        /// （一次 draw 只带一份 uniform，给每个物体不同值 = 每个物体一次 DrawCall）。
-        /// </summary>
-        public void Draw(Texture2D texture, Vector2 position, Color color, ShaderPropertyBlock? properties)
-            => Draw(texture, position, null, color, 0f, Vector2.Zero, Vector2.One, SpriteEffects.None, 0f, properties);
-
-        public void Draw(Texture2D texture, Rectangle destination, Color color, ShaderPropertyBlock? properties)
-            => Draw(texture, destination, null, color, properties);
-
-        public void Draw(Texture2D texture, Rectangle destination, Rectangle? sourceRectangle, Color color, ShaderPropertyBlock? properties)
-        {
-            ArgumentNullException.ThrowIfNull(texture);
-            Draw(texture, new Vector2(destination.X, destination.Y), sourceRectangle, color,
-                 0f, Vector2.Zero,
-                 new Vector2(destination.Width / (float)(sourceRectangle?.Width ?? texture.Width),
-                             destination.Height / (float)(sourceRectangle?.Height ?? texture.Height)),
-                 SpriteEffects.None, 0f, properties);
-        }
-
         /// <summary>以中心点对齐绘制并缩放。</summary>
         public void DrawCentered(Texture2D texture, Vector2 center, Color color,
                                  float rotation = 0f, float scale = 1f, float layerDepth = 0f)
-            => Draw(texture, center, null, color, rotation,
-                    new Vector2(texture.Width / 2f, texture.Height / 2f),
-                    new Vector2(scale, scale), SpriteEffects.None, layerDepth);
+        {
+            // 中心点对齐：目标矩形的锚点落在 center，锚点取纹理中心 —— 于是精灵（含旋转）绕 center 摆。
+            var target = new Rectangle((int)MathF.Round(center.X), (int)MathF.Round(center.Y),
+                                       (int)MathF.Round(texture.Width * scale),
+                                       (int)MathF.Round(texture.Height * scale));
+            Draw(texture, target, null, color, rotation,
+                 new Vector2(texture.Width / 2f, texture.Height / 2f), null, SpriteEffects.None, layerDepth);
+        }
 
 
 

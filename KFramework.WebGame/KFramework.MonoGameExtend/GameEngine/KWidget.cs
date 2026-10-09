@@ -271,7 +271,7 @@ namespace KFramework.MonoGameExtend
                         (Size * WorldScale).ToPoint());
 
                     Color mColor = new Color(255, 255, 255, 200);
-                    batch.Draw(
+                    batch.DrawRect(
                         KDefaultRes.DefaultSprite.Texture,
                         target,
                         KDefaultRes.DefaultSprite.Rectangle,
@@ -289,7 +289,7 @@ namespace KFramework.MonoGameExtend
                     KRectangleF target = GetWorldRectRectangle(GetAnchorRectangle());
 
                     Color mColor = new Color(0, 0, 0, 200);
-                    batch.Draw(
+                    batch.DrawRect(
                         KDefaultRes.DefaultSprite.Texture,
                         target,
                         KDefaultRes.DefaultSprite.Rectangle,

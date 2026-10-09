@@ -46,10 +46,10 @@ namespace KFramework.Test.Common.Tests
             if (hover)
                 bg = new Color(Math.Min(255, bg.R + 26), Math.Min(255, bg.G + 26), Math.Min(255, bg.B + 26));
 
-            batch.Draw(pixel, Rect, bg);
+            batch.Draw(pixel, Rect, null, bg);
             // 左侧色条：开 → 亮蓝，关 → 灰
             batch.Draw(pixel, new Rectangle(Rect.X, Rect.Y, 4, Rect.Height),
-                       Active ? new Color(96, 190, 255) : new Color(70, 82, 110));
+                       null, Active ? new Color(96, 190, 255) : new Color(70, 82, 110));
             batch.DrawString(font, Label, new Vector2(Rect.X + 12, Rect.Y + 7),
                              Active ? Color.White : new Color(200, 212, 232));
         }

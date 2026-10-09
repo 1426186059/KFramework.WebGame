@@ -143,7 +143,7 @@ namespace KFramework.MonoGame
                 _whitePixel = device.CreateTexture(1, 1);
                 _whitePixel.SetData(new byte[] { 255, 255, 255, 255 }, 0, 0, 1, 1);
             }
-            batch.Draw(_whitePixel, bounds, backColor);
+            batch.Draw(_whitePixel, bounds, null, backColor);
         }
 
         /// <summary>调用方已 Begin/End 批次时使用，避免重复开关。</summary>

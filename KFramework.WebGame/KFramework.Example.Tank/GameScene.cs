@@ -153,7 +153,7 @@ namespace KFramework.Example.Tank
         {
             BeginBatch();
             _batch.Draw(KDefaultRes.DefaultTexture2D,
-                        new Rectangle(0, 0, _gd.Viewport.Width, _gd.Viewport.Height), _bg);
+                        new Rectangle(0, 0, _gd.Viewport.Width, _gd.Viewport.Height), null, _bg);
             _batch.End();
         }
 
@@ -197,7 +197,11 @@ namespace KFramework.Example.Tank
             {
                 KSprite sprite = _res.Player[i];
                 if (sprite.Texture is null) continue;
-                batch.Draw(sprite.Texture, new Vector2(24f + (i % columns) * cell, 24f + (i / columns) * cell), sprite.Rectangle, Color.White);
+                // 目标矩形形态：位置取矩形左上角、尺寸用源矩形尺寸（原来那版浮点位置 + 源矩形已收敛到矩形形态）。
+                var target = new Rectangle((int)MathF.Round(24f + (i % columns) * cell),
+                                           (int)MathF.Round(24f + (i / columns) * cell),
+                                           sprite.Rectangle.Width, sprite.Rectangle.Height);
+                batch.Draw(sprite.Texture, target, sprite.Rectangle, Color.White);
             }
         }
 

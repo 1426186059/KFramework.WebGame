@@ -87,7 +87,7 @@ namespace KFramework.Test.WebGL20.Tests
                     e.Effect.Time = t;
                     e.Effect.Params = e.BaseParams;
                     batch.Begin(SpriteSortMode.Deferred, null, null, null, null, e.Effect);
-                    batch.Draw(_tex, new Rectangle((int)x, (int)y, (int)size, (int)size), Color.White);
+                    batch.Draw(_tex, new Rectangle((int)x, (int)y, (int)size, (int)size), null, Color.White);
                     batch.End();
 
                     batch.Begin();
@@ -123,7 +123,7 @@ namespace KFramework.Test.WebGL20.Tests
                 e.Effect.Time = t;
                 e.Effect.Params = e.BaseParams;
                 batch.Begin(SpriteSortMode.Deferred, null, null, null, null, e.Effect);
-                batch.Draw(_tex, new Rectangle((int)x, (int)y, (int)size, (int)size), Color.White);
+                batch.Draw(_tex, new Rectangle((int)x, (int)y, (int)size, (int)size), null, Color.White);
                 batch.End();
 
                 batch.Begin();

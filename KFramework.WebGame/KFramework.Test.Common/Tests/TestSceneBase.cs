@@ -105,7 +105,7 @@ namespace KFramework.Test.Common.Tests
             batch.Begin();
 
             // 返回按钮
-            batch.Draw(KDefaultRes.DefaultTexture2D, _backRect, new Color(38, 52, 92));
+            batch.Draw(KDefaultRes.DefaultTexture2D, _backRect, null, new Color(38, 52, 92));
             batch.DrawString(Font, "← 返回", new Vector2(_backRect.X + 12, _backRect.Y + 6), new Color(170, 210, 255));
             // 标题
             batch.DrawString(Font, Title, new Vector2(_backRect.Right + 18, _backRect.Y + 4), new Color(126, 200, 255));
@@ -147,7 +147,7 @@ namespace KFramework.Test.Common.Tests
 
         /// <summary>画一个纯色矩形（面板 / 按钮底）。</summary>
         protected void DrawRect(SpriteBatch batch, Rectangle rect, Color color)
-            => batch.Draw(KDefaultRes.DefaultTexture2D, rect, color);
+            => batch.Draw(KDefaultRes.DefaultTexture2D, rect, null, color);
     }
 
 }

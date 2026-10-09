@@ -129,6 +129,7 @@ namespace KFramework.Example.Mario
                 Color.White,
                 0.0f,
                 Vector2.Zero,
+                null,
                 SpriteEffects.None,
                 0.0f);
 

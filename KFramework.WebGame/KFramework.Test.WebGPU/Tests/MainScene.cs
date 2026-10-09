@@ -127,7 +127,7 @@ namespace KFramework.Test.WebGPU.Tests
                 Rectangle rect = _rows[i];
 
                 bool hover = rect.Contains(Input_Mouse.Position);
-                batch.Draw(KDefaultRes.DefaultTexture2D, rect, hover ? new Color(46, 66, 104) : new Color(30, 38, 58));
+                batch.Draw(KDefaultRes.DefaultTexture2D, rect, null, hover ? new Color(46, 66, 104) : new Color(30, 38, 58));
 
                 batch.DrawString(Font, $"{i + 1}. {entry.Name}",
                     new Vector2(rect.X + 16f, rect.Y + 10f), new Color(210, 230, 255));

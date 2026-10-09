@@ -303,6 +303,7 @@ namespace KFramework.Example.Mario
                         particle.Color,           // Particle's color
                         0.0f,                     // No rotation
                         textureOrigin,            // Origin for positioning
+                        null,                     // No extra scale (rectangle already carries the size)
                         SpriteEffects.None,       // No flipping
                         0f);                      // Draw layer depth
 
@@ -324,6 +325,7 @@ namespace KFramework.Example.Mario
                             tailColor,
                             0f,
                             textureOrigin,
+                            null,
                             SpriteEffects.None,
                             0f);
                     }

@@ -37,7 +37,7 @@ namespace KFramework.Test.WebGL20.Tests
                 {
                     var pos = new Vector2(28f + c * step, y + r * step);
                     float rotation = (r + c) * 0.05f + _frame * 0.01f;
-                    batch.Draw(_tex, pos, Color.White, rotation, new Vector2(16f, 16f), 1f);
+                    batch.DrawCentered(_tex, pos, Color.White, rotation, 1f);
                 }
             }
 

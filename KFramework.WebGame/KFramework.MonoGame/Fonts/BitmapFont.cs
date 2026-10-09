@@ -186,8 +186,8 @@ namespace KFramework.MonoGame
                 {
                     Vector2 drawAt = new(cursor.X + glyph.Offset.X * scale,
                                          cursor.Y + (Base + glyph.Offset.Y) * scale);
-                    batch.Draw(_pages[glyph.Page], drawAt, glyph.Rect, color, 0f, Vector2.Zero,
-                               new Vector2(scale, scale), SpriteEffects.None, layerDepth);
+                    batch.DrawGlyph(_pages[glyph.Page], drawAt, glyph.Rect, color, 0f, Vector2.Zero,
+                                    new Vector2(scale, scale), SpriteEffects.None, layerDepth);
                 }
 
                 cursor.X += (glyph.Advance + _data.GetKerning(prev, c)) * scale;

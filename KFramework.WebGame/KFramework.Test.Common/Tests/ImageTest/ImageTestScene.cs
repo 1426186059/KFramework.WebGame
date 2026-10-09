@@ -76,7 +76,7 @@ namespace KFramework.Test.Common.Tests.ImageTest
                     cy += rowH;
                 }
                 var rect = new Rectangle((int)cx, (int)cy, (int)size, (int)size);
-                if (it.Tex != null) batch.Draw(it.Tex, rect, Color.White);
+                if (it.Tex != null) batch.Draw(it.Tex, rect, null, Color.White);
                 else DrawRect(batch, rect, new Color(120, 44, 44));
                 DrawLine(batch, Font, Fit(Font, it.Label, cell), new Vector2(cx, cy + labelDY), Color.LightGray);
                 DrawLine(batch, Font, Fit(Font, it.Status, cell), new Vector2(cx, cy + statusDY),

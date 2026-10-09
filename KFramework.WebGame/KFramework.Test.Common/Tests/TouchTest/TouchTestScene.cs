@@ -91,7 +91,7 @@ namespace KFramework.Test.Common.Tests.TouchTest
             {
                 KTouch t = Input_Touch.GetTouch(i);
                 var rect = new Rectangle((int)t.Position.X - 14, (int)t.Position.Y - 14, 28, 28);
-                batch.Draw(KDefaultRes.DefaultTexture2D, rect, StateColor(t.State) * 0.55f);
+                batch.Draw(KDefaultRes.DefaultTexture2D, rect, null, StateColor(t.State) * 0.55f);
                 Vector2 lp = t.Position - new Vector2(10f, 28f);
                 if (lp.Y > 0 && lp.Y < Device.Viewport.Height)
                     batch.DrawString(Font, "#" + t.Id, lp, Color.White);

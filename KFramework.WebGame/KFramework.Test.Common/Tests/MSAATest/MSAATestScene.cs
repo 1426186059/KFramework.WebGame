@@ -80,8 +80,8 @@ namespace KFramework.Test.Common.Tests.MSAATest
                 float a = i / (float)bars * MathF.PI * 2f + spin;
                 float len = MathF.Min(w, h) * 0.47f;
                 Color col = Hsv((i * 360f / bars + spin * 40f) % 360f, 0.85f, 1f);
-                batch.Draw(KDefaultRes.DefaultTexture2D, new Vector2(cx, cy), null, col, a,
-                           new Vector2(0.5f, 0.5f), new Vector2(len, 9f), SpriteEffects.None, 0f);
+                batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle((int)cx, (int)cy, (int)len, 9), null, col, a,
+                           new Vector2(0.5f, 0.5f), null, SpriteEffects.None, 0f);
             }
 
             // 几个旋转方块，强化边缘锯齿观感
@@ -90,8 +90,8 @@ namespace KFramework.Test.Common.Tests.MSAATest
                 float a = i / 5f * MathF.PI + spin * 0.7f;
                 Color col = Hsv((i * 70f) % 360f, 0.6f, 1f);
                 float s = 70f + i * 26f;
-                batch.Draw(KDefaultRes.DefaultTexture2D, new Vector2(cx, cy), null, col, a,
-                           new Vector2(0.5f, 0.5f), new Vector2(s, s), SpriteEffects.None, 0f);
+                batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle((int)cx, (int)cy, (int)s, (int)s), null, col, a,
+                           new Vector2(0.5f, 0.5f), null, SpriteEffects.None, 0f);
             }
         }
 
@@ -108,8 +108,8 @@ namespace KFramework.Test.Common.Tests.MSAATest
             // 全屏底
             DrawRect(batch, new Rectangle(0, 0, Device.Viewport.Width, Device.Viewport.Height), new Color(8, 10, 18));
 
-            if (_rtOff != null) batch.Draw(_rtOff, _panelOff, Color.White);
-            if (_rtOn != null) batch.Draw(_rtOn, _panelOn, Color.White);
+            if (_rtOff != null) batch.Draw(_rtOff, _panelOff, null, Color.White);
+            if (_rtOn != null) batch.Draw(_rtOn, _panelOn, null, Color.White);
 
             // 面板边框
             Border(batch, _panelOff, new Color(248, 113, 113));
@@ -162,7 +162,7 @@ namespace KFramework.Test.Common.Tests.MSAATest
         }
 
         private static void DrawRectRaw(SpriteBatch batch, Rectangle rect, Color color)
-            => batch.Draw(KDefaultRes.DefaultTexture2D, rect, color);
+            => batch.Draw(KDefaultRes.DefaultTexture2D, rect, null, color);
 
         private static Color Hsv(float h, float s, float v)
         {

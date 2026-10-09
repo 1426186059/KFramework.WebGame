@@ -98,6 +98,7 @@ namespace KFramework.Example.Mario
                 color,
                 0.0f,
                 Origin,
+                null,
                 spriteEffects,
                 0.0f);
         }
