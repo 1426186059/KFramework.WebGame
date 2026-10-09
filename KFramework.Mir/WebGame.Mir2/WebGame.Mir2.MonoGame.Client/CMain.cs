@@ -375,7 +375,7 @@ namespace WebGame.Mir2.MonoGame.Client
         //   Device.Clear → BeginScene → Sprite.Begin(SpriteFlags.AlphaBlend) → SetSurface(MainSurface)
         //   → ActiveScene.Draw() → Sprite.End → EndScene → Present
         // 本引擎为材质驱动：原版固定管线的 Sprite.Begin(SpriteFlags.AlphaBlend) 换成等价材质开批
-        // （SpriteFlags.AlphaBlend ≡ BlendState.NonPremultiplied），Sprite.End 换成 EndBatch。
+        // （SpriteFlags.AlphaBlend ≡ BlendState.NonPremultiplied），Sprite.End 换成 EndSprite。
         private static void RenderEnvironment()
         {
             try
@@ -385,13 +385,13 @@ namespace WebGame.Mir2.MonoGame.Client
 
                 DXManager.Device.Clear(SlimDX.Direct3D9.ClearFlags.Target, MirEngine.Color.Black, 0, 0);
                 DXManager.Device.BeginScene();
-                DXManager.BeginBatch(DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied));
+                DXManager.BeginSprite(DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied));
                 DXManager.SetSurface(null);                          // 原版 DXManager.SetSurface(DXManager.MainSurface)
 
                 if (MirScene.ActiveScene != null)
                     MirScene.ActiveScene.Draw();                     // 原版 ActiveScene.Draw()
 
-                DXManager.EndBatch();                                // 原版 DXManager.Sprite.End()
+                DXManager.EndSprite();                               // 原版 DXManager.Sprite.End()
                 DXManager.Device.EndScene();
                 DXManager.Device.Present();
             }

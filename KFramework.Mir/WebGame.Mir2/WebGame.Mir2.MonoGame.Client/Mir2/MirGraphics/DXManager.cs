@@ -176,21 +176,16 @@ namespace Client.MirGraphics
             new KFramework.MonoGame.Rectangle(r.X, r.Y, r.Width, r.Height);
 
         // —— 主精灵路径：Texture2D（KFramework.MonoGame）——
-        // 对齐原版：原版 D3D9 在 CMain.RenderEnvironment 里整帧只 Sprite.Begin 一次，之后连续 Sprite.Draw，
-        // 由 Sprite 内部按纹理/状态变化自动 Flush；且原版 DXManager.SetBlend / SetSurface 都是
-        // 「状态没变就直接 return」，绝不重复设置。
-        // 移植原先每个 Draw 都 Batch.Begin/End 一次（每帧上千次"开-关"批次 + 反复重设渲染状态），
-        // 这里改为缓存当前批次状态（混合模式 + 世界变换），仅在状态变化时才 End+Begin，其余直接 Draw；
-        // 渲染目标切换（SetSurface）与帧末（CMain.RenderEnvironment）负责收尾 EndBatch。
+        // 批次控制对齐原版 Sprite.Begin / Sprite.End / Sprite.Flush（原版 D3D9 固定管线）：
+        //   Sprite.Begin(flags)  可重复调用（已处于 Begin 时忽略）—— 原版在 CMain.RenderEnvironment 与 DXManager.Draw 各调一次；
+        //   Sprite.End()         收批（幂等）—— 换混合（SetBlend）、异常恢复（AttemptRecovery）、帧末各调一次；
+        //   Sprite.Flush()       提交已排队绘制但不收批 —— 切渲染目标（SetSurface）前调用。
+        // 本引擎 SpriteBatch 严格配对、且材质/投影在 Begin 时捕获，故用下面三个方法等价实现：
+        //   BeginSprite —— 材质 / 世界变换没变则忽略（= 原版容忍的重复 Begin）；变了先 End 再 Begin（原版这一步在 SetBlend 里）。
+        //   EndSprite   —— 收批；FlushSprite —— 提交（本引擎只能靠 End 提交）。
         //
         // 安全性依据：所有离屏绘制（MirLabel 文本、MirTextBox、控件/层烘焙）都经 DXManager.SetSurface
-        // 切目标，而 SetSurface 会先 EndBatch，故不会出现"同目标内 DXManager 批次与其它 SpriteBatch
-        // 交错提交"的乱序。
-        //
-        // 为什么这里用「End + Begin」而不用 SpriteNestedBatch 的嵌套（Begin 叠一层 / End 退一层）：
-        // 本路径的材质切换是「切过去就不再回头」（下一笔是什么混合由 Drawing 当时的状态决定），
-        // 而嵌套的收益恰恰在于「切走后要回到外层材质」——这里没有"回外层"的动作，嵌套不会少一次
-        // DrawCall（Begin 叠层内部同样是 flush 当前层），反而要在帧末逐层 End 才能关闭整批。
+        // 切目标，而 SetSurface 会先 FlushSprite，故不会出现"同目标内批次交错提交"的乱序。
         private static bool _batchBegun;
         private static KFramework.MonoGame.Material _batchMaterial;
         private static KFramework.MonoGame.Matrix4x4? _batchTransform;
@@ -217,13 +212,9 @@ namespace Client.MirGraphics
             return mat;
         }
 
-        // 供帧级 / 文本渲染等复用主批：以指定材质（可再给世界变换）开出主批；状态未变则复用当前批次。
-        // 由调用方负责与其后的 EndBatch 配对。
-        public static void BeginBatch(KFramework.MonoGame.Material material, KFramework.MonoGame.Matrix4x4? transform = null)
-            => EnsureBatch(material, transform);
-
-        // 确保批次以指定「材质 + 世界变换」处于开启状态；状态未变则复用当前批次，不重复 Begin。
-        private static void EnsureBatch(KFramework.MonoGame.Material material, KFramework.MonoGame.Matrix4x4? transform)
+        // 对齐 Sprite.Begin(...)：开出主批（材质 / 世界变换未变则忽略，＝原版容忍的重复 Begin）。
+        // 主绘制路径传 RenderTransform；文本烘焙等需恒等变换的场景传 null。
+        public static void BeginSprite(KFramework.MonoGame.Material material, KFramework.MonoGame.Matrix4x4? transform = null)
         {
             if (_batchBegun && ReferenceEquals(_batchMaterial, material) && Nullable.Equals(_batchTransform, transform)) return;
             if (_batchBegun) Batch.End();
@@ -233,14 +224,16 @@ namespace Client.MirGraphics
             _batchTransform = transform;
         }
 
-        // 结束当前批次（幂等）。切换渲染目标 / 帧末必须调用，否则下一次 Begin 会因
-        // "SpriteBatch 仍处于 Begin 状态"抛 InvalidOperationException（见上文黑屏注释）。
-        public static void EndBatch()
+        // 对齐 Sprite.End()：收批（幂等）。切渲染目标 / 帧末 / 异常恢复都要调用。
+        public static void EndSprite()
         {
             if (!_batchBegun) return;
             Batch.End();
             _batchBegun = false;
         }
+
+        // 对齐 Sprite.Flush()：提交当前批次（本引擎只能靠 End 提交，故等价于 EndSprite）。
+        public static void FlushSprite() => EndSprite();
 
         // 本次绘制应使用的混合状态：显式传入优先，否则按全局 Blending 标志选「加法 / 非预乘」（对齐原版 SetBlend 语义）。
         private static KFramework.MonoGame.BlendState ResolveBlend(KFramework.MonoGame.BlendState? blendState)
@@ -251,7 +244,7 @@ namespace Client.MirGraphics
             if (texture == null) return;
             Rectangle src = sourceRect ?? new Rectangle(0, 0, texture.Width, texture.Height);
             SlimDX.Vector3 pos = position ?? SlimDX.Vector3.Zero;
-            EnsureBatch(GetMaterial(ResolveBlend(blendState)), RenderTransform);
+            BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
             Batch.Draw(texture, new KFramework.MonoGame.Vector2(pos.X, pos.Y), ToRect(src), ToColor(color));
             CMain.DPSCounter++;
         }
@@ -259,7 +252,7 @@ namespace Client.MirGraphics
         public static void Draw(Texture2D texture, Rectangle sourceRect, RectangleF destRect, SlimDX.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
         {
             if (texture == null) return;
-            EnsureBatch(GetMaterial(ResolveBlend(blendState)), RenderTransform);
+            BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
             Batch.Draw(texture,
                 new KFramework.MonoGame.Rectangle((int)destRect.X, (int)destRect.Y, (int)destRect.Width, (int)destRect.Height),
                 ToRect(sourceRect), ToColor(color));
@@ -312,9 +305,9 @@ namespace Client.MirGraphics
         {
             // 对齐原版 DXManager.SetSurface：目标相同则直接返回（原版 CurrentSurface == surface 时 return）。
             if (ReferenceEquals(CurrentSurface, surface)) return;
-            // 切渲染目标会打断 SpriteBatch（Begin 时已捕获旧目标）：先结束当前批次，
-            // 下一次 Draw 会在新目标上重新 Begin（原版这里是 Sprite.Flush）。
-            EndBatch();
+            // 切渲染目标会打断 SpriteBatch（Begin 时已捕获旧目标）：先收批提交到旧目标，
+            // 下一次 Draw 会在新目标上重新 Begin（对齐原版 SetSurface 里的 Sprite.Flush()）。
+            FlushSprite();
             CurrentSurface = surface;
             GDevice?.SetRenderTarget(surface?.Owner?.RenderTarget);
         }
@@ -322,7 +315,15 @@ namespace Client.MirGraphics
         public static void SetOpacity(float opacity) { Opacity = opacity; }
         public static void SetBlend(bool value, float rate = 1F, BlendMode mode = BlendMode.NORMAL)
         {
+            // 对齐原版：状态没变就直接 return（绝不重复换批 / 重设渲染状态）。
+            if (value == Blending && rate == BlendingRate && mode == BlendingMode) return;
+
             Blending = value; BlendingRate = rate; BlendingMode = mode;
+
+            // 对齐原版 SetBlend 里的 Sprite.Flush() + Sprite.End() + Sprite.Begin(...)：
+            // 混合变了就收掉当前批次，再以新混合对应的材质重新开批。
+            EndSprite();
+            BeginSprite(GetMaterial(Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied), RenderTransform);
         }
         public static void SetNormal(float blend, Color tintcolor) { }
         public static void SetGrayscale(float blend, Color tintcolor) { }
@@ -330,11 +331,11 @@ namespace Client.MirGraphics
 
         public static void AttemptReset() { }
         public static void ResetDevice() { }
-        // 对齐原版 DXManager.AttemptRecovery：收尾 Sprite.End（→ EndBatch）、EndScene（无对应物）、
+        // 对齐原版 DXManager.AttemptRecovery：收尾 Sprite.End（→ EndSprite）、EndScene（无对应物）、
         // 把渲染目标重置回主画布——否则异常帧残留的离屏目标会让下一帧清屏清错对象。
         public static void AttemptRecovery()
         {
-            try { EndBatch(); } catch { }
+            try { EndSprite(); } catch { }
             try { SetSurface(null); } catch { }
         }
 

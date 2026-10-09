@@ -330,7 +330,7 @@ namespace Client.MirControls
                 {
                     // 用主批（SpriteBatch）绘制：以新式材质 API 开批（NonPremultiplied + 纹理 PointClamp），
                     // 文本 + 光标交给基础库 TextBox（DrawTextBox，实例自身持有光标状态）。
-                    DXManager.BeginBatch(DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied));
+                    DXManager.BeginSprite(DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied));
                     _caretBox.DrawTextBox(
                         DXManager.Batch, DXManager.GDevice, font, drawText,
                         new KFramework.MonoGame.Rectangle(0, 0, Size.Width, Size.Height),
@@ -338,7 +338,7 @@ namespace Client.MirControls
                         TextBox.SelectionStart, !TextBox.Multiline, TextBox.Focused,
                         KFramework.MonoGame.TextBox.DefaultPadLeft, drawComp,
                         TextBox.SelectionStart, TextBox.SelectionLength);
-                    DXManager.EndBatch();
+                    DXManager.EndSprite();
                 }
                 finally
                 {
