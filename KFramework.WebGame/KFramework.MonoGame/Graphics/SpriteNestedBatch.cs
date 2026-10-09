@@ -33,17 +33,17 @@ namespace KFramework.MonoGame
     /// var nested = new SpriteNestedBatch(Device);
     ///
     /// nested.Begin(materialUi);                        // 外层材质
-    /// nested.Draw(panel, Color.White, panelPos);       // 用外层材质画（位置形态）
+    /// nested.Draw(panel, panelPos);                    // 用外层材质画（位置形态，颜色默认白）
     ///
     /// nested.Begin(materialGlow);                      // 叠一层：冲刷外层 → 换发光材质
-    /// nested.Draw(glow, Color.White, glowPos);         // 用发光材质画
+    /// nested.Draw(glow, glowPos, color: tint);         // 用发光材质画，带着色
     ///
     /// nested.Begin(materialMask);                      // 想嵌多深就再 Begin
-    /// nested.Draw(mask, Color.White, maskPos);
+    /// nested.Draw(mask, maskPos);
     /// nested.End();                                    // 退到发光层（外层材质被重新下发）
     ///
     /// nested.End();                                    // 退到外层
-    /// nested.Draw(panel2, Color.White, panel2Pos);     // 继续用外层材质
+    /// nested.Draw(panel2, panel2Pos);                  // 继续用外层材质
     ///
     /// int drawCalls = nested.End();                    // 最外层 End：整批结束，返回最后一段的 DrawCall
     /// </code>
@@ -162,10 +162,10 @@ namespace KFramework.MonoGame
 
         // ============ 绘制透传（与 SpriteBatch 的那两个 Draw 一一对应，换用不必改调用代码）============
 
-        public void Draw(Texture2D texture, Color color, Vector2 position,
-                         float rotation = 0f, Vector2? scale = null, Vector2 origin = default,
-                         ShaderPropertyBlock? properties = null)
-            => _batch.Draw(texture, color, position, rotation, scale, origin, properties);
+        public void Draw(Texture2D texture, Vector2 position,
+                         float rotation = 0f, Vector2? scale = null, Color? color = null,
+                         Vector2 origin = default, ShaderPropertyBlock? properties = null)
+            => _batch.Draw(texture, position, rotation, scale, color, origin, properties);
 
         public void Draw(Texture2D texture, Rectangle? targetRectangle, Rectangle? sourceRectangle, Color color,
                          float rotation = 0f, Vector2 origin = default, Vector2? scale = null,

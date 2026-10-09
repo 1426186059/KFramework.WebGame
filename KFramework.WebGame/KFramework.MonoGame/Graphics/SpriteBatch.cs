@@ -264,10 +264,10 @@ namespace KFramework.MonoGame
 
 
         /// <summary>
-        /// 绘制（位置形态，浮点）：按浮点位置画整幅纹理，带旋转 / 锚点 / 缩放 [+ 属性块]。
+        /// 绘制（位置形态，浮点）：按浮点位置画整幅纹理，带旋转 / 锚点 / 缩放 [+ 着色 + 属性块]。
         /// <paramref name="position"/> 是锚点落点（即 <paramref name="origin"/> 落在哪）；
         /// <paramref name="origin"/> 是源纹理上的像素锚点（按 源尺寸 → 实际尺寸 的比例放大后再定位）；
-        /// <paramref name="scale"/> 传 null = 不缩放。
+        /// <paramref name="scale"/> 传 null = 不缩放；<paramref name="color"/> 传 null = <see cref="Color.White"/>。
         /// <para>
         /// 本形态不做翻转、不参与深度排序（翻转与 <c>layerDepth</c> 只在下面那个「目标矩形形态」里给）；
         /// 顶点按 <see cref="SpriteEffects.None"/> / 深度 0 展开，要与其它精灵比深度请用目标矩形形态。
@@ -275,15 +275,15 @@ namespace KFramework.MonoGame
         /// </summary>
         public void Draw(
             Texture2D texture,
-            Color color,
             Vector2 position, 
             float rotation = 0f,
             Vector2? scale = null,
+            Color? color = null,
             Vector2 origin = default, 
             ShaderPropertyBlock? properties = null)
         {
             CheckValid(texture);
-            DrawVertexPath(texture, position, null, color, rotation, origin, scale ?? Vector2.One,
+            DrawVertexPath(texture, position, null, color ?? Color.White, rotation, origin, scale ?? Vector2.One,
                            SpriteEffects.None, 0f, properties);
         }
 

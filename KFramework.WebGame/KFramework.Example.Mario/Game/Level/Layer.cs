@@ -21,8 +21,8 @@ namespace FCGame_MonoGame2.Core
             int rightSegment = leftSegment + 1;
             x = (x / segmentWidth - leftSegment) * -segmentWidth;
 
-            spriteBatch.Draw(textures[leftSegment % textures.Length], Color.White, new Vector2(x, 0.0f));
-            spriteBatch.Draw(textures[rightSegment % textures.Length], Color.White, new Vector2(x + segmentWidth, 0.0f));
+            spriteBatch.Draw(textures[leftSegment % textures.Length], new Vector2(x, 0.0f));
+            spriteBatch.Draw(textures[rightSegment % textures.Length], new Vector2(x + segmentWidth, 0.0f));
         }
 
     }

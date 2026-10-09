@@ -47,7 +47,7 @@ namespace KFramework.Test.WebGPU.Tests
                 batch.Begin(SpriteSortMode.Deferred, state);
                 batch.DrawString(Font, name, new Vector2(28f, y), new Color(220, 230, 250));
                 for (int i = 0; i < 6; i++)
-                    batch.Draw(_tex, tint, new Vector2(280f + i * 56f, y - 6f));
+                    batch.Draw(_tex, new Vector2(280f + i * 56f, y - 6f), color: tint);
                 batch.End();
 
                 y += 62f;
