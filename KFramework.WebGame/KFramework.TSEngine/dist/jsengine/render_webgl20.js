@@ -206,7 +206,9 @@ export function bindBuffer(target, buffer) { gpu().bindBuffer(target, buffer); }
 export function bindBufferRange(target, index, buffer, offset, size) {
     gpu().bindBufferRange(target, index, buffer, offset, size);
 }
-export function bufferDataSize(target, size, usage) { gpu().bufferData(target, size, usage); }
+export function bufferDataSize(target, size, usage) {
+    gpu().bufferData(target, size, usage);
+}
 export function bufferData(target, data, usage) {
     gpu().bufferData(target, toVertexBytes(data), usage);
 }

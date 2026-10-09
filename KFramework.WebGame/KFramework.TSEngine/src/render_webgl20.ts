@@ -244,7 +244,11 @@ export function bindBuffer(target: number, buffer: WebGLBuffer | null): void { g
 export function bindBufferRange(target: number, index: number, buffer: WebGLBuffer | null, offset: number, size: number): void {
     gpu().bindBufferRange(target, index, buffer, offset, size);
 }
-export function bufferDataSize(target: number, size: number, usage: number): void { gpu().bufferData(target, size, usage); }
+export function bufferDataSize(target: number, size: number, usage: number): void 
+{ 
+    gpu().bufferData(target, size, usage); 
+}
+
 export function bufferData(target: number, data: MemoryView_Span | Uint8Array, usage: number): void {
     gpu().bufferData(target, toVertexBytes(data), usage);
 }
@@ -256,13 +260,21 @@ export function deleteBuffer(buffer: WebGLBuffer | null): void { gpu().deleteBuf
 export function createVertexArray(): WebGLVertexArrayObject | null { return gpu().createVertexArray(); }
 export function bindVertexArray(vao: WebGLVertexArrayObject | null): void { gpu().bindVertexArray(vao); }
 export function enableVertexAttribArray(index: number): void { gpu().enableVertexAttribArray(index); }
-export function vertexAttribPointer(index: number, size: number, type: number, normalized: number | boolean, stride: number, offset: number): void {
+export function vertexAttribPointer(
+    index: number, 
+    size: number, 
+    type: number,
+    normalized: number | boolean, 
+    stride: number, 
+    offset: number): void 
+{
     gpu().vertexAttribPointer(index, size, type, !!normalized, stride, offset);
 }
 
 // 顶点属性的推进步长：0 = 每个顶点推进一条记录（普通属性），1 = 每个实例推进一条（GPU 实例化）。
 // divisor 属于 VAO 状态，必须在绑定 VAO 之后设置。
-export function vertexAttribDivisor(index: number, divisor: number): void {
+export function vertexAttribDivisor(index: number, divisor: number): void 
+{
     gpu().vertexAttribDivisor(index, divisor | 0);
 }
 
@@ -272,16 +284,24 @@ export function createTexture(): number {
     _texByInt.set(id, t);
     return id;
 }
+
 export function bindTexture(target: number, texture: number): void {
     gpu().bindTexture(target, texture ? (_texByInt.get(texture) ?? null) : null);
 }
 export function texImage2D(
-    target: number, level: number, internalFormat: number,
-    width: number, height: number, border: number,
-    format: number, type: number, data: MemoryView_Span | Uint8Array | null,
-): void {
+    target: number, 
+    level: number, 
+    internalFormat: number,
+    width: number, 
+    height: number, 
+    border: number,
+    format: number, 
+    type: number, 
+    data: MemoryView_Span | Uint8Array | null): void 
+{
     gpu().texImage2D(target, level, internalFormat, width, height, border, format, type, toTextureBytes(data) ?? new Uint8Array(0));
 }
+
 export function texSubImage2D(
     target: number, level: number, xoffset: number, yoffset: number,
     width: number, height: number, format: number, type: number,

@@ -1,5 +1,4 @@
 using System.Buffers.Binary;
-using System.Numerics;
 using System.Runtime.InteropServices.JavaScript;
 
 namespace KFramework.MonoGame
@@ -44,12 +43,7 @@ void main()
         private readonly JSObject? _projectionLocation;
         private readonly JSObject? _textureLocation;
         private readonly byte[] _matrixBuffer = new byte[16 * sizeof(float)];
-
-        /// <summary>材质纹理绑定的纹理单元：0 号留给 SpriteBatch 的精灵纹理，材质纹理从 1 号开始。</summary>
         private const int MaterialTextureUnit = 1;
-
-        /// <summary>属性名 → uniform location 的缓存（照 Unity 缓存 Shader.PropertyToID 的思路，避免每帧跨界查询）。
-        /// 值为 null 表示着色器里没有这个 uniform（也缓存下来，免得每帧重查）。</summary>
         private readonly Dictionary<string, JSObject?> _propertyLocations = new(StringComparer.Ordinal);
 
         internal WebGL_ShaderProgram_2D_Custom(string fragmentSource)
@@ -64,7 +58,9 @@ void main()
             JSBind_WEBGL20.LinkProgram(_program);
 
             if (JSBind_WEBGL20.GetProgramParameter(_program, JSBind_WEBGL20.LINK_STATUS) == 0)
+            {
                 throw new InvalidOperationException("自定义着色器链接失败: " + JSBind_WEBGL20.GetProgramInfoLog(_program));
+            }
 
             JSBind_WEBGL20.DeleteShader(vertexShader);
             JSBind_WEBGL20.DeleteShader(fragmentShader);
@@ -97,18 +93,14 @@ void main()
                 WriteMatrix(projection, _matrixBuffer);
                 JSBind_WEBGL20.UniformMatrix4fv(_projectionLocation, 0, _matrixBuffer);
             }
-            if (_textureLocation is not null) JSBind_WEBGL20.Uniform1i(_textureLocation, 0);
-
-            // 先发效果上的默认材质属性（SpriteBatch.Begin 已把空效果落到 ShaderEffect.Default），
-            // 再发这一次绘制的覆盖块：同名 uniform 后写的赢（照 Unity 的 SetPropertyBlock）。
+            if (_textureLocation is not null)
+            {
+                JSBind_WEBGL20.Uniform1i(_textureLocation, 0);
+            }
             ApplyProperties(material.Effect!, material.Sampler);
             if (block is not null) ApplyProperties(block, material.Sampler);
         }
 
-        /// <summary>
-        /// 把属性表里的着色器属性逐个灌入本程序的 uniform（按属性类型选接口：1f / 1i / 4f / Matrix4fv / 纹理单元）。
-        /// 属性名在本着色器里不存在就跳过（照 Unity：设了没用到的属性不报错也不生效）。
-        /// </summary>
         private void ApplyProperties(ShaderProperties source, SamplerState sampler)
         {
             IReadOnlyDictionary<string, ShaderProperty> properties = source.Properties;
@@ -146,7 +138,10 @@ void main()
         /// <summary>取属性的 uniform location（首次查询后缓存；着色器里没有则缓存 null 并一直跳过）。</summary>
         private JSObject? PropertyLocation(string name)
         {
-            if (_propertyLocations.TryGetValue(name, out JSObject? cached)) return cached;
+            if (_propertyLocations.TryGetValue(name, out JSObject? cached))
+            {
+                return cached;
+            }
             JSObject? location = JSBind_WEBGL20.GetUniformLocation(_program, name);
             _propertyLocations[name] = location;
             return location;
@@ -171,7 +166,6 @@ void main()
             }
 
             JSBind_WEBGL20.Uniform1i(location, MaterialTextureUnit);
-            // 复位到 0 号单元：后续 SpriteBatch 绑定精灵纹理默认走 0 号，避免把材质纹理的绑定串过去。
             JSBind_WEBGL20.ActiveTexture(JSBind_WEBGL20.TEXTURE0);
         }
 

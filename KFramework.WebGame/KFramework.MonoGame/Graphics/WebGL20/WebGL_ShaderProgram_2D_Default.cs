@@ -83,7 +83,9 @@ namespace KFramework.MonoGame
             JSBind_WEBGL20.LinkProgram(_program);
 
             if (JSBind_WEBGL20.GetProgramParameter(_program, JSBind_WEBGL20.LINK_STATUS) == 0)
+            {
                 throw new InvalidOperationException("着色器链接失败: " + JSBind_WEBGL20.GetProgramInfoLog(_program));
+            }
 
             JSBind_WEBGL20.DeleteShader(vertexShader);
             JSBind_WEBGL20.DeleteShader(fragmentShader);
