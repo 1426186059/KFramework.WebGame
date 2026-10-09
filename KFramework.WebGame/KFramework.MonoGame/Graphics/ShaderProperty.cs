@@ -33,6 +33,12 @@ namespace KFramework.MonoGame
     /// <summary>
     /// 一条着色器属性的值：按 <see cref="Type"/> 取对应字段（与 Unity 的材质属性一样只存值，
     /// 名字/类型对不对得上由具体着色器决定）。声明为 struct 以避免每条属性一次堆分配。
+    /// <para>
+    /// 每个构造函数对应 <see cref="ShaderProperties"/> 上的一个 Set 方法（类型也据此推出），
+    /// 省掉"先设 <see cref="Type"/> 再填字段"的样板：<c>new ShaderProperty(1.5f)</c> /
+    /// <c>new ShaderProperty(color)</c> / <c>new ShaderProperty(matrix)</c> / <c>new ShaderProperty(tex)</c> …
+    /// 只用到某一个字段时，其余字段由 <c>this()</c> 链零初始化（<see cref="Texture"/> 为 null）。
+    /// </para>
     /// </summary>
     public struct ShaderProperty
     {
@@ -53,5 +59,77 @@ namespace KFramework.MonoGame
 
         /// <summary>纹理（<see cref="ShaderPropertyType.Texture"/>）；设为 null 表示解绑该采样器。</summary>
         public Texture2D? Texture;
+
+        /// <summary>float 属性（与 <see cref="ShaderProperties.SetFloat"/> 等价）。</summary>
+        public ShaderProperty(float value)
+            : this()
+        {
+            Type = ShaderPropertyType.Float;
+            Float = value;
+        }
+
+        /// <summary>int 属性（与 <see cref="ShaderProperties.SetInt"/> 等价）。</summary>
+        public ShaderProperty(int value)
+            : this()
+        {
+            Type = ShaderPropertyType.Int;
+            Int = value;
+        }
+
+        /// <summary>bool 属性：按 int 下发（true = 1，false = 0）—— 照 Unity 用 int 设布尔开关。</summary>
+        public ShaderProperty(bool value)
+            : this()
+        {
+            Type = ShaderPropertyType.Int;
+            Int = value ? 1 : 0;
+        }
+
+        /// <summary>vec4 属性（与 <see cref="ShaderProperties.SetVector(string, Vector4)"/> 等价）。</summary>
+        public ShaderProperty(Vector4 value)
+            : this()
+        {
+            Type = ShaderPropertyType.Vector;
+            Vector = value;
+        }
+
+        /// <summary>vec3 属性：w 补 0（与 <see cref="ShaderProperties.SetVector(string, Vector3)"/> 等价）。</summary>
+        public ShaderProperty(Vector3 value)
+            : this()
+        {
+            Type = ShaderPropertyType.Vector;
+            Vector = new Vector4(value.X, value.Y, value.Z, 0f);
+        }
+
+        /// <summary>vec2 属性：z / w 补 0。</summary>
+        public ShaderProperty(Vector2 value)
+            : this()
+        {
+            Type = ShaderPropertyType.Vector;
+            Vector = new Vector4(value.X, value.Y, 0f, 0f);
+        }
+
+        /// <summary>颜色属性：0~255 的 <see cref="Color"/> 归一化成 0~1 的 vec4（与 <see cref="ShaderProperties.SetColor"/> 等价）。</summary>
+        public ShaderProperty(Color value)
+            : this()
+        {
+            Type = ShaderPropertyType.Color;
+            Vector = new Vector4(value.R / 255f, value.G / 255f, value.B / 255f, value.A / 255f);
+        }
+
+        /// <summary>mat4 属性（与 <see cref="ShaderProperties.SetMatrix"/> 等价）。</summary>
+        public ShaderProperty(Matrix4x4 value)
+            : this()
+        {
+            Type = ShaderPropertyType.Matrix;
+            Matrix = value;
+        }
+
+        /// <summary>纹理属性（与 <see cref="ShaderProperties.SetTexture"/> 等价）；传 null 表示解绑该采样器。</summary>
+        public ShaderProperty(Texture2D? value)
+            : this()
+        {
+            Type = ShaderPropertyType.Texture;
+            Texture = value;
+        }
     }
 }

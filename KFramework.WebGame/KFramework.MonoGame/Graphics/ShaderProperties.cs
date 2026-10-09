@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Numerics;
 
 namespace KFramework.MonoGame
@@ -47,49 +45,31 @@ namespace KFramework.MonoGame
 
         /// <summary>设置 float 属性（对应着色器里的 uniform float）。</summary>
         public void SetFloat(string name, float value)
-        {
-            Set(name, new ShaderProperty { Type = ShaderPropertyType.Float, Float = value });
-        }
+            => Set(name, new ShaderProperty(value));
 
         /// <summary>设置 int 属性（对应着色器里的 uniform int / bool / 枚举）。</summary>
         public void SetInt(string name, int value)
-        {
-            Set(name, new ShaderProperty { Type = ShaderPropertyType.Int, Int = value });
-        }
+            => Set(name, new ShaderProperty(value));
 
         /// <summary>设置 vec4 属性（对应着色器里的 uniform vec4）。</summary>
         public void SetVector(string name, Vector4 value)
-        {
-            Set(name, new ShaderProperty { Type = ShaderPropertyType.Vector, Vector = value });
-        }
+            => Set(name, new ShaderProperty(value));
 
         /// <summary>设置 vec3 属性（对应着色器里的 uniform vec3；w 补 0）。</summary>
         public void SetVector(string name, Vector3 value)
-        {
-            SetVector(name, new Vector4(value.X, value.Y, value.Z, 0f));
-        }
+            => Set(name, new ShaderProperty(value));
 
         /// <summary>设置颜色属性：0~255 的 <see cref="Color"/> 会归一化成 0~1 的 vec4 下发（照 Unity 的 SetColor）。</summary>
         public void SetColor(string name, Color value)
-        {
-            Set(name, new ShaderProperty
-            {
-                Type = ShaderPropertyType.Color,
-                Vector = new Vector4(value.R / 255f, value.G / 255f, value.B / 255f, value.A / 255f),
-            });
-        }
+            => Set(name, new ShaderProperty(value));
 
         /// <summary>设置 mat4 属性（对应着色器里的 uniform mat4）。</summary>
         public void SetMatrix(string name, Matrix4x4 value)
-        {
-            Set(name, new ShaderProperty { Type = ShaderPropertyType.Matrix, Matrix = value });
-        }
+            => Set(name, new ShaderProperty(value));
 
         /// <summary>设置纹理属性（对应着色器里的 uniform sampler2D）；传 null 表示解绑该采样器。</summary>
         public void SetTexture(string name, Texture2D? value)
-        {
-            Set(name, new ShaderProperty { Type = ShaderPropertyType.Texture, Texture = value });
-        }
+            => Set(name, new ShaderProperty(value));
 
         /// <summary>是否设过该属性（不看着色器里有没有，只看这里设没设）。</summary>
         public bool HasProperty(string name)
