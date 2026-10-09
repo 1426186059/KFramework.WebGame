@@ -1,15 +1,27 @@
 namespace KFramework.MonoGame
 {
+    /// <summary>
+    /// Canvas2D 光栅化的精灵字体：逐字形画进字形图集，绘制时按 source rect 出图（与精灵同一条路径，可合批）。
+    /// <para>
+    /// <b>多图集</b>：一页（<see cref="AtlasSize"/>²）塞满就自动新建下一页，字形用
+    /// <see cref="Glyph.AtlasIndex"/> 记住自己在第几页 —— 中文这种几千字的字集不会再出现"后面的字直接消失"。
+    /// 代价是绘制跨页时要换纹理：<see cref="SpriteBatch"/> 按纹理分段，连续文本通常只在页边界处多一次 draw。
+    /// </para>
+    /// </summary>
     public sealed class SpriteFont : IFont, IDisposable
     {
         private readonly struct Glyph
         {
+            /// <summary>字形所在图集页号；-1 = 没有贴图（空白字符 / 退化字形，只推进光标）。</summary>
+            public readonly int AtlasIndex;
+
             public readonly Rectangle Bounds;
             public readonly float Advance;
             public readonly Vector2 DrawOffset;
 
-            public Glyph(Rectangle bounds, float advance, Vector2 drawOffset)
+            public Glyph(int atlasIndex, Rectangle bounds, float advance, Vector2 drawOffset)
             {
+                AtlasIndex = atlasIndex;
                 Bounds = bounds;
                 Advance = advance;
                 DrawOffset = drawOffset;
@@ -19,15 +31,23 @@ namespace KFramework.MonoGame
         private const int Padding = 2;
         private const int AtlasSize = 1024;
 
+        /// <summary>图集页数上限（每页 <see cref="AtlasSize"/>² RGBA ≈ 4MB，16 页 ≈ 64MB 封顶，防病态字集吃光显存）。</summary>
+        private const int MaxAtlasPages = 16;
+
         private readonly GraphicsDevice _device;
         private readonly string _fontCss;
         private readonly float _letterSpacing;
         private readonly Dictionary<char, Glyph> _glyphs = new();
-        private readonly Texture2D _atlas;
+
+        /// <summary>字形图集页表：第 0 页在构造时建好，之后一页满就追加一页；字形用 <see cref="Glyph.AtlasIndex"/> 指回来。</summary>
+        private readonly List<Texture2D> _atlases = new();
 
         private int _shelfX;
         private int _shelfY;
         private int _shelfHeight;
+
+        /// <summary>当前已使用的图集页数（诊断用）。</summary>
+        public int AtlasCount => _atlases.Count;
 
         /// <summary>字号（像素）。</summary>
         public readonly float Size;
@@ -78,7 +98,7 @@ namespace KFramework.MonoGame
             LetterSpacing = letterSpacing;
             _letterSpacing = letterSpacing;
             _fontCss = FontCss.Build(size, family, style, weight, stretch);
-            _atlas = device.CreateTexture(AtlasSize, AtlasSize);
+            _atlases.Add(device.CreateTexture(AtlasSize, AtlasSize));
 
             Span<short> metrics = stackalloc short[4];
             JSBind_Text.Measure("Hg", _fontCss, _letterSpacing, metrics);
@@ -167,44 +187,78 @@ namespace KFramework.MonoGame
             int height = Math.Max(metrics[1], (int)(Size * 1.15f) + 4);
             int ascent = Math.Max(metrics[2], (int)(Size * 0.85f) + 2);
 
-            Rectangle bounds = Rectangle.Empty;
             Vector2 drawOffset = new(-Padding, 0f);
 
             // 仅格子留白加 1px 防裁切；布局 advance 不再额外 +1（见 text.ts measure），文字宽度才与 GDI 一致。
             int cellWidth = advance + Padding * 2 + 1;
             int cellHeight = height + Padding * 2;
 
-            if (cellWidth > 0 && cellHeight > 0 && !char.IsWhiteSpace(c))
+            // 空白字符 / 度量退化：不占图集，只推进光标
+            if (cellWidth <= 0 || cellHeight <= 0 || char.IsWhiteSpace(c))
             {
-                if (_shelfX + cellWidth > AtlasSize)
+                glyph = new Glyph(-1, Rectangle.Empty, advance, drawOffset);
+                _glyphs[c] = glyph;
+                return glyph;
+            }
+
+            // 单格比整页还大（字号病态）：退化为空字形，避免越界写入
+            if (cellWidth > AtlasSize || cellHeight > AtlasSize)
+            {
+                PrintTool.Log($"[SpriteFont] {Family} 字号 {Size}：字形格 {cellWidth}×{cellHeight} 超过单页 {AtlasSize}²，字符「{c}」不绘制");
+                glyph = new Glyph(-1, Rectangle.Empty, advance, drawOffset);
+                _glyphs[c] = glyph;
+                return glyph;
+            }
+
+            // 当前页这一行放不下 → 翻行；整页放不下 → 开新页（多图集）
+            if (_shelfX + cellWidth > AtlasSize)
+            {
+                _shelfX = 0;
+                _shelfY += _shelfHeight;
+                _shelfHeight = 0;
+            }
+            if (_shelfY + cellHeight > AtlasSize)
+            {
+                if (!OpenNextAtlas())
                 {
-                    _shelfX = 0;
-                    _shelfY += _shelfHeight;
-                    _shelfHeight = 0;
-                }
-                if (_shelfY + cellHeight > AtlasSize)
-                {
-                    // 图集已满：后续字符退化为空，避免越界写入
-                    glyph = new Glyph(Rectangle.Empty, advance, drawOffset);
+                    // 页数已达上限：退化为空字形，避免越界写入
+                    PrintTool.Log($"[SpriteFont] {Family} 字号 {Size}：图集已达 {MaxAtlasPages} 页上限，字符「{c}」不绘制");
+                    glyph = new Glyph(-1, Rectangle.Empty, advance, drawOffset);
                     _glyphs[c] = glyph;
                     return glyph;
                 }
 
-                byte[] pixels = new byte[cellWidth * cellHeight * 4];
-                JSBind_Text.Render(text, _fontCss, _letterSpacing, Padding, Padding + ascent, cellWidth, cellHeight, pixels);
-                _atlas.SetData(pixels, _shelfX, _shelfY, cellWidth, cellHeight);
-
-                // 照官方 MonoGame 的图集用法：整张图集是单个 Texture2D，字形用 source rect 绘制，可合批。
-                bounds = new Rectangle(_shelfX, _shelfY, cellWidth, cellHeight);
-                drawOffset = new Vector2(-Padding, -(Padding + ascent));
-
-                _shelfX += cellWidth;
-                _shelfHeight = Math.Max(_shelfHeight, cellHeight);
+                // 新页从左上角重新起排
+                _shelfX = 0;
+                _shelfY = 0;
+                _shelfHeight = 0;
             }
 
-            glyph = new Glyph(bounds, advance, drawOffset);
+            int atlasIndex = _atlases.Count - 1;
+            byte[] pixels = new byte[cellWidth * cellHeight * 4];
+            JSBind_Text.Render(text, _fontCss, _letterSpacing, Padding, Padding + ascent, cellWidth, cellHeight, pixels);
+            _atlases[atlasIndex].SetData(pixels, _shelfX, _shelfY, cellWidth, cellHeight);
+
+            // 照官方 MonoGame 的图集用法：字形用 source rect 绘制，与精灵同批。
+            Rectangle bounds = new(_shelfX, _shelfY, cellWidth, cellHeight);
+            drawOffset = new Vector2(-Padding, -(Padding + ascent));
+
+            _shelfX += cellWidth;
+            _shelfHeight = Math.Max(_shelfHeight, cellHeight);
+
+            glyph = new Glyph(atlasIndex, bounds, advance, drawOffset);
             _glyphs[c] = glyph;
             return glyph;
+        }
+
+        /// <summary>当前页塞满时开新页；已达 <see cref="MaxAtlasPages"/> 上限返回 false。</summary>
+        private bool OpenNextAtlas()
+        {
+            if (_atlases.Count >= MaxAtlasPages) return false;
+
+            _atlases.Add(_device.CreateTexture(AtlasSize, AtlasSize));
+            PrintTool.Log($"[SpriteFont] {Family} 字号 {Size}：第 {_atlases.Count - 1} 页已满，新建第 {_atlases.Count} 页（{AtlasSize}²）");
+            return true;
         }
 
         public void Draw(
@@ -235,13 +289,15 @@ namespace KFramework.MonoGame
                 }
 
                 Glyph glyph = GetGlyph(c);
-                if (glyph.Bounds.Width > 0)
+                // 越界保护与 BitmapFont 一致：-1（无贴图）与 Dispose 之后的页号都不画
+                if (glyph.AtlasIndex >= 0 && glyph.AtlasIndex < _atlases.Count
+                    && glyph.Bounds.Width > 0 && glyph.Bounds.Height > 0)
                 {
                     Vector2 drawAt = new Vector2(
                         cursor.X + glyph.DrawOffset.X * scale,
                         cursor.Y + (Ascent + glyph.DrawOffset.Y) * scale);
                     batch.DrawGlyph(
-                        _atlas, 
+                        _atlases[glyph.AtlasIndex], 
                         drawAt, 
                         glyph.Bounds, 
                         color, 
@@ -256,7 +312,9 @@ namespace KFramework.MonoGame
 
         public void Dispose()
         {
-            _atlas.Dispose();
+            // 多图集：每一页都要释放
+            foreach (Texture2D atlas in _atlases) atlas.Dispose();
+            _atlases.Clear();
         }
 
     }
