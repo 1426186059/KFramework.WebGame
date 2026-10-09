@@ -35,7 +35,10 @@ const _cacheMatrix = new ByteCache(64); // uniformMatrix4fv：16 个 float，用
 const _cacheVertex = new ByteCache(64 * 1024, 1024 * 1024); // bufferData / bufferSubData
 const _cacheTexture = new ByteCache(2048, 32 * 1024 * 1024); // texImage2D / texSubImage2D / compressedTexImage2D
 let _cacheMatrixF32 = null; // 矩阵还原用的 Float32Array 视图（建在 _cacheMatrix 的缓冲上）
-let uniformLogged = false; // 矩阵上传只在首次打一条日志
+// 整数句柄映射：原生 WebGL 的 createTexture 返回的是 WebGLTexture 对象而非整数，
+// 但 C# 侧 Texture2D.Handle 现已统一为 int（与 WebGPU 一致），故这里维护 id → WebGLTexture 的映射。
+let _texId = 0;
+const _texByInt = new Map();
 // ============ 模块级字段结束 ============
 function gpu() {
     if (!gl)
@@ -140,6 +143,19 @@ export function getUniformLocation(program, name) {
 export function getAttribLocation(program, name) {
     return gpu().getAttribLocation(program, name);
 }
+// ---------- Uniform Buffer（UBO） ----------
+// SRP Batcher 式"常量缓冲常驻 + 逐物体只改绑定"靠这三件事：
+//   1) 着色器里声明 layout(std140) uniform 块（GLSL ES 3.00 没有 layout(binding=)，绑定点只能显式指定）；
+//   2) uniformBlockBinding 把块绑到一个绑定点（一次即可）；
+//   3) bindBufferRange 把缓冲的一段绑到该绑定点 —— 逐物体只是换个偏移，不上传任何字节。
+/** 取 uniform block 的索引；块名不存在时返回 0xFFFFFFFF（C# 侧读到的就是 -1）。 */
+export function getUniformBlockIndex(program, blockName) {
+    return gpu().getUniformBlockIndex(program, blockName);
+}
+/** 把一个 uniform block 绑定到指定绑定点（同一程序只需调用一次）。 */
+export function uniformBlockBinding(program, blockIndex, bindingPoint) {
+    gpu().uniformBlockBinding(program, blockIndex, bindingPoint);
+}
 export function uniform1i(location, v) { gpu().uniform1i(location, v); }
 export function uniform1f(location, v) { gpu().uniform1f(location, v); }
 export function uniform4f(location, x, y, z, w) {
@@ -159,8 +175,15 @@ export function uniformMatrix4fv(location, transpose, value) {
         if (buf === null)
             return;
         if (n === 64) {
-            // 唯一实际会用到的尺寸：复用 Float32Array 视图，不必每次 new
-            if (_cacheMatrixF32 === null || _cacheMatrixF32.buffer !== buf.buffer)
+            // 唯一实际会用到的尺寸：复用 Float32Array 视图，不必每次 new。
+            // 【必须连 byteOffset 一起比对】C# 侧传进来的是托管数组（WebGL_ShaderProgram_2D_Default._matrixBuffer = new byte[64]），
+            // 只在本次 JSImport 调用期间被固定，GC 一搬动它，下次的指针就变了；
+            // 只比 .buffer 会让视图一直盯着【第一次的地址】，之后每次上传读的都是那块已经被释放/挪走的内存
+            // —— 表现是投影矩阵逐渐变成垃圾（≈全 0），顶点全退化，整屏只剩清屏色（Release 下尤其明显，
+            // 因为 GC 行为与 Debug 不同，且各 app 的分配节奏不同）。
+            if (_cacheMatrixF32 === null
+                || _cacheMatrixF32.buffer !== buf.buffer
+                || _cacheMatrixF32.byteOffset !== buf.byteOffset)
                 _cacheMatrixF32 = new Float32Array(buf.buffer, buf.byteOffset, 16);
             matrix = _cacheMatrixF32;
         }
@@ -170,16 +193,22 @@ export function uniformMatrix4fv(location, transpose, value) {
             matrix = new Float32Array(aligned.buffer);
         }
     }
-    if (!uniformLogged) {
-        uniformLogged = true;
-        console.log('[gl] 上传矩阵:', Array.from(matrix).map((n) => n.toFixed(4)).join(','));
-    }
     gpu().uniformMatrix4fv(location, transpose !== 0, matrix);
 }
 // ---------- 缓冲 ----------
 export function createBuffer() { return gpu().createBuffer(); }
 export function bindBuffer(target, buffer) { gpu().bindBuffer(target, buffer); }
-export function bufferDataSize(target, size, usage) { gpu().bufferData(target, size, usage); }
+/**
+ * 把缓冲的一段范围绑到某个 UBO 绑定点。
+ * ⚠️ offset 必须是 UNIFORM_BUFFER_OFFSET_ALIGNMENT 的整数倍（常见 256），
+ * 所以"逐物体记录"的实际占位要按该值向上取整，不能直接用结构体大小。
+ */
+export function bindBufferRange(target, index, buffer, offset, size) {
+    gpu().bindBufferRange(target, index, buffer, offset, size);
+}
+export function bufferDataSize(target, size, usage) {
+    gpu().bufferData(target, size, usage);
+}
 export function bufferData(target, data, usage) {
     gpu().bufferData(target, toVertexBytes(data), usage);
 }
@@ -193,11 +222,11 @@ export function enableVertexAttribArray(index) { gpu().enableVertexAttribArray(i
 export function vertexAttribPointer(index, size, type, normalized, stride, offset) {
     gpu().vertexAttribPointer(index, size, type, !!normalized, stride, offset);
 }
-// ---------- 纹理 ----------
-// 整数句柄映射：原生 WebGL 的 createTexture 返回的是 WebGLTexture 对象而非整数，
-// 但 C# 侧 Texture2D.Handle 现已统一为 int（与 WebGPU 一致），故这里维护 id → WebGLTexture 的映射。
-let _texId = 0;
-const _texByInt = new Map();
+// 顶点属性的推进步长：0 = 每个顶点推进一条记录（普通属性），1 = 每个实例推进一条（GPU 实例化）。
+// divisor 属于 VAO 状态，必须在绑定 VAO 之后设置。
+export function vertexAttribDivisor(index, divisor) {
+    gpu().vertexAttribDivisor(index, divisor | 0);
+}
 export function createTexture() {
     const t = gpu().createTexture();
     const id = ++_texId;
@@ -249,6 +278,10 @@ export function viewport(x, y, width, height) { gpu().viewport(x, y, width, heig
 export function scissor(x, y, width, height) { gpu().scissor(x, y, width, height); }
 export function drawElements(mode, count, type, offset) {
     gpu().drawElements(mode, count, type, offset);
+}
+// 实例化索引绘制：一次 draw 画 instanceCount 个实例（配合 divisor=1 的逐实例属性）。
+export function drawElementsInstanced(mode, count, type, offset, instanceCount) {
+    gpu().drawElementsInstanced(mode, count, type, offset, instanceCount | 0);
 }
 export function drawArrays(mode, first, count) { gpu().drawArrays(mode, first, count); }
 /** 分配一张未初始化的 2D 纹理存储（渲染目标用：内容由 GPU 绘制，不传像素数据）。 */

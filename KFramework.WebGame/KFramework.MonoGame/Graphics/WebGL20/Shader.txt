@@ -1,1 +1,3 @@
 uniform 就是“一次绘制调用内，对所有顶点和片段都相同的全局只读参数”。
+UBO 全称是 Uniform Buffer Object，中文叫“统一缓冲区对象”。
+in Matrix4x4 value 里的 in 是 只读引用传参，C# 7.2 起支持。
