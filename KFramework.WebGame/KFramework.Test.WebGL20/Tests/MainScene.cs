@@ -80,6 +80,12 @@ namespace KFramework.Test.WebGL20.Tests
                 Desc = "CPU 合批的规模测试：空格切换精灵数，读数给出 DrawCall 增量（同一张纹理也受「单次 4096 个四边形」限制）、CPU 侧带宽与提交耗时拆分；可与第 7 页 GPU 实例化对照",
                 Factory = static () => new SpriteBatchPerfScene(),
             },
+            new TestEntry
+            {
+                Name = "批处理嵌套（SpriteNestedBatch：用材质切段）",
+                Desc = "同一个批内用嵌套 Begin/End 换材质：外层 → 发光(Additive) → 再嵌一层(灰度效果) → 退层回到外层；空格切换嵌套/不嵌套，读数给出 1 段 vs 4 段（DrawCall 1 vs 4）",
+                Factory = static () => new NestedBatchScene(),
+            },
         ];
     }
 

@@ -146,6 +146,10 @@ namespace SlimDX.Direct3D9
             LastTarget = CurrentTarget;
         }
         public void Dispose() { }
+        // 对齐原版 D3D9 Device 的场景包围（浏览器端由 CMain 帧循环 + SpriteBatch 承载，这里保持同名占位）。
+        public void BeginScene() { }
+        public void EndScene() { }
+        public void Present() { }
         public void SetRenderState(RenderState s, object v) { }
         public void Clear(ClearFlags f, Color c, float z, int s)
         {

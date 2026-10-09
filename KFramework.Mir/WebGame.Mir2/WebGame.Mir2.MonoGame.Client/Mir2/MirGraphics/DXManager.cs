@@ -74,6 +74,7 @@ namespace Client.MirGraphics
 
         // KFramework.MonoGame 渲染后端（由 MirGame.Initialize 注入）。
         public static GraphicsDevice GDevice;
+        // 主精灵批（对齐原版 DXManager 的主力绘制器）。文本渲染（DrawTextBox / IFont.Draw）同样吃这一支批。
         public static SpriteBatch Batch;
         public static void Initialize(GraphicsDevice device, SpriteBatch batch)
         {
@@ -99,7 +100,7 @@ namespace Client.MirGraphics
             }
 
             // 嵌套 RT 合成：切回画布（SetRenderTarget(null)）时保留已合成内容，避免闪烁。
-            // 清屏仍由每帧 RenderFrame 的显式 Clear 负责；默认 DiscardContents 保持 XNA/MonoGame 兼容。
+            // 清屏由每帧 CMain.RenderEnvironment 的显式 Clear 负责；默认 DiscardContents 保持 XNA/MonoGame 兼容。
             GDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
 
             // 浏览器端程序化生成灯贴图（光晕），填充 DXManager.Lights，使昼夜系统的蜡烛/火把/地图灯能照亮。
@@ -180,13 +181,18 @@ namespace Client.MirGraphics
         // 「状态没变就直接 return」，绝不重复设置。
         // 移植原先每个 Draw 都 Batch.Begin/End 一次（每帧上千次"开-关"批次 + 反复重设渲染状态），
         // 这里改为缓存当前批次状态（混合模式 + 世界变换），仅在状态变化时才 End+Begin，其余直接 Draw；
-        // 渲染目标切换（SetSurface）与帧结束（RenderFrame）负责收尾 EndBatch。
+        // 渲染目标切换（SetSurface）与帧末（CMain.RenderEnvironment）负责收尾 EndBatch。
         //
         // 安全性依据：所有离屏绘制（MirLabel 文本、MirTextBox、控件/层烘焙）都经 DXManager.SetSurface
         // 切目标，而 SetSurface 会先 EndBatch，故不会出现"同目标内 DXManager 批次与其它 SpriteBatch
         // 交错提交"的乱序。
+        //
+        // 为什么这里用「End + Begin」而不用 SpriteNestedBatch 的嵌套（Begin 叠一层 / End 退一层）：
+        // 本路径的材质切换是「切过去就不再回头」（下一笔是什么混合由 Drawing 当时的状态决定），
+        // 而嵌套的收益恰恰在于「切走后要回到外层材质」——这里没有"回外层"的动作，嵌套不会少一次
+        // DrawCall（Begin 叠层内部同样是 flush 当前层），反而要在帧末逐层 End 才能关闭整批。
         private static bool _batchBegun;
-        private static KFramework.MonoGame.BlendState _batchBlend;
+        private static KFramework.MonoGame.Material _batchMaterial;
         private static KFramework.MonoGame.Matrix4x4? _batchTransform;
 
         // 复用的材质（引擎主力 API：SpriteBatch.Begin(Material, ...)）。按 BlendState 缓存，
@@ -194,7 +200,8 @@ namespace Client.MirGraphics
         private static readonly Dictionary<KFramework.MonoGame.BlendState, KFramework.MonoGame.Material> _materials
             = new Dictionary<KFramework.MonoGame.BlendState, KFramework.MonoGame.Material>();
 
-        private static KFramework.MonoGame.Material GetMaterial(KFramework.MonoGame.BlendState blend)
+        // 取某混合模式对应的复用材质（新式材质驱动 API 的入口：SpriteFlags.AlphaBlend 之类的 flags 用法一律改走这里）。
+        public static KFramework.MonoGame.Material GetMaterial(KFramework.MonoGame.BlendState blend)
         {
             if (!_materials.TryGetValue(blend, out var mat))
             {
@@ -210,14 +217,19 @@ namespace Client.MirGraphics
             return mat;
         }
 
-        // 确保批次以指定「混合模式 + 世界变换」处于开启状态；状态未变则复用当前批次，不重复 Begin。
-        private static void EnsureBatch(KFramework.MonoGame.BlendState blend, KFramework.MonoGame.Matrix4x4? transform)
+        // 供帧级 / 文本渲染等复用主批：以指定材质（可再给世界变换）开出主批；状态未变则复用当前批次。
+        // 由调用方负责与其后的 EndBatch 配对。
+        public static void BeginBatch(KFramework.MonoGame.Material material, KFramework.MonoGame.Matrix4x4? transform = null)
+            => EnsureBatch(material, transform);
+
+        // 确保批次以指定「材质 + 世界变换」处于开启状态；状态未变则复用当前批次，不重复 Begin。
+        private static void EnsureBatch(KFramework.MonoGame.Material material, KFramework.MonoGame.Matrix4x4? transform)
         {
-            if (_batchBegun && ReferenceEquals(_batchBlend, blend) && Nullable.Equals(_batchTransform, transform)) return;
+            if (_batchBegun && ReferenceEquals(_batchMaterial, material) && Nullable.Equals(_batchTransform, transform)) return;
             if (_batchBegun) Batch.End();
-            Batch.Begin(GetMaterial(blend), KFramework.MonoGame.SpriteSortMode.Deferred, transform);
+            Batch.Begin(material, KFramework.MonoGame.SpriteSortMode.Deferred, transform);
             _batchBegun = true;
-            _batchBlend = blend;
+            _batchMaterial = material;
             _batchTransform = transform;
         }
 
@@ -230,13 +242,16 @@ namespace Client.MirGraphics
             _batchBegun = false;
         }
 
+        // 本次绘制应使用的混合状态：显式传入优先，否则按全局 Blending 标志选「加法 / 非预乘」（对齐原版 SetBlend 语义）。
+        private static KFramework.MonoGame.BlendState ResolveBlend(KFramework.MonoGame.BlendState? blendState)
+            => blendState ?? (Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied);
+
         public static void Draw(Texture2D texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
         {
             if (texture == null) return;
             Rectangle src = sourceRect ?? new Rectangle(0, 0, texture.Width, texture.Height);
             SlimDX.Vector3 pos = position ?? SlimDX.Vector3.Zero;
-            KFramework.MonoGame.BlendState blend = blendState ?? (Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied);
-            EnsureBatch(blend, RenderTransform);
+            EnsureBatch(GetMaterial(ResolveBlend(blendState)), RenderTransform);
             Batch.Draw(texture, new KFramework.MonoGame.Vector2(pos.X, pos.Y), ToRect(src), ToColor(color));
             CMain.DPSCounter++;
         }
@@ -244,8 +259,7 @@ namespace Client.MirGraphics
         public static void Draw(Texture2D texture, Rectangle sourceRect, RectangleF destRect, SlimDX.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
         {
             if (texture == null) return;
-            KFramework.MonoGame.BlendState blend = blendState ?? (Blending ? KFramework.MonoGame.BlendState.Additive : KFramework.MonoGame.BlendState.NonPremultiplied);
-            EnsureBatch(blend, RenderTransform);
+            EnsureBatch(GetMaterial(ResolveBlend(blendState)), RenderTransform);
             Batch.Draw(texture,
                 new KFramework.MonoGame.Rectangle((int)destRect.X, (int)destRect.Y, (int)destRect.Width, (int)destRect.Height),
                 ToRect(sourceRect), ToColor(color));
@@ -316,7 +330,13 @@ namespace Client.MirGraphics
 
         public static void AttemptReset() { }
         public static void ResetDevice() { }
-        public static void AttemptRecovery() { }
+        // 对齐原版 DXManager.AttemptRecovery：收尾 Sprite.End（→ EndBatch）、EndScene（无对应物）、
+        // 把渲染目标重置回主画布——否则异常帧残留的离屏目标会让下一帧清屏清错对象。
+        public static void AttemptRecovery()
+        {
+            try { EndBatch(); } catch { }
+            try { SetSurface(null); } catch { }
+        }
 
         // 离屏渲染目标：走 KFramework.MonoGame.RenderTarget2D（SlimDX 壳的 Texture 构造里创建）。
         public static SlimDX.Direct3D9.Texture CreateRenderTarget(int w, int h)
@@ -335,23 +355,6 @@ namespace Client.MirGraphics
             SetSurface(saved);
         }
 
-        // 每帧渲染：清主画布 → 场景绘制（DXManager.Draw 复用同一批次）→ 结束批次。
-        // 对齐原版"整帧一次 Sprite.Begin/End"：帧末统一 EndBatch；try/finally 保证异常时也关闭，
-        // 否则下一帧首个 Begin 会因"SpriteBatch 仍处于 Begin 状态"抛异常 → 永久黑屏。
-        public static void RenderFrame(Action draw)
-        {
-            EndBatch(); // 兜底：上一帧若异常残留批次，先关闭
-            GDevice.Clear(KFramework.MonoGame.Color.Black);
-            try
-            {
-                draw?.Invoke();
-            }
-            finally
-            {
-                EndBatch();
-            }
-        }
-
         // 浏览器端全屏呈现：场景（含所有子控件）已在固定逻辑分辨率(Settings.ScreenWidth/Height)
         // 下烘焙进离屏纹理(ControlTexture)，这里把它拉伸铺满整个画布(Viewport)。
         // 这样 UI 只需按设计分辨率布局一次即可等比居中铺满窗口，且不会只显示在左上角、
@@ -362,7 +365,6 @@ namespace Client.MirGraphics
         {
             if (texture == null) return;
             RenderTransform = null;
-            var vp = GDevice.Viewport;
             Draw(texture,
                 new Rectangle(0, 0, texture.Width, texture.Height),
                 new RectangleF(0, 0, texture.Width, texture.Height),

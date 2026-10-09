@@ -371,20 +371,29 @@ namespace WebGame.Mir2.MonoGame.Client
 
         // 原 DisposeDebugLabel 已更名为 HideDebugDialog（见上方），此处不再保留。
 
-        // 原版 CMain.RenderEnvironment()（Crystal Client/Forms/CMain.cs:385）。
+        // 原版 CMain.RenderEnvironment()（Crystal Client/Forms/CMain.cs:385）：
+        //   Device.Clear → BeginScene → Sprite.Begin(SpriteFlags.AlphaBlend) → SetSurface(MainSurface)
+        //   → ActiveScene.Draw() → Sprite.End → EndScene → Present
+        // 本引擎为材质驱动：原版固定管线的 Sprite.Begin(SpriteFlags.AlphaBlend) 换成等价材质开批
+        // （SpriteFlags.AlphaBlend ≡ BlendState.NonPremultiplied），Sprite.End 换成 EndBatch。
         private static void RenderEnvironment()
         {
             try
             {
-                // 原版在这里先处理 DXManager.DeviceLost（D3D 设备丢失 → AttemptReset 后返回）。
-                // WebGL 没有「设备丢失」概念，本移植的 DXManager 也没有该成员，故略去。
+                // 原版在这里先判 DXManager.DeviceLost（D3D 设备丢失 → AttemptReset 后 return）。
+                // WebGL 无「设备丢失」概念，本移植的 DXManager 也无该成员，故略去。
 
-                // 对应原版的 Device.Clear + BeginScene + Sprite.Begin + ActiveScene.Draw + Sprite.End + EndScene + Present。
-                DXManager.RenderFrame(() =>
-                {
-                    if (MirScene.ActiveScene != null)
-                        MirScene.ActiveScene.Draw();
-                });
+                DXManager.Device.Clear(SlimDX.Direct3D9.ClearFlags.Target, MirEngine.Color.Black, 0, 0);
+                DXManager.Device.BeginScene();
+                DXManager.BeginBatch(DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied));
+                DXManager.SetSurface(null);                          // 原版 DXManager.SetSurface(DXManager.MainSurface)
+
+                if (MirScene.ActiveScene != null)
+                    MirScene.ActiveScene.Draw();                     // 原版 ActiveScene.Draw()
+
+                DXManager.EndBatch();                                // 原版 DXManager.Sprite.End()
+                DXManager.Device.EndScene();
+                DXManager.Device.Present();
             }
             catch (Exception ex)
             {

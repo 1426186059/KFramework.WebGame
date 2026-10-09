@@ -328,18 +328,17 @@ namespace Client.MirControls
                 DXManager.SetSurface(new SlimDX.Direct3D9.Surface(ControlTexture));
                 try
                 {
-                    var batch = DXManager.Batch;
-                    batch.Begin(KFramework.MonoGame.SpriteSortMode.Deferred,
-                                KFramework.MonoGame.BlendState.NonPremultiplied,
-                                KFramework.MonoGame.SamplerState.PointClamp);
+                    // 用主批（SpriteBatch）绘制：以新式材质 API 开批（NonPremultiplied + 纹理 PointClamp），
+                    // 文本 + 光标交给基础库 TextBox（DrawTextBox，实例自身持有光标状态）。
+                    DXManager.BeginBatch(DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied));
                     _caretBox.DrawTextBox(
-                        batch, DXManager.GDevice, font, drawText,
+                        DXManager.Batch, DXManager.GDevice, font, drawText,
                         new KFramework.MonoGame.Rectangle(0, 0, Size.Width, Size.Height),
                         KFramework.MonoGame.Color.FromArgb((uint)fore),
                         TextBox.SelectionStart, !TextBox.Multiline, TextBox.Focused,
                         KFramework.MonoGame.TextBox.DefaultPadLeft, drawComp,
                         TextBox.SelectionStart, TextBox.SelectionLength);
-                    batch.End();
+                    DXManager.EndBatch();
                 }
                 finally
                 {
