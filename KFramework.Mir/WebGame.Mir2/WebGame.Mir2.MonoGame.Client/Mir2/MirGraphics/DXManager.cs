@@ -245,7 +245,10 @@ namespace Client.MirGraphics
             Rectangle src = sourceRect ?? new Rectangle(0, 0, texture.Width, texture.Height);
             SlimDX.Vector3 pos = position ?? SlimDX.Vector3.Zero;
             BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
-            Batch.Draw(texture, new KFramework.MonoGame.Vector2(pos.X, pos.Y), ToRect(src), ToColor(color));
+            // 位置形态已并入「目标矩形形态」：落点 + 源尺寸就是目标矩形。
+            Batch.Draw(texture,
+                new KFramework.MonoGame.Rectangle((int)pos.X, (int)pos.Y, src.Width, src.Height),
+                ToRect(src), ToColor(color));
             CMain.DPSCounter++;
         }
 
