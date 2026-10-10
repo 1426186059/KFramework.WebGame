@@ -129,9 +129,15 @@ namespace KFramework.Test.Canvas2D.Tests
             Color expected = new(200, 70, 70);
             batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(px, py, 40, 40), null, expected);
 
-            Color got = Device.ReadPixel(px + 20, py + 20);
-            bool ok = Math.Abs(got.R - expected.R) <= 2 && Math.Abs(got.G - expected.G) <= 2 && Math.Abs(got.B - expected.B) <= 2;
-            _probeText = $"⑥ 读像素自检：{(ok ? "✓" : "✗")}  期望 ({expected.R},{expected.G},{expected.B})  实读 ({got.R},{got.G},{got.B},{got.A})";
+            // 读回降频：Canvas2D 的 ReadPixel 是 getImageData —— 同步回读，会把画布从 GPU 快路径
+            // 上拽下来，每帧调用足以把帧率砍半。被读的是固定色块、结果恒定，故每 30 帧采一次，
+            // 其余帧沿用上次结果；自检语义不变（首帧读到清屏色仍为 ✗，其后为 ✓）。
+            if (_frame % 30 == 0)
+            {
+                Color got = Device.ReadPixel(px + 20, py + 20);
+                bool ok = Math.Abs(got.R - expected.R) <= 2 && Math.Abs(got.G - expected.G) <= 2 && Math.Abs(got.B - expected.B) <= 2;
+                _probeText = $"⑥ 读像素自检：{(ok ? "✓" : "✗")}  期望 ({expected.R},{expected.G},{expected.B})  实读 ({got.R},{got.G},{got.B},{got.A})  （每 30 帧采一次）";
+            }
 
             batch.DrawString(Font, _probeText, new Vector2(px + 56f, py + 10f), new Color(255, 206, 110));
         }

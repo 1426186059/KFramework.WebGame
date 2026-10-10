@@ -16,8 +16,18 @@ import { ByteCache } from './custom_data_byte_cache.js';
 const VERTEX_STRIDE = 28;
 /** 顶点数据用的字节缓冲（与 WebGL 后端的顶点缓冲同量级：4096 四边形 × 4 × 28B ≈ 448KB）。 */
 const _vertexCache = new ByteCache(64 * 1024, 1024 * 1024);
-/** 着色副本缓存上限（Canvas2D 没有逐绘制着色，只能按颜色预乘一份；满了整体丢弃）。 */
-const TINT_CACHE_LIMIT = 8;
+/**
+ * 着色副本的条数上限（Canvas2D 没有逐绘制着色，只能按颜色预乘一份离屏副本）。
+ * <para>
+ * 淘汰是【逐条淘汰最旧的】，而不是"满了整体清空" —— 整体清空会让"颜色每帧都在变"的用法
+ * （测试页的流动球色、传奇的染色 / 特效）每帧把全部副本重建一遍，白扔掉一堆 canvas 创建与绘制。
+ * </para>
+ */
+const TINT_CACHE_LIMIT = 32;
+/** 着色副本的总像素预算（≈16MB @ RGBA8）：防止大图集（1024²）把副本缓存吃爆显存。 */
+const TINT_PIXEL_BUDGET = 4 * 1024 * 1024;
+/** 被淘汰副本的 canvas 复用池上限：新建副本优先从池里取，省掉 createElement + getContext（这两个最贵）。 */
+const TINT_POOL_LIMIT = 16;
 /** 主画布（屏幕）。 */
 let screen = null;
 /** 当前绘制目标（未绑定时 = 主画布）。 */
@@ -27,8 +37,15 @@ const targets = new Map();
 /** 纹理表：C# 的 Texture2D.Handle（int）→ 承载像素的离屏 canvas + 尺寸。 */
 const textures = new Map();
 const texSizes = new Map();
-/** 着色副本：(纹理 id|RGB) → 已着色的离屏 canvas。 */
+/**
+ * 着色副本：(纹理 id|RGB) → 已着色的离屏副本。
+ * Map 的迭代顺序即插入顺序，故它本身就是一条可用的 FIFO 淘汰链。
+ */
 const tintedCache = new Map();
+/** 被淘汰副本的 canvas 复用池（避免每帧 createElement + getContext）。 */
+const tintPool = [];
+/** 当前副本占用的总像素数（配合 TINT_PIXEL_BUDGET）。 */
+let tintPixels = 0;
 /** 当前绑定的纹理 id。 */
 let currentTexture = 0;
 /** 当前"局部像素 → 画布像素"仿射（由 C# 侧从投影矩阵还原，见 Canvas2DShaderProgram.Apply）。 */
@@ -177,7 +194,7 @@ export function createTexture(id, w, h) {
         c.imageSmoothingEnabled = false;
     textures.set(id, canvas);
     texSizes.set(id, { w: canvas.width, h: canvas.height });
-    tintedCache.clear();
+    // 纹理 id 单调递增、不会被旧副本命中，故无需动缓存；旧 id 的副本由 deleteTexture 精确回收。
 }
 export function deleteTexture(id) {
     // 渲染目标同时登记在"目标表"与"纹理表"里（RenderTarget2D.Dispose → DeleteTexture 会走到这里），
@@ -187,7 +204,7 @@ export function deleteTexture(id) {
     targets.delete(id);
     textures.delete(id);
     texSizes.delete(id);
-    tintedCache.clear();
+    clearTintsFor(id);
 }
 // ============ 渲染目标（离屏 canvas）============
 /** 主画布（屏幕）的目标句柄。 */
@@ -211,7 +228,7 @@ export function createRenderTarget(id, w, h) {
     textures.set(id, canvas);
     texSizes.set(id, { w: canvas.width, h: canvas.height });
     targets.set(id, makeSurface(id, canvas, context));
-    tintedCache.clear();
+    // 同上：新 id 不会命中旧副本，不必整体清空。
 }
 /** 绑定渲染目标：把后续绘制切到该目标的 canvas；id &lt; 0 或查不到 → 回主画布。 */
 export function bindRenderTarget(id) {
@@ -234,7 +251,7 @@ export function deleteRenderTarget(id) {
     targets.delete(id);
     textures.delete(id);
     texSizes.delete(id);
-    tintedCache.clear();
+    clearTintsFor(id);
 }
 /** 整张上传（level 只支持 0；压缩格式由 C# 侧拦截）。 */
 export function uploadTexture(id, level, bytes) {
@@ -254,7 +271,7 @@ export function uploadTexture(id, level, bytes) {
     const pixels = new Uint8ClampedArray(need);
     pixels.set(data.subarray(0, need));
     canvas.getContext('2d').putImageData(new ImageData(pixels, w, h), 0, 0);
-    tintedCache.clear();
+    clearTintsFor(id);
 }
 /** 局部上传（动态字形图集走这条）。 */
 export function uploadSubTexture(id, level, x, y, w, h, bytes) {
@@ -272,11 +289,8 @@ export function uploadSubTexture(id, level, x, y, w, h, bytes) {
     const pixels = new Uint8ClampedArray(need);
     pixels.set(data.subarray(0, need));
     canvas.getContext('2d').putImageData(new ImageData(pixels, w, h), x, y);
-    // 该纹理的着色副本已过期
-    for (const key of Array.from(tintedCache.keys())) {
-        if (key.startsWith(`${id}|`))
-            tintedCache.delete(key);
-    }
+    // 该纹理的着色副本已过期 —— 只失效它自己的（原实现会 Array.from 全部键再逐个比对前缀）。
+    clearTintsFor(id);
 }
 // ============ 绘制 ============
 /**
@@ -306,6 +320,10 @@ export function drawBatch(vertices, start, end) {
     const c = gpu();
     c.globalCompositeOperation = compositeOf();
     c.imageSmoothingEnabled = smoothing;
+    // 一个四边形内 4 个顶点同色，一段里却可能夹着多次 Draw（顶点色不同），
+    // 故按"纹理或颜色变了才重取"记住上一次的着色副本，省掉每个四边形的键拼接与 Map 查找。
+    let lastTintTexId = -1, lastTintR = -1, lastTintG = -1, lastTintB = -1;
+    let lastTintSource = tex;
     for (let i = start; i < end; i += 4) {
         const o0 = i * VERTEX_STRIDE;
         const o1 = o0 + VERTEX_STRIDE;
@@ -329,7 +347,14 @@ export function drawBatch(vertices, start, end) {
         const al = view.getUint8(o0 + 19);
         if (al === 0)
             continue; // 全透明：直接跳过
-        const source = tintedSource(tex, size, currentTexture, r, g, b);
+        if (currentTexture !== lastTintTexId || r !== lastTintR || g !== lastTintG || b !== lastTintB) {
+            lastTintTexId = currentTexture;
+            lastTintR = r;
+            lastTintG = g;
+            lastTintB = b;
+            lastTintSource = tintedSource(tex, size, currentTexture, r, g, b);
+        }
+        const source = lastTintSource;
         // 正片叠底（kind=3）：D3D 的 dst*src.rgb 不看源 alpha，故这里忽略顶点 alpha ——
         // 否则 globalAlpha<1 会把 'multiply' 变成"往原图插值"，压暗效果被削弱。
         c.globalAlpha = blend === 3 ? 1 : al / 255;
@@ -377,10 +402,70 @@ export function drawBatch(vertices, start, end) {
     c.setTransform(1, 0, 0, 1, 0, 0);
     c.globalAlpha = 1;
 }
+/** 失效某个纹理的全部着色副本（纹理内容变了，副本必须重做）；副本 canvas 回收进复用池。 */
+function clearTintsFor(texId) {
+    const prefix = `${texId}|`;
+    for (const [key, s] of tintedCache) {
+        if (!key.startsWith(prefix))
+            continue;
+        tintedCache.delete(key); // Map 迭代中删除当前项是安全的
+        releaseTintSurface(s);
+    }
+}
+/** 把一块副本 canvas 放回复用池（池满则丢弃，交给 GC）。 */
+function releaseTintSurface(s) {
+    tintPixels -= s.pixels;
+    s.pixels = 0;
+    if (tintPool.length < TINT_POOL_LIMIT)
+        tintPool.push(s);
+}
+/** 淘汰最旧的一条副本（FIFO）。 */
+function evictOldestTint() {
+    const oldest = tintedCache.keys().next();
+    if (oldest.done)
+        return;
+    const s = tintedCache.get(oldest.value);
+    tintedCache.delete(oldest.value);
+    releaseTintSurface(s);
+}
+/**
+ * 为"即将插入一块 incomingPixels 像素的副本"腾位置：条数与像素预算双双满足才停手。
+ * 原来是"满了整体清空"——颜色连续变化时会退化成每帧全量重建。
+ */
+function evictTintsFor(incomingPixels) {
+    while (tintedCache.size >= TINT_CACHE_LIMIT)
+        evictOldestTint();
+    while (tintedCache.size > 0 && tintPixels + incomingPixels > TINT_PIXEL_BUDGET)
+        evictOldestTint();
+}
+/** 取一块可用的副本 canvas：优先复用池里的，池空才 createElement。 */
+function acquireTintSurface(w, h) {
+    let s = tintPool.pop();
+    if (s) {
+        // 尺寸不同就重设（给 width / height 赋值会清空画布）。
+        if (s.canvas.width !== w)
+            s.canvas.width = w;
+        if (s.canvas.height !== h)
+            s.canvas.height = h;
+    }
+    else {
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        s = { canvas, ctx: canvas.getContext('2d'), pixels: 0 };
+    }
+    s.ctx.imageSmoothingEnabled = false;
+    s.pixels = w * h;
+    tintPixels += s.pixels;
+    return s;
+}
 /**
  * 取"带着色"的纹理：Canvas2D 没有逐绘制 tint，只能按颜色预乘一份离屏副本。
  * 白色（最常见：UI 文字与白色精灵）直接返回原纹理，不产生任何副本。
  * 颜色的 alpha 不参与缓存键，改由 drawBatch 的 globalAlpha 承担（避免 alpha 被乘两次）。
+ *
+ * 注意最坏情况："颜色每帧都在变"（流动色相 / 染色特效）时缓存天然不命中，
+ * 此时唯一能把开销压住的是复用池 —— 千万不要退回"每帧 createElement"。
  */
 function tintedSource(tex, size, texId, r, g, b) {
     if (r === 255 && g === 255 && b === 255)
@@ -388,14 +473,14 @@ function tintedSource(tex, size, texId, r, g, b) {
     const key = `${texId}|${r},${g},${b}`;
     const cached = tintedCache.get(key);
     if (cached)
-        return cached;
-    if (tintedCache.size >= TINT_CACHE_LIMIT)
-        tintedCache.clear();
-    const copy = document.createElement('canvas');
-    copy.width = size.w;
-    copy.height = size.h;
-    const cc = copy.getContext('2d');
-    cc.imageSmoothingEnabled = false;
+        return cached.canvas;
+    evictTintsFor(size.w * size.h);
+    const s = acquireTintSurface(size.w, size.h);
+    const cc = s.ctx;
+    // 复用的 canvas 会残留上次的内容：drawImage 的 source-over 只覆盖源不透明处，
+    // 不清掉的话残留会从透明区域"透出来"。
+    cc.globalCompositeOperation = 'source-over';
+    cc.clearRect(0, 0, size.w, size.h);
     cc.drawImage(tex, 0, 0);
     // 正片叠底上色（alpha 保持 1，避免把 alpha 也乘一遍）
     cc.globalCompositeOperation = 'multiply';
@@ -404,8 +489,9 @@ function tintedSource(tex, size, texId, r, g, b) {
     // 还原原始 alpha：只在原纹理不透明处保留上色结果
     cc.globalCompositeOperation = 'destination-in';
     cc.drawImage(tex, 0, 0);
-    tintedCache.set(key, copy);
-    return copy;
+    cc.globalCompositeOperation = 'source-over';
+    tintedCache.set(key, s);
+    return s.canvas;
 }
 // ============ 读像素 ============
 /** 读一个像素（x/y 原点在左上，与 Canvas2D 一致，故无需 Y 换算）。 */
