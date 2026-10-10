@@ -215,6 +215,9 @@ export function uploadSubTexture(id, level, x, y, w, h, bytes) {
 /**
  * 回放一段顶点批次：每 4 个顶点 = 1 个四边形（TL,TR,BR,BL），逐个 drawImage。
  * 顶点坐标已经是"局部像素"，由 setProjection 下发的仿射映射到画布像素。
+ *
+ * 注意：每个四边形都按自己的 uv 子矩形取样 —— drawImage(src, sx, sy, sw, sh, 0, 0, 1, 1) 配合 transform，
+ * 而不是把整张纹理映射过去。后者会让浏览器按整幅图集做降采样，字形被邻格"出血"糊掉（图集越大越明显）。
  */
 export function drawBatch(vertices, start, end) {
     const count = end - start;
@@ -272,18 +275,35 @@ export function drawBatch(vertices, start, end) {
         const tb = (dvy * (y1 - y0) - duy * (y2 - y0)) * k;
         const tc = (dux * (x2 - x0) - dvx * (x1 - x0)) * k;
         const td = (dux * (y2 - y0) - dvx * (y1 - y0)) * k;
-        const te = x0 - ta * u0 - tc * v0;
-        const tf = y0 - tb * u0 - td * v0;
+        // 这个四边形用到的 uv 子矩形（包围盒）。UV 永远轴对齐（旋转只作用在位置上，不作用在 uv 上），
+        // 所以包围盒 == uv 平行四边形，含翻转时同样成立；BR 由平行四边形关系补出来。
+        // 越界（平铺 WrapMode）夹到 [0,1]：Canvas2D 没有 REPEAT，这里退化成"只画一格"。
+        const u3 = u1 + u2 - u0, v3 = v1 + v2 - v0;
+        const uMin = Math.max(0, Math.min(u0, u1, u2, u3));
+        const uMax = Math.min(1, Math.max(u0, u1, u2, u3));
+        const vMin = Math.max(0, Math.min(v0, v1, v2, v3));
+        const vMax = Math.min(1, Math.max(v0, v1, v2, v3));
+        if (uMax <= uMin || vMax <= vMin)
+            continue;
+        // 只把「这个 uv 子矩形」交给 drawImage —— 绝不能把整张纹理映射过去：
+        // 图集有 1024²，而一个字形只有 ~30px，源图比目标大几十倍时浏览器会按整幅源图做降采样，
+        // 邻格字形与留白会被平均进来（图集出血），字就发虚发灰；只给子矩形则采样范围被严格限制在自己的格子里。
+        // 先把「子矩形局部单位方格」映射到 uv 子区间，再套上面的 uv → 局部像素 仿射：
+        //   S: unit → uv 子区间（线性部分乘以跨度，平移改从子矩形左上角起算），翻转由 T 自身承担。
+        const uw = uMax - uMin, vh = vMax - vMin;
+        const sa = ta * uw, sb = tb * uw;
+        const sc = tc * vh, sd = td * vh;
+        const se = ta * uMin + tc * vMin + x0 - ta * u0 - tc * v0;
+        const sf = tb * uMin + td * vMin + y0 - tb * u0 - td * v0;
         // 与投影仿射复合：final = m ∘ quad
-        const fa = m.a * ta + m.c * tb;
-        const fb = m.b * ta + m.d * tb;
-        const fc = m.a * tc + m.c * td;
-        const fd = m.b * tc + m.d * td;
-        const fe = m.a * te + m.c * tf + m.e;
-        const ff = m.b * te + m.d * tf + m.f;
+        const fa = m.a * sa + m.c * sb;
+        const fb = m.b * sa + m.d * sb;
+        const fc = m.a * sc + m.c * sd;
+        const fd = m.b * sc + m.d * sd;
+        const fe = m.a * se + m.c * sf + m.e;
+        const ff = m.b * se + m.d * sf + m.f;
         c.setTransform(fa, fb, fc, fd, fe, ff);
-        // 把整张纹理的 uv 单位方格画到单位方格上，由 setTransform 把它映射到四边形
-        c.drawImage(source, 0, 0, size.w, size.h, 0, 0, 1, 1);
+        c.drawImage(source, uMin * size.w, vMin * size.h, uw * size.w, vh * size.h, 0, 0, 1, 1);
     }
     c.setTransform(1, 0, 0, 1, 0, 0);
     c.globalAlpha = 1;

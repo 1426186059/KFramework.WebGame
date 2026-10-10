@@ -47,92 +47,93 @@ namespace KFramework.Test.Canvas2D.Tests
 
             SpriteBatch batch = Batch;
 
+            // 版面：左右两列各自从上往下排，互不重叠（每块内容高度都算过）：
+            //   左列 ① 96..314、③ 340..558、⑥ 590..640
+            //   右列 ② 96..314、④ 340..456、⑤ 480..596
+            const float leftX = 28f;
+            const float rightX = 470f;
+
             // ① 点采样（像素风）
             batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp);
             DrawHeader(batch);
-            DrawSamplerRow(batch, tex, 96f, "① 点采样 Point（放大 4 倍：硬边像素块）");
+            DrawSampler(batch, tex, leftX, 96f, 3f, "① 点采样 Point（放大 3 倍：硬边像素块）");
             batch.End();
 
             // ② 线性采样（同样的放大倍数，边缘平滑）
             batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.Linear);
-            DrawSamplerRow(batch, tex, 244f, "② 线性采样 Linear（同样放大 4 倍：平滑过渡）");
+            DrawSampler(batch, tex, rightX, 96f, 3f, "② 线性采样 Linear（同样 3 倍：平滑过渡）");
             batch.End();
 
             // ③ 局部上传（每帧只改右下角一小块）
             batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp);
-            DrawPatchDemo(batch, tex, 392f);
+            DrawPatchDemo(batch, tex, leftX, 340f);
             batch.End();
 
             // ④ 混合模式：加色 / 正片叠底（同一对叠压精灵，只换混合状态）
             batch.Begin(SpriteSortMode.Deferred, Additive, SamplerState.PointClamp);
-            DrawBlendDemo(batch, tex, 528f, "④ 加色 Additive（'lighter'）");
+            DrawBlendDemo(batch, tex, rightX, 340f, "④ 加色 Additive（lighter）");
             batch.End();
 
             batch.Begin(SpriteSortMode.Deferred, Multiply, SamplerState.PointClamp);
-            DrawBlendDemo(batch, tex, 528f + 150f, "⑤ 正片叠底 Multiply（'multiply'）");
+            DrawBlendDemo(batch, tex, rightX, 480f, "⑤ 正片叠底 Multiply（multiply）");
             batch.End();
 
             // ⑥ 读像素自检
             batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp);
-            DrawReadback(batch, tex);
+            DrawReadback(batch);
             DrawFooter(batch);
             batch.End();
         }
 
-        private void DrawSamplerRow(SpriteBatch batch, Texture2D tex, float y, string caption)
+        /// <summary>同一张纹理按给定倍率放大，对照采样方式（Point 硬边 / Linear 平滑）。</summary>
+        private void DrawSampler(SpriteBatch batch, Texture2D tex, float x, float y, float scale, string caption)
         {
-            DrawLine(batch, caption, 28f, y, new Color(180, 220, 255));
-
-            float x = 28f;
-            for (int i = 0; i < 5; i++)
-            {
-                float scale = 1f + i;   // 原尺寸 → 5 倍
-                batch.Draw(tex, new Vector2(x, y + 26f), rotation: 0f, scale: new Vector2(scale, scale), color: Color.White);
-                x += 64f * scale + 14f;
-            }
+            DrawLine(batch, caption, x, y, new Color(180, 220, 255));
+            batch.Draw(tex, new Vector2(x, y + 26f), scale: new Vector2(scale, scale));
         }
 
-        private void DrawPatchDemo(SpriteBatch batch, Texture2D tex, float y)
+        private void DrawPatchDemo(SpriteBatch batch, Texture2D tex, float x, float y)
         {
-            DrawLine(batch, "③ 局部上传：每帧用 SetData(..., x, y, 24, 24) 只更新右下角一小块（Canvas2D → putImageData）",
-                     28f, y, new Color(180, 220, 255));
-            batch.Draw(tex, new Vector2(28f, y + 26f), rotation: 0f, scale: new Vector2(3f, 3f), color: Color.White);
-            DrawLine(batch, "整张仍是 1 次上传；局部更新不会重传整张纹理", 236f, y + 34f, new Color(150, 165, 195));
+            DrawLine(batch, "③ 局部上传：每帧 SetData(..., x, y, 24, 24) 只更新右下角那一小块",
+                     x, y, new Color(180, 220, 255));
+            batch.Draw(tex, new Vector2(x, y + 26f), scale: new Vector2(3f, 3f));
+            DrawLine(batch, "（Canvas2D → putImageData；不会重传整张纹理）", x, y + 26f + 200f, new Color(150, 165, 195));
         }
 
-        private void DrawBlendDemo(SpriteBatch batch, Texture2D tex, float y, string caption)
+        private void DrawBlendDemo(SpriteBatch batch, Texture2D tex, float x, float y, string caption)
         {
-            DrawLine(batch, caption, 28f, y, new Color(180, 220, 255));
+            DrawLine(batch, caption, x, y, new Color(180, 220, 255));
 
-            // 两个半透明精灵叠压：背景亮块 + 前景色块，混合模式的区别一眼可见
-            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(28, (int)y + 26, 90, 90), null, new Color(120, 170, 255, 220));
+            // 一整块亮底 + 三个前景精灵完全叠在它上面：加色更亮、正片叠底更暗，效果都限制在亮底范围内。
+            // 若让精灵落到深色清屏色上，正片叠底会把它乘成近黑，看起来像脏块 —— 那是背景的问题，不是后端的错。
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle((int)x, (int)y + 30, 220, 120), null, new Color(120, 170, 255, 220));
             for (int i = 0; i < 3; i++)
             {
-                batch.Draw(tex, new Vector2(70f + i * 22f, y + 48f), color: new Color(255, 200, 90, 200));
+                batch.Draw(tex, new Vector2(x + 40f + i * 44f, y + 56f), color: new Color(255, 200, 90, 200));
             }
         }
 
-        private void DrawReadback(SpriteBatch batch, Texture2D tex)
+        /// <summary>
+        /// 读像素自检：在固定位置画一块已知颜色，再把它读回来对照（Canvas2D 走 getImageData）。
+        /// <para>
+        /// 注意时序：SpriteBatch 是攒批的，此刻这一笔还没提交，所以读到的是<b>上一帧</b>同一位置的颜色。
+        /// 这里画的是固定颜色，等一帧即可；页面上显示的结果照样有效（首帧会读到清屏色，显示 ✗，第二帧起为 ✓）。
+        /// </para>
+        /// </summary>
+        private void DrawReadback(SpriteBatch batch)
         {
-            // 在固定位置画一块已知颜色，再把它读回来对照（Canvas2D 走 getImageData，画布内容即时可见）
-            const int px = 620;
-            int py = (int)(Device.Viewport.Height - 120f);
+            float y = Math.Min(590f, Device.Viewport.Height - 150f);
+            const int px = 28;
+            int py = (int)y;
+
             Color expected = new(200, 70, 70);
             batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(px, py, 40, 40), null, expected);
 
-            if ((_frame & 15) == 0)
-            {
-                Color got = Device.ReadPixel(px + 20, py + 20);
-                _probeText = $"{(_probeText.StartsWith("读像素：✓") ? "读像素：✓ " + expected : "读像素：")}  期望 ({expected.R},{expected.G},{expected.B})  实读 ({got.R},{got.G},{got.B},{got.A})";
-            }
-            else
-            {
-                Color got = Device.ReadPixel(px + 20, py + 20);
-                bool ok = Math.Abs(got.R - expected.R) <= 2 && Math.Abs(got.G - expected.G) <= 2 && Math.Abs(got.B - expected.B) <= 2;
-                _probeText = $"{(ok ? "读像素：✓" : "读像素：✗")}  期望 ({expected.R},{expected.G},{expected.B})  实读 ({got.R},{got.G},{got.B},{got.A})";
-            }
+            Color got = Device.ReadPixel(px + 20, py + 20);
+            bool ok = Math.Abs(got.R - expected.R) <= 2 && Math.Abs(got.G - expected.G) <= 2 && Math.Abs(got.B - expected.B) <= 2;
+            _probeText = $"⑥ 读像素自检：{(ok ? "✓" : "✗")}  期望 ({expected.R},{expected.G},{expected.B})  实读 ({got.R},{got.G},{got.B},{got.A})";
 
-            batch.DrawString(Font, _probeText, new Vector2(28f, py + 8f), new Color(255, 206, 110));
+            batch.DrawString(Font, _probeText, new Vector2(px + 56f, py + 10f), new Color(255, 206, 110));
         }
 
         /// <summary>把右下角那一小块填成随时间变化的颜色（局部上传的实际数据）。</summary>
