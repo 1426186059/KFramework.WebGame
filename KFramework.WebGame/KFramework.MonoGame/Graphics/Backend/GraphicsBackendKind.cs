@@ -17,7 +17,8 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// Canvas2D：不走 GPU 管线，直接用浏览器 Canvas2D 回放精灵批次 —— 用于对照 / 兜底。
-        /// 不支持自定义着色器、GPU 实例化、URP、渲染目标与压缩纹理（相关入口会抛 <see cref="System.NotSupportedException"/>）。
+        /// 支持渲染目标（离屏 canvas，画完可直接当纹理采样）；不支持自定义着色器、GPU 实例化、URP 与压缩纹理
+        /// （相关入口会抛 <see cref="System.NotSupportedException"/>），也没有 MRT 与渲染目标级 MSAA。
         /// </summary>
         Canvas2D = 2,
     }

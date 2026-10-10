@@ -10,11 +10,12 @@ namespace KFramework.MonoGame
     /// <list type="bullet">
     ///   <item><description><b>支持</b>：清屏 / 视口 / 矩形裁剪（clip）、混合（普通 / 加色 / 正片叠底 / 不透明）、
     ///   点采样与线性采样、纹理创建与上传（含动态字形图集的局部更新）、CPU 合批的精灵与文字
-    ///   （<see cref="SpriteBatch"/> / <see cref="SpriteNestedBatch"/>）、读像素。</description></item>
-    ///   <item><description><b>不支持</b>：自定义着色器、GPU 实例化、URP（UBO）、渲染目标、压缩纹理、深度 / 模板 ——
-    ///   这些一律抛 <see cref="NotSupportedException"/>；其中实例化与 URP 通过
-    ///   <see cref="SupportsGpuInstancing"/> / <see cref="SupportsUrpBatching"/> 返回 false 提前告知上层，
-    ///   由已有的"后端不支持"分支给出可读的报错。</description></item>
+    ///   （<see cref="SpriteBatch"/> / <see cref="SpriteNestedBatch"/>）、读像素、
+    ///   <b>渲染目标（离屏渲染）</b>—— 目标就是另一块离屏 canvas，画完可直接当纹理采样。</description></item>
+    ///   <item><description><b>不支持</b>：自定义着色器、GPU 实例化、URP（UBO）、压缩纹理、深度 / 模板、
+    ///   多渲染目标（MRT）、渲染目标级 MSAA —— 前四类一律抛 <see cref="NotSupportedException"/>
+    ///   （实例化与 URP 通过 <see cref="SupportsGpuInstancing"/> / <see cref="SupportsUrpBatching"/> 返回 false
+    ///   提前告知上层，由已有的"后端不支持"分支给出可读的报错）；后两类只记日志并忽略（抛错会让整条离屏链路不可用）。</description></item>
     ///   <item><description><b>语义差异</b>：逐绘制着色（顶点色 tint）在 Canvas2D 里没有对应能力，
     ///   由 TS 侧按"纹理 + RGB"缓存一份着色的离屏副本实现（见 render_canvas2d.ts 的 tintedSource），
     ///   故非白色着色会有额外开销。</description></item>
@@ -39,7 +40,10 @@ namespace KFramework.MonoGame
 
         public string Name => "Canvas2D";
 
-        /// <summary>Canvas2D 坐标原点在左上，与屏幕一致；且本后端不支持离屏渲染，故无需 Y 翻转。</summary>
+        /// <summary>
+        /// 恒为 false：Canvas2D 的坐标原点在左上、Y 向下，离屏目标（另一块 canvas）与主画布完全同构，
+        /// 所以离屏与屏幕共用同一套投影（<see cref="Matrix4x4.CreateOrthographicScreen"/>），不需要翻转。
+        /// </summary>
         public bool NeedsOffscreenYFlip => false;
 
         public int MaxTextureSize { get; private set; }
@@ -169,7 +173,7 @@ namespace KFramework.MonoGame
                 JSBind_Canvas2D.ClearScissor();
         }
 
-        /// <summary>Canvas2D 没有深度 / 模板缓冲，本后端也不支持渲染目标，故深度模板状态恒为无操作。</summary>
+        /// <summary>Canvas2D 没有深度 / 模板缓冲（离屏目标也只是另一块 2D canvas，不带深度附件），故深度模板状态恒为无操作。</summary>
         public void ApplyDepthStencilState(DepthStencilState state) { }
 
         /// <summary>采样方式：线性任一（放大 / 缩小）即开 imageSmoothing，否则最近邻。</summary>
@@ -194,16 +198,21 @@ namespace KFramework.MonoGame
         public void CreateTexture(Texture2D texture, int width, int height, bool mipmap, SurfaceFormat format,
                                   Texture2D.SurfaceType type)
         {
-            if (type == Texture2D.SurfaceType.RenderTarget)
-                throw new NotSupportedException(
-                    $"渲染后端「{Name}」不支持渲染目标：Canvas2D 没有 FBO / 附件概念，请改用 WebGL2 / WebGPU 后端。");
-
             if (format.IsCompressed())
                 throw new NotSupportedException(
                     $"渲染后端「{Name}」不支持压缩纹理（{format}）：Canvas2D 无法解码 DXT / ASTC / BC7 / KTX2。");
 
             int id = _nextTextureId++;
             texture.Handle = id;
+
+            // 渲染目标 = 一块离屏 canvas：它既能被画进去（bindRenderTarget），也能直接被 drawImage 采样。
+            // 与普通纹理的两点差别：上下文必须带 alpha（离屏分层靠透明层叠加合成）、不参与 putImageData 上传。
+            if (type == Texture2D.SurfaceType.RenderTarget)
+            {
+                JSBind_Canvas2D.CreateRenderTarget(id, width, height);
+                return;
+            }
+
             JSBind_Canvas2D.CreateTexture(id, width, height);
         }
 
@@ -225,25 +234,53 @@ namespace KFramework.MonoGame
 
         public void DeleteTexture(Texture2D texture) => JSBind_Canvas2D.DeleteTexture(texture.Handle);
 
-        // ============ 渲染目标平台层（不支持） ============
+        // ============ 渲染目标平台层 ============
+        //
+        // Canvas2D 没有 FBO / 附件那一套，但"离屏渲染"这件事天然成立：渲染目标就是<b>再要一块离屏 canvas</b>。
+        // 它既能被画进去（BindRenderTarget），也能当普通纹理被 drawImage 采样（上屏或当中间图）——
+        // 于是"把控件 / 图层烘焙进 RT，再合成上屏"这类架构在本后端可以直接跑（见测试工程 OffscreenScene）。
 
+        /// <summary>
+        /// 建渲染目标：那块离屏 canvas 在 <see cref="CreateTexture"/> 里就已经建好了（RT 的 <c>SurfaceType</c>
+        /// 就是 RenderTarget），这里没有要分配的底层对象。
+        /// <para>
+        /// 两点差异：① 没有深度 / 模板附件，<paramref name="depthFormat"/> 被忽略；
+        /// ② 没有 RT 级多重采样，<see cref="IRenderTarget.MultiSampleCount"/> 被忽略 —— 这里只记日志不抛错，
+        /// 抛了整条离屏链路就不可用，而画质影响仅限"边缘少一点抗锯齿"。
+        /// </para>
+        /// </summary>
         public void CreateRenderTarget(IRenderTarget renderTarget, int width, int height, DepthFormat depthFormat)
-            => throw new NotSupportedException(
-                $"渲染后端「{Name}」不支持渲染目标（离屏渲染）：请改用 WebGL2 / WebGPU 后端。");
+        {
+            if (renderTarget.MultiSampleCount > 0)
+                PrintTool.Log($"[KFramework.MonoGame] Canvas2D 没有渲染目标级 MSAA：请求 {renderTarget.MultiSampleCount}x 已忽略");
+        }
 
-        /// <summary>释放路径上可能被调到（即使从未创建成功），故按无操作处理，不抛。</summary>
-        public void DeleteRenderTarget(IRenderTarget renderTarget) { }
+        /// <summary>释放渲染目标：把它的离屏 canvas 从目标表与纹理表一并摘掉。</summary>
+        public void DeleteRenderTarget(IRenderTarget renderTarget)
+            => JSBind_Canvas2D.DeleteRenderTarget(renderTarget.GLTexture);
 
+        /// <summary>
+        /// 绑定渲染目标组合，并返回首个目标（契约要求：上层用它取 <c>Width</c> / <c>Height</c> / usage，
+        /// 再据此设视口与投影）。Canvas2D 没有 MRT，故只认 <paramref name="bindings"/>[0]。
+        /// </summary>
         public IRenderTarget ApplyRenderTargets(RenderTargetBinding[] bindings, int count)
-            => throw new NotSupportedException(
-                $"渲染后端「{Name}」不支持渲染目标（离屏渲染）：请改用 WebGL2 / WebGPU 后端。");
+        {
+            if (count > 1)
+                PrintTool.Log($"[KFramework.MonoGame] Canvas2D 不支持多渲染目标（MRT，收到 {count} 个）：只用第一个");
 
-        /// <summary>切回默认目标：Canvas2D 一直在默认画布上画，无操作。</summary>
-        public void ApplyDefaultRenderTarget() { }
+            var first = (IRenderTarget)bindings[0].RenderTarget!;
+            JSBind_Canvas2D.BindRenderTarget(first.GLTexture);
+            return first;
+        }
 
-        public void ResolveRenderTarget(IRenderTarget renderTarget)
-            => throw new NotSupportedException(
-                $"渲染后端「{Name}」不支持多重采样解析（没有渲染目标）：请改用 WebGL2 / WebGPU 后端。");
+        /// <summary>切回默认目标（主画布）。</summary>
+        public void ApplyDefaultRenderTarget() => JSBind_Canvas2D.BindRenderTarget(-1);
+
+        /// <summary>
+        /// 多重采样解析：Canvas2D 没有 MSAA，而渲染目标本身就是一块可采样的 canvas（内容即结果），
+        /// 故无需动作 —— 与 WebGPU"解析由渲染通道结束自动完成"同理。
+        /// </summary>
+        public void ResolveRenderTarget(IRenderTarget renderTarget) { }
 
         public void Dispose() { }
     }

@@ -43,14 +43,21 @@ namespace KFramework.Test.Canvas2D.Tests
                 Desc = "同一份内容分别用 NonPremultiplied / Additive / AdditiveFull / Multiply / AlphaBlend / Opaque 画一遍，对照 globalCompositeOperation",
                 Factory = static () => new BlendScene(),
             },
+            new TestEntry
+            {
+                Name = "离屏渲染（渲染目标 = 离屏 canvas）",
+                Desc = "SetRenderTarget → 画进 RT → 切回画布当纹理上屏；透明 RT 叠加 / PreserveContents 切走再切回 / 拉伸铺满 / 读回 RT 像素",
+                Factory = static () => new OffscreenScene(),
+            },
         ];
     }
 
     /// <summary>
     /// 总纲页面：列出全部测试项，鼠标点条目（或按数字键）进入对应测试页。
     /// <para>
-    /// 本工程只收录 Canvas2D 后端<b>支持</b>的测试：自定义着色器、GPU 实例化、URP、渲染目标与 MSAA
-    /// 在 Canvas2D 下会抛 <see cref="NotSupportedException"/>，故不在列表里。
+    /// 本工程只收录 Canvas2D 后端<b>支持</b>的测试：自定义着色器、GPU 实例化、URP 与画布级 MSAA
+    /// 在 Canvas2D 下会抛 <see cref="NotSupportedException"/>，故不在列表里；
+    /// 渲染目标（离屏 canvas）是支持的，见「离屏渲染」页。
     /// </para>
     /// </summary>
     public sealed class MainScene : KSceneBase
@@ -129,7 +136,7 @@ namespace KFramework.Test.Canvas2D.Tests
             batch.DrawString(Font, "KFramework — Canvas2D 渲染测试", new Vector2(28f, 20f), new Color(126, 200, 255));
             batch.DrawString(Font, $"当前后端：{Device.BackendName}    （点条目或按数字键进入；各页内 Esc 返回本页）",
                 new Vector2(28f, 48f), new Color(150, 165, 195));
-            batch.DrawString(Font, "本后端不做自定义着色器 / GPU 实例化 / URP / 渲染目标 / MSAA：相关入口会抛 NotSupportedException",
+            batch.DrawString(Font, "本后端不做自定义着色器 / GPU 实例化 / URP / MRT / RT 级 MSAA：相关入口会抛 NotSupportedException 或被忽略",
                 new Vector2(28f, 74f), new Color(255, 206, 110));
 
             for (int i = 0; i < TestRegistry.Entries.Count; i++)

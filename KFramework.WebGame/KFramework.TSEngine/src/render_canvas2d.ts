@@ -23,7 +23,31 @@ const _vertexCache = new ByteCache(64 * 1024, 1024 * 1024);
 /** 着色副本缓存上限（Canvas2D 没有逐绘制着色，只能按颜色预乘一份；满了整体丢弃）。 */
 const TINT_CACHE_LIMIT = 8;
 
-let ctx: CanvasRenderingContext2D | null = null;
+/**
+ * 一块"可画 + 可采样"的画布。主画布（屏幕）与每个渲染目标（离屏 canvas）是同一种东西 ——
+ * 这正是 Canvas2D 能支持离屏渲染的原因：绘制目标本身就是一张 canvas，画完可以直接当纹理 drawImage 采样，
+ * 不需要 FBO / 附件那一套。
+ */
+interface Surface {
+    /** 目标句柄：-1 = 主画布（屏幕），其余 = 创建渲染目标时给的 id。 */
+    id: number;
+    canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
+    /** 上次见到的 backing 尺寸（给 canvas.width / height 赋值会重置整个 2D 状态，要靠它识别）。 */
+    lastWidth: number;
+    lastHeight: number;
+    /** 该目标上是否已经建立裁剪（clip 只能靠 save / restore 撤销，且这是每上下文各自的状态）。 */
+    scissorActive: boolean;
+}
+
+/** 主画布（屏幕）。 */
+let screen: Surface | null = null;
+
+/** 当前绘制目标（未绑定时 = 主画布）。 */
+let current: Surface | null = null;
+
+/** 渲染目标表：句柄 → Surface。这些 canvas 同时登记在 textures 里，因此能直接被 drawImage 采样。 */
+const targets = new Map<number, Surface>();
 
 /** 纹理表：C# 的 Texture2D.Handle（int）→ 承载像素的离屏 canvas + 尺寸。 */
 const textures = new Map<number, HTMLCanvasElement>();
@@ -42,30 +66,38 @@ let m = { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 };
 let blend = 0;          // 0=source-over 1=lighter 2=source-over(不透明) 3=multiply
 let smoothing = false;
 
-/** 裁剪是否生效（Canvas2D 的 clip 只能靠 save/restore 撤销）。 */
-let scissorActive = false;
-
-/** 上一次见到的画布 backing 尺寸（用于识别"画布被改过尺寸"）。 */
-let lastWidth = 0;
-let lastHeight = 0;
+/** 建一块 Surface：设好初始变换并压入基准 save（setScissor 的 restore 要回到这一层）。 */
+function makeSurface(id: number, canvas: HTMLCanvasElement, context: CanvasRenderingContext2D): Surface {
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.save();
+    return {
+        id,
+        canvas,
+        ctx: context,
+        lastWidth: canvas.width,
+        lastHeight: canvas.height,
+        scissorActive: false,
+    };
+}
 
 /**
- * 取上下文，并处理一个容易踩的坑：给 canvas.width / height 赋值会<b>重置整个 2D 状态</b>
- * （变换、clip、设置全部回到默认，save 栈也被清空）。引擎每帧可能按 CSS 尺寸同步 backing 尺寸，
+ * 取当前绘制目标的上下文，并处理一个容易踩的坑：给 canvas.width / height 赋值会<b>重置整个 2D 状态</b>
+ * （变换、clip、设置全部回到默认，save 栈也被清空）。引擎每帧可能按 CSS 尺寸同步主画布 backing 尺寸，
  * 所以每次取上下文都检查一次，发现尺寸变了就重建基准 save，避免后续 restore 把栈弹空。
  */
 function gpu(): CanvasRenderingContext2D {
-    if (!ctx) throw new Error('[canvas2d] 上下文尚未初始化');
+    const s = current;
+    if (!s) throw new Error('[canvas2d] 上下文尚未初始化');
 
-    if (ctx.canvas.width !== lastWidth || ctx.canvas.height !== lastHeight) {
-        lastWidth = ctx.canvas.width;
-        lastHeight = ctx.canvas.height;
-        scissorActive = false;
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.save();
+    if (s.canvas.width !== s.lastWidth || s.canvas.height !== s.lastHeight) {
+        s.lastWidth = s.canvas.width;
+        s.lastHeight = s.canvas.height;
+        s.scissorActive = false;
+        s.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        s.ctx.save();
     }
 
-    return ctx;
+    return s.ctx;
 }
 
 function toBytes(view: MemoryView_Span | Uint8Array | null): Uint8Array | null {
@@ -81,18 +113,17 @@ export function init(antialias: boolean): boolean {
         return false;
     }
 
-    ctx = element.getContext('2d', { alpha: false });
-    if (!ctx) {
+    const context = element.getContext('2d', { alpha: false });
+    if (!context) {
         console.error('[canvas2d] 无法创建 Canvas2D 上下文（该画布已绑定到别的上下文类型？）');
         return false;
     }
 
     // Canvas2D 的几何抗锯齿由浏览器自行处理，antialias 参数在这里没有对应开关，仅记录。
-    ctx.imageSmoothingEnabled = false;
+    context.imageSmoothingEnabled = false;
     // 基准 save：setScissor / clearScissor 依靠 restore 回到这里
-    ctx.save();
-    lastWidth = element.width;
-    lastHeight = element.height;
+    screen = makeSurface(-1, element, context);
+    current = screen;
 
     console.log(`[canvas2d] 就绪 | Canvas2D | 画布 ${element.width}x${element.height} | 请求 MSAA=${antialias}（Canvas2D 不提供开关）`);
     return true;
@@ -114,9 +145,10 @@ export function setViewport(_x: number, _y: number, _w: number, _h: number): voi
 
 export function setScissor(x: number, y: number, w: number, h: number): void {
     const c = gpu();
-    if (scissorActive) c.restore();
+    const s = current!;
+    if (s.scissorActive) c.restore();
     c.save();
-    scissorActive = true;
+    s.scissorActive = true;
 
     // clip 的路径按当前变换求值，故先在单位变换下建立矩形裁剪
     c.setTransform(1, 0, 0, 1, 0, 0);
@@ -126,9 +158,10 @@ export function setScissor(x: number, y: number, w: number, h: number): void {
 }
 
 export function clearScissor(): void {
-    if (!scissorActive) return;
+    const s = current;
+    if (!s || !s.scissorActive) return;
     gpu().restore();
-    scissorActive = false;
+    s.scissorActive = false;
 }
 
 export function clear(r: number, g: number, b: number, a: number): void {
@@ -205,6 +238,63 @@ export function createTexture(id: number, w: number, h: number): void {
 }
 
 export function deleteTexture(id: number): void {
+    // 渲染目标同时登记在"目标表"与"纹理表"里（RenderTarget2D.Dispose → DeleteTexture 会走到这里），
+    // 故一并摘掉；普通纹理在 targets 里查不到，删了也没影响。
+    if (current && current.id === id) bindRenderTarget(MAIN_SURFACE_ID);
+    targets.delete(id);
+    textures.delete(id);
+    texSizes.delete(id);
+    tintedCache.clear();
+}
+
+// ============ 渲染目标（离屏 canvas）============
+
+/** 主画布（屏幕）的目标句柄。 */
+const MAIN_SURFACE_ID = -1;
+
+/**
+ * 建一个渲染目标：本质是"再要一张离屏 canvas"，同一 id 同时登记进目标表与纹理表 ——
+ * 既能被画进去（<see cref="bindRenderTarget"/>），也能当普通纹理被 drawImage 采样（上屏 / 当中间图）。
+ * 与 createTexture 的两点差别：① 上下文必须带 alpha（离屏分层靠透明层叠加合成）；
+ * ② 不参与 putImageData 上传（它的内容只能靠绘制产生）。
+ */
+export function createRenderTarget(id: number, w: number, h: number): void {
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, w | 0);
+    canvas.height = Math.max(1, h | 0);
+
+    const context = canvas.getContext('2d');
+    if (!context) {
+        console.error('[canvas2d] 无法为渲染目标创建 2D 上下文');
+        return;
+    }
+
+    context.imageSmoothingEnabled = false;
+    textures.set(id, canvas);
+    texSizes.set(id, { w: canvas.width, h: canvas.height });
+    targets.set(id, makeSurface(id, canvas, context));
+    tintedCache.clear();
+}
+
+/** 绑定渲染目标：把后续绘制切到该目标的 canvas；id &lt; 0 或查不到 → 回主画布。 */
+export function bindRenderTarget(id: number): void {
+    if (!screen) throw new Error('[canvas2d] 上下文尚未初始化');
+
+    const next = id < 0 ? screen : (targets.get(id) ?? screen);
+    if (next === current) return;
+
+    // 离开旧目标前先撤掉它上面的裁剪：clip 是每上下文各自的状态，留着的话下次切回该目标会带着旧裁剪。
+    if (current && current.scissorActive) clearScissor();
+
+    current = next;
+    // 新目标的变换/裁剪栈可能是很久以前留下的（drawBatch 每次都重设变换与合成算子，但裁剪栈不是），统一复位。
+    gpu().setTransform(1, 0, 0, 1, 0, 0);
+}
+
+/** 释放渲染目标：从目标表与纹理表一起摘掉（canvas 交给 GC；Canvas2D 没有 GL 对象要销毁）。 */
+export function deleteRenderTarget(id: number): void {
+    if (current && current.id === id) bindRenderTarget(MAIN_SURFACE_ID);
+    targets.delete(id);
     textures.delete(id);
     texSizes.delete(id);
     tintedCache.clear();

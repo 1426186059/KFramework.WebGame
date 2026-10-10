@@ -6,7 +6,7 @@ namespace KFramework.Test.Canvas2D.Tests
 
     /// <summary>
     /// 测试页基类（与 WebGL 测试工程同构）：统一画标题 / 底部切换提示，子类按需重写
-    /// <see cref="RenderOffscreen"/>（Canvas2D 后端不支持离屏渲染，保留钩子只为与 WebGL 工程排版一致）
+    /// <see cref="RenderOffscreen"/>（Canvas2D 的离屏目标是另一块 canvas，与画布同构，钩子仍为排版一致而保留）
     /// 与 <see cref="DrawBody"/>（屏幕正文）。
     /// </summary>
     public abstract class DemoScene : KSceneBase
@@ -48,7 +48,7 @@ namespace KFramework.Test.Canvas2D.Tests
                 new Vector2(28f, Device.Viewport.Height - 38f), new Color(110, 130, 170));
         }
 
-        /// <summary>离屏渲染阶段（Canvas2D 后端不支持，保留钩子与 WebGL 工程同构）。</summary>
+        /// <summary>离屏渲染阶段（在 Begin / End 之外；Canvas2D 的离屏同样是画进另一块 canvas，保留钩子与 WebGL 工程同构）。</summary>
         protected virtual void RenderOffscreen(SpriteBatch batch) { }
 
         /// <summary>屏幕正文（已在 Begin / End 之间）。</summary>

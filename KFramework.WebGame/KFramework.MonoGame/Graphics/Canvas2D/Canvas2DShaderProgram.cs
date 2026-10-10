@@ -5,8 +5,12 @@ namespace KFramework.MonoGame
     /// <b>view × 投影</b>矩阵还原成 Canvas2D 的 2×3 仿射（局部像素 → 画布像素），交给 TS 侧 setTransform。
     /// <para>
     /// 还原方式：投影固定是 <see cref="Matrix4x4.CreateOrthographicScreen"/>（像素 → NDC，Y 轴翻转）——
-    /// 因为 <see cref="Canvas2DBackend.NeedsOffscreenYFlip"/> 恒为 false 且本后端不支持渲染目标。
-    /// 于是 <c>view = projection × P⁻¹</c>，P⁻¹ 就是它的解析逆（NDC → 像素）。
+    /// 因为 <see cref="Canvas2DBackend.NeedsOffscreenYFlip"/> 恒为 false（离屏目标也是一块左上原点的 canvas，
+    /// 与主画布同构），屏幕与离屏走的是同一条投影。于是 <c>view = projection × P⁻¹</c>，P⁻¹ 是它的解析逆。
+    /// </para>
+    /// <para>
+    /// 视口尺寸由 <see cref="Canvas2DBackend.ViewportWidth"/> / <c>ViewportHeight</c> 提供：绑定渲染目标时
+    /// <see cref="GraphicsDevice"/> 会把视口设成该目标的尺寸，故仿射会自动换算到目标像素空间，无需额外分支。
     /// </para>
     /// <para>材质 uniform / 属性块在 Canvas2D 下没有意义，一律忽略（着色器路径由材质状态与顶点色承担）。</para>
     /// </summary>
