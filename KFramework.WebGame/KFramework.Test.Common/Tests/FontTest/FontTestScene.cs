@@ -64,8 +64,17 @@ namespace KFramework.Test.Common.Tests.FontTest
         private bool _bitmapBakeFailed;
         private string _bitmapStatus = "未烘焙（切到本模式的当帧烘焙）";
 
-        private const string BundleKeyword = "fonts";
-        private const string BundlePath = "bundles/fonts";
+        /// <summary>
+        /// 按名取包时的候选名（清单里的 <c>Packages[].Name</c>）：
+        /// <list type="bullet">
+        ///   <item><description>分包模式（BundleSplitMode=Split）：每个子目录一个包，故叫 <c>fonts</c>；</description></item>
+        ///   <item><description>整包模式（本工程 build.config.json 用的是 <c>Whole</c>）：整个 Bundles 目录一个包，叫 <c>bundles</c>。</description></item>
+        /// </list>
+        /// 实际使用时优先拿"已加载的包"（不依赖包名），只有兜底加载才用这份候选。
+        /// </summary>
+        private static readonly string[] BundleNameCandidates = ["fonts", "bundles"];
+
+        /// <summary>包内资源路径前缀（rawDir 起的相对路径，构建时统一小写）。</summary>
         private const string AssetDir = "bundles/fonts/";
 
         private readonly Dictionary<string, byte[]> _fontBytes = new(StringComparer.Ordinal);
@@ -102,8 +111,13 @@ namespace KFramework.Test.Common.Tests.FontTest
         {
             try
             {
-                AssetBundle? bundle = ContentManager.Default.GetBundle(BundleKeyword, strict: false)
-                                      ?? await ContentManager.Default.LoadBundleAsync(BundlePath).ConfigureAwait(false);
+                AssetBundle? bundle = await ResolveBundleAsync().ConfigureAwait(false);
+                if (bundle is null)
+                {
+                    _status = "资源包未加载（启动时 ContentManager.LoadAsync 应已拉好，见日志）";
+                    Log(_status);
+                    return;
+                }
 
                 LoadBytes(bundle, "simhei.ttf");
                 LoadBytes(bundle, "arial.ttf");
@@ -132,6 +146,32 @@ namespace KFramework.Test.Common.Tests.FontTest
                 // 包（以及可能失败的 ttf 注册）到此为止：位图字体模式可以开始烘焙了
                 _bundleSettled = true;
             }
+        }
+
+        /// <summary>
+        /// 取资源包：启动时 <c>ContentManager.LoadAsync()</c> 已把清单里的包全部拉好，这里直接按名取；
+        /// 万一没加载过，再按清单名拉一次。
+        /// </summary>
+        private async Task<AssetBundle?> ResolveBundleAsync()
+        {
+            foreach (string name in ContentManager.Default.LoadedBundles)
+            {
+                AssetBundle? loaded = ContentManager.Default.GetBundle(name, strict: true);
+                if (loaded != null) return loaded;
+            }
+
+            foreach (string candidate in BundleNameCandidates)
+            {
+                try
+                {
+                    return await ContentManager.Default.LoadBundleAsync(candidate, strict: false).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Log($"加载资源包 {candidate} 失败：{ex.Message}");
+                }
+            }
+            return null;
         }
 
         private void LoadBytes(AssetBundle bundle, string file)
