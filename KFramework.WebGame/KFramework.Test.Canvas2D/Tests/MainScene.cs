@@ -45,8 +45,8 @@ namespace KFramework.Test.Canvas2D.Tests
             },
             new TestEntry
             {
-                Name = "离屏渲染（渲染目标 = 离屏 canvas）",
-                Desc = "SetRenderTarget → 画进 RT → 切回画布当纹理上屏；透明 RT 叠加 / PreserveContents 切走再切回 / 拉伸铺满 / 读回 RT 像素",
+                Name = "渲染目标（RenderTarget2D）专项",
+                Desc = "6 个画面切换：离屏上屏 · 无MSAA 负向验证 · RT→RT 合成 · 纹理合成 A-F（含切走再切回）· 画布来回切 · PreserveContents 累积",
                 Factory = static () => new OffscreenScene(),
             },
         ];
