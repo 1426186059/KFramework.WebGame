@@ -263,7 +263,9 @@ export function drawBatch(vertices, start, end) {
         if (al === 0)
             continue; // 全透明：直接跳过
         const source = tintedSource(tex, size, currentTexture, r, g, b);
-        c.globalAlpha = al / 255;
+        // 正片叠底（kind=3）：D3D 的 dst*src.rgb 不看源 alpha，故这里忽略顶点 alpha ——
+        // 否则 globalAlpha<1 会把 'multiply' 变成"往原图插值"，压暗效果被削弱。
+        c.globalAlpha = blend === 3 ? 1 : al / 255;
         // uv → 四边形 的仿射：由 (u0,v0)->P0、(u1,v1)->P1、(u2,v2)->P2 三点决定
         const dux = u1 - u0, duy = v1 - v0;
         const dvx = u2 - u0, dvy = v2 - v0;

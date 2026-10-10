@@ -116,27 +116,45 @@ namespace KFramework.MonoGame
         /// <summary>
         /// 混合：Canvas2D 只有 globalCompositeOperation 一个开关，按"源 / 目标因子"的组合归类：
         /// <list type="bullet">
-        ///   <item><description>关闭混合（Opaque）→ 普通覆盖（source-over）；</description></item>
-        ///   <item><description>SrcAlpha + One（加色）→ <c>lighter</c>；</description></item>
-        ///   <item><description>DstColor + Zero（正片叠底）→ <c>multiply</c>；</description></item>
-        ///   <item><description>其余（含默认的 SrcAlpha + OneMinusSrcAlpha）→ <c>source-over</c>
-        ///   —— Canvas2D 的 source-over 本身就是"源 alpha / 1−源 alpha"的预乘合成，与本引擎的默认混合一致。</description></item>
+        ///   <item><description>加色（<c>SrcAlpha+One</c> / <c>One+One</c>）→ <c>lighter</c>
+        ///   —— 覆盖 <see cref="BlendState.Additive"/> 与 <see cref="BlendState.AdditiveFull"/>；</description></item>
+        ///   <item><description>正片叠底（<c>DstColor+Zero</c> / <c>Zero+SrcColor</c>）→ <c>multiply</c>
+        ///   —— 后者是引擎内置 <see cref="BlendState.Multiply"/> 的写法（原 D3D9 固定管线，传奇的光照图用它）；</description></item>
+        ///   <item><description>关闭混合（<see cref="BlendState.Opaque"/>，<c>enabled:false</c>）与其余（含默认的 <c>SrcAlpha+OneMinusSrcAlpha</c>）
+        ///   → <c>source-over</c> —— Canvas2D 的 source-over 本身就是"源 alpha / 1−源 alpha"的预乘合成，与本引擎的默认混合一致。</description></item>
         /// </list>
+        /// <para>
+        /// 已知差异：Canvas2D 没有"忽略源 alpha"的合成算子，所以 <see cref="BlendState.Opaque"/> 下顶点 alpha 仍会被叠加
+        /// （半透明精灵照旧半透明），要完全覆盖只能把顶点 alpha 给满。
+        /// </para>
         /// </summary>
         public void SetBlendState(BlendState state)
         {
             int kind;
             if (!state.Enabled)
                 kind = 0;
-            else if (state.SourceColorBlendFactor == BlendMode.DstColor && state.DestinationColorBlendFactor == BlendMode.Zero)
+            else if (IsMultiply(state))
                 kind = 3;
-            else if (state.SourceColorBlendFactor == BlendMode.SrcAlpha && state.DestinationColorBlendFactor == BlendMode.One)
+            else if (IsAdditive(state))
                 kind = 1;
             else
                 kind = 0;
 
             JSBind_Canvas2D.SetBlendState(kind);
         }
+
+        /// <summary>
+        /// 正片叠底：两种等价写法都认 —— <c>DstColor+Zero</c>（<c>dst*src</c>）与 <c>Zero+SrcColor</c>
+        /// （<see cref="BlendState.Multiply"/>，D3D9 固定管线写法）的结果都是"目标色乘以源色"。
+        /// </summary>
+        private static bool IsMultiply(BlendState s)
+            => (s.SourceColorBlendFactor == BlendMode.DstColor && s.DestinationColorBlendFactor == BlendMode.Zero)
+            || (s.SourceColorBlendFactor == BlendMode.Zero && s.DestinationColorBlendFactor == BlendMode.SrcColor);
+
+        /// <summary>加色：<c>SrcAlpha+One</c>（按源 alpha 加权）与 <c>One+One</c>（整亮度相加）都归到 <c>lighter</c>。</summary>
+        private static bool IsAdditive(BlendState s)
+            => s.DestinationColorBlendFactor == BlendMode.One
+            && (s.SourceColorBlendFactor == BlendMode.SrcAlpha || s.SourceColorBlendFactor == BlendMode.One);
 
         /// <summary>裁剪开关在这里生效（Canvas2D 无"裁剪测试"标志，只能真的上 / 撤 clip）；剔除与 Canvas2D 无关。</summary>
         public void ApplyRasterizerState(RasterizerState state)

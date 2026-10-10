@@ -215,10 +215,9 @@ export function uploadSubTexture(id, level, x, y, w, h, bytes) {
 /**
  * 回放一段顶点批次：每 4 个顶点 = 1 个四边形（TL,TR,BR,BL），逐个 drawImage。
  * 顶点坐标已经是"局部像素"，由 setProjection 下发的仿射映射到画布像素。
- * <para>
- * 每个四边形都按自己的 uv 子矩形取样（<c>drawImage(src, sx,sy,sw,sh, 0,0,1,1)</c> 配合 transform），
- * 而不是把整张纹理映射过去 —— 后者会让浏览器按整幅图集降采样，字形被邻格"出血"糊掉。
- * </para>
+ *
+ * 注意：每个四边形都按自己的 uv 子矩形取样 —— drawImage(src, sx, sy, sw, sh, 0, 0, 1, 1) 配合 transform，
+ * 而不是把整张纹理映射过去。后者会让浏览器按整幅图集做降采样，字形被邻格"出血"糊掉（图集越大越明显）。
  */
 export function drawBatch(vertices, start, end) {
     const count = end - start;
@@ -264,7 +263,9 @@ export function drawBatch(vertices, start, end) {
         if (al === 0)
             continue; // 全透明：直接跳过
         const source = tintedSource(tex, size, currentTexture, r, g, b);
-        c.globalAlpha = al / 255;
+        // 正片叠底（kind=3）：D3D 的 dst*src.rgb 不看源 alpha，故这里忽略顶点 alpha ——
+        // 否则 globalAlpha<1 会把 'multiply' 变成"往原图插值"，压暗效果被削弱。
+        c.globalAlpha = blend === 3 ? 1 : al / 255;
         // uv → 四边形 的仿射：由 (u0,v0)->P0、(u1,v1)->P1、(u2,v2)->P2 三点决定
         const dux = u1 - u0, duy = v1 - v0;
         const dvx = u2 - u0, dvy = v2 - v0;

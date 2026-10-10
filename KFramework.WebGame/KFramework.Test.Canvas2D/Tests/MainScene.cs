@@ -37,6 +37,12 @@ namespace KFramework.Test.Canvas2D.Tests
                 Desc = "每张纹理就是一张离屏 canvas：SetData → putImageData（含局部更新），采样开关 → imageSmoothingEnabled，读像素 → getImageData",
                 Factory = static () => new TextureScene(),
             },
+            new TestEntry
+            {
+                Name = "混合模式（引擎 6 个 BlendState 对照）",
+                Desc = "同一份内容分别用 NonPremultiplied / Additive / AdditiveFull / Multiply / AlphaBlend / Opaque 画一遍，对照 globalCompositeOperation",
+                Factory = static () => new BlendScene(),
+            },
         ];
     }
 
