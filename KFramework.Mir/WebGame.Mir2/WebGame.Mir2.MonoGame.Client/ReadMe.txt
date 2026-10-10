@@ -1,5 +1,23 @@
-WebGame.Mir2 (MonoGame.Client) — 基于 KFramework.MonoGame 重构的传奇客户端
 ====================================================================
+WebGame.Mir2 (MonoGame.Client) —— 基于 KFramework.MonoGame 重构的传奇客户端
+            （内含 UI 编写指南：原 UI_ReadMe.txt 已合并至第八节）
+====================================================================
+
+★ 原版在哪里（务必先看这里）
+--------------------------------------------------------------------
+原版传奇客户端源码在本地：
+
+    D:\OpenSource\Crystal        （客户端在 D:\OpenSource\Crystal\Client）
+
+它是一个 WinForms + SlimDX/Direct3D9 的桌面客户端，是【本项目一切行为的
+标准答案】。凡涉及“某功能本来该怎么表现 / 某结构该怎么组织 / 某资源怎么
+解析”的问题，一律【先到 D:\OpenSource\Crystal 里 grep / 读源码】，确认原版
+怎么做，再考虑 Web（渲染分层 / 输入桥 / 资源懒加载 / WASM 运行时）这一层
+需要怎样最小适配。
+
+心法：不要凭记忆重写功能——先对照原版，照着它的结构搬，只在 Web 特有约束
+处做最小改动，并写注释说明为何偏离。
+
 
 一、项目定位
 --------------------------------------------------------------------
@@ -12,7 +30,7 @@ WebGame.Mir2 (MonoGame.Client) — 基于 KFramework.MonoGame 重构的传奇客
 - 它证明了 KFramework.MonoGame（一个基于 MonoGame 的通用游戏基础设施框架）能够承接
   真实、体量庞大、逻辑复杂的商业级游戏客户端；
 - 同时，它也在实践中反向驱动了 KFramework.MonoGame 的能力演进
-  （内容异步加载、图集、键鼠输入/音频桥接、浏览器 WASM 运行时等）。
+  （内容异步加载、图集、键鼠输入 / 音频桥接、浏览器 WASM 运行时等）。
 
 换言之：本项目是 KFramework.MonoGame 的“商业化落地样例（showcase）”，
 而 KFramework.MonoGame 是本项目得以在浏览器中运行的底层底座。
@@ -20,12 +38,9 @@ WebGame.Mir2 (MonoGame.Client) — 基于 KFramework.MonoGame 重构的传奇客
 
 二、为什么重构底层
 --------------------------------------------------------------------
-原版客户端位于同仓库的 Web_Mir2.Client/，底层强依赖：
-
+原版客户端位于 D:\OpenSource\Crystal\Client，底层强依赖：
   - System.Windows.Forms / System.Drawing  （窗体、GDI+ 绘图）
-  - SlimDX                                （DirectX 图形）
-  - NAudio                                （音频）
-  - 自研的 Web_Mir2.Engine 浏览器化垫片
+  - SlimDX（Direct3D9）/ NAudio            （原生 / 半原生依赖）
 
 这些原生 / 半原生依赖在浏览器 WASM 场景下要么不可用、要么需要大量修补，
 工程上难以维护，也不利于把“游戏引擎能力”沉淀成可复用的框架。
@@ -48,7 +63,7 @@ WebGame.Mir2 (MonoGame.Client) — 基于 KFramework.MonoGame 重构的传奇客
 三、架构总览
 --------------------------------------------------------------------
     Mir2 业务代码 ──(Shims 垫片)──┐
-                                  ├─→ KFramework.MonoGame（图形/输入/音频/资源底层）
+                                  ├─→ KFramework.MonoGame（图形 / 输入 / 音频 / 资源底层）
     浏览器桥接层 TSEngine ────────┘        ▲
             │                              │ ProjectReference
             ▼                              │
@@ -57,7 +72,7 @@ WebGame.Mir2 (MonoGame.Client) — 基于 KFramework.MonoGame 重构的传奇客
 核心组件：
 
   - CMain.cs
-        游戏主机（纯 C#，无任何 [JSExport]）。承载原 WinForms CMain 的窗体/输入语义
+        游戏主机（纯 C#，无任何 [JSExport]）。承载原 WinForms CMain 的窗体 / 输入语义
         （单例 CMain.Form、输入事件桥接、帧循环 Loop()）。Init() 由 MirGame.LoadContentAsync
         在 C# 内直接调用；Loop() 由 MirGame.Draw（经框架 Game.TickFrame）调用。
         原 Program 入口的 JS 导出入口 Init/Frame/Step 已全部移除——本项目不得向 JS 暴露任何入口。
@@ -66,7 +81,7 @@ WebGame.Mir2 (MonoGame.Client) — 基于 KFramework.MonoGame 重构的传奇客
         游戏引导（MonoGame 化的 Game 子类）；LoadContentAsync 中调用 CMain.Init()。
 
   - Mir2/Host/CMain.cs
-        历史目录；引导/主机类已上移到项目根 CMain.cs（见上）。同样禁止 [JSExport]。
+        历史目录；引导 / 主机类已上移到项目根 CMain.cs（见上）。同样禁止 [JSExport]。
 
   - Shims/
         浏览器垫片，提供高仿的 System.Windows.Forms / System.Drawing / SlimDX /
@@ -114,19 +129,20 @@ WebGame.Mir2.MonoGame.Client/
   3. 以 .NET WASM（Microsoft.NET.Sdk.WebAssembly，net10.0）发布 / 调试。
 
 
-六、与原版（Web_Mir2.Client）的关系
+六、与参考源的关系（以原版传奇 Crystal 为准则）
 --------------------------------------------------------------------
-- 本工程从 Web_Mir2.Client 迁移而来，业务代码（Mir2/ + Shared/）保持一致；
-- 引擎层 Web_Mir2.Engine 以及 SlimDX / NAudio 等原生依赖【不再引用】，
+- 原版传奇客户端：D:\OpenSource\Crystal（标准答案，任何时候都先对照它）；
+- 本工程业务代码（Mir2/ + Shared/）与各参考源同源，保持一致；
+- 原生依赖（SlimDX / NAudio / System.Windows.Forms / System.Drawing）【不再引用】，
   全部由本工程 Shims/ 自提供；
 - 底层图形 / 输入 / 音频 / 资源【统一走 KFramework.MonoGame】。
 
-七、运行约束：彻底不用 Web_Mir2.Engine，且本项目禁止 [JSExport]
+
+七、运行约束：底层统一走 KFramework.MonoGame，且本项目禁止 [JSExport] 和 [JSImport]
 --------------------------------------------------------------------
-1) 引擎层：本项目【彻底抛弃 Web_Mir2.Engine】，浏览器运行时（渲染 / 输入 / 音频 /
-   资源 / 网络 / 帧循环）【完全由 KFramework.MonoGame 提供】。wwwroot/jsengine/ 是
-   KFramework.TSEngine（KFramework.MonoGame 的 JS 引擎层）的编译产物，并非 Web_Mir2.Engine。
-   原 Web_Mir2.Engine/tsengine 的启动器与本工程无关，不要在此引用或混用。
+1) 引擎层：本项目浏览器运行时（渲染 / 输入 / 音频 / 资源 / 网络 / 帧循环）
+   【完全由 KFramework.MonoGame 提供】。wwwroot/jsengine/ 是 KFramework.TSEngine
+   （KFramework.MonoGame 的 JS 引擎层）的编译产物。
 
 2) 禁止 [JSExport]：WebGame.Mir2.MonoGame.Client 内【不允许出现任何 [JSExport]】。
    所有 JS 互操作基础设施都由 KFramework.MonoGame 以 JSBind_* 形式提供
@@ -152,26 +168,209 @@ WebGame.Mir2.MonoGame.Client/
   把同一套传奇业务“重做底座”，并以此作为 KFramework.MonoGame 的商业化验证案例。
 
 
-八、可参考的同源 / 兄弟工程（定位与取舍参考）
---------------------------------------------------------------------
-本项目在重构与排障时，可对照以下三处源码：
+====================================================================
+八、UI 编写指南（合并自原 UI_ReadMe.txt）
+====================================================================
+适用代码：WebGame.Mir2.MonoGame.Client
+最后核对：2026-09-21（基于当前 2026New 分层渲染 + 恒等变换）
 
-  1. D:\OpenSource\Mir2_Unity_2027\Mir2_Unity_2027_1
-     Unity 重制版。涉及“分辨率 / 全屏缩放 / 相机正交尺寸”等处理方式时优先参考：
-       - Assets\Client\Settings.cs  （Resolution = 1024，按所选分辨率原生渲染，
-         而非把固定缓冲放大铺满窗口）
-       - Assets\Client\Resolution\DisplayResolutions.cs / eSupportedResolution.cs
-         （多分辨率支持枚举与探测）
-     其思路：游戏按“原生分辨率”渲染、UI 随分辨率自适应，从根上避免“低分辨率缓冲放大
-     导致的模糊”。本项目若要做到真正清晰的全屏，应借鉴此思路（见第九节）。
+--------------------------------------------------------------------------------
+8.0 一句话结论
+--------------------------------------------------------------------------------
+UI 是「场景(MirScene) → 两个层(WorldLayerControl / UILayerControl) → 控件树」
+的三层结构。所有界面控件挂在 UILayer 下，按画布原生分辨率 1:1 布局，窗口
+尺寸变化由「锚点重排」负责，不做任何 x/y 拉伸缩放。
 
-  2. D:\OpenSource\Crystal\Client
-     Crystal 客户端（同源美术/资源）。涉及贴图库、地图库、音效索引等资源结构与命名
-     （如音效索引 index → 文件名的 `index/10 - index%10` 规则）时参考。
+--------------------------------------------------------------------------------
+8.1 三层结构
+--------------------------------------------------------------------------------
+- MirScene（场景基类）：只有两个直接子 —— WorldLayerControl、UILayerControl。
+    （MirScene.cs:21、38 处 UILayer/WorldLayer 字段初始化并 Parent=this）
+- 世界层 WorldLayerControl：地图、角色、物品等【世界坐标】内容。
+    恒等变换（1:1），世界像素不缩放，窗口变大只是"看到更多世界"。
+- UI 层 UILayerControl：对话框 / HUD / 按钮等界面控件。
+    恒等变换（1:1），UI 以画布像素布局，1:1 上屏。
+    （两个层都覆写 GetLayerTransform 返回 CreateScaleTranslation(1,1,0,0)，
+     见 UILayerControl.cs:21-24、WorldLayerControl.cs:10-11）
 
-  3. D:\OpenSource\KFramework.WebGame\KFramework.Mir\WebGame.Mir2\Web_Mir2.Client
-     原版 Web 客户端（WinForms/SlimDX 底座）。业务逻辑与本工程同源，涉及场景/控件/
-     网络/地图等具体实现细节时直接对照，是最贴近本工程的参考源。
+注意：基类 MirControl.GetLayerTransform 原本按高度缩放（h/768），但当前两个
+层都已覆写为恒等，所以「逻辑坐标 == 画布像素」成立。
+
+--------------------------------------------------------------------------------
+8.2 怎么挂一个控件（最关键的一步）
+--------------------------------------------------------------------------------
+(1) 在 GameScene 里：
+        new XxxDialog { Parent = this };          // 走 MirScene.AddControl 路由
+    MirScene.AddControl 会把控件路由进 UILayer（UI）/ WorldLayer（地图）。
+    ★ 现在路由用的是 Insert 而非 Add：Insert 会同步 control._parent = UILayer，
+      否则置顶/排序逻辑会把它写回场景根导致「画不出、点不动」。
+      （MirScene.cs:48-56，AddControl 内 UILayer.Insert(末尾)）
+
+(2) 在 LoginScene / SelectScene 里：
+        Parent = this.UILayer;                    // 直接挂 UI 层
+    （LoginScene.cs:48、SelectScene.cs:38/47 已是这种写法）
+
+(3) 千万不要：
+    - GameScene.Controls.Add(ctrl)        // 绕过路由，控件落在场景根、永不被烘焙
+    - 直接操作 Parent.Controls（Remove/Add）// TrySort / OnVisibleChanged /
+      BringToFront 内部就是这么写的，一旦 Parent 与真实容器不一致就会把控件
+      踢回场景根（这一坑已通过 (1) 的 Insert 修掉）
+
+--------------------------------------------------------------------------------
+8.3 常用控件
+--------------------------------------------------------------------------------
+- MirImageControl：图片控件（Library + Index 画图）。属性：
+    Library / Index / AutoSize / DrawImage / UseOffSet / ForeColour / Opacity /
+    Blending / GrayScale
+- 交互控件：MirButton、MirLabel、MirTextBox、MirItemCell、MirComboBox、
+    MirScrollingBar、MirCheckBox、MirImageBox 等。
+- 通用属性（MirControl）：Location、Size、Visible、Enabled、Movable、Sort、
+    Modal、NotControl、DrawControlTexture、BackColour、Border、Opacity。
+- 事件：Click、MouseEnter、MouseLeave、MouseDown、MouseUp、BeforeDraw、
+    SizeChanged、VisibleChanged。
+
+--------------------------------------------------------------------------------
+8.4 绘制原理（为什么画图片"不用 Size"）
+--------------------------------------------------------------------------------
+每帧链路：
+    CMain.Loop → ActiveScene.Draw → MirScene.DrawControl
+      → WorldLayer.Bake()  +  UILayer.Bake()          (MirScene.cs:102-103)
+      → 两层 RT 各 PresentToScreen 上屏（先世界后 UI 叠加）
+
+层 Bake（LayerControl.CreateTexture）：
+    为层创建 Size = DXManager.FullScreenSize 的 RT（不是 Size！），
+    再 DrawChildControls 递归画子控件。
+
+子控件绘制：
+    Ctrl.Draw → DrawControl：
+      a) base.DrawControl：若 DrawControlTexture=true，按 Size 建自身
+         ControlTexture，再 DrawOpaque(ControlTexture, rect(0,0,Size), DisplayLocation)
+         贴回父层 RT —— 这是"底"。
+      b) MirImageControl 额外调用：
+         Library.Draw(Index, DisplayLocation, ForeColour, ...)   (MirImageControl.cs:177-189)
+         ★ 这个调用只用「图索引 + 位置」，根本不传 Size；
+           图片尺寸 = Library.GetTrueSize(Index)（资源本身），不按 Size 缩放/裁剪。
+
+结论：
+    Size 只管「控件这个框多大 / 命中矩形多大 / 底图 RT 多大」；
+    图片本体永远跟随资源，不跟随 Size。
+
+超屏剔除守卫：
+    MirControl.Draw：Size.Width > Settings.ScreenWidth || Size.Height > Settings.ScreenHeight
+    时直接 return 不画（MirControl.cs:773-776）。全屏层必须绕开 Size，用 FullScreenSize。
+
+--------------------------------------------------------------------------------
+8.5 尺寸与坐标（重点坑）
+--------------------------------------------------------------------------------
+三套口径：
+    - Size          ：控件自身逻辑尺寸（资源图/代码常量），用于框、命中、底图 RT
+    - FullScreenSize：画布后备缓冲真实像素（如 1461x799），所有层 RT 按它建
+    - GetLayerTransform：逻辑坐标→RT 像素的映射（当前 UI/世界层都是恒等 1:1）
+
+坐标系要点：
+    - DisplayLocation = Parent.DisplayLocation + Location，一路累加到场景根
+      （MirControl.cs:13）。这是逻辑坐标。
+    - 当前恒等变换下逻辑坐标 == 画布像素，UI 按真实像素布局。
+    - Settings.ScreenWidth = DXManager.GDevice.Viewport.Width。浏览器宿主下
+      Viewport 可能读到 0 或逻辑尺寸，DXManager.Initialize 已强行校正成
+      BackBuffer 尺寸（DXManager.cs:83-96），但仍不要在构造期依赖它做硬编码定位。
+    - 命中测试 IsMouseOver 用 DisplayRectangle = (DisplayLocation, Size)，
+      鼠标已在输入入口转过一次（KCamera.ScreenToWorldPos 只减视口原点、不逆缩放，
+      因为层是恒等变换）。渲染口径与命中口径必须一致，否则「画得出点不动」。
+
+常见副作用：手动把 Size 设得比图小 → 图溢出框照画（Library.Draw 不裁剪到 Size），
+看得见但点击区只有框那么大。
+
+--------------------------------------------------------------------------------
+8.6 自适应布局（窗口变化）
+--------------------------------------------------------------------------------
+- 锚点机制：Anchor + AnchorPos（MirControl.ApplyAnchor）。
+    基准取自活的 Settings.ScreenWidth/Height，窗口变化后重排即得新位置。
+    九宫格表达不了的布局可覆写 ApplyAnchor（如"右边距固定 170px"）。
+- 窗口大小变化回调：
+    MirGame.Window.SizeChanged → CMain.OnWindowSizeChanged
+      → 1) 释放地板/光照离屏纹理（按新尺寸重建）
+         2) RelayoutAll：按锚点重排 UI 顶层控件，子控件随父移动
+         3) Refresh：令当前场景重新烘焙         (CMain.cs:180-186)
+- 不要硬编码右下角坐标，改用 Anchor.Right / Anchor.Bottom / Anchor.Center。
+
+--------------------------------------------------------------------------------
+8.7 常见坑清单
+--------------------------------------------------------------------------------
+[1] 控件消失 / 点不动
+     → 多半掉出 UILayer（被踢回场景根）。挂控件用 Parent=this（GameScene）/
+       Parent=this.UILayer（登录/选人），别直接 Controls.Add。
+[2] UI 只铺左上角 + 四周洋红底
+     → 层 RT 尺寸用了 Size 而非 FullScreenSize；上屏是 1:1，RT 必须按画布建。
+[3] 图溢出框（画得出、点不准）
+     → 手动 Size 小于图；设 AutoSize=true 让框等于图，或别改 Size。
+[4] 画得出点不动
+     → 渲染与命中坐标口径不一致。检查 DisplayLocation / IsMouseOver 用的是否
+       都是逻辑坐标，鼠标入口是否已转过一次。
+[5] UI 变形（圆变椭圆、字体压扁）
+     → 层变换被改成非等比缩放；当前两层都是恒等，改回 1:1。
+[6] 整层不画
+     → Size > Settings.ScreenWidth 守卫触发；全屏层必须绕开 Size、用 FullScreenSize。
+[7] 浏览器下对话框跑到负坐标
+     → 构造期依赖 Settings.ScreenWidth 读到 0；DXManager.Initialize 已校正，
+       但定位优先用锚点而非构造期硬编码。
+[8] 登录按钮「看得见点不动」，MouseControl 停在 LoginScene（场景根）
+     → 根因在背景图 _background 的命中矩形没随窗口变大而变大。
+       _background 是 MirImageControl，Anchor = MiddleCenter；
+       ApplyAnchor 的 MiddleCenter 只设 Location = 屏幕中心、不改 Size
+       （见 MirControl.cs:335-355）。它的 Size 停在构造时图片固定尺寸
+       （ChrSel 首图 1024x768），不随 resize 变大。
+       - 窗口 ≤ 1024x768 时：_background 居中后整块盖住窗口，命中链
+         Scene→UILayer→_background→LoginDialog→按钮 全程通过 → 按钮可点；
+       - 最大化（>1024x768）时：_background 只占屏幕中间一块，LoginDialog/
+         按钮按屏幕中心布局探出它的命中矩形（如按钮在 x≈1489 处），
+         OnMouseMove 子控件循环里 _background.IsMouseOver=false 直接跳过
+         整棵子树 → MouseControl 停在 LoginScene → 点登录无反应。
+       修复：让背景（或承载 UI 的容器）在 resize 时铺满全屏——把 _background.Size
+       设为 Settings.ScreenWidth×Settings.ScreenHeight（或在 ApplyAnchors 里
+       随窗口重设），命中即可穿透到按钮。注意 MirImageControl 绘制走 Library.Draw，
+       不按 Size 缩放，所以把 Size 设大不会拉伸背景图，只是扩大命中/底图矩形。
+       排障线索：浏览器控制台里 [Mir][Down] MC=LoginScene、MP 命中按钮位置、
+       且只有 Down 没有 Click，基本就是命中链断在背景层。
+
+--------------------------------------------------------------------------------
+8.8 最小示例
+--------------------------------------------------------------------------------
+// GameScene 里创建对话框（自动路由进 UILayer）
+CharacterDialog = new CharacterDialog(MirGridType.Equipment, User)
+{
+    Parent  = this,                          // 路由进 UILayer（Insert 同步 _parent）
+    Index   = 504,
+    Library = Libraries.Title,
+    Location = new Point(Settings.ScreenWidth - 264, 0),
+    Movable = true,
+    Sort    = true,                          // 置顶靠 Sort，不要手动 Controls.Add
+};
+
+// 对话框内加一个子按钮（Parent 指向对话框，不是场景）
+CloseButton = new MirButton
+{
+    Parent    = CharacterDialog,             // 子控件挂到对话框
+    Index     = 120,
+    Library   = Libraries.Title,
+    Location  = new Point(CharacterDialog.Size.Width - 24, 4),
+    Hint      = "关闭",
+    ClickAction = (_) => CharacterDialog.Hide(),
+};
+
+// 自适应：想让它贴右边，用锚点而不是改 Location
+CloseButton.Anchor    = MirAnchor.Top | MirAnchor.Right;
+CloseButton.AnchorPos = new Point(4, 4);
+
+--------------------------------------------------------------------------------
+8.9 排查口诀
+--------------------------------------------------------------------------------
+- 谁决定最终像素：FullScreenSize（RT 尺寸）+ GetLayerTransform（映射）+ PresentToScreen（1:1 铺）
+- Size 只决定：自身纹理大小、命中矩形、底图 RT
+- 看到「只占一角 / 突然不画 / 能画不能点」先查三件事：
+    RT 是不是按 FullScreenSize 建的？
+    是不是撞上 Size > Settings.ScreenWidth 的守卫？
+    命中坐标是不是多转/少转了一次？
 
 
 九、已知体验取舍：全屏拉伸 vs 清晰度
@@ -208,3 +407,18 @@ Assets/KFramework/Rumtime/Tools/SafeAreaFit.cs 的“改相机渲染区域(rect)
     只把 ControlTexture 设为窗口原生分辨率，由 DrawControl 1:1 合成，避免触发该守卫。
   - 关键结论：等比铺满(scale-fill)会放大世界坐标，而世界坐标不应被放大——这是错的。
 
+
+十一、与原版的对照工作法（本项目通用准则）
+--------------------------------------------------------------------
+1. 先读原版：grep / 读 D:\OpenSource\Crystal 对应文件，确认原版“本来怎么做”
+   （字段名、调用点、事件签名、绘制时机）。
+2. 判定差异类别：属于哪一类 Web 适配——(a) 渲染分层烘焙 / (b) 浏览器输入桥 /
+   (c) 资源按需异步加载 / (d) WASM 运行时（内存 / 无 System.Drawing / IME）——并列出
+   会让原版写法失效的点。
+3. 最小忠实改动：照原版结构搬，只在 Web 约束处适配；不重写、不“顺手优化”原版逻辑。
+4. 编译验证：dotnet build 客户端工程确认 0 错误；留意 CS0104 类型歧义
+   （MirEngine.Color vs KFramework.MonoGame 同名类型要用全限定）。
+5. 检查副作用：改输入查“左键 vs 右键 / 按住 vs 单击”；改渲染查“是否重复绘制 /
+   尺寸不更新”；改资源查“冷库首帧空白”。
+6. 写注释说明偏离：凡与原版不同处（不挂 Parent、显式 DisposeTexture、预热库、
+   批次缓存、F12 被浏览器吃掉等）都加注释写清“为什么 Web 要这样”，方便后人对照。

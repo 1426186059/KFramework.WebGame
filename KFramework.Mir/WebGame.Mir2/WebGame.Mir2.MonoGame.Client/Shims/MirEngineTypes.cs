@@ -2,7 +2,7 @@ using System;
 
 namespace MirEngine
 {
-    // ===== 几何值类型（原 Web_Mir2.Engine/MirEngine/Shims 的 Point/Size/Rectangle 系列，纯数学、无 Browser 依赖）=====
+    // ===== 几何值类型（MirEngine 的 Point/Size/Rectangle 系列，纯数学、无 Browser 依赖）=====
 
     public struct Point
     {

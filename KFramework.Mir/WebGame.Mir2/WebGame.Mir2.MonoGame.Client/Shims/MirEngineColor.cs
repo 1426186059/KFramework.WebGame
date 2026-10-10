@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MirEngine
 {
-    // 原 Web_Mir2.Engine/MirEngine/Shims/Color.cs（纯值类型，无 Browser 依赖）
+    // MirEngine.Color（纯值类型，无 Browser 依赖）
     public struct Color : IEquatable<Color>
     {
         private const int AlphaShift = 24;

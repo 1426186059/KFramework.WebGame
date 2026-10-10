@@ -168,7 +168,7 @@ namespace KFramework.MonoGame
         }
 
         // 当前聚焦的 TextBox（浏览器 / MonoGame 无真实窗口，需 shim 自行维护焦点链以实现互斥）。
-        // 与 Web_Mir2.Engine 的 MirEngine.TextBox 行为对齐：聚焦时先对旧框触发 LostFocus，再对新框触发 GotFocus，
+        // 与 MirEngine.TextBox 行为对齐：聚焦时先对旧框触发 LostFocus，再对新框触发 GotFocus，
         // 上层无需再自行维护 _current / ReleaseFocus 之类的互斥逻辑。
         private static TextBox _active;
 
