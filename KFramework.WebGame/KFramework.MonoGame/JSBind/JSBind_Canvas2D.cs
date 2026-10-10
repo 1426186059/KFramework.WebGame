@@ -65,19 +65,20 @@ namespace KFramework.MonoGame
         public static partial void DeleteTexture(int id);
 
         /// <summary>
-        /// 建渲染目标：本质是"再要一张离屏 canvas"，同一 id 同时登记进目标表与纹理表 ——
-        /// 既能被画进去（<see cref="BindRenderTarget"/>），也能当普通纹理被 drawImage 采样。
+        /// 建渲染目标（离屏 canvas）。同一 id 既是绘制目标、也能当纹理采样，
+        /// 故它与 <see cref="CreateTexture"/> 共用同一套句柄空间（<c>RenderTarget2D</c> 的 Handle）。
         /// </summary>
         [JSImport("createRenderTarget", "render_canvas2d")]
         public static partial void CreateRenderTarget(int id, int width, int height);
 
-        /// <summary>绑定渲染目标：把后续绘制切到该离屏 canvas；<paramref name="id"/> &lt; 0 表示回主画布。</summary>
+        /// <summary>绑定渲染目标：把后续绘制切到该目标的离屏 canvas；<paramref name="id"/> &lt; 0 表示回主画布。</summary>
         [JSImport("bindRenderTarget", "render_canvas2d")]
         public static partial void BindRenderTarget(int id);
 
-        /// <summary>释放渲染目标：把它的离屏 canvas 从目标表与纹理表一并摘掉。</summary>
+        /// <summary>释放渲染目标（同时摘掉它的纹理登记）。</summary>
         [JSImport("deleteRenderTarget", "render_canvas2d")]
         public static partial void DeleteRenderTarget(int id);
+
         [JSImport("uploadTexture", "render_canvas2d")]
         public static partial void UploadTexture(int id, int level, [JSMarshalAs<JSType.MemoryView>] Span<byte> bytes);
 
@@ -100,5 +101,3 @@ namespace KFramework.MonoGame
                                              [JSMarshalAs<JSType.MemoryView>] Span<byte> rgba);
     }
 }
-
-// probe

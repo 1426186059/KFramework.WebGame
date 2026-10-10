@@ -7,7 +7,7 @@ namespace KFramework.Example.Mario
     /// </summary>
     public sealed class MarioGame : Game
     {
-        public MarioGame() : base("#game") { }
+        public MarioGame() : base(GraphicsBackendKind.WebGL20) { }
 
         protected override async Task LoadContentAsync()
         {

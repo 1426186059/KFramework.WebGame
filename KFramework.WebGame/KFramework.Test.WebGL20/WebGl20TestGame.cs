@@ -7,7 +7,7 @@ namespace KFramework.Test.WebGL20
     /// <summary>
     /// 例子2：WebGL 2.0 渲染专项测试宿主。
     /// <para>
-    /// 固定使用 WebGL 2.0 后端（preferWebGpu: false，设备由 Game 在 Run 时同步创建），
+    /// 固定使用 WebGL 2.0 后端（显式指定 <see cref="GraphicsBackendKind.WebGL20"/>，设备由 Game 在 Run 时同步创建），
     /// 按 <c>1 / 2 / 3</c> 切换测试页；测试页放在 Tests/ 下，一个文件一页。
     /// </para>
     /// </summary>
@@ -18,7 +18,7 @@ namespace KFramework.Test.WebGL20
 
         private readonly GraphicsDeviceManager _graphics;
 
-        public WebGl20TestGame() : base("#game", Antialias, preferWebGpu: false)
+        public WebGl20TestGame() : base(GraphicsBackendKind.WebGL20, "#game", antialias: Antialias)
         {
             ClearColor = new Color(10, 12, 20);
             IsFixedTimeStep = false;

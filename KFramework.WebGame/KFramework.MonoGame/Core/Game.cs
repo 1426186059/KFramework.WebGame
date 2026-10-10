@@ -64,16 +64,17 @@ namespace KFramework.MonoGame
         /// <summary>
         /// 创建游戏宿主（设备不在构造里建，照 MonoGame 在 Run 进入 Initialize 之前建）。
         /// </summary>
+        /// <param name="backend">
+        /// 渲染后端。<see cref="GraphicsBackendKind.WebGPU"/> 的设备是<b>异步</b>创建的
+        /// （requestAdapter / requestDevice），必须由 <see cref="RunAsync"/> 在进入 Initialize 之前 await；
+        /// WebGL 2.0 / Canvas2D 则同步创建。
+        /// </param>
         /// <param name="canvasSelector">画布选择器或 DOM id（页面里没有时引擎自动建一块全屏画布）。</param>
         /// <param name="antialias">
         /// 是否启用 MSAA。上下文创建后不可改，只能在构造时决定
         /// （等价于 MonoGame 里「设备创建前」设置 <c>PreferMultiSampling</c>）。
         /// </param>
-        /// <param name="preferWebGpu">
-        /// true（默认 false）：先试 WebGPU，失败回落 WebGL 2.0。开启时设备为<b>异步</b>创建，
-        /// 因此必须在 <see cref="RunAsync"/> 里 await（不能在构造里）。false 则为纯 WebGL 2.0 同步创建。
-        /// </param>
-        protected Game(string canvasSelector = "#game", bool antialias = false, bool preferWebGpu = false)
+        protected Game(GraphicsBackendKind backend, string canvasSelector = "#game", bool antialias = false)
         {
             if (Current != null)
             {
@@ -83,17 +84,8 @@ namespace KFramework.MonoGame
             Current = this;
             HTML_Canvas.Current = new HTML_Canvas(canvasSelector);
             _antialias = antialias;
-            _backendKind = preferWebGpu ? GraphicsBackendKind.WebGPU : GraphicsBackendKind.WebGL20;
-            Components = new GameComponentCollection();
-        }
-
-        /// <summary>
-        /// 直接指定渲染后端创建宿主。后端种类放在<b>第一个参数</b>，以免与上面那个 bool 重载在省略实参时产生歧义。
-        /// </summary>
-        protected Game(GraphicsBackendKind backend, string canvasSelector = "#game", bool antialias = false)
-            : this(canvasSelector, antialias, preferWebGpu: backend == GraphicsBackendKind.WebGPU)
-        {
             _backendKind = backend;
+            Components = new GameComponentCollection();
         }
 
         private readonly bool _antialias;

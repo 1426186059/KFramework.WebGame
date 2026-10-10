@@ -8,7 +8,7 @@ namespace KFramework.Test.WebGPU
     /// 例子3：WebGPU 渲染专项测试宿主。
     /// <para>
     /// 设备由 Game 在 Run 进入 Initialize 之前异步创建（照 MonoGame 的 DoInitialize）：
-    /// 构造时指定 preferWebGpu: true，Game 内部 <c>await GraphicsDevice.CreateAsync</c>
+    /// 构造时指定 <see cref="GraphicsBackendKind.WebGPU"/>，Game 内部 <c>await GraphicsDevice.CreateAsync</c>
     /// （WebGPU 优先，不支持回落 WebGL 2.0），因此本类不再自己建设备、也不在构造里收 device。
     /// 启动进入 <see cref="Tests.MainScene"/> 总纲页，可点条目或按数字键进入各测试页。
     /// 若浏览器不支持 WebGPU，<see cref="GraphicsDevice.CreateAsync"/> 会回落到 WebGL 2.0，
@@ -27,7 +27,7 @@ namespace KFramework.Test.WebGPU
         // antialias 管的是【画布】的采样数（离屏 RT 的 MSAA 由各自 MultiSampleCount 决定，与此无关）。
         // 当前用 false：WebGPU 下画布一旦带多重采样+解析目标，切回画布时用 load 续画就保不住内容
         // （"测试来回切"会丢掉切换前画的东西）。这是验证该问题的临时设置。
-        public WebGpuTestGame() : base("#game", antialias: false, preferWebGpu: true)
+        public WebGpuTestGame() : base(GraphicsBackendKind.WebGPU, "#game", antialias: false)
         {
             ClearColor = new Color(10, 12, 20);
             IsFixedTimeStep = false;

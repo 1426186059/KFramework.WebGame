@@ -12,7 +12,7 @@ namespace WebGame.Mir2.MonoGame.Client
     /// </summary>
     public sealed class MirGame : Game
     {
-        public MirGame() : base("#game", false, false)
+        public MirGame() : base(GraphicsBackendKind.WebGL20, "#game", antialias: false)
         {
             IsFixedTimeStep = false;
         }

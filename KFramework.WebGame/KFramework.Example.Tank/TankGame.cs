@@ -11,7 +11,7 @@ namespace KFramework.Example.Tank
     /// </summary>
     public sealed class TankGame : Game
     {
-        public TankGame() : base("#game") { }
+        public TankGame() : base(GraphicsBackendKind.WebGL20) { }
 
         protected override async Task LoadContentAsync()
         {

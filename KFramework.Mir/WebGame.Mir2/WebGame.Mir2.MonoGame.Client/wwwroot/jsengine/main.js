@@ -6,6 +6,7 @@
 import { dotnet } from '../_framework/dotnet.js';
 import * as gl from './render_webgl20.js';
 import * as webgpu from './render_webgpu.js';
+import * as canvas2d from './render_canvas2d.js';
 import * as html5Canvas from './html_canvas.js';
 import * as htmlWindow from './html_window.js';
 import * as audio from './audio.js';
@@ -71,6 +72,7 @@ const { setModuleImports, getAssemblyExports, getConfig, runMain } = await dotne
 // 且函数名不带点号（.NET 会把点号当嵌套路径解析）。
 setModuleImports('render_webgl20', gl);
 setModuleImports('render_webgpu', webgpu);
+setModuleImports('render_canvas2d', canvas2d);
 setModuleImports('canvas', html5Canvas);
 setModuleImports('window', htmlWindow);
 setModuleImports('audio', audio);
