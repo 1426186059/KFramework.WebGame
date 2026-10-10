@@ -20,7 +20,7 @@ namespace KFramework.Test.Common.Tests
             new TestEntry
             {
                 Name = "字体测试",
-                Desc = "系统字体 SpriteFont（Canvas2D 光栅化）与包内矢量字体 KFont（引擎自解析 ttf）：Arial / Consolas / Georgia / 黑体",
+                Desc = "四条字体路线对比：SpriteFont（Canvas2D 光栅化，多图集）/ KFont（引擎自解析 ttf）/ BitmapFont（位图字体，本页运行时烘焙 ASCII）/ MSDF（占位未实现）；按钮切模式，空格切 1000→9000 字共 9 档",
                 Factory = static () => new FontTest.FontTestScene(),
             },
             new TestEntry
