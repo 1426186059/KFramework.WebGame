@@ -6,6 +6,7 @@
   <Project Path="KFramework.Test.Common/KFramework.Test.Common.csproj" />
   <Project Path="KFramework.Test.WebGL20/KFramework.Test.WebGL20.csproj" />
   <Project Path="KFramework.Test.WebGPU/KFramework.Test.WebGPU.csproj" />
+  <Project Path="KFramework.Test.Canvas2D/KFramework.Test.Canvas2D.csproj" />
   <Project Path="KFramework.Example.Tank/KFramework.Example.Tank.csproj" />
   <Project Path="KFramework.Example.Mario/KFramework.Example.Mario.csproj" />
   <Project Path="KFramework.MonoGame/KFramework.MonoGame.csproj" />

@@ -156,6 +156,25 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
+        /// 按指定后端<b>同步</b>创建图形设备（WebGL 2.0 / Canvas2D 的初始化都是同步完成的）。
+        /// WebGPU 的初始化是异步的，必须走 <see cref="CreateAsync(GraphicsBackendKind, bool, bool)"/>。
+        /// </summary>
+        public GraphicsDevice(bool antialias, GraphicsBackendKind backend)
+            : this(CreateInitializedBackend(CreateBackend(backend), antialias), antialias)
+        {
+        }
+
+        /// <summary>按后端种类创建实例（只 new，不初始化）。</summary>
+        private static IGraphicsBackend CreateBackend(GraphicsBackendKind kind) => kind switch
+        {
+            GraphicsBackendKind.Canvas2D => new Canvas2DBackend(),
+            GraphicsBackendKind.WebGL20 => new WebGl20Backend(),
+            GraphicsBackendKind.WebGPU => throw new InvalidOperationException(
+                "WebGPU 的初始化是异步的（requestAdapter / requestDevice），请使用 GraphicsDevice.CreateAsync。"),
+            _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, "未知的渲染后端。"),
+        };
+
+        /// <summary>
         /// 异步创建图形设备：优先 WebGPU，不可用时回落 WebGL 2.0。
         /// <para>
         /// WebGPU 的 requestAdapter / requestDevice 是<b>异步</b>的，因此必须走本工厂，
@@ -166,26 +185,35 @@ namespace KFramework.MonoGame
         /// <param name="antialias">是否启用 MSAA。</param>
         /// <param name="preferWebGpu">true（默认）：先试 WebGPU，失败则回落 WebGL 2.0。</param>
         public static async Task<GraphicsDevice> CreateAsync(bool antialias = false, bool preferWebGpu = true)
+            => await CreateAsync(preferWebGpu ? GraphicsBackendKind.WebGPU : GraphicsBackendKind.WebGL20, antialias)
+                     .ConfigureAwait(false);
+
+        /// <summary>
+        /// 按指定后端<b>异步</b>创建图形设备（统一入口：WebGPU 的初始化本来就是异步的）。
+        /// <paramref name="backend"/> 为 WebGPU 且 <paramref name="allowFallback"/> 为 true 时，
+        /// 初始化失败会回落 WebGL 2.0；为 false 则把异常抛给调用方。
+        /// </summary>
+        public static async Task<GraphicsDevice> CreateAsync(GraphicsBackendKind backend, bool antialias = false,
+                                                            bool allowFallback = true)
         {
-            IGraphicsBackend backend = null;
-            if (preferWebGpu)
+            if (backend == GraphicsBackendKind.WebGPU)
             {
                 try
                 {
                     var webgpu = new WebGpuBackend();
                     await webgpu.InitializeAsync(antialias).ConfigureAwait(false);
-                    backend = webgpu;
-                    return new GraphicsDevice(backend, antialias);
+                    return new GraphicsDevice(webgpu, antialias);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (allowFallback)
                 {
                     PrintTool.Log($"[KFramework.MonoGame] WebGPU 不可用，回落 WebGL 2.0：{ex.Message}");
+                    backend = GraphicsBackendKind.WebGL20;
                 }
             }
 
-            backend = new WebGl20Backend();
-            await backend.InitializeAsync(antialias).ConfigureAwait(false);
-            return new GraphicsDevice(backend, antialias);
+            IGraphicsBackend created = CreateBackend(backend);
+            await created.InitializeAsync(antialias).ConfigureAwait(false);
+            return new GraphicsDevice(created, antialias);
         }
 
         /// <summary>
@@ -253,7 +281,7 @@ namespace KFramework.MonoGame
         /// </summary>
         public void EndFrame() => Backend.EndFrame();
 
-        /// <summary>当前渲染后端名（"WebGL2" / "WebGPU"）。</summary>
+        /// <summary>当前渲染后端名（"WebGL2" / "WebGPU" / "Canvas2D"）。</summary>
         public string BackendName => Backend.Name;
 
         /// <summary>

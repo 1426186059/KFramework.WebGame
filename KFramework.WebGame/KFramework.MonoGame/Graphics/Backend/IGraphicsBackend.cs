@@ -2,8 +2,9 @@ namespace KFramework.MonoGame
 {
 
     /// <summary>
-    /// 渲染后端抽象：把 <see cref="GraphicsDevice"/> 的平台层（目前是 WebGL 2.0）隔离出去，
-    /// 使 WebGL 与 WebGPU 能作为两个可互换的实现共存于同一套框架。
+    /// 渲染后端抽象：把 <see cref="GraphicsDevice"/> 的平台层隔离出去，
+    /// 使 WebGL 2.0 / WebGPU / Canvas2D 能作为可互换的实现共存于同一套框架
+    /// （三个实现分别见 <c>WebGl20Backend</c> / <c>WebGpuBackend</c> / <c>Canvas2DBackend</c>）。
     /// <para>
     /// 设计原则：方法签名一律用<b>领域类型</b>（<see cref="BlendState"/> / <see cref="Texture2D"/> /
     /// <see cref="IRenderTarget"/> 等），不出现具体后端的句柄类型，这样 WebGPU 也能实现。
@@ -14,7 +15,7 @@ namespace KFramework.MonoGame
     {
         // ============ 初始化 / 查询 ============
 
-        /// <summary>后端名（用于日志），如 "WebGL2" / "WebGPU"。</summary>
+        /// <summary>后端名（用于日志），如 "WebGL2" / "WebGPU" / "Canvas2D"。</summary>
         string Name { get; }
 
         /// <summary>

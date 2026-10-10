@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>KFramework.Test.Canvas2D</RootNamespace>
+    <AssemblyName>KFramework.Test.Canvas2D</AssemblyName>
+    <StartupObject>KFramework.Test.Canvas2D.Program</StartupObject>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <WasmLoadAllGlobalizationData>false</WasmLoadAllGlobalizationData>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <StaticWebAssetFingerprintPattern Include="JS" Pattern="*.js" Expression="#[.{fingerprint}]!" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KFramework.MonoGame\KFramework.MonoGame.csproj" />
+    <ProjectReference Include="..\KFramework.MonoGameExtend\KFramework.MonoGameExtend.csproj" />
+  </ItemGroup>
+
+  <!-- 编译引擎的浏览器层（TypeScript）。tsc 报错即中断构建，不留旧产物。 -->
+  <Target Name="BuildTypeScript" BeforeTargets="BeforeBuild" Condition="Exists('$(MSBuildThisFileDirectory)..\KFramework.TSEngine\node_modules')">
+    <Exec Command="npm run build" WorkingDirectory="$(MSBuildThisFileDirectory)..\KFramework.TSEngine" />
+  </Target>
+
+  <!-- KFramework.TSEngine/dist/jsengine 已是完整产物（含 deps/ktx2 转码器），
+       直接整体复制到本工程 wwwroot/jsengine 即可。 -->
+  <Target Name="SyncJsEngine" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <_Engine Include="$(MSBuildThisFileDirectory)..\KFramework.TSEngine\dist\jsengine\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_Engine)" DestinationFiles="@(_Engine->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+
+  <!-- 本工程是纯 Canvas2D 渲染测试：全部纹理程序化生成，不依赖 AssetBundle 内容包，故不跑 BuildGameContent。 -->
+
+</Project>

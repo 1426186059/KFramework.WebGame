@@ -83,23 +83,35 @@ namespace KFramework.MonoGame
             Current = this;
             HTML_Canvas.Current = new HTML_Canvas(canvasSelector);
             _antialias = antialias;
-            _preferWebGpu = preferWebGpu;
+            _backendKind = preferWebGpu ? GraphicsBackendKind.WebGPU : GraphicsBackendKind.WebGL20;
             Components = new GameComponentCollection();
         }
 
+        /// <summary>
+        /// 直接指定渲染后端创建宿主。后端种类放在<b>第一个参数</b>，以免与上面那个 bool 重载在省略实参时产生歧义。
+        /// </summary>
+        protected Game(GraphicsBackendKind backend, string canvasSelector = "#game", bool antialias = false)
+            : this(canvasSelector, antialias, preferWebGpu: backend == GraphicsBackendKind.WebGPU)
+        {
+            _backendKind = backend;
+        }
+
         private readonly bool _antialias;
-        private readonly bool _preferWebGpu;
+        private GraphicsBackendKind _backendKind = GraphicsBackendKind.WebGL20;
 
         /// <summary>
         /// 异步创建设备并搭建窗口（照 MonoGame 的 DoInitialize：Run 进入 Initialize 之前建好设备）。
-        /// preferWebGpu 时走 <see cref="GraphicsDevice.CreateAsync"/>（WebGPU 优先、不支持回落 WebGL 2.0），
-        /// 否则走同步的 <see cref="GraphicsDevice"/> 构造（纯 WebGL 2.0）。
+        /// WebGPU 走 <see cref="GraphicsDevice.CreateAsync(GraphicsBackendKind, bool, bool)"/>（不支持时回落 WebGL 2.0），
+        /// WebGL 2.0 / Canvas2D 走同步构造（它们的初始化本来就是同步的）。
         /// </summary>
         private async Task CreateDeviceAsync()
         {
-            GraphicsDevice = _preferWebGpu
-                ? await GraphicsDevice.CreateAsync(_antialias, preferWebGpu: true)
-                : new GraphicsDevice(_antialias);
+            GraphicsDevice = _backendKind switch
+            {
+                GraphicsBackendKind.WebGPU => await GraphicsDevice.CreateAsync(_antialias, preferWebGpu: true),
+                GraphicsBackendKind.Canvas2D => new GraphicsDevice(_antialias, GraphicsBackendKind.Canvas2D),
+                _ => new GraphicsDevice(_antialias),
+            };
             Window = new GameWindow(GraphicsDevice);
         }
 

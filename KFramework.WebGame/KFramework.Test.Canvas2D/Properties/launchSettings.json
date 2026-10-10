@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "KFramework.Test.Canvas2D": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:54135;http://localhost:54136"
+    }
+  }
+}
