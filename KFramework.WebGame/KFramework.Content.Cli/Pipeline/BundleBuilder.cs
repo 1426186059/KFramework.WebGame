@@ -14,7 +14,9 @@ namespace KFramework.Content.Cli
     public sealed class AssetBundleAsset
     {
         public string Path { get; set; } = "";
-        public ContentAssetType Type { get; set; } =  ContentAssetType.Text;
+
+        /// <summary>资源类型；默认 <see cref="ContentAssetType.Binary"/>（未识别的一律按二进制资源处理）。</summary>
+        public ContentAssetType Type { get; set; } = ContentAssetType.Binary;
         public byte[] Bytes { get; set; } = Array.Empty<byte>();
         public int Width { get; set; }
         public int Height { get; set; }

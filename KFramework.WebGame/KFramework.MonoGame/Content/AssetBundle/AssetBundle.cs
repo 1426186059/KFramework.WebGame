@@ -130,6 +130,14 @@ namespace KFramework.MonoGame
                 throw new KeyNotFoundException($"资源不存在: {name}");
             }
 
+            // 类型不符时先说清楚（例如 Binary = 未识别 / 原样字节，本来就不该往 GPU 上传），
+            // 免得落到下面那句"没预转码"的报错上误导排查方向。
+            if (info.Type != ContentAssetType.Texture)
+            {
+                throw new InvalidOperationException(
+                    $"资源「{name}」不是纹理（Type={info.Type}），请用 LoadAsset / LoadText 取原始字节。");
+            }
+
             if (!_decodedTextures.TryGetValue(info.Path, out var decodedKtx2))
             {
                 throw new InvalidOperationException(

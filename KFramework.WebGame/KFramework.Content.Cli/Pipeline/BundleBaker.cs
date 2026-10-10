@@ -108,7 +108,7 @@ namespace KFramework.Content.Cli
                     }
                     else
                     {
-                        // 文本 / JSON / 音效 / 视频 / 任意字节 —— 按扩展名归类为 Audio / Video / Text，原样作为 Bundle 内资源
+                        // 文本 / JSON / 音效 / 视频 / 任意字节 —— 按扩展名归类为 Audio / Video / Text，未识别的一律 Binary，原样作为 Bundle 内资源
                         bundle.Assets.Add(new AssetBundleAsset
                         {
                             Path = name,
@@ -378,7 +378,9 @@ namespace KFramework.Content.Cli
             string ext = Path.GetExtension(relative);
             if (Global.supportAudioFileType.Contains(ext)) return ContentAssetType.Audio;
             if (Global.supportVideoFileType.Contains(ext)) return ContentAssetType.Video;
-            return ContentAssetType.Text;
+            if (Global.supportTextFileType.Contains(ext)) return ContentAssetType.Text;
+            // 认不出来的扩展名（.ttf / .bin / .wasm 等）一律按二进制资源入库，不再默认当成文本
+            return ContentAssetType.Binary;
         }
     }
 

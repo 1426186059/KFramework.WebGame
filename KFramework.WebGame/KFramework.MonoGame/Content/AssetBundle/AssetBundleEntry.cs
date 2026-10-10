@@ -6,7 +6,8 @@ namespace KFramework.MonoGame
     /// 对应 Unity 内部 AssetBundle 的清单条目；图集类资源额外携带 Page/X/Y 以便运行时切片。
     /// </summary>
     /// <param name="Path">包内相对路径（即资源名，如 myres/atlas/characters_0）</param>
-    /// <param name="Type">资源类型（枚举 <see cref="ContentAssetType"/>：Texture 表示需 GPU 解码的纹理，Text 表示原样字节的文本/数据/图集描述等）</param>
+    /// <param name="Type">资源类型（枚举 <see cref="ContentAssetType"/>：Texture 表示需 GPU 解码的纹理；Text 表示文本/数据/图集描述；
+    /// Audio / Video 表示对应媒体；<b>Binary 表示未识别</b>，即按原始字节存取、不做任何特殊处理）</param>
     /// <param name="Bytes">字节长度</param>
     /// <param name="Crc">ZIP CRC32（8 位十六进制），快速完整性校验</param>
     /// <param name="Hash">内容哈希（小写十六进制，无算法前缀）；算法见总清单 Hash 字段</param>

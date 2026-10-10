@@ -14,6 +14,15 @@ namespace KFramework.Content.Cli
             ".wav", ".mp3", ".ogg", ".flac", ".aac", ".m4a"
         };
 
+        /// <summary>
+        /// 按文本处理的数据类资源（运行端用 LoadText / LoadJson 读，不做任何解码）。
+        /// 不在此列的未知扩展名一律归为 <see cref="ContentAssetType.Binary"/>（如 .ttf / .bin / .wasm）。
+        /// </summary>
+        public static readonly HashSet<string> supportTextFileType = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ".json", ".txt", ".xml", ".csv", ".ini", ".fnt", ".atlas"
+        };
+
         public static readonly HashSet<string> supportVideoFileType = new(StringComparer.OrdinalIgnoreCase)
         {
             ".mp4", ".webm", ".mov", ".avi"
