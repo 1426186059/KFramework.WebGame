@@ -124,11 +124,9 @@ namespace KFramework.MonoGame
             _projection = _device.CreateSpriteProjection();
             _transformProjection = _transform * _projection;
 
-            // ---- 批内不变的渲染状态，在这里一次性下发 ----
-            // 材质（混合 / 深度 / 剔除 / 采样）与效果（着色器程序 + uProjection + 材质属性）在整个 Begin/End
-            // 期间都不会变（一个批只有一个材质），所以只在开批时下发一次；提交时每段只需换纹理。
-            // 「带属性块」的段例外：块的 uniform 值必须逐段下发/还原（见 FlushBatch），那是可变 uniform 的代价。
-            _device.ApplyMaterial(_material, _transformProjection, null);
+            // ---- 材质只在这里【算好并记住】，真正下发放到提交时（见 FlushBatch）----
+            // 一个批只有一个材质（混合 / 深度 / 剔除 / 采样 + 着色器程序 + uProjection + 材质属性），
+            // 批内不变，所以每个批只需要下发一次；至于"哪一刻下发"由 FlushBatch 决定。
             _blockApplied = false;
 
             _beginCalled = true;
@@ -143,12 +141,19 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 提交当前累积的绘制：排序 → 按「纹理 + 属性块」切段 → 把段内绘制项展开成四边形顶点 →
+        /// 提交当前累积的绘制：下发材质 → 排序 → 按「纹理 + 属性块」切段 → 把段内绘制项展开成四边形顶点 →
         /// 整段一次 <c>drawElements</c>；精灵总数累加到渲染统计。
         /// <para>
-        /// <b>每段只换纹理</b>：材质状态 / 效果程序 / uProjection / 材质属性这些批内不变的东西，已在
-        /// <see cref="BeginInternal"/> 里下发过一次，这里不再重复 —— 这正是"一个批一个材质"的红利
-        /// （不打图集时"一张图一段"，若每段都重设一遍状态，开销就按精灵数走了）。
+        /// <b>材质在提交这一刻下发</b>（而不是 <see cref="BeginInternal"/> 里）：空批不白设状态；
+        /// 且批进行中途若发生过 <c>Clear</c>（切渲染目标清屏 → <see cref="GraphicsDevice.InvalidateMaterialCache"/>，
+        /// 后端会重置 uniform 槽位）或块段残留，提交前的这一刻也能把状态拉回确定值。
+        /// <b>不设 dirty 标志</b>是有意的：<see cref="GraphicsDevice.ApplyMaterial"/> 自身按
+        /// 「材质内容 + 变换」去重，重复调用只做几次引用比较；一旦用标志跳过，上面那种中途失效就会漏掉。
+        /// </para>
+        /// <para>
+        /// <b>每段只换纹理</b>：材质状态 / 效果程序 / uProjection / 材质属性都是批内不变的，上面统一下发
+        /// 一次即可，不必每段重复 —— 这正是"一个批一个材质"的红利（不打图集时"一张图一段"，
+        /// 若每段都重设一遍状态，开销就按精灵数走了）。
         /// </para>
         /// <para>
         /// 例外是<b>属性块</b>：块是可变 uniform，值必须逐段生效 —— 带块的段下发块值（盖住材质默认值），
@@ -160,6 +165,13 @@ namespace KFramework.MonoGame
         private void FlushBatch()
         {
             if (_batchItemCount == 0) return;
+
+            // ---- 材质：批内不变，提交前下发一次 ----
+            // 重复调用由 GraphicsDevice 按「材质内容 + 变换」去重（命中则只做几次引用比较）。
+            // _blockApplied 归零：ApplyMaterial(..., null) 之后状态已回到材质默认值，
+            // 块"待还原"的标记必须同步清掉，否则后面的不带块段会多走一次还原路径。
+            _device.ApplyMaterial(_material, _transformProjection, null);
+            _blockApplied = false;
 
             switch (_sortMode)
             {
@@ -193,13 +205,11 @@ namespace KFramework.MonoGame
                 {
                     SpriteBatchItem item = _batchItemList[batchIndex];
 
-                    // 换批：纹理变了（照 MonoGame 用引用相等判断），或属性块变了。
                     if (!batchStarted
                         || !ReferenceEquals(item.Texture, tex)
                         || !ReferenceEquals(item.Properties, block)
                         || item.BlockVersion != blockVersion)
                     {
-                        // 先把上一段画掉（用的是上一段自己的状态），再为本段下发状态。
                         FlushVertexArray(startIndex, index);
 
                         tex = item.Texture;

@@ -426,9 +426,14 @@ namespace KFramework.MonoGame
         /// 按「材质内容 + 变换」下发渲染状态。与上次完全一致则整体跳过（省去 blend / depth / rasterizer /
         /// 着色器切换与矩阵上传这一串跨 JS 调用）。材质正是 Unity 的 Material：打包效果 + 采样/混合/深度/剔除状态。
         /// <para>
-        /// <b>调用时机</b>：一个批（Begin/End）只有一个材质，所以 <see cref="SpriteBatch"/> 在 <c>Begin</c> 里
-        /// 调它一次即可，提交时每段不再重复调用；只有「带属性块」的段才需要再调一次（块值必须逐段生效，
-        /// 块结束后还要再用 <paramref name="properties"/> = null 调一次把材质默认值发回去）。
+        /// <b>调用时机</b>：一个批（Begin/End）只有一个材质，所以 <see cref="SpriteBatch"/> 在
+        /// <b>提交前（<c>FlushBatch</c>）</b>调它一次即可，批内每段不再重复调用 —— 不在 <c>Begin</c> 里调：
+        /// 空批就不必白设状态，且批中途若发生 <c>Clear</c>（会让本类的去重缓存失效、后端重置 uniform 槽位），
+        /// 提交那一刻仍能把状态拉回确定值。
+        /// 只有「带属性块」的段才需要再调一次（块值必须逐段生效，块结束后还要再用
+        /// <paramref name="properties"/> = null 调一次把材质默认值发回去）。
+        /// <see cref="GpuInstanceBatch"/> / <see cref="UrpBatch"/> 走的是 <see cref="ApplyRenderStates"/>，
+        /// 它们各自的着色器程序不由本方法管理。
         /// </para>
         /// </summary>
         internal void ApplyMaterial(

@@ -169,7 +169,8 @@ namespace KFramework.MonoGame
 
             // 【关键】只有"清屏开帧"才重置 uniform 槽位。
             // "沿用内容开帧"（load）绝不能动槽位：它是在【本批次第一次绘制】时才被触发的，
-            // 此时 SpriteBatch.Begin 早已经 ApplyMaterial → ShaderEffect.Apply 分配好槽位并写入投影矩阵；
+            // 此时 SpriteBatch 早已在提交前（FlushBatch）ApplyMaterial → ShaderEffect.Apply
+            // 分配好槽位并写入投影矩阵（apply 必定排在 FlushVertexArray 之前）；
             // 一重置就会让本批次退回 0 号槽（单位矩阵），画面整体塌进右上角（看着像黑屏）。
             if (!clear) return;
 
