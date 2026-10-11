@@ -320,12 +320,12 @@ namespace Client.MirControls
             if (TextBox.UseSystemPasswordChar) drawText = new string('●', drawText.Length);
             string drawComp = TextBox.CompositionString ?? "";
             if (TextBox.UseSystemPasswordChar) drawComp = new string('●', drawComp.Length);
-            TextRenderer.Clear(ControlTexture, back);
-            
+
             {
-                // 渲染目标与批次由本控件绑定，文本 + 光标交给基础库 TextBox（DrawTextBox，实例自身持有光标状态）。
+                // 渲染目标、清屏与批次都由本控件绑定，文本 + 光标交给基础库 TextBox（DrawTextBox，实例自身持有光标状态）。
                 var saved = DXManager.CurrentSurface;
                 DXManager.SetSurface(new SlimDX.Direct3D9.Surface(ControlTexture));
+                DXManager.GDevice.Clear(KFramework.MonoGame.Color.FromArgb((uint)back));
                 try
                 {
                     // 用主批（SpriteBatch）绘制：以新式材质 API 开批（NonPremultiplied + 纹理 PointClamp），

@@ -189,13 +189,13 @@ namespace Client.MirControls
             int fore = ForeColour.ToArgb();
             int outline = OutLine ? OutLineColour.ToArgb() : 0;
             int back = BackColour.ToArgb();
-            TextRenderer.Clear(ControlTexture, back);
 
-            // 批的边界归调用方（GDI 与游戏渲染已合并为一个渲染系统）：
+            // 目标、清屏、批三件事都由调用方管（GDI 与游戏渲染已合并为一个渲染系统）：
             // 下面最多 5 次 DrawText（4 次描边 + 1 次前景）共用一次 Begin/End → 合成 1 次 draw call；
             // 若让 TextRenderer 每次自己开收批，就是 5 段。
             var savedSurface = DXManager.CurrentSurface;
             DXManager.SetSurface(new SlimDX.Direct3D9.Surface(ControlTexture));
+            DXManager.GDevice.Clear(KFramework.MonoGame.Color.FromArgb((uint)back));
             try
             {
                 DXManager.BeginSprite(DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied));
@@ -204,12 +204,12 @@ namespace Client.MirControls
                     // 描边对齐原版 MirLabel：四向各偏移 1px 先画轮廓，再画前景。
                     if (outline != 0)
                     {
-                        TextRenderer.DrawText(ControlTexture, Text, Font, new MirEngine.Rectangle(1, 0, Size.Width, Size.Height), outline, DrawFormat);
-                        TextRenderer.DrawText(ControlTexture, Text, Font, new MirEngine.Rectangle(0, 1, Size.Width, Size.Height), outline, DrawFormat);
-                        TextRenderer.DrawText(ControlTexture, Text, Font, new MirEngine.Rectangle(2, 1, Size.Width, Size.Height), outline, DrawFormat);
-                        TextRenderer.DrawText(ControlTexture, Text, Font, new MirEngine.Rectangle(1, 2, Size.Width, Size.Height), outline, DrawFormat);
+                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(1, 0, Size.Width, Size.Height), outline, DrawFormat);
+                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(0, 1, Size.Width, Size.Height), outline, DrawFormat);
+                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(2, 1, Size.Width, Size.Height), outline, DrawFormat);
+                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(1, 2, Size.Width, Size.Height), outline, DrawFormat);
                     }
-                    TextRenderer.DrawText(ControlTexture, Text, Font, new MirEngine.Rectangle(1, 1, Size.Width, Size.Height), fore, DrawFormat);
+                    TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(1, 1, Size.Width, Size.Height), fore, DrawFormat);
                 }
                 finally
                 {

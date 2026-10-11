@@ -82,17 +82,16 @@ public sealed class FPSDialog : MirControl
             TextureSize = Size;
         }
 
-        TextRenderer.Clear(ControlTexture, BackColour.ToArgb());
-
-        // 同 MirLabel：TextRenderer.DrawText 不再自持 Begin/End，批由调用方开。
+        // 同 MirLabel：目标、清屏、批都由调用方管（TextRenderer 只把字形塞进当前批）。
         var savedSurface = DXManager.CurrentSurface;
         DXManager.SetSurface(new SlimDX.Direct3D9.Surface(ControlTexture));
+        DXManager.GDevice.Clear(KFramework.MonoGame.Color.FromArgb((uint)BackColour.ToArgb()));
         try
         {
             DXManager.BeginSprite(DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied));
             try
             {
-                TextRenderer.DrawText(ControlTexture, _text, _font,
+                TextRenderer.DrawText(_text, _font,
                     new MirEngine.Rectangle(0, 0, Size.Width, Size.Height), ForeColour.ToArgb(),
                     TextFormatFlags.Left);
             }
