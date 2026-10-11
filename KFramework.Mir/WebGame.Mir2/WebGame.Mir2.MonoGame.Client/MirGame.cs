@@ -19,7 +19,9 @@ namespace WebGame.Mir2.MonoGame.Client
 
         protected override void Initialize()
         {
-            DXManager.Initialize(GraphicsDevice, new SpriteBatch(GraphicsDevice));
+            // 批统一由 Game 持有（SpriteBatch 的构造函数已 internal，外部不能自己 new）；
+            // Initialize 时设备已就绪，Game.SpriteBatch 必然可用。
+            DXManager.Initialize(GraphicsDevice, Game.SpriteBatch);
             Window.SizeChanged += () => CMain.OnWindowSizeChanged(Window.Width, Window.Height);
         }
 

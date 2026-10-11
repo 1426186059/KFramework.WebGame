@@ -73,7 +73,7 @@ namespace KFramework.MonoGame
         {
             ArgumentNullException.ThrowIfNull(device);
             _device = device;
-            _batch = new SpriteBatch(device);
+            _batch = Game.SpriteBatch;
         }
 
         /// <summary>底层设备（对应 <see cref="SpriteBatch.GraphicsDevice"/>）。</summary>

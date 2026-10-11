@@ -24,7 +24,7 @@ namespace KFramework.MonoGame
         public virtual void Update(GameTime gameTime) { }
     }
 
-    /// <summary>带绘制能力的组件，自带一个 <see cref="SpriteBatch"/>。</summary>
+    /// <summary>带绘制能力的组件。绘制用的批是<b>全局共享的那一个</b>（<see cref="Game.SpriteBatch"/>），不是每组件一份。</summary>
     public abstract class DrawableGameComponent : GameComponent
     {
         protected DrawableGameComponent(Game game) : base(game) { }
@@ -36,11 +36,16 @@ namespace KFramework.MonoGame
 
         public GraphicsDevice GraphicsDevice => Game.GraphicsDevice;
 
+        /// <summary>
+        /// 绘制用的批 —— 指向 <see cref="Game.SpriteBatch"/> 那一个共享实例（<see cref="SpriteBatch"/> 的构造函数是
+        /// internal，组件也自建不了）。保留成可写属性只为兼容老代码里"自己塞一把批"的写法。
+        /// </summary>
         protected SpriteBatch SpriteBatch { get; private set; } = null!;
 
         public virtual void LoadContent()
         {
-            SpriteBatch ??= new SpriteBatch(GraphicsDevice);
+            // 不再 per-component 新建：全游戏共用 Game 建的那一把，避免多份顶点池与状态互相冲刷。
+            SpriteBatch = Game.SpriteBatch;
         }
 
         public virtual void Draw(GameTime gameTime) { }

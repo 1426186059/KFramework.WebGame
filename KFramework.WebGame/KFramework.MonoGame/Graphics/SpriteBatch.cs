@@ -53,7 +53,19 @@ namespace KFramework.MonoGame
         /// <summary>逐顶点数组（提交前把绘制项展开成四边形写在这里，再整段上传）。</summary>
         private VertexPositionColorTexture[] _vertexArray;
 
-        public SpriteBatch(GraphicsDevice device)
+        /// <summary>
+        /// 创建批处理器。构造函数是 <b>internal</b> 的：整个游戏<b>只有 <see cref="Game.SpriteBatch"/> 这一个实例</b>，
+        /// 外部程序集拿不到 new，只能从 <see cref="Game.SpriteBatch"/> 取用。
+        /// <para>
+        /// 这样做的原因是<b>状态与顶点池只有一份</b>：多个实例意味着多份状态（材质 / 变换 / 顶点池），
+        /// 同一帧里交替使用就会互相冲刷、切断合批，而且每一份都要自己承担对象池与顶点数组的内存。
+        /// </para>
+        /// <para>
+        /// <b>需要"嵌套绘制"（在一个批中间插入另一套材质）时不要 new 新实例</b>，用
+        /// <see cref="SpriteNestedBatch"/> —— 它的做法是"同一个批 + 材质栈"，Begin / End 配对即可叠层。
+        /// </para>
+        /// </summary>
+        internal SpriteBatch(GraphicsDevice device)
         {
             ArgumentNullException.ThrowIfNull(device);
             _device = device;

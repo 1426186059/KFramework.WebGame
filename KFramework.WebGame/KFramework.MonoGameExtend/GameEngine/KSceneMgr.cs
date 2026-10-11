@@ -18,6 +18,10 @@ namespace KFramework.MonoGameExtend
 
         public static event EventHandler<EventArgs> ScreenSizeChanged;
 
+        /// <summary>
+        /// 共享批 —— 就是 <see cref="KFramework.MonoGame.Game.SpriteBatch"/> 那一个实例（由 <see cref="Init"/> 转发过来）。
+        /// 保留本属性只为兼容既有调用点（KImage / KLabel / 各示例工程都从这里取批）。
+        /// </summary>
         public static SpriteBatch SpriteBatch { get; set; } = null;
         public static Game Game { get; set; } = null;
 
@@ -36,7 +40,10 @@ namespace KFramework.MonoGameExtend
         public static void Init(Game mGame)
         {
             Game = mGame;
-            SpriteBatch = new SpriteBatch(mGame.GraphicsDevice);
+            // 批不再由本类新建：SpriteBatch 的构造函数已 internal，唯一实例由 Game 持有。
+            // 这里只是把它转发出来，让既有的 KSceneMgr.SpriteBatch 调用点（KImage / KLabel / 各示例工程）不用改。
+            // （类型写全限定名：本类里 Game 这个名字被上面同名的静态属性占着。）
+            SpriteBatch = KFramework.MonoGame.Game.SpriteBatch;
             // 浏览器窗口尺寸变化通知：Game.TickFrame 里 GraphicsDevice.SyncCanvasSize 检测到
             // 画布变化后会触发 GameWindow.SizeChanged，这里转发到 ScreenSizeChanged，
             // KCanvas 据此重算画布尺寸并把 UI 子控件级联重排，实现自适应屏幕。

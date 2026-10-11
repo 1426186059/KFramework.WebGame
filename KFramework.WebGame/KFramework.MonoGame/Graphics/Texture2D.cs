@@ -206,7 +206,10 @@ namespace KFramework.MonoGame
             {
                 device.SetRenderTarget(rt);
                 device.Clear(Color.Transparent);
-                var batch = new SpriteBatch(device);
+                // 复用全局那把批（同程序集虽仍可 new，但没必要再摊一份顶点池 + 顶点数组的垃圾）；
+                // 走到这里必然是帧外的 await 读回路径，不会与正在进行的 Begin / End 撞车。
+                // Game 尚未建立时（纯设备级调用）兜底自建一把。
+                var batch = Game.SpriteBatch;
                 batch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp, transformMatrix: Matrix4x4.Identity);
                 batch.Draw(this, new Rectangle(0, 0, rect.Width, rect.Height), rect, Color.White);
                 batch.End();

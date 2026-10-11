@@ -32,6 +32,20 @@ namespace KFramework.MonoGame
 
         public GraphicsDevice GraphicsDevice { get; private set; }
 
+        /// <summary>
+        /// 全游戏唯一的精灵批。<see cref="Graphics.SpriteBatch"/> 的构造函数是 internal，
+        /// 外部程序集不能自己 new，一律从这里取用 —— 保证"一份顶点池 + 一份材质 / 变换状态"。
+        /// <para>
+        /// 在设备就绪（<see cref="CreateDeviceAsync"/>）之后建立，因此 <see cref="Initialize"/> /
+        /// <see cref="LoadContent"/> 及其后各阶段都能安全取用；构造阶段（设备尚未创建）还取不到。
+        /// </para>
+        /// <para>
+        /// 与 <see cref="Current"/> 一样做成静态的：本引擎不允许同时存在两个 <see cref="Game"/> 实例。
+        /// 需要"在一个批中间插入另一套材质"时不要新建实例，用 <see cref="SpriteNestedBatch"/>。
+        /// </para>
+        /// </summary>
+        public static SpriteBatch SpriteBatch { get; private set; } = null!;
+
         public GameWindow Window { get; private set; }
 
         /// <summary>
@@ -105,6 +119,9 @@ namespace KFramework.MonoGame
                 _ => new GraphicsDevice(_antialias),
             };
             Window = new GameWindow(GraphicsDevice);
+
+            // 唯一的那把批：在设备就绪处建立，于是 Initialize / LoadContent 里就能直接取用。
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
         /// <summary>收到画布尺寸事件：应用新尺寸，变了才通知 Window（与原先每帧同步的行为一致）。</summary>
