@@ -20,7 +20,7 @@ namespace KFramework.MonoGame
         /// <summary>垂直溢出模式。</summary>
         public readonly VerticalWrapMode VerticalWrap;
 
-        public TextStyle(TextAnchor anchor,
+        public TextStyle(TextAnchor anchor = TextAnchor.UpperLeft,
                          HorizontalWrapMode horizontalWrap = HorizontalWrapMode.Overflow,
                          VerticalWrapMode verticalWrap = VerticalWrapMode.Overflow)
         {
@@ -31,5 +31,6 @@ namespace KFramework.MonoGame
 
         /// <summary>默认风格：左上对齐、不折行、不截断。</summary>
         public static TextStyle Default => new TextStyle(TextAnchor.UpperLeft);
+
     }
 }
