@@ -69,7 +69,7 @@ namespace KFramework.MonoGameExtend
 
         public void DrawMe()
         {
-            // 照 MonoGame：GraphicsDevice.Metrics 是整帧累计的渲染统计（每帧 Clear 时重置一次）。
+            // 照 MonoGame：GraphicsDevice.Metrics 是整帧累计的渲染统计（每帧末 EndFrame 重置一次）。
             var metrics = KSceneMgr.Game.GraphicsDevice.Metrics;
             nClearCount = metrics.ClearCount;
             nDrawCount = metrics.DrawCount;
