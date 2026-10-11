@@ -22,7 +22,10 @@ namespace KFramework.MonoGame
 
         public RenderTargetBinding(RenderTarget2D renderTarget)
         {
-            if (renderTarget == null) throw new System.ArgumentNullException(nameof(renderTarget));
+            if (renderTarget == null)
+            {
+                throw new System.ArgumentNullException(nameof(renderTarget));
+            }
 
             _renderTarget = renderTarget;
             _arraySlice = 0;
@@ -31,6 +34,9 @@ namespace KFramework.MonoGame
 
         /// <summary>RenderTarget2D 可隐式转为绑定（照 MonoGame，便于 SetRenderTargets(rt) 直接传目标）。</summary>
         public static implicit operator RenderTargetBinding(RenderTarget2D renderTarget)
-            => new RenderTargetBinding(renderTarget);
+        { 
+            return new RenderTargetBinding(renderTarget);
+        }
+
     }
 }

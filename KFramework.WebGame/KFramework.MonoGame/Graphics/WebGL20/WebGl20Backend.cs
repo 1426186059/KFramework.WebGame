@@ -20,9 +20,9 @@ namespace KFramework.MonoGame
 
         public string Name => "WebGL2";
 
-    /// <summary>WebGL 的 FBO 与纹理原点在左下，离屏渲染需要改用 Y 向上投影来抵消（详见接口注释）。</summary>
-    public bool NeedsOffscreenYFlip => true;
-
+        /// <summary>WebGL 的 FBO 与纹理原点在左下，离屏渲染需要改用 Y 向上投影来抵消（详见接口注释）。</summary>
+        public bool NeedsOffscreenYFlip => true;
+        
         /// <summary>WebGL 后端无显式收帧动作：画面由浏览器在 rAF 回调结束时自动合成。</summary>
         public void EndFrame() { }
 
@@ -450,7 +450,7 @@ namespace KFramework.MonoGame
             {
                 int samples = renderTarget.MultiSampleCount;
                 int max = JSBind_WEBGL20.GetParameterInt(JSBind_WEBGL20.MAX_SAMPLES);
-                if (samples > max) samples = Math.Max(1, max);
+                if (samples > max) samples = max;
                 if (samples < 1) samples = 1;
 
                 // MSAA 颜色 renderbuffer（RGBA8）
@@ -612,7 +612,8 @@ namespace KFramework.MonoGame
 
             JSBind_WEBGL20.BindFramebuffer(JSBind_WEBGL20.READ_FRAMEBUFFER, ms);
             JSBind_WEBGL20.BindFramebuffer(JSBind_WEBGL20.DRAW_FRAMEBUFFER, resolve);
-            JSBind_WEBGL20.BlitFramebuffer(0, 0, rt.Width, rt.Height, 0, 0, rt.Width, rt.Height,
+            JSBind_WEBGL20.BlitFramebuffer(
+                0, 0, rt.Width, rt.Height, 0, 0, rt.Width, rt.Height,
                 JSBind_WEBGL20.COLOR_BUFFER_BIT, JSBind_WEBGL20.LINEAR);
             JSBind_WEBGL20.BindFramebuffer(JSBind_WEBGL20.READ_FRAMEBUFFER, null);
             JSBind_WEBGL20.BindFramebuffer(JSBind_WEBGL20.DRAW_FRAMEBUFFER, null);
