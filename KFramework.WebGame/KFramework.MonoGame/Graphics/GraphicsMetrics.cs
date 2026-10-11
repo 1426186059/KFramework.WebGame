@@ -26,6 +26,9 @@ namespace KFramework.MonoGame
         /// <summary>像素着色器在 GPU 上被切换的次数。</summary>
         public long PixelShaderCount => _pixelShaderCount;
 
+        /// <summary>顶点着色器在 GPU 上被切换的次数。</summary>
+        public long VertexShaderCount => _vertexShaderCount;
+
         /// <summary>渲染的图元数。</summary>
         public long PrimitiveCount => _primitiveCount;
 
@@ -38,8 +41,8 @@ namespace KFramework.MonoGame
         /// <summary>纹理在 GPU 上被切换的次数。</summary>
         public long TextureCount => _textureCount;
 
-        /// <summary>顶点着色器在 GPU 上被切换的次数。</summary>
-        public long VertexShaderCount => _vertexShaderCount;
+
+
 
         /// <summary>两组 metrics 的差值。</summary>
         public static GraphicsMetrics operator -(GraphicsMetrics value1, GraphicsMetrics value2)
@@ -72,5 +75,13 @@ namespace KFramework.MonoGame
                 _vertexShaderCount = value1._vertexShaderCount + value2._vertexShaderCount,
             };
         }
+
+        /// <summary>
+        /// 全部计数的多行汇总，供调试浮层直接显示（MonoGame 原版没有此方法，这里为便于展示而加）。
+        /// 行之间用 <c>'\n'</c>：SpriteFont / KFont / BitmapFont 的 DrawString 都原生支持换行。
+        /// </summary>
+        public override string ToString()
+            => $"Clear: {_clearCount}   Draw: {_drawCount}   Prim: {_primitiveCount}   Sprite: {_spriteCount}\n"
+             + $"Tex: {_textureCount}   Target: {_targetCount}   VS: {_vertexShaderCount}   PS: {_pixelShaderCount}";
     }
 }
