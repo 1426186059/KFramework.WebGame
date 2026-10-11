@@ -307,7 +307,10 @@ namespace Client.MirGraphics
         public static void SetSurface(SlimDX.Direct3D9.Surface surface)
         {
             // 对齐原版 DXManager.SetSurface：目标相同则直接返回（原版 CurrentSurface == surface 时 return）。
-            if (ReferenceEquals(CurrentSurface, surface)) return;
+            // 注意这里比较的是【渲染目标本身（Owner）】，而不是 Surface 包装对象：调用方普遍写成
+            // `SetSurface(new Surface(ControlTexture))`，每次都是新对象，按引用比较会把"同一个目标"
+            // 误判成切目标 —— 那会白白 Flush 掉已经攒好的批，把本该合并的一段绘制切成好几段（DC 白涨）。
+            if (ReferenceEquals(CurrentSurface?.Owner, surface?.Owner)) return;
             // 切渲染目标会打断 SpriteBatch（Begin 时已捕获旧目标）：先收批提交到旧目标，
             // 下一次 Draw 会在新目标上重新 Begin（对齐原版 SetSurface 里的 Sprite.Flush()）。
             FlushSprite();

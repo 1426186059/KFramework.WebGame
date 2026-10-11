@@ -47,19 +47,14 @@ public static class TextRenderer
             // WinForms 兼容入口：GDI 风格标志 → Unity 三元组（TextAnchor / HorizontalWrapMode / VerticalWrapMode）。
             EngineTextStyle style = flags.ToTextStyle();
 
-            // 引擎文本库不再自持 SpriteBatch：这里用 DXManager 的主批（外部批）包一次。
-            // 文本烘焙走恒等变换，故 transform 传 null（BeginSprite / EndSprite 皆为幂等）。
-            DXManager.BeginSprite(DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied));
-            try
-            {
-                EngineText.DrawText(DXManager.Batch, text, font,
-                    new EngineRect(bounds.X, bounds.Y, bounds.Width, bounds.Height),
-                    EngineColor.FromArgb((uint)foreColor), style.Anchor, style.HorizontalWrap, style.VerticalWrap);
-            }
-            finally
-            {
-                DXManager.EndSprite();
-            }
+            // 只做两件事：切到目标纹理、把字形塞进【调用方已经开好的批】。
+            // 本方法【既不开批也不收批】—— GDI 与游戏渲染已合成为一个渲染系统，批的边界归调用方：
+            // 同一张 ControlTexture 上要画多少次（如 MirLabel 的 4 次描边 + 1 次前景）由调用方用
+            // 一次 BeginSprite / EndSprite 包住，N 次绘制才合成 1 次 draw call；若在这里每次自己开收批，
+            // N 次就是 N 段。调用方必须保证进入本方法时批已开（见 MirLabel / MirTextBox / FPSDialog）。
+            EngineText.DrawText(DXManager.Batch, text, font,
+                new EngineRect(bounds.X, bounds.Y, bounds.Width, bounds.Height),
+                EngineColor.FromArgb((uint)foreColor), style.Anchor, style.HorizontalWrap, style.VerticalWrap);
         }
         finally
         {

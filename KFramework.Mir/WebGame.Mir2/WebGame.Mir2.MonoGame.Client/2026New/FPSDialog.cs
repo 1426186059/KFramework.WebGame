@@ -83,9 +83,28 @@ public sealed class FPSDialog : MirControl
         }
 
         TextRenderer.Clear(ControlTexture, BackColour.ToArgb());
-        TextRenderer.DrawText(ControlTexture, _text, _font,
-            new MirEngine.Rectangle(0, 0, Size.Width, Size.Height), ForeColour.ToArgb(),
-            TextFormatFlags.Left);
+
+        // 同 MirLabel：TextRenderer.DrawText 不再自持 Begin/End，批由调用方开。
+        var savedSurface = DXManager.CurrentSurface;
+        DXManager.SetSurface(new SlimDX.Direct3D9.Surface(ControlTexture));
+        try
+        {
+            DXManager.BeginSprite(DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied));
+            try
+            {
+                TextRenderer.DrawText(ControlTexture, _text, _font,
+                    new MirEngine.Rectangle(0, 0, Size.Width, Size.Height), ForeColour.ToArgb(),
+                    TextFormatFlags.Left);
+            }
+            finally
+            {
+                DXManager.EndSprite();
+            }
+        }
+        finally
+        {
+            DXManager.SetSurface(savedSurface);
+        }
 
         TextureValid = true;
     }
