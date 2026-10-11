@@ -82,6 +82,8 @@ namespace KFramework.MonoGame
 
         //这是本引擎的主力API，允许直接传入材质（Material）对象。
         //本 API 只做 CPU 合批（逐顶点路径）；GPU 实例化请用 GpuInstanceBatch（另一条独立的路）。
+        //transformMatrix 就是 Camera（相机）矩阵：世界 → 屏幕的变换，null = 单位矩阵；
+        //与投影矩阵相乘后作为整批顶点的变换下发（批内不变，见 GraphicsDevice.CreateSpriteProjection）。
         public void Begin(Material material, SpriteSortMode sortMode = SpriteSortMode.Deferred,
                           Matrix4x4? transformMatrix = null)
         {
@@ -90,6 +92,7 @@ namespace KFramework.MonoGame
 
         //这是老API，后续不再推荐使用，建议改用上面的 Begin(Material, ...) 版本。
         //这个API 是对齐 MonoGame,不再增加新字段和删除字段。不要修改任何参数签名，避免破坏兼容性。 
+        //transformMatrix：同上面的主力 API —— 就是 Camera（相机）矩阵（世界 → 屏幕），null = 单位矩阵。
         public void Begin(SpriteSortMode sortMode = SpriteSortMode.Deferred,
                           BlendState? blendState = null,
                           SamplerState? samplerState = null,
