@@ -411,6 +411,7 @@ namespace KFramework.MonoGame
         {
             Backend.BindTexture(texture);
             Textures[0] = texture;
+            _metrics._textureCount++;   // 照 MonoGame 的 TextureCollection：真正下发纹理绑定时计数
             // WebGL2 无独立 sampler 对象：采样参数写在当前绑定的纹理上。
             // 每张纹理记住自己上次应用的采样器，仅当与期望不一致才重发 texParameteri（每纹理至多一次，跨帧也复用）。
             if (!ReferenceEquals(texture._appliedSampler, _samplerState))
@@ -457,6 +458,14 @@ namespace KFramework.MonoGame
                 && _appliedTransform.Equals(transform))
             {
                 return;
+            }
+
+            // 着色器程序真的换了才算一次切换（照 MonoGame 用 dirty 标志：只在真正下发时计数）。
+            // 本引擎顶点 / 片元是同一个 program 对象（WebGL 单一 program、WebGPU 单一 pipeline），故两个计数一起加。
+            if (!ReferenceEquals(_appliedEffect, program))
+            {
+                _metrics._vertexShaderCount++;
+                _metrics._pixelShaderCount++;
             }
 
             _appliedBlend = material.Blend;
@@ -679,6 +688,7 @@ namespace KFramework.MonoGame
             {
                 _currentRenderTargetCount = 0;
                 Backend.ApplyDefaultRenderTarget();
+                _metrics._targetCount++;                    // 照 MonoGame：绑回默认目标记一次
 
                 // 目标换了，纹理单元绑定失效（照 MonoGame 的 Textures.Dirty()）；
                 // 采样参数写在纹理对象上、随纹理存活，切 FBO 不会失效，无需重发。
@@ -695,6 +705,7 @@ namespace KFramework.MonoGame
             {
                 _currentRenderTargetCount = renderTargets.Length;
                 Array.Copy(renderTargets, _currentRenderTargetBindings, renderTargets.Length);
+                _metrics._targetCount += renderTargets.Length;   // 照 MonoGame：按绑定数量累加
 
                 IRenderTarget platformTarget = Backend.ApplyRenderTargets(_currentRenderTargetBindings, _currentRenderTargetCount);
 

@@ -38,6 +38,9 @@ namespace KFramework.MonoGame
         /// <summary>纹理在 GPU 上被切换的次数。</summary>
         public long TextureCount => _textureCount;
 
+        /// <summary>顶点着色器在 GPU 上被切换的次数。</summary>
+        public long VertexShaderCount => _vertexShaderCount;
+
         /// <summary>两组 metrics 的差值。</summary>
         public static GraphicsMetrics operator -(GraphicsMetrics value1, GraphicsMetrics value2)
         {
