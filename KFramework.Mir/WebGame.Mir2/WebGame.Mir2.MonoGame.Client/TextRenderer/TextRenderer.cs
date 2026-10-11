@@ -24,15 +24,15 @@ public static class TextRenderer
     // ---------------- MeasureText ----------------
 
     public static MirEngine.Size MeasureText(string text, Font font)
-        => EngineText.MeasureText(Device, text, font);
+        => EngineText.MeasureText(text, font);
 
     public static MirEngine.Size MeasureText(string text, Font font, MirEngine.Size proposedSize)
-        => EngineText.MeasureText(Device, text, font, ToEngineSize(proposedSize));
+        => EngineText.MeasureText(text, font, ToEngineSize(proposedSize));
 
     // WinForms 兼容入口：把 GDI 风格标志折算成引擎的 Unity 三元组（折算见 Shims/TextFormatFlags.cs 的 ToTextStyle）。
     // 业务代码继续用 TextFormatFlags，后续要迁移只需改这几个入口，不必动 150 处调用点。
     public static MirEngine.Size MeasureText(string text, Font font, MirEngine.Size proposedSize, TextFormatFlags flags)
-        => EngineText.MeasureText(Device, text, font, ToEngineSize(proposedSize), flags.ToTextStyle().HorizontalWrap);
+        => EngineText.MeasureText(text, font, ToEngineSize(proposedSize), flags.ToTextStyle().HorizontalWrap);
 
     // ---------------- DrawText ----------------
 
@@ -46,9 +46,20 @@ public static class TextRenderer
         {
             // WinForms 兼容入口：GDI 风格标志 → Unity 三元组（TextAnchor / HorizontalWrapMode / VerticalWrapMode）。
             EngineTextStyle style = flags.ToTextStyle();
-            EngineText.DrawText(Device, text, font,
-                new EngineRect(bounds.X, bounds.Y, bounds.Width, bounds.Height),
-                EngineColor.FromArgb((uint)foreColor), style.Anchor, style.HorizontalWrap, style.VerticalWrap);
+
+            // 引擎文本库不再自持 SpriteBatch：这里用 DXManager 的主批（外部批）包一次。
+            // 文本烘焙走恒等变换，故 transform 传 null（BeginSprite / EndSprite 皆为幂等）。
+            DXManager.BeginSprite(DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied));
+            try
+            {
+                EngineText.DrawText(DXManager.Batch, text, font,
+                    new EngineRect(bounds.X, bounds.Y, bounds.Width, bounds.Height),
+                    EngineColor.FromArgb((uint)foreColor), style.Anchor, style.HorizontalWrap, style.VerticalWrap);
+            }
+            finally
+            {
+                DXManager.EndSprite();
+            }
         }
         finally
         {
