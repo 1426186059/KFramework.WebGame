@@ -84,7 +84,7 @@ namespace KFramework.Test.Canvas2D.Tests
                 "这是一段用于演示自动折行的中文与 English 混排文本，超出宽度时按词 / 逐字换行，"
                 + "并在面板里水平居中。Canvas2D 后端下每个字形同样是一次 drawImage。",
                 _f24, new Rectangle(panel.X + 10, panel.Y + 8, panel.Width - 20, panel.Height - 16),
-                Color.White, TextFormatFlags.WordBreak | TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                Color.White, TextAnchor.MiddleCenter, HorizontalWrapMode.Wrap);
         }
 
         /// <summary>用某个字体画一行（含测量出的高度），返回占用高度。</summary>

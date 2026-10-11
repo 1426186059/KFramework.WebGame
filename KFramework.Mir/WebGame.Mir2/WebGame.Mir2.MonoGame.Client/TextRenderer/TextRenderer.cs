@@ -1,4 +1,5 @@
 using Client.MirGraphics;
+using WebGame.Mir2.MonoGame.Client;   // TextFormatFlags 及其 ToTextStyle() 折算扩展
 using SlimTexture = SlimDX.Direct3D9.Texture;
 using SlimSurface = SlimDX.Direct3D9.Surface;
 using EngineDevice = KFramework.MonoGame.GraphicsDevice;
@@ -6,6 +7,7 @@ using EngineColor = KFramework.MonoGame.Color;
 using EngineRect = KFramework.MonoGame.Rectangle;
 using EngineText = KFramework.MonoGame.TextRenderer;
 using EngineSize = KFramework.MonoGame.Size;
+using EngineTextStyle = KFramework.MonoGame.TextStyle;
 
 // 客户端适配层：把引擎通用文本库（KFramework.MonoGame/TextRenderer）与本工程的设备、离屏纹理
 // （SlimDX 壳 SlimDX.Direct3D9.Texture -> RenderTarget2D）接起来。
@@ -27,8 +29,10 @@ public static class TextRenderer
     public static MirEngine.Size MeasureText(string text, Font font, MirEngine.Size proposedSize)
         => EngineText.MeasureText(Device, text, font, ToEngineSize(proposedSize));
 
+    // WinForms 兼容入口：把 GDI 风格标志折算成引擎的 Unity 三元组（折算见 Shims/TextFormatFlags.cs 的 ToTextStyle）。
+    // 业务代码继续用 TextFormatFlags，后续要迁移只需改这几个入口，不必动 150 处调用点。
     public static MirEngine.Size MeasureText(string text, Font font, MirEngine.Size proposedSize, TextFormatFlags flags)
-        => EngineText.MeasureText(Device, text, font, ToEngineSize(proposedSize), flags);
+        => EngineText.MeasureText(Device, text, font, ToEngineSize(proposedSize), flags.ToTextStyle().HorizontalWrap);
 
     // ---------------- DrawText ----------------
 
@@ -40,9 +44,11 @@ public static class TextRenderer
         DXManager.SetSurface(new SlimSurface(texture));
         try
         {
+            // WinForms 兼容入口：GDI 风格标志 → Unity 三元组（TextAnchor / HorizontalWrapMode / VerticalWrapMode）。
+            EngineTextStyle style = flags.ToTextStyle();
             EngineText.DrawText(Device, text, font,
                 new EngineRect(bounds.X, bounds.Y, bounds.Width, bounds.Height),
-                EngineColor.FromArgb((uint)foreColor), flags);
+                EngineColor.FromArgb((uint)foreColor), style.Anchor, style.HorizontalWrap, style.VerticalWrap);
         }
         finally
         {

@@ -281,11 +281,11 @@ namespace KFramework.Test.Common.Tests.FontTest
                     "MSDF 模式尚未实现（占位）。\n\n"
                     + "这里将来放多通道有符号距离场（MSDF）字体的对比：同一份字形数据在任意字号 / 缩放下都清晰，"
                     + "描边、外发光、阴影几乎不额外增加图集开销 —— 代价是生成麻烦、极小字号会发虚。",
-                    Font, textRect, new Color(255, 206, 110), TextFormatFlags.WordBreak);
+                    Font, textRect, new Color(255, 206, 110), hWrap: HorizontalWrapMode.Wrap);
             }
             else if (font is null)
             {
-                TextRenderer.DrawText(batch, NotReadyReason(), Font, textRect, Color.DarkGray, TextFormatFlags.WordBreak);
+                TextRenderer.DrawText(batch, NotReadyReason(), Font, textRect, Color.DarkGray, hWrap: HorizontalWrapMode.Wrap);
             }
             else
             {

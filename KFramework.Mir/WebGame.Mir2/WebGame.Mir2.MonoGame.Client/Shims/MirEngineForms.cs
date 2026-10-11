@@ -7,8 +7,9 @@ namespace MirEngine
 {
     // MirEngine.Forms 所需的最小集合（TextRenderer 已移除，文本度量统一改用 TextRenderer.MeasureText）
 
-    // TextFormatFlags 已上移到引擎通用库：KFramework.MonoGame.TextFormatFlags
-    // （见 Shims/GlobalUsings.cs 的全局别名，位值与此处原定义完全一致）。
+    // TextFormatFlags 现由本工程定义（Shims/TextFormatFlags.cs）：引擎（KFramework.MonoGame）
+    // 只认 Unity 的三元组（TextAnchor / HorizontalWrapMode / VerticalWrapMode），
+    // GDI 标志到三元组的折算在该文件的 ToTextStyle() 扩展里完成。
 
     public struct Message
     {

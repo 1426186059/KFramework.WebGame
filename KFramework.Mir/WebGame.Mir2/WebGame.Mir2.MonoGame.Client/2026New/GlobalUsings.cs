@@ -1,4 +1,4 @@
 global using MirEngine;
 global using Keys = KFramework.MonoGame.Keys;
 global using MouseButtons = KFramework.MonoGame.MouseButton;
-global using TextFormatFlags = KFramework.MonoGame.TextFormatFlags;
+global using TextFormatFlags = WebGame.Mir2.MonoGame.Client.TextFormatFlags;

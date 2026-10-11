@@ -109,9 +109,9 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
             DrawRect(batch, panel, new Color(24, 30, 46));
             Rectangle textBounds = new(panel.X + 10, panel.Y + 8, panel.Width - 20, panelH - 16);
             TextRenderer.DrawText(batch, sample, _font, textBounds, Color.White,
-                                  TextFormatFlags.WordBreak | TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                                  TextAnchor.MiddleCenter, HorizontalWrapMode.Wrap);
 
-            Size measured = TextRenderer.MeasureText(sample, _font, new Size(panel.Width - 20, int.MaxValue), TextFormatFlags.WordBreak);
+            Size measured = TextRenderer.MeasureText(sample, _font, new Size(panel.Width - 20, int.MaxValue), HorizontalWrapMode.Wrap);
             y += panelH + 6f;
             y += DrawLine(batch, Font, $"MeasureText(WordBreak) = {measured.Width} × {measured.Height}", new Vector2(x, y), Color.LightGray);
 
@@ -119,17 +119,17 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
             y += 8f;
             y += DrawSection(batch, "对齐 + 底色（backColor）", new Vector2(x, y));
             int bandH = 30, bandW = (int)_colW;
-            DrawBand(batch, "Left 左对齐", new Rectangle((int)x, (int)y, bandW, bandH), Color.White, TextFormatFlags.Left | TextFormatFlags.VerticalCenter, new Color(60, 90, 140));
+            DrawBand(batch, "MiddleLeft 左对齐", new Rectangle((int)x, (int)y, bandW, bandH), Color.White, TextAnchor.MiddleLeft, new Color(60, 90, 140));
             y += bandH + 8;
-            DrawBand(batch, "HorizontalCenter 居中", new Rectangle((int)x, (int)y, bandW, bandH), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter, new Color(60, 130, 110));
+            DrawBand(batch, "MiddleCenter 居中", new Rectangle((int)x, (int)y, bandW, bandH), Color.White, TextAnchor.MiddleCenter, new Color(60, 130, 110));
             y += bandH + 8;
-            DrawBand(batch, "Right 右对齐", new Rectangle((int)x, (int)y, bandW, bandH), Color.White, TextFormatFlags.Right | TextFormatFlags.VerticalCenter, new Color(130, 90, 60));
+            DrawBand(batch, "MiddleRight 右对齐", new Rectangle((int)x, (int)y, bandW, bandH), Color.White, TextAnchor.MiddleRight, new Color(130, 90, 60));
         }
 
-        private static void DrawBand(SpriteBatch batch, string text, Rectangle band, Color fore, TextFormatFlags flags, Color back)
+        private static void DrawBand(SpriteBatch batch, string text, Rectangle band, Color fore, TextAnchor anchor, Color back)
         {
             batch.Draw(KDefaultRes.DefaultTexture2D, band, null, back);
-            TextRenderer.DrawText(batch, text, KDefaultRes.DefaultSpriteFont, band, fore, flags);
+            TextRenderer.DrawText(batch, text, KDefaultRes.DefaultSpriteFont, band, fore, anchor);
         }
 
         // ── 右栏：单机聊天（TextBox） ────────────────────────────────────────
@@ -161,14 +161,14 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
             for (int i = _log.Count - 1; i >= 0; i--)
             {
                 string msg = _log[i];
-                Size sz = TextRenderer.MeasureText(msg, _font, new Size(availW, int.MaxValue), TextFormatFlags.WordBreak);
+                Size sz = TextRenderer.MeasureText(msg, _font, new Size(availW, int.MaxValue), HorizontalWrapMode.Wrap);
                 y -= sz.Height;
                 if (y < panel.Y + 8f) break; // 超出顶部，丢弃更旧的消息
 
                 Color c = msg.StartsWith("我：") ? new Color(160, 230, 160)
                           : msg.StartsWith("系统：") ? new Color(255, 206, 110)
                           : Color.White;
-                TextRenderer.DrawText(batch, msg, _font, new Rectangle((int)x, (int)y, availW, sz.Height), c, TextFormatFlags.WordBreak);
+                TextRenderer.DrawText(batch, msg, _font, new Rectangle((int)x, (int)y, availW, sz.Height), c, hWrap: HorizontalWrapMode.Wrap);
             }
         }
 
