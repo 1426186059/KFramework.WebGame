@@ -108,7 +108,7 @@ namespace KFramework.MonoGame
 
         /// <summary>
         /// 渲染统计快照，照 MonoGame 的 GraphicsDevice.Metrics。
-        /// 每帧由 Clear 重置一次（照 MonoGame 在 Present 里重置），跨所有 SpriteBatch 批次累计。
+        /// 每帧由 <see cref="EndFrame"/> 重置一次（照 MonoGame 在 Present 里重置），跨所有 SpriteBatch 批次累计。
         /// </summary>
         public GraphicsMetrics Metrics { get { return _metrics; } set { _metrics = value; } }
 
@@ -278,8 +278,16 @@ namespace KFramework.MonoGame
         /// 收帧（照 MonoGame 的 GraphicsDevice.Present）。
         /// WebGL 后端无需动作（画面由浏览器在 rAF 回调结束时自动合成）；
         /// WebGPU 后端在此结束渲染通道并提交命令缓冲，不调则画面永不呈现。
+        /// <para>
+        /// 帧末顺带重置渲染统计（照 MonoGame 在 Present 里 <c>_graphicsMetrics = new GraphicsMetrics()</c>）。
+        /// 放在这里而不是 <see cref="Clear"/>：一帧内可能清多次屏，而统计要覆盖整帧。
+        /// </para>
         /// </summary>
-        public void EndFrame() => Backend.EndFrame();
+        public void EndFrame()
+        {
+            Backend.EndFrame();
+            _metrics = new GraphicsMetrics();
+        }
 
         /// <summary>当前渲染后端名（"WebGL2" / "WebGPU" / "Canvas2D"）。</summary>
         public string BackendName => Backend.Name;
@@ -326,8 +334,9 @@ namespace KFramework.MonoGame
 
         public void Clear(Color color)
         {
-            // 每帧清一次渲染统计，照 MonoGame 在 Present 里 _graphicsMetrics = new GraphicsMetrics()（跨所有 SpriteBatch 批次累计）。
-            _metrics = new GraphicsMetrics();
+            // 只累加清屏次数：整个统计快照在帧末（EndFrame）重置，照 MonoGame 在 Present 里重置。
+            // 绝不能在这里 new GraphicsMetrics() —— 一帧内可能清多次屏（离屏 RT 逐块清 + 切回画布再清），
+            // 那会把本帧已累积的 sprite / draw / primitive 计数全部抹掉，度量退化成"最后一次 Clear 之后"。
             _metrics._clearCount++;
 
             // 【必须与后端的新通道同步失效材质去重缓存】

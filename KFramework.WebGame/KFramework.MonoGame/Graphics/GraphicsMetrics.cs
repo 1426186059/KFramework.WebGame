@@ -4,7 +4,7 @@ namespace KFramework.MonoGame
     /// <summary>
     /// 渲染统计快照，照 MonoGame 的 Microsoft.Xna.Framework.Graphics.GraphicsMetrics。
     /// 通过 <see cref="GraphicsDevice.Metrics"/> 读取，用于运行时调试与性能分析。
-    /// 每帧由 GraphicsDevice.Clear 重置一次（照 MonoGame 在 Present 里重置），跨所有 SpriteBatch 批次累计。
+    /// 每帧由 GraphicsDevice.EndFrame 重置一次（照 MonoGame 在 Present 里重置），跨所有 SpriteBatch 批次累计。
     /// </summary>
     public struct GraphicsMetrics
     {
