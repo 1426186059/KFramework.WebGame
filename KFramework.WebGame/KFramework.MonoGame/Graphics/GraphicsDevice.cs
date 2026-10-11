@@ -347,6 +347,14 @@ namespace KFramework.MonoGame
             // 精灵坐标被当成 NDC 原样送出，几乎全部落在 [-1,1] 之外被裁掉：
             // 离屏 RT 变成一块纯背景色的死矩形，画布上也只残留下零星内容。
             // 这里同步清掉去重标记，保证每个新通道都真正下发一次状态与变换矩阵。
+            //
+            // 【这不是 MonoGame 的做法，MonoGame 里没有也不需要这一步】
+            // MonoGame 的 SpriteBatch 在提交前（End → Setup()，仅 Immediate 模式在 Begin）【全量下发】
+            // 混合 / 深度 / 剔除 / 采样与 _spritePass，且原生 GL / DX 调用便宜，所以不存在
+            // "缓存以为没变、实际状态已经变了"的裂缝，它的 Clear 里自然没有东西要失效。
+            // 本引擎为省 Web/WASM 的跨 JS 调用引入了 ApplyMaterial 去重，又让后端用"槽位"管理 uniform，
+            // 两者叠加才产生这条裂缝 —— 这句是本引擎特有的必要配套。
+            // 将来若砍掉去重缓存（回到每批全量下发），这句与 ApplyMaterial 里那组 _appliedXxx 可一起删除。
             InvalidateMaterialCache();
 
             Backend.Clear(color);
