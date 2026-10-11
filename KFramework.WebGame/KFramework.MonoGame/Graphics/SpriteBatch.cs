@@ -113,24 +113,19 @@ namespace KFramework.MonoGame
 
         private void BeginInternal(Material material, SpriteSortMode sortMode, Matrix4x4? transformMatrix)
         {
-            if (_beginCalled) throw new InvalidOperationException("上一次 Begin 还没有对应的 End。");
+            if (_beginCalled)
+            {
+                throw new InvalidOperationException("上一次 Begin 还没有对应的 End。");
+            }
 
-            // 材质没指定效果就在【开批】时落到设备默认效果（写回字段）：此后 ApplyMaterial 与着色器程序
-            // 都只认 material.Effect，不必在更晚的地方再判一次空。
             material.Effect ??= ShaderEffect.Default;
+            _material = material;
 
             _sortMode = sortMode;
-            _material = material;
+   
             _transform = transformMatrix ?? Matrix4x4.Identity;
-
-            // 投影矩阵：与 GpuInstanceBatch / UrpBatch 共用同一份（见 GraphicsDevice.CreateSpriteProjection）。
             _projection = _device.CreateSpriteProjection();
             _transformProjection = _transform * _projection;
-
-            // ---- 材质只在这里【算好并记住】，真正下发放到提交时（见 FlushBatch）----
-            // 一个批只有一个材质（混合 / 深度 / 剔除 / 采样 + 着色器程序 + uProjection + 材质属性），
-            // 批内不变，所以每个批只需要下发一次；至于"哪一刻下发"由 FlushBatch 决定。
-            _blockApplied = false;
 
             _beginCalled = true;
         }
