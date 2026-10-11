@@ -1,14 +1,31 @@
 namespace KFramework.MonoGame
 {
-    /// <summary>
-    /// 文本排版风格：把 Unity 的三元组（<see cref="TextAnchor"/> + <see cref="HorizontalWrapMode"/> +
-    /// <see cref="VerticalWrapMode"/>）打成一个值，便于整体传递与传参。
-    /// <para>
-    /// 引擎只认这三元组。WinForms 的 <c>TextFormatFlags</c> <b>不属于引擎</b> ——
-    /// GDI 标志到三元组的折算由需要的调用方自行提供
-    /// （传奇客户端在 MirEngine 侧给了 <c>ToTextStyle()</c> 扩展，见其 Shims）。
-    /// </para>
-    /// </summary>
+    public enum TextAnchor
+    {
+        UpperLeft = 0,
+        UpperCenter = 1,
+        UpperRight = 2,
+        MiddleLeft = 3,
+        MiddleCenter = 4,
+        MiddleRight = 5,
+        LowerLeft = 6,
+        LowerCenter = 7,
+        LowerRight = 8,
+    }
+
+    public enum HorizontalWrapMode
+    {
+        Wrap = 0,
+        Overflow = 1,
+    }
+
+    public enum VerticalWrapMode
+    {
+        Truncate = 0,
+        Overflow = 1,
+    }
+    
+
     public readonly struct TextStyle
     {
         /// <summary>对齐锚点（同时决定水平与垂直对齐）。</summary>
