@@ -85,9 +85,14 @@ namespace KFramework.MonoGame
             int row = (int)anchor / 3;
             int col = (int)anchor % 3;
 
+            // 对齐就是对齐，不做"防溢出"的夹取：bounds 比文字窄 / 矮时，让文字向上下均摊溢出，
+            // 这与 GDI 的 DT_CENTER / DT_VCENTER 语义一致（文字宽于矩形时向两侧平均溢出，而不是退化成左对齐）。
+            // 原来的 Math.Max(0f, …) 会把窄框下的"居中"悄悄变成"顶对齐"——
+            // 当 bounds 退化成一个点（例如 KButton.Label 的 MinMaxAnchor 被 Anchor 覆盖成 0）时，
+            // 就表现为"文字从锚点向右下画"，看起来像完全没居中。
             float startY = bounds.Y;
-            if (row == 1) startY = bounds.Y + Math.Max(0f, (bounds.Height - totalH) / 2f);
-            else if (row == 2) startY = bounds.Y + Math.Max(0f, bounds.Height - totalH);
+            if (row == 1) startY = bounds.Y + (bounds.Height - totalH) / 2f;
+            else if (row == 2) startY = bounds.Y + (bounds.Height - totalH);
 
             // Truncate：这一行【放不下】就整行不画（只截断，不画省略号）。
             // 判据必须是【行底】而不是【行顶】：只看行顶的话，"顶部还压在框内、底部已经越出框底"
@@ -98,10 +103,11 @@ namespace KFramework.MonoGame
             {
                 if (startY + lineH > clipBottom) break;
 
+                // 同上：水平方向也不夹取 —— 文字宽于矩形时向两侧平均溢出（GDI 的 DT_CENTER 行为）。
                 float lineW = font.MeasureString(line).X;
                 float tx = bounds.X;
-                if (col == 1) tx = bounds.X + Math.Max(0f, (bounds.Width - lineW) / 2f);
-                else if (col == 2) tx = bounds.X + Math.Max(0f, bounds.Width - lineW);
+                if (col == 1) tx = bounds.X + (bounds.Width - lineW) / 2f;
+                else if (col == 2) tx = bounds.X + (bounds.Width - lineW);
 
                 font.Draw(batch, line, new Vector2(tx, startY), foreColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
                 startY += lineH;
