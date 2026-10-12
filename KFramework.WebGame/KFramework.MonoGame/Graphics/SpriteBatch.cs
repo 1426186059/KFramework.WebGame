@@ -29,7 +29,7 @@ namespace KFramework.MonoGame
         private readonly GraphicsDevice _device;
 
         private SpriteSortMode _sortMode;
-        private Matrix4x4 _transform = Matrix4x4.Identity;
+        private Matrix4x4 _cameraMatrix = Matrix4x4.Identity;
         private Matrix4x4 _projection;
         private Material _material = null!;
         private readonly Material _cache_Mat = new Material();
@@ -45,7 +45,7 @@ namespace KFramework.MonoGame
         private int _batchItemCount;
 
         /// <summary>本批的「世界 → 屏幕」矩阵（= 相机矩阵 × 投影）：批内不变，开批时算一次。</summary>
-        private Matrix4x4 _transformProjection;
+        private Matrix4x4 _cameraProjectionMatrix;
 
         /// <summary>设备上此刻是否挂着某个属性块的 uniform 值（为 true 时，遇不带块的段要先把材质默认值发回去）。</summary>
         private bool _blockApplied;
@@ -123,9 +123,9 @@ namespace KFramework.MonoGame
 
             _sortMode = sortMode;
    
-            _transform = transformMatrix ?? Matrix4x4.Identity;
+            _cameraMatrix = transformMatrix ?? Matrix4x4.Identity;
             _projection = _device.CreateSpriteProjection();
-            _transformProjection = _transform * _projection;
+            _cameraProjectionMatrix = _cameraMatrix * _projection;
 
             _beginCalled = true;
         }
@@ -168,7 +168,7 @@ namespace KFramework.MonoGame
             // 重复调用由 GraphicsDevice 按「材质内容 + 变换」去重（命中则只做几次引用比较）。
             // _blockApplied 归零：ApplyMaterial(..., null) 之后状态已回到材质默认值，
             // 块"待还原"的标记必须同步清掉，否则后面的不带块段会多走一次还原路径。
-            _device.ApplyMaterial(_material, _transformProjection, null);
+            _device.ApplyMaterial(_material, _cameraProjectionMatrix, null);
             _blockApplied = false;
 
             switch (_sortMode)
@@ -219,12 +219,12 @@ namespace KFramework.MonoGame
                         //   2) 纹理：每段必然不同（分段键之一）。
                         if (block is not null)
                         {
-                            _device.ApplyMaterial(_material, _transformProjection, block);
+                            _device.ApplyMaterial(_material, _cameraProjectionMatrix, block);
                             _blockApplied = true;
                         }
                         else if (_blockApplied)
                         {
-                            _device.ApplyMaterial(_material, _transformProjection, null);
+                            _device.ApplyMaterial(_material, _cameraProjectionMatrix, null);
                             _blockApplied = false;
                         }
 
