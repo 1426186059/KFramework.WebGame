@@ -182,8 +182,6 @@ namespace KFramework.MonoGame
 
             // 整批精灵总数（照 MonoGame：spriteCount 只在提交时累加一次）。
             _device._metrics._spriteCount += _batchItemCount;
-
-            Matrix4x4 transform = _transformProjection;
             int batchIndex = 0;
             int batchCount = _batchItemCount;
             int maxBatchSize = GraphicsDevice.MaxBatchSize;
@@ -221,12 +219,12 @@ namespace KFramework.MonoGame
                         //   2) 纹理：每段必然不同（分段键之一）。
                         if (block is not null)
                         {
-                            _device.ApplyMaterial(_material, transform, block);
+                            _device.ApplyMaterial(_material, _transformProjection, block);
                             _blockApplied = true;
                         }
                         else if (_blockApplied)
                         {
-                            _device.ApplyMaterial(_material, transform, null);
+                            _device.ApplyMaterial(_material, _transformProjection, null);
                             _blockApplied = false;
                         }
 
