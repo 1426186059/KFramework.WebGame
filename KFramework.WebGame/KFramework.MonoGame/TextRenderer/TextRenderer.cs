@@ -89,12 +89,14 @@ namespace KFramework.MonoGame
             if (row == 1) startY = bounds.Y + Math.Max(0f, (bounds.Height - totalH) / 2f);
             else if (row == 2) startY = bounds.Y + Math.Max(0f, bounds.Height - totalH);
 
-            // Truncate：整行已落到框外就停（只截断，不画省略号）。
+            // Truncate：这一行【放不下】就整行不画（只截断，不画省略号）。
+            // 判据必须是【行底】而不是【行顶】：只看行顶的话，"顶部还压在框内、底部已经越出框底"
+            // 的那一行会被完整画出去 —— 表现就是"最后一行明显冒出矩形之外"。
             float clipBottom = vWrap == VerticalWrapMode.Truncate ? bounds.Y + bounds.Height : float.MaxValue;
 
             foreach (string line in lines)
             {
-                if (startY >= clipBottom) break;
+                if (startY + lineH > clipBottom) break;
 
                 float lineW = font.MeasureString(line).X;
                 float tx = bounds.X;

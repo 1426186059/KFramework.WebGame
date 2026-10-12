@@ -73,8 +73,8 @@ namespace KFramework.Test.Common.Tests
             },
             new TestEntry
             {
-                Name = "文本渲染 / 输入框",
-                Desc = "TextRenderer（对齐 WinForms GDI 的 MeasureText/DrawText：WordBreak 折行、对齐、backColor）与 TextBox（点击聚焦、键入/IME 中文、密码、多行）",
+                Name = "文本渲染 / KLabel / 输入框（按钮切页）",
+                Desc = "① TextRenderer 与 ② KLabel 共用同一套矩形与样本（TextAnchor 九向各占一格、HorizontalWrapMode 的 Wrap/Overflow、VerticalWrapMode 的 Truncate/Overflow），两页对照可分离「文本库问题」与「控件层换算问题」；③ TextBox：点击聚焦、键入/IME 中文、多行",
                 Factory = static () => new TextRenderTest.TextRenderTestScene(),
             },
             new TestEntry
