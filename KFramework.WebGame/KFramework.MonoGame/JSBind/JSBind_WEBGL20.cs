@@ -344,6 +344,9 @@ namespace KFramework.MonoGame
         public static partial void VertexAttribPointer(int index, int size, int type, bool normalized, int stride, int offset);
 
         /// <summary>设置顶点属性的实例化步长（0 = 逐顶点，1 = 逐实例）。属于 VAO 状态。</summary>
+        ///divisor = 0（默认值）：表示该属性是逐顶点更新的。这是标准渲染模式，每个顶点都会从缓冲区读取新数据。
+        ///divisor = 1：表示该属性是逐实例更新的。渲染一个实例时，所有顶点共用同一个属性值。渲染下一个实例时，才会读取下一个属性值。
+        ///divisor = N（N > 1）：表示每渲染 N 个实例，该属性才更新一次。
         [JSImport("vertexAttribDivisor", "render_webgl20")]
         public static partial void VertexAttribDivisor(int index, int divisor);
 

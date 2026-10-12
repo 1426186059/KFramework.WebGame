@@ -103,7 +103,9 @@ void main()
             JSBind_WEBGL20.AttachShader(_program, fragmentShader);
             JSBind_WEBGL20.LinkProgram(_program);
             if (JSBind_WEBGL20.GetProgramParameter(_program, JSBind_WEBGL20.LINK_STATUS) == 0)
+            {
                 throw new InvalidOperationException("实例化着色器链接失败: " + JSBind_WEBGL20.GetProgramInfoLog(_program));
+            }
 
             JSBind_WEBGL20.DeleteShader(vertexShader);
             JSBind_WEBGL20.DeleteShader(fragmentShader);
@@ -111,11 +113,9 @@ void main()
             _projectionLocation = JSBind_WEBGL20.GetUniformLocation(_program, "uProjection");
             _textureLocation = JSBind_WEBGL20.GetUniformLocation(_program, "uTexture");
 
-            // ---- 缓冲：单位四边形（静态）、索引（静态）、实例数据（动态）----
             _quadBuffer = JSBind_WEBGL20.CreateBuffer();
             _indexBuffer = JSBind_WEBGL20.CreateBuffer();
             _instanceBuffer = JSBind_WEBGL20.CreateBuffer();
-
             _vertexArray = JSBind_WEBGL20.CreateVertexArray();
 
             JSBind_WEBGL20.BindVertexArray(_vertexArray);
@@ -206,7 +206,10 @@ void main()
                 JSBind_WEBGL20.UniformMatrix4fv(_projectionLocation, 0, _matrixBuffer);
             }
             // 精灵纹理固定在 0 号单元（与 SpriteBatch / 自定义程序一致）。
-            if (_textureLocation is not null) JSBind_WEBGL20.Uniform1i(_textureLocation, 0);
+            if (_textureLocation is not null)
+            {
+                JSBind_WEBGL20.Uniform1i(_textureLocation, 0);
+            }
 
             // UV 矩形与逐实例矩阵都不走 uniform：它们随实例数据一起进缓冲（GpuInstance.UvRect / ObjectToWorld），
             // 所以同一个 draw 里每个实例都能取纹理的不同子区域、各有自己的变换。

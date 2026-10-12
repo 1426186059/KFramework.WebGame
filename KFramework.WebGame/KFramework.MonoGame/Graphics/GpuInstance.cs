@@ -3,28 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace KFramework.MonoGame
 {
-    /// <summary>
-    /// GPU 实例化（Instancing）的逐实例数据，84 字节。字段与 Unity 的实例化数据对齐：
-    /// <see cref="ObjectToWorld"/> 就是 Unity 的 <c>unity_ObjectToWorld</c>（对象→世界变换矩阵），
-    /// 其余是 2D 精灵特有的附加数据（颜色 / UV 矩形）。
-    /// <para>
-    /// 布局与 <see cref="WebGL_ShaderProgram_2D_Instanced"/> 的顶点属性一一对应（<c>vertexAttribDivisor = 1</c>）：
-    /// ObjectToWorld float32x4 ×4（偏移 0 / 16 / 32 / 48，占 4 个属性槽）
-    /// → Tint unorm8x4（偏移 64）
-    /// → UvRect float32x4（偏移 68：xy = UV 起点、zw = UV 尺寸，均归一化）。
-    /// </para>
-    /// <para>
-    /// <b>矩阵约定</b>：<see cref="ObjectToWorld"/> 是<b>行主序 + 行向量</b>（与本引擎 / MonoGame 一致，p' = p × M），
-    /// 它把<b>单位四边形 (0,0)-(1,1)</b> 变换到屏幕；顶点着色器里写
-    /// <c>gl_Position = uProjection * (aObjectToWorld * vec4(顶点, 0, 1))</c>。
-    /// 内存按行主序直发、GLSL 按列读，两者恰好等价（见 <see cref="Matrix4x4"/> 的说明）。
-    /// 矩阵带来的好处与 Unity 一样：位置 / 尺寸 / 旋转 / 斜切 / 任意仿射都能表达，不必再为每种变换加字段。
-    /// </para>
-    /// <para>
-    /// 与 Unity 的差异（有意为之）：Unity 的内置实例化缓冲还带 <c>unity_WorldToObject</c>（法线 / 光照用）。
-    /// 2D 精灵没有光照与法线，故这里不带它 —— 带上等于每个实例白多 64 字节。
-    /// </para>
-    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct GpuInstance
     {
