@@ -120,6 +120,8 @@ void main()
 
             JSBind_WEBGL20.BindVertexArray(_vertexArray);
 
+            //_quadBuffer 的 4 个顶点不会溢出，
+            //因为逐实例属性根本不去动它；而逐顶点属性每个实例都重新从它开头读，是设计如此。
             JSBind_WEBGL20.BindBuffer(JSBind_WEBGL20.ARRAY_BUFFER, _quadBuffer);
             JSBind_WEBGL20.BufferData(JSBind_WEBGL20.ARRAY_BUFFER, BuildUnitQuad(), JSBind_WEBGL20.STATIC_DRAW);
 

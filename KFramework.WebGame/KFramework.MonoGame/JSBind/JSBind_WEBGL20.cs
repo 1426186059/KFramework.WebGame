@@ -83,10 +83,10 @@ namespace KFramework.MonoGame
         public const int TRIANGLE_STRIP = 0x0005;
 
         // —— 缓冲目标 & 用法（bindBuffer、bufferData 的 target / usage） ——
-        public const int ARRAY_BUFFER = 0x8892;
-        public const int ELEMENT_ARRAY_BUFFER = 0x8893;
-        public const int STATIC_DRAW = 0x88E4;
-        public const int DYNAMIC_DRAW = 0x88E8;
+        public const int ARRAY_BUFFER = 0x8892; //这块 buffer 存的是顶点数据
+        public const int ELEMENT_ARRAY_BUFFER = 0x8893; //这块 buffer 存的是索引数据
+        public const int STATIC_DRAW = 0x88E4; //数据几乎不变，只上传一次,适合：静态模型、不动的场景物体。
+        public const int DYNAMIC_DRAW = 0x88E8; //数据会经常变，要反复更新,适合：每帧都在变的粒子、骨骼动画、实时更新的位置数据。
 
         /// <summary>uniform buffer（UBO）目标：SRP Batcher 式的常量缓冲用它（见 <see cref="UrpBatch"/>）。</summary>
         public const int UNIFORM_BUFFER = 0x8A11;
