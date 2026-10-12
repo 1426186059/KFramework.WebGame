@@ -124,8 +124,7 @@ namespace KFramework.MonoGame
         /// <param name="material">材质（混合 / 采样 / 深度 / 剔除状态 + <see cref="Material.Effect"/> 自定义着色器）；
         /// 为 null 时用精灵默认状态与内置片元着色器。逐材质常量请用 <see cref="MaterialColor"/>（它进 <c>UnityPerMaterial</c> 常量块）。</param>
         /// <param name="sortMode">渲染顺序（<see cref="SpriteSortMode"/>）：Deferred = 保持 Draw 调用顺序；
-        /// Texture = 按纹理排序（让同纹理的物体连在一起，减少绑定切换）；FrontToBack / BackToFront = 按 layerDepth 排序；
-        /// Immediate = 每笔当场提交。</param>
+        /// Texture = 按纹理排序（让同纹理的物体连在一起，减少绑定切换）；FrontToBack / BackToFront = 按 layerDepth 排序。</param>
         /// <param name="transformMatrix">相机矩阵（世界 → 屏幕的变换），null = 单位矩阵；与投影矩阵相乘后下发。</param>
         public void Begin(Material? material = null, SpriteSortMode sortMode = SpriteSortMode.Deferred,
                           Matrix4x4? transformMatrix = null)
@@ -212,7 +211,6 @@ namespace KFramework.MonoGame
                 Order = _entries.Count,
             });
 
-            if (_sortMode == SpriteSortMode.Immediate) FlushQueued();
         }
 
         /// <summary>
@@ -229,7 +227,7 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 把已排队的物体提交掉（Immediate 模式下每笔 Draw 都会调它）。
+        /// 把已排队的物体提交掉（只由 End 调用）。
         /// <para>
         /// <b>每段只换纹理</b>：渲染状态已在 <see cref="Begin"/> 里下发过一次（批内不变），
         /// 这里不再重复 —— 这正是"一个批一个材质"的红利。
@@ -240,7 +238,7 @@ namespace KFramework.MonoGame
             if (_entries.Count == 0) return 0;
             if (_impl is null) { _entries.Clear(); return 0; }
 
-            if (_sortMode != SpriteSortMode.Deferred && _sortMode != SpriteSortMode.Immediate)
+            if (_sortMode != SpriteSortMode.Deferred)
                 _entries.Sort(EntryComparison);
 
             // 材质常量：材质/值没变就一次都不传（这就是"每材质一份常驻常量缓冲"）。

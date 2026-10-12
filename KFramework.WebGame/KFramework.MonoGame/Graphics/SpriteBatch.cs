@@ -339,11 +339,11 @@ namespace KFramework.MonoGame
                 item.Set(position.X, position.Y, -origin.X, -origin.Y, w, h, s, c, color, uvTL, uvBR, layerDepth);
             }
 
-            if (_sortMode == SpriteSortMode.Immediate || uniformBlock is not null)
+            if (uniformBlock is not null)
             {
-                // Immediate：不排队，当场画。
                 // 带 uniform 块：块是【可变的】uniform 数据，值必须当场生效（若等 End 再提交，块早被后面的绘制改掉了）
                 // —— 一次 draw 只有一份 uniform 值，这是必然的代价。
+                // （没有 Immediate 模式：需要"结算当前已排队的内容"直接 End 即可。）
                 FlushBatch();
             }
         }

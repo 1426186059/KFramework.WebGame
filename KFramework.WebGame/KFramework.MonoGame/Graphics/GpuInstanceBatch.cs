@@ -53,7 +53,7 @@ namespace KFramework.MonoGame
         private readonly GraphicsDevice _device;
 
         /// <summary>本批的材质快照（照 <see cref="SpriteBatch"/> 的 <c>_cache_Mat</c>：复用同一个材质，每帧零分配）。</summary>
-        private readonly Material _material = new();
+        private Material _material = null;
 
         /// <summary>按片元源码缓存的后端程序：同一个源码只创建（编译）一次。</summary>
         private readonly Dictionary<string, IGpuInstanceProgram?> _programs = new();
@@ -109,42 +109,31 @@ namespace KFramework.MonoGame
         /// <param name="material">材质（混合 / 采样 / 深度 / 剔除状态 + <see cref="Material.Effect"/> 自定义着色器）；
         /// 为 null 时用精灵默认状态与内置片元着色器。</param>
         /// <param name="sortMode">渲染顺序（<see cref="SpriteSortMode"/>）：Deferred = 保持 Draw 调用顺序；
-        /// Texture = 按纹理排序键（让同纹理的物体连在一起，减少实例化 draw 次数）；FrontToBack / BackToFront = 按 layerDepth 排序；
-        /// Immediate = 每笔当场提交。</param>
+        /// Texture = 按纹理排序键（让同纹理的物体连在一起，减少实例化 draw 次数）；FrontToBack / BackToFront = 按 layerDepth 排序。</param>
         /// <param name="transformMatrix">相机矩阵（世界 → 屏幕的变换），null = 单位矩阵；与投影矩阵相乘后下发。</param>
-        public void Begin(Material? material = null, SpriteSortMode sortMode = SpriteSortMode.Deferred,
+        public void Begin(Material material, SpriteSortMode sortMode = SpriteSortMode.Deferred,
                           Matrix4x4? transformMatrix = null)
         {
-            if (_begun) throw new InvalidOperationException("上一次 Begin 还没有对应的 End。");
-
-            // 材质快照：复用同一个 Material 实例（照 SpriteBatch 的 _cache_Mat），逐批零分配。
-            _material.Reset();
-            if (material is not null)
+            if (_begun)
             {
-                _material.Effect = material.Effect;
-                _material.Blend = material.Blend;
-                _material.Sampler = material.Sampler;
-                _material.DepthStencil = material.DepthStencil;
-                _material.Rasterizer = material.Rasterizer;
+                throw new InvalidOperationException("上一次 Begin 还没有对应的 End。");
             }
 
-            // 着色器：来自 Material.Effect 的片元源码（null = 内置默认）。按源码缓存，故每帧 Begin 不会重编译。
+            _material = material;
             _impl = ResolveProgram(material?.Effect?.FragmentSource);
             if (_impl is null)
+            {
                 throw new NotSupportedException($"后端「{_device.Backend.Name}」尚未接入 GPU 实例化。");
+            }
 
             _sortMode = sortMode;
             _transform = transformMatrix ?? Matrix4x4.Identity;
             _projection = _device.CreateSpriteProjection();
             _transformProjection = _transform * _projection;
 
-            // ---- 批内不变的渲染状态，在这里一次性下发 ----
-            // 混合 / 深度 / 剔除 / 采样在整个 Begin/End 期间都不会变（一个批只有一个材质），
-            // 所以不必在每段纹理前重复下发；提交时每段只换纹理（见 FlushQueued）。
-            // 本路的着色器程序由 _impl 自己管理（它不在 Material.Effect 上），故此处的职责只是状态。
             _device.ApplyRenderStates(_material);
-
             _entries.Clear();
+
             _begun = true;
         }
 
@@ -210,7 +199,6 @@ namespace KFramework.MonoGame
                 Order = _entries.Count,
             });
 
-            if (_sortMode == SpriteSortMode.Immediate) FlushQueued();
         }
 
         /// <summary>提交并按"纹理段 + 容量"分批发起实例化绘制，返回本次的 DrawCall 数。</summary>
@@ -223,15 +211,15 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 把已排队的实例提交掉：排序（非 Deferred / Immediate 时）→ 按"连续同一张纹理"切段 →
-        /// 每段拷成连续数组、按容量分块 → 每块一次实例化 draw。Immediate 模式下每笔 Draw 都会调它。
+        /// 把已排队的实例提交掉：排序（非 Deferred 时）→ 按"连续同一张纹理"切段 →
+        /// 每段拷成连续数组、按容量分块 → 每块一次实例化 draw。只由 <see cref="End"/> 调用。
         /// </summary>
         private int FlushQueued()
         {
             if (_entries.Count == 0) return 0;
             if (_impl is null) { _entries.Clear(); return 0; }
 
-            if (_sortMode != SpriteSortMode.Deferred && _sortMode != SpriteSortMode.Immediate)
+            if (_sortMode != SpriteSortMode.Deferred)
                 _entries.Sort(EntryComparison);
 
             if (_scratch.Length < _entries.Count)
