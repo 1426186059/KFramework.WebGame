@@ -1,33 +1,13 @@
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace KFramework.MonoGame
 {
-
-    /// <summary>
-    /// WebSocket 层：对浏览器原生 WebSocket 的 C# 封装（连接管理 + 收发二进制帧 + 事件）。
-    /// <para>
-    /// 底层经 JSBind_Net_WebSocket 桥接 KFramework.TSEngine 的 net_websocket 模块（薄 JS 层）。
-    /// WebSocket 的所有事件都在主线程（JS 事件循环）上回调，无需跨线程同步。
-    /// </para>
-    /// 示例：
-    /// <code>
-    ///   var ws = new WebSocketClient();
-    ///   ws.Opened += () => { /* 已连上 */ };
-    ///   ws.MessageReceived += m => { /* m 是一帧原始字节 */ };
-    ///   ws.Connect("wss://host/path");
-    ///   ws.Send(System.Text.Encoding.UTF8.GetBytes("hello"));
-    /// </code>
-    /// </summary>
     public sealed class Net_WebSocket_Client
     {
-        /// <summary>句柄 → 实例 路由表；由 JSBind_Net_WebSocket 的 [JSExport] 回调按句柄分发事件。</summary>
         internal static readonly Dictionary<int, Net_WebSocket_Client> s_instances = new Dictionary<int, Net_WebSocket_Client>();
 
         private int _handle = -1;
-
         public event Action? Opened;
-        /// <summary>收到一帧数据：底层是运行时新分配的 byte[]，可以长期持有。</summary>
         public event Action<ReadOnlyMemory<byte>>? MessageReceived;
         public event Action<int>? Closed;
         public event Action<string>? Error;
