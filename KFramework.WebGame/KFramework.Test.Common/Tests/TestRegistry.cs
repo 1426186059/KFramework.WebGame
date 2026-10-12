@@ -79,6 +79,12 @@ namespace KFramework.Test.Common.Tests
             },
             new TestEntry
             {
+                Name = "KCanvas 组件（KButton / KLabel / KImage / KSimpleLabel）",
+                Desc = "节点树 UI 体系：组件挂在 KUIRoot 的 KCanvas 上（由 KSceneMgr 驱动，Anchor/Pivot 布局 + 全局指针分发）。每个组件一个页签 —— KButton 九个按钮用 Anchor=Pivot 钉在固定矩形九处（文字居中、四态过渡）；KLabel 与它同构（Anchor 决定控件落点、Alignment 只管格内）+ 折行；KImage 尺寸/染色/Pivot；KSimpleLabel 纯 Pivot 定位九处",
+                Factory = static () => new KCanvasTest.KCanvasTestScene(),
+            },
+            new TestEntry
+            {
                 Name = "混合模式 Blend",
                 Desc = "BlendState 各混合模式可视化对比：半透明 / 加法发光 / 覆盖 / 乘法压暗，以及传奇昼夜用的 Multiply(Zero, SourceColor)；并演示用公开构造传自定义混合参数",
                 Factory = static () => new BlendTest.BlendTestScene(),
