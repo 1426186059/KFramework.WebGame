@@ -1,44 +1,16 @@
 namespace KFramework.MonoGame
 {
-    /// <summary>
-    /// CPU 合批的精灵绘制器（本引擎的主力 API）：把待绘制的精灵排队 → 排序 → 按纹理/属性块分批，
-    /// 每批一次 draw call（几何在 CPU 侧展开成四边形顶点）。
-    /// <para>
-    /// 原来的 <c>SpriteBatcher</c> 已并入本类（它的职责只有"给 SpriteBatch 排队与提交"这一件事）：
-    /// <list type="bullet">
-    ///   <item><description><see cref="SpriteBatchItem"/> 以对象池复用（1.5 倍增长、按 64 对齐），只重置计数，零每帧分配；</description></item>
-    ///   <item><description>排序用 float SortKey + <c>Array.Sort</c>；</description></item>
-    ///   <item><description>单次 draw 最多 <see cref="GraphicsDevice.MaxBatchSize"/> 个四边形，超出自动分块（绕开 short 索引上限）。</description></item>
-    /// </list>
-    /// 分组与排序完全照官方 MonoGame：按纹理引用相等（<c>ReferenceEquals</c>）换批，Texture 排序模式用
-    /// <see cref="Texture2D.SortingKey"/>。要让同一张图集页合批，必须用单个 <see cref="Texture2D"/> + source rect 绘制
-    /// （KTexturePacker、SpriteFont 都是这种官方用法）；直接 LoadTexture 拿到的子图区域视图各自是独立
-    /// <see cref="Texture2D"/>，按官方语义各自成批。
-    /// </para>
-    /// <para>
-    /// 本类只做 CPU 合批（逐顶点路径）。另外两条路各有自己的类：
-    /// <see cref="GpuInstanceBatch"/>（GPU 实例化，几何只有一份单位四边形）与
-    /// <see cref="UrpBatch"/>（SRP-Batcher 式 UBO，DrawCall 不降但换物体极便宜）。
-    /// </para>
-    /// </summary>
     public sealed class SpriteBatch
     {
-        /// <summary>对象池初始容量。</summary>
         private const int InitialBatchSize = 256;
-
         private readonly GraphicsDevice _device;
-
         private SpriteSortMode _sortMode;
         private Matrix4x4 _cameraMatrix = Matrix4x4.Identity;
         private Matrix4x4 _projection;
         private Material _material = null!;
         private readonly Material _cache_Mat = new Material();
-
         private bool _beginCalled;
 
-        // ---- 对象池 + 顶点数组（原 SpriteBatcher 的成员）----
-
-        /// <summary>可复用的绘制项池（1.5 倍增长、按 64 对齐）；下标 &lt; <see cref="_batchItemCount"/> 的项属于本批。</summary>
         private SpriteBatchItem[] _batchItemList;
 
         /// <summary>本批已排队的绘制项数（提交后清零）。</summary>
