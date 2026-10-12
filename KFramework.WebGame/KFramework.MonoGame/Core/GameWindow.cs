@@ -1,10 +1,5 @@
-using KFramework.MonoGame;
-using System.Diagnostics;
-
-
 namespace KFramework.MonoGame
 {
-
     /// <summary>浏览器画布窗口。</summary>
     public sealed class GameWindow
     {
