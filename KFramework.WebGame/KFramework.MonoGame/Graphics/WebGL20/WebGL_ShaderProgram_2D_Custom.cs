@@ -3,16 +3,6 @@ using System.Runtime.InteropServices.JavaScript;
 
 namespace KFramework.MonoGame
 {
-    /// <summary>
-    /// WebGL 2D 的自定义着色器程序（GLSL ES 3.00）：片元着色器由外部传入。
-    /// <para>
-    /// 顶点着色器复用标准精灵顶点格式（aPosition / aColor / aTexCoord + uProjection），
-    /// 声明顺序与默认 <see cref="WebGL_ShaderProgram_2D_Default"/> 完全一致，因此可直接套用后端已配置好的 VAO。
-    /// 片元着色器里任意 uniform 都能被设置：把属性名写进 <c>material.Effect</c>（默认材质属性）或
-    /// <see cref="ShaderPropertyBlock"/>（这一次绘制的覆盖值）即可，绘制时按这个先后顺序灌 uniform
-    /// （约定名 <c>uTime</c> / <c>uParams</c> 只是常用写法，引擎不做特殊处理）。
-    /// </para>
-    /// </summary>
     internal sealed class WebGL_ShaderProgram_2D_Custom : IShaderProgram
     {
         private const string VertexSource = @"#version 300 es
