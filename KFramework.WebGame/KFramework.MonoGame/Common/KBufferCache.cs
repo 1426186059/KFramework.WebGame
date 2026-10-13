@@ -28,25 +28,7 @@ namespace KFramework.MonoGame
 
         public void CopyFrom(ReadOnlySpan<byte> data)
         {
-            if (nUseLength + data.Length > nAllocLength)
-            {
-                while (true)
-                {
-                    nAllocLength *= 2;
-                    if (nAllocLength >= nUseLength + data.Length)
-                    {
-                        break;
-                    }
-
-                    if (MaxAllocLength > 0 && nAllocLength > MaxAllocLength)
-                    {
-                        throw new Exception($"KBufferCache: Exceed MaxAllocLength {MaxAllocLength}");
-                    }
-                }
-
-                cache = (byte*)NativeMemory.Realloc(cache, (nuint)nAllocLength);
-            }
-
+            SureSizeOK(data.Length);
             data.CopyTo(new Span<byte>(cache + nUseLength, data.Length));
             nUseLength += data.Length;
         }
@@ -67,6 +49,27 @@ namespace KFramework.MonoGame
         {
            NativeMemory.Free(cache);
            cache = null;
+        }
+
+        private void SureSizeOK(int nRequiredLength)
+        {
+            if (nUseLength + nRequiredLength > nAllocLength)
+            {
+                while (true)
+                {
+                    nAllocLength *= 2;
+                    if (nAllocLength >= nUseLength + nRequiredLength)
+                    {
+                        break;
+                    }
+
+                    if (MaxAllocLength > 0 && nAllocLength > MaxAllocLength)
+                    {
+                        throw new Exception($"KBufferCache: Exceed MaxAllocLength {MaxAllocLength}");
+                    }
+                }
+                cache = (byte*)NativeMemory.Realloc(cache, (nuint)nAllocLength);
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
