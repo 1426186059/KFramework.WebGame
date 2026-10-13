@@ -61,7 +61,7 @@ namespace KFramework.MonoGame
 
         public void Dispose()
         {
-           Marshal.FreeHGlobal((IntPtr)cache);
+           NativeMemory.Free(cache);
            cache = null;
         }
 
