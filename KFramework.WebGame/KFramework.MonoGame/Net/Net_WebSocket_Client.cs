@@ -46,14 +46,12 @@ namespace KFramework.MonoGame
         {
             if (_handle < 0) return false;
 
-            // 传进来的本来就是整段数组（最常见的情况）时直接复用，别再 ToArray() 多复制一份
-            if (MemoryMarshal.TryGetArray(data, out ArraySegment<byte> segment)
-                && segment.Array is { } array && segment.Offset == 0 && segment.Count == data.Length)
-            {
-                return JSBind_Net_WebSocket.NetSend(_handle, array);
-            }
-
-            return JSBind_Net_WebSocket.NetSend(_handle, data.ToArray());
+            // 直接传 Span（JS 侧按 MemoryView 收，零封送拷贝）。
+            // 调用方给的是只读内存，而封送只认 Span / ArraySegment，故用 AsMemory 换个可变视图过去 ——
+            // JS 侧（netSend）只 copyTo 读出、不回写，所以是安全的。
+            // 这样也不再需要"整段数组才复用、否则 ToArray()"那条分支：Span 覆盖数组 / MemoryPool /
+            // 自定义内存后端，顺带把那次 ToArray() 的分配和判断一起去掉。
+            return JSBind_Net_WebSocket.NetSend(_handle, MemoryMarshal.AsMemory(data).Span);
         }
 
         /// <summary>关闭连接。</summary>
