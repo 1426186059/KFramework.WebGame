@@ -59,6 +59,8 @@ namespace KFramework.MonoGame
             return new Span<byte>(cache, nUseLength);
         }
 
+        public int Length => nUseLength;
+
         public void Dispose()
         {
            NativeMemory.Free(cache);
