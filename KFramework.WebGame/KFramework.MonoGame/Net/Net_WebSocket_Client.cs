@@ -42,7 +42,7 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>发送一帧二进制数据；连接未就绪时返回 false。</summary>
-        public bool Send(ReadOnlyMemory<byte> data)
+        public bool Send(ReadOnlySpan<byte> data)
         {
             if (_handle < 0) return false;
 
@@ -51,7 +51,9 @@ namespace KFramework.MonoGame
             // JS 侧（netSend）只 copyTo 读出、不回写，所以是安全的。
             // 这样也不再需要"整段数组才复用、否则 ToArray()"那条分支：Span 覆盖数组 / MemoryPool /
             // 自定义内存后端，顺带把那次 ToArray() 的分配和判断一起去掉。
-            return JSBind_Net_WebSocket.NetSend(_handle, MemoryMarshal.AsMemory(data).Span);
+            return JSBind_Net_WebSocket.NetSend(
+                _handle, 
+                MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(data), data.Length));
         }
 
         /// <summary>关闭连接。</summary>

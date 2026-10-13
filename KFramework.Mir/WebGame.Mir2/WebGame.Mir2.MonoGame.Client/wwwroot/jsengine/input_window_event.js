@@ -1,1 +1,84 @@
-import{E_HTML_Event_Type as t}from"./html_event_type.js";import{getCanvas as n}from"./html_canvas.js";import{assert as e}from"./cusotm_func.js";const o=new Map,i=new Uint8Array(10),s=new DataView(i.buffer),r=new Uint8Array(0);let c=null,d=!0,u={x:-1,y:-1};function a(t){return t>32767?32767:t<-32768?-32768:0|t}function h(){o.set(document.hidden?t.SysPageHidden:t.SysPageVisible,r)}function l(){}function f(){}function w(t){t.preventDefault()}export function bindWindowEvents(){c=n(),e(null!=c,"bindWindowEvents Error"),document.addEventListener("visibilitychange",h),window.addEventListener("contextmenu",w),window.addEventListener("blur",f),window.addEventListener("focus",l),d=document.hasFocus()}export function reportWindowFocus(){e(null!=c,"reportCanvasFocus error");const n=document.hasFocus();d!=n&&(d=n,n?o.set(t.SysFocusGained,r):o.set(t.SysFocusLost,r))}export function reportPointerCancel(){o.set(t.SysPointerCancel,r)}export function hadFocusLost(){return!document.hasFocus()}export function drainWindowEvents(n){!function(){const n=c;if(n.clientWidth!=u.x||n.clientHeight!=u.y){u={x:n.clientWidth,y:n.clientHeight};const e=window.devicePixelRatio||1,r=Math.max(1,Math.round(n.clientWidth||1)),c=Math.max(1,Math.round(n.clientHeight||1)),d=Math.max(1,Math.round(r*e)),h=Math.max(1,Math.round(c*e));n.width===d&&n.height===h||(n.width=d,n.height=h),s.setInt16(0,a(r),!0),s.setInt16(2,a(c),!0),s.setInt16(4,a(d),!0),s.setInt16(6,a(h),!0),s.setInt16(8,a(Math.round(1e3*e)),!0),o.set(t.CanvasResized,i)}}(),reportWindowFocus();for(const[t,e]of o)n.put(t,e,e.length);o.clear()}
+import { E_HTML_Event_Type } from './html_event_type.js';
+import { getCanvas } from './html_canvas.js';
+import { assert } from './cusotm_func.js';
+const pending = new Map();
+const sizeData = new Uint8Array(10);
+const sizeView = new DataView(sizeData.buffer);
+const noData = new Uint8Array(0);
+let canvas = null;
+let wasFocused = true;
+let _cacheCanvasSize = { x: -1, y: -1 };
+function clampI16(v) {
+    return v > 32767 ? 32767 : v < -32768 ? -32768 : v | 0;
+}
+function onDocumentVisibility() {
+    pending.set(document.hidden ? E_HTML_Event_Type.SysPageHidden : E_HTML_Event_Type.SysPageVisible, noData);
+}
+function onWindowFocus() {
+    console.log('窗口 聚焦');
+}
+function onWindowBlur() {
+    console.log('窗口 失焦');
+}
+function onWindowContextMenu(e) {
+    e.preventDefault();
+    console.log("onWindow ContextMenu");
+}
+export function bindWindowEvents() {
+    canvas = getCanvas();
+    assert(canvas != null, "bindWindowEvents Error");
+    document.addEventListener('visibilitychange', onDocumentVisibility);
+    window.addEventListener('contextmenu', onWindowContextMenu);
+    window.addEventListener('blur', onWindowBlur);
+    window.addEventListener('focus', onWindowFocus);
+    wasFocused = document.hasFocus();
+}
+export function reportWindowFocus() {
+    assert(canvas != null, "reportCanvasFocus error");
+    const now = document.hasFocus();
+    if (wasFocused != now) {
+        wasFocused = now;
+        if (now) {
+            pending.set(E_HTML_Event_Type.SysFocusGained, noData);
+        }
+        else {
+            pending.set(E_HTML_Event_Type.SysFocusLost, noData);
+        }
+    }
+}
+function reportCanvasSize() {
+    const c = canvas;
+    //游戏中 禁止使用 canvas.getBoundingClientRect();
+    if (c.clientWidth != _cacheCanvasSize.x || c.clientHeight != _cacheCanvasSize.y) {
+        _cacheCanvasSize = { x: c.clientWidth, y: c.clientHeight };
+        const devicePixelRatio = window.devicePixelRatio || 1;
+        const cssWidth = Math.max(1, Math.round(c.clientWidth || 1));
+        const cssHeight = Math.max(1, Math.round(c.clientHeight || 1));
+        const drawWidth = Math.max(1, Math.round(cssWidth * devicePixelRatio));
+        const drawHeight = Math.max(1, Math.round(cssHeight * devicePixelRatio));
+        if (c.width !== drawWidth || c.height !== drawHeight) {
+            c.width = drawWidth;
+            c.height = drawHeight;
+        }
+        sizeView.setInt16(0, clampI16(cssWidth), true);
+        sizeView.setInt16(2, clampI16(cssHeight), true);
+        sizeView.setInt16(4, clampI16(drawWidth), true);
+        sizeView.setInt16(6, clampI16(drawHeight), true);
+        sizeView.setInt16(8, clampI16(Math.round(devicePixelRatio * 1000)), true);
+        pending.set(E_HTML_Event_Type.CanvasResized, sizeData);
+    }
+}
+export function reportPointerCancel() {
+    pending.set(E_HTML_Event_Type.SysPointerCancel, noData);
+}
+export function hadFocusLost() {
+    return !document.hasFocus();
+}
+export function drainWindowEvents(w) {
+    reportCanvasSize();
+    reportWindowFocus();
+    for (const [type, data] of pending) {
+        w.put(type, data, data.length);
+    }
+    pending.clear();
+}

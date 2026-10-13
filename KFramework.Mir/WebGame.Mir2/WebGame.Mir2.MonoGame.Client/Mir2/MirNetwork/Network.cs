@@ -21,6 +21,7 @@ namespace Client.MirNetwork
         private static ConcurrentQueue<Packet> _receiveList = new ConcurrentQueue<Packet>();
         private static ConcurrentQueue<Packet> _sendList = new ConcurrentQueue<Packet>();
         private static readonly ConcurrentQueue<byte[]> _rawQueue = new ConcurrentQueue<byte[]>();
+        private static readonly KBufferCache send_byte_list = new KBufferCache(1024, 1024 * 64);
 
         public static void Connect()
         {
@@ -149,15 +150,19 @@ namespace Client.MirNetwork
 
             TimeOutTime = CMain.Time + Settings.TimeOut;
 
-            var data = new List<byte>();
+            send_byte_list.Clear();
             while (!_sendList.IsEmpty)
             {
-                if (!_sendList.TryDequeue(out Packet p) || p == null) continue;
-                data.AddRange(p.GetPacketBytes());
+                if (!_sendList.TryDequeue(out Packet p) || p == null)
+                {
+                    continue;
+                }
+                byte[] packet_byte_data = p.GetPacketBytes();
+                send_byte_list.CopyFrom(packet_byte_data);
             }
 
-            CMain.BytesSent += data.Count;
-            _ws.Send(data.ToArray());
+            CMain.BytesSent += send_byte_list.GetSpan().Length;
+            _ws.Send(send_byte_list.GetSpan());
         }
 
         public static void Enqueue(Packet p)
