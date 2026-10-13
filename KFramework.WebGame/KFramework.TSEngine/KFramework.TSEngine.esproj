@@ -1,3 +1,17 @@
 <Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.5984942">
+  <PropertyGroup>
+    <!-- VS 里对本工程点「生成」时执行的命令：SDK 的 CoreCompile 会跑 $(BuildCommand)
+         （见 Microsoft.VisualStudio.JavaScript.Sdk/Sdk/Sdk.targets）。
 
+         不设的话，SDK 会自动取 package.json 的 "build" 脚本 —— 那条【不压缩、不删 console】，
+         于是 Release 下点生成出来的仍是开发形态（这正是之前"点生成没变化"的原因）。
+
+         产物分配置存，互不覆盖：Debug -> dist/Debug/jsengine，Release -> dist/Release/jsengine；
+         各工程的 SyncJsEngine 按同样的 $(Configuration) 取用。 -->
+    <BuildCommand Condition="'$(Configuration)' == 'Release'">npm run build:release</BuildCommand>
+    <BuildCommand Condition="'$(BuildCommand)' == ''">npm run build</BuildCommand>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="dist\" />
+  </ItemGroup>
 </Project>

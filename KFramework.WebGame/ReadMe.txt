@@ -36,7 +36,7 @@ AI 协作约定（代码注释与命名）
 
 【渲染资源与生成产物】
 - JS 是 TS 的自动生成产物：修改渲染逻辑只改 KFramework.TSEngine/src/*.ts 源文件，
-  由构建（tsc）生成 dist/jsengine/*.js，再由 SyncJsEngine 复制到各 wwwroot/jsengine；
+  由构建（tsc）生成 dist/<Debug|Release>/jsengine/*.js，再由 SyncJsEngine 按配置复制到各 wwwroot/jsengine；
   不要手改生成的 .js（它们是产物，会被重新生成覆盖）。
 
 ================================

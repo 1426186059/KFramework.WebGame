@@ -12,8 +12,12 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = dirname(fileURLToPath(import.meta.url));
+
+// 产物按配置分开存（dist/Debug/jsengine 与 dist/Release/jsengine，互不覆盖），
+// 所以目标目录由参数决定：node copy_deps.mjs Debug | Release（省略时按 Debug）。
+const config = process.argv[2] ?? 'Debug';
 const depsSrc = join(root, 'deps');
-const depsDst = join(root, 'dist', 'jsengine', 'deps');
+const depsDst = join(root, 'dist', config, 'jsengine', 'deps');
 
 if (existsSync(depsDst)) rmSync(depsDst, { recursive: true, force: true });
 cpSync(depsSrc, depsDst, { recursive: true });

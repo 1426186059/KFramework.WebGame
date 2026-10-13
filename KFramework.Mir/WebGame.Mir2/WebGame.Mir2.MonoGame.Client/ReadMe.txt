@@ -89,8 +89,9 @@ WebGame.Mir2 (MonoGame.Client) —— 基于 KFramework.MonoGame 重构的传奇
         （编译期 CS0436 警告已统一抑制，见 csproj）。
 
   - KFramework.TSEngine（tsengine）
-        引擎的浏览器 JS 层（jsengine/）；由 npm run build 生成 dist/jsengine，
-        再由 csproj 的 SyncJsEngine 目标整目录复制到 wwwroot/jsengine。
+        引擎的浏览器 JS 层（jsengine/）；由 npm run build / build:release 生成
+        dist/<Debug|Release>/jsengine，再由 csproj 的 SyncJsEngine 目标按配置整目录复制到
+        wwwroot/jsengine（Debug 未压、Release 已压缩并剥离 console.*）。
 
 
 四、目录结构（节选）
@@ -117,10 +118,13 @@ WebGame.Mir2.MonoGame.Client/
 --------------------------------------------------------------------
 前置（依据 csproj 注释与仓库约定）：
 
-  1. 先构建引擎 JS 层：
+  1. 引擎 JS 层由 csproj 的 BuildTypeScript 自动构建（Debug 走 npm run build、
+     Release 走 npm run build:release —— 后者压缩并剥离 console.*），产物落在
+     dist/<Debug|Release>/jsengine；只需先在该目录做过一次 npm install。
+     手工构建时同样：
        cd <repo>/KFramework.WebGame/KFramework.TSEngine
-       npm install && npm run build
-     生成 dist/jsengine 后，csproj 的 SyncJsEngine 目标会自动复制到 wwwroot/jsengine。
+       npm install && npm run build          # 或 npm run build:release
+     SyncJsEngine 目标随后按当前配置把对应目录复制到 wwwroot/jsengine。
 
   2. 资源基址默认 http://127.0.0.1:5080/
      （见 CMain.Init 中的 BrowserResource.Configure，指向本地 HTTP 资源服务，

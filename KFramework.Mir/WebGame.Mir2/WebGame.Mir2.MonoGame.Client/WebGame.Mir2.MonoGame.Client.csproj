@@ -26,11 +26,24 @@
 
   <!-- 全局 using（global using MirEngine; + JSExport/JSImport）由本工程 Shims/GlobalUsings.cs 提供。 -->
 
-  <!-- 引擎浏览器层（KFramework.TSEngine）编译产物 dist/jsengine 整目录复制到 wwwroot/jsengine。
-       需先到 KFramework.TSEngine 目录执行 npm install && npm run build 生成 dist（含 net.js）。 -->
+  <!-- 编译引擎浏览器层（TypeScript）：Debug 走 build，Release 走 build:release
+       （terser 压缩 + 剥离 console.*，实现见 KFramework.TSEngine/minify.mjs）。
+       本工程以前只同步 dist 不构建 —— 那样 Release 拿到的是"上一次别人构建时留下的状态"，
+       压缩与去 console 都会漏掉，所以这里补上构建步骤（与 KFramework.WebGame 下各工程一致）。 -->
+  <Target Name="BuildTypeScript" BeforeTargets="BeforeBuild" Condition="Exists('$(MSBuildThisFileDirectory)..\..\..\KFramework.WebGame\KFramework.TSEngine\node_modules')">
+    <PropertyGroup>
+      <_TsBuildScript Condition="'$(Configuration)' == 'Release'">build:release</_TsBuildScript>
+      <_TsBuildScript Condition="'$(_TsBuildScript)' == ''">build</_TsBuildScript>
+    </PropertyGroup>
+    <Exec Command="npm run $(_TsBuildScript)" WorkingDirectory="$(MSBuildThisFileDirectory)..\..\..\KFramework.WebGame\KFramework.TSEngine" />
+  </Target>
+
+  <!-- 引擎浏览器层（KFramework.TSEngine）编译产物 dist/<配置>/jsengine 整目录复制到 wwwroot/jsengine，
+       按 $(Configuration) 取：Debug 未压（带注释与 console）、Release 已压缩去 console。
+       产物由上面的 BuildTypeScript 生成（npm install 需先做过一次）。 -->
   <Target Name="SyncJsEngine" BeforeTargets="BeforeBuild">
     <ItemGroup>
-      <_Engine Include="$(MSBuildThisFileDirectory)..\..\..\KFramework.WebGame\KFramework.TSEngine\dist\jsengine\**\*" />
+      <_Engine Include="$(MSBuildThisFileDirectory)..\..\..\KFramework.WebGame\KFramework.TSEngine\dist\$(Configuration)\jsengine\**\*" />
     </ItemGroup>
     <Copy SourceFiles="@(_Engine)" DestinationFiles="@(_Engine->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>

@@ -43,15 +43,22 @@
 
   <!-- 引擎的浏览器层（KFramework.TSEngine）目前由 tsconfig 固定输出到 MirGame/wwwroot/jsengine。 -->
   <!-- 编译引擎的浏览器层（TypeScript）。tsc 报错即中断构建，不留旧产物。 -->
+  <!-- Debug 走 build（保留注释与 console，便于调试）；Release 走 build:release
+       —— 在 tsc 之后补一步 terser：压缩 + 剥离所有 console.*（实现见 KFramework.TSEngine/minify.mjs）。 -->
   <Target Name="BuildTypeScript" BeforeTargets="BeforeBuild" Condition="Exists('$(MSBuildThisFileDirectory)..\KFramework.TSEngine\node_modules')">
-    <Exec Command="npm run build" WorkingDirectory="$(MSBuildThisFileDirectory)..\KFramework.TSEngine" />
+    <PropertyGroup>
+      <_TsBuildScript Condition="'$(Configuration)' == 'Release'">build:release</_TsBuildScript>
+      <_TsBuildScript Condition="'$(_TsBuildScript)' == ''">build</_TsBuildScript>
+    </PropertyGroup>
+    <Exec Command="npm run $(_TsBuildScript)" WorkingDirectory="$(MSBuildThisFileDirectory)..\KFramework.TSEngine" />
   </Target>
 
-  <!-- KFramework.TSEngine/dist/jsengine 已是完整产物（含 deps/ktx2 转码器），
-       直接整体复制到本工程 wwwroot/jsengine 即可。 -->
+  <!-- KFramework.TSEngine/dist/<配置>/jsengine 已是完整产物（含 deps/ktx2 转码器），
+       直接整体复制到本工程 wwwroot/jsengine 即可。
+       按 $(Configuration) 取：Debug 拿未压产物（带注释与 console），Release 拿压缩过的。 -->
   <Target Name="SyncJsEngine" BeforeTargets="BeforeBuild">
     <ItemGroup>
-      <_Engine Include="$(MSBuildThisFileDirectory)..\KFramework.TSEngine\dist\jsengine\**\*" />
+      <_Engine Include="$(MSBuildThisFileDirectory)..\KFramework.TSEngine\dist\$(Configuration)\jsengine\**\*" />
     </ItemGroup>
     <Copy SourceFiles="@(_Engine)" DestinationFiles="@(_Engine->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>

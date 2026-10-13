@@ -13,9 +13,11 @@
     "exactOptionalPropertyTypes": false,
 
     "rootDir": "./src",
-    // 产物输出到 dist/jsengine/，并由 build.mjs 把 deps 一并拷入，
-    // 形成“开箱即用”的完整引擎目录，供各示例的 SyncJsEngine 整文件夹复制。
-    "outDir": "./dist/jsengine",
+    // 产物输出到 dist/<Debug|Release>/jsengine，由 package.json 的 build / build:release
+    // 用 --outDir 显式指定（两种形态并存、互不覆盖）；copy_deps.mjs 再把 deps 一并拷入，
+    // 形成“开箱即用”的完整引擎目录，供各示例的 SyncJsEngine 按 $(Configuration) 整目录复制。
+    // 这里的默认值只服务 IDE / tsc --watch —— 那是 Debug 形态。
+    "outDir": "./dist/Debug/jsengine",
 
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

@@ -33,8 +33,13 @@ console.log 是日志而非断言，Release 下会被正常剥离（这是预期
 不要把断言写成 console.log + 条件判断，统一用 assert。
 
 
-【Release 去 console 的实现提示（尚未接入）】
-当前 build 脚本是 `tsc && copy_deps.mjs`，tsc 本身不去 console。
-要 Release 剥离 console，需在 tsc 之后再跑 terser/esbuild 的 drop_console
-（或 babel-plugin-transform-remove-console），并区分 build / build:release 两个脚本。
-注意：无论用哪种方案，都不要依赖 console.* 做断言（一律用本文件的 assert）。
+【Release 去 console / 压缩 —— 已接入】
+tsc 本身既不去 console 也不压缩，所以 Release 走的是另一条脚本：
+    npm run build           → dist/Debug/jsengine   ：未压产物，保留注释与 console，供开发调试
+    npm run build:release   → dist/Release/jsengine ：额外跑 node minify.mjs，terser 压缩 + drop_console
+两种产物【分配置并存、互不覆盖】，Debug / Release 反复构建不会互相踩。
+各工程 csproj 的 BuildTypeScript 按 $(Configuration) 自动选脚本，SyncJsEngine 按同一配置取源；
+在 VS 里直接点 KFramework.TSEngine 工程「生成」也按配置走（见 .esproj 的 BuildCommand）。
+实现见 KFramework.TSEngine/minify.mjs（只压该目录顶层的 *.js，不碰第三方 deps/）。
+注意（不变）：断言一律走本文件的 assert（只 throw），不要用 console.* ——
+它在 Release 下会被整体删除，用它写的"断言"会连逻辑一起消失。
