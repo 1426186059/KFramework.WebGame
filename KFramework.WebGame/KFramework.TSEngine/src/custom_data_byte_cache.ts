@@ -59,41 +59,50 @@ function assertPowerOfTwo(name: string, n: number): number {
  * @returns 共享视图；拿不到（或传 null）时返回 null。
  */
 
+/**
+ * 把 .NET 传进来的字节取成【共享内存】的 Uint8Array —— 零拷贝。
+ *
+ * 只认一种入参：MemoryView（C# 的 Span<byte> / ArraySegment<byte> 封送过来的那个对象）。
+ * 它的 _unsafe_create_view() 返回的就是共享托管内存的 byte 视图，
+ * 内部即 new Uint8Array(localHeapViewU8().buffer, ptr, len)（marshal.ts:481）；
+ * 与公开 API runtime.localHeapViewU8() 是同一块内存 —— Bench_RuntimeApi ⑤⑥ 已实测。
+ * 那个视图【原样返回】，不再包一层。
+ *
+ * 不是 MemoryView（比如 JS 侧自己的 TypedArray）就返回 null：那种入参的数据本来就是副本，
+ * 这里没有零拷贝可言，由调用方走拷贝兜底。
+ *
+ * ⚠️ 返回的视图【只在当前同步调用期间有效】：别存起来、别跨 await。
+ *    堆一增长（memory.grow），底层 buffer 被 detach，视图会【静默失效】
+ *    —— 读写既不抛错也不生效，是最难查的一类 bug。
+ *    同步用途安全：gl.bufferData / gl.texImage2D / new Blob(...) 这些 API 都是【同步读取】的，
+ *    数据在调用返回前就已固化。异步用途（要先 await 才用到字节）必须先自己固化一份。
+ *
+ * @returns 共享视图；传 null 时返回 null；入参不是 MemoryView、或取不到共享视图时【抛异常】。
+ */
 export function sharedBytesOf(view: MemoryView_Span | ArrayBufferView | null): Uint8Array | null {
     if (view == null) return null;
 
-    const kind = (view as unknown as { constructor?: { name?: string } })?.constructor?.name ?? typeof view;
-
-    // 已是 JS 侧的 TypedArray：直接建一个共享同一段内存的字节视图。
-    // ⚠️ 但要注意：走到这里说明入参【不是】MemoryView —— 它多半是跨界封送出来的副本，
-    // 那次拷贝在跨界时已经发生，本函数省不掉。
-    if (ArrayBuffer.isView(view)) {
-        console.log('[ByteCache] 零拷贝【未】生效：入参已是 TypedArray（' + kind + '）—— 它是跨界封送的副本，不是共享内存。')
-        return new Uint8Array(view.buffer, view.byteOffset, view.byteLength);
-    }
-
-    const memory = view as MemoryView_Span;
-
-    // MemoryView：要共享内存的那份视图。_unsafe_create_view 不在官方 IMemoryView 类型里，故强转。
-    const createSharedView = (memory as unknown as {
+    // _unsafe_create_view 不在官方 IMemoryView 类型里，故强转；没有它就不是 MemoryView。
+    const createSharedView = (view as unknown as {
         _unsafe_create_view?: () => ArrayBufferView;
     })._unsafe_create_view;
 
-    if (typeof createSharedView === 'function') {
-        try {
-            const shared = createSharedView.call(memory);
-            // 长度对得上才敢用：对不上说明拿到的不是本视图的共享内存
-            if (shared && shared.byteLength === memory.byteLength) {
-                //console.log('[ByteCache] 零拷贝生效 ✓：入参 ' + kind + ' → _unsafe_create_view() 拿到共享托管内存的视图，无 memcpy。');
-                return new Uint8Array(shared.buffer, shared.byteOffset, shared.byteLength);
-            }
-        } catch {
-            // 拿不到就返回 null，交给调用方兜底
-        }
+    // 不是 MemoryView 就【抛】：喂 TypedArray 进来是调用方用错了（JS 侧的 TypedArray 本来就是副本，
+    // 没有共享内存可言），静默返回 null 只会让它一路降级成"悄悄多一次 memcpy"。
+    if (typeof createSharedView !== 'function') {
+        throw new Error('sharedBytesOf 只接受 MemoryView（.NET Span<byte> / ArraySegment<byte>），收到的是 '
+            + ((view as object).constructor?.name ?? typeof view));
     }
 
-    console.log('[ByteCache] 零拷贝【未】生效：入参 ' + kind + ' 上找不到可用的 _unsafe_create_view，将退回拷贝。');
-    return null;
+    // 这里【不吞异常】：拿不到、或长度对不上（说明拿到的不是本视图的共享内存）同样抛，不降级 ——
+    // 降级的后果是每次调用悄悄多一次 memcpy，那种慢没人查得出来。
+    const shared = createSharedView.call(view);
+    if (!shared || shared.byteLength !== view.byteLength) {
+        throw new Error('sharedBytesOf：_unsafe_create_view() 没给出可用的共享视图（byteLength '
+            + (shared ? shared.byteLength : 'null') + ' != ' + view.byteLength + '）');
+    }
+
+    return shared as Uint8Array;
 }
 
 export class ByteCache {

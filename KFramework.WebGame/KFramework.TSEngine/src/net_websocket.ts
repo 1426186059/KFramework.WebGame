@@ -20,7 +20,7 @@
 // 分配纪律：
 //   1. new Uint8Array(arrayBuffer) 是“视图”，不复制；new Uint8Array(uint8Array) 才是“按内容复制” —— 千万别写反；
 //   2. JS→C# 的二进制帧直接建视图交给 C#（C# 的 byte[] 参数只认 Uint8Array，裸 ArrayBuffer 会被运行时断言拒绝）；
-//   3. TextEncoder 全模块共用一个实例，发送兜底缓冲每条连接各持一块，都别每次 new。
+//   3. TextEncoder 全模块共用一个实例，别每次 new。
 
 import { sharedBytesOf } from './custom_data_byte_cache.js';
 
@@ -39,25 +39,25 @@ const utf8 = new TextEncoder();
 /**
  * 一条浏览器 WebSocket 连接。
  *
- * 句柄就是本实例的 id；四个事件回调是本类的实例方法（用类字段箭头函数写，
- * 天然绑定 this，赋给 ws.onXxx 时既不需要包一层匿名函数，也不需要 bind）。
+ * 句柄就是本实例的 id；四个事件回调是本类【原型上的普通方法】——
+ * 构造器里各 bind 一次把 this 固定住，之后直接赋给 ws.onXxx（不包匿名函数）。
  */
 class NetSocket {
     /** 连接句柄（C# 侧用它寻址）。 */
     public readonly handle: number;
 
     private readonly ws: WebSocket;
-    /** 发送兜底缓冲：只在拿不到共享视图时用（按需扩容，避免每次发送都分配一块 Uint8Array）。 */
-    private scratch = new Uint8Array(0);
 
     constructor(ws: WebSocket) {
         this.handle = nextId++;
         this.ws = ws;
         this.ws.binaryType = 'arraybuffer';
-        this.ws.onopen = this.onOpen;
-        this.ws.onmessage = this.onMessage;
-        this.ws.onclose = this.onClose;
-        this.ws.onerror = this.onError;
+        // 事件回调是【原型上的普通方法】（类里不再有箭头函数字段）：直接赋引用的话
+        // this 会变成事件目标 ws，所以这里各 bind 一次把 this 固定到本实例。
+        this.ws.onopen = this.onOpen.bind(this);
+        this.ws.onmessage = this.onMessage.bind(this);
+        this.ws.onclose = this.onClose.bind(this);
+        this.ws.onerror = this.onError.bind(this);
     }
 
     /** WebSocket.readyState：0 CONNECTING / 1 OPEN / 2 CLOSING / 3 CLOSED。 */
@@ -76,11 +76,12 @@ class NetSocket {
     public send(data: MemoryView_Span): boolean {
         if (this.ws.readyState !== WebSocket.OPEN) return false;
 
-        // 零拷贝优先：sharedBytesOf 经 _unsafe_create_view() 取出【共享托管内存】的视图，一次 memcpy 都没有。
+        // 零拷贝：sharedBytesOf 直接给出【共享托管内存】的视图 —— 不是 MemoryView、或取不到，
+        // 它当场抛，不静默降级成拷贝（调用方喂错东西就该立刻现形）。
         // ws.send 会【同步】把数据拷进浏览器自己的发送队列（返回前就已固化），所以直接喂共享视图是安全的
         // —— 与 gl.bufferData / new Blob 同类，不会踩"堆一增长、视图静默失效"那个坑。
-        // 拿不到共享视图（内部方法缺失等）才退回本连接的复用缓冲：多一次 memcpy，但功能不丢。
-        const payload = sharedBytesOf(data) ?? this.copyToScratch(data);
+        // 叹号：data 非空，所以 sharedBytesOf 只可能返回视图（类型系统看不出来）。
+        const payload = sharedBytesOf(data)!;
 
         try {
             this.ws.send(payload);
@@ -97,12 +98,12 @@ class NetSocket {
     }
 
     /** 连接建立。 */
-    private readonly onOpen = (): void => {
+    private onOpen(): void {
         handlers?.onOpen(this.handle);
-    };
+    }
 
     /** 收到一帧（文本帧先编码成 UTF-8 字节，与二进制帧走同一条上报路径）。 */
-    private readonly onMessage = (ev: MessageEvent): void => {
+    private onMessage(ev: MessageEvent): void {
         const raw: unknown = ev.data;
 
         // 文本帧：编码成 UTF-8 字节（这一步必然产生新数组，省不掉）
@@ -121,29 +122,16 @@ class NetSocket {
 
         // 走到这里说明 binaryType 被改过或收到了 Blob，明确报错好过静默丢包
         handlers?.onError(this.handle, `[net] 不支持的消息类型：${Object.prototype.toString.call(raw)}`);
-    };
+    }
 
     /** 连接关闭。 */
-    private readonly onClose = (ev: CloseEvent): void => {
+    private onClose(ev: CloseEvent): void {
         handlers?.onClose(this.handle, ev.code);
-    };
+    }
 
     /** 连接出错（浏览器的 error 事件不带原因，给固定文案）。 */
-    private readonly onError = (): void => {
+    private onError(): void {
         handlers?.onError(this.handle, 'websocket error');
-    };
-
-    /** 兜底路径：把 MemoryView copyTo 进本连接的复用缓冲（1 次 memcpy，无分配）。 */
-    private copyToScratch(data: MemoryView_Span): Uint8Array {
-        const n = data.length;
-        if (this.scratch.length < n) {
-            let cap = this.scratch.length || 256;
-            while (cap < n) cap *= 2;
-            this.scratch = new Uint8Array(cap);
-        }
-        const payload = this.scratch.subarray(0, n);   // subarray 是视图，不复制
-        data.copyTo(payload);
-        return payload;
     }
 }
 
