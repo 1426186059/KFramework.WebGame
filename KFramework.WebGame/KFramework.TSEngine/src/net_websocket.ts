@@ -26,7 +26,6 @@ import { sharedBytesOf } from './custom_data_byte_cache.js';
 
 export interface NetHandlers {
     onOpen: (handle: number) => void;
-    /** 收到一帧：整帧交给 C#（运行时封送成 byte[]，必然有一份拷贝；必须传 Uint8Array）。 */
     onBinaryMessage: (handle: number, data: Uint8Array) => void;
     onClose: (handle: number, code: number) => void;
     onError: (handle: number, message: string) => void;
