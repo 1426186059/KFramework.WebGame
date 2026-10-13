@@ -30,7 +30,7 @@ namespace KFramework.MonoGame
         {
             if (nUseLength + data.Length > nAllocLength)
             {
-                while(true)
+                while (true)
                 {
                     nAllocLength *= 2;
                     if (nAllocLength >= nUseLength + data.Length)
@@ -38,13 +38,15 @@ namespace KFramework.MonoGame
                         break;
                     }
 
-                    if(MaxAllocLength > 0 && nAllocLength > MaxAllocLength)
+                    if (MaxAllocLength > 0 && nAllocLength > MaxAllocLength)
                     {
                         throw new Exception($"KBufferCache: Exceed MaxAllocLength {MaxAllocLength}");
                     }
                 }
-                cache = (byte*)NativeMemory.Alloc((nuint)nAllocLength);
+
+                cache = (byte*)NativeMemory.Realloc(cache, (nuint)nAllocLength);
             }
+
             data.CopyTo(new Span<byte>(cache + nUseLength, data.Length));
             nUseLength += data.Length;
         }
