@@ -161,7 +161,7 @@ namespace Client.MirNetwork
                 send_byte_list.CopyFrom(packet_byte_data);
             }
 
-            CMain.BytesSent += send_byte_list.GetSpan().Length;
+            CMain.BytesSent += send_byte_list.Length;
             _ws.Send(send_byte_list.GetSpan());
         }
 
