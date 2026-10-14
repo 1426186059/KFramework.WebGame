@@ -94,7 +94,7 @@ namespace KFramework.Test.Common.Tests.WebSocketTest
                 ws.Opened += () => { _status = "已连接 " + ServerUrl; Log("[打开] " + ServerUrl); };
                 ws.Closed += code => { _status = $"已关闭（code={code}）"; Log("[关闭] code=" + code); };
                 ws.Error += message => { _status = "错误：" + message; Log("[错误] " + message); };
-                ws.MessageReceived += data => Log("[收到] " + Encoding.UTF8.GetString(data.Span));
+                ws.MessageReceived += data => Log("[收到] " + Encoding.UTF8.GetString(data));
                 _ws = ws;
 
                 _status = "连接中…";

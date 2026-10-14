@@ -11,16 +11,7 @@
 // 对外只暴露两类东西，命名与 C# 侧一一对应：
 //   * export class Caching —— 通用封装（类似 Unity 的 Caching），支持任意命名缓存；实例方法用 TS 习惯的小驼峰。
 //   * CachingXxxAsync(...) 模块函数 —— 供 C# JSBind_CacheStorage 静态绑定，PascalCase + Async 后缀，与 C# 方法同名。
-const DEFAULT_CACHE = 'kframework-bundles';
-// ArraySegment<byte> 在 JS 侧是 MemoryView_ArraySegment（非 TypedArray），必须拷成 Uint8Array 才能当 Response body，否则会被当字符串存成垃圾。
-function toBody(src) {
-    const out = new Uint8Array(src.byteLength);
-    if (src instanceof Uint8Array)
-        out.set(src);
-    else
-        src.copyTo(out);
-    return out;
-}
+import { sharedBytesOf } from "./custom_data_byte_cache.js";
 // 相对/绝对键归一化为绝对 URL：cache.match / cache.put 内部按 document.baseURI 解析相对键，
 // 这里保持一致，才能和 cache.keys() 返回的 Request.url 直接比对。
 function toAbsoluteUrl(name) {
@@ -40,31 +31,17 @@ function toPath(url) {
         return url;
     }
 }
-/**
- * 通用 Cache Storage 封装（类似 Unity 的 Caching）。
- * 不再写死单个缓存名：支持任意命名缓存，默认缓存名为 {@link DEFAULT_CACHE}。
- *
- * 用法：
- *   const c = Caching.open('level-1');                       // 打开（复用）一个命名缓存
- *   await c.save(key, bytes);                                // 写入
- *   const len = await c.size(key);                           // 查询长度
- *   await c.prune(keepList, 'hot_update_res/', '.web.lib');  // 按白名单 GC
- *   await c.clear();                                         // 清空并删除该缓存
- *
- * Caching.current 对应 Unity 的 Caching.currentCacheForWriting（当前写入缓存）。
- */
 export class Caching {
     name;
-    static DefaultName = DEFAULT_CACHE;
     static _pool = new Map();
     static _current = null;
     /** 打开（或获取已缓存的）一个命名缓存；同名复用同一 Cache 句柄。 */
-    static open(name = DEFAULT_CACHE) {
+    static open(name) {
         return new Caching(name);
     }
     /** 当前写入缓存（对应 Unity 的 Caching.currentCacheForWriting）；未设置时回退到默认缓存。 */
     static get current() {
-        return Caching._current ?? (Caching._current = new Caching(DEFAULT_CACHE));
+        return Caching._current;
     }
     static set current(c) { Caching._current = c; }
     /** 设置“当前写入缓存”（按名字），返回该缓存句柄。 */
@@ -115,7 +92,7 @@ export class Caching {
     /** 把字节以 Response 形式写入（覆盖式）。MemoryView_ArraySegment 必须归一化成 Uint8Array，否则会被当字符串存。 */
     async save(key, bytes) {
         try {
-            const res = new Response(toBody(bytes), { headers: { 'Content-Type': 'application/octet-stream' } });
+            const res = new Response(sharedBytesOf(bytes), { headers: { 'Content-Type': 'application/octet-stream' } });
             await (await this._open()).put(key, res);
         }
         finally {

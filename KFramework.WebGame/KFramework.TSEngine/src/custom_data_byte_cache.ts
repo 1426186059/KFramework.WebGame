@@ -79,7 +79,7 @@ function assertPowerOfTwo(name: string, n: number): number {
  *
  * @returns 共享视图；传 null 时返回 null；入参不是 MemoryView、或取不到共享视图时【抛异常】。
  */
-export function sharedBytesOf(view: MemoryView_Span | ArrayBufferView | null): Uint8Array | null {
+export function sharedBytesOf(view: MemoryView_Span | ArrayBufferView | null): Uint8Array<ArrayBuffer> | null {
     if (view == null) return null;
 
     // _unsafe_create_view 不在官方 IMemoryView 类型里，故强转；没有它就不是 MemoryView。
@@ -102,7 +102,11 @@ export function sharedBytesOf(view: MemoryView_Span | ArrayBufferView | null): U
             + (shared ? shared.byteLength : 'null') + ' != ' + view.byteLength + '）');
     }
 
-    return shared as Uint8Array;
+    // 返回类型收窄到 Uint8Array<ArrayBuffer>：运行期它就是 new Uint8Array(localHeapViewU8().buffer, ptr, len)，
+    // 底层是【真正的 ArrayBuffer】（不是 SharedArrayBuffer）。而 lib 里 heap view 的静态类型是更宽的
+    // ArrayBufferLike，直接透出去会让 new Response(...) / 其它严格签名报 TS2345 —— 所以在这里（唯一源头）
+    // 断言收窄一次，调用方不必各自处理。纯类型动作，运行时零开销。
+    return shared as Uint8Array<ArrayBuffer>;
 }
 
 export class ByteCache {
