@@ -466,16 +466,10 @@ public static class Functions
     {
         mGzipInputStream.SetLength(0);
         mGzipInputStream.Position = 0;
-        mGzipInputStream.Write(raw);
-        mGzipInputStream.Flush();
-        mGzipInputStream.Seek(0, SeekOrigin.Begin);
-
-        mGzipOutStream.SetLength(0);
-        mGzipOutStream.Seek(0, SeekOrigin.Begin);
         using (var mGzipStream = new GZipStream(mGzipInputStream, CompressionMode.Compress, true))
         {
-            mGzipStream.CopyTo(mGzipOutStream);
-            return mGzipOutStream.GetBuffer().AsSpan(0, (int)mGzipOutStream.Length);
+            mGzipStream.Write(raw);
+            return mGzipInputStream.GetBuffer().AsSpan(0, (int)mGzipInputStream.Length);
         }
     }
 
