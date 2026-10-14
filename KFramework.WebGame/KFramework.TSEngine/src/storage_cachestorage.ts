@@ -14,17 +14,6 @@
 
 import { sharedBytesOf } from "./custom_data_byte_cache.js";
 
-// 相对/绝对键归一化为绝对 URL：cache.match / cache.put 内部按 document.baseURI 解析相对键，
-// 这里保持一致，才能和 cache.keys() 返回的 Request.url 直接比对。
-function toAbsoluteUrl(name: string): string {
-    try { return new URL(name, document.baseURI).href; } catch { return name; }
-}
-
-// 取 URL 的 pathname（去掉 origin 与查询串），用于前缀 / 后缀比对；解析不了就按原串。
-function toPath(url: string): string {
-    try { return new URL(url, document.baseURI).pathname; } catch { return url; }
-}
-
 export class Caching {
     private static _pool = new Map<string, Promise<Cache>>();
     private static _current: Caching | null = null;
