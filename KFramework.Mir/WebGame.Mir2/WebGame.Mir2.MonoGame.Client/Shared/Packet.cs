@@ -44,6 +44,7 @@ public abstract class Packet
                 rawBytes.GetSpan().Slice(4, length - 4);
 
             readerStream.Write(ms);
+            readerStream.Flush();
             readerStream.Position = 0;
             p.ReadPacket(reader);
         }
@@ -74,6 +75,7 @@ public abstract class Packet
             writer.Write((ushort)mem.Length + 4);
             writer.Write(Index);
             writer.Write(mem);
+            writer.Flush();
             return writerStream.GetBuffer().AsSpan().Slice(0, (int)writerStream.Length);
         }
         else
@@ -81,6 +83,7 @@ public abstract class Packet
             writer.Seek(0, SeekOrigin.Begin);
             writer.Write((ushort)writerStream.Length + 4);
             writer.Write(Index);
+            writer.Flush();
             return writerStream.GetBuffer().AsSpan().Slice(0, (int)writerStream.Length);
         }
     }
