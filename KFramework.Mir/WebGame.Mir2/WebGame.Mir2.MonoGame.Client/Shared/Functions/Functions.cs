@@ -459,7 +459,6 @@ public static class Functions
     }
 
     static readonly MemoryStream mGzipInputStream = new MemoryStream();
-    static readonly MemoryStream mGzipOutStream = new MemoryStream();
     static readonly GZipStream mGzipCompressStream = new GZipStream(mGzipInputStream, CompressionMode.Compress, true);
     static readonly GZipStream mGzipDeCompressStream = new GZipStream(mGzipInputStream, CompressionMode.Decompress, true);
 
@@ -470,6 +469,7 @@ public static class Functions
         mGzipCompressStream.Position = 0;
         mGzipCompressStream.SetLength(0);
         mGzipCompressStream.Write(raw);
+        mGzipCompressStream.Flush();
         return mGzipInputStream.GetBuffer().AsSpan(0, (int)mGzipInputStream.Length);
     }
 
@@ -480,6 +480,8 @@ public static class Functions
         mGzipDeCompressStream.Position = 0;
         mGzipDeCompressStream.SetLength(0);
         mGzipDeCompressStream.Write(gzip);
+        mGzipDeCompressStream.Flush();
         return mGzipInputStream.GetBuffer().AsSpan(0, (int)mGzipInputStream.Length);
     }
+
 }
