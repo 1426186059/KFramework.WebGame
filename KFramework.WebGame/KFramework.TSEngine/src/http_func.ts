@@ -24,20 +24,30 @@
 // 误伤「已下载但还没取走」的条目，让 takePending 抛「没有待取字节」。
 // 释放靠三条路径：takePending 交付后删除、releasePending 主动放弃、Dispose 清空。
 const pending = new Map<string, Uint8Array>();
-
-// C# 侧传进来的缓冲：同步调用的 Span<byte> 在 JS 侧是 MemoryView_Span，写入方式与 Uint8Array 一致（set(src, offset)）。
 type ByteTarget = MemoryView_Span | Uint8Array;
-
 /**
- * 第一步（异步）：只做 fetch，字节暂存在 pending，等 takePending 取走；完全不碰 Cache Storage。
- *
- * @param name 资源 URL（绝对 URL 直接用；相对路径按 document.baseURI 解析）
- * @returns >=0 字节长度（C# 按此值分配后调 takePending）；-1 失败（非 2xx / 网络错误）
+ * fetch 的 RequestCache 取值（规范定义的全集），用常量代替魔法字符串 —— 拼错值时编译当场报错。
+ * C# 侧若要按名字指定，也应当用这几个字符串（见 JSBind_Http 的参数注释）。
  */
-export async function fetchBytesAsync(name: string): Promise<number> {
+const CacheMode = {
+    /** 浏览器默认规则：按 HTTP 响应头（Cache-Control / ETag…）决定要不要复用缓存。 */
+    Default: 'default',
+    /** 不读也不写 HTTP 缓存，每次都走网络。 */
+    NoStore: 'no-store',
+    /** 跳过缓存直接回源，并把新响应写回缓存。 */
+    Reload: 'reload',
+    /** 每次都回源校验（服务端有 ETag 时可走 304，省流量）。 */
+    NoCache: 'no-cache',
+    /** 强制用缓存：命中就用（【过期也用】），没有才回源。 */
+    ForceCache: 'force-cache',
+    /** 只用缓存，没有就按失败处理（不发起网络请求）。 */
+    OnlyIfCached: 'only-if-cached',
+} as const;
+
+export async function fetchBytesAsync(name: string, bCache = true): Promise<number> {
     let res: Response;
     try {
-        res = await fetch(name);
+        res = await fetch(name, { cache: bCache ? CacheMode.Default : CacheMode.NoStore });
     } catch {
         return -1;
     }

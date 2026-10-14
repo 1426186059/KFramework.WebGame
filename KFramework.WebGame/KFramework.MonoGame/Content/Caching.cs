@@ -2,6 +2,8 @@ namespace KFramework.MonoGame
 {
     public sealed class Caching : IDisposable
     {
+        public static readonly Caching Default = new Caching("KFramework.MonoGame.WebGame");
+
         /// <summary>该缓存的 Cache Storage 名字。</summary>
         public string Name { get; }
 

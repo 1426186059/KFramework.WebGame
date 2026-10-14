@@ -17,9 +17,15 @@ namespace KFramework.MonoGame
         /// 缓存统一由 C# 侧 Caching 管理，同时也省掉一次大文件的 Cache 写入 IO。
         /// </summary>
         /// <param name="name">资源 URL（绝对 URL 直接用）。</param>
+        /// <param name="bCache">
+        /// 是否使用 HTTP 缓存：
+        /// <c>true</c>（默认）强制走缓存（对应 fetch 的 <c>cache:'force-cache'</c>）—— 缓存里有就用，过期也用，没有才回源。
+        /// 注意：这意味着只要浏览器缓存里还有旧的那份就一直用旧的，**只有 URL 带版本号 / 内容指纹时才安全**；
+        /// <c>false</c> 完全不用缓存（对应 <c>cache:'no-store'</c>）—— 不读也不写，每次都走网络。
+        /// </param>
         /// <returns>&gt;=0 字节长度——C# 按此值分配后调 <see cref="TakePending"/>；-1 失败（非 2xx / 网络错误）。</returns>
         [JSImport("fetchBytesAsync", "http_func")]
-        public static partial Task<int> FetchBytesAsync(string name);
+        public static partial Task<int> FetchBytesAsync(string name, bool bCache = true);
 
         /// <summary>
         /// 第二步（同步）：把 <see cref="FetchBytesAsync"/> 暂存的字节拷进 <paramref name="buffer"/> 并释放暂存。

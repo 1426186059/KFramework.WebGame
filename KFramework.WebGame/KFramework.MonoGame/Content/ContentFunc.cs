@@ -1,3 +1,5 @@
+using System.Net.Http.Headers;
+
 namespace KFramework.MonoGame
 {
     internal static class ContentFunc
@@ -18,6 +20,7 @@ namespace KFramework.MonoGame
         /// </param>
         /// 
         public const bool bUseJSHttp = true;
+        public const bool bUseCacheInstance = false;
         public static async Task<byte[]> LoadCacheOrDownloadAsync(HttpClient http, string path, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
         {
             string url = http.BaseAddress + path;
@@ -38,9 +41,10 @@ namespace KFramework.MonoGame
             int priority = 0, 
             CancellationToken cancellationToken = default)
         {
+            bool bUseHttpCache = mCacheInstance != null && !bUseCacheInstance;
             try
             {
-                if (mCacheInstance != null)
+                if (bUseCacheInstance && mCacheInstance != null)
                 {
                     GameProfiler.TestStart();
                     byte[]? buf = await mCacheInstance.LoadAsync(url, cancellationToken).ConfigureAwait(false);
@@ -55,14 +59,7 @@ namespace KFramework.MonoGame
                 {
                     data = await ContentLoadScheduler.Default.EnqueueAsync(priority, async _ =>
                     {
-                        GameProfiler.TestStart();
-                        using var resp = await http.GetAsync(url, cancellationToken).ConfigureAwait(false);
-                        resp.EnsureSuccessStatusCode();
-                        GameProfiler.TestFinishAndLog($"[http] 下载 GetAsync耗时: {url}");
-
-                        GameProfiler.TestStart();
-                        var buffer = await resp.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
-                        GameProfiler.TestFinishAndLog($"[http] 下载 ReadAsByteArrayAsync 耗时 {url} {FmtSize(buffer.Length)}");
+                        byte[] buffer = await SendHttpClientAsync(http, url, bUseHttpCache, cancellationToken).ConfigureAwait(false);
                         return buffer;
                     }, cancellationToken).ConfigureAwait(false);
 
@@ -76,7 +73,7 @@ namespace KFramework.MonoGame
 
                 if (data == null) return data;
 
-                if (mCacheInstance != null)
+                if (bUseCacheInstance && mCacheInstance != null)
                 {
                     GameProfiler.TestStart();
                     await mCacheInstance.SaveAsync(url, new ArraySegment<byte>(data)).ConfigureAwait(false);
@@ -91,28 +88,18 @@ namespace KFramework.MonoGame
 
             return null;
         }
-
-        /// <summary>
-        /// JS 侧链路版加载（大文件首选）。
-        ///
-        /// 为什么需要它：.NET WASM 自带的 HttpClient（http_wasm_fetch）对大响应体极慢 ——
-        /// 实测 41.6MB 要 19 秒，而 6.8MB 只要 0.09 秒（超过约 8MB 后断崖式变慢）。
-        /// 改为 JS 侧 fetch 后字节先留在 JS 堆，再由同步的 takePending 一次拷进 C#，绕开该瓶颈。
-        ///
-        /// 缓存策略刻意保持与 HttpClient 版一致：读写都走传入的 <paramref name="mCacheInstance"/>，
-        /// 用同一个 key（完整 URL）。这样不会在 JS 侧另存一份（JS 的 Caching.current 与本缓存名不同），
-        /// 磁盘不翻倍、缓存也能完全复用。
-        /// </summary>
+        
         public static async Task<byte[]> LoadCacheOrDownloadJsAsync(
             string url,
             Caching mCacheInstance, 
             int priority = 0, 
             CancellationToken cancellationToken = default)
         {
+            bool bUseHttpCache = mCacheInstance != null && !bUseCacheInstance;
             try
             {
                 // 1) 缓存命中（与 HttpClient 版同 key，完全复用）
-                if (mCacheInstance != null)
+                if (bUseCacheInstance && mCacheInstance != null)
                 {
                     GameProfiler.TestStart();
                     byte[] cached = await mCacheInstance.LoadAsync(url).ConfigureAwait(false);
@@ -129,7 +116,7 @@ namespace KFramework.MonoGame
                     data = await ContentLoadScheduler.Default.EnqueueAsync(priority, async _ =>
                     {
                         GameProfiler.TestStart();
-                        int len = await JSBind_Http.FetchBytesAsync(url).ConfigureAwait(false);
+                        int len = await JSBind_Http.FetchBytesAsync(url, bUseHttpCache).ConfigureAwait(false);
                         GameProfiler.TestFinishAndLog($"[js] fetch {url} len={len}");
 
                         if (len < 0) return null;   // -1 = 非 2xx / 网络错误，属真实失败，不回退
@@ -156,10 +143,13 @@ namespace KFramework.MonoGame
                     await Task.Delay(nNextAttemptTime * attempt, cancellationToken);
                 }
 
-                if (data == null) return data;
+                if (data == null)
+                {
+                    return null;
+                }
 
                 // 3) 写回缓存（失败不影响本次结果：磁盘紧张 / 配额满时退化为每次走网络）
-                if (mCacheInstance != null)
+                if (bUseCacheInstance && mCacheInstance != null)
                 {
                     GameProfiler.TestStart();
                     await mCacheInstance.SaveAsync(url, new ArraySegment<byte>(data)).ConfigureAwait(false);
@@ -180,5 +170,29 @@ namespace KFramework.MonoGame
         {
             return bytes >= 1048576 ? $"{bytes / 1048576.0:F1}MB" : $"{bytes / 1024}KB";
         }
+        
+        public static async Task<byte[]> SendHttpClientAsync(
+            HttpClient httpClient,
+            string url,
+            bool bUseHttpCache = true,
+            CancellationToken cancellationToken = default)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            if (!bUseHttpCache)
+            {
+                request.Headers.CacheControl = new CacheControlHeaderValue { NoCache = true, NoStore = true };
+            }
+
+            GameProfiler.TestStart();
+            using var response = await httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            GameProfiler.TestFinishAndLog($"[http] 下载 GetAsync耗时: {url}");
+
+            GameProfiler.TestStart();
+            byte[] buffer = await response.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
+            GameProfiler.TestFinishAndLog($"[http] 下载 ReadAsByteArrayAsync 耗时 {url} {FmtSize(buffer.Length)}");
+            return buffer;
+        }
+
     }
 }
