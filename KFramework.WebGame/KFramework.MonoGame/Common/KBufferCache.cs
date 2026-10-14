@@ -5,11 +5,11 @@ namespace KFramework.MonoGame
 {
     public unsafe class KBufferCache : IDisposable
     {
-        byte* cache;
-        int nAllocLength;
-        int nUseLength;
+        private byte* cache;
+        private int nAllocLength;
+        private int nUseLength;
 
-        public readonly int MaxAllocLength;
+        private readonly int MaxAllocLength;
 
         public KBufferCache(int nInitSize = 1024, int nMaxSize = 0)
         {
