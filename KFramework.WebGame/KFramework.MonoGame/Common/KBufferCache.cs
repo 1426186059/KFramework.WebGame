@@ -42,6 +42,11 @@ namespace KFramework.MonoGame
 
         public void RemoveRange(int nByteCount)
         {
+            if (nByteCount > nUseLength)
+            {
+                throw new Exception($"KBufferCache: RemoveRange Error");
+            }
+
             NativeMemory.Copy(cache + nByteCount, cache, (nuint)(nUseLength - nByteCount));
             nUseLength -= nByteCount;
         }
