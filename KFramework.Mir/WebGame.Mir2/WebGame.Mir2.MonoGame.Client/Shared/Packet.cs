@@ -12,14 +12,13 @@ public abstract class Packet
     public virtual bool Compressed => false;
     public abstract short Index { get; }
 
-    static readonly MemoryStream readerStream = new MemoryStream();
-    static readonly BinaryReader reader = new BinaryReader(readerStream);
-    static readonly MemoryStream writerStream = new MemoryStream();
-    static readonly BinaryWriter writer = new BinaryWriter(writerStream);
+    static readonly MemoryStream readerWriterStream = new MemoryStream();
+    static readonly BinaryReader reader = new BinaryReader(readerWriterStream);
+    static readonly BinaryWriter writer = new BinaryWriter(readerWriterStream);
 
     public static Packet ReceivePacket(KBufferCache rawBytes)
     {
-        Packet p;
+        Packet p = null;
         if (rawBytes.Length < 4) return null; //| 2Bytes: Packet Size | 2Bytes: Packet ID |
 
         var length = BinaryPrimitives.ReadUInt16LittleEndian(rawBytes.GetSpan());
@@ -43,13 +42,16 @@ public abstract class Packet
                 p.DecompressPacket(rawBytes.GetSpan().Slice(4, length - 4)) :
                 rawBytes.GetSpan().Slice(4, length - 4);
 
-            readerStream.Write(ms);
-            readerStream.Flush();
-            readerStream.Position = 0;
+            readerWriterStream.Position = 0;
+            readerWriterStream.SetLength(0);
+            readerWriterStream.Write(ms);
+            readerWriterStream.Flush();
+            readerWriterStream.Position = 0;
             p.ReadPacket(reader);
         }
         catch (Exception e)
         {
+            PrintTool.LogError($"Packet.ReceivePacket: Exception while reading packet {p?.GetType().Name ?? "null"} (ID: {id})", e);
             throw new InvalidDataException();
         }
 
@@ -61,30 +63,46 @@ public abstract class Packet
     {
         if (Index < 0) return null;
 
-        writerStream.Position = 0;
-        writerStream.SetLength(0);
-        writer.Seek(4, SeekOrigin.Begin);
-        WritePacket(writer);
-
+        readerWriterStream.Position = 0;
+        readerWriterStream.SetLength(0);
         if (Compressed)
         {
-            ReadOnlySpan<byte> mem =
-                CompressPacket(writerStream.GetBuffer().AsSpan().Slice(0, (int)writerStream.Length));
-
             writer.Seek(0, SeekOrigin.Begin);
-            writer.Write((ushort)mem.Length + 4);
+            WritePacket(writer);
+            writer.Flush();
+
+            ReadOnlySpan<byte> mem =
+                CompressPacket(readerWriterStream.GetBuffer().AsSpan().Slice(0, (int)readerWriterStream.Length));
+
+            readerWriterStream.Position = 0;
+            readerWriterStream.SetLength(0);
+
+            int sumLength = (int)(mem.Length + 4);
+            writer.Seek(0, SeekOrigin.Begin);
+            writer.Write((ushort)sumLength);
             writer.Write(Index);
             writer.Write(mem);
             writer.Flush();
-            return writerStream.GetBuffer().AsSpan().Slice(0, (int)writerStream.Length);
+
+
+            PrintTool.Assert(readerWriterStream.Length == sumLength, $"Packet.GetPacketBytes: writerStream.Length != sumLength ({readerWriterStream.Length} != {sumLength})");
+            return readerWriterStream.GetBuffer().AsSpan().Slice(0, (int)readerWriterStream.Length);
         }
         else
         {
-            writer.Seek(0, SeekOrigin.Begin);
-            writer.Write((ushort)writerStream.Length + 4);
+            writer.Seek(2, SeekOrigin.Begin);
             writer.Write(Index);
+            WritePacket(writer);
             writer.Flush();
-            return writerStream.GetBuffer().AsSpan().Slice(0, (int)writerStream.Length);
+
+            int sumLength = (int)(readerWriterStream.Length);
+            writer.Seek(0, SeekOrigin.Begin);
+            writer.Write((ushort)sumLength);
+            writer.Flush();
+
+            PrintTool.Assert(readerWriterStream.Length == sumLength, $"Packet.GetPacketBytes: writerStream.Length != sumLength ({readerWriterStream.Length} != {sumLength})");
+            return readerWriterStream.GetBuffer().AsSpan().Slice(0, (int)readerWriterStream.Length);
+
         }
     }
 
