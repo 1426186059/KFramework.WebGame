@@ -20,7 +20,7 @@ namespace Client.MirNetwork
 
         private static ConcurrentQueue<Packet> _receiveList = new ConcurrentQueue<Packet>();
         private static ConcurrentQueue<Packet> _sendList = new ConcurrentQueue<Packet>();
-        private static readonly ConcurrentQueue<byte[]> _rawQueue = new ConcurrentQueue<byte[]>();
+        private static readonly KBufferCache receive_byte_list = new KBufferCache(1024, 1024 * 64);
         private static readonly KBufferCache send_byte_list = new KBufferCache(1024, 1024 * 64);
 
         public static void Connect()
@@ -76,10 +76,9 @@ namespace Client.MirNetwork
             Disconnect();
         }
 
-        private static void OnNet_MessageReceivedFunc(ReadOnlyMemory<byte> m)
+        private static void OnNet_MessageReceivedFunc(ReadOnlySpan<byte> m)
         {
-            byte[] data = m.ToArray();
-            if (data.Length > 0) _rawQueue.Enqueue(data);
+            receive_byte_list.WriteFrom(m);
         }
 
         public static void Disconnect()
@@ -89,7 +88,7 @@ namespace Client.MirNetwork
             Connected = false;
             _sendList = new ConcurrentQueue<Packet>();
             _receiveList = new ConcurrentQueue<Packet>();
-            while (_rawQueue.TryDequeue(out _)) { }
+            receive_byte_list.Clear();
         }
 
         public static void Process()
@@ -123,20 +122,13 @@ namespace Client.MirNetwork
                 Connected = true;
             }
 
-            // 收取所有已到达的二进制消息并切分为 Packet（一条 WS 消息可能含多个完整 Packet）。
-            byte[] msg;
-            while (_rawQueue.TryDequeue(out msg))
+            while (receive_byte_list.Length > 0)
             {
-                byte[] rest = msg;
-                Packet p;
-                while (rest != null && rest.Length > 0)
-                {
-                    p = Packet.ReceivePacket(rest, out rest);
-                    if (p == null) break;   // 该消息内无更多完整 Packet（损坏/截断），丢弃剩余
-                    _receiveList.Enqueue(p);
-                }
+                Packet p = Packet.ReceivePacket(receive_byte_list);
+                if (p == null) break;   // 该消息内无更多完整 Packet（损坏/截断），丢弃剩余
+                _receiveList.Enqueue(p);
             }
-
+            
             while (!_receiveList.IsEmpty)
             {
                 if (!_receiveList.TryDequeue(out Packet p) || p == null) continue;
@@ -157,8 +149,8 @@ namespace Client.MirNetwork
                 {
                     continue;
                 }
-                byte[] packet_byte_data = p.GetPacketBytes();
-                send_byte_list.CopyFrom(packet_byte_data);
+                ReadOnlySpan<byte> packet_byte_data = p.GetPacketBytes();
+                send_byte_list.WriteFrom(packet_byte_data);
             }
 
             CMain.BytesSent += send_byte_list.Length;

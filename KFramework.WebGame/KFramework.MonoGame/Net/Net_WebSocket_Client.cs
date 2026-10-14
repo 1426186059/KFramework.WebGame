@@ -8,7 +8,7 @@ namespace KFramework.MonoGame
 
         private int _handle = -1;
         public event Action? Opened;
-        public event Action<ReadOnlyMemory<byte>>? MessageReceived;
+        public event Action<ReadOnlySpan<byte>>? MessageReceived;
         public event Action<int>? Closed;
         public event Action<string>? Error;
 
@@ -69,7 +69,7 @@ namespace KFramework.MonoGame
 
         internal void RaiseOpened() => Opened?.Invoke();
 
-        internal void RaiseMessage(ReadOnlyMemory<byte> data) => MessageReceived?.Invoke(data);
+        internal void RaiseMessage(byte[] data) => MessageReceived?.Invoke(data);
         internal void RaiseClosed(int code) => Closed?.Invoke(code);
         internal void RaiseError(string message) => Error?.Invoke(message);
     }

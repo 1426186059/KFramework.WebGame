@@ -26,11 +26,24 @@ namespace KFramework.MonoGame
             nUseLength = 0;
         }
 
-        public void CopyFrom(ReadOnlySpan<byte> data)
+        public void WriteFrom(ReadOnlySpan<byte> data)
         {
             SureSizeOK(data.Length);
             data.CopyTo(new Span<byte>(cache + nUseLength, data.Length));
             nUseLength += data.Length;
+        }
+
+        public int WriteTo(Span<byte> data)
+        {
+            int nActualLength = Math.Min(data.Length, nUseLength);
+            GetSpan().Slice(0, nActualLength).CopyTo(data);
+            return nActualLength;
+        }
+
+        public void RemoveRange(int nByteCount)
+        {
+            NativeMemory.Copy(cache + nByteCount, cache, (nuint)(nUseLength - nByteCount));
+            nUseLength -= nByteCount;
         }
 
         public void Clear()

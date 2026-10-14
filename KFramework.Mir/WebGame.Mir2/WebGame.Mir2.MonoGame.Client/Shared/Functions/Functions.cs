@@ -458,28 +458,28 @@ public static class Functions
         return _tempChunks;
     }
 
-    public static byte[] CompressBytes(byte[] raw)
+    static readonly MemoryStream mGzipInputStream = new MemoryStream();
+    static readonly MemoryStream mGzipOutStream = new MemoryStream();
+    static readonly GZipStream mGzipCompressStream = new GZipStream(mGzipInputStream, CompressionMode.Compress, true);
+    static readonly GZipStream mGzipDeCompressStream = new GZipStream(mGzipInputStream, CompressionMode.Decompress, true);
+
+    public static ReadOnlySpan<byte> CompressBytes(ReadOnlySpan<byte> raw)
     {
-        using (var memory = new MemoryStream())
-        {
-            using (var gzip = new GZipStream(memory, CompressionMode.Compress, true))
-            {
-                gzip.Write(raw, 0, raw.Length);
-            }
-            return memory.ToArray();
-        }
+        mGzipInputStream.SetLength(0);
+        mGzipInputStream.Position = 0;
+        mGzipCompressStream.Position = 0;
+        mGzipCompressStream.SetLength(0);
+        mGzipCompressStream.Write(raw);
+        return mGzipInputStream.GetBuffer().AsSpan(0, (int)mGzipInputStream.Length);
     }
 
-    public static byte[] DecompressBytes(byte[] gzip)
+    public static ReadOnlySpan<byte> DecompressBytes(ReadOnlySpan<byte> gzip)
     {
-        using (var stream = new GZipStream(new MemoryStream(gzip), CompressionMode.Decompress))
-        {
-            using (var memory = new MemoryStream())
-            {
-                stream.CopyTo(memory, 4096);
-
-                return memory.ToArray();
-            }
-        }
+        mGzipInputStream.SetLength(0);
+        mGzipInputStream.Seek(0, SeekOrigin.Begin);
+        mGzipDeCompressStream.Position = 0;
+        mGzipDeCompressStream.SetLength(0);
+        mGzipDeCompressStream.Write(gzip);
+        return mGzipInputStream.GetBuffer().AsSpan(0, (int)mGzipInputStream.Length);
     }
 }

@@ -42,7 +42,7 @@ namespace KFramework.MonoGame
         public static void OnBinaryMessage(int handle, byte[] data)
         {
             if (!Net_WebSocket_Client.s_instances.TryGetValue(handle, out var c)) return;
-            c.RaiseMessage(data ?? Array.Empty<byte>());
+            c.RaiseMessage(data);
         }
     }
 }
