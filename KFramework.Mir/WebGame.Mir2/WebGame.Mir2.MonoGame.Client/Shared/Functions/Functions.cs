@@ -460,7 +460,6 @@ public static class Functions
 
     static readonly MemoryStream mGzipInputStream = new MemoryStream();
     static readonly MemoryStream mGzipOutStream = new MemoryStream();
-    static readonly GZipStream mGzipCompressStream = new GZipStream(mGzipInputStream, CompressionMode.Compress, true);
 
     public static ReadOnlySpan<byte> CompressBytes(ReadOnlySpan<byte> raw)
     {
