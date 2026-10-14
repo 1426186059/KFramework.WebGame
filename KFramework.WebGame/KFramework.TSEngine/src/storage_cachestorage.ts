@@ -101,29 +101,7 @@ export class Caching {
     async remove(key: string): Promise<boolean> {
         return await (await this._open()).delete(key);
     }
-
-    /** 通用 GC：保留 keep 白名单中的键、删除其余条目，返回实际删除条数。 */
-    async prune(keep: string[], prefix = '', suffix = ''): Promise<number> {
-        const cache = await this._open();
-        const keepSet = new Set(keep.map(toAbsoluteUrl));
-        const prefixPath = prefix ? toPath(prefix) : '';
-        const reqs = await cache.keys();
-        let removed = 0;
-        for (const req of reqs) {
-            if (keepSet.has(req.url)) continue;
-            const path = toPath(req.url);
-            if (prefixPath && !path.startsWith(prefixPath)) continue;
-            if (suffix && !path.endsWith(suffix)) continue;
-            try {
-                // 单条失败（如并发写占用）不中断整体 GC
-                if (await cache.delete(req)) removed++;
-            } catch {
-                // 忽略
-            }
-        }
-        return removed;
-    }
-
+    
     /** 清空并删除整个缓存（含其中的全部条目）。 */
     async clear(): Promise<void> {
         await caches.delete(this.name);
