@@ -19,7 +19,8 @@ api.MapGet("/info", () => Results.Ok(new
 {
     os = Environment.OSVersion.ToString(),
     framework = Environment.Version.ToString(),
-    cwd = Directory.GetCurrentDirectory()
+    cwd = Directory.GetCurrentDirectory(),
+    downloadDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads")
 }));
 
 // 文件系统浏览（替代 Unity 的 OpenFolderPanel / OpenFilePanel）
@@ -36,8 +37,8 @@ api.MapPost("/file/info", (PathReq req, ReverseService s) =>
 
 // ---- 地图 .dat ----
 // 自动下载（按 Config.cs 中的 URL）地图包 + 配置，解析索引并合并地图名/宽高
-api.MapPost("/map/load", async (ReverseService s) =>
-    Results.Ok(await s.LoadMapDataAsync()));
+api.MapPost("/map/load", async (MapLoadRequest req, ReverseService s) =>
+    Results.Ok(await s.LoadMapDataAsync(req.DatUrl)));
 api.MapPost("/map/parse", (PathReq req, ReverseService s) =>
     Results.Ok(s.ParseMapDat(req.Path)));
 api.MapPost("/map/decode", (MapDecodeRequest req, ReverseService s) =>
@@ -55,8 +56,8 @@ api.MapPost("/atlas/info", (PathReq req, ReverseService s) =>
 api.MapPost("/atlas/manifest", async (ReverseService s) =>
     Results.Ok(await s.LoadManifestAsync()));
 api.MapPost("/atlas/download", async (AtlasDownloadRequest req, ReverseService s) =>
-    Results.Ok(await s.DownloadManifestAsset(req.Key)));
-api.MapPost("/atlas/downloadAll", async (ReverseService s) =>
-    Results.Ok(await s.DownloadManifestAll()));
+    Results.Ok(await s.DownloadManifestAsset(req.Key, req.OutDir)));
+api.MapPost("/atlas/downloadAll", async (AtlasDownloadRequest req, ReverseService s) =>
+    Results.Ok(await s.DownloadManifestAll(req.OutDir)));
 
 app.Run();

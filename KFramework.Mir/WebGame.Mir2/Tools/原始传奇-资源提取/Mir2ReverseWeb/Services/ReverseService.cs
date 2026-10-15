@@ -149,12 +149,13 @@ public class ReverseService
     /// 自动下载地图包 + 配置（仅放入内存，不写本地磁盘），解析索引并给每张地图补上名字与真实像素宽高。
     /// 地图包 ~1.2MB + 4 个配置分片，下载后直接解压进内存缓存，供预览/导出复用。
     /// </summary>
-    public async Task<MapIndexResult> LoadMapDataAsync()
+    public async Task<MapIndexResult> LoadMapDataAsync(string? datUrl = null)
     {
         var res = new MapIndexResult { Messages = new() };
         try
         {
-            foreach (var url in Mir2Config.MapDataUrls)
+            var datUrls = string.IsNullOrWhiteSpace(datUrl) ? Mir2Config.MapDataUrls : new[] { datUrl };
+            foreach (var url in datUrls)
             {
                 var bytes = await DownloadBytesAsync(url, res.Messages);
                 if (bytes == null) continue;
@@ -187,6 +188,10 @@ public class ReverseService
         catch (Exception ex) { res.Error = ex.Message; }
         return res;
     }
+
+    /// <summary>操作系统默认下载目录（UserProfile/Downloads）</summary>
+    private static string OsDownloadDir()
+        => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
 
     // ---------------- 资源 manifest 加载 + 下载（仅内存解析，按需落盘） ----------------
     /// <summary>由 manifest 条目推导实际 CDN 文件 URL：{CdnBase}/resource/{v前2位}/{v}_{s}.{ext}</summary>
@@ -230,7 +235,7 @@ public class ReverseService
         return res;
     }
 
-    public async Task<AtlasDownloadResult> DownloadManifestAsset(string key)
+    public async Task<AtlasDownloadResult> DownloadManifestAsset(string key, string? outDir = null)
     {
         var res = new AtlasDownloadResult { Key = key };
         try
@@ -239,7 +244,8 @@ public class ReverseService
             if (entry == null) { res.Error = "清单未加载或无此条目"; return res; }
             res.Url = entry.Url;
             var sub = entry.Hash.Length >= 2 ? entry.Hash.Substring(0, 2) : entry.Hash;
-            var dir = Path.Combine(Directory.GetCurrentDirectory(), Mir2Config.DownloadDir, sub);
+            var baseDir = string.IsNullOrWhiteSpace(outDir) ? OsDownloadDir() : outDir!;
+            var dir = Path.Combine(baseDir, sub);
             Directory.CreateDirectory(dir);
             var fileName = $"{entry.Hash}_{entry.Size}.{entry.Ext.TrimStart('.')}";
             var file = Path.Combine(dir, fileName);
@@ -255,7 +261,7 @@ public class ReverseService
         return res;
     }
 
-    public async Task<AtlasDownloadAllResult> DownloadManifestAll()
+    public async Task<AtlasDownloadAllResult> DownloadManifestAll(string? outDir = null)
     {
         var res = new AtlasDownloadAllResult { Messages = new() };
         try
@@ -267,7 +273,7 @@ public class ReverseService
             foreach (var e in list)
             {
                 n++;
-                var r = await DownloadManifestAsset(e.Key);
+                var r = await DownloadManifestAsset(e.Key, outDir);
                 if (r.Skipped) res.Skipped++;
                 else if (r.Ok) { res.Downloaded++; res.TotalBytes += r.Bytes; }
                 else res.Failed++;

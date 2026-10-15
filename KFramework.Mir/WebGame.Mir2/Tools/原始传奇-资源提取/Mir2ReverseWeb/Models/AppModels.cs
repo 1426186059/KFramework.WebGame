@@ -112,6 +112,12 @@ public class MapExportResult
     public List<string> Files { get; set; } = new();
 }
 
+/// <summary>加载地图数据（可选自定义 map.data URL 覆盖 Config）</summary>
+public class MapLoadRequest
+{
+    public string? DatUrl { get; set; }
+}
+
 /// <summary>图集(WIL/WIX)文件信息</summary>
 public class AtlasFile
 {
@@ -173,6 +179,8 @@ public class ManifestResult
 public class AtlasDownloadRequest
 {
     public string Key { get; set; } = "";
+    /// <summary>输出目录；留空则默认系统下载目录</summary>
+    public string? OutDir { get; set; }
 }
 
 public class AtlasDownloadResult

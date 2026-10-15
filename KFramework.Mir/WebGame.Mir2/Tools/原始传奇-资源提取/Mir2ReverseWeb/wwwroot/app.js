@@ -123,9 +123,10 @@ async function loadMapData() {
     const btn = $('#btnParseMap');
     btn.disabled = true;
     btn.textContent = '加载中…';
+    const datUrl = $('#mapDatPath').value.trim();
     log('开始加载地图数据（按 Config.cs 中的 URL 自动下载）…');
     try {
-        const res = await api('POST', '/api/map/load', {});
+        const res = await api('POST', '/api/map/load', { datUrl });
         if (!res.ok) { log('加载失败: ' + res.error, 'err'); return; }
         mapIndex = res.entries;
         mapSourceFile = res.sourceFile || '';
@@ -239,7 +240,7 @@ async function previewMap(id) {
 $('#btnExportMap').addEventListener('click', async () => {
     const dest = $('#mapDest').value.trim();
     if (!mapSourceFile) { toast('请先加载地图数据'); return; }
-    if (!dest) { toast('请设置导出目标目录'); return; }
+    if (!dest) { toast('请设置输出目录'); return; }
     const ids = [...mapSelected];
     try {
         log(`导出 ${ids.length} 张地图到 ${dest} ...`);
@@ -303,7 +304,7 @@ function renderManifestTable() {
 
 async function downloadOne(key) {
     try {
-        const res = await api('POST', '/api/atlas/download', { key });
+        const res = await api('POST', '/api/atlas/download', { key, outDir: $('#atlasOutDir').value.trim() });
         if (!res.ok) { log(`下载 ${key} 失败: ${res.error}`, 'err'); return; }
         if (res.skipped) log(`已存在(跳过) ${key} -> ${res.localPath}`, 'ok');
         else log(`已下载 ${key} (${(res.bytes / 1024).toFixed(1)} KB) -> ${res.localPath}`, 'ok');
@@ -314,7 +315,7 @@ async function downloadAll() {
     const btn = $('#btnDownloadAll');
     btn.disabled = true; btn.textContent = '下载中…';
     try {
-        const res = await api('POST', '/api/atlas/downloadAll', {});
+        const res = await api('POST', '/api/atlas/downloadAll', { outDir: $('#atlasOutDir').value.trim() });
         if (!res.ok) { log('全部下载失败: ' + res.error, 'err'); return; }
         (res.messages || []).forEach(m => log(m, 'ok'));
     } catch (e) { log('全部下载异常: ' + e.message, 'err'); }
@@ -356,4 +357,12 @@ $('#btnClearLog').addEventListener('click', () => $('#log').innerHTML = '');
     } catch (e) {
         log('无法连接服务: ' + e.message, 'err');
     }
+    try {
+        const info = await api('GET', '/api/info');
+        const dl = info.downloadDir || '';
+        if (dl) {
+            if (!$('#mapDest').value.trim()) $('#mapDest').value = dl;
+            if (!$('#atlasOutDir').value.trim()) $('#atlasOutDir').value = dl;
+        }
+    } catch (e) { log('读取运行信息失败: ' + e.message, 'err'); }
 })();

@@ -48,9 +48,8 @@
                     <div class="card-title">地图数据加载</div>
 
                     <div class="field">
-                        <label>本地 .dat 文件</label>
-                        <input id="mapDatPath" type="text" placeholder="map10.25341.1.dat（支持 zlib/gzip 压缩，自动解压）" />
-                        <button class="btn btn-ghost" data-browse-file="mapDatPath" data-filter="*.dat">浏览</button>
+                        <label>map.data URL</label>
+                        <input id="mapDatPath" type="text" placeholder="https://…/map10.25341.1.dat（支持 zlib/gzip 压缩，自动解压）" />
                         <span id="dot-mapDatPath" class="dot"></span>
                     </div>
 
@@ -62,8 +61,8 @@
                     </div>
 
                     <div class="field">
-                        <label>导出目标</label>
-                        <input id="mapDest" type="text" placeholder="导出可走性 PNG 的目标目录" />
+                        <label>输出目录</label>
+                        <input id="mapDest" type="text" placeholder="可走性 PNG 的输出目录（默认系统下载目录）" />
                         <button class="btn btn-ghost" data-browse="mapDest">浏览</button>
                         <span id="dot-mapDest" class="dot"></span>
                     </div>
@@ -119,6 +118,12 @@ bit3=可走 ｜ bit2=遮挡 ｜ bit1=安全区。预览按此渲染可走性掩�
                             <div class="url-label label-cyan">allmanifest10.25341.1.json</div>
                             <ul id="urlManifest" class="url-list"></ul>
                         </div>
+                    </div>
+                    <div class="field">
+                        <label>输出目录</label>
+                        <input id="atlasOutDir" type="text" placeholder="下载资源的输出目录（默认系统下载目录）" />
+                        <button class="btn btn-ghost" data-browse="atlasOutDir">浏览</button>
+                        <span id="dot-atlasOutDir" class="dot"></span>
                     </div>
                     <div class="row-actions">
                         <button id="btnLoadManifest" class="btn btn-primary">加载清单</button>
