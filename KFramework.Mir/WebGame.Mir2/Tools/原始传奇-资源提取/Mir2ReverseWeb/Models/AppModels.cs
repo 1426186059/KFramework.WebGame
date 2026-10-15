@@ -55,6 +55,9 @@ public class MapIndexResult
     public int ConfigCount { get; set; }
     public List<MapEntry> Entries { get; set; } = new();
     public List<string> Messages { get; set; } = new();
+    /// <summary>本次加载用到的资源 URL（配置 / JS），供页面展示</summary>
+    public List<string> MapConfigUrls { get; set; } = new();
+    public List<string> MapJsUrls { get; set; } = new();
 }
 
 /// <summary>解码单张地图（nibble 单元格 → 可走性掩码）</summary>
@@ -75,9 +78,18 @@ public class MapDecodeResult
     public string? Error { get; set; }
     public int Id { get; set; }
     public int Cells { get; set; }
+    /// <summary>由数据块长度推算的真实单元格总数（每个 4 bit）</summary>
+    public int RawCells { get; set; }
+    /// <summary>由配置宽高推算的网格列/行</summary>
+    public int Cols { get; set; }
+    public int Rows { get; set; }
+    /// <summary>配置格数（Cols*Rows），用于与 RawCells 比对；0 表示无配置</summary>
+    public int ConfigCells { get; set; }
     public int Walkable { get; set; }
     public int Cover { get; set; }
     public int Safe { get; set; }
+    /// <summary>非致命提示（如配置与数据不符时自动重算网格）</summary>
+    public string? Warn { get; set; }
     public string? PreviewPngBase64 { get; set; }
     public string? OutFile { get; set; }
 }

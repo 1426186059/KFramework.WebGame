@@ -140,6 +140,7 @@ async function loadMapData() {
         $('#mapCountInfo').textContent =
             `共 ${res.count} 张 · 配置 ${res.configCount} 条 · ${(res.totalBytes / 1048576).toFixed(2)} MB`;
         (res.messages || []).forEach(m => log(m, 'ok'));
+        renderSourceUrls(res);
         renderMapTable();
         log(`加载完成：${res.count} 张地图，平均 ${(res.totalBytes / res.count / 1024).toFixed(1)} KB/张`, 'ok');
     } catch (e) {
@@ -148,6 +149,23 @@ async function loadMapData() {
         btn.disabled = false;
         btn.textContent = '重新加载地图数据';
     }
+}
+
+function renderUrlList(el, urls) {
+    el.innerHTML = '';
+    (urls || []).forEach(u => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = u; a.target = '_blank'; a.rel = 'noopener'; a.textContent = u;
+        li.appendChild(a);
+        el.appendChild(li);
+    });
+    if (!(urls && urls.length)) el.innerHTML = '<li class="muted">（无）</li>';
+}
+
+function renderSourceUrls(res) {
+    renderUrlList($('#urlMapConfig'), res.mapConfigUrls);
+    renderUrlList($('#urlMapJs'), res.mapJsUrls);
 }
 
 $('#btnParseMap').addEventListener('click', loadMapData);
@@ -216,8 +234,9 @@ async function previewMap(id) {
         $('#previewBody').classList.remove('hidden');
         $('#previewName').textContent = `地图 ${id}${entry.name ? ' · ' + entry.name : ''}`;
         $('#previewImg').src = res.previewPngBase64;
-        $('#previewStats').textContent =
-            `网格 ${Math.sqrt(res.cells) | 0}? · 总格 ${res.cells} ｜ 可走 ${res.walkable} ｜ 遮挡 ${res.cover} ｜ 安全区 ${res.safe}`;
+        let stats = `网格 ${res.cols} × ${res.rows} ｜ 总格 ${res.cells}（数据块 ${res.rawCells}）｜ 可走 ${res.walkable} ｜ 遮挡 ${res.cover} ｜ 安全区 ${res.safe}`;
+        if (res.warn) stats += `\n⚠ ${res.warn}`;
+        $('#previewStats').textContent = stats;
     } catch (e) { log('预览异常: ' + e.message, 'err'); }
 }
 

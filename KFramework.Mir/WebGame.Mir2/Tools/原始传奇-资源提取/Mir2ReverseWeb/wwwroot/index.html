@@ -45,10 +45,24 @@
             <!-- ===================== 提取地图资源 ===================== -->
             <section class="view" id="view-map">
                 <div class="card">
-                    <div class="card-title">地图数据包配置</div>
+                    <div class="card-title">Config 中的所有 URL</div>
+                    <div class="url-groups">
+                        <div class="url-group">
+                            <div class="url-label label-cyan">地图配置 (.json 分片)</div>
+                            <ul id="urlMapConfig" class="url-list"></ul>
+                        </div>
+                        <div class="url-group">
+                            <div class="url-label label-cyan">客户端 JS（含解码逻辑）</div>
+                            <ul id="urlMapJs" class="url-list"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">地图数据加载</div>
 
                     <div class="field">
-                        <label>地图数据包</label>
+                        <label>本地 .dat 文件</label>
                         <input id="mapDatPath" type="text" placeholder="map10.25341.1.dat（支持 zlib/gzip 压缩，自动解压）" />
                         <button class="btn btn-ghost" data-browse-file="mapDatPath" data-filter="*.dat">浏览</button>
                         <span id="dot-mapDatPath" class="dot"></span>

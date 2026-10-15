@@ -20,6 +20,7 @@ public class ReverseService
     private readonly Dictionary<int, MapMeta> _mapConfig = new();
     private readonly Dictionary<int, string> _idToFile = new();
     private string? _loadedFile;
+    private byte[]? _mapDatBytes;   // 从 URL 下载并解压后的完整 .dat（仅存内存，不落盘）
     private static readonly object _lock = new();
 
     private static int ReadBEInt(byte[] d, int p)
@@ -36,22 +37,28 @@ public class ReverseService
             return c.data;
 
         var raw = File.ReadAllBytes(path);
-        byte[] data = raw;
+        var data = DecompressIfNeeded(raw);
+
+        _cache[key] = (fi.Length, fi.LastWriteTimeUtc.Ticks, data);
+        return data;
+    }
+
+    /// <summary>按需解压：gzip / zlib 魔数则解压，否则原样返回（纯内存，不落盘）</summary>
+    private static byte[] DecompressIfNeeded(byte[] raw)
+    {
         if (raw.Length > 2 && raw[0] == 0x1f && raw[1] == 0x8b) // gzip
         {
             using var ms = new MemoryStream(raw);
             using var gz = new GZipStream(ms, CompressionMode.Decompress);
-            using var o = new MemoryStream(); gz.CopyTo(o); data = o.ToArray();
+            using var o = new MemoryStream(); gz.CopyTo(o); return o.ToArray();
         }
-        else if (raw.Length > 2 && raw[0] == 0x78 && (raw[1] == 0x01 || raw[1] == 0x9c || raw[1] == 0xda)) // zlib
+        if (raw.Length > 2 && raw[0] == 0x78 && (raw[1] == 0x01 || raw[1] == 0x9c || raw[1] == 0xda)) // zlib
         {
             using var ms = new MemoryStream(raw);
             using var zl = new ZLibStream(ms, CompressionMode.Decompress);
-            using var o = new MemoryStream(); zl.CopyTo(o); data = o.ToArray();
+            using var o = new MemoryStream(); zl.CopyTo(o); return o.ToArray();
         }
-
-        _cache[key] = (fi.Length, fi.LastWriteTimeUtc.Ticks, data);
-        return data;
+        return raw;
     }
 
     // ---------------- 索引解析 ----------------
@@ -78,6 +85,9 @@ public class ReverseService
         try
         {
             var data = GetData(path);
+            _mapDatBytes = data;
+            _loadedFile = path;
+            res.SourceFile = path;
             res.Count = ParseIndexInto(data, res.Entries);
             res.TotalBytes = res.Entries.Sum(e => (long)e.Len);
             res.Ok = true;
@@ -86,41 +96,25 @@ public class ReverseService
         return res;
     }
 
-    // ---------------- 自动下载 + 配置合并 ----------------
-    private string CacheRoot() => Path.Combine(Directory.GetCurrentDirectory(), Mir2Config.CacheDir);
-
-    private async Task<string?> DownloadAsync(string url, List<string> msgs)
+    // ---------------- 自动下载（仅内存，不落盘） + 配置合并 ----------------
+    private async Task<byte[]?> DownloadBytesAsync(string url, List<string> msgs)
     {
         try
         {
-            var uri = new Uri(url);
-            var seg = string.Concat(uri.Segments
-                .Where(s => !string.IsNullOrEmpty(s) && s != "/")
-                .Select(s => s.Trim('/')))
-                .Replace('/', '_');
-            var cache = CacheRoot();
-            Directory.CreateDirectory(cache);
-            var file = Path.Combine(cache, seg + ".bin");
-            if (File.Exists(file) && new FileInfo(file).Length > 0)
-            {
-                msgs.Add($"[缓存] {seg}");
-                return file;
-            }
             msgs.Add($"[下载] {url}");
-            var bytes = await _http.GetByteArrayAsync(url);
-            await File.WriteAllBytesAsync(file, bytes);
-            msgs.Add($"[已存] {seg} ({bytes.Length} 字节)");
-            return file;
+            var raw = await _http.GetByteArrayAsync(url);
+            var data = DecompressIfNeeded(raw);
+            msgs.Add($"[已载] {url}（{(data.Length / 1024.0).ToString("F1")} KB，仅内存）");
+            return data;
         }
         catch (Exception ex) { msgs.Add($"[下载失败] {url}：{ex.Message}"); return null; }
     }
 
-    /// <summary>解析配置 JSON（GBK 编码的中文地图名），合并进内存字典</summary>
-    private void MergeConfig(string file, List<string> msgs)
+    /// <summary>解析配置 JSON（UTF-8 中文地图名，直接读内存字节），合并进内存字典</summary>
+    private void MergeConfig(byte[] bytes, string label, List<string> msgs)
     {
         try
         {
-            var bytes = File.ReadAllBytes(file);
             // 配置文件为 UTF-8（不要按 GBK 解码，否则会产生乱码）
             using var doc = JsonDocument.Parse(bytes);
             var root = doc.RootElement;
@@ -145,14 +139,14 @@ public class ReverseService
                     n++;
                 }
             }
-            msgs.Add($"[配置] {Path.GetFileName(file)}：{n} 条地图定义");
+            msgs.Add($"[配置] {label}：{n} 条地图定义");
         }
-        catch (Exception ex) { msgs.Add($"[配置失败] {file}：{ex.Message}"); }
+        catch (Exception ex) { msgs.Add($"[配置失败] {label}：{ex.Message}"); }
     }
 
     /// <summary>
-    /// 自动下载地图包 + 配置，解析索引并给每张地图补上名字与真实像素宽高。
-    /// 首次会联网下载（地图包 ~1.2MB + 4 个配置分片各 ~7MB），之后走本地缓存。
+    /// 自动下载地图包 + 配置（仅放入内存，不写本地磁盘），解析索引并给每张地图补上名字与真实像素宽高。
+    /// 地图包 ~1.2MB + 4 个配置分片，下载后直接解压进内存缓存，供预览/导出复用。
     /// </summary>
     public async Task<MapIndexResult> LoadMapDataAsync()
     {
@@ -161,24 +155,23 @@ public class ReverseService
         {
             foreach (var url in Mir2Config.MapDataUrls)
             {
-                var f = await DownloadAsync(url, res.Messages);
-                if (f == null) continue;
-                var data = GetData(f);
-                int n = ParseIndexInto(data, res.Entries);
-                res.Messages.Add($"[地图包] {Path.GetFileName(f)}：{n} 张");
-                _loadedFile = f;
+                var bytes = await DownloadBytesAsync(url, res.Messages);
+                if (bytes == null) continue;
+                int n = ParseIndexInto(bytes, res.Entries);
+                res.Messages.Add($"[地图包] {url}：{n} 张");
+                _mapDatBytes = bytes;
+                _loadedFile = url;
             }
             foreach (var url in Mir2Config.MapConfigUrls)
             {
-                var f = await DownloadAsync(url, res.Messages);
-                if (f == null) continue;
-                MergeConfig(f, res.Messages);
+                var bytes = await DownloadBytesAsync(url, res.Messages);
+                if (bytes == null) continue;
+                MergeConfig(bytes, url, res.Messages);
             }
             lock (_lock)
             {
                 foreach (var e in res.Entries)
                 {
-                    _idToFile[e.Id] = _loadedFile!;
                     if (_mapConfig.TryGetValue(e.Id, out var m)) { e.Name = m.Name; e.Width = m.Width; e.Height = m.Height; }
                 }
             }
@@ -186,6 +179,8 @@ public class ReverseService
             res.SourceFile = _loadedFile;
             res.Count = res.Entries.Count;
             res.TotalBytes = res.Entries.Sum(e => (long)e.Len);
+            res.MapConfigUrls = Mir2Config.MapConfigUrls.ToList();
+            res.MapJsUrls = Mir2Config.MapJsUrls.ToList();
             res.Ok = true;
         }
         catch (Exception ex) { res.Error = ex.Message; }
@@ -226,28 +221,51 @@ public class ReverseService
         var res = new MapDecodeResult { Id = req.Id };
         try
         {
-            // 优先用请求里带的文件路径；若路径无效（如含中文在传输中损坏），回退到加载时记录的内存路径
-            string? file = (!string.IsNullOrWhiteSpace(req.Path) && File.Exists(req.Path)) ? req.Path : ResolveFile(req.Id);
-            if (file == null || !File.Exists(file)) { res.Error = "未加载地图数据，请先在「提取地图资源」页加载"; return res; }
-            var data = GetData(file);
+            // URL 加载的数据已解压进内存（_mapDatBytes）；仅当内存无数据时才回退到本地文件
+            byte[]? data = _mapDatBytes;
+            if (data == null)
+            {
+                string? file = (!string.IsNullOrWhiteSpace(req.Path) && File.Exists(req.Path)) ? req.Path : ResolveFile(req.Id);
+                if (file == null || !File.Exists(file)) { res.Error = "未加载地图数据，请先在「提取地图资源」页加载"; return res; }
+                data = GetData(file);
+            }
             var block = ExtractMapBlock(data, req.Id, out int rawLen);
             if (block == null) { res.Error = $"未找到地图 {req.Id}（块长 {rawLen}）"; return res; }
 
             int pw = req.Width, ph = req.Height;
             if ((pw <= 0 || ph <= 0) && _mapConfig.TryGetValue(req.Id, out var m)) { pw = m.Width; ph = m.Height; }
 
-            int cols, rows;
+            // 每个单元格 4 bit，两格压一字节；块首 4 字节为头部（客户端 readInt 丢弃）。
+            // 真实单元格总数必须由数据块长度决定，配置宽高仅用于推算宽高比。
+            int rawCells = block.Length * 2;
+            int cfgCols = 0, cfgRows = 0, cfgCells = 0;
             bool fromConfig = pw > 0 && ph > 0;
             if (fromConfig)
             {
-                cols = (int)Math.Ceiling(pw / (double)Mir2Config.GridWidth);
-                rows = (int)Math.Ceiling(ph / (double)Mir2Config.GridHeight);
+                cfgCols = (int)Math.Ceiling(pw / (double)Mir2Config.GridWidth);
+                cfgRows = (int)Math.Ceiling(ph / (double)Mir2Config.GridHeight);
+                cfgCells = cfgCols * cfgRows;
+            }
+
+            int cols, rows;
+            // 数据块在单元格之后还会附带 stallage/guaji/safe 区域点表（readData 末尾读取），
+            // 因此块长度会略大于纯单元格数；只要有足够字节容纳 cfgCells 即视为匹配。
+            if (cfgCells > 0 && rawCells >= cfgCells)
+            {
+                // 配置与数据匹配，直接用客户端同款网格
+                cols = cfgCols; rows = cfgRows;
             }
             else
             {
-                int total = block.Length * 2;
-                cols = (int)Math.Ceiling(Math.Sqrt(total));
-                rows = (int)Math.Ceiling(total / (double)cols);
+                // 配置缺失 / 不匹配：用真实单元格数 + 配置宽高比反推网格
+                double aspect = fromConfig
+                    ? (pw * (double)Mir2Config.GridHeight) / (ph * (double)Mir2Config.GridWidth)
+                    : 1.0;
+                cols = (int)Math.Max(1, Math.Round(Math.Sqrt(rawCells * aspect)));
+                rows = (int)Math.Max(1, Math.Round(rawCells / (double)cols));
+                res.Warn = cfgCells > 0
+                    ? $"配置格数({cfgCells})与数据块格数({rawCells})不符，已按数据长度+宽高比重算网格 {cols}x{rows}"
+                    : $"未找到配置宽高，已按数据块长度估算网格 {cols}x{rows}（正方形假设）";
             }
 
             int maxCells = cols * rows;
@@ -268,8 +286,9 @@ public class ReverseService
                 for (int c = 0; c < cols; c++)
                 {
                     int nib = 0;
-                    if (idx < maxCells)
-                        nib = (idx % 2 == 0) ? ((block[idx / 2] >> 4) & 0xF) : (block[idx / 2] & 0xF);
+                    int bi = idx / 2;
+                    if (bi < block.Length)
+                        nib = (idx % 2 == 0) ? ((block[bi] >> 4) & 0xF) : (block[bi] & 0xF);
                     idx++;
                     bool w = (nib & 8) != 0, cov = (nib & 4) != 0, sf = (nib & 2) != 0;
                     if (idx <= maxCells) { if (w) walk++; if (cov) cover++; if (sf) safe++; }
@@ -284,6 +303,10 @@ public class ReverseService
             byte[] bytes = png.ToArray();
             res.PreviewPngBase64 = "data:image/png;base64," + Convert.ToBase64String(bytes);
             res.Cells = maxCells;
+            res.RawCells = rawCells;
+            res.Cols = cols;
+            res.Rows = rows;
+            res.ConfigCells = cfgCells;
             res.Walkable = walk;
             res.Cover = cover;
             res.Safe = safe;
