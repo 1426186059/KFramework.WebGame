@@ -15,10 +15,6 @@
                 <p>Mir2 Reverse Web · 资源提取 / 数据解析 / 浏览器</p>
             </div>
         </div>
-        <div class="top-status">
-            <span id="pingBadge" class="badge badge-gray">连接中…</span>
-            <span id="datBadge" class="badge badge-gray">未加载地图包</span>
-        </div>
     </header>
 
     <div class="layout">
@@ -27,16 +23,6 @@
             <div class="nav-group">资源提取</div>
             <a class="nav-item active" data-view="map"><span class="nav-ico">🗺</span>提取地图资源</a>
             <a class="nav-item" data-view="atlas"><span class="nav-ico">🎞</span>提取所有图集</a>
-            <a class="nav-item" data-view="sprite"><span class="nav-ico">🧙</span>提取精灵素材</a>
-            <a class="nav-item" data-view="audio"><span class="nav-ico">🔊</span>提取音效音乐</a>
-
-            <div class="nav-group">数据解析</div>
-            <a class="nav-item" data-view="mirdb"><span class="nav-ico">📚</span>解析 MirDB</a>
-            <a class="nav-item" data-view="config"><span class="nav-ico">⚙</span>客户端配置 / 文本</a>
-
-            <div class="nav-group">工具</div>
-            <a class="nav-item" data-view="browser"><span class="nav-ico">📂</span>资源浏览器</a>
-            <a class="nav-item" data-view="settings"><span class="nav-ico">🛠</span>运行配置</a>
         </nav>
 
         <!-- 中间主区 -->
@@ -127,25 +113,32 @@ bit3=可走 ｜ bit2=遮挡 ｜ bit1=安全区。预览按此渲染可走性掩�
             <!-- ===================== 提取所有图集 ===================== -->
             <section class="view hidden" id="view-atlas">
                 <div class="card">
-                    <div class="card-title">图集目录</div>
-                    <div class="field">
-                        <label>资源根目录</label>
-                        <input id="atlasRoot" type="text" placeholder="含 .wil/.lib/.wix/.wzl 的目录" />
-                        <button class="btn btn-ghost" data-browse="atlasRoot">浏览</button>
-                        <span id="dot-atlasRoot" class="dot"></span>
+                    <div class="card-title">Manifest URL（资源总索引）</div>
+                    <div class="url-groups">
+                        <div class="url-group">
+                            <div class="url-label label-cyan">allmanifest10.25341.1.json</div>
+                            <ul id="urlManifest" class="url-list"></ul>
+                        </div>
                     </div>
                     <div class="row-actions">
-                        <button id="btnAtlasScan" class="btn btn-primary">扫描图集</button>
-                        <span id="atlasInfo" class="muted"></span>
+                        <button id="btnLoadManifest" class="btn btn-primary">加载清单</button>
+                        <span id="manifestInfo" class="muted"></span>
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-title">图集列表</div>
-                    <div id="atlasList" class="result-empty muted">（扫描后列出所有 WIL/Lib 图集）</div>
-                    <div class="table-scroll hidden" id="atlasTableWrap">
+                    <div class="card-title">清单条目（<span id="manifestCount">0</span>）</div>
+                    <div class="row-actions">
+                        <button id="btnDownloadAll" class="btn btn-success" disabled>全部下载</button>
+                        <span id="dlAllInfo" class="muted"></span>
+                    </div>
+                    <div class="list-toolbar">
+                        <span class="search"><input id="manifestSearch" type="text" placeholder="搜索 key（如 window-sheet / .png）" /></span>
+                        <span id="manifestSelInfo" class="sel-info"></span>
+                    </div>
+                    <div class="table-scroll">
                         <table class="map-table">
-                            <thead><tr><th>文件名</th><th>类型</th><th>体积</th><th class="col-act">操作</th></tr></thead>
-                            <tbody id="atlasTbody"></tbody>
+                            <thead><tr><th>逻辑路径 key</th><th>hash</th><th>体积</th><th class="col-act">操作</th></tr></thead>
+                            <tbody id="manifestTbody"></tbody>
                         </table>
                     </div>
                 </div>
@@ -161,133 +154,11 @@ bit3=可走 ｜ bit2=遮挡 ｜ bit1=安全区。预览按此渲染可走性掩�
                 </div>
             </section>
 
-            <!-- ===================== 提取精灵素材 ===================== -->
-            <section class="view hidden" id="view-sprite">
-                <div class="card">
-                    <div class="card-title">精灵类别与目录</div>
-                    <div class="field">
-                        <label>精灵类别</label>
-                        <select id="spriteCat" class="sel">
-                            <option value="wil,wzl,wzx">全部图集 (.wil/.wzl/.wzx)</option>
-                            <option value="wil,wzl,wzx">怪物 / 怪物特效</option>
-                            <option value="wil,wzl,wzx">角色 / 武器 / 坐骑</option>
-                            <option value="wil,wzl,wzx">技能特效 (Magic)</option>
-                            <option value="wil,wzl,wzx">物品图标 (Items)</option>
-                            <option value="wil,wzl,wzx">NPC</option>
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label>资源根目录</label>
-                        <input id="spriteRoot" type="text" placeholder="传奇客户端 Data 目录" />
-                        <button class="btn btn-ghost" data-browse="spriteRoot">浏览</button>
-                        <span id="dot-spriteRoot" class="dot"></span>
-                    </div>
-                    <div class="row-actions">
-                        <button id="btnSpriteScan" class="btn btn-primary">扫描精灵库</button>
-                        <span id="spriteInfo" class="muted"></span>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-title">精灵库列表</div>
-                    <div id="spriteList" class="result-empty muted">（扫描后列出对应 .wil 库）</div>
-                    <div class="table-scroll hidden" id="spriteTableWrap">
-                        <table class="map-table">
-                            <thead><tr><th>文件名</th><th>类型</th><th>体积</th><th class="col-act">操作</th></tr></thead>
-                            <tbody id="spriteTbody"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
 
-            <!-- ===================== 提取音效音乐 ===================== -->
-            <section class="view hidden" id="view-audio">
-                <div class="card">
-                    <div class="card-title">音效 / 音乐目录</div>
-                    <div class="field">
-                        <label>资源根目录</label>
-                        <input id="audioRoot" type="text" placeholder="含 .wav/.mp3/.mid 或 Sound.Lib 的目录" />
-                        <button class="btn btn-ghost" data-browse="audioRoot">浏览</button>
-                        <span id="dot-audioRoot" class="dot"></span>
-                    </div>
-                    <div class="row-actions">
-                        <button id="btnAudioScan" class="btn btn-primary">扫描音频</button>
-                        <span id="audioInfo" class="muted"></span>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-title">音频列表</div>
-                    <div id="audioList" class="result-empty muted">（扫描后列出所有音频资源）</div>
-                    <div class="table-scroll hidden" id="audioTableWrap">
-                        <table class="map-table">
-                            <thead><tr><th>文件名</th><th>类型</th><th>体积</th></tr></thead>
-                            <tbody id="audioTbody"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
 
-            <!-- ===================== 解析 MirDB ===================== -->
-            <section class="view hidden" id="view-mirdb">
-                <div class="card">
-                    <div class="card-title">MirDB 数据库</div>
-                    <div class="field">
-                        <label>MirDB 文件</label>
-                        <input id="mirdbPath" type="text" placeholder="Server.MirDB" />
-                        <button class="btn btn-ghost" data-browse-file="mirdbPath" data-filter="*.MirDB">浏览</button>
-                        <span id="dot-mirdbPath" class="dot"></span>
-                    </div>
-                    <div class="row-actions">
-                        <button id="btnMirDbInfo" class="btn btn-primary">读取信息</button>
-                    </div>
-                    <pre class="help" id="mirdbResult">（选择 MirDB 后展示大小 / 记录数 / 结构说明）</pre>
-                </div>
-            </section>
 
-            <!-- ===================== 客户端配置 / 文本 ===================== -->
-            <section class="view hidden" id="view-config">
-                <div class="card">
-                    <div class="card-title">客户端配置 / 文本</div>
-                    <div class="field">
-                        <label>文件</label>
-                        <input id="cfgPath" type="text" placeholder="config.json / GamePack / StrRes 等" />
-                        <button class="btn btn-ghost" data-browse-file="cfgPath" data-filter="*.json;*.txt;*.ini;*.xml">浏览</button>
-                        <span id="dot-cfgPath" class="dot"></span>
-                    </div>
-                    <div class="row-actions">
-                        <button id="btnCfgInfo" class="btn btn-primary">读取信息</button>
-                    </div>
-                    <pre class="help" id="cfgResult">（选择文本/配置后展示行数、大小与解析说明）</pre>
-                </div>
-            </section>
 
-            <!-- ===================== 资源浏览器 ===================== -->
-            <section class="view hidden" id="view-browser">
-                <div class="card">
-                    <div class="card-title">资源浏览器</div>
-                    <div class="field">
-                        <label>当前路径</label>
-                        <input id="browserPath" type="text" placeholder="目录路径" />
-                        <button id="btnBrowserGo" class="btn btn-primary">前往</button>
-                        <button id="btnBrowserUp" class="btn btn-ghost">↑ 上级</button>
-                    </div>
-                    <div class="row-actions">
-                        <input id="browserFilter" type="text" class="num" style="width:160px" placeholder="扩展名过滤，如 .wil,.dat" />
-                        <label class="check"><input id="browserFiles" type="checkbox" checked /> 显示文件</label>
-                    </div>
-                </div>
-                <div class="card grow">
-                    <div class="card-title">目录内容</div>
-                    <div id="browserList" class="browse-inline"></div>
-                </div>
-            </section>
 
-            <!-- ===================== 运行配置 ===================== -->
-            <section class="view hidden" id="view-settings">
-                <div class="card">
-                    <div class="card-title">运行配置</div>
-                    <pre class="help" id="settingsInfo">（展示服务状态与运行目录）</pre>
-                </div>
-            </section>
 
         </main>
 

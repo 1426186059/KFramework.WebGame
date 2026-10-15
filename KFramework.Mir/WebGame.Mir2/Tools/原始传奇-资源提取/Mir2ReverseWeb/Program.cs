@@ -51,4 +51,12 @@ api.MapPost("/atlas/scan", (PathReq req, ReverseService s) =>
 api.MapPost("/atlas/info", (PathReq req, ReverseService s) =>
     Results.Ok(s.ReadAtlas(req.Path)));
 
+// ---- 图集（manifest 模式）：加载清单 → 单条/全部下载 ----
+api.MapPost("/atlas/manifest", async (ReverseService s) =>
+    Results.Ok(await s.LoadManifestAsync()));
+api.MapPost("/atlas/download", async (AtlasDownloadRequest req, ReverseService s) =>
+    Results.Ok(await s.DownloadManifestAsset(req.Key)));
+api.MapPost("/atlas/downloadAll", async (ReverseService s) =>
+    Results.Ok(await s.DownloadManifestAll()));
+
 app.Run();

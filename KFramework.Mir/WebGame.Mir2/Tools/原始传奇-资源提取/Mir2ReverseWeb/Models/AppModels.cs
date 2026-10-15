@@ -150,6 +150,54 @@ public class AtlasImage
     public bool HasData { get; set; }
 }
 
+/// <summary>manifest 条目：逻辑路径 key + 哈希(v) + 字节数(s) + 派生下载 URL</summary>
+public class ManifestEntry
+{
+    public string Key { get; set; } = "";
+    public string Hash { get; set; } = "";
+    public long Size { get; set; }
+    public string Ext { get; set; } = "";
+    public string Url { get; set; } = "";
+}
+
+public class ManifestResult
+{
+    public bool Ok { get; set; }
+    public string? Error { get; set; }
+    public string? ManifestUrl { get; set; }
+    public int Count { get; set; }
+    public List<ManifestEntry> Entries { get; set; } = new();
+    public List<string> Messages { get; set; } = new();
+}
+
+public class AtlasDownloadRequest
+{
+    public string Key { get; set; } = "";
+}
+
+public class AtlasDownloadResult
+{
+    public bool Ok { get; set; }
+    public string? Error { get; set; }
+    public string? Key { get; set; }
+    public string? Url { get; set; }
+    public string? LocalPath { get; set; }
+    public long Bytes { get; set; }
+    public bool Skipped { get; set; }
+}
+
+public class AtlasDownloadAllResult
+{
+    public bool Ok { get; set; }
+    public string? Error { get; set; }
+    public int Total { get; set; }
+    public int Downloaded { get; set; }
+    public int Skipped { get; set; }
+    public int Failed { get; set; }
+    public long TotalBytes { get; set; }
+    public List<string> Messages { get; set; } = new();
+}
+
 public class FileInfoResult
 {
     public bool Exists { get; set; }

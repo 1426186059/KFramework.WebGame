@@ -61,8 +61,6 @@ $$('.nav-item').forEach(n => n.addEventListener('click', () => {
     const v = n.dataset.view;
     switchView(v);
     if (v === 'map' && !mapLoaded) loadMapData();
-    if (v === 'browser') browserGo();
-    if (v === 'settings') loadSettings();
 }));
 
 // ---------------- 浏览弹窗 ----------------
@@ -135,8 +133,6 @@ async function loadMapData() {
         mapSelected.clear();
         $('#mapDatPath').value = mapSourceFile;
         setDot('mapDatPath', true);
-        $('#datBadge').className = 'badge badge-green';
-        $('#datBadge').textContent = `已加载 ${res.count} 张`;
         $('#mapCountInfo').textContent =
             `共 ${res.count} 张 · 配置 ${res.configCount} 条 · ${(res.totalBytes / 1048576).toFixed(2)} MB`;
         (res.messages || []).forEach(m => log(m, 'ok'));
@@ -268,33 +264,66 @@ $('#btnExportCsv').addEventListener('click', () => {
     log('已导出索引 CSV（含地图名，' + mapIndex.length + ' 行）', 'ok');
 });
 
-// ---------------- 提取所有图集 ----------------
-$('#btnAtlasScan').addEventListener('click', async () => {
-    const root = $('#atlasRoot').value.trim();
-    if (!root) { toast('请选择资源根目录'); return; }
-    try {
-        const res = await api('POST', '/api/atlas/scan', { path: root });
-        if (!res.ok) { log('扫描失败: ' + res.error, 'err'); return; }
-        renderAtlasList(res.files);
-        $('#atlasInfo').textContent = `找到 ${res.files.length} 个图集文件`;
-        log(`扫描到 ${res.files.length} 个图集`, 'ok');
-    } catch (e) { log('扫描异常: ' + e.message, 'err'); }
-});
+// ---------------- 提取所有图集（manifest 模式） ----------------
+let manifestEntries = [];
 
-function renderAtlasList(files) {
-    const tb = $('#atlasTbody');
+async function loadManifest() {
+    const btn = $('#btnLoadManifest');
+    btn.disabled = true; btn.textContent = '加载中…';
+    try {
+        const res = await api('POST', '/api/atlas/manifest', {});
+        if (!res.ok) { log('加载清单失败: ' + res.error, 'err'); return; }
+        manifestEntries = res.entries;
+        renderUrlList($('#urlManifest'), res.manifestUrl ? [res.manifestUrl] : []);
+        $('#manifestCount').textContent = res.count;
+        $('#manifestInfo').textContent = `共 ${res.count} 条资源`;
+        (res.messages || []).forEach(m => log(m, 'ok'));
+        renderManifestTable();
+        $('#btnDownloadAll').disabled = false;
+    } catch (e) { log('清单异常: ' + e.message, 'err'); }
+    finally { btn.disabled = false; btn.textContent = '加载清单'; }
+}
+
+function renderManifestTable() {
+    const q = $('#manifestSearch').value.trim().toLowerCase();
+    const tb = $('#manifestTbody');
     tb.innerHTML = '';
-    if (!files.length) { $('#atlasTableWrap').classList.add('hidden'); $('#atlasList').classList.remove('hidden'); return; }
-    $('#atlasList').classList.add('hidden');
-    $('#atlasTableWrap').classList.remove('hidden');
-    files.forEach(f => {
+    const list = q
+        ? manifestEntries.filter(e => e.key.toLowerCase().includes(q) || e.hash.toLowerCase().includes(q))
+        : manifestEntries;
+    list.forEach(e => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${f.name}</td><td>${f.kind}</td><td>${fmtSize(f.size)}</td>
-            <td><button class="btn btn-ghost btn-xs act-info">解析</button></td>`;
-        tr.querySelector('.act-info').addEventListener('click', () => atlasInfo(f.path, f.name));
+        tr.innerHTML = `<td class="title-cn" title="${e.key}">${e.key}</td><td>${e.hash}</td><td>${fmtSize(e.size)}</td>
+            <td><button class="btn btn-ghost btn-xs act-dl">下载</button></td>`;
+        tr.querySelector('.act-dl').addEventListener('click', () => downloadOne(e.key));
         tb.appendChild(tr);
     });
+    $('#manifestSelInfo').textContent = `显示 ${list.length} 条`;
 }
+
+async function downloadOne(key) {
+    try {
+        const res = await api('POST', '/api/atlas/download', { key });
+        if (!res.ok) { log(`下载 ${key} 失败: ${res.error}`, 'err'); return; }
+        if (res.skipped) log(`已存在(跳过) ${key} -> ${res.localPath}`, 'ok');
+        else log(`已下载 ${key} (${(res.bytes / 1024).toFixed(1)} KB) -> ${res.localPath}`, 'ok');
+    } catch (e) { log(`下载异常 ${key}: ${e.message}`, 'err'); }
+}
+
+async function downloadAll() {
+    const btn = $('#btnDownloadAll');
+    btn.disabled = true; btn.textContent = '下载中…';
+    try {
+        const res = await api('POST', '/api/atlas/downloadAll', {});
+        if (!res.ok) { log('全部下载失败: ' + res.error, 'err'); return; }
+        (res.messages || []).forEach(m => log(m, 'ok'));
+    } catch (e) { log('全部下载异常: ' + e.message, 'err'); }
+    finally { btn.disabled = false; btn.textContent = '全部下载'; $('#dlAllInfo').textContent = ''; }
+}
+
+$('#btnLoadManifest').addEventListener('click', loadManifest);
+$('#btnDownloadAll').addEventListener('click', downloadAll);
+$('#manifestSearch').addEventListener('input', renderManifestTable);
 
 async function atlasInfo(path, name) {
     try {
@@ -316,128 +345,15 @@ async function atlasInfo(path, name) {
     } catch (e) { log('解析图集异常: ' + e.message, 'err'); }
 }
 
-// ---------------- 提取精灵素材 ----------------
-$('#btnSpriteScan').addEventListener('click', async () => {
-    const root = $('#spriteRoot').value.trim();
-    if (!root) { toast('请选择资源根目录'); return; }
-    const exts = ($('#spriteCat').value || 'wil,wzl,wzx').split(',').map(s => '.' + s.trim().replace(/^\./, ''));
-    try {
-        const res = await api('POST', '/api/scan', { root, exts });
-        if (!res.ok) { log('扫描失败: ' + res.error, 'err'); return; }
-        const tb = $('#spriteTbody');
-        tb.innerHTML = '';
-        if (!res.files.length) { $('#spriteTableWrap').classList.add('hidden'); $('#spriteList').classList.remove('hidden'); }
-        else {
-            $('#spriteList').classList.add('hidden'); $('#spriteTableWrap').classList.remove('hidden');
-            res.files.forEach(f => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${f.name}</td><td>${f.kind}</td><td>${fmtSize(f.size)}</td>
-                    <td><button class="btn btn-ghost btn-xs act-info">解析</button></td>`;
-                tr.querySelector('.act-info').addEventListener('click', () => atlasInfo(f.path, f.name));
-                tb.appendChild(tr);
-            });
-        }
-        $('#spriteInfo').textContent = `找到 ${res.files.length} 个精灵库`;
-        log(`扫描到 ${res.files.length} 个精灵库`, 'ok');
-    } catch (e) { log('扫描异常: ' + e.message, 'err'); }
-});
 
-// ---------------- 提取音效音乐 ----------------
-$('#btnAudioScan').addEventListener('click', async () => {
-    const root = $('#audioRoot').value.trim();
-    if (!root) { toast('请选择资源根目录'); return; }
-    const exts = ['.wav', '.mp3', '.mid', '.midi', '.wma', '.ogg', '.lib'];
-    try {
-        const res = await api('POST', '/api/scan', { root, exts });
-        if (!res.ok) { log('扫描失败: ' + res.error, 'err'); return; }
-        const tb = $('#audioTbody');
-        tb.innerHTML = '';
-        if (!res.files.length) { $('#audioTableWrap').classList.add('hidden'); $('#audioList').classList.remove('hidden'); }
-        else {
-            $('#audioList').classList.add('hidden'); $('#audioTableWrap').classList.remove('hidden');
-            res.files.forEach(f => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${f.name}</td><td>${f.kind}</td><td>${fmtSize(f.size)}</td>`;
-                tb.appendChild(tr);
-            });
-        }
-        $('#audioInfo').textContent = `找到 ${res.files.length} 个音频资源`;
-        log(`扫描到 ${res.files.length} 个音频`, 'ok');
-    } catch (e) { log('扫描异常: ' + e.message, 'err'); }
-});
-
-// ---------------- 解析 MirDB / 配置 ----------------
-$('#btnMirDbInfo').addEventListener('click', async () => {
-    const path = $('#mirdbPath').value.trim();
-    if (!path) { toast('请选择 MirDB 文件'); return; }
-    try {
-        const res = await api('POST', '/api/file/info', { path });
-        $('#mirdbResult').textContent = `${path}\n大小: ${fmtSize(res.size)}\n类型: ${res.kind}\n${res.note || ''}`;
-        log(`MirDB 信息: ${fmtSize(res.size)}`, 'ok');
-    } catch (e) { log('读取异常: ' + e.message, 'err'); }
-});
-
-$('#btnCfgInfo').addEventListener('click', async () => {
-    const path = $('#cfgPath').value.trim();
-    if (!path) { toast('请选择文件'); return; }
-    try {
-        const res = await api('POST', '/api/file/info', { path });
-        $('#cfgResult').textContent = `${path}\n大小: ${fmtSize(res.size)}\n行数: ${res.lines}\n类型: ${res.kind}\n${res.note || ''}`;
-        log(`配置信息: ${fmtSize(res.size)} / ${res.lines} 行`, 'ok');
-    } catch (e) { log('读取异常: ' + e.message, 'err'); }
-});
-
-// ---------------- 资源浏览器 ----------------
-async function browserGo() {
-    const p = $('#browserPath').value.trim();
-    let list;
-    try {
-        list = await api('GET', `/api/fs?path=${encodeURIComponent(p)}&files=${$('#browserFiles').checked}&filter=${encodeURIComponent($('#browserFilter').value.trim())}`);
-    } catch (e) { log('浏览失败: ' + e.message, 'err'); return; }
-    const box = $('#browserList');
-    box.innerHTML = '';
-    list.forEach(it => {
-        const div = document.createElement('div');
-        div.className = 'browse-item';
-        div.innerHTML = `<span class="ic">${it.isDir ? '📁' : '📄'}</span><span>${it.name}${it.isDir ? '' : '  ·  ' + fmtSize(it.size)}</span>`;
-        div.addEventListener('click', () => {
-            if (it.isDir) { $('#browserPath').value = it.path; browserGo(); }
-            else { log('文件: ' + it.path + '  (' + fmtSize(it.size) + ')'); }
-        });
-        box.appendChild(div);
-    });
-}
-$('#btnBrowserGo').addEventListener('click', browserGo);
-$('#btnBrowserUp').addEventListener('click', () => {
-    const p = $('#browserPath').value.trim();
-    const up = p.replace(/[\\/][^\\/]+$/, '');
-    if (up && up !== p) { $('#browserPath').value = up; browserGo(); }
-});
-$('#browserFiles').addEventListener('change', browserGo);
-$('#browserFilter').addEventListener('input', browserGo);
-
-// ---------------- 运行配置 ----------------
-async function loadSettings() {
-    try {
-        const res = await api('GET', '/api/info');
-        $('#settingsInfo').textContent =
-            `运行状态: 正常\n操作系统: ${res.os}\n框架: ${res.framework}\n工作目录: ${res.cwd}\n静态根: wwwroot`;
-    } catch (e) {
-        $('#settingsInfo').textContent = '获取运行信息失败: ' + e.message;
-    }
-}
 
 // ---------------- 初始化 ----------------
 $('#btnClearLog').addEventListener('click', () => $('#log').innerHTML = '');
 (async () => {
     try {
         const p = await api('GET', '/api/ping');
-        $('#pingBadge').className = 'badge badge-green';
-        $('#pingBadge').textContent = '已连接';
         log('服务已连接 ' + (p.time ? new Date(p.time).toLocaleTimeString() : ''), 'ok');
     } catch (e) {
-        $('#pingBadge').className = 'badge badge-red';
-        $('#pingBadge').textContent = '未连接';
         log('无法连接服务: ' + e.message, 'err');
     }
 })();

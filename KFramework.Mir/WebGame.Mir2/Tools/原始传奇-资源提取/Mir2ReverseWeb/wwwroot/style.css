@@ -34,7 +34,6 @@ body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 .brand .logo { font-size: 26px; color: #6ea8ff; }
 .brand h1 { font-size: 16px; margin: 0; font-weight: 600; }
 .brand p { margin: 2px 0 0; font-size: 11px; color: #9fb0c4; }
-.top-status { display: flex; gap: 8px; }
 
 .badge { padding: 3px 10px; border-radius: 999px; font-size: 11px; }
 .badge-gray { background: #3a4a5c; color: #c2ccd8; }

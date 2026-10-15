@@ -21,6 +21,7 @@ public class ReverseService
     private readonly Dictionary<int, string> _idToFile = new();
     private string? _loadedFile;
     private byte[]? _mapDatBytes;   // 从 URL 下载并解压后的完整 .dat（仅存内存，不落盘）
+    private List<ManifestEntry>? _manifestEntries;   // 加载后的 manifest 条目（内存）
     private static readonly object _lock = new();
 
     private static int ReadBEInt(byte[] d, int p)
@@ -181,6 +182,98 @@ public class ReverseService
             res.TotalBytes = res.Entries.Sum(e => (long)e.Len);
             res.MapConfigUrls = Mir2Config.MapConfigUrls.ToList();
             res.MapJsUrls = Mir2Config.MapJsUrls.ToList();
+            res.Ok = true;
+        }
+        catch (Exception ex) { res.Error = ex.Message; }
+        return res;
+    }
+
+    // ---------------- 资源 manifest 加载 + 下载（仅内存解析，按需落盘） ----------------
+    /// <summary>由 manifest 条目推导实际 CDN 文件 URL：{CdnBase}/resource/{v前2位}/{v}_{s}.{ext}</summary>
+    private static string ManifestToUrl(string key, string hash, long size)
+    {
+        var v2 = hash.Length >= 2 ? hash.Substring(0, 2) : hash;
+        var cleanExt = Path.GetExtension(key).TrimStart('.');
+        return $"{Mir2Config.CdnBase}/resource/{v2}/{hash}_{size}.{cleanExt}";
+    }
+
+    public async Task<ManifestResult> LoadManifestAsync()
+    {
+        var res = new ManifestResult { Messages = new() };
+        try
+        {
+            res.ManifestUrl = Mir2Config.ManifestUrl;
+            res.Messages.Add($"[下载] {Mir2Config.ManifestUrl}");
+            var raw = await _http.GetByteArrayAsync(Mir2Config.ManifestUrl);
+            using var doc = JsonDocument.Parse(raw);
+            var root = doc.RootElement;
+            var list = new List<ManifestEntry>();
+            if (root.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var prop in root.EnumerateObject())
+                {
+                    if (prop.Value.ValueKind != JsonValueKind.Object) continue;
+                    var v = prop.Value;
+                    var hash = v.TryGetProperty("v", out var vp) ? (vp.GetString() ?? "") : "";
+                    var size = v.TryGetProperty("s", out var sp) ? sp.GetInt64() : 0;
+                    var url = ManifestToUrl(prop.Name, hash, size);
+                    list.Add(new ManifestEntry { Key = prop.Name, Hash = hash, Size = size, Ext = Path.GetExtension(prop.Name), Url = url });
+                }
+            }
+            _manifestEntries = list;
+            res.Entries = list;
+            res.Count = list.Count;
+            res.Messages.Add($"[清单] 共 {list.Count} 条资源");
+            res.Ok = true;
+        }
+        catch (Exception ex) { res.Error = ex.Message; }
+        return res;
+    }
+
+    public async Task<AtlasDownloadResult> DownloadManifestAsset(string key)
+    {
+        var res = new AtlasDownloadResult { Key = key };
+        try
+        {
+            var entry = _manifestEntries?.FirstOrDefault(e => e.Key == key);
+            if (entry == null) { res.Error = "清单未加载或无此条目"; return res; }
+            res.Url = entry.Url;
+            var sub = entry.Hash.Length >= 2 ? entry.Hash.Substring(0, 2) : entry.Hash;
+            var dir = Path.Combine(Directory.GetCurrentDirectory(), Mir2Config.DownloadDir, sub);
+            Directory.CreateDirectory(dir);
+            var fileName = $"{entry.Hash}_{entry.Size}.{entry.Ext.TrimStart('.')}";
+            var file = Path.Combine(dir, fileName);
+            if (File.Exists(file) && new FileInfo(file).Length == entry.Size)
+            {
+                res.Skipped = true; res.LocalPath = file; res.Bytes = entry.Size; res.Ok = true; return res;
+            }
+            var bytes = await _http.GetByteArrayAsync(entry.Url);
+            await File.WriteAllBytesAsync(file, bytes);
+            res.LocalPath = file; res.Bytes = bytes.Length; res.Ok = true;
+        }
+        catch (Exception ex) { res.Error = ex.Message; }
+        return res;
+    }
+
+    public async Task<AtlasDownloadAllResult> DownloadManifestAll()
+    {
+        var res = new AtlasDownloadAllResult { Messages = new() };
+        try
+        {
+            var list = _manifestEntries;
+            if (list == null || list.Count == 0) { res.Error = "请先加载清单"; return res; }
+            res.Total = list.Count;
+            int n = 0;
+            foreach (var e in list)
+            {
+                n++;
+                var r = await DownloadManifestAsset(e.Key);
+                if (r.Skipped) res.Skipped++;
+                else if (r.Ok) { res.Downloaded++; res.TotalBytes += r.Bytes; }
+                else res.Failed++;
+                if (n % 50 == 0) res.Messages.Add($"[进度] {n}/{list.Count}（下载 {res.Downloaded} 跳过 {res.Skipped} 失败 {res.Failed}）");
+            }
+            res.Messages.Add($"[完成] 总计 {res.Total}：下载 {res.Downloaded}，跳过 {res.Skipped}，失败 {res.Failed}，共 {(res.TotalBytes / 1048576.0).ToString("F1")} MB");
             res.Ok = true;
         }
         catch (Exception ex) { res.Error = ex.Message; }

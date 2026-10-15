@@ -43,6 +43,17 @@ public static class Mir2Config
         $"{CdnBase}/main10.25341.1.min.js",
     };
 
+    /// <summary>
+    /// 资源清单 manifest（图集 + UI + 配置 总索引，1641 条）。
+    /// 每条形如 { "逻辑路径key": { "v": "8位hex哈希", "s": 字节数 } }。
+    /// 实际 CDN 文件 URL = {CdnBase}/resource/{v前2位}/{v}_{s}.{key扩展名}（见 URL.txt 加载规则）。
+    /// </summary>
+    public static readonly string ManifestUrl =
+        $"{CdnBase}/allmanifest10.25341.1.json?v=20260922111844&qufu_version=229";
+
+    /// <summary>manifest 资源下载落地根目录（相对程序运行目录）</summary>
+    public const string DownloadDir = "downloads";
+
     /// <summary>单元格像素尺寸（来自 JS 的 GameDefine.MAP_GRID_WIDTH / MAP_GRID_HEIGHT）</summary>
     public const int GridWidth = 48;
     public const int GridHeight = 32;
