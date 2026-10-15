@@ -10,17 +10,8 @@ namespace KFramework.MonoGame
             return System.Text.Encoding.UTF8.GetString(data, start, data.Length - start);
         }
 
-        /// <param name="expectedSize">
-        /// 已知的准确字节数（如资源包清单里的 Size）。给了的会做一次校验：
-        /// 缓存条目长度对不上 = 脏数据（历史版本写坏的缓存），删掉重下一次，自愈。
-        /// </param>
-        /// <param name="priority">
-        /// 加载优先级（数值<strong>越大越优先</strong>，0 = 普通）。经由 <see cref="ContentLoadScheduler"/> 调度：
-        /// 只有拿到并发槽才会真正发起请求，避免几十个资源同时发起造成的队头阻塞。
-        /// </param>
-        /// 
-        public const bool bUseJSHttp = true;
-        public const bool bUseCacheInstance = false;
+        private const bool bUseJSHttp = true;
+        private const bool bUseCacheInstance = false;
         public static async Task<byte[]> LoadCacheOrDownloadAsync(HttpClient http, string path, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
         {
             string url = http.BaseAddress + path;
@@ -53,7 +44,7 @@ namespace KFramework.MonoGame
                 }
 
                 byte[] data = null;
-                const int MaxAttempts = 3;
+                const int MaxAttempts = 2;
                 int nNextAttemptTime = 1000;
                 for (int attempt = 0; attempt < MaxAttempts; attempt++)
                 {
@@ -109,7 +100,7 @@ namespace KFramework.MonoGame
 
                 // 2) 下载：走 JS fetch（useCache=false，缓存由本方法统一写，避免 JS 侧另存一份）
                 byte[] data = null;
-                const int MaxAttempts = 3;
+                const int MaxAttempts = 2;
                 int nNextAttemptTime = 1000;
                 for (int attempt = 0; attempt < MaxAttempts; attempt++)
                 {
