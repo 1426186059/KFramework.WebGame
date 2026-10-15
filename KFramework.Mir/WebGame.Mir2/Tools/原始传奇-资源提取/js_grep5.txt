@@ -1,0 +1,42 @@
+﻿=== [mapDatas] @1736001 ===
+Tiles.addMinimap(this._miniTexture,this._miniJson.frames[this.mapConfig.img+"_png"])},e.prototype.initMapData=function(){var e=cm.mapDatas[this.mapConfig.data];e.position=0,gd.map.readData(e)},e.prototype.resize=function(){this.mapConfig&&(this._widthBig=mStage.stageWidth>this.mapConfig.width,this._heightBig=MtwGame.Instance.getStageHei
+=== [mapDatas] @2760423 ===
+{},this.open_level={},this.union={},this.rein={},this.activebuttons={},this.systemFunTrailer={},this.box={},this.announce={},this.mapDatas={},this.fortreasures={},this.monsterWave={},this.compose={},this.monthCard={},this.vip={},this.iconLinker={},this.wayGeter={},this.wayGeter1={},this.title={},this.rank={},this.quicklylevelup={},this.
+=== [mapDatas] @2767969 ===
+."),r.setProgress(6,10));for(var s=o.readShort();s>0;){var l=o.readInt(),c=o.readInt(),d=new egret.ByteArray;o.readBytes(d,0,c),t.mapDatas[l]=d,s--}r&&r.setText("读取配置文件..."),Logic.isMiniGame()&&!js_gameVars.isMY?(window.Zlib=null,js_gameVars.isWX?t.M_ROOT=wx:js_gameVars.isQQ?t.M_ROOT=qq:js_gameVars.isOPPO?t.M_ROOT=qg:js_gameVars.isMY&&(
+=== [attrib] @758803 ===
+etModel.ins().send26(e.type,e.selectdata.lid),r){e.btn_add.touchEnabled=!0,e.btn_add.filters=null;var s=CommonUtils.getSpetAttr(r.attribute,+t.qualification);if(e.txt_attr0.textFlow=Html.toEle(s),a){var l=CommonUtils.getSpetAttr(a.attribute,+t.qualification);e.txt_attr1.textFlow=Html.toEle(l)}else e.btn_add.touchEnabled=!1,e.btn_add.f
+=== [attrib] @758904 ===
+ s=CommonUtils.getSpetAttr(r.attribute,+t.qualification);if(e.txt_attr0.textFlow=Html.toEle(s),a){var l=CommonUtils.getSpetAttr(a.attribute,+t.qualification);e.txt_attr1.textFlow=Html.toEle(l)}else e.btn_add.touchEnabled=!1,e.btn_add.filters=[FilterUtil.FILTER_GRAY()],e.txt_attr1.textFlow=Html.toEle("已满级")}else e.txt_attr0.text="暂无属性"
+=== [attrib] @815883 ===
+var i=e.grooveEquipData.getItemAt(t),r={showHint:i.showHint,index:i.index,nindex:i.nindex,isUnlocked:i.isUnlocked,itemId:i.itemId,attribute:i.attribute,selected:!1,grooveBean:i.grooveBean};i.config&&(r.config=i.config),i.icon&&(r.icon=i.icon),i.name&&(r.name=i.name),i.quality&&(r.quality=i.quality);for(var a in i)i.hasOwnProperty(a)&&
+=== [attrib] @815895 ===
+veEquipData.getItemAt(t),r={showHint:i.showHint,index:i.index,nindex:i.nindex,isUnlocked:i.isUnlocked,itemId:i.itemId,attribute:i.attribute,selected:!1,grooveBean:i.grooveBean};i.config&&(r.config=i.config),i.icon&&(r.icon=i.icon),i.name&&(r.name=i.name),i.quality&&(r.quality=i.quality);for(var a in i)i.hasOwnProperty(a)&&!r.hasOwnPro
+=== [attrib] @820799 ===
+his;e.grooveEquipData.removeAll();for(var t=1;5>=t;t++){var i={showHint:!1,index:t,nindex:0,isUnlocked:!1,itemId:0,equipData:null,attribute:null};e.grooveEquipData.addItem(i)}e.list_groove.touchEnabled=!1,e.list_groove.touchChildren=!1,e.updateSlotAttributes()},t.prototype.showGrooveEquip=function(){var e=this;e.list_groove.touchEnabl
+=== [attrib] @831350 ===
+.equipIndex===e.subType&&a.push(l.grooveIndex)}for(var c=1;5>=c;c++){var d={showHint:!1,index:c,nindex:c-1,isUnlocked:!1,itemId:0,attribute:"",selected:!1,grooveBean:null};if(e.lockDragonPatternInfo=r,d.isUnlocked=-1!==a.indexOf(c),r.dragonPatternBeans&&r.dragonPatternBeans.length>0)for(var u=0,p=r.dragonPatternBeans;u<p.length;u++){v
+=== [readByte] @1023623 ===
+fferMessage.call(this,t,i);var r=this.input;switch(t){case 220001:var a={},n=r.readShort();a.beans=[];for(var o=0;n>o;o++)if(0!=r.readByte()){var s=a.beans[o]={};s.cls=r.readVarInt(!1),s.point=r.readVarInt(!1),s.buyCount=r.readVarInt(!1)}else a.beans[o]=null;a.count=r.readVarInt(!1),this.sendNotif(t,a);break;case 220004:var l={};l.point
+=== [readByte] @1024082 ===
+yCount=r.readVarInt(!1),this.sendNotif(t,l);break;case 220007:var c={},d=r.readShort();c.rankBeans=[];for(var u=0;d>u;u++)if(0!=r.readByte()){var p=c.rankBeans[u]={};p.rid=r.readLong(),p.name=r.readString(),p.point=r.readVarInt(!1),p.rank=r.readVarInt(!1)}else c.rankBeans[u]=null;c.rank=r.readVarInt(!1),c.point=r.readVarInt(!1),this.sen
+=== [readByte] @1065292 ===
+otype.dealBufferMessage=function(t,i){e.prototype.dealBufferMessage.call(this,t,i);var r=this.input;switch(t){case 229001:var a=r.readByte();if(0!=a){var n={};n.activityId=r.readVarInt(!1),n.status=r.readVarInt(!1),n.count=r.readVarInt(!1),n.douChaId=r.readVarInt(!1),n.totalRecount=r.readVarInt(!1),n.peopleStar=r.readVarInt(!1),n.teaSta
+=== [readByte] @1065776 ===
+nt(!1),o.teaStar=r.readVarInt(!1),o.drawTeaStar=r.readVarInt(!1);var s=r.readShort();o.rewardItems=[];for(var l=0;s>l;l++)if(0!=r.readByte()){var c=o.rewardItems[l]={};c.itemId=r.readVarInt(!1),c.count=r.readVarInt(!1)}else o.rewardItems[l]=null;this.sendNotif(t,o)}},t}(ModelBase);e.TeafightModel=t,__reflect(t.prototype,"net.TeafightMod
+=== [readByte] @1331863 ===
+nt=r-1;var a,n=8,o=4,s=2,l=!0,c=0,d=0,u=0;t._mapIndex=new Array(r);for(var p=0;r>p;p++){for(var g=new Array(i),f=0;i>f;f++)l?(d=e.readByte(),0>d&&(d+=256),l=!1,u=d>>4):(u=15&d,l=!0),a=(f<<16)+p,(u&n)>0?g[f]=1:g[f]=0,(u&o)>0&&(t._coverDic[a]=!0),(u&s)>0&&(t._safeDic[a]=!0),c++;t._mapIndex[p]=g}var h=e.readShort();if(h>0){t.stallageArea=[
+=== [readByte] @1859391 ===
+,e.prototype.onReceiveMessage=function(e){this.byteArray?this.byteArray.clear():this.byteArray=new egret.ByteArray,this.webSocket.readBytes(this.byteArray);var t=(this.byteArray.readInt()-4,this.byteArray.readInt());this.byteArray.readShort();this._handler.received(t,this.byteArray)},e.prototype.sendData=function(e,t){if(void 0===t&&(t=
+=== [MapInfo] @991164 ===
+nt=!0,gd.angler.checkDisountLoopHint(!0));break;case 4179:gd.activity.updateFontExchange(t);break;case 4182:gd.activity.updateStarMapInfo(t);break;case 4186:gd.activity.updateHalfPriceInfo(t);break;case 4188:gd.player.ZfbShortcutReward=t,gd.player.sendNotif(1092);break;case 4191:if(0==t.mouthGoldBeans.length)break;var c=t.mouthGoldBean
+=== [MapInfo] @1074162 ===
+i(t);break;case 23111:gd.union.updateDaTiInfo(t);break;case 23114:gd.union.updateDaTiRank(t);break;case 23115:gd.union.setUnionOwnMapInfo(t);break;case 23117:gd.union.sendNotif(672,t);break;case 23124:gd.union.updateDatiFood(t);break;case 23125:gd.union.setUnionRelation(t);break;case 23122:gd.union.setUnionAffairApply(t);break;case 231
+=== [MapInfo] @1118169 ===
+teFontExchange=function(e){var t=this;t.FontExchangeArr=e.beanList,t.checkFontHint(),this.sendNotif(946,e)},t.prototype.updateStarMapInfo=function(e){var t=this;t.StarMapInfo=e,this.sendNotif(949,e)},t.prototype.updateHalfPriceInfo=function(e){var t=this;t.HalfPriceInfo=e},t.prototype.atcOnlineInf=function(e){var t=this;t.onlineInfoDic
+=== [MapInfo] @1118206 ===
+;t.FontExchangeArr=e.beanList,t.checkFontHint(),this.sendNotif(946,e)},t.prototype.updateStarMapInfo=function(e){var t=this;t.StarMapInfo=e,this.sendNotif(949,e)},t.prototype.updateHalfPriceInfo=function(e){var t=this;t.HalfPriceInfo=e},t.prototype.atcOnlineInf=function(e){var t=this;t.onlineInfoDic={};var i=0;for(var r in e.receivedRe
+=== [MapInfo] @1119224 ===
+time)-Math.round(DateUtil.serverNow()/1e3);if(0>=o)return!0}}return!1},t.prototype.checkStarmapHint=function(){var e=this,t=e.StarMapInfo;if(!t)return!1;for(var i in t.levelData)if(1==t.levelData[i].rewardState)return!0;return!1},t.prototype.setDouChaInfo=function(e){var t=this;t.douChaInfo=e,t.sendNotif(1026)},t.prototype.setAdventure
+=== [MapInfo] @1224966 ===
+t.arpgBossSetDic={},t.arpgBossListDic={},t.arpgBossTimeDic={},t.arpgMapTimeDic={},t.arpgBossInfoDic={},t.arpgBossAutoDic={},t.arpgMapInfo={},t.isbossRemin=!0,t.instanceInfoDic={},t.instanceTimeDic={},t.instanceBossTimeDic={},t.bossTimeDic={},t.bossSetDic={},t.bossKillerDic={},t.bossDoubleDic={},t.bossAutoDic={},t.timeId=0,t.actBtnState

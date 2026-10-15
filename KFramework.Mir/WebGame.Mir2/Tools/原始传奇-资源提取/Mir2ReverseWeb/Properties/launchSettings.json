@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Mir2ReverseWeb": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:58707;http://localhost:58708"
+    }
+  }
+}
