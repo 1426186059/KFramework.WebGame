@@ -44,7 +44,7 @@ const CacheMode = {
 export async function fetchBytesAsync(name, bCache = true) {
     let res;
     try {
-        res = await fetch(name, { cache: bCache ? CacheMode.Default : CacheMode.NoStore });
+        res = await fetch(name, { cache: bCache ? CacheMode.ForceCache : CacheMode.NoStore });
     }
     catch {
         return -1;
