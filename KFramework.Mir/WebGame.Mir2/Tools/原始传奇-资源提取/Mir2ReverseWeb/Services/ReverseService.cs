@@ -24,8 +24,7 @@ public class ReverseService
     private List<ManifestEntry>? _manifestEntries;   // 加载后的 manifest 条目（内存）
     private static readonly object _lock = new();
 
-    private static int ReadBEInt(byte[] d, int p)
-        => (d[p] << 24) | (d[p + 1] << 16) | (d[p + 2] << 8) | d[p + 3];
+    private static readonly JsonSerializerOptions _jsonIndented = new() { WriteIndented = true };
 
     // ---------------- 透明解压 + 缓存 ----------------
     private readonly Dictionary<string, (long len, long tm, byte[] data)> _cache = new();
@@ -62,24 +61,7 @@ public class ReverseService
         return raw;
     }
 
-    // ---------------- 索引解析 ----------------
-    private int ParseIndexInto(byte[] data, List<MapEntry> list)
-    {
-        int count = (data[0] << 8) | data[1];
-        int pos = 2;
-        for (int i = 0; i < count && pos < data.Length; i++)
-        {
-            if (pos + 8 > data.Length) break;
-            int id = ReadBEInt(data, pos);
-            int len = ReadBEInt(data, pos + 4);
-            pos += 8;
-            if (len < 0 || len > data.Length - pos) break;
-            list.Add(new MapEntry { Id = id, Len = len, Kb = Math.Round(len / 1024.0, 2) });
-            pos += len;
-        }
-        return list.Count;
-    }
-
+    // ---------------- 索引解析（委托给 MapDecoder） ----------------
     public MapIndexResult ParseMapDat(string path)
     {
         var res = new MapIndexResult();
@@ -89,7 +71,8 @@ public class ReverseService
             _mapDatBytes = data;
             _loadedFile = path;
             res.SourceFile = path;
-            res.Count = ParseIndexInto(data, res.Entries);
+            res.Entries = MapDecoder.ParseIndex(data);
+            res.Count = res.Entries.Count;
             res.TotalBytes = res.Entries.Sum(e => (long)e.Len);
             res.Ok = true;
         }
@@ -134,9 +117,11 @@ public class ReverseService
                         : (int.TryParse(prop.Name, out var pid) ? pid : 0);
                     if (id == 0) continue;
                     string name = v.TryGetProperty("name", out var np) ? (np.GetString() ?? "") : "";
+                    string img = v.TryGetProperty("img", out var ip) ? (ip.GetString() ?? "") : "";
+                    if (string.IsNullOrEmpty(img) && v.TryGetProperty("id", out var idp2)) img = idp2.GetInt32().ToString();
                     int w = v.TryGetProperty("width", out var wp) ? wp.GetInt32() : 0;
                     int h = v.TryGetProperty("height", out var hp) ? hp.GetInt32() : 0;
-                    _mapConfig[id] = new MapMeta { Name = name, Width = w, Height = h };
+                    _mapConfig[id] = new MapMeta { Name = name, Width = w, Height = h, Img = img };
                     n++;
                 }
             }
@@ -159,7 +144,9 @@ public class ReverseService
             {
                 var bytes = await DownloadBytesAsync(url, res.Messages);
                 if (bytes == null) continue;
-                int n = ParseIndexInto(bytes, res.Entries);
+                var entries = MapDecoder.ParseIndex(bytes);
+                res.Entries.AddRange(entries);
+                int n = entries.Count;
                 res.Messages.Add($"[地图包] {url}：{n} 张");
                 _mapDatBytes = bytes;
                 _loadedFile = url;
@@ -174,7 +161,7 @@ public class ReverseService
             {
                 foreach (var e in res.Entries)
                 {
-                    if (_mapConfig.TryGetValue(e.Id, out var m)) { e.Name = m.Name; e.Width = m.Width; e.Height = m.Height; }
+                    if (_mapConfig.TryGetValue(e.Id, out var m)) { e.Name = m.Name; e.Width = m.Width; e.Height = m.Height; e.Img = m.Img; }
                 }
             }
             res.ConfigCount = _mapConfig.Count;
@@ -190,7 +177,7 @@ public class ReverseService
     }
 
     /// <summary>操作系统默认下载目录（UserProfile/Downloads）</summary>
-    private static string OsDownloadDir()
+    internal static string OsDownloadDir()
         => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
 
     // ---------------- 资源 manifest 加载 + 下载（仅内存解析，按需落盘） ----------------
@@ -292,29 +279,6 @@ public class ReverseService
         return _loadedFile;
     }
 
-    private byte[]? ExtractMapBlock(byte[] data, int id, out int lenOut)
-    {
-        lenOut = 0;
-        int count = (data[0] << 8) | data[1];
-        int pos = 2;
-        for (int i = 0; i < count && pos < data.Length; i++)
-        {
-            if (pos + 8 > data.Length) break;
-            int mid = ReadBEInt(data, pos);
-            int len = ReadBEInt(data, pos + 4);
-            pos += 8;
-            if (len < 0 || len > data.Length - pos) break;
-            if (mid == id)
-            {
-                lenOut = len;
-                if (len <= 4) return null;
-                return data.Skip(pos + 4).Take(len - 4).ToArray();
-            }
-            pos += len;
-        }
-        return null;
-    }
-
     public MapDecodeResult DecodeMap(MapDecodeRequest req)
     {
         var res = new MapDecodeResult { Id = req.Id };
@@ -328,94 +292,53 @@ public class ReverseService
                 if (file == null || !File.Exists(file)) { res.Error = "未加载地图数据，请先在「提取地图资源」页加载"; return res; }
                 data = GetData(file);
             }
-            var block = ExtractMapBlock(data, req.Id, out int rawLen);
+            var block = MapDecoder.ExtractMapBlock(data, req.Id, out int rawLen);
             if (block == null) { res.Error = $"未找到地图 {req.Id}（块长 {rawLen}）"; return res; }
 
             int pw = req.Width, ph = req.Height;
-            if ((pw <= 0 || ph <= 0) && _mapConfig.TryGetValue(req.Id, out var m)) { pw = m.Width; ph = m.Height; }
+            string name = "";
+            if (_mapConfig.TryGetValue(req.Id, out var m)) { name = m.Name; if (pw <= 0) pw = m.Width; if (ph <= 0) ph = m.Height; }
 
-            // 每个单元格 4 bit，两格压一字节；块首 4 字节为头部（客户端 readInt 丢弃）。
-            // 真实单元格总数必须由数据块长度决定，配置宽高仅用于推算宽高比。
-            int rawCells = block.Length * 2;
-            int cfgCols = 0, cfgRows = 0, cfgCells = 0;
-            bool fromConfig = pw > 0 && ph > 0;
-            if (fromConfig)
-            {
-                cfgCols = (int)Math.Ceiling(pw / (double)Mir2Config.GridWidth);
-                cfgRows = (int)Math.Ceiling(ph / (double)Mir2Config.GridHeight);
-                cfgCells = cfgCols * cfgRows;
-            }
+            // 委托给 MapDecoder 解析网格与逐格标志（纯逻辑，可合并到 MonoGame.Client）
+            var map = MapDecoder.Decode(req.Id, block, pw, ph, name, Mir2Config.GridWidth, Mir2Config.GridHeight);
 
-            int cols, rows;
-            // 数据块在单元格之后还会附带 stallage/guaji/safe 区域点表（readData 末尾读取），
-            // 因此块长度会略大于纯单元格数；只要有足够字节容纳 cfgCells 即视为匹配。
-            if (cfgCells > 0 && rawCells >= cfgCells)
+            // 导出模式：渲染真实网格比例的完整地图图片（最长边 ≤ 4096）；否则渲染内联预览（≤ 760）
+            bool export = !string.IsNullOrWhiteSpace(req.Destination) && Directory.Exists(req.Destination);
+            int side = export ? 4096 : 760;
+            using var bmp = MapRenderer.RenderMask(map, side);
+
+            if (export)
             {
-                // 配置与数据匹配，直接用客户端同款网格
-                cols = cfgCols; rows = cfgRows;
+                var pngBytes = MapRenderer.EncodePng(bmp);
+                var pngFile = Path.Combine(req.Destination!, $"map_{req.Id}.png");
+                File.WriteAllBytes(pngFile, pngBytes);
+                res.OutFile = pngFile;
+
+                // 同时导出结构化地图数据（JSON，含每格可走/遮挡/安全区标志）
+                var jsonFile = Path.Combine(req.Destination!, $"map_{req.Id}.json");
+                File.WriteAllText(jsonFile, JsonSerializer.Serialize(map, _jsonIndented));
+                res.OutDataFile = jsonFile;
+
+                // 内联预览使用缩小图，避免超大 base64
+                using var prev = MapRenderer.ScaleDown(bmp, 760);
+                res.PreviewPngBase64 = "data:image/png;base64," + Convert.ToBase64String(MapRenderer.EncodePng(prev));
             }
             else
             {
-                // 配置缺失 / 不匹配：用真实单元格数 + 配置宽高比反推网格
-                double aspect = fromConfig
-                    ? (pw * (double)Mir2Config.GridHeight) / (ph * (double)Mir2Config.GridWidth)
-                    : 1.0;
-                cols = (int)Math.Max(1, Math.Round(Math.Sqrt(rawCells * aspect)));
-                rows = (int)Math.Max(1, Math.Round(rawCells / (double)cols));
-                res.Warn = cfgCells > 0
-                    ? $"配置格数({cfgCells})与数据块格数({rawCells})不符，已按数据长度+宽高比重算网格 {cols}x{rows}"
-                    : $"未找到配置宽高，已按数据块长度估算网格 {cols}x{rows}（正方形假设）";
+                res.PreviewPngBase64 = "data:image/png;base64," + Convert.ToBase64String(MapRenderer.EncodePng(bmp));
             }
 
-            int maxCells = cols * rows;
-            // 单元格按 48:32 比例绘制（3:2），避免预览变形
-            int CW = 3, CH = 2;
-
-            int walk = 0, cover = 0, safe = 0, idx = 0;
-            using var bmp = new SKBitmap(Math.Max(1, cols) * CW, Math.Max(1, rows) * CH);
-            using var canvas = new SKCanvas(bmp);
-            canvas.Clear(new SKColor(18, 22, 28));
-            using var pWalk = new SKPaint { Color = new SKColor(56, 180, 99) };
-            using var pBlock = new SKPaint { Color = new SKColor(38, 46, 58) };
-            using var pSafe = new SKPaint { Color = new SKColor(230, 200, 40) };
-            using var pCover = new SKPaint { Color = new SKColor(220, 90, 80) };
-
-            for (int r = 0; r < rows; r++)
-            {
-                for (int c = 0; c < cols; c++)
-                {
-                    int nib = 0;
-                    int bi = idx / 2;
-                    if (bi < block.Length)
-                        nib = (idx % 2 == 0) ? ((block[bi] >> 4) & 0xF) : (block[bi] & 0xF);
-                    idx++;
-                    bool w = (nib & 8) != 0, cov = (nib & 4) != 0, sf = (nib & 2) != 0;
-                    if (idx <= maxCells) { if (w) walk++; if (cov) cover++; if (sf) safe++; }
-                    var paint = !w ? pBlock : (sf ? pSafe : pWalk);
-                    canvas.DrawRect(c * CW, r * CH, CW, CH, paint);
-                    if (cov) canvas.DrawRect(c * CW, r * CH, CW, 1, pCover); // 遮挡：顶红线
-                }
-            }
-
-            using var img = SKImage.FromBitmap(bmp);
-            using var png = img.Encode(SKEncodedImageFormat.Png, 100);
-            byte[] bytes = png.ToArray();
-            res.PreviewPngBase64 = "data:image/png;base64," + Convert.ToBase64String(bytes);
-            res.Cells = maxCells;
-            res.RawCells = rawCells;
-            res.Cols = cols;
-            res.Rows = rows;
-            res.ConfigCells = cfgCells;
-            res.Walkable = walk;
-            res.Cover = cover;
-            res.Safe = safe;
-
-            if (!string.IsNullOrWhiteSpace(req.Destination) && Directory.Exists(req.Destination))
-            {
-                var outFile = Path.Combine(req.Destination, $"map_{req.Id}.png");
-                File.WriteAllBytes(outFile, bytes);
-                res.OutFile = outFile;
-            }
+            res.Cells = map.Cols * map.Rows;
+            res.RawCells = map.RawCells;
+            res.Cols = map.Cols;
+            res.Rows = map.Rows;
+            res.ConfigCells = (pw > 0 && ph > 0)
+                ? (int)Math.Ceiling(pw / (double)Mir2Config.GridWidth) * (int)Math.Ceiling(ph / (double)Mir2Config.GridHeight)
+                : 0;
+            res.Walkable = map.Walkable;
+            res.Cover = map.Cover;
+            res.Safe = map.Safe;
+            res.Warn = map.Warn;
             res.Ok = true;
         }
         catch (Exception ex) { res.Error = ex.Message; }
@@ -431,21 +354,39 @@ public class ReverseService
             Directory.CreateDirectory(req.Destination);
             foreach (var id in req.Ids)
             {
+                // 每张地图一个以「地图名_id」命名的文件夹
+                string name = _mapConfig.TryGetValue(id, out var mc) ? mc.Name : "";
+                string dirName = string.IsNullOrWhiteSpace(name) ? $"map_{id}" : $"{Sanitize(name)}_{id}";
+                string dir = Path.Combine(req.Destination, dirName);
+                Directory.CreateDirectory(dir);
+
                 var dm = new MapDecodeRequest
                 {
                     Path = req.Path,
                     Id = id,
-                    Destination = req.Destination
+                    Destination = dir
                 };
                 if (_mapConfig.TryGetValue(id, out var m)) { dm.Width = m.Width; dm.Height = m.Height; }
                 var r = DecodeMap(dm);
                 if (r.Ok && r.OutFile != null) res.Files.Add(r.OutFile);
+                if (r.Ok && r.OutDataFile != null) res.DataFiles.Add(r.OutDataFile);
             }
             res.Exported = res.Files.Count;
             res.Ok = true;
         }
         catch (Exception ex) { res.Error = ex.Message; }
         return res;
+    }
+
+    /// <summary>清理文件名中的非法字符，避免建文件夹失败</summary>
+    private static string Sanitize(string s)
+    {
+        var invalid = Path.GetInvalidFileNameChars();
+        var sb = new System.Text.StringBuilder(s.Length);
+        foreach (var c in s)
+            sb.Append(invalid.Contains(c) ? '_' : c);
+        var outStr = sb.ToString().Trim().TrimEnd('.', ' ');
+        return string.IsNullOrWhiteSpace(outStr) ? "map" : outStr;
     }
 
     // ---------------- 图集 WIL/WIX ----------------
@@ -639,4 +580,5 @@ internal class MapMeta
     public string Name { get; set; } = "";
     public int Width { get; set; }
     public int Height { get; set; }
+    public string Img { get; set; } = "";
 }

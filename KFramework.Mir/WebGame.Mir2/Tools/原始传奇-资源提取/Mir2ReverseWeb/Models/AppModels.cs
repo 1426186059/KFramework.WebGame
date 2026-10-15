@@ -41,6 +41,8 @@ public class MapEntry
     public int Width { get; set; }
     /// <summary>像素高（来自 config），0 表示未知</summary>
     public int Height { get; set; }
+    /// <summary>图像资源 key（来自 config 的 img 字段）。真实地图瓦片直链使用：zipmap/{Img}/{index}.jpg</summary>
+    public string Img { get; set; } = "";
 }
 
 public class MapIndexResult
@@ -92,6 +94,8 @@ public class MapDecodeResult
     public string? Warn { get; set; }
     public string? PreviewPngBase64 { get; set; }
     public string? OutFile { get; set; }
+    /// <summary>导出模式下同时写出的结构化地图数据(JSON)路径</summary>
+    public string? OutDataFile { get; set; }
 }
 
 /// <summary>批量导出多张地图为可走性 PNG</summary>
@@ -110,6 +114,7 @@ public class MapExportResult
     public string? Error { get; set; }
     public int Exported { get; set; }
     public List<string> Files { get; set; } = new();
+    public List<string> DataFiles { get; set; } = new();
 }
 
 /// <summary>加载地图数据（可选自定义 map.data URL 覆盖 Config）</summary>
@@ -214,4 +219,41 @@ public class FileInfoResult
     public string? Kind { get; set; }
     public int Lines { get; set; }
     public string? Note { get; set; }
+}
+
+// ---------------- 真实地图瓦片下载（zipmap/{img}/{index}.jpg） ----------------
+public class MapTileDownloadRequest
+{
+    /// <summary>要下载的地图（含 Id/Img/Name/Width/Height）</summary>
+    public List<MapEntry> Maps { get; set; } = new();
+    /// <summary>输出根目录；留空则默认系统下载目录</summary>
+    public string Destination { get; set; } = "";
+    /// <summary>下载完成后是否拼接一张 ≤4096 的总览 PNG（瓦片过多时自动跳过）</summary>
+    public bool Stitch { get; set; } = true;
+}
+
+public class MapTileJobResult
+{
+    public bool Ok { get; set; }
+    public string? Error { get; set; }
+    public string? JobId { get; set; }
+    public int TotalMaps { get; set; }
+    public long TotalTiles { get; set; }
+}
+
+public class MapTileProgress
+{
+    public string JobId { get; set; } = "";
+    /// <summary>running / done / error</summary>
+    public string Status { get; set; } = "";
+    public int TotalMaps { get; set; }
+    public int DoneMaps { get; set; }
+    public long TotalTiles { get; set; }
+    public long DoneTiles { get; set; }
+    public long Bytes { get; set; }
+    public int Failed { get; set; }
+    public int Missing { get; set; }
+    public int Percent { get; set; }
+    public string? CurrentMap { get; set; }
+    public List<string> Messages { get; set; } = new();
 }

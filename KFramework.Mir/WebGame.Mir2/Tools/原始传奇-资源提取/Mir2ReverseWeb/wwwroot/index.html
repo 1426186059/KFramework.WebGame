@@ -12,7 +12,7 @@
             <span class="logo">◈</span>
             <div>
                 <h1>原始传奇逆向工坊</h1>
-                <p>Mir2 Reverse Web · 资源提取 / 数据解析 / 浏览器</p>
+                <p>Mir2 Reverse Web · 资源提取 / 数据解析</p>
             </div>
         </div>
     </header>
@@ -62,7 +62,7 @@
 
                     <div class="field">
                         <label>输出目录</label>
-                        <input id="mapDest" type="text" placeholder="可走性 PNG 的输出目录（默认系统下载目录）" />
+                        <input id="mapDest" type="text" placeholder="完整地图图片(PNG) 与 地图数据(JSON) 的输出目录（默认系统下载目录）" />
                         <button class="btn btn-ghost" data-browse="mapDest">浏览</button>
                         <span id="dot-mapDest" class="dot"></span>
                     </div>
@@ -74,13 +74,23 @@
                     </div>
                     <pre class="help">格式（已逆向）：大端 [count:u16][ [id:i32][len:i32] … ][ 数据… ]
 每个地图块前 4 字节丢弃；其后 4-bit/格（两格压一字节，高 nibble 在前）：
-bit3=可走 ｜ bit2=遮挡 ｜ bit1=安全区。预览按此渲染可走性掩码。</pre>
+bit3=可走 ｜ bit2=遮挡 ｜ bit1=安全区。
+「提取」为每张选中的地图创建一个以「地图名_id」命名的文件夹，内含：
+① 完整地图图片 map_&lt;id&gt;.png（真实网格 48:32 比例，最长边≤4096）
+② 地图数据 map_&lt;id&gt;.json（每格可走/遮挡/安全区标志，可合并进游戏客户端）。
+「下载真实地图瓦片」按客户端规则拉取每幅地图被切成的 512×256 真实 jpg 瓦片（zipmap/{img}/{n}.jpg），
+保存到 tiles/，并可拼接总览图 map_&lt;id&gt;_real.png（这才是真实地图画面，而非上面的可走性掩码）。</pre>
                 </div>
 
                 <div class="card">
                     <div class="row-actions">
                         <button id="btnExportMap" class="btn btn-success" disabled>提取选中的 0 张地图</button>
-                        <span id="exportInfo" class="muted"></span>
+                        <button id="btnDownloadTiles" class="btn btn-primary" disabled>下载真实地图瓦片</button>
+                        <label class="chk"><input type="checkbox" id="chkStitch" checked /> 生成拼接总览图(≤4096)</label>
+                        <span id="exportInfo" class="dl-status"></span>
+                    </div>
+                    <div id="mapProgressWrap" class="progress-wrap hidden">
+                        <div class="progress-track"><div id="mapProgressBar" class="progress-fill"></div></div>
                     </div>
 
                     <div id="mapListWrap" class="list-wrap hidden">
@@ -136,6 +146,10 @@ bit3=可走 ｜ bit2=遮挡 ｜ bit1=安全区。预览按此渲染可走性掩�
                         <button id="btnDownloadAll" class="btn btn-success" disabled>全部下载</button>
                         <span id="dlAllInfo" class="muted"></span>
                     </div>
+                    <div id="dlProgressWrap" class="progress-wrap hidden">
+                        <div class="progress-track"><div id="dlProgressBar" class="progress-fill"></div></div>
+                    </div>
+                    <div id="dlStatus" class="dl-status"></div>
                     <div class="list-toolbar">
                         <span class="search"><input id="manifestSearch" type="text" placeholder="搜索 key（如 window-sheet / .png）" /></span>
                         <span id="manifestSelInfo" class="sel-info"></span>

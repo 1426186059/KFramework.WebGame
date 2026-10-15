@@ -3,6 +3,7 @@ using Mir2ReverseWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<ReverseService>();
+builder.Services.AddSingleton<MapTileService>();
 
 var app = builder.Build();
 
@@ -45,6 +46,25 @@ api.MapPost("/map/decode", (MapDecodeRequest req, ReverseService s) =>
     Results.Ok(s.DecodeMap(req)));
 api.MapPost("/map/export", (MapExportRequest req, ReverseService s) =>
     Results.Ok(s.ExportMaps(req)));
+
+// 真实地图瓦片（zipmap/{img}/{index}.jpg）批量下载：启动异步任务，立即返回 jobId 供前端轮询
+api.MapPost("/map/downloadTiles", (MapTileDownloadRequest req, MapTileService s) =>
+{
+    if (req.Maps == null || req.Maps.Count == 0)
+        return Results.Ok(new MapTileJobResult { Ok = false, Error = "未选择地图" });
+    var dest = string.IsNullOrWhiteSpace(req.Destination) ? ReverseService.OsDownloadDir() : req.Destination;
+    var id = s.Start(req.Maps, dest, req.Stitch);
+    return Results.Ok(new MapTileJobResult { Ok = true, JobId = id.ToString(), TotalMaps = req.Maps.Count });
+});
+
+// 轮询真实地图瓦片下载进度（真实百分比）
+api.MapGet("/map/tilesProgress", (string? job, MapTileService s) =>
+{
+    if (string.IsNullOrWhiteSpace(job) || !Guid.TryParse(job, out var gid))
+        return Results.Ok(new { ok = false, error = "bad job" });
+    var p = s.GetProgress(gid);
+    return p == null ? Results.Ok(new { ok = false, error = "unknown job" }) : Results.Ok(p);
+});
 
 // ---- 图集 WIL/WIX ----
 api.MapPost("/atlas/scan", (PathReq req, ReverseService s) =>

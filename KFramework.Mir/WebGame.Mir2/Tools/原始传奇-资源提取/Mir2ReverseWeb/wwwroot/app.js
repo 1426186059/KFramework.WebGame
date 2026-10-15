@@ -51,6 +51,39 @@ function fmtSize(n) {
     return n + ' B';
 }
 
+// 图集下载状态：busy 时显示动画进度条；ok/err 时显示结果文字
+function setDlStatus(text, cls) {
+    const el = $('#dlStatus');
+    if (el) { el.textContent = text; el.className = 'dl-status ' + (cls || ''); }
+    const w = $('#dlProgressWrap'), bar = $('#dlProgressBar');
+    if (w && bar) {
+        const busy = cls === 'busy';
+        w.classList.toggle('hidden', !busy);
+        bar.classList.toggle('indeterminate', busy);
+    }
+}
+
+// 地图提取状态（复用同一套进度条样式）
+function setMapStatus(text, cls) {
+    const el = $('#exportInfo');
+    if (el) { el.textContent = text; el.className = 'dl-status ' + (cls || ''); }
+    const w = $('#mapProgressWrap'), bar = $('#mapProgressBar');
+    if (w && bar) {
+        const busy = cls === 'busy';
+        w.classList.toggle('hidden', !busy);
+        bar.classList.toggle('indeterminate', busy);
+    }
+}
+
+// 真实百分比进度（真实地图瓦片下载）
+function setTileProgress(pct, text) {
+    const w = $('#mapProgressWrap'), bar = $('#mapProgressBar');
+    if (w) w.classList.remove('hidden');
+    if (bar) { bar.classList.remove('indeterminate'); bar.style.width = Math.max(0, Math.min(100, pct)) + '%'; }
+    const el = $('#exportInfo');
+    if (el) { el.textContent = text; el.className = 'dl-status'; }
+}
+
 // ---------------- 视图切换 ----------------
 function switchView(v) {
     $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.view === v));
@@ -202,6 +235,9 @@ function updateMapSel() {
     const btn = $('#btnExportMap');
     btn.disabled = n === 0;
     btn.textContent = `提取选中的 ${n} 张地图`;
+    const tb = $('#btnDownloadTiles');
+    tb.disabled = n === 0;
+    tb.textContent = `下载真实地图瓦片 (${n})`;
 }
 
 $('#mapSearch').addEventListener('input', renderMapTable);
@@ -242,16 +278,67 @@ $('#btnExportMap').addEventListener('click', async () => {
     if (!mapSourceFile) { toast('请先加载地图数据'); return; }
     if (!dest) { toast('请设置输出目录'); return; }
     const ids = [...mapSelected];
+    const btn = $('#btnExportMap');
+    btn.disabled = true;
+    setMapStatus('导出中…', 'busy');
     try {
-        log(`导出 ${ids.length} 张地图到 ${dest} ...`);
+        log(`导出 ${ids.length} 张地图（完整图片 PNG + 数据 JSON）到 ${dest} ...`);
         const res = await api('POST', '/api/map/export', {
             path: '', ids, destination: dest
         });
-        if (!res.ok) { log('导出失败: ' + res.error, 'err'); return; }
-        log(`已导出 ${res.exported} 张 PNG`, 'ok');
-        toast(`导出完成：${res.exported} 张`);
-    } catch (e) { log('导出异常: ' + e.message, 'err'); }
+        if (!res.ok) { log('导出失败: ' + res.error, 'err'); setMapStatus('导出失败', 'err'); return; }
+        log(`已导出 ${res.exported} 张：每张地图一个以地图名命名的文件夹，内含 map_<id>.png（完整图片）+ map_<id>.json（数据）`, 'ok');
+        setMapStatus(`已完成：${res.exported} 张（PNG + JSON）`, 'ok');
+        toast(`导出完成：${res.exported} 张（PNG+JSON）`);
+    } catch (e) { log('导出异常: ' + e.message, 'err'); setMapStatus('导出异常', 'err'); }
+    finally { btn.disabled = false; updateMapSel(); }
 });
+
+// ---------------- 下载真实地图瓦片（zipmap/{img}/{n}.jpg） ----------------
+$('#btnDownloadTiles').addEventListener('click', downloadRealMaps);
+
+async function downloadRealMaps() {
+    if (!mapSourceFile) { toast('请先加载地图数据'); return; }
+    const dest = $('#mapDest').value.trim();
+    if (!dest) { toast('请设置输出目录'); return; }
+    const maps = mapIndex.filter(e => mapSelected.has(e.id))
+        .map(e => ({ id: e.id, img: e.img, name: e.name, width: e.width, height: e.height }));
+    if (!maps.length) { toast('请选择地图'); return; }
+    const btn = $('#btnDownloadTiles');
+    btn.disabled = true;
+    try {
+        const res = await api('POST', '/api/map/downloadTiles', { Maps: maps, Destination: dest, Stitch: $('#chkStitch').checked });
+        if (!res.ok) { log('启动失败: ' + res.error, 'err'); return; }
+        log(`开始下载真实地图瓦片（${res.totalMaps} 张地图，任务 ${res.jobId}）…`, 'ok');
+        await pollTiles(res.jobId);
+    } catch (e) { log('异常: ' + e.message, 'err'); }
+    finally { btn.disabled = false; updateMapSel(); }
+}
+
+function pollTiles(jobId) {
+    return new Promise(resolve => {
+        const timer = setInterval(async () => {
+            try {
+                const p = await api('GET', `/api/map/tilesProgress?job=${jobId}`);
+                if (!p || p.status === 'error') {
+                    clearInterval(timer);
+                    setTileProgress(100, '下载异常');
+                    log('真实地图瓦片下载异常', 'err');
+                    resolve(); return;
+                }
+                const pct = p.percent || 0;
+                setTileProgress(pct, `${pct}%  地图 ${p.doneMaps}/${p.totalMaps}  瓦片 ${p.doneTiles}/${p.totalTiles}  失败 ${p.failed} 缺失 ${p.missing}`);
+                if (p.status === 'done') {
+                    clearInterval(timer);
+                    setTileProgress(100, `完成：瓦片 ${p.doneTiles} 失败 ${p.failed} 缺失 ${p.missing}`);
+                    toast('真实地图瓦片下载完成');
+                    (p.messages || []).forEach(m => log(m, 'ok'));
+                    resolve();
+                }
+            } catch (_) { /* 继续轮询 */ }
+        }, 400);
+    });
+}
 
 $('#btnExportCsv').addEventListener('click', () => {
     if (!mapIndex.length) { toast('请先加载地图数据'); return; }
@@ -303,22 +390,25 @@ function renderManifestTable() {
 }
 
 async function downloadOne(key) {
+    setDlStatus('下载中…', 'busy');
     try {
         const res = await api('POST', '/api/atlas/download', { key, outDir: $('#atlasOutDir').value.trim() });
-        if (!res.ok) { log(`下载 ${key} 失败: ${res.error}`, 'err'); return; }
-        if (res.skipped) log(`已存在(跳过) ${key} -> ${res.localPath}`, 'ok');
-        else log(`已下载 ${key} (${(res.bytes / 1024).toFixed(1)} KB) -> ${res.localPath}`, 'ok');
-    } catch (e) { log(`下载异常 ${key}: ${e.message}`, 'err'); }
+        if (!res.ok) { log(`下载 ${key} 失败: ${res.error}`, 'err'); setDlStatus('下载失败', 'err'); return; }
+        if (res.skipped) { log(`已存在(跳过) ${key} -> ${res.localPath}`, 'ok'); setDlStatus('已完成（跳过已存在）', 'ok'); }
+        else { log(`已下载 ${key} (${(res.bytes / 1024).toFixed(1)} KB) -> ${res.localPath}`, 'ok'); setDlStatus('下载完成', 'ok'); }
+    } catch (e) { log(`下载异常 ${key}: ${e.message}`, 'err'); setDlStatus('下载失败', 'err'); }
 }
 
 async function downloadAll() {
     const btn = $('#btnDownloadAll');
     btn.disabled = true; btn.textContent = '下载中…';
+    setDlStatus('下载中…', 'busy');
     try {
         const res = await api('POST', '/api/atlas/downloadAll', { outDir: $('#atlasOutDir').value.trim() });
-        if (!res.ok) { log('全部下载失败: ' + res.error, 'err'); return; }
+        if (!res.ok) { log('全部下载失败: ' + res.error, 'err'); setDlStatus('下载失败', 'err'); return; }
         (res.messages || []).forEach(m => log(m, 'ok'));
-    } catch (e) { log('全部下载异常: ' + e.message, 'err'); }
+        setDlStatus('下载完成', 'ok');
+    } catch (e) { log('全部下载异常: ' + e.message, 'err'); setDlStatus('下载失败', 'err'); }
     finally { btn.disabled = false; btn.textContent = '全部下载'; $('#dlAllInfo').textContent = ''; }
 }
 

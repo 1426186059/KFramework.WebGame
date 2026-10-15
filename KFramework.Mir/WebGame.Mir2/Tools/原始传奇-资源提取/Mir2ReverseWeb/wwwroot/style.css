@@ -181,3 +181,20 @@ body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
     font-size: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, .25); z-index: 100; max-width: 70vw;
 }
 .hidden { display: none !important; }
+
+/* ---------- 下载进度 ---------- */
+.progress-wrap { margin: 6px 0 2px; }
+.progress-track {
+    position: relative; width: 100%; height: 8px;
+    background: #1c2230; border-radius: 6px; overflow: hidden;
+}
+.progress-fill {
+    position: absolute; left: 0; top: 0; height: 100%; width: 40%;
+    background: linear-gradient(90deg, #3a8bff, #36e0a0); border-radius: 6px;
+}
+.progress-fill.indeterminate { animation: indet 1.2s ease-in-out infinite; }
+@keyframes indet { 0% { left: -40%; } 100% { left: 100%; } }
+.dl-status { font-size: 12px; margin-top: 4px; min-height: 16px; }
+.dl-status.busy { color: #9fb3c8; }
+.dl-status.ok { color: #38b463; }
+.dl-status.err { color: #e05a50; }
