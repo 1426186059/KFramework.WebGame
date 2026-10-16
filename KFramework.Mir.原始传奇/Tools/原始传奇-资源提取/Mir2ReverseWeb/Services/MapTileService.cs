@@ -10,7 +10,7 @@ namespace Mir2ReverseWeb.Services;
 /// 直链规则（见 URL.txt）：
 ///     {CdnBase}/assets/resource/zipmap/{img}/{index}.jpg?ver={ResourceVersion}
 /// 本服务批量下载这些“真实地图小图”（全分辨率），并可选择拼接成一张总览 PNG。
-/// 与 ReverseService 解耦：仅接收 MapEntry（Img/Width/Height/Name），不依赖配置。
+/// 与 GameConfigService 解耦：仅接收 MapEntry（Img/Width/Height/Name），不依赖配置。
 /// </summary>
 public class MapTileService
 {

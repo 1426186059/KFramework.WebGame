@@ -18,10 +18,10 @@ namespace Mir2ReverseWeb.Services;
 ///   单元格 bit3=可走 / bit2=遮挡 / bit1=安全区
 ///   真实网格列数 = ceil(像素宽 / 48)，行数 = ceil(像素高 / 32)（来自 GameDefine.MAP_GRID_*）
 /// </summary>
-public class ReverseService
+public class GameConfigService
 {
     private static readonly HttpClient _http = new() { Timeout = TimeSpan.FromSeconds(180) };
-    static ReverseService()
+    static GameConfigService()
     {
         // CDN 会按 User-Agent 返回不同编码的配置：现代 UA 拿到的是「GBK 误当 UTF-8」的乱码
         // （如 "商店" 变成 "鍟嗗簵"），旧式 UA 才返回正确的 UTF-8。这里伪装成旧客户端以拿到干净中文。

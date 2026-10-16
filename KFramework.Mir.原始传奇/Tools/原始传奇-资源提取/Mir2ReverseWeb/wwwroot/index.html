@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>原始传奇逆向工坊 (Mir2 Reverse Web)</title>
+    <title>原始传奇逆向工坊 · 提取总览</title>
     <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body data-page="overview">
     <header class="topbar">
         <div class="brand">
             <span class="logo">◈</span>
@@ -17,16 +17,13 @@
         </div>
     </header>
 
-    <div class="layout">
-        <!-- 左侧：仅一个返回按钮（无选项列表） -->
+    <!-- 总览页：干净的整页（隐藏左右栏，见 .layout.overview） -->
+    <div class="layout overview">
         <nav class="sidebar">
             <button class="back-btn" id="btnBack">← 返回总览</button>
         </nav>
 
-        <!-- 中间主区 -->
         <main class="main-panel">
-
-            <!-- ===================== 提取总览（启动默认页） ===================== -->
             <section class="view" id="view-overview">
                 <div class="card">
                     <div class="card-title">提取总览</div>
@@ -52,254 +49,8 @@
 配置拼接规则（同游戏 JS onloadCfgAgain）：数据服务器根 + "0config" + 版本号 + ".json?v=" + 版本号</pre>
                 </div>
             </section>
-
-            <!-- ===================== 提取地图资源 ===================== -->
-            <section class="view hidden" id="view-map">
-                <div class="card">
-                    <div class="card-title">Config 中的所有 URL</div>
-                    <div class="url-groups">
-                        <div class="url-group">
-                            <div class="url-label label-cyan">地图配置 (.json 分片)</div>
-                            <ul id="urlMapConfig" class="url-list"></ul>
-                        </div>
-                        <div class="url-group">
-                            <div class="url-label label-cyan">客户端 JS（含解码逻辑）</div>
-                            <ul id="urlMapJs" class="url-list"></ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">地图数据加载</div>
-
-                    <div class="field">
-                        <label>map.data URL</label>
-                        <input id="mapDatPath" type="text" placeholder="https://…/map10.25341.1.dat（支持 zlib/gzip 压缩，自动解压）" />
-                        <span id="dot-mapDatPath" class="dot"></span>
-                    </div>
-
-                    <div class="field">
-                        <label>覆盖宽/高</label>
-                        <span class="inline">宽</span><input id="mapWidth" type="text" class="num" placeholder="配置值" />
-                        <span class="inline">高</span><input id="mapHeight" type="text" class="num" placeholder="配置值" />
-                        <span class="muted small">留空则用配置的真实网格尺寸（推荐）</span>
-                    </div>
-
-                    <div class="field">
-                        <label>输出目录</label>
-                        <input id="mapDest" type="text" placeholder="完整地图图片(PNG) 与 地图数据(JSON) 的输出目录（默认系统下载目录）" />
-                        <button class="btn btn-ghost" data-browse="mapDest">浏览</button>
-                        <span id="dot-mapDest" class="dot"></span>
-                    </div>
-
-                    <div class="row-actions">
-                        <button id="btnParseMap" class="btn btn-primary">加载地图数据</button>
-                        <button id="btnExportCsv" class="btn">导出索引 CSV</button>
-                        <span id="mapCountInfo" class="muted"></span>
-                    </div>
-                    <pre class="help">格式（已逆向）：大端 [count:u16][ [id:i32][len:i32] … ][ 数据… ]
-每个地图块前 4 字节丢弃；其后 4-bit/格（两格压一字节，高 nibble 在前）：
-bit3=不可走(墙)（可走=该位为0）｜ bit2=遮挡 ｜ bit1=安全区。
-「提取选中地图资源」为每张选中的地图在输出目录下创建一个以「地图名_id」命名的文件夹，内含：
-① tiles/：真实地图瓦片（zipmap/{img}/{n}.jpg，512×256，这才是真实地图画面）
-② map_&lt;id&gt;_real.png：瓦片拼接总览图（勾选“生成拼接总览图”时）
-③ map_&lt;id&gt;.json：解析出的结构化地图数据（每格可走/遮挡/安全区标志，可合并进游戏客户端）
-④ minimap.png：小地图（优先取 assets/resource/minimap/{img}.jpg 独立整图；取不到再回退 minimaps 图集 {img}_png 帧，仍无则 43005_png 默认帧）。
-预览：点列表行的「预览」一次性刷新“可走性掩码”“真实瓦片地图”“小地图”三张图；预览区右上角可「下载红绿图 / 下载真实图 / 下载小地图」保存图片。</pre>
-                </div>
-
-                <div class="card">
-                    <div class="row-actions">
-                        <button id="btnExtract" class="btn btn-success" disabled>提取选中地图资源 (0)</button>
-                        <label class="chk"><input type="checkbox" id="chkStitch" checked /> 生成拼接总览图(≤4096)</label>
-                        <span id="exportInfo" class="dl-status"></span>
-                    </div>
-                    <div id="mapProgressWrap" class="progress-wrap hidden">
-                        <div class="progress-track"><div id="mapProgressBar" class="progress-fill"></div></div>
-                    </div>
-
-                    <div id="mapListWrap" class="list-wrap hidden">
-                        <div class="list-toolbar">
-                            <span class="search"><input id="mapSearch" type="text" placeholder="搜索 地图ID" /></span>
-                            <button id="btnMapSelAll" class="btn btn-ghost">全选</button>
-                            <button id="btnMapClearAll" class="btn btn-ghost">取消全选</button>
-                            <span id="mapSelInfo" class="sel-info"></span>
-                        </div>
-                        <div class="table-scroll">
-                            <table class="map-table">
-                                <thead>
-                                    <tr>
-                                        <th class="col-check"><input id="mapChkAll" type="checkbox" /></th>
-                                        <th class="col-idx">序号</th>
-                                        <th>地图ID</th>
-                                        <th>地图名</th>
-                                        <th>体积(KB)</th>
-                                        <th class="col-act">操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="mapTbody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <!-- 预览对比：仅在本（地图）页面可用 -->
-                <div class="card">
-                    <div class="card-title">预览对比
-                        <button id="btnDownloadRed" class="btn btn-ghost btn-xs">下载红绿图</button>
-                        <button id="btnDownloadReal" class="btn btn-ghost btn-xs">下载真实图</button>
-                        <button id="btnDownloadMini" class="btn btn-ghost btn-xs">下载小地图</button>
-                    </div>
-                    <div id="previewEmpty" class="muted">（点列表行的“预览”同时刷新可走性掩码、真实瓦片地图、小地图三张图）</div>
-                    <div id="previewBody" class="hidden">
-                        <div class="preview-name" id="previewName"></div>
-                        <div class="preview-block">
-                            <div class="preview-label label-cyan">可走性掩码（灰=不可走/墙 ｜ 绿=可走 ｜ 黄=安全区 ｜ 红上半=遮挡/挡视线但可走）</div>
-                            <div id="previewStats" class="muted small"></div>
-                            <img id="previewImg" class="preview-img" alt="可走性预览" />
-                        </div>
-                        <div class="preview-block">
-                            <div class="preview-label label-cyan">真实地图（zipmap 瓦片拼接 · 缩略，全分辨率见 &lt;名&gt;_&lt;id&gt;/tiles/）</div>
-                            <div id="previewRealStats" class="muted small"></div>
-                            <img id="previewRealImg" class="preview-img" alt="真实地图预览" />
-                        </div>
-                        <div class="preview-block">
-                            <div class="preview-label label-cyan">小地图（优先 {img}.jpg 独立整图，回退图集帧）</div>
-                            <div id="previewMiniStats" class="muted small"></div>
-                            <img id="previewMiniImg" class="preview-img" alt="小地图预览" />
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ===================== 提取所有图集 ===================== -->
-            <section class="view hidden" id="view-atlas">
-                <div class="card">
-                    <div class="card-title">Manifest URL（资源总索引）</div>
-                    <div class="url-groups">
-                        <div class="url-group">
-                            <div class="url-label label-cyan">allmanifest10.25341.1.json</div>
-                            <ul id="urlManifest" class="url-list"></ul>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label>输出目录</label>
-                        <input id="atlasOutDir" type="text" placeholder="下载资源的输出目录（默认系统下载目录）" />
-                        <button class="btn btn-ghost" data-browse="atlasOutDir">浏览</button>
-                        <span id="dot-atlasOutDir" class="dot"></span>
-                    </div>
-                    <div class="row-actions">
-                        <button id="btnLoadManifest" class="btn btn-primary">加载清单</button>
-                        <span id="manifestInfo" class="muted"></span>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-title">清单条目（<span id="manifestCount">0</span>）</div>
-                    <div class="row-actions">
-                        <button id="btnDownloadAll" class="btn btn-success" disabled>全部下载</button>
-                        <span id="dlAllInfo" class="muted"></span>
-                    </div>
-                    <div id="dlProgressWrap" class="progress-wrap hidden">
-                        <div class="progress-track"><div id="dlProgressBar" class="progress-fill"></div></div>
-                    </div>
-                    <div id="dlStatus" class="dl-status"></div>
-                    <div class="list-toolbar">
-                        <span class="search"><input id="manifestSearch" type="text" placeholder="搜索 key（如 window-sheet / .png）" /></span>
-                        <span id="manifestSelInfo" class="sel-info"></span>
-                    </div>
-                    <div class="table-scroll">
-                        <table class="map-table">
-                            <thead><tr><th>逻辑路径 key</th><th>hash</th><th>体积</th><th class="col-act">操作</th></tr></thead>
-                            <tbody id="manifestTbody"></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="card hidden" id="atlasDetailCard">
-                    <div class="card-title">图集详情：<span id="atlasDetailName"></span></div>
-                    <pre class="help" id="atlasDetailMeta"></pre>
-                    <div class="table-scroll">
-                        <table class="map-table">
-                            <thead><tr><th>索引</th><th>宽</th><th>高</th><th>OffsetX</th><th>OffsetY</th></tr></thead>
-                            <tbody id="atlasImgTbody"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ===================== 提取配置表 ===================== -->
-            <section class="view hidden" id="view-config">
-                <div class="card">
-                    <div class="card-title">配置来源（0config&lt;版本&gt;.json，单文件）</div>
-                    <div class="field">
-                        <label>数据服务器地址</label>
-                        <input id="configBaseUrl" type="text" value="https://cdn.yscq-wy.yscq.com/fugu_20201203" />
-                        <span class="muted small">对应游戏 js_gameVars.configUrl / ResUrl.Data</span>
-                    </div>
-                    <div class="field">
-                        <label>版本号</label>
-                        <input id="configVersion" type="text" value="10.25341.1" />
-                        <span class="muted small">文件名 0config&lt;版本&gt;.json 用它</span>
-                    </div>
-                    <div class="field">
-                        <label>拼接 URL</label>
-                        <input id="configResolvedUrl" type="text" readonly class="readonly" />
-                        <button id="btnCopyConfigUrl" class="btn btn-ghost btn-xs">复制</button>
-                    </div>
-                    <div class="row-actions">
-                        <button id="btnLoadConfig" class="btn btn-primary">加载配置表</button>
-                        <span id="configLoadInfo" class="muted"></span>
-                    </div>
-                    <pre class="help">拼法与游戏主程序 JS 的 onloadCfgAgain 完全一致：数据服务器地址 + "0config" + 版本号 + ".json?v=" + 版本号。
-该文件顶层每个键（map / global / level / conditions / compose …）就是一张「配置表」。
-每张表可提取为两类产物：① &lt;表名&gt;Config.cs（由字段自动推断并映射 JS 对象到 C# 类）；② &lt;表名&gt;.json（保持原始形态的数据，按 URL 下载提取）。</pre>
-                </div>
-
-                <div class="card">
-                    <div class="field">
-                        <label>输出目录</label>
-                        <input id="configOutDir" type="text" placeholder="C# 类与 JSON 的输出目录（默认系统下载目录 / Mir2Config）" />
-                        <button class="btn btn-ghost" data-browse="configOutDir">浏览</button>
-                        <span id="dot-configOutDir" class="dot"></span>
-                    </div>
-                    <div class="row-actions">
-                        <button id="btnExtractConfigSel" class="btn btn-success" disabled>提取选中配置表 (0)</button>
-                        <button id="btnExtractConfigAll" class="btn">提取全部配置表</button>
-                        <span id="configStatus" class="dl-status"></span>
-                    </div>
-                    <div id="configListWrap" class="list-wrap hidden">
-                        <div class="list-toolbar">
-                            <span class="search"><input id="configSearch" type="text" placeholder="搜索 表名" /></span>
-                            <button id="btnConfigSelAll" class="btn btn-ghost">全选</button>
-                            <button id="btnConfigClearAll" class="btn btn-ghost">取消全选</button>
-                            <span id="configSelInfo" class="sel-info"></span>
-                        </div>
-                        <div class="table-scroll">
-                            <table class="map-table">
-                                <thead>
-                                    <tr>
-                                        <th class="col-check"><input id="configChkAll" type="checkbox" /></th>
-                                        <th>表名</th>
-                                        <th>形态</th>
-                                        <th>条目数</th>
-                                        <th>字段数</th>
-                                        <th class="col-act">操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="configTbody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-
-
-
-
-
-
         </main>
 
-        <!-- 右侧：日志（预览对比已移到“提取地图资源”页面内） -->
         <aside class="side-panel">
             <div class="card grow">
                 <div class="card-title">
@@ -330,5 +81,6 @@ bit3=不可走(墙)（可走=该位为0）｜ bit2=遮挡 ｜ bit1=安全区。
     <div id="toast" class="toast hidden"></div>
 
     <script src="app.js"></script>
+    <script src="pages/overview.js"></script>
 </body>
 </html>
