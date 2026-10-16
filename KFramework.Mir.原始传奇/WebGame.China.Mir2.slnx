@@ -3,7 +3,7 @@
     <Project Path="Tools/原始传奇-资源提取/Mir2ReverseWeb/Mir2ReverseWeb.csproj" />
   </Folder>
   <Project Path="../KFramework.WebGame/KFramework.MonoGame/KFramework.MonoGame.csproj" />
-  <Project Path="WebGame.Mir2.MonoGame.Client/WebGame.China.Mir2.Client.csproj" />
+  <Project Path="WebGame.China.Mir2.Client/WebGame.China.Mir2.Client.csproj" />
   <Project Path="Web_Mir2.Server.WinForms/Server.csproj" />
   <Project Path="Web_Mir2.Server/Web_Mir2.Server.csproj" />
 </Solution>
