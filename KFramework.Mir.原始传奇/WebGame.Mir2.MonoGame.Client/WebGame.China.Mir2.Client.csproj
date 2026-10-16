@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- 传奇源码按 nullable-disable 编写，沿用以免大量误报 -->
+    <Nullable>disable</Nullable>
+    <!-- CS0436：高仿的 System.Windows.Forms / System.Drawing 类型有意覆盖框架同名类型（去原生依赖），
+         该警告会为每个使用点刷屏，属预期行为，统一抑制。 -->
+    <NoWarn>$(NoWarn);CS0436</NoWarn>
+	<RunAotCompilation>true</RunAotCompilation>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\KFramework.WebGame\KFramework.MonoGame\KFramework.MonoGame.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <StaticWebAssetFingerprintPattern Include="JS" Pattern="*.js" Expression="#[.{fingerprint}]!" />
+  </ItemGroup>
+
+  <!-- 原 WinForms 原生版本（Forms/**、Mir2/Program.cs、Utils/BrowserHelper.cs）已彻底移除；
+       浏览器版入口/窗体由 Host/ 下的 CMain、Program(partial) 与 Shims/ 提供。 -->
+
+  <!-- 全局 using（global using MirEngine; + JSExport/JSImport）由本工程 Shims/GlobalUsings.cs 提供。 -->
+
+  <!-- 编译引擎浏览器层（TypeScript）：Debug 走 build，Release 走 build:release
+       （terser 压缩 + 剥离 console.*，实现见 KFramework.TSEngine/minify.mjs）。
+       本工程以前只同步 dist 不构建 —— 那样 Release 拿到的是"上一次别人构建时留下的状态"，
+       压缩与去 console 都会漏掉，所以这里补上构建步骤（与 KFramework.WebGame 下各工程一致）。 -->
+  <Target Name="BuildTypeScript" BeforeTargets="BeforeBuild" Condition="Exists('$(MSBuildThisFileDirectory)..\..\..\KFramework.WebGame\KFramework.TSEngine\node_modules')">
+    <PropertyGroup>
+      <_TsBuildScript Condition="'$(Configuration)' == 'Release'">build:release</_TsBuildScript>
+      <_TsBuildScript Condition="'$(_TsBuildScript)' == ''">build</_TsBuildScript>
+    </PropertyGroup>
+    <Exec Command="npm run $(_TsBuildScript)" WorkingDirectory="$(MSBuildThisFileDirectory)..\..\..\KFramework.WebGame\KFramework.TSEngine" />
+  </Target>
+
+  <!-- 引擎浏览器层（KFramework.TSEngine）编译产物 dist/<配置>/jsengine 整目录复制到 wwwroot/jsengine，
+       按 $(Configuration) 取：Debug 未压（带注释与 console）、Release 已压缩去 console。
+       产物由上面的 BuildTypeScript 生成（npm install 需先做过一次）。 -->
+  <Target Name="SyncJsEngine" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <_Engine Include="$(MSBuildThisFileDirectory)..\..\..\KFramework.WebGame\KFramework.TSEngine\dist\$(Configuration)\jsengine\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_Engine)" DestinationFiles="@(_Engine->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

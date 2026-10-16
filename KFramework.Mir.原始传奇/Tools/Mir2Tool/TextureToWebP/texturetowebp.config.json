@@ -1,0 +1,10 @@
+﻿{
+  "SourceFolder": "D:\\OpenSource\\2026Map",
+  "OutputFolder": "",
+  "Lossless": false,
+  "Quality": 80,
+  "Recursive": true,
+  "DeleteSource": false,
+  "Overwrite": true,
+  "Extensions": ".png,.jpg,.jpeg,.bmp,.gif"
+}

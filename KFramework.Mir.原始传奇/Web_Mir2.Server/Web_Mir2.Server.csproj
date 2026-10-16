@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>Mir2Server</AssemblyName>
+    <RootNamespace>Mir2Server</RootNamespace>
+    <!-- 高仿/协议类型有意覆盖框架同名类型（去系统依赖），抑制其刷屏警告 -->
+    <NoWarn>$(NoWarn);CS0436</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Mir2 服务器逻辑使用 System.Drawing 的几何/颜色类型（Point/Color/Rectangle 等），
+         浏览器无 GDI+，但服务器跑在 Windows 上，引用 System.Drawing.Common 即可。 -->
+    <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
+    <PackageReference Include="log4net" Version="3.3.0" />
+  </ItemGroup>
+
+</Project>
