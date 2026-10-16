@@ -40,7 +40,8 @@ public static class MapRenderer
                 int i = r * cols + c;
                 if (i >= map.CellFlags.Length) break;
                 int nib = map.CellFlags[i];
-                // bit3 为墙标志：未置位(=0)才可走；置位(=1)为不可走/墙
+                // bit3 为墙标志：未置位(=0)才可走；置位(=1)为不可走/墙。
+                // 与游戏 MapData.readData（n=8,o=4,s=2；(u&8)>0 记不可走）及 PathLayer.canStand 一致。
                 bool w = (nib & 8) == 0, cov = (nib & 4) != 0, sf = (nib & 2) != 0;
                 var paint = !w ? pBlock : (sf ? pSafe : pWalk);
                 canvas.DrawRect(c * cw, r * ch, cw, ch, paint);

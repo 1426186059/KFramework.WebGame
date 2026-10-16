@@ -6,9 +6,34 @@ namespace Mir2ReverseWeb.Services;
 /// <summary>
 /// 地图(.dat) 解码器：纯逻辑、无 ASP/HTTP/Skia 依赖，便于将来合并进 MonoGame.Client。
 /// 负责从已下载的 .dat 字节中解析索引、提取单张地图块、把 4-bit/格 解码为 MirMapData。
-/// 格式（已逆向）：大端 [count:u16][ [id:i32][len:i32] … ][ 数据… ]
+/// 格式：大端 [count:u16][ [id:i32][len:i32] … ][ 数据… ]
 /// 每个地图数据块前 4 字节丢弃；其后为 4-bit/格（两格压一字节，高 nibble 在前），
 /// 单元格 bit3=不可走(墙)（可走=该位为0） / bit2=遮挡 / bit1=安全区。
+///
+/// 以下为游戏官方权威解码器（逆向自 main10.25341.1.min.js 的 MapData.readData，
+/// 以及 PathLayer 的可走判定），本类的位定义与打包方式与之一一对应、已逐位核对：
+/// <code>
+/// e.endian = egret.Endian.LITTLE_ENDIAN, e.position = 0;
+/// var i = Math.ceil(t.config.width  / GameDefine.MAP_GRID_WIDTH),
+///     r = Math.ceil(t.config.height / GameDefine.MAP_GRID_HEIGHT);
+/// t._colCount = i - 1, t._rowCount = r - 1;
+/// var a, n = 8, o = 4, s = 2, l = !0, c = 0, d = 0, u = 0;   // n=墙(bit3) o=遮挡(bit2) s=安全区(bit1)
+/// t._mapIndex = new Array(r);
+/// for (var p = 0; r > p; p++) {
+///     for (var g = new Array(i), f = 0; i > f; f++)
+///         l ? (d = e.readByte(), 0 > d && (d += 256), l = !1, u = d >> 4)   // 高 nibble 在前
+///           : (u = 15 & d, l = !0),                                        // 低 nibble
+///         a = (f << 16) + p,
+///         (u & n) > 0 ? g[f] = 1 : g[f] = 0,        // n=8(bit3) 置位 → 该格记不可走(g=1)
+///         (u & o) > 0 &amp;&amp; (t._coverDic[a] = !0),    // o=4(bit2) 遮挡
+///         (u & s) > 0 &amp;&amp; (t._safeDic[a] = !0);     // s=2(bit1) 安全区
+///     t._mapIndex[p] = g;
+/// }
+/// // 寻路层可走判定（PathLayer）：
+/// //   getBlockValueByXY(e,t) { ... return 1 != this.mapTiles[t][e]; }
+/// //   canStand(e,t)          { ... return getBlockValueByXY(...) ? true : false; }
+/// // => 可走 = (u &amp; 8) == 0；bit3 置位 = 墙/不可走。
+/// </code>
 /// </summary>
 public static class MapDecoder
 {

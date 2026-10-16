@@ -2,9 +2,10 @@ namespace Mir2ReverseWeb.Models;
 
 /// <summary>
 /// 地图单元格标志（来自 .dat 的 4-bit/格 解码）。
-/// 位定义（与客户端一致，已修正）：bit3=不可走(墙) / bit2=遮挡 / bit1=安全区。
+/// 位定义（已对照游戏官方 MapData.readData 核实）：bit3=不可走(墙) / bit2=遮挡 / bit1=安全区。
 /// 单元格“可走” = bit3 为 0（即未置墙标志）；置位则该格为墙/不可走。
 /// 之前误把 bit3 当成“置位=可走”，导致小地图掩码整体反色（可走区被标灰、墙被标绿）。
+/// 权威源码见 MapDecoder 头部注释中的游戏 MapData.readData / PathLayer 片段。
 /// </summary>
 [Flags]
 public enum MapCellFlags : byte
