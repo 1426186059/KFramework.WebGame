@@ -116,8 +116,8 @@ public class ReverseService
                         ? idi
                         : (int.TryParse(prop.Name, out var pid) ? pid : 0);
                     if (id == 0) continue;
-                    string name = v.TryGetProperty("name", out var np) ? (np.GetString() ?? "") : "";
-                    string img = v.TryGetProperty("img", out var ip) ? (ip.GetString() ?? "") : "";
+                    string name = StrOrNum(v, "name");
+                    string img = StrOrNum(v, "img");
                     if (string.IsNullOrEmpty(img) && v.TryGetProperty("id", out var idp2)) img = idp2.GetInt32().ToString();
                     int w = v.TryGetProperty("width", out var wp) ? wp.GetInt32() : 0;
                     int h = v.TryGetProperty("height", out var hp) ? hp.GetInt32() : 0;
@@ -128,6 +128,16 @@ public class ReverseService
             msgs.Add($"[配置] {label}：{n} 条地图定义");
         }
         catch (Exception ex) { msgs.Add($"[配置失败] {label}：{ex.Message}"); }
+    }
+
+    /// <summary>读取配置里「可能是字符串也可能是数字」的字段，统一返回字符串。
+    /// 线上配置里 "img":103、"id":103 都是数字，直接 GetString() 会抛异常导致整份配置解析失败。</summary>
+    private static string StrOrNum(JsonElement v, string prop)
+    {
+        if (!v.TryGetProperty(prop, out var e)) return "";
+        if (e.ValueKind == JsonValueKind.String) return e.GetString() ?? "";
+        if (e.ValueKind == JsonValueKind.Number) return e.GetRawText();
+        return "";
     }
 
     /// <summary>
@@ -309,19 +319,22 @@ public class ReverseService
 
             if (export)
             {
-                var pngBytes = MapRenderer.EncodePng(bmp);
-                var pngFile = Path.Combine(req.Destination!, $"map_{req.Id}.png");
-                File.WriteAllBytes(pngFile, pngBytes);
-                res.OutFile = pngFile;
+                if (req.WritePng)
+                {
+                    var pngBytes = MapRenderer.EncodePng(bmp);
+                    var pngFile = Path.Combine(req.Destination!, $"map_{req.Id}.png");
+                    File.WriteAllBytes(pngFile, pngBytes);
+                    res.OutFile = pngFile;
+
+                    // 内联预览使用缩小图，避免超大 base64
+                    using var prev = MapRenderer.ScaleDown(bmp, 760);
+                    res.PreviewPngBase64 = "data:image/png;base64," + Convert.ToBase64String(MapRenderer.EncodePng(prev));
+                }
 
                 // 同时导出结构化地图数据（JSON，含每格可走/遮挡/安全区标志）
                 var jsonFile = Path.Combine(req.Destination!, $"map_{req.Id}.json");
                 File.WriteAllText(jsonFile, JsonSerializer.Serialize(map, _jsonIndented));
                 res.OutDataFile = jsonFile;
-
-                // 内联预览使用缩小图，避免超大 base64
-                using var prev = MapRenderer.ScaleDown(bmp, 760);
-                res.PreviewPngBase64 = "data:image/png;base64," + Convert.ToBase64String(MapRenderer.EncodePng(prev));
             }
             else
             {
@@ -364,14 +377,15 @@ public class ReverseService
                 {
                     Path = req.Path,
                     Id = id,
-                    Destination = dir
+                    Destination = dir,
+                    WritePng = req.WritePng
                 };
                 if (_mapConfig.TryGetValue(id, out var m)) { dm.Width = m.Width; dm.Height = m.Height; }
                 var r = DecodeMap(dm);
                 if (r.Ok && r.OutFile != null) res.Files.Add(r.OutFile);
                 if (r.Ok && r.OutDataFile != null) res.DataFiles.Add(r.OutDataFile);
             }
-            res.Exported = res.Files.Count;
+            res.Exported = res.DataFiles.Count;
             res.Ok = true;
         }
         catch (Exception ex) { res.Error = ex.Message; }

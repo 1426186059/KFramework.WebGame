@@ -66,6 +66,23 @@ api.MapGet("/map/tilesProgress", (string? job, MapTileService s) =>
     return p == null ? Results.Ok(new { ok = false, error = "unknown job" }) : Results.Ok(p);
 });
 
+// 预览真实地图（基于已下载的 zipmap 瓦片拼接缩略 PNG）
+api.MapPost("/map/previewReal", (MapRealPreviewRequest req, MapTileService s) =>
+{
+    var dest = string.IsNullOrWhiteSpace(req.Destination) ? ReverseService.OsDownloadDir() : req.Destination;
+    var m = new MapEntry { Id = req.Id, Img = req.Img, Name = req.Name, Width = req.Width, Height = req.Height };
+    var r = s.PreviewReal(m, dest);
+    return Results.Ok(new
+    {
+        ok = r.Ok,
+        error = r.Error,
+        previewPngBase64 = r.Base64 ?? "",
+        tiles = r.Tiles,
+        cols = r.Cols,
+        rows = r.Rows
+    });
+});
+
 // ---- 图集 WIL/WIX ----
 api.MapPost("/atlas/scan", (PathReq req, ReverseService s) =>
     Results.Ok(s.ScanAtlases(req.Path)));

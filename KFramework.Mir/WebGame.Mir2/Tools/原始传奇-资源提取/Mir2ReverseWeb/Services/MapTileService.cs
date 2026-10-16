@@ -159,6 +159,60 @@ public class MapTileService
         await File.WriteAllBytesAsync(Path.Combine(mapDir, $"map_{id}_real.png"), png.ToArray());
     }
 
+    /// <summary>
+    /// 预览：基于已下载的真实瓦片（zipmap/{img}/{n}.jpg）拼接一张缩略 PNG 返回。
+    /// 若此前下载时已生成 map_{id}_real.png 总览图则直接复用（最快），否则即时拼接。
+    /// 这是“真实地图”预览，与可走性红绿掩码无关。
+    /// </summary>
+    public (bool Ok, string? Error, string? Base64, int Tiles, int Cols, int Rows) PreviewReal(MapEntry m, string destDir, int maxSide = 2048)
+    {
+        if (string.IsNullOrWhiteSpace(m.Img))
+            return (false, "地图缺少 img 信息（配置可能未加载），无法定位瓦片；请先在「提取地图资源」页加载地图数据", null, 0, 0, 0);
+        int cols = Math.Max(1, (int)Math.Ceiling(m.Width / (double)TILE_W));
+        int rows = Math.Max(1, (int)Math.Ceiling(m.Height / (double)TILE_H));
+        var dirName = string.IsNullOrWhiteSpace(m.Name) ? $"map_{m.Id}" : $"{Sanitize(m.Name)}_{m.Id}";
+        var mapDir = Path.Combine(destDir, dirName);
+        var tileDir = Path.Combine(mapDir, "tiles");
+        if (!Directory.Exists(tileDir))
+            return (false, $"尚未下载真实地图瓦片（未找到 {tileDir}）。请先点「提取选中地图资源」下载，再预览。", null, 0, cols, rows);
+
+        // 优先复用已生成的总览图（最快）
+        var existing = Path.Combine(mapDir, $"map_{m.Id}_real.png");
+        if (File.Exists(existing))
+        {
+            var bytes = File.ReadAllBytes(existing);
+            return (true, null, "data:image/png;base64," + Convert.ToBase64String(bytes),
+                Directory.GetFiles(tileDir, "*.jpg").Length, cols, rows);
+        }
+
+        var files = Directory.GetFiles(tileDir, "*.jpg")
+            .Select(f => { int.TryParse(Path.GetFileNameWithoutExtension(f), out var i); return (f, i); })
+            .Where(x => x.i > 0).OrderBy(x => x.i).ToList();
+        if (files.Count == 0)
+            return (false, "瓦片目录为空，请先点「提取选中地图资源」下载真实瓦片", null, 0, cols, rows);
+
+        double scale = Math.Min(maxSide / (double)(cols * TILE_W), maxSide / (double)(rows * TILE_H));
+        int outW = Math.Max(1, (int)(cols * TILE_W * scale));
+        int outH = Math.Max(1, (int)(rows * TILE_H * scale));
+        using var bmp = new SKBitmap(outW, outH);
+        using var canvas = new SKCanvas(bmp);
+        canvas.Clear(SKColors.Black);
+        foreach (var (f, i) in files)
+        {
+            int r = (i - 1) / cols, c = (i - 1) % cols;
+            using var tile = SKBitmap.Decode(f);
+            if (tile == null) continue;
+            var dx = (float)(c * TILE_W * scale);
+            var dy = (float)(r * TILE_H * scale);
+            var dw = (float)(TILE_W * scale) + 1;
+            var dh = (float)(TILE_H * scale) + 1;
+            canvas.DrawBitmap(tile, new SKRect(dx, dy, dx + dw, dy + dh));
+        }
+        using var img = SKImage.FromBitmap(bmp);
+        using var png = img.Encode(SKEncodedImageFormat.Png, 90);
+        return (true, null, "data:image/png;base64," + Convert.ToBase64String(png.ToArray()), files.Count, cols, rows);
+    }
+
     private static string Sanitize(string s)
     {
         var invalid = Path.GetInvalidFileNameChars();

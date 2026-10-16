@@ -215,12 +215,13 @@ function renderMapTable() {
             <td>${e.id}</td>
             <td class="title-cn">${e.name || '—'}</td>
             <td>${e.kb}</td>
-            <td><button class="btn btn-ghost btn-xs act-prev">预览</button></td>`;
+            <td><button class="btn btn-ghost btn-xs act-prev">红绿图</button><button class="btn btn-ghost btn-xs act-prev-real">真实图</button></td>`;
         tr.querySelector('.mc').addEventListener('change', ev => {
             if (ev.target.checked) mapSelected.add(e.id); else mapSelected.delete(e.id);
             updateMapSel();
         });
         tr.querySelector('.act-prev').addEventListener('click', ev => { ev.stopPropagation(); previewMap(e.id); });
+        tr.querySelector('.act-prev-real').addEventListener('click', ev => { ev.stopPropagation(); previewReal(e.id); });
         tr.addEventListener('click', () => previewMap(e.id));
         tb.appendChild(tr);
         n++;
@@ -232,12 +233,9 @@ function renderMapTable() {
 
 function updateMapSel() {
     const n = mapSelected.size;
-    const btn = $('#btnExportMap');
+    const btn = $('#btnExtract');
     btn.disabled = n === 0;
-    btn.textContent = `提取选中的 ${n} 张地图`;
-    const tb = $('#btnDownloadTiles');
-    tb.disabled = n === 0;
-    tb.textContent = `下载真实地图瓦片 (${n})`;
+    btn.textContent = `提取选中地图资源 (${n})`;
 }
 
 $('#mapSearch').addEventListener('input', renderMapTable);
@@ -273,45 +271,58 @@ async function previewMap(id) {
     } catch (e) { log('预览异常: ' + e.message, 'err'); }
 }
 
-$('#btnExportMap').addEventListener('click', async () => {
-    const dest = $('#mapDest').value.trim();
+// 预览真实地图：基于已下载的 zipmap 瓦片（<名>_<id>/tiles/）即时拼接缩略 PNG
+async function previewReal(id) {
     if (!mapSourceFile) { toast('请先加载地图数据'); return; }
-    if (!dest) { toast('请设置输出目录'); return; }
-    const ids = [...mapSelected];
-    const btn = $('#btnExportMap');
-    btn.disabled = true;
-    setMapStatus('导出中…', 'busy');
+    const dest = $('#mapDest').value.trim();
+    if (!dest) { toast('请先设置输出目录（需先点「提取选中地图资源」下载真实瓦片）'); return; }
+    const entry = findEntry(id) || {};
     try {
-        log(`导出 ${ids.length} 张地图（完整图片 PNG + 数据 JSON）到 ${dest} ...`);
-        const res = await api('POST', '/api/map/export', {
-            path: '', ids, destination: dest
+        const res = await api('POST', '/api/map/previewReal', {
+            id,
+            img: entry.img,
+            name: entry.name,
+            width: entry.width,
+            height: entry.height,
+            destination: dest
         });
-        if (!res.ok) { log('导出失败: ' + res.error, 'err'); setMapStatus('导出失败', 'err'); return; }
-        log(`已导出 ${res.exported} 张：每张地图一个以地图名命名的文件夹，内含 map_<id>.png（完整图片）+ map_<id>.json（数据）`, 'ok');
-        setMapStatus(`已完成：${res.exported} 张（PNG + JSON）`, 'ok');
-        toast(`导出完成：${res.exported} 张（PNG+JSON）`);
-    } catch (e) { log('导出异常: ' + e.message, 'err'); setMapStatus('导出异常', 'err'); }
-    finally { btn.disabled = false; updateMapSel(); }
-});
+        if (!res.ok) { log(`预览真实地图 ${id} 失败: ` + res.error, 'err'); toast(res.error); return; }
+        $('#previewEmpty').classList.add('hidden');
+        $('#previewBody').classList.remove('hidden');
+        $('#previewName').textContent = `地图 ${id}${entry.name ? ' · ' + entry.name : ''}（真实瓦片）`;
+        $('#previewRealImg').src = res.previewPngBase64;
+        $('#previewRealStats').textContent =
+            `拼接 ${res.tiles} 张瓦片 ｜ 网格 ${res.cols}×${res.rows}（缩略预览，全分辨率见 <名>_<id>/tiles/）`;
+    } catch (e) { log('预览真实地图异常: ' + e.message, 'err'); }
+}
 
-// ---------------- 下载真实地图瓦片（zipmap/{img}/{n}.jpg） ----------------
-$('#btnDownloadTiles').addEventListener('click', downloadRealMaps);
+// ---------------- 提取选中地图资源：下载真实瓦片 + 解析 JSON ----------------
+$('#btnExtract').addEventListener('click', extractMaps);
 
-async function downloadRealMaps() {
+async function extractMaps() {
     if (!mapSourceFile) { toast('请先加载地图数据'); return; }
     const dest = $('#mapDest').value.trim();
     if (!dest) { toast('请设置输出目录'); return; }
     const maps = mapIndex.filter(e => mapSelected.has(e.id))
         .map(e => ({ id: e.id, img: e.img, name: e.name, width: e.width, height: e.height }));
     if (!maps.length) { toast('请选择地图'); return; }
-    const btn = $('#btnDownloadTiles');
+    const ids = maps.map(m => m.id);
+    const btn = $('#btnExtract');
     btn.disabled = true;
     try {
-        const res = await api('POST', '/api/map/downloadTiles', { Maps: maps, Destination: dest, Stitch: $('#chkStitch').checked });
-        if (!res.ok) { log('启动失败: ' + res.error, 'err'); return; }
-        log(`开始下载真实地图瓦片（${res.totalMaps} 张地图，任务 ${res.jobId}）…`, 'ok');
-        await pollTiles(res.jobId);
-    } catch (e) { log('异常: ' + e.message, 'err'); }
+        // ① 下载真实地图瓦片（zipmap）并（可选）拼接总览图
+        const r1 = await api('POST', '/api/map/downloadTiles', { Maps: maps, Destination: dest, Stitch: $('#chkStitch').checked });
+        if (!r1.ok) { log('启动失败: ' + r1.error, 'err'); setMapStatus('失败', 'err'); return; }
+        log(`开始提取选中地图资源（${r1.totalMaps} 张）：① 下载真实瓦片 → ② 解析 JSON`, 'ok');
+        await pollTiles(r1.jobId);
+        // ② 解析地图数据为 JSON（不再单独写红绿 PNG，预览用"红绿图"按钮）
+        setMapStatus('解析 JSON…', 'busy');
+        const r2 = await api('POST', '/api/map/export', { path: '', ids, destination: dest, writePng: false });
+        if (!r2.ok) { log('解析 JSON 失败: ' + r2.error, 'err'); setMapStatus('JSON 失败', 'err'); return; }
+        log(`已完成：每张地图一个「地图名_id」文件夹，内含 tiles/（真实瓦片）+ map_<id>_real.png（拼接图）+ map_<id>.json（数据）`, 'ok');
+        setMapStatus(`已完成：${r2.exported} 张（真实瓦片 + JSON）`, 'ok');
+        toast(`提取完成：${r2.exported} 张（真实瓦片 + JSON）`);
+    } catch (e) { log('异常: ' + e.message, 'err'); setMapStatus('异常', 'err'); }
     finally { btn.disabled = false; updateMapSel(); }
 }
 

@@ -72,6 +72,8 @@ public class MapDecodeRequest
     /// <summary>像素高（来自 config）。<=0 时后端自动用配置或按单元格数近方估算</summary>
     public int Height { get; set; }
     public string? Destination { get; set; }
+    /// <summary>导出时是否同时写出红绿可走性掩码 PNG（默认 true）。统一“提取选中地图资源”时设为 false，只产 JSON。</summary>
+    public bool WritePng { get; set; } = true;
 }
 
 public class MapDecodeResult
@@ -106,6 +108,8 @@ public class MapExportRequest
     public int Width { get; set; }
     public int Height { get; set; }
     public string Destination { get; set; } = "";
+    /// <summary>导出时是否同时写出红绿可走性掩码 PNG（默认 true）。统一“提取选中地图资源”时设为 false，只产 JSON。</summary>
+    public bool WritePng { get; set; } = true;
 }
 
 public class MapExportResult
@@ -256,4 +260,15 @@ public class MapTileProgress
     public int Percent { get; set; }
     public string? CurrentMap { get; set; }
     public List<string> Messages { get; set; } = new();
+}
+
+// 真实地图瓦片预览请求（传入地图元信息 + 瓦片所在输出目录）
+public class MapRealPreviewRequest
+{
+    public int Id { get; set; }
+    public string Img { get; set; } = "";
+    public string Name { get; set; } = "";
+    public int Width { get; set; }
+    public int Height { get; set; }
+    public string Destination { get; set; } = "";
 }

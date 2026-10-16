@@ -75,17 +75,16 @@
                     <pre class="help">格式（已逆向）：大端 [count:u16][ [id:i32][len:i32] … ][ 数据… ]
 每个地图块前 4 字节丢弃；其后 4-bit/格（两格压一字节，高 nibble 在前）：
 bit3=可走 ｜ bit2=遮挡 ｜ bit1=安全区。
-「提取」为每张选中的地图创建一个以「地图名_id」命名的文件夹，内含：
-① 完整地图图片 map_&lt;id&gt;.png（真实网格 48:32 比例，最长边≤4096）
-② 地图数据 map_&lt;id&gt;.json（每格可走/遮挡/安全区标志，可合并进游戏客户端）。
-「下载真实地图瓦片」按客户端规则拉取每幅地图被切成的 512×256 真实 jpg 瓦片（zipmap/{img}/{n}.jpg），
-保存到 tiles/，并可拼接总览图 map_&lt;id&gt;_real.png（这才是真实地图画面，而非上面的可走性掩码）。</pre>
+「提取选中地图资源」为每张选中的地图在输出目录下创建一个以「地图名_id」命名的文件夹，内含：
+① tiles/：真实地图瓦片（zipmap/{img}/{n}.jpg，512×256，这才是真实地图画面）
+② map_&lt;id&gt;_real.png：瓦片拼接总览图（勾选“生成拼接总览图”时）
+③ map_&lt;id&gt;.json：解析出的结构化地图数据（每格可走/遮挡/安全区标志，可合并进游戏客户端）。
+预览：点“红绿图”看可走性掩码，点“真实图”看真实瓦片地图。</pre>
                 </div>
 
                 <div class="card">
                     <div class="row-actions">
-                        <button id="btnExportMap" class="btn btn-success" disabled>提取选中的 0 张地图</button>
-                        <button id="btnDownloadTiles" class="btn btn-primary" disabled>下载真实地图瓦片</button>
+                        <button id="btnExtract" class="btn btn-success" disabled>提取选中地图资源 (0)</button>
                         <label class="chk"><input type="checkbox" id="chkStitch" checked /> 生成拼接总览图(≤4096)</label>
                         <span id="exportInfo" class="dl-status"></span>
                     </div>
@@ -185,13 +184,18 @@ bit3=可走 ｜ bit2=遮挡 ｜ bit1=安全区。
         <aside class="side-panel">
             <div class="card">
                 <div class="card-title">预览对比</div>
-                <div id="previewEmpty" class="muted">（勾选 / 点击地图后可预览可走性掩码）</div>
+                <div id="previewEmpty" class="muted">（点“红绿图”预览可走性掩码，点“真实图”预览 zipmap 真实瓦片地图）</div>
                 <div id="previewBody" class="hidden">
                     <div class="preview-name" id="previewName"></div>
                     <div class="preview-block">
                         <div class="preview-label label-cyan">可走性掩码（绿=可走 黄=安全区 红点=遮挡）</div>
                         <div id="previewStats" class="muted small"></div>
                         <img id="previewImg" class="preview-img" alt="可走性预览" />
+                    </div>
+                    <div class="preview-block">
+                        <div class="preview-label label-cyan">真实地图（zipmap 瓦片拼接 · 缩略）</div>
+                        <div id="previewRealStats" class="muted small"></div>
+                        <img id="previewRealImg" class="preview-img" alt="真实地图预览" />
                     </div>
                 </div>
             </div>
