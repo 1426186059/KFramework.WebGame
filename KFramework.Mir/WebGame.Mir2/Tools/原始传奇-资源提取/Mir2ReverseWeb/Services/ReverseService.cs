@@ -1,6 +1,9 @@
 using System.IO.Compression;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
+using System.Text.Json.Serialization;
 using Mir2ReverseWeb.Models;
 using SkiaSharp;
 
@@ -17,6 +20,13 @@ namespace Mir2ReverseWeb.Services;
 public class ReverseService
 {
     private static readonly HttpClient _http = new() { Timeout = TimeSpan.FromSeconds(180) };
+    static ReverseService()
+    {
+        // CDN 会按 User-Agent 返回不同编码的配置：现代 UA 拿到的是「GBK 误当 UTF-8」的乱码
+        // （如 "商店" 变成 "鍟嗗簵"），旧式 UA 才返回正确的 UTF-8。这里伪装成旧客户端以拿到干净中文。
+        _http.DefaultRequestHeaders.UserAgent.ParseAdd(
+            "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)");
+    }
     private readonly Dictionary<int, MapMeta> _mapConfig = new();
     private readonly Dictionary<int, string> _idToFile = new();
     private string? _loadedFile;
@@ -24,7 +34,14 @@ public class ReverseService
     private List<ManifestEntry>? _manifestEntries;   // 加载后的 manifest 条目（内存）
     private static readonly object _lock = new();
 
-    private static readonly JsonSerializerOptions _jsonIndented = new() { WriteIndented = true };
+    private static readonly JsonSerializerOptions _jsonIndented = new()
+    {
+        WriteIndented = true,
+        // 保留中文等非 ASCII 字符为可读原文（而非 \uXXXX 转义）
+        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+        // byte[] 默认会被序列化为 Base64 字符串；这里改成「数字数组」以贴合 byte[] 语义
+        Converters = { new ByteArrayToArrayConverter() }
+    };
 
     // ---------------- 透明解压 + 缓存 ----------------
     private readonly Dictionary<string, (long len, long tm, byte[] data)> _cache = new();
@@ -94,13 +111,17 @@ public class ReverseService
         catch (Exception ex) { msgs.Add($"[下载失败] {url}：{ex.Message}"); return null; }
     }
 
-    /// <summary>解析配置 JSON（UTF-8 中文地图名，直接读内存字节），合并进内存字典</summary>
+    /// <summary>解析配置 JSON（中文地图名，可能以 UTF-8 或 GBK 编码，依 CDN 返回的编码而定），合并进内存字典</summary>
     private void MergeConfig(byte[] bytes, string label, List<string> msgs)
     {
         try
         {
-            // 配置文件为 UTF-8（不要按 GBK 解码，否则会产生乱码）
-            using var doc = JsonDocument.Parse(bytes);
+            // CDN 会按 User-Agent 返回不同编码（本服务的 HttpClient 拿到的是 GBK，旧 UA 是 UTF-8）。
+            // 先按严格 UTF-8 解析；若字节非合法 UTF-8 则回退 GBK，避免中文名变成乱码。
+            string text;
+            try { text = new UTF8Encoding(false, true).GetString(bytes); }
+            catch (DecoderFallbackException) { text = Encoding.GetEncoding("gbk").GetString(bytes); }
+            using var doc = JsonDocument.Parse(text);
             var root = doc.RootElement;
             // 结构：{ "map": { "154": { id, name, width, height, ... }, ... } }
             if (root.TryGetProperty("map", out var mapEl) && mapEl.ValueKind == JsonValueKind.Object)
@@ -116,7 +137,7 @@ public class ReverseService
                         ? idi
                         : (int.TryParse(prop.Name, out var pid) ? pid : 0);
                     if (id == 0) continue;
-                    string name = StrOrNum(v, "name");
+                    string name = FixChinese(StrOrNum(v, "name"));
                     string img = StrOrNum(v, "img");
                     if (string.IsNullOrEmpty(img) && v.TryGetProperty("id", out var idp2)) img = idp2.GetInt32().ToString();
                     int w = v.TryGetProperty("width", out var wp) ? wp.GetInt32() : 0;
@@ -138,6 +159,18 @@ public class ReverseService
         if (e.ValueKind == JsonValueKind.String) return e.GetString() ?? "";
         if (e.ValueKind == JsonValueKind.Number) return e.GetRawText();
         return "";
+    }
+
+    /// <summary>
+    /// 还原被“双重编码”成乱码的中文（如 "商店" 在 CDN 上偶发会变成 "鍟嗗簵"：
+    /// 即原始 GBK 字节被误当 UTF-8 再编码）。恢复方式：把当前字符串按 UTF-8 取回字节，
+    /// 再用 GBK 解码。该操作对已经是正确中文的字符串是幂等的（"商店"→"商店"），可放心套用。
+    /// </summary>
+    private static string FixChinese(string s)
+    {
+        if (string.IsNullOrEmpty(s)) return s;
+        try { return Encoding.GetEncoding("gbk").GetString(Encoding.UTF8.GetBytes(s)); }
+        catch { return s; }
     }
 
     /// <summary>
@@ -595,4 +628,31 @@ internal class MapMeta
     public int Width { get; set; }
     public int Height { get; set; }
     public string Img { get; set; } = "";
+}
+
+/// <summary>
+/// 把 byte[] 序列化为 JSON 数字数组（[0,1,3,…]），而非默认的 Base64 字符串。
+/// 反序列化时也支持从数字数组还原回 byte[]，方便人工校对与合并进客户端。
+/// </summary>
+public class ByteArrayToArrayConverter : JsonConverter<byte[]>
+{
+    public override void Write(Utf8JsonWriter writer, byte[] value, JsonSerializerOptions options)
+    {
+        writer.WriteStartArray();
+        foreach (var b in value) writer.WriteNumberValue(b);
+        writer.WriteEndArray();
+    }
+
+    public override byte[] Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (reader.TokenType != JsonTokenType.StartArray)
+            throw new JsonException("byte[] 期望以 JSON 数组开头");
+        var list = new List<byte>();
+        while (reader.Read())
+        {
+            if (reader.TokenType == JsonTokenType.EndArray) return list.ToArray();
+            if (reader.TokenType == JsonTokenType.Number) list.Add((byte)reader.GetByte());
+        }
+        throw new JsonException("byte[] 数组未正常结束");
+    }
 }
