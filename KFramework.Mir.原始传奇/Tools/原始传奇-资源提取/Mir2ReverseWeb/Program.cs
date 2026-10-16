@@ -130,4 +130,17 @@ api.MapPost("/atlas/download", async (AtlasDownloadRequest req, ReverseService s
 api.MapPost("/atlas/downloadAll", async (AtlasDownloadRequest req, ReverseService s) =>
     Results.Ok(await s.DownloadManifestAll(req.OutDir)));
 
+// ---- 配置表（0config*.json 顶层每个键 = 一张配置表）----
+// 加载所有配置分片到内存（不落盘），解析出全部表
+api.MapPost("/config/load", async (ReverseService s) =>
+    Results.Ok(await s.LoadConfigTablesAsync()));
+
+// 枚举已加载的表（名 / 形态 / 条目数 / 字段列表与推断类型）
+api.MapPost("/config/tables", (ReverseService s) =>
+    Results.Ok(s.ListConfigTables()));
+
+// 提取指定表（或 "*" 全部）为 C# 类 + JSON 数据，写出到输出目录
+api.MapPost("/config/extract", (ConfigExtractRequest req, ReverseService s) =>
+    Results.Ok(s.ExtractConfigTables(req)));
+
 app.Run();

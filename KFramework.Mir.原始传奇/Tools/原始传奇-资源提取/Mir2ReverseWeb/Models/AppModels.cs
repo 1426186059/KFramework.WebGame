@@ -289,3 +289,72 @@ public class MapRealPreviewRequest
     public int Height { get; set; }
     public string Destination { get; set; } = "";
 }
+
+// ---------------- 配置表提取（0config*.json 顶层每个键 = 一张配置表） ----------------
+/// <summary>单字段的推断结果（用于生成 C# 类）</summary>
+public class ConfigTableField
+{
+    /// <summary>原始字段名（JSON 中的键）</summary>
+    public string Name { get; set; } = "";
+    /// <summary>推断出的 C# 类型（string / int / long / double / bool / JsonElement）</summary>
+    public string CsType { get; set; } = "string";
+    /// <summary>是否在部分条目中缺失（缺失则值类型标记为可空）</summary>
+    public bool Optional { get; set; }
+}
+
+/// <summary>一张配置表的元信息</summary>
+public class ConfigTableInfo
+{
+    public bool Ok { get; set; } = true;
+    public string? Error { get; set; }
+    /// <summary>表名（配置 JSON 的顶层键）</summary>
+    public string Name { get; set; } = "";
+    /// <summary>条目形态：object（以 id 为键的对象映射）/ array（裸数组）</summary>
+    public string Kind { get; set; } = "";
+    /// <summary>条目数</summary>
+    public int Count { get; set; }
+    public List<ConfigTableField> Fields { get; set; } = new();
+}
+
+/// <summary>/config/load 与 /config/tables 的返回</summary>
+public class ConfigTableListResult
+{
+    public bool Ok { get; set; }
+    public string? Error { get; set; }
+    public int Count { get; set; }
+    public List<ConfigTableInfo> Tables { get; set; } = new();
+    /// <summary>本次加载用到的配置分片 URL，供页面展示</summary>
+    public List<string> Urls { get; set; } = new();
+    public List<string> Messages { get; set; } = new();
+}
+
+/// <summary>/config/extract 请求</summary>
+public class ConfigExtractRequest
+{
+    /// <summary>要提取的表名；空或仅含 "*" 表示全部。</summary>
+    public List<string> Tables { get; set; } = new();
+    /// <summary>输出目录；留空则默认系统下载目录下的 Mir2Config 子目录。</summary>
+    public string? OutDir { get; set; }
+    /// <summary>写出 C# 类（默认 true）。</summary>
+    public bool WriteClass { get; set; } = true;
+    /// <summary>写出 JSON 数据（默认 true）。</summary>
+    public bool WriteJson { get; set; } = true;
+}
+
+public class ConfigTableFile
+{
+    public string Table { get; set; } = "";
+    public string? ClassFile { get; set; }
+    public string? DataFile { get; set; }
+    public int Entries { get; set; }
+}
+
+/// <summary>/config/extract 返回</summary>
+public class ConfigExtractResult
+{
+    public bool Ok { get; set; }
+    public string? Error { get; set; }
+    public int TableCount { get; set; }
+    public List<ConfigTableFile> Files { get; set; } = new();
+    public List<string> Messages { get; set; } = new();
+}

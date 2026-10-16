@@ -2,6 +2,7 @@ using System.IO.Compression;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Unicode;
 using System.Text.Json.Serialization;
 using Mir2ReverseWeb.Models;
@@ -33,6 +34,10 @@ public class ReverseService
     private byte[]? _mapDatBytes;   // 从 URL 下载并解压后的完整 .dat（仅存内存，不落盘）
     private List<ManifestEntry>? _manifestEntries;   // 加载后的 manifest 条目（内存）
     private static readonly object _lock = new();
+
+    // ---------------- 配置表（0config*.json 顶层每个键 = 一张配置表） ----------------
+    private readonly Dictionary<string, JsonNode> _configTables = new();
+    private bool _configLoaded;
 
     private static readonly JsonSerializerOptions _jsonIndented = new()
     {
@@ -159,6 +164,280 @@ public class ReverseService
         if (e.ValueKind == JsonValueKind.String) return e.GetString() ?? "";
         if (e.ValueKind == JsonValueKind.Number) return e.GetRawText();
         return "";
+    }
+
+    // ---------------- 配置表：加载 / 枚举 / 提取（C# 类 + JSON 数据） ----------------
+
+    /// <summary>
+    /// 下载 4 个配置分片（与 LoadMapDataAsync 使用同一组 Mir2Config.MapConfigUrls），
+    /// 将「顶层每个键」视为一张配置表，合并进内存（后加载的分片覆盖先前的同名键）。
+    /// 每张表的数据以 JsonNode 形式保留（支持 object 映射 / array 两种形态），供枚举与导出复用。
+    /// </summary>
+    public async Task<ConfigTableListResult> LoadConfigTablesAsync()
+    {
+        var res = new ConfigTableListResult { Messages = new() };
+        try
+        {
+            _configTables.Clear();
+            _configLoaded = false;
+            foreach (var url in Mir2Config.MapConfigUrls)
+            {
+                var bytes = await DownloadBytesAsync(url, res.Messages);
+                if (bytes == null) continue;
+                // 与 MergeConfig 相同的编码兜底：先严格 UTF-8，失败时回退 GBK
+                string text;
+                try { text = new UTF8Encoding(false, true).GetString(bytes); }
+                catch (DecoderFallbackException) { text = Encoding.GetEncoding("gbk").GetString(bytes); }
+                var node = JsonNode.Parse(text);
+                if (node is not JsonObject obj) { res.Messages.Add($"[配置] {url}：根不是对象，跳过"); continue; }
+                int n0 = _configTables.Count;
+                foreach (var kv in obj)
+                {
+                    if (kv.Value != null) _configTables[kv.Key] = kv.Value!;
+                }
+                res.Messages.Add($"[配置] {url}：载入 {obj.Count} 个顶层键（累计 {_configTables.Count}，本次新增 {_configTables.Count - n0}）");
+            }
+            if (_configTables.Count == 0) { res.Error = "未从配置 URL 解析到任何配置表"; return res; }
+            _configLoaded = true;
+            res.Tables = ListTableInfos();
+            res.Urls = Mir2Config.MapConfigUrls.ToList();
+            res.Count = res.Tables.Count;
+            res.Ok = true;
+        }
+        catch (Exception ex) { res.Error = ex.Message; }
+        return res;
+    }
+
+    /// <summary>从已加载的内存配置枚举所有表及其字段（不重新下载）。</summary>
+    public ConfigTableListResult ListConfigTables()
+    {
+        var res = new ConfigTableListResult();
+        if (!_configLoaded) { res.Error = "请先加载配置表（点“加载配置表”按钮）"; return res; }
+        res.Tables = ListTableInfos();
+        res.Count = res.Tables.Count;
+        res.Ok = true;
+        return res;
+    }
+
+    private List<ConfigTableInfo> ListTableInfos()
+    {
+        var list = new List<ConfigTableInfo>();
+        foreach (var kv in _configTables)
+            list.Add(BuildTableInfo(kv.Key, kv.Value));
+        list.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase));
+        return list;
+    }
+
+    private ConfigTableInfo BuildTableInfo(string name, JsonNode node)
+    {
+        var info = new ConfigTableInfo { Name = name };
+        var entries = NormalizeEntries(node);
+        info.Count = entries.Count;
+        info.Kind = node is JsonObject ? "object" : node is JsonArray ? "array" : node.GetValueKind().ToString();
+        info.Fields = InferFields(entries);
+        return info;
+    }
+
+    /// <summary>
+    /// 把一张表规整成「条目集合」：
+    /// object 表 → 其值的集合；array 表 → 数组元素。
+    /// 若所有条目本身是数组（如某表 = { "1000": [ {…}, {…} ] }），则展平为内部对象，便于字段推断。
+    /// </summary>
+    private static List<JsonNode> NormalizeEntries(JsonNode node)
+    {
+        List<JsonNode> entries;
+        if (node is JsonObject o) entries = o.Select(p => p.Value!).ToList();
+        else if (node is JsonArray a) entries = a.Select(x => x!).ToList();
+        else return new List<JsonNode>();
+
+        if (entries.Count > 0 && entries.All(e => e is JsonArray))
+        {
+            var inner = entries.SelectMany(e => ((JsonArray)e).Select(x => x!))
+                .Where(x => x is JsonObject).ToList();
+            if (inner.Count > 0) entries = inner;
+        }
+        return entries;
+    }
+
+    /// <summary>从一组条目推断所有字段名与 C# 类型（最佳努力：标量尽量用强类型，对象/数组/混合一律 JsonElement 兜底）。</summary>
+    private static List<ConfigTableField> InferFields(List<JsonNode> entries)
+    {
+        var stat = new Dictionary<string, FieldStat>();
+        var optional = new HashSet<string>();
+        foreach (var e in entries)
+        {
+            if (e is not JsonObject o) continue;
+            var present = new HashSet<string>();
+            foreach (var p in o)
+            {
+                present.Add(p.Key);
+                if (!stat.TryGetValue(p.Key, out var s)) stat[p.Key] = s = new FieldStat();
+                var vk = p.Value?.GetValueKind() ?? JsonValueKind.Null;
+                s.Kinds.Add(vk);
+                if (vk == JsonValueKind.Number && p.Value is JsonValue jv && jv.TryGetValue<double>(out var d))
+                {
+                    if (Math.Abs(d - Math.Floor(d)) > 1e-9 || double.IsInfinity(d) || double.IsNaN(d))
+                        s.NumIntegral = false;
+                    if (d < int.MinValue || d > int.MaxValue) s.NumFitsInt32 = false;
+                }
+            }
+            foreach (var k in stat.Keys)
+                if (!present.Contains(k)) optional.Add(k);
+        }
+        var fields = new List<ConfigTableField>();
+        foreach (var kv in stat)
+            fields.Add(new ConfigTableField
+            {
+                Name = kv.Key,
+                CsType = InferCsType(kv.Value),
+                Optional = optional.Contains(kv.Key)
+            });
+        fields.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase));
+        return fields;
+    }
+
+    private static string InferCsType(FieldStat s)
+    {
+        var k = s.Kinds;
+        if (k.Count == 1)
+        {
+            var only = k.First();
+            if (only == JsonValueKind.String) return "string";
+            if (only == JsonValueKind.True || only == JsonValueKind.False) return "bool";
+            if (only == JsonValueKind.Number) return s.NumIntegral ? (s.NumFitsInt32 ? "int" : "long") : "double";
+            return "JsonElement";
+        }
+        if (k.All(x => x == JsonValueKind.True || x == JsonValueKind.False)) return "bool";
+        if (k.All(x => x == JsonValueKind.Number))
+            return s.NumIntegral ? (s.NumFitsInt32 ? "int" : "long") : "double";
+        return "JsonElement";
+    }
+
+    /// <summary>
+    /// 提取配置表：为每张表写出「C# 类（描述字段 schema）」与「JSON 数据（保持原始 object/array 形态）」。
+    /// 输出目录默认系统下载目录下的 Mir2Config 子目录。
+    /// </summary>
+    public ConfigExtractResult ExtractConfigTables(ConfigExtractRequest req)
+    {
+        var res = new ConfigExtractResult { Messages = new() };
+        try
+        {
+            if (!_configLoaded) { res.Error = "请先加载配置表（点“加载配置表”按钮）"; return res; }
+            var baseDir = string.IsNullOrWhiteSpace(req.OutDir)
+                ? Path.Combine(OsDownloadDir(), "Mir2Config")
+                : req.OutDir!;
+            Directory.CreateDirectory(baseDir);
+
+            var allNames = _configTables.Keys.ToList();
+            List<string> names;
+            if (req.Tables != null && req.Tables.Count > 0 && !(req.Tables.Count == 1 && req.Tables[0] == "*"))
+                names = req.Tables.Where(n => _configTables.ContainsKey(n)).ToList();
+            else
+                names = allNames;
+
+            int n = 0;
+            foreach (var name in names)
+            {
+                var node = _configTables[name];
+                var info = BuildTableInfo(name, node);
+                int entryCount = info.Count;
+
+                string? classFile = null;
+                if (req.WriteClass)
+                {
+                    var cs = GenerateConfigClass(name, info);
+                    if (cs != null)
+                    {
+                        classFile = Path.Combine(baseDir, Sanitize(name) + "Config.cs");
+                        File.WriteAllText(classFile, cs);
+                    }
+                }
+                string? dataFile = null;
+                if (req.WriteJson)
+                {
+                    dataFile = Path.Combine(baseDir, Sanitize(name) + ".json");
+                    File.WriteAllText(dataFile, JsonSerializer.Serialize(node, _jsonIndented));
+                }
+                res.Files.Add(new ConfigTableFile { Table = name, ClassFile = classFile, DataFile = dataFile, Entries = entryCount });
+                if (++n % 25 == 0) res.Messages.Add($"[进度] {n}/{names.Count}");
+            }
+            res.TableCount = n;
+            res.Messages.Add($"[完成] 共 {n} 张配置表，输出目录：{baseDir}");
+            res.Ok = true;
+        }
+        catch (Exception ex) { res.Error = ex.Message; }
+        return res;
+    }
+
+    /// <summary>把表名转 PascalCase 作为 C# 类名（数字/非法字符处理为合法标识符）。</summary>
+    private static string PascalName(string key)
+    {
+        var sb = new System.Text.StringBuilder();
+        bool up = true;
+        foreach (var c in key)
+        {
+            if (char.IsLetterOrDigit(c) || c == '_')
+            {
+                sb.Append(up ? char.ToUpperInvariant(c) : c);
+                up = false;
+            }
+            else up = true; // 分隔符后下一个字母大写
+        }
+        var s = sb.ToString();
+        if (s.Length == 0) s = "Table";
+        if (!char.IsLetter(s[0]) && s[0] != '_') s = "_" + s;
+        return s;
+    }
+
+    /// <summary>把字段名规整为合法 C# 标识符（保留原始键名通过 [JsonPropertyName] 映射）。</summary>
+    private static string CsFieldName(string key)
+    {
+        var sb = new System.Text.StringBuilder();
+        foreach (var c in key)
+            sb.Append(char.IsLetterOrDigit(c) || c == '_' ? c : '_');
+        var s = sb.ToString();
+        if (s.Length == 0) s = "Field";
+        if (char.IsDigit(s[0])) s = "_" + s;
+        // 规避 C# 关键字
+        return s == "object" || s == "string" || s == "event" || s == "base" || s == "class" || s == "namespace"
+            ? "@" + s : s;
+    }
+
+    /// <summary>由表元信息生成一张配置表的 C# 类源文件。</summary>
+    private static string? GenerateConfigClass(string name, ConfigTableInfo info)
+    {
+        if (info.Fields.Count == 0) return null;
+        var cls = PascalName(name) + "Config";
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("// <auto-generated> 原始传奇 配置表 \"" + name + "\" —— 由 Mir2ReverseWeb 提取");
+        sb.AppendLine("// 形态: " + info.Kind + "，条目数: " + info.Count + "，字段数: " + info.Fields.Count);
+        sb.AppendLine("// 标量字段做了最佳努力类型推断；对象/数组/混合字段用 JsonElement 兜底，反序列化时无需额外配置。");
+        sb.AppendLine("using System.Collections.Generic;");
+        sb.AppendLine("using System.Text.Json;");
+        sb.AppendLine("using System.Text.Json.Serialization;");
+        sb.AppendLine();
+        sb.AppendLine("namespace Mir2Config;");
+        sb.AppendLine();
+        sb.AppendLine("/// <summary>配置表 \"" + name + "\" 的单条记录</summary>");
+        sb.AppendLine("public class " + cls);
+        sb.AppendLine("{");
+        foreach (var f in info.Fields)
+        {
+            var csType = f.CsType + (f.Optional && f.CsType != "string" && f.CsType != "JsonElement" ? "?" : "");
+            var def = f.CsType == "string" ? " = \"\"" : f.Optional ? "" : (f.CsType == "JsonElement" ? "" : " = default");
+            sb.AppendLine("    [JsonPropertyName(\"" + f.Name + "\")]");
+            sb.AppendLine("    public " + csType + " " + CsFieldName(f.Name) + " { get; set; }" + def + "");
+            sb.AppendLine();
+        }
+        sb.AppendLine("}");
+        return sb.ToString();
+    }
+
+    private sealed class FieldStat
+    {
+        public HashSet<JsonValueKind> Kinds { get; } = new();
+        public bool NumIntegral { get; set; } = true;
+        public bool NumFitsInt32 { get; set; } = true;
     }
 
     /// <summary>

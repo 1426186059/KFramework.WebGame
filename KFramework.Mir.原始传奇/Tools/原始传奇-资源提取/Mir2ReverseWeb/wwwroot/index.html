@@ -23,6 +23,7 @@
             <div class="nav-group">资源提取</div>
             <a class="nav-item active" data-view="map"><span class="nav-ico">🗺</span>提取地图资源</a>
             <a class="nav-item" data-view="atlas"><span class="nav-ico">🎞</span>提取所有图集</a>
+            <a class="nav-item" data-view="config"><span class="nav-ico">📋</span>提取配置表</a>
         </nav>
 
         <!-- 中间主区 -->
@@ -169,6 +170,62 @@ bit3=不可走(墙)（可走=该位为0）｜ bit2=遮挡 ｜ bit1=安全区。
                             <thead><tr><th>索引</th><th>宽</th><th>高</th><th>OffsetX</th><th>OffsetY</th></tr></thead>
                             <tbody id="atlasImgTbody"></tbody>
                         </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================== 提取配置表 ===================== -->
+            <section class="view hidden" id="view-config">
+                <div class="card">
+                    <div class="card-title">配置来源（0config*.json 分片）</div>
+                    <div class="url-groups">
+                        <div class="url-group">
+                            <div class="url-label label-cyan">配置分片 URL</div>
+                            <ul id="urlConfig" class="url-list"></ul>
+                        </div>
+                    </div>
+                    <div class="row-actions">
+                        <button id="btnLoadConfig" class="btn btn-primary">加载配置表</button>
+                        <span id="configLoadInfo" class="muted"></span>
+                    </div>
+                    <pre class="help">加载后，0config*.json 顶层每个键会被识别为一张「配置表」（如 map / global / level / conditions / compose …）。
+每张表可提取为两类产物：① &lt;表名&gt;Config.cs（由字段自动推断的 C# 类）；② &lt;表名&gt;.json（保持原始形态的数据）。</pre>
+                </div>
+
+                <div class="card">
+                    <div class="field">
+                        <label>输出目录</label>
+                        <input id="configOutDir" type="text" placeholder="C# 类与 JSON 的输出目录（默认系统下载目录 / Mir2Config）" />
+                        <button class="btn btn-ghost" data-browse="configOutDir">浏览</button>
+                        <span id="dot-configOutDir" class="dot"></span>
+                    </div>
+                    <div class="row-actions">
+                        <button id="btnExtractConfigSel" class="btn btn-success" disabled>提取选中配置表 (0)</button>
+                        <button id="btnExtractConfigAll" class="btn">提取全部配置表</button>
+                        <span id="configStatus" class="dl-status"></span>
+                    </div>
+                    <div id="configListWrap" class="list-wrap hidden">
+                        <div class="list-toolbar">
+                            <span class="search"><input id="configSearch" type="text" placeholder="搜索 表名" /></span>
+                            <button id="btnConfigSelAll" class="btn btn-ghost">全选</button>
+                            <button id="btnConfigClearAll" class="btn btn-ghost">取消全选</button>
+                            <span id="configSelInfo" class="sel-info"></span>
+                        </div>
+                        <div class="table-scroll">
+                            <table class="map-table">
+                                <thead>
+                                    <tr>
+                                        <th class="col-check"><input id="configChkAll" type="checkbox" /></th>
+                                        <th>表名</th>
+                                        <th>形态</th>
+                                        <th>条目数</th>
+                                        <th>字段数</th>
+                                        <th class="col-act">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="configTbody"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </section>
