@@ -8,7 +8,7 @@ namespace Mir2ReverseWeb.Services;
 /// 负责从已下载的 .dat 字节中解析索引、提取单张地图块、把 4-bit/格 解码为 MirMapData。
 /// 格式（已逆向）：大端 [count:u16][ [id:i32][len:i32] … ][ 数据… ]
 /// 每个地图数据块前 4 字节丢弃；其后为 4-bit/格（两格压一字节，高 nibble 在前），
-/// 单元格 bit3=可走 / bit2=遮挡 / bit1=安全区。
+/// 单元格 bit3=不可走(墙)（可走=该位为0） / bit2=遮挡 / bit1=安全区。
 /// </summary>
 public static class MapDecoder
 {
@@ -114,7 +114,7 @@ public static class MapDecoder
                 if (bi < block.Length)
                     nib = (idx % 2 == 0) ? ((block[bi] >> 4) & 0xF) : (block[bi] & 0xF);
                 map.CellFlags[idx] = (byte)nib;
-                if ((nib & 8) != 0) map.Walkable++;
+                if ((nib & 8) == 0) map.Walkable++;   // bit3=墙标志：未置位才可走
                 if ((nib & 4) != 0) map.Cover++;
                 if ((nib & 2) != 0) map.Safe++;
                 idx++;

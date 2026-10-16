@@ -29,7 +29,7 @@ public static class MapRenderer
         using var canvas = new SKCanvas(bmp);
         canvas.Clear(new SKColor(18, 22, 28));
         using var pWalk = new SKPaint { Color = new SKColor(56, 180, 99) };
-        using var pBlock = new SKPaint { Color = new SKColor(38, 46, 58) };
+        using var pBlock = new SKPaint { Color = new SKColor(130, 138, 150) }; // 不可走/墙：醒目灰，避免与深色背景混淆
         using var pSafe = new SKPaint { Color = new SKColor(230, 200, 40) };
         using var pCover = new SKPaint { Color = new SKColor(220, 90, 80) };
 
@@ -40,7 +40,8 @@ public static class MapRenderer
                 int i = r * cols + c;
                 if (i >= map.CellFlags.Length) break;
                 int nib = map.CellFlags[i];
-                bool w = (nib & 8) != 0, cov = (nib & 4) != 0, sf = (nib & 2) != 0;
+                // bit3 为墙标志：未置位(=0)才可走；置位(=1)为不可走/墙
+                bool w = (nib & 8) == 0, cov = (nib & 4) != 0, sf = (nib & 2) != 0;
                 var paint = !w ? pBlock : (sf ? pSafe : pWalk);
                 canvas.DrawRect(c * cw, r * ch, cw, ch, paint);
                 if (cov) canvas.DrawRect(c * cw, r * ch, cw, Math.Max(1, ch / 2), pCover); // 遮挡：上半红

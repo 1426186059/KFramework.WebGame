@@ -74,7 +74,7 @@
                     </div>
                     <pre class="help">格式（已逆向）：大端 [count:u16][ [id:i32][len:i32] … ][ 数据… ]
 每个地图块前 4 字节丢弃；其后 4-bit/格（两格压一字节，高 nibble 在前）：
-bit3=可走 ｜ bit2=遮挡 ｜ bit1=安全区。
+bit3=不可走(墙)（可走=该位为0）｜ bit2=遮挡 ｜ bit1=安全区。
 「提取选中地图资源」为每张选中的地图在输出目录下创建一个以「地图名_id」命名的文件夹，内含：
 ① tiles/：真实地图瓦片（zipmap/{img}/{n}.jpg，512×256，这才是真实地图画面）
 ② map_&lt;id&gt;_real.png：瓦片拼接总览图（勾选“生成拼接总览图”时）
@@ -193,7 +193,7 @@ bit3=可走 ｜ bit2=遮挡 ｜ bit1=安全区。
                 <div id="previewBody" class="hidden">
                     <div class="preview-name" id="previewName"></div>
                     <div class="preview-block">
-                        <div class="preview-label label-cyan">可走性掩码（绿=可走 黄=安全区 红点=遮挡）</div>
+                        <div class="preview-label label-cyan">可走性掩码（灰=不可走/墙 ｜ 绿=可走 ｜ 黄=安全区 ｜ 红上半=遮挡/挡视线但可走）</div>
                         <div id="previewStats" class="muted small"></div>
                         <img id="previewImg" class="preview-img" alt="可走性预览" />
                     </div>

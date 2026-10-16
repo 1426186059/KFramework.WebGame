@@ -345,9 +345,9 @@ public class ReverseService
             // 委托给 MapDecoder 解析网格与逐格标志（纯逻辑，可合并到 MonoGame.Client）
             var map = MapDecoder.Decode(req.Id, block, pw, ph, name, Mir2Config.GridWidth, Mir2Config.GridHeight);
 
-            // 导出模式：渲染真实网格比例的完整地图图片（最长边 ≤ 4096）；否则渲染内联预览（≤ 760）
+            // 导出模式：渲染真实网格比例的完整地图图片（最长边 ≤ 4096）；否则渲染内联预览（≤ 560）
             bool export = !string.IsNullOrWhiteSpace(req.Destination) && Directory.Exists(req.Destination);
-            int side = export ? 4096 : 760;
+            int side = export ? 4096 : 560;
             using var bmp = MapRenderer.RenderMask(map, side);
 
             if (export)
@@ -360,7 +360,7 @@ public class ReverseService
                     res.OutFile = pngFile;
 
                     // 内联预览使用缩小图，避免超大 base64
-                    using var prev = MapRenderer.ScaleDown(bmp, 760);
+                    using var prev = MapRenderer.ScaleDown(bmp, 560);
                     res.PreviewPngBase64 = "data:image/png;base64," + Convert.ToBase64String(MapRenderer.EncodePng(prev));
                 }
 

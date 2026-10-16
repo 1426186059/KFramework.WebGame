@@ -2,7 +2,9 @@ namespace Mir2ReverseWeb.Models;
 
 /// <summary>
 /// 地图单元格标志（来自 .dat 的 4-bit/格 解码）。
-/// 与客户端 bit 位定义一致：bit3=可走 / bit2=遮挡 / bit1=安全区。
+/// 位定义（与客户端一致，已修正）：bit3=不可走(墙) / bit2=遮挡 / bit1=安全区。
+/// 单元格“可走” = bit3 为 0（即未置墙标志）；置位则该格为墙/不可走。
+/// 之前误把 bit3 当成“置位=可走”，导致小地图掩码整体反色（可走区被标灰、墙被标绿）。
 /// </summary>
 [Flags]
 public enum MapCellFlags : byte
@@ -10,7 +12,7 @@ public enum MapCellFlags : byte
     None = 0,
     Safe = 1 << 1,     // 安全区
     Cover = 1 << 2,    // 遮挡
-    Walkable = 1 << 3  // 可走
+    Blocked = 1 << 3   // 不可走/墙（置位即墙；可走 = 该位为 0）
 }
 
 /// <summary>

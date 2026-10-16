@@ -164,7 +164,7 @@ public class MapTileService
     /// 若此前下载时已生成 map_{id}_real.png 总览图则直接复用（最快），否则即时拼接。
     /// 这是“真实地图”预览，与可走性红绿掩码无关。
     /// </summary>
-    public (bool Ok, string? Error, string? Base64, int Tiles, int Cols, int Rows) PreviewReal(MapEntry m, string destDir, int maxSide = 2048)
+    public (bool Ok, string? Error, string? Base64, int Tiles, int Cols, int Rows) PreviewReal(MapEntry m, string destDir, int maxSide = 1200)
     {
         if (string.IsNullOrWhiteSpace(m.Img))
             return (false, "地图缺少 img 信息（配置可能未加载），无法定位瓦片；请先在「提取地图资源」页加载地图数据", null, 0, 0, 0);
