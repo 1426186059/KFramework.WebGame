@@ -233,12 +233,77 @@ public class GameConfigService
 
     private ConfigTableInfo BuildTableInfo(string name, JsonNode node)
     {
+        // item 表是「数字下标数组」结构（StdItem 定长记录），字段名需从 attribute_score 配置 + 已知直接字段反推
+        if (name == "item" && node is JsonObject) return BuildItemTableInfo(node);
         var info = new ConfigTableInfo { Name = name };
         var entries = NormalizeEntries(node);
         info.Count = entries.Count;
         info.Kind = node is JsonObject ? "object" : node is JsonArray ? "array" : node.GetValueKind().ToString();
         info.Fields = InferFields(entries);
         return info;
+    }
+
+    /// <summary>
+    /// item 表专用构建：遍历所有物品，收集出现的数字下标（0..N），逐个映射为语义化字段。
+    /// 数字下标分两类：① 直接字段（id/名称/价格/描述/图标/部位…），见 _itemFieldOverrides；
+    /// ② 属性槽位，其下标即 attribute_score 配置表的 id，名称来自该表（攻击下限/防御上限/魔防下限/准确/闪避…）。
+    /// 二者都通过 [JsonPropertyName("数字下标")] 映射回原始 JSON。
+    /// </summary>
+    private ConfigTableInfo BuildItemTableInfo(JsonNode node)
+    {
+        var info = new ConfigTableInfo { Name = "item", Kind = "object" };
+        var entries = node is JsonObject o ? o.Select(p => p.Value!).ToList() : new List<JsonNode>();
+        var idxSet = new SortedSet<int>();
+        foreach (var e in entries)
+        {
+            if (e is JsonObject eo)
+                foreach (var p in eo)
+                    if (int.TryParse(p.Key, out var idx)) idxSet.Add(idx);
+        }
+        foreach (var idx in idxSet)
+        {
+            var f = GetItemField(idx);
+            info.Fields.Add(new ConfigTableField
+            {
+                JsonName = idx.ToString(),
+                Name = f.Cs,
+                CsType = f.IsStr ? "string" : "int",
+                Optional = true,
+                Comment = f.Cn
+            });
+        }
+        info.Count = entries.Count;
+        return info;
+    }
+
+    /// <summary>item 表里的「直接字段」（非属性槽位，下标不对应 attribute_score）。语义来自 main10.25341.1.min.js 的访问方式。</summary>
+    private static readonly Dictionary<int, (string Cs, string Cn, bool IsStr)> _itemFieldOverrides = new()
+    {
+        { 0,  ("Index",    "物品ID", false) },
+        { 2,  ("Name",     "名称", true) },
+        { 3,  ("Name1",    "别名/外显名", true) },
+        { 5,  ("Category", "类别/类型(货币/武器…)", true) },
+        { 12, ("Compound", "合成配方(#分隔)", true) },
+        { 18, ("EffectId", "特效ID", false) },
+        { 19, ("IconId",   "图标ID(资源图)", false) },
+        { 22, ("Price",    "价格", true) },
+        { 23, ("EquipPos", "装备部位(211=武器,212=左手,213=右手…)", false) },
+        { 42, ("Desc",     "描述", true) },
+        { 52, ("Career",   "职业限制", false) },
+        { 56, ("Sex",      "性别限制", false) },
+    };
+
+    private (string Cs, string Cn, bool IsStr) GetItemField(int idx)
+    {
+        if (_itemFieldOverrides.TryGetValue(idx, out var ov)) return ov;
+        if (_configTables.TryGetValue("attribute_score", out var asNode) && asNode is JsonObject aso
+            && aso.TryGetPropertyValue(idx.ToString(), out var av) && av is JsonObject avo)
+        {
+            var enName = (avo["name"] is JsonValue np) ? (np.GetValue<string>() ?? ("Attr" + idx)) : ("Attr" + idx);
+            var cnName = (avo["description"] is JsonValue dp) ? (dp.GetValue<string>() ?? "") : "";
+            return (PascalName(enName), cnName, false);
+        }
+        return (("Field" + idx), ("未识别下标" + idx), false);
     }
 
     /// <summary>
@@ -291,6 +356,7 @@ public class GameConfigService
         foreach (var kv in stat)
             fields.Add(new ConfigTableField
             {
+                JsonName = kv.Key,
                 Name = kv.Key,
                 CsType = InferCsType(kv.Value),
                 Optional = optional.Contains(kv.Key)
@@ -428,7 +494,8 @@ public class GameConfigService
         {
             var csType = f.CsType + (f.Optional && f.CsType != "string" && f.CsType != "JsonElement" ? "?" : "");
             var def = f.CsType == "string" ? " = \"\"" : f.Optional ? "" : (f.CsType == "JsonElement" ? "" : " = default");
-            sb.AppendLine("    [JsonPropertyName(\"" + f.Name + "\")]");
+            sb.AppendLine("    [JsonPropertyName(\"" + f.JsonName + "\")]");
+            if (!string.IsNullOrEmpty(f.Comment)) sb.AppendLine("    // " + f.Comment);
             sb.AppendLine("    public " + csType + " " + CsFieldName(f.Name) + " { get; set; }" + def + "");
             sb.AppendLine();
         }

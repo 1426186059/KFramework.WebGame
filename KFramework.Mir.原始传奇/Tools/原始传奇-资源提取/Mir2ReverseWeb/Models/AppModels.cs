@@ -294,12 +294,17 @@ public class MapRealPreviewRequest
 /// <summary>单字段的推断结果（用于生成 C# 类）</summary>
 public class ConfigTableField
 {
-    /// <summary>原始字段名（JSON 中的键）</summary>
+    /// <summary>映射回 JSON 的原始键名（用于 [JsonPropertyName]）。
+    /// 一般等于 Name；对 item 表这类「数字键数组」表，这里是数字下标本身。</summary>
+    public string JsonName { get; set; } = "";
+    /// <summary>C# 属性名（语义化，如 Atk / DefMax；未知下标用 FieldN）。</summary>
     public string Name { get; set; } = "";
-    /// <summary>推断出的 C# 类型（string / int / long / double / bool / JsonElement）</summary>
+    /// <summary>C# 类型（string / int / long / double / bool / JsonElement）</summary>
     public string CsType { get; set; } = "string";
     /// <summary>是否在部分条目中缺失（缺失则值类型标记为可空）</summary>
     public bool Optional { get; set; }
+    /// <summary>中文注释（item 表里每个数字下标对应的属性含义，从 attribute_score 配置反推）</summary>
+    public string Comment { get; set; } = "";
 }
 
 /// <summary>一张配置表的元信息</summary>
