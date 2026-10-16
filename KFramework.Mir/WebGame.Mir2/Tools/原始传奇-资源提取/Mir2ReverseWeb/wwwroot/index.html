@@ -78,8 +78,9 @@ bit3=可走 ｜ bit2=遮挡 ｜ bit1=安全区。
 「提取选中地图资源」为每张选中的地图在输出目录下创建一个以「地图名_id」命名的文件夹，内含：
 ① tiles/：真实地图瓦片（zipmap/{img}/{n}.jpg，512×256，这才是真实地图画面）
 ② map_&lt;id&gt;_real.png：瓦片拼接总览图（勾选“生成拼接总览图”时）
-③ map_&lt;id&gt;.json：解析出的结构化地图数据（每格可走/遮挡/安全区标志，可合并进游戏客户端）。
-预览：点“红绿图”看可走性掩码，点“真实图”看真实瓦片地图。</pre>
+③ map_&lt;id&gt;.json：解析出的结构化地图数据（每格可走/遮挡/安全区标志，可合并进游戏客户端）
+④ minimap.png：小地图（优先取 assets/resource/minimap/{img}.jpg 独立整图；取不到再回退 minimaps 图集 {img}_png 帧，仍无则 43005_png 默认帧）。
+预览：点列表行的「预览」一次性刷新“可走性掩码”“真实瓦片地图”“小地图”三张图；预览区右上角可「下载红绿图 / 下载真实图 / 下载小地图」保存图片。</pre>
                 </div>
 
                 <div class="card">
@@ -183,8 +184,12 @@ bit3=可走 ｜ bit2=遮挡 ｜ bit1=安全区。
         <!-- 右侧：预览 + 日志 -->
         <aside class="side-panel">
             <div class="card">
-                <div class="card-title">预览对比</div>
-                <div id="previewEmpty" class="muted">（点“红绿图”预览可走性掩码，点“真实图”预览 zipmap 真实瓦片地图）</div>
+                <div class="card-title">预览对比
+                    <button id="btnDownloadRed" class="btn btn-ghost btn-xs">下载红绿图</button>
+                    <button id="btnDownloadReal" class="btn btn-ghost btn-xs">下载真实图</button>
+                    <button id="btnDownloadMini" class="btn btn-ghost btn-xs">下载小地图</button>
+                </div>
+                <div id="previewEmpty" class="muted">（点列表行的“预览”同时刷新可走性掩码、真实瓦片地图、小地图三张图）</div>
                 <div id="previewBody" class="hidden">
                     <div class="preview-name" id="previewName"></div>
                     <div class="preview-block">
@@ -193,9 +198,14 @@ bit3=可走 ｜ bit2=遮挡 ｜ bit1=安全区。
                         <img id="previewImg" class="preview-img" alt="可走性预览" />
                     </div>
                     <div class="preview-block">
-                        <div class="preview-label label-cyan">真实地图（zipmap 瓦片拼接 · 缩略）</div>
+                        <div class="preview-label label-cyan">真实地图（zipmap 瓦片拼接 · 缩略，全分辨率见 &lt;名&gt;_&lt;id&gt;/tiles/）</div>
                         <div id="previewRealStats" class="muted small"></div>
                         <img id="previewRealImg" class="preview-img" alt="真实地图预览" />
+                    </div>
+                    <div class="preview-block">
+                        <div class="preview-label label-cyan">小地图（优先 {img}.jpg 独立整图，回退图集帧）</div>
+                        <div id="previewMiniStats" class="muted small"></div>
+                        <img id="previewMiniImg" class="preview-img" alt="小地图预览" />
                     </div>
                 </div>
             </div>

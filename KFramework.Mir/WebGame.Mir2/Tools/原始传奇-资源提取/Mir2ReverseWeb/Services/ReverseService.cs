@@ -467,92 +467,22 @@ public class ReverseService
         return res;
     }
 
+    /// <summary>扫描图集库文件（委托 Mir2AtlasDecoder 模块）。</summary>
     public AtlasScanResult ScanAtlases(string root)
     {
         var res = new AtlasScanResult();
         try
         {
-            if (!Directory.Exists(root)) { res.Error = "目录不存在"; return res; }
-            var exts = new HashSet<string> { ".wil", ".lib", ".wix", ".wzl", ".wzx" };
-            var files = Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories)
-                .Where(f => exts.Contains(Path.GetExtension(f).ToLowerInvariant()))
-                .Select(f => new AtlasFile
-                {
-                    Name = Path.GetFileName(f),
-                    Path = f,
-                    Kind = Path.GetExtension(f).TrimStart('.').ToLowerInvariant(),
-                    Size = new FileInfo(f).Length
-                })
-                .OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase)
-                .ToList();
-            res.Files = files;
+            res.Files = Mir2AtlasDecoder.Scan(root);
             res.Ok = true;
         }
         catch (Exception ex) { res.Error = ex.Message; }
         return res;
     }
 
-    /// <summary>
-    /// 解析 WIL 头 + 通过 WIX 索引读取每张图的尺寸。
-    /// WIL: 40 字节标题 + int32 版本 + int32 图像数；WIX: int32 图像数 + N×int32 偏移。
-    /// 像素解码（调色板/RLE）后续接入。
-    /// </summary>
+    /// <summary>解析 WIL/WIX 图集结构（委托 Mir2AtlasDecoder 模块）。</summary>
     public AtlasInfo ReadAtlas(string wilPath)
-    {
-        var info = new AtlasInfo();
-        try
-        {
-            if (!File.Exists(wilPath)) { info.Error = "文件不存在"; return info; }
-            var dir = Path.GetDirectoryName(wilPath)!;
-            var name = Path.GetFileNameWithoutExtension(wilPath);
-            var wixPath = Path.Combine(dir, name + ".wix");
-            byte[] wil = File.ReadAllBytes(wilPath);
-
-            if (wil.Length >= 44)
-            {
-                int tl = 0; while (tl < 40 && wil[tl] != 0) tl++;
-                info.Title = (tl > 0) ? Encoding.ASCII.GetString(wil, 0, tl) : "(无标题)";
-                info.Version = BitConverter.ToInt32(wil, 40);
-                info.ImageCount = BitConverter.ToInt32(wil, 44);
-            }
-
-            List<int> offsets = new();
-            if (File.Exists(wixPath))
-            {
-                byte[] wix = File.ReadAllBytes(wixPath);
-                int n = BitConverter.ToInt32(wix, 0);
-                int start = 4;
-                if (n <= 0 || n * 4 + 4 > wix.Length) { n = wix.Length / 4; start = 0; }
-                for (int i = 0; i < n; i++)
-                {
-                    int off = BitConverter.ToInt32(wix, start + i * 4);
-                    if (off > 0 && off + 16 <= wil.Length) offsets.Add(off);
-                }
-            }
-
-            foreach (var off in offsets)
-            {
-                int w = BitConverter.ToInt32(wil, off);
-                int h = BitConverter.ToInt32(wil, off + 4);
-                int ox = BitConverter.ToInt32(wil, off + 8);
-                int oy = BitConverter.ToInt32(wil, off + 12);
-                if (w <= 0 || w > 4096 || h <= 0 || h > 4096) continue;
-                info.Images.Add(new AtlasImage
-                {
-                    Index = info.Images.Count,
-                    Width = w,
-                    Height = h,
-                    OffsetX = ox,
-                    OffsetY = oy,
-                    HasData = true
-                });
-            }
-            info.ParsedImages = info.Images.Count;
-            info.Ok = true;
-        }
-        catch (Exception ex) { info.Error = ex.Message; }
-        return info;
-    }
+        => Mir2AtlasDecoder.ReadAtlas(wilPath);
 
     // ---------------- 文件信息 ----------------
     public FileInfoResult GetFileInfo(string path)

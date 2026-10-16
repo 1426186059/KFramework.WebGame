@@ -236,6 +236,23 @@ public class MapTileDownloadRequest
     public bool Stitch { get; set; } = true;
 }
 
+// ---------------- 小地图提取（minimaps.png + minimaps.json 图集） ----------------
+public class MapMinimapRequest
+{
+    /// <summary>要提取小地图的地图（含 Id/Img/Name）</summary>
+    public List<MapEntry> Maps { get; set; } = new();
+    /// <summary>输出根目录；留空则默认系统下载目录</summary>
+    public string Destination { get; set; } = "";
+}
+
+// 小地图预览请求（传入地图 id + img，按 {id}_png 帧裁出 base64）
+public class MapMinimapPreviewRequest
+{
+    public int Id { get; set; }
+    public string Img { get; set; } = "";
+    public string Name { get; set; } = "";
+}
+
 public class MapTileJobResult
 {
     public bool Ok { get; set; }

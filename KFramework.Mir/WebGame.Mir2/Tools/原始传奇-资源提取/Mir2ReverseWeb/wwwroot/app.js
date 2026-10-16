@@ -215,14 +215,13 @@ function renderMapTable() {
             <td>${e.id}</td>
             <td class="title-cn">${e.name || '—'}</td>
             <td>${e.kb}</td>
-            <td><button class="btn btn-ghost btn-xs act-prev">红绿图</button><button class="btn btn-ghost btn-xs act-prev-real">真实图</button></td>`;
+            <td><button class="btn btn-ghost btn-xs act-prev">预览</button></td>`;
         tr.querySelector('.mc').addEventListener('change', ev => {
             if (ev.target.checked) mapSelected.add(e.id); else mapSelected.delete(e.id);
             updateMapSel();
         });
-        tr.querySelector('.act-prev').addEventListener('click', ev => { ev.stopPropagation(); previewMap(e.id); });
-        tr.querySelector('.act-prev-real').addEventListener('click', ev => { ev.stopPropagation(); previewReal(e.id); });
-        tr.addEventListener('click', () => previewMap(e.id));
+        tr.querySelector('.act-prev').addEventListener('click', ev => { ev.stopPropagation(); previewBoth(e.id); });
+        tr.addEventListener('click', () => previewBoth(e.id));
         tb.appendChild(tr);
         n++;
     });
@@ -248,6 +247,25 @@ $('#mapChkAll').addEventListener('change', ev => {
 
 function findEntry(id) { return mapIndex.find(e => e.id === id); }
 
+// 当前预览（用于"下载"按钮保存图片）。redSrc / realSrc 为 dataURL。
+let currentPreview = { id: 0, name: '', redSrc: '', realSrc: '', miniSrc: '' };
+
+function safeName(s) {
+    const o = (s || '').replace(/[\\/:*?"<>|]/g, '_').trim();
+    return o || 'map';
+}
+
+// 合并后的"预览"：一次刷新红绿可走性掩码 + 真实瓦片 + 小地图三张图
+async function previewBoth(id) {
+    $('#previewImg').src = '';
+    $('#previewRealImg').src = '';
+    $('#previewMiniImg').src = '';
+    currentPreview.redSrc = ''; currentPreview.realSrc = ''; currentPreview.miniSrc = '';
+    await previewMap(id);
+    await previewReal(id);
+    await previewMinimap(id);
+}
+
 async function previewMap(id) {
     if (!mapSourceFile) { toast('请先加载地图数据'); return; }
     const entry = findEntry(id) || {};
@@ -265,6 +283,9 @@ async function previewMap(id) {
         $('#previewBody').classList.remove('hidden');
         $('#previewName').textContent = `地图 ${id}${entry.name ? ' · ' + entry.name : ''}`;
         $('#previewImg').src = res.previewPngBase64;
+        currentPreview.id = id;
+        currentPreview.name = entry.name || '';
+        currentPreview.redSrc = res.previewPngBase64;
         let stats = `网格 ${res.cols} × ${res.rows} ｜ 总格 ${res.cells}（数据块 ${res.rawCells}）｜ 可走 ${res.walkable} ｜ 遮挡 ${res.cover} ｜ 安全区 ${res.safe}`;
         if (res.warn) stats += `\n⚠ ${res.warn}`;
         $('#previewStats').textContent = stats;
@@ -275,7 +296,7 @@ async function previewMap(id) {
 async function previewReal(id) {
     if (!mapSourceFile) { toast('请先加载地图数据'); return; }
     const dest = $('#mapDest').value.trim();
-    if (!dest) { toast('请先设置输出目录（需先点「提取选中地图资源」下载真实瓦片）'); return; }
+    if (!dest) { $('#previewRealStats').textContent = '未设置输出目录，无法预览真实图（请先设置输出目录并提取下载瓦片）'; return; }
     const entry = findEntry(id) || {};
     try {
         const res = await api('POST', '/api/map/previewReal', {
@@ -286,18 +307,66 @@ async function previewReal(id) {
             height: entry.height,
             destination: dest
         });
-        if (!res.ok) { log(`预览真实地图 ${id} 失败: ` + res.error, 'err'); toast(res.error); return; }
+        if (!res.ok) { $('#previewRealStats').textContent = '真实图预览失败：' + res.error; toast(res.error); return; }
         $('#previewEmpty').classList.add('hidden');
         $('#previewBody').classList.remove('hidden');
         $('#previewName').textContent = `地图 ${id}${entry.name ? ' · ' + entry.name : ''}（真实瓦片）`;
         $('#previewRealImg').src = res.previewPngBase64;
+        currentPreview.realSrc = res.previewPngBase64;
         $('#previewRealStats').textContent =
             `拼接 ${res.tiles} 张瓦片 ｜ 网格 ${res.cols}×${res.rows}（缩略预览，全分辨率见 <名>_<id>/tiles/）`;
     } catch (e) { log('预览真实地图异常: ' + e.message, 'err'); }
 }
 
-// ---------------- 提取选中地图资源：下载真实瓦片 + 解析 JSON ----------------
+// 预览小地图：优先取 minimap/{img}.jpg 独立整图，缺则回退 minimaps 图集 {img}_png 帧（再回退 43005_png）
+async function previewMinimap(id) {
+    if (!mapSourceFile) { toast('请先加载地图数据'); return; }
+    const entry = findEntry(id) || {};
+    try {
+        const res = await api('POST', '/api/map/previewMinimap', {
+            id,
+            img: entry.img,
+            name: entry.name
+        });
+        $('#previewEmpty').classList.add('hidden');
+        $('#previewBody').classList.remove('hidden');
+        if (!res.ok) {
+            $('#previewMiniImg').src = '';
+            currentPreview.miniSrc = '';
+            $('#previewMiniStats').textContent = '小地图预览失败：' + res.error;
+            return;
+        }
+        $('#previewMiniImg').src = res.previewPngBase64;
+        currentPreview.miniSrc = res.previewPngBase64;
+        $('#previewMiniStats').textContent = `小地图 ${res.w}×${res.h}（${res.source}）`;
+    } catch (e) { log('预览小地图异常: ' + e.message, 'err'); }
+}
+
+// 把当前预览的红绿图 / 真实图 / 小地图 保存为本地 PNG 文件。
+// 经 fetch→Blob 再下载，避免大尺寸 dataURL 在 <a download> 下静默失败（真实图下载不下来的根因）。
+async function downloadPreview(kind) {
+    let src, label, ext;
+    if (kind === 'red') { src = currentPreview.redSrc; label = '红绿可走性图'; ext = '_walk.png'; }
+    else if (kind === 'real') { src = currentPreview.realSrc; label = '真实地图图'; ext = '_real.png'; }
+    else { src = currentPreview.miniSrc; label = '小地图'; ext = '_minimap.png'; }
+    if (!src) { toast('请先点"预览"生成' + label); return; }
+    try {
+        const blob = await (await fetch(src)).blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = safeName(currentPreview.name) + '_' + currentPreview.id + ext;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        log(`已下载${label}：${a.download}`, 'ok');
+    } catch (e) { log('下载失败: ' + e.message, 'err'); }
+}
+
+// ---------------- 提取选中地图资源：下载真实瓦片 + 解析 JSON + 提取小地图 ----------------
 $('#btnExtract').addEventListener('click', extractMaps);
+$('#btnDownloadRed').addEventListener('click', () => downloadPreview('red'));
+$('#btnDownloadReal').addEventListener('click', () => downloadPreview('real'));
+$('#btnDownloadMini').addEventListener('click', () => downloadPreview('mini'));
 
 async function extractMaps() {
     if (!mapSourceFile) { toast('请先加载地图数据'); return; }
@@ -313,15 +382,26 @@ async function extractMaps() {
         // ① 下载真实地图瓦片（zipmap）并（可选）拼接总览图
         const r1 = await api('POST', '/api/map/downloadTiles', { Maps: maps, Destination: dest, Stitch: $('#chkStitch').checked });
         if (!r1.ok) { log('启动失败: ' + r1.error, 'err'); setMapStatus('失败', 'err'); return; }
-        log(`开始提取选中地图资源（${r1.totalMaps} 张）：① 下载真实瓦片 → ② 解析 JSON`, 'ok');
+        log(`开始提取选中地图资源（${r1.totalMaps} 张）：① 下载真实瓦片 → ② 解析 JSON → ③ 提取小地图`, 'ok');
         await pollTiles(r1.jobId);
-        // ② 解析地图数据为 JSON（不再单独写红绿 PNG，预览用"红绿图"按钮）
+        // ② 解析地图数据为 JSON（不再单独写红绿 PNG，预览用"预览"按钮）
         setMapStatus('解析 JSON…', 'busy');
         const r2 = await api('POST', '/api/map/export', { path: '', ids, destination: dest, writePng: false });
         if (!r2.ok) { log('解析 JSON 失败: ' + r2.error, 'err'); setMapStatus('JSON 失败', 'err'); return; }
-        log(`已完成：每张地图一个「地图名_id」文件夹，内含 tiles/（真实瓦片）+ map_<id>_real.png（拼接图）+ map_<id>.json（数据）`, 'ok');
-        setMapStatus(`已完成：${r2.exported} 张（真实瓦片 + JSON）`, 'ok');
-        toast(`提取完成：${r2.exported} 张（真实瓦片 + JSON）`);
+        // ③ 从 minimaps.png 图集按 img 裁出每幅地图的小地图
+        setMapStatus('提取小地图…', 'busy');
+        let minMsg = '';
+        try {
+            const r3 = await api('POST', '/api/map/minimap', { Maps: maps, Destination: dest });
+            if (r3.ok) {
+                const skipped = (r3.results || []).filter(x => !x.ok);
+                minMsg = `｜小地图 ${r3.extracted}/${r3.total}`;
+                if (skipped.length) log(`  小地图跳过 ${skipped.length} 张（无小地图帧）`, 'ok');
+            }
+        } catch (e) { log('提取小地图失败: ' + e.message, 'err'); }
+        log(`已完成：每张地图一个「地图名_id」文件夹，内含 tiles/（真实瓦片）+ map_<id>_real.png（拼接图）+ map_<id>.json（数据）+ minimap.png（小地图）`, 'ok');
+        setMapStatus(`已完成：${r2.exported} 张（真实瓦片 + JSON${minMsg}）`, 'ok');
+        toast(`提取完成：${r2.exported} 张（真实瓦片 + JSON + 小地图）`);
     } catch (e) { log('异常: ' + e.message, 'err'); setMapStatus('异常', 'err'); }
     finally { btn.disabled = false; updateMapSel(); }
 }

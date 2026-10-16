@@ -4,6 +4,7 @@ using Mir2ReverseWeb.Services;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<ReverseService>();
 builder.Services.AddSingleton<MapTileService>();
+builder.Services.AddSingleton<MapMinimapService>();
 
 var app = builder.Build();
 
@@ -80,6 +81,38 @@ api.MapPost("/map/previewReal", (MapRealPreviewRequest req, MapTileService s) =>
         tiles = r.Tiles,
         cols = r.Cols,
         rows = r.Rows
+    });
+});
+
+// 提取小地图：从 minimaps.png 图集按 {img}_png 帧裁出每幅地图的小地图 PNG
+api.MapPost("/map/minimap", (MapMinimapRequest req, MapMinimapService s) =>
+{
+    if (req.Maps == null || req.Maps.Count == 0)
+        return Results.Ok(new { ok = false, error = "未选择地图" });
+    var dest = string.IsNullOrWhiteSpace(req.Destination) ? ReverseService.OsDownloadDir() : req.Destination;
+    int ok = 0;
+    var results = new List<object>();
+    foreach (var m in req.Maps)
+    {
+        var r = s.Extract(dest, m.Id, m.Img, m.Name);
+        if (r.Ok) ok++;
+        results.Add(new { id = m.Id, name = m.Name, ok = r.Ok, file = r.File ?? "", error = r.Error ?? "" });
+    }
+    return Results.Ok(new { ok = true, extracted = ok, total = req.Maps.Count, results });
+});
+
+// 预览小地图：优先取 minimap/{img}.jpg 独立整图，缺则回退 minimaps 图集 img_png 帧（再回退 43005_png）
+api.MapPost("/map/previewMinimap", (MapMinimapPreviewRequest req, MapMinimapService s) =>
+{
+    var r = s.Preview(req.Id, req.Img, req.Name);
+    return Results.Ok(new
+    {
+        ok = r.Ok,
+        error = r.Error,
+        previewPngBase64 = r.Base64 ?? "",
+        w = r.W,
+        h = r.H,
+        source = r.Source
     });
 });
 
