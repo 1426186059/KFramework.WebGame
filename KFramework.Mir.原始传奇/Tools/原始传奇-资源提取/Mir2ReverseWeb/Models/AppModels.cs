@@ -316,6 +316,15 @@ public class ConfigTableInfo
     public List<ConfigTableField> Fields { get; set; } = new();
 }
 
+/// <summary>/config/load 请求：可覆盖默认的数据服务器地址与版本号（拼法同游戏 onloadCfgAgain）</summary>
+public class ConfigLoadRequest
+{
+    /// <summary>数据服务器根地址（默认 Mir2Config.CdnBase），如 https://cdn.yscq-wy.yscq.com/fugu_20201203</summary>
+    public string? BaseUrl { get; set; }
+    /// <summary>游戏版本号（默认 Mir2Config.GameVersion），配置文件名 0config&lt;version&gt;.json 用它</summary>
+    public string? Version { get; set; }
+}
+
 /// <summary>/config/load 与 /config/tables 的返回</summary>
 public class ConfigTableListResult
 {

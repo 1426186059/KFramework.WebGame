@@ -45,13 +45,27 @@ body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 .layout {
     flex: 1 1 auto;
     display: grid;
-    grid-template-columns: 200px minmax(0, 1fr) 340px;
+    grid-template-columns: 132px minmax(0, 1fr) 340px;
     gap: 12px; padding: 12px; overflow: hidden;
 }
 .sidebar {
     background: var(--sidebar); color: #cdd6e2; border-radius: 10px;
     padding: 10px 8px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto;
 }
+/* 总览页：隐藏左右栏（左侧黑竖条 / 右侧日志），保持整页干净 */
+.layout.overview { grid-template-columns: minmax(0, 1fr); }
+.layout.overview .sidebar,
+.layout.overview .side-panel { display: none; }
+.layout.overview .main-panel { max-width: 980px; margin: 0 auto; width: 100%; }
+/* 左侧仅一个返回按钮（无选项列表） */
+.back-btn {
+    margin-top: 4px;
+    padding: 10px 10px; border: none; border-radius: 8px; cursor: pointer;
+    background: #2b3a4d; color: #e8eef6; font-size: 13px; font-weight: 600; text-align: left;
+    transition: background .12s ease;
+}
+.back-btn:hover { background: var(--primary); color: #fff; }
+.back-btn.hidden { display: none; }
 .nav-group {
     font-size: 11px; color: #6f8095; text-transform: uppercase; letter-spacing: .05em;
     padding: 12px 10px 4px; font-weight: 700;
@@ -85,6 +99,7 @@ body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 }
 .field input[type="text"]:focus { outline: none; border-color: var(--primary); background: #fff; }
 .field input.num { width: 64px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; background: #fbfcfe; }
+.field input.readonly { background: #eef1f6; color: #445; border-style: dashed; }
 .sel { padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; background: #fbfcfe; min-width: 240px; }
 
 .dot { width: 9px; height: 9px; border-radius: 50%; background: #c3cbd6; }
@@ -198,3 +213,16 @@ body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 .dl-status.busy { color: #9fb3c8; }
 .dl-status.ok { color: #38b463; }
 .dl-status.err { color: #e05a50; }
+
+/* ---------- 提取总览 ---------- */
+.overview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 6px; }
+.ov-card {
+    background: linear-gradient(180deg, #ffffff, #f4f8ff);
+    border: 1px solid var(--border); border-radius: 12px; padding: 18px 16px; cursor: pointer;
+    transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.ov-card:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(47, 111, 237, .18); border-color: var(--primary); }
+.ov-ico { font-size: 34px; line-height: 1; }
+.ov-title { font-size: 15px; font-weight: 700; margin: 10px 0 6px; }
+.ov-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
+@media (max-width: 880px) { .overview-grid { grid-template-columns: 1fr; } }

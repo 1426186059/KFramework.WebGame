@@ -131,9 +131,9 @@ api.MapPost("/atlas/downloadAll", async (AtlasDownloadRequest req, ReverseServic
     Results.Ok(await s.DownloadManifestAll(req.OutDir)));
 
 // ---- 配置表（0config*.json 顶层每个键 = 一张配置表）----
-// 加载所有配置分片到内存（不落盘），解析出全部表
-api.MapPost("/config/load", async (ReverseService s) =>
-    Results.Ok(await s.LoadConfigTablesAsync()));
+// 加载配置到内存（不落盘），解析出全部表；可覆盖默认数据服务器地址 / 版本号
+api.MapPost("/config/load", async (ConfigLoadRequest req, ReverseService s) =>
+    Results.Ok(await s.LoadConfigTablesAsync(req?.BaseUrl, req?.Version)));
 
 // 枚举已加载的表（名 / 形态 / 条目数 / 字段列表与推断类型）
 api.MapPost("/config/tables", (ReverseService s) =>

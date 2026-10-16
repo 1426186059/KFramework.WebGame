@@ -86,12 +86,19 @@ function setTileProgress(pct, text) {
 
 // ---------------- 视图切换 ----------------
 function switchView(v) {
-    $$('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.view === v));
     $$('.view').forEach(s => s.classList.toggle('hidden', s.id !== 'view-' + v));
+    const back = $('#btnBack');
+    if (back) back.classList.toggle('hidden', v === 'overview'); // 总览页不显示返回
+    const layout = $('.layout');
+    if (layout) layout.classList.toggle('overview', v === 'overview'); // 总览页隐藏左右栏，更干净
 }
 
-$$('.nav-item').forEach(n => n.addEventListener('click', () => {
-    const v = n.dataset.view;
+// 返回按钮：回到总览页
+$('#btnBack').addEventListener('click', () => switchView('overview'));
+
+// 总览页：点卡片跳到对应资源页
+$$('.ov-card').forEach(c => c.addEventListener('click', () => {
+    const v = c.dataset.go;
     switchView(v);
     if (v === 'map' && !mapLoaded) loadMapData();
 }));
@@ -538,16 +545,27 @@ function setConfigStatus(text, cls) {
     if (el) { el.textContent = text; el.className = 'dl-status ' + (cls || ''); }
 }
 
+// 根据 数据服务器地址 + 版本号 实时拼出配置 URL（与游戏 onloadCfgAgain 完全一致）
+function updateConfigResolvedUrl() {
+    const base = ($('#configBaseUrl').value.trim() || 'https://cdn.yscq-wy.yscq.com/fugu_20201203').replace(/\/$/, '');
+    const ver = $('#configVersion').value.trim() || '10.25341.1';
+    $('#configResolvedUrl').value = `${base}/0config${ver}.json?v=${ver}`;
+}
+
 async function loadConfigTables() {
     const btn = $('#btnLoadConfig');
     btn.disabled = true; btn.textContent = '加载中…';
-    log('开始加载配置表（按 Config.cs 中的 URL 下载 0config*.json 分片）…');
+    const baseUrl = $('#configBaseUrl').value.trim();
+    const version = $('#configVersion').value.trim();
+    updateConfigResolvedUrl();
+    const url = $('#configResolvedUrl').value;
+    log('开始加载配置表（按游戏 onloadCfgAgain 拼法下载 ' + url + '）…');
     try {
-        const res = await api('POST', '/api/config/load', {});
+        const res = await api('POST', '/api/config/load', { baseUrl: baseUrl || null, version: version || null });
         if (!res.ok) { log('加载失败: ' + res.error, 'err'); setConfigStatus('失败', 'err'); $('#configLoadInfo').textContent = '0 张'; return; }
         configTables = res.tables || [];
         $('#configLoadInfo').textContent = `共 ${res.count} 张配置表`;
-        renderUrlList($('#urlConfig'), res.urls && res.urls.length ? res.urls : (res.messages || []));
+        (res.urls || []).forEach(u => log('配置 URL: ' + u, 'ok'));
         (res.messages || []).forEach(m => log(m, 'ok'));
         renderConfigTable();
         log(`加载完成：${res.count} 张配置表`, 'ok');
@@ -621,10 +639,18 @@ $('#configChkAll').addEventListener('change', ev => {
     if (ev.target.checked) configTables.forEach(t => configSelected.add(t.name)); else configSelected.clear();
     renderConfigTable();
 });
+$('#configBaseUrl').addEventListener('input', updateConfigResolvedUrl);
+$('#configVersion').addEventListener('input', updateConfigResolvedUrl);
+$('#btnCopyConfigUrl').addEventListener('click', () => {
+    const v = $('#configResolvedUrl').value;
+    if (navigator.clipboard) navigator.clipboard.writeText(v).then(() => toast('已复制配置 URL')).catch(() => toast('复制失败'));
+});
 
 // ---------------- 初始化 ----------------
 $('#btnClearLog').addEventListener('click', () => $('#log').innerHTML = '');
 (async () => {
+    switchView('overview');        // 启动默认进入「提取总览」
+    updateConfigResolvedUrl();     // 实时拼出配置 URL
     try {
         const p = await api('GET', '/api/ping');
         log('服务已连接 ' + (p.time ? new Date(p.time).toLocaleTimeString() : ''), 'ok');
@@ -637,6 +663,7 @@ $('#btnClearLog').addEventListener('click', () => $('#log').innerHTML = '');
         if (dl) {
             if (!$('#mapDest').value.trim()) $('#mapDest').value = dl;
             if (!$('#atlasOutDir').value.trim()) $('#atlasOutDir').value = dl;
+            if (!$('#configOutDir').value.trim()) $('#configOutDir').value = dl + '\\Mir2Config';
         }
     } catch (e) { log('读取运行信息失败: ' + e.message, 'err'); }
 })();

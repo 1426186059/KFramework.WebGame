@@ -55,27 +55,38 @@
 .\Extract-MapData.ps1 -MapId 154 -ConfigUrl "https://<数据服务器>/"
 ```
 
-## 配置表提取（0config*.json 顶层每个键 = 一张表）
+## 配置表提取（0config&lt;版本&gt;.json 顶层每个键 = 一张表）
 
-`0config10.25341.1.json` 等配置分片除了 `map` 外，顶层还有大量“配置表”键
-（`global` / `level` / `conditions` / `compose` / `vip` / `starSoulSuit` …… 共数百张），
-每张表的取值通常是「以 id 为键的对象映射」或「裸数组」，内部是平铺的字段（多为
-`53#1000#1000`、`1#19|36#15` 这类 `#`/`|` 分隔的字符串，也有纯数字字段）。
+实际配置只有一个分片 `0config<版本>.json`（如 `0config10.25341.1.json`，约 7MB），
+不是 0/1/2/3 多个分片。其 URL 拼法与游戏主程序 JS 的 `onloadCfgAgain` 完全一致：
 
-在 `Mir2ReverseWeb` 逆向工坊左侧「提取配置表」页：
+```js
+// 游戏主 JS：ResUrl.Data + "0config" + resVersion + ".json" + resver
+var t = ResUrl.Data + ("0config" + (js_gameVars.noCache ? "" : js_gameVars.resVersion) + ".json") + js_gameVars.resver;
+```
 
-1. **加载配置表**：按 `Config.cs` 中的 `MapConfigUrls` 下载 4 个分片并合并进内存
-   （仅内存、不落盘），把顶层每个键识别为一张配置表。
+即：**数据服务器地址 + "0config" + 版本号 + ".json?v=" + 版本号**。
+`ResUrl.Data` = `js_gameVars.configUrl`（数据服务器根，与镜像 CDN `fugu_20201203` 同根）。
+页面“提取配置表”可手动改「数据服务器地址 / 版本号」，并实时预览拼出的 URL。
+
+该文件顶层有数百个“配置表”键（`map` / `global` / `level` / `conditions` / `compose` /
+`vip` / `starSoulSuit` ……），每张表的取值通常是「以 id 为键的对象映射」或「裸数组」，
+内部是平铺的字段（多为 `53#1000#1000`、`1#19|36#15` 这类 `#`/`|` 分隔的字符串，也有纯数字字段）。
+
+在 `Mir2ReverseWeb` 逆向工坊左侧「提取配置表」页（启动后先经「提取总览」进入）：
+
+1. **加载配置表**：按上面的拼法下载 `0config<版本>.json` 进内存（不落盘），
+   把顶层每个键识别为一张配置表。
 2. 列表展示每张表的 **表名 / 形态(object|array) / 条目数 / 字段数**，
    字段类型由数据最佳努力推断（`int` / `long` / `double` / `bool` / `string`，
-   对象/数组/混合字段用 `JsonElement` 兜底）。
+   对象/数组/混合字段用 `JsonElement` 兜底），即把 JS 对象映射为 C# 类。
 3. **提取选中 / 提取全部**：为每张表在输出目录写出两份产物
    （默认 `系统下载目录/Mir2Config`，可在页面改）：
    - `<表名>Config.cs`：由字段自动生成的 C# 类（`[JsonPropertyName]` 绑定原始键名，
      反序列化无需额外配置）；
-   - `<表名>.json`：保持原始 object/array 形态的结构化数据（中文保留原文）。
+   - `<表名>.json`：按 URL 下载提取后保持原始 object/array 形态的结构化数据（中文保留原文）。
 
-对应接口：`POST /api/config/load`、`/api/config/tables`、`/api/config/extract`。
+对应接口：`POST /api/config/load`（可带 `baseUrl` / `version`）、`/api/config/tables`、`/api/config/extract`。
 
 ## 常量速查
 - `MAP_TILE_WIDTH = 512`，`MAP_TILE_HEIGHT = 256`

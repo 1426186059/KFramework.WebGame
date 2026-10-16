@@ -169,38 +169,43 @@ public class ReverseService
     // ---------------- 配置表：加载 / 枚举 / 提取（C# 类 + JSON 数据） ----------------
 
     /// <summary>
-    /// 下载 4 个配置分片（与 LoadMapDataAsync 使用同一组 Mir2Config.MapConfigUrls），
-    /// 将「顶层每个键」视为一张配置表，合并进内存（后加载的分片覆盖先前的同名键）。
-    /// 每张表的数据以 JsonNode 形式保留（支持 object 映射 / array 两种形态），供枚举与导出复用。
+    /// 下载配置 JSON（游戏里只有一个分片 <c>0config&lt;version&gt;.json</c>，拼法与主程序 JS 的
+    /// onloadCfgAgain 一致：ResUrl.Data + "0config" + resVersion + ".json" + resver）。
+    /// 将「顶层每个键」视为一张配置表，全部保留进内存，供枚举与导出复用。
+    /// baseUrl / version 可传空以使用 Config.cs 中的默认 CDN 根与游戏版本号。
     /// </summary>
-    public async Task<ConfigTableListResult> LoadConfigTablesAsync()
+    public async Task<ConfigTableListResult> LoadConfigTablesAsync(string? baseUrl = null, string? version = null)
     {
         var res = new ConfigTableListResult { Messages = new() };
         try
         {
+            var root = (baseUrl ?? Mir2Config.CdnBase).TrimEnd('/');
+            var ver = version ?? Mir2Config.GameVersion;
+            var url = $"{root}/0config{ver}.json?v={ver}";
             _configTables.Clear();
             _configLoaded = false;
-            foreach (var url in Mir2Config.MapConfigUrls)
+            res.Urls = new List<string> { url };
+
+            var bytes = await DownloadBytesAsync(url, res.Messages);
+            if (bytes == null)
             {
-                var bytes = await DownloadBytesAsync(url, res.Messages);
-                if (bytes == null) continue;
-                // 与 MergeConfig 相同的编码兜底：先严格 UTF-8，失败时回退 GBK
-                string text;
-                try { text = new UTF8Encoding(false, true).GetString(bytes); }
-                catch (DecoderFallbackException) { text = Encoding.GetEncoding("gbk").GetString(bytes); }
-                var node = JsonNode.Parse(text);
-                if (node is not JsonObject obj) { res.Messages.Add($"[配置] {url}：根不是对象，跳过"); continue; }
-                int n0 = _configTables.Count;
-                foreach (var kv in obj)
-                {
-                    if (kv.Value != null) _configTables[kv.Key] = kv.Value!;
-                }
-                res.Messages.Add($"[配置] {url}：载入 {obj.Count} 个顶层键（累计 {_configTables.Count}，本次新增 {_configTables.Count - n0}）");
+                res.Error = "配置 URL 下载失败，请检查「数据服务器地址 / 版本号」（拼法同游戏 onloadCfgAgain：0config<version>.json）";
+                return res;
             }
+            // 与 MergeConfig 相同的编码兜底：先严格 UTF-8，失败时回退 GBK
+            string text;
+            try { text = new UTF8Encoding(false, true).GetString(bytes); }
+            catch (DecoderFallbackException) { text = Encoding.GetEncoding("gbk").GetString(bytes); }
+            var node = JsonNode.Parse(text);
+            if (node is not JsonObject obj) { res.Error = "配置根不是 JSON 对象"; return res; }
+            foreach (var kv in obj)
+            {
+                if (kv.Value != null) _configTables[kv.Key] = kv.Value!;
+            }
+            res.Messages.Add($"[配置] {url}：载入 {obj.Count} 个顶层键（每张顶层键 = 一张配置表）");
             if (_configTables.Count == 0) { res.Error = "未从配置 URL 解析到任何配置表"; return res; }
             _configLoaded = true;
             res.Tables = ListTableInfos();
-            res.Urls = Mir2Config.MapConfigUrls.ToList();
             res.Count = res.Tables.Count;
             res.Ok = true;
         }

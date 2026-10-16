@@ -18,19 +18,43 @@
     </header>
 
     <div class="layout">
-        <!-- 左侧导航 -->
+        <!-- 左侧：仅一个返回按钮（无选项列表） -->
         <nav class="sidebar">
-            <div class="nav-group">资源提取</div>
-            <a class="nav-item active" data-view="map"><span class="nav-ico">🗺</span>提取地图资源</a>
-            <a class="nav-item" data-view="atlas"><span class="nav-ico">🎞</span>提取所有图集</a>
-            <a class="nav-item" data-view="config"><span class="nav-ico">📋</span>提取配置表</a>
+            <button class="back-btn" id="btnBack">← 返回总览</button>
         </nav>
 
         <!-- 中间主区 -->
         <main class="main-panel">
 
+            <!-- ===================== 提取总览（启动默认页） ===================== -->
+            <section class="view" id="view-overview">
+                <div class="card">
+                    <div class="card-title">提取总览</div>
+                    <p class="muted">这是一个参考 Web 页游《原始传奇》的逆向工坊：从线上 CDN 拉取资源与配置，并在本地解析 / 预览 / 导出。选择一种资源开始：</p>
+                    <div class="overview-grid">
+                        <div class="ov-card" data-go="map">
+                            <div class="ov-ico">🗺</div>
+                            <div class="ov-title">提取地图资源</div>
+                            <div class="ov-desc">下载地图数据包（.dat），解析每张地图的可走性 / 遮挡 / 安全区，预览真实瓦片地图与小地图，并导出 PNG + JSON。</div>
+                        </div>
+                        <div class="ov-card" data-go="atlas">
+                            <div class="ov-ico">🎞</div>
+                            <div class="ov-title">提取所有图集</div>
+                            <div class="ov-desc">从 manifest 总索引解析全部图集 / UI 资源，按 CDN 规则下载到本地（含纹理图集 JSON 元信息）。</div>
+                        </div>
+                        <div class="ov-card" data-go="config">
+                            <div class="ov-ico">📋</div>
+                            <div class="ov-title">提取配置表</div>
+                            <div class="ov-desc">下载 0config 配置，把每张表（map / global / level …）映射为 C# 类，并导出 JSON 数据。</div>
+                        </div>
+                    </div>
+                    <pre class="help">资源来源：CDN 根 https://cdn.yscq-wy.yscq.com/fugu_20201203  ｜  配置版本 10.25341.1
+配置拼接规则（同游戏 JS onloadCfgAgain）：数据服务器根 + "0config" + 版本号 + ".json?v=" + 版本号</pre>
+                </div>
+            </section>
+
             <!-- ===================== 提取地图资源 ===================== -->
-            <section class="view" id="view-map">
+            <section class="view hidden" id="view-map">
                 <div class="card">
                     <div class="card-title">Config 中的所有 URL</div>
                     <div class="url-groups">
@@ -118,6 +142,33 @@ bit3=不可走(墙)（可走=该位为0）｜ bit2=遮挡 ｜ bit1=安全区。
                         </div>
                     </div>
                 </div>
+                <!-- 预览对比：仅在本（地图）页面可用 -->
+                <div class="card">
+                    <div class="card-title">预览对比
+                        <button id="btnDownloadRed" class="btn btn-ghost btn-xs">下载红绿图</button>
+                        <button id="btnDownloadReal" class="btn btn-ghost btn-xs">下载真实图</button>
+                        <button id="btnDownloadMini" class="btn btn-ghost btn-xs">下载小地图</button>
+                    </div>
+                    <div id="previewEmpty" class="muted">（点列表行的“预览”同时刷新可走性掩码、真实瓦片地图、小地图三张图）</div>
+                    <div id="previewBody" class="hidden">
+                        <div class="preview-name" id="previewName"></div>
+                        <div class="preview-block">
+                            <div class="preview-label label-cyan">可走性掩码（灰=不可走/墙 ｜ 绿=可走 ｜ 黄=安全区 ｜ 红上半=遮挡/挡视线但可走）</div>
+                            <div id="previewStats" class="muted small"></div>
+                            <img id="previewImg" class="preview-img" alt="可走性预览" />
+                        </div>
+                        <div class="preview-block">
+                            <div class="preview-label label-cyan">真实地图（zipmap 瓦片拼接 · 缩略，全分辨率见 &lt;名&gt;_&lt;id&gt;/tiles/）</div>
+                            <div id="previewRealStats" class="muted small"></div>
+                            <img id="previewRealImg" class="preview-img" alt="真实地图预览" />
+                        </div>
+                        <div class="preview-block">
+                            <div class="preview-label label-cyan">小地图（优先 {img}.jpg 独立整图，回退图集帧）</div>
+                            <div id="previewMiniStats" class="muted small"></div>
+                            <img id="previewMiniImg" class="preview-img" alt="小地图预览" />
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- ===================== 提取所有图集 ===================== -->
@@ -177,19 +228,29 @@ bit3=不可走(墙)（可走=该位为0）｜ bit2=遮挡 ｜ bit1=安全区。
             <!-- ===================== 提取配置表 ===================== -->
             <section class="view hidden" id="view-config">
                 <div class="card">
-                    <div class="card-title">配置来源（0config*.json 分片）</div>
-                    <div class="url-groups">
-                        <div class="url-group">
-                            <div class="url-label label-cyan">配置分片 URL</div>
-                            <ul id="urlConfig" class="url-list"></ul>
-                        </div>
+                    <div class="card-title">配置来源（0config&lt;版本&gt;.json，单文件）</div>
+                    <div class="field">
+                        <label>数据服务器地址</label>
+                        <input id="configBaseUrl" type="text" value="https://cdn.yscq-wy.yscq.com/fugu_20201203" />
+                        <span class="muted small">对应游戏 js_gameVars.configUrl / ResUrl.Data</span>
+                    </div>
+                    <div class="field">
+                        <label>版本号</label>
+                        <input id="configVersion" type="text" value="10.25341.1" />
+                        <span class="muted small">文件名 0config&lt;版本&gt;.json 用它</span>
+                    </div>
+                    <div class="field">
+                        <label>拼接 URL</label>
+                        <input id="configResolvedUrl" type="text" readonly class="readonly" />
+                        <button id="btnCopyConfigUrl" class="btn btn-ghost btn-xs">复制</button>
                     </div>
                     <div class="row-actions">
                         <button id="btnLoadConfig" class="btn btn-primary">加载配置表</button>
                         <span id="configLoadInfo" class="muted"></span>
                     </div>
-                    <pre class="help">加载后，0config*.json 顶层每个键会被识别为一张「配置表」（如 map / global / level / conditions / compose …）。
-每张表可提取为两类产物：① &lt;表名&gt;Config.cs（由字段自动推断的 C# 类）；② &lt;表名&gt;.json（保持原始形态的数据）。</pre>
+                    <pre class="help">拼法与游戏主程序 JS 的 onloadCfgAgain 完全一致：数据服务器地址 + "0config" + 版本号 + ".json?v=" + 版本号。
+该文件顶层每个键（map / global / level / conditions / compose …）就是一张「配置表」。
+每张表可提取为两类产物：① &lt;表名&gt;Config.cs（由字段自动推断并映射 JS 对象到 C# 类）；② &lt;表名&gt;.json（保持原始形态的数据，按 URL 下载提取）。</pre>
                 </div>
 
                 <div class="card">
@@ -238,35 +299,8 @@ bit3=不可走(墙)（可走=该位为0）｜ bit2=遮挡 ｜ bit1=安全区。
 
         </main>
 
-        <!-- 右侧：预览 + 日志 -->
+        <!-- 右侧：日志（预览对比已移到“提取地图资源”页面内） -->
         <aside class="side-panel">
-            <div class="card">
-                <div class="card-title">预览对比
-                    <button id="btnDownloadRed" class="btn btn-ghost btn-xs">下载红绿图</button>
-                    <button id="btnDownloadReal" class="btn btn-ghost btn-xs">下载真实图</button>
-                    <button id="btnDownloadMini" class="btn btn-ghost btn-xs">下载小地图</button>
-                </div>
-                <div id="previewEmpty" class="muted">（点列表行的“预览”同时刷新可走性掩码、真实瓦片地图、小地图三张图）</div>
-                <div id="previewBody" class="hidden">
-                    <div class="preview-name" id="previewName"></div>
-                    <div class="preview-block">
-                        <div class="preview-label label-cyan">可走性掩码（灰=不可走/墙 ｜ 绿=可走 ｜ 黄=安全区 ｜ 红上半=遮挡/挡视线但可走）</div>
-                        <div id="previewStats" class="muted small"></div>
-                        <img id="previewImg" class="preview-img" alt="可走性预览" />
-                    </div>
-                    <div class="preview-block">
-                        <div class="preview-label label-cyan">真实地图（zipmap 瓦片拼接 · 缩略，全分辨率见 &lt;名&gt;_&lt;id&gt;/tiles/）</div>
-                        <div id="previewRealStats" class="muted small"></div>
-                        <img id="previewRealImg" class="preview-img" alt="真实地图预览" />
-                    </div>
-                    <div class="preview-block">
-                        <div class="preview-label label-cyan">小地图（优先 {img}.jpg 独立整图，回退图集帧）</div>
-                        <div id="previewMiniStats" class="muted small"></div>
-                        <img id="previewMiniImg" class="preview-img" alt="小地图预览" />
-                    </div>
-                </div>
-            </div>
-
             <div class="card grow">
                 <div class="card-title">
                     日志

@@ -9,8 +9,15 @@ public static class Mir2Config
     /// <summary>CDN 基址</summary>
     public const string CdnBase = "https://cdn.yscq-wy.yscq.com/fugu_20201203";
 
-    /// <summary>资源版本号（缓存破坏参数）</summary>
+    /// <summary>资源版本号（缓存破坏参数，用于 .dat 瓦片包的 ?ver=）</summary>
     public const string ResourceVersion = "1.0.2";
+
+    /// <summary>
+    /// 游戏版本号（配置 / 地图主程序均用此号）：
+    /// 主程序 main10.25341.1.min.js、配置 0config10.25341.1.json、地图包 map10.25341.1.dat 都用它。
+    /// 来自游戏运行时注入的 js_gameVars.resVersion。
+    /// </summary>
+    public const string GameVersion = "10.25341.1";
 
     /// <summary>
     /// 地图数据包（.dat，zlib 压缩）。
@@ -22,16 +29,16 @@ public static class Mir2Config
     };
 
     /// <summary>
-    /// 地图配置（含地图名 / 像素宽高），通常分片存储。
-    /// 程序会自动合并所有分片并据此给每张地图补上名字与真实网格尺寸。
+    /// 配置 JSON 完整 URL。拼法与游戏主程序 JS 的 onloadCfgAgain 完全一致：
+    ///   ResUrl.Data + "0config" + resVersion + ".json" + resver
+    /// 注意：配置只有一个分片 <c>0config&lt;version&gt;.json</c>，不存在 1config/2config/3config。
+    /// 该文件顶层每个键（map / global / level / conditions …）就是一张「配置表」。
     /// </summary>
-    public static readonly string[] MapConfigUrls = new[]
-    {
-        $"{CdnBase}/0config10.25341.1.json",
-        $"{CdnBase}/1config10.25341.1.json",
-        $"{CdnBase}/2config10.25341.1.json",
-        $"{CdnBase}/3config10.25341.1.json",
-    };
+    public static string ConfigUrl =>
+        $"{CdnBase}/0config{GameVersion}.json?v={GameVersion}";
+
+    /// <summary>兼容旧调用：地图加载也只需这一个配置分片。</summary>
+    public static string[] MapConfigUrls => new[] { ConfigUrl };
 
     /// <summary>
     /// 客户端主程序 JS（含真实的地图包加载 / 单元解码逻辑，可对照逆向）。
