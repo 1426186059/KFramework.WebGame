@@ -169,41 +169,39 @@ public class GameConfigService
     // ---------------- 配置表：加载 / 枚举 / 提取（C# 类 + JSON 数据） ----------------
 
     /// <summary>
-    /// 下载配置 JSON（游戏里只有一个分片 <c>0config&lt;version&gt;.json</c>，拼法与主程序 JS 的
-    /// onloadCfgAgain 一致：ResUrl.Data + "0config" + resVersion + ".json" + resver）。
-    /// 将「顶层每个键」视为一张配置表，全部保留进内存，供枚举与导出复用。
-    /// baseUrl / version 可传空以使用 Config.cs 中的默认 CDN 根与游戏版本号。
+    /// 下载并合并配置分片（游戏实际加载 6 片：0config~5config，见 main10.25341.1.min.js 的
+    /// onLoadCfgComplete2 循环）。每片「顶层每个键」视为一张配置表，全部合并进内存
+    /// （靠后的分片同名键会覆盖靠前的，与游戏行为一致），供枚举与导出复用。
+    /// baseUrl / version 可空，使用 Config.cs 默认值。某个分片下载失败会被跳过，不阻断其余分片。
     /// </summary>
     public async Task<ConfigTableListResult> LoadConfigTablesAsync(string? baseUrl = null, string? version = null)
     {
         var res = new ConfigTableListResult { Messages = new() };
         try
         {
-            var root = (baseUrl ?? Mir2Config.CdnBase).TrimEnd('/');
-            var ver = version ?? Mir2Config.GameVersion;
-            var url = $"{root}/0config{ver}.json?v={ver}";
+            var urls = Mir2Config.ConfigShardUrls(baseUrl, version).ToList();
             _configTables.Clear();
             _configLoaded = false;
-            res.Urls = new List<string> { url };
+            res.Urls = urls;
 
-            var bytes = await DownloadBytesAsync(url, res.Messages);
-            if (bytes == null)
+            int loaded = 0;
+            foreach (var url in urls)
             {
-                res.Error = "配置 URL 下载失败，请检查「数据服务器地址 / 版本号」（拼法同游戏 onloadCfgAgain：0config<version>.json）";
-                return res;
+                var bytes = await DownloadBytesAsync(url, res.Messages);
+                if (bytes == null) continue;
+                // 与 MergeConfig 相同的编码兜底：先严格 UTF-8，失败时回退 GBK
+                string text;
+                try { text = new UTF8Encoding(false, true).GetString(bytes); }
+                catch (DecoderFallbackException) { text = Encoding.GetEncoding("gbk").GetString(bytes); }
+                var node = JsonNode.Parse(text);
+                if (node is not JsonObject obj) { res.Messages.Add($"[跳过] {url}：根不是 JSON 对象"); continue; }
+                foreach (var kv in obj)
+                    if (kv.Value != null) _configTables[kv.Key] = kv.Value!;
+                res.Messages.Add($"[配置] {url}：载入 {obj.Count} 个顶层键（累计 {_configTables.Count}）");
+                loaded++;
             }
-            // 与 MergeConfig 相同的编码兜底：先严格 UTF-8，失败时回退 GBK
-            string text;
-            try { text = new UTF8Encoding(false, true).GetString(bytes); }
-            catch (DecoderFallbackException) { text = Encoding.GetEncoding("gbk").GetString(bytes); }
-            var node = JsonNode.Parse(text);
-            if (node is not JsonObject obj) { res.Error = "配置根不是 JSON 对象"; return res; }
-            foreach (var kv in obj)
-            {
-                if (kv.Value != null) _configTables[kv.Key] = kv.Value!;
-            }
-            res.Messages.Add($"[配置] {url}：载入 {obj.Count} 个顶层键（每张顶层键 = 一张配置表）");
-            if (_configTables.Count == 0) { res.Error = "未从配置 URL 解析到任何配置表"; return res; }
+            if (loaded == 0) { res.Error = "所有配置分片下载失败，请检查「数据服务器地址 / 版本号」"; return res; }
+            if (_configTables.Count == 0) { res.Error = "未从配置分片解析到任何配置表"; return res; }
             _configLoaded = true;
             res.Tables = ListTableInfos();
             res.Count = res.Tables.Count;

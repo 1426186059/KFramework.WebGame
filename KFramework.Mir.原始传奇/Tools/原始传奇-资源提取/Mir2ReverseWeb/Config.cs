@@ -29,15 +29,30 @@ public static class Mir2Config
     };
 
     /// <summary>
-    /// 配置 JSON 完整 URL。拼法与游戏主程序 JS 的 onloadCfgAgain 完全一致：
-    ///   ResUrl.Data + "0config" + resVersion + ".json" + resver
-    /// 注意：配置只有一个分片 <c>0config&lt;version&gt;.json</c>，不存在 1config/2config/3config。
-    /// 该文件顶层每个键（map / global / level / conditions …）就是一张「配置表」。
+    /// 配置 JSON 分片完整 URL 列表。游戏主程序 <c>ConfigManager</c> 实际加载 6 个分片：
+    /// <c>0config</c> ~ <c>5config</c>（见 main10.25341.1.min.js 的 onLoadCfgComplete2 循环：
+    /// totalCfgFileNum=6，每片按 ResUrl.Data + (i + "config" + resVersion) + ".json" + resver 拼接，
+    /// 并合并进同一个配置对象）。各分片顶层每个键（map / global / item …）就是一张「配置表」，
+    /// 分布在各分片里（如物品表就不在 0config，而在后续分片）。
+    /// baseUrl / version 可覆盖（默认见 CdnBase / GameVersion）。
     /// </summary>
+    public const int ConfigShardCount = 6;
+
+    public static string[] ConfigShardUrls(string? baseUrl = null, string? version = null)
+    {
+        var root = (baseUrl ?? CdnBase).TrimEnd('/');
+        var ver = version ?? GameVersion;
+        var list = new List<string>();
+        for (int i = 0; i < ConfigShardCount; i++)
+            list.Add($"{root}/{i}config{ver}.json?v={ver}");
+        return list.ToArray();
+    }
+
+    /// <summary>单分片 0config（地图表 map 所在分片，供地图加载使用）</summary>
     public static string ConfigUrl =>
         $"{CdnBase}/0config{GameVersion}.json?v={GameVersion}";
 
-    /// <summary>兼容旧调用：地图加载也只需这一个配置分片。</summary>
+    /// <summary>地图加载用的配置分片：地图表只在 0config 中，故只需这一个分片。</summary>
     public static string[] MapConfigUrls => new[] { ConfigUrl };
 
     /// <summary>

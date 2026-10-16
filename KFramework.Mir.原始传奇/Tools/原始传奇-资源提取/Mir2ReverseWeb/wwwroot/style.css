@@ -100,6 +100,7 @@ body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 .field input[type="text"]:focus { outline: none; border-color: var(--primary); background: #fff; }
 .field input.num { width: 64px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; background: #fbfcfe; }
 .field input.readonly { background: #eef1f6; color: #445; border-style: dashed; }
+.field textarea.readonly { width: 100%; box-sizing: border-box; resize: vertical; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; line-height: 1.5; padding: 6px 8px; border: 1px dashed var(--border); border-radius: 6px; background: #eef1f6; color: #445; }
 .sel { padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; background: #fbfcfe; min-width: 240px; }
 
 .dot { width: 9px; height: 9px; border-radius: 50%; background: #c3cbd6; }

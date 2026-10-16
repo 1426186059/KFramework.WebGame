@@ -8,11 +8,13 @@ function setConfigStatus(text, cls) {
     if (el) { el.textContent = text; el.className = 'dl-status ' + (cls || ''); }
 }
 
-// 根据 数据服务器地址 + 版本号 实时拼出配置 URL（与游戏 onloadCfgAgain 完全一致）
+// 根据 数据服务器地址 + 版本号 实时拼出全部配置分片 URL（与游戏 onLoadCfgComplete2 循环一致：0config~5config）
 function updateConfigResolvedUrl() {
     const base = ($('#configBaseUrl').value.trim() || 'https://cdn.yscq-wy.yscq.com/fugu_20201203').replace(/\/$/, '');
     const ver = $('#configVersion').value.trim() || '10.25341.1';
-    $('#configResolvedUrl').value = `${base}/0config${ver}.json?v=${ver}`;
+    const urls = [];
+    for (let i = 0; i < 6; i++) urls.push(`${base}/${i}config${ver}.json?v=${ver}`);
+    $('#configResolvedUrl').value = urls.join('\n');
 }
 
 async function loadConfigTables() {

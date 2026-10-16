@@ -37,17 +37,18 @@
                         <span class="muted small">文件名 0config&lt;版本&gt;.json 用它</span>
                     </div>
                     <div class="field">
-                        <label>拼接 URL</label>
-                        <input id="configResolvedUrl" type="text" readonly class="readonly" />
+                        <label>拼接 URL（6 个分片）</label>
+                        <textarea id="configResolvedUrl" readonly class="readonly" rows="4"></textarea>
                         <button id="btnCopyConfigUrl" class="btn btn-ghost btn-xs">复制</button>
                     </div>
                     <div class="row-actions">
                         <button id="btnLoadConfig" class="btn btn-primary">加载配置表</button>
                         <span id="configLoadInfo" class="muted"></span>
                     </div>
-                    <pre class="help">拼法与游戏主程序 JS 的 onloadCfgAgain 完全一致：数据服务器地址 + "0config" + 版本号 + ".json?v=" + 版本号。
-该文件顶层每个键（map / global / level / conditions / compose …）就是一张「配置表」。
-每张表可提取为两类产物：① &lt;表名&gt;Config.cs（由字段自动推断并映射 JS 对象到 C# 类）；② &lt;表名&gt;.json（保持原始形态的数据，按 URL 下载提取）。</pre>
+                    <pre class="help">拼法与游戏主程序 JS 的 onLoadCfgComplete2 循环完全一致：数据服务器地址 + (i + "config") + 版本号 + ".json?v=" + 版本号，
+其中 i = 0~5，共 6 个分片（totalCfgFileNum=6），全部合并进同一份配置。
+每个分片顶层每个键（map / global / item …）就是一张「配置表」，分布在各分片里（如物品表不在 0config，而在后续分片）。
+每张表可提取为两类产物：① &lt;表名&gt;Config.cs（由字段自动推断并映射 JS 对象到 C# 类）；② &lt;表名&gt;.json（保持原始形态的数据）。</pre>
                 </div>
 
                 <div class="card">
