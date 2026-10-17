@@ -103,6 +103,11 @@ namespace WebGame.Mir2.MonoGame.Client
             // 注意：新 UI（MainDialogUI : KUIBase）在构造时挂到 KUIRoot.GetCanvas(0)，
             // 该 KCanvas 位于 KSceneMgr.DontDestroyOnLoadRoot，KSceneMgr.Draw/Update 会自动遍历它，无需 AddScene。
 
+            // 图集/UI 资源走 CDN 哈希布局：manifest key → resource/{hash前2}/{hash}_{size}.ext。
+            // 默认 LocalMirrorUsesKeyPath=true 仅匹配「本地镜像按 key 原路径落盘」；默认 base 是 CDN，
+            // 故需设为 false，否则 key 会被当成逻辑路径直接拼到 CDN 根而 404（之前就是这么挂的）。
+            Mir2OriginResource.LocalMirrorUsesKeyPath = false;
+
             // 异步加载图集并构建新 UI 控件树（fire-and-forget，不阻塞登录）。
             _ = MainDialogUI.Instance.LoadAsync(DXManager.GDevice);
 

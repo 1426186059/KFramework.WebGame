@@ -39,6 +39,13 @@ public static class Mir2AtlasLibrary
         // ① sheet JSON（帧信息）
         var jsonPath = Mir2OriginResource.ResolveManifestAssetPath(sheetKey);
         var jsonBytes = await Mir2OriginResource.GetBytesAsync(jsonPath, ct: ct);
+        if (jsonBytes == null || jsonBytes.Length == 0)
+        {
+            throw new System.InvalidOperationException(
+                $"[Mir2Atlas] 图集 JSON 下载为空：sheetKey={sheetKey}，resolvedPath={jsonPath}。" +
+                $"若 resolvedPath 仍是逻辑路径(含 resource/assets/...)且 404，说明 LocalMirrorUsesKeyPath 与 base 不匹配；" +
+                $"若 resolvedPath 已是哈希路径(resource/xx/...)仍空，说明该 key 不在 manifest 或资源缺失。");
+        }
         var sheet = Mir2AtlasSheet.Parse(Encoding.UTF8.GetString(jsonBytes));
 
         // ② 同目录整页贴图（png）
