@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<GameConfigService>();
 builder.Services.AddSingleton<MapTileService>();
 builder.Services.AddSingleton<MapMinimapService>();
+builder.Services.AddSingleton<AnimExportService>();
 
 var app = builder.Build();
 
@@ -146,5 +147,26 @@ api.MapPost("/config/tables", (GameConfigService s) =>
 // 提取指定表（或 "*" 全部）为 C# 类 + JSON 数据，写出到输出目录
 api.MapPost("/config/extract", (ConfigExtractRequest req, GameConfigService s) =>
     Results.Ok(s.ExtractConfigTables(req)));
+
+// ---- 角色 / NPC / 怪物 动画精灵表导出（model/{模型号}/{sourceId}.png|json） ----
+// 加载 resourceVersion.json，解析出全部模型号清单（先点这个，再决定导出哪些模型）
+api.MapPost("/anim/load", async (AnimExportService s) =>
+    Results.Ok(await s.LoadAsync()));
+
+// 启动异步导出（按模型号筛选，可含/不含 json 帧），立即返回 jobId + 总文件数
+api.MapPost("/anim/export", async (AnimExportRequest req, AnimExportService s) =>
+{
+    var (jobId, total) = await s.StartAsync(req);
+    return Results.Ok(new AnimJobResult { Ok = true, JobId = jobId.ToString(), TotalFiles = total });
+});
+
+// 轮询导出进度（真实百分比）
+api.MapGet("/anim/progress", (string? job, AnimExportService s) =>
+{
+    if (string.IsNullOrWhiteSpace(job) || !Guid.TryParse(job, out var gid))
+        return Results.Ok(new { ok = false, error = "bad job" });
+    var p = s.GetProgress(gid);
+    return p == null ? Results.Ok(new { ok = false, error = "unknown job" }) : Results.Ok(p);
+});
 
 app.Run();

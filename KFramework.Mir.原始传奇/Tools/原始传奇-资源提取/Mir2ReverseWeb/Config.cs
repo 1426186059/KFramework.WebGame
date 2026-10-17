@@ -73,7 +73,16 @@ public static class Mir2Config
     public static readonly string ManifestUrl =
         $"{CdnBase}/allmanifest10.25341.1.json?v=20260922111844&qufu_version=229";
 
-    /// <summary>manifest 资源下载落地根目录（相对程序运行目录）</summary>
+    /// <summary>
+    /// 资源版本映射表（原版 JS 的 cm.version 来源）：全量「资源名 -> 版本号」映射，
+    /// 含所有角色/NPC/怪物动画精灵表条目（键形如 model/{模型号}/{sourceId}.png/.json，值如 "10.1393.1"）。
+    /// 逆向自 main10.25341.1.min.js 的 CommonUtils.setGlobalConfigValue：先拉 resourceVersion.json，
+    /// 再 posJsonComp 里把整份赋给 cm.version。完整动画 URL =
+    ///   {CdnBase}/assets/resource/{版本号}/model/{模型号}/{sourceId}.png?ver={ResourceVersion}
+    /// </summary>
+    public static string ResourceVersionManifestUrl => $"{CdnBase}/resourceVersion.json";
+
+    /// <summary>动画精灵表下载落地根目录（默认系统下载目录下的 Mir2Anim 子目录）</summary>
     public const string DownloadDir = "downloads";
 
     /// <summary>单元格像素尺寸（来自 JS 的 GameDefine.MAP_GRID_WIDTH / MAP_GRID_HEIGHT）</summary>

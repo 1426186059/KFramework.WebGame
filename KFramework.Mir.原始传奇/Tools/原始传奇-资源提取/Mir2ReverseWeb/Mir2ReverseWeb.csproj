@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Mir2ReverseWeb</RootNamespace>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- 本应用不使用 jQuery，关闭 VS Browser Link 注入（避免 $.noConflict 报错） -->
+    <DisableBrowserLink>true</DisableBrowserLink>
   </PropertyGroup>
 
   <ItemGroup>

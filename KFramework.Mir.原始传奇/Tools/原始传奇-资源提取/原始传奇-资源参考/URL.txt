@@ -76,3 +76,19 @@ C:\Users\Administrator\Downloads\allmanifest10.25341.1.json
 #    或自动钩 XHR/fetch 抓取进入盟重省154时的真实地图请求URL(正则 /154/)
 # 5) 拿到 configUrl 后: 拼 configUrl+'154.bin'(或 map/154.bin / 154.map 等) 下载并解析
 #    解析格式: 热血传奇 .bin 地图 = 头(宽高) + 宽*高 字节可走性掩码 + 门/对象数据
+
+# ============================================================
+# 角色 / NPC / 怪物 动画精灵表帧 (model/{模型号}/{sourceId}.png|json)
+# ============================================================
+# 统一相对路径规则（与 CDN 完全一致，导出时整体落在 assets/resource/{版本}/model/ 下）：
+#   https://cdn.yscq-wy.yscq.com/fugu_20201203/assets/resource/{版本号}/model/{模型号}/{sourceId}.png?ver=1.0.2
+#
+# 用户验证可用的示例（model 参考连接，已记录于此）：
+https://cdn.yscq-wy.yscq.com/fugu_20201203/assets/resource/10.1393.1/model/9027/9027010.png?ver=1.0.2
+#
+# 说明：
+#   - 模型号清单来自 resourceVersion.json 的 model/ 键（?v=10.25341.1 分版），每个模型有独立版本号（如 9027 -> 10.1393.1）
+#   - sourceId = 1000*模型号 + 10*动作 + 方向(0..7)
+#   - 部分动作各方向帧内容完全相同（如 1220011 / 1220012），这是游戏自有资源复用，非导出错误；
+#     每个 model/{srcId}.png 都按原路径落盘，供引擎按 sourceId 读取
+#   - ?ver=1.0.2 为缓存破坏参数（Mir2Config.ResourceVersion），与路径里的版本号是两个不同东西

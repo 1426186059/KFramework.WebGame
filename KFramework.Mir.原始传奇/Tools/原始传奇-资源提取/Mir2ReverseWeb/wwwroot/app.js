@@ -163,6 +163,7 @@ $('#btnClearLog').addEventListener('click', () => { const l = $('#log'); if (l) 
             setIfEmpty('mapDest', dl);
             setIfEmpty('atlasOutDir', dl);
             setIfEmpty('configOutDir', dl + '\\Mir2Config');
+            setIfEmpty('animOutDir', dl + '\\Mir2Anim');
         }
     } catch (e) { log('读取运行信息失败: ' + e.message, 'err'); }
 })();

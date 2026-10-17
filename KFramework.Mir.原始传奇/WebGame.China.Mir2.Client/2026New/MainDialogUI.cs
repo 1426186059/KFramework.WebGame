@@ -22,8 +22,9 @@ public sealed class MainDialogUI : KUIBase
 {
     public static readonly MainDialogUI Instance = new MainDialogUI();
 
-    // 一张窗口图集（精灵表）。帧名以实际 sheet 为准；缺失时 KImage 自动回退到默认白块，不会崩。
-    private const string SheetKey = "resource/assets/gameui4/window-sheet/advance-sheet.json";
+    // 一张窗口图集（精灵表）。用原版 Egret 的短名（对应 default.res.json 的 name），不用写长路径；
+    // 帧名以实际 sheet 为准；缺失时 KImage 自动回退到默认白块，不会崩。
+    private const string SheetKey = "advance-sheet_json";
 
     private bool _built;
 
@@ -78,7 +79,7 @@ public sealed class MainDialogUI : KUIBase
             AnchorPosition = new Vector2(0, 80),  // 在背景中心下方一点（画布原生坐标，随 KCanvas 缩放）
             Label = new KLabel("确定"),
         };
-        if (sheet.Frames.TryGetValue("adv_ok", out var btnFrame))
+        if (sheet.Frames.TryGetValue("adv_suc", out var btnFrame))
             btn.Sprite = btnFrame;
         btn.PointerClickEvent += (s, e) => PrintTool.Log("[MainDialogUI] 按钮被点击 ✓（新框架事件链路通了）");
 

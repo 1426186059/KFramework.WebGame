@@ -409,3 +409,56 @@ public class ConfigExtractResult
     public List<ConfigTableFile> Files { get; set; } = new();
     public List<string> Messages { get; set; } = new();
 }
+
+// ---------------- 角色 / NPC / 怪物 动画精灵表导出（model/{模型号}/{sourceId}.png|json） ----------------
+/// <summary>/anim/load 返回：解析 resourceVersion.json 后给出的模型号清单</summary>
+public class AnimLoadResult
+{
+    public bool Ok { get; set; }
+    public string? Error { get; set; }
+    public string? ResourceVersionUrl { get; set; }
+    /// <summary>model/ 条目总数（png + json 合计）</summary>
+    public int TotalEntries { get; set; }
+    /// <summary>不同模型号数量（每个模型号 = 一个角色/NPC/怪物/武器…的动画集合）</summary>
+    public int ModelCount { get; set; }
+    /// <summary>全部模型号（升序），供前端列出与筛选</summary>
+    public List<string> Models { get; set; } = new();
+    public List<string> Messages { get; set; } = new();
+}
+
+/// <summary>/anim/export 请求</summary>
+public class AnimExportRequest
+{
+    /// <summary>要导出的模型号列表（逗号/空格分隔，如 "9001,9002,9027"）；为空或仅含 "*" 表示全部模型。</summary>
+    public string? Models { get; set; }
+    /// <summary>输出根目录；留空则默认系统下载目录下的 Mir2Anim 子目录。文件按 model/{模型号}/{sourceId}.png 平铺。</summary>
+    public string? OutDir { get; set; }
+    /// <summary>是否同时下载 .json 帧描述（默认 true，缺它无法还原每帧矩形）。</summary>
+    public bool WithJson { get; set; } = true;
+    /// <summary>动作枚举上界（默认 60，超过此动作号不再尝试；可用以降低请求量）。</summary>
+    public int MaxAction { get; set; } = 60;
+}
+
+public class AnimJobResult
+{
+    public bool Ok { get; set; }
+    public string? Error { get; set; }
+    public string? JobId { get; set; }
+    public int TotalFiles { get; set; }
+}
+
+/// <summary>/anim/progress 轮询返回</summary>
+public class AnimProgress
+{
+    public string JobId { get; set; } = "";
+    /// <summary>running / done / error</summary>
+    public string Status { get; set; } = "";
+    public int TotalFiles { get; set; }
+    public int DoneFiles { get; set; }
+    public int Skipped { get; set; }
+    public int Failed { get; set; }
+    public long Bytes { get; set; }
+    public int Percent { get; set; }
+    public string? Current { get; set; }
+    public List<string> Messages { get; set; } = new();
+}
