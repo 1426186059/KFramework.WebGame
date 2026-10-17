@@ -1,6 +1,4 @@
-using KFramework.MonoGame;
-
-namespace KFramework.MonoGameExtend
+namespace KFramework.MonoGame
 {
     public struct KSprite
     {

@@ -12,25 +12,6 @@
 //   * export class Caching —— 通用封装（类似 Unity 的 Caching），支持任意命名缓存；实例方法用 TS 习惯的小驼峰。
 //   * CachingXxxAsync(...) 模块函数 —— 供 C# JSBind_CacheStorage 静态绑定，PascalCase + Async 后缀，与 C# 方法同名。
 import { sharedBytesOf } from "./custom_data_byte_cache.js";
-// 相对/绝对键归一化为绝对 URL：cache.match / cache.put 内部按 document.baseURI 解析相对键，
-// 这里保持一致，才能和 cache.keys() 返回的 Request.url 直接比对。
-function toAbsoluteUrl(name) {
-    try {
-        return new URL(name, document.baseURI).href;
-    }
-    catch {
-        return name;
-    }
-}
-// 取 URL 的 pathname（去掉 origin 与查询串），用于前缀 / 后缀比对；解析不了就按原串。
-function toPath(url) {
-    try {
-        return new URL(url, document.baseURI).pathname;
-    }
-    catch {
-        return url;
-    }
-}
 export class Caching {
     name;
     static _pool = new Map();
@@ -107,32 +88,6 @@ export class Caching {
     /** 删除单个键；返回是否真的删掉了（原本不存在返回 false）。 */
     async remove(key) {
         return await (await this._open()).delete(key);
-    }
-    /** 通用 GC：保留 keep 白名单中的键、删除其余条目，返回实际删除条数。 */
-    async prune(keep, prefix = '', suffix = '') {
-        const cache = await this._open();
-        const keepSet = new Set(keep.map(toAbsoluteUrl));
-        const prefixPath = prefix ? toPath(prefix) : '';
-        const reqs = await cache.keys();
-        let removed = 0;
-        for (const req of reqs) {
-            if (keepSet.has(req.url))
-                continue;
-            const path = toPath(req.url);
-            if (prefixPath && !path.startsWith(prefixPath))
-                continue;
-            if (suffix && !path.endsWith(suffix))
-                continue;
-            try {
-                // 单条失败（如并发写占用）不中断整体 GC
-                if (await cache.delete(req))
-                    removed++;
-            }
-            catch {
-                // 忽略
-            }
-        }
-        return removed;
     }
     /** 清空并删除整个缓存（含其中的全部条目）。 */
     async clear() {

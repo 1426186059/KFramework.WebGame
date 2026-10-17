@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using KFramework.MonoGame;
@@ -105,38 +102,20 @@ public static class Mir2OriginResource
     // ===================== UI / 图集资源（manifest 索引：key → {v,s}）=====================
     // CDN：实际文件 = resource/{v前2}/{v}_{s}.{ext}
     // 本地镜像（KeyPath 模式）：直接用 key 原路径
-    private static Dictionary<string, (string v, int s)> _manifest;
+    /// <summary>资源总索引 manifest（图集 + UI + 配置 总索引）；由 LoadManifestAsync 填充。</summary>
+    public static Mir2AtlasManifest Manifest { get; private set; }
 
-    /// <summary>拉取资源清单 manifest（图集 + UI + 配置 总索引，1641 条），供 UI/图集资源按 key 解析。</summary>
+    /// <summary>拉取资源清单 manifest（图集 + UI + 配置 总索引），供 UI/图集资源按 key 解析。解析委托 Mir2AtlasManifest。</summary>
     public static async Task LoadManifestAsync(CancellationToken ct = default)
     {
         var json = await GetBytesAsync($"allmanifest{GameVersion}.json?v=20260922111844&qufu_version=229", ct: ct);
-        var node = JsonNode.Parse(Encoding.UTF8.GetString(json));
-        var dict = new Dictionary<string, (string, int)>(StringComparer.OrdinalIgnoreCase);
-        if (node is JsonObject obj)
-        {
-            foreach (var kv in obj)
-            {
-                if (kv.Value is JsonObject o &&
-                    o["v"] is JsonValue vv && vv.TryGetValue<string>(out var vstr) &&
-                    o["s"] is JsonValue sv && sv.TryGetValue<int>(out var sz))
-                    dict[kv.Key] = (vstr, sz);
-            }
-        }
-        _manifest = dict;
-        PrintTool.Log($"[Mir2Origin] manifest 已加载：{dict.Count} 条");
+        Manifest = Mir2AtlasManifest.Parse(json);
+        PrintTool.Log($"[Mir2Origin] manifest 已加载：{Manifest.Entries.Count} 条");
     }
 
     /// <summary>把 manifest key 解析成实际相对路径：本地镜像(Keypath)→key 原路径；CDN→resource/{v前2}/{v}_{s}.{ext}。</summary>
     public static string ResolveManifestAssetPath(string key)
-    {
-        if (!LocalMirrorUsesKeyPath && _manifest != null && _manifest.TryGetValue(key, out var e))
-        {
-            var ext = Path.GetExtension(key).TrimStart('.');
-            return $"resource/{e.v.Substring(0, 2)}/{e.v}_{e.s}.{ext}";
-        }
-        return key; // 本地镜像 key 路径 / 未加载 manifest 时回退
-    }
+        => Manifest?.ResolvePath(key, LocalMirrorUsesKeyPath) ?? key;
 
     public static Task<byte[]> GetManifestAssetBytesAsync(string key, CancellationToken ct = default) => GetBytesAsync(ResolveManifestAssetPath(key), ct: ct);
     public static Task<Texture2D> GetManifestAssetTextureAsync(string key, GraphicsDevice device, CancellationToken ct = default) => GetTextureAsync(ResolveManifestAssetPath(key), device, ct: ct);
