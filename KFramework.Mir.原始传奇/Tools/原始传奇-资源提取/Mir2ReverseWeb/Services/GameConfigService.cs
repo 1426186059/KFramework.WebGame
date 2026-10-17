@@ -622,12 +622,11 @@ public class GameConfigService
             var entry = _manifestEntries?.FirstOrDefault(e => e.Key == key);
             if (entry == null) { res.Error = "清单未加载或无此条目"; return res; }
             res.Url = entry.Url;
-            var sub = entry.Hash.Length >= 2 ? entry.Hash.Substring(0, 2) : entry.Hash;
             var baseDir = string.IsNullOrWhiteSpace(outDir) ? OsDownloadDir() : outDir!;
-            var dir = Path.Combine(baseDir, sub);
-            Directory.CreateDirectory(dir);
-            var fileName = $"{entry.Hash}_{entry.Size}.{entry.Ext.TrimStart('.')}";
-            var file = Path.Combine(dir, fileName);
+            // 原始路径模式：直接用 manifest 的 key（如 resource/assets/qianghua.png）作为相对路径落地
+            var rel = entry.Key.Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar);
+            var file = Path.Combine(baseDir, rel);
+            Directory.CreateDirectory(Path.GetDirectoryName(file)!);
             if (File.Exists(file) && new FileInfo(file).Length == entry.Size)
             {
                 res.Skipped = true; res.LocalPath = file; res.Bytes = entry.Size; res.Ok = true; return res;
@@ -663,6 +662,124 @@ public class GameConfigService
         }
         catch (Exception ex) { res.Error = ex.Message; }
         return res;
+    }
+
+    // ---------------- 单地图资源提取（相对路径平铺） ----------------
+    /// <summary>
+    /// 按 CDN 相对路径平铺下载单张地图的全部资源（与「提取图集」同风格）：
+    /// ① 真实瓦片 assets/resource/zipmap/{img}/{1..N}.jpg（N=ceil(宽/512)×ceil(高/256)）
+    /// ② 小地图 assets/resource/minimap/{img}.jpg
+    /// ③ 逻辑地图数据 {data}.dat(带?v) / .dat / .bin / .csv（取到一个即停，落根目录）
+    /// </summary>
+    public async Task<MapResourceResult> ExtractMapResourcesAsync(MapResourceRequest req)
+    {
+        var res = new MapResourceResult { MapId = req.MapId };
+        try
+        {
+            int img, data = 0, w, h;
+            if (req.Width is > 0 && req.Height is > 0)
+            {
+                // 前端已提供宽高（来自已加载的地图条目），直接用，省去拉配置表
+                img = req.Img ?? req.MapId;
+                w = req.Width.Value; h = req.Height.Value;
+            }
+            else
+            {
+                (img, data, w, h) = await GetMapEntryAsync(req.MapId);
+            }
+            if (data <= 0) data = img;
+            if (w <= 0 || h <= 0) { res.Error = $"地图 {req.MapId} 无法获取宽高，无法计算瓦片数"; return res; }
+            res.Img = img; res.Data = data; res.Width = w; res.Height = h;
+            var cols = (int)Math.Ceiling(w / 512.0);
+            var rows = (int)Math.Ceiling(h / 256.0);
+            var n = cols * rows;
+            res.Cols = cols; res.Rows = rows; res.TileCount = n;
+            var baseDir = string.IsNullOrWhiteSpace(req.OutDir) ? OsDownloadDir() : req.OutDir!;
+            var dataRoot = (string.IsNullOrWhiteSpace(req.DataUrl) ? Mir2Config.CdnBase : req.DataUrl.TrimEnd('/')) + "/";
+
+            // ① 下载 zipmap 瓦片（相对路径），有界并发
+            var sem = new SemaphoreSlim(16);
+            var tasks = new List<Task>();
+            var dl = 0; var skip = 0; var fail = 0;
+            for (var i = 1; i <= n; i++)
+            {
+                var idx = i;
+                await sem.WaitAsync();
+                tasks.Add(Task.Run(async () =>
+                {
+                    try
+                    {
+                        var rel = $"assets/resource/zipmap/{img}/{idx}.jpg";
+                        var local = Path.Combine(baseDir, rel);
+                        if (File.Exists(local)) { Interlocked.Increment(ref skip); }
+                        else
+                        {
+                            var bytes = await _http.GetByteArrayAsync($"{Mir2Config.CdnBase}/assets/resource/zipmap/{img}/{idx}.jpg");
+                            if (bytes.Length == 0) Interlocked.Increment(ref fail);
+                            else { Directory.CreateDirectory(Path.GetDirectoryName(local)!); await File.WriteAllBytesAsync(local, bytes); Interlocked.Increment(ref dl); }
+                        }
+                    }
+                    catch { Interlocked.Increment(ref fail); }
+                    finally { sem.Release(); }
+                }));
+            }
+            await Task.WhenAll(tasks);
+            res.TilesDownloaded = dl; res.TilesSkipped = skip; res.TilesFailed = fail;
+
+            // ② 小地图（相对路径）
+            try
+            {
+                var mrel = $"assets/resource/minimap/{img}.jpg";
+                var mlocal = Path.Combine(baseDir, mrel);
+                if (File.Exists(mlocal)) { res.MinimapLocal = mrel; res.MinimapOk = true; }
+                else
+                {
+                    var mbytes = await _http.GetByteArrayAsync($"{Mir2Config.CdnBase}/assets/resource/minimap/{img}.jpg");
+                    if (mbytes.Length > 0) { Directory.CreateDirectory(Path.GetDirectoryName(mlocal)!); await File.WriteAllBytesAsync(mlocal, mbytes); res.MinimapLocal = mrel; res.MinimapOk = true; }
+                }
+            }
+            catch { /* 部分地图无独立小地图整图 */ }
+
+            // ③ 逻辑地图数据（取到一个即停）
+            foreach (var (ext, q) in new[] { (".dat", "?v=" + Mir2Config.ResourceVersion), (".dat", ""), (".bin", ""), (".csv", "") })
+            {
+                try
+                {
+                    var bytes = await _http.GetByteArrayAsync($"{dataRoot}{data}{ext}{q}");
+                    if (bytes.Length > 0)
+                    {
+                        var local = Path.Combine(baseDir, $"{data}{ext}");
+                        await File.WriteAllBytesAsync(local, bytes);
+                        res.DataFiles.Add($"{data}{ext}");
+                        break;
+                    }
+                }
+                catch { /* 尝试下一个扩展名 */ }
+            }
+
+            res.Messages.Add($"地图 {req.MapId}：img={img}, {w}×{h}, 网格 {cols}×{rows}, 瓦片 {n} → 下载 {dl} 跳过 {skip} 失败 {fail} ｜ 小地图 {(res.MinimapOk ? "有" : "无")} ｜ 逻辑数据 [{string.Join(",", res.DataFiles)}]");
+            res.Ok = true;
+        }
+        catch (Exception ex) { res.Error = ex.Message; }
+        return res;
+    }
+
+    private async Task<(int img, int data, int w, int h)> GetMapEntryAsync(int mapId)
+    {
+        try
+        {
+            var raw = await _http.GetByteArrayAsync(Mir2Config.ConfigUrl);
+            using var doc = JsonDocument.Parse(raw);
+            if (doc.RootElement.TryGetProperty("map", out var mapNode) && mapNode.ValueKind == JsonValueKind.Object
+                && mapNode.TryGetProperty(mapId.ToString(), out var e) && e.ValueKind == JsonValueKind.Object)
+            {
+                int GetInt(string k, int d = 0) => e.TryGetProperty(k, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt32() : d;
+                var img = GetInt("img", mapId);
+                return (img, GetInt("data", img), GetInt("width"), GetInt("height"));
+            }
+        }
+        catch { /* 配置获取失败则回退到 mapId 本身 */ }
+        return (mapId, mapId, 0, 0);
     }
 
     private string? ResolveFile(int id)

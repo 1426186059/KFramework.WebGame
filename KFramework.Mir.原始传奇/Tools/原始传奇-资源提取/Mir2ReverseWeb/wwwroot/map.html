@@ -78,8 +78,13 @@ bit3=不可走(墙)（可走=该位为0）｜ bit2=遮挡 ｜ bit1=安全区。
                 </div>
 
                 <div class="card">
+                    <div class="help">两种导出方式共用上方「输出目录」：
+                        <br /><b>嵌套</b>（绿）：每张地图一个「地图名_id」文件夹，内含 tiles/（真实瓦片）+ map_&lt;id&gt;_real.png（拼接图）+ map_&lt;id&gt;.json（数据）+ minimap.png（小地图）。
+                        <br /><b>相对路径</b>（蓝）：按 CDN 相对路径平铺（assets/resource/zipmap/{img}/{n}.jpg、assets/resource/minimap/{img}.jpg、{data}.dat/.bin/.csv），与「提取图集」同风格，复刻版可直接按 ResUrl 加载。
+                    </div>
                     <div class="row-actions">
-                        <button id="btnExtract" class="btn btn-success" disabled>提取选中地图资源 (0)</button>
+                        <button id="btnExtract" class="btn btn-success" disabled>提取选中(嵌套) (0)</button>
+                        <button id="btnExtractRel" class="btn btn-primary" disabled>提取选中(相对路径) (0)</button>
                         <label class="chk"><input type="checkbox" id="chkStitch" checked /> 生成拼接总览图(≤4096)</label>
                         <span id="exportInfo" class="dl-status"></span>
                     </div>

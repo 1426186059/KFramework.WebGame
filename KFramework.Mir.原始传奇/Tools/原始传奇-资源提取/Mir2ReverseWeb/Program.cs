@@ -130,6 +130,10 @@ api.MapPost("/atlas/download", async (AtlasDownloadRequest req, GameConfigServic
 api.MapPost("/atlas/downloadAll", async (AtlasDownloadRequest req, GameConfigService s) =>
     Results.Ok(await s.DownloadManifestAll(req.OutDir)));
 
+// ---- 单地图资源提取（相对路径平铺，与图集提取同风格） ----
+api.MapPost("/map/resources", async (MapResourceRequest req, GameConfigService s) =>
+    Results.Ok(await s.ExtractMapResourcesAsync(req)));
+
 // ---- 配置表（0config*.json 顶层每个键 = 一张配置表）----
 // 加载配置到内存（不落盘），解析出全部表；可覆盖默认数据服务器地址 / 版本号
 api.MapPost("/config/load", async (ConfigLoadRequest req, GameConfigService s) =>

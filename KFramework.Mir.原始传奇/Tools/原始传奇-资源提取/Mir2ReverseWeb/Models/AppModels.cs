@@ -215,6 +215,43 @@ public class AtlasDownloadAllResult
     public List<string> Messages { get; set; } = new();
 }
 
+// ---------------- 单地图资源提取（相对路径平铺，与图集提取一致的 CDN 相对路径） ----------------
+public class MapResourceRequest
+{
+    /// <summary>地图 ID（对应配置表 map 的键）</summary>
+    public int MapId { get; set; }
+    /// <summary>输出根目录；留空则默认系统下载目录。文件按 CDN 相对路径平铺（assets/resource/zipmap/...）</summary>
+    public string? OutDir { get; set; }
+    /// <summary>逻辑地图数据服务器根（.bin/.dat/.csv 所在）；留空默认 CdnBase（与图片 CDN 同根）。</summary>
+    public string? DataUrl { get; set; }
+    /// <summary>可选：直接给出 img（省去拉配置表）。不填则由配置表推导。</summary>
+    public int? Img { get; set; }
+    /// <summary>可选：直接给出像素宽/高（省去拉配置表）。两者都>0 时使用，否则回退配置表。</summary>
+    public int? Width { get; set; }
+    public int? Height { get; set; }
+}
+
+public class MapResourceResult
+{
+    public bool Ok { get; set; }
+    public string? Error { get; set; }
+    public int MapId { get; set; }
+    public int Img { get; set; }
+    public int Data { get; set; }
+    public int Width { get; set; }
+    public int Height { get; set; }
+    public int Cols { get; set; }
+    public int Rows { get; set; }
+    public int TileCount { get; set; }
+    public int TilesDownloaded { get; set; }
+    public int TilesSkipped { get; set; }
+    public int TilesFailed { get; set; }
+    public string? MinimapLocal { get; set; }
+    public bool MinimapOk { get; set; }
+    public List<string> DataFiles { get; set; } = new();
+    public List<string> Messages { get; set; } = new();
+}
+
 public class FileInfoResult
 {
     public bool Exists { get; set; }

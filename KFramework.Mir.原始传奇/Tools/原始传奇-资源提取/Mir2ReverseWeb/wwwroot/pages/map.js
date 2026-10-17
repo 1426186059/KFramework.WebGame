@@ -61,12 +61,18 @@ function renderMapTable() {
             <td>${e.id}</td>
             <td class="title-cn">${e.name || '—'}</td>
             <td>${e.kb}</td>
-            <td><button class="btn btn-ghost btn-xs act-prev">预览</button></td>`;
+            <td>
+                <button class="btn btn-ghost btn-xs act-prev">预览</button>
+                <button class="btn btn-ghost btn-xs act-exp">导出</button>
+                <button class="btn btn-ghost btn-xs act-rel">相对路径</button>
+            </td>`;
         tr.querySelector('.mc').addEventListener('change', ev => {
             if (ev.target.checked) mapSelected.add(e.id); else mapSelected.delete(e.id);
             updateMapSel();
         });
         tr.querySelector('.act-prev').addEventListener('click', ev => { ev.stopPropagation(); previewBoth(e.id); });
+        tr.querySelector('.act-exp').addEventListener('click', ev => { ev.stopPropagation(); extractOneNested(e.id); });
+        tr.querySelector('.act-rel').addEventListener('click', ev => { ev.stopPropagation(); extractOneRelative(e.id); });
         tr.addEventListener('click', () => previewBoth(e.id));
         tb.appendChild(tr);
         n++;
@@ -80,7 +86,9 @@ function updateMapSel() {
     const n = mapSelected.size;
     const btn = $('#btnExtract');
     btn.disabled = n === 0;
-    btn.textContent = `提取选中地图资源 (${n})`;
+    btn.textContent = `提取选中(嵌套) (${n})`;
+    const btnRel = $('#btnExtractRel');
+    if (btnRel) { btnRel.disabled = n === 0; btnRel.textContent = `提取选中(相对路径) (${n})`; }
 }
 
 function findEntry(id) { return mapIndex.find(e => e.id === id); }
@@ -200,22 +208,19 @@ async function downloadPreview(kind) {
     } catch (e) { log('下载失败: ' + e.message, 'err'); }
 }
 
-// ---------------- 提取选中地图资源：下载真实瓦片 + 解析 JSON + 提取小地图 ----------------
-async function extractMaps() {
+// ---------------- 提取选中地图资源（嵌套）：下载真实瓦片 + 解析 JSON + 提取小地图 ----------------
+async function extractMapsWith(maps, btnEl) {
     if (!mapSourceFile) { toast('请先加载地图数据'); return; }
     const dest = $('#mapDest').value.trim();
     if (!dest) { toast('请设置输出目录'); return; }
-    const maps = mapIndex.filter(e => mapSelected.has(e.id))
-        .map(e => ({ id: e.id, img: e.img, name: e.name, width: e.width, height: e.height }));
     if (!maps.length) { toast('请选择地图'); return; }
     const ids = maps.map(m => m.id);
-    const btn = $('#btnExtract');
-    btn.disabled = true;
+    if (btnEl) btnEl.disabled = true;
     try {
         // ① 下载真实地图瓦片（zipmap）并（可选）拼接总览图
         const r1 = await api('POST', '/api/map/downloadTiles', { Maps: maps, Destination: dest, Stitch: $('#chkStitch').checked });
         if (!r1.ok) { log('启动失败: ' + r1.error, 'err'); setMapStatus('失败', 'err'); return; }
-        log(`开始提取选中地图资源（${r1.totalMaps} 张）：① 下载真实瓦片 → ② 解析 JSON → ③ 提取小地图`, 'ok');
+        log(`开始提取（嵌套，${r1.totalMaps} 张）：① 下载真实瓦片 → ② 解析 JSON → ③ 提取小地图`, 'ok');
         await pollTiles(r1.jobId);
         // ② 解析地图数据为 JSON（不再单独写红绿 PNG，预览用“预览”按钮）
         setMapStatus('解析 JSON…', 'busy');
@@ -232,11 +237,67 @@ async function extractMaps() {
                 if (skipped.length) log(`  小地图跳过 ${skipped.length} 张（无小地图帧）`, 'ok');
             }
         } catch (e) { log('提取小地图失败: ' + e.message, 'err'); }
-        log(`已完成：每张地图一个「地图名_id」文件夹，内含 tiles/（真实瓦片）+ map_<id>_real.png（拼接图）+ map_<id>.json（数据）+ minimap.png（小地图）`, 'ok');
+        log(`已完成：每张地图一个「地图名_id」文件夹，内含 tiles/ + map_<id>_real.png + map_<id>.json + minimap.png`, 'ok');
         setMapStatus(`已完成：${r2.exported} 张（真实瓦片 + JSON${minMsg}）`, 'ok');
         toast(`提取完成：${r2.exported} 张（真实瓦片 + JSON + 小地图）`);
     } catch (e) { log('异常: ' + e.message, 'err'); setMapStatus('异常', 'err'); }
-    finally { btn.disabled = false; updateMapSel(); }
+    finally { if (btnEl) btnEl.disabled = false; updateMapSel(); }
+}
+
+async function extractMaps() {
+    const maps = mapIndex.filter(e => mapSelected.has(e.id))
+        .map(e => ({ id: e.id, img: e.img, name: e.name, width: e.width, height: e.height }));
+    await extractMapsWith(maps, $('#btnExtract'));
+}
+
+async function extractOneNested(id) {
+    const e = findEntry(id);
+    if (!e) { toast('找不到该地图'); return; }
+    await extractMapsWith([{ id: e.id, img: e.img, name: e.name, width: e.width, height: e.height }], null);
+}
+
+// ---------------- 提取地图资源（相对路径平铺，与「提取图集」同风格） ----------------
+async function extractRelativeWith(list, btnEl) {
+    const dest = $('#mapDest').value.trim();
+    if (!dest) { toast('请设置输出目录'); return; }
+    if (btnEl) btnEl.disabled = true;
+    const N = list.length;
+    setMapStatus('提取中…', 'busy');
+    setTileProgress(0, `准备相对路径提取（共 ${N} 张）`);
+    try {
+        let done = 0;
+        for (const e of list) {
+            done++;
+            setTileProgress(Math.round((done - 1) / N * 100), `正在提取 第 ${done} / ${N} 张：地图 ${e.id}（${e.name || ''}）`);
+            log(`相对路径提取 地图 ${e.id}（${e.name || ''}）…`);
+            const res = await api('POST', '/api/map/resources', {
+                mapId: e.id,
+                outDir: dest,
+                img: e.img ? parseInt(e.img, 10) : 0,
+                width: e.width || 0,
+                height: e.height || 0
+            });
+            if (!res.ok) { log(`  地图 ${e.id} 失败: ` + res.error, 'err'); }
+            else { log(`  地图 ${e.id}：瓦片 下载 ${res.tilesDownloaded} 跳过 ${res.tilesSkipped} 失败 ${res.tilesFailed}；小地图 ${res.minimapOk ? '有(' + res.minimapLocal + ')' : '无'}；逻辑数据 [${res.dataFiles.join(', ')}]`, 'ok'); }
+            setTileProgress(Math.round(done / N * 100), `已完成 ${done} / ${N} 张：地图 ${e.id}（${e.name || ''}）`);
+        }
+        setMapStatus(`相对路径提取完成（${N} 张）`, 'ok');
+        toast(`相对路径提取完成（${N} 张）`);
+    } catch (e) { log('异常: ' + e.message, 'err'); setMapStatus('异常', 'err'); }
+    finally { if (btnEl) btnEl.disabled = false; updateMapSel(); }
+}
+
+async function extractMapsRelative() {
+    const list = mapIndex.filter(e => mapSelected.has(e.id))
+        .map(e => ({ id: e.id, img: e.img, name: e.name, width: e.width, height: e.height }));
+    if (!list.length) { toast('请选择地图'); return; }
+    await extractRelativeWith(list, $('#btnExtractRel'));
+}
+
+async function extractOneRelative(id) {
+    const e = findEntry(id);
+    if (!e) { toast('找不到该地图'); return; }
+    await extractRelativeWith([{ id: e.id, img: e.img, name: e.name, width: e.width, height: e.height }], null);
 }
 
 function pollTiles(jobId) {
@@ -288,6 +349,9 @@ $('#btnExportCsv').addEventListener('click', () => {
     a.click();
     log('已导出索引 CSV（含地图名，' + mapIndex.length + ' 行）', 'ok');
 });
+
+// ---------------- 地图页初始化 ----------------
+$('#btnExtractRel').addEventListener('click', extractMapsRelative);
 
 // 进入页面即自动加载地图数据（与旧版“点总览卡片进地图页即加载”一致）
 loadMapData();
