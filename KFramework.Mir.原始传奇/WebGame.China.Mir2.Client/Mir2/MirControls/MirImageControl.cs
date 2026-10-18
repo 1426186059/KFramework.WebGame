@@ -87,6 +87,33 @@ namespace Client.MirControls
                 LibraryChanged.Invoke(this, EventArgs.Empty);
         }
 
+        // —— 方案2：图集绘制分支（与 .Lib 并存）——
+        // AtlasSheet 为已加载的图集（Mir2AtlasLibrary.GetSheetAsync 返回），AtlasFrame 为帧名；
+        // 二者齐备时 DrawControl 优先走图集精灵绘制，否则回退老的 Library.Draw(Index)。
+        private Mir2AtlasSheet _atlasSheet;
+        public Mir2AtlasSheet AtlasSheet
+        {
+            get { return _atlasSheet; }
+            set
+            {
+                if (_atlasSheet == value) return;
+                _atlasSheet = value;
+                OnLibraryChanged();
+            }
+        }
+
+        private string _atlasFrame;
+        public string AtlasFrame
+        {
+            get { return _atlasFrame; }
+            set
+            {
+                if (_atlasFrame == value) return;
+                _atlasFrame = value;
+                OnLibraryChanged();
+            }
+        }
+
         private bool _pixelDetect;
         protected bool PixelDetect
         {
@@ -131,6 +158,9 @@ namespace Client.MirControls
             set { base.Size = value; }
             get
             {
+                if (AutoSize && AtlasSheet != null && !string.IsNullOrEmpty(AtlasFrame)
+                    && AtlasSheet.Frames.TryGetValue(AtlasFrame, out var s))
+                    return new Size(s.SourceRectangle.Width, s.SourceRectangle.Height);
                 if (AutoSize && Library != null && Index >= 0)
                     return Library.GetTrueSize(Index);
                 return base.Size;
@@ -141,6 +171,9 @@ namespace Client.MirControls
         {
             get
             {
+                if (AtlasSheet != null && !string.IsNullOrEmpty(AtlasFrame)
+                    && AtlasSheet.Frames.TryGetValue(AtlasFrame, out var s))
+                    return new Size(s.SourceRectangle.Width, s.SourceRectangle.Height);
                 if (Library != null && Index >= 0)
                     return Library.GetTrueSize(Index);
                 return base.TrueSize;
@@ -160,7 +193,24 @@ namespace Client.MirControls
         {
             base.DrawControl();
 
-            if (DrawImage && Library != null)
+            if (!DrawImage) return;
+
+            // 方案2：图集绘制分支优先（AtlasSheet + AtlasFrame 齐备时走图集，否则回退老 .Lib）。
+            if (AtlasSheet != null && !string.IsNullOrEmpty(AtlasFrame)
+                && AtlasSheet.Frames.TryGetValue(AtlasFrame, out var atlasSprite))
+            {
+                Color drawColor = ForeColour;
+                if (Opacity < 1f)
+                    drawColor = new Color(drawColor.R, drawColor.G, drawColor.B, (byte)(drawColor.A * Opacity));
+
+                bool oldGray = DXManager.GrayScale;
+                if (GrayScale) DXManager.SetGrayscale(true);
+                DXManager.Batch.DrawFrame(atlasSprite, DisplayLocation.X, DisplayLocation.Y, drawColor);
+                if (GrayScale) DXManager.SetGrayscale(oldGray);
+                return;
+            }
+
+            if (Library != null)
             {
                 bool oldGray = DXManager.GrayScale;
 
