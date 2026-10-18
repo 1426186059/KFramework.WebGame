@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
 using Mir2.Direction;
@@ -34,6 +35,7 @@ public class AnimExportService
     private readonly object _lock = new();
 
     private readonly IWebHostEnvironment _env;
+    private readonly GameConfigService _config;
 
     /// <summary>模型号 -> 名字（怪物/NPC 名，离线生成于 wwwroot/data/modelNames.json，源自原版客户端配置表）。</summary>
     private readonly Dictionary<string, string> _modelNames = new();
@@ -42,9 +44,10 @@ public class AnimExportService
     private Dictionary<long, Dictionary<int, int>> _modelTotalDir = new();
     private bool _modelInfoLoaded;
 
-    public AnimExportService(IWebHostEnvironment env)
+    public AnimExportService(IWebHostEnvironment env, GameConfigService config)
     {
         _env = env;
+        _config = config;
         // 加载 model -> 名字 映射（怪/NPC 名来自客户端配置 monster/npc 表，构建期由脚本从客户端配置分片抽出）
         try
         {
@@ -362,6 +365,168 @@ public class AnimExportService
         {
             int type = arr[i].TryGetProperty("type", out var t) && t.TryGetInt32(out var tv) ? tv : 0;
             int pos = arr[i].TryGetProperty("pos", out var p) && p.TryGetInt32(out var pv) ? pv : 1;
+            string r = i == 0
+                ? (type == 0 ? "施法特效" : type == 1 ? "命中特效" : type == 2 ? "飞弹特效" : "特效" + type)
+                : (type == 1 ? "命中特效" : type == 2 ? "飞弹特效" : "追加特效");
+            if (pos == 0) r = "自身·" + r;
+            labels.Add(r);
+        }
+        var seen = new Dictionary<string, int>();
+        var outL = new List<string>();
+        foreach (var r in labels)
+        {
+            if (!seen.ContainsKey(r)) { seen[r] = 0; outL.Add(r); }
+            else { seen[r]++; outL.Add(r + "·" + (seen[r] + 1)); }
+        }
+        return outL;
+    }
+
+    // ---------------- 统一资源提取（按配置表分类） ----------------
+    /// <summary>一个资源分类：id/显示名/后端配置表名/名字取法/模型取法。</summary>
+    public record ResourceCategory(string Id, string Label, string Table, string NameRule, string ModelRule);
+
+    /// <summary>下拉分类。怪物/NPC/称号/特效 直接取 model 字段；技能特效 经 skillEffects→effect→model；物品 为数组按列取外观。</summary>
+    private static readonly ResourceCategory[] _resourceCategories =
+    {
+        new("monster", "怪物", "monster", "name", "model"),
+        new("npc", "NPC", "npc", "name", "model"),
+        new("title", "称号", "title", "name", "model"),
+        new("effect", "特效(全部 effect)", "effect", "id", "model"),
+        new("skillEffects", "技能特效", "skillEffects", "__skill", "__skillEffects"),
+        new("item", "物品(外观·实验)", "item", "__itemName", "__itemLooks"),
+    };
+
+    public object GetResourceCategories()
+        => _resourceCategories.Select(c => new { id = c.Id, label = c.Label }).ToArray();
+
+    /// <summary>返回某分类下的条目（模型号 + 名字），可按关键字过滤。配置表未加载时自动尝试加载。</summary>
+    public async Task<object> GetResourceEntriesAsync(string catId, string? q)
+    {
+        var cat = _resourceCategories.FirstOrDefault(c => c.Id == catId);
+        if (cat == null) return new { ok = false, error = "未知分类：" + catId };
+        if (_config == null || !_config.IsConfigLoaded)
+        {
+            try { await _config.LoadConfigTablesAsync(); }
+            catch (Exception ex) { return new { ok = false, error = "加载配置表失败：" + ex.Message }; }
+        }
+        var table = _config.GetTable(cat.Table);
+        if (table == null) return new { ok = false, error = $"配置表 {cat.Table} 未找到（请先在配置页加载配置表）" };
+
+        var rows = new List<object>();
+        var query = (q ?? "").Trim();
+        if (cat.Id == "skillEffects")
+            BuildSkillEffectRows(table, query, rows);
+        else
+            BuildTableRows(cat, table, query, rows);
+        return new { ok = true, count = rows.Count, rows };
+    }
+
+    private void BuildSkillEffectRows(JsonNode seNode, string q, List<object> rows)
+    {
+        if (seNode is not JsonObject se) return;
+        var skills = _config.GetTable("skill") as JsonObject;
+        var eff = _config.GetTable("effect") as JsonObject;
+        foreach (var kv in se)
+        {
+            if (!int.TryParse(kv.Key, out var k)) continue;
+            int skillId = k / 100, level = k % 100;
+            if (skillId == 0) { skillId = k; level = 0; }
+            var sName = SkillNameNode(skills, skillId) ?? SkillNameNode(skills, k);
+            if (sName == null) continue;
+            var arr = kv.Value is JsonArray ja ? ja : new JsonArray { kv.Value! };
+            var roles = AssignRolesNode(arr);
+            for (int i = 0; i < arr.Count; i++)
+            {
+                if (arr[i] is not JsonObject e) continue;
+                var eid = GetIntFlex(e, "effect");
+                if (!eid.HasValue) continue;
+                var model = (eff?.TryGetPropertyValue(eid.Value.ToString(), out var em) == true && em is JsonObject emo)
+                    ? GetIntFlex(emo, "model") : null;
+                if (!model.HasValue) continue;
+                var name = $"特效·{sName}{(level > 0 ? $"(Lv{level})" : "")}·{roles[i]}";
+                if (q.Length > 0 && !(name.Contains(q) || model.Value.ToString().Contains(q))) continue;
+                rows.Add(new { key = model.Value.ToString(), name, models = new[] { model.Value } });
+            }
+        }
+    }
+
+    private void BuildTableRows(ResourceCategory cat, JsonNode table, string q, List<object> rows)
+    {
+        foreach (var e in NormalizeNode(table))
+        {
+            if (e is not JsonObject o) continue;
+            var name = ResolveName(cat.NameRule, o);
+            var models = ResolveModels(cat.ModelRule, o);
+            if (models.Count == 0) continue;
+            var key = GetIntFlex(o, "id")?.ToString() ?? models[0].ToString();
+            if (q.Length > 0 && !(name.Contains(q) || string.Join(",", models).Contains(q))) continue;
+            rows.Add(new { key, name, models });
+        }
+    }
+
+    private static List<JsonNode> NormalizeNode(JsonNode node)
+    {
+        if (node is JsonObject o) return o.Select(p => p.Value!).ToList();
+        if (node is JsonArray a) return a.Select(x => x!).ToList();
+        return new List<JsonNode>();
+    }
+
+    private static string ResolveName(string rule, JsonObject o)
+    {
+        return rule switch
+        {
+            "name" => o["name"]?.GetValue<string>() ?? "",
+            "id" => "特效" + (GetIntFlex(o, "id")?.ToString() ?? "?"),
+            "__itemName" => o["2"]?.GetValue<string>() ?? "",
+            _ => o["name"]?.GetValue<string>() ?? ""
+        };
+    }
+
+    private static List<int> ResolveModels(string rule, JsonObject o)
+    {
+        var list = new List<int>();
+        if (rule == "model")
+        {
+            var m = GetIntFlex(o, "model");
+            if (m.HasValue) list.Add(m.Value);
+        }
+        else if (rule == "__itemLooks")
+        {
+            foreach (var idx in new[] { 20, 17 })
+            {
+                var v = GetIntFlex(o, idx.ToString());
+                if (v.HasValue && v.Value > 0 && !list.Contains(v.Value)) list.Add(v.Value);
+            }
+        }
+        return list;
+    }
+
+    private static int? GetIntFlex(JsonObject o, string key)
+    {
+        var v = o[key];
+        if (v is not JsonValue jv) return null;
+        if (jv.TryGetValue<int>(out var i)) return i;
+        if (jv.TryGetValue<string>(out var s) && int.TryParse(s, out var si)) return si;
+        return null;
+    }
+
+    private static string? SkillNameNode(JsonObject? skills, int id)
+    {
+        if (skills == null) return null;
+        if (skills.TryGetPropertyValue(id.ToString(), out var s) && s is JsonObject so
+            && so.TryGetPropertyValue("name", out var n) && n is JsonValue nv)
+            return nv.GetValue<string>();
+        return null;
+    }
+
+    private static List<string> AssignRolesNode(JsonArray arr)
+    {
+        var labels = new List<string>();
+        for (int i = 0; i < arr.Count; i++)
+        {
+            if (arr[i] is not JsonObject e) { labels.Add("特效" + i); continue; }
+            int type = GetIntFlex(e, "type") ?? 0;
+            int pos = GetIntFlex(e, "pos") ?? 1;
             string r = i == 0
                 ? (type == 0 ? "施法特效" : type == 1 ? "命中特效" : type == 2 ? "飞弹特效" : "特效" + type)
                 : (type == 1 ? "命中特效" : type == 2 ? "飞弹特效" : "追加特效");

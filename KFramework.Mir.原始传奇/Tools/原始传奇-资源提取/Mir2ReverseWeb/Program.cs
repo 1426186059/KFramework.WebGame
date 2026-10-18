@@ -173,4 +173,9 @@ api.MapGet("/anim/progress", (string? job, AnimExportService s) =>
 api.MapPost("/anim/refresh-names", async (AnimExportService s) =>
     Results.Ok(await s.RefreshModelNamesAsync()));
 
+// 统一资源提取：按配置表分类列出可提取的资源条目（模型号 + 名字），复用现有导出（有/无版本号双路径）
+api.MapGet("/anim/categories", (AnimExportService s) => Results.Ok(s.GetResourceCategories()));
+api.MapGet("/anim/category-entries", async (string cat, string? q, AnimExportService s) =>
+    Results.Ok(await s.GetResourceEntriesAsync(cat, q)));
+
 app.Run();

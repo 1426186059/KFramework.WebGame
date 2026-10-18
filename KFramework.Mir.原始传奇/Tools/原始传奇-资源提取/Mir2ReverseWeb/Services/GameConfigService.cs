@@ -39,6 +39,17 @@ public class GameConfigService
     private readonly Dictionary<string, JsonNode> _configTables = new();
     private bool _configLoaded;
 
+    /// <summary>配置表是否已加载（/config/load 完成后为 true）。</summary>
+    public bool IsConfigLoaded => _configLoaded;
+
+    /// <summary>已加载的全部配置表名（顶层键）。未加载时返回空。</summary>
+    public IEnumerable<string> GetLoadedTableNames()
+        => _configLoaded ? _configTables.Keys : Array.Empty<string>();
+
+    /// <summary>按表名取已加载的配置表（JsonNode）。未加载或不存在返回 null。</summary>
+    public JsonNode? GetTable(string name)
+        => _configTables.TryGetValue(name, out var n) ? n : null;
+
     private static readonly JsonSerializerOptions _jsonIndented = new()
     {
         WriteIndented = true,

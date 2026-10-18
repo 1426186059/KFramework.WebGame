@@ -49,6 +49,11 @@
                             <div class="ov-title">导出角色/NPC/怪物动画</div>
                             <div class="ov-desc">从 resourceVersion.json 解析全部模型号，把每个角色/NPC/怪物/武器动画精灵表（model/{模型号}/{sourceId}.png + .json）批量下载到本地。</div>
                         </div>
+                        <div class="ov-card" data-go="unified">
+                            <div class="ov-ico">📦</div>
+                            <div class="ov-title">按配置表提取资源</div>
+                            <div class="ov-desc">不依赖 resourceVersion 清单：直接从原版配置表（怪物 / NPC / 称号 / 技能特效 / 物品…）解析资源条目（模型号 + 名字），选中即可按有/无版本号双路径导出。</div>
+                        </div>
                     </div>
                     <pre class="help">资源来源：CDN 根 https://cdn.yscq-wy.yscq.com/fugu_20201203  ｜  配置版本 10.25341.1
 配置拼接规则（同游戏 JS onloadCfgAgain）：数据服务器根 + "0config" + 版本号 + ".json?v=" + 版本号</pre>

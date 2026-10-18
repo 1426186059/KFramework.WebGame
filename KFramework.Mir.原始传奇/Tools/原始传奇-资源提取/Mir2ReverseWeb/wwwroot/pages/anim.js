@@ -175,3 +175,4 @@ if (animChkAll) animChkAll.addEventListener('change', ev => {
     if (ev.target.checked) anim.allModels.forEach(e => anim.selected.add(e.id)); else anim.selected.clear();
     animRenderTable(); animFilterTable();
 });
+
