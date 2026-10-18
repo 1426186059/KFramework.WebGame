@@ -85,6 +85,20 @@ public static class Mir2Config
     /// <summary>动画精灵表下载落地根目录（默认系统下载目录下的 Mir2Anim 子目录）</summary>
     public const string DownloadDir = "downloads";
 
+    /// <summary>
+    /// 模型帧资源基址（客户端运行时由 js_gameVars.resUrl / cdnServer 注入，并非 resourceVersion.json 所在主机）。
+    /// 逆向自 main10.25341.1.min.js：帧 URL = resUrl + 版本号 + "/model/{模型号}/{sourceId}.png"，其中 resUrl 以
+    /// "/resource/"（或 MiniGame/H5 构建含 "/assets/resource/"）结尾，defaultVersion 为空（无 ?ver 参数）。
+    /// 默认 CdnBase+"/assets/resource" 与旧行为一致；若该地址下取帧 404（资源在另一 CDN 主机），用环境变量
+    /// MIR2_FRAME_BASE 覆盖为真实 resUrl 基址（含 /resource 或 /assets/resource 段）。
+    /// </summary>
+    public static string FrameBase =>
+        Environment.GetEnvironmentVariable("MIR2_FRAME_BASE") ?? (CdnBase + "/assets/resource");
+
+    /// <summary>帧 URL 附加查询串（客户端 defaultVersion 为空，默认空串；个别 CDN 若需 ?ver= 再经 MIR2_FRAME_QUERY 设置）。</summary>
+    public static string FrameQuery =>
+        Environment.GetEnvironmentVariable("MIR2_FRAME_QUERY") ?? "";
+
     /// <summary>单元格像素尺寸（来自 JS 的 GameDefine.MAP_GRID_WIDTH / MAP_GRID_HEIGHT）</summary>
     public const int GridWidth = 48;
     public const int GridHeight = 32;

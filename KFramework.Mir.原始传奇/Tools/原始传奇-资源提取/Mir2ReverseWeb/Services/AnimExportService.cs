@@ -1,18 +1,25 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
+using System.Threading;
 using Microsoft.AspNetCore.Hosting;
+using Mir2.Direction;
 using Mir2ReverseWeb.Models;
 
 namespace Mir2ReverseWeb.Services;
 
 /// <summary>
-/// 角色 / NPC / 怪物 动画精灵表导出。
-/// 逆向自客户端 main10.25341.1.min.js 的 ResUrl / ActionLoader：
+/// 角色 / NPC / 怪物 / 特效 动画精灵表导出。
+/// 逆向自客户端 main10.25341.1.min.js 的 ResUrl / ActionLoader / DirectionType：
 ///   sourceId = 1000*模型号 + 10*动作 + 方向(0~7)；
 ///   URL = {CdnBase}/assets/resource/{版本号}/model/{模型号}/{sourceId}.png?ver={ResourceVersion}
 ///   「版本号」来自 resourceVersion.json 的 cm.version["model/{模型号}"]（按 ?v= 分版，本游戏用 10.25341.1）。
 /// resourceVersion.json 的键形如 "model/{模型号}"（无扩展名、无 sourceId），列出全部模型号。
-/// 每个模型号下并无清单，故按动作×方向枚举 sourceId，下载并跳过 404 的缺帧。
+/// 每个模型号下并无清单，故按动作枚举、每个动作按游戏方向系统只请求“实际存在的朝向”。
+///
+/// 方向系统（见 Mir2.Direction.Mir2Directions，工具与 WebGame.China.Mir2.Client 共用）：
+///   每个动作在配置 modelInfo / effect 里有 totaldir(1/2/5/8)，getDir 据此把 8 个逻辑朝向映射为实际存储朝向，
+///   引擎只加载这些实际朝向的帧。工具据此只下载真实帧（如特效 totaldir=1 仅 NONE=4 一帧；totaldir=5 仅 0..4），
+///   避免对镜像位/缺帧发无效请求。模型不在 resourceVersion(无版本段，如 14031)时 ver 留空走 assets/resource/model/{id}/...。
 /// 解析用 JsonDocument（允许大小写重复键，后者覆盖），规避 PowerShell 所见重复键报错。
 /// </summary>
 public class AnimExportService
@@ -27,6 +34,10 @@ public class AnimExportService
 
     /// <summary>模型号 -> 名字（怪物/NPC 名，离线生成于 wwwroot/data/modelNames.json，源自原版客户端配置表）。</summary>
     private readonly Dictionary<string, string> _modelNames = new();
+
+    /// <summary>模型号 -> (动作号 -> totaldir)，来自 2config 的 modelInfo；用于按游戏方向系统只请求实际朝向。</summary>
+    private Dictionary<long, Dictionary<int, int>> _modelTotalDir = new();
+    private bool _modelInfoLoaded;
 
     public AnimExportService(IWebHostEnvironment env)
     {
@@ -161,20 +172,30 @@ public class AnimExportService
         var selected = ParseModelFilter(req.Models);   // null = 全部
         int maxAction = Math.Max(1, Math.Min(req.MaxAction <= 0 ? 60 : req.MaxAction, 200));
 
-        // 以 (模型号, 动作) 为一组；组内先下 dir0，命中再下 dir1-7（避免对不存在的帧发 8 倍无效请求）。
-        // 留空 Models 即导出全部模型（resourceVersion.json 里列出的 4774 个模型号）。
+        // 加载 modelInfo（动作 totaldir），供按游戏方向系统只请求实际存在的帧
+        await EnsureModelInfoAsync();
+
+        // 以 (模型号, 动作) 为一组。留空 Models 导出全部（resourceVersion 里的模型号）；
+        // 指定 Models 时：即便模型不在 resourceVersion（无版本段路径 assets/resource/model/{id}/...，如 14031）
+        // 也照常处理，ver 留空。
         var groups = new List<(long r, string ver, int action, bool json)>();
-        foreach (var kv in versions)
+        if (selected == null)
         {
-            if (!kv.Key.StartsWith("model/", StringComparison.OrdinalIgnoreCase)) continue;
-            var r = ModelIdFromKey(kv.Key);
-            if (!r.HasValue) continue;
-            if (selected != null && !selected.Contains(r.Value.ToString())) continue;
-            var ver = kv.Value;
-            for (int action = 0; action <= maxAction; action++)
+            foreach (var kv in versions)
             {
-                groups.Add((r.Value, ver, action, false));
-                if (req.WithJson) groups.Add((r.Value, ver, action, true));
+                if (!kv.Key.StartsWith("model/", StringComparison.OrdinalIgnoreCase)) continue;
+                var r = ModelIdFromKey(kv.Key);
+                if (!r.HasValue) continue;
+                AddModelGroups(groups, r.Value, kv.Value, maxAction, req.WithJson);
+            }
+        }
+        else
+        {
+            foreach (var idStr in selected)
+            {
+                if (!long.TryParse(idStr, out var r)) continue;
+                versions.TryGetValue("model/" + idStr, out var ver);   // 不在版本表则 ver 留空（无版本段路径）
+                AddModelGroups(groups, r, ver ?? "", maxAction, req.WithJson);
             }
         }
 
@@ -192,6 +213,57 @@ public class AnimExportService
         foreach (var p in models.Split([',', ' ', ';', '\n', '\t'], StringSplitOptions.RemoveEmptyEntries))
             set.Add(p.Trim());
         return set.Count == 0 ? null : set;
+    }
+
+    /// <summary>把单个模型的全部动作组加入列表（动作 0..maxAction）。</summary>
+    private static void AddModelGroups(List<(long r, string ver, int action, bool json)> groups, long r, string ver, int maxAction, bool withJson)
+    {
+        for (int action = 0; action <= maxAction; action++)
+        {
+            groups.Add((r, ver, action, false));
+            if (withJson) groups.Add((r, ver, action, true));
+        }
+    }
+
+    /// <summary>取某模型某动作的 totaldir；modelInfo 无记录时默认 8 向（与游戏 getActionCfg 缺配置行为一致）。</summary>
+    private int GetTotalDir(long r, int action)
+    {
+        if (_modelTotalDir.TryGetValue(r, out var acts) && acts.TryGetValue(action, out var td)) return td;
+        return 8;
+    }
+
+    /// <summary>下载并解析 2config 的 modelInfo（模型→动作→totaldir），缓存到 _modelTotalDir；失败则退化为 8 向全扫。</summary>
+    private async Task EnsureModelInfoAsync()
+    {
+        bool need;
+        lock (_lock) { need = !_modelInfoLoaded; }
+        if (!need) return;
+        try
+        {
+            var url = $"{Mir2Config.CdnBase}/2config{Mir2Config.GameVersion}.json?v={Mir2Config.GameVersion}";
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+            var json = await _http.GetStringAsync(url, cts.Token);
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.TryGetProperty("modelInfo", out var mi) && mi.ValueKind == JsonValueKind.Object)
+            {
+                var dict = new Dictionary<long, Dictionary<int, int>>();
+                foreach (var m in mi.EnumerateObject())
+                {
+                    if (!long.TryParse(m.Name, out var modelId)) continue;
+                    if (m.Value.ValueKind != JsonValueKind.Object) continue;
+                    var acts = new Dictionary<int, int>();
+                    foreach (var a in m.Value.EnumerateObject())
+                    {
+                        if (!int.TryParse(a.Name, out var act)) continue;
+                        if (a.Value.TryGetProperty("totaldir", out var td) && td.TryGetInt32(out var t)) acts[act] = t;
+                    }
+                    dict[modelId] = acts;
+                }
+                _modelTotalDir = dict;
+            }
+        }
+        catch { /* modelInfo 缺失不影响导出，仅退化为 8 向全扫 */ }
+        finally { _modelInfoLoaded = true; }
     }
 
     public AnimProgress? GetProgress(Guid id)
@@ -221,8 +293,11 @@ public class AnimExportService
                 ? Path.Combine(GameConfigService.OsDownloadDir(), "Mir2Anim")
                 : outDir!;
             Directory.CreateDirectory(baseDir);
-            var cdnRoot = Mir2Config.CdnBase.TrimEnd('/');          // https://cdn.yscq-wy.yscq.com/fugu_20201203
-            var verParam = "?ver=" + Mir2Config.ResourceVersion;     // 缓存破坏参数 ?ver=1.0.2
+            // 帧资源基址：默认 CdnBase+"/assets/resource"（旧行为），但真实帧主机是游戏运行时注入的
+            // js_gameVars.resUrl / cdnServer（与 resourceVersion.json 所在主机不同）。若此主机下取帧 404，
+            // 用环境变量 MIR2_FRAME_BASE 覆盖为真实 resUrl 基址（含 /resource 或 /assets/resource 段）。
+            var frameBase = Mir2Config.FrameBase.TrimEnd('/');
+            var verParam = Mir2Config.FrameQuery;                    // 客户端帧无 ?ver 参数，默认空串
 
             var sem = new SemaphoreSlim(CONCURRENCY);
             var tasks = new List<Task>();
@@ -233,11 +308,11 @@ public class AnimExportService
                 {
                     try
                     {
-                        // 先下 dir0：成功才继续 dir1-7；404 说明该动作本就不存在，整组跳过其余方向
-                        var okDir0 = await DownloadOne(job, baseDir, cdnRoot, verParam, g.r, g.ver, g.action, 0, g.json);
-                        if (okDir0)
-                            for (int dir = 1; dir < 8; dir++)
-                                await DownloadOne(job, baseDir, cdnRoot, verParam, g.r, g.ver, g.action, dir, g.json);
+                        // 每个动作按 totaldir 仅请求“实际存在的朝向”（见 Mir2Directions）：
+                        // 游戏 getDir 依据 totaldir(1/2/5/8) 把 8 个逻辑朝向映射为实际存储朝向，引擎只加载这些帧。
+                        int totaldir = GetTotalDir(g.r, g.action);
+                        foreach (var dir in Mir2Directions.ActualDirs(totaldir))
+                            await DownloadOne(job, baseDir, frameBase, verParam, g.r, g.ver, g.action, dir, g.json);
                     }
                     catch { /* 单组异常不中断整体 */ }
                     finally { Interlocked.Increment(ref job.DoneFiles); sem.Release(); }
@@ -251,14 +326,19 @@ public class AnimExportService
         finally { job.Finished = true; }
     }
 
-    /// <summary>下载单帧，落盘到统一相对路径 assets/resource/{ver}/model/{r}/{srcId}.{ext}（与 CDN 完全一致）。
-    /// sourceId = 1000*模型号 + 10*动作 + 方向(0~7)，URL 公式与游戏客户端 JS 一致，各 srcId 下载各自正确的帧。</summary>
-    private async Task<bool> DownloadOne(Job job, string baseDir, string cdnRoot, string verParam, long r, string ver, int action, int dir, bool json)
+    /// <summary>下载单帧，落盘到统一相对路径（与 CDN 完全一致）。
+    /// sourceId = 1000*模型号 + 10*动作 + 方向(0~7)，URL 公式与游戏客户端 JS 一致，各 srcId 下载各自正确的帧。
+    /// version 为空（无版本段模型，如 14031）时走 assets/resource/model/{模型号}/...。</summary>
+    private async Task<bool> DownloadOne(Job job, string baseDir, string frameBase, string verParam, long r, string ver, int action, int dir, bool json)
     {
         long srcId = 1000L * r + 10L * action + dir;
         var ext = json ? "json" : "png";
-        var relPath = $"assets/resource/{ver}/model/{r}/{srcId}.{ext}";   // 统一相对路径(含版本)，对齐 CDN
-        var url = $"{cdnRoot}/{relPath}{verParam}";
+        // 相对路径：version 为空（无版本段模型，如 14031）时走 assets/resource/model/{模型号}/...，
+        // 否则 {版本}/model/{模型号}/{sourceId}.{ext}；frameBase 已包含 /resource 或 /assets/resource 段
+        var relPath = string.IsNullOrEmpty(ver)
+            ? $"model/{r}/{srcId}.{ext}"
+            : $"{ver}/model/{r}/{srcId}.{ext}";
+        var url = $"{frameBase}/{relPath}{verParam}";
         var local = Path.Combine(baseDir, relPath.Replace('/', Path.DirectorySeparatorChar));
         job.Current = relPath;
         if (File.Exists(local) && new FileInfo(local).Length > 0) { Interlocked.Increment(ref job.Skipped); return true; }
