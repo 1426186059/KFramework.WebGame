@@ -215,13 +215,26 @@ public class AnimExportService
         return set.Count == 0 ? null : set;
     }
 
-    /// <summary>把单个模型的全部动作组加入列表（动作 0..maxAction）。</summary>
-    private static void AddModelGroups(List<(long r, string ver, int action, bool json)> groups, long r, string ver, int maxAction, bool withJson)
+    /// <summary>把单个模型的动作组加入列表。模型在 modelInfo 中时只导出「登记的动作」（与游戏一致，避免对不存在的动作全向枚举发 404）；
+    /// 不在 modelInfo 时回退扫描 0..maxAction（兜底，保持旧行为）。动作方向由 Run 内按 totaldir 决定。</summary>
+    private void AddModelGroups(List<(long r, string ver, int action, bool json)> groups, long r, string ver, int maxAction, bool withJson)
     {
-        for (int action = 0; action <= maxAction; action++)
+        if (_modelTotalDir.TryGetValue(r, out var acts) && acts.Count > 0)
         {
-            groups.Add((r, ver, action, false));
-            if (withJson) groups.Add((r, ver, action, true));
+            // 仅导出配置里实际存在的动作；每个动作按 totaldir 只请求实际朝向（Run 内处理）
+            foreach (var a in acts.Keys)
+            {
+                groups.Add((r, ver, a, false));
+                if (withJson) groups.Add((r, ver, a, true));
+            }
+        }
+        else
+        {
+            for (int a = 0; a <= maxAction; a++)
+            {
+                groups.Add((r, ver, a, false));
+                if (withJson) groups.Add((r, ver, a, true));
+            }
         }
     }
 
