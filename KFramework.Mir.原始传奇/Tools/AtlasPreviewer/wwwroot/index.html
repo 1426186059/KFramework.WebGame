@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>原始传奇 图集预览</title>
+<style>
+  body { margin: 0; font-family: system-ui, "Microsoft YaHei", sans-serif; background: #1b1b1b; color: #ddd; }
+  header {
+    position: sticky; top: 0; background: #262626; padding: 10px 14px; display: flex;
+    flex-direction: column; gap: 8px; border-bottom: 1px solid #333; z-index: 10;
+  }
+  .bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  select, input[type=text], button {
+    background: #333; color: #eee; border: 1px solid #555; border-radius: 4px; padding: 6px 8px;
+  }
+  #rootPath { flex: 1 1 360px; min-width: 240px; color: #9fd3ff; }
+  #grid { display: flex; flex-wrap: wrap; gap: 10px; padding: 14px; align-content: flex-start; }
+  .card { background: #2a2a2a; border: 1px solid #383838; border-radius: 6px; padding: 6px; width: fit-content; }
+  .card canvas {
+    display: block;
+    background: repeating-conic-gradient(#3a3a3a 0% 25%, #2e2e2e 0% 50%) 50% / 16px 16px;
+    image-rendering: pixelated;
+  }
+  .card .name { font-size: 11px; margin-top: 4px; word-break: break-all; max-width: 260px; color: #9fd3ff; }
+  .card .dim { font-size: 10px; color: #888; }
+  .empty { padding: 40px; color: #888; }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <h1>原始传奇 图集预览</h1>
+    <input id="rootPath" type="text" placeholder="把本地图集文件夹路径粘贴到这里，例如 D:\xxx\assets" />
+    <button id="loadBtn">加载</button>
+  </div>
+  <div class="bar">
+    <label>图集：
+      <select id="atlasSelect"><option value="">（先粘贴路径并加载）</option></select>
+    </label>
+    <input id="filter" type="text" placeholder="过滤帧名…" />
+    <span id="count" style="color:#888"></span>
+  </div>
+</header>
+
+<div id="grid"><div class="empty">把本地图集文件夹路径粘贴到上方输入框，点“加载”，工具会遍历该目录下所有 *-sheet.json（含子目录）</div></div>
+
+<script>
+const THUMB_H = 150; // 每个条目固定高度 150px
+const grid = document.getElementById('grid');
+const filterInput = document.getElementById('filter');
+const countEl = document.getElementById('count');
+const rootInput = document.getElementById('rootPath');
+const loadBtn = document.getElementById('loadBtn');
+const atlasSelect = document.getElementById('atlasSelect');
+
+let atlases = [];
+let currentRoot = '';
+let currentFrames = [];
+let currentImg = null;
+
+// 粘贴路径 -> 服务端遍历列出图集
+async function loadRoot() {
+  const root = rootInput.value.trim();
+  if (!root) { alert('请先粘贴图集文件夹路径'); return; }
+  currentRoot = root;
+  try {
+    const res = await fetch('/api/atlases?root=' + encodeURIComponent(root));
+    const data = await res.json();
+    if (!res.ok) { grid.innerHTML = '<div class="empty">错误：' + (data.error || res.status) + '</div>'; return; }
+    atlases = data.atlases || [];
+    atlasSelect.innerHTML = '<option value="">— 选择图集 —</option>';
+    atlases.forEach((a, i) => {
+      const o = document.createElement('option'); o.value = i; o.textContent = a.name; atlasSelect.appendChild(o);
+    });
+    countEl.textContent = '共 ' + atlases.length + ' 个图集';
+    grid.innerHTML = atlases.length
+      ? '<div class="empty">已发现 ' + atlases.length + ' 个图集，请从下拉选择</div>'
+      : '<div class="empty">该路径下没找到 *-sheet.json</div>';
+  } catch (e) { grid.innerHTML = '<div class="empty">请求失败：' + e + '</div>'; }
+}
+loadBtn.addEventListener('click', loadRoot);
+rootInput.addEventListener('keydown', e => { if (e.key === 'Enter') loadRoot(); });
+
+// 选图集 -> 解析帧 + 加载同目录 png（pngUrl 已是 /api/atlasimage?...）
+atlasSelect.addEventListener('change', async e => {
+  const i = e.target.value;
+  if (i === '' || i == null) return;
+  const a = atlases[+i];
+  if (!a) return;
+  try {
+    const res = await fetch('/api/atlas?root=' + encodeURIComponent(currentRoot) + '&rel=' + encodeURIComponent(a.relPath));
+    const data = await res.json();
+    if (!res.ok) { grid.innerHTML = '<div class="empty">错误：' + (data.error || res.status) + '</div>'; return; }
+    const frames = data.frames || [];
+    if (!data.pngUrl) { grid.innerHTML = '<div class="empty">该图集没有 png 地址</div>'; return; }
+    const img = new Image();
+    img.onload = () => { currentImg = img; currentFrames = frames; render(); };
+    img.onerror = () => alert('png 加载失败');
+    img.src = data.pngUrl;
+  } catch (e) { grid.innerHTML = '<div class="empty">请求失败：' + e + '</div>'; }
+});
+
+function render() {
+  const q = (filterInput.value || '').toLowerCase();
+  const frames = currentFrames.filter(f => f.name.toLowerCase().includes(q));
+  countEl.textContent = frames.length + ' / ' + currentFrames.length + ' 帧';
+  grid.innerHTML = '';
+  if (!frames.length) { grid.innerHTML = '<div class="empty">无匹配帧</div>'; return; }
+  const img = currentImg;
+  for (const f of frames) {
+    if (f.w <= 0 || f.h <= 0) continue;
+    const cw = Math.max(1, Math.round(THUMB_H * (f.w / f.h)));
+    const card = document.createElement('div');
+    card.className = 'card';
+    const cv = document.createElement('canvas');
+    cv.width = cw; cv.height = THUMB_H;
+    const ctx = cv.getContext('2d');
+    ctx.imageSmoothingEnabled = false; // 像素清晰
+    try { ctx.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, cw, THUMB_H); } catch (e) {}
+    const nm = document.createElement('div');
+    nm.className = 'name'; nm.textContent = f.name;
+    const dm = document.createElement('div');
+    dm.className = 'dim'; dm.textContent = f.w + '×' + f.h;
+    card.appendChild(cv); card.appendChild(nm); card.appendChild(dm);
+    grid.appendChild(card);
+  }
+}
+filterInput.addEventListener('input', render);
+</script>
+</body>
+</html>
