@@ -31,20 +31,34 @@
                         <button id="btnLoadVersion" class="btn btn-primary">加载并解析模型清单</button>
                         <span id="animLoadInfo" class="muted"></span>
                     </div>
-                    <div class="field">
-                        <label>模型号清单（共 <span id="animModelCount">0</span> 个，仅供参考/挑选）</label>
-                        <textarea id="animModelHint" class="readonly" readonly placeholder="这是加载后列出的全部模型号，仅供预览挑选；导出范围请在下方『筛选模型号』填写，留空即全部"></textarea>
-                        <span class="muted small">每个模型号 = 一个角色/NPC/怪物/武器 的动画集合（含其所有动作×8方向帧表）</span>
+                    <div id="animListWrap" class="list-wrap hidden">
+                        <div class="list-toolbar">
+                            <span class="search"><input id="animSearch" type="text" placeholder="搜索 模型号 / 名字" /></span>
+                            <button id="btnAnimSelAll" class="btn btn-ghost">全选</button>
+                            <button id="btnAnimClearAll" class="btn btn-ghost">取消全选</button>
+                            <span id="animSelInfo" class="sel-info"></span>
+                        </div>
+                        <div class="table-scroll">
+                            <table class="map-table">
+                                <thead>
+                                    <tr>
+                                        <th class="col-check"><input id="animChkAll" type="checkbox" /></th>
+                                        <th class="col-idx">序号</th>
+                                        <th>模型号</th>
+                                        <th>动画名字</th>
+                                        <th>资源版本</th>
+                                        <th class="col-act">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="animTbody"></tbody>
+                            </table>
+                        </div>
                     </div>
+                    <p class="muted small">每个模型号 = 一个角色/NPC/怪物/武器等 的动画集合（含其所有动作×8方向帧表）。「动画名字」全部逆向自原版客户端配置分片（{n}config）：怪物/NPC 表（model 字段）、物品表（外观号 Looks，第20列主外观＋第17列次级外观，按 Type 区分 武器/衣服/翅膀/装备…）、称号表（model 可拆成对）、技能/Buff/成就/星盘等表的数字 icon 字段；技能特效按 skillEffects（键=技能id×100+等级，可回链 skill 表名字）→ effect 表（id→model 精灵号）命名成「特效·雷电术(Lv5)」这类；其余纯特效按 effect 表回链 Buff 名或归类「特效-模型号」。**特效精灵以 effect 表的 model 字段为准，优先级高于技能/UI 图标的 icon 引用**——那些 icon 是图集索引而非 model 精灵号（如一个精灵不可能既是“雷电术Lv5特效”又是“地狱火技能图标”，后者是误算），故特效名会覆盖之，但不覆盖真实怪/NPC/物品/称号精灵。当前版本快照约 4200/4774（≈89%）能直出名，剩下约 11% 是 UI 图标类（配置里以字符串资源名引用、非数字模型号）等无统一名字的，显示「—」。「资源版本」是该模型各自当前的版本号（不同模型版本不同，正是你看到的 3.x / 10.x 并存的原因）。</p>
                 </div>
 
                 <div class="card">
                     <div class="card-title">导出范围与输出</div>
-                    <div class="field">
-                        <label>筛选模型号</label>
-                        <input id="animModels" type="text" placeholder="留空 = 全部；或填 9001,9002,9027 等（逗号/空格分隔）" />
-                        <span class="muted small">留空 = 导出全部（resourceVersion.json 里的 4774 个模型号，无需抄下面清单）</span>
-                    </div>
                     <div class="field">
                         <label>输出目录</label>
                         <input id="animOutDir" type="text" placeholder="默认 下载目录/Mir2Anim，文件按 model/{模型号}/{sourceId}.png 平铺" />
@@ -54,11 +68,14 @@
                     <div class="row-actions">
                         <label class="chk"><input type="checkbox" id="animWithJson" checked /> 含 .json 帧描述（还原每帧矩形必需）</label>
                     </div>
-                    <div class="field">
-                        <label>动作枚举上界</label>
-                        <input id="animMaxAction" type="number" value="60" min="1" max="200" style="width:90px" />
-                        <span class="muted small">默认 60（动作号超过此值不再尝试；按需下调可减少请求量。帧按 sourceId=1000×模型号+10×动作+方向 枚举，命中才下载、404 自动跳过）</span>
-                    </div>
+                    <details class="adv">
+                        <summary>高级选项（动作枚举上界等）</summary>
+                        <div class="field">
+                            <label>动作枚举上界</label>
+                            <input id="animMaxAction" type="number" value="60" min="1" max="200" style="width:90px" />
+                        </div>
+                        <p class="muted small">默认 60（动作号超过此值不再尝试；按需下调可减少请求量）。帧按 sourceId=1000×模型号+10×动作+方向 枚举，命中才下载、404 自动跳过。导出范围由上方条目勾选决定：勾选部分=仅导出勾选；全不选=导出全部（resourceVersion.json 里的全部模型号）。</p>
+                    </details>
                     <div class="row-actions">
                         <button id="btnExportAnim" class="btn btn-success" disabled>导出 角色/NPC/怪物 动画精灵表</button>
                         <span id="animStatus" class="dl-status"></span>

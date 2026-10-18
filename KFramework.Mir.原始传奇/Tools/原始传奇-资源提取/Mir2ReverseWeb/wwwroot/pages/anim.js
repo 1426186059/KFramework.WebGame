@@ -1,12 +1,14 @@
 'use strict';
 
 // 角色 / NPC / 怪物 动画精灵表导出页
-// 注意：ASP.NET Core 默认把响应属性序列化为小驼峰（ok/error/modelCount…），此处字段名须与之对应。
+// 注意：ASP.NET Core 默认把响应属性序列化为小驼峰（ok/error/models…），此处字段名须与之对应。
 
 const anim = {
     loaded: false,
     jobId: null,
     timer: null,
+    allModels: [],          // [{id, name, version}]
+    selected: new Set(),    // 选中的模型号字符串
 };
 
 function animSetProgress(pct, text) {
@@ -20,6 +22,56 @@ function animSetProgress(pct, text) {
     if (el) { el.textContent = text; el.className = 'dl-status'; }
 }
 
+function animUpdateSel() {
+    const n = anim.selected.size;
+    const btn = $('#btnExportAnim');
+    if (btn) {
+        if (n === 0) btn.textContent = '导出全部 角色/NPC/怪物 动画精灵表';
+        else btn.textContent = `导出选中 (${n}) 角色/NPC/怪物 动画精灵表`;
+    }
+    const info = $('#animSelInfo');
+    if (info) info.textContent = `已选 ${n} / ${anim.allModels.length}`;
+}
+
+function animRenderTable() {
+    const tb = $('#animTbody');
+    tb.innerHTML = '';
+    anim.allModels.forEach((e, i) => {
+        const tr = document.createElement('tr');
+        tr.dataset.id = e.id;
+        tr.innerHTML = `
+            <td><input type="checkbox" class="ac" data-id="${e.id}" ${anim.selected.has(e.id) ? 'checked' : ''}/></td>
+            <td>${i + 1}</td>
+            <td>${e.id}</td>
+            <td class="title-cn">${e.name || '—'}</td>
+            <td>${e.version || '—'}</td>
+            <td><button class="btn btn-ghost btn-xs act-exp">导出</button></td>`;
+        tr.querySelector('.ac').addEventListener('change', ev => {
+            if (ev.target.checked) anim.selected.add(e.id); else anim.selected.delete(e.id);
+            animUpdateSel();
+        });
+        tr.querySelector('.act-exp').addEventListener('click', ev => { ev.stopPropagation(); animExport([e.id]); });
+        tb.appendChild(tr);
+    });
+    $('#animListWrap').classList.remove('hidden');
+    animUpdateSel();
+}
+
+function animFilterTable() {
+    const q = $('#animSearch').value.trim().toLowerCase();
+    const rows = $('#animTbody').querySelectorAll('tr');
+    let shown = 0;
+    rows.forEach(tr => {
+        const id = (tr.dataset.id || '').toLowerCase();
+        const name = (tr.querySelector('.title-cn') ? tr.querySelector('.title-cn').textContent : '').toLowerCase();
+        const hit = !q || id.includes(q) || name.includes(q);
+        tr.style.display = hit ? '' : 'none';
+        if (hit) shown++;
+    });
+    const info = $('#animSelInfo');
+    if (info) info.textContent = `显示 ${shown} / ${anim.allModels.length}` + (anim.selected.size ? `　已选 ${anim.selected.size}` : '');
+}
+
 async function animLoad() {
     const btn = $('#btnLoadVersion');
     btn.disabled = true;
@@ -30,14 +82,12 @@ async function animLoad() {
         if (!r.ok) { log('加载失败: ' + (r.error || '（服务未返回具体原因，详见上方日志）'), 'err'); return; }
         anim.loaded = true;
         $('#animLoadInfo').textContent = `共 ${r.totalEntries} 个 model 资源，涉及 ${r.modelCount} 个模型号`;
-        $('#animModelCount').textContent = r.modelCount;
-        const models = r.models || [];
-        const hint = models.length > 300
-            ? models.slice(0, 300).join(', ') + ` …（共 ${models.length} 个，可在上方筛选框指定部分）`
-            : models.join(', ');
-        $('#animModelHint').value = hint || '（无）';
+        anim.allModels = r.models || [];
+        anim.selected.clear();
+        animRenderTable();
+        animFilterTable();
         $('#btnExportAnim').disabled = false;
-        log(`解析完成：${r.modelCount} 个模型号，可点「导出」批量下载`, 'ok');
+        log(`解析完成：${r.modelCount} 个模型号，可在上方列表中勾选导出`, 'ok');
     } catch (e) {
         log('加载失败: ' + e.message, 'err');
     } finally {
@@ -45,17 +95,21 @@ async function animLoad() {
     }
 }
 
-async function animExport() {
-    if (!anim.loaded) { toast('请先加载并解析模型清单'); return; }
+async function animExport(onlyIds) {
+    if (!anim.loaded && !(Array.isArray(onlyIds) && onlyIds.length)) { toast('请先加载并解析模型清单'); return; }
+    let ids;
+    if (Array.isArray(onlyIds)) ids = onlyIds;
+    else if (anim.selected.size > 0) ids = Array.from(anim.selected);
+    else ids = [];   // 空 = 全部
     const btn = $('#btnExportAnim');
     btn.disabled = true;
     const body = {
-        Models: $('#animModels').value.trim(),
+        Models: ids.join(','),
         OutDir: $('#animOutDir').value.trim(),
         WithJson: $('#animWithJson').checked,
         MaxAction: parseInt($('#animMaxAction').value, 10) || 60,
     };
-    log('提交导出任务…');
+    log(ids.length ? `提交导出任务（${ids.length} 个模型）…` : '提交导出任务（全部模型）…');
     try {
         const r = await api('POST', '/api/anim/export', body);
         if (!r.ok) { log('导出失败: ' + (r.error || '（服务未返回具体原因，详见上方日志）'), 'err'); btn.disabled = false; return; }
@@ -93,4 +147,16 @@ async function animPoll() {
 const animBtnLoad = $('#btnLoadVersion');
 if (animBtnLoad) animBtnLoad.addEventListener('click', animLoad);
 const animBtnExport = $('#btnExportAnim');
-if (animBtnExport) animBtnExport.addEventListener('click', animExport);
+if (animBtnExport) animBtnExport.addEventListener('click', () => animExport());
+
+const animSearchEl = $('#animSearch');
+if (animSearchEl) animSearchEl.addEventListener('input', animFilterTable);
+const animSelAllBtn = $('#btnAnimSelAll');
+if (animSelAllBtn) animSelAllBtn.addEventListener('click', () => { anim.allModels.forEach(e => anim.selected.add(e.id)); animRenderTable(); animFilterTable(); });
+const animClearAllBtn = $('#btnAnimClearAll');
+if (animClearAllBtn) animClearAllBtn.addEventListener('click', () => { anim.selected.clear(); animRenderTable(); animFilterTable(); });
+const animChkAll = $('#animChkAll');
+if (animChkAll) animChkAll.addEventListener('change', ev => {
+    if (ev.target.checked) anim.allModels.forEach(e => anim.selected.add(e.id)); else anim.selected.clear();
+    animRenderTable(); animFilterTable();
+});

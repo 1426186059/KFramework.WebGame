@@ -411,6 +411,17 @@ public class ConfigExtractResult
 }
 
 // ---------------- 角色 / NPC / 怪物 动画精灵表导出（model/{模型号}/{sourceId}.png|json） ----------------
+/// <summary>单个模型条目（resourceVersion.json 的 "model/{模型号}"）。Name 暂留空，待接入名字表后填充。</summary>
+public class AnimModelEntry
+{
+    /// <summary>模型号（即 "model/{模型号}" 里的整数）</summary>
+    public string Id { get; set; } = "";
+    /// <summary>动画名字（角色/怪物名）；暂未接入名字表，为 null</summary>
+    public string? Name { get; set; }
+    /// <summary>该模型当前资源版本号（来自 resourceVersion.json，每个模型各自不同，如 3.4428.1 / 10.x）</summary>
+    public string? Version { get; set; }
+}
+
 /// <summary>/anim/load 返回：解析 resourceVersion.json 后给出的模型号清单</summary>
 public class AnimLoadResult
 {
@@ -421,8 +432,8 @@ public class AnimLoadResult
     public int TotalEntries { get; set; }
     /// <summary>不同模型号数量（每个模型号 = 一个角色/NPC/怪物/武器…的动画集合）</summary>
     public int ModelCount { get; set; }
-    /// <summary>全部模型号（升序），供前端列出与筛选</summary>
-    public List<string> Models { get; set; } = new();
+    /// <summary>全部模型号（按 Id 升序），供前端逐条列出与勾选</summary>
+    public List<AnimModelEntry> Models { get; set; } = new();
     public List<string> Messages { get; set; } = new();
 }
 

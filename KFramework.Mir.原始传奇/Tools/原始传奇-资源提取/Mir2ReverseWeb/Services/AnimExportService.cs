@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
+using Microsoft.AspNetCore.Hosting;
 using Mir2ReverseWeb.Models;
 
 namespace Mir2ReverseWeb.Services;
@@ -23,6 +24,26 @@ public class AnimExportService
     // 资源名(模型键) -> 版本号。键形如 "model/{模型号}"。
     private Dictionary<string, string> _versions = new(StringComparer.OrdinalIgnoreCase);
     private readonly object _lock = new();
+
+    /// <summary>模型号 -> 名字（怪物/NPC 名，离线生成于 wwwroot/data/modelNames.json，源自原版客户端配置表）。</summary>
+    private readonly Dictionary<string, string> _modelNames = new();
+
+    public AnimExportService(IWebHostEnvironment env)
+    {
+        // 加载 model -> 名字 映射（怪/NPC 名来自客户端配置 monster/npc 表，构建期由脚本从客户端配置分片抽出）
+        try
+        {
+            var path = Path.Combine(env.WebRootPath, "data", "modelNames.json");
+            if (File.Exists(path))
+            {
+                using var doc = JsonDocument.Parse(File.ReadAllText(path));
+                foreach (var p in doc.RootElement.EnumerateObject())
+                    if (p.Value.ValueKind == JsonValueKind.String)
+                        _modelNames[p.Name] = p.Value.GetString()!;
+            }
+        }
+        catch { /* 名字映射缺失不影响导出 */ }
+    }
 
     static AnimExportService()
     {
@@ -57,16 +78,23 @@ public class AnimExportService
                 .ToList();
             res.TotalEntries = modelKeys.Count;   // = 模型号数量
 
-            // 键 "model/{模型号}" → 模型号就是键里的整数
-            var models = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
+            // 键 "model/{模型号}" → 模型号就是键里的整数；版本号取 dict[k]
+            var entries = new List<AnimModelEntry>();
             foreach (var k in modelKeys)
             {
                 var r = ModelIdFromKey(k);
-                if (r.HasValue) models.Add(r.Value.ToString());
+                if (r.HasValue)
+                    entries.Add(new AnimModelEntry
+                    {
+                        Id = r.Value.ToString(),
+                        Name = _modelNames.TryGetValue(r.Value.ToString(), out var nm) ? nm : null,
+                        Version = dict.TryGetValue(k, out var v) ? v : null,
+                    });
             }
-            res.Models = models.ToList();
-            res.ModelCount = res.Models.Count;
-            res.Messages.Add($"[完成] 共 {res.ModelCount} 个模型号（角色/NPC/怪物/武器…）");
+            entries.Sort((a, b) => int.Parse(a.Id).CompareTo(int.Parse(b.Id)));
+            res.Models = entries;
+            res.ModelCount = entries.Count;
+            res.Messages.Add($"[完成] 共 {res.ModelCount} 个模型号（角色/NPC/怪物/武器…），各自资源版本见条目列表");
             res.Ok = true;
         }
         catch (Exception ex) { res.Error = ex.Message; }
