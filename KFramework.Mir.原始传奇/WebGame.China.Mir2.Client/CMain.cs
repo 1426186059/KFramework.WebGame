@@ -95,21 +95,10 @@ namespace WebGame.Mir2.MonoGame.Client
             await CMain.InputKeys.LoadAsync().ConfigureAwait(false);
             DXManager.Create();
 
-            // 新 UI 框架（KFramework.MonoGameExtend）接入：初始化输入与场景管理。
-            // KSceneMgr.SpriteBatch 设为 DXManager.Batch（= 引擎 Game.SpriteBatch），KCanvas 绘制时复用这一个批对象独立开批。
-            KFramework.MonoGameExtend.KInputMgr.Init();
-            KFramework.MonoGameExtend.KSceneMgr.Init(KFramework.MonoGame.Game.Current);
-            KFramework.MonoGameExtend.KSceneMgr.SpriteBatch = DXManager.Batch;
-            // 注意：新 UI（MainDialogUI : KUIBase）在构造时挂到 KUIRoot.GetCanvas(0)，
-            // 该 KCanvas 位于 KSceneMgr.DontDestroyOnLoadRoot，KSceneMgr.Draw/Update 会自动遍历它，无需 AddScene。
-
             // 图集/UI 资源走 CDN 哈希布局：manifest key → resource/{hash前2}/{hash}_{size}.ext。
             // 默认 LocalMirrorUsesKeyPath=true 仅匹配「本地镜像按 key 原路径落盘」；默认 base 是 CDN，
             // 故需设为 false，否则 key 会被当成逻辑路径直接拼到 CDN 根而 404（之前就是这么挂的）。
             Mir2OriginResource.LocalMirrorUsesKeyPath = false;
-
-            // 异步加载图集并构建新 UI 控件树（fire-and-forget，不阻塞登录）。
-            _ = MainDialogUI.Instance.LoadAsync(DXManager.GDevice);
 
             // 触发 Libraries 静态构造（登记各库，不加载）
             _ = Libraries.Loaded;
@@ -141,9 +130,7 @@ namespace WebGame.Mir2.MonoGame.Client
         }
 
         private static string _lastLoopError;
-        // 供 RenderEnvironment 绘制新 UI 框架场景用的上一帧 GameTime（KSceneMgr.Draw 仅作帧率统计，不依赖它）。
-        private static GameTime _frameGameTime;
-        
+
         public static void Update(GameTime gameTime)
         {
             UpdateTime(gameTime);
@@ -153,11 +140,6 @@ namespace WebGame.Mir2.MonoGame.Client
             SoundManager.ProcessDelayedSounds();
 
             UpdateEnviroment();
-
-            // 新 UI 框架（KFramework.MonoGameExtend）每帧驱动：场景更新（控件动画/过渡）+ 指针分发（按钮点击）。
-            _frameGameTime = gameTime;
-            KFramework.MonoGameExtend.KSceneMgr.Update(gameTime);
-            KFramework.MonoGameExtend.KInputMgr.Update(gameTime);
         }
 
         public static void Draw()
@@ -415,9 +397,6 @@ namespace WebGame.Mir2.MonoGame.Client
                     MirScene.ActiveScene.Draw();                     // 原版 ActiveScene.Draw()
 
                 DXManager.EndSprite();                               // 原版 DXManager.Sprite.End()
-                // 新 UI 框架（KFramework.MonoGameExtend）：KCanvas 自己 Begin/End 批（带 UI 缩放 + PointClamp），
-                // 必须放在 DXManager 批结束之后，由 KCanvas 独立开批，否则与已开的批冲突（重复 Begin 报错）。
-                KFramework.MonoGameExtend.KSceneMgr.Draw(_frameGameTime);
                 DXManager.Device.EndScene();
                 DXManager.Device.Present();
             }

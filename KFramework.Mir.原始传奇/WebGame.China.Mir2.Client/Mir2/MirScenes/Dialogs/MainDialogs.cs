@@ -379,6 +379,8 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(Settings.Resolution != 800 ? 899 : 675, Settings.Resolution != 800 ? -463 : -295),
                 Visible = Settings.ModeView
             };
+
+            Visible = false;
         }
 
         public void Process()

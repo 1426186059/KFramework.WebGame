@@ -14,7 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\KFramework.WebGame\KFramework.MonoGameExtend\KFramework.MonoGameExtend.csproj" />
     <ProjectReference Include="..\..\KFramework.WebGame\KFramework.MonoGame\KFramework.MonoGame.csproj" />
   </ItemGroup>
 
