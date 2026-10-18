@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +33,8 @@ public class AnimExportService
     private Dictionary<string, string> _versions = new(StringComparer.OrdinalIgnoreCase);
     private readonly object _lock = new();
 
+    private readonly IWebHostEnvironment _env;
+
     /// <summary>模型号 -> 名字（怪物/NPC 名，离线生成于 wwwroot/data/modelNames.json，源自原版客户端配置表）。</summary>
     private readonly Dictionary<string, string> _modelNames = new();
 
@@ -41,6 +44,7 @@ public class AnimExportService
 
     public AnimExportService(IWebHostEnvironment env)
     {
+        _env = env;
         // 加载 model -> 名字 映射（怪/NPC 名来自客户端配置 monster/npc 表，构建期由脚本从客户端配置分片抽出）
         try
         {
@@ -277,6 +281,101 @@ public class AnimExportService
         }
         catch { /* modelInfo 缺失不影响导出，仅退化为 8 向全扫 */ }
         finally { _modelInfoLoaded = true; }
+    }
+
+    /// <summary>从原始配置（CDN 5config）重新生成 modelNames.json 的「特效」条目：skillEffects→effect→model，按 type 标注施法/命中/飞弹特效。
+    /// 怪物/NPC/称号等其它名字保留原文件不变。生成后同步刷新内存 _modelNames，下次加载模型清单即生效。</summary>
+    public async Task<object> RefreshModelNamesAsync()
+    {
+        var url = $"{Mir2Config.CdnBase}/5config{Mir2Config.GameVersion}.json?v={Mir2Config.GameVersion}";
+        string json;
+        try
+        {
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+            json = await _http.GetStringAsync(url, cts.Token);
+        }
+        catch (Exception ex) { return new { ok = false, error = "下载 5config 失败：" + ex.Message }; }
+
+        var dataPath = Path.Combine(_env.WebRootPath, "data", "modelNames.json");
+        var names = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        if (File.Exists(dataPath))
+        {
+            using var ed = JsonDocument.Parse(File.ReadAllText(dataPath));
+            foreach (var p in ed.RootElement.EnumerateObject())
+                if (p.Value.ValueKind == JsonValueKind.String)
+                    names[p.Name] = p.Value.GetString()!;
+        }
+
+        int updated = 0;
+        using (var doc = JsonDocument.Parse(json))
+        {
+            var root = doc.RootElement;
+            if (!root.TryGetProperty("skillEffects", out var se) || se.ValueKind != JsonValueKind.Object
+                || !root.TryGetProperty("effect", out var eff) || eff.ValueKind != JsonValueKind.Object
+                || !root.TryGetProperty("skill", out var skills) || skills.ValueKind != JsonValueKind.Object)
+                return new { ok = false, error = "5config 缺少 skillEffects/effect/skill 表" };
+
+            foreach (var kv in se.EnumerateObject())
+            {
+                if (!int.TryParse(kv.Name, out var k)) continue;
+                int skillId = k / 100, level = k % 100;
+                if (skillId == 0) { skillId = k; level = 0; }
+                var sName = SkillName(skills, skillId) ?? SkillName(skills, k);
+                if (sName == null) continue; // 解析不到技能名：保留旧名，不覆盖
+                var arr = kv.Value.ValueKind == JsonValueKind.Array
+                    ? kv.Value.EnumerateArray().ToList()
+                    : new List<JsonElement> { kv.Value };
+                var roles = AssignRoles(arr);
+                for (int i = 0; i < arr.Count; i++)
+                {
+                    if (!arr[i].TryGetProperty("effect", out var ef) || !ef.TryGetInt32(out var eid)) continue;
+                    if (!eff.TryGetProperty(eid.ToString(), out var em) || em.ValueKind != JsonValueKind.Object) continue;
+                    if (!em.TryGetProperty("model", out var me) || !me.TryGetInt32(out var model)) continue;
+                    var mkey = model.ToString();
+                    var lv = level > 0 ? $"(Lv{level})" : "";
+                    var nn = $"特效·{sName}{lv}·{roles[i]}";
+                    if (nn.StartsWith("技能")) continue; // 退化名不覆盖
+                    names[mkey] = nn; updated++;
+                }
+            }
+        }
+
+        File.WriteAllText(dataPath, JsonSerializer.Serialize(names));
+        _modelNames.Clear();
+        foreach (var kv in names) _modelNames[kv.Key] = kv.Value;
+        return new { ok = true, updated, total = names.Count };
+    }
+
+    private static string? SkillName(JsonElement skills, int id)
+    {
+        if (skills.TryGetProperty(id.ToString(), out var s) && s.ValueKind == JsonValueKind.Object
+            && s.TryGetProperty("name", out var n) && n.ValueKind == JsonValueKind.String)
+            return n.GetString();
+        return null;
+    }
+
+    /// <summary>按 skillEffects 条目 type/pos 推导组内角色：type0=施法特效(立即落点)、type1=命中特效(目标)、type2=飞弹特效(弹道)；pos0=自身。</summary>
+    private static List<string> AssignRoles(List<JsonElement> arr)
+    {
+        var labels = new List<string>();
+        for (int i = 0; i < arr.Count; i++)
+        {
+            int type = arr[i].TryGetProperty("type", out var t) && t.TryGetInt32(out var tv) ? tv : 0;
+            int pos = arr[i].TryGetProperty("pos", out var p) && p.TryGetInt32(out var pv) ? pv : 1;
+            string r = i == 0
+                ? (type == 0 ? "施法特效" : type == 1 ? "命中特效" : type == 2 ? "飞弹特效" : "特效" + type)
+                : (type == 1 ? "命中特效" : type == 2 ? "飞弹特效" : "追加特效");
+            if (pos == 0) r = "自身·" + r;
+            labels.Add(r);
+        }
+        var seen = new Dictionary<string, int>();
+        var outL = new List<string>();
+        foreach (var r in labels)
+        {
+            if (!seen.ContainsKey(r)) { seen[r] = 0; outL.Add(r); }
+            else { seen[r]++; outL.Add(r + "·" + (seen[r] + 1)); }
+        }
+        return outL;
     }
 
     public AnimProgress? GetProgress(Guid id)

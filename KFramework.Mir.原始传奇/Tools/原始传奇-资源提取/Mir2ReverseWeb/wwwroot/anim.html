@@ -29,6 +29,7 @@
                     <p class="muted">该文件即原版 JS 的 cm.version：全量「资源名 → 版本号」映射，含所有角色/NPC/怪物动画精灵表条目（model/{模型号}/{sourceId}.png/.json）。先加载它，解析出全部模型号后再决定导出哪些。</p>
                     <div class="row-actions">
                         <button id="btnLoadVersion" class="btn btn-primary">加载并解析模型清单</button>
+                        <button id="btnRefreshNames" class="btn btn-ghost" title="从 CDN 原始配置(5config) 重新生成特效命名（施法/命中/飞弹），保留怪物/NPC/称号名">刷新命名（从原始配置）</button>
                         <span id="animLoadInfo" class="muted"></span>
                     </div>
                     <div id="animListWrap" class="list-wrap hidden">

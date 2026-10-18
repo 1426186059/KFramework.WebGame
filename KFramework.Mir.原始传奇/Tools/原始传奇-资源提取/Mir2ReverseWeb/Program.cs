@@ -169,4 +169,8 @@ api.MapGet("/anim/progress", (string? job, AnimExportService s) =>
     return p == null ? Results.Ok(new { ok = false, error = "unknown job" }) : Results.Ok(p);
 });
 
+// 从原始配置（CDN 5config）重新生成 modelNames.json 的特效命名（施法/命中/飞弹），保留怪物/NPC/称号名
+api.MapPost("/anim/refresh-names", async (AnimExportService s) =>
+    Results.Ok(await s.RefreshModelNamesAsync()));
+
 app.Run();

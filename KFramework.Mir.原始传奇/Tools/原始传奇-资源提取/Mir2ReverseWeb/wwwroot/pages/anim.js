@@ -146,6 +146,21 @@ async function animPoll() {
 
 const animBtnLoad = $('#btnLoadVersion');
 if (animBtnLoad) animBtnLoad.addEventListener('click', animLoad);
+
+const animBtnRefresh = $('#btnRefreshNames');
+if (animBtnRefresh) animBtnRefresh.addEventListener('click', async () => {
+    const btn = animBtnRefresh; btn.disabled = true;
+    log('从 CDN 原始配置(5config) 重新生成 modelNames.json 特效命名…');
+    try {
+        const r = await api('POST', '/api/anim/refresh-names');
+        if (!r.ok) { log('刷新失败: ' + (r.error || ''), 'err'); }
+        else {
+            log(`刷新完成：更新 ${r.updated} 条特效命名（共 ${r.total} 条），重新加载清单…`, 'ok');
+            await animLoad();
+        }
+    } catch (e) { log('刷新失败: ' + e.message, 'err'); }
+    finally { btn.disabled = false; }
+});
 const animBtnExport = $('#btnExportAnim');
 if (animBtnExport) animBtnExport.addEventListener('click', () => animExport());
 
