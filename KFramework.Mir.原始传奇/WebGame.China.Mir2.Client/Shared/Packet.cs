@@ -16,7 +16,7 @@ public abstract class Packet
     static readonly BinaryReader reader = new BinaryReader(readerWriterStream);
     static readonly BinaryWriter writer = new BinaryWriter(readerWriterStream);
 
-    public static Packet ReceivePacket(KBufferCache rawBytes)
+    public static Packet ReceivePacket(NetBufferCache rawBytes)
     {
         Packet p = null;
         if (rawBytes.Length < 4) return null; //| 2Bytes: Packet Size | 2Bytes: Packet ID |

@@ -20,8 +20,8 @@ namespace Client.MirNetwork
 
         private static ConcurrentQueue<Packet> _receiveList = new ConcurrentQueue<Packet>();
         private static ConcurrentQueue<Packet> _sendList = new ConcurrentQueue<Packet>();
-        private static readonly KBufferCache receive_byte_list = new KBufferCache(1024, 1024 * 64);
-        private static readonly KBufferCache send_byte_list = new KBufferCache(1024, 1024 * 64);
+        private static readonly NetBufferCache receive_byte_list = new NetBufferCache(1024, 1024 * 64);
+        private static readonly NetBufferCache send_byte_list = new NetBufferCache(1024, 1024 * 64);
 
         public static void Connect()
         {
