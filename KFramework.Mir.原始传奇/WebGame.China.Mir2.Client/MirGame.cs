@@ -16,12 +16,7 @@ namespace WebGame.Mir2.MonoGame.Client
         public MirGame() : base(GraphicsBackendKind.WebGL20, "#game", antialias: false)
         {
             IsFixedTimeStep = false;
-            Components.Add(new KEngineComponent(this) 
-            { 
-                EnableInput = false, 
-                EnableScene = false 
-            });
-
+            Components.Add(new KEngineComponent(this));
         }
 
         protected override void Initialize()
