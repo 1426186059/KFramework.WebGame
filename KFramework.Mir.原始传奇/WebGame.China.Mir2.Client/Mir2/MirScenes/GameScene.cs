@@ -56,6 +56,7 @@ namespace Client.MirScenes
         public List<ParticleEngine> ParticleEngines = new List<ParticleEngine>();
         public MapControl MapControl;
         public MainDialog MainDialog;
+        private LoadingDialog _loadingDialog;
         public ChatDialog ChatDialog;
         public ChatControlBar ChatControl;
         public InventoryDialog InventoryDialog;
@@ -1187,6 +1188,23 @@ namespace Client.MirScenes
         }
         public override void Process()
         {
+            // 加载蒙层：GameScene 一显示就盖在最上层预加载主场景资源；它下面的 GameScene 照常收包/跑逻辑。
+            // 预加载结束（或失败兜底）即移除蒙层。放在 MapControl/User 空判断之前，保证尽早显示。
+            if (_loadingDialog != null)
+            {
+                _loadingDialog.Tick();
+                if (_loadingDialog.Done)
+                {
+                    _loadingDialog.Cancel();
+                    _loadingDialog.Dispose();
+                    _loadingDialog = null;
+                }
+            }
+            else
+            {
+                _loadingDialog = new LoadingDialog { Parent = this };
+            }
+
             if (MapControl == null || User == null)
                 return;
 
