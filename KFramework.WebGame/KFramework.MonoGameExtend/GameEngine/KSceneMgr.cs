@@ -37,6 +37,9 @@ namespace KFramework.MonoGameExtend
             }
         }
 
+        /// <summary>记录已订阅 Window.SizeChanged 的那个 Game，保证 <see cref="Init"/> 幂等（重复调用不会重复订阅）。</summary>
+        private static Game _initedGame;
+
         public static void Init(Game mGame)
         {
             Game = mGame;
@@ -44,6 +47,12 @@ namespace KFramework.MonoGameExtend
             // 这里只是把它转发出来，让既有的 KSceneMgr.SpriteBatch 调用点（KImage / KLabel / 各示例工程）不用改。
             // （类型写全限定名：本类里 Game 这个名字被上面同名的静态属性占着。）
             SpriteBatch = KFramework.MonoGame.Game.SpriteBatch;
+
+            // 幂等：KEngineComponent 会在 Initialize / LoadContent / Update 多处兜底调用，同一 Game 只订阅一次。
+            if (ReferenceEquals(_initedGame, mGame)) return;
+            if (_initedGame != null) _initedGame.Window.SizeChanged -= OnWindowSizeChangedForward;
+            _initedGame = mGame;
+
             // 浏览器窗口尺寸变化通知：Game.TickFrame 里 GraphicsDevice.SyncCanvasSize 检测到
             // 画布变化后会触发 GameWindow.SizeChanged，这里转发到 ScreenSizeChanged，
             // KCanvas 据此重算画布尺寸并把 UI 子控件级联重排，实现自适应屏幕。

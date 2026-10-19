@@ -30,6 +30,10 @@ namespace KFramework.Test.WebGL20
                 PreferMultiSampling = Antialias,
                 GraphicsProfile = GraphicsProfile.Reach,
             };
+
+            // 组件式接入 MonoGameExtend：输入、KTime、场景树、KTween / KTimer 等全由它每帧驱动。
+            // 键盘绑到画布：页面里有输入框时不会误收游戏键（画布会自行聚焦并在 pointerdown 时重新聚焦）。
+            Components.Add(new KEngineComponent(this) { KeyboardUseCanvasListener = true });
         }
 
         protected override void Initialize()
@@ -40,10 +44,6 @@ namespace KFramework.Test.WebGL20
 
         protected override Task LoadContentAsync()
         {
-            KInputMgr.Init();
-            Input_KeyBoard.Activate(bUseCanvasListener: true);
-            Input_Mouse.Activate();   // 总纲页与各页的「← 总纲」都要用鼠标点击，必须激活
-            KSceneMgr.Init(this);
             // 测试界面用程序化生成的系统字体，不依赖任何字体资源。
             KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 20f);
 
@@ -53,9 +53,8 @@ namespace KFramework.Test.WebGL20
 
         protected override void Update(GameTime gameTime)
         {
-            KInputMgr.Update(gameTime);
+            // 输入 / KTime / 场景树由 KEngineComponent 驱动，这里只处理全局按键切页。
             HandleGlobalKeys();
-            KSceneMgr.Update(gameTime);
         }
 
         /// <summary>
@@ -79,11 +78,6 @@ namespace KFramework.Test.WebGL20
                     return;
                 }
             }
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            KSceneMgr.Draw(gameTime);
         }
     }
 

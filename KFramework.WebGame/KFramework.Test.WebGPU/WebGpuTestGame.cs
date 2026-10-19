@@ -38,6 +38,11 @@ namespace KFramework.Test.WebGPU
                 PreferredDepthStencilFormat = DepthFormat.Depth24,
                 GraphicsProfile = GraphicsProfile.Reach,
             };
+
+            // 组件式接入 MonoGameExtend：输入、KTime、场景树、KTween / KTimer 等全由它每帧驱动，
+            // 本类不再重写 Draw 转发。键盘保持默认的 window 全局捕获（而非画布）：画布监听要求画布处于焦点，
+            // 一旦焦点被页面或开发者工具抢走，键盘就完全收不到事件。
+            Components.Add(new KEngineComponent(this));
         }
 
         protected override void Initialize()
@@ -49,13 +54,6 @@ namespace KFramework.Test.WebGPU
 
         protected override Task LoadContentAsync()
         {
-            KInputMgr.Init();
-            // 绑到 window 全局捕获（而非画布）：画布监听要求画布处于焦点，
-            // 一旦焦点被页面或开发者工具抢走，键盘就完全收不到事件。
-            Input_KeyBoard.Activate(bUseCanvasListener: false);
-            // 总纲页与各页的「← 总纲」都要用鼠标点击，必须激活鼠标。
-            Input_Mouse.Activate();
-            KSceneMgr.Init(this);
             KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 20f);
 
             KSceneMgr.SetMainScene(new Tests.MainScene());
@@ -64,9 +62,8 @@ namespace KFramework.Test.WebGPU
 
         protected override void Update(GameTime gameTime)
         {
-            KInputMgr.Update(gameTime);
+            // 输入 / KTime / 场景树由 KEngineComponent 驱动，这里只处理全局按键切页。
             HandleGlobalKeys();
-            KSceneMgr.Update(gameTime);
         }
 
         /// <summary>
@@ -90,11 +87,6 @@ namespace KFramework.Test.WebGPU
                     return;
                 }
             }
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            KSceneMgr.Draw(gameTime);
         }
     }
 

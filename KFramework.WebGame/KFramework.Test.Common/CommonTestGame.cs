@@ -51,6 +51,10 @@ namespace KFramework.Test.Common
             {
                 args.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.DiscardContents;
             };
+
+            // 组件式接入 MonoGameExtend：输入（自动激活键鼠/触摸）、KTime、场景树、
+            // KTween / KTimer 等全由它每帧驱动，本类不再重写 Update / Draw 转发。
+            Components.Add(new KEngineComponent(this));
         }
 
         protected override void Initialize()
@@ -62,10 +66,6 @@ namespace KFramework.Test.Common
 
         protected override async Task LoadContentAsync()
         {
-            // MonoGameExtend 的输入总调度（键盘 / 鼠标 / 触摸 / 指针事件分发）
-            KInputMgr.Init();
-            // 场景管理器：创建共享 SpriteBatch 并接管 Update / Draw 的遍历
-            KSceneMgr.Init(this);
             // 测试界面用程序化生成的系统字体，不依赖任何字体资源
             KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 20f);
 
@@ -73,18 +73,6 @@ namespace KFramework.Test.Common
             await ContentManager.Default.LoadAsync().ConfigureAwait(false);
 
             KSceneMgr.SetMainScene(new TestMainScene());
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            // 输入由引擎在 TickFrame 内统一驱动（Input.Update / Input.LateUpdate）；本例只负责激活所需装置。
-            KInputMgr.Update(gameTime);
-            KSceneMgr.Update(gameTime);
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            KSceneMgr.Draw(gameTime);
         }
     }
 

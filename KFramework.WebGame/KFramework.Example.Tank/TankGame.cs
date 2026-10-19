@@ -5,44 +5,27 @@ namespace KFramework.Example.Tank
 {
 
     /// <summary>
-    /// 坦克大战的宿主：只负责初始化引擎（输入 / 场景管理器 / 字体 / 内容），
-    /// 真正的游戏逻辑与界面都在 <see cref="GameScene"/> 里，由 MonoGameExtend 的节点树驱动。
+    /// 坦克大战的宿主：组件式接入 MonoGameExtend —— 只挂一个 <see cref="KEngineComponent"/>，
+    /// 输入、KTime、场景树、KTween / KTimer 就都由它每帧驱动，本类只负责内容与场景。
     /// 对应 PixiJS 版的 CreationEngine + GameScene。
     /// </summary>
     public sealed class TankGame : Game
     {
-        public TankGame() : base(GraphicsBackendKind.WebGL20) { }
+        public TankGame() : base(GraphicsBackendKind.WebGL20)
+        {
+            // 挂上即接管：KInputMgr（并自动激活键鼠/触摸）→ KTime → 场景树 → 树上所有系统（KTween / KTimer / UI）。
+            // 组件在首次真正运行时才初始化，因此这里写在构造函数里是安全的（那时设备还没建）。
+            Components.Add(new KEngineComponent(this));
+        }
 
         protected override async Task LoadContentAsync()
         {
-            // MonoGameExtend 的输入总调度（键盘/鼠标/触摸/指针事件分发）
-            KInputMgr.Init();
-            // 激活本例需要的输入装置：引擎按各装置的 Active 开关决定是否真正采集；不需要的可不激活。
-            // 键盘默认绑到画布（bUseCanvas: true，需画布聚焦才收键）；传 false 则绑到 window 全局捕获。
-            Input_KeyBoard.Activate();
-            Input_Mouse.Activate();
-            Input_Touch.Activate();
-            // 场景管理器：创建共享 SpriteBatch 并接管 Update/Draw 的遍历
-            KSceneMgr.Init(this);
             // 节点树 UI 文本需要默认字体
             KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 40f);
 
             await ContentManager.Default.LoadAsync().ConfigureAwait(false);
 
-            var scene = new GameScene();
-            KSceneMgr.SetMainScene(scene);
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            // 输入由引擎在 TickFrame 内统一驱动（Input.Update / Input.LateUpdate）；本例只负责激活所需装置。
-            KInputMgr.Update(gameTime);
-            KSceneMgr.Update(gameTime);
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            KSceneMgr.Draw(gameTime);
+            KSceneMgr.SetMainScene(new GameScene());
         }
     }
 

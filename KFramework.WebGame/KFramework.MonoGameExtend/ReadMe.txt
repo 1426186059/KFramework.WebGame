@@ -20,6 +20,31 @@ KFramework.MonoGame 之上的“扩展层”，提供更贴近上层游戏的丰
 - 图集：基于 TexturePacker 的图集加载与按帧名取图；
 - 其它常用辅助：KTime、KInputMgr、KDefaultRes、协程（Coroutine）等。
 
+接入方式（一个组件搞定）
+----------------------
+在 Game 的构造函数（或 Initialize）里挂一个 KEngineComponent，整个扩展层就随主循环自动驱动：
+
+  public sealed class MyGame : Game
+  {
+      public MyGame() : base(GraphicsBackendKind.WebGL20)
+      {
+          Components.Add(new KEngineComponent(this));
+      }
+
+      protected override async Task LoadContentAsync()
+      {
+          await ContentManager.Default.LoadAsync().ConfigureAwait(false);
+          KSceneMgr.SetMainScene(new MyScene());
+      }
+  }
+
+它每帧依次驱动：
+  KInputMgr（指针/点击分发） → KTime（deltaTime / timeScale） → KSceneMgr（主场景 + DontDestroyOnLoadRoot 节点树）
+树上挂着的 KTween / KTimer / KUpdateMgr / KUIRoot / KCanvas 等随之递归更新与绘制，
+因此这些系统【不需要】各自再做成组件。
+需要更细的控制时，可调组件上的 EnableInput / EnableScene / EnableDraw / KeyboardUseCanvasListener，
+或用 UpdateOrder 调整它与其它组件的先后（默认 -1000，先于其它组件刷新 KTime）。
+
 适用场景
 --------
 把“基础引擎”与“扩展层”分离后，KFramework.MonoGame 可以适配更多不同的游戏框架，例如：
