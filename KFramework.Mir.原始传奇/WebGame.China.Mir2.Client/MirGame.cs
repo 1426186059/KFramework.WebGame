@@ -1,5 +1,6 @@
 using Client.MirGraphics;
 using KFramework.MonoGame;
+using KFramework.MonoGameExtend;
 
 namespace WebGame.Mir2.MonoGame.Client
 {
@@ -15,6 +16,12 @@ namespace WebGame.Mir2.MonoGame.Client
         public MirGame() : base(GraphicsBackendKind.WebGL20, "#game", antialias: false)
         {
             IsFixedTimeStep = false;
+            Components.Add(new KEngineComponent(this) 
+            { 
+                EnableInput = false, 
+                EnableScene = false 
+            });
+
         }
 
         protected override void Initialize()
