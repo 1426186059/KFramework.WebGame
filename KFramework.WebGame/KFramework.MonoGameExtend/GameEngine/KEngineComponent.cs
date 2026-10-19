@@ -50,13 +50,10 @@ namespace KFramework.MonoGameExtend
         /// 画布模式要求画布获焦，但页面里有输入框时不会误收游戏键；全局模式不怕焦点被抢走。
         /// 只在首次初始化时生效。
         /// </summary>
-        public bool KeyboardUseCanvasListener { get; set; }
+        public bool InputUseCanvasListener { get; set; } = false;
 
         /// <summary>是否驱动 <c>KSceneMgr.Update</c>（KTime + 场景树 + KTween / KTimer）。</summary>
         public bool EnableScene { get; set; } = true;
-
-        /// <summary>是否驱动 <c>KSceneMgr.Draw</c>（场景树绘制）。</summary>
-        public bool EnableDraw { get; set; } = true;
 
         public override void Initialize()
         {
@@ -81,7 +78,7 @@ namespace KFramework.MonoGameExtend
         public override void Draw(GameTime gameTime)
         {
             EnsureInitialized();
-            if (EnableDraw) KSceneMgr.Draw(gameTime);
+            if (EnableScene) KSceneMgr.Draw(gameTime);
         }
 
         /// <summary>
@@ -93,7 +90,7 @@ namespace KFramework.MonoGameExtend
             if (_inited) return;
             _inited = true;
 
-            KInputMgr.Init(KeyboardUseCanvasListener);
+            KInputMgr.Init(InputUseCanvasListener);
             KSceneMgr.Init(Game);
         }
     }
