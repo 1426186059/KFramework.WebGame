@@ -1,3 +1,5 @@
+using KFramework.MonoGameExtend;
+
 namespace KFramework.Example.Mario
 {
     internal class Level : IDisposable

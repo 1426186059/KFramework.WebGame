@@ -1,4 +1,6 @@
-namespace KFramework.MonoGame
+using KFramework.MonoGame;
+
+namespace KFramework.MonoGameExtend
 {
     public class KSpriteInfo
     {

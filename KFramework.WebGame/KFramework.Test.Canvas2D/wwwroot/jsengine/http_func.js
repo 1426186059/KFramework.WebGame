@@ -27,7 +27,7 @@ const pending = new Map();
  * fetch 的 RequestCache 取值（规范定义的全集），用常量代替魔法字符串 —— 拼错值时编译当场报错。
  * C# 侧若要按名字指定，也应当用这几个字符串（见 JSBind_Http 的参数注释）。
  */
-export const CacheMode = {
+const CacheMode = {
     /** 浏览器默认规则：按 HTTP 响应头（Cache-Control / ETag…）决定要不要复用缓存。 */
     Default: 'default',
     /** 不读也不写 HTTP 缓存，每次都走网络。 */
@@ -41,18 +41,6 @@ export const CacheMode = {
     /** 只用缓存，没有就按失败处理（不发起网络请求）。 */
     OnlyIfCached: 'only-if-cached',
 };
-/**
- * 第一步（异步）：只做 fetch，字节暂存在 pending，等 takePending 取走；完全不碰 Cache Storage。
- *
- * @param name 资源 URL（绝对 URL 直接用；相对路径按 document.baseURI 解析）
- * @param bCache 是否使用 HTTP 缓存：
- *        true（默认）—— 强制走缓存（fetch 的 cache:'force-cache'）：缓存里有就用（【过期也用】），没有才回源。
- *                        注意这意味着：只要浏览器缓存里还留着旧的那份，就一直用旧的 ——
- *                        只有 URL 自带版本号 / 内容指纹（每次发版 URL 都变）时这样才是安全的。
- *        false       —— 完全不用缓存（fetch 的 cache:'no-store'）：不读也不写，每次都走网络。
- *                        代价是这次下载的新响应也不会被缓存，下次仍要重新下载。
- * @returns >=0 字节长度（C# 按此值分配后调 takePending）；-1 失败（非 2xx / 网络错误）
- */
 export async function fetchBytesAsync(name, bCache = true) {
     let res;
     try {
