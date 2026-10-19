@@ -1,8 +1,6 @@
 ﻿using KFramework.MonoGame;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-public unsafe class NetBufferCache : IDisposable
 {
     private byte* cache;
     private int nAllocLength;

@@ -1,5 +1,6 @@
 ﻿using Client.MirControls;
 using KFramework.MonoGame;
+using KFramework.MonoGameExtend;
 using System.Collections.Concurrent;
 using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;

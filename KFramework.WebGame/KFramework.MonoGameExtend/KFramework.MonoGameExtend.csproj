@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RootNamespace>KFramework.MonoGameExtend</RootNamespace>
     <AssemblyName>KFramework.MonoGameExtend</AssemblyName>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
