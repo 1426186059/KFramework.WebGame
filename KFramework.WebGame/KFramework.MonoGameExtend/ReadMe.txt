@@ -1,24 +1,30 @@
 KFramework.MonoGameExtend
 ==========================
 
-KFramework.MonoGame 之上的“扩展层”，提供更贴近上层游戏的丰富能力。
+KFramework.MonoGame 之上的“扩展层”，提供更贴近上层游戏、开箱即用的丰富能力。
 
 定位
 ----
-- KFramework.MonoGame：只提供游戏引擎的【基础能力】
+- KFramework.MonoGame：游戏引擎的【基础能力】
   （渲染抽象、输入抽象、音频、内容管线、JS 互操作等通用底座）。
-  它尽量保持精简与通用，以便能适配各种不同的游戏框架。
-- KFramework.MonoGameExtend：在基础引擎之上，提供更丰富、更“开箱即用”的能力，
-  让上层游戏直接用节点树来组织场景与 UI，而无需从零搭建。
+  它以 MonoGame 为参照，同时已超出 MonoGame（多后端、自绘字体、协程、组件异步加载等）。
+- KFramework.MonoGameExtend：在基础引擎之上的【上层框架】。
+  这里的东西 MonoGame 基本没有对应概念（它只有组件模型，没有场景图 / UI / 补间 / 计时器 / 指针分发），
+  所以本层不存在“对齐上游”的包袱：API 以开发体验为先，按游戏开发的实际需要设计。
+  上层游戏直接用节点树组织场景与 UI、用 KTween / KTimer 做动画与延时，而无需从零搭建。
 
 提供的扩展能力
 --------------
+- 接入：KEngineComponent —— 挂一个组件即接管输入、KTime、场景树的每帧驱动（见下方“接入方式”）；
 - 节点树（Scene Graph）：KTransform / KSceneBase / KSceneMgr，用父子层级组织游戏对象；
 - 相机：KCamera；
-- UI 组件：KWidget / KImage / KLabel / KButton / KCanvas 等；
+- UI 组件：KWidget / KImage / KLabel / KButton / KCanvas / KUIRoot 等；
 - 精灵组件：KSprite（带动画帧的精灵）；
+- 动画与计时：KTween（补间，含缓动 / 循环 / 往返）、KTimer（延时与循环回调）、KUpdateMgr（逐帧回调）；
 - 图集：基于 TexturePacker 的图集加载与按帧名取图；
-- 其它常用辅助：KTime、KInputMgr、KDefaultRes、协程（Coroutine）等。
+- 输入：KInputMgr / KPointerDispatcher（鼠标 / 触摸统一成指针事件，派发给 IClickable）；
+- 时间：KTime（对齐 Unity 的 deltaTime / timeScale / fixedTime / realFps 等）；
+- 其它常用辅助：KDefaultRes、KSetting、KStorage、协程（Coroutine）等。
 
 接入方式（一个组件搞定）
 ----------------------

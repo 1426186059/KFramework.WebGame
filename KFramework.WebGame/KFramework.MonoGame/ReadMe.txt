@@ -1,20 +1,35 @@
-KFramework.MonoGame —— 仿 MonoGame 引擎（面向 AI 智能体）
-================================================
+KFramework.MonoGame —— 以 MonoGame 为参照的 Web 原生引擎（面向 AI 智能体）
+=====================================================================
 
-本库是 MonoGame 游戏引擎的 C# 仿制实现，运行目标为 WebAssembly（浏览器），
-通过 JSImport 桥接到 WebGL / WebAudio / 浏览器平台能力。
+本库最初是 MonoGame 的 C# 仿制实现：运行目标为 WebAssembly（浏览器），
+通过 JSImport 桥接到 WebGL / WebGPU / WebAudio / 浏览器平台能力。
 
-为了让代码结构、命名与 MonoGame 尽量保持一致，请以官方仓库为权威参照：
+现在它已经趋于成熟，定位也从"仿制 MonoGame"变成了"以 MonoGame 为参照、能力超出 MonoGame 的 Web 原生引擎"：
+
+- 参照的部分：Game / GameTime / GraphicsDevice / SpriteBatch / Texture2D / 组件模型 / 内容管线等核心概念，
+  命名与语义都以 MonoGame 为基准，让熟悉它的人拿来就能用；
+- 超出的部分：多渲染后端（WebGPU / WebGL 2.0 / Canvas2D）、自绘字体（KFont）、BMFont 美术字、
+  可变步长与固定步进、帧内分段计时（GameProfiler）、协程、组件式异步加载 … 这些 MonoGame 没有、或只在桌面版 / 别的 XNA 分支里出现。
+- 所以：不再追求"逐行与上游一致"。API 保持相似的目的是降低迁移成本，新增能力与上游冲突时，以本引擎的实际行为为准。
+
+MonoGame 仍是理解本库概念的最佳参照（不复刻其实现）：
 
     MonoGame 官方仓库： https://github.com/MonoGame/MonoGame
     MonoGame 文档：     https://docs.monogame.net/
 
-约定（请严格遵守，保持与上游一致）
------------------------------------
-1. 公共 API 尽量对齐 MonoGame：
+约定（请严格遵守）
+-----------------
+1. 公共 API 以 MonoGame 为参照基准，而非硬性对齐：
    Game / GameTime / GraphicsDevice / SpriteBatch / Texture2D / Vector2、
-   SoundEffect / SoundEffectInstance / MediaPlayer / SoundState / MediaState 等。
-   命名、参数顺序、行为以 MonoGame 为准。
+   SoundEffect / SoundEffectInstance / MediaPlayer / SoundState / MediaState 等沿用其命名、参数顺序与语义。
+   但下列能力是本引擎【自有、超出 MonoGame】的，不要为了"对齐"把它们改回去：
+   - 渲染后端可切换：GraphicsBackendKind.WebGPU / WebGL20 / Canvas2D，同一套 SpriteBatch 代码跑三种后端；
+   - 主循环：默认固定步长（对齐 MonoGame），另有可变 dt + FixedUpdteFunc（Web 推荐）与 SetFrameInterval 限帧；
+   - 字体：系统字体 SpriteFont、自定义 ttf/otf/woff（KFont 自己光栅化）、BMFont 美术字（BitmapFont），统一走 IFont；
+   - 内容：KFramework.Content 内容管线（raw -> kfc -> AssetBundle），AssetBundle 同步取资源，SpriteSheetLoader 取图集；
+   - 组件：GameComponent / DrawableGameComponent / GameComponentCollection，组件支持异步 LoadContentAsync；
+   - 其它：GameProfiler（帧内分段计时）、Coroutine、AudioMaster（AudioContext 统一管控）、Game.SpriteBatch 全局唯一。
+   扩展这些能力时不要硬塞进 MonoGame 既有类型的签名里；优先用扩展方法 / 可选参数，避免破坏熟悉感。
 
 2. 跨语言调用（C# ⇄ JS）集中放在 JSBind/ 目录。
    业务封装类不要直接写 [JSImport]，一律调用 JSBind_* 静态类。
@@ -54,7 +69,7 @@ KFramework.MonoGame —— 仿 MonoGame 引擎（面向 AI 智能体）
 
 目录速览
 --------
-  Core/      Game、GameTime、GameHost 等生命周期
+  Core/      Game、GameTime、GameComponent（组件模型）、GameWindow、FixedUpdteFunc（固定步进）等生命周期
   HTML/      HTML_Canvas（一块画布的对象封装）、HTML_Canvas_Func（静态函数入口，带 id）、HTML_CanvasLayoutMode
              三者对应 KFramework.TSEngine/src/html_canvas.ts 的 "canvas" 模块，绑定见 JSBind/JSBind_HTML_Canvas.cs
   Graphics/  GraphicsDevice、SpriteBatch、Texture2D、效果与状态
