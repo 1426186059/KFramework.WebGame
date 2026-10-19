@@ -288,6 +288,8 @@ namespace Client.MirScenes
 
             KeyDown += GameScene_KeyDown;
 
+            _loadingDialog = new LoadingDialog { Parent = this };
+
             MainDialog = new MainDialog { Parent = this };
             ChatDialog = new ChatDialog { Parent = this };
             ChatControl = new ChatControlBar { Parent = this };
@@ -1188,11 +1190,17 @@ namespace Client.MirScenes
         }
         public override void Process()
         {
-            // 加载蒙层：GameScene 一显示就盖在最上层预加载主场景资源；它下面的 GameScene 照常收包/跑逻辑。
-            // 预加载结束（或失败兜底）即移除蒙层。放在 MapControl/User 空判断之前，保证尽早显示。
-            if (_loadingDialog != null)
+            // 加载蒙层：盖在 GameScene 之上，直到主场景资源（地图/角色）就绪才移除。
+            // 仅在「未就绪」时显示、并在「就绪」时只移除一次，避免反复创建导致重复下载/死循环。
+            if (MapControl == null || User == null)
+            {
+                return;
+            }
+
+            if(_loadingDialog != null)
             {
                 _loadingDialog.Tick();
+
                 if (_loadingDialog.Done)
                 {
                     _loadingDialog.Cancel();
@@ -1200,13 +1208,6 @@ namespace Client.MirScenes
                     _loadingDialog = null;
                 }
             }
-            else
-            {
-                _loadingDialog = new LoadingDialog { Parent = this };
-            }
-
-            if (MapControl == null || User == null)
-                return;
 
             if (CMain.Time >= MoveTime)
             {

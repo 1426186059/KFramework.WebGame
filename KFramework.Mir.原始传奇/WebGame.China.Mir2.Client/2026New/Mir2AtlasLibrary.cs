@@ -195,6 +195,36 @@ public static class Mir2AtlasLibrary
         return null; // name 是资源名而非帧短名时，没有单帧可返回
     }
 
+    /// <summary>
+    /// 加载「独立图片」资源（default.res.json 中 type=image 的资源，如加载背景 bg_loading2n）：
+    /// 按 Egret 资源名解析成 manifest key 后取整张纹理（PNG/JPG），走 Mir2OriginResource 的纹理缓存。
+    /// 与 GetSheetAsync 不同：图片资源没有 JSON 帧表，只取整张图。
+    /// </summary>
+    public static async Task<Texture2D> GetImageTextureAsync(string name, GraphicsDevice device, CancellationToken ct = default)
+    {
+        await EnsureManifestAsync(ct);
+        await EnsureResConfigAsync(ct);
+        var (key, _) = ResolveName(name); // 图片资源 -> 其 manifestKey（无帧）
+        return await Mir2OriginResource.GetManifestAssetTextureAsync(key, device, ct);
+    }
+
+    /// <summary>
+    /// 按「直接相对路径」加载一张图集（绕过 manifest/RES 表，用于 CDN 直链资源，例如
+    /// qufu_resource1/assets/sheet/preload-sheet.json + .png）。jsonRelativePath / pngRelativePath
+    /// 为相对 CDN 根的路径，可带 ?qufu_version=229 缓存参数。任一拉取为空返回 null（由上层回退纯色条）。
+    /// </summary>
+    public static async Task<Mir2AtlasSheet> GetSheetByPathsAsync(string jsonRelativePath, string pngRelativePath, GraphicsDevice device, CancellationToken ct = default)
+    {
+        await EnsureManifestAsync(ct); // 仅保证 Manifest 字段存在（不影响直链解析）
+        var jsonBytes = await Mir2OriginResource.GetBytesAsync(jsonRelativePath, ct: ct);
+        if (jsonBytes == null || jsonBytes.Length == 0) return null;
+        var sheet = Mir2AtlasSheet.Parse(Encoding.UTF8.GetString(jsonBytes));
+        var texture = await Mir2OriginResource.GetTextureAsync(pngRelativePath, device, ct: ct);
+        sheet.Build(texture);
+        PrintTool.Log($"[Mir2Atlas] 已加载直链图集 {jsonRelativePath}：{sheet.Frames.Count} 帧");
+        return sheet;
+    }
+
     /// <summary>从已加载图集取某帧的 KSpriteInfo；sheetOrFrameName 可为资源名或帧短名（支持短名；未加载返回 false）。</summary>
     public static bool TryGetFrame(string sheetOrFrameName, string frameName, out KSpriteInfo frame)
     {
@@ -209,24 +239,21 @@ public static class Mir2AtlasLibrary
     public static string[] GetGroupResourceNames(string groupName)
         => (_groups != null && _groups.TryGetValue(groupName, out var names)) ? names : Array.Empty<string>();
 
-    /// <summary>按 KSpriteInfo 绘制一帧。目标尺寸取源矩形尺寸（与框架 SpriteBatchExtensions.Draw 一致），position 为帧左上角。</summary>
-    public static void DrawFrame(this SpriteBatch batch, KSpriteInfo sprite, int x, int y, Color color)
-    {
-        var r = sprite.SourceRectangle;
-        batch.Draw(sprite.Texture, new Rectangle(x, y, r.Width, r.Height), r, color);
-    }
-
     /// <summary>按 KSprite 句柄绘制一帧（KSprite 可经隐式转换由 KSpriteInfo 得到，等价于上面的绘制）。</summary>
-    public static void DrawFrame(this SpriteBatch batch, KSprite sprite, int x, int y, Color color)
+    public static void DrawFrame(this SpriteBatch batch, KSprite sprite, Rectangle targetRect, Color color)
     {
         var r = sprite.Rectangle;
-        batch.Draw(sprite.Texture, new Rectangle(x, y, r.Width, r.Height), r, color);
+        batch.Draw(sprite.Texture, targetRect, r, color);
     }
 
     /// <summary>按「已加载图集 + 帧名」绘制一帧（帧不存在则静默跳过）。</summary>
     public static void DrawFrame(this SpriteBatch batch, Mir2AtlasSheet sheet, string frameName, int x, int y, Color color)
     {
-        if (sheet.Frames.TryGetValue(frameName, out var s)) DrawFrame(batch, s, x, y, color);
+        if (sheet.Frames.TryGetValue(frameName, out var s))
+        {
+            Rectangle targetRect  = new Rectangle(x, y, (int)s.Size.X, (int)s.Size.Y);
+            DrawFrame(batch, s, targetRect, color);
+        }
     }
 
     private static string SheetPngKey(string sheetKey, string pngFile)

@@ -1,32 +1,30 @@
-using System.Threading;
-using System.Threading.Tasks;
 using Client.MirGraphics;
 using KFramework.MonoGame;
-using Size = MirEngine.Size;
-using Point = MirEngine.Point;
+using KFramework.MonoGameExtend;
+using SlimDX.Direct3D9;
 using Color = MirEngine.Color;
 using GraphicsDevice = KFramework.MonoGame.GraphicsDevice;
+using Point = MirEngine.Point;
+using Size = MirEngine.Size;
 
 namespace Client.MirControls
 {
     /// <summary>
-    /// 盖在 GameScene 之上的加载蒙层（不是独立场景）：GameScene 必须立刻 Active 起来接收网络包，
-    /// 否则早期包（StartGame/角色/地图…）命中 null 会报错。故 GameScene 一显示就创建本蒙层，
-    /// 在它下面 GameScene 正常收包/跑逻辑；本蒙层只负责把主场景所需 H5 图集预加载进
-    /// Mir2AtlasLibrary 缓存，并显示进度，加载完成（或失败兜底）由 GameScene 调用 Dispose 移除。
-    /// 对应原始传奇 Egret 的 loadingState / RES.loadGroup 分阶段预加载。
+    /// 盖在 GameScene 之上的加载蒙层（非独立场景）：GameScene 必须立刻 Active 以接收网络包，
+    /// 故 GameScene 一显示就创建本蒙层；其下 GameScene 正常收包/跑逻辑。
+    /// 蒙层美术直接用原始传奇 H5 资源：bg_loading2n.jpg（全屏背景）+ preload-sheet（进度条/Logo 图集），
+    /// 这两个资源在本蒙层创建时按需加载（用到才加载），加载完即显示；不预加载主场景游戏资源。
     /// </summary>
     public class LoadingDialog : MirControl
     {
-        // 主场景预加载图集清单（原版 Egret 资源短名，如 "y_homeUI-sheet_json"）。
-        // 先放主界面 HUD 图集，后续按需补充（地图/角色/怪物精灵等），
-        // 补充时直接往这个数组加 sheet 短名即可；也可改用 Mir2AtlasLibrary.GetGroupResourceNames("分组名") 整组预加载。
-        private static readonly string[] PreloadSheets = new[]
-        {
-            "y_homeUI-sheet_json", // 主界面 HUD（MainDialogUI 使用）
-        };
+        // 原版 CDN 直链资源（不在 manifest/RES 表内，按相对 CDN 根的路径 + 缓存参数加载）
+        private const string BgImageName = "img/bg_loading2n.jpg?qufu_version=229";                          // 加载背景图
+        private const string SheetJsonPath = "qufu_resource1/assets/sheet/preload-sheet.json?qufu_version=229"; // 进度条图集 JSON
+        
+        private const string SheetPngPath = "qufu_resource1/assets/sheet/preload-sheet.png?qufu_version=229";  // 进度条图集 PNG
+        private const string BarBgFrameHint = "bar";
+        private const string BarFillFrameHint = "loading";
 
-        private readonly MirControl _panel;
         private readonly MirLabel _titleLabel;
         private readonly MirLabel _statusLabel;
         private readonly MirLabel _percentLabel;
@@ -37,110 +35,210 @@ namespace Client.MirControls
         private readonly int _barHeight = 18;
 
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        private int _total;
+
+        private Texture2D _bgTexture;
+        private Mir2AtlasSheet _sheet;
+        private string _barBgFrame;
+        private string _barFillFrame;
+        private bool _useSheetBar;
+
+        private int _total = 2;
         private int _loaded;
         private bool _finished;
         private string _status = "正在准备…";
+        private bool _dirty;
 
-        /// <summary>由 GameScene 在每帧 Tick 时读取：预加载是否已结束（成功或失败）。</summary>
         public bool Done { get; private set; }
 
         public LoadingDialog()
         {
-            // 全屏不透明黑色蒙层，盖住下方正在初始化的 GameScene。
             Location = new Point(0, 0);
             Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
             BackColour = Color.Black;
             DrawControlTexture = true;
 
-            _panel = new MirControl
-            {
-                Parent = this,
-                Size = new Size(440, 150),
-                BackColour = Color.DarkGray,
-                DrawControlTexture = true,
-                Anchor = EAnchorType.MiddleCenter,
-                AnchorPos = new Point(0, 0),
-            };
-            _panel.ApplyAnchor();
-
-            _titleLabel = new MirLabel
-            {
-                Parent = _panel,
-                Location = new Point(0, 16),
-                Size = new Size(440, 26),
-                Text = "资源加载中…",
-                ForeColour = Color.White,
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
-            };
-
-            _statusLabel = new MirLabel
-            {
-                Parent = _panel,
-                Location = new Point(16, 52),
-                Size = new Size(408, 20),
-                Text = _status,
-                ForeColour = Color.LightGray,
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
-            };
-
             _barTrack = new MirControl
             {
-                Parent = _panel,
-                Location = new Point(20, 86),
+                Parent = this,
+                Anchor = EAnchorType.BottomCenter,
+                AnchorPos = new Point(0, 70),
                 Size = new Size(_trackWidth, _barHeight),
                 BackColour = Color.Black,
                 DrawControlTexture = true,
             };
+            _barTrack.ApplyAnchor();
 
             _barFill = new MirControl
             {
-                Parent = _panel,
-                Location = new Point(20, 86),
+                Parent = _barTrack,
+                Anchor = EAnchorType.BottomCenter,
+                Location = new Point(0, 70),
                 Size = new Size(1, _barHeight),
                 BackColour = Color.Green,
                 DrawControlTexture = true,
             };
 
+            _titleLabel = new MirLabel
+            {
+                Parent = this,
+                Anchor = EAnchorType.MiddleCenter,
+                AnchorPos = new Point(0, -50),
+                Size = new Size(500, 30),
+                Text = "资源加载中…",
+                ForeColour = Color.White,
+                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+            };
+            _titleLabel.ApplyAnchor();
+
+            _statusLabel = new MirLabel
+            {
+                Parent = this,
+                Anchor = EAnchorType.MiddleCenter,
+                AnchorPos = new Point(0, 100),
+                Size = new Size(500, 20),
+                Text = _status,
+                ForeColour = Color.LightGray,
+                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+            };
+            _statusLabel.ApplyAnchor();
+
             _percentLabel = new MirLabel
             {
-                Parent = _panel,
-                Location = new Point(16, 114),
-                Size = new Size(408, 20),
+                Parent = this,
+                Anchor = EAnchorType.MiddleCenter,
+                AnchorPos = new Point(0, 40),
+                Size = new Size(500, 20),
                 Text = "0%",
                 ForeColour = Color.White,
                 DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
             };
+            _percentLabel.ApplyAnchor();
 
             var device = DXManager.GDevice;
-            _ = Task.Run(async () => await PreloadAsync(device));
+            _ = Task.Run(async () => await LoadArtAsync(device));
+
         }
 
-        private async Task PreloadAsync(GraphicsDevice device)
+        private async Task LoadArtAsync(GraphicsDevice device)
         {
-            var names = PreloadSheets;
-            _total = names.Length;
-            _loaded = 0;
             try
             {
-                for (int i = 0; i < names.Length; i++)
+                _status = "加载背景图…";
+                _bgTexture = await Mir2AtlasLibrary.GetImageTextureAsync(BgImageName, device, _cts.Token);
+                _loaded = 1;
+                _dirty = true;
+
+                _status = "加载进度条资源…";
+                _sheet = await Mir2AtlasLibrary.GetSheetByPathsAsync(SheetJsonPath, SheetPngPath, device, _cts.Token);
+                _loaded = 2;
+
+                if (_sheet != null)
                 {
-                    if (_cts.IsCancellationRequested) break;
-                    var name = names[i];
-                    _status = string.Format("加载中 ({0}/{1})：{2}", i + 1, names.Length, name);
-                    await Mir2AtlasLibrary.GetSheetAsync(name, device, _cts.Token);
-                    _loaded = i + 1;
+                    PrintTool.Log("[LoadingDialog] preload-sheet 帧名：" + string.Join(", ", _sheet.Frames.Keys));
+                    PickBarFrames();
+                    if (_useSheetBar)
+                    {
+                        _barTrack.Visible = false;
+                        _barFill.Visible = false;
+                    }
                 }
-                _status = _loaded >= _total ? "加载完成，正在进入游戏…" : "部分资源已加载";
+                else
+                {
+                    PrintTool.Log("[LoadingDialog] preload-sheet 未取到（JSON/PNG 拉取为空），回退纯色进度条。");
+                }
+                _status = "加载完成，正在进入游戏…";
             }
             catch (System.Exception ex)
             {
                 _status = "部分资源加载失败：" + ex.Message;
-                PrintTool.LogError("[LoadingDialog] 预加载异常：" + ex);
+                PrintTool.LogError("[LoadingDialog] 资源加载异常：" + ex);
+                _loaded = _total; // 失败也走完进度，避免卡在 0%
             }
             finally
             {
+                _dirty = true;
                 _finished = true;
+            }
+        }
+
+        // 从 preload-sheet 按关键字挑出进度条底图/填充帧（挑不到则回退纯色条）。
+        private void PickBarFrames()
+        {
+            _barBgFrame = null;
+            _barFillFrame = null;
+            foreach (var key in _sheet.Frames.Keys)
+            {
+                var k = key.ToLowerInvariant();
+                if (_barBgFrame == null && k.Contains(BarBgFrameHint) &&
+                    (k.Contains("bg") || k.Contains("back") || k.Contains("track") || k.Contains("kuang") || k.Contains("ground")))
+                    _barBgFrame = key;
+                if (_barFillFrame == null && (k.Contains(BarFillFrameHint) || k.Contains("fill") || k.Contains("pro") || k.Contains("jd")))
+                    _barFillFrame = key;
+            }
+            if (_barBgFrame == null)
+            {
+                foreach (var key in _sheet.Frames.Keys)
+                    if (key.ToLowerInvariant().Contains(BarBgFrameHint)) { _barBgFrame = key; break; }
+            }
+            _useSheetBar = _barBgFrame != null || _barFillFrame != null;
+        }
+
+        // 把背景图 / 进度条图集帧烘焙进本蒙层的 ControlTexture（全屏），供 DrawControl 上屏。
+        // 用 BeginSprite(null) 以 1:1 烘焙（不受全局 RenderTransform 缩放影响）。
+        protected override void CreateTexture()
+        {
+            if (ControlTexture == null || ControlTexture.Disposed)
+            {
+                DXManager.ControlList.Add(this);
+                ControlTexture = DXManager.CreateRenderTarget(Size.Width, Size.Height);
+                TextureSize = Size;
+            }
+
+            var saved = DXManager.CurrentSurface;
+            DXManager.SetSurface(new Surface(ControlTexture));
+            DXManager.GDevice.Clear(new KFramework.MonoGame.Color(0, 0, 0, 255));
+
+            var mat = DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied);
+            DXManager.BeginSprite(mat, null);
+            try
+            {
+                DrawArtIntoControlTexture();
+            }
+            finally
+            {
+                DXManager.EndSprite();
+            }
+
+            DXManager.SetSurface(saved);
+            TextureValid = true;
+        }
+
+        private void DrawArtIntoControlTexture()
+        {
+            int w = Size.Width, h = Size.Height;
+            if (_bgTexture != null)
+            {
+                DXManager.Batch.Draw(_bgTexture,
+                    new KFramework.MonoGame.Rectangle(0, 0, w, h),
+                    new KFramework.MonoGame.Rectangle(0, 0, _bgTexture.Width, _bgTexture.Height),
+                    new KFramework.MonoGame.Color(255, 255, 255, 255));
+            }
+
+            if (_useSheetBar && _sheet != null)
+            {
+                int x = (Settings.ScreenWidth - _trackWidth) / 2;
+                int y = Settings.ScreenHeight / 2 + 70;
+                float p = _total > 0 ? (float)_loaded / _total : 1f;
+                if (_barBgFrame != null && _sheet.Frames.TryGetValue(_barBgFrame, out var bg))
+                    DXManager.Batch.Draw(bg.Texture,
+                        new KFramework.MonoGame.Rectangle(x, y, _trackWidth, _barHeight),
+                        bg.SourceRectangle,
+                        new KFramework.MonoGame.Color(255, 255, 255, 255));
+                if (_barFillFrame != null && _sheet.Frames.TryGetValue(_barFillFrame, out var fill))
+                    DXManager.Batch.Draw(fill.Texture,
+                        new KFramework.MonoGame.Rectangle(x, y, (int)(_trackWidth * p), _barHeight),
+                        fill.SourceRectangle,
+                        new KFramework.MonoGame.Color(255, 255, 255, 255));
             }
         }
 
@@ -148,7 +246,15 @@ namespace Client.MirControls
         public void Tick()
         {
             if (Size.Width != Settings.ScreenWidth || Size.Height != Settings.ScreenHeight)
+            {
                 Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
+                _dirty = true;
+            }
+            if (_dirty)
+            {
+                _dirty = false;
+                TextureValid = false; // 触发 ControlTexture 重烘焙（主线程安全）
+            }
 
             float p = _total > 0 ? (float)_loaded / _total : 1f;
             int barW = System.Math.Max(1, (int)(_trackWidth * p));
@@ -157,10 +263,13 @@ namespace Client.MirControls
             _percentLabel.Text = (_total > 0 ? (int)(p * 100) : 100) + "%";
             _statusLabel.Text = _status;
 
-            if (_finished) Done = true;
+            if (_finished)
+            {
+                KTween.delayedCall(1.0f, () => { Done = true; });
+            }
         }
 
-        /// <summary>取消仍在进行的预加载任务（在 Dispose 前由 GameScene 调用）。</summary>
+        /// <summary>取消仍在进行的资源加载任务（在 Dispose 前由 GameScene 调用）。</summary>
         public void Cancel() => _cts.Cancel();
     }
 }

@@ -195,18 +195,28 @@ namespace Client.MirControls
 
             if (!DrawImage) return;
 
-            // 方案2：图集绘制分支优先（AtlasSheet + AtlasFrame 齐备时走图集，否则回退老 .Lib）。
             if (AtlasSheet != null && !string.IsNullOrEmpty(AtlasFrame)
                 && AtlasSheet.Frames.TryGetValue(AtlasFrame, out var atlasSprite))
             {
                 Color drawColor = ForeColour;
                 if (Opacity < 1f)
+                {
                     drawColor = new Color(drawColor.R, drawColor.G, drawColor.B, (byte)(drawColor.A * Opacity));
+                }
 
                 bool oldGray = DXManager.GrayScale;
-                if (GrayScale) DXManager.SetGrayscale(true);
-                DXManager.Batch.DrawFrame(atlasSprite, DisplayLocation.X, DisplayLocation.Y, drawColor);
-                if (GrayScale) DXManager.SetGrayscale(oldGray);
+                if (GrayScale)
+                {
+                    DXManager.SetGrayscale(true);
+                }
+
+                KFramework.MonoGame.Rectangle targetRect = new KFramework.MonoGame.Rectangle(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height);
+                DXManager.Batch.DrawFrame(atlasSprite, targetRect, drawColor);
+                
+                if (GrayScale)
+                {
+                    DXManager.SetGrayscale(oldGray);
+                }
                 return;
             }
 
