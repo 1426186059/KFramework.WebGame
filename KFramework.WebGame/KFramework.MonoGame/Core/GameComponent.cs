@@ -21,6 +21,12 @@ namespace KFramework.MonoGame
 
         public virtual void Initialize() { }
 
+        /// <summary>
+        /// 加载内容（异步）。宿主在 <c>Game.LoadContentAsync</c> 之后、主循环启动之前 await 它，
+        /// 需要下载 / 反序列化内容包的组件重写这里即可；默认什么都不做。
+        /// </summary>
+        public virtual Task LoadContentAsync() => Task.CompletedTask;
+
         public virtual void Update(GameTime gameTime) { }
     }
 
@@ -42,10 +48,11 @@ namespace KFramework.MonoGame
         /// </summary>
         protected SpriteBatch SpriteBatch { get; private set; } = null!;
 
-        public virtual void LoadContent()
+        public override Task LoadContentAsync()
         {
             // 不再 per-component 新建：全游戏共用 Game 建的那一把，避免多份顶点池与状态互相冲刷。
             SpriteBatch = Game.SpriteBatch;
+            return Task.CompletedTask;
         }
 
         public virtual void Draw(GameTime gameTime) { }
@@ -88,9 +95,17 @@ namespace KFramework.MonoGame
             foreach (GameComponent component in _components) component.Initialize();
         }
 
-        internal void LoadContent()
+        /// <summary>
+        /// 依次 await 各组件的 <see cref="GameComponent.LoadContentAsync"/>。
+        /// 顺序即添加顺序；加载期间新加入的组件本轮不参与（用快照计数，避免边遍历边扩容）。
+        /// </summary>
+        internal async Task LoadContentAsync()
         {
-            foreach (DrawableGameComponent component in _drawable) component.LoadContent();
+            int count = _components.Count;
+            for (int i = 0; i < count; i++)
+            {
+                await _components[i].LoadContentAsync().ConfigureAwait(false);
+            }
         }
 
         internal void Update(GameTime gameTime)

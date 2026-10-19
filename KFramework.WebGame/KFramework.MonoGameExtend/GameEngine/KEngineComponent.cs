@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using KFramework.MonoGame;
 
 namespace KFramework.MonoGameExtend
@@ -20,13 +21,13 @@ namespace KFramework.MonoGameExtend
 
         public override void Initialize()
         {
-            EnsureInitialized();
+            
         }
 
-        public override void LoadContent()
+        public override Task LoadContentAsync()
         {
-            base.LoadContent();
             EnsureInitialized();
+            return base.LoadContentAsync();
         }
 
         public override void Update(GameTime gameTime)

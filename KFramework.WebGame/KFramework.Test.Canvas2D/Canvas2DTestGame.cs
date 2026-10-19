@@ -24,7 +24,7 @@ namespace KFramework.Test.Canvas2D
 
             // 组件式接入 MonoGameExtend：输入、KTime、场景树、KTween / KTimer 等全由它每帧驱动。
             // 键盘绑到画布：页面里有输入框时不会误收游戏键（画布会自行聚焦并在 pointerdown 时重新聚焦）。
-            Components.Add(new KEngineComponent(this) { KeyboardUseCanvasListener = true });
+            Components.Add(new KEngineComponent(this) { InputUseCanvasListener = true });
         }
 
         protected override Task LoadContentAsync()

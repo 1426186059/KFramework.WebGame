@@ -162,7 +162,7 @@ namespace KFramework.MonoGame
                     Initialize();
                     Components.Initialize();
                     await LoadContentAsync().ConfigureAwait(false);
-                    Components.LoadContent();
+                    await Components.LoadContentAsync().ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
