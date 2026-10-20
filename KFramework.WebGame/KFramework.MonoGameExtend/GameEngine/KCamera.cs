@@ -32,10 +32,6 @@ public partial class KCamera : KTransform
     /// <summary>渲染开始前是否清屏（离屏 PreserveContents 场景设 false）。默认 true。</summary>
     public bool ClearOnRender = true;
 
-    /// <summary>视图矩阵覆盖：非空时渲染入口用它本身作为 Begin 的 transformMatrix，
-    /// 否则用相机自身的 <see cref="ViewMatrix"/>（含屏幕适配）。离屏渲染常用 <see cref="Matrix4x4.Identity"/>（世界坐标=像素）。</summary>
-    public Matrix4x4? ViewMatrixOverride = null;
-
     /// <summary>在遍历场景之前先画的内容（例如把上一步离屏 RT 当纹理贴到屏幕）。在已开的批内执行。</summary>
     public Action<SpriteBatch>? PreDraw = null;
 
@@ -135,21 +131,21 @@ public partial class KCamera : KTransform
 
     public Matrix4x4 ViewMatrix
     {
-        get { return World_To_Screen_Matrix; }
+        get { return World_To_Camera_Matrix; }
     }
 
-    public Matrix4x4 World_To_Screen_Matrix
+    public Matrix4x4 World_To_Camera_Matrix
     {
         get
         {
-            // 世界 → 屏幕：先相机平移，再缩放，再加屏幕偏移
-            // 矩阵乘法顺序（从右到左应用）：
-            // 1. 减去相机位置（相机跟随）
-            // 2. 乘以缩放系数（适配屏幕）
-            // 3. 加上屏幕偏移（居中）
+            // 世界 → 屏幕：先相机平移，再缩放，再加偏移。
+            // 缩放系数取自【当前渲染目标】的视口尺寸（RT 或 屏幕）：渲染到 RT 时自动按 RT 大小适配、
+            // 渲染到屏幕时按屏幕尺寸适配——对标 Unity「相机矩阵即视图矩阵」，无需 ViewMatrixOverride 之类的覆盖项。
+            var viewport = KSceneMgr.Game.GraphicsDevice.Viewport;
+            float scaleCoef = viewport.Height / (OrthographicSize * 2f);
             return Matrix4x4.CreateTranslation(-LocalPosition.X, -LocalPosition.Y, 0f) *
                 Matrix4x4.CreateRotationZ(-LocalRotation) *
-                Matrix4x4.CreateScale(ScaleCoef, ScaleCoef, 1f) *
+                Matrix4x4.CreateScale(scaleCoef, scaleCoef, 1f) *
                 Matrix4x4.CreateTranslation(_screenOffset.X, _screenOffset.Y, 0f);
         }
     }
@@ -161,7 +157,7 @@ public partial class KCamera : KTransform
     /// </summary>
     public Vector2 ScreenToWorld(Vector2 screenPos)
     {
-        return Vector2.Transform(screenPos, Matrix4x4.Invert(World_To_Screen_Matrix));
+        return Vector2.Transform(screenPos, Matrix4x4.Invert(World_To_Camera_Matrix));
     }
 
     /// <summary>
@@ -169,7 +165,7 @@ public partial class KCamera : KTransform
     /// </summary>
     public Vector2 WorldToScreen(Vector2 worldPos)
     {
-        return Vector2.Transform(worldPos, World_To_Screen_Matrix);
+        return Vector2.Transform(worldPos, World_To_Camera_Matrix);
     }
 
     // ===== 便捷方法 =====

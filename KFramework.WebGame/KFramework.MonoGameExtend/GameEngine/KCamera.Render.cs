@@ -18,7 +18,7 @@ public partial class KCamera : KTransform
 
         var batch = KSceneMgr.SpriteBatch;
         Material mat = Material ?? (_defaultMaterial ??= new Material());
-        batch.Begin(mat, SortMode, ViewMatrixOverride ?? ViewMatrix);
+        batch.Begin(mat, SortMode, ViewMatrix);
 
         PreDraw?.Invoke(batch);
         draw(batch);
@@ -45,7 +45,7 @@ public partial class KCamera : KTransform
         if (ClearOnRender) device.Clear(BackgroundColor);
 
         var batch = KSceneMgr.SpriteBatch;
-        Matrix4x4 view = ViewMatrixOverride ?? ViewMatrix;
+        Matrix4x4 view = ViewMatrix;
 
         // 1) 收集批贡献节点（MeshRenderer，按层剔除）
         var nodes = new List<MeshRenderer>();
