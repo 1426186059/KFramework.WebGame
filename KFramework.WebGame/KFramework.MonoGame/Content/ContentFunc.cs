@@ -11,7 +11,7 @@ namespace KFramework.MonoGame
         }
 
         private const bool bUseJSHttp = true;
-        private const bool bUseCacheInstance = false;
+        private const bool bUseCacheInstance = true;
         public static async Task<byte[]> LoadCacheOrDownloadAsync(HttpClient http, string path, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
         {
             string url = http.BaseAddress + path;
