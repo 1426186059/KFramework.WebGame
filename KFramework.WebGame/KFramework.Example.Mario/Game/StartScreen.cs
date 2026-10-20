@@ -23,14 +23,14 @@ namespace KFramework.Example.Mario
 
             Parent = KUIRoot.Instance.GetCanvas(0);
             Pivot = Vector2.One * 0.5f;
-            MinMaxAnchor = KRectangleF.MinMax(0, 0, 1, 1);
-            AnchorOffset = KRectangleFOffset.Zero;
+            MinMaxAnchor = RectangleF.MinMax(0, 0, 1, 1);
+            AnchorOffset = AnchorRectOffset.Zero;
 
             new KImage() //灰色背景
             {
                 Parent = this,
-                MinMaxAnchor = KRectangleF.MinMax(0, 0, 1, 1),
-                AnchorOffset = KRectangleFOffset.Zero,
+                MinMaxAnchor = RectangleF.MinMax(0, 0, 1, 1),
+                AnchorOffset = AnchorRectOffset.Zero,
                 Sprite = KDefaultRes.DefaultSprite,
                 Color = new Color(Color.Gray.R, Color.Gray.G, Color.Gray.B, (byte)150)
             };

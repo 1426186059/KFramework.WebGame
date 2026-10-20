@@ -20,8 +20,8 @@ namespace KFramework.Example.Mario
 
             Parent = KUIRoot.Instance.GetCanvas(0);
             Pivot = Vector2.One * 0.5f;
-            MinMaxAnchor = KRectangleF.MinMax(0, 0, 1, 1);
-            AnchorOffset = KRectangleFOffset.Zero;
+            MinMaxAnchor = RectangleF.MinMax(0, 0, 1, 1);
+            AnchorOffset = AnchorRectOffset.Zero;
 
             mLabel_Name_Score = new KLabel()
             {

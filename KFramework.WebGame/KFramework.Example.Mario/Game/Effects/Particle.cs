@@ -52,7 +52,7 @@ namespace KFramework.Example.Mario
             }
 
             PreviousPosition = (Vector2)LocalPosition;
-            LocalPosition += Velocity * elapsedTime;
+            LocalPosition += (Vector3)(Velocity * elapsedTime);
             float dragFactor = Math.Max(1 - (elapsedTime * DragPerSecond), 0);
             Velocity *= dragFactor;
             LifeTime -= elapsedTime;

@@ -26,7 +26,7 @@ namespace KFramework.Example.Tank.Screens
             _onTimeout = onTimeout;
 
             Parent = canvas;   // 先挂到画布：否则布局拿不到父尺寸
-            MinMaxAnchor = KRectangleF.MinMax(0, 0, 1, 1);
+            MinMaxAnchor = RectangleF.MinMax(0, 0, 1, 1);
 
             // 黑色全屏背景（对应 Pixi 的黑色 Graphics 矩形）
             new KImage
@@ -34,7 +34,7 @@ namespace KFramework.Example.Tank.Screens
                 Parent = this,
                 Sprite = KDefaultRes.DefaultTexture2D,
                 Color = Color.Black,
-                MinMaxAnchor = KRectangleF.MinMax(0, 0, 1, 1),
+                MinMaxAnchor = RectangleF.MinMax(0, 0, 1, 1),
             };
 
             // 居中失败图（对应 Pixi 的 Texture.from("main/MyRes/Textures/UIGameOver.png")，pivot=center, position=center）
@@ -44,7 +44,7 @@ namespace KFramework.Example.Tank.Screens
                 Sprite = res.UIGameOver,
                 UseNativeSize = true,
                 Pivot = new Vector2(0.5f),
-                MinMaxAnchor = KRectangleF.MinMax(0.5f, 0.5f, 0.5f, 0.5f),
+                MinMaxAnchor = RectangleF.MinMax(0.5f, 0.5f, 0.5f, 0.5f),
             };
         }
 

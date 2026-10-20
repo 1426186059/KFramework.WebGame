@@ -8,8 +8,8 @@ namespace KFramework.MonoGameExtend
 
         private Vector2 _cacheSize;
         private Vector2 _cachePovit;
-        private KRectangleF _cacheMinMaxAnchor; //最小最大 锚点
-        private KRectangleFOffset _cacheMinMaxAnchorOffset; //最小最大 锚点
+        private RectangleF _cacheMinMaxAnchor; //最小最大 锚点
+        private AnchorRectOffset _cacheMinMaxAnchorOffset; //最小最大 锚点
 
         public KWidget()
         {
@@ -45,11 +45,11 @@ namespace KFramework.MonoGameExtend
         {
             set
             {
-                MinMaxAnchor = KRectangleF.MinMax(value, value);
+                MinMaxAnchor = RectangleF.MinMax(value, value);
             }
         }
 
-        public KRectangleF MinMaxAnchor
+        public RectangleF MinMaxAnchor
         {
             get { return _cacheMinMaxAnchor; }
             set
@@ -63,7 +63,7 @@ namespace KFramework.MonoGameExtend
             }
         }
 
-        public KRectangleFOffset AnchorOffset
+        public AnchorRectOffset AnchorOffset
         {
             get
             {
@@ -84,12 +84,12 @@ namespace KFramework.MonoGameExtend
         {
             get
             {
-                KRectangleF mAnchorRectangle = GetAnchorRectangle();
+                RectangleF mAnchorRectangle = GetAnchorRectangle();
                 return (Vector2)LocalPosition - mAnchorRectangle.Location;
             }
             set
             {
-                KRectangleF mAnchorRectangle = GetAnchorRectangle();
+                RectangleF mAnchorRectangle = GetAnchorRectangle();
                 LocalPosition = value + mAnchorRectangle.Location;
                 UpdateAnchorOffset();
             }
@@ -110,7 +110,7 @@ namespace KFramework.MonoGameExtend
 
                     Vector2 lastPovit = _cachePovit;
                     _cachePovit = value;
-                    LocalPosition += (_cachePovit - lastPovit) * Size;
+                    LocalPosition += (Vector3)((_cachePovit - lastPovit) * Size);
                 }
             }
         }
@@ -140,19 +140,19 @@ namespace KFramework.MonoGameExtend
             }
         }
 
-        private KRectangleF GetAnchorRectangle()
+        private RectangleF GetAnchorRectangle()
         {
             var mParentWidgetSize = GetParentWidgetSize();
             var mParentWidgetPivot = GetParentWidgetPivot();
-            return new KRectangleF(
+            return new RectangleF(
                 (MinMaxAnchor.Location - mParentWidgetPivot) * mParentWidgetSize,
                 MinMaxAnchor.Size * mParentWidgetSize
                 );
         }
 
-        private KRectangleF GetRealRectangle()
+        private RectangleF GetRealRectangle()
         {
-            return new KRectangleF((Vector2)LocalPosition - Pivot * Size, Size);
+            return new RectangleF((Vector2)LocalPosition - Pivot * Size, Size);
         }
 
         protected override void OnLocalPositionChanged()
@@ -179,8 +179,8 @@ namespace KFramework.MonoGameExtend
         
         private void UpdateRealRectangle()
         {
-            KRectangleF mRealRectangle = new KRectangleF();
-            KRectangleF mAnchorRectangle = GetAnchorRectangle();
+            RectangleF mRealRectangle = new RectangleF();
+            RectangleF mAnchorRectangle = GetAnchorRectangle();
             mRealRectangle.Left = mAnchorRectangle.Left + AnchorOffset.Left;
             mRealRectangle.Right = mAnchorRectangle.Right + AnchorOffset.Right;
             mRealRectangle.Top = mAnchorRectangle.Top + AnchorOffset.Top;
@@ -191,8 +191,8 @@ namespace KFramework.MonoGameExtend
 
         private void UpdateAnchorOffset()
         {
-            KRectangleF mRealRectangle = GetRealRectangle();
-            KRectangleF mAnchorRectangle = GetAnchorRectangle();
+            RectangleF mRealRectangle = GetRealRectangle();
+            RectangleF mAnchorRectangle = GetAnchorRectangle();
             _cacheMinMaxAnchorOffset.Left = mRealRectangle.Left - mAnchorRectangle.Left;
             _cacheMinMaxAnchorOffset.Right = mRealRectangle.Right - mAnchorRectangle.Right;
             _cacheMinMaxAnchorOffset.Top = mRealRectangle.Top - mAnchorRectangle.Top;
@@ -244,9 +244,9 @@ namespace KFramework.MonoGameExtend
             get { return new Vector2(0, GetParentWidgetSize().Y - Size.Y); }
         }
 
-        public KRectangleF GetWorldBound()
+        public RectangleF GetWorldBound()
         {
-            KRectangleF target = new KRectangleF(
+            RectangleF target = new RectangleF(
                 (WorldPosition - Size * Pivot * WorldScale),
                 (Size * WorldScale));
             return target;
@@ -255,11 +255,11 @@ namespace KFramework.MonoGameExtend
 
         private const bool bDrawWidgetZone = false;
 
-        private KRectangleF GetWorldRectangle(KRectangleF LocalRectangle)
+        private RectangleF GetWorldRectangle(RectangleF LocalRectangle)
         {
             var Location = Parent.LocalToWorld(LocalRectangle.Location);
             var Size = LocalRectangle.Size * WorldScale;
-            return new KRectangleF(Location, Size);
+            return new RectangleF(Location, Size);
         }
 
         public void DrawWidgetZone(GameTime gameTime)
@@ -294,7 +294,7 @@ namespace KFramework.MonoGameExtend
                     Vector2 worldPos = WorldPosition;
                     Vector2 origin = Vector2.Zero;
 
-                    KRectangleF target = GetWorldRectangle(GetAnchorRectangle());
+                    RectangleF target = GetWorldRectangle(GetAnchorRectangle());
 
                     Color mColor = new Color(0, 0, 0, 200);
                     batch.DrawRect(

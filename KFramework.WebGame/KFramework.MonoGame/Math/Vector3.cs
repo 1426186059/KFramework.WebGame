@@ -105,7 +105,7 @@ namespace KFramework.MonoGame
         public static bool operator !=(Vector3 a, Vector3 b) => !(a == b);
 
         public static implicit operator Vector3(Vector2 v) => new(v.X, v.Y, 0f);
-        public static explicit operator Vector2(Vector3 v) => new(v.X, v.Y);
+        public static implicit operator Vector2(Vector3 v) => new(v.X, v.Y);
 
         public bool Equals(Vector3 other) => X == other.X && Y == other.Y && Z == other.Z;
         public override bool Equals(object? obj) => obj is Vector3 v && Equals(v);

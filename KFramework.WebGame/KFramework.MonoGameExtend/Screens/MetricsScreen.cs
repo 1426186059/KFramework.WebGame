@@ -41,8 +41,8 @@ namespace KFramework.MonoGameExtend
         {
             Parent = KSceneMgr.DontDestroyOnLoadRoot;
             Pivot = Vector2.One * 0.5f;
-            MinMaxAnchor = KRectangleF.MinMax(0, 0, 1, 1);
-            AnchorOffset = KRectangleFOffset.Zero;
+            MinMaxAnchor = RectangleF.MinMax(0, 0, 1, 1);
+            AnchorOffset = AnchorRectOffset.Zero;
 
             mImage = new KImage()
             {

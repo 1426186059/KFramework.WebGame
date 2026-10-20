@@ -3,59 +3,16 @@ using System;
 
 namespace KFramework.MonoGameExtend
 {
-    public struct KRectangleFOffset
+    public struct RectangleF : IEquatable<RectangleF>
     {
-        public float Left;
-        public float Right;
-        public float Top;
-        public float Bottom;
-
-        public KRectangleFOffset(float Left, float Right, float Top, float Bottom)
-        {
-            this.Left = Left;
-            this.Right = Right;
-            this.Top = Top;
-            this.Bottom = Bottom;
-        }
-
-        public static KRectangleFOffset Zero => new KRectangleFOffset(0, 0, 0, 0);
-
-        public static bool operator ==(KRectangleFOffset a, KRectangleFOffset b)
-        {
-            return a.Left == b.Left && a.Right == b.Right && a.Top == b.Top && a.Bottom == b.Bottom;
-        }
-
-        public static bool operator !=(KRectangleFOffset a, KRectangleFOffset b)
-        {
-            return !(a == b);
-        }
-
-        public override bool Equals(object obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override int GetHashCode()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override string ToString()
-        {
-            return "{Left:" + Left + " Right:" + Right + " Top:" + Top + " Bottom:" + Bottom + "}";
-        }
-    }
-
-    public struct KRectangleF : IEquatable<KRectangleF>
-    {
-        private static KRectangleF emptyRectangle;
+        private static RectangleF emptyRectangle;
 
         public float X;
         public float Y;
         public float Width;
         public float Height;
 
-        public static KRectangleF Empty => emptyRectangle;
+        public static RectangleF Empty => emptyRectangle;
 
 
         public float Left { get { return X; } set { X = value; } }
@@ -106,7 +63,7 @@ namespace KFramework.MonoGameExtend
 
         public Vector2 Center => new Vector2(X + Width / 2, Y + Height / 2);
 
-        public KRectangleF(float x, float y, float width, float height)
+        public RectangleF(float x, float y, float width, float height)
         {
             X = x;
             Y = y;
@@ -114,7 +71,7 @@ namespace KFramework.MonoGameExtend
             Height = height;
         }
 
-        public KRectangleF(Vector2 location, Vector2 size)
+        public RectangleF(Vector2 location, Vector2 size)
         {
             X = location.X;
             Y = location.Y;
@@ -122,9 +79,9 @@ namespace KFramework.MonoGameExtend
             Height = size.Y;
         }
 
-        public static KRectangleF MinMax(Vector2 minPos, Vector2 maxPos)
+        public static RectangleF MinMax(Vector2 minPos, Vector2 maxPos)
         {
-            KRectangleF m = new KRectangleF();
+            RectangleF m = new RectangleF();
             m.X = minPos.X;
             m.Y = minPos.Y;
             m.Width = maxPos.X - minPos.X;
@@ -132,9 +89,9 @@ namespace KFramework.MonoGameExtend
             return m;
         }
 
-        public static KRectangleF MinMax(float minPosX, float minPosY, float maxPosX, float maxPosY)
+        public static RectangleF MinMax(float minPosX, float minPosY, float maxPosX, float maxPosY)
         {
-            KRectangleF m = new KRectangleF();
+            RectangleF m = new RectangleF();
             m.X = minPosX;
             m.Y = minPosY;
             m.Width = maxPosX - minPosX;
@@ -172,7 +129,7 @@ namespace KFramework.MonoGameExtend
             return false;
         }
 
-        public bool Contains(KRectangleF value)
+        public bool Contains(RectangleF value)
         {
             if (X <= value.X && value.X + value.Width <= X + Width && Y <= value.Y)
             {
@@ -196,38 +153,38 @@ namespace KFramework.MonoGameExtend
 
         //隐式转换
 
-        public static implicit operator Rectangle(KRectangleF a)
+        public static implicit operator Rectangle(RectangleF a)
         {
             return new Rectangle((int)a.X, (int)a.Y, (int)a.Width, (int)a.Height);
         }
 
         //强制 转换
-        public static explicit operator KRectangleF(Rectangle a)
+        public static explicit operator RectangleF(Rectangle a)
         {
-            return new KRectangleF(a.X, a.Y, a.Width, a.Height);
+            return new RectangleF(a.X, a.Y, a.Width, a.Height);
         }
 
-        public static bool operator ==(KRectangleF a, KRectangleF b)
+        public static bool operator ==(RectangleF a, RectangleF b)
         {
             return a.X == b.X && a.Y == b.Y && a.Width == b.Width && a.Height == b.Height;
         }
 
-        public static bool operator !=(KRectangleF a, KRectangleF b)
+        public static bool operator !=(RectangleF a, RectangleF b)
         {
             return !(a == b);
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is KRectangleF)
+            if (obj is RectangleF)
             {
-                return this == (KRectangleF)obj;
+                return this == (RectangleF)obj;
             }
 
             return false;
         }
 
-        public bool Equals(KRectangleF other)
+        public bool Equals(RectangleF other)
         {
             return this == other;
         }

@@ -20,8 +20,8 @@ namespace KFramework.Example.Mario
 
             Parent = KUIRoot.Instance.GetCanvas(0);
             AnchorPosition = Vector2.Zero;
-            MinMaxAnchor = KRectangleF.MinMax(0, 0, 1, 1);
-            AnchorOffset = KRectangleFOffset.Zero;
+            MinMaxAnchor = RectangleF.MinMax(0, 0, 1, 1);
+            AnchorOffset = AnchorRectOffset.Zero;
 
             LeftTopBtn = new KButton()
             {

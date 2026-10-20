@@ -39,10 +39,10 @@ namespace KFramework.MonoGameExtend
         private void InitLableDefault()
         {
             _cacheLable.Parent = this;
-            _cacheLable.MinMaxAnchor = KRectangleF.MinMax(0, 0, 1, 1);
+            _cacheLable.MinMaxAnchor = RectangleF.MinMax(0, 0, 1, 1);
             _cacheLable.Anchor = Vector2.One * 0.5f;
             _cacheLable.Pivot = Vector2.One * 0.5f;
-            _cacheLable.AnchorOffset = KRectangleFOffset.Zero;
+            _cacheLable.AnchorOffset = AnchorRectOffset.Zero;
         }
 
         /// <summary>点击事件，用法：button.onClick += (s, e) => { };</summary>
