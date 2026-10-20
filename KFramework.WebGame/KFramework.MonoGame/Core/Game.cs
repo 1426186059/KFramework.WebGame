@@ -159,10 +159,10 @@ namespace KFramework.MonoGame
                     Input_GameFrameData.WindowSizeChanged += OnWindowSizeChanged;
                     Input_GameFrameData.WindowFocusChanged += OnWindowFocusChanged;
 
-                    Initialize();
                     Components.Initialize();
-                    await LoadContentAsync().ConfigureAwait(false);
+                    Initialize();
                     await Components.LoadContentAsync().ConfigureAwait(false);
+                    await LoadContentAsync().ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -234,8 +234,8 @@ namespace KFramework.MonoGame
                         _totalGameTime += TimeSpan.FromSeconds(target);
                         var stepTime = new GameTime(_totalGameTime, TimeSpan.FromSeconds(target));
                         Input.Update();
-                        Update(stepTime);
                         Components.Update(stepTime);
+                        Update(stepTime);
                         Input.LateUpdate();
                         _accumulator -= target;
                         steps++;
@@ -247,28 +247,25 @@ namespace KFramework.MonoGame
                     var drawElapsed = TimeSpan.FromSeconds(target * steps);
                     GraphicsDevice.Clear(ClearColor);
                     var drawTime = new GameTime(_totalGameTime, drawElapsed);
-                    Draw(drawTime);
                     Components.Draw(drawTime);
-                    // 收帧（照 MonoGame 在 Draw 结束后的 Present）。WebGL 后端无需动作；
-                    // WebGPU 后端必须在此提交命令缓冲 —— 交换链纹理只在当前帧有效，
-                    // 拖到下一帧再提交就会报 "Destroyed texture used in a submit" 且画面全黑。
+                    Draw(drawTime);
                     GraphicsDevice.EndFrame();
                 }
                 else
                 {
-                    // 可变 dt：dt 用两次 rAF 的真实间隔（被 MaxElapsedSeconds 截断，避免切后台回来时一次性模拟过多）。
                     var span = TimeSpan.FromSeconds(Math.Min(elapsed, MaxElapsedSeconds));
                     _totalGameTime += span;
                     var frameTime = new GameTime(_totalGameTime, span);
 
                     Input.Update();
-                    Update(frameTime);
                     Components.Update(frameTime);
+                    Update(frameTime);
                     Input.LateUpdate();
 
                     GraphicsDevice.Clear(ClearColor);
-                    Draw(frameTime);
                     Components.Draw(frameTime);
+                    Draw(frameTime);
+
                     // 同上：帧内必须收帧提交。
                     GraphicsDevice.EndFrame();
                 }

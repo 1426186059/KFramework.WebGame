@@ -21,7 +21,7 @@ namespace KFramework.MonoGameExtend
 
         public override void Initialize()
         {
-            
+            EnsureInitialized();
         }
 
         public override Task LoadContentAsync()
