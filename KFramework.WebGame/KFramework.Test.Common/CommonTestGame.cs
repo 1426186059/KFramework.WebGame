@@ -22,7 +22,6 @@ namespace KFramework.Test.Common
 
         /// <summary>
         /// 图形设备管理器（MonoGame 的标准用法：每个 Game 在构造函数里创建一个并持有它）。
-        /// 完整演示见 <see cref="KFramework.Test.Common.Tests.GraphicsManagerTest.GraphicsManagerTestScene"/>。
         /// </summary>
         public GraphicsDeviceManager Graphics { get; }
 

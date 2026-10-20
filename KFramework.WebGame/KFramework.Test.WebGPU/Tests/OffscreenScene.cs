@@ -412,7 +412,7 @@ namespace KFramework.Test.WebGPU.Tests
         /// <para>
         /// 关键：MSAA 抗的是<b>三角形（几何）边缘</b>；球体那种靠纹理 alpha 形成的圆边不在它的作用范围内，
         /// 拿球去看 MSAA 开没开等于白测 —— 这正是上一版"MSAA 貌似没起作用"的原因。
-        /// 做法照 Test.Common 的 <c>MSAATestScene.DrawScene</c>。
+        /// 做法照 WebGL/WebGPU 测试工程里专门的多重采样示例（原 Test.Common 的 MSAATestScene 已迁出）。
         /// </para>
         /// </summary>
         private void DrawEdgeInto(RenderTarget2D? target, SpriteBatch batch)

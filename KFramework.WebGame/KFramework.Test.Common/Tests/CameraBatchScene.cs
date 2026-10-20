@@ -88,7 +88,8 @@ namespace KFramework.Test.Common.Tests
                 CullingMask = 1u << 1,
                 BackgroundColor = new Color(0, 0, 0, 0),
                 ClearOnRender = true,
-                OrthographicSize = 256f,   // 512 高 RT：缩放=512/(2*256)=1，世界坐标=像素（靠相机矩阵自适应，无需 override）
+                OrthographicSize = 256f,   // 512 高 RT：缩放=512/(2*256)=1
+                LocalPosition = new Vector3(256, 256, 0),   // 相机是中心点坐标系：把相机中心放到 RT 中心，世界坐标=像素
             };
 
             // 屏幕相机：目标=画布，只渲染层0，清屏成深色；PreDraw 只画说明文字（前置批）
@@ -99,6 +100,7 @@ namespace KFramework.Test.Common.Tests
                 CullingMask = 1u << 0,
                 BackgroundColor = new Color(18, 22, 34),
                 ClearOnRender = true,
+                LocalPosition = new Vector3(960, 540, 0),   // 相机是中心点坐标系：放到设计分辨率中心，世界坐标=屏幕像素
                 PreDraw = batch =>
                 {
                     batch.DrawString(KDefaultRes.DefaultSpriteFont,

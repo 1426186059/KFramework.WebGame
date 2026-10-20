@@ -106,6 +106,23 @@ namespace KFramework.MonoGame
         public static Matrix4x4 CreateOrthographicScreen(float width, float height)
             => CreateOrthographicOffCenter(0f, width, height, 0f, 0f, 1f);
 
+        /// <summary>
+        /// 透视投影矩阵（行向量约定，裁剪空间 z ∈ [-1, 1]，与 WebGL 一致）。对标 MonoGame / XNA 的
+        /// <c>Matrix.CreatePerspectiveFieldOfView</c>。fovRadians 为垂直方向视野角（弧度），aspect = 宽 / 高。
+        /// </summary>
+        public static Matrix4x4 CreatePerspectiveFieldOfView(float fovRadians, float aspect, float zNear, float zFar)
+        {
+            float f = 1f / MathF.Tan(fovRadians / 2f);
+            Matrix4x4 m = Identity;
+            m.M11 = f / aspect;
+            m.M22 = f;
+            m.M33 = (zFar + zNear) / (zNear - zFar);
+            m.M34 = (2f * zFar * zNear) / (zNear - zFar);
+            m.M43 = -1f;
+            m.M44 = 0f;
+            return m;
+        }
+
         public static Matrix4x4 CreateScale(float scaleX, float scaleY)
             => new() { M11 = scaleX, M22 = scaleY, M33 = 1f, M44 = 1f };
 

@@ -37,12 +37,6 @@ namespace KFramework.Test.Common.Tests
             },
             new TestEntry
             {
-                Name = "GraphicsDeviceManager",
-                Desc = "设备参数管理的标准用法：点按钮切多重采样 / 呈现间隔（限帧）、切分辨率，每次改动后 ApplyChanges，并展示已应用的呈现参数",
-                Factory = static () => new GraphicsManagerTest.GraphicsManagerTestScene(),
-            },
-            new TestEntry
-            {
                 Name = "画布位置与尺寸",
                 Desc = "C# 控制 <canvas> 的 CSS 位置与尺寸：点按钮切预设分辨率、居中 / 左上角 / 填满整个 HTML 页面（软全屏）/ 恢复页面布局（html_canvas.ts）",
                 Factory = static () => new CanvasTest.CanvasTestScene(),
@@ -52,12 +46,6 @@ namespace KFramework.Test.Common.Tests
                 Name = "离屏渲染 RenderTarget",
                 Desc = "开 / 关 离屏渲染对比：几千个精灵，直接画 vs 画进 RenderTarget2D 后每帧只贴 1 个（看 FPS 与提交量）",
                 Factory = static () => new RenderTargetTest.RenderTargetTestScene(),
-            },
-            new TestEntry
-            {
-                Name = "多重采样 MSAA",
-                Desc = "同一场景渲染进两张离屏 RenderTarget2D（MultiSampleCount 0 / 4），并排对比边缘锯齿；WebGL 单上下文内做 MSAA 的正确方式（多重采样 FBO + blitFramebuffer 解析）",
-                Factory = static () => new MSAATest.MSAATestScene(),
             },
             new TestEntry
             {
@@ -94,6 +82,12 @@ namespace KFramework.Test.Common.Tests
                 Name = "相机自动合批 KCamera",
                 Desc = "v1+v2 演示：两个相机各合各的批、各画各的目标（离屏 RT / 画布），场景 Draw 里零 Begin/End/SetRenderTarget；屏幕相机按 CullingMask 层剔除只画 UI 层，离屏相机只画世界层，PreDraw 把 RT 合成回屏幕",
                 Factory = static () => new CameraBatchScene(),
+            },
+            new TestEntry
+            {
+                Name = "相机测试（2D正交/3D透视/视锥裁剪）",
+                Desc = "专项测试：2D 正交相机世界↔屏幕坐标往返 + 正交视锥剔除（环上越界精灵被 activeSelf=false 真正剔除）；3D 透视相机（看向 -Z）用 IsInFrustum 断言 前方/背后/超远/过近/FOV外/FOV内 各用例，文本报告 PASS/FAIL。对标 Unity 相机矩阵",
+                Factory = static () => new CameraTest.CameraTestScene(),
             },
         ];
     }
