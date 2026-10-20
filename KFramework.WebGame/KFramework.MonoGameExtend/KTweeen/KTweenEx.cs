@@ -89,7 +89,7 @@ namespace KFramework.MonoGameExtend
 
         public static KTween.TweenItem moveLocal(KTransform obj, Vector2 to, float time)
         {
-            Vector2 from = obj.LocalPosition;
+            Vector2 from = (Vector2)obj.LocalPosition;
             return KTween.AddTween(obj, time, fPercent =>
             {
                 obj.LocalPosition = Vector2.LerpPrecise(from, to, fPercent);
@@ -137,7 +137,7 @@ namespace KFramework.MonoGameExtend
 
         public static KTween.TweenItem moveLocalX(KTransform obj, float x, float time)
         {
-            Vector2 from = obj.LocalPosition;
+            Vector2 from = (Vector2)obj.LocalPosition;
             return KTween.AddTween(obj, time, fPercent =>
             {
                 obj.LocalPosition = new Vector2(
@@ -148,7 +148,7 @@ namespace KFramework.MonoGameExtend
 
         public static KTween.TweenItem moveLocalY(KTransform obj, float y, float time)
         {
-            Vector2 from = obj.LocalPosition;
+            Vector2 from = (Vector2)obj.LocalPosition;
             return KTween.AddTween(obj, time, fPercent =>
             {
                 obj.LocalPosition = new Vector2(

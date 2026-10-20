@@ -51,7 +51,7 @@ namespace KFramework.Example.Mario
                 Velocity.Y += GravityAcceleration * elapsedTime;
             }
 
-            PreviousPosition = LocalPosition;
+            PreviousPosition = (Vector2)LocalPosition;
             LocalPosition += Velocity * elapsedTime;
             float dragFactor = Math.Max(1 - (elapsedTime * DragPerSecond), 0);
             Velocity *= dragFactor;
@@ -59,7 +59,7 @@ namespace KFramework.Example.Mario
             Color.A = (byte)(255f * LifeTime / InitialLifeTime);
             if (!IsAlive)
             {
-                OnDeath?.Invoke(LocalPosition);
+                OnDeath?.Invoke((Vector2)LocalPosition);
             }
         }
 

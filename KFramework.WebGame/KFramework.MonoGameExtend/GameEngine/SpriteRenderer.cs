@@ -9,7 +9,7 @@ namespace KFramework.MonoGameExtend
     /// 约定：绘制发生在外部已 Begin 的 SpriteBatch 上下文里（与 Level 的 viewMatrix 体系一致），
     /// 本组件只负责 Draw，不 Begin/End。
     /// </summary>
-    public class SpriteRenderer : KTransform
+    public class SpriteRenderer : MeshRenderer
     {
         public enum SpriteDrawMode
         {

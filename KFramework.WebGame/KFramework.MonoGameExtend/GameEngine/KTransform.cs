@@ -8,7 +8,7 @@ namespace KFramework.MonoGameExtend
     {
         // 本地属性
         private readonly LinkedListNode<KTransform> mEntry;
-        private Vector2 _cacheLocalPosition;
+        private Vector3 _cacheLocalPosition;
         private Vector2 _cacheLocalScale;
         private float _cacheLocalRotation;
         private readonly LinkedList<KTransform> _cacheChildList = new LinkedList<KTransform>();
@@ -32,6 +32,7 @@ namespace KFramework.MonoGameExtend
         public KTransform()
         {
             mEntry = new LinkedListNode<KTransform>(this);
+            _cacheLocalPosition = Vector3.Zero;
             _cacheLocalScale = Vector2.One;
             _cacheActive = true;
             SetDirty();
@@ -116,7 +117,7 @@ namespace KFramework.MonoGameExtend
             }
         }
 
-        public Vector2 LocalPosition
+        public Vector3 LocalPosition
         {
             get { return _cacheLocalPosition; }
             set
@@ -126,6 +127,20 @@ namespace KFramework.MonoGameExtend
                     _cacheLocalPosition = value;
                     SetDirty();
                     OnLocalPositionChanged();
+                }
+            }
+        }
+
+        /// <summary>局部 Z 深度（世界 Z 用于相机自动合批的深度排序，对标 Unity transform.z / 深度轴）。</summary>
+        public float LocalZ
+        {
+            get { return _cacheLocalPosition.Z; }
+            set
+            {
+                if (value != _cacheLocalPosition.Z)
+                {
+                    _cacheLocalPosition.Z = value;
+                    SetDirty();
                 }
             }
         }
@@ -167,7 +182,7 @@ namespace KFramework.MonoGameExtend
                     // 构建本地矩阵：缩放 → 旋转 → 平移
                     Matrix4x4 localMatrix = Matrix4x4.CreateScale(LocalScale.X, LocalScale.Y, 1f)
                                        * Matrix4x4.CreateRotationZ(LocalRotation)
-                                       * Matrix4x4.CreateTranslation(LocalPosition.X, LocalPosition.Y, 0f);
+                                       * Matrix4x4.CreateTranslation(LocalPosition.X, LocalPosition.Y, LocalPosition.Z);
 
                     // 有父节点则乘以父节点世界矩阵，否则就是自身
                     _worldMatrix = Parent != null
@@ -199,6 +214,12 @@ namespace KFramework.MonoGameExtend
                 var inv = Matrix4x4.Invert(parentWorld);
                 LocalPosition = Vector2.Transform(value, inv);
             }
+        }
+
+        /// <summary>世界 Z 深度（由世界矩阵 M43 取得）。相机自动合批按此排序（深度分批）。</summary>
+        public float WorldZ
+        {
+            get { Matrix4x4 m = Local_To_World_Matrix; return m.M43; }
         }
 
         public float WorldRotation

@@ -63,19 +63,19 @@ namespace KFramework.Example.Mario
             switch (effectType)
             {
                 case ParticleEffectType.Confetti:
-                    EmitConfetti(numberOfParticles, LocalPosition, color);
+                    EmitConfetti(numberOfParticles, (Vector2)LocalPosition, color);
                     break;
                 case ParticleEffectType.Explosions:
-                    EmitExplosions(numberOfParticles, LocalPosition, color);
+                    EmitExplosions(numberOfParticles, (Vector2)LocalPosition, color);
                     break;
                 case ParticleEffectType.Fireworks:
-                    EmitFireworks(numberOfParticles, LocalPosition, color);
+                    EmitFireworks(numberOfParticles, (Vector2)LocalPosition, color);
                     break;
                 case ParticleEffectType.Sparkles:
-                    EmitSparkles(numberOfParticles, LocalPosition, color);
+                    EmitSparkles(numberOfParticles, (Vector2)LocalPosition, color);
                     break;
                 case ParticleEffectType.BreakableBlock_Break:
-                    BreakableBlock_Break(numberOfParticles, LocalPosition, color);
+                    BreakableBlock_Break(numberOfParticles, (Vector2)LocalPosition, color);
                     break;
             }
 
@@ -286,7 +286,7 @@ namespace KFramework.Example.Mario
                 if (particle.IsAlive)
                 {
                     // Calculate the direction and length of the particle's tail
-                    Vector2 tailDirection = particle.LocalPosition - particle.PreviousPosition;
+                    Vector2 tailDirection = (Vector2)particle.LocalPosition - particle.PreviousPosition;
                     float tailLength = particle.TailLength * tailDirection.Length();
                     if (tailDirection != Vector2.Zero)
                         tailDirection.Normalize();

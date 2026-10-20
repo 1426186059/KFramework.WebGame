@@ -85,7 +85,7 @@ namespace KFramework.MonoGameExtend
             get
             {
                 KRectangleF mAnchorRectangle = GetAnchorRectangle();
-                return LocalPosition - mAnchorRectangle.Location;
+                return (Vector2)LocalPosition - mAnchorRectangle.Location;
             }
             set
             {
@@ -152,7 +152,7 @@ namespace KFramework.MonoGameExtend
 
         private KRectangleF GetRealRectangle()
         {
-            return new KRectangleF(LocalPosition - Pivot * Size, Size);
+            return new KRectangleF((Vector2)LocalPosition - Pivot * Size, Size);
         }
 
         protected override void OnLocalPositionChanged()
