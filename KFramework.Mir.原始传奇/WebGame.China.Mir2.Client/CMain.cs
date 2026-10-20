@@ -100,6 +100,11 @@ namespace WebGame.Mir2.MonoGame.Client
             // 故需设为 false，否则 key 会被当成逻辑路径直接拼到 CDN 根而 404（之前就是这么挂的）。
             Mir2OriginResource.LocalMirrorUsesKeyPath = false;
 
+            // 提前并发拉取图集/UI 资源索引（manifest + RES 配置 default.res.json）：
+            // 二者是后续所有 CDN 图集解析的前置；与首屏 Lib 加载并行发起，缩短进图等待。
+            // 失败已在 Mir2AtlasLibrary 内部消化，不会中断启动；懒加载路径会兜底重试。
+            var atlasInitTask = Mir2AtlasLibrary.InitializeAsync();
+
             // 触发 Libraries 静态构造（登记各库，不加载）
             _ = Libraries.Loaded;
 
@@ -122,6 +127,7 @@ namespace WebGame.Mir2.MonoGame.Client
             // 渲染循环在 LoadContentAsync 完成后才启动，避免首屏库尚未下载完就开画导致的"隔几帧黑屏"闪烁。
             // 其余库（地图/怪物/装备等）不在启动时加载，绘制时按需 InitializeAsync，就绪后 LibraryLoaded 触发重绘。
             await Libraries.LoadAsync();
+            await atlasInitTask;   // 通常已先完成；保证 LoginScene 之前就绪（失败已消化，不中断启动）
 
             KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(MirScene.ActiveScene == null ? "null" : MirScene.ActiveScene.GetType().Name)} → LoginScene  时刻={DateTime.Now:HH:mm:ss.fff}");
             MirScene.ActiveScene = new LoginScene();

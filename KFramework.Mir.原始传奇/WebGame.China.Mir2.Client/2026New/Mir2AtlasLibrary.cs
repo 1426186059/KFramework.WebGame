@@ -42,6 +42,9 @@ public static class Mir2AtlasLibrary
     // 原版 RES.loadConfig("resource/default.res.json", "resource/")：资源根
     private const string ResourceRoot = "resource/";
 
+    // 初始化任务（幂等：manifest + RES 配置仅拉一次；进行中/已完成的调用复用同一 Task）。
+    private static Task _initTask;
+
     public static Mir2AtlasManifest Manifest => Mir2OriginResource.Manifest;
 
     /// <summary>Egret 资源项（对应 default.res.json 的 resources[] 元素）。</summary>
@@ -122,6 +125,33 @@ public static class Mir2AtlasLibrary
         {
             PrintTool.LogError("[Mir2Atlas] RES 配置(default.res.json)加载失败，回退为直接用原始 key：" + ex);
         }
+    }
+
+    /// <summary>
+    /// 游戏初始化最早期调用：并发拉取 manifest 索引与 RES 配置(default.res.json)。
+    /// 二者是后续所有 UI/图集资源解析的前置，提前发起可与本地 Lib 加载并行，缩短进图等待。
+    /// 幂等：重复调用（含懒加载路径）返回同一个 Task，不会重复拉取；
+    /// 失败已在内部消化（仅日志 + 复位，允许懒加载路径或重试重新发起），不会中断启动。
+    /// </summary>
+    public static Task InitializeAsync(CancellationToken ct = default)
+    {
+        if (_initTask != null && !_initTask.IsFaulted && !_initTask.IsCanceled)
+            return _initTask;
+        _initTask = Task.Run(async () =>
+        {
+            try
+            {
+                await EnsureManifestAsync(ct).ConfigureAwait(false);
+                await EnsureResConfigAsync(ct).ConfigureAwait(false);
+                PrintTool.Log("[Mir2Atlas] 初始化完成（manifest + RES 配置）。");
+            }
+            catch (Exception ex)
+            {
+                PrintTool.LogError("[Mir2Atlas] 初始化失败（manifest/RES 配置）：" + ex);
+                _initTask = null; // 复位，允许后续懒加载或重试重新发起
+            }
+        }, ct);
+        return _initTask;
     }
 
     /// <summary>
