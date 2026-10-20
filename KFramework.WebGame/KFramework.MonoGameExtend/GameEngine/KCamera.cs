@@ -114,8 +114,6 @@ public partial class KCamera : KTransform
         // 按高度适配：让设计高度始终填满屏幕高度
         // 如果你想按宽度适配，改成 ScreenResolution.X / DesignResolution.X
         ScaleCoef = ScreenResolution.Y / (OrthographicSize * 2f);
-        //    (ScreenResolution.Y - scaledHeight) / 2f
-        //);
     }
 
     /// <summary>视图矩阵（世界 → 相机空间，纯视图变换，不含投影）。对标 Unity 的 worldToCameraMatrix。
