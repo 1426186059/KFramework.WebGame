@@ -89,6 +89,12 @@ namespace KFramework.Test.Common.Tests
                 Desc = "BlendState 各混合模式可视化对比：半透明 / 加法发光 / 覆盖 / 乘法压暗，以及传奇昼夜用的 Multiply(Zero, SourceColor)；并演示用公开构造传自定义混合参数",
                 Factory = static () => new BlendTest.BlendTestScene(),
             },
+            new TestEntry
+            {
+                Name = "相机自动合批 KCamera",
+                Desc = "v1+v2 演示：两个相机各合各的批、各画各的目标（离屏 RT / 画布），场景 Draw 里零 Begin/End/SetRenderTarget；屏幕相机按 CullingMask 层剔除只画 UI 层，离屏相机只画世界层，PreDraw 把 RT 合成回屏幕",
+                Factory = static () => new CameraBatchScene(),
+            },
         ];
     }
 

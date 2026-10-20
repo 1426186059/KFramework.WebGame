@@ -1,13 +1,75 @@
 using KFramework.MonoGameExtend;
 using KFramework.MonoGame;
+using System;
 
 public class KCamera : KTransform
 {
     // 相机视野的垂直半高（世界单位），类似 Unity 的 orthographicSize
     // 默认值 = 设计高度 / 2，让设计分辨率下 1 世界单位 = 1 像素
     public float OrthographicSize = 540f;
-    // 背景色（如果需要清屏的话）
+    // 背景色（清屏色，由 ClearOnRender 决定是否在渲染前清屏）
     public Color BackgroundColor = Color.CornflowerBlue;
+
+    // ===================== 自动合批（v1）：把「渲染目标 + 清屏 + Begin/End」绑成一个单元 =====================
+    // 对标 Unity：Camera.targetTexture（null=画布）、camera.depth（渲染顺序）、相机矩阵即 Begin 的 transformMatrix。
+
+    /// <summary>渲染目标；null = 画布（屏幕）。切目标 + 清屏 + Begin/End 全部由 <see cref="Render"/> 自动完成，
+    /// 业务代码不再手写 SetRenderTarget / Clear / Begin / End。</summary>
+    public RenderTarget2D? Target = null;
+
+    /// <summary>渲染顺序，越小越先画（照 Unity camera.depth）。多个相机按此排序，离屏相机通常给负值。</summary>
+    public int Depth = 0;
+
+    /// <summary>材质（可为 null → 用默认材质）。一个相机一个材质，批内不变。</summary>
+    public Material? Material = null;
+
+    /// <summary>排序模式（默认 Deferred，不打乱插入顺序）。</summary>
+    public SpriteSortMode SortMode = SpriteSortMode.Deferred;
+
+    /// <summary>渲染开始前是否清屏（离屏 PreserveContents 场景设 false）。默认 true。</summary>
+    public bool ClearOnRender = true;
+
+    /// <summary>视图矩阵覆盖：非空时 <see cref="Render"/> 用它本身作为 Begin 的 transformMatrix，
+    /// 否则用相机自身的 <see cref="ViewMatrix"/>（含屏幕适配）。离屏渲染常用 <see cref="Matrix4x4.Identity"/>（世界坐标=像素）。</summary>
+    public Matrix4x4? ViewMatrixOverride = null;
+
+    /// <summary>在遍历场景之前先画的内容（例如把上一步离屏 RT 当纹理贴到屏幕）。在已开的批内执行。</summary>
+    public Action<SpriteBatch>? PreDraw = null;
+
+    // ===================== 层剔除（v2）：每个相机只渲染自己 CullingMask 内的层 =====================
+
+    /// <summary>层遮罩（对标 Unity camera.cullingMask，默认 ~0u = 全部层）。
+    /// 仅当 <c>(1u &lt;&lt; node.Layer) &amp; CullingMask != 0</c> 的节点会被本相机绘制。</summary>
+    public uint CullingMask = ~0u;
+
+    private Material? _defaultMaterial;
+
+    /// <summary>
+    /// 自动合批渲染：切到 <see cref="Target"/> →（可选）清屏 → Begin（相机矩阵）→ PreDraw → draw 回调 → End。
+    /// 一次调用即一个相机的一整段批，天然解决「切 Target 自动 Begin/End」。
+    /// </summary>
+    public void Render(Action<SpriteBatch> draw)
+    {
+        var device = KSceneMgr.Game.GraphicsDevice;
+        device.SetRenderTarget(Target);
+        if (ClearOnRender) device.Clear(BackgroundColor);
+
+        var batch = KSceneMgr.SpriteBatch;
+        Material mat = Material ?? (_defaultMaterial ??= new Material());
+        batch.Begin(mat, SortMode, ViewMatrixOverride ?? ViewMatrix);
+
+        PreDraw?.Invoke(batch);
+        draw(batch);
+
+        batch.End();
+    }
+
+    /// <summary>渲染一个根节点（带层剔除）：相机只画 <see cref="CullingMask"/> 命中的层。</summary>
+    public void RenderRoot(KTransform root)
+        => Render(_ => KTransformHelper.Do_Draw_AllChildList(root, CullingMask));
+
+    /// <summary>渲染一个场景（带层剔除）：等价于 <see cref="RenderRoot"/>(scene.SceneNodeRoot)。</summary>
+    public void RenderScene(KSceneBase scene) => RenderRoot(scene.SceneNodeRoot);
     // 当前实际屏幕尺寸
     public Vector2 ScreenResolution { get; private set; }
     // 宽高比

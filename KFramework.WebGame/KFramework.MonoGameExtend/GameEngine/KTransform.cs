@@ -22,6 +22,13 @@ namespace KFramework.MonoGameExtend
         public string Name { get; set; } = "GameObject";
         public bool IsDispose { get { return _cacheDispose; } }
 
+        /// <summary>
+        /// 渲染层（对标 Unity 的 GameObject.layer）。<see cref="KCamera.CullingMask"/> 决定是否渲染本节点：
+        /// 仅当 <c>(1u &lt;&lt; Layer) &amp; CullingMask != 0</c> 时本节点才会被对应相机绘制。
+        /// 子节点按各自的 Layer 独立判定（父节点被剔除不会连带隐藏子节点，与 Unity 一致）。
+        /// </summary>
+        public uint Layer { get; set; } = 0;
+
         public KTransform()
         {
             mEntry = new LinkedListNode<KTransform>(this);
