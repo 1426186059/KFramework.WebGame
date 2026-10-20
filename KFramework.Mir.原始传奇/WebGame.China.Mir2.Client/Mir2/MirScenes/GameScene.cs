@@ -288,8 +288,6 @@ namespace Client.MirScenes
 
             KeyDown += GameScene_KeyDown;
 
-            _loadingDialog = new LoadingDialog { Parent = this };
-
             MainDialog = new MainDialog { Parent = this };
             ChatDialog = new ChatDialog { Parent = this };
             ChatControl = new ChatControlBar { Parent = this };
@@ -398,6 +396,7 @@ namespace Client.MirScenes
             RollControl = new RollDialog { Parent = this, Visible = false };
 
             for (int i = 0; i < OutputLines.Length; i++)
+            {
                 OutputLines[i] = new MirLabel
                 {
                     AutoSize = true,
@@ -407,9 +406,14 @@ namespace Client.MirScenes
                     Location = new Point(20, 25 + i * 13),
                     OutLine = true,
                 };
+            }
 
             if (MapInfoList.Count > 0)
+            {
                 RecreateBigMapButtons();
+            }
+
+            _loadingDialog = new LoadingDialog { Parent = this };
         }
 
         private void UpdateMouseCursor()
