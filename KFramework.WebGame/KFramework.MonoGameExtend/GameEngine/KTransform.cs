@@ -217,7 +217,7 @@ namespace KFramework.MonoGameExtend
         }
 
         // 本地坐标 → 世界坐标
-        //注意，这是父物体的孩子孩子节点的本地坐标，得用父物体的 矩阵变换
+        //注意，这是父物体的孩子节点的本地坐标，得用父物体的 矩阵变换
         public Vector2 LocalToWorld(Vector2 localPoint)
         {
             return Vector2.Transform(localPoint, Local_To_World_Matrix);

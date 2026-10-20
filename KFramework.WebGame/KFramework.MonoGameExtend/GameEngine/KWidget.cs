@@ -244,10 +244,18 @@ namespace KFramework.MonoGameExtend
             get { return new Vector2(0, GetParentWidgetSize().Y - Size.Y); }
         }
 
+        public KRectangleF GetWorldBound()
+        {
+            KRectangleF target = new KRectangleF(
+                (WorldPosition - Size * Pivot * WorldScale),
+                (Size * WorldScale));
+            return target;
+        }
 
-        private const bool bDrawWidgetZone = true;
 
-        public KRectangleF GetWorldRectRectangle(KRectangleF LocalRectangle)
+        private const bool bDrawWidgetZone = false;
+
+        private KRectangleF GetWorldRectangle(KRectangleF LocalRectangle)
         {
             var Location = Parent.LocalToWorld(LocalRectangle.Location);
             var Size = LocalRectangle.Size * WorldScale;
@@ -286,7 +294,7 @@ namespace KFramework.MonoGameExtend
                     Vector2 worldPos = WorldPosition;
                     Vector2 origin = Vector2.Zero;
 
-                    KRectangleF target = GetWorldRectRectangle(GetAnchorRectangle());
+                    KRectangleF target = GetWorldRectangle(GetAnchorRectangle());
 
                     Color mColor = new Color(0, 0, 0, 200);
                     batch.DrawRect(
