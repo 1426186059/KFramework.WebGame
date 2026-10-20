@@ -129,18 +129,24 @@ public partial class KCamera : KTransform
         //);
     }
 
+    /// <summary>相机矩阵：世界 → 相机（视图）矩阵，等价于 <see cref="World_To_Camera_Matrix"/>。</summary>
     public Matrix4x4 ViewMatrix
     {
         get { return World_To_Camera_Matrix; }
     }
 
+    /// <summary>
+    /// 世界 → 相机（视图）矩阵：把世界坐标变换到相机空间，并叠加正交投影（视口缩放 + 居中偏移），
+    /// 直接喂给 <see cref="SpriteBatch.Begin"/> 当 transformMatrix（最终的裁剪空间 / 屏幕投影由 SpriteBatch 内部完成）。
+    /// 缩放系数取自【当前渲染目标】的视口尺寸（RT 或 屏幕）：渲染到 RT 时自动按 RT 大小适配、
+    /// 渲染到屏幕时按屏幕尺寸适配——对标 Unity 的 worldToCameraMatrix（相机矩阵即视图矩阵），无需 ViewMatrixOverride 之类的覆盖项。
+    /// </summary>
     public Matrix4x4 World_To_Camera_Matrix
     {
         get
         {
-            // 世界 → 屏幕：先相机平移，再缩放，再加偏移。
-            // 缩放系数取自【当前渲染目标】的视口尺寸（RT 或 屏幕）：渲染到 RT 时自动按 RT 大小适配、
-            // 渲染到屏幕时按屏幕尺寸适配——对标 Unity「相机矩阵即视图矩阵」，无需 ViewMatrixOverride 之类的覆盖项。
+            // 世界 → 相机（视图）矩阵：先相机平移、旋转，再叠加正交投影（视口缩放 + 居中偏移）。
+            // 直接作为 SpriteBatch.Begin 的 transformMatrix；最终裁剪空间 / 屏幕投影由 SpriteBatch 内部完成。
             var viewport = KSceneMgr.Game.GraphicsDevice.Viewport;
             float scaleCoef = viewport.Height / (OrthographicSize * 2f);
             return Matrix4x4.CreateTranslation(-LocalPosition.X, -LocalPosition.Y, 0f) *
@@ -153,7 +159,7 @@ public partial class KCamera : KTransform
     // ===== 坐标转换 =====
 
     /// <summary>
-    /// 屏幕坐标 → 世界坐标（鼠标交互用）
+    /// 屏幕坐标 → 世界坐标（鼠标交互用）。基于相机矩阵 <see cref="World_To_Camera_Matrix"/> 求逆。
     /// </summary>
     public Vector2 ScreenToWorld(Vector2 screenPos)
     {
@@ -161,7 +167,7 @@ public partial class KCamera : KTransform
     }
 
     /// <summary>
-    /// 世界坐标 → 屏幕坐标
+    /// 世界坐标 → 屏幕坐标（经相机矩阵 <see cref="World_To_Camera_Matrix"/> 变换，输出渲染目标像素坐标）。
     /// </summary>
     public Vector2 WorldToScreen(Vector2 worldPos)
     {
