@@ -13,7 +13,8 @@ namespace Client.MirControls
     /// 盖在 GameScene 之上的加载蒙层（非独立场景）：GameScene 必须立刻 Active 以接收网络包，
     /// 故 GameScene 一显示就创建本蒙层；其下 GameScene 正常收包/跑逻辑。
     /// 蒙层美术直接用原始传奇 H5 资源：bg_loading2n.jpg（全屏背景）+ preload-sheet（进度条/Logo 图集），
-    /// 这两个资源在本蒙层创建时按需加载（用到才加载），加载完即显示；不预加载主场景游戏资源。
+    /// 这两个资源在本蒙层创建时按需加载（用到才加载），加载完即显示；并借这段时间预下载主界面 UI 图集
+    /// y_homeUI-sheet（正式 RES 资源，进主界面立即要用，先缓存避免卡顿）。不预加载其余主场景游戏资源。
     /// </summary>
     public class LoadingDialog : MirControl
     {
@@ -24,6 +25,7 @@ namespace Client.MirControls
         private const string SheetPngPath = "qufu_resource1/assets/sheet/preload-sheet.png?qufu_version=229";  // 进度条图集 PNG
         private const string BarBgFrameHint = "bar";
         private const string BarFillFrameHint = "loading";
+        private const string HomeUiSheetKey = "y_homeUI-sheet_json";   // 主界面 UI 图集（正式 RES 资源，预加载进缓存，进主界面不卡）
 
         private readonly MirLabel _titleLabel;
         private readonly MirLabel _statusLabel;
@@ -42,7 +44,7 @@ namespace Client.MirControls
         private string _barFillFrame;
         private bool _useSheetBar;
 
-        private int _total = 2;
+        private int _total = 3;
         private int _loaded;
         private bool _finished;
         private string _status = "正在准备…";
@@ -146,6 +148,20 @@ namespace Client.MirControls
                 {
                     PrintTool.Log("[LoadingDialog] preload-sheet 未取到（JSON/PNG 拉取为空），回退纯色进度条。");
                 }
+
+                // 预加载主界面 UI 图集（y_homeUI-sheet）：登录/进主界面后立即要用，
+                // 趁加载蒙层期间下载并缓存，避免进主界面时再卡一下。失败仅日志，不阻塞进入游戏。
+                _status = "预加载主界面 UI…";
+                try
+                {
+                    await Mir2AtlasLibrary.GetSheetAsync(HomeUiSheetKey, device, _cts.Token);
+                    PrintTool.Log("[LoadingDialog] y_homeUI-sheet 预加载完成。");
+                }
+                catch (System.Exception ex)
+                {
+                    PrintTool.LogError("[LoadingDialog] y_homeUI-sheet 预加载失败（不影响进入游戏）：" + ex);
+                }
+                _loaded = 3;
                 _status = "加载完成，正在进入游戏…";
             }
             catch (System.Exception ex)
