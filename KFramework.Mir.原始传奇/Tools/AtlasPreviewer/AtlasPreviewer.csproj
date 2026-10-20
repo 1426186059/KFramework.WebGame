@@ -8,4 +8,17 @@
     <NoWarn>$(NoWarn);CS0436</NoWarn>
   </PropertyGroup>
 
+  <!-- 本地开发工具：直接跑 bin 里的 .exe 时内容根为 bin 目录，而 Web SDK 默认不会把 wwwroot
+       拷贝到输出目录（静态 Web 资产仅按 .staticwebassets.runtime.json 里的源路径解析），
+       导致 / 返回 404、index.html 打不开。这里显式在 Build 后把 wwwroot 复制到输出目录，
+       使 exe 可独立运行（dotnet run 本来就基于项目目录内容根，不受影响）。 -->
+  <Target Name="CopyWwwrootToOutput" AfterTargets="Build">
+    <ItemGroup>
+      <_WwwrootFiles Include="wwwroot\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_WwwrootFiles)"
+          DestinationFiles="@(_WwwrootFiles->'$(OutDir)wwwroot\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+  </Target>
+
 </Project>

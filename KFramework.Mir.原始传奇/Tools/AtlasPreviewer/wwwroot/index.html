@@ -38,7 +38,9 @@
     <label>图集：
       <select id="atlasSelect"><option value="">（先粘贴路径并加载）</option></select>
     </label>
-    <input id="filter" type="text" placeholder="过滤帧名…" />
+    <input id="atlasSearch" type="text" placeholder="模糊搜索图集名…（如 y_homeUI）" />
+    <span id="atlasCount" style="color:#888"></span>
+    <input id="filter" type="text" placeholder="模糊过滤帧名…" />
     <span id="count" style="color:#888"></span>
   </div>
 </header>
@@ -53,6 +55,46 @@ const countEl = document.getElementById('count');
 const rootInput = document.getElementById('rootPath');
 const loadBtn = document.getElementById('loadBtn');
 const atlasSelect = document.getElementById('atlasSelect');
+const atlasSearch = document.getElementById('atlasSearch');
+const atlasCountEl = document.getElementById('atlasCount');
+
+// 模糊匹配：query 各字符按出现顺序（可不连续）命中 text 即匹配；空 query 全匹配。
+function fuzzyMatch(text, query) {
+  text = (text || '').toLowerCase();
+  query = (query || '').toLowerCase().trim();
+  if (!query) return true;
+  let ti = 0;
+  for (const ch of query) {
+    if (ti >= text.length) return false;
+    const idx = text.indexOf(ch, ti);
+    if (idx === -1) return false;
+    ti = idx + 1;
+  }
+  return true;
+}
+
+// 按图集名模糊过滤下拉项（占位项始终显示），并显示匹配计数。
+function filterAtlasOptions() {
+  const q = atlasSearch.value;
+  let visible = 0;
+  for (const opt of atlasSelect.options) {
+    if (opt.value === '') { opt.style.display = ''; continue; }
+    const show = fuzzyMatch(opt.textContent, q);
+    opt.style.display = show ? '' : 'none';
+    if (show) visible++;
+  }
+  atlasCountEl.textContent = atlases.length ? ('匹配 ' + visible + ' / ' + atlases.length + ' 个图集') : '';
+}
+atlasSearch.addEventListener('input', filterAtlasOptions);
+// 回车直接选中第一个匹配项
+atlasSearch.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  for (const opt of atlasSelect.options) {
+    if (opt.value !== '' && opt.style.display !== 'none') {
+      atlasSelect.value = opt.value; atlasSelect.dispatchEvent(new Event('change')); break;
+    }
+  }
+});
 
 let atlases = [];
 let currentRoot = '';
@@ -73,7 +115,7 @@ async function loadRoot() {
     atlases.forEach((a, i) => {
       const o = document.createElement('option'); o.value = i; o.textContent = a.name; atlasSelect.appendChild(o);
     });
-    countEl.textContent = '共 ' + atlases.length + ' 个图集';
+    filterAtlasOptions();
     grid.innerHTML = atlases.length
       ? '<div class="empty">已发现 ' + atlases.length + ' 个图集，请从下拉选择</div>'
       : '<div class="empty">该路径下没找到 *-sheet.json</div>';
@@ -102,8 +144,8 @@ atlasSelect.addEventListener('change', async e => {
 });
 
 function render() {
-  const q = (filterInput.value || '').toLowerCase();
-  const frames = currentFrames.filter(f => f.name.toLowerCase().includes(q));
+  const q = filterInput.value;
+  const frames = currentFrames.filter(f => fuzzyMatch(f.name, q));
   countEl.textContent = frames.length + ' / ' + currentFrames.length + ' 帧';
   grid.innerHTML = '';
   if (!frames.length) { grid.innerHTML = '<div class="empty">无匹配帧</div>'; return; }
