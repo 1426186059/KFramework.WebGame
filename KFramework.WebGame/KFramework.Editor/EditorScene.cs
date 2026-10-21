@@ -36,9 +36,13 @@ namespace KFramework.Editor
         private float _animT;
 
         // 视图相机参数（透视）
-        private const float Fov = 50f, Near = 0.1f, Far = 200f;
-        // 编辑器“场景视图”相机默认俯视/侧视角度，让物体呈现 3D 透视
-        private static readonly Vector3 SceneCamRot = new Vector3(0.35f, -0.4f, 0f);
+        private const float Fov = 70f, Near = 0.1f, Far = 200f;
+        // 复用同一个立方体网格（边长 6）与渲染器实例
+        private readonly KFramework.MonoGameExtend.MeshRenderer _cubeRenderer = new KFramework.MonoGameExtend.MeshRenderer
+        {
+            Mesh = Mesh.CreateCube(6f),
+            MeshColor = new Color(228, 232, 240),
+        };
 
         public EditorScene()
         {
@@ -172,11 +176,6 @@ namespace KFramework.Editor
             _fields.Clear();
             _hierarchyRows.Clear();
 
-            batch.Begin();
-
-            // 背景
-            batch.Draw(tex, new Rectangle(0, 0, W, H), null, new Color(30, 32, 40));
-
             // ---- 布局 ----
             const int toolbarH = 36;
             const int leftW = 240;     // 左侧：资源(Project)
@@ -190,12 +189,24 @@ namespace KFramework.Editor
             Rectangle hierRect = new Rectangle(W - rightW, toolbarH, rightW, viewH / 2);
             Rectangle inspRect = new Rectangle(W - rightW, toolbarH + viewH / 2, rightW, viewH - viewH / 2);
 
+            // 窗口过小直接跳过视图
+            if (viewW <= 0 || viewH <= 0) return;
+
+            // 两个视图共用 Main Camera（位置 / 旋转）
+            Vector3 camPos = _model.MainCamera.Position;
+            Vector3 camRot = _model.MainCamera.Rotation;
+            float aspect = viewRect.Width / (float)viewRect.Height;
+            Matrix4x4 proj = Matrix4x4.CreatePerspectiveFieldOfView(Fov * MathF.PI / 180f, aspect, Near, Far);
+            Matrix4x4 rotInv = Matrix4x4.CreateRotationZ(-camRot.Z) * Matrix4x4.CreateRotationY(-camRot.Y) * Matrix4x4.CreateRotationX(-camRot.X);
+            Matrix4x4 view = Matrix4x4.CreateTranslation(-camPos.X, -camPos.Y, -camPos.Z) * rotInv;
+
+            // ============ 2D 背景层（必须在 3D 之前）============
+            batch.Begin();
+            batch.Draw(tex, new Rectangle(0, 0, W, H), null, new Color(30, 32, 40));
             DrawPanel(batch, tex, projectRect, "资源 Project");
             DrawPanel(batch, tex, hierRect, "层级 Hierarchy");
             DrawPanel(batch, tex, inspRect, "检视 Inspector");
-
-            // 中央单一视图（场景/游戏 切换）
-            DrawView(batch, tex, viewRect, _showGameView);
+            batch.Draw(tex, viewRect, null, new Color(12, 14, 20));   // 视图背景（3D 在其上绘制）
 
             // 工具栏
             batch.Draw(tex, new Rectangle(0, 0, W, toolbarH), null, new Color(40, 44, 58));
@@ -212,6 +223,19 @@ namespace KFramework.Editor
             DrawProject(batch, font, tex, projectRect);
             DrawHierarchy(batch, font, tex, hierRect);
             DrawInspector(batch, font, tex, inspRect, device);
+            batch.End();
+
+            // ============ 3D 视图层（硬件深度缓冲；viewport 裁剪到 viewRect）============
+            Render3DView(device, viewRect, view, proj, tex, _showGameView);
+
+            // ============ 2D 前景层（在 3D 之后：视图边框 + 标题 + 上下文菜单）============
+            batch.Begin();
+            string title = _showGameView ? "游戏 Game（Main Camera）" : "场景 Scene（Main Camera + 网格）";
+            batch.Draw(tex, new Rectangle(viewRect.X - 1, viewRect.Y - 1, viewRect.Width + 2, 2), null, new Color(90, 150, 220));
+            batch.Draw(tex, new Rectangle(viewRect.X - 1, viewRect.Y - 1, 2, viewRect.Height + 2), null, new Color(90, 150, 220));
+            batch.Draw(tex, new Rectangle(viewRect.X - 1, viewRect.Y + viewRect.Height - 1, viewRect.Width + 2, 2), null, new Color(90, 150, 220));
+            batch.Draw(tex, new Rectangle(viewRect.X + viewRect.Width - 1, viewRect.Y - 1, 2, viewRect.Height + 2), null, new Color(90, 150, 220));
+            batch.DrawString(KDefaultRes.DefaultSpriteFont, title, new Vector2(viewRect.X + 6, viewRect.Y + 4), new Color(150, 220, 255));
 
             // 右键上下文菜单（最上层绘制）
             if (_contextOpen)
@@ -231,8 +255,31 @@ namespace KFramework.Editor
                     batch.DrawString(font, _contextItems[i].label, new Vector2(r.X + 12, r.Y + 4), new Color(230, 230, 240));
                 }
             }
-
             batch.End();
+        }
+
+        /// <summary>
+        /// 3D 视图渲染：把 viewport 裁剪到 viewRect（WebGL 视口原点在左下，故 y 需换算成 y 朝上），
+        /// 开启硬件深度缓冲，先画地面网格 / 坐标轴再画立方体（立方体由 GPU 深度做遮挡），
+        /// 最后复位视口与深度状态。
+        /// </summary>
+        private void Render3DView(GraphicsDevice device, Rectangle r, Matrix4x4 view, Matrix4x4 proj, Texture2D tex, bool useGameCam)
+        {
+            int glY = device.Viewport.Height - r.Y - r.Height;   // GL 视口 y 朝上
+            var savedVp = device.Viewport;
+            device.Viewport = new Viewport(r.X, glY, r.Width, r.Height);
+            device.DepthStencilState = DepthStencilState.Default;
+            if (!useGameCam) KFramework.MonoGameExtend.MeshRenderer.DrawGrid(device, view, proj, tex);
+            foreach (EditorObject o in _model.Objects)
+                if (o.Type == EditorObjectType.Cube && o.Visible)
+                {
+                    _cubeRenderer.LocalPosition = o.Position;
+                    _cubeRenderer.MeshRotation = o.Rotation;
+                    _cubeRenderer.MeshScale = o.Scale;
+                    _cubeRenderer.RenderMesh(device, view, proj, tex);
+                }
+            device.DepthStencilState = DepthStencilState.None;
+            device.Viewport = savedVp;
         }
 
         // ===== 面板外框 + 标题 =====
@@ -242,28 +289,6 @@ namespace KFramework.Editor
             b.Draw(tex, new Rectangle(r.X, r.Y, r.Width, 18), null, new Color(40, 46, 64));
             b.Draw(tex, new Rectangle(r.X, r.Y, r.Width, 2), null, new Color(70, 90, 130));
             b.DrawString(KDefaultRes.DefaultSpriteFont, title, new Vector2(r.X + 6, r.Y + 1), new Color(170, 200, 255));
-        }
-
-        // ===== 视图（场景 / 游戏 二选一）=====
-        private void DrawView(SpriteBatch b, Texture2D tex, Rectangle r, bool useGameCam)
-        {
-            b.Draw(tex, r, null, new Color(12, 14, 20));   // 视图背景
-
-            // 场景视图用固定的“编辑器相机”，故意带一点俯视/侧视角度（Unity 风格透视），
-            // 这样线框 Cube 能露出三个面、看起来是 3D 的，而不是正面看过去塌成一个正方形。
-            Vector3 camPos = useGameCam ? _model.MainCamera.Position : Vector3.Zero;
-            Vector3 camRot = useGameCam ? _model.MainCamera.Rotation : SceneCamRot;
-            foreach (EditorObject o in _model.Objects)
-                if (o.Type == EditorObjectType.Cube && o.Visible)
-                    Cube.Draw(b, r, Fov, Near, Far, camPos, camRot, o.Position, o.Rotation, o.Scale, tex);
-
-            string title = useGameCam ? "游戏 Game（Main Camera）" : "场景 Scene（固定相机）";
-            // 边框
-            b.Draw(tex, new Rectangle(r.X - 1, r.Y - 1, r.Width + 2, 2), null, new Color(90, 150, 220));
-            b.Draw(tex, new Rectangle(r.X - 1, r.Y - 1, 2, r.Height + 2), null, new Color(90, 150, 220));
-            b.Draw(tex, new Rectangle(r.X - 1, r.Y + r.Height - 1, r.Width + 2, 2), null, new Color(90, 150, 220));
-            b.Draw(tex, new Rectangle(r.X + r.Width - 1, r.Y - 1, 2, r.Height + 2), null, new Color(90, 150, 220));
-            b.DrawString(KDefaultRes.DefaultSpriteFont, title, new Vector2(r.X + 6, r.Y + 4), new Color(150, 220, 255));
         }
 
         // ===== 层级 =====

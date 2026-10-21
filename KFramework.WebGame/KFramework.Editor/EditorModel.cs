@@ -40,17 +40,17 @@ namespace KFramework.Editor
             MainCamera = new EditorObject("Main Camera", EditorObjectType.Camera)
             {
                 Position = Vector3.Zero,
-                Rotation = new Vector3(0.35f, -0.4f, 0f),   // 默认带角度，游戏视图也能呈现 3D 透视
+                Rotation = new Vector3(0.2f, -0.25f, 0f),   // 轻微俯视/侧视：Cube 居中且露出 3 个面
             };
             Objects.Add(MainCamera);
             Objects.Add(new EditorObject("Directional Light", EditorObjectType.Light)
             {
                 Position = new Vector3(5f, 8f, -5f),
             });
-            // 默认就放一个 Cube，在相机正前方（屏幕正中）
+            // 默认就放一个 Cube，在相机正前方（屏幕正中、完整可见）
             Objects.Add(new EditorObject("Cube", EditorObjectType.Cube)
             {
-                Position = new Vector3(0f, 0f, -10f),
+                Position = new Vector3(0f, 0f, -12f),
             });
             Selected = Objects[2];
         }

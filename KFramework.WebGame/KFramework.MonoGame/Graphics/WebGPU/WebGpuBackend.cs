@@ -76,6 +76,10 @@ namespace KFramework.MonoGame
         private int _indexBuffer;
         private int _uniformBuffer;
 
+        // —— 3D 网格绘制路径（与 2D 精灵批次隔离，自带 MVP 顶点着色器 + 深度缓冲）——
+        private int _meshIndexBuffer;
+        private const int MeshIndexCapacity = 128 * 1024;
+
         private BlendState _blend = null!;
         private SamplerState _sampler = null!;
         private Texture2D? _boundTexture;
@@ -120,6 +124,10 @@ namespace KFramework.MonoGame
                 MaxSpritesPerFrame * IndicesPerSprite * sizeof(ushort),
                 JSBind_WebGPU.BUFFER_USAGE_INDEX | JSBind_WebGPU.BUFFER_USAGE_COPY_DST);
             JSBind_WebGPU.WriteBuffer(_indexBuffer, 0, BuildQuadIndices(MaxSpritesPerFrame));
+
+            _meshIndexBuffer = JSBind_WebGPU.CreateBuffer(
+                MeshIndexCapacity * sizeof(ushort),
+                JSBind_WebGPU.BUFFER_USAGE_INDEX | JSBind_WebGPU.BUFFER_USAGE_COPY_DST);
 
             _vertexBuffer = JSBind_WebGPU.CreateBuffer(
                 MaxSpritesPerFrame * VerticesPerSprite * VertexSizeInBytes,
@@ -266,6 +274,55 @@ namespace KFramework.MonoGame
             JSBind_WebGPU.DrawIndexed(vRun / VerticesPerSprite * IndicesPerSprite, 1, 0, baseVertex);
 
             _vertexBump += vRun;
+        }
+
+        /// <summary>
+        /// 硬件深度缓冲下的 3D 网格绘制（WebGPU）：复用现有精灵管线的顶点布局（position/color/uv）
+        /// 与深度状态，把 MVP 当作 uTransform 喂入，即可让 WGSL 的 <c>uTransform.proj * input.position</c>
+        /// 完成 3D 投影。本引擎投影按 OpenGL 约定产出 NDC z ∈ [-1,1]，WebGPU 需 z ∈ [0,1]，故在 MVP 后乘 z 修正矩阵。
+        /// 与 2D 精灵批次完全隔离（独立索引缓冲 + 独立顶点区间）。
+        /// </summary>
+        public void DrawPrimitives3D(VertexPositionColorTexture[] vertices, ushort[] indices, Matrix4x4 mvp, Texture2D texture)
+        {
+            if (vertices == null || vertices.Length == 0 || indices == null || indices.Length == 0) return;
+            if (indices.Length > MeshIndexCapacity)
+                throw new InvalidOperationException($"[webgpu] 3D 索引超出容量（上限 {MeshIndexCapacity}）。");
+
+            EnsureFrameActive();
+            if (texture is null || !_textures.TryGetValue(texture, out int textureHandle)) return;
+
+            // NDC z 修正：把 clip.z 映射成 0.5*z + 0.5*w（行主序：第 3 行 M33=0.5 / M34=0.5）。
+            // 本引擎投影按 OpenGL 约定产出 NDC z ∈ [-1,1]，而 WebGPU 需要 NDC z ∈ [0,1]，故作此修正。
+            Matrix4x4 zFix = new Matrix4x4
+            {
+                M11 = 1f, M22 = 1f, M33 = 0.5f, M34 = 0.5f, M44 = 1f
+            };
+            Matrix4x4 mvpGpu = mvp * zFix;
+
+            int slot = _nextUniformSlot++;
+            if (slot * UniformSlotStride + TransformSizeInBytes > UniformSlotCount * UniformSlotStride)
+                throw new InvalidOperationException("[webgpu] 3D 绘制的 uniform 槽位超出容量。");
+
+            WriteMatrix(mvpGpu, _matrixBuffer);
+            JSBind_WebGPU.WriteBuffer(_uniformBuffer, slot * UniformSlotStride, _matrixBuffer);
+
+            int vRun = vertices.Length;
+            if (_vertexBump + vRun > MaxSpritesPerFrame * VerticesPerSprite)
+                throw new InvalidOperationException($"[webgpu] 单帧顶点超出容量（上限 {MaxSpritesPerFrame * VerticesPerSprite} 个）。");
+            int baseVertex = _vertexBump;
+            JSBind_WebGPU.WriteBuffer(_vertexBuffer, baseVertex * VertexSizeInBytes, MemoryMarshal.AsBytes(vertices.AsSpan()));
+            _vertexBump += vRun;
+
+            JSBind_WebGPU.WriteBuffer(_meshIndexBuffer, 0, MemoryMarshal.AsBytes(indices.AsSpan()));
+
+            int pipeline = GetOrCreatePipeline(_blend, DepthStencilState.Default);
+            int samplerHandle = GetOrCreateSampler(_sampler);
+            int bindGroup = GetOrCreateBindGroup(pipeline, textureHandle, samplerHandle, slot);
+            JSBind_WebGPU.SetPipeline(pipeline);
+            JSBind_WebGPU.SetVertexBuffer(0, _vertexBuffer);
+            JSBind_WebGPU.SetIndexBuffer(_meshIndexBuffer, "uint16");
+            JSBind_WebGPU.SetBindGroup(0, bindGroup);
+            JSBind_WebGPU.DrawIndexed(indices.Length, 1, 0, baseVertex);
         }
 
         private void EnsureFrameActive()

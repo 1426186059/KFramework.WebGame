@@ -1,3 +1,5 @@
+using System.Buffers.Binary;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 
@@ -13,6 +15,16 @@ namespace KFramework.MonoGame
         private JSObject _vertexBuffer = default!;
         private JSObject _indexBuffer = default!;
         private JSObject _vertexArray = default!;
+
+        // —— 3D 网格绘制路径（与 2D 精灵批次完全隔离，自带 MVP 顶点着色器 + 深度缓冲）——
+        private WebGL_ShaderProgram_3D _mesh3D = null!;
+        private JSObject _meshVertexBuffer = default!;
+        private JSObject _meshIndexBuffer = default!;
+        private JSObject _meshVertexArray = default!;
+        private readonly byte[] _meshMatrixBuffer = new byte[16 * sizeof(float)];
+
+        private const int MeshVertexBufferCapacity = 64 * 1024 * VertexPositionColorTexture.SizeInBytes;
+        private const int MeshIndexBufferCapacity = 128 * 1024 * sizeof(ushort);
 
         public int MaxTextureSize { get; private set; }
 
@@ -52,6 +64,19 @@ namespace KFramework.MonoGame
             JSBind_WEBGL20.BufferData(JSBind_WEBGL20.ELEMENT_ARRAY_BUFFER, BuildQuadIndices(GraphicsDevice.MaxBatchSize), JSBind_WEBGL20.STATIC_DRAW);
 
             ConfigureAttributes();
+
+            // 3D 网格程序 + 缓冲 + VAO（与 2D 精灵批次完全隔离）
+            _mesh3D = new WebGL_ShaderProgram_3D();
+            _meshVertexBuffer = JSBind_WEBGL20.CreateBuffer();
+            _meshIndexBuffer = JSBind_WEBGL20.CreateBuffer();
+            _meshVertexArray = JSBind_WEBGL20.CreateVertexArray();
+            JSBind_WEBGL20.BindVertexArray(_meshVertexArray);
+            JSBind_WEBGL20.BindBuffer(JSBind_WEBGL20.ARRAY_BUFFER, _meshVertexBuffer);
+            JSBind_WEBGL20.BufferDataSize(JSBind_WEBGL20.ARRAY_BUFFER, MeshVertexBufferCapacity, JSBind_WEBGL20.DYNAMIC_DRAW);
+            JSBind_WEBGL20.BindBuffer(JSBind_WEBGL20.ELEMENT_ARRAY_BUFFER, _meshIndexBuffer);
+            JSBind_WEBGL20.BufferDataSize(JSBind_WEBGL20.ELEMENT_ARRAY_BUFFER, MeshIndexBufferCapacity, JSBind_WEBGL20.DYNAMIC_DRAW);
+            BindMeshAttributes();
+            JSBind_WEBGL20.BindVertexArray(null!);
 
             // 与 MonoGame 一致：正面 = 逆时针（CCW），供 3D 渲染使用。
             // 注意：本后端的正交投影会翻转 Y，2D 精灵四边形在窗口空间是顺时针绕序，
@@ -369,6 +394,73 @@ namespace KFramework.MonoGame
                                     MemoryMarshal.AsBytes(vertices.AsSpan(start, vRun)));
             JSBind_WEBGL20.DrawElements(JSBind_WEBGL20.TRIANGLES, vRun / 4 * 6, JSBind_WEBGL20.UNSIGNED_SHORT, (start / 4) * 6 * 2);
         }
+
+        /// <summary>
+        /// 硬件深度缓冲下的 3D 网格绘制：上传顶点（position + 逐顶点 color + uv）与索引，
+        /// 按 <paramref name="mvp"/> 投影并启用深度测试。与 2D 精灵批次完全隔离（独立程序 / 缓冲 / VAO）。
+        /// 绘制前上层必须已把 <c>DepthStencilState</c> 设为启用深度（如 <c>DepthStencilState.Default</c>）。
+        /// </summary>
+        public void DrawPrimitives3D(VertexPositionColorTexture[] vertices, ushort[] indices, Matrix4x4 mvp, Texture2D texture)
+        {
+            if (vertices == null || vertices.Length == 0 || indices == null || indices.Length == 0) return;
+            if (vertices.Length * VertexPositionColorTexture.SizeInBytes > MeshVertexBufferCapacity)
+                throw new InvalidOperationException($"[webgl20] 3D 顶点超出容量（上限 {MeshVertexBufferCapacity / VertexPositionColorTexture.SizeInBytes} 个）。");
+            if (indices.Length > MeshIndexBufferCapacity / sizeof(ushort))
+                throw new InvalidOperationException($"[webgl20] 3D 索引超出容量（上限 {MeshIndexBufferCapacity / sizeof(ushort)} 个）。");
+
+            JSBind_WEBGL20.ActiveTexture(JSBind_WEBGL20.TEXTURE0);
+            JSBind_WEBGL20.BindTexture(JSBind_WEBGL20.TEXTURE_2D, texture.Handle);
+            JSBind_WEBGL20.UseProgram(_mesh3D.Program);
+            if (_mesh3D.MvpLocation is not null)
+            {
+                WriteMeshMatrix(mvp, _meshMatrixBuffer);
+                JSBind_WEBGL20.UniformMatrix4fv(_mesh3D.MvpLocation, 0, _meshMatrixBuffer);
+            }
+            if (_mesh3D.TextureLocation is not null)
+                JSBind_WEBGL20.Uniform1i(_mesh3D.TextureLocation, 0);
+
+            JSBind_WEBGL20.BindVertexArray(_meshVertexArray);
+            JSBind_WEBGL20.BindBuffer(JSBind_WEBGL20.ARRAY_BUFFER, _meshVertexBuffer);
+            JSBind_WEBGL20.BufferSubData(JSBind_WEBGL20.ARRAY_BUFFER, 0, MemoryMarshal.AsBytes(vertices.AsSpan()));
+            JSBind_WEBGL20.BindBuffer(JSBind_WEBGL20.ELEMENT_ARRAY_BUFFER, _meshIndexBuffer);
+            JSBind_WEBGL20.BufferSubData(JSBind_WEBGL20.ELEMENT_ARRAY_BUFFER, 0, MemoryMarshal.AsBytes(indices.AsSpan()));
+            JSBind_WEBGL20.DrawElements(JSBind_WEBGL20.TRIANGLES, indices.Length, JSBind_WEBGL20.UNSIGNED_SHORT, 0);
+        }
+
+        private void BindMeshAttributes()
+        {
+            int stride = VertexPositionColorTexture.SizeInBytes;
+            if (_mesh3D.PositionLocation >= 0)
+            {
+                JSBind_WEBGL20.EnableVertexAttribArray(_mesh3D.PositionLocation);
+                JSBind_WEBGL20.VertexAttribPointer(_mesh3D.PositionLocation, 4, JSBind_WEBGL20.FLOAT, false, stride, 0);
+            }
+            if (_mesh3D.ColorLocation >= 0)
+            {
+                JSBind_WEBGL20.EnableVertexAttribArray(_mesh3D.ColorLocation);
+                JSBind_WEBGL20.VertexAttribPointer(_mesh3D.ColorLocation, 4, JSBind_WEBGL20.UNSIGNED_BYTE, true, stride, 16);
+            }
+            if (_mesh3D.TexCoordLocation >= 0)
+            {
+                JSBind_WEBGL20.EnableVertexAttribArray(_mesh3D.TexCoordLocation);
+                JSBind_WEBGL20.VertexAttribPointer(_mesh3D.TexCoordLocation, 2, JSBind_WEBGL20.FLOAT, false, stride, 20);
+            }
+        }
+
+        private static void WriteMeshMatrix(in Matrix4x4 value, Span<byte> destination)
+        {
+            WriteSingle(destination, 0, value.M11); WriteSingle(destination, 1, value.M12);
+            WriteSingle(destination, 2, value.M13); WriteSingle(destination, 3, value.M14);
+            WriteSingle(destination, 4, value.M21); WriteSingle(destination, 5, value.M22);
+            WriteSingle(destination, 6, value.M23); WriteSingle(destination, 7, value.M24);
+            WriteSingle(destination, 8, value.M31); WriteSingle(destination, 9, value.M32);
+            WriteSingle(destination, 10, value.M33); WriteSingle(destination, 11, value.M34);
+            WriteSingle(destination, 12, value.M41); WriteSingle(destination, 13, value.M42);
+            WriteSingle(destination, 14, value.M43); WriteSingle(destination, 15, value.M44);
+        }
+
+        private static void WriteSingle(Span<byte> destination, int index, float value)
+            => BinaryPrimitives.WriteSingleLittleEndian(destination.Slice(index * 4, 4), value);
 
         // ============ 纹理资源（原 Texture2D.Web.cs 的平台层） ============
 

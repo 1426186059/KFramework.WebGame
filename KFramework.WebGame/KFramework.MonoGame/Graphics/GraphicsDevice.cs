@@ -542,6 +542,41 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
+        /// 硬件深度缓冲下的 3D 网格绘制：上传顶点（position + 逐顶点 color + uv）与索引，
+        /// 按 <paramref name="mvp"/> 投影并启用深度测试，由 GPU 做遮挡（不再用画家算法做排序）。
+        /// <para>
+        /// 调用前无需设置深度状态：本方法会把 <see cref="DepthStencilState"/> 设为
+        /// <see cref="DepthStencilState.Default"/>（启用深度写入 + LessEqual）。
+        /// 绘制后请由调用方把 <see cref="DepthStencilState"/> 复位为 <see cref="DepthStencilState.None"/>
+        /// （2D 精灵默认关闭深度）。
+        /// </para>
+        /// <para>与 2D 精灵批次完全隔离：绘制绕过了 ApplyMaterial 的去重缓存，故会一并作废缓存。</para>
+        /// </summary>
+        public void DrawPrimitives3D(VertexPositionColorTexture[] vertices, ushort[] indices, Matrix4x4 mvp, Texture2D texture)
+        {
+            if (vertices == null || indices == null) return;
+
+            // 启用深度测试（写入 + LessEqual）
+            if (_depthStencilState != DepthStencilState.Default)
+            {
+                _depthStencilState = DepthStencilState.Default;
+                ApplyDepthStencilState();
+            }
+
+            BindTexture(texture);
+            Backend.DrawPrimitives3D(vertices, indices, mvp, texture);
+
+            _metrics._drawCount++;
+            _metrics._primitiveCount += indices.Length / 3;
+
+            // 3D 路径绕过了 ApplyMaterial 的「材质级去重」缓存，必须作废，否则紧接着的 SpriteBatch
+            // 会因为"材质/变换都没变"被短路而不重新 UseProgram，导致后续 2D 内容错用 3D 程序绘制。
+            _appliedEffect = null!;
+            _appliedEffectPropertiesVersion = -1;
+            _appliedMaterial = null!;
+        }
+
+        /// <summary>
         /// 实例化绘制（GPU 实例化路径）：绑定本段纹理 → 后端发起一次实例化绘制 → 计入渲染统计。
         /// 渲染状态（混合 / 深度 / 剔除 / 采样）已在 <see cref="GpuInstanceBatch.Begin"/> 里下发过一次
         /// （见 <see cref="ApplyRenderStates"/>），这里只处理批内唯一会变的东西 —— 纹理。

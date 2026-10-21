@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace KFramework.MonoGame
 {
 
@@ -79,6 +81,13 @@ namespace KFramework.MonoGame
         // ============ 绘制 ============
 
         void DrawUserIndexedPrimitives(VertexPositionColorTexture[] vertices, int start, int end);
+
+        /// <summary>
+        /// 硬件深度缓冲下的 3D 网格绘制：上传顶点（position + 逐顶点 color + uv）与索引，
+        /// 按 <paramref name="mvp"/> 投影并启用深度测试，由 GPU 做遮挡（不再用画家算法）。
+        /// 与 <see cref="DrawUserIndexedPrimitives"/> 的区别：本方法自带 MVP 顶点着色器与深度状态，用于真正的 3D 网格。
+        /// </summary>
+        void DrawPrimitives3D(VertexPositionColorTexture[] vertices, ushort[] indices, Matrix4x4 mvp, Texture2D texture);
 
         // ============ 精灵着色器程序 ============
 

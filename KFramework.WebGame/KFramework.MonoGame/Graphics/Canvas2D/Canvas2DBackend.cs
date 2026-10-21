@@ -193,6 +193,14 @@ namespace KFramework.MonoGame
             JSBind_Canvas2D.DrawBatch(MemoryMarshal.AsBytes(vertices.AsSpan()), start, end);
         }
 
+        /// <summary>
+        /// Canvas2D 后端不支持硬件 3D 网格（无深度缓冲、无 GPU 三角光栅化），故为空实现。
+        /// 需要真 3D 时请使用 WebGL / WebGPU 后端（编辑器固定走 WebGL20）。
+        /// </summary>
+        public void DrawPrimitives3D(VertexPositionColorTexture[] vertices, ushort[] indices, Matrix4x4 mvp, Texture2D texture)
+        {
+        }
+
         // ============ 纹理 ============
 
         public void CreateTexture(Texture2D texture, int width, int height, bool mipmap, SurfaceFormat format,
