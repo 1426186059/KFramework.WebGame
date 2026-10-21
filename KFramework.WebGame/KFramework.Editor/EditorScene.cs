@@ -37,6 +37,8 @@ namespace KFramework.Editor
 
         // 视图相机参数（透视）
         private const float Fov = 50f, Near = 0.1f, Far = 200f;
+        // 编辑器“场景视图”相机默认俯视/侧视角度，让物体呈现 3D 透视
+        private static readonly Vector3 SceneCamRot = new Vector3(0.35f, -0.4f, 0f);
 
         public EditorScene()
         {
@@ -247,11 +249,13 @@ namespace KFramework.Editor
         {
             b.Draw(tex, r, null, new Color(12, 14, 20));   // 视图背景
 
+            // 场景视图用固定的“编辑器相机”，故意带一点俯视/侧视角度（Unity 风格透视），
+            // 这样线框 Cube 能露出三个面、看起来是 3D 的，而不是正面看过去塌成一个正方形。
             Vector3 camPos = useGameCam ? _model.MainCamera.Position : Vector3.Zero;
-            Vector3 camRot = useGameCam ? _model.MainCamera.Rotation : Vector3.Zero;
+            Vector3 camRot = useGameCam ? _model.MainCamera.Rotation : SceneCamRot;
             foreach (EditorObject o in _model.Objects)
                 if (o.Type == EditorObjectType.Cube && o.Visible)
-                    CubeView.Draw(b, r, Fov, Near, Far, camPos, camRot, o.Position, o.Rotation, o.Scale, tex);
+                    Cube.Draw(b, r, Fov, Near, Far, camPos, camRot, o.Position, o.Rotation, o.Scale, tex);
 
             string title = useGameCam ? "游戏 Game（Main Camera）" : "场景 Scene（固定相机）";
             // 边框

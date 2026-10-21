@@ -40,6 +40,7 @@ namespace KFramework.Editor
             MainCamera = new EditorObject("Main Camera", EditorObjectType.Camera)
             {
                 Position = Vector3.Zero,
+                Rotation = new Vector3(0.35f, -0.4f, 0f),   // 默认带角度，游戏视图也能呈现 3D 透视
             };
             Objects.Add(MainCamera);
             Objects.Add(new EditorObject("Directional Light", EditorObjectType.Light)
