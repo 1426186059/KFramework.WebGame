@@ -206,7 +206,7 @@ namespace KFramework.Editor
             DrawPanel(batch, tex, projectRect, "资源 Project");
             DrawPanel(batch, tex, hierRect, "层级 Hierarchy");
             DrawPanel(batch, tex, inspRect, "检视 Inspector");
-            batch.Draw(tex, viewRect, null, new Color(12, 14, 20));   // 视图背景（3D 在其上绘制）
+            batch.Draw(tex, viewRect, null, new Color(49, 77, 121));   // 视图背景：Unity 默认相机背景蓝（3D 在其上绘制）
 
             // 工具栏
             batch.Draw(tex, new Rectangle(0, 0, W, toolbarH), null, new Color(40, 44, 58));
