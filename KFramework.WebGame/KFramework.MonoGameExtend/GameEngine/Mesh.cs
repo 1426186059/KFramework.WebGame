@@ -1,6 +1,7 @@
 using System;
+using KFramework.MonoGame;   // 引用引擎自定义 Vector2/Vector3（Mesh 仅依赖这些基础类型）
 
-namespace KFramework.MonoGame
+namespace KFramework.MonoGameExtend
 {
     /// <summary>网格顶点：位置 + 法线 + UV（仿 Unity Mesh 的顶点属性）。</summary>
     public struct MeshVertex
