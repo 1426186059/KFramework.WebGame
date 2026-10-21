@@ -163,6 +163,37 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
+        /// 绕 Y 轴旋转（3D 旋转）。与 <see cref="CreateRotationZ"/> 同套行向量约定：
+        /// 第 1 行为 (c, 0, -s)、第 3 行为 (s, 0, c)，故绕 Y 的旋转角可由 Atan2(-M13, M11) 还原。
+        /// </summary>
+        public static Matrix4x4 CreateRotationY(float radians)
+        {
+            float c = MathF.Cos(radians), s = MathF.Sin(radians);
+            return new()
+            {
+                M11 = c, M13 = -s,
+                M22 = 1f,
+                M31 = s, M33 = c,
+                M44 = 1f,
+            };
+        }
+
+        /// <summary>
+        /// 绕 X 轴旋转（3D 旋转）。行向量约定：M22=c, M23=-s, M32=s, M33=c。
+        /// </summary>
+        public static Matrix4x4 CreateRotationX(float radians)
+        {
+            float c = MathF.Cos(radians), s = MathF.Sin(radians);
+            return new()
+            {
+                M11 = 1f,
+                M22 = c, M23 = -s,
+                M32 = s, M33 = c,
+                M44 = 1f,
+            };
+        }
+
+        /// <summary>
         /// 求逆。复用 System.Numerics 的实现以保证数值正确性；
         /// 奇异矩阵（不可逆）返回单位矩阵而不是 NaN，避免变换结果污染。
         /// System.Numerics.Matrix4x4 同为行主序 + 行向量，字段可原样对应，无需转置。

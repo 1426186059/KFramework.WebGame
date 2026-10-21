@@ -25,9 +25,20 @@ namespace KFramework.Test.Common.Tests
         // ---- 按钮（业务页用 BeginButtons + AddUiButton 登记，基类负责命中与绘制） ----
 
         private readonly List<UiButton> _buttons = [];
+        private readonly List<UiGroup> _groups = new();
+        private readonly Dictionary<string, bool> _groupExpanded = new();
+        private UiGroup? _currentGroup;
         private int _buttonX;
         private int _buttonY;
         private int _contentTop;
+
+        /// <summary>可折叠按钮组（「大按钮」）：组头点击展开/收起其下的 <see cref="AddUiButton"/>。</summary>
+        private sealed class UiGroup
+        {
+            public bool Expanded;
+            public UiButton? Header;
+            public readonly List<UiButton> Children = new();
+        }
 
         /// <summary>按钮区之后正文的起始 y（由 <see cref="BeginButtons"/> / <see cref="AddUiButton"/> 算出）。</summary>
         protected float ContentTop => _contentTop;
@@ -43,14 +54,51 @@ namespace KFramework.Test.Common.Tests
         protected void BeginButtons(int top)
         {
             _buttons.Clear();
+            _groups.Clear();
+            _currentGroup = null;
             _buttonX = 28;
             _buttonY = top;
             _contentTop = top;
         }
 
+        /// <summary>
+        /// 开一个可折叠按钮组（「大按钮」）：组头独占一行，点击组头展开/收起其下所有 <see cref="AddUiButton"/>。
+        /// 展开状态按 <paramref name="label"/> 记忆（跨帧保持）。组的子按钮在本帧 <see cref="EndGroup"/> 之前登记。
+        /// </summary>
+        /// <param name="label">组名（同时作为展开状态记忆的键）。</param>
+        /// <param name="defaultExpanded">首次出现时是否默认展开。</param>
+        protected void BeginGroup(string label, bool defaultExpanded = true)
+        {
+            if (!_groupExpanded.TryGetValue(label, out bool exp)) exp = defaultExpanded;
+            _groupExpanded[label] = exp;
+            string text = (exp ? "▾ " : "▸ ") + label;
+            int width = UiButton.MeasureWidth(Font, text);
+            if (_buttonX + width > Device.Viewport.Width - 20 && _buttonX > 28)
+            {
+                _buttonX = 28;
+                _buttonY += UiButton.DefaultHeight + UiButton.Gap;
+            }
+            var header = new UiButton(new Rectangle(_buttonX, _buttonY, width, UiButton.DefaultHeight), text,
+                () => _groupExpanded[label] = !_groupExpanded[label]);
+            _buttons.Add(header);
+            _currentGroup = new UiGroup { Expanded = exp, Header = header };
+            _groups.Add(_currentGroup);
+            _buttonX = 28;                                   // 子按钮从下一行左侧开始排
+            _buttonY += UiButton.DefaultHeight + UiButton.Gap;
+        }
+
+        /// <summary>结束当前按钮组；之后的 <see cref="AddUiButton"/> 回到顶层（不再属于任何组）。</summary>
+        protected void EndGroup() => _currentGroup = null;
+
         /// <summary>按行排一个按钮；超出画布右边自动换行。<paramref name="active"/> 表示开关处于「开」。</summary>
         protected void AddUiButton(string label, Action click, bool active = false)
         {
+            // 处于「收起」的组内：只登记引用，不占布局、不入命中/绘制列表（即被隐藏）
+            if (_currentGroup != null && !_currentGroup.Expanded)
+            {
+                _currentGroup.Children.Add(new UiButton(new Rectangle(0, 0, 0, 0), label, click, active));
+                return;
+            }
             int width = UiButton.MeasureWidth(Font, label);
             if (_buttonX + width > Device.Viewport.Width - 20 && _buttonX > 28)
             {
