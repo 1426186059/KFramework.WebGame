@@ -608,7 +608,8 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
-        /// 精灵类绘制共用的投影矩阵（<see cref="SpriteBatch"/> / <see cref="GpuInstanceBatch"/> / <see cref="UrpBatch"/> 三家一致）。
+        /// 精灵类绘制共用的默认投影矩阵（<see cref="SpriteBatch"/> / <see cref="GpuInstanceBatch"/> / <see cref="UrpBatch"/> 三家一致）；
+        /// 各 Begin 也可传入自定义投影（如透视矩阵）覆盖本默认，使 2D 批绘制也能走透视渲染。
         /// <para>
         /// 离屏时是否改用 Y 向上投影，取决于后端的坐标系原点（详见 <see cref="IGraphicsBackend.NeedsOffscreenYFlip"/>）：
         /// <list type="bullet">

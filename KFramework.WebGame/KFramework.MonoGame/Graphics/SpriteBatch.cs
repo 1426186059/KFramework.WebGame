@@ -44,10 +44,12 @@ namespace KFramework.MonoGame
         //本 API 只做 CPU 合批（逐顶点路径）；GPU 实例化请用 GpuInstanceBatch（另一条独立的路）。
         //transformMatrix 就是 Camera（相机）矩阵：世界 → 屏幕的变换，null = 单位矩阵；
         //与投影矩阵相乘后作为整批顶点的变换下发（批内不变，见 GraphicsDevice.CreateSpriteProjection）。
+        //projection：自定义投影矩阵（如透视矩阵），null = 使用默认正交屏幕投影（CreateSpriteProjection）；
+        //传透视矩阵即可让本批 2D 精灵走透视渲染（近大远小），但需自行保证深度/相机关系正确。
         public void Begin(Material material, SpriteSortMode sortMode = SpriteSortMode.Deferred,
-                          Matrix4x4? transformMatrix = null)
+                          Matrix4x4? transformMatrix = null, Matrix4x4? projection = null)
         {
-            BeginInternal(material, sortMode, transformMatrix);
+            BeginInternal(material, sortMode, transformMatrix, projection);
         }
 
         //这是老API，后续不再推荐使用，建议改用上面的 Begin(Material, ...) 版本。
@@ -68,10 +70,10 @@ namespace KFramework.MonoGame
             _cache_Mat.Sampler = samplerState ?? SamplerState.Point;
             _cache_Mat.DepthStencil = depthStencilState ?? DepthStencilState.None;
             _cache_Mat.Rasterizer = rasterizerState ?? RasterizerState.CullNone;
-            BeginInternal(_cache_Mat, sortMode, transformMatrix);
+            BeginInternal(_cache_Mat, sortMode, transformMatrix, null);
         }
 
-        private void BeginInternal(Material material, SpriteSortMode sortMode, Matrix4x4? transformMatrix)
+        private void BeginInternal(Material material, SpriteSortMode sortMode, Matrix4x4? transformMatrix, Matrix4x4? projection = null)
         {
             if (_beginCalled)
             {
@@ -84,7 +86,7 @@ namespace KFramework.MonoGame
             _sortMode = sortMode;
    
             _cameraMatrix = transformMatrix ?? Matrix4x4.Identity;
-            _projection = _device.CreateSpriteProjection();
+            _projection = projection ?? _device.CreateSpriteProjection();
             _cameraProjectionMatrix = _cameraMatrix * _projection;
 
             _beginCalled = true;

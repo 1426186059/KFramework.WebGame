@@ -126,8 +126,9 @@ namespace KFramework.MonoGame
         /// <param name="sortMode">渲染顺序（<see cref="SpriteSortMode"/>）：Deferred = 保持 Draw 调用顺序；
         /// Texture = 按纹理排序（让同纹理的物体连在一起，减少绑定切换）；FrontToBack / BackToFront = 按 layerDepth 排序。</param>
         /// <param name="transformMatrix">相机矩阵（世界 → 屏幕的变换），null = 单位矩阵；与投影矩阵相乘后下发。</param>
+        /// <param name="projection">自定义投影矩阵（如透视），null = 使用默认正交屏幕投影（CreateSpriteProjection）。与 transformMatrix 组合为本批下发矩阵；传透视矩阵即可让 2D 走透视渲染。</param>
         public void Begin(Material? material = null, SpriteSortMode sortMode = SpriteSortMode.Deferred,
-                          Matrix4x4? transformMatrix = null)
+                          Matrix4x4? transformMatrix = null, Matrix4x4? projection = null)
         {
             if (_begun) throw new InvalidOperationException("上一次 Begin 还没有对应的 End。");
 
@@ -150,7 +151,8 @@ namespace KFramework.MonoGame
 
             _sortMode = sortMode;
             _transform = transformMatrix ?? Matrix4x4.Identity;
-            _projection = _device.CreateSpriteProjection();
+            // projection：自定义投影矩阵（如透视），null = 默认正交屏幕投影（CreateSpriteProjection）
+            _projection = projection ?? _device.CreateSpriteProjection();
             _transformProjection = _transform * _projection;
 
             // ---- 批内不变的渲染状态，在这里一次性下发 ----

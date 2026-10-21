@@ -48,7 +48,7 @@ namespace KFramework.MonoGame
         public int InstanceCount => _entries.Count;
         
         public void Begin(Material material, SpriteSortMode sortMode = SpriteSortMode.Deferred,
-                          Matrix4x4? transformMatrix = null)
+                          Matrix4x4? transformMatrix = null, Matrix4x4? projection = null)
         {
             if (_begun)
             {
@@ -64,7 +64,8 @@ namespace KFramework.MonoGame
 
             _sortMode = sortMode;
             _transform = transformMatrix ?? Matrix4x4.Identity;
-            _projection = _device.CreateSpriteProjection();
+            // projection：自定义投影矩阵（如透视），null = 默认正交屏幕投影（CreateSpriteProjection）
+            _projection = projection ?? _device.CreateSpriteProjection();
             _transformProjection = _transform * _projection;
 
             _device.ApplyRenderStates(_material);
