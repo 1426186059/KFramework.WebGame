@@ -67,7 +67,9 @@ namespace KFramework.Editor
                 EditorObjectType.Cube => new EditorObject("Cube " + (cubeN + 1), EditorObjectType.Cube),
                 _ => new EditorObject("Empty " + (emptyN + 1), EditorObjectType.Empty),
             };
-            newObj.Position = new Vector3(0f, 0f, -10f);
+            // 错开位置，避免和默认 Cube(0,0,-10) 完全重叠导致“看不见”
+            float off = (type == EditorObjectType.Cube ? cubeN : emptyN) * 4f;
+            newObj.Position = new Vector3(off, 0f, -10f);
             Objects.Add(newObj);
             Selected = newObj;
         }

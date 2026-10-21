@@ -82,7 +82,8 @@ namespace KFramework.Editor
             float dx = x2 - x1, dy = y2 - y1;
             float len = MathF.Sqrt(dx * dx + dy * dy);
             float ang = MathF.Atan2(dy, dx);
-            b.Draw(tex, new Rectangle(0, 0, (int)len, thick), null, c, ang, new Vector2(0f, thick / 2f));
+            // 目标矩形定位到线段起点 (x1,y1)，再以左中点为轴旋转 len 长度 → 线段落在两顶点之间
+            b.Draw(tex, new Rectangle((int)x1, (int)y1, (int)len, thick), null, c, ang, new Vector2(0f, thick / 2f));
         }
     }
 }

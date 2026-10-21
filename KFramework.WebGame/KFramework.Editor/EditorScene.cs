@@ -2,14 +2,16 @@ using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace KFramework.Editor
 {
     /// <summary>
-    /// 类 Unity 编辑器主场景：屏幕被划分为 5 块——
-    /// 顶部工具栏、左侧层级(Hierarchy)、中央场景视图 + 游戏视图、右侧检视(Inspector) + 资源(Project)。
+    /// 类 Unity 编辑器主场景：
+    /// 顶部工具栏（含「场景/游戏」视图切换按钮）、左侧资源(Project)、中央单一视图（场景/游戏切换）、
+    /// 右侧层级(Hierarchy) + 检视(Inspector)。
     /// 默认场景里有一个 Cube 物体，位于相机正前方便于「在屏幕正中」观察；
-    /// 在检视面板里用 Unity 式「拖拽改值」编辑其 位置/旋转/缩放，场景与游戏视图实时更新。
+    /// 检视面板里 位置/旋转/缩放 既可横向拖拽改值，也可单击聚焦后键入（含中文 IME）。
     /// </summary>
     public sealed class EditorScene : KSceneBase
     {
@@ -17,14 +19,39 @@ namespace KFramework.Editor
         private readonly List<(Rectangle rect, Action act)> _clickables = new();
         private readonly List<(Rectangle rect, Action<float> apply)> _fields = new();
         private readonly List<(Rectangle rect, EditorObject obj)> _hierarchyRows = new();
-        private int _dragField = -1;
+        private readonly TextBox[] _numBoxes = new TextBox[9];   // 位置/旋转/缩放 各 3 个分量
+
+        // 拖拽改值 / 聚焦输入的状态
+        private int _pendingField = -1;
+        private float _dragStartX;
+        private bool _dragging;
+
+        // 右键上下文菜单
         private bool _contextOpen;
         private Vector2 _contextPos;
         private readonly List<(string label, Action act)> _contextItems = new();
+
+        private bool _showGameView;   // false=场景视图, true=游戏视图
+        private Rectangle _viewToggleRect;
         private float _animT;
 
         // 视图相机参数（透视）
         private const float Fov = 50f, Near = 0.1f, Far = 200f;
+
+        public EditorScene()
+        {
+            for (int i = 0; i < _numBoxes.Length; i++)
+            {
+                _numBoxes[i] = new TextBox
+                {
+                    Multiline = false,
+                    MaxLength = 12,
+                    OverlayScale = 1f,
+                    OverlayFontPx = 18f,
+                    OverlayFontCss = "18px sans-serif",
+                };
+            }
+        }
 
         public override void Update()
         {
@@ -47,26 +74,55 @@ namespace KFramework.Editor
                         if (MenuRectFor(i).Contains(mouse)) { _contextItems[i].act(); hitMenu = true; break; }
                     }
                     _contextOpen = false;
-                    if (hitMenu) return;          // 命中菜单项：本帧不再处理其它点击
+                    if (hitMenu) return;
                 }
 
-                // 优先判定：是否按在某个数值字段上（开始拖拽改值）
-                bool hitField = false;
+                // 是否按在某个数值字段上（记录为待定：拖拽=改值，单击=聚焦输入）
+                _pendingField = -1;
                 for (int i = 0; i < _fields.Count; i++)
                 {
-                    if (_fields[i].rect.Contains(mouse)) { _dragField = i; hitField = true; break; }
+                    if (_fields[i].rect.Contains(mouse)) { _pendingField = i; _dragStartX = mouse.X; _dragging = false; break; }
                 }
-                if (!hitField)
+                if (_pendingField == -1)
                 {
+                    BlurAllBoxes();   // 点字段以外的地方：取消输入焦点
                     foreach (var c in _clickables)
                         if (c.rect.Contains(mouse)) { c.act(); break; }
-                    _dragField = -1;
                 }
             }
-            // 拖拽中：按横向位移改值（Unity 风格 scrub）
-            if (_dragField >= 0 && Input_Mouse.GetButton(MouseButton.Left))
-                _fields[_dragField].apply(Input_Mouse.Delta.X);
-            if (Input_Mouse.GetButtonUp(MouseButton.Left)) _dragField = -1;
+
+            // 按住左键：超过阈值判定为拖拽改值（并立即取消输入焦点，避免与键入冲突）
+            if (Input_Mouse.GetButton(MouseButton.Left) && _pendingField >= 0)
+            {
+                if (Math.Abs(mouse.X - _dragStartX) > 3f)
+                {
+                    if (!_dragging) { _dragging = true; BlurAllBoxes(); }
+                    _fields[_pendingField].apply(Input_Mouse.Delta.X);
+                }
+            }
+
+            // 松开左键：未拖拽=聚焦该字段（进入键入模式），拖拽过=保持取消焦点
+            if (Input_Mouse.GetButtonUp(MouseButton.Left))
+            {
+                if (_pendingField >= 0)
+                {
+                    if (_dragging) BlurAllBoxes();
+                    else FocusBox(_pendingField);
+                }
+                _pendingField = -1;
+                _dragging = false;
+            }
+        }
+
+        private void FocusBox(int i)
+        {
+            for (int j = 0; j < _numBoxes.Length; j++)
+                if (j == i) _numBoxes[j].Focus(); else _numBoxes[j].Blur();
+        }
+
+        private void BlurAllBoxes()
+        {
+            foreach (var b in _numBoxes) b.Blur();
         }
 
         // 在鼠标位置弹出上下文菜单（仅当落在某个层级行上、且不是 Main Camera 时提供删除）
@@ -121,33 +177,39 @@ namespace KFramework.Editor
 
             // ---- 布局 ----
             const int toolbarH = 36;
-            const int hierW = 220;
-            const int inspW = 300;
-            int centerX = hierW;
-            int centerW = W - hierW - inspW;
-            int centerH = H - toolbarH;
+            const int leftW = 240;     // 左侧：资源(Project)
+            const int rightW = 300;    // 右侧：层级 + 检视
+            int viewX = leftW;
+            int viewW = W - leftW - rightW;
+            int viewH = H - toolbarH;
 
-            Rectangle hierRect = new Rectangle(0, toolbarH, hierW, centerH);
-            Rectangle inspRect = new Rectangle(W - inspW, toolbarH, inspW, centerH / 2);
-            Rectangle projRect = new Rectangle(W - inspW, toolbarH + centerH / 2, inspW, centerH - centerH / 2);
-            Rectangle sceneRect = new Rectangle(centerX, toolbarH, centerW / 2, centerH);
-            Rectangle gameRect = new Rectangle(centerX + centerW / 2, toolbarH, centerW / 2, centerH);
+            Rectangle projectRect = new Rectangle(0, toolbarH, leftW, viewH);
+            Rectangle viewRect = new Rectangle(viewX, toolbarH, viewW, viewH);
+            Rectangle hierRect = new Rectangle(W - rightW, toolbarH, rightW, viewH / 2);
+            Rectangle inspRect = new Rectangle(W - rightW, toolbarH + viewH / 2, rightW, viewH - viewH / 2);
 
+            DrawPanel(batch, tex, projectRect, "资源 Project");
             DrawPanel(batch, tex, hierRect, "层级 Hierarchy");
             DrawPanel(batch, tex, inspRect, "检视 Inspector");
-            DrawPanel(batch, tex, projRect, "资源 Project");
 
-            DrawView(batch, tex, sceneRect, "场景 Scene（固定相机）", false);
-            DrawView(batch, tex, gameRect, "游戏 Game（Main Camera）", true);
+            // 中央单一视图（场景/游戏 切换）
+            DrawView(batch, tex, viewRect, _showGameView);
 
             // 工具栏
             batch.Draw(tex, new Rectangle(0, 0, W, toolbarH), null, new Color(40, 44, 58));
             batch.DrawString(font, "KFramework 编辑器（类 Unity）  ·  FPS " + (int)KTime.realFps,
                 new Vector2(12, 8), new Color(150, 200, 255));
 
+            // 视图切换按钮
+            _viewToggleRect = new Rectangle(W - 186, 6, 174, 24);
+            batch.Draw(tex, _viewToggleRect, null, new Color(60, 90, 140));
+            batch.DrawString(font, "视图: " + (_showGameView ? "游戏 Game" : "场景 Scene"),
+                new Vector2(_viewToggleRect.X + 10, _viewToggleRect.Y + 3), new Color(225, 235, 255));
+            _clickables.Add((_viewToggleRect, () => _showGameView = !_showGameView));
+
+            DrawProject(batch, font, tex, projectRect);
             DrawHierarchy(batch, font, tex, hierRect);
-            DrawInspector(batch, font, tex, inspRect);
-            DrawProject(batch, font, tex, projRect);
+            DrawInspector(batch, font, tex, inspRect, device);
 
             // 右键上下文菜单（最上层绘制）
             if (_contextOpen)
@@ -180,8 +242,8 @@ namespace KFramework.Editor
             b.DrawString(KDefaultRes.DefaultSpriteFont, title, new Vector2(r.X + 6, r.Y + 1), new Color(170, 200, 255));
         }
 
-        // ===== 视图（场景 / 游戏）=====
-        private void DrawView(SpriteBatch b, Texture2D tex, Rectangle r, string title, bool useGameCam)
+        // ===== 视图（场景 / 游戏 二选一）=====
+        private void DrawView(SpriteBatch b, Texture2D tex, Rectangle r, bool useGameCam)
         {
             b.Draw(tex, r, null, new Color(12, 14, 20));   // 视图背景
 
@@ -191,6 +253,7 @@ namespace KFramework.Editor
                 if (o.Type == EditorObjectType.Cube && o.Visible)
                     CubeView.Draw(b, r, Fov, Near, Far, camPos, camRot, o.Position, o.Rotation, o.Scale, tex);
 
+            string title = useGameCam ? "游戏 Game（Main Camera）" : "场景 Scene（固定相机）";
             // 边框
             b.Draw(tex, new Rectangle(r.X - 1, r.Y - 1, r.Width + 2, 2), null, new Color(90, 150, 220));
             b.Draw(tex, new Rectangle(r.X - 1, r.Y - 1, 2, r.Height + 2), null, new Color(90, 150, 220));
@@ -218,8 +281,8 @@ namespace KFramework.Editor
             }
         }
 
-        // ===== 检视（位置 / 旋转 / 缩放，拖拽改值）=====
-        private void DrawInspector(SpriteBatch b, IFont font, Texture2D tex, Rectangle r)
+        // ===== 检视（位置 / 旋转 / 缩放：拖拽改值 + 单击聚焦键入）=====
+        private void DrawInspector(SpriteBatch b, IFont font, Texture2D tex, Rectangle r, GraphicsDevice device)
         {
             EditorObject? o = _model.Selected;
             int y = r.Y + 22;
@@ -232,38 +295,62 @@ namespace KFramework.Editor
             b.DrawString(font, o.Name + "  (" + o.Type + ")", new Vector2(r.X + 8, y), new Color(200, 220, 255));
             y += rowH + 6;
 
-            y = AddVector3Field(b, tex, r, y, rowH, "位置 Position", o.Position, 0.05f,
-                v => o.Position = v);
-            y = AddVector3Field(b, tex, r, y, rowH, "旋转 Rotation", o.Rotation, 0.02f,
-                v => o.Rotation = v);
-            y = AddVector3Field(b, tex, r, y, rowH, "缩放 Scale", o.Scale, 0.01f,
-                v => o.Scale = v);
+            int boxIdx = 0;
+            y = InsGroup(b, font, tex, r, y, rowH, "位置 Position", o.Position, 0.05f, v => o.Position = v, ref boxIdx, device);
+            y = InsGroup(b, font, tex, r, y, rowH, "旋转 Rotation", o.Rotation, 0.02f, v => o.Rotation = v, ref boxIdx, device);
+            y = InsGroup(b, font, tex, r, y, rowH, "缩放 Scale", o.Scale, 0.01f, v => o.Scale = v, ref boxIdx, device);
         }
 
-        // 画一组三轴的数值字段；每个字段支持横向拖拽改值
-        private int AddVector3Field(SpriteBatch b, Texture2D tex, Rectangle r, int y, int rowH,
-            string name, Vector3 value, float sens, Action<Vector3> set)
+        // 画一组三轴字段：标题 + 三个数值框（每个对应一个 TextBox）。
+        private int InsGroup(SpriteBatch b, IFont font, Texture2D tex, Rectangle r, int y, int rowH,
+            string name, Vector3 value, float sens, Action<Vector3> set, ref int boxIdx, GraphicsDevice device)
         {
-            b.DrawString(KDefaultRes.DefaultSpriteFont, name, new Vector2(r.X + 8, y), new Color(255, 206, 110));
+            b.DrawString(font, name, new Vector2(r.X + 8, y), new Color(255, 206, 110));
             y += rowH;
 
-            RegAxis(b, tex, r, y, rowH, "X", value.X, sens, x => { Vector3 v = value; v.X = x; set(v); });
-            y += rowH;
-            RegAxis(b, tex, r, y, rowH, "Y", value.Y, sens, x => { Vector3 v = value; v.Y = x; set(v); });
-            y += rowH;
-            RegAxis(b, tex, r, y, rowH, "Z", value.Z, sens, x => { Vector3 v = value; v.Z = x; set(v); });
-            y += rowH;
+            for (int axis = 0; axis < 3; axis++)
+            {
+                Rectangle valRect = new Rectangle(r.X + r.Width - 150, y, 142, rowH - 4);
+                b.Draw(tex, valRect, null, new Color(40, 44, 60));
+                b.DrawString(font, "XYZ"[axis] + " ", new Vector2(r.X + r.Width - 146, y + 2), new Color(180, 200, 230));
+
+                TextBox box = _numBoxes[boxIdx];
+                box.Font = font;
+                box.Location = new Point(valRect.X, valRect.Y);
+                box.Size = new Size(valRect.Width, valRect.Height);
+
+                float cur = axis == 0 ? value.X : axis == 1 ? value.Y : value.Z;
+                if (!box.Focused)
+                {
+                    string txt = cur.ToString("0.00", CultureInfo.InvariantCulture);
+                    if (box.Text != txt) box.Text = txt;
+                }
+                else if (float.TryParse(box.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out float f))
+                {
+                    Vector3 v = value;
+                    if (axis == 0) v.X = f; else if (axis == 1) v.Y = f; else v.Z = f;
+                    set(v);
+                }
+
+                // 拖拽改值（单击聚焦则由 TextBox 接管键入）
+                int ax = axis; float s = sens; Vector3 snap = value;
+                _fields.Add((valRect, dx =>
+                {
+                    Vector3 v = snap;
+                    if (ax == 0) v.X = snap.X + dx * s;
+                    else if (ax == 1) v.Y = snap.Y + dx * s;
+                    else v.Z = snap.Z + dx * s;
+                    set(v);
+                }));
+
+                // 引擎自绘文字 + 光标/选区（聚焦时由 DOM 覆盖层承接 IME 输入）
+                box.DrawTextBox(b, device, font, box.Text, valRect, new Color(225, 225, 235),
+                    box.SelectionStart, false, box.Focused, TextBox.DefaultPadLeft, box.CompositionString, box.SelectionStart, box.SelectionLength);
+
+                boxIdx++;
+                y += rowH;
+            }
             return y + 4;
-        }
-
-        private void RegAxis(SpriteBatch b, Texture2D tex, Rectangle r, int y, int rowH, string axis, float cur, float sens, Action<float> set)
-        {
-            Rectangle valRect = new Rectangle(r.X + r.Width - 150, y, 142, rowH - 4);
-            b.Draw(tex, valRect, null, new Color(40, 44, 60));
-            b.DrawString(KDefaultRes.DefaultSpriteFont, axis + "   " + cur.ToString("0.00"),
-                new Vector2(r.X + r.Width - 144, y + 2), new Color(220, 220, 230));
-            float c = cur;
-            _fields.Add((valRect, dx => set(c + dx * sens)));
         }
 
         // ===== 资源（点击创建物体）=====
