@@ -21,6 +21,9 @@ namespace KFramework.Editor
         private readonly List<(Rectangle rect, EditorObject obj)> _hierarchyRows = new();
         private readonly TextBox[] _numBoxes = new TextBox[9];   // 位置/旋转/缩放 各 3 个分量
 
+        private float _lastClickTime;     // 上次点击时间，用于双击全选判定
+        private int _lastClickField = -1; // 上次点击的字段索引
+
         // 拖拽改值 / 聚焦输入的状态
         private int _pendingField = -1;
         private float _dragStartX;
@@ -113,7 +116,15 @@ namespace KFramework.Editor
                 if (_pendingField >= 0)
                 {
                     if (_dragging) BlurAllBoxes();
-                    else FocusBox(_pendingField);
+                    else
+                    {
+                        FocusBox(_pendingField);
+                        // 双击同一字段 = 全选；单击仅定位光标，方便编辑某一位
+                        if (_lastClickField == _pendingField && (_animT - _lastClickTime) < 0.3f)
+                            _numBoxes[_pendingField].SelectAll();
+                        _lastClickField = _pendingField;
+                        _lastClickTime = _animT;
+                    }
                 }
                 _pendingField = -1;
                 _dragging = false;
@@ -123,7 +134,10 @@ namespace KFramework.Editor
         private void FocusBox(int i)
         {
             for (int j = 0; j < _numBoxes.Length; j++)
-                if (j == i) _numBoxes[j].Focus(); else _numBoxes[j].Blur();
+            {
+                if (j == i) _numBoxes[j].Focus();
+                else _numBoxes[j].Blur();
+            }
         }
 
         private void BlurAllBoxes()
@@ -339,7 +353,7 @@ namespace KFramework.Editor
 
             for (int axis = 0; axis < 3; axis++)
             {
-                Rectangle valRect = new Rectangle(r.X + r.Width - 150, y, 142, rowH - 4);
+                Rectangle valRect = new Rectangle(r.X + r.Width - 150, y, 120, rowH - 4);
                 b.Draw(tex, valRect, null, new Color(40, 44, 60));
                 b.DrawString(font, "XYZ"[axis] + " ", new Vector2(r.X + r.Width - 146, y + 2), new Color(180, 200, 230));
 
@@ -354,11 +368,19 @@ namespace KFramework.Editor
                     string txt = cur.ToString("0.00", CultureInfo.InvariantCulture);
                     if (box.Text != txt) box.Text = txt;
                 }
-                else if (float.TryParse(box.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out float f))
+                else
                 {
-                    Vector3 v = value;
-                    if (axis == 0) v.X = f; else if (axis == 1) v.Y = f; else v.Z = f;
-                    set(v);
+                    // 聚焦中：解析并实时写回模型。空文本（全选后删除）视为 0，避免失焦时恢复旧值；
+                    // 中间态（如单独的 "-" 或 "."）解析失败则暂不写回，避免打断输入。
+                    float f;
+                    if (string.IsNullOrWhiteSpace(box.Text)) f = 0f;
+                    else if (!float.TryParse(box.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out f)) f = float.NaN;
+                    if (!float.IsNaN(f))
+                    {
+                        Vector3 v = value;
+                        if (axis == 0) v.X = f; else if (axis == 1) v.Y = f; else v.Z = f;
+                        set(v);
+                    }
                 }
 
                 // 拖拽改值（单击聚焦则由 TextBox 接管键入）
@@ -375,6 +397,19 @@ namespace KFramework.Editor
                 // 引擎自绘文字 + 光标/选区（聚焦时由 DOM 覆盖层承接 IME 输入）
                 box.DrawTextBox(b, device, font, box.Text, valRect, new Color(225, 225, 235),
                     box.SelectionStart, false, box.Focused, TextBox.DefaultPadLeft, box.CompositionString, box.SelectionStart, box.SelectionLength);
+
+                // 一键删除（X）：把该分量归零，便于快速清空后重输
+                Rectangle delRect = new Rectangle(r.X + r.Width - 26, y, 22, rowH - 4);
+                b.Draw(tex, delRect, null, new Color(72, 42, 52));
+                b.DrawString(font, "X", new Vector2(r.X + r.Width - 19, y + 2), new Color(235, 130, 130));
+                int dax = axis; Action<Vector3> dset = set; TextBox dbox = box;
+                _clickables.Add((delRect, () =>
+                {
+                    Vector3 dv = value;
+                    if (dax == 0) dv.X = 0f; else if (dax == 1) dv.Y = 0f; else dv.Z = 0f;
+                    dset(dv);
+                    dbox.Text = "0.00";
+                }));
 
                 boxIdx++;
                 y += rowH;

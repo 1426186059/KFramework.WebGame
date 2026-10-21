@@ -44,6 +44,17 @@ let areaEl: HTMLTextAreaElement | null = null;
 let last: ShowParams | null = null;
 let composing = false; // IME 组字中（compositionstart..compositionend），用于拦截选词用的 Enter
 
+// 覆盖层是引擎自绘文字的透明代理：transparent 模式选中时浏览器默认的 ::selection 蓝底会叠在引擎自绘高亮之上，
+// 看起来像“多出了一层 HTML”。故 transparent 模式让 ::selection 背景透明，只保留引擎自绘高亮。
+(function injectKfImeSelectionStyle(): void {
+    const id = 'kf-ime-selection-style';
+    if (document.getElementById(id)) return;
+    const s = document.createElement('style');
+    s.id = id;
+    s.textContent = '.kf-ime-transparent::selection{background:transparent !important;}';
+    document.head.appendChild(s);
+})();
+
 function canvasMetrics(): { left: number; top: number; dpr: number } {
     const canvas = getInputCanvas();
     if (!canvas) return { left: 0, top: 0, dpr: 1 };
@@ -200,7 +211,9 @@ function place(el: HTMLElement, p: ShowParams): void {
     if (p.transparent) {
         el.style.color = 'transparent';
         el.style.caretColor = 'transparent';
+        el.classList.add('kf-ime-transparent');
     } else {
+        el.classList.remove('kf-ime-transparent');
         const r = (p.color >> 16) & 0xff, g = (p.color >> 8) & 0xff, b = p.color & 0xff;
         el.style.color = `rgb(${r},${g},${b})`;
         el.style.caretColor = `rgb(${r},${g},${b})`;

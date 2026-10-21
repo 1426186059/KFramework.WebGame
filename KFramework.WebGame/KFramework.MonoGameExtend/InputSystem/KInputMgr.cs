@@ -26,18 +26,14 @@ namespace KFramework.MonoGameExtend
 
         /// <summary>
         /// 初始化输入总调度（幂等）。三个装置一律激活：鼠标/触摸是 UI 点击的前提，键盘没有不激活的理由。
+        /// 键盘 / 鼠标监听固定绑定到 window 全局（bUseCanvasListener 已废弃，统一为全局捕获模式）。
         /// </summary>
-        /// <param name="keyboardUseCanvasListener">
-        /// 键盘监听绑到哪：true = 画布（需画布获焦，页面上有输入框时不会误收键）；
-        /// false（默认）= window 全局捕获（焦点被页面 / 开发者工具抢走时仍能收键）。
-        /// 只在首次 Init 时生效。
-        /// </param>
-        public static void Init(bool keyboardUseCanvasListener = false)
+        public static void Init()
         {
             if (Inited) return;
 
-            Input_KeyBoard.Activate(keyboardUseCanvasListener);
-            Input_Mouse.Activate(keyboardUseCanvasListener);   // 总纲页与各页的「← 总纲」都要用鼠标点击，必须激活
+            Input_KeyBoard.Activate();
+            Input_Mouse.Activate();   // 总纲页与各页的「← 总纲」都要用鼠标点击，必须激活
             Input_Touch.Activate();
             Pointer = new KPointerDispatcher();
             Pointer.Init();

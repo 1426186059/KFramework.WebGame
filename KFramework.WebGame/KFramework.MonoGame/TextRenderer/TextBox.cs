@@ -485,6 +485,7 @@ namespace KFramework.MonoGame
         {
             selectionStart = 0;
             selectionLength = text.Length;
+            SyncOverlay();   // 同步给 DOM 覆盖层，使浏览器原生 input 也选中（聚焦即全选时必需）
         }
 
         /// <summary>

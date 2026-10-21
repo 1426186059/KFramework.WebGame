@@ -16,7 +16,6 @@ namespace KFramework.MonoGameExtend
         }
 
         public bool EnableInput { get; set; } = true;
-        public bool InputUseCanvasListener { get; set; } = false;
         public bool EnableScene { get; set; } = true;
 
         public override void Initialize()
@@ -54,7 +53,7 @@ namespace KFramework.MonoGameExtend
             if (_inited) return;
             _inited = true;
 
-            KInputMgr.Init(InputUseCanvasListener);
+            KInputMgr.Init();
             KSceneMgr.Init(Game);
         }
     }

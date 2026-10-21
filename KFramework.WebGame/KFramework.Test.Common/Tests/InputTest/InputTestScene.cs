@@ -61,8 +61,6 @@ namespace KFramework.Test.Common.Tests.InputTest
         private bool _draggingA;
         private bool _draggingB;
 
-        // 键盘绑定模式开关：true=绑画布(需聚焦) / false=绑 window(全局)。对应 Input_KeyBoard.Activate(bUseCanvas)。
-        private bool _keyboardUseCanvas = true;
         private Rectangle _bindBtn = Rectangle.Empty;
 
         public override string Title
@@ -205,8 +203,7 @@ namespace KFramework.Test.Common.Tests.InputTest
             if (_bindBtn.IsEmpty) return;
             bool hover = _bindBtn.Contains(Input_Mouse.Position);
             DrawRect(batch, _bindBtn, hover ? new Color(40, 60, 90) : new Color(28, 36, 56));
-            string mode = _keyboardUseCanvas ? "画布(需聚焦)" : "窗口(全局)";
-            string label = $"[点击切换] 键盘绑定: {mode}";
+            string label = "[点击] 重新激活键盘输入（window 全局模式）";
             float tx = _bindBtn.X + 8f;
             float ty = _bindBtn.Y + (_bindBtn.Height - Font.LineSpacing) / 2f;
             batch.DrawString(Font, label, new Vector2(tx, ty), Color.White);
@@ -221,10 +218,9 @@ namespace KFramework.Test.Common.Tests.InputTest
             if (_bindBtn.IsEmpty) _bindBtn = new Rectangle(w - 360, 20, 340, 30);
             if (Input_Mouse.GetButtonDown(MouseButton.Left) && _bindBtn.Contains(Input_Mouse.Position))
             {
-                _keyboardUseCanvas = !_keyboardUseCanvas;
                 Input_KeyBoard.Deactivate();
-                Input_KeyBoard.Activate(_keyboardUseCanvas);
-                LogEvent("键盘绑定 → " + (_keyboardUseCanvas ? "画布(需聚焦)" : "窗口(全局)"));
+                Input_KeyBoard.Activate();   // 重新激活（已固定为 window 全局模式）
+                LogEvent("键盘已重新激活（window 全局模式）");
             }
         }
 
