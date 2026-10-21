@@ -43,6 +43,12 @@ namespace KFramework.MonoGame
             }
 
             byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted("version.manifest"), null, 0, cancellationToken).ConfigureAwait(false);
+            if (data == null)
+            {
+                // 没有远端清单（例如不依赖任何资源包的“无内容”工程）：视为空清单，不下载任何包。
+                _manifest = new AssetBundleManifest("web.lib.bundle", 1, "", "", new BundlePackage[0]);
+                return _manifest;
+            }
             string json = ContentFunc.DecodeUtf8(data);
             AssetBundleManifest new_version = AssetBundleManifest.Parse(json);
             await this.DeleteOldCachesAsync(old_version, new_version, cancellationToken).ConfigureAwait(false);

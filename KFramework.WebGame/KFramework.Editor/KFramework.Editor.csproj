@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- 内容包里的 JSON（图集 manifest）在运行时用反射反序列化 -->
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <StaticWebAssetFingerprintPattern Include="JS" Pattern="*.js" Expression="#[.{fingerprint}]!" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KFramework.MonoGame\KFramework.MonoGame.csproj" />
+    <ProjectReference Include="..\KFramework.MonoGameExtend\KFramework.MonoGameExtend.csproj" />
+  </ItemGroup>
+
+  <!-- KTexturePacker 是预编译 DLL：必须在本入口工程直接引用，否则会被“未使用引用”优化剔除，
+       导致浏览器运行时 FileNotFoundException（Parser 依赖 Core）。 -->
+  <ItemGroup>
+    <Reference Include="KTexturePacker.Parser">
+      <HintPath>..\Need_DLL\KTexturePacker.Parser.dll</HintPath>
+    </Reference>
+    <Reference Include="KTexturePacker.Core">
+      <HintPath>..\Need_DLL\KTexturePacker.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!-- 引擎的浏览器层（KFramework.TSEngine）由 tsconfig 输出到 dist。Debug 走 build，Release 走 build:release。 -->
+  <Target Name="BuildTypeScript" BeforeTargets="BeforeBuild" Condition="Exists('$(MSBuildThisFileDirectory)..\KFramework.TSEngine\node_modules')">
+    <PropertyGroup>
+      <_TsBuildScript Condition="'$(Configuration)' == 'Release'">build:release</_TsBuildScript>
+      <_TsBuildScript Condition="'$(_TsBuildScript)' == ''">build</_TsBuildScript>
+    </PropertyGroup>
+    <Exec Command="npm run $(_TsBuildScript)" WorkingDirectory="$(MSBuildThisFileDirectory)..\KFramework.TSEngine" />
+  </Target>
+
+  <!-- KFramework.TSEngine/dist/<配置>/jsengine 已是完整产物，整体复制到本工程 wwwroot/jsengine。 -->
+  <Target Name="SyncJsEngine" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <_Engine Include="$(MSBuildThisFileDirectory)..\KFramework.TSEngine\dist\$(Configuration)\jsengine\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_Engine)" DestinationFiles="@(_Engine->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>
