@@ -109,6 +109,12 @@ namespace KFramework.MonoGame
         /// <summary>
         /// 透视投影矩阵（行向量约定，裁剪空间 z ∈ [-1, 1]，与 WebGL 一致）。对标 MonoGame / XNA 的
         /// <c>Matrix.CreatePerspectiveFieldOfView</c>。fovRadians 为垂直方向视野角（弧度），aspect = 宽 / 高。
+        /// <para>
+        /// 行向量约定下 p' = p × M，故裁剪坐标的 z / w 为：
+        /// z_clip = z_view·M33 + M43，w_clip = z_view·M34（M44=0）。要让 w_clip = -z_view（透视除法），
+        /// 必须令 <b>M34 = -1</b>；而 z_clip 的常数项（由 view 空间 z=-1 推得）落在 <b>M43</b> 上。
+        /// 这与列向量版（M34 放深度比例、M43=-1）正好把下 2×2 互为转置——本引擎是行向量，故取本版。
+        /// </para>
         /// </summary>
         public static Matrix4x4 CreatePerspectiveFieldOfView(float fovRadians, float aspect, float zNear, float zFar)
         {
@@ -117,8 +123,8 @@ namespace KFramework.MonoGame
             m.M11 = f / aspect;
             m.M22 = f;
             m.M33 = (zFar + zNear) / (zNear - zFar);
-            m.M34 = (2f * zFar * zNear) / (zNear - zFar);
-            m.M43 = -1f;
+            m.M34 = -1f;
+            m.M43 = (2f * zFar * zNear) / (zNear - zFar);
             m.M44 = 0f;
             return m;
         }

@@ -62,22 +62,37 @@ namespace KFramework.MonoGameExtend
         {
             if (Mesh == null || Mesh.Vertices == null || Mesh.Indices == null) return;
 
+            // 行向量约定（与着色器 gl_Position = uMVP * aPosition 一致）：
+            // 模型变换必须「先缩放 → 再绕自身中心（模型原点）旋转 → 最后平移到世界位置」。
+            // 行向量下 t*r*s 会变成「先平移再绕世界原点旋转」的公转效果，所以这里显式按此顺序做，
+            // 彻底绕开矩阵乘法顺序歧义（也避开 Transform/XFormDir 当前的列向量实现）。
             Matrix4x4 r = Matrix4x4.CreateRotationX(MeshRotation.X)
                         * Matrix4x4.CreateRotationY(MeshRotation.Y)
                         * Matrix4x4.CreateRotationZ(MeshRotation.Z);
-            Matrix4x4 s = Matrix4x4.CreateScale(MeshScale.X, MeshScale.Y, MeshScale.Z);
-            Matrix4x4 t = Matrix4x4.CreateTranslation(LocalPosition.X, LocalPosition.Y, LocalPosition.Z);
-            Matrix4x4 model = t * r * s;
-            // MVP 只含 projection × view：模型变换已烘焙进顶点世界坐标。
-            Matrix4x4 mvp = projection * view;
+            // 行向量：mvp = view × projection（先 View 后 Projection）。
+            Matrix4x4 mvp = view * projection;
 
+            float sx = MeshScale.X, sy = MeshScale.Y, sz = MeshScale.Z;
             int vc = Mesh.VertexCount;
             var verts = new VertexPositionColorTexture[vc];
             for (int i = 0; i < vc; i++)
             {
                 MeshVertex mv = Mesh.Vertices[i];
-                Vector3 wp = Transform(mv.Position, model);
-                Vector3 wn = NormalizeV(XFormDir(model, mv.Normal));
+                // 1) 缩放（绕模型原点）
+                Vector3 p = new Vector3(mv.Position.X * sx, mv.Position.Y * sy, mv.Position.Z * sz);
+                // 2) 旋转（行向量 p × R：用 R 的第 1/2/3 行），旋转中心即模型原点 = 物体自身中心
+                Vector3 rp = new Vector3(
+                    p.X * r.M11 + p.Y * r.M12 + p.Z * r.M13,
+                    p.X * r.M21 + p.Y * r.M22 + p.Z * r.M23,
+                    p.X * r.M31 + p.Y * r.M32 + p.Z * r.M33);
+                // 3) 平移到世界位置
+                Vector3 wp = new Vector3(rp.X + LocalPosition.X, rp.Y + LocalPosition.Y, rp.Z + LocalPosition.Z);
+
+                // 法线仅旋转（行向量 n × R，均匀缩放下方向无需逆变换）；LightDir 为世界空间
+                Vector3 wn = NormalizeV(new Vector3(
+                    mv.Normal.X * r.M11 + mv.Normal.Y * r.M12 + mv.Normal.Z * r.M13,
+                    mv.Normal.X * r.M21 + mv.Normal.Y * r.M22 + mv.Normal.Z * r.M23,
+                    mv.Normal.X * r.M31 + mv.Normal.Y * r.M32 + mv.Normal.Z * r.M33));
                 float nl = Math.Max(0f, wn.X * LightDir.X + wn.Y * LightDir.Y + wn.Z * LightDir.Z);
                 float shade = 0.35f + 0.65f * nl;
                 byte rr = (byte)(MeshColor.R * shade);
@@ -95,7 +110,8 @@ namespace KFramework.MonoGameExtend
         /// </summary>
         public static void DrawGrid(GraphicsDevice device, Matrix4x4 view, Matrix4x4 projection, Texture2D tex)
         {
-            Matrix4x4 mvp = projection * view;
+            // 行向量约定：先 View 后 Projection，故 mvp = view × projection。
+            Matrix4x4 mvp = view * projection;
             var verts = new List<VertexPositionColorTexture>();
             var idx = new List<ushort>();
 
