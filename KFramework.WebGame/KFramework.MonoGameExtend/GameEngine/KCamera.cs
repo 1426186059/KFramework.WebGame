@@ -116,9 +116,10 @@ public partial class KCamera : KTransform
         ScaleCoef = ScreenResolution.Y / (OrthographicSize * 2f);
     }
 
-    /// <summary>视图矩阵（世界 → 相机空间，纯视图变换，不含投影）。对标 Unity 的 worldToCameraMatrix。
-    /// 离屏 / 自动合批渲染请使用 <see cref="World_To_Camera_Matrix"/>（视图 + 正交投影，直接喂 SpriteBatch）。</summary>
-    public Matrix4x4 ViewMatrix
+    /// <summary>世界 → 相机（视图）矩阵，纯视图变换，不含投影。对标 Unity 的 worldToCameraMatrix。
+    /// 只把世界平移到「相机位置的反向」、再按相机旋转反向旋转，输出相机空间坐标（相机在原点、单位=世界）。
+    /// 视锥裁剪 / 3D 投影 / 视空间数学用它；要绘制请改用 <see cref="World_To_Camera_Projection_Matrix"/>（视图 + 正交投影，直接喂 SpriteBatch）。</summary>
+    public Matrix4x4 World_To_Camera_Matrix
     {
         get
         {
@@ -130,12 +131,12 @@ public partial class KCamera : KTransform
     }
 
     /// <summary>
-    /// 世界 → 相机（视图）矩阵：把世界坐标变换到相机空间，并叠加正交投影（视口缩放 + 居中偏移），
+    /// 世界 → 相机（视图）投影矩阵：在 <see cref="World_To_Camera_Matrix"/> 之上叠加正交投影（视口缩放 + 居中偏移），
     /// 直接喂给 <see cref="SpriteBatch.Begin"/> 当 transformMatrix（最终的裁剪空间 / 屏幕投影由 SpriteBatch 内部完成）。
     /// 缩放系数取自【当前渲染目标】的视口尺寸（RT 或 屏幕）：渲染到 RT 时自动按 RT 大小适配、
-    /// 渲染到屏幕时按屏幕尺寸适配——对标 Unity 的 worldToCameraMatrix（相机矩阵即视图矩阵），无需 ViewMatrixOverride 之类的覆盖项。
+    /// 渲染到屏幕时按屏幕尺寸适配。即「视图 + 正交投影」的组合矩阵（对标 Unity worldToCameraMatrix × 正交 projection）。
     /// </summary>
-    public Matrix4x4 World_To_Camera_Matrix
+    public Matrix4x4 World_To_Camera_Projection_Matrix
     {
         get
         {
@@ -196,8 +197,8 @@ public partial class KCamera : KTransform
         }
     }
 
-    /// <summary>视图 × 投影 组合矩阵（世界 → 裁剪空间）。对标 Unity worldToCameraMatrix × projectionMatrix。</summary>
-    public Matrix4x4 ViewProjectionMatrix => ProjectionMatrix * ViewMatrix;
+    /// <summary>视图 × 投影 组合矩阵（世界 → 裁剪空间）。行向量约定下先 View 后 Projection，故为 World_To_Camera_Matrix × ProjectionMatrix。对标 Unity worldToCameraMatrix × projectionMatrix。</summary>
+    public Matrix4x4 ViewProjectionMatrix => World_To_Camera_Matrix * ProjectionMatrix;
 
     // ===================== 相机矩阵裁剪（视锥剔除），对标 Unity GeometryUtility.TestPlanesAABB =====================
 
@@ -208,7 +209,7 @@ public partial class KCamera : KTransform
     /// </summary>
     public bool IsInFrustum(Vector3 worldCenter, float radius)
     {
-        Matrix4x4 m = ViewMatrix;
+        Matrix4x4 m = World_To_Camera_Matrix;
         float vx = worldCenter.X * m.M11 + worldCenter.Y * m.M12 + worldCenter.Z * m.M13 + m.M14;
         float vy = worldCenter.X * m.M21 + worldCenter.Y * m.M22 + worldCenter.Z * m.M23 + m.M24;
         float vz = worldCenter.X * m.M31 + worldCenter.Y * m.M32 + worldCenter.Z * m.M33 + m.M34;
@@ -217,10 +218,12 @@ public partial class KCamera : KTransform
         {
             float halfH = OrthographicSize;
             float halfW = OrthographicSize * ViewportAspect;
-            // 相机看向 -Z：可见 Z 落在 [-Far, -Near]
+            // 渲染端并不做 Z 裁剪，且 2D 内容通常就贴在相机 Z 平面上（视图空间 vz≈0）；
+            // 故只在「整体越过远面」或「整体在相机背后」时才剔除，避免把 z=0 的 2D 物体误剔除。
+            if (vz + radius < -FarClipPlane) return false;   // 整体越过远面
+            if (vz - radius > 0f) return false;              // 整体在相机背后
             return vx >= -halfW - radius && vx <= halfW + radius
-                && vy >= -halfH - radius && vy <= halfH + radius
-                && vz >= -FarClipPlane - radius && vz <= -NearClipPlane + radius;
+                && vy >= -halfH - radius && vy <= halfH + radius;
         }
 
         // 透视：必须在相机前方、且介于近远面之间
@@ -251,7 +254,7 @@ public partial class KCamera : KTransform
     /// <summary>世界坐标轴对齐包围盒（center + halfExtents）是否在视锥体内。保守判定：整盒在某一平面之外才剔除。</summary>
     public bool IsInFrustum(Vector3 worldCenter, Vector3 halfExtents)
     {
-        Matrix4x4 m = ViewMatrix;
+        Matrix4x4 m = World_To_Camera_Matrix;
         // 8 个角点 → 相机空间，求视图空间 AABB（旋转后的盒用其外接 AABB 做保守测试）
         float minX = float.MaxValue, minY = float.MaxValue, minZ = float.MaxValue;
         float maxX = -float.MaxValue, maxY = -float.MaxValue, maxZ = -float.MaxValue;
@@ -284,8 +287,8 @@ public partial class KCamera : KTransform
             if (c.X + he.X < -halfW) return false;
             if (c.Y - he.Y > halfH) return false;
             if (c.Y + he.Y < -halfH) return false;
-            if (c.Z - he.Z > -NearClipPlane) return false;
-            if (c.Z + he.Z < -FarClipPlane) return false;
+            if (c.Z - he.Z > 0f) return false;              // 整体在相机背后
+            if (c.Z + he.Z < -FarClipPlane) return false;   // 整体越过远面
             return true;
         }
         float tanH = MathF.Tan(FieldOfView * MathF.PI / 180f / 2f);
@@ -311,19 +314,19 @@ public partial class KCamera : KTransform
     // ===== 坐标转换 =====
 
     /// <summary>
-    /// 屏幕坐标 → 世界坐标（鼠标交互用）。基于相机矩阵 <see cref="World_To_Camera_Matrix"/> 求逆。
+    /// 屏幕坐标 → 世界坐标（鼠标交互用）。基于相机矩阵 <see cref="World_To_Camera_Projection_Matrix"/> 求逆。
     /// </summary>
     public Vector2 ScreenToWorld(Vector2 screenPos)
     {
-        return Vector2.Transform(screenPos, Matrix4x4.Invert(World_To_Camera_Matrix));
+        return Vector2.Transform(screenPos, Matrix4x4.Invert(World_To_Camera_Projection_Matrix));
     }
 
     /// <summary>
-    /// 世界坐标 → 屏幕坐标（经相机矩阵 <see cref="World_To_Camera_Matrix"/> 变换，输出渲染目标像素坐标）。
+    /// 世界坐标 → 屏幕坐标（经相机矩阵 <see cref="World_To_Camera_Projection_Matrix"/> 变换，输出渲染目标像素坐标）。
     /// </summary>
     public Vector2 WorldToScreen(Vector2 worldPos)
     {
-        return Vector2.Transform(worldPos, World_To_Camera_Matrix);
+        return Vector2.Transform(worldPos, World_To_Camera_Projection_Matrix);
     }
 
     // ===== 便捷方法 =====

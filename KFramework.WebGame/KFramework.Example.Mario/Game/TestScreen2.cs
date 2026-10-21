@@ -98,11 +98,11 @@ namespace KFramework.Example.Mario
             KSceneMgr.Game.GraphicsDevice.Clear(Color.CornflowerBlue);
             var _spriteBatch = KSceneMgr.SpriteBatch;
 
-            // 关键：传入 World_To_Camera_Matrix（视图 + 正交投影），SpriteBatch 自动处理所有世界→屏幕转换；复用共享材质以触发去重。
+            // 关键：传入 World_To_Camera_Projection_Matrix（视图 + 正交投影），SpriteBatch 自动处理所有世界→屏幕转换；复用共享材质以触发去重。
             _spriteBatch.Begin(
                 s_screenMaterial,
                 SpriteSortMode.Deferred,
-                _camera.World_To_Camera_Matrix);
+                _camera.World_To_Camera_Projection_Matrix);
 
             // 图集尚未异步加载完成时跳过绘制
             if (_sprite != null)
