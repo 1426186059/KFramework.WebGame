@@ -383,10 +383,15 @@ namespace Client.MirGraphics
         {
             if (texture == null) return;
             RenderTransform = null;
+            // 固定用 NonPremultiplied（直通 alpha）上屏：场景合成必须是正常 alpha 合成，
+            // 绝不能依赖全局 DXManager.Blending——光照/特效(SetBlend(true))会把全局混合残留成
+            // 加法，若此处落到全局，则整帧(尤其 UI 层)被加法叠到亮世界上→暗色 UI 过曝发白
+            // （与 MirImageControl 注释警告的“混合过头”同源，只是泄漏点在合成而非逐控件绘制）。
             Draw(texture,
                 new Rectangle(0, 0, texture.Width, texture.Height),
                 new RectangleF(0, 0, texture.Width, texture.Height),
-                Color.White);
+                Color.White,
+                KFramework.MonoGame.BlendState.NonPremultiplied);
         }
 
         //这个方法是每秒刷新一次
