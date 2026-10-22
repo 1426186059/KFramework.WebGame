@@ -134,6 +134,11 @@ namespace MirEngine
         public int GetCharIndexFromPosition(Point pt) => _inner.GetCharIndexFromPosition(pt);
         public void ScrollToCaret() => _inner.ScrollToCaret();
 
+        // 双击全选 / 单击取消全选，并把光标移到点击处：转发给引擎 TextBox 自带的点击逻辑。
+        public void HandleClick(Point pt) => _inner.HandleClick(pt);
+        public void SelectAll() => _inner.SelectAll();
+        public void ClearSelection(int caret = -1) => _inner.ClearSelection(caret);
+
         public event EventHandler TextChanged { add => _inner.TextChanged += value; remove => _inner.TextChanged -= value; }
         public event EventHandler GotFocus { add => _inner.GotFocus += value; remove => _inner.GotFocus -= value; }
         public event EventHandler LostFocus { add => _inner.LostFocus += value; remove => _inner.LostFocus -= value; }

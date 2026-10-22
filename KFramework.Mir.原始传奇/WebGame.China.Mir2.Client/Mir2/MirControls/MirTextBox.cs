@@ -357,9 +357,10 @@ namespace Client.MirControls
             if (e.Button == MouseButtons.Left)
             {
                 Point localPoint = new Point(e.X - DisplayLocation.X, e.Y - DisplayLocation.Y);
-                int charIndex = TextBox.GetCharIndexFromPosition(localPoint);
-                TextBox.SelectionStart = Math.Max(0, Math.Min(charIndex, TextBox.TextLength));
-                TextBox.SelectionLength = 0;
+                // 交给引擎 TextBox 自带的点击逻辑：双击=全选、单击=取消全选并把光标移到点击处。
+                // 引擎全局鼠标路由(OnGlobalMouseDown)因底层 TextBox 被藏到屏幕外(-32000,-32000)而命中不到本框，
+                // 故这里直接在 MirTextBox 的鼠标路径里转交，复用 SelectAll / ClearSelection。
+                TextBox.HandleClick(localPoint);
             }
 
             SetFocus();
