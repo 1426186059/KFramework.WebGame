@@ -573,7 +573,8 @@ namespace Client.MirScenes.Dialogs
             PixelDetect = true;
 
             AtlasNameKey = "y_homeUI-sheet";
-            AtlasFrame = "y_h_bg5";
+            //AtlasFrame = "y_h_bg5";
+            AtlasFrame = "bg_liaotianzy_06";
 
             AutoSize = false;
             Size = new Size(600, 120);
