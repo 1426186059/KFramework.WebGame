@@ -39,8 +39,8 @@ namespace WebGame.Client.Test
 
         public AtlasTestGame() : base(GraphicsBackendKind.WebGL20, "#game", antialias: false)
         {
-            // 中性灰背景，便于肉眼分辨“黑 vs 白”。
-            ClearColor = new Color(90, 90, 90);
+            // 亮（白）背景：用户要在亮底上看叠加结果（与 Unity 纯白图对照）。
+            ClearColor = new Color(255, 255, 255);
             IsFixedTimeStep = false;
         }
 
@@ -119,20 +119,20 @@ namespace WebGame.Client.Test
 
                 // 每图正下方只标注所用混合方式
                 int ly = y + fh + 6;
-                sb.DrawString(KDefaultRes.DefaultSpriteFont, "NonPremultiplied", new Vector2(xL, ly), Color.White);
-                sb.DrawString(KDefaultRes.DefaultSpriteFont, "AlphaBlend·黑底", new Vector2(xM, ly), Color.White);
-                sb.DrawString(KDefaultRes.DefaultSpriteFont, "AlphaBlend·白底", new Vector2(xR, ly), Color.White);
-                sb.DrawString(KDefaultRes.DefaultSpriteFont, "Additive", new Vector2(xA, ly), Color.Orange);
+                sb.DrawString(KDefaultRes.DefaultSpriteFont, "NonPremultiplied", new Vector2(xL, ly), Color.Black);
+                sb.DrawString(KDefaultRes.DefaultSpriteFont, "AlphaBlend·黑底", new Vector2(xM, ly), Color.Black);
+                sb.DrawString(KDefaultRes.DefaultSpriteFont, "AlphaBlend·白底", new Vector2(xR, ly), Color.Black);
+                sb.DrawString(KDefaultRes.DefaultSpriteFont, "Additive", new Vector2(xA, ly), Color.Red);
             }
 
             // 信息栏（左侧，图集/帧/中心像素）
-            sb.DrawString(KDefaultRes.DefaultSpriteFont, _status, new Vector2(20, 240), Color.White);
+            sb.DrawString(KDefaultRes.DefaultSpriteFont, _status, new Vector2(20, 240), Color.Black);
             sb.DrawString(KDefaultRes.DefaultSpriteFont,
                 $"图集: {SheetName}   帧: {_frameName}   帧数: {(_sheet?.Frames.Count ?? 0)}",
-                new Vector2(20, 264), Color.White);
+                new Vector2(20, 264), Color.Black);
             sb.DrawString(KDefaultRes.DefaultSpriteFont,
                 $"★ 中心像素 RGBA = ({_centerPixel.R}, {_centerPixel.G}, {_centerPixel.B}, {_centerPixel.A})  ← 贴图本身到底是黑还是白，看这里",
-                new Vector2(20, 288), Color.Yellow);
+                new Vector2(20, 288), Color.Red);
             sb.End();
 
             // —— 第二段：Additive 图（与上面一排最右侧，用 Additive 混合绘制）——

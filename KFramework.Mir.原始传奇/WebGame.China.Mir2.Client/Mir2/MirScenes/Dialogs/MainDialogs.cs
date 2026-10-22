@@ -573,12 +573,12 @@ namespace Client.MirScenes.Dialogs
             PixelDetect = true;
 
             AtlasNameKey = "y_homeUI-sheet";
-            AtlasFrame = "bg_liaotianzy_06";
+            AtlasFrame = "y_h_bg5";
 
             AutoSize = false;
-            Size = new Size(627, 100);
+            Size = new Size(600, 120);
             Anchor = EAnchorType.BottomCenter;
-            AnchorPos = new Point(0, -20);
+            AnchorPos = new Point(0, -5);
             ApplyAnchor();
 
             KeyPress += ChatPanel_KeyPress;
