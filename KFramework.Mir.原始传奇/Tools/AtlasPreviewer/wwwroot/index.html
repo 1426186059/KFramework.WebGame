@@ -27,8 +27,8 @@
   .empty { padding: 40px; color: #888; }
   .card .name { cursor: pointer; user-select: text; }
   .card .name:hover { text-decoration: underline; }
-  .card .key { font-size: 10px; margin-top: 2px; word-break: break-all; max-width: 260px; color: #c9a06a; cursor: pointer; }
-  .card .key:hover { text-decoration: underline; }
+  .copy { color: #c9a06a; cursor: pointer; }
+  .copy:hover { text-decoration: underline; }
   #toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); background: #2e7d32; color: #fff; padding: 8px 14px; border-radius: 6px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 100; font-size: 13px; max-width: 80vw; word-break: break-all; }
   #toast.show { opacity: 1; }
 </style>
@@ -48,6 +48,9 @@
     <span id="atlasCount" style="color:#888"></span>
     <input id="filter" type="text" placeholder="模糊过滤帧名…" />
     <span id="count" style="color:#888"></span>
+  </div>
+  <div class="bar" id="atlasInfoBar" style="display:none">
+    <span>当前选择的图集：</span><span id="atlasName" class="copy" title="点击复制图集名"></span>
   </div>
 </header>
 
@@ -138,6 +141,10 @@ atlasSelect.addEventListener('change', async e => {
   if (i === '' || i == null) return;
   const a = atlases[+i];
   currentAtlasName = a.name;
+  // 顶部显示并支持复制当前图集名（去掉 .json 后缀的裸名，如 y_homeUI-sheet）
+  const sheetKey = (a.name || '').replace(/\.json$/i, '');
+  document.getElementById('atlasName').textContent = sheetKey;
+  document.getElementById('atlasInfoBar').style.display = '';
   if (!a) return;
   try {
     const res = await fetch('/api/atlas?root=' + encodeURIComponent(currentRoot) + '&rel=' + encodeURIComponent(a.relPath));
@@ -180,8 +187,6 @@ function render() {
   grid.innerHTML = '';
   if (!frames.length) { grid.innerHTML = '<div class="empty">无匹配帧</div>'; return; }
   const img = currentImg;
-  // 图集名（a.name）形如 y_homeUI-sheet.json，去掉 .json 即为客户端 sheet key
-  const sheetKey = (currentAtlasName || '').replace(/\.json$/i, '');
   for (const f of frames) {
     if (f.w <= 0 || f.h <= 0) continue;
     const cw = Math.max(1, Math.round(THUMB_H * (f.w / f.h)));
@@ -192,22 +197,18 @@ function render() {
     const ctx = cv.getContext('2d');
     ctx.imageSmoothingEnabled = false; // 像素清晰
     try { ctx.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, cw, THUMB_H); } catch (e) {}
-    // 帧名：点击复制（单独设置 AtlasFrame 时用）
     const nm = document.createElement('div');
     nm.className = 'name'; nm.textContent = f.name; nm.title = '点击复制帧名';
     nm.addEventListener('click', () => copyText(f.name));
-    // 完整 key（sheet#frame）：直接粘进 AtlasNameKey
-    const key = sheetKey ? (sheetKey + '#' + f.name) : f.name;
-    const kd = document.createElement('div');
-    kd.className = 'key'; kd.textContent = key; kd.title = '点击复制 AtlasNameKey（sheet#frame）';
-    kd.addEventListener('click', () => copyText(key));
     const dm = document.createElement('div');
     dm.className = 'dim'; dm.textContent = f.w + '×' + f.h;
-    card.appendChild(cv); card.appendChild(nm); card.appendChild(kd); card.appendChild(dm);
+    card.appendChild(cv); card.appendChild(nm); card.appendChild(dm);
     grid.appendChild(card);
   }
 }
 filterInput.addEventListener('input', render);
+// 顶部「当前选择的图集」名称点击即可复制（裸名，如 y_homeUI-sheet）
+document.getElementById('atlasName').addEventListener('click', e => copyText(e.target.textContent));
 </script>
 </body>
 </html>

@@ -25,7 +25,7 @@ namespace Client.MirControls
         private const string SheetPngPath = "qufu_resource1/assets/sheet/preload-sheet.png?qufu_version=229";  // 进度条图集 PNG
         private const string BarBgFrameHint = "bar";
         private const string BarFillFrameHint = "loading";
-        private const string HomeUiSheetKey = "y_homeUI-sheet_json";   // 主界面 UI 图集（正式 RES 资源，预加载进缓存，进主界面不卡）
+        private const string HomeUiSheetKey = "y_homeUI-sheet";   // 主界面 UI 图集（正式 RES 资源，预加载进缓存，进主界面不卡）
 
         private readonly MirLabel _titleLabel;
         private readonly MirLabel _statusLabel;

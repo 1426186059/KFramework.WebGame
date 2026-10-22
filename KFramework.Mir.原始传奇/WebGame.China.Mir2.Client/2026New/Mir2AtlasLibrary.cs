@@ -138,23 +138,41 @@ public static class Mir2AtlasLibrary
     
     internal static (string key, string frame) ResolveName(string nameOrKey)
     {
-        if (_alias != null && _alias.TryGetValue(nameOrKey, out var spec))
+        // 先按 # 拆分出 sheet 名与帧名：无论是否命中别名表都先拆，
+        // 否则 "sheet#frame" 会被整体当成 key（ResolveManifestAssetPath 原样返回 -> 404）。
+        string sheetName = nameOrKey;
+        string frame = null;
+        int h = nameOrKey.IndexOf('#');
+        if (h >= 0)
         {
-            var h = spec.IndexOf('#');
-            var sheetName = spec.Substring(0, h);
-            var frame = spec.Substring(h + 1);
-            if (_fsData.TryGetValue(sheetName, out var it))
+            sheetName = nameOrKey.Substring(0, h);
+            frame = nameOrKey.Substring(h + 1);
+        }
+
+        // 别名表命中（如 "帧名" -> "sheetJsonKey#帧名"）：用别名指向的 sheetJsonKey 查 _fsData 得到 ManifestKey。
+        if (_alias != null && _alias.TryGetValue(nameOrKey, out var spec) && spec != null)
+        {
+            int ah = spec.IndexOf('#');
+            if (ah >= 0)
             {
-                return (it.ManifestKey, frame);
+                var aliasSheet = spec.Substring(0, ah);
+                var aliasFrame = spec.Substring(ah + 1);
+                if (_fsData.TryGetValue(aliasSheet, out var it))
+                    return (it.ManifestKey, aliasFrame);
             }
         }
 
-        if (_fsData != null && _fsData.TryGetValue(nameOrKey, out var item))
+        // 直接按 sheet 名查 _fsData；裸名（如 y_homeUI-sheet）没有 _json 后缀时，
+        // 兜底补 _json（如 y_homeUI-sheet_json）以匹配 RES 配置里的实际键。
+        if (_fsData != null)
         {
-            return (item.ManifestKey, null);
+            if (_fsData.TryGetValue(sheetName, out var item))
+                return (item.ManifestKey, frame);
+            if (_fsData.TryGetValue(sheetName + "_json", out var item2))
+                return (item2.ManifestKey, frame);
         }
 
-        return (nameOrKey, null);
+        return (nameOrKey, frame);
     }
     
     // 按 sheet key 去重在途加载：多个控件/调用方同时请求同一图集时，只发起一次下载，
