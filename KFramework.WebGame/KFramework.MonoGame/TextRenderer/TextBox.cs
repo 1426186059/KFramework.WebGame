@@ -172,6 +172,9 @@ namespace KFramework.MonoGame
         // 上层无需再自行维护 _current / ReleaseFocus 之类的互斥逻辑。
         private static TextBox _active;
 
+        // 所有 TextBox 实例登记表：供全局鼠标事件自动路由（点击命中时自动 Focus + 处理双击全选/单击取消）。
+        private static readonly HashSet<TextBox> _instances = new HashSet<TextBox>();
+
         /// <summary>
         /// 退化兜底：当引擎自身的焦点链（<see cref="_active"/>）因某些原因未建立时，
         /// 由上层（shim）提供"当前激活的 TextBox"。控制键据此仍能被正确路由，
@@ -195,6 +198,30 @@ namespace KFramework.MonoGame
             // DOM 覆盖层经 Input_IME 转发的控制键 / 编辑结果，订阅其事件，与 [JSExport] 解耦。
             Input_IME.KeyDown += ProcessKey;
             Input_IME.DomValue += ProcessDomValue;
+            // 全局鼠标按下：自动路由到命中的 TextBox（自动 Focus + 双击全选/单击取消），调用方零介入。
+            Input_Mouse.ButtonDown += OnGlobalMouseDown;
+        }
+
+        /// <summary>登记本实例，使其能被全局鼠标事件自动命中处理（双击全选 / 单击取消）。</summary>
+        public TextBox()
+        {
+            _instances.Add(this);
+        }
+
+        private static void OnGlobalMouseDown(MouseButton button, Vector2 pos)
+        {
+            if (button != MouseButton.Left) return;
+            int x = (int)pos.X, y = (int)pos.Y;
+            foreach (var box in _instances)
+            {
+                if (box.isDisposed || !box.visible || !box.enabled || !box.canFocus) continue;
+                int lx = x - box.location.X;
+                int ly = y - box.location.Y;
+                if (lx < 0 || ly < 0 || lx >= box.size.Width || ly >= box.size.Height) continue;
+                box.Focus();
+                box.HandleClick(new Point(lx, ly));
+                break; // 命中一个即止（字段间不重叠）
+            }
         }
 
         private static void OnGlobalKeyDown(Keys key)
@@ -326,6 +353,7 @@ namespace KFramework.MonoGame
         public void Dispose()
         {
             isDisposed = true;
+            _instances.Remove(this);
             GC.SuppressFinalize(this);
         }
 
@@ -498,6 +526,27 @@ namespace KFramework.MonoGame
             selectionLength = 0;
             selectionAnchor = selectionStart;
             SyncOverlay();
+        }
+
+        private DateTime _lastClickTime = DateTime.MinValue;
+        private const int DoubleClickMilliseconds = 300;
+
+        /// <summary>
+        /// 处理一次鼠标点击（clientPoint 为相对本 TextBox 客户区左上角的坐标）。
+        /// 双击 = 全选；单击 = 取消全选并把光标移到点击字符（方便编辑某一位）。
+        /// 通用交互，所有使用 TextBox 的场景都直接调用它，不必各自实现双击/单击选择逻辑。
+        /// </summary>
+        public void HandleClick(Point clientPoint)
+        {
+            DateTime now = DateTime.UtcNow;
+            bool doubleClick = (now - _lastClickTime).TotalMilliseconds <= DoubleClickMilliseconds;
+            _lastClickTime = now;
+            if (doubleClick) SelectAll();
+            else
+            {
+                int caret = GetCharIndexFromPosition(clientPoint);
+                ClearSelection(caret);
+            }
         }
 
         /// <summary>

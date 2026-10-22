@@ -21,9 +21,6 @@ namespace KFramework.Editor
         private readonly List<(Rectangle rect, EditorObject obj)> _hierarchyRows = new();
         private readonly TextBox[] _numBoxes = new TextBox[9];   // 位置/旋转/缩放 各 3 个分量
 
-        private float _lastClickTime;     // 上次点击时间，用于双击全选判定
-        private int _lastClickField = -1; // 上次点击的字段索引
-
         // 拖拽改值 / 聚焦输入的状态
         private int _pendingField = -1;
         private float _dragStartX;
@@ -119,19 +116,6 @@ namespace KFramework.Editor
                     else
                     {
                         FocusBox(_pendingField);
-                        var box = _numBoxes[_pendingField];
-                        // 双击同一字段 = 全选；单击 = 取消全选并把光标移到点击处（方便编辑某一位）
-                        if (_lastClickField == _pendingField && (_animT - _lastClickTime) < 0.3f)
-                        {
-                            box.SelectAll();
-                        }
-                        else
-                        {
-                            int localX = (int)(mouse.X - box.Location.X);
-                            box.ClearSelection(box.GetCharIndexFromPosition(new Point(localX, box.Size.Height / 2)));
-                        }
-                        _lastClickField = _pendingField;
-                        _lastClickTime = _animT;
                     }
                 }
                 _pendingField = -1;
