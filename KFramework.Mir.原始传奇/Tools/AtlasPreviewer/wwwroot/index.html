@@ -25,6 +25,12 @@
   .card .name { font-size: 11px; margin-top: 4px; word-break: break-all; max-width: 260px; color: #9fd3ff; }
   .card .dim { font-size: 10px; color: #888; }
   .empty { padding: 40px; color: #888; }
+  .card .name { cursor: pointer; user-select: text; }
+  .card .name:hover { text-decoration: underline; }
+  .card .key { font-size: 10px; margin-top: 2px; word-break: break-all; max-width: 260px; color: #c9a06a; cursor: pointer; }
+  .card .key:hover { text-decoration: underline; }
+  #toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); background: #2e7d32; color: #fff; padding: 8px 14px; border-radius: 6px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 100; font-size: 13px; max-width: 80vw; word-break: break-all; }
+  #toast.show { opacity: 1; }
 </style>
 </head>
 <body>
@@ -47,6 +53,7 @@
 
 <div id="grid"><div class="empty">把本地图集文件夹路径粘贴到上方输入框，点“加载”，工具会遍历该目录下所有 *-sheet.json（含子目录）</div></div>
 
+<div id="toast"></div>
 <script>
 const THUMB_H = 150; // 每个条目固定高度 150px
 const grid = document.getElementById('grid');
@@ -100,6 +107,7 @@ let atlases = [];
 let currentRoot = '';
 let currentFrames = [];
 let currentImg = null;
+let currentAtlasName = '';
 
 // 粘贴路径 -> 服务端遍历列出图集
 async function loadRoot() {
@@ -129,6 +137,7 @@ atlasSelect.addEventListener('change', async e => {
   const i = e.target.value;
   if (i === '' || i == null) return;
   const a = atlases[+i];
+  currentAtlasName = a.name;
   if (!a) return;
   try {
     const res = await fetch('/api/atlas?root=' + encodeURIComponent(currentRoot) + '&rel=' + encodeURIComponent(a.relPath));
@@ -143,6 +152,27 @@ atlasSelect.addEventListener('change', async e => {
   } catch (e) { grid.innerHTML = '<div class="empty">请求失败：' + e + '</div>'; }
 });
 
+// 复制文本到剪贴板（localhost 为安全上下文可用 navigator.clipboard；否则降级到 textarea+execCommand），并弹提示。
+async function copyText(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+    }
+    showToast('已复制：' + text);
+  } catch (err) { showToast('复制失败：' + err); }
+}
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1400);
+}
+
 function render() {
   const q = filterInput.value;
   const frames = currentFrames.filter(f => fuzzyMatch(f.name, q));
@@ -150,6 +180,8 @@ function render() {
   grid.innerHTML = '';
   if (!frames.length) { grid.innerHTML = '<div class="empty">无匹配帧</div>'; return; }
   const img = currentImg;
+  // 图集名（a.name）形如 y_homeUI-sheet.json，去掉 .json 即为客户端 sheet key
+  const sheetKey = (currentAtlasName || '').replace(/\.json$/i, '');
   for (const f of frames) {
     if (f.w <= 0 || f.h <= 0) continue;
     const cw = Math.max(1, Math.round(THUMB_H * (f.w / f.h)));
@@ -160,11 +192,18 @@ function render() {
     const ctx = cv.getContext('2d');
     ctx.imageSmoothingEnabled = false; // 像素清晰
     try { ctx.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, cw, THUMB_H); } catch (e) {}
+    // 帧名：点击复制（单独设置 AtlasFrame 时用）
     const nm = document.createElement('div');
-    nm.className = 'name'; nm.textContent = f.name;
+    nm.className = 'name'; nm.textContent = f.name; nm.title = '点击复制帧名';
+    nm.addEventListener('click', () => copyText(f.name));
+    // 完整 key（sheet#frame）：直接粘进 AtlasNameKey
+    const key = sheetKey ? (sheetKey + '#' + f.name) : f.name;
+    const kd = document.createElement('div');
+    kd.className = 'key'; kd.textContent = key; kd.title = '点击复制 AtlasNameKey（sheet#frame）';
+    kd.addEventListener('click', () => copyText(key));
     const dm = document.createElement('div');
     dm.className = 'dim'; dm.textContent = f.w + '×' + f.h;
-    card.appendChild(cv); card.appendChild(nm); card.appendChild(dm);
+    card.appendChild(cv); card.appendChild(nm); card.appendChild(kd); card.appendChild(dm);
     grid.appendChild(card);
   }
 }
