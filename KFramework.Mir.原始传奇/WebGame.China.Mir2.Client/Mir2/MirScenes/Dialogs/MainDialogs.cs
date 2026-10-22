@@ -555,7 +555,7 @@ namespace Client.MirScenes.Dialogs
         public List<ChatItem> LinkedItems = new List<ChatItem>();
         public List<MirLabel> LinkedItemButtons = new List<MirLabel>();
 
-        public MirButton HomeButton, UpButton, EndButton, DownButton, PositionBar;
+        public MirButton SendChatBtn, HomeButton, UpButton, EndButton, DownButton, PositionBar;
         public MirImageControl CountBar;
         public MirTextBox ChatTextBox;
         public Font ChatFont = new Font(Settings.FontName, 8F);
@@ -573,8 +573,8 @@ namespace Client.MirScenes.Dialogs
             PixelDetect = true;
 
             AtlasNameKey = "y_homeUI-sheet";
-            //AtlasFrame = "y_h_bg5";
-            AtlasFrame = "bg_liaotianzy_06";
+            AtlasFrame = "y_h_bg5";
+            //AtlasFrame = "bg_liaotianzy_06";
 
             AutoSize = false;
             Size = new Size(600, 120);
@@ -591,8 +591,8 @@ namespace Client.MirScenes.Dialogs
                 BackColour = Color.DarkGray,
                 ForeColour = Color.Black,
                 Parent = this,
-                Size = new Size(627, 13),
-                Location = new Point(1, 100),
+                Size = new Size(627, 20),
+                Location = new Point(1, 90),
                 MaxLength = Globals.MaxChatLength,
                 Visible = false,
                 Font = ChatFont,
@@ -600,6 +600,17 @@ namespace Client.MirScenes.Dialogs
             ChatTextBox.TextBox.KeyPress += ChatTextBox_KeyPress;
             ChatTextBox.TextBox.KeyDown += ChatTextBox_KeyDown;
             ChatTextBox.TextBox.KeyUp += ChatTextBox_KeyUp;
+
+            SendChatBtn = new MirButton
+            {
+                Index = 2018,
+                HoverIndex = 2019,
+                Library = Libraries.Prguse,
+                Location = new Point(500, 90),
+                Parent = this,
+                PressedIndex = 2020,
+                Sound = SoundList.ButtonA,
+            };
 
             HomeButton = new MirButton
             {
