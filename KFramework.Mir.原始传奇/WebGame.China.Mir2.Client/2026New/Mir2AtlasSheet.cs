@@ -70,10 +70,15 @@ public sealed class Mir2AtlasSheet
         Texture = pageTexture;
         var frames = new Dictionary<string, KSpriteInfo>(StringComparer.OrdinalIgnoreCase);
         foreach (var d in _defs)
+        {
             frames[d.Name] = new KSpriteInfo(d.Name, pageTexture, d.SourceRect, d.Size, Vector2.Zero, false);
+        }
         Frames = frames;
     }
 
     private static int GetInt(JsonObject o, string k, int fallback = 0)
-        => o[k] is JsonValue v && v.TryGetValue<int>(out var i) ? i : fallback;
+    { 
+        return o[k] is JsonValue v && v.TryGetValue<int>(out var i) ? i : fallback;
+    }
+
 }
