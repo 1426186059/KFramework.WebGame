@@ -159,7 +159,7 @@ namespace Client.MirControls
                 if (ct.IsCancellationRequested) return;
                 AtlasSheet = sheet;
                 if (!string.IsNullOrEmpty(frame)) AtlasFrame = frame;
-                BubbleRedraw();
+                Redraw();
                 AtlasLoaded?.Invoke(this, EventArgs.Empty);
             }
             catch (TaskCanceledException) { }
@@ -167,16 +167,6 @@ namespace Client.MirControls
             catch (Exception ex)
             {
                 KFramework.MonoGame.PrintTool.LogError("[MirImageControl] AtlasNameKey 加载失败：" + ex);
-            }
-        }
-
-        // 向上找到最近的 LayerControl 祖先并标记需重烘：子控件晚加载完只 invalidate 自己，
-        // 父 Layer 不会自动重烘（LayerControl.Bake 只看自身 TextureValid），必须冒泡通知。
-        private void BubbleRedraw()
-        {
-            for (var p = Parent; p != null; p = p.Parent)
-            {
-                if (p is LayerControl lc) { lc.Redraw(); break; }
             }
         }
 
@@ -313,7 +303,12 @@ namespace Client.MirControls
 
         public override bool IsMouseOver(Point p)
         {
-            return base.IsMouseOver(p) && (!_pixelDetect || Library.VisiblePixel(Index, p.Subtract(DisplayLocation),true) || Moving);
+            if (!base.IsMouseOver(p)) return false;
+            if (!_pixelDetect) return true;
+            // 图集(atlas)模式下 Library 为空：无逐像素检测数据，退回包围盒命中。
+            if (Library != null)
+                return Library.VisiblePixel(Index, p.Subtract(DisplayLocation), true) || Moving;
+            return true;
         }
 
         private bool _uiHostChecked;

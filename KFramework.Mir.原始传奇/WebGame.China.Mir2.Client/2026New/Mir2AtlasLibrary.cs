@@ -211,6 +211,9 @@ public static class Mir2AtlasLibrary
             var pngKey = SheetPngKey(key, sheet.File);
             var pngPath = Mir2OriginResource.ResolveManifestAssetPath(pngKey);
             var texture = await Mir2OriginResource.GetTextureAsync(pngPath, device, ct: CancellationToken.None);
+            if (texture == null)
+                KFramework.MonoGame.PrintTool.LogError(
+                    $"[Mir2Atlas] 图集 PNG 贴图为空：pngPath={pngPath}（resolvedPath={Mir2OriginResource.ResolveManifestAssetPath(pngKey)}，检查是否在 manifest / CDN 404 或解码失败）");
 
             sheet.Build(texture);
             _sheets[key] = sheet;

@@ -34,12 +34,15 @@ namespace Client.MirScenes.Dialogs
 
         public MainDialog()
         {
-            Location = new Point(((Settings.ScreenWidth / 2) - (Size.Width / 2)), Settings.ScreenHeight - Size.Height);
+           // Location = new Point(((Settings.ScreenWidth / 2) - (Size.Width / 2)), Settings.ScreenHeight - Size.Height);
             PixelDetect = true;
 
             AtlasNameKey = "y_homeUI-sheet";
             AtlasFrame = "bg_zhukuang_1_tx";
-            
+
+            Anchor = EAnchorType.BottomCenter;
+            AnchorPos = new Point(0, -200);
+
             LeftCap = new MirImageControl
             {
                 Index = 12,
