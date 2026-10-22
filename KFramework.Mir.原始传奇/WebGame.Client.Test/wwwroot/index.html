@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>WebGame.Client.Test - 图集颜色对比</title>
+    <!-- 框架在构建/发布时填充此 import map，把明文模块名映射到指纹名。 -->
+    <script type="importmap"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: #0a0c14;
+            overflow: hidden;
+        }
+
+        #game {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            image-rendering: pixelated;
+        }
+
+        #boot {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8a93b2;
+            font: 14px/1.6 system-ui, sans-serif;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="boot">正在加载…</div>
+    <canvas id="game"></canvas>
+    <!-- 入口走内联 module 的 import，使其经由上方 import map 解析到指纹名。 -->
+    <script type="module">import './jsengine/main.js';</script>
+</body>
+</html>

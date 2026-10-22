@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <StaticWebAssetFingerprintPattern Include="JS" Pattern="*.js" Expression="#[.{fingerprint}]!" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KFramework.MonoGame\KFramework.MonoGame.csproj" />
+    <ProjectReference Include="..\KFramework.MonoGameExtend\KFramework.MonoGameExtend.csproj" />
+  </ItemGroup>
+
+  <!-- 把 KFramework.TSEngine 编译好的 JS 引擎（render_webgl20.js 等）拷进 wwwroot/jsengine，
+       浏览器靠它创建 WebGL 上下文并跑主循环；dist 下按 Debug/Release 分目录。
+       若运行时页面空白、控制台报找不到 ./jsengine/main.js，多半是这里没拷到——
+       请确认 KFramework.TSEngine 已用同一 Configuration 构建（或手动 npm run build）。 -->
+  <Target Name="SyncJsEngine" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <_Engine Include="$(MSBuildThisFileDirectory)..\KFramework.TSEngine\dist\$(Configuration)\jsengine\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_Engine)" DestinationFiles="@(_Engine->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

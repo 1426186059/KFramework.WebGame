@@ -11,6 +11,7 @@
   <Project Path="KFramework.Editor/KFramework.Editor.csproj" />
   <Project Path="KFramework.Example.Mario/KFramework.Example.Mario.csproj" />
   <Project Path="KFramework.MonoGame/KFramework.MonoGame.csproj" />
+  <Project Path="KFramework.Game.Template/KFramework.Game.Template.csproj" />
   <Project Path="KFramework.MonoGameExtend/KFramework.MonoGameExtend.csproj" />
   <Project Path="KFramework.TSEngine/KFramework.TSEngine.esproj">
     <Build />

@@ -6,6 +6,7 @@
   <Project Path="../KFramework.WebGame/KFramework.MonoGame/KFramework.MonoGame.csproj" />
   <Project Path="../KFramework.WebGame/KFramework.MonoGameExtend/KFramework.MonoGameExtend.csproj" />
   <Project Path="WebGame.China.Mir2.Client/WebGame.China.Mir2.Client.csproj" />
+  <Project Path="WebGame.Client.Test/WebGame.Client.Test.csproj" />
   <Project Path="Web_Mir2.Server.WinForms/Server.csproj" />
   <Project Path="Web_Mir2.Server/Web_Mir2.Server.csproj" />
 </Solution>

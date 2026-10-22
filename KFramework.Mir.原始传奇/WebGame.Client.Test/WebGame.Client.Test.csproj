@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <!-- 传奇源码按 nullable-disable 编写，沿用以免大量误报 -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <StaticWebAssetFingerprintPattern Include="JS" Pattern="*.js" Expression="#[.{fingerprint}]!" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\KFramework.WebGame\KFramework.MonoGame\KFramework.MonoGame.csproj" />
+    <ProjectReference Include="..\..\KFramework.WebGame\KFramework.MonoGameExtend\KFramework.MonoGameExtend.csproj" />
+  </ItemGroup>
+
+  <!-- 把 KFramework.TSEngine 编译好的 JS 引擎拷进 wwwroot/jsengine（浏览器靠它创建 WebGL 上下文并跑主循环）。 -->
+  <Target Name="SyncJsEngine" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <_Engine Include="$(MSBuildThisFileDirectory)..\..\KFramework.WebGame\KFramework.TSEngine\dist\$(Configuration)\jsengine\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_Engine)" DestinationFiles="@(_Engine->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

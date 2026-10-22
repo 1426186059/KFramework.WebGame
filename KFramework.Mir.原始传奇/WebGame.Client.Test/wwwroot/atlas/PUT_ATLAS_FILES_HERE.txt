@@ -1,0 +1,7 @@
+把要测试的 Egret 图集文件放进这个目录，然后改 AtlasTestGame.cs 里的 SheetName / FrameName 常量并重新生成。
+
+例：
+  y_homeUI-sheet.json
+  y_homeUI-sheet.png
+
+文件需与游戏里使用的是同一份（即被“白化/发白”的那个图集）。
