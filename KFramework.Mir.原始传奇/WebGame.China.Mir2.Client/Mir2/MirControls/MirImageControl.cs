@@ -87,9 +87,6 @@ namespace Client.MirControls
                 LibraryChanged.Invoke(this, EventArgs.Empty);
         }
 
-        // —— 方案2：图集绘制分支（与 .Lib 并存）——
-        // AtlasSheet 为已加载的图集（Mir2AtlasLibrary.GetSheetAsync 返回），AtlasFrame 为帧名；
-        // 二者齐备时 DrawControl 优先走图集精灵绘制，否则回退老的 Library.Draw(Index)。
         private Mir2AtlasSheet _atlasSheet;
         public Mir2AtlasSheet AtlasSheet
         {
