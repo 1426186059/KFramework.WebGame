@@ -1,6 +1,4 @@
 using System;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
@@ -11,21 +9,24 @@ namespace WebGame.Client.Test
 {
     /// <summary>
     /// 图集贴图颜色对比测试：
-    ///   1) 从 wwwroot/atlas/ 加载一个 Egret 图集（*-sheet.json + 同目录 *-sheet.png）；
+    ///   1) 直接复用客户端线上资源加载（CDN 图集），无需本地文件；
     ///   2) 用与游戏完全相同的链路解码成 Texture2D（浏览器原生解码 → RGBA8）；
     ///   3) 取选中帧中心像素的 RGBA（GetData），直接读出贴图本身到底是黑还是白；
     ///   4) 同屏对比三种画法：NonPremultiplied / 黑底 / 白底 / Additive，肉眼即可判断是“贴图被白化”还是“混合过曝”。
     ///
-    /// 使用：把你要测的图集文件（如 y_homeUI-sheet.json 和 y_homeUI-sheet.png）放进本工程 wwwroot/atlas/ 目录，
-    /// 然后改下面两个常量即可。重新生成并在浏览器打开即可。
+    /// 使用：改下面 SheetName / FrameName 两个常量即可（默认 y_homeUI-sheet / bg_zhukuang_1_tx）。
+    /// 首次运行会从 CDN 下载图集（走浏览器 Cache Storage 缓存），重新生成并在浏览器打开即可。
     /// </summary>
     public sealed class AtlasTestGame : Game
     {
-        // ===== 要测试的图集（放进 wwwroot/atlas/ 后改这里）=====
-        private const string SheetName = "y_homeUI-sheet";   // 不含扩展名；会加载 atlas/y_homeUI-sheet.json + .png
-        private const string FrameName = "bg_zhukuang_1_tx"; // 想看的那一帧；找不到就退化为第一帧
-
-        private const string AtlasBase = "./atlas/";
+        // ===== 要测试的图集（线上 CDN 图集，直接改这里即可，无需本地文件、无额外依赖）=====
+        private const string CdnBase = "https://cdn.yscq-wy.yscq.com/fugu_20201203"; // 与游戏同一 CDN
+        private const string SheetName = "y_homeUI-sheet";                            // 仅用于界面显示
+        // CDN 走哈希布局（allmanifest 解析）：resource/{hash前2}/{hash}_{size}.{ext}
+        // 以下两个是 y_homeUI-sheet 在 allmanifest10.25341.1.json 中解析出的真实 CDN 路径。
+        private const string SheetJsonCdn = "resource/c6/c6615f93_29900.json";
+        private const string SheetPngCdn  = "resource/68/68b4b394_354142.png";
+        private const string FrameName = "bg_liaotianzy_06"; // 想看的那一帧；找不到就退化为第一帧
 
         private Texture2D _white;
         private Texture2D _black;
@@ -49,48 +50,51 @@ namespace WebGame.Client.Test
             _white = GraphicsDevice.CreateTexture(1, 1, new byte[] { 255, 255, 255, 255 });
             _black = GraphicsDevice.CreateTexture(1, 1, new byte[] { 0, 0, 0, 255 });
 
-            try
+            // 直接用 ContentManager 从线上 CDN 拉真实图集（与游戏同一份资源，无需本地文件、无额外依赖）。
+            // 与游戏 Mir2OriginResource 完全一致：BaseURL 设成 CDN 基址，path 传【相对路径】；
+            // ContentManager 内部 BaseAddress + "/相对路径" 拼出正确 CDN URL（BaseURL 为空会回退页面基址，故必须显式给 CDN 基址）。
+            // root 传空：ResolveRooted 不会再加 hot_update_res 前缀。
+            // 注：不包 try/catch，任何异常（下载/404/解析/GetData 等）直接抛出 → WASM 会打印到浏览器控制台（带堆栈）。
+            var cm = new ContentManager(root: "", BaseURL: CdnBase);
+
+            var jsonText = await cm.LoadTextAsync(SheetJsonCdn).ConfigureAwait(false);
+            _sheet = Mir2AtlasSheet.Parse(jsonText);
+
+            // PNG 与 JSON 是同一图集的两份文件，CDN 上都走哈希路径（与游戏一致）。
+            _page = await cm.LoadTexture2DAsync(SheetPngCdn, GraphicsDevice).ConfigureAwait(false);
+            _sheet.Build(_page);
+
+            // 选帧：优先 FrameName，否则第一帧。
+            if (!_sheet.Frames.TryGetValue(FrameName, out _frame))
             {
-                var http = new HttpClient();
-                var jsonBytes = await http.GetByteArrayAsync(AtlasBase + SheetName + ".json").ConfigureAwait(false);
-                var pngBytes = await http.GetByteArrayAsync(AtlasBase + SheetName + ".png").ConfigureAwait(false);
-
-                _sheet = Mir2AtlasSheet.Parse(Encoding.UTF8.GetString(jsonBytes));
-
-                // 关键：与游戏完全相同的贴图解码链路（浏览器原生解码 → RGBA8 → Texture2D）。
-                _page = await ContentManager.Default.LoadTexture2DAsync(pngBytes, GraphicsDevice).ConfigureAwait(false);
-                _sheet.Build(_page);
-
-                // 选帧：优先 FrameName，否则第一帧。
-                if (!_sheet.Frames.TryGetValue(FrameName, out _frame))
-                {
-                    foreach (var kv in _sheet.Frames) { _frame = kv.Value; _frameName = kv.Key; break; }
-                }
-
-                // 取该帧中心像素的真实 RGBA（贴图本身的数据，与怎么混合无关）。
-                if (_frame != null)
-                {
-                    var r = _frame.SourceRectangle;
-                    int cx = r.X + r.Width / 2;
-                    int cy = r.Y + r.Height / 2;
-                    var buf = new Color[1];
-                    _page.GetData(0, new Rectangle(cx, cy, 1, 1), buf, 0, 1);
-                    _centerPixel = buf[0];
-                }
-
-                _status = $"已加载：{SheetName}（{_sheet.Frames.Count} 帧）";
+                foreach (var kv in _sheet.Frames) { _frame = kv.Value; _frameName = kv.Key; break; }
             }
-            catch (Exception ex)
+
+            // 取该帧中心像素的真实 RGBA（贴图本身的数据，与怎么混合无关）。
+            // 注意：ContentManager 解码出的纹理默认不可读，直接 GetData 会抛异常；
+            // 框架提供 GetPixelsViaRenderTargetAsync 用渲染目标中转得到【可读副本】，再 GetData。
+            if (_frame != null)
             {
-                _status = "加载失败：" + ex.Message;
+                var r = _frame.SourceRectangle;
+                // 只中转该帧所在子区域（更小更快），返回的可读纹理坐标从 0 开始。
+                var readable = await _page.GetPixelsViaRenderTargetAsync(GraphicsDevice, r).ConfigureAwait(false);
+                int cx = r.Width / 2;
+                int cy = r.Height / 2;
+                // 框架 GetData<Color> 因 Color 非基元数组（Buffer.BlockCopy 不支持）而失败，
+                // 故改读 byte[]（RGBA8 每像素 4 字节），再手动组装 Color。
+                var buf = new byte[4];
+                readable.GetData(0, new Rectangle(cx, cy, 1, 1), buf, 0, 4);
+                _centerPixel = new Color(buf[0], buf[1], buf[2], buf[3]);
             }
+
+            _status = $"已加载：{SheetName}（{_sheet.Frames.Count} 帧）";
         }
 
         protected override void Draw(GameTime gameTime)
         {
             var sb = SpriteBatch;
 
-            // —— 第一段：NonPremultiplied（预期正确的直通 alpha）——
+            // —— 第一段：三种底色对比，每个图【下方】都有文字标注 ——
             sb.Begin();
             int x = 20, y = 20;
             if (_page != null)
@@ -101,18 +105,30 @@ namespace WebGame.Client.Test
                 var r = _frame.SourceRectangle;
                 int fw = (int)r.Width, fh = (int)r.Height;
 
+                int xL = x + 240;              // 左：NonPremultiplied
+                int xM = xL + fw + 30;         // 中：黑底
+                int xR = xM + fw + 30;         // 右：白底
+                int xA = xR + fw + 30;         // 最右：Additive（与上面一排）
+
                 // 左：NonPremultiplied（正常画）
-                sb.Draw(_page, new Rectangle(x + 240, y, fw, fh), r, Color.White);
+                sb.Draw(_page, new Rectangle(xL, y, fw, fh), r, Color.White);
+                // 中：画在纯黑块上
+                sb.Draw(_black, new Rectangle(xM, y, fw, fh), null, Color.White);
+                sb.Draw(_page, new Rectangle(xM, y, fw, fh), r, Color.White);
+                // 右：画在纯白块上
+                sb.Draw(_white, new Rectangle(xR, y, fw, fh), null, Color.White);
+                sb.Draw(_page, new Rectangle(xR, y, fw, fh), r, Color.White);
+                // 最右：Additive 图以 Additive 混合绘制（见下方第二段）
 
-                // 中：画在纯黑块上（若贴图其实白，会明显发白；若其实黑，则与黑块融合看不见）
-                sb.Draw(_black, new Rectangle(x + 240 + fw + 30, y, fw, fh), null, Color.White);
-                sb.Draw(_page, new Rectangle(x + 240 + fw + 30, y, fw, fh), r, Color.White);
-
-                // 右：画在纯白块上（若贴图其实黑，会显出深色形状；若其实白，则与白块融合看不见）
-                sb.Draw(_white, new Rectangle(x + 240 + 2 * (fw + 30), y, fw, fh), null, Color.White);
-                sb.Draw(_page, new Rectangle(x + 240 + 2 * (fw + 30), y, fw, fh), r, Color.White);
+                // 每图正下方只标注所用混合方式
+                int ly = y + fh + 6;
+                sb.DrawString(KDefaultRes.DefaultSpriteFont, "NonPremultiplied", new Vector2(xL, ly), Color.White);
+                sb.DrawString(KDefaultRes.DefaultSpriteFont, "AlphaBlend·黑底", new Vector2(xM, ly), Color.White);
+                sb.DrawString(KDefaultRes.DefaultSpriteFont, "AlphaBlend·白底", new Vector2(xR, ly), Color.White);
+                sb.DrawString(KDefaultRes.DefaultSpriteFont, "Additive", new Vector2(xA, ly), Color.Orange);
             }
 
+            // 信息栏（左侧，图集/帧/中心像素）
             sb.DrawString(KDefaultRes.DefaultSpriteFont, _status, new Vector2(20, 240), Color.White);
             sb.DrawString(KDefaultRes.DefaultSpriteFont,
                 $"图集: {SheetName}   帧: {_frameName}   帧数: {(_sheet?.Frames.Count ?? 0)}",
@@ -120,24 +136,16 @@ namespace WebGame.Client.Test
             sb.DrawString(KDefaultRes.DefaultSpriteFont,
                 $"★ 中心像素 RGBA = ({_centerPixel.R}, {_centerPixel.G}, {_centerPixel.B}, {_centerPixel.A})  ← 贴图本身到底是黑还是白，看这里",
                 new Vector2(20, 288), Color.Yellow);
-            sb.DrawString(KDefaultRes.DefaultSpriteFont,
-                "左:NonPremultiplied   中:黑底   右:白底", new Vector2(20, 312), Color.LightGray);
             sb.End();
 
-            // —— 第二段：Additive（验证“过曝发白/混合过头”假设）——
+            // —— 第二段：Additive 图（与上面一排最右侧，用 Additive 混合绘制）——
             if (_frame != null)
             {
                 var r = _frame.SourceRectangle;
                 int fw = (int)r.Width, fh = (int)r.Height;
-                int ax = 20, ay = 340;
+                int xA = (x + 240) + (fw + 30) * 3; // 与上面一排最后一格对齐
                 sb.Begin(SpriteSortMode.Deferred, BlendState.Additive);
-                sb.Draw(_page, new Rectangle(ax, ay, fw, fh), r, Color.White);
-                sb.End();
-
-                sb.Begin();
-                sb.DrawString(KDefaultRes.DefaultSpriteFont,
-                    "★ Additive 混合（验证过曝假设）：暗图在亮背景上会被叠亮 → 发白",
-                    new Vector2(ax, ay + fh + 8), Color.Orange);
+                sb.Draw(_page, new Rectangle(xA, y, fw, fh), r, Color.White);
                 sb.End();
             }
         }

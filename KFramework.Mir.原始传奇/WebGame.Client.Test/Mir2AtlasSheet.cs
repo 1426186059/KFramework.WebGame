@@ -15,6 +15,9 @@ using Vector2 = KFramework.MonoGame.Vector2;
 /// 解析后每帧产出框架标准的 KSpriteInfo（整页贴图 + 源矩形 + 原始尺寸），可直接交给 SpriteBatch 绘制。
 /// 构建方式对齐 KFramework.MonoGameExtend.KTexturePacker.SpriteSheetLoader：pivot 默认左上、不旋转。
 /// 这是网页版 Egret 图集，与桌面端 WIL/WIX（MLibrary/MImage）是两套体系。
+///
+/// 本文件为 Test 自带的本地解析类（仅依赖 KFramework 两个框架，不引入任何外部工程依赖），
+/// 与客户端 2026New/Mir2AtlasSheet.cs 逻辑保持一致，用于把线上的 Egret 图集 JSON 解析成 KSpriteInfo。
 /// </summary>
 public sealed class Mir2AtlasSheet
 {
@@ -77,8 +80,7 @@ public sealed class Mir2AtlasSheet
     }
 
     private static int GetInt(JsonObject o, string k, int fallback = 0)
-    { 
+    {
         return o[k] is JsonValue v && v.TryGetValue<int>(out var i) ? i : fallback;
     }
-
 }
