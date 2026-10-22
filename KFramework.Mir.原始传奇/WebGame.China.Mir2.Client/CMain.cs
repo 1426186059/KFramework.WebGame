@@ -368,9 +368,6 @@ namespace WebGame.Mir2.MonoGame.Client
             HintBaseLabel.Location = point;
         }
 
-        // 文本标签是 AutoSize 的，底板要跟着文本尺寸走（原版 HintTextLabel.SizeChanged += ...）。
-        // 额外一步 DisposeTexture：MirControl.CreateTexture 只在 ControlTexture 为 null 时建 RT，
-        // 尺寸变了不会重建，不显式释放的话底板会一直沿用首次的纹理尺寸。
         private static void ResizeBaseToText(MirControl baseLabel, MirLabel textLabel)
         {
             if (baseLabel == null || baseLabel.IsDisposed || textLabel == null) return;
@@ -380,13 +377,6 @@ namespace WebGame.Mir2.MonoGame.Client
             baseLabel.DisposeTexture();
         }
 
-        // 原 DisposeDebugLabel 已更名为 HideDebugDialog（见上方），此处不再保留。
-
-        // CMain.RenderEnvironment()：
-        //   Device.Clear → BeginScene → Sprite.Begin(SpriteFlags.AlphaBlend) → SetSurface(MainSurface)
-        //   → ActiveScene.Draw() → Sprite.End → EndScene → Present
-        // 本引擎为材质驱动：传统固定管线的 Sprite.Begin(SpriteFlags.AlphaBlend) 换成等价材质开批
-        // （SpriteFlags.AlphaBlend ≡ BlendState.NonPremultiplied），Sprite.End 换成 EndSprite。
         private static void RenderEnvironment()
         {
             try
@@ -413,7 +403,6 @@ namespace WebGame.Mir2.MonoGame.Client
             }
         }
 
-        // 帧循环里同一异常会每帧重复抛出，去重后再打印，避免刷屏。
         private static void SaveErrorOnce(string text)
         {
             if (text == _lastLoopError) return;
@@ -421,9 +410,6 @@ namespace WebGame.Mir2.MonoGame.Client
             SaveError(text);
         }
 
-        // 原版用 Win32 .CUR 文件切换窗体光标；浏览器端无法加载 .CUR，改为切换 canvas 的 CSS cursor。
-        // 之前的空实现会让游戏内光标永远停在 canvas 默认样式（攻击/NPC对话/文本等状态都不变化）。
-        // 传的是语义名，具体图片/样式在 tsengine/src/core/cursor.ts 里定义（改成自己的图片只需改那里）。
         public static void SetMouseCursor(MouseCursor cursor)
         {
             string name;
@@ -447,18 +433,9 @@ namespace WebGame.Mir2.MonoGame.Client
 
             BrowserCursor.Set(name);
         }
-
-        // 窗口尺寸变化的处理。UI 以画布原生分辨率布局（UI 层恒等变换、不做非等比拉伸），
-        // 世界层用 FullScreenSize 原生渲染，故这里只需三步：
-        //   1) 释放地板/光照离屏纹理，让它们按新尺寸重建（MapControl 每帧用 FullScreenSize
-        //      调 UpdateViewPort，会同步自身 Size 与可视范围）；
-        //   2) RelayoutAll：按锚点重排 UI 顶层控件，内部子控件随父移动；
-        //   3) Refresh：令当前场景重新烘焙。
-        // （该回调由 MirGame 在 Window.SizeChanged 时触发，传入的 width/height 即画布尺寸，此处不再使用。）
+        
         public static void OnWindowSizeChanged(int width, int height)
         {
-            // 游戏内场景的地板/光照是离屏 RenderTarget，分辨率变化时先释放，
-            // DrawFloor/DrawLights 检测到 null/Disposed 后会用逻辑分辨率(Settings)重建。
             if (GameScene.Scene != null)
             {
                 GameScene.Scene.MapControl.FloorValid = false;
@@ -468,11 +445,7 @@ namespace WebGame.Mir2.MonoGame.Client
                 DXManager.LightSurface = null;
             }
 
-            // UI 以原生分辨率布局，窗口变化后已构造控件的位置不会自动更新，
-            // 故先重新结算顶层控件位置，再重新烘焙（库加载完成也会触发 Refresh，见 Init）。
             MirScene.ActiveScene?.ApplyAnchors();
-
-            // 当前活动场景（登录/选人/游戏）重烘焙。
             MirScene.ActiveScene?.Refresh();
         }
 
@@ -538,8 +511,6 @@ namespace WebGame.Mir2.MonoGame.Client
 
         public static void CMain_MouseMove(object sender, MirEngine.MouseEventArgs e)
         {
-            // 与 OnMouseDown/OnMouseUp 保持一致：把原始画布坐标换算成逻辑 UI 坐标(1024x768)，
-            // 否则命中检测用原始像素对比逻辑 DisplayRectangle 会错位。
             MPoint = KCamera.ScreenToWorldPos(new MirEngine.Point(e.Location.X, e.Location.Y));
             try { if (MirScene.ActiveScene != null) MirScene.ActiveScene.OnMouseMove(e); }
             catch (Exception ex) { SaveError(ex.ToString()); }
@@ -553,9 +524,6 @@ namespace WebGame.Mir2.MonoGame.Client
 
         private static void ConfigureInput()
         {
-            // 输入改走 KFramework.MonoGame 的 Input 层（KInputMgr 已把指针/键盘事件桥到 GL 画布）。
-            // 鼠标移动不提供事件，改为每帧在 MirGame.Update 里轮询 Input_Mouse.Position 并转发 CMain_MouseMove。
-            // 字符输入（KeyPress）浏览器端由 MirTextBox 的 DOM 输入层承担，这里不桥接。
             MG.Input_Mouse.ButtonDown += OnMouseDown;
             MG.Input_Mouse.ButtonUp += OnMouseUp;
             MG.Input_Mouse.ScrollWheel += OnScrollWheel;
@@ -569,12 +537,7 @@ namespace WebGame.Mir2.MonoGame.Client
 
             MG.Input_KeyBoard.Activate();
             MG.Input_Mouse.Activate();
-            // 对齐历史实现 Program.Form.ActiveControl：传统桌面端靠 WinForms 表单级焦点登记表把按键路由到
-            // 当前聚焦的原生 TextBox。移植版无真实窗口，引擎用
-            // TextBox.ActiveOrResolved 决定回车/退格等控制键的目标框：优先引擎焦点链 _active，
-            // 退化时回退到本 resolver。这里把“当前激活的文本框”登记到引擎，使聊天框等惰性显示的
-            // 框在 _active 因 Blur/焦点互斥被清空、而 MirControl 层 ActiveControl 仍指向它时，
-            // 回车仍能正确送达 ChatTextBox_KeyPress 发送（否则输入完回车没反应）。
+
             KFramework.MonoGame.TextBox.ActiveTextBoxResolver =
                 () => CMain.Instance?.ActiveControl as KFramework.MonoGame.TextBox;
         }
@@ -594,9 +557,6 @@ namespace WebGame.Mir2.MonoGame.Client
             var lp = KCamera.ScreenToWorldPos(p);
             CMain.MPoint = new MirEngine.Point((int)lp.X, (int)lp.Y);
             var e = ToMouseEventArgs(b, lp);
-            // 复刻 WinForms 原版 CMain_MouseUp：松开按键必须清掉 MapControl.MapButtons，否则后续点击会错位。
-            // MouseButtons 现在是对齐 HTML MouseEvent.button 的顺序枚举，不再用 &=~ 位运算清除，
-            // 直接在该键释放时把它清空即可（== 比较即可，无需位操作）。
             if (MapControl.MapButtons == e.Button) MapControl.MapButtons = MouseButtons.None;
             if (e.Button != MouseButtons.Right || !Settings.NewMove)
                 GameScene.CanRun = false;
@@ -615,8 +575,6 @@ namespace WebGame.Mir2.MonoGame.Client
 
         private static KeyPressEventArgs ToKeyPressEventArgs(MG.Keys k)
         {
-            // 浏览器 keyCode 不区分上档（Shift+2 与 2 都是 50），修饰键电平由 MG.Input_KeyBoard 单独给出，
-            // 直接作为 bool 传入事件参数，不再用 65536 高位掩码打包进 KeyData。
             return new KeyPressEventArgs(k, MG.Input_KeyBoard.Shift, MG.Input_KeyBoard.Ctrl, MG.Input_KeyBoard.Alt);
         }
 

@@ -112,17 +112,22 @@ namespace Client.MirControls
         protected internal bool TextureValid;
         private bool _drawControlTexture;
         protected Size TextureSize;
+
         public bool DrawControlTexture
         {
             get { return _drawControlTexture; }
             set
             {
                 if (_drawControlTexture == value)
+                {
                     return;
+                }
+
                 _drawControlTexture = value;
                 Redraw();
             }
         }
+
         protected virtual void CreateTexture()
         {
             if (ControlTexture == null || ControlTexture.Disposed)

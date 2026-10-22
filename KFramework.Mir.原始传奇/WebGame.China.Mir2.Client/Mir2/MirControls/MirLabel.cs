@@ -181,7 +181,6 @@ namespace Client.MirControls
             if (ControlTexture == null || ControlTexture.Disposed)
             {
                 DXManager.ControlList.Add(this);
-
                 ControlTexture = DXManager.CreateRenderTarget(Size.Width, Size.Height);
                 TextureSize = Size;
             }

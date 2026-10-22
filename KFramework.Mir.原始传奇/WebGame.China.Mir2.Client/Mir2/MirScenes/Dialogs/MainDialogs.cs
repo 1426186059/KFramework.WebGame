@@ -1,13 +1,12 @@
-using System.Text.RegularExpressions;
 using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirSounds;
 using SlimDX;
-using MirEngine;
-using C = ClientPackets;
+using System.Text.RegularExpressions;
 using WebGame.Mir2.MonoGame.Client;
+using C = ClientPackets;
 
 namespace Client.MirScenes.Dialogs
 {
@@ -39,7 +38,7 @@ namespace Client.MirScenes.Dialogs
             Library = Libraries.Prguse;
             Location = new Point(((Settings.ScreenWidth / 2) - (Size.Width / 2)), Settings.ScreenHeight - Size.Height);
             PixelDetect = true;
-             
+            
             LeftCap = new MirImageControl
             {
                 Index = 12,
@@ -561,6 +560,7 @@ namespace Client.MirScenes.Dialogs
             WeightBar.Library.Draw(WeightBar.Index, section, WeightBar.DisplayLocation, Color.White, false);
         }
     }
+
     public sealed class ChatDialog : MirImageControl
     {
         public List<ChatHistory> FullHistory = new List<ChatHistory>();

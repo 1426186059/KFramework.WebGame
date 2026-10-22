@@ -440,14 +440,20 @@ namespace Client.MirControls
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
+            if (!disposing)
+            {
+                return;
+            }
 
-            if (!disposing) return;
-
-            // 若本框正接管输入，失焦以收起 IME（覆盖其他清理）。
             if (!TextBox.IsDisposed)
+            {
                 TextBox.LoseFocus();
+            }
+
             if (!TextBox.IsDisposed)
+            {
                 TextBox.Dispose();
+            }
         }
 
 

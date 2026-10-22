@@ -51,10 +51,10 @@ public abstract class LayerControl : MirControl
             ControlTexture = new SlimDX.Direct3D9.Texture(DXManager.Device, rtW, rtH, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
             TextureSize = new MirEngine.Size(rtW, rtH);
         }
+
         Surface oldSurface = DXManager.CurrentSurface;
         Surface surface = ControlTexture.GetSurfaceLevel(0);
         DXManager.SetSurface(surface);
-
         DXManager.Device.Clear(ClearFlags.Target, BackColour, 0, 0);
 
         // 各派生层通过覆写 GetLayerTransform 提供自己的变换（世界层=单位矩阵，UI 层=按高度缩放）。
