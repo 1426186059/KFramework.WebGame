@@ -1,4 +1,6 @@
 using System.Text.Json;
+using System.IO;
+using System.IO.Compression;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
@@ -79,6 +81,58 @@ app.MapGet("/api/atlasimage", (string root, string rel) =>
            : (ext == ".jpg" || ext == ".jpeg") ? "image/jpeg"
            : "application/octet-stream";
     return Results.File(bytes, ct);
+});
+
+// 返回本机“下载”目录，作为前端输出目录输入框的默认值（本地工具，服务端即本机）。
+app.MapGet("/api/defaultdownload", () =>
+{
+    var profile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+    var downloads = Path.Combine(profile, "Downloads");
+    if (!Directory.Exists(downloads)) downloads = profile;
+    return Results.Ok(new { path = downloads });
+});
+
+// 接收前端打包好的图集 zip，解压到用户指定的输出目录（dir 由前端传，默认即下载目录，可自定义）。
+// zip 内部已是 <图集名>/<帧名>.png 结构，解压即还原该层级。
+app.MapPost("/api/export", async (HttpContext ctx) =>
+{
+    var dir = ctx.Request.Query["dir"].ToString();
+    var form = await ctx.Request.ReadFormAsync();
+    var file = form.Files["zip"];
+    if (string.IsNullOrWhiteSpace(dir))
+        return Results.BadRequest(new { error = "未指定输出目录" });
+    if (file == null || file.Length == 0)
+        return Results.BadRequest(new { error = "未收到 zip 文件" });
+    try
+    {
+        Directory.CreateDirectory(dir);
+        var tmp = Path.Combine(Path.GetTempPath(), "AtlasPreviewer_" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tmp);
+        using (var stream = file.OpenReadStream())
+        using (var archive = new ZipArchive(stream, ZipArchiveMode.Read))
+        {
+            archive.ExtractToDirectory(tmp);
+        }
+        // 把临时目录里的 <图集名>/ 与零散文件搬到输出目录（保留 zip 内层级，覆盖同名）
+        foreach (var d in Directory.EnumerateDirectories(tmp))
+        {
+            var dest = Path.Combine(dir, Path.GetFileName(d));
+            if (Directory.Exists(dest)) Directory.Delete(dest, true);
+            Directory.Move(d, dest);
+        }
+        foreach (var f in Directory.EnumerateFiles(tmp))
+        {
+            var dest = Path.Combine(dir, Path.GetFileName(f));
+            if (File.Exists(dest)) File.Delete(dest);
+            File.Move(f, dest);
+        }
+        Directory.Delete(tmp, true);
+        return Results.Ok(new { outDir = Path.GetFullPath(dir) });
+    }
+    catch (Exception e)
+    {
+        return Results.BadRequest(new { error = "导出失败：" + e.Message });
+    }
 });
 
 app.Run();
