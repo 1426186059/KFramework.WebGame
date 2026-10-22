@@ -3,9 +3,13 @@ using KFramework.MonoGameExtend;
 
 namespace KFramework.Game.Template
 {
+    /// <summary>
+    /// 最小游戏模板：仅用于验证 WASM 渲染链路（框架初始化 + 清屏 + SpriteBatch 画纹理/文字）。
     /// 直接继承 KFramework.MonoGame 的 Game 基类即可；每帧基类会先按 ClearColor 清屏，再调用本类的 Draw。
     /// 类名（KFramework.Game.Template）与 KFramework.Game 命名空间重名前缀，故基类用完全限定名。
     /// </summary>
+    public sealed class GameTemplateGame : KFramework.MonoGame.Game
+    {
         private Texture2D _white = null!;
 
         public GameTemplateGame() : base(GraphicsBackendKind.WebGL20, "#game", antialias: false)
