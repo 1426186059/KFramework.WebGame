@@ -35,14 +35,20 @@ public static class Mir2AtlasLibrary
     
     private static async Task EnsureResConfigAsync(CancellationToken ct)
     {
-        if (_fsData != null) return;
+        if (_fsData != null)
+        {
+            return;
+        }
+        
         _fsData = new Dictionary<string, Mir2ResItem>(StringComparer.OrdinalIgnoreCase);
         _alias = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         _groups = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+
         try
         {
             var bytes = await Mir2OriginResource.GetBytesAsync(
                 Mir2OriginResource.ResolveManifestAssetPath("resource/default.res.json"), ct: ct);
+            
             if (bytes == null || bytes.Length == 0)
             {
                 return;
