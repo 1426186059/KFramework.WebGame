@@ -1,5 +1,6 @@
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
+using System.Collections.Concurrent;
 using System.Text;
 using System.Text.Json.Nodes;
 using Color = KFramework.MonoGame.Color;
@@ -9,6 +10,11 @@ public static class Mir2AtlasLibrary
 {
     private static readonly Dictionary<string, Mir2AtlasSheet> _sheets =
         new Dictionary<string, Mir2AtlasSheet>(StringComparer.OrdinalIgnoreCase);
+
+    // 在途图集加载任务（按 sheet key 去重）：多个控件/调用方同时请求同一图集时，只发起一次下载，
+    // 大家都 await 同一个 Task<Mir2AtlasSheet>，避免重复 HTTP 拉取。
+    private static readonly ConcurrentDictionary<string, Task<Mir2AtlasSheet>> _sheetTasks =
+        new ConcurrentDictionary<string, Task<Mir2AtlasSheet>>(StringComparer.OrdinalIgnoreCase);
 
     private static Dictionary<string, Mir2ResItem> _fsData;
     private static Dictionary<string, string> _alias;
@@ -130,7 +136,7 @@ public static class Mir2AtlasLibrary
         return _initTask;
     }
     
-    private static (string key, string frame) ResolveName(string nameOrKey)
+    internal static (string key, string frame) ResolveName(string nameOrKey)
     {
         if (_alias != null && _alias.TryGetValue(nameOrKey, out var spec))
         {
@@ -151,35 +157,53 @@ public static class Mir2AtlasLibrary
         return (nameOrKey, null);
     }
     
-    public static async Task<Mir2AtlasSheet> GetSheetAsync(string nameOrKey, GraphicsDevice device, CancellationToken ct = default)
+    // 按 sheet key 去重在途加载：多个控件/调用方同时请求同一图集时，只发起一次下载，
+    // 大家都 await 同一个 Task<Mir2AtlasSheet>，避免重复 HTTP 拉取（见 _sheetTasks）。
+    // 注意：共享任务不使用调用方的 ct —— 一个控件取消不应连累其他共享同一图集的控件；
+    // 各控件的「取消是否应用结果」在其自身层（见 MirImageControl.LoadAtlasAsync）处理。
+    public static Task<Mir2AtlasSheet> GetSheetAsync(string nameOrKey, GraphicsDevice device, CancellationToken ct = default)
     {
-        await EnsureManifestAsync(ct);
-        await EnsureResConfigAsync(ct);
         var (key, _) = ResolveName(nameOrKey);
         if (_sheets.TryGetValue(key, out var existing))
+            return Task.FromResult(existing);
+        return _sheetTasks.GetOrAdd(key, k => LoadSheetCoreAsync(k, device));
+    }
+
+    // 实际加载（被 GetOrAdd 合并调用，保证同一 key 同时只下载一次）。
+    private static async Task<Mir2AtlasSheet> LoadSheetCoreAsync(string key, GraphicsDevice device)
+    {
+        try
         {
-            return existing;
-        }
+            await EnsureManifestAsync(CancellationToken.None);
+            await EnsureResConfigAsync(CancellationToken.None);
+            if (_sheets.TryGetValue(key, out var existing))
+                return existing;
 
-        var jsonPath = Mir2OriginResource.ResolveManifestAssetPath(key);
-        var jsonBytes = await Mir2OriginResource.GetBytesAsync(jsonPath, ct: ct);
-        if (jsonBytes == null || jsonBytes.Length == 0)
+            var jsonPath = Mir2OriginResource.ResolveManifestAssetPath(key);
+            var jsonBytes = await Mir2OriginResource.GetBytesAsync(jsonPath, ct: CancellationToken.None);
+            if (jsonBytes == null || jsonBytes.Length == 0)
+            {
+                throw new InvalidOperationException(
+                    $"[Mir2Atlas] 图集 JSON 下载为空：key={key}，resolvedPath={jsonPath}。" +
+                    $"若 resolvedPath 仍是逻辑路径(含 resource/assets/...)且 404，说明 LocalMirrorUsesKeyPath 与 base 不匹配；" +
+                    $"若已是哈希路径(resource/xx/...)仍空，说明该 key 不在 manifest 或资源缺失。");
+            }
+
+            var sheet = Mir2AtlasSheet.Parse(Encoding.UTF8.GetString(jsonBytes));
+            var pngKey = SheetPngKey(key, sheet.File);
+            var pngPath = Mir2OriginResource.ResolveManifestAssetPath(pngKey);
+            var texture = await Mir2OriginResource.GetTextureAsync(pngPath, device, ct: CancellationToken.None);
+
+            sheet.Build(texture);
+            _sheets[key] = sheet;
+            PrintTool.Log($"[Mir2Atlas] 已加载图集 {key}：{sheet.Frames.Count} 帧");
+            return sheet;
+        }
+        catch (Exception)
         {
-            throw new InvalidOperationException(
-                $"[Mir2Atlas] 图集 JSON 下载为空：nameOrKey={nameOrKey}，resolvedKey={key}，resolvedPath={jsonPath}。" +
-                $"若 resolvedPath 仍是逻辑路径(含 resource/assets/...)且 404，说明 LocalMirrorUsesKeyPath 与 base 不匹配；" +
-                $"若 resolvedPath 已是哈希路径(resource/xx/...)仍空，说明该 key 不在 manifest 或资源缺失。");
+            _sheetTasks.TryRemove(key, out _); // 失败移除，允许下次重试
+            throw;
         }
-
-        var sheet = Mir2AtlasSheet.Parse(Encoding.UTF8.GetString(jsonBytes));
-        var pngKey = SheetPngKey(key, sheet.File);
-        var pngPath = Mir2OriginResource.ResolveManifestAssetPath(pngKey);
-        var texture = await Mir2OriginResource.GetTextureAsync(pngPath, device, ct: ct);
-
-        sheet.Build(texture);
-        _sheets[key] = sheet;
-        PrintTool.Log($"[Mir2Atlas] 已加载图集 {key}：{sheet.Frames.Count} 帧");
-        return sheet;
     }
     
     public static async Task<KSpriteInfo> GetResSpriteAsync(string nameOrFrame, GraphicsDevice device, CancellationToken ct = default)

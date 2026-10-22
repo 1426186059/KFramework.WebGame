@@ -38,6 +38,9 @@ namespace Client.MirScenes.Dialogs
             Library = Libraries.Prguse;
             Location = new Point(((Settings.ScreenWidth / 2) - (Size.Width / 2)), Settings.ScreenHeight - Size.Height);
             PixelDetect = true;
+
+            AtlasNameKey = "";
+            AtlasFrame = "bg_zhukuang_1_tx";
             
             LeftCap = new MirImageControl
             {

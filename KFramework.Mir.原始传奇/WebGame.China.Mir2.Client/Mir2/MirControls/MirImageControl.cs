@@ -1,4 +1,7 @@
-﻿using Client.MirGraphics;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Client.MirGraphics;
 
 namespace Client.MirControls
 {
@@ -108,6 +111,72 @@ namespace Client.MirControls
                 if (_atlasFrame == value) return;
                 _atlasFrame = value;
                 OnLibraryChanged();
+            }
+        }
+
+        // —— 便捷加载入口：设一个字符串（支持 "sheet#frame" 或别名，见 Mir2AtlasLibrary.ResolveName），
+        //    即自动异步加载该图集帧。同一图集的下载会被 Mir2AtlasLibrary 按 sheet key 去重（多控件共享一次），
+        //    但每个控件各自持有完成事件 AtlasLoaded。加载完成后于主线程赋值并触发事件。
+        private string _atlasNameKey;
+        public string AtlasNameKey
+        {
+            get { return _atlasNameKey; }
+            set
+            {
+                if (_atlasNameKey == value) return;
+                _atlasNameKey = value;
+                _ = LoadAtlasAsync(value);
+            }
+        }
+
+        /// <summary>图集加载完成事件（主线程触发）：sender=本控件，e=EventArgs.Empty。</summary>
+        public event EventHandler AtlasLoaded;
+
+        private CancellationTokenSource _atlasCts;
+
+        private async Task LoadAtlasAsync(string key)
+        {
+            // 取消上一次在途加载（重设 key / 切换资源时，避免旧结果覆盖新结果）。
+            _atlasCts?.Cancel();
+            _atlasCts?.Dispose();
+            var cts = new CancellationTokenSource();
+            _atlasCts = cts;
+            var ct = cts.Token;
+
+            if (string.IsNullOrWhiteSpace(key))
+                return;
+
+            var (sheetKey, frame) = Mir2AtlasLibrary.ResolveName(key);
+            try
+            {
+                // 库内按 sheetKey 合并在途下载（共享一份）；此处 ct 只用于「本控件是否还应用结果」，
+                // 不传入库内共享任务，避免一个控件取消连累其他共享同一图集的控件。
+                var sheet = await Mir2AtlasLibrary.GetSheetAsync(sheetKey, DXManager.GDevice, CancellationToken.None);
+                if (ct.IsCancellationRequested) return;
+
+                // WASM 单线程构建下，await 回调本就在主线程，直接在这里应用即可（无需 RunOnMainThread 转发，
+                // 那只会多延迟一帧）。赋值 + 让已烘焙的父 LayerControl 重新烘焙 + 触发本控件完成事件。
+                if (ct.IsCancellationRequested) return;
+                AtlasSheet = sheet;
+                if (!string.IsNullOrEmpty(frame)) AtlasFrame = frame;
+                BubbleRedraw();
+                AtlasLoaded?.Invoke(this, EventArgs.Empty);
+            }
+            catch (TaskCanceledException) { }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                KFramework.MonoGame.PrintTool.LogError("[MirImageControl] AtlasNameKey 加载失败：" + ex);
+            }
+        }
+
+        // 向上找到最近的 LayerControl 祖先并标记需重烘：子控件晚加载完只 invalidate 自己，
+        // 父 Layer 不会自动重烘（LayerControl.Bake 只看自身 TextureValid），必须冒泡通知。
+        private void BubbleRedraw()
+        {
+            for (var p = Parent; p != null; p = p.Parent)
+            {
+                if (p is LayerControl lc) { lc.Redraw(); break; }
             }
         }
 
