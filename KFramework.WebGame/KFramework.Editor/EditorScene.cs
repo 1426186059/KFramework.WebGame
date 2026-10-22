@@ -119,9 +119,17 @@ namespace KFramework.Editor
                     else
                     {
                         FocusBox(_pendingField);
-                        // 双击同一字段 = 全选；单击仅定位光标，方便编辑某一位
+                        var box = _numBoxes[_pendingField];
+                        // 双击同一字段 = 全选；单击 = 取消全选并把光标移到点击处（方便编辑某一位）
                         if (_lastClickField == _pendingField && (_animT - _lastClickTime) < 0.3f)
-                            _numBoxes[_pendingField].SelectAll();
+                        {
+                            box.SelectAll();
+                        }
+                        else
+                        {
+                            int localX = (int)(mouse.X - box.Location.X);
+                            box.ClearSelection(box.GetCharIndexFromPosition(new Point(localX, box.Size.Height / 2)));
+                        }
                         _lastClickField = _pendingField;
                         _lastClickTime = _animT;
                     }

@@ -489,6 +489,18 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
+        /// 取消选区并把光标放到 <paramref name="caret"/>（默认文本末尾），同时同步给 DOM 覆盖层。
+        /// 用于单击定位：双击全选后单点取消全选并把光标移到点击处（方便编辑某一位）。
+        /// </summary>
+        public void ClearSelection(int caret = -1)
+        {
+            selectionStart = caret < 0 ? text.Length : Math.Max(0, Math.Min(caret, text.Length));
+            selectionLength = 0;
+            selectionAnchor = selectionStart;
+            SyncOverlay();
+        }
+
+        /// <summary>
         /// DOM 把原生编辑结果回传：以引擎自身光标为锚点合并差异（保证引擎是文本唯一真相源）。
         /// composing=true 时 value 含组字预览，仅更新预览不落库。
         /// </summary>
