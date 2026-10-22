@@ -34,37 +34,13 @@ namespace Client.MirScenes.Dialogs
 
         public MainDialog()
         {
-           // Location = new Point(((Settings.ScreenWidth / 2) - (Size.Width / 2)), Settings.ScreenHeight - Size.Height);
             PixelDetect = true;
 
+            Anchor = EAnchorType.BottomCenter;
+            AnchorPos = new Point(0, 0);
+            ApplyAnchor();
             AtlasNameKey = "y_homeUI-sheet";
             AtlasFrame = "bg_zhukuang_1_tx";
-
-            Anchor = EAnchorType.BottomCenter;
-            AnchorPos = new Point(0, -200);
-
-            LeftCap = new MirImageControl
-            {
-                Index = 12,
-                Library = Libraries.Prguse,
-                Location = new Point(-67, this.Size.Height - 96),
-                Parent = this,
-                Visible = false
-            };
-            RightCap = new MirImageControl
-            {
-                Index = 13,
-                Library = Libraries.Prguse,
-                Location = new Point(1024, this.Size.Height - 104),
-                Parent = this,
-                Visible = false
-            };
-
-            if (Settings.Resolution > 1024)
-            {
-                LeftCap.Visible = true;
-                RightCap.Visible = true;
-            }
 
             InventoryButton = new MirButton
             {
@@ -384,6 +360,11 @@ namespace Client.MirScenes.Dialogs
             };
         }
 
+        private void MainDialog_AtlasLoaded(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Process()
         {
             switch (GameScene.Scene.AMode)
@@ -587,10 +568,18 @@ namespace Client.MirScenes.Dialogs
 
         public ChatDialog()
         {
-            Index = Settings.Resolution != 800 ? 2221 : 2201;
-            Library = Libraries.Prguse;
-            Location = new Point(GameScene.Scene.MainDialog.Location.X + 230, Settings.ScreenHeight - 97);
+            //Library = Libraries.Prguse;
+            //Location = new Point(GameScene.Scene.MainDialog.Location.X + 230, Settings.ScreenHeight - 97);
             PixelDetect = true;
+
+            AtlasNameKey = "y_homeUI-sheet";
+            AtlasFrame = "bg_liaotianzy_06";
+
+            AutoSize = false;
+            Size = TrueSize = new Size(800, 150);
+            Anchor = EAnchorType.BottomCenter;
+            AnchorPos = new Point(0, -20);
+            ApplyAnchor();
 
             KeyPress += ChatPanel_KeyPress;
             KeyDown += ChatPanel_KeyDown;

@@ -149,17 +149,17 @@ namespace Client.MirControls
             var (sheetKey, frame) = Mir2AtlasLibrary.ResolveName(key);
             try
             {
-                // 库内按 sheetKey 合并在途下载（共享一份）；此处 ct 只用于「本控件是否还应用结果」，
-                // 不传入库内共享任务，避免一个控件取消连累其他共享同一图集的控件。
                 var sheet = await Mir2AtlasLibrary.GetSheetAsync(sheetKey, DXManager.GDevice, CancellationToken.None);
                 if (ct.IsCancellationRequested) return;
 
-                // WASM 单线程构建下，await 回调本就在主线程，直接在这里应用即可（无需 RunOnMainThread 转发，
-                // 那只会多延迟一帧）。赋值 + 让已烘焙的父 LayerControl 重新烘焙 + 触发本控件完成事件。
                 if (ct.IsCancellationRequested) return;
                 AtlasSheet = sheet;
-                if (!string.IsNullOrEmpty(frame)) AtlasFrame = frame;
+                if (!string.IsNullOrEmpty(frame))
+                {
+                    AtlasFrame = frame;
+                }
                 Redraw();
+                ApplyAnchor();
                 AtlasLoaded?.Invoke(this, EventArgs.Empty);
             }
             catch (TaskCanceledException) { }
@@ -233,6 +233,11 @@ namespace Client.MirControls
                 if (Library != null && Index >= 0)
                     return Library.GetTrueSize(Index);
                 return base.TrueSize;
+            }
+
+            set
+            {
+                base.TrueSize = value;
             }
         }
 

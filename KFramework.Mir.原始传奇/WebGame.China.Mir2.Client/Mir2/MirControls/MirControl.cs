@@ -500,6 +500,7 @@ namespace Client.MirControls
         public virtual Size TrueSize
         {
             get { return _size; }
+            set { _size = value; }
         }
 
         public event EventHandler SizeChanged;
