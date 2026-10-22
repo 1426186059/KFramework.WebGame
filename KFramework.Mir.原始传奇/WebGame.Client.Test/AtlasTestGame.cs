@@ -97,9 +97,6 @@ namespace WebGame.Client.Test
             // —— 第一段：三种底色对比，每个图【下方】都有文字标注 ——
             sb.Begin();
             int x = 20, y = 20;
-            if (_page != null)
-                sb.Draw(_page, new Rectangle(x, y, 200, (int)(200.0 * _page.Height / _page.Width)), null, Color.White);
-
             if (_frame != null)
             {
                 var r = _frame.SourceRectangle;
