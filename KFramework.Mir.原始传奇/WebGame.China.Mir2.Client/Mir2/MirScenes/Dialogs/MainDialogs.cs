@@ -576,7 +576,7 @@ namespace Client.MirScenes.Dialogs
             AtlasFrame = "bg_liaotianzy_06";
 
             AutoSize = false;
-            Size = TrueSize = new Size(800, 150);
+            Size = new Size(627, 100);
             Anchor = EAnchorType.BottomCenter;
             AnchorPos = new Point(0, -20);
             ApplyAnchor();
@@ -590,8 +590,8 @@ namespace Client.MirScenes.Dialogs
                 BackColour = Color.DarkGray,
                 ForeColour = Color.Black,
                 Parent = this,
-                Size = new Size(Settings.Resolution != 800 ? 627 : 403, 13),
-                Location = new Point(1, 54),
+                Size = new Size(627, 13),
+                Location = new Point(1, 100),
                 MaxLength = Globals.MaxChatLength,
                 Visible = false,
                 Font = ChatFont,

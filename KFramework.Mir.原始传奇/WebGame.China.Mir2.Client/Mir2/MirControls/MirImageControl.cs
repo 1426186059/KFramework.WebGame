@@ -234,11 +234,6 @@ namespace Client.MirControls
                     return Library.GetTrueSize(Index);
                 return base.TrueSize;
             }
-
-            set
-            {
-                base.TrueSize = value;
-            }
         }
 
 
@@ -271,15 +266,22 @@ namespace Client.MirControls
                     DXManager.SetGrayscale(true);
                 }
 
-                // 绘制目标矩形：以 DisplayLocation 为锚点、按「实际图片像素尺寸 TrueSize」绘制，
-                // 与下方 Library 分支 Library.Draw(Index, DisplayLocation, ...) 在 DisplayLocation 以自然尺寸绘制的行为一致。
-                //   • Size     = 控件布局/碰撞尺寸：DisplayRectangle、IsMouseOver 命中判定、LayerControl 烘焙 RT 尺寸都基于它。
-                //   • TrueSize = 图片/精灵实际像素尺寸（atlas 帧 SourceRectangle 或 Library.GetTrueSize），即“实际要画多大”。
-                // 不要用 Size 当绘制尺寸：那会把图片拉伸/压缩进布局框，既与 Library 分支不一致，也会把图扭曲。
-                KFramework.MonoGame.Rectangle targetRect = new KFramework.MonoGame.Rectangle(DisplayLocation.X, DisplayLocation.Y, TrueSize.Width, TrueSize.Height);
+                // 绘制目标矩形：以 DisplayLocation 为锚点。
+                // 用 Size（而非 TrueSize）作目标尺寸：Size 的 getter 尊重 AutoSize ——
+                //   • AutoSize=true  → Size 取图集帧自然尺寸（与 TrueSize 一致），按原尺寸绘制；
+                //   • AutoSize=false → Size 为用户指定尺寸，图片按 Size 缩放铺满布局框，使显式设置的尺寸真正生效。
+                // Size 同时驱动 DisplayRectangle 命中判定与 ApplyAnchor 定位，三者保持一致。
+                KFramework.MonoGame.Rectangle targetRect = new KFramework.MonoGame.Rectangle(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height);
+                // 混合状态对齐原版 Crystal：用【控件自身的 Blending 属性】决定，而非全局 DXManager.Blending。
+                // 否则会被其它特效遗留的全局加法混合污染——暗色 UI 在亮背景上被叠加成“过曝发白”（即“混合过头”）。
+                //   • Blending=false（正常 UI）→ NonPremultiplied（直通 alpha，等价原版 SpriteFlags.AlphaBlend）
+                //   • Blending=true        → Additive（发光/叠加特效，等价原版 SetBlend(true)）
+                var imgBlend = Blending
+                    ? KFramework.MonoGame.BlendState.Additive
+                    : KFramework.MonoGame.BlendState.NonPremultiplied;
                 // 走 DXManager.Draw 安全入口（BeginSprite 会按当前上下文自动 Begin）：
                 // 主渲染 / LayerControl 烘焙通用；直接调 SpriteBatch.DrawFrame 在烘焙时主批未 Begin 会抛异常。
-                DXManager.Draw(atlasSprite.Texture, atlasSprite.SourceRectangle, targetRect, drawColor);
+                DXManager.Draw(atlasSprite.Texture, atlasSprite.SourceRectangle, targetRect, drawColor, imgBlend);
                 
                 if (GrayScale)
                 {
