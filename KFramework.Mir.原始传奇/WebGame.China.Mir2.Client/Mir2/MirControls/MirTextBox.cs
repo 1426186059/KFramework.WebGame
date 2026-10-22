@@ -320,16 +320,12 @@ namespace Client.MirControls
             if (TextBox.UseSystemPasswordChar) drawText = new string('●', drawText.Length);
             string drawComp = TextBox.CompositionString ?? "";
             if (TextBox.UseSystemPasswordChar) drawComp = new string('●', drawComp.Length);
-
             {
-                // 渲染目标、清屏与批次都由本控件绑定，文本 + 光标交给基础库 TextBox（DrawTextBox，实例自身持有光标状态）。
                 var saved = DXManager.CurrentSurface;
                 DXManager.SetSurface(new SlimDX.Direct3D9.Surface(ControlTexture));
                 DXManager.GDevice.Clear(KFramework.MonoGame.Color.FromArgb((uint)back));
                 try
                 {
-                    // 用主批（SpriteBatch）绘制：以新式材质 API 开批（NonPremultiplied + 纹理 PointClamp），
-                    // 文本 + 光标交给基础库 TextBox（DrawTextBox，实例自身持有光标状态）。
                     DXManager.BeginSprite(DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied));
                     _caretBox.DrawTextBox(
                         DXManager.Batch, DXManager.GDevice, font, drawText,
@@ -353,7 +349,10 @@ namespace Client.MirControls
         {
             base.OnMouseDown(e);
 
-            if (!Enabled || TextBox == null || TextBox.IsDisposed || !TextBox.Visible) return;
+            if (!Enabled || TextBox == null || TextBox.IsDisposed || !TextBox.Visible)
+            {
+                return;
+            }
 
             if (e.Button == MouseButtons.Left)
             {
@@ -366,7 +365,10 @@ namespace Client.MirControls
             SetFocus();
 
             if (TextBox.CanFocus)
+            {
                 CMain.Instance.ActiveControl = TextBox;
+            }
+
         }
 
         void TextBox_KeyPress(object sender, KeyPressEventArgs e)

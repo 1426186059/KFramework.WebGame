@@ -210,8 +210,15 @@ namespace Client.MirControls
                     DXManager.SetGrayscale(true);
                 }
 
-                KFramework.MonoGame.Rectangle targetRect = new KFramework.MonoGame.Rectangle(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height);
-                DXManager.Batch.DrawFrame(atlasSprite, targetRect, drawColor);
+                // 绘制目标矩形：以 DisplayLocation 为锚点、按「实际图片像素尺寸 TrueSize」绘制，
+                // 与下方 Library 分支 Library.Draw(Index, DisplayLocation, ...) 在 DisplayLocation 以自然尺寸绘制的行为一致。
+                //   • Size     = 控件布局/碰撞尺寸：DisplayRectangle、IsMouseOver 命中判定、LayerControl 烘焙 RT 尺寸都基于它。
+                //   • TrueSize = 图片/精灵实际像素尺寸（atlas 帧 SourceRectangle 或 Library.GetTrueSize），即“实际要画多大”。
+                // 不要用 Size 当绘制尺寸：那会把图片拉伸/压缩进布局框，既与 Library 分支不一致，也会把图扭曲。
+                KFramework.MonoGame.Rectangle targetRect = new KFramework.MonoGame.Rectangle(DisplayLocation.X, DisplayLocation.Y, TrueSize.Width, TrueSize.Height);
+                // 走 DXManager.Draw 安全入口（BeginSprite 会按当前上下文自动 Begin）：
+                // 主渲染 / LayerControl 烘焙通用；直接调 SpriteBatch.DrawFrame 在烘焙时主批未 Begin 会抛异常。
+                DXManager.Draw(atlasSprite.Texture, atlasSprite.SourceRectangle, targetRect, drawColor);
                 
                 if (GrayScale)
                 {
@@ -243,18 +250,11 @@ namespace Client.MirControls
             return base.IsMouseOver(p) && (!_pixelDetect || Library.VisiblePixel(Index, p.Subtract(DisplayLocation),true) || Moving);
         }
 
-        // MirImageControl（含 MirButton / MirAnimatedControl / MirMessageBox / 各 *Dialog）只允许挂在 UI 层：
-        // MirScene.AddControl 的路由规则保证 MapControl → WorldLayer、其余一律 → UILayer；
-        // 世界层里唯一的控件就是 MapControl（class MapControl : MirControl），它及其子树不使用图片控件。
-        // 一旦图片控件落在世界层或游离，命中测试/坐标口径/层变换全部错位（典型症状：按钮画得出却点不动）。
-        // 全部实现收在 AssertUILayerHosted 这一个方法里（辅助逻辑用局部函数内联），不额外污染本类与其它文件。
         private bool _uiHostChecked;
         private static readonly HashSet<MirControl> _uiHostReported = new HashSet<MirControl>();
 
         public override void Draw()
         {
-            // 必须放在 base.Draw() 之前：base 里有 Size > ScreenWidth 的超屏剔除会直接 return，
-            // 而这类"尺寸比屏幕还大"的控件恰恰最可疑，必须照样被体检到。
             AssertUILayerHosted(this);
             base.Draw();
         }
@@ -354,5 +354,7 @@ namespace Client.MirControls
             UseOffSetChanged = null;
             _useOffSet = false;
         }
+
+        
     }
 }

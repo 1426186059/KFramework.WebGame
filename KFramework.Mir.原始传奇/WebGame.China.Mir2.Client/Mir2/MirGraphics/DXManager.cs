@@ -262,6 +262,17 @@ namespace Client.MirGraphics
             CMain.DPSCounter++;
         }
 
+        // 图集帧专用（与主 Texture2D 路径同源的安全入口：BeginSprite 会按当前上下文自动 Begin，
+        // 主渲染 / LayerControl 烘焙通用）。直接调 SpriteBatch.DrawFrame 在烘焙时主批未 Begin 会抛
+        // “Draw 必须在 Begin / End 之间调用”。源/目标矩形与颜色直接与 atlas 帧(KSpriteInfo)一致。
+        public static void Draw(Texture2D texture, KFramework.MonoGame.Rectangle sourceRect, KFramework.MonoGame.Rectangle destRect, KFramework.MonoGame.Color color, KFramework.MonoGame.BlendState? blendState = null)
+        {
+            if (texture == null) return;
+            BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
+            Batch.Draw(texture, destRect, sourceRect, color);
+            CMain.DPSCounter++;
+        }
+
         public static void DrawOpaque(Texture2D texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, float opacity)
         {
             var c = color; c.Alpha = opacity; Draw(texture, sourceRect, position, c);
