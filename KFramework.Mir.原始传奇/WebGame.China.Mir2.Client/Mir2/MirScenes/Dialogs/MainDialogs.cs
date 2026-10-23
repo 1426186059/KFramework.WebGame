@@ -40,9 +40,48 @@ namespace Client.MirScenes.Dialogs
             Anchor = EAnchorType.BottomCenter;
             AnchorPos = new Point(0, 0);
             ApplyAnchor();
-            AtlasNameKey = "y_homeUI-sheet";
-            AtlasFrame = "bg_zhukuang_1_tx";
+            //AtlasNameKey = "y_homeUI-sheet";
+            //AtlasFrame = "bg_zhukuang_1_tx";
             this.Size = new MirEngine.Size(1151, 237);
+
+            HealthOrb = new MirControl
+            {
+                Parent = this,
+                Location = new Point(170, 90),
+                NotControl = true,
+            };
+            HealthOrb.BeforeDraw += HealthOrb_BeforeDraw;
+
+            var mHPAni = new MirAtlasAnimatedControl
+            {
+                Parent = HealthOrb,
+                Location = new Point(0, 0),
+                Animated = true,
+                Loop = true,
+                AnimationDelay = 120,
+                Pivot = new PointF(1, 0f),
+                AtlasNameKey = "y_homeUI-sheet", 
+            };
+            mHPAni.SetFrames("y_h_hp_", 0, 9);
+
+            var mMPAni = new MirAtlasAnimatedControl
+            {
+                Parent = HealthOrb,
+                Location = new Point(0, 0),
+                Animated = true,
+                Loop = true,
+                AnimationDelay = 120,
+                AtlasNameKey = "y_homeUI-sheet"
+            };
+            mMPAni.SetFrames("y_h_mp_", 0, 9);
+
+            var mMainUI = new MirImageControl
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "bg_zhukuang_1_tx",
+                Location = new Point(0, 0),
+                Parent = this,
+            };
 
             InventoryButton = new MirButton
             {
@@ -205,37 +244,6 @@ namespace Client.MirScenes.Dialogs
                 if (!GameScene.Scene.GameShopDialog.Visible) GameScene.Scene.GameShopDialog.Show();
                 else GameScene.Scene.GameShopDialog.Hide();
             };
-
-            HealthOrb = new MirControl
-            {
-                Parent = this,
-                Location = new Point(100, 30),
-                NotControl = true,
-            };
-
-            HealthOrb.BeforeDraw += HealthOrb_BeforeDraw;
-
-            var mHPAni = new MirAtlasAnimatedControl
-            {
-                Parent = HealthOrb,
-                Location = new Point(-64, 0),
-                Animated = true,
-                Loop = true,
-                AnimationDelay = 120,
-                AtlasNameKey = "y_homeUI-sheet"
-            };
-            mHPAni.SetFrames("y_h_hp_", 0, 9);
-
-            var mMPAni = new MirAtlasAnimatedControl
-            {
-                Parent = HealthOrb,
-                Location = new Point(0, 0),
-                Animated = true,
-                Loop = true,
-                AnimationDelay = 120,
-                AtlasNameKey = "y_homeUI-sheet"
-            };
-            mMPAni.SetFrames("y_h_mp_", 0, 9);
 
             //HealthLabel = new MirLabel
             //{

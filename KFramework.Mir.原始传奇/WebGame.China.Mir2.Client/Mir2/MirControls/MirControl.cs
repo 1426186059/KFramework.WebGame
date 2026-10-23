@@ -13,6 +13,23 @@ namespace Client.MirControls
         public virtual Point DisplayLocation { get { return Parent == null ? Location : Parent.DisplayLocation.Add(Location); } }
         public Rectangle DisplayRectangle { get { return new Rectangle(DisplayLocation, Size); } }
 
+        // 缩放（对齐 KTransform/KWidget）：LocalScale 为本控件自身缩放，WorldScale 沿父链累乘得到最终缩放；默认 1，不改变现有布局/命中逻辑。
+        private Vector2 _localScale = new Vector2(1f, 1f);
+        public Vector2 LocalScale
+        {
+            get { return _localScale; }
+            set { if (_localScale.X == value.X && _localScale.Y == value.Y) return; _localScale = value; Redraw(); }
+        }
+
+        public Vector2 WorldScale
+        {
+            get
+            {
+                Vector2 p = Parent != null ? Parent.WorldScale : new Vector2(1f, 1f);
+                return new Vector2(p.X * _localScale.X, p.Y * _localScale.Y);
+            }
+        }
+
         public bool GrayScale { get; set; }
         public bool Blending { get; set; }
         public float BlendingRate { get; set; }

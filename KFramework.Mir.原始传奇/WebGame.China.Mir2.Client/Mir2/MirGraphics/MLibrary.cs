@@ -414,6 +414,19 @@ namespace Client.MirGraphics
             DXManager.SetBlend(oldBlend);
             mi.CleanTime = CMain.Time + Settings.CleanDelay;
         }
+        public void DrawBlend(int index, Point point, Size size, Color colour, float rate = 1)
+        {
+            MImage mi = CheckImage(index);
+            if (mi == null) return;
+
+            if (point.X >= Settings.ScreenWidth || point.Y >= Settings.ScreenHeight || point.X + size.Width < 0 || point.Y + size.Height < 0) return;
+
+            bool oldBlend = DXManager.Blending;
+            DXManager.SetBlend(true, rate);
+            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new RectangleF(point.X, point.Y, size.Width, size.Height), colour);
+            DXManager.SetBlend(oldBlend);
+            mi.CleanTime = CMain.Time + Settings.CleanDelay;
+        }
         public void Draw(int index, Rectangle section, Point point, Color colour, bool offSet)
         {
             MImage mi = CheckImage(index);
@@ -468,7 +481,7 @@ namespace Client.MirGraphics
             float scaleX = (float)size.Width / mi.Width;
             float scaleY = (float)size.Height / mi.Height;
 
-            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new RectangleF(point.X, point.Y, size.Width, size.Height), Color.White);
+            DXManager.Draw(mi.Image, new Rectangle(0, 0, mi.Width, mi.Height), new RectangleF(point.X, point.Y, size.Width, size.Height), colour);
 
             mi.CleanTime = CMain.Time + Settings.CleanDelay;
         }

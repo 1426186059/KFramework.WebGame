@@ -210,6 +210,14 @@ namespace Client.MirControls
                 UseOffSetChanged.Invoke(this, EventArgs.Empty);
         }
 
+        // 锚点（归一化 0~1，默认左上）：绘制时图像以自身该点对齐到布局框对应点，便于多帧动画尺寸不一致时统一对齐。
+        private PointF _pivot = new PointF(0f, 0f);
+        public PointF Pivot
+        {
+            get { return _pivot; }
+            set { if (_pivot == value) return; _pivot = value; Redraw(); }
+        }
+
         public override Size Size
         {
             set { base.Size = value; }
@@ -267,12 +275,12 @@ namespace Client.MirControls
                     DXManager.SetGrayscale(true);
                 }
 
-                // 绘制目标矩形：以 DisplayLocation 为锚点。
-                // 用 Size（而非 TrueSize）作目标尺寸：Size 的 getter 尊重 AutoSize ——
-                //   • AutoSize=true  → Size 取图集帧自然尺寸（与 TrueSize 一致），按原尺寸绘制；
-                //   • AutoSize=false → Size 为用户指定尺寸，图片按 Size 缩放铺满布局框，使显式设置的尺寸真正生效。
-                // Size 同时驱动 DisplayRectangle 命中判定与 ApplyAnchor 定位，三者保持一致。
-                KFramework.MonoGame.Rectangle targetRect = new KFramework.MonoGame.Rectangle(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height);
+                // 目标矩形按 Pivot（归一化锚点，默认左上）对齐：图像以自身 Pivot 点落在 DisplayLocation；WorldScale 沿父链累乘缩放绘制尺寸（默认 1，行为不变）。
+                var ws = WorldScale;
+                Size drawSize = new Size((int)(Size.Width * ws.X), (int)(Size.Height * ws.Y));
+                int px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
+                int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
+                KFramework.MonoGame.Rectangle targetRect = new KFramework.MonoGame.Rectangle(px, py, drawSize.Width, drawSize.Height);
                 // 混合状态对齐原版 Crystal：用【控件自身的 Blending 属性】决定，而非全局 DXManager.Blending。
                 // 否则会被其它特效遗留的全局加法混合污染——暗色 UI 在亮背景上被叠加成“过曝发白”（即“混合过头”）。
                 //   • Blending=false（正常 UI）→ NonPremultiplied（直通 alpha，等价原版 SpriteFlags.AlphaBlend）
@@ -300,10 +308,22 @@ namespace Client.MirControls
                     DXManager.SetGrayscale(true);
                 }
 
+                // 同图集分支：以 Pivot 决定图像哪个点落在 DisplayLocation；WorldScale 缩放绘制尺寸（默认 1，行为不变）。
+                var ws = WorldScale;
+                Size drawSize = new Size((int)(Size.Width * ws.X), (int)(Size.Height * ws.Y));
+                Point drawLoc = new Point(
+                    DisplayLocation.X - (int)(_pivot.X * drawSize.Width),
+                    DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height));
+
+                // 预乘透明度到颜色，再交给按 Size 缩放的重载（该重载走 DXManager.Draw，自身不处理 Opacity）。
+                Color drawColor = ForeColour;
+                if (Opacity < 1f)
+                    drawColor = new Color(drawColor.R, drawColor.G, drawColor.B, (byte)(drawColor.A * Opacity));
+
                 if (Blending)
-                    Library.DrawBlend(Index, DisplayLocation, ForeColour, false, BlendingRate);
+                    Library.DrawBlend(Index, drawLoc, drawSize, drawColor, BlendingRate);
                 else
-                    Library.Draw(Index, DisplayLocation, ForeColour, false, Opacity);
+                    Library.Draw(Index, drawLoc, drawSize, drawColor);
 
                 if (GrayScale) DXManager.SetGrayscale(oldGray);
             }
