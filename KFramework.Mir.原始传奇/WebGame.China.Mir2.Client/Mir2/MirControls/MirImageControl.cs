@@ -313,7 +313,7 @@ namespace Client.MirControls
                     ? KFramework.MonoGame.BlendState.Additive
                     : KFramework.MonoGame.BlendState.NonPremultiplied;
                 // 走 DXManager.Draw 安全入口（BeginSprite 会按当前上下文自动 Begin）：
-                // 主渲染 / LayerControl 烘焙通用；直接调 SpriteBatch.DrawFrame 在烘焙时主批未 Begin 会抛异常。
+                // 主渲染 / 场景烘焙通用；直接调 SpriteBatch.DrawFrame 在烘焙时主批未 Begin 会抛异常。
                 DXManager.Draw(atlasSprite.Texture, srcRect, dstRect, drawColor, imgBlend);
                 
                 if (GrayScale)
@@ -400,88 +400,7 @@ namespace Client.MirControls
             return true;
         }
 
-        private bool _uiHostChecked;
-        private static readonly HashSet<MirControl> _uiHostReported = new HashSet<MirControl>();
 
-        public override void Draw()
-        {
-            AssertUILayerHosted(this);
-            base.Draw();
-        }
-
-        private static void AssertUILayerHosted(MirControl self)
-        {
-            if (self == null) return;
-
-            // 沿"实际收录容器"向上走：Parent 可能仍指向场景而实体已被 MirScene.AddControl
-            // 路由进某个层容器，所以要按 Controls 的收录关系找真正的上一级。
-            MirControl ContainerOf(MirControl node)
-            {
-                if (node == null || node.Parent == null) return null;
-                if (node.Parent.Controls.Contains(node)) return node.Parent;
-
-                for (int i = 0; i < node.Parent.Controls.Count; i++)
-                {
-                    MirControl c = node.Parent.Controls[i];
-                    if (c != null && c.Controls.Contains(node)) return c;
-                }
-                return null;
-            }
-
-            string Describe(MirControl c)
-            {
-                MirImageControl img = c as MirImageControl;
-                string lib = (img != null && img.Library != null) ? " lib=" + img.Library.FileName + " idx=" + img.Index : "";
-                return string.Format("{0}[Loc=({1},{2}) Size={3}x{4} Disp=({5},{6}){7}]",
-                    c.GetType().Name, c.Location.X, c.Location.Y, c.Size.Width, c.Size.Height,
-                    c.DisplayLocation.X, c.DisplayLocation.Y, lib);
-            }
-
-            // 每个控件只体检一次（字段在实例上，避免每帧走链）。
-            MirImageControl selfImage = self as MirImageControl;
-            if (selfImage != null)
-            {
-                if (selfImage._uiHostChecked) return;
-                selfImage._uiHostChecked = true;
-            }
-
-            // 第一遍只判 ok，不分配、不拼串。
-            MirControl cur = self, below = null;
-            for (int i = 0; i < 64; i++)
-            {
-                MirControl next = ContainerOf(cur);
-                if (next == null) break;
-                below = cur;
-                cur = next;
-            }
-            MirControl root = cur, layer = below;
-
-            if (root is MirScene && layer is UILayerControl) return;
-
-            // 第二遍才拼详细日志：同一控件只报一次，总数超过 200 条后收口。
-            if (!_uiHostReported.Add(self)) return;
-            if (_uiHostReported.Count > 200)
-            {
-                if (_uiHostReported.Count == 201)
-                    KFramework.MonoGame.PrintTool.Log("[Mir][UIHost] 已达日志上限(200)，后续不再打印。");
-                return;
-            }
-
-            string reason = !(root is MirScene)
-                ? "根节点不是 MirScene（" + root.GetType().FullName + "）"
-                : (layer == null ? "直接挂在场景根上，未进入任何层"
-                                 : "所在层不是 UILayerControl（" + layer.GetType().FullName + "）");
-
-            var chain = new List<MirControl>();
-            for (MirControl node = self; node != null && chain.Count < 64; node = ContainerOf(node))
-                chain.Add(node);
-            string chainText = "";
-            for (int i = 0; i < chain.Count; i++)
-                chainText += (i > 0 ? " <- " : "") + Describe(chain[i]);
-
-            KFramework.MonoGame.PrintTool.Log(string.Format("[Mir][UIHost] {0} | 链: {1} | 活动场景: {2}",
-                reason, chainText, MirScene.ActiveScene == null ? "null" : MirScene.ActiveScene.GetType().Name));
-        }
 
         protected override void Dispose(bool disposing)
         {

@@ -1159,12 +1159,11 @@ namespace Client.MirScenes
 
         protected internal override void DrawControl()
         {
-            // 地图由世界层负责：MapControl 挂在 WorldLayer 里，世界层烘焙它并先上屏，
-            // UI 层透明叠加在世界之上——整条链路交给 base.DrawControl()，这里不再直画 MapControl。
-            // 世界内容只在 MapControl 纹理失效（动画/移动/地板变化）时才需重新烘焙，
-            // 故按 MapControl.TextureValid 精确作废世界层，避免每帧多一张全屏 RT。
+            // 单一场景 RT：地图(MapControl)与所有 UI 一起烤进同一张不透明 RT（见 MirScene.CreateTexture），
+            // 半透明 UI 始终压在不透明内容之上，不会漏到地图层。
+            // 地图纹理失效（动画/移动/地板变化）时整张场景 RT 重烘焙。
             if (MapControl != null && !MapControl.TextureValid)
-                WorldLayer.Redraw();
+                Redraw();
 
             base.DrawControl();
 
@@ -10735,11 +10734,9 @@ namespace Client.MirScenes
 
         public override void Draw()
         {
-            AssertWorldLayerHosted(this);
-
             // 不走 base.Draw()：base 里有 Size > Settings.ScreenWidth 的超屏裁剪守卫，
             // 而 MapControl 按窗口原生分辨率(FullScreenSize)铺满，天然等于甚至大于逻辑分辨率，
-            // 走 base 会被直接剔除、世界层只剩黑底。这里由世界层烘焙时调用，画进世界层 RT。
+            // 走 base 会被直接剔除、场景只剩黑底。这里由场景烘焙时调用，画进场景 RT。
             OnBeforeShown();
             BeforeDrawControl();
             DrawControl();
@@ -10750,40 +10747,15 @@ namespace Client.MirScenes
             OnShown();
         }
 
-        // MapControl 只允许挂在 MirScene.WorldLayer 上（见 MirScene.InsertControl 的 MapControl → WorldLayer 路由）。
-        // 一旦不在世界层里，世界层烘焙不到任何内容——地图不上屏（黑屏），或被世界层的黑底盖住。
-        // 全部实现收在 AssertWorldLayerHosted 这一个方法里，与本类其它逻辑解耦。
-        private bool _worldHostChecked;
-        private static readonly HashSet<MirControl> _worldHostReported = new HashSet<MirControl>();
-
-        private static void AssertWorldLayerHosted(MapControl self)
-        {
-            if (self._worldHostChecked) return;
-            self._worldHostChecked = true;
-
-            MirControl layer = self.Parent, root = (layer == null) ? null : layer.Parent;
-            if (layer is WorldLayerControl && root is MirScene) return;
-
-            if (!_worldHostReported.Add(self)) return;
-            if (_worldHostReported.Count > 50) return;
-
-            string reason = (layer == null)
-                ? "没有父容器（游离，未被任何层收录）"
-                : !(layer is WorldLayerControl)
-                    ? "父容器不是 WorldLayerControl（" + layer.GetType().FullName + "）"
-                    : "WorldLayer 的父不是 MirScene（" + ((root == null) ? "null" : root.GetType().FullName) + "）";
-
-            KFramework.MonoGame.PrintTool.Log(string.Format(
-                "[Mir][WorldHost] MapControl 不在世界层：{0} | Loc=({1},{2}) Size={3}x{4}",
-                reason, self.Location.X, self.Location.Y, self.Size.Width, self.Size.Height));
-        }
+        // MapControl 只允许挂在 MirScene 上（不再有独立的世界层容器）。
+        // 一旦不在场景里，场景烘焙不到任何内容——地图不上屏（黑屏）。
 
         protected override void CreateTexture()
         {
             if (User == null) return;
 
             // MapControl 按【全屏/窗口原生分辨率】烘焙世界（世界坐标），地板 1:1 铺满、无黑边、无放大。
-            // 世界层只做 1:1 透传（见 WorldLayerControl 覆写的 GetLayerTransform，单位矩阵），所以这里直接用窗口像素作为世界区域：
+            // 场景 RT 为 1:1 透传（单位矩阵），所以这里直接用窗口像素作为世界区域：
             // 窗口更大只是看到更多世界（以 48x32 世界像素为单位的视口更大），而非放大世界坐标。
             // 命中：MapControl 内鼠标即世界像素（与屏幕 1:1），与 OffSetX/Y、ViewRangeX/Y 一致。
             // 用 DXManager.FullScreenSize（后备缓冲真实像素）而非 GDevice.Viewport，避免某些宿主下
@@ -10815,7 +10787,7 @@ namespace Client.MirScenes
             DXManager.Device.Clear(ClearFlags.Target, BackColour, 0, 0);
 
             // 内容按全屏(窗口原生分辨率) 1:1 烘焙（不缩放）。世界层为单位变换，DrawControl 直接 1:1 合成。
-            var worldLayerTransform = DXManager.RenderTransform;
+            var savedRenderTransform = DXManager.RenderTransform;
             DXManager.RenderTransform = null;
 
             DrawBackground();
@@ -10894,7 +10866,7 @@ namespace Client.MirScenes
                 MapObject.User.DrawName();
 
             // 恢复世界层变换，供外层 DrawControl 合成时等比缩放（只缩放一次）。
-            DXManager.RenderTransform = worldLayerTransform;
+            DXManager.RenderTransform = savedRenderTransform;
             DXManager.SetSurface(oldSurface);
             surface.Dispose();
             TextureValid = true;

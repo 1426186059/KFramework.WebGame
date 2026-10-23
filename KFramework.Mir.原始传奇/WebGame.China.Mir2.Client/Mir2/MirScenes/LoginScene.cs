@@ -45,7 +45,7 @@ namespace Client.MirScenes
                     Index = 0,
                     Library = Libraries.ChrSel,
                     Loop = false,
-                    Parent = this.UILayer,
+                    Parent = this,
                 };
 
             _background.Anchor = EAnchorType.MiddleCenter;

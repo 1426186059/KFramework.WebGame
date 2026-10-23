@@ -5,7 +5,7 @@
 public class KCamera
 {
     // 把视口(画布)像素坐标转换为 UI 坐标。
-    // UI 层已是恒等变换（UILayerControl.GetLayerTransform），UI 以画布原生分辨率布局，
+    // 场景为单张全屏 RT（恒等变换），UI 以画布原生分辨率布局，
     // 故这里只需扣掉视口原点偏移，【不再做任何逆缩放】——命中检测与可见位置天然对齐。
     // 保留 vp.X/vp.Y 偏移以兼容宿主把 Viewport 设在非原点的情况。
     public static MirEngine.Point ScreenToWorldPos(MirEngine.Point mPoint)

@@ -35,7 +35,7 @@ namespace Client.MirScenes
             {
                 Index = 65,
                 Library = Libraries.Prguse,
-                Parent = this.UILayer,
+                Parent = this,
             };
             Background.Anchor = EAnchorType.MiddleCenter;
             Background.AnchorPos = new Point(0, 0);

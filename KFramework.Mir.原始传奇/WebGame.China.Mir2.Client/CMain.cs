@@ -315,7 +315,7 @@ namespace WebGame.Mir2.MonoGame.Client
 
         // CMain.CreateHintLabel()：鼠标悬停控件的 Hint 浮层。
         // 传统桌面实现把 HintBaseLabel 挂在 MirScene.ActiveScene 上；本移植刻意不挂父节点——场景的子控件会被
-        // 烘焙进 UI 层纹理（MirScene.DrawControl → UILayer.Bake），再叠加一次 MirScene.Draw 里的显式
+        // 烘焙进场景离屏纹理（MirScene.CreateTexture），再叠加一次 MirScene.Draw 里的显式
         // Draw 就会画两遍，故保持无父、只由 MirScene.Draw 画一次（UI 层是单位变换，屏幕坐标即 UI 坐标）。
         private static void CreateHintLabel()
         {

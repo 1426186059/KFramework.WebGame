@@ -1,6 +1,7 @@
 ﻿using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirScenes;
+using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
 using S = ServerPackets;
 
@@ -14,30 +15,11 @@ namespace Client.MirControls
         private static long _lastClickTime;
         private static MirControl _clickedControl;
 
-        protected readonly WorldLayerControl WorldLayer;
-        protected readonly UILayerControl UILayer;
-
         protected MirScene()
         {
             DrawControlTexture = true;
-            BackColour = Color.Black;
+            BackColour = Color.Magenta;
             Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
-
-
-            WorldLayer = new WorldLayerControl
-            {
-                BackColour = Color.Black,
-                DrawControlTexture = false,
-            };
-
-            UILayer = new UILayerControl
-            {
-                BackColour = Color.Transparent,
-                DrawControlTexture = false,
-            };
-
-            WorldLayer.Parent = this;
-            UILayer.Parent = this;
         }
 
         public override sealed Size Size
@@ -46,32 +28,7 @@ namespace Client.MirControls
             set { base.Size = value; }
         }
 
-        // 统一路由：UI 控件进 UILayer，地图(MapControl)进 WorldLayer，层容器自身直接挂到场景。
-        // 必须用 Insert(末尾) 而不是 Add：MirControl.AddControl 只把控件塞进层容器的 Controls，
-        // 并不改 control._parent，于是 Parent 仍指向场景根；而置顶/排序逻辑
-        // （TrySort / OnVisibleChanged / BringToFront）写的都是
-        // "Parent.Controls.Remove(this); Parent.Controls.Add(this)"，
-        // Parent 与真实收录容器一旦不一致，控件就被加回场景根、掉出 UILayer：
-        // 层烘焙不到它（窗口画不出、点不动），并触发 [Mir][UIHost] 归属断言。
-        protected override void AddControl(MirControl control)
-        {
-            if (control == WorldLayer || control == UILayer)
-                base.AddControl(control);
-            else if (control is MapControl)
-                WorldLayer.Insert(WorldLayer.Controls.Count, control);
-            else
-                UILayer.Insert(UILayer.Controls.Count, control);
-        }
 
-        public override void InsertControl(int index, MirControl control)
-        {
-            if (control == WorldLayer || control == UILayer)
-                base.InsertControl(index, control);
-            else if (control is MapControl)
-                WorldLayer.Insert(index, control);
-            else
-                UILayer.Insert(index, control);
-        }
 
         public override void Draw()
         {
@@ -92,29 +49,37 @@ namespace Client.MirControls
         }
 
         /// <summary>
-        /// 浏览器端全屏呈现：覆盖基类 1:1 贴图，改为先把整帧场景（含子控件）烘焙进离屏
-        /// 纹理(ControlTexture)，再把它拉伸铺满画布(Viewport)，使固定逻辑分辨率的 UI 等比
-        /// 铺满窗口，消除"只显示在左上角 + 四周洋红底色"问题。
+        /// 单张全屏不透明 RT：把地图(MapControl)与所有 UI 一起烤进同一张 ControlTexture，
+        /// 清空色用 Magenta（不透明），地图满屏覆盖后不可见。半透明 UI 始终叠在不透明内容之上，
+        /// 绝不会漏到地图层。对应原版 Crystal\Client 的 MirScene.CreateTexture。
         /// </summary>
-        protected internal override void DrawControl()
+        protected override void CreateTexture()
         {
-            if (!DrawControlTexture) return;
+            if (Size != TextureSize)
+                DisposeTexture();
 
-            // 分层烘焙：世界层先，UI 层后（UI 透明叠加在世界之上）。
-            WorldLayer.Bake();
-            UILayer.Bake();
+            if (ControlTexture == null || ControlTexture.Disposed)
+            {
+                DXManager.ControlList.Add(this);
+                ControlTexture = new Texture(DXManager.Device, Size.Width, Size.Height, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+                TextureSize = Size;
+            }
+            Surface oldSurface = DXManager.CurrentSurface;
+            Surface surface = ControlTexture.GetSurfaceLevel(0);
+            DXManager.SetSurface(surface);
 
-            // 两层渲染目标均为视口分辨率、1:1 上屏；先世界后 UI 叠加。
-            var worldRT = WorldLayer.RenderTargetTexture;
-            if (worldRT != null) DXManager.PresentToScreen(worldRT);
+            DXManager.Device.Clear(ClearFlags.Target, BackColour, 0, 0);
 
-            var uiRT = UILayer.RenderTargetTexture;
-            if (uiRT != null) DXManager.PresentToScreen(uiRT);
+            BeforeDrawControl();
+            DrawChildControls();
+            AfterDrawControl();
 
+            DXManager.Sprite.Flush();
+
+            DXManager.SetSurface(oldSurface);
+            TextureValid = true;
+            surface.Dispose();
         }
-
-        // 烘焙职责已下放到 WorldLayer / UILayer（见下方 LayerControl.CreateTexture），
-        // 由 DrawControl 分别烘焙后叠加上屏，故场景根不再单独烘焙。
 
         public override void OnMouseDown(MouseEventArgs e)
         {
@@ -215,11 +180,7 @@ namespace Client.MirControls
 
         public override void Redraw()
         {
-            //场景ReDraw，对应的是 世界层
-            if (WorldLayer != null)
-            {
-                WorldLayer.Redraw();
-            }
+            TextureValid = false;
         }
 
         /// <summary>
@@ -241,23 +202,11 @@ namespace Client.MirControls
         {
             Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
 
-            // UI 层整棵子树（含嵌套对话框，例如登录框嵌在 _background 内）。
-            // 虽然子控件的 DisplayLocation 会随父累加，但"居中/贴边"这类布局是【相对屏幕】算出来的，
-            // 父动了不代表子仍是居中，故需逐个调用；未设锚点的控件不会产生任何变化。
-            ApplyAnchorTree(UILayer);
+            // 整棵控件树（地图 + UI）按锚点重算位置；未设锚点的控件不产生任何变化。
+            ApplyAnchorTree(this);
 
-            // 直接挂在场景根上、未走 AddControl 路由的控件（如调试标签）。
-            if (Controls != null)
-                for (int i = 0; i < Controls.Count; i++)
-                {
-                    var c = Controls[i];
-                    if (c == null || c == WorldLayer || c == UILayer) continue;
-                    ApplyAnchorTree(c);
-                }
-
-            //// 位置已变，两层离屏纹理需重新烘焙。
-            //WorldLayer.Invalidate();
-            UILayer.Redraw();
+            // 位置已变，场景离屏纹理需重新烘焙。
+            Redraw();
         }
 
         // 世界层不参与重算：MapControl 每帧用 FullScreenSize 调 UpdateViewPort，

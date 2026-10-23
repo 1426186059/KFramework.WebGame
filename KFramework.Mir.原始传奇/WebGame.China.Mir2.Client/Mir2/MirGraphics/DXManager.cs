@@ -87,7 +87,7 @@ namespace Client.MirGraphics
             // 浏览器/WebGL 宿主下 GDevice.Viewport 常读到 0 或“逻辑尺寸”，而后备缓冲(BackBuffer)才是真实画布像素
             // （这也是 FullScreenSize 优先用 BackBuffer 的原因）。Settings.ScreenWidth/Height 直接读 GDevice.Viewport，
             // 若不校正，控件构造/布局时会拿到 0 → Recenter 把对话框定位到负坐标、且 MirControl.Draw 守卫
-            // （Size.Width > Settings.ScreenWidth）直接跳过绘制 → 整层 UILayer（登录/选人/游戏 UI）全不可见。
+            // （Size.Width > Settings.ScreenWidth）直接跳过绘制 → 整屏 UI（登录/选人/游戏 UI）全不可见。
             // 这里把 Viewport 显式校正为后备缓冲尺寸，让全屏值在任何时刻都正确。
             var pp = GDevice.PresentationParameters;
             if (pp != null && pp.BackBufferWidth > 0 && pp.BackBufferHeight > 0)
@@ -263,7 +263,7 @@ namespace Client.MirGraphics
         }
 
         // 图集帧专用（与主 Texture2D 路径同源的安全入口：BeginSprite 会按当前上下文自动 Begin，
-        // 主渲染 / LayerControl 烘焙通用）。直接调 SpriteBatch.DrawFrame 在烘焙时主批未 Begin 会抛
+        // 主渲染 / 场景烘焙通用）。直接调 SpriteBatch.DrawFrame 在烘焙时主批未 Begin 会抛
         // “Draw 必须在 Begin / End 之间调用”。源/目标矩形与颜色直接与 atlas 帧(KSpriteInfo)一致。
         public static void Draw(Texture2D texture, KFramework.MonoGame.Rectangle sourceRect, KFramework.MonoGame.Rectangle destRect, KFramework.MonoGame.Color color, KFramework.MonoGame.BlendState? blendState = null)
         {
