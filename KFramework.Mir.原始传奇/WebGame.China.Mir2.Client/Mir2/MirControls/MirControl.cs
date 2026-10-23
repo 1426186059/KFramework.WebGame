@@ -409,13 +409,7 @@ namespace Client.MirControls
         }
 
         private bool _notControl;
-        /// <summary>
-        /// 标记本控件“不参与鼠标交互”：仍会正常绘制，但不进入鼠标命中测试，
-        /// 点击 / 悬停会穿透到其下方的控件。
-        /// 作用点见 <see cref="IsMouseOver"/>（return 末尾的 <c>&amp;&amp; !NotControl</c>，为 true 时直接判定未命中）
-        /// 与 <see cref="Highlight"/>（为 true 时不成为 MouseControl，从而不抢走父级控件的悬停/按下状态）。
-        /// 典型用途：贴在按钮/单元格上的文字标签（MirButton._label 等），避免文字层拦截按钮本身的点击与高亮。
-        /// </summary>
+        // 只绘制、不拦截鼠标：为 true 时点击/悬停穿透到下层控件（见 IsMouseOver / Highlight）。
         public bool NotControl
         {
             private get { return _notControl; }
