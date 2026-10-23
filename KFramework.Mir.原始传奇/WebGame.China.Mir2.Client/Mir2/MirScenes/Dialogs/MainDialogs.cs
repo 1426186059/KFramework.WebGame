@@ -28,6 +28,8 @@ namespace Client.MirScenes.Dialogs
 
         public MirButton HeroMenuButton, HeroSummonButton;
 
+        MirAtlasAnimatedControl mHPAni, mHPAni1, mMPAni, mMPAni1;
+
         public bool HPOnly
         {
             get { return User != null && User.Class == MirClass.Warrior && User.Level < 26; }
@@ -47,12 +49,12 @@ namespace Client.MirScenes.Dialogs
             HealthOrb = new MirControl
             {
                 Parent = this,
-                Location = new Point(170, 90),
+                Location = new Point(168, 90),
                 NotControl = true,
             };
             HealthOrb.BeforeDraw += HealthOrb_BeforeDraw;
 
-            var mHPAni = new MirAtlasAnimatedControl
+            this.mHPAni = new MirAtlasAnimatedControl
             {
                 Parent = HealthOrb,
                 Location = new Point(0, 0),
@@ -61,11 +63,25 @@ namespace Client.MirScenes.Dialogs
                 AnimationDelay = 120,
                 Pivot = new PointF(1, 0f),
                 AtlasNameKey = "y_homeUI-sheet",
-                SizeScale = 1.2f
+                SizeScale = 1.1f,
+                FillOrigin = MirFillOrigin.Bottom,
             };
-            mHPAni.SetFrames("y_h_hp_", 0, 9);
+            this.mHPAni.SetFrames("y_h_hp_", 0, 9);
 
-            var mMPAni = new MirAtlasAnimatedControl
+            this.mHPAni1 = new MirAtlasAnimatedControl
+            {
+                Parent = mHPAni,
+                Location = new Point(0, 0),
+                Animated = true,
+                Loop = true,
+                AnimationDelay = 120,
+                Pivot = new PointF(1, 1f),
+                AtlasNameKey = "y_homeUI-sheet",
+                SizeScale = 1.1f,
+            };
+            this.mHPAni1.SetFrames("y_h_pl_", 0, 9);
+
+            this.mMPAni = new MirAtlasAnimatedControl
             {
                 Parent = HealthOrb,
                 Location = new Point(0, 0),
@@ -73,9 +89,23 @@ namespace Client.MirScenes.Dialogs
                 Loop = true,
                 AnimationDelay = 120,
                 AtlasNameKey = "y_homeUI-sheet",
-                SizeScale = 1.2f
+                SizeScale = 1.1f,
+                FillOrigin = MirFillOrigin.Bottom,
             };
-            mMPAni.SetFrames("y_h_mp_", 0, 9);
+            this.mMPAni.SetFrames("y_h_mp_", 0, 9);
+
+            this.mMPAni1 = new MirAtlasAnimatedControl
+            {
+                Parent = mMPAni,
+                Location = new Point(0, 0),
+                Animated = true,
+                Loop = true,
+                AnimationDelay = 120,
+                AtlasNameKey = "y_homeUI-sheet",
+                SizeScale = 1.1f,
+                Pivot = new PointF(0, 1f),
+            };
+            this.mMPAni1.SetFrames("y_h_mpl_", 0, 9);
 
             var mMainUI = new MirImageControl
             {
@@ -562,45 +592,13 @@ namespace Client.MirScenes.Dialogs
 
         private void HealthOrb_BeforeDraw(object sender, EventArgs e)
         {
-            if (Libraries.Prguse == null) return;
-
-            int height;
-            if (User != null && User.HP != User.Stats[Stat.HP])
-                height = (int)(80 * User.HP / (float)User.Stats[Stat.HP]);
-            else
-                height = 80;
-
-            if (height < 0) height = 0;
-            if (height > 80) height = 80;
-
-            int orbImage = 4;
-
-            bool hpOnly = false;
-
-            if (HPOnly)
-            {
-                hpOnly = true;
-                orbImage = 6;
-            }
-
-            Rectangle r = new Rectangle(0, 80 - height, hpOnly ? 100 : 50, height);
-            Point mPos = new Point(
-                ((Settings.ScreenWidth / 2) - (Size.Width / 2)), 
-                HealthOrb.DisplayLocation.Y + 80 - height);
-            Libraries.Prguse.Draw(orbImage, r, mPos, Color.White, false);
-
-            if (hpOnly) return;
-
-            if (User.MP != User.Stats[Stat.MP])
-                height = (int)(80 * User.MP / (float)User.Stats[Stat.MP]);
-            else
-                height = 80;
-
-            if (height < 0) height = 0;
-            if (height > 80) height = 80;
-            r = new Rectangle(51, 80 - height, 50, height);
-
-            Libraries.Prguse.Draw(4, r, new Point(((Settings.ScreenWidth / 2) - (Size.Width / 2)) + 51, HealthOrb.DisplayLocation.Y + 80 - height), Color.White, false);
+            float fHPPercent = User.HP / (float)User.Stats[Stat.HP];
+            this.mHPAni.FillAmount = fHPPercent;
+            this.mHPAni1.Location = new Point(0, (int)(10 + 122 * this.mHPAni.SizeScale * (1 - fHPPercent)));
+            if (HPOnly) return;
+            float fMPPercent = User.MP / (float)User.Stats[Stat.MP];
+            this.mMPAni.FillAmount = fMPPercent;
+            this.mMPAni1.Location = new Point(0, (int)(10 + 122 * this.mMPAni.SizeScale * (1 - fMPPercent)));
         }
 
         private void ExperienceBar_BeforeDraw(object sender, EventArgs e)
