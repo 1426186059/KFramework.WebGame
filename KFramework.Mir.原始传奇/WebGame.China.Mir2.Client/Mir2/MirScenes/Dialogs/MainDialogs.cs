@@ -136,7 +136,9 @@ namespace Client.MirScenes.Dialogs
                 HoverIndex = 1910,
                 Index = 1909,
                 Library = Libraries.Prguse,
-                Location = new Point(this.Size.Width - 50, 76),
+                AutoSize = false,
+                Size = new Size(60, 60),
+                Location = new Point(this.Size.Width - 120, 100),
                 Parent = this,
                 PressedIndex = 1911,
                 Sound = SoundList.ButtonA,
@@ -154,7 +156,9 @@ namespace Client.MirScenes.Dialogs
                 HoverIndex = 1913,
                 Index = 1912,
                 Library = Libraries.Prguse,
-                Location = new Point(this.Size.Width - 27, 76),
+                AutoSize = false,
+                Size = new Size(60, 60),
+                Location = new Point(this.Size.Width - 100, 130),
                 Parent = this,
                 PressedIndex = 1914,
                 Sound = SoundList.ButtonA,
@@ -172,7 +176,7 @@ namespace Client.MirScenes.Dialogs
                 HoverIndex = 1961,
                 Index = 1960,
                 Library = Libraries.Prguse,
-                Location = new Point(this.Size.Width - 55, 35),
+                Location = new Point(this.Size.Width - 100, 160),
                 Parent = this,
                 PressedIndex = 1962,
                 Sound = SoundList.ButtonC,
@@ -186,15 +190,16 @@ namespace Client.MirScenes.Dialogs
 
             GameShopButton = new MirButton
             {
-                HoverIndex = 827,
-                Index = 826,
-                Library = Libraries.Prguse,
-                Location = new Point(this.Size.Width - 105, 35),
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_gongneng_19",
+                PressedAtlasFrame = "btn_gongneng_20",
+                Size = new Size(45, 45),
+                Location = new Point(this.Size.Width - 170, 100),
                 Parent = this,
-                PressedIndex = 828,
                 Sound = SoundList.ButtonC,
                 Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.GameShopKey), CMain.InputKeys.GetKey(KeybindOptions.GameShop))
             };
+
             GameShopButton.Click += (o, e) =>
             {
                 if (!GameScene.Scene.GameShopDialog.Visible) GameScene.Scene.GameShopDialog.Show();
