@@ -233,7 +233,7 @@ namespace Client.MirControls
             CloseDropDown();
             SelectedIndex = -1;
         }
-        public void Update()
+        public override void Update()
         {
             // Member is not implemented.
         }

@@ -3,32 +3,17 @@ using Client.MirSounds;
 using SlimDX;
 using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
+using KFramework.MonoGameExtend;
 
 namespace Client.MirControls
 {
-    public class MirControl : IDisposable
+    // 直接继承 KTransform：获得引擎的 LocalScale / WorldScale（沿父链累乘）/ LocalPosition / WorldPosition 等变换能力。
+    public class MirControl : KTransform
     {
         public static MirControl ActiveControl, MouseControl;
         
         public virtual Point DisplayLocation { get { return Parent == null ? Location : Parent.DisplayLocation.Add(Location); } }
         public Rectangle DisplayRectangle { get { return new Rectangle(DisplayLocation, Size); } }
-
-        // 缩放（对齐 KTransform/KWidget）：LocalScale 为本控件自身缩放，WorldScale 沿父链累乘得到最终缩放；默认 1，不改变现有布局/命中逻辑。
-        private Vector2 _localScale = new Vector2(1f, 1f);
-        public Vector2 LocalScale
-        {
-            get { return _localScale; }
-            set { if (_localScale.X == value.X && _localScale.Y == value.Y) return; _localScale = value; Redraw(); }
-        }
-
-        public Vector2 WorldScale
-        {
-            get
-            {
-                Vector2 p = Parent != null ? Parent.WorldScale : new Vector2(1f, 1f);
-                return new Vector2(p.X * _localScale.X, p.Y * _localScale.Y);
-            }
-        }
 
         public bool GrayScale { get; set; }
         public bool Blending { get; set; }
@@ -473,7 +458,8 @@ namespace Client.MirControls
         }
 
         private MirControl _parent;
-        public MirControl Parent
+        // 隐藏 KTransform.Parent（类型为 KTransform）为本控件的 Parent（MirControl），并同步 KTransform 父链以启用 WorldScale 层级累乘。
+        public new MirControl Parent
         {
             get { return _parent; }
             set
@@ -487,11 +473,12 @@ namespace Client.MirControls
                     _parent.AddControl(this);
 
                 ApplyAnchor();
-                OnParentChanged();
+                // 同步 KTransform 父链：其 Parent setter 会维护子链并（经 virtual）回调用本类 OnParentChanged。
+                base.Parent = value;
             }
         }
         public event EventHandler ParentChanged;
-        protected virtual void OnParentChanged()
+        protected override void OnParentChanged()
         {
             OnLocationChanged();
             if (ParentChanged != null)
@@ -751,7 +738,7 @@ namespace Client.MirControls
             Visible = false;
         }
 
-        public virtual void Draw()
+        public override void Draw()
         {
             //2026-0--25 超出屏幕，我依然让他显示
             if (IsDisposed || !Visible)
@@ -1093,7 +1080,7 @@ namespace Client.MirControls
 
         public bool IsDisposed { get; private set; }
 
-        public void Dispose()
+        public override void Dispose()
         {
             if (IsDisposed)
                 return;
@@ -1198,6 +1185,8 @@ namespace Client.MirControls
                 if (MouseControl == this) MouseControl = null;
             }
 
+            // 清理 KTransform 父链（置 base.Parent=null 并从父节点子链移除）。
+            base.Dispose();
             IsDisposed = true;
         }
 

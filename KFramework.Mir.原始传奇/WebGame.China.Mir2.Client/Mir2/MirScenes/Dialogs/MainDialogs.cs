@@ -60,7 +60,8 @@ namespace Client.MirScenes.Dialogs
                 Loop = true,
                 AnimationDelay = 120,
                 Pivot = new PointF(1, 0f),
-                AtlasNameKey = "y_homeUI-sheet", 
+                AtlasNameKey = "y_homeUI-sheet",
+                
             };
             mHPAni.SetFrames("y_h_hp_", 0, 9);
 
