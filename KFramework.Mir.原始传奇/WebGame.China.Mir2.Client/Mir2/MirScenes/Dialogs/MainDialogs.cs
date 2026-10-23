@@ -42,8 +42,6 @@ namespace Client.MirScenes.Dialogs
             Anchor = EAnchorType.BottomCenter;
             AnchorPos = new Point(0, 0);
             ApplyAnchor();
-            //AtlasNameKey = "y_homeUI-sheet";
-            //AtlasFrame = "bg_zhukuang_1_tx";
             this.Size = new MirEngine.Size(1151, 237);
 
             HealthOrb = new MirControl

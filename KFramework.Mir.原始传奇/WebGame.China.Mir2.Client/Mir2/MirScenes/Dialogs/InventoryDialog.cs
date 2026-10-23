@@ -633,8 +633,6 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(this.Size.Width + 2, 20),
             };
 
-            BeforeDraw += BeltPanel_BeforeDraw;
-
             for (int i = 0; i < Key.Length; i++)
             {
                 Key[i] = new MirLabel
@@ -661,12 +659,6 @@ namespace Client.MirScenes.Dialogs
                 };
             }
 
-        }
-
-        private void BeltPanel_BeforeDraw(object sender, EventArgs e)
-        {
-            if (Libraries.Prguse != null)
-                Libraries.Prguse.Draw(Index + 1, DisplayLocation, Color.White, false, 0.5F);
         }
 
         public MirItemCell GetCell(ulong id)
