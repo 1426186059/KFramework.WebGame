@@ -209,11 +209,33 @@ namespace Client.MirScenes.Dialogs
             HealthOrb = new MirControl
             {
                 Parent = this,
-                Location = new Point(0, 30),
+                Location = new Point(100, 30),
                 NotControl = true,
             };
 
             HealthOrb.BeforeDraw += HealthOrb_BeforeDraw;
+
+            var mHPAni = new MirAtlasAnimatedControl
+            {
+                Parent = HealthOrb,
+                Location = new Point(-64, 0),
+                Animated = true,
+                Loop = true,
+                AnimationDelay = 120,
+                AtlasNameKey = "y_homeUI-sheet"
+            };
+            mHPAni.SetFrames("y_h_hp_", 0, 9);
+
+            var mMPAni = new MirAtlasAnimatedControl
+            {
+                Parent = HealthOrb,
+                Location = new Point(0, 0),
+                Animated = true,
+                Loop = true,
+                AnimationDelay = 120,
+                AtlasNameKey = "y_homeUI-sheet"
+            };
+            mMPAni.SetFrames("y_h_mp_", 0, 9);
 
             //HealthLabel = new MirLabel
             //{

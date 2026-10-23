@@ -232,6 +232,9 @@ namespace WebGame.Mir2.MonoGame.Client
             for (int i = 0; i < MirAnimatedButton.Animations.Count; i++)
                 MirAnimatedButton.Animations[i].UpdateOffSet();
 
+            for (int i = 0; i < MirAtlasAnimatedControl.Animations.Count; i++)
+                MirAtlasAnimatedControl.Animations[i].UpdateOffSet();
+
             // CreateHintLabel() / CreateDebugLabel()（传奇客户端主机类的两个浮层）。
             // 逐帧刷新：Hint 浮层跟随鼠标所在控件的 Hint 文本；Debug 浮层由 Settings.DebugMode（F12）开关，
             // 两个浮层都无 Parent，由 MirScene.Draw() 在场景上屏之后单独 Draw（与 MirScene.cs:85-89 对应）。
