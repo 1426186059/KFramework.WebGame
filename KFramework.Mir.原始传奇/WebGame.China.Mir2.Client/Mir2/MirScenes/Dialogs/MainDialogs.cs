@@ -6,6 +6,7 @@ using Client.MirSounds;
 using SlimDX;
 using System.Text.RegularExpressions;
 using WebGame.Mir2.MonoGame.Client;
+using static Client.MirScenes.SelectScene;
 using C = ClientPackets;
 
 namespace Client.MirScenes.Dialogs
@@ -41,6 +42,7 @@ namespace Client.MirScenes.Dialogs
             ApplyAnchor();
             AtlasNameKey = "y_homeUI-sheet";
             AtlasFrame = "bg_zhukuang_1_tx";
+            this.Size = new MirEngine.Size(1151, 237);
 
             InventoryButton = new MirButton
             {
@@ -68,14 +70,17 @@ namespace Client.MirScenes.Dialogs
 
                 AtlasNameKey = "y_homeUI-sheet",
                 AtlasFrame = "btn_gongneng_07",
-                HoverAtlasFrame = "btn_gongneng_08",    
-
-                Location = new Point(this.Size.Width - 119, 76),
+                PressedAtlasFrame = "btn_gongneng_08",
+                
+                Location = new Point(this.Size.Width - 250, 50),
                 Parent = this,
-                PressedIndex = 1902,
                 Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.CharacterKey), CMain.InputKeys.GetKey(KeybindOptions.Equipment))
             };
+            CharacterButton.LabelImage.AtlasNameKey = "y_homeUI-sheet";
+            CharacterButton.LabelImage.AtlasFrame = "word_xitong_09";
+            CharacterButton.LabelImage.Location =
+                CharacterButton.LabelImage.Bottom.Add(new Point(0, 0));
+
             CharacterButton.Click += (o, e) =>
             {
                 if (GameScene.Scene.CharacterDialog.Visible && GameScene.Scene.CharacterDialog.CharacterPage.Visible)

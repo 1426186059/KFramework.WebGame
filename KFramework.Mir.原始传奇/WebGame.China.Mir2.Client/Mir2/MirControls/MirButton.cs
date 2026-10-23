@@ -97,6 +97,17 @@ namespace Client.MirControls
         }
 
         protected MirLabel _label;
+        public MirLabel Label
+        {
+            get { return _label; }
+        }
+
+        protected MirImageControl _labelImage;
+        public MirImageControl LabelImage
+        {
+            get { return _labelImage; }
+            set { _labelImage = value; }
+        }
 
         protected bool _center;
         public virtual bool CenterText
@@ -190,10 +201,9 @@ namespace Client.MirControls
                 {
                     NotControl = true,
                     Parent = this,
-                    //Font = new Font("Constantia", 8, FontStyle.Italic),
-                    //OutLine = true,
-                    //OutLineColour = Color.FromArgb(255, 70, 50, 30),
                 };
+
+            _labelImage = new MirImageControl { Parent = this, NotControl = true, Visible = false };
         }
 
         protected internal override void DrawControl()
