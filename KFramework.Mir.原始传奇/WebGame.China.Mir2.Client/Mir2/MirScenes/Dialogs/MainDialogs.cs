@@ -215,36 +215,45 @@ namespace Client.MirScenes.Dialogs
 
             HealthOrb.BeforeDraw += HealthOrb_BeforeDraw;
 
-            HealthLabel = new MirLabel
-            {
-                AutoSize = true,
-                Location = new Point(0, 27),
-                Parent = HealthOrb
-            };
-            HealthLabel.SizeChanged += Label_SizeChanged;
+            //HealthLabel = new MirLabel
+            //{
+            //    AutoSize = true,
+            //    Location = new Point(0, 27),
+            //    Parent = HealthOrb
+            //};
+            //HealthLabel.SizeChanged += Label_SizeChanged;
 
-            ManaLabel = new MirLabel
-            {
-                AutoSize = true,
-                Location = new Point(0, 42),
-                Parent = HealthOrb
-            };
-            ManaLabel.SizeChanged += Label_SizeChanged;
+            //ManaLabel = new MirLabel
+            //{
+            //    AutoSize = true,
+            //    Location = new Point(0, 42),
+            //    Parent = HealthOrb
+            //};
+            //ManaLabel.SizeChanged += Label_SizeChanged;
 
-            TopLabel = new MirLabel
-            {
-                Size = new Size(85, 30),
-                DrawFormat = TextFormatFlags.HorizontalCenter,
-                Location = new Point(9, 20),
-                Parent = HealthOrb,
-            };
+            //TopLabel = new MirLabel
+            //{
+            //    Size = new Size(85, 30),
+            //    DrawFormat = TextFormatFlags.HorizontalCenter,
+            //    Location = new Point(9, 20),
+            //    Parent = HealthOrb,
+            //};
 
-            BottomLabel = new MirLabel
+            //BottomLabel = new MirLabel
+            //{
+            //    Size = new Size(85, 30),
+            //    DrawFormat = TextFormatFlags.HorizontalCenter,
+            //    Location = new Point(9, 50),
+            //    Parent = HealthOrb,
+            //};
+
+            var mLevel1 = new MirImageControl
             {
-                Size = new Size(85, 30),
-                DrawFormat = TextFormatFlags.HorizontalCenter,
-                Location = new Point(9, 50),
-                Parent = HealthOrb,
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_gongneng_19",
+                Size = new Size(45, 45),
+                Location = new Point(this.Size.Width - 170, 100),
+                Parent = this,
             };
 
             LevelLabel = new MirLabel
@@ -253,15 +262,6 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Location = new Point(5, 108)
             };
-
-            CharacterName = new MirLabel
-            {
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
-                Parent = this,
-                Location = new Point(6, 120),
-                Size = new Size(90, 16)
-            };
-
 
             ExperienceBar = new MirImageControl
             {
@@ -281,38 +281,38 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
             };
 
-            GoldLabel = new MirLabel
-            {
-                DrawFormat = TextFormatFlags.VerticalCenter,
-                Font = new Font(Settings.FontName, 8F),
-                Location = new Point(this.Size.Width - 105, 119),
-                Parent = this,
-                Size = new Size(99, 13),
-                Sound = SoundList.Gold,
-            };
-            GoldLabel.Click += (o, e) =>
-            {
-                if (GameScene.SelectedCell == null)
-                    GameScene.PickedUpGold = !GameScene.PickedUpGold && GameScene.Gold > 0;
-            };
+            //GoldLabel = new MirLabel
+            //{
+            //    DrawFormat = TextFormatFlags.VerticalCenter,
+            //    Font = new Font(Settings.FontName, 8F),
+            //    Location = new Point(this.Size.Width - 105, 119),
+            //    Parent = this,
+            //    Size = new Size(99, 13),
+            //    Sound = SoundList.Gold,
+            //};
+            //GoldLabel.Click += (o, e) =>
+            //{
+            //    if (GameScene.SelectedCell == null)
+            //        GameScene.PickedUpGold = !GameScene.PickedUpGold && GameScene.Gold > 0;
+            //};
 
-            WeightBar = new MirImageControl
-            {
-                Index = 76,
-                Library = Libraries.Prguse,
-                Location = new Point(this.Size.Width - 105, 103),
-                Parent = this,
-                DrawImage = false,
-                NotControl = true,
-            };
-            WeightBar.BeforeDraw += WeightBar_BeforeDraw;
+            //WeightBar = new MirImageControl
+            //{
+            //    Index = 76,
+            //    Library = Libraries.Prguse,
+            //    Location = new Point(this.Size.Width - 105, 103),
+            //    Parent = this,
+            //    DrawImage = false,
+            //    NotControl = true,
+            //};
+            //WeightBar.BeforeDraw += WeightBar_BeforeDraw;
 
-            WeightLabel = new MirLabel
-            {
-                Parent = this,
-                Location = new Point(this.Size.Width - 105, 101),
-                Size = new Size(40, 14),
-            };
+            //WeightLabel = new MirLabel
+            //{
+            //    Parent = this,
+            //    Location = new Point(this.Size.Width - 105, 101),
+            //    Size = new Size(40, 14),
+            //};
 
             SpaceLabel = new MirLabel
             {
@@ -321,42 +321,42 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(26, 14),
             };
 
-            HeroMenuButton = new MirButton
-            {
-                Index = 2164,
-                HoverIndex = 2165,
-                PressedIndex = 2166,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(Size.Width - 160, 65),
-                Size = new Size(20, 20),
-                Sound = SoundList.ButtonA,
-                Visible = false
-            };
-            HeroMenuButton.Click += (o, e) =>
-            {
-                GameScene.Scene.HeroMenuPanel.Toggle();
-            };
+            //HeroMenuButton = new MirButton
+            //{
+            //    Index = 2164,
+            //    HoverIndex = 2165,
+            //    PressedIndex = 2166,
+            //    Library = Libraries.Prguse,
+            //    Parent = this,
+            //    Location = new Point(Size.Width - 160, 65),
+            //    Size = new Size(20, 20),
+            //    Sound = SoundList.ButtonA,
+            //    Visible = false
+            //};
+            //HeroMenuButton.Click += (o, e) =>
+            //{
+            //    GameScene.Scene.HeroMenuPanel.Toggle();
+            //};
 
-            HeroSummonButton = new MirButton
-            {
-                Index = 2167,
-                HoverIndex = 2168,
-                PressedIndex = 2169,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(this.Size.Width - 160, 90),
-                Size = new Size(20, 20),
-                Sound = SoundList.ButtonA,
-                Visible = false
-            };
-            HeroSummonButton.Click += (o, e) =>
-            {
-                Network.Enqueue(new C.Chat
-                {
-                    Message = "@SUMMONHERO",
-                });
-            };
+            //HeroSummonButton = new MirButton
+            //{
+            //    Index = 2167,
+            //    HoverIndex = 2168,
+            //    PressedIndex = 2169,
+            //    Library = Libraries.Prguse,
+            //    Parent = this,
+            //    Location = new Point(this.Size.Width - 160, 90),
+            //    Size = new Size(20, 20),
+            //    Sound = SoundList.ButtonA,
+            //    Visible = false
+            //};
+            //HeroSummonButton.Click += (o, e) =>
+            //{
+            //    Network.Enqueue(new C.Chat
+            //    {
+            //        Message = "@SUMMONHERO",
+            //    });
+            //};
 
             HeroInfoPanel = new HeroInfoPanel { Parent = this, Visible = false };
 
@@ -449,28 +449,28 @@ namespace Client.MirScenes.Dialogs
                     break;
             }
 
-            if (Settings.HPView)
-            {
-                HealthLabel.Text = string.Format("HP {0}/{1}", User.HP, User.Stats[Stat.HP]);
-                ManaLabel.Text = HPOnly ? "" : string.Format("MP {0}/{1} ", User.MP, User.Stats[Stat.MP]);
-                TopLabel.Text = string.Empty;
-                BottomLabel.Text = string.Empty;
-            }
-            else
-            {
-                if (HPOnly)
-                {
-                    TopLabel.Text = string.Format("{0}\n" + "--", User.HP);
-                    BottomLabel.Text = string.Format("{0}", User.Stats[Stat.HP]);
-                }
-                else
-                {
-                    TopLabel.Text = string.Format(" {0}    {1} \n" + "---------------", User.HP, User.MP);
-                    BottomLabel.Text = string.Format(" {0}    {1} ", User.Stats[Stat.HP], User.Stats[Stat.MP]);
-                }
-                HealthLabel.Text = string.Empty;
-                ManaLabel.Text = string.Empty;
-            }
+            //if (Settings.HPView)
+            //{
+            //    HealthLabel.Text = string.Format("HP {0}/{1}", User.HP, User.Stats[Stat.HP]);
+            //    ManaLabel.Text = HPOnly ? "" : string.Format("MP {0}/{1} ", User.MP, User.Stats[Stat.MP]);
+            //    TopLabel.Text = string.Empty;
+            //    BottomLabel.Text = string.Empty;
+            //}
+            //else
+            //{
+            //    if (HPOnly)
+            //    {
+            //        TopLabel.Text = string.Format("{0}\n" + "--", User.HP);
+            //        BottomLabel.Text = string.Format("{0}", User.Stats[Stat.HP]);
+            //    }
+            //    else
+            //    {
+            //        TopLabel.Text = string.Format(" {0}    {1} \n" + "---------------", User.HP, User.MP);
+            //        BottomLabel.Text = string.Format(" {0}    {1} ", User.Stats[Stat.HP], User.Stats[Stat.MP]);
+            //    }
+            //    HealthLabel.Text = string.Empty;
+            //    ManaLabel.Text = string.Empty;
+            //}
 
             LevelLabel.Text = User.Level.ToString();
             ExperienceLabel.Text = string.Format("{0:#0.##%}", User.Experience / (double)User.MaxExperience);
