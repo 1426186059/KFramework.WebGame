@@ -170,6 +170,7 @@ namespace Client.MirControls
             }
         }
 
+        // 逐像素命中：true 时点中透明像素不算命中（透明区穿透），false 时整框都算命中。
         private bool _pixelDetect;
         protected bool PixelDetect
         {

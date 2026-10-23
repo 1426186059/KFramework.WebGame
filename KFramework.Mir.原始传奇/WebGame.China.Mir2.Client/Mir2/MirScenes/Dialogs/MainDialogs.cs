@@ -399,7 +399,7 @@ namespace Client.MirScenes.Dialogs
             //    });
             //};
 
-            HeroInfoPanel = new HeroInfoPanel { Parent = this, Visible = false };
+            //HeroInfoPanel = new HeroInfoPanel { Parent = this, Visible = false };
 
             AModeLabel = new MirLabel
             {
@@ -552,7 +552,10 @@ namespace Client.MirScenes.Dialogs
             }
 
             Rectangle r = new Rectangle(0, 80 - height, hpOnly ? 100 : 50, height);
-            Libraries.Prguse.Draw(orbImage, r, new Point(((Settings.ScreenWidth / 2) - (Size.Width / 2)), HealthOrb.DisplayLocation.Y + 80 - height), Color.White, false);
+            Point mPos = new Point(
+                ((Settings.ScreenWidth / 2) - (Size.Width / 2)), 
+                HealthOrb.DisplayLocation.Y + 80 - height);
+            Libraries.Prguse.Draw(orbImage, r, mPos, Color.White, false);
 
             if (hpOnly) return;
 
