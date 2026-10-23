@@ -486,6 +486,22 @@ namespace Client.MirGraphics
             mi.CleanTime = CMain.Time + Settings.CleanDelay;
         }
 
+        public void Draw(int index, Rectangle section, RectangleF destRect, Color colour, float opacity = 1f)
+        {
+            MImage mi = CheckImage(index);
+            if (mi == null) return;
+
+            if (destRect.X >= Settings.ScreenWidth || destRect.Y >= Settings.ScreenHeight || destRect.X + destRect.Width < 0 || destRect.Y + destRect.Height < 0) return;
+
+            Color c = colour;
+            if (opacity < 1f)
+                c = Color.FromArgb((byte)(c.A * opacity), c.R, c.G, c.B);
+
+            DXManager.Draw(mi.Image, section, destRect, c);
+
+            mi.CleanTime = CMain.Time + Settings.CleanDelay;
+        }
+
         public void DrawTinted(int index, Point point, Color colour, Color Tint, bool offSet = false)
         {
             MImage mi = CheckImage(index);

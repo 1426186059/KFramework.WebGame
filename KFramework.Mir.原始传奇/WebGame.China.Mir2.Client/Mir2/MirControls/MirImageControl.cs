@@ -5,6 +5,9 @@ using Client.MirGraphics;
 
 namespace Client.MirControls
 {
+    // 填充裁剪起点：Top/Bottom=竖直（从上/下开始），Left/Right=水平。
+    public enum MirFillOrigin { Left, Right, Top, Bottom }
+
     public class MirImageControl : MirControl
     {
         public override Point DisplayLocation { get { return UseOffSet ? base.DisplayLocation.Add(Library.GetOffSet(Index)) : base.DisplayLocation; } }
@@ -12,6 +15,12 @@ namespace Client.MirControls
 
         // 绘制尺寸缩放（仅影响本控件图像绘制，不影响布局/命中）。默认 1 = 原尺寸。
         public float SizeScale { get; set; } = 1f;
+
+        // 填充裁剪（类似 Unity Image.fillAmount）：FillAmount<1 时只绘制图像的指定比例部分，不拉伸图像。
+        // 用于固定形状（如半月血条）按比例显隐，避免改 Size 把形状压变形。
+        public float FillAmount { get; set; } = 1f;
+        // 填充起点（默认竖直：从顶部开始向下减少）。
+        public MirFillOrigin FillOrigin { get; set; } = MirFillOrigin.Top;
 
         private bool _autoSize;
         public bool AutoSize
@@ -289,7 +298,13 @@ namespace Client.MirControls
                 Size drawSize = Size;
                 int px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
                 int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
-                KFramework.MonoGame.Rectangle targetRect = new KFramework.MonoGame.Rectangle(px, py, drawSize.Width, drawSize.Height);
+                KFramework.MonoGame.Rectangle srcFull = atlasSprite.SourceRectangle;
+                KFramework.MonoGame.Rectangle dstFull = new KFramework.MonoGame.Rectangle(px, py, drawSize.Width, drawSize.Height);
+                Rectangle srcSD = new Rectangle(srcFull.X, srcFull.Y, srcFull.Width, srcFull.Height);
+                Rectangle dstSD = new Rectangle(dstFull.X, dstFull.Y, dstFull.Width, dstFull.Height);
+                ApplyFillClip(FillAmount, FillOrigin, ref srcSD, ref dstSD);
+                KFramework.MonoGame.Rectangle srcRect = new KFramework.MonoGame.Rectangle(srcSD.X, srcSD.Y, srcSD.Width, srcSD.Height);
+                KFramework.MonoGame.Rectangle dstRect = new KFramework.MonoGame.Rectangle(dstSD.X, dstSD.Y, dstSD.Width, dstSD.Height);
                 // 混合状态对齐原版 Crystal：用【控件自身的 Blending 属性】决定，而非全局 DXManager.Blending。
                 // 否则会被其它特效遗留的全局加法混合污染——暗色 UI 在亮背景上被叠加成“过曝发白”（即“混合过头”）。
                 //   • Blending=false（正常 UI）→ NonPremultiplied（直通 alpha，等价原版 SpriteFlags.AlphaBlend）
@@ -299,7 +314,7 @@ namespace Client.MirControls
                     : KFramework.MonoGame.BlendState.NonPremultiplied;
                 // 走 DXManager.Draw 安全入口（BeginSprite 会按当前上下文自动 Begin）：
                 // 主渲染 / LayerControl 烘焙通用；直接调 SpriteBatch.DrawFrame 在烘焙时主批未 Begin 会抛异常。
-                DXManager.Draw(atlasSprite.Texture, atlasSprite.SourceRectangle, targetRect, drawColor, imgBlend);
+                DXManager.Draw(atlasSprite.Texture, srcRect, dstRect, drawColor, imgBlend);
                 
                 if (GrayScale)
                 {
@@ -328,12 +343,50 @@ namespace Client.MirControls
                 if (Opacity < 1f)
                     drawColor = new Color(drawColor.R, drawColor.G, drawColor.B, (byte)(drawColor.A * Opacity));
 
-                if (Blending)
-                    Library.DrawBlend(Index, drawLoc, drawSize, drawColor, BlendingRate);
+                if (FillAmount >= 1f)
+                {
+                    if (Blending)
+                        Library.DrawBlend(Index, drawLoc, drawSize, drawColor, BlendingRate);
+                    else
+                        Library.Draw(Index, drawLoc, drawSize, drawColor);
+                }
                 else
-                    Library.Draw(Index, drawLoc, drawSize, drawColor);
+                {
+                    // fillAmount（裁剪，不拉伸）：按 FillOrigin 仅绘制图像指定比例部分。
+                    Size imgSize = Library.GetTrueSize(Index);
+                    Rectangle src = new Rectangle(0, 0, imgSize.Width, imgSize.Height);
+                    Rectangle dst = new Rectangle(drawLoc.X, drawLoc.Y, drawSize.Width, drawSize.Height);
+                    ApplyFillClip(FillAmount, FillOrigin, ref src, ref dst);
+                    bool oldBlend = DXManager.Blending;
+                    if (Blending) DXManager.SetBlend(true, BlendingRate);
+                    Library.Draw(Index, src, new RectangleF(dst.X, dst.Y, dst.Width, dst.Height), drawColor, 1f);
+                    if (Blending) DXManager.SetBlend(oldBlend);
+                }
 
                 if (GrayScale) DXManager.SetGrayscale(oldGray);
+            }
+        }
+
+        // 按 FillAmount / FillOrigin 把整图源/目标矩形裁剪为可见部分（不拉伸图像，仅按比例显隐）。
+        private static void ApplyFillClip(float fillAmount, MirFillOrigin origin, ref Rectangle src, ref Rectangle dst)
+        {
+            float fa = fillAmount < 0f ? 0f : (fillAmount > 1f ? 1f : fillAmount);
+            if (fa >= 1f) return;
+            int fsw = src.Width, fsh = src.Height, fdw = dst.Width, fdh = dst.Height;
+            int vsw = (int)(fsw * fa), vsh = (int)(fsh * fa);
+            int vdw = (int)(fdw * fa), vdh = (int)(fdh * fa);
+            switch (origin)
+            {
+                case MirFillOrigin.Left:
+                    src.Width = vsw; dst.Width = vdw; break;
+                case MirFillOrigin.Right:
+                    src.X += fsw - vsw; src.Width = vsw;
+                    dst.X += fdw - vdw; dst.Width = vdw; break;
+                case MirFillOrigin.Top:
+                    src.Height = vsh; dst.Height = vdh; break;
+                case MirFillOrigin.Bottom:
+                    src.Y += fsh - vsh; src.Height = vsh;
+                    dst.Y += fdh - vdh; dst.Height = vdh; break;
             }
         }
 
