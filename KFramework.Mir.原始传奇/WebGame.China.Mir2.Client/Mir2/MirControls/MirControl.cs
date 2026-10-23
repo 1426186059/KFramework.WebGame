@@ -11,8 +11,18 @@ namespace Client.MirControls
     public class MirControl : KTransform
     {
         public static MirControl ActiveControl, MouseControl;
-        
-        public virtual Point DisplayLocation { get { return Parent == null ? Location : Parent.DisplayLocation.Add(Location); } }
+
+        public Point Location
+        {
+            get { return new Point((int)LocalPosition.X, (int)LocalPosition.Y); }
+            set { LocalPosition = new KFramework.MonoGame.Vector3(value.X, value.Y, 0f); }
+        }
+
+        public virtual Point DisplayLocation 
+        { 
+            get { return new Point((int)WorldPosition.X, (int)WorldPosition.Y); } 
+        }
+
         public Rectangle DisplayRectangle { get { return new Rectangle(DisplayLocation, Size); } }
 
         public bool GrayScale { get; set; }
@@ -262,18 +272,6 @@ namespace Client.MirControls
                 ForeColourChanged.Invoke(this, EventArgs.Empty);
         }
 
-        private Point _location;
-        public Point Location
-        {
-            get { return _location; }
-            set
-            {
-                if (_location == value)
-                    return;
-                _location = value;
-                OnLocationChanged();
-            }
-        }
         public event EventHandler LocationChanged;
         protected virtual void OnLocationChanged()
         {
@@ -284,6 +282,12 @@ namespace Client.MirControls
 
             if (LocationChanged != null)
                 LocationChanged.Invoke(this, EventArgs.Empty);
+        }
+
+        // 把 KTransform 的局部位置变化桥接到 MirControl 的布局通知（Redraw + 子控件联动）。
+        protected override void OnLocalPositionChanged()
+        {
+            OnLocationChanged();
         }
 
 
@@ -1150,7 +1154,6 @@ namespace Client.MirControls
                 _foreColour = Color.Empty;
 
                 LocationChanged = null;
-                _location = Point.Empty;
 
                 ModalChanged = null;
                 _modal = false;
