@@ -729,7 +729,7 @@ namespace Client.MirScenes
                         else BeltDialog.Hide();
                         break;
                     case KeybindOptions.BeltFlip:
-                        BeltDialog.Flip();
+                        //BeltDialog.Flip();
                         break;
                     case KeybindOptions.Pickup:
                         if (CMain.Time > PickUpTime)

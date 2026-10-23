@@ -601,17 +601,37 @@ namespace Client.MirScenes.Dialogs
     public sealed class BeltDialog : MirImageControl
     {
         public MirLabel[] Key = new MirLabel[6];
-        public MirButton CloseButton, RotateButton;
         public MirItemCell[] Grid;
 
         public BeltDialog()
         {
-            Index = 1932;
-            Library = Libraries.Prguse;
-            Movable = true;
+            AtlasNameKey = "y_homeUI-sheet";
+            AtlasFrame = "bg_daoju_1";
+
+            Movable = false;
             Sort = true;
             Visible = true;
-            Location = new Point(GameScene.Scene.MainDialog.Location.X + 230, Settings.ScreenHeight - 150);
+
+            Size = new Size(286, 58);
+            Anchor = EAnchorType.BottomCenter;
+            AnchorPos = new Point(0, -155);
+            ApplyAnchor();
+
+            var m1 = new MirImageControl
+            {
+                Parent = this,
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "bg_daoju_2",
+                Location = new Point(-75, 20),
+            };
+
+            var m2 = new MirImageControl
+            {
+                Parent = this,
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "bg_daoju_3",
+                Location = new Point(this.Size.Width + 2, 20),
+            };
 
             BeforeDraw += BeltPanel_BeforeDraw;
 
@@ -621,36 +641,10 @@ namespace Client.MirScenes.Dialogs
                 {
                     Parent = this,
                     Size = new Size(26, 14),
-                    Location = new Point(8 + i * 35, 2),
+                    Location = new Point(8 + i * 57, 2),
                     Text = (i + 1).ToString()
                 };
             }
-
-            RotateButton = new MirButton
-            {
-                HoverIndex = 1927,
-                Index = 1926,
-                Location = new Point(222, 3),
-                Library = Libraries.Prguse,
-                Parent = this,
-                PressedIndex = 1928,
-                Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Rotate)
-            };
-            RotateButton.Click += (o, e) => Flip();
-
-            CloseButton = new MirButton
-            {
-                HoverIndex = 1924,
-                Index = 1923,
-                Location = new Point(222, 19),
-                Library = Libraries.Prguse,
-                Parent = this,
-                PressedIndex = 1925,
-                Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.CloseKey), CMain.InputKeys.GetKey(KeybindOptions.Belt))
-            };
-            CloseButton.Click += (o, e) => Hide();
 
             Grid = new MirItemCell[6];
 
@@ -671,59 +665,9 @@ namespace Client.MirScenes.Dialogs
 
         private void BeltPanel_BeforeDraw(object sender, EventArgs e)
         {
-            //if Transparent return
-
             if (Libraries.Prguse != null)
                 Libraries.Prguse.Draw(Index + 1, DisplayLocation, Color.White, false, 0.5F);
         }
-
-        public void Flip()
-        {
-            //0,70 LOCATION
-            if (Index == 1932)
-            {
-                Index = 1944;
-                Location = new Point(0, 200);
-
-                for (int x = 0; x < 6; x++)
-                    Grid[x].Location = new Point(3, x * 35 + 12);
-
-                CloseButton.Index = 1935;
-                CloseButton.HoverIndex = 1936;
-                CloseButton.Location = new Point(3, 222);
-                CloseButton.PressedIndex = 1937;
-
-                RotateButton.Index = 1938;
-                RotateButton.HoverIndex = 1939;
-                RotateButton.Location = new Point(19, 222);
-                RotateButton.PressedIndex = 1940;
-
-            }
-            else
-            {
-                Index = 1932;
-                Location = new Point(GameScene.Scene.MainDialog.Location.X + 230, Settings.ScreenHeight - 150);
-
-                for (int x = 0; x < 6; x++)
-                    Grid[x].Location = new Point(x * 35 + 12, 3);
-
-                CloseButton.Index = 1923;
-                CloseButton.HoverIndex = 1924;
-                CloseButton.Location = new Point(222, 19);
-                CloseButton.PressedIndex = 1925;
-
-                RotateButton.Index = 1926;
-                RotateButton.HoverIndex = 1927;
-                RotateButton.Location = new Point(222, 3);
-                RotateButton.PressedIndex = 1928;
-            }
-
-            for (int i = 0; i < Key.Length; i++)
-            {
-                Key[i].Location = (Index != 1932) ? new Point(-1, 11 + i * 35) : new Point(8 + i * 35, 2);
-            }
-        }
-
 
         public MirItemCell GetCell(ulong id)
         {

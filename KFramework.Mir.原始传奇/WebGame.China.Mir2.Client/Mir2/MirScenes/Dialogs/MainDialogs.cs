@@ -489,7 +489,7 @@ namespace Client.MirScenes.Dialogs
                 ForeColour = Color.LimeGreen,
                 OutLineColour = Color.Black,
                 Parent = this,
-                Location = new Point(Settings.Resolution != 800 ? 899 : 675, Settings.Resolution != 800 ? -463 : -295),
+                Location = new Point(899, -463),
                 Visible = Settings.ModeView
             };
         }
