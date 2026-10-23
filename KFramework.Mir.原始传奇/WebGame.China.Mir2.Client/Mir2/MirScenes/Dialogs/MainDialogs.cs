@@ -251,7 +251,7 @@ namespace Client.MirScenes.Dialogs
             {
                 AtlasNameKey = "y_homeUI-sheet",
                 AtlasFrame = "btn_gongneng_22",
-                Location = new Point(this.Size.Width - 230, 135),
+                Location = new Point(this.Size.Width - 225, 135),
                 Parent = this,
             };
 
@@ -265,9 +265,10 @@ namespace Client.MirScenes.Dialogs
 
             LevelLabel = new MirLabel
             {
-                AutoSize = true,
+                Size = new Size(50, 22),
                 Parent = this,
-                Location = new Point(this.Size.Width - 225, 135),
+                Location = new Point(this.Size.Width - 218, 135),
+                Alignment = KFramework.MonoGame.TextAnchor.MiddleLeft
             };
 
             ExperienceBar = new MirImageControl

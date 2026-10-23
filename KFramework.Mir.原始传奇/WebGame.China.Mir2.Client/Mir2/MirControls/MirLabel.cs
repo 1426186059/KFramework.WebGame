@@ -47,6 +47,26 @@ namespace Client.MirControls
                 DrawFormatChanged.Invoke(this, e);
         }
 
+        // 对齐（KLabel 风格）：显式设置后用 TextAnchor 覆盖 DrawFormat 里的对齐位，其余位（如 WordBreak）保留。
+        private KFramework.MonoGame.TextAnchor? _alignment;
+        public KFramework.MonoGame.TextAnchor Alignment
+        {
+            get { return _alignment ?? KFramework.MonoGame.TextAnchor.UpperLeft; }
+            set { _alignment = value; TextureValid = false; Redraw(); }
+        }
+
+        private static TextFormatFlags AlignToFlags(KFramework.MonoGame.TextAnchor a)
+        {
+            int col = ((int)a) % 3;   // 0=Left 1=Center 2=Right
+            int row = ((int)a) / 3;   // 0=Upper 1=Middle 2=Lower
+            var f = TextFormatFlags.Default;
+            if (col == 1) f |= TextFormatFlags.HorizontalCenter | TextFormatFlags.Center;
+            else if (col == 2) f |= TextFormatFlags.Right;
+            if (row == 1) f |= TextFormatFlags.VerticalCenter;
+            else if (row == 2) f |= TextFormatFlags.Bottom;
+            return f;
+        }
+
         private Font _font;
         public Font Font
         {
@@ -189,6 +209,11 @@ namespace Client.MirControls
             int outline = OutLine ? OutLineColour.ToArgb() : 0;
             int back = BackColour.ToArgb();
 
+            // 对齐：显式设了 Alignment 就用它覆盖 DrawFormat 的对齐位（WordBreak 等其余位保留），否则沿用 DrawFormat。
+            TextFormatFlags format = _alignment.HasValue
+                ? (_drawFormat & ~(TextFormatFlags.Right | TextFormatFlags.Center | TextFormatFlags.HorizontalCenter | TextFormatFlags.Bottom | TextFormatFlags.VerticalCenter)) | AlignToFlags(_alignment.Value)
+                : _drawFormat;
+
             // 目标、清屏、批三件事都由调用方管（GDI 与游戏渲染已合并为一个渲染系统）：
             // 下面最多 5 次 DrawText（4 次描边 + 1 次前景）共用一次 Begin/End → 合成 1 次 draw call；
             // 若让 TextRenderer 每次自己开收批，就是 5 段。
@@ -203,12 +228,12 @@ namespace Client.MirControls
                     // 描边对齐原版 MirLabel：四向各偏移 1px 先画轮廓，再画前景。
                     if (outline != 0)
                     {
-                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(1, 0, Size.Width, Size.Height), outline, DrawFormat);
-                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(0, 1, Size.Width, Size.Height), outline, DrawFormat);
-                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(2, 1, Size.Width, Size.Height), outline, DrawFormat);
-                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(1, 2, Size.Width, Size.Height), outline, DrawFormat);
+                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(1, 0, Size.Width, Size.Height), outline, format);
+                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(0, 1, Size.Width, Size.Height), outline, format);
+                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(2, 1, Size.Width, Size.Height), outline, format);
+                        TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(1, 2, Size.Width, Size.Height), outline, format);
                     }
-                    TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(1, 1, Size.Width, Size.Height), fore, DrawFormat);
+                    TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(1, 1, Size.Width, Size.Height), fore, format);
                 }
                 finally
                 {
