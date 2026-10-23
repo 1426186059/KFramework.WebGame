@@ -247,12 +247,19 @@ namespace Client.MirScenes.Dialogs
             //    Parent = HealthOrb,
             //};
 
+            var mLevel0 = new MirImageControl
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_gongneng_22",
+                Location = new Point(this.Size.Width - 230, 135),
+                Parent = this,
+            };
+
             var mLevel1 = new MirImageControl
             {
                 AtlasNameKey = "y_homeUI-sheet",
-                AtlasFrame = "btn_gongneng_19",
-                Size = new Size(45, 45),
-                Location = new Point(this.Size.Width - 170, 100),
+                AtlasFrame = "btn_gongneng_21",
+                Location = new Point(this.Size.Width - 250, 130),
                 Parent = this,
             };
 
@@ -260,7 +267,7 @@ namespace Client.MirScenes.Dialogs
             {
                 AutoSize = true,
                 Parent = this,
-                Location = new Point(5, 108)
+                Location = new Point(this.Size.Width - 225, 135),
             };
 
             ExperienceBar = new MirImageControl
@@ -475,10 +482,10 @@ namespace Client.MirScenes.Dialogs
             LevelLabel.Text = User.Level.ToString();
             ExperienceLabel.Text = string.Format("{0:#0.##%}", User.Experience / (double)User.MaxExperience);
             ExperienceLabel.Location = new Point((ExperienceBar.Size.Width / 2) - 20, -10);
-            GoldLabel.Text = GameScene.Gold.ToString("###,###,##0");
-            CharacterName.Text = User.Name;
-            SpaceLabel.Text = User.Inventory.Count(t => t == null).ToString();
-            WeightLabel.Text = (MapObject.User.Stats[Stat.BagWeight] - MapObject.User.CurrentBagWeight).ToString();
+            //GoldLabel.Text = GameScene.Gold.ToString("###,###,##0");
+            //CharacterName.Text = User.Name;
+            //SpaceLabel.Text = User.Inventory.Count(t => t == null).ToString();
+            //WeightLabel.Text = (MapObject.User.Stats[Stat.BagWeight] - MapObject.User.CurrentBagWeight).ToString();
         }
 
         private void Label_SizeChanged(object sender, EventArgs e)
