@@ -739,7 +739,11 @@ namespace Client.MirControls
             Visible = false;
         }
 
-        public override void Draw()
+        public virtual void Update()
+        {
+        }
+
+        public virtual void Draw()
         {
             //2026-0--25 超出屏幕，我依然让他显示
             if (IsDisposed || !Visible)
