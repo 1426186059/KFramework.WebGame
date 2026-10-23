@@ -600,7 +600,7 @@ namespace Client.MirScenes.Dialogs
     }
     public sealed class BeltDialog : MirImageControl
     {
-        public MirLabel[] Key = new MirLabel[6];
+        public MirLabel[] Key = new MirLabel[5];
         public MirItemCell[] Grid;
 
         public BeltDialog()
@@ -646,9 +646,9 @@ namespace Client.MirScenes.Dialogs
                 };
             }
 
-            Grid = new MirItemCell[6];
+            Grid = new MirItemCell[5];
 
-            for (int x = 0; x < 6; x++)
+            for (int x = 0; x < Grid.Length; x++)
             {
                 Grid[x] = new MirItemCell
                 {

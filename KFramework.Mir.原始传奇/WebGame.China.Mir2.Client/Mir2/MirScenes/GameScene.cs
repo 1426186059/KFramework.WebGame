@@ -758,10 +758,6 @@ namespace Client.MirScenes
                     case KeybindOptions.Belt5Alt:
                         BeltDialog.Grid[4].UseItem();
                         break;
-                    case KeybindOptions.Belt6:
-                    case KeybindOptions.Belt6Alt:
-                        BeltDialog.Grid[5].UseItem();
-                        break;
                     case KeybindOptions.Belt7:
                     case KeybindOptions.Belt7Alt:
                         HeroBeltDialog?.Grid[0].UseItem();
