@@ -253,6 +253,7 @@ namespace Client.MirScenes.Dialogs
                 AtlasFrame = "btn_gongneng_22",
                 Location = new Point(this.Size.Width - 225, 135),
                 Parent = this,
+                NotControl = true,
             };
 
             var mLevel1 = new MirImageControl
@@ -261,6 +262,7 @@ namespace Client.MirScenes.Dialogs
                 AtlasFrame = "btn_gongneng_21",
                 Location = new Point(this.Size.Width - 250, 130),
                 Parent = this,
+                NotControl = true,
             };
 
             LevelLabel = new MirLabel
@@ -268,14 +270,42 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(50, 22),
                 Parent = this,
                 Location = new Point(this.Size.Width - 218, 135),
-                Alignment = KFramework.MonoGame.TextAnchor.MiddleLeft
+                Alignment = KFramework.MonoGame.TextAnchor.MiddleLeft,
+                NotControl = true,
+            };
+
+            var mProgressBar00 = new MirImageControl
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "y_h_bg3",
+                Location = new Point(this.Size.Width - 225, 168),
+                Parent = this,
+                NotControl = true,
+            };
+
+            var mProgressBar0 = new MirImageControl
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_gongneng_26",
+                Location = new Point(this.Size.Width - 225, 165),
+                Parent = this,
+                NotControl = true,
+            };
+
+            var mProgressBar1 = new MirImageControl
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_gongneng_24",
+                Location = new Point(this.Size.Width - 250, 160),
+                Parent = this,
+                NotControl = true,
             };
 
             ExperienceBar = new MirImageControl
             {
-                Index = Settings.Resolution != 800 ? 8 : 7,
-                Library = Libraries.Prguse,
-                Location = new Point(9, 143),
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_gongneng_25",
+                Location = new Point(this.Size.Width - 250, 165),
                 Parent = this,
                 DrawImage = false,
                 NotControl = true,
@@ -284,8 +314,11 @@ namespace Client.MirScenes.Dialogs
 
             ExperienceLabel = new MirLabel
             {
-                AutoSize = true,
-                Parent = ExperienceBar,
+                Parent = this,
+                Location = new Point(this.Size.Width - 250, 165),
+                AutoSize = false,
+                Size = new Size(88, 22),
+                Alignment = KFramework.MonoGame.TextAnchor.MiddleCenter,
                 NotControl = true,
             };
 
@@ -482,7 +515,6 @@ namespace Client.MirScenes.Dialogs
 
             LevelLabel.Text = User.Level.ToString();
             ExperienceLabel.Text = string.Format("{0:#0.##%}", User.Experience / (double)User.MaxExperience);
-            ExperienceLabel.Location = new Point((ExperienceBar.Size.Width / 2) - 20, -10);
             //GoldLabel.Text = GameScene.Gold.ToString("###,###,##0");
             //CharacterName.Text = User.Name;
             //SpaceLabel.Text = User.Inventory.Count(t => t == null).ToString();
