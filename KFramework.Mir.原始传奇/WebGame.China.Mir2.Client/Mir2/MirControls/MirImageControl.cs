@@ -103,7 +103,7 @@ namespace Client.MirControls
         }
 
         private string _atlasFrame;
-        public string AtlasFrame
+        public virtual string AtlasFrame
         {
             get { return _atlasFrame; }
             set

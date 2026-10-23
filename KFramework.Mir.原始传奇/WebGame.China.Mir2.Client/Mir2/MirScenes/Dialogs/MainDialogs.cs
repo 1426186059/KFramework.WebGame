@@ -53,6 +53,7 @@ namespace Client.MirScenes.Dialogs
                 Sound = SoundList.ButtonA,
                 Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.InventoryKey), CMain.InputKeys.GetKey(KeybindOptions.Inventory))
             };
+
             InventoryButton.Click += (o, e) =>
             {
                 if (GameScene.Scene.InventoryDialog.Visible)
@@ -64,8 +65,11 @@ namespace Client.MirScenes.Dialogs
             CharacterButton = new MirButton
             {
                 HoverIndex = 1901,
-                Index = 1900,
-                Library = Libraries.Prguse,
+
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_gongneng_07",
+                HoverAtlasFrame = "btn_gongneng_08",    
+
                 Location = new Point(this.Size.Width - 119, 76),
                 Parent = this,
                 PressedIndex = 1902,

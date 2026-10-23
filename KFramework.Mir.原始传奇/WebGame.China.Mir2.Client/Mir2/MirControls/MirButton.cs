@@ -56,6 +56,46 @@ namespace Client.MirControls
             set { base.Index = value; }
         }
 
+        // —— 图集版状态帧：与 Index 的状态选择逻辑一致，但作用于 AtlasFrame（同一图集内的不同帧名）。
+        private string _hoverAtlasFrame;
+        public string HoverAtlasFrame
+        {
+            get { return _hoverAtlasFrame; }
+            set { _hoverAtlasFrame = value; Redraw(); }
+        }
+
+        private string _pressedAtlasFrame;
+        public string PressedAtlasFrame
+        {
+            get { return _pressedAtlasFrame; }
+            set { _pressedAtlasFrame = value; Redraw(); }
+        }
+
+        private string _disabledAtlasFrame;
+        public string DisabledAtlasFrame
+        {
+            get { return _disabledAtlasFrame; }
+            set { _disabledAtlasFrame = value; Redraw(); }
+        }
+
+        public override string AtlasFrame
+        {
+            get
+            {
+                if (!Enabled)
+                    return !string.IsNullOrEmpty(_disabledAtlasFrame) ? _disabledAtlasFrame : base.AtlasFrame;
+
+                if (!string.IsNullOrEmpty(_pressedAtlasFrame) && ActiveControl == this && MouseControl == this)
+                    return _pressedAtlasFrame;
+
+                if (!string.IsNullOrEmpty(_hoverAtlasFrame) && MouseControl == this)
+                    return _hoverAtlasFrame;
+
+                return base.AtlasFrame;
+            }
+            set { base.AtlasFrame = value; }
+        }
+
         protected MirLabel _label;
 
         protected bool _center;
