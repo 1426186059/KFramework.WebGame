@@ -46,15 +46,24 @@ namespace Client.MirScenes.Dialogs
 
             InventoryButton = new MirButton
             {
-                HoverIndex = 1904,
-                Index = 1903,
-                Library = Libraries.Prguse,
-                Location = new Point(this.Size.Width - 96, 76),
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_gongneng_09",
+                PressedAtlasFrame = "btn_gongneng_10",
+
+                Size = new Size(45, 45),
+                Location = new Point(this.Size.Width - 200, 30),
                 Parent = this,
                 PressedIndex = 1905,
                 Sound = SoundList.ButtonA,
                 Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.InventoryKey), CMain.InputKeys.GetKey(KeybindOptions.Inventory))
             };
+
+            InventoryButton.LabelImage.AtlasNameKey = "y_homeUI-sheet";
+            InventoryButton.LabelImage.AtlasFrame = "word_xitong_10";
+            InventoryButton.LabelImage.Size = new Size(25, 14);
+            InventoryButton.LabelImage.Location =
+                InventoryButton.LabelImage.Bottom.Add(new Point(0, 0));
+            InventoryButton.LabelImage.Visible = true;
 
             InventoryButton.Click += (o, e) =>
             {
@@ -66,20 +75,21 @@ namespace Client.MirScenes.Dialogs
 
             CharacterButton = new MirButton
             {
-                HoverIndex = 1901,
-
                 AtlasNameKey = "y_homeUI-sheet",
                 AtlasFrame = "btn_gongneng_07",
                 PressedAtlasFrame = "btn_gongneng_08",
-                
-                Location = new Point(this.Size.Width - 250, 50),
+                Size = new Size(45, 45),
+                Location = new Point(this.Size.Width - 250, 55),
                 Parent = this,
                 Sound = SoundList.ButtonA,
+                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CharacterKey)
             };
             CharacterButton.LabelImage.AtlasNameKey = "y_homeUI-sheet";
             CharacterButton.LabelImage.AtlasFrame = "word_xitong_09";
+            CharacterButton.LabelImage.Size = new Size(25, 14);
             CharacterButton.LabelImage.Location =
                 CharacterButton.LabelImage.Bottom.Add(new Point(0, 0));
+            CharacterButton.LabelImage.Visible = true;
 
             CharacterButton.Click += (o, e) =>
             {
@@ -94,15 +104,22 @@ namespace Client.MirScenes.Dialogs
 
             SkillButton = new MirButton
             {
-                HoverIndex = 1907,
-                Index = 1906,
-                Library = Libraries.Prguse,
-                Location = new Point(this.Size.Width - 73, 76),
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_gongneng_11",
+                PressedAtlasFrame = "btn_gongneng_12",
+                Size = new Size(45, 45),
+                Location = new Point(this.Size.Width - 150, 50),
                 Parent = this,
-                PressedIndex = 1908,
                 Sound = SoundList.ButtonA,
                 Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.SkillsKey), CMain.InputKeys.GetKey(KeybindOptions.Skills))
             };
+            SkillButton.LabelImage.AtlasNameKey = "y_homeUI-sheet";
+            SkillButton.LabelImage.AtlasFrame = "word_xitong_14";
+            SkillButton.LabelImage.Size = new Size(25, 14);
+            SkillButton.LabelImage.Location =
+                SkillButton.LabelImage.Bottom.Add(new Point(0, 0));
+            SkillButton.LabelImage.Visible = true;
+
             SkillButton.Click += (o, e) =>
             {
                 if (GameScene.Scene.CharacterDialog.Visible && GameScene.Scene.CharacterDialog.SkillPage.Visible)
