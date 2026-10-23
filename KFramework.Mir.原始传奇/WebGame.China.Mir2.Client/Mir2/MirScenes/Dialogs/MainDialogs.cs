@@ -61,7 +61,7 @@ namespace Client.MirScenes.Dialogs
                 AnimationDelay = 120,
                 Pivot = new PointF(1, 0f),
                 AtlasNameKey = "y_homeUI-sheet",
-                
+                SizeScale = 1.2f
             };
             mHPAni.SetFrames("y_h_hp_", 0, 9);
 
@@ -72,7 +72,8 @@ namespace Client.MirScenes.Dialogs
                 Animated = true,
                 Loop = true,
                 AnimationDelay = 120,
-                AtlasNameKey = "y_homeUI-sheet"
+                AtlasNameKey = "y_homeUI-sheet",
+                SizeScale = 1.2f
             };
             mMPAni.SetFrames("y_h_mp_", 0, 9);
 

@@ -7,20 +7,27 @@ using KFramework.MonoGameExtend;
 
 namespace Client.MirControls
 {
-    // 直接继承 KTransform：获得引擎的 LocalScale / WorldScale（沿父链累乘）/ LocalPosition / WorldPosition 等变换能力。
-    public class MirControl : KTransform
+    public class MirControl
     {
         public static MirControl ActiveControl, MouseControl;
 
+        private Point _location;
+
         public Point Location
         {
-            get { return new Point((int)LocalPosition.X, (int)LocalPosition.Y); }
-            set { LocalPosition = new KFramework.MonoGame.Vector3(value.X, value.Y, 0f); }
+            get { return _location; }
+            set
+            {
+                if (_location == value)
+                    return;
+                _location = value;
+                OnLocationChanged();
+            }
         }
 
-        public virtual Point DisplayLocation 
-        { 
-            get { return new Point((int)WorldPosition.X, (int)WorldPosition.Y); } 
+        public virtual Point DisplayLocation
+        {
+            get { return Parent == null ? Location : Parent.DisplayLocation.Add(Location); }
         }
 
         public Rectangle DisplayRectangle { get { return new Rectangle(DisplayLocation, Size); } }
@@ -284,13 +291,6 @@ namespace Client.MirControls
                 LocationChanged.Invoke(this, EventArgs.Empty);
         }
 
-        // 把 KTransform 的局部位置变化桥接到 MirControl 的布局通知（Redraw + 子控件联动）。
-        protected override void OnLocalPositionChanged()
-        {
-            OnLocationChanged();
-        }
-
-
         /// <summary>
         /// 九宫格锚点（见 EAnchorType）。默认 None —— 不使用锚点，ApplyAnchor 不做任何事。
         /// </summary>
@@ -462,8 +462,7 @@ namespace Client.MirControls
         }
 
         private MirControl _parent;
-        // 隐藏 KTransform.Parent（类型为 KTransform）为本控件的 Parent（MirControl），并同步 KTransform 父链以启用 WorldScale 层级累乘。
-        public new MirControl Parent
+        public MirControl Parent
         {
             get { return _parent; }
             set
@@ -477,12 +476,10 @@ namespace Client.MirControls
                     _parent.AddControl(this);
 
                 ApplyAnchor();
-                // 同步 KTransform 父链：其 Parent setter 会维护子链并（经 virtual）回调用本类 OnParentChanged。
-                base.Parent = value;
             }
         }
         public event EventHandler ParentChanged;
-        protected override void OnParentChanged()
+        protected virtual void OnParentChanged()
         {
             OnLocationChanged();
             if (ParentChanged != null)
@@ -1084,7 +1081,7 @@ namespace Client.MirControls
 
         public bool IsDisposed { get; private set; }
 
-        public override void Dispose()
+        public void Dispose()
         {
             if (IsDisposed)
                 return;
@@ -1188,8 +1185,6 @@ namespace Client.MirControls
                 if (MouseControl == this) MouseControl = null;
             }
 
-            // 清理 KTransform 父链（置 base.Parent=null 并从父节点子链移除）。
-            base.Dispose();
             IsDisposed = true;
         }
 

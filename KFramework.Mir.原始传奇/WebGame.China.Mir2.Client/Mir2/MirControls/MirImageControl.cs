@@ -10,6 +10,9 @@ namespace Client.MirControls
         public override Point DisplayLocation { get { return UseOffSet ? base.DisplayLocation.Add(Library.GetOffSet(Index)) : base.DisplayLocation; } }
         public Point DisplayLocationWithoutOffSet { get { return base.DisplayLocation; } }
 
+        // 绘制尺寸缩放（仅影响本控件图像绘制，不影响布局/命中）。默认 1 = 原尺寸。
+        public float SizeScale { get; set; } = 1f;
+
         private bool _autoSize;
         public bool AutoSize
         {
@@ -223,12 +226,18 @@ namespace Client.MirControls
             set { base.Size = value; }
             get
             {
+                Size result;
                 if (AutoSize && AtlasSheet != null && !string.IsNullOrEmpty(AtlasFrame)
                     && AtlasSheet.Frames.TryGetValue(AtlasFrame, out var s))
-                    return new Size(s.SourceRectangle.Width, s.SourceRectangle.Height);
-                if (AutoSize && Library != null && Index >= 0)
-                    return Library.GetTrueSize(Index);
-                return base.Size;
+                    result = new Size(s.SourceRectangle.Width, s.SourceRectangle.Height);
+                else if (AutoSize && Library != null && Index >= 0)
+                    result = Library.GetTrueSize(Index);
+                else
+                    result = base.Size;
+                // SizeScale 直接收进 Size：绘制/布局框/命中区（DisplayRectangle 用 Size）一起缩放。
+                if (SizeScale != 1f)
+                    result = new Size((int)(result.Width * SizeScale), (int)(result.Height * SizeScale));
+                return result;
             }
         }
 
@@ -275,9 +284,9 @@ namespace Client.MirControls
                     DXManager.SetGrayscale(true);
                 }
 
-                // 目标矩形按 Pivot（归一化锚点，默认左上）对齐：图像以自身 Pivot 点落在 DisplayLocation；WorldScale 沿父链累乘缩放绘制尺寸（默认 1，行为不变）。
-                var ws = WorldScale;
-                Size drawSize = new Size((int)(Size.Width * ws.X), (int)(Size.Height * ws.Y));
+                // 目标矩形按 Pivot（归一化锚点，默认左上）对齐：图像以自身 Pivot 点落在 DisplayLocation。
+                // Size 已含 SizeScale（见 Size 重写），此处直接用 Size，避免重复乘。
+                Size drawSize = Size;
                 int px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
                 int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
                 KFramework.MonoGame.Rectangle targetRect = new KFramework.MonoGame.Rectangle(px, py, drawSize.Width, drawSize.Height);
@@ -308,9 +317,8 @@ namespace Client.MirControls
                     DXManager.SetGrayscale(true);
                 }
 
-                // 同图集分支：以 Pivot 决定图像哪个点落在 DisplayLocation；WorldScale 缩放绘制尺寸（默认 1，行为不变）。
-                var ws = WorldScale;
-                Size drawSize = new Size((int)(Size.Width * ws.X), (int)(Size.Height * ws.Y));
+                // 以 Pivot 决定图像哪个点落在 DisplayLocation。Size 已含 SizeScale，直接用 Size。
+                Size drawSize = Size;
                 Point drawLoc = new Point(
                     DisplayLocation.X - (int)(_pivot.X * drawSize.Width),
                     DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height));
