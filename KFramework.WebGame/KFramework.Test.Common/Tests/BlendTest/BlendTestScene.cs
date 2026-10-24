@@ -11,7 +11,7 @@ namespace KFramework.Test.Common.Tests.BlendTest
     /// <para>模式①（默认）：每一格先把同一张彩色底图用 Opaque 画出真实图像作参照，再用指定的混合模式叠一层叠加图，
     /// 直观对比各混合的效果；重点演示传奇 / 传奇昼夜系统用的 <see cref="BlendState.Multiply"/>（Zero, SourceColor）。</para>
     /// <para>模式②：3 层 / 3 色 演示。底层红(最大·不透明) / 中层绿(中等·不透明) / 顶层蓝(最小·半透明)，下面两层不透明、只有最顶层半透明。
-    /// 把同样的 3 层用不同数量的 RT 渲染并排对比：① 3 个 Draw 直接画（无 RT）；② 1 张 RT（三层合一）；③ 2 张 RT（底 / 中上）；④ 3 张 RT（每层各自）。</para>
+    /// 把同样的 3 层用不同数量的 RT 渲染并排对比（每行一组，右侧最终图对齐）：A 3 个 Draw 直接画（无 RT）；B 1 张 RT（三层合一）；C 2 张 RT（底 / 中上）；D 3 张 RT（每层各自）。</para>
     /// </summary>
     public sealed class BlendTestScene : TestSceneBase
     {
@@ -31,6 +31,11 @@ namespace KFramework.Test.Common.Tests.BlendTest
         private RenderTarget2D _rtGreen = null!;   // ④ 中层绿 RT
         private RenderTarget2D _rtBlue = null!;    // ④ 顶层蓝（半透明）RT
         private bool _rtDirty = true;
+
+        // 烘焙 RT 用的混合：颜色按 SrcAlpha 预乘、alpha 保持直线（避免 NonPremultiplied 把半透明 alpha 算成 a²）。
+        // 对应 Unity 的预乘思路（Blend One / OneMinusSrcAlpha），显示端用 BlendState.AlphaBlend 读取。
+        private static readonly BlendState BakePremulBlend =
+            new BlendState(BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, BlendMode.One, BlendMode.OneMinusSrcAlpha);
 
         private int _mode;                      // 0 = 通用混合网格；1 = 半透明漏下层（3 层演示）
         private int _alphaIndex = 1;
@@ -193,7 +198,8 @@ namespace KFramework.Test.Common.Tests.BlendTest
             b.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(x + bi, y + bi, w - 2 * bi, h - 2 * bi), null, new Color(90, 150, 240, a));  // ③ 顶：蓝 · 半透明
         }
 
-        // 烘焙 5 张 RT（组②③④ 用）。统一 NonPremultiplied + 透明清屏，保证合成一致。
+        // 烘焙 5 张 RT（组②③④ 用）。统一用 BakePremulBlend（颜色预乘、alpha 直线）+ 透明清屏，
+        // 显示端用 AlphaBlend 读取；这样 RT 内是「预乘 rgb + 直线 alpha」，与不拆 RT 直接画逐像素一致。
         private void BakeAllRTs()
         {
             int a = AlphaLevels[_alphaIndex];
@@ -208,7 +214,7 @@ namespace KFramework.Test.Common.Tests.BlendTest
 
             // ② 三层合一 RT
             Device.SetRenderTarget(_rtAll); Device.Clear(Color.Transparent);
-            Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            Batch.Begin(SpriteSortMode.Deferred, BakePremulBlend);
             Batch.Draw(KDefaultRes.DefaultTexture2D, red, null, cRed);
             Batch.Draw(KDefaultRes.DefaultTexture2D, green, null, cGreen);
             Batch.Draw(KDefaultRes.DefaultTexture2D, blue, null, cBlue);
@@ -216,26 +222,26 @@ namespace KFramework.Test.Common.Tests.BlendTest
 
             // ③ 底层红 RT
             Device.SetRenderTarget(_rtBottom); Device.Clear(Color.Transparent);
-            Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            Batch.Begin(SpriteSortMode.Deferred, BakePremulBlend);
             Batch.Draw(KDefaultRes.DefaultTexture2D, red, null, cRed);
             Batch.End(); Device.SetRenderTarget(null);
 
             // ③ 中+顶（绿+蓝）RT
             Device.SetRenderTarget(_rtMidTop); Device.Clear(Color.Transparent);
-            Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            Batch.Begin(SpriteSortMode.Deferred, BakePremulBlend);
             Batch.Draw(KDefaultRes.DefaultTexture2D, green, null, cGreen);
             Batch.Draw(KDefaultRes.DefaultTexture2D, blue, null, cBlue);
             Batch.End(); Device.SetRenderTarget(null);
 
             // ④ 中层绿 RT
             Device.SetRenderTarget(_rtGreen); Device.Clear(Color.Transparent);
-            Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            Batch.Begin(SpriteSortMode.Deferred, BakePremulBlend);
             Batch.Draw(KDefaultRes.DefaultTexture2D, green, null, cGreen);
             Batch.End(); Device.SetRenderTarget(null);
 
             // ④ 顶层蓝（半透明）RT
             Device.SetRenderTarget(_rtBlue); Device.Clear(Color.Transparent);
-            Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            Batch.Begin(SpriteSortMode.Deferred, BakePremulBlend);
             Batch.Draw(KDefaultRes.DefaultTexture2D, blue, null, cBlue);
             Batch.End(); Device.SetRenderTarget(null);
         }
@@ -245,41 +251,100 @@ namespace KFramework.Test.Common.Tests.BlendTest
             if (_rtDirty) { BakeAllRTs(); _rtDirty = false; } // 批次当前未激活，可安全切 RT 烘焙
 
             int a = AlphaLevels[_alphaIndex];
-            int pw = 300, ph = 200, gap = 14;
             int startX = (int)origin.X;
             int startY = (int)(ContentTop + 40);
-            int cols = Math.Max(1, Math.Min(4, (int)((Device.Viewport.Width - startX) / (pw + gap))));
 
-            int CellX(int i) => startX + (i % cols) * (pw + gap);
-            int CellY(int i) => startY + (i / cols) * (ph + 56);
+            // 自适应：4 行在「可用高度」内尽量大，且每行之间留固定空隙（不挤、也不溢出屏幕）。
+            int bottomMargin = 64;                 // 底部说明预留
+            int gap = 12, arrowW = 24;
+            int labelH = 20, capH = 18, interRowGap = 18;
+            int availH = Device.Viewport.Height - startY - bottomMargin;
+            int thumbH = (availH / 4) - (labelH + capH + interRowGap);
+            thumbH = Math.Clamp(thumbH, 72, 110);  // 太小看不清，太大仍占地方
+            int thumbW = (int)(thumbH * 1.5f + 0.5f); // 保持 3:2
+            int rowStep = thumbH + labelH + capH + interRowGap;
 
-            // 4 组对照：① 3 Draws；② 1 RT；③ 2 RT；④ 3 RT（同尺寸缩放显示）
-            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
-            DrawThreeLayers(batch, CellX(0), CellY(0), pw, ph, a);                                            // ① 无 RT
-            batch.Draw(_rtAll, new Rectangle(CellX(1), CellY(1), pw, ph), null, Color.White);                  // ② 1 RT
-            batch.Draw(_rtBottom, new Rectangle(CellX(2), CellY(2), pw, ph), null, Color.White);               // ③ 底 RT
-            batch.Draw(_rtMidTop, new Rectangle(CellX(2), CellY(2), pw, ph), null, Color.White);               // ③ 中上 RT
-            batch.Draw(_rtBottom, new Rectangle(CellX(3), CellY(3), pw, ph), null, Color.White);               // ④ 底 RT
-            batch.Draw(_rtGreen, new Rectangle(CellX(3), CellY(3), pw, ph), null, Color.White);                // ④ 绿 RT
-            batch.Draw(_rtBlue, new Rectangle(CellX(3), CellY(3), pw, ph), null, Color.White);                 // ④ 蓝 RT
+            // 4 组对照，各占一行（A 无RT / B 1RT / C 2RT / D 3RT）。
+            // 每行：左侧「中间产生的 RT」缩略图（没有就不显示）+ "→" + 右侧「最终合成图」（4 个最终图对齐成一列便于比较）。
+            string[] labels = {
+                "A　3 个 Draw 直接画（无中间 RT）",
+                "B　1 张 RT（三层合一）",
+                "C　2 张 RT（底 / 中上）",
+                "D　3 张 RT（每层各自）",
+            };
+            string[][] names = {
+                new string[0],
+                new[] { "RT(三层合一)" },
+                new[] { "RT底·红", "RT中上·绿+蓝" },
+                new[] { "RT底·红", "RT中·绿", "RT顶·蓝(半透明)" },
+            };
+            RenderTarget2D[][] parts = {
+                new RenderTarget2D[0],
+                new[] { _rtAll },
+                new[] { _rtBottom, _rtMidTop },
+                new[] { _rtBottom, _rtGreen, _rtBlue },
+            };
+
+            int finalX = startX + 3 * (thumbW + gap) + arrowW + gap;
+
+            // RT 缩略图与「最终图(B/C/D)」：RT 内含预乘 alpha，必须用 premultiplied（AlphaBlend）显示，
+            // 否则半透明层会被二次预乘 → 颜色发暗/偏透（这正是之前 4 组不一致的根因）。
+            batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            for (int i = 0; i < 4; i++)
+            {
+                int ry = startY + i * rowStep;
+                int cx = startX;
+                foreach (var rt in parts[i])
+                {
+                    batch.Draw(rt, new Rectangle(cx, ry, thumbW, thumbH), null, Color.White);
+                    cx += thumbW + gap;
+                }
+                if (i == 1)
+                    batch.Draw(_rtAll, new Rectangle(finalX, ry, thumbW, thumbH), null, Color.White);          // B 最终 = 该 RT
+                else if (i == 2)
+                {
+                    batch.Draw(_rtBottom, new Rectangle(finalX, ry, thumbW, thumbH), null, Color.White);        // C 最终
+                    batch.Draw(_rtMidTop, new Rectangle(finalX, ry, thumbW, thumbH), null, Color.White);
+                }
+                else if (i == 3)
+                {
+                    batch.Draw(_rtBottom, new Rectangle(finalX, ry, thumbW, thumbH), null, Color.White);        // D 最终
+                    batch.Draw(_rtGreen, new Rectangle(finalX, ry, thumbW, thumbH), null, Color.White);
+                    batch.Draw(_rtBlue, new Rectangle(finalX, ry, thumbW, thumbH), null, Color.White);
+                }
+                // i == 0（A）的最终图在下面用 NonPremultiplied 直接画
+            }
             batch.End();
 
-            string[] titles = {
-                "① 3 个 Draw 直接画（无 RT）",
-                "② 1 张 RT（三层合一）",
-                "③ 2 张 RT（底 / 中上）",
-                "④ 3 张 RT（每层各自）",
-            };
+            // A 组最终图：直接 3 个 Draw（源是带 tint 的白图，非预乘），必须用 NonPremultiplied；与 B/C/D 的最终图应当一致。
+            {
+                int ry = startY;
+                batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+                DrawThreeLayers(batch, finalX, ry, thumbW, thumbH, a);
+                batch.End();
+            }
+
+            // 文本：行标签 + 缩略图名 + 箭头 + 最终标注 + 底部说明
             batch.Begin();
             for (int i = 0; i < 4; i++)
             {
-                int x = CellX(i), y = CellY(i);
-                batch.DrawString(Font, titles[i], new Vector2(x, y - 22), new Color(255, 206, 110));
-                batch.DrawString(Font, "底红·中绿·顶蓝半透明", new Vector2(x, y + ph + 2), Color.LightGray);
+                int ry = startY + i * rowStep;
+                batch.DrawString(Font, labels[i], new Vector2(startX, ry - 18), new Color(255, 206, 110));
+                int cx = startX;
+                foreach (var n in names[i])
+                {
+                    batch.DrawString(Font, n, new Vector2(cx, ry + thumbH + 2), Color.LightGray);
+                    cx += thumbW + gap;
+                }
+                if (i == 0)
+                    batch.DrawString(Font, "（直接 3 Draw 合成，无中间 RT）", new Vector2(startX, ry + thumbH + 2), Color.LightGray);
+                batch.DrawString(Font, "→", new Vector2(finalX - arrowW, ry + thumbH / 2 - 8), new Color(210, 210, 210));
+                batch.DrawString(Font, "最终合成图", new Vector2(finalX, ry + thumbH + 2), new Color(150, 200, 255));
             }
-            int noteY = CellY(3 / cols) + ph + 60;
-            batch.DrawString(Font, "同样的三层，用不同数量的 RT 渲染，结果应当一致；点「半透明浓度」调 alpha，Esc 返回。",
+            int noteY = startY + 4 * rowStep + 8;
+            batch.DrawString(Font, "同样的 3 层，拆成 0/1/2/3 张 RT 渲染，最终图应当完全一致（半透明蓝层无论拆几张 RT 都一样）。",
                 new Vector2(startX, noteY), new Color(150, 200, 255));
+            batch.DrawString(Font, "点「半透明浓度」调 alpha；Esc 返回。", new Vector2(startX, noteY + 22), Color.LightGray);
             batch.End();
         }
 
