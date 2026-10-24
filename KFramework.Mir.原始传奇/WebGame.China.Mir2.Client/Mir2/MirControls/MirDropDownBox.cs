@@ -313,6 +313,12 @@ namespace Client.MirControls
             if (_dropUp)
                 Location = new Point(Location.X, _collapsedY);
             _dropUp = false;
+
+            // 还原折叠布局:向上展开时表头(_label/_DropDownButton)被移到控件底部,收起后控件高度变回
+            // OrigHeight,若不还原表头会落在控件之外被裁掉(字和标签背景一起消失)。
+            _label.Location = new Point(0, 0);
+            _DropDownButton.Location = new Point(Size.Width - 18, 1);
+
             for (int i = 0; i < _Option.Length; i++)
                 _Option[i].Visible = false;
             _ScrollDown.Visible = false;

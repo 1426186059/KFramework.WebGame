@@ -807,6 +807,16 @@ namespace Client.MirScenes.Dialogs
             KeyDown += ChatPanel_KeyDown;
             MouseWheel += ChatPanel_MouseWheel;
 
+            var mChatTextBoxBg = new MirImageControl
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "y_h_map0",
+                AutoSize = false,
+                Size = new Size(500, 25),
+                Parent = this,
+            };
+            mChatTextBoxBg.Location = mChatTextBoxBg.Bottom;
+
             ChatTextBox = new MirTextBox
             {
                 BackColour = Color.DarkGray,
@@ -1478,6 +1488,7 @@ namespace Client.MirScenes.Dialogs
     public sealed class ChatControlBar : MirImageControl
     {
         public MirButton SendChatBtn, SizeButton, SettingsButton, NormalButton, ShoutButton, WhisperButton, LoverButton, MentorButton, GroupButton, GuildButton, ReportButton, TradeButton;
+        private MirDropDownBox mChatChannel;
 
         private readonly List<string> ChatChannelList = new List<string>()
         {
@@ -1496,7 +1507,7 @@ namespace Client.MirScenes.Dialogs
             Visible = true;
             NotControl = false;
 
-            var mChatChannel = new MirDropDownBox()
+            mChatChannel = new MirDropDownBox()
             {
                 BackColour = Color.FromArgb(255, 15, 15, 15),
                 ForeColour = Color.White,
@@ -1507,20 +1518,24 @@ namespace Client.MirScenes.Dialogs
                 Enabled = true,
                 DropMode = 1,
             };
-            //mChatChannel.ValueChanged += (o, e) => OnNewRank(index, MembersRanks[index]._WantedIndex);
-            //mChatChannel.MouseWheel += MembersPanel_MouseWheel;
+            mChatChannel.ValueChanged += (o, e) =>
+            {
+                mChatChannel.SelectedIndex = mChatChannel._WantedIndex; // 写回,标签才显示选中项
+            };
             mChatChannel.Items = ChatChannelList;
             mChatChannel.MinimumOption = 0;
+            mChatChannel.SelectedIndex = 0; // 默认显示第一个频道(综合)
 
             SendChatBtn = new MirButton
             {
                 AtlasNameKey = "y_homeUI-sheet",
-                AtlasFrame = "bg_zhukuang_1_1",
-                PressedAtlasFrame = "",
-
-                Location = new Point(500, 90),
+                AtlasFrame = "btn_liaotian_11",
+                PressedAtlasFrame = "btn_liaotian_12",
+                Location = new Point(540, 95),
                 Parent = this,
                 Sound = SoundList.ButtonA,
+                Text = "发送",
+                CenterText = true,
             };
 
             SizeButton = new MirButton
