@@ -4,6 +4,7 @@ using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirSounds;
 using SlimDX;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using WebGame.Mir2.MonoGame.Client;
 using static Client.MirScenes.SelectScene;
@@ -29,6 +30,8 @@ namespace Client.MirScenes.Dialogs
         public MirButton HeroMenuButton, HeroSummonButton;
 
         MirAtlasAnimatedControl mHPAni, mHPAni1, mMPAni, mMPAni1;
+
+        public MirButton RankBtn, GuildBtn, HeChengBtn, QiangXingBtn, ZhuangBanBtn, RongLuBtn, SheJiaoBtn, TianShenBtn, ShenChongBtn;
 
         public bool HPOnly
         {
@@ -275,6 +278,75 @@ namespace Client.MirScenes.Dialogs
                 else GameScene.Scene.GameShopDialog.Hide();
             };
 
+            this.RankBtn = this.RankBtnStyle(
+                "word_xitong_03", 
+                0, 
+                GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                );
+
+            this.GuildBtn = this.RankBtnStyle(
+                 "word_xitong_02", 
+                 1,
+                 GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                 );
+
+            this.HeChengBtn = this.RankBtnStyle(
+                 "word_xitong_04",
+                 2,
+                 GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                 );
+
+            this.QiangXingBtn = this.RankBtnStyle(
+                 "word_xitong_05",
+                 3,
+                 GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                 );
+                
+            this.ZhuangBanBtn = this.RankBtnStyle(
+                 "word_xitong_06",
+                 4,
+                 GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                 );
+
+            this.RongLuBtn = this.RankBtnStyle(
+                   "word_xitong_07",
+                   5,
+                   GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                   );
+
+            this.SheJiaoBtn = this.RankBtnStyle(
+                "word_xitong_08",
+                6,
+                GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                );
+
+            this.TianShenBtn = this.RankBtnStyle(
+                  "word_xitong_16",
+                  7,
+                  GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                  );
+
+            this.ShenChongBtn = this.RankBtnStyle(
+                  "word_xitong_17",
+                  8,
+                  GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.RankingKey), CMain.InputKeys.GetKey(KeybindOptions.Ranking))
+                  );
+
+            var quitBtn = new MirButton
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_gongneng_05",
+                PressedAtlasFrame = "btn_gongneng_06",
+                Location = new Point(830, 88),
+                Parent = this,
+                Sound = SoundList.ButtonC,
+                Hint = Hint
+            };
+            quitBtn.Click += (o, e) =>
+            {
+
+            };
+
             //HealthLabel = new MirLabel
             //{
             //    AutoSize = true,
@@ -492,6 +564,35 @@ namespace Client.MirScenes.Dialogs
             };
         }
 
+        private MirButton RankBtnStyle(
+            string LabelImageAtlasFrame,
+            int nIndex, string Hint)
+        {
+            var rankBtn = new MirButton
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_gongneng_01",
+                PressedAtlasFrame = "btn_gongneng_02",
+                Size = new Size(34, 18),
+                Location = new Point(350 + 50 * nIndex, 88),
+                Parent = this,
+                Sound = SoundList.ButtonC,
+                Hint = Hint
+            };
+
+            rankBtn.LabelImage.Visible = true;
+            rankBtn.LabelImage.AtlasNameKey = "y_homeUI-sheet";
+            rankBtn.LabelImage.AtlasFrame = LabelImageAtlasFrame;
+            rankBtn.LabelImage.Size = new Size(25, 14);
+            rankBtn.LabelImage.Location = rankBtn.LabelImage.Center;
+            rankBtn.Click += (o, e) =>
+            {
+                
+            };
+
+            return rankBtn;
+        }
+
         private void MainDialog_AtlasLoaded(object sender, EventArgs e)
         {
             throw new NotImplementedException();
@@ -675,13 +776,13 @@ namespace Client.MirScenes.Dialogs
             PixelDetect = true;
 
             AtlasNameKey = "y_homeUI-sheet";
-            AtlasFrame = "y_h_bg5";
+            AtlasFrame = "y_h_msbg";
             //AtlasFrame = "bg_liaotianzy_06";
 
             AutoSize = false;
             Size = new Size(600, 120);
             Anchor = EAnchorType.BottomCenter;
-            AnchorPos = new Point(0, -5);
+            AnchorPos = new Point(0, -10);
             ApplyAnchor();
 
             KeyPress += ChatPanel_KeyPress;
@@ -1371,9 +1472,11 @@ namespace Client.MirScenes.Dialogs
 
         public ChatControlBar()
         {
-            Index = Settings.Resolution != 800 ? 2034 : 2035;
-            Library = Libraries.Prguse;
-            Location = new Point(GameScene.Scene.MainDialog.Location.X + 230, Settings.ScreenHeight - 112);
+            Size = new Size(0, 0);
+            Anchor = EAnchorType.BottomCenter;
+            AnchorPos = new Point(-200, -130);
+            ApplyAnchor();
+            Visible = false;
 
             SizeButton = new MirButton
             {
@@ -1387,6 +1490,7 @@ namespace Client.MirScenes.Dialogs
                 Sound = SoundList.ButtonA,
                 Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Size)
             };
+
             SizeButton.Click += (o, e) =>
             {
                 GameScene.Scene.ChatDialog.ChangeSize();
