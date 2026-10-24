@@ -99,7 +99,7 @@ namespace KFramework.MonoGame
         /// 注意：它不是用来直接画到屏幕的（屏幕直出 alpha 仍用 <see cref="NonPremultiplied"/>）。</para>
         /// </summary>
         public static readonly BlendState BakePremultiplied =
-            new(BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha);
+            new(BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, BlendMode.One, BlendMode.OneMinusSrcAlpha);
 
         /// <summary>
         /// 叠加发光，用于粒子、爆炸、激光。
