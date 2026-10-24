@@ -1,5 +1,6 @@
 // SlimDX 子集兼容壳：仅实现传奇客户端 (Mir2) 渲染代码实际用到的类型，
 // 让 95 个逻辑文件几乎不改即可编译到浏览器。真正的绘制由 RenderingCore(Canvas) 接管。
+using Client.MirGraphics;
 using MirEngine;
 
 namespace SlimDX
@@ -177,7 +178,8 @@ namespace SlimDX.Direct3D9
         public float Width = 1F;
         public void Draw(Vector2[] points, Color color)
         {
-            // 线条绘制暂未接入 SpriteBatch；保留签名以兼容调用点（不影响主流程）。
+            // 线条绘制已接入：复用 DXManager 的 1×1 白像素沿 SpriteBatch 拉伸成细矩形（见 DXManager.DrawLines）。
+            DXManager.DrawLines(points, Width, color);
         }
     }
 

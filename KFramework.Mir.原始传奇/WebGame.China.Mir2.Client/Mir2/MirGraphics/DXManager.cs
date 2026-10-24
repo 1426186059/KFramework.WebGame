@@ -215,10 +215,136 @@ namespace Client.MirGraphics
             return mat;
         }
 
+        // —— 像素级后效（灰度 / 染色 / 魔法 / 淡出）：对齐原版 Crystal 的 Device.PixelShader（灰度 / Normal / Magic 三套 .ps）——
+        // 原版用 D3D9 像素着色器（颜色后效）+ 全局混合因子（SetOpacity 的半透明）。本移植改用引擎 Material.Effect
+        // （ShaderEffect，GLSL ES 3.00；仅 WebGL 后端真正生效，WebGPU 回落默认精灵着色器，页面照常只是无后效）。
+        // 颜色后效（灰度 / 染色 / 魔法）三者互斥、共用一个“颜色后效槽” _colorEffect；全局不透明度 _opacity 与之正交叠加
+        // （premultiplied 约定下只需把 alpha 乘 uOpacity，下游混合按 alpha 预乘 rgb，等于整层按 uOpacity 缩放）。
+        private static KFramework.MonoGame.ShaderEffect _grayscaleEffect;
+        private static KFramework.MonoGame.ShaderEffect _normalEffect;
+        private static KFramework.MonoGame.ShaderEffect _magicEffect;
+        private static KFramework.MonoGame.ShaderEffect _fadeEffect; // 仅淡出（不改色）
+
+        // 后效状态：_colorEffect 为颜色后效槽（0 无；1 灰度；2 normal 染色；3 magic 染色）；_opacity 全局不透明度。
+        private static int _colorEffect;
+        private static System.Numerics.Vector4 _tintParam; // rgb = 染色色，a = 混合比例
+        private static float _opacity = 1f;
+
+        // 按 (混合, 后效) 缓存的材质：后效开启 / 切换时返回另一实例，关闭 / 回到默认时回到基础材质实例，保证 BeginSprite 去重正确。
+        private static readonly Dictionary<(KFramework.MonoGame.BlendState, KFramework.MonoGame.ShaderEffect), KFramework.MonoGame.Material> _effectMaterials
+            = new Dictionary<(KFramework.MonoGame.BlendState, KFramework.MonoGame.ShaderEffect), KFramework.MonoGame.Material>();
+
+        private static void EnsureEffects()
+        {
+            if (GDevice == null || _grayscaleEffect != null) return;
+            // 灰度：把像素转成亮度（遵循 premultiplied 约定，只改 rgb、不动 alpha）。uOpacity 统一淡出。
+            const string grayscaleFrag = @"#version 300 es
+precision highp float;
+in vec2 vTexCoord;
+in vec4 vColor;
+uniform sampler2D uTexture;
+uniform float uOpacity;
+out vec4 fragColor;
+void main()
+{
+    vec4 c = texture(uTexture, vTexCoord) * vColor;
+    float g = dot(c.rgb, vec3(0.299, 0.587, 0.114));
+    fragColor = vec4(g, g, g, c.a * uOpacity);
+}";
+            // 染色 / 魔法：把颜色朝 uTint.rgb 混合 uTint.a 比例（premultiplied 空间），用于伤害红闪 / 光效等。uOpacity 统一淡出。
+            const string tintFrag = @"#version 300 es
+precision highp float;
+in vec2 vTexCoord;
+in vec4 vColor;
+uniform sampler2D uTexture;
+uniform vec4 uTint;
+uniform float uOpacity;
+out vec4 fragColor;
+void main()
+{
+    vec4 c = texture(uTexture, vTexCoord) * vColor;
+    vec3 tinted = c.rgb * uTint.rgb;
+    c.rgb = mix(c.rgb, tinted, clamp(uTint.a, 0.0, 1.0));
+    fragColor = vec4(c.rgb, c.a * uOpacity);
+}";
+            // 淡出：仅把 alpha 乘 uOpacity（premultiplied 约定下 rgb 由下游混合按 alpha 预乘，等于整层按 uOpacity 缩放）。
+            const string fadeFrag = @"#version 300 es
+precision highp float;
+in vec2 vTexCoord;
+in vec4 vColor;
+uniform sampler2D uTexture;
+uniform float uOpacity;
+out vec4 fragColor;
+void main()
+{
+    vec4 c = texture(uTexture, vTexCoord) * vColor;
+    fragColor = vec4(c.rgb, c.a * uOpacity);
+}";
+            _grayscaleEffect = GDevice.CreateShaderEffect(grayscaleFrag);
+            _normalEffect = GDevice.CreateShaderEffect(tintFrag);
+            _magicEffect = GDevice.CreateShaderEffect(tintFrag);
+            _fadeEffect = GDevice.CreateShaderEffect(fadeFrag);
+            // 安全默认：uOpacity 未设置时 GLSL 默认 0（会让整屏不可见），必须显式置 1。
+            _grayscaleEffect.SetFloat("uOpacity", 1f);
+            _normalEffect.SetFloat("uOpacity", 1f);
+            _magicEffect.SetFloat("uOpacity", 1f);
+            _fadeEffect.SetFloat("uOpacity", 1f);
+        }
+
+        // 依据当前颜色后效槽 + 全局不透明度，解析本批应使用的 ShaderEffect（null = 默认精灵着色器）。
+        private static KFramework.MonoGame.ShaderEffect ResolveEffect()
+        {
+            if (_grayscaleEffect == null) return null; // 后效未就绪（GDevice 还没好）→ 无后效，安全降级
+            switch (_colorEffect)
+            {
+                case 1:
+                    _grayscaleEffect.SetFloat("uOpacity", _opacity);
+                    return _grayscaleEffect;
+                case 2:
+                    _normalEffect.SetVector("uTint", _tintParam);
+                    _normalEffect.SetFloat("uOpacity", _opacity);
+                    return _normalEffect;
+                case 3:
+                    _magicEffect.SetVector("uTint", _tintParam);
+                    _magicEffect.SetFloat("uOpacity", _opacity);
+                    return _magicEffect;
+                default:
+                    if (_opacity != 1f)
+                    {
+                        _fadeEffect.SetFloat("uOpacity", _opacity);
+                        return _fadeEffect;
+                    }
+                    return null;
+            }
+        }
+
+        // 把当前后效合成进“基础材质”，返回本批使用材质（无后效时返回原实例，保持去重）。
+        private static KFramework.MonoGame.Material ApplyCurrentEffect(KFramework.MonoGame.Material baseMaterial)
+        {
+            EnsureEffects();
+            var effect = ResolveEffect();
+            if (effect == null) return baseMaterial;
+            var key = (baseMaterial.Blend, effect);
+            if (!_effectMaterials.TryGetValue(key, out var m))
+            {
+                m = new KFramework.MonoGame.Material
+                {
+                    Blend = baseMaterial.Blend,
+                    Sampler = baseMaterial.Sampler,
+                    DepthStencil = baseMaterial.DepthStencil,
+                    Rasterizer = baseMaterial.Rasterizer,
+                    Effect = effect,
+                };
+                _effectMaterials[key] = m;
+            }
+            return m;
+        }
+
         // 对齐 Sprite.Begin(...)：开出主批（材质 / 世界变换未变则忽略，＝原版容忍的重复 Begin）。
         // 主绘制路径传 RenderTransform；文本烘焙等需恒等变换的场景传 null。
         public static void BeginSprite(KFramework.MonoGame.Material material, KFramework.MonoGame.Matrix4x4? transform = null)
         {
+            material = ApplyCurrentEffect(material);
             if (_batchBegun && ReferenceEquals(_batchMaterial, material) && Nullable.Equals(_batchTransform, transform)) return;
             if (_batchBegun) Batch.End();
             Batch.Begin(material, KFramework.MonoGame.SpriteSortMode.Deferred, transform);
@@ -320,6 +446,35 @@ namespace Client.MirGraphics
             }
         }
 
+        // 画线：把折线各段画成细矩形（复用 1×1 白像素沿 SpriteBatch 拉伸）。
+        // 控件边框都是轴对齐矩形，故无需旋转即可精确绘制；对角线段退化为其轴对齐包围盒（罕见）。
+        public static void DrawLines(SlimDX.Vector2[] points, float width, Color color)
+        {
+            if (points == null || points.Length < 2) return;
+            var c = ToColor(color);
+            for (int i = 0; i < points.Length - 1; i++)
+            {
+                float x0 = points[i].X, y0 = points[i].Y;
+                float x1 = points[i + 1].X, y1 = points[i + 1].Y;
+                float dx = x1 - x0, dy = y1 - y0;
+                KFramework.MonoGame.Rectangle dest;
+                if (Math.Abs(dx) >= Math.Abs(dy))
+                    dest = new KFramework.MonoGame.Rectangle(
+                        (int)Math.Round(Math.Min(x0, x1)),
+                        (int)Math.Round(Math.Min(y0, y1) - width / 2f),
+                        (int)Math.Round(Math.Abs(dx)),
+                        (int)Math.Round(width));
+                else
+                    dest = new KFramework.MonoGame.Rectangle(
+                        (int)Math.Round(Math.Min(x0, x1) - width / 2f),
+                        (int)Math.Round(Math.Min(y0, y1)),
+                        (int)Math.Round(width),
+                        (int)Math.Round(Math.Abs(dy)));
+                if (dest.Width <= 0 || dest.Height <= 0) continue;
+                Draw(WhitePixel, new KFramework.MonoGame.Rectangle(0, 0, 1, 1), dest, c);
+            }
+        }
+
         // 离屏渲染目标：把 surface 所属的 RenderTarget2D 绑到设备（null = 回默认画布）。
         // 嵌套合成时按"保存/恢复 CurrentSurface"的方式调用，保证子控件烘焙后能回到父 RT。
         public static void SetSurface(SlimDX.Direct3D9.Surface surface)
@@ -335,8 +490,13 @@ namespace Client.MirGraphics
             CurrentSurface = surface;
             GDevice?.SetRenderTarget(surface?.Owner?.RenderTarget);
         }
-        public static void SetGrayscale(bool value) { GrayScale = value; }
-        public static void SetOpacity(float opacity) { Opacity = opacity; }
+        public static void SetGrayscale(bool value)
+        {
+            GrayScale = value;
+            // 颜色后效槽：1=灰度；关灰度同时清掉染色（对齐原版 SetGrayscale(false) 把像素着色器置空）。
+            _colorEffect = value ? 1 : 0;
+        }
+        public static void SetOpacity(float opacity) { Opacity = opacity; _opacity = opacity; }
         public static void SetBlend(bool value, float rate = 1F, BlendMode mode = BlendMode.NORMAL)
         {
             // 对齐原版：状态没变就直接 return（绝不重复换批 / 重设渲染状态）。
@@ -349,9 +509,21 @@ namespace Client.MirGraphics
             EndSprite();
             BeginSprite(Blending ? MirBlend.Additive : MirBlend.Normal, RenderTransform);
         }
-        public static void SetNormal(float blend, Color tintcolor) { }
-        public static void SetGrayscale(float blend, Color tintcolor) { }
-        public static void SetBlendMagic(float blend, Color tintcolor) { }
+        public static void SetNormal(float blend, Color tintcolor)
+        {
+            _colorEffect = 2; // 染色（normal）
+            _tintParam = new System.Numerics.Vector4(tintcolor.R / 255f, tintcolor.G / 255f, tintcolor.B / 255f, blend);
+        }
+        public static void SetGrayscale(float blend, Color tintcolor)
+        {
+            // 原版这套在灰度着色器上再叠 tint 常量；本移植灰度着色器无 tint 项，退化为纯灰度。
+            SetGrayscale(true);
+        }
+        public static void SetBlendMagic(float blend, Color tintcolor)
+        {
+            _colorEffect = 3; // 染色（magic）
+            _tintParam = new System.Numerics.Vector4(tintcolor.R / 255f, tintcolor.G / 255f, tintcolor.B / 255f, blend);
+        }
 
         public static void AttemptReset() { }
         public static void ResetDevice() { }
