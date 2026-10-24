@@ -24,7 +24,7 @@ namespace MapExtract2.Models
         /// &lt;PackRootPath&gt;/raw 的同级生成 &lt;PackRootPath&gt;/hot_update_res，无需在此配置绝对路径。
         /// 客户端从 &lt;baseUrl&gt;/hot_update_res 拉取 version.manifest 与 *.web.lib（见 WebGame.Mir2.MonoGame.Client 的 MirGame.cs / Shims/BrowserResource.cs）。</summary>
         public string DestinationPath { get; set; } =
-            @"D:\OpenSource\KFramework.WebGame\KFramework.Mir\WebGame.Mir2\Mir2Res\hot_update_res";
+            @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.Crystal\WebGame.Mir2\Mir2Res\hot_update_res";
 
         public string MinimapLibPath { get; set; } = @"D:\OpenSource\Crystal\Build\Client\Debug\Data\mmap.Lib";
         public string MirDBPath { get; set; } = @"D:\OpenSource\Crystal\Build\Server\Debug\Server.MirDB";
@@ -56,7 +56,7 @@ namespace MapExtract2.Models
         /// 留空则回退到系统临时目录（用后删除）。
         /// </summary>
         public string PackRootPath { get; set; } =
-            @"D:\OpenSource\KFramework.WebGame\KFramework.Mir\WebGame.Mir2\Mir2Res";
+            @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.Crystal\WebGame.Mir2\Mir2Res";
     }
 
     /// <summary>扫描到的一张地图（含 MirDB 匹配信息）。</summary>

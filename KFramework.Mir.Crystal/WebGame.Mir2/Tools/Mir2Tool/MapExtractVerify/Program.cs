@@ -15,7 +15,7 @@ using Mir.Lib;
 class Program
 {
     const string ClientRoot = @"D:\OpenSource\Crystal\Build\Client\Debug";
-    const string ResRoot = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir\WebGame.Mir2\Mir2Res";
+    const string ResRoot = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.Crystal\WebGame.Mir2\Mir2Res";
     const string MapName = "0";
     const int DoorFrameSafety = 8;
     const string MapPrefix = "Data/Map/";
