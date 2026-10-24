@@ -85,20 +85,38 @@ namespace KFramework.MonoGame
             new(BlendMode.One, BlendMode.OneMinusSrcAlpha, BlendMode.One, BlendMode.OneMinusSrcAlpha);
 
         /// <summary>
-        /// 非预乘的 source-over（标准直出 alpha 的「普通透明」）。
-        /// <para>公式：Final = S×Sa + D×(1−Sa)；FinalA = Sa×Sa + Da×(1−Sa)。</para>
-        /// <para>注意：半透明层叠在透明上时 alpha 算成 Sa×Sa（≠Sa）；若要把烘焙出的 RT 当预乘数据读，别用它烘焙。</para>
+        /// 非预乘的 source-over（标准直出 alpha 的「普通透明」），<b>仅适合直接画到屏幕</b>。
+        /// <para>颜色公式正确：Final = S×Sa + D×(1−Sa)（S 是未预乘的原色，逐像素正确）。</para>
+        /// <para>⚠ <b>Alpha 通道有坑——这是传奇半透明 bug 的元凶</b>：本状态的 α 源因子是
+        /// <see cref="BlendMode.SrcAlpha"/>，于是 Alpha 公式变成 <c>FinalA = Sa×Sa + Da×(1−Sa)</c>，
+        /// 把源 alpha 自己平方了。两个必现的恶果：
+        /// <list type="bullet">
+        ///   <item><term>① 烘 RT 时半透明层"过透"</term><description>半透明层(Sa=a)烤到透明 RT(Da=0)上，存进去的 alpha = a×a = a²（本应是 a）。
+        /// 这层比预期透明得多，下面的层/底色直接透出来 → 传奇里"半透明叠加层把地图漏出来"。</description></item>
+        ///   <item><term>② 不透明底 + 半透明盖，整张图却变半透明</term><description>底 α=1、盖 α=a，合成后 alpha = a² + 1×(1−a) = 1−a+a²（a∈(0,1) 恒 &lt; 1）。
+        /// 不透明图叠半透明盖本应<b>仍不透明</b>，结果整张合成图反而半透明、把身后背景透出来——明显荒谬。</description></item>
+        /// </list>
+        /// </para>
+        /// <para><b>结论</b>：纯屏幕直绘（后备缓冲不透明、alpha 通道被丢弃）用它没问题；但<b>绝不要用它烘焙 RT / 做多层离屏合成</b>，否则必踩上面两个坑。
+        /// 烘焙请改用 <see cref="NonPremultiplied_Fix"/>——只把 α 源因子从 SrcAlpha 改成 One，alpha 即保持直线 a。</para>
         /// </summary>
-        public static readonly BlendState NonPremultiplied =
+        public static readonly BlendState Old_NonPremultiplied =
             new(BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha);
 
         /// <summary>
-        /// 烘焙 RT 专用：把「非预乘（直出 alpha）」的源预乘进颜色、但 alpha 保持直线，使产物可被 <see cref="AlphaBlend"/> 当预乘纹理读取。
-        /// <para>公式：Final = S×Sa + D×(1−Sa)（颜色已预乘）；FinalA = Sa + Da×(1−Sa)（alpha 保持直线，≠ Sa×Sa）。</para>
-        /// <para>用途：把若干层烘进同一张 RT、之后用 AlphaBlend 合成/显示，可避开 <see cref="NonPremultiplied"/> 把 alpha 算成 Sa×Sa 的坑；与 Unity 预乘思路一致。
+        /// <b>NonPremultiplied 的修复版</b>：唯一改动是把 α 源因子从 <see cref="BlendMode.SrcAlpha"/> 改成
+        /// <see cref="BlendMode.One"/>，从而修掉上面 <see cref="NonPremultiplied"/> 把 alpha 算成 Sa×Sa 的坑。
+        /// <para>公式：Final = S×Sa + D×(1−Sa)（颜色已预乘）；FinalA = Sa + Da×(1−Sa)（alpha 保持直线 a，不再平方）。</para>
+        /// <para>对照 NonPremultiplied 的两个恶果，这里都正确：
+        /// <list type="bullet">
+        ///   <item><term>① 烘 RT</term><description>半透明层(a)烤到透明 RT：存 alpha = a（直线），不再 a²，层下不再漏底。</description></item>
+        ///   <item><term>② 不透明底 + 半透明盖</term><description>合成 alpha = a + 1×(1−a) = 1，<b>恒不透明</b>，整张图不再变透。</description></item>
+        /// </list>
+        /// </para>
+        /// <para>用途：把若干层烘进同一张 RT、之后用 <see cref="AlphaBlend"/>（颜色源=One，按预乘读取）合成/显示；与 Unity 预乘思路一致。
         /// 注意：它不是用来直接画到屏幕的（屏幕直出 alpha 仍用 <see cref="NonPremultiplied"/>）。</para>
         /// </summary>
-        public static readonly BlendState BakePremultiplied =
+        public static readonly BlendState NonPremultiplied =
             new(BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, BlendMode.One, BlendMode.OneMinusSrcAlpha);
 
         /// <summary>

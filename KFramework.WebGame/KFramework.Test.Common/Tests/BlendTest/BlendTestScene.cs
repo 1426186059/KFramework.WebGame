@@ -222,7 +222,7 @@ namespace KFramework.Test.Common.Tests.BlendTest
             b.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(x + bi, y + bi, w - 2 * bi, h - 2 * bi), null, cTop);
         }
 
-        // 烘焙 5 张 RT（组②③④ 用）。统一用 BlendState.BakePremultiplied（颜色预乘、alpha 直线）+ 透明清屏，
+        // 烘焙 5 张 RT（组②③④ 用）。统一用 BlendState.NonPremultiplied_Fix（颜色预乘、alpha 直线）+ 透明清屏，
         // 显示端用 AlphaBlend 读取；这样 RT 内是「预乘 rgb + 直线 alpha」，与不拆 RT 直接画逐像素一致。
         private void BakeAllRTs()
         {
@@ -236,7 +236,7 @@ namespace KFramework.Test.Common.Tests.BlendTest
 
             // ② 三层合一 RT
             Device.SetRenderTarget(_rtAll); Device.Clear(Color.Transparent);
-            Batch.Begin(SpriteSortMode.Deferred, BlendState.BakePremultiplied);
+            Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied_Fix);
             Batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(0, 0, RT_W / 2, RT_H), null, cRed);
             Batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(RT_W / 2, 0, RT_W - RT_W / 2, RT_H), null, cRedDark);
             Batch.Draw(KDefaultRes.DefaultTexture2D, green, null, cGreen);
@@ -245,27 +245,27 @@ namespace KFramework.Test.Common.Tests.BlendTest
 
             // ③ 底层红 RT
             Device.SetRenderTarget(_rtBottom); Device.Clear(Color.Transparent);
-            Batch.Begin(SpriteSortMode.Deferred, BlendState.BakePremultiplied);
+            Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied_Fix);
             Batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(0, 0, RT_W / 2, RT_H), null, cRed);
             Batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(RT_W / 2, 0, RT_W - RT_W / 2, RT_H), null, cRedDark);
             Batch.End(); Device.SetRenderTarget(null);
 
             // ③ 中+顶（绿+蓝）RT
             Device.SetRenderTarget(_rtMidTop); Device.Clear(Color.Transparent);
-            Batch.Begin(SpriteSortMode.Deferred, BlendState.BakePremultiplied);
+            Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied_Fix);
             Batch.Draw(KDefaultRes.DefaultTexture2D, green, null, cGreen);
             Batch.Draw(KDefaultRes.DefaultTexture2D, blue, null, cBlue);
             Batch.End(); Device.SetRenderTarget(null);
 
             // ④ 中层绿 RT
             Device.SetRenderTarget(_rtGreen); Device.Clear(Color.Transparent);
-            Batch.Begin(SpriteSortMode.Deferred, BlendState.BakePremultiplied);
+            Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied_Fix);
             Batch.Draw(KDefaultRes.DefaultTexture2D, green, null, cGreen);
             Batch.End(); Device.SetRenderTarget(null);
 
             // ④ 顶层蓝（半透明）RT
             Device.SetRenderTarget(_rtBlue); Device.Clear(Color.Transparent);
-            Batch.Begin(SpriteSortMode.Deferred, BlendState.BakePremultiplied);
+            Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied_Fix);
             Batch.Draw(KDefaultRes.DefaultTexture2D, blue, null, cBlue);
             Batch.End(); Device.SetRenderTarget(null);
         }

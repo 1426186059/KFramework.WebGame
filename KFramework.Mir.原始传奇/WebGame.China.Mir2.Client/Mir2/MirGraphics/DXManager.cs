@@ -196,9 +196,9 @@ namespace Client.MirGraphics
             = new Dictionary<KFramework.MonoGame.BlendState, KFramework.MonoGame.Material>();
 
         // —— 统一混合常量：全工程只在此定义一次，要换整体混合只改这里 ——
-        // NormalBlend  : 正常 alpha 合成（当前 = 预乘烤 BakePremultiplied），用于场景/控件离屏烘焙与直绘，修复半透明漏底。
+        // NormalBlend  : 正常 alpha 合成（当前 = 预乘烤 NonPremultiplied_Fix），用于场景/控件离屏烘焙与直绘，修复半透明漏底。
         // AdditiveBlend: 发光/叠加特效（等价原版 SetBlend(true)）。
-        public static readonly KFramework.MonoGame.BlendState NormalBlend = KFramework.MonoGame.BlendState.BakePremultiplied;
+        public static readonly KFramework.MonoGame.BlendState NormalBlend = KFramework.MonoGame.BlendState.NonPremultiplied;
         public static readonly KFramework.MonoGame.BlendState AdditiveBlend = KFramework.MonoGame.BlendState.Additive;
 
         // 取某混合模式对应的复用材质（新式材质驱动 API 的入口：SpriteFlags.AlphaBlend 之类的 flags 用法一律改走这里）。
@@ -389,7 +389,7 @@ namespace Client.MirGraphics
         {
             if (texture == null) return;
             RenderTransform = null;
-            // 固定用 BakePremultiplied（预乘烤）上屏：场景已在不透明离屏 RT 内用 BakePremultiplied 合成完毕
+            // 固定用 NonPremultiplied_Fix（预乘烤）上屏：场景已在不透明离屏 RT 内用 NonPremultiplied_Fix 合成完毕
             // （RT 内为预乘 rgb + 直线 alpha，且整帧不透明、alpha=1），此处按已预乘读取即 = 原色，不会二次预乘发暗；
             // 绝不能依赖全局 DXManager.Blending——光照/特效(SetBlend(true))会把全局混合残留成
             // 加法，若此处落到全局，则整帧(尤其 UI 层)被加法叠到亮世界上→暗色 UI 过曝发白
