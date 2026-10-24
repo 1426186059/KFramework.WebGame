@@ -220,10 +220,16 @@ namespace Client.MirGraphics
         // （ShaderEffect，GLSL ES 3.00；仅 WebGL 后端真正生效，WebGPU 回落默认精灵着色器，页面照常只是无后效）。
         // 颜色后效（灰度 / 染色 / 魔法）三者互斥、共用一个“颜色后效槽” _colorEffect；全局不透明度 _opacity 与之正交叠加
         // （premultiplied 约定下只需把 alpha 乘 uOpacity，下游混合按 alpha 预乘 rgb，等于整层按 uOpacity 缩放）。
+        // 后效资产：用引擎 Shader 类登记并编译一次（构造即编译、共享 Program）。类名 / 路径照 Unity 风格，
+        // 可用 KFramework.MonoGame.Shader.Find("Mir2/...") 按名取。
+        private static KFramework.MonoGame.Shader _grayscaleShader;
+        private static KFramework.MonoGame.Shader _tintShader;     // Normal + Magic 共用（同片元源码）
+        private static KFramework.MonoGame.Shader _fadeShader;     // 仅淡出（不改色）
+
+        // 按后效状态持有的 ShaderEffect 实例：各自独立 uniform 字典，但包同一份共享 Program（由 Shader.CreateEffectInstance 产出）。
         private static KFramework.MonoGame.ShaderEffect _grayscaleEffect;
-        private static KFramework.MonoGame.ShaderEffect _normalEffect;
-        private static KFramework.MonoGame.ShaderEffect _magicEffect;
-        private static KFramework.MonoGame.ShaderEffect _fadeEffect; // 仅淡出（不改色）
+        private static KFramework.MonoGame.ShaderEffect _tintEffect;    // Normal / Magic 共用同一实例（互斥，每帧重写 uTint/uOpacity）
+        private static KFramework.MonoGame.ShaderEffect _fadeEffect;
 
         // 后效状态：_colorEffect 为颜色后效槽（0 无；1 灰度；2 normal 染色；3 magic 染色）；_opacity 全局不透明度。
         private static int _colorEffect;
@@ -280,15 +286,21 @@ void main()
     vec4 c = texture(uTexture, vTexCoord) * vColor;
     fragColor = vec4(c.rgb, c.a * uOpacity);
 }";
-            _grayscaleEffect = GDevice.CreateShaderEffect(grayscaleFrag);
-            _normalEffect = GDevice.CreateShaderEffect(tintFrag);
-            _magicEffect = GDevice.CreateShaderEffect(tintFrag);
-            _fadeEffect = GDevice.CreateShaderEffect(fadeFrag);
-            // 安全默认：uOpacity 未设置时 GLSL 默认 0（会让整屏不可见），必须显式置 1。
-            _grayscaleEffect.SetFloat("uOpacity", 1f);
-            _normalEffect.SetFloat("uOpacity", 1f);
-            _magicEffect.SetFloat("uOpacity", 1f);
-            _fadeEffect.SetFloat("uOpacity", 1f);
+            // 用 Shader 类登记并编译一次（构造即编译，共享 Program）。Defaults 写完整默认 uniform，
+            // 保证每个 CreateEffectInstance 出来的实例都从"全默认"起步，共享 Program 也不会串味。
+            _grayscaleShader = new KFramework.MonoGame.Shader("Mir2/GrayScale", null, grayscaleFrag, GDevice);
+            _tintShader = new KFramework.MonoGame.Shader("Mir2/Tint", null, tintFrag, GDevice);
+            _fadeShader = new KFramework.MonoGame.Shader("Mir2/Fade", null, fadeFrag, GDevice);
+
+            _grayscaleShader.Defaults.SetFloat("uOpacity", 1f);
+            _tintShader.Defaults.SetFloat("uOpacity", 1f);
+            _tintShader.Defaults.SetVector("uTint", new System.Numerics.Vector4(1f, 1f, 1f, 0f));
+            _fadeShader.Defaults.SetFloat("uOpacity", 1f);
+
+            // 每个后效状态持有一个独立 uniform 字典的实例（共享底层 Program，互不干扰）。
+            _grayscaleEffect = _grayscaleShader.CreateEffectInstance();
+            _tintEffect = _tintShader.CreateEffectInstance();
+            _fadeEffect = _fadeShader.CreateEffectInstance();
         }
 
         // 依据当前颜色后效槽 + 全局不透明度，解析本批应使用的 ShaderEffect（null = 默认精灵着色器）。
@@ -301,13 +313,13 @@ void main()
                     _grayscaleEffect.SetFloat("uOpacity", _opacity);
                     return _grayscaleEffect;
                 case 2:
-                    _normalEffect.SetVector("uTint", _tintParam);
-                    _normalEffect.SetFloat("uOpacity", _opacity);
-                    return _normalEffect;
+                    _tintEffect.SetVector("uTint", _tintParam);
+                    _tintEffect.SetFloat("uOpacity", _opacity);
+                    return _tintEffect;
                 case 3:
-                    _magicEffect.SetVector("uTint", _tintParam);
-                    _magicEffect.SetFloat("uOpacity", _opacity);
-                    return _magicEffect;
+                    _tintEffect.SetVector("uTint", _tintParam);
+                    _tintEffect.SetFloat("uOpacity", _opacity);
+                    return _tintEffect;
                 default:
                     if (_opacity != 1f)
                     {
