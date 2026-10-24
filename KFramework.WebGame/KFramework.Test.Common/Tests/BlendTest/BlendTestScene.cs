@@ -222,7 +222,7 @@ namespace KFramework.Test.Common.Tests.BlendTest
             b.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(x + bi, y + bi, w - 2 * bi, h - 2 * bi), null, cTop);
         }
 
-        // 烘焙 5 张 RT（组②③④ 用）。统一用 BlendState.NonPremultiplied_Fix（颜色预乘、alpha 直线）+ 透明清屏，
+        // 烘焙 5 张 RT（组②③④ 用）。统一用 BlendState.NonPremultiplied（颜色预乘、alpha 直线）+ 透明清屏，
         // 显示端用 AlphaBlend 读取；这样 RT 内是「预乘 rgb + 直线 alpha」，与不拆 RT 直接画逐像素一致。
         private void BakeAllRTs()
         {
