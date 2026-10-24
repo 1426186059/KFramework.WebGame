@@ -215,7 +215,9 @@ namespace KFramework.Test.Common.Tests.BlendTest
         {
             int gi = (int)(w * 0.14f + 0.5f); // 中层内缩
             int bi = (int)(w * 0.28f + 0.5f); // 顶层内缩
-            b.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(x, y, w, h), null, cBottom);
+            int half = w / 2;                  // 底图左半亮、右半暗，便于辨认"底是否透出"
+            b.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(x, y, half, h), null, cBottom);
+            b.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(x + half, y, w - half, h), null, cBottom.Multiply(0.45f));
             b.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(x + gi, y + gi, w - 2 * gi, h - 2 * gi), null, cMid);
             b.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(x + bi, y + bi, w - 2 * bi, h - 2 * bi), null, cTop);
         }
@@ -227,15 +229,16 @@ namespace KFramework.Test.Common.Tests.BlendTest
             int a = AlphaLevels[_alphaIndex];
             int gi = (int)(RT_W * 0.14f + 0.5f);
             int bi = (int)(RT_W * 0.28f + 0.5f);
-            var red = new Rectangle(0, 0, RT_W, RT_H);
             var green = new Rectangle(gi, gi, RT_W - 2 * gi, RT_H - 2 * gi);
             var blue = new Rectangle(bi, bi, RT_W - 2 * bi, RT_H - 2 * bi);
             (Color cRed, Color cGreen, Color cBlue) = LayerColors(a);
+            var cRedDark = cRed.Multiply(0.45f); // 底图右半刷暗色，便于辨认"底是否透出"
 
             // ② 三层合一 RT
             Device.SetRenderTarget(_rtAll); Device.Clear(Color.Transparent);
             Batch.Begin(SpriteSortMode.Deferred, BlendState.BakePremultiplied);
-            Batch.Draw(KDefaultRes.DefaultTexture2D, red, null, cRed);
+            Batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(0, 0, RT_W / 2, RT_H), null, cRed);
+            Batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(RT_W / 2, 0, RT_W - RT_W / 2, RT_H), null, cRedDark);
             Batch.Draw(KDefaultRes.DefaultTexture2D, green, null, cGreen);
             Batch.Draw(KDefaultRes.DefaultTexture2D, blue, null, cBlue);
             Batch.End(); Device.SetRenderTarget(null);
@@ -243,7 +246,8 @@ namespace KFramework.Test.Common.Tests.BlendTest
             // ③ 底层红 RT
             Device.SetRenderTarget(_rtBottom); Device.Clear(Color.Transparent);
             Batch.Begin(SpriteSortMode.Deferred, BlendState.BakePremultiplied);
-            Batch.Draw(KDefaultRes.DefaultTexture2D, red, null, cRed);
+            Batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(0, 0, RT_W / 2, RT_H), null, cRed);
+            Batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(RT_W / 2, 0, RT_W - RT_W / 2, RT_H), null, cRedDark);
             Batch.End(); Device.SetRenderTarget(null);
 
             // ③ 中+顶（绿+蓝）RT
