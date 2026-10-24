@@ -12,7 +12,7 @@ namespace Client.MirControls
 
         public int _SelectedIndex = -1;
         public int _WantedIndex = -1;
-        public int MinimumOption = 0;
+        public int MinimumOption = 0; // 列表起始索引偏移:下拉从第 MinimumOption 项开始显示/可选(之前的项被跳过),实际索引 = ScrollIndex + 槽位 + MinimumOption
         public int ScrollIndex = 0;
         public int OrigHeight = 0;
         public long LastMouseLeave = 0;

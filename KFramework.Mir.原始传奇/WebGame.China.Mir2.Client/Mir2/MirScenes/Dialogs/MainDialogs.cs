@@ -771,7 +771,7 @@ namespace Client.MirScenes.Dialogs
         public List<ChatItem> LinkedItems = new List<ChatItem>();
         public List<MirLabel> LinkedItemButtons = new List<MirLabel>();
 
-        public MirButton SendChatBtn, HomeButton, UpButton, EndButton, DownButton, PositionBar;
+        public MirButton HomeButton, UpButton, EndButton, DownButton, PositionBar;
         public MirImageControl CountBar;
         public MirTextBox ChatTextBox;
         public Font ChatFont = new Font(Settings.FontName, 8F);
@@ -781,6 +781,11 @@ namespace Client.MirScenes.Dialogs
         public string ChatPrefix = "";
 
         public bool Transparent;
+
+        private readonly List<string> ChatChannelList = new List<string>()
+        {
+            "综合", "世界", "私聊", "行会", "队伍", "附近"
+        };
 
         public ChatDialog()
         {
@@ -817,16 +822,7 @@ namespace Client.MirScenes.Dialogs
             ChatTextBox.TextBox.KeyDown += ChatTextBox_KeyDown;
             ChatTextBox.TextBox.KeyUp += ChatTextBox_KeyUp;
 
-            SendChatBtn = new MirButton
-            {
-                Index = 2018,
-                HoverIndex = 2019,
-                Library = Libraries.Prguse,
-                Location = new Point(500, 90),
-                Parent = this,
-                PressedIndex = 2020,
-                Sound = SoundList.ButtonA,
-            };
+
 
             HomeButton = new MirButton
             {
@@ -1481,15 +1477,51 @@ namespace Client.MirScenes.Dialogs
     }
     public sealed class ChatControlBar : MirImageControl
     {
-        public MirButton SizeButton, SettingsButton, NormalButton, ShoutButton, WhisperButton, LoverButton, MentorButton, GroupButton, GuildButton, ReportButton, TradeButton;
+        public MirButton SendChatBtn, SizeButton, SettingsButton, NormalButton, ShoutButton, WhisperButton, LoverButton, MentorButton, GroupButton, GuildButton, ReportButton, TradeButton;
+
+        private readonly List<string> ChatChannelList = new List<string>()
+        {
+            "综合", "世界", "私聊", "行会", "队伍", "附近"
+        };
 
         public ChatControlBar()
         {
-            Size = new Size(0, 0);
+            //和聊天保持同样的尺寸和位置
+            AutoSize = false;
+            Size = new Size(600, 120);
             Anchor = EAnchorType.BottomCenter;
-            AnchorPos = new Point(-200, -130);
+            AnchorPos = new Point(0, -6);
             ApplyAnchor();
-            Visible = false;
+
+            Visible = true;
+            NotControl = false;
+
+            var mChatChannel = new MirDropDownBox()
+            {
+                BackColour = Color.FromArgb(255, 15, 15, 15),
+                ForeColour = Color.White,
+                Parent = this,
+                Size = new Size(80, 30),
+                Location = new Point(0, 90),
+                Visible = true,
+                Enabled = true,
+                DropMode = 1,
+            };
+            //mChatChannel.ValueChanged += (o, e) => OnNewRank(index, MembersRanks[index]._WantedIndex);
+            //mChatChannel.MouseWheel += MembersPanel_MouseWheel;
+            mChatChannel.Items = ChatChannelList;
+            mChatChannel.MinimumOption = 0;
+
+            SendChatBtn = new MirButton
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "bg_zhukuang_1_1",
+                PressedAtlasFrame = "",
+
+                Location = new Point(500, 90),
+                Parent = this,
+                Sound = SoundList.ButtonA,
+            };
 
             SizeButton = new MirButton
             {
