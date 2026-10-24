@@ -1159,11 +1159,11 @@ namespace Client.MirScenes
 
         protected internal override void DrawControl()
         {
-            // 单一场景 RT：地图(MapControl)与所有 UI 一起烤进同一张不透明 RT（见 MirScene.CreateTexture），
-            // 半透明 UI 始终压在不透明内容之上，不会漏到地图层。
-            // 地图纹理失效（动画/移动/地板变化）时整张场景 RT 重烘焙。
-            if (MapControl != null && !MapControl.TextureValid)
-                Redraw();
+            // 与原版 Crystal 一致：先 blit 地图 RT，再 blit 场景(UI) RT。
+            // 地图单独成 RT（MapControl.ControlTexture），只在动画/移动时重烤；UI 在场景 RT 中、只在变动时重烤。
+            // 场景 RT 底色为透明洋红，洋红区即透出已先画好的地图——半透明 UI 不会漏到地图层。
+            if (MapControl != null && !MapControl.IsDisposed)
+                MapControl.DrawControl();
 
             base.DrawControl();
 
@@ -10734,17 +10734,9 @@ namespace Client.MirScenes
 
         public override void Draw()
         {
-            // 不走 base.Draw()：base 里有 Size > Settings.ScreenWidth 的超屏裁剪守卫，
-            // 而 MapControl 按窗口原生分辨率(FullScreenSize)铺满，天然等于甚至大于逻辑分辨率，
-            // 走 base 会被直接剔除、场景只剩黑底。这里由场景烘焙时调用，画进场景 RT。
-            OnBeforeShown();
-            BeforeDrawControl();
-            DrawControl();
-            DrawChildControls();
-            DrawBorder();
-            AfterDrawControl();
-            CleanTime = CMain.Time + Settings.CleanDelay;
-            OnShown();
+            // 与原版 Crystal 一致：MapControl 不向场景 RT 绘制。
+            // 地图整张烤进 MapControl 自己的 ControlTexture（见 CreateTexture），由 GameScene.DrawControl
+            // 单独 blit 上屏；场景 RT 只装 UI——半透明 UI 叠在不透明地图之上不漏层，且 UI 不再随地图动画每帧重烤。
         }
 
         // MapControl 只允许挂在 MirScene 上（不再有独立的世界层容器）。

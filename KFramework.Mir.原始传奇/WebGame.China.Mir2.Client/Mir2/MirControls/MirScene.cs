@@ -18,7 +18,10 @@ namespace Client.MirControls
         protected MirScene()
         {
             DrawControlTexture = true;
-            BackColour = Color.Magenta;
+            // 场景 RT 底色用【透明洋红】(alpha=0)：本端口 blit 走 alpha 合成（非原版洋红 color key），
+            // 洋红区即透明，上屏时露出下层地图——与 Crystal「洋红=透明键」等价。GameScene 拆两层后，
+            // UI 区域外透出地图；登陆/选人场景会在各自构造里覆盖为黑底。
+            BackColour = Color.FromArgb(0, 255, 0, 255);
             Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
         }
 
@@ -49,9 +52,10 @@ namespace Client.MirControls
         }
 
         /// <summary>
-        /// 单张全屏不透明 RT：把地图(MapControl)与所有 UI 一起烤进同一张 ControlTexture，
-        /// 清空色用 Magenta（不透明），地图满屏覆盖后不可见。半透明 UI 始终叠在不透明内容之上，
-        /// 绝不会漏到地图层。对应原版 Crystal\Client 的 MirScene.CreateTexture。
+        /// 场景(UI) RT：只装 UI，不装地图。底色用【透明洋红】(alpha=0)，上屏时洋红区即透明，
+        /// 露出下方已先画好的地图 RT（见 GameScene.DrawControl：先 MapControl.DrawControl 再 base.DrawControl）——与
+        /// 原版 Crystal 的「地图 RT + UI RT 两层、洋红=透明键」拓扑一致。UI 只在变动时重烤
+        /// （Redraw 置 TextureValid=false），不随地图动画每帧重烤。登陆/选人等场景在各自构造里把底色覆盖为黑。
         /// </summary>
         protected override void CreateTexture()
         {
