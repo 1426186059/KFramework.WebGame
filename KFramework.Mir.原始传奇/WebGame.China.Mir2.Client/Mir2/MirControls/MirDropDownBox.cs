@@ -16,6 +16,11 @@ namespace Client.MirControls
         public int ScrollIndex = 0;
         public int OrigHeight = 0;
         public long LastMouseLeave = 0;
+
+        /// <summary>展开方向:0=向下(默认,保持原行为), 1=向上, 2=自动(按屏幕空间选择)。</summary>
+        public int DropMode { get; set; } = 0;
+        private bool _dropUp;        // 本次展开是否向上(每次 Open 时依 DropMode 计算)
+        private int _collapsedY;     // 收起时的 Location.Y,向上展开后关闭时还原
         private List<String> _Items = new List<string>();
         public event EventHandler ValueChanged;
 
@@ -246,15 +251,44 @@ namespace Client.MirControls
         }
         public void OpenDropDown()
         {
-            Size = new Size(Size.Width, OrigHeight + (Math.Max(5, Items.Count) * 15));
+            int needed = Math.Max(5, Items.Count) * 15;
+            int vis = Math.Min(5, Items.Count);
+
+            // 展开方向:0=向下, 1=向上, 2=自动(下方空间不足且上方够则上拉)
+            switch (DropMode)
+            {
+                case 0:
+                    _dropUp = false;
+                    break;
+                case 1:
+                    _dropUp = true;
+                    break;
+                default:
+                    int spaceBelow = Settings.ScreenHeight - (DisplayLocation.Y + OrigHeight);
+                    _dropUp = spaceBelow < needed && DisplayLocation.Y >= needed;
+                    break;
+            }
+
+            _collapsedY = Location.Y;
+            Size = new Size(Size.Width, OrigHeight + needed);
+            if (_dropUp)
+                Location = new Point(Location.X, _collapsedY - needed);
+
+            // 表头:向下在顶部,向上在底部
+            int headerY = _dropUp ? needed : 0;
+            _label.Location = new Point(0, headerY);
+            _DropDownButton.Location = new Point(Size.Width - 18, headerY + (_dropUp ? 2 : 1));
+
             ScrollIndex = 0;
             if (Items.Count > 5)
                 ScrollIndex = SelectedIndex > 3 ? SelectedIndex - 2 : 0;
             for (int i = 0; i < _Option.Length; i++)
-                if (Items.Count > i)
-                    _Option[i].Visible = true;
-                else
-                    _Option[i].Visible = false;
+                _Option[i].Visible = Items.Count > i;
+
+            // 选项槽位:向下 15+i*13;向上翻到表头上方(槽位 0 在最顶)
+            for (int i = 0; i < _Option.Length; i++)
+                _Option[i].Location = new Point(0, _dropUp ? (needed - _Option.Length * 13 + i * 13) : (15 + i * 13));
+
             if (Items.Count > 5)
             {
                 _ScrollDown.Visible = true;
@@ -267,11 +301,18 @@ namespace Client.MirControls
                 _ScrollPosition.Visible = false;
                 _ScrollUp.Visible = false;
             }
-            _ScrollDown.Location = new Point(Size.Width - 12, 9 + Math.Min(5, Items.Count) * 13);
+
+            // 滚动按钮:向下在右下方,向上在右上方
+            _ScrollUp.Location = new Point(Size.Width - 12, _dropUp ? 2 : 14);
+            _ScrollDown.Location = new Point(Size.Width - 12, _dropUp ? needed - 13 : 9 + vis * 13);
+            _ScrollPosition.Location = new Point(Size.Width - 11, _dropUp ? needed / 2 : 22);
         }
         public void CloseDropDown()
         {
             Size = new Size(Size.Width, OrigHeight);
+            if (_dropUp)
+                Location = new Point(Location.X, _collapsedY);
+            _dropUp = false;
             for (int i = 0; i < _Option.Length; i++)
                 _Option[i].Visible = false;
             _ScrollDown.Visible = false;
@@ -292,11 +333,13 @@ namespace Client.MirControls
         {
             int x = Size.Width - 11;
             int y = _ScrollPosition.Location.Y;
-            if (y >= _ScrollDown.Location.Y - 14) y = _ScrollDown.Location.Y - 14;
-            if (y < 20) y = 20;
+            int top = _ScrollUp.Location.Y;
+            int bottom = _ScrollDown.Location.Y - 14;
+            if (y > bottom) y = bottom;
+            if (y < top) y = top;
 
-            int h = _ScrollDown.Location.Y - _ScrollUp.Location.Y + 6;
-            h = (int)((y - 15) / (h / (float)(Items.Count - 1)));
+            int track = _ScrollDown.Location.Y - _ScrollUp.Location.Y + 6;
+            int h = (int)((y - top) / (track / (float)(Items.Count - 1)));
             if (h > Items.Count - 5) h = Math.Max(0, Items.Count - 5);
             if (h != ScrollIndex)
             {
