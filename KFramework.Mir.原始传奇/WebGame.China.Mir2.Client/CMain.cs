@@ -389,7 +389,7 @@ namespace WebGame.Mir2.MonoGame.Client
 
                 DXManager.Device.Clear(SlimDX.Direct3D9.ClearFlags.Target, MirEngine.Color.Black, 0, 0);
                 DXManager.Device.BeginScene();
-                DXManager.BeginSprite(DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied));
+                DXManager.BeginSprite(DXManager.GetMaterial(DXManager.NormalBlend));
                 DXManager.SetSurface(null);                          // 原版 DXManager.SetSurface(DXManager.MainSurface)
 
                 if (MirScene.ActiveScene != null)

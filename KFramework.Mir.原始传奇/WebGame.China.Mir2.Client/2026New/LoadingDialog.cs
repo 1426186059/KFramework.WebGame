@@ -214,7 +214,7 @@ namespace Client.MirControls
             DXManager.SetSurface(new Surface(ControlTexture));
             DXManager.GDevice.Clear(new KFramework.MonoGame.Color(0, 0, 0, 255));
 
-            var mat = DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied);
+            var mat = DXManager.GetMaterial(DXManager.NormalBlend);
             DXManager.BeginSprite(mat, null);
             try
             {

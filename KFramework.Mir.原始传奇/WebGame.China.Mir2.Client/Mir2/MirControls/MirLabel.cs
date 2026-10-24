@@ -222,7 +222,7 @@ namespace Client.MirControls
             DXManager.GDevice.Clear(KFramework.MonoGame.Color.FromArgb((uint)back));
             try
             {
-                DXManager.BeginSprite(DXManager.GetMaterial(KFramework.MonoGame.BlendState.NonPremultiplied));
+                DXManager.BeginSprite(DXManager.GetMaterial(DXManager.NormalBlend));
                 try
                 {
                     // 描边对齐原版 MirLabel：四向各偏移 1px 先画轮廓，再画前景。
