@@ -307,11 +307,11 @@ namespace Client.MirControls
                 KFramework.MonoGame.Rectangle dstRect = new KFramework.MonoGame.Rectangle(dstSD.X, dstSD.Y, dstSD.Width, dstSD.Height);
                 // 混合状态对齐原版 Crystal：用【控件自身的 Blending 属性】决定，而非全局 DXManager.Blending。
                 // 否则会被其它特效遗留的全局加法混合污染——暗色 UI 在亮背景上被叠加成“过曝发白”（即“混合过头”）。
-                //   • Blending=false（正常 UI）→ NormalBlend（统一定义于 DXManager，当前=预乘烤，修复半透明叠加）
-                //   • Blending=true        → AdditiveBlend（发光/叠加特效，等价原版 SetBlend(true)）
-                var imgBlend = Blending
-                    ? DXManager.AdditiveBlend
-                    : DXManager.NormalBlend;
+                //   • Blending=false（正常 UI）→ MirBlend.Normal（引擎 NonPremultiplied 修复版，修复半透明叠加）
+                //   • Blending=true        → MirBlend.Additive（发光/叠加特效，等价原版 SetBlend(true)）
+                var imgBlend = (Blending
+                    ? MirBlend.Additive
+                    : MirBlend.Normal).ToBlendState();
                 // 走 DXManager.Draw 安全入口（BeginSprite 会按当前上下文自动 Begin）：
                 // 主渲染 / 场景烘焙通用；直接调 SpriteBatch.DrawFrame 在烘焙时主批未 Begin 会抛异常。
                 DXManager.Draw(atlasSprite.Texture, srcRect, dstRect, drawColor, imgBlend);

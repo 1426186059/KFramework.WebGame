@@ -88,7 +88,7 @@ public sealed class FPSDialog : MirControl
         DXManager.GDevice.Clear(KFramework.MonoGame.Color.FromArgb((uint)BackColour.ToArgb()));
         try
         {
-            DXManager.BeginSprite(DXManager.GetMaterial(DXManager.NormalBlend));
+            DXManager.BeginSprite(MirBlend.Normal);
             try
             {
                 TextRenderer.DrawText(_text, _font,

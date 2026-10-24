@@ -11571,9 +11571,9 @@ namespace Client.MirScenes
             // —— 合成（照原版传奇）——
             // 光照 RT 此刻 = 暗度色 darkness + 加法叠加的发光体（火把/法术/地图灯）。
             // 原版用 D3D9 固定功能混合 SourceBlend=Zero, DestinationBlend=SourceColor，即
-            // Final = 主画面 × 光照图，逐像素乘法压暗回主画面；这里用等价的 BlendState.Multiply。
+            // Final = 主画面 × 光照图，逐像素乘法压暗回主画面；这里用等价的 MirBlend.Multiply。
             var vpSize = DXManager.GDevice.Viewport;
-            DXManager.Draw(DXManager.LightTexture, new Rectangle(0, 0, vpSize.Width, vpSize.Height), Vector3.Zero, Color.White, KFramework.MonoGame.BlendState.Multiply);
+            DXManager.Draw(DXManager.LightTexture, new Rectangle(0, 0, vpSize.Width, vpSize.Height), Vector3.Zero, Color.White, MirBlend.Multiply.ToBlendState());
 
             DXManager.Sprite.End();
             DXManager.Sprite.Begin(SpriteFlags.AlphaBlend);

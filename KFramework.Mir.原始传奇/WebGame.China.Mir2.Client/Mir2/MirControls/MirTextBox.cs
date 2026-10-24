@@ -326,7 +326,7 @@ namespace Client.MirControls
                 DXManager.GDevice.Clear(KFramework.MonoGame.Color.FromArgb((uint)back));
                 try
                 {
-                    DXManager.BeginSprite(DXManager.GetMaterial(DXManager.NormalBlend));
+                    DXManager.BeginSprite(MirBlend.Normal);
                     _caretBox.DrawTextBox(
                         DXManager.Batch, DXManager.GDevice, font, drawText,
                         new KFramework.MonoGame.Rectangle(0, 0, Size.Width, Size.Height),

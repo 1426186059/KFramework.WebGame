@@ -195,11 +195,8 @@ namespace Client.MirGraphics
         private static readonly Dictionary<KFramework.MonoGame.BlendState, KFramework.MonoGame.Material> _materials
             = new Dictionary<KFramework.MonoGame.BlendState, KFramework.MonoGame.Material>();
 
-        // —— 统一混合常量：全工程只在此定义一次，要换整体混合只改这里 ——
-        // NormalBlend  : 正常 alpha 合成（当前 = 预乘烤 NonPremultiplied），用于场景/控件离屏烘焙与直绘，修复半透明漏底。
-        // AdditiveBlend: 发光/叠加特效（等价原版 SetBlend(true)）。
-        public static readonly KFramework.MonoGame.BlendState NormalBlend = KFramework.MonoGame.BlendState.NonPremultiplied;
-        public static readonly KFramework.MonoGame.BlendState AdditiveBlend = KFramework.MonoGame.BlendState.Additive;
+        // 统一混合见 Client.MirGraphics.MirBlend 枚举（MirBlend → 引擎 BlendState 由 MirBlendExtensions.ToBlendState 转换）。
+        // 游戏代码一律引用 MirBlend，不要再直接写 BlendState / 本类的 NormalBlend、AdditiveBlend。
 
         // 取某混合模式对应的复用材质（新式材质驱动 API 的入口：SpriteFlags.AlphaBlend 之类的 flags 用法一律改走这里）。
         public static KFramework.MonoGame.Material GetMaterial(KFramework.MonoGame.BlendState blend)
@@ -230,6 +227,10 @@ namespace Client.MirGraphics
             _batchTransform = transform;
         }
 
+        // 便捷重载：直接用游戏层 MirBlend 枚举，内部转换到引擎混合态（换引擎混合只改 MirBlendExtensions 一处）。
+        public static void BeginSprite(MirBlend blend, KFramework.MonoGame.Matrix4x4? transform = null)
+            => BeginSprite(GetMaterial(blend.ToBlendState()), transform);
+
         // 对齐 Sprite.End()：收批（幂等）。切渲染目标 / 帧末 / 异常恢复都要调用。
         public static void EndSprite()
         {
@@ -243,7 +244,7 @@ namespace Client.MirGraphics
 
         // 本次绘制应使用的混合状态：显式传入优先，否则按全局 Blending 标志选「加法 / 非预乘」（对齐原版 SetBlend 语义）。
         private static KFramework.MonoGame.BlendState ResolveBlend(KFramework.MonoGame.BlendState? blendState)
-            => blendState ?? (Blending ? AdditiveBlend : NormalBlend);
+            => blendState ?? (Blending ? MirBlend.Additive : MirBlend.Normal).ToBlendState();
 
         public static void Draw(Texture2D texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, KFramework.MonoGame.BlendState? blendState = null)
         {
@@ -346,7 +347,7 @@ namespace Client.MirGraphics
             // 对齐原版 SetBlend 里的 Sprite.Flush() + Sprite.End() + Sprite.Begin(...)：
             // 混合变了就收掉当前批次，再以新混合对应的材质重新开批。
             EndSprite();
-            BeginSprite(GetMaterial(Blending ? AdditiveBlend : NormalBlend), RenderTransform);
+            BeginSprite(Blending ? MirBlend.Additive : MirBlend.Normal, RenderTransform);
         }
         public static void SetNormal(float blend, Color tintcolor) { }
         public static void SetGrayscale(float blend, Color tintcolor) { }
@@ -398,7 +399,7 @@ namespace Client.MirGraphics
                 new Rectangle(0, 0, texture.Width, texture.Height),
                 new RectangleF(0, 0, texture.Width, texture.Height),
                 Color.White,
-                NormalBlend);
+                MirBlend.Normal.ToBlendState());
         }
 
         //这个方法是每秒刷新一次
