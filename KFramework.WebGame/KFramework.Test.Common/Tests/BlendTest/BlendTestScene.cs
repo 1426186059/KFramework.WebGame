@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 
@@ -5,11 +7,11 @@ namespace KFramework.Test.Common.Tests.BlendTest
 {
 
     /// <summary>
-    /// 混合模式（BlendState）可视化测试：每一格先把同一张彩色底图用 Opaque 画出真实图像作参照，
-    /// 再用指定的混合模式叠一层叠加图，直观对比各混合的效果。
-    /// <para>重点演示传奇 / 传奇昼夜系统用的 <see cref="BlendState.Multiply"/>（Zero, SourceColor）：
-    /// 主画面 × 光照图，实现「暗度压暗 + 火把光池」。最后一组用公开的 BlendState 构造把混合参数直接传进来，
-    /// 验证「针对混合的 Draw」可以承载任意自定义混合。</para>
+    /// 混合模式（BlendState）可视化测试。
+    /// <para>模式①（默认）：每一格先把同一张彩色底图用 Opaque 画出真实图像作参照，再用指定的混合模式叠一层叠加图，
+    /// 直观对比各混合的效果；重点演示传奇 / 传奇昼夜系统用的 <see cref="BlendState.Multiply"/>（Zero, SourceColor）。</para>
+    /// <para>模式②：用 3 个 Draw 直接画 3 层 / 3 种颜色演示「半透明层漏到下层」。底层红(最大·不透明) / 中层绿(中等·不透明) / 顶层蓝(最小·半透明)。
+    /// 下面两层不透明，只有最顶层是半透明；半透明蓝和正下方的绿混合，若蓝底下没有不透明绿底垫就会漏到更下面的红。</para>
     /// </summary>
     public sealed class BlendTestScene : TestSceneBase
     {
@@ -17,11 +19,17 @@ namespace KFramework.Test.Common.Tests.BlendTest
         private Texture2D _whiteTex = null!;    // 纯白（用于着色成半透明/加法/覆盖叠加）
         private Texture2D _mirLightTex = null!; // 传奇光照图：暗度灰铺底 + 中心火把白光池（RGB 烘焙）
 
+        // —— 模式②：3 层 / 3 色 复现「半透明层压在透明层上漏到最底层」——
+        private static readonly byte[] AlphaLevels = [100, 150, 215]; // 顶层半透明蓝的浓度（≈0.4 / 0.6 / 0.84）
+
+        private int _mode;                      // 0 = 通用混合网格；1 = 半透明漏下层（3 层演示）
+        private int _alphaIndex = 1;
+
         private readonly List<IDisposable> _owned = [];
 
         private sealed record BlendDemo(string Name, BlendState Blend, Texture2D? Overlay, Color Tint);
 
-        public override string Title => "混合模式 BlendState 测试（含传奇昼夜乘法压暗）";
+        public override string Title => "混合模式 BlendState 测试（含传奇昼夜乘法压暗 + 3 层半透明漏下层演示）";
 
         private T Own<T>(T d) where T : IDisposable { _owned.Add(d); return d; }
 
@@ -33,18 +41,52 @@ namespace KFramework.Test.Common.Tests.BlendTest
             _mirLightTex = Own(MakeMirLightTexture(Device, w, h));
         }
 
+        public override void Update()
+        {
+            // 基类处理 Esc / 左上角返回；一旦切走就不要再碰本场景的状态。
+            base.Update();
+            if (!ReferenceEquals(KSceneMgr.Main, this)) return;
+
+            // 按钮命中（_buttons 由上一帧 DrawBody 里的 BeginButtons/AddUiButton 建好，布局稳定，可直接用）。
+            ClickButtons();
+        }
+
         protected override void DrawBody(SpriteBatch batch, Vector2 origin)
         {
-            // 基类 Draw() 已用默认混合 Begin 并画了返回/标题，这里先收掉，再按每个 cell 各自的 BlendState 开关批次。
+            // 基类 Draw() 已用默认混合 Begin 并画了返回/标题，这里先收掉，再按各模式开关批次。
             batch.End();
 
+            // —— 顶部模式切换按钮（两种模式都显示）——
+            BeginButtons((int)origin.Y);
+            AddUiButton("① 通用混合模式", () => _mode = 0, _mode == 0);
+            AddUiButton("② 半透明漏下层(3层)", () => _mode = 1, _mode == 1);
+            if (_mode == 1)
+                AddUiButton($"半透明浓度 {AlphaLevels[_alphaIndex] * 100 / 255}% [点击]", CycleAlpha);
+
+            if (_mode == 1)
+            {
+                DrawLeakDemo(batch, origin);
+                batch.Begin();                  // 重新开批次给 DrawButtons / 基类 End 收尾
+            }
+            else
+            {
+                DrawGrid(batch, origin);        // DrawGrid 末尾已自行 Begin
+            }
+
+            DrawButtons(batch);
+        }
+
+        // ===== 模式①：通用混合模式网格（原逻辑，仅起始 y 让位给按钮） =====
+
+        private void DrawGrid(SpriteBatch batch, Vector2 origin)
+        {
             List<BlendDemo> demos = BuildDemos();
 
             const int cell = 200, hGap = 28, vGap = 38, labelH = 56;
             int cols = Math.Max(1, (int)((Device.Viewport.Width - origin.X) / (cell + hGap)));
             int i = 0;
-            float x = origin.X, y = origin.Y + 6; // 顶部留点空隙
-            float contentBottom = y;             // 已绘制内容的最底部，用来给说明行定位
+            float x = origin.X, y = ContentTop + 6; // 顶部留点空隙，且避开上方按钮
+            float contentBottom = y;
 
             foreach (BlendDemo d in demos)
             {
@@ -114,6 +156,37 @@ namespace KFramework.Test.Common.Tests.BlendTest
             }
         }
 
+        // ===== 模式②：3 层 / 3 色 半透明漏下层演示（不用 RT，就 3 个 Draw） =====
+        // 底红(最大·不透明) / 中绿(中等·不透明) / 顶蓝(最小·半透明)。
+
+        private void CycleAlpha()
+        {
+            _alphaIndex = (_alphaIndex + 1) % AlphaLevels.Length;
+        }
+
+        private void DrawLeakDemo(SpriteBatch batch, Vector2 origin)
+        {
+            int a = AlphaLevels[_alphaIndex];
+            int pw = 360, ph = 240;
+            int x = (int)origin.X, y = (int)(ContentTop + 40);
+
+            // 就这 3 个 Draw：红(满铺·不透明) → 绿(居中缩小·不透明) → 蓝(再缩小·半透明)
+            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(x, y, pw, ph), null, new Color(220, 70, 70));                            // ① 底：红 · 不透明 · 最大
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(x + 50, y + 50, pw - 100, ph - 100), null, new Color(70, 200, 110));      // ② 中：绿 · 不透明
+            batch.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(x + 100, y + 100, pw - 200, ph - 200), null, new Color(90, 150, 240, a));  // ③ 顶：蓝 · 半透明
+            batch.End();
+
+            batch.Begin();
+            batch.DrawString(Font, "3 层：底红(最大·不透明) / 中绿(中等·不透明) / 顶蓝(最小·半透明) —— 下面两层不透明，只有最顶层是半透明。",
+                new Vector2(x, y - 30), new Color(255, 206, 110));
+            batch.DrawString(Font, "顶层蓝是半透明的，它和正下方的绿混合成蓝绿色；如果蓝底下没有不透明绿底垫，就会漏到更下面的红。",
+                new Vector2(x, y + ph + 12), new Color(150, 200, 255));
+            batch.DrawString(Font, "点「半透明浓度」可看不同 alpha 下蓝的透出程度；按 Esc 返回总屏。",
+                new Vector2(x, y + ph + 40), Color.LightGray);
+            batch.End();
+        }
+
         // —— 程序化生成纹理（不依赖任何图片资源） ——
 
         private static Texture2D MakeBaseTexture(GraphicsDevice device, int w, int h)
@@ -161,8 +234,8 @@ namespace KFramework.Test.Common.Tests.BlendTest
                 {
                     int i = (y * w + x) * 4;
                     int cx = x - w / 2, cy = y - h / 2;
-                    double d = Math.Sqrt(cx * cx + cy * cy);
-                    double t = Math.Max(0, 1 - d / 80); // 0..1 光池强度
+                    double d = System.Math.Sqrt(cx * cx + cy * cy);
+                    double t = System.Math.Max(0, 1 - d / 80); // 0..1 光池强度
                     data[i] = (byte)(dr + (255 - dr) * t);
                     data[i + 1] = (byte)(dg + (255 - dg) * t);
                     data[i + 2] = (byte)(db + (255 - db) * t);
