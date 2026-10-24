@@ -26,6 +26,9 @@ namespace Client.MirScenes
             SoundManager.PlayMusic(SoundList.SelectMusic, true);
             Disposing += (o, e) => SoundManager.StopMusic();
 
+            // 选人场景没有世界地图，场景 RT 底色用黑而非基类洋红（洋红在此会显粉红，露出未盖满的背景）。
+            BackColour = Color.Black;
+
             Characters = characters;
             SortList();
 

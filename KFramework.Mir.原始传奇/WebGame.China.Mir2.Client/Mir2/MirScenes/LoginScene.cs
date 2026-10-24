@@ -37,6 +37,9 @@ namespace Client.MirScenes
             SoundManager.PlayMusic(SoundList.IntroMusic, true);
             Disposing += (o, e) => SoundManager.StopMusic();
 
+            // 登陆场景没有世界地图，场景 RT 底色用黑而非基类洋红（洋红在此会显粉红，露出未盖满的背景）。
+            BackColour = Color.Black;
+
             _background = new MirAnimatedControl
                 {
                     Animated = false,
