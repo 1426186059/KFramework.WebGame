@@ -108,6 +108,19 @@ namespace Client.MirScenes.Dialogs
             };
             this.mMPAni1.SetFrames("y_h_mpl_", 0, 9);
 
+            var mChatBg = new MirImageControl
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "y_h_msbg",
+                Parent = this,
+
+                AutoSize = false,
+                Size = new Size(650, 130),
+                Anchor = EAnchorType.BottomCenter,
+                AnchorPos = new Point(0, -10),
+            };
+            mChatBg.ApplyAnchor();
+
             var mMainUI = new MirImageControl
             {
                 AtlasNameKey = "y_homeUI-sheet",
@@ -775,14 +788,14 @@ namespace Client.MirScenes.Dialogs
             //Location = new Point(GameScene.Scene.MainDialog.Location.X + 230, Settings.ScreenHeight - 97);
             PixelDetect = true;
 
-            AtlasNameKey = "y_homeUI-sheet";
-            AtlasFrame = "y_h_msbg";
+            //AtlasNameKey = "y_homeUI-sheet";
+            //AtlasFrame = "y_h_msbg";
             //AtlasFrame = "bg_liaotianzy_06";
 
             AutoSize = false;
             Size = new Size(600, 120);
             Anchor = EAnchorType.BottomCenter;
-            AnchorPos = new Point(0, -10);
+            AnchorPos = new Point(0, -6);
             ApplyAnchor();
 
             KeyPress += ChatPanel_KeyPress;
