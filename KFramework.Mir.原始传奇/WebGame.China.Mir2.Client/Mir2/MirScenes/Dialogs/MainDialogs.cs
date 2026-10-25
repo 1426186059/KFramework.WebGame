@@ -1554,7 +1554,6 @@ namespace Client.MirScenes.Dialogs
             Anchor = EAnchorType.BottomCenter;
             AnchorPos = new Point(0, -6);
             ApplyAnchor();
-            NotControl = true;
             Visible = true;
 
             mChatChannel = new MirDropDownBox2()
