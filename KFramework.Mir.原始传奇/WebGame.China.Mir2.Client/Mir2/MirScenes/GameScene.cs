@@ -58,7 +58,6 @@ namespace Client.MirScenes
         public MainDialog MainDialog;
         private LoadingDialog _loadingDialog;
         public ChatDialog ChatDialog;
-        public ChatControlBar ChatControl;
         public InventoryDialog InventoryDialog;
         public CharacterDialog CharacterDialog;
         public CharacterDialog HeroDialog;
@@ -290,7 +289,6 @@ namespace Client.MirScenes
 
             MainDialog = new MainDialog { Parent = this };
             ChatDialog = new ChatDialog { Parent = this };
-            ChatControl = new ChatControlBar { Parent = this };
             InventoryDialog = new InventoryDialog { Parent = this };
             BeltDialog = new BeltDialog { Parent = this };
             StorageDialog = new StorageDialog { Parent = this, Visible = false };
@@ -853,7 +851,6 @@ namespace Client.MirScenes
                             MainDialog.Show();
                             ChatDialog.Show();
                             BeltDialog.Show();
-                            ChatControl.Show();
                             MiniMapDialog.Show();
                             CharacterDuraPanel.Show();
                             DuraStatusPanel.Show();
@@ -864,7 +861,6 @@ namespace Client.MirScenes
                             MainDialog.Hide();
                             ChatDialog.Hide();
                             BeltDialog.Hide();
-                            ChatControl.Hide();
                             MiniMapDialog.Hide();
                             CharacterDuraPanel.Hide();
                             DuraStatusPanel.Hide();
@@ -10060,7 +10056,6 @@ namespace Client.MirScenes
                 MapControl = null;
                 MainDialog = null;
                 ChatDialog = null;
-                ChatControl = null;
                 InventoryDialog = null;
                 CharacterDialog = null;
                 StorageDialog = null;

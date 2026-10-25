@@ -1,4 +1,4 @@
-using Client.MirControls;
+﻿using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
@@ -767,11 +767,12 @@ namespace Client.MirScenes.Dialogs
         public List<ChatHistory> FullHistory = new List<ChatHistory>();
         public List<ChatHistory> History = new List<ChatHistory>();
         public List<MirLabel> ChatLines = new List<MirLabel>();
+        private MirImageControl ChatHistoryPanel;
 
         public List<ChatItem> LinkedItems = new List<ChatItem>();
         public List<MirLabel> LinkedItemButtons = new List<MirLabel>();
 
-        public MirButton HomeButton, UpButton, EndButton, DownButton, PositionBar;
+        public MirButton HomeButton, UpButton, EndButton, DownButton, PositionBar, SendChatBtn;
         public MirImageControl CountBar;
         public MirTextBox ChatTextBox;
         public MirButton ChatInputBtn;
@@ -784,11 +785,24 @@ namespace Client.MirScenes.Dialogs
         // 下拉频道选择后,聊天面板只显示该频道(综合=全部);发送前缀仍由 ToggleChatFilter 设置。
         public ChatChannelFilter CurrentViewChannel = ChatChannelFilter.All;
 
-        public bool Transparent;
+        // 频道下拉相关(从 ChatControlBar 合并)
+        private MirDropDownBox2 mChatChannel;
+        private MirImageControl mChatChannel_BtnJianTou;
 
         private readonly List<string> ChatChannelList = new List<string>()
         {
-            "综合", "世界", "私聊", "行会", "队伍", "附近"
+            "综合", "世界", "私聊", "行会", "队伍", "附近", "系统"
+        };
+
+        // 与 ChatChannelList 一一对应:下拉选中第 i 项时,映射到对应的频道过滤类型。
+        private static readonly ChatChannelFilter[] ChannelFilterMap = new ChatChannelFilter[]
+        {
+            ChatChannelFilter.All,         // 综合
+            ChatChannelFilter.World,       // 世界
+            ChatChannelFilter.PrivateChat, // 私聊
+            ChatChannelFilter.Guild,       // 行会
+            ChatChannelFilter.Team,        // 队伍
+            ChatChannelFilter.Nearby,      // 附近(本作无独立过滤,归并到无特定频道)
         };
 
         public ChatDialog()
@@ -859,8 +873,86 @@ namespace Client.MirScenes.Dialogs
 
             ChatInputBtn.Click += (o, e) =>
             {
-                GameScene.Scene.ChatDialog.StartChatInput();
+                StartChatInput();
             };
+
+            // 聊天文字容器:把聊天接收文字(ChatLines / 物品链接)归到其下,使其绘制在输入框与下拉列表之下,
+            // 下拉展开时不再被聊天文字挡住。仅绘制、不拦截鼠标(点击/悬停穿透到下层控件)。
+            ChatHistoryPanel = new MirImageControl
+            {
+                Parent = this,
+                Location = new Point(0, 0),
+                Size = Size,
+                NotControl = true,
+            };
+
+            // 频道下拉 + 发送按钮(从 ChatControlBar 合并进来)
+            mChatChannel = new MirDropDownBox2()
+            {
+                BackColour = Color.FromArgb(255, 15, 15, 15),
+                ForeColour = Color.White,
+                Parent = this,
+                Size = new Size(60, 30),
+                Location = new Point(0, 90),
+                Visible = true,
+                Enabled = true,
+                DropMode = 1,
+            };
+            mChatChannel.ValueChanged += (o, e) =>
+            {
+                // 写回选中项,按钮 Label 才显示当前频道
+                mChatChannel.SelectedIndex = mChatChannel._WantedIndex;
+                int idx = mChatChannel.SelectedIndex;
+                if (idx >= 0 && idx < ChannelFilterMap.Length)
+                    ToggleChatFilter(ChannelFilterMap[idx]);
+            };
+            mChatChannel.DropDownStateChanged += (s, e) =>
+            {
+                if (mChatChannel_BtnJianTou != null)
+                {
+                    // 展开时箭头朝上,收起时朝下(翻转是之前给 MirImageControl 加的 FlipY)
+                    mChatChannel_BtnJianTou.FlipY = e.IsOpen;
+                }
+            };
+
+            mChatChannel.Items = ChatChannelList;
+            mChatChannel.MinimumOption = 0;
+            mChatChannel.SelectedIndex = 0; // 默认显示第一个频道(综合)
+            mChatChannel.DropDownButton.Library = null;
+            mChatChannel.DropDownButton.Index = 0;
+            mChatChannel.DropDownButton.AtlasNameKey = "y_homeUI-sheet";
+            mChatChannel.DropDownButton.AtlasFrame = "btn_liaotian_11";
+            mChatChannel.DropDownButton.PressedAtlasFrame = "btn_liaotian_12";
+            mChatChannel.DropDownButton.Size = new Size(60, 19);
+            mChatChannel.ButtonTextOffsetX = -10;
+            mChatChannel_BtnJianTou = new MirImageControl
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_liaotian_13",
+                Parent = mChatChannel.DropDownButton,
+                Size = new Size(12, 9),
+                NotControl = true,
+            };
+            mChatChannel_BtnJianTou.Location = mChatChannel_BtnJianTou.Right.Subtract(new Point(5, 0));
+
+            SendChatBtn = new MirButton
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_liaotian_11",
+                PressedAtlasFrame = "btn_liaotian_12",
+                Location = new Point(540, 95),
+                Parent = this,
+                Sound = SoundList.ButtonA,
+                Text = "发送",
+                CenterText = true,
+            };
+
+            SendChatBtn.Click += (o, e) =>
+            {
+                SendChatMessage();
+            };
+
+            ToggleChatFilter(ChatChannelFilter.All);
 
 
 
@@ -1227,7 +1319,7 @@ namespace Client.MirScenes.Dialogs
                     ForeColour = History[i].ForeColour,
                     Location = new Point(1, y),
                     OutLine = false,
-                    Parent = this,
+                    Parent = ChatHistoryPanel,
                     Text = History[i].Text,
                     Font = ChatFont,
                 };
@@ -1298,7 +1390,7 @@ namespace Client.MirScenes.Dialogs
                 {
                     AutoSize = true,
                     Visible = true,
-                    Parent = this,
+                    Parent = ChatHistoryPanel,
                     Location = p,
                     Text = name,
                     ForeColour = Color.Blue,
@@ -1455,65 +1547,37 @@ namespace Client.MirScenes.Dialogs
             }
         }
 
-
-        public void ChangeSize()
+        public void ToggleChatFilter(ChatChannelFilter filter)
         {
-            if (++WindowSize >= 3) WindowSize = 0;
+            // 下拉选定频道:既设置发送前缀(服务端据此路由),也作为聊天面板视图过滤(只看该频道)。
+            CurrentViewChannel = filter;
 
-            int y = DisplayRectangle.Bottom;
-            switch (WindowSize)
+            switch (filter)
             {
-                case 0:
-                    LineCount = 4;
-                    Index = Settings.Resolution != 800 ? 2221 : 2201;
-                    CountBar.Index = 2012;
-                    DownButton.Location = new Point(Settings.Resolution != 800 ? 618 : 394, 39);
-                    EndButton.Location = new Point(Settings.Resolution != 800 ? 618 : 394, 45);
-                    ChatTextBox.Location = new Point(1, 54);
+                case ChatChannelFilter.All:
+                case ChatChannelFilter.System:
+                    ChatPrefix = "";
                     break;
-                case 1:
-                    LineCount = 7;
-                    Index = Settings.Resolution != 800 ? 2224 : 2204;
-                    CountBar.Index = 2013;
-                    DownButton.Location = new Point(Settings.Resolution != 800 ? 618 : 394, 39 + 48);
-                    EndButton.Location = new Point(Settings.Resolution != 800 ? 618 : 394, 45 + 48);
-                    ChatTextBox.Location = new Point(1, 54 + 48);
+                case ChatChannelFilter.World:
+                    ChatPrefix = "!";
                     break;
-                case 2:
-                    LineCount = 11;
-                    Index = Settings.Resolution != 800 ? 2227 : 2207;
-                    CountBar.Index = 2014;
-                    DownButton.Location = new Point(Settings.Resolution != 800 ? 618 : 394, 39 + 96);
-                    EndButton.Location = new Point(Settings.Resolution != 800 ? 618 : 394, 45 + 96);
-                    ChatTextBox.Location = new Point(1, 54 + 96);
+                case ChatChannelFilter.PrivateChat:
+                    ChatPrefix = "/";
+                    break;
+                case ChatChannelFilter.Team:
+                    ChatPrefix = "!!";
+                    break;
+                case ChatChannelFilter.Guild:
+                    ChatPrefix = "!~";
+                    break;
+                case ChatChannelFilter.Nearby:
+                    // 本作暂无独立“附近”频道过滤,保持默认(前缀清空)。
+                    ChatPrefix = "";
                     break;
             }
 
-            Location = new Point(Location.X, y - Size.Height);
-
-            UpdateBackground();
-
+            // 重新渲染聊天面板以应用视图过滤
             Update();
-        }
-
-        public void UpdateBackground()
-        {
-            int offset = Transparent ? 1 : 0;
-
-            switch (WindowSize)
-            {
-                case 0:
-                    Index = Settings.Resolution != 800 ? 2221 : 2201;
-                    break;
-                case 1:
-                    Index = Settings.Resolution != 800 ? 2224 : 2204;
-                    break;
-                case 2:
-                    Index = Settings.Resolution != 800 ? 2227 : 2207;
-                    break;
-            }
-
-            Index -= offset;
         }
 
         public class ChatHistory
@@ -1523,308 +1587,6 @@ namespace Client.MirScenes.Dialogs
             public ChatType Type;
         }
     }
-    public sealed class ChatControlBar : MirImageControl
-    {
-        public MirButton SendChatBtn, SizeButton, SettingsButton, NormalButton, ShoutButton, WhisperButton, GroupButton, GuildButton, ReportButton, TradeButton;
-        private MirDropDownBox2 mChatChannel;
-        private MirImageControl mChatChannel_BtnJianTou;
-
-        private readonly List<string> ChatChannelList = new List<string>()
-        {
-            "综合", "世界", "私聊", "行会", "队伍", "附近", "系统"
-        };
-
-        // 与 ChatChannelList 一一对应:下拉选中第 i 项时,映射到对应的频道过滤类型。
-        private static readonly ChatChannelFilter[] ChannelFilterMap = new ChatChannelFilter[]
-        {
-            ChatChannelFilter.All,     // 综合
-            ChatChannelFilter.World,   // 世界
-            ChatChannelFilter.PrivateChat, // 私聊
-            ChatChannelFilter.Guild,   // 行会
-            ChatChannelFilter.Team,   // 队伍
-            ChatChannelFilter.Nearby,  // 附近(本作无独立过滤,归并到无特定频道)
-            ChatChannelFilter.System,  // 系统(开关系统消息)
-        };
-
-        public ChatControlBar()
-        {
-            //和聊天保持同样的尺寸和位置
-            AutoSize = false;
-            Size = new Size(600, 120);
-            Anchor = EAnchorType.BottomCenter;
-            AnchorPos = new Point(0, -6);
-            ApplyAnchor();
-            Visible = true;
-
-            mChatChannel = new MirDropDownBox2()
-            {
-                BackColour = Color.FromArgb(255, 15, 15, 15),
-                ForeColour = Color.White,
-                Parent = this,
-                Size = new Size(60, 30),
-                Location = new Point(0, 90),
-                Visible = true,
-                Enabled = true,
-                DropMode = 1,
-            };
-            mChatChannel.ValueChanged += (o, e) =>
-            {
-                // 写回选中项,按钮 Label 才显示当前频道
-                mChatChannel.SelectedIndex = mChatChannel._WantedIndex;
-                int idx = mChatChannel.SelectedIndex;
-                if (idx >= 0 && idx < ChannelFilterMap.Length)
-                    ToggleChatFilter(ChannelFilterMap[idx]);
-            };
-            mChatChannel.DropDownStateChanged += (s, e) =>
-            {
-                if (mChatChannel_BtnJianTou != null)
-                {
-                    // 展开时箭头朝上,收起时朝下(翻转是之前给 MirImageControl 加的 FlipY)
-                    mChatChannel_BtnJianTou.FlipY = e.IsOpen;
-                    // 也可以换 Hover/Pressed 帧、改表头颜色等
-                }
-            };
-
-            mChatChannel.Items = ChatChannelList;
-            mChatChannel.MinimumOption = 0;
-            mChatChannel.SelectedIndex = 0; // 默认显示第一个频道(综合
-            mChatChannel.DropDownButton.Library = null;
-            mChatChannel.DropDownButton.Index = 0;
-            mChatChannel.DropDownButton.AtlasNameKey = "y_homeUI-sheet";
-            mChatChannel.DropDownButton.AtlasFrame = "btn_liaotian_11";
-            mChatChannel.DropDownButton.PressedAtlasFrame = "btn_liaotian_12";
-            mChatChannel.DropDownButton.Size = new Size(60, 19);
-            mChatChannel.ButtonTextOffsetX = -10;
-            mChatChannel_BtnJianTou = new MirImageControl
-            {
-                AtlasNameKey = "y_homeUI-sheet",
-                AtlasFrame = "btn_liaotian_13",
-                Parent = mChatChannel.DropDownButton,
-                Size = new Size(12, 9),
-                NotControl = true,
-            };
-            mChatChannel_BtnJianTou.Location = mChatChannel_BtnJianTou.Right.Subtract(new Point(5, 0));
-
-            SendChatBtn = new MirButton
-            {
-                AtlasNameKey = "y_homeUI-sheet",
-                AtlasFrame = "btn_liaotian_11",
-                PressedAtlasFrame = "btn_liaotian_12",
-                Location = new Point(540, 95),
-                Parent = this,
-                Sound = SoundList.ButtonA,
-                Text = "发送",
-                CenterText = true,
-            };
-
-            SendChatBtn.Click += (o, e) =>
-            {
-                GameScene.Scene.ChatDialog.SendChatMessage();
-            };
-
-            //SettingsButton = new MirButton
-            //{
-            //    Index = 2060,
-            //    HoverIndex = 2061,
-            //    PressedIndex = 2062,
-            //    Library = Libraries.Prguse,
-            //    Parent = this,
-            //    Location = new Point(Settings.Resolution != 800 ? 596 : 372, 1),
-            //    Sound = SoundList.ButtonA,
-            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ChatSettings)
-            //};
-            //SettingsButton.Click += (o, e) =>
-            //{
-            //    if (GameScene.Scene.ChatOptionDialog.Visible)
-            //        GameScene.Scene.ChatOptionDialog.Hide();
-            //    else
-            //        GameScene.Scene.ChatOptionDialog.Show();
-
-            //    //GameScene.Scene.ChatDialog.Transparent = !GameScene.Scene.ChatDialog.Transparent;
-            //    //GameScene.Scene.ChatDialog.UpdateBackground();
-            //};
-
-            //NormalButton = new MirButton
-            //{
-            //    Index = 2036,
-            //    HoverIndex = 2037,
-            //    PressedIndex = 2038,
-            //    Library = Libraries.Prguse,
-            //    Parent = this,
-            //    Location = new Point(12, 1),
-            //    Sound = SoundList.ButtonA,
-            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_All)
-            //};
-            //NormalButton.Click += (o, e) =>
-            //{
-            //    ToggleChatFilter("All");
-            //};
-
-            //ShoutButton = new MirButton
-            //{
-            //    Index = 2039,
-            //    HoverIndex = 2040,
-            //    PressedIndex = 2041,
-            //    Library = Libraries.Prguse,
-            //    Parent = this,
-            //    Location = new Point(34, 1),
-            //    Sound = SoundList.ButtonA,
-            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Short)
-            //};
-            //ShoutButton.Click += (o, e) =>
-            //{
-            //    ToggleChatFilter("Shout");
-            //};
-
-            //WhisperButton = new MirButton
-            //{
-            //    Index = 2042,
-            //    HoverIndex = 2043,
-            //    PressedIndex = 2044,
-            //    Library = Libraries.Prguse,
-            //    Parent = this,
-            //    Location = new Point(56, 1),
-            //    Sound = SoundList.ButtonA,
-            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Whisper)
-            //};
-            //WhisperButton.Click += (o, e) =>
-            //{
-            //    ToggleChatFilter("Whisper");
-            //};
-
-            //LoverButton = new MirButton
-            //{
-            //    Index = 2045,
-            //    HoverIndex = 2046,
-            //    PressedIndex = 2047,
-            //    Library = Libraries.Prguse,
-            //    Parent = this,
-            //    Location = new Point(78, 1),
-            //    Sound = SoundList.ButtonA,
-            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Lover)
-            //};
-            //LoverButton.Click += (o, e) =>
-            //{
-            //    ToggleChatFilter("Lover");
-            //};
-
-            //MentorButton = new MirButton
-            //{
-            //    Index = 2048,
-            //    HoverIndex = 2049,
-            //    PressedIndex = 2050,
-            //    Library = Libraries.Prguse,
-            //    Parent = this,
-            //    Location = new Point(100, 1),
-            //    Sound = SoundList.ButtonA,
-            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Mentor)
-            //};
-            //MentorButton.Click += (o, e) =>
-            //{
-            //    ToggleChatFilter("Mentor");
-            //};
-
-            //GroupButton = new MirButton
-            //{
-            //    Index = 2051,
-            //    HoverIndex = 2052,
-            //    PressedIndex = 2053,
-            //    Library = Libraries.Prguse,
-            //    Parent = this,
-            //    Location = new Point(122, 1),
-            //    Sound = SoundList.ButtonA,
-            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Group)
-            //};
-            //GroupButton.Click += (o, e) =>
-            //{
-            //    ToggleChatFilter("Group");
-            //};
-
-            //GuildButton = new MirButton
-            //{
-            //    Index = 2054,
-            //    HoverIndex = 2055,
-            //    PressedIndex = 2056,
-            //    Library = Libraries.Prguse,
-            //    Parent = this,
-            //    Location = new Point(144, 1),
-            //    Sound = SoundList.ButtonA,
-            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Guild)
-            //};
-            //GuildButton.Click += (o, e) =>
-            //{
-            //    Settings.ShowGuildChat = !Settings.ShowGuildChat;
-            //    ToggleChatFilter("Guild");
-            //};
-
-            //TradeButton = new MirButton
-            //{
-            //    Index = 2004,
-            //    HoverIndex = 2005,
-            //    PressedIndex = 2006,
-            //    Library = Libraries.Prguse,
-            //    Location = new Point(166, 1),
-            //    Parent = this,
-            //    Sound = SoundList.ButtonC,
-            //    Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.TradeKey), CMain.InputKeys.GetKey(KeybindOptions.Trade)),
-            //};
-            //TradeButton.Click += (o, e) => Network.Enqueue(new C.TradeRequest());
-
-            //ReportButton = new MirButton
-            //{
-            //    Index = 2063,
-            //    HoverIndex = 2064,
-            //    PressedIndex = 2065,
-            //    Library = Libraries.Prguse,
-            //    Parent = this,
-            //    Location = new Point(Settings.Resolution != 800 ? 552 : 328, 1),
-            //    Sound = SoundList.ButtonA,
-            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Report),
-            //    Visible = false
-            //};
-            //ReportButton.Click += (o, e) =>
-            //{
-            //    GameScene.Scene.ReportDialog.Visible = !GameScene.Scene.ReportDialog.Visible;
-            //};
-
-            ToggleChatFilter(ChatChannelFilter.All);
-
-        }
-
-        public void ToggleChatFilter(ChatChannelFilter filter)
-        {
-            // 下拉选定频道:既设置发送前缀(服务端据此路由),也作为聊天面板视图过滤(只看该频道)。
-            GameScene.Scene.ChatDialog.CurrentViewChannel = filter;
-
-            switch (filter)
-            {
-                case ChatChannelFilter.All:
-                case ChatChannelFilter.System:
-                    GameScene.Scene.ChatDialog.ChatPrefix = "";
-                    break;
-                case ChatChannelFilter.World:
-                    GameScene.Scene.ChatDialog.ChatPrefix = "!";
-                    break;
-                case ChatChannelFilter.PrivateChat:
-                    GameScene.Scene.ChatDialog.ChatPrefix = "/";
-                    break;
-                case ChatChannelFilter.Team:
-                    GameScene.Scene.ChatDialog.ChatPrefix = "!!";
-                    break;
-                case ChatChannelFilter.Guild:
-                    GameScene.Scene.ChatDialog.ChatPrefix = "!~";
-                    break;
-                case ChatChannelFilter.Nearby:
-                    // 本作暂无独立“附近”频道过滤,保持默认(前缀清空)。
-                    GameScene.Scene.ChatDialog.ChatPrefix = "";
-                    break;
-            }
-
-            // 重新渲染聊天面板以应用视图过滤
-            GameScene.Scene.ChatDialog.Update();
-        }
-    }
-
     public sealed class SkillBarDialog : MirImageControl
     {
         private readonly MirButton _switchBindsButton;
