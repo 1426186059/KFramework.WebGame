@@ -1524,7 +1524,13 @@ namespace Client.MirScenes.Dialogs
             };
             mChatChannel.Items = ChatChannelList;
             mChatChannel.MinimumOption = 0;
-            mChatChannel.SelectedIndex = 0; // 默认显示第一个频道(综合)
+            mChatChannel.SelectedIndex = 0; // 默认显示第一个频道(综合
+            //mChatChannel.DropDownButton.Library = null;
+            //mChatChannel.DropDownButton.Index = 0;
+            //mChatChannel.DropDownButton.AtlasNameKey = "y_homeUI-sheet";
+            //mChatChannel.DropDownButton.AtlasFrame = "btn_liaotian_11";
+            //mChatChannel.DropDownButton.PressedAtlasFrame = "btn_liaotian_12";
+            //mChatChannel.DropDownButton.Size = new Size(60, 19);
 
             SendChatBtn = new MirButton
             {

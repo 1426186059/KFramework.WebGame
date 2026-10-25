@@ -7,8 +7,10 @@ namespace Client.MirControls
     {
         private MirLabel _label;
         private MirButton _DropDownButton;
-        private MirLabel[] _Option = new MirLabel[5];
-        private MirButton _ScrollUp, _ScrollDown, _ScrollPosition;
+        private List<MirLabel> _Option = new List<MirLabel>();
+
+        // 暴露下拉箭头按钮:外部可直接配置它的图集(Library/Index 或 AtlasSheet/AtlasFrame/AtlasNameKey 等)。
+        public MirButton DropDownButton { get { return _DropDownButton; } }
 
         public int _SelectedIndex = -1;
         public int _WantedIndex = -1;
@@ -22,12 +24,6 @@ namespace Client.MirControls
         private bool _dropUp;        // 本次展开是否向上(每次 Open 时依 DropMode 计算)
         private int _collapsedY;     // 收起时的 Location.Y,向上展开后关闭时还原
 
-        // —— 可选图集底图:设了 Library+Index,控件背景就用该图(默认拉伸填满;设了四边边框则九宫格)。——
-        private MLibrary _bgLibrary;
-        public MLibrary Library { get { return _bgLibrary; } set { _bgLibrary = value; Redraw(); } }
-        private int _bgIndex = -1;
-        public int Index { get { return _bgIndex; } set { _bgIndex = value; Redraw(); } }
-        public int BorderLeft, BorderTop, BorderRight, BorderBottom; // 九宫格边框(默认 0=纯拉伸)
         private List<String> _Items = new List<string>();
         public event EventHandler ValueChanged;
 
@@ -71,7 +67,7 @@ namespace Client.MirControls
         {
             base.OnSizeChanged();
             OrigHeight = OrigHeight == 0 ? Size.Height : OrigHeight;
-            for (int i = 0; i < _Option.Length; i++)
+            for (int i = 0; i < _Option.Count; i++)
             {
                 _Option[i].Size = new Size(Size.Width - 16, 16); //Size.Width - 13, 13
             }
@@ -80,13 +76,6 @@ namespace Client.MirControls
                 _label.Size = new Size(Size.Width - 16, 15); //Size.Width - 16, 12
             if (_DropDownButton != null && !_DropDownButton.IsDisposed)
                 _DropDownButton.Location = new Point(Size.Width - 18, 2);
-            if (_ScrollUp != null && !_ScrollUp.IsDisposed)
-                _ScrollUp.Location = new Point(Size.Width - 12, 14);
-            if (_ScrollDown != null && !_ScrollDown.IsDisposed)
-                _ScrollDown.Location = new Point(Size.Width - 12, 52);
-            if (_ScrollPosition != null && !_ScrollPosition.IsDisposed)
-                _ScrollPosition.Location = new Point(Size.Width - 11, 22);
- 
         }
 
 
@@ -136,30 +125,6 @@ namespace Client.MirControls
                 else
                     _label.Text = "None";
             };
-            for (int i = 0; i < _Option.Length; i++)
-            {
-                _Option[i] = new MirLabel
-                {
-                    Parent = this,
-                    Visible = false,
-                    Location = new Point(0, 15 + (i * 13)),
-                    ForeColour = ForeColour,
-                    BackColour = Color.FromArgb(255,20,20,20),
-                    Font = new Font(Settings.FontName, 8F)
-                };
-                int index = i;
-                _Option[index].MouseEnter += (o, e) => _Option[index].BackColour = Color.FromArgb(255,140,70,0);
-                _Option[index].MouseLeave += (o, e) => _Option[index].BackColour = Color.FromArgb(255, 20, 20, 20);
-                _Option[index].MouseDown += (o, e) => _Option[index].BackColour = Color.FromArgb(255, 20, 20, 20);
-                _Option[index].MouseUp += (o, e) => _Option[index].BackColour = Color.FromArgb(255,20,20,20);
-                _Option[index].Click += (o, e) => SelectOption(index);
-
-                _Option[index].BeforeDraw += (o, e) =>
-                {
-                    if (Items.Count > (ScrollIndex + index + MinimumOption))
-                        _Option[index].Text = _Items[ScrollIndex + index + MinimumOption];
-                };
-            }
             _DropDownButton = new MirButton
             {
                 Index = 207,
@@ -171,71 +136,12 @@ namespace Client.MirControls
                 Visible = false,
             };
             _DropDownButton.Click += (o, e) => DropDownClick();
-            _ScrollUp = new MirButton
-            {
-                HoverIndex = 2022,
-                Index = 2021,
-                Library = Libraries.Prguse,
-                Location = new Point(Size.Width - 12, 14),
-                Parent = this,
-                PressedIndex = 2023,
-                Visible = false
-            };
-            _ScrollUp.Click += (o, e) => ScrollUp();
-            _ScrollDown = new MirButton
-            {
-                HoverIndex = 2025,
-                Index = 2024,
-                Library = Libraries.Prguse,
-                Location = new Point(Size.Width - 12, 52),
-                Parent = this,
-                PressedIndex = 2026,
-                Visible = false
-            };
-            _ScrollDown.Click += (o, e) => ScrollDown();
-           
-            _ScrollPosition = new MirButton
-            {
-                HoverIndex = 2016,
-                Index = 2015,
-                Library = Libraries.Prguse,
-                Location = new Point(Size.Width - 11, 22),
-                Movable = true,
-                Parent = this,
-                PressedIndex = 2017,
-                Visible = false
-            };
-            _ScrollPosition.OnMoving += ScrollPosition;
             BeforeDraw += MirDropDownBox_BeforeDraw;
-        }
-
-        protected internal override void DrawControl()
-        {
-            base.DrawControl(); // 先画原 BackColour 底(未设图集时即为最终外观)
-            if (_bgLibrary != null && _bgIndex >= 0)
-            {
-                Size img = _bgLibrary.GetTrueSize(_bgIndex);
-                Size drawSize = Size;
-                Point drawLoc = DisplayLocation;
-                Color drawColor = ForeColour;
-
-                int borders = BorderLeft + BorderTop + BorderRight + BorderBottom;
-                if (borders > 0)
-                {
-                    MirImageControl.ForEachNineGridRect(img.Width, img.Height, drawLoc.X, drawLoc.Y, drawSize.Width, drawSize.Height,
-                        BorderLeft, BorderTop, BorderRight, BorderBottom,
-                        (src, dst) => _bgLibrary.Draw(_bgIndex, src, dst, drawColor, 1f));
-                }
-                else
-                {
-                    _bgLibrary.Draw(_bgIndex, drawLoc, drawSize, drawColor);
-                }
-            }
         }
 
         void MirDropDownBox_BeforeDraw(object sender, EventArgs e)
         {
-            if (!_Option[0].Visible) return;
+            if (_Option.Count == 0 || !_Option[0].Visible) return;
             if (IsMouseOver(CMain.MPoint)) return;
             foreach (MirControl control in Controls)
                 if (control.IsMouseOver(CMain.MPoint))
@@ -275,15 +181,44 @@ namespace Client.MirControls
         }
         public void DropDownClick()
         {
-            if (_Option[0].Visible)
+            if (_Option.Count > 0 && _Option[0].Visible)
                 CloseDropDown();
             else
                 OpenDropDown();
         }
+        // 按需创建选项标签,确保至少有 count 个(超出保留,收起时隐藏即可)。去掉固定 5 项上限。
+        private void EnsureOptions(int count)
+        {
+            while (_Option.Count < count)
+            {
+                int index = _Option.Count;
+                var lbl = new MirLabel
+                {
+                    Parent = this,
+                    Visible = false,
+                    Location = new Point(0, 15 + (index * 13)),
+                    Size = new Size(Size.Width - 16, 16),
+                    ForeColour = ForeColour,
+                    BackColour = Color.FromArgb(255, 20, 20, 20),
+                    Font = new Font(Settings.FontName, 8F)
+                };
+                lbl.MouseEnter += (o, e) => lbl.BackColour = Color.FromArgb(255, 140, 70, 0);
+                lbl.MouseLeave += (o, e) => lbl.BackColour = Color.FromArgb(255, 20, 20, 20);
+                lbl.MouseDown += (o, e) => lbl.BackColour = Color.FromArgb(255, 20, 20, 20);
+                lbl.MouseUp += (o, e) => lbl.BackColour = Color.FromArgb(255, 20, 20, 20);
+                lbl.Click += (o, e) => SelectOption(index);
+                lbl.BeforeDraw += (o, e) =>
+                {
+                    if (Items.Count > (ScrollIndex + index + MinimumOption))
+                        lbl.Text = _Items[ScrollIndex + index + MinimumOption];
+                };
+                _Option.Add(lbl);
+            }
+        }
+
         public void OpenDropDown()
         {
             int needed = Math.Max(5, Items.Count) * 15;
-            int vis = Math.Min(5, Items.Count);
 
             // 展开方向:0=向下, 1=向上, 2=自动(下方空间不足且上方够则上拉)
             switch (DropMode)
@@ -311,32 +246,13 @@ namespace Client.MirControls
             _DropDownButton.Location = new Point(Size.Width - 18, headerY + (_dropUp ? 2 : 1));
 
             ScrollIndex = 0;
-            if (Items.Count > 5)
-                ScrollIndex = SelectedIndex > 3 ? SelectedIndex - 2 : 0;
-            for (int i = 0; i < _Option.Length; i++)
-                _Option[i].Visible = Items.Count > i;
+            EnsureOptions(Items.Count);   // 动态补足选项标签,去掉固定 5 项上限
+            for (int i = 0; i < _Option.Count; i++)
+                _Option[i].Visible = i < Items.Count;
 
             // 选项槽位:向下 15+i*13;向上翻到表头上方(槽位 0 在最顶)
-            for (int i = 0; i < _Option.Length; i++)
-                _Option[i].Location = new Point(0, _dropUp ? (needed - _Option.Length * 13 + i * 13) : (15 + i * 13));
-
-            if (Items.Count > 5)
-            {
-                _ScrollDown.Visible = true;
-                _ScrollPosition.Visible = true;
-                _ScrollUp.Visible = true;
-            }
-            else
-            {
-                _ScrollDown.Visible = false;
-                _ScrollPosition.Visible = false;
-                _ScrollUp.Visible = false;
-            }
-
-            // 滚动按钮:向下在右下方,向上在右上方
-            _ScrollUp.Location = new Point(Size.Width - 12, _dropUp ? 2 : 14);
-            _ScrollDown.Location = new Point(Size.Width - 12, _dropUp ? needed - 13 : 9 + vis * 13);
-            _ScrollPosition.Location = new Point(Size.Width - 11, _dropUp ? needed / 2 : 22);
+            for (int i = 0; i < _Option.Count; i++)
+                _Option[i].Location = new Point(0, _dropUp ? (needed - _Option.Count * 13 + i * 13) : (15 + i * 13));
         }
         public void CloseDropDown()
         {
@@ -350,41 +266,8 @@ namespace Client.MirControls
             _label.Location = new Point(0, 0);
             _DropDownButton.Location = new Point(Size.Width - 18, 1);
 
-            for (int i = 0; i < _Option.Length; i++)
+            for (int i = 0; i < _Option.Count; i++)
                 _Option[i].Visible = false;
-            _ScrollDown.Visible = false;
-            _ScrollPosition.Visible = false;
-            _ScrollUp.Visible = false;
-        }
-        public void ScrollUp()
-        {
-            if (ScrollIndex > 0) ScrollIndex--;
-            Update();
-        }
-        public void ScrollDown()
-        {
-            if (ScrollIndex < (Items.Count - 5)) ScrollIndex++;
-            Update();
-        }
-        void ScrollPosition(object sender, MouseEventArgs e)
-        {
-            int x = Size.Width - 11;
-            int y = _ScrollPosition.Location.Y;
-            int top = _ScrollUp.Location.Y;
-            int bottom = _ScrollDown.Location.Y - 14;
-            if (y > bottom) y = bottom;
-            if (y < top) y = top;
-
-            int track = _ScrollDown.Location.Y - _ScrollUp.Location.Y + 6;
-            int h = (int)((y - top) / (track / (float)(Items.Count - 1)));
-            if (h > Items.Count - 5) h = Math.Max(0, Items.Count - 5);
-            if (h != ScrollIndex)
-            {
-                ScrollIndex = h;
-                Update();
-            }
-
-            _ScrollPosition.Location = new Point(x, y);
         }
 
         protected override void Dispose(bool disposing)
@@ -401,18 +284,7 @@ namespace Client.MirControls
                 _DropDownButton.Dispose();
             _DropDownButton = null;
 
-            if (_ScrollDown != null && !_ScrollDown.IsDisposed)
-                _ScrollDown.Dispose();
-            _ScrollDown = null;
-
-            if (_ScrollPosition != null && !_ScrollPosition.IsDisposed)
-                _ScrollPosition.Dispose();
-            _ScrollPosition = null;
-
-            if (_ScrollUp != null && !_ScrollUp.IsDisposed)
-                _ScrollUp.Dispose();
-            _ScrollUp = null;
-            for (int i = 0; i < _Option.Length; i++)
+            for (int i = 0; i < _Option.Count; i++)
             {
                 if (_Option[i] != null && !_Option[i].IsDisposed)
                     _Option[i].Dispose();
