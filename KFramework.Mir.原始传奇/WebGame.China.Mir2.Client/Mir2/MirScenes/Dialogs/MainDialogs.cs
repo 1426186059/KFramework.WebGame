@@ -12,9 +12,6 @@ using C = ClientPackets;
 
 namespace Client.MirScenes.Dialogs
 {
-        Shout,    // 世界
-        Whisper,  // 私聊
-        Lover,    // 情侣
     public sealed class MainDialog : MirImageControl
     {
         public static UserObject User
