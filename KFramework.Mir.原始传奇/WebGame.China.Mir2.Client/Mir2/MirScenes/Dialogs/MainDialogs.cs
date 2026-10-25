@@ -812,18 +812,27 @@ namespace Client.MirScenes.Dialogs
                 AtlasNameKey = "y_homeUI-sheet",
                 AtlasFrame = "y_h_msbg",
                 AutoSize = false,
-                Size = new Size(450, 25),
+                Size = new Size(470, 20),
                 Parent = this,
             };
-            mChatTextBoxBg.Location = mChatTextBoxBg.Bottom;
+            mChatTextBoxBg.Location = mChatTextBoxBg.Bottom.Add(new Point(0, -5));
+
+            var mChatTipLabel = new MirLabel
+            {
+                Parent = mChatTextBoxBg,
+                Text = "请输入文字",
+                Size = new Size(465, 20),
+                Alignment = KFramework.MonoGame.TextAnchor.MiddleLeft,
+                Location = new Point(5, 0)
+            };
 
             ChatTextBox = new MirTextBox
             {
                 BackColour = Color.DarkGray,
                 ForeColour = Color.Black,
-                Parent = this,
-                Size = new Size(600, 20),
-                Location = new Point(1, 95),
+                Parent = mChatTextBoxBg,
+                Size = new Size(470, 20),
+                Location = new Point(0, 0),
                 MaxLength = Globals.MaxChatLength,
                 Visible = false,
                 Font = ChatFont,
@@ -1513,7 +1522,7 @@ namespace Client.MirScenes.Dialogs
                 BackColour = Color.FromArgb(255, 15, 15, 15),
                 ForeColour = Color.White,
                 Parent = this,
-                Size = new Size(80, 30),
+                Size = new Size(60, 30),
                 Location = new Point(0, 90),
                 Visible = true,
                 Enabled = true,

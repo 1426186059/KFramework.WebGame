@@ -82,26 +82,44 @@ namespace Client.MirControls
         }
 
         // 列表项整体布局:图集异步加载完/尺寸变化时会重新摆放箭头按钮,避免偏位。
+        // 取箭头按钮当前的实际矩形,列表据此对齐到按钮正下方(列表宽度/偏移与按钮完全一致)。
+        private void GetButtonRect(out int btnX, out int btnW)
+        {
+            if (_DropDownButton == null || _DropDownButton.IsDisposed || _DropDownButton.Size.Width <= 0)
+            {
+                btnW = Size.Width; btnX = 0;   // 按钮尚未取到尺寸,列表回退为整宽
+            }
+            else
+            {
+                btnX = _DropDownButton.Location.X;
+                btnW = _DropDownButton.Size.Width;
+            }
+        }
+
+        // 列表项与表头不在同一垂直区域(按钮在表头,列表在其上/下方):
+        // 列表宽度与箭头按钮一致,且 X 对齐到按钮下方,这样列表正好落在按钮正下方、不偏左。
         private void RelayoutHeader()
         {
-            // 列表项与表头不在同一垂直区域(按钮在表头,列表在其上/下方),无需避让,宽度与控件(按钮)等宽。
+            GetButtonRect(out int btnX, out int btnW);
             for (int i = 0; i < _Option.Count; i++)
-                _Option[i].Size = new Size(Math.Max(0, Size.Width), RowHeight);
+            {
+                _Option[i].Location = new Point(btnX, _Option[i].Location.Y);
+                _Option[i].Size = new Size(Math.Max(0, btnW), RowHeight);
+            }
 
             LayoutDropDownButton();
         }
 
-        // 把箭头按钮摆到表头区右侧:按按钮实际尺寸右对齐 + 垂直居中。
+        // 把箭头按钮摆到表头区并铺满控件宽度(左对齐 x=0):按钮宽度与 MirDropDownBox2 的 Size.Width 一致。
+        // 关闭 AutoSize 以尊重显式尺寸;高度保留自然高度、垂直居中。
         private void LayoutDropDownButton()
         {
             if (_DropDownButton == null || _DropDownButton.IsDisposed) return;
-            int btnW = _DropDownButton.Size.Width;   // AutoSize => 实际图集尺寸
-            int btnH = _DropDownButton.Size.Height;
-            int pad = 2;
             int headerH = _headerHeight > 0 ? _headerHeight : (OrigHeight > 0 ? OrigHeight : RowHeight);
-            _DropDownButton.Location = new Point(
-                Math.Max(0, Size.Width - btnW - pad),
-                _headerY + Math.Max(0, (headerH - btnH) / 2));
+            int btnH = _DropDownButton.Size.Height;   // 当前显示高度(图集或显式)
+            _DropDownButton.AutoSize = false;
+            _DropDownButton.Size = new Size(Size.Width, btnH);
+            _DropDownButton.Location = new Point(0, _headerY + Math.Max(0, (headerH - _DropDownButton.Size.Height) / 2));
         }
 
         protected override void OnSizeChanged()
@@ -223,6 +241,7 @@ namespace Client.MirControls
         // 按需创建选项标签,确保至少有 count 个(超出保留,收起时隐藏即可)。去掉固定 5 项上限。
         private void EnsureOptions(int count)
         {
+            GetButtonRect(out int btnX, out int btnW);
             while (_Option.Count < count)
             {
                 int index = _Option.Count;
@@ -230,8 +249,8 @@ namespace Client.MirControls
                 {
                     Parent = this,
                     Visible = false,
-                    Location = new Point(0, index * RowHeight),
-                    Size = new Size(Math.Max(0, Size.Width), RowHeight),
+                    Location = new Point(btnX, index * RowHeight),
+                    Size = new Size(Math.Max(0, btnW), RowHeight),
                     ForeColour = ForeColour,
                     BackColour = Color.FromArgb(255, 20, 20, 20),
                     Font = new Font(Settings.FontName, 8F)
@@ -285,9 +304,10 @@ namespace Client.MirControls
             for (int i = 0; i < _Option.Count; i++)
                 _Option[i].Visible = i < Items.Count;
 
-            // 选项槽位:向下紧跟表头(OrigHeight + i*RowHeight);向上在表头上方(顶部 i*RowHeight)。
+            // 选项槽位:横向对齐到按钮下方(btnX),纵向向下紧跟表头(OrigHeight + i*RowHeight)或向上在表头上方(i*RowHeight)。
+            GetButtonRect(out int btnX, out int btnW);
             for (int i = 0; i < _Option.Count; i++)
-                _Option[i].Location = new Point(0, _dropUp ? (i * RowHeight) : (OrigHeight + i * RowHeight));
+                _Option[i].Location = new Point(btnX, _dropUp ? (i * RowHeight) : (OrigHeight + i * RowHeight));
 
             IsDropDownOpen = true;
             OnDropDownStateChanged();
