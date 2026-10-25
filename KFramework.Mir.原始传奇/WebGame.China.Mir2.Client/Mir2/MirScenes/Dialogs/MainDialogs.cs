@@ -774,11 +774,15 @@ namespace Client.MirScenes.Dialogs
         public MirButton HomeButton, UpButton, EndButton, DownButton, PositionBar;
         public MirImageControl CountBar;
         public MirTextBox ChatTextBox;
+        public MirButton ChatInputBtn;
         public Font ChatFont = new Font(Settings.FontName, 8F);
         public string LastPM = string.Empty;
 
         public int StartIndex, LineCount = 7, WindowSize;
         public string ChatPrefix = "";
+
+        // 下拉频道选择后,聊天面板只显示该频道(综合=全部);发送前缀仍由 ToggleChatFilter 设置。
+        public ChatChannelFilter CurrentViewChannel = ChatChannelFilter.All;
 
         public bool Transparent;
 
@@ -841,6 +845,22 @@ namespace Client.MirScenes.Dialogs
             ChatTextBox.TextBox.KeyPress += ChatTextBox_KeyPress;
             ChatTextBox.TextBox.KeyDown += ChatTextBox_KeyDown;
             ChatTextBox.TextBox.KeyUp += ChatTextBox_KeyUp;
+
+            // 空按钮:覆盖在聊天输入框背景之上,点击聚焦并开始输入(类似按 Enter 打开聊天)
+            ChatInputBtn = new MirButton
+            {
+                Parent = mChatTextBoxBg,
+                Size = mChatTextBoxBg.Size,
+                Location = new Point(0, 0),
+                Sound = SoundList.ButtonA,
+                Text = "",
+                CenterText = true,
+            };
+
+            ChatInputBtn.Click += (o, e) =>
+            {
+                GameScene.Scene.ChatDialog.StartChatInput();
+            };
 
 
 
@@ -958,36 +978,7 @@ namespace Client.MirScenes.Dialogs
                 case Keys.Enter:
                     KFramework.MonoGame.PrintTool.Log($"[Chat] ChatTextBox_KeyPress Enter Visible={ChatTextBox.Visible} Active={CMain.Instance?.ActiveControl?.GetType().Name}");
                     e.Handled = true;
-                    if (!string.IsNullOrEmpty(ChatTextBox.Text))
-                    {
-                        string msg = ChatTextBox.Text;
-
-                        if (msg.ToUpper() == "@LEVELEFFECT")
-                        {
-                            Settings.LevelEffect = !Settings.LevelEffect;
-                        }
-
-                        if (msg.ToUpper() == "@TARGETDEAD")
-                        {
-                            Settings.TargetDead = !Settings.TargetDead;
-                        }
-
-                        Network.Enqueue(new C.Chat
-                        {
-                            Message = msg,
-                            LinkedItems = new List<ChatItem>(LinkedItems)
-                        });
-
-                        if (ChatTextBox.Text[0] == '/')
-                        {
-                            string[] parts = ChatTextBox.Text.Split(' ');
-                            if (parts.Length > 0)
-                                LastPM = parts[0];
-                        }
-                    }
-                    ChatTextBox.Visible = false;
-                    ChatTextBox.Text = string.Empty;
-                    LinkedItems.Clear();
+                    SendChatMessage();
                     break;
                 case Keys.Escape:
                     e.Handled = true;
@@ -996,6 +987,47 @@ namespace Client.MirScenes.Dialogs
                     LinkedItems.Clear();
                     break;
             }
+        }
+
+        // 发送当前聊天框内容(供 Enter 键与发送按钮共用)
+        public void SendChatMessage()
+        {
+            if (string.IsNullOrEmpty(ChatTextBox.Text)) return;
+
+            string msg = ChatTextBox.Text;
+
+            if (msg.ToUpper() == "@LEVELEFFECT")
+                Settings.LevelEffect = !Settings.LevelEffect;
+
+            if (msg.ToUpper() == "@TARGETDEAD")
+                Settings.TargetDead = !Settings.TargetDead;
+
+            Network.Enqueue(new C.Chat
+            {
+                Message = msg,
+                LinkedItems = new List<ChatItem>(LinkedItems)
+            });
+
+            if (msg[0] == '/')
+            {
+                string[] parts = msg.Split(' ');
+                if (parts.Length > 0)
+                    LastPM = parts[0];
+            }
+
+            ChatTextBox.Visible = false;
+            ChatTextBox.Text = string.Empty;
+            LinkedItems.Clear();
+        }
+
+        // 聚焦聊天输入框并开始输入(供"开始聊天"按钮与 Enter 打开聊天共用)
+        public void StartChatInput()
+        {
+            ChatTextBox.SetFocus();
+            if (ChatPrefix != "") ChatTextBox.Text = ChatPrefix;
+            ChatTextBox.Visible = true;
+            ChatTextBox.TextBox.SelectionLength = 0;
+            ChatTextBox.TextBox.SelectionStart = ChatTextBox.Text.Length;
         }
 
         void PositionBar_OnMoving(object sender, MouseEventArgs e)
@@ -1083,6 +1115,11 @@ namespace Client.MirScenes.Dialogs
 
             chat.Add(text.Substring(index, text.Length - index));
 
+            // 在每条消息首行前加频道前缀,如【世界】【私聊】,便于区分来源
+            string channelPrefix = GetChannelPrefix(type);
+            if (chat.Count > 0 && !string.IsNullOrEmpty(channelPrefix))
+                chat[0] = channelPrefix + chat[0];
+
             if (StartIndex == History.Count - LineCount)
                 StartIndex += chat.Count;
 
@@ -1090,6 +1127,36 @@ namespace Client.MirScenes.Dialogs
                 FullHistory.Add(new ChatHistory { Text = chat[i], BackColour = backColour, ForeColour = foreColour, Type = type });
 
             Update();
+        }
+
+        // 频道 → 显示前缀
+        private static string GetChannelPrefix(ChatType type)
+        {
+            switch (type)
+            {
+                case ChatType.World: return "【世界】";
+                case ChatType.PrivateChat: return "【私聊】";
+                case ChatType.Guild: return "【行会】";
+                case ChatType.Team: return "【队伍】";
+                case ChatType.Nearby: return "【附近】";
+                case ChatType.System: return "【系统】";
+                default: return "";
+            }
+        }
+
+        // 视图频道 → 对应的消息类型(All 不会走到这里)
+        private static ChatType ViewChannelToType(ChatChannelFilter filter)
+        {
+            switch (filter)
+            {
+                case ChatChannelFilter.World: return ChatType.World;
+                case ChatChannelFilter.PrivateChat: return ChatType.PrivateChat;
+                case ChatChannelFilter.Guild: return ChatType.Guild;
+                case ChatChannelFilter.Team: return ChatType.Team;
+                case ChatChannelFilter.Nearby: return ChatType.Nearby;
+                case ChatChannelFilter.System: return ChatType.System;
+                default: return ChatType.Nearby;
+            }
         }
 
         public void Update()
@@ -1119,6 +1186,10 @@ namespace Client.MirScenes.Dialogs
                         if (Settings.FilterGuildChat) continue;
                         break;
                 }
+
+                // 下拉频道视图过滤:选定具体频道时只显示该频道(综合=全部)
+                if (CurrentViewChannel != ChatChannelFilter.All && FullHistory[i].Type != ViewChannelToType(CurrentViewChannel))
+                    continue;
 
                 History.Add(FullHistory[i]);
             }
@@ -1547,7 +1618,7 @@ namespace Client.MirScenes.Dialogs
 
             SendChatBtn.Click += (o, e) =>
             {
-                
+                GameScene.Scene.ChatDialog.SendChatMessage();
             };
 
             //SettingsButton = new MirButton
@@ -1721,8 +1792,9 @@ namespace Client.MirScenes.Dialogs
 
         public void ToggleChatFilter(ChatChannelFilter filter)
         {
-            // 按当前下拉选定的频道设置命令前缀(服务端据此路由);系统/综合等同普通消息(无前缀)。
-            // 旧版频道按钮(NormalButton 等)已由下拉控件取代,这里不再操作那些按钮。
+            // 下拉选定频道:既设置发送前缀(服务端据此路由),也作为聊天面板视图过滤(只看该频道)。
+            GameScene.Scene.ChatDialog.CurrentViewChannel = filter;
+
             switch (filter)
             {
                 case ChatChannelFilter.All:
@@ -1746,6 +1818,9 @@ namespace Client.MirScenes.Dialogs
                     GameScene.Scene.ChatDialog.ChatPrefix = "";
                     break;
             }
+
+            // 重新渲染聊天面板以应用视图过滤
+            GameScene.Scene.ChatDialog.Update();
         }
     }
 
