@@ -1528,7 +1528,7 @@ namespace Client.MirScenes.Dialogs
                 if (mChatChannel_BtnJianTou != null)
                 {
                     // 展开时箭头朝上,收起时朝下(翻转是之前给 MirImageControl 加的 FlipY)
-                    mChatChannel_BtnJianTou.FlipY = !e.IsOpen;
+                    mChatChannel_BtnJianTou.FlipY = e.IsOpen;
                     // 也可以换 Hover/Pressed 帧、改表头颜色等
                 }
             };
@@ -1542,6 +1542,7 @@ namespace Client.MirScenes.Dialogs
             mChatChannel.DropDownButton.AtlasFrame = "btn_liaotian_11";
             mChatChannel.DropDownButton.PressedAtlasFrame = "btn_liaotian_12";
             mChatChannel.DropDownButton.Size = new Size(60, 19);
+            mChatChannel.ButtonTextOffsetX = -10;
             mChatChannel_BtnJianTou = new MirImageControl
             {
                 AtlasNameKey = "y_homeUI-sheet",
@@ -1550,7 +1551,7 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(12, 9),
                 NotControl = true,
             };
-            mChatChannel_BtnJianTou.Location = mChatChannel_BtnJianTou.Right.Subtract(new Point(15, 0));
+            mChatChannel_BtnJianTou.Location = mChatChannel_BtnJianTou.Right.Subtract(new Point(5, 0));
 
             SendChatBtn = new MirButton
             {

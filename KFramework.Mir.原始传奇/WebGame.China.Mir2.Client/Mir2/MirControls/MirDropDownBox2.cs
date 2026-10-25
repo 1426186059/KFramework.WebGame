@@ -6,12 +6,11 @@ namespace Client.MirControls
     // MirDropDownBox 的变体：
     //   • 箭头按钮(DropDownButton)本身是 MirButton，已自带 AtlasFrame / AtlasNameKey 等图集能力，
     //     由外部直接配置即可(无需在控件上再挂一套背景图集)。
-    //   • 箭头按钮精确落在“收起后显示选中文字的表头区”右侧——
-    //     按按钮实际尺寸右对齐 + 垂直居中，不再写死偏移(写死偏移会让自定义图集的箭头溢出/偏位)。
+    //   • 选中文字直接显示在箭头按钮(DropDownButton)自身的 Label 中并居中对齐(CenterText);
+    //     按钮即点击区，精确按实际尺寸右对齐 + 垂直居中落在控件内，不再写死偏移。
     //   • 无滚动条：选项随 Items.Count 动态创建，下拉框整体长高容纳全部项。
     public class MirDropDownBox2 : MirControl
     {
-        private MirLabel _label;
         private MirButton _DropDownButton;
         private List<MirLabel> _Option = new List<MirLabel>();
 
@@ -25,10 +24,31 @@ namespace Client.MirControls
         public int OrigHeight = 0;
         public long LastMouseLeave = 0;
 
-        /// <summary>展开方向:0=向下(默认), 1=向上, 2=自动(按屏幕空间选择)。</summary>
+        /// <summary>展开生长方向:0=向下(默认,列表在按钮/点击区正下方,点击区在顶部不动), 1=向上(列表在按钮正上方,整框上移、点击区屏幕位置不变),
+        /// 2=自动(下方空间不足且上方够则改向上生长)。</summary>
         public int DropMode { get; set; } = 0;
+
+        /// <summary>按钮内文字相对于“居中”位置的左右偏移(正=右移,负=左移)。配合 CenterText 使用。</summary>
+        public int ButtonTextOffsetX
+        {
+            get { return _btnTextOffX; }
+            set { _btnTextOffX = value; ApplyButtonTextOffset(); }
+        }
+        /// <summary>按钮内文字相对于“居中”位置的上下偏移(正=下移,负=上移)。配合 CenterText 使用。</summary>
+        public int ButtonTextOffsetY
+        {
+            get { return _btnTextOffY; }
+            set { _btnTextOffY = value; ApplyButtonTextOffset(); }
+        }
+        private int _btnTextOffX;
+        private int _btnTextOffY;
         private bool _dropUp;        // 本次展开是否向上(每次 Open 时依 DropMode 计算)
         private int _collapsedY;     // 收起时的 Location.Y,向上展开后关闭时还原
+
+        // 布局常量与状态
+        private const int RowHeight = 16;  // 选项行高(同时也是行间距,行与行紧贴不重叠)
+        private int _headerY;             // 当前表头(选中文字区)的 Y
+        private int _headerHeight;        // 当前表头高度(折叠=OrigHeight;展开时仍为表头自身高度)
 
         private List<String> _Items = new List<string>();
         public event EventHandler ValueChanged;
@@ -59,33 +79,38 @@ namespace Client.MirControls
         protected override void OnBackColourChanged()
         {
             base.OnBackColourChanged();
-            if (_label != null && !_label.IsDisposed)
-                _label.BackColour = BackColour;
         }
 
-        // 把箭头按钮摆到“收起后显示选中文字的表头区”右侧：按按钮实际尺寸右对齐 + 垂直居中。
-        private void LayoutDropDownButton(int headerY, int headerHeight)
+        // 列表项整体布局:图集异步加载完/尺寸变化时会重新摆放箭头按钮,避免偏位。
+        private void RelayoutHeader()
+        {
+            // 列表项与表头不在同一垂直区域(按钮在表头,列表在其上/下方),无需避让,宽度与控件(按钮)等宽。
+            for (int i = 0; i < _Option.Count; i++)
+                _Option[i].Size = new Size(Math.Max(0, Size.Width), RowHeight);
+
+            LayoutDropDownButton();
+        }
+
+        // 把箭头按钮摆到表头区右侧:按按钮实际尺寸右对齐 + 垂直居中。
+        private void LayoutDropDownButton()
         {
             if (_DropDownButton == null || _DropDownButton.IsDisposed) return;
             int btnW = _DropDownButton.Size.Width;   // AutoSize => 实际图集尺寸
             int btnH = _DropDownButton.Size.Height;
             int pad = 2;
+            int headerH = _headerHeight > 0 ? _headerHeight : (OrigHeight > 0 ? OrigHeight : RowHeight);
             _DropDownButton.Location = new Point(
                 Math.Max(0, Size.Width - btnW - pad),
-                headerY + Math.Max(0, (headerHeight - btnH) / 2));
+                _headerY + Math.Max(0, (headerH - btnH) / 2));
         }
 
         protected override void OnSizeChanged()
         {
             base.OnSizeChanged();
             OrigHeight = OrigHeight == 0 ? Size.Height : OrigHeight;
-            int rightPad = ((_DropDownButton != null && !_DropDownButton.IsDisposed) ? _DropDownButton.Size.Width : 0) + 4;
-            for (int i = 0; i < _Option.Count; i++)
-                _Option[i].Size = new Size(Math.Max(0, Size.Width - rightPad), 16);
-
-            if (_label != null && !_label.IsDisposed)
-                _label.Size = new Size(Math.Max(0, Size.Width - rightPad), 15);
-            LayoutDropDownButton(0, OrigHeight);
+            _headerY = 0;
+            _headerHeight = OrigHeight;
+            RelayoutHeader();
         }
 
         protected override void OnEnabledChanged()
@@ -106,38 +131,40 @@ namespace Client.MirControls
             BackColour = Color.FromArgb(255, 6, 6, 6);
             ForeColour = Color.White;
             Enabled = false;
-            _label = new MirLabel
-            {
-                Parent = this,
-                Location = new Point(0, 0),
-                ForeColour = ForeColour,
-                BackColour = BackColour,
-                Font = new Font(Settings.FontName, 8F),
-                Visible = true,
-            };
-            _label.Click += (o, e) =>
-            {
-                if (_DropDownButton.Enabled)
-                    DropDownClick();
-            };
-            _label.BeforeDraw += (o, e) =>
-            {
-                if ((Items.Count > 0) && (Items.Count >= SelectedIndex))
-                    if (SelectedIndex == -1)
-                        _label.Text = " ";
-                    else
-                        _label.Text = Items[SelectedIndex];
-                else
-                    _label.Text = "None";
-            };
-            // 只用 AtlasFrame：不在按钮上设 Library/Index(legacy)，箭头由外部设 DropDownButton.AtlasFrame / AtlasNameKey。
+            // 箭头按钮(DropDownButton)本身就是点击区:选中文字直接显示在它的 Label 里(见下方 BeforeDraw),
+            // 不再使用独立的左侧 Label。外部配 DropDownButton.AtlasFrame / AtlasNameKey 即可。
             _DropDownButton = new MirButton
             {
                 Parent = this,
                 Visible = false,
+                CenterText = true,   // 选中文字在按钮内居中对齐
             };
             _DropDownButton.Click += (o, e) => DropDownClick();
+            // 图集异步加载完成 / 按钮尺寸变化(如 AutoSize 取到实际图集尺寸)时,重新摆放按钮与文字偏移,避免偏位。
+            _DropDownButton.AtlasLoaded += (o, e) => RelayoutHeader();
+            _DropDownButton.SizeChanged += (o, e) => { RelayoutHeader(); ApplyButtonTextOffset(); };
+            ApplyButtonTextOffset();   // 初始偏移(默认 0,即纯居中)
+            // 选中文字显示在按钮自身的 Label 中(不再用独立的左侧 Label)
+            _DropDownButton.BeforeDraw += (o, e) =>
+            {
+                if (Items.Count > 0 && SelectedIndex >= 0 && SelectedIndex < Items.Count)
+                    _DropDownButton.Text = Items[SelectedIndex];
+                else if (SelectedIndex == -1)
+                    _DropDownButton.Text = " ";
+                else
+                    _DropDownButton.Text = "None";
+            };
             BeforeDraw += MirDropDownBox2_BeforeDraw;
+        }
+
+        // 把按钮内文字 Label 从“居中”位置按偏移量平移(CenterText 已让 Label 充满按钮并居中)。
+        // 设 ButtonTextOffsetX/Y 即可微调文字在按钮中的位置,避免文字压到箭头或被裁切。
+        private void ApplyButtonTextOffset()
+        {
+            if (_DropDownButton == null || _DropDownButton.IsDisposed) return;
+            var lbl = _DropDownButton.Label;
+            if (lbl == null || lbl.IsDisposed) return;
+            lbl.Location = new Point(_btnTextOffX, _btnTextOffY);
         }
 
         void MirDropDownBox2_BeforeDraw(object sender, EventArgs e)
@@ -199,13 +226,12 @@ namespace Client.MirControls
             while (_Option.Count < count)
             {
                 int index = _Option.Count;
-                int rightPad = ((_DropDownButton != null && !_DropDownButton.IsDisposed) ? _DropDownButton.Size.Width : 0) + 4;
                 var lbl = new MirLabel
                 {
                     Parent = this,
                     Visible = false,
-                    Location = new Point(0, 15 + (index * 13)),
-                    Size = new Size(Math.Max(0, Size.Width - rightPad), 16),
+                    Location = new Point(0, index * RowHeight),
+                    Size = new Size(Math.Max(0, Size.Width), RowHeight),
                     ForeColour = ForeColour,
                     BackColour = Color.FromArgb(255, 20, 20, 20),
                     Font = new Font(Settings.FontName, 8F)
@@ -226,41 +252,42 @@ namespace Client.MirControls
 
         public void OpenDropDown()
         {
-            int needed = Math.Max(5, Items.Count) * 15;
+            int listH = Items.Count * RowHeight;   // 列表区高度(随项数),不再写死 5 行
 
-            // 展开方向:0=向下, 1=向上, 2=自动(下方空间不足且上方够则上拉)
+            // 生长方向:_dropUp=false 向下(默认,列表在按钮下方,点击区在顶部不动);
+            // true 向上(列表在按钮上方,整框上移、点击区屏幕位置不变)。
             switch (DropMode)
             {
-                case 0:
-                    _dropUp = false;
-                    break;
                 case 1:
                     _dropUp = true;
                     break;
-                default:
+                case 2:
                     int spaceBelow = Settings.ScreenHeight - (DisplayLocation.Y + OrigHeight);
-                    _dropUp = spaceBelow < needed && DisplayLocation.Y >= needed;
+                    _dropUp = spaceBelow < listH && DisplayLocation.Y >= listH;
+                    break;
+                default:
+                    _dropUp = false;   // 默认向下展开
                     break;
             }
 
             _collapsedY = Location.Y;
-            Size = new Size(Size.Width, OrigHeight + needed);
+            Size = new Size(Size.Width, OrigHeight + listH);
             if (_dropUp)
-                Location = new Point(Location.X, _collapsedY - needed);
+                Location = new Point(Location.X, _collapsedY - listH);
 
-            // 表头:向下在顶部,向上在底部(收起后显示选中文字的区域)
-            int headerY = _dropUp ? needed : 0;
-            _label.Location = new Point(0, headerY);
-            LayoutDropDownButton(headerY, OrigHeight);
+            // 表头(点击区:选中文字 + 箭头按钮):向下在顶部(0),向上在底部(listH)。
+            _headerY = _dropUp ? listH : 0;
+            _headerHeight = OrigHeight;
+            RelayoutHeader();   // 摆放 _DropDownButton(箭头按钮=点击区)
 
             ScrollIndex = 0;
             EnsureOptions(Items.Count);   // 动态补足选项标签,去掉固定 5 项上限
             for (int i = 0; i < _Option.Count; i++)
                 _Option[i].Visible = i < Items.Count;
 
-            // 选项槽位:向下 15+i*13;向上翻到表头上方(槽位 0 在最顶)
+            // 选项槽位:向下紧跟表头(OrigHeight + i*RowHeight);向上在表头上方(顶部 i*RowHeight)。
             for (int i = 0; i < _Option.Count; i++)
-                _Option[i].Location = new Point(0, _dropUp ? (needed - _Option.Count * 13 + i * 13) : (15 + i * 13));
+                _Option[i].Location = new Point(0, _dropUp ? (i * RowHeight) : (OrigHeight + i * RowHeight));
 
             IsDropDownOpen = true;
             OnDropDownStateChanged();
@@ -273,10 +300,10 @@ namespace Client.MirControls
                 Location = new Point(Location.X, _collapsedY);
             _dropUp = false;
 
-            // 还原折叠布局:向上展开时表头(_label/_DropDownButton)被移到控件底部,收起后控件高度变回
-            // OrigHeight,若不还原表头会落在控件之外被裁掉(字和标签背景一起消失)。
-            _label.Location = new Point(0, 0);
-            LayoutDropDownButton(0, OrigHeight);
+            // 还原折叠布局:收起后控件高度变回 OrigHeight,表头(点击区)回到顶部。
+            _headerY = 0;
+            _headerHeight = OrigHeight;
+            RelayoutHeader();   // 摆放 _DropDownButton(箭头按钮=点击区)
 
             for (int i = 0; i < _Option.Count; i++)
                 _Option[i].Visible = false;
@@ -290,10 +317,6 @@ namespace Client.MirControls
             base.Dispose(disposing);
 
             if (!disposing) return;
-
-            if (_label != null && !_label.IsDisposed)
-                _label.Dispose();
-            _label = null;
 
             if (_DropDownButton != null && !_DropDownButton.IsDisposed)
                 _DropDownButton.Dispose();
