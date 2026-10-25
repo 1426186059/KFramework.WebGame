@@ -286,6 +286,7 @@ namespace Client.MirScenes
             MoveTime = CMain.Time;
 
             KeyDown += GameScene_KeyDown;
+            KeyUp += GameScene_KeyUp;
 
             MainDialog = new MainDialog { Parent = this };
             ChatDialog = new ChatDialog { Parent = this };
@@ -505,8 +506,104 @@ namespace Client.MirScenes
                 }
             }
         }
+        // ── 天气/昼夜 调试和弦（按住 W + 数字）─────────────────────────
+        // 0=昼夜切换, 1=无(晴), 2=雨, 3=雪, 4=雾, 5=落叶, 6=火落叶, 7=红余烬, 8=白余烬, 9=紫叶
+        private bool _wKeyHeld;
+        private WeatherSetting? _forcedWeather;   // null=跟随服务端；有值=本地强制天气
+        private LightSetting? _forcedLights;      // null=跟随服务端；有值=本地强制昼夜
+
+        private void GameScene_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.KeyW) _wKeyHeld = false;
+        }
+
+        private static bool IsWeatherChordKey(Keys key)
+        {
+            return (key >= Keys.Digit0 && key <= Keys.Digit9)
+                || (key >= Keys.Numpad0 && key <= Keys.Numpad9);
+        }
+
+        private void HandleWeatherChord(Keys key)
+        {
+            if (MapControl == null) return;
+
+            switch (key)
+            {
+                case Keys.Digit0:
+                case Keys.Numpad0:
+                    ToggleDayNight();
+                    return;
+                case Keys.Digit1:
+                case Keys.Numpad1:
+                    SetLocalWeather(WeatherSetting.None);
+                    return;
+                case Keys.Digit2:
+                case Keys.Numpad2:
+                    SetLocalWeather(WeatherSetting.Rain);
+                    return;
+                case Keys.Digit3:
+                case Keys.Numpad3:
+                    SetLocalWeather(WeatherSetting.Snow);
+                    return;
+                case Keys.Digit4:
+                case Keys.Numpad4:
+                    SetLocalWeather(WeatherSetting.Fog);
+                    return;
+                case Keys.Digit5:
+                case Keys.Numpad5:
+                    SetLocalWeather(WeatherSetting.Leaves);
+                    return;
+                case Keys.Digit6:
+                case Keys.Numpad6:
+                    SetLocalWeather(WeatherSetting.FireyLeaves);
+                    return;
+                case Keys.Digit7:
+                case Keys.Numpad7:
+                    SetLocalWeather(WeatherSetting.RedEmber);
+                    return;
+                case Keys.Digit8:
+                case Keys.Numpad8:
+                    SetLocalWeather(WeatherSetting.WhiteEmber);
+                    return;
+                case Keys.Digit9:
+                case Keys.Numpad9:
+                    SetLocalWeather(WeatherSetting.PurpleLeaves);
+                    return;
+            }
+        }
+
+        private void SetLocalWeather(WeatherSetting ws)
+        {
+            _forcedWeather = ws;
+            MapControl.Weather = ws;
+            MapControl.UpdateWeather();
+        }
+
+        private void ToggleDayNight()
+        {
+            LightSetting next = (MapControl.Lights == LightSetting.Night
+                                || MapControl.Lights == LightSetting.Evening
+                                || MapControl.Lights == LightSetting.Dawn)
+                ? LightSetting.Day
+                : LightSetting.Night;
+            _forcedLights = next;
+            MapControl.Lights = next;
+            GameScene.Scene.Lights = next;
+            if (MiniMapDialog != null)
+                MiniMapDialog.LightSetting.Index = next == LightSetting.Night ? 2092 : 2093;
+        }
+
         private void GameScene_KeyDown(object sender, KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.KeyW) _wKeyHeld = true;
+
+            // 和弦：按住 W + 数字键 → 切换天气/昼夜（return 跳过原有数字绑定，避免误触腰带等）
+            if (_wKeyHeld && IsWeatherChordKey(e.KeyCode))
+            {
+                HandleWeatherChord(e.KeyCode);
+                return;
+            }
+
             if (GameScene.Scene.KeyboardLayoutDialog.WaitingForBind != null)
             {
                 GameScene.Scene.KeyboardLayoutDialog.CheckNewInput(e);
@@ -2158,13 +2255,13 @@ namespace Client.MirScenes
                 Title = p.Title,
                 MiniMap = p.MiniMap,
                 BigMap = p.BigMap,
-                Lights = p.Lights,
+                Lights = _forcedLights ?? p.Lights,
                 Lightning = p.Lightning,
                 Fire = p.Fire,
                 MapDarkLight = p.MapDarkLight,
                 Music = p.Music
             };
-            MapControl.Weather = p.WeatherParticles;
+            MapControl.Weather = _forcedWeather ?? p.WeatherParticles;
             // 登录进游戏的第一张地图（服务器按角色存档下发），随后可能紧跟一个 MapChanged 纠正到实际所在图。
             KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapInformation: {p.FileName}(Index={p.MapIndex})  时刻={DateTime.Now:HH:mm:ss.fff}");
             _ = MapControl.LoadMapAsync();
@@ -3209,7 +3306,7 @@ namespace Client.MirScenes
 
         private void TimeOfDay(S.TimeOfDay p)
         {
-            Lights = p.Lights;
+            Lights = _forcedLights ?? p.Lights;
             switch (Lights)
             {
                 case LightSetting.Day:
@@ -3996,10 +4093,10 @@ namespace Client.MirScenes
                 MapControl.Title = p.Title;
                 MapControl.MiniMap = p.MiniMap;
                 MapControl.BigMap = p.BigMap;
-                MapControl.Lights = p.Lights;
+                MapControl.Lights = _forcedLights ?? p.Lights;
                 MapControl.MapDarkLight = p.MapDarkLight;
                 MapControl.Music = p.Music;
-                MapControl.Weather = p.Weather;
+                MapControl.Weather = _forcedWeather ?? p.Weather;
                 KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapChanged: {p.FileName}(Index={p.MapIndex})  切到={Path.GetFileNameWithoutExtension(MapControl.FileName)}  时刻={DateTime.Now:HH:mm:ss.fff}");
                 _ = MapControl.LoadMapAsync();
             }
@@ -12637,8 +12734,8 @@ namespace Client.MirScenes
 
                         ParticleEngine LeavesEngine2 = new ParticleEngine(textures, new Vector2(2f, 0), ParticleType.Leaves);
                         Vector2 lVelocity = new Vector2(0F, 0F);
-                        for (int y = 512 * -1; y < DXManager.GDevice.Viewport.Height + 512; y += 512)
-                            for (int x = 512 * -1; x < DXManager.GDevice.Viewport.Width + 512; x += 512)
+                        for (int y = 512 * -1; y < Settings.ScreenHeight + 512; y += 512)
+                            for (int x = 512 * -1; x < Settings.ScreenWidth + 512; x += 512)
                             {
                                 Particle part = LeavesEngine2.GenerateNewParticle(ParticleType.Leaves);
                                 part.Position = new Vector2(x, y);
@@ -12656,8 +12753,8 @@ namespace Client.MirScenes
 
                         ParticleEngine FLeavesEngine2 = new ParticleEngine(textures, new Vector2(2f, 0), ParticleType.FireyLeaves);
                         Vector2 FlVelocity = new Vector2(0F, 0F);
-                        for (int y = 512 * -1; y < DXManager.GDevice.Viewport.Height + 512; y += 512)
-                            for (int x = 512 * -1; x < DXManager.GDevice.Viewport.Width + 512; x += 512)
+                        for (int y = 512 * -1; y < Settings.ScreenHeight + 512; y += 512)
+                            for (int x = 512 * -1; x < Settings.ScreenWidth + 512; x += 512)
                             {
                                 Particle part = FLeavesEngine2.GenerateNewParticle(ParticleType.FireyLeaves);
                                 part.Position = new Vector2(x, y);
@@ -12676,8 +12773,8 @@ namespace Client.MirScenes
                         Vector2 rsevelocity = new Vector2(0F, 0F);
                         var xVar = 512;
                         var yVar = 512;
-                        for (int y = yVar * -1; y < DXManager.GDevice.Viewport.Height + yVar; y += yVar)
-                            for (int x = xVar * -1; x < DXManager.GDevice.Viewport.Width + xVar; x += xVar)
+                        for (int y = yVar * -1; y < Settings.ScreenHeight + yVar; y += yVar)
+                            for (int x = xVar * -1; x < Settings.ScreenWidth + xVar; x += xVar)
                             {
                                 Particle part = RainEngine2.GenerateNewParticle(ParticleType.Rain);
                                 part.Position = new Vector2(x, y);
@@ -12694,8 +12791,8 @@ namespace Client.MirScenes
                         ParticleEngine RainEngine = new ParticleEngine(textures, new Vector2(0, 0), ParticleType.Snow);
                         Vector2 rsvelocity = new Vector2(1F, -1F);
 
-                        for (int y = -400; y < DXManager.GDevice.Viewport.Height + 400; y += 400)
-                            for (int x = -400; x < DXManager.GDevice.Viewport.Width + 400; x += 400)
+                        for (int y = -400; y < Settings.ScreenHeight + 400; y += 400)
+                            for (int x = -400; x < Settings.ScreenWidth + 400; x += 400)
                             {
                                 Particle part = RainEngine.GenerateNewParticle(ParticleType.Snow);
                                 part.Position = new Vector2(x, y);
@@ -12712,8 +12809,8 @@ namespace Client.MirScenes
                         fengine.UpdateDelay = TimeSpan.FromMilliseconds(20);
 
                         Vector2 fvelocity = new Vector2(2F, -2F);
-                        for (int y = -512; y < DXManager.GDevice.Viewport.Height + 512; y += 512)
-                            for (int x = -512; x < DXManager.GDevice.Viewport.Width + 512; x += 512)
+                        for (int y = -512; y < Settings.ScreenHeight + 512; y += 512)
+                            for (int x = -512; x < Settings.ScreenWidth + 512; x += 512)
                             {
                                 Particle part = fengine.GenerateNewParticle(ParticleType.Fog);
                                 part.Position = new Vector2(x, y);
@@ -12748,8 +12845,8 @@ namespace Client.MirScenes
 
                         var pEmberEngine = new ParticleEngine(textures, new Vector2(0, 0), ParticleType.PurpleLeaves);
 
-                        for (int y = 512 * -1; y < DXManager.GDevice.Viewport.Height + 512; y += 512)
-                            for (int x = 512 * -1; x < DXManager.GDevice.Viewport.Width + 512; x += 512)
+                        for (int y = 512 * -1; y < Settings.ScreenHeight + 512; y += 512)
+                            for (int x = 512 * -1; x < Settings.ScreenWidth + 512; x += 512)
                             {
                                 Particle part = pEmberEngine.GenerateNewParticle(ParticleType.PurpleLeaves);
                                 part.Position = new Vector2(x, y);
