@@ -810,9 +810,9 @@ namespace Client.MirScenes.Dialogs
             var mChatTextBoxBg = new MirImageControl
             {
                 AtlasNameKey = "y_homeUI-sheet",
-                AtlasFrame = "y_h_map0",
+                AtlasFrame = "y_h_msbg",
                 AutoSize = false,
-                Size = new Size(500, 25),
+                Size = new Size(450, 25),
                 Parent = this,
             };
             mChatTextBoxBg.Location = mChatTextBoxBg.Bottom;
