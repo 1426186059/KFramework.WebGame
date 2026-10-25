@@ -21,6 +21,13 @@ namespace Client.MirControls
         public int DropMode { get; set; } = 0;
         private bool _dropUp;        // 本次展开是否向上(每次 Open 时依 DropMode 计算)
         private int _collapsedY;     // 收起时的 Location.Y,向上展开后关闭时还原
+
+        // —— 可选图集底图:设了 Library+Index,控件背景就用该图(默认拉伸填满;设了四边边框则九宫格)。——
+        private MLibrary _bgLibrary;
+        public MLibrary Library { get { return _bgLibrary; } set { _bgLibrary = value; Redraw(); } }
+        private int _bgIndex = -1;
+        public int Index { get { return _bgIndex; } set { _bgIndex = value; Redraw(); } }
+        public int BorderLeft, BorderTop, BorderRight, BorderBottom; // 九宫格边框(默认 0=纯拉伸)
         private List<String> _Items = new List<string>();
         public event EventHandler ValueChanged;
 
@@ -200,6 +207,30 @@ namespace Client.MirControls
             };
             _ScrollPosition.OnMoving += ScrollPosition;
             BeforeDraw += MirDropDownBox_BeforeDraw;
+        }
+
+        protected internal override void DrawControl()
+        {
+            base.DrawControl(); // 先画原 BackColour 底(未设图集时即为最终外观)
+            if (_bgLibrary != null && _bgIndex >= 0)
+            {
+                Size img = _bgLibrary.GetTrueSize(_bgIndex);
+                Size drawSize = Size;
+                Point drawLoc = DisplayLocation;
+                Color drawColor = ForeColour;
+
+                int borders = BorderLeft + BorderTop + BorderRight + BorderBottom;
+                if (borders > 0)
+                {
+                    MirImageControl.ForEachNineGridRect(img.Width, img.Height, drawLoc.X, drawLoc.Y, drawSize.Width, drawSize.Height,
+                        BorderLeft, BorderTop, BorderRight, BorderBottom,
+                        (src, dst) => _bgLibrary.Draw(_bgIndex, src, dst, drawColor, 1f));
+                }
+                else
+                {
+                    _bgLibrary.Draw(_bgIndex, drawLoc, drawSize, drawColor);
+                }
+            }
         }
 
         void MirDropDownBox_BeforeDraw(object sender, EventArgs e)

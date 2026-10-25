@@ -8,6 +8,9 @@ namespace Client.MirControls
     // 填充裁剪起点：Top/Bottom=竖直（从上/下开始），Left/Right=水平。
     public enum MirFillOrigin { Left, Right, Top, Bottom }
 
+    // 绘制模式：Normal=整图缩放；NineGrid=九宫格（保留四角四边厚度，仅中间随 Size 拉伸）。
+    public enum MirImageDrawMode { Normal, NineGrid }
+
     public class MirImageControl : MirControl
     {
         public override Point DisplayLocation { get { return UseOffSet ? base.DisplayLocation.Add(Library.GetOffSet(Index)) : base.DisplayLocation; } }
@@ -21,6 +24,15 @@ namespace Client.MirControls
         public float FillAmount { get; set; } = 1f;
         // 填充起点（默认竖直：从顶部开始向下减少）。
         public MirFillOrigin FillOrigin { get; set; } = MirFillOrigin.Top;
+
+        // 九宫格边框厚度（像素，基于源图）。四边任一 >0 且 DrawMode=NineGrid 时生效：
+        // 四角原尺寸保留、四边单轴拉伸、中心双轴拉伸，UI 面板/边框随 Size 缩放不变形。
+        public int BorderLeft { get; set; } = 0;
+        public int BorderTop { get; set; } = 0;
+        public int BorderRight { get; set; } = 0;
+        public int BorderBottom { get; set; } = 0;
+        // 绘制模式：默认 Normal（整图缩放）。NineGrid 时按上方四个边框做九宫格。
+        public MirImageDrawMode DrawMode { get; set; } = MirImageDrawMode.Normal;
 
         private bool _autoSize;
         public bool AutoSize
@@ -299,23 +311,38 @@ namespace Client.MirControls
                 int px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
                 int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
                 KFramework.MonoGame.Rectangle srcFull = atlasSprite.SourceRectangle;
+
+                // 混合状态对齐原版 Crystal：用【控件自身的 Blending 属性】决定，而非全局 DXManager.Blending。
+                var imgBlend = (Blending
+                    ? MirBlend.Additive
+                    : MirBlend.Normal).ToBlendState();
+
+                // 九宫格：拆 9 块绘制，保留四角/四边厚度，仅中间随 Size 拉伸。
+                int bordersAtlas = BorderLeft + BorderTop + BorderRight + BorderBottom;
+                if (DrawMode == MirImageDrawMode.NineGrid && bordersAtlas > 0)
+                {
+                    ForEachNineGridRect(srcFull.Width, srcFull.Height, px, py, drawSize.Width, drawSize.Height,
+                        BorderLeft, BorderTop, BorderRight, BorderBottom,
+                        (src, dst) =>
+                        {
+                            var sR = new KFramework.MonoGame.Rectangle(srcFull.X + src.X, srcFull.Y + src.Y, src.Width, src.Height);
+                            var dR = new KFramework.MonoGame.Rectangle((int)Math.Round(dst.X), (int)Math.Round(dst.Y), (int)Math.Round(dst.Width), (int)Math.Round(dst.Height));
+                            DXManager.Draw(atlasSprite.Texture, sR, dR, drawColor, imgBlend);
+                        });
+                    if (GrayScale) DXManager.SetGrayscale(oldGray);
+                    return;
+                }
+
                 KFramework.MonoGame.Rectangle dstFull = new KFramework.MonoGame.Rectangle(px, py, drawSize.Width, drawSize.Height);
                 Rectangle srcSD = new Rectangle(srcFull.X, srcFull.Y, srcFull.Width, srcFull.Height);
                 Rectangle dstSD = new Rectangle(dstFull.X, dstFull.Y, dstFull.Width, dstFull.Height);
                 ApplyFillClip(FillAmount, FillOrigin, ref srcSD, ref dstSD);
                 KFramework.MonoGame.Rectangle srcRect = new KFramework.MonoGame.Rectangle(srcSD.X, srcSD.Y, srcSD.Width, srcSD.Height);
                 KFramework.MonoGame.Rectangle dstRect = new KFramework.MonoGame.Rectangle(dstSD.X, dstSD.Y, dstSD.Width, dstSD.Height);
-                // 混合状态对齐原版 Crystal：用【控件自身的 Blending 属性】决定，而非全局 DXManager.Blending。
-                // 否则会被其它特效遗留的全局加法混合污染——暗色 UI 在亮背景上被叠加成“过曝发白”（即“混合过头”）。
-                //   • Blending=false（正常 UI）→ MirBlend.Normal（引擎 NonPremultiplied 修复版，修复半透明叠加）
-                //   • Blending=true        → MirBlend.Additive（发光/叠加特效，等价原版 SetBlend(true)）
-                var imgBlend = (Blending
-                    ? MirBlend.Additive
-                    : MirBlend.Normal).ToBlendState();
                 // 走 DXManager.Draw 安全入口（BeginSprite 会按当前上下文自动 Begin）：
                 // 主渲染 / 场景烘焙通用；直接调 SpriteBatch.DrawFrame 在烘焙时主批未 Begin 会抛异常。
                 DXManager.Draw(atlasSprite.Texture, srcRect, dstRect, drawColor, imgBlend);
-                
+
                 if (GrayScale)
                 {
                     DXManager.SetGrayscale(oldGray);
@@ -342,6 +369,18 @@ namespace Client.MirControls
                 Color drawColor = ForeColour;
                 if (Opacity < 1f)
                     drawColor = new Color(drawColor.R, drawColor.G, drawColor.B, (byte)(drawColor.A * Opacity));
+
+                // 九宫格：拆 9 块绘制，保留四角/四边厚度，仅中间随 Size 拉伸。
+                int bordersLib = BorderLeft + BorderTop + BorderRight + BorderBottom;
+                if (DrawMode == MirImageDrawMode.NineGrid && bordersLib > 0)
+                {
+                    Size img = Library.GetTrueSize(Index);
+                    ForEachNineGridRect(img.Width, img.Height, drawLoc.X, drawLoc.Y, drawSize.Width, drawSize.Height,
+                        BorderLeft, BorderTop, BorderRight, BorderBottom,
+                        (src, dst) => Library.Draw(Index, src, dst, drawColor, 1f));
+                    if (GrayScale) DXManager.SetGrayscale(oldGray);
+                    return;
+                }
 
                 if (FillAmount >= 1f)
                 {
@@ -388,6 +427,38 @@ namespace Client.MirControls
                     src.Y += fsh - vsh; src.Height = vsh;
                     dst.Y += fdh - vdh; dst.Height = vdh; break;
             }
+        }
+
+        // 九宫格分块：把 (sw,sh) 源图与 (dx,dy,dw,dh) 目标矩形各切成 9 块（四角/四边/中心），
+        // 对每块回调 (源矩形, 目标矩形)。边框会按目标尺寸减半钳制，避免目标过小时各块重叠。
+        internal static void ForEachNineGridRect(int sw, int sh, int dx, int dy, int dw, int dh,
+            int l, int t, int r, int b, Action<Rectangle, RectangleF> draw)
+        {
+            l = Math.Min(l, dw / 2); r = Math.Min(r, dw / 2);
+            t = Math.Min(t, dh / 2); b = Math.Min(b, dh / 2);
+            int mw = Math.Max(0, dw - l - r);
+            int mh = Math.Max(0, dh - t - b);
+            int smw = Math.Max(0, sw - l - r);
+            int smh = Math.Max(0, sh - t - b);
+
+            void Emit(int sx, int sy, int sww, int shh, int dxx, int dyy, int dww, int dhh)
+            {
+                if (sww <= 0 || shh <= 0 || dww <= 0 || dhh <= 0) return;
+                draw(new Rectangle(sx, sy, sww, shh), new RectangleF(dxx, dyy, dww, dhh));
+            }
+
+            // 上行
+            Emit(0, 0, l, t, dx, dy, l, t);
+            Emit(l, 0, smw, t, dx + l, dy, mw, t);
+            Emit(sw - r, 0, r, t, dx + l + mw, dy, r, t);
+            // 中行
+            Emit(0, t, l, smh, dx, dy + t, l, mh);
+            Emit(l, t, smw, smh, dx + l, dy + t, mw, mh);
+            Emit(sw - r, t, r, smh, dx + l + mw, dy + t, r, mh);
+            // 下行
+            Emit(0, sh - b, l, b, dx, dy + t + mh, l, b);
+            Emit(l, sh - b, smw, b, dx + l, dy + t + mh, mw, b);
+            Emit(sw - r, sh - b, r, b, dx + l + mw, dy + t + mh, r, b);
         }
 
         public override bool IsMouseOver(Point p)
