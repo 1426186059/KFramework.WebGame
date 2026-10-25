@@ -9,7 +9,7 @@ namespace Client.MirScenes.Dialogs
         public MirButton FilterTabButton, ChatTabButton;
         public MirButton CloseButton;
 
-        public MirButton AllButton, GeneralButton, WhisperButton, ShoutButton, SystemButton, LoverButton, MentorButton, GroupButton, GuildButton;
+        public MirButton AllButton, GeneralButton, WhisperButton, ShoutButton, SystemButton, GroupButton, GuildButton;
         public MirButton TransparencyOnButton, TransparencyOffButton;
 
         public bool AllFiltersOff = true;
@@ -127,34 +127,6 @@ namespace Client.MirScenes.Dialogs
                 CheckAllFilters();
             };
 
-            LoverButton = new MirButton
-            {
-                Index = 2077,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(135, 69),
-                Sound = SoundList.ButtonA
-            };
-            LoverButton.Click += (o, e) =>
-            {
-                Settings.FilterLoverChat = !Settings.FilterLoverChat;
-                CheckAllFilters();
-            };
-
-            MentorButton = new MirButton
-            {
-                Index = 2079,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(135, 92),
-                Sound = SoundList.ButtonA
-            };
-            MentorButton.Click += (o, e) =>
-            {
-                Settings.FilterMentorChat = !Settings.FilterMentorChat;
-                CheckAllFilters();
-            };
-
             GroupButton = new MirButton
             {
                 Index = 2081,
@@ -232,8 +204,6 @@ namespace Client.MirScenes.Dialogs
             WhisperButton.Index = Settings.FilterWhisperChat ? 2074 : 2075;
             ShoutButton.Index = Settings.FilterShoutChat ? 2072 : 2073;
             SystemButton.Index = Settings.FilterSystemChat ? 2084 : 2085;
-            LoverButton.Index = Settings.FilterLoverChat ? 2076 : 2077;
-            MentorButton.Index = Settings.FilterMentorChat ? 2078 : 2079;
             GroupButton.Index = Settings.FilterGroupChat ? 2080 : 2081; 
             GuildButton.Index = Settings.FilterGuildChat ? 2082 : 2083;
         }
@@ -254,8 +224,6 @@ namespace Client.MirScenes.Dialogs
                 WhisperButton.Visible = true;
                 ShoutButton.Visible = true;
                 SystemButton.Visible = true;
-                LoverButton.Visible = true;
-                MentorButton.Visible = true;
                 GroupButton.Visible = true;
                 GuildButton.Visible = true;
 
@@ -277,8 +245,6 @@ namespace Client.MirScenes.Dialogs
                 WhisperButton.Visible = false;
                 ShoutButton.Visible = false;
                 SystemButton.Visible = false;
-                LoverButton.Visible = false;
-                MentorButton.Visible = false;
                 GroupButton.Visible = false;
                 GuildButton.Visible = false;
 
@@ -292,7 +258,6 @@ namespace Client.MirScenes.Dialogs
         {
             if (!Settings.FilterNormalChat && !Settings.FilterWhisperChat 
                 && !Settings.FilterShoutChat && !Settings.FilterSystemChat
-                && !Settings.FilterLoverChat && !Settings.FilterMentorChat 
                 && !Settings.FilterGroupChat && !Settings.FilterGuildChat)
             {
                 AllFiltersOff = true;
@@ -313,8 +278,6 @@ namespace Client.MirScenes.Dialogs
                 Settings.FilterWhisperChat = true;
                 Settings.FilterShoutChat = true;
                 Settings.FilterSystemChat = true;
-                Settings.FilterLoverChat = true;
-                Settings.FilterMentorChat = true;
                 Settings.FilterGroupChat = true;
                 Settings.FilterGuildChat = true;
 
@@ -327,8 +290,6 @@ namespace Client.MirScenes.Dialogs
                 Settings.FilterWhisperChat = false;
                 Settings.FilterShoutChat = false;
                 Settings.FilterSystemChat = false;
-                Settings.FilterLoverChat = false;
-                Settings.FilterMentorChat = false;
                 Settings.FilterGroupChat = false;
                 Settings.FilterGuildChat = false;
 

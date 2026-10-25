@@ -855,25 +855,28 @@ public enum ObjectType : byte
     Hero = 8
 }
 
+// 聊天频道过滤类型:统一替代 ToggleChatFilter 里散落的字符串,每个值对应一个聊天频道。
+// 字段名与 ChatType 保持一致(World/PrivateChat/Team/Guild/Nearby/System)。
+public enum ChatChannelFilter
+{
+    All,          // 综合(显示全部频道)
+    World,        // 世界
+    PrivateChat,  // 私聊
+    Team,         // 队伍
+    Guild,        // 行会
+    Nearby,       // 附近(本作暂无独立过滤)
+    System,       // 系统(用于开关系统消息,非发送频道)
+}
+
 public enum ChatType : byte
 {
-    Normal = 0,
-    Shout = 1,
-    System = 2,
-    Hint = 3,
-    Announcement = 4,
-    Group = 5,
-    WhisperIn = 6,
-    WhisperOut = 7,
-    Guild = 8,
-    Trainer = 9,
-    LevelUp = 10,
-    System2 = 11,
-    Relationship = 12,
-    Mentor = 13,
-    Shout2 = 14,
-    Shout3 = 15,
-    LineMessage = 16,
+    // 玩家聊天频道(与 ChatChannelFilter 一一对应,共 7 项)
+    Nearby = 0,        // 普通/附近
+    World = 1,         // 世界(含地图喊话/全服喊话)
+    System = 2,        // 系统消息(公告/提示/升级/物品返还等统一归并)
+    Team = 5,          // 队伍
+    PrivateChat = 6,   // 私聊
+    Guild = 8,         // 行会
 }
 
 public enum ItemType : byte

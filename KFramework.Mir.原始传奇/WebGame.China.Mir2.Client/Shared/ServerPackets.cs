@@ -1152,7 +1152,7 @@ namespace ServerPackets
 
         public override bool Observable
         {
-            get { return Type != ChatType.WhisperIn && Type != ChatType.WhisperOut; }
+            get { return Type != ChatType.PrivateChat; }
         }
 
         public string Message = string.Empty;

@@ -12,19 +12,9 @@ using C = ClientPackets;
 
 namespace Client.MirScenes.Dialogs
 {
-    // 聊天频道过滤类型:统一替代 ToggleChatFilter 里散落的 "All"/"Shout" 等字符串,每个值对应一个聊天频道。
-    public enum ChatChannelFilter
-    {
-        All,      // 综合(显示全部频道)
         Shout,    // 世界
         Whisper,  // 私聊
         Lover,    // 情侣
-        Mentor,   // 师徒
-        Group,    // 队伍
-        Guild,    // 行会
-        Nearby,   // 附近(本作暂无独立过滤)
-    }
-
     public sealed class MainDialog : MirImageControl
     {
         public static UserObject User
@@ -1036,66 +1026,25 @@ namespace Client.MirScenes.Dialogs
 
             switch (type)
             {
-                case ChatType.Hint:
-                    backColour = Color.White;
-                    foreColour = Color.DarkGreen;
-                    break;
-                case ChatType.Announcement:
-                    backColour = Color.Blue;
-                    foreColour = Color.White;
-                    GameScene.Scene.ChatNoticeDialog.ShowNotice(RegexFunctions.CleanChatString(text));
-                    break;
-                case ChatType.LineMessage:
-                    backColour = Color.Blue;
-                    foreColour = Color.White;
-                    break;
-                case ChatType.Shout:
+                case ChatType.World:
                     backColour = Color.Yellow;
                     foreColour = Color.Black;
-                    break;
-                case ChatType.Shout2:
-                    backColour = Color.Green;
-                    foreColour = Color.White;
-                    break;
-                case ChatType.Shout3:
-                    backColour = Color.Purple;
-                    foreColour = Color.White;
                     break;
                 case ChatType.System:
                     backColour = Color.Red;
                     foreColour = Color.White;
                     break;
-                case ChatType.System2:
-                    backColour = Color.DarkRed;
-                    foreColour = Color.White;
-                    break;
-                case ChatType.Group:
+                case ChatType.Team:
                     backColour = Color.White;
                     foreColour = Color.Brown;
                     break;
-                case ChatType.WhisperOut:
+                case ChatType.PrivateChat:
                     foreColour = Color.CornflowerBlue;
-                    backColour = Color.White;
-                    break;
-                case ChatType.WhisperIn:
-                    foreColour = Color.DarkBlue;
                     backColour = Color.White;
                     break;
                 case ChatType.Guild:
                     backColour = Color.White;
                     foreColour = Color.Green;
-                    break;
-                case ChatType.LevelUp:
-                    backColour = Color.FromArgb(255, 225, 185, 250);
-                    foreColour = Color.Blue;
-                    break;
-                case ChatType.Relationship:
-                    backColour = Color.Transparent;
-                    foreColour = Color.HotPink;
-                    break;
-                case ChatType.Mentor:
-                    backColour = Color.White;
-                    foreColour = Color.Purple;
                     break;
                 default:
                     backColour = Color.White;
@@ -1154,24 +1103,19 @@ namespace Client.MirScenes.Dialogs
             {
                 switch (FullHistory[i].Type)
                 {
-                    case ChatType.Normal:
-                    case ChatType.LineMessage:
+                    case ChatType.Nearby:
                         if (Settings.FilterNormalChat) continue;
                         break;
-                    case ChatType.WhisperIn:
-                    case ChatType.WhisperOut:
+                    case ChatType.PrivateChat:
                         if (Settings.FilterWhisperChat) continue;
                         break;
-                    case ChatType.Shout:
-                    case ChatType.Shout2:
-                    case ChatType.Shout3:
+                    case ChatType.World:
                         if (Settings.FilterShoutChat) continue;
                         break;
                     case ChatType.System:
-                    case ChatType.System2:
                         if (Settings.FilterSystemChat) continue;
                         break;
-                    case ChatType.Group:
+                    case ChatType.Team:
                         if (Settings.FilterGroupChat) continue;
                         break;
                     case ChatType.Guild:
@@ -1510,24 +1454,25 @@ namespace Client.MirScenes.Dialogs
     }
     public sealed class ChatControlBar : MirImageControl
     {
-        public MirButton SendChatBtn, SizeButton, SettingsButton, NormalButton, ShoutButton, WhisperButton, LoverButton, MentorButton, GroupButton, GuildButton, ReportButton, TradeButton;
+        public MirButton SendChatBtn, SizeButton, SettingsButton, NormalButton, ShoutButton, WhisperButton, GroupButton, GuildButton, ReportButton, TradeButton;
         private MirDropDownBox2 mChatChannel;
         private MirImageControl mChatChannel_BtnJianTou;
 
         private readonly List<string> ChatChannelList = new List<string>()
         {
-            "综合", "世界", "私聊", "行会", "队伍", "附近"
+            "综合", "世界", "私聊", "行会", "队伍", "附近", "系统"
         };
 
         // 与 ChatChannelList 一一对应:下拉选中第 i 项时,映射到对应的频道过滤类型。
         private static readonly ChatChannelFilter[] ChannelFilterMap = new ChatChannelFilter[]
         {
             ChatChannelFilter.All,     // 综合
-            ChatChannelFilter.Shout,   // 世界
-            ChatChannelFilter.Whisper, // 私聊
+            ChatChannelFilter.World,   // 世界
+            ChatChannelFilter.PrivateChat, // 私聊
             ChatChannelFilter.Guild,   // 行会
-            ChatChannelFilter.Group,   // 队伍
+            ChatChannelFilter.Team,   // 队伍
             ChatChannelFilter.Nearby,  // 附近(本作无独立过滤,归并到无特定频道)
+            ChatChannelFilter.System,  // 系统(开关系统消息)
         };
 
         public ChatControlBar()
@@ -1779,62 +1724,29 @@ namespace Client.MirScenes.Dialogs
 
         public void ToggleChatFilter(ChatChannelFilter filter)
         {
-            NormalButton.Index = 2036;
-            NormalButton.HoverIndex = 2037;
-            ShoutButton.Index = 2039;
-            ShoutButton.HoverIndex = 2040;
-            WhisperButton.Index = 2042;
-            WhisperButton.HoverIndex = 2043;
-            LoverButton.Index = 2045;
-            LoverButton.HoverIndex = 2046;
-            MentorButton.Index = 2048;
-            MentorButton.HoverIndex = 2049;
-            GroupButton.Index = 2051;
-            GroupButton.HoverIndex = 2052;
-            GuildButton.Index = 2054;
-            GuildButton.HoverIndex = 2055;
-
-            GameScene.Scene.ChatDialog.ChatPrefix = "";
-
+            // 按当前下拉选定的频道设置命令前缀(服务端据此路由);系统/综合等同普通消息(无前缀)。
+            // 旧版频道按钮(NormalButton 等)已由下拉控件取代,这里不再操作那些按钮。
             switch (filter)
             {
                 case ChatChannelFilter.All:
-                    NormalButton.Index = 2038;
-                    NormalButton.HoverIndex = 2038;
+                case ChatChannelFilter.System:
                     GameScene.Scene.ChatDialog.ChatPrefix = "";
                     break;
-                case ChatChannelFilter.Shout:
-                    ShoutButton.Index = 2041;
-                    ShoutButton.HoverIndex = 2041;
+                case ChatChannelFilter.World:
                     GameScene.Scene.ChatDialog.ChatPrefix = "!";
                     break;
-                case ChatChannelFilter.Whisper:
-                    WhisperButton.Index = 2044;
-                    WhisperButton.HoverIndex = 2044;
+                case ChatChannelFilter.PrivateChat:
                     GameScene.Scene.ChatDialog.ChatPrefix = "/";
                     break;
-                case ChatChannelFilter.Group:
-                    GroupButton.Index = 2053;
-                    GroupButton.HoverIndex = 2053;
+                case ChatChannelFilter.Team:
                     GameScene.Scene.ChatDialog.ChatPrefix = "!!";
                     break;
                 case ChatChannelFilter.Guild:
-                    GuildButton.Index = 2056;
-                    GuildButton.HoverIndex = 2056;
                     GameScene.Scene.ChatDialog.ChatPrefix = "!~";
                     break;
-                case ChatChannelFilter.Lover:
-                    LoverButton.Index = 2047;
-                    LoverButton.HoverIndex = 2047;
-                    GameScene.Scene.ChatDialog.ChatPrefix = ":)";
-                    break;
-                case ChatChannelFilter.Mentor:
-                    MentorButton.Index = 2050;
-                    MentorButton.HoverIndex = 2050;
-                    GameScene.Scene.ChatDialog.ChatPrefix = "!#";
-                    break;
                 case ChatChannelFilter.Nearby:
-                    // 本作暂无独立“附近”频道过滤,保持默认(所有过滤按钮复位、前缀清空)。
+                    // 本作暂无独立“附近”频道过滤,保持默认(前缀清空)。
+                    GameScene.Scene.ChatDialog.ChatPrefix = "";
                     break;
             }
         }
@@ -3018,7 +2930,7 @@ namespace Client.MirScenes.Dialogs
             HPViewOn.Click += (o, e) =>
             {
                 Settings.HPView = true;
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.HpMpMode1), ChatType.Hint);
+                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.HpMpMode1), ChatType.System);
             };
 
             HPViewOff = new MirButton
@@ -3033,7 +2945,7 @@ namespace Client.MirScenes.Dialogs
             HPViewOff.Click += (o, e) =>
             {
                 Settings.HPView = false;
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.HpMpMode2), ChatType.Hint);
+                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.HpMpMode2), ChatType.System);
             };
 
             SoundBar = new MirImageControl
@@ -3090,7 +3002,7 @@ namespace Client.MirScenes.Dialogs
             NewMoveOn.Click += (o, e) =>
             {
                 Settings.NewMove = true;
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NewMovementStyle), ChatType.Hint);
+                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NewMovementStyle), ChatType.System);
             };
 
             NewMoveOff = new MirButton
@@ -3105,7 +3017,7 @@ namespace Client.MirScenes.Dialogs
             NewMoveOff.Click += (o, e) =>
             {
                 Settings.NewMove = false;
-                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.OldMovementStyle), ChatType.Hint);
+                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.OldMovementStyle), ChatType.System);
             };
 
             ObserveOn = new MirButton

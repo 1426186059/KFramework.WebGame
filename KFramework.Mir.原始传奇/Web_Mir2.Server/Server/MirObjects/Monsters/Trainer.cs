@@ -186,7 +186,7 @@ namespace Server.MirObjects.Monsters
             if (_StartTime == 0)
                 timespend = 1000;
             double Dps = _totalDamage / (timespend * 0.001);
-            _currentAttacker.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PoisonDamageDps), damage, attacker is MonsterObject ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YourPetsPoison) : GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YourPoison), Dps), ChatType.Trainer);
+            _currentAttacker.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PoisonDamageDps), damage, attacker is MonsterObject ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YourPetsPoison) : GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YourPoison), Dps), ChatType.System);
             Poisoned = true;
         }
 
@@ -213,7 +213,7 @@ namespace Server.MirObjects.Monsters
             if (_StartTime == 0)
                 timespend = 1000;
             double Dps = _totalDamage / (timespend * 0.001);
-            _currentAttacker.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YourPoisonStoppedRegen), amount, Dps), ChatType.Trainer);
+            _currentAttacker.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YourPoisonStoppedRegen), amount, Dps), ChatType.System);
         }
 
 
@@ -242,7 +242,7 @@ namespace Server.MirObjects.Monsters
             if (_StartTime == 0)
                 timespend = 1000;
             double Dps = _totalDamage / (timespend * 0.001);
-            _currentAttacker.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PetInflictedDamageDps), damage, output, Dps, Pet? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YourPet): GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.You)), ChatType.Trainer);
+            _currentAttacker.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PetInflictedDamageDps), damage, output, Dps, Pet? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YourPet): GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.You)), ChatType.System);
         }
 
         private void ResetStats()
@@ -263,7 +263,7 @@ namespace Server.MirObjects.Monsters
             if (_StartTime == 0)
                 timespend = 1000;
             double Dps = _totalDamage / (timespend * 0.001);
-            _currentAttacker.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.AverageDamageOnTrainer), (int)(_totalDamage / _hitCount),Dps), ChatType.Trainer);
+            _currentAttacker.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.AverageDamageOnTrainer), (int)(_totalDamage / _hitCount),Dps), ChatType.System);
         }
     }
 }

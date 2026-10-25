@@ -341,7 +341,7 @@ namespace Server
 
             foreach (var player in Envir.Players)
             {
-                player.ReceiveChat(GlobalMessageTextBox.Text, ChatType.Announcement);
+                player.ReceiveChat(GlobalMessageTextBox.Text, ChatType.System);
             }
 
             EnqueueChat(GlobalMessageTextBox.Text);

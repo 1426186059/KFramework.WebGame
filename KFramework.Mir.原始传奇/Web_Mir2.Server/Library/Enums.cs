@@ -857,23 +857,13 @@ public enum ObjectType : byte
 
 public enum ChatType : byte
 {
-    Normal = 0,
-    Shout = 1,
-    System = 2,
-    Hint = 3,
-    Announcement = 4,
-    Group = 5,
-    WhisperIn = 6,
-    WhisperOut = 7,
-    Guild = 8,
-    Trainer = 9,
-    LevelUp = 10,
-    System2 = 11,
-    Relationship = 12,
-    Mentor = 13,
-    Shout2 = 14,
-    Shout3 = 15,
-    LineMessage = 16,
+    // 玩家聊天频道(与客户端 ChatChannelFilter/ChatType 保持一致,共 7 项)
+    Nearby = 0,        // 普通/附近
+    World = 1,         // 世界(含地图喊话/全服喊话)
+    System = 2,        // 系统消息(公告/提示/升级/物品返还等统一归并)
+    Team = 5,          // 队伍
+    PrivateChat = 6,   // 私聊
+    Guild = 8,         // 行会
 }
 
 public enum ItemType : byte

@@ -2161,7 +2161,7 @@ namespace Server.MirEnvir
                             Broadcast(new S.Chat
                             {
                                 Message = GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.OnlinePlayers), Players.Count),
-                                Type = ChatType.Hint
+                                Type = ChatType.System
                             });
                         }
 
@@ -2171,7 +2171,7 @@ namespace Server.MirEnvir
                             Broadcast(new S.Chat
                             {
                                 Message = LineMessages[Random.Next(LineMessages.Count)],
-                                Type = ChatType.LineMessage
+                                Type = ChatType.System
                             });
                         }
 
@@ -2404,9 +2404,9 @@ namespace Server.MirEnvir
                         MailCharacter(info.CurrentBuyerInfo, item: info.Item, customMessage: message);
 
                         MessageAccount(info.CurrentBuyerInfo.AccountInfo, GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouBoughtForGold), info.Item.FriendlyName, info.CurrentBid),
-                            ChatType.Hint);
+                            ChatType.System);
                         MessageAccount(info.SellerInfo.AccountInfo, GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.YouSoldForGold), info.Item.FriendlyName, info.CurrentBid),
-                            ChatType.Hint);
+                            ChatType.System);
                     }
                     else
                     {
@@ -4934,7 +4934,7 @@ namespace Server.MirEnvir
                             continue;
                         }
 
-                        rentingPlayer.Player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemExpiredFromInventory), item.Info.FriendlyName), ChatType.Hint);
+                        rentingPlayer.Player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemExpiredFromInventory), item.Info.FriendlyName), ChatType.System);
                         rentingPlayer.Player.Enqueue(new S.DeleteItem { UniqueID = item.UniqueID, Count = item.Count });
                         rentingPlayer.Player.RefreshStats();
                     }
@@ -4962,7 +4962,7 @@ namespace Server.MirEnvir
                             continue;
                         }
 
-                        rentingPlayer.Player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemExpiredInventory), item.Info.FriendlyName), ChatType.Hint);
+                        rentingPlayer.Player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemExpiredInventory), item.Info.FriendlyName), ChatType.System);
                         rentingPlayer.Player.Enqueue(new S.DeleteItem { UniqueID = item.UniqueID, Count = item.Count });
                         rentingPlayer.Player.RefreshStats();
                     }

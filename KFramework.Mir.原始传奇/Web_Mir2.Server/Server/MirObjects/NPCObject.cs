@@ -265,7 +265,7 @@ namespace Server.MirObjects
 
                     var speech = Speech.OrderBy(x => x.GetWeight(Envir.Random, maxWeight)).Last();
 
-                    Broadcast(new S.ObjectChat { ObjectID = this.ObjectID, Text = $"{Info.Name.Split('_')[0]}:{speech.Message}", Type = ChatType.Normal });
+                    Broadcast(new S.ObjectChat { ObjectID = this.ObjectID, Text = $"{Info.Name.Split('_')[0]}:{speech.Message}", Type = ChatType.Nearby });
                 }
             }
         }

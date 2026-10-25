@@ -157,7 +157,7 @@ namespace Server.Database
             string reason = ReasonTextBox.Text.Trim();
             if (auction.SellerInfo?.Player != null && !string.IsNullOrEmpty(reason))
             {
-                auction.SellerInfo.Player.ReceiveChat(reason, ChatType.Announcement);
+                auction.SellerInfo.Player.ReceiveChat(reason, ChatType.System);
             }
 
             // Remove the auction from the main auction list and the seller's account

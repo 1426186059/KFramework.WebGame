@@ -297,7 +297,7 @@ namespace Server
 
             if (SendMessageTextBox.Text.Length < 1) return;
 
-            Character.Player.ReceiveChat(SendMessageTextBox.Text, ChatType.Announcement);
+            Character.Player.ReceiveChat(SendMessageTextBox.Text, ChatType.System);
         }
 
         private void KickButton_Click(object sender, EventArgs e)

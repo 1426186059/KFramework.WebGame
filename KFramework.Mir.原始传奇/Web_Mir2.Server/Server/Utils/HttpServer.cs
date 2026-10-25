@@ -80,7 +80,7 @@ namespace Server.Library.Utils
                         Envir.Main.Broadcast(new S.Chat
                         {
                             Message = msg.Trim(),
-                            Type = ChatType.Shout2
+                            Type = ChatType.World
                         });
                         WriteResponse(response, "true");
                         break;

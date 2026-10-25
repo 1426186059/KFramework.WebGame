@@ -203,8 +203,6 @@ namespace Client
             ShowNormalChat = true,
             ShowYellChat = true,
             ShowWhisperChat = true,
-            ShowLoverChat = true,
-            ShowMentorChat = true,
             ShowGroupChat = true,
             ShowGuildChat = true;
 
@@ -214,8 +212,6 @@ namespace Client
             FilterWhisperChat = false,
             FilterShoutChat = false,
             FilterSystemChat = false,
-            FilterLoverChat = false,
-            FilterMentorChat = false,
             FilterGroupChat = false,
             FilterGuildChat = false;
 
@@ -304,8 +300,6 @@ namespace Client
             ShowNormalChat = Reader.ReadBoolean("Chat", "ShowNormalChat", ShowNormalChat);
             ShowYellChat = Reader.ReadBoolean("Chat", "ShowYellChat", ShowYellChat);
             ShowWhisperChat = Reader.ReadBoolean("Chat", "ShowWhisperChat", ShowWhisperChat);
-            ShowLoverChat = Reader.ReadBoolean("Chat", "ShowLoverChat", ShowLoverChat);
-            ShowMentorChat = Reader.ReadBoolean("Chat", "ShowMentorChat", ShowMentorChat);
             ShowGroupChat = Reader.ReadBoolean("Chat", "ShowGroupChat", ShowGroupChat);
             ShowGuildChat = Reader.ReadBoolean("Chat", "ShowGuildChat", ShowGuildChat);
 
@@ -314,8 +308,6 @@ namespace Client
             FilterWhisperChat = Reader.ReadBoolean("Filter", "FilterWhisperChat", FilterWhisperChat);
             FilterShoutChat = Reader.ReadBoolean("Filter", "FilterShoutChat", FilterShoutChat);
             FilterSystemChat = Reader.ReadBoolean("Filter", "FilterSystemChat", FilterSystemChat);
-            FilterLoverChat = Reader.ReadBoolean("Filter", "FilterLoverChat", FilterLoverChat);
-            FilterMentorChat = Reader.ReadBoolean("Filter", "FilterMentorChat", FilterMentorChat);
             FilterGroupChat = Reader.ReadBoolean("Filter", "FilterGroupChat", FilterGroupChat);
             FilterGuildChat = Reader.ReadBoolean("Filter", "FilterGuildChat", FilterGuildChat);
 
@@ -403,8 +395,6 @@ namespace Client
             Reader.Write("Chat", "ShowNormalChat", ShowNormalChat);
             Reader.Write("Chat", "ShowYellChat", ShowYellChat);
             Reader.Write("Chat", "ShowWhisperChat", ShowWhisperChat);
-            Reader.Write("Chat", "ShowLoverChat", ShowLoverChat);
-            Reader.Write("Chat", "ShowMentorChat", ShowMentorChat);
             Reader.Write("Chat", "ShowGroupChat", ShowGroupChat);
             Reader.Write("Chat", "ShowGuildChat", ShowGuildChat);
 
@@ -413,8 +403,6 @@ namespace Client
             Reader.Write("Filter", "FilterWhisperChat", FilterWhisperChat);
             Reader.Write("Filter", "FilterShoutChat", FilterShoutChat);
             Reader.Write("Filter", "FilterSystemChat", FilterSystemChat);
-            Reader.Write("Filter", "FilterLoverChat", FilterLoverChat);
-            Reader.Write("Filter", "FilterMentorChat", FilterMentorChat);
             Reader.Write("Filter", "FilterGroupChat", FilterGroupChat);
             Reader.Write("Filter", "FilterGuildChat", FilterGuildChat);
 
