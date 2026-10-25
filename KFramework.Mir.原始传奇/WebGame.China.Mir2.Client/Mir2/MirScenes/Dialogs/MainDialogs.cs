@@ -12,6 +12,19 @@ using C = ClientPackets;
 
 namespace Client.MirScenes.Dialogs
 {
+    // 聊天频道过滤类型:统一替代 ToggleChatFilter 里散落的 "All"/"Shout" 等字符串,每个值对应一个聊天频道。
+    public enum ChatChannelFilter
+    {
+        All,      // 综合(显示全部频道)
+        Shout,    // 世界
+        Whisper,  // 私聊
+        Lover,    // 情侣
+        Mentor,   // 师徒
+        Group,    // 队伍
+        Guild,    // 行会
+        Nearby,   // 附近(本作暂无独立过滤)
+    }
+
     public sealed class MainDialog : MirImageControl
     {
         public static UserObject User
@@ -1506,6 +1519,17 @@ namespace Client.MirScenes.Dialogs
             "综合", "世界", "私聊", "行会", "队伍", "附近"
         };
 
+        // 与 ChatChannelList 一一对应:下拉选中第 i 项时,映射到对应的频道过滤类型。
+        private static readonly ChatChannelFilter[] ChannelFilterMap = new ChatChannelFilter[]
+        {
+            ChatChannelFilter.All,     // 综合
+            ChatChannelFilter.Shout,   // 世界
+            ChatChannelFilter.Whisper, // 私聊
+            ChatChannelFilter.Guild,   // 行会
+            ChatChannelFilter.Group,   // 队伍
+            ChatChannelFilter.Nearby,  // 附近(本作无独立过滤,归并到无特定频道)
+        };
+
         public ChatControlBar()
         {
             //和聊天保持同样的尺寸和位置
@@ -1531,7 +1555,11 @@ namespace Client.MirScenes.Dialogs
             };
             mChatChannel.ValueChanged += (o, e) =>
             {
-                mChatChannel.SelectedIndex = mChatChannel._WantedIndex; // 写回,标签才显示选中项
+                // 写回选中项,按钮 Label 才显示当前频道
+                mChatChannel.SelectedIndex = mChatChannel._WantedIndex;
+                int idx = mChatChannel.SelectedIndex;
+                if (idx >= 0 && idx < ChannelFilterMap.Length)
+                    ToggleChatFilter(ChannelFilterMap[idx]);
             };
             mChatChannel.DropDownStateChanged += (s, e) =>
             {
@@ -1575,199 +1603,181 @@ namespace Client.MirScenes.Dialogs
                 CenterText = true,
             };
 
-            SizeButton = new MirButton
+            SendChatBtn.Click += (o, e) =>
             {
-                Index = 2057,
-                HoverIndex = 2058,
-                PressedIndex = 2059,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(Settings.Resolution != 800 ? 574 : 350, 1),
-                Visible = true,
-                Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Size)
+                
             };
 
-            SizeButton.Click += (o, e) =>
-            {
-                GameScene.Scene.ChatDialog.ChangeSize();
-                Location = new Point(Location.X, GameScene.Scene.ChatDialog.DisplayRectangle.Top - Size.Height);
-                if (GameScene.Scene.BeltDialog.Index == 1932)
-                    GameScene.Scene.BeltDialog.Location = new Point(GameScene.Scene.MainDialog.Location.X + 230, Location.Y - GameScene.Scene.BeltDialog.Size.Height);
+            //SettingsButton = new MirButton
+            //{
+            //    Index = 2060,
+            //    HoverIndex = 2061,
+            //    PressedIndex = 2062,
+            //    Library = Libraries.Prguse,
+            //    Parent = this,
+            //    Location = new Point(Settings.Resolution != 800 ? 596 : 372, 1),
+            //    Sound = SoundList.ButtonA,
+            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ChatSettings)
+            //};
+            //SettingsButton.Click += (o, e) =>
+            //{
+            //    if (GameScene.Scene.ChatOptionDialog.Visible)
+            //        GameScene.Scene.ChatOptionDialog.Hide();
+            //    else
+            //        GameScene.Scene.ChatOptionDialog.Show();
 
-                if (GameScene.Scene.HeroBeltDialog != null)
-                    GameScene.Scene.HeroBeltDialog.Location = new Point(GameScene.Scene.MainDialog.Location.X + 475, Location.Y - GameScene.Scene.HeroBeltDialog.Size.Height);
-            };
+            //    //GameScene.Scene.ChatDialog.Transparent = !GameScene.Scene.ChatDialog.Transparent;
+            //    //GameScene.Scene.ChatDialog.UpdateBackground();
+            //};
 
-            SettingsButton = new MirButton
-            {
-                Index = 2060,
-                HoverIndex = 2061,
-                PressedIndex = 2062,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(Settings.Resolution != 800 ? 596 : 372, 1),
-                Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ChatSettings)
-            };
-            SettingsButton.Click += (o, e) =>
-            {
-                if (GameScene.Scene.ChatOptionDialog.Visible)
-                    GameScene.Scene.ChatOptionDialog.Hide();
-                else
-                    GameScene.Scene.ChatOptionDialog.Show();
+            //NormalButton = new MirButton
+            //{
+            //    Index = 2036,
+            //    HoverIndex = 2037,
+            //    PressedIndex = 2038,
+            //    Library = Libraries.Prguse,
+            //    Parent = this,
+            //    Location = new Point(12, 1),
+            //    Sound = SoundList.ButtonA,
+            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_All)
+            //};
+            //NormalButton.Click += (o, e) =>
+            //{
+            //    ToggleChatFilter("All");
+            //};
 
-                //GameScene.Scene.ChatDialog.Transparent = !GameScene.Scene.ChatDialog.Transparent;
-                //GameScene.Scene.ChatDialog.UpdateBackground();
-            };
+            //ShoutButton = new MirButton
+            //{
+            //    Index = 2039,
+            //    HoverIndex = 2040,
+            //    PressedIndex = 2041,
+            //    Library = Libraries.Prguse,
+            //    Parent = this,
+            //    Location = new Point(34, 1),
+            //    Sound = SoundList.ButtonA,
+            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Short)
+            //};
+            //ShoutButton.Click += (o, e) =>
+            //{
+            //    ToggleChatFilter("Shout");
+            //};
 
-            NormalButton = new MirButton
-            {
-                Index = 2036,
-                HoverIndex = 2037,
-                PressedIndex = 2038,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(12, 1),
-                Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_All)
-            };
-            NormalButton.Click += (o, e) =>
-            {
-                ToggleChatFilter("All");
-            };
+            //WhisperButton = new MirButton
+            //{
+            //    Index = 2042,
+            //    HoverIndex = 2043,
+            //    PressedIndex = 2044,
+            //    Library = Libraries.Prguse,
+            //    Parent = this,
+            //    Location = new Point(56, 1),
+            //    Sound = SoundList.ButtonA,
+            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Whisper)
+            //};
+            //WhisperButton.Click += (o, e) =>
+            //{
+            //    ToggleChatFilter("Whisper");
+            //};
 
-            ShoutButton = new MirButton
-            {
-                Index = 2039,
-                HoverIndex = 2040,
-                PressedIndex = 2041,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(34, 1),
-                Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Short)
-            };
-            ShoutButton.Click += (o, e) =>
-            {
-                ToggleChatFilter("Shout");
-            };
+            //LoverButton = new MirButton
+            //{
+            //    Index = 2045,
+            //    HoverIndex = 2046,
+            //    PressedIndex = 2047,
+            //    Library = Libraries.Prguse,
+            //    Parent = this,
+            //    Location = new Point(78, 1),
+            //    Sound = SoundList.ButtonA,
+            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Lover)
+            //};
+            //LoverButton.Click += (o, e) =>
+            //{
+            //    ToggleChatFilter("Lover");
+            //};
 
-            WhisperButton = new MirButton
-            {
-                Index = 2042,
-                HoverIndex = 2043,
-                PressedIndex = 2044,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(56, 1),
-                Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Whisper)
-            };
-            WhisperButton.Click += (o, e) =>
-            {
-                ToggleChatFilter("Whisper");
-            };
+            //MentorButton = new MirButton
+            //{
+            //    Index = 2048,
+            //    HoverIndex = 2049,
+            //    PressedIndex = 2050,
+            //    Library = Libraries.Prguse,
+            //    Parent = this,
+            //    Location = new Point(100, 1),
+            //    Sound = SoundList.ButtonA,
+            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Mentor)
+            //};
+            //MentorButton.Click += (o, e) =>
+            //{
+            //    ToggleChatFilter("Mentor");
+            //};
 
-            LoverButton = new MirButton
-            {
-                Index = 2045,
-                HoverIndex = 2046,
-                PressedIndex = 2047,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(78, 1),
-                Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Lover)
-            };
-            LoverButton.Click += (o, e) =>
-            {
-                ToggleChatFilter("Lover");
-            };
+            //GroupButton = new MirButton
+            //{
+            //    Index = 2051,
+            //    HoverIndex = 2052,
+            //    PressedIndex = 2053,
+            //    Library = Libraries.Prguse,
+            //    Parent = this,
+            //    Location = new Point(122, 1),
+            //    Sound = SoundList.ButtonA,
+            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Group)
+            //};
+            //GroupButton.Click += (o, e) =>
+            //{
+            //    ToggleChatFilter("Group");
+            //};
 
-            MentorButton = new MirButton
-            {
-                Index = 2048,
-                HoverIndex = 2049,
-                PressedIndex = 2050,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(100, 1),
-                Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Mentor)
-            };
-            MentorButton.Click += (o, e) =>
-            {
-                ToggleChatFilter("Mentor");
-            };
+            //GuildButton = new MirButton
+            //{
+            //    Index = 2054,
+            //    HoverIndex = 2055,
+            //    PressedIndex = 2056,
+            //    Library = Libraries.Prguse,
+            //    Parent = this,
+            //    Location = new Point(144, 1),
+            //    Sound = SoundList.ButtonA,
+            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Guild)
+            //};
+            //GuildButton.Click += (o, e) =>
+            //{
+            //    Settings.ShowGuildChat = !Settings.ShowGuildChat;
+            //    ToggleChatFilter("Guild");
+            //};
 
-            GroupButton = new MirButton
-            {
-                Index = 2051,
-                HoverIndex = 2052,
-                PressedIndex = 2053,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(122, 1),
-                Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Group)
-            };
-            GroupButton.Click += (o, e) =>
-            {
-                ToggleChatFilter("Group");
-            };
+            //TradeButton = new MirButton
+            //{
+            //    Index = 2004,
+            //    HoverIndex = 2005,
+            //    PressedIndex = 2006,
+            //    Library = Libraries.Prguse,
+            //    Location = new Point(166, 1),
+            //    Parent = this,
+            //    Sound = SoundList.ButtonC,
+            //    Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.TradeKey), CMain.InputKeys.GetKey(KeybindOptions.Trade)),
+            //};
+            //TradeButton.Click += (o, e) => Network.Enqueue(new C.TradeRequest());
 
-            GuildButton = new MirButton
-            {
-                Index = 2054,
-                HoverIndex = 2055,
-                PressedIndex = 2056,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(144, 1),
-                Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Chat_Guild)
-            };
-            GuildButton.Click += (o, e) =>
-            {
-                Settings.ShowGuildChat = !Settings.ShowGuildChat;
-                ToggleChatFilter("Guild");
-            };
+            //ReportButton = new MirButton
+            //{
+            //    Index = 2063,
+            //    HoverIndex = 2064,
+            //    PressedIndex = 2065,
+            //    Library = Libraries.Prguse,
+            //    Parent = this,
+            //    Location = new Point(Settings.Resolution != 800 ? 552 : 328, 1),
+            //    Sound = SoundList.ButtonA,
+            //    Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Report),
+            //    Visible = false
+            //};
+            //ReportButton.Click += (o, e) =>
+            //{
+            //    GameScene.Scene.ReportDialog.Visible = !GameScene.Scene.ReportDialog.Visible;
+            //};
 
-            TradeButton = new MirButton
-            {
-                Index = 2004,
-                HoverIndex = 2005,
-                PressedIndex = 2006,
-                Library = Libraries.Prguse,
-                Location = new Point(166, 1),
-                Parent = this,
-                Sound = SoundList.ButtonC,
-                Hint = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.TradeKey), CMain.InputKeys.GetKey(KeybindOptions.Trade)),
-            };
-            TradeButton.Click += (o, e) => Network.Enqueue(new C.TradeRequest());
+            ToggleChatFilter(ChatChannelFilter.All);
 
-            ReportButton = new MirButton
-            {
-                Index = 2063,
-                HoverIndex = 2064,
-                PressedIndex = 2065,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(Settings.Resolution != 800 ? 552 : 328, 1),
-                Sound = SoundList.ButtonA,
-                Hint = GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Report),
-                Visible = false
-            };
-            ReportButton.Click += (o, e) =>
-            {
-                GameScene.Scene.ReportDialog.Visible = !GameScene.Scene.ReportDialog.Visible;
-            };
-
-            ToggleChatFilter("All");
         }
 
-        public void ToggleChatFilter(string chatFilter)
+        public void ToggleChatFilter(ChatChannelFilter filter)
         {
             NormalButton.Index = 2036;
             NormalButton.HoverIndex = 2037;
@@ -1786,42 +1796,45 @@ namespace Client.MirScenes.Dialogs
 
             GameScene.Scene.ChatDialog.ChatPrefix = "";
 
-            switch (chatFilter)
+            switch (filter)
             {
-                case "All":
+                case ChatChannelFilter.All:
                     NormalButton.Index = 2038;
                     NormalButton.HoverIndex = 2038;
                     GameScene.Scene.ChatDialog.ChatPrefix = "";
                     break;
-                case "Shout":
+                case ChatChannelFilter.Shout:
                     ShoutButton.Index = 2041;
                     ShoutButton.HoverIndex = 2041;
                     GameScene.Scene.ChatDialog.ChatPrefix = "!";
                     break;
-                case "Whisper":
+                case ChatChannelFilter.Whisper:
                     WhisperButton.Index = 2044;
                     WhisperButton.HoverIndex = 2044;
                     GameScene.Scene.ChatDialog.ChatPrefix = "/";
                     break;
-                case "Group":
+                case ChatChannelFilter.Group:
                     GroupButton.Index = 2053;
                     GroupButton.HoverIndex = 2053;
                     GameScene.Scene.ChatDialog.ChatPrefix = "!!";
                     break;
-                case "Guild":
+                case ChatChannelFilter.Guild:
                     GuildButton.Index = 2056;
                     GuildButton.HoverIndex = 2056;
                     GameScene.Scene.ChatDialog.ChatPrefix = "!~";
                     break;
-                case "Lover":
+                case ChatChannelFilter.Lover:
                     LoverButton.Index = 2047;
                     LoverButton.HoverIndex = 2047;
                     GameScene.Scene.ChatDialog.ChatPrefix = ":)";
                     break;
-                case "Mentor":
+                case ChatChannelFilter.Mentor:
                     MentorButton.Index = 2050;
                     MentorButton.HoverIndex = 2050;
                     GameScene.Scene.ChatDialog.ChatPrefix = "!#";
+                    break;
+                case ChatChannelFilter.Nearby:
+                    // 本作暂无独立“附近”频道过滤,保持默认(所有过滤按钮复位、前缀清空)。
                     break;
             }
         }
