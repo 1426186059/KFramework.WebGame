@@ -777,7 +777,7 @@ namespace Client.MirScenes.Dialogs
         public Font ChatFont = new Font(Settings.FontName, 8F);
         public string LastPM = string.Empty;
 
-        public int StartIndex, LineCount = 4, WindowSize;
+        public int StartIndex, LineCount = 7, WindowSize;
         public string ChatPrefix = "";
 
         public bool Transparent;
@@ -823,7 +823,8 @@ namespace Client.MirScenes.Dialogs
                 Text = "请输入文字",
                 Size = new Size(465, 20),
                 Alignment = KFramework.MonoGame.TextAnchor.MiddleLeft,
-                Location = new Point(5, 0)
+                Location = new Point(5, 0),
+                Opacity = 0.5f,
             };
 
             ChatTextBox = new MirTextBox
