@@ -992,29 +992,31 @@ namespace Client.MirScenes.Dialogs
         // 发送当前聊天框内容(供 Enter 键与发送按钮共用)
         public void SendChatMessage()
         {
-            if (string.IsNullOrEmpty(ChatTextBox.Text)) return;
-
             string msg = ChatTextBox.Text;
 
-            if (msg.ToUpper() == "@LEVELEFFECT")
-                Settings.LevelEffect = !Settings.LevelEffect;
-
-            if (msg.ToUpper() == "@TARGETDEAD")
-                Settings.TargetDead = !Settings.TargetDead;
-
-            Network.Enqueue(new C.Chat
+            if (!string.IsNullOrEmpty(msg))
             {
-                Message = msg,
-                LinkedItems = new List<ChatItem>(LinkedItems)
-            });
+                if (msg.ToUpper() == "@LEVELEFFECT")
+                    Settings.LevelEffect = !Settings.LevelEffect;
 
-            if (msg[0] == '/')
-            {
-                string[] parts = msg.Split(' ');
-                if (parts.Length > 0)
-                    LastPM = parts[0];
+                if (msg.ToUpper() == "@TARGETDEAD")
+                    Settings.TargetDead = !Settings.TargetDead;
+
+                Network.Enqueue(new C.Chat
+                {
+                    Message = msg,
+                    LinkedItems = new List<ChatItem>(LinkedItems)
+                });
+
+                if (msg[0] == '/')
+                {
+                    string[] parts = msg.Split(' ');
+                    if (parts.Length > 0)
+                        LastPM = parts[0];
+                }
             }
 
+            // 无论是否发送,都收起输入框(空内容时等同于按 Enter 关闭输入),与 Enter 键行为一致
             ChatTextBox.Visible = false;
             ChatTextBox.Text = string.Empty;
             LinkedItems.Clear();
@@ -1024,7 +1026,8 @@ namespace Client.MirScenes.Dialogs
         public void StartChatInput()
         {
             ChatTextBox.SetFocus();
-            if (ChatPrefix != "") ChatTextBox.Text = ChatPrefix;
+            // 仅在首次展开(输入框还隐藏)时填入频道前缀,避免重复点击聊天栏清空已输入内容
+            if (!ChatTextBox.Visible && ChatPrefix != "") ChatTextBox.Text = ChatPrefix;
             ChatTextBox.Visible = true;
             ChatTextBox.TextBox.SelectionLength = 0;
             ChatTextBox.TextBox.SelectionStart = ChatTextBox.Text.Length;
@@ -1551,9 +1554,8 @@ namespace Client.MirScenes.Dialogs
             Anchor = EAnchorType.BottomCenter;
             AnchorPos = new Point(0, -6);
             ApplyAnchor();
-
+            NotControl = true;
             Visible = true;
-            NotControl = false;
 
             mChatChannel = new MirDropDownBox2()
             {
