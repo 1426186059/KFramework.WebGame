@@ -1488,7 +1488,8 @@ namespace Client.MirScenes.Dialogs
     public sealed class ChatControlBar : MirImageControl
     {
         public MirButton SendChatBtn, SizeButton, SettingsButton, NormalButton, ShoutButton, WhisperButton, LoverButton, MentorButton, GroupButton, GuildButton, ReportButton, TradeButton;
-        private MirDropDownBox mChatChannel;
+        private MirDropDownBox2 mChatChannel;
+        private MirImageControl mChatChannel_BtnJianTou;
 
         private readonly List<string> ChatChannelList = new List<string>()
         {
@@ -1507,7 +1508,7 @@ namespace Client.MirScenes.Dialogs
             Visible = true;
             NotControl = false;
 
-            mChatChannel = new MirDropDownBox()
+            mChatChannel = new MirDropDownBox2()
             {
                 BackColour = Color.FromArgb(255, 15, 15, 15),
                 ForeColour = Color.White,
@@ -1522,15 +1523,34 @@ namespace Client.MirScenes.Dialogs
             {
                 mChatChannel.SelectedIndex = mChatChannel._WantedIndex; // 写回,标签才显示选中项
             };
+            mChatChannel.DropDownStateChanged += (s, e) =>
+            {
+                if (mChatChannel_BtnJianTou != null)
+                {
+                    // 展开时箭头朝上,收起时朝下(翻转是之前给 MirImageControl 加的 FlipY)
+                    mChatChannel_BtnJianTou.FlipY = !e.IsOpen;
+                    // 也可以换 Hover/Pressed 帧、改表头颜色等
+                }
+            };
+
             mChatChannel.Items = ChatChannelList;
             mChatChannel.MinimumOption = 0;
             mChatChannel.SelectedIndex = 0; // 默认显示第一个频道(综合
-            //mChatChannel.DropDownButton.Library = null;
-            //mChatChannel.DropDownButton.Index = 0;
-            //mChatChannel.DropDownButton.AtlasNameKey = "y_homeUI-sheet";
-            //mChatChannel.DropDownButton.AtlasFrame = "btn_liaotian_11";
-            //mChatChannel.DropDownButton.PressedAtlasFrame = "btn_liaotian_12";
-            //mChatChannel.DropDownButton.Size = new Size(60, 19);
+            mChatChannel.DropDownButton.Library = null;
+            mChatChannel.DropDownButton.Index = 0;
+            mChatChannel.DropDownButton.AtlasNameKey = "y_homeUI-sheet";
+            mChatChannel.DropDownButton.AtlasFrame = "btn_liaotian_11";
+            mChatChannel.DropDownButton.PressedAtlasFrame = "btn_liaotian_12";
+            mChatChannel.DropDownButton.Size = new Size(60, 19);
+            mChatChannel_BtnJianTou = new MirImageControl
+            {
+                AtlasNameKey = "y_homeUI-sheet",
+                AtlasFrame = "btn_liaotian_13",
+                Parent = mChatChannel.DropDownButton,
+                Size = new Size(12, 9),
+                NotControl = true,
+            };
+            mChatChannel_BtnJianTou.Location = mChatChannel_BtnJianTou.Right.Subtract(new Point(15, 0));
 
             SendChatBtn = new MirButton
             {

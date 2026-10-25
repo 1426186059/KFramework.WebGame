@@ -34,6 +34,20 @@ namespace Client.MirControls
         // 绘制模式：默认 Normal（整图缩放）。NineGrid 时按上方四个边框做九宫格。
         public MirImageDrawMode DrawMode { get; set; } = MirImageDrawMode.Normal;
 
+        // 翻转:FlipX=左右镜像, FlipY=上下镜像(作用于 AtlasFrame 绘制,Normal 模式;九宫格模式不翻转)。
+        public bool FlipX { get; set; } = false;
+        public bool FlipY { get; set; } = false;
+        private KFramework.MonoGame.SpriteEffects FlipEffects
+        {
+            get
+            {
+                var e = KFramework.MonoGame.SpriteEffects.None;
+                if (FlipX) e |= KFramework.MonoGame.SpriteEffects.FlipHorizontally;
+                if (FlipY) e |= KFramework.MonoGame.SpriteEffects.FlipVertically;
+                return e;
+            }
+        }
+
         private bool _autoSize;
         public bool AutoSize
         {
@@ -341,7 +355,7 @@ namespace Client.MirControls
                 KFramework.MonoGame.Rectangle dstRect = new KFramework.MonoGame.Rectangle(dstSD.X, dstSD.Y, dstSD.Width, dstSD.Height);
                 // 走 DXManager.Draw 安全入口（BeginSprite 会按当前上下文自动 Begin）：
                 // 主渲染 / 场景烘焙通用；直接调 SpriteBatch.DrawFrame 在烘焙时主批未 Begin 会抛异常。
-                DXManager.Draw(atlasSprite.Texture, srcRect, dstRect, drawColor, imgBlend);
+                DXManager.Draw(atlasSprite.Texture, srcRect, dstRect, drawColor, imgBlend, FlipEffects);
 
                 if (GrayScale)
                 {

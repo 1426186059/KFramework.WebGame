@@ -418,6 +418,15 @@ void main()
             CMain.DPSCounter++;
         }
 
+        // 带翻转(SpriteEffects)的图集帧绘制：供 MirImageControl 的 FlipX/FlipY 使用。
+        public static void Draw(Texture2D texture, KFramework.MonoGame.Rectangle sourceRect, KFramework.MonoGame.Rectangle destRect, KFramework.MonoGame.Color color, KFramework.MonoGame.BlendState? blendState, KFramework.MonoGame.SpriteEffects effects)
+        {
+            if (texture == null) return;
+            BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
+            Batch.Draw(texture, destRect, sourceRect, color, 0f, KFramework.MonoGame.Vector2.Zero, (KFramework.MonoGame.Vector2?)null, effects, 0f);
+            CMain.DPSCounter++;
+        }
+
         public static void DrawOpaque(Texture2D texture, Rectangle? sourceRect, SlimDX.Vector3? position, SlimDX.Color4 color, float opacity)
         {
             var c = color; c.Alpha = opacity; Draw(texture, sourceRect, position, c);
