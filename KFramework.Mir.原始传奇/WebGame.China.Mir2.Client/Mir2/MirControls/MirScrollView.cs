@@ -183,12 +183,14 @@ namespace Client.MirControls
             }
         }
 
-        /// <summary>鼠标滚轮滚动：向上滚（Delta&gt;0）= 内容上移（ScrollOffset 减小）；并标记 Handled 停止冒泡。</summary>
+        /// <summary>鼠标滚轮滚动：向上滚（Delta&gt;0）= 内容下移（ScrollOffset 增大）；并标记 Handled 停止冒泡。</summary>
         public override void OnMouseWheel(MouseEventArgs e)
         {
-            int count = e.Delta / 120;   // 每格 120 = 一行
-            if (count != 0)
-                ScrollBy(new Point(0, (e.Delta > 0 ? -1 : 1) * count * 30));   // 30px / 行
+            // 本环境 e.Delta 每格为 ±1（浏览器端已归一化），不再除以 120（否则 count 恒为 0、永不滚动）。
+            // 兼容桌面端 ±120：|delta|>=120 时按 /120 折算成"格数"，否则直接把 delta 当格数。
+            int notches = Math.Abs(e.Delta) >= 120 ? e.Delta / 120 : e.Delta;
+            if (notches != 0)
+                ScrollBy(new Point(0, notches * 30));   // 上滚(delta>0)=内容下移(ScrollOffset 增大)
             e.Handled = true;
             base.OnMouseWheel(e);
         }
@@ -247,6 +249,17 @@ namespace Client.MirControls
             {
                 _captured = false;
                 base.OnMouseUp(e);
+            }
+
+            // 关键修复：引擎每次 OnMouseUp 都会走 base.OnMouseUp → ActiveControl.Deactivate()，
+            // 而按下时 Activate() 已把 ActiveControl 设为本滑块。重写 Deactivate 在此清掉 _captured，
+            // 这样无论 mouse up 落在滑块本身还是其它控件（光标在拖拽中可能飘走），捕获都会被释放，
+            // 避免"松手后没按键只是移动，内容却一直跟着滚动"的卡死式拖拽。
+            protected override void Deactivate()
+            {
+                _captured = false;
+                if (ActiveControl == this) ActiveControl = null;
+                base.Deactivate();
             }
         }
     }
