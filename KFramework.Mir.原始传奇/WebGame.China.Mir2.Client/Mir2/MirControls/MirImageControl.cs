@@ -300,7 +300,7 @@ namespace Client.MirControls
 
         /// <summary>直接渲染的纹理(引擎默认图,如 KDefaultRes.DefaultTexture2D 的 1×1 白纹理)。
         /// 设置后 DrawControl 会跳过 Libraries.* 图集,把该纹理拉伸到 Size 并按 ForeColour 着色。</summary>
-        public Texture2D Texture { get; set; }
+        public KFramework.MonoGame.Texture2D Texture { get; set; }
 
         protected internal override void DrawControl()
         {
