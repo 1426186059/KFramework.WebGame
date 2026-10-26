@@ -299,6 +299,7 @@ namespace ClientPackets
         public string Message = string.Empty;
         public List<ChatItem> LinkedItems = new List<ChatItem>();
         // 显式频道:取代消息文本里的路由前缀(!/!!/!~/等),服务端据此路由。
+        public ChatType Type = ChatType.Nearby;
         // 私聊目标角色ID:非私聊时为 0;有值时服务端按 ID 精确投递。
         public uint PrivateChatTargetId = 0;
 
