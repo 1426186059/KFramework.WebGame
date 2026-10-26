@@ -85,6 +85,7 @@ namespace Client.MirScenes
         public GroupDialog GroupDialog;
         public GuildDialog GuildDialog;
         public GuildTerritoryDialog GuildTerritoryDialog;
+        public GMDialog GMDialog;
         public NewCharacterDialog NewHeroDialog;
         public HeroBeltDialog HeroBeltDialog;
 
@@ -316,6 +317,7 @@ namespace Client.MirScenes
             GroupDialog = new GroupDialog { Parent = this, Visible = false };
             GuildDialog = new GuildDialog { Parent = this, Visible = false };
             GuildTerritoryDialog = new GuildTerritoryDialog { Parent = this, Visible = false };
+            GMDialog = new GMDialog { Parent = this, Visible = false };
             NewHeroDialog = new NewCharacterDialog { Parent = this, Visible = false };
             NewHeroDialog.TitleLabel.Index = 847;
             NewHeroDialog.TitleLabel.Location = new Point(246, 11);
@@ -595,6 +597,13 @@ namespace Client.MirScenes
 
         private void GameScene_KeyDown(object sender, KeyEventArgs e)
         {
+            // GM 工具面板: 组合键 Ctrl+G 开关
+            if (CMain.Ctrl && e.KeyCode == Keys.KeyG)
+            {
+                GMDialog.Toggle();
+                return;
+            }
+
             if (e.KeyCode == Keys.KeyW) _wKeyHeld = true;
 
             // 和弦：按住 W + 数字键 → 切换天气/昼夜（return 跳过原有数字绑定，避免误触腰带等）
