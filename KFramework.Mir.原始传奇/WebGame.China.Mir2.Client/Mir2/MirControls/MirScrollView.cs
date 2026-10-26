@@ -35,6 +35,9 @@ namespace Client.MirControls
         /// <summary>当前滚动偏移（像素，内容相对视口左上角的位移，>=0）。</summary>
         public Point ScrollOffset { get; private set; }
 
+        /// <summary>滚动偏移变化（SetScrollOffset / ScrollBy / 滚轮）后触发，参数为本控件。可用于做"可见窗口"优化（只保留视口附近子控件可见）。</summary>
+        public event Action<MirScrollView> ScrollChanged;
+
         /// <summary>添加子控件（= 加到内容容器），并刷新内容尺寸 / 重新烘焙。</summary>
         public void Add(MirControl control)
         {
@@ -59,6 +62,7 @@ namespace Client.MirControls
             ScrollOffset = new Point(x, y);
             _content.Location = new Point(-x, -y);
             Redraw();   // 令 TextureValid=false → 下次 Draw 重新烘焙内容
+            ScrollChanged?.Invoke(this);
         }
 
         /// <summary>相对当前偏移滚动。</summary>

@@ -39,17 +39,16 @@ namespace Client.MirScenes.Dialogs
         private MirButton CloseButton;
         private MirButton GMCommandTab, ItemTab;
 
-        // GM 命令面板
-        private MirImageControl GMCommandPanel;
+        // GM 命令面板（用 ScrollView 承载长列表，离屏烘焙天然裁掉溢出）
+        private MirScrollView GMCommandScrollView;
         private MirButton GMUp, GMDown;
-        private int GMScrollOffset;
         private readonly List<MirControl> GMRows = new List<MirControl>();
 
         // 物品面板
         private MirImageControl ItemPanel;
         private MirButton ItemUp, ItemDown, FetchAllButton;
         private MirTextBox ItemCountBox;
-        private int ItemScrollOffset;
+        private MirScrollView ItemScrollView;   // 物品行滚动区（放在 ItemPanel 内、表头下方）
         private readonly List<MirControl> ItemRows = new List<MirControl>();
         private int _itemListVersion;
 
@@ -177,13 +176,13 @@ namespace Client.MirScenes.Dialogs
             ItemTab.Label.ForeColour = Color.White;
             ItemTab.Click += (o, e) => ShowItemTab();
 
-            // —— GM 命令面板 ——
-            GMCommandPanel = new MirImageControl
+            // —— GM 命令面板（ScrollView 承载长列表）——
+            GMCommandScrollView = new MirScrollView
             {
-                Parent = this, AutoSize = false, Visible = true,
+                Parent = this, Visible = true,
                 Location = new Point(ContentX, ContentY),
                 Size = new Size(Size.Width - ContentX - 28, Size.Height - ContentY - 12),
-                Texture = DefTex, ForeColour = PanelFill, Border = true, BorderColour = PanelBorder,
+                BackColour = PanelFill, Border = true, BorderColour = PanelBorder,
             };
 
             GMUp = new MirButton
@@ -193,7 +192,7 @@ namespace Client.MirScenes.Dialogs
                 Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
             };
             GMUp.Label.Text = "▲"; GMUp.Label.ForeColour = Color.White;
-            GMUp.Click += (o, e) => { GMScrollOffset -= RowH * 3; ClampGMScroll(); UpdateGMRows(); };
+            GMUp.Click += (o, e) => GMCommandScrollView.ScrollBy(new Point(0, -RowH * 3));
             GMDown = new MirButton
             {
                 Parent = this, AutoSize = false, Size = new Size(18, 18),
@@ -201,7 +200,7 @@ namespace Client.MirScenes.Dialogs
                 Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
             };
             GMDown.Label.Text = "▼"; GMDown.Label.ForeColour = Color.White;
-            GMDown.Click += (o, e) => { GMScrollOffset += RowH * 3; ClampGMScroll(); UpdateGMRows(); };
+            GMDown.Click += (o, e) => GMCommandScrollView.ScrollBy(new Point(0, RowH * 3));
 
             BuildGMRows();
 
@@ -235,6 +234,17 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(172, 2), Size = new Size(60, 18), MaxLength = 9,
             };
 
+            // 物品行滚动区：放在表头下方，自带填充与边框
+            ItemScrollView = new MirScrollView
+            {
+                Parent = ItemPanel,
+                Location = new Point(3, 24),
+                Size = new Size(ItemPanel.Size.Width - 6, ItemPanel.Size.Height - 24 - 6),
+                BackColour = PanelFill, Border = true, BorderColour = PanelBorder,
+            };
+            // 列表很长，只保留视口附近行可见，避免每次滚动都烘焙上千行
+            ItemScrollView.ScrollChanged += OnItemScrollChanged;
+
             ItemUp = new MirButton
             {
                 Parent = this, AutoSize = false, Size = new Size(18, 18),
@@ -242,7 +252,7 @@ namespace Client.MirScenes.Dialogs
                 Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
             };
             ItemUp.Label.Text = "▲"; ItemUp.Label.ForeColour = Color.White;
-            ItemUp.Click += (o, e) => { ItemScrollOffset -= RowH * 3; ClampItemScroll(); UpdateItemRows(); };
+            ItemUp.Click += (o, e) => ItemScrollView.ScrollBy(new Point(0, -RowH * 3));
             ItemDown = new MirButton
             {
                 Parent = this, AutoSize = false, Size = new Size(18, 18),
@@ -250,23 +260,22 @@ namespace Client.MirScenes.Dialogs
                 Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
             };
             ItemDown.Label.Text = "▼"; ItemDown.Label.ForeColour = Color.White;
-            ItemDown.Click += (o, e) => { ItemScrollOffset += RowH * 3; ClampItemScroll(); UpdateItemRows(); };
+            ItemDown.Click += (o, e) => ItemScrollView.ScrollBy(new Point(0, RowH * 3));
 
             ShowGMCommandTab();
         }
 
         private void ShowGMCommandTab()
         {
-            GMCommandPanel.Visible = true;
+            GMCommandScrollView.Visible = true;
             ItemPanel.Visible = false;
             GMCommandTab.ForeColour = TabActive;
             ItemTab.ForeColour = TabInactive;
-            UpdateGMRows();
         }
 
         private void ShowItemTab()
         {
-            GMCommandPanel.Visible = false;
+            GMCommandScrollView.Visible = false;
             ItemPanel.Visible = true;
             GMCommandTab.ForeColour = TabInactive;
             ItemTab.ForeColour = TabActive;
@@ -276,6 +285,7 @@ namespace Client.MirScenes.Dialogs
         #region GM 命令行
         private void BuildGMRows()
         {
+            // 行控件按"内容本地坐标"布局（ScrollView 负责滚动 + 裁切），无需手动移动/裁剪
             for (int i = 0; i < GMCommands.Length; i++)
             {
                 string[] parts = GMCommands[i].Split(new[] { '|' }, 2);
@@ -284,20 +294,20 @@ namespace Client.MirScenes.Dialogs
 
                 var label = new MirLabel
                 {
-                    Parent = GMCommandPanel, Location = new Point(0, 0), Size = new Size(340, 24),
+                    Location = new Point(0, i * RowH + 1), Size = new Size(340, 24),
                     Text = cmd + (string.IsNullOrEmpty(hint) ? "" : "  -  " + hint),
-                    ForeColour = Color.Yellow, AutoSize = false, Visible = false,
+                    ForeColour = Color.Yellow, AutoSize = false,
                 };
                 var box = new MirTextBox
                 {
-                    Parent = GMCommandPanel, Border = true, BorderColour = Color.Lime,
-                    Location = new Point(350, 2), Size = new Size(210, 20), MaxLength = 200, Visible = false,
+                    Border = true, BorderColour = Color.Lime,
+                    Location = new Point(350, i * RowH + 2), Size = new Size(210, 20), MaxLength = 200,
                 };
                 var btn = new MirButton
                 {
-                    Parent = GMCommandPanel, AutoSize = false, Size = new Size(64, 22), Location = new Point(566, 1),
+                    AutoSize = false, Size = new Size(64, 22), Location = new Point(566, i * RowH + 1),
                     Sound = SoundList.ButtonA, Texture = DefTex, ForeColour = ButtonFill,
-                    Border = true, BorderColour = ButtonBorder, Visible = false,
+                    Border = true, BorderColour = ButtonBorder,
                 };
                 btn.Label.Text = "执行";
                 btn.Label.ForeColour = Color.White;
@@ -312,6 +322,9 @@ namespace Client.MirScenes.Dialogs
                     }
                 };
 
+                GMCommandScrollView.Add(label);
+                GMCommandScrollView.Add(box);
+                GMCommandScrollView.Add(btn);
                 GMRows.Add(label);
                 GMRows.Add(box);
                 GMRows.Add(btn);
@@ -324,29 +337,6 @@ namespace Client.MirScenes.Dialogs
             // 参数以空格分隔(双空格也可,服务端按空白拆分),每个参数间用一个空格连接
             string msg = "@" + cmd + (args.Length > 0 ? " " + args : "");
             Network.Enqueue(new C.GMCommand { Message = msg });
-        }
-
-        private void ClampGMScroll()
-        {
-            int max = Math.Max(0, GMCommands.Length * RowH - GMCommandPanel.Size.Height);
-            if (GMScrollOffset < 0) GMScrollOffset = 0;
-            if (GMScrollOffset > max) GMScrollOffset = max;
-        }
-
-        private void UpdateGMRows()
-        {
-            ClampGMScroll();
-            for (int i = 0; i < GMCommands.Length; i++)
-            {
-                int y = i * RowH - GMScrollOffset;
-                bool vis = y >= -RowH && y <= GMCommandPanel.Size.Height;
-                for (int k = 0; k < 3; k++)
-                {
-                    var c = GMRows[i * 3 + k];
-                    c.Location = new Point(c.Location.X, y + 1);
-                    c.Visible = vis;
-                }
-            }
         }
         #endregion
 
@@ -371,7 +361,7 @@ namespace Client.MirScenes.Dialogs
             ItemRows.Clear();
 
             var list = GameScene.ItemInfoList;
-            int rowW = ItemPanel.Size.Width - 6;
+            int rowW = ItemScrollView.Size.Width - 6;
             for (int i = 0; i < list.Count; i++)
             {
                 var info = list[i];
@@ -380,8 +370,8 @@ namespace Client.MirScenes.Dialogs
                 string name = info.Name;
                 var bg = new MirImageControl
                 {
-                    Parent = ItemPanel, AutoSize = false, Size = new Size(rowW, RowH), Location = new Point(3, 0),
-                    Visible = false, Texture = DefTex, ForeColour = ItemRowFill,
+                    AutoSize = false, Size = new Size(rowW, RowH), Location = new Point(3, i * RowH),
+                    Texture = DefTex, ForeColour = ItemRowFill,
                 };
                 var label = new MirLabel
                 {
@@ -400,31 +390,22 @@ namespace Client.MirScenes.Dialogs
                 {
                     bg.ForeColour = MirControl.MouseControl == bg ? ItemRowHover : ItemRowFill;
                 };
+
+                ItemScrollView.Add(bg);   // 加入滚动内容（内容本地坐标 i*RowH）
                 ItemRows.Add(bg);
             }
-            ClampItemScroll();
-            UpdateItemRows();
+            ItemScrollView.SetScrollOffset(Point.Empty);   // 夹紧并触发可见窗口更新
             GameScene.Scene.OutputMessage("物品数量:" + ItemRows.Count);
         }
 
-        private void ClampItemScroll()
+        // 只在视口附近保留行可见，缩小 ScrollView 每次烘焙的开销（列表可能上千行）。
+        private void OnItemScrollChanged(MirScrollView sv)
         {
-            int max = Math.Max(0, ItemRows.Count * RowH - (ItemPanel.Size.Height - 24));
-            if (ItemScrollOffset < 0) ItemScrollOffset = 0;
-            if (ItemScrollOffset > max) ItemScrollOffset = max;
-        }
-
-        private void UpdateItemRows()
-        {
-            ClampItemScroll();
-            int top = 24; // 为"拉取全部/数量"行留空间
-            for (int i = 0; i < ItemRows.Count; i++)
+            int view = sv.Size.Height;
+            foreach (var bg in ItemRows)
             {
-                int y = top + i * RowH - ItemScrollOffset;
-                bool vis = y >= top - RowH && y <= ItemPanel.Size.Height;
-                var c = ItemRows[i];
-                c.Location = new Point(c.Location.X, y);
-                c.Visible = vis;
+                int y = bg.Location.Y;   // 内容本地坐标
+                bg.Visible = y >= sv.ScrollOffset.Y - RowH * 2 && y <= sv.ScrollOffset.Y + view + RowH * 2;
             }
         }
         #endregion
@@ -437,7 +418,6 @@ namespace Client.MirScenes.Dialogs
             BringToFront();
             // 每次显示时刷新一次物品(可能已拉取)
             if (ItemPanel.Visible) RefreshItemRows();
-            else UpdateGMRows();
         }
 
         public new void Hide()
