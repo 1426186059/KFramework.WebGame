@@ -39,14 +39,13 @@ namespace Client.MirScenes.Dialogs
         private MirButton CloseButton;
         private MirButton GMCommandTab, ItemTab;
 
-        // GM 命令面板（用 ScrollView 承载长列表，离屏烘焙天然裁掉溢出）
+        // GM 命令面板（用 ScrollView 承载长列表，离屏烘焙天然裁掉溢出，自带竖直滚动条）
         private MirScrollView GMCommandScrollView;
-        private MirButton GMUp, GMDown;
         private readonly List<MirControl> GMRows = new List<MirControl>();
 
         // 物品面板
         private MirImageControl ItemPanel;
-        private MirButton ItemUp, ItemDown, FetchAllButton;
+        private MirButton FetchAllButton;
         private MirTextBox ItemCountBox;
         private MirScrollView ItemScrollView;   // 物品行滚动区（放在 ItemPanel 内、表头下方）
         private readonly List<MirControl> ItemRows = new List<MirControl>();
@@ -185,23 +184,6 @@ namespace Client.MirScenes.Dialogs
                 BackColour = PanelFill, Border = true, BorderColour = PanelBorder,
             };
 
-            GMUp = new MirButton
-            {
-                Parent = this, AutoSize = false, Size = new Size(18, 18),
-                Location = new Point(Size.Width - 23, ContentY), Sound = SoundList.ButtonA,
-                Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
-            };
-            GMUp.Label.Text = "▲"; GMUp.Label.ForeColour = Color.White;
-            GMUp.Click += (o, e) => GMCommandScrollView.ScrollBy(new Point(0, -RowH * 3));
-            GMDown = new MirButton
-            {
-                Parent = this, AutoSize = false, Size = new Size(18, 18),
-                Location = new Point(Size.Width - 23, Size.Height - 28), Sound = SoundList.ButtonA,
-                Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
-            };
-            GMDown.Label.Text = "▼"; GMDown.Label.ForeColour = Color.White;
-            GMDown.Click += (o, e) => GMCommandScrollView.ScrollBy(new Point(0, RowH * 3));
-
             BuildGMRows();
 
             // —— 物品面板 ——
@@ -244,23 +226,6 @@ namespace Client.MirScenes.Dialogs
             };
             // 列表很长，只保留视口附近行可见，避免每次滚动都烘焙上千行
             ItemScrollView.ScrollChanged += OnItemScrollChanged;
-
-            ItemUp = new MirButton
-            {
-                Parent = this, AutoSize = false, Size = new Size(18, 18),
-                Location = new Point(Size.Width - 23, ContentY), Sound = SoundList.ButtonA,
-                Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
-            };
-            ItemUp.Label.Text = "▲"; ItemUp.Label.ForeColour = Color.White;
-            ItemUp.Click += (o, e) => ItemScrollView.ScrollBy(new Point(0, -RowH * 3));
-            ItemDown = new MirButton
-            {
-                Parent = this, AutoSize = false, Size = new Size(18, 18),
-                Location = new Point(Size.Width - 23, Size.Height - 28), Sound = SoundList.ButtonA,
-                Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
-            };
-            ItemDown.Label.Text = "▼"; ItemDown.Label.ForeColour = Color.White;
-            ItemDown.Click += (o, e) => ItemScrollView.ScrollBy(new Point(0, RowH * 3));
 
             ShowGMCommandTab();
         }
@@ -361,7 +326,7 @@ namespace Client.MirScenes.Dialogs
             ItemRows.Clear();
 
             var list = GameScene.ItemInfoList;
-            int rowW = ItemScrollView.Size.Width - 6;
+            int rowW = ItemScrollView.Size.Width - 6 - MirScrollView.ScrollBarWidth;
             for (int i = 0; i < list.Count; i++)
             {
                 var info = list[i];

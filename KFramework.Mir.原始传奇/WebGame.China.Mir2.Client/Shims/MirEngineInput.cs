@@ -18,6 +18,8 @@ namespace MirEngine
         public int X { get; }
         public int Y { get; }
         public int Delta { get; }
+        /// <summary>事件是否被处理（如被滚动视图消费）。冒泡式分发（MirScene.OnMouseWheel）会在一处处理后停止继续向上传递。</summary>
+        public bool Handled { get; set; }
         public Point Location => new Point(X, Y);
     }
 
