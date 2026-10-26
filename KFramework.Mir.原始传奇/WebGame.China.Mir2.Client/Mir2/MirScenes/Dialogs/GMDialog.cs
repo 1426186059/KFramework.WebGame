@@ -47,6 +47,8 @@ namespace Client.MirScenes.Dialogs
         private MirImageControl ItemPanel;
         private MirButton FetchAllButton;
         private MirTextBox ItemCountBox;
+        private MirTextBox ItemSearchBox;        // 物品搜索框（按 Id 或 名字 过滤）
+        private string _itemSearch = string.Empty;
         private MirScrollView ItemScrollView;   // 物品行滚动区（放在 ItemPanel 内、表头下方）
         private readonly List<MirControl> ItemRows = new List<MirControl>();
         private int _itemListVersion;
@@ -216,6 +218,23 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(172, 2), Size = new Size(60, 18), MaxLength = 9,
             };
 
+            // 物品搜索框：按 Id（纯数字）或 名字（包含，忽略大小写）过滤
+            var searchLabel = new MirLabel
+            {
+                Parent = ItemPanel, Location = new Point(240, 3), Size = new Size(40, 18),
+                Text = "搜索", ForeColour = Color.White, AutoSize = false,
+            };
+            ItemSearchBox = new MirTextBox
+            {
+                Parent = ItemPanel, Border = true, BorderColour = Color.Lime, MaxLength = 40,
+                Location = new Point(280, 2), Size = new Size(170, 18),
+            };
+            ItemSearchBox.TextBox.TextChanged += (s, e) =>
+            {
+                _itemSearch = ItemSearchBox.Text;
+                BuildItemRows(GetFilteredItems());
+            };
+
             // 物品行滚动区：放在表头下方，自带填充与边框
             ItemScrollView = new MirScrollView
             {
@@ -317,15 +336,30 @@ namespace Client.MirScenes.Dialogs
 
         private void RefreshItemRows()
         {
-            // 列表有变化时重建物品行
+            // 列表有变化时重建物品行（应用当前搜索过滤）
             if (_itemListVersion == GameScene.ItemInfoList.Count) return;
             _itemListVersion = GameScene.ItemInfoList.Count;
+            BuildItemRows(GetFilteredItems());
+        }
 
+        // 按搜索词过滤：纯数字→按 Id(Index) 精确匹配；否则按名字包含(忽略大小写)
+        private List<ItemInfo> GetFilteredItems()
+        {
+            var all = GameScene.ItemInfoList;
+            string q = _itemSearch.Trim();
+            if (q.Length == 0) return all;
+            if (int.TryParse(q, out int id) && id > 0)
+                return all.Where(x => x != null && x.Index == id).ToList();
+            return all.Where(x => x != null && !string.IsNullOrEmpty(x.Name) &&
+                                  x.Name.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+        }
+
+        private void BuildItemRows(List<ItemInfo> list)
+        {
             foreach (var c in ItemRows)
                 if (!c.IsDisposed) c.Dispose();
             ItemRows.Clear();
 
-            var list = GameScene.ItemInfoList;
             int rowW = ItemScrollView.Size.Width - 6 - MirScrollView.ScrollBarWidth;
             for (int i = 0; i < list.Count; i++)
             {
@@ -338,19 +372,61 @@ namespace Client.MirScenes.Dialogs
                     AutoSize = false, Size = new Size(rowW, RowH), Location = new Point(3, i * RowH),
                     Texture = DefTex, ForeColour = ItemRowFill,
                 };
+
+                // 物品图标（真实图集；与全工程一致直接按 Image 索引绘制，库会容错无效索引）
+                var icon = new MirImageControl
+                {
+                    Parent = bg, AutoSize = false, Size = new Size(20, 20),
+                    Location = new Point(4, (RowH - 20) / 2), NotControl = true,
+                };
+                if (Libraries.Items != null)
+                {
+                    icon.Library = Libraries.Items;
+                    icon.Index = info.Image;
+                }
+
+                // 名字
                 var label = new MirLabel
                 {
-                    Parent = bg, NotControl = true, Location = new Point(6, 0), Size = new Size(rowW - 12, RowH),
+                    Parent = bg, NotControl = true,
+                    Location = new Point(28, 0), Size = new Size(Math.Max(40, rowW - 136), RowH),
                     Text = name, ForeColour = Color.White, AutoSize = false,
                 };
-                bg.Click += (o, e) =>
+
+                // 数量输入框（默认 1）
+                var qtyBox = new MirTextBox
                 {
-                    string countText = ItemCountBox.Text.Trim();
-                    string msg = "@MAKE " + name;
-                    if (countText.Length > 0 && int.TryParse(countText, out int cnt) && cnt > 1)
-                        msg += " " + cnt;
-                    Network.Enqueue(new C.GMCommand { Message = msg });
+                    Parent = bg, Border = true, BorderColour = Color.Lime, MaxLength = 9,
+                    Location = new Point(rowW - 104, (RowH - 20) / 2), Size = new Size(44, 20),
+                    Text = "1",
                 };
+                // 烘焙内的文本框键入后不会自动重画，手动让滚动视图重烘焙以显示输入的数字
+                qtyBox.TextBox.TextChanged += (s, e) => ItemScrollView.Refresh();
+
+                // 执行按钮
+                var btn = new MirButton
+                {
+                    Parent = bg, AutoSize = false, Size = new Size(52, 20),
+                    Location = new Point(rowW - 56, (RowH - 20) / 2),
+                    Sound = SoundList.ButtonA, Texture = DefTex, ForeColour = ButtonFill,
+                    Border = true, BorderColour = ButtonBorder,
+                };
+                btn.Label.Text = "执行";
+                btn.Label.ForeColour = Color.White;
+
+                // 发送 @MAKE 物品名 [数量]（数量为 1 时省略）
+                void Execute()
+                {
+                    string qtyText = qtyBox.Text.Trim();
+                    string msg = "@MAKE " + name;
+                    if (qtyText.Length > 0 && int.TryParse(qtyText, out int qty) && qty > 1)
+                        msg += " " + qty;
+                    Network.Enqueue(new C.GMCommand { Message = msg });
+                }
+
+                bg.Click += (o, e) => Execute();   // 点行内空白/图标/名字执行
+                btn.Click += (o, e) => Execute();   // 点执行按钮（Click 不冒泡，不会重复执行）
+
                 bg.BeforeDraw += (o, e) =>
                 {
                     bg.ForeColour = MirControl.MouseControl == bg ? ItemRowHover : ItemRowFill;
