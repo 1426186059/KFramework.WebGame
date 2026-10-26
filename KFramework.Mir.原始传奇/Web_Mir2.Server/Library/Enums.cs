@@ -1866,6 +1866,7 @@ public enum ClientPacketIds : short
     UnlockStorage,
     SetStoragePassword,
     RemoveStoragePassword,
+    GMCommand,
 }
 
 public enum ConquestType : byte

@@ -341,6 +341,9 @@ namespace Server.MirNetwork
                 case (short)ClientPacketIds.Chat:
                     Chat((C.Chat) p);
                     break;
+                case (short)ClientPacketIds.GMCommand:
+                    GMCommand((C.GMCommand) p);
+                    break;
                 case (short)ClientPacketIds.MoveItem:
                     MoveItem((C.MoveItem) p);
                     break;
@@ -1194,7 +1197,21 @@ namespace Server.MirNetwork
 
             if (Stage == GameStage.Game)
             {
-                Player.Chat(p.Message, p.LinkedItems);
+                Player.Chat(p.Message, p.LinkedItems, p.Type, p.PrivateChatTargetId);
+            }
+        }
+
+        private void GMCommand(C.GMCommand p)
+        {
+            if (p.Message.Length > Globals.MaxChatLength)
+            {
+                SendDisconnect(2);
+                return;
+            }
+
+            if (Stage == GameStage.Game)
+            {
+                Player.GMCommand(p.Message);
             }
             else if (Stage == GameStage.Observer)
             {

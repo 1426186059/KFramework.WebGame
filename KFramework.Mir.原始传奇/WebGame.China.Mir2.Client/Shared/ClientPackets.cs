@@ -327,6 +327,23 @@ namespace ClientPackets
                 LinkedItems[i].Save(writer);
         }
     }
+
+    public sealed class GMCommand : Packet
+    {
+        public override short Index { get { return (short)ClientPacketIds.GMCommand; } }
+
+        public string Message = string.Empty;
+
+        protected override void ReadPacket(BinaryReader reader)
+        {
+            Message = reader.ReadString();
+        }
+
+        protected override void WritePacket(BinaryWriter writer)
+        {
+            writer.Write(Message);
+        }
+    }
     public sealed class MoveItem : Packet
     {
         public override short Index { get { return (short)ClientPacketIds.MoveItem; } }

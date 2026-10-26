@@ -298,10 +298,15 @@ namespace ClientPackets
 
         public string Message = string.Empty;
         public List<ChatItem> LinkedItems = new List<ChatItem>();
+        // 显式频道:取代消息文本里的路由前缀(!/!!/!~/等),服务端据此路由。
+        // 私聊目标角色ID:非私聊时为 0;有值时服务端按 ID 精确投递。
+        public uint PrivateChatTargetId = 0;
 
         protected override void ReadPacket(BinaryReader reader)
         {
+            Type = (ChatType)reader.ReadByte();
             Message = reader.ReadString();
+            PrivateChatTargetId = reader.ReadUInt32();
 
             int count = reader.ReadInt32();
 
@@ -311,12 +316,31 @@ namespace ClientPackets
 
         protected override void WritePacket(BinaryWriter writer)
         {
+            writer.Write((byte)Type);
             writer.Write(Message);
+            writer.Write(PrivateChatTargetId);
 
             writer.Write(LinkedItems.Count);
 
             for (int i = 0; i < LinkedItems.Count; i++)
                 LinkedItems[i].Save(writer);
+        }
+    }
+
+    public sealed class GMCommand : Packet
+    {
+        public override short Index { get { return (short)ClientPacketIds.GMCommand; } }
+
+        public string Message = string.Empty;
+
+        protected override void ReadPacket(BinaryReader reader)
+        {
+            Message = reader.ReadString();
+        }
+
+        protected override void WritePacket(BinaryWriter writer)
+        {
+            writer.Write(Message);
         }
     }
     public sealed class MoveItem : Packet

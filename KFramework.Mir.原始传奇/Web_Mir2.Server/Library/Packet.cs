@@ -129,6 +129,8 @@ public abstract class Packet
                 return new C.Run();
             case (short)ClientPacketIds.Chat:
                 return new C.Chat();
+            case (short)ClientPacketIds.GMCommand:
+                return new C.GMCommand();
             case (short)ClientPacketIds.MoveItem:
                 return new C.MoveItem();
             case (short)ClientPacketIds.StoreItem:
