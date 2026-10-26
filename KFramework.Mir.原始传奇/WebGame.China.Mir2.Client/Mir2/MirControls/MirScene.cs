@@ -121,16 +121,19 @@ namespace Client.MirControls
             if (!Enabled)
                 return;
 
-            // 沿父链冒泡：从鼠标所在控件向上，直到某个控件消费（Handled）或到达顶层。
-            // 这样滚轮在滚动视图的子控件（行/输入框）上滚动时，事件能冒泡到 MirScrollView 并滚动内容。
+            // 沿父链冒泡：从鼠标所在控件向上，直到某个控件消费（Handled）或到达本场景。
+            // 这样滚轮悬停在滚动视图的子控件（行/输入框）上时，事件能冒泡到 MirScrollView 并滚动内容。
+            // 冒泡到"本场景(this)"这一层时不再调虚方法自身（否则会重读静态 MouseControl 形成无限递归），
+            // 改为循环结束后调一次 base（仅触发场景自己的 MouseWheel 事件）。
             var c = MouseControl;
-            while (c != null)
+            while (c != null && !ReferenceEquals(c, this))
             {
                 c.OnMouseWheel(e);
                 if (e.Handled)
                     return;
                 c = c.Parent;
             }
+            base.OnMouseWheel(e);
         }
 
         public override void OnMouseClick(MouseEventArgs e)

@@ -79,7 +79,7 @@ namespace Client.MirControls
             ScrollOffset = new Point(x, y);
             _content.Location = new Point(-x, -y);
             UpdateScrollBar();
-            Redraw();   // 令 TextureValid=false → 下次 Draw 重新烘焙内容
+            TextureValid = false;   // 令本控件离屏纹理失效 → 下次 Draw 重新烘焙内容（基类 Redraw() 只冒泡父级、不会置 TextureValid=false）
             ScrollChanged?.Invoke(this);
         }
 
