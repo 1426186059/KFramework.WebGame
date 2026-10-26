@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirSounds;
+using KFramework.MonoGame;
+using KFramework.MonoGameExtend;
 using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
 using Point = MirEngine.Point;
@@ -13,9 +14,26 @@ using Color = MirEngine.Color;
 
 namespace Client.MirScenes.Dialogs
 {
+    // 全部用引擎默认图(KDefaultRes.DefaultTexture2D 白纹理) + ForeColour 着色 + Border 描边绘制,
+    // 不依赖将来废弃的 Libraries.* 图集贴图。
     public sealed class GMDialog : MirImageControl
     {
         public static GMDialog Instance;
+
+        // 引擎默认白纹理(拉伸着色)
+        private static readonly Texture2D DefTex = KDefaultRes.DefaultTexture2D;
+
+        // 配色
+        private static readonly Color WindowFill = new Color(22, 26, 42);
+        private static readonly Color WindowBorder = new Color(110, 150, 210);
+        private static readonly Color PanelFill = new Color(28, 33, 52);
+        private static readonly Color PanelBorder = new Color(70, 100, 150);
+        private static readonly Color ButtonFill = new Color(48, 68, 110);
+        private static readonly Color ButtonBorder = new Color(120, 150, 200);
+        private static readonly Color TabInactive = new Color(40, 46, 70);
+        private static readonly Color TabActive = new Color(86, 116, 176);
+        private static readonly Color ItemRowFill = new Color(30, 36, 56);
+        private static readonly Color ItemRowHover = new Color(70, 98, 152);
 
         // 窗口
         private MirButton CloseButton;
@@ -35,7 +53,7 @@ namespace Client.MirScenes.Dialogs
         private readonly List<MirControl> ItemRows = new List<MirControl>();
         private int _itemListVersion;
 
-        // GM 命令清单(命令名|参数提示)。发送时自动加 @ 前缀。
+        // GM 命令清单(命令名|参数提示)。发送时自动加 @ 前缀,参数以空格分隔。
         private static readonly string[] GMCommands = new[]
         {
             "LOGIN|登录GM(输入密码)",
@@ -111,80 +129,78 @@ namespace Client.MirScenes.Dialogs
             "SETTIMER|设置计时器 <键> <秒> <类型>",
         };
 
-        private const int RowH = 20;
-        private const int ContentX = 12;
-        private const int ContentY = 46;
+        private const int RowH = 26;
+        private const int ContentX = 14;
+        private const int ContentY = 50;
 
         public GMDialog()
         {
             Instance = this;
 
-            Index = 920;
-            Library = Libraries.Prguse;
             Movable = true;
             Sort = true;
-            Size = new Size(600, 480);
-            Location = new Point(160, 80);
+            AutoSize = false;
+            Size = new Size(720, 540);
+            Location = new Point(120, 60);
+            Texture = DefTex;
+            ForeColour = WindowFill;
+            Border = true;
+            BorderColour = WindowBorder;
 
             CloseButton = new MirButton
             {
-                HoverIndex = 361,
-                Index = 360,
-                PressedIndex = 362,
-                Library = Libraries.Prguse2,
-                Parent = this,
-                Location = new Point(Size.Width - 25, 3),
-                Sound = SoundList.ButtonA,
+                Parent = this, AutoSize = false, Size = new Size(24, 24),
+                Location = new Point(Size.Width - 28, 4), Sound = SoundList.ButtonA,
+                Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
             };
+            CloseButton.Label.Text = "X";
+            CloseButton.Label.ForeColour = Color.White;
             CloseButton.Click += (o, e) => Hide();
 
             GMCommandTab = new MirButton
             {
-                Index = 500,
-                Library = Libraries.Title,
-                Parent = this,
-                Size = new Size(90, 20),
-                Location = new Point(ContentX, 14),
-                Sound = SoundList.ButtonA,
+                Parent = this, AutoSize = false, Size = new Size(120, 26),
+                Location = new Point(ContentX, 14), Sound = SoundList.ButtonA,
+                Texture = DefTex, ForeColour = TabActive, Border = true, BorderColour = ButtonBorder,
             };
             GMCommandTab.Label.Text = "GM 命令";
+            GMCommandTab.Label.ForeColour = Color.White;
             GMCommandTab.Click += (o, e) => ShowGMCommandTab();
 
             ItemTab = new MirButton
             {
-                Index = 502,
-                Library = Libraries.Title,
-                Parent = this,
-                Size = new Size(90, 20),
-                Location = new Point(ContentX + 95, 14),
-                Sound = SoundList.ButtonA,
+                Parent = this, AutoSize = false, Size = new Size(120, 26),
+                Location = new Point(ContentX + 125, 14), Sound = SoundList.ButtonA,
+                Texture = DefTex, ForeColour = TabInactive, Border = true, BorderColour = ButtonBorder,
             };
             ItemTab.Label.Text = "物品表";
+            ItemTab.Label.ForeColour = Color.White;
             ItemTab.Click += (o, e) => ShowItemTab();
 
             // —— GM 命令面板 ——
             GMCommandPanel = new MirImageControl
             {
-                Parent = this,
+                Parent = this, AutoSize = false, Visible = true,
                 Location = new Point(ContentX, ContentY),
-                Size = new Size(Size.Width - ContentX - 26, Size.Height - ContentY - 12),
-                Visible = true,
-                DrawImage = false,
+                Size = new Size(Size.Width - ContentX - 28, Size.Height - ContentY - 12),
+                Texture = DefTex, ForeColour = PanelFill, Border = true, BorderColour = PanelBorder,
             };
 
             GMUp = new MirButton
             {
-                Index = 240, HoverIndex = 241, PressedIndex = 242,
-                Library = Libraries.Prguse2, Parent = this, Size = new Size(16, 16),
-                Location = new Point(Size.Width - 22, ContentY), Sound = SoundList.ButtonA,
+                Parent = this, AutoSize = false, Size = new Size(18, 18),
+                Location = new Point(Size.Width - 23, ContentY), Sound = SoundList.ButtonA,
+                Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
             };
+            GMUp.Label.Text = "▲"; GMUp.Label.ForeColour = Color.White;
             GMUp.Click += (o, e) => { GMScrollOffset -= RowH * 3; ClampGMScroll(); UpdateGMRows(); };
             GMDown = new MirButton
             {
-                Index = 243, HoverIndex = 244, PressedIndex = 245,
-                Library = Libraries.Prguse2, Parent = this, Size = new Size(16, 16),
-                Location = new Point(Size.Width - 22, Size.Height - 28), Sound = SoundList.ButtonA,
+                Parent = this, AutoSize = false, Size = new Size(18, 18),
+                Location = new Point(Size.Width - 23, Size.Height - 28), Sound = SoundList.ButtonA,
+                Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
             };
+            GMDown.Label.Text = "▼"; GMDown.Label.ForeColour = Color.White;
             GMDown.Click += (o, e) => { GMScrollOffset += RowH * 3; ClampGMScroll(); UpdateGMRows(); };
 
             BuildGMRows();
@@ -192,45 +208,48 @@ namespace Client.MirScenes.Dialogs
             // —— 物品面板 ——
             ItemPanel = new MirImageControl
             {
-                Parent = this,
+                Parent = this, AutoSize = false, Visible = false,
                 Location = new Point(ContentX, ContentY),
-                Size = new Size(Size.Width - ContentX - 26, Size.Height - ContentY - 12),
-                Visible = false,
-                DrawImage = false,
+                Size = new Size(Size.Width - ContentX - 28, Size.Height - ContentY - 12),
+                Texture = DefTex, ForeColour = PanelFill, Border = true, BorderColour = PanelBorder,
             };
 
             FetchAllButton = new MirButton
             {
-                Index = 500, Library = Libraries.Title, Parent = ItemPanel,
-                Size = new Size(110, 20), Location = new Point(0, 0), Sound = SoundList.ButtonA,
+                Parent = ItemPanel, AutoSize = false, Size = new Size(120, 22), Location = new Point(0, 0),
+                Sound = SoundList.ButtonA, Texture = DefTex, ForeColour = ButtonFill,
+                Border = true, BorderColour = ButtonBorder,
             };
             FetchAllButton.Label.Text = "拉取全部物品";
+            FetchAllButton.Label.ForeColour = Color.White;
             FetchAllButton.Click += (o, e) => FetchAllItems();
 
             var countLabel = new MirLabel
             {
-                Parent = ItemPanel, Location = new Point(120, 2), Size = new Size(40, 18),
+                Parent = ItemPanel, Location = new Point(130, 3), Size = new Size(40, 18),
                 Text = "数量", ForeColour = Color.White, AutoSize = false,
             };
             ItemCountBox = new MirTextBox
             {
                 Parent = ItemPanel, Border = true, BorderColour = Color.Lime,
-                Location = new Point(160, 1), Size = new Size(60, 18), MaxLength = 9,
+                Location = new Point(172, 2), Size = new Size(60, 18), MaxLength = 9,
             };
 
             ItemUp = new MirButton
             {
-                Index = 240, HoverIndex = 241, PressedIndex = 242,
-                Library = Libraries.Prguse2, Parent = this, Size = new Size(16, 16),
-                Location = new Point(Size.Width - 22, ContentY), Sound = SoundList.ButtonA,
+                Parent = this, AutoSize = false, Size = new Size(18, 18),
+                Location = new Point(Size.Width - 23, ContentY), Sound = SoundList.ButtonA,
+                Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
             };
+            ItemUp.Label.Text = "▲"; ItemUp.Label.ForeColour = Color.White;
             ItemUp.Click += (o, e) => { ItemScrollOffset -= RowH * 3; ClampItemScroll(); UpdateItemRows(); };
             ItemDown = new MirButton
             {
-                Index = 243, HoverIndex = 244, PressedIndex = 245,
-                Library = Libraries.Prguse2, Parent = this, Size = new Size(16, 16),
-                Location = new Point(Size.Width - 22, Size.Height - 28), Sound = SoundList.ButtonA,
+                Parent = this, AutoSize = false, Size = new Size(18, 18),
+                Location = new Point(Size.Width - 23, Size.Height - 28), Sound = SoundList.ButtonA,
+                Texture = DefTex, ForeColour = ButtonFill, Border = true, BorderColour = ButtonBorder,
             };
+            ItemDown.Label.Text = "▼"; ItemDown.Label.ForeColour = Color.White;
             ItemDown.Click += (o, e) => { ItemScrollOffset += RowH * 3; ClampItemScroll(); UpdateItemRows(); };
 
             ShowGMCommandTab();
@@ -240,8 +259,8 @@ namespace Client.MirScenes.Dialogs
         {
             GMCommandPanel.Visible = true;
             ItemPanel.Visible = false;
-            GMCommandTab.Index = 501;
-            ItemTab.Index = 502;
+            GMCommandTab.ForeColour = TabActive;
+            ItemTab.ForeColour = TabInactive;
             UpdateGMRows();
         }
 
@@ -249,8 +268,8 @@ namespace Client.MirScenes.Dialogs
         {
             GMCommandPanel.Visible = false;
             ItemPanel.Visible = true;
-            GMCommandTab.Index = 500;
-            ItemTab.Index = 503;
+            GMCommandTab.ForeColour = TabInactive;
+            ItemTab.ForeColour = TabActive;
             RefreshItemRows();
         }
 
@@ -265,25 +284,24 @@ namespace Client.MirScenes.Dialogs
 
                 var label = new MirLabel
                 {
-                    Parent = GMCommandPanel, Location = new Point(0, 0), Size = new Size(300, 18),
+                    Parent = GMCommandPanel, Location = new Point(0, 0), Size = new Size(340, 24),
                     Text = cmd + (string.IsNullOrEmpty(hint) ? "" : "  -  " + hint),
                     ForeColour = Color.Yellow, AutoSize = false, Visible = false,
                 };
                 var box = new MirTextBox
                 {
                     Parent = GMCommandPanel, Border = true, BorderColour = Color.Lime,
-                    Location = new Point(305, 0), Size = new Size(150, 18), MaxLength = 200, Visible = false,
+                    Location = new Point(350, 2), Size = new Size(210, 20), MaxLength = 200, Visible = false,
                 };
                 var btn = new MirButton
                 {
-                    Index = 500, Library = Libraries.Title, Parent = GMCommandPanel,
-                    Size = new Size(46, 18), Location = new Point(460, 0), Sound = SoundList.ButtonA, Visible = false,
+                    Parent = GMCommandPanel, AutoSize = false, Size = new Size(64, 22), Location = new Point(566, 1),
+                    Sound = SoundList.ButtonA, Texture = DefTex, ForeColour = ButtonFill,
+                    Border = true, BorderColour = ButtonBorder, Visible = false,
                 };
                 btn.Label.Text = "执行";
-                btn.Click += (o, e) =>
-                {
-                    SendGMCommand(cmd, box.Text);
-                };
+                btn.Label.ForeColour = Color.White;
+                btn.Click += (o, e) => SendGMCommand(cmd, box.Text);
 
                 box.TextBox.KeyDown += (s, ev) =>
                 {
@@ -349,25 +367,28 @@ namespace Client.MirScenes.Dialogs
             _itemListVersion = GameScene.ItemInfoList.Count;
 
             foreach (var c in ItemRows)
-            {
                 if (!c.IsDisposed) c.Dispose();
-            }
             ItemRows.Clear();
 
             var list = GameScene.ItemInfoList;
+            int rowW = ItemPanel.Size.Width - 6;
             for (int i = 0; i < list.Count; i++)
             {
                 var info = list[i];
                 if (info == null || string.IsNullOrEmpty(info.Name)) continue;
 
                 string name = info.Name;
+                var bg = new MirImageControl
+                {
+                    Parent = ItemPanel, AutoSize = false, Size = new Size(rowW, RowH), Location = new Point(3, 0),
+                    Visible = false, Texture = DefTex, ForeColour = ItemRowFill,
+                };
                 var label = new MirLabel
                 {
-                    Parent = ItemPanel, Location = new Point(0, 0), Size = new Size(ItemPanel.Size.Width - 6, 18),
-                    Text = name, ForeColour = Color.White, AutoSize = false, Visible = false,
+                    Parent = bg, NotControl = true, Location = new Point(6, 0), Size = new Size(rowW - 12, RowH),
+                    Text = name, ForeColour = Color.White, AutoSize = false,
                 };
-                int idx = i;
-                label.Click += (o, e) =>
+                bg.Click += (o, e) =>
                 {
                     string countText = ItemCountBox.Text.Trim();
                     string msg = "@MAKE " + name;
@@ -375,11 +396,11 @@ namespace Client.MirScenes.Dialogs
                         msg += " " + cnt;
                     Network.Enqueue(new C.GMCommand { Message = msg });
                 };
-                label.BeforeDraw += (o, e) =>
+                bg.BeforeDraw += (o, e) =>
                 {
-                    label.BackColour = MirControl.MouseControl == label ? new Color(60, 60, 120) : Color.Transparent;
+                    bg.ForeColour = MirControl.MouseControl == bg ? ItemRowHover : ItemRowFill;
                 };
-                ItemRows.Add(label);
+                ItemRows.Add(bg);
             }
             ClampItemScroll();
             UpdateItemRows();

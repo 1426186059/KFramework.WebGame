@@ -298,9 +298,27 @@ namespace Client.MirControls
             _autoSize = true;
         }
 
+        /// <summary>直接渲染的纹理(引擎默认图,如 KDefaultRes.DefaultTexture2D 的 1×1 白纹理)。
+        /// 设置后 DrawControl 会跳过 Libraries.* 图集,把该纹理拉伸到 Size 并按 ForeColour 着色。</summary>
+        public Texture2D Texture { get; set; }
+
         protected internal override void DrawControl()
         {
             base.DrawControl();
+
+            if (Texture != null)
+            {
+                Color drawColor = ForeColour;
+                if (Opacity < 1f)
+                    drawColor = new Color(drawColor.R, drawColor.G, drawColor.B, (byte)(drawColor.A * Opacity));
+                Size drawSize = Size;
+                int px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
+                int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
+                var srcRect = new KFramework.MonoGame.Rectangle(0, 0, Texture.Width, Texture.Height);
+                var dstRect = new KFramework.MonoGame.Rectangle(px, py, drawSize.Width, drawSize.Height);
+                DXManager.Draw(Texture, srcRect, dstRect, drawColor, (Blending ? MirBlend.Additive : MirBlend.Normal).ToBlendState(), FlipEffects);
+                return;
+            }
 
             if (!DrawImage) return;
 
