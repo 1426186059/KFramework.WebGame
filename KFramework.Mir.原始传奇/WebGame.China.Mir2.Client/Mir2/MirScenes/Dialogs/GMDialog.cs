@@ -45,8 +45,7 @@ namespace Client.MirScenes.Dialogs
 
         // 物品面板
         private MirImageControl ItemPanel;
-        private MirButton FetchAllButton;
-        private MirTextBox ItemCountBox;
+
         private MirTextBox ItemSearchBox;        // 物品搜索框（按 Id 或 名字 过滤）
         private string _itemSearch = string.Empty;
         private MirScrollView ItemScrollView;   // 物品行滚动区（放在 ItemPanel 内、表头下方）
@@ -197,37 +196,16 @@ namespace Client.MirScenes.Dialogs
                 Texture = DefTex, ForeColour = PanelFill, Border = true, BorderColour = PanelBorder,
             };
 
-            FetchAllButton = new MirButton
-            {
-                Parent = ItemPanel, AutoSize = false, Size = new Size(120, 22), Location = new Point(0, 0),
-                Sound = SoundList.ButtonA, Texture = DefTex, ForeColour = ButtonFill,
-                Border = true, BorderColour = ButtonBorder,
-            };
-            FetchAllButton.Label.Text = "拉取全部物品";
-            FetchAllButton.Label.ForeColour = Color.White;
-            FetchAllButton.Click += (o, e) => FetchAllItems();
-
-            var countLabel = new MirLabel
-            {
-                Parent = ItemPanel, Location = new Point(130, 3), Size = new Size(40, 18),
-                Text = "数量", ForeColour = Color.White, AutoSize = false,
-            };
-            ItemCountBox = new MirTextBox
-            {
-                Parent = ItemPanel, Border = true, BorderColour = Color.Lime,
-                Location = new Point(172, 2), Size = new Size(60, 18), MaxLength = 9,
-            };
-
-            // 物品搜索框：按 Id（纯数字）或 名字（包含，忽略大小写）过滤
+            // 物品搜索框：按 Id（纯数字）或 名字（包含，忽略大小写）过滤，左对齐
             var searchLabel = new MirLabel
             {
-                Parent = ItemPanel, Location = new Point(240, 3), Size = new Size(40, 18),
+                Parent = ItemPanel, Location = new Point(3, 3), Size = new Size(40, 18),
                 Text = "搜索", ForeColour = Color.White, AutoSize = false,
             };
             ItemSearchBox = new MirTextBox
             {
                 Parent = ItemPanel, Border = true, BorderColour = Color.Lime, MaxLength = 40,
-                Location = new Point(280, 2), Size = new Size(170, 18),
+                Location = new Point(45, 2), Size = new Size(180, 18),
             };
             ItemSearchBox.TextBox.TextChanged += (s, e) =>
             {
@@ -325,15 +303,6 @@ namespace Client.MirScenes.Dialogs
         #endregion
 
         #region 物品行
-        private void FetchAllItems()
-        {
-            // 复用现有物品信息请求机制:逐个请求索引,服务端对有效索引回 S.NewItemInfo。
-            const int maxIndex = 6000;
-            for (int i = 1; i <= maxIndex; i++)
-                GameScene.RequestItemInfo(i);
-            GameScene.Scene.OutputMessage("正在拉取全部物品,请稍候…");
-        }
-
         private void RefreshItemRows()
         {
             // 列表有变化时重建物品行（应用当前搜索过滤）
