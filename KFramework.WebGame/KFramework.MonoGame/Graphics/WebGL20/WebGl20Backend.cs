@@ -169,7 +169,7 @@ namespace KFramework.MonoGame
 
         public void SetScissor(int x, int y, int width, int height)
         {
-            // 上层（KFramework.MonoGameExtend.Mask.RectMaskScissor 等）传入的是屏幕左上原点、Y 向下的坐标；WebGL 的 glScissor 用左下原点，故翻转 Y。
+            // 上层（KFramework.MonoGameExtend.Mask.Mask 等）传入的是屏幕左上原点、Y 向下的坐标；WebGL 的 glScissor 用左下原点，故翻转 Y。
             // 全屏矩形 (x=0,y=0,w=W,h=H) 翻转后仍为 (0,0,W,H)，与历史内部调用一致。
             int glY = _viewportHeight - (y + height);
             JSBind_WEBGL20.Scissor(x, glY, width, height);

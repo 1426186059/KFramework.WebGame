@@ -147,7 +147,7 @@ namespace KFramework.MonoGame
         /// 设置剪刀（裁剪）矩形，供"矩形遮罩"使用。坐标采用屏幕左上原点、Y 向下（与精灵批一致）；
         /// 各后端在内部换算成自己的原生坐标（WebGL 左下原点会翻转 Y，Canvas2D 左上原点直接用）。
         /// <para>本方法只设置矩形；是否真正裁剪由当前 <see cref="RasterizerState.ScissorTestEnable"/> 决定，
-        /// 通常配合 <c>KFramework.MonoGameExtend.Mask.RectMaskScissor</c> 的矩形遮罩材质使用。</para>
+        /// 通常配合 <c>KFramework.MonoGameExtend.Mask.Mask</c> 的矩形遮罩材质使用。</para>
         /// </summary>
         public void SetScissor(int x, int y, int width, int height)
         {
