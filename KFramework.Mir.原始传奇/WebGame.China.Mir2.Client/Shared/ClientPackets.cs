@@ -298,10 +298,16 @@ namespace ClientPackets
 
         public string Message = string.Empty;
         public List<ChatItem> LinkedItems = new List<ChatItem>();
+        // 显式频道:取代原先塞在 Message 文本里的路由前缀(!/!!/!~/等),服务端据此路由。
+        public ChatType Type = ChatType.Nearby;
+        // 私聊目标角色ID:非私聊时为 0;有值时服务端按 ID 精确投递,无需再解析消息里的名字。
+        public uint PrivateChatTargetId = 0;
 
         protected override void ReadPacket(BinaryReader reader)
         {
+            Type = (ChatType)reader.ReadByte();
             Message = reader.ReadString();
+            PrivateChatTargetId = reader.ReadUInt32();
 
             int count = reader.ReadInt32();
 
@@ -311,7 +317,9 @@ namespace ClientPackets
 
         protected override void WritePacket(BinaryWriter writer)
         {
+            writer.Write((byte)Type);
             writer.Write(Message);
+            writer.Write(PrivateChatTargetId);
 
             writer.Write(LinkedItems.Count);
 

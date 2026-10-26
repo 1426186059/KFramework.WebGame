@@ -244,6 +244,8 @@ namespace Client.MirScenes.Dialogs
                 }
 
                 GameScene.Scene.ChatDialog.ChatTextBox.SetFocus();
+                GameScene.Scene.ChatDialog.CurrentSendChannel = ChatChannelFilter.PrivateChat;
+                GameScene.Scene.ChatDialog.LastPrivateChatTargetId = (uint)SelectedFriend.Index;
                 GameScene.Scene.ChatDialog.ChatTextBox.Text = "/" + SelectedFriend.Name + " ";
                 GameScene.Scene.ChatDialog.ChatTextBox.Visible = true;
                 GameScene.Scene.ChatDialog.ChatTextBox.TextBox.SelectionLength = 0;

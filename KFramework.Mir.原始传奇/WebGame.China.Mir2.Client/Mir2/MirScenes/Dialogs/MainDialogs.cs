@@ -780,9 +780,13 @@ namespace Client.MirScenes.Dialogs
         public string LastPM = string.Empty;
 
         public int StartIndex, LineCount = 7, WindowSize;
-        public string ChatPrefix = "";
+        // 私聊目标角色ID:由好友/伴侣等入口设置;非私聊为 0。取代原先把名字塞进消息文本的做法。
+        public uint LastPrivateChatTargetId = 0;
 
-        // 下拉频道选择后,聊天面板只显示该频道(综合=全部);发送前缀仍由 ToggleChatFilter 设置。
+        // 下拉/快捷键选定的“发送频道”;与 CurrentViewChannel(视图过滤)解耦,避免打字时误改视图。
+        public ChatChannelFilter CurrentSendChannel = ChatChannelFilter.All;
+
+        // 下拉频道选择后,聊天面板只显示该频道(综合=全部);发送频道由 ToggleChatFilter 一并设置。
         public ChatChannelFilter CurrentViewChannel = ChatChannelFilter.All;
 
         // 频道下拉相关(从 ChatControlBar 合并)
@@ -1094,18 +1098,47 @@ namespace Client.MirScenes.Dialogs
                 if (msg.ToUpper() == "@TARGETDEAD")
                     Settings.TargetDead = !Settings.TargetDead;
 
+                ChatType type = ViewChannelToType(CurrentSendChannel);
+                uint targetId = 0;
+
+                if (type == ChatType.PrivateChat)
+                {
+                    // 私聊:消息形如 "/名字 内容" 时解析目标名字(供回复预填 LastPM),并按需剥掉名字只发内容。
+                    if (msg.StartsWith("/"))
+                    {
+                        string[] parts = msg.Split(' ');
+                        string name = parts.Length > 0 ? parts[0].Substring(1) : "";
+                        if (!string.IsNullOrEmpty(name))
+                        {
+                            LastPM = name;
+                            // 仅当已知目标角色ID(好友/伴侣入口设置)时,才剥掉名字、用ID精确路由;
+                            // 否则保留 "/名字" 在消息里,服务端按名字兜底路由。
+                            if (LastPrivateChatTargetId != 0)
+                            {
+                                targetId = LastPrivateChatTargetId;
+                                msg = msg.Substring(name.Length + 1).TrimStart();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        targetId = LastPrivateChatTargetId;
+                    }
+                }
+                else
+                {
+                    // 非私聊:剥掉可能残留的旧版路由前缀(!/!!/!~),避免服务端重复解析;@ 命令前缀保留。
+                    msg = StripLegacyPrefix(msg);
+                    LastPrivateChatTargetId = 0;
+                }
+
                 Network.Enqueue(new C.Chat
                 {
                     Message = msg,
-                    LinkedItems = new List<ChatItem>(LinkedItems)
+                    LinkedItems = new List<ChatItem>(LinkedItems),
+                    Type = type,
+                    PrivateChatTargetId = targetId,
                 });
-
-                if (msg[0] == '/')
-                {
-                    string[] parts = msg.Split(' ');
-                    if (parts.Length > 0)
-                        LastPM = parts[0];
-                }
             }
 
             // 无论是否发送,都收起输入框(空内容时等同于按 Enter 关闭输入),与 Enter 键行为一致
@@ -1118,8 +1151,7 @@ namespace Client.MirScenes.Dialogs
         public void StartChatInput()
         {
             ChatTextBox.SetFocus();
-            // 仅在首次展开(输入框还隐藏)时填入频道前缀,避免重复点击聊天栏清空已输入内容
-            if (!ChatTextBox.Visible && ChatPrefix != "") ChatTextBox.Text = ChatPrefix;
+            // 频道已由下拉/快捷键显式选定(CurrentSendChannel),无需再往输入框塞前缀文本。
             ChatTextBox.Visible = true;
             ChatTextBox.TextBox.SelectionLength = 0;
             ChatTextBox.TextBox.SelectionStart = ChatTextBox.Text.Length;
@@ -1252,6 +1284,15 @@ namespace Client.MirScenes.Dialogs
                 case ChatChannelFilter.System: return ChatType.System;
                 default: return ChatType.Nearby;
             }
+        }
+
+        // 剥掉非私聊消息里可能残留的旧版路由前缀(!/!!/!~);注意只判断 '!' 开头,不误伤 '@' 命令前缀。
+        private static string StripLegacyPrefix(string msg)
+        {
+            if (msg.StartsWith("!~")) return msg.Substring(2).TrimStart();
+            if (msg.StartsWith("!!")) return msg.Substring(2).TrimStart();
+            if (msg.StartsWith("!")) return msg.Substring(1).TrimStart();
+            return msg;
         }
 
         public void Update()
@@ -1458,25 +1499,26 @@ namespace Client.MirScenes.Dialogs
             // KeyPress 现在给的是键码：'@' / '!' 是上档字符，靠 Shift 位与 '2' / '1' 区分；'/' 是 Oem 键(191)。
             switch (e.KeyCode)
             {
-                case Keys.Digit2:               // '@' = Shift + 2
-                case Keys.Digit1:               // '!' = Shift + 1
-                case Keys.Space:
-                case Keys.Enter:
-                    if (!e.Shift && (e.KeyCode == Keys.Digit1 || e.KeyCode == Keys.Digit2))
-                        break;              // 没按 Shift 的 1 / 2 只是数字，不是聊天前缀
+                case Keys.Digit2:               // '@' = Shift + 2：命令前缀,保留原样写入输入框
                     ChatTextBox.SetFocus();
-                    if (e.KeyCode == Keys.Digit1) ChatTextBox.Text = "!";
-                    if (e.KeyCode == Keys.Digit2) ChatTextBox.Text = "@";
-                    if (ChatPrefix != "") ChatTextBox.Text = ChatPrefix;
-
+                    ChatTextBox.Text = "@";
                     ChatTextBox.Visible = true;
                     ChatTextBox.TextBox.SelectionLength = 0;
                     ChatTextBox.TextBox.SelectionStart = ChatTextBox.Text.Length;
                     e.Handled = true;
                     break;
-                case Keys.Slash:      // '/'
+                case Keys.Digit1:               // '!' = Shift + 1：世界频道(仅设发送频道,不改视图过滤)
                     ChatTextBox.SetFocus();
-                    ChatTextBox.Text = LastPM + " ";
+                    CurrentSendChannel = ChatChannelFilter.World;
+                    ChatTextBox.Visible = true;
+                    ChatTextBox.TextBox.SelectionLength = 0;
+                    ChatTextBox.TextBox.SelectionStart = ChatTextBox.Text.Length;
+                    e.Handled = true;
+                    break;
+                case Keys.Slash:                // '/'：私聊发送频道 + 预填上次私聊对象名
+                    ChatTextBox.SetFocus();
+                    CurrentSendChannel = ChatChannelFilter.PrivateChat;
+                    ChatTextBox.Text = (LastPM != "" ? LastPM + " " : "");
                     ChatTextBox.Visible = true;
                     ChatTextBox.TextBox.SelectionLength = 0;
                     ChatTextBox.TextBox.SelectionStart = ChatTextBox.Text.Length;
@@ -1549,32 +1591,9 @@ namespace Client.MirScenes.Dialogs
 
         public void ToggleChatFilter(ChatChannelFilter filter)
         {
-            // 下拉选定频道:既设置发送前缀(服务端据此路由),也作为聊天面板视图过滤(只看该频道)。
+            // 下拉选定频道:既作为聊天面板视图过滤(只看该频道),也作为发送频道(显式下发给服务端,取代文本前缀)。
             CurrentViewChannel = filter;
-
-            switch (filter)
-            {
-                case ChatChannelFilter.All:
-                case ChatChannelFilter.System:
-                    ChatPrefix = "";
-                    break;
-                case ChatChannelFilter.World:
-                    ChatPrefix = "!";
-                    break;
-                case ChatChannelFilter.PrivateChat:
-                    ChatPrefix = "/";
-                    break;
-                case ChatChannelFilter.Team:
-                    ChatPrefix = "!!";
-                    break;
-                case ChatChannelFilter.Guild:
-                    ChatPrefix = "!~";
-                    break;
-                case ChatChannelFilter.Nearby:
-                    // 本作暂无独立“附近”频道过滤,保持默认(前缀清空)。
-                    ChatPrefix = "";
-                    break;
-            }
+            CurrentSendChannel = filter;
 
             // 重新渲染聊天面板以应用视图过滤
             Update();
