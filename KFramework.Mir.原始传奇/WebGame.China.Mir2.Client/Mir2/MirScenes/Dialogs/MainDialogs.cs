@@ -791,7 +791,7 @@ namespace Client.MirScenes.Dialogs
 
         private readonly List<string> ChatChannelList = new List<string>()
         {
-            "综合", "世界", "私聊", "行会", "队伍", "附近", "系统"
+            "综合", "世界", "私聊", "行会", "队伍", "附近"
         };
 
         // 与 ChatChannelList 一一对应:下拉选中第 i 项时,映射到对应的频道过滤类型。
