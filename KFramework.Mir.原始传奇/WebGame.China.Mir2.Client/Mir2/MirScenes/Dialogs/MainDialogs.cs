@@ -1103,27 +1103,7 @@ namespace Client.MirScenes.Dialogs
 
                 if (type == ChatType.PrivateChat)
                 {
-                    // 私聊:消息形如 "/名字 内容" 时解析目标名字(供回复预填 LastPM),并按需剥掉名字只发内容。
-                    if (msg.StartsWith("/"))
-                    {
-                        string[] parts = msg.Split(' ');
-                        string name = parts.Length > 0 ? parts[0].Substring(1) : "";
-                        if (!string.IsNullOrEmpty(name))
-                        {
-                            LastPM = name;
-                            // 仅当已知目标角色ID(好友/伴侣入口设置)时,才剥掉名字、用ID精确路由;
-                            // 否则保留 "/名字" 在消息里,服务端按名字兜底路由。
-                            if (LastPrivateChatTargetId != 0)
-                            {
-                                targetId = LastPrivateChatTargetId;
-                                msg = msg.Substring(name.Length + 1).TrimStart();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        targetId = LastPrivateChatTargetId;
-                    }
+                    targetId = LastPrivateChatTargetId;
                 }
                 else
                 {
@@ -1295,8 +1275,9 @@ namespace Client.MirScenes.Dialogs
             return msg;
         }
 
-        public void Update()
+        public override void Update()
         {
+            base.Update();
             History = new List<ChatHistory>();
 
             for (int i = 0; i < FullHistory.Count; i++)
