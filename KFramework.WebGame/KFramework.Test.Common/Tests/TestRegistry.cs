@@ -73,6 +73,12 @@ namespace KFramework.Test.Common.Tests
             },
             new TestEntry
             {
+                Name = "UI 组件总览（标签页切换）",
+                Desc = "每种 UI 控件一个标签页，顶部按钮切换：① KImage（尺寸/染色/Pivot）② KButton（九锚点·四态·点击计数）③ KLabel（九锚点·格内居中·折行）④ KSimpleLabel（Pivot 定位）⑤ KScrollView（滚轮/滚动条）⑥ KDropDown（展开选项·回显）⑦ KInputBox（聚焦键入·回车提交）⑧ KProgressBar（动画·百分比）",
+                Factory = static () => new UITest.UITestScene(),
+            },
+            new TestEntry
+            {
                 Name = "混合模式 Blend",
                 Desc = "BlendState 各混合模式可视化对比：半透明 / 加法发光 / 覆盖 / 乘法压暗，以及传奇昼夜用的 Multiply(Zero, SourceColor)；并演示用公开构造传自定义混合参数",
                 Factory = static () => new BlendTest.BlendTestScene(),
