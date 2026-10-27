@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using System.Text;
 
@@ -76,20 +75,14 @@ namespace KFramework.MonoGame
 
         [Conditional(MacroConst.DEBUG)]
         [Conditional(MacroConst.PrintLog)]
-        public static void Assert(bool isTrue, object data1 = null, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
+        public static void Assert(bool isTrue, object data1 = null, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null)
         {
             if (!isTrue)
             {
-                string content = GetStr(data1, data2, data3, data4, data5, data6, data7, data8, data9);
+                string content = GetStr("Assert Failed", data1, data2, data3, data4, data5, data6, data7, data8);
+                Console.Error.WriteLine(content);
                 Debug.Assert(isTrue, content);
             }
-        }
-
-        [Conditional(MacroConst.DEBUG)]
-        [Conditional(MacroConst.PrintLog)]
-        public static void Assert(bool isTrue)
-        {
-            Debug.Assert(isTrue);
         }
     }
 }
