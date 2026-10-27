@@ -1,3 +1,5 @@
+using KFramework.MonoGameExtend;
+
 namespace KFramework.Example.Mario
 {
     internal class TestScreen : KUIBase

@@ -1,5 +1,6 @@
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
+using KFramework.MonoGameExtend;
 
 namespace KFramework.Test.Common.Tests.KCanvasTest
 {

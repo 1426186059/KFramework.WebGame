@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
+using KFramework.MonoGameExtend;
 
 namespace KFramework.Example.Tank
 {

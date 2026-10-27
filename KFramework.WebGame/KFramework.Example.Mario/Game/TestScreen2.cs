@@ -1,4 +1,3 @@
-
 using KFramework.MonoGameExtend;
 
 namespace KFramework.Example.Mario
