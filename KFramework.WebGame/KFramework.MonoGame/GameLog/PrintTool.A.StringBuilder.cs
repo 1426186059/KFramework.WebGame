@@ -1,6 +1,4 @@
-using System;
 using System.Diagnostics;
-using System.Text;
 
 namespace KFramework.MonoGame
 {
@@ -148,6 +146,42 @@ namespace KFramework.MonoGame
             {
                 if (value != null) mStringBuilder.Append(value);
                 mStringBuilder.Append(ConcatStr.AsSpan());
+            }
+
+            // KV 形式（key=value）：key/value 须为 ISpanFormattable（所有数值/char/bool/DateTime/Guid 等均满足，string 不满足请用 Append）。
+            // 走 TryFormat 直写 stackalloc 缓冲，常见情况零分配；仅超长（如极长 decimal）才回退 ToString()。
+            [Conditional("DEBUG")]
+            [Conditional(MacroConst.PrintLog)]
+            public static void AppendKV<K, V>(K key, V value)
+                where K : ISpanFormattable
+                where V : ISpanFormattable
+            {
+                AppendFormatted(key);
+                mStringBuilder.Append(KVConcatStr.AsSpan());
+                AppendFormatted(value);
+                mStringBuilder.Append(ConcatStr.AsSpan());
+            }
+
+            // 字符串键重载：key 为 string（真实日志里键几乎都是字符串），value 仍须 ISpanFormattable。
+            [Conditional("DEBUG")]
+            [Conditional(MacroConst.PrintLog)]
+            public static void AppendKV<V>(string key, V value)
+                where V : ISpanFormattable
+            {
+                mStringBuilder.Append(key);
+                mStringBuilder.Append(KVConcatStr.AsSpan());
+                AppendFormatted(value);
+                mStringBuilder.Append(ConcatStr.AsSpan());
+            }
+
+            private static void AppendFormatted<T>(T value)
+                where T : ISpanFormattable
+            {
+                Span<char> buffer = stackalloc char[128];
+                if (value.TryFormat(buffer, out int written, default, null))
+                    mStringBuilder.Append(buffer[..written]);
+                else
+                    mStringBuilder.Append(value.ToString());   // 极端超长才分配，极少走到
             }
 
             [Conditional("DEBUG")]

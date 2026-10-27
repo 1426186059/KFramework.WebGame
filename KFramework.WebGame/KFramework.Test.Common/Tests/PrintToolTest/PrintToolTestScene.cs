@@ -12,9 +12,10 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
 
     /// <summary>
     /// PrintTool 三种打印方式性能对比：
-    /// <para>· ① Generic.Log(object…) —— 值类型（int/float/bool）按 object 传递，会装箱、触发 GC。</para>
+    /// <para>· ① Generic.Log(object…) —— 各种值类型（int/long/uint/ulong/short/ushort/byte/sbyte/float/double/decimal/bool/char）按 object 传递，会装箱、触发 GC。</para>
     /// <para>· ② PrintTool.A（StringBuilder 后端）—— 强类型 Append，无装箱，输出经 StringBuilder.GetChunks() 直写。</para>
     /// <para>· ③ PrintTool.B（Span&lt;char&gt; 后端）—— 强类型 Append（TryFormat 直写字符缓冲），无装箱、无字符串分配。</para>
+    /// <para>· ④⑤ A-KV / B-KV —— 在 ②/③ 的基础上改用 AppendKV(string 键, 强类型值) 写法（key=value），对比 Append 写法本身的耗时/分配差异（数据完全相同）。</para>
     /// <para>各方式打印几千条，统计 用时（Stopwatch）与 GC0 次数（GC.CollectionCount）。</para>
     /// <para>注意：PrintTool.A/B 的方法带 [Conditional]，Release（无 DEBUG 且未定义 PrintLog）下调用点被整体剔除；请用 Debug 构建运行本页。</para>
     /// </summary>
@@ -50,11 +51,15 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
             AddUiButton("测试 Generic.Log", () => RunBenchmark("① Generic.Log", RunGeneric));
             AddUiButton("测试 A(StringBuilder)", () => RunBenchmark("② StringBuilder", RunStringBuilder));
             AddUiButton("测试 B(Span)", () => RunBenchmark("③ Span<char>", RunSpan));
+            AddUiButton("测试 A-KV(StringBuilder)", () => RunBenchmark("④ A-KV", RunStringBuilderKV));
+            AddUiButton("测试 B-KV(Span)", () => RunBenchmark("⑤ B-KV", RunSpanKV));
             AddUiButton("全部测试", () =>
             {
                 RunBenchmark("① Generic.Log", RunGeneric);
                 RunBenchmark("② StringBuilder", RunStringBuilder);
                 RunBenchmark("③ Span<char>", RunSpan);
+                RunBenchmark("④ A-KV", RunStringBuilderKV);
+                RunBenchmark("⑤ B-KV", RunSpanKV);
             });
             AddUiButton("清空结果", () => { _results.Clear(); _lastError = null; });
         }
@@ -92,20 +97,24 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
             }
         }
 
-        // 以下三个方法每次循环塞同样的重负载：覆盖各种值类型（int/long/uint/ulong/short/ushort/byte/sbyte/float/double/decimal/bool/char/string）。
-        // 唯一变量是它们的传递方式：Generic.Log 按 object 传递会逐项装箱并触发 GC；A/B 走强类型 Append 不装箱。
-        // 注：PrintTool.Log 固定最多 9 个 object 参数，故 Generic 基线最多喂 9 个值类型（全部装箱）；A/B 的 Append 无上限，可打出全部类型。
+        // 三个方法使用完全相同的 9 个数据（int/long/uint/ulong/float/double/decimal/bool/string），保证对比绝对公平；
+        // 每个值都被放大/加长（大整数、长小数、80 字符长字符串）以加重 ToString 与装箱代价，使差距更明显。
+        // 唯一变量是传递方式：Generic.Log 按 object 逐项装箱并对每个值 ToString() 分配字符串；A/B 走强类型 Append（TryFormat 直写），零装箱、零字符串分配。
         private static void RunGeneric(int n)
         {
             for (int i = 0; i < n; i++)
             {
-                float f = i * 1.234f;
-                double d = i * 5.678;
-                decimal dec = i * 9.99m;
-                // 9 个值类型全部作为 object 传入 → 全部装箱
-                PrintTool.Log(
-                    (int)i, (long)i, (uint)i, (ulong)i, (short)i,
-                    f, d, dec, true);
+                int vInt = i * 7919 + 13;
+                long vLong = i * 1000000000L + 123456789L;
+                uint vUInt = (uint)(i * 104729u + 7u);
+                ulong vULong = (ulong)i * 1000000000000UL + 999UL;
+                float vFloat = i * 1.2345678f;
+                double vDouble = i * 5.678901234;
+                decimal vDecimal = i * 123456.7890123456m;
+                bool vBool = (i & 1) == 0;
+                string vStr = "item_" + i.ToString("D8") + "_" + new string('*', 80);
+                // 9 个数据全部作为 object 传入 → 全部装箱，且每个值都会 ToString() 分配字符串
+                PrintTool.Log(vInt, vLong, vUInt, vULong, vFloat, vDouble, vDecimal, vBool, vStr);
             }
         }
 
@@ -113,29 +122,25 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
         {
             for (int i = 0; i < n; i++)
             {
-                float f = i * 1.234f;
-                double d = i * 5.678;
-                decimal dec = i * 9.99m;
-                string name = "item" + i;
-                char c = (char)('A' + i % 26);
-                byte b = (byte)(i & 0xFF);
-                sbyte sb = (sbyte)(i & 0x7F);
-                ushort us = (ushort)(i & 0xFFFF);
+                int vInt = i * 7919 + 13;
+                long vLong = i * 1000000000L + 123456789L;
+                uint vUInt = (uint)(i * 104729u + 7u);
+                ulong vULong = (ulong)i * 1000000000000UL + 999UL;
+                float vFloat = i * 1.2345678f;
+                double vDouble = i * 5.678901234;
+                decimal vDecimal = i * 123456.7890123456m;
+                bool vBool = (i & 1) == 0;
+                string vStr = "item_" + i.ToString("D8") + "_" + new string('*', 80);
                 PrintTool.A.BeginLog();
-                PrintTool.A.Append("i");   PrintTool.A.Append((int)i);
-                PrintTool.A.Append("l");   PrintTool.A.Append((long)i);
-                PrintTool.A.Append("u");   PrintTool.A.Append((uint)i);
-                PrintTool.A.Append("ul");  PrintTool.A.Append((ulong)i);
-                PrintTool.A.Append("s");   PrintTool.A.Append((short)i);
-                PrintTool.A.Append("us");  PrintTool.A.Append(us);
-                PrintTool.A.Append("b");   PrintTool.A.Append(b);
-                PrintTool.A.Append("sb");  PrintTool.A.Append(sb);
-                PrintTool.A.Append("f");   PrintTool.A.Append(f);
-                PrintTool.A.Append("d");   PrintTool.A.Append(d);
-                PrintTool.A.Append("dec"); PrintTool.A.Append(dec);
-                PrintTool.A.Append("bo");  PrintTool.A.Append(true);
-                PrintTool.A.Append("c");   PrintTool.A.Append(c);
-                PrintTool.A.Append("name");PrintTool.A.Append(name);
+                PrintTool.A.Append("vInt");    PrintTool.A.Append(vInt);
+                PrintTool.A.Append("vLong");   PrintTool.A.Append(vLong);
+                PrintTool.A.Append("vUInt");   PrintTool.A.Append(vUInt);
+                PrintTool.A.Append("vULong");  PrintTool.A.Append(vULong);
+                PrintTool.A.Append("vFloat");  PrintTool.A.Append(vFloat);
+                PrintTool.A.Append("vDouble"); PrintTool.A.Append(vDouble);
+                PrintTool.A.Append("vDecimal");PrintTool.A.Append(vDecimal);
+                PrintTool.A.Append("vBool");   PrintTool.A.Append(vBool);
+                PrintTool.A.Append("vStr");    PrintTool.A.Append(vStr);
                 PrintTool.A.EndLog();
             }
         }
@@ -144,29 +149,81 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
         {
             for (int i = 0; i < n; i++)
             {
-                float f = i * 1.234f;
-                double d = i * 5.678;
-                decimal dec = i * 9.99m;
-                string name = "item" + i;
-                char c = (char)('A' + i % 26);
-                byte b = (byte)(i & 0xFF);
-                sbyte sb = (sbyte)(i & 0x7F);
-                ushort us = (ushort)(i & 0xFFFF);
+                int vInt = i * 7919 + 13;
+                long vLong = i * 1000000000L + 123456789L;
+                uint vUInt = (uint)(i * 104729u + 7u);
+                ulong vULong = (ulong)i * 1000000000000UL + 999UL;
+                float vFloat = i * 1.2345678f;
+                double vDouble = i * 5.678901234;
+                decimal vDecimal = i * 123456.7890123456m;
+                bool vBool = (i & 1) == 0;
+                string vStr = "item_" + i.ToString("D8") + "_" + new string('*', 80);
                 PrintTool.B.BeginLog();
-                PrintTool.B.Append("i");   PrintTool.B.Append((int)i);
-                PrintTool.B.Append("l");   PrintTool.B.Append((long)i);
-                PrintTool.B.Append("u");   PrintTool.B.Append((uint)i);
-                PrintTool.B.Append("ul");  PrintTool.B.Append((ulong)i);
-                PrintTool.B.Append("s");   PrintTool.B.Append((short)i);
-                PrintTool.B.Append("us");  PrintTool.B.Append(us);
-                PrintTool.B.Append("b");   PrintTool.B.Append(b);
-                PrintTool.B.Append("sb");  PrintTool.B.Append(sb);
-                PrintTool.B.Append("f");   PrintTool.B.Append(f);
-                PrintTool.B.Append("d");   PrintTool.B.Append(d);
-                PrintTool.B.Append("dec"); PrintTool.B.Append(dec);
-                PrintTool.B.Append("bo");  PrintTool.B.Append(true);
-                PrintTool.B.Append("c");   PrintTool.B.Append(c);
-                PrintTool.B.Append("name");PrintTool.B.Append(name);
+                PrintTool.B.Append("vInt");    PrintTool.B.Append(vInt);
+                PrintTool.B.Append("vLong");   PrintTool.B.Append(vLong);
+                PrintTool.B.Append("vUInt");   PrintTool.B.Append(vUInt);
+                PrintTool.B.Append("vULong");  PrintTool.B.Append(vULong);
+                PrintTool.B.Append("vFloat");  PrintTool.B.Append(vFloat);
+                PrintTool.B.Append("vDouble"); PrintTool.B.Append(vDouble);
+                PrintTool.B.Append("vDecimal");PrintTool.B.Append(vDecimal);
+                PrintTool.B.Append("vBool");   PrintTool.B.Append(vBool);
+                PrintTool.B.Append("vStr");    PrintTool.B.Append(vStr);
+                PrintTool.B.EndLog();
+            }
+        }
+
+        // 与 RunStringBuilder / RunSpan 使用完全相同的 9 个数据，仅写法换成 AppendKV（string 键 + 强类型值）；
+        // 字符串值 vStr 因 string 非 ISpanFormattable，仍走 Append，确保输出与上面两组完全一致。
+        private static void RunStringBuilderKV(int n)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                int vInt = i * 7919 + 13;
+                long vLong = i * 1000000000L + 123456789L;
+                uint vUInt = (uint)(i * 104729u + 7u);
+                ulong vULong = (ulong)i * 1000000000000UL + 999UL;
+                float vFloat = i * 1.2345678f;
+                double vDouble = i * 5.678901234;
+                decimal vDecimal = i * 123456.7890123456m;
+                bool vBool = (i & 1) == 0;
+                string vStr = "item_" + i.ToString("D8") + "_" + new string('*', 80);
+                PrintTool.A.BeginLog();
+                PrintTool.A.AppendKV("vInt", vInt);
+                PrintTool.A.AppendKV("vLong", vLong);
+                PrintTool.A.AppendKV("vUInt", vUInt);
+                PrintTool.A.AppendKV("vULong", vULong);
+                PrintTool.A.AppendKV("vFloat", vFloat);
+                PrintTool.A.AppendKV("vDouble", vDouble);
+                PrintTool.A.AppendKV("vDecimal", vDecimal);
+                PrintTool.A.AppendKV("vBool", vBool);
+                PrintTool.A.Append("vStr"); PrintTool.A.Append(vStr);
+                PrintTool.A.EndLog();
+            }
+        }
+
+        private static void RunSpanKV(int n)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                int vInt = i * 7919 + 13;
+                long vLong = i * 1000000000L + 123456789L;
+                uint vUInt = (uint)(i * 104729u + 7u);
+                ulong vULong = (ulong)i * 1000000000000UL + 999UL;
+                float vFloat = i * 1.2345678f;
+                double vDouble = i * 5.678901234;
+                decimal vDecimal = i * 123456.7890123456m;
+                bool vBool = (i & 1) == 0;
+                string vStr = "item_" + i.ToString("D8") + "_" + new string('*', 80);
+                PrintTool.B.BeginLog();
+                PrintTool.B.AppendKV("vInt", vInt);
+                PrintTool.B.AppendKV("vLong", vLong);
+                PrintTool.B.AppendKV("vUInt", vUInt);
+                PrintTool.B.AppendKV("vULong", vULong);
+                PrintTool.B.AppendKV("vFloat", vFloat);
+                PrintTool.B.AppendKV("vDouble", vDouble);
+                PrintTool.B.AppendKV("vDecimal", vDecimal);
+                PrintTool.B.AppendKV("vBool", vBool);
+                PrintTool.B.Append("vStr"); PrintTool.B.Append(vStr);
                 PrintTool.B.EndLog();
             }
         }
@@ -183,7 +240,7 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
 
             if (_results.Count == 0)
                 y += DrawLine(batch, Font,
-                    "点上方按钮开始：Generic.Log 会对 int/float/bool 装箱并触发 GC，另两者不会。",
+                    "点上方按钮开始：Generic.Log 会对 int/long/uint/ulong/float/double/decimal/bool 等所有传入的值类型装箱并触发 GC，A/B 强类型 Append 不会。",
                     new Vector2(origin.X, y), Color.LightGray);
             for (int i = 0; i < _results.Count; i++)
             {
