@@ -89,6 +89,12 @@ namespace KFramework.Test.Common.Tests
                 Desc = "专项测试：2D 正交相机世界↔屏幕坐标往返 + 正交视锥剔除（环上越界精灵被 activeSelf=false 真正剔除）；3D 透视相机（看向 -Z）用 IsInFrustum 断言 前方/背后/超远/过近/FOV外/FOV内 各用例，文本报告 PASS/FAIL。对标 Unity 相机矩阵",
                 Factory = static () => new CameraTest.CameraTestScene(),
             },
+            new TestEntry
+            {
+                Name = "PrintTool 打印性能",
+                Desc = "三种打印方式对比：① Generic.Log(object 装箱) ② BeginStringBuilder(强类型 Append) ③ BeginSpan(Span<char> 强类型 TryFormat)，各打印几千条并计时 + 统计 GC0 次数；可切数量档位、单测或全测。请用 Debug 构建运行（PrintTool 输出在 #if DEBUG 内）",
+                Factory = static () => new PrintToolTest.PrintToolTestScene(),
+            },
         ];
     }
 
