@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using KFramework.MonoGame;
 
-namespace KFramework.MonoGameExtend.Mask
+namespace KFramework.MonoGameExtend
 {
     /// <summary>
     /// 统一遮罩静态类：把"剪刀 / 模板 / Alpha / 矩形"四类遮罩的<b>材质配置方法</b>都归拢到这一个类里，
