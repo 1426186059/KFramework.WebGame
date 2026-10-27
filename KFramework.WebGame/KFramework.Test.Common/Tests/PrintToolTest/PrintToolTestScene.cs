@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
@@ -24,6 +26,9 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
         private readonly List<string> _results = new();
         private string _lastError;
 
+        private bool _buildOnly;                                   // 仅构建（不打印）模式：替换 Console.Out 为丢弃写入器
+        private static readonly TextWriter Discard = new DiscardWriter();
+
         public override string Title => "PrintTool 打印性能对比（装箱 / GC / 用时）";
 
         public override void Update()
@@ -41,6 +46,7 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
             BeginButtons(70);
 
             AddUiButton($"数量 {CountOptions[_countIndex]:N0}", () => _countIndex = (_countIndex + 1) % CountOptions.Length);
+            AddUiButton(_buildOnly ? "模式: 仅构建(不打印)" : "模式: 打印", () => _buildOnly = !_buildOnly);
             AddUiButton("测试 Generic.Log", () => RunBenchmark("① Generic.Log", RunGeneric));
             AddUiButton("测试 BeginStringBuilder", () => RunBenchmark("② StringBuilder", RunStringBuilder));
             AddUiButton("测试 BeginSpan", () => RunBenchmark("③ Span<char>", RunSpan));
@@ -60,11 +66,24 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
             {
                 long gcBefore = GC.CollectionCount(0);
                 var sw = Stopwatch.StartNew();
-                action(n);
+                if (_buildOnly)
+                {
+                    // 仅构建：把 Console.Out 换成丢弃写入器，去掉 console.log 这个 interop 耗时大头；
+                    // 三种方式仍走真实 .Log() 代码路径，从而暴露纯构建成本（含 Generic 的装箱）。
+                    TextWriter old = Console.Out;
+                    Console.SetOut(Discard);
+                    try { action(n); }
+                    finally { Console.SetOut(old); }
+                }
+                else
+                {
+                    action(n);
+                }
                 sw.Stop();
                 long gcAfter = GC.CollectionCount(0);
 
-                _results.Insert(0, $"{name,-16} n={n,-6:N0} 用时 {sw.Elapsed.TotalMilliseconds,9:F1} ms  GC0={gcAfter - gcBefore}");
+                string tag = _buildOnly ? "构建" : "打印";
+                _results.Insert(0, $"{name,-16} [{tag}] n={n,-6:N0} 用时 {sw.Elapsed.TotalMilliseconds,9:F1} ms  GC0={gcAfter - gcBefore}");
                 if (_results.Count > 12) _results.RemoveAt(_results.Count - 1);
             }
             catch (Exception ex)
@@ -121,7 +140,9 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
             DrawButtons(batch);
 
             float y = ContentTop + 6f;
-            y += DrawSection(batch, "结果（用时含真实控制台打印；GC0 即 Gen0 回收次数，最能反映装箱代价）", new Vector2(origin.X, y));
+            y += DrawSection(batch, _buildOnly
+                ? "结果【仅构建·不打印】：去掉 console.log 大头，看纯构建耗时；GC0 反映装箱代价"
+                : "结果【打印】：用时含真实控制台打印；GC0 即 Gen0 回收次数，最能反映装箱代价", new Vector2(origin.X, y));
 
             if (_results.Count == 0)
                 y += DrawLine(batch, Font,
@@ -137,9 +158,29 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
                 y += DrawLine(batch, Font, _lastError, new Vector2(origin.X, y), new Color(255, 150, 150));
 
             y += DrawLine(batch, Font,
+                _buildOnly
+                    ? "当前：仅构建模式（Console.Out 已替换为丢弃写入器，无控制台输出）"
+                    : "当前：打印模式（真实 console.log；点「模式」按钮切到仅构建）",
+                new Vector2(origin.X, y), new Color(150, 165, 190));
+            y += DrawLine(batch, Font,
                 $"FPS {Fps:F1}（真实帧率）    Esc 返回",
                 new Vector2(origin.X, y), new Color(150, 165, 190));
         }
+
+        /// <summary>丢弃一切写入的 TextWriter：仅构建模式下替换 Console.Out，去掉 console.log 这个耗时大头，暴露纯构建成本。</summary>
+        private sealed class DiscardWriter : TextWriter
+        {
+            public override Encoding Encoding => Encoding.UTF8;
+            public override void Write(char value) { }
+            public override void Write(char[] buffer, int index, int count) { }
+            public override void Write(string value) { }
+            public override void Write(ReadOnlySpan<char> buffer) { }
+            public override void WriteLine() { }
+            public override void WriteLine(string value) { }
+            public override void WriteLine(ReadOnlySpan<char> buffer) { }
+            public override void Flush() { }
+        }
+
     }
 
 }
