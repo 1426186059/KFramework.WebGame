@@ -36,7 +36,7 @@ namespace KFramework.MonoGame
             return mStringBuilder.ToString();
         }
 
-        [Conditional("DEBUG")]
+        [Conditional(MacroConst.DEBUG)]
         [Conditional(MacroConst.PrintLog)]
         public static void LogWithColor(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
