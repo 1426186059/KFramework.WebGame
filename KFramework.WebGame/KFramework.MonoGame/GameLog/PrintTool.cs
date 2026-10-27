@@ -46,7 +46,7 @@ namespace KFramework.MonoGame
             Console.Out.Write("</color>\n".AsSpan());
         }
 
-        [Conditional("DEBUG")]
+        [Conditional(MacroConst.DEBUG)]
         [Conditional(MacroConst.PrintLog)]
         public static void LogFormatWithColor(string formatStr, object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
@@ -56,7 +56,7 @@ namespace KFramework.MonoGame
             Console.Out.Write("</color>\n".AsSpan());
         }
 
-        [Conditional("DEBUG")]
+        [Conditional(MacroConst.DEBUG)]
         [Conditional(MacroConst.PrintLog)]
         public static void Log(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
@@ -65,7 +65,7 @@ namespace KFramework.MonoGame
             Console.Out.Write('\n');
         }
 
-        [Conditional("DEBUG")]
+        [Conditional(MacroConst.DEBUG)]
         [Conditional(MacroConst.PrintLog)]
         public static void LogError(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
@@ -74,7 +74,7 @@ namespace KFramework.MonoGame
             Console.Error.Write('\n');
         }
 
-        [Conditional("DEBUG")]
+        [Conditional(MacroConst.DEBUG)]
         [Conditional(MacroConst.PrintLog)]
         public static void Assert(bool isTrue, object data1 = null, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
@@ -82,7 +82,7 @@ namespace KFramework.MonoGame
             Debug.Assert(isTrue, content);
         }
 
-        [Conditional("DEBUG")]
+        [Conditional(MacroConst.DEBUG)]
         [Conditional(MacroConst.PrintLog)]
         public static void Assert(bool isTrue)
         {

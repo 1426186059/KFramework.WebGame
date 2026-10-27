@@ -19,7 +19,7 @@ namespace KFramework.MonoGame
             private static readonly char[] _buffer = new char[16384];
             private static int _length;
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void BeginLog()
             {
@@ -45,7 +45,7 @@ namespace KFramework.MonoGame
 
             private static void AppendSep() => AppendRaw(ConcatStr.AsSpan());
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void Append(string value)
             {
@@ -53,7 +53,7 @@ namespace KFramework.MonoGame
                 AppendSep();
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void Append(int value)
             {
@@ -61,7 +61,7 @@ namespace KFramework.MonoGame
                 AppendSep();
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void Append(long value)
             {
@@ -69,7 +69,7 @@ namespace KFramework.MonoGame
                 AppendSep();
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void Append(uint value)
             {
@@ -77,7 +77,7 @@ namespace KFramework.MonoGame
                 AppendSep();
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void Append(ulong value)
             {
@@ -85,7 +85,7 @@ namespace KFramework.MonoGame
                 AppendSep();
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void Append(short value)
             {
@@ -93,7 +93,7 @@ namespace KFramework.MonoGame
                 AppendSep();
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void Append(ushort value)
             {
@@ -101,7 +101,7 @@ namespace KFramework.MonoGame
                 AppendSep();
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void Append(byte value)
             {
@@ -109,7 +109,7 @@ namespace KFramework.MonoGame
                 AppendSep();
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void Append(sbyte value)
             {
@@ -117,7 +117,7 @@ namespace KFramework.MonoGame
                 AppendSep();
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void Append(float value)
             {
@@ -125,7 +125,7 @@ namespace KFramework.MonoGame
                 AppendSep();
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void Append(double value)
             {
@@ -133,7 +133,7 @@ namespace KFramework.MonoGame
                 AppendSep();
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void Append(decimal value)
             {
@@ -141,7 +141,7 @@ namespace KFramework.MonoGame
                 AppendSep();
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void Append(bool value)
             {
@@ -149,7 +149,7 @@ namespace KFramework.MonoGame
                 AppendSep();
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void Append(char value)
             {
@@ -158,7 +158,7 @@ namespace KFramework.MonoGame
             }
 
             // 兜底：引用类型或没有对应重载的值类型（会装箱 + 分配字符串，仅必要时使用）
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void Append(object value)
             {
@@ -169,7 +169,7 @@ namespace KFramework.MonoGame
             // KV 形式（key: value）：键固定为 string（真实日志里键几乎都是字符串）。
             // value 为 ISpanFormattable（int/long/uint/ulong/float/double/decimal/char/DateTime/Guid 等）时走 TryFormat 直写，零分配；
             // bool/string 等非 ISpanFormattable 的值走下方 object 兜底（仅按 ToString，极少或无需分配）。
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void AppendKV<V>(string key, V value)
                 where V : ISpanFormattable
@@ -181,7 +181,7 @@ namespace KFramework.MonoGame
             }
 
             // 非 ISpanFormattable 值的兜底（bool/string 等）：键仍为 string，值按 object 处理（会装箱，仅此类值走到）。
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void AppendKV(string key, object value)
             {
@@ -201,7 +201,7 @@ namespace KFramework.MonoGame
                     AppendRaw(value.ToString().AsSpan());   // 极端超长才分配，极少走到
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void EndLog()
             {
@@ -213,7 +213,7 @@ namespace KFramework.MonoGame
                 _length = 0;
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void EndLogError()
             {
@@ -225,7 +225,7 @@ namespace KFramework.MonoGame
                 _length = 0;
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void EndLogWarning()
             {
@@ -238,7 +238,7 @@ namespace KFramework.MonoGame
                 _length = 0;
             }
 
-            [Conditional("DEBUG")]
+            [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void EndLogWithColor()
             {
