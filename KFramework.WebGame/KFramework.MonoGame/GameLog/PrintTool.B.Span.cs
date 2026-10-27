@@ -166,21 +166,9 @@ namespace KFramework.MonoGame
                 AppendSep();
             }
 
-            // KV 形式（key=value）：key/value 须为 ISpanFormattable（所有数值/char/bool/DateTime/Guid 等均满足，string 不满足请用 Append）。
-            // 走 TryFormat 直写 stackalloc 缓冲再拷入主缓冲，常见情况零分配；仅超长才回退 ToString()。
-            [Conditional("DEBUG")]
-            [Conditional(MacroConst.PrintLog)]
-            public static void AppendKV<K, V>(K key, V value)
-                where K : ISpanFormattable
-                where V : ISpanFormattable
-            {
-                AppendFormatted(key);
-                AppendRaw(KVConcatStr.AsSpan());
-                AppendFormatted(value);
-                AppendSep();
-            }
-
-            // 字符串键重载：key 为 string（真实日志里键几乎都是字符串），value 仍须 ISpanFormattable。
+            // KV 形式（key: value）：键固定为 string（真实日志里键几乎都是字符串）。
+            // value 为 ISpanFormattable（int/long/uint/ulong/float/double/decimal/char/DateTime/Guid 等）时走 TryFormat 直写，零分配；
+            // bool/string 等非 ISpanFormattable 的值走下方 object 兜底（仅按 ToString，极少或无需分配）。
             [Conditional("DEBUG")]
             [Conditional(MacroConst.PrintLog)]
             public static void AppendKV<V>(string key, V value)
@@ -189,6 +177,17 @@ namespace KFramework.MonoGame
                 AppendRaw(key.AsSpan());
                 AppendRaw(KVConcatStr.AsSpan());
                 AppendFormatted(value);
+                AppendSep();
+            }
+
+            // 非 ISpanFormattable 值的兜底（bool/string 等）：键仍为 string，值按 object 处理（会装箱，仅此类值走到）。
+            [Conditional("DEBUG")]
+            [Conditional(MacroConst.PrintLog)]
+            public static void AppendKV(string key, object value)
+            {
+                AppendRaw(key.AsSpan());
+                AppendRaw(KVConcatStr.AsSpan());
+                if (value != null) AppendRaw(value.ToString().AsSpan());
                 AppendSep();
             }
 
