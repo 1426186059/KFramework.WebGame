@@ -7,7 +7,7 @@ namespace KFramework.MonoGame
     public static partial class PrintTool
     {
         private static readonly StringBuilder mStringBuilder = new StringBuilder();
-        internal const string ConcatStr = "  ";
+        private const string ConcatStr = "  ";
 
         // 把参数拼接进共享 mStringBuilder（前缀时间戳），不直接 ToString，便于调用方用 GetChunks 直写避免分配
         private static void Build(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
