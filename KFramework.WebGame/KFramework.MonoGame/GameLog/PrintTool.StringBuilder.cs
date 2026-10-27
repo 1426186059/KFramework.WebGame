@@ -18,9 +18,8 @@ namespace KFramework.MonoGame
 #if DEBUG
             mStringBuilder.Clear();
             mStringBuilder.Append('[');
-            // 用 TryFormat 直接写进 StringBuilder，避免 DateTime.Now.ToString() 产生字符串分配
             Span<char> ts = stackalloc char[32];
-            if (((ISpanFormattable)DateTime.Now).TryFormat(ts, out int w, "HH:mm:ss.fff".AsSpan(), null))
+            if (DateTime.Now.TryFormat(ts, out int w, "HH:mm:ss.fff".AsSpan(), null))
                 mStringBuilder.Append(ts.Slice(0, w));
             mStringBuilder.Append(']');
             return new PrintStringBuilder(mStringBuilder);

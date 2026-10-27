@@ -14,9 +14,8 @@ namespace KFramework.MonoGame
         {
             mStringBuilder.Clear();
             mStringBuilder.Append('[');
-            // TryFormat 直接写入，避免 DateTime.Now.ToString() 的字符串分配（仅一次 DateTime 装箱）
             Span<char> ts = stackalloc char[32];
-            if (((ISpanFormattable)DateTime.Now).TryFormat(ts, out int w, "HH:mm:ss.fff".AsSpan(), null))
+            if (DateTime.Now.TryFormat(ts, out int w, "HH:mm:ss.fff".AsSpan(), null))
                 mStringBuilder.Append(ts.Slice(0, w));
             mStringBuilder.Append(']');
             if (data1 != null) { mStringBuilder.Append(data1); mStringBuilder.Append(ConcatStr.AsSpan()); }
@@ -30,7 +29,6 @@ namespace KFramework.MonoGame
             if (data9 != null) { mStringBuilder.Append(data9); mStringBuilder.Append(ConcatStr.AsSpan()); }
         }
 
-        // 兼容 / 显式取字符串（如 Debug.Assert）时使用；其余输出改走 GetChunks 直写
         private static string GetStr(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
             Build(data1, data2, data3, data4, data5, data6, data7, data8, data9);
@@ -88,7 +86,7 @@ namespace KFramework.MonoGame
         {
 #if DEBUG
             Debug.Assert(isTrue);
-            return isTrue;
+            return !isTrue;
 #endif
         }
 
