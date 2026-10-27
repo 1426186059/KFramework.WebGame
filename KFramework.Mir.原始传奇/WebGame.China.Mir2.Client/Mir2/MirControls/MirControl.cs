@@ -3,7 +3,6 @@ using Client.MirSounds;
 using SlimDX;
 using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
-using KFramework.MonoGameExtend;
 
 namespace Client.MirControls
 {
@@ -159,16 +158,6 @@ namespace Client.MirControls
             DXManager.ClearControlTexture(ControlTexture, BackColour);
 
             TextureValid = true;
-        }
-
-        /// <summary>
-        /// 该层烘焙时使用的世界→屏幕变换（视口尺寸驱动）。默认按高度统一缩放；
-        /// 层容器(世界层/UI 层)可覆写以实现不同映射。
-        /// </summary>
-        protected virtual KFramework.MonoGame.Matrix4x4 GetLayerTransform(int viewportWidth, int viewportHeight)
-        {
-            float s = (float)viewportHeight / Settings.ScreenHeight;
-            return KFramework.MonoGame.Matrix4x4.CreateScaleTranslation(1, 1, 0, 0f);
         }
 
         internal void DisposeTexture()
