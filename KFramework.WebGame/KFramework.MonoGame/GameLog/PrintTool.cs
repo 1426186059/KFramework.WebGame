@@ -74,6 +74,7 @@ namespace KFramework.MonoGame
 #endif
         }
 
+        [Conditional("DEBUG")]
         public static void Assert(bool isTrue, object data1 = null, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
 #if DEBUG
@@ -84,10 +85,8 @@ namespace KFramework.MonoGame
 
         public static bool Assert(bool isTrue)
         {
-#if DEBUG
             Debug.Assert(isTrue);
-            return !isTrue;
-#endif
+            return !isTrue;          
         }
 
 

@@ -84,6 +84,11 @@ namespace KFramework.MonoGame
                 if (!_buffer.IsEmpty && value.TryFormat(_buffer.Slice(_length), out int w)) _length += w;
                 return AppendSep();
             }
+            public PrintSpan Append(ulong value)
+            {
+                if (!_buffer.IsEmpty && value.TryFormat(_buffer.Slice(_length), out int w)) _length += w;
+                return AppendSep();
+            }
             public PrintSpan Append(short value)
             {
                 if (!_buffer.IsEmpty && value.TryFormat(_buffer.Slice(_length), out int w)) _length += w;

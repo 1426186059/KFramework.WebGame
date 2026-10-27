@@ -52,6 +52,7 @@ namespace KFramework.MonoGame
             public PrintStringBuilder Append(int value) { if (_sb != null) { _sb.Append(value); _sb.Append(PrintTool.ConcatStr.AsSpan()); } return this; }
             public PrintStringBuilder Append(long value) { if (_sb != null) { _sb.Append(value); _sb.Append(PrintTool.ConcatStr.AsSpan()); } return this; }
             public PrintStringBuilder Append(uint value) { if (_sb != null) { _sb.Append(value); _sb.Append(PrintTool.ConcatStr.AsSpan()); } return this; }
+            public PrintStringBuilder Append(ulong value) { if (_sb != null) { _sb.Append(value); _sb.Append(PrintTool.ConcatStr.AsSpan()); } return this; }
             public PrintStringBuilder Append(short value) { if (_sb != null) { _sb.Append(value); _sb.Append(PrintTool.ConcatStr.AsSpan()); } return this; }
             public PrintStringBuilder Append(ushort value) { if (_sb != null) { _sb.Append(value); _sb.Append(PrintTool.ConcatStr.AsSpan()); } return this; }
             public PrintStringBuilder Append(byte value) { if (_sb != null) { _sb.Append(value); _sb.Append(PrintTool.ConcatStr.AsSpan()); } return this; }
