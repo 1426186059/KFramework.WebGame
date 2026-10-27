@@ -178,7 +178,6 @@ namespace KFramework.Test.Common.Tests.UITest
                 int row = i;
                 var item = new KImage
                 {
-                    Parent = _scroll.Content,
                     Size = new Vector2(280, 30),
                     Anchor = Vector2.Zero,
                     Pivot = Vector2.Zero,
@@ -186,6 +185,7 @@ namespace KFramework.Test.Common.Tests.UITest
                     WorldPosition = new Vector2(10, 8 + row * 36),
                     Color = ButtonColor(i % 9),
                 };
+                _scroll.Add(item); // 必须走 Add：内部触发 RefreshContentSize，否则 _contentSize=0→滚动条不显示
             }
         }
 

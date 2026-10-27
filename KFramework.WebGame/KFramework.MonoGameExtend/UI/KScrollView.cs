@@ -116,6 +116,12 @@ namespace KFramework.MonoGameExtend
 
         public override void Update()
         {
+            base.Update(); // 确保整棵子树 WorldMatrix 脏标记被消费（WorldPosition 为惰性派生）
+            // 每帧基于最新世界矩阵重算内容尺寸 / 滚动条可见性 / 视口剔除：
+            // 这样即使首次布局未定、或内容用 Add/直接 Parent 动态增删，滚动条都能正确出现。
+            RefreshContentSize();
+            UpdateScrollBarVisibility();
+            UpdateCull();
             // 滚轮：鼠标在视口内才滚动（上滚 delta>0 看上方内容）
             int wheel = KInputMgr.ScrollDelta;
             if (wheel != 0)
