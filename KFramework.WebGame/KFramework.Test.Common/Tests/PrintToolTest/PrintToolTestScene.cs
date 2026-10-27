@@ -20,8 +20,8 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
     /// </summary>
     public sealed class PrintToolTestScene : TestSceneBase
     {
-        private static readonly int[] CountOptions = [1000, 3000, 5000, 10000];
-        private int _countIndex = 2; // 默认 5000
+        private static readonly int[] CountOptions = [2000, 10000, 50000, 100000];
+        private int _countIndex = 1; // 默认 10000
 
         private readonly List<string> _results = new();
         private string _lastError;
@@ -92,15 +92,20 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
             }
         }
 
-        // 以下三个方法给每次循环塞同样的负载：一个 int、一个 float、一个 string、一个 bool，
-        // 唯一变量是 int/float/bool 的传递方式（装箱 vs 不装箱）。
+        // 以下三个方法每次循环塞同样的重负载：覆盖各种值类型（int/long/uint/ulong/short/ushort/byte/sbyte/float/double/decimal/bool/char/string）。
+        // 唯一变量是它们的传递方式：Generic.Log 按 object 传递会逐项装箱并触发 GC；A/B 走强类型 Append 不装箱。
+        // 注：PrintTool.Log 固定最多 9 个 object 参数，故 Generic 基线最多喂 9 个值类型（全部装箱）；A/B 的 Append 无上限，可打出全部类型。
         private static void RunGeneric(int n)
         {
             for (int i = 0; i < n; i++)
             {
                 float f = i * 1.234f;
-                string name = "item" + i;
-                PrintTool.Log("idx", i, "ratio", f, "name", name, "ok", true);
+                double d = i * 5.678;
+                decimal dec = i * 9.99m;
+                // 9 个值类型全部作为 object 传入 → 全部装箱
+                PrintTool.Log(
+                    (int)i, (long)i, (uint)i, (ulong)i, (short)i,
+                    f, d, dec, true);
             }
         }
 
@@ -109,12 +114,28 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
             for (int i = 0; i < n; i++)
             {
                 float f = i * 1.234f;
+                double d = i * 5.678;
+                decimal dec = i * 9.99m;
                 string name = "item" + i;
+                char c = (char)('A' + i % 26);
+                byte b = (byte)(i & 0xFF);
+                sbyte sb = (sbyte)(i & 0x7F);
+                ushort us = (ushort)(i & 0xFFFF);
                 PrintTool.A.BeginLog();
-                PrintTool.A.Append("idx"); PrintTool.A.Append(i);
-                PrintTool.A.Append("ratio"); PrintTool.A.Append(f);
-                PrintTool.A.Append("name"); PrintTool.A.Append(name);
-                PrintTool.A.Append("ok"); PrintTool.A.Append(true);
+                PrintTool.A.Append("i");   PrintTool.A.Append((int)i);
+                PrintTool.A.Append("l");   PrintTool.A.Append((long)i);
+                PrintTool.A.Append("u");   PrintTool.A.Append((uint)i);
+                PrintTool.A.Append("ul");  PrintTool.A.Append((ulong)i);
+                PrintTool.A.Append("s");   PrintTool.A.Append((short)i);
+                PrintTool.A.Append("us");  PrintTool.A.Append(us);
+                PrintTool.A.Append("b");   PrintTool.A.Append(b);
+                PrintTool.A.Append("sb");  PrintTool.A.Append(sb);
+                PrintTool.A.Append("f");   PrintTool.A.Append(f);
+                PrintTool.A.Append("d");   PrintTool.A.Append(d);
+                PrintTool.A.Append("dec"); PrintTool.A.Append(dec);
+                PrintTool.A.Append("bo");  PrintTool.A.Append(true);
+                PrintTool.A.Append("c");   PrintTool.A.Append(c);
+                PrintTool.A.Append("name");PrintTool.A.Append(name);
                 PrintTool.A.EndLog();
             }
         }
@@ -124,12 +145,28 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
             for (int i = 0; i < n; i++)
             {
                 float f = i * 1.234f;
+                double d = i * 5.678;
+                decimal dec = i * 9.99m;
                 string name = "item" + i;
+                char c = (char)('A' + i % 26);
+                byte b = (byte)(i & 0xFF);
+                sbyte sb = (sbyte)(i & 0x7F);
+                ushort us = (ushort)(i & 0xFFFF);
                 PrintTool.B.BeginLog();
-                PrintTool.B.Append("idx"); PrintTool.B.Append(i);
-                PrintTool.B.Append("ratio"); PrintTool.B.Append(f);
-                PrintTool.B.Append("name"); PrintTool.B.Append(name);
-                PrintTool.B.Append("ok"); PrintTool.B.Append(true);
+                PrintTool.B.Append("i");   PrintTool.B.Append((int)i);
+                PrintTool.B.Append("l");   PrintTool.B.Append((long)i);
+                PrintTool.B.Append("u");   PrintTool.B.Append((uint)i);
+                PrintTool.B.Append("ul");  PrintTool.B.Append((ulong)i);
+                PrintTool.B.Append("s");   PrintTool.B.Append((short)i);
+                PrintTool.B.Append("us");  PrintTool.B.Append(us);
+                PrintTool.B.Append("b");   PrintTool.B.Append(b);
+                PrintTool.B.Append("sb");  PrintTool.B.Append(sb);
+                PrintTool.B.Append("f");   PrintTool.B.Append(f);
+                PrintTool.B.Append("d");   PrintTool.B.Append(d);
+                PrintTool.B.Append("dec"); PrintTool.B.Append(dec);
+                PrintTool.B.Append("bo");  PrintTool.B.Append(true);
+                PrintTool.B.Append("c");   PrintTool.B.Append(c);
+                PrintTool.B.Append("name");PrintTool.B.Append(name);
                 PrintTool.B.EndLog();
             }
         }
