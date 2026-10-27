@@ -1,94 +1,78 @@
+using System;
 using System.Diagnostics;
 using System.Text;
 
 namespace KFramework.MonoGame
 {
-    public static class PrintTool
+    public static partial class PrintTool
     {
         private static readonly StringBuilder mStringBuilder = new StringBuilder();
-        private const string ConcatStr = "  ";
+        internal const string ConcatStr = "  ";
 
-        private static string GetStr(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
+        // 把参数拼接进共享 mStringBuilder（前缀时间戳），不直接 ToString，便于调用方用 GetChunks 直写避免分配
+        private static void Build(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
             mStringBuilder.Clear();
-            mStringBuilder.Append($"[{DateTime.Now.ToString("HH:mm:ss.fff")}]");
-            if (data1 != null)
-            {
-                mStringBuilder.Append(data1);
-                mStringBuilder.Append(ConcatStr);
-            }
-            if (data2 != null)
-            {
-                mStringBuilder.Append(data2);
-                mStringBuilder.Append(ConcatStr);
-            }
-            if (data3 != null)
-            {
-                mStringBuilder.Append(data3);
-                mStringBuilder.Append(ConcatStr);
-            }
-            if (data4 != null)
-            {
-                mStringBuilder.Append(data4);
-                mStringBuilder.Append(ConcatStr);
-            }
-            if (data5 != null)
-            {
-                mStringBuilder.Append(data5);
-                mStringBuilder.Append(ConcatStr);
-            }
-            if (data6 != null)
-            {
-                mStringBuilder.Append(data6);
-                mStringBuilder.Append(ConcatStr);
-            }
-            if (data7 != null)
-            {
-                mStringBuilder.Append(data7);
-                mStringBuilder.Append(ConcatStr);
-            }
-            if (data8 != null)
-            {
-                mStringBuilder.Append(data8);
-                mStringBuilder.Append(ConcatStr);
-            }
-            if (data9 != null)
-            {
-                mStringBuilder.Append(data9);
-                mStringBuilder.Append(ConcatStr);
-            }
+            mStringBuilder.Append('[');
+            // TryFormat 直接写入，避免 DateTime.Now.ToString() 的字符串分配（仅一次 DateTime 装箱）
+            Span<char> ts = stackalloc char[32];
+            if (((ISpanFormattable)DateTime.Now).TryFormat(ts, out int w, "HH:mm:ss.fff".AsSpan(), null))
+                mStringBuilder.Append(ts.Slice(0, w));
+            mStringBuilder.Append(']');
+            if (data1 != null) { mStringBuilder.Append(data1); mStringBuilder.Append(ConcatStr.AsSpan()); }
+            if (data2 != null) { mStringBuilder.Append(data2); mStringBuilder.Append(ConcatStr.AsSpan()); }
+            if (data3 != null) { mStringBuilder.Append(data3); mStringBuilder.Append(ConcatStr.AsSpan()); }
+            if (data4 != null) { mStringBuilder.Append(data4); mStringBuilder.Append(ConcatStr.AsSpan()); }
+            if (data5 != null) { mStringBuilder.Append(data5); mStringBuilder.Append(ConcatStr.AsSpan()); }
+            if (data6 != null) { mStringBuilder.Append(data6); mStringBuilder.Append(ConcatStr.AsSpan()); }
+            if (data7 != null) { mStringBuilder.Append(data7); mStringBuilder.Append(ConcatStr.AsSpan()); }
+            if (data8 != null) { mStringBuilder.Append(data8); mStringBuilder.Append(ConcatStr.AsSpan()); }
+            if (data9 != null) { mStringBuilder.Append(data9); mStringBuilder.Append(ConcatStr.AsSpan()); }
+        }
+
+        // 兼容 / 显式取字符串（如 Debug.Assert）时使用；其余输出改走 GetChunks 直写
+        private static string GetStr(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
+        {
+            Build(data1, data2, data3, data4, data5, data6, data7, data8, data9);
             return mStringBuilder.ToString();
         }
 
         public static void LogWithColor(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
 #if DEBUG
-            string content = GetStr(data1, data2, data3, data4, data5, data6, data7, data8, data9);
-            Console.WriteLine($"<color=yellow>{content}</color>");
+            Build(data1, data2, data3, data4, data5, data6, data7, data8, data9);
+            Console.Out.Write("<color=yellow>".AsSpan());
+            foreach (var chunk in mStringBuilder.GetChunks()) Console.Out.Write(chunk.Span);
+            Console.Out.Write("</color>\n".AsSpan());
 #endif
         }
 
         public static void LogFormatWithColor(string formatStr, object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
 #if DEBUG
+            // string.Format 仍会产生格式化字符串（format API 固有），但避免外层的 "<color>...</color>" 拼接分配
             string content = string.Format(formatStr, data1, data2, data3, data4, data5, data6, data7, data8, data9);
-            Console.WriteLine($"<color=yellow>{content}</color>");
+            Console.Out.Write("<color=yellow>".AsSpan());
+            Console.Out.Write(content.AsSpan());
+            Console.Out.Write("</color>\n".AsSpan());
 #endif
         }
 
         public static void Log(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
 #if DEBUG
-            string content = GetStr(data1, data2, data3, data4, data5, data6, data7, data8, data9);
-            Console.WriteLine(content);
+            Build(data1, data2, data3, data4, data5, data6, data7, data8, data9);
+            foreach (var chunk in mStringBuilder.GetChunks()) Console.Out.Write(chunk.Span);
+            Console.Out.Write('\n');
 #endif
         }
 
         public static void LogError(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
 #if DEBUG
-            string content = GetStr(data1, data2, data3, data4, data5, data6, data7, data8, data9);
-            Console.Error.WriteLine(content);
+            Build(data1, data2, data3, data4, data5, data6, data7, data8, data9);
+            foreach (var chunk in mStringBuilder.GetChunks()) Console.Error.Write(chunk.Span);
+            Console.Error.Write('\n');
 #endif
         }
 
@@ -99,6 +83,15 @@ namespace KFramework.MonoGame
             Debug.Assert(isTrue, content);
 #endif
         }
+
+        public static bool Assert(bool isTrue)
+        {
+#if DEBUG
+            Debug.Assert(isTrue);
+            return isTrue;
+#endif
+        }
+
 
     }
 }
