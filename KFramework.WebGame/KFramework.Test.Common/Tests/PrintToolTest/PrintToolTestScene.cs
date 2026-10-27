@@ -56,6 +56,7 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
                 RunBenchmark("② StringBuilder", RunStringBuilder);
                 RunBenchmark("③ Span<char>", RunSpan);
             });
+            AddUiButton("测试 Assert 失败", () => PrintTool.Assert(false, "这是一条故意失败的断言", "用于演示 PrintTool.Assert 失败时的行为"));
             AddUiButton("清空结果", () => { _results.Clear(); _lastError = null; });
         }
 
