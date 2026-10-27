@@ -13,10 +13,10 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
     /// <summary>
     /// PrintTool 三种打印方式性能对比：
     /// <para>· ① Generic.Log(object…) —— 值类型（int/float/bool）按 object 传递，会装箱、触发 GC。</para>
-    /// <para>· ② BeginStringBuilder() —— 强类型 Append，无装箱，输出经 StringBuilder.GetChunks() 直写。</para>
-    /// <para>· ③ BeginSpan() —— Span&lt;char&gt; 强类型 Append（TryFormat 直写字符缓冲），无装箱、无字符串分配。</para>
+    /// <para>· ② PrintTool.A（StringBuilder 后端）—— 强类型 Append，无装箱，输出经 StringBuilder.GetChunks() 直写。</para>
+    /// <para>· ③ PrintTool.B（Span&lt;char&gt; 后端）—— 强类型 Append（TryFormat 直写字符缓冲），无装箱、无字符串分配。</para>
     /// <para>各方式打印几千条，统计 用时（Stopwatch）与 GC0 次数（GC.CollectionCount）。</para>
-    /// <para>注意：PrintTool.* 的输出在 #if DEBUG 内，请用 Debug 构建运行本页，否则不打印、计时近乎 0。</para>
+    /// <para>注意：PrintTool.A/B 的方法带 [Conditional]，Release（无 DEBUG 且未定义 PrintLog）下调用点被整体剔除；请用 Debug 构建运行本页。</para>
     /// </summary>
     public sealed class PrintToolTestScene : TestSceneBase
     {
@@ -48,8 +48,8 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
             AddUiButton($"数量 {CountOptions[_countIndex]:N0}", () => _countIndex = (_countIndex + 1) % CountOptions.Length);
             AddUiButton(_buildOnly ? "模式: 仅构建(不打印)" : "模式: 打印", () => _buildOnly = !_buildOnly);
             AddUiButton("测试 Generic.Log", () => RunBenchmark("① Generic.Log", RunGeneric));
-            AddUiButton("测试 BeginStringBuilder", () => RunBenchmark("② StringBuilder", RunStringBuilder));
-            AddUiButton("测试 BeginSpan", () => RunBenchmark("③ Span<char>", RunSpan));
+            AddUiButton("测试 A(StringBuilder)", () => RunBenchmark("② StringBuilder", RunStringBuilder));
+            AddUiButton("测试 B(Span)", () => RunBenchmark("③ Span<char>", RunSpan));
             AddUiButton("全部测试", () =>
             {
                 RunBenchmark("① Generic.Log", RunGeneric);
@@ -69,7 +69,7 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
                 if (_buildOnly)
                 {
                     // 仅构建：把 Console.Out 换成丢弃写入器，去掉 console.log 这个 interop 耗时大头；
-                    // 三种方式仍走真实 .Log() 代码路径，从而暴露纯构建成本（含 Generic 的装箱）。
+                    // 三种方式仍走真实 .EndLog() 代码路径，从而暴露纯构建成本（含 Generic 的装箱）。
                     TextWriter old = Console.Out;
                     Console.SetOut(Discard);
                     try { action(n); }
@@ -110,12 +110,12 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
             {
                 float f = i * 1.234f;
                 string name = "item" + i;
-                PrintTool.BeginStringBuilder()
-                    .Append("idx").Append(i)
-                    .Append("ratio").Append(f)
-                    .Append("name").Append(name)
-                    .Append("ok").Append(true)
-                    .Log();
+                PrintTool.A.BeginLog();
+                PrintTool.A.Append("idx"); PrintTool.A.Append(i);
+                PrintTool.A.Append("ratio"); PrintTool.A.Append(f);
+                PrintTool.A.Append("name"); PrintTool.A.Append(name);
+                PrintTool.A.Append("ok"); PrintTool.A.Append(true);
+                PrintTool.A.EndLog();
             }
         }
 
@@ -125,12 +125,12 @@ namespace KFramework.Test.Common.Tests.PrintToolTest
             {
                 float f = i * 1.234f;
                 string name = "item" + i;
-                PrintTool.BeginSpan()
-                    .Append("idx").Append(i)
-                    .Append("ratio").Append(f)
-                    .Append("name").Append(name)
-                    .Append("ok").Append(true)
-                    .Log();
+                PrintTool.B.BeginLog();
+                PrintTool.B.Append("idx"); PrintTool.B.Append(i);
+                PrintTool.B.Append("ratio"); PrintTool.B.Append(f);
+                PrintTool.B.Append("name"); PrintTool.B.Append(name);
+                PrintTool.B.Append("ok"); PrintTool.B.Append(true);
+                PrintTool.B.EndLog();
             }
         }
 

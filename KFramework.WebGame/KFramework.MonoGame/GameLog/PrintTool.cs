@@ -9,7 +9,6 @@ namespace KFramework.MonoGame
         private static readonly StringBuilder mStringBuilder = new StringBuilder();
         private const string ConcatStr = "  ";
 
-        // 把参数拼接进共享 mStringBuilder（前缀时间戳），不直接 ToString，便于调用方用 GetChunks 直写避免分配
         private static void Build(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
             mStringBuilder.Clear();
@@ -35,60 +34,57 @@ namespace KFramework.MonoGame
             return mStringBuilder.ToString();
         }
 
+        [Conditional("DEBUG")]
+        [Conditional(MacroConst.PrintLog)]
         public static void LogWithColor(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
-#if DEBUG
             Build(data1, data2, data3, data4, data5, data6, data7, data8, data9);
             Console.Out.Write("<color=yellow>".AsSpan());
             foreach (var chunk in mStringBuilder.GetChunks()) Console.Out.Write(chunk.Span);
             Console.Out.Write("</color>\n".AsSpan());
-#endif
         }
 
+        [Conditional("DEBUG")]
+        [Conditional(MacroConst.PrintLog)]
         public static void LogFormatWithColor(string formatStr, object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
-#if DEBUG
-            // string.Format 仍会产生格式化字符串（format API 固有），但避免外层的 "<color>...</color>" 拼接分配
             string content = string.Format(formatStr, data1, data2, data3, data4, data5, data6, data7, data8, data9);
             Console.Out.Write("<color=yellow>".AsSpan());
             Console.Out.Write(content.AsSpan());
             Console.Out.Write("</color>\n".AsSpan());
-#endif
-        }
-
-        public static void Log(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
-        {
-#if DEBUG
-            Build(data1, data2, data3, data4, data5, data6, data7, data8, data9);
-            foreach (var chunk in mStringBuilder.GetChunks()) Console.Out.Write(chunk.Span);
-            Console.Out.Write('\n');
-#endif
-        }
-
-        public static void LogError(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
-        {
-#if DEBUG
-            Build(data1, data2, data3, data4, data5, data6, data7, data8, data9);
-            foreach (var chunk in mStringBuilder.GetChunks()) Console.Error.Write(chunk.Span);
-            Console.Error.Write('\n');
-#endif
         }
 
         [Conditional("DEBUG")]
+        [Conditional(MacroConst.PrintLog)]
+        public static void Log(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
+        {
+            Build(data1, data2, data3, data4, data5, data6, data7, data8, data9);
+            foreach (var chunk in mStringBuilder.GetChunks()) Console.Out.Write(chunk.Span);
+            Console.Out.Write('\n');
+        }
+
+        [Conditional("DEBUG")]
+        [Conditional(MacroConst.PrintLog)]
+        public static void LogError(object data1, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
+        {
+            Build(data1, data2, data3, data4, data5, data6, data7, data8, data9);
+            foreach (var chunk in mStringBuilder.GetChunks()) Console.Error.Write(chunk.Span);
+            Console.Error.Write('\n');
+        }
+
+        [Conditional("DEBUG")]
+        [Conditional(MacroConst.PrintLog)]
         public static void Assert(bool isTrue, object data1 = null, object data2 = null, object data3 = null, object data4 = null, object data5 = null, object data6 = null, object data7 = null, object data8 = null, object data9 = null)
         {
-#if DEBUG
             string content = GetStr(data1, data2, data3, data4, data5, data6, data7, data8, data9);
             Debug.Assert(isTrue, content);
-#endif
         }
 
-        public static bool Assert(bool isTrue)
+        [Conditional("DEBUG")]
+        [Conditional(MacroConst.PrintLog)]
+        public static void Assert(bool isTrue)
         {
             Debug.Assert(isTrue);
-            return !isTrue;          
         }
-
-
     }
 }

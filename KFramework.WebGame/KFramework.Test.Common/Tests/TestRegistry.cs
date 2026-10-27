@@ -92,7 +92,7 @@ namespace KFramework.Test.Common.Tests
             new TestEntry
             {
                 Name = "PrintTool 打印性能",
-                Desc = "三种打印方式对比：① Generic.Log(object 装箱) ② BeginStringBuilder(强类型 Append) ③ BeginSpan(Span<char> 强类型 TryFormat)，各打印几千条并计时 + 统计 GC0 次数；可切数量档位、单测或全测。请用 Debug 构建运行（PrintTool 输出在 #if DEBUG 内）",
+                Desc = "三种打印方式对比：① Generic.Log(object 装箱) ② PrintTool.A(StringBuilder 后端) ③ PrintTool.B(Span<char> 后端)，各打印几千条并计时 + 统计 GC0 次数；可切数量档位、单测或全测。请用 Debug 构建运行（PrintTool.A/B 方法带 [Conditional]，Release 下被剔除）",
                 Factory = static () => new PrintToolTest.PrintToolTestScene(),
             },
         ];

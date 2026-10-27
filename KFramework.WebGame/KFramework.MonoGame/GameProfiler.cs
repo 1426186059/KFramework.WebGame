@@ -13,13 +13,7 @@ namespace KFramework.MonoGame
         public static double GetTestFinishSpendTime()
         {
             var FinishDate = System.DateTime.Now;
-            if(PrintTool.Assert(TestStack.Count > 0))
-            {
-                PrintTool.BeginStringBuilder().
-                    Append("Test 方法 要成对出现  !!!").
-                    LogError();
-            }
-
+            PrintTool.Assert(TestStack.Count > 0, "Test 方法 要成对出现  !!!");
             var StartDate = TestStack.Pop();
             return ((FinishDate - StartDate).TotalSeconds);
         }
