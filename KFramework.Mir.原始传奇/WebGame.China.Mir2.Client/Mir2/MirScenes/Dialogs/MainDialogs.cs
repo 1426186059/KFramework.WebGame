@@ -4,10 +4,8 @@ using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirSounds;
 using SlimDX;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using WebGame.Mir2.MonoGame.Client;
-using static Client.MirScenes.SelectScene;
 using C = ClientPackets;
 
 namespace Client.MirScenes.Dialogs
@@ -355,38 +353,6 @@ namespace Client.MirScenes.Dialogs
             {
 
             };
-
-            //HealthLabel = new MirLabel
-            //{
-            //    AutoSize = true,
-            //    Location = new Point(0, 27),
-            //    Parent = HealthOrb
-            //};
-            //HealthLabel.SizeChanged += Label_SizeChanged;
-
-            //ManaLabel = new MirLabel
-            //{
-            //    AutoSize = true,
-            //    Location = new Point(0, 42),
-            //    Parent = HealthOrb
-            //};
-            //ManaLabel.SizeChanged += Label_SizeChanged;
-
-            //TopLabel = new MirLabel
-            //{
-            //    Size = new Size(85, 30),
-            //    DrawFormat = TextFormatFlags.HorizontalCenter,
-            //    Location = new Point(9, 20),
-            //    Parent = HealthOrb,
-            //};
-
-            //BottomLabel = new MirLabel
-            //{
-            //    Size = new Size(85, 30),
-            //    DrawFormat = TextFormatFlags.HorizontalCenter,
-            //    Location = new Point(9, 50),
-            //    Parent = HealthOrb,
-            //};
 
             var mLevel0 = new MirImageControl
             {
