@@ -5,6 +5,7 @@ using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirScenes.Dialogs;
 using Client.MirSounds;
+
 using SlimDX;
 using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
@@ -6307,7 +6308,7 @@ namespace Client.MirScenes
             {
                 Parent = this,
                 Visible = true,
-                Location = new Point(KSetting.UIReferenceWidth - 170, 80),
+                Location = new Point(DXManager.GDevice.Viewport.Width - 170, 80),
                 GetExpandedParameter = () => { return Settings.ExpandedHeroBuffWindow; },
                 SetExpandedParameter = (value) => { Settings.ExpandedHeroBuffWindow = value; }
             };
