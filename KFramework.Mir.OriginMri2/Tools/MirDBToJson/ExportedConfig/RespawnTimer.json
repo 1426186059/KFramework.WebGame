@@ -1,0 +1,18 @@
+{
+  "$id": "1",
+  "BaseSpawnRate": 20,
+  "CurrentTickcounter": 275,
+  "LastTick": 0,
+  "LastUsercount": 0,
+  "CurrentDelay": 1200000,
+  "Respawn": {
+    "$id": "2",
+    "$values": [
+      {
+        "$id": "3",
+        "UserCount": 0,
+        "DelayLoss": 1
+      }
+    ]
+  }
+}

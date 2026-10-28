@@ -13,6 +13,9 @@ using System.Numerics;
 using System.Text.RegularExpressions;
 using Library.Network;
 using S = ServerPackets;
+using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Server.MirEnvir
 {
@@ -2823,6 +2826,15 @@ namespace Server.MirEnvir
         {
             lock (LoadLock)
             {
+                return LoadDBFromJson();
+            }
+        }
+
+        // ===== 旧的 .db 二进制加载路径（已弃用：配置表改为通过 Web 从 JSON 加载；保留以备紧急手动回退） =====
+        private bool LoadDBFromBinary_DEPRECATED()
+        {
+            lock (LoadLock)
+            {
                 if (!File.Exists(DatabasePath))
                 {
                     SaveDB();
@@ -2941,6 +2953,97 @@ namespace Server.MirEnvir
 
             return true;
         }
+
+        // ===== 配置表通过 Web 从 JSON 加载（替代旧的 .db 二进制加载） =====
+        private bool LoadDBFromJson()
+        {
+            try
+            {
+                string baseUrl = Settings.ConfigBaseUrl;
+                if (string.IsNullOrWhiteSpace(baseUrl))
+                {
+                    MessageQueue.Enqueue("ConfigBaseUrl 未配置，无法从 Web 加载配置表（请在 Setup.ini 的 [Database] 段设置 ConfigBaseUrl）。");
+                    return false;
+                }
+                if (!baseUrl.EndsWith("/")) baseUrl += "/";
+
+                using var client = new HttpClient { BaseAddress = new Uri(baseUrl), Timeout = TimeSpan.FromSeconds(30) };
+
+                var meta = JsonSerializer.Deserialize<ConfigMeta>(
+                    client.GetStringAsync("Crystal/Config/Meta.json").GetAwaiter().GetResult(), JsonConfigOptions);
+                LoadVersion = meta.version;
+                LoadCustomVersion = meta.customVersion;
+
+                if (LoadVersion < MinVersion)
+                {
+                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CannotLoadDatabaseMinSupported), LoadVersion, MinVersion));
+                    return false;
+                }
+                else if (LoadVersion > Version)
+                {
+                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CannotLoadDatabaseMaxSupported), LoadVersion, Version));
+                    return false;
+                }
+
+                MapInfoList = DownloadList<MapInfo>(client, "Crystal/Config/MapInfo.json");
+                ItemInfoList = DownloadList<ItemInfo>(client, "Crystal/Config/ItemInfo.json");
+                MonsterInfoList = DownloadList<MonsterInfo>(client, "Crystal/Config/MonsterInfo.json");
+                NPCInfoList = DownloadList<NPCInfo>(client, "Crystal/Config/NPCInfo.json");
+                QuestInfoList = DownloadList<QuestInfo>(client, "Crystal/Config/QuestInfo.json");
+                DragonInfo = Download<DragonInfo>(client, "Crystal/Config/DragonInfo.json");
+                MagicInfoList = DownloadList<MagicInfo>(client, "Crystal/Config/MagicInfo.json");
+                if (LoadVersion >= 63)
+                    GameShopList = DownloadList<GameShopItem>(client, "Crystal/Config/GameShopItem.json");
+                if (LoadVersion >= 66)
+                    ConquestInfoList = DownloadList<ConquestInfo>(client, "Crystal/Config/ConquestInfo.json");
+                if (LoadVersion > 67)
+                    RespawnTick = Download<RespawnTimer>(client, "Crystal/Config/RespawnTimer.json");
+
+                PostLoadDB();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageQueue.Enqueue("从 Web 加载配置表失败: " + ex.Message);
+                return false;
+            }
+        }
+
+        private void PostLoadDB()
+        {
+            for (int i = 0; i < ItemInfoList.Count; i++)
+            {
+                if (ItemInfoList[i] != null && ItemInfoList[i].RandomStatsId < Settings.RandomItemStatsList.Count)
+                    ItemInfoList[i].RandomStats = Settings.RandomItemStatsList[ItemInfoList[i].RandomStatsId];
+            }
+            FillMagicInfoList();
+            if (LoadVersion <= 70) UpdateMagicInfo();
+            if (LoadVersion >= 63)
+            {
+                for (int i = 0; i < GameShopList.Count; i++)
+                    Main.BindGameShop(GameShopList[i]);
+            }
+            Settings.LinkGuildCreationItems(ItemInfoList);
+        }
+
+        private T Download<T>(HttpClient client, string path) where T : class
+            => JsonSerializer.Deserialize<T>(client.GetStringAsync(path).GetAwaiter().GetResult(), JsonConfigOptions);
+
+        private List<T> DownloadList<T>(HttpClient client, string path)
+            => JsonSerializer.Deserialize<List<T>>(client.GetStringAsync(path).GetAwaiter().GetResult(), JsonConfigOptions) ?? new List<T>();
+
+        private sealed class ConfigMeta
+        {
+            public int version;
+            public int customVersion;
+        }
+
+        private static readonly JsonSerializerOptions JsonConfigOptions = new JsonSerializerOptions
+        {
+            IncludeFields = true,
+            ReferenceHandler = ReferenceHandler.Preserve,
+            TypeInfoResolver = new JsonConfigResolver(),
+        };
 
         public void LoadAccounts()
         {

@@ -77,6 +77,9 @@ namespace Server
         public static string HTTPIPAddress = "http://127.0.0.1:5679/";
         public static string HTTPTrustedIPAddress = "127.0.0.1";
 
+        // 配置表 JSON 的 Web 服务器根地址（Mir2Res 资源服务器根）。例如 http://127.0.0.1:5082/
+        public static string ConfigBaseUrl = "http://127.0.0.1:5082/";
+
         //Permission
         public static bool AllowNewAccount = true,
                            AllowChangePassword = true,
@@ -400,6 +403,7 @@ namespace Server
             StartHTTPService = Reader.ReadBoolean("Network", "StartHTTPService", StartHTTPService);
             HTTPIPAddress = Reader.ReadString("Network", "HTTPIPAddress", HTTPIPAddress);
             HTTPTrustedIPAddress = Reader.ReadString("Network", "HTTPTrustedIPAddress", HTTPTrustedIPAddress);
+            ConfigBaseUrl = Reader.ReadString("Database", "ConfigBaseUrl", ConfigBaseUrl);
 
             //Permission
             AllowNewAccount = Reader.ReadBoolean("Permission", "AllowNewAccount", AllowNewAccount);
