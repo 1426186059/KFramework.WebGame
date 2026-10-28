@@ -101,6 +101,20 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>
+        /// 安全结束当前批：若已 <see cref="Begin"/> 则提交当前段（<see cref="FlushBatch"/>）并复位 Begin 状态；
+        /// 未 Begin 时为 no-op（不会像 <see cref="End"/> 那样抛异常）。
+        /// 用于「自动切批」——调用本方法提交旧段后，紧接 <c>Begin(新材质)</c> 即可切换到新的 SpriteBatch 段。
+        /// </summary>
+        public void AutoEndBatch()
+        {
+            if (_beginCalled)
+            {
+                _beginCalled = false;
+                FlushBatch();
+            }
+        }
+
+        /// <summary>
         /// 提交当前累积的绘制：下发材质 → 排序 → 按「纹理 + 属性块」切段 → 把段内绘制项展开成四边形顶点 →
         /// 整段一次 <c>drawElements</c>；精灵总数累加到渲染统计。
         /// <para>

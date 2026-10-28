@@ -6,6 +6,13 @@ namespace KFramework.MonoGameExtend
     {
         public KCamera Camera { get; set; } = KCamera.Main;
 
+        /// <summary>
+        /// 本控件绘制所用的批处理材质。非 null 会让 KCanvas 在绘制本节点及其子树（除非子树另有显式材质）时
+        /// 切到一个独立的 SpriteBatch 段，从而支持多材质 / 遮罩（例如 KScrollView 用开启 ScissorTest 的材质做内容裁剪）。
+        /// 默认 null = 继承当前批材质（沿用父节点的批）。
+        /// </summary>
+        public virtual Material BatchMaterial => null;
+
         private Vector2 _cacheSize;
         private Vector2 _cachePovit;
         private RectangleF _cacheMinMaxAnchor; //最小最大 锚点

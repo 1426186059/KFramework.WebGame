@@ -53,6 +53,12 @@ namespace KFramework.MonoGameExtend
         public float matchWidthOrHeight { get; set; } = 0;
         private float scaleFactor { get; set; } = 1.0f;
 
+        // 自动合批：普通控件沿用当前批材质；显式 BatchMaterial 的节点（如 KScrollView 的 scissor 材质）会切到独立批，画完子树再恢复。
+        private Material _defaultMaterial;
+        private Material _currentMat;
+        private bool _began;
+        private bool _scissorActive;
+
         public int DrawOrder => throw new NotImplementedException();
 
         public bool Visible => throw new NotImplementedException();
@@ -129,17 +135,27 @@ namespace KFramework.MonoGameExtend
 
         public override void Draw()
         {
-            Matrix4x4 viewMatrix = Matrix4x4.Identity;
-            var mSpriteBatch = KSceneMgr.SpriteBatch;
-            mSpriteBatch.Begin(
-                transformMatrix: viewMatrix,
-                sortMode: SpriteSortMode.Deferred,
-                samplerState: SamplerState.PointClamp,
-                blendState: BlendState.NonPremultiplied);
+            var batch = KSceneMgr.SpriteBatch;
+            if (_defaultMaterial == null)
+            {
+                _defaultMaterial = new Material
+                {
+                    Blend = BlendState.NonPremultiplied,
+                    Sampler = SamplerState.PointClamp,
+                    DepthStencil = DepthStencilState.None,
+                    Rasterizer = RasterizerState.CullNone,
+                };
+            }
+            batch.Begin(_defaultMaterial, SpriteSortMode.Deferred, Matrix4x4.Identity);
+            _currentMat = _defaultMaterial;
+            _began = true;
+            _scissorActive = false;
 
             DrawWidget(this);
 
-            mSpriteBatch.End();
+            batch.AutoEndBatch(); // 提交最后一段（未 Begin 时安全 no-op）
+            _began = false;
+            _currentMat = null;
         }
 
         public void DrawWidget(KTransform t)
@@ -155,30 +171,42 @@ namespace KFramework.MonoGameExtend
                         t.ChildList.Remove(mEntry);
                     }
                 }
-                else
+                else if (mEntry.Value.activeInHierarchy)
                 {
-                    if (mEntry.Value.activeInHierarchy)
+                    if (mEntry.Value is KWidget w)
                     {
-                        if (mEntry.Value is KWidget)
+                        Material prevMat = _currentMat;
+                        // 显式材质 != 当前批 → 切换到一个独立 SpriteBatch 段；null 则继承当前批（沿用父的材质/scissor）
+                        if (w.BatchMaterial != null && w.BatchMaterial != _currentMat)
                         {
-                            mEntry.Value.Draw();
+                            SwitchBatch(w.BatchMaterial);
                         }
-
-                        if (mEntry.Value.IsDispose)
+                        w.Draw();
+                        DrawWidget(mEntry.Value); // 子树继承当前批，scissor 材质对 KScrollView 内容同样生效
+                        if (w.BatchMaterial != null && w.BatchMaterial != prevMat)
                         {
-                            if (mEntry.List != null)
-                            {
-                                t.ChildList.Remove(mEntry);
-                            }
+                            SwitchBatch(prevMat); // 恢复进入本节点前的批
                         }
-                        else
-                        {
-                            DrawWidget(mEntry.Value);
-                        }
+                    }
+                    else
+                    {
+                        DrawWidget(mEntry.Value);
                     }
                 }
                 mEntry = next;
             }
+        }
+
+        /// <summary>结束当前 SpriteBatch 段并以新材质开启下一段；若离开 scissor 批则顺手清掉设备级裁剪矩形。</summary>
+        private void SwitchBatch(Material mat)
+        {
+            var batch = KSceneMgr.SpriteBatch;
+            batch.AutoEndBatch(); // 提交当前段（切批：紧接 Begin 新材质即可）
+            if (_scissorActive) { Mask.ClearScissor(KSceneMgr.Game.GraphicsDevice); _scissorActive = false; }
+            batch.Begin(mat, SpriteSortMode.Deferred, Matrix4x4.Identity);
+            _currentMat = mat;
+            _began = true;
+            _scissorActive = mat?.Rasterizer?.ScissorTestEnable == true;
         }
 
         public override void Dispose()

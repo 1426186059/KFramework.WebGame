@@ -6,9 +6,9 @@ namespace KFramework.MonoGameExtend
 {
     /// <summary>
     /// 滚动视图（参考 Unity ScrollRect + Scrollbar）：把子控件放进 Content 容器，通过滚动偏移平移内容；
-    /// 视口外的子项会被剔除（activeSelf=false）以避免越界绘制；支持滚轮与右侧滚动条拖拽，可选内容拖拽。
-    /// <para>裁剪说明：本框架 KCanvas 用 SpriteBatch 绘制且 rasterizer 在 Begin 时锁定，运行时 scissor 不生效，
-    /// 故采用「视口外子项剔除」方案——完全在视口外的项不绘制；跨越视口边界的项会完整绘制（可能轻微溢出边界），属已知限制。</para>
+    /// 视口裁剪由 KCanvas 配合 Mask 的「剪刀测试（scissor 材质）」完成 —— KScrollView 重写 BatchMaterial 返回一个开启 ScissorTest 的材质，
+    /// KCanvas 据此把本视图内容切到独立 SpriteBatch 段并用 Mask.ApplyScissor 裁剪（Viewport 外像素不绘制）；
+    /// UpdateCull 仅用于交互剔除（视口外子项不响应点击）。支持滚轮与右侧滚动条拖拽，可选内容拖拽。
     /// <para>用法：new KScrollView(){ Size = new Vector2(300,400) }，Add(child) 加入内容；挂在 KCanvas 下即可自动 Update/Draw。</para>
     /// </summary>
     public class KScrollView : KWidget, IClickable
@@ -33,6 +33,16 @@ namespace KFramework.MonoGameExtend
 
         public int Priority { get; set; } = 0;
         public bool RaycastEnabled => true;
+
+        /// <summary>裁剪内容用的 scissor 材质（开启 ScissorTest）。KCanvas 会因本节点 BatchMaterial 非 null 而把内容切到独立批绘制。</summary>
+        private Material _scissorMaterial;
+        public override Material BatchMaterial => _scissorMaterial ??= new Material
+        {
+            Blend = BlendState.NonPremultiplied,
+            Sampler = SamplerState.PointClamp,
+            DepthStencil = DepthStencilState.None,
+            Rasterizer = new RasterizerState { CullMode = CullMode.Off, ScissorTestEnable = true },
+        };
 
         public event EventHandler<KScrollView> ScrollChanged;
 
@@ -147,10 +157,15 @@ namespace KFramework.MonoGameExtend
         public override void Draw()
         {
             if (!activeInHierarchy) return;
-            var batch = KSceneMgr.SpriteBatch;
+            // 用 Mask 的剪刀测试把内容裁到视口内（Viewport 外像素不绘制）。
+            // 裁剪矩形用屏幕坐标给出：本框架 UI 的 WorldPosition 已是经 Canvas 缩放后的屏幕像素坐标。
+            var device = KSceneMgr.Game.GraphicsDevice;
             RectangleF r = GetWorldBound();
-            Rectangle dest = new Rectangle((int)Math.Round(r.X), (int)Math.Round(r.Y), (int)Math.Round(r.Width), (int)Math.Round(r.Height));
-            batch.DrawRect(KDefaultRes.DefaultTexture2D, dest, null, BackgroundColor, 0, Vector2.Zero, SpriteEffects.None, 0);
+            Rectangle rect = new Rectangle((int)Math.Round(r.X), (int)Math.Round(r.Y), (int)Math.Round(r.Width), (int)Math.Round(r.Height));
+            Mask.ApplyScissor(device, rect);
+
+            var batch = KSceneMgr.SpriteBatch;
+            batch.DrawRect(KDefaultRes.DefaultTexture2D, rect, null, BackgroundColor, 0, Vector2.Zero, SpriteEffects.None, 0);
         }
 
         // ===== IClickable =====
