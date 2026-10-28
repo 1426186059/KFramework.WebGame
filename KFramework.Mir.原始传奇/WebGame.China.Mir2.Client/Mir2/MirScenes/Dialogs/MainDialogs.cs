@@ -554,35 +554,9 @@ namespace Client.MirScenes.Dialogs
                     break;
             }
 
-            //if (Settings.HPView)
-            //{
-            //    HealthLabel.Text = string.Format("HP {0}/{1}", User.HP, User.Stats[Stat.HP]);
-            //    ManaLabel.Text = HPOnly ? "" : string.Format("MP {0}/{1} ", User.MP, User.Stats[Stat.MP]);
-            //    TopLabel.Text = string.Empty;
-            //    BottomLabel.Text = string.Empty;
-            //}
-            //else
-            //{
-            //    if (HPOnly)
-            //    {
-            //        TopLabel.Text = string.Format("{0}\n" + "--", User.HP);
-            //        BottomLabel.Text = string.Format("{0}", User.Stats[Stat.HP]);
-            //    }
-            //    else
-            //    {
-            //        TopLabel.Text = string.Format(" {0}    {1} \n" + "---------------", User.HP, User.MP);
-            //        BottomLabel.Text = string.Format(" {0}    {1} ", User.Stats[Stat.HP], User.Stats[Stat.MP]);
-            //    }
-            //    HealthLabel.Text = string.Empty;
-            //    ManaLabel.Text = string.Empty;
-            //}
-
             LevelLabel.Text = User.Level.ToString();
             ExperienceLabel.Text = string.Format("{0:#0.##%}", User.Experience / (double)User.MaxExperience);
-            //GoldLabel.Text = GameScene.Gold.ToString("###,###,##0");
-            //CharacterName.Text = User.Name;
-            //SpaceLabel.Text = User.Inventory.Count(t => t == null).ToString();
-            //WeightLabel.Text = (MapObject.User.Stats[Stat.BagWeight] - MapObject.User.CurrentBagWeight).ToString();
+            
         }
 
         private void Label_SizeChanged(object sender, EventArgs e)
