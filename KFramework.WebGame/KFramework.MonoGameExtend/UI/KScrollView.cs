@@ -132,14 +132,15 @@ namespace KFramework.MonoGameExtend
             RefreshContentSize();
             UpdateScrollBarVisibility();
             UpdateCull();
-            // 滚轮：鼠标在视口内才滚动（上滚 delta>0 看上方内容）
+            // 滚轮：鼠标在视口内才滚动。约定：向前/上滚看上方内容（offset 减小）；
+            // 若实测方向相反，翻转下面的符号即可（不同后端的 ScrollDelta 正负约定可能不同）。
             int wheel = KInputMgr.ScrollDelta;
             if (wheel != 0)
             {
                 RectangleF view = GetWorldBound();
                 Vector2 mp = KInputMgr.MousePosition;
                 if (mp.X >= view.Left && mp.X <= view.Right && mp.Y >= view.Top && mp.Y <= view.Bottom)
-                    ScrollBy(new Vector2(0, -wheel * 20f));
+                    ScrollBy(new Vector2(0, wheel * 20f));
             }
 
             if (_contentDragging)
