@@ -949,7 +949,6 @@ namespace Client.MirScenes.Dialogs
             }
         }
 
-        // 发送当前聊天框内容(供 Enter 键与发送按钮共用)
         public void SendChatMessage()
         {
             string msg = ChatTextBox.Text;
