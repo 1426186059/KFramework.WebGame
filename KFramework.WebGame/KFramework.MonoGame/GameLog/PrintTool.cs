@@ -79,9 +79,8 @@ namespace KFramework.MonoGame
         {
             if (!isTrue)
             {
-                string content = GetStr("Assert Failed", data1, data2, data3, data4, data5, data6, data7, data8);
-                Console.Error.WriteLine(content);
-                Debug.Assert(isTrue, content);
+                LogError("Assert Failed", data1, data2, data3, data4, data5, data6, data7, data8);
+                Debug.Assert(isTrue);
             }
         }
     }
