@@ -5,7 +5,7 @@
       "$id": "2",
       "Index": 1,
       "FileName": "BichonProvince/BorderVillage/Transport",
-      "Name": "TeleportGilbert",
+      "Name": "Teleport_Gilbert",
       "MapIndex": 1,
       "Location": {
         "X": 287,
@@ -43,7 +43,7 @@
       "$id": "5",
       "Index": 2,
       "FileName": "BichonProvince/BorderVillage/BountyBoard",
-      "Name": "BorderVillageBoard",
+      "Name": "BorderVillage_Board",
       "MapIndex": 1,
       "Location": {
         "X": 284,
@@ -81,7 +81,7 @@
       "$id": "8",
       "Index": 3,
       "FileName": "BichonProvince/BorderVillage/Jane",
-      "Name": "AssistantJane",
+      "Name": "Assistant_Jane",
       "MapIndex": 1,
       "Location": {
         "X": 284,
@@ -119,7 +119,7 @@
       "$id": "11",
       "Index": 4,
       "FileName": "BichonProvince/BorderVillage/CraftLady",
-      "Name": "CraftsLadyJude",
+      "Name": "CraftsLady_Jude",
       "MapIndex": 1,
       "Location": {
         "X": 294,
@@ -157,7 +157,7 @@
       "$id": "14",
       "Index": 5,
       "FileName": "BichonProvince/BorderVillage/Blacksmith",
-      "Name": "BlacksmithSmith",
+      "Name": "Blacksmith_Smith",
       "MapIndex": 1,
       "Location": {
         "X": 296,
@@ -195,7 +195,7 @@
       "$id": "17",
       "Index": 6,
       "FileName": "BichonProvince/BorderVillage/BookStore",
-      "Name": "LibrarianBrian",
+      "Name": "Librarian_Brian",
       "MapIndex": 29,
       "Location": {
         "X": 5,
@@ -233,7 +233,7 @@
       "$id": "20",
       "Index": 7,
       "FileName": "BichonProvince/BorderVillage/Butcher",
-      "Name": "MerchantJohn",
+      "Name": "Merchant_John",
       "MapIndex": 1,
       "Location": {
         "X": 292,
@@ -271,7 +271,7 @@
       "$id": "23",
       "Index": 8,
       "FileName": "BichonProvince/BorderVillage/Drapery",
-      "Name": "MerchantWhitney",
+      "Name": "Merchant_Whitney",
       "MapIndex": 1,
       "Location": {
         "X": 305,
@@ -309,7 +309,7 @@
       "$id": "26",
       "Index": 9,
       "FileName": "BichonProvince/BorderVillage/Grocery",
-      "Name": "MerchantRuben",
+      "Name": "Merchant_Ruben",
       "MapIndex": 1,
       "Location": {
         "X": 288,
@@ -347,7 +347,7 @@
       "$id": "29",
       "Index": 10,
       "FileName": "BichonProvince/BorderVillage/Warehouse",
-      "Name": "Inn守Anthony",
+      "Name": "InnKeeper_Anthony",
       "MapIndex": 32,
       "Location": {
         "X": 8,
@@ -385,7 +385,7 @@
       "$id": "32",
       "Index": 11,
       "FileName": "BichonProvince/BorderVillage/Ring",
-      "Name": "MerchantAlice",
+      "Name": "Merchant_Alice",
       "MapIndex": 31,
       "Location": {
         "X": 20,
@@ -423,7 +423,7 @@
       "$id": "35",
       "Index": 12,
       "FileName": "BichonProvince/BorderVillage/Bracelet",
-      "Name": "MerchantBetty",
+      "Name": "Merchant_Betty",
       "MapIndex": 31,
       "Location": {
         "X": 15,
@@ -461,7 +461,7 @@
       "$id": "38",
       "Index": 13,
       "FileName": "BichonProvince/BorderVillage/Necklace",
-      "Name": "MerchantClara",
+      "Name": "Merchant_Clara",
       "MapIndex": 31,
       "Location": {
         "X": 7,
@@ -499,7 +499,7 @@
       "$id": "41",
       "Index": 14,
       "FileName": "BichonProvince/BorderVillage/Prison",
-      "Name": "Prison卫",
+      "Name": "Prison_Guard",
       "MapIndex": 25,
       "Location": {
         "X": 13,
@@ -537,7 +537,7 @@
       "$id": "44",
       "Index": 15,
       "FileName": "BichonProvince/Sailor",
-      "Name": "SailorRupert",
+      "Name": "Sailor_Rupert",
       "MapIndex": 1,
       "Location": {
         "X": 251,
@@ -575,7 +575,7 @@
       "$id": "47",
       "Index": 16,
       "FileName": "BichonProvince/Wa-Master",
-      "Name": "师Wa",
+      "Name": "Master_Wa",
       "MapIndex": 1,
       "Location": {
         "X": 110,
@@ -613,7 +613,7 @@
       "$id": "50",
       "Index": 17,
       "FileName": "BichonProvince/HighPriest",
-      "Name": "HighPriestJude",
+      "Name": "HighPriest_Jude",
       "MapIndex": 1,
       "Location": {
         "X": 429,
@@ -651,7 +651,7 @@
       "$id": "53",
       "Index": 18,
       "FileName": "BichonProvince/HighPriestShinsu",
-      "Name": "Shinsu(Jude)",
+      "Name": "_Shinsu(Jude)",
       "MapIndex": 1,
       "Location": {
         "X": 428,
@@ -689,7 +689,7 @@
       "$id": "56",
       "Index": 19,
       "FileName": "BichonProvince/SinCloud",
-      "Name": "High刺Cloud",
+      "Name": "HighAssassin_Cloud",
       "MapIndex": 1,
       "Location": {
         "X": 101,
@@ -727,7 +727,7 @@
       "$id": "59",
       "Index": 20,
       "FileName": "BichonProvince/ArcherCaptain",
-      "Name": "CaptainJerald",
+      "Name": "Captain_Jerald",
       "MapIndex": 1,
       "Location": {
         "X": 320,
@@ -765,7 +765,7 @@
       "$id": "62",
       "Index": 21,
       "FileName": "BichonProvince/ArcherMage",
-      "Name": "师法Don",
+      "Name": "MasterMage_Don",
       "MapIndex": 33,
       "Location": {
         "X": 8,
@@ -803,7 +803,7 @@
       "$id": "65",
       "Index": 22,
       "FileName": "BichonProvince/BichonWall/Bichon_Teleport1",
-      "Name": "TeleportJason",
+      "Name": "Teleport_Jason",
       "MapIndex": 1,
       "Location": {
         "X": 292,
@@ -841,7 +841,7 @@
       "$id": "68",
       "Index": 23,
       "FileName": "BichonProvince/BichonWall/Bichon_Teleport2",
-      "Name": "TeleportHarrison",
+      "Name": "Teleport_Harrison",
       "MapIndex": 1,
       "Location": {
         "X": 291,
@@ -879,7 +879,7 @@
       "$id": "71",
       "Index": 24,
       "FileName": "BichonProvince/BichonWall/Bichon_Teleport3",
-      "Name": "TeleportKyle",
+      "Name": "Teleport_Kyle",
       "MapIndex": 1,
       "Location": {
         "X": 371,
@@ -917,7 +917,7 @@
       "$id": "74",
       "Index": 25,
       "FileName": "BichonProvince/BichonWall/Butcher1",
-      "Name": "MerchantSarah",
+      "Name": "Merchant_Sarah",
       "MapIndex": 1,
       "Location": {
         "X": 313,
@@ -955,7 +955,7 @@
       "$id": "77",
       "Index": 26,
       "FileName": "BichonProvince/BichonWall/Butcher2",
-      "Name": "MerchantKim",
+      "Name": "Merchant_Kim",
       "MapIndex": 3,
       "Location": {
         "X": 9,
@@ -993,7 +993,7 @@
       "$id": "80",
       "Index": 27,
       "FileName": "BichonProvince/BichonWall/Blacksmith",
-      "Name": "BlacksmithBill",
+      "Name": "Blacksmith_Bill",
       "MapIndex": 1,
       "Location": {
         "X": 302,
@@ -1031,7 +1031,7 @@
       "$id": "83",
       "Index": 28,
       "FileName": "BichonProvince/BichonWall/Potion1",
-      "Name": "AlchemistSamuel",
+      "Name": "Alchemist_Samuel",
       "MapIndex": 1,
       "Location": {
         "X": 324,
@@ -1069,7 +1069,7 @@
       "$id": "86",
       "Index": 29,
       "FileName": "BichonProvince/BichonWall/Potion2",
-      "Name": "AlchemistLarry",
+      "Name": "Alchemist_Larry",
       "MapIndex": 4,
       "Location": {
         "X": 7,
@@ -1107,7 +1107,7 @@
       "$id": "89",
       "Index": 30,
       "FileName": "BichonProvince/BichonWall/Potion3",
-      "Name": "SpecialistTravis",
+      "Name": "Specialist_Travis",
       "MapIndex": 5,
       "Location": {
         "X": 4,
@@ -1145,7 +1145,7 @@
       "$id": "92",
       "Index": 31,
       "FileName": "BichonProvince/BichonWall/Warehouse1",
-      "Name": "Inn守Brittney",
+      "Name": "InnKeeper_Brittney",
       "MapIndex": 1,
       "Location": {
         "X": 301,
@@ -1183,7 +1183,7 @@
       "$id": "95",
       "Index": 32,
       "FileName": "BichonProvince/BichonWall/Warehouse2",
-      "Name": "Inn守Mary",
+      "Name": "InnKeeper_Mary",
       "MapIndex": 8,
       "Location": {
         "X": 8,
@@ -1221,7 +1221,7 @@
       "$id": "98",
       "Index": 33,
       "FileName": "BichonProvince/BichonWall/Grocery",
-      "Name": "MerchantBull",
+      "Name": "Merchant_Bull",
       "MapIndex": 1,
       "Location": {
         "X": 374,
@@ -1259,7 +1259,7 @@
       "$id": "101",
       "Index": 34,
       "FileName": "BichonProvince/BichonWall/Lottery",
-      "Name": "LotteryEddie",
+      "Name": "Lottery_Eddie",
       "MapIndex": 1,
       "Location": {
         "X": 298,
@@ -1297,7 +1297,7 @@
       "$id": "104",
       "Index": 35,
       "FileName": "BichonProvince/BichonWall/Board",
-      "Name": "BichonWallBoard",
+      "Name": "BichonWall_Board",
       "MapIndex": 1,
       "Location": {
         "X": 334,
@@ -1335,7 +1335,7 @@
       "$id": "107",
       "Index": 36,
       "FileName": "BichonProvince/BichonWall/Materials",
-      "Name": "MaterialDealerJeffery",
+      "Name": "MaterialDealer_Jeffery",
       "MapIndex": 1,
       "Location": {
         "X": 303,
@@ -1373,7 +1373,7 @@
       "$id": "110",
       "Index": 37,
       "FileName": "BichonProvince/BichonWall/MirGuide",
-      "Name": "米尔GuidePeter",
+      "Name": "MirGuide_Peter",
       "MapIndex": 1,
       "Location": {
         "X": 328,
@@ -1411,7 +1411,7 @@
       "$id": "113",
       "Index": 38,
       "FileName": "BichonProvince/BichonWall/Examiner",
-      "Name": "ExaminerTony",
+      "Name": "Examiner_Tony",
       "MapIndex": 1,
       "Location": {
         "X": 340,
@@ -1449,7 +1449,7 @@
       "$id": "116",
       "Index": 39,
       "FileName": "BichonProvince/BichonWall/WiseFisher",
-      "Name": "WiseFishermanAlbert",
+      "Name": "WiseFisherman_Albert",
       "MapIndex": 1,
       "Location": {
         "X": 341,
@@ -1487,7 +1487,7 @@
       "$id": "119",
       "Index": 40,
       "FileName": "BichonProvince/BichonWall/StableGirl",
-      "Name": "StableGirlMary",
+      "Name": "StableGirl_Mary",
       "MapIndex": 1,
       "Location": {
         "X": 353,
@@ -1525,7 +1525,7 @@
       "$id": "122",
       "Index": 41,
       "FileName": "BichonProvince/BichonWall/Solider",
-      "Name": "SoliderRichard",
+      "Name": "Solider_Richard",
       "MapIndex": 1,
       "Location": {
         "X": 337,
@@ -1563,7 +1563,7 @@
       "$id": "125",
       "Index": 42,
       "FileName": "BichonProvince/BichonWall/TrustMerchant",
-      "Name": "TrustMerchantJames",
+      "Name": "TrustMerchant_James",
       "MapIndex": 1,
       "Location": {
         "X": 267,
@@ -1601,7 +1601,7 @@
       "$id": "128",
       "Index": 43,
       "FileName": "BichonProvince/BichonWall/GTMerchant",
-      "Name": "MerchantJamie",
+      "Name": "GTMerchant_Jamie",
       "MapIndex": 1,
       "Location": {
         "X": 335,
@@ -1639,7 +1639,7 @@
       "$id": "131",
       "Index": 44,
       "FileName": "BichonProvince/BichonWall/Administrator",
-      "Name": "AdministratorEdward",
+      "Name": "Administrator_Edward",
       "MapIndex": 2,
       "Location": {
         "X": 28,
@@ -1677,7 +1677,7 @@
       "$id": "134",
       "Index": 45,
       "FileName": "BichonProvince/BichonWall/BookStore",
-      "Name": "LibrarianSteven",
+      "Name": "Librarian_Steven",
       "MapIndex": 6,
       "Location": {
         "X": 5,
@@ -1715,7 +1715,7 @@
       "$id": "137",
       "Index": 46,
       "FileName": "BichonProvince/BichonWall/Blacksmith1",
-      "Name": "MerchantVincent",
+      "Name": "Merchant_Vincent",
       "MapIndex": 10,
       "Location": {
         "X": 19,
@@ -1753,7 +1753,7 @@
       "$id": "140",
       "Index": 47,
       "FileName": "BichonProvince/BichonWall/Bracelet",
-      "Name": "MerchantOlivia",
+      "Name": "Merchant_Olivia",
       "MapIndex": 11,
       "Location": {
         "X": 12,
@@ -1791,7 +1791,7 @@
       "$id": "143",
       "Index": 48,
       "FileName": "BichonProvince/BichonWall/Ring",
-      "Name": "MerchantDiana",
+      "Name": "Merchant_Diana",
       "MapIndex": 11,
       "Location": {
         "X": 18,
@@ -1829,7 +1829,7 @@
       "$id": "146",
       "Index": 49,
       "FileName": "BichonProvince/BichonWall/Necklace",
-      "Name": "MerchantKristin",
+      "Name": "Merchant_Kristin",
       "MapIndex": 11,
       "Location": {
         "X": 6,
@@ -1867,7 +1867,7 @@
       "$id": "149",
       "Index": 50,
       "FileName": "BichonProvince/BichonWall/Clothing",
-      "Name": "MerchantAnne",
+      "Name": "Merchant_Anne",
       "MapIndex": 12,
       "Location": {
         "X": 19,
@@ -1905,7 +1905,7 @@
       "$id": "152",
       "Index": 51,
       "FileName": "BichonProvince/BichonWall/OldmanInfinity",
-      "Name": "ChallangeOldMan",
+      "Name": "Challange_OldMan",
       "MapIndex": 13,
       "Location": {
         "X": 6,
@@ -1943,7 +1943,7 @@
       "$id": "155",
       "Index": 52,
       "FileName": "BichonProvince/BichonWall/MongchonScout",
-      "Name": "MongchonScoutBrian",
+      "Name": "MongchonScout_Brian",
       "MapIndex": 14,
       "Location": {
         "X": 4,
@@ -1981,7 +1981,7 @@
       "$id": "158",
       "Index": 53,
       "FileName": "BichonProvince/BichonWall/Sir.Mogu",
-      "Name": "SirMogu",
+      "Name": "Sir_Mogu",
       "MapIndex": 13,
       "Location": {
         "X": 8,
@@ -2019,7 +2019,7 @@
       "$id": "161",
       "Index": 54,
       "FileName": "BichonProvince/BichonWall/SubjagationManager",
-      "Name": "SubjagationManagerJames",
+      "Name": "SubjagationManager_James",
       "MapIndex": 1,
       "Location": {
         "X": 343,
@@ -2057,7 +2057,7 @@
       "$id": "164",
       "Index": 55,
       "FileName": "BichonProvince/BichonWall/CraftsLady",
-      "Name": "CraftsLadyAlice",
+      "Name": "CraftsLady_Alice",
       "MapIndex": 1,
       "Location": {
         "X": 321,
@@ -2095,7 +2095,7 @@
       "$id": "167",
       "Index": 56,
       "FileName": "BichonProvince/BichonWall/Awakening",
-      "Name": "师Joffrey",
+      "Name": "Master_Joffrey",
       "MapIndex": 1,
       "Location": {
         "X": 338,
@@ -2133,7 +2133,7 @@
       "$id": "170",
       "Index": 57,
       "FileName": "BichonProvince/BichonWall/Downgrade",
-      "Name": "AssistantJulie",
+      "Name": "Assistant_Julie",
       "MapIndex": 1,
       "Location": {
         "X": 331,
@@ -2171,7 +2171,7 @@
       "$id": "173",
       "Index": 58,
       "FileName": "BichonProvince/BichonWall/PetStore",
-      "Name": "Pet师Andy",
+      "Name": "PetMaster_Andy",
       "MapIndex": 8,
       "Location": {
         "X": 17,
@@ -2209,7 +2209,7 @@
       "$id": "176",
       "Index": 59,
       "FileName": "BichonProvince/BichonWall/PearlStore",
-      "Name": "MerchantGlenn",
+      "Name": "Merchant_Glenn",
       "MapIndex": 13,
       "Location": {
         "X": 8,
@@ -2247,7 +2247,7 @@
       "$id": "179",
       "Index": 60,
       "FileName": "BichonProvince/BichonWall/Premium",
-      "Name": "尊mElijah",
+      "Name": "Premium_Elijah",
       "MapIndex": 1,
       "Location": {
         "X": 328,
@@ -2285,7 +2285,7 @@
       "$id": "182",
       "Index": 61,
       "FileName": "BichonProvince/BichonWall/Far",
-      "Name": "皇Far",
+      "Name": "Emperor_Far",
       "MapIndex": 2,
       "Location": {
         "X": 24,
@@ -2323,7 +2323,7 @@
       "$id": "185",
       "Index": 62,
       "FileName": "BichonProvince/BichonWall/Luke",
-      "Name": "CommanderLuke",
+      "Name": "Commander_Luke",
       "MapIndex": 1,
       "Location": {
         "X": 345,
@@ -2361,7 +2361,7 @@
       "$id": "188",
       "Index": 63,
       "FileName": "BichonProvince/OmaCave/Warehouse",
-      "Name": "StorageJake",
+      "Name": "Storage_Jake",
       "MapIndex": 40,
       "Location": {
         "X": 174,
@@ -2437,7 +2437,7 @@
       "$id": "194",
       "Index": 65,
       "FileName": "BichonProvince/NaturalCave/WickedTrader",
-      "Name": "WickedTraderJames",
+      "Name": "WickedTrader_James",
       "MapIndex": 36,
       "Location": {
         "X": 4,
@@ -2513,7 +2513,7 @@
       "$id": "200",
       "Index": 67,
       "FileName": "BichonProvince/OmaCave/Stone",
-      "Name": "Mysterious石",
+      "Name": "MysteriousStone",
       "MapIndex": 43,
       "Location": {
         "X": 351,
@@ -2551,7 +2551,7 @@
       "$id": "203",
       "Index": 68,
       "FileName": "WoomyonWoods/Fortress/Butcher",
-      "Name": "MerchantHans",
+      "Name": "Merchant_Hans",
       "MapIndex": 64,
       "Location": {
         "X": 328,
@@ -2589,7 +2589,7 @@
       "$id": "206",
       "Index": 69,
       "FileName": "WoomyonWoods/Fortress/Blacksmith",
-      "Name": "MerchantJang",
+      "Name": "Merchant_Jang",
       "MapIndex": 64,
       "Location": {
         "X": 314,
@@ -2627,7 +2627,7 @@
       "$id": "209",
       "Index": 70,
       "FileName": "WoomyonWoods/Fortress/Potion",
-      "Name": "MerchantHelen",
+      "Name": "Merchant_Helen",
       "MapIndex": 64,
       "Location": {
         "X": 292,
@@ -2665,7 +2665,7 @@
       "$id": "212",
       "Index": 71,
       "FileName": "WoomyonWoods/Fortress/Master",
-      "Name": "师Shok",
+      "Name": "Master_Shok",
       "MapIndex": 64,
       "Location": {
         "X": 312,
@@ -2703,7 +2703,7 @@
       "$id": "215",
       "Index": 72,
       "FileName": "WoomyonWoods/Fortress/Drapery",
-      "Name": "MerchantJulia",
+      "Name": "Merchant_Julia",
       "MapIndex": 64,
       "Location": {
         "X": 302,
@@ -2741,7 +2741,7 @@
       "$id": "218",
       "Index": 73,
       "FileName": "WoomyonWoods/Fortress/SubjugationLead",
-      "Name": "SubjugationLeadEric",
+      "Name": "SubjugationLead_Eric",
       "MapIndex": 64,
       "Location": {
         "X": 317,
@@ -2779,7 +2779,7 @@
       "$id": "221",
       "Index": 74,
       "FileName": "WoomyonWoods/InsectCave/Soho",
-      "Name": "TravellerSoho",
+      "Name": "Traveller_Soho",
       "MapIndex": 66,
       "Location": {
         "X": 114,
@@ -2817,7 +2817,7 @@
       "$id": "224",
       "Index": 75,
       "FileName": "WoomyonWoods/WoomaTemple/Stone",
-      "Name": "Mysterious石",
+      "Name": "MysteriousStone",
       "MapIndex": 71,
       "Location": {
         "X": 381,
@@ -2855,7 +2855,7 @@
       "$id": "227",
       "Index": 76,
       "FileName": "WoomyonWoods/Castle-GI/Warehouse",
-      "Name": "Inn守Helen",
+      "Name": "InnKeeper_Helen",
       "MapIndex": 84,
       "Location": {
         "X": 12,
@@ -2893,7 +2893,7 @@
       "$id": "230",
       "Index": 77,
       "FileName": "WoomyonWoods/Castle-GI/Drapery",
-      "Name": "MerchantBelina",
+      "Name": "Merchant_Belina",
       "MapIndex": 82,
       "Location": {
         "X": 10,
@@ -2931,7 +2931,7 @@
       "$id": "233",
       "Index": 78,
       "FileName": "WoomyonWoods/Castle-GI/Stones",
-      "Name": "MerchantSatin",
+      "Name": "Merchant_Satin",
       "MapIndex": 81,
       "Location": {
         "X": 10,
@@ -2969,7 +2969,7 @@
       "$id": "236",
       "Index": 79,
       "FileName": "WoomyonWoods/Castle-GI/Peddlar",
-      "Name": "MerchantDerby",
+      "Name": "Merchant_Derby",
       "MapIndex": 77,
       "Location": {
         "X": 252,
@@ -3007,7 +3007,7 @@
       "$id": "239",
       "Index": 80,
       "FileName": "WoomyonWoods/Castle-GI/1Gime",
-      "Name": "MerchantJim",
+      "Name": "Merchant_Jim",
       "MapIndex": 77,
       "Location": {
         "X": 244,
@@ -3045,7 +3045,7 @@
       "$id": "242",
       "Index": 81,
       "FileName": "WoomyonWoods/Castle-GI/Jewellery",
-      "Name": "MerchantMonica",
+      "Name": "Merchant_Monica",
       "MapIndex": 81,
       "Location": {
         "X": 16,
@@ -3083,7 +3083,7 @@
       "$id": "245",
       "Index": 82,
       "FileName": "WoomyonWoods/Castle-GI/Potion",
-      "Name": "MerchantMurray",
+      "Name": "Merchant_Murray",
       "MapIndex": 80,
       "Location": {
         "X": 8,
@@ -3121,7 +3121,7 @@
       "$id": "248",
       "Index": 83,
       "FileName": "WoomyonWoods/Castle-GI/Potion1",
-      "Name": "SpecialistKimberly",
+      "Name": "Specialist_Kimberly",
       "MapIndex": 80,
       "Location": {
         "X": 13,
@@ -3159,7 +3159,7 @@
       "$id": "251",
       "Index": 84,
       "FileName": "WoomyonWoods/Castle-GI/Weaponsmith",
-      "Name": "MerchantGerald",
+      "Name": "Merchant_Gerald",
       "MapIndex": 79,
       "Location": {
         "X": 12,
@@ -3197,7 +3197,7 @@
       "$id": "254",
       "Index": 85,
       "FileName": "WoomyonWoods/Castle-GI/Blacksmith",
-      "Name": "BlacksmithWayne",
+      "Name": "Blacksmith_Wayne",
       "MapIndex": 77,
       "Location": {
         "X": 227,
@@ -3235,7 +3235,7 @@
       "$id": "257",
       "Index": 86,
       "FileName": "WoomyonWoods/Castle-GI/Transporter",
-      "Name": "TeleportDenzel",
+      "Name": "Teleport_Denzel",
       "MapIndex": 77,
       "Location": {
         "X": 265,
@@ -3273,7 +3273,7 @@
       "$id": "260",
       "Index": 87,
       "FileName": "WoomyonWoods/Castle-GI/Crafting",
-      "Name": "CraftsLadyJane",
+      "Name": "CraftsLady_Jane",
       "MapIndex": 77,
       "Location": {
         "X": 224,
@@ -3311,7 +3311,7 @@
       "$id": "263",
       "Index": 88,
       "FileName": "WoomyonWoods/Castle-GI/TrustMerchant",
-      "Name": "TrustMerchantPatrick",
+      "Name": "TrustMerchant_Patrick",
       "MapIndex": 77,
       "Location": {
         "X": 230,
@@ -3349,7 +3349,7 @@
       "$id": "266",
       "Index": 89,
       "FileName": "WoomyonWoods/TaoistVillage/Weaponsmith",
-      "Name": "MerchantJerald",
+      "Name": "Merchant_Jerald",
       "MapIndex": 109,
       "Location": {
         "X": 14,
@@ -3387,7 +3387,7 @@
       "$id": "269",
       "Index": 90,
       "FileName": "WoomyonWoods/TaoistVillage/Peddlar",
-      "Name": "MerchantJerry",
+      "Name": "Merchant_Jerry",
       "MapIndex": 115,
       "Location": {
         "X": 11,
@@ -3425,7 +3425,7 @@
       "$id": "272",
       "Index": 91,
       "FileName": "WoomyonWoods/TaoistVillage/Jewellery",
-      "Name": "MerchantKen",
+      "Name": "Merchant_Ken",
       "MapIndex": 113,
       "Location": {
         "X": 9,
@@ -3463,7 +3463,7 @@
       "$id": "275",
       "Index": 92,
       "FileName": "WoomyonWoods/TaoistVillage/Drapery",
-      "Name": "MerchantSam",
+      "Name": "Merchant_Sam",
       "MapIndex": 111,
       "Location": {
         "X": 13,
@@ -3501,7 +3501,7 @@
       "$id": "278",
       "Index": 93,
       "FileName": "WoomyonWoods/TaoistVillage/Potion",
-      "Name": "MerchantJaney",
+      "Name": "Merchant_Janey",
       "MapIndex": 114,
       "Location": {
         "X": 9,
@@ -3539,7 +3539,7 @@
       "$id": "281",
       "Index": 94,
       "FileName": "WoomyonWoods/TaoistVillage/Potion1",
-      "Name": "SpecialistEugene",
+      "Name": "Specialist_Eugene",
       "MapIndex": 114,
       "Location": {
         "X": 12,
@@ -3577,7 +3577,7 @@
       "$id": "284",
       "Index": 95,
       "FileName": "WoomyonWoods/TaoistVillage/Books",
-      "Name": "LibrarianHuxley",
+      "Name": "Librarian_Huxley",
       "MapIndex": 112,
       "Location": {
         "X": 9,
@@ -3615,7 +3615,7 @@
       "$id": "287",
       "Index": 96,
       "FileName": "WoomyonWoods/TaoistVillage/Warehouse",
-      "Name": "WarehouseHubert",
+      "Name": "Warehouse_Hubert",
       "MapIndex": 108,
       "Location": {
         "X": 184,
@@ -3653,7 +3653,7 @@
       "$id": "290",
       "Index": 97,
       "FileName": "WoomyonWoods/TaoistVillage/Perry",
-      "Name": "师Perry",
+      "Name": "Master_Perry",
       "MapIndex": 110,
       "Location": {
         "X": 14,
@@ -3919,7 +3919,7 @@
       "$id": "311",
       "Index": 104,
       "FileName": "WoomyonWoods/TaoistVillage/TrainerTao",
-      "Name": "Trainer道",
+      "Name": "TrainerTaoist",
       "MapIndex": 108,
       "Location": {
         "X": 182,
@@ -4185,7 +4185,7 @@
       "$id": "332",
       "Index": 111,
       "FileName": "WoomyonWoods/TaoistVillage/TrainerTaoist2",
-      "Name": "Trainer道",
+      "Name": "TrainerTaoist",
       "MapIndex": 108,
       "Location": {
         "X": 196,
@@ -4223,7 +4223,7 @@
       "$id": "335",
       "Index": 112,
       "FileName": "WoomyonWoods/TaoistVillage/BigTaoist",
-      "Name": "Big道",
+      "Name": "BigTaoist",
       "MapIndex": 130,
       "Location": {
         "X": 11,
@@ -4261,7 +4261,7 @@
       "$id": "338",
       "Index": 113,
       "FileName": "WoomyonWoods/TaoistVillage/Dealer",
-      "Name": "MaterialDealerAlex",
+      "Name": "MaterialDealer_Alex",
       "MapIndex": 108,
       "Location": {
         "X": 186,
@@ -4337,7 +4337,7 @@
       "$id": "344",
       "Index": 115,
       "FileName": "WoomyonWoods/TaoistVillage/Transporter",
-      "Name": "TeleportSigmund",
+      "Name": "Teleport_Sigmund",
       "MapIndex": 108,
       "Location": {
         "X": 166,
@@ -4375,7 +4375,7 @@
       "$id": "347",
       "Index": 116,
       "FileName": "WoomyonWoods/TaoistVillage/MasterMK",
-      "Name": "师Deric",
+      "Name": "MasterMK_Deric",
       "MapIndex": 108,
       "Location": {
         "X": 165,
@@ -4413,7 +4413,7 @@
       "$id": "350",
       "Index": 117,
       "FileName": "WoomyonWoods/TaoistVillage/InvestigatorTV",
-      "Name": "InvestigatorDavid",
+      "Name": "Investigator_David",
       "MapIndex": 108,
       "Location": {
         "X": 182,
@@ -4451,7 +4451,7 @@
       "$id": "353",
       "Index": 118,
       "FileName": "WoomyonWoods/TaoistVillage/LeadTrainerTV",
-      "Name": "LeadTrainerHarry",
+      "Name": "LeadTrainer_Harry",
       "MapIndex": 110,
       "Location": {
         "X": 11,
@@ -4527,7 +4527,7 @@
       "$id": "359",
       "Index": 120,
       "FileName": "WoomyonWoods/TaoistVillage/CaveGuideTV",
-      "Name": "CaveGuidePaddy",
+      "Name": "CaveGuide_Paddy",
       "MapIndex": 108,
       "Location": {
         "X": 119,
@@ -4641,7 +4641,7 @@
       "$id": "368",
       "Index": 123,
       "FileName": "WoomyonWoods/SeokchoValley/Grocery",
-      "Name": "MerchantCook",
+      "Name": "Merchant_Cook",
       "MapIndex": 103,
       "Location": {
         "X": 144,
@@ -4679,7 +4679,7 @@
       "$id": "371",
       "Index": 124,
       "FileName": "WoomyonWoods/SeokchoValley/Merchant",
-      "Name": "MerchantCarratt",
+      "Name": "Merchant_Carratt",
       "MapIndex": 103,
       "Location": {
         "X": 125,
@@ -4717,7 +4717,7 @@
       "$id": "374",
       "Index": 125,
       "FileName": "WoomyonWoods/SeokchoValley/Warehouse",
-      "Name": "WarehouseClair",
+      "Name": "Warehouse_Clair",
       "MapIndex": 103,
       "Location": {
         "X": 124,
@@ -4831,7 +4831,7 @@
       "$id": "383",
       "Index": 128,
       "FileName": "SerpentValley/Village/Grocery",
-      "Name": "MerchantRobert",
+      "Name": "Merchant_Robert",
       "MapIndex": 144,
       "Location": {
         "X": 505,
@@ -4869,7 +4869,7 @@
       "$id": "386",
       "Index": 129,
       "FileName": "SerpentValley/Village/Clothes",
-      "Name": "MerchantMelissa",
+      "Name": "Merchant_Melissa",
       "MapIndex": 144,
       "Location": {
         "X": 517,
@@ -4907,7 +4907,7 @@
       "$id": "389",
       "Index": 130,
       "FileName": "SerpentValley/Village/Warehouse",
-      "Name": "Inn守Nicole",
+      "Name": "InnKeeper_Nicole",
       "MapIndex": 144,
       "Location": {
         "X": 517,
@@ -4945,7 +4945,7 @@
       "$id": "392",
       "Index": 131,
       "FileName": "SerpentValley/Village/Transport",
-      "Name": "TransportChandler",
+      "Name": "Transport_Chandler",
       "MapIndex": 144,
       "Location": {
         "X": 499,
@@ -5021,7 +5021,7 @@
       "$id": "398",
       "Index": 133,
       "FileName": "SerpentValley/Village/MirGuide",
-      "Name": "米尔GuideJames",
+      "Name": "MirGuide_James",
       "MapIndex": 144,
       "Location": {
         "X": 505,
@@ -5059,7 +5059,7 @@
       "$id": "401",
       "Index": 134,
       "FileName": "SerpentValley/Village/Potion",
-      "Name": "MerchantDr.Kim",
+      "Name": "Merchant_Dr.Kim",
       "MapIndex": 146,
       "Location": {
         "X": 5,
@@ -5097,7 +5097,7 @@
       "$id": "404",
       "Index": 135,
       "FileName": "SerpentValley/Village/Blacksmith",
-      "Name": "MerchantBradley",
+      "Name": "Merchant_Bradley",
       "MapIndex": 147,
       "Location": {
         "X": 7,
@@ -5135,7 +5135,7 @@
       "$id": "407",
       "Index": 136,
       "FileName": "SerpentValley/Village/Crafting",
-      "Name": "CraftsLadyVictoria",
+      "Name": "CraftsLady_Victoria",
       "MapIndex": 144,
       "Location": {
         "X": 491,
@@ -5173,7 +5173,7 @@
       "$id": "410",
       "Index": 137,
       "FileName": "SerpentValley/VulnerableSon",
-      "Name": "VulnerableSonAlfie",
+      "Name": "VulnerableSon_Alfie",
       "MapIndex": 144,
       "Location": {
         "X": 562,
@@ -5249,7 +5249,7 @@
       "$id": "416",
       "Index": 139,
       "FileName": "SerpentValley/ConnectionPath/MysteriousYu",
-      "Name": "MysteriousYu",
+      "Name": "Mysterious_Yu",
       "MapIndex": 168,
       "Location": {
         "X": 31,
@@ -5363,7 +5363,7 @@
       "$id": "425",
       "Index": 142,
       "FileName": "MongchonProvince/MudWall/Warehouse",
-      "Name": "Inn守Jessica",
+      "Name": "InnKeeper_Jessica",
       "MapIndex": 172,
       "Location": {
         "X": 305,
@@ -5401,7 +5401,7 @@
       "$id": "428",
       "Index": 143,
       "FileName": "MongchonProvince/MudWall/Grocery",
-      "Name": "MerchantKevin",
+      "Name": "Merchant_Kevin",
       "MapIndex": 172,
       "Location": {
         "X": 346,
@@ -5439,7 +5439,7 @@
       "$id": "431",
       "Index": 144,
       "FileName": "MongchonProvince/MudWall/Butcher",
-      "Name": "MerchantRupert",
+      "Name": "Merchant_Rupert",
       "MapIndex": 172,
       "Location": {
         "X": 355,
@@ -5477,7 +5477,7 @@
       "$id": "434",
       "Index": 145,
       "FileName": "MongchonProvince/MudWall/Potion",
-      "Name": "MerchantDaniel",
+      "Name": "Merchant_Daniel",
       "MapIndex": 172,
       "Location": {
         "X": 361,
@@ -5515,7 +5515,7 @@
       "$id": "437",
       "Index": 146,
       "FileName": "MongchonProvince/MudWall/Transport",
-      "Name": "TransportEdwin",
+      "Name": "Transport_Edwin",
       "MapIndex": 172,
       "Location": {
         "X": 365,
@@ -5553,7 +5553,7 @@
       "$id": "440",
       "Index": 147,
       "FileName": "MongchonProvince/MudWall/Grocery1",
-      "Name": "MerchantWalter",
+      "Name": "Merchant_Walter",
       "MapIndex": 172,
       "Location": {
         "X": 855,
@@ -5591,7 +5591,7 @@
       "$id": "443",
       "Index": 148,
       "FileName": "MongchonProvince/MudWall/Board",
-      "Name": "MudWallBoard",
+      "Name": "MudWall_Board",
       "MapIndex": 172,
       "Location": {
         "X": 330,
@@ -5629,7 +5629,7 @@
       "$id": "446",
       "Index": 149,
       "FileName": "MongchonProvince/MudWall/TrustMerchant",
-      "Name": "TrustMerchantJake",
+      "Name": "TrustMerchant_Jake",
       "MapIndex": 172,
       "Location": {
         "X": 323,
@@ -5667,7 +5667,7 @@
       "$id": "449",
       "Index": 150,
       "FileName": "MongchonProvince/MudWall/MirGuide",
-      "Name": "米尔GuideStephen",
+      "Name": "MirGuide_Stephen",
       "MapIndex": 172,
       "Location": {
         "X": 339,
@@ -5705,7 +5705,7 @@
       "$id": "452",
       "Index": 151,
       "FileName": "MongchonProvince/MudWall/Warehouse1",
-      "Name": "Inn守Ruben",
+      "Name": "InnKeeper_Ruben",
       "MapIndex": 175,
       "Location": {
         "X": 9,
@@ -5743,7 +5743,7 @@
       "$id": "455",
       "Index": 152,
       "FileName": "MongchonProvince/MudWall/Clothes",
-      "Name": "MerchantJennifer",
+      "Name": "Merchant_Jennifer",
       "MapIndex": 178,
       "Location": {
         "X": 23,
@@ -5781,7 +5781,7 @@
       "$id": "458",
       "Index": 153,
       "FileName": "MongchonProvince/MudWall/Bracelet",
-      "Name": "MerchantLaura",
+      "Name": "Merchant_Laura",
       "MapIndex": 178,
       "Location": {
         "X": 11,
@@ -5819,7 +5819,7 @@
       "$id": "461",
       "Index": 154,
       "FileName": "MongchonProvince/MudWall/Helmets",
-      "Name": "MerchantMichelle",
+      "Name": "Merchant_Michelle",
       "MapIndex": 178,
       "Location": {
         "X": 8,
@@ -5857,7 +5857,7 @@
       "$id": "464",
       "Index": 155,
       "FileName": "MongchonProvince/MudWall/Ring",
-      "Name": "MerchantTiffany",
+      "Name": "Merchant_Tiffany",
       "MapIndex": 179,
       "Location": {
         "X": 11,
@@ -5895,7 +5895,7 @@
       "$id": "467",
       "Index": 156,
       "FileName": "MongchonProvince/MudWall/Bracelet1",
-      "Name": "MerchantKelly",
+      "Name": "Merchant_Kelly",
       "MapIndex": 179,
       "Location": {
         "X": 16,
@@ -5933,7 +5933,7 @@
       "$id": "470",
       "Index": 157,
       "FileName": "MongchonProvince/MudWall/Necklace",
-      "Name": "MerchantRachel",
+      "Name": "Merchant_Rachel",
       "MapIndex": 179,
       "Location": {
         "X": 4,
@@ -5971,7 +5971,7 @@
       "$id": "473",
       "Index": 158,
       "FileName": "MongchonProvince/MudWall/Blacksmith",
-      "Name": "MerchantBruce",
+      "Name": "Merchant_Bruce",
       "MapIndex": 180,
       "Location": {
         "X": 5,
@@ -6009,7 +6009,7 @@
       "$id": "476",
       "Index": 159,
       "FileName": "MongchonProvince/MudWall/Potion1",
-      "Name": "MerchantRaymond",
+      "Name": "Merchant_Raymond",
       "MapIndex": 181,
       "Location": {
         "X": 5,
@@ -6047,7 +6047,7 @@
       "$id": "479",
       "Index": 160,
       "FileName": "MongchonProvince/MudWall/Lottery",
-      "Name": "LotteryCharley",
+      "Name": "Lottery_Charley",
       "MapIndex": 172,
       "Location": {
         "X": 284,
@@ -6085,7 +6085,7 @@
       "$id": "482",
       "Index": 161,
       "FileName": "MongchonProvince/MudWall/Crafting",
-      "Name": "CraftsLadyLouise",
+      "Name": "CraftsLady_Louise",
       "MapIndex": 172,
       "Location": {
         "X": 299,
@@ -6123,7 +6123,7 @@
       "$id": "485",
       "Index": 162,
       "FileName": "MongchonProvince/MudWall/GT",
-      "Name": "MerchantGraeme",
+      "Name": "GTMerchant_Graeme",
       "MapIndex": 172,
       "Location": {
         "X": 321,
@@ -6161,7 +6161,7 @@
       "$id": "488",
       "Index": 163,
       "FileName": "MongchonProvince/MudWall/Warehouse2",
-      "Name": "Inn守Robin",
+      "Name": "InnKeeper_Robin",
       "MapIndex": 176,
       "Location": {
         "X": 5,
@@ -6199,7 +6199,7 @@
       "$id": "491",
       "Index": 164,
       "FileName": "MongchonProvince/MudWall/MonDelegate",
-      "Name": "MongchonDelegateMichael",
+      "Name": "MongchonDelegate_Michael",
       "MapIndex": 172,
       "Location": {
         "X": 330,
@@ -6237,7 +6237,7 @@
       "$id": "494",
       "Index": 165,
       "FileName": "MongchonProvince/SabukWall/Butcher",
-      "Name": "MerchantMilton",
+      "Name": "Merchant_Milton",
       "MapIndex": 172,
       "Location": {
         "X": 659,
@@ -6275,7 +6275,7 @@
       "$id": "497",
       "Index": 166,
       "FileName": "MongchonProvince/SabukWall/Peddlar",
-      "Name": "MerchantMr.Wang",
+      "Name": "Merchant_Mr.Wang",
       "MapIndex": 172,
       "Location": {
         "X": 663,
@@ -6313,7 +6313,7 @@
       "$id": "500",
       "Index": 167,
       "FileName": "MongchonProvince/SabukWall/Blacksmith",
-      "Name": "BlacksmithDean",
+      "Name": "Blacksmith_Dean",
       "MapIndex": 246,
       "Location": {
         "X": 3,
@@ -6351,7 +6351,7 @@
       "$id": "503",
       "Index": 168,
       "FileName": "MongchonProvince/SabukWall/Weaponsmith",
-      "Name": "MerchantBill",
+      "Name": "Merchant_Bill",
       "MapIndex": 246,
       "Location": {
         "X": 7,
@@ -6389,7 +6389,7 @@
       "$id": "506",
       "Index": 169,
       "FileName": "MongchonProvince/SabukWall/Clothes",
-      "Name": "MerchantSandra",
+      "Name": "Merchant_Sandra",
       "MapIndex": 250,
       "Location": {
         "X": 13,
@@ -6427,7 +6427,7 @@
       "$id": "509",
       "Index": 170,
       "FileName": "MongchonProvince/SabukWall/Helmet",
-      "Name": "MerchantDebora",
+      "Name": "Merchant_Debora",
       "MapIndex": 250,
       "Location": {
         "X": 9,
@@ -6465,7 +6465,7 @@
       "$id": "512",
       "Index": 171,
       "FileName": "MongchonProvince/SabukWall/Potion1",
-      "Name": "SpecialistMilton",
+      "Name": "Specialist_Milton",
       "MapIndex": 248,
       "Location": {
         "X": 7,
@@ -6503,7 +6503,7 @@
       "$id": "515",
       "Index": 172,
       "FileName": "MongchonProvince/SabukWall/Potion",
-      "Name": "MerchantHarry",
+      "Name": "Merchant_Harry",
       "MapIndex": 248,
       "Location": {
         "X": 14,
@@ -6541,7 +6541,7 @@
       "$id": "518",
       "Index": 173,
       "FileName": "MongchonProvince/SabukWall/Warehouse",
-      "Name": "Inn守Vicky",
+      "Name": "InnKeeper_Vicky",
       "MapIndex": 247,
       "Location": {
         "X": 7,
@@ -6579,7 +6579,7 @@
       "$id": "521",
       "Index": 174,
       "FileName": "MongchonProvince/SabukWall/Bracelet",
-      "Name": "MerchantCindy",
+      "Name": "Merchant_Cindy",
       "MapIndex": 249,
       "Location": {
         "X": 14,
@@ -6617,7 +6617,7 @@
       "$id": "524",
       "Index": 175,
       "FileName": "MongchonProvince/SabukWall/Necklace",
-      "Name": "MerchantSarah",
+      "Name": "Merchant_Sarah",
       "MapIndex": 249,
       "Location": {
         "X": 3,
@@ -6655,7 +6655,7 @@
       "$id": "527",
       "Index": 176,
       "FileName": "MongchonProvince/SabukWall/Ring",
-      "Name": "MerchantPeggy",
+      "Name": "Merchant_Peggy",
       "MapIndex": 249,
       "Location": {
         "X": 10,
@@ -6693,7 +6693,7 @@
       "$id": "530",
       "Index": 177,
       "FileName": "MongchonProvince/SabukWall/Blacksmith1",
-      "Name": "BlacksmithCarlos",
+      "Name": "Blacksmith_Carlos",
       "MapIndex": 246,
       "Location": {
         "X": 12,
@@ -6731,7 +6731,7 @@
       "$id": "533",
       "Index": 178,
       "FileName": "MongchonProvince/SabukWall/SwampNPC",
-      "Name": "ProtectorJames",
+      "Name": "Protector_James",
       "MapIndex": 172,
       "Location": {
         "X": 648,
@@ -6921,7 +6921,7 @@
       "$id": "548",
       "Index": 183,
       "FileName": "MongchonProvince/BugCave/Clothes",
-      "Name": "DraperyMaximus",
+      "Name": "Drapery_Maximus",
       "MapIndex": 189,
       "Location": {
         "X": 30,
@@ -6959,7 +6959,7 @@
       "$id": "551",
       "Index": 184,
       "FileName": "MongchonProvince/BugCave/LostSoul",
-      "Name": "Lost魂",
+      "Name": "LostSoul",
       "MapIndex": 182,
       "Location": {
         "X": 202,
@@ -7073,7 +7073,7 @@
       "$id": "560",
       "Index": 187,
       "FileName": "MongchonProvince/StoneTemple/Stone",
-      "Name": "Mysterious石",
+      "Name": "MysteriousStone",
       "MapIndex": 204,
       "Location": {
         "X": 272,
@@ -7111,7 +7111,7 @@
       "$id": "563",
       "Index": 188,
       "FileName": "MongchonProvince/ZumaTemple/Stone",
-      "Name": "Mysterious石",
+      "Name": "MysteriousStone",
       "MapIndex": 257,
       "Location": {
         "X": 214,
@@ -7149,7 +7149,7 @@
       "$id": "566",
       "Index": 189,
       "FileName": "PrajnaIsland/Jewellery",
-      "Name": "MerchantGrace",
+      "Name": "Merchant_Grace",
       "MapIndex": 291,
       "Location": {
         "X": 7,
@@ -7187,7 +7187,7 @@
       "$id": "569",
       "Index": 190,
       "FileName": "PrajnaIsland/Jewellery",
-      "Name": "MerchantEmily",
+      "Name": "Merchant_Emily",
       "MapIndex": 289,
       "Location": {
         "X": 154,
@@ -7225,7 +7225,7 @@
       "$id": "572",
       "Index": 191,
       "FileName": "PrajnaIsland/Clothes",
-      "Name": "MerchantSusan",
+      "Name": "Merchant_Susan",
       "MapIndex": 292,
       "Location": {
         "X": 13,
@@ -7263,7 +7263,7 @@
       "$id": "575",
       "Index": 192,
       "FileName": "PrajnaIsland/WeaponSmith",
-      "Name": "MerchantKeith",
+      "Name": "Merchant_Keith",
       "MapIndex": 290,
       "Location": {
         "X": 8,
@@ -7301,7 +7301,7 @@
       "$id": "578",
       "Index": 193,
       "FileName": "PrajnaIsland/Peddlar",
-      "Name": "MerchantBart",
+      "Name": "Merchant_Bart",
       "MapIndex": 289,
       "Location": {
         "X": 148,
@@ -7339,7 +7339,7 @@
       "$id": "581",
       "Index": 194,
       "FileName": "PrajnaIsland/Fisherman",
-      "Name": "OldFishermanFrank",
+      "Name": "OldFisherman_Frank",
       "MapIndex": 294,
       "Location": {
         "X": 10,
@@ -7377,7 +7377,7 @@
       "$id": "584",
       "Index": 195,
       "FileName": "PrajnaIsland/Potion",
-      "Name": "MerchantSandford",
+      "Name": "Merchant_Sandford",
       "MapIndex": 289,
       "Location": {
         "X": 161,
@@ -7415,7 +7415,7 @@
       "$id": "587",
       "Index": 196,
       "FileName": "PrajnaIsland/Potion1",
-      "Name": "SpecialistKurtis",
+      "Name": "Specialist_Kurtis",
       "MapIndex": 295,
       "Location": {
         "X": 14,
@@ -7453,7 +7453,7 @@
       "$id": "590",
       "Index": 197,
       "FileName": "PrajnaIsland/Warehouse",
-      "Name": "WarehouseHeather",
+      "Name": "Warehouse_Heather",
       "MapIndex": 289,
       "Location": {
         "X": 142,
@@ -7491,7 +7491,7 @@
       "$id": "593",
       "Index": 198,
       "FileName": "PrajnaIsland/Inspector1",
-      "Name": "BichonInspectorAnthony",
+      "Name": "BichonInspector_Anthony",
       "MapIndex": 289,
       "Location": {
         "X": 351,
@@ -7567,7 +7567,7 @@
       "$id": "599",
       "Index": 200,
       "FileName": "PrajnaIsland/Sailor",
-      "Name": "SailorRaymond",
+      "Name": "Sailor_Raymond",
       "MapIndex": 289,
       "Location": {
         "X": 122,
@@ -7605,7 +7605,7 @@
       "$id": "602",
       "Index": 201,
       "FileName": "PrajnaIsland/Inspector",
-      "Name": "InspectorPeter",
+      "Name": "Inspector_Peter",
       "MapIndex": 289,
       "Location": {
         "X": 140,
@@ -7681,7 +7681,7 @@
       "$id": "608",
       "Index": 203,
       "FileName": "PrajnaIsland/CraftLady",
-      "Name": "CraftsLadyKimberly",
+      "Name": "CraftsLady_Kimberly",
       "MapIndex": 289,
       "Location": {
         "X": 142,
@@ -7719,7 +7719,7 @@
       "$id": "611",
       "Index": 204,
       "FileName": "PrajnaIsland/TrustMerchant",
-      "Name": "TrustMerchantJoseph",
+      "Name": "TrustMerchant_Joseph",
       "MapIndex": 289,
       "Location": {
         "X": 136,
@@ -7757,7 +7757,7 @@
       "$id": "614",
       "Index": 205,
       "FileName": "PrajnaIsland/GTMerchant",
-      "Name": "MerchantRobert",
+      "Name": "GTMerchant_Robert",
       "MapIndex": 289,
       "Location": {
         "X": 135,
@@ -7795,7 +7795,7 @@
       "$id": "617",
       "Index": 206,
       "FileName": "PrajnaIsland/MirGuide",
-      "Name": "米尔GuideEdward",
+      "Name": "MirGuide_Edward",
       "MapIndex": 289,
       "Location": {
         "X": 128,
@@ -7833,7 +7833,7 @@
       "$id": "620",
       "Index": 207,
       "FileName": "PrajnaIsland/VillageChief",
-      "Name": "VillageChiefAndrew",
+      "Name": "VillageChief_Andrew",
       "MapIndex": 293,
       "Location": {
         "X": 11,
@@ -7871,7 +7871,7 @@
       "$id": "623",
       "Index": 208,
       "FileName": "PrajnaIsland/Timestone",
-      "Name": "Time石",
+      "Name": "TimeStone",
       "MapIndex": 289,
       "Location": {
         "X": 340,
@@ -7909,7 +7909,7 @@
       "$id": "626",
       "Index": 209,
       "FileName": "AncientCaves/AncientPrajna-D2074",
-      "Name": "Mysterious石",
+      "Name": "MysteriousStone",
       "MapIndex": 307,
       "Location": {
         "X": 60,
@@ -7947,7 +7947,7 @@
       "$id": "629",
       "Index": 210,
       "FileName": "PastBichon/Clothes",
-      "Name": "MerchantJames",
+      "Name": "Merchant_James",
       "MapIndex": 316,
       "Location": {
         "X": 111,
@@ -7985,7 +7985,7 @@
       "$id": "632",
       "Index": 211,
       "FileName": "PastBichon/Weaponsmith",
-      "Name": "MerchantDustin",
+      "Name": "Merchant_Dustin",
       "MapIndex": 316,
       "Location": {
         "X": 105,
@@ -8023,7 +8023,7 @@
       "$id": "635",
       "Index": 212,
       "FileName": "PastBichon/Peddlar",
-      "Name": "MerchantJack",
+      "Name": "Merchant_Jack",
       "MapIndex": 316,
       "Location": {
         "X": 134,
@@ -8061,7 +8061,7 @@
       "$id": "638",
       "Index": 213,
       "FileName": "PastBichon/Jewellery",
-      "Name": "MerchantHarvey",
+      "Name": "Merchant_Harvey",
       "MapIndex": 316,
       "Location": {
         "X": 116,
@@ -8099,7 +8099,7 @@
       "$id": "641",
       "Index": 214,
       "FileName": "PastBichon/Potion",
-      "Name": "MerchantGordon",
+      "Name": "Merchant_Gordon",
       "MapIndex": 316,
       "Location": {
         "X": 129,
@@ -8137,7 +8137,7 @@
       "$id": "644",
       "Index": 215,
       "FileName": "PastBichon/Warehouse",
-      "Name": "WarehouseStanislav",
+      "Name": "Warehouse_Stanislav",
       "MapIndex": 316,
       "Location": {
         "X": 94,
@@ -8175,7 +8175,7 @@
       "$id": "647",
       "Index": 216,
       "FileName": "PastBichon/CraftsLady",
-      "Name": "CraftsLadyChristine",
+      "Name": "CraftsLady_Christine",
       "MapIndex": 316,
       "Location": {
         "X": 123,
@@ -8213,7 +8213,7 @@
       "$id": "650",
       "Index": 217,
       "FileName": "PastBichon/TrustMerchant",
-      "Name": "TrustMerchantTerry",
+      "Name": "TrustMerchant_Terry",
       "MapIndex": 316,
       "Location": {
         "X": 124,
@@ -8251,7 +8251,7 @@
       "$id": "653",
       "Index": 218,
       "FileName": "PastBichon/GTMerchant",
-      "Name": "MerchantRoger",
+      "Name": "GTMerchant_Roger",
       "MapIndex": 316,
       "Location": {
         "X": 129,
@@ -8289,7 +8289,7 @@
       "$id": "656",
       "Index": 219,
       "FileName": "PastBichon/LeftEscort",
-      "Name": "LeftEscortCarl",
+      "Name": "LeftEscort_Carl",
       "MapIndex": 316,
       "Location": {
         "X": 113,
@@ -8327,7 +8327,7 @@
       "$id": "659",
       "Index": 220,
       "FileName": "PastBichon/RightEscort",
-      "Name": "RightEscortMartin",
+      "Name": "RightEscort_Martin",
       "MapIndex": 316,
       "Location": {
         "X": 118,
@@ -8365,7 +8365,7 @@
       "$id": "662",
       "Index": 221,
       "FileName": "PastBichon/General",
-      "Name": "GeneralSir.Kevin",
+      "Name": "General_Sir.Kevin",
       "MapIndex": 317,
       "Location": {
         "X": 8,
@@ -8403,7 +8403,7 @@
       "$id": "665",
       "Index": 222,
       "FileName": "PastBichon/Timestone",
-      "Name": "Time石",
+      "Name": "TimeStone",
       "MapIndex": 316,
       "Location": {
         "X": 67,
@@ -8441,7 +8441,7 @@
       "$id": "668",
       "Index": 223,
       "FileName": "PastBichon/ChaosNode",
-      "Name": "混沌Node",
+      "Name": "ChaosNode",
       "MapIndex": 330,
       "Location": {
         "X": 213,
@@ -8479,7 +8479,7 @@
       "$id": "671",
       "Index": 224,
       "FileName": "WasteLand/Weaponsmith",
-      "Name": "MerchantYang",
+      "Name": "Merchant_Yang",
       "MapIndex": 334,
       "Location": {
         "X": 51,
@@ -8517,7 +8517,7 @@
       "$id": "674",
       "Index": 225,
       "FileName": "WasteLand/Clothes",
-      "Name": "MerchantJene",
+      "Name": "Merchant_Jene",
       "MapIndex": 334,
       "Location": {
         "X": 55,
@@ -8555,7 +8555,7 @@
       "$id": "677",
       "Index": 226,
       "FileName": "WasteLand/Jewellery",
-      "Name": "MerchantJune",
+      "Name": "Merchant_June",
       "MapIndex": 334,
       "Location": {
         "X": 50,
@@ -8593,7 +8593,7 @@
       "$id": "680",
       "Index": 227,
       "FileName": "WasteLand/Soldier",
-      "Name": "BichonSoldierFrank",
+      "Name": "BichonSoldier_Frank",
       "MapIndex": 334,
       "Location": {
         "X": 52,
@@ -8631,7 +8631,7 @@
       "$id": "683",
       "Index": 228,
       "FileName": "WasteLand/Peddlar",
-      "Name": "MerchantPaddy",
+      "Name": "Merchant_Paddy",
       "MapIndex": 334,
       "Location": {
         "X": 48,
@@ -8669,7 +8669,7 @@
       "$id": "686",
       "Index": 229,
       "FileName": "WasteLand/Potion",
-      "Name": "MerchantDr.Hwa",
+      "Name": "Merchant_Dr.Hwa",
       "MapIndex": 334,
       "Location": {
         "X": 44,
@@ -8707,7 +8707,7 @@
       "$id": "689",
       "Index": 230,
       "FileName": "WasteLand/Excavenger",
-      "Name": "ExcavengerStuart",
+      "Name": "Excavenger_Stuart",
       "MapIndex": 334,
       "Location": {
         "X": 264,
@@ -8745,7 +8745,7 @@
       "$id": "692",
       "Index": 231,
       "FileName": "WasteLand/DeadForest/Potion",
-      "Name": "药ShopSamuel",
+      "Name": "PotionShop_Samuel",
       "MapIndex": 362,
       "Location": {
         "X": 695,
@@ -8783,7 +8783,7 @@
       "$id": "695",
       "Index": 232,
       "FileName": "WasteLand/DeadForest/Peddlar",
-      "Name": "GroceryBull",
+      "Name": "Grocery_Bull",
       "MapIndex": 362,
       "Location": {
         "X": 704,
@@ -8821,7 +8821,7 @@
       "$id": "698",
       "Index": 233,
       "FileName": "WhiteValley/Encampment/Sailor",
-      "Name": "SailorAlfred",
+      "Name": "Sailor_Alfred",
       "MapIndex": 366,
       "Location": {
         "X": 68,
@@ -8859,7 +8859,7 @@
       "$id": "701",
       "Index": 234,
       "FileName": "WhiteValley/Encampment/Storage",
-      "Name": "StorageJon",
+      "Name": "Storage_Jon",
       "MapIndex": 366,
       "Location": {
         "X": 315,
@@ -8897,7 +8897,7 @@
       "$id": "704",
       "Index": 235,
       "FileName": "WhiteValley/Encampment/Blacksmith",
-      "Name": "BlacksmithKieron",
+      "Name": "Blacksmith_Kieron",
       "MapIndex": 374,
       "Location": {
         "X": 26,
@@ -8935,7 +8935,7 @@
       "$id": "707",
       "Index": 236,
       "FileName": "WhiteValley/Encampment/Drapery",
-      "Name": "DraperyAmanda",
+      "Name": "Drapery_Amanda",
       "MapIndex": 370,
       "Location": {
         "X": 20,
@@ -8973,7 +8973,7 @@
       "$id": "710",
       "Index": 237,
       "FileName": "WhiteValley/Encampment/Accessory",
-      "Name": "AccessoryAbbigale",
+      "Name": "Accessory_Abbigale",
       "MapIndex": 367,
       "Location": {
         "X": 23,
@@ -9011,7 +9011,7 @@
       "$id": "713",
       "Index": 238,
       "FileName": "WhiteValley/Encampment/Book",
-      "Name": "书Vivian",
+      "Name": "Book_Vivian",
       "MapIndex": 373,
       "Location": {
         "X": 25,
@@ -9049,7 +9049,7 @@
       "$id": "716",
       "Index": 239,
       "FileName": "WhiteValley/Encampment/General",
-      "Name": "GeneralMartyn",
+      "Name": "General_Martyn",
       "MapIndex": 367,
       "Location": {
         "X": 21,
@@ -9087,7 +9087,7 @@
       "$id": "719",
       "Index": 240,
       "FileName": "WhiteValley/Encampment/Fisheries",
-      "Name": "FishMongerLaura",
+      "Name": "FishMonger_Laura",
       "MapIndex": 368,
       "Location": {
         "X": 23,
@@ -9125,7 +9125,7 @@
       "$id": "722",
       "Index": 241,
       "FileName": "WhiteValley/Encampment/Captain",
-      "Name": "CaptainAndrew",
+      "Name": "Captain_Andrew",
       "MapIndex": 366,
       "Location": {
         "X": 300,
@@ -9201,7 +9201,7 @@
       "$id": "728",
       "Index": 243,
       "FileName": "WhiteValley/Encampment/TrustMerchant",
-      "Name": "TrustMerchantMichael",
+      "Name": "TrustMerchant_Michael",
       "MapIndex": 366,
       "Location": {
         "X": 293,
@@ -9239,7 +9239,7 @@
       "$id": "731",
       "Index": 244,
       "FileName": "WhiteValley/Encampment/CaveGuard",
-      "Name": "TheWatcherJacob",
+      "Name": "TheWatcher_Jacob",
       "MapIndex": 366,
       "Location": {
         "X": 466,
@@ -9277,7 +9277,7 @@
       "$id": "734",
       "Index": 245,
       "FileName": "WhiteValley/SquadLeader",
-      "Name": "SquadLeaderDolby",
+      "Name": "SquadLeader_Dolby",
       "MapIndex": 377,
       "Location": {
         "X": 199,
@@ -9581,7 +9581,7 @@
       "$id": "758",
       "Index": 253,
       "FileName": "GM/GM-Bracelet",
-      "Name": "镯",
+      "Name": "GM_Bracelet",
       "MapIndex": 384,
       "Location": {
         "X": 90,
@@ -9619,7 +9619,7 @@
       "$id": "761",
       "Index": 254,
       "FileName": "GM/GM-Necklace",
-      "Name": "链",
+      "Name": "GM_Necklace",
       "MapIndex": 384,
       "Location": {
         "X": 91,
@@ -9657,7 +9657,7 @@
       "$id": "764",
       "Index": 255,
       "FileName": "GM/GM-Ring",
-      "Name": "戒",
+      "Name": "GM_Ring",
       "MapIndex": 384,
       "Location": {
         "X": 92,
@@ -9695,7 +9695,7 @@
       "$id": "767",
       "Index": 256,
       "FileName": "GM/GM-Armour",
-      "Name": "甲",
+      "Name": "GM_Armour",
       "MapIndex": 384,
       "Location": {
         "X": 93,
@@ -9733,7 +9733,7 @@
       "$id": "770",
       "Index": 257,
       "FileName": "GM/GM-Boot",
-      "Name": "Boot",
+      "Name": "GM_Boot",
       "MapIndex": 384,
       "Location": {
         "X": 94,
@@ -9771,7 +9771,7 @@
       "$id": "773",
       "Index": 258,
       "FileName": "GM/GM-Belt",
-      "Name": "带",
+      "Name": "GM_Belt",
       "MapIndex": 384,
       "Location": {
         "X": 95,
@@ -9809,7 +9809,7 @@
       "$id": "776",
       "Index": 259,
       "FileName": "GM/GM-Helmet",
-      "Name": "盔",
+      "Name": "GM_Helmet",
       "MapIndex": 384,
       "Location": {
         "X": 96,
@@ -9847,7 +9847,7 @@
       "$id": "779",
       "Index": 260,
       "FileName": "GM/GM-Weapon",
-      "Name": "Weapon",
+      "Name": "GM_Weapon",
       "MapIndex": 384,
       "Location": {
         "X": 90,
@@ -9885,7 +9885,7 @@
       "$id": "782",
       "Index": 261,
       "FileName": "GM/GM-Book",
-      "Name": "书",
+      "Name": "GM_Book",
       "MapIndex": 384,
       "Location": {
         "X": 91,
@@ -9923,7 +9923,7 @@
       "$id": "785",
       "Index": 262,
       "FileName": "GM/GM-Stone",
-      "Name": "石",
+      "Name": "GM_Stone",
       "MapIndex": 384,
       "Location": {
         "X": 92,
@@ -9961,7 +9961,7 @@
       "$id": "788",
       "Index": 263,
       "FileName": "GM/GM-Gem",
-      "Name": "宝",
+      "Name": "GM_Gem",
       "MapIndex": 384,
       "Location": {
         "X": 93,
@@ -9999,7 +9999,7 @@
       "$id": "791",
       "Index": 264,
       "FileName": "GM/GM-Meat",
-      "Name": "Meat",
+      "Name": "GM_Meat",
       "MapIndex": 384,
       "Location": {
         "X": 105,
@@ -10037,7 +10037,7 @@
       "$id": "794",
       "Index": 265,
       "FileName": "GM/GM-Grocery",
-      "Name": "Grocery",
+      "Name": "GM_Grocery",
       "MapIndex": 384,
       "Location": {
         "X": 106,
@@ -10075,7 +10075,7 @@
       "$id": "797",
       "Index": 266,
       "FileName": "GM/GM-Potion",
-      "Name": "药",
+      "Name": "GM_Potion",
       "MapIndex": 384,
       "Location": {
         "X": 107,
@@ -10113,7 +10113,7 @@
       "$id": "800",
       "Index": 267,
       "FileName": "GM/GM-CraftingMaterial",
-      "Name": "CraftingMaterial",
+      "Name": "GM_CraftingMaterial",
       "MapIndex": 384,
       "Location": {
         "X": 102,
@@ -10151,7 +10151,7 @@
       "$id": "803",
       "Index": 268,
       "FileName": "GM/GM-Fishing",
-      "Name": "Fishing",
+      "Name": "GM_Fishing",
       "MapIndex": 384,
       "Location": {
         "X": 103,
@@ -10189,7 +10189,7 @@
       "$id": "806",
       "Index": 269,
       "FileName": "GM/GM-Mount",
-      "Name": "Mount",
+      "Name": "GM_Mount",
       "MapIndex": 384,
       "Location": {
         "X": 104,
@@ -10227,7 +10227,7 @@
       "$id": "809",
       "Index": 270,
       "FileName": "GM/GM-Ore",
-      "Name": "矿",
+      "Name": "GM_Ore",
       "MapIndex": 384,
       "Location": {
         "X": 105,
@@ -10265,7 +10265,7 @@
       "$id": "812",
       "Index": 271,
       "FileName": "GM/GM-Script",
-      "Name": "Script",
+      "Name": "GM_Script",
       "MapIndex": 384,
       "Location": {
         "X": 106,
@@ -10303,7 +10303,7 @@
       "$id": "815",
       "Index": 272,
       "FileName": "GM/GM-Nothing",
-      "Name": "Nothing",
+      "Name": "GM_Nothing",
       "MapIndex": 384,
       "Location": {
         "X": 95,
@@ -10341,7 +10341,7 @@
       "$id": "818",
       "Index": 273,
       "FileName": "GM/GM-Quest",
-      "Name": "Quest",
+      "Name": "GM_Quest",
       "MapIndex": 384,
       "Location": {
         "X": 96,
@@ -10379,7 +10379,7 @@
       "$id": "821",
       "Index": 274,
       "FileName": "GM/GM-Awakening",
-      "Name": "Awakening",
+      "Name": "GM_Awakening",
       "MapIndex": 384,
       "Location": {
         "X": 94,
@@ -10417,7 +10417,7 @@
       "$id": "824",
       "Index": 275,
       "FileName": "GM/GM-Manager",
-      "Name": "Manager",
+      "Name": "GM_Manager",
       "MapIndex": 384,
       "Location": {
         "X": 100,
@@ -10455,7 +10455,7 @@
       "$id": "827",
       "Index": 276,
       "FileName": "CraftingPortal/Bichon",
-      "Name": "CraftingVillagePortal",
+      "Name": "CraftingVillage_Portal",
       "MapIndex": 1,
       "Location": {
         "X": 328,
@@ -10493,7 +10493,7 @@
       "$id": "830",
       "Index": 277,
       "FileName": "CraftingPortal/Border",
-      "Name": "CraftingVillagePortal",
+      "Name": "CraftingVillage_Portal",
       "MapIndex": 1,
       "Location": {
         "X": 296,
@@ -10531,7 +10531,7 @@
       "$id": "833",
       "Index": 278,
       "FileName": "CraftingPortal/Serpent",
-      "Name": "CraftingVillagePortal",
+      "Name": "CraftingVillage_Portal",
       "MapIndex": 144,
       "Location": {
         "X": 493,
@@ -10569,7 +10569,7 @@
       "$id": "836",
       "Index": 279,
       "FileName": "CraftingPortal/MudWall",
-      "Name": "CraftingVillagePortal",
+      "Name": "CraftingVillage_Portal",
       "MapIndex": 172,
       "Location": {
         "X": 293,
@@ -10607,7 +10607,7 @@
       "$id": "839",
       "Index": 280,
       "FileName": "CraftingPortal/CastleGI",
-      "Name": "CraftingVillagePortal",
+      "Name": "CraftingVillage_Portal",
       "MapIndex": 77,
       "Location": {
         "X": 222,
@@ -10645,7 +10645,7 @@
       "$id": "842",
       "Index": 281,
       "FileName": "CraftingPortal/Prajna",
-      "Name": "CraftingVillagePortal",
+      "Name": "CraftingVillage_Portal",
       "MapIndex": 289,
       "Location": {
         "X": 140,
@@ -10683,7 +10683,7 @@
       "$id": "845",
       "Index": 282,
       "FileName": "CraftingPortal/PastBichon",
-      "Name": "CraftingVillagePortal",
+      "Name": "CraftingVillage_Portal",
       "MapIndex": 316,
       "Location": {
         "X": 121,
@@ -10721,7 +10721,7 @@
       "$id": "848",
       "Index": 283,
       "FileName": "TravellingMerchant",
-      "Name": "TravellingMerchantDamian",
+      "Name": "TravellingMerchant_Damian",
       "MapIndex": 1,
       "Location": {
         "X": 287,
@@ -10759,7 +10759,7 @@
       "$id": "851",
       "Index": 284,
       "FileName": "TravellingMerchant",
-      "Name": "TravellingMerchantDamian",
+      "Name": "TravellingMerchant_Damian",
       "MapIndex": 1,
       "Location": {
         "X": 325,
@@ -10797,7 +10797,7 @@
       "$id": "854",
       "Index": 285,
       "FileName": "TravellingMerchant",
-      "Name": "TravellingMerchantDamian",
+      "Name": "TravellingMerchant_Damian",
       "MapIndex": 64,
       "Location": {
         "X": 316,
@@ -10835,7 +10835,7 @@
       "$id": "857",
       "Index": 286,
       "FileName": "TravellingMerchant",
-      "Name": "TravellingMerchantDamian",
+      "Name": "TravellingMerchant_Damian",
       "MapIndex": 77,
       "Location": {
         "X": 234,
@@ -10873,7 +10873,7 @@
       "$id": "860",
       "Index": 287,
       "FileName": "TravellingMerchant",
-      "Name": "TravellingMerchantDamian",
+      "Name": "TravellingMerchant_Damian",
       "MapIndex": 108,
       "Location": {
         "X": 192,
@@ -10911,7 +10911,7 @@
       "$id": "863",
       "Index": 288,
       "FileName": "TravellingMerchant",
-      "Name": "TravellingMerchantDamian",
+      "Name": "TravellingMerchant_Damian",
       "MapIndex": 103,
       "Location": {
         "X": 136,
@@ -10949,7 +10949,7 @@
       "$id": "866",
       "Index": 289,
       "FileName": "TravellingMerchant",
-      "Name": "TravellingMerchantDamian",
+      "Name": "TravellingMerchant_Damian",
       "MapIndex": 144,
       "Location": {
         "X": 500,
@@ -10987,7 +10987,7 @@
       "$id": "869",
       "Index": 290,
       "FileName": "TravellingMerchant",
-      "Name": "TravellingMerchantDamian",
+      "Name": "TravellingMerchant_Damian",
       "MapIndex": 172,
       "Location": {
         "X": 337,
@@ -11025,7 +11025,7 @@
       "$id": "872",
       "Index": 291,
       "FileName": "TravellingMerchant",
-      "Name": "TravellingMerchantDamian",
+      "Name": "TravellingMerchant_Damian",
       "MapIndex": 172,
       "Location": {
         "X": 656,
@@ -11063,7 +11063,7 @@
       "$id": "875",
       "Index": 292,
       "FileName": "TravellingMerchant",
-      "Name": "TravellingMerchantDamian",
+      "Name": "TravellingMerchant_Damian",
       "MapIndex": 289,
       "Location": {
         "X": 147,
@@ -11101,7 +11101,7 @@
       "$id": "878",
       "Index": 293,
       "FileName": "TravellingMerchant",
-      "Name": "TravellingMerchantDamian",
+      "Name": "TravellingMerchant_Damian",
       "MapIndex": 366,
       "Location": {
         "X": 296,
@@ -11139,7 +11139,7 @@
       "$id": "881",
       "Index": 295,
       "FileName": "BichonProvince/BorderVillage/Pedlar",
-      "Name": "MerchantScott",
+      "Name": "Merchant_Scott",
       "MapIndex": 1,
       "Location": {
         "X": 291,
@@ -11177,7 +11177,7 @@
       "$id": "884",
       "Index": 296,
       "FileName": "BichonProvince/BichonWall/Hairdresser",
-      "Name": "HairdresserChris",
+      "Name": "Hairdresser_Chris",
       "MapIndex": 7,
       "Location": {
         "X": 5,
@@ -11215,7 +11215,7 @@
       "$id": "887",
       "Index": 297,
       "FileName": "WoomyonWoods/SeokchoValley/TrollMine/Transporter",
-      "Name": "GeneralGrimchamp",
+      "Name": "General_Grimchamp",
       "MapIndex": 106,
       "Location": {
         "X": 48,
@@ -11253,7 +11253,7 @@
       "$id": "890",
       "Index": 298,
       "FileName": "MongchonProvince/Swamp/Transporter",
-      "Name": "GeneralPaula",
+      "Name": "General_Paula",
       "MapIndex": 287,
       "Location": {
         "X": 41,
@@ -11291,7 +11291,7 @@
       "$id": "893",
       "Index": 299,
       "FileName": "MongchonProvince/Swamp/Transporter1",
-      "Name": "GeneralJane",
+      "Name": "General_Jane",
       "MapIndex": 286,
       "Location": {
         "X": 201,
@@ -11329,7 +11329,7 @@
       "$id": "896",
       "Index": 300,
       "FileName": "GM/GM-Teleporter",
-      "Name": "Teleporter",
+      "Name": "GM_Teleporter",
       "MapIndex": 384,
       "Location": {
         "X": 99,
@@ -11367,7 +11367,7 @@
       "$id": "899",
       "Index": 301,
       "FileName": "BichonProvince/OmaCave/Grim",
-      "Name": "MysteriousGrim",
+      "Name": "Mysterious_Grim",
       "MapIndex": 41,
       "Location": {
         "X": 4,
@@ -11405,7 +11405,7 @@
       "$id": "902",
       "Index": 302,
       "FileName": "BichonProvince/BorderVillage/Materials",
-      "Name": "MaterialDealerReece",
+      "Name": "MaterialDealer_Reece",
       "MapIndex": 1,
       "Location": {
         "X": 295,
@@ -11443,7 +11443,7 @@
       "$id": "905",
       "Index": 303,
       "FileName": "BichonProvince/BichonWall/LukeStatue",
-      "Name": "LukeThompson",
+      "Name": "Luke_Thompson",
       "MapIndex": 1,
       "Location": {
         "X": 360,
@@ -11481,7 +11481,7 @@
       "$id": "908",
       "Index": 304,
       "FileName": "MongchonProvince/SabukWall/Conquest",
-      "Name": "AdministratorSabukOfficer",
+      "Name": "Administrator_SabukOfficer",
       "MapIndex": 245,
       "Location": {
         "X": 9,
@@ -11519,7 +11519,7 @@
       "$id": "911",
       "Index": 305,
       "FileName": "WhiteValley/Wanderer_Charlotte",
-      "Name": "WandererCharlotte",
+      "Name": "Wanderer_Charlotte",
       "MapIndex": 366,
       "Location": {
         "X": 56,
@@ -11557,7 +11557,7 @@
       "$id": "914",
       "Index": 307,
       "FileName": "GuildTerritory\\GA0\\GTStore-GA0",
-      "Name": "StoreMira",
+      "Name": "GTStore_Mira",
       "MapIndex": 396,
       "Location": {
         "X": 55,
@@ -11595,7 +11595,7 @@
       "$id": "917",
       "Index": 308,
       "FileName": "GuildTerritory\\GA0\\GTTeleporter-GA0",
-      "Name": "Transporter",
+      "Name": "GTTransporter",
       "MapIndex": 396,
       "Location": {
         "X": 49,
@@ -11633,7 +11633,7 @@
       "$id": "920",
       "Index": 309,
       "FileName": "GuildTerritory\\GA0\\GTBulletinBoard-GA0",
-      "Name": "BulletinBoard",
+      "Name": "GT_BulletinBoard",
       "MapIndex": 396,
       "Location": {
         "X": 57,
@@ -11671,7 +11671,7 @@
       "$id": "923",
       "Index": 310,
       "FileName": "GuildTerritory\\GA0\\GTPeddler-GA0",
-      "Name": "Peddler",
+      "Name": "GT_Peddler",
       "MapIndex": 396,
       "Location": {
         "X": 59,
@@ -11709,7 +11709,7 @@
       "$id": "926",
       "Index": 311,
       "FileName": "GuildTerritory\\GA0\\GTAdmin-GA10",
-      "Name": "Steward",
+      "Name": "GT_Steward",
       "MapIndex": 406,
       "Location": {
         "X": 13,
@@ -11823,7 +11823,7 @@
       "$id": "935",
       "Index": 314,
       "FileName": "GuildTerritory\\GA1\\GTStore-GA1",
-      "Name": "StoreMira",
+      "Name": "GTStore_Mira",
       "MapIndex": 397,
       "Location": {
         "X": 55,
@@ -11861,7 +11861,7 @@
       "$id": "938",
       "Index": 315,
       "FileName": "GuildTerritory\\GA1\\GTTeleporter-GA1",
-      "Name": "Transporter",
+      "Name": "GTTransporter",
       "MapIndex": 397,
       "Location": {
         "X": 49,
@@ -11899,7 +11899,7 @@
       "$id": "941",
       "Index": 316,
       "FileName": "GuildTerritory\\GA1\\GTBulletinBoard-GA1",
-      "Name": "BulletinBoard",
+      "Name": "GT_BulletinBoard",
       "MapIndex": 397,
       "Location": {
         "X": 57,
@@ -11937,7 +11937,7 @@
       "$id": "944",
       "Index": 317,
       "FileName": "GuildTerritory\\GA1\\GTPeddler-GA1",
-      "Name": "Peddler",
+      "Name": "GT_Peddler",
       "MapIndex": 397,
       "Location": {
         "X": 59,
@@ -11975,7 +11975,7 @@
       "$id": "947",
       "Index": 318,
       "FileName": "GuildTerritory\\GA1\\GTAdmin-GA11",
-      "Name": "Steward",
+      "Name": "GT_Steward",
       "MapIndex": 407,
       "Location": {
         "X": 13,
@@ -12089,7 +12089,7 @@
       "$id": "956",
       "Index": 321,
       "FileName": "GuildTerritory\\GA2\\GTStore-GA2",
-      "Name": "StoreMira",
+      "Name": "GTStore_Mira",
       "MapIndex": 398,
       "Location": {
         "X": 55,
@@ -12127,7 +12127,7 @@
       "$id": "959",
       "Index": 322,
       "FileName": "GuildTerritory\\GA2\\GTTeleporter-GA2",
-      "Name": "Transporter",
+      "Name": "GTTransporter",
       "MapIndex": 398,
       "Location": {
         "X": 49,
@@ -12165,7 +12165,7 @@
       "$id": "962",
       "Index": 323,
       "FileName": "GuildTerritory\\GA2\\GTBulletinBoard-GA2",
-      "Name": "BulletinBoard",
+      "Name": "GT_BulletinBoard",
       "MapIndex": 398,
       "Location": {
         "X": 57,
@@ -12203,7 +12203,7 @@
       "$id": "965",
       "Index": 324,
       "FileName": "GuildTerritory\\GA2\\GTPeddler-GA2",
-      "Name": "Peddler",
+      "Name": "GT_Peddler",
       "MapIndex": 398,
       "Location": {
         "X": 59,
@@ -12241,7 +12241,7 @@
       "$id": "968",
       "Index": 325,
       "FileName": "GuildTerritory\\GA2\\GTAdmin-GA12",
-      "Name": "Steward",
+      "Name": "GT_Steward",
       "MapIndex": 408,
       "Location": {
         "X": 13,
@@ -12355,7 +12355,7 @@
       "$id": "977",
       "Index": 328,
       "FileName": "GuildTerritory\\GA3\\GTStore-GA3",
-      "Name": "StoreMira",
+      "Name": "GTStore_Mira",
       "MapIndex": 399,
       "Location": {
         "X": 55,
@@ -12393,7 +12393,7 @@
       "$id": "980",
       "Index": 329,
       "FileName": "GuildTerritory\\GA3\\GTTeleporter-GA3",
-      "Name": "Transporter",
+      "Name": "GTTransporter",
       "MapIndex": 399,
       "Location": {
         "X": 49,
@@ -12431,7 +12431,7 @@
       "$id": "983",
       "Index": 330,
       "FileName": "GuildTerritory\\GA3\\GTBulletinBoard-GA3",
-      "Name": "BulletinBoard",
+      "Name": "GT_BulletinBoard",
       "MapIndex": 399,
       "Location": {
         "X": 57,
@@ -12469,7 +12469,7 @@
       "$id": "986",
       "Index": 331,
       "FileName": "GuildTerritory\\GA3\\GTPeddler-GA3",
-      "Name": "Peddler",
+      "Name": "GT_Peddler",
       "MapIndex": 399,
       "Location": {
         "X": 59,
@@ -12507,7 +12507,7 @@
       "$id": "989",
       "Index": 332,
       "FileName": "GuildTerritory\\GA3\\GTAdmin-GA13",
-      "Name": "Steward",
+      "Name": "GT_Steward",
       "MapIndex": 409,
       "Location": {
         "X": 13,
@@ -12621,7 +12621,7 @@
       "$id": "998",
       "Index": 335,
       "FileName": "GuildTerritory\\GA4\\GTStore-GA4",
-      "Name": "StoreMira",
+      "Name": "GTStore_Mira",
       "MapIndex": 400,
       "Location": {
         "X": 55,
@@ -12659,7 +12659,7 @@
       "$id": "1001",
       "Index": 336,
       "FileName": "GuildTerritory\\GA4\\GTTeleporter-GA4",
-      "Name": "Transporter",
+      "Name": "GTTransporter",
       "MapIndex": 400,
       "Location": {
         "X": 49,
@@ -12697,7 +12697,7 @@
       "$id": "1004",
       "Index": 337,
       "FileName": "GuildTerritory\\GA4\\GTBulletinBoard-GA4",
-      "Name": "BulletinBoard",
+      "Name": "GT_BulletinBoard",
       "MapIndex": 400,
       "Location": {
         "X": 57,
@@ -12735,7 +12735,7 @@
       "$id": "1007",
       "Index": 338,
       "FileName": "GuildTerritory\\GA4\\GTPeddler-GA4",
-      "Name": "Peddler",
+      "Name": "GT_Peddler",
       "MapIndex": 400,
       "Location": {
         "X": 59,
@@ -12773,7 +12773,7 @@
       "$id": "1010",
       "Index": 339,
       "FileName": "GuildTerritory\\GA4\\GTAdmin-GA14",
-      "Name": "Steward",
+      "Name": "GT_Steward",
       "MapIndex": 410,
       "Location": {
         "X": 13,
@@ -12887,7 +12887,7 @@
       "$id": "1019",
       "Index": 342,
       "FileName": "GuildTerritory\\GA5\\GTStore-GA5",
-      "Name": "StoreMira",
+      "Name": "GTStore_Mira",
       "MapIndex": 401,
       "Location": {
         "X": 55,
@@ -12925,7 +12925,7 @@
       "$id": "1022",
       "Index": 343,
       "FileName": "GuildTerritory\\GA5\\GTTeleporter-GA5",
-      "Name": "Transporter",
+      "Name": "GTTransporter",
       "MapIndex": 401,
       "Location": {
         "X": 49,
@@ -12963,7 +12963,7 @@
       "$id": "1025",
       "Index": 344,
       "FileName": "GuildTerritory\\GA5\\GTBulletinBoard-GA5",
-      "Name": "BulletinBoard",
+      "Name": "GT_BulletinBoard",
       "MapIndex": 401,
       "Location": {
         "X": 57,
@@ -13001,7 +13001,7 @@
       "$id": "1028",
       "Index": 345,
       "FileName": "GuildTerritory\\GA5\\GTPeddler-GA5",
-      "Name": "Peddler",
+      "Name": "GT_Peddler",
       "MapIndex": 401,
       "Location": {
         "X": 59,
@@ -13039,7 +13039,7 @@
       "$id": "1031",
       "Index": 346,
       "FileName": "GuildTerritory\\GA5\\GTAdmin-GA15",
-      "Name": "Steward",
+      "Name": "GT_Steward",
       "MapIndex": 411,
       "Location": {
         "X": 13,
@@ -13153,7 +13153,7 @@
       "$id": "1040",
       "Index": 349,
       "FileName": "GuildTerritory\\GA6\\GTStore-GA6",
-      "Name": "StoreMira",
+      "Name": "GTStore_Mira",
       "MapIndex": 402,
       "Location": {
         "X": 59,
@@ -13191,7 +13191,7 @@
       "$id": "1043",
       "Index": 350,
       "FileName": "GuildTerritory\\GA6\\GTTeleporter-GA6",
-      "Name": "Transporter",
+      "Name": "GTTransporter",
       "MapIndex": 402,
       "Location": {
         "X": 49,
@@ -13229,7 +13229,7 @@
       "$id": "1046",
       "Index": 351,
       "FileName": "GuildTerritory\\GA6\\GTBulletinBoard-GA6",
-      "Name": "BulletinBoard",
+      "Name": "GT_BulletinBoard",
       "MapIndex": 402,
       "Location": {
         "X": 57,
@@ -13267,7 +13267,7 @@
       "$id": "1049",
       "Index": 352,
       "FileName": "GuildTerritory\\GA6\\GTPeddler-GA6",
-      "Name": "Peddler",
+      "Name": "GT_Peddler",
       "MapIndex": 402,
       "Location": {
         "X": 59,
@@ -13305,7 +13305,7 @@
       "$id": "1052",
       "Index": 353,
       "FileName": "GuildTerritory\\GA6\\GTAdmin-GA16",
-      "Name": "Steward",
+      "Name": "GT_Steward",
       "MapIndex": 412,
       "Location": {
         "X": 13,
@@ -13419,7 +13419,7 @@
       "$id": "1061",
       "Index": 356,
       "FileName": "GuildTerritory\\GA7\\GTStore-GA7",
-      "Name": "StoreMira",
+      "Name": "GTStore_Mira",
       "MapIndex": 403,
       "Location": {
         "X": 55,
@@ -13457,7 +13457,7 @@
       "$id": "1064",
       "Index": 357,
       "FileName": "GuildTerritory\\GA7\\GTTeleporter-GA7",
-      "Name": "Transporter",
+      "Name": "GTTransporter",
       "MapIndex": 403,
       "Location": {
         "X": 49,
@@ -13495,7 +13495,7 @@
       "$id": "1067",
       "Index": 358,
       "FileName": "GuildTerritory\\GA7\\GTBulletinBoard-GA7",
-      "Name": "BulletinBoard",
+      "Name": "GT_BulletinBoard",
       "MapIndex": 403,
       "Location": {
         "X": 57,
@@ -13533,7 +13533,7 @@
       "$id": "1070",
       "Index": 359,
       "FileName": "GuildTerritory\\GA7\\GTPeddler-GA7",
-      "Name": "Peddler",
+      "Name": "GT_Peddler",
       "MapIndex": 403,
       "Location": {
         "X": 59,
@@ -13571,7 +13571,7 @@
       "$id": "1073",
       "Index": 360,
       "FileName": "GuildTerritory\\GA7\\GTAdmin-GA17",
-      "Name": "Steward",
+      "Name": "GT_Steward",
       "MapIndex": 413,
       "Location": {
         "X": 13,
@@ -13685,7 +13685,7 @@
       "$id": "1082",
       "Index": 363,
       "FileName": "GuildTerritory\\GA8\\GTStore-GA8",
-      "Name": "StoreMira",
+      "Name": "GTStore_Mira",
       "MapIndex": 404,
       "Location": {
         "X": 55,
@@ -13723,7 +13723,7 @@
       "$id": "1085",
       "Index": 364,
       "FileName": "GuildTerritory\\GA8\\GTTeleporter-GA8",
-      "Name": "Transporter",
+      "Name": "GTTransporter",
       "MapIndex": 404,
       "Location": {
         "X": 49,
@@ -13761,7 +13761,7 @@
       "$id": "1088",
       "Index": 365,
       "FileName": "GuildTerritory\\GA8\\GTBulletinBoard-GA8",
-      "Name": "GtBulletinBoard",
+      "Name": "Gt_BulletinBoard",
       "MapIndex": 404,
       "Location": {
         "X": 57,
@@ -13799,7 +13799,7 @@
       "$id": "1091",
       "Index": 366,
       "FileName": "GuildTerritory\\GA8\\GTPeddler-GA8",
-      "Name": "Peddler",
+      "Name": "GT_Peddler",
       "MapIndex": 404,
       "Location": {
         "X": 59,
@@ -13837,7 +13837,7 @@
       "$id": "1094",
       "Index": 367,
       "FileName": "GuildTerritory\\GA8\\GTAdmin-GA18",
-      "Name": "Steward",
+      "Name": "GT_Steward",
       "MapIndex": 414,
       "Location": {
         "X": 13,
@@ -13951,7 +13951,7 @@
       "$id": "1103",
       "Index": 370,
       "FileName": "GuildTerritory\\GA9\\GTStore-GA9",
-      "Name": "StoreMira",
+      "Name": "GTStore_Mira",
       "MapIndex": 405,
       "Location": {
         "X": 55,
@@ -13989,7 +13989,7 @@
       "$id": "1106",
       "Index": 371,
       "FileName": "GuildTerritory\\GA9\\GTTeleporter-GA9",
-      "Name": "Transporter",
+      "Name": "GTTransporter",
       "MapIndex": 405,
       "Location": {
         "X": 49,
@@ -14027,7 +14027,7 @@
       "$id": "1109",
       "Index": 372,
       "FileName": "GuildTerritory\\GA9\\GTBulletinBoard-GA9",
-      "Name": "BulletinBoard",
+      "Name": "GT_BulletinBoard",
       "MapIndex": 405,
       "Location": {
         "X": 57,
@@ -14065,7 +14065,7 @@
       "$id": "1112",
       "Index": 373,
       "FileName": "GuildTerritory\\GA9\\GTPeddler-GA9",
-      "Name": "Peddler",
+      "Name": "GT_Peddler",
       "MapIndex": 405,
       "Location": {
         "X": 59,
@@ -14103,7 +14103,7 @@
       "$id": "1115",
       "Index": 374,
       "FileName": "GuildTerritory\\GA9\\GTAdmin-GA19",
-      "Name": "Steward",
+      "Name": "GT_Steward",
       "MapIndex": 415,
       "Location": {
         "X": 13,
@@ -14217,7 +14217,7 @@
       "$id": "1124",
       "Index": 386,
       "FileName": "BichonProvince/BichonWall/IcemanStatue",
-      "Name": "JohnSchwartz",
+      "Name": "John_Schwartz",
       "MapIndex": 1,
       "Location": {
         "X": 362,

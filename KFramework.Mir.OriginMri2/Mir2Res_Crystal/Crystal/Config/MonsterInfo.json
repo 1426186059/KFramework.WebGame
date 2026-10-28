@@ -4,7 +4,7 @@
     {
       "$id": "2",
       "Index": 1,
-      "Name": "弓卫",
+      "Name": "弓手守卫",
       "Image": 139,
       "AI": 57,
       "Effect": 0,
@@ -51,7 +51,7 @@
     {
       "$id": "6",
       "Index": 2,
-      "Name": "弓卫1",
+      "Name": "弓手守卫1",
       "Image": 120,
       "AI": 57,
       "Effect": 0,
@@ -98,7 +98,7 @@
     {
       "$id": "10",
       "Index": 3,
-      "Name": "卫",
+      "Name": "守卫",
       "Image": 0,
       "AI": 6,
       "Effect": 0,
@@ -145,7 +145,7 @@
     {
       "$id": "14",
       "Index": 4,
-      "Name": "卫1",
+      "Name": "守卫1",
       "Image": 1,
       "AI": 58,
       "Effect": 0,
@@ -192,7 +192,7 @@
     {
       "$id": "18",
       "Index": 5,
-      "Name": "卫2",
+      "Name": "守卫2",
       "Image": 123,
       "AI": 6,
       "Effect": 0,
@@ -364,7 +364,7 @@
     {
       "$id": "34",
       "Index": 9,
-      "Name": "骨Familiar",
+      "Name": "骷髅",
       "Image": 78,
       "AI": 23,
       "Effect": 0,
@@ -407,7 +407,7 @@
     {
       "$id": "38",
       "Index": 10,
-      "Name": "Shinsu",
+      "Name": "神兽",
       "Image": 79,
       "AI": 18,
       "Effect": 0,
@@ -493,7 +493,7 @@
     {
       "$id": "46",
       "Index": 12,
-      "Name": "圣Deva",
+      "Name": "圣精灵",
       "Image": 117,
       "AI": 38,
       "Effect": 0,
@@ -537,7 +537,7 @@
     {
       "$id": "50",
       "Index": 13,
-      "Name": "Clone",
+      "Name": "分身",
       "Image": 0,
       "AI": 55,
       "Effect": 0,
@@ -582,7 +582,7 @@
     {
       "$id": "54",
       "Index": 14,
-      "Name": "刺Clone",
+      "Name": "刺客分身",
       "Image": 0,
       "AI": 59,
       "Effect": 0,
@@ -627,7 +627,7 @@
     {
       "$id": "58",
       "Index": 15,
-      "Name": "VampireSpider",
+      "Name": "吸血蜘蛛",
       "Image": 359,
       "AI": 60,
       "Effect": 0,
@@ -666,7 +666,7 @@
     {
       "$id": "62",
       "Index": 16,
-      "Name": "SpittingToad",
+      "Name": "喷毒蟾蜍",
       "Image": 360,
       "AI": 61,
       "Effect": 0,
@@ -705,7 +705,7 @@
     {
       "$id": "66",
       "Index": 17,
-      "Name": "蛇腾",
+      "Name": "蛇图腾",
       "Image": 361,
       "AI": 62,
       "Effect": 0,
@@ -744,7 +744,7 @@
     {
       "$id": "70",
       "Index": 18,
-      "Name": "Charmed蛇",
+      "Name": "魅惑之蛇",
       "Image": 368,
       "AI": 63,
       "Effect": 0,
@@ -783,7 +783,7 @@
     {
       "$id": "74",
       "Index": 19,
-      "Name": "BabyPig",
+      "Name": "幼Pig",
       "Image": 10000,
       "AI": 64,
       "Effect": 0,
@@ -823,7 +823,7 @@
     {
       "$id": "78",
       "Index": 20,
-      "Name": "Chick",
+      "Name": "小鸡",
       "Image": 10001,
       "AI": 64,
       "Effect": 1,
@@ -863,7 +863,7 @@
     {
       "$id": "82",
       "Index": 21,
-      "Name": "Kitten",
+      "Name": "小猫",
       "Image": 10002,
       "AI": 64,
       "Effect": 2,
@@ -903,7 +903,7 @@
     {
       "$id": "86",
       "Index": 22,
-      "Name": "BabySkeleton",
+      "Name": "幼骷髅",
       "Image": 10003,
       "AI": 64,
       "Effect": 3,
@@ -1023,7 +1023,7 @@
     {
       "$id": "98",
       "Index": 25,
-      "Name": "黑Kitten",
+      "Name": "黑小猫",
       "Image": 10006,
       "AI": 64,
       "Effect": 6,
@@ -1063,7 +1063,7 @@
     {
       "$id": "102",
       "Index": 26,
-      "Name": "Baby龙",
+      "Name": "幼龙",
       "Image": 10007,
       "AI": 64,
       "Effect": 7,
@@ -1143,7 +1143,7 @@
     {
       "$id": "110",
       "Index": 28,
-      "Name": "BabySnowMan",
+      "Name": "幼Snow人",
       "Image": 10009,
       "AI": 64,
       "Effect": 9,
@@ -1222,7 +1222,7 @@
     {
       "$id": "118",
       "Index": 30,
-      "Name": "Deer",
+      "Name": "鹿",
       "Image": 4,
       "AI": 2,
       "Effect": 0,
@@ -1261,7 +1261,7 @@
     {
       "$id": "122",
       "Index": 31,
-      "Name": "Deer1",
+      "Name": "鹿1",
       "Image": 4,
       "AI": 2,
       "Effect": 0,
@@ -1339,7 +1339,7 @@
     {
       "$id": "130",
       "Index": 33,
-      "Name": "Bull",
+      "Name": "公牛",
       "Image": 143,
       "AI": 1,
       "Effect": 0,
@@ -1456,7 +1456,7 @@
     {
       "$id": "142",
       "Index": 36,
-      "Name": "Currish",
+      "Name": "野犬",
       "Image": 104,
       "AI": 9,
       "Effect": 0,
@@ -1495,7 +1495,7 @@
     {
       "$id": "146",
       "Index": 37,
-      "Name": "Yob",
+      "Name": "小混混",
       "Image": 8,
       "AI": 0,
       "Effect": 0,
@@ -1533,7 +1533,7 @@
     {
       "$id": "150",
       "Index": 38,
-      "Name": "Yob0",
+      "Name": "小混混0",
       "Image": 8,
       "AI": 0,
       "Effect": 0,
@@ -1571,7 +1571,7 @@
     {
       "$id": "154",
       "Index": 39,
-      "Name": "Scarecrow",
+      "Name": "稻草人",
       "Image": 5,
       "AI": 0,
       "Effect": 0,
@@ -1610,7 +1610,7 @@
     {
       "$id": "158",
       "Index": 40,
-      "Name": "Scarecrow0",
+      "Name": "稻草人0",
       "Image": 5,
       "AI": 0,
       "Effect": 0,
@@ -1649,7 +1649,7 @@
     {
       "$id": "162",
       "Index": 41,
-      "Name": "Scarecrow1",
+      "Name": "稻草人1",
       "Image": 5,
       "AI": 0,
       "Effect": 0,
@@ -1688,7 +1688,7 @@
     {
       "$id": "166",
       "Index": 42,
-      "Name": "HookingCat",
+      "Name": "钩爪猫",
       "Image": 6,
       "AI": 0,
       "Effect": 0,
@@ -1727,7 +1727,7 @@
     {
       "$id": "170",
       "Index": 43,
-      "Name": "HookingCat0",
+      "Name": "钩爪猫0",
       "Image": 6,
       "AI": 0,
       "Effect": 0,
@@ -1766,7 +1766,7 @@
     {
       "$id": "174",
       "Index": 44,
-      "Name": "RakingCat",
+      "Name": "Raking猫",
       "Image": 7,
       "AI": 0,
       "Effect": 0,
@@ -1805,7 +1805,7 @@
     {
       "$id": "178",
       "Index": 45,
-      "Name": "RakingCat0",
+      "Name": "Raking猫0",
       "Image": 7,
       "AI": 0,
       "Effect": 0,
@@ -1844,7 +1844,7 @@
     {
       "$id": "182",
       "Index": 46,
-      "Name": "SpittingSpider",
+      "Name": "Spitting蜘蛛",
       "Image": 12,
       "AI": 4,
       "Effect": 0,
@@ -1889,7 +1889,7 @@
     {
       "$id": "186",
       "Index": 47,
-      "Name": "CannibalPlant",
+      "Name": "食人Plant",
       "Image": 10,
       "AI": 5,
       "Effect": 0,
@@ -1930,7 +1930,7 @@
     {
       "$id": "190",
       "Index": 48,
-      "Name": "沃玛",
+      "Name": "奥玛",
       "Image": 9,
       "AI": 0,
       "Effect": 0,
@@ -1971,7 +1971,7 @@
     {
       "$id": "194",
       "Index": 49,
-      "Name": "沃玛0",
+      "Name": "奥玛0",
       "Image": 9,
       "AI": 0,
       "Effect": 0,
@@ -2012,7 +2012,7 @@
     {
       "$id": "198",
       "Index": 50,
-      "Name": "沃玛Fighter",
+      "Name": "奥玛战士",
       "Image": 17,
       "AI": 0,
       "Effect": 0,
@@ -2055,7 +2055,7 @@
     {
       "$id": "202",
       "Index": 51,
-      "Name": "沃玛Fighter0",
+      "Name": "奥玛战士0",
       "Image": 17,
       "AI": 0,
       "Effect": 0,
@@ -2098,7 +2098,7 @@
     {
       "$id": "206",
       "Index": 52,
-      "Name": "沃玛战",
+      "Name": "奥玛武士",
       "Image": 18,
       "AI": 0,
       "Effect": 0,
@@ -2137,7 +2137,7 @@
     {
       "$id": "210",
       "Index": 53,
-      "Name": "沃玛战1",
+      "Name": "奥玛武士1",
       "Image": 18,
       "AI": 0,
       "Effect": 0,
@@ -2176,7 +2176,7 @@
     {
       "$id": "214",
       "Index": 54,
-      "Name": "沃玛战2",
+      "Name": "奥玛武士2",
       "Image": 18,
       "AI": 0,
       "Effect": 0,
@@ -2215,7 +2215,7 @@
     {
       "$id": "218",
       "Index": 55,
-      "Name": "ForestYeti",
+      "Name": "森林雪怪",
       "Image": 11,
       "AI": 0,
       "Effect": 0,
@@ -2256,7 +2256,7 @@
     {
       "$id": "222",
       "Index": 56,
-      "Name": "ForestYeti0",
+      "Name": "森林雪怪0",
       "Image": 11,
       "AI": 0,
       "Effect": 0,
@@ -2340,7 +2340,7 @@
     {
       "$id": "230",
       "Index": 58,
-      "Name": "ChestnutTree",
+      "Name": "栗子树",
       "Image": 13,
       "AI": 3,
       "Effect": 0,
@@ -2377,7 +2377,7 @@
     {
       "$id": "234",
       "Index": 59,
-      "Name": "ChestnutTree1",
+      "Name": "栗子树1",
       "Image": 13,
       "AI": 3,
       "Effect": 0,
@@ -2414,7 +2414,7 @@
     {
       "$id": "238",
       "Index": 60,
-      "Name": "ChestnutTree2",
+      "Name": "栗子树2",
       "Image": 13,
       "AI": 3,
       "Effect": 0,
@@ -2451,7 +2451,7 @@
     {
       "$id": "242",
       "Index": 61,
-      "Name": "EbonyTree",
+      "Name": "乌木树",
       "Image": 14,
       "AI": 3,
       "Effect": 0,
@@ -2488,7 +2488,7 @@
     {
       "$id": "246",
       "Index": 62,
-      "Name": "CherryTree",
+      "Name": "Cherry树",
       "Image": 16,
       "AI": 3,
       "Effect": 0,
@@ -2646,7 +2646,7 @@
     {
       "$id": "262",
       "Index": 66,
-      "Name": "红Viper",
+      "Name": "红毒蛇",
       "Image": 111,
       "AI": 0,
       "Effect": 0,
@@ -2771,7 +2771,7 @@
     {
       "$id": "274",
       "Index": 69,
-      "Name": "虎Viper",
+      "Name": "虎毒蛇",
       "Image": 112,
       "AI": 0,
       "Effect": 0,
@@ -2812,7 +2812,7 @@
     {
       "$id": "278",
       "Index": 70,
-      "Name": "Keratoid",
+      "Name": "角虫",
       "Image": 106,
       "AI": 0,
       "Effect": 0,
@@ -2851,7 +2851,7 @@
     {
       "$id": "282",
       "Index": 71,
-      "Name": "Keratoid0",
+      "Name": "角虫0",
       "Image": 106,
       "AI": 0,
       "Effect": 0,
@@ -2890,7 +2890,7 @@
     {
       "$id": "286",
       "Index": 72,
-      "Name": "ShellNipper",
+      "Name": "Shell钳手",
       "Image": 105,
       "AI": 0,
       "Effect": 0,
@@ -2929,7 +2929,7 @@
     {
       "$id": "290",
       "Index": 73,
-      "Name": "ShellNipper0",
+      "Name": "Shell钳手0",
       "Image": 105,
       "AI": 0,
       "Effect": 0,
@@ -2968,7 +2968,7 @@
     {
       "$id": "294",
       "Index": 74,
-      "Name": "SkyStinger",
+      "Name": "天毒刺",
       "Image": 108,
       "AI": 0,
       "Effect": 0,
@@ -3007,7 +3007,7 @@
     {
       "$id": "298",
       "Index": 75,
-      "Name": "SkyStinger0",
+      "Name": "天毒刺0",
       "Image": 108,
       "AI": 0,
       "Effect": 0,
@@ -3046,7 +3046,7 @@
     {
       "$id": "302",
       "Index": 76,
-      "Name": "VisceralWorm",
+      "Name": "Visceral蠕虫",
       "Image": 110,
       "AI": 0,
       "Effect": 0,
@@ -3089,7 +3089,7 @@
     {
       "$id": "306",
       "Index": 77,
-      "Name": "SandWorm",
+      "Name": "沙蠕虫",
       "Image": 109,
       "AI": 35,
       "Effect": 0,
@@ -3128,7 +3128,7 @@
     {
       "$id": "310",
       "Index": 78,
-      "Name": "GiantKeratoid",
+      "Name": "巨角虫",
       "Image": 107,
       "AI": 0,
       "Effect": 0,
@@ -3167,7 +3167,7 @@
     {
       "$id": "314",
       "Index": 79,
-      "Name": "GiantKeratoid1",
+      "Name": "巨角虫1",
       "Image": 107,
       "AI": 0,
       "Effect": 0,
@@ -3206,7 +3206,7 @@
     {
       "$id": "318",
       "Index": 80,
-      "Name": "GiantKeratoid2",
+      "Name": "巨角虫2",
       "Image": 107,
       "AI": 0,
       "Effect": 0,
@@ -3245,7 +3245,7 @@
     {
       "$id": "322",
       "Index": 81,
-      "Name": "CaveBat",
+      "Name": "洞穴蝙蝠",
       "Image": 19,
       "AI": 0,
       "Effect": 0,
@@ -3286,7 +3286,7 @@
     {
       "$id": "326",
       "Index": 82,
-      "Name": "CaveBat0",
+      "Name": "洞穴蝙蝠0",
       "Image": 19,
       "AI": 0,
       "Effect": 0,
@@ -3327,7 +3327,7 @@
     {
       "$id": "330",
       "Index": 83,
-      "Name": "CaveMaggot",
+      "Name": "洞穴蛆",
       "Image": 20,
       "AI": 7,
       "Effect": 0,
@@ -3366,7 +3366,7 @@
     {
       "$id": "334",
       "Index": 84,
-      "Name": "Scorpion",
+      "Name": "蝎子",
       "Image": 21,
       "AI": 9,
       "Effect": 0,
@@ -3407,7 +3407,7 @@
     {
       "$id": "338",
       "Index": 85,
-      "Name": "Skeleton",
+      "Name": "骷髅兵",
       "Image": 22,
       "AI": 0,
       "Effect": 0,
@@ -3446,7 +3446,7 @@
     {
       "$id": "342",
       "Index": 86,
-      "Name": "Skeleton0",
+      "Name": "骷髅0",
       "Image": 22,
       "AI": 0,
       "Effect": 0,
@@ -3485,7 +3485,7 @@
     {
       "$id": "346",
       "Index": 87,
-      "Name": "斧Skeleton",
+      "Name": "斧骷髅",
       "Image": 24,
       "AI": 8,
       "Effect": 0,
@@ -3524,7 +3524,7 @@
     {
       "$id": "350",
       "Index": 88,
-      "Name": "斧Skeleton0",
+      "Name": "斧骷髅0",
       "Image": 24,
       "AI": 8,
       "Effect": 0,
@@ -3563,7 +3563,7 @@
     {
       "$id": "354",
       "Index": 89,
-      "Name": "斧Skeleton9",
+      "Name": "斧骷髅9",
       "Image": 24,
       "AI": 8,
       "Effect": 0,
@@ -3602,7 +3602,7 @@
     {
       "$id": "358",
       "Index": 90,
-      "Name": "骨Fighter",
+      "Name": "骨战士",
       "Image": 23,
       "AI": 0,
       "Effect": 0,
@@ -3645,7 +3645,7 @@
     {
       "$id": "362",
       "Index": 91,
-      "Name": "骨Fighter0",
+      "Name": "骨战士0",
       "Image": 23,
       "AI": 0,
       "Effect": 0,
@@ -3688,7 +3688,7 @@
     {
       "$id": "366",
       "Index": 92,
-      "Name": "骨战",
+      "Name": "骨武士",
       "Image": 25,
       "AI": 0,
       "Effect": 0,
@@ -3727,7 +3727,7 @@
     {
       "$id": "370",
       "Index": 93,
-      "Name": "骨战0",
+      "Name": "骨武士0",
       "Image": 25,
       "AI": 0,
       "Effect": 0,
@@ -3766,7 +3766,7 @@
     {
       "$id": "374",
       "Index": 94,
-      "Name": "骨Elite",
+      "Name": "骨精英",
       "Image": 26,
       "AI": 0,
       "Effect": 0,
@@ -3809,7 +3809,7 @@
     {
       "$id": "378",
       "Index": 95,
-      "Name": "骨Elite1",
+      "Name": "骨精英1",
       "Image": 26,
       "AI": 0,
       "Effect": 0,
@@ -3852,7 +3852,7 @@
     {
       "$id": "382",
       "Index": 96,
-      "Name": "骨Elite2",
+      "Name": "骨精英2",
       "Image": 26,
       "AI": 0,
       "Effect": 0,
@@ -3895,7 +3895,7 @@
     {
       "$id": "386",
       "Index": 97,
-      "Name": "骨Elite9",
+      "Name": "骨精英9",
       "Image": 26,
       "AI": 0,
       "Effect": 0,
@@ -3938,7 +3938,7 @@
     {
       "$id": "390",
       "Index": 98,
-      "Name": "古斧Skeleton",
+      "Name": "远古斧骷髅",
       "Image": 24,
       "AI": 8,
       "Effect": 0,
@@ -3977,7 +3977,7 @@
     {
       "$id": "394",
       "Index": 99,
-      "Name": "古斧Skeleton0",
+      "Name": "远古斧骷髅0",
       "Image": 24,
       "AI": 8,
       "Effect": 0,
@@ -4016,7 +4016,7 @@
     {
       "$id": "398",
       "Index": 100,
-      "Name": "古Skeleton",
+      "Name": "远古骷髅",
       "Image": 22,
       "AI": 0,
       "Effect": 0,
@@ -4055,7 +4055,7 @@
     {
       "$id": "402",
       "Index": 101,
-      "Name": "古Skeleton0",
+      "Name": "远古骷髅0",
       "Image": 22,
       "AI": 0,
       "Effect": 0,
@@ -4094,7 +4094,7 @@
     {
       "$id": "406",
       "Index": 102,
-      "Name": "古骨Fighter",
+      "Name": "远古骨战士",
       "Image": 23,
       "AI": 0,
       "Effect": 0,
@@ -4135,7 +4135,7 @@
     {
       "$id": "410",
       "Index": 103,
-      "Name": "古骨Fighter0",
+      "Name": "远古骨战士0",
       "Image": 23,
       "AI": 0,
       "Effect": 0,
@@ -4176,7 +4176,7 @@
     {
       "$id": "414",
       "Index": 104,
-      "Name": "古骨战",
+      "Name": "远古骨武士",
       "Image": 25,
       "AI": 0,
       "Effect": 0,
@@ -4215,7 +4215,7 @@
     {
       "$id": "418",
       "Index": 105,
-      "Name": "古骨战0",
+      "Name": "远古骨武士0",
       "Image": 25,
       "AI": 0,
       "Effect": 0,
@@ -4254,7 +4254,7 @@
     {
       "$id": "422",
       "Index": 106,
-      "Name": "古骨Elite",
+      "Name": "远古骨精英",
       "Image": 26,
       "AI": 0,
       "Effect": 0,
@@ -4295,7 +4295,7 @@
     {
       "$id": "426",
       "Index": 107,
-      "Name": "骨Whoo",
+      "Name": "骨枭",
       "Image": 194,
       "AI": 0,
       "Effect": 0,
@@ -4306,7 +4306,7 @@
       "AttackSpeed": 2000,
       "MoveSpeed": 1200,
       "Experience": 6000,
-      "DropPath": "",
+      "DropPath": "BoneWhoo",
       "Drops": {
         "$id": "427",
         "$values": []
@@ -4338,7 +4338,7 @@
     {
       "$id": "430",
       "Index": 108,
-      "Name": "Zombie1",
+      "Name": "僵尸1",
       "Image": 73,
       "AI": 26,
       "Effect": 0,
@@ -4381,7 +4381,7 @@
     {
       "$id": "434",
       "Index": 109,
-      "Name": "Zombie10",
+      "Name": "僵尸10",
       "Image": 73,
       "AI": 26,
       "Effect": 0,
@@ -4424,7 +4424,7 @@
     {
       "$id": "438",
       "Index": 110,
-      "Name": "Zombie2",
+      "Name": "僵尸2",
       "Image": 69,
       "AI": 24,
       "Effect": 0,
@@ -4463,7 +4463,7 @@
     {
       "$id": "442",
       "Index": 111,
-      "Name": "Zombie20",
+      "Name": "僵尸20",
       "Image": 69,
       "AI": 24,
       "Effect": 0,
@@ -4502,7 +4502,7 @@
     {
       "$id": "446",
       "Index": 112,
-      "Name": "Zombie3",
+      "Name": "僵尸3",
       "Image": 70,
       "AI": 25,
       "Effect": 0,
@@ -4545,7 +4545,7 @@
     {
       "$id": "450",
       "Index": 113,
-      "Name": "Zombie30",
+      "Name": "僵尸30",
       "Image": 70,
       "AI": 25,
       "Effect": 0,
@@ -4588,7 +4588,7 @@
     {
       "$id": "454",
       "Index": 114,
-      "Name": "Zombie4",
+      "Name": "僵尸4",
       "Image": 71,
       "AI": 25,
       "Effect": 0,
@@ -4631,7 +4631,7 @@
     {
       "$id": "458",
       "Index": 115,
-      "Name": "Zombie40",
+      "Name": "僵尸40",
       "Image": 71,
       "AI": 25,
       "Effect": 0,
@@ -4674,7 +4674,7 @@
     {
       "$id": "462",
       "Index": 116,
-      "Name": "Zombie5",
+      "Name": "僵尸5",
       "Image": 72,
       "AI": 25,
       "Effect": 0,
@@ -4717,7 +4717,7 @@
     {
       "$id": "466",
       "Index": 117,
-      "Name": "Zombie50",
+      "Name": "僵尸50",
       "Image": 72,
       "AI": 25,
       "Effect": 0,
@@ -4760,7 +4760,7 @@
     {
       "$id": "470",
       "Index": 118,
-      "Name": "Ghoul",
+      "Name": "食尸鬼",
       "Image": 74,
       "AI": 0,
       "Effect": 0,
@@ -4803,7 +4803,7 @@
     {
       "$id": "474",
       "Index": 119,
-      "Name": "Ghoul1",
+      "Name": "食尸鬼1",
       "Image": 74,
       "AI": 0,
       "Effect": 0,
@@ -4814,7 +4814,7 @@
       "AttackSpeed": 2000,
       "MoveSpeed": 600,
       "Experience": 1200,
-      "DropPath": "",
+      "DropPath": "Ghoul1",
       "Drops": {
         "$id": "475",
         "$values": []
@@ -4843,7 +4843,7 @@
     {
       "$id": "478",
       "Index": 120,
-      "Name": "Ghoul2",
+      "Name": "食尸鬼2",
       "Image": 74,
       "AI": 0,
       "Effect": 0,
@@ -4886,7 +4886,7 @@
     {
       "$id": "482",
       "Index": 121,
-      "Name": "Ghoul4",
+      "Name": "食尸鬼4",
       "Image": 74,
       "AI": 0,
       "Effect": 0,
@@ -4897,7 +4897,7 @@
       "AttackSpeed": 2800,
       "MoveSpeed": 1500,
       "Experience": 1200,
-      "DropPath": "",
+      "DropPath": "Ghoul4",
       "Drops": {
         "$id": "483",
         "$values": []
@@ -4929,7 +4929,7 @@
     {
       "$id": "486",
       "Index": 122,
-      "Name": "PriestZombie",
+      "Name": "祭司僵尸",
       "Image": 69,
       "AI": 24,
       "Effect": 0,
@@ -4968,7 +4968,7 @@
     {
       "$id": "490",
       "Index": 123,
-      "Name": "PriestZombie0",
+      "Name": "祭司僵尸0",
       "Image": 69,
       "AI": 24,
       "Effect": 0,
@@ -5007,7 +5007,7 @@
     {
       "$id": "494",
       "Index": 124,
-      "Name": "ClZombie",
+      "Name": "Cl僵尸",
       "Image": 70,
       "AI": 25,
       "Effect": 0,
@@ -5050,7 +5050,7 @@
     {
       "$id": "498",
       "Index": 125,
-      "Name": "ClZombie0",
+      "Name": "Cl僵尸0",
       "Image": 70,
       "AI": 25,
       "Effect": 0,
@@ -5093,7 +5093,7 @@
     {
       "$id": "502",
       "Index": 126,
-      "Name": "NdZombie",
+      "Name": "Nd僵尸",
       "Image": 71,
       "AI": 25,
       "Effect": 0,
@@ -5136,7 +5136,7 @@
     {
       "$id": "506",
       "Index": 127,
-      "Name": "NdZombie0",
+      "Name": "Nd僵尸0",
       "Image": 71,
       "AI": 25,
       "Effect": 0,
@@ -5179,7 +5179,7 @@
     {
       "$id": "510",
       "Index": 128,
-      "Name": "CrawlerZombie",
+      "Name": "爬行者僵尸",
       "Image": 72,
       "AI": 25,
       "Effect": 0,
@@ -5222,7 +5222,7 @@
     {
       "$id": "514",
       "Index": 129,
-      "Name": "CrawlerZombie0",
+      "Name": "爬行者僵尸0",
       "Image": 72,
       "AI": 25,
       "Effect": 0,
@@ -5265,7 +5265,7 @@
     {
       "$id": "518",
       "Index": 130,
-      "Name": "ShamanZombie",
+      "Name": "巫医僵尸",
       "Image": 73,
       "AI": 26,
       "Effect": 0,
@@ -5308,7 +5308,7 @@
     {
       "$id": "522",
       "Index": 131,
-      "Name": "ShamanZombie0",
+      "Name": "巫医僵尸0",
       "Image": 73,
       "AI": 26,
       "Effect": 0,
@@ -5351,7 +5351,7 @@
     {
       "$id": "526",
       "Index": 132,
-      "Name": "RotNdZombie",
+      "Name": "RotNd僵尸",
       "Image": 71,
       "AI": 25,
       "Effect": 0,
@@ -5362,7 +5362,7 @@
       "AttackSpeed": 3000,
       "MoveSpeed": 2000,
       "Experience": 500,
-      "DropPath": "",
+      "DropPath": "RotNdZombie",
       "Drops": {
         "$id": "527",
         "$values": []
@@ -5394,7 +5394,7 @@
     {
       "$id": "530",
       "Index": 133,
-      "Name": "RotShamanZombie",
+      "Name": "Rot巫医僵尸",
       "Image": 73,
       "AI": 26,
       "Effect": 0,
@@ -5405,7 +5405,7 @@
       "AttackSpeed": 3000,
       "MoveSpeed": 1500,
       "Experience": 500,
-      "DropPath": "",
+      "DropPath": "RotShamanZombie",
       "Drops": {
         "$id": "531",
         "$values": []
@@ -5437,7 +5437,7 @@
     {
       "$id": "534",
       "Index": 134,
-      "Name": "Zombie51",
+      "Name": "僵尸51",
       "Image": 73,
       "AI": 26,
       "Effect": 0,
@@ -5480,7 +5480,7 @@
     {
       "$id": "538",
       "Index": 135,
-      "Name": "Hi巨Ghoul",
+      "Name": "Hi巨食尸鬼",
       "Image": 74,
       "AI": 0,
       "Effect": 0,
@@ -5491,7 +5491,7 @@
       "AttackSpeed": 2800,
       "MoveSpeed": 1500,
       "Experience": 1200,
-      "DropPath": "",
+      "DropPath": "HiGreatGhoul",
       "Drops": {
         "$id": "539",
         "$values": []
@@ -5523,7 +5523,7 @@
     {
       "$id": "542",
       "Index": 136,
-      "Name": "白Serpent",
+      "Name": "白蛇",
       "Image": 114,
       "AI": 0,
       "Effect": 0,
@@ -5566,7 +5566,7 @@
     {
       "$id": "546",
       "Index": 137,
-      "Name": "Ghoul10",
+      "Name": "食尸鬼10",
       "Image": 74,
       "AI": 0,
       "Effect": 0,
@@ -5606,7 +5606,7 @@
     {
       "$id": "550",
       "Index": 138,
-      "Name": "蓝Viper",
+      "Name": "蓝毒蛇",
       "Image": 115,
       "AI": 0,
       "Effect": 0,
@@ -5649,7 +5649,7 @@
     {
       "$id": "554",
       "Index": 139,
-      "Name": "蓝Viper0",
+      "Name": "蓝毒蛇0",
       "Image": 115,
       "AI": 0,
       "Effect": 0,
@@ -5692,7 +5692,7 @@
     {
       "$id": "558",
       "Index": 140,
-      "Name": "黄Viper",
+      "Name": "黄毒蛇",
       "Image": 116,
       "AI": 0,
       "Effect": 0,
@@ -5735,7 +5735,7 @@
     {
       "$id": "562",
       "Index": 141,
-      "Name": "黄Viper0",
+      "Name": "黄毒蛇0",
       "Image": 116,
       "AI": 0,
       "Effect": 0,
@@ -5778,7 +5778,7 @@
     {
       "$id": "566",
       "Index": 142,
-      "Name": "GuardianViper",
+      "Name": "守卫毒蛇",
       "Image": 114,
       "AI": 0,
       "Effect": 0,
@@ -5864,7 +5864,7 @@
     {
       "$id": "574",
       "Index": 144,
-      "Name": "TreasureBox",
+      "Name": "Treasure箱",
       "Image": 164,
       "AI": 3,
       "Effect": 0,
@@ -5875,7 +5875,7 @@
       "AttackSpeed": 1000,
       "MoveSpeed": 1500,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "TreasureBox",
       "Drops": {
         "$id": "575",
         "$values": []
@@ -5903,7 +5903,7 @@
     {
       "$id": "578",
       "Index": 145,
-      "Name": "Elite弓",
+      "Name": "精英弓手",
       "Image": 64,
       "AI": 8,
       "Effect": 0,
@@ -5914,7 +5914,7 @@
       "AttackSpeed": 2000,
       "MoveSpeed": 1000,
       "Experience": 3400,
-      "DropPath": "",
+      "DropPath": "EliteArcher",
       "Drops": {
         "$id": "579",
         "$values": []
@@ -5946,7 +5946,7 @@
     {
       "$id": "582",
       "Index": 146,
-      "Name": "EliteStatue",
+      "Name": "精英雕像",
       "Image": 65,
       "AI": 15,
       "Effect": 0,
@@ -5957,7 +5957,7 @@
       "AttackSpeed": 2000,
       "MoveSpeed": 1000,
       "Experience": 3600,
-      "DropPath": "",
+      "DropPath": "EliteStatue",
       "Drops": {
         "$id": "583",
         "$values": []
@@ -5989,7 +5989,7 @@
     {
       "$id": "586",
       "Index": 147,
-      "Name": "EliteGuardian",
+      "Name": "精英守卫",
       "Image": 66,
       "AI": 15,
       "Effect": 0,
@@ -6000,7 +6000,7 @@
       "AttackSpeed": 2000,
       "MoveSpeed": 1000,
       "Experience": 4000,
-      "DropPath": "",
+      "DropPath": "EliteGuardian",
       "Drops": {
         "$id": "587",
         "$values": []
@@ -6032,7 +6032,7 @@
     {
       "$id": "590",
       "Index": 148,
-      "Name": "邪Spider",
+      "Name": "邪蜘蛛",
       "Image": 61,
       "AI": 0,
       "Effect": 0,
@@ -6043,7 +6043,7 @@
       "AttackSpeed": 2000,
       "MoveSpeed": 1000,
       "Experience": 4500,
-      "DropPath": "",
+      "DropPath": "EvilSpider",
       "Drops": {
         "$id": "591",
         "$values": []
@@ -6075,7 +6075,7 @@
     {
       "$id": "594",
       "Index": 149,
-      "Name": "邪Hog",
+      "Name": "邪猪",
       "Image": 76,
       "AI": 0,
       "Effect": 0,
@@ -6086,7 +6086,7 @@
       "AttackSpeed": 2000,
       "MoveSpeed": 1000,
       "Experience": 10000,
-      "DropPath": "",
+      "DropPath": "EvilHog",
       "Drops": {
         "$id": "595",
         "$values": []
@@ -6118,7 +6118,7 @@
     {
       "$id": "598",
       "Index": 150,
-      "Name": "黑Maggot",
+      "Name": "黑蛆",
       "Image": 38,
       "AI": 0,
       "Effect": 0,
@@ -6159,7 +6159,7 @@
     {
       "$id": "602",
       "Index": 151,
-      "Name": "黑Maggot0",
+      "Name": "黑蛆0",
       "Image": 38,
       "AI": 0,
       "Effect": 0,
@@ -6200,7 +6200,7 @@
     {
       "$id": "606",
       "Index": 152,
-      "Name": "Centipede",
+      "Name": "蜈蚣",
       "Image": 37,
       "AI": 0,
       "Effect": 0,
@@ -6241,7 +6241,7 @@
     {
       "$id": "610",
       "Index": 153,
-      "Name": "Centipede0",
+      "Name": "蜈蚣0",
       "Image": 37,
       "AI": 0,
       "Effect": 0,
@@ -6282,7 +6282,7 @@
     {
       "$id": "614",
       "Index": 154,
-      "Name": "GiantWorm",
+      "Name": "巨蠕虫",
       "Image": 36,
       "AI": 0,
       "Effect": 0,
@@ -6325,7 +6325,7 @@
     {
       "$id": "618",
       "Index": 155,
-      "Name": "GiantWorm0",
+      "Name": "巨蠕虫0",
       "Image": 36,
       "AI": 0,
       "Effect": 0,
@@ -6368,7 +6368,7 @@
     {
       "$id": "622",
       "Index": 156,
-      "Name": "WhimperingBee",
+      "Name": "哀鸣蜂",
       "Image": 35,
       "AI": 0,
       "Effect": 0,
@@ -6411,7 +6411,7 @@
     {
       "$id": "626",
       "Index": 157,
-      "Name": "WhimperingBee0",
+      "Name": "哀鸣蜂0",
       "Image": 35,
       "AI": 0,
       "Effect": 0,
@@ -6454,7 +6454,7 @@
     {
       "$id": "630",
       "Index": 158,
-      "Name": "Tongs",
+      "Name": "钳虫",
       "Image": 39,
       "AI": 0,
       "Effect": 0,
@@ -6497,7 +6497,7 @@
     {
       "$id": "634",
       "Index": 159,
-      "Name": "Tongs0",
+      "Name": "钳虫0",
       "Image": 39,
       "AI": 0,
       "Effect": 0,
@@ -6540,7 +6540,7 @@
     {
       "$id": "638",
       "Index": 160,
-      "Name": "邪Tongs",
+      "Name": "邪钳虫",
       "Image": 40,
       "AI": 0,
       "Effect": 0,
@@ -6583,7 +6583,7 @@
     {
       "$id": "642",
       "Index": 161,
-      "Name": "邪Tongs1",
+      "Name": "邪钳虫1",
       "Image": 40,
       "AI": 0,
       "Effect": 0,
@@ -6626,7 +6626,7 @@
     {
       "$id": "646",
       "Index": 162,
-      "Name": "邪Tongs2",
+      "Name": "邪钳虫2",
       "Image": 40,
       "AI": 0,
       "Effect": 0,
@@ -6669,7 +6669,7 @@
     {
       "$id": "650",
       "Index": 163,
-      "Name": "邪Tongs9",
+      "Name": "邪钳虫9",
       "Image": 40,
       "AI": 0,
       "Effect": 0,
@@ -6712,7 +6712,7 @@
     {
       "$id": "654",
       "Index": 164,
-      "Name": "邪Centipede",
+      "Name": "邪蜈蚣",
       "Image": 41,
       "AI": 14,
       "Effect": 0,
@@ -6757,7 +6757,7 @@
     {
       "$id": "658",
       "Index": 165,
-      "Name": "WedgeMoth",
+      "Name": "楔蛾",
       "Image": 44,
       "AI": 7,
       "Effect": 0,
@@ -6800,7 +6800,7 @@
     {
       "$id": "662",
       "Index": 166,
-      "Name": "BugBat",
+      "Name": "虫蝙蝠",
       "Image": 42,
       "AI": 0,
       "Effect": 0,
@@ -6838,7 +6838,7 @@
     {
       "$id": "666",
       "Index": 167,
-      "Name": "BugBatMaggot",
+      "Name": "虫蝙蝠蛆",
       "Image": 43,
       "AI": 12,
       "Effect": 0,
@@ -6877,7 +6877,7 @@
     {
       "$id": "670",
       "Index": 168,
-      "Name": "红Boar",
+      "Name": "红野猪",
       "Image": 45,
       "AI": 0,
       "Effect": 0,
@@ -6918,7 +6918,7 @@
     {
       "$id": "674",
       "Index": 169,
-      "Name": "红Boar0",
+      "Name": "红野猪0",
       "Image": 45,
       "AI": 0,
       "Effect": 0,
@@ -6959,7 +6959,7 @@
     {
       "$id": "678",
       "Index": 170,
-      "Name": "红Boar3",
+      "Name": "红野猪3",
       "Image": 45,
       "AI": 0,
       "Effect": 0,
@@ -7000,7 +7000,7 @@
     {
       "$id": "682",
       "Index": 171,
-      "Name": "黑Boar",
+      "Name": "黑野猪",
       "Image": 46,
       "AI": 0,
       "Effect": 0,
@@ -7041,7 +7041,7 @@
     {
       "$id": "686",
       "Index": 172,
-      "Name": "黑Boar0",
+      "Name": "黑野猪0",
       "Image": 46,
       "AI": 0,
       "Effect": 0,
@@ -7082,7 +7082,7 @@
     {
       "$id": "690",
       "Index": 173,
-      "Name": "黑Boar3",
+      "Name": "黑野猪3",
       "Image": 46,
       "AI": 0,
       "Effect": 0,
@@ -7123,7 +7123,7 @@
     {
       "$id": "694",
       "Index": 174,
-      "Name": "白Boar",
+      "Name": "白野猪",
       "Image": 48,
       "AI": 0,
       "Effect": 0,
@@ -7166,7 +7166,7 @@
     {
       "$id": "698",
       "Index": 175,
-      "Name": "白Boar0",
+      "Name": "白野猪0",
       "Image": 48,
       "AI": 0,
       "Effect": 0,
@@ -7209,7 +7209,7 @@
     {
       "$id": "702",
       "Index": 176,
-      "Name": "白Boar1",
+      "Name": "白野猪1",
       "Image": 48,
       "AI": 0,
       "Effect": 0,
@@ -7252,7 +7252,7 @@
     {
       "$id": "706",
       "Index": 177,
-      "Name": "蛇Scorpion",
+      "Name": "蛇蝎子",
       "Image": 47,
       "AI": 0,
       "Effect": 0,
@@ -7295,7 +7295,7 @@
     {
       "$id": "710",
       "Index": 178,
-      "Name": "蛇Scorpion0",
+      "Name": "蛇蝎子0",
       "Image": 47,
       "AI": 0,
       "Effect": 0,
@@ -7338,7 +7338,7 @@
     {
       "$id": "714",
       "Index": 179,
-      "Name": "蛇Scorpion3",
+      "Name": "蛇蝎子3",
       "Image": 47,
       "AI": 0,
       "Effect": 0,
@@ -7467,7 +7467,7 @@
     {
       "$id": "726",
       "Index": 182,
-      "Name": "古黑Maggot",
+      "Name": "远古黑蛆",
       "Image": 38,
       "AI": 0,
       "Effect": 0,
@@ -7508,7 +7508,7 @@
     {
       "$id": "730",
       "Index": 183,
-      "Name": "古黑Maggot0",
+      "Name": "远古黑蛆0",
       "Image": 38,
       "AI": 0,
       "Effect": 0,
@@ -7549,7 +7549,7 @@
     {
       "$id": "734",
       "Index": 184,
-      "Name": "古蛇Scorpion",
+      "Name": "远古蛇蝎子",
       "Image": 47,
       "AI": 0,
       "Effect": 0,
@@ -7592,7 +7592,7 @@
     {
       "$id": "738",
       "Index": 185,
-      "Name": "古蛇Scorpion0",
+      "Name": "远古蛇蝎子0",
       "Image": 47,
       "AI": 0,
       "Effect": 0,
@@ -7635,7 +7635,7 @@
     {
       "$id": "742",
       "Index": 186,
-      "Name": "古红Boar",
+      "Name": "远古红野猪",
       "Image": 45,
       "AI": 0,
       "Effect": 0,
@@ -7676,7 +7676,7 @@
     {
       "$id": "746",
       "Index": 187,
-      "Name": "古红Boar0",
+      "Name": "远古红野猪0",
       "Image": 45,
       "AI": 0,
       "Effect": 0,
@@ -7717,7 +7717,7 @@
     {
       "$id": "750",
       "Index": 188,
-      "Name": "古黑Boar",
+      "Name": "远古黑野猪",
       "Image": 46,
       "AI": 0,
       "Effect": 0,
@@ -7758,7 +7758,7 @@
     {
       "$id": "754",
       "Index": 189,
-      "Name": "古黑Boar0",
+      "Name": "远古黑野猪0",
       "Image": 46,
       "AI": 0,
       "Effect": 0,
@@ -7799,7 +7799,7 @@
     {
       "$id": "758",
       "Index": 190,
-      "Name": "古白Boar",
+      "Name": "远古白野猪",
       "Image": 48,
       "AI": 0,
       "Effect": 0,
@@ -7840,7 +7840,7 @@
     {
       "$id": "762",
       "Index": 191,
-      "Name": "古王Hog",
+      "Name": "远古王猪",
       "Image": 76,
       "AI": 0,
       "Effect": 0,
@@ -7883,7 +7883,7 @@
     {
       "$id": "766",
       "Index": 192,
-      "Name": "GiantRat",
+      "Name": "巨鼠",
       "Image": 63,
       "AI": 0,
       "Effect": 0,
@@ -7924,7 +7924,7 @@
     {
       "$id": "770",
       "Index": 193,
-      "Name": "GiantRat0",
+      "Name": "巨鼠0",
       "Image": 63,
       "AI": 0,
       "Effect": 0,
@@ -7965,7 +7965,7 @@
     {
       "$id": "774",
       "Index": 194,
-      "Name": "Zuma弓",
+      "Name": "祖玛弓手",
       "Image": 64,
       "AI": 8,
       "Effect": 0,
@@ -8008,7 +8008,7 @@
     {
       "$id": "778",
       "Index": 195,
-      "Name": "Zuma弓0",
+      "Name": "祖玛弓手0",
       "Image": 64,
       "AI": 8,
       "Effect": 0,
@@ -8051,7 +8051,7 @@
     {
       "$id": "782",
       "Index": 196,
-      "Name": "Zuma弓3",
+      "Name": "祖玛弓手3",
       "Image": 64,
       "AI": 8,
       "Effect": 0,
@@ -8094,7 +8094,7 @@
     {
       "$id": "786",
       "Index": 197,
-      "Name": "ZumaStatue",
+      "Name": "祖玛雕像",
       "Image": 65,
       "AI": 15,
       "Effect": 0,
@@ -8137,7 +8137,7 @@
     {
       "$id": "790",
       "Index": 198,
-      "Name": "ZumaStatue0",
+      "Name": "祖玛雕像0",
       "Image": 65,
       "AI": 15,
       "Effect": 0,
@@ -8180,7 +8180,7 @@
     {
       "$id": "794",
       "Index": 199,
-      "Name": "ZumaStatue3",
+      "Name": "祖玛雕像3",
       "Image": 65,
       "AI": 15,
       "Effect": 0,
@@ -8223,7 +8223,7 @@
     {
       "$id": "798",
       "Index": 200,
-      "Name": "ZumaGuardian",
+      "Name": "祖玛守卫",
       "Image": 66,
       "AI": 15,
       "Effect": 0,
@@ -8266,7 +8266,7 @@
     {
       "$id": "802",
       "Index": 201,
-      "Name": "ZumaGuardian0",
+      "Name": "祖玛守卫0",
       "Image": 66,
       "AI": 15,
       "Effect": 0,
@@ -8309,7 +8309,7 @@
     {
       "$id": "806",
       "Index": 202,
-      "Name": "ZumaGuardian3",
+      "Name": "祖玛守卫3",
       "Image": 66,
       "AI": 15,
       "Effect": 0,
@@ -8352,7 +8352,7 @@
     {
       "$id": "810",
       "Index": 203,
-      "Name": "ZumaGuardian00",
+      "Name": "祖玛守卫00",
       "Image": 66,
       "AI": 15,
       "Effect": 0,
@@ -8395,7 +8395,7 @@
     {
       "$id": "814",
       "Index": 204,
-      "Name": "红雷Zuma",
+      "Name": "红雷祖玛",
       "Image": 67,
       "AI": 16,
       "Effect": 0,
@@ -8438,7 +8438,7 @@
     {
       "$id": "818",
       "Index": 205,
-      "Name": "ZumaTaurus",
+      "Name": "祖玛教主",
       "Image": 68,
       "AI": 17,
       "Effect": 0,
@@ -8481,7 +8481,7 @@
     {
       "$id": "822",
       "Index": 206,
-      "Name": "ZumaTaurus9",
+      "Name": "祖玛教主9",
       "Image": 68,
       "AI": 17,
       "Effect": 0,
@@ -8524,7 +8524,7 @@
     {
       "$id": "826",
       "Index": 207,
-      "Name": "古GiantRat",
+      "Name": "远古巨鼠",
       "Image": 63,
       "AI": 0,
       "Effect": 0,
@@ -8565,7 +8565,7 @@
     {
       "$id": "830",
       "Index": 208,
-      "Name": "古GiantRat0",
+      "Name": "远古巨鼠0",
       "Image": 63,
       "AI": 0,
       "Effect": 0,
@@ -8606,7 +8606,7 @@
     {
       "$id": "834",
       "Index": 209,
-      "Name": "古Zuma弓",
+      "Name": "远古祖玛弓手",
       "Image": 64,
       "AI": 8,
       "Effect": 0,
@@ -8647,7 +8647,7 @@
     {
       "$id": "838",
       "Index": 210,
-      "Name": "古Zuma弓0",
+      "Name": "远古祖玛弓手0",
       "Image": 64,
       "AI": 8,
       "Effect": 0,
@@ -8688,7 +8688,7 @@
     {
       "$id": "842",
       "Index": 211,
-      "Name": "古ZumaStatue",
+      "Name": "远古祖玛雕像",
       "Image": 65,
       "AI": 15,
       "Effect": 0,
@@ -8729,7 +8729,7 @@
     {
       "$id": "846",
       "Index": 212,
-      "Name": "古ZumaStatue0",
+      "Name": "远古祖玛雕像0",
       "Image": 65,
       "AI": 15,
       "Effect": 0,
@@ -8770,7 +8770,7 @@
     {
       "$id": "850",
       "Index": 213,
-      "Name": "古ZumaGuardian",
+      "Name": "远古祖玛守卫",
       "Image": 66,
       "AI": 15,
       "Effect": 0,
@@ -8811,7 +8811,7 @@
     {
       "$id": "854",
       "Index": 214,
-      "Name": "古ZumaGuardian0",
+      "Name": "远古祖玛守卫0",
       "Image": 66,
       "AI": 15,
       "Effect": 0,
@@ -8852,7 +8852,7 @@
     {
       "$id": "858",
       "Index": 215,
-      "Name": "古红雷Zuma",
+      "Name": "远古红雷祖玛",
       "Image": 67,
       "AI": 16,
       "Effect": 0,
@@ -8893,7 +8893,7 @@
     {
       "$id": "862",
       "Index": 216,
-      "Name": "红FoxMan",
+      "Name": "红狐人",
       "Image": 128,
       "AI": 45,
       "Effect": 0,
@@ -8938,7 +8938,7 @@
     {
       "$id": "866",
       "Index": 217,
-      "Name": "黑FoxMan",
+      "Name": "黑狐人",
       "Image": 127,
       "AI": 44,
       "Effect": 0,
@@ -8981,7 +8981,7 @@
     {
       "$id": "870",
       "Index": 218,
-      "Name": "白FoxMan",
+      "Name": "白狐人",
       "Image": 129,
       "AI": 46,
       "Effect": 0,
@@ -9024,7 +9024,7 @@
     {
       "$id": "874",
       "Index": 219,
-      "Name": "TrapRock",
+      "Name": "陷阱岩石",
       "Image": 130,
       "AI": 47,
       "Effect": 0,
@@ -9067,7 +9067,7 @@
     {
       "$id": "878",
       "Index": 220,
-      "Name": "TrapRock1",
+      "Name": "陷阱岩石1",
       "Image": 130,
       "AI": 47,
       "Effect": 0,
@@ -9110,7 +9110,7 @@
     {
       "$id": "882",
       "Index": 221,
-      "Name": "GuardianRock",
+      "Name": "守卫岩石",
       "Image": 131,
       "AI": 48,
       "Effect": 0,
@@ -9153,7 +9153,7 @@
     {
       "$id": "886",
       "Index": 222,
-      "Name": "ElectricElement",
+      "Name": "雷电元素",
       "Image": 132,
       "AI": 49,
       "Effect": 0,
@@ -9196,7 +9196,7 @@
     {
       "$id": "890",
       "Index": 223,
-      "Name": "CloudElement",
+      "Name": "Cloud元素",
       "Image": 133,
       "AI": 49,
       "Effect": 0,
@@ -9239,7 +9239,7 @@
     {
       "$id": "894",
       "Index": 224,
-      "Name": "HedgeKekTal",
+      "Name": "刺猬KekTal",
       "Image": 135,
       "AI": 51,
       "Effect": 0,
@@ -9282,7 +9282,7 @@
     {
       "$id": "898",
       "Index": 225,
-      "Name": "BigHedgeKekTal",
+      "Name": "大刺猬KekTal",
       "Image": 136,
       "AI": 51,
       "Effect": 0,
@@ -9325,7 +9325,7 @@
     {
       "$id": "902",
       "Index": 226,
-      "Name": "BrownFrogSpider",
+      "Name": "Brown蛙蜘蛛",
       "Image": 138,
       "AI": 0,
       "Effect": 0,
@@ -9368,7 +9368,7 @@
     {
       "$id": "906",
       "Index": 227,
-      "Name": "红FrogSpider",
+      "Name": "红蛙蜘蛛",
       "Image": 137,
       "AI": 0,
       "Effect": 0,
@@ -9411,7 +9411,7 @@
     {
       "$id": "910",
       "Index": 228,
-      "Name": "巨Fox灵",
+      "Name": "巨狐之灵",
       "Image": 134,
       "AI": 50,
       "Effect": 0,
@@ -9456,7 +9456,7 @@
     {
       "$id": "914",
       "Index": 229,
-      "Name": "SpiderFrog",
+      "Name": "蜘蛛蛙",
       "Image": 81,
       "AI": 0,
       "Effect": 0,
@@ -9499,7 +9499,7 @@
     {
       "$id": "918",
       "Index": 230,
-      "Name": "SpiderFrog0",
+      "Name": "蜘蛛蛙0",
       "Image": 81,
       "AI": 0,
       "Effect": 0,
@@ -9542,7 +9542,7 @@
     {
       "$id": "922",
       "Index": 231,
-      "Name": "HoroBlaster",
+      "Name": "吼罗爆破手",
       "Image": 82,
       "AI": 0,
       "Effect": 0,
@@ -9585,7 +9585,7 @@
     {
       "$id": "926",
       "Index": 232,
-      "Name": "HoroBlaster0",
+      "Name": "吼罗爆破手0",
       "Image": 82,
       "AI": 0,
       "Effect": 0,
@@ -9628,7 +9628,7 @@
     {
       "$id": "930",
       "Index": 233,
-      "Name": "蓝HoroBlaster",
+      "Name": "蓝吼罗爆破手",
       "Image": 83,
       "AI": 0,
       "Effect": 0,
@@ -9671,7 +9671,7 @@
     {
       "$id": "934",
       "Index": 234,
-      "Name": "蓝HoroBlaster0",
+      "Name": "蓝吼罗爆破手0",
       "Image": 83,
       "AI": 0,
       "Effect": 0,
@@ -10015,7 +10015,7 @@
     {
       "$id": "966",
       "Index": 242,
-      "Name": "Dung",
+      "Name": "粪怪",
       "Image": 27,
       "AI": 7,
       "Effect": 0,
@@ -10058,7 +10058,7 @@
     {
       "$id": "970",
       "Index": 243,
-      "Name": "Dung0",
+      "Name": "粪怪0",
       "Image": 27,
       "AI": 7,
       "Effect": 0,
@@ -10101,7 +10101,7 @@
     {
       "$id": "974",
       "Index": 244,
-      "Name": "WoomaSoldier",
+      "Name": "沃玛士兵",
       "Image": 29,
       "AI": 0,
       "Effect": 0,
@@ -10144,7 +10144,7 @@
     {
       "$id": "978",
       "Index": 245,
-      "Name": "WoomaSoldier0",
+      "Name": "沃玛士兵0",
       "Image": 29,
       "AI": 0,
       "Effect": 0,
@@ -10187,7 +10187,7 @@
     {
       "$id": "982",
       "Index": 246,
-      "Name": "WoomaFighter",
+      "Name": "沃玛战士",
       "Image": 30,
       "AI": 0,
       "Effect": 0,
@@ -10230,7 +10230,7 @@
     {
       "$id": "986",
       "Index": 247,
-      "Name": "WoomaFighter0",
+      "Name": "沃玛战士0",
       "Image": 30,
       "AI": 0,
       "Effect": 0,
@@ -10273,7 +10273,7 @@
     {
       "$id": "990",
       "Index": 248,
-      "Name": "Wooma战",
+      "Name": "沃玛武士",
       "Image": 31,
       "AI": 0,
       "Effect": 0,
@@ -10316,7 +10316,7 @@
     {
       "$id": "994",
       "Index": 249,
-      "Name": "Wooma战0",
+      "Name": "沃玛武士0",
       "Image": 31,
       "AI": 0,
       "Effect": 0,
@@ -10359,7 +10359,7 @@
     {
       "$id": "998",
       "Index": 250,
-      "Name": "FlamingWooma",
+      "Name": "烈焰沃玛",
       "Image": 32,
       "AI": 10,
       "Effect": 0,
@@ -10398,7 +10398,7 @@
     {
       "$id": "1002",
       "Index": 251,
-      "Name": "FlamingWooma0",
+      "Name": "烈焰沃玛0",
       "Image": 32,
       "AI": 10,
       "Effect": 0,
@@ -10437,7 +10437,7 @@
     {
       "$id": "1006",
       "Index": 252,
-      "Name": "FlamingWooma2",
+      "Name": "烈焰沃玛2",
       "Image": 32,
       "AI": 10,
       "Effect": 0,
@@ -10476,7 +10476,7 @@
     {
       "$id": "1010",
       "Index": 253,
-      "Name": "WoomaGuardian",
+      "Name": "沃玛守卫",
       "Image": 33,
       "AI": 0,
       "Effect": 0,
@@ -10519,7 +10519,7 @@
     {
       "$id": "1014",
       "Index": 254,
-      "Name": "WoomaGuardian1",
+      "Name": "沃玛守卫1",
       "Image": 33,
       "AI": 0,
       "Effect": 0,
@@ -10561,7 +10561,7 @@
     {
       "$id": "1018",
       "Index": 255,
-      "Name": "WoomaGuardian2",
+      "Name": "沃玛守卫2",
       "Image": 33,
       "AI": 0,
       "Effect": 0,
@@ -10604,7 +10604,7 @@
     {
       "$id": "1022",
       "Index": 256,
-      "Name": "WoomaTaurus",
+      "Name": "沃玛教主",
       "Image": 34,
       "AI": 11,
       "Effect": 0,
@@ -10647,7 +10647,7 @@
     {
       "$id": "1026",
       "Index": 257,
-      "Name": "WoomaTaurus1",
+      "Name": "沃玛教主1",
       "Image": 34,
       "AI": 11,
       "Effect": 0,
@@ -10685,7 +10685,7 @@
     {
       "$id": "1030",
       "Index": 258,
-      "Name": "WoomaTaurus9",
+      "Name": "沃玛教主9",
       "Image": 34,
       "AI": 11,
       "Effect": 0,
@@ -10728,7 +10728,7 @@
     {
       "$id": "1034",
       "Index": 259,
-      "Name": "古WoomaSoldier",
+      "Name": "远古沃玛士兵",
       "Image": 29,
       "AI": 0,
       "Effect": 0,
@@ -10771,7 +10771,7 @@
     {
       "$id": "1038",
       "Index": 260,
-      "Name": "古WoomaFighter",
+      "Name": "远古沃玛战士",
       "Image": 30,
       "AI": 0,
       "Effect": 0,
@@ -10814,7 +10814,7 @@
     {
       "$id": "1042",
       "Index": 261,
-      "Name": "古Wooma战",
+      "Name": "远古沃玛武士",
       "Image": 31,
       "AI": 0,
       "Effect": 0,
@@ -10857,7 +10857,7 @@
     {
       "$id": "1046",
       "Index": 262,
-      "Name": "古FlamingWooma",
+      "Name": "远古烈焰沃玛",
       "Image": 32,
       "AI": 10,
       "Effect": 0,
@@ -10896,7 +10896,7 @@
     {
       "$id": "1050",
       "Index": 263,
-      "Name": "古WoomaGuardian",
+      "Name": "远古沃玛守卫",
       "Image": 33,
       "AI": 0,
       "Effect": 0,
@@ -10939,7 +10939,7 @@
     {
       "$id": "1054",
       "Index": 264,
-      "Name": "古WoomaTaurus",
+      "Name": "远古沃玛教主",
       "Image": 34,
       "AI": 11,
       "Effect": 0,
@@ -10982,7 +10982,7 @@
     {
       "$id": "1058",
       "Index": 265,
-      "Name": "邪Tongs20",
+      "Name": "邪钳虫20",
       "Image": 40,
       "AI": 0,
       "Effect": 0,
@@ -11025,7 +11025,7 @@
     {
       "$id": "1062",
       "Index": 266,
-      "Name": "邪Tongs21",
+      "Name": "邪钳虫21",
       "Image": 40,
       "AI": 0,
       "Effect": 0,
@@ -11154,7 +11154,7 @@
     {
       "$id": "1074",
       "Index": 269,
-      "Name": "Ghoul20",
+      "Name": "食尸鬼20",
       "Image": 74,
       "AI": 0,
       "Effect": 0,
@@ -11197,7 +11197,7 @@
     {
       "$id": "1078",
       "Index": 270,
-      "Name": "Ghoul21",
+      "Name": "食尸鬼21",
       "Image": 74,
       "AI": 0,
       "Effect": 0,
@@ -11240,7 +11240,7 @@
     {
       "$id": "1082",
       "Index": 271,
-      "Name": "Zuma弓20",
+      "Name": "祖玛弓手20",
       "Image": 64,
       "AI": 8,
       "Effect": 0,
@@ -11283,7 +11283,7 @@
     {
       "$id": "1086",
       "Index": 272,
-      "Name": "Zuma弓21",
+      "Name": "祖玛弓手21",
       "Image": 64,
       "AI": 8,
       "Effect": 0,
@@ -11322,7 +11322,7 @@
     {
       "$id": "1090",
       "Index": 273,
-      "Name": "ZumaStatue20",
+      "Name": "祖玛雕像20",
       "Image": 65,
       "AI": 15,
       "Effect": 0,
@@ -11365,7 +11365,7 @@
     {
       "$id": "1094",
       "Index": 274,
-      "Name": "ZumaStatue21",
+      "Name": "祖玛雕像21",
       "Image": 65,
       "AI": 15,
       "Effect": 0,
@@ -11408,7 +11408,7 @@
     {
       "$id": "1098",
       "Index": 275,
-      "Name": "ZumaGuardian20",
+      "Name": "祖玛守卫20",
       "Image": 66,
       "AI": 15,
       "Effect": 0,
@@ -11451,7 +11451,7 @@
     {
       "$id": "1102",
       "Index": 276,
-      "Name": "ZumaGuardian21",
+      "Name": "祖玛守卫21",
       "Image": 66,
       "AI": 15,
       "Effect": 0,
@@ -11494,7 +11494,7 @@
     {
       "$id": "1106",
       "Index": 277,
-      "Name": "白Boar20",
+      "Name": "白野猪20",
       "Image": 48,
       "AI": 0,
       "Effect": 0,
@@ -11537,7 +11537,7 @@
     {
       "$id": "1110",
       "Index": 278,
-      "Name": "白Boar21",
+      "Name": "白野猪21",
       "Image": 48,
       "AI": 0,
       "Effect": 0,
@@ -11580,7 +11580,7 @@
     {
       "$id": "1114",
       "Index": 279,
-      "Name": "WoomaGuardian5",
+      "Name": "沃玛守卫5",
       "Image": 33,
       "AI": 0,
       "Effect": 0,
@@ -11623,7 +11623,7 @@
     {
       "$id": "1118",
       "Index": 280,
-      "Name": "WoomaGuardian6",
+      "Name": "沃玛守卫6",
       "Image": 33,
       "AI": 0,
       "Effect": 0,
@@ -11666,7 +11666,7 @@
     {
       "$id": "1122",
       "Index": 281,
-      "Name": "王Scorpion",
+      "Name": "王蝎子",
       "Image": 75,
       "AI": 19,
       "Effect": 0,
@@ -11711,7 +11711,7 @@
     {
       "$id": "1126",
       "Index": 282,
-      "Name": "王Hog",
+      "Name": "猪王",
       "Image": 76,
       "AI": 0,
       "Effect": 0,
@@ -11754,7 +11754,7 @@
     {
       "$id": "1130",
       "Index": 283,
-      "Name": "Incarnated",
+      "Name": "化身WT",
       "Image": 34,
       "AI": 11,
       "Effect": 0,
@@ -11797,7 +11797,7 @@
     {
       "$id": "1134",
       "Index": 284,
-      "Name": "Incarnated",
+      "Name": "化身ZT",
       "Image": 68,
       "AI": 22,
       "Effect": 0,
@@ -11840,7 +11840,7 @@
     {
       "$id": "1138",
       "Index": 285,
-      "Name": "暗魔",
+      "Name": "暗恶魔",
       "Image": 77,
       "AI": 20,
       "Effect": 0,
@@ -11883,7 +11883,7 @@
     {
       "$id": "1142",
       "Index": 286,
-      "Name": "血Priest",
+      "Name": "血祭司",
       "Image": 69,
       "AI": 24,
       "Effect": 0,
@@ -11926,7 +11926,7 @@
     {
       "$id": "1146",
       "Index": 287,
-      "Name": "血Priest0",
+      "Name": "血祭司0",
       "Image": 69,
       "AI": 24,
       "Effect": 0,
@@ -11969,7 +11969,7 @@
     {
       "$id": "1150",
       "Index": 288,
-      "Name": "CursedShaman",
+      "Name": "受诅巫医",
       "Image": 73,
       "AI": 26,
       "Effect": 0,
@@ -12012,7 +12012,7 @@
     {
       "$id": "1154",
       "Index": 289,
-      "Name": "CursedShaman0",
+      "Name": "受诅巫医0",
       "Image": 73,
       "AI": 26,
       "Effect": 0,
@@ -12055,7 +12055,7 @@
     {
       "$id": "1158",
       "Index": 290,
-      "Name": "CursedPriest",
+      "Name": "受诅祭司",
       "Image": 69,
       "AI": 24,
       "Effect": 0,
@@ -12098,7 +12098,7 @@
     {
       "$id": "1162",
       "Index": 291,
-      "Name": "CursedPriest0",
+      "Name": "受诅祭司0",
       "Image": 69,
       "AI": 24,
       "Effect": 0,
@@ -12141,7 +12141,7 @@
     {
       "$id": "1166",
       "Index": 292,
-      "Name": "CursedZombie",
+      "Name": "受诅僵尸",
       "Image": 70,
       "AI": 0,
       "Effect": 0,
@@ -12184,7 +12184,7 @@
     {
       "$id": "1170",
       "Index": 293,
-      "Name": "CursedZombie0",
+      "Name": "受诅僵尸0",
       "Image": 70,
       "AI": 0,
       "Effect": 0,
@@ -12227,7 +12227,7 @@
     {
       "$id": "1174",
       "Index": 294,
-      "Name": "HungryZombie",
+      "Name": "饥饿僵尸",
       "Image": 71,
       "AI": 0,
       "Effect": 0,
@@ -12270,7 +12270,7 @@
     {
       "$id": "1178",
       "Index": 295,
-      "Name": "HungryZombie0",
+      "Name": "饥饿僵尸0",
       "Image": 71,
       "AI": 0,
       "Effect": 0,
@@ -12313,7 +12313,7 @@
     {
       "$id": "1182",
       "Index": 296,
-      "Name": "ShiZombie",
+      "Name": "尸僵尸",
       "Image": 70,
       "AI": 0,
       "Effect": 0,
@@ -12356,7 +12356,7 @@
     {
       "$id": "1186",
       "Index": 297,
-      "Name": "ShiZombie0",
+      "Name": "尸僵尸0",
       "Image": 70,
       "AI": 0,
       "Effect": 0,
@@ -12399,7 +12399,7 @@
     {
       "$id": "1190",
       "Index": 298,
-      "Name": "ToxicZombie",
+      "Name": "毒僵尸",
       "Image": 71,
       "AI": 0,
       "Effect": 0,
@@ -12442,7 +12442,7 @@
     {
       "$id": "1194",
       "Index": 299,
-      "Name": "ToxicZombie0",
+      "Name": "毒僵尸0",
       "Image": 71,
       "AI": 0,
       "Effect": 0,
@@ -12485,7 +12485,7 @@
     {
       "$id": "1198",
       "Index": 300,
-      "Name": "巨Ghoul",
+      "Name": "巨食尸鬼",
       "Image": 74,
       "AI": 0,
       "Effect": 0,
@@ -12528,7 +12528,7 @@
     {
       "$id": "1202",
       "Index": 301,
-      "Name": "BombSpider",
+      "Name": "自爆蜘蛛",
       "Image": 50,
       "AI": 40,
       "Effect": 0,
@@ -12567,7 +12567,7 @@
     {
       "$id": "1206",
       "Index": 302,
-      "Name": "RootSpider",
+      "Name": "根须蜘蛛",
       "Image": 51,
       "AI": 39,
       "Effect": 0,
@@ -12608,7 +12608,7 @@
     {
       "$id": "1210",
       "Index": 303,
-      "Name": "SpiderBat",
+      "Name": "蜘蛛蝙蝠",
       "Image": 52,
       "AI": 7,
       "Effect": 0,
@@ -12651,7 +12651,7 @@
     {
       "$id": "1214",
       "Index": 304,
-      "Name": "VenomSpider",
+      "Name": "毒液蜘蛛",
       "Image": 53,
       "AI": 4,
       "Effect": 0,
@@ -12694,7 +12694,7 @@
     {
       "$id": "1218",
       "Index": 305,
-      "Name": "VenomSpider0",
+      "Name": "毒液蜘蛛0",
       "Image": 53,
       "AI": 4,
       "Effect": 0,
@@ -12737,7 +12737,7 @@
     {
       "$id": "1222",
       "Index": 306,
-      "Name": "VenomSpider3",
+      "Name": "毒液蜘蛛3",
       "Image": 53,
       "AI": 4,
       "Effect": 0,
@@ -12780,7 +12780,7 @@
     {
       "$id": "1226",
       "Index": 307,
-      "Name": "GangSpider",
+      "Name": "巨颚蜘蛛",
       "Image": 54,
       "AI": 0,
       "Effect": 0,
@@ -12823,7 +12823,7 @@
     {
       "$id": "1230",
       "Index": 308,
-      "Name": "GangSpider0",
+      "Name": "巨颚蜘蛛0",
       "Image": 54,
       "AI": 0,
       "Effect": 0,
@@ -12866,7 +12866,7 @@
     {
       "$id": "1234",
       "Index": 309,
-      "Name": "GangSpider3",
+      "Name": "巨颚蜘蛛3",
       "Image": 54,
       "AI": 0,
       "Effect": 0,
@@ -12909,7 +12909,7 @@
     {
       "$id": "1238",
       "Index": 310,
-      "Name": "巨Spider",
+      "Name": "巨蜘蛛",
       "Image": 55,
       "AI": 0,
       "Effect": 0,
@@ -12952,7 +12952,7 @@
     {
       "$id": "1242",
       "Index": 311,
-      "Name": "巨Spider0",
+      "Name": "巨蜘蛛0",
       "Image": 55,
       "AI": 0,
       "Effect": 0,
@@ -12995,7 +12995,7 @@
     {
       "$id": "1246",
       "Index": 312,
-      "Name": "巨Spider3",
+      "Name": "巨蜘蛛3",
       "Image": 55,
       "AI": 0,
       "Effect": 0,
@@ -13038,7 +13038,7 @@
     {
       "$id": "1250",
       "Index": 313,
-      "Name": "LureSpider",
+      "Name": "诱惑蜘蛛",
       "Image": 56,
       "AI": 4,
       "Effect": 0,
@@ -13081,7 +13081,7 @@
     {
       "$id": "1254",
       "Index": 314,
-      "Name": "LureSpider0",
+      "Name": "诱惑蜘蛛0",
       "Image": 56,
       "AI": 4,
       "Effect": 0,
@@ -13124,7 +13124,7 @@
     {
       "$id": "1258",
       "Index": 315,
-      "Name": "LureSpider3",
+      "Name": "诱惑蜘蛛3",
       "Image": 56,
       "AI": 4,
       "Effect": 0,
@@ -13167,7 +13167,7 @@
     {
       "$id": "1262",
       "Index": 316,
-      "Name": "BigApe",
+      "Name": "大猿",
       "Image": 57,
       "AI": 0,
       "Effect": 0,
@@ -13210,7 +13210,7 @@
     {
       "$id": "1266",
       "Index": 317,
-      "Name": "BigApe0",
+      "Name": "大猿0",
       "Image": 57,
       "AI": 0,
       "Effect": 0,
@@ -13253,7 +13253,7 @@
     {
       "$id": "1270",
       "Index": 318,
-      "Name": "BigApe3",
+      "Name": "大猿3",
       "Image": 57,
       "AI": 0,
       "Effect": 0,
@@ -13296,7 +13296,7 @@
     {
       "$id": "1274",
       "Index": 319,
-      "Name": "邪Ape",
+      "Name": "邪猿",
       "Image": 58,
       "AI": 0,
       "Effect": 0,
@@ -13339,7 +13339,7 @@
     {
       "$id": "1278",
       "Index": 320,
-      "Name": "邪Ape0",
+      "Name": "邪猿0",
       "Image": 58,
       "AI": 0,
       "Effect": 0,
@@ -13382,7 +13382,7 @@
     {
       "$id": "1282",
       "Index": 321,
-      "Name": "Grey邪Ape",
+      "Name": "Grey邪猿",
       "Image": 59,
       "AI": 0,
       "Effect": 0,
@@ -13423,7 +13423,7 @@
     {
       "$id": "1286",
       "Index": 322,
-      "Name": "红邪Ape",
+      "Name": "红邪猿",
       "Image": 60,
       "AI": 0,
       "Effect": 0,
@@ -13464,7 +13464,7 @@
     {
       "$id": "1290",
       "Index": 323,
-      "Name": "晶Spider",
+      "Name": "水晶蜘蛛",
       "Image": 61,
       "AI": 37,
       "Effect": 0,
@@ -13509,7 +13509,7 @@
     {
       "$id": "1294",
       "Index": 324,
-      "Name": "红Moon邪",
+      "Name": "红月邪",
       "Image": 62,
       "AI": 13,
       "Effect": 0,
@@ -13552,7 +13552,7 @@
     {
       "$id": "1298",
       "Index": 325,
-      "Name": "红Moon邪1",
+      "Name": "红月邪1",
       "Image": 62,
       "AI": 13,
       "Effect": 0,
@@ -13595,7 +13595,7 @@
     {
       "$id": "1302",
       "Index": 326,
-      "Name": "邪ApeSobo",
+      "Name": "邪猿Sobo",
       "Image": 58,
       "AI": 0,
       "Effect": 0,
@@ -13638,7 +13638,7 @@
     {
       "$id": "1306",
       "Index": 327,
-      "Name": "邪BigApe",
+      "Name": "邪大猿",
       "Image": 58,
       "AI": 0,
       "Effect": 0,
@@ -13681,7 +13681,7 @@
     {
       "$id": "1310",
       "Index": 328,
-      "Name": "ValeBat",
+      "Name": "谷地蝙蝠",
       "Image": 203,
       "AI": 0,
       "Effect": 0,
@@ -13726,7 +13726,7 @@
     {
       "$id": "1314",
       "Index": 329,
-      "Name": "ValeBat2",
+      "Name": "谷地蝙蝠2",
       "Image": 203,
       "AI": 0,
       "Effect": 0,
@@ -13771,7 +13771,7 @@
     {
       "$id": "1318",
       "Index": 330,
-      "Name": "Weaver",
+      "Name": "织网蛛",
       "Image": 204,
       "AI": 0,
       "Effect": 0,
@@ -13816,7 +13816,7 @@
     {
       "$id": "1322",
       "Index": 331,
-      "Name": "VenomWeaver",
+      "Name": "毒液织网蛛",
       "Image": 205,
       "AI": 0,
       "Effect": 0,
@@ -13861,7 +13861,7 @@
     {
       "$id": "1326",
       "Index": 332,
-      "Name": "CrackingWeaver",
+      "Name": "裂壳织网蛛",
       "Image": 206,
       "AI": 0,
       "Effect": 0,
@@ -13906,7 +13906,7 @@
     {
       "$id": "1330",
       "Index": 333,
-      "Name": "ArmingWeaver",
+      "Name": "Arming织网蛛",
       "Image": 207,
       "AI": 0,
       "Effect": 0,
@@ -13951,7 +13951,7 @@
     {
       "$id": "1334",
       "Index": 334,
-      "Name": "晶Weaver",
+      "Name": "水晶织网蛛",
       "Image": 208,
       "AI": 0,
       "Effect": 0,
@@ -13996,7 +13996,7 @@
     {
       "$id": "1338",
       "Index": 335,
-      "Name": "GreaterWeaver",
+      "Name": "Greater织网蛛",
       "Image": 212,
       "AI": 0,
       "Effect": 0,
@@ -14041,7 +14041,7 @@
     {
       "$id": "1342",
       "Index": 336,
-      "Name": "Spider战",
+      "Name": "蜘蛛武士",
       "Image": 213,
       "AI": 0,
       "Effect": 0,
@@ -14086,7 +14086,7 @@
     {
       "$id": "1346",
       "Index": 337,
-      "Name": "SpiderBarbarian",
+      "Name": "蜘蛛蛮兵",
       "Image": 214,
       "AI": 0,
       "Effect": 0,
@@ -14131,7 +14131,7 @@
     {
       "$id": "1350",
       "Index": 339,
-      "Name": "FlyingStatue",
+      "Name": "Flying雕像",
       "Image": 202,
       "AI": 0,
       "Effect": 0,
@@ -14176,7 +14176,7 @@
     {
       "$id": "1354",
       "Index": 340,
-      "Name": "StoningStatue",
+      "Name": "Stoning雕像",
       "Image": 201,
       "AI": 0,
       "Effect": 0,
@@ -14221,7 +14221,7 @@
     {
       "$id": "1358",
       "Index": 341,
-      "Name": "ToxicGhoul",
+      "Name": "毒食尸鬼",
       "Image": 88,
       "AI": 28,
       "Effect": 0,
@@ -14264,7 +14264,7 @@
     {
       "$id": "1362",
       "Index": 342,
-      "Name": "ToxicGhoul0",
+      "Name": "毒食尸鬼0",
       "Image": 88,
       "AI": 28,
       "Effect": 0,
@@ -14307,7 +14307,7 @@
     {
       "$id": "1366",
       "Index": 343,
-      "Name": "RoninGhoul",
+      "Name": "浪人食尸鬼",
       "Image": 87,
       "AI": 0,
       "Effect": 0,
@@ -14350,7 +14350,7 @@
     {
       "$id": "1370",
       "Index": 344,
-      "Name": "RoninGhoul0",
+      "Name": "浪人食尸鬼0",
       "Image": 87,
       "AI": 0,
       "Effect": 0,
@@ -14393,7 +14393,7 @@
     {
       "$id": "1374",
       "Index": 345,
-      "Name": "骨弓",
+      "Name": "骨弓手",
       "Image": 92,
       "AI": 8,
       "Effect": 0,
@@ -14436,7 +14436,7 @@
     {
       "$id": "1378",
       "Index": 346,
-      "Name": "骨弓0",
+      "Name": "骨弓手0",
       "Image": 92,
       "AI": 8,
       "Effect": 0,
@@ -14479,7 +14479,7 @@
     {
       "$id": "1382",
       "Index": 347,
-      "Name": "骨Blademan",
+      "Name": "骨刀兵",
       "Image": 91,
       "AI": 0,
       "Effect": 0,
@@ -14522,7 +14522,7 @@
     {
       "$id": "1386",
       "Index": 348,
-      "Name": "骨Blademan0",
+      "Name": "骨刀兵0",
       "Image": 91,
       "AI": 0,
       "Effect": 0,
@@ -14565,7 +14565,7 @@
     {
       "$id": "1390",
       "Index": 349,
-      "Name": "骨Spearman",
+      "Name": "骨矛兵",
       "Image": 90,
       "AI": 29,
       "Effect": 0,
@@ -14608,7 +14608,7 @@
     {
       "$id": "1394",
       "Index": 350,
-      "Name": "骨Spearman0",
+      "Name": "骨矛兵0",
       "Image": 90,
       "AI": 29,
       "Effect": 0,
@@ -14651,7 +14651,7 @@
     {
       "$id": "1398",
       "Index": 351,
-      "Name": "骨Captain",
+      "Name": "骨队长",
       "Image": 89,
       "AI": 0,
       "Effect": 0,
@@ -14694,7 +14694,7 @@
     {
       "$id": "1402",
       "Index": 352,
-      "Name": "骨Captain0",
+      "Name": "骨队长0",
       "Image": 89,
       "AI": 0,
       "Effect": 0,
@@ -14737,7 +14737,7 @@
     {
       "$id": "1406",
       "Index": 353,
-      "Name": "骨主",
+      "Name": "骨领主",
       "Image": 93,
       "AI": 30,
       "Effect": 0,
@@ -14780,7 +14780,7 @@
     {
       "$id": "1410",
       "Index": 354,
-      "Name": "古ToxicGhoul",
+      "Name": "远古毒食尸鬼",
       "Image": 88,
       "AI": 28,
       "Effect": 0,
@@ -14823,7 +14823,7 @@
     {
       "$id": "1414",
       "Index": 355,
-      "Name": "古RoninGhoul",
+      "Name": "远古浪人食尸鬼",
       "Image": 87,
       "AI": 0,
       "Effect": 0,
@@ -14866,7 +14866,7 @@
     {
       "$id": "1418",
       "Index": 356,
-      "Name": "古骨弓",
+      "Name": "远古骨弓手",
       "Image": 92,
       "AI": 8,
       "Effect": 0,
@@ -14909,7 +14909,7 @@
     {
       "$id": "1422",
       "Index": 357,
-      "Name": "古骨Blademan",
+      "Name": "远古骨刀兵",
       "Image": 91,
       "AI": 0,
       "Effect": 0,
@@ -14952,7 +14952,7 @@
     {
       "$id": "1426",
       "Index": 358,
-      "Name": "古骨Spearman",
+      "Name": "远古骨矛兵",
       "Image": 90,
       "AI": 29,
       "Effect": 0,
@@ -14995,7 +14995,7 @@
     {
       "$id": "1430",
       "Index": 359,
-      "Name": "古骨Captain",
+      "Name": "远古骨队长",
       "Image": 89,
       "AI": 0,
       "Effect": 0,
@@ -15038,7 +15038,7 @@
     {
       "$id": "1434",
       "Index": 360,
-      "Name": "古骨主",
+      "Name": "远古骨领主",
       "Image": 93,
       "AI": 30,
       "Effect": 0,
@@ -15081,7 +15081,7 @@
     {
       "$id": "1438",
       "Index": 361,
-      "Name": "Minotaur",
+      "Name": "牛头怪",
       "Image": 94,
       "AI": 0,
       "Effect": 0,
@@ -15124,7 +15124,7 @@
     {
       "$id": "1442",
       "Index": 362,
-      "Name": "Minotaur0",
+      "Name": "牛头怪0",
       "Image": 94,
       "AI": 0,
       "Effect": 0,
@@ -15167,7 +15167,7 @@
     {
       "$id": "1446",
       "Index": 363,
-      "Name": "冰Minotaur",
+      "Name": "冰牛头怪",
       "Image": 95,
       "AI": 0,
       "Effect": 0,
@@ -15210,7 +15210,7 @@
     {
       "$id": "1450",
       "Index": 364,
-      "Name": "冰Minotaur0",
+      "Name": "冰牛头怪0",
       "Image": 95,
       "AI": 0,
       "Effect": 0,
@@ -15253,7 +15253,7 @@
     {
       "$id": "1454",
       "Index": 365,
-      "Name": "ElectricMinotaur",
+      "Name": "雷电牛头怪",
       "Image": 96,
       "AI": 0,
       "Effect": 0,
@@ -15296,7 +15296,7 @@
     {
       "$id": "1458",
       "Index": 366,
-      "Name": "ElectricMinotaur0",
+      "Name": "雷电牛头怪0",
       "Image": 96,
       "AI": 0,
       "Effect": 0,
@@ -15339,7 +15339,7 @@
     {
       "$id": "1462",
       "Index": 367,
-      "Name": "风Minotaur",
+      "Name": "风牛头怪",
       "Image": 97,
       "AI": 0,
       "Effect": 0,
@@ -15382,7 +15382,7 @@
     {
       "$id": "1466",
       "Index": 368,
-      "Name": "风Minotaur0",
+      "Name": "风牛头怪0",
       "Image": 97,
       "AI": 0,
       "Effect": 0,
@@ -15425,7 +15425,7 @@
     {
       "$id": "1470",
       "Index": 369,
-      "Name": "火Minotaur",
+      "Name": "火牛头怪",
       "Image": 98,
       "AI": 0,
       "Effect": 0,
@@ -15468,7 +15468,7 @@
     {
       "$id": "1474",
       "Index": 370,
-      "Name": "火Minotaur0",
+      "Name": "火牛头怪0",
       "Image": 98,
       "AI": 0,
       "Effect": 0,
@@ -15511,7 +15511,7 @@
     {
       "$id": "1478",
       "Index": 371,
-      "Name": "Right卫",
+      "Name": "右守卫",
       "Image": 99,
       "AI": 31,
       "Effect": 0,
@@ -15554,7 +15554,7 @@
     {
       "$id": "1482",
       "Index": 372,
-      "Name": "Right卫0",
+      "Name": "右守卫0",
       "Image": 99,
       "AI": 31,
       "Effect": 0,
@@ -15597,7 +15597,7 @@
     {
       "$id": "1486",
       "Index": 373,
-      "Name": "Left卫",
+      "Name": "左守卫",
       "Image": 100,
       "AI": 32,
       "Effect": 0,
@@ -15640,7 +15640,7 @@
     {
       "$id": "1490",
       "Index": 374,
-      "Name": "Left卫0",
+      "Name": "左守卫0",
       "Image": 100,
       "AI": 32,
       "Effect": 0,
@@ -15683,7 +15683,7 @@
     {
       "$id": "1494",
       "Index": 375,
-      "Name": "Minotaur王",
+      "Name": "牛头怪王",
       "Image": 101,
       "AI": 33,
       "Effect": 0,
@@ -15728,7 +15728,7 @@
     {
       "$id": "1498",
       "Index": 376,
-      "Name": "斧沃玛",
+      "Name": "斧奥玛",
       "Image": 118,
       "AI": 0,
       "Effect": 0,
@@ -15771,7 +15771,7 @@
     {
       "$id": "1502",
       "Index": 377,
-      "Name": "斧沃玛0",
+      "Name": "斧奥玛0",
       "Image": 118,
       "AI": 0,
       "Effect": 0,
@@ -15814,7 +15814,7 @@
     {
       "$id": "1506",
       "Index": 378,
-      "Name": "剑沃玛",
+      "Name": "剑奥玛",
       "Image": 119,
       "AI": 0,
       "Effect": 0,
@@ -15857,7 +15857,7 @@
     {
       "$id": "1510",
       "Index": 379,
-      "Name": "剑沃玛0",
+      "Name": "剑奥玛0",
       "Image": 119,
       "AI": 0,
       "Effect": 0,
@@ -15900,7 +15900,7 @@
     {
       "$id": "1514",
       "Index": 380,
-      "Name": "Crossbow沃玛",
+      "Name": "弩奥玛",
       "Image": 120,
       "AI": 8,
       "Effect": 0,
@@ -15943,7 +15943,7 @@
     {
       "$id": "1518",
       "Index": 381,
-      "Name": "Crossbow沃玛0",
+      "Name": "弩奥玛0",
       "Image": 120,
       "AI": 8,
       "Effect": 0,
@@ -15986,7 +15986,7 @@
     {
       "$id": "1522",
       "Index": 382,
-      "Name": "Winged沃玛",
+      "Name": "有翼奥玛",
       "Image": 121,
       "AI": 0,
       "Effect": 0,
@@ -16029,7 +16029,7 @@
     {
       "$id": "1526",
       "Index": 383,
-      "Name": "Winged沃玛0",
+      "Name": "有翼奥玛0",
       "Image": 121,
       "AI": 0,
       "Effect": 0,
@@ -16072,7 +16072,7 @@
     {
       "$id": "1530",
       "Index": 384,
-      "Name": "Flail沃玛",
+      "Name": "连枷奥玛",
       "Image": 122,
       "AI": 0,
       "Effect": 0,
@@ -16115,7 +16115,7 @@
     {
       "$id": "1534",
       "Index": 385,
-      "Name": "Flail沃玛0",
+      "Name": "连枷奥玛0",
       "Image": 122,
       "AI": 0,
       "Effect": 0,
@@ -16158,7 +16158,7 @@
     {
       "$id": "1538",
       "Index": 386,
-      "Name": "沃玛卫",
+      "Name": "奥玛守卫",
       "Image": 123,
       "AI": 0,
       "Effect": 0,
@@ -16201,7 +16201,7 @@
     {
       "$id": "1542",
       "Index": 387,
-      "Name": "沃玛卫0",
+      "Name": "奥玛守卫0",
       "Image": 123,
       "AI": 0,
       "Effect": 0,
@@ -16244,7 +16244,7 @@
     {
       "$id": "1546",
       "Index": 388,
-      "Name": "Yin魔Node",
+      "Name": "阴恶魔节点",
       "Image": 124,
       "AI": 42,
       "Effect": 0,
@@ -16287,7 +16287,7 @@
     {
       "$id": "1550",
       "Index": 389,
-      "Name": "Yang魔Node",
+      "Name": "阳恶魔节点",
       "Image": 125,
       "AI": 42,
       "Effect": 0,
@@ -16330,7 +16330,7 @@
     {
       "$id": "1554",
       "Index": 390,
-      "Name": "沃玛g",
+      "Name": "奥玛王",
       "Image": 126,
       "AI": 43,
       "Effect": 0,
@@ -16375,7 +16375,7 @@
     {
       "$id": "1558",
       "Index": 391,
-      "Name": "沃玛g灵",
+      "Name": "奥玛王之灵",
       "Image": 126,
       "AI": 0,
       "Effect": 0,
@@ -16507,7 +16507,7 @@
     {
       "$id": "1570",
       "Index": 394,
-      "Name": "米尔Statue",
+      "Name": "米尔雕像",
       "Image": 902,
       "AI": 54,
       "Effect": 0,
@@ -16552,7 +16552,7 @@
     {
       "$id": "1574",
       "Index": 395,
-      "Name": "ManectricHammer",
+      "Name": "雷电兽Hammer",
       "Image": 221,
       "AI": 0,
       "Effect": 0,
@@ -16595,7 +16595,7 @@
     {
       "$id": "1578",
       "Index": 396,
-      "Name": "ManectricClub",
+      "Name": "雷电兽Club",
       "Image": 222,
       "AI": 0,
       "Effect": 0,
@@ -16638,7 +16638,7 @@
     {
       "$id": "1582",
       "Index": 397,
-      "Name": "Manectric爪",
+      "Name": "雷电兽爪",
       "Image": 223,
       "AI": 0,
       "Effect": 0,
@@ -16681,7 +16681,7 @@
     {
       "$id": "1586",
       "Index": 398,
-      "Name": "Manectric杖",
+      "Name": "雷电兽杖",
       "Image": 224,
       "AI": 0,
       "Effect": 0,
@@ -16724,7 +16724,7 @@
     {
       "$id": "1590",
       "Index": 399,
-      "Name": "ManectricSlave",
+      "Name": "雷电兽仆从",
       "Image": 233,
       "AI": 0,
       "Effect": 0,
@@ -16853,7 +16853,7 @@
     {
       "$id": "1602",
       "Index": 402,
-      "Name": "ManectricBlest",
+      "Name": "雷电兽Blest",
       "Image": 228,
       "AI": 0,
       "Effect": 0,
@@ -16896,7 +16896,7 @@
     {
       "$id": "1606",
       "Index": 403,
-      "Name": "Manectric王",
+      "Name": "雷电兽王",
       "Image": 229,
       "AI": 0,
       "Effect": 0,
@@ -16939,7 +16939,7 @@
     {
       "$id": "1610",
       "Index": 404,
-      "Name": "FrozenDoor",
+      "Name": "冰封Door",
       "Image": 230,
       "AI": 0,
       "Effect": 0,
@@ -16950,7 +16950,7 @@
       "AttackSpeed": 1000,
       "MoveSpeed": 2000,
       "Experience": 20000,
-      "DropPath": "",
+      "DropPath": "FrozenDoor",
       "Drops": {
         "$id": "1611",
         "$values": []
@@ -16982,7 +16982,7 @@
     {
       "$id": "1614",
       "Index": 405,
-      "Name": "冰Pilar",
+      "Name": "冰石柱",
       "Image": 231,
       "AI": 0,
       "Effect": 0,
@@ -16993,7 +16993,7 @@
       "AttackSpeed": 1000,
       "MoveSpeed": 5000,
       "Experience": 20000,
-      "DropPath": "",
+      "DropPath": "IcePilar",
       "Drops": {
         "$id": "1615",
         "$values": []
@@ -17197,7 +17197,7 @@
     {
       "$id": "1634",
       "Index": 410,
-      "Name": "DreamDevourer",
+      "Name": "梦境吞噬者",
       "Image": 163,
       "AI": 0,
       "Effect": 0,
@@ -17240,7 +17240,7 @@
     {
       "$id": "1638",
       "Index": 411,
-      "Name": "暗Devourer",
+      "Name": "暗吞噬者",
       "Image": 159,
       "AI": 0,
       "Effect": 0,
@@ -17283,7 +17283,7 @@
     {
       "$id": "1642",
       "Index": 412,
-      "Name": "狱Slasher",
+      "Name": "地狱砍杀者",
       "Image": 215,
       "AI": 0,
       "Effect": 0,
@@ -17326,7 +17326,7 @@
     {
       "$id": "1646",
       "Index": 413,
-      "Name": "狱Pirate",
+      "Name": "地狱海盗",
       "Image": 216,
       "AI": 0,
       "Effect": 0,
@@ -17369,7 +17369,7 @@
     {
       "$id": "1650",
       "Index": 414,
-      "Name": "狱Cannibal",
+      "Name": "地狱食人",
       "Image": 217,
       "AI": 0,
       "Effect": 0,
@@ -17412,7 +17412,7 @@
     {
       "$id": "1654",
       "Index": 415,
-      "Name": "狱Bolt",
+      "Name": "地狱弩箭",
       "Image": 219,
       "AI": 0,
       "Effect": 0,
@@ -17455,7 +17455,7 @@
     {
       "$id": "1658",
       "Index": 416,
-      "Name": "WitchDoctor",
+      "Name": "女巫医生",
       "Image": 220,
       "AI": 0,
       "Effect": 0,
@@ -17498,7 +17498,7 @@
     {
       "$id": "1662",
       "Index": 417,
-      "Name": "CaveWitch",
+      "Name": "洞穴女巫",
       "Image": 220,
       "AI": 0,
       "Effect": 0,
@@ -17541,7 +17541,7 @@
     {
       "$id": "1666",
       "Index": 418,
-      "Name": "狱守",
+      "Name": "地狱守望者",
       "Image": 218,
       "AI": 79,
       "Effect": 0,
@@ -17584,7 +17584,7 @@
     {
       "$id": "1670",
       "Index": 419,
-      "Name": "MubZombie",
+      "Name": "Mub僵尸",
       "Image": 263,
       "AI": 0,
       "Effect": 0,
@@ -17627,7 +17627,7 @@
     {
       "$id": "1674",
       "Index": 420,
-      "Name": "FrozenZombie",
+      "Name": "冰封僵尸",
       "Image": 264,
       "AI": 0,
       "Effect": 0,
@@ -17638,7 +17638,7 @@
       "AttackSpeed": 1650,
       "MoveSpeed": 1150,
       "Experience": 5400,
-      "DropPath": "",
+      "DropPath": "FrozenZombie",
       "Drops": {
         "$id": "1675",
         "$values": []
@@ -17681,7 +17681,7 @@
       "AttackSpeed": 1300,
       "MoveSpeed": 1300,
       "Experience": 4600,
-      "DropPath": "",
+      "DropPath": "DemonWolf",
       "Drops": {
         "$id": "1679",
         "$values": []
@@ -17724,7 +17724,7 @@
       "AttackSpeed": 1570,
       "MoveSpeed": 1600,
       "Experience": 5000,
-      "DropPath": "",
+      "DropPath": "UndeadWolf",
       "Drops": {
         "$id": "1683",
         "$values": []
@@ -17811,7 +17811,7 @@
       "AttackSpeed": 1500,
       "MoveSpeed": 1350,
       "Experience": 6000,
-      "DropPath": "",
+      "DropPath": "DarkBeast",
       "Drops": {
         "$id": "1691",
         "$values": []
@@ -17843,7 +17843,7 @@
     {
       "$id": "1694",
       "Index": 425,
-      "Name": "光兽",
+      "Name": "轻兽",
       "Image": 269,
       "AI": 0,
       "Effect": 0,
@@ -17854,7 +17854,7 @@
       "AttackSpeed": 1700,
       "MoveSpeed": 1200,
       "Experience": 6100,
-      "DropPath": "",
+      "DropPath": "LightBeast",
       "Drops": {
         "$id": "1695",
         "$values": []
@@ -17886,7 +17886,7 @@
     {
       "$id": "1698",
       "Index": 426,
-      "Name": "血Baboon",
+      "Name": "血狒狒",
       "Image": 270,
       "AI": 0,
       "Effect": 0,
@@ -17897,7 +17897,7 @@
       "AttackSpeed": 1450,
       "MoveSpeed": 1300,
       "Experience": 5200,
-      "DropPath": "",
+      "DropPath": "BloodBaboon",
       "Drops": {
         "$id": "1699",
         "$values": []
@@ -17972,7 +17972,7 @@
     {
       "$id": "1706",
       "Index": 428,
-      "Name": "DeathCrawler",
+      "Name": "Death爬行者",
       "Image": 261,
       "AI": 0,
       "Effect": 0,
@@ -17983,7 +17983,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 800,
       "Experience": 5100,
-      "DropPath": "",
+      "DropPath": "DeathCrawler",
       "Drops": {
         "$id": "1707",
         "$values": []
@@ -18015,7 +18015,7 @@
     {
       "$id": "1710",
       "Index": 429,
-      "Name": "BurningZombie",
+      "Name": "燃烧僵尸",
       "Image": 262,
       "AI": 0,
       "Effect": 0,
@@ -18112,7 +18112,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1000,
       "Experience": 40000,
-      "DropPath": "",
+      "DropPath": "BeastKing",
       "Drops": {
         "$id": "1719",
         "$values": []
@@ -18189,7 +18189,7 @@
     {
       "$id": "1726",
       "Index": 433,
-      "Name": "SmallDrake",
+      "Name": "小龙兽",
       "Image": 372,
       "AI": 182,
       "Effect": 0,
@@ -18200,7 +18200,7 @@
       "AttackSpeed": 1800,
       "MoveSpeed": 1500,
       "Experience": 9500,
-      "DropPath": "",
+      "DropPath": "SmallDrake",
       "Drops": {
         "$id": "1727",
         "$values": []
@@ -18275,7 +18275,7 @@
     {
       "$id": "1734",
       "Index": 435,
-      "Name": "Keel战",
+      "Name": "龙骨武士",
       "Image": 374,
       "AI": 0,
       "Effect": 0,
@@ -18286,7 +18286,7 @@
       "AttackSpeed": 1800,
       "MoveSpeed": 1500,
       "Experience": 9500,
-      "DropPath": "",
+      "DropPath": "KeelWarrior",
       "Drops": {
         "$id": "1735",
         "$values": []
@@ -18318,7 +18318,7 @@
     {
       "$id": "1738",
       "Index": 436,
-      "Name": "Keel弓",
+      "Name": "龙骨弓手",
       "Image": 375,
       "AI": 0,
       "Effect": 0,
@@ -18329,7 +18329,7 @@
       "AttackSpeed": 1800,
       "MoveSpeed": 1500,
       "Experience": 9700,
-      "DropPath": "",
+      "DropPath": "KeelArcher",
       "Drops": {
         "$id": "1739",
         "$values": []
@@ -18362,7 +18362,7 @@
     {
       "$id": "1742",
       "Index": 437,
-      "Name": "Sand暴",
+      "Name": "沙暴",
       "Image": 378,
       "AI": 0,
       "Effect": 0,
@@ -18373,7 +18373,7 @@
       "AttackSpeed": 1800,
       "MoveSpeed": 1500,
       "Experience": 9100,
-      "DropPath": "",
+      "DropPath": "SandStorm",
       "Drops": {
         "$id": "1743",
         "$values": []
@@ -18448,7 +18448,7 @@
     {
       "$id": "1750",
       "Index": 439,
-      "Name": "Slave2",
+      "Name": "仆从2",
       "Image": 66,
       "AI": 15,
       "Effect": 0,
@@ -18459,7 +18459,7 @@
       "AttackSpeed": 1800,
       "MoveSpeed": 1500,
       "Experience": 14500,
-      "DropPath": "",
+      "DropPath": "Slave2",
       "Drops": {
         "$id": "1751",
         "$values": []
@@ -18526,7 +18526,7 @@
     {
       "$id": "1758",
       "Index": 441,
-      "Name": "Bear",
+      "Name": "熊",
       "Image": 354,
       "AI": 0,
       "Effect": 0,
@@ -18537,7 +18537,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "Bear",
       "Drops": {
         "$id": "1759",
         "$values": []
@@ -18561,7 +18561,7 @@
     {
       "$id": "1762",
       "Index": 442,
-      "Name": "TurtleGrass",
+      "Name": "龟草",
       "Image": 352,
       "AI": 173,
       "Effect": 0,
@@ -18572,7 +18572,7 @@
       "AttackSpeed": 1700,
       "MoveSpeed": 900,
       "Experience": 3000,
-      "DropPath": "",
+      "DropPath": "TurtleGrass",
       "Drops": {
         "$id": "1763",
         "$values": []
@@ -18639,7 +18639,7 @@
     {
       "$id": "1770",
       "Index": 444,
-      "Name": "Minion战",
+      "Name": "爪牙武士",
       "Image": 3,
       "AI": 0,
       "Effect": 0,
@@ -18650,7 +18650,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "Minion_Warrior",
       "Drops": {
         "$id": "1771",
         "$values": []
@@ -18674,7 +18674,7 @@
     {
       "$id": "1774",
       "Index": 445,
-      "Name": "MinionWarlock",
+      "Name": "爪牙术士",
       "Image": 3,
       "AI": 0,
       "Effect": 0,
@@ -18685,7 +18685,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "Minion_Warlock",
       "Drops": {
         "$id": "1775",
         "$values": []
@@ -18709,7 +18709,7 @@
     {
       "$id": "1778",
       "Index": 446,
-      "Name": "MinionPriest",
+      "Name": "爪牙祭司",
       "Image": 3,
       "AI": 0,
       "Effect": 0,
@@ -18720,7 +18720,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "Minion_Priest",
       "Drops": {
         "$id": "1779",
         "$values": []
@@ -18744,7 +18744,7 @@
     {
       "$id": "1782",
       "Index": 447,
-      "Name": "MinionRouge",
+      "Name": "爪牙Rouge",
       "Image": 3,
       "AI": 0,
       "Effect": 0,
@@ -18755,7 +18755,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "Minion_Rouge",
       "Drops": {
         "$id": "1783",
         "$values": []
@@ -18779,7 +18779,7 @@
     {
       "$id": "1786",
       "Index": 448,
-      "Name": "Chieftain战",
+      "Name": "酋长武士",
       "Image": 221,
       "AI": 0,
       "Effect": 0,
@@ -18790,7 +18790,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1800,
       "Experience": 18500,
-      "DropPath": "",
+      "DropPath": "Chieftain_Warrior",
       "Drops": {
         "$id": "1787",
         "$values": []
@@ -18822,7 +18822,7 @@
     {
       "$id": "1790",
       "Index": 449,
-      "Name": "ChieftainWarlock",
+      "Name": "酋长术士",
       "Image": 222,
       "AI": 0,
       "Effect": 0,
@@ -18833,7 +18833,7 @@
       "AttackSpeed": 1300,
       "MoveSpeed": 1800,
       "Experience": 18500,
-      "DropPath": "",
+      "DropPath": "Chieftain_Warlock",
       "Drops": {
         "$id": "1791",
         "$values": []
@@ -18863,7 +18863,7 @@
     {
       "$id": "1794",
       "Index": 450,
-      "Name": "ChieftainPriest",
+      "Name": "酋长祭司",
       "Image": 223,
       "AI": 86,
       "Effect": 0,
@@ -18874,7 +18874,7 @@
       "AttackSpeed": 1100,
       "MoveSpeed": 1000,
       "Experience": 19500,
-      "DropPath": "",
+      "DropPath": "Chieftain_Priest",
       "Drops": {
         "$id": "1795",
         "$values": []
@@ -18908,7 +18908,7 @@
     {
       "$id": "1798",
       "Index": 451,
-      "Name": "ChieftainRouge",
+      "Name": "酋长Rouge",
       "Image": 224,
       "AI": 44,
       "Effect": 0,
@@ -18919,7 +18919,7 @@
       "AttackSpeed": 1300,
       "MoveSpeed": 1000,
       "Experience": 18500,
-      "DropPath": "",
+      "DropPath": "Chieftain_Rouge",
       "Drops": {
         "$id": "1799",
         "$values": []
@@ -18951,7 +18951,7 @@
     {
       "$id": "1802",
       "Index": 452,
-      "Name": "Chieftain弓",
+      "Name": "酋长弓手",
       "Image": 233,
       "AI": 0,
       "Effect": 0,
@@ -18962,7 +18962,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1500,
       "Experience": 18500,
-      "DropPath": "",
+      "DropPath": "Chieftain_Archer",
       "Drops": {
         "$id": "1803",
         "$values": []
@@ -18994,7 +18994,7 @@
     {
       "$id": "1806",
       "Index": 453,
-      "Name": "师龙Yang",
+      "Name": "大师龙阳",
       "Image": 229,
       "AI": 88,
       "Effect": 0,
@@ -19005,7 +19005,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1200,
       "Experience": 35000,
-      "DropPath": "",
+      "DropPath": "Master_DragonYang",
       "Drops": {
         "$id": "1807",
         "$values": []
@@ -19041,7 +19041,7 @@
     {
       "$id": "1810",
       "Index": 454,
-      "Name": "Jar1",
+      "Name": "坛1",
       "Image": 280,
       "AI": 119,
       "Effect": 0,
@@ -19052,7 +19052,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 0,
       "Experience": 7000,
-      "DropPath": "",
+      "DropPath": "Jar1",
       "Drops": {
         "$id": "1811",
         "$values": []
@@ -19084,7 +19084,7 @@
     {
       "$id": "1814",
       "Index": 455,
-      "Name": "Jar2",
+      "Name": "坛2",
       "Image": 281,
       "AI": 120,
       "Effect": 0,
@@ -19095,7 +19095,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 0,
       "Experience": 7000,
-      "DropPath": "",
+      "DropPath": "Jar2",
       "Drops": {
         "$id": "1815",
         "$values": []
@@ -19127,7 +19127,7 @@
     {
       "$id": "1818",
       "Index": 456,
-      "Name": "FightingCat",
+      "Name": "Fighting猫",
       "Image": 273,
       "AI": 0,
       "Effect": 0,
@@ -19138,7 +19138,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1400,
       "Experience": 13500,
-      "DropPath": "",
+      "DropPath": "FightingCat",
       "Drops": {
         "$id": "1819",
         "$values": []
@@ -19170,7 +19170,7 @@
     {
       "$id": "1822",
       "Index": 457,
-      "Name": "火Cat",
+      "Name": "火猫",
       "Image": 274,
       "AI": 44,
       "Effect": 0,
@@ -19181,7 +19181,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1400,
       "Experience": 14500,
-      "DropPath": "",
+      "DropPath": "FireCat",
       "Drops": {
         "$id": "1823",
         "$values": []
@@ -19213,7 +19213,7 @@
     {
       "$id": "1826",
       "Index": 458,
-      "Name": "CatWidow",
+      "Name": "猫Widow",
       "Image": 275,
       "AI": 112,
       "Effect": 0,
@@ -19224,7 +19224,7 @@
       "AttackSpeed": 1400,
       "MoveSpeed": 1200,
       "Experience": 13500,
-      "DropPath": "",
+      "DropPath": "CatWidow",
       "Drops": {
         "$id": "1827",
         "$values": []
@@ -19256,7 +19256,7 @@
     {
       "$id": "1830",
       "Index": 459,
-      "Name": "StainHammerCat",
+      "Name": "锈锤猫",
       "Image": 276,
       "AI": 0,
       "Effect": 0,
@@ -19267,7 +19267,7 @@
       "AttackSpeed": 1400,
       "MoveSpeed": 1200,
       "Experience": 15500,
-      "DropPath": "",
+      "DropPath": "StainHammerCat",
       "Drops": {
         "$id": "1831",
         "$values": []
@@ -19299,7 +19299,7 @@
     {
       "$id": "1834",
       "Index": 460,
-      "Name": "黑HammerCat",
+      "Name": "黑锤猫",
       "Image": 277,
       "AI": 116,
       "Effect": 0,
@@ -19310,7 +19310,7 @@
       "AttackSpeed": 1400,
       "MoveSpeed": 1200,
       "Experience": 16000,
-      "DropPath": "",
+      "DropPath": "BlackHammerCat",
       "Drops": {
         "$id": "1835",
         "$values": []
@@ -19342,7 +19342,7 @@
     {
       "$id": "1838",
       "Index": 461,
-      "Name": "StrayCat",
+      "Name": "流浪猫",
       "Image": 278,
       "AI": 117,
       "Effect": 0,
@@ -19353,7 +19353,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1200,
       "Experience": 14000,
-      "DropPath": "",
+      "DropPath": "StrayCat",
       "Drops": {
         "$id": "1839",
         "$values": []
@@ -19385,7 +19385,7 @@
     {
       "$id": "1842",
       "Index": 462,
-      "Name": "CatShaman",
+      "Name": "猫巫师",
       "Image": 279,
       "AI": 118,
       "Effect": 0,
@@ -19396,7 +19396,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1200,
       "Experience": 13500,
-      "DropPath": "",
+      "DropPath": "CatShaman",
       "Drops": {
         "$id": "1843",
         "$values": []
@@ -19428,7 +19428,7 @@
     {
       "$id": "1846",
       "Index": 463,
-      "Name": "SeedingsGeneral",
+      "Name": "Seedings将军",
       "Image": 282,
       "AI": 121,
       "Effect": 0,
@@ -19439,7 +19439,7 @@
       "AttackSpeed": 1600,
       "MoveSpeed": 1000,
       "Experience": 35000,
-      "DropPath": "",
+      "DropPath": "SeedingsGeneral",
       "Drops": {
         "$id": "1847",
         "$values": []
@@ -19475,7 +19475,7 @@
     {
       "$id": "1850",
       "Index": 464,
-      "Name": "RestlessJar",
+      "Name": "Restless坛",
       "Image": 283,
       "AI": 122,
       "Effect": 0,
@@ -19486,7 +19486,7 @@
       "AttackSpeed": 2000,
       "MoveSpeed": 0,
       "Experience": 8000,
-      "DropPath": "",
+      "DropPath": "RestlessJar",
       "Drops": {
         "$id": "1851",
         "$values": []
@@ -19518,7 +19518,7 @@
     {
       "$id": "1854",
       "Index": 465,
-      "Name": "GeneralMeowMeow",
+      "Name": "将军MeowMeow",
       "Image": 284,
       "AI": 123,
       "Effect": 0,
@@ -19563,7 +19563,7 @@
     {
       "$id": "1858",
       "Index": 466,
-      "Name": "TucsonEgg",
+      "Name": "图森蛋",
       "Image": 292,
       "AI": 128,
       "Effect": 0,
@@ -19598,7 +19598,7 @@
     {
       "$id": "1862",
       "Index": 467,
-      "Name": "YoungTucson",
+      "Name": "幼年图森",
       "Image": 293,
       "AI": 0,
       "Effect": 0,
@@ -19633,7 +19633,7 @@
     {
       "$id": "1866",
       "Index": 468,
-      "Name": "Armadillo",
+      "Name": "犰狳",
       "Image": 290,
       "AI": 124,
       "Effect": 0,
@@ -19644,7 +19644,7 @@
       "AttackSpeed": 1500,
       "MoveSpeed": 1200,
       "Experience": 8250,
-      "DropPath": "",
+      "DropPath": "Armadillo",
       "Drops": {
         "$id": "1867",
         "$values": []
@@ -19678,7 +19678,7 @@
     {
       "$id": "1870",
       "Index": 469,
-      "Name": "ArmadilloElder",
+      "Name": "犰狳长老",
       "Image": 291,
       "AI": 125,
       "Effect": 0,
@@ -19689,7 +19689,7 @@
       "AttackSpeed": 1500,
       "MoveSpeed": 1200,
       "Experience": 8350,
-      "DropPath": "",
+      "DropPath": "ArmadilloElder",
       "Drops": {
         "$id": "1871",
         "$values": []
@@ -19723,7 +19723,7 @@
     {
       "$id": "1874",
       "Index": 470,
-      "Name": "VisceralWorm2",
+      "Name": "Visceral蠕虫2",
       "Image": 110,
       "AI": 0,
       "Effect": 0,
@@ -19768,7 +19768,7 @@
     {
       "$id": "1878",
       "Index": 471,
-      "Name": "SandSnail",
+      "Name": "沙蜗牛",
       "Image": 294,
       "AI": 115,
       "Effect": 0,
@@ -19813,7 +19813,7 @@
     {
       "$id": "1882",
       "Index": 472,
-      "Name": "CannibalTentacles",
+      "Name": "食人Tentacles",
       "Image": 295,
       "AI": 130,
       "Effect": 0,
@@ -19858,7 +19858,7 @@
     {
       "$id": "1886",
       "Index": 473,
-      "Name": "Tucson",
+      "Name": "图森",
       "Image": 286,
       "AI": 0,
       "Effect": 0,
@@ -19901,7 +19901,7 @@
     {
       "$id": "1890",
       "Index": 474,
-      "Name": "TucsonFighter",
+      "Name": "图森战士",
       "Image": 287,
       "AI": 44,
       "Effect": 0,
@@ -19944,7 +19944,7 @@
     {
       "$id": "1894",
       "Index": 475,
-      "Name": "Tucson法",
+      "Name": "图森法师",
       "Image": 288,
       "AI": 126,
       "Effect": 0,
@@ -19987,7 +19987,7 @@
     {
       "$id": "1898",
       "Index": 476,
-      "Name": "Tucson战",
+      "Name": "图森武士",
       "Image": 289,
       "AI": 127,
       "Effect": 0,
@@ -20032,7 +20032,7 @@
     {
       "$id": "1902",
       "Index": 477,
-      "Name": "TucsonGeneral",
+      "Name": "图森将军",
       "Image": 296,
       "AI": 131,
       "Effect": 0,
@@ -20079,7 +20079,7 @@
     {
       "$id": "1906",
       "Index": 478,
-      "Name": "FrozenSolider",
+      "Name": "冰封士兵",
       "Image": 363,
       "AI": 0,
       "Effect": 0,
@@ -20090,7 +20090,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1200,
       "Experience": 27000,
-      "DropPath": "",
+      "DropPath": "FrozenSolider",
       "Drops": {
         "$id": "1907",
         "$values": []
@@ -20122,7 +20122,7 @@
     {
       "$id": "1910",
       "Index": 479,
-      "Name": "FrozenFighter",
+      "Name": "冰封战士",
       "Image": 364,
       "AI": 44,
       "Effect": 0,
@@ -20133,7 +20133,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1200,
       "Experience": 28500,
-      "DropPath": "",
+      "DropPath": "FrozenFighter",
       "Drops": {
         "$id": "1911",
         "$values": []
@@ -20169,7 +20169,7 @@
     {
       "$id": "1914",
       "Index": 480,
-      "Name": "Frozen弓",
+      "Name": "冰封弓手",
       "Image": 365,
       "AI": 8,
       "Effect": 0,
@@ -20180,7 +20180,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1200,
       "Experience": 23000,
-      "DropPath": "",
+      "DropPath": "FrozenArcher",
       "Drops": {
         "$id": "1915",
         "$values": []
@@ -20216,7 +20216,7 @@
     {
       "$id": "1918",
       "Index": 481,
-      "Name": "Frozen骑",
+      "Name": "冰封骑士",
       "Image": 366,
       "AI": 0,
       "Effect": 0,
@@ -20227,7 +20227,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1200,
       "Experience": 28500,
-      "DropPath": "",
+      "DropPath": "FrozenKnight",
       "Drops": {
         "$id": "1919",
         "$values": []
@@ -20259,7 +20259,7 @@
     {
       "$id": "1922",
       "Index": 482,
-      "Name": "FrozenGolem",
+      "Name": "冰封Golem",
       "Image": 367,
       "AI": 0,
       "Effect": 0,
@@ -20270,7 +20270,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1200,
       "Experience": 28500,
-      "DropPath": "",
+      "DropPath": "FrozenGolem",
       "Drops": {
         "$id": "1923",
         "$values": []
@@ -20302,7 +20302,7 @@
     {
       "$id": "1926",
       "Index": 483,
-      "Name": "冰Phantom",
+      "Name": "冰幻影",
       "Image": 368,
       "AI": 0,
       "Effect": 0,
@@ -20313,7 +20313,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1200,
       "Experience": 31000,
-      "DropPath": "",
+      "DropPath": "IcePhantom",
       "Drops": {
         "$id": "1927",
         "$values": []
@@ -20345,7 +20345,7 @@
     {
       "$id": "1930",
       "Index": 484,
-      "Name": "Snow狼",
+      "Name": "雪狼",
       "Image": 369,
       "AI": 179,
       "Effect": 0,
@@ -20356,7 +20356,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1200,
       "Experience": 28000,
-      "DropPath": "",
+      "DropPath": "SnowWolf",
       "Drops": {
         "$id": "1931",
         "$values": []
@@ -20388,7 +20388,7 @@
     {
       "$id": "1934",
       "Index": 485,
-      "Name": "FrozenWarewolf",
+      "Name": "冰封狼人",
       "Image": 370,
       "AI": 180,
       "Effect": 0,
@@ -20399,7 +20399,7 @@
       "AttackSpeed": 1300,
       "MoveSpeed": 1100,
       "Experience": 28500,
-      "DropPath": "",
+      "DropPath": "FrozenWarewolf",
       "Drops": {
         "$id": "1935",
         "$values": []
@@ -20431,7 +20431,7 @@
     {
       "$id": "1938",
       "Index": 486,
-      "Name": "FrozenMiner",
+      "Name": "冰封Miner",
       "Image": 380,
       "AI": 187,
       "Effect": 0,
@@ -20442,7 +20442,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1200,
       "Experience": 23000,
-      "DropPath": "",
+      "DropPath": "FrozenMiner",
       "Drops": {
         "$id": "1939",
         "$values": []
@@ -20476,7 +20476,7 @@
     {
       "$id": "1942",
       "Index": 487,
-      "Name": "FrozenAxeman",
+      "Name": "冰封Axeman",
       "Image": 381,
       "AI": 188,
       "Effect": 0,
@@ -20487,7 +20487,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1200,
       "Experience": 28000,
-      "DropPath": "",
+      "DropPath": "FrozenAxeman",
       "Drops": {
         "$id": "1943",
         "$values": []
@@ -20521,7 +20521,7 @@
     {
       "$id": "1946",
       "Index": 488,
-      "Name": "FrozenMagician",
+      "Name": "冰封Magician",
       "Image": 382,
       "AI": 189,
       "Effect": 0,
@@ -20532,7 +20532,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1200,
       "Experience": 28500,
-      "DropPath": "",
+      "DropPath": "FrozenMagician",
       "Drops": {
         "$id": "1947",
         "$values": []
@@ -20566,7 +20566,7 @@
     {
       "$id": "1950",
       "Index": 489,
-      "Name": "SnowYeti",
+      "Name": "Snow雪怪",
       "Image": 383,
       "AI": 190,
       "Effect": 0,
@@ -20577,7 +20577,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1200,
       "Experience": 27000,
-      "DropPath": "",
+      "DropPath": "SnowYeti",
       "Drops": {
         "$id": "1951",
         "$values": []
@@ -20609,7 +20609,7 @@
     {
       "$id": "1954",
       "Index": 490,
-      "Name": "冰晶Solider",
+      "Name": "冰水晶士兵",
       "Image": 384,
       "AI": 102,
       "Effect": 0,
@@ -20620,7 +20620,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 1200,
       "Experience": 25000,
-      "DropPath": "",
+      "DropPath": "IceCrystalSolider",
       "Drops": {
         "$id": "1955",
         "$values": []
@@ -20656,7 +20656,7 @@
     {
       "$id": "1958",
       "Index": 491,
-      "Name": "暗Wraith",
+      "Name": "暗幽魂",
       "Image": 385,
       "AI": 192,
       "Effect": 0,
@@ -20667,7 +20667,7 @@
       "AttackSpeed": 1100,
       "MoveSpeed": 1000,
       "Experience": 40000,
-      "DropPath": "",
+      "DropPath": "DarkWraith",
       "Drops": {
         "$id": "1959",
         "$values": []
@@ -20703,7 +20703,7 @@
     {
       "$id": "1962",
       "Index": 492,
-      "Name": "暗灵",
+      "Name": "暗之灵",
       "Image": 386,
       "AI": 181,
       "Effect": 0,
@@ -20714,7 +20714,7 @@
       "AttackSpeed": 1100,
       "MoveSpeed": 1000,
       "Experience": 40000,
-      "DropPath": "",
+      "DropPath": "DarkSpirit",
       "Drops": {
         "$id": "1963",
         "$values": []
@@ -20795,7 +20795,7 @@
     {
       "$id": "1970",
       "Index": 494,
-      "Name": "BloodyLureSpider",
+      "Name": "Bloody诱惑蜘蛛",
       "Image": 56,
       "AI": 4,
       "Effect": 0,
@@ -20806,7 +20806,7 @@
       "AttackSpeed": 1800,
       "MoveSpeed": 800,
       "Experience": 640,
-      "DropPath": "",
+      "DropPath": "BloodyLureSpider",
       "Drops": {
         "$id": "1971",
         "$values": []
@@ -20838,7 +20838,7 @@
     {
       "$id": "1974",
       "Index": 495,
-      "Name": "鬼Zombie",
+      "Name": "鬼僵尸",
       "Image": 70,
       "AI": 25,
       "Effect": 0,
@@ -20849,7 +20849,7 @@
       "AttackSpeed": 3000,
       "MoveSpeed": 2000,
       "Experience": 500,
-      "DropPath": "",
+      "DropPath": "GhostZombie",
       "Drops": {
         "$id": "1975",
         "$values": []
@@ -20881,7 +20881,7 @@
     {
       "$id": "1978",
       "Index": 496,
-      "Name": "暗PriestZombie",
+      "Name": "暗祭司僵尸",
       "Image": 69,
       "AI": 24,
       "Effect": 0,
@@ -20892,7 +20892,7 @@
       "AttackSpeed": 3000,
       "MoveSpeed": 2000,
       "Experience": 500,
-      "DropPath": "",
+      "DropPath": "DarkPriestZombie",
       "Drops": {
         "$id": "1979",
         "$values": []
@@ -20920,7 +20920,7 @@
     {
       "$id": "1982",
       "Index": 497,
-      "Name": "ChainGhoul",
+      "Name": "Chain食尸鬼",
       "Image": 74,
       "AI": 0,
       "Effect": 0,
@@ -20931,7 +20931,7 @@
       "AttackSpeed": 2800,
       "MoveSpeed": 1500,
       "Experience": 1200,
-      "DropPath": "",
+      "DropPath": "ChainGhoul",
       "Drops": {
         "$id": "1983",
         "$values": []
@@ -20963,7 +20963,7 @@
     {
       "$id": "1986",
       "Index": 498,
-      "Name": "卫3",
+      "Name": "守卫3",
       "Image": 377,
       "AI": 6,
       "Effect": 0,
@@ -20974,7 +20974,7 @@
       "AttackSpeed": 2000,
       "MoveSpeed": 0,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "Guard3",
       "Drops": {
         "$id": "1987",
         "$values": []
@@ -21010,7 +21010,7 @@
     {
       "$id": "1990",
       "Index": 499,
-      "Name": "弓卫3",
+      "Name": "弓手守卫3",
       "Image": 378,
       "AI": 80,
       "Effect": 0,
@@ -21057,7 +21057,7 @@
     {
       "$id": "1994",
       "Index": 500,
-      "Name": "GameShop卫",
+      "Name": "GameShop守卫",
       "Image": 0,
       "AI": 23,
       "Effect": 0,
@@ -21068,7 +21068,7 @@
       "AttackSpeed": 750,
       "MoveSpeed": 750,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "GameShop_Guard",
       "Drops": {
         "$id": "1995",
         "$values": []
@@ -21104,7 +21104,7 @@
     {
       "$id": "1998",
       "Index": 501,
-      "Name": "Football",
+      "Name": "足球",
       "Image": 149,
       "AI": 68,
       "Effect": 0,
@@ -21115,7 +21115,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "Football",
       "Drops": {
         "$id": "1999",
         "$values": []
@@ -21139,7 +21139,7 @@
     {
       "$id": "2002",
       "Index": 502,
-      "Name": "Royal卫",
+      "Name": "皇家守卫",
       "Image": 0,
       "AI": 6,
       "Effect": 0,
@@ -21150,7 +21150,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 520,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "Royal_Guard",
       "Drops": {
         "$id": "2003",
         "$values": []
@@ -21186,7 +21186,7 @@
     {
       "$id": "2006",
       "Index": 503,
-      "Name": "Royal弓",
+      "Name": "皇家弓手",
       "Image": 139,
       "AI": 57,
       "Effect": 0,
@@ -21197,7 +21197,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 520,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "Royal_Archer",
       "Drops": {
         "$id": "2007",
         "$values": []
@@ -21233,7 +21233,7 @@
     {
       "$id": "2010",
       "Index": 504,
-      "Name": "RoyalLieutenant",
+      "Name": "皇家Lieutenant",
       "Image": 1,
       "AI": 6,
       "Effect": 0,
@@ -21244,7 +21244,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 520,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "Royal_Lieutenant",
       "Drops": {
         "$id": "2011",
         "$values": []
@@ -21280,7 +21280,7 @@
     {
       "$id": "2014",
       "Index": 505,
-      "Name": "灵",
+      "Name": "PK之灵",
       "Image": 226,
       "AI": 38,
       "Effect": 0,
@@ -21291,7 +21291,7 @@
       "AttackSpeed": 1500,
       "MoveSpeed": 900,
       "Experience": 263,
-      "DropPath": "",
+      "DropPath": "PKSpirit",
       "Drops": {
         "$id": "2015",
         "$values": []
@@ -21325,7 +21325,7 @@
     {
       "$id": "2018",
       "Index": 506,
-      "Name": "Frog",
+      "Name": "蛙",
       "Image": 10010,
       "AI": 64,
       "Effect": 10,
@@ -21336,7 +21336,7 @@
       "AttackSpeed": 1200,
       "MoveSpeed": 900,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "Frog",
       "Drops": {
         "$id": "2019",
         "$values": []
@@ -21365,7 +21365,7 @@
     {
       "$id": "2022",
       "Index": 512,
-      "Name": "红Turtle",
+      "Name": "红龟",
       "Image": 169,
       "AI": 0,
       "Effect": 0,
@@ -21376,7 +21376,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "RedTurtle",
       "Drops": {
         "$id": "2023",
         "$values": []
@@ -21400,7 +21400,7 @@
     {
       "$id": "2026",
       "Index": 513,
-      "Name": "绿Turtle",
+      "Name": "绿龟",
       "Image": 170,
       "AI": 0,
       "Effect": 0,
@@ -21411,7 +21411,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "GreenTurtle",
       "Drops": {
         "$id": "2027",
         "$values": []
@@ -21435,7 +21435,7 @@
     {
       "$id": "2030",
       "Index": 514,
-      "Name": "蓝Turtle",
+      "Name": "蓝龟",
       "Image": 171,
       "AI": 0,
       "Effect": 0,
@@ -21446,7 +21446,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "BlueTurtle",
       "Drops": {
         "$id": "2031",
         "$values": []
@@ -21470,7 +21470,7 @@
     {
       "$id": "2034",
       "Index": 515,
-      "Name": "TowerTurtle",
+      "Name": "塔龟",
       "Image": 185,
       "AI": 0,
       "Effect": 0,
@@ -21481,7 +21481,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "TowerTurtle",
       "Drops": {
         "$id": "2035",
         "$values": []
@@ -21505,7 +21505,7 @@
     {
       "$id": "2038",
       "Index": 516,
-      "Name": "FinialTurtle",
+      "Name": "檐龟",
       "Image": 186,
       "AI": 72,
       "Effect": 0,
@@ -21516,7 +21516,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "FinialTurtle",
       "Drops": {
         "$id": "2039",
         "$values": []
@@ -21540,7 +21540,7 @@
     {
       "$id": "2042",
       "Index": 517,
-      "Name": "Hugger",
+      "Name": "抱噬虫",
       "Image": 161,
       "AI": 70,
       "Effect": 0,
@@ -21551,7 +21551,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "Hugger",
       "Drops": {
         "$id": "2043",
         "$values": []
@@ -21575,7 +21575,7 @@
     {
       "$id": "2046",
       "Index": 518,
-      "Name": "毒Hugger",
+      "Name": "毒抱噬虫",
       "Image": 160,
       "AI": 69,
       "Effect": 0,
@@ -21586,7 +21586,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "PoisonHugger",
       "Drops": {
         "$id": "2047",
         "$values": []
@@ -21610,7 +21610,7 @@
     {
       "$id": "2050",
       "Index": 519,
-      "Name": "MutatedHugger",
+      "Name": "变异抱噬虫",
       "Image": 162,
       "AI": 40,
       "Effect": 0,
@@ -21621,7 +21621,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "MutatedHugger",
       "Drops": {
         "$id": "2051",
         "$values": []
@@ -21645,7 +21645,7 @@
     {
       "$id": "2054",
       "Index": 520,
-      "Name": "狱骑1",
+      "Name": "地狱骑士1",
       "Image": 243,
       "AI": 97,
       "Effect": 0,
@@ -21688,7 +21688,7 @@
     {
       "$id": "2058",
       "Index": 521,
-      "Name": "狱骑2",
+      "Name": "地狱骑士2",
       "Image": 244,
       "AI": 97,
       "Effect": 0,
@@ -21731,7 +21731,7 @@
     {
       "$id": "2062",
       "Index": 522,
-      "Name": "狱骑3",
+      "Name": "地狱骑士3",
       "Image": 245,
       "AI": 97,
       "Effect": 0,
@@ -21774,7 +21774,7 @@
     {
       "$id": "2066",
       "Index": 523,
-      "Name": "狱骑4",
+      "Name": "地狱骑士4",
       "Image": 246,
       "AI": 97,
       "Effect": 0,
@@ -21817,7 +21817,7 @@
     {
       "$id": "2070",
       "Index": 524,
-      "Name": "狱Bomb1",
+      "Name": "地狱爆弹1",
       "Image": 903,
       "AI": 99,
       "Effect": 0,
@@ -21860,7 +21860,7 @@
     {
       "$id": "2074",
       "Index": 525,
-      "Name": "狱Bomb2",
+      "Name": "地狱爆弹2",
       "Image": 904,
       "AI": 99,
       "Effect": 0,
@@ -21903,7 +21903,7 @@
     {
       "$id": "2078",
       "Index": 526,
-      "Name": "狱Bomb3",
+      "Name": "地狱爆弹3",
       "Image": 905,
       "AI": 99,
       "Effect": 0,
@@ -21946,7 +21946,7 @@
     {
       "$id": "2082",
       "Index": 527,
-      "Name": "狱主",
+      "Name": "地狱领主",
       "Image": 247,
       "AI": 98,
       "Effect": 0,
@@ -21989,7 +21989,7 @@
     {
       "$id": "2086",
       "Index": 537,
-      "Name": "Hydrax",
+      "Name": "海德拉克斯",
       "Image": 338,
       "AI": 0,
       "Effect": 0,
@@ -22000,7 +22000,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "Hydrax",
       "Drops": {
         "$id": "2087",
         "$values": []
@@ -22024,7 +22024,7 @@
     {
       "$id": "2090",
       "Index": 538,
-      "Name": "HornedSorceror",
+      "Name": "有角巫师",
       "Image": 346,
       "AI": 169,
       "Effect": 0,
@@ -22059,7 +22059,7 @@
     {
       "$id": "2094",
       "Index": 540,
-      "Name": "Horned弓",
+      "Name": "有角弓手",
       "Image": 341,
       "AI": 164,
       "Effect": 0,
@@ -22094,7 +22094,7 @@
     {
       "$id": "2098",
       "Index": 541,
-      "Name": "HornedCommander",
+      "Name": "有角Commander",
       "Image": 348,
       "AI": 171,
       "Effect": 0,
@@ -22129,7 +22129,7 @@
     {
       "$id": "2102",
       "Index": 542,
-      "Name": "Horned法",
+      "Name": "有角法师",
       "Image": 339,
       "AI": 163,
       "Effect": 0,
@@ -22164,7 +22164,7 @@
     {
       "$id": "2106",
       "Index": 544,
-      "Name": "Horned战",
+      "Name": "有角武士",
       "Image": 343,
       "AI": 165,
       "Effect": 0,
@@ -22199,7 +22199,7 @@
     {
       "$id": "2110",
       "Index": 545,
-      "Name": "Boulder灵",
+      "Name": "巨岩之灵",
       "Image": 347,
       "AI": 170,
       "Effect": 0,
@@ -22234,7 +22234,7 @@
     {
       "$id": "2114",
       "Index": 546,
-      "Name": "战卷",
+      "Name": "战士秘卷",
       "Image": 414,
       "AI": 210,
       "Effect": 0,
@@ -22269,7 +22269,7 @@
     {
       "$id": "2118",
       "Index": 547,
-      "Name": "道卷",
+      "Name": "道士秘卷",
       "Image": 415,
       "AI": 210,
       "Effect": 0,
@@ -22304,7 +22304,7 @@
     {
       "$id": "2122",
       "Index": 548,
-      "Name": "Wizard卷",
+      "Name": "法师秘卷",
       "Image": 416,
       "AI": 210,
       "Effect": 0,
@@ -22339,7 +22339,7 @@
     {
       "$id": "2126",
       "Index": 549,
-      "Name": "刺卷",
+      "Name": "刺客秘卷",
       "Image": 417,
       "AI": 210,
       "Effect": 0,
@@ -22374,7 +22374,7 @@
     {
       "$id": "2130",
       "Index": 550,
-      "Name": "ZumaStatue22",
+      "Name": "祖玛雕像22",
       "Image": 65,
       "AI": 15,
       "Effect": 0,
@@ -22409,7 +22409,7 @@
     {
       "$id": "2134",
       "Index": 551,
-      "Name": "ZumaGuardian22",
+      "Name": "祖玛守卫22",
       "Image": 66,
       "AI": 15,
       "Effect": 0,
@@ -22444,7 +22444,7 @@
     {
       "$id": "2138",
       "Index": 552,
-      "Name": "Zuma弓22",
+      "Name": "祖玛弓手22",
       "Image": 64,
       "AI": 8,
       "Effect": 0,
@@ -22479,7 +22479,7 @@
     {
       "$id": "2142",
       "Index": 553,
-      "Name": "WedgeMoth22",
+      "Name": "楔蛾22",
       "Image": 44,
       "AI": 7,
       "Effect": 0,
@@ -22514,7 +22514,7 @@
     {
       "$id": "2146",
       "Index": 554,
-      "Name": "Michelangelo",
+      "Name": "米开朗基罗",
       "Image": 185,
       "AI": 0,
       "Effect": 0,
@@ -22549,7 +22549,7 @@
     {
       "$id": "2150",
       "Index": 555,
-      "Name": "Raphael",
+      "Name": "拉斐尔",
       "Image": 169,
       "AI": 0,
       "Effect": 0,
@@ -22560,7 +22560,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "Raphael",
       "Drops": {
         "$id": "2151",
         "$values": []
@@ -22584,7 +22584,7 @@
     {
       "$id": "2154",
       "Index": 556,
-      "Name": "Donatello",
+      "Name": "多纳泰罗",
       "Image": 185,
       "AI": 0,
       "Effect": 0,
@@ -22619,7 +22619,7 @@
     {
       "$id": "2158",
       "Index": 557,
-      "Name": "骨Spearman22",
+      "Name": "骨矛兵22",
       "Image": 90,
       "AI": 29,
       "Effect": 0,
@@ -22654,7 +22654,7 @@
     {
       "$id": "2162",
       "Index": 558,
-      "Name": "骨Blademan22",
+      "Name": "骨刀兵22",
       "Image": 0,
       "AI": 0,
       "Effect": 0,
@@ -22689,7 +22689,7 @@
     {
       "$id": "2166",
       "Index": 559,
-      "Name": "骨弓22",
+      "Name": "骨弓手22",
       "Image": 92,
       "AI": 8,
       "Effect": 0,
@@ -22724,7 +22724,7 @@
     {
       "$id": "2170",
       "Index": 560,
-      "Name": "骨Captain22",
+      "Name": "骨队长22",
       "Image": 0,
       "AI": 0,
       "Effect": 0,
@@ -22759,7 +22759,7 @@
     {
       "$id": "2174",
       "Index": 561,
-      "Name": "SeaTurtle",
+      "Name": "Sea龟",
       "Image": 185,
       "AI": 0,
       "Effect": 0,
@@ -22770,7 +22770,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 1800,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "SeaTurtle",
       "Drops": {
         "$id": "2175",
         "$values": []
@@ -22794,7 +22794,7 @@
     {
       "$id": "2178",
       "Index": 562,
-      "Name": "Tree后",
+      "Name": "树后",
       "Image": 307,
       "AI": 142,
       "Effect": 0,
@@ -22805,7 +22805,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 0,
       "Experience": 250000,
-      "DropPath": "",
+      "DropPath": "TreeQueen",
       "Drops": {
         "$id": "2179",
         "$values": []
@@ -22837,7 +22837,7 @@
     {
       "$id": "2182",
       "Index": 563,
-      "Name": "古ZumaTaurus",
+      "Name": "远古祖玛教主",
       "Image": 68,
       "AI": 17,
       "Effect": 0,
@@ -22880,7 +22880,7 @@
     {
       "$id": "2186",
       "Index": 564,
-      "Name": "FrozenZumaStatue",
+      "Name": "冰封祖玛雕像",
       "Image": 209,
       "AI": 15,
       "Effect": 0,
@@ -22914,7 +22914,7 @@
     {
       "$id": "2190",
       "Index": 565,
-      "Name": "FrozenZumaGuardian",
+      "Name": "冰封祖玛守卫",
       "Image": 210,
       "AI": 15,
       "Effect": 0,
@@ -22948,7 +22948,7 @@
     {
       "$id": "2194",
       "Index": 566,
-      "Name": "Frozen红Zuma",
+      "Name": "冰封红祖玛",
       "Image": 211,
       "AI": 16,
       "Effect": 0,
@@ -22982,7 +22982,7 @@
     {
       "$id": "2198",
       "Index": 567,
-      "Name": "石Trap",
+      "Name": "岩石陷阱",
       "Image": 358,
       "AI": 255,
       "Effect": 0,
@@ -22993,7 +22993,7 @@
       "AttackSpeed": 2500,
       "MoveSpeed": 0,
       "Experience": 0,
-      "DropPath": "",
+      "DropPath": "StoneTrap",
       "Drops": {
         "$id": "2199",
         "$values": []
@@ -23023,7 +23023,7 @@
     {
       "$id": "2202",
       "Index": 568,
-      "Name": "SabukGate",
+      "Name": "沙巴克Gate",
       "Image": 950,
       "AI": 81,
       "Effect": 1,
@@ -23034,7 +23034,7 @@
       "AttackSpeed": 0,
       "MoveSpeed": 0,
       "Experience": 5000,
-      "DropPath": "",
+      "DropPath": "SabukGate",
       "Drops": {
         "$id": "2203",
         "$values": []
@@ -23062,7 +23062,7 @@
     {
       "$id": "2206",
       "Index": 569,
-      "Name": "PalaceWallLeft",
+      "Name": "宫殿墙左",
       "Image": 951,
       "AI": 82,
       "Effect": 0,
@@ -23073,7 +23073,7 @@
       "AttackSpeed": 0,
       "MoveSpeed": 0,
       "Experience": 500,
-      "DropPath": "",
+      "DropPath": "PalaceWallLeft",
       "Drops": {
         "$id": "2207",
         "$values": []
@@ -23101,7 +23101,7 @@
     {
       "$id": "2210",
       "Index": 570,
-      "Name": "PalaceWall1",
+      "Name": "宫殿墙1",
       "Image": 952,
       "AI": 82,
       "Effect": 0,
@@ -23112,7 +23112,7 @@
       "AttackSpeed": 0,
       "MoveSpeed": 0,
       "Experience": 500,
-      "DropPath": "",
+      "DropPath": "PalaceWall1",
       "Drops": {
         "$id": "2211",
         "$values": []
@@ -23140,7 +23140,7 @@
     {
       "$id": "2214",
       "Index": 571,
-      "Name": "PalaceWall2",
+      "Name": "宫殿墙2",
       "Image": 953,
       "AI": 82,
       "Effect": 0,
@@ -23151,7 +23151,7 @@
       "AttackSpeed": 0,
       "MoveSpeed": 0,
       "Experience": 500,
-      "DropPath": "",
+      "DropPath": "PalaceWall2",
       "Drops": {
         "$id": "2215",
         "$values": []
@@ -23179,7 +23179,7 @@
     {
       "$id": "2218",
       "Index": 572,
-      "Name": "MudZombie",
+      "Name": "泥僵尸",
       "Image": 263,
       "AI": 108,
       "Effect": 0,

@@ -162,59 +162,59 @@ namespace Server
                           NewbieGuildMaxSize = 1000;
 
         public static string NewbieGuild = "NewbieGuild",
-                             SkeletonName = "BoneFamiliar",
-                             ShinsuName = "Shinsu",
-                             BugBatName = "BugBat",
-                             Zuma1 = "ZumaStatue",
-                             Zuma2 = "ZumaGuardian",
-                             Zuma3 = "ZumaArcher",
-                             Zuma4 = "WedgeMoth",
-                             Zuma5 = "ZumaArcher3",
-                             Zuma6 = "ZumaStatue3",
-                             Zuma7 = "ZumaGuardian3",
-                             Turtle1 = "RedTurtle",
-                             Turtle2 = "GreenTurtle",
-                             Turtle3 = "BlueTurtle",
-                             Turtle4 = "TowerTurtle",
-                             Turtle5 = "FinialTurtle",
-                             BoneMonster1 = "BoneSpearman",
-                             BoneMonster2 = "BoneBlademan",
-                             BoneMonster3 = "BoneArcher",
-                             BoneMonster4 = "BoneCaptain",
-                             BehemothMonster1 = "Hugger",
-                             BehemothMonster2 = "PoisonHugger",
-                             BehemothMonster3 = "MutatedHugger",
-                             HellKnight1 = "HellKnight1",
-                             HellKnight2 = "HellKnight2",
-                             HellKnight3 = "HellKnight3",
-                             HellKnight4 = "HellKnight4",
-                             HellBomb1 = "HellBomb1",
-                             HellBomb2 = "HellBomb2",
-                             HellBomb3 = "HellBomb3",
-                             WhiteSnake = "WhiteSerpent",
-                             AngelName = "HolyDeva",
-                             BombSpiderName = "BombSpider",
-                             CloneName = "Clone",
-                             AssassinCloneName = "AssassinClone",
-                             VampireName = "VampireSpider",
-                             ToadName = "SpittingToad",
-                             SnakeTotemName = "SnakeTotem",
-                             SnakesName = "CharmedSnake",
+                             SkeletonName = "骷髅",
+                             ShinsuName = "神兽",
+                             BugBatName = "虫蝙蝠",
+                             Zuma1 = "祖玛雕像",
+                             Zuma2 = "祖玛守卫",
+                             Zuma3 = "祖玛弓手",
+                             Zuma4 = "楔蛾",
+                             Zuma5 = "祖玛弓手3",
+                             Zuma6 = "祖玛雕像3",
+                             Zuma7 = "祖玛守卫3",
+                             Turtle1 = "红龟",
+                             Turtle2 = "绿龟",
+                             Turtle3 = "蓝龟",
+                             Turtle4 = "塔龟",
+                             Turtle5 = "檐龟",
+                             BoneMonster1 = "骨矛兵",
+                             BoneMonster2 = "骨刀兵",
+                             BoneMonster3 = "骨弓手",
+                             BoneMonster4 = "骨队长",
+                             BehemothMonster1 = "抱噬虫",
+                             BehemothMonster2 = "毒抱噬虫",
+                             BehemothMonster3 = "变异抱噬虫",
+                             HellKnight1 = "地狱骑士1",
+                             HellKnight2 = "地狱骑士2",
+                             HellKnight3 = "地狱骑士3",
+                             HellKnight4 = "地狱骑士4",
+                             HellBomb1 = "地狱爆弹1",
+                             HellBomb2 = "地狱爆弹2",
+                             HellBomb3 = "地狱爆弹3",
+                             WhiteSnake = "白蛇",
+                             AngelName = "圣精灵",
+                             BombSpiderName = "自爆蜘蛛",
+                             CloneName = "分身",
+                             AssassinCloneName = "刺客分身",
+                             VampireName = "吸血蜘蛛",
+                             ToadName = "喷毒蟾蜍",
+                             SnakeTotemName = "蛇图腾",
+                             SnakesName = "魅惑之蛇",
                              AncientBatName = "AncientBat",
-                             TucsonGeneralEgg = "GeneralTucson",
-                             GeneralMeowMeowMob1 = "StainHammerCat",
-                             GeneralMeowMeowMob2 = "BlackHammerCat",
-                             GeneralMeowMeowMob3 = "StrayCat",
-                             GeneralMeowMeowMob4 = "CatShaman",
-                             KingHydraxMob = "Hydrax",
-                             HornedCommanderMob = "HornedSorceror",
-                             HornedCommanderBombMob = "BoulderSpirit",
-                             SnowWolfKingMob = "SnowWolf",
-                             ScrollMob1 = "WarriorScroll",
-                             ScrollMob2 = "TaoistScroll",
-                             ScrollMob3 = "WizardScroll",
-                             ScrollMob4 = "AssassinScroll",
-                             StoneName = "StoneTrap",
+                             TucsonGeneralEgg = "图森将军",
+                             GeneralMeowMeowMob1 = "锈锤猫",
+                             GeneralMeowMeowMob2 = "黑锤猫",
+                             GeneralMeowMeowMob3 = "流浪猫",
+                             GeneralMeowMeowMob4 = "猫巫师",
+                             KingHydraxMob = "海德拉克斯",
+                             HornedCommanderMob = "有角巫师",
+                             HornedCommanderBombMob = "巨岩之灵",
+                             SnowWolfKingMob = "雪狼",
+                             ScrollMob1 = "战士秘卷",
+                             ScrollMob2 = "道士秘卷",
+                             ScrollMob3 = "法师秘卷",
+                             ScrollMob4 = "刺客秘卷",
+                             StoneName = "岩石陷阱",
                              HeroName = "Hero";
 
 
@@ -231,7 +231,7 @@ namespace Server
         public static uint MaxDropGold = 2000;
         public static bool DropGold = true;
 
-        public static string CreatureBlackStoneName = "BlackCreatureStone";
+        public static string CreatureBlackStoneName = "黑灵石";
 
         //Fishing Settings
         public static int FishingAttempts = 30;
@@ -239,7 +239,7 @@ namespace Server
         public static int FishingSuccessMultiplier = 10;
         public static long FishingDelay = 0;
         public static int FishingMobSpawnChance = 5;
-        public static string FishingMonster = "GiantKeratoid";
+        public static string FishingMonster = "巨角虫";
 
         //Mail Settings
         public static bool MailAutoSendGold = false;
@@ -260,7 +260,7 @@ namespace Server
         public static byte RefineItemStatReduce = 15;
         public static int RefineCost = 125;
 
-        public static string RefineOreName = "BlackIronOre";
+        public static string RefineOreName = "黑铁矿";
 
         //Marriage Settings
         public static int LoverEXPBonus = 5;
@@ -318,7 +318,7 @@ namespace Server
         public static bool AllowNewHero = true;
         public static byte Hero_RequiredLevel = 22;
         public static bool[] Hero_CanCreateClass = new bool[0];
-        public static string HeroSealItemName = "SealedHero";
+        public static string HeroSealItemName = "封印英雄";
         public static ushort HeroMaximumSealCount = 5;
         public static byte MaximumHeroCount = 9;
 
@@ -464,13 +464,13 @@ namespace Server
             BehemothMonster1 = Reader.ReadString("Game", "BehemothMonster1", BehemothMonster1);
             BehemothMonster2 = Reader.ReadString("Game", "BehemothMonster2", BehemothMonster2);
             BehemothMonster3 = Reader.ReadString("Game", "BehemothMonster3", BehemothMonster3);
-            HellKnight1 = Reader.ReadString("Game", "HellKnight1", HellKnight1);
-            HellKnight2 = Reader.ReadString("Game", "HellKnight2", HellKnight2);
-            HellKnight3 = Reader.ReadString("Game", "HellKnight3", HellKnight3);
-            HellKnight4 = Reader.ReadString("Game", "HellKnight4", HellKnight4);
-            HellBomb1 = Reader.ReadString("Game", "HellBomb1", HellBomb1);
-            HellBomb2 = Reader.ReadString("Game", "HellBomb2", HellBomb2);
-            HellBomb3 = Reader.ReadString("Game", "HellBomb3", HellBomb3);
+            HellKnight1 = Reader.ReadString("Game", "地狱骑士1", HellKnight1);
+            HellKnight2 = Reader.ReadString("Game", "地狱骑士2", HellKnight2);
+            HellKnight3 = Reader.ReadString("Game", "地狱骑士3", HellKnight3);
+            HellKnight4 = Reader.ReadString("Game", "地狱骑士4", HellKnight4);
+            HellBomb1 = Reader.ReadString("Game", "地狱爆弹1", HellBomb1);
+            HellBomb2 = Reader.ReadString("Game", "地狱爆弹2", HellBomb2);
+            HellBomb3 = Reader.ReadString("Game", "地狱爆弹3", HellBomb3);
             GeneralMeowMeowMob1 = Reader.ReadString("Game", "GeneralMeowMeowMob1", GeneralMeowMeowMob1);
             GeneralMeowMeowMob2 = Reader.ReadString("Game", "GeneralMeowMeowMob2", GeneralMeowMeowMob2);
             GeneralMeowMeowMob3 = Reader.ReadString("Game", "GeneralMeowMeowMob3", GeneralMeowMeowMob3);
@@ -753,13 +753,13 @@ namespace Server
             Reader.Write("Game", "BehemothMonster2", BehemothMonster2);
             Reader.Write("Game", "BehemothMonster3", BehemothMonster3);
 
-            Reader.Write("Game", "HellKnight1", HellKnight1);
-            Reader.Write("Game", "HellKnight2", HellKnight2);
-            Reader.Write("Game", "HellKnight3", HellKnight3);
-            Reader.Write("Game", "HellKnight4", HellKnight4);
-            Reader.Write("Game", "HellBomb1", HellBomb1);
-            Reader.Write("Game", "HellBomb2", HellBomb2);
-            Reader.Write("Game", "HellBomb3", HellBomb3);
+            Reader.Write("Game", "地狱骑士1", HellKnight1);
+            Reader.Write("Game", "地狱骑士2", HellKnight2);
+            Reader.Write("Game", "地狱骑士3", HellKnight3);
+            Reader.Write("Game", "地狱骑士4", HellKnight4);
+            Reader.Write("Game", "地狱爆弹1", HellBomb1);
+            Reader.Write("Game", "地狱爆弹2", HellBomb2);
+            Reader.Write("Game", "地狱爆弹3", HellBomb3);
 
             Reader.Write("Game", "WhiteSnake", WhiteSnake);
             Reader.Write("Game", "AngelName", AngelName);
@@ -1337,7 +1337,7 @@ namespace Server
             if (!File.Exists(Path.Combine(ConfigPath, "GuildSettings.ini")))
             {
                 Guild_CreationCostList.Add(new GuildItemVolume(){Amount = 1000000});
-                Guild_CreationCostList.Add(new GuildItemVolume(){ItemName = "WoomaHorn",Amount = 1});
+                Guild_CreationCostList.Add(new GuildItemVolume(){ItemName = "沃玛角",Amount = 1});
                 return;
             }
             InIReader reader = new InIReader(Path.Combine(ConfigPath, "GuildSettings.ini"));
