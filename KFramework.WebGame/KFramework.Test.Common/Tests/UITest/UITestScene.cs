@@ -11,16 +11,16 @@ namespace KFramework.Test.Common.Tests.UITest
     /// </summary>
     public sealed class UITestScene : TestSceneBase
     {
-        public override string Title => "UI 组件总览（标签页切换：KImage/KButton/KLabel/KSimpleLabel/KScrollView/KDropDown/KInputBox/KProgressBar）";
+        public override string Title => "UI 组件总览（标签页切换：KImage/KButton/KLabel/KSimpleLabel/KScrollView/KDropDown/KInputBox/KProgressBar/KSlider）";
 
-        private enum Page { KImage, KButton, KLabel, KSimpleLabel, KScrollView, KDropDown, KInputBox, KProgressBar }
+        private enum Page { KImage, KButton, KLabel, KSimpleLabel, KScrollView, KDropDown, KInputBox, KProgressBar, KSlider }
         private Page _page = Page.KImage;
 
         /// <summary>用高层号，避免与引擎/示例自己的 Canvas 撞车。</summary>
         private const int CanvasLayer = 10;
         private KCanvas _canvas;
 
-        private KTransform _pageImage, _pageButton, _pageLabel, _pageSimple, _pageScroll, _pageDrop, _pageInput, _pageProgress;
+        private KTransform _pageImage, _pageButton, _pageLabel, _pageSimple, _pageScroll, _pageDrop, _pageInput, _pageProgress, _pageSlider;
 
         // ── KImage 页 ──
         private KImage _imgBig, _imgTint, _imgMidPivot;
@@ -53,6 +53,10 @@ namespace KFramework.Test.Common.Tests.UITest
         private KProgressBar _bar;
         private float _barT;
 
+        // ── KSlider 页 ──
+        private KSlider _sliderH, _sliderV;
+        private KLabel _sliderEcho;
+
         private static readonly Vector2[] NineAnchors =
         [
             new(0f, 0f), new(0.5f, 0f), new(1f, 0f),
@@ -75,6 +79,7 @@ namespace KFramework.Test.Common.Tests.UITest
             _pageDrop = AddRoot(false);
             _pageInput = AddRoot(false);
             _pageProgress = AddRoot(false);
+            _pageSlider = AddRoot(false);
 
             BuildImagePage();
             BuildButtonPage();
@@ -84,6 +89,7 @@ namespace KFramework.Test.Common.Tests.UITest
             BuildDropDownPage();
             BuildInputPage();
             BuildProgressPage();
+            BuildSliderPage();
         }
 
         private KTransform AddRoot(bool active)
@@ -246,6 +252,7 @@ namespace KFramework.Test.Common.Tests.UITest
             AddUiButton("⑥ KDropDown", () => SetPage(Page.KDropDown), _page == Page.KDropDown);
             AddUiButton("⑦ KInputBox", () => SetPage(Page.KInputBox), _page == Page.KInputBox);
             AddUiButton("⑧ KProgressBar", () => SetPage(Page.KProgressBar), _page == Page.KProgressBar);
+            AddUiButton("⑨ KSlider", () => SetPage(Page.KSlider), _page == Page.KSlider);
 
             float top = ContentTop + 24f;
             float left = 40f;
@@ -270,6 +277,11 @@ namespace KFramework.Test.Common.Tests.UITest
                     Place(_inputEcho, left, top + 44f, 280f, 32f);
                     break;
                 case Page.KProgressBar: Place(_bar, left, top, 320f, 24f); break;
+                case Page.KSlider:
+                    Place(_sliderH, left, top, 320f, 24f);
+                    Place(_sliderEcho, left, top + 40f, 320f, 28f);
+                    Place(_sliderV, left + 360f, top, 24f, 200f);
+                    break;
             }
         }
 
@@ -307,15 +319,40 @@ namespace KFramework.Test.Common.Tests.UITest
             _pageDrop.activeSelf = page == Page.KDropDown;
             _pageInput.activeSelf = page == Page.KInputBox;
             _pageProgress.activeSelf = page == Page.KProgressBar;
+            _pageSlider.activeSelf = page == Page.KSlider;
 
             // KButton 注册在全局输入上，仅靠 activeSelf 挡不住命中 —— 一并关掉非当前页的交互。
             bool btnLive = page == Page.KButton;
             foreach (KButton b in _anchorButtons) b.Interactable = btnLive;
             _dd.Interactable = page == Page.KDropDown;
+            bool sliderLive = page == Page.KSlider;
+            _sliderH.Interactable = sliderLive;
+            _sliderV.Interactable = sliderLive;
 
             // 隐藏页的输入框/滚动视图：注销其 IClickable，避免不显示时仍吃点击或键盘。
             if (page == Page.KInputBox) _input.Register(); else _input.Unregister();
             if (page == Page.KScrollView) KInputMgr.Register(_scroll); else KInputMgr.Unregister(_scroll);
+        }
+
+        // ── KSlider ────────────────────────────────────────────────────────
+        private void BuildSliderPage()
+        {
+            _sliderH = new KSlider { Parent = _pageSlider, Size = new Vector2(320, 24), Direction = KSlider.KSliderDir.Horizontal };
+            _sliderEcho = new KLabel("Value: 0.40", new Color(200, 230, 255), _font)
+            {
+                Parent = _pageSlider,
+                Size = new Vector2(320, 28),
+                Alignment = TextAnchor.UpperLeft,
+            };
+            _sliderH.OnValueChanged += (_, v) => _sliderEcho.Text = "Value: " + v.ToString("F2");
+            _sliderH.Value = 0.4f; // 订阅后再设值，避免首次触发时空引用
+
+            _sliderV = new KSlider { Parent = _pageSlider, Size = new Vector2(24, 200), Direction = KSlider.KSliderDir.Vertical };
+            _sliderV.OnValueChanged += (_, v) =>
+            {
+                // 垂直滑块联动水平滑块，演示 OnValueChanged 双向绑定
+                _sliderH.Value = v;
+            };
         }
 
         public override void Update()
@@ -349,6 +386,7 @@ namespace KFramework.Test.Common.Tests.UITest
             Page.KDropDown => "KDropDown：点击主体展开选项，选中后更新下方回显；点击展开区域之外自动收起。",
             Page.KInputBox => "KInputBox：点击聚焦后可键入（ASCII + 退格），回车提交；点击框外失焦。下方回显提交内容。",
             Page.KProgressBar => "KProgressBar：进度条在 0~1 间来回动画，支持四种方向与百分比文本（ShowText）。",
+            Page.KSlider => "KSlider：水平 / 垂直滑块，按下即拖动（点轨道会跳到该位置），Value 变化触发 OnValueChanged；右侧垂直滑块联动水平滑块。",
             _ => "",
         };
 
@@ -358,8 +396,10 @@ namespace KFramework.Test.Common.Tests.UITest
             _dd?.Unregister();
             _input?.Unregister();
             KInputMgr.Unregister(_scroll);
+            _sliderH?.Unregister();
+            _sliderV?.Unregister();
 
-            foreach (KTransform root in new[] { _pageImage, _pageButton, _pageLabel, _pageSimple, _pageScroll, _pageDrop, _pageInput, _pageProgress })
+            foreach (KTransform root in new[] { _pageImage, _pageButton, _pageLabel, _pageSimple, _pageScroll, _pageDrop, _pageInput, _pageProgress, _pageSlider })
                 if (root != null) root.Parent = null;
 
             base.Dispose();
