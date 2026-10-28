@@ -429,84 +429,12 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
             };
 
-            //GoldLabel = new MirLabel
-            //{
-            //    DrawFormat = TextFormatFlags.VerticalCenter,
-            //    Font = new Font(Settings.FontName, 8F),
-            //    Location = new Point(this.Size.Width - 105, 119),
-            //    Parent = this,
-            //    Size = new Size(99, 13),
-            //    Sound = SoundList.Gold,
-            //};
-            //GoldLabel.Click += (o, e) =>
-            //{
-            //    if (GameScene.SelectedCell == null)
-            //        GameScene.PickedUpGold = !GameScene.PickedUpGold && GameScene.Gold > 0;
-            //};
-
-            //WeightBar = new MirImageControl
-            //{
-            //    Index = 76,
-            //    Library = Libraries.Prguse,
-            //    Location = new Point(this.Size.Width - 105, 103),
-            //    Parent = this,
-            //    DrawImage = false,
-            //    NotControl = true,
-            //};
-            //WeightBar.BeforeDraw += WeightBar_BeforeDraw;
-
-            //WeightLabel = new MirLabel
-            //{
-            //    Parent = this,
-            //    Location = new Point(this.Size.Width - 105, 101),
-            //    Size = new Size(40, 14),
-            //};
-
             SpaceLabel = new MirLabel
             {
                 Parent = this,
                 Location = new Point(this.Size.Width - 30, 101),
                 Size = new Size(26, 14),
             };
-
-            //HeroMenuButton = new MirButton
-            //{
-            //    Index = 2164,
-            //    HoverIndex = 2165,
-            //    PressedIndex = 2166,
-            //    Library = Libraries.Prguse,
-            //    Parent = this,
-            //    Location = new Point(Size.Width - 160, 65),
-            //    Size = new Size(20, 20),
-            //    Sound = SoundList.ButtonA,
-            //    Visible = false
-            //};
-            //HeroMenuButton.Click += (o, e) =>
-            //{
-            //    GameScene.Scene.HeroMenuPanel.Toggle();
-            //};
-
-            //HeroSummonButton = new MirButton
-            //{
-            //    Index = 2167,
-            //    HoverIndex = 2168,
-            //    PressedIndex = 2169,
-            //    Library = Libraries.Prguse,
-            //    Parent = this,
-            //    Location = new Point(this.Size.Width - 160, 90),
-            //    Size = new Size(20, 20),
-            //    Sound = SoundList.ButtonA,
-            //    Visible = false
-            //};
-            //HeroSummonButton.Click += (o, e) =>
-            //{
-            //    Network.Enqueue(new C.Chat
-            //    {
-            //        Message = "@SUMMONHERO",
-            //    });
-            //};
-
-            //HeroInfoPanel = new HeroInfoPanel { Parent = this, Visible = false };
 
             AModeLabel = new MirLabel
             {
