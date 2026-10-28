@@ -360,6 +360,9 @@ namespace MirDBToJson
             {"EggDumpling","鸡蛋饺子"},{"BoneDumpling","骨头饺子"},
             {"BoneBroth","骨头汤"},{"ChickenBroth","鸡汤"},{"EggBroth","蛋汤"},{"MeatSoup","肉汤"},
             {"HerbalTea","草药茶"},{"ZerkSoup","狂暴汤"},{"FishBait","鱼饵"},
+            // 召唤系技能书物品（词根切分译不完整，必须整词，否则与掉落引用断链）
+            {"SummonShinsu","召唤神兽"},{"SummonHolyDeva","召唤圣精灵"},
+            {"SummonVampire","召唤吸血蜘蛛"},{"SummonSnakes","召唤魅惑之蛇"},
             // 关键怪物（CanStartEnvir 启动检查按名引用）
             {"BoneFamiliar","骷髅"},{"Shinsu","神兽"},{"BugBat","虫蝙蝠"},
             {"HellKnight1","地狱骑士1"},{"HellKnight2","地狱骑士2"},{"HellKnight3","地狱骑士3"},{"HellKnight4","地狱骑士4"},

@@ -43977,7 +43977,7 @@
     {
       "$id": "3092",
       "Index": 1032,
-      "Name": "召唤Shinsu",
+      "Name": "召唤神兽",
       "Type": 20,
       "Grade": 0,
       "RequiredType": 0,
@@ -44057,7 +44057,7 @@
     {
       "$id": "3098",
       "Index": 1034,
-      "Name": "召唤圣Deva",
+      "Name": "召唤圣精灵",
       "Type": 20,
       "Grade": 0,
       "RequiredType": 0,
@@ -45337,7 +45337,7 @@
     {
       "$id": "3194",
       "Index": 1066,
-      "Name": "召唤Vampire",
+      "Name": "召唤吸血蜘蛛",
       "Type": 20,
       "Grade": 0,
       "RequiredType": 0,
@@ -45657,7 +45657,7 @@
     {
       "$id": "3218",
       "Index": 1074,
-      "Name": "召唤Snakes",
+      "Name": "召唤魅惑之蛇",
       "Type": 20,
       "Grade": 0,
       "RequiredType": 0,
