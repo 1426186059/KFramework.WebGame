@@ -8,13 +8,14 @@ namespace KFramework.Test.Common.Tests
     /// 条目较多，整体放进一个 <see cref="KScrollView"/>。
     /// KCanvas 直接挂在场景自己的 <see cref="KSceneBase.SceneNodeRoot"/> 下（而非 KUIRoot）：
     /// 由框架（KSceneBase.Update/Draw 默认实现的递归遍历）自动 Update/Draw，且随场景切换自动销毁，无需手动摘离。
-    /// 本场景只负责画页眉、做点击 / 数字键进入。
+    /// 每个条目是一个 <see cref="KButton"/>（走 KInputMgr 事件分发，订阅 PointerClickEvent 进入），
+    /// 不再用 Input 轮询自己算命中 —— 这样「拖滚动条」与「点卡片」是同一套事件体系，靠 Priority 区分，从根上杜绝穿透。
     /// </summary>
     public sealed class TestMainScene : KSceneBase
     {
         private KCanvas _canvas;
         private KScrollView _scroll;
-        private readonly List<KWidget> _cards = new();
+        private readonly List<KButton> _cards = new();
         private IFont _font;
         private IFont _descFont;
         private bool _built;
@@ -27,28 +28,10 @@ namespace KFramework.Test.Common.Tests
             EnsureBuilt();
             base.Update(); // 递归驱动 SceneNodeRoot 下的 KCanvas → KScrollView（含滚轮 / 拖拽 / 矩阵刷新）
 
-            if (Input_Mouse.GetButtonDown(MouseButton.Left))
-            {
-                Vector2 p = Input_Mouse.Position;
-                RectangleF view = _scroll.GetWorldBound();
-                // 只在滚动视口内才判定卡片点击（视口外被 scissor 裁掉的不应命中）
-                if (p.X >= view.Left && p.X <= view.Right && p.Y >= view.Top && p.Y <= view.Bottom)
-                {
-                    for (int i = 0; i < _cards.Count; i++)
-                    {
-                        RectangleF r = _cards[i].GetWorldBound();
-                        if (p.X >= r.Left && p.X <= r.Right && p.Y >= r.Top && p.Y <= r.Bottom)
-                        {
-                            Enter(i);
-                            return;
-                        }
-                    }
-                }
-            }
-
+            // 数字键 1-9 作为前 9 个条目的快捷入口（键盘走 KInputMgr 查询，与指针事件互不干扰）
             for (int i = 0; i < TestRegistry.Entries.Count && i < 9; i++)
             {
-                if (Input_KeyBoard.GetKeyDown(new[]
+                if (KInputMgr.GetKeyDown(new[]
                 {
                     Keys.Digit1, Keys.Digit2, Keys.Digit3, Keys.Digit4, Keys.Digit5,
                     Keys.Digit6, Keys.Digit7, Keys.Digit8, Keys.Digit9,
@@ -85,42 +68,58 @@ namespace KFramework.Test.Common.Tests
                 WorldPosition = new Vector2(marginX, topY),
             };
 
+            // 卡片让出右侧滚动条宽度：滚动条区（与卡片右缘原本重叠）里就没有 KButton 了，
+            // 该区域的按下自然落到 KScrollView（拖滚动条），不会误触卡片。
+            float cardW = listW - _scroll.ScrollBarWidth;
+
             float accY = 0f;
             for (int i = 0; i < TestRegistry.Entries.Count; i++)
             {
                 TestEntry entry = TestRegistry.Entries[i];
-                var card = new KImage
+
+                // 条目 = KButton：自身即背景，走 KInputMgr 事件分发；Priority 高于 KScrollView(0)，
+                // 内容区按下优先命中卡片，滚动条区因卡片不含而命中 KScrollView。
+                var btn = new KButton
                 {
                     Parent = _scroll.Content,
-                    Size = new Vector2(listW, 56),
+                    Size = new Vector2(cardW, 56),
                     LocalPosition = new Vector2(0, accY),
-                    Color = new Color(26, 32, 48),
+                    Priority = 1,
                 };
+                var bg = new Color(26, 32, 48);
+                btn.Color = bg;
+                btn.NormalColor = bg;
+                btn.HighlightedColor = new Color(40, 48, 70);
+                btn.PressedColor = new Color(54, 64, 92);
+
                 // 左侧色条
                 _ = new KImage
                 {
-                    Parent = card,
+                    Parent = btn,
                     Size = new Vector2(6, 56),
                     LocalPosition = Vector2.Zero,
                     Color = new Color(72, 150, 230),
                 };
                 _ = new KLabel($"[{i + 1}] {entry.Name}", Color.White, _font)
                 {
-                    Parent = card,
-                    Size = new Vector2(listW - 24, 22),
+                    Parent = btn,
+                    Size = new Vector2(cardW - 24, 22),
                     LocalPosition = new Vector2(20, 7),
                     Alignment = TextAnchor.UpperLeft,
                 };
                 _ = new KLabel(entry.Desc, new Color(150, 165, 190), _descFont)
                 {
-                    Parent = card,
-                    Size = new Vector2(listW - 24, 30),
+                    Parent = btn,
+                    Size = new Vector2(cardW - 24, 30),
                     LocalPosition = new Vector2(20, 28),
                     Alignment = TextAnchor.UpperLeft,
                     HorizontalWrap = HorizontalWrapMode.Wrap,
                 };
 
-                _cards.Add(card);
+                int idx = i; // 闭包捕获
+                btn.PointerClickEvent += (s, e) => Enter(idx);
+
+                _cards.Add(btn);
                 accY += 56 + 6;
             }
         }
@@ -145,7 +144,8 @@ namespace KFramework.Test.Common.Tests
 
         public override void Dispose()
         {
-            // 摘掉 KInputMgr 的全局注册（避免残留接收指针）；节点本身随场景销毁，无需手动 Parent=null
+            // 摘掉 KInputMgr 的全局注册（KButton / KScrollView 都是 IClickable，不摘会残留接收指针）
+            foreach (var btn in _cards) KInputMgr.Unregister(btn);
             if (_scroll != null) KInputMgr.Unregister(_scroll);
             base.Dispose();
         }

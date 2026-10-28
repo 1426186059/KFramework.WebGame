@@ -212,7 +212,7 @@ namespace KFramework.MonoGameExtend
         public void OnPointerEnter(KPointerEventArgs args) { }
         public void OnPointerExit(KPointerEventArgs args) { }
 
-        private bool InScrollBarZone(Vector2 screen)
+        public bool InScrollBarZone(Vector2 screen)
         {
             if (!_scrollBar.activeSelf) return false;
             RectangleF view = GetWorldBound();

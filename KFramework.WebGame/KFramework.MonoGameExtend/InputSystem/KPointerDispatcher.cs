@@ -93,13 +93,19 @@ namespace KFramework.MonoGameExtend
         {
             if (_sortDirty)
             {
-                // 优先级高的排前面，先接收事件
                 _clickables.Sort((a, b) => b.Priority.CompareTo(a.Priority));
                 _sortDirty = false;
             }
 
-            if (!System.OperatingSystem.IsAndroid() && !System.OperatingSystem.IsIOS()) UpdateMouse();
-            UpdateTouch();
+            if (HTML_Window.IsMobile())
+            {
+                UpdateTouch();
+            }
+            else
+            {
+                UpdateMouse();
+            }
+
         }
 
         public void Reset()
