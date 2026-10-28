@@ -1,0 +1,120 @@
+;Gold
+1/1 Gold 30000
+
+;Pots + Other
+1/1 大金创药
+1/1 大金创药
+1/1 大魔法药
+1/1 大魔法药
+1/1 特制金创药
+1/1 特制金创药
+1/1 特制魔法药
+1/1 特制魔法药
+
+1/2 太阳水
+1/5 太阳药水(M)
+
+1/10 Impact药(L)
+1/10 魔法药(L)
+1/10 道士药(L)
+1/10 暴药(L)
+
+1/15 BenedictionOil
+
+1/40 觉醒魂0
+1/40 觉醒魂0
+
+;Weapons
+1/250 凶煞弓
+1/250 龙斩杀
+1/250 龙杖
+1/250 魂军刀
+1/450 Burst剑
+1/450 Dread弓
+1/450 圣血矛
+1/450 龙血剑
+
+;Armour
+1/20 Studded甲(M)
+1/20 Studded甲(F)
+1/20 钢甲(M)
+1/20 钢甲(F)
+1/20 龙袍(M)
+1/20 龙袍(F)
+1/20 Titan甲(M)
+1/20 Titan甲(F)
+
+;Helmets
+1/545 ApesCrown
+1/550 Sparkling盔
+1/560 盔之Darkness
+
+;Necklace
+1/100 Cuspid项链
+1/100 SorceryAnchor
+1/100 PurifiedMirror
+
+;Bracelets
+1/100 DualTitan护符
+1/100 SacredAngel护符
+1/100 邪Whisp护符
+
+;Rings
+1/100 Pledge戒
+1/100 五元素戒
+1/100 Crimson红宝石戒
+
+;Shoes
+
+
+;Belts
+1/40 BoneBelt
+1/150 烈焰Grasp
+1/260 Sparkling腰带
+1/165 腰带之Darkness
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+;;Warrior
+1/500 刃Avalanche
+1/700 防护Field
+1/900 Rage
+1/1500 Counter攻击
+
+;;Wizard
+1/60 FlameDisruptor
+1/500 Mirroring
+1/900 MeteorStrike
+1/1500 魔法Booster
+1/1500 冰Thrust
+
+;;Toaist
+1/60 UltimateEnhancer
+1/500 召唤圣精灵
+1/700 Reincarnation
+1/900 毒Cloud
+1/900 Plague
+1/1500 PetEnhancer
+
+;;Assassion
+1/60 MPEater
+1/500 SwiftFeet
+1/900 暗Body
+1/1500 Hemorrhage
+
+;CraftingMaterials
+
+
+;Quests
+

@@ -1,0 +1,11 @@
+[Recipe]
+Amount 1
+Chance 100
+Gold 500
+
+[Tools]
+
+[Ingredients]
+肉
+老山参
+StaminaAid(S)

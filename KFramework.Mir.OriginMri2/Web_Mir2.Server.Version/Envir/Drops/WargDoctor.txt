@@ -1,0 +1,65 @@
+;Gold
+1/3 Gold 2500
+
+;Pots + Other
+1/15 太阳水
+1/15 太阳水
+1/15 太阳水
+1/15 太阳水
+
+
+;Weapons
+
+1/30000 Crimson红宝石戒
+1/30000 Pledge戒
+1/30000 五元素戒
+1/15000 巨盔
+1/15000 WisdomCoronet
+1/15000 皇家盔
+1/15000 道Coronet
+1/25000 DestinyRing 
+1/25000 奥玛之灵戒
+1/25000 Noble戒
+1/25000 魂戒
+
+;Armour
+
+
+;Helmets
+
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+
+
+;CraftingMaterials
+
+
+;Quests
+

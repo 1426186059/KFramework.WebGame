@@ -1,0 +1,24 @@
+[@Description]
+
+[@TaskDescription]
+Eliminate 30 {左守卫/Crimson} and {右守卫's/Crimson}.
+
+[@Completion]
+
+[@KillTasks]
+左守卫 30
+右守卫 30
+
+[@ItemTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+55000
+
+[@GoldReward]
+55000

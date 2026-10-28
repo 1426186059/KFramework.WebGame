@@ -1,0 +1,53 @@
+;Gold
+1/10 Gold 1500
+
+;Pots + Other
+1/35 特制金创药
+1/35 特制魔法药
+1/50 太阳水
+1/50 太阳水
+
+;Weapons
+
+
+;Armour
+
+
+;Helmets
+
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+
+
+;CraftingMaterials
+1/40 ArtifactToken
+
+;Quests
+

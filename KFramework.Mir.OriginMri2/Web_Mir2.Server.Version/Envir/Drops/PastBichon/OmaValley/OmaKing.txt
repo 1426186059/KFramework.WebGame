@@ -1,0 +1,189 @@
+;Gold
+1/1 Gold 35000
+1/10 金Bar
+1/50 金BarBundle
+1/500 金Chest
+
+;Potions
+1/1 大金创药
+1/1 大金创药
+1/2 大金创药
+1/2 大金创药
+1/1 大魔法药
+1/1 大魔法药
+1/2 大魔法药
+1/2 大魔法药
+1/1 特制金创药
+1/1 特制金创药
+1/2 特制金创药
+1/2 特制金创药
+1/1 特制魔法药
+1/1 特制魔法药
+1/2 特制魔法药
+1/2 特制魔法药
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+1/10 Apple
+1/15 Apple
+1/2 BenedictionOil
+1/5 BenedictionOil
+1/10 Impact药(L)
+1/10 魔法药(L)
+1/10 道士药(L)
+1/10 暴药(L)
+1/20 红眼Skull
+
+;Weapons
+1/35 JudgementMace
+1/35 战争法师杖
+1/35 魂泉杖
+1/35 刃之Darkness
+1/35 Fiend弓
+1/150 战争之灵刃
+1/150 魔法Scythe
+1/150 石BambooFan
+1/150 冰冻刃
+1/150 轻盈弓
+1/200 龙斩杀
+1/200 龙杖
+1/200 魂军刀
+1/200 皇家刃
+1/200 凶煞弓
+1/400 剑之战争神
+1/400 刃之Sorcery
+1/400 天剑
+1/400 刃之Magi
+1/400 弓之Force
+
+;Armours
+1/5 钢甲(M)
+1/5 钢甲(F)
+1/5 龙袍(M)
+1/5 龙袍(F)
+1/5 Titan甲(M)
+1/5 Titan甲(F)
+1/5 皇家甲(M)
+1/5 皇家甲(F)
+1/5 Studded甲(M)
+1/5 Studded甲(F)
+1/500 奥玛王袍(M)
+1/500 奥玛王袍(F)
+1/1000 天甲(M)
+1/1000 天甲(F)
+1/500 红暗甲(M)
+1/500 红暗甲(F)
+1/500 蓝暗甲(M)
+1/500 蓝暗甲(F)
+1/500 绿暗甲(M)
+1/500 绿暗甲(F)
+1/500 金暗甲(M)
+1/500 金暗甲(F)
+1/500 Scaled甲(M)
+1/500 Scaled甲(F)
+
+;Helmets
+1/5 巫医盔
+1/5 骷髅盔
+1/10 钢盔
+1/10 Brass盔
+1/30 黑铁盔
+1/10 盔之英雄
+1/35 巨盔
+1/40 WisdomCoronet
+1/40 道Coronet
+
+;Belts
+1/10 青铜腰带
+1/15 Chain腰带
+1/50 金腰带
+
+;Boots
+1/10 丝靴
+1/20 黑靴
+1/30 龙靴
+
+;Rings
+1/5 骷髅戒
+1/5 Charm戒
+1/5 Moral戒
+1/5 Expel戒
+1/5 珊瑚戒
+1/15 Gale戒
+1/2500 防护戒
+1/5000 Paralysis戒
+1/3000 Revival戒
+1/2500 Teleport戒
+1/25 力量戒
+1/25 Titan戒
+1/25 Violet戒
+1/50 奥玛之灵戒
+1/60 Noble戒
+1/60 魂戒
+1/70 Boundless戒
+1/70 雷戒
+1/70 TaeGuk戒
+
+;Bracelets
+1/5 DeathGauntlet
+1/5 金手镯
+1/5 青铜手套
+1/20 骑士手镯
+1/20 龙手镯
+1/20 魂泉手镯
+1/20 钢手套
+1/70 8Trigram轮
+1/70 HangMa轮
+1/70 BokMa轮
+1/90 BaekTa手套
+1/90 之灵Reformer
+1/90 圣道轮
+
+;Necklace
+1/5 Lantern项链
+1/5 虎项链
+1/5 蓝玉项链
+1/5 BambooPipe
+1/5 ConvexLens
+1/30 Gale项链
+1/20 绿Bead
+1/20 DemonicBells
+1/20 魂项链
+1/60 英雄项链
+1/60 精金项链
+1/60 Requiem项链
+1/500 技能项链
+
+;Gems
+1/100 勇气珠
+1/100 魂珠
+1/100 魔法珠
+1/130 耐久珠
+1/140 准确珠
+1/140 敏捷珠
+1/300 毒珠
+1/300 冰冻珠
+1/200 耐力珠
+1/200 幻灭珠
+
+;Books
+1/100 CrossHalf月
+1/100 FlameDisruptor
+1/100 UltimateEnhancer
+1/50 EnergyRepulsor
+1/100 双生龙兽刃
+1/50 Purification
+1/50 LionRoar
+1/120 召唤圣精灵
+1/120 Mirroring
+1/160 Entrapment
+1/160 Hallucination
+1/160 Vampirism
+1/200 FlameField
+1/200 刃Avalanche
+1/200 诅咒

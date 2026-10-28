@@ -1,0 +1,207 @@
+;Gold
+1/1 Gold 15000
+
+;Weapons
+1/50 净化剑 
+1/50 巨斧 
+1/50 法师杖 
+1/50 蛇剑 
+1/50 双刃 
+1/50 银弓 
+1/50 龙剑 
+1/50 血Stealer剑 
+1/280 JudgementMace 
+1/280 战争法师杖 
+1/280 魂泉杖 
+1/280 刃之Darkness 
+1/280 Fiend弓 
+1/225 战争之灵刃 
+1/225 魔法Scythe 
+1/225 石BambooFan 
+1/225 冰冻刃 
+1/225 轻盈弓 
+1/550 龙斩杀 
+1/550 龙杖 
+1/550 魂军刀 
+1/550 皇家刃 
+1/550 凶煞弓 
+1/800 剑之战争神 
+1/800 刃之Sorcery 
+1/800 天剑 
+1/800 刃之Magi 
+1/800 弓之Force 
+1/170 祖玛JudgementMace 
+1/170 祖玛战争法师杖 
+1/170 祖玛魂泉杖 
+1/170 祖玛刃 
+1/170 祖玛Fiend弓 
+
+;Armours
+1/5 Heavy甲(M) 
+1/5 Heavy甲(F) 
+1/5 魔法袍(M) 
+1/5 魔法袍(F) 
+1/5 魂甲(M) 
+1/5 魂甲(F) 
+1/5 圣物甲(M) 
+1/5 圣物甲(F) 
+1/5 轻皮革甲(M) 
+1/5 轻皮革甲(F) 
+1/55 钢甲(M) 
+1/55 钢甲(F) 
+1/55 龙袍(M) 
+1/55 龙袍(F) 
+1/55 Titan甲(M) 
+1/55 Titan甲(F) 
+1/55 皇家甲(M) 
+1/55 皇家甲(F) 
+1/55 Studded甲(M) 
+1/55 Studded甲(F) 
+1/1000 天甲(M) 
+1/1000 天甲(F) 
+
+;Helmets
+1/80 黑铁盔 
+1/5 骷髅盔 
+1/5 巫医盔 
+1/80 盔之英雄 
+1/70 巨盔 
+1/70 WisdomCoronet 
+1/70 道Coronet 
+
+;Necklaces
+1/100 Gale项链 
+1/65 绿Bead 
+1/65 DemonicBells 
+1/65 魂项链 
+1/400 技能项链 
+1/5 ConvexLens 
+1/5 BambooPipe 
+1/40 爪项链 
+1/40 Life项链 
+1/40 珍珠项链 
+
+;Bracelets
+1/5 DeathGauntlet 
+1/5 金手镯 
+1/5 青铜手套 
+1/40 Spell手镯 
+1/40 3rd眼手镯 
+1/85 骑士手镯 
+1/85 龙手镯 
+1/85 魂泉手镯 
+1/35 黑铁手镯 
+1/65 钢手套 
+
+;Rings
+1/5 Charm戒 
+1/5 Moral戒 
+1/5 Expel戒 
+1/5 珊瑚戒 
+1/10 Gale戒 
+1/35 龙戒 
+1/35 红宝石戒 
+1/35 铂金戒 
+1/95 力量戒 
+1/95 Violet戒 
+1/95 Titan戒 
+1/4000 Flame戒 
+1/4000 Recovery戒 
+1/40000 Revival戒 
+1/40000 防护戒 
+1/40000 防护戒 
+1/40000 Paralysis戒 
+1/4000 Clear戒 
+1/10 Gale戒 
+
+;Amulets
+1/5 复活护符 
+
+;Belts
+1/100 金腰带 
+1/150 精金腰带 
+
+;Boots
+1/100 龙靴 
+1/150 红鳞靴 
+
+;Potions
+1/1 大金创药 
+1/1 大魔法药 
+1/1 大金创药 
+1/1 大魔法药 
+1/2 大金创药 
+1/2 大魔法药 
+1/2 大金创药 
+1/2 大魔法药 
+1/1 太阳药水(M) 
+1/1 太阳药水(M) 
+1/1 太阳药水(M) 
+1/1 太阳药水(M) 
+1/1 太阳药水(M) 
+1/1 太阳药水(M) 
+1/2 太阳药水(M) 
+1/2 太阳药水(M) 
+1/2 太阳药水(M) 
+1/2 太阳药水(M) 
+1/2 太阳药水(M) 
+1/2 太阳药水(M) 
+1/30 Impact药(M) 
+1/30 魔法药(M) 
+1/30 道士药(M) 
+1/30 暴药(M) 
+1/30 StaminaAid(M) 
+1/30 魔法Aid(M) 
+1/1 特制金创药 
+1/1 特制魔法药 
+1/2 特制金创药 
+1/2 特制魔法药 
+
+;Crafting Materials
+1/10 祖玛圣物 
+
+;Scrolls
+1/2 BenedictionOil 
+1/5 BenedictionOil 
+
+;Gems
+1/350 勇气珠 
+1/350 魔法珠 
+1/350 魂珠 
+
+;Books
+1/50 双生龙兽刃 
+1/50 Entrapment 
+1/25 烈焰剑 
+1/50 LionRoar 
+1/30 CrossHalf月 
+1/50 刃Avalanche 
+1/400 防护Field 
+1/400 Rage 
+1/50 Vampirism 
+1/25 冰暴 
+1/30 FlameDisruptor 
+1/50 Mirroring 
+1/200 FlameField 
+1/400 MeteorStrike 
+1/600 Blizzard 
+1/50 Hallucination 
+1/50 Purification 
+1/30 UltimateEnhancer 
+1/30 EnergyRepulsor 
+1/25 召唤神兽 
+1/200 召唤圣精灵 
+1/200 诅咒 
+1/200 Reincarnation 
+1/400 毒Cloud
+1/600 Energy盾 
+1/175 FlashDash 
+1/50 毒剑 
+1/50 月轻 
+1/50 MPEater 
+1/200 暗Body 
+1/400 SwiftFeet 
+1/400 火Burst 
+
+;Nothing
+1/100 金Bar 

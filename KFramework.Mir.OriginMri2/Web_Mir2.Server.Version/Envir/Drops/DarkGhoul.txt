@@ -1,0 +1,172 @@
+;Gold
+1/2 Gold 2500
+
+;Potions
+1/2 太阳水 
+1/2 太阳药水(M) 
+1/1 中金创药 
+1/1 中魔法药 
+1/1 大金创药 
+1/1 大魔法药
+1/1 中金创药 
+1/1 中魔法药 
+1/1 大金创药 
+1/1 大魔法药 
+1/30 Impact药(S) 
+1/30 魔法药(S) 
+1/30 道士药(小) 
+1/30 风暴药(小) 
+1/30 StaminaAid(S) 
+1/30 魔法Aid(S)
+
+;Weapons
+1/15 力量斧
+1/15 长弓
+1/25 净化剑  
+1/10 武侠剑
+1/10 钩矛 
+1/10 铁刃
+1/25 血Stealer剑
+1/10 Scimitar
+1/15 短剑剑
+
+;Armours
+1/15 轻皮革甲(M)
+1/15 轻皮革甲(F)
+1/15 Medium甲(M) 
+1/15 Medium甲(F) 
+1/15 Heavy甲(M)
+1/15 Heavy甲(F)
+1/15 魂甲(M)
+1/15 魂甲(F)
+1/15 魔法袍(M)
+1/15 魔法袍(F)
+1/15 圣物甲(M)
+1/15 圣物甲(F)
+
+;Helmets
+1/15 青铜盔 
+1/17 魔法盔 
+1/20 巫医盔
+1/20 骷髅盔
+1/250 黑铁盔
+
+;Necklaces
+1/15 蓝玉项链 
+1/15 ConvexLens 
+1/15 BambooPipe 
+1/6 Lantern项链 
+1/6 虎项链 
+1/6 铂金项链 
+1/5 Naga项链 
+1/5 Amber项链 
+1/5 凤凰Bead 
+
+;Bracelets
+1/10 DeathGauntlet 
+1/10 金手镯 
+1/6 乌木手镯 
+1/6 Monk手镯 
+1/6 Strain手镯 
+1/5 钢手镯 
+1/15 魂泉手镯
+1/10 Hard手套 
+1/10 魔法手镯 
+1/10 Mundane手套
+1/10 NokChi轮
+1/10 道守护手镯
+
+;Rings
+1/10 金戒 
+1/10 Charm戒 
+1/10 Moral戒 
+1/6 黑戒 
+1/6 蛇眼戒 
+1/6 珍珠戒 
+1/6 骷髅戒 
+1/5 蓝戒 
+1/10 Mundane戒
+1/10 NokChi戒
+1/10 道守护戒
+
+;Belts
+1/10 皮革腰带
+1/15 Chain腰带
+1/15 青铜腰带
+1/20 钢腰带
+
+;Boots
+1/15 皮革靴
+1/20 丝靴
+1/45 黑靴
+
+;Stones
+1/30 DC石(M)
+1/65 DC石(L)
+1/30 MC石(M)
+1/65 MC石(L)
+1/30 SC石(M)
+1/65 SC石(L) 
+
+;Gems
+1/450 勇气宝石
+1/450 魔法宝石
+1/450 魂宝石
+1/150 防护宝石
+1/150 邪斩杀宝石
+
+1/1400 MajesticRing
+1/1400 MajesticNecklace
+1/1400 MajesticWheel
+1/1400 MajesticBoots
+1/1400 MajesticBelt
+
+;Books
+;Warrior
+1/30 Slaying
+1/35 Thrusting
+1/40 Half月
+1/50 ShoulderDash
+1/100 SliceNDice
+1/210 双生龙兽刃
+
+;Wizard
+1/30 雷弩箭
+1/35 Teleport
+1/40 火Bang
+1/45 火墙
+1/50 雷
+1/55 霜Crunch
+1/100 雷暴
+1/210 魔法盾
+
+;Taoist
+1/30 魂火球
+1/35 召唤骷髅
+1/40 Hiding
+1/45 MassHiding
+1/50 魂盾
+1/55 Revelation
+1/60 Blessed甲
+1/65 EnergyRepulsor
+1/70 陷阱Hexagon
+1/100 Purification
+1/210 MassHealing
+
+;Assassin
+1/30 双Slash
+1/35 Haste
+1/40 FlashDash
+1/45 轻Body
+1/100 Heavenly剑
+1/210 火Burst
+
+;Archer
+1/30 Focus
+1/35 StraightShot
+1/40 MentalState
+1/45 双Shot
+1/100 Meditation
+
+;quests
+1/1 GhoulChains Q

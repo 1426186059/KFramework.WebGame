@@ -1,0 +1,206 @@
+;Gold
+1/1 Gold 22000
+
+;Pots + Other
+1/1 大金创药
+1/1 大金创药
+1/1 大金创药
+1/1 大金创药
+1/1 大魔法药
+1/1 大魔法药
+1/1 大魔法药
+1/1 大魔法药
+1/1 太阳水
+1/1 太阳水
+1/2 太阳水
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/2 太阳药水(M)
+
+1/2 BenedictionOil
+
+
+1/1 Awakeningbox 
+1/1 觉醒魂0 
+
+;Weapons
+1/90 龙斩杀
+1/90 凶煞弓
+1/90 皇家刃
+1/90 龙杖
+1/90 魂军刀
+1/165 刃之Magi
+1/115 剑之战争神
+1/115 弓之Force
+1/115 刃之Sorcery
+1/115 天剑
+1/215 黑虎Hammer
+1/215 Lethal弓
+1/215 杖之Lotus
+1/215 Fan之Crane
+1/215 Butchering刃
+1/3000 LordSlayerBlade
+1/3000 LordSlayerStaff
+1/3000 LordSlayerFan
+1/3000 LordSlayerBlades
+
+;Armours
+1/3000 LordSlayerArmour(M)
+1/3000 LordSlayerArmour(F)
+
+;Helmet
+1/3000 LordSlayerHelmet
+
+;Necklace
+1/45 爪项链
+1/45 Life项链
+1/45 珍珠项链
+1/60 绿Bead
+1/60 DemonicBells
+1/60 魂项链
+1/95 Cuspid项链
+1/95 SorceryAnchor
+1/95 PurifiedMirror
+1/197 邪Triangle
+1/197 CrossPurified
+1/197 Adamant项链
+
+;Necklace Rare
+1/1400 TerrapinNecklace
+1/3000 LordSlayerNecklace
+
+;Bracelets
+1/10 HangMa轮
+1/10 BokMa轮
+1/10 8Trigram轮
+1/25 之灵Reformer
+1/25 圣道轮
+1/25 BaekTa手套
+1/95 DualTitan护符
+1/95 SacredAngel护符
+1/95 邪Whisp护符
+1/195 WildTitan护符
+1/195 Enchanted护符
+1/195 五元素护符
+
+;Bracelets Rare
+1/1300 TerrapinBracelet
+1/3000 LordSlayerBracelet
+
+;Rings
+1/10 奥玛之灵戒
+1/10 DestinyRing 
+1/10 Noble戒
+1/10 魂戒
+1/15 Boundless戒
+1/15 雷戒
+1/15 TaeGuk戒
+1/95 Pledge戒
+1/95 五元素戒
+1/95 Crimson红宝石戒
+1/195 魔红宝石戒
+1/195 邪Expel戒
+1/195 金龙戒
+
+;Rings Rare
+1/1300 TerrapinRing
+1/3000 LordSlayerRing
+
+;Shields
+1/1300 TerrapinShield
+
+;Shoes
+1/15 丝靴
+1/20 黑靴
+1/30 龙靴
+1/60 红鳞靴
+1/3000 LordSlayerBoots
+
+;Belt
+1/3000 LordSlayerBelt
+
+;Stone
+1/50 HolyDCStone
+1/50 HolyMCStone
+1/50 HolySCStone
+1/50 HolyHealthStone
+1/50 HolyMagicStone
+1/50 HolyACStone
+1/50 HolyAMCStone
+1/50 HolyDefenseStone
+
+;Books
+;Warrior
+1/60 BladeStorm
+1/65 烈焰剑
+1/70 LionRoar
+1/75 BladeStorm
+1/80 CrossHalf月
+1/85 刃Avalanche
+1/90 防护Field
+1/95 Rage
+1/100 Fury
+1/220 Counter攻击
+
+;Wizard
+1/60 魔法盾
+1/65 冰暴
+1/70 FlameDisruptor
+1/75 Mirroring
+1/80 FlameField
+1/85 Blizzard
+1/220 魔法Booster
+
+;Taoist
+1/60 UltimateEnhancer
+1/65 Healing轮
+1/70 召唤神兽
+1/75 Reincarnation
+1/80 召唤圣精灵
+1/85 诅咒
+1/90 毒Cloud
+1/95 PetEnhancer
+1/220 Energy盾
+
+;Assassin
+1/40 Haste
+1/45 FlashDash
+1/50 轻Body
+1/55 Heavenly剑
+1/60 火Burst
+1/65 CrescentSlash
+1/70 陷阱
+1/75 毒剑
+1/80 月轻
+1/120 MPEater
+1/210 SwiftFeet
+
+;Archer
+1/40 双Shot
+1/45 Meditation
+1/50 ElementalShot
+1/55 Explosive陷阱
+1/60 Concentration
+1/65 VampireShot
+1/70 召唤吸血蜘蛛
+1/75 BackStep
+1/80 DelayedExplosion
+1/120 ElementalBarrier
+1/120 BindingShot
+1/210 召唤蟾蜍
+1/210 毒Shot
+
+;CraftingMaterials
+1/25 BraveryFragment
+1/25 MagicFragment
+1/25 SoulFragment
+1/25 ProtectionFragment
+1/25 EvilSlayerFragment
+1/25 DurabilityFragment
+1/25 StormFragment
+1/25 DisillusionFragment
+1/25 AccuracyFragment
+1/25 PoisonFragment
+1/25 FreezingFragment
+1/25 AgilityFragment
+1/25 EnduranceFragment

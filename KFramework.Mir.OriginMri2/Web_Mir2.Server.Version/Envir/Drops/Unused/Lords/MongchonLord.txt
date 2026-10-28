@@ -1,0 +1,1123 @@
+;Level1
+;Gold
+1/1 Gold 15000 LV1
+
+
+;Pots + Other
+1/1 大金创药 LV1
+1/1 大魔法药 LV1
+1/1 大金创药 LV1
+1/1 大魔法药 LV1
+1/2 大金创药 LV1
+1/2 大魔法药 LV1
+1/1 大金创药 LV1
+1/1 大魔法药 LV1
+1/2 大金创药 LV1
+1/2 大魔法药 LV1
+1/1 大金创药 LV1
+1/1 大魔法药 LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/2 太阳药水(M) LV1
+
+
+;Other 
+1/15 BenedictionOil LV1
+
+1/40 觉醒魂0 LV1
+1/40 觉醒魂0 LV1
+
+
+;Weapons
+1/50 血Stealer剑 LV1
+1/50 龙剑 LV1
+1/50 JudgementMace LV1 
+1/50 战争法师杖 LV1
+1/50 魂泉杖 LV1 
+1/50 刃之Darkness LV1
+
+
+;Weapons Rare
+1/225 冰冻刃 LV1
+1/225 战争之灵刃 LV1 
+1/225 轻盈弓 LV1
+1/225 魔法Scythe LV1
+1/225 石BambooFan LV1
+
+;Armour
+1/40 锻造甲(M) LV1
+1/40 锻造甲(F) LV1
+1/40 铁甲(M) LV1
+1/40 铁甲(F) LV1
+1/40 Wizard袍(M) LV1
+1/40 WizardRobe(F) LV1
+1/40 珍珠甲(M) LV1
+1/40 珍珠甲(F) LV1
+1/40 远古甲(M) LV1
+1/40 远古甲(F) LV1
+
+;Armour Rare
+1/10000 天甲(M) LV1
+1/10000 天甲(F) LV1
+
+;Helmets
+1/10 骷髅盔 LV1 
+1/10 巫医盔 LV1
+1/15 金Tiara LV1
+1/40 黑铁盔 LV1 
+
+;Helmets Rare
+1/800 MajesticHelmet LV1
+
+;Necklace
+1/10 Lantern项链 LV1 
+1/10 虎项链 LV1 
+1/15 蓝玉项链 LV1 
+1/15 ConvexLens LV1 
+1/15 BambooPipe LV1 
+1/35 爪项链 LV1
+1/35 珍珠项链 LV1 
+1/35 Life项链 LV1 
+1/70 Gale项链 LV1
+
+;Necklace Rare
+1/110 红Orchid项链 LV1 
+1/110 红花项链 LV1 
+
+;Bracelets
+1/35 骑士手镯 LV1 
+1/35 魂泉手镯 LV1 
+1/35 龙手镯 LV1 
+1/600 8Trigram轮 LV1
+1/600 BaekTa手套 LV1
+1/600 HangMa轮 LV1
+
+;Bracelets Rare
+1/100 红Orchid手镯 LV1 
+1/100 红花手镯 LV1 
+1/800 MajesticWheel LV1
+
+
+;Rings Rare
+1/120 红Orchid戒 LV1 
+1/120 红花戒 LV1
+1/800 MajesticRing LV1
+1/600 Boundless戒 LV1
+1/600 Violet戒 LV1
+1/600 Titan戒 LV1
+
+
+;Belts
+1/600 精金腰带 LV1
+1/400 金腰带 LV1
+1/200 钢腰带 LV1
+
+;Shoes Rare
+1/800 MajesticBoots LV1
+
+
+;Belts Rare
+1/500 MajesticBelt LV1
+1/100 黑靴 LV1
+1/400 龙靴 LV1
+
+
+;Shields
+1/200 PlasmaShield LV1
+1/200 SeekerShield LV1
+
+;Shields Rare
+1/250 FlechetteShield LV1
+
+
+;Stone
+1/40 DC石(L) LV1
+1/40 MC石(L) LV1
+1/40 SC石(L) LV1
+
+
+;Level2
+;Gold
+1/1 Gold 15000 LV2
+
+
+;Pots + Other
+1/1 大金创药 LV2
+1/1 大魔法药 LV2
+1/1 大金创药 LV2
+1/1 大魔法药 LV2
+1/2 大金创药 LV2
+1/2 大魔法药 LV2
+1/1 大金创药 LV2
+1/1 大魔法药 LV2
+1/2 大金创药 LV2
+1/2 大魔法药 LV2
+1/1 大金创药 LV2
+1/1 大魔法药 LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/2 太阳药水(M) LV2
+
+
+;Other 
+1/15 BenedictionOil LV2
+
+1/40 觉醒魂0 LV2
+1/40 觉醒魂0 LV2
+
+
+;Weapons
+1/50 血Stealer剑 LV2
+1/50 龙剑 LV2
+1/50 JudgementMace LV2 
+1/50 战争法师杖 LV2
+1/50 魂泉杖 LV2 
+1/50 刃之Darkness LV2
+
+
+;Weapons Rare
+1/225 冰冻刃 LV2
+1/225 战争之灵刃 LV2 
+1/225 魔法Scythe LV2
+1/225 轻盈弓 LV2
+1/225 石BambooFan LV2
+
+;Armour
+1/40 锻造甲(M) LV2
+1/40 锻造甲(F) LV2
+1/40 铁甲(M) LV2
+1/40 铁甲(F) LV2
+1/40 Wizard袍(M) LV2
+1/40 WizardRobe(F) LV2
+1/40 珍珠甲(M) LV2
+1/40 珍珠甲(F) LV2
+1/40 远古甲(M) LV2
+1/40 远古甲(F) LV2
+
+;Armour Rare
+1/10000 天甲(M) LV2
+1/10000 天甲(F) LV2
+
+;Helmets
+1/10 骷髅盔 LV2 
+1/10 巫医盔 LV2
+1/15 金Tiara LV2
+1/40 黑铁盔 LV2 
+
+;Helmets Rare
+1/800 MajesticHelmet LV2
+
+;Necklace
+1/10 Lantern项链 LV2 
+1/10 虎项链 LV2 
+1/15 蓝玉项链 LV2 
+1/15 ConvexLens LV2 
+1/15 BambooPipe LV2 
+1/35 爪项链 LV2
+1/35 珍珠项链 LV2 
+1/35 Life项链 LV2 
+1/70 Gale项链 LV2
+
+;Necklace Rare
+1/110 红Orchid项链 LV2 
+1/110 红花项链 LV2 
+
+;Bracelets
+1/35 骑士手镯 LV2 
+1/35 魂泉手镯 LV2 
+1/35 龙手镯 LV2 
+1/600 8Trigram轮 LV2
+1/600 BaekTa手套 LV2
+1/600 HangMa轮 LV2
+
+;Bracelets Rare
+1/100 红Orchid手镯 LV2 
+1/100 红花手镯 LV2 
+1/800 MajesticWheel LV2
+
+
+;Rings Rare
+1/120 红Orchid戒 LV2 
+1/120 红花戒 LV2
+1/800 MajesticRing LV2
+1/600 Boundless戒 LV2
+1/600 Violet戒 LV2
+1/600 Titan戒 LV2
+
+
+;Belts
+1/600 精金腰带 LV2
+1/400 金腰带 LV2
+1/200 钢腰带 LV2
+
+;Shoes Rare
+1/800 MajesticBoots LV2
+
+
+;Belts Rare
+1/500 MajesticBelt LV2
+1/100 黑靴 LV2
+1/400 龙靴 LV2
+
+
+;Shields
+1/200 PlasmaShield LV2
+1/200 SeekerShield LV2
+
+;Shields Rare
+1/250 FlechetteShield LV2
+
+
+;Stone
+1/40 DC石(L) LV2
+1/40 MC石(L) LV2
+1/40 SC石(L) LV2
+
+;Level3
+;Gold
+1/1 Gold 15000 LV3
+
+
+;Pots + Other
+1/1 大金创药 LV3
+1/1 大魔法药 LV3
+1/1 大金创药 LV3
+1/1 大魔法药 LV3
+1/2 大金创药 LV3
+1/2 大魔法药 LV3
+1/1 大金创药 LV3
+1/1 大魔法药 LV3
+1/2 大金创药 LV3
+1/2 大魔法药 LV3
+1/1 大金创药 LV3
+1/1 大魔法药 LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/2 太阳药水(M) LV3
+
+
+;Other 
+1/15 BenedictionOil LV3
+
+1/40 觉醒魂0 LV3
+1/40 觉醒魂0 LV3
+
+
+;Weapons
+1/50 血Stealer剑 LV3
+1/50 龙剑 LV3
+1/50 JudgementMace LV3 
+1/50 战争法师杖 LV3
+1/50 魂泉杖 LV3 
+1/50 刃之Darkness LV3
+
+
+;Weapons Rare
+1/225 冰冻刃 LV3
+1/225 轻盈弓 LV3
+1/225 战争之灵刃 LV3 
+1/225 魔法Scythe LV3
+1/225 石BambooFan LV3
+
+;Armour
+1/40 锻造甲(M) LV3
+1/40 锻造甲(F) LV3
+1/40 铁甲(M) LV3
+1/40 铁甲(F) LV3
+1/40 Wizard袍(M) LV3
+1/40 WizardRobe(F) LV3
+1/40 珍珠甲(M) LV3
+1/40 珍珠甲(F) LV3
+1/40 远古甲(M) LV3
+1/40 远古甲(F) LV3
+
+;Armour Rare
+1/10000 天甲(M) LV3
+1/10000 天甲(F) LV3
+
+;Helmets
+1/10 骷髅盔 LV3 
+1/10 巫医盔 LV3
+1/15 金Tiara LV3
+1/40 黑铁盔 LV3 
+
+;Helmets Rare
+1/800 MajesticHelmet LV3
+
+;Necklace
+1/10 Lantern项链 LV3 
+1/10 虎项链 LV3 
+1/15 蓝玉项链 LV3 
+1/15 ConvexLens LV3 
+1/15 BambooPipe LV3 
+1/35 爪项链 LV3
+1/35 珍珠项链 LV3 
+1/35 Life项链 LV3 
+1/70 Gale项链 LV3
+
+;Necklace Rare
+1/110 红Orchid项链 LV3 
+1/110 红花项链 LV3 
+
+;Bracelets
+1/35 骑士手镯 LV3 
+1/35 魂泉手镯 LV3 
+1/35 龙手镯 LV3 
+1/600 8Trigram轮 LV3
+1/600 BaekTa手套 LV3
+1/600 HangMa轮 LV3
+
+;Bracelets Rare
+1/100 红Orchid手镯 LV3 
+1/100 红花手镯 LV3 
+1/800 MajesticWheel LV3
+
+
+;Rings Rare
+1/120 红Orchid戒 LV3 
+1/120 红花戒 LV3
+1/800 MajesticRing LV3
+1/600 Boundless戒 LV3
+1/600 Violet戒 LV3
+1/600 Titan戒 LV3
+
+
+;Belts
+1/600 精金腰带 LV3
+1/400 金腰带 LV3
+1/200 钢腰带 LV3
+
+;Shoes Rare
+1/800 MajesticBoots LV3
+
+
+;Belts Rare
+1/500 MajesticBelt LV3
+1/100 黑靴 LV3
+1/400 龙靴 LV3
+
+
+;Shields
+1/200 PlasmaShield LV3
+1/200 SeekerShield LV3
+
+;Shields Rare
+1/250 FlechetteShield LV3
+
+
+;Stone
+1/40 DC石(L) LV3
+1/40 MC石(L) LV3
+1/40 SC石(L) LV3
+
+
+;Level4
+;Gold
+1/1 Gold 15000 LV4
+
+
+;Pots + Other
+1/1 大金创药 LV4
+1/1 大魔法药 LV4
+1/1 大金创药 LV4
+1/1 大魔法药 LV4
+1/2 大金创药 LV4
+1/2 大魔法药 LV4
+1/1 大金创药 LV4
+1/1 大魔法药 LV4
+1/2 大金创药 LV4
+1/2 大魔法药 LV4
+1/1 大金创药 LV4
+1/1 大魔法药 LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/2 太阳药水(M) LV4
+
+
+;Other 
+1/15 BenedictionOil LV4
+
+1/40 觉醒魂0 LV4
+1/40 觉醒魂0 LV4
+
+
+;Weapons
+1/50 血Stealer剑 LV4
+1/50 龙剑 LV4
+1/50 JudgementMace LV4 
+1/50 战争法师杖 LV4
+1/50 魂泉杖 LV4 
+1/50 刃之Darkness LV4
+
+
+;Weapons Rare
+1/225 冰冻刃 LV4
+1/225 轻盈弓 LV4
+1/225 战争之灵刃 LV4 
+1/225 魔法Scythe LV4
+1/225 石BambooFan LV4
+
+;Armour
+1/40 锻造甲(M) LV4
+1/40 锻造甲(F) LV4
+1/40 铁甲(M) LV4
+1/40 铁甲(F) LV4
+1/40 Wizard袍(M) LV4
+1/40 WizardRobe(F) LV4
+1/40 珍珠甲(M) LV4
+1/40 珍珠甲(F) LV4
+1/40 远古甲(M) LV4
+1/40 远古甲(F) LV4
+
+;Armour Rare
+1/10000 天甲(M) LV4
+1/10000 天甲(F) LV4
+
+;Helmets
+1/10 骷髅盔 LV4 
+1/10 巫医盔 LV4
+1/15 金Tiara LV4
+1/40 黑铁盔 LV4 
+
+;Helmets Rare
+1/800 MajesticHelmet LV4
+
+;Necklace
+1/10 Lantern项链 LV4 
+1/10 虎项链 LV4 
+1/15 蓝玉项链 LV4 
+1/15 ConvexLens LV4 
+1/15 BambooPipe LV4 
+1/35 爪项链 LV4
+1/35 珍珠项链 LV4 
+1/35 Life项链 LV4 
+1/70 Gale项链 LV4
+
+;Necklace Rare
+1/110 红Orchid项链 LV4 
+1/110 红花项链 LV4 
+
+;Bracelets
+1/35 骑士手镯 LV4 
+1/35 魂泉手镯 LV4 
+1/35 龙手镯 LV4 
+1/600 8Trigram轮 LV4
+1/600 BaekTa手套 LV4
+1/600 HangMa轮 LV4
+
+;Bracelets Rare
+1/100 红Orchid手镯 LV4 
+1/100 红花手镯 LV4 
+1/800 MajesticWheel LV4
+
+
+;Rings Rare
+1/120 红Orchid戒 LV4 
+1/120 红花戒 LV4
+1/800 MajesticRing LV4
+1/600 Boundless戒 LV4
+1/600 Violet戒 LV4
+1/600 Titan戒 LV4
+
+
+;Belts
+1/600 精金腰带 LV4
+1/400 金腰带 LV4
+1/200 钢腰带 LV4
+
+;Shoes Rare
+1/800 MajesticBoots LV4
+
+
+;Belts Rare
+1/500 MajesticBelt LV4
+1/100 黑靴 LV4
+1/400 龙靴 LV4
+
+
+;Shields
+1/200 PlasmaShield LV4
+1/200 SeekerShield LV4
+
+;Shields Rare
+1/250 FlechetteShield LV4
+
+
+;Stone
+1/40 DC石(L) LV4
+1/40 MC石(L) LV4
+1/40 SC石(L) LV4
+
+;Level5
+;Gold
+1/1 Gold 15000 LV5
+
+
+;Pots + Other
+1/1 大金创药 LV5
+1/1 大魔法药 LV5
+1/1 大金创药 LV5
+1/1 大魔法药 LV5
+1/2 大金创药 LV5
+1/2 大魔法药 LV5
+1/1 大金创药 LV5
+1/1 大魔法药 LV5
+1/2 大金创药 LV5
+1/2 大魔法药 LV5
+1/1 大金创药 LV5
+1/1 大魔法药 LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/2 太阳药水(M) LV5
+
+
+;Other 
+1/15 BenedictionOil LV5
+
+1/40 觉醒魂0 LV5
+1/40 觉醒魂0 LV5
+
+
+;Weapons
+1/50 血Stealer剑 LV5
+1/50 龙剑 LV5
+1/50 JudgementMace LV5 
+1/50 战争法师杖 LV5
+1/50 魂泉杖 LV5 
+1/50 刃之Darkness LV5
+
+
+;Weapons Rare
+1/225 冰冻刃 LV5
+1/225 战争之灵刃 LV5 
+1/225 轻盈弓 LV5
+1/225 魔法Scythe LV5
+1/225 石BambooFan LV5
+
+;Armour
+1/40 锻造甲(M) LV5
+1/40 锻造甲(F) LV5
+1/40 铁甲(M) LV5
+1/40 铁甲(F) LV5
+1/40 Wizard袍(M) LV5
+1/40 WizardRobe(F) LV5
+1/40 珍珠甲(M) LV5
+1/40 珍珠甲(F) LV5
+1/40 远古甲(M) LV5
+1/40 远古甲(F) LV5
+
+;Armour Rare
+1/10000 天甲(M) LV5
+1/10000 天甲(F) LV5
+
+;Helmets
+1/10 骷髅盔 LV5 
+1/10 巫医盔 LV5
+1/15 金Tiara LV5
+1/40 黑铁盔 LV5 
+
+;Helmets Rare
+1/800 MajesticHelmet LV5
+
+;Necklace
+1/10 Lantern项链 LV5 
+1/10 虎项链 LV5 
+1/15 蓝玉项链 LV5 
+1/15 ConvexLens LV5 
+1/15 BambooPipe LV5 
+1/35 爪项链 LV5
+1/35 珍珠项链 LV5 
+1/35 Life项链 LV5 
+1/70 Gale项链 LV5
+
+;Necklace Rare
+1/110 红Orchid项链 LV5 
+1/110 红花项链 LV5 
+
+;Bracelets
+1/35 骑士手镯 LV5 
+1/35 魂泉手镯 LV5 
+1/35 龙手镯 LV5 
+1/600 8Trigram轮 LV5
+1/600 BaekTa手套 LV5
+1/600 HangMa轮 LV5
+
+;Bracelets Rare
+1/100 红Orchid手镯 LV5 
+1/100 红花手镯 LV5 
+1/800 MajesticWheel LV5
+
+
+;Rings Rare
+1/120 红Orchid戒 LV5 
+1/120 红花戒 LV5
+1/800 MajesticRing LV5
+1/600 Boundless戒 LV5
+1/600 Violet戒 LV5
+1/600 Titan戒 LV5
+
+
+;Belts
+1/600 精金腰带 LV5
+1/400 金腰带 LV5
+1/200 钢腰带 LV5
+
+;Shoes Rare
+1/800 MajesticBoots LV5
+
+
+;Belts Rare
+1/500 MajesticBelt LV5
+1/100 黑靴 LV5
+1/400 龙靴 LV5
+
+
+;Shields
+1/200 PlasmaShield LV5
+1/200 SeekerShield LV5
+
+;Shields Rare
+1/250 FlechetteShield LV5
+
+
+;Stone
+1/40 DC石(L) LV5
+1/40 MC石(L) LV5
+1/40 SC石(L) LV5
+
+
+;Level6
+;Gold
+1/1 Gold 15000 LV6
+
+
+;Pots + Other
+1/1 大金创药 LV6
+1/1 大魔法药 LV6
+1/1 大金创药 LV6
+1/1 大魔法药 LV6
+1/2 大金创药 LV6
+1/2 大魔法药 LV6
+1/1 大金创药 LV6
+1/1 大魔法药 LV6
+1/2 大金创药 LV6
+1/2 大魔法药 LV6
+1/1 大金创药 LV6
+1/1 大魔法药 LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/2 太阳药水(M) LV6
+
+
+;Other 
+1/15 BenedictionOil LV6
+
+1/40 觉醒魂0 LV6
+1/40 觉醒魂0 LV6
+
+
+;Weapons
+1/50 血Stealer剑 LV6
+1/50 龙剑 LV6
+1/50 JudgementMace LV6 
+1/50 战争法师杖 LV6
+1/50 魂泉杖 LV6 
+1/50 刃之Darkness LV6
+
+
+;Weapons Rare
+1/225 冰冻刃 LV6
+1/225 轻盈弓 LV6
+1/225 战争之灵刃 LV6 
+1/225 魔法Scythe LV6
+1/225 石BambooFan LV6
+
+;Armour
+1/40 锻造甲(M) LV6
+1/40 锻造甲(F) LV6
+1/40 铁甲(M) LV6
+1/40 铁甲(F) LV6
+1/40 Wizard袍(M) LV6
+1/40 WizardRobe(F) LV6
+1/40 珍珠甲(M) LV6
+1/40 珍珠甲(F) LV6
+1/40 远古甲(M) LV6
+1/40 远古甲(F) LV6
+
+;Armour Rare
+1/10000 天甲(M) LV6
+1/10000 天甲(F) LV6
+
+;Helmets
+1/10 骷髅盔 LV6 
+1/10 巫医盔 LV6
+1/15 金Tiara LV6
+1/40 黑铁盔 LV6 
+
+;Helmets Rare
+1/800 MajesticHelmet LV6
+
+;Necklace
+1/10 Lantern项链 LV6 
+1/10 虎项链 LV6 
+1/15 蓝玉项链 LV6 
+1/15 ConvexLens LV6 
+1/15 BambooPipe LV6 
+1/35 爪项链 LV6
+1/35 珍珠项链 LV6 
+1/35 Life项链 LV6 
+1/70 Gale项链 LV6
+
+;Necklace Rare
+1/110 红Orchid项链 LV6 
+1/110 红花项链 LV6 
+
+;Bracelets
+1/35 骑士手镯 LV6 
+1/35 魂泉手镯 LV6 
+1/35 龙手镯 LV6 
+1/600 8Trigram轮 LV6
+1/600 BaekTa手套 LV6
+1/600 HangMa轮 LV6
+
+;Bracelets Rare
+1/100 红Orchid手镯 LV6 
+1/100 红花手镯 LV6 
+1/800 MajesticWheel LV6
+
+
+;Rings Rare
+1/120 红Orchid戒 LV6 
+1/120 红花戒 LV6
+1/800 MajesticRing LV6
+1/600 Boundless戒 LV6
+1/600 Violet戒 LV6
+1/600 Titan戒 LV6
+
+
+;Belts
+1/600 精金腰带 LV6
+1/400 金腰带 LV6
+1/200 钢腰带 LV6
+
+;Shoes Rare
+1/800 MajesticBoots LV6
+
+
+;Belts Rare
+1/500 MajesticBelt LV6
+1/100 黑靴 LV6
+1/400 龙靴 LV6
+
+
+;Shields
+1/200 PlasmaShield LV6
+1/200 SeekerShield LV6
+
+;Shields Rare
+1/250 FlechetteShield LV6
+
+
+;Stone
+1/40 DC石(L) LV6
+1/40 MC石(L) LV6
+1/40 SC石(L) LV6
+
+
+;Level6
+;Gold
+1/1 Gold 15000 LV7
+
+
+;Pots + Other
+1/1 大金创药 LV7
+1/1 大魔法药 LV7
+1/1 大金创药 LV7
+1/1 大魔法药 LV7
+1/2 大金创药 LV7
+1/2 大魔法药 LV7
+1/1 大金创药 LV7
+1/1 大魔法药 LV7
+1/2 大金创药 LV7
+1/2 大魔法药 LV7
+1/1 大金创药 LV7
+1/1 大魔法药 LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/2 太阳药水(M) LV7
+
+
+;Other 
+1/15 BenedictionOil LV7
+
+1/40 觉醒魂0 LV7
+1/40 觉醒魂0 LV7
+
+
+;Weapons
+1/50 血Stealer剑 LV7
+1/50 龙剑 LV7
+1/50 JudgementMace LV7 
+1/50 战争法师杖 LV7
+1/50 魂泉杖 LV7 
+1/50 刃之Darkness LV7
+
+
+;Weapons Rare
+1/225 冰冻刃 LV7
+1/225 战争之灵刃 LV7 
+1/225 轻盈弓 LV7
+1/225 魔法Scythe LV7
+1/225 石BambooFan LV7
+
+;Armour
+1/40 锻造甲(M) LV7
+1/40 锻造甲(F) LV7
+1/40 铁甲(M) LV7
+1/40 铁甲(F) LV7
+1/40 Wizard袍(M) LV7
+1/40 WizardRobe(F) LV7
+1/40 珍珠甲(M) LV7
+1/40 珍珠甲(F) LV7
+1/40 远古甲(M) LV7
+1/40 远古甲(F) LV7
+
+;Armour Rare
+1/10000 天甲(M) LV7
+1/10000 天甲(F) LV7
+
+;Helmets
+1/10 骷髅盔 LV7 
+1/10 巫医盔 LV7
+1/15 金Tiara LV7
+1/40 黑铁盔 LV7 
+
+;Helmets Rare
+1/800 MajesticHelmet LV7
+
+;Necklace
+1/10 Lantern项链 LV7 
+1/10 虎项链 LV7 
+1/15 蓝玉项链 LV7 
+1/15 ConvexLens LV7 
+1/15 BambooPipe LV7 
+1/35 爪项链 LV7
+1/35 珍珠项链 LV7 
+1/35 Life项链 LV7 
+1/70 Gale项链 LV7
+
+;Necklace Rare
+1/110 红Orchid项链 LV7 
+1/110 红花项链 LV7 
+
+;Bracelets
+1/35 骑士手镯 LV7 
+1/35 魂泉手镯 LV7 
+1/35 龙手镯 LV7 
+1/600 8Trigram轮 LV7
+1/600 BaekTa手套 LV7
+1/600 HangMa轮 LV7
+
+;Bracelets Rare
+1/100 红Orchid手镯 LV7 
+1/100 红花手镯 LV7 
+1/800 MajesticWheel LV7
+
+
+;Rings Rare
+1/120 红Orchid戒 LV7 
+1/120 红花戒 LV7
+1/800 MajesticRing LV7
+1/600 Boundless戒 LV7
+1/600 Violet戒 LV7
+1/600 Titan戒 LV7
+
+
+;Belts
+1/600 精金腰带 LV7
+1/400 金腰带 LV7
+1/200 钢腰带 LV7
+
+;Shoes Rare
+1/800 MajesticBoots LV7
+
+
+;Belts Rare
+1/500 MajesticBelt LV7
+1/100 黑靴 LV7
+1/400 龙靴 LV7
+
+
+;Shields
+1/200 PlasmaShield LV7
+1/200 SeekerShield LV7
+
+;Shields Rare
+1/250 FlechetteShield LV7
+
+
+;Stone
+1/40 DC石(L) LV7
+1/40 MC石(L) LV7
+1/40 SC石(L) LV7
+
+;Level8
+;Gold
+1/1 Gold 15000 LV8
+
+
+;Pots + Other
+1/1 大金创药 LV8
+1/1 大魔法药 LV8
+1/1 大金创药 LV8
+1/1 大魔法药 LV8
+1/2 大金创药 LV8
+1/2 大魔法药 LV8
+1/1 大金创药 LV8
+1/1 大魔法药 LV8
+1/2 大金创药 LV8
+1/2 大魔法药 LV8
+1/1 大金创药 LV8
+1/1 大魔法药 LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/2 太阳药水(M) LV8
+
+
+;Other 
+1/15 BenedictionOil LV8
+
+1/40 觉醒魂0 LV8
+1/40 觉醒魂0 LV8
+
+
+;Weapons
+1/50 血Stealer剑 LV8
+1/50 龙剑 LV8
+1/50 JudgementMace LV8 
+1/50 战争法师杖 LV8
+1/50 魂泉杖 LV8 
+1/50 刃之Darkness LV8
+
+
+;Weapons Rare
+1/225 冰冻刃 LV8
+1/225 战争之灵刃 LV8 
+1/225 轻盈弓 LV8
+1/225 魔法Scythe LV8
+1/225 石BambooFan LV8
+
+;Armour
+1/40 锻造甲(M) LV8
+1/40 锻造甲(F) LV8
+1/40 铁甲(M) LV8
+1/40 铁甲(F) LV8
+1/40 Wizard袍(M) LV8
+1/40 WizardRobe(F) LV8
+1/40 珍珠甲(M) LV8
+1/40 珍珠甲(F) LV8
+1/40 远古甲(M) LV8
+1/40 远古甲(F) LV8
+
+;Armour Rare
+1/10000 天甲(M) LV8
+1/10000 天甲(F) LV8
+
+;Helmets
+1/10 骷髅盔 LV8 
+1/10 巫医盔 LV8
+1/15 金Tiara LV8
+1/40 黑铁盔 LV8 
+
+;Helmets Rare
+1/800 MajesticHelmet LV8
+
+;Necklace
+1/10 Lantern项链 LV8 
+1/10 虎项链 LV8 
+1/15 蓝玉项链 LV8 
+1/15 ConvexLens LV8 
+1/15 BambooPipe LV8 
+1/35 爪项链 LV8
+1/35 珍珠项链 LV8 
+1/35 Life项链 LV8 
+1/70 Gale项链 LV8
+
+;Necklace Rare
+1/110 红Orchid项链 LV8 
+1/110 红花项链 LV8 
+
+;Bracelets
+1/35 骑士手镯 LV8 
+1/35 魂泉手镯 LV8 
+1/35 龙手镯 LV8 
+1/600 8Trigram轮 LV8
+1/600 BaekTa手套 LV8
+1/600 HangMa轮 LV8
+
+;Bracelets Rare
+1/100 红Orchid手镯 LV8 
+1/100 红花手镯 LV8 
+1/800 MajesticWheel LV8
+
+
+;Rings Rare
+1/120 红Orchid戒 LV8 
+1/120 红花戒 LV8
+1/800 MajesticRing LV8
+1/600 Boundless戒 LV8
+1/600 Violet戒 LV8
+1/600 Titan戒 LV8
+
+
+;Belts
+1/600 精金腰带 LV8
+1/400 金腰带 LV8
+1/200 钢腰带 LV8
+
+;Shoes Rare
+1/800 MajesticBoots LV8
+
+
+;Belts Rare
+1/500 MajesticBelt LV8
+1/100 黑靴 LV8
+1/400 龙靴 LV8
+
+
+;Shields
+1/200 PlasmaShield LV8
+1/200 SeekerShield LV8
+
+;Shields Rare
+1/250 FlechetteShield LV8
+
+
+;Stone
+1/40 DC石(L) LV8
+1/40 MC石(L) LV8
+1/40 SC石(L) LV8

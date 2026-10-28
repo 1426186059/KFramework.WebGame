@@ -1,0 +1,27 @@
+[@Description]
+
+[@TaskDescription]
+Eliminate 20 {风牛头怪/Crimson}, {ElecMinotaur/Crimson}, 
+{火牛头怪/Crimson} and {冰牛头怪/Crimson}.
+
+[@Completion]
+
+[@KillTasks]
+ElecMinotaur 20
+火牛头怪 20
+冰牛头怪 20
+风牛头怪 20
+
+[@ItemTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+54000
+
+[@GoldReward]
+54000

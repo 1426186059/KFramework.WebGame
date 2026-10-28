@@ -1,0 +1,198 @@
+[@Main]
+#IF
+CHECKPKPOINT > 199
+#SAY
+I will not help an evil person like you...
+ 
+ 
+<Close/@exit>
+#ELSEACT
+GOTO @Main-1
+
+[@Main-1]
+#SAY
+Welcome, How many i help you?
+ 
+<View/@BuySell> Store.
+Listen to the <explanation/@helpbooks> about skills.
+ 
+<Close/@exit>
+
+[@BuySell]
+#SAY
+Please select the Book you either want to Buy or Sell.
+<Buy Back/@BuyBack>
+ 
+<Back/@Main>
+
+[@helpbooks]
+#SAY
+What kind of Books are you interested in?
+ 
+Warrior:  <Skill List/@War1>
+Wizard:   <Skill List/@Wiz1>
+Taoist:   <Skill List/@Tao1>
+Assassin: <Skill List/@Assa1>
+Archer:   <Skill List/@Arc1>
+
+
+[@War1]
+#SAY
+Level  7: Fencing
+Level 15: Slaying
+Level 22: Thrusting
+Level 26: Half月
+Level 30: ShoulderDash
+Level 32: TwinDragonBlade
+Level 32: Entrapment
+<More/@War2> <Back/@helpbooks>
+
+[@War2]
+#SAY
+Level 35: 烈焰剑
+Level 36: LionRoar
+Level 38: CrossHalf月
+Level 38: 刃Avalanche
+Level 39: 防护Field
+Level 44: Rage
+Level 50: SlashingBurst
+<Back/@helpbooks>
+
+[@Wiz1]
+#SAY
+Level  7: 火球
+Level 12: Repulsion
+Level 13: 雷电Shock
+Level 15: 巨火球
+Level 16: 地狱火
+Level 17: 雷弩箭
+<More/@Wiz2> <Back/@helpbooks>
+
+[@Wiz2]
+#SAY
+Level 19: Teleport
+Level 22: 火Bang
+Level 24: 火墙
+Level 26: 雷
+Level 28: 霜Crunch
+Level 30: 雷暴
+Level 31: 魔法盾
+Level 32: TurnUndead
+<More/@Wiz3> <Back/@helpBooks>
+
+[@Wiz3]
+#SAY
+Level 33: Vampirism
+Level 35: IceStrom
+Level 38: FlameDisruptor
+Level 41: Mirroring
+Level 42: FlameField
+Level 44: Blizzard
+Level 49: MeteorStrike
+Level 53: IceFreeze
+<Back/@helpBooks>
+
+[@Tao1]
+#SAY
+Level  7: Healing
+Level  9: 之灵剑
+Level 14: Poisoning
+Level 18: 魂火球
+Level 19: SummonSkeletonton
+Level 20: Hiding
+<More/@Tao2> <Back/@helpbooks>
+
+[@Tao2]
+#SAY
+Level 21: MassHiding
+Level 22: 魂盾
+Level 23: Revelation
+Level 25: Blessed甲
+Level 27: EnergyRepulsor
+Level 28: 陷阱Hexagon
+Level 30: Purification
+<More/@Tao3> <Back/@helpBooks>
+
+[@Tao3]
+#SAY
+Level 31: MassHealing
+Level 31: Hallucination
+Level 33: UltimateEnhancer
+Level 35: 召唤神兽
+Level 37: Reincarnation
+Level 38: 召唤圣精灵
+Level 40: 诅咒
+Level 43: 毒Cloud
+Level 48: CelestalShield
+<Back/@helpBooks>
+
+
+[@Assa1]
+#SAY
+Level  7: Fatal剑
+Level 15: 双Slash
+Level 20: Haste
+Level 25: FlashDash
+Level 27: 轻Body
+Level 30: Heavenly剑
+Level 33: 火Burst
+<More/@Assa2> <Back/@helpBooks>
+
+[@Assa2]
+#SAY
+Level 33: 陷阱
+Level 34: 毒剑
+Level 36: 月轻
+Level 38: MPEater
+Level 40: SwiftFeet
+Level 46: 暗Body
+Level 50: MoonBlade
+<Back/@helpBooks>
+
+
+[@Arc1]
+#SAY
+Level  7: Focus
+Level  9: StraightShot
+Level 11: MentalState
+Level 14: 双Shot
+Level 19: Meditation
+Level 20: ElementalShot
+Level 22: Explosive陷阱
+<More/@Arc2> <Back/@helpBooks>
+
+[@Arc2]
+#SAY
+Level 23: Concentration
+Level 26: VampireShot
+Level 28: 召唤吸血蜘蛛
+Level 30: BackStep
+Level 31: DelayedExplosion
+Level 33: ElementalBarrier
+Level 35: BindingShot
+<More/@Arc3> <Back/@helpBooks>
+
+[@Arc3]
+#SAY
+Level 37: 召唤蟾蜍
+Level 40: 毒Shot
+Level 43: CrippleShot
+Level 46: 召唤魅惑之蛇
+Level 48: NapalmShot
+Level 50: OneWith自然
+<Back/@helpBooks>
+
+[Types]
+20
+
+[Trade]
+Fencing
+Slaying
+火球
+Repulsion
+Healing
+之灵剑
+Fatal剑
+双Slash
+Focus
+StraightShot

@@ -1,0 +1,11 @@
+[Recipe]
+Amount 1
+Chance 100
+Gold 10
+
+[Tools]
+
+
+[Ingredients]
+蜘蛛Web 10
+乌木Fruit 

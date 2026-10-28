@@ -1,0 +1,16 @@
+;Gold
+1/5 Gold 50
+
+;Potions
+1/5 小金创药 
+1/5 小魔法药 
+
+;Scrolls
+1/50 TownTeleport 
+1/40 TownTeleport 
+1/50 TownTeleport 
+
+;Quest
+1/5 蝙蝠Teeth Q
+1/6 蝙蝠Wings Q
+1/200 远古Scyther Q

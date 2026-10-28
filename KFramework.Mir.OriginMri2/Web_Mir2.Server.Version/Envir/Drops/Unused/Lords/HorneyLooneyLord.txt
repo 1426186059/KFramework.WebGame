@@ -1,0 +1,158 @@
+;Gold
+1/1 Gold 45000
+1/10 金Bar
+
+;Pots + Other
+1/1 特制金创药
+1/1 特制魔法药
+1/1 特制金创药
+1/1 特制魔法药
+1/2 特制金创药
+1/2 特制魔法药
+1/2 特制金创药
+1/2 特制魔法药
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/2 太阳水
+1/2 太阳水
+1/2 太阳水
+1/2 太阳水
+1/2 太阳水
+1/2 太阳水
+1/1 太阳水 
+1/1 太阳水  
+1/2 太阳水  
+1/2 太阳水  
+1/2 太阳水  
+1/2 太阳水  
+1/2 太阳水  
+
+1/1  BenedictionOil
+1/10 GoldenBenedictionOil
+
+
+1/15 觉醒魂0
+1/15 觉醒魂0
+
+;Weapons
+1/1150 蛮兵剑
+1/1150 Apus弓
+1/1150 Raw剑
+1/1150 骨CarvedFan
+1/1150 Mad龙刃
+1/1150 HorneySlayer
+1/1150 HorneyScepter
+1/1150 HorneyFeathers
+1/1150 HorneyKives
+1/2000 LordSlayerBlade
+1/2000 LordSlayerStaff
+1/2000 LordSlayerFan
+1/2000 LordSlayerBlades
+
+;Armour
+1/950 HorneySuit(M)
+1/950 HorneySuit(F)
+1/2500 天甲(M)
+1/2500 天甲(F)
+1/2500 HeavenRedArmour(M)
+1/2500 HeavenRedArmour(F)
+1/2500 HeavenGrnArmour(M)
+1/2500 HeavenGrnArmour(F)
+1/2500 HeavenGoldArmour(M)
+1/2500 HeavenGoldArmour(F)
+1/2000 LordSlayerArmour(M)
+1/2000 LordSlayerArmour(F)
+
+;Helmets
+1/2000 LordSlayerHelmet
+
+;Necklace
+1/2000 LordSlayerNecklace
+
+;Bracelets
+1/2000 LordSlayerBracelet
+
+;Rings
+1/2000 LordSlayerRing
+
+;Shoes
+1/2000 LordSlayerBoots
+
+;Belts
+1/2000 LordSlayerBelt
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Gems/Orbs
+1/10 勇气宝石
+1/10 魔法宝石 
+1/10 魂宝石
+1/15 防护宝石
+1/15 邪斩杀宝石
+1/15 耐久宝石
+1/30 毒宝石
+1/32 冰冻宝石
+1/35 准确宝石
+1/35 暴宝石
+1/40 耐力宝石
+1/50 QualityGem
+1/55 CriticalDamgeForge
+1/55 CriticalRateForge
+1/55 HpDrainForge
+1/55 ReflectForge
+
+
+;Books
+;;Warrior
+1/200 刃Avalanche
+1/400 防护Field
+1/500 Rage
+1/600 Counter攻击
+
+;;Wizard
+1/200 Mirroring
+1/400 MeteorStrike
+1/500 魔法Booster
+1/600 冰Thrust
+1/700 LavaKing
+1/850 FrozenRains
+
+;;Taoist
+1/400 Reincarnation
+1/400 毒Cloud
+1/500 Plague
+1/700 PetEnhancer
+1/850 HeadShot
+1/1000 HolyShield
+
+;;Assassion
+1/200 SwiftFeet
+1/400 暗Body
+1/600 Hemorrhage
+1/700 月Mist
+1/850 ShadowStep
+1/900 FuryWaves
+
+1/200 毒Shot
+1/400 CrippleShot
+1/700 召唤魅惑之蛇
+1/850 NapalmShot
+1/900 OneWith自然
+
+;CraftingMaterials
+
+
+;Quests
+

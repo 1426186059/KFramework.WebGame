@@ -1,0 +1,106 @@
+[@MAIN]
+#IF
+CHECKPKPOINT > 199
+#SAY
+I will not help an evil person like you...
+ 
+ 
+<Close/@exit>
+#ELSEACT
+GOTO @Main-1
+
+[@Main-1]
+#SAY
+Welcome, What can I do for you?
+ 
+<View/@BuySell> Store.
+<Repair/@Repair> Item.
+ 
+<Close/@exit>
+
+[@BuySell]
+#SAY
+Which item would you like to Buy or Sell?
+<Buy Back/@BuyBack>
+ 
+<Back/@main>
+
+[@BuyBack]
+#SAY
+These are the items still available to purchase back.
+ 
+<Back/@main>
+
+[@Repair]
+#SAY
+You can repair various kinds of Items.
+  
+<Back/@main>
+
+[Types]
+1
+2
+4
+5
+6
+7
+9
+10
+14
+
+[Trade]
+小金创药 1
+小金创药 5
+小金创药 10
+小魔法药 1
+小魔法药 5
+小魔法药 10
+中金创药 1
+中金创药 5
+中金创药 10
+中魔法药 1
+中魔法药 5
+中魔法药 10
+木剑
+木弓
+匕首
+乌木剑
+乌木弓
+青铜剑
+Short弓
+Short剑
+锋利豪剑
+骨弓
+铁剑
+青铜斧
+Trident
+钩剑
+Scimitar
+刃之Velocity
+复合弓
+轻甲(M)
+轻甲(F)
+青铜盔
+魔法盔
+Brass盔
+皮革腰带
+Chain腰带
+Low鞋
+皮革靴
+Naga项链
+PheonixBead
+Amber项链
+Lantern项链
+角戒
+铁戒
+白玉戒
+蓝戒
+黑戒
+蛇眼戒
+珍珠戒
+金戒
+钢手镯
+Large手镯
+Strain手镯
+Monk手镯
+乌木手镯

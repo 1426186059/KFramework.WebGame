@@ -1,0 +1,157 @@
+;Gold
+1/10 Gold 1450
+
+;Pots + Other
+1/1 大金创药
+1/1 大魔法药
+1/5 大金创药
+1/5 大魔法药
+1/15 特制金创药
+1/15 特制魔法药
+
+1/100 RepairOil
+1/1200 战争神Oil
+
+
+1/25 觉醒魂0
+1/200 AncientPrajnaSlime
+
+;Weapons
+1/2000 龙剑
+1/2000 血Stealer剑
+1/1000 巨斧
+1/1000 法师杖
+1/1000 蛇剑
+1/3000 双刃
+
+;Weapons Rare
+1/6000 Fiend弓
+1/6000 JudgementMace
+1/6000 战争法师杖
+1/6000 魂泉杖
+1/6000 刃之Darkness
+1/7000 战争之灵刃
+1/7000 魔法Scythe
+1/7000 轻盈弓
+1/7000 石BambooFan
+1/7000 冰冻刃
+
+;Armour
+1/300 铁甲(M)
+1/300 铁甲(F)
+1/300 Wizard袍(M)
+1/300 WizardRobe(F)
+1/300 珍珠甲(M)
+1/300 珍珠甲(F)
+1/300 远古甲(M)
+1/300 远古甲(F)
+
+;Armour Rare
+1/1000 Studded甲(M)
+1/1000 Studded甲(F)
+1/1000 钢甲(M)
+1/1000 钢甲(F)
+1/1000 龙袍(M)
+1/1000 龙袍(F)
+1/1000 Titan甲(M)
+1/1000 Titan甲(F)
+1/2000 皇家甲(M)
+1/2000 皇家甲(F)
+
+;Helmets
+1/8000 盔之英雄
+1/10000 黑铁盔
+
+;Helmets Rare
+1/15000 巨盔
+1/15000 WisdomCoronet
+1/15000 道Coronet
+1/15000 皇家盔
+1/25000 MajesticHelmet
+
+;Necklace
+1/15 Lantern项链
+1/15 虎项链
+1/1500 爪项链
+1/1500 Life项链
+1/1500 珍珠项链
+
+;Necklace Rare
+1/1800 绿Bead
+1/1800 DemonicBells
+1/1800 魂项链
+1/2800 MajesticNecklace
+
+;Bracelets
+1/2000 魂泉手镯
+1/2000 龙手镯
+1/2000 骑士手镯
+
+;Bracelets Rare
+1/3000 HangMa轮
+1/3000 BokMa轮
+1/3000 8Trigram轮
+1/4000 MajesticWheel
+
+;Rings
+1/1800 龙戒
+1/1800 红宝石戒
+1/1800 铂金戒
+
+;Rings Rare
+1/2000 力量戒
+1/2000 Violet戒
+1/2000 Titan戒
+1/3000 MajesticRing
+
+;Shoes
+1/650 丝靴
+1/750 龙靴
+
+;Shoes Rare
+1/1000 红鳞靴
+1/2000 MajesticBoots
+
+;Belts
+1/650 钢腰带
+1/750 金腰带
+
+;Belts Rare
+1/1000 精金腰带
+1/2000 MajesticBelt
+
+;Medals
+1/600 GrimMedal
+1/700 HollowMedal
+
+;Shields
+1/1000 ArmouredShield
+
+;Shields Rare
+1/1200 DomeShield
+1/1500 NanoShield
+1/1500 TrophyShield
+
+;Pads
+1/500 DefenderPads[14d]
+
+;Pads Rare
+1/600 BrutalPads[14d]
+1/700 EvolutionPads[14d]
+
+;Stone
+
+
+;Books
+
+
+;CraftingMaterials
+1/10 骨头
+1/20 大骨头
+1/400 风Marble
+1/400 毒Marble
+
+;Quests
+1/5 BoneSoul Q
+1/10 Bone1 Q
+1/25 LargeBone1 Q

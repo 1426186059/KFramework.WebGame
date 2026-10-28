@@ -1,0 +1,119 @@
+;Gold
+1/1 Gold 30000
+
+;Pots + Other
+1/1 特制金创药
+1/2 特制金创药
+1/1 特制魔法药
+1/2 特制魔法药
+1/1 太阳水
+1/1 太阳水
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳水
+1/1 太阳水
+1/2 太阳水
+1/2 太阳水
+1/1 太阳水
+1/2 太阳水
+
+
+1/1 BenedictionOil
+1/10 GoldenBenedictionOil
+
+
+1/10 觉醒魂0
+1/10 觉醒魂0
+
+;Weapons
+
+
+;Armour
+
+
+;Helmets
+
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Gems/Orbs
+1/30 勇气珠
+1/30 魔法珠
+1/30 魂珠
+1/25 防护珠
+1/25 邪斩杀珠
+1/20 耐久珠
+1/40 毒珠
+1/40 冰冻珠
+1/40 准确珠
+1/40 暴珠
+1/40 耐力珠
+
+
+;Books
+1/100 SliceNDice
+1/200 召唤圣精灵
+1/200 Mirroring
+1/200 SwiftFeet
+1/200 刃Avalanche
+1/500 防护Field
+1/500 Reincarnation
+1/500 MeteorStrike
+1/500 毒Cloud
+1/500 Rage
+1/500 Plague
+1/500 魔法Booster
+1/500 Hemorrhage
+1/500 Counter攻击
+1/900 SlashingBurst
+1/900 月Mist
+1/900 暴Escape
+1/700 LavaKing
+1/750 FrozenRains
+1/850 HeadShot
+1/850 ShadowStep
+1/1280 SummonHolyDragon
+1/1280 FuryWaves
+1/1200 HolyShield
+
+;Archer
+1/100 DelayedExplosion
+1/200 ElementalBarrier
+1/500 BindingShot
+1/750 召唤蟾蜍
+1/800 毒Shot
+1/900  CrippleShot
+1/1200 召唤魅惑之蛇
+1/90 NapalmShot
+1/1200 OneWith自然
+
+;CraftingMaterials
+
+
+;Quests
+

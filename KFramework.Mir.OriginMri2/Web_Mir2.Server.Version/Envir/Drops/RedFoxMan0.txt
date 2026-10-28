@@ -1,0 +1,55 @@
+;Gold
+1/15 Gold 1600
+
+;Potions
+1/5 大金创药 
+1/5 大魔法药 
+1/5 大金创药 
+1/5 大魔法药 
+ 
+1/25 Impact药(M) 
+1/25 魔法药(M) 
+1/25 道士药(M) 
+1/25 暴药(M) 
+1/25 StaminaAid(M) 
+1/25 魔法Aid(M)
+
+;Nothing
+1/100 Admission珠
+
+;Weapons
+
+;Hemet
+
+;Helmet Rare
+1/900 ExternalHelmet
+
+;Necklaces
+
+;Necklaces Rare
+1/900 ExternalNecklace
+
+;Bracelets
+
+;Bracelets Rare
+1/900 ExternalWheel
+
+;Rings
+
+;Ring Rare
+1/900 ExternalRing
+
+;Shoes
+
+;Shoes Rare
+1/700 ExternalBoots
+
+;Belts
+
+;Belts Rare
+1/700 ExternalBelt
+
+;Books
+
+;Quests
+1/10 FoxSkull Q

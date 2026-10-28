@@ -1,0 +1,27 @@
+[@Description]
+The Necklace is my {LifeStone/LightSteelBlue}.. This is why I have 
+returned. Please find my {LifeStone/LightSteelBlue}.
+
+[@TaskDescription]
+Hunt {巨蠕虫's/Crimson} and return the {老项链/LightSteelBlue}.
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+老项链 1
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+8000
+
+[@GoldReward]
+8000
+
+// Pickup - LostSoul D601 202 204
+// Hand In - LostSoul D601 202 204

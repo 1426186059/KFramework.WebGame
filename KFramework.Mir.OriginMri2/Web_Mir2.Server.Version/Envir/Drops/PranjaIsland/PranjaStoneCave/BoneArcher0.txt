@@ -1,0 +1,50 @@
+;Gold
+1/1 Gold 6000
+
+;Potions
+1/1 中金创药
+1/1 中魔法药
+1/3 大金创药
+1/3 大魔法药
+1/2 太阳水
+1/6 太阳药水(M)
+
+;Scrolls
+1/20 TownTeleport
+
+;Crafting Material
+1/1 骨头
+1/2 大骨头
+1/40 FocusMarble
+1/40 EvasionMarble
+
+;Rings
+1/8 金戒
+1/6 骷髅戒
+1/11 珊瑚戒
+1/10 Expel戒
+1/50 双生金戒
+1/50 邪斩杀戒
+1/50 玉Snow戒
+
+;Bracelet
+1/30 魔法手镯
+1/6 金手镯
+1/4 Hard手套
+1/30 Spell手镯
+1/40 道力量手镯
+1/40 Bracer之魔法
+1/60 钢Gauntlet
+1/6 DeathGauntlet
+
+;Necklace
+1/8 蓝玉项链
+1/8 BambooPipe
+1/8 ConvexLens
+
+;Helmet
+1/12 骷髅盔
+1/10 巫医盔
+
+;Quest
+1/10 CleanSkull Q

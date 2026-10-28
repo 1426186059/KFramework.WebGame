@@ -1,0 +1,80 @@
+;Gold
+1/2 Gold 25000
+
+;Pots + Other
+1/1 特制金创药
+1/1 特制魔法药
+1/1 特制金创药
+1/1 特制魔法药
+1/1 特制金创药
+1/1 特制魔法药
+1/1 特制金创药
+1/1 特制魔法药
+1/1 特制金创药
+1/1 特制魔法药
+1/2 太阳水
+1/2 太阳水
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+
+1/1 BenedictionOil
+
+1/20 觉醒魂0
+1/20 觉醒魂0
+1/75 MinotaurKingRune
+
+
+;Weapons
+
+
+;Armour
+
+
+;Helmets
+
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Medals Rare
+
+
+;Shields
+
+
+;Shields Rare
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+
+
+;CraftingMaterials
+
+
+;Quests
+1/2 PrajnaTempleMap Q

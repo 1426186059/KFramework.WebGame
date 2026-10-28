@@ -1,0 +1,19 @@
+;Gold
+1/5 Gold 1650
+
+;Potions
+1/5 特制金创药
+1/5 特制魔法药
+1/10 太阳水
+1/10 太阳水
+
+
+1/12000 SmasherGlove
+1/12000 BlizzardGlove
+1/12000 MistyGlove
+1/12000 SlicerGlove
+
+1/40000 Sparkling腰带
+1/40000 Sparkling靴
+1/40000 Sparkling盔
+1/60000 PuiYuHelmet

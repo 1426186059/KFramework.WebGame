@@ -1,0 +1,8 @@
+;Gold
+1/5 Gold 400
+
+
+;Quest
+1/15 比奇Tales(1) Q
+1/15 比奇Tales(2) Q
+1/15 比奇Tales(3) Q

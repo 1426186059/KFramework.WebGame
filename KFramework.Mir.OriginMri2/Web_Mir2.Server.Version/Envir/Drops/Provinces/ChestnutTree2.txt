@@ -1,0 +1,17 @@
+;Crafting Materials
+
+1/2 Brown栗子 
+1/2 Brown栗子 
+1/2 Brown栗子 
+
+1/4 青铜栗子 
+1/4 青铜栗子 
+
+1/8 银栗子 
+1/8 银栗子 
+
+1/10 金栗子 
+1/10 金栗子 
+
+1/4 Timber
+1/10 Timber

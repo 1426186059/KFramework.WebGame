@@ -1,0 +1,87 @@
+;Gold
+1/5 Gold 850
+
+;Pots + Other
+1/20 大金创药
+1/20 大魔法药
+1/25 特制金创药
+1/25 特制魔法药
+
+;Weapons
+
+
+;Armour
+
+
+;Helmets
+
+
+;Necklace
+1/15000 英雄项链
+1/15000 MeteoriteOfArchey 
+1/15000 精金项链
+1/15000 Requiem项链
+
+
+;Necklace Rare
+1/18000 Cuspid项链
+1/18000 SorceryAnchor
+1/18000 PurifiedMirror
+
+;Bracelets
+1/2800 钢Gauntlet
+1/3900 8Trigram轮
+1/3900 HangMa轮
+1/3900 BokMa轮
+1/4500 BaekTa手套
+1/4500 之灵Reformer
+1/4500 圣道轮
+
+
+;Bracelets Rare
+1/18000 DualTitan护符
+1/18000 SacredAngel护符
+1/18000 邪Whisp护符
+
+
+;Rings
+1/4000 TaeGuk戒
+1/4000 雷戒
+1/4000 Boundless戒
+1/5500 Noble戒
+1/5500 魂戒
+1/5500 奥玛之灵戒
+1/5500 DestinyRing 
+
+
+;Rings Rare
+1/18000 Pledge戒
+1/18000 五元素戒
+1/18000 Crimson红宝石戒
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+
+
+;CraftingMaterials
+
+
+;Quests
+

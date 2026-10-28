@@ -1,0 +1,89 @@
+;Gold
+1/1 Gold 15000
+
+;Pots + Other
+1/1 大金创药
+1/1 大金创药
+1/2 大金创药
+1/2 大金创药
+1/1 大魔法药
+1/1 大魔法药
+1/2 大魔法药
+1/2 大魔法药
+1/1 特制金创药
+1/1 特制金创药
+1/2 特制金创药
+1/2 特制金创药
+1/1 特制魔法药
+1/1 特制魔法药
+1/2 特制魔法药
+1/2 特制魔法药
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+
+1/2 BenedictionOil
+1/5 BenedictionOil
+
+1/10 Impact药(L)
+1/10 魔法药(L)
+1/10 道士药(L)
+1/10 暴药(L)
+
+
+
+1/5 觉醒魂0
+1/20 觉醒魂0
+
+
+;Weapons
+
+
+;Armour
+
+
+;Helmets
+
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+
+
+;CraftingMaterials
+1/20 龙鳞
+1/40 红眼Skull
+
+
+;Quests
+1/2 PastBichonMap Q

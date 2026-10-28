@@ -1,0 +1,19 @@
+;Gold
+1/5 Gold 1650
+
+;Potions
+1/5 特制金创药
+1/5 特制魔法药
+1/10 太阳水
+1/10 太阳水
+
+1/10000 SmasherRing
+1/10000 BlizzardRing
+1/10000 MistyRing
+1/10000 SlicerRing
+
+1/35000 Burst剑
+1/35000 圣血矛
+1/35000 龙血剑
+1/35000 Stiletto
+1/35000 Dread弓

@@ -1,0 +1,174 @@
+;Gold
+1/1 Gold 30000
+
+;Pots + Other
+1/1 大金创药
+1/1 大金创药
+1/1 大金创药
+1/1 大魔法药
+1/1 大魔法药
+1/1 大魔法药
+1/1 特制金创药
+1/2 特制金创药
+1/1 特制魔法药
+1/2 特制魔法药
+1/1 太阳水
+1/1 太阳水
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 BenedictionOil
+1/4 BenedictionOil
+
+
+1/10 觉醒魂0
+1/75 BehemothRune
+
+;Weapons
+1/150 龙斩杀
+1/150 凶煞弓
+1/150 龙杖
+1/150 魂军刀
+1/150 皇家刃
+1/200 剑之战争神
+1/200 刃之Sorcery
+1/200 天剑
+1/200 刃之Magi
+
+;Weapons Rare
+1/400 Burst剑
+1/400 Dread弓
+1/400 圣血矛
+1/400 龙血剑
+1/400 Stiletto
+
+;Armour
+1/200 黑虎甲(M)
+1/200 黑虎甲(F)
+1/200 Lotus甲(M)
+1/200 Lotus甲(F)
+1/200 Crane甲(M)
+1/200 Crane甲(F)
+1/200 Stealth甲(M)
+1/200 Stealth甲(F)
+
+
+;Armour Rare
+1/11500 天甲(M)
+1/11500 天甲(F)
+1/11500 HeavenRedArmour(M)
+1/11500 HeavenRedArmour(F)
+1/11500 HeavenGrnArmour(M)
+1/11500 HeavenGrnArmour(F)
+1/1500 HeavenGoldArmour(M)
+1/1500 HeavenGoldArmour(F)
+
+;Helmets
+1/345 ApesCrown
+1/250 Sparkling盔
+1/350 ExternalHelmet
+1/450 PuiYuHelmet
+
+;Necklace
+1/100 ExternalNecklace
+1/150 Cuspid项链
+1/150 SorceryAnchor
+1/150 PurifiedMirror
+
+;Bracelets
+1/100 ExternalWheel
+1/150 DualTitan护符
+1/150 SacredAngel护符
+1/150 邪Whisp护符
+
+;Rings
+1/100 ExternalRing
+1/150 Pledge戒
+1/150 五元素戒
+1/150 Crimson红宝石戒
+
+;Shoes
+1/350 ExternalBoots
+1/400 Sparkling靴
+
+;Belts
+1/40 BoneBelt
+1/50 烈焰Grasp
+1/350 ExternalBelt
+1/400 Sparkling腰带
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+1/700 DoomGuards[14d]
+
+;Stone
+
+
+;Gems/Orbs
+1/10 勇气宝石
+1/10 魂宝石
+1/10 魔法宝石
+1/10 防护宝石
+1/10 邪斩杀宝石
+1/10 耐久宝石
+1/20 毒宝石
+1/20 冰冻宝石
+1/30 敏捷宝石
+1/30 准确宝石
+1/30 幻灭宝石
+1/30 耐力宝石
+1/30 暴宝石
+1/20 勇气珠
+1/20 魂珠
+1/20 魔法珠
+1/50 准确珠
+1/50 敏捷珠
+1/80 冰冻珠
+1/80 毒珠
+
+
+;Books
+;Warrior
+1/105 烈焰剑
+1/110 LionRoar
+1/115 BladeStorm
+1/120 CrossHalf月
+1/125 刃Avalanche
+1/130 防护Field
+
+;Wizard
+1/105 冰暴
+1/110 FlameDisruptor
+1/115 Mirroring
+1/120 FlameField
+
+;Archer
+1/105 BindingShot
+1/110 召唤蟾蜍
+1/115 毒Shot
+1/120 CrippleShot
+
+
+;Taoist
+1/105 召唤神兽
+1/110 Reincarnation
+1/115 召唤圣精灵
+1/120 诅咒
+1/125 毒Cloud
+
+;Assassin
+1/105 陷阱
+1/110 毒剑
+1/115 月轻
+1/120 MPEater
+1/125 SwiftFeet
+
+;CraftingMaterials
+
+
+;Quests
+1/2 CoiledSnakeCaveMap Q

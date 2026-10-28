@@ -1,0 +1,20 @@
+;Gold
+1/5 Gold 1000
+
+;Potions
+1/15 大金创药
+1/15 大魔法药
+1/250 太阳水
+1/500 太阳药水(M)
+
+;Crafting Material
+1/80 大骨头
+1/60 Mammoth皮革
+1/80 甲书(MC)
+1/80 Rusty甲
+1/10 BraveryFragment
+1/10 MagicFragment
+1/10 SoulFragment
+1/10 ProtectionFragment
+1/10 EvilSlayerFragment
+1/10 DurabilityFragment

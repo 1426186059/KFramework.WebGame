@@ -1,0 +1,64 @@
+;Gold
+1/30 Gold 400
+
+;Pots + Other
+1/30 中金创药
+1/30 中魔法药
+1/70 大金创药
+1/70 大魔法药
+
+;Weapons
+1/3000 银弓
+1/3000 巨斧
+1/3000 法师杖
+1/3000 蛇剑
+1/1000 双刃
+
+;Weapons Rare
+1/4550 龙剑
+1/4550 血Stealer剑
+1/4550 TaoistWidow
+1/4550 DragonSabers
+1/6000 VanguardBow
+1/6000 VanguardBlade
+1/6000 VanguardStaff
+1/6000 VanguardSerp
+1/6000 VanguardBlades
+
+;Armour
+1/500 轻皮革甲(M)
+1/500 轻皮革甲(F)
+1/600 Heavy甲(M) 
+1/600 Heavy甲(F) 
+1/600 魔法袍(M) 
+1/600 魔法袍(F) 
+1/600 魂甲(M) 
+1/600 魂甲(F) 
+1/600 圣物甲(M)
+1/600 圣物甲(F)
+
+;Armour Rare
+1/7600 VanguardArmour(M)
+1/7600 VanguardArmour(F)
+
+;Helmets Rare
+1/6600 VanguardHelmet
+
+
+;Necklace Rare
+1/6600 VanguardNecklace
+
+
+;Bracelets Rare
+1/6600 VanguardWheel
+
+;Rings Rare
+1/6600 VanguardRing
+
+
+;Shoes Rare
+1/6600 VanguardBoots
+
+
+;Belts Rare
+1/6600 VanguardBelt

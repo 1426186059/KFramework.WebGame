@@ -1,0 +1,65 @@
+;Gold
+1/2 Gold 3750
+
+;Pots + Other
+1/4 特制金创药
+1/4 特制魔法药
+1/10 特制金创药
+1/10 特制魔法药
+
+;Weapons
+
+
+;Armour
+
+
+;Helmets
+
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+;Warrior
+1/16000 Counter攻击
+
+;Taoist
+1/16000 Plague
+1/16000 PetEnhancer
+
+;Wizard
+1/16000 魔法Booster
+1/16000 冰Thrust
+
+;Assassin
+1/16000 Hemorrhage
+
+;CraftingMaterials
+1/100 FocusMarble
+
+;Quests
+1/1 CannibalStomach Q

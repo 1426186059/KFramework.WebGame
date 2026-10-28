@@ -1,0 +1,34 @@
+[@Description]
+We have been receiving new report's.
+There is a New type of creature in the {Temple/Yellow}.
+
+[@TaskDescription]
+Eliminate 30 {沃玛武士's/Crimson} and a 
+{WoomaGaurdian/Crimson} and return his {Horn/LightSteelBlue}.
+
+[@Completion]
+
+[@KillTasks]
+沃玛武士 30
+沃玛守卫 1
+
+[@ItemTasks]
+Woomas角 1
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+蓝玉坠子
+Wizard戒
+戒之Moral
+
+[@ExpReward]
+11000
+
+[@GoldReward]
+11000
+
+// Pickup - SubjugationManager_James 1 343 182
+// Hand In - 

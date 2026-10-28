@@ -1,0 +1,33 @@
+[@Description]
+Travel deep within {RedValley/Yellow} and Slay the
+{红月邪/Crimson}.
+
+[@TaskDescription]
+Eliminate the {红月邪/Crimson}.
+
+[@Completion]
+
+[@KillTasks]
+红月邪 1
+
+[@ItemTasks]
+
+[@FlagTasks]
+
+[@CarryItems]
+邪猿Oil 2
+邪猿心 2
+
+[@FixedRewards]
+
+[@SelectRewards]
+红月剑
+红月刃
+红月弓
+
+[@ExpReward]
+
+[@GoldReward]
+
+// Pickup - BigTaoist D10061 11 16
+// Hand In - BigTaoist D10061 11 16

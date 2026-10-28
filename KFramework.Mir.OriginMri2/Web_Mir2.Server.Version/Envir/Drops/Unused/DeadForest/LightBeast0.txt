@@ -1,0 +1,10 @@
+;Gold
+1/5 Gold 1000
+
+;Potions
+1/15 大金创药
+1/15 大魔法药
+
+;Crafting Material
+1/60 轻皮革
+1/80 大骨头

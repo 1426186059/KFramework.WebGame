@@ -1,0 +1,53 @@
+;Gold
+1/6 Gold 2750
+
+;Pots + Other
+1/4 特制金创药
+1/4 特制魔法药
+1/10 特制金创药
+1/10 特制魔法药
+
+;Weapons
+
+
+;Armour
+
+
+;Helmets
+
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+
+
+;CraftingMaterials
+1/200 WillMarble
+
+;Quests
+

@@ -1,0 +1,68 @@
+[@MAIN]
+#IF
+CHECKPKPOINT > 199
+#SAY
+I will not help an evil person like you...
+ 
+ 
+<Close/@exit>
+#ELSEACT
+GOTO @Main-1
+
+[@Main-1]
+#SAY
+Hello Traveller. What can I do for you? 
+
+I see you're wearing: {<$ARMOUR>/CORAL}
+I see you're wearing: {<$BELT>/CORAL}
+I see you're wearing: {<$BOOTS>/CORAL}
+
+<View/@BuySell> Store.
+<Repair/@Repair> Drapery pieces.
+ 
+<Close/@exit>
+
+[@BuySell]
+#SAY
+Which item would you like to Buy or Sell?
+<Buy Back/@BuyBack>
+ 
+<Back/@main>
+
+[@BuyBack]
+#SAY
+These are the items still available to purchase back.
+ 
+<Back/@main>
+
+[@Repair]
+#SAY
+Would you like to repair a drapery piece?
+ 
+<Back/@main>
+
+
+[Types]
+2
+4
+10
+
+[Trade]
+基础布衣(M)
+基础布衣(F)
+轻甲(M)
+轻甲(F)
+Heavy甲(M)
+Heavy甲(F)
+魔法袍(M)
+魔法袍(F)
+魂甲(M)
+魂甲(F)
+圣物甲(M)
+圣物甲(F)
+轻皮革甲(M)
+轻皮革甲(F)
+皮革腰带
+Chain腰带
+Low鞋
+皮革靴

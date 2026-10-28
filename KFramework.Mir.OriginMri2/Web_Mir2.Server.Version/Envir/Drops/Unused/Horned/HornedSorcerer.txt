@@ -1,0 +1,187 @@
+;Gold
+1/1 Gold 20000
+
+;Pots + Other
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 BenedictionOil
+1/10 GoldenBenedictionOil
+
+
+1/10 觉醒魂0
+1/10 觉醒魂0
+
+;Weapons
+1/2150 蛮兵剑
+1/2150 Apus弓
+1/2150 Raw剑
+1/2150 骨CarvedFan
+1/2150 Mad龙刃
+1/3150 HorneySlayer
+1/3150 HorneyScepter
+1/3150 HorneyFeathers
+1/3150 HorneyKives
+
+;Armour
+1/400 黑虎甲(M)
+1/400 黑虎甲(F)
+1/400 Lotus甲(M)
+1/400 Lotus甲(F)
+1/400 Crane甲(M)
+1/400 Crane甲(F)
+1/400 Stealth甲(M)
+1/400 Stealth甲(F)
+1/550 红暗甲(M)
+1/550 红暗甲(F)
+1/550 蓝暗甲(M)
+1/550 蓝暗甲(F)
+1/550 Scaled甲(M)
+1/550 Scaled甲(F)
+1/550 绿暗甲(M)
+1/550 绿暗甲(F)
+1/550 金暗甲(M)
+1/550 金暗甲(F)
+1/850 WatcherSuit(M)
+1/850 WatcherSuit(F)
+1/950 HorneySuit(M)
+1/950 HorneySuit(F)
+
+;Armour Rare
+1/5500 天甲(M)
+1/5500 天甲(F)
+1/5500 HeavenRedArmour(M)
+1/5500 HeavenRedArmour(F)
+1/5500 HeavenGrnArmour(M)
+1/5500 HeavenGrnArmour(F)
+1/5500 HeavenGoldArmour(M)
+1/5500 HeavenGoldArmour(F)
+
+;Helmets
+1/50 巨盔
+1/50 WisdomCoronet
+1/50 道Coronet
+1/50 皇家盔
+1/350 Sparkling盔
+1/360 PuiYuHelmet
+1/670 WatcherHelmet
+
+;Helmets Rare
+1/700 HydraxHelmet
+
+;Necklace
+1/60 Cuspid项链
+1/60 SorceryAnchor
+1/60 PurifiedMirror
+1/375 邪Triangle
+1/375 CrossPurified
+1/375 Adamant项链
+1/600 DefenderNecklace
+
+;Necklace Rare
+1/700 HornedSorcerersPendant
+
+;Bracelets
+1/60 DualTitan护符
+1/60 SacredAngel护符
+1/60 邪Whisp护符
+1/370 WildTitan护符
+1/375 Enchanted护符
+1/375 五元素护符
+1/675 WatcherGloves
+1/600 DefenderGlove
+
+;Bracelets Rare
+1/700 SackWarriorsGlove
+
+;Rings
+1/60 Pledge戒
+1/60 五元素戒
+1/60 Crimson红宝石戒
+1/375 魔红宝石戒
+1/375 邪Expel戒
+1/375 金龙戒
+1/600 DefenderRing
+
+;Rings Rare
+1/700 HornedWarriorsRing
+
+;Shoes
+1/650 WatcherBoots
+1/700 HornedCommandersBoots
+
+;Belts
+1/700 HornedSorcerersBelt
+
+;Medals
+1/700 HornedMedallion
+
+;Shields
+1/700 WereTigerShield
+
+;Pads
+1/700 HornedMagePads
+
+;Stone
+1/700 EyeOfKingHydrax
+
+;Gems/Orbs
+1/10 勇气宝石
+1/10 魔法宝石 
+1/10 魂宝石
+1/15 防护宝石
+1/15 邪斩杀宝石
+1/15 耐久宝石
+1/30 毒宝石
+1/32 冰冻宝石
+1/35 准确宝石
+1/35 暴宝石
+1/40 耐力宝石
+1/50 QualityGem
+1/55 CriticalDamgeForge
+1/55 CriticalRateForge
+1/55 HpDrainForge
+1/55 ReflectForge
+
+
+;Books
+;;Warrior
+1/200 刃Avalanche
+1/400 防护Field
+1/500 Rage
+1/600 Counter攻击
+
+;;Wizard
+1/200 Mirroring
+1/400 MeteorStrike
+1/500 魔法Booster
+1/600 冰Thrust
+1/700 LavaKing
+1/850 FrozenRains
+
+;;Taoist
+1/400 Reincarnation
+1/400 毒Cloud
+1/500 Plague
+1/700 PetEnhancer
+1/850 HeadShot
+1/1000 HolyShield
+
+;;Assassion
+1/200 SwiftFeet
+1/400 暗Body
+1/600 Hemorrhage
+1/700 月Mist
+1/850 ShadowStep
+1/900 FuryWaves
+
+;CraftingMaterials
+
+
+;Quests

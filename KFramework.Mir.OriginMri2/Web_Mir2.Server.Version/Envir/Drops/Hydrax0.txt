@@ -1,0 +1,51 @@
+;Gold
+1/10 Gold 1150
+
+;Pots + Other
+1/15 特制金创药
+1/15 特制魔法药
+
+;Weapons
+
+
+;Armour
+
+
+;Helmets
+1/1900 HydraxHelmet
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+
+
+;CraftingMaterials
+
+
+;Quests
+

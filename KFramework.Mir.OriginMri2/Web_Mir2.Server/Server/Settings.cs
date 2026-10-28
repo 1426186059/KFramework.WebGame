@@ -15,24 +15,28 @@ namespace Server
 
         public const int Day = 24 * Hour, Hour = 60 * Minute, Minute = 60 * Second, Second = 1000;
 
-        public static readonly string EnvirPath = Path.Combine(".", "Envir"),
-            ConfigPath = Path.Combine(".", "Configs"),
+        public const string VersionRoot = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Web_Mir2.Server.Version";
+
+        public static string EnvirPath { get; set; } = Path.Combine(VersionRoot, "Envir");
+
+        public static readonly string ConfigPath = Path.Combine(VersionRoot, "Configs"),
             MapPath = Path.Combine(".", "Maps"),
             ExportPath = Path.Combine(".", "Exports"),
             GuildPath = Path.Combine(".", "Guilds"),
-            ConquestsPath = Path.Combine(".", "Conquests"),
-            NPCPath = Path.Combine(EnvirPath, "NPCs"),
-            GoodsPath = Path.Combine(EnvirPath, "Goods"),
-            RecipePath = Path.Combine(EnvirPath, "Recipe"),
-            QuestPath = Path.Combine(EnvirPath, "Quests"),
-            DropPath = Path.Combine(EnvirPath, "Drops"),
-            RoutePath = Path.Combine(EnvirPath, "Routes"),
-            NameListPath = Path.Combine(EnvirPath, "NameLists"),
-            ValuePath = Path.Combine(EnvirPath, "Values"),
-            NoticePath = Path.Combine(EnvirPath, "Notice.txt"),
-            MinimapsPath = Path.Combine(EnvirPath, "Previews", "Minimaps"),
-            NPCPreviewPath = Path.Combine(EnvirPath, "Previews", "NPC"),
-            Previews = Path.Combine(EnvirPath, "Previews");
+            ConquestsPath = Path.Combine(".", "Conquests");
+
+        public static string NPCPath => Path.Combine(EnvirPath, "NPCs");
+        public static string GoodsPath => Path.Combine(EnvirPath, "Goods");
+        public static string RecipePath => Path.Combine(EnvirPath, "Recipe");
+        public static string QuestPath => Path.Combine(EnvirPath, "Quests");
+        public static string DropPath => Path.Combine(EnvirPath, "Drops");
+        public static string RoutePath => Path.Combine(EnvirPath, "Routes");
+        public static string NameListPath => Path.Combine(EnvirPath, "NameLists");
+        public static string ValuePath => Path.Combine(EnvirPath, "Values");
+        public static string NoticePath => Path.Combine(EnvirPath, "Notice.txt");
+        public static string MinimapsPath => Path.Combine(EnvirPath, "Previews", "Minimaps");
+        public static string NPCPreviewPath => Path.Combine(EnvirPath, "Previews", "NPC");
+        public static string Previews => Path.Combine(EnvirPath, "Previews");
 
         private static readonly InIReader Reader = new InIReader(Path.Combine(ConfigPath, "Setup.ini"));
 

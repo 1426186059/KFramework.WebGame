@@ -1,0 +1,207 @@
+;Gold
+1/1 Gold 35000
+1/10 金Bar
+
+;Pots + Other
+1/1 特制金创药
+1/2 特制金创药
+1/1 特制魔法药
+1/2 特制魔法药
+1/1 太阳水
+1/1 太阳水
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳水
+1/1 太阳水
+1/2 太阳水
+1/2 太阳水
+1/1 太阳水
+1/2 太阳水
+
+
+1/1 BenedictionOil
+1/10 GoldenBenedictionOil
+
+
+1/1 Awakeningbox 
+1/1 觉醒魂0 
+
+;Weapons
+1/200 凶煞弓
+1/200 龙斩杀
+1/200 龙杖
+1/200 魂军刀
+1/450 剑之战争神
+1/450 弓之Force
+1/450 刃之Sorcery
+1/450 天剑
+1/800 冰封军刀
+1/800 Conqueror矛
+1/800 Bastard剑
+1/1000 黑虎Hammer
+1/1000 Lethal弓
+1/1000 杖之Lotus
+1/1000 Fan之Crane
+
+;Weapons Rare
+1/1400 地狱阎罗刃
+1/1600 WidowsWail
+1/1600 ThorsBattleAxe
+1/1600 OathKeeper
+1/6000 LordSlayerBlade
+1/6000 LordSlayerStaff
+1/6000 LordSlayerFan
+1/6000 LordSlayerBlades
+
+;Armour
+1/300 黑虎甲(M)
+1/300 黑虎甲(F)
+1/300 Lotus甲(M)
+1/300 Lotus甲(F)
+1/300 Crane甲(M)
+1/300 Crane甲(F)
+
+;Armour Rare
+1/1000 TrollsRobe(M)
+1/1000 TrollsRobe(F)
+1/6000 LordSlayerArmour(M)
+1/6000 LordSlayerArmour(F)
+
+;Helmets
+1/40 巨盔
+1/40 WisdomCoronet
+1/40 道Coronet
+1/40 皇家盔
+1/450 Sparkling盔
+1/460 PuiYuHelmet
+
+;Helmets Rare
+1/600 CannibalHelmet
+1/1000 TrollCap
+1/1000 InfernoHelmet
+1/6000 LordSlayerHelmet
+
+;Necklace
+1/100 Cuspid项链
+1/100 SorceryAnchor
+1/100 PurifiedMirror
+1/205 邪Triangle
+1/205 CrossPurified
+1/205 Adamant项链
+1/600 DefenderNecklace
+1/800 AscendedNecklace
+
+;Necklace Rare
+1/600 PirateNecklace
+1/1000 TrollChains
+1/1000 InfernoNecklace
+1/6000 LordSlayerNecklace
+
+;Bracelets
+1/100 DualTitan护符
+1/100 SacredAngel护符
+1/100 邪Whisp护符
+1/205 WildTitan护符
+1/205 Enchanted护符
+1/205 五元素护符
+1/600 DefenderGlove
+1/800 AscendedWheel
+
+;Bracelets Rare
+1/600 DemonWheel
+1/1000 TrollBand
+1/1000 InfernoWheel
+1/6000 LordSlayerBracelet
+
+;Rings
+1/100 Pledge戒
+1/100 五元素戒
+1/100 Crimson红宝石戒
+1/205 魔红宝石戒
+1/205 邪Expel戒
+1/205 金龙戒
+1/600 DefenderRing
+1/800 AscendedRing
+
+;Rings Rare
+1/600 SlasherRing
+1/1000 TrollRing
+1/1000 InfernoRing
+1/6000 LordSlayerRing
+
+;Shoes
+1/600 KeeperBoots
+1/800 AscendedBoots
+1/1075 TrollLeathers
+1/1000 InfernoBoots
+1/6000 LordSlayerBoots
+
+;Belts
+1/600 WitchBelt
+1/1050 StrapofTrolls
+1/800 AscendedBelt
+1/1000 InfernoBelt
+1/6000 LordSlayerBelt
+
+;Medals
+
+
+;Shields
+1/1000 InfernoShield
+
+;Pads
+
+
+;Stone
+
+;Gems/Orbs
+1/30 勇气珠
+1/30 魔法珠
+1/30 魂珠
+1/25 防护珠
+1/25 邪斩杀珠
+1/20 耐久珠
+1/40 毒珠
+1/40 冰冻珠
+1/40 准确珠
+1/40 暴珠
+1/40 耐力珠
+
+
+;Books
+1/100 SliceNDice
+1/200 召唤圣精灵
+1/200 Mirroring
+1/200 SwiftFeet
+1/200 刃Avalanche
+1/500 防护Field
+1/500 Reincarnation
+1/500 MeteorStrike
+1/500 毒Cloud
+1/500 Rage
+1/500 Plague
+1/500 魔法Booster
+1/500 Hemorrhage
+1/500 Counter攻击
+1/900 SlashingBurst
+1/900 月Mist
+1/900 暴Escape
+1/700 LavaKing
+1/750 FrozenRains
+1/850 HeadShot
+1/850 ShadowStep
+1/1280 SummonHolyDragon
+1/1280 FuryWaves
+1/1200 HolyShield
+
+1/100 毒Shot 
+1/200 CrippleShot
+1/500 召唤魅惑之蛇 		
+1/90 NapalmShot 		
+1/1200 OneWith自然
+
+
+;CraftingMaterials
+
+
+;Quests

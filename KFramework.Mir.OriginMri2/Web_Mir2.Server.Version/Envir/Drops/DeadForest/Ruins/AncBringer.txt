@@ -1,0 +1,152 @@
+;Potions
+1/3 大金创药
+1/3 大魔法药
+1/3 大金创药
+1/3 大魔法药
+1/3 特制金创药
+1/3 特制魔法药
+1/25 大金创药
+1/25 大魔法药
+1/25 大金创药
+1/25 大魔法药
+1/1 太阳水
+1/1 太阳水
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+1/3 BenedictionOil
+1/10 BenedictionOil
+
+;Weapons
+1/15 火血剑
+1/2500 地狱阎罗刃
+1/45 龙斩杀
+1/45 龙杖
+1/45 魂军刀
+1/45 皇家刃
+1/45 凶煞弓
+1/100 剑之战争神
+1/100 刃之Sorcery
+1/100 天剑
+1/100 刃之Magi
+1/100 弓之Force
+1/120 Burst剑
+1/120 圣血矛
+1/120 龙血剑
+1/120 Stiletto
+1/120 Dread弓
+1/90 冰封军刀
+1/90 Conqueror矛
+1/90 Bastard剑
+1/90 Zinc刃
+1/90 Grim弓
+1/350 黑虎Hammer
+1/350 杖之Lotus
+1/350 Fan之Crane
+1/350 Butchering刃
+1/350 Lethal弓
+1/1000 蛮兵剑
+1/1000 Raw剑
+1/1000 骨CarvedFan
+1/1000 TheRipper
+1/1000 Apus弓
+
+
+;Armours
+1/25 钢甲(M)
+1/25 钢甲(F)
+1/25 龙袍(M)
+1/25 龙袍(F)
+1/25 Titan甲(M)
+1/25 Titan甲(F)
+1/25 皇家甲(M)
+1/25 皇家甲(F)
+1/25 Studded甲(M)
+1/25 Studded甲(F)
+1/200 黑虎甲(M)
+1/200 黑虎甲(F)
+1/200 Lotus甲(M)
+1/200 Lotus甲(F)
+1/200 Crane甲(M)
+1/200 Crane甲(F)
+1/200 Stealth甲(M)
+1/200 Stealth甲(F)
+1/200 轻锻造甲(M)
+1/200 轻锻造甲(F)
+1/5000 天甲(M)
+1/5000 天甲(F)
+
+;Helmet
+1/20 巨盔
+1/20 WisdomCoronet
+1/20 道Coronet
+1/20 皇家盔
+1/125 盔之Kings
+1/125 盔之Sorcery
+1/125 Purified面具
+1/125 魔影
+
+;Belts
+1/35 金腰带
+1/65 精金腰带
+1/155 烈焰Grasp
+
+;Boots
+1/20 龙靴
+1/55 红鳞靴
+1/120 金Pattern靴
+
+;Rings
+1/55 Pledge戒
+1/55 Crimson红宝石戒
+1/55 五元素戒
+1/145 金龙戒
+1/145 魔红宝石戒
+1/145 邪Expel戒
+1/450 印戒
+1/300 Taji戒
+
+;Bracelet
+1/65 DualTitan护符
+1/65 邪Whisp护符
+1/65 SacredAngel护符
+1/250 WildTitan护符
+1/250 Enchanted护符
+1/250 五元素护符
+
+;Necklaces
+1/50 Cuspid项链
+1/50 SorceryAnchor
+1/50 PurifiedMirror
+1/100 Adamant项链
+1/100 邪Triangle
+1/100 CrossPurified
+
+;Crafting Material
+1/5 远古皮革
+1/10 远古皮革
+1/5 大骨头
+1/10 大骨头
+1/10 StrongRope
+1/50 StrongRope
+
+;Gems
+1/150 勇气珠
+1/150 魔法珠
+1/150 魂珠
+1/100 防护珠
+1/100 邪斩杀珠
+1/100 耐久珠
+1/225 毒珠
+1/225 冰冻珠
+1/300 暴珠
+1/300 准确珠
+1/300 敏捷珠
+
+;Gems
+1/600 SlashingBurst
+1/600 Energy盾
+1/600 冰Thrust
+1/600 月轻

@@ -1,0 +1,47 @@
+;Gold
+1/20 Gold 2500
+
+;Weapons
+1/600  巨斧
+1/600  蛇剑
+1/600  法师杖
+1/600  双刃
+
+;Necklaces
+1/120 蓝狐项圈
+1/1180 英雄项链
+1/780 Purity项链
+1/780 Hwan恶魔项链
+
+;Bracelets
+1/120 蓝狐手镯
+
+;Rings
+1/120 蓝狐戒
+
+;Shoes
+1/360 丝靴
+
+;Belts
+1/580 精金腰带
+
+;Potions
+1/10    大金创药
+1/10    大魔法药
+1/10    大金创药
+1/10    大魔法药
+1/20   太阳药水(M)
+1/20   太阳药水(M)
+1/20   太阳药水(M)
+1/20   太阳药水(M)
+1/100  Impact药(S)
+1/100  StaminaAid(S)
+1/100  风暴药(小)
+
+;Books
+1/200 LionRoar
+1/200 Vampirism
+1/2000 召唤圣精灵
+1/800 Hallucination
+1/800 Purification
+1/800 swiftfeet

@@ -1,0 +1,32 @@
+;Necklace
+;;Warrior
+1/300 爪项链
+1/400 绿Bead
+1/500 英雄项链
+1/600 紫狐项圈
+1/700 巨紫狐项圈
+1/800 Cuspid项链
+1/900 Adamant项链
+
+;;Wizard
+1/300 Life项链
+1/400 DemonicBells
+1/500 精金项链
+1/600 红狐项圈
+1/700 巨红狐项圈
+1/800 SorceryAnchor
+1/900 邪Triangle
+
+;;Taoist
+1/300 珍珠项链
+1/400 魂项链
+1/500 Requiem项链
+1/600 蓝狐项圈
+1/700 巨蓝狐项圈
+1/800 PurifiedMirror
+1/900 CrossPurified
+
+;Set
+1/450 SmashPendulum
+1/450 Hwan恶魔项链
+1/450 Purity项链

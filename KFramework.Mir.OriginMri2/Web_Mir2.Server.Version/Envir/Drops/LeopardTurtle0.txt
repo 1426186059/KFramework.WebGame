@@ -1,0 +1,44 @@
+;Gold
+1/20 Gold 1700
+
+;Pots + Other
+1/5 特制金创药
+1/5 特制魔法药
+
+1/1125 BraveryFragment
+1/1125 MagicFragment
+1/1125 SoulFragment
+1/1125 ProtectionFragment
+1/1125 EvilSlayerFragment
+1/1125 DurabilityFragment
+1/1125 StormFragment
+1/1125 DisillusionFragment
+1/1125 AccuracyFragment
+1/1125 PoisonFragment
+1/1125 FreezingFragment
+1/1125 AgilityFragment
+1/1125 EnduranceFragment
+1/1130 冰Marble
+1/1900 甲CastTool 
+1/1900 TranslucentCrystal
+1/1900 甲书(DC)
+1/1900 甲书(SC)
+1/1900 甲书(MC)
+1/1900 Rusty甲
+1/1900 Bookof之灵
+1/1900 Havoc水晶
+
+1/5000 五弦项链
+1/5000 五弦手镯
+1/5000 五弦戒
+1/5000 Purity项链
+1/5000 Purity手镯
+1/5000 Purity戒
+1/5000 SmashPendulum
+1/5000 DarkGhostChain
+1/5000 Smash轮
+1/5000 DarkGhostBracelet
+1/5000 Hwan恶魔戒
+
+
+

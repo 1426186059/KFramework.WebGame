@@ -1,0 +1,12 @@
+[Recipe]
+Amount 1
+Chance 100
+Gold 5000
+
+[Tools]
+
+[Ingredients]
+银矿 2 12000
+碧玉戒
+大骨头 40
+黑线 80

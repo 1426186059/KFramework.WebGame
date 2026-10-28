@@ -1,0 +1,279 @@
+1/2 Gold 20000
+
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳水
+1/2 BenedictionOil
+1/5 金Bar
+
+1/140 黑虎甲(M)
+1/140 黑虎甲(F)
+1/140 Lotus甲(M)
+1/140 Lotus甲(F)
+1/140 Crane甲(M)
+1/140 Crane甲(F)
+1/140 Stealth甲(M)
+1/140 Stealth甲(F)
+1/170 红暗甲(M)
+1/170 红暗甲(F)
+1/170 蓝暗甲(M)
+1/170 蓝暗甲(F)
+1/170 Scaled甲(M)
+1/170 Scaled甲(F)
+1/170 绿暗甲(M)
+1/170 绿暗甲(F)
+1/170 金暗甲(M)
+1/170 金暗甲(F)
+1/400 WatcherSuit(M)
+1/400 WatcherSuit(F)
+1/1700 HeavenRedArmour(M)
+1/1700 HeavenRedArmour(F)
+1/1700 HeavenGrnArmour(M)
+1/1700 HeavenGrnArmour(F)
+1/1700 天甲(M)
+1/1700 天甲(F)
+1/1700 HeavenGoldArmour(M)
+1/1700 HeavenGoldArmour(F)
+
+1/100 刃之Magi
+1/300 弓之Force
+1/300 剑之战争神
+1/300 刃之Sorcery
+1/300 天剑
+1/50 冰封军刀
+1/50 Grim弓
+1/50 Zinc刃
+1/50 Conqueror矛
+1/50 Bastard剑
+1/450 黑虎Hammer
+1/450 Lethal弓
+1/450 Butchering刃
+1/450 杖之Lotus
+1/450 Fan之Crane
+1/700 蛮兵剑
+1/700 Apus弓
+1/700 Raw剑
+1/700 Mad龙刃
+1/700 骨CarvedFan
+
+1/40 巨盔
+1/40 WisdomCoronet
+1/40 道Coronet
+1/40 皇家盔
+1/100 Sparkling盔
+1/150 PuiYuHelmet
+1/150 WatcherHelmet
+
+
+1/50 Pledge戒
+1/50 五元素戒
+1/50 Crimson红宝石戒
+1/105 魔红宝石戒
+1/105 邪Expel戒
+1/155 金龙戒
+
+1/50 DualTitan护符
+1/50 SacredAngel护符
+1/50 邪Whisp护符
+1/105 WildTitan护符
+1/105 Enchanted护符
+1/105 五元素护符
+1/155 WatcherGloves
+
+1/50 Cuspid项链
+1/50 SorceryAnchor
+1/50 PurifiedMirror
+1/100 邪Triangle
+1/100 CrossPurified
+1/100 Adamant项链
+
+1/10 勇气珠
+1/10 魔法珠
+1/10 魂珠
+1/20 防护珠
+1/20 邪斩杀珠
+1/40 暴珠
+1/40 敏捷珠
+1/40 准确珠
+1/40 毒珠
+1/40 冰冻珠
+1/40 幻灭珠
+1/40 耐力珠
+1/45 耐久珠
+
+1/30 HolyHealthStone
+1/30 HolyMagicStone
+1/30 HolyPowerStone
+1/40 HolyAcStone
+1/40 HolyAmcStone
+1/40 HolyDefenseStone
+1/30 HolyDCStone
+1/30 HolyMCStone
+1/30 HolySCStone
+
+
+;Boots
+1/300 WatcherBoots
+
+
+;Shield
+1/650 OrcsShield
+
+1/300 DefenderRing
+1/300 DefenderGlove
+1/300 DefenderNecklace
+1/100 (H)魔面具
+1/100 (H)Violet珠
+1/100 (H)KunroonTear
+1/100 (H)WheelOfLunar
+1/100 (H)红魔戒
+1/100 (H)Cloud戒
+1/100 (H)毒戒
+1/80 ArmouredMedal
+1/50 HollowMedal
+1/200 AscendedRing
+1/200 AscendedWheel
+1/200 AscendedNecklace
+1/200 AscendedHelmet
+1/200 AscendedBoots
+1/200 AscendedBelt
+
+;other
+1/550 InfernoRing
+1/550 InfernoNecklace
+1/550 InfernoWheel
+1/550 InfernoBoots
+1/550 InfernoBelt
+1/550 InfernoShield
+1/550 InfernoHelmet
+1/1200 HeatsBanes
+1/1200 WidowsWail
+1/1200 ThorsBattleAxe
+1/1200 OathKeeper
+1/450 TrollCap
+1/450 TrollRing
+1/450 TrollBand
+1/450 TrollChains
+1/450 StrapofTrolls
+1/450 TrollLeathers
+1/200 TerrapinNecklace
+1/200 TerrapinBracelet
+1/200 TerrapinRing
+1/300 TerrapinShield
+1/500 TrollsRobe(M)
+1/500 TrollsRobe(F)
+
+1/100 DefensiveMedal
+1/100 OffensiveMedal
+
+1/100 SmasherGlove
+1/100 BlizzardGlove
+1/100 MistyGlove
+1/100 SlicerGlove
+1/100 SmasherNecklace
+1/100 BlizzardNecklace
+1/100 MistyNecklace
+1/100 SlicerNecklace
+1/100 SmasherRing
+1/100 BlizzardRing
+1/100 MistyRing
+1/100 SlicerRing
+
+1/900 HavokBraveArmour(M)
+1/900 HavokBraveArmour(F)
+1/900 HavokMagicArmour(M)
+1/900 HavokMagicArmour(F)
+1/900 HavokSoulArmour(M)
+1/900 HavokSoulArmour(F)
+1/900 HavokSinArmour(M)
+1/900 HavokSinArmour(F)
+
+1/400 项链之痛苦
+1/400 手镯之痛苦
+1/400 戒之痛苦
+
+1/1200 FrozenBelt
+1/1200 FrozenNecklace
+1/1200 FrozenRing
+1/1200 FrozenBoots
+1/900 FrozenWheel
+1/1200 FrozenSlayer
+1/1200 FrozenStaff
+1/1200 FrozenWand
+1/1200 FrozenDaggers
+1/1200 FrozenBow
+
+;Books
+;Warrior
+1/25 烈焰剑
+1/30 CrossHalf月
+1/50 双生龙兽刃
+1/60 LionRoar
+1/70 Entrapment
+1/120 SliceNDice
+1/140 BladeStorm
+1/150 刃Avalanche
+1/700 防护Field
+1/800 Rage
+1/900 Fury
+1/1000 Counter攻击
+1/1500 ImmortalSkin
+
+;Wizard
+1/10 霜Crunch
+1/25 冰暴
+1/30 FlameDisruptor
+1/50 Vampirism
+1/100 DragNet
+1/150 Mirroring
+1/190 FlameField
+1/700 Blizzard
+1/800 魔法Booster
+1/900 MeteorStrike
+1/1000 FastMove
+1/1100 冰Thrust
+1/1200 FrozenRains
+1/1300 LavaKing
+1/1600 暴Escape
+
+;Taoist
+1/50 Hallucination
+1/50 Purification
+1/30 UltimateEnhancer
+1/30 EnergyRepulsor
+1/25 召唤神兽
+1/100 Healing轮
+1/200 召唤圣精灵
+1/500 诅咒
+1/800 Reincarnation
+1/900 毒Cloud
+1/1100 Energy盾
+1/1000 PetEnhancer
+1/1300 HolyShield
+1/1600 HeadShot
+
+;Assassin
+1/50 火Burst
+1/75 陷阱
+1/60 SwiftFeet
+1/100 CrescentSlash
+1/600 暗Body
+
+

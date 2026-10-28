@@ -1,0 +1,53 @@
+;Gold
+1/20 Gold 2500
+
+;Weapons
+1/600  巨斧
+1/600  蛇剑
+1/600  法师杖
+1/600  双刃
+
+;Necklaces
+1/640  Requiem项链
+1/640  红玉项链
+1/640  五弦项链
+
+;Bracelets
+1/540  道力量手镯
+
+;Rings
+1/560  红玉戒
+1/560  NokChi戒
+
+;Shoes
+1/380  黑靴
+1/580  龙靴
+
+;Belts
+1/500  青铜腰带
+1/500  钢腰带
+
+;Potions
+1/10    大金创药
+1/10    大魔法药
+1/10    大金创药
+1/10    大魔法药
+1/20   太阳药水(M)
+1/20   太阳药水(M)
+1/20   太阳药水(M)
+1/20   太阳药水(M)
+1/100  Impact药(S)
+1/100  StaminaAid(S)
+1/100  风暴药(小)
+
+;Nothing
+1/100  Admission珠
+
+;Books
+1/400 防护Field
+1/600 Entrapment
+1/200 双生龙兽刃
+1/600 LionRoar
+1/200 月轻
+1/800 刃Avalanche
+1/800  mpeater

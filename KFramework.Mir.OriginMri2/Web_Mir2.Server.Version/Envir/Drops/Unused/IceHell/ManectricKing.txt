@@ -1,0 +1,97 @@
+;Gold
+1/1 Gold 60000
+1/30 金Bar
+
+;Potions
+2/1 大金创药
+2/1 大魔法药
+2/2 大金创药
+2/2 大魔法药
+2/1 特制金创药
+2/2 特制金创药
+2/1 特制魔法药
+2/2 特制魔法药
+2/1 太阳水
+2/2 太阳水
+2/1 太阳药水(M)
+2/2 太阳药水(M)
+1/2 BenedictionOil
+1/5 BenedictionOil
+1/5 战争神Oil
+
+;Weapons
+1/400 黑虎Hammer
+1/500 杖之Lotus
+1/500 Fan之Crane
+1/450 Butchering刃
+1/500 Lethal弓
+
+;Armour
+1/200 黑虎甲(M)
+1/200 黑虎甲(F)
+1/200 Lotus甲(M)
+1/200 Lotus甲(F)
+1/200 Crane甲(M)
+1/200 Crane甲(F)
+1/200 Stealth甲(M)
+1/200 Stealth甲(F)
+1/200 轻锻造甲(M)
+1/200 轻锻造甲(F)
+
+;Rings
+1/3000 Teleport戒
+1/3500 防护戒
+1/3500 Paralysis戒
+1/5000 Revival戒
+1/3000 Clear戒
+1/500 Muscle戒
+1/500 Recovery戒
+1/250 Flame戒
+1/100 Pledge戒
+1/100 Crimson红宝石戒
+1/100 五元素戒
+
+;Bracelets
+1/100 DualTitan护符
+1/100 邪Whisp护符
+1/100 SacredAngel护符
+
+;Necklaces
+1/100 魔面具
+1/100 Violet珠
+1/100 KunroonTear
+
+;Gems
+1/250 勇气珠
+1/250 魔法珠
+1/250 魂珠
+1/200 防护珠
+1/200 邪斩杀珠
+1/325 毒珠
+1/325 冰冻珠
+1/800 暴珠
+1/800 准确珠
+1/800 敏捷珠
+
+;Books
+1/50 双生龙兽刃
+1/50 Purification
+1/50 LionRoar
+1/50 Mirroring
+1/50 月轻
+1/50 Entrapment
+1/50 Hallucination
+1/50 Vampirism
+1/50 Mpeater
+1/200 召唤圣精灵
+1/200 FlameField
+1/50 刃Avalanche
+1/200 防护Field
+1/200 诅咒
+1/200 暗Body
+1/400 swiftfeet
+1/400 MeteorStrike
+1/400 毒Cloud
+1/400 Rage
+1/600 火Burst
+1/600 Energy盾

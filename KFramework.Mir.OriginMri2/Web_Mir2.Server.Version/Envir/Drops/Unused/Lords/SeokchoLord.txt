@@ -1,0 +1,242 @@
+;Gold
+1/1 Gold 50000
+
+;Pots + Other
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 BenedictionOil
+1/10 GoldenBenedictionOil
+
+1/1 觉醒魂0
+1/1 觉醒魂0
+
+
+
+;Weapons
+1/100 冰封军刀
+1/100 Grim弓
+1/100 Conqueror矛
+1/100 Bastard剑
+1/200 黑虎Hammer
+1/200 Lethal弓
+1/200 杖之Lotus
+1/200 Fan之Crane
+1/300 剑之战争神
+1/300 弓之Force
+1/300 刃之Sorcery
+1/300 天剑
+1/400 Burst剑
+1/400 Dread弓
+1/400 圣血矛
+1/400 龙血剑
+1/600 Apus弓
+1/600 蛮兵剑
+1/600 Raw剑
+1/900 骨CarvedFan
+1/1300 地狱阎罗刃
+1/2000 PriestSlayer
+1/2000 PriestStaff
+1/2000 PriestFan
+1/2000 PriestSlayers
+1/6000 LordSlayerBlade
+1/6000 LordSlayerStaff
+1/6000 LordSlayerFan
+1/6000 LordSlayerBlades
+
+
+;Armour
+1/1000 天甲(M)
+1/1000 天甲(F)
+1/1000 HeavenArcheyRobe(M)
+1/1000 HeavenArcheyRobe(F)
+1/1200 HeavenGrnArmour(M)
+1/1200 HeavenGrnArmour(F)
+1/1200 HeavenRedArmour(M)
+1/1200 HeavenRedArmour(F)
+1/1200 天甲(M)
+1/1200 天甲(F)
+1/1200 HeavenGoldArmour(M)
+1/1200 HeavenGoldArmour(F)
+1/650 BloodDragonArmour(M)
+1/650 BloodDragonArmour(F)
+1/1300 WargBraveArmour(M)
+1/1300 WargBraveArmour(F)
+1/1300 WargMagicArmour(M)
+1/1300 WargMagicArmour(F)
+1/1300 WargSoulArmour(M)
+1/1300 WargSoulArmour(F)
+1/1300 WargArmour(M)
+1/1300 WargArmour(F)
+1/2000 RobeOfWarrior(M)
+1/2000 RobeOfWarrior(F)
+1/2000 RobeOfWizard(M)
+1/2000 RobeOfWizard(F)
+1/2000 RobeOfTaoist(M)
+1/2000 RobeOfTaoist(F)
+1/2000 RobeOfAssassin(M)
+1/2000 RobeOfAssassin(F)
+1/2000 RobeOfArcher(M)
+1/2000 RobeOfArcher(F)
+1/6000 LordSlayerArmour(M)
+1/6000 LordSlayerArmour(F)
+
+
+;Helmets
+1/2000 MantisHelmet
+1/90 ApesCrown
+1/60 Sparkling盔
+1/520 盔之Darkness
+1/100 PuiYuHelmet
+1/450 BloodDragonHelmet
+1/6000 LordSlayerHelmet
+
+;Necklace
+1/2000 RhinoChains
+1/100 邪Triangle
+1/100 CrossPurified
+1/100 Adamant项链
+1/150 魔面具
+1/150 Violet珠
+1/150 KunroonTear
+1/200 (H)魔面具
+1/200 (H)Violet珠
+1/200 (H)KunroonTear
+1/500 BloodDragonNecklace
+1/600 项链之痛苦
+1/6000 LordSlayerNecklace
+
+;Bracelets
+1/2000 SlimeBracelet
+1/155 WildTitan护符
+1/155 Enchanted护符
+1/155 五元素护符
+1/250 WheelOfLunar
+1/300 (H)WheelOfLunar
+1/500 BloodDragonBrace
+1/600 手镯之痛苦
+1/6000 LordSlayerBracelet
+
+;Rings
+1/2000 BirdRing
+1/155 魔红宝石戒
+1/155 邪Expel戒
+1/155 金龙戒
+1/120 红魔戒
+1/120 Cloud戒
+1/120 毒戒
+1/200 (H)红魔戒
+1/200 (H)Cloud戒
+1/200 (H)毒戒
+1/450 BloodDragonRing
+1/600 戒之痛苦
+1/6000 LordSlayerRing
+
+;Shoes
+1/2000 SpikedBoots
+1/500 BloodDragonBoots
+1/6000 LordSlayerBoots
+
+;Belts
+1/2000 BarkStrap
+1/500 BloodDragonBelt
+1/6000 LordSlayerBelt
+
+;Medals
+1/2000 QueensMedallion
+1/230 ArmouredMedal
+1/250 HollowMedal
+1/820 WargMedal
+
+
+;Shields
+1/2000 ProtectorOfQueen
+1/225 TrophyShield
+1/440 LunarPlate
+1/830 WargShield
+
+;Pads
+1/2000 TreeProtectors
+1/720 ShadowGuards[14d]
+
+;Stone
+1/2000 QueensJewl
+1/830 WargStone
+
+;Runes
+1/400 PinPointRune
+1/400 EvasiveRune
+1/400 EnrageRune
+1/400 IronWallRune
+1/400 SpeedyMagicianRune
+
+;Gems/Orbs
+1/25 勇气宝石
+1/25 魔法宝石
+1/25 魂宝石
+1/20 防护宝石
+1/20 邪斩杀宝石
+1/32 毒宝石
+1/32 冰冻宝石
+1/80 暴宝石
+1/80 准确宝石
+1/80 敏捷宝石
+1/25 勇气珠
+1/25 魔法珠
+1/25 魂珠
+1/20 防护珠
+1/20 邪斩杀珠
+1/32 毒珠
+1/32 冰冻珠
+1/80 暴珠
+1/80 准确珠
+1/80 敏捷珠
+
+;Books
+;Warrior
+1/500 Counter攻击
+1/500 ImmortalSkin
+1/250 Fury
+1/80 防护Field
+1/80 Rage
+
+;Wizard
+1/80 MeteorStrike
+1/120 魔法Booster
+1/200 暴Escape
+1/250 FastMove
+1/500 冰Thrust
+1/500 LavaKing
+1/500 FrozenRains
+
+;Taoist
+1/80 MeteorStrike
+1/120 魔法Booster
+1/200 暴Escape
+1/250 FastMove
+1/400 Plague
+1/500 HeadShot
+1/500 HolyShield
+1/2000 FortuneTeller
+
+;Assassin
+1/500 Hemorrhage
+1/800 SwiftFeet
+1/800 暗Body
+1/1200 月Mist
+1/1650 FuryWaves
+1/2000 BackStab
+1/2200 ShadowStep
+
+1/500 毒Shot
+1/800 CrippleShot
+1/1200 召唤魅惑之蛇
+1/1650 NapalmShot
+1/2000 OneWith自然
+
+;CraftingMaterials

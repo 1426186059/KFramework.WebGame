@@ -1,0 +1,33 @@
+[@Description]
+Assistant Jane sent you? 
+I can't reject anyone that she has recommended, 
+but I cant accept just anyone as my disciple. 
+You will have to pass my test.
+
+[@TaskDescription]
+Eliminate 10 {奥玛's/Crimson} and {Raking猫's/Crimson}
+
+[@Completion]
+
+[@KillTasks]
+奥玛 10
+Raking猫 10
+
+[@ItemTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+老Loafer
+Fatal剑
+
+[@SelectRewards]
+
+[@ExpReward]
+180
+
+[@GoldReward]
+45
+
+// Pickup - HighAssassin_Cloud 0 101 411
+// Hand In - HighAssassin_Cloud 0 101 411

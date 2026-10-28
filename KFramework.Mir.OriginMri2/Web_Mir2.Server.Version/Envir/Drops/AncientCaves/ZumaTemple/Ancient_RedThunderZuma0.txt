@@ -1,0 +1,65 @@
+;Gold
+1/1 Gold 1000
+
+;Pots + Other
+1/1 大金创药 
+1/1 大魔法药 
+1/1 大金创药 
+1/1 大魔法药 
+1/1 特制金创药 
+1/1 特制魔法药 
+1/1 特制金创药 
+1/1 特制魔法药
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+
+1/40 觉醒魂0
+1/50 觉醒魂0
+
+
+;Weapons
+
+
+;Armour
+
+
+;Helmets
+
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+
+
+;CraftingMaterials
+
+
+;Quests
+

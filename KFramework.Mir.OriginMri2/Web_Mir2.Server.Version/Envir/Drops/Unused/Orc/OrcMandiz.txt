@@ -1,0 +1,31 @@
+;Gold
+1/6 Gold 2650
+
+;Potions
+1/5 特制金创药
+1/5 特制魔法药
+1/10 太阳水
+1/10 太阳水
+
+;Wizard
+1/45100 Conqueror矛
+1/55250 杖之Lotus
+1/55550 Raw剑
+
+;Taoist
+1/45100 Bastard剑
+1/55250 Fan之Crane
+1/55550 骨CarvedFan
+
+1/25000 黑虎甲(M)
+1/25000 黑虎甲(F)
+1/25000 Lotus甲(M)
+1/25000 Lotus甲(F)
+1/25000 Crane甲(M)
+1/25000 Crane甲(F)
+1/25000 Stealth甲(M)
+1/25000 Stealth甲(F)
+1/25000 轻锻造甲(M)
+1/25000 轻锻造甲(F)
+
+

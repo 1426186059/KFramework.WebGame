@@ -1,0 +1,116 @@
+;Gold
+1/10 Gold 25000
+
+;Weapons
+1/50 血Stealer剑 
+1/10 巨斧 
+1/10 法师杖 
+1/10 蛇剑 
+1/10 双刃 
+1/10 银弓 
+1/25 龙剑 
+1/50 JudgementMace 
+1/50 战争法师杖 
+1/50 魂泉杖 
+1/50 刃之Darkness 
+1/50 Fiend弓 
+1/250 龙斩杀 
+1/250 龙杖 
+1/250 魂军刀 
+1/250 皇家刃 
+1/250 凶煞弓 
+
+;Helmets
+1/10 骷髅盔 
+1/10 巫医盔 
+1/50 黑铁盔 
+
+;Necklaces
+1/500 红Orchid项链 
+1/500 红花项链 
+1/50 绿Bead 
+1/50 DemonicBells 
+1/50 魂项链 
+1/35 爪项链 
+1/35 珍珠项链 
+1/35 Life项链 
+1/50 之灵项链 
+1/50 Gale项链 
+
+;Bracelets
+1/500 红Orchid手镯 
+1/500 红花手镯 
+1/35 骑士手镯 
+1/35 魂泉手镯 
+1/35 龙手镯 
+
+;Rings
+1/500 红Orchid戒 
+1/500 红花戒 
+1/10 龙戒 
+1/10 红宝石戒 
+1/10 铂金戒 
+1/35 之灵戒 
+1/35 力量戒 
+1/35 Violet戒 
+1/35 Titan戒 
+1/2 Expel戒 
+1/2 珊瑚戒 
+1/5000 Clear戒 
+1/5000 Muscle戒 
+1/1000 Flame戒 
+1/1000 Recovery戒 
+1/50000 Paralysis戒 
+1/50000 Teleport戒 
+1/50000 Revival戒 
+1/50000 防护戒 
+
+;Potions
+1/1 大金创药 
+1/1 大魔法药 
+1/1 大金创药 
+1/1 大魔法药 
+1/1 大金创药 
+1/1 大魔法药 
+1/1 大金创药 
+1/1 大魔法药 
+1/1 大金创药 
+1/1 大魔法药 
+1/1 大金创药 
+1/1 大魔法药 
+1/2 大金创药 
+1/2 大魔法药 
+1/1 太阳药水(M) 
+1/1 太阳药水(M) 
+1/1 太阳药水(M) 
+1/1 太阳药水(M) 
+1/1 太阳药水(M) 
+1/1 太阳药水(M) 
+1/1 太阳药水(M) 
+1/2 太阳药水(M) 
+1/2 太阳药水(M) 
+1/2 太阳药水(M) 
+1/2 太阳药水(M) 
+1/2 太阳药水(M) 
+1/2 太阳药水(M) 
+1/5 Impact药(M)
+1/5 魔法药(M) 
+1/5 道士药(M) 
+1/5 暴药(M) 
+1/5 StaminaAid(M) 
+1/5 魔法Aid(M) 
+
+;Scrolls
+1/5 BenedictionOil 
+1/5 BenedictionOil 
+1/5 BenedictionOil 
+1/5 BenedictionOil 
+1/5 BenedictionOil 
+1/5 BenedictionOil 
+1/5 BenedictionOil 
+1/5 BenedictionOil 
+
+;Nothing
+1/10 金Bar 
+1/100 金BarBundle 
+1/1000 金Chest 

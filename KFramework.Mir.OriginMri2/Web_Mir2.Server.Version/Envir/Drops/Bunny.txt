@@ -1,0 +1,23 @@
+;Gold
+1/16 Gold 2141
+
+;Pots + Other
+1/40 (HP)Booster
+1/40 (MP)Booster 
+1/60 太阳水 
+1/100 太阳药水(M)
+
+1/250 Impact药(L) 
+1/250 魔法药(L) 
+1/250 道士药(L) 
+1/250 暴药(L) 
+1/250 StaminaAid(L) 
+1/250 魔法Aid(L) 
+
+1/500 Awakeningbox
+1/500 觉醒魂0
+
+
+;;1/2500 EasterRobe(M)[7d]
+;;1/2500 EasterRobe(F)[7d]
+1/5000 CuteRatEgg

@@ -1,0 +1,12 @@
+[Recipe]
+Amount 1
+Chance 20
+Gold 10000
+
+[Tools]
+Crafting书
+
+[Ingredients]
+MC石
+魔法药(L)
+特制魔法药

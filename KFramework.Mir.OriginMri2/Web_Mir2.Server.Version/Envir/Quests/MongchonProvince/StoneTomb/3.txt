@@ -1,0 +1,28 @@
+[@Description]
+How Deep have you been in {Stone Temple/Yellow}?
+The {白野猪/Crimson} is located on Deep Within.
+
+[@TaskDescription]
+Eliminate the {白野猪/Crimson}.
+
+[@Completion]
+
+[@KillTasks]
+白野猪 1
+
+[@ItemTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+13000
+
+[@GoldReward]
+13000
+
+// Pickup - MongchonDelegate_Michael 3 330 332
+// Hand In - MongchonDelegate_Michael 3 330 332

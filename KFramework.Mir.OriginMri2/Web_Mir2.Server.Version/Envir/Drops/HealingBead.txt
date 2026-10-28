@@ -1,0 +1,63 @@
+;Gold
+
+
+;Pots + Other
+
+
+;Weapons
+
+
+;Armour
+
+
+;Helmets
+
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Gem/Orb
+1/1300 冰冻宝石
+1/1300 耐久宝石
+1/1300 勇气宝石
+1/1300 魔法宝石
+1/1300 魂宝石
+1/1300 防护宝石
+1/1300 邪斩杀宝石
+1/1300 毒宝石
+1/1300 准确宝石
+1/1300 敏捷宝石
+
+
+;Books
+
+
+;CraftingMaterials
+
+
+;Quests
+

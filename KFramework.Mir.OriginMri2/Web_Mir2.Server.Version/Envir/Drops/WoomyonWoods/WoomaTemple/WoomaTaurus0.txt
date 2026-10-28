@@ -1,0 +1,75 @@
+;Gold
+1/1 Gold 10000
+
+
+;Pots + Other
+1/1 中金创药 
+1/1 中魔法药 
+1/1 中金创药 
+1/1 中魔法药 
+1/1 大金创药
+1/1 大魔法药
+1/1 太阳水 
+1/1 太阳药水(M)
+
+1/15 BenedictionOil
+1/10 沃玛角
+1/10 沃玛心
+
+1/40 觉醒魂0
+1/40 觉醒魂0
+
+
+;Weapons
+
+
+;Armour
+
+
+;Helmets
+
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Medals Rare
+
+
+;Shields
+
+
+;Shields Rare
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+
+
+;CraftingMaterials
+
+
+;Quests
+1/1 沃玛心 Q
+1/10 HeartLocket Q
+1/2 GuardianBlades Q
+1/1 WoomaTempleMap Q

@@ -1,0 +1,11 @@
+[Recipe]
+Amount 1
+Chance 100
+Gold 1000
+
+[Tools]
+
+[Ingredients]
+铜矿 1 12000
+Mundane戒
+红线 10

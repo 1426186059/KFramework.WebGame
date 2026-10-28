@@ -1,0 +1,13 @@
+[Recipe]
+Amount 1
+Chance 100
+Gold 1000
+
+[Tools]
+
+
+[Ingredients]
+虫Leg 15
+Monk手镯 
+银矿 1 12000
+蜘蛛Web 15

@@ -1,0 +1,75 @@
+Todo:
+
+Add more Daily Quests
+Add Quest to enter Palace
+
+
+Add 地狱火 Spawns
+Add IceHell Spawns
+
+Add Remaining Drops
+
+Add NPC Dialog to Rankings + Master
+Add Guild Levels (Need official information)
+Add Guild Skills (Need official Information)
+Tiger Package
+Add Premium Dungeons (Awaiting Expiry)
+
+Add Stats to following Monsters:
+
+沙暴 - Image
+
+Fine魂
+熊
+龟草
+Leopard
+爪牙武士
+爪牙术士
+爪牙祭司
+爪牙Rouge
+酋长武士
+酋长术士
+酋长祭司
+酋长Rouge
+酋长弓手
+大师龙阳
+坛1
+坛2
+Fighting猫
+火猫
+猫Widow
+锈锤猫
+黑锤猫
+流浪猫
+猫巫师
+Seedings将军
+Restless坛
+GeneralJinmYo
+图森蛋
+幼年图森
+犰狳
+犰狳长老
+Visceral蠕虫2
+沙蜗牛
+食人Tentacles
+图森
+图森战士
+图森法师
+图森武士
+GeneralTucson
+冰封士兵
+冰封战士
+冰封弓手
+冰封骑士
+冰封Golem
+冰幻影
+雪狼
+冰封狼人
+冰封Miner
+冰封Axeman
+冰封Magician
+Snow雪怪
+冰水晶士兵
+暗幽魂
+暗之灵
+SinseokMiner

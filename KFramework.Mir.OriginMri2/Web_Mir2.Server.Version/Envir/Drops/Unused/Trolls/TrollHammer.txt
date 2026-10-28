@@ -1,0 +1,30 @@
+;Gold
+1/10 Gold 1950
+1/5 太阳水
+1/5 太阳水
+
+;Potions
+1/30 太阳水
+1/50 太阳药水(M)
+
+1/35800 TrollCap
+1/35800 TrollRing
+1/35800 TrollBand
+1/35800 TrollChains
+
+
+1/12000 HolyHealthStone
+1/12000 HolyMagicStone
+1/12000 HolyPowerStone
+1/12000 HolyDCStone
+1/12000 HolyMCStone
+1/12000 HolySCStone
+1/12000 HolyAcStone
+1/12000 HolyDefenseStone
+
+1/40000 Sparkling腰带
+1/40000 Sparkling靴
+1/40000 Sparkling盔
+1/60000 PuiYuHelmet
+
+1/7000 BenedictionOil

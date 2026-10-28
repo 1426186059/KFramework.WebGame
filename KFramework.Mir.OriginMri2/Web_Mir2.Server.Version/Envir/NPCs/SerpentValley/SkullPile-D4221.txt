@@ -1,0 +1,30 @@
+[@Main]
+#SAY
+(Hmm?! There is a note left in the 骷髅兵 pile?)
+ 
+<Read/@Read>
+ 
+<Close/@exit>
+
+
+[@Read]
+#SAY
+"From another being who endlessly wanders this place,"
+"Obtain the book and bring it to me."
+ 
+(Is this the book?)
+(<I should try it out./@Enter>)
+
+
+[@Enter]
+#IF
+CHECKITEM 卷轴之印 1
+#ACT
+TAKEITEM 卷轴之印 1
+MOVE LABY01 
+
+#ELSESAY
+You need to have the {卷轴之印/LightSteelBlue} to enter!
+ 
+<Close/@Exit>
+

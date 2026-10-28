@@ -1,0 +1,86 @@
+;Gold
+1/5 Gold 450
+
+;Weapons
+1/150 青铜斧 
+1/250 钩剑 
+1/250 Trident 
+1/250 Scimitar 
+1/250 刃之Velocity 
+1/250 复合弓 
+1/300 钢斧 
+1/350 钢剑 
+1/350 武侠剑 
+1/350 钩矛 
+1/350 短剑剑 
+1/350 铁刃 
+1/350 长弓 
+
+;Armours
+1/250 轻甲(M) 
+1/250 轻甲(F) 
+
+;Helmets
+1/150 青铜盔 
+1/175 魔法盔 
+
+;Necklaces
+1/500 Lantern项链 
+1/500 虎项链 
+1/500 铂金项链 
+1/500 Naga项链 
+1/500 Amber项链 
+1/500 凤凰Bead 
+
+;Bracelets
+1/500 魔法手镯 
+1/750 Hard手套 
+
+;Rings
+1/400 蓝戒 
+1/500 黑戒 
+1/500 蛇眼戒 
+1/500 珍珠戒 
+
+;Potions
+1/30 中金创药 
+1/30 中魔法药 
+1/100 太阳水 
+
+;Books
+1/100 Fencing 
+1/100 火球 
+1/100 Healing 
+1/100 Fatal剑 
+1/100 Focus 
+1/100 Repulsion 
+1/100 雷电Shock 
+1/100 之灵剑 
+1/100 Poisoning 
+1/200 StraightShot 
+1/200 雷弩箭 
+1/200 巨火球 
+1/200 魂火球 
+1/200 召唤骷髅 
+1/200 Teleport 
+1/200 Slaying 
+1/200 地狱火 
+1/200 双Slash 
+1/250 Hiding 
+1/250 MassHiding 
+1/250 火Bang 
+1/250 火墙 
+1/250 魂盾 
+1/250 Haste 
+1/500 Thrusting 
+1/500 雷 
+1/500 Revelation 
+1/500 Blessed甲 
+1/500 FlashDash 
+1/150 Explosive陷阱 
+1/200 Meditation 
+1/250 召唤吸血蜘蛛 
+1/500 DelayedExplosion 
+1/700 BackStep 
+1/1000 ElementalShot 
+1/400 双Shot 

@@ -1,0 +1,33 @@
+[@Description]
+Thankyou traveler. For returning my son's {Robe/LightSteelBlue} I have a task
+if your to the challenge. My Son was looking for some treasure in 
+{SerpentDeadMine/Yellow} There was a letter in his Robes saying he found
+the Gold. Please return and retrieve the {Stolen金/LightSteelBlue}
+
+[@TaskDescription]
+Kill {RotNd僵尸/Crimson} located on {SerpentDeadMine 2F/Yellow}
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+Stolen金 1
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+黑水晶戒
+Eyeof金蛇
+黑珍珠戒 
+
+[@ExpReward]
+4800
+
+[@GoldReward]
+4800
+
+// Pickup - InnKeeper_Robin 0146 5 10
+// Hand In - InnKeeper_Robin 0146 5 10

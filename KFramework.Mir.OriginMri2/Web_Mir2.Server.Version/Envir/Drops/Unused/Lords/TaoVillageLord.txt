@@ -1,0 +1,215 @@
+;Gold
+1/4 Gold 12500
+1/80 金Bar
+
+;Potions
+1/1 大金创药
+1/1 大魔法药
+1/1 大金创药
+1/1 大魔法药
+1/1 大金创药
+1/1 大魔法药
+1/1 太阳水
+1/1 太阳水
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/5 道士药(小)
+1/5 Impact药(S)
+1/5 魔法药(S)
+1/5 风暴药(小)
+1/5 老山参
+1/5 老山参
+1/1 Apple
+1/1 Apple
+1/5 BenedictionOil
+1/5 BenedictionOil
+1/5 BenedictionOil
+
+;Armours
+1/6 锻造甲(M)
+1/6 锻造甲(F)
+1/6 铁甲(M)
+1/6 铁甲(F)
+1/6 Wizard袍(M)
+1/6 WizardRobe(F)
+1/6 珍珠甲(M)
+1/6 珍珠甲(F)
+1/6 远古甲(M)
+1/6 远古甲(F)
+1/300 水晶甲(M)
+1/300 水晶甲(F)
+1/55 钢甲(M)
+1/55 钢甲(F)
+1/55 龙袍(M)
+1/55 龙袍(F)
+1/55 Titan甲(M)
+1/55 Titan甲(F)
+1/55 皇家甲(M)
+1/55 皇家甲(F)
+
+;Weapons
+1/25 力量斧
+1/25 长弓
+1/30 净化剑
+1/15 巨斧
+1/15 银弓
+1/15 双刃
+1/15 法师杖
+1/15 蛇剑
+1/150 Fiend弓
+1/150 JudgementMace
+1/150 战争法师杖
+1/150 魂泉杖
+1/150 刃之Darkness
+1/50 血Stealer剑
+
+;Helmets
+1/5 巫医盔
+1/10 骷髅盔
+1/85 黑铁盔
+1/100 盔之英雄
+
+;Sets
+1/50 红Orchid戒
+1/50 红Orchid项链
+1/50 红Orchid手镯
+1/50 红花戒
+1/50 红花项链
+1/50 红花手镯
+1/600 召回盔
+1/600 召回项链
+1/600 召回戒
+1/600 召回手镯
+1/400 MajesticNecklace
+1/400 MajesticRing
+1/400 MajesticBelt
+1/400 MajesticBoots
+1/400 MajesticWheel
+1/400 MajesticHelmet
+1/6000 LordSlayerBlade
+1/6000 LordSlayerStaff
+1/6000 LordSlayerFan
+1/6000 LordSlayerBlades
+1/6000 LordSlayerArmour(M)
+1/6000 LordSlayerArmour(F)
+1/6000 LordSlayerHelmet
+1/6000 LordSlayerNecklace
+1/6000 LordSlayerBracelet
+1/6000 LordSlayerRing
+1/6000 LordSlayerBoots
+1/6000 LordSlayerBelt
+
+;Rings
+1/15 骷髅戒
+1/15 铁戒
+1/10 Charm戒
+1/10 Moral戒
+1/15 Expel戒
+1/15 珊瑚戒
+1/140 Gale戒
+1/30 龙戒
+1/30 红宝石戒
+1/30 铂金戒
+1/90 力量戒
+1/90 Violet戒
+1/90 Titan戒
+
+;Bracelets
+1/25 DeathGauntlet
+1/15 金手镯
+1/30 青铜手套
+1/90 骑士手镯
+1/90 HangMa轮
+1/75 魂泉手镯
+
+
+;Necklaces
+1/10 Lantern项链
+1/10 虎项链
+1/30 铂金项链
+1/75 蓝玉项链
+1/75 BambooPipe
+1/75 ConvexLens
+1/15 Life项链
+1/15 珍珠项链
+1/15 爪项链
+1/210 Gale项链
+1/80 绿Bead
+1/80 魂项链
+1/80 DemonicBells
+1/90 技能项链
+1/1000 Probe项链
+
+;Stones
+1/10 DC石(S)
+1/10 MC石(S)
+1/10 SC石(S)
+1/20 DC石(M)
+1/20 MC石(M)
+1/20 SC石(M)
+1/50 DC石(XL)
+1/50 MC石(XL)
+1/50 SC石(XL)
+1/100 HolyDCStone
+1/100 HolyMCStone
+1/100 HolySCStone
+
+;Gems
+1/55 勇气珠
+1/55 魔法珠
+1/55 魂珠
+1/60 暴珠
+1/60 准确珠
+1/60 幻灭珠
+1/100 暴珠
+
+;Books
+1/100 陷阱Hexagon
+1/100 雷暴
+1/100 Heavenly剑
+1/100 ShoulderDash
+1/300 Entrapment
+1/500 Lionroar
+1/300 冰暴
+1/300 烈焰剑
+1/600 诅咒
+1/500 召唤圣精灵
+1/500 Mirroring
+1/500 SwiftFeet
+1/800 Fury
+1/400 双生龙兽刃
+
+1/100 Heavenly剑
+1/100 火Burst
+1/300 陷阱
+1/400 毒剑
+1/500 CrescentSlash
+1/600 月轻
+1/800 MPEater
+1/800 SwiftFeet
+
+1/100 BackStep
+1/300 DelayedExplosion
+1/400 ElementalBarrier
+1/500 BindingShot
+1/600 召唤蟾蜍
+1/800 毒Shot
+
+;Crafting Materials
+1/15 蜘蛛Web
+1/10 红线
+
+
+;Shields
+1/150 RustyShield
+1/170 RustlessShield
+1/190 DruidShield
+1/150 PaladinShield
+1/170 KryptoniteShield
+1/190 AfflictedShield
+
+;Awakening Souls
+1/2 觉醒魂0
+1/20 觉醒魂0

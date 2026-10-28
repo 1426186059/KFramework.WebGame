@@ -1,0 +1,168 @@
+;Gold
+1/1 Gold 30000
+
+;Pots + Other
+1/1 大金创药
+1/1 大金创药
+1/1 大魔法药
+1/1 大魔法药
+1/1 特制金创药
+1/1 特制金创药
+1/1 特制魔法药
+1/1 特制魔法药
+1/1 太阳水
+1/2 太阳水
+1/3 太阳药水(M)
+1/5 太阳药水(M)
+
+1/10 Impact药(L)
+1/10 魔法药(L)
+1/10 道士药(L)
+1/10 暴药(L)
+
+1/15 BenedictionOil
+1/40 GoldenBenedictionOil
+
+1/40 觉醒魂0
+1/40 觉醒魂0
+
+;Weapons
+1/250 凶煞弓
+1/250 龙斩杀
+1/250 龙杖
+1/250 魂军刀
+1/450 Burst剑
+1/450 Dread弓
+1/450 圣血矛
+1/450 龙血剑
+
+;Weapon Rare
+1/900 黑虎Hammer
+1/900 杖之Lotus
+1/900 Lethal弓
+1/900 Fan之Crane
+
+;Armour
+1/20 Studded甲(M)
+1/20 Studded甲(F)
+1/20 钢甲(M)
+1/20 钢甲(F)
+1/20 龙袍(M)
+1/20 龙袍(F)
+1/20 Titan甲(M)
+1/20 Titan甲(F)
+
+;Armour Rare
+1/500 黑虎甲(M)
+1/500 黑虎甲(F)
+1/500 Lotus甲(F)
+1/500 Lotus甲(M)
+1/500 Crane甲(F)
+1/500 Crane甲(M)
+
+;Helmets
+1/545 ApesCrown
+1/550 Sparkling盔
+1/560 盔之Darkness
+
+;Helmets Rare
+1/400 AscendedHelmet
+
+;Necklace
+1/205 邪Triangle
+1/205 CrossPurified
+1/205 Adamant项链
+
+;Necklace Rare
+1/400 AscendedNecklace
+
+;Bracelets
+1/205 WildTitan护符
+1/205 Enchanted护符
+1/205 五元素护符
+
+;Bracelets Rare
+1/400 AscendedWheel
+
+;Rings
+1/205 魔红宝石戒
+1/205 邪Expel戒
+1/205 金龙戒
+
+;Ring Rare
+1/400 AscendedRing
+
+
+;Shoes
+
+
+;Shoes Rare
+1/400 AscendedBoots
+
+;Belts
+1/40 BoneBelt
+1/150 烈焰Grasp
+1/260 Sparkling腰带
+1/165 腰带之Darkness
+
+;Belt Rare
+1/400 AscendedBelt
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Gems/Orbs
+1/50 冰冻珠
+1/50 耐久珠
+1/50 勇气珠
+1/50 魔法珠
+1/50 魂珠
+1/50 防护珠
+1/50 邪斩杀珠
+1/50 毒珠
+1/50 准确珠
+1/50 敏捷珠
+
+
+;Books
+;;Warrior
+1/500 刃Avalanche
+1/700 防护Field
+1/900 Rage
+1/1500 Counter攻击
+
+;;Wizard
+1/60 FlameDisruptor
+1/500 Mirroring
+1/900 MeteorStrike
+1/1500 魔法Booster
+1/1500 冰Thrust
+
+;;Toaist
+1/60 UltimateEnhancer
+1/500 召唤圣精灵
+1/700 Reincarnation
+1/900 毒Cloud
+1/900 Plague
+1/1500 PetEnhancer
+
+;;Assassion
+1/60 MPEater
+1/500 SwiftFeet
+1/900 暗Body
+1/1500 Hemorrhage
+
+;CraftingMaterials
+
+
+;Quests
+

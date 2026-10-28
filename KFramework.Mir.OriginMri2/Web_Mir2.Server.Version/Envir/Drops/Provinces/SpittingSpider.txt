@@ -1,0 +1,11 @@
+;Gold
+1/10 Gold 100
+
+;Crafting Materials
+1/3 蜘蛛Teeth 
+1/10 蜘蛛Web
+
+;Quest
+1/3 毒Sack Q
+1/3 Web Q
+1/7 蜘蛛Leg Q

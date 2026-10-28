@@ -1,0 +1,13 @@
+[Recipe]
+Amount 
+Chance 
+Gold 
+
+[Tools]
+
+
+[Ingredients]
+大骨头 80
+白线 120
+白金腰带 1
+铂金 2

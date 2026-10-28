@@ -1,0 +1,11 @@
+;Pots + Other
+1/100 奇药(EXP)
+1/100 奇药(DROP)
+1/10 奇药(HP)
+1/10 奇药(MP)
+1/10 奇药(AC)
+1/10 奇药(MAC)
+1/10 奇药(A.SPEED)
+1/100 Knapsack(S)
+1/200 Knapsack(M)
+1/300 Knapsack(L)

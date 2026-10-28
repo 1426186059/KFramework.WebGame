@@ -1,0 +1,31 @@
+;Gold
+1/10 Gold 1350
+1/5 太阳水
+1/5 太阳水
+
+;Potions
+1/30 太阳水
+1/50 太阳药水(M)
+
+1/12000 SmasherGlove
+1/12000 BlizzardGlove
+1/12000 MistyGlove
+1/12000 SlicerGlove
+
+
+
+1/40000 Sparkling腰带
+1/40000 Sparkling靴
+1/40000 Sparkling盔
+1/60000 PuiYuHelmet
+
+1/25000 黑虎甲(M)
+1/25000 黑虎甲(F)
+1/25000 Lotus甲(M)
+1/25000 Lotus甲(F)
+1/25000 Crane甲(M)
+1/25000 Crane甲(F)
+1/25000 Stealth甲(M)
+1/25000 Stealth甲(F)
+1/25000 轻锻造甲(M)
+1/25000 轻锻造甲(F)

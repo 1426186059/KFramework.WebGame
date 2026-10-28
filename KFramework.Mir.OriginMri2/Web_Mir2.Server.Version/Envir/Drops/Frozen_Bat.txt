@@ -1,0 +1,52 @@
+;Gold
+1/5 Gold 40
+
+;Pots + Other
+1/35 中金创药
+1/35 中魔法药
+
+1/50 TownTeleport 
+
+;Weapons
+
+
+;Armour
+
+
+;Helmets
+
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+
+
+;CraftingMaterials
+
+
+;Quests

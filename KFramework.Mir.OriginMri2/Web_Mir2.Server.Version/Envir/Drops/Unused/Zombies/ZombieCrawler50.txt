@@ -1,0 +1,120 @@
+;Gold
+1/5 Gold 185
+
+;Pots + Other
+1/7 小金创药
+1/7 小魔法药
+1/30 中金创药
+1/30 中魔法药
+
+;Weapons
+1/110 青铜剑 
+1/110 Short剑 
+1/110 Short弓
+1/110 铁剑 
+1/110 青铜斧 
+1/210 钩剑 
+1/210 Trident 
+1/210 Scimitar 
+1/280 钢斧 
+1/250 钢剑 
+1/250 武侠剑 
+1/250 钩矛 
+1/250 短剑剑 
+1/200 刃之Velocity
+1/250 铁刃
+1/110 复合弓
+1/250 长弓
+
+;Armour
+1/200 轻甲(M) 
+1/200 轻甲(F) 
+
+;Helmets
+1/100 青铜盔 
+1/125 魔法盔 
+
+;Necklace
+1/400 Lantern项链 
+1/400 虎项链 
+1/400 铂金项链 
+1/400 Naga项链 
+1/400 Amber项链 
+1/400 凤凰Bead 
+
+;Bracelets
+1/400 魔法手镯 
+1/550 Hard手套 
+
+;Rings
+1/300 蓝戒 
+1/400 黑戒 
+1/400 蛇眼戒 
+1/400 珍珠戒 
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+;Warrior
+1/105 Fencing
+1/110 Slaying 
+1/115 Thrusting
+1/200 Half月 
+
+;Wizard
+1/105 火球 
+1/110 Repulsion
+1/115 雷电Shock
+1/120 巨火球
+1/125 地狱火
+1/130 雷弩箭
+1/200 Teleport 
+1/300 火Bang
+
+;Taoist
+1/105 Healing 
+1/110 之灵剑
+1/115 Poisoning 
+1/120 魂火球 
+1/125 召唤骷髅
+1/130 Hiding
+1/200 MassHiding
+1/300 魂盾
+
+;Assassin
+1/105 Fatal剑
+1/110 双Slash
+1/115 Haste
+1/200 FlashDash
+1/300 Heavenly剑
+
+;Archer
+1/105 Focus
+1/110 StraightShot
+1/115 MentalState
+1/200 双Shot
+1/300 Meditation
+
+
+;CraftingMaterials
+
+
+;Quests
+1/2 僵尸眼 Q
+1/2 Entrails Q

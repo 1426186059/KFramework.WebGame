@@ -1,0 +1,155 @@
+;Gold
+1/5 Gold 20000
+
+;Potions
+1/1 大金创药
+1/1 大魔法药
+1/1 特制金创药
+1/1 特制魔法药
+1/1 大金创药
+1/1 大魔法药
+1/1 特制金创药
+1/1 特制魔法药
+1/2 大金创药
+1/2 大魔法药
+1/2 特制金创药
+1/2 特制魔法药
+1/2 大金创药
+1/2 大魔法药
+1/2 特制金创药
+1/2 特制魔法药
+1/1 太阳水
+1/1 太阳药水(M)
+1/1 太阳水
+1/1 太阳药水(M)
+1/1 太阳水
+1/1 太阳药水(M)
+1/1 太阳水
+1/1 太阳药水(M)
+1/2 太阳水
+1/2 太阳药水(M)
+1/2 太阳水
+1/2 太阳药水(M)
+1/2 太阳水
+1/2 太阳药水(M)
+1/2 太阳水
+1/2 太阳药水(M)
+1/5 BenedictionOil
+1/5 BenedictionOil
+
+;Armours
+1/30 钢甲(M)
+1/30 钢甲(F)
+1/30 龙袍(M)
+1/30 龙袍(F)
+1/30 Titan甲(M)
+1/30 Titan甲(F)
+1/30 皇家甲(M)
+1/30 皇家甲(F)
+1/30 Studded甲(M)
+1/30 Studded甲(F)
+1/350 黑虎甲(M)
+1/350 黑虎甲(F)
+1/350 Lotus甲(M)
+1/350 Lotus甲(F)
+1/350 Crane甲(M)
+1/350 Crane甲(F)
+1/350 Stealth甲(M)
+1/350 Stealth甲(F)
+
+;Weapons
+1/60 战争之灵刃
+1/60 魔法Scythe
+1/60 石BambooFan
+1/60 冰冻刃
+1/60 轻盈弓
+1/350 黑虎Hammer
+1/350 杖之Lotus
+1/350 Fan之Crane
+1/350 Butchering刃
+
+;Belts
+1/30 金腰带
+1/30 精金腰带
+
+;Shoes
+1/20 黑靴
+1/50 龙靴
+1/70 红鳞靴
+
+;Helmets
+1/60 巨盔
+1/60 道Coronet
+1/60 WisdomCoronet
+1/60 皇家盔
+
+;Rings
+1/40 Noble戒
+1/40 魂戒
+1/40 奥玛之灵戒
+1/40 TaeGuk戒
+1/40 雷戒
+1/40 Boundless戒
+1/300 Crimson红宝石戒
+1/300 Pledge戒
+1/300 五元素戒
+
+;Bracelets
+1/50 钢Gauntlet
+1/50 8Trigram轮
+1/50 HangMa轮
+1/50 BokMa轮
+1/90 BaekTa手套
+1/90 之灵Reformer
+1/90 圣道轮
+1/300 DualTitan护符
+1/300 邪Whisp护符
+1/300 SacredAngel护符
+
+;Necklaces
+1/110 英雄项链
+1/110 精金项链
+1/110 Requiem项链
+1/300 魔面具
+1/300 Violet珠
+1/300 KunroonTear
+
+;Books
+1/300 防护Field
+1/100 刃Avalanche 
+1/100 Vampirism
+1/200 Mirroring
+1/500 Blizzard
+1/300 Reincarnation
+1/300 毒Cloud
+1/100 UltimateEnhancer
+1/100 EnergyRepulsor
+1/100 魂盾
+1/100 火Burst
+1/100 陷阱
+1/200 毒剑
+1/200 月轻
+1/300 MPEater
+1/500 SwiftFeet
+1/1000 FlameField
+1/1000 诅咒
+1/1000 刃Avalanche
+1/1000 Reincarnation
+1/1000 mpeater
+1/1000 Hemorrhage
+1/1000 Plague 
+1/1000 魔法Booster 
+1/1000 Counter攻击 
+
+;Gems
+1/200 勇气珠
+1/200  魂珠
+1/200  魔法珠
+1/200  防护珠
+1/200  邪斩杀珠
+1/200  耐久珠
+1/200  毒珠
+1/200  冰冻珠
+1/200  准确珠
+1/200  暴珠
+1/200  耐力珠

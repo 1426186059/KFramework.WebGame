@@ -1,0 +1,80 @@
+;Gold
+1/5 Gold 950
+
+;Pots + Other
+1/20 大金创药
+1/20 大魔法药
+1/20 特制金创药
+1/20 特制魔法药
+
+;Weapons
+1/16000 轻盈弓
+1/16000 战争之灵刃
+1/16000 魔法Scythe
+1/16000 石BambooFan
+1/16000 冰冻刃
+1/18000 凶煞弓
+1/18000 龙斩杀
+1/18000 龙杖
+1/18000 魂军刀
+1/18000 皇家刃
+
+
+;Weapon Rare
+1/19500 剑之战争神
+1/19500 弓之Force
+1/19500 刃之Sorcery
+1/19500 天剑
+1/19500 刃之Magi
+
+
+;Armour
+1/3000 Studded甲(M)
+1/3000 Studded甲(F)
+1/3000 钢甲(M)
+1/3000 钢甲(F)
+1/3000 龙袍(M)
+1/3000 龙袍(F)
+1/3000 Titan甲(M)
+1/3000 Titan甲(F)
+1/3000 皇家甲(M)
+1/3000 皇家甲(F)
+
+;Helmets
+
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+
+
+;CraftingMaterials
+
+
+;Quests
+

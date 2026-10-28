@@ -1,0 +1,69 @@
+[@Main]
+Welcome, how may I help you?
+ 
+<View/@BuySell> Store.
+<Repair/@repair> Items.
+<Close/@exit>
+
+[@BuySell]
+What item do you want to buy or sell?
+<Buy Back/@BuyBack>
+ 
+<Back/@main>
+
+[@BuyBack]
+#SAY
+Item's you are still able to purchase back.
+ 
+<Back/@Main>
+
+[@Repair]
+Show me the items you wish to repair.
+ 
+<Back/@main>
+
+[Types]
+1
+2
+4
+9
+10
+
+[Trade]
+小金创药 1
+小金创药 5
+小金创药 10
+小魔法药 1
+小魔法药 5
+小魔法药 10
+中金创药 1
+中金创药 5
+中金创药 10
+中魔法药 1
+中魔法药 5
+中魔法药 10
+木剑
+木弓
+匕首
+乌木剑
+乌木弓
+青铜剑
+Short弓
+Short剑
+锋利豪剑
+骨弓
+铁剑
+青铜斧
+Trident
+钩剑
+Scimitar
+刃之Velocity
+复合弓
+钢剑
+Candle
+DungeonEscape
+RandomTeleport
+基础布衣(M)
+基础布衣(F)
+轻甲(M)
+轻甲(F)

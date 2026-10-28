@@ -1,0 +1,163 @@
+;Gold
+1/1 Gold 35000
+1/10 金Bar
+
+;Pots + Other
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/1 太阳水
+1/2 太阳水
+1/2 太阳水
+1/2 太阳水
+1/2 太阳水
+1/2 太阳水
+1/2 太阳水
+1/1 特制金创药
+1/1 特制魔法药
+1/1 特制金创药
+1/1 特制魔法药
+1/2 特制金创药
+1/2 特制魔法药
+1/2 特制金创药
+1/2 特制魔法药
+1/1 太阳水 
+1/1 太阳水  
+1/2 太阳水  
+1/2 太阳水  
+1/2 太阳水  
+1/2 太阳水  
+1/2 太阳水  
+
+1/1  BenedictionOil
+1/10 GoldenBenedictionOil
+
+
+
+1/15 觉醒魂0
+1/15 觉醒魂0
+
+;Weapons
+1/400 冰封军刀
+1/400 Grim弓
+1/400 Conqueror矛
+1/400 Bastard剑
+1/800 黑虎Hammer
+1/800 Lethal弓
+1/800 杖之Lotus
+1/800 Fan之Crane
+1/1800 FrozenSlayer
+1/1800 FrozenStaff
+1/1800 FrozenWand
+
+;Armour
+1/200 黑虎甲(M)
+1/200 黑虎甲(F)
+1/200 Lotus甲(M)
+1/200 Lotus甲(F)
+1/200 Crane甲(M)
+1/200 Crane甲(F)
+1/700 WatcherSuit(M)
+1/700 WatcherSuit(F)
+1/1400 FrozenArmour(M)
+1/1400 FrozenArmour(F)
+
+;Helmets
+1/550 WatcherHelmet
+1/570 PuiYuHelmet
+1/570 盔之Darkness
+1/1470 FrozenHelmet
+
+;Necklace
+1/100 Adamant项链
+1/100 邪Triangle
+1/100 CrossPurified
+1/1400 FrozenNecklace
+
+;Bracelets
+1/100 WildTitan护符
+1/100 Enchanted护符
+1/100 五元素护符
+1/500 WatcherGloves
+1/1400 FrozenWheel
+
+;Rings
+1/100 金龙戒
+1/100 魔红宝石戒
+1/100 邪Expel戒
+1/1400 FrozenRing
+
+;Shoes
+1/550 WatcherBoots
+1/500 靴之Darkness
+1/1450 FrozenBoots
+
+;Belts
+1/100 腰带之Darkness
+1/1400 FrozenBelt
+
+;Medals
+
+
+;Shields
+1/1300 FrozenShield
+
+;Pads
+
+
+;Stone
+1/800 冰封石
+
+;Gems/Orbs
+1/25 勇气宝石
+1/25 魔法宝石
+1/25 魂宝石
+1/20 防护宝石
+1/20 邪斩杀宝石
+1/32 毒宝石
+1/32 冰冻宝石
+1/80 暴宝石
+1/80 准确宝石
+1/80 敏捷宝石
+1/25 勇气珠
+1/25 魔法珠
+1/25 魂珠
+1/20 防护珠
+1/20 邪斩杀珠
+1/32 毒珠
+1/32 冰冻珠
+1/80 暴珠
+1/80 准确珠
+1/80 敏捷珠
+
+
+;Books
+;;Warrior
+1/500 Rage
+1/800 SlashingBurst
+
+;;Wizard
+1/700 魔法Booster
+1/800 冰Thrust
+1/900 LavaKing
+1/900 FrozenRains
+
+;;Taoist
+1/500 毒Cloud
+1/700 Plague
+1/800 PetEnhancer
+1/900 HeadShot
+1/950 HolyShield
+
+
+;;Assassin
+1/900 月Mist
+1/900 FuryWaves
+
+;Archer
+1/500 CrippleShot
+1/700 召唤魅惑之蛇
+1/800 NapalmShot
+
+
+;CraftingMaterials

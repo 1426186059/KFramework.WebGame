@@ -1,0 +1,53 @@
+;Gold
+1/5 Gold 25
+
+;Pots + Other
+1/5 小金创药 
+1/5 小魔法药 
+
+;Weapons
+
+
+;Armour
+
+
+;Helmets
+
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+
+
+;CraftingMaterials
+1/2 蛆丹 
+1/10 蛆丹 
+
+;Quests
+1/5 Relics Q
+1/200 远古Scyther Q

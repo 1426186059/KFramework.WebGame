@@ -1,0 +1,36 @@
+;Gold
+1/2 Gold 4969
+
+;Pots + Other
+1/2 (HP)Booster
+1/2 (HP)Booster
+1/2 (MP)Booster
+1/2 (MP)Booster
+1/2 太阳水
+1/2 太阳水
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+
+1/25 Impact药(L) 
+1/25 魔法药(L) 
+1/25 道士药(L) 
+1/25 暴药(L) 
+1/25 StaminaAid(L) 
+1/25 魔法Aid(L) 
+
+1/55 Awakeningbox
+1/80 觉醒魂0
+
+;;1/150 EasterRobe(M)[1d]
+;;1/150 EasterRobe(F)[1d]
+1/250 CuteRatEgg
+
+;Pads
+1/1530 MysteriousGuards[1d]
+
+;Stone
+1/1550 ItemMineJewl[1d]
+1/1550 ExperienceMineJewl[1d]
+1/2550 BloodJewl[1d]

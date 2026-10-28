@@ -1,0 +1,2129 @@
+;Level1
+;Gold
+1/1 Gold 5000 LV1
+
+
+;Pots + Other
+1/1 中金创药 LV1 
+1/1 中魔法药 LV1 
+1/1 中金创药 LV1 
+1/1 中魔法药 LV1 
+1/1 大金创药 LV1
+1/1 大魔法药 LV1
+1/2 太阳水 LV1 
+1/2 太阳药水(M) LV1
+
+1/40 BenedictionOil LV1
+
+1/40 觉醒魂0 LV1
+1/40 觉醒魂0 LV1
+1/2 WoomaHearts LV1
+
+1/40 FrozenTaurusRune LV1
+
+
+;Weapon
+;Warrior
+1/20 钩剑 LV1
+1/30 钢斧 LV1
+1/30 钢剑 LV1
+1/35 王子匕首 LV1
+1/40 武侠剑 LV1
+1/45 力量斧 LV1
+1/50 巨斧 LV1
+1/55 龙剑 LV1
+1/50 银弓 LV1
+1/45 长弓 LV1
+
+;Wizard
+1/20 Trident LV1
+1/20 钩矛 LV1
+1/30 法师杖 LV1
+1/50 血Stealer剑 LV1
+
+;Taoist
+1/20 Scimitar LV1
+1/20 短剑剑 LV1
+1/30 蛇剑 LV1
+1/50 TaoistWidow LV1
+
+;Assassin
+1/20 刃之Velocity LV1
+1/20 铁刃 LV1
+1/30 双刃 LV1
+1/50 DragonSabers LV1
+
+;Weapons Rare
+1/60 VanguardBlade LV1
+1/60 VanguardStaff LV1
+1/60 VanguardSerp LV1
+1/60 VanguardBlades LV1
+1/90 JudgementMace LV1
+1/90 Fiend弓 LV1
+1/90 战争法师杖 LV1
+1/90 魂泉杖 LV1
+1/90 刃之Darkness LV1
+
+
+;Armour
+1/10 Heavy甲(M) LV1
+1/10 Heavy甲(F) LV1
+1/10 魔法袍(M) LV1
+1/10 魔法袍(F) LV1
+1/10 魂甲(M) LV1 
+1/10 魂甲(F) LV1
+1/10 圣物甲(M) LV1
+1/10 圣物甲(F) LV1
+
+
+;Armour Rare
+1/120 VanguardArmour(F) LV1
+1/120 VanguardArmour(M) LV1
+1/140 铁甲(M) LV1
+1/140 铁甲(F) LV1
+1/140 锻造甲(M) LV1
+1/140 锻造甲(F) LV1
+1/140 Wizard袍(M) LV1
+1/140 WizardRobe(F) LV1
+1/140 珍珠甲(M) LV1
+1/140 珍珠甲(F) LV1
+1/140 远古甲(M) LV1
+1/140 远古甲(F) LV1
+1/10000 天甲(M) LV1
+1/10000 天甲(F) LV1
+1/10000 HeavenArcheyRobe(M) LV1
+1/10000 HeavenArcheyRobe(F) LV1
+
+;Helmets
+1/5 骷髅盔 LV1
+1/5 巫医盔 LV1
+1/10 钢盔 LV1
+
+
+;Helmets Rare
+1/200 VanguardHelmet LV1
+1/300 MajesticHelmet LV1
+
+
+;Necklace
+1/15 蓝玉项链 LV1
+1/15 ConvexLens LV1
+1/15 BambooPipe LV1
+1/50 爪项链 LV1
+1/60 Amethyst项链 LV1
+1/70 绿Bead LV1
+1/50 Life项链 LV1
+1/60 Demonicbells LV1
+1/50 珍珠项链 LV1
+1/60 魂项链 LV1
+
+;Necklace Rare
+1/120 VanguardNecklace LV1
+1/200 MajesticNecklace LV1
+
+
+;Bracelets
+1/15 DeathGauntlet LV1
+1/20 金手镯 LV1
+1/30 骑士手镯 LV1
+1/45 钢手套 LV1
+1/30 Spell手镯 LV1
+1/45 BraceletOfMagic LV1
+1/30 3rd眼手镯 LV1
+1/45 道力量手镯 LV1
+
+
+;Bracelets Rare
+1/120 VanguardWheel LV1
+1/200 MajesticWheel LV1
+
+
+;Rings
+1/15 Expel戒  LV1
+1/20 双生金戒 LV1
+1/40 龙戒 LV1
+1/60 力量戒 LV1
+1/15 邪斩杀戒 LV1
+1/40 红宝石戒 LV1
+1/60 Violet戒 LV1
+1/15 玉Snow戒 LV1
+1/40 铂金戒 LV1
+1/60 Titan戒 LV1
+
+;Rings Rare
+1/120 VanguardRing LV1
+1/200 MajesticRing LV1
+
+
+;Shoes
+1/50 黑靴 LV1
+1/50 龙靴 LV1
+
+;Shoes Rare
+1/120 VanguardBoots LV1
+1/200 MajesticBoots LV1
+
+
+;Belts
+1/50 黑铁腰带 LV1
+1/50 金腰带 LV1
+
+;Belts Rare
+1/120 VanguardBelt LV1
+1/200 MajesticBelt LV1
+
+
+;Medals
+1/185 GrimMedal LV1
+
+
+;Medals Rare
+1/190 HollowMedal LV1
+
+;Shields
+1/180 FlechetteShield LV1
+
+
+;Shields Rare
+1/185 SpikeShield LV1
+
+;Pads
+1/200 DefenderPads[14d] LV1
+
+;Stones
+1/30 DC石(M) LV1
+1/65 DC石(L) LV1
+1/30 MC石(M) LV1
+1/65 MC石(L) LV1
+1/30 SC石(M) LV1
+1/65 SC石(L) LV1
+
+;Stones Rare
+1/50 ACStone(M) LV1
+1/70 ACStone(L) LV1
+1/50 AMCStone(M) LV1
+1/70 AMCStone(L) LV1
+1/50 DefenseStone(M) LV1
+1/70 DefenseStone(L) LV1
+
+
+;Books
+;Warrior
+1/30 Slaying LV1
+1/35 Thrusting LV1
+1/40 Half月 LV1
+1/50 ShoulderDash LV1
+1/100 SliceNDice LV1
+1/210 双生龙兽刃 LV1
+
+;Wizard
+1/30 雷弩箭 LV1
+1/35 Teleport LV1
+1/40 火Bang LV1
+1/45 火墙 LV1
+1/50 雷 LV1
+1/55 霜Crunch LV1
+1/100 雷暴 LV1
+1/210 魔法盾 LV1
+
+;Taoist
+1/30 魂火球 LV1
+1/35 召唤骷髅 LV1
+1/40 Hiding LV1 LV1
+1/45 MassHiding LV1
+1/50 魂盾 LV1
+1/55 Revelation LV1
+1/60 Blessed甲 LV1
+1/65 EnergyRepulsor LV1
+1/70 陷阱Hexagon LV1
+1/100 Purification LV1
+1/210 MassHealing LV1
+
+;Assassin
+1/30 双Slash LV1
+1/35 Haste LV1
+1/40 FlashDash LV1
+1/45 轻Body LV1
+1/100 Heavenly剑 LV1
+1/210 火Burst LV1
+
+;Archer
+1/30 双Shot LV1
+1/30 Meditation LV1
+1/35 ElementalShot LV1
+1/35 Explosive陷阱 LV1
+1/40 Concentration LV1
+1/40 VampireShot LV1
+1/45 召唤吸血蜘蛛 LV1
+1/45 BackStep LV1
+1/50 NapalmShot LV1
+1/100 DelayedExplosion LV1
+1/210 ElementalBarrier LV1
+
+;Quests
+1/1 FrozenTempleMap Q LV1
+1/1 沃玛心 Q LV1
+
+;Level2
+;Gold
+1/1 Gold 5000 LV2
+
+
+;Pots + Other
+1/1 中金创药 LV2 
+1/1 中魔法药 LV2 
+1/1 中金创药 LV2 
+1/1 中魔法药 LV2 
+1/1 大金创药 LV2
+1/1 大魔法药 LV2
+1/2 太阳水 LV2 
+1/2 太阳药水(M) LV2
+
+1/40 BenedictionOil LV2
+
+1/40 觉醒魂0 LV2
+1/40 觉醒魂0 LV2
+1/2 WoomaHearts LV2
+
+1/40 FrozenTaurusRune LV2
+
+
+;Weapon
+;Warrior
+1/20 钩剑 LV2
+1/30 钢斧 LV2
+1/30 钢剑 LV2
+1/35 王子匕首 LV2
+1/40 武侠剑 LV2
+1/45 力量斧 LV2
+1/50 巨斧 LV2
+1/55 龙剑 LV2
+1/50 银弓 LV2
+1/45 长弓 LV2
+
+;Wizard
+1/20 Trident LV2
+1/20 钩矛 LV2
+1/30 法师杖 LV2
+1/50 血Stealer剑 LV2
+
+;Taoist
+1/20 Scimitar LV2
+1/20 短剑剑 LV2
+1/30 蛇剑 LV2
+1/50 TaoistWidow LV2
+
+;Assassin
+1/20 刃之Velocity LV2
+1/20 铁刃 LV2
+1/30 双刃 LV2
+1/50 DragonSabers LV2
+
+;Weapons Rare
+1/60 VanguardBlade LV2
+1/60 VanguardStaff LV2
+1/60 VanguardSerp LV2
+1/60 VanguardBlades LV2
+1/90 Fiend弓 LV2
+1/90 JudgementMace LV2
+1/90 战争法师杖 LV2
+1/90 魂泉杖 LV2
+1/90 刃之Darkness LV2
+
+
+;Armour
+1/10 Heavy甲(M) LV2
+1/10 Heavy甲(F) LV2
+1/10 魔法袍(M) LV2
+1/10 魔法袍(F) LV2
+1/10 魂甲(M) LV2 
+1/10 魂甲(F) LV2
+1/10 圣物甲(M) LV2
+1/10 圣物甲(F) LV2
+
+
+;Armour Rare
+1/120 VanguardArmour(F) LV2
+1/120 VanguardArmour(M) LV2
+1/140 铁甲(M) LV2
+1/140 铁甲(F) LV2
+1/140 锻造甲(M) LV2
+1/140 锻造甲(F) LV2
+1/140 Wizard袍(M) LV2
+1/140 WizardRobe(F) LV2
+1/140 珍珠甲(M) LV2
+1/140 珍珠甲(F) LV2
+1/140 远古甲(M) LV2
+1/140 远古甲(F) LV2
+1/10000 天甲(M) LV2
+1/10000 天甲(F) LV2
+1/10000 HeavenArcheyRobe(M) LV2
+1/10000 HeavenArcheyRobe(F) LV2
+
+;Helmets
+1/5 骷髅盔 LV2
+1/5 巫医盔 LV2
+1/10 钢盔 LV2
+
+
+;Helmets Rare
+1/200 VanguardHelmet LV2
+1/300 MajesticHelmet LV2
+
+
+;Necklace
+1/15 蓝玉项链 LV2
+1/15 ConvexLens LV2
+1/15 BambooPipe LV2
+1/50 爪项链 LV2
+1/60 Amethyst项链 LV2
+1/70 绿Bead LV2
+1/50 Life项链 LV2
+1/60 Demonicbells LV2
+1/50 珍珠项链 LV2
+1/60 魂项链 LV2
+
+;Necklace Rare
+1/120 VanguardNecklace LV2
+1/200 MajesticNecklace LV2
+
+
+;Bracelets
+1/15 DeathGauntlet LV2
+1/20 金手镯 LV2
+1/30 骑士手镯 LV2
+1/45 钢手套 LV2
+1/30 Spell手镯 LV2
+1/45 BraceletOfMagic LV2
+1/30 3rd眼手镯 LV2
+1/45 道力量手镯 LV2
+
+
+;Bracelets Rare
+1/120 VanguardWheel LV2
+1/200 MajesticWheel LV2
+
+
+;Rings
+1/15 Expel戒  LV2
+1/20 双生金戒 LV2
+1/40 龙戒 LV2
+1/60 力量戒 LV2
+1/15 邪斩杀戒 LV2
+1/40 红宝石戒 LV2
+1/60 Violet戒 LV2
+1/15 玉Snow戒 LV2
+1/40 铂金戒 LV2
+1/60 Titan戒 LV2
+
+;Rings Rare
+1/120 VanguardRing LV2
+1/200 MajesticRing LV2
+
+
+;Shoes
+1/50 黑靴 LV2
+1/50 龙靴 LV2
+
+;Shoes Rare
+1/120 VanguardBoots LV2
+1/200 MajesticBoots LV2
+
+
+;Belts
+1/50 黑铁腰带 LV2
+1/50 金腰带 LV2
+
+;Belts Rare
+1/120 VanguardBelt LV2
+1/200 MajesticBelt LV2
+
+
+;Medals
+1/185 GrimMedal LV2
+
+
+;Medals Rare
+1/190 HollowMedal LV2
+
+;Shields
+1/180 FlechetteShield LV2
+
+
+;Shields Rare
+1/185 SpikeShield LV2
+
+;Pads
+1/200 DefenderPads[14d] LV2
+
+;Stones
+1/30 DC石(M) LV2
+1/65 DC石(L) LV2
+1/30 MC石(M) LV2
+1/65 MC石(L) LV2
+1/30 SC石(M) LV2
+1/65 SC石(L) LV2
+
+;Stones Rare
+1/50 ACStone(M) LV2
+1/70 ACStone(L) LV2
+1/50 AMCStone(M) LV2
+1/70 AMCStone(L) LV2
+1/50 DefenseStone(M) LV2
+1/70 DefenseStone(L) LV2
+
+
+;Books
+;Warrior
+1/30 Slaying LV2
+1/35 Thrusting LV2
+1/40 Half月 LV2
+1/50 ShoulderDash LV2
+1/100 SliceNDice LV2
+1/210 双生龙兽刃 LV2
+
+;Wizard
+1/30 雷弩箭 LV2
+1/35 Teleport LV2
+1/40 火Bang LV2
+1/45 火墙 LV2
+1/50 雷 LV2
+1/55 霜Crunch LV2
+1/100 雷暴 LV2
+1/210 魔法盾 LV2
+
+;Taoist
+1/30 魂火球 LV2
+1/35 召唤骷髅 LV2
+1/40 Hiding LV2 LV2
+1/45 MassHiding LV2
+1/50 魂盾 LV2
+1/55 Revelation LV2
+1/60 Blessed甲 LV2
+1/65 EnergyRepulsor LV2
+1/70 陷阱Hexagon LV2
+1/100 Purification LV2
+1/210 MassHealing LV2
+
+;Assassin
+1/30 双Slash LV2
+1/35 Haste LV2
+1/40 FlashDash LV2
+1/45 轻Body LV2
+1/100 Heavenly剑 LV2
+1/210 火Burst LV2
+
+;Archer
+1/30 双Shot LV2
+1/30 Meditation LV2
+1/35 ElementalShot LV2
+1/35 Explosive陷阱 LV2
+1/40 Concentration LV2
+1/40 VampireShot LV2
+1/45 召唤吸血蜘蛛 LV2
+1/45 BackStep LV2
+1/50 NapalmShot LV2
+1/100 DelayedExplosion LV2
+1/210 ElementalBarrier LV2
+
+
+;Quests
+1/1 FrozenTempleMap Q LV2
+1/1 沃玛心 Q LV2
+
+;Level3
+;Gold
+1/1 Gold 5000 LV3
+
+
+;Pots + Other
+1/1 中金创药 LV3 
+1/1 中魔法药 LV3 
+1/1 中金创药 LV3 
+1/1 中魔法药 LV3 
+1/1 大金创药 LV3
+1/1 大魔法药 LV3
+1/2 太阳水 LV3 
+1/2 太阳药水(M) LV3
+
+1/40 BenedictionOil LV3
+
+1/40 觉醒魂0 LV3
+1/40 觉醒魂0 LV3
+1/2 WoomaHearts LV3
+
+1/40 FrozenTaurusRune LV3
+
+
+;Weapon
+;Warrior
+1/20 钩剑 LV3
+1/30 钢斧 LV3
+1/30 钢剑 LV3
+1/35 王子匕首 LV3
+1/40 武侠剑 LV3
+1/45 力量斧 LV3
+1/50 巨斧 LV3
+1/55 龙剑 LV3
+1/50 银弓 LV3
+1/45 长弓 LV3
+
+;Wizard
+1/20 Trident LV3
+1/20 钩矛 LV3
+1/30 法师杖 LV3
+1/50 血Stealer剑 LV3
+
+;Taoist
+1/20 Scimitar LV3
+1/20 短剑剑 LV3
+1/30 蛇剑 LV3
+1/50 TaoistWidow LV3
+
+;Assassin
+1/20 刃之Velocity LV3
+1/20 铁刃 LV3
+1/30 双刃 LV3
+1/50 DragonSabers LV3
+
+;Weapons Rare
+1/60 VanguardBlade LV3
+1/60 VanguardStaff LV3
+1/60 VanguardSerp LV3
+1/60 VanguardBlades LV3
+1/90 JudgementMace LV3
+1/90 Fiend弓 LV3
+1/90 战争法师杖 LV3
+1/90 魂泉杖 LV3
+1/90 刃之Darkness LV3
+
+
+;Armour
+1/10 Heavy甲(M) LV3
+1/10 Heavy甲(F) LV3
+1/10 魔法袍(M) LV3
+1/10 魔法袍(F) LV3
+1/10 魂甲(M) LV3 
+1/10 魂甲(F) LV3
+1/10 圣物甲(M) LV3
+1/10 圣物甲(F) LV3
+
+
+;Armour Rare
+1/120 VanguardArmour(F) LV3
+1/120 VanguardArmour(M) LV3
+1/140 铁甲(M) LV3
+1/140 铁甲(F) LV3
+1/140 锻造甲(M) LV3
+1/140 锻造甲(F) LV3
+1/140 Wizard袍(M) LV3
+1/140 WizardRobe(F) LV3
+1/140 珍珠甲(M) LV3
+1/140 珍珠甲(F) LV3
+1/140 远古甲(M) LV3
+1/140 远古甲(F) LV3
+1/10000 天甲(M) LV3
+1/10000 天甲(F) LV3
+1/10000 HeavenArcheyRobe(M) LV3
+1/10000 HeavenArcheyRobe(F) LV3
+
+;Helmets
+1/5 骷髅盔 LV3
+1/5 巫医盔 LV3
+1/10 钢盔 LV3
+
+
+;Helmets Rare
+1/200 VanguardHelmet LV3
+1/300 MajesticHelmet LV3
+
+
+;Necklace
+1/15 蓝玉项链 LV3
+1/15 ConvexLens LV3
+1/15 BambooPipe LV3
+1/50 爪项链 LV3
+1/60 Amethyst项链 LV3
+1/70 绿Bead LV3
+1/50 Life项链 LV3
+1/60 Demonicbells LV3
+1/50 珍珠项链 LV3
+1/60 魂项链 LV3
+
+;Necklace Rare
+1/120 VanguardNecklace LV3
+1/200 MajesticNecklace LV3
+
+
+;Bracelets
+1/15 DeathGauntlet LV3
+1/20 金手镯 LV3
+1/30 骑士手镯 LV3
+1/45 钢手套 LV3
+1/30 Spell手镯 LV3
+1/45 BraceletOfMagic LV3
+1/30 3rd眼手镯 LV3
+1/45 道力量手镯 LV3
+
+
+;Bracelets Rare
+1/120 VanguardWheel LV3
+1/200 MajesticWheel LV3
+
+
+;Rings
+1/15 Expel戒  LV3
+1/20 双生金戒 LV3
+1/40 龙戒 LV3
+1/60 力量戒 LV3
+1/15 邪斩杀戒 LV3
+1/40 红宝石戒 LV3
+1/60 Violet戒 LV3
+1/15 玉Snow戒 LV3
+1/40 铂金戒 LV3
+1/60 Titan戒 LV3
+
+;Rings Rare
+1/120 VanguardRing LV3
+1/200 MajesticRing LV3
+
+
+;Shoes
+1/50 黑靴 LV3
+1/50 龙靴 LV3
+
+;Shoes Rare
+1/120 VanguardBoots LV3
+1/200 MajesticBoots LV3
+
+
+;Belts
+1/50 黑铁腰带 LV3
+1/50 金腰带 LV3
+
+;Belts Rare
+1/120 VanguardBelt LV3
+1/200 MajesticBelt LV3
+
+
+;Medals
+1/185 GrimMedal LV3
+
+
+;Medals Rare
+1/190 HollowMedal LV3
+
+;Shields
+1/180 FlechetteShield LV3
+
+
+;Shields Rare
+1/185 SpikeShield LV3
+
+;Pads
+1/200 DefenderPads[14d] LV3
+
+;Stones
+1/30 DC石(M) LV3
+1/65 DC石(L) LV3
+1/30 MC石(M) LV3
+1/65 MC石(L) LV3
+1/30 SC石(M) LV3
+1/65 SC石(L) LV3
+
+;Stones Rare
+1/50 ACStone(M) LV3
+1/70 ACStone(L) LV3
+1/50 AMCStone(M) LV3
+1/70 AMCStone(L) LV3
+1/50 DefenseStone(M) LV3
+1/70 DefenseStone(L) LV3
+
+
+;Books
+;Warrior
+1/30 Slaying LV3
+1/35 Thrusting LV3
+1/40 Half月 LV3
+1/50 ShoulderDash LV3
+1/100 SliceNDice LV3
+1/210 双生龙兽刃 LV3
+
+;Wizard
+1/30 雷弩箭 LV3
+1/35 Teleport LV3
+1/40 火Bang LV3
+1/45 火墙 LV3
+1/50 雷 LV3
+1/55 霜Crunch LV3
+1/100 雷暴 LV3
+1/210 魔法盾 LV3
+
+;Taoist
+1/30 魂火球 LV3
+1/35 召唤骷髅 LV3
+1/40 Hiding LV3 LV3
+1/45 MassHiding LV3
+1/50 魂盾 LV3
+1/55 Revelation LV3
+1/60 Blessed甲 LV3
+1/65 EnergyRepulsor LV3
+1/70 陷阱Hexagon LV3
+1/100 Purification LV3
+1/210 MassHealing LV3
+
+;Assassin
+1/30 双Slash LV3
+1/35 Haste LV3
+1/40 FlashDash LV3
+1/45 轻Body LV3
+1/100 Heavenly剑 LV3
+1/210 火Burst LV3
+
+;Archer
+1/30 双Shot LV3
+1/30 Meditation LV3
+1/35 ElementalShot LV3
+1/35 Explosive陷阱 LV3
+1/40 Concentration LV3
+1/40 VampireShot LV3
+1/45 召唤吸血蜘蛛 LV3
+1/45 BackStep LV3
+1/50 NapalmShot LV3
+1/100 DelayedExplosion LV3
+1/210 ElementalBarrier LV3
+
+;Quests
+1/1 FrozenTempleMap Q LV3
+1/1 沃玛心 Q LV3
+
+;Level4
+;Gold
+1/1 Gold 5000 LV4
+
+
+;Pots + Other
+1/1 中金创药 LV4 
+1/1 中魔法药 LV4 
+1/1 中金创药 LV4 
+1/1 中魔法药 LV4 
+1/1 大金创药 LV4
+1/1 大魔法药 LV4
+1/2 太阳水 LV4 
+1/2 太阳药水(M) LV4
+
+1/40 BenedictionOil LV4
+
+1/40 觉醒魂0 LV4
+1/40 觉醒魂0 LV4
+1/2 WoomaHearts LV4
+
+1/40 FrozenTaurusRune LV4
+
+
+;Weapon
+;Warrior
+1/20 钩剑 LV4
+1/30 钢斧 LV4
+1/30 钢剑 LV4
+1/35 王子匕首 LV4
+1/40 武侠剑 LV4
+1/45 力量斧 LV4
+1/50 巨斧 LV4
+1/55 龙剑 LV4
+1/50 银弓 LV4
+1/45 长弓 LV4
+
+;Wizard
+1/20 Trident LV4
+1/20 钩矛 LV4
+1/30 法师杖 LV4
+1/50 血Stealer剑 LV4
+
+;Taoist
+1/20 Scimitar LV4
+1/20 短剑剑 LV4
+1/30 蛇剑 LV4
+1/50 TaoistWidow LV4
+
+;Assassin
+1/20 刃之Velocity LV4
+1/20 铁刃 LV4
+1/30 双刃 LV4
+1/50 DragonSabers LV4
+
+;Weapons Rare
+1/60 VanguardBlade LV4
+1/60 VanguardStaff LV4
+1/60 VanguardSerp LV4
+1/60 VanguardBlades LV4
+1/90 JudgementMace LV4
+1/90 Fiend弓 LV4
+1/90 战争法师杖 LV4
+1/90 魂泉杖 LV4
+1/90 刃之Darkness LV4
+
+
+;Armour
+1/10 Heavy甲(M) LV4
+1/10 Heavy甲(F) LV4
+1/10 魔法袍(M) LV4
+1/10 魔法袍(F) LV4
+1/10 魂甲(M) LV4 
+1/10 魂甲(F) LV4
+1/10 圣物甲(M) LV4
+1/10 圣物甲(F) LV4
+
+
+;Armour Rare
+1/120 VanguardArmour(F) LV4
+1/120 VanguardArmour(M) LV4
+1/140 铁甲(M) LV4
+1/140 铁甲(F) LV4
+1/140 Wizard袍(M) LV4
+1/140 锻造甲(M) LV4
+1/140 锻造甲(F) LV4
+1/140 WizardRobe(F) LV4
+1/140 珍珠甲(M) LV4
+1/140 珍珠甲(F) LV4
+1/140 远古甲(M) LV4
+1/140 远古甲(F) LV4
+1/10000 天甲(M) LV4
+1/10000 天甲(F) LV4
+1/10000 HeavenArcheyRobe(M) LV4
+1/10000 HeavenArcheyRobe(F) LV4
+
+;Helmets
+1/5 骷髅盔 LV4
+1/5 巫医盔 LV4
+1/10 钢盔 LV4
+
+
+;Helmets Rare
+1/200 VanguardHelmet LV4
+1/300 MajesticHelmet LV4
+
+
+;Necklace
+1/15 蓝玉项链 LV4
+1/15 ConvexLens LV4
+1/15 BambooPipe LV4
+1/50 爪项链 LV4
+1/60 Amethyst项链 LV4
+1/70 绿Bead LV4
+1/50 Life项链 LV4
+1/60 Demonicbells LV4
+1/50 珍珠项链 LV4
+1/60 魂项链 LV4
+
+;Necklace Rare
+1/120 VanguardNecklace LV4
+1/200 MajesticNecklace LV4
+
+
+;Bracelets
+1/15 DeathGauntlet LV4
+1/20 金手镯 LV4
+1/30 骑士手镯 LV4
+1/45 钢手套 LV4
+1/30 Spell手镯 LV4
+1/45 BraceletOfMagic LV4
+1/30 3rd眼手镯 LV4
+1/45 道力量手镯 LV4
+
+
+;Bracelets Rare
+1/120 VanguardWheel LV4
+1/200 MajesticWheel LV4
+
+
+;Rings
+1/15 Expel戒  LV4
+1/20 双生金戒 LV4
+1/40 龙戒 LV4
+1/60 力量戒 LV4
+1/15 邪斩杀戒 LV4
+1/40 红宝石戒 LV4
+1/60 Violet戒 LV4
+1/15 玉Snow戒 LV4
+1/40 铂金戒 LV4
+1/60 Titan戒 LV4
+
+;Rings Rare
+1/120 VanguardRing LV4
+1/200 MajesticRing LV4
+
+
+;Shoes
+1/50 黑靴 LV4
+1/50 龙靴 LV4
+
+;Shoes Rare
+1/120 VanguardBoots LV4
+1/200 MajesticBoots LV4
+
+
+;Belts
+1/50 黑铁腰带 LV4
+1/50 金腰带 LV4
+
+;Belts Rare
+1/120 VanguardBelt LV4
+1/200 MajesticBelt LV4
+
+
+;Medals
+1/185 GrimMedal LV4
+
+
+;Medals Rare
+1/190 HollowMedal LV4
+
+;Shields
+1/180 FlechetteShield LV4
+
+
+;Shields Rare
+1/185 SpikeShield LV4
+
+;Pads
+1/200 DefenderPads[14d] LV4
+
+;Stones
+1/30 DC石(M) LV4
+1/65 DC石(L) LV4
+1/30 MC石(M) LV4
+1/65 MC石(L) LV4
+1/30 SC石(M) LV4
+1/65 SC石(L) LV4
+
+;Stones Rare
+1/50 ACStone(M) LV4
+1/70 ACStone(L) LV4
+1/50 AMCStone(M) LV4
+1/70 AMCStone(L) LV4
+1/50 DefenseStone(M) LV4
+1/70 DefenseStone(L) LV4
+
+
+;Books
+;Warrior
+1/30 Slaying LV4
+1/35 Thrusting LV4
+1/40 Half月 LV4
+1/50 ShoulderDash LV4
+1/100 SliceNDice LV4
+1/210 双生龙兽刃 LV4
+
+;Wizard
+1/30 雷弩箭 LV4
+1/35 Teleport LV4
+1/40 火Bang LV4
+1/45 火墙 LV4
+1/50 雷 LV4
+1/55 霜Crunch LV4
+1/100 雷暴 LV4
+1/210 魔法盾 LV4
+
+;Taoist
+1/30 魂火球 LV4
+1/35 召唤骷髅 LV4
+1/40 Hiding LV4 LV4
+1/45 MassHiding LV4
+1/50 魂盾 LV4
+1/55 Revelation LV4
+1/60 Blessed甲 LV4
+1/65 EnergyRepulsor LV4
+1/70 陷阱Hexagon LV4
+1/100 Purification LV4
+1/210 MassHealing LV4
+
+;Assassin
+1/30 双Slash LV4
+1/35 Haste LV4
+1/40 FlashDash LV4
+1/45 轻Body LV4
+1/100 Heavenly剑 LV4
+1/210 火Burst LV4
+
+;Archer
+1/30 双Shot LV4
+1/30 Meditation LV4
+1/35 ElementalShot LV4
+1/35 Explosive陷阱 LV4
+1/40 Concentration LV4
+1/40 VampireShot LV4
+1/45 召唤吸血蜘蛛 LV4
+1/45 BackStep LV4
+1/50 NapalmShot LV4
+1/100 DelayedExplosion LV4
+1/210 ElementalBarrier LV4
+
+;Quests
+1/1 FrozenTempleMap Q LV4
+1/1 沃玛心 Q LV4
+
+;Level5
+;Gold
+1/1 Gold 5000 LV5
+
+
+;Pots + Other
+1/1 中金创药 LV5 
+1/1 中魔法药 LV5 
+1/1 中金创药 LV5 
+1/1 中魔法药 LV5 
+1/1 大金创药 LV5
+1/1 大魔法药 LV5
+1/2 太阳水 LV5 
+1/2 太阳药水(M) LV5
+
+1/40 BenedictionOil LV5
+
+1/40 觉醒魂0 LV5
+1/40 觉醒魂0 LV5
+1/2 WoomaHearts LV5
+
+1/40 FrozenTaurusRune LV5
+
+
+;Weapon
+;Warrior
+1/20 钩剑 LV5
+1/30 钢斧 LV5
+1/30 钢剑 LV5
+1/35 王子匕首 LV5
+1/40 武侠剑 LV5
+1/45 力量斧 LV5
+1/50 巨斧 LV5
+1/55 龙剑 LV5
+1/50 银弓 LV5
+1/45 长弓 LV5
+
+;Wizard
+1/20 Trident LV5
+1/20 钩矛 LV5
+1/30 法师杖 LV5
+1/50 血Stealer剑 LV5
+
+;Taoist
+1/20 Scimitar LV5
+1/20 短剑剑 LV5
+1/30 蛇剑 LV5
+1/50 TaoistWidow LV5
+
+;Assassin
+1/20 刃之Velocity LV5
+1/20 铁刃 LV5
+1/30 双刃 LV5
+1/50 DragonSabers LV5
+
+;Weapons Rare
+1/60 VanguardBlade LV5
+1/60 VanguardStaff LV5
+1/60 VanguardSerp LV5
+1/60 VanguardBlades LV5
+1/90 JudgementMace LV5
+1/90 Fiend弓 LV5
+1/90 战争法师杖 LV5
+1/90 魂泉杖 LV5
+1/90 刃之Darkness LV5
+
+
+;Armour
+1/10 Heavy甲(M) LV5
+1/10 Heavy甲(F) LV5
+1/10 魔法袍(M) LV5
+1/10 魔法袍(F) LV5
+1/10 魂甲(M) LV5 
+1/10 魂甲(F) LV5
+1/10 圣物甲(M) LV5
+1/10 圣物甲(F) LV5
+
+
+;Armour Rare
+1/120 VanguardArmour(F) LV5
+1/120 VanguardArmour(M) LV5
+1/140 铁甲(M) LV5
+1/140 铁甲(F) LV5
+1/140 Wizard袍(M) LV5
+1/140 锻造甲(M) LV5
+1/140 锻造甲(F) LV5
+1/140 WizardRobe(F) LV5
+1/140 珍珠甲(M) LV5
+1/140 珍珠甲(F) LV5
+1/140 远古甲(M) LV5
+1/140 远古甲(F) LV5
+1/10000 天甲(M) LV5
+1/10000 天甲(F) LV5
+1/10000 HeavenArcheyRobe(M) LV5
+1/10000 HeavenArcheyRobe(F) LV5
+
+;Helmets
+1/5 骷髅盔 LV5
+1/5 巫医盔 LV5
+1/10 钢盔 LV5
+
+
+;Helmets Rare
+1/200 VanguardHelmet LV5
+1/300 MajesticHelmet LV5
+
+
+;Necklace
+1/15 蓝玉项链 LV5
+1/15 ConvexLens LV5
+1/15 BambooPipe LV5
+1/50 爪项链 LV5
+1/60 Amethyst项链 LV5
+1/70 绿Bead LV5
+1/50 Life项链 LV5
+1/60 Demonicbells LV5
+1/50 珍珠项链 LV5
+1/60 魂项链 LV5
+
+;Necklace Rare
+1/120 VanguardNecklace LV5
+1/200 MajesticNecklace LV5
+
+
+;Bracelets
+1/15 DeathGauntlet LV5
+1/20 金手镯 LV5
+1/30 骑士手镯 LV5
+1/45 钢手套 LV5
+1/30 Spell手镯 LV5
+1/45 BraceletOfMagic LV5
+1/30 3rd眼手镯 LV5
+1/45 道力量手镯 LV5
+
+
+;Bracelets Rare
+1/120 VanguardWheel LV5
+1/200 MajesticWheel LV5
+
+
+;Rings
+1/15 Expel戒  LV5
+1/20 双生金戒 LV5
+1/40 龙戒 LV5
+1/60 力量戒 LV5
+1/15 邪斩杀戒 LV5
+1/40 红宝石戒 LV5
+1/60 Violet戒 LV5
+1/15 玉Snow戒 LV5
+1/40 铂金戒 LV5
+1/60 Titan戒 LV5
+
+;Rings Rare
+1/120 VanguardRing LV5
+1/200 MajesticRing LV5
+
+
+;Shoes
+1/50 黑靴 LV5
+1/50 龙靴 LV5
+
+;Shoes Rare
+1/120 VanguardBoots LV5
+1/200 MajesticBoots LV5
+
+
+;Belts
+1/50 黑铁腰带 LV5
+1/50 金腰带 LV5
+
+;Belts Rare
+1/120 VanguardBelt LV5
+1/200 MajesticBelt LV5
+
+
+;Medals
+1/185 GrimMedal LV5
+
+
+;Medals Rare
+1/190 HollowMedal LV5
+
+;Shields
+1/180 FlechetteShield LV5
+
+
+;Shields Rare
+1/185 SpikeShield LV5
+
+;Pads
+1/200 DefenderPads[14d] LV5
+
+;Stones
+1/30 DC石(M) LV5
+1/65 DC石(L) LV5
+1/30 MC石(M) LV5
+1/65 MC石(L) LV5
+1/30 SC石(M) LV5
+1/65 SC石(L) LV5
+
+;Stones Rare
+1/50 ACStone(M) LV5
+1/70 ACStone(L) LV5
+1/50 AMCStone(M) LV5
+1/70 AMCStone(L) LV5
+1/50 DefenseStone(M) LV5
+1/70 DefenseStone(L) LV5
+
+
+;Books
+;Warrior
+1/30 Slaying LV5
+1/35 Thrusting LV5
+1/40 Half月 LV5
+1/50 ShoulderDash LV5
+1/100 SliceNDice LV5
+1/210 双生龙兽刃 LV5
+
+;Wizard
+1/30 雷弩箭 LV5
+1/35 Teleport LV5
+1/40 火Bang LV5
+1/45 火墙 LV5
+1/50 雷 LV5
+1/55 霜Crunch LV5
+1/100 雷暴 LV5
+1/210 魔法盾 LV5
+
+;Taoist
+1/30 魂火球 LV5
+1/35 召唤骷髅 LV5
+1/40 Hiding LV5 LV5
+1/45 MassHiding LV5
+1/50 魂盾 LV5
+1/55 Revelation LV5
+1/60 Blessed甲 LV5
+1/65 EnergyRepulsor LV5
+1/70 陷阱Hexagon LV5
+1/100 Purification LV5
+1/210 MassHealing LV5
+
+;Assassin
+1/30 双Slash LV5
+1/35 Haste LV5
+1/40 FlashDash LV5
+1/45 轻Body LV5
+1/100 Heavenly剑 LV5
+1/210 火Burst LV5
+
+;Archer
+1/30 双Shot LV5
+1/30 Meditation LV5
+1/35 ElementalShot LV5
+1/35 Explosive陷阱 LV5
+1/40 Concentration LV5
+1/40 VampireShot LV5
+1/45 召唤吸血蜘蛛 LV5
+1/45 BackStep LV5
+1/50 NapalmShot LV5
+1/100 DelayedExplosion LV5
+1/210 ElementalBarrier LV5
+
+;Quests
+1/1 FrozenTempleMap Q LV5
+1/1 沃玛心 Q LV5
+
+;Level6
+;Gold
+1/1 Gold 5000 LV6
+
+
+;Pots + Other
+1/1 中金创药 LV6 
+1/1 中魔法药 LV6 
+1/1 中金创药 LV6 
+1/1 中魔法药 LV6 
+1/1 大金创药 LV6
+1/1 大魔法药 LV6
+1/2 太阳水 LV6 
+1/2 太阳药水(M) LV6
+
+1/40 BenedictionOil LV6
+
+1/40 觉醒魂0 LV6
+1/40 觉醒魂0 LV6
+1/2 WoomaHearts LV6
+
+1/40 FrozenTaurusRune LV6
+
+
+;Weapon
+;Warrior
+1/20 钩剑 LV6
+1/30 钢斧 LV6
+1/30 钢剑 LV6
+1/35 王子匕首 LV6
+1/40 武侠剑 LV6
+1/45 力量斧 LV6
+1/50 巨斧 LV6
+1/55 龙剑 LV6
+1/50 银弓 LV6
+1/45 长弓 LV6
+
+;Wizard
+1/20 Trident LV6
+1/20 钩矛 LV6
+1/30 法师杖 LV6
+1/50 血Stealer剑 LV6
+
+;Taoist
+1/20 Scimitar LV6
+1/20 短剑剑 LV6
+1/30 蛇剑 LV6
+1/50 TaoistWidow LV6
+
+;Assassin
+1/20 刃之Velocity LV6
+1/20 铁刃 LV6
+1/30 双刃 LV6
+1/50 DragonSabers LV6
+
+;Weapons Rare
+1/60 VanguardBlade LV6
+1/60 VanguardStaff LV6
+1/60 VanguardSerp LV6
+1/60 VanguardBlades LV6
+1/90 JudgementMace LV6
+1/90 Fiend弓 LV6
+1/90 战争法师杖 LV6
+1/90 魂泉杖 LV6
+1/90 刃之Darkness LV6
+
+
+;Armour
+1/10 Heavy甲(M) LV6
+1/10 Heavy甲(F) LV6
+1/10 魔法袍(M) LV6
+1/10 魔法袍(F) LV6
+1/10 魂甲(M) LV6 
+1/10 魂甲(F) LV6
+1/10 圣物甲(M) LV6
+1/10 圣物甲(F) LV6
+
+
+;Armour Rare
+1/120 VanguardArmour(F) LV6
+1/120 VanguardArmour(M) LV6
+1/140 铁甲(M) LV6
+1/140 铁甲(F) LV6
+1/140 锻造甲(M) LV6
+1/140 锻造甲(F) LV6
+1/140 Wizard袍(M) LV6
+1/140 WizardRobe(F) LV6
+1/140 珍珠甲(M) LV6
+1/140 珍珠甲(F) LV6
+1/140 远古甲(M) LV6
+1/140 远古甲(F) LV6
+1/10000 天甲(M) LV6
+1/10000 天甲(F) LV6
+1/10000 HeavenArcheyRobe(M) LV6
+1/10000 HeavenArcheyRobe(F) LV6
+
+;Helmets
+1/5 骷髅盔 LV6
+1/5 巫医盔 LV6
+1/10 钢盔 LV6
+
+
+;Helmets Rare
+1/200 VanguardHelmet LV6
+1/300 MajesticHelmet LV6
+
+
+;Necklace
+1/15 蓝玉项链 LV6
+1/15 ConvexLens LV6
+1/15 BambooPipe LV6
+1/50 爪项链 LV6
+1/60 Amethyst项链 LV6
+1/70 绿Bead LV6
+1/50 Life项链 LV6
+1/60 Demonicbells LV6
+1/50 珍珠项链 LV6
+1/60 魂项链 LV6
+
+;Necklace Rare
+1/120 VanguardNecklace LV6
+1/200 MajesticNecklace LV6
+
+
+;Bracelets
+1/15 DeathGauntlet LV6
+1/20 金手镯 LV6
+1/30 骑士手镯 LV6
+1/45 钢手套 LV6
+1/30 Spell手镯 LV6
+1/45 BraceletOfMagic LV6
+1/30 3rd眼手镯 LV6
+1/45 道力量手镯 LV6
+
+
+;Bracelets Rare
+1/120 VanguardWheel LV6
+1/200 MajesticWheel LV6
+
+
+;Rings
+1/15 Expel戒  LV6
+1/20 双生金戒 LV6
+1/40 龙戒 LV6
+1/60 力量戒 LV6
+1/15 邪斩杀戒 LV6
+1/40 红宝石戒 LV6
+1/60 Violet戒 LV6
+1/15 玉Snow戒 LV6
+1/40 铂金戒 LV6
+1/60 Titan戒 LV6
+
+;Rings Rare
+1/120 VanguardRing LV6
+1/200 MajesticRing LV6
+
+
+;Shoes
+1/50 黑靴 LV6
+1/50 龙靴 LV6
+
+;Shoes Rare
+1/120 VanguardBoots LV6
+1/200 MajesticBoots LV6
+
+
+;Belts
+1/50 黑铁腰带 LV6
+1/50 金腰带 LV6
+
+;Belts Rare
+1/120 VanguardBelt LV6
+1/200 MajesticBelt LV6
+
+
+;Medals
+1/185 GrimMedal LV6
+
+
+;Medals Rare
+1/190 HollowMedal LV6
+
+;Shields
+1/180 FlechetteShield LV6
+
+
+;Shields Rare
+1/185 SpikeShield LV6
+
+;Pads
+1/200 DefenderPads[14d] LV6
+
+;Stones
+1/30 DC石(M) LV6
+1/65 DC石(L) LV6
+1/30 MC石(M) LV6
+1/65 MC石(L) LV6
+1/30 SC石(M) LV6
+1/65 SC石(L) LV6
+
+;Stones Rare
+1/50 ACStone(M) LV6
+1/70 ACStone(L) LV6
+1/50 AMCStone(M) LV6
+1/70 AMCStone(L) LV6
+1/50 DefenseStone(M) LV6
+1/70 DefenseStone(L) LV6
+
+
+;Books
+;Warrior
+1/30 Slaying LV6
+1/35 Thrusting LV6
+1/40 Half月 LV6
+1/50 ShoulderDash LV6
+1/100 SliceNDice LV6
+1/210 双生龙兽刃 LV6
+
+;Wizard
+1/30 雷弩箭 LV6
+1/35 Teleport LV6
+1/40 火Bang LV6
+1/45 火墙 LV6
+1/50 雷 LV6
+1/55 霜Crunch LV6
+1/100 雷暴 LV6
+1/210 魔法盾 LV6
+
+;Taoist
+1/30 魂火球 LV6
+1/35 召唤骷髅 LV6
+1/40 Hiding LV6 LV6
+1/45 MassHiding LV6
+1/50 魂盾 LV6
+1/55 Revelation LV6
+1/60 Blessed甲 LV6
+1/65 EnergyRepulsor LV6
+1/70 陷阱Hexagon LV6
+1/100 Purification LV6
+1/210 MassHealing LV6
+
+;Assassin
+1/30 双Slash LV6
+1/35 Haste LV6
+1/40 FlashDash LV6
+1/45 轻Body LV6
+1/100 Heavenly剑 LV6
+1/210 火Burst LV6
+
+;Archer
+1/30 双Shot LV6
+1/30 Meditation LV6
+1/35 ElementalShot LV6
+1/35 Explosive陷阱 LV6
+1/40 Concentration LV6
+1/40 VampireShot LV6
+1/45 召唤吸血蜘蛛 LV6
+1/45 BackStep LV6
+1/50 NapalmShot LV6
+1/100 DelayedExplosion LV6
+1/210 ElementalBarrier LV6
+
+;Quests
+1/1 FrozenTempleMap Q LV6
+1/1 沃玛心 Q LV6
+
+;Level7
+;Gold
+1/1 Gold 5000 LV7
+
+
+;Pots + Other
+1/1 中金创药 LV7 
+1/1 中魔法药 LV7 
+1/1 中金创药 LV7 
+1/1 中魔法药 LV7 
+1/1 大金创药 LV7
+1/1 大魔法药 LV7
+1/2 太阳水 LV7 
+1/2 太阳药水(M) LV7
+
+1/40 BenedictionOil LV7
+
+
+1/40 觉醒魂0 LV7
+1/40 觉醒魂0 LV7
+1/2 WoomaHearts LV7
+
+1/40 FrozenTaurusRune LV7
+
+
+;Weapon
+;Warrior
+1/20 钩剑 LV7
+1/30 钢斧 LV7
+1/30 钢剑 LV7
+1/35 王子匕首 LV7
+1/40 武侠剑 LV7
+1/45 力量斧 LV7
+1/50 巨斧 LV7
+1/55 龙剑 LV7
+1/50 银弓 LV7
+1/45 长弓 LV7
+
+;Wizard
+1/20 Trident LV7
+1/20 钩矛 LV7
+1/30 法师杖 LV7
+1/50 血Stealer剑 LV7
+
+;Taoist
+1/20 Scimitar LV7
+1/20 短剑剑 LV7
+1/30 蛇剑 LV7
+1/50 TaoistWidow LV7
+
+;Assassin
+1/20 刃之Velocity LV7
+1/20 铁刃 LV7
+1/30 双刃 LV7
+1/50 DragonSabers LV7
+
+;Weapons Rare
+1/60 VanguardBlade LV7
+1/60 VanguardStaff LV7
+1/60 VanguardSerp LV7
+1/60 VanguardBlades LV7
+1/90 JudgementMace LV7
+1/90 Fiend弓 LV7
+1/90 战争法师杖 LV7
+1/90 魂泉杖 LV7
+1/90 刃之Darkness LV7
+
+
+;Armour
+1/10 Heavy甲(M) LV7
+1/10 Heavy甲(F) LV7
+1/10 魔法袍(M) LV7
+1/10 魔法袍(F) LV7
+1/10 魂甲(M) LV7 
+1/10 魂甲(F) LV7
+1/10 圣物甲(M) LV7
+1/10 圣物甲(F) LV7
+
+
+;Armour Rare
+1/120 VanguardArmour(F) LV7
+1/120 VanguardArmour(M) LV7
+1/140 锻造甲(M) LV7
+1/140 锻造甲(F) LV7
+1/140 铁甲(M) LV7
+1/140 铁甲(F) LV7
+1/140 Wizard袍(M) LV7
+1/140 WizardRobe(F) LV7
+1/140 珍珠甲(M) LV7
+1/140 珍珠甲(F) LV7
+1/140 远古甲(M) LV7
+1/140 远古甲(F) LV7
+1/10000 天甲(M) LV7
+1/10000 天甲(F) LV7
+1/10000 HeavenArcheyRobe(M) LV7
+1/10000 HeavenArcheyRobe(F) LV7
+
+;Helmets
+1/5 骷髅盔 LV7
+1/5 巫医盔 LV7
+1/10 钢盔 LV7
+
+
+;Helmets Rare
+1/200 VanguardHelmet LV7
+1/300 MajesticHelmet LV7
+
+
+;Necklace
+1/15 蓝玉项链 LV7
+1/15 ConvexLens LV7
+1/15 BambooPipe LV7
+1/50 爪项链 LV7
+1/60 Amethyst项链 LV7
+1/70 绿Bead LV7
+1/50 Life项链 LV7
+1/60 Demonicbells LV7
+1/50 珍珠项链 LV7
+1/60 魂项链 LV7
+
+;Necklace Rare
+1/120 VanguardNecklace LV7
+1/200 MajesticNecklace LV7
+
+
+;Bracelets
+1/15 DeathGauntlet LV7
+1/20 金手镯 LV7
+1/30 骑士手镯 LV7
+1/45 钢手套 LV7
+1/30 Spell手镯 LV7
+1/45 BraceletOfMagic LV7
+1/30 3rd眼手镯 LV7
+1/45 道力量手镯 LV7
+
+
+;Bracelets Rare
+1/120 VanguardWheel LV7
+1/200 MajesticWheel LV7
+
+
+;Rings
+1/15 Expel戒  LV7
+1/20 双生金戒 LV7
+1/40 龙戒 LV7
+1/60 力量戒 LV7
+1/15 邪斩杀戒 LV7
+1/40 红宝石戒 LV7
+1/60 Violet戒 LV7
+1/15 玉Snow戒 LV7
+1/40 铂金戒 LV7
+1/60 Titan戒 LV7
+
+;Rings Rare
+1/120 VanguardRing LV7
+1/200 MajesticRing LV7
+
+
+;Shoes
+1/50 黑靴 LV7
+1/50 龙靴 LV7
+
+;Shoes Rare
+1/120 VanguardBoots LV7
+1/200 MajesticBoots LV7
+
+
+;Belts
+1/50 黑铁腰带 LV7
+1/50 金腰带 LV7
+
+;Belts Rare
+1/120 VanguardBelt LV7
+1/200 MajesticBelt LV7
+
+
+;Medals
+1/185 GrimMedal LV7
+
+
+;Medals Rare
+1/190 HollowMedal LV7
+
+;Shields
+1/180 FlechetteShield LV7
+
+
+;Shields Rare
+1/185 SpikeShield LV7
+
+;Pads
+1/200 DefenderPads[14d] LV7
+
+;Stones
+1/30 DC石(M) LV7
+1/65 DC石(L) LV7
+1/30 MC石(M) LV7
+1/65 MC石(L) LV7
+1/30 SC石(M) LV7
+1/65 SC石(L) LV7
+
+;Stones Rare
+1/50 ACStone(M) LV7
+1/70 ACStone(L) LV7
+1/50 AMCStone(M) LV7
+1/70 AMCStone(L) LV7
+1/50 DefenseStone(M) LV7
+1/70 DefenseStone(L) LV7
+
+
+;Books
+;Warrior
+1/30 Slaying LV7
+1/35 Thrusting LV7
+1/40 Half月 LV7
+1/50 ShoulderDash LV7
+1/100 SliceNDice LV7
+1/210 双生龙兽刃 LV7
+
+;Wizard
+1/30 雷弩箭 LV7
+1/35 Teleport LV7
+1/40 火Bang LV7
+1/45 火墙 LV7
+1/50 雷 LV7
+1/55 霜Crunch LV7
+1/100 雷暴 LV7
+1/210 魔法盾 LV7
+
+;Taoist
+1/30 魂火球 LV7
+1/35 召唤骷髅 LV7
+1/40 Hiding LV7 LV7
+1/45 MassHiding LV7
+1/50 魂盾 LV7
+1/55 Revelation LV7
+1/60 Blessed甲 LV7
+1/65 EnergyRepulsor LV7
+1/70 陷阱Hexagon LV7
+1/100 Purification LV7
+1/210 MassHealing LV7
+
+;Assassin
+1/30 双Slash LV7
+1/35 Haste LV7
+1/40 FlashDash LV7
+1/45 轻Body LV7
+1/100 Heavenly剑 LV7
+1/210 火Burst LV7
+
+;Archer
+1/30 双Shot LV7
+1/30 Meditation LV7
+1/35 ElementalShot LV7
+1/35 Explosive陷阱 LV7
+1/40 Concentration LV7
+1/40 VampireShot LV7
+1/45 召唤吸血蜘蛛 LV7
+1/45 BackStep LV7
+1/50 NapalmShot LV7
+1/100 DelayedExplosion LV7
+1/210 ElementalBarrier LV7
+
+;Quests
+1/1 FrozenTempleMap Q LV7
+1/1 沃玛心 Q LV7
+
+;Level8
+;Gold
+1/1 Gold 5000 LV8
+
+
+;Pots + Other
+1/1 中金创药 LV8 
+1/1 中魔法药 LV8 
+1/1 中金创药 LV8 
+1/1 中魔法药 LV8 
+1/1 大金创药 LV8
+1/1 大魔法药 LV8
+1/2 太阳水 LV8 
+1/2 太阳药水(M) LV8
+
+1/40 BenedictionOil LV8
+
+1/40 觉醒魂0 LV8
+1/40 觉醒魂0 LV8
+1/2 WoomaHearts LV8
+
+1/40 FrozenTaurusRune LV8
+
+
+;Weapon
+;Warrior
+1/20 钩剑 LV8
+1/30 钢斧 LV8
+1/30 钢剑 LV8
+1/35 王子匕首 LV8
+1/40 武侠剑 LV8
+1/45 力量斧 LV8
+1/50 巨斧 LV8
+1/55 龙剑 LV8
+1/50 银弓 LV8
+1/45 长弓 LV8
+
+;Wizard
+1/20 Trident LV8
+1/20 钩矛 LV8
+1/30 法师杖 LV8
+1/50 血Stealer剑 LV8
+
+;Taoist
+1/20 Scimitar LV8
+1/20 短剑剑 LV8
+1/30 蛇剑 LV8
+1/50 TaoistWidow LV8
+
+;Assassin
+1/20 刃之Velocity LV8
+1/20 铁刃 LV8
+1/30 双刃 LV8
+1/50 DragonSabers LV8
+
+;Weapons Rare
+1/60 VanguardBlade LV8
+1/60 VanguardStaff LV8
+1/60 VanguardSerp LV8
+1/60 VanguardBlades LV8
+1/90 JudgementMace LV8
+1/90 Fiend弓 LV8
+1/90 战争法师杖 LV8
+1/90 魂泉杖 LV8
+1/90 刃之Darkness LV8
+
+
+;Armour
+1/10 Heavy甲(M) LV8
+1/10 Heavy甲(F) LV8
+1/10 魔法袍(M) LV8
+1/10 魔法袍(F) LV8
+1/10 魂甲(M) LV8 
+1/10 魂甲(F) LV8
+1/10 圣物甲(M) LV8
+1/10 圣物甲(F) LV8
+
+
+;Armour Rare
+1/120 VanguardArmour(F) LV8
+1/120 VanguardArmour(M) LV8
+1/140 锻造甲(M) LV8
+1/140 锻造甲(F) LV8
+1/140 铁甲(M) LV8
+1/140 铁甲(F) LV8
+1/140 Wizard袍(M) LV8
+1/140 WizardRobe(F) LV8
+1/140 珍珠甲(M) LV8
+1/140 珍珠甲(F) LV8
+1/140 远古甲(M) LV8
+1/140 远古甲(F) LV8
+1/10000 天甲(M) LV8
+1/10000 天甲(F) LV8
+1/10000 HeavenArcheyRobe(M) LV8
+1/10000 HeavenArcheyRobe(F) LV8
+
+;Helmets
+1/5 骷髅盔 LV8
+1/5 巫医盔 LV8
+1/10 钢盔 LV8
+
+
+;Helmets Rare
+1/200 VanguardHelmet LV8
+1/300 MajesticHelmet LV8
+
+
+;Necklace
+1/15 蓝玉项链 LV8
+1/15 ConvexLens LV8
+1/15 BambooPipe LV8
+1/50 爪项链 LV8
+1/60 Amethyst项链 LV8
+1/70 绿Bead LV8
+1/50 Life项链 LV8
+1/60 Demonicbells LV8
+1/50 珍珠项链 LV8
+1/60 魂项链 LV8
+
+;Necklace Rare
+1/120 VanguardNecklace LV8
+1/200 MajesticNecklace LV8
+
+
+;Bracelets
+1/15 DeathGauntlet LV8
+1/20 金手镯 LV8
+1/30 骑士手镯 LV8
+1/45 钢手套 LV8
+1/30 Spell手镯 LV8
+1/45 BraceletOfMagic LV8
+1/30 3rd眼手镯 LV8
+1/45 道力量手镯 LV8
+
+
+;Bracelets Rare
+1/120 VanguardWheel LV8
+1/200 MajesticWheel LV8
+
+
+;Rings
+1/15 Expel戒  LV8
+1/20 双生金戒 LV8
+1/40 龙戒 LV8
+1/60 力量戒 LV8
+1/15 邪斩杀戒 LV8
+1/40 红宝石戒 LV8
+1/60 Violet戒 LV8
+1/15 玉Snow戒 LV8
+1/40 铂金戒 LV8
+1/60 Titan戒 LV8
+
+;Rings Rare
+1/120 VanguardRing LV8
+1/200 MajesticRing LV8
+
+
+;Shoes
+1/50 黑靴 LV8
+1/50 龙靴 LV8
+
+;Shoes Rare
+1/120 VanguardBoots LV8
+1/200 MajesticBoots LV8
+
+
+;Belts
+1/50 黑铁腰带 LV8
+1/50 金腰带 LV8
+
+;Belts Rare
+1/120 VanguardBelt LV8
+1/200 MajesticBelt LV8
+
+
+;Medals
+1/185 GrimMedal LV8
+
+
+;Medals Rare
+1/190 HollowMedal LV8
+
+;Shields
+1/180 FlechetteShield LV8
+
+
+;Shields Rare
+1/185 SpikeShield LV8
+
+;Pads
+1/200 DefenderPads[14d] LV8
+
+;Stones
+1/30 DC石(M) LV8
+1/65 DC石(L) LV8
+1/30 MC石(M) LV8
+1/65 MC石(L) LV8
+1/30 SC石(M) LV8
+1/65 SC石(L) LV8
+
+;Stones Rare
+1/50 ACStone(M) LV8
+1/70 ACStone(L) LV8
+1/50 AMCStone(M) LV8
+1/70 AMCStone(L) LV8
+1/50 DefenseStone(M) LV8
+1/70 DefenseStone(L) LV8
+
+
+;Books
+;Warrior
+1/30 Slaying LV8
+1/35 Thrusting LV8
+1/40 Half月 LV8
+1/50 ShoulderDash LV8
+1/100 SliceNDice LV8
+1/210 双生龙兽刃 LV8
+
+;Wizard
+1/30 雷弩箭 LV8
+1/35 Teleport LV8
+1/40 火Bang LV8
+1/45 火墙 LV8
+1/50 雷 LV8
+1/55 霜Crunch LV8
+1/100 雷暴 LV8
+1/210 魔法盾 LV8
+
+;Taoist
+1/30 魂火球 LV8
+1/35 召唤骷髅 LV8
+1/40 Hiding LV8 LV8
+1/45 MassHiding LV8
+1/50 魂盾 LV8
+1/55 Revelation LV8
+1/60 Blessed甲 LV8
+1/65 EnergyRepulsor LV8
+1/70 陷阱Hexagon LV8
+1/100 Purification LV8
+1/210 MassHealing LV8
+
+;Assassin
+1/30 双Slash LV8
+1/35 Haste LV8
+1/40 FlashDash LV8
+1/45 轻Body LV8
+1/100 Heavenly剑 LV8
+1/210 火Burst LV8
+
+;Archer
+1/30 双Shot LV8
+1/30 Meditation LV8
+1/35 ElementalShot LV8
+1/35 Explosive陷阱 LV8
+1/40 Concentration LV8
+1/40 VampireShot LV8
+1/45 召唤吸血蜘蛛 LV8
+1/45 BackStep LV8
+1/50 NapalmShot LV8
+1/100 DelayedExplosion LV8
+1/210 ElementalBarrier LV8
+
+;Quests
+1/1 FrozenTempleMap Q LV8
+1/1 沃玛心 Q LV8

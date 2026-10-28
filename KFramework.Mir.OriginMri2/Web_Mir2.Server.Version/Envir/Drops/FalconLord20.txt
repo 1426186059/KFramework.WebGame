@@ -1,0 +1,1460 @@
+;Gold
+1/1 Gold 10000 LV1
+
+;Potions
+1/1 大金创药 LV1
+1/1 大魔法药 LV1
+1/1 大金创药 LV1
+1/1 大魔法药 LV1
+1/1 特制金创药 LV1
+1/1 特制魔法药 LV1
+1/1 特制金创药 LV1
+1/1 特制魔法药 LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/3 BenedictionOil LV1
+1/10 BenedictionOil LV1
+1/5 战争神Oil LV1
+1/30 道士药(M) LV1
+1/30 魔法药(M) LV1
+1/30 Impact药(M) LV1
+1/30 暴药(M) LV1
+
+1/70 金Bar LV1
+
+;Weapons
+1/45 JudgementMace LV1
+1/45 战争法师杖 LV1
+1/45 刃之Darkness LV1
+1/45 魂泉杖 LV1
+1/125 战争之灵刃 LV1
+1/125 轻盈弓 LV1
+1/125 魔法Scythe LV1
+1/125 冰冻刃 LV1
+1/125 石BambooFan LV1
+1/500 凶煞弓 LV1
+1/500 龙斩杀 LV1
+1/500 龙杖 LV1
+1/500 魂军刀 LV1
+1/500 皇家刃 LV1
+
+;Armours
+1/5 锻造甲(M) LV1
+1/5 锻造甲(F) LV1
+1/5 铁甲(M) LV1
+1/5 铁甲(F) LV1
+1/5 Wizard袍(M) LV1
+1/5 WizardRobe(F) LV1
+1/5 珍珠甲(M) LV1
+1/5 珍珠甲(F) LV1
+1/5 远古甲(M) LV1
+1/5 远古甲(F) LV1
+1/40 皇家甲(M) LV1
+1/40 皇家甲(F) LV1
+1/40 钢甲(M) LV1
+1/40 钢甲(F) LV1
+1/40 Studded甲(M) LV1
+1/40 Studded甲(F) LV1
+1/40 龙袍(M) LV1
+1/40 龙袍(F) LV1
+1/40 Titan甲(M) LV1
+1/40 Titan甲(F) LV1
+
+
+;Helmets
+1/70 黑铁盔 LV1
+1/150 巨盔 LV1
+1/150 WisdomCoronet LV1
+1/150 道Coronet LV1
+1/150 皇家盔 LV1
+1/10 Brass盔 LV1
+1/15 钢盔 LV1
+1/5 巫医盔 LV1
+1/5 骷髅盔 LV1
+
+;Belts
+1/20 Chain腰带 LV1
+1/30 青铜腰带 LV1
+1/30 金腰带 LV1
+1/100 精金腰带 LV1
+
+;Shoes
+1/20 黑靴 LV1
+1/20 丝靴 LV1
+1/30 龙靴 LV1
+1/45 红鳞靴 LV1
+
+;Necklaces
+1/300 Gale项链 LV1
+1/80 绿Bead LV1
+1/80 DemonicBells LV1
+1/80 魂项链 LV1
+1/55 爪项链 LV1
+1/55 Life项链 LV1
+1/55 珍珠项链 LV1
+
+;Rings
+1/105 龙戒 LV1
+1/105 红宝石戒 LV1
+1/105 铂金戒 LV1
+1/70 力量戒 LV1
+1/70 Violet戒 LV1
+1/70 Titan戒 LV1
+1/200 奥玛之灵戒 LV1
+1/200 Noble戒 LV1
+1/200 魂戒 LV1
+1/350 Boundless戒 LV1
+1/350 雷戒 LV1
+1/350 TaeGuk戒 LV1
+1/100 Gale戒 LV1
+1/5 Expel戒 LV1
+1/5 珊瑚戒 LV1
+
+1/150 DestinyRing LV1
+1/150 DestinyRing LV2
+1/150 DestinyRing LV3
+1/150 DestinyRing LV4
+1/150 DestinyRing LV5
+1/150 DestinyRing LV6
+1/150 DestinyRing LV7
+
+;Bracelets
+1/105 骑士手镯 LV1
+1/105 龙手镯 LV1
+1/1055 魂泉手镯 LV1
+1/85 钢手套 LV1
+1/70 Spell手镯 LV1
+1/70 3rd眼手镯 LV1
+1/200 HangMa轮 LV1
+1/200 BokMa轮 LV1
+1/200 8Trigram轮 LV1
+1/350 之灵Reformer LV1
+1/350 圣道轮 LV1
+1/350 BaekTa手套 LV1
+
+;Gems
+1/400 冰冻珠 LV1
+1/400 耐久珠 LV1
+1/400 勇气珠 LV1
+1/400 魔法珠 LV1
+1/400 魂珠 LV1
+1/400 暴珠 LV1
+1/400 防护珠 LV1
+1/400 邪斩杀珠 LV1
+1/400 毒珠 LV1
+1/400 准确珠 LV1
+1/400 敏捷珠 LV1
+
+;Books
+1/35 冰暴 LV1
+1/35 月轻 LV1
+1/35 召唤神兽 LV1
+1/35 烈焰剑 LV1
+1/70 CrossHalf月 LV1
+1/70 UltimateEnhancer LV1
+1/70 FlameDisruptor LV1
+1/500 召唤圣精灵 LV1
+1/600 Mirroring LV1
+1/600 SwiftFeet LV1
+1/100 刃Avalanche LV1
+
+1/35 BindingShot LV1
+1/70 召唤蟾蜍 LV1
+1/600 毒Shot LV1
+
+
+1/300 MajesticRing LV1
+1/300 MajesticBoots LV1
+1/300 MajesticWheel LV1
+1/300 MajesticNecklace LV1
+1/300 MajesticHelmet LV1
+1/300 MajesticBelt LV1
+
+
+;shields
+1/150 PlasmaShield LV1
+1/150 SeekerShield LV1
+1/250 PredatorShield LV1
+1/400 FlechetteShield LV1
+1/400 SpikeShield LV1
+1/1000 ArmouredShield LV1
+
+
+;Other
+1/25 觉醒魂0 LV1
+
+;level2
+;Gold
+1/1 Gold 10000 LV2
+
+;Potions
+1/1 大金创药 LV2
+1/1 大魔法药 LV2
+1/1 大金创药 LV2
+1/1 大魔法药 LV2
+1/1 特制金创药 LV2
+1/1 特制魔法药 LV2
+1/1 特制金创药 LV2
+1/1 特制魔法药 LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/3 BenedictionOil LV2
+1/10 BenedictionOil LV2
+1/5 战争神Oil LV2
+1/30 道士药(M) LV2
+1/30 魔法药(M) LV2
+1/30 Impact药(M) LV2
+1/30 暴药(M) LV2
+
+1/70 金Bar LV2
+
+;Weapons
+1/45 JudgementMace LV2
+1/45 战争法师杖 LV2
+1/45 刃之Darkness LV2
+1/45 魂泉杖 LV2
+1/125 战争之灵刃 LV2
+1/125 轻盈弓 LV2
+1/125 魔法Scythe LV2
+1/125 冰冻刃 LV2
+1/125 石BambooFan LV2
+1/500 龙斩杀 LV2
+1/500 凶煞弓 LV2
+1/500 龙杖 LV2
+1/500 魂军刀 LV2
+1/500 皇家刃 LV2
+
+;Armours
+1/5 锻造甲(M) LV2
+1/5 锻造甲(F) LV2
+1/5 铁甲(M) LV2
+1/5 铁甲(F) LV2
+1/5 Wizard袍(M) LV2
+1/5 WizardRobe(F) LV2
+1/5 珍珠甲(M) LV2
+1/5 珍珠甲(F) LV2
+1/5 远古甲(M) LV2
+1/5 远古甲(F) LV2
+1/40 皇家甲(M) LV2
+1/40 皇家甲(F) LV2
+1/40 钢甲(M) LV2
+1/40 钢甲(F) LV2
+1/40 Studded甲(M) LV2
+1/40 Studded甲(F) LV2
+1/40 龙袍(M) LV2
+1/40 龙袍(F) LV2
+1/40 Titan甲(M) LV2
+1/40 Titan甲(F) LV2
+
+
+;Helmets
+1/70 黑铁盔 LV2
+1/150 巨盔 LV2
+1/150 WisdomCoronet LV2
+1/150 道Coronet LV2
+1/150 皇家盔 LV2
+1/10 Brass盔 LV2
+1/15 钢盔 LV2
+1/5 巫医盔 LV2
+1/5 骷髅盔 LV2
+
+;Belts
+1/20 Chain腰带 LV2
+1/30 青铜腰带 LV2
+1/30 金腰带 LV2
+1/100 精金腰带 LV2
+
+;Shoes
+1/20 黑靴 LV2
+1/20 丝靴 LV2
+1/30 龙靴 LV2
+1/45 红鳞靴 LV2
+
+;Necklaces
+1/300 Gale项链 LV2
+1/80 绿Bead LV2
+1/80 DemonicBells LV2
+1/80 魂项链 LV2
+1/55 爪项链 LV2
+1/55 Life项链 LV2
+1/55 珍珠项链 LV2
+
+;Rings
+1/105 龙戒 LV2
+1/105 红宝石戒 LV2
+1/105 铂金戒 LV2
+1/70 力量戒 LV2
+1/70 Violet戒 LV2
+1/70 Titan戒 LV2
+1/200 奥玛之灵戒 LV2
+1/200 Noble戒 LV2
+1/200 魂戒 LV2
+1/350 Boundless戒 LV2
+1/350 雷戒 LV2
+1/350 TaeGuk戒 LV2
+1/100 Gale戒 LV2
+1/5 Expel戒 LV2
+1/5 珊瑚戒 LV2
+
+;Bracelets
+1/105 骑士手镯 LV2
+1/105 龙手镯 LV2
+1/1055 魂泉手镯 LV2
+1/85 钢手套 LV2
+1/70 Spell手镯 LV2
+1/70 3rd眼手镯 LV2
+1/200 HangMa轮 LV2
+1/200 BokMa轮 LV2
+1/200 8Trigram轮 LV2
+1/350 之灵Reformer LV2
+1/350 圣道轮 LV2
+1/350 BaekTa手套 LV2
+
+;Gems
+1/400 冰冻珠 LV2
+1/400 耐久珠 LV2
+1/400 勇气珠 LV2
+1/400 魔法珠 LV2
+1/400 魂珠 LV2
+1/400 暴珠 LV2
+1/400 防护珠 LV2
+1/400 邪斩杀珠 LV2
+1/400 毒珠 LV2
+1/400 准确珠 LV2
+1/400 敏捷珠 LV2
+
+;Books
+1/35 冰暴 LV2
+1/35 月轻 LV2
+1/35 召唤神兽 LV2
+1/35 烈焰剑 LV2
+1/70 CrossHalf月 LV2
+1/70 UltimateEnhancer LV2
+1/70 FlameDisruptor LV2
+1/500 召唤圣精灵 LV2
+1/600 Mirroring LV2
+1/600 SwiftFeet LV2
+1/100 刃Avalanche LV2
+
+1/35 BindingShot LV2
+1/70 召唤蟾蜍 LV2
+1/600 毒Shot LV2
+
+
+1/300 MajesticRing LV2
+1/300 MajesticBoots LV2
+1/300 MajesticWheel LV2
+1/300 MajesticNecklace LV2
+1/300 MajesticHelmet LV2
+1/300 MajesticBelt LV2
+
+
+;shields
+1/150 PlasmaShield LV2
+1/150 SeekerShield LV2
+1/250 PredatorShield LV2
+1/400 FlechetteShield LV2
+1/400 SpikeShield LV2
+1/1000 ArmouredShield LV2
+
+
+;Other
+1/25 觉醒魂0 LV2
+
+;Level3
+;Gold
+1/1 Gold 10000 LV3
+
+;Potions
+1/1 大金创药 LV3
+1/1 大魔法药 LV3
+1/1 大金创药 LV3
+1/1 大魔法药 LV3
+1/1 特制金创药 LV3
+1/1 特制魔法药 LV3
+1/1 特制金创药 LV3
+1/1 特制魔法药 LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/3 BenedictionOil LV3
+1/10 BenedictionOil LV3
+1/5 战争神Oil LV3
+1/30 道士药(M) LV3
+1/30 魔法药(M) LV3
+1/30 Impact药(M) LV3
+1/30 暴药(M) LV3
+
+1/70 金Bar LV3
+
+;Weapons
+1/45 JudgementMace LV3
+1/45 战争法师杖 LV3
+1/45 刃之Darkness LV3
+1/45 魂泉杖 LV3
+1/125 轻盈弓 LV3
+1/125 战争之灵刃 LV3
+1/125 魔法Scythe LV3
+1/125 冰冻刃 LV3
+1/125 石BambooFan LV3
+1/500 龙斩杀 LV3
+1/500 凶煞弓 LV3
+1/500 龙杖 LV3
+1/500 魂军刀 LV3
+1/500 皇家刃 LV3
+
+;Armours
+1/5 锻造甲(M) LV3
+1/5 锻造甲(F) LV3
+1/5 铁甲(M) LV3
+1/5 铁甲(F) LV3
+1/5 Wizard袍(M) LV3
+1/5 WizardRobe(F) LV3
+1/5 珍珠甲(M) LV3
+1/5 珍珠甲(F) LV3
+1/5 远古甲(M) LV3
+1/5 远古甲(F) LV3
+1/40 皇家甲(M) LV3
+1/40 皇家甲(F) LV3
+1/40 钢甲(M) LV3
+1/40 钢甲(F) LV3
+1/40 Studded甲(M) LV3
+1/40 Studded甲(F) LV3
+1/40 龙袍(M) LV3
+1/40 龙袍(F) LV3
+1/40 Titan甲(M) LV3
+1/40 Titan甲(F) LV3
+
+
+;Helmets
+1/70 黑铁盔 LV3
+1/150 巨盔 LV3
+1/150 WisdomCoronet LV3
+1/150 道Coronet LV3
+1/150 皇家盔 LV3
+1/10 Brass盔 LV3
+1/15 钢盔 LV3
+1/5 巫医盔 LV3
+1/5 骷髅盔 LV3
+
+;Belts
+1/20 Chain腰带 LV3
+1/30 青铜腰带 LV3
+1/30 金腰带 LV3
+1/100 精金腰带 LV3
+
+;Shoes
+1/20 黑靴 LV3
+1/20 丝靴 LV3
+1/30 龙靴 LV3
+1/45 红鳞靴 LV3
+
+;Necklaces
+1/300 Gale项链 LV3
+1/80 绿Bead LV3
+1/80 DemonicBells LV3
+1/80 魂项链 LV3
+1/55 爪项链 LV3
+1/55 Life项链 LV3
+1/55 珍珠项链 LV3
+
+;Rings
+1/105 龙戒 LV3
+1/105 红宝石戒 LV3
+1/105 铂金戒 LV3
+1/70 力量戒 LV3
+1/70 Violet戒 LV3
+1/70 Titan戒 LV3
+1/200 奥玛之灵戒 LV3
+1/200 Noble戒 LV3
+1/200 魂戒 LV3
+1/350 Boundless戒 LV3
+1/350 雷戒 LV3
+1/350 TaeGuk戒 LV3
+1/100 Gale戒 LV3
+1/5 Expel戒 LV3
+1/5 珊瑚戒 LV3
+
+;Bracelets
+1/105 骑士手镯 LV3
+1/105 龙手镯 LV3
+1/1055 魂泉手镯 LV3
+1/85 钢手套 LV3
+1/70 Spell手镯 LV3
+1/70 3rd眼手镯 LV3
+1/200 HangMa轮 LV3
+1/200 BokMa轮 LV3
+1/200 8Trigram轮 LV3
+1/350 之灵Reformer LV3
+1/350 圣道轮 LV3
+1/350 BaekTa手套 LV3
+
+;Gems
+1/400 冰冻珠 LV3
+1/400 耐久珠 LV3
+1/400 勇气珠 LV3
+1/400 魔法珠 LV3
+1/400 魂珠 LV3
+1/400 暴珠 LV3
+1/400 防护珠 LV3
+1/400 邪斩杀珠 LV3
+1/400 毒珠 LV3
+1/400 准确珠 LV3
+1/400 敏捷珠 LV3
+
+;Books
+1/35 冰暴 LV3
+1/35 月轻 LV3
+1/35 召唤神兽 LV3
+1/35 烈焰剑 LV3
+1/70 CrossHalf月 LV3
+1/70 UltimateEnhancer LV3
+1/70 FlameDisruptor LV3
+1/500 召唤圣精灵 LV3
+1/600 Mirroring LV3
+1/600 SwiftFeet LV3
+1/100 刃Avalanche LV3
+
+
+1/35 BindingShot LV3
+1/70 召唤蟾蜍 LV3
+1/600 毒Shot LV3
+
+1/300 MajesticRing LV3
+1/300 MajesticBoots LV3
+1/300 MajesticWheel LV3
+1/300 MajesticNecklace LV3
+1/300 MajesticHelmet LV3
+1/300 MajesticBelt LV3
+
+
+;shields
+1/150 PlasmaShield LV3
+1/150 SeekerShield LV3
+1/250 PredatorShield LV3
+1/400 FlechetteShield LV3
+1/400 SpikeShield LV3
+1/1000 ArmouredShield LV3
+
+
+;Other
+1/25 觉醒魂0 LV3
+
+;Level4
+;Gold
+1/1 Gold 10000 LV4
+
+;Potions
+1/1 大金创药 LV4
+1/1 大魔法药 LV4
+1/1 大金创药 LV4
+1/1 大魔法药 LV4
+1/1 特制金创药 LV4
+1/1 特制魔法药 LV4
+1/1 特制金创药 LV4
+1/1 特制魔法药 LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/3 BenedictionOil LV4
+1/10 BenedictionOil LV4
+1/5 战争神Oil LV4
+1/30 道士药(M) LV4
+1/30 魔法药(M) LV4
+1/30 Impact药(M) LV4
+1/30 暴药(M) LV4
+
+1/70 金Bar LV4
+
+;Weapons
+1/45 JudgementMace LV4
+1/45 战争法师杖 LV4
+1/45 刃之Darkness LV4
+1/45 魂泉杖 LV4
+1/125 战争之灵刃 LV4
+1/125 轻盈弓 LV4
+1/125 魔法Scythe LV4
+1/125 冰冻刃 LV4
+1/125 石BambooFan LV4
+1/500 龙斩杀 LV4
+1/500 凶煞弓 LV4
+1/500 龙杖 LV4
+1/500 魂军刀 LV4
+1/500 皇家刃 LV4
+
+;Armours
+1/5 锻造甲(M) LV4
+1/5 锻造甲(F) LV4
+1/5 铁甲(M) LV4
+1/5 铁甲(F) LV4
+1/5 Wizard袍(M) LV4
+1/5 WizardRobe(F) LV4
+1/5 珍珠甲(M) LV4
+1/5 珍珠甲(F) LV4
+1/5 远古甲(M) LV4
+1/5 远古甲(F) LV4
+1/40 皇家甲(M) LV4
+1/40 皇家甲(F) LV4
+1/40 钢甲(M) LV4
+1/40 钢甲(F) LV4
+1/40 Studded甲(M) LV4
+1/40 Studded甲(F) LV4
+1/40 龙袍(M) LV4
+1/40 龙袍(F) LV4
+1/40 Titan甲(M) LV4
+1/40 Titan甲(F) LV4
+
+
+;Helmets
+1/70 黑铁盔 LV4
+1/150 巨盔 LV4
+1/150 WisdomCoronet LV4
+1/150 道Coronet LV4
+1/150 皇家盔 LV4
+1/10 Brass盔 LV4
+1/15 钢盔 LV4
+1/5 巫医盔 LV4
+1/5 骷髅盔 LV4
+
+;Belts
+1/20 Chain腰带 LV4
+1/30 青铜腰带 LV4
+1/30 金腰带 LV4
+1/100 精金腰带 LV4
+
+;Shoes
+1/20 黑靴 LV4
+1/20 丝靴 LV4
+1/30 龙靴 LV4
+1/45 红鳞靴 LV4
+
+;Necklaces
+1/300 Gale项链 LV4
+1/80 绿Bead LV4
+1/80 DemonicBells LV4
+1/80 魂项链 LV4
+1/55 爪项链 LV4
+1/55 Life项链 LV4
+1/55 珍珠项链 LV4
+
+;Rings
+1/105 龙戒 LV4
+1/105 红宝石戒 LV4
+1/105 铂金戒 LV4
+1/70 力量戒 LV4
+1/70 Violet戒 LV4
+1/70 Titan戒 LV4
+1/200 奥玛之灵戒 LV4
+1/200 Noble戒 LV4
+1/200 魂戒 LV4
+1/350 Boundless戒 LV4
+1/350 雷戒 LV4
+1/350 TaeGuk戒 LV4
+1/100 Gale戒 LV4
+1/5 Expel戒 LV4
+1/5 珊瑚戒 LV4
+
+;Bracelets
+1/105 骑士手镯 LV4
+1/105 龙手镯 LV4
+1/1055 魂泉手镯 LV4
+1/85 钢手套 LV4
+1/70 Spell手镯 LV4
+1/70 3rd眼手镯 LV4
+1/200 HangMa轮 LV4
+1/200 BokMa轮 LV4
+1/200 8Trigram轮 LV4
+1/350 之灵Reformer LV4
+1/350 圣道轮 LV4
+1/350 BaekTa手套 LV4
+
+;Gems
+1/400 冰冻珠 LV4
+1/400 耐久珠 LV4
+1/400 勇气珠 LV4
+1/400 魔法珠 LV4
+1/400 魂珠 LV4
+1/400 暴珠 LV4
+1/400 防护珠 LV4
+1/400 邪斩杀珠 LV4
+1/400 毒珠 LV4
+1/400 准确珠 LV4
+1/400 敏捷珠 LV4
+
+;Books
+1/35 冰暴 LV4
+1/35 月轻 LV4
+1/35 召唤神兽 LV4
+1/35 烈焰剑 LV4
+1/70 CrossHalf月 LV4
+1/70 UltimateEnhancer LV4
+1/70 FlameDisruptor LV4
+1/500 召唤圣精灵 LV4
+1/600 Mirroring LV4
+1/600 SwiftFeet LV4
+1/100 刃Avalanche LV4
+
+
+1/35 BindingShot LV4
+1/70 召唤蟾蜍 LV4
+1/600 毒Shot LV4
+
+1/300 MajesticRing LV4
+1/300 MajesticBoots LV4
+1/300 MajesticWheel LV4
+1/300 MajesticNecklace LV4
+1/300 MajesticHelmet LV4
+1/300 MajesticBelt LV4
+
+
+;shields
+1/150 PlasmaShield LV4
+1/150 SeekerShield LV4
+1/250 PredatorShield LV4
+1/400 FlechetteShield LV4
+1/400 SpikeShield LV4
+1/1000 ArmouredShield LV4
+
+
+;Other
+1/25 觉醒魂0 LV4
+
+;Level5
+;Gold
+1/1 Gold 10000 LV5
+
+;Potions
+1/1 大金创药 LV5
+1/1 大魔法药 LV5
+1/1 大金创药 LV5
+1/1 大魔法药 LV5
+1/1 特制金创药 LV5
+1/1 特制魔法药 LV5
+1/1 特制金创药 LV5
+1/1 特制魔法药 LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/3 BenedictionOil LV5
+1/10 BenedictionOil LV5
+1/5 战争神Oil LV5
+1/30 道士药(M) LV5
+1/30 魔法药(M) LV5
+1/30 Impact药(M) LV5
+1/30 暴药(M) LV5
+
+1/70 金Bar LV5
+
+;Weapons
+1/45 JudgementMace LV5
+1/45 战争法师杖 LV5
+1/45 刃之Darkness LV5
+1/45 魂泉杖 LV5
+1/125 战争之灵刃 LV5
+1/125 轻盈弓 LV5
+1/125 魔法Scythe LV5
+1/125 冰冻刃 LV5
+1/125 石BambooFan LV5
+1/500 龙斩杀 LV5
+1/500 龙杖 LV5
+1/500 凶煞弓 LV5
+1/500 魂军刀 LV5
+1/500 皇家刃 LV5
+
+;Armours
+1/5 锻造甲(M) LV5
+1/5 锻造甲(F) LV5
+1/5 铁甲(M) LV5
+1/5 铁甲(F) LV5
+1/5 Wizard袍(M) LV5
+1/5 WizardRobe(F) LV5
+1/5 珍珠甲(M) LV5
+1/5 珍珠甲(F) LV5
+1/5 远古甲(M) LV5
+1/5 远古甲(F) LV5
+1/40 皇家甲(M) LV5
+1/40 皇家甲(F) LV5
+1/40 钢甲(M) LV5
+1/40 钢甲(F) LV5
+1/40 Studded甲(M) LV5
+1/40 Studded甲(F) LV5
+1/40 龙袍(M) LV5
+1/40 龙袍(F) LV5
+1/40 Titan甲(M) LV5
+1/40 Titan甲(F) LV5
+
+
+;Helmets
+1/70 黑铁盔 LV5
+1/150 巨盔 LV5
+1/150 WisdomCoronet LV5
+1/150 道Coronet LV5
+1/150 皇家盔 LV5
+1/10 Brass盔 LV5
+1/15 钢盔 LV5
+1/5 巫医盔 LV5
+1/5 骷髅盔 LV5
+
+;Belts
+1/20 Chain腰带 LV5
+1/30 青铜腰带 LV5
+1/30 金腰带 LV5
+1/100 精金腰带 LV5
+
+;Shoes
+1/20 黑靴 LV5
+1/20 丝靴 LV5
+1/30 龙靴 LV5
+1/45 红鳞靴 LV5
+
+;Necklaces
+1/300 Gale项链 LV5
+1/80 绿Bead LV5
+1/80 DemonicBells LV5
+1/80 魂项链 LV5
+1/55 爪项链 LV5
+1/55 Life项链 LV5
+1/55 珍珠项链 LV5
+
+;Rings
+1/105 龙戒 LV5
+1/105 红宝石戒 LV5
+1/105 铂金戒 LV5
+1/70 力量戒 LV5
+1/70 Violet戒 LV5
+1/70 Titan戒 LV5
+1/200 奥玛之灵戒 LV5
+1/200 Noble戒 LV5
+1/200 魂戒 LV5
+1/350 Boundless戒 LV5
+1/350 雷戒 LV5
+1/350 TaeGuk戒 LV5
+1/100 Gale戒 LV5
+1/5 Expel戒 LV5
+1/5 珊瑚戒 LV5
+
+;Bracelets
+1/105 骑士手镯 LV5
+1/105 龙手镯 LV5
+1/1055 魂泉手镯 LV5
+1/85 钢手套 LV5
+1/70 Spell手镯 LV5
+1/70 3rd眼手镯 LV5
+1/200 HangMa轮 LV5
+1/200 BokMa轮 LV5
+1/200 8Trigram轮 LV5
+1/350 之灵Reformer LV5
+1/350 圣道轮 LV5
+1/350 BaekTa手套 LV5
+
+;Gems
+1/400 冰冻珠 LV5
+1/400 耐久珠 LV5
+1/400 勇气珠 LV5
+1/400 魔法珠 LV5
+1/400 魂珠 LV5
+1/400 暴珠 LV5
+1/400 防护珠 LV5
+1/400 邪斩杀珠 LV5
+1/400 毒珠 LV5
+1/400 准确珠 LV5
+1/400 敏捷珠 LV5
+
+;Books
+1/35 冰暴 LV5
+1/35 月轻 LV5
+1/35 召唤神兽 LV5
+1/35 烈焰剑 LV5
+1/70 CrossHalf月 LV5
+1/70 UltimateEnhancer LV5
+1/70 FlameDisruptor LV5
+1/500 召唤圣精灵 LV5
+1/600 Mirroring LV5
+1/600 SwiftFeet LV5
+1/100 刃Avalanche LV5
+
+1/35 BindingShot LV5
+1/70 召唤蟾蜍 LV5
+1/600 毒Shot LV5
+
+1/300 MajesticRing LV5
+1/300 MajesticBoots LV5
+1/300 MajesticWheel LV5
+1/300 MajesticNecklace LV5
+1/300 MajesticHelmet LV5
+1/300 MajesticBelt LV5
+
+
+;shields
+1/150 PlasmaShield LV5
+1/150 SeekerShield LV5
+1/250 PredatorShield LV5
+1/400 FlechetteShield LV5
+1/400 SpikeShield LV5
+1/1000 ArmouredShield LV5
+
+
+;Other
+1/25 觉醒魂0 LV5
+
+;level6
+;Gold
+1/1 Gold 10000 LV6
+
+;Potions
+1/1 大金创药 LV6
+1/1 大魔法药 LV6
+1/1 大金创药 LV6
+1/1 大魔法药 LV6
+1/1 特制金创药 LV6
+1/1 特制魔法药 LV6
+1/1 特制金创药 LV6
+1/1 特制魔法药 LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/3 BenedictionOil LV6
+1/10 BenedictionOil LV6
+1/5 战争神Oil LV6
+1/30 道士药(M) LV6
+1/30 魔法药(M) LV6
+1/30 Impact药(M) LV6
+1/30 暴药(M) LV6
+
+1/70 金Bar LV6
+
+;Weapons
+1/45 JudgementMace LV6
+1/45 战争法师杖 LV6
+1/45 刃之Darkness LV6
+1/45 魂泉杖 LV6
+1/125 战争之灵刃 LV6
+1/125 轻盈弓 LV6
+1/125 魔法Scythe LV6
+1/125 冰冻刃 LV6
+1/125 石BambooFan LV6
+1/500 龙斩杀 LV6
+1/500 凶煞弓 LV6
+1/500 龙杖 LV6
+1/500 魂军刀 LV6
+1/500 皇家刃 LV6
+
+;Armours
+1/5 锻造甲(M) LV6
+1/5 锻造甲(F) LV6
+1/5 铁甲(M) LV6
+1/5 铁甲(F) LV6
+1/5 Wizard袍(M) LV6
+1/5 WizardRobe(F) LV6
+1/5 珍珠甲(M) LV6
+1/5 珍珠甲(F) LV6
+1/5 远古甲(M) LV6
+1/5 远古甲(F) LV6
+1/40 皇家甲(M) LV6
+1/40 皇家甲(F) LV6
+1/40 钢甲(M) LV6
+1/40 钢甲(F) LV6
+1/40 Studded甲(M) LV6
+1/40 Studded甲(F) LV6
+1/40 龙袍(M) LV6
+1/40 龙袍(F) LV6
+1/40 Titan甲(M) LV6
+1/40 Titan甲(F) LV6
+
+
+;Helmets
+1/70 黑铁盔 LV6
+1/150 巨盔 LV6
+1/150 WisdomCoronet LV6
+1/150 道Coronet LV6
+1/150 皇家盔 LV6
+1/10 Brass盔 LV6
+1/15 钢盔 LV6
+1/5 巫医盔 LV6
+1/5 骷髅盔 LV6
+
+;Belts
+1/20 Chain腰带 LV6
+1/30 青铜腰带 LV6
+1/30 金腰带 LV6
+1/100 精金腰带 LV6
+
+;Shoes
+1/20 黑靴 LV6
+1/20 丝靴 LV6
+1/30 龙靴 LV6
+1/45 红鳞靴 LV6
+
+;Necklaces
+1/300 Gale项链 LV6
+1/80 绿Bead LV6
+1/80 DemonicBells LV6
+1/80 魂项链 LV6
+1/55 爪项链 LV6
+1/55 Life项链 LV6
+1/55 珍珠项链 LV6
+
+;Rings
+1/105 龙戒 LV6
+1/105 红宝石戒 LV6
+1/105 铂金戒 LV6
+1/70 力量戒 LV6
+1/70 Violet戒 LV6
+1/70 Titan戒 LV6
+1/200 奥玛之灵戒 LV6
+1/200 Noble戒 LV6
+1/200 魂戒 LV6
+1/350 Boundless戒 LV6
+1/350 雷戒 LV6
+1/350 TaeGuk戒 LV6
+1/100 Gale戒 LV6
+1/5 Expel戒 LV6
+1/5 珊瑚戒 LV6
+
+;Bracelets
+1/105 骑士手镯 LV6
+1/105 龙手镯 LV6
+1/1055 魂泉手镯 LV6
+1/85 钢手套 LV6
+1/70 Spell手镯 LV6
+1/70 3rd眼手镯 LV6
+1/200 HangMa轮 LV6
+1/200 BokMa轮 LV6
+1/200 8Trigram轮 LV6
+1/350 之灵Reformer LV6
+1/350 圣道轮 LV6
+1/350 BaekTa手套 LV6
+
+;Gems
+1/400 冰冻珠 LV6
+1/400 耐久珠 LV6
+1/400 勇气珠 LV6
+1/400 魔法珠 LV6
+1/400 魂珠 LV6
+1/400 暴珠 LV6
+1/400 防护珠 LV6
+1/400 邪斩杀珠 LV6
+1/400 毒珠 LV6
+1/400 准确珠 LV6
+1/400 敏捷珠 LV6
+
+;Books
+1/35 冰暴 LV6
+1/35 月轻 LV6
+1/35 召唤神兽 LV6
+1/35 烈焰剑 LV6
+1/70 CrossHalf月 LV6
+1/70 UltimateEnhancer LV6
+1/70 FlameDisruptor LV6
+1/500 召唤圣精灵 LV6
+1/600 Mirroring LV6
+1/600 SwiftFeet LV6
+1/100 刃Avalanche LV6
+
+1/35 BindingShot LV6
+1/70 召唤蟾蜍 LV6
+1/600 毒Shot LV6
+
+1/300 MajesticRing LV6
+1/300 MajesticBoots LV6
+1/300 MajesticWheel LV6
+1/300 MajesticNecklace LV6
+1/300 MajesticHelmet LV6
+1/300 MajesticBelt LV6
+
+
+;shields
+1/150 PlasmaShield LV6
+1/150 SeekerShield LV6
+1/250 PredatorShield LV6
+1/400 FlechetteShield LV6
+1/400 SpikeShield LV6
+1/1000 ArmouredShield LV6
+
+
+;Other
+1/25 觉醒魂0 LV6
+
+;Level7
+;Gold
+1/1 Gold 10000 LV7
+
+;Potions
+1/1 大金创药 LV7
+1/1 大魔法药 LV7
+1/1 大金创药 LV7
+1/1 大魔法药 LV7
+1/1 特制金创药 LV7
+1/1 特制魔法药 LV7
+1/1 特制金创药 LV7
+1/1 特制魔法药 LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/3 BenedictionOil LV7
+1/10 BenedictionOil LV7
+1/5 战争神Oil LV7
+1/30 道士药(M) LV7
+1/30 魔法药(M) LV7
+1/30 Impact药(M) LV7
+1/30 暴药(M) LV7
+
+1/70 金Bar LV7
+
+;Weapons
+1/45 JudgementMace LV7
+1/45 战争法师杖 LV7
+1/45 刃之Darkness LV7
+1/45 魂泉杖 LV7
+1/125 战争之灵刃 LV7
+1/125 轻盈弓 LV7
+1/125 魔法Scythe LV7
+1/125 冰冻刃 LV7
+1/125 石BambooFan LV7
+1/500 龙斩杀 LV7
+1/500 凶煞弓 LV7
+1/500 龙杖 LV7
+1/500 魂军刀 LV7
+1/500 皇家刃 LV7
+
+;Armours
+1/5 锻造甲(M) LV7
+1/5 锻造甲(F) LV7
+1/5 铁甲(M) LV7
+1/5 铁甲(F) LV7
+1/5 Wizard袍(M) LV7
+1/5 WizardRobe(F) LV7
+1/5 珍珠甲(M) LV7
+1/5 珍珠甲(F) LV7
+1/5 远古甲(M) LV7
+1/5 远古甲(F) LV7
+1/40 皇家甲(M) LV7
+1/40 皇家甲(F) LV7
+1/40 钢甲(M) LV7
+1/40 钢甲(F) LV7
+1/40 Studded甲(M) LV7
+1/40 Studded甲(F) LV7
+1/40 龙袍(M) LV7
+1/40 龙袍(F) LV7
+1/40 Titan甲(M) LV7
+1/40 Titan甲(F) LV7
+
+
+;Helmets
+1/70 黑铁盔 LV7
+1/150 巨盔 LV7
+1/150 WisdomCoronet LV7
+1/150 道Coronet LV7
+1/150 皇家盔 LV7
+1/10 Brass盔 LV7
+1/15 钢盔 LV7
+1/5 巫医盔 LV7
+1/5 骷髅盔 LV7
+
+;Belts
+1/20 Chain腰带 LV7
+1/30 青铜腰带 LV7
+1/30 金腰带 LV7
+1/100 精金腰带 LV7
+
+;Shoes
+1/20 黑靴 LV7
+1/20 丝靴 LV7
+1/30 龙靴 LV7
+1/45 红鳞靴 LV7
+
+;Necklaces
+1/300 Gale项链 LV7
+1/80 绿Bead LV7
+1/80 DemonicBells LV7
+1/80 魂项链 LV7
+1/55 爪项链 LV7
+1/55 Life项链 LV7
+1/55 珍珠项链 LV7
+
+;Rings
+1/105 龙戒 LV7
+1/105 红宝石戒 LV7
+1/105 铂金戒 LV7
+1/70 力量戒 LV7
+1/70 Violet戒 LV7
+1/70 Titan戒 LV7
+1/200 奥玛之灵戒 LV7
+1/200 Noble戒 LV7
+1/200 魂戒 LV7
+1/350 Boundless戒 LV7
+1/350 雷戒 LV7
+1/350 TaeGuk戒 LV7
+1/100 Gale戒 LV7
+1/5 Expel戒 LV7
+1/5 珊瑚戒 LV7
+
+;Bracelets
+1/105 骑士手镯 LV7
+1/105 龙手镯 LV7
+1/1055 魂泉手镯 LV7
+1/85 钢手套 LV7
+1/70 Spell手镯 LV7
+1/70 3rd眼手镯 LV7
+1/200 HangMa轮 LV7
+1/200 BokMa轮 LV7
+1/200 8Trigram轮 LV7
+1/350 之灵Reformer LV7
+1/350 圣道轮 LV7
+1/350 BaekTa手套 LV7
+
+;Gems
+1/400 冰冻珠 LV7
+1/400 耐久珠 LV7
+1/400 勇气珠 LV7
+1/400 魔法珠 LV7
+1/400 魂珠 LV7
+1/400 暴珠 LV7
+1/400 防护珠 LV7
+1/400 邪斩杀珠 LV7
+1/400 毒珠 LV7
+1/400 准确珠 LV7
+1/400 敏捷珠 LV7
+
+;Books
+1/35 冰暴 LV7
+1/35 月轻 LV7
+1/35 召唤神兽 LV7
+1/35 烈焰剑 LV7
+1/70 CrossHalf月 LV7
+1/70 UltimateEnhancer LV7
+1/70 FlameDisruptor LV7
+1/500 召唤圣精灵 LV7
+1/600 Mirroring LV7
+1/600 SwiftFeet LV7
+1/100 刃Avalanche LV7
+
+
+1/35 BindingShot LV7
+1/70 召唤蟾蜍 LV7
+1/600 毒Shot LV7
+
+1/300 MajesticRing LV7
+1/300 MajesticBoots LV7
+1/300 MajesticWheel LV7
+1/300 MajesticNecklace LV7
+1/300 MajesticHelmet LV7
+1/300 MajesticBelt LV7
+
+
+;shields
+1/150 PlasmaShield LV7
+1/150 SeekerShield LV7
+1/250 PredatorShield LV7
+1/400 FlechetteShield LV7
+1/400 SpikeShield LV7
+1/1000 ArmouredShield LV7
+
+
+;Other
+1/25 觉醒魂0 LV7
+
+;Level8
+;Gold
+1/1 Gold 10000 LV8
+
+;Potions
+1/1 大金创药 LV8
+1/1 大魔法药 LV8
+1/1 大金创药 LV8
+1/1 大魔法药 LV8
+1/1 特制金创药 LV8
+1/1 特制魔法药 LV8
+1/1 特制金创药 LV8
+1/1 特制魔法药 LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/3 BenedictionOil LV8
+1/10 BenedictionOil LV8
+1/5 战争神Oil LV8
+1/30 道士药(M) LV8
+1/30 魔法药(M) LV8
+1/30 Impact药(M) LV8
+1/30 暴药(M) LV8
+
+1/70 金Bar LV8
+
+;Weapons
+1/45 JudgementMace LV8
+1/45 战争法师杖 LV8
+1/45 刃之Darkness LV8
+1/45 魂泉杖 LV8
+1/125 战争之灵刃 LV8
+1/125 轻盈弓 LV8
+1/125 魔法Scythe LV8
+1/125 冰冻刃 LV8
+1/125 石BambooFan LV8
+1/500 龙斩杀 LV8
+1/500 凶煞弓 LV8
+1/500 龙杖 LV8
+1/500 魂军刀 LV8
+1/500 皇家刃 LV8
+
+;Armours
+1/5 锻造甲(M) LV8
+1/5 锻造甲(F) LV8
+1/5 铁甲(M) LV8
+1/5 铁甲(F) LV8
+1/5 Wizard袍(M) LV8
+1/5 WizardRobe(F) LV8
+1/5 珍珠甲(M) LV8
+1/5 珍珠甲(F) LV8
+1/5 远古甲(M) LV8
+1/5 远古甲(F) LV8
+1/40 皇家甲(M) LV8
+1/40 皇家甲(F) LV8
+1/40 钢甲(M) LV8
+1/40 钢甲(F) LV8
+1/40 Studded甲(M) LV8
+1/40 Studded甲(F) LV8
+1/40 龙袍(M) LV8
+1/40 龙袍(F) LV8
+1/40 Titan甲(M) LV8
+1/40 Titan甲(F) LV8
+
+
+;Helmets
+1/70 黑铁盔 LV8
+1/150 巨盔 LV8
+1/150 WisdomCoronet LV8
+1/150 道Coronet LV8
+1/150 皇家盔 LV8
+1/10 Brass盔 LV8
+1/15 钢盔 LV8
+1/5 巫医盔 LV8
+1/5 骷髅盔 LV8
+
+;Belts
+1/20 Chain腰带 LV8
+1/30 青铜腰带 LV8
+1/30 金腰带 LV8
+1/100 精金腰带 LV8
+
+;Shoes
+1/20 黑靴 LV8
+1/20 丝靴 LV8
+1/30 龙靴 LV8
+1/45 红鳞靴 LV8
+
+;Necklaces
+1/300 Gale项链 LV8
+1/80 绿Bead LV8
+1/80 DemonicBells LV8
+1/80 魂项链 LV8
+1/55 爪项链 LV8
+1/55 Life项链 LV8
+1/55 珍珠项链 LV8
+
+;Rings
+1/105 龙戒 LV8
+1/105 红宝石戒 LV8
+1/105 铂金戒 LV8
+1/70 力量戒 LV8
+1/70 Violet戒 LV8
+1/70 Titan戒 LV8
+1/200 奥玛之灵戒 LV8
+1/200 Noble戒 LV8
+1/200 魂戒 LV8
+1/350 Boundless戒 LV8
+1/350 雷戒 LV8
+1/350 TaeGuk戒 LV8
+1/100 Gale戒 LV8
+1/5 Expel戒 LV8
+1/5 珊瑚戒 LV8
+
+;Bracelets
+1/105 骑士手镯 LV8
+1/105 龙手镯 LV8
+1/1055 魂泉手镯 LV8
+1/85 钢手套 LV8
+1/70 Spell手镯 LV8
+1/70 3rd眼手镯 LV8
+1/200 HangMa轮 LV8
+1/200 BokMa轮 LV8
+1/200 8Trigram轮 LV8
+1/350 之灵Reformer LV8
+1/350 圣道轮 LV8
+1/350 BaekTa手套 LV8
+
+;Gems
+1/400 冰冻珠 LV8
+1/400 耐久珠 LV8
+1/400 勇气珠 LV8
+1/400 魔法珠 LV8
+1/400 魂珠 LV8
+1/400 暴珠 LV8
+1/400 防护珠 LV8
+1/400 邪斩杀珠 LV8
+1/400 毒珠 LV8
+1/400 准确珠 LV8
+1/400 敏捷珠 LV8
+
+;Books
+1/35 冰暴 LV8
+1/35 月轻 LV8
+1/35 召唤神兽 LV8
+1/35 烈焰剑 LV8
+1/70 CrossHalf月 LV8
+1/70 UltimateEnhancer LV8
+1/70 FlameDisruptor LV8
+1/500 召唤圣精灵 LV8
+1/600 Mirroring LV8
+1/600 SwiftFeet LV8
+1/100 刃Avalanche LV8
+
+1/35 BindingShot LV8
+1/70 召唤蟾蜍 LV8
+1/600 毒Shot LV8
+
+
+1/300 MajesticRing LV8
+1/300 MajesticBoots LV8
+1/300 MajesticWheel LV8
+1/300 MajesticNecklace LV8
+1/300 MajesticHelmet LV8
+1/300 MajesticBelt LV8
+
+
+;shields
+1/150 PlasmaShield LV8
+1/150 SeekerShield LV8
+1/250 PredatorShield LV8
+1/400 FlechetteShield LV8
+1/400 SpikeShield LV8
+1/1000 ArmouredShield LV8
+
+
+;Other
+1/25 觉醒魂0 LV8

@@ -1,0 +1,1521 @@
+;Level1
+;Gold
+1/1 Gold 22000 LV1
+
+;Pots + Other
+1/1 大金创药 LV1
+1/1 大金创药 LV1
+1/1 大金创药 LV1
+1/1 大金创药 LV1
+1/1 大魔法药 LV1
+1/1 大魔法药 LV1
+1/1 大魔法药 LV1
+1/1 大魔法药 LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/1 太阳水 LV1
+1/1 太阳水 LV1
+1/1 太阳水 LV1
+
+1/2 BenedictionOil LV1
+
+
+1/20 觉醒魂0 LV1
+
+;Weapons
+1/900 龙斩杀 LV1
+1/900 凶煞弓 LV1
+1/900 皇家刃 LV1
+1/900 龙杖 LV1
+1/900 魂军刀 LV1
+1/1650 刃之Magi LV1
+1/1150 剑之战争神 LV1
+1/1150 弓之Force LV1
+1/1150 刃之Sorcery LV1
+1/1150 天剑 LV1
+1/2150 黑虎Hammer LV1
+1/2150 Lethal弓 LV1
+1/2150 杖之Lotus LV1
+1/2150 Fan之Crane LV1
+1/2150 Butchering刃 LV1
+
+
+;Necklace
+1/950 Cuspid项链 LV1
+1/950 SorceryAnchor LV1
+1/950 PurifiedMirror LV1
+1/975 邪Triangle LV1
+1/975 CrossPurified LV1
+1/975 Adamant项链 LV1
+1/45 爪项链 LV1
+1/45 Life项链 LV1
+1/45 珍珠项链 LV1
+1/80 绿Bead LV1
+1/80 DemonicBells LV1
+1/80 魂项链 LV1
+
+;Necklace Rare
+1/1900 TerrapinNecklace LV1
+
+;Bracelets
+1/950 DualTitan护符 LV1
+1/950 SacredAngel护符 LV1
+1/950 邪Whisp护符 LV1
+1/975 WildTitan护符 LV1
+1/975 Enchanted护符 LV1
+1/975 五元素护符 LV1
+1/30 钢手套 LV1
+1/30 Spell手镯 LV1
+1/30 3rd眼手镯 LV1
+1/100 HangMa轮 LV1
+1/100 BokMa轮 LV1
+1/100 8Trigram轮 LV1
+1/250 之灵Reformer LV1
+1/250 圣道轮 LV1
+1/250 BaekTa手套 LV1
+
+;Bracelets Rare
+1/1900 TerrapinBracelet LV1
+
+;Rings
+1/950 Pledge戒 LV1
+1/950 五元素戒 LV1
+1/950 Crimson红宝石戒 LV1
+1/975 魔红宝石戒 LV1
+1/975 邪Expel戒 LV1
+1/975 金龙戒 LV1
+1/30 力量戒 LV1
+1/30 Violet戒 LV1
+1/30 Titan戒 LV1
+1/100 奥玛之灵戒 LV1
+1/100 Noble戒 LV1
+1/100 魂戒 LV1
+1/150 Boundless戒 LV1
+1/150 雷戒 LV1
+1/150 TaeGuk戒 LV1
+
+
+1/150 DestinyRing LV1
+1/150 DestinyRing LV2
+1/150 DestinyRing LV3
+1/150 DestinyRing LV4
+1/150 DestinyRing LV5
+1/150 DestinyRing LV6
+1/150 DestinyRing LV7
+
+;Rings Rare
+1/1900 TerrapinRing LV1
+
+;Shields
+1/1900 TerrapinShield LV1
+
+;Shoes
+1/15 丝靴 LV1
+1/20 黑靴 LV1
+1/30 龙靴 LV1
+1/60 红鳞靴 LV1
+
+;Stone
+1/50 HolyDCStone LV1
+1/50 HolyMCStone LV1
+1/50 HolySCStone LV1
+1/50 HolyHealthStone LV1
+1/50 HolyMagicStone LV1
+1/50 HolyACStone LV1
+1/50 HolyAMCStone LV1
+1/50 HolyDefenseStone LV1
+
+;Books
+1/10 霜Crunch LV1
+1/25 冰暴 LV1
+1/30 FlameDisruptor LV1
+1/400 FlameField LV1
+1/50 Vampirism LV1
+1/150 Mirroring LV1
+1/1200 Blizzard LV1
+1/1400 魔法Booster LV1
+1/1600 MeteorStrike LV1
+1/2000 FastMove LV1
+1/2200 冰Thrust LV1
+1/2400 FrozenRains LV1
+1/2600 LavaKing LV1
+1/3000 暴Escape LV1
+
+1/25 烈焰剑 LV1
+1/30 CrossHalf月 LV1
+1/50 双生龙兽刃 LV1
+1/50 LionRoar LV1
+1/50 Entrapment LV1
+1/60 BladeStorm LV1
+1/150 刃Avalanche LV1
+1/1200 防护Field LV1
+1/1400 Rage LV1
+1/1600 Fury LV1
+1/2000 Counter攻击 LV1
+1/2600 ImmortalSkin LV1
+
+1/25 月轻 LV1
+1/30 MPEater LV1
+1/50 SwiftFeet LV1
+1/1400 暗Body LV1
+1/100 CrescentSlash LV1
+
+
+1/25 召唤神兽 LV1
+1/30 UltimateEnhancer LV1
+1/30 EnergyRepulsor LV1
+1/50 Purification LV1
+1/50 Hallucination LV1
+1/100 Healing轮 LV1
+1/200 召唤圣精灵 LV1
+1/1200 诅咒 LV1
+1/1400 毒Cloud LV1
+1/1800 PetEnhancer LV1
+1/2000 Energy盾 LV1
+1/2300 HolyShield LV1
+1/2600 HeadShot LV1
+
+
+;CraftingMaterials LV1
+1/25 BraveryFragment LV1
+1/25 MagicFragment LV1
+1/25 SoulFragment LV1
+1/25 ProtectionFragment LV1
+1/25 EvilSlayerFragment LV1
+1/25 DurabilityFragment LV1
+1/25 StormFragment LV1
+1/25 DisillusionFragment LV1
+1/25 AccuracyFragment LV1
+1/25 PoisonFragment LV1
+1/25 FreezingFragment LV1
+1/25 AgilityFragment LV1
+1/25 EnduranceFragment LV1
+
+
+;Level2
+;Gold
+1/1 Gold 22000 LV2
+
+;Pots + Other
+1/1 大金创药 LV2
+1/1 大金创药 LV2
+1/1 大金创药 LV2
+1/1 大金创药 LV2
+1/1 大魔法药 LV2
+1/1 大魔法药 LV2
+1/1 大魔法药 LV2
+1/1 大魔法药 LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/1 太阳水 LV2
+1/1 太阳水 LV2
+1/1 太阳水 LV2
+
+1/2 BenedictionOil LV2
+
+
+1/20 觉醒魂0 LV2
+
+;Weapons
+1/900 龙斩杀 LV2
+1/900 凶煞弓 LV2
+1/900 皇家刃 LV2
+1/900 龙杖 LV2
+1/900 魂军刀 LV2
+1/1650 刃之Magi LV2
+1/1150 剑之战争神 LV2
+1/1150 刃之Sorcery LV2
+1/1150 天剑 LV2
+1/1150 弓之Force LV2
+1/2150 黑虎Hammer LV2
+1/2150 Lethal弓 LV2
+1/2150 杖之Lotus LV2
+1/2150 Fan之Crane LV2
+1/2150 Butchering刃 LV2
+
+
+;Necklace
+1/950 Cuspid项链 LV2
+1/950 SorceryAnchor LV2
+1/950 PurifiedMirror LV2
+1/975 邪Triangle LV2
+1/975 CrossPurified LV2
+1/975 Adamant项链 LV2
+1/45 爪项链 LV2
+1/45 Life项链 LV2
+1/45 珍珠项链 LV2
+1/80 绿Bead LV2
+1/80 DemonicBells LV2
+1/80 魂项链 LV2
+
+;Necklace Rare
+1/1900 TerrapinNecklace LV2
+
+;Bracelets
+1/950 DualTitan护符 LV2
+1/950 SacredAngel护符 LV2
+1/950 邪Whisp护符 LV2
+1/975 WildTitan护符 LV2
+1/975 Enchanted护符 LV2
+1/975 五元素护符 LV2
+1/30 钢手套 LV2
+1/30 Spell手镯 LV2
+1/30 3rd眼手镯 LV2
+1/100 HangMa轮 LV2
+1/100 BokMa轮 LV2
+1/100 8Trigram轮 LV2
+1/250 之灵Reformer LV2
+1/250 圣道轮 LV2
+1/250 BaekTa手套 LV2
+
+;Bracelets Rare
+1/1900 TerrapinBracelet LV2
+
+;Rings
+1/950 Pledge戒 LV2
+1/950 五元素戒 LV2
+1/950 Crimson红宝石戒 LV2
+1/975 魔红宝石戒 LV2
+1/975 邪Expel戒 LV2
+1/975 金龙戒 LV2
+1/30 力量戒 LV2
+1/30 Violet戒 LV2
+1/30 Titan戒 LV2
+1/100 奥玛之灵戒 LV2
+1/100 Noble戒 LV2
+1/100 魂戒 LV2
+1/150 Boundless戒 LV2
+1/150 雷戒 LV2
+1/150 TaeGuk戒 LV2
+
+;Rings Rare
+1/1900 TerrapinRing LV2
+
+;Shields
+1/1900 TerrapinShield LV2
+
+;Shoes
+1/15 丝靴 LV2
+1/20 黑靴 LV2
+1/30 龙靴 LV2
+1/60 红鳞靴 LV2
+
+;Stone
+1/50 HolyDCStone LV2
+1/50 HolyMCStone LV2
+1/50 HolySCStone LV2
+1/50 HolyHealthStone LV2
+1/50 HolyMagicStone LV2
+1/50 HolyACStone LV2
+1/50 HolyAMCStone LV2
+1/50 HolyDefenseStone LV2
+
+;Books
+1/10 霜Crunch LV2
+1/25 冰暴 LV2
+1/30 FlameDisruptor LV2
+1/400 FlameField LV2
+1/50 Vampirism LV2
+1/150 Mirroring LV2
+1/1200 Blizzard LV2
+1/1400 魔法Booster LV2
+1/1600 MeteorStrike LV2
+1/2000 FastMove LV2
+1/2200 冰Thrust LV2
+1/2400 FrozenRains LV2
+1/2600 LavaKing LV2
+1/3000 暴Escape LV2
+
+1/25 烈焰剑 LV2
+1/30 CrossHalf月 LV2
+1/50 双生龙兽刃 LV2
+1/50 LionRoar LV2
+1/50 Entrapment LV2
+1/60 BladeStorm LV2
+1/150 刃Avalanche LV2
+1/1200 防护Field LV2
+1/1400 Rage LV2
+1/1600 Fury LV2
+1/2000 Counter攻击 LV2
+1/2600 ImmortalSkin LV2
+
+1/25 月轻 LV2
+1/30 MPEater LV2
+1/50 SwiftFeet LV2
+1/1400 暗Body LV2
+1/100 CrescentSlash LV2
+
+
+1/25 召唤神兽 LV2
+1/30 UltimateEnhancer LV2
+1/30 EnergyRepulsor LV2
+1/50 Purification LV2
+1/50 Hallucination LV2
+1/100 Healing轮 LV2
+1/200 召唤圣精灵 LV2
+1/1200 诅咒 LV2
+1/1400 毒Cloud LV2
+1/1800 PetEnhancer LV2
+1/2000 Energy盾 LV2
+1/2300 HolyShield LV2
+1/2600 HeadShot LV2
+
+
+;CraftingMaterials LV2
+1/25 BraveryFragment LV2
+1/25 MagicFragment LV2
+1/25 SoulFragment LV2
+1/25 ProtectionFragment LV2
+1/25 EvilSlayerFragment LV2
+1/25 DurabilityFragment LV2
+1/25 StormFragment LV2
+1/25 DisillusionFragment LV2
+1/25 AccuracyFragment LV2
+1/25 PoisonFragment LV2
+1/25 FreezingFragment LV2
+1/25 AgilityFragment LV2
+1/25 EnduranceFragment LV2
+
+
+;Level3
+;Gold
+1/1 Gold 22000 LV3
+
+;Pots + Other
+1/1 大金创药 LV3
+1/1 大金创药 LV3
+1/1 大金创药 LV3
+1/1 大金创药 LV3
+1/1 大魔法药 LV3
+1/1 大魔法药 LV3
+1/1 大魔法药 LV3
+1/1 大魔法药 LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/1 太阳水 LV3
+1/1 太阳水 LV3
+1/1 太阳水 LV3
+
+1/2 BenedictionOil LV3
+
+
+1/20 觉醒魂0 LV3
+
+;Weapons
+1/900 龙斩杀 LV3
+1/900 皇家刃 LV3
+1/900 凶煞弓 LV3
+1/900 龙杖 LV3
+1/900 魂军刀 LV3
+1/1650 刃之Magi LV3
+1/1150 剑之战争神 LV3
+1/1150 弓之Force LV3
+1/1150 刃之Sorcery LV3
+1/1150 天剑 LV3
+1/2150 黑虎Hammer LV3
+1/2150 Lethal弓 LV3
+1/2150 杖之Lotus LV3
+1/2150 Fan之Crane LV3
+1/2150 Butchering刃 LV3
+
+
+;Necklace
+1/950 Cuspid项链 LV3
+1/950 SorceryAnchor LV3
+1/950 PurifiedMirror LV3
+1/975 邪Triangle LV3
+1/975 CrossPurified LV3
+1/975 Adamant项链 LV3
+1/45 爪项链 LV3
+1/45 Life项链 LV3
+1/45 珍珠项链 LV3
+1/80 绿Bead LV3
+1/80 DemonicBells LV3
+1/80 魂项链 LV3
+
+;Necklace Rare
+1/1900 TerrapinNecklace LV3
+
+;Bracelets
+1/950 DualTitan护符 LV3
+1/950 SacredAngel护符 LV3
+1/950 邪Whisp护符 LV3
+1/975 WildTitan护符 LV3
+1/975 Enchanted护符 LV3
+1/975 五元素护符 LV3
+1/30 钢手套 LV3
+1/30 Spell手镯 LV3
+1/30 3rd眼手镯 LV3
+1/100 HangMa轮 LV3
+1/100 BokMa轮 LV3
+1/100 8Trigram轮 LV3
+1/250 之灵Reformer LV3
+1/250 圣道轮 LV3
+1/250 BaekTa手套 LV3
+
+;Bracelets Rare
+1/1900 TerrapinBracelet LV3
+
+;Rings
+1/950 Pledge戒 LV3
+1/950 五元素戒 LV3
+1/950 Crimson红宝石戒 LV3
+1/975 魔红宝石戒 LV3
+1/975 邪Expel戒 LV3
+1/975 金龙戒 LV3
+1/30 力量戒 LV3
+1/30 Violet戒 LV3
+1/30 Titan戒 LV3
+1/100 奥玛之灵戒 LV3
+1/100 Noble戒 LV3
+1/100 魂戒 LV3
+1/150 Boundless戒 LV3
+1/150 雷戒 LV3
+1/150 TaeGuk戒 LV3
+
+;Rings Rare
+1/1900 TerrapinRing LV3
+
+;Shields
+1/1900 TerrapinShield LV3
+
+;Shoes
+1/15 丝靴 LV3
+1/20 黑靴 LV3
+1/30 龙靴 LV3
+1/60 红鳞靴 LV3
+
+;Stone
+1/50 HolyDCStone LV3
+1/50 HolyMCStone LV3
+1/50 HolySCStone LV3
+1/50 HolyHealthStone LV3
+1/50 HolyMagicStone LV3
+1/50 HolyACStone LV3
+1/50 HolyAMCStone LV3
+1/50 HolyDefenseStone LV3
+
+;Books
+1/10 霜Crunch LV3
+1/25 冰暴 LV3
+1/30 FlameDisruptor LV3
+1/400 FlameField LV3
+1/50 Vampirism LV3
+1/150 Mirroring LV3
+1/1200 Blizzard LV3
+1/1400 魔法Booster LV3
+1/1600 MeteorStrike LV3
+1/2000 FastMove LV3
+1/2200 冰Thrust LV3
+1/2400 FrozenRains LV3
+1/2600 LavaKing LV3
+1/3000 暴Escape LV3
+
+1/25 烈焰剑 LV3
+1/30 CrossHalf月 LV3
+1/50 双生龙兽刃 LV3
+1/50 LionRoar LV3
+1/50 Entrapment LV3
+1/60 BladeStorm LV3
+1/150 刃Avalanche LV3
+1/1200 防护Field LV3
+1/1400 Rage LV3
+1/1600 Fury LV3
+1/2000 Counter攻击 LV3
+1/2600 ImmortalSkin LV3
+
+1/25 月轻 LV3
+1/30 MPEater LV3
+1/50 SwiftFeet LV3
+1/1400 暗Body LV3
+1/100 CrescentSlash LV3
+
+
+1/25 召唤神兽 LV3
+1/30 UltimateEnhancer LV3
+1/30 EnergyRepulsor LV3
+1/50 Purification LV3
+1/50 Hallucination LV3
+1/100 Healing轮 LV3
+1/200 召唤圣精灵 LV3
+1/1200 诅咒 LV3
+1/1400 毒Cloud LV3
+1/1800 PetEnhancer LV3
+1/2000 Energy盾 LV3
+1/2300 HolyShield LV3
+1/2600 HeadShot LV3
+
+
+;CraftingMaterials LV3
+1/25 BraveryFragment LV3
+1/25 MagicFragment LV3
+1/25 SoulFragment LV3
+1/25 ProtectionFragment LV3
+1/25 EvilSlayerFragment LV3
+1/25 DurabilityFragment LV3
+1/25 StormFragment LV3
+1/25 DisillusionFragment LV3
+1/25 AccuracyFragment LV3
+1/25 PoisonFragment LV3
+1/25 FreezingFragment LV3
+1/25 AgilityFragment LV3
+1/25 EnduranceFragment LV3
+
+
+;Level4
+;Gold
+1/1 Gold 22000 LV4
+
+;Pots + Other
+1/1 大金创药 LV4
+1/1 大金创药 LV4
+1/1 大金创药 LV4
+1/1 大金创药 LV4
+1/1 大魔法药 LV4
+1/1 大魔法药 LV4
+1/1 大魔法药 LV4
+1/1 大魔法药 LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/1 太阳水 LV4
+1/1 太阳水 LV4
+1/1 太阳水 LV4
+
+1/2 BenedictionOil LV4
+
+
+1/20 觉醒魂0 LV4
+
+;Weapons
+1/900 龙斩杀 LV4
+1/900 凶煞弓 LV4
+1/900 皇家刃 LV4
+1/900 龙杖 LV4
+1/900 魂军刀 LV4
+1/1650 刃之Magi LV4
+1/1150 剑之战争神 LV4
+1/1150 弓之Force LV4
+1/1150 刃之Sorcery LV4
+1/1150 天剑 LV4
+1/2150 黑虎Hammer LV4
+1/2150 Lethal弓 LV4
+1/2150 杖之Lotus LV4
+1/2150 Fan之Crane LV4
+1/2150 Butchering刃 LV4
+
+
+;Necklace
+1/950 Cuspid项链 LV4
+1/950 SorceryAnchor LV4
+1/950 PurifiedMirror LV4
+1/975 邪Triangle LV4
+1/975 CrossPurified LV4
+1/975 Adamant项链 LV4
+1/45 爪项链 LV4
+1/45 Life项链 LV4
+1/45 珍珠项链 LV4
+1/80 绿Bead LV4
+1/80 DemonicBells LV4
+1/80 魂项链 LV4
+
+;Necklace Rare
+1/1900 TerrapinNecklace LV4
+
+;Bracelets
+1/950 DualTitan护符 LV4
+1/950 SacredAngel护符 LV4
+1/950 邪Whisp护符 LV4
+1/975 WildTitan护符 LV4
+1/975 Enchanted护符 LV4
+1/975 五元素护符 LV4
+1/30 钢手套 LV4
+1/30 Spell手镯 LV4
+1/30 3rd眼手镯 LV4
+1/100 HangMa轮 LV4
+1/100 BokMa轮 LV4
+1/100 8Trigram轮 LV4
+1/250 之灵Reformer LV4
+1/250 圣道轮 LV4
+1/250 BaekTa手套 LV4
+
+;Bracelets Rare
+1/1900 TerrapinBracelet LV4
+
+;Rings
+1/950 Pledge戒 LV4
+1/950 五元素戒 LV4
+1/950 Crimson红宝石戒 LV4
+1/975 魔红宝石戒 LV4
+1/975 邪Expel戒 LV4
+1/975 金龙戒 LV4
+1/30 力量戒 LV4
+1/30 Violet戒 LV4
+1/30 Titan戒 LV4
+1/100 奥玛之灵戒 LV4
+1/100 Noble戒 LV4
+1/100 魂戒 LV4
+1/150 Boundless戒 LV4
+1/150 雷戒 LV4
+1/150 TaeGuk戒 LV4
+
+;Rings Rare
+1/1900 TerrapinRing LV4
+
+;Shields
+1/1900 TerrapinShield LV4
+
+;Shoes
+1/15 丝靴 LV4
+1/20 黑靴 LV4
+1/30 龙靴 LV4
+1/60 红鳞靴 LV4
+
+;Stone
+1/50 HolyDCStone LV4
+1/50 HolyMCStone LV4
+1/50 HolySCStone LV4
+1/50 HolyHealthStone LV4
+1/50 HolyMagicStone LV4
+1/50 HolyACStone LV4
+1/50 HolyAMCStone LV4
+1/50 HolyDefenseStone LV4
+
+;Books
+1/10 霜Crunch LV4
+1/25 冰暴 LV4
+1/30 FlameDisruptor LV4
+1/400 FlameField LV4
+1/50 Vampirism LV4
+1/150 Mirroring LV4
+1/1200 Blizzard LV4
+1/1400 魔法Booster LV4
+1/1600 MeteorStrike LV4
+1/2000 FastMove LV4
+1/2200 冰Thrust LV4
+1/2400 FrozenRains LV4
+1/2600 LavaKing LV4
+1/3000 暴Escape LV4
+
+1/25 烈焰剑 LV4
+1/30 CrossHalf月 LV4
+1/50 双生龙兽刃 LV4
+1/50 LionRoar LV4
+1/50 Entrapment LV4
+1/60 BladeStorm LV4
+1/150 刃Avalanche LV4
+1/1200 防护Field LV4
+1/1400 Rage LV4
+1/1600 Fury LV4
+1/2000 Counter攻击 LV4
+1/2600 ImmortalSkin LV4
+
+1/25 月轻 LV4
+1/30 MPEater LV4
+1/50 SwiftFeet LV4
+1/1400 暗Body LV4
+1/100 CrescentSlash LV4
+
+
+1/25 召唤神兽 LV4
+1/30 UltimateEnhancer LV4
+1/30 EnergyRepulsor LV4
+1/50 Purification LV4
+1/50 Hallucination LV4
+1/100 Healing轮 LV4
+1/200 召唤圣精灵 LV4
+1/1200 诅咒 LV4
+1/1400 毒Cloud LV4
+1/1800 PetEnhancer LV4
+1/2000 Energy盾 LV4
+1/2300 HolyShield LV4
+1/2600 HeadShot LV4
+
+
+;CraftingMaterials LV4
+1/25 BraveryFragment LV4
+1/25 MagicFragment LV4
+1/25 SoulFragment LV4
+1/25 ProtectionFragment LV4
+1/25 EvilSlayerFragment LV4
+1/25 DurabilityFragment LV4
+1/25 StormFragment LV4
+1/25 DisillusionFragment LV4
+1/25 AccuracyFragment LV4
+1/25 PoisonFragment LV4
+1/25 FreezingFragment LV4
+1/25 AgilityFragment LV4
+1/25 EnduranceFragment LV4
+
+
+;Level5
+;Gold
+1/1 Gold 22000 LV5
+
+;Pots + Other
+1/1 大金创药 LV5
+1/1 大金创药 LV5
+1/1 大金创药 LV5
+1/1 大金创药 LV5
+1/1 大魔法药 LV5
+1/1 大魔法药 LV5
+1/1 大魔法药 LV5
+1/1 大魔法药 LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/1 太阳水 LV5
+1/1 太阳水 LV5
+1/1 太阳水 LV5
+
+1/2 BenedictionOil LV5
+
+
+1/20 觉醒魂0 LV5
+
+;Weapons
+1/900 龙斩杀 LV5
+1/900 凶煞弓 LV5
+1/900 皇家刃 LV5
+1/900 龙杖 LV5
+1/900 魂军刀 LV5
+1/1650 刃之Magi LV5
+1/1150 剑之战争神 LV5
+1/1150 弓之Force LV5
+1/1150 刃之Sorcery LV5
+1/1150 天剑 LV5
+1/2150 黑虎Hammer LV5
+1/2150 Lethal弓 LV5
+1/2150 杖之Lotus LV5
+1/2150 Fan之Crane LV5
+1/2150 Butchering刃 LV5
+
+
+;Necklace
+1/950 Cuspid项链 LV5
+1/950 SorceryAnchor LV5
+1/950 PurifiedMirror LV5
+1/975 邪Triangle LV5
+1/975 CrossPurified LV5
+1/975 Adamant项链 LV5
+1/45 爪项链 LV5
+1/45 Life项链 LV5
+1/45 珍珠项链 LV5
+1/80 绿Bead LV5
+1/80 DemonicBells LV5
+1/80 魂项链 LV5
+
+;Necklace Rare
+1/1900 TerrapinNecklace LV5
+
+;Bracelets
+1/950 DualTitan护符 LV5
+1/950 SacredAngel护符 LV5
+1/950 邪Whisp护符 LV5
+1/975 WildTitan护符 LV5
+1/975 Enchanted护符 LV5
+1/975 五元素护符 LV5
+1/30 钢手套 LV5
+1/30 Spell手镯 LV5
+1/30 3rd眼手镯 LV5
+1/100 HangMa轮 LV5
+1/100 BokMa轮 LV5
+1/100 8Trigram轮 LV5
+1/250 之灵Reformer LV5
+1/250 圣道轮 LV5
+1/250 BaekTa手套 LV5
+
+;Bracelets Rare
+1/1900 TerrapinBracelet LV5
+
+;Rings
+1/950 Pledge戒 LV5
+1/950 五元素戒 LV5
+1/950 Crimson红宝石戒 LV5
+1/975 魔红宝石戒 LV5
+1/975 邪Expel戒 LV5
+1/975 金龙戒 LV5
+1/30 力量戒 LV5
+1/30 Violet戒 LV5
+1/30 Titan戒 LV5
+1/100 奥玛之灵戒 LV5
+1/100 Noble戒 LV5
+1/100 魂戒 LV5
+1/150 Boundless戒 LV5
+1/150 雷戒 LV5
+1/150 TaeGuk戒 LV5
+
+;Rings Rare
+1/1900 TerrapinRing LV5
+
+;Shields
+1/1900 TerrapinShield LV5
+
+;Shoes
+1/15 丝靴 LV5
+1/20 黑靴 LV5
+1/30 龙靴 LV5
+1/60 红鳞靴 LV5
+
+;Stone
+1/50 HolyDCStone LV5
+1/50 HolyMCStone LV5
+1/50 HolySCStone LV5
+1/50 HolyHealthStone LV5
+1/50 HolyMagicStone LV5
+1/50 HolyACStone LV5
+1/50 HolyAMCStone LV5
+1/50 HolyDefenseStone LV5
+
+;Books
+1/10 霜Crunch LV5
+1/25 冰暴 LV5
+1/30 FlameDisruptor LV5
+1/400 FlameField LV5
+1/50 Vampirism LV5
+1/150 Mirroring LV5
+1/1200 Blizzard LV5
+1/1400 魔法Booster LV5
+1/1600 MeteorStrike LV5
+1/2000 FastMove LV5
+1/2200 冰Thrust LV5
+1/2400 FrozenRains LV5
+1/2600 LavaKing LV5
+1/3000 暴Escape LV5
+
+1/25 烈焰剑 LV5
+1/30 CrossHalf月 LV5
+1/50 双生龙兽刃 LV5
+1/50 LionRoar LV5
+1/50 Entrapment LV5
+1/60 BladeStorm LV5
+1/150 刃Avalanche LV5
+1/1200 防护Field LV5
+1/1400 Rage LV5
+1/1600 Fury LV5
+1/2000 Counter攻击 LV5
+1/2600 ImmortalSkin LV5
+
+1/25 月轻 LV5
+1/30 MPEater LV5
+1/50 SwiftFeet LV5
+1/1400 暗Body LV5
+1/100 CrescentSlash LV5
+
+
+1/25 召唤神兽 LV5
+1/30 UltimateEnhancer LV5
+1/30 EnergyRepulsor LV5
+1/50 Purification LV5
+1/50 Hallucination LV5
+1/100 Healing轮 LV5
+1/200 召唤圣精灵 LV5
+1/1200 诅咒 LV5
+1/1400 毒Cloud LV5
+1/1800 PetEnhancer LV5
+1/2000 Energy盾 LV5
+1/2300 HolyShield LV5
+1/2600 HeadShot LV5
+
+
+;CraftingMaterials LV5
+1/25 BraveryFragment LV5
+1/25 MagicFragment LV5
+1/25 SoulFragment LV5
+1/25 ProtectionFragment LV5
+1/25 EvilSlayerFragment LV5
+1/25 DurabilityFragment LV5
+1/25 StormFragment LV5
+1/25 DisillusionFragment LV5
+1/25 AccuracyFragment LV5
+1/25 PoisonFragment LV5
+1/25 FreezingFragment LV5
+1/25 AgilityFragment LV5
+1/25 EnduranceFragment LV5
+
+
+;Level6
+;Gold
+1/1 Gold 22000 LV6
+
+;Pots + Other
+1/1 大金创药 LV6
+1/1 大金创药 LV6
+1/1 大金创药 LV6
+1/1 大金创药 LV6
+1/1 大魔法药 LV6
+1/1 大魔法药 LV6
+1/1 大魔法药 LV6
+1/1 大魔法药 LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/1 太阳水 LV6
+1/1 太阳水 LV6
+1/1 太阳水 LV6
+
+1/2 BenedictionOil LV6
+
+
+1/20 觉醒魂0 LV6
+
+;Weapons
+1/900 龙斩杀 LV6
+1/900 凶煞弓 LV6
+1/900 皇家刃 LV6
+1/900 龙杖 LV6
+1/900 魂军刀 LV6
+1/1650 刃之Magi LV6
+1/1150 剑之战争神 LV6
+1/1150 弓之Force LV6
+1/1150 刃之Sorcery LV6
+1/1150 天剑 LV6
+1/2150 黑虎Hammer LV6
+1/2150 Lethal弓 LV6
+1/2150 杖之Lotus LV6
+1/2150 Fan之Crane LV6
+1/2150 Butchering刃 LV6
+
+
+;Necklace
+1/950 Cuspid项链 LV6
+1/950 SorceryAnchor LV6
+1/950 PurifiedMirror LV6
+1/975 邪Triangle LV6
+1/975 CrossPurified LV6
+1/975 Adamant项链 LV6
+1/45 爪项链 LV6
+1/45 Life项链 LV6
+1/45 珍珠项链 LV6
+1/80 绿Bead LV6
+1/80 DemonicBells LV6
+1/80 魂项链 LV6
+
+;Necklace Rare
+1/1900 TerrapinNecklace LV6
+
+;Bracelets
+1/950 DualTitan护符 LV6
+1/950 SacredAngel护符 LV6
+1/950 邪Whisp护符 LV6
+1/975 WildTitan护符 LV6
+1/975 Enchanted护符 LV6
+1/975 五元素护符 LV6
+1/30 钢手套 LV6
+1/30 Spell手镯 LV6
+1/30 3rd眼手镯 LV6
+1/100 HangMa轮 LV6
+1/100 BokMa轮 LV6
+1/100 8Trigram轮 LV6
+1/250 之灵Reformer LV6
+1/250 圣道轮 LV6
+1/250 BaekTa手套 LV6
+
+;Bracelets Rare
+1/1900 TerrapinBracelet LV6
+
+;Rings
+1/950 Pledge戒 LV6
+1/950 五元素戒 LV6
+1/950 Crimson红宝石戒 LV6
+1/975 魔红宝石戒 LV6
+1/975 邪Expel戒 LV6
+1/975 金龙戒 LV6
+1/30 力量戒 LV6
+1/30 Violet戒 LV6
+1/30 Titan戒 LV6
+1/100 奥玛之灵戒 LV6
+1/100 Noble戒 LV6
+1/100 魂戒 LV6
+1/150 Boundless戒 LV6
+1/150 雷戒 LV6
+1/150 TaeGuk戒 LV6
+
+;Rings Rare
+1/1900 TerrapinRing LV6
+
+;Shields
+1/1900 TerrapinShield LV6
+
+;Shoes
+1/15 丝靴 LV6
+1/20 黑靴 LV6
+1/30 龙靴 LV6
+1/60 红鳞靴 LV6
+
+;Stone
+1/50 HolyDCStone LV6
+1/50 HolyMCStone LV6
+1/50 HolySCStone LV6
+1/50 HolyHealthStone LV6
+1/50 HolyMagicStone LV6
+1/50 HolyACStone LV6
+1/50 HolyAMCStone LV6
+1/50 HolyDefenseStone LV6
+
+;Books
+1/10 霜Crunch LV6
+1/25 冰暴 LV6
+1/30 FlameDisruptor LV6
+1/400 FlameField LV6
+1/50 Vampirism LV6
+1/150 Mirroring LV6
+1/1200 Blizzard LV6
+1/1400 魔法Booster LV6
+1/1600 MeteorStrike LV6
+1/2000 FastMove LV6
+1/2200 冰Thrust LV6
+1/2400 FrozenRains LV6
+1/2600 LavaKing LV6
+1/3000 暴Escape LV6
+
+1/25 烈焰剑 LV6
+1/30 CrossHalf月 LV6
+1/50 双生龙兽刃 LV6
+1/50 LionRoar LV6
+1/50 Entrapment LV6
+1/60 BladeStorm LV6
+1/150 刃Avalanche LV6
+1/1200 防护Field LV6
+1/1400 Rage LV6
+1/1600 Fury LV6
+1/2000 Counter攻击 LV6
+1/2600 ImmortalSkin LV6
+
+1/25 月轻 LV6
+1/30 MPEater LV6
+1/50 SwiftFeet LV6
+1/1400 暗Body LV6
+1/100 CrescentSlash LV6
+
+
+1/25 召唤神兽 LV6
+1/30 UltimateEnhancer LV6
+1/30 EnergyRepulsor LV6
+1/50 Purification LV6
+1/50 Hallucination LV6
+1/100 Healing轮 LV6
+1/200 召唤圣精灵 LV6
+1/1200 诅咒 LV6
+1/1400 毒Cloud LV6
+1/1800 PetEnhancer LV6
+1/2000 Energy盾 LV6
+1/2300 HolyShield LV6
+1/2600 HeadShot LV6
+
+
+;CraftingMaterials LV6
+1/25 BraveryFragment LV6
+1/25 MagicFragment LV6
+1/25 SoulFragment LV6
+1/25 ProtectionFragment LV6
+1/25 EvilSlayerFragment LV6
+1/25 DurabilityFragment LV6
+1/25 StormFragment LV6
+1/25 DisillusionFragment LV6
+1/25 AccuracyFragment LV6
+1/25 PoisonFragment LV6
+1/25 FreezingFragment LV6
+1/25 AgilityFragment LV6
+1/25 EnduranceFragment LV6
+
+
+;Level7
+;Gold
+1/1 Gold 22000 LV7
+
+;Pots + Other
+1/1 大金创药 LV7
+1/1 大金创药 LV7
+1/1 大金创药 LV7
+1/1 大金创药 LV7
+1/1 大魔法药 LV7
+1/1 大魔法药 LV7
+1/1 大魔法药 LV7
+1/1 大魔法药 LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/1 太阳水 LV7
+1/1 太阳水 LV7
+1/1 太阳水 LV7
+
+1/2 BenedictionOil LV7
+
+
+1/20 觉醒魂0 LV7
+
+;Weapons
+1/900 龙斩杀 LV7
+1/900 凶煞弓 LV7
+1/900 皇家刃 LV7
+1/900 龙杖 LV7
+1/900 魂军刀 LV7
+1/1650 刃之Magi LV7
+1/1150 剑之战争神 LV7
+1/1150 弓之Force LV7
+1/1150 刃之Sorcery LV7
+1/1150 天剑 LV7
+1/2150 黑虎Hammer LV7
+1/2150 Lethal弓 LV7
+1/2150 杖之Lotus LV7
+1/2150 Fan之Crane LV7
+1/2150 Butchering刃 LV7
+
+
+;Necklace
+1/950 Cuspid项链 LV7
+1/950 SorceryAnchor LV7
+1/950 PurifiedMirror LV7
+1/975 邪Triangle LV7
+1/975 CrossPurified LV7
+1/975 Adamant项链 LV7
+1/45 爪项链 LV7
+1/45 Life项链 LV7
+1/45 珍珠项链 LV7
+1/80 绿Bead LV7
+1/80 DemonicBells LV7
+1/80 魂项链 LV7
+
+;Necklace Rare
+1/1900 TerrapinNecklace LV7
+
+;Bracelets
+1/950 DualTitan护符 LV7
+1/950 SacredAngel护符 LV7
+1/950 邪Whisp护符 LV7
+1/975 WildTitan护符 LV7
+1/975 Enchanted护符 LV7
+1/975 五元素护符 LV7
+1/30 钢手套 LV7
+1/30 Spell手镯 LV7
+1/30 3rd眼手镯 LV7
+1/100 HangMa轮 LV7
+1/100 BokMa轮 LV7
+1/100 8Trigram轮 LV7
+1/250 之灵Reformer LV7
+1/250 圣道轮 LV7
+1/250 BaekTa手套 LV7
+
+;Bracelets Rare
+1/1900 TerrapinBracelet LV7
+
+;Rings
+1/950 Pledge戒 LV7
+1/950 五元素戒 LV7
+1/950 Crimson红宝石戒 LV7
+1/975 魔红宝石戒 LV7
+1/975 邪Expel戒 LV7
+1/975 金龙戒 LV7
+1/30 力量戒 LV7
+1/30 Violet戒 LV7
+1/30 Titan戒 LV7
+1/100 奥玛之灵戒 LV7
+1/100 Noble戒 LV7
+1/100 魂戒 LV7
+1/150 Boundless戒 LV7
+1/150 雷戒 LV7
+1/150 TaeGuk戒 LV7
+
+;Rings Rare
+1/1900 TerrapinRing LV7
+
+;Shields
+1/1900 TerrapinShield LV7
+
+;Shoes
+1/15 丝靴 LV7
+1/20 黑靴 LV7
+1/30 龙靴 LV7
+1/60 红鳞靴 LV7
+
+;Stone
+1/50 HolyDCStone LV7
+1/50 HolyMCStone LV7
+1/50 HolySCStone LV7
+1/50 HolyHealthStone LV7
+1/50 HolyMagicStone LV7
+1/50 HolyACStone LV7
+1/50 HolyAMCStone LV7
+1/50 HolyDefenseStone LV7
+
+;Books
+1/10 霜Crunch LV7
+1/25 冰暴 LV7
+1/30 FlameDisruptor LV7
+1/400 FlameField LV7
+1/50 Vampirism LV7
+1/150 Mirroring LV7
+1/1200 Blizzard LV7
+1/1400 魔法Booster LV7
+1/1600 MeteorStrike LV7
+1/2000 FastMove LV7
+1/2200 冰Thrust LV7
+1/2400 FrozenRains LV7
+1/2600 LavaKing LV7
+1/3000 暴Escape LV7
+
+1/25 烈焰剑 LV7
+1/30 CrossHalf月 LV7
+1/50 双生龙兽刃 LV7
+1/50 LionRoar LV7
+1/50 Entrapment LV7
+1/60 BladeStorm LV7
+1/150 刃Avalanche LV7
+1/1200 防护Field LV7
+1/1400 Rage LV7
+1/1600 Fury LV7
+1/2000 Counter攻击 LV7
+1/2600 ImmortalSkin LV7
+
+1/25 月轻 LV7
+1/30 MPEater LV7
+1/50 SwiftFeet LV7
+1/1400 暗Body LV7
+1/100 CrescentSlash LV7
+
+
+1/25 召唤神兽 LV7
+1/30 UltimateEnhancer LV7
+1/30 EnergyRepulsor LV7
+1/50 Purification LV7
+1/50 Hallucination LV7
+1/100 Healing轮 LV7
+1/200 召唤圣精灵 LV7
+1/1200 诅咒 LV7
+1/1400 毒Cloud LV7
+1/1800 PetEnhancer LV7
+1/2000 Energy盾 LV7
+1/2300 HolyShield LV7
+1/2600 HeadShot LV7
+
+
+;CraftingMaterials LV7
+1/25 BraveryFragment LV7
+1/25 MagicFragment LV7
+1/25 SoulFragment LV7
+1/25 ProtectionFragment LV7
+1/25 EvilSlayerFragment LV7
+1/25 DurabilityFragment LV7
+1/25 StormFragment LV7
+1/25 DisillusionFragment LV7
+1/25 AccuracyFragment LV7
+1/25 PoisonFragment LV7
+1/25 FreezingFragment LV7
+1/25 AgilityFragment LV7
+1/25 EnduranceFragment LV7
+
+;Level8
+;Gold
+1/1 Gold 22000 LV8
+
+;Pots + Other
+1/1 大金创药 LV8
+1/1 大金创药 LV8
+1/1 大金创药 LV8
+1/1 大金创药 LV8
+1/1 大魔法药 LV8
+1/1 大魔法药 LV8
+1/1 大魔法药 LV8
+1/1 大魔法药 LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/1 太阳水 LV8
+1/1 太阳水 LV8
+1/1 太阳水 LV8
+
+1/2 BenedictionOil LV8
+
+
+1/20 觉醒魂0 LV8
+
+;Weapons
+1/900 龙斩杀 LV8
+1/900 凶煞弓 LV8
+1/900 皇家刃 LV8
+1/900 龙杖 LV8
+1/900 魂军刀 LV8
+1/1650 刃之Magi LV8
+1/1150 剑之战争神 LV8
+1/1150 弓之Force LV8
+1/1150 刃之Sorcery LV8
+1/1150 天剑 LV8
+1/2150 黑虎Hammer LV8
+1/2150 Lethal弓 LV8
+1/2150 杖之Lotus LV8
+1/2150 Fan之Crane LV8
+1/2150 Butchering刃 LV8
+
+
+;Necklace
+1/950 Cuspid项链 LV8
+1/950 SorceryAnchor LV8
+1/950 PurifiedMirror LV8
+1/975 邪Triangle LV8
+1/975 CrossPurified LV8
+1/975 Adamant项链 LV8
+1/45 爪项链 LV8
+1/45 Life项链 LV8
+1/45 珍珠项链 LV8
+1/80 绿Bead LV8
+1/80 DemonicBells LV8
+1/80 魂项链 LV8
+
+;Necklace Rare
+1/1900 TerrapinNecklace LV8
+
+;Bracelets
+1/950 DualTitan护符 LV8
+1/950 SacredAngel护符 LV8
+1/950 邪Whisp护符 LV8
+1/975 WildTitan护符 LV8
+1/975 Enchanted护符 LV8
+1/975 五元素护符 LV8
+1/30 钢手套 LV8
+1/30 Spell手镯 LV8
+1/30 3rd眼手镯 LV8
+1/100 HangMa轮 LV8
+1/100 BokMa轮 LV8
+1/100 8Trigram轮 LV8
+1/250 之灵Reformer LV8
+1/250 圣道轮 LV8
+1/250 BaekTa手套 LV8
+
+;Bracelets Rare
+1/1900 TerrapinBracelet LV8
+
+;Rings
+1/950 Pledge戒 LV8
+1/950 五元素戒 LV8
+1/950 Crimson红宝石戒 LV8
+1/975 魔红宝石戒 LV8
+1/975 邪Expel戒 LV8
+1/975 金龙戒 LV8
+1/30 力量戒 LV8
+1/30 Violet戒 LV8
+1/30 Titan戒 LV8
+1/100 奥玛之灵戒 LV8
+1/100 Noble戒 LV8
+1/100 魂戒 LV8
+1/150 Boundless戒 LV8
+1/150 雷戒 LV8
+1/150 TaeGuk戒 LV8
+
+;Rings Rare
+1/1900 TerrapinRing LV8
+
+;Shields
+1/1900 TerrapinShield LV8
+
+;Shoes
+1/15 丝靴 LV8
+1/20 黑靴 LV8
+1/30 龙靴 LV8
+1/60 红鳞靴 LV8
+
+;Stone
+1/50 HolyDCStone LV8
+1/50 HolyMCStone LV8
+1/50 HolySCStone LV8
+1/50 HolyHealthStone LV8
+1/50 HolyMagicStone LV8
+1/50 HolyACStone LV8
+1/50 HolyAMCStone LV8
+1/50 HolyDefenseStone LV8
+
+;Books
+1/10 霜Crunch LV8
+1/25 冰暴 LV8
+1/30 FlameDisruptor LV8
+1/400 FlameField LV8
+1/50 Vampirism LV8
+1/150 Mirroring LV8
+1/1200 Blizzard LV8
+1/1400 魔法Booster LV8
+1/1600 MeteorStrike LV8
+1/2000 FastMove LV8
+1/2200 冰Thrust LV8
+1/2400 FrozenRains LV8
+1/2600 LavaKing LV8
+1/3000 暴Escape LV8
+
+1/25 烈焰剑 LV8
+1/30 CrossHalf月 LV8
+1/50 双生龙兽刃 LV8
+1/50 LionRoar LV8
+1/50 Entrapment LV8
+1/60 BladeStorm LV8
+1/150 刃Avalanche LV8
+1/1200 防护Field LV8
+1/1400 Rage LV8
+1/1600 Fury LV8
+1/2000 Counter攻击 LV8
+1/2600 ImmortalSkin LV8
+
+1/25 月轻 LV8
+1/30 MPEater LV8
+1/50 SwiftFeet LV8
+1/1400 暗Body LV8
+1/100 CrescentSlash LV8
+
+
+1/25 召唤神兽 LV8
+1/30 UltimateEnhancer LV8
+1/30 EnergyRepulsor LV8
+1/50 Purification LV8
+1/50 Hallucination LV8
+1/100 Healing轮 LV8
+1/200 召唤圣精灵 LV8
+1/1200 诅咒 LV8
+1/1400 毒Cloud LV8
+1/1800 PetEnhancer LV8
+1/2000 Energy盾 LV8
+1/2300 HolyShield LV8
+1/2600 HeadShot LV8
+
+
+;CraftingMaterials LV8
+1/25 BraveryFragment LV8
+1/25 MagicFragment LV8
+1/25 SoulFragment LV8
+1/25 ProtectionFragment LV8
+1/25 EvilSlayerFragment LV8
+1/25 DurabilityFragment LV8
+1/25 StormFragment LV8
+1/25 DisillusionFragment LV8
+1/25 AccuracyFragment LV8
+1/25 PoisonFragment LV8
+1/25 FreezingFragment LV8
+1/25 AgilityFragment LV8
+1/25 EnduranceFragment LV8
+
+
+

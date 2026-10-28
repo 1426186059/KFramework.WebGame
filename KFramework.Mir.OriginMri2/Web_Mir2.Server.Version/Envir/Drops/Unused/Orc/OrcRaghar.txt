@@ -1,0 +1,1300 @@
+;Level 1
+;Gold
+1/1 Gold 25000 LV1
+
+;Pots + Other
+1/1 太阳水 LV1
+1/1 太阳水 LV1
+1/1 太阳水 LV1
+1/1 太阳水 LV1
+1/1 太阳水 LV1
+1/1 太阳水 LV1
+1/1 太阳水 LV1
+1/1 太阳水 LV1
+1/1 太阳水 LV1
+1/1 BenedictionOil LV1
+1/10 GoldenBenedictionOil LV1
+
+
+1/10 觉醒魂0 LV1
+1/20 觉醒魂0 LV1
+
+;Weapons
+1/550 剑之战争神 LV1
+1/550 弓之Force LV1
+1/550 刃之Sorcery LV1
+1/550 天剑 LV1
+1/900 Grim弓 LV1
+1/900 冰封军刀 LV1
+1/900 Conqueror矛 LV1
+1/900 Bastard剑 LV1
+1/1800 黑虎Hammer LV1
+1/1800 杖之Lotus LV1
+1/1800 Lethal弓 LV1
+1/1800 Fan之Crane LV1
+
+;Armour
+1/500 黑虎甲(M) LV1
+1/500 黑虎甲(F) LV1
+1/500 Lotus甲(M) LV1
+1/500 Lotus甲(F) LV1
+1/500 Crane甲(M) LV1
+1/500 Crane甲(F) LV1
+1/750 红暗甲(M) LV1
+1/750 红暗甲(F) LV1
+1/750 蓝暗甲(M) LV1
+1/750 蓝暗甲(F) LV1
+1/750 绿暗甲(M) LV1
+1/750 绿暗甲(F) LV1
+1/750 Scaled甲(M) LV1
+1/750 Scaled甲(F) LV1
+
+;Helmets
+1/40 巨盔 LV1
+1/40 WisdomCoronet LV1
+1/40 道Coronet LV1
+1/40 皇家盔 LV1
+1/650 Sparkling盔 LV1
+1/660 PuiYuHelmet LV1
+1/1200 WatcherHelmet LV1
+
+;Necklace
+1/200 Cuspid项链 LV1
+1/200 SorceryAnchor LV1
+1/200 PurifiedMirror LV1
+1/450 邪Triangle LV1
+1/450 CrossPurified LV1
+1/450 Adamant项链 LV1
+
+;Bracelets
+1/150 DualTitan护符 LV1
+1/150 SacredAngel护符 LV1
+1/150 邪Whisp护符 LV1
+1/475 WildTitan护符 LV1
+1/475 Enchanted护符 LV1
+1/475 五元素护符 LV1
+1/1450 WatcherGloves LV1
+
+;Rings
+1/150 Pledge戒 LV1
+1/150 五元素戒 LV1
+1/150 Crimson红宝石戒 LV1
+1/475 魔红宝石戒 LV1
+1/475 邪Expel戒 LV1
+1/475 金龙戒 LV1
+
+;Shoes
+1/1450 WatcherBoots LV1
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+1/20 DC石(XL) LV1
+1/20 MC石(XL) LV1
+1/20 SC石(XL) LV1
+1/35 ACStone(XL) LV1
+1/40 HolyAcStone LV1
+1/35 AMCStone(XL) LV1
+1/40 HolyAmcStone LV1
+
+;Gems/Orbs
+1/10 勇气宝石 LV1
+1/10 魔法宝石  LV1
+1/10 魂宝石 LV1
+
+1/30 毒宝石 LV1
+1/32 冰冻宝石 LV1
+1/35 准确宝石 LV1
+1/35 暴宝石 LV1
+1/40 耐力宝石 LV1
+
+1/30 勇气珠 LV1
+1/30 魔法珠 LV1
+1/30 魂珠 LV1
+1/45 防护珠 LV1
+1/45 邪斩杀珠 LV1
+1/45 耐久珠 LV1
+
+1/80 毒珠 LV1
+1/80 冰冻珠 LV1
+1/65 准确珠 LV1
+1/65 暴珠 LV1
+
+;Books
+;;Warrior
+1/600 防护Field LV1
+1/900 Rage LV1
+1/1000 Counter攻击 LV1
+
+;;Wizard
+1/800 MeteorStrike LV1
+1/1000 魔法Booster LV1
+1/1200 冰Thrust LV1
+
+;;Taoist
+1/600 Reincarnation LV1
+1/600 毒Cloud LV1
+1/900 Plague LV1
+1/1200 PetEnhancer LV1
+
+;;Assassion
+1/900 Hemorrhage LV1
+1/1200 暗Body LV1
+
+1/900 召唤魅惑之蛇 LV1
+
+;CraftingMaterials
+
+
+;Quests
+1/1 OrcCombsMap Q LV1
+
+
+;Level 2
+;Gold
+1/1 Gold 25000 LV2
+
+;Pots + Other
+1/1 太阳水 LV2
+1/1 太阳水 LV2
+1/1 太阳水 LV2
+1/1 太阳水 LV2
+1/1 太阳水 LV2
+1/1 太阳水 LV2
+1/1 太阳水 LV2
+1/1 太阳水 LV2
+1/1 太阳水 LV2
+1/1 BenedictionOil LV2
+1/10 GoldenBenedictionOil LV2
+
+
+1/10 觉醒魂0 LV2
+1/20 觉醒魂0 LV2
+
+;Weapons
+1/550 弓之Force LV2
+1/550 剑之战争神 LV2
+1/550 刃之Sorcery LV2
+1/550 天剑 LV2
+1/900 冰封军刀 LV2
+1/900 Grim弓 LV2
+1/900 Conqueror矛 LV2
+1/900 Bastard剑 LV2
+1/1800 黑虎Hammer LV2
+1/1800 杖之Lotus LV2
+1/1800 Lethal弓 LV2
+1/1800 Fan之Crane LV2
+
+;Armour
+1/500 黑虎甲(M) LV2
+1/500 黑虎甲(F) LV2
+1/500 Lotus甲(M) LV2
+1/500 Lotus甲(F) LV2
+1/500 Crane甲(M) LV2
+1/500 Crane甲(F) LV2
+1/750 红暗甲(M) LV2
+1/750 红暗甲(F) LV2
+1/750 蓝暗甲(M) LV2
+1/750 蓝暗甲(F) LV2
+1/750 绿暗甲(M) LV2
+1/750 绿暗甲(F) LV2
+1/750 Scaled甲(M) LV2
+1/750 Scaled甲(F) LV2
+
+;Helmets
+1/40 巨盔 LV2
+1/40 WisdomCoronet LV2
+1/40 道Coronet LV2
+1/40 皇家盔 LV2
+1/650 Sparkling盔 LV2
+1/660 PuiYuHelmet LV2
+1/1200 WatcherHelmet LV2
+
+;Necklace
+1/200 Cuspid项链 LV2
+1/200 SorceryAnchor LV2
+1/200 PurifiedMirror LV2
+1/450 邪Triangle LV2
+1/450 CrossPurified LV2
+1/450 Adamant项链 LV2
+
+;Bracelets
+1/150 DualTitan护符 LV2
+1/150 SacredAngel护符 LV2
+1/150 邪Whisp护符 LV2
+1/475 WildTitan护符 LV2
+1/475 Enchanted护符 LV2
+1/475 五元素护符 LV2
+1/1450 WatcherGloves LV2
+
+;Rings
+1/150 Pledge戒 LV2
+1/150 五元素戒 LV2
+1/150 Crimson红宝石戒 LV2
+1/475 魔红宝石戒 LV2
+1/475 邪Expel戒 LV2
+1/475 金龙戒 LV2
+
+;Shoes
+1/1450 WatcherBoots LV2
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+1/20 DC石(XL) LV2
+1/20 MC石(XL) LV2
+1/20 SC石(XL) LV2
+1/35 ACStone(XL) LV2
+1/40 HolyAcStone LV2
+1/35 AMCStone(XL) LV2
+1/40 HolyAmcStone LV2
+
+;Gems/Orbs
+1/10 勇气宝石 LV2
+1/10 魔法宝石  LV2
+1/10 魂宝石 LV2
+
+1/30 毒宝石 LV2
+1/32 冰冻宝石 LV2
+1/35 准确宝石 LV2
+1/35 暴宝石 LV2
+1/40 耐力宝石 LV2
+
+1/30 勇气珠 LV2
+1/30 魔法珠 LV2
+1/30 魂珠 LV2
+1/45 防护珠 LV2
+1/45 邪斩杀珠 LV2
+1/45 耐久珠 LV2
+
+1/80 毒珠 LV2
+1/80 冰冻珠 LV2
+1/65 准确珠 LV2
+1/65 暴珠 LV2
+
+;Books
+;;Warrior
+1/600 防护Field LV2
+1/900 Rage LV2
+1/1000 Counter攻击 LV2
+
+;;Wizard
+1/800 MeteorStrike LV2
+1/1000 魔法Booster LV2
+1/1200 冰Thrust LV2
+
+;;Taoist
+1/600 Reincarnation LV2
+1/600 毒Cloud LV2
+1/900 Plague LV2
+1/1200 PetEnhancer LV2
+
+;;Assassion
+1/900 Hemorrhage LV2
+1/1200 暗Body LV2
+
+1/900 召唤魅惑之蛇 LV2
+
+;CraftingMaterials
+
+
+;Quests
+1/1 OrcCombsMap Q LV2
+
+
+
+;Level 3
+;Gold
+1/1 Gold 25000 LV3
+
+;Pots + Other
+1/1 太阳水 LV3
+1/1 太阳水 LV3
+1/1 太阳水 LV3
+1/1 太阳水 LV3
+1/1 太阳水 LV3
+1/1 太阳水 LV3
+1/1 太阳水 LV3
+1/1 太阳水 LV3
+1/1 太阳水 LV3
+1/1 BenedictionOil LV3
+1/10 GoldenBenedictionOil LV3
+
+
+1/10 觉醒魂0 LV3
+1/20 觉醒魂0 LV3
+
+;Weapons
+1/550 弓之Force LV3
+1/550 剑之战争神 LV3
+1/550 刃之Sorcery LV3
+1/550 天剑 LV3
+1/900 Grim弓 LV3
+1/900 冰封军刀 LV3
+1/900 Conqueror矛 LV3
+1/900 Bastard剑 LV3
+1/1800 黑虎Hammer LV3
+1/1800 Lethal弓 LV3
+1/1800 杖之Lotus LV3
+1/1800 Fan之Crane LV3
+
+;Armour
+1/500 黑虎甲(M) LV3
+1/500 黑虎甲(F) LV3
+1/500 Lotus甲(M) LV3
+1/500 Lotus甲(F) LV3
+1/500 Crane甲(M) LV3
+1/500 Crane甲(F) LV3
+1/750 红暗甲(M) LV3
+1/750 红暗甲(F) LV3
+1/750 蓝暗甲(M) LV3
+1/750 蓝暗甲(F) LV3
+1/750 绿暗甲(M) LV3
+1/750 Scaled甲(M) LV3
+1/750 Scaled甲(F) LV3
+1/750 绿暗甲(F) LV3
+
+;Helmets
+1/40 巨盔 LV3
+1/40 WisdomCoronet LV3
+1/40 道Coronet LV3
+1/40 皇家盔 LV3
+1/650 Sparkling盔 LV3
+1/660 PuiYuHelmet LV3
+1/1200 WatcherHelmet LV3
+
+;Necklace
+1/200 Cuspid项链 LV3
+1/200 SorceryAnchor LV3
+1/200 PurifiedMirror LV3
+1/450 邪Triangle LV3
+1/450 CrossPurified LV3
+1/450 Adamant项链 LV3
+
+;Bracelets
+1/150 DualTitan护符 LV3
+1/150 SacredAngel护符 LV3
+1/150 邪Whisp护符 LV3
+1/475 WildTitan护符 LV3
+1/475 Enchanted护符 LV3
+1/475 五元素护符 LV3
+1/1450 WatcherGloves LV3
+
+;Rings
+1/150 Pledge戒 LV3
+1/150 五元素戒 LV3
+1/150 Crimson红宝石戒 LV3
+1/475 魔红宝石戒 LV3
+1/475 邪Expel戒 LV3
+1/475 金龙戒 LV3
+
+;Shoes
+1/1450 WatcherBoots LV3
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+1/20 DC石(XL) LV3
+1/20 MC石(XL) LV3
+1/20 SC石(XL) LV3
+1/35 ACStone(XL) LV3
+1/40 HolyAcStone LV3
+1/35 AMCStone(XL) LV3
+1/40 HolyAmcStone LV3
+
+;Gems/Orbs
+1/10 勇气宝石 LV3
+1/10 魔法宝石  LV3
+1/10 魂宝石 LV3
+
+1/30 毒宝石 LV3
+1/32 冰冻宝石 LV3
+1/35 准确宝石 LV3
+1/35 暴宝石 LV3
+1/40 耐力宝石 LV3
+
+1/30 勇气珠 LV3
+1/30 魔法珠 LV3
+1/30 魂珠 LV3
+1/45 防护珠 LV3
+1/45 邪斩杀珠 LV3
+1/45 耐久珠 LV3
+
+1/80 毒珠 LV3
+1/80 冰冻珠 LV3
+1/65 准确珠 LV3
+1/65 暴珠 LV3
+
+;Books
+;;Warrior
+1/600 防护Field LV3
+1/900 Rage LV3
+1/1000 Counter攻击 LV3
+
+;;Wizard
+1/800 MeteorStrike LV3
+1/1000 魔法Booster LV3
+1/1200 冰Thrust LV3
+
+;;Taoist
+1/600 Reincarnation LV3
+1/600 毒Cloud LV3
+1/900 Plague LV3
+1/1200 PetEnhancer LV3
+
+;;Assassion
+1/900 Hemorrhage LV3
+1/1200 暗Body LV3
+
+1/900 召唤魅惑之蛇 LV3
+
+;CraftingMaterials
+
+
+;Quests
+1/1 OrcCombsMap Q LV3
+
+
+
+;Level 4
+;Gold
+1/1 Gold 25000 LV4
+
+;Pots + Other
+1/1 太阳水 LV4
+1/1 太阳水 LV4
+1/1 太阳水 LV4
+1/1 太阳水 LV4
+1/1 太阳水 LV4
+1/1 太阳水 LV4
+1/1 太阳水 LV4
+1/1 太阳水 LV4
+1/1 太阳水 LV4
+1/1 BenedictionOil LV4
+1/10 GoldenBenedictionOil LV4
+
+1/10 觉醒魂0 LV4
+1/20 觉醒魂0 LV4
+
+;Weapons
+1/550 弓之Force LV4
+1/550 剑之战争神 LV4
+1/550 刃之Sorcery LV4
+1/550 天剑 LV4
+1/900 冰封军刀 LV4
+1/900 Conqueror矛 LV4
+1/900 Grim弓 LV4
+1/900 Bastard剑 LV4
+1/1800 黑虎Hammer LV4
+1/1800 Lethal弓 LV4
+1/1800 杖之Lotus LV4
+1/1800 Fan之Crane LV4
+
+;Armour
+1/500 黑虎甲(M) LV4
+1/500 黑虎甲(F) LV4
+1/500 Lotus甲(M) LV4
+1/500 Lotus甲(F) LV4
+1/500 Crane甲(M) LV4
+1/500 Crane甲(F) LV4
+1/750 红暗甲(M) LV4
+1/750 红暗甲(F) LV4
+1/750 蓝暗甲(M) LV4
+1/750 蓝暗甲(F) LV4
+1/750 绿暗甲(M) LV4
+1/750 绿暗甲(F) LV4
+1/750 Scaled甲(M) LV4
+1/750 Scaled甲(F) LV4
+
+;Helmets
+1/40 巨盔 LV4
+1/40 WisdomCoronet LV4
+1/40 道Coronet LV4
+1/40 皇家盔 LV4
+1/650 Sparkling盔 LV4
+1/660 PuiYuHelmet LV4
+1/1200 WatcherHelmet LV4
+
+;Necklace
+1/200 Cuspid项链 LV4
+1/200 SorceryAnchor LV4
+1/200 PurifiedMirror LV4
+1/450 邪Triangle LV4
+1/450 CrossPurified LV4
+1/450 Adamant项链 LV4
+
+;Bracelets
+1/150 DualTitan护符 LV4
+1/150 SacredAngel护符 LV4
+1/150 邪Whisp护符 LV4
+1/475 WildTitan护符 LV4
+1/475 Enchanted护符 LV4
+1/475 五元素护符 LV4
+1/1450 WatcherGloves LV4
+
+;Rings
+1/150 Pledge戒 LV4
+1/150 五元素戒 LV4
+1/150 Crimson红宝石戒 LV4
+1/475 魔红宝石戒 LV4
+1/475 邪Expel戒 LV4
+1/475 金龙戒 LV4
+
+;Shoes
+1/1450 WatcherBoots LV4
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+1/20 DC石(XL) LV4
+1/20 MC石(XL) LV4
+1/20 SC石(XL) LV4
+1/35 ACStone(XL) LV4
+1/40 HolyAcStone LV4
+1/35 AMCStone(XL) LV4
+1/40 HolyAmcStone LV4
+
+;Gems/Orbs
+1/10 勇气宝石 LV4
+1/10 魔法宝石  LV4
+1/10 魂宝石 LV4
+
+1/30 毒宝石 LV4
+1/32 冰冻宝石 LV4
+1/35 准确宝石 LV4
+1/35 暴宝石 LV4
+1/40 耐力宝石 LV4
+
+1/30 勇气珠 LV4
+1/30 魔法珠 LV4
+1/30 魂珠 LV4
+1/45 防护珠 LV4
+1/45 邪斩杀珠 LV4
+1/45 耐久珠 LV4
+
+1/80 毒珠 LV4
+1/80 冰冻珠 LV4
+1/65 准确珠 LV4
+1/65 暴珠 LV4
+
+;Books
+;;Warrior
+1/600 防护Field LV4
+1/900 Rage LV4
+1/1000 Counter攻击 LV4
+
+;;Wizard
+1/800 MeteorStrike LV4
+1/1000 魔法Booster LV4
+1/1200 冰Thrust LV4
+
+;;Taoist
+1/600 Reincarnation LV4
+1/600 毒Cloud LV4
+1/900 Plague LV4
+1/1200 PetEnhancer LV4
+
+;;Assassion
+1/900 Hemorrhage LV4
+1/1200 暗Body LV4
+
+1/900 召唤魅惑之蛇 LV4
+
+;CraftingMaterials
+
+
+;Quests
+1/1 OrcCombsMap Q LV4
+
+
+
+;Level 5
+;Gold
+1/1 Gold 25000 LV5
+
+;Pots + Other
+1/1 太阳水 LV5
+1/1 太阳水 LV5
+1/1 太阳水 LV5
+1/1 太阳水 LV5
+1/1 太阳水 LV5
+1/1 太阳水 LV5
+1/1 太阳水 LV5
+1/1 太阳水 LV5
+1/1 太阳水 LV5
+1/1 BenedictionOil LV5
+1/10 GoldenBenedictionOil LV5
+
+
+1/10 觉醒魂0 LV5
+1/20 觉醒魂0 LV5
+
+;Weapons
+1/550 剑之战争神 LV5
+1/550 弓之Force LV5
+1/550 刃之Sorcery LV5
+1/550 天剑 LV5
+1/900 冰封军刀 LV5
+1/900 Grim弓 LV5
+1/900 Conqueror矛 LV5
+1/900 Bastard剑 LV5
+1/1800 黑虎Hammer LV5
+1/1800 Lethal弓 LV5
+1/1800 杖之Lotus LV5
+1/1800 Fan之Crane LV5
+
+;Armour
+1/500 黑虎甲(M) LV5
+1/500 黑虎甲(F) LV5
+1/500 Lotus甲(M) LV5
+1/500 Lotus甲(F) LV5
+1/500 Crane甲(M) LV5
+1/500 Crane甲(F) LV5
+1/750 红暗甲(M) LV5
+1/750 红暗甲(F) LV5
+1/750 蓝暗甲(M) LV5
+1/750 蓝暗甲(F) LV5
+1/750 绿暗甲(M) LV5
+1/750 绿暗甲(F) LV5
+1/750 Scaled甲(M) LV5
+1/750 Scaled甲(F) LV5
+
+;Helmets
+1/40 巨盔 LV5
+1/40 WisdomCoronet LV5
+1/40 道Coronet LV5
+1/40 皇家盔 LV5
+1/650 Sparkling盔 LV5
+1/660 PuiYuHelmet LV5
+1/1200 WatcherHelmet LV5
+
+;Necklace
+1/200 Cuspid项链 LV5
+1/200 SorceryAnchor LV5
+1/200 PurifiedMirror LV5
+1/450 邪Triangle LV5
+1/450 CrossPurified LV5
+1/450 Adamant项链 LV5
+
+;Bracelets
+1/150 DualTitan护符 LV5
+1/150 SacredAngel护符 LV5
+1/150 邪Whisp护符 LV5
+1/475 WildTitan护符 LV5
+1/475 Enchanted护符 LV5
+1/475 五元素护符 LV5
+1/1450 WatcherGloves LV5
+
+;Rings
+1/150 Pledge戒 LV5
+1/150 五元素戒 LV5
+1/150 Crimson红宝石戒 LV5
+1/475 魔红宝石戒 LV5
+1/475 邪Expel戒 LV5
+1/475 金龙戒 LV5
+
+;Shoes
+1/1450 WatcherBoots LV5
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+1/20 DC石(XL) LV5
+1/20 MC石(XL) LV5
+1/20 SC石(XL) LV5
+1/35 ACStone(XL) LV5
+1/40 HolyAcStone LV5
+1/35 AMCStone(XL) LV5
+1/40 HolyAmcStone LV5
+
+;Gems/Orbs
+1/10 勇气宝石 LV5
+1/10 魔法宝石  LV5
+1/10 魂宝石 LV5
+
+1/30 毒宝石 LV5
+1/32 冰冻宝石 LV5
+1/35 准确宝石 LV5
+1/35 暴宝石 LV5
+1/40 耐力宝石 LV5
+
+1/30 勇气珠 LV5
+1/30 魔法珠 LV5
+1/30 魂珠 LV5
+1/45 防护珠 LV5
+1/45 邪斩杀珠 LV5
+1/45 耐久珠 LV5
+
+1/80 毒珠 LV5
+1/80 冰冻珠 LV5
+1/65 准确珠 LV5
+1/65 暴珠 LV5
+
+;Books
+;;Warrior
+1/600 防护Field LV5
+1/900 Rage LV5
+1/1000 Counter攻击 LV5
+
+;;Wizard
+1/800 MeteorStrike LV5
+1/1000 魔法Booster LV5
+1/1200 冰Thrust LV5
+
+;;Taoist
+1/600 Reincarnation LV5
+1/600 毒Cloud LV5
+1/900 Plague LV5
+1/1200 PetEnhancer LV5
+
+;;Assassion
+1/900 Hemorrhage LV5
+1/1200 暗Body LV5
+
+1/900 召唤魅惑之蛇 LV5
+
+;CraftingMaterials
+
+
+;Quests
+1/1 OrcCombsMap Q LV5
+
+
+
+;Level 6
+;Gold
+1/1 Gold 25000 LV6
+
+;Pots + Other
+1/1 太阳水 LV6
+1/1 太阳水 LV6
+1/1 太阳水 LV6
+1/1 太阳水 LV6
+1/1 太阳水 LV6
+1/1 太阳水 LV6
+1/1 太阳水 LV6
+1/1 太阳水 LV6
+1/1 太阳水 LV6
+1/1 BenedictionOil LV6
+1/10 GoldenBenedictionOil LV6
+
+
+1/10 觉醒魂0 LV6
+1/20 觉醒魂0 LV6
+
+;Weapons
+1/550 剑之战争神 LV6
+1/550 弓之Force LV6
+1/550 刃之Sorcery LV6
+1/550 天剑 LV6
+1/900 冰封军刀 LV6
+1/900 Grim弓 LV6
+1/900 Conqueror矛 LV6
+1/900 Bastard剑 LV6
+1/1800 黑虎Hammer LV6
+1/1800 Lethal弓 LV6
+1/1800 杖之Lotus LV6
+1/1800 Fan之Crane LV6
+
+;Armour
+1/500 黑虎甲(M) LV6
+1/500 黑虎甲(F) LV6
+1/500 Lotus甲(M) LV6
+1/500 Lotus甲(F) LV6
+1/500 Crane甲(M) LV6
+1/500 Crane甲(F) LV6
+1/750 红暗甲(M) LV6
+1/750 红暗甲(F) LV6
+1/750 蓝暗甲(M) LV6
+1/750 蓝暗甲(F) LV6
+1/750 绿暗甲(M) LV6
+1/750 绿暗甲(F) LV6
+1/750 Scaled甲(M) LV6
+1/750 Scaled甲(F) LV6
+
+;Helmets
+1/40 巨盔 LV6
+1/40 WisdomCoronet LV6
+1/40 道Coronet LV6
+1/40 皇家盔 LV6
+1/650 Sparkling盔 LV6
+1/660 PuiYuHelmet LV6
+1/1200 WatcherHelmet LV6
+
+;Necklace
+1/200 Cuspid项链 LV6
+1/200 SorceryAnchor LV6
+1/200 PurifiedMirror LV6
+1/450 邪Triangle LV6
+1/450 CrossPurified LV6
+1/450 Adamant项链 LV6
+
+;Bracelets
+1/150 DualTitan护符 LV6
+1/150 SacredAngel护符 LV6
+1/150 邪Whisp护符 LV6
+1/475 WildTitan护符 LV6
+1/475 Enchanted护符 LV6
+1/475 五元素护符 LV6
+1/1450 WatcherGloves LV6
+
+;Rings
+1/150 Pledge戒 LV6
+1/150 五元素戒 LV6
+1/150 Crimson红宝石戒 LV6
+1/475 魔红宝石戒 LV6
+1/475 邪Expel戒 LV6
+1/475 金龙戒 LV6
+
+;Shoes
+1/1450 WatcherBoots LV6
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+1/20 DC石(XL) LV6
+1/20 MC石(XL) LV6
+1/20 SC石(XL) LV6
+1/35 ACStone(XL) LV6
+1/40 HolyAcStone LV6
+1/35 AMCStone(XL) LV6
+1/40 HolyAmcStone LV6
+
+;Gems/Orbs
+1/10 勇气宝石 LV6
+1/10 魔法宝石  LV6
+1/10 魂宝石 LV6
+
+1/30 毒宝石 LV6
+1/32 冰冻宝石 LV6
+1/35 准确宝石 LV6
+1/35 暴宝石 LV6
+1/40 耐力宝石 LV6
+
+1/30 勇气珠 LV6
+1/30 魔法珠 LV6
+1/30 魂珠 LV6
+1/45 防护珠 LV6
+1/45 邪斩杀珠 LV6
+1/45 耐久珠 LV6
+
+1/80 毒珠 LV6
+1/80 冰冻珠 LV6
+1/65 准确珠 LV6
+1/65 暴珠 LV6
+
+;Books
+;;Warrior
+1/600 防护Field LV6
+1/900 Rage LV6
+1/1000 Counter攻击 LV6
+
+;;Wizard
+1/800 MeteorStrike LV6
+1/1000 魔法Booster LV6
+1/1200 冰Thrust LV6
+
+;;Taoist
+1/600 Reincarnation LV6
+1/600 毒Cloud LV6
+1/900 Plague LV6
+1/1200 PetEnhancer LV6
+
+;;Assassion
+1/900 Hemorrhage LV6
+1/1200 暗Body LV6
+
+1/900 召唤魅惑之蛇 LV6
+
+;CraftingMaterials
+
+
+;Quests
+1/1 OrcCombsMap Q LV6
+
+
+
+;Level 7
+;Gold
+1/1 Gold 25000 LV7
+
+;Pots + Other
+1/1 太阳水 LV7
+1/1 太阳水 LV7
+1/1 太阳水 LV7
+1/1 太阳水 LV7
+1/1 太阳水 LV7
+1/1 太阳水 LV7
+1/1 太阳水 LV7
+1/1 太阳水 LV7
+1/1 太阳水 LV7
+1/1 BenedictionOil LV7
+1/10 GoldenBenedictionOil LV7
+
+
+1/10 觉醒魂0 LV7
+1/20 觉醒魂0 LV7
+
+;Weapons
+1/550 剑之战争神 LV7
+1/550 弓之Force LV7
+1/550 刃之Sorcery LV7
+1/550 天剑 LV7
+1/900 冰封军刀 LV7
+1/900 Grim弓 LV7
+1/900 Conqueror矛 LV7
+1/900 Bastard剑 LV7
+1/1800 黑虎Hammer LV7
+1/1800 Lethal弓 LV7
+1/1800 杖之Lotus LV7
+1/1800 Fan之Crane LV7
+
+;Armour
+1/500 黑虎甲(M) LV7
+1/500 黑虎甲(F) LV7
+1/500 Lotus甲(M) LV7
+1/500 Lotus甲(F) LV7
+1/500 Crane甲(M) LV7
+1/500 Crane甲(F) LV7
+1/750 红暗甲(M) LV7
+1/750 红暗甲(F) LV7
+1/750 蓝暗甲(M) LV7
+1/750 蓝暗甲(F) LV7
+1/750 Scaled甲(M) LV7
+1/750 Scaled甲(F) LV7
+1/750 绿暗甲(M) LV7
+1/750 绿暗甲(F) LV7
+
+;Helmets
+1/40 巨盔 LV7
+1/40 WisdomCoronet LV7
+1/40 道Coronet LV7
+1/40 皇家盔 LV7
+1/650 Sparkling盔 LV7
+1/660 PuiYuHelmet LV7
+1/1200 WatcherHelmet LV7
+
+;Necklace
+1/200 Cuspid项链 LV7
+1/200 SorceryAnchor LV7
+1/200 PurifiedMirror LV7
+1/450 邪Triangle LV7
+1/450 CrossPurified LV7
+1/450 Adamant项链 LV7
+
+;Bracelets
+1/150 DualTitan护符 LV7
+1/150 SacredAngel护符 LV7
+1/150 邪Whisp护符 LV7
+1/475 WildTitan护符 LV7
+1/475 Enchanted护符 LV7
+1/475 五元素护符 LV7
+1/1450 WatcherGloves LV7
+
+;Rings
+1/150 Pledge戒 LV7
+1/150 五元素戒 LV7
+1/150 Crimson红宝石戒 LV7
+1/475 魔红宝石戒 LV7
+1/475 邪Expel戒 LV7
+1/475 金龙戒 LV7
+
+;Shoes
+1/1450 WatcherBoots LV7
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+1/20 DC石(XL) LV7
+1/20 MC石(XL) LV7
+1/20 SC石(XL) LV7
+1/35 ACStone(XL) LV7
+1/40 HolyAcStone LV7
+1/35 AMCStone(XL) LV7
+1/40 HolyAmcStone LV7
+
+;Gems/Orbs
+1/10 勇气宝石 LV7
+1/10 魔法宝石  LV7
+1/10 魂宝石 LV7
+
+1/30 毒宝石 LV7
+1/32 冰冻宝石 LV7
+1/35 准确宝石 LV7
+1/35 暴宝石 LV7
+1/40 耐力宝石 LV7
+
+1/30 勇气珠 LV7
+1/30 魔法珠 LV7
+1/30 魂珠 LV7
+1/45 防护珠 LV7
+1/45 邪斩杀珠 LV7
+1/45 耐久珠 LV7
+
+1/80 毒珠 LV7
+1/80 冰冻珠 LV7
+1/65 准确珠 LV7
+1/65 暴珠 LV7
+
+;Books
+;;Warrior
+1/600 防护Field LV7
+1/900 Rage LV7
+1/1000 Counter攻击 LV7
+
+;;Wizard
+1/800 MeteorStrike LV7
+1/1000 魔法Booster LV7
+1/1200 冰Thrust LV7
+
+;;Taoist
+1/600 Reincarnation LV7
+1/600 毒Cloud LV7
+1/900 Plague LV7
+1/1200 PetEnhancer LV7
+
+;;Assassion
+1/900 Hemorrhage LV7
+1/1200 暗Body LV7
+
+1/900 召唤魅惑之蛇 LV7
+
+;CraftingMaterials
+
+
+;Quests
+1/1 OrcCombsMap Q LV7
+
+
+
+;Level 8
+;Gold
+1/1 Gold 25000 LV8
+
+;Pots + Other
+1/1 太阳水 LV8
+1/1 太阳水 LV8
+1/1 太阳水 LV8
+1/1 太阳水 LV8
+1/1 太阳水 LV8
+1/1 太阳水 LV8
+1/1 太阳水 LV8
+1/1 太阳水 LV8
+1/1 太阳水 LV8
+1/1 BenedictionOil LV8
+1/10 GoldenBenedictionOil LV8
+
+
+1/10 觉醒魂0 LV8
+1/20 觉醒魂0 LV8
+
+;Weapons
+1/550 剑之战争神 LV8
+1/550 弓之Force LV8
+1/550 刃之Sorcery LV8
+1/550 天剑 LV8
+1/900 冰封军刀 LV8
+1/900 Grim弓 LV8
+1/900 Conqueror矛 LV8
+1/900 Bastard剑 LV8
+1/1800 黑虎Hammer LV8
+1/1800 Lethal弓 LV8
+1/1800 杖之Lotus LV8
+1/1800 Fan之Crane LV8
+
+;Armour
+1/500 黑虎甲(M) LV8
+1/500 黑虎甲(F) LV8
+1/500 Lotus甲(M) LV8
+1/500 Lotus甲(F) LV8
+1/500 Crane甲(M) LV8
+1/500 Crane甲(F) LV8
+1/750 红暗甲(M) LV8
+1/750 红暗甲(F) LV8
+1/750 蓝暗甲(M) LV8
+1/750 蓝暗甲(F) LV8
+1/750 绿暗甲(M) LV8
+1/750 绿暗甲(F) LV8
+1/750 Scaled甲(M) LV8
+1/750 Scaled甲(F) LV8
+
+;Helmets
+1/40 巨盔 LV8
+1/40 WisdomCoronet LV8
+1/40 道Coronet LV8
+1/40 皇家盔 LV8
+1/650 Sparkling盔 LV8
+1/660 PuiYuHelmet LV8
+1/1200 WatcherHelmet LV8
+
+;Necklace
+1/200 Cuspid项链 LV8
+1/200 SorceryAnchor LV8
+1/200 PurifiedMirror LV8
+1/450 邪Triangle LV8
+1/450 CrossPurified LV8
+1/450 Adamant项链 LV8
+
+;Bracelets
+1/150 DualTitan护符 LV8
+1/150 SacredAngel护符 LV8
+1/150 邪Whisp护符 LV8
+1/475 WildTitan护符 LV8
+1/475 Enchanted护符 LV8
+1/475 五元素护符 LV8
+1/1450 WatcherGloves LV8
+
+;Rings
+1/150 Pledge戒 LV8
+1/150 五元素戒 LV8
+1/150 Crimson红宝石戒 LV8
+1/475 魔红宝石戒 LV8
+1/475 邪Expel戒 LV8
+1/475 金龙戒 LV8
+
+;Shoes
+1/1450 WatcherBoots LV8
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+1/20 DC石(XL) LV8
+1/20 MC石(XL) LV8
+1/20 SC石(XL) LV8
+1/35 ACStone(XL) LV8
+1/40 HolyAcStone LV8
+1/35 AMCStone(XL) LV8
+1/40 HolyAmcStone LV8
+
+;Gems/Orbs
+1/10 勇气宝石 LV8
+1/10 魔法宝石  LV8
+1/10 魂宝石 LV8
+
+1/30 毒宝石 LV8
+1/32 冰冻宝石 LV8
+1/35 准确宝石 LV8
+1/35 暴宝石 LV8
+1/40 耐力宝石 LV8
+
+1/30 勇气珠 LV8
+1/30 魔法珠 LV8
+1/30 魂珠 LV8
+1/45 防护珠 LV8
+1/45 邪斩杀珠 LV8
+1/45 耐久珠 LV8
+
+1/80 毒珠 LV8
+1/80 冰冻珠 LV8
+1/65 准确珠 LV8
+1/65 暴珠 LV8
+
+;Books
+;;Warrior
+1/600 防护Field LV8
+1/900 Rage LV8
+1/1000 Counter攻击 LV8
+
+;;Wizard
+1/800 MeteorStrike LV8
+1/1000 魔法Booster LV8
+1/1200 冰Thrust LV8
+
+;;Taoist
+1/600 Reincarnation LV8
+1/600 毒Cloud LV8
+1/900 Plague LV8
+1/1200 PetEnhancer LV8
+
+;;Assassion
+1/900 Hemorrhage LV8
+1/1200 暗Body LV8
+
+1/900 召唤魅惑之蛇 LV8
+
+;CraftingMaterials
+
+
+;Quests
+1/1 OrcCombsMap Q LV8
+

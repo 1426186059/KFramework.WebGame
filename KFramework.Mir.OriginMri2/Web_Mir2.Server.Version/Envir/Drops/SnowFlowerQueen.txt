@@ -1,0 +1,1162 @@
+;Gold 
+1/2 Gold 50000 LV1
+
+;Potions
+1/1 太阳水 LV1
+1/1 太阳水 LV1
+1/1 太阳水 LV1
+1/1 太阳水 LV1
+1/2 太阳水 LV1
+1/2 太阳水 LV1
+1/2 太阳水 LV1
+1/2 太阳水 LV1
+1/2 太阳水 LV1
+1/2 太阳水 LV1
+1/1 太阳水 LV1
+1/1 太阳水 LV1
+1/2 太阳水 LV1
+1/2 太阳水 LV1
+1/2 太阳水 LV1
+1/2 太阳水 LV1
+1/2 太阳水 LV1
+1/1  BenedictionOil LV1
+1/10 GoldenBenedictionOil LV1
+
+1/150 SnowFlowerQueenRune LV1
+
+;Weapons
+1/200 冰封军刀 LV1
+1/200 Grim弓 LV1
+1/200 Conqueror矛 LV1
+1/200 Bastard剑 LV1
+1/250 黑虎Hammer LV1
+1/250 Lethal弓 LV1
+1/250 杖之Lotus LV1
+1/250 Fan之Crane LV1
+1/550 蛮兵剑 LV1
+1/550 Apus弓 LV1
+1/550 Raw剑 LV1
+1/550 骨CarvedFan LV1
+1/2000 WinterSlayer LV1
+1/2000 WinterStaff LV1
+1/2000 SnowFeather LV1
+
+;Armours
+1/2000 PrismArmour(M) LV1
+1/2000 PrismArmour(F) LV1
+
+1/150 WatcherHelmet LV1
+1/200 PuiYuHelmet LV1
+1/200 盔之Darkness LV1
+1/100 Sparkling盔 LV1
+1/100 Sparkling腰带 LV1
+1/100 Sparkling靴 LV1
+ 
+1/100 (H)魔面具 LV1
+1/100 (H)Violet珠 LV1
+1/100 (H)KunroonTear LV1
+1/100 (H)WheelOfLunar LV1
+1/100 (H)红魔戒 LV1
+1/100 (H)Cloud戒 LV1
+1/100 (H)毒戒 LV1
+1/80 ArmouredMedal LV1
+1/50 HollowMedal LV1
+
+1/300 SmasherGlove LV1
+1/300 BlizzardGlove LV1
+1/300 MistyGlove LV1
+1/300 SlicerGlove LV1
+1/300 SmasherNecklace LV1
+1/300 BlizzardNecklace LV1
+1/300 MistyNecklace LV1
+1/300 SlicerNecklace LV1
+1/300 SmasherRing LV1
+1/300 BlizzardRing LV1
+1/300 MistyRing LV1
+1/300 SlicerRing LV1
+
+;Medals
+1/400 DefensiveMedal LV1
+1/400 OffensiveMedal LV1
+
+
+;Books
+1/500 毒Cloud LV1
+1/500 Rage LV1
+1/700 Plague LV1
+1/700 魔法Booster LV1
+1/700 Counter攻击 LV1
+1/800 冰Thrust LV1
+1/800 PetEnhancer LV1
+1/800 SlashingBurst LV1
+1/900 LavaKing LV1
+1/900 FrozenRains LV1
+1/900 HeadShot LV1
+1/950 HolyShield LV1
+
+1/500 暗Body LV1
+1/700 Hemorrhage LV1
+1/800 ShadowStep LV1
+
+1/500 召唤魅惑之蛇  LV1
+1/110 NapalmShot  LV1
+
+;Random
+1/600 DefenderRing LV1
+1/600 DefenderGlove LV1
+1/600 DefenderNecklace LV1
+
+1/700 AscendedRing LV1
+1/700 AscendedWheel LV1
+1/700 AscendedNecklace LV1
+1/700 AscendedHelmet LV1
+1/700 AscendedBoots LV1
+1/700 AscendedBelt LV1
+
+1/200 项链之痛苦 LV1
+1/200 手镯之痛苦 LV1
+1/200 戒之痛苦 LV1
+
+
+
+;Other
+1/25 勇气宝石 LV1
+1/25 魔法宝石 LV1
+1/25 魂宝石 LV1
+1/20 防护宝石 LV1
+1/20 邪斩杀宝石 LV1
+1/32 毒宝石 LV1
+1/32 冰冻宝石 LV1
+1/80 暴宝石 LV1
+1/80 准确宝石 LV1
+1/80 敏捷宝石 LV1
+1/25 勇气珠 LV1
+1/25 魔法珠 LV1
+1/25 魂珠 LV1
+1/20 防护珠 LV1
+1/20 邪斩杀珠 LV1
+1/32 毒珠 LV1
+1/32 冰冻珠 LV1
+1/80 暴珠 LV1
+1/80 准确珠 LV1
+1/80 敏捷珠 LV1
+
+;Gold 
+1/2 Gold 50000 LV2
+
+;Potions
+1/1 太阳水 LV2
+1/1 太阳水 LV2
+1/1 太阳水 LV2
+1/1 太阳水 LV2
+1/2 太阳水 LV2
+1/2 太阳水 LV2
+1/2 太阳水 LV2
+1/2 太阳水 LV2
+1/2 太阳水 LV2
+1/2 太阳水 LV2
+1/1 太阳水 LV2
+1/1 太阳水 LV2
+1/2 太阳水 LV2
+1/2 太阳水 LV2
+1/2 太阳水 LV2
+1/2 太阳水 LV2
+1/2 太阳水 LV2
+1/1  BenedictionOil LV2
+1/10 GoldenBenedictionOil LV2
+
+
+1/150 SnowFlowerQueenRune LV2
+
+;Weapons
+1/200 冰封军刀 LV2
+1/200 Grim弓 LV2
+1/200 Conqueror矛 LV2
+1/200 Bastard剑 LV2
+1/250 黑虎Hammer LV2
+1/250 Lethal弓 LV2
+1/250 杖之Lotus LV2
+1/250 Fan之Crane LV2
+1/550 蛮兵剑 LV2
+1/550 Apus弓 LV2
+1/550 Raw剑 LV2
+1/550 骨CarvedFan LV2
+1/2000 WinterSlayer LV2
+1/2000 WinterStaff LV2
+1/2000 SnowFeather LV2
+
+;Armours
+1/2000 PrismArmour(M) LV2
+1/2000 PrismArmour(F) LV2
+
+1/150 WatcherHelmet LV2
+1/200 PuiYuHelmet LV2
+1/200 盔之Darkness LV2
+1/100 Sparkling盔 LV2
+1/100 Sparkling腰带 LV2
+1/100 Sparkling靴 LV2
+ 
+1/100 (H)魔面具 LV2
+1/100 (H)Violet珠 LV2
+1/100 (H)KunroonTear LV2
+1/100 (H)WheelOfLunar LV2
+1/100 (H)红魔戒 LV2
+1/100 (H)Cloud戒 LV2
+1/100 (H)毒戒 LV2
+1/80 ArmouredMedal LV2
+1/50 HollowMedal LV2
+
+1/300 SmasherGlove LV2
+1/300 BlizzardGlove LV2
+1/300 MistyGlove LV2
+1/300 SlicerGlove LV2
+1/300 SmasherNecklace LV2
+1/300 BlizzardNecklace LV2
+1/300 MistyNecklace LV2
+1/300 SlicerNecklace LV2
+1/300 SmasherRing LV2
+1/300 BlizzardRing LV2
+1/300 MistyRing LV2
+1/300 SlicerRing LV2
+
+;Medals
+1/400 DefensiveMedal LV2
+1/400 OffensiveMedal LV2
+
+
+;Books
+1/500 毒Cloud LV2
+1/500 Rage LV2
+1/700 Plague LV2
+1/700 魔法Booster LV2
+1/700 Counter攻击 LV2
+1/800 冰Thrust LV2
+1/800 PetEnhancer LV2
+1/800 SlashingBurst LV2
+1/900 LavaKing LV2
+1/900 FrozenRains LV2
+1/900 HeadShot LV2
+1/950 HolyShield LV2
+
+1/500 暗Body LV2
+1/700 Hemorrhage LV2
+1/800 ShadowStep LV2
+
+1/500 召唤魅惑之蛇  LV2
+1/110 NapalmShot  LV2
+
+;Random
+1/600 DefenderRing LV2
+1/600 DefenderGlove LV2
+1/600 DefenderNecklace LV2
+
+1/700 AscendedRing LV2
+1/700 AscendedWheel LV2
+1/700 AscendedNecklace LV2
+1/700 AscendedHelmet LV2
+1/700 AscendedBoots LV2
+1/700 AscendedBelt LV2
+
+1/200 项链之痛苦 LV2
+1/200 手镯之痛苦 LV2
+1/200 戒之痛苦 LV2
+
+
+
+;Other
+1/25 勇气宝石 LV2
+1/25 魔法宝石 LV2
+1/25 魂宝石 LV2
+1/20 防护宝石 LV2
+1/20 邪斩杀宝石 LV2
+1/32 毒宝石 LV2
+1/32 冰冻宝石 LV2
+1/80 暴宝石 LV2
+1/80 准确宝石 LV2
+1/80 敏捷宝石 LV2
+1/25 勇气珠 LV2
+1/25 魔法珠 LV2
+1/25 魂珠 LV2
+1/20 防护珠 LV2
+1/20 邪斩杀珠 LV2
+1/32 毒珠 LV2
+1/32 冰冻珠 LV2
+1/80 暴珠 LV2
+1/80 准确珠 LV2
+1/80 敏捷珠 LV2
+
+;Gold 
+1/2 Gold 50000 LV3
+
+;Potions
+1/1 太阳水 LV3
+1/1 太阳水 LV3
+1/1 太阳水 LV3
+1/1 太阳水 LV3
+1/2 太阳水 LV3
+1/2 太阳水 LV3
+1/2 太阳水 LV3
+1/2 太阳水 LV3
+1/2 太阳水 LV3
+1/2 太阳水 LV3
+1/1 太阳水 LV3
+1/1 太阳水 LV3
+1/2 太阳水 LV3
+1/2 太阳水 LV3
+1/2 太阳水 LV3
+1/2 太阳水 LV3
+1/2 太阳水 LV3
+1/1  BenedictionOil LV3
+1/10 GoldenBenedictionOil LV3
+
+
+1/150 SnowFlowerQueenRune LV3
+
+;Weapons
+1/200 冰封军刀 LV3
+1/200 Grim弓 LV3
+1/200 Conqueror矛 LV3
+1/200 Bastard剑 LV3
+1/250 黑虎Hammer LV3
+1/250 Lethal弓 LV3
+1/250 杖之Lotus LV3
+1/250 Fan之Crane LV3
+1/550 蛮兵剑 LV3
+1/550 Raw剑 LV3
+1/550 骨CarvedFan LV3
+1/550 Apus弓 LV3
+1/2000 WinterSlayer LV3
+1/2000 WinterStaff LV3
+1/2000 SnowFeather LV3
+
+;Armours
+1/2000 PrismArmour(M) LV3
+1/2000 PrismArmour(F) LV3
+
+1/150 WatcherHelmet LV3
+1/200 PuiYuHelmet LV3
+1/200 盔之Darkness LV3
+1/100 Sparkling盔 LV3
+1/100 Sparkling腰带 LV3
+1/100 Sparkling靴 LV3
+ 
+1/100 (H)魔面具 LV3
+1/100 (H)Violet珠 LV3
+1/100 (H)KunroonTear LV3
+1/100 (H)WheelOfLunar LV3
+1/100 (H)红魔戒 LV3
+1/100 (H)Cloud戒 LV3
+1/100 (H)毒戒 LV3
+1/80 ArmouredMedal LV3
+1/50 HollowMedal LV3
+
+1/300 SmasherGlove LV3
+1/300 BlizzardGlove LV3
+1/300 MistyGlove LV3
+1/300 SlicerGlove LV3
+1/300 SmasherNecklace LV3
+1/300 BlizzardNecklace LV3
+1/300 MistyNecklace LV3
+1/300 SlicerNecklace LV3
+1/300 SmasherRing LV3
+1/300 BlizzardRing LV3
+1/300 MistyRing LV3
+1/300 SlicerRing LV3
+
+;Medals
+1/400 DefensiveMedal LV3
+1/400 OffensiveMedal LV3
+
+
+;Books
+1/500 毒Cloud LV3
+1/500 Rage LV3
+1/700 Plague LV3
+1/700 魔法Booster LV3
+1/700 Counter攻击 LV3
+1/800 冰Thrust LV3
+1/800 PetEnhancer LV3
+1/800 SlashingBurst LV3
+1/900 LavaKing LV3
+1/900 FrozenRains LV3
+1/900 HeadShot LV3
+1/950 HolyShield LV3
+
+1/500 暗Body LV3
+1/700 Hemorrhage LV3
+1/800 ShadowStep LV3
+
+1/500 召唤魅惑之蛇  LV3
+1/110 NapalmShot  LV3
+
+
+;Random
+1/600 DefenderRing LV3
+1/600 DefenderGlove LV3
+1/600 DefenderNecklace LV3
+
+1/700 AscendedRing LV3
+1/700 AscendedWheel LV3
+1/700 AscendedNecklace LV3
+1/700 AscendedHelmet LV3
+1/700 AscendedBoots LV3
+1/700 AscendedBelt LV3
+
+1/200 项链之痛苦 LV3
+1/200 手镯之痛苦 LV3
+1/200 戒之痛苦 LV3
+
+
+
+;Other
+1/25 勇气宝石 LV3
+1/25 魔法宝石 LV3
+1/25 魂宝石 LV3
+1/20 防护宝石 LV3
+1/20 邪斩杀宝石 LV3
+1/32 毒宝石 LV3
+1/32 冰冻宝石 LV3
+1/80 暴宝石 LV3
+1/80 准确宝石 LV3
+1/80 敏捷宝石 LV3
+1/25 勇气珠 LV3
+1/25 魔法珠 LV3
+1/25 魂珠 LV3
+1/20 防护珠 LV3
+1/20 邪斩杀珠 LV3
+1/32 毒珠 LV3
+1/32 冰冻珠 LV3
+1/80 暴珠 LV3
+1/80 准确珠 LV3
+1/80 敏捷珠 LV3
+
+;Gold 
+1/2 Gold 50000 LV4
+
+;Potions
+1/1 太阳水 LV4
+1/1 太阳水 LV4
+1/1 太阳水 LV4
+1/1 太阳水 LV4
+1/2 太阳水 LV4
+1/2 太阳水 LV4
+1/2 太阳水 LV4
+1/2 太阳水 LV4
+1/2 太阳水 LV4
+1/2 太阳水 LV4
+1/1 太阳水 LV4
+1/1 太阳水 LV4
+1/2 太阳水 LV4
+1/2 太阳水 LV4
+1/2 太阳水 LV4
+1/2 太阳水 LV4
+1/2 太阳水 LV4
+1/1  BenedictionOil LV4
+1/10 GoldenBenedictionOil LV4
+
+
+1/150 SnowFlowerQueenRune LV4
+
+;Weapons
+1/200 冰封军刀 LV4
+1/200 Grim弓 LV4
+1/200 Conqueror矛 LV4
+1/200 Bastard剑 LV4
+1/250 黑虎Hammer LV4
+1/250 Lethal弓 LV4
+1/250 杖之Lotus LV4
+1/250 Fan之Crane LV4
+1/550 蛮兵剑 LV4
+1/550 Raw剑 LV4
+1/550 Apus弓 LV4
+1/550 骨CarvedFan LV4
+1/2000 WinterSlayer LV4
+1/2000 WinterStaff LV4
+1/2000 SnowFeather LV4
+
+;Armours
+1/2000 PrismArmour(M) LV4
+1/2000 PrismArmour(F) LV4
+
+1/150 WatcherHelmet LV4
+1/200 PuiYuHelmet LV4
+1/200 盔之Darkness LV4
+1/100 Sparkling盔 LV4
+1/100 Sparkling腰带 LV4
+1/100 Sparkling靴 LV4
+ 
+1/100 (H)魔面具 LV4
+1/100 (H)Violet珠 LV4
+1/100 (H)KunroonTear LV4
+1/100 (H)WheelOfLunar LV4
+1/100 (H)红魔戒 LV4
+1/100 (H)Cloud戒 LV4
+1/100 (H)毒戒 LV4
+1/80 ArmouredMedal LV4
+1/50 HollowMedal LV4
+
+1/300 SmasherGlove LV4
+1/300 BlizzardGlove LV4
+1/300 MistyGlove LV4
+1/300 SlicerGlove LV4
+1/300 SmasherNecklace LV4
+1/300 BlizzardNecklace LV4
+1/300 MistyNecklace LV4
+1/300 SlicerNecklace LV4
+1/300 SmasherRing LV4
+1/300 BlizzardRing LV4
+1/300 MistyRing LV4
+1/300 SlicerRing LV4
+
+;Medals
+1/400 DefensiveMedal LV4
+1/400 OffensiveMedal LV4
+
+
+;Books
+1/500 毒Cloud LV4
+1/500 Rage LV4
+1/700 Plague LV4
+1/700 魔法Booster LV4
+1/700 Counter攻击 LV4
+1/800 冰Thrust LV4
+1/800 PetEnhancer LV4
+1/800 SlashingBurst LV4
+1/900 月Mist LV4
+1/900 LavaKing LV4
+1/900 FrozenRains LV4
+1/900 HeadShot LV4
+1/900 ShadowStep LV4
+1/900 FuryWaves LV4
+1/950 HolyShield LV4
+
+1/500 暗Body LV4
+1/700 Hemorrhage LV4
+1/800 ShadowStep LV4
+
+1/500 召唤魅惑之蛇  LV4
+1/110 NapalmShot  LV4
+
+;Random
+1/600 DefenderRing LV4
+1/600 DefenderGlove LV4
+1/600 DefenderNecklace LV4
+
+1/700 AscendedRing LV4
+1/700 AscendedWheel LV4
+1/700 AscendedNecklace LV4
+1/700 AscendedHelmet LV4
+1/700 AscendedBoots LV4
+1/700 AscendedBelt LV4
+
+1/200 项链之痛苦 LV4
+1/200 手镯之痛苦 LV4
+1/200 戒之痛苦 LV4
+
+
+
+;Other
+1/25 勇气宝石 LV4
+1/25 魔法宝石 LV4
+1/25 魂宝石 LV4
+1/20 防护宝石 LV4
+1/20 邪斩杀宝石 LV4
+1/32 毒宝石 LV4
+1/32 冰冻宝石 LV4
+1/80 暴宝石 LV4
+1/80 准确宝石 LV4
+1/80 敏捷宝石 LV4
+1/25 勇气珠 LV4
+1/25 魔法珠 LV4
+1/25 魂珠 LV4
+1/20 防护珠 LV4
+1/20 邪斩杀珠 LV4
+1/32 毒珠 LV4
+1/32 冰冻珠 LV4
+1/80 暴珠 LV4
+1/80 准确珠 LV4
+1/80 敏捷珠 LV4
+
+;Gold 
+1/2 Gold 50000 LV5
+
+;Potions
+1/1 太阳水 LV5
+1/1 太阳水 LV5
+1/1 太阳水 LV5
+1/1 太阳水 LV5
+1/2 太阳水 LV5
+1/2 太阳水 LV5
+1/2 太阳水 LV5
+1/2 太阳水 LV5
+1/2 太阳水 LV5
+1/2 太阳水 LV5
+1/1 太阳水 LV5
+1/1 太阳水 LV5
+1/2 太阳水 LV5
+1/2 太阳水 LV5
+1/2 太阳水 LV5
+1/2 太阳水 LV5
+1/2 太阳水 LV5
+1/1  BenedictionOil LV5
+1/10 GoldenBenedictionOil LV5
+
+
+1/150 SnowFlowerQueenRune LV5
+
+;Weapons
+1/200 冰封军刀 LV5
+1/200 Grim弓 LV5
+1/200 Conqueror矛 LV5
+1/200 Bastard剑 LV5
+1/250 黑虎Hammer LV5
+1/250 Lethal弓 LV5
+1/250 杖之Lotus LV5
+1/250 Fan之Crane LV5
+1/550 蛮兵剑 LV5
+1/550 Raw剑 LV5
+1/550 Apus弓 LV5
+1/550 骨CarvedFan LV5
+1/2000 WinterSlayer LV5
+1/2000 WinterStaff LV5
+1/2000 SnowFeather LV5
+
+;Armours
+1/2000 PrismArmour(M) LV5
+1/2000 PrismArmour(F) LV5
+
+1/150 WatcherHelmet LV5
+1/200 PuiYuHelmet LV5
+1/200 盔之Darkness LV5
+1/100 Sparkling盔 LV5
+1/100 Sparkling腰带 LV5
+1/100 Sparkling靴 LV5
+ 
+1/100 (H)魔面具 LV5
+1/100 (H)Violet珠 LV5
+1/100 (H)KunroonTear LV5
+1/100 (H)WheelOfLunar LV5
+1/100 (H)红魔戒 LV5
+1/100 (H)Cloud戒 LV5
+1/100 (H)毒戒 LV5
+1/80 ArmouredMedal LV5
+1/50 HollowMedal LV5
+
+1/300 SmasherGlove LV5
+1/300 BlizzardGlove LV5
+1/300 MistyGlove LV5
+1/300 SlicerGlove LV5
+1/300 SmasherNecklace LV5
+1/300 BlizzardNecklace LV5
+1/300 MistyNecklace LV5
+1/300 SlicerNecklace LV5
+1/300 SmasherRing LV5
+1/300 BlizzardRing LV5
+1/300 MistyRing LV5
+1/300 SlicerRing LV5
+
+;Medals
+1/400 DefensiveMedal LV5
+1/400 OffensiveMedal LV5
+
+
+;Books
+1/500 毒Cloud LV5
+1/500 Rage LV5
+1/700 Plague LV5
+1/700 魔法Booster LV5
+1/700 Counter攻击 LV5
+1/800 冰Thrust LV5
+1/800 PetEnhancer LV5
+1/800 SlashingBurst LV5
+1/900 LavaKing LV5
+1/900 FrozenRains LV5
+1/900 HeadShot LV5
+1/950 HolyShield LV5
+
+1/500 暗Body LV5
+1/700 Hemorrhage LV5
+1/800 ShadowStep LV5
+
+1/500 召唤魅惑之蛇  LV5
+1/110 NapalmShot  LV5
+
+;Random
+1/600 DefenderRing LV5
+1/600 DefenderGlove LV5
+1/600 DefenderNecklace LV5
+
+1/700 AscendedRing LV5
+1/700 AscendedWheel LV5
+1/700 AscendedNecklace LV5
+1/700 AscendedHelmet LV5
+1/700 AscendedBoots LV5
+1/700 AscendedBelt LV5
+
+1/200 项链之痛苦 LV5
+1/200 手镯之痛苦 LV5
+1/200 戒之痛苦 LV5
+
+
+
+;Other
+1/25 勇气宝石 LV5
+1/25 魔法宝石 LV5
+1/25 魂宝石 LV5
+1/20 防护宝石 LV5
+1/20 邪斩杀宝石 LV5
+1/32 毒宝石 LV5
+1/32 冰冻宝石 LV5
+1/80 暴宝石 LV5
+1/80 准确宝石 LV5
+1/80 敏捷宝石 LV5
+1/25 勇气珠 LV5
+1/25 魔法珠 LV5
+1/25 魂珠 LV5
+1/20 防护珠 LV5
+1/20 邪斩杀珠 LV5
+1/32 毒珠 LV5
+1/32 冰冻珠 LV5
+1/80 暴珠 LV5
+1/80 准确珠 LV5
+1/80 敏捷珠 LV5
+
+;Gold 
+1/2 Gold 50000 LV6
+
+;Potions
+1/1 太阳水 LV6
+1/1 太阳水 LV6
+1/1 太阳水 LV6
+1/1 太阳水 LV6
+1/2 太阳水 LV6
+1/2 太阳水 LV6
+1/2 太阳水 LV6
+1/2 太阳水 LV6
+1/2 太阳水 LV6
+1/2 太阳水 LV6
+1/1 太阳水 LV6
+1/1 太阳水 LV6
+1/2 太阳水 LV6
+1/2 太阳水 LV6
+1/2 太阳水 LV6
+1/2 太阳水 LV6
+1/2 太阳水 LV6
+1/1  BenedictionOil LV6
+1/10 GoldenBenedictionOil LV6
+
+1/150 SnowFlowerQueenRune LV6
+
+;Weapons
+1/200 冰封军刀 LV6
+1/200 Grim弓 LV6
+1/200 Conqueror矛 LV6
+1/200 Bastard剑 LV6
+1/250 黑虎Hammer LV6
+1/250 Lethal弓 LV6
+1/250 杖之Lotus LV6
+1/250 Fan之Crane LV6
+1/550 蛮兵剑 LV6
+1/550 Raw剑 LV6
+1/550 骨CarvedFan LV6
+1/550 Apus弓 LV6
+1/2000 WinterSlayer LV6
+1/2000 WinterStaff LV6
+1/2000 SnowFeather LV6
+
+;Armours
+1/2000 PrismArmour(M) LV6
+1/2000 PrismArmour(F) LV6
+
+1/150 WatcherHelmet LV6
+1/200 PuiYuHelmet LV6
+1/200 盔之Darkness LV6
+1/100 Sparkling盔 LV6
+1/100 Sparkling腰带 LV6
+1/100 Sparkling靴 LV6
+ 
+1/100 (H)魔面具 LV6
+1/100 (H)Violet珠 LV6
+1/100 (H)KunroonTear LV6
+1/100 (H)WheelOfLunar LV6
+1/100 (H)红魔戒 LV6
+1/100 (H)Cloud戒 LV6
+1/100 (H)毒戒 LV6
+1/80 ArmouredMedal LV6
+1/50 HollowMedal LV6
+
+1/300 SmasherGlove LV6
+1/300 BlizzardGlove LV6
+1/300 MistyGlove LV6
+1/300 SlicerGlove LV6
+1/300 SmasherNecklace LV6
+1/300 BlizzardNecklace LV6
+1/300 MistyNecklace LV6
+1/300 SlicerNecklace LV6
+1/300 SmasherRing LV6
+1/300 BlizzardRing LV6
+1/300 MistyRing LV6
+1/300 SlicerRing LV6
+
+;Medals
+1/400 DefensiveMedal LV6
+1/400 OffensiveMedal LV6
+
+
+;Books
+1/500 毒Cloud LV6
+1/500 Rage LV6
+1/700 Plague LV6
+1/700 魔法Booster LV6
+1/700 Counter攻击 LV6
+1/800 冰Thrust LV6
+1/800 PetEnhancer LV6
+1/800 SlashingBurst LV6
+1/900 LavaKing LV6
+1/900 FrozenRains LV6
+1/900 HeadShot LV6
+1/950 HolyShield LV6
+
+1/500 暗Body LV6
+1/700 Hemorrhage LV6
+1/800 ShadowStep LV6
+
+1/500 召唤魅惑之蛇  LV6
+1/110 NapalmShot  LV6
+
+;Random
+1/600 DefenderRing LV6
+1/600 DefenderGlove LV6
+1/600 DefenderNecklace LV6
+
+1/700 AscendedRing LV6
+1/700 AscendedWheel LV6
+1/700 AscendedNecklace LV6
+1/700 AscendedHelmet LV6
+1/700 AscendedBoots LV6
+1/700 AscendedBelt LV6
+
+1/200 项链之痛苦 LV6
+1/200 手镯之痛苦 LV6
+1/200 戒之痛苦 LV6
+
+
+
+;Other
+1/25 勇气宝石 LV6
+1/25 魔法宝石 LV6
+1/25 魂宝石 LV6
+1/20 防护宝石 LV6
+1/20 邪斩杀宝石 LV6
+1/32 毒宝石 LV6
+1/32 冰冻宝石 LV6
+1/80 暴宝石 LV6
+1/80 准确宝石 LV6
+1/80 敏捷宝石 LV6
+1/25 勇气珠 LV6
+1/25 魔法珠 LV6
+1/25 魂珠 LV6
+1/20 防护珠 LV6
+1/20 邪斩杀珠 LV6
+1/32 毒珠 LV6
+1/32 冰冻珠 LV6
+1/80 暴珠 LV6
+1/80 准确珠 LV6
+1/80 敏捷珠 LV6
+
+;Gold 
+1/2 Gold 50000 LV7
+
+;Potions
+1/1 太阳水 LV7
+1/1 太阳水 LV7
+1/1 太阳水 LV7
+1/1 太阳水 LV7
+1/2 太阳水 LV7
+1/2 太阳水 LV7
+1/2 太阳水 LV7
+1/2 太阳水 LV7
+1/2 太阳水 LV7
+1/2 太阳水 LV7
+1/1 太阳水 LV7
+1/1 太阳水 LV7
+1/2 太阳水 LV7
+1/2 太阳水 LV7
+1/2 太阳水 LV7
+1/2 太阳水 LV7
+1/2 太阳水 LV7
+1/1  BenedictionOil LV7
+1/10 GoldenBenedictionOil LV7
+
+
+1/150 SnowFlowerQueenRune LV7
+
+;Weapons
+1/200 冰封军刀 LV7
+1/200 Grim弓 LV7
+1/200 Conqueror矛 LV7
+1/200 Bastard剑 LV7
+1/250 黑虎Hammer LV7
+1/250 Lethal弓 LV7
+1/250 杖之Lotus LV7
+1/250 Fan之Crane LV7
+1/550 蛮兵剑 LV7
+1/550 Raw剑 LV7
+1/550 Apus弓 LV7
+1/550 骨CarvedFan LV7
+1/2000 WinterSlayer LV7
+1/2000 WinterStaff LV7
+1/2000 SnowFeather LV7
+
+;Armours
+1/2000 PrismArmour(M) LV7
+1/2000 PrismArmour(F) LV7
+
+1/150 WatcherHelmet LV7
+1/200 PuiYuHelmet LV7
+1/200 盔之Darkness LV7
+1/100 Sparkling盔 LV7
+1/100 Sparkling腰带 LV7
+1/100 Sparkling靴 LV7
+ 
+1/100 (H)魔面具 LV7
+1/100 (H)Violet珠 LV7
+1/100 (H)KunroonTear LV7
+1/100 (H)WheelOfLunar LV7
+1/100 (H)红魔戒 LV7
+1/100 (H)Cloud戒 LV7
+1/100 (H)毒戒 LV7
+1/80 ArmouredMedal LV7
+1/50 HollowMedal LV7
+
+1/300 SmasherGlove LV7
+1/300 BlizzardGlove LV7
+1/300 MistyGlove LV7
+1/300 SlicerGlove LV7
+1/300 SmasherNecklace LV7
+1/300 BlizzardNecklace LV7
+1/300 MistyNecklace LV7
+1/300 SlicerNecklace LV7
+1/300 SmasherRing LV7
+1/300 BlizzardRing LV7
+1/300 MistyRing LV7
+1/300 SlicerRing LV7
+
+;Medals
+1/400 DefensiveMedal LV7
+1/400 OffensiveMedal LV7
+
+
+;Books
+1/500 毒Cloud LV7
+1/500 Rage LV7
+1/700 Plague LV7
+1/700 魔法Booster LV7
+1/700 Counter攻击 LV7
+1/800 冰Thrust LV7
+1/800 PetEnhancer LV7
+1/800 SlashingBurst LV7
+1/900 LavaKing LV7
+1/900 FrozenRains LV7
+1/900 HeadShot LV7
+1/950 HolyShield LV7
+
+1/500 暗Body LV7
+1/700 Hemorrhage LV7
+1/800 ShadowStep LV7
+
+1/500 召唤魅惑之蛇  LV7
+1/110 NapalmShot  LV7
+
+;Random
+1/600 DefenderRing LV7
+1/600 DefenderGlove LV7
+1/600 DefenderNecklace LV7
+
+1/700 AscendedRing LV7
+1/700 AscendedWheel LV7
+1/700 AscendedNecklace LV7
+1/700 AscendedHelmet LV7
+1/700 AscendedBoots LV7
+1/700 AscendedBelt LV7
+
+1/200 项链之痛苦 LV7
+1/200 手镯之痛苦 LV7
+1/200 戒之痛苦 LV7
+
+
+
+;Other
+1/25 勇气宝石 LV7
+1/25 魔法宝石 LV7
+1/25 魂宝石 LV7
+1/20 防护宝石 LV7
+1/20 邪斩杀宝石 LV7
+1/32 毒宝石 LV7
+1/32 冰冻宝石 LV7
+1/80 暴宝石 LV7
+1/80 准确宝石 LV7
+1/80 敏捷宝石 LV7
+1/25 勇气珠 LV7
+1/25 魔法珠 LV7
+1/25 魂珠 LV7
+1/20 防护珠 LV7
+1/20 邪斩杀珠 LV7
+1/32 毒珠 LV7
+1/32 冰冻珠 LV7
+1/80 暴珠 LV7
+1/80 准确珠 LV7
+1/80 敏捷珠 LV7
+
+;Gold 
+1/2 Gold 50000 LV8
+
+;Potions
+1/1 太阳水 LV8
+1/1 太阳水 LV8
+1/1 太阳水 LV8
+1/1 太阳水 LV8
+1/2 太阳水 LV8
+1/2 太阳水 LV8
+1/2 太阳水 LV8
+1/2 太阳水 LV8
+1/2 太阳水 LV8
+1/2 太阳水 LV8
+1/1 太阳水 LV8
+1/1 太阳水 LV8
+1/2 太阳水 LV8
+1/2 太阳水 LV8
+1/2 太阳水 LV8
+1/2 太阳水 LV8
+1/2 太阳水 LV8
+1/1  BenedictionOil LV8
+1/10 GoldenBenedictionOil LV8
+
+
+1/150 SnowFlowerQueenRune LV8
+
+;Weapons
+1/200 冰封军刀 LV8
+1/200 Grim弓 LV8
+1/200 Conqueror矛 LV8
+1/200 Bastard剑 LV8
+1/250 黑虎Hammer LV8
+1/250 Lethal弓 LV8
+1/250 杖之Lotus LV8
+1/250 Fan之Crane LV8
+1/550 蛮兵剑 LV8
+1/550 Raw剑 LV8
+1/550 Apus弓 LV8
+1/550 骨CarvedFan LV8
+1/2000 WinterSlayer LV8
+1/2000 WinterStaff LV8
+1/2000 SnowFeather LV8
+
+;Armours
+1/2000 PrismArmour(M) LV8
+1/2000 PrismArmour(F) LV8
+
+1/150 WatcherHelmet LV8
+1/200 PuiYuHelmet LV8
+1/200 盔之Darkness LV8
+1/100 Sparkling盔 LV8
+1/100 Sparkling腰带 LV8
+1/100 Sparkling靴 LV8
+ 
+1/100 (H)魔面具 LV8
+1/100 (H)Violet珠 LV8
+1/100 (H)KunroonTear LV8
+1/100 (H)WheelOfLunar LV8
+1/100 (H)红魔戒 LV8
+1/100 (H)Cloud戒 LV8
+1/100 (H)毒戒 LV8
+1/80 ArmouredMedal LV8
+1/50 HollowMedal LV8
+
+1/300 SmasherGlove LV8
+1/300 BlizzardGlove LV8
+1/300 MistyGlove LV8
+1/300 SlicerGlove LV8
+1/300 SmasherNecklace LV8
+1/300 BlizzardNecklace LV8
+1/300 MistyNecklace LV8
+1/300 SlicerNecklace LV8
+1/300 SmasherRing LV8
+1/300 BlizzardRing LV8
+1/300 MistyRing LV8
+1/300 SlicerRing LV8
+
+;Medals
+1/400 DefensiveMedal LV8
+1/400 OffensiveMedal LV8
+
+
+;Books
+1/500 毒Cloud LV8
+1/500 Rage LV8
+1/700 Plague LV8
+1/700 魔法Booster LV8
+1/700 Counter攻击 LV8
+1/800 冰Thrust LV8
+1/800 PetEnhancer LV8
+1/800 SlashingBurst LV8
+1/900 LavaKing LV8
+1/900 FrozenRains LV8
+1/900 HeadShot LV8
+1/950 HolyShield LV8
+
+1/500 暗Body LV8
+1/700 Hemorrhage LV8
+1/800 ShadowStep LV8
+
+1/500 召唤魅惑之蛇  LV8
+1/110 NapalmShot  LV8
+
+;Random
+1/600 DefenderRing LV8
+1/600 DefenderGlove LV8
+1/600 DefenderNecklace LV8
+
+1/700 AscendedRing LV8
+1/700 AscendedWheel LV8
+1/700 AscendedNecklace LV8
+1/700 AscendedHelmet LV8
+1/700 AscendedBoots LV8
+1/700 AscendedBelt LV8
+
+1/200 项链之痛苦 LV8
+1/200 手镯之痛苦 LV8
+1/200 戒之痛苦 LV8
+
+
+
+;Other
+1/25 勇气宝石 LV8
+1/25 魔法宝石 LV8
+1/25 魂宝石 LV8
+1/20 防护宝石 LV8
+1/20 邪斩杀宝石 LV8
+1/32 毒宝石 LV8
+1/32 冰冻宝石 LV8
+1/80 暴宝石 LV8
+1/80 准确宝石 LV8
+1/80 敏捷宝石 LV8
+1/25 勇气珠 LV8
+1/25 魔法珠 LV8
+1/25 魂珠 LV8
+1/20 防护珠 LV8
+1/20 邪斩杀珠 LV8
+1/32 毒珠 LV8
+1/32 冰冻珠 LV8
+1/80 暴珠 LV8
+1/80 准确珠 LV8
+1/80 敏捷珠 LV8
+
+1/1600 YetiProtector LV1
+1/1600 YetiProtector LV2
+1/1600 YetiProtector LV3
+1/1600 YetiProtector LV4
+1/1600 YetiProtector LV5
+1/1600 YetiProtector LV6
+1/1600 YetiProtector LV7
+1/1600 YetiProtector LV8

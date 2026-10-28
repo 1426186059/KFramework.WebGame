@@ -1,0 +1,54 @@
+1/1 Gold 750
+
+;Pots + Other
+1/6 大金创药
+1/6 大魔法药
+
+1/40 觉醒魂0
+1/40 觉醒魂0
+
+
+;Weapons
+
+
+;Armour
+
+
+;Helmets
+
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+
+
+;CraftingMaterials
+
+
+;Quests
+

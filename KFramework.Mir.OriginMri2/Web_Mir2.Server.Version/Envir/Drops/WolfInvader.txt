@@ -1,0 +1,31 @@
+;Gold
+1/4 Gold 320
+
+;Pots + Other
+1/20 中金创药 
+1/20 中魔法药
+
+
+;Armour Rare
+1/1000 Medium甲(M)
+1/1000 Medium甲(F)
+ 
+
+;Shoes
+1/140 老Loafer
+
+;Belts
+1/140 皮革腰带
+
+
+;Shields
+1/100 RustlessShield
+
+
+;Stone
+1/1520 MC石(S)
+1/1520 SC石(S)
+1/1520 DC石(S)
+1/1920 MC石(M)
+1/1920 MC石(M)
+1/1920 DC石(M)

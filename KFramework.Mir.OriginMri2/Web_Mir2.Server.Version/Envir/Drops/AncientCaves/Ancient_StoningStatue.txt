@@ -1,0 +1,143 @@
+;Gold
+1/1 Gold 30000
+
+;Pots + Other
+1/1 大金创药
+1/1 大魔法药
+1/1 大金创药
+1/1 大魔法药
+1/1 特制金创药
+1/1 特制魔法药
+1/1 特制金创药
+1/1 特制魔法药
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 BenedictionOil
+1/2 BenedictionOil
+
+1/10 觉醒魂0
+
+
+;Weapons
+1/900 冰封军刀
+1/900 Grim弓
+1/900 Conqueror矛
+1/900 Bastard剑
+1/1100 黑虎Hammer
+1/1100 Lethal弓
+1/1100 杖之Lotus
+1/1100 Fan之Crane
+1/1300 地狱阎罗刃
+
+;Armour
+1/1650 BloodDragonArmour(M)
+1/1650 BloodDragonArmour(F)
+
+;Helmets
+1/390 ApesCrown
+1/500 Sparkling盔
+1/520 盔之Darkness
+1/460 PuiYuHelmet
+1/1450 BloodDragonHelmet
+
+;Necklace
+1/155 邪Triangle
+1/155 CrossPurified
+1/155 Adamant项链
+1/630 魔面具
+1/630 Violet珠
+1/630 KunroonTear
+1/800 (H)魔面具
+1/800 (H)Violet珠
+1/800 (H)KunroonTear
+1/1550 BloodDragonNecklace
+
+;Bracelets
+1/155 WildTitan护符
+1/155 Enchanted护符
+1/155 五元素护符
+1/600 WheelOfLunar
+1/800 (H)WheelOfLunar
+1/1550 BloodDragonBrace
+
+;Rings
+1/155 魔红宝石戒
+1/155 邪Expel戒
+1/155 金龙戒
+1/620 红魔戒
+1/620 Cloud戒
+1/620 毒戒
+1/800 (H)红魔戒
+1/800 (H)Cloud戒
+1/800 (H)毒戒
+1/1450 BloodDragonRing
+
+;Belt
+1/1500 BloodDragonBelt
+
+;Boot
+1/1500 BloodDragonBoots
+
+
+;Shields
+1/225 TrophyShield
+1/440 LunarPlate
+
+;Medals
+1/230 ArmouredMedal
+1/250 HollowMedal
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+;;Warrior
+1/800 防护Field
+1/800 Rage
+1/800 Counter攻击
+1/800 SlashingBurst
+1/800 Fury
+1/900 ImmortalSkin
+
+;;Wizard
+1/800 冰Thrust
+1/800 MeteorStrike
+1/800 魔法Booster
+1/900 暴Escape
+1/900 FastMove
+1/1500 LavaKing
+1/1550 FrozenRains
+
+;;Taoist
+1/800 毒Cloud
+1/800 Reincarnation
+1/900 PetEnhancer
+1/900 Plague
+1/900 Energy盾
+1/1650 HeadShot
+1/1800 HolyShield
+
+;;Assassion
+1/800 SwiftFeet
+1/800 暗Body
+1/900 Hemorrhage
+1/900 月Mist
+1/1650 FuryWaves
+1/1650 ShadowStep
+
+;Archer
+1/800 毒Shot
+1/800 CrippleShot
+1/900 召唤魅惑之蛇
+1/90 NapalmShot
+1/1650 OneWith自然
+
+;CraftingMaterials
+
+
+;Quests

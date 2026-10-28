@@ -1,0 +1,229 @@
+;Gold
+1/1 Gold 55000
+1/10 金Bar
+
+;Pots + Other
+1/1 特制金创药
+1/2 特制金创药
+1/1 特制魔法药
+1/2 特制魔法药
+1/1 太阳水
+1/2 太阳水
+1/1 太阳药水(M)
+1/2 太阳药水(M)
+1/1 太阳水
+1/1 太阳水
+1/2 太阳水
+1/2 太阳水
+1/1 太阳水
+1/2 太阳水
+
+1/1 BenedictionOil
+1/10 GoldenBenedictionOil
+
+1/10 觉醒魂0
+1/10 觉醒魂0
+
+;Weapons
+1/450 剑之战争神
+1/450 弓之Force
+1/450 刃之Sorcery
+1/450 天剑
+1/450 刃之Magi
+
+1/800 冰封军刀
+1/800 Conqueror矛
+1/800 Bastard剑
+1/800 Zinc刃
+1/800 Grim弓
+
+1/1000 黑虎Hammer
+1/1000 Lethal弓
+1/1000 杖之Lotus
+1/1000 Fan之Crane
+1/1000 Butchering刃
+
+1/1100 蛮兵剑
+1/1100 Raw剑
+1/1100 骨CarvedFan
+1/1100 Mad龙刃
+1/1100 Apus弓
+
+;Weapons Rare
+1/1600 WidowsWail
+1/1600 ThorsBattleAxe
+1/1600 OathKeeper
+1/1600 HeatsBanes
+
+;Armour
+1/300 黑虎甲(M)
+1/300 黑虎甲(F)
+1/300 Lotus甲(M)
+1/300 Lotus甲(F)
+1/300 Crane甲(M)
+1/300 Crane甲(F)
+1/300 Stealth甲(M)
+1/300 Stealth甲(F)
+
+;Armour Rare
+1/11500 天甲(M)
+1/11500 天甲(F)
+1/11500 HeavenRedArmour(M)
+1/11500 HeavenRedArmour(F)
+1/11500 HeavenGrnArmour(M)
+1/11500 HeavenGrnArmour(F)
+1/11500 HeavenGoldArmour(M)
+1/11500 HeavenGoldArmour(F)
+
+
+;Helmets
+1/25 盔之英雄
+1/40 巨盔
+1/40 WisdomCoronet
+1/40 道Coronet
+1/40 皇家盔
+1/360 Sparkling盔
+1/360 CannibalHelmet
+1/360 PuiYuHelmet
+1/440 CannibalHelmet
+1/800 AscendedHelmet
+1/1000 InfernoHelmet
+
+
+;Necklace
+1/50 Cuspid项链
+1/50 SorceryAnchor
+1/50 PurifiedMirror
+1/150 邪Triangle
+1/150 CrossPurified
+1/150 Adamant项链
+1/450 PirateNecklace
+1/600 DefenderNecklace
+1/800 AscendedNecklace
+1/1000 InfernoNecklace
+
+
+;Bracelets
+1/50 DualTitan护符
+1/50 SacredAngel护符
+1/50 邪Whisp护符
+1/150 WildTitan护符
+1/150 Enchanted护符
+1/150 五元素护符
+1/440 DemonWheel
+1/600 DefenderGlove
+1/800 AscendedWheel
+1/1000 InfernoWheel
+
+;Rings
+1/50 Pledge戒
+1/50 五元素戒
+1/50 Crimson红宝石戒
+1/150 魔红宝石戒
+1/150 邪Expel戒
+1/150 金龙戒
+1/450 SlasherRing
+1/600 DefenderRing
+1/800 AscendedRing
+1/1000 InfernoRing
+
+
+;Shoes
+1/800 AscendedBoots
+1/1000 InfernoBoots
+
+;Belts
+1/800 AscendedBelt
+1/1000 InfernoBelt
+
+;Medals
+
+
+;Shields
+1/1000 InfernoShield
+
+;Pads
+
+
+;Stone
+
+
+;Books
+;;Warrior
+1/100 SliceNDice
+1/105 烈焰剑
+1/110 LionRoar
+1/115 BladeStorm
+1/120 CrossHalf月
+1/125 刃Avalanche
+1/130 防护Field
+1/135 Rage
+1/140 Fury
+1/500 Counter攻击
+1/900 SlashingBurst
+
+;;Wizard
+1/105 冰暴
+1/110 FlameDisruptor
+1/115 Mirroring
+1/120 FlameField
+1/135 Blizzard
+1/140 魔法Booster
+1/700 LavaKing
+1/750 FrozenRains
+1/900 暴Escape
+
+;;Taoist
+1/105 召唤神兽
+1/110 Reincarnation
+1/115 召唤圣精灵
+1/120 诅咒
+1/125 毒Cloud
+1/135 PetEnhancer
+1/140 Energy盾
+1/850 HeadShot
+1/1200 HolyShield
+
+;;Assassin
+1/200 SwiftFeet
+1/500 Plague
+1/500 Hemorrhage
+1/900 月Mist
+1/850 ShadowStep
+1/1280 FuryWaves
+
+;;Archer
+1/90 NapalmShot
+1/100 DelayedExplosion
+1/200 ElementalBarrier
+1/500 BindingShot
+1/750 召唤蟾蜍
+1/800 毒Shot
+1/900 CrippleShot
+1/1200 召唤魅惑之蛇
+1/1280 OneWith自然
+
+;Gems/Orbs
+1/50 CriticalDamgeForge
+1/50 CriticalRateForge
+1/50 HpDrainForge
+1/50 ReflectForge
+1/75 SocketForge(G)
+
+1/30 勇气珠
+1/30 魔法珠
+1/30 魂珠
+1/25 防护珠
+1/25 邪斩杀珠
+1/20 耐久珠
+1/40 毒珠
+1/40 冰冻珠
+1/40 准确珠
+1/40 暴珠
+1/40 耐力珠
+
+;CraftingMaterials
+
+
+;Quests
+

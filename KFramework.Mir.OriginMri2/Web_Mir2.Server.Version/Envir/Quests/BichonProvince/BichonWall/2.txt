@@ -1,0 +1,32 @@
+[@Description]
+There are creatures named {奥玛/Crimson} outside
+{BichonWall/Yellow} and other towns. 
+They are very strong and violent. They have 
+been attacking the merchants. Hey, would you 
+be able to help us eliminate the danager?
+
+[@TaskDescription]
+Please hunt {奥玛's/Crimson} and bring back 10 
+{奥玛之牙's/LightSteelBlue}
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+奥玛之牙 10
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+青铜Short剑
+青铜豪剑
+Elk木弓
+
+[@ExpReward]
+300
+
+[@GoldReward]
+83

@@ -1,0 +1,807 @@
+;Level1
+;Gold
+1/1 Gold 50000 LV1
+
+;Pots + Other
+1/1 特制金创药 LV1
+1/1 特制魔法药 LV1
+1/1 特制金创药 LV1
+1/1 特制魔法药 LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/5 太阳药水(M) LV1
+1/5 太阳药水(M) LV1
+1/5 太阳药水(M) LV1
+1/1 BenedictionOil LV1
+
+;Weapons
+
+
+;Weapons Rare
+1/370 凶煞弓 LV1
+1/370 龙斩杀 LV1
+1/370 龙杖 LV1
+1/370 魂军刀 LV1
+1/370 皇家刃 LV1
+
+
+;Armour
+1/20 Studded甲(M) LV1
+1/20 Studded甲(F) LV1
+1/20 钢甲(M) LV1
+1/20 钢甲(F) LV1
+1/20 龙袍(M) LV1
+1/20 龙袍(F) LV1
+1/20 Titan甲(M) LV1
+1/20 Titan甲(F) LV1
+1/20 皇家甲(M) LV1
+1/20 皇家甲(F) LV1
+
+
+;Helmets
+1/200 MajesticHelmet LV1
+1/350 ExternalHelmet LV1
+
+;Necklace
+1/200 MajesticNecklace LV1
+1/350 ExternalNecklace LV1
+
+;Bracelets
+1/200 MajesticWheel LV1
+1/350 ExternalWheel LV1
+
+;Rings
+1/200 MajesticRing LV1
+1/350 ExternalRing LV1
+
+;Shoes
+1/200 MajesticBoots LV1
+1/350 ExternalBoots LV1
+
+;Belts
+1/200 MajesticBelt LV1
+1/350 ExternalBelt LV1
+
+
+;Shields
+1/130 SpikeShield LV1
+1/140 ArmouredShield LV1
+1/160 DomeShield LV1
+1/180 NanoShield LV1
+
+;Shields Rare
+1/190 TrophyShield LV1
+
+;Gems/Orbs
+1/70 勇气珠 LV1
+1/70 魔法珠 LV1
+1/70 魂珠 LV1
+1/70 防护珠 LV1
+1/70 邪斩杀珠 LV1
+1/70 耐久珠 LV1
+1/90 毒珠 LV1
+1/90 冰冻珠 LV1
+1/90 准确珠 LV1
+1/90 暴珠 LV1
+1/90 敏捷珠 LV1
+1/90 耐力珠 LV1
+
+
+1/140 VanguardBlade LV1
+1/140 VanguardStaff LV1
+1/140 VanguardSerp LV1
+1/140 VanguardBlades LV1
+1/180 VanguardHelmet LV1
+1/250 VanguardNecklace LV1
+1/250 VanguardWheel LV1
+1/250 VanguardRing LV1
+1/190 VanguardBelt LV1
+1/190 VanguardBoots LV1
+
+;Level2
+;Gold
+1/1 Gold 50000 LV2
+
+;Pots + Other
+1/1 特制金创药 LV2
+1/1 特制魔法药 LV2
+1/1 特制金创药 LV2
+1/1 特制魔法药 LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/5 太阳药水(M) LV2
+1/5 太阳药水(M) LV2
+1/5 太阳药水(M) LV2
+1/1 BenedictionOil LV2
+
+;Weapons
+
+
+;Weapons Rare
+1/370 凶煞弓 LV2
+1/370 龙斩杀 LV2
+1/370 龙杖 LV2
+1/370 魂军刀 LV2
+1/370 皇家刃 LV2
+
+
+;Armour
+1/20 Studded甲(M) LV2
+1/20 Studded甲(F) LV2
+1/20 钢甲(M) LV2
+1/20 钢甲(F) LV2
+1/20 龙袍(M) LV2
+1/20 龙袍(F) LV2
+1/20 Titan甲(M) LV2
+1/20 Titan甲(F) LV2
+1/20 皇家甲(M) LV2
+1/20 皇家甲(F) LV2
+
+
+;Helmets
+1/200 MajesticHelmet LV2
+1/350 ExternalHelmet LV2
+
+;Necklace
+1/200 MajesticNecklace LV2
+1/350 ExternalNecklace LV2
+
+;Bracelets
+1/200 MajesticWheel LV2
+1/350 ExternalWheel LV2
+
+;Rings
+1/200 MajesticRing LV2
+1/350 ExternalRing LV2
+
+;Shoes
+1/200 MajesticBoots LV2
+1/350 ExternalBoots LV2
+
+;Belts
+1/200 MajesticBelt LV2
+1/350 ExternalBelt LV2
+
+
+;Shields
+1/130 SpikeShield LV2
+1/140 ArmouredShield LV2
+1/160 DomeShield LV2
+1/180 NanoShield LV2
+
+;Shields Rare
+1/190 TrophyShield LV2
+
+;Gems/Orbs
+1/70 勇气珠 LV2
+1/70 魔法珠 LV2
+1/70 魂珠 LV2
+1/70 防护珠 LV2
+1/70 邪斩杀珠 LV2
+1/70 耐久珠 LV2
+1/90 毒珠 LV2
+1/90 冰冻珠 LV2
+1/90 准确珠 LV2
+1/90 暴珠 LV2
+1/90 敏捷珠 LV2
+1/90 耐力珠 LV2
+
+
+1/140 VanguardBlade LV2
+1/140 VanguardStaff LV2
+1/140 VanguardSerp LV2
+1/140 VanguardBlades LV2
+1/180 VanguardHelmet LV2
+1/250 VanguardNecklace LV2
+1/250 VanguardWheel LV2
+1/250 VanguardRing LV2
+1/190 VanguardBelt LV2
+1/190 VanguardBoots LV2
+
+;Level3
+;Gold
+1/1 Gold 50000 LV3
+
+;Pots + Other
+1/1 特制金创药 LV3
+1/1 特制魔法药 LV3
+1/1 特制金创药 LV3
+1/1 特制魔法药 LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/5 太阳药水(M) LV3
+1/5 太阳药水(M) LV3
+1/5 太阳药水(M) LV3
+1/1 BenedictionOil LV3
+
+;Weapons
+
+
+;Weapons Rare
+1/370 凶煞弓 LV3
+1/370 龙斩杀 LV3
+1/370 龙杖 LV3
+1/370 魂军刀 LV3
+1/370 皇家刃 LV3
+
+
+;Armour
+1/20 Studded甲(M) LV3
+1/20 Studded甲(F) LV3
+1/20 钢甲(M) LV3
+1/20 钢甲(F) LV3
+1/20 龙袍(M) LV3
+1/20 龙袍(F) LV3
+1/20 Titan甲(M) LV3
+1/20 Titan甲(F) LV3
+1/20 皇家甲(M) LV3
+1/20 皇家甲(F) LV3
+
+
+;Helmets
+1/200 MajesticHelmet LV3
+1/350 ExternalHelmet LV3
+
+;Necklace
+1/200 MajesticNecklace LV3
+1/350 ExternalNecklace LV3
+
+;Bracelets
+1/200 MajesticWheel LV3
+1/350 ExternalWheel LV3
+
+;Rings
+1/200 MajesticRing LV3
+1/350 ExternalRing LV3
+
+;Shoes
+1/200 MajesticBoots LV3
+1/350 ExternalBoots LV3
+
+;Belts
+1/200 MajesticBelt LV3
+1/350 ExternalBelt LV3
+
+
+;Shields
+1/130 SpikeShield LV3
+1/140 ArmouredShield LV3
+1/160 DomeShield LV3
+1/180 NanoShield LV3
+
+;Shields Rare
+1/190 TrophyShield LV3
+
+;Gems/Orbs
+1/70 勇气珠 LV3
+1/70 魔法珠 LV3
+1/70 魂珠 LV3
+1/70 防护珠 LV3
+1/70 邪斩杀珠 LV3
+1/70 耐久珠 LV3
+1/90 毒珠 LV3
+1/90 冰冻珠 LV3
+1/90 准确珠 LV3
+1/90 暴珠 LV3
+1/90 敏捷珠 LV3
+1/90 耐力珠 LV3
+
+
+1/140 VanguardBlade LV3
+1/140 VanguardStaff LV3
+1/140 VanguardSerp LV3
+1/140 VanguardBlades LV3
+1/180 VanguardHelmet LV3
+1/250 VanguardNecklace LV3
+1/250 VanguardWheel LV3
+1/250 VanguardRing LV3
+1/190 VanguardBelt LV3
+1/190 VanguardBoots LV3
+
+;Level4
+;Gold
+1/1 Gold 50000 LV4
+
+;Pots + Other
+1/1 特制金创药 LV4
+1/1 特制魔法药 LV4
+1/1 特制金创药 LV4
+1/1 特制魔法药 LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/5 太阳药水(M) LV4
+1/5 太阳药水(M) LV4
+1/5 太阳药水(M) LV4
+1/1 BenedictionOil LV4
+
+;Weapons
+
+
+;Weapons Rare
+1/370 凶煞弓 LV4
+1/370 龙斩杀 LV4
+1/370 龙杖 LV4
+1/370 魂军刀 LV4
+1/370 皇家刃 LV4
+
+
+;Armour
+1/20 Studded甲(M) LV4
+1/20 Studded甲(F) LV4
+1/20 钢甲(M) LV4
+1/20 钢甲(F) LV4
+1/20 龙袍(M) LV4
+1/20 龙袍(F) LV4
+1/20 Titan甲(M) LV4
+1/20 Titan甲(F) LV4
+1/20 皇家甲(M) LV4
+1/20 皇家甲(F) LV4
+
+
+;Helmets
+1/200 MajesticHelmet LV4
+1/350 ExternalHelmet LV4
+
+;Necklace
+1/200 MajesticNecklace LV4
+1/350 ExternalNecklace LV4
+
+;Bracelets
+1/200 MajesticWheel LV4
+1/350 ExternalWheel LV4
+
+;Rings
+1/200 MajesticRing LV4
+1/350 ExternalRing LV4
+
+;Shoes
+1/200 MajesticBoots LV4
+1/350 ExternalBoots LV4
+
+;Belts
+1/200 MajesticBelt LV4
+1/350 ExternalBelt LV4
+
+
+;Shields
+1/130 SpikeShield LV4
+1/140 ArmouredShield LV4
+1/160 DomeShield LV4
+1/180 NanoShield LV4
+
+;Shields Rare
+1/190 TrophyShield LV4
+
+;Gems/Orbs
+1/70 勇气珠 LV4
+1/70 魔法珠 LV4
+1/70 魂珠 LV4
+1/70 防护珠 LV4
+1/70 邪斩杀珠 LV4
+1/70 耐久珠 LV4
+1/90 毒珠 LV4
+1/90 冰冻珠 LV4
+1/90 准确珠 LV4
+1/90 暴珠 LV4
+1/90 敏捷珠 LV4
+1/90 耐力珠 LV4
+
+
+1/140 VanguardBlade LV4
+1/140 VanguardStaff LV4
+1/140 VanguardSerp LV4
+1/140 VanguardBlades LV4
+1/180 VanguardHelmet LV4
+1/250 VanguardNecklace LV4
+1/250 VanguardWheel LV4
+1/250 VanguardRing LV4
+1/190 VanguardBelt LV4
+1/190 VanguardBoots LV4
+
+;Level5
+;Gold
+1/1 Gold 50000 LV5
+
+;Pots + Other
+1/1 特制金创药 LV5
+1/1 特制魔法药 LV5
+1/1 特制金创药 LV5
+1/1 特制魔法药 LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/5 太阳药水(M) LV5
+1/5 太阳药水(M) LV5
+1/5 太阳药水(M) LV5
+1/1 BenedictionOil LV5
+
+;Weapons
+
+
+;Weapons Rare
+1/370 凶煞弓 LV5
+1/370 龙斩杀 LV5
+1/370 龙杖 LV5
+1/370 魂军刀 LV5
+1/370 皇家刃 LV5
+
+
+;Armour
+1/20 Studded甲(M) LV5
+1/20 Studded甲(F) LV5
+1/20 钢甲(M) LV5
+1/20 钢甲(F) LV5
+1/20 龙袍(M) LV5
+1/20 龙袍(F) LV5
+1/20 Titan甲(M) LV5
+1/20 Titan甲(F) LV5
+1/20 皇家甲(M) LV5
+1/20 皇家甲(F) LV5
+
+
+;Helmets
+1/200 MajesticHelmet LV5
+1/350 ExternalHelmet LV5
+
+;Necklace
+1/200 MajesticNecklace LV5
+1/350 ExternalNecklace LV5
+
+;Bracelets
+1/200 MajesticWheel LV5
+1/350 ExternalWheel LV5
+
+;Rings
+1/200 MajesticRing LV5
+1/350 ExternalRing LV5
+
+;Shoes
+1/200 MajesticBoots LV5
+1/350 ExternalBoots LV5
+
+;Belts
+1/200 MajesticBelt LV5
+1/350 ExternalBelt LV5
+
+
+;Shields
+1/130 SpikeShield LV5
+1/140 ArmouredShield LV5
+1/160 DomeShield LV5
+1/180 NanoShield LV5
+
+;Shields Rare
+1/190 TrophyShield LV5
+
+;Gems/Orbs
+1/70 勇气珠 LV5
+1/70 魔法珠 LV5
+1/70 魂珠 LV5
+1/70 防护珠 LV5
+1/70 邪斩杀珠 LV5
+1/70 耐久珠 LV5
+1/90 毒珠 LV5
+1/90 冰冻珠 LV5
+1/90 准确珠 LV5
+1/90 暴珠 LV5
+1/90 敏捷珠 LV5
+1/90 耐力珠 LV5
+
+
+1/140 VanguardBlade LV5
+1/140 VanguardStaff LV5
+1/140 VanguardSerp LV5
+1/140 VanguardBlades LV5
+1/180 VanguardHelmet LV5
+1/250 VanguardNecklace LV5
+1/250 VanguardWheel LV5
+1/250 VanguardRing LV5
+1/190 VanguardBelt LV5
+1/190 VanguardBoots LV5
+
+;Level6
+;Gold
+1/1 Gold 50000 LV6
+
+;Pots + Other
+1/1 特制金创药 LV6
+1/1 特制魔法药 LV6
+1/1 特制金创药 LV6
+1/1 特制魔法药 LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/5 太阳药水(M) LV6
+1/5 太阳药水(M) LV6
+1/5 太阳药水(M) LV6
+1/1 BenedictionOil LV6
+
+;Weapons
+
+
+;Weapons Rare
+1/370 凶煞弓 LV6
+1/370 龙斩杀 LV6
+1/370 龙杖 LV6
+1/370 魂军刀 LV6
+1/370 皇家刃 LV6
+
+
+;Armour
+1/20 Studded甲(M) LV6
+1/20 Studded甲(F) LV6
+1/20 钢甲(M) LV6
+1/20 钢甲(F) LV6
+1/20 龙袍(M) LV6
+1/20 龙袍(F) LV6
+1/20 Titan甲(M) LV6
+1/20 Titan甲(F) LV6
+1/20 皇家甲(M) LV6
+1/20 皇家甲(F) LV6
+
+
+;Helmets
+1/200 MajesticHelmet LV6
+1/350 ExternalHelmet LV6
+
+;Necklace
+1/200 MajesticNecklace LV6
+1/350 ExternalNecklace LV6
+
+;Bracelets
+1/200 MajesticWheel LV6
+1/350 ExternalWheel LV6
+
+;Rings
+1/200 MajesticRing LV6
+1/350 ExternalRing LV6
+
+;Shoes
+1/200 MajesticBoots LV6
+1/350 ExternalBoots LV6
+
+;Belts
+1/200 MajesticBelt LV6
+1/350 ExternalBelt LV6
+
+
+;Shields
+1/130 SpikeShield LV6
+1/140 ArmouredShield LV6
+1/160 DomeShield LV6
+1/180 NanoShield LV6
+
+;Shields Rare
+1/190 TrophyShield LV6
+
+;Gems/Orbs
+1/70 勇气珠 LV6
+1/70 魔法珠 LV6
+1/70 魂珠 LV6
+1/70 防护珠 LV6
+1/70 邪斩杀珠 LV6
+1/70 耐久珠 LV6
+1/90 毒珠 LV6
+1/90 冰冻珠 LV6
+1/90 准确珠 LV6
+1/90 暴珠 LV6
+1/90 敏捷珠 LV6
+1/90 耐力珠 LV6
+
+
+1/140 VanguardBlade LV6
+1/140 VanguardStaff LV6
+1/140 VanguardSerp LV6
+1/140 VanguardBlades LV6
+1/180 VanguardHelmet LV6
+1/250 VanguardNecklace LV6
+1/250 VanguardWheel LV6
+1/250 VanguardRing LV6
+1/190 VanguardBelt LV6
+1/190 VanguardBoots LV6
+
+;Level7
+;Gold
+1/1 Gold 50000 LV7
+
+;Pots + Other
+1/1 特制金创药 LV7
+1/1 特制魔法药 LV7
+1/1 特制金创药 LV7
+1/1 特制魔法药 LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/5 太阳药水(M) LV7
+1/5 太阳药水(M) LV7
+1/5 太阳药水(M) LV7
+1/1 BenedictionOil LV7
+
+;Weapons
+
+
+;Weapons Rare
+1/370 凶煞弓 LV7
+1/370 龙斩杀 LV7
+1/370 龙杖 LV7
+1/370 魂军刀 LV7
+1/370 皇家刃 LV7
+
+
+;Armour
+1/20 Studded甲(M) LV7
+1/20 Studded甲(F) LV7
+1/20 钢甲(M) LV7
+1/20 钢甲(F) LV7
+1/20 龙袍(M) LV7
+1/20 龙袍(F) LV7
+1/20 Titan甲(M) LV7
+1/20 Titan甲(F) LV7
+1/20 皇家甲(M) LV7
+1/20 皇家甲(F) LV7
+
+
+;Helmets
+1/200 MajesticHelmet LV7
+1/350 ExternalHelmet LV7
+
+;Necklace
+1/200 MajesticNecklace LV7
+1/350 ExternalNecklace LV7
+
+;Bracelets
+1/200 MajesticWheel LV7
+1/350 ExternalWheel LV7
+
+;Rings
+1/200 MajesticRing LV7
+1/350 ExternalRing LV7
+
+;Shoes
+1/200 MajesticBoots LV7
+1/350 ExternalBoots LV7
+
+;Belts
+1/200 MajesticBelt LV7
+1/350 ExternalBelt LV7
+
+
+;Shields
+1/130 SpikeShield LV7
+1/140 ArmouredShield LV7
+1/160 DomeShield LV7
+1/180 NanoShield LV7
+
+;Shields Rare
+1/190 TrophyShield LV7
+
+;Gems/Orbs
+1/70 勇气珠 LV7
+1/70 魔法珠 LV7
+1/70 魂珠 LV7
+1/70 防护珠 LV7
+1/70 邪斩杀珠 LV7
+1/70 耐久珠 LV7
+1/90 毒珠 LV7
+1/90 冰冻珠 LV7
+1/90 准确珠 LV7
+1/90 暴珠 LV7
+1/90 敏捷珠 LV7
+1/90 耐力珠 LV7
+
+
+1/140 VanguardBlade LV7
+1/140 VanguardStaff LV7
+1/140 VanguardSerp LV7
+1/140 VanguardBlades LV7
+1/180 VanguardHelmet LV7
+1/250 VanguardNecklace LV7
+1/250 VanguardWheel LV7
+1/250 VanguardRing LV7
+1/190 VanguardBelt LV7
+1/190 VanguardBoots LV7
+
+;Gold
+1/1 Gold 50000 LV8
+
+;Pots + Other
+1/1 特制金创药 LV8
+1/1 特制魔法药 LV8
+1/1 特制金创药 LV8
+1/1 特制魔法药 LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/5 太阳药水(M) LV8
+1/5 太阳药水(M) LV8
+1/5 太阳药水(M) LV8
+1/1 BenedictionOil LV8
+
+;Weapons
+
+
+;Weapons Rare
+1/370 凶煞弓 LV8
+1/370 龙斩杀 LV8
+1/370 龙杖 LV8
+1/370 魂军刀 LV8
+1/370 皇家刃 LV8
+
+
+;Armour
+1/20 Studded甲(M) LV8
+1/20 Studded甲(F) LV8
+1/20 钢甲(M) LV8
+1/20 钢甲(F) LV8
+1/20 龙袍(M) LV8
+1/20 龙袍(F) LV8
+1/20 Titan甲(M) LV8
+1/20 Titan甲(F) LV8
+1/20 皇家甲(M) LV8
+1/20 皇家甲(F) LV8
+
+
+;Helmets
+1/200 MajesticHelmet LV8
+1/350 ExternalHelmet LV8
+
+;Necklace
+1/200 MajesticNecklace LV8
+1/350 ExternalNecklace LV8
+
+;Bracelets
+1/200 MajesticWheel LV8
+1/350 ExternalWheel LV8
+
+;Rings
+1/200 MajesticRing LV8
+1/350 ExternalRing LV8
+
+;Shoes
+1/200 MajesticBoots LV8
+1/350 ExternalBoots LV8
+
+;Belts
+1/200 MajesticBelt LV8
+1/350 ExternalBelt LV8
+
+
+;Shields
+1/130 SpikeShield LV8
+1/140 ArmouredShield LV8
+1/160 DomeShield LV8
+1/180 NanoShield LV8
+
+;Shields Rare
+1/190 TrophyShield LV8
+
+;Gems/Orbs
+1/70 勇气珠 LV8
+1/70 魔法珠 LV8
+1/70 魂珠 LV8
+1/70 防护珠 LV8
+1/70 邪斩杀珠 LV8
+1/70 耐久珠 LV8
+1/90 毒珠 LV8
+1/90 冰冻珠 LV8
+1/90 准确珠 LV8
+1/90 暴珠 LV8
+1/90 敏捷珠 LV8
+1/90 耐力珠 LV8
+
+
+1/140 VanguardBlade LV8
+1/140 VanguardStaff LV8
+1/140 VanguardSerp LV8
+1/140 VanguardBlades LV8
+1/180 VanguardHelmet LV8
+1/250 VanguardNecklace LV8
+1/250 VanguardWheel LV8
+1/250 VanguardRing LV8
+1/190 VanguardBelt LV8
+1/190 VanguardBoots LV8
+

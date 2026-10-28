@@ -1,0 +1,33 @@
+[@Description]
+A Recommendation.. Thats a first.
+We need all that is able to help with this war.
+Whether they join the 守卫 or not.
+Please can you assist me with something.
+
+[@TaskDescription]
+Eliminate 10 {奥玛's/Crimson} and {Raking猫's/Crimson}
+
+[@Completion]
+
+[@KillTasks]
+奥玛 10
+Raking猫 10
+
+[@ItemTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+老Loafer
+Focus
+
+[@SelectRewards]
+
+[@ExpReward]
+180
+
+[@GoldReward]
+45
+
+// Pickup - Captain_Jerald 0 320 476
+// Hand In - Captain_Jerald 0 320 476

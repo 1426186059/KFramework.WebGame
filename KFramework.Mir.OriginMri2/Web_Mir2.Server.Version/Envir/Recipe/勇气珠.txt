@@ -1,0 +1,12 @@
+[Recipe]
+Amount 1
+Chance 20
+Gold 10000
+
+[Tools]
+Crafting书
+
+[Ingredients]
+DC石 
+Impact药(L) 
+特制金创药 2

@@ -1,0 +1,11 @@
+;Helmets
+1/100 谜盔
+
+;Bracelets
+1/100 谜轮 
+
+;Rings
+1/100 谜轮 
+
+;Potions
+1/100 谜水

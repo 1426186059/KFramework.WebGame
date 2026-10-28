@@ -1,0 +1,11 @@
+[Recipe]
+Amount 1
+Chance 100
+Gold 1000
+
+[Tools]
+
+[Ingredients]
+天毒刺蛋
+老山参
+魔法Aid(S)

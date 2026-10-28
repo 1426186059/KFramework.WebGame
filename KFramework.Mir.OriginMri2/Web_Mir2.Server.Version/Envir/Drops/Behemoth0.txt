@@ -1,0 +1,71 @@
+;Gold
+1/2 Gold 30000
+
+;Pots + Other
+1/1 大金创药
+1/1 大金创药
+1/1 大金创药
+1/1 大魔法药
+1/1 大魔法药
+1/1 大魔法药
+1/1 特制金创药
+1/2 特制金创药
+1/1 特制魔法药
+1/2 特制魔法药
+1/1 太阳水
+1/1 太阳水
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 BenedictionOil
+1/4 BenedictionOil
+
+
+
+1/20 觉醒魂0
+1/20 觉醒魂0
+
+
+;Weapons
+
+
+;Armour
+
+
+;Helmets
+
+
+;Necklace
+
+
+;Bracelets
+
+
+;Rings
+
+
+;Shoes
+
+
+;Belts
+
+
+;Medals
+
+
+;Shields
+
+
+;Pads
+
+
+;Stone
+
+
+;Books
+
+
+;CraftingMaterials
+
+
+;Quests
+1/2 CoiledSnakeCaveMap Q

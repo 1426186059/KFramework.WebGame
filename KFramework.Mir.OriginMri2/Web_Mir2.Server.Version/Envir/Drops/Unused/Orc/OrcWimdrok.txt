@@ -1,0 +1,26 @@
+;Gold
+1/5 Gold 1650
+
+;Potions
+1/5 特制金创药
+1/5 特制魔法药
+1/10 太阳水
+1/10 太阳水
+
+
+1/45100 Grim弓
+1/55550 Lethal弓
+1/55650 Apus弓
+
+1/15000 SmasherNecklace
+1/15000 SmasherGlove
+1/15000 SmasherRing
+1/15000 BlizzardNecklace
+1/15000 BlizzardGlove
+1/15000 BlizzardRing
+1/15000 MistyNecklace
+1/15000 MistyGlove
+1/15000 MistyRing
+1/15000 SlicerNecklace
+1/15000 SlicerGlove
+1/15000 SlicerRing

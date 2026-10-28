@@ -1,0 +1,54 @@
+[@MAIN]
+#IF
+CHECKPKPOINT > 199
+#SAY
+I will not help an evil person like you...
+ 
+ 
+<Close/@exit>
+#ELSEACT
+GOTO @Main-1
+
+[@Main-1]
+#SAY
+Hello traveller, How may I help you?
+ 
+<View/@BuySell> Store. 
+ 
+<Close/@exit>
+
+[@BuySell]
+#SAY
+What Item would you like to buy or sell?
+<BuyBack/@BuyBack>
+ 
+<Back/@Main>
+
+[@BuyBack]
+#SAY
+These are the items still available to purchase back.
+ 
+<Back/@Main>
+
+[Types]
+13
+
+[Trade]
+小金创药 1
+小金创药 5
+小金创药 10
+小魔法药 1
+小魔法药 5
+小魔法药 10
+中金创药 1
+中金创药 5
+中金创药 10
+中魔法药 1
+中魔法药 5
+中魔法药 10
+大金创药 1
+大金创药 5
+大金创药 10
+大魔法药 1
+大魔法药 5
+大魔法药 10
