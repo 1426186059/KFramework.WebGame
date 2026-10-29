@@ -10998,7 +10998,10 @@ namespace Client.MirScenes
         {
             try
             {
-                var tex = await Mir2OriginResource.GetMapTileTextureAsync(MapImg, index, DXManager.GDevice).ConfigureAwait(false);
+                // 经并发闸门（最多 6 个同时在跑）加载瓦片，避免一帧内 50+ 请求挤爆同域连接池，
+                // 并削平多个瓦片同时下完后的解码 + GPU 上传主线程尖峰。
+                var tex = await MapTileLoadGate.RunAsync(() =>
+                    Mir2OriginResource.GetMapTileTextureAsync(MapImg, index, DXManager.GDevice)).ConfigureAwait(false);
                 if (tex != null) _mapTileCache[index] = tex;
             }
             catch (Exception ex)

@@ -194,6 +194,7 @@ namespace Client.MirObjects
 
         public static async Task<(Mir2MapData data, Mir2MapEntry entry)> LoadAsync(int id, CancellationToken ct)
         {
+            GameProfiler.TestStart();
             await Mir2MapConfig.EnsureLoadedAsync(ct).ConfigureAwait(false);
             Mir2MapConfig.TryGetEntry(id, out var entry);
             int img = entry?.Img ?? id;
@@ -201,13 +202,18 @@ namespace Client.MirObjects
             int ph = entry?.Height ?? 0;
 
             byte[] dat = await EnsureDatAsync(ct).ConfigureAwait(false);
-            if (dat == null) return (null, entry);
+            if (dat == null) { GameProfiler.TestFinishAndLog($"[Map] LoadAsync(地图{id}) dat为空"); return (null, entry); }
 
             int rawLen;
+            GameProfiler.TestStart();
             byte[] block = Mir2MapDecoder.ExtractMapBlock(dat, id, out rawLen);
-            if (block == null || rawLen == 0) return (null, entry);
+            GameProfiler.TestFinishAndLog($"[Map] ExtractMapBlock block={block?.Length ?? 0}字节");
+            if (block == null || rawLen == 0) { GameProfiler.TestFinishAndLog($"[Map] LoadAsync(地图{id}) block为空"); return (null, entry); }
 
+            GameProfiler.TestStart();
             var md = Mir2MapDecoder.Decode(id, block, pw, ph, 48, 32);
+            GameProfiler.TestFinishAndLog($"[Map] Decode cols={md.Cols} rows={md.Rows} 总格={md.Cols * md.Rows}");
+            GameProfiler.TestFinishAndLog($"[Map] LoadAsync(地图{id}) 完成");
             return (md, entry);
         }
 
@@ -219,14 +225,21 @@ namespace Client.MirObjects
             // 文件名版本号随游戏更新（如 10.25487.1），并带 ?ver= 缓存破坏参数。
             _datTask = Task.Run(async () =>
             {
+                GameProfiler.TestStart();
                 byte[] data = null;
                 string[] candidates = { "map10.25487.1.dat?ver=1.0.2", "map10.25487.1.dat" };
                 foreach (var p in candidates)
                 {
                     try { data = await Mir2OriginResource.GetDataBytesAsync(p, ct).ConfigureAwait(false); }
                     catch { data = null; }
-                    if (data != null && data.Length > 0) return Mir2MapDecoder.DecompressIfNeeded(data);
+                    if (data != null && data.Length > 0)
+                    {
+                        var d = Mir2MapDecoder.DecompressIfNeeded(data);
+                        GameProfiler.TestFinishAndLog($"[Map] dat 下载+解压 原始{data.Length}→解压{d.Length}字节");
+                        return d;
+                    }
                 }
+                GameProfiler.TestFinishAndLog($"[Map] dat 下载+解压 未取到数据");
                 return null;
             });
             var result = await _datTask.ConfigureAwait(false);
