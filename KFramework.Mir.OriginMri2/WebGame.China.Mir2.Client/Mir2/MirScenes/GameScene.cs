@@ -10468,6 +10468,16 @@ namespace Client.MirScenes
         public int Width, Height;
 
         public int Index;
+
+        // 原始传奇 zipmap 真实瓦片渲染：从 CDN 的 assets/resource/zipmap/{MapImg}/{index}.jpg 拼图，
+        // 取代旧的 .map 瓦片索引(Libraries.MapLibs)渲染。
+        public int MapImg;
+        public int PixelWidth, PixelHeight;
+        public int TileCols, TileRows;
+        private readonly Dictionary<int, KFramework.MonoGame.Texture2D> _mapTileCache = new Dictionary<int, KFramework.MonoGame.Texture2D>();
+        private readonly HashSet<int> _mapTileLoading = new HashSet<int>();
+        private Point _lastUserCell = new Point(-1, -1);
+        private bool _floorDirty;
         public string FileName = String.Empty;
 
         /// <summary>当前已加载地图「用到」的地图片库索引集合（Libraries.MapLibs 下标）。
@@ -10555,6 +10565,8 @@ namespace Client.MirScenes
             ObjectsList.Clear();
             Effects.Clear();
             Doors.Clear();
+            _mapTileCache.Clear();
+            _mapTileLoading.Clear();
 
             if (User != null)
             {
@@ -10623,6 +10635,16 @@ namespace Client.MirScenes
             Width = Map.Width;
             Height = Map.Height;
 
+            MapImg = Map.MapImg;
+            PixelWidth = Map.PixelWidth;
+            PixelHeight = Map.PixelHeight;
+            TileCols = (int)Math.Ceiling(PixelWidth / 512.0);
+            TileRows = (int)Math.Ceiling(PixelHeight / 256.0);
+            _mapTileCache.Clear();
+            _mapTileLoading.Clear();
+            _floorDirty = true;
+            _lastUserCell = new Point(-1, -1);
+
             PathFinder = new PathFinder(this);
 
             // 进图后立刻预加载本图用到的地图片库，避免玩家先看到一大片马赛克/空洞
@@ -10657,6 +10679,7 @@ namespace Client.MirScenes
             try
             {
                 if (M2CellInfo == null) return;
+                if (Libraries.MapLibs == null) return;   // 不再使用地图片库渲染地板，库可能为 null，直接跳过
 
                 var used = new HashSet<int>();
                 int backCells = 0, midCells = 0, frontCells = 0;
@@ -10860,9 +10883,16 @@ namespace Client.MirScenes
 
             // 视口尺寸变化（首帧布局未稳 / 窗口缩放 / dpr 变化）时必须重建地板：
             // 地板纹理随窗口原生分辨率重建，1:1 原尺寸贴图铺满。
+            // 相机所在格变化 → 暴露出新的瓦片范围，需要重新烘焙地板（按需从 CDN 拉取新瓦片）
+            if (User != null && (User.Movement.X != _lastUserCell.X || User.Movement.Y != _lastUserCell.Y))
+            {
+                _floorDirty = true;
+                _lastUserCell = new Point(User.Movement.X, User.Movement.Y);
+            }
+
             bool floorNeedsResize = DXManager.FloorTexture == null || DXManager.FloorTexture.Disposed
                 || DXManager.FloorTexture.Width != rtW || DXManager.FloorTexture.Height != rtH;
-            if (!FloorValid || floorNeedsResize)
+            if (!FloorValid || floorNeedsResize || _floorDirty)
                 DrawFloor(rtW, rtH);
 
             if (TextureSize.Width != rtW || TextureSize.Height != rtH)
@@ -11003,8 +11033,6 @@ namespace Client.MirScenes
 
         private void DrawFloor(int vpW, int vpH)
         {
-            // 本次烘焙里「库还没加载完」的格子数：>0 表示这份地板是残缺的，末尾据此决定是否缓存。
-            int pendingLib = 0;
             int fw = vpW, fh = vpH;
             if (DXManager.FloorTexture == null || DXManager.FloorTexture.Disposed
                 || DXManager.FloorTexture.Width != fw || DXManager.FloorTexture.Height != fh)
@@ -11013,154 +11041,88 @@ namespace Client.MirScenes
                 DXManager.FloorSurface = DXManager.FloorTexture.GetSurfaceLevel(0);
             }
 
+            // 还没进图（User 为空）时直接判定有效，避免空烘焙
+            if (User == null) { FloorValid = true; return; }
+
             Surface oldSurface = DXManager.CurrentSurface;
             DXManager.SetSurface(DXManager.FloorSurface);
             DXManager.Device.Clear(ClearFlags.Target, Color.Empty, 0, 0);
 
-            // 地图按 ViewPort 原生渲染，无需缩放：直接以视口可见范围(ViewRangeX/Y，已随视口计算)烘焙地板。
-            int startX = User.Movement.X - ViewRangeX;
-            int endX = User.Movement.X + ViewRangeX;
-            int startY = User.Movement.Y - ViewRangeY;
-            int endY = User.Movement.Y + ViewRangeY;
-            int endYExtended = endY + 5;
-
-
-            int[] drawXCache = new int[endX - startX + 1];
-            for (int xi = startX; xi <= endX; xi++)
-                drawXCache[xi - startX] = (xi - User.Movement.X + OffSetX) * CellWidth - OffSetX + User.OffSetMove.X;
-
-            int[] drawYCache = new int[endYExtended - startY + 1];
-            for (int yi = startY; yi <= endYExtended; yi++)
-                drawYCache[yi - startY] = (yi - User.Movement.Y + OffSetY) * CellHeight + User.OffSetMove.Y;
-
-
-            for (int y = startY; y <= endYExtended; y++)
+            // 原版传奇地板：直接由 CDN 的 assets/resource/zipmap/{MapImg}/{index}.jpg 真实瓦片拼出，
+            // 取代旧 Libraries.MapLibs 瓦片索引渲染——原始传奇官方就是这么画地图的。
+            // 瓦片网格：cols=ceil(PixelWidth/512)，rows=ceil(PixelHeight/256)，index=r*cols+c+1；
+            // 每瓦片在地图像素空间占 [c*512,(c+1)*512]x[r*256,(r+1)*256]，映射到 1:1 地板 RT 后整张贴入。
+            int pending = 0;
+            if (MapImg > 0 && TileCols > 0 && TileRows > 0)
             {
-                if (y <= 0) continue;
-                if (y >= Height) break;
+                int startX = User.Movement.X - ViewRangeX;
+                int endX = User.Movement.X + ViewRangeX;
+                int startY = User.Movement.Y - ViewRangeY;
+                int endYExtended = User.Movement.Y + ViewRangeY + 5;
 
-                int drawY = drawYCache[y - startY];
+                int colMin = (int)Math.Floor((startX * CellWidth) / 512.0) - 1;
+                int colMax = (int)Math.Floor((endX * CellWidth) / 512.0) + 1;
+                int rowMin = (int)Math.Floor((startY * CellHeight) / 256.0) - 1;
+                int rowMax = (int)Math.Floor((endYExtended * CellHeight) / 256.0) + 1;
+                if (colMin < 0) colMin = 0;
+                if (rowMin < 0) rowMin = 0;
+                if (colMax >= TileCols) colMax = TileCols - 1;
+                if (rowMax >= TileRows) rowMax = TileRows - 1;
 
-                for (int x = startX; x <= endX; x++)
+                // 地板 RT 是 1:1 像素，瓦片用单位变换贴，避免被外层遗留 RenderTransform 二次缩放/偏移
+                var savedRT = DXManager.RenderTransform;
+                DXManager.RenderTransform = null;
+                try
                 {
-                    if (x < 0) continue;
-                    if (x >= Width) break;
-
-                    int drawX = drawXCache[x - startX];
-                    var cell = M2CellInfo[x, y];
-
-                    // Back
-                    // 注意：MapCode 把原 16 位 BackImage 的 0x8000 位转译成了 0x20000000。
-                    // 在这套地图数据里 0x8000 代表的是“有效地砖（动画/特殊地砖）”，并非无底图(void)；
-                    // 真正的无底图是 BackImage==0。因此不能凭 0x20000000 跳过绘制，否则会把大量有效
-                    // 地砖当作空洞丢弃，导致整图显示不全（两张地图都出现此问题）。
-                    // 取图时用 & 0x1FFFFFFF 去掉高位标志即可得到真实索引。
-                    if (y <= endY && cell.BackImage != 0 && cell.BackIndex != -1)
+                    for (int r = rowMin; r <= rowMax; r++)
                     {
-                        int index = (cell.BackImage & 0x1FFFFFFF) - 1;
-                        if (index >= 0)
+                        for (int c = colMin; c <= colMax; c++)
                         {
-                            // 资源库按需加载：槽位可能未配置(为 null)或索引越界，直接 Draw 会抛异常。
-                            var lib = (cell.BackIndex >= 0 && cell.BackIndex < Libraries.MapLibs.Length)
-                                ? Libraries.MapLibs[cell.BackIndex] : null;
+                            int index = r * TileCols + c + 1;
+                            var tex = GetMapTile(index);
+                            if (tex == null) { pending++; continue; }
 
-                            if (lib != null)
-                            {
-                                // 库还在加载（将来会有资源）：这些格子本次画不上，记下来（末尾据此决定是否缓存）
-                                if (lib.IsPending) pendingLib++;
-
-                                // 底图画法取决于地砖尺寸：
-                                // - 大地砖（如 96x64，一张覆盖 2x2 格）：只在 x、y 均为偶数时画一次（与原版一致）；
-                                // - 小地砖（48x32，每格一张）：必须每格都画，否则会丢掉约 3/4 的地砖。
-                                Size bs = lib.GetSize(index);
-                                bool largeTile = bs.Width >= CellWidth * 2 && bs.Height >= CellHeight * 2;
-
-                                if (!largeTile || (y % 2 == 0 && x % 2 == 0))
-                                { lib.Draw(index, drawX, drawY); _backDrawn++; }
-                                else _backSkipped++;
-                            }
-                            else _backNoLib++;
-                        }
-                        else _backNoImage++;
-                    }
-                    else if (cell.BackImage == 0 || cell.BackIndex == -1) _backNoImage++;
-
-                    // Middle
-                    int midIndex = cell.MiddleImage - 1;
-                    if (midIndex >= 0 && cell.MiddleIndex != -1)
-                    {
-                        // 与 Back 层一致：槽位可能未配置或为 null，直接访问会 IndexOutOfRange；
-                        // 缺失时跳过该层中图，避免崩溃。
-                        var lib = (cell.MiddleIndex >= 0 && cell.MiddleIndex < Libraries.MapLibs.Length)
-                            ? Libraries.MapLibs[cell.MiddleIndex] : null;
-                        if (lib != null)
-                        {
-                            Size s = lib.GetSize(midIndex);
-                            if ((s.Width == CellWidth && s.Height == CellHeight) ||
-                                (s.Width == CellWidth * 2 && s.Height == CellHeight * 2))
-                            {
-                                lib.Draw(midIndex, drawX, drawY);
-                            }
-                        }
-                    }
-
-                    // Front
-                    int frontIndex = (cell.FrontImage & 0x7FFF) - 1;
-                    if (frontIndex != -1)
-                    {
-                        int fileIndex = cell.FrontIndex;
-                        if (fileIndex != -1 && fileIndex != 200)
-                        {
-                            // 防御：Front 库缺失/越界时跳过，避免 IndexOutOfRange（同 Back 层处理）。
-                            var lib = (fileIndex >= 0 && fileIndex < Libraries.MapLibs.Length)
-                                ? Libraries.MapLibs[fileIndex] : null;
-                            if (lib != null)
-                            {
-                            Size s = lib.GetSize(frontIndex);
-
-                            // door
-                            if (cell.DoorIndex > 0)
-                            {
-                                Door doorInfo = GetDoor(cell.DoorIndex);
-                                if (doorInfo == null)
-                                {
-                                    doorInfo = new Door() { index = cell.DoorIndex, DoorState = 0, ImageIndex = 0, LastTick = CMain.Time };
-                                    Doors.Add(doorInfo);
-                                }
-                                else if (doorInfo.DoorState != 0)
-                                {
-                                    frontIndex += (doorInfo.ImageIndex + 1) * cell.DoorOffset;
-                                }
-                            }
-
-                            if (frontIndex >= 0 &&
-                                ((s.Width == CellWidth && s.Height == CellHeight) ||
-                                 (s.Width == CellWidth * 2 && s.Height == CellHeight * 2)))
-                            {
-                                lib.Draw(frontIndex, drawX, drawY);
-                            }
-                            }
+                            int tileDrawX = c * 512 - User.Movement.X * CellWidth + OffSetX * CellWidth - OffSetX + User.OffSetMove.X;
+                            int tileDrawY = r * 256 - User.Movement.Y * CellHeight + OffSetY * CellHeight + User.OffSetMove.Y;
+                            DXManager.Draw(tex, new Rectangle(0, 0, tex.Width, tex.Height), new RectangleF(tileDrawX, tileDrawY, 512, 256), new SlimDX.Color4(1f, 1f, 1f, 1f));
                         }
                     }
                 }
-            }
-
-            if (CMain.Time > _lastDrawStatTime)
-            {
-                if (_lastDrawStatTime > 0)
-                    KFramework.MonoGame.PrintTool.Log("[Draw] 底图 绘制=" + _backDrawn + " 偶数格跳过=" + _backSkipped +
-                        " 库为空=" + _backNoLib + " 无底图数据=" + _backNoImage);
-
-                _lastDrawStatTime = CMain.Time + 3000;
-                _backDrawn = _backSkipped = _backNoLib = _backNoImage = 0;
+                finally
+                {
+                    DXManager.RenderTransform = savedRT;
+                }
             }
 
             DXManager.SetSurface(oldSurface);
+            // 可见瓦片尚未全部到位时继续重烘焙；全部到位则缓存停止重烘焙
+            FloorValid = pending == 0;
+            _floorDirty = false;
+        }
 
-            // 有资源就烘焙、没有就不烘焙，不要求「资源完整」：
-            // 本次若仍有库在加载中（有格子因资源没到位而没画上），就不把这份残缺结果缓存住，
-            // 下一帧继续烘焙，随资源到位逐步补全；不再有「还在等资源」的格子时才停止重烘焙。
-            FloorValid = pendingLib == 0;
+        private KFramework.MonoGame.Texture2D GetMapTile(int index)
+        {
+            if (_mapTileCache.TryGetValue(index, out var t)) return t;
+            if (!_mapTileLoading.Contains(index))
+            {
+                _mapTileLoading.Add(index);
+                _ = LoadMapTileAsync(index);
+            }
+            return null;
+        }
+
+        private async Task LoadMapTileAsync(int index)
+        {
+            try
+            {
+                var tex = await Mir2OriginResource.GetMapTileTextureAsync(MapImg, index, DXManager.GDevice).ConfigureAwait(false);
+                if (tex != null) _mapTileCache[index] = tex;
+            }
+            catch (Exception ex)
+            {
+                KFramework.MonoGame.PrintTool.Log("[Map] 瓦片加载失败 img=" + MapImg + " idx=" + index + " " + ex.Message);
+            }
+            finally { _mapTileLoading.Remove(index); }
         }
         private void DrawBackground()
         {

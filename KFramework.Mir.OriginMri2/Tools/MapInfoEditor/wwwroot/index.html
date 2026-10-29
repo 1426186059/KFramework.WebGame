@@ -257,6 +257,14 @@ function wireTables() {
   bindBody('szBody', current => current.safeZones, ['x','y','size'], ['start']);
   bindBody('monBody', current => current.respawns, ['monsterIndex','x','y','count','spread','delay','direction'], []);
   bindBody('mvBody', current => current.movements, ['destMapIndex','sourceX','sourceY','destX','destY'], ['needHole','needMove']);
+  // 传送点目标地图：输入索引时实时刷新旁边的地图名
+  $('mvBody').addEventListener('input', e => {
+    const t = e.target;
+    if (t.dataset.f === 'destMapIndex') {
+      const span = t.parentNode.querySelector('.mvname');
+      if (span) span.textContent = mapNameById(parseInt(t.value, 10) || 0);
+    }
+  });
 
   // NPC 表格：内联编辑 -> PUT；删除 -> DELETE（均作用于全局 NPC 表）
   $('npcBody').addEventListener('input', async e => {
@@ -353,11 +361,17 @@ function renderNpc() {
     </tr>`).join('');
 }
 
+function mapNameById(idx) {
+  const m = (typeof maps !== 'undefined' && maps) ? maps.find(x => x.index === idx) : null;
+  if (!m) return '未知(' + idx + ')';
+  return (m.title || m.fileName || ('#' + idx));
+}
+
 function renderMv() {
   const body = $('mvBody');
   body.innerHTML = current.movements.map((m, i) =>
     `<tr>
-      <td><input type="number" data-i="${i}" data-f="destMapIndex" value="${m.destMapIndex}"></td>
+      <td><input type="number" data-i="${i}" data-f="destMapIndex" value="${m.destMapIndex}"><span class="mvname" style="color:#1565ff;margin-left:5px;">${mapNameById(m.destMapIndex)}</span></td>
       <td><input type="number" data-i="${i}" data-f="sourceX" value="${m.sourceX}"></td>
       <td><input type="number" data-i="${i}" data-f="sourceY" value="${m.sourceY}"></td>
       <td><input type="number" data-i="${i}" data-f="destX" value="${m.destX}"></td>

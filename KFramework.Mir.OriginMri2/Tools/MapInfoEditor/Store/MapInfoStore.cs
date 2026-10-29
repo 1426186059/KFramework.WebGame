@@ -76,10 +76,19 @@ namespace MapInfoEditor
 
         private byte[] _datBytes;
 
+        // 兼容信封格式({"$values":[...]})与裸数组 [...]（MapInfo_Fix / NPCInfo / MonsterInfo 均可能是任一种）。
+        private static JsonArray LoadArray(JsonNode root)
+        {
+            if (root is JsonArray arr) return arr;
+            if (root is JsonObject obj && obj["$values"] is JsonArray vals) return vals;
+            return new JsonArray();
+        }
+
         public void Load()
         {
             Root = JsonNode.Parse(File.ReadAllText(MapInfoPath, Encoding.UTF8));
-            MapsArray = (JsonArray)Root["$values"];
+            // 兼容旧信封格式({"$values":[...]})与新格式(裸数组 [...])
+            MapsArray = Root is JsonArray rootArr ? rootArr : (Root["$values"] as JsonArray);
 
             // 直接从配置表(*config*.json)读取 id -> (宽, 高, 名)，替代已废弃的 MapIndex.json。
             // 既用于反推网格，也用于解析地图中文名（MapInfo_Fix 里很多是 "???"）。
@@ -99,9 +108,10 @@ namespace MapInfoEditor
                             {
                                 if (!int.TryParse(kv.Key, out int id)) continue;
                                 var v = kv.Value;
-                                int w = v["width"]?.GetValue<int>() ?? 0;
-                                int h = v["height"]?.GetValue<int>() ?? 0;
-                                string nm = v["name"]?.GetValue<string>() ?? "";
+                                if (v is not JsonObject vo) continue;
+                                int w = vo["width"]?.GetValue<int>() ?? 0;
+                                int h = vo["height"]?.GetValue<int>() ?? 0;
+                                string nm = vo["name"]?.GetValue<string>() ?? "";
                                 if (w > 0 && h > 0 && !ConfigDims.ContainsKey(id)) ConfigDims[id] = (w, h);
                                 if (!string.IsNullOrEmpty(nm) && !NameById.ContainsKey(id)) NameById[id] = nm;
                             }
@@ -136,7 +146,7 @@ namespace MapInfoEditor
             if (File.Exists(MonsterInfoPath))
             {
                 var mj = JsonNode.Parse(File.ReadAllText(MonsterInfoPath, Encoding.UTF8));
-                if (mj["$values"] is JsonArray mv)
+                if (LoadArray(mj) is JsonArray mv)
                 {
                     foreach (var m in mv)
                     {
@@ -155,7 +165,7 @@ namespace MapInfoEditor
             if (File.Exists(NpcInfoPath))
             {
                 RootNpc = JsonNode.Parse(File.ReadAllText(NpcInfoPath, Encoding.UTF8));
-                if (RootNpc["$values"] is JsonArray nv)
+                if (LoadArray(RootNpc) is JsonArray nv)
                 {
                     NpcArray = nv;
                     foreach (var n in nv)
@@ -191,15 +201,42 @@ namespace MapInfoEditor
         public void Save()
         {
             var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
-            File.WriteAllText(MapInfoPath, Root.ToJsonString(opts), Encoding.UTF8);
+            // 写入前归一化：剥掉 $id/$ref、拆掉 $values 信封，输出干净 JSON（不再有 $ 元数据）。
+            JsonNode clean = NormalizeNode((JsonNode)Root.DeepClone());
+            File.WriteAllText(MapInfoPath, clean.ToJsonString(opts), Encoding.UTF8);
         }
 
-        /// <summary>保存全局 NPC 表（NPCInfo.json）。</summary>
+        /// <summary>递归：删除 $id/$ref，并把 {"$values":[...]} 拆成数组（与服务端归一化逻辑一致）。</summary>
+        private static JsonNode NormalizeNode(JsonNode node)
+        {
+            // 重建新树（不就地改），避免把已挂父节点的节点重复挂到新父节点抛出 "already has a parent"。
+            if (node is JsonObject obj)
+            {
+                if (obj["$values"] is JsonArray vals) return NormalizeNode(vals);
+                var result = new JsonObject();
+                foreach (var p in obj)
+                {
+                    if (p.Key == "$id" || p.Key == "$ref") continue;
+                    result[p.Key] = NormalizeNode(p.Value);
+                }
+                return result;
+            }
+            if (node is JsonArray arr)
+            {
+                var result = new JsonArray();
+                foreach (var item in arr) result.Add(NormalizeNode(item));
+                return result;
+            }
+            return node.DeepClone();
+        }
+
+        /// <summary>保存全局 NPC 表（NPCInfo.json）。同样归一化为干净 JSON（兼容旧信封，去掉 $id/$ref/$values）。</summary>
         public void SaveNpc()
         {
             if (RootNpc == null) return;
             var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
-            File.WriteAllText(NpcInfoPath, RootNpc.ToJsonString(opts), Encoding.UTF8);
+            JsonNode clean = NormalizeNode((JsonNode)RootNpc.DeepClone());
+            File.WriteAllText(NpcInfoPath, clean.ToJsonString(opts), Encoding.UTF8);
         }
 
         public MapEntry GetMap(int index) => ByIndex.TryGetValue(index, out var e) ? e : null;
@@ -230,17 +267,14 @@ namespace MapInfoEditor
             return OriginalMapDecoder.Decode(id, block, dim.w, dim.h, name, 48, 32);
         }
 
-        // ---------- $values 信封获取 / 新建 ----------
+        // ---------- 数组获取 / 新建（直接数组，不再套 $values 信封） ----------
         public JsonArray GetValues(MapEntry e, string field)
         {
-            if (e.Node[field] is JsonObject env && env["$values"] is JsonArray arr) return arr;
-            var newEnv = new JsonObject
-            {
-                ["$id"] = JsonValue.Create(NextId()),
-                ["$values"] = new JsonArray()
-            };
-            e.Node[field] = newEnv;
-            return (JsonArray)newEnv["$values"];
+            if (e.Node[field] is JsonArray arr) return arr;
+            if (e.Node[field] is JsonObject env && env["$values"] is JsonArray a) return a;
+            var newArr = new JsonArray();
+            e.Node[field] = newArr;
+            return newArr;
         }
 
         private int MaxId(JsonNode n)
@@ -366,11 +400,9 @@ namespace MapInfoEditor
             var arr = GetValues(e, "SafeZones");
             var z = new JsonObject
             {
-                ["$id"] = JsonValue.Create(NextId()),
                 ["Location"] = new JsonObject { ["X"] = JsonValue.Create(x), ["Y"] = JsonValue.Create(y) },
                 ["Size"] = JsonValue.Create(size),
-                ["StartPoint"] = JsonValue.Create(start),
-                ["Info"] = new JsonObject { ["$ref"] = JsonValue.Create(e.Node["$id"]?.GetValue<string>() ?? "") }
+                ["StartPoint"] = JsonValue.Create(start)
             };
             arr.Add(z);
         }
@@ -380,7 +412,6 @@ namespace MapInfoEditor
             var arr = GetValues(e, "Respawns");
             var r = new JsonObject
             {
-                ["$id"] = JsonValue.Create(NextId()),
                 ["MonsterIndex"] = JsonValue.Create(monsterIndex),
                 ["Location"] = new JsonObject { ["X"] = JsonValue.Create(x), ["Y"] = JsonValue.Create(y) },
                 ["Count"] = JsonValue.Create(count),
@@ -401,7 +432,6 @@ namespace MapInfoEditor
             var arr = GetValues(e, "Movements");
             var mv = new JsonObject
             {
-                ["$id"] = JsonValue.Create(NextId()),
                 ["MapIndex"] = JsonValue.Create(destMapIndex),
                 ["Source"] = new JsonObject { ["X"] = JsonValue.Create(sourceX), ["Y"] = JsonValue.Create(sourceY) },
                 ["Destination"] = new JsonObject { ["X"] = JsonValue.Create(destX), ["Y"] = JsonValue.Create(destY) },

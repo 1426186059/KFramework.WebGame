@@ -1108,6 +1108,28 @@ namespace Server.MirObjects
 
                     if (temp == null || !temp.ValidPoint(BindLocation))
                     {
+                        // [出生诊断] 精确打印失败原因，定位是“地图实例未加载”还是“出生格被判成墙/越界”。
+                        MessageQueue.Enqueue($"[出生诊断] BindMapIndex={BindMapIndex}, BindLocation={BindLocation}, mapNull={(temp == null)}");
+                        if (temp != null)
+                        {
+                            bool inBounds = BindLocation.X >= 0 && BindLocation.X < temp.Width
+                                && BindLocation.Y >= 0 && BindLocation.Y < temp.Height;
+                            MessageQueue.Enqueue($"[出生诊断] map WxH={temp.Width}x{temp.Height}, inBounds={inBounds}");
+                            if (inBounds)
+                            {
+                                var cell = temp.GetCell(BindLocation.X, BindLocation.Y);
+                                MessageQueue.Enqueue($"[出生诊断] cell.Attribute={cell?.Attribute} (Walk=可走, HighWall=墙)");
+                                // 顺带打印周围 3x3，看出生点是不是被墙包住（可判断解码位语义是否反了）。
+                                for (int dy = -1; dy <= 1; dy++)
+                                    for (int dx = -1; dx <= 1; dx++)
+                                    {
+                                        int cx = BindLocation.X + dx, cy = BindLocation.Y + dy;
+                                        if (cx < 0 || cy < 0 || cx >= temp.Width || cy >= temp.Height) continue;
+                                        var c = temp.GetCell(cx, cy);
+                                        MessageQueue.Enqueue($"[出生诊断]   周围({cx},{cy})={c?.Attribute}");
+                                    }
+                            }
+                        }
                         StartGameFailed();
                         return;
                     }

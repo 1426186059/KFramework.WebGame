@@ -16,6 +16,7 @@ using S = ServerPackets;
 using System.Net.Http;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 namespace Server.MirEnvir
@@ -2987,7 +2988,11 @@ namespace Server.MirEnvir
                 }
 
                 MapInfoList = JsonSerializer.Deserialize<List<MapInfo>>(
-                    File.ReadAllText(Path.Combine(Settings.MapPath, "MapInfo_Fix.json")), JsonConfigOptions) ?? new List<MapInfo>();
+                    NormalizeMapInfoJson(File.ReadAllText(Path.Combine(Settings.MapPath, "MapInfo_Fix.json"))), MapInfoJsonOptions) ?? new List<MapInfo>();
+                // SafeZoneInfo.Info 已 [JsonIgnore]，反序列化后手动挂回所属地图（SetBind 依赖 szi.Info.Index）。
+                foreach (MapInfo mi in MapInfoList)
+                    foreach (SafeZoneInfo sz in mi.SafeZones)
+                        sz.Info = mi;
                 ItemInfoList = DownloadList<ItemInfo>(client, "Crystal/Config/ItemInfo.json");
                 MonsterInfoList = DownloadList<MonsterInfo>(client, "Crystal/Config/MonsterInfo.json");
                 NPCInfoList = DownloadList<NPCInfo>(client, "Crystal/Config/NPCInfo.json");
@@ -3046,6 +3051,47 @@ namespace Server.MirEnvir
             ReferenceHandler = ReferenceHandler.Preserve,
             TypeInfoResolver = new JsonConfigResolver(),
         };
+
+        // MapInfo 不再使用 ReferenceHandler.Preserve：SafeZoneInfo.Info 已用 [JsonIgnore] 排除，
+        // 因此文件里不再出现 $id/$ref/$values 元数据（编辑器曾误把 $id 写成数字导致加载失败）。
+        private static readonly JsonSerializerOptions MapInfoJsonOptions = new JsonSerializerOptions
+        {
+            IncludeFields = true,
+            TypeInfoResolver = new JsonConfigResolver(),
+        };
+
+        /// <summary>把旧的“引用信封”格式归一化为干净 JSON：递归删除 $id/$ref，并把 {"$values":[...]} 拆成数组。
+        /// 这样旧的信封格式与新格式都能被无 Preserve 的 MapInfoJsonOptions 反序列化。</summary>
+        private static string NormalizeMapInfoJson(string json)
+        {
+            JsonNode node = JsonNode.Parse(json);
+            if (node == null) return json;
+            JsonNode normalized = NormalizeNode(node);
+            return normalized.ToJsonString();
+        }
+
+        private static JsonNode NormalizeNode(JsonNode node)
+        {
+            // 重建新树（不就地改），避免把已挂父节点的节点重复挂到新父节点抛出 "already has a parent"。
+            if (node is JsonObject obj)
+            {
+                if (obj["$values"] is JsonArray vals) return NormalizeNode(vals);
+                var result = new JsonObject();
+                foreach (var p in obj)
+                {
+                    if (p.Key == "$id" || p.Key == "$ref") continue;
+                    result[p.Key] = NormalizeNode(p.Value);
+                }
+                return result;
+            }
+            if (node is JsonArray arr)
+            {
+                var result = new JsonArray();
+                foreach (var item in arr) result.Add(NormalizeNode(item));
+                return result;
+            }
+            return node.DeepClone();
+        }
 
         public void LoadAccounts()
         {

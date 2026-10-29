@@ -158,11 +158,9 @@ app.MapPost("/api/maps/{id:int}", async (int id, HttpContext ctx) =>
     {
         arr.Add(new JsonObject
         {
-            ["$id"] = JsonValue.Create(store.NextId()),
             ["Location"] = new JsonObject { ["X"] = JsonValue.Create(it.GetProperty("x").GetInt32()), ["Y"] = JsonValue.Create(it.GetProperty("y").GetInt32()) },
             ["Size"] = JsonValue.Create(it.GetProperty("size").GetInt32()),
-            ["StartPoint"] = JsonValue.Create(it.GetProperty("start").GetBoolean()),
-            ["Info"] = new JsonObject { ["$ref"] = JsonValue.Create(e.Node["$id"]?.GetValue<string>() ?? "") }
+            ["StartPoint"] = JsonValue.Create(it.GetProperty("start").GetBoolean())
         });
     });
 
@@ -171,7 +169,6 @@ app.MapPost("/api/maps/{id:int}", async (int id, HttpContext ctx) =>
     {
         arr.Add(new JsonObject
         {
-            ["$id"] = JsonValue.Create(store.NextId()),
             ["MonsterIndex"] = JsonValue.Create(it.GetProperty("monsterIndex").GetInt32()),
             ["Location"] = new JsonObject { ["X"] = JsonValue.Create(it.GetProperty("x").GetInt32()), ["Y"] = JsonValue.Create(it.GetProperty("y").GetInt32()) },
             ["Count"] = JsonValue.Create(it.GetProperty("count").GetInt32()),
@@ -191,7 +188,6 @@ app.MapPost("/api/maps/{id:int}", async (int id, HttpContext ctx) =>
     {
         arr.Add(new JsonObject
         {
-            ["$id"] = JsonValue.Create(store.NextId()),
             ["MapIndex"] = JsonValue.Create(it.GetProperty("destMapIndex").GetInt32()),
             ["Source"] = new JsonObject { ["X"] = JsonValue.Create(it.GetProperty("sourceX").GetInt32()), ["Y"] = JsonValue.Create(it.GetProperty("sourceY").GetInt32()) },
             ["Destination"] = new JsonObject { ["X"] = JsonValue.Create(it.GetProperty("destX").GetInt32()), ["Y"] = JsonValue.Create(it.GetProperty("destY").GetInt32()) },

@@ -1,5 +1,6 @@
 using System.Drawing;
-﻿namespace Server.MirDatabase
+using System.Text.Json.Serialization;
+namespace Server.MirDatabase
 {
     public class SafeZoneInfo
     {
@@ -7,6 +8,9 @@ using System.Drawing;
         public ushort Size;
         public bool StartPoint;
 
+        // 反向指向所属 MapInfo，会形成循环引用。序列化时忽略它（不再依赖 $ref），
+        // 由服务端加载后统一重新挂回（见 Envir.LoadDB）。
+        [JsonIgnore]
         public MapInfo Info;
 
         public SafeZoneInfo() { }
