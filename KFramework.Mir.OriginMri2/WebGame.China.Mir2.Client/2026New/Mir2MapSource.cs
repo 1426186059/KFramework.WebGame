@@ -198,12 +198,12 @@ namespace Client.MirObjects
         {
             if (_datBytes != null) return _datBytes;
             if (_datTask != null) { var r = await _datTask.ConfigureAwait(false); _datBytes = r; return r; }
-            // 合并地图数据(map10.25341.1.dat)在服务端/数据服务器根，按服务端 Settings.OriginalMapDatPath 的
-            // Maps/ 映射为 Map/（Norm 自动转小写）；root 作为兜底路径。
+            // 合并地图数据：服务端合并全地图碰撞数据，直接在 CDN 根提供（无 Maps/ 前缀），
+            // 文件名版本号随游戏更新（如 10.25487.1），并带 ?ver= 缓存破坏参数。
             _datTask = Task.Run(async () =>
             {
                 byte[] data = null;
-                string[] candidates = { "Maps/map10.25341.1.dat", "map10.25341.1.dat" };
+                string[] candidates = { "map10.25487.1.dat?ver=1.0.2", "map10.25487.1.dat" };
                 foreach (var p in candidates)
                 {
                     try { data = await Mir2OriginResource.GetDataBytesAsync(p, ct).ConfigureAwait(false); }

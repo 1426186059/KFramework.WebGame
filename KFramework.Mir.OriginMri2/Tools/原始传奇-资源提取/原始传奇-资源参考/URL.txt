@@ -51,6 +51,11 @@ C:\Users\Administrator\Downloads\allmanifest10.25341.1.json
 #   https://cdn.yscq-wy.yscq.com/fugu_20201203/assets/resource/zipmap/{mapId}/{index}.jpg?ver=1.0.2
 #   盟重省154: index = 1..9300  (cols*rows)
 
+# 地图合并数据(.dat) —— 本项目客户端直接拉取的「服务端合并全地图碰撞数据」(非线上 154.bin)：
+#   https://cdn.yscq-wy.yscq.com/fugu_20201203/map10.25487.1.dat?ver=1.0.2
+#   位于 CDN 根(无 Maps/ 前缀)，文件名版本号随游戏更新(此处 10.25487.1)，?ver= 为缓存破坏参数。
+#   对应客户端代码：Mir2MapSource.EnsureDatAsync 的 candidates。
+
 # 【地图逻辑数据 154.bin】 (仍未拿到)
 #   = {configUrl}154.bin, configUrl 为宿主页运行时注入的 js_gameVars.configUrl
 #   需浏览器 DevTools->Network 过滤 154.bin 取得
