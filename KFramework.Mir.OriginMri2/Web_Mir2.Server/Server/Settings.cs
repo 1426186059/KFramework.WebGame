@@ -25,6 +25,11 @@ namespace Server
             GuildPath = Path.Combine(".", "Guilds"),
             ConquestsPath = Path.Combine(".", "Conquests");
 
+        /// <summary>原始传奇地图数据源（提取工具导出的全部地图 .dat，zlib 压缩）</summary>
+        public const string OriginalMapDatPath = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Tools\原始传奇-资源提取\原始传奇-资源参考\map10.25341.1.dat";
+        /// <summary>原始传奇地图配置表（提供每图像素宽高，反推网格）</summary>
+        public const string OriginalMapConfigPath = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Tools\原始传奇-资源提取\原始传奇-资源参考\0config10.25341.1.json";
+
         public static string NPCPath => Path.Combine(EnvirPath, "NPCs");
         public static string GoodsPath => Path.Combine(EnvirPath, "Goods");
         public static string RecipePath => Path.Combine(EnvirPath, "Recipe");

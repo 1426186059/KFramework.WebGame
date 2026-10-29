@@ -70,442 +70,90 @@ namespace Server.MirEnvir
             return false;
         }
 
-        private byte FindType(byte[] input)
-        {
-            //c# custom map format
-            if ((input[2] == 0x43) && (input[3] == 0x23))
-            {
-                return 100;
-            }
-            //wemade mir3 maps have no title they just start with blank bytes
-            if (input[0] == 0)
-                return 5;
-            //shanda mir3 maps start with title: (C) SNDA, MIR3.
-            if ((input[0] == 0x0F) && (input[5] == 0x53) && (input[14] == 0x33))
-                return 6;
-
-            //wemades antihack map (laby maps) title start with: Mir2 AntiHack
-            if ((input[0] == 0x15) && (input[4] == 0x32) && (input[6] == 0x41) && (input[19] == 0x31))
-                return 4;
-
-            //wemades 2010 map format i guess title starts with: Map 2010 Ver 1.0
-            if ((input[0] == 0x10) && (input[2] == 0x61) && (input[7] == 0x31) && (input[14] == 0x31))
-                return 1;
-
-            //shanda's 2012 format and one of shandas(wemades) older formats share same header info, only difference is the filesize
-            if ((input[4] == 0x0F) || (input[4] == 0x03) && (input[18] == 0x0D) && (input[19] == 0x0A))
-            {
-                int W = input[0] + (input[1] << 8);
-                int H = input[2] + (input[3] << 8);
-                if (input.Length > (52 + (W * H * 14)))
-                    return 3;
-                else
-                    return 2;
-            }
-
-            //3/4 heroes map format (myth/lifcos i guess)
-            if ((input[0] == 0x0D) && (input[1] == 0x4C) && (input[7] == 0x20) && (input[11] == 0x6D))
-                return 7;
-            return 0;
-        }
-
-        private void LoadMapCellsv0(byte[] fileBytes)
-        {
-            int offSet = 0;
-            Width = BitConverter.ToInt16(fileBytes, offSet);
-            offSet += 2;
-            Height = BitConverter.ToInt16(fileBytes, offSet);
-            Cells = new Cell[Width, Height];
-            DoorIndex = new Door[Width, Height];
-
-            offSet = 52;
-
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
-                {//total 12
-                    if ((BitConverter.ToInt16(fileBytes, offSet) & 0x8000) != 0)
-                        Cells[x, y] = Cell.HighWall; //Can Fire Over.
-
-                    offSet += 2;
-                    if ((BitConverter.ToInt16(fileBytes, offSet) & 0x8000) != 0)
-                        Cells[x, y] = Cell.LowWall; //Can't Fire Over.
-
-                    offSet += 2;
-
-                    if ((BitConverter.ToInt16(fileBytes, offSet) & 0x8000) != 0)
-                        Cells[x, y] = Cell.HighWall; //No Floor Tile.
-
-                    if (Cells[x, y] == null) Cells[x, y] = new Cell { Attribute = CellAttribute.Walk };
-
-                    offSet += 4;
-
-                    if (fileBytes[offSet] > 0)
-                        DoorIndex[x, y] = AddDoor(fileBytes[offSet], new Point(x, y));
-
-                    offSet += 3;
-
-                    byte light = fileBytes[offSet++];
-
-                    if (light >= 100 && light <= 119)
-                        Cells[x, y].FishingAttribute = (sbyte)(light - 100);
-                }
-        }
-        
-        private void LoadMapCellsv1(byte[] fileBytes)
-        {
-            int offSet = 21;
-
-            int w = BitConverter.ToInt16(fileBytes, offSet);
-            offSet += 2;
-            int xor = BitConverter.ToInt16(fileBytes, offSet);
-            offSet += 2;
-            int h = BitConverter.ToInt16(fileBytes, offSet);
-            Width = w ^ xor;
-            Height = h ^ xor;
-            Cells = new Cell[Width, Height];
-            DoorIndex = new Door[Width, Height];
-
-            offSet = 54;
-
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
-                {
-                    if (((BitConverter.ToInt32(fileBytes, offSet) ^ 0xAA38AA38) & 0x20000000) != 0)
-                        Cells[x, y] = Cell.HighWall; //Can Fire Over.
-
-                    offSet += 6;
-                    if (((BitConverter.ToInt16(fileBytes, offSet) ^ xor) & 0x8000) != 0)
-                        Cells[x, y] = Cell.LowWall; //No Floor Tile.
-
-                    if (Cells[x, y] == null) Cells[x, y] = new Cell { Attribute = CellAttribute.Walk };
-                    offSet += 2;
-                    if (fileBytes[offSet] > 0)
-                        DoorIndex[x, y] = AddDoor(fileBytes[offSet], new Point(x, y));
-                    offSet += 5;
-
-                    byte light = fileBytes[offSet++];
-
-                    if (light >= 100 && light <= 119)
-                        Cells[x, y].FishingAttribute = (sbyte)(light - 100);
-
-                    offSet += 1;
-                }
-        }
-
-        private void LoadMapCellsv2(byte[] fileBytes)
-        {
-            int offSet = 0;
-            Width = BitConverter.ToInt16(fileBytes, offSet);
-            offSet += 2;
-            Height = BitConverter.ToInt16(fileBytes, offSet);
-            Cells = new Cell[Width, Height];
-            DoorIndex = new Door[Width, Height];
-
-            offSet = 52;
-
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
-                {//total 14
-                    if ((BitConverter.ToInt16(fileBytes, offSet) & 0x8000) != 0)
-                        Cells[x, y] = Cell.HighWall; //Can Fire Over.
-
-                    offSet += 2;
-                    if ((BitConverter.ToInt16(fileBytes, offSet) & 0x8000) != 0)
-                        Cells[x, y] = Cell.LowWall; //Can't Fire Over.
-
-                    offSet += 2;
-                    if ((BitConverter.ToInt16(fileBytes, offSet) & 0x8000) != 0)
-                        Cells[x, y] = Cell.HighWall; //No Floor Tile.
-
-                    if (Cells[x, y] == null) Cells[x, y] = new Cell { Attribute = CellAttribute.Walk };
-
-                    offSet += 2;
-                    if (fileBytes[offSet] > 0)
-                        DoorIndex[x, y] = AddDoor(fileBytes[offSet], new Point(x, y));
-                    offSet += 5;
-
-                    byte light = fileBytes[offSet++];
-
-                    if (light >= 100 && light <= 119)
-                        Cells[x, y].FishingAttribute = (sbyte)(light - 100);
-
-                    offSet += 2;
-                }
-        }
-
-        private void LoadMapCellsv3(byte[] fileBytes)
-        {
-            int offSet = 0;
-            Width = BitConverter.ToInt16(fileBytes, offSet);
-            offSet += 2;
-            Height = BitConverter.ToInt16(fileBytes, offSet);
-            Cells = new Cell[Width, Height];
-            DoorIndex = new Door[Width, Height];
-
-            offSet = 52;
-
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
-                {//total 36
-                    if ((BitConverter.ToInt16(fileBytes, offSet) & 0x8000) != 0)
-                        Cells[x, y] = Cell.HighWall; //Can Fire Over.
-
-                    offSet += 2;
-                    if ((BitConverter.ToInt16(fileBytes, offSet) & 0x8000) != 0)
-                        Cells[x, y] = Cell.LowWall; //Can't Fire Over.
-
-                    offSet += 2;
-                    if ((BitConverter.ToInt16(fileBytes, offSet) & 0x8000) != 0)
-                        Cells[x, y] = Cell.HighWall; //No Floor Tile.
-
-                    if (Cells[x, y] == null) Cells[x, y] = new Cell { Attribute = CellAttribute.Walk };
-                    offSet += 2;
-                    if (fileBytes[offSet] > 0)
-                        DoorIndex[x, y] = AddDoor(fileBytes[offSet], new Point(x, y));
-                    offSet += 12;
-
-                    byte light = fileBytes[offSet++];
-
-                    if (light >= 100 && light <= 119)
-                        Cells[x, y].FishingAttribute = (sbyte)(light - 100);
-
-                    offSet += 17;
-                }
-        }
-
-        private void LoadMapCellsv4(byte[] fileBytes)
-        {
-            int offSet = 31;
-            int w = BitConverter.ToInt16(fileBytes, offSet);
-            offSet += 2;
-            int xor = BitConverter.ToInt16(fileBytes, offSet);
-            offSet += 2;
-            int h = BitConverter.ToInt16(fileBytes, offSet);
-            Width = w ^ xor;
-            Height = h ^ xor;
-            Cells = new Cell[Width, Height];
-            DoorIndex = new Door[Width, Height];
-
-            offSet = 64;
-
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
-                {//total 12
-                    if ((BitConverter.ToInt16(fileBytes, offSet) & 0x8000) != 0)
-                        Cells[x, y] = Cell.HighWall; //Can Fire Over.
-
-                    offSet += 2;
-                    if ((BitConverter.ToInt16(fileBytes, offSet) & 0x8000) != 0)
-                        Cells[x, y] = Cell.LowWall; //Can't Fire Over.
-
-                    if (Cells[x, y] == null) Cells[x, y] = new Cell { Attribute = CellAttribute.Walk };
-                    offSet += 4;
-                    if (fileBytes[offSet] > 0)
-                        DoorIndex[x, y] = AddDoor(fileBytes[offSet], new Point(x, y));
-                    offSet += 6;
-                }
-        }
-
-        private void LoadMapCellsv5(byte[] fileBytes)
-        {
-            int offSet = 22;
-            Width = BitConverter.ToInt16(fileBytes, offSet);
-            offSet += 2;
-            Height = BitConverter.ToInt16(fileBytes, offSet);
-            Cells = new Cell[Width, Height];
-            DoorIndex = new Door[Width, Height];
-
-            offSet = 28 + (3 * ((Width / 2) + (Width % 2)) * (Height / 2));
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
-                {//total 14
-                    if ((fileBytes[offSet] & 0x01) != 1)
-                        Cells[x, y] = Cell.HighWall;
-                    else if ((fileBytes[offSet] & 0x02) != 2)
-                        Cells[x, y] = Cell.LowWall;
-                    else
-                        Cells[x, y] = new Cell { Attribute = CellAttribute.Walk };
-                    offSet += 13;
-
-                    byte light = fileBytes[offSet++];
-
-                    if (light >= 100 && light <= 119)
-                        Cells[x, y].FishingAttribute = (sbyte)(light - 100);
-                }
-        }
-
-        private void LoadMapCellsv6(byte[] fileBytes)
-        {
-            int offSet = 16;
-            Width = BitConverter.ToInt16(fileBytes, offSet);
-            offSet += 2;
-            Height = BitConverter.ToInt16(fileBytes, offSet);
-            Cells = new Cell[Width, Height];
-            DoorIndex = new Door[Width, Height];
-
-            offSet = 40;
-
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
-                {//total 20
-                    if ((fileBytes[offSet] & 0x01) != 1)
-                        Cells[x, y] = Cell.HighWall;
-                    else if ((fileBytes[offSet] & 0x02) != 2)
-                        Cells[x, y] = Cell.LowWall;
-                    else
-                        Cells[x, y] = new Cell { Attribute = CellAttribute.Walk };
-                    offSet += 20;
-                }
-        }
-
-        private void LoadMapCellsv7(byte[] fileBytes)
-        {
-            int offSet = 21;
-            Width = BitConverter.ToInt16(fileBytes, offSet);
-            offSet += 4;
-            Height = BitConverter.ToInt16(fileBytes, offSet);
-            Cells = new Cell[Width, Height];
-            DoorIndex = new Door[Width, Height];
-
-            offSet = 54;
-
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
-                {//total 15
-                    if ((BitConverter.ToInt16(fileBytes, offSet) & 0x8000) != 0)
-                        Cells[x, y] = Cell.HighWall; //Can Fire Over.
-                    offSet += 6;
-                    if ((BitConverter.ToInt16(fileBytes, offSet) & 0x8000) != 0)
-                        Cells[x, y] = Cell.LowWall; //Can't Fire Over.
-                    //offSet += 2;
-                    if (Cells[x, y] == null) Cells[x, y] = new Cell { Attribute = CellAttribute.Walk };
-                    offSet += 2;
-                    if (fileBytes[offSet] > 0)
-                        DoorIndex[x, y] = AddDoor(fileBytes[offSet], new Point(x, y));
-                    offSet += 4;
-
-                    byte light = fileBytes[offSet++];
-
-                    if (light >= 100 && light <= 119)
-                        Cells[x, y].FishingAttribute = (sbyte)(light - 100);
-
-                    offSet += 2;
-                }
-        }
-
-        private void LoadMapCellsV100(byte[] Bytes)
-        {
-            int offset = 4;
-            if ((Bytes[0] != 1) || (Bytes[1] != 0)) return;//only support version 1 atm
-            Width = BitConverter.ToInt16(Bytes, offset);
-            offset += 2;
-            Height = BitConverter.ToInt16(Bytes, offset);
-            Cells = new Cell[Width, Height];
-            DoorIndex = new Door[Width, Height];
-
-            offset = 8;
-
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
-                {
-                    offset += 2;
-                    if ((BitConverter.ToInt32(Bytes, offset) & 0x20000000) != 0)
-                        Cells[x, y] = Cell.HighWall; //Can Fire Over.
-                    offset += 10;
-                    if ((BitConverter.ToInt16(Bytes, offset) & 0x8000) != 0)
-                        Cells[x, y] = Cell.LowWall; //Can't Fire Over.
-
-                    if (Cells[x, y] == null) Cells[x, y] = new Cell { Attribute = CellAttribute.Walk };
-                    offset += 2;
-                    if (Bytes[offset] > 0)
-                        DoorIndex[x, y] = AddDoor(Bytes[offset], new Point(x, y));
-                    offset += 11;
-
-                    byte light = Bytes[offset++];
-
-                    if (light >= 100 && light <= 119)
-                        Cells[x, y].FishingAttribute = (sbyte)(light - 100);
-                }
-                
-        }
-
         public bool Load()
         {
             try
             {
-                string fileName = Path.Combine(Settings.MapPath, Info.FileName + ".map");
-                if (File.Exists(fileName))
+                if (!LoadCells())
                 {
-                    byte[] fileBytes = File.ReadAllBytes(fileName);
-                    switch(FindType(fileBytes))
-                    {
-                        case 0:
-                            LoadMapCellsv0(fileBytes);
-                            break;
-                        case 1:
-                            LoadMapCellsv1(fileBytes);
-                            break;
-                        case 2:
-                            LoadMapCellsv2(fileBytes);
-                            break;
-                        case 3:
-                            LoadMapCellsv3(fileBytes);
-                            break;
-                        case 4:
-                            LoadMapCellsv4(fileBytes);
-                            break;
-                        case 5:
-                            LoadMapCellsv5(fileBytes);
-                            break;
-                        case 6:
-                            LoadMapCellsv6(fileBytes);
-                            break;
-                        case 7:
-                            LoadMapCellsv7(fileBytes);
-                            break;
-                        case 100:
-                            LoadMapCellsV100(fileBytes);
-                            break;
-                    }
-
-                    GetWalkableCells();
-                    
-                    for (int i = 0; i < Info.Respawns.Count; i++)
-                    {
-                        MapRespawn info = new MapRespawn(Info.Respawns[i]);
-                        if (info.Monster == null) continue;
-                        info.Map = this;
-                        info.WalkableCells = WalkableCells.Where(x =>
-                        x.X <= info.Info.Location.X + info.Info.Spread &&
-                        x.X >= info.Info.Location.X - info.Info.Spread &&
-                        x.Y <= info.Info.Location.Y + info.Info.Spread &&
-                        x.Y >= info.Info.Location.Y - info.Info.Spread).ToList();
-
-                        Respawns.Add(info);
-
-                        if ((info.Info.SaveRespawnTime) && (info.Info.RespawnTicks != 0))
-                            Envir.SavedSpawns.Add(info);
-                    }
-
-                    for (int i = 0; i < Info.NPCs.Count; i++)
-                    {
-                        NPCInfo info = Info.NPCs[i];
-                        if (!ValidPoint(info.Location)) continue;
-
-                        AddObject(new NPCObject(info) { CurrentMap = this });
-                    }
-
-                    for (int i = 0; i < Info.SafeZones.Count; i++)
-                        CreateSafeZone(Info.SafeZones[i]);
-
-                    CreateMine();
-
-                    return true;
+                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FailedToLoadMap) + Info.Title);
+                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.Filename) + Info.FileName);
+                    return false;
                 }
+
+                GetWalkableCells();
+
+                for (int i = 0; i < Info.Respawns.Count; i++)
+                {
+                    MapRespawn info = new MapRespawn(Info.Respawns[i]);
+                    if (info.Monster == null) continue;
+                    info.Map = this;
+                    info.WalkableCells = WalkableCells.Where(x =>
+                    x.X <= info.Info.Location.X + info.Info.Spread &&
+                    x.X >= info.Info.Location.X - info.Info.Spread &&
+                    x.Y <= info.Info.Location.Y + info.Info.Spread &&
+                    x.Y >= info.Info.Location.Y - info.Info.Spread).ToList();
+
+                    Respawns.Add(info);
+
+                    if ((info.Info.SaveRespawnTime) && (info.Info.RespawnTicks != 0))
+                        Envir.SavedSpawns.Add(info);
+                }
+
+                for (int i = 0; i < Info.NPCs.Count; i++)
+                {
+                    NPCInfo info = Info.NPCs[i];
+                    if (!ValidPoint(info.Location)) continue;
+
+                    AddObject(new NPCObject(info) { CurrentMap = this });
+                }
+
+                for (int i = 0; i < Info.SafeZones.Count; i++)
+                    CreateSafeZone(Info.SafeZones[i]);
+
+                CreateMine();
+
+                return true;
             }
             catch (Exception ex)
             {
                 MessageQueue.Enqueue(ex);
+            }
+
+            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FailedToLoadMap) + Info.Title);
+            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.Filename) + Info.FileName);
+            return false;
+        }
+
+        /// <summary>
+        /// 按 MapInfo.FileName(整数 id) 从原始传奇数据源(.dat 4-bit/格) 加载地图单元格。
+        /// 直接复用提取工具的解码逻辑，不再支持任何旧 .map 格式。
+        /// </summary>
+        private bool LoadCells()
+        {
+            if (!int.TryParse(Info.FileName, out int mapId))
+            {
+                MessageQueue.Enqueue("地图文件名非数字，无法映射到原始数据源: " + Info.FileName);
+                return false;
+            }
+
+            if (OriginalMapSource.TryGetMap(mapId, out OriginalMapData original) && original != null)
+            {
+                Width = original.Cols;
+                Height = original.Rows;
+                Cells = new Cell[Width, Height];
+                int idx = 0;
+                for (int y = 0; y < Height; y++)
+                {
+                    for (int x = 0; x < Width; x++)
+                    {
+                        int nib = original.CellFlags[idx++];
+                        Cells[x, y] = ((nib & 8) != 0)
+                            ? new Cell { Attribute = CellAttribute.HighWall }
+                            : new Cell { Attribute = CellAttribute.Walk };
+                    }
+                }
+                return true;
             }
 
             MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FailedToLoadMap) + Info.Title);
