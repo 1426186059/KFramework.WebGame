@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using Library.Network;
 using S = ServerPackets;
 using System.Net.Http;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -2985,7 +2986,8 @@ namespace Server.MirEnvir
                     return false;
                 }
 
-                MapInfoList = DownloadList<MapInfo>(client, "Crystal/Config/MapInfo.json");
+                MapInfoList = JsonSerializer.Deserialize<List<MapInfo>>(
+                    File.ReadAllText(Path.Combine(Settings.MapPath, "MapInfo_Fix.json")), JsonConfigOptions) ?? new List<MapInfo>();
                 ItemInfoList = DownloadList<ItemInfo>(client, "Crystal/Config/ItemInfo.json");
                 MonsterInfoList = DownloadList<MonsterInfo>(client, "Crystal/Config/MonsterInfo.json");
                 NPCInfoList = DownloadList<NPCInfo>(client, "Crystal/Config/NPCInfo.json");

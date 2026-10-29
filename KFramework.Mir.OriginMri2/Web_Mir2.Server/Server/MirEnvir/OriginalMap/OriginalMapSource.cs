@@ -32,22 +32,25 @@ namespace Server.MirEnvir
                 RebuildOffsets();
             }
 
-            string cfgPath = Settings.OriginalMapConfigPath;
-            if (File.Exists(cfgPath))
+            string cfgDir = Settings.OriginalMapConfigPath;
+            if (Directory.Exists(cfgDir))
             {
                 try
                 {
-                    using var doc = JsonDocument.Parse(File.ReadAllText(cfgPath));
-                    if (doc.RootElement.TryGetProperty("map", out var mapEl))
+                    foreach (var cfgPath in Directory.GetFiles(cfgDir, "*config*.json"))
                     {
-                        foreach (var entry in mapEl.EnumerateObject())
+                        using var doc = JsonDocument.Parse(File.ReadAllText(cfgPath));
+                        if (doc.RootElement.TryGetProperty("map", out var mapEl))
                         {
-                            if (!entry.Value.TryGetProperty("id", out var idEl)) continue;
-                            int id = idEl.GetInt32();
-                            int w = entry.Value.TryGetProperty("width", out var wEl) ? wEl.GetInt32() : 0;
-                            int h = entry.Value.TryGetProperty("height", out var hEl) ? hEl.GetInt32() : 0;
-                            string name = entry.Value.TryGetProperty("name", out var nEl) ? nEl.GetString() ?? "" : "";
-                            _config[id] = (w, h, name);
+                            foreach (var entry in mapEl.EnumerateObject())
+                            {
+                                if (!entry.Value.TryGetProperty("id", out var idEl)) continue;
+                                int id = idEl.GetInt32();
+                                int w = entry.Value.TryGetProperty("width", out var wEl) ? wEl.GetInt32() : 0;
+                                int h = entry.Value.TryGetProperty("height", out var hEl) ? hEl.GetInt32() : 0;
+                                string name = entry.Value.TryGetProperty("name", out var nEl) ? nEl.GetString() ?? "" : "";
+                                _config[id] = (w, h, name);
+                            }
                         }
                     }
                 }

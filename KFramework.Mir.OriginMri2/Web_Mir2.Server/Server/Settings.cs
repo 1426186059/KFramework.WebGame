@@ -25,10 +25,12 @@ namespace Server
             GuildPath = Path.Combine(".", "Guilds"),
             ConquestsPath = Path.Combine(".", "Conquests");
 
+        /// <summary>本地 Excel 配置目录（原始传奇资源提取的配置表 / dat / 导出 JSON 都放这里，优先于远程下载）</summary>
+        public static readonly string ExcelConfigPath = Path.Combine(VersionRoot, "ExcelConfig");
         /// <summary>原始传奇地图数据源（提取工具导出的全部地图 .dat，zlib 压缩）</summary>
-        public const string OriginalMapDatPath = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Tools\原始传奇-资源提取\原始传奇-资源参考\map10.25341.1.dat";
-        /// <summary>原始传奇地图配置表（提供每图像素宽高，反推网格）</summary>
-        public const string OriginalMapConfigPath = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Tools\原始传奇-资源提取\原始传奇-资源参考\0config10.25341.1.json";
+        public const string OriginalMapDatPath = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Web_Mir2.Server.Version\ExcelConfig\map10.25341.1.dat";
+        /// <summary>原始传奇地图配置表目录（0config~5config*.json，提供每图像素宽高，反推网格）</summary>
+        public const string OriginalMapConfigPath = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Web_Mir2.Server.Version\ExcelConfig";
 
         public static string NPCPath => Path.Combine(EnvirPath, "NPCs");
         public static string GoodsPath => Path.Combine(EnvirPath, "Goods");

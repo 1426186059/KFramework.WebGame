@@ -1,0 +1,131 @@
+{
+  "$id": "1",
+  "$values": [
+    {
+      "$id": "2",
+      "Index": 1,
+      "FileName": "104",
+      "Title": "BichonCity",
+      "MiniMap": 104,
+      "BigMap": 104,
+      "Music": 0,
+      "Light": 0,
+      "MapDarkLight": 0,
+      "MineIndex": 0,
+      "GTIndex": 0,
+      "NoTeleport": false,
+      "NoReconnect": false,
+      "NoRandom": false,
+      "NoEscape": false,
+      "NoRecall": false,
+      "NoDrug": false,
+      "NoPosition": false,
+      "NoFight": false,
+      "NoThrowItem": false,
+      "NoDropPlayer": false,
+      "NoDropMonster": false,
+      "NoNames": false,
+      "NoMount": false,
+      "NeedBridle": false,
+      "Fight": false,
+      "NeedHole": false,
+      "Fire": false,
+      "Lightning": false,
+      "NoTownTeleport": false,
+      "NoReincarnation": false,
+      "GT": false,
+      "NoExperience": false,
+      "NoGroup": false,
+      "NoPets": false,
+      "NoIntelligentCreatures": false,
+      "NoHero": false,
+      "RequiredGroup": false,
+      "FireWallLimit": false,
+      "RequiredGroupSize": 0,
+      "FireWallCount": 0,
+      "NoReconnectMap": "",
+      "FireDamage": 0,
+      "LightningDamage": 0,
+      "SafeZones": {
+        "$id": "4",
+        "$values": [
+          {
+            "$id": "5",
+            "Location": {
+              "X": 100,
+              "Y": 100
+            },
+            "Size": 10,
+            "StartPoint": true,
+            "Info": {
+              "$ref": "2"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "$id": "3",
+      "Index": 2,
+      "FileName": "154",
+      "Title": "MengChongTown",
+      "MiniMap": 154,
+      "BigMap": 154,
+      "Music": 0,
+      "Light": 0,
+      "MapDarkLight": 0,
+      "MineIndex": 0,
+      "GTIndex": 0,
+      "NoTeleport": false,
+      "NoReconnect": false,
+      "NoRandom": false,
+      "NoEscape": false,
+      "NoRecall": false,
+      "NoDrug": false,
+      "NoPosition": false,
+      "NoFight": false,
+      "NoThrowItem": false,
+      "NoDropPlayer": false,
+      "NoDropMonster": false,
+      "NoNames": false,
+      "NoMount": false,
+      "NeedBridle": false,
+      "Fight": false,
+      "NeedHole": false,
+      "Fire": false,
+      "Lightning": false,
+      "NoTownTeleport": false,
+      "NoReincarnation": false,
+      "GT": false,
+      "NoExperience": false,
+      "NoGroup": false,
+      "NoPets": false,
+      "NoIntelligentCreatures": false,
+      "NoHero": false,
+      "RequiredGroup": false,
+      "FireWallLimit": false,
+      "RequiredGroupSize": 0,
+      "FireWallCount": 0,
+      "NoReconnectMap": "",
+      "FireDamage": 0,
+      "LightningDamage": 0,
+      "SafeZones": {
+        "$id": "6",
+        "$values": [
+          {
+            "$id": "7",
+            "Location": {
+              "X": 100,
+              "Y": 100
+            },
+            "Size": 10,
+            "StartPoint": true,
+            "Info": {
+              "$ref": "3"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
