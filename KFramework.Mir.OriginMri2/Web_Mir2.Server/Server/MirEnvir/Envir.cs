@@ -59,8 +59,8 @@ namespace Server.MirEnvir
         public const int MinVersion = 60;
         public const int Version = 117;
         public const int CustomVersion = 0;
-        public static readonly string DatabasePath = Path.Combine(".", "Server.MirDB");
-        public static readonly string AccountPath = Path.Combine(".", "Server.MirADB");
+        public static readonly string DatabasePath = Path.Combine(Settings.VersionRoot, "Server.MirDB");
+        public static readonly string AccountPath = Path.Combine(Settings.VersionRoot, "Server.MirADB");
         public static readonly string BackUpPath = Path.Combine(".", "Back Up");
         public static readonly string AccountsBackUpPath = Path.Combine(".", "Back Up", "Accounts");
         public static readonly string DatabaseBackUpPath = Path.Combine(".", "Back Up", "Database");

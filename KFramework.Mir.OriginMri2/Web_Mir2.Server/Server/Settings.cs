@@ -20,7 +20,7 @@ namespace Server
         public static string EnvirPath { get; set; } = Path.Combine(VersionRoot, "Envir");
 
         public static readonly string ConfigPath = Path.Combine(VersionRoot, "Configs"),
-            MapPath = Path.Combine(".", "Maps"),
+            MapPath = Path.Combine(VersionRoot, "Maps"),
             ExportPath = Path.Combine(".", "Exports"),
             GuildPath = Path.Combine(".", "Guilds"),
             ConquestsPath = Path.Combine(".", "Conquests");
@@ -626,7 +626,7 @@ namespace Server
             LoadWorldMap();
             LoadHeroSettings();
 
-            string languageDirectory = @".\Localization\";
+            string languageDirectory = Path.Combine(VersionRoot, "Localization");
             if (!Directory.Exists(languageDirectory))
             {
                 Directory.CreateDirectory(languageDirectory);
