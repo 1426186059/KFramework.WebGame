@@ -52,6 +52,7 @@
       <option value="safezone">安全区</option>
       <option value="monster">怪物</option>
       <option value="npc">NPC</option>
+      <option value="movement">传送点</option>
     </select>
   </label>
   <label>怪物: <select id="monSel"></select></label>
@@ -73,6 +74,7 @@
       <button data-tab="sz">安全区</button>
       <button data-tab="mon">怪物刷新</button>
       <button data-tab="npc">NPC</button>
+      <button data-tab="mv">传送点</button>
     </div>
 
     <div id="tab-general" class="tabpane active">
@@ -97,8 +99,13 @@
     </div>
 
     <div id="tab-npc" class="tabpane">
-      <div class="row"><button class="action" id="addNpc">＋ 添加</button><span class="hint">也可选“NPC”模式后点击右侧地图放置</span></div>
-      <table><thead><tr><th>脚本</th><th>名称</th><th>X</th><th>Y</th><th>频率</th><th>图像</th><th></th></tr></thead><tbody id="npcBody"></tbody></table>
+      <div class="row"><button class="action" id="addNpc">＋ 添加</button><span class="hint">新增 NPC 写入全局 NPC 表；也可选“NPC”模式点击地图放置</span></div>
+      <table><thead><tr><th>ID</th><th>脚本</th><th>名称</th><th>X</th><th>Y</th><th>频率</th><th>图像</th><th></th></tr></thead><tbody id="npcBody"></tbody></table>
+    </div>
+
+    <div id="tab-mv" class="tabpane">
+      <div class="row"><button class="action" id="addMv">＋ 添加</button><span class="hint">新增传送点写入本图；也可选“传送点”模式点击地图设置源坐标</span></div>
+      <table><thead><tr><th>目标地图</th><th>源X</th><th>源Y</th><th>目标X</th><th>目标Y</th><th>NeedHole</th><th>NeedMove</th><th></th></tr></thead><tbody id="mvBody"></tbody></table>
     </div>
   </div>
 
@@ -106,7 +113,8 @@
     <div id="legend">
       图例：<span style="color:#ebe8de">■</span>可走 &nbsp; <span style="color:#404040">■</span>墙(不可走) &nbsp;
       <span style="color:#00cc00">□</span>安全区(亮绿=出生点) &nbsp; <span style="color:#ff2222">●</span>怪物 &nbsp;
-      <span style="color:#1565ff">○</span>Boss &nbsp; <span style="color:#00aa00">●</span>NPC<br/>
+      <span style="color:#1565ff">○</span>Boss &nbsp; <span style="color:#00aa00">●</span>NPC &nbsp;
+      <span style="color:#ff9900">■</span>传送点(源)<br/>
       提示：选上方“放置模式”后，在图上点击即可放置对应元素。
     </div>
     <div id="status">就绪</div>
@@ -199,14 +207,18 @@ async function selectMap(id) {
   const res = await fetch('/api/maps/' + id);
   if (!res.ok) { setStatus('加载失败: ' + (await res.text())); return; }
   current = await res.json();
+  if (!current.npcs) current.npcs = [];
+  if (!current.movements) current.movements = [];
   flags = current.map.flagsBase64 ? b64ToBytes(current.map.flagsBase64) : null;
   cellPx = Math.max(1, Math.floor(560 / Math.max(current.map.cols || 1, current.map.rows || 1)));
   renderList($('filter').value);
   renderGeneral();
-  renderSZ(); renderMon(); renderNpc();
+  renderSZ(); renderMon(); renderNpc(); renderMv();
   drawMap();
   setStatus(`已加载：${current.title || current.fileName} (id=${current.index})`);
 }
+
+async function reloadMap() { await selectMap(current.index); }
 
 function renderGeneral() {
   const g = current.general;
@@ -236,13 +248,40 @@ function wireTables() {
   $('addSZ').onclick = () => { current.safeZones.push({ x: Math.floor(current.map.cols/2), y: Math.floor(current.map.rows/2), size: 10, start: false }); renderSZ(); drawMap(); };
   // 怪物
   $('addMon').onclick = () => { current.respawns.push({ monsterIndex: selectedMonster, x: Math.floor(current.map.cols/2), y: Math.floor(current.map.rows/2), count: 1, spread: 0, delay: 0, direction: 0, isBoss: false }); renderMon(); drawMap(); };
-  // NPC
-  $('addNpc').onclick = () => { current.npcs.push({ index: 0, fileName: 'NPC', name: '新NPC', x: Math.floor(current.map.cols/2), y: Math.floor(current.map.rows/2), rate: 100, image: 0 }); renderNpc(); drawMap(); };
+  // 传送点
+  $('addMv').onclick = () => { current.movements.push({ destMapIndex: current.index, sourceX: Math.floor(current.map.cols/2), sourceY: Math.floor(current.map.rows/2), destX: 0, destY: 0, needHole: false, needMove: false }); renderMv(); drawMap(); };
+  // NPC：新增走服务端（全局 NPC 表）
+  $('addNpc').onclick = () => addNpcAt(Math.floor(current.map.cols/2), Math.floor(current.map.rows/2));
 
-  // 委托编辑
+  // 委托编辑（安全区/怪物/传送点：本地修改，保存时随地图一起写入 MapInfo_Fix）
   bindBody('szBody', current => current.safeZones, ['x','y','size'], ['start']);
   bindBody('monBody', current => current.respawns, ['monsterIndex','x','y','count','spread','delay','direction'], []);
-  bindBody('npcBody', current => current.npcs, ['fileName','name','x','y','rate','image'], []);
+  bindBody('mvBody', current => current.movements, ['destMapIndex','sourceX','sourceY','destX','destY'], ['needHole','needMove']);
+
+  // NPC 表格：内联编辑 -> PUT；删除 -> DELETE（均作用于全局 NPC 表）
+  $('npcBody').addEventListener('input', async e => {
+    const t = e.target;
+    if (t.dataset.idx === undefined) return;
+    const idx = +t.dataset.idx;
+    const i = +t.dataset.i;
+    const arr = current.npcs;
+    const f = t.dataset.f;
+    if (t.type === 'checkbox') arr[i][f] = t.checked;
+    else if (['rate','image','x','y'].includes(f)) arr[i][f] = parseInt(t.value, 10) || 0;
+    else arr[i][f] = t.value;
+    drawMap();
+    try {
+      await fetch('/api/npcs/' + idx, { method:'PUT', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ fileName: arr[i].fileName, name: arr[i].name, x: arr[i].x, y: arr[i].y, rate: arr[i].rate, image: arr[i].image }) });
+    } catch (_) {}
+  });
+  $('npcBody').addEventListener('click', async e => {
+    if (e.target.dataset.del !== undefined) {
+      const idx = +e.target.dataset.del;
+      const res = await fetch('/api/npcs/' + idx, { method:'DELETE' });
+      if (res.ok) await reloadMap(); else setStatus('NPC 删除失败');
+    }
+  });
 }
 
 function bindBody(bodyId, getArr, numFields, boolFields) {
@@ -261,7 +300,7 @@ function bindBody(bodyId, getArr, numFields, boolFields) {
     if (e.target.dataset.del !== undefined) {
       const i = +e.target.dataset.del;
       getArr(current).splice(i, 1);
-      if (bodyId === 'szBody') renderSZ(); else if (bodyId === 'monBody') renderMon(); else renderNpc();
+      if (bodyId === 'szBody') renderSZ(); else if (bodyId === 'monBody') renderMon(); else renderMv();
       drawMap();
     }
   });
@@ -284,9 +323,10 @@ function renderMon() {
   body.innerHTML = current.respawns.map((r, i) => {
     const mn = monsters.find(m => m.index === r.monsterIndex);
     const name = mn ? mn.name : '(未知)';
+    const boss = mn ? mn.isBoss : false;
     return `<tr>
       <td><input type="number" data-i="${i}" data-f="monsterIndex" value="${r.monsterIndex}"></td>
-      <td>${name}${r.isBoss ? ' [Boss]' : ''}</td>
+      <td>${name}${boss ? ' [Boss]' : ''}</td>
       <td><input type="number" data-i="${i}" data-f="x" value="${r.x}"></td>
       <td><input type="number" data-i="${i}" data-f="y" value="${r.y}"></td>
       <td><input type="number" data-i="${i}" data-f="count" value="${r.count}"></td>
@@ -302,12 +342,28 @@ function renderNpc() {
   const body = $('npcBody');
   body.innerHTML = current.npcs.map((n, i) =>
     `<tr>
-      <td><input type="text" data-i="${i}" data-f="fileName" value="${n.fileName || ''}"></td>
-      <td><input type="text" data-i="${i}" data-f="name" value="${n.name || ''}"></td>
-      <td><input type="number" data-i="${i}" data-f="x" value="${n.x}"></td>
-      <td><input type="number" data-i="${i}" data-f="y" value="${n.y}"></td>
-      <td><input type="number" data-i="${i}" data-f="rate" value="${n.rate}"></td>
-      <td><input type="number" data-i="${i}" data-f="image" value="${n.image}"></td>
+      <td>${n.index}</td>
+      <td><input type="text" data-i="${i}" data-idx="${n.index}" data-f="fileName" value="${n.fileName || ''}"></td>
+      <td><input type="text" data-i="${i}" data-idx="${n.index}" data-f="name" value="${n.name || ''}"></td>
+      <td><input type="number" data-i="${i}" data-idx="${n.index}" data-f="x" value="${n.x}"></td>
+      <td><input type="number" data-i="${i}" data-idx="${n.index}" data-f="y" value="${n.y}"></td>
+      <td><input type="number" data-i="${i}" data-idx="${n.index}" data-f="rate" value="${n.rate}"></td>
+      <td><input type="number" data-i="${i}" data-idx="${n.index}" data-f="image" value="${n.image}"></td>
+      <td><button class="del" data-del="${n.index}">删</button></td>
+    </tr>`).join('');
+}
+
+function renderMv() {
+  const body = $('mvBody');
+  body.innerHTML = current.movements.map((m, i) =>
+    `<tr>
+      <td><input type="number" data-i="${i}" data-f="destMapIndex" value="${m.destMapIndex}"></td>
+      <td><input type="number" data-i="${i}" data-f="sourceX" value="${m.sourceX}"></td>
+      <td><input type="number" data-i="${i}" data-f="sourceY" value="${m.sourceY}"></td>
+      <td><input type="number" data-i="${i}" data-f="destX" value="${m.destX}"></td>
+      <td><input type="number" data-i="${i}" data-f="destY" value="${m.destY}"></td>
+      <td><input type="checkbox" data-i="${i}" data-f="needHole" ${m.needHole ? 'checked' : ''}></td>
+      <td><input type="checkbox" data-i="${i}" data-f="needMove" ${m.needMove ? 'checked' : ''}></td>
       <td><button class="del" data-del="${i}">删</button></td>
     </tr>`).join('');
 }
@@ -349,14 +405,21 @@ function drawMap() {
   });
   // 怪物
   current.respawns.forEach(r => {
+    const mn = monsters.find(m => m.index === r.monsterIndex);
+    const boss = mn ? mn.isBoss : false;
     const cx = r.x * cell + cell / 2, cy = r.y * cell + cell / 2, rad = Math.max(3, cell * 0.45);
-    if (r.isBoss) { ctx.lineWidth = 2; ctx.strokeStyle = '#1565ff'; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.stroke(); }
+    if (boss) { ctx.lineWidth = 2; ctx.strokeStyle = '#1565ff'; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.stroke(); }
     else { ctx.fillStyle = '#ff2222'; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fill(); }
   });
-  // NPC
+  // NPC（绿点）
   current.npcs.forEach(n => {
     const cx = n.x * cell + cell / 2, cy = n.y * cell + cell / 2, rad = Math.max(3, cell * 0.45);
     ctx.fillStyle = '#00aa00'; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fill();
+  });
+  // 传送点（橙色方块 = 源坐标）
+  current.movements.forEach(mv => {
+    const cx = mv.sourceX * cell + cell / 2, cy = mv.sourceY * cell + cell / 2, s = Math.max(3, cell * 0.6);
+    ctx.fillStyle = '#ff9900'; ctx.fillRect(cx - s / 2, cy - s / 2, s, s);
   });
   setStatus(`${current.title || current.fileName} (id=${current.index})  网格 ${cols}×${rows}  可走 ${m.walkable}`);
 }
@@ -371,12 +434,21 @@ function wireCanvas() {
     if (x < 0 || y < 0 || x >= current.map.cols || y >= current.map.rows) return;
     if (mode === 'safezone') current.safeZones.push({ x, y, size: 10, start: false });
     else if (mode === 'monster') current.respawns.push({ monsterIndex: selectedMonster, x, y, count: 1, spread: 0, delay: 0, direction: 0, isBoss: false });
-    else if (mode === 'npc') current.npcs.push({ index: 0, fileName: 'NPC', name: '新NPC', x, y, rate: 100, image: 0 });
+    else if (mode === 'npc') { addNpcAt(x, y); return; }
+    else if (mode === 'movement') current.movements.push({ destMapIndex: current.index, sourceX: x, sourceY: y, destX: 0, destY: 0, needHole: false, needMove: false });
     if (mode === 'safezone') { document.querySelector('#tabs button[data-tab="sz"]').click(); renderSZ(); }
     else if (mode === 'monster') { document.querySelector('#tabs button[data-tab="mon"]').click(); renderMon(); }
-    else if (mode === 'npc') { document.querySelector('#tabs button[data-tab="npc"]').click(); renderNpc(); }
+    else if (mode === 'movement') { document.querySelector('#tabs button[data-tab="mv"]').click(); renderMv(); }
     drawMap();
   });
+}
+
+async function addNpcAt(x, y) {
+  const res = await fetch('/api/npcs', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mapIndex: current.index, fileName: 'NPC', name: '新NPC', x, y, rate: 100, image: 0 })
+  });
+  if (res.ok) await reloadMap(); else setStatus('NPC 添加失败');
 }
 
 async function save() {
@@ -391,11 +463,12 @@ async function save() {
   g.noReconnectMap = $('g_noReconnectMap').value;
   BOOL_FIELDS.forEach(([k]) => { g[k] = $('g_' + k).checked; });
 
+  // 注意：NPC 不在此处保存（NPC 属于全局 NPC 表，已通过独立接口增删改）
   const payload = {
     general: g,
     safeZones: current.safeZones,
     respawns: current.respawns.map(r => ({ monsterIndex: r.monsterIndex, x: r.x, y: r.y, count: r.count, spread: r.spread, delay: r.delay, direction: r.direction })),
-    npcs: current.npcs.map(n => ({ fileName: n.fileName, name: n.name, x: n.x, y: n.y, rate: n.rate, image: n.image }))
+    movements: current.movements.map(m => ({ destMapIndex: m.destMapIndex, sourceX: m.sourceX, sourceY: m.sourceY, destX: m.destX, destY: m.destY, needHole: m.needHole, needMove: m.needMove }))
   };
   setTb('保存中...');
   const res = await fetch('/api/maps/' + current.index, {

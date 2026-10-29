@@ -33,7 +33,7 @@ namespace MapInfoEditor
         public int MonsterIndex, X, Y, Count, Spread, Delay, Direction;
     }
 
-    /// <summary>NPC 视图。</summary>
+    /// <summary>NPC 视图（来自全局 NPCInfo.json，按 MapIndex 关联）。</summary>
     public class NpcRow
     {
         public JsonObject Node;
@@ -41,18 +41,35 @@ namespace MapInfoEditor
         public string FileName = "", Name = "";
     }
 
+    /// <summary>传送点视图（Movements，属于 MapInfo_Fix）。</summary>
+    public class MovementRow
+    {
+        public JsonObject Node;
+        public int DestMapIndex, SourceX, SourceY, DestX, DestY;
+        public bool NeedHole, NeedMove;
+    }
+
     public class MapInfoStore
     {
         public const string VersionRoot = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Web_Mir2.Server.Version";
         public string MapInfoPath = Path.Combine(VersionRoot, "Maps", "MapInfo_Fix.json");
-        public string MapIndexPath = Path.Combine(VersionRoot, "Maps", "MapIndex.json");
-        public string DatPath = Path.Combine(VersionRoot, "ExcelConfig", "map10.25341.1.dat");
-        public string MonsterInfoPath = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Tools\MirDBToJson\ExportedConfig\MonsterInfo.json";
+        public Dictionary<int, string> NameById = new();
+        // dat 与 MapInfo_Fix 同目录（Maps/），编辑器按 id 解码网格。切勿指向 ExcelConfig（那里没有 dat）。
+        public string DatPath = Path.Combine(VersionRoot, "Maps", "map10.25341.1.dat");
+        // NPC / 怪物 等“全局配置表”走本地 ExcelConfig（已与 Crystal/Config 同步拷贝）：
+        // 服务器 Web 模式下载的即此类文件，编辑这份即可让游戏读到。
+        public string MonsterInfoPath = Path.Combine(VersionRoot, "ExcelConfig", "MonsterInfo.json");
+        public string NpcInfoPath = Path.Combine(VersionRoot, "ExcelConfig", "NPCInfo.json");
 
         public JsonNode Root;
         public JsonArray MapsArray;
         public List<MapEntry> Maps = new List<MapEntry>();
         public Dictionary<int, MapEntry> ByIndex = new Dictionary<int, MapEntry>();
+
+        // 全局 NPC 表（NPCInfo.json）
+        public JsonNode RootNpc;
+        public JsonArray NpcArray;
+        public Dictionary<int, JsonObject> NpcByIndex = new Dictionary<int, JsonObject>();
 
         public Dictionary<int, (int w, int h)> ConfigDims = new Dictionary<int, (int, int)>();
         public Dictionary<int, (string Name, bool IsBoss)> Monsters = new Dictionary<int, (string, bool)>();
@@ -63,38 +80,55 @@ namespace MapInfoEditor
         {
             Root = JsonNode.Parse(File.ReadAllText(MapInfoPath, Encoding.UTF8));
             MapsArray = (JsonArray)Root["$values"];
+
+            // 直接从配置表(*config*.json)读取 id -> (宽, 高, 名)，替代已废弃的 MapIndex.json。
+            // 既用于反推网格，也用于解析地图中文名（MapInfo_Fix 里很多是 "???"）。
+            ConfigDims.Clear();
+            NameById.Clear();
+            string excelCfg = Path.Combine(VersionRoot, "ExcelConfig");
+            if (Directory.Exists(excelCfg))
+            {
+                foreach (var cfg in Directory.GetFiles(excelCfg, "*config*.json"))
+                {
+                    try
+                    {
+                        var cj = JsonNode.Parse(File.ReadAllText(cfg, Encoding.UTF8));
+                        if (cj["map"] is JsonObject mapObj)
+                        {
+                            foreach (var kv in mapObj)
+                            {
+                                if (!int.TryParse(kv.Key, out int id)) continue;
+                                var v = kv.Value;
+                                int w = v["width"]?.GetValue<int>() ?? 0;
+                                int h = v["height"]?.GetValue<int>() ?? 0;
+                                string nm = v["name"]?.GetValue<string>() ?? "";
+                                if (w > 0 && h > 0 && !ConfigDims.ContainsKey(id)) ConfigDims[id] = (w, h);
+                                if (!string.IsNullOrEmpty(nm) && !NameById.ContainsKey(id)) NameById[id] = nm;
+                            }
+                        }
+                    }
+                    catch { }
+                }
+            }
+
             Maps.Clear();
             ByIndex.Clear();
             foreach (var n in MapsArray)
             {
                 if (n is not JsonObject obj) continue;
                 int idx = obj["Index"]?.GetValue<int>() ?? 0;
+                string rawTitle = obj["Title"]?.GetValue<string>() ?? "";
+                if (string.IsNullOrWhiteSpace(rawTitle) || rawTitle == "???")
+                    rawTitle = NameById.TryGetValue(idx, out var nn) ? nn : rawTitle;
                 var e = new MapEntry
                 {
                     Node = obj,
                     Index = idx,
                     FileName = obj["FileName"]?.GetValue<string>() ?? "",
-                    Title = obj["Title"]?.GetValue<string>() ?? ""
+                    Title = rawTitle
                 };
                 Maps.Add(e);
                 if (!ByIndex.ContainsKey(idx)) ByIndex[idx] = e;
-            }
-
-            // MapIndex.json: 取每张图的像素宽高（用于反推网格）
-            if (File.Exists(MapIndexPath))
-            {
-                var idxJson = JsonNode.Parse(File.ReadAllText(MapIndexPath, Encoding.UTF8));
-                if (idxJson["maps"] is JsonArray marr)
-                {
-                    foreach (var m in marr)
-                    {
-                        int id = m["id"]?.GetValue<int>() ?? -1;
-                        if (id < 0) continue;
-                        int w = m["width"]?.GetValue<int>() ?? 0;
-                        int h = m["height"]?.GetValue<int>() ?? 0;
-                        ConfigDims[id] = (w, h);
-                    }
-                }
             }
 
             // MonsterInfo.json: 建立 怪物索引 -> (名称, 是否Boss) 查表（用于预览着色与名称显示）
@@ -112,6 +146,23 @@ namespace MapInfoEditor
                         string name = mo["Name"]?.GetValue<string>() ?? "";
                         bool boss = mo["IsBoss"]?.GetValue<bool>() ?? false;
                         Monsters[mi] = (name, boss);
+                    }
+                }
+            }
+
+            // NPCInfo.json: 全局 NPC 表（按 MapIndex 关联地图）。服务器 Web 模式下载的即此文件。
+            NpcByIndex.Clear();
+            if (File.Exists(NpcInfoPath))
+            {
+                RootNpc = JsonNode.Parse(File.ReadAllText(NpcInfoPath, Encoding.UTF8));
+                if (RootNpc["$values"] is JsonArray nv)
+                {
+                    NpcArray = nv;
+                    foreach (var n in nv)
+                    {
+                        if (n is not JsonObject no) continue;
+                        int idx = no["Index"]?.GetValue<int>() ?? -1;
+                        if (idx >= 0 && !NpcByIndex.ContainsKey(idx)) NpcByIndex[idx] = no;
                     }
                 }
             }
@@ -141,6 +192,14 @@ namespace MapInfoEditor
         {
             var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
             File.WriteAllText(MapInfoPath, Root.ToJsonString(opts), Encoding.UTF8);
+        }
+
+        /// <summary>保存全局 NPC 表（NPCInfo.json）。</summary>
+        public void SaveNpc()
+        {
+            if (RootNpc == null) return;
+            var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+            File.WriteAllText(NpcInfoPath, RootNpc.ToJsonString(opts), Encoding.UTF8);
         }
 
         public MapEntry GetMap(int index) => ByIndex.TryGetValue(index, out var e) ? e : null;
@@ -184,32 +243,35 @@ namespace MapInfoEditor
             return (JsonArray)newEnv["$values"];
         }
 
+        private int MaxId(JsonNode n)
+        {
+            int m = 0;
+            if (n is JsonObject o)
+            {
+                if (o.TryGetPropertyValue("$id", out var idn) && idn is JsonValue jv && jv.TryGetValue<int>(out int v)) m = v;
+                foreach (var kv in o) m = Math.Max(m, MaxId(kv.Value));
+            }
+            else if (n is JsonArray a)
+            {
+                foreach (var item in a) m = Math.Max(m, MaxId(item));
+            }
+            return m;
+        }
+
         private int _maxIdCache = -1;
         public int NextId()
         {
-            if (_maxIdCache < 0)
-            {
-                _maxIdCache = 1;
-                ScanIds(Root);
-            }
+            if (_maxIdCache < 0) _maxIdCache = Root != null ? MaxId(Root) : 0;
             _maxIdCache++;
             return _maxIdCache;
         }
 
-        private void ScanIds(JsonNode n)
+        private int _maxNpcId = -1;
+        public int NextNpcId()
         {
-            if (n is JsonObject o)
-            {
-                if (o.TryGetPropertyValue("$id", out var idn) && idn is JsonValue jv)
-                {
-                    if (jv.TryGetValue<int>(out int v)) _maxIdCache = Math.Max(_maxIdCache, v);
-                }
-                foreach (var kv in o) ScanIds(kv.Value);
-            }
-            else if (n is JsonArray a)
-            {
-                foreach (var item in a) ScanIds(item);
-            }
+            if (_maxNpcId < 0) _maxNpcId = RootNpc != null ? MaxId(RootNpc) : 0;
+            _maxNpcId++;
+            return _maxNpcId;
         }
 
         // ---------- 读取视图 ----------
@@ -252,11 +314,14 @@ namespace MapInfoEditor
             return list;
         }
 
-        public List<NpcRow> GetNpcs(MapEntry e)
+        /// <summary>从全局 NPC 表按 MapIndex 取某张图的 NPC。</summary>
+        public List<NpcRow> GetNpcs(int mapIndex)
         {
             var list = new List<NpcRow>();
-            foreach (JsonObject n in GetValues(e, "NPCs"))
+            if (NpcArray == null) return list;
+            foreach (JsonObject n in NpcArray)
             {
+                if (n["MapIndex"]?.GetValue<int>() != mapIndex) continue;
                 if (n["Location"] is not JsonObject loc) continue;
                 list.Add(new NpcRow
                 {
@@ -268,6 +333,28 @@ namespace MapInfoEditor
                     Y = loc["Y"]?.GetValue<int>() ?? 0,
                     Rate = n["Rate"]?.GetValue<int>() ?? 0,
                     Image = n["Image"]?.GetValue<int>() ?? 0
+                });
+            }
+            return list;
+        }
+
+        public List<MovementRow> GetMovements(MapEntry e)
+        {
+            var list = new List<MovementRow>();
+            foreach (JsonObject mv in GetValues(e, "Movements"))
+            {
+                if (mv["Source"] is not JsonObject src) continue;
+                if (mv["Destination"] is not JsonObject dst) continue;
+                list.Add(new MovementRow
+                {
+                    Node = mv,
+                    DestMapIndex = mv["MapIndex"]?.GetValue<int>() ?? 0,
+                    SourceX = src["X"]?.GetValue<int>() ?? 0,
+                    SourceY = src["Y"]?.GetValue<int>() ?? 0,
+                    DestX = dst["X"]?.GetValue<int>() ?? 0,
+                    DestY = dst["Y"]?.GetValue<int>() ?? 0,
+                    NeedHole = mv["NeedHole"]?.GetValue<bool>() ?? false,
+                    NeedMove = mv["NeedMove"]?.GetValue<bool>() ?? false
                 });
             }
             return list;
@@ -309,20 +396,76 @@ namespace MapInfoEditor
             arr.Add(r);
         }
 
-        public void AddNpc(MapEntry e, string fileName, string name, int x, int y, int rate, int image)
+        public void AddMovement(MapEntry e, int destMapIndex, int sourceX, int sourceY, int destX, int destY, bool needHole, bool needMove)
         {
-            var arr = GetValues(e, "NPCs");
-            var n = new JsonObject
+            var arr = GetValues(e, "Movements");
+            var mv = new JsonObject
             {
-                ["Index"] = JsonValue.Create(NextId()),
-                ["FileName"] = JsonValue.Create(fileName),
-                ["Name"] = JsonValue.Create(name),
-                ["MapIndex"] = JsonValue.Create(e.Index),
-                ["Location"] = new JsonObject { ["X"] = JsonValue.Create(x), ["Y"] = JsonValue.Create(y) },
-                ["Rate"] = JsonValue.Create(rate),
-                ["Image"] = JsonValue.Create(image)
+                ["$id"] = JsonValue.Create(NextId()),
+                ["MapIndex"] = JsonValue.Create(destMapIndex),
+                ["Source"] = new JsonObject { ["X"] = JsonValue.Create(sourceX), ["Y"] = JsonValue.Create(sourceY) },
+                ["Destination"] = new JsonObject { ["X"] = JsonValue.Create(destX), ["Y"] = JsonValue.Create(destY) },
+                ["NeedHole"] = JsonValue.Create(needHole),
+                ["NeedMove"] = JsonValue.Create(needMove),
+                ["ConquestIndex"] = JsonValue.Create(0),
+                ["ShowOnBigMap"] = JsonValue.Create(false),
+                ["Icon"] = JsonValue.Create(0)
             };
-            arr.Add(n);
+            arr.Add(mv);
+        }
+
+        /// <summary>向全局 NPC 表新增一个 NPC（克隆现有条目为模板，保证字段完整；重置嵌套 $id 避免重复）。</summary>
+        public int AddNpcGlobal(int mapIndex, string fileName, string name, int x, int y, int rate, int image)
+        {
+            if (NpcArray == null)
+            {
+                RootNpc = new JsonObject { ["$id"] = JsonValue.Create(NextNpcId()), ["$values"] = new JsonArray() };
+                NpcArray = (JsonArray)RootNpc["$values"];
+            }
+            JsonObject template = NpcArray.Count > 0 ? (JsonObject)NpcArray[0] : null;
+            int newIndex = 1;
+            foreach (var kv in NpcByIndex) newIndex = Math.Max(newIndex, kv.Key + 1);
+            JsonObject n = template != null ? (JsonObject)template.DeepClone() : new JsonObject();
+            n["$id"] = JsonValue.Create(NextNpcId());
+            n["Index"] = JsonValue.Create(newIndex);
+            n["FileName"] = JsonValue.Create(fileName);
+            n["Name"] = JsonValue.Create(name);
+            n["MapIndex"] = JsonValue.Create(mapIndex);
+            n["Location"] = new JsonObject { ["X"] = JsonValue.Create(x), ["Y"] = JsonValue.Create(y) };
+            n["Rate"] = JsonValue.Create(rate);
+            n["Image"] = JsonValue.Create(image);
+            // 重置含 $id 的嵌套对象，避免重复 $id 破坏引用一致性
+            n["CollectQuestIndexes"] = new JsonObject { ["$id"] = JsonValue.Create(NextNpcId()), ["$values"] = new JsonArray() };
+            n["FinishQuestIndexes"] = new JsonObject { ["$id"] = JsonValue.Create(NextNpcId()), ["$values"] = new JsonArray() };
+            NpcArray.Add(n);
+            NpcByIndex[newIndex] = n;
+            return newIndex;
+        }
+
+        public bool UpdateNpc(int npcIndex, string fileName, string name, int x, int y, int rate, int image)
+        {
+            if (!NpcByIndex.TryGetValue(npcIndex, out var n)) return false;
+            n["FileName"] = JsonValue.Create(fileName);
+            n["Name"] = JsonValue.Create(name);
+            n["Location"] = new JsonObject { ["X"] = JsonValue.Create(x), ["Y"] = JsonValue.Create(y) };
+            n["Rate"] = JsonValue.Create(rate);
+            n["Image"] = JsonValue.Create(image);
+            return true;
+        }
+
+        public bool DeleteNpc(int npcIndex)
+        {
+            if (NpcArray == null) return false;
+            for (int i = 0; i < NpcArray.Count; i++)
+            {
+                if (NpcArray[i] is JsonObject o && o["Index"]?.GetValue<int>() == npcIndex)
+                {
+                    NpcArray.RemoveAt(i);
+                    NpcByIndex.Remove(npcIndex);
+                    return true;
+                }
+            }
+            return false;
         }
 
         // ---------- 删除 ----------

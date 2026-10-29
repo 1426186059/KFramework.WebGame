@@ -48,10 +48,10 @@
       "FireWallLimit": false,
       "WeatherParticles": 0,
       "SafeZones": {
-        "$id": "3",
+        "$id": "1",
         "$values": [
           {
-            "$id": "4",
+            "$id": "2",
             "Location": {
               "X": 75,
               "Y": 80
@@ -63,14 +63,6 @@
             }
           }
         ]
-      },
-      "Respawns": {
-        "$id": 10,
-        "$values": []
-      },
-      "NPCs": {
-        "$id": 11,
-        "$values": []
       }
     },
     {
@@ -91,10 +83,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "6",
+        "$id": "3",
         "$values": [
           {
-            "$id": "7",
+            "$id": "4",
             "Location": {
               "X": 16,
               "Y": 14
@@ -126,10 +118,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "9",
+        "$id": "5",
         "$values": [
           {
-            "$id": "10",
+            "$id": "6",
             "Location": {
               "X": 50,
               "Y": 50
@@ -161,10 +153,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "12",
+        "$id": "7",
         "$values": [
           {
-            "$id": "13",
+            "$id": "8",
             "Location": {
               "X": 50,
               "Y": 50
@@ -196,10 +188,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "15",
+        "$id": "9",
         "$values": [
           {
-            "$id": "16",
+            "$id": "10",
             "Location": {
               "X": 103,
               "Y": 111
@@ -231,10 +223,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "18",
+        "$id": "11",
         "$values": [
           {
-            "$id": "19",
+            "$id": "12",
             "Location": {
               "X": 22,
               "Y": 24
@@ -266,10 +258,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "21",
+        "$id": "13",
         "$values": [
           {
-            "$id": "22",
+            "$id": "14",
             "Location": {
               "X": 20,
               "Y": 21
@@ -301,10 +293,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "24",
+        "$id": "15",
         "$values": [
           {
-            "$id": "25",
+            "$id": "16",
             "Location": {
               "X": 96,
               "Y": 128
@@ -336,10 +328,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "27",
+        "$id": "17",
         "$values": [
           {
-            "$id": "28",
+            "$id": "18",
             "Location": {
               "X": 35,
               "Y": 35
@@ -371,10 +363,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "30",
+        "$id": "19",
         "$values": [
           {
-            "$id": "31",
+            "$id": "20",
             "Location": {
               "X": 104,
               "Y": 104
@@ -406,10 +398,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "33",
+        "$id": "21",
         "$values": [
           {
-            "$id": "34",
+            "$id": "22",
             "Location": {
               "X": 35,
               "Y": 35
@@ -441,10 +433,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "36",
+        "$id": "23",
         "$values": [
           {
-            "$id": "37",
+            "$id": "24",
             "Location": {
               "X": 104,
               "Y": 104
@@ -476,10 +468,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "39",
+        "$id": "25",
         "$values": [
           {
-            "$id": "40",
+            "$id": "26",
             "Location": {
               "X": 83,
               "Y": 101
@@ -511,10 +503,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "42",
+        "$id": "27",
         "$values": [
           {
-            "$id": "43",
+            "$id": "28",
             "Location": {
               "X": 37,
               "Y": 34
@@ -546,10 +538,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "45",
+        "$id": "29",
         "$values": [
           {
-            "$id": "46",
+            "$id": "30",
             "Location": {
               "X": 75,
               "Y": 80
@@ -581,10 +573,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "48",
+        "$id": "31",
         "$values": [
           {
-            "$id": "49",
+            "$id": "32",
             "Location": {
               "X": 22,
               "Y": 23
@@ -616,10 +608,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "51",
+        "$id": "33",
         "$values": [
           {
-            "$id": "52",
+            "$id": "34",
             "Location": {
               "X": 22,
               "Y": 23
@@ -651,10 +643,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "54",
+        "$id": "35",
         "$values": [
           {
-            "$id": "55",
+            "$id": "36",
             "Location": {
               "X": 22,
               "Y": 23
@@ -686,10 +678,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "57",
+        "$id": "37",
         "$values": [
           {
-            "$id": "58",
+            "$id": "38",
             "Location": {
               "X": 22,
               "Y": 23
@@ -721,10 +713,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "60",
+        "$id": "39",
         "$values": [
           {
-            "$id": "61",
+            "$id": "40",
             "Location": {
               "X": 22,
               "Y": 23
@@ -756,10 +748,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "63",
+        "$id": "41",
         "$values": [
           {
-            "$id": "64",
+            "$id": "42",
             "Location": {
               "X": 22,
               "Y": 23
@@ -791,10 +783,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "66",
+        "$id": "43",
         "$values": [
           {
-            "$id": "67",
+            "$id": "44",
             "Location": {
               "X": 22,
               "Y": 23
@@ -826,10 +818,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "69",
+        "$id": "45",
         "$values": [
           {
-            "$id": "70",
+            "$id": "46",
             "Location": {
               "X": 25,
               "Y": 25
@@ -861,10 +853,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "72",
+        "$id": "47",
         "$values": [
           {
-            "$id": "73",
+            "$id": "48",
             "Location": {
               "X": 149,
               "Y": 148
@@ -896,10 +888,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "75",
+        "$id": "49",
         "$values": [
           {
-            "$id": "76",
+            "$id": "50",
             "Location": {
               "X": 25,
               "Y": 25
@@ -931,10 +923,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "78",
+        "$id": "51",
         "$values": [
           {
-            "$id": "79",
+            "$id": "52",
             "Location": {
               "X": 56,
               "Y": 63
@@ -966,10 +958,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "81",
+        "$id": "53",
         "$values": [
           {
-            "$id": "82",
+            "$id": "54",
             "Location": {
               "X": 43,
               "Y": 43
@@ -1001,10 +993,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "84",
+        "$id": "55",
         "$values": [
           {
-            "$id": "85",
+            "$id": "56",
             "Location": {
               "X": 58,
               "Y": 64
@@ -1036,10 +1028,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "87",
+        "$id": "57",
         "$values": [
           {
-            "$id": "88",
+            "$id": "58",
             "Location": {
               "X": 25,
               "Y": 27
@@ -1071,10 +1063,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "90",
+        "$id": "59",
         "$values": [
           {
-            "$id": "91",
+            "$id": "60",
             "Location": {
               "X": 197,
               "Y": 200
@@ -1106,10 +1098,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "93",
+        "$id": "61",
         "$values": [
           {
-            "$id": "94",
+            "$id": "62",
             "Location": {
               "X": 197,
               "Y": 200
@@ -1141,10 +1133,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "96",
+        "$id": "63",
         "$values": [
           {
-            "$id": "97",
+            "$id": "64",
             "Location": {
               "X": 16,
               "Y": 19
@@ -1176,10 +1168,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "99",
+        "$id": "65",
         "$values": [
           {
-            "$id": "100",
+            "$id": "66",
             "Location": {
               "X": 197,
               "Y": 200
@@ -1211,10 +1203,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "102",
+        "$id": "67",
         "$values": [
           {
-            "$id": "103",
+            "$id": "68",
             "Location": {
               "X": 197,
               "Y": 200
@@ -1246,10 +1238,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "105",
+        "$id": "69",
         "$values": [
           {
-            "$id": "106",
+            "$id": "70",
             "Location": {
               "X": 197,
               "Y": 200
@@ -1281,10 +1273,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "108",
+        "$id": "71",
         "$values": [
           {
-            "$id": "109",
+            "$id": "72",
             "Location": {
               "X": 100,
               "Y": 100
@@ -1316,10 +1308,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "111",
+        "$id": "73",
         "$values": [
           {
-            "$id": "112",
+            "$id": "74",
             "Location": {
               "X": 50,
               "Y": 50
@@ -1351,10 +1343,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "114",
+        "$id": "75",
         "$values": [
           {
-            "$id": "115",
+            "$id": "76",
             "Location": {
               "X": 50,
               "Y": 50
@@ -1386,10 +1378,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "117",
+        "$id": "77",
         "$values": [
           {
-            "$id": "118",
+            "$id": "78",
             "Location": {
               "X": 100,
               "Y": 100
@@ -1421,10 +1413,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "120",
+        "$id": "79",
         "$values": [
           {
-            "$id": "121",
+            "$id": "80",
             "Location": {
               "X": 50,
               "Y": 50
@@ -1456,10 +1448,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "123",
+        "$id": "81",
         "$values": [
           {
-            "$id": "124",
+            "$id": "82",
             "Location": {
               "X": 100,
               "Y": 100
@@ -1491,10 +1483,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "126",
+        "$id": "83",
         "$values": [
           {
-            "$id": "127",
+            "$id": "84",
             "Location": {
               "X": 50,
               "Y": 50
@@ -1526,10 +1518,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "129",
+        "$id": "85",
         "$values": [
           {
-            "$id": "130",
+            "$id": "86",
             "Location": {
               "X": 100,
               "Y": 100
@@ -1561,10 +1553,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "132",
+        "$id": "87",
         "$values": [
           {
-            "$id": "133",
+            "$id": "88",
             "Location": {
               "X": 50,
               "Y": 50
@@ -1596,10 +1588,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "135",
+        "$id": "89",
         "$values": [
           {
-            "$id": "136",
+            "$id": "90",
             "Location": {
               "X": 100,
               "Y": 100
@@ -1631,10 +1623,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "138",
+        "$id": "91",
         "$values": [
           {
-            "$id": "139",
+            "$id": "92",
             "Location": {
               "X": 50,
               "Y": 50
@@ -1666,10 +1658,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "141",
+        "$id": "93",
         "$values": [
           {
-            "$id": "142",
+            "$id": "94",
             "Location": {
               "X": 100,
               "Y": 100
@@ -1701,10 +1693,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "144",
+        "$id": "95",
         "$values": [
           {
-            "$id": "145",
+            "$id": "96",
             "Location": {
               "X": 197,
               "Y": 200
@@ -1736,10 +1728,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "147",
+        "$id": "97",
         "$values": [
           {
-            "$id": "148",
+            "$id": "98",
             "Location": {
               "X": 197,
               "Y": 200
@@ -1771,10 +1763,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "150",
+        "$id": "99",
         "$values": [
           {
-            "$id": "151",
+            "$id": "100",
             "Location": {
               "X": 15,
               "Y": 16
@@ -1806,10 +1798,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "153",
+        "$id": "101",
         "$values": [
           {
-            "$id": "154",
+            "$id": "102",
             "Location": {
               "X": 197,
               "Y": 200
@@ -1841,10 +1833,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "156",
+        "$id": "103",
         "$values": [
           {
-            "$id": "157",
+            "$id": "104",
             "Location": {
               "X": 197,
               "Y": 200
@@ -1876,10 +1868,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "159",
+        "$id": "105",
         "$values": [
           {
-            "$id": "160",
+            "$id": "106",
             "Location": {
               "X": 197,
               "Y": 200
@@ -1911,10 +1903,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "162",
+        "$id": "107",
         "$values": [
           {
-            "$id": "163",
+            "$id": "108",
             "Location": {
               "X": 197,
               "Y": 200
@@ -1946,10 +1938,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "165",
+        "$id": "109",
         "$values": [
           {
-            "$id": "166",
+            "$id": "110",
             "Location": {
               "X": 100,
               "Y": 100
@@ -1981,10 +1973,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "168",
+        "$id": "111",
         "$values": [
           {
-            "$id": "169",
+            "$id": "112",
             "Location": {
               "X": 50,
               "Y": 50
@@ -2016,10 +2008,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "171",
+        "$id": "113",
         "$values": [
           {
-            "$id": "172",
+            "$id": "114",
             "Location": {
               "X": 50,
               "Y": 50
@@ -2051,10 +2043,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "174",
+        "$id": "115",
         "$values": [
           {
-            "$id": "175",
+            "$id": "116",
             "Location": {
               "X": 50,
               "Y": 50
@@ -2086,10 +2078,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "177",
+        "$id": "117",
         "$values": [
           {
-            "$id": "178",
+            "$id": "118",
             "Location": {
               "X": 50,
               "Y": 50
@@ -2121,10 +2113,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "180",
+        "$id": "119",
         "$values": [
           {
-            "$id": "181",
+            "$id": "120",
             "Location": {
               "X": 50,
               "Y": 50
@@ -2156,10 +2148,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "183",
+        "$id": "121",
         "$values": [
           {
-            "$id": "184",
+            "$id": "122",
             "Location": {
               "X": 50,
               "Y": 50
@@ -2191,10 +2183,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "186",
+        "$id": "123",
         "$values": [
           {
-            "$id": "187",
+            "$id": "124",
             "Location": {
               "X": 50,
               "Y": 50
@@ -2226,10 +2218,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "189",
+        "$id": "125",
         "$values": [
           {
-            "$id": "190",
+            "$id": "126",
             "Location": {
               "X": 50,
               "Y": 50
@@ -2261,10 +2253,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "192",
+        "$id": "127",
         "$values": [
           {
-            "$id": "193",
+            "$id": "128",
             "Location": {
               "X": 50,
               "Y": 50
@@ -2296,10 +2288,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "195",
+        "$id": "129",
         "$values": [
           {
-            "$id": "196",
+            "$id": "130",
             "Location": {
               "X": 20,
               "Y": 20
@@ -2331,10 +2323,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "198",
+        "$id": "131",
         "$values": [
           {
-            "$id": "199",
+            "$id": "132",
             "Location": {
               "X": 20,
               "Y": 20
@@ -2366,10 +2358,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "201",
+        "$id": "133",
         "$values": [
           {
-            "$id": "202",
+            "$id": "134",
             "Location": {
               "X": 20,
               "Y": 20
@@ -2401,10 +2393,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "204",
+        "$id": "135",
         "$values": [
           {
-            "$id": "205",
+            "$id": "136",
             "Location": {
               "X": 20,
               "Y": 20
@@ -2436,10 +2428,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "207",
+        "$id": "137",
         "$values": [
           {
-            "$id": "208",
+            "$id": "138",
             "Location": {
               "X": 20,
               "Y": 20
@@ -2471,10 +2463,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "210",
+        "$id": "139",
         "$values": [
           {
-            "$id": "211",
+            "$id": "140",
             "Location": {
               "X": 100,
               "Y": 100
@@ -2506,10 +2498,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "213",
+        "$id": "141",
         "$values": [
           {
-            "$id": "214",
+            "$id": "142",
             "Location": {
               "X": 25,
               "Y": 25
@@ -2541,10 +2533,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "216",
+        "$id": "143",
         "$values": [
           {
-            "$id": "217",
+            "$id": "144",
             "Location": {
               "X": 197,
               "Y": 200
@@ -2576,10 +2568,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "219",
+        "$id": "145",
         "$values": [
           {
-            "$id": "220",
+            "$id": "146",
             "Location": {
               "X": 197,
               "Y": 200
@@ -2611,10 +2603,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "222",
+        "$id": "147",
         "$values": [
           {
-            "$id": "223",
+            "$id": "148",
             "Location": {
               "X": 197,
               "Y": 200
@@ -2646,10 +2638,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "225",
+        "$id": "149",
         "$values": [
           {
-            "$id": "226",
+            "$id": "150",
             "Location": {
               "X": 197,
               "Y": 200
@@ -2681,10 +2673,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "228",
+        "$id": "151",
         "$values": [
           {
-            "$id": "229",
+            "$id": "152",
             "Location": {
               "X": 197,
               "Y": 200
@@ -2716,10 +2708,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "231",
+        "$id": "153",
         "$values": [
           {
-            "$id": "232",
+            "$id": "154",
             "Location": {
               "X": 25,
               "Y": 25
@@ -2751,10 +2743,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "234",
+        "$id": "155",
         "$values": [
           {
-            "$id": "235",
+            "$id": "156",
             "Location": {
               "X": 25,
               "Y": 25
@@ -2786,10 +2778,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "237",
+        "$id": "157",
         "$values": [
           {
-            "$id": "238",
+            "$id": "158",
             "Location": {
               "X": 25,
               "Y": 25
@@ -2821,10 +2813,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "240",
+        "$id": "159",
         "$values": [
           {
-            "$id": "241",
+            "$id": "160",
             "Location": {
               "X": 25,
               "Y": 25
@@ -2856,10 +2848,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "243",
+        "$id": "161",
         "$values": [
           {
-            "$id": "244",
+            "$id": "162",
             "Location": {
               "X": 25,
               "Y": 25
@@ -2891,10 +2883,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "246",
+        "$id": "163",
         "$values": [
           {
-            "$id": "247",
+            "$id": "164",
             "Location": {
               "X": 25,
               "Y": 25
@@ -2926,10 +2918,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "249",
+        "$id": "165",
         "$values": [
           {
-            "$id": "250",
+            "$id": "166",
             "Location": {
               "X": 25,
               "Y": 25
@@ -2961,10 +2953,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "252",
+        "$id": "167",
         "$values": [
           {
-            "$id": "253",
+            "$id": "168",
             "Location": {
               "X": 25,
               "Y": 25
@@ -2996,10 +2988,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "255",
+        "$id": "169",
         "$values": [
           {
-            "$id": "256",
+            "$id": "170",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3031,10 +3023,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "258",
+        "$id": "171",
         "$values": [
           {
-            "$id": "259",
+            "$id": "172",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3066,10 +3058,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "261",
+        "$id": "173",
         "$values": [
           {
-            "$id": "262",
+            "$id": "174",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3101,10 +3093,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "264",
+        "$id": "175",
         "$values": [
           {
-            "$id": "265",
+            "$id": "176",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3136,10 +3128,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "267",
+        "$id": "177",
         "$values": [
           {
-            "$id": "268",
+            "$id": "178",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3171,10 +3163,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "270",
+        "$id": "179",
         "$values": [
           {
-            "$id": "271",
+            "$id": "180",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3206,10 +3198,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "273",
+        "$id": "181",
         "$values": [
           {
-            "$id": "274",
+            "$id": "182",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3241,10 +3233,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "276",
+        "$id": "183",
         "$values": [
           {
-            "$id": "277",
+            "$id": "184",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3276,10 +3268,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "279",
+        "$id": "185",
         "$values": [
           {
-            "$id": "280",
+            "$id": "186",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3311,10 +3303,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "282",
+        "$id": "187",
         "$values": [
           {
-            "$id": "283",
+            "$id": "188",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3346,10 +3338,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "285",
+        "$id": "189",
         "$values": [
           {
-            "$id": "286",
+            "$id": "190",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3381,10 +3373,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "288",
+        "$id": "191",
         "$values": [
           {
-            "$id": "289",
+            "$id": "192",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3416,10 +3408,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "291",
+        "$id": "193",
         "$values": [
           {
-            "$id": "292",
+            "$id": "194",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3451,10 +3443,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "294",
+        "$id": "195",
         "$values": [
           {
-            "$id": "295",
+            "$id": "196",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3486,10 +3478,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "297",
+        "$id": "197",
         "$values": [
           {
-            "$id": "298",
+            "$id": "198",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3521,10 +3513,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "300",
+        "$id": "199",
         "$values": [
           {
-            "$id": "301",
+            "$id": "200",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3556,10 +3548,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "303",
+        "$id": "201",
         "$values": [
           {
-            "$id": "304",
+            "$id": "202",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3591,10 +3583,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "306",
+        "$id": "203",
         "$values": [
           {
-            "$id": "307",
+            "$id": "204",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3626,10 +3618,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "309",
+        "$id": "205",
         "$values": [
           {
-            "$id": "310",
+            "$id": "206",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3661,10 +3653,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "312",
+        "$id": "207",
         "$values": [
           {
-            "$id": "313",
+            "$id": "208",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3696,10 +3688,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "315",
+        "$id": "209",
         "$values": [
           {
-            "$id": "316",
+            "$id": "210",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3731,10 +3723,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "318",
+        "$id": "211",
         "$values": [
           {
-            "$id": "319",
+            "$id": "212",
             "Location": {
               "X": 25,
               "Y": 25
@@ -3766,10 +3758,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "321",
+        "$id": "213",
         "$values": [
           {
-            "$id": "322",
+            "$id": "214",
             "Location": {
               "X": 100,
               "Y": 100
@@ -3801,10 +3793,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "324",
+        "$id": "215",
         "$values": [
           {
-            "$id": "325",
+            "$id": "216",
             "Location": {
               "X": 125,
               "Y": 125
@@ -3836,10 +3828,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "327",
+        "$id": "217",
         "$values": [
           {
-            "$id": "328",
+            "$id": "218",
             "Location": {
               "X": 125,
               "Y": 125
@@ -3871,10 +3863,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "330",
+        "$id": "219",
         "$values": [
           {
-            "$id": "331",
+            "$id": "220",
             "Location": {
               "X": 125,
               "Y": 125
@@ -3906,10 +3898,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "333",
+        "$id": "221",
         "$values": [
           {
-            "$id": "334",
+            "$id": "222",
             "Location": {
               "X": 100,
               "Y": 100
@@ -3941,10 +3933,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "336",
+        "$id": "223",
         "$values": [
           {
-            "$id": "337",
+            "$id": "224",
             "Location": {
               "X": 100,
               "Y": 100
@@ -3976,10 +3968,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "339",
+        "$id": "225",
         "$values": [
           {
-            "$id": "340",
+            "$id": "226",
             "Location": {
               "X": 100,
               "Y": 100
@@ -4011,10 +4003,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "342",
+        "$id": "227",
         "$values": [
           {
-            "$id": "343",
+            "$id": "228",
             "Location": {
               "X": 25,
               "Y": 25
@@ -4046,10 +4038,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "345",
+        "$id": "229",
         "$values": [
           {
-            "$id": "346",
+            "$id": "230",
             "Location": {
               "X": 25,
               "Y": 25
@@ -4081,10 +4073,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "348",
+        "$id": "231",
         "$values": [
           {
-            "$id": "349",
+            "$id": "232",
             "Location": {
               "X": 25,
               "Y": 25
@@ -4116,10 +4108,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "351",
+        "$id": "233",
         "$values": [
           {
-            "$id": "352",
+            "$id": "234",
             "Location": {
               "X": 25,
               "Y": 25
@@ -4151,10 +4143,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "354",
+        "$id": "235",
         "$values": [
           {
-            "$id": "355",
+            "$id": "236",
             "Location": {
               "X": 50,
               "Y": 50
@@ -4186,10 +4178,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "357",
+        "$id": "237",
         "$values": [
           {
-            "$id": "358",
+            "$id": "238",
             "Location": {
               "X": 150,
               "Y": 150
@@ -4221,10 +4213,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "360",
+        "$id": "239",
         "$values": [
           {
-            "$id": "361",
+            "$id": "240",
             "Location": {
               "X": 50,
               "Y": 50
@@ -4256,10 +4248,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "363",
+        "$id": "241",
         "$values": [
           {
-            "$id": "364",
+            "$id": "242",
             "Location": {
               "X": 50,
               "Y": 50
@@ -4291,10 +4283,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "366",
+        "$id": "243",
         "$values": [
           {
-            "$id": "367",
+            "$id": "244",
             "Location": {
               "X": 50,
               "Y": 50
@@ -4326,10 +4318,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "369",
+        "$id": "245",
         "$values": [
           {
-            "$id": "370",
+            "$id": "246",
             "Location": {
               "X": 50,
               "Y": 50
@@ -4361,10 +4353,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "372",
+        "$id": "247",
         "$values": [
           {
-            "$id": "373",
+            "$id": "248",
             "Location": {
               "X": 50,
               "Y": 50
@@ -4396,10 +4388,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "375",
+        "$id": "249",
         "$values": [
           {
-            "$id": "376",
+            "$id": "250",
             "Location": {
               "X": 100,
               "Y": 100
@@ -4431,10 +4423,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "378",
+        "$id": "251",
         "$values": [
           {
-            "$id": "379",
+            "$id": "252",
             "Location": {
               "X": 50,
               "Y": 50
@@ -4466,10 +4458,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "381",
+        "$id": "253",
         "$values": [
           {
-            "$id": "382",
+            "$id": "254",
             "Location": {
               "X": 50,
               "Y": 50
@@ -4501,10 +4493,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "384",
+        "$id": "255",
         "$values": [
           {
-            "$id": "385",
+            "$id": "256",
             "Location": {
               "X": 50,
               "Y": 50
@@ -4536,10 +4528,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "387",
+        "$id": "257",
         "$values": [
           {
-            "$id": "388",
+            "$id": "258",
             "Location": {
               "X": 50,
               "Y": 50
@@ -4571,10 +4563,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "390",
+        "$id": "259",
         "$values": [
           {
-            "$id": "391",
+            "$id": "260",
             "Location": {
               "X": 50,
               "Y": 50
@@ -4606,10 +4598,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "393",
+        "$id": "261",
         "$values": [
           {
-            "$id": "394",
+            "$id": "262",
             "Location": {
               "X": 55,
               "Y": 55
@@ -4641,10 +4633,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "396",
+        "$id": "263",
         "$values": [
           {
-            "$id": "397",
+            "$id": "264",
             "Location": {
               "X": 50,
               "Y": 50
@@ -4676,10 +4668,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "399",
+        "$id": "265",
         "$values": [
           {
-            "$id": "400",
+            "$id": "266",
             "Location": {
               "X": 50,
               "Y": 50
@@ -4711,10 +4703,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "402",
+        "$id": "267",
         "$values": [
           {
-            "$id": "403",
+            "$id": "268",
             "Location": {
               "X": 50,
               "Y": 50
@@ -4746,10 +4738,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "405",
+        "$id": "269",
         "$values": [
           {
-            "$id": "406",
+            "$id": "270",
             "Location": {
               "X": 75,
               "Y": 75
@@ -4781,10 +4773,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "408",
+        "$id": "271",
         "$values": [
           {
-            "$id": "409",
+            "$id": "272",
             "Location": {
               "X": 75,
               "Y": 75
@@ -4816,13 +4808,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "411",
+        "$id": "273",
         "$values": [
           {
-            "$id": "412",
+            "$id": "274",
             "Location": {
-              "X": 105,
-              "Y": 105
+              "X": 75,
+              "Y": 75
             },
             "Size": 10,
             "StartPoint": true,
@@ -4851,10 +4843,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "414",
+        "$id": "275",
         "$values": [
           {
-            "$id": "415",
+            "$id": "276",
             "Location": {
               "X": 75,
               "Y": 75
@@ -4886,13 +4878,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "417",
+        "$id": "277",
         "$values": [
           {
-            "$id": "418",
+            "$id": "278",
             "Location": {
-              "X": 50,
-              "Y": 50
+              "X": 75,
+              "Y": 75
             },
             "Size": 10,
             "StartPoint": true,
@@ -4921,10 +4913,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "420",
+        "$id": "279",
         "$values": [
           {
-            "$id": "421",
+            "$id": "280",
             "Location": {
               "X": 197,
               "Y": 200
@@ -4956,10 +4948,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "423",
+        "$id": "281",
         "$values": [
           {
-            "$id": "424",
+            "$id": "282",
             "Location": {
               "X": 12,
               "Y": 12
@@ -4991,10 +4983,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "426",
+        "$id": "283",
         "$values": [
           {
-            "$id": "427",
+            "$id": "284",
             "Location": {
               "X": 12,
               "Y": 12
@@ -5026,10 +5018,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "429",
+        "$id": "285",
         "$values": [
           {
-            "$id": "430",
+            "$id": "286",
             "Location": {
               "X": 12,
               "Y": 12
@@ -5061,10 +5053,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "432",
+        "$id": "287",
         "$values": [
           {
-            "$id": "433",
+            "$id": "288",
             "Location": {
               "X": 15,
               "Y": 15
@@ -5096,10 +5088,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "435",
+        "$id": "289",
         "$values": [
           {
-            "$id": "436",
+            "$id": "290",
             "Location": {
               "X": 170,
               "Y": 248
@@ -5131,10 +5123,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "438",
+        "$id": "291",
         "$values": [
           {
-            "$id": "439",
+            "$id": "292",
             "Location": {
               "X": 197,
               "Y": 200
@@ -5166,10 +5158,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "441",
+        "$id": "293",
         "$values": [
           {
-            "$id": "442",
+            "$id": "294",
             "Location": {
               "X": 149,
               "Y": 148
@@ -5201,10 +5193,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "444",
+        "$id": "295",
         "$values": [
           {
-            "$id": "445",
+            "$id": "296",
             "Location": {
               "X": 149,
               "Y": 148
@@ -5236,10 +5228,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "447",
+        "$id": "297",
         "$values": [
           {
-            "$id": "448",
+            "$id": "298",
             "Location": {
               "X": 149,
               "Y": 148
@@ -5271,10 +5263,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "450",
+        "$id": "299",
         "$values": [
           {
-            "$id": "451",
+            "$id": "300",
             "Location": {
               "X": 149,
               "Y": 148
@@ -5306,10 +5298,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "453",
+        "$id": "301",
         "$values": [
           {
-            "$id": "454",
+            "$id": "302",
             "Location": {
               "X": 149,
               "Y": 148
@@ -5341,10 +5333,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "456",
+        "$id": "303",
         "$values": [
           {
-            "$id": "457",
+            "$id": "304",
             "Location": {
               "X": 149,
               "Y": 148
@@ -5376,10 +5368,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "459",
+        "$id": "305",
         "$values": [
           {
-            "$id": "460",
+            "$id": "306",
             "Location": {
               "X": 100,
               "Y": 100
@@ -5411,10 +5403,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "462",
+        "$id": "307",
         "$values": [
           {
-            "$id": "463",
+            "$id": "308",
             "Location": {
               "X": 100,
               "Y": 100
@@ -5446,10 +5438,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "465",
+        "$id": "309",
         "$values": [
           {
-            "$id": "466",
+            "$id": "310",
             "Location": {
               "X": 15,
               "Y": 15
@@ -5481,10 +5473,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "468",
+        "$id": "311",
         "$values": [
           {
-            "$id": "469",
+            "$id": "312",
             "Location": {
               "X": 20,
               "Y": 20
@@ -5516,10 +5508,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "471",
+        "$id": "313",
         "$values": [
           {
-            "$id": "472",
+            "$id": "314",
             "Location": {
               "X": 50,
               "Y": 50
@@ -5551,10 +5543,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "474",
+        "$id": "315",
         "$values": [
           {
-            "$id": "475",
+            "$id": "316",
             "Location": {
               "X": 100,
               "Y": 100
@@ -5586,10 +5578,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "477",
+        "$id": "317",
         "$values": [
           {
-            "$id": "478",
+            "$id": "318",
             "Location": {
               "X": 149,
               "Y": 148
@@ -5621,13 +5613,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "480",
+        "$id": "319",
         "$values": [
           {
-            "$id": "481",
+            "$id": "320",
             "Location": {
-              "X": 25,
-              "Y": 25
+              "X": 75,
+              "Y": 75
             },
             "Size": 10,
             "StartPoint": true,
@@ -5656,10 +5648,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "483",
+        "$id": "321",
         "$values": [
           {
-            "$id": "484",
+            "$id": "322",
             "Location": {
               "X": 149,
               "Y": 148
@@ -5691,10 +5683,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "486",
+        "$id": "323",
         "$values": [
           {
-            "$id": "487",
+            "$id": "324",
             "Location": {
               "X": 50,
               "Y": 50
@@ -5726,10 +5718,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "489",
+        "$id": "325",
         "$values": [
           {
-            "$id": "490",
+            "$id": "326",
             "Location": {
               "X": 50,
               "Y": 50
@@ -5761,10 +5753,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "492",
+        "$id": "327",
         "$values": [
           {
-            "$id": "493",
+            "$id": "328",
             "Location": {
               "X": 50,
               "Y": 50
@@ -5796,10 +5788,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "495",
+        "$id": "329",
         "$values": [
           {
-            "$id": "496",
+            "$id": "330",
             "Location": {
               "X": 100,
               "Y": 100
@@ -5831,10 +5823,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "498",
+        "$id": "331",
         "$values": [
           {
-            "$id": "499",
+            "$id": "332",
             "Location": {
               "X": 50,
               "Y": 50
@@ -5866,10 +5858,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "501",
+        "$id": "333",
         "$values": [
           {
-            "$id": "502",
+            "$id": "334",
             "Location": {
               "X": 50,
               "Y": 50
@@ -5901,10 +5893,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "504",
+        "$id": "335",
         "$values": [
           {
-            "$id": "505",
+            "$id": "336",
             "Location": {
               "X": 149,
               "Y": 148
@@ -5936,10 +5928,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "507",
+        "$id": "337",
         "$values": [
           {
-            "$id": "508",
+            "$id": "338",
             "Location": {
               "X": 50,
               "Y": 50
@@ -5971,10 +5963,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "510",
+        "$id": "339",
         "$values": [
           {
-            "$id": "511",
+            "$id": "340",
             "Location": {
               "X": 50,
               "Y": 50
@@ -6006,10 +5998,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "513",
+        "$id": "341",
         "$values": [
           {
-            "$id": "514",
+            "$id": "342",
             "Location": {
               "X": 100,
               "Y": 100
@@ -6041,10 +6033,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "516",
+        "$id": "343",
         "$values": [
           {
-            "$id": "517",
+            "$id": "344",
             "Location": {
               "X": 50,
               "Y": 50
@@ -6076,10 +6068,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "519",
+        "$id": "345",
         "$values": [
           {
-            "$id": "520",
+            "$id": "346",
             "Location": {
               "X": 149,
               "Y": 148
@@ -6111,10 +6103,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "522",
+        "$id": "347",
         "$values": [
           {
-            "$id": "523",
+            "$id": "348",
             "Location": {
               "X": 100,
               "Y": 100
@@ -6146,10 +6138,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "525",
+        "$id": "349",
         "$values": [
           {
-            "$id": "526",
+            "$id": "350",
             "Location": {
               "X": 100,
               "Y": 100
@@ -6181,10 +6173,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "528",
+        "$id": "351",
         "$values": [
           {
-            "$id": "529",
+            "$id": "352",
             "Location": {
               "X": 100,
               "Y": 100
@@ -6216,10 +6208,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "531",
+        "$id": "353",
         "$values": [
           {
-            "$id": "532",
+            "$id": "354",
             "Location": {
               "X": 100,
               "Y": 100
@@ -6251,10 +6243,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "534",
+        "$id": "355",
         "$values": [
           {
-            "$id": "535",
+            "$id": "356",
             "Location": {
               "X": 149,
               "Y": 148
@@ -6286,10 +6278,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "537",
+        "$id": "357",
         "$values": [
           {
-            "$id": "538",
+            "$id": "358",
             "Location": {
               "X": 100,
               "Y": 100
@@ -6321,10 +6313,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "540",
+        "$id": "359",
         "$values": [
           {
-            "$id": "541",
+            "$id": "360",
             "Location": {
               "X": 197,
               "Y": 200
@@ -6356,10 +6348,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "543",
+        "$id": "361",
         "$values": [
           {
-            "$id": "544",
+            "$id": "362",
             "Location": {
               "X": 149,
               "Y": 148
@@ -6391,10 +6383,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "546",
+        "$id": "363",
         "$values": [
           {
-            "$id": "547",
+            "$id": "364",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6426,10 +6418,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "549",
+        "$id": "365",
         "$values": [
           {
-            "$id": "550",
+            "$id": "366",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6461,10 +6453,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "552",
+        "$id": "367",
         "$values": [
           {
-            "$id": "553",
+            "$id": "368",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6496,10 +6488,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "555",
+        "$id": "369",
         "$values": [
           {
-            "$id": "556",
+            "$id": "370",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6531,10 +6523,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "558",
+        "$id": "371",
         "$values": [
           {
-            "$id": "559",
+            "$id": "372",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6566,10 +6558,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "561",
+        "$id": "373",
         "$values": [
           {
-            "$id": "562",
+            "$id": "374",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6601,10 +6593,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "564",
+        "$id": "375",
         "$values": [
           {
-            "$id": "565",
+            "$id": "376",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6636,10 +6628,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "567",
+        "$id": "377",
         "$values": [
           {
-            "$id": "568",
+            "$id": "378",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6671,10 +6663,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "570",
+        "$id": "379",
         "$values": [
           {
-            "$id": "571",
+            "$id": "380",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6706,10 +6698,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "573",
+        "$id": "381",
         "$values": [
           {
-            "$id": "574",
+            "$id": "382",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6741,10 +6733,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "576",
+        "$id": "383",
         "$values": [
           {
-            "$id": "577",
+            "$id": "384",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6776,10 +6768,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "579",
+        "$id": "385",
         "$values": [
           {
-            "$id": "580",
+            "$id": "386",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6811,10 +6803,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "582",
+        "$id": "387",
         "$values": [
           {
-            "$id": "583",
+            "$id": "388",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6846,10 +6838,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "585",
+        "$id": "389",
         "$values": [
           {
-            "$id": "586",
+            "$id": "390",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6881,10 +6873,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "588",
+        "$id": "391",
         "$values": [
           {
-            "$id": "589",
+            "$id": "392",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6916,10 +6908,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "591",
+        "$id": "393",
         "$values": [
           {
-            "$id": "592",
+            "$id": "394",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6951,10 +6943,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "594",
+        "$id": "395",
         "$values": [
           {
-            "$id": "595",
+            "$id": "396",
             "Location": {
               "X": 10,
               "Y": 10
@@ -6986,10 +6978,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "597",
+        "$id": "397",
         "$values": [
           {
-            "$id": "598",
+            "$id": "398",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7021,10 +7013,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "600",
+        "$id": "399",
         "$values": [
           {
-            "$id": "601",
+            "$id": "400",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7056,10 +7048,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "603",
+        "$id": "401",
         "$values": [
           {
-            "$id": "604",
+            "$id": "402",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7091,10 +7083,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "606",
+        "$id": "403",
         "$values": [
           {
-            "$id": "607",
+            "$id": "404",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7126,10 +7118,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "609",
+        "$id": "405",
         "$values": [
           {
-            "$id": "610",
+            "$id": "406",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7161,10 +7153,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "612",
+        "$id": "407",
         "$values": [
           {
-            "$id": "613",
+            "$id": "408",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7196,10 +7188,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "615",
+        "$id": "409",
         "$values": [
           {
-            "$id": "616",
+            "$id": "410",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7231,10 +7223,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "618",
+        "$id": "411",
         "$values": [
           {
-            "$id": "619",
+            "$id": "412",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7266,10 +7258,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "621",
+        "$id": "413",
         "$values": [
           {
-            "$id": "622",
+            "$id": "414",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7301,10 +7293,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "624",
+        "$id": "415",
         "$values": [
           {
-            "$id": "625",
+            "$id": "416",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7336,10 +7328,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "627",
+        "$id": "417",
         "$values": [
           {
-            "$id": "628",
+            "$id": "418",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7371,10 +7363,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "630",
+        "$id": "419",
         "$values": [
           {
-            "$id": "631",
+            "$id": "420",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7406,10 +7398,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "633",
+        "$id": "421",
         "$values": [
           {
-            "$id": "634",
+            "$id": "422",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7441,10 +7433,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "636",
+        "$id": "423",
         "$values": [
           {
-            "$id": "637",
+            "$id": "424",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7476,10 +7468,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "639",
+        "$id": "425",
         "$values": [
           {
-            "$id": "640",
+            "$id": "426",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7511,10 +7503,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "642",
+        "$id": "427",
         "$values": [
           {
-            "$id": "643",
+            "$id": "428",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7546,10 +7538,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "645",
+        "$id": "429",
         "$values": [
           {
-            "$id": "646",
+            "$id": "430",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7581,10 +7573,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "648",
+        "$id": "431",
         "$values": [
           {
-            "$id": "649",
+            "$id": "432",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7616,10 +7608,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "651",
+        "$id": "433",
         "$values": [
           {
-            "$id": "652",
+            "$id": "434",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7651,10 +7643,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "654",
+        "$id": "435",
         "$values": [
           {
-            "$id": "655",
+            "$id": "436",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7686,10 +7678,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "657",
+        "$id": "437",
         "$values": [
           {
-            "$id": "658",
+            "$id": "438",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7721,10 +7713,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "660",
+        "$id": "439",
         "$values": [
           {
-            "$id": "661",
+            "$id": "440",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7756,10 +7748,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "663",
+        "$id": "441",
         "$values": [
           {
-            "$id": "664",
+            "$id": "442",
             "Location": {
               "X": 10,
               "Y": 10
@@ -7791,10 +7783,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "666",
+        "$id": "443",
         "$values": [
           {
-            "$id": "667",
+            "$id": "444",
             "Location": {
               "X": 75,
               "Y": 75
@@ -7826,10 +7818,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "669",
+        "$id": "445",
         "$values": [
           {
-            "$id": "670",
+            "$id": "446",
             "Location": {
               "X": 197,
               "Y": 200
@@ -7861,10 +7853,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "672",
+        "$id": "447",
         "$values": [
           {
-            "$id": "673",
+            "$id": "448",
             "Location": {
               "X": 50,
               "Y": 50
@@ -7896,10 +7888,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "675",
+        "$id": "449",
         "$values": [
           {
-            "$id": "676",
+            "$id": "450",
             "Location": {
               "X": 100,
               "Y": 100
@@ -7931,10 +7923,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "678",
+        "$id": "451",
         "$values": [
           {
-            "$id": "679",
+            "$id": "452",
             "Location": {
               "X": 149,
               "Y": 148
@@ -7966,10 +7958,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "681",
+        "$id": "453",
         "$values": [
           {
-            "$id": "682",
+            "$id": "454",
             "Location": {
               "X": 50,
               "Y": 50
@@ -8001,10 +7993,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "684",
+        "$id": "455",
         "$values": [
           {
-            "$id": "685",
+            "$id": "456",
             "Location": {
               "X": 100,
               "Y": 100
@@ -8036,10 +8028,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "687",
+        "$id": "457",
         "$values": [
           {
-            "$id": "688",
+            "$id": "458",
             "Location": {
               "X": 20,
               "Y": 20
@@ -8071,10 +8063,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "690",
+        "$id": "459",
         "$values": [
           {
-            "$id": "691",
+            "$id": "460",
             "Location": {
               "X": 20,
               "Y": 20
@@ -8106,10 +8098,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "693",
+        "$id": "461",
         "$values": [
           {
-            "$id": "694",
+            "$id": "462",
             "Location": {
               "X": 20,
               "Y": 20
@@ -8141,10 +8133,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "696",
+        "$id": "463",
         "$values": [
           {
-            "$id": "697",
+            "$id": "464",
             "Location": {
               "X": 20,
               "Y": 20
@@ -8176,10 +8168,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "699",
+        "$id": "465",
         "$values": [
           {
-            "$id": "700",
+            "$id": "466",
             "Location": {
               "X": 20,
               "Y": 20
@@ -8211,10 +8203,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "702",
+        "$id": "467",
         "$values": [
           {
-            "$id": "703",
+            "$id": "468",
             "Location": {
               "X": 20,
               "Y": 20
@@ -8246,10 +8238,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "705",
+        "$id": "469",
         "$values": [
           {
-            "$id": "706",
+            "$id": "470",
             "Location": {
               "X": 20,
               "Y": 20
@@ -8281,10 +8273,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "708",
+        "$id": "471",
         "$values": [
           {
-            "$id": "709",
+            "$id": "472",
             "Location": {
               "X": 50,
               "Y": 50
@@ -8316,10 +8308,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "711",
+        "$id": "473",
         "$values": [
           {
-            "$id": "712",
+            "$id": "474",
             "Location": {
               "X": 149,
               "Y": 148
@@ -8351,10 +8343,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "714",
+        "$id": "475",
         "$values": [
           {
-            "$id": "715",
+            "$id": "476",
             "Location": {
               "X": 197,
               "Y": 200
@@ -8386,10 +8378,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "717",
+        "$id": "477",
         "$values": [
           {
-            "$id": "718",
+            "$id": "478",
             "Location": {
               "X": 10,
               "Y": 10
@@ -8421,10 +8413,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "720",
+        "$id": "479",
         "$values": [
           {
-            "$id": "721",
+            "$id": "480",
             "Location": {
               "X": 100,
               "Y": 100
@@ -8456,10 +8448,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "723",
+        "$id": "481",
         "$values": [
           {
-            "$id": "724",
+            "$id": "482",
             "Location": {
               "X": 15,
               "Y": 17
@@ -8491,10 +8483,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "726",
+        "$id": "483",
         "$values": [
           {
-            "$id": "727",
+            "$id": "484",
             "Location": {
               "X": 50,
               "Y": 50
@@ -8526,10 +8518,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "729",
+        "$id": "485",
         "$values": [
           {
-            "$id": "730",
+            "$id": "486",
             "Location": {
               "X": 25,
               "Y": 25
@@ -8561,10 +8553,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "732",
+        "$id": "487",
         "$values": [
           {
-            "$id": "733",
+            "$id": "488",
             "Location": {
               "X": 20,
               "Y": 20
@@ -8596,10 +8588,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "735",
+        "$id": "489",
         "$values": [
           {
-            "$id": "736",
+            "$id": "490",
             "Location": {
               "X": 15,
               "Y": 15
@@ -8631,10 +8623,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "738",
+        "$id": "491",
         "$values": [
           {
-            "$id": "739",
+            "$id": "492",
             "Location": {
               "X": 40,
               "Y": 40
@@ -8666,10 +8658,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "741",
+        "$id": "493",
         "$values": [
           {
-            "$id": "742",
+            "$id": "494",
             "Location": {
               "X": 40,
               "Y": 40
@@ -8701,10 +8693,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "744",
+        "$id": "495",
         "$values": [
           {
-            "$id": "745",
+            "$id": "496",
             "Location": {
               "X": 15,
               "Y": 15
@@ -8736,10 +8728,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "747",
+        "$id": "497",
         "$values": [
           {
-            "$id": "748",
+            "$id": "498",
             "Location": {
               "X": 15,
               "Y": 15
@@ -8771,10 +8763,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "750",
+        "$id": "499",
         "$values": [
           {
-            "$id": "751",
+            "$id": "500",
             "Location": {
               "X": 10,
               "Y": 10
@@ -8806,10 +8798,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "753",
+        "$id": "501",
         "$values": [
           {
-            "$id": "754",
+            "$id": "502",
             "Location": {
               "X": 15,
               "Y": 15
@@ -8841,10 +8833,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "756",
+        "$id": "503",
         "$values": [
           {
-            "$id": "757",
+            "$id": "504",
             "Location": {
               "X": 50,
               "Y": 50
@@ -8876,10 +8868,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "759",
+        "$id": "505",
         "$values": [
           {
-            "$id": "760",
+            "$id": "506",
             "Location": {
               "X": 50,
               "Y": 50
@@ -8911,10 +8903,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "762",
+        "$id": "507",
         "$values": [
           {
-            "$id": "763",
+            "$id": "508",
             "Location": {
               "X": 50,
               "Y": 50
@@ -8946,10 +8938,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "765",
+        "$id": "509",
         "$values": [
           {
-            "$id": "766",
+            "$id": "510",
             "Location": {
               "X": 50,
               "Y": 50
@@ -8981,10 +8973,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "768",
+        "$id": "511",
         "$values": [
           {
-            "$id": "769",
+            "$id": "512",
             "Location": {
               "X": 50,
               "Y": 50
@@ -9016,10 +9008,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "771",
+        "$id": "513",
         "$values": [
           {
-            "$id": "772",
+            "$id": "514",
             "Location": {
               "X": 50,
               "Y": 50
@@ -9051,10 +9043,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "774",
+        "$id": "515",
         "$values": [
           {
-            "$id": "775",
+            "$id": "516",
             "Location": {
               "X": 96,
               "Y": 100
@@ -9086,10 +9078,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "777",
+        "$id": "517",
         "$values": [
           {
-            "$id": "778",
+            "$id": "518",
             "Location": {
               "X": 96,
               "Y": 100
@@ -9121,10 +9113,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "780",
+        "$id": "519",
         "$values": [
           {
-            "$id": "781",
+            "$id": "520",
             "Location": {
               "X": 96,
               "Y": 100
@@ -9156,10 +9148,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "783",
+        "$id": "521",
         "$values": [
           {
-            "$id": "784",
+            "$id": "522",
             "Location": {
               "X": 150,
               "Y": 150
@@ -9191,10 +9183,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "786",
+        "$id": "523",
         "$values": [
           {
-            "$id": "787",
+            "$id": "524",
             "Location": {
               "X": 50,
               "Y": 50
@@ -9226,10 +9218,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "789",
+        "$id": "525",
         "$values": [
           {
-            "$id": "790",
+            "$id": "526",
             "Location": {
               "X": 50,
               "Y": 50
@@ -9261,10 +9253,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "792",
+        "$id": "527",
         "$values": [
           {
-            "$id": "793",
+            "$id": "528",
             "Location": {
               "X": 15,
               "Y": 15
@@ -9296,10 +9288,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "795",
+        "$id": "529",
         "$values": [
           {
-            "$id": "796",
+            "$id": "530",
             "Location": {
               "X": 298,
               "Y": 248
@@ -9331,10 +9323,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "798",
+        "$id": "531",
         "$values": [
           {
-            "$id": "799",
+            "$id": "532",
             "Location": {
               "X": 149,
               "Y": 148
@@ -9366,10 +9358,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "801",
+        "$id": "533",
         "$values": [
           {
-            "$id": "802",
+            "$id": "534",
             "Location": {
               "X": 120,
               "Y": 117
@@ -9401,10 +9393,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "804",
+        "$id": "535",
         "$values": [
           {
-            "$id": "805",
+            "$id": "536",
             "Location": {
               "X": 75,
               "Y": 75
@@ -9436,10 +9428,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "807",
+        "$id": "537",
         "$values": [
           {
-            "$id": "808",
+            "$id": "538",
             "Location": {
               "X": 96,
               "Y": 248
@@ -9471,10 +9463,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "810",
+        "$id": "539",
         "$values": [
           {
-            "$id": "811",
+            "$id": "540",
             "Location": {
               "X": 100,
               "Y": 100
@@ -9506,10 +9498,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "813",
+        "$id": "541",
         "$values": [
           {
-            "$id": "814",
+            "$id": "542",
             "Location": {
               "X": 96,
               "Y": 248
@@ -9541,10 +9533,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "816",
+        "$id": "543",
         "$values": [
           {
-            "$id": "817",
+            "$id": "544",
             "Location": {
               "X": 100,
               "Y": 100
@@ -9576,10 +9568,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "819",
+        "$id": "545",
         "$values": [
           {
-            "$id": "820",
+            "$id": "546",
             "Location": {
               "X": 197,
               "Y": 148
@@ -9611,10 +9603,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "822",
+        "$id": "547",
         "$values": [
           {
-            "$id": "823",
+            "$id": "548",
             "Location": {
               "X": 197,
               "Y": 100
@@ -9646,10 +9638,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "825",
+        "$id": "549",
         "$values": [
           {
-            "$id": "826",
+            "$id": "550",
             "Location": {
               "X": 149,
               "Y": 148
@@ -9681,10 +9673,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "828",
+        "$id": "551",
         "$values": [
           {
-            "$id": "829",
+            "$id": "552",
             "Location": {
               "X": 100,
               "Y": 100
@@ -9716,10 +9708,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "831",
+        "$id": "553",
         "$values": [
           {
-            "$id": "832",
+            "$id": "554",
             "Location": {
               "X": 100,
               "Y": 100
@@ -9751,10 +9743,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "834",
+        "$id": "555",
         "$values": [
           {
-            "$id": "835",
+            "$id": "556",
             "Location": {
               "X": 149,
               "Y": 148
@@ -9786,10 +9778,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "837",
+        "$id": "557",
         "$values": [
           {
-            "$id": "838",
+            "$id": "558",
             "Location": {
               "X": 149,
               "Y": 100
@@ -9821,10 +9813,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "840",
+        "$id": "559",
         "$values": [
           {
-            "$id": "841",
+            "$id": "560",
             "Location": {
               "X": 149,
               "Y": 148
@@ -9856,10 +9848,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "843",
+        "$id": "561",
         "$values": [
           {
-            "$id": "844",
+            "$id": "562",
             "Location": {
               "X": 197,
               "Y": 200
@@ -9891,10 +9883,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "846",
+        "$id": "563",
         "$values": [
           {
-            "$id": "847",
+            "$id": "564",
             "Location": {
               "X": 197,
               "Y": 200
@@ -9926,10 +9918,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "849",
+        "$id": "565",
         "$values": [
           {
-            "$id": "850",
+            "$id": "566",
             "Location": {
               "X": 40,
               "Y": 45
@@ -9961,10 +9953,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "852",
+        "$id": "567",
         "$values": [
           {
-            "$id": "853",
+            "$id": "568",
             "Location": {
               "X": 4,
               "Y": 6
@@ -9996,10 +9988,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "855",
+        "$id": "569",
         "$values": [
           {
-            "$id": "856",
+            "$id": "570",
             "Location": {
               "X": 25,
               "Y": 25
@@ -10031,10 +10023,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "858",
+        "$id": "571",
         "$values": [
           {
-            "$id": "859",
+            "$id": "572",
             "Location": {
               "X": 50,
               "Y": 50
@@ -10066,10 +10058,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "861",
+        "$id": "573",
         "$values": [
           {
-            "$id": "862",
+            "$id": "574",
             "Location": {
               "X": 50,
               "Y": 50
@@ -10101,10 +10093,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "864",
+        "$id": "575",
         "$values": [
           {
-            "$id": "865",
+            "$id": "576",
             "Location": {
               "X": 125,
               "Y": 125
@@ -10136,10 +10128,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "867",
+        "$id": "577",
         "$values": [
           {
-            "$id": "868",
+            "$id": "578",
             "Location": {
               "X": 197,
               "Y": 200
@@ -10171,10 +10163,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "870",
+        "$id": "579",
         "$values": [
           {
-            "$id": "871",
+            "$id": "580",
             "Location": {
               "X": 100,
               "Y": 100
@@ -10206,10 +10198,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "873",
+        "$id": "581",
         "$values": [
           {
-            "$id": "874",
+            "$id": "582",
             "Location": {
               "X": 50,
               "Y": 42
@@ -10241,10 +10233,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "876",
+        "$id": "583",
         "$values": [
           {
-            "$id": "877",
+            "$id": "584",
             "Location": {
               "X": 149,
               "Y": 148
@@ -10276,10 +10268,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "879",
+        "$id": "585",
         "$values": [
           {
-            "$id": "880",
+            "$id": "586",
             "Location": {
               "X": 197,
               "Y": 200
@@ -10311,10 +10303,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "882",
+        "$id": "587",
         "$values": [
           {
-            "$id": "883",
+            "$id": "588",
             "Location": {
               "X": 35,
               "Y": 35
@@ -10346,10 +10338,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "885",
+        "$id": "589",
         "$values": [
           {
-            "$id": "886",
+            "$id": "590",
             "Location": {
               "X": 50,
               "Y": 60
@@ -10381,10 +10373,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "888",
+        "$id": "591",
         "$values": [
           {
-            "$id": "889",
+            "$id": "592",
             "Location": {
               "X": 120,
               "Y": 120
@@ -10416,10 +10408,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "891",
+        "$id": "593",
         "$values": [
           {
-            "$id": "892",
+            "$id": "594",
             "Location": {
               "X": 100,
               "Y": 100
@@ -10451,10 +10443,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "894",
+        "$id": "595",
         "$values": [
           {
-            "$id": "895",
+            "$id": "596",
             "Location": {
               "X": 50,
               "Y": 50
@@ -10486,10 +10478,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "897",
+        "$id": "597",
         "$values": [
           {
-            "$id": "898",
+            "$id": "598",
             "Location": {
               "X": 277,
               "Y": 300
@@ -10521,10 +10513,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "900",
+        "$id": "599",
         "$values": [
           {
-            "$id": "901",
+            "$id": "600",
             "Location": {
               "X": 197,
               "Y": 148
@@ -10556,10 +10548,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "903",
+        "$id": "601",
         "$values": [
           {
-            "$id": "904",
+            "$id": "602",
             "Location": {
               "X": 100,
               "Y": 100
@@ -10591,10 +10583,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "906",
+        "$id": "603",
         "$values": [
           {
-            "$id": "907",
+            "$id": "604",
             "Location": {
               "X": 100,
               "Y": 100
@@ -10626,10 +10618,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "909",
+        "$id": "605",
         "$values": [
           {
-            "$id": "910",
+            "$id": "606",
             "Location": {
               "X": 50,
               "Y": 50
@@ -10661,10 +10653,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "912",
+        "$id": "607",
         "$values": [
           {
-            "$id": "913",
+            "$id": "608",
             "Location": {
               "X": 50,
               "Y": 42
@@ -10696,10 +10688,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "915",
+        "$id": "609",
         "$values": [
           {
-            "$id": "916",
+            "$id": "610",
             "Location": {
               "X": 75,
               "Y": 80
@@ -10731,10 +10723,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "918",
+        "$id": "611",
         "$values": [
           {
-            "$id": "919",
+            "$id": "612",
             "Location": {
               "X": 25,
               "Y": 25
@@ -10766,10 +10758,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "921",
+        "$id": "613",
         "$values": [
           {
-            "$id": "922",
+            "$id": "614",
             "Location": {
               "X": 50,
               "Y": 50
@@ -10801,10 +10793,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "924",
+        "$id": "615",
         "$values": [
           {
-            "$id": "925",
+            "$id": "616",
             "Location": {
               "X": 40,
               "Y": 40
@@ -10836,10 +10828,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "927",
+        "$id": "617",
         "$values": [
           {
-            "$id": "928",
+            "$id": "618",
             "Location": {
               "X": 40,
               "Y": 40
@@ -10871,10 +10863,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "930",
+        "$id": "619",
         "$values": [
           {
-            "$id": "931",
+            "$id": "620",
             "Location": {
               "X": 40,
               "Y": 40
@@ -10906,10 +10898,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "933",
+        "$id": "621",
         "$values": [
           {
-            "$id": "934",
+            "$id": "622",
             "Location": {
               "X": 50,
               "Y": 50
@@ -10941,10 +10933,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "936",
+        "$id": "623",
         "$values": [
           {
-            "$id": "937",
+            "$id": "624",
             "Location": {
               "X": 50,
               "Y": 50
@@ -10976,10 +10968,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "939",
+        "$id": "625",
         "$values": [
           {
-            "$id": "940",
+            "$id": "626",
             "Location": {
               "X": 50,
               "Y": 50
@@ -11011,10 +11003,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "942",
+        "$id": "627",
         "$values": [
           {
-            "$id": "943",
+            "$id": "628",
             "Location": {
               "X": 20,
               "Y": 25
@@ -11046,10 +11038,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "945",
+        "$id": "629",
         "$values": [
           {
-            "$id": "946",
+            "$id": "630",
             "Location": {
               "X": 15,
               "Y": 17
@@ -11081,10 +11073,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "948",
+        "$id": "631",
         "$values": [
           {
-            "$id": "949",
+            "$id": "632",
             "Location": {
               "X": 15,
               "Y": 20
@@ -11116,10 +11108,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "951",
+        "$id": "633",
         "$values": [
           {
-            "$id": "952",
+            "$id": "634",
             "Location": {
               "X": 15,
               "Y": 15
@@ -11151,10 +11143,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "954",
+        "$id": "635",
         "$values": [
           {
-            "$id": "955",
+            "$id": "636",
             "Location": {
               "X": 96,
               "Y": 100
@@ -11186,10 +11178,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "957",
+        "$id": "637",
         "$values": [
           {
-            "$id": "958",
+            "$id": "638",
             "Location": {
               "X": 25,
               "Y": 25
@@ -11221,10 +11213,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "960",
+        "$id": "639",
         "$values": [
           {
-            "$id": "961",
+            "$id": "640",
             "Location": {
               "X": 35,
               "Y": 35
@@ -11256,10 +11248,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "963",
+        "$id": "641",
         "$values": [
           {
-            "$id": "964",
+            "$id": "642",
             "Location": {
               "X": 149,
               "Y": 148
@@ -11291,13 +11283,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "966",
+        "$id": "643",
         "$values": [
           {
-            "$id": "967",
+            "$id": "644",
             "Location": {
-              "X": 50,
-              "Y": 50
+              "X": 100,
+              "Y": 100
             },
             "Size": 10,
             "StartPoint": true,
@@ -11326,13 +11318,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "969",
+        "$id": "645",
         "$values": [
           {
-            "$id": "970",
+            "$id": "646",
             "Location": {
-              "X": 50,
-              "Y": 50
+              "X": 100,
+              "Y": 100
             },
             "Size": 10,
             "StartPoint": true,
@@ -11347,7 +11339,7 @@
       "$id": "971",
       "Index": 103,
       "FileName": "103",
-      "Title": "比奇省",
+      "Title": "???",
       "MiniMap": 0,
       "BigMap": 0,
       "Music": 0,
@@ -11390,27 +11382,15 @@
       "FireWallLimit": false,
       "WeatherParticles": 0,
       "SafeZones": {
-        "$id": "972",
+        "$id": "647",
         "$values": [
           {
-            "$id": 12,
+            "$id": 6,
             "Location": {
-              "X": 331,
-              "Y": 272
+              "X": 346,
+              "Y": 348
             },
             "Size": 10,
-            "StartPoint": false,
-            "Info": {
-              "$ref": "971"
-            }
-          },
-          {
-            "$id": 13,
-            "Location": {
-              "X": 286,
-              "Y": 614
-            },
-            "Size": 5,
             "StartPoint": true,
             "Info": {
               "$ref": "971"
@@ -11419,11 +11399,11 @@
         ]
       },
       "Respawns": {
-        "$id": 2,
+        "$id": 1,
         "$values": []
       },
-      "NPCs": {
-        "$id": 3,
+      "Movements": {
+        "$id": 2,
         "$values": []
       }
     },
@@ -11445,10 +11425,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "975",
+        "$id": "649",
         "$values": [
           {
-            "$id": "976",
+            "$id": "650",
             "Location": {
               "X": 30,
               "Y": 30
@@ -11480,10 +11460,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "978",
+        "$id": "651",
         "$values": [
           {
-            "$id": "979",
+            "$id": "652",
             "Location": {
               "X": 12,
               "Y": 15
@@ -11515,10 +11495,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "981",
+        "$id": "653",
         "$values": [
           {
-            "$id": "982",
+            "$id": "654",
             "Location": {
               "X": 12,
               "Y": 15
@@ -11550,10 +11530,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "984",
+        "$id": "655",
         "$values": [
           {
-            "$id": "985",
+            "$id": "656",
             "Location": {
               "X": 12,
               "Y": 15
@@ -11585,10 +11565,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "987",
+        "$id": "657",
         "$values": [
           {
-            "$id": "988",
+            "$id": "658",
             "Location": {
               "X": 11,
               "Y": 13
@@ -11620,10 +11600,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "990",
+        "$id": "659",
         "$values": [
           {
-            "$id": "991",
+            "$id": "660",
             "Location": {
               "X": 10,
               "Y": 12
@@ -11655,10 +11635,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "993",
+        "$id": "661",
         "$values": [
           {
-            "$id": "994",
+            "$id": "662",
             "Location": {
               "X": 8,
               "Y": 10
@@ -11690,10 +11670,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "996",
+        "$id": "663",
         "$values": [
           {
-            "$id": "997",
+            "$id": "664",
             "Location": {
               "X": 10,
               "Y": 10
@@ -11725,10 +11705,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "999",
+        "$id": "665",
         "$values": [
           {
-            "$id": "1000",
+            "$id": "666",
             "Location": {
               "X": 10,
               "Y": 13
@@ -11760,10 +11740,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1002",
+        "$id": "667",
         "$values": [
           {
-            "$id": "1003",
+            "$id": "668",
             "Location": {
               "X": 15,
               "Y": 15
@@ -11795,10 +11775,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1005",
+        "$id": "669",
         "$values": [
           {
-            "$id": "1006",
+            "$id": "670",
             "Location": {
               "X": 15,
               "Y": 15
@@ -11830,10 +11810,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1008",
+        "$id": "671",
         "$values": [
           {
-            "$id": "1009",
+            "$id": "672",
             "Location": {
               "X": 16,
               "Y": 18
@@ -11865,13 +11845,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1011",
+        "$id": "673",
         "$values": [
           {
-            "$id": "1012",
+            "$id": "674",
             "Location": {
-              "X": 15,
-              "Y": 20
+              "X": 35,
+              "Y": 35
             },
             "Size": 10,
             "StartPoint": true,
@@ -11900,10 +11880,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1014",
+        "$id": "675",
         "$values": [
           {
-            "$id": "1015",
+            "$id": "676",
             "Location": {
               "X": 15,
               "Y": 17
@@ -11935,10 +11915,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1017",
+        "$id": "677",
         "$values": [
           {
-            "$id": "1018",
+            "$id": "678",
             "Location": {
               "X": 13,
               "Y": 18
@@ -11970,10 +11950,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1020",
+        "$id": "679",
         "$values": [
           {
-            "$id": "1021",
+            "$id": "680",
             "Location": {
               "X": 10,
               "Y": 12
@@ -12005,10 +11985,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1023",
+        "$id": "681",
         "$values": [
           {
-            "$id": "1024",
+            "$id": "682",
             "Location": {
               "X": 7,
               "Y": 10
@@ -12040,13 +12020,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1026",
+        "$id": "683",
         "$values": [
           {
-            "$id": "1027",
+            "$id": "684",
             "Location": {
               "X": 7,
-              "Y": 7
+              "Y": 10
             },
             "Size": 10,
             "StartPoint": true,
@@ -12075,13 +12055,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1029",
+        "$id": "685",
         "$values": [
           {
-            "$id": "1030",
+            "$id": "686",
             "Location": {
-              "X": 13,
-              "Y": 13
+              "X": 7,
+              "Y": 10
             },
             "Size": 10,
             "StartPoint": true,
@@ -12110,10 +12090,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1032",
+        "$id": "687",
         "$values": [
           {
-            "$id": "1033",
+            "$id": "688",
             "Location": {
               "X": 10,
               "Y": 10
@@ -12145,10 +12125,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1035",
+        "$id": "689",
         "$values": [
           {
-            "$id": "1036",
+            "$id": "690",
             "Location": {
               "X": 17,
               "Y": 20
@@ -12180,10 +12160,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1038",
+        "$id": "691",
         "$values": [
           {
-            "$id": "1039",
+            "$id": "692",
             "Location": {
               "X": 25,
               "Y": 30
@@ -12215,13 +12195,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1041",
+        "$id": "693",
         "$values": [
           {
-            "$id": "1042",
+            "$id": "694",
             "Location": {
-              "X": 15,
-              "Y": 15
+              "X": 10,
+              "Y": 10
             },
             "Size": 10,
             "StartPoint": true,
@@ -12250,13 +12230,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1044",
+        "$id": "695",
         "$values": [
           {
-            "$id": "1045",
+            "$id": "696",
             "Location": {
-              "X": 15,
-              "Y": 15
+              "X": 7,
+              "Y": 10
             },
             "Size": 10,
             "StartPoint": true,
@@ -12285,13 +12265,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1047",
+        "$id": "697",
         "$values": [
           {
-            "$id": "1048",
+            "$id": "698",
             "Location": {
-              "X": 10,
-              "Y": 10
+              "X": 25,
+              "Y": 25
             },
             "Size": 10,
             "StartPoint": true,
@@ -12320,13 +12300,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1050",
+        "$id": "699",
         "$values": [
           {
-            "$id": "1051",
+            "$id": "700",
             "Location": {
-              "X": 15,
-              "Y": 15
+              "X": 10,
+              "Y": 12
             },
             "Size": 10,
             "StartPoint": true,
@@ -12355,13 +12335,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1053",
+        "$id": "701",
         "$values": [
           {
-            "$id": "1054",
+            "$id": "702",
             "Location": {
-              "X": 15,
-              "Y": 15
+              "X": 10,
+              "Y": 12
             },
             "Size": 10,
             "StartPoint": true,
@@ -12390,10 +12370,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1056",
+        "$id": "703",
         "$values": [
           {
-            "$id": "1057",
+            "$id": "704",
             "Location": {
               "X": 15,
               "Y": 15
@@ -12425,10 +12405,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1059",
+        "$id": "705",
         "$values": [
           {
-            "$id": "1060",
+            "$id": "706",
             "Location": {
               "X": 15,
               "Y": 15
@@ -12460,13 +12440,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1062",
+        "$id": "707",
         "$values": [
           {
-            "$id": "1063",
+            "$id": "708",
             "Location": {
-              "X": 15,
-              "Y": 15
+              "X": 7,
+              "Y": 10
             },
             "Size": 10,
             "StartPoint": true,
@@ -12495,13 +12475,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1065",
+        "$id": "709",
         "$values": [
           {
-            "$id": "1066",
+            "$id": "710",
             "Location": {
-              "X": 15,
-              "Y": 15
+              "X": 7,
+              "Y": 10
             },
             "Size": 10,
             "StartPoint": true,
@@ -12530,10 +12510,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1068",
+        "$id": "711",
         "$values": [
           {
-            "$id": "1069",
+            "$id": "712",
             "Location": {
               "X": 15,
               "Y": 15
@@ -12565,13 +12545,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1071",
+        "$id": "713",
         "$values": [
           {
-            "$id": "1072",
+            "$id": "714",
             "Location": {
-              "X": 15,
-              "Y": 15
+              "X": 10,
+              "Y": 10
             },
             "Size": 10,
             "StartPoint": true,
@@ -12600,10 +12580,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1074",
+        "$id": "715",
         "$values": [
           {
-            "$id": "1075",
+            "$id": "716",
             "Location": {
               "X": 15,
               "Y": 15
@@ -12635,13 +12615,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1077",
+        "$id": "717",
         "$values": [
           {
-            "$id": "1078",
+            "$id": "718",
             "Location": {
-              "X": 15,
-              "Y": 15
+              "X": 35,
+              "Y": 35
             },
             "Size": 10,
             "StartPoint": true,
@@ -12670,13 +12650,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1080",
+        "$id": "719",
         "$values": [
           {
-            "$id": "1081",
+            "$id": "720",
             "Location": {
-              "X": 15,
-              "Y": 15
+              "X": 25,
+              "Y": 25
             },
             "Size": 10,
             "StartPoint": true,
@@ -12705,10 +12685,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1083",
+        "$id": "721",
         "$values": [
           {
-            "$id": "1084",
+            "$id": "722",
             "Location": {
               "X": 50,
               "Y": 50
@@ -12740,13 +12720,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1086",
+        "$id": "723",
         "$values": [
           {
-            "$id": "1087",
+            "$id": "724",
             "Location": {
-              "X": 15,
-              "Y": 15
+              "X": 13,
+              "Y": 18
             },
             "Size": 10,
             "StartPoint": true,
@@ -12775,13 +12755,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1089",
+        "$id": "725",
         "$values": [
           {
-            "$id": "1090",
+            "$id": "726",
             "Location": {
-              "X": 15,
-              "Y": 15
+              "X": 10,
+              "Y": 12
             },
             "Size": 10,
             "StartPoint": true,
@@ -12810,13 +12790,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1092",
+        "$id": "727",
         "$values": [
           {
-            "$id": "1093",
+            "$id": "728",
             "Location": {
-              "X": 15,
-              "Y": 15
+              "X": 16,
+              "Y": 18
             },
             "Size": 10,
             "StartPoint": true,
@@ -12845,13 +12825,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1095",
+        "$id": "729",
         "$values": [
           {
-            "$id": "1096",
+            "$id": "730",
             "Location": {
-              "X": 15,
-              "Y": 15
+              "X": 25,
+              "Y": 25
             },
             "Size": 10,
             "StartPoint": true,
@@ -12909,10 +12889,10 @@
       "FireWallLimit": false,
       "WeatherParticles": 0,
       "SafeZones": {
-        "$id": "1098",
+        "$id": "731",
         "$values": [
           {
-            "$id": "1099",
+            "$id": "732",
             "Location": {
               "X": 496,
               "Y": 400
@@ -12944,10 +12924,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1101",
+        "$id": "733",
         "$values": [
           {
-            "$id": "1102",
+            "$id": "734",
             "Location": {
               "X": 25,
               "Y": 25
@@ -12979,10 +12959,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1104",
+        "$id": "735",
         "$values": [
           {
-            "$id": "1105",
+            "$id": "736",
             "Location": {
               "X": 25,
               "Y": 25
@@ -13014,10 +12994,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1107",
+        "$id": "737",
         "$values": [
           {
-            "$id": "1108",
+            "$id": "738",
             "Location": {
               "X": 25,
               "Y": 25
@@ -13049,10 +13029,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1110",
+        "$id": "739",
         "$values": [
           {
-            "$id": "1111",
+            "$id": "740",
             "Location": {
               "X": 25,
               "Y": 25
@@ -13084,10 +13064,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1113",
+        "$id": "741",
         "$values": [
           {
-            "$id": "1114",
+            "$id": "742",
             "Location": {
               "X": 25,
               "Y": 25
@@ -13119,10 +13099,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1116",
+        "$id": "743",
         "$values": [
           {
-            "$id": "1117",
+            "$id": "744",
             "Location": {
               "X": 25,
               "Y": 25
@@ -13154,10 +13134,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1119",
+        "$id": "745",
         "$values": [
           {
-            "$id": "1120",
+            "$id": "746",
             "Location": {
               "X": 25,
               "Y": 25
@@ -13189,13 +13169,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1122",
+        "$id": "747",
         "$values": [
           {
-            "$id": "1123",
+            "$id": "748",
             "Location": {
-              "X": 25,
-              "Y": 25
+              "X": 35,
+              "Y": 35
             },
             "Size": 10,
             "StartPoint": true,
@@ -13224,13 +13204,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1125",
+        "$id": "749",
         "$values": [
           {
-            "$id": "1126",
+            "$id": "750",
             "Location": {
-              "X": 25,
-              "Y": 25
+              "X": 16,
+              "Y": 18
             },
             "Size": 10,
             "StartPoint": true,
@@ -13259,13 +13239,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1128",
+        "$id": "751",
         "$values": [
           {
-            "$id": "1129",
+            "$id": "752",
             "Location": {
-              "X": 25,
-              "Y": 25
+              "X": 10,
+              "Y": 12
             },
             "Size": 10,
             "StartPoint": true,
@@ -13294,13 +13274,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1131",
+        "$id": "753",
         "$values": [
           {
-            "$id": "1132",
+            "$id": "754",
             "Location": {
-              "X": 25,
-              "Y": 25
+              "X": 10,
+              "Y": 10
             },
             "Size": 10,
             "StartPoint": true,
@@ -13329,10 +13309,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1134",
+        "$id": "755",
         "$values": [
           {
-            "$id": "1135",
+            "$id": "756",
             "Location": {
               "X": 35,
               "Y": 35
@@ -13364,13 +13344,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1137",
+        "$id": "757",
         "$values": [
           {
-            "$id": "1138",
+            "$id": "758",
             "Location": {
-              "X": 35,
-              "Y": 35
+              "X": 16,
+              "Y": 18
             },
             "Size": 10,
             "StartPoint": true,
@@ -13399,10 +13379,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1140",
+        "$id": "759",
         "$values": [
           {
-            "$id": "1141",
+            "$id": "760",
             "Location": {
               "X": 25,
               "Y": 25
@@ -13434,10 +13414,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1143",
+        "$id": "761",
         "$values": [
           {
-            "$id": "1144",
+            "$id": "762",
             "Location": {
               "X": 35,
               "Y": 35
@@ -13469,10 +13449,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1146",
+        "$id": "763",
         "$values": [
           {
-            "$id": "1147",
+            "$id": "764",
             "Location": {
               "X": 35,
               "Y": 35
@@ -13504,13 +13484,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1149",
+        "$id": "765",
         "$values": [
           {
-            "$id": "1150",
+            "$id": "766",
             "Location": {
-              "X": 35,
-              "Y": 35
+              "X": 10,
+              "Y": 10
             },
             "Size": 10,
             "StartPoint": true,
@@ -13539,13 +13519,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1152",
+        "$id": "767",
         "$values": [
           {
-            "$id": "1153",
+            "$id": "768",
             "Location": {
-              "X": 25,
-              "Y": 25
+              "X": 15,
+              "Y": 15
             },
             "Size": 10,
             "StartPoint": true,
@@ -13574,10 +13554,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1155",
+        "$id": "769",
         "$values": [
           {
-            "$id": "1156",
+            "$id": "770",
             "Location": {
               "X": 25,
               "Y": 25
@@ -13609,10 +13589,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1158",
+        "$id": "771",
         "$values": [
           {
-            "$id": "1159",
+            "$id": "772",
             "Location": {
               "X": 50,
               "Y": 50
@@ -13644,10 +13624,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1161",
+        "$id": "773",
         "$values": [
           {
-            "$id": "1162",
+            "$id": "774",
             "Location": {
               "X": 50,
               "Y": 50
@@ -13679,10 +13659,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1164",
+        "$id": "775",
         "$values": [
           {
-            "$id": "1165",
+            "$id": "776",
             "Location": {
               "X": 50,
               "Y": 50
@@ -13714,10 +13694,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1167",
+        "$id": "777",
         "$values": [
           {
-            "$id": "1168",
+            "$id": "778",
             "Location": {
               "X": 50,
               "Y": 50
@@ -13749,10 +13729,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1170",
+        "$id": "779",
         "$values": [
           {
-            "$id": "1171",
+            "$id": "780",
             "Location": {
               "X": 245,
               "Y": 248
@@ -13784,10 +13764,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1173",
+        "$id": "781",
         "$values": [
           {
-            "$id": "1174",
+            "$id": "782",
             "Location": {
               "X": 15,
               "Y": 15
@@ -13819,10 +13799,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1176",
+        "$id": "783",
         "$values": [
           {
-            "$id": "1177",
+            "$id": "784",
             "Location": {
               "X": 15,
               "Y": 15
@@ -13854,10 +13834,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1179",
+        "$id": "785",
         "$values": [
           {
-            "$id": "1180",
+            "$id": "786",
             "Location": {
               "X": 15,
               "Y": 15
@@ -13889,10 +13869,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1182",
+        "$id": "787",
         "$values": [
           {
-            "$id": "1183",
+            "$id": "788",
             "Location": {
               "X": 15,
               "Y": 15
@@ -13924,10 +13904,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1185",
+        "$id": "789",
         "$values": [
           {
-            "$id": "1186",
+            "$id": "790",
             "Location": {
               "X": 15,
               "Y": 15
@@ -13959,10 +13939,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1188",
+        "$id": "791",
         "$values": [
           {
-            "$id": "1189",
+            "$id": "792",
             "Location": {
               "X": 15,
               "Y": 15
@@ -13994,10 +13974,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1191",
+        "$id": "793",
         "$values": [
           {
-            "$id": "1192",
+            "$id": "794",
             "Location": {
               "X": 15,
               "Y": 15
@@ -14029,10 +14009,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1194",
+        "$id": "795",
         "$values": [
           {
-            "$id": "1195",
+            "$id": "796",
             "Location": {
               "X": 245,
               "Y": 248
@@ -14064,10 +14044,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1197",
+        "$id": "797",
         "$values": [
           {
-            "$id": "1198",
+            "$id": "798",
             "Location": {
               "X": 50,
               "Y": 50
@@ -14099,10 +14079,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1200",
+        "$id": "799",
         "$values": [
           {
-            "$id": "1201",
+            "$id": "800",
             "Location": {
               "X": 20,
               "Y": 20
@@ -14134,13 +14114,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1203",
+        "$id": "801",
         "$values": [
           {
-            "$id": "1204",
+            "$id": "802",
             "Location": {
-              "X": 12,
-              "Y": 12
+              "X": 16,
+              "Y": 18
             },
             "Size": 10,
             "StartPoint": true,
@@ -14169,12 +14149,12 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1206",
+        "$id": "803",
         "$values": [
           {
-            "$id": "1207",
+            "$id": "804",
             "Location": {
-              "X": 12,
+              "X": 10,
               "Y": 12
             },
             "Size": 10,
@@ -14204,13 +14184,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1209",
+        "$id": "805",
         "$values": [
           {
-            "$id": "1210",
+            "$id": "806",
             "Location": {
-              "X": 10,
-              "Y": 10
+              "X": 35,
+              "Y": 35
             },
             "Size": 10,
             "StartPoint": true,
@@ -14239,13 +14219,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1212",
+        "$id": "807",
         "$values": [
           {
-            "$id": "1213",
+            "$id": "808",
             "Location": {
-              "X": 12,
-              "Y": 12
+              "X": 25,
+              "Y": 25
             },
             "Size": 10,
             "StartPoint": true,
@@ -14274,13 +14254,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1215",
+        "$id": "809",
         "$values": [
           {
-            "$id": "1216",
+            "$id": "810",
             "Location": {
-              "X": 10,
-              "Y": 10
+              "X": 15,
+              "Y": 15
             },
             "Size": 10,
             "StartPoint": true,
@@ -14309,13 +14289,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1218",
+        "$id": "811",
         "$values": [
           {
-            "$id": "1219",
+            "$id": "812",
             "Location": {
-              "X": 10,
-              "Y": 10
+              "X": 25,
+              "Y": 25
             },
             "Size": 10,
             "StartPoint": true,
@@ -14344,10 +14324,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1221",
+        "$id": "813",
         "$values": [
           {
-            "$id": "1222",
+            "$id": "814",
             "Location": {
               "X": 25,
               "Y": 27
@@ -14379,10 +14359,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1224",
+        "$id": "815",
         "$values": [
           {
-            "$id": "1225",
+            "$id": "816",
             "Location": {
               "X": 400,
               "Y": 400
@@ -14414,10 +14394,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1227",
+        "$id": "817",
         "$values": [
           {
-            "$id": "1228",
+            "$id": "818",
             "Location": {
               "X": 50,
               "Y": 50
@@ -14449,13 +14429,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1230",
+        "$id": "819",
         "$values": [
           {
-            "$id": "1231",
+            "$id": "820",
             "Location": {
-              "X": 50,
-              "Y": 50
+              "X": 35,
+              "Y": 35
             },
             "Size": 10,
             "StartPoint": true,
@@ -14484,13 +14464,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1233",
+        "$id": "821",
         "$values": [
           {
-            "$id": "1234",
+            "$id": "822",
             "Location": {
-              "X": 50,
-              "Y": 50
+              "X": 15,
+              "Y": 17
             },
             "Size": 10,
             "StartPoint": true,
@@ -14519,13 +14499,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1236",
+        "$id": "823",
         "$values": [
           {
-            "$id": "1237",
+            "$id": "824",
             "Location": {
-              "X": 50,
-              "Y": 50
+              "X": 25,
+              "Y": 25
             },
             "Size": 10,
             "StartPoint": true,
@@ -14554,13 +14534,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1239",
+        "$id": "825",
         "$values": [
           {
-            "$id": "1240",
+            "$id": "826",
             "Location": {
-              "X": 50,
-              "Y": 50
+              "X": 10,
+              "Y": 10
             },
             "Size": 10,
             "StartPoint": true,
@@ -14589,13 +14569,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1242",
+        "$id": "827",
         "$values": [
           {
-            "$id": "1243",
+            "$id": "828",
             "Location": {
-              "X": 50,
-              "Y": 50
+              "X": 10,
+              "Y": 12
             },
             "Size": 10,
             "StartPoint": true,
@@ -14624,10 +14604,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1245",
+        "$id": "829",
         "$values": [
           {
-            "$id": "1246",
+            "$id": "830",
             "Location": {
               "X": 149,
               "Y": 148
@@ -14659,10 +14639,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1248",
+        "$id": "831",
         "$values": [
           {
-            "$id": "1249",
+            "$id": "832",
             "Location": {
               "X": 28,
               "Y": 30
@@ -14694,10 +14674,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1251",
+        "$id": "833",
         "$values": [
           {
-            "$id": "1252",
+            "$id": "834",
             "Location": {
               "X": 96,
               "Y": 100
@@ -14729,10 +14709,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1254",
+        "$id": "835",
         "$values": [
           {
-            "$id": "1255",
+            "$id": "836",
             "Location": {
               "X": 50,
               "Y": 50
@@ -14764,13 +14744,13 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1257",
+        "$id": "837",
         "$values": [
           {
-            "$id": "1258",
+            "$id": "838",
             "Location": {
               "X": 75,
-              "Y": 80
+              "Y": 75
             },
             "Size": 10,
             "StartPoint": true,
@@ -14799,10 +14779,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1260",
+        "$id": "839",
         "$values": [
           {
-            "$id": "1261",
+            "$id": "840",
             "Location": {
               "X": 245,
               "Y": 248
@@ -14834,10 +14814,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1263",
+        "$id": "841",
         "$values": [
           {
-            "$id": "1264",
+            "$id": "842",
             "Location": {
               "X": 149,
               "Y": 200
@@ -14869,10 +14849,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1266",
+        "$id": "843",
         "$values": [
           {
-            "$id": "1267",
+            "$id": "844",
             "Location": {
               "X": 50,
               "Y": 50
@@ -14904,10 +14884,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1269",
+        "$id": "845",
         "$values": [
           {
-            "$id": "1270",
+            "$id": "846",
             "Location": {
               "X": 245,
               "Y": 248
@@ -14939,10 +14919,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1272",
+        "$id": "847",
         "$values": [
           {
-            "$id": "1273",
+            "$id": "848",
             "Location": {
               "X": 197,
               "Y": 200
@@ -14974,10 +14954,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1275",
+        "$id": "849",
         "$values": [
           {
-            "$id": "1276",
+            "$id": "850",
             "Location": {
               "X": 149,
               "Y": 148
@@ -15009,10 +14989,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1278",
+        "$id": "851",
         "$values": [
           {
-            "$id": "1279",
+            "$id": "852",
             "Location": {
               "X": 149,
               "Y": 148
@@ -15044,10 +15024,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1281",
+        "$id": "853",
         "$values": [
           {
-            "$id": "1282",
+            "$id": "854",
             "Location": {
               "X": 197,
               "Y": 200
@@ -15079,10 +15059,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1284",
+        "$id": "855",
         "$values": [
           {
-            "$id": "1285",
+            "$id": "856",
             "Location": {
               "X": 197,
               "Y": 200
@@ -15114,10 +15094,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1287",
+        "$id": "857",
         "$values": [
           {
-            "$id": "1288",
+            "$id": "858",
             "Location": {
               "X": 100,
               "Y": 100
@@ -15149,10 +15129,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1290",
+        "$id": "859",
         "$values": [
           {
-            "$id": "1291",
+            "$id": "860",
             "Location": {
               "X": 197,
               "Y": 200
@@ -15184,10 +15164,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1293",
+        "$id": "861",
         "$values": [
           {
-            "$id": "1294",
+            "$id": "862",
             "Location": {
               "X": 149,
               "Y": 148
@@ -15219,10 +15199,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1296",
+        "$id": "863",
         "$values": [
           {
-            "$id": "1297",
+            "$id": "864",
             "Location": {
               "X": 272,
               "Y": 272
@@ -15254,10 +15234,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1299",
+        "$id": "865",
         "$values": [
           {
-            "$id": "1300",
+            "$id": "866",
             "Location": {
               "X": 298,
               "Y": 300
@@ -15289,10 +15269,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1302",
+        "$id": "867",
         "$values": [
           {
-            "$id": "1303",
+            "$id": "868",
             "Location": {
               "X": 149,
               "Y": 148
@@ -15324,10 +15304,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1305",
+        "$id": "869",
         "$values": [
           {
-            "$id": "1306",
+            "$id": "870",
             "Location": {
               "X": 25,
               "Y": 25
@@ -15359,10 +15339,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1308",
+        "$id": "871",
         "$values": [
           {
-            "$id": "1309",
+            "$id": "872",
             "Location": {
               "X": 197,
               "Y": 200
@@ -15394,10 +15374,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1311",
+        "$id": "873",
         "$values": [
           {
-            "$id": "1312",
+            "$id": "874",
             "Location": {
               "X": 149,
               "Y": 148
@@ -15429,10 +15409,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1314",
+        "$id": "875",
         "$values": [
           {
-            "$id": "1315",
+            "$id": "876",
             "Location": {
               "X": 25,
               "Y": 25
@@ -15464,10 +15444,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1317",
+        "$id": "877",
         "$values": [
           {
-            "$id": "1318",
+            "$id": "878",
             "Location": {
               "X": 100,
               "Y": 100
@@ -15499,10 +15479,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1320",
+        "$id": "879",
         "$values": [
           {
-            "$id": "1321",
+            "$id": "880",
             "Location": {
               "X": 50,
               "Y": 50
@@ -15534,10 +15514,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1323",
+        "$id": "881",
         "$values": [
           {
-            "$id": "1324",
+            "$id": "882",
             "Location": {
               "X": 50,
               "Y": 50
@@ -15569,10 +15549,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1326",
+        "$id": "883",
         "$values": [
           {
-            "$id": "1327",
+            "$id": "884",
             "Location": {
               "X": 50,
               "Y": 50
@@ -15604,10 +15584,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1329",
+        "$id": "885",
         "$values": [
           {
-            "$id": "1330",
+            "$id": "886",
             "Location": {
               "X": 15,
               "Y": 17
@@ -15639,10 +15619,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1332",
+        "$id": "887",
         "$values": [
           {
-            "$id": "1333",
+            "$id": "888",
             "Location": {
               "X": 10,
               "Y": 10
@@ -15674,10 +15654,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1335",
+        "$id": "889",
         "$values": [
           {
-            "$id": "1336",
+            "$id": "890",
             "Location": {
               "X": 30,
               "Y": 30
@@ -15709,10 +15689,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1338",
+        "$id": "891",
         "$values": [
           {
-            "$id": "1339",
+            "$id": "892",
             "Location": {
               "X": 50,
               "Y": 50
@@ -15744,10 +15724,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1341",
+        "$id": "893",
         "$values": [
           {
-            "$id": "1342",
+            "$id": "894",
             "Location": {
               "X": 50,
               "Y": 50
@@ -15779,10 +15759,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1344",
+        "$id": "895",
         "$values": [
           {
-            "$id": "1345",
+            "$id": "896",
             "Location": {
               "X": 50,
               "Y": 50
@@ -15814,10 +15794,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1347",
+        "$id": "897",
         "$values": [
           {
-            "$id": "1348",
+            "$id": "898",
             "Location": {
               "X": 50,
               "Y": 50
@@ -15849,10 +15829,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1350",
+        "$id": "899",
         "$values": [
           {
-            "$id": "1351",
+            "$id": "900",
             "Location": {
               "X": 50,
               "Y": 50
@@ -15884,10 +15864,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1353",
+        "$id": "901",
         "$values": [
           {
-            "$id": "1354",
+            "$id": "902",
             "Location": {
               "X": 50,
               "Y": 50
@@ -15919,10 +15899,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1356",
+        "$id": "903",
         "$values": [
           {
-            "$id": "1357",
+            "$id": "904",
             "Location": {
               "X": 149,
               "Y": 148
@@ -15954,10 +15934,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1359",
+        "$id": "905",
         "$values": [
           {
-            "$id": "1360",
+            "$id": "906",
             "Location": {
               "X": 149,
               "Y": 148
@@ -15989,10 +15969,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1362",
+        "$id": "907",
         "$values": [
           {
-            "$id": "1363",
+            "$id": "908",
             "Location": {
               "X": 149,
               "Y": 148
@@ -16024,10 +16004,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1365",
+        "$id": "909",
         "$values": [
           {
-            "$id": "1366",
+            "$id": "910",
             "Location": {
               "X": 149,
               "Y": 148
@@ -16059,10 +16039,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1368",
+        "$id": "911",
         "$values": [
           {
-            "$id": "1369",
+            "$id": "912",
             "Location": {
               "X": 149,
               "Y": 148
@@ -16094,10 +16074,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1371",
+        "$id": "913",
         "$values": [
           {
-            "$id": "1372",
+            "$id": "914",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16129,10 +16109,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1374",
+        "$id": "915",
         "$values": [
           {
-            "$id": "1375",
+            "$id": "916",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16164,10 +16144,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1377",
+        "$id": "917",
         "$values": [
           {
-            "$id": "1378",
+            "$id": "918",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16199,10 +16179,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1380",
+        "$id": "919",
         "$values": [
           {
-            "$id": "1381",
+            "$id": "920",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16234,10 +16214,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1383",
+        "$id": "921",
         "$values": [
           {
-            "$id": "1384",
+            "$id": "922",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16269,10 +16249,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1386",
+        "$id": "923",
         "$values": [
           {
-            "$id": "1387",
+            "$id": "924",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16304,10 +16284,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1389",
+        "$id": "925",
         "$values": [
           {
-            "$id": "1390",
+            "$id": "926",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16339,10 +16319,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1392",
+        "$id": "927",
         "$values": [
           {
-            "$id": "1393",
+            "$id": "928",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16374,10 +16354,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1395",
+        "$id": "929",
         "$values": [
           {
-            "$id": "1396",
+            "$id": "930",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16409,10 +16389,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1398",
+        "$id": "931",
         "$values": [
           {
-            "$id": "1399",
+            "$id": "932",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16444,10 +16424,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1401",
+        "$id": "933",
         "$values": [
           {
-            "$id": "1402",
+            "$id": "934",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16479,10 +16459,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1404",
+        "$id": "935",
         "$values": [
           {
-            "$id": "1405",
+            "$id": "936",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16514,10 +16494,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1407",
+        "$id": "937",
         "$values": [
           {
-            "$id": "1408",
+            "$id": "938",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16549,10 +16529,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1410",
+        "$id": "939",
         "$values": [
           {
-            "$id": "1411",
+            "$id": "940",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16584,10 +16564,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1413",
+        "$id": "941",
         "$values": [
           {
-            "$id": "1414",
+            "$id": "942",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16619,10 +16599,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1416",
+        "$id": "943",
         "$values": [
           {
-            "$id": "1417",
+            "$id": "944",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16654,10 +16634,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1419",
+        "$id": "945",
         "$values": [
           {
-            "$id": "1420",
+            "$id": "946",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16689,10 +16669,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1422",
+        "$id": "947",
         "$values": [
           {
-            "$id": "1423",
+            "$id": "948",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16724,10 +16704,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1425",
+        "$id": "949",
         "$values": [
           {
-            "$id": "1426",
+            "$id": "950",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16759,10 +16739,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1428",
+        "$id": "951",
         "$values": [
           {
-            "$id": "1429",
+            "$id": "952",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16794,10 +16774,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1431",
+        "$id": "953",
         "$values": [
           {
-            "$id": "1432",
+            "$id": "954",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16829,10 +16809,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1434",
+        "$id": "955",
         "$values": [
           {
-            "$id": "1435",
+            "$id": "956",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16864,10 +16844,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1437",
+        "$id": "957",
         "$values": [
           {
-            "$id": "1438",
+            "$id": "958",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16899,10 +16879,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1440",
+        "$id": "959",
         "$values": [
           {
-            "$id": "1441",
+            "$id": "960",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16934,10 +16914,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1443",
+        "$id": "961",
         "$values": [
           {
-            "$id": "1444",
+            "$id": "962",
             "Location": {
               "X": 25,
               "Y": 25
@@ -16969,10 +16949,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1446",
+        "$id": "963",
         "$values": [
           {
-            "$id": "1447",
+            "$id": "964",
             "Location": {
               "X": 25,
               "Y": 25
@@ -17004,10 +16984,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1449",
+        "$id": "965",
         "$values": [
           {
-            "$id": "1450",
+            "$id": "966",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17039,10 +17019,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1452",
+        "$id": "967",
         "$values": [
           {
-            "$id": "1453",
+            "$id": "968",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17074,10 +17054,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1455",
+        "$id": "969",
         "$values": [
           {
-            "$id": "1456",
+            "$id": "970",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17109,10 +17089,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1458",
+        "$id": "971",
         "$values": [
           {
-            "$id": "1459",
+            "$id": "972",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17144,10 +17124,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1461",
+        "$id": "973",
         "$values": [
           {
-            "$id": "1462",
+            "$id": "974",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17179,10 +17159,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1464",
+        "$id": "975",
         "$values": [
           {
-            "$id": "1465",
+            "$id": "976",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17214,10 +17194,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1467",
+        "$id": "977",
         "$values": [
           {
-            "$id": "1468",
+            "$id": "978",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17249,10 +17229,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1470",
+        "$id": "979",
         "$values": [
           {
-            "$id": "1471",
+            "$id": "980",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17284,10 +17264,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1473",
+        "$id": "981",
         "$values": [
           {
-            "$id": "1474",
+            "$id": "982",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17319,10 +17299,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1476",
+        "$id": "983",
         "$values": [
           {
-            "$id": "1477",
+            "$id": "984",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17354,10 +17334,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1479",
+        "$id": "985",
         "$values": [
           {
-            "$id": "1480",
+            "$id": "986",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17389,10 +17369,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1482",
+        "$id": "987",
         "$values": [
           {
-            "$id": "1483",
+            "$id": "988",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17424,10 +17404,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1485",
+        "$id": "989",
         "$values": [
           {
-            "$id": "1486",
+            "$id": "990",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17459,10 +17439,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1488",
+        "$id": "991",
         "$values": [
           {
-            "$id": "1489",
+            "$id": "992",
             "Location": {
               "X": 35,
               "Y": 35
@@ -17494,10 +17474,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1491",
+        "$id": "993",
         "$values": [
           {
-            "$id": "1492",
+            "$id": "994",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17529,10 +17509,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1494",
+        "$id": "995",
         "$values": [
           {
-            "$id": "1495",
+            "$id": "996",
             "Location": {
               "X": 35,
               "Y": 35
@@ -17564,10 +17544,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1497",
+        "$id": "997",
         "$values": [
           {
-            "$id": "1498",
+            "$id": "998",
             "Location": {
               "X": 100,
               "Y": 100
@@ -17599,10 +17579,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1500",
+        "$id": "999",
         "$values": [
           {
-            "$id": "1501",
+            "$id": "1000",
             "Location": {
               "X": 16,
               "Y": 19
@@ -17634,10 +17614,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1503",
+        "$id": "1001",
         "$values": [
           {
-            "$id": "1504",
+            "$id": "1002",
             "Location": {
               "X": 50,
               "Y": 42
@@ -17669,10 +17649,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1506",
+        "$id": "1003",
         "$values": [
           {
-            "$id": "1507",
+            "$id": "1004",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17704,10 +17684,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1509",
+        "$id": "1005",
         "$values": [
           {
-            "$id": "1510",
+            "$id": "1006",
             "Location": {
               "X": 50,
               "Y": 40
@@ -17739,10 +17719,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1512",
+        "$id": "1007",
         "$values": [
           {
-            "$id": "1513",
+            "$id": "1008",
             "Location": {
               "X": 100,
               "Y": 100
@@ -17774,10 +17754,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1515",
+        "$id": "1009",
         "$values": [
           {
-            "$id": "1516",
+            "$id": "1010",
             "Location": {
               "X": 100,
               "Y": 100
@@ -17809,10 +17789,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1518",
+        "$id": "1011",
         "$values": [
           {
-            "$id": "1519",
+            "$id": "1012",
             "Location": {
               "X": 100,
               "Y": 100
@@ -17844,10 +17824,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1521",
+        "$id": "1013",
         "$values": [
           {
-            "$id": "1522",
+            "$id": "1014",
             "Location": {
               "X": 10,
               "Y": 10
@@ -17879,10 +17859,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1524",
+        "$id": "1015",
         "$values": [
           {
-            "$id": "1525",
+            "$id": "1016",
             "Location": {
               "X": 128,
               "Y": 148
@@ -17914,10 +17894,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1527",
+        "$id": "1017",
         "$values": [
           {
-            "$id": "1528",
+            "$id": "1018",
             "Location": {
               "X": 110,
               "Y": 110
@@ -17949,10 +17929,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1530",
+        "$id": "1019",
         "$values": [
           {
-            "$id": "1531",
+            "$id": "1020",
             "Location": {
               "X": 50,
               "Y": 50
@@ -17984,10 +17964,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1533",
+        "$id": "1021",
         "$values": [
           {
-            "$id": "1534",
+            "$id": "1022",
             "Location": {
               "X": 21,
               "Y": 44
@@ -18019,10 +17999,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1536",
+        "$id": "1023",
         "$values": [
           {
-            "$id": "1537",
+            "$id": "1024",
             "Location": {
               "X": 50,
               "Y": 50
@@ -18054,10 +18034,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1539",
+        "$id": "1025",
         "$values": [
           {
-            "$id": "1540",
+            "$id": "1026",
             "Location": {
               "X": 92,
               "Y": 95
@@ -18089,10 +18069,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1542",
+        "$id": "1027",
         "$values": [
           {
-            "$id": "1543",
+            "$id": "1028",
             "Location": {
               "X": 92,
               "Y": 95
@@ -18124,10 +18104,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1545",
+        "$id": "1029",
         "$values": [
           {
-            "$id": "1546",
+            "$id": "1030",
             "Location": {
               "X": 121,
               "Y": 120
@@ -18159,10 +18139,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1548",
+        "$id": "1031",
         "$values": [
           {
-            "$id": "1549",
+            "$id": "1032",
             "Location": {
               "X": 50,
               "Y": 50
@@ -18194,10 +18174,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1551",
+        "$id": "1033",
         "$values": [
           {
-            "$id": "1552",
+            "$id": "1034",
             "Location": {
               "X": 149,
               "Y": 148
@@ -18229,10 +18209,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1554",
+        "$id": "1035",
         "$values": [
           {
-            "$id": "1555",
+            "$id": "1036",
             "Location": {
               "X": 30,
               "Y": 37
@@ -18264,10 +18244,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1557",
+        "$id": "1037",
         "$values": [
           {
-            "$id": "1558",
+            "$id": "1038",
             "Location": {
               "X": 15,
               "Y": 15
@@ -18299,10 +18279,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1560",
+        "$id": "1039",
         "$values": [
           {
-            "$id": "1561",
+            "$id": "1040",
             "Location": {
               "X": 15,
               "Y": 15
@@ -18334,10 +18314,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1563",
+        "$id": "1041",
         "$values": [
           {
-            "$id": "1564",
+            "$id": "1042",
             "Location": {
               "X": 96,
               "Y": 128
@@ -18369,10 +18349,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1566",
+        "$id": "1043",
         "$values": [
           {
-            "$id": "1567",
+            "$id": "1044",
             "Location": {
               "X": 96,
               "Y": 128
@@ -18404,10 +18384,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1569",
+        "$id": "1045",
         "$values": [
           {
-            "$id": "1570",
+            "$id": "1046",
             "Location": {
               "X": 30,
               "Y": 35
@@ -18439,10 +18419,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1572",
+        "$id": "1047",
         "$values": [
           {
-            "$id": "1573",
+            "$id": "1048",
             "Location": {
               "X": 26,
               "Y": 26
@@ -18474,10 +18454,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1575",
+        "$id": "1049",
         "$values": [
           {
-            "$id": "1576",
+            "$id": "1050",
             "Location": {
               "X": 26,
               "Y": 26
@@ -18509,10 +18489,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1578",
+        "$id": "1051",
         "$values": [
           {
-            "$id": "1579",
+            "$id": "1052",
             "Location": {
               "X": 26,
               "Y": 26
@@ -18544,10 +18524,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1581",
+        "$id": "1053",
         "$values": [
           {
-            "$id": "1582",
+            "$id": "1054",
             "Location": {
               "X": 26,
               "Y": 26
@@ -18579,10 +18559,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1584",
+        "$id": "1055",
         "$values": [
           {
-            "$id": "1585",
+            "$id": "1056",
             "Location": {
               "X": 26,
               "Y": 26
@@ -18614,10 +18594,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1587",
+        "$id": "1057",
         "$values": [
           {
-            "$id": "1588",
+            "$id": "1058",
             "Location": {
               "X": 26,
               "Y": 26
@@ -18649,10 +18629,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1590",
+        "$id": "1059",
         "$values": [
           {
-            "$id": "1591",
+            "$id": "1060",
             "Location": {
               "X": 26,
               "Y": 26
@@ -18684,10 +18664,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1593",
+        "$id": "1061",
         "$values": [
           {
-            "$id": "1594",
+            "$id": "1062",
             "Location": {
               "X": 30,
               "Y": 30
@@ -18719,10 +18699,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1596",
+        "$id": "1063",
         "$values": [
           {
-            "$id": "1597",
+            "$id": "1064",
             "Location": {
               "X": 30,
               "Y": 30
@@ -18754,10 +18734,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1599",
+        "$id": "1065",
         "$values": [
           {
-            "$id": "1600",
+            "$id": "1066",
             "Location": {
               "X": 128,
               "Y": 148
@@ -18789,10 +18769,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1602",
+        "$id": "1067",
         "$values": [
           {
-            "$id": "1603",
+            "$id": "1068",
             "Location": {
               "X": 110,
               "Y": 110
@@ -18824,10 +18804,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1605",
+        "$id": "1069",
         "$values": [
           {
-            "$id": "1606",
+            "$id": "1070",
             "Location": {
               "X": 50,
               "Y": 50
@@ -18859,10 +18839,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1608",
+        "$id": "1071",
         "$values": [
           {
-            "$id": "1609",
+            "$id": "1072",
             "Location": {
               "X": 23,
               "Y": 25
@@ -18894,10 +18874,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1611",
+        "$id": "1073",
         "$values": [
           {
-            "$id": "1612",
+            "$id": "1074",
             "Location": {
               "X": 50,
               "Y": 50
@@ -18929,10 +18909,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1614",
+        "$id": "1075",
         "$values": [
           {
-            "$id": "1615",
+            "$id": "1076",
             "Location": {
               "X": 197,
               "Y": 200
@@ -18964,10 +18944,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1617",
+        "$id": "1077",
         "$values": [
           {
-            "$id": "1618",
+            "$id": "1078",
             "Location": {
               "X": 277,
               "Y": 300
@@ -18999,10 +18979,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1620",
+        "$id": "1079",
         "$values": [
           {
-            "$id": "1621",
+            "$id": "1080",
             "Location": {
               "X": 25,
               "Y": 25
@@ -19034,10 +19014,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1623",
+        "$id": "1081",
         "$values": [
           {
-            "$id": "1624",
+            "$id": "1082",
             "Location": {
               "X": 25,
               "Y": 25
@@ -19069,10 +19049,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1626",
+        "$id": "1083",
         "$values": [
           {
-            "$id": "1627",
+            "$id": "1084",
             "Location": {
               "X": 25,
               "Y": 25
@@ -19104,10 +19084,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1629",
+        "$id": "1085",
         "$values": [
           {
-            "$id": "1630",
+            "$id": "1086",
             "Location": {
               "X": 25,
               "Y": 25
@@ -19139,10 +19119,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1632",
+        "$id": "1087",
         "$values": [
           {
-            "$id": "1633",
+            "$id": "1088",
             "Location": {
               "X": 32,
               "Y": 32
@@ -19174,10 +19154,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1635",
+        "$id": "1089",
         "$values": [
           {
-            "$id": "1636",
+            "$id": "1090",
             "Location": {
               "X": 400,
               "Y": 400
@@ -19209,10 +19189,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1638",
+        "$id": "1091",
         "$values": [
           {
-            "$id": "1639",
+            "$id": "1092",
             "Location": {
               "X": 40,
               "Y": 40
@@ -19244,10 +19224,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1641",
+        "$id": "1093",
         "$values": [
           {
-            "$id": "1642",
+            "$id": "1094",
             "Location": {
               "X": 149,
               "Y": 148
@@ -19279,10 +19259,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1644",
+        "$id": "1095",
         "$values": [
           {
-            "$id": "1645",
+            "$id": "1096",
             "Location": {
               "X": 50,
               "Y": 50
@@ -19314,10 +19294,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1647",
+        "$id": "1097",
         "$values": [
           {
-            "$id": "1648",
+            "$id": "1098",
             "Location": {
               "X": 53,
               "Y": 40
@@ -19349,10 +19329,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1650",
+        "$id": "1099",
         "$values": [
           {
-            "$id": "1651",
+            "$id": "1100",
             "Location": {
               "X": 53,
               "Y": 52
@@ -19384,10 +19364,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1653",
+        "$id": "1101",
         "$values": [
           {
-            "$id": "1654",
+            "$id": "1102",
             "Location": {
               "X": 15,
               "Y": 15
@@ -19419,10 +19399,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1656",
+        "$id": "1103",
         "$values": [
           {
-            "$id": "1657",
+            "$id": "1104",
             "Location": {
               "X": 8,
               "Y": 10
@@ -19454,10 +19434,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1659",
+        "$id": "1105",
         "$values": [
           {
-            "$id": "1660",
+            "$id": "1106",
             "Location": {
               "X": 15,
               "Y": 17
@@ -19489,10 +19469,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1662",
+        "$id": "1107",
         "$values": [
           {
-            "$id": "1663",
+            "$id": "1108",
             "Location": {
               "X": 10,
               "Y": 10
@@ -19524,10 +19504,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1665",
+        "$id": "1109",
         "$values": [
           {
-            "$id": "1666",
+            "$id": "1110",
             "Location": {
               "X": 20,
               "Y": 20
@@ -19559,10 +19539,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1668",
+        "$id": "1111",
         "$values": [
           {
-            "$id": "1669",
+            "$id": "1112",
             "Location": {
               "X": 20,
               "Y": 20
@@ -19594,10 +19574,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1671",
+        "$id": "1113",
         "$values": [
           {
-            "$id": "1672",
+            "$id": "1114",
             "Location": {
               "X": 45,
               "Y": 29
@@ -19629,10 +19609,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1674",
+        "$id": "1115",
         "$values": [
           {
-            "$id": "1675",
+            "$id": "1116",
             "Location": {
               "X": 85,
               "Y": 104
@@ -19664,10 +19644,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1677",
+        "$id": "1117",
         "$values": [
           {
-            "$id": "1678",
+            "$id": "1118",
             "Location": {
               "X": 40,
               "Y": 59
@@ -19699,10 +19679,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1680",
+        "$id": "1119",
         "$values": [
           {
-            "$id": "1681",
+            "$id": "1120",
             "Location": {
               "X": 70,
               "Y": 75
@@ -19734,10 +19714,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1683",
+        "$id": "1121",
         "$values": [
           {
-            "$id": "1684",
+            "$id": "1122",
             "Location": {
               "X": 78,
               "Y": 77
@@ -19769,10 +19749,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1686",
+        "$id": "1123",
         "$values": [
           {
-            "$id": "1687",
+            "$id": "1124",
             "Location": {
               "X": 85,
               "Y": 80
@@ -19874,10 +19854,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1695",
+        "$id": "1125",
         "$values": [
           {
-            "$id": "1696",
+            "$id": "1126",
             "Location": {
               "X": 69,
               "Y": 76
@@ -19944,10 +19924,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1701",
+        "$id": "1127",
         "$values": [
           {
-            "$id": "1702",
+            "$id": "1128",
             "Location": {
               "X": 48,
               "Y": 48
@@ -19979,10 +19959,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1704",
+        "$id": "1129",
         "$values": [
           {
-            "$id": "1705",
+            "$id": "1130",
             "Location": {
               "X": 58,
               "Y": 56
@@ -20014,10 +19994,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1707",
+        "$id": "1131",
         "$values": [
           {
-            "$id": "1708",
+            "$id": "1132",
             "Location": {
               "X": 48,
               "Y": 53
@@ -20049,10 +20029,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1710",
+        "$id": "1133",
         "$values": [
           {
-            "$id": "1711",
+            "$id": "1134",
             "Location": {
               "X": 96,
               "Y": 104
@@ -20084,10 +20064,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1713",
+        "$id": "1135",
         "$values": [
           {
-            "$id": "1714",
+            "$id": "1136",
             "Location": {
               "X": 69,
               "Y": 68
@@ -20119,10 +20099,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1716",
+        "$id": "1137",
         "$values": [
           {
-            "$id": "1717",
+            "$id": "1138",
             "Location": {
               "X": 96,
               "Y": 132
@@ -20154,10 +20134,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1719",
+        "$id": "1139",
         "$values": [
           {
-            "$id": "1720",
+            "$id": "1140",
             "Location": {
               "X": 80,
               "Y": 92
@@ -20189,10 +20169,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1722",
+        "$id": "1141",
         "$values": [
           {
-            "$id": "1723",
+            "$id": "1142",
             "Location": {
               "X": 37,
               "Y": 40
@@ -20224,10 +20204,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1725",
+        "$id": "1143",
         "$values": [
           {
-            "$id": "1726",
+            "$id": "1144",
             "Location": {
               "X": 70,
               "Y": 70
@@ -20259,10 +20239,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1728",
+        "$id": "1145",
         "$values": [
           {
-            "$id": "1729",
+            "$id": "1146",
             "Location": {
               "X": 48,
               "Y": 48
@@ -20294,10 +20274,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1731",
+        "$id": "1147",
         "$values": [
           {
-            "$id": "1732",
+            "$id": "1148",
             "Location": {
               "X": 38,
               "Y": 37
@@ -20329,10 +20309,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1734",
+        "$id": "1149",
         "$values": [
           {
-            "$id": "1735",
+            "$id": "1150",
             "Location": {
               "X": 20,
               "Y": 26
@@ -20364,10 +20344,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1737",
+        "$id": "1151",
         "$values": [
           {
-            "$id": "1738",
+            "$id": "1152",
             "Location": {
               "X": 26,
               "Y": 32
@@ -20399,10 +20379,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1740",
+        "$id": "1153",
         "$values": [
           {
-            "$id": "1741",
+            "$id": "1154",
             "Location": {
               "X": 32,
               "Y": 32
@@ -20434,10 +20414,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1743",
+        "$id": "1155",
         "$values": [
           {
-            "$id": "1744",
+            "$id": "1156",
             "Location": {
               "X": 53,
               "Y": 60
@@ -20469,10 +20449,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1746",
+        "$id": "1157",
         "$values": [
           {
-            "$id": "1747",
+            "$id": "1158",
             "Location": {
               "X": 50,
               "Y": 50
@@ -20504,10 +20484,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1749",
+        "$id": "1159",
         "$values": [
           {
-            "$id": "1750",
+            "$id": "1160",
             "Location": {
               "X": 64,
               "Y": 68
@@ -20539,10 +20519,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1752",
+        "$id": "1161",
         "$values": [
           {
-            "$id": "1753",
+            "$id": "1162",
             "Location": {
               "X": 45,
               "Y": 45
@@ -20574,10 +20554,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1755",
+        "$id": "1163",
         "$values": [
           {
-            "$id": "1756",
+            "$id": "1164",
             "Location": {
               "X": 32,
               "Y": 36
@@ -20609,10 +20589,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1758",
+        "$id": "1165",
         "$values": [
           {
-            "$id": "1759",
+            "$id": "1166",
             "Location": {
               "X": 27,
               "Y": 41
@@ -20644,10 +20624,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1761",
+        "$id": "1167",
         "$values": [
           {
-            "$id": "1762",
+            "$id": "1168",
             "Location": {
               "X": 36,
               "Y": 38
@@ -20679,10 +20659,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1764",
+        "$id": "1169",
         "$values": [
           {
-            "$id": "1765",
+            "$id": "1170",
             "Location": {
               "X": 80,
               "Y": 100
@@ -20714,10 +20694,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1767",
+        "$id": "1171",
         "$values": [
           {
-            "$id": "1768",
+            "$id": "1172",
             "Location": {
               "X": 42,
               "Y": 44
@@ -20749,10 +20729,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1770",
+        "$id": "1173",
         "$values": [
           {
-            "$id": "1771",
+            "$id": "1174",
             "Location": {
               "X": 75,
               "Y": 75
@@ -20784,10 +20764,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1773",
+        "$id": "1175",
         "$values": [
           {
-            "$id": "1774",
+            "$id": "1176",
             "Location": {
               "X": 197,
               "Y": 200
@@ -20819,10 +20799,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1776",
+        "$id": "1177",
         "$values": [
           {
-            "$id": "1777",
+            "$id": "1178",
             "Location": {
               "X": 32,
               "Y": 40
@@ -20854,10 +20834,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1779",
+        "$id": "1179",
         "$values": [
           {
-            "$id": "1780",
+            "$id": "1180",
             "Location": {
               "X": 85,
               "Y": 108
@@ -20889,10 +20869,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1782",
+        "$id": "1181",
         "$values": [
           {
-            "$id": "1783",
+            "$id": "1182",
             "Location": {
               "X": 53,
               "Y": 72
@@ -20924,10 +20904,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1785",
+        "$id": "1183",
         "$values": [
           {
-            "$id": "1786",
+            "$id": "1184",
             "Location": {
               "X": 37,
               "Y": 44
@@ -20959,10 +20939,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1788",
+        "$id": "1185",
         "$values": [
           {
-            "$id": "1789",
+            "$id": "1186",
             "Location": {
               "X": 48,
               "Y": 52
@@ -20994,10 +20974,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1791",
+        "$id": "1187",
         "$values": [
           {
-            "$id": "1792",
+            "$id": "1188",
             "Location": {
               "X": 80,
               "Y": 60
@@ -21029,10 +21009,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1794",
+        "$id": "1189",
         "$values": [
           {
-            "$id": "1795",
+            "$id": "1190",
             "Location": {
               "X": 58,
               "Y": 48
@@ -21064,10 +21044,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1797",
+        "$id": "1191",
         "$values": [
           {
-            "$id": "1798",
+            "$id": "1192",
             "Location": {
               "X": 101,
               "Y": 100
@@ -21099,10 +21079,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1800",
+        "$id": "1193",
         "$values": [
           {
-            "$id": "1801",
+            "$id": "1194",
             "Location": {
               "X": 32,
               "Y": 32
@@ -21134,10 +21114,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1803",
+        "$id": "1195",
         "$values": [
           {
-            "$id": "1804",
+            "$id": "1196",
             "Location": {
               "X": 42,
               "Y": 32
@@ -21169,10 +21149,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1806",
+        "$id": "1197",
         "$values": [
           {
-            "$id": "1807",
+            "$id": "1198",
             "Location": {
               "X": 42,
               "Y": 32
@@ -21204,10 +21184,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1809",
+        "$id": "1199",
         "$values": [
           {
-            "$id": "1810",
+            "$id": "1200",
             "Location": {
               "X": 58,
               "Y": 48
@@ -21239,10 +21219,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1812",
+        "$id": "1201",
         "$values": [
           {
-            "$id": "1813",
+            "$id": "1202",
             "Location": {
               "X": 58,
               "Y": 48
@@ -21274,10 +21254,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1815",
+        "$id": "1203",
         "$values": [
           {
-            "$id": "1816",
+            "$id": "1204",
             "Location": {
               "X": 80,
               "Y": 80
@@ -21309,10 +21289,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1818",
+        "$id": "1205",
         "$values": [
           {
-            "$id": "1819",
+            "$id": "1206",
             "Location": {
               "X": 32,
               "Y": 32
@@ -21344,10 +21324,10 @@
       "FireDamage": 0,
       "LightningDamage": 0,
       "SafeZones": {
-        "$id": "1821",
+        "$id": "1207",
         "$values": [
           {
-            "$id": "1822",
+            "$id": "1208",
             "Location": {
               "X": 32,
               "Y": 32

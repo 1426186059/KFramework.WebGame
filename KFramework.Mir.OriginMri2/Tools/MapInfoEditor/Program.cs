@@ -95,8 +95,17 @@ app.MapGet("/api/maps/{id:int}", (int id) =>
         };
     }).ToList();
 
-    var npcs = store.GetNpcs(e)
+    // NPC 来自全局 NPC 表（按 MapIndex 关联），不放在 MapInfo_Fix 里
+    var npcs = store.GetNpcs(e.Index)
         .Select(n => new { index = n.Index, fileName = n.FileName, name = n.Name, x = n.X, y = n.Y, rate = n.Rate, image = n.Image }).ToList();
+
+    var movements = store.GetMovements(e).Select(mv => new
+    {
+        destMapIndex = mv.DestMapIndex,
+        sourceX = mv.SourceX, sourceY = mv.SourceY,
+        destX = mv.DestX, destY = mv.DestY,
+        needHole = mv.NeedHole, needMove = mv.NeedMove
+    }).ToList();
 
     return Results.Ok(new
     {
@@ -107,6 +116,7 @@ app.MapGet("/api/maps/{id:int}", (int id) =>
         safeZones,
         respawns,
         npcs,
+        movements,
         map = new { cols, rows, walkable, flagsBase64 = flagsB64 }
     });
 });
@@ -176,22 +186,65 @@ app.MapPost("/api/maps/{id:int}", async (int id, HttpContext ctx) =>
         });
     });
 
-    // NPC
-    ReplaceArray(e, "NPCs", body.GetProperty("npcs"), (arr, it) =>
+    // 传送点（Movements，属于 MapInfo_Fix，服务器 Web 模式本地读取即生效）
+    ReplaceArray(e, "Movements", body.GetProperty("movements"), (arr, it) =>
     {
         arr.Add(new JsonObject
         {
-            ["Index"] = JsonValue.Create(store.NextId()),
-            ["FileName"] = JsonValue.Create(it.GetProperty("fileName").GetString() ?? ""),
-            ["Name"] = JsonValue.Create(it.GetProperty("name").GetString() ?? ""),
-            ["MapIndex"] = JsonValue.Create(id),
-            ["Location"] = new JsonObject { ["X"] = JsonValue.Create(it.GetProperty("x").GetInt32()), ["Y"] = JsonValue.Create(it.GetProperty("y").GetInt32()) },
-            ["Rate"] = JsonValue.Create(it.GetProperty("rate").GetInt32()),
-            ["Image"] = JsonValue.Create(it.GetProperty("image").GetInt32())
+            ["$id"] = JsonValue.Create(store.NextId()),
+            ["MapIndex"] = JsonValue.Create(it.GetProperty("destMapIndex").GetInt32()),
+            ["Source"] = new JsonObject { ["X"] = JsonValue.Create(it.GetProperty("sourceX").GetInt32()), ["Y"] = JsonValue.Create(it.GetProperty("sourceY").GetInt32()) },
+            ["Destination"] = new JsonObject { ["X"] = JsonValue.Create(it.GetProperty("destX").GetInt32()), ["Y"] = JsonValue.Create(it.GetProperty("destY").GetInt32()) },
+            ["NeedHole"] = JsonValue.Create(it.GetProperty("needHole").GetBoolean()),
+            ["NeedMove"] = JsonValue.Create(it.GetProperty("needMove").GetBoolean()),
+            ["ConquestIndex"] = JsonValue.Create(0),
+            ["ShowOnBigMap"] = JsonValue.Create(false),
+            ["Icon"] = JsonValue.Create(0)
         });
     });
 
     store.Save();
+    return Results.Ok(new { ok = true });
+});
+
+// ---------- NPC 增删改（作用于全局 NPCInfo.json，按 MapIndex 关联地图） ----------
+app.MapPost("/api/npcs", async (HttpContext ctx) =>
+{
+    using var doc = await JsonDocument.ParseAsync(ctx.Request.Body);
+    var b = doc.RootElement;
+    int mapIndex = b.GetProperty("mapIndex").GetInt32();
+    string fileName = b.GetProperty("fileName").GetString() ?? "";
+    string name = b.GetProperty("name").GetString() ?? "";
+    int x = b.GetProperty("x").GetInt32();
+    int y = b.GetProperty("y").GetInt32();
+    int rate = b.TryGetProperty("rate", out var r) ? r.GetInt32() : 100;
+    int image = b.TryGetProperty("image", out var im) ? im.GetInt32() : 0;
+    int newIndex = store.AddNpcGlobal(mapIndex, fileName, name, x, y, rate, image);
+    store.SaveNpc();
+    return Results.Ok(new { ok = true, index = newIndex });
+});
+
+app.MapPut("/api/npcs/{index:int}", async (int index, HttpContext ctx) =>
+{
+    using var doc = await JsonDocument.ParseAsync(ctx.Request.Body);
+    var b = doc.RootElement;
+    string fileName = b.GetProperty("fileName").GetString() ?? "";
+    string name = b.GetProperty("name").GetString() ?? "";
+    int x = b.GetProperty("x").GetInt32();
+    int y = b.GetProperty("y").GetInt32();
+    int rate = b.GetProperty("rate").GetInt32();
+    int image = b.GetProperty("image").GetInt32();
+    bool ok = store.UpdateNpc(index, fileName, name, x, y, rate, image);
+    if (!ok) return Results.NotFound(new { error = "未找到 NPC index=" + index });
+    store.SaveNpc();
+    return Results.Ok(new { ok = true });
+});
+
+app.MapDelete("/api/npcs/{index:int}", (int index) =>
+{
+    bool ok = store.DeleteNpc(index);
+    if (!ok) return Results.NotFound(new { error = "未找到 NPC index=" + index });
+    store.SaveNpc();
     return Results.Ok(new { ok = true });
 });
 
