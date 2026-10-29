@@ -81,6 +81,42 @@ class Program
 
     static int idc = 900000;
 
+    // 把文档内所有 $id 重新分配为唯一序号，并同步修正所有 $ref（保留数据，仅修复引用一致性）。
+    // 关键：按“对象本体”逐一分配唯一新 id（即使旧 id 已重复也不会再撞），旧 id→新 id 取首次出现用于 $ref。
+    static void NormalizeIds(JObject doc)
+    {
+        int counter = 1;
+        var newIdOf = new Dictionary<JObject, string>(); // 引用相等：每个有 $id 的对象得到唯一新 id
+        var oldToNew = new Dictionary<string, string>();  // 旧 id -> 新 id（首次出现，供 $ref 修正）
+        void Assign(JToken t)
+        {
+            if (t is JObject o)
+            {
+                var id = o["$id"]?.ToString();
+                if (id != null)
+                {
+                    string nid = (counter++).ToString();
+                    newIdOf[o] = nid;
+                    if (!oldToNew.ContainsKey(id)) oldToNew[id] = nid;
+                }
+                foreach (var p in o.Properties()) if (p.Name != "$id") Assign(p.Value);
+            }
+            else if (t is JArray a) { foreach (var e in a) Assign(e); }
+        }
+        Assign(doc);
+        void Replace(JToken t)
+        {
+            if (t is JObject o)
+            {
+                if (newIdOf.TryGetValue(o, out var nid)) o["$id"] = nid;
+                if (o["$ref"] != null) { var r = o["$ref"].ToString(); if (oldToNew.TryGetValue(r, out var nn)) o["$ref"] = nn; }
+                foreach (var p in o.Properties()) if (p.Name != "$id" && p.Name != "$ref") Replace(p.Value);
+            }
+            else if (t is JArray a) { foreach (var e in a) Replace(e); }
+        }
+        Replace(doc);
+    }
+
     static void Main(string[] args)
     {
         bool npcOnly = args.Length > 0 && args[0] == "npc";
@@ -90,14 +126,17 @@ class Program
         string targetNpcPath = Path.Combine(versionRoot, "ExcelConfig", "NPCInfo.json");
         string logPath = Path.Combine(crystalDir, "bridge_log2.txt");
 
+        // 注意：绝不能用 PreserveReferencesHandling.Objects —— 它会给无 $id 的对象从 "1" 重新编号，
+        // 和原文件已有 $id 冲突。这里把 $id/$ref 当普通属性原样保留，仅新容器用唯一 id。
         var set = new JsonSerializerSettings
         {
-            PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+            PreserveReferencesHandling = PreserveReferencesHandling.None,
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore,
         };
 
         var targetDoc = JObject.Parse(File.ReadAllText(targetMapPath));
+        NormalizeIds(targetDoc); // 防御：先规范化基底的 $id/$ref，避免任何历史污染导致冲突
         var targetMaps = (JArray)targetDoc["$values"];
         var targetByIndex = new Dictionary<int, JObject>();
         foreach (JObject m in targetMaps) targetByIndex[(int)m["Index"]] = m;
@@ -142,6 +181,89 @@ class Program
             return;
         }
 
+        if (args.Length > 0 && args[0] == "verify")
+        {
+            foreach (var p in new[] { targetMapPath, targetNpcPath })
+            {
+                if (!File.Exists(p)) { Console.WriteLine($"跳过(不存在): {Path.GetFileName(p)}"); continue; }
+                try
+                {
+                    var opts = new System.Text.Json.JsonSerializerOptions { ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve };
+                    var o = System.Text.Json.JsonSerializer.Deserialize<object>(File.ReadAllText(p), opts);
+                    Console.WriteLine($"OK 可加载(无$id冲突): {Path.GetFileName(p)}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"!! 加载失败: {Path.GetFileName(p)} -> {ex.Message}");
+                }
+            }
+            return;
+        }
+
+        if (args.Length > 0 && args[0] == "normalize")
+        {
+            string normPath = args.Length > 1 ? args[1] : targetMapPath;
+            var doc = JObject.Parse(File.ReadAllText(normPath));
+            int before = CountIds(doc);
+            NormalizeIds(doc);
+            File.WriteAllText(normPath, JsonConvert.SerializeObject(doc, set));
+            Console.WriteLine($"normalize 完成：重排 {before} 个 $id 为唯一序号并修正 $ref，已写回 {Path.GetFileName(normPath)}");
+            return;
+        }
+
+        static int CountIds(JToken t)
+        {
+            int n = 0;
+            if (t is JObject o) { if (o["$id"] != null) n++; foreach (var p in o.Properties()) if (p.Name != "$id") n += CountIds(p.Value); }
+            else if (t is JArray a) { foreach (var e in a) n += CountIds(e); }
+            return n;
+        }
+
+        if (args.Length > 0 && args[0] == "scanids")
+        {
+            string scanPath = args.Length > 1 ? args[1] : targetMapPath;
+            var doc = JObject.Parse(File.ReadAllText(scanPath));
+            var ids = new Dictionary<string, int>();
+            int dups = 0;
+            void Walk(JToken t)
+            {
+                if (t is JObject o)
+                {
+                    var id = o["$id"]?.ToString();
+                    if (id != null) { if (!ids.TryAdd(id, 1)) { ids[id]++; dups++; Console.WriteLine($"重复 $id: {id} (第{ids[id]}次) 路径≈{o.Path}"); } }
+                    foreach (var p in o.Properties()) if (p.Name != "$id") Walk(p.Value);
+                }
+                else if (t is JArray a) { foreach (var e in a) Walk(e); }
+            }
+            Walk(doc);
+            Console.WriteLine(dups == 0 ? "未检测到重复 $id，磁盘文件干净" : $"共发现 {dups} 处重复 $id");
+            return;
+        }
+
+        if (args.Length > 0 && args[0] == "editorsim")
+        {
+            // 模拟 MapInfoEditor.Save()：JsonNode.Parse + ToJsonString(WriteIndented, UnsafeRelaxedJsonEscaping)
+            var node = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(targetMapPath));
+            var opts = new System.Text.Json.JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+            var outTxt = node.ToJsonString(opts);
+            var doc = JObject.Parse(outTxt);
+            var ids = new Dictionary<string, int>();
+            int dups = 0;
+            void Walk(JToken t)
+            {
+                if (t is JObject o)
+                {
+                    var id = o["$id"]?.ToString();
+                    if (id != null) { if (!ids.TryAdd(id, 1)) { ids[id]++; dups++; } }
+                    foreach (var p in o.Properties()) if (p.Name != "$id") Walk(p.Value);
+                }
+                else if (t is JArray a) { foreach (var e in a) Walk(e); }
+            }
+            Walk(doc);
+            Console.WriteLine(dups == 0 ? "模拟编辑器保存后：无重复 $id（编辑器保存安全）" : $"模拟编辑器保存后：发现 {dups} 处重复 $id（编辑器会破坏！）");
+            return;
+        }
+
         var log = new List<string>();
 
         // ---- 地图内 怪物/安全区/传送门 ----
@@ -169,8 +291,8 @@ class Program
             Console.WriteLine($"MapInfo 完成：填充地图 {filled} | 怪物+{respAdded} 安全区+{szAdded} 传送门+{mvAdded}");
         }
 
-        // ---- NPC（写入 ExcelConfig/NPCInfo.json，按 MapIndex 关联）----
-        if (File.Exists(targetNpcPath) && File.Exists(Path.Combine(crystalDir, "NPCInfo.json")))
+        // ---- NPC（写入 ExcelConfig/NPCInfo.json，按 MapIndex 关联）仅 npc 模式 ----
+        if (npcOnly && File.Exists(targetNpcPath) && File.Exists(Path.Combine(crystalDir, "NPCInfo.json")))
         {
             string bak = targetNpcPath + ".bak2";
             File.Copy(targetNpcPath, bak, true);
@@ -275,7 +397,7 @@ class Program
         if (!(src[field] is JObject sjo) || !(sjo["$values"] is JArray sa)) return 0;
         var da = GetOrCreateValues(dst, field);
         int n = 0;
-        foreach (JObject item in sa) { var c = (JObject)item.DeepClone(); c.Remove("$id"); da.Add(c); n++; }
+        foreach (JObject item in sa) { var c = (JObject)item.DeepClone(); ClearNestedIds(c); da.Add(c); n++; }
         return n;
     }
 
@@ -287,7 +409,7 @@ class Program
         foreach (JObject item in sa)
         {
             var c = (JObject)item.DeepClone();
-            c.Remove("$id");
+            ClearNestedIds(c);
             c["Info"] = new JObject { ["$ref"] = (string)dst["$id"] };
             da.Add(c); n++;
         }
@@ -304,7 +426,7 @@ class Program
             var mi = (int?)item["MapIndex"];
             if (!mi.HasValue || !idxMap.TryGetValue(mi.Value, out int ti)) continue;
             var c = (JObject)item.DeepClone();
-            c.Remove("$id");
+            ClearNestedIds(c);
             c["MapIndex"] = ti;
             da.Add(c); n++;
         }
