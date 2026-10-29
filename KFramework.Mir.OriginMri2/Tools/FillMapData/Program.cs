@@ -117,6 +117,24 @@ class Program
         Replace(doc);
     }
 
+    static byte[] DecompressIfNeeded(byte[] raw)
+    {
+        if (raw == null || raw.Length < 2) return raw;
+        if (raw[0] == 0x1f && raw[1] == 0x8b)
+        {
+            using var ms = new MemoryStream(raw);
+            using var gz = new System.IO.Compression.GZipStream(ms, System.IO.Compression.CompressionMode.Decompress);
+            using var o = new MemoryStream(); gz.CopyTo(o); return o.ToArray();
+        }
+        if (raw[0] == 0x78 && (raw[1] == 0x01 || raw[1] == 0x9c || raw[1] == 0xda))
+        {
+            using var ms = new MemoryStream(raw);
+            using var zl = new System.IO.Compression.ZLibStream(ms, System.IO.Compression.CompressionMode.Decompress);
+            using var o = new MemoryStream(); zl.CopyTo(o); return o.ToArray();
+        }
+        return raw;
+    }
+
     static void Main(string[] args)
     {
         bool npcOnly = args.Length > 0 && args[0] == "npc";
@@ -237,6 +255,51 @@ class Program
             }
             Walk(doc);
             Console.WriteLine(dups == 0 ? "未检测到重复 $id，磁盘文件干净" : $"共发现 {dups} 处重复 $id");
+            return;
+        }
+
+        if (args.Length > 0 && args[0] == "mapcheck")
+        {
+            string datPath = Path.Combine(versionRoot, "Maps", "map10.25341.1.dat");
+            var datIds = new HashSet<int>();
+            if (!File.Exists(datPath)) Console.WriteLine("!! dat 不存在: " + datPath);
+            else
+            {
+                byte[] data = DecompressIfNeeded(File.ReadAllBytes(datPath));
+                if (data != null && data.Length >= 2)
+                {
+                    int count = (data[0] << 8) | data[1];
+                    int pos = 2;
+                    for (int i = 0; i < count && pos < data.Length; i++)
+                    {
+                        if (pos + 8 > data.Length) break;
+                        int id = (data[pos] << 24) | (data[pos + 1] << 16) | (data[pos + 2] << 8) | data[pos + 3];
+                        int len = (data[pos + 4] << 24) | (data[pos + 5] << 16) | (data[pos + 6] << 8) | data[pos + 7];
+                        pos += 8;
+                        if (len < 0 || len > data.Length - pos) break;
+                        datIds.Add(id);
+                        pos += len;
+                    }
+                }
+            }
+            var doc = JObject.Parse(File.ReadAllText(targetMapPath));
+            var arr = (JArray)doc["$values"];
+            int total = 0, hit = 0, startMaps = 0; var missing = new List<int>();
+            foreach (JObject m in arr)
+            {
+                var fn = m["FileName"]?.ToString();
+                if (!int.TryParse(fn, out int id)) continue;
+                total++;
+                if (datIds.Contains(id))
+                {
+                    hit++;
+                    if (m["SafeZones"] is JObject sz && sz["$values"] is JArray sza)
+                        foreach (JObject z in sza) if (z["StartPoint"]?.ToObject<bool>() == true) { startMaps++; break; }
+                }
+                else missing.Add(id);
+            }
+            Console.WriteLine($"地图总数={total}  dat内含={hit}  缺失={missing.Count}  含起始点(可启动)={startMaps}");
+            if (missing.Count > 0) Console.WriteLine("缺失id(前40): " + string.Join(",", missing.Take(40)));
             return;
         }
 
