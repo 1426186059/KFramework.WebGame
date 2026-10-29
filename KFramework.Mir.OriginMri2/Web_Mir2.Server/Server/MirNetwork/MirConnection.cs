@@ -714,9 +714,7 @@ namespace Server.MirNetwork
                 case (short)ClientPacketIds.GetRanking:
                     GetRanking((C.GetRanking)p);
                     break;
-                case (short)ClientPacketIds.Opendoor:
-                    Opendoor((C.Opendoor)p);
-                    break;
+                // 【门已移除】原 ClientPacketIds.Opendoor 分支删除（不再处理开门包）。
                 case (short)ClientPacketIds.GetRentedItems:
                     GetRentedItems();
                     break;
@@ -2207,11 +2205,7 @@ namespace Server.MirNetwork
             Envir.GetRanking(this, p.RankType, p.RankIndex, p.OnlineOnly);
         }
 
-        private void Opendoor(C.Opendoor p)
-        {
-            if (Stage != GameStage.Game) return;
-            Player.Opendoor(p.DoorIndex);
-        }
+        // 【门已移除】原 Opendoor(C.Opendoor) 处理删除。
 
         private void GetRentedItems()
         {

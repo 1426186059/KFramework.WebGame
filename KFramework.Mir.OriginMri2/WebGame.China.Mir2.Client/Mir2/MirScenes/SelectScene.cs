@@ -475,7 +475,7 @@ namespace Client.MirScenes
                     break;
                 case 4:
                     KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(ActiveScene == null ? "null" : ActiveScene.GetType().Name)} → GameScene  时刻={DateTime.Now:HH:mm:ss.fff}");
-                    ActiveScene = new GameScene();
+                    CMain.Profile("new GameScene() 构造", () => ActiveScene = new GameScene());
                     Dispose();
                     break;
             }

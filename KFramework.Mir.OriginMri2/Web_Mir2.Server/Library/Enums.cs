@@ -1898,13 +1898,7 @@ public enum GuildRankOptions : byte
     CanActivateBuff = 128
 }
 
-public enum DoorState : byte
-{
-    Closed = 0,
-    Opening = 1,
-    Open = 2,
-    Closing = 3
-}
+// 【门已移除】原 DoorState 枚举删除。
 
 public enum IntelligentCreaturePickupMode : byte
 {

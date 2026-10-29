@@ -31,14 +31,7 @@ public class SelectInfo
     }
 }
 
-public class Door
-{
-    public byte index;
-    public DoorState DoorState;
-    public byte ImageIndex;
-    public long LastTick;
-    public Point Location;
-}
+// 【门已移除】原 Door 类删除：原始传奇地图数据不含门信息（老 .map 的 DoorIndex/DoorOffset 遗留）。
 
 public class RankCharacterInfo
 {

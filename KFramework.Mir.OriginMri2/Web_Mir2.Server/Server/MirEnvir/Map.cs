@@ -25,8 +25,8 @@ namespace Server.MirEnvir
         public int Width, Height;
         public Cell[,] Cells;
         public List<Point> WalkableCells;
-        public Door[,] DoorIndex;
-        public List<Door> Doors = new List<Door>();
+        // 【门已移除】原 Door[,] DoorIndex / List<Door> Doors 属于老 .map 格式（DoorIndex/DoorOffset 字段）的门机制；
+        // 原始传奇地图数据 = dat（每格 4-bit 碰撞标志）+ zipmap 瓦片整图，不含任何门信息，故整条门链路已从服务端移除。
         public MineSpot[,] Mine;
         public long LightningTime, FireTime;
         public int MonsterCount;
@@ -45,29 +45,6 @@ namespace Server.MirEnvir
         {
             Info = info;
             Thread = Envir.Random.Next(Settings.ThreadLimit);
-        }
-
-        public Door AddDoor(byte DoorIndex, Point location)
-        {
-            DoorIndex = (byte)(DoorIndex & 0x7F);
-            for (int i = 0; i < Doors.Count; i++)
-                if (Doors[i].index == DoorIndex)
-                    return Doors[i];
-            Door DoorInfo = new Door() { index = DoorIndex, Location = location };
-            Doors.Add(DoorInfo);
-            return DoorInfo;
-        }
-        
-        public bool OpenDoor(byte DoorIndex)
-        {
-            for (int i = 0; i < Doors.Count; i++)
-                if (Doors[i].index == DoorIndex)
-                {
-                    Doors[i].DoorState = DoorState.Open;
-                    Doors[i].LastTick = Envir.Time;
-                    return true;
-                }
-            return false;
         }
 
         public bool Load()
@@ -291,26 +268,13 @@ namespace Server.MirEnvir
             return x >= 0 && x < Width && y >= 0 && y < Height && GetCell(x, y).Valid;
         }
 
-        public bool CheckDoorOpen(Point location)
-        {
-            if (DoorIndex[location.X, location.Y] == null) return true;
-            if (DoorIndex[location.X, location.Y].DoorState != DoorState.Open) return false;
-            return true;
-        }
+        // 【门已移除】原 CheckDoorOpen(Point) / 每帧遍历 Doors 广播关门 一并删除：
+        // 原始传奇地图数据不含门信息（dat 每格仅 4-bit 碰撞标志 + zipmap 瓦片整图），
+        // 门是老 .map 格式的 DoorIndex/DoorOffset 遗留，服务端不再有任何门状态机。
 
         public void Process()
         {
             ProcessRespawns();
-
-            for (int i = 0; i < Doors.Count; i++)
-            {
-                if ((Doors[i].DoorState == DoorState.Open) && (Doors[i].LastTick + 5000 < Envir.Time))
-                {
-                    Doors[i].DoorState = 0;
-
-                    Broadcast(new S.Opendoor() { DoorIndex = Doors[i].index, Close = true }, Doors[i].Location);
-                }
-            }
 
             if ((Info.Lightning) && Envir.Time > LightningTime)
             {

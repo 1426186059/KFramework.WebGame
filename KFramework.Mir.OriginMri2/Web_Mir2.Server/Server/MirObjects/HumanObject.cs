@@ -2417,12 +2417,7 @@ namespace Server.MirObjects
                 return false;
             }
 
-            if (!CurrentMap.CheckDoorOpen(location))
-            {
-                Enqueue(new S.UserLocation { Direction = Direction, Location = CurrentLocation });
-                return false;
-            }
-
+            // 【门已移除】原 CheckDoorOpen 判定删除：原始传奇地图数据不含门信息。
 
             Cell cell = CurrentMap.GetCell(location);
             if (cell.Objects != null)
@@ -2556,11 +2551,7 @@ namespace Server.MirObjects
                     Enqueue(new S.UserLocation { Direction = Direction, Location = CurrentLocation });
                     return false;
                 }
-                if (!CurrentMap.CheckDoorOpen(location))
-                {
-                    Enqueue(new S.UserLocation { Direction = Direction, Location = CurrentLocation });
-                    return false;
-                }
+                // 【门已移除】原 CheckDoorOpen 判定删除：原始传奇地图数据不含门信息。
                 Cell cell = CurrentMap.GetCell(location);
 
                 if (cell.Objects != null)

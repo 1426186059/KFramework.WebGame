@@ -19,6 +19,27 @@ namespace WebGame.Mir2.MonoGame.Client
         public readonly static DateTime StartTime = DateTime.UtcNow;
         public static long Time;
         public static DateTime Now { get { return StartTime.AddMilliseconds(Time); } }
+
+        // ── 主线程卡顿采样（排查“首次进 GameScene 卡 3 秒 → 心跳超时”）──────────────
+        // 只测上层游戏逻辑：帧间隔 / Network.Process / 场景 Process / 场景 Draw。
+        // 引擎内部（Game.TickFrame、UpdateLoop、DrawPhase、GL 提交）一概不动。
+        // 每帧只在耗时超过阈值时打一行，正常帧零输出，不会刷屏。
+        private static DateTime _tickStart = DateTime.Now;
+        private static int _libLoadedCount;
+        public const double StallLogMs = 20;
+
+        public static void LogStall(string tag, double ms)
+        {
+            if (ms > StallLogMs)
+                PrintTool.Log($"[Stall] {tag} 耗时 {ms:F0}ms");
+        }
+
+        public static void Profile(string tag, Action action)
+        {
+            var t0 = DateTime.Now;
+            action();
+            LogStall(tag, (DateTime.Now - t0).TotalMilliseconds);
+        }
         public static MirEngine.Point MPoint;
         public static Random Random = new Random();
         public static KeyBindSettings InputKeys = new KeyBindSettings();
@@ -113,6 +134,10 @@ namespace WebGame.Mir2.MonoGame.Client
             // 就令当前活动场景递归失效、下一帧重新烘焙，纹理就绪后即可正常显示。
             Libraries.LibraryLoaded += () =>
             {
+                _libLoadedCount++;
+                // 每个库加载完都会整场景递归 Refresh → 下一帧全树重烘焙。
+                // 进 GameScene 时会首次触碰几十个库，这里计数以便确认“连续重烘焙”是不是卡顿来源。
+                PrintTool.Log($"[Stall] LibraryLoaded #{_libLoadedCount} → 整场景 Refresh");
                 MirScene.ActiveScene?.Refresh();
 
                 // 地表（Floor）是单独烘焙到离屏 FloorTexture 的：CreateTexture 里只有
@@ -139,6 +164,14 @@ namespace WebGame.Mir2.MonoGame.Client
 
         public static void Update(GameTime gameTime)
         {
+            // 整帧周期（上一帧 Update 开始 → 本帧 Update 开始）= Update + Draw + 引擎/浏览器开销。
+            // 这一行能直接看出“卡 3 秒”落在哪一帧的窗口里。
+            var now = DateTime.Now;
+            var gap = (now - _tickStart).TotalMilliseconds;
+            _tickStart = now;
+            if (gap > StallLogMs)
+                PrintTool.Log($"[Stall] 整帧周期 {gap:F0}ms（CMain.Time={Time}）");
+
             UpdateTime(gameTime);
 
             CMain.MPoint = Input_Mouse.Position;
@@ -217,11 +250,12 @@ namespace WebGame.Mir2.MonoGame.Client
                 DXManager.Clean(); // Clean once a second.
             }
 
-            Network.Process();
+            Profile("Network.Process", Network.Process);
 
             if (MirScene.ActiveScene != null)
             {
-                MirScene.ActiveScene.Process();
+                var scene = MirScene.ActiveScene;
+                Profile("Scene.Process<" + scene.GetType().Name + ">", scene.Process);
             }
 
             // 每帧推进动画控件/按钮的帧偏移。移植时漏掉这两段会让动画永远停在第一帧
@@ -393,7 +427,10 @@ namespace WebGame.Mir2.MonoGame.Client
                 DXManager.SetSurface(null);                          // 原版 DXManager.SetSurface(DXManager.MainSurface)
 
                 if (MirScene.ActiveScene != null)
-                    MirScene.ActiveScene.Draw();                     // 原版 ActiveScene.Draw()
+                {
+                    var scene = MirScene.ActiveScene;
+                    Profile("Scene.Draw<" + scene.GetType().Name + ">", scene.Draw);   // 原版 ActiveScene.Draw()
+                }
 
                 DXManager.EndSprite();                               // 原版 DXManager.Sprite.End()
                 DXManager.Device.EndScene();

@@ -7903,15 +7903,7 @@ namespace Server.MirObjects
         {
             Enqueue(new S.SendOutputMessage { Message = text, Type = type });
         }
-        public void Opendoor(byte Doorindex)
-        {
-            //todo: add check for sw doors
-            if (CurrentMap.OpenDoor(Doorindex))
-            {
-                Enqueue(new S.Opendoor() { DoorIndex = Doorindex });
-                Broadcast(new S.Opendoor() { DoorIndex = Doorindex });
-            }
-        }
+        // 【门已移除】原 Opendoor(byte) 删除：原始传奇地图数据不含门信息，服务端不再有门状态机。
 
         #region NPC
 

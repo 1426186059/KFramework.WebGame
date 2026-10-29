@@ -38,6 +38,9 @@ namespace Client.MirScenes
             set { MapObject.HeroObject = value; }
         }
 
+        /// <summary>采样用：地图加载链路起点（收到 MapInformation / MapChanged 的时刻）。</summary>
+        public static DateTime MapLoadStart;
+
         public static long MoveTime, AttackTime, NextRunTime, LogTime, LastRunTime, ChangePModeTime, ChangeAModeTime, HeroSpellTime, IntelligentCreaturePickupTime;
         public static bool CanMove, CanRun;
 
@@ -1260,15 +1263,18 @@ namespace Client.MirScenes
             }
         }
 
+        // base.DrawControl 无法在 lambda 里调用，包一层供卡顿采样传方法组。
+        private void DrawUiBase() => base.DrawControl();
+
         protected internal override void DrawControl()
         {
             // 与原版 Crystal 一致：先 blit 地图 RT，再 blit 场景(UI) RT。
             // 地图单独成 RT（MapControl.ControlTexture），只在动画/移动时重烤；UI 在场景 RT 中、只在变动时重烤。
             // 场景 RT 底色为透明洋红，洋红区即透出已先画好的地图——半透明 UI 不会漏到地图层。
             if (MapControl != null && !MapControl.IsDisposed)
-                MapControl.DrawControl();
+                CMain.Profile("MapControl.DrawControl(地图层)", MapControl.DrawControl);
 
-            base.DrawControl();
+            CMain.Profile("GameScene.UI.DrawControl(UI层烘焙)", DrawUiBase);
 
 
 
@@ -2273,6 +2279,7 @@ namespace Client.MirScenes
             };
             MapControl.Weather = _forcedWeather ?? p.WeatherParticles;
             // 登录进游戏的第一张地图（服务器按角色存档下发），随后可能紧跟一个 MapChanged 纠正到实际所在图。
+            MapLoadStart = DateTime.Now;   // 采样：整条地图加载链路的起点
             KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapInformation: {p.FileName}(Index={p.MapIndex})  时刻={DateTime.Now:HH:mm:ss.fff}");
             _ = MapControl.LoadMapAsync();
             InsertControl(0, MapControl);
@@ -4107,6 +4114,7 @@ namespace Client.MirScenes
                 MapControl.MapDarkLight = p.MapDarkLight;
                 MapControl.Music = p.Music;
                 MapControl.Weather = _forcedWeather ?? p.Weather;
+                MapLoadStart = DateTime.Now;   // 采样：整条地图加载链路的起点
                 KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapChanged: {p.FileName}(Index={p.MapIndex})  切到={Path.GetFileNameWithoutExtension(MapControl.FileName)}  时刻={DateTime.Now:HH:mm:ss.fff}");
                 _ = MapControl.LoadMapAsync();
             }
@@ -10637,10 +10645,17 @@ namespace Client.MirScenes
             TileRows = (int)Math.Ceiling(PixelHeight / (double)TileTexHeight);
             _mapTileCache.Clear();
             _mapTileLoading.Clear();
+            _tilesReady = 0;            // 采样计数随切图重置
+            _tileGridLogged = false;
+            _floorWaitFrames = 0;
             _floorDirty = true;
             _lastUserCell = new Point(-1, -1);
 
+            // 首次进图卡顿采样：PathFinder 构造会为整张地图逐格 new Node（Width*Height 个对象），
+            // 与上面 CellInfo 网格同量级，同样跑在 await 之后的主线程上。
+            var pfT0 = DateTime.Now;
             PathFinder = new PathFinder(this);
+            CMain.LogStall($"[Map] 构建 PathFinder 网格 {Width}x{Height}={Width * Height} 节点", (DateTime.Now - pfT0).TotalMilliseconds);
 
             try
             {
@@ -10657,6 +10672,9 @@ namespace Client.MirScenes
 
             SetMusic = Music;
             SoundList.Music = Music;
+
+            // 采样：从收到地图包 → 网格/寻路全部就绪的总耗时（瓦片另算，见 DrawFloor 日志）
+            KFramework.MonoGame.PrintTool.Log($"[Map] 地图加载链路总耗时（收包 → 网格+寻路就绪）：{(DateTime.Now - GameScene.MapLoadStart).TotalMilliseconds:F0}ms  时刻={DateTime.Now:HH:mm:ss.fff}");
 
             UpdateWeather();
         }
@@ -10927,6 +10945,7 @@ namespace Client.MirScenes
             // 还没进图（User 为空）时直接判定有效，避免空烘焙
             if (User == null) { FloorValid = true; return; }
 
+            var floorT0 = DateTime.Now;   // 采样：单次地板烘焙耗时
             Surface oldSurface = DXManager.CurrentSurface;
             DXManager.SetSurface(DXManager.FloorSurface);
             DXManager.Device.Clear(ClearFlags.Target, Color.Empty, 0, 0);
@@ -10951,6 +10970,14 @@ namespace Client.MirScenes
                 if (rowMin < 0) rowMin = 0;
                 if (colMax >= TileCols) colMax = TileCols - 1;
                 if (rowMax >= TileRows) rowMax = TileRows - 1;
+
+                // 采样：本次切图一次性要拉多少张瓦片（只在切图后第一帧打一次）
+                if (!_tileGridLogged)
+                {
+                    _tileGridLogged = true;
+                    int tc = colMax - colMin + 1, tr = rowMax - rowMin + 1;
+                    KFramework.MonoGame.PrintTool.Log($"[Map] 地板瓦片请求规模: {tc}x{tr}={tc * tr} 张（TileCols={TileCols} TileRows={TileRows} 地图像素={PixelWidth}x{PixelHeight}）");
+                }
 
                 // 地板 RT 是 1:1 像素，瓦片用单位变换贴，避免被外层遗留 RenderTransform 二次缩放/偏移
                 var savedRT = DXManager.RenderTransform;
@@ -10981,6 +11008,21 @@ namespace Client.MirScenes
             // 可见瓦片尚未全部到位时继续重烘焙；全部到位则缓存停止重烘焙
             FloorValid = pending == 0;
             _floorDirty = false;
+
+            // 采样：地板重烘焙的频次与总等待时长（pending>0 期间每帧都会重烤一次）
+            if (pending > 0)
+            {
+                if (_floorWaitFrames == 0) _floorWaitStart = DateTime.Now;
+                _floorWaitFrames++;
+                if (_floorWaitFrames % 30 == 1)
+                    KFramework.MonoGame.PrintTool.Log($"[Map] 地板重烘焙第 {_floorWaitFrames} 帧，仍缺 {pending} 张瓦片（已就绪 {_tilesReady} 张）");
+            }
+            else if (_floorWaitFrames > 0)
+            {
+                KFramework.MonoGame.PrintTool.Log($"[Map] 地板瓦片全部到位：共重烘焙 {_floorWaitFrames} 帧 / {(DateTime.Now - _floorWaitStart).TotalMilliseconds:F0}ms，就绪 {_tilesReady} 张");
+                _floorWaitFrames = 0;
+            }
+            CMain.LogStall($"[Map] DrawFloor 单次烘焙（pending={pending}）", (DateTime.Now - floorT0).TotalMilliseconds);
         }
 
         private KFramework.MonoGame.Texture2D GetMapTile(int index)
@@ -10996,6 +11038,7 @@ namespace Client.MirScenes
 
         private async Task LoadMapTileAsync(int index)
         {
+            var tileT0 = DateTime.Now;
             try
             {
                 // 经并发闸门（最多 6 个同时在跑）加载瓦片，避免一帧内 50+ 请求挤爆同域连接池，
@@ -11003,13 +11046,25 @@ namespace Client.MirScenes
                 var tex = await MapTileLoadGate.RunAsync(() =>
                     Mir2OriginResource.GetMapTileTextureAsync(MapImg, index, DXManager.GDevice)).ConfigureAwait(false);
                 if (tex != null) _mapTileCache[index] = tex;
+                _tilesReady++;
             }
             catch (Exception ex)
             {
                 KFramework.MonoGame.PrintTool.Log("[Map] 瓦片加载失败 img=" + MapImg + " idx=" + index + " " + ex.Message);
             }
-            finally { _mapTileLoading.Remove(index); }
+            finally
+            {
+                // 含闸门排队 + 下载 + 解码 + GPU 上传；只在慢于阈值时输出。
+                CMain.LogStall($"[Map] 瓦片 idx={index} 就绪（已就绪 {_tilesReady} 张）", (DateTime.Now - tileT0).TotalMilliseconds);
+                _mapTileLoading.Remove(index);
+            }
         }
+
+        // ── 以下仅为「新地图加载方式」的耗时采样，不参与任何渲染逻辑 ──
+        private int _tilesReady;              // 本次切图已就绪瓦片数
+        private bool _tileGridLogged;         // 瓦片请求规模是否已打过日志
+        private DateTime _floorWaitStart;     // 地板开始等待瓦片的时刻
+        private int _floorWaitFrames;         // 地板重烘焙帧数
         private void DrawBackground()
         {
             string cleanFilename = FileName.Replace(Settings.MapPath, "");

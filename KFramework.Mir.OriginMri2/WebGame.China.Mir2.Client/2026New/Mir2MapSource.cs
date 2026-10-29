@@ -1,7 +1,9 @@
 using System.IO;
 using System.IO.Compression;
+using System.Text;
 using KFramework.MonoGame;
 using System.Text.Json;
+using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirObjects
 {
@@ -138,34 +140,115 @@ namespace Client.MirObjects
             await t.ConfigureAwait(false);
         }
 
+        // 属性名 UTF-8 字面量：Utf8JsonReader.ValueTextEquals 直接比字节，避免每个属性都做一次 string→UTF8 编码。
+        private static readonly byte[] MapProp = Encoding.UTF8.GetBytes("map");
+        private static readonly byte[] NameProp = Encoding.UTF8.GetBytes("name");
+        private static readonly byte[] ImgProp = Encoding.UTF8.GetBytes("img");
+        private static readonly byte[] WidthProp = Encoding.UTF8.GetBytes("width");
+        private static readonly byte[] HeightProp = Encoding.UTF8.GetBytes("height");
+
         private static async Task LoadAsync(CancellationToken ct)
         {
             try
             {
                 // 0config 内含 map 表：{id:{id,img,width,height,name,...}}
-                string json = await Mir2OriginResource.GetConfigShardTextAsync(0, ct).ConfigureAwait(false);
+                //
+                // 【性能】早先用 JsonDocument.Parse 解析整份分片：0config 有 6.7MB / 175 张表，
+                // Parse 会为全部内容建完整 DOM（几百万个 JsonElement 元数据），实测耗时 15.76 秒，
+                // 主线程一帧卡死 17.7 秒 → 服务端心跳超时（10s）直接断开，表现为「第一次进 GameScene 就掉线」。
+                // 而我们只要其中一张 map 表（991 条）。改为 Utf8JsonReader 流式前向扫描：
+                // 非目标属性直接 Skip，零 DOM、零中间字符串，代价仅为线性扫一遍字节。
+                byte[] json = await Mir2OriginResource.GetConfigShardBytesAsync(0, ct).ConfigureAwait(false);
+
+                var cfgT0 = DateTime.Now;
                 var dict = new Dictionary<int, Mir2MapEntry>();
-                using var doc = JsonDocument.Parse(json);
-                if (doc.RootElement.TryGetProperty("map", out var mapEl) && mapEl.ValueKind == JsonValueKind.Object)
-                {
-                    foreach (var prop in mapEl.EnumerateObject())
-                    {
-                        if (!int.TryParse(prop.Name, out int mid)) continue;
-                        var obj = prop.Value;
-                        var entry = new Mir2MapEntry { Id = mid };
-                        if (obj.TryGetProperty("name", out var n)) entry.Name = n.GetString() ?? string.Empty;
-                        entry.Img = GetInt(obj, "img", mid);
-                        entry.Width = GetInt(obj, "width", 0);
-                        entry.Height = GetInt(obj, "height", 0);
-                        dict[mid] = entry;
-                    }
-                }
+                ParseMapTable(json, dict);
                 _entries = dict;
+                CMain.LogStall($"[Map] 0config map表 流式解析（{json.Length} 字节，{dict.Count} 张图）", (DateTime.Now - cfgT0).TotalMilliseconds);
             }
             catch (Exception ex)
             {
                 PrintTool.Log("[Map] 加载地图配置失败(map表): " + ex.Message);
             }
+        }
+
+        /// <summary>只抽取根对象的 map 表，其余全部 Skip（不建 DOM）。</summary>
+        private static void ParseMapTable(byte[] json, Dictionary<int, Mir2MapEntry> dict)
+        {
+            var reader = new Utf8JsonReader(json, new JsonReaderOptions
+            {
+                AllowTrailingCommas = true,
+                CommentHandling = JsonCommentHandling.Skip,
+            });
+
+            if (!reader.Read() || reader.TokenType != JsonTokenType.StartObject) return;
+
+            while (reader.Read())
+            {
+                if (reader.TokenType == JsonTokenType.EndObject) return;      // 根对象结束，没有 map 表
+                if (reader.TokenType != JsonTokenType.PropertyName) continue;
+
+                if (!reader.ValueTextEquals(MapProp)) { reader.Skip(); continue; }
+
+                ParseMapEntries(ref reader, dict);
+                return;
+            }
+        }
+
+        /// <summary>reader 已定位在 "map" 属性名上：读其值对象 { "id": {...}, ... }。</summary>
+        private static void ParseMapEntries(ref Utf8JsonReader reader, Dictionary<int, Mir2MapEntry> dict)
+        {
+            if (!reader.Read() || reader.TokenType != JsonTokenType.StartObject) return;
+
+            while (reader.Read())
+            {
+                if (reader.TokenType == JsonTokenType.EndObject) return;
+                if (reader.TokenType != JsonTokenType.PropertyName) continue;
+
+                // 属性名即地图 id（字符串形式）
+                if (!int.TryParse(reader.GetString(), out int id)) { reader.Skip(); continue; }
+
+                var entry = new Mir2MapEntry { Id = id };
+                if (!reader.Read() || reader.TokenType != JsonTokenType.StartObject) continue;
+
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+                    if (reader.TokenType != JsonTokenType.PropertyName) continue;
+
+                    if (reader.ValueTextEquals(NameProp)) entry.Name = ReadStringValue(ref reader);
+                    else if (reader.ValueTextEquals(ImgProp)) entry.Img = ReadIntValue(ref reader, id);
+                    else if (reader.ValueTextEquals(WidthProp)) entry.Width = ReadIntValue(ref reader, 0);
+                    else if (reader.ValueTextEquals(HeightProp)) entry.Height = ReadIntValue(ref reader, 0);
+                    else reader.Skip();
+                }
+
+                dict[id] = entry;
+            }
+        }
+
+        /// <summary>把当前属性的值读成字符串（数字也按字符串收，保险）。</summary>
+        private static string ReadStringValue(ref Utf8JsonReader reader)
+        {
+            if (!reader.Read()) return string.Empty;
+            if (reader.TokenType == JsonTokenType.String) return reader.GetString() ?? string.Empty;
+            if (reader.TokenType == JsonTokenType.Number) return reader.TryGetInt32(out int n) ? n.ToString() : string.Empty;
+            reader.Skip();
+            return string.Empty;
+        }
+
+        /// <summary>把当前属性的值读成 int（配置里数字可能是 JSON number 也可能是字符串）。</summary>
+        private static int ReadIntValue(ref Utf8JsonReader reader, int dflt)
+        {
+            if (!reader.Read()) return dflt;
+            if (reader.TokenType == JsonTokenType.Number) return reader.TryGetInt32(out int v) ? v : dflt;
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                var s = reader.GetString();
+                return int.TryParse(s, out int r) ? r : dflt;
+            }
+            reader.Skip();
+            return dflt;
         }
 
         public static bool TryGetEntry(int id, out Mir2MapEntry entry)
@@ -175,15 +258,7 @@ namespace Client.MirObjects
             return false;
         }
 
-        private static int GetInt(JsonElement obj, string key, int dflt)
-        {
-            if (obj.TryGetProperty(key, out var v))
-            {
-                if (v.ValueKind == JsonValueKind.Number) return v.GetInt32();
-                if (v.ValueKind == JsonValueKind.String && int.TryParse(v.GetString(), out int r)) return r;
-            }
-            return dflt;
-        }
+
     }
 
     internal static class Mir2MapDataLoader

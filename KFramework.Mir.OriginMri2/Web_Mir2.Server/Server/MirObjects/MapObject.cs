@@ -803,8 +803,11 @@ namespace Server.MirObjects
         public virtual bool TeleportRandom(int attempts, int distance, Map map = null)
         {
             if (map == null) map = CurrentMap;
-            if (map.Cells == null) return false;
-            if (map.WalkableCells.Count == 0) return false;
+            if (map == null || map.Cells == null) return false;
+            // WalkableCells 只在地图加载成功时由 Map.GetWalkableCells() 填充；对加载失败的地图它仍是 null
+            // （配置里存在对不上数据源的地图，如日志中的 "Failed to load Dragon (bad map name)"），
+            // 这里必须判 null，否则随机传送会 NullReference 崩掉服务器主循环。
+            if (map.WalkableCells == null || map.WalkableCells.Count == 0) return false;
 
             int cellIndex = Envir.Random.Next(map.WalkableCells.Count);
 
