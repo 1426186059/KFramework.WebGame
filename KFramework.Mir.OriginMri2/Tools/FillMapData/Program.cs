@@ -1,204 +1,313 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Text.RegularExpressions;
+using System.Linq;
 
-/// <summary>
-/// 桥接导入：真库(463 英文地图) -> MapInfo_Fix(607 中文地图)。
-/// 思路（按用户要求，英文猜中文 + 模糊搜）：
-///   1. 把真库每张英文地图名翻译成候选中文名；
-///   2. 与目标库的中文 Title 做模糊匹配（互含 / 关键片段重叠）；
-///   3. 命中则把 安全区/怪物/传送门 一条条 MERGE 进目标地图（不覆盖整文件）。
-/// 同时修正 $id 唯一、安全区 Info.$ref 指向本图、传送门 MapIndex 按桥接翻译。
-/// 输出每一张真库地图的[英文名|候选中文|最佳匹配目标|分数]，便于人工补字典。
-/// </summary>
+// 把 Crystal 真库（英文名地图）的 怪物/安全区/传送门/NPC，按中文名桥接进中文自定义图。
+//   FillMapData            -> 处理地图内 怪物/安全区/传送门（写入 Maps/MapInfo_Fix.json）
+//   FillMapData npc        -> 仅处理 NPC（写入 ExcelConfig/NPCInfo.json，按 MapIndex 关联）
+// 策略：覆盖表（英文名 -> 目标 Index，手工核对）优先；未命中用 翻译+子串 唯一匹配；多义/无匹配跳过。
 class Program
 {
-    static int _nextId;
-    // 英文/罗马化片段 -> 中文
-    static readonly Dictionary<string, string> Dict = new(StringComparer.OrdinalIgnoreCase)
+    static readonly Dictionary<string, int> Override = new()
     {
-        // 地名根
-        {"Bichon","比奇"},{"Mongchon","盟重"},{"Woomyon","沃玛"},{"Oma","沃玛"},{"Zuma","祖玛"},
-        {"Serpent","蛇"},{"Prajna","般若"},{"CastleGi-Ryoong","基龙"},{"Gi-Ryoong","基龙"},{"Past","废弃"},
-        {"Treepath","林间"},{"CraftingVillage","工匠村"},{"S_Valley","山谷"},{"Valley","谷"},{"Gorge","峡谷"},
-        {"Pass","关口"},{"Woods","森林"},{"Forest","森林"},{"Island","岛"},{"Province","省"},{"Field","野外"},
-        {"Cave","洞"},{"Mine","矿"},{"Tomb","墓"},{"Temple","寺庙"},{"Mountain","山"},
-        {"North","北"},{"South","南"},{"East","东"},{"West","西"},
-        // 建筑/功能
-        {"MeatStore","肉铺"},{"WeaponStore","武器店"},{"Library","书店"},{"AccessoryStore","饰品店"},
-        {"DrapersStore","布店"},{"BeautySaloon","美容院"},{"ReagentStore","药剂店"},{"MedicineRoom","药房"},
-        {"Drug_Store","药店"},{"Inn","客栈"},{"2FofInn","客栈二楼"},{"Tavern","酒馆"},{"Blacksmith","铁匠铺"},
-        {"Warehouse","仓库"},{"GroceryStore","杂货店"},{"Prison","监狱"},{"Palace","宫殿"},{"PrivateHouse","民房"},
-        {"Barracks","兵营"},{"Kitchen","厨房"},{"Academy","学院"},{"MageHouse","魔法屋"},{"Mill","磨坊"},
-        {"BorderRestaurant","边界餐厅"},{"ContestGround","比武场"},{"Lobby","前厅"},{"Ancient","古"},{"ZumaLobby","祖玛阁"},
-        {"ArchersHideout","弓手洞"},{"Rev.Tao_Office","道馆"},{"Laundry","洗衣房"},{"Item_Lab","实验室"},
-        {"Armory","军械库"},{"Residence","住宅"},{"Hideout","洞"},{"Village","村"},{"Ground","场"},
-        {"Restaurant","餐厅"},{"Store","店"},{"House","屋"},{"Room","房"},{"Office","室"},{"LobbyofZumaTemple","祖玛寺庙前厅"},
+        { "1", 5426 }, { "11", 5426 },
+        { "D021", 5416 }, { "D022", 5417 }, { "D023", 5418 }, { "D024", 5355 },
+        { "D021A", 5416 }, { "D022A", 5417 }, { "D023A", 5418 }, { "D024A", 5355 },
+        { "D2006", 5355 },
+        { "D001", 5109 }, { "D002", 5110 }, { "D003", 5109 },
+        { "D011", 5006 }, { "D012", 5007 },
+        { "D501", 5026 }, { "D502", 5027 }, { "D503", 5028 }, { "D504", 5029 }, { "D505", 5030 },
+        { "D501A", 5026 }, { "D502A", 5027 }, { "D503A", 5028 },
+        { "D511", 5025 }, { "D512", 5025 }, { "D513", 5025 }, { "D514", 5025 }, { "D515", 5025 },
+        { "D5061", 5031 }, { "D5062", 5032 }, { "D5063", 5033 }, { "D5064", 5034 }, { "D5065", 5035 },
+        { "D5066", 5036 }, { "D5067", 5037 }, { "D5068", 5038 }, { "D5069", 5039 },
+        { "D5071", 5379 }, { "D5072", 5379 }, { "D5073", 5379 }, { "D5074", 5379 },
+        { "0157", 5379 }, { "0157A", 5031 },
+        { "D10062", 5136 },
+        { "D2031", 5011 }, { "D2032", 5012 }, { "D2033", 5014 }, { "D2034", 5022 },
+        { "SG001", 5011 }, { "SG002", 5012 }, { "SG003", 5014 }, { "SG004", 5022 },
+        { "D401", 5016 }, { "D402", 5016 }, { "D403", 5016 }, { "D404", 5016 }, { "D405", 5020 }, { "D406", 5016 },
+        { "D411", 5016 }, { "D412", 5016 }, { "D413", 5016 }, { "D414", 5016 }, { "D415", 5016 }, { "D416", 5016 },
+        { "D421", 5016 }, { "D422", 5016 }, { "D4221", 5016 },
+        { "6", 5016 },
+        { "D710", 5050 }, { "D710A", 5050 },
+        { "D711", 5051 }, { "D712", 5052 }, { "D713", 5053 }, { "D714", 5054 }, { "D715", 5055 }, { "D716", 5056 }, { "D717", 5383 },
+        { "DM001", 5227 }, { "DM001A", 5227 }, { "DM002", 5004 },
+        { "D71601", 5058 }, { "D71602", 5059 }, { "D71603", 5060 }, { "D71604", 5061 }, { "D71605", 5062 },
+        { "D71606", 5063 }, { "D71607", 5064 }, { "D71608", 5065 }, { "D71609", 5066 }, { "D71610", 5067 },
+        { "D71611", 5068 }, { "D71612", 5069 }, { "D71613", 5070 }, { "D71614", 5071 }, { "D71615", 5072 },
+        { "D71616", 5073 }, { "D71617", 5074 }, { "D71618", 5075 }, { "D71619", 5076 }, { "D71620", 5077 },
+        { "D71621", 5078 }, { "D71622", 5079 }, { "D71623", 5080 }, { "D71624", 5081 }, { "D71625", 5082 },
+        { "D71650", 5058 }, { "D71651", 5059 }, { "D71652", 5060 }, { "D71653", 5061 },
+        { "D701", 5311 },
+        { "D2081", 5280 }, { "D2082", 5281 },
+        { "HELL201", 5287 }, { "HELL202", 5288 }, { "HELL203", 5289 }, { "HELL204", 5287 }, { "HELL205", 5288 }, { "HELL206", 5289 },
+        { "SnowCave_1F", 5287 }, { "SnowCave_2F", 5288 }, { "SnowCave_BOSS", 5289 },
+        { "HF1", 5232 }, { "HF2", 5232 }, { "HF3", 5232 }, { "HKR", 5232 },
+        { "2", 5427 }, { "L001", 5427 }, { "L002", 5427 }, { "L003", 5427 }, { "L004", 5427 },
+        { "SNAKE", 5427 }, { "SnakePre", 5427 }, { "SnakePre2", 5427 },
+        { "Q004", 5124 },
+        { "E001", 5111 }, { "E002", 5112 }, { "E401", 5113 }, { "E402", 5114 }, { "E403", 5115 }, { "E404", 5116 },
+        { "E601", 5117 }, { "E602", 5118 }, { "E603", 5119 }, { "E604", 5115 }, { "E605", 5115 },
+        { "E701", 5111 }, { "E702", 5111 }, { "E703", 5111 },
+        { "EBEE01", 5444 }, { "EBEE02", 5444 }, { "EBEE03", 5444 }, { "EBEEBOSS", 5445 },
+        { "EM001", 5339 }, { "EM002", 5339 }, { "EM003", 5339 },
+        { "Fox01", 5283 }, { "Fox02", 5284 }, { "Fox03", 5285 },
+        { "12", 5125 },
+        { "LABY01", 5125 }, { "LABY02", 5125 }, { "LABY03", 5125 }, { "LABY04", 5125 }, { "LABYBUY01", 5125 }, { "LABYBUY02", 5125 }, { "LABYROOM", 5125 },
+        { "DogYoMineLobby", 5279 }, { "DogYoHyun", 5279 }, { "DogYoArena2", 5309 },
+        { "DY_Pharmacy", 5370 }, { "DY_Weapon", 5369 }, { "DY_Wearhouse", 5312 }, { "DY_Craft1", 5413 }, { "DY_Head1", 5413 },
+        { "DY_MedStorage", 5370 }, { "DY_Smithy", 5369 },
+        { "WhiteVillage", 5384 },
+        { "whitevil_acc", 5387 }, { "whitevil_armor", 5387 }, { "whitevil_book", 5388 }, { "whitevil_empty", 5384 },
+        { "whitevil_empty1", 5384 }, { "whitevil_etc", 5391 }, { "whitevil_etc1", 5389 }, { "whitevil_etc2", 5390 },
+        { "whitevil_fish", 5384 }, { "whitevil_weapon", 5385 },
+        { "B341", 5372 }, { "B342", 5369 }, { "B343", 5370 }, { "B344", 5397 }, { "B345", 5374 }, { "B346", 5399 }, { "B347", 5312 },
+        { "B351", 5369 }, { "B352", 5397 }, { "B353", 5374 }, { "B354", 5386 }, { "B355", 5384 }, { "B356", 5384 }, { "B357", 5346 },
+        { "0", 103 }, { "3", 154 },
+        { "0100", 5334 }, { "0101", 200 }, { "0102", 5323 }, { "0103", 5369 }, { "0104", 5047 }, { "01041", 5047 },
+        { "0105", 5397 }, { "0106", 5374 }, { "0107", 5338 }, { "0108", 5370 }, { "0109", 5370 },
+        { "0115", 5047 }, { "0116", 200 }, { "0117", 5370 }, { "0120", 5083 }, { "0121", 5346 }, { "0122", 5001 },
+        { "0123", 5342 }, { "0124", 5342 }, { "0125", 5342 }, { "0126", 5342 }, { "0127", 5342 }, { "0128", 5342 },
+        { "0129", 5342 }, { "0130", 5342 }, { "0131", 5342 },
+        { "0132", 5047 }, { "0136", 5350 }, { "0137", 5339 }, { "0138", 5342 }, { "0139", 5339 },
+        { "0140", 5312 }, { "0141", 5376 }, { "0142", 5342 }, { "0143", 5342 }, { "0144", 5342 }, { "0145", 5342 },
+        { "0146", 5333 }, { "0147", 5352 }, { "0148", 200 }, { "0149", 5374 },
+        { "0151", 5083 }, { "0152", 5312 }, { "0153", 5370 }, { "0154", 5370 }, { "0155", 5370 }, { "0156", 5399 },
     };
 
-    static readonly char[] Splitters = { ' ', '_', '.', '-', '(', ')' };
+    static int idc = 900000;
 
-    static string Translate(string name)
+    static void Main(string[] args)
     {
-        if (string.IsNullOrEmpty(name)) return "";
-        // 先整名命中
-        if (Dict.TryGetValue(name, out var whole)) return whole;
-        // 按大小写/分隔符切词
-        var tokens = Regex.Split(name, @"(?<=[a-z])(?=[A-Z])"); // camelCase 切分
-        var sb = new System.Text.StringBuilder();
-        foreach (var t in tokens)
+        bool npcOnly = args.Length > 0 && args[0] == "npc";
+        string crystalDir = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Tools\MirDBToJson\_realcheck";
+        string versionRoot = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Web_Mir2.Server.Version";
+        string targetMapPath = Path.Combine(versionRoot, "Maps", "MapInfo_Fix.json");
+        string targetNpcPath = Path.Combine(versionRoot, "ExcelConfig", "NPCInfo.json");
+        string logPath = Path.Combine(crystalDir, "bridge_log2.txt");
+
+        var set = new JsonSerializerSettings
         {
-            var tk = t.Trim(Splitters);
-            if (tk.Length == 0) continue;
-            if (Dict.TryGetValue(tk, out var zh)) sb.Append(zh);
-            else sb.Append(tk); // 未识别保留原文（多为数字/缩写）
+            PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+            Formatting = Formatting.Indented,
+            NullValueHandling = NullValueHandling.Ignore,
+        };
+
+        var targetDoc = JObject.Parse(File.ReadAllText(targetMapPath));
+        var targetMaps = (JArray)targetDoc["$values"];
+        var targetByIndex = new Dictionary<int, JObject>();
+        foreach (JObject m in targetMaps) targetByIndex[(int)m["Index"]] = m;
+
+        var crystalDoc = JObject.Parse(File.ReadAllText(Path.Combine(crystalDir, "MapInfo.json")));
+        var crystalMaps = (JArray)crystalDoc["$values"];
+        var crystalByIndex = new Dictionary<int, JObject>();
+        var crystalByFile = new Dictionary<string, JObject>();
+        foreach (JObject m in crystalMaps) { crystalByIndex[(int)m["Index"]] = m; var fn = (string)m["FileName"]; if (fn != null) crystalByFile[fn] = m; }
+
+        int? ResolveTarget(JObject cm)
+        {
+            string fn = (string)cm["FileName"];
+            if (fn != null && Override.TryGetValue(fn, out int t)) return t;
+            string cn = Translate((string)cm["Title"]);
+            if (!string.IsNullOrEmpty(cn))
+            {
+                var cands = targetMaps.OfType<JObject>().Where(m => TitleMatch((string)m["Title"], cn)).ToList();
+                if (cands.Count == 1) return (int)cands[0]["Index"];
+            }
+            return null;
         }
+
+        var crystalIndexToTarget = new Dictionary<int, int>();
+        foreach (JObject cm in crystalMaps) { var t = ResolveTarget(cm); if (t.HasValue) crystalIndexToTarget[(int)cm["Index"]] = t.Value; }
+
+        if (args.Length > 0 && args[0] == "npcclean")
+        {
+            var nDoc = JObject.Parse(File.ReadAllText(targetNpcPath));
+            var nArr = (JArray)nDoc["$values"];
+            var seen = new HashSet<string>();
+            var toRemove = new List<JObject>();
+            foreach (JObject o in nArr)
+            {
+                var loc = o["Location"] as JObject;
+                var key = $"{(int?)o["MapIndex"]}|{o["Name"]}|{loc?["X"]}|{loc?["Y"]}";
+                if (!seen.Add(key)) toRemove.Add(o);
+            }
+            foreach (var r in toRemove) nArr.Remove(r);
+            File.WriteAllText(targetNpcPath, JsonConvert.SerializeObject(nDoc, set));
+            Console.WriteLine($"清理重复 NPC: 移除 {toRemove.Count} 条，剩余 {nArr.Count}");
+            return;
+        }
+
+        var log = new List<string>();
+
+        // ---- 地图内 怪物/安全区/传送门 ----
+        if (!npcOnly)
+        {
+            string bak = targetMapPath + ".bak2";
+            File.Copy(targetMapPath, bak, true);
+            int filled = 0, respAdded = 0, szAdded = 0, mvAdded = 0;
+            foreach (JObject cm in crystalMaps)
+            {
+                var tIdx = ResolveTarget(cm);
+                if (!tIdx.HasValue) continue;
+                if (!targetByIndex.TryGetValue(tIdx.Value, out JObject tm)) continue;
+                int ra = CopyArray(cm, tm, "Respawns");
+                int sa = CopySafeZones(cm, tm);
+                int ma = CopyMovements(cm, tm, crystalIndexToTarget);
+                if (ra + sa + ma > 0)
+                {
+                    filled++; respAdded += ra; szAdded += sa; mvAdded += ma;
+                    log.Add($"[FILL] {cm["FileName"]}({cm["Title"]}) -> {tIdx}({tm["Title"]})  怪{ra} 安{sa} 门{ma}");
+                }
+            }
+            File.WriteAllText(targetMapPath, JsonConvert.SerializeObject(targetDoc, set));
+            log.Add($"# MapInfo 完成：填充地图 {filled} | 怪物+{respAdded} 安全区+{szAdded} 传送门+{mvAdded}");
+            Console.WriteLine($"MapInfo 完成：填充地图 {filled} | 怪物+{respAdded} 安全区+{szAdded} 传送门+{mvAdded}");
+        }
+
+        // ---- NPC（写入 ExcelConfig/NPCInfo.json，按 MapIndex 关联）----
+        if (File.Exists(targetNpcPath) && File.Exists(Path.Combine(crystalDir, "NPCInfo.json")))
+        {
+            string bak = targetNpcPath + ".bak2";
+            File.Copy(targetNpcPath, bak, true);
+            var nDoc = JObject.Parse(File.ReadAllText(targetNpcPath));
+            var nArr = nDoc["$values"] is JArray a ? a : (nDoc["$values"] = new JArray()) as JArray;
+            if (nDoc["$values"] is JArray) nArr = (JArray)nDoc["$values"];
+            int maxIdx = 0;
+            foreach (JObject o in nArr) maxIdx = Math.Max(maxIdx, (int?)o["Index"] ?? 0);
+
+            var cNpc = JObject.Parse(File.ReadAllText(Path.Combine(crystalDir, "NPCInfo.json")));
+            var cNpcArr = (JArray)cNpc["$values"];
+            int added = 0;
+            foreach (JObject npc in cNpcArr)
+            {
+                var mi = (int?)npc["MapIndex"];
+                if (!mi.HasValue || !crystalIndexToTarget.TryGetValue(mi.Value, out int ti)) continue;
+                var c = (JObject)npc.DeepClone();
+                c.Remove("$id");
+                c["MapIndex"] = ti;
+                maxIdx++;
+                c["Index"] = maxIdx;
+                // 递归清掉嵌套 $id，交给 Newtonsoft 重排
+                ClearNestedIds(c);
+                nArr.Add(c);
+                added++;
+            }
+            File.WriteAllText(targetNpcPath, JsonConvert.SerializeObject(nDoc, set));
+            log.Add($"# NPC 完成：新增 NPC {added} 条 -> {targetNpcPath}");
+            Console.WriteLine($"NPC 完成：新增 {added} 条 -> {Path.GetFileName(targetNpcPath)}");
+        }
+        else
+        {
+            log.Add("[NPC] 跳过：目标或 crystal 的 NPCInfo.json 不存在");
+            Console.WriteLine("[NPC] 跳过：NPCInfo.json 不存在");
+        }
+
+        File.WriteAllText(logPath, string.Join("\n", log));
+        Console.WriteLine($"日志: {logPath}");
+    }
+
+    static void ClearNestedIds(JObject o)
+    {
+        foreach (var p in o.Properties().ToList())
+        {
+            if (p.Name == "$id") { p.Remove(); continue; }
+            if (p.Value is JObject jo) ClearNestedIds(jo);
+            else if (p.Value is JArray ja)
+            {
+                foreach (var e in ja) if (e is JObject eo) ClearNestedIds(eo);
+            }
+        }
+    }
+
+    static bool TitleMatch(string title, string cn)
+    {
+        if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(cn) || cn.Length < 2) return false;
+        return title.Contains(cn) || cn.Contains(title);
+    }
+
+    static string Translate(string title)
+    {
+        if (string.IsNullOrEmpty(title)) return "";
+        var s = title;
+        s = s.Replace("_1F", "一层").Replace("_2F", "二层").Replace("_3F", "三层").Replace("_4F", "四层")
+             .Replace("_5F", "五层").Replace("_6F", "六层").Replace("_7F", "七层").Replace("_8F", "八层").Replace("_9F", "九层")
+             .Replace("_10F", "十层").Replace("_11F", "十一层").Replace("_12F", "十二层")
+             .Replace("B1", "地下一层").Replace("B2", "地下二层");
+        s = s.Replace("Woomyon", "沃玛").Replace("Wooma", "沃玛").Replace("Oma", "沃玛").Replace("Zuma", "祖玛")
+             .Replace("Red", "赤").Replace("Blood", "赤").Replace("Serpent", "蛇").Replace("Snake", "蛇").Replace("Viper", "蛇")
+             .Replace("Mongchon", "盟重").Replace("Prajna", "般若").Replace("BlackDragon", "黑龙").Replace("HwanMa", "幻")
+             .Replace("Castle", "城").Replace("WhiteDragon", "白龙").Replace("Ancient", "古")
+             .Replace("NaturalCave", "自然洞穴").Replace("Cave", "洞").Replace("Temple", "寺庙").Replace("Valley", "谷")
+             .Replace("Gorge", "峡谷").Replace("Pass", "通道").Replace("Mine", "矿").Replace("MineralMine", "矿区")
+             .Replace("Store", "店").Replace("House", "屋").Replace("Palace", "宫殿").Replace("Tavern", "酒馆")
+             .Replace("Inn", "旅店").Replace("Kitchen", "厨房").Replace("Meat", "肉").Replace("Prison", "监狱")
+             .Replace("Barracks", "兵营").Replace("Warehouse", "仓库").Replace("Library", "图书馆").Replace("Academy", "学院")
+             .Replace("Beauty", "美容").Replace("Reagent", "药").Replace("Medicine", "药").Replace("Accessory", "首饰")
+             .Replace("Draper", "服装").Replace("Grocery", "杂货").Replace("Weapon", "武器").Replace("Book", "书店")
+             .Replace("Boss", "教主").Replace("Room", "房").Replace("Hall", "厅").Replace("Lobby", "大厅")
+             .Replace("Entrance", "入口").Replace("ConnectionPath", "连接通道").Replace("ConnectionCave", "连接通道")
+             .Replace("DeadMine", "废矿").Replace("Swamp", "沼泽").Replace("Hell", "地狱").Replace("Ice", "冰")
+             .Replace("Snow", "雪").Replace("Dark", "暗").Replace("Forest", "森林").Replace("Island", "岛")
+             .Replace("Village", "村").Replace("Town", "镇").Replace("Province", "省").Replace("Woods", "森林")
+             .Replace("Path", "道").Replace("Maze", "迷宫").Replace("Tomb", "墓").Replace("Ruin", "废墟")
+             .Replace("Crypt", "墓").Replace("Cavern", "洞窟");
+        var sb = new System.Text.StringBuilder();
+        foreach (char c in s) if (c >= 0x4e00 && c <= 0x9fff) sb.Append(c);
         return sb.ToString();
     }
 
-    // 模糊匹配：候选中文 c 与目标标题 t 的互含得分
-    static int Score(string c, string t)
+    static JArray GetOrCreateValues(JObject map, string field)
     {
-        if (string.IsNullOrEmpty(c) || string.IsNullOrEmpty(t)) return 0;
-        if (t.Contains(c)) return c.Length * 2;
-        if (c.Contains(t)) return t.Length * 2;
-        // 关键片段重叠（取较长公共子串）
-        int best = 0;
-        for (int i = 0; i < c.Length; i++)
-            for (int j = i + 1; j <= c.Length; j++)
-            {
-                var sub = c.Substring(i, j - i);
-                if (sub.Length >= 2 && t.Contains(sub)) best = Math.Max(best, sub.Length);
-            }
-        return best;
+        var token = map[field];
+        if (token is JObject jo && jo["$values"] is JArray arr) return arr;
+        var newArr = new JArray();
+        map[field] = new JObject { ["$id"] = "n" + (idc++), ["$values"] = newArr };
+        return newArr;
     }
 
-    static void Main()
+    static int CopyArray(JObject src, JObject dst, string field)
     {
-        string targetPath = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Web_Mir2.Server.Version\Maps\MapInfo_Fix.json";
-        string tempPath = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Tools\MirDBToJson\_originbin\MapInfo.json";
-
-        var target = JsonNode.Parse(File.ReadAllText(targetPath, Encoding.UTF8));
-        var temp = JsonNode.Parse(File.ReadAllText(tempPath, Encoding.UTF8));
-        _nextId = MaxId(target) + 1;
-
-        var realByFile = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
-        var realIndexToFile = new Dictionary<int, string>();
-        foreach (JsonObject m in (JsonArray)temp["$values"])
-        {
-            string fn = m["FileName"]?.GetValue<string>() ?? "";
-            int idx = m["Index"]?.GetValue<int>() ?? -1;
-            if (!string.IsNullOrEmpty(fn) && !realByFile.ContainsKey(fn)) realByFile[fn] = m;
-            if (idx >= 0 && !realIndexToFile.ContainsKey(idx)) realIndexToFile[idx] = fn;
-        }
-
-        // 目标：Title -> 地图节点（取第一个）
-        var targetByTitle = new Dictionary<string, JsonObject>();
-        foreach (JsonObject m in (JsonArray)target["$values"])
-        {
-            string ti = (m["Title"]?.GetValue<string>() ?? "").Trim();
-            if (!string.IsNullOrEmpty(ti) && !targetByTitle.ContainsKey(ti)) targetByTitle[ti] = m;
-        }
-
-        int filled = 0, sz = 0, rp = 0, mv = 0;
-        var log = new List<string>();
-        foreach (var kv in realByFile)
-        {
-            var src = kv.Value;
-            string enName = kv.Key;
-            string cn = Translate(enName);
-            if (string.IsNullOrEmpty(cn)) cn = Translate(src["Title"]?.GetValue<string>() ?? "");
-
-            // 找最佳目标
-            JsonObject bestTarget = null; int bestScore = 0; string bestTitle = "";
-            foreach (var tt in targetByTitle)
-            {
-                int s = Score(cn, tt.Key);
-                if (s > bestScore) { bestScore = s; bestTarget = tt.Value; bestTitle = tt.Key; }
-            }
-
-            if (bestTarget != null && bestScore >= 2)
-            {
-                string mapId = bestTarget["$id"]?.GetValue<string>() ?? "";
-                if (string.IsNullOrEmpty(mapId)) { mapId = (_nextId++).ToString(); bestTarget["$id"] = JsonValue.Create(mapId); }
-                foreach (var field in new[] { "SafeZones", "Respawns", "Movements" })
-                {
-                    if (src[field] is JsonObject srcField)
-                    {
-                        var clone = srcField.DeepClone();
-                        Reassign(clone, mapId);
-                        if (field == "Movements") RemapMovementDest(clone, realIndexToFile, targetByTitle);
-                        bestTarget[field] = clone;
-                        int c = ((JsonArray)clone["$values"]).Count;
-                        if (field == "SafeZones") sz += c; else if (field == "Respawns") rp += c; else if (field == "Movements") mv += c;
-                    }
-                }
-                filled++;
-                log.Add($"[MATCH {bestScore}] {enName} -> {bestTitle}");
-            }
-            else
-            {
-                log.Add($"[NOMATCH] {enName} | 候选中文:{cn}");
-            }
-        }
-
-        var opts = new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
-        File.WriteAllText(targetPath, target.ToJsonString(opts), Encoding.UTF8);
-
-        File.WriteAllLines(@"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Tools\MirDBToJson\bridge_log.txt", log, Encoding.UTF8);
-        Console.WriteLine($"真库地图={realByFile.Count}  桥接命中并填充={filled}");
-        Console.WriteLine($"新增: 安全区={sz} 刷怪={rp} 传送门={mv}");
-        Console.WriteLine("未命中清单见 bridge_log.txt (NOMATCH 行)");
+        if (!(src[field] is JObject sjo) || !(sjo["$values"] is JArray sa)) return 0;
+        var da = GetOrCreateValues(dst, field);
+        int n = 0;
+        foreach (JObject item in sa) { var c = (JObject)item.DeepClone(); c.Remove("$id"); da.Add(c); n++; }
+        return n;
     }
 
-    static int RemapMovementDest(JsonNode node, Dictionary<int, string> realIndexToFile, Dictionary<string, JsonObject> targetByTitle)
+    static int CopySafeZones(JObject src, JObject dst)
     {
-        int remapped = 0;
-        if (node is JsonObject o)
+        if (!(src["SafeZones"] is JObject sjo) || !(sjo["$values"] is JArray sa)) return 0;
+        var da = GetOrCreateValues(dst, "SafeZones");
+        int n = 0;
+        foreach (JObject item in sa)
         {
-            if (o.ContainsKey("MapIndex") && o["MapIndex"] is JsonValue mv && mv.TryGetValue<int>(out int realIdx))
-            {
-                if (realIndexToFile.TryGetValue(realIdx, out var fn) && targetByTitle.TryGetValue(fn, out var destMap))
-                {
-                    int ti = destMap["Index"]?.GetValue<int>() ?? -1;
-                    if (ti >= 0 && ti != realIdx) { o["MapIndex"] = JsonValue.Create(ti); remapped++; }
-                }
-            }
-            foreach (var kv in o) remapped += RemapMovementDest(kv.Value, realIndexToFile, targetByTitle);
+            var c = (JObject)item.DeepClone();
+            c.Remove("$id");
+            c["Info"] = new JObject { ["$ref"] = (string)dst["$id"] };
+            da.Add(c); n++;
         }
-        else if (node is JsonArray a) foreach (var item in a) remapped += RemapMovementDest(item, realIndexToFile, targetByTitle);
-        return remapped;
+        return n;
     }
 
-    static void Reassign(JsonNode node, string mapId)
+    static int CopyMovements(JObject src, JObject dst, Dictionary<int, int> idxMap)
     {
-        if (node is JsonObject o)
+        if (!(src["Movements"] is JObject sjo) || !(sjo["$values"] is JArray sa)) return 0;
+        var da = GetOrCreateValues(dst, "Movements");
+        int n = 0;
+        foreach (JObject item in sa)
         {
-            if (o.ContainsKey("$id")) o["$id"] = JsonValue.Create((_nextId++).ToString());
-            if (o.ContainsKey("Info") && o["Info"] is JsonObject info && info.ContainsKey("$ref")) info["$ref"] = JsonValue.Create(mapId);
-            foreach (var kv in o) Reassign(kv.Value, mapId);
+            var mi = (int?)item["MapIndex"];
+            if (!mi.HasValue || !idxMap.TryGetValue(mi.Value, out int ti)) continue;
+            var c = (JObject)item.DeepClone();
+            c.Remove("$id");
+            c["MapIndex"] = ti;
+            da.Add(c); n++;
         }
-        else if (node is JsonArray a) foreach (var item in a) Reassign(item, mapId);
-    }
-
-    static int MaxId(JsonNode n)
-    {
-        int m = 0;
-        if (n is JsonObject o)
-        {
-            if (o.TryGetPropertyValue("$id", out var idn) && idn is JsonValue jv)
-            {
-                if (jv.TryGetValue<int>(out int v)) m = v;
-                else if (jv.TryGetValue<string>(out string s) && int.TryParse(s, out v)) m = v;
-            }
-            foreach (var kv in o) m = Math.Max(m, MaxId(kv.Value));
-        }
-        else if (n is JsonArray a) foreach (var item in a) m = Math.Max(m, MaxId(item));
-        return m;
+        return n;
     }
 }
