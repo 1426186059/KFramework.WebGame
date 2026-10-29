@@ -35,7 +35,8 @@ namespace KFramework.MonoGame
         /// </summary>
         [JSImport("decodeImageToRgbaAsync1", "texture")]
         public static partial Task<int> DecodeImageToRgbaAsync1(
-            [JSMarshalAs<JSType.MemoryView>] ArraySegment<byte> bytes);
+            [JSMarshalAs<JSType.MemoryView>] ArraySegment<byte> bytes,
+            int token);
 
         /// <summary>
         /// 已知尺寸的纹理解码（原 DecodeImageToRgba，仅改名 + 返回 bool）：解码后零拷贝写入
@@ -54,7 +55,7 @@ namespace KFramework.MonoGame
         /// 之所以能同步返回 byte[]（而非必须异步）：byte[] 的同步封送是“复制成新数组”，不像 JSObject 那样需要异步句柄。
         /// </summary>
         [JSImport("getImageData", "texture")]
-        public static partial byte[] GetImageData();
+        public static partial byte[] GetImageData(int seq);
 
         /// <summary>
         /// 借浏览器中的 Basis Universal 转码器（basis_transcoder.js/.wasm）把 KTX2（Basis 超压缩）纹理的【基础级别】

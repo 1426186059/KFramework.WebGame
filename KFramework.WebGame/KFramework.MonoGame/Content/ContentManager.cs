@@ -122,17 +122,19 @@ namespace KFramework.MonoGame
             return await LoadTexture2DAsync(data, device).ConfigureAwait(false);
         }
 
+        // 全局自增 token：JS 端 _decodeCache 是跨所有 C# 实例共享的全局 Map，token 必须全局唯一，
+        // 否则不同实例从 0 自增会撞 key；用 static 计数器保证每请求一个唯一 token，隔离 decode/getImageData 配对。
+        private static int _decodeTexture2DToken;
         public async Task<Texture2D> LoadTexture2DAsync(byte[] data, GraphicsDevice device)
         {
-            // 未知尺寸：解码入缓存，返回按位打包的「(宽<<16)|高」（高 16 位宽、低 16 位高；-1 表示失败）。
-            int packed = await JSBind_Texture.DecodeImageToRgbaAsync1(new ArraySegment<byte>(data)).ConfigureAwait(false);
+            int token = ++_decodeTexture2DToken;
+            int packed = await JSBind_Texture.DecodeImageToRgbaAsync1(new ArraySegment<byte>(data), token).ConfigureAwait(false);
             if (packed < 0)
                 throw new InvalidOperationException("图片解码失败：浏览器原生解码器返回失败。");
             int w = packed >> 16;
             int h = packed & 0xFFFF;
             if (w <= 0 || h <= 0) throw new InvalidOperationException("图片解码失败：尺寸无效。");
-            // 像素由 GetImageData 同步返回（byte[] 封送复制成托管数组）。
-            byte[] pixels = JSBind_Texture.GetImageData();
+            byte[] pixels = JSBind_Texture.GetImageData(token);
             return device.CreateTexture(w, h, pixels);
         }
 

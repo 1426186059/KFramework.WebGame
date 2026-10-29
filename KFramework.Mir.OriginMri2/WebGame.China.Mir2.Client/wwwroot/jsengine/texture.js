@@ -46,14 +46,16 @@ function mimeFromBytes(b) {
     }
     return '';
 }
-// 未知尺寸解码的像素缓存：decodeImageToRgbaAsync1 入缓存，getImageData 取回后清空。
-let _lastDecoded = null;
+// 未知尺寸解码的像素缓存：decodeImageToRgbaAsync1 按 token 入缓存，getImageData(token) 取回后清空。
+// 用 Map + token 取代单例 _lastDecoded：主线程里多个瓦片 async 解码会交错，单例会被互相覆盖/提前取空，
+// 导致部分 getImageData 落空（"未知尺寸"）。每请求一个 token，彻底并发安全。
+const _decodeCache = new Map();
 // 纹理解码：借浏览器原生解码器把图像字节（PNG / WebP 等）解码为 RGBA8。
 // 因 WASM 无托管 WebP 解码器，统一走 createImageBitmap（浏览器原生，覆盖 Png / Webp）。
 // bytes 走 ArraySegment + MemoryView：C# 侧跨界（await createImageBitmap）时不再整块拷贝（理由见 JSBind_Texture 的注释）。
 // 未知尺寸（松散图片）：解码成功后把 RGBA8 像素暂存进 _lastDecoded 缓存，返回打包宽高的 int（(w << 16) | h：高 16 位宽、低 16 位高）；
 // 调用方解出宽高后，用 getImageData 取回像素。失败（解码失败）返回 -1，不抛。
-export async function decodeImageToRgbaAsync1(bytes) {
+export async function decodeImageToRgbaAsync1(bytes, token) {
     try {
         const raw = sourceBytes(bytes);
         const blob = new Blob([raw], { type: mimeFromBytes(raw) });
@@ -70,8 +72,8 @@ export async function decodeImageToRgbaAsync1(bytes) {
         const image = c.getImageData(0, 0, w, h).data;
         if (bitmap.close)
             bitmap.close();
-        // 未知尺寸：缓存像素，供 getImageData 取回
-        _lastDecoded = { width: w, height: h, data: new Uint8Array(image) };
+        // 未知尺寸：按 token 缓存像素，供 getImageData(token) 取回（Map 隔离，不再用单例）
+        _decodeCache.set(token, { width: w, height: h, data: new Uint8Array(image) });
         // 打包宽高：高 16 位存 w、低 16 位存 h，即 (w << 16) | h（每维 < 65536 时位不重叠；本函数断言已限制更严 < 32767）；解码失败返回 -1。
         return (w << 16) | h;
     }
@@ -129,11 +131,11 @@ export async function decodeImageToRgbaAsync2(bytes, outSize, outPixels) {
 // 必须在 decodeImageToRgbaAsync1(bytes) 返回 ≥ 0 之后调用；否则抛错（上一步解码失败或未调用）。
 // 直接返回缓存的 Uint8Array：C# 封送复制成新 byte[]，取走即清空缓存，避免多次加载堆积。
 // 不再 async / 不再包 JSObject —— 同步返回 byte[] 在本互操作下可行（byte[] 同步封送 = 复制成新数组）。
-export function getImageData() {
-    if (!_lastDecoded)
+export function getImageData(seq) {
+    const cached = _decodeCache.get(seq);
+    if (!cached)
         throw new Error('[texture] getImageData 前必须先成功调用 decodeImageToRgbaAsync1（未知尺寸）');
-    const cached = _lastDecoded;
-    _lastDecoded = null;
+    _decodeCache.delete(seq);
     return cached.data;
 }
 // ---------- KTX2（Basis Universal 超压缩）纹理上传 ----------
