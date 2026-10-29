@@ -50,9 +50,6 @@ namespace Client.MirGraphics
         public static readonly MLibrary
             Dragon = new MLibrary(Settings.DataPath + "Dragon");
 
-        //Map
-        public static readonly MLibrary[] MapLibs = new MLibrary[400];
-
         //Items
         public static readonly MLibrary
             Items = new MLibrary(Settings.DataPath + "Items"),
@@ -127,81 +124,7 @@ namespace Client.MirGraphics
             InitLibrary(ref Transform, Settings.TransformPath, "00");
             InitLibrary(ref TransformMounts, Settings.TransformMountsPath, "00");
             InitLibrary(ref TransformEffect, Settings.TransformEffectPath, "00");
-            InitLibrary(ref TransformWeaponEffect, Settings.TransformWeaponEffectPath, "00");
-
-            //wemade mir2 (allowed from 0-99)
-            MapLibs[0] = new MLibrary(Settings.DataPath + "Map\\WemadeMir2\\Tiles");
-            MapLibs[1] = new MLibrary(Settings.DataPath + "Map\\WemadeMir2\\Smtiles");
-            MapLibs[2] = new MLibrary(Settings.DataPath + "Map\\WemadeMir2\\Objects");
-            for (int i = 2; i < 28; i++)
-            {
-                MapLibs[i + 1] = new MLibrary(Settings.DataPath + "Map\\WemadeMir2\\Objects" + i.ToString());
-            }
-            MapLibs[90] = new MLibrary(Settings.DataPath + "Map\\WemadeMir2\\Objects_32bit");
-
-            //shanda mir2 (allowed from 100-199)
-            MapLibs[100] = new MLibrary(Settings.DataPath + "Map\\ShandaMir2\\Tiles");
-            for (int i = 1; i < 10; i++)
-            {
-                MapLibs[100 + i] = new MLibrary(Settings.DataPath + "Map\\ShandaMir2\\Tiles" + (i + 1));
-            }
-            MapLibs[110] = new MLibrary(Settings.DataPath + "Map\\ShandaMir2\\SmTiles");
-            for (int i = 1; i < 10; i++)
-            {
-                MapLibs[110 + i] = new MLibrary(Settings.DataPath + "Map\\ShandaMir2\\SmTiles" + (i + 1));
-            }
-            MapLibs[120] = new MLibrary(Settings.DataPath + "Map\\ShandaMir2\\Objects");
-            for (int i = 1; i < 31; i++)
-            {
-                MapLibs[120 + i] = new MLibrary(Settings.DataPath + "Map\\ShandaMir2\\Objects" + (i + 1));
-            }
-            MapLibs[190] = new MLibrary(Settings.DataPath + "Map\\ShandaMir2\\AniTiles1");
-            //wemade mir3 (allowed from 200-299)
-            string[] Mapstate = { "", "wood\\", "sand\\", "snow\\", "forest\\"};
-            for (int i = 0; i < Mapstate.Length; i++)
-            {
-                MapLibs[200 +(i*15)] = new MLibrary(Settings.DataPath + "Map\\WemadeMir3\\" + Mapstate[i] + "Tilesc");
-                MapLibs[201 +(i*15)] = new MLibrary(Settings.DataPath + "Map\\WemadeMir3\\" + Mapstate[i] + "Tiles30c");
-                MapLibs[202 +(i*15)] = new MLibrary(Settings.DataPath + "Map\\WemadeMir3\\" + Mapstate[i] + "Tiles5c");
-                MapLibs[203 +(i*15)] = new MLibrary(Settings.DataPath + "Map\\WemadeMir3\\" + Mapstate[i] + "Smtilesc");
-                MapLibs[204 +(i*15)] = new MLibrary(Settings.DataPath + "Map\\WemadeMir3\\" + Mapstate[i] + "Housesc");
-                MapLibs[205 +(i*15)] = new MLibrary(Settings.DataPath + "Map\\WemadeMir3\\" + Mapstate[i] + "Cliffsc");
-                MapLibs[206 +(i*15)] = new MLibrary(Settings.DataPath + "Map\\WemadeMir3\\" + Mapstate[i] + "Dungeonsc");
-                MapLibs[207 +(i*15)] = new MLibrary(Settings.DataPath + "Map\\WemadeMir3\\" + Mapstate[i] + "Innersc");
-                MapLibs[208 +(i*15)] = new MLibrary(Settings.DataPath + "Map\\WemadeMir3\\" + Mapstate[i] + "Furnituresc");
-                MapLibs[209 +(i*15)] = new MLibrary(Settings.DataPath + "Map\\WemadeMir3\\" + Mapstate[i] + "Wallsc");
-                MapLibs[210 +(i*15)] = new MLibrary(Settings.DataPath + "Map\\WemadeMir3\\" + Mapstate[i] + "smObjectsc");
-                MapLibs[211 +(i*15)] = new MLibrary(Settings.DataPath + "Map\\WemadeMir3\\" + Mapstate[i] + "Animationsc");
-                MapLibs[212 +(i*15)] = new MLibrary(Settings.DataPath + "Map\\WemadeMir3\\" + Mapstate[i] + "Object1c");
-                MapLibs[213 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\WemadeMir3\\" + Mapstate[i] + "Object2c");
-            }
-            Mapstate = new string[] { "", "wood", "sand", "snow", "forest"};
-            //shanda mir3 (allowed from 300-399)
-            for (int i = 0; i < Mapstate.Length; i++)
-            {
-                MapLibs[300 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "Tilesc" + Mapstate[i]);
-                MapLibs[301 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "Tiles30c" + Mapstate[i]);
-                MapLibs[302 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "Tiles5c" + Mapstate[i]);
-                MapLibs[303 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "Smtilesc" + Mapstate[i]);
-                MapLibs[304 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "Housesc" + Mapstate[i]);
-                MapLibs[305 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "Cliffsc" + Mapstate[i]);
-                MapLibs[306 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "Dungeonsc" + Mapstate[i]);
-                MapLibs[307 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "Innersc" + Mapstate[i]);
-                MapLibs[308 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "Furnituresc" + Mapstate[i]);
-                MapLibs[309 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "Wallsc" + Mapstate[i]);
-                MapLibs[310 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "smObjectsc" + Mapstate[i]);
-                MapLibs[311 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "Animationsc" + Mapstate[i]);
-                MapLibs[312 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "Object1c" + Mapstate[i]);
-                MapLibs[313 + (i * 15)] = new MLibrary(Settings.DataPath + "Map\\ShandaMir3\\" + "Object2c" + Mapstate[i]);
-            }
-
-            // 静态构造里不加载任何库：加载统一由 LoadAsync() 在 CMain.Init 之后驱动，
-            // 全程走 HTTP 异步，避免同步网络请求冻结主线程（渲染/输入/心跳）。
-
-            // 把 MapLibs 的空槽填成占位库（_fileName=".Lib"，InitializeAsync 会跳过并标记 _failed，
-            // 绘制时返回马赛克占位），避免绘制路径访问 null。不发起请求、不参与预加载。
-            for (int i = 0; i < MapLibs.Length; i++)
-                if (MapLibs[i] == null) MapLibs[i] = new MLibrary("");
+            InitLibrary(ref TransformWeaponEffect, Settings.TransformWeaponEffectPath, "00");     
         }
 
         /// <summary>
@@ -293,7 +216,7 @@ namespace Client.MirGraphics
         // 当前不再被调用，仅保留以免破坏引用；可整体删除（连同 _queue/LoadQueuedAsync/Count/Progress）。
         private static async Task LoadGameLibrariesAsync()
         {
-            Count = MapLibs.Length + Monsters.Length + Gates.Length + Flags.Length + Siege.Length + NPCs.Length + CArmours.Length +
+            Count = Monsters.Length + Gates.Length + Flags.Length + Siege.Length + NPCs.Length + CArmours.Length +
                 CHair.Length + CWeapons.Length + CWeaponEffect.Length + AArmours.Length + AHair.Length + AWeaponsL.Length + AWeaponsR.Length +
                 ARArmours.Length + ARHair.Length + ARWeapons.Length + ARWeaponsS.Length +
                 CHumEffect.Length + AHumEffect.Length + ARHumEffect.Length + Mounts.Length + Fishing.Length + Pets.Length +
@@ -350,15 +273,6 @@ namespace Client.MirGraphics
             Progress++;
             _queue.Add(Items_Tooltip_32bit);
             Progress++;
-
-            for (int i = 0; i < MapLibs.Length; i++)
-            {
-                if (MapLibs[i] == null)
-                    MapLibs[i] = new MLibrary("");
-                else
-                    _queue.Add(MapLibs[i]);
-                Progress++;
-            }
 
             for (int i = 0; i < Monsters.Length; i++)
             {

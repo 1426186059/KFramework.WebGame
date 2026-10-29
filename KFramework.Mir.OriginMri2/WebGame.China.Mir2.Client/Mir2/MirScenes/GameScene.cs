@@ -10345,11 +10345,6 @@ namespace Client.MirScenes
             }
         }
 
-        // 底图绘制统计（每 3 秒输出一次），用于定位"地板不显示"：
-        // 绘制=真正画出的地砖；跳过=大地砖只在偶数格画而跳过；库为空=引用的库为 null；无底图数据=该格没有底图。
-        private static int _backDrawn, _backSkipped, _backNoLib, _backNoImage;
-        private static long _lastDrawStatTime;
-
         // 限频输出移动诊断日志：每次点击只打一条，便于判断是"点击没送到"、
         // "坐标算错"还是"目标格被阻挡"，而不是靠猜。
         private static long _lastMoveLog;
@@ -10480,9 +10475,6 @@ namespace Client.MirScenes
         private bool _floorDirty;
         public string FileName = String.Empty;
 
-        /// <summary>当前已加载地图「用到」的地图片库索引集合（Libraries.MapLibs 下标）。
-        /// 切图时据此把旧地图的库全部 Dispose 掉，释放贴图内存。</summary>
-        private HashSet<int> _usedMapLibs = new HashSet<int>();
         public string Title = String.Empty;
         public ushort MiniMap, BigMap, Music, SetMusic;
         public LightSetting Lights;
@@ -10589,7 +10581,6 @@ namespace Client.MirScenes
         public async Task LoadMapAsync()
         {
             ResetMap();
-            DisposeOldMapLibraries();
 
             // 记录本次加载代次并快照文件名：LoadMapAsync 是 fire-and-forget 调用的，
             // 连续/并发切图时（如登录时连着收到两张地图包），先完成的旧地图若照常落地，
@@ -10647,10 +10638,6 @@ namespace Client.MirScenes
 
             PathFinder = new PathFinder(this);
 
-            // 进图后立刻预加载本图用到的地图片库，避免玩家先看到一大片马赛克/空洞
-            // （等绘制时再按需加载，每个库都要多等一次 HTTP 往返）。
-            PreloadMapLibraries();
-
             try
             {
                 if (SetMusic != Music)
@@ -10668,120 +10655,6 @@ namespace Client.MirScenes
             SoundList.Music = Music;
 
             UpdateWeather();
-        }
-
-        /// <summary>
-        /// 扫描整张地图用到的地图片库索引，并触发它们的异步加载。
-        /// InitializeAsync 是幂等的（已加载/加载中会直接返回），可安全重复调用。
-        /// </summary>
-        private void PreloadMapLibraries()
-        {
-            try
-            {
-                if (M2CellInfo == null) return;
-                if (Libraries.MapLibs == null) return;   // 不再使用地图片库渲染地板，库可能为 null，直接跳过
-
-                var used = new HashSet<int>();
-                int backCells = 0, midCells = 0, frontCells = 0;
-                long backImageMax = 0;
-
-                for (int x = 0; x < Width; x++)
-                {
-                    for (int y = 0; y < Height; y++)
-                    {
-                        var c = M2CellInfo[x, y];
-                        if (c == null)
-                        {
-                            continue;
-                        }
-
-                        if (c.BackImage != 0)
-                        {
-                            backCells++;
-                            if (c.BackImage > backImageMax)
-                            {
-                                backImageMax = c.BackImage;
-                            }
-                        }
-
-                        if (c.MiddleImage != 0)
-                        {
-                            midCells++;
-                        }
-
-                        if (c.FrontImage != 0)
-                        {
-                            frontCells++;
-                        }
-
-                        // 注意：0 是合法索引（MapLibs[0] = Tiles 底图），绝不能用 "> 0" 过滤，
-                        // 否则底图库永远进不了预加载，只能等绘制时按需去取（表现为地图大片不全）。
-                        if (c.BackIndex >= 0)
-                        {
-                            used.Add(c.BackIndex);
-                        }
-                        if (c.MiddleIndex >= 0)
-                        {
-                            used.Add(c.MiddleIndex);
-                        }
-                        if (c.FrontIndex >= 0 && c.FrontIndex != 200)
-                        {
-                            used.Add(c.FrontIndex);
-                        }
-                    }
-                }
-
-                // 记录本图用到的地图片库索引，供切图时整体 Dispose 释放。
-                _usedMapLibs = used;
-
-                // 诊断地图数据是否解析正确：正常地图应有大量带底图的格子。
-                KFramework.MonoGame.PrintTool.Log("[Map] 尺寸=" + Width + "x" + Height +
-                    " 有底图格=" + backCells + " 有中层格=" + midCells + " 有前景格=" + frontCells +
-                    " 最大底图号=" + backImageMax);
-
-                int count = 0;
-                foreach (int i in used)
-                {
-                    if (i < 0 || i >= Libraries.MapLibs.Length) continue;
-                    var lib = Libraries.MapLibs[i];
-                    if (lib == null) continue;
-
-                    _ = lib.InitializeAsync();
-                    count++;
-                }
-
-                KFramework.MonoGame.PrintTool.Log("[Map] 预加载地图片库: " + count + " 个，索引=[" + string.Join(",", used) + "]");
-            }
-            catch (Exception ex)
-            {
-                KFramework.MonoGame.PrintTool.Log("[Map] 预加载地图片库失败: " + ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// 切换地图时，把「上一张地图」用到的所有地图片库 Dispose 掉，释放其纹理与字节流，
-        /// 避免 WASM 堆被历次地图的贴图持续堆积（堆上限仅 2GB）。
-        /// 仅在 ResetMap 之后（M2CellInfo 已置空、绘制不再引用这些库）调用。
-        /// 释放后库的 _loaded 复位，新地图访问时会自动重新 InitializeAsync 拉取属于它的那份 Lib。
-        /// 仅对远程地图（内容随地图名变化）生效；本地共享库内容跨地图一致，保留缓存避免重复下载。
-        /// </summary>
-        private void DisposeOldMapLibraries()
-        {
-            if (!NewResConfig.RemoteLibEnabled) return;   // 本地共享库跨地图内容一致，不释放
-            if (_usedMapLibs == null || _usedMapLibs.Count == 0) return;
-
-            int n = _usedMapLibs.Count;
-            foreach (int i in _usedMapLibs)
-            {
-                if (i < 0 || i >= Libraries.MapLibs.Length) continue;
-                var lib = Libraries.MapLibs[i];
-                if (lib == null) continue;
-                if (lib.IsLoading) continue;   // 仍在上一张地图的异步加载中：交给新地图的 staleForOtherMap 重载处理，避免打断在途请求
-                try { lib.Dispose(); }
-                catch (Exception ex) { KFramework.MonoGame.PrintTool.Log("[Map] 释放旧地图库失败 idx=" + i + ": " + ex.Message); }
-            }
-            _usedMapLibs.Clear();
-            KFramework.MonoGame.PrintTool.Log("[Map] 已释放旧地图用到的地图片库: " + n + " 个");
         }
 
 
@@ -10881,14 +10754,8 @@ namespace Client.MirScenes
             int rtW = fs.Width, rtH = fs.Height;
             UpdateViewPort(rtW, rtH);
 
-            // 视口尺寸变化（首帧布局未稳 / 窗口缩放 / dpr 变化）时必须重建地板：
-            // 地板纹理随窗口原生分辨率重建，1:1 原尺寸贴图铺满。
-            // 相机所在格变化 → 暴露出新的瓦片范围，需要重新烘焙地板（按需从 CDN 拉取新瓦片）
-            if (User != null && (User.Movement.X != _lastUserCell.X || User.Movement.Y != _lastUserCell.Y))
-            {
-                _floorDirty = true;
-                _lastUserCell = new Point(User.Movement.X, User.Movement.Y);
-            }
+            // 视口/相机变化导致的地板重烤，改由 DrawControl 每帧检测并置 _floorDirty（见 DrawControl 顶部），
+            // 此处不再判断——否则“门控为 false 时 CreateTexture 不跑、内部移动判断也跳过”会让地板不随角色滚动。
 
             bool floorNeedsResize = DXManager.FloorTexture == null || DXManager.FloorTexture.Disposed
                 || DXManager.FloorTexture.Width != rtW || DXManager.FloorTexture.Height != rtH;
@@ -11001,7 +10868,19 @@ namespace Client.MirScenes
             if (!DrawControlTexture)
                 return;
 
-            if (!TextureValid)
+            // 相机所在格变化 → 暴露出新的瓦片范围，需重新烘焙地板（按需从 CDN 拉取新瓦片）。
+            // 这必须在 DrawControl 每帧判断：否则 CreateTexture 门控为 false 时内部判断被跳过，地板不随角色滚动。
+            if (User != null && (User.Movement.X != _lastUserCell.X || User.Movement.Y != _lastUserCell.Y))
+            {
+                _floorDirty = true;
+                _lastUserCell = new Point(User.Movement.X, User.Movement.Y);
+            }
+
+            // 地板是异步烘焙的：进图首帧 MapImg 尚未就绪会烤出空地板并把 TextureValid 置 true，
+            // 此后 LoadMapAsync 设 _floorDirty / MapImg 时，必须允许 CreateTexture 再次执行
+            // （DrawFloor 只在 CreateTexture 内部被调用），否则空地板永远留着 → 所有地图黑屏。
+            // 故门控不能只看 !TextureValid，还要在地板需要重烤(!FloorValid)或地图刚就绪(_floorDirty)时放行。
+            if (!TextureValid || _floorDirty || !FloorValid)
                 CreateTexture();
 
             if (ControlTexture == null || ControlTexture.Disposed)
@@ -11173,126 +11052,8 @@ namespace Client.MirScenes
             {
                 if (y <= 0) continue;
                 if (y >= Height) break;
-                int drawY = (y - User.Movement.Y + OffSetY + 1) * CellHeight + User.OffSetMove.Y;
-
-                for (int x = User.Movement.X - ViewRangeX; x <= User.Movement.X + ViewRangeX; x++)
-                {
-                    if (x < 0) continue;
-                    if (x >= Width) break;
-                    int drawX = (x - User.Movement.X + OffSetX) * CellWidth - OffSetX + User.OffSetMove.X;
-                    int index;
-                    byte animation;
-                    bool blend;
-                    Size s;
-                    index = M2CellInfo[x, y].TileAnimationImage;
-                    animation = M2CellInfo[x, y].TileAnimationFrames;
-                    if ((index > 0) & (animation > 0))
-                    {
-                        index--;
-                        int animationoffset = M2CellInfo[x, y].TileAnimationOffset ^ 0x2000;
-                        index += animationoffset * (AnimationCount % animation);
-                        Libraries.MapLibs[190].DrawUp(index, drawX, drawY);
-                    }
-
-
-                    if ((M2CellInfo[x, y].MiddleIndex >= 0) && (M2CellInfo[x, y].MiddleIndex != -1))   //M2P '> 199' changed to '>= 0' to include mir2 libraries. Fixes middle layer tile strips draw. Also changed in 'DrawFloor' above.
-                    {
-                        index = M2CellInfo[x, y].MiddleImage - 1;
-                        if (index > 0)
-                        {
-                            animation = M2CellInfo[x, y].MiddleAnimationFrame;
-                            blend = false;
-                            if ((animation > 0) && (animation < 255))
-                            {
-                                if ((animation & 0x0f) > 0)
-                                {
-                                    blend = true;
-                                    animation &= 0x0f;
-                                }
-                                if (animation > 0)
-                                {
-                                    byte animationTick = M2CellInfo[x, y].MiddleAnimationTick;
-                                    index += (AnimationCount % (animation + (animation * animationTick))) / (1 + animationTick);
-
-                                    if (blend && (animation == 10 || animation == 8)) //diamond mines, abyss blends
-                                    {
-                                        Libraries.MapLibs[M2CellInfo[x, y].MiddleIndex].DrawUpBlend(index, new Point(drawX, drawY));
-                                    }
-                                    else
-                                    {
-                                        Libraries.MapLibs[M2CellInfo[x, y].MiddleIndex].DrawUp(index, drawX, drawY);
-                                    }
-                                }
-                            }
-                            s = Libraries.MapLibs[M2CellInfo[x, y].MiddleIndex].GetSize(index);
-                            if ((s.Width != CellWidth || s.Height != CellHeight) && (s.Width != (CellWidth * 2) || s.Height != (CellHeight * 2)) && !blend)
-                            {
-                                Libraries.MapLibs[M2CellInfo[x, y].MiddleIndex].DrawUp(index, drawX, drawY);
-                            }
-                        }
-                    }
-
-                    index = (M2CellInfo[x, y].FrontImage & 0x7FFF) - 1;
-
-                    if (index < 0) continue;
-
-                    int fileIndex = M2CellInfo[x, y].FrontIndex;
-                    if (fileIndex == -1) continue;
-                    animation = M2CellInfo[x, y].FrontAnimationFrame;
-
-                    if ((animation & 0x80) > 0)
-                    {
-                        blend = true;
-                        animation &= 0x7F;
-                    }
-                    else
-                        blend = false;
-
-
-                    if (animation > 0)
-                    {
-                        byte animationTick = M2CellInfo[x, y].FrontAnimationTick;
-                        index += (AnimationCount % (animation + (animation * animationTick))) / (1 + animationTick);
-                    }
-
-
-                    if (M2CellInfo[x, y].DoorIndex > 0)
-                    {
-                        Door DoorInfo = GetDoor(M2CellInfo[x, y].DoorIndex);
-                        if (DoorInfo == null)
-                        {
-                            DoorInfo = new Door() { index = M2CellInfo[x, y].DoorIndex, DoorState = 0, ImageIndex = 0, LastTick = CMain.Time };
-                            Doors.Add(DoorInfo);
-                        }
-                        else
-                        {
-                            if (DoorInfo.DoorState != 0)
-                            {
-                                index += (DoorInfo.ImageIndex + 1) * M2CellInfo[x, y].DoorOffset;//'bad' code if you want to use animation but it's gonna depend on the animation > has to be custom designed for the animtion
-                            }
-                        }
-                    }
-
-                    s = Libraries.MapLibs[fileIndex].GetSize(index);
-                    if (s.Width == CellWidth && s.Height == CellHeight && animation == 0) continue;
-                    if ((s.Width == CellWidth * 2) && (s.Height == CellHeight * 2) && (animation == 0)) continue;
-
-                    if (blend)
-                    {
-                        if (fileIndex == 14 || fileIndex == 27 || (fileIndex > 99 & fileIndex < 199))
-                            Libraries.MapLibs[fileIndex].DrawBlend(index, new Point(drawX, drawY - (3 * CellHeight)), Color.White, true);
-                        else
-                            Libraries.MapLibs[fileIndex].DrawBlend(index, new Point(drawX, drawY - s.Height), Color.White, (index >= 2723 && index <= 2732));
-                    }
-                    else
-                    {
-                        if (fileIndex == 28 && Libraries.MapLibs[fileIndex].GetOffSet(index) != Point.Empty)
-                            Libraries.MapLibs[fileIndex].Draw(index, new Point(drawX, drawY - CellHeight), Color.White, true);
-                        else
-                            Libraries.MapLibs[fileIndex].Draw(index, drawX, drawY - s.Height);
-                    }
-                }
-
+                // 原始传奇地图整体由 CDN zipmap 瓦片拼出（见 DrawFloor），已包含地面/中层/前层/动画，
+                // 不再用 Libraries.MapLibs 逐层叠加绘制。这里只画随格子挂的动态对象（角色/NPC/怪物/物品等）。
                 for (int x = User.Movement.X - ViewRangeX; x <= User.Movement.X + ViewRangeX; x++)
                 {
                     if (x < 0) continue;
@@ -11612,10 +11373,6 @@ namespace Client.MirScenes
                         p = new Point(
                             (x + OffSetX - MapObject.User.Movement.X) * CellWidth + MapObject.User.OffSetMove.X,
                             (y + OffSetY - MapObject.User.Movement.Y) * CellHeight + MapObject.User.OffSetMove.Y + 32);
-
-
-                        if (M2CellInfo[x, y].FrontAnimationFrame > 0)
-                            p.Offset(Libraries.MapLibs[fileIndex].GetOffSet(imageIndex));
 
                         if (light >= DXManager.Lights.Count)
                             light = DXManager.Lights.Count - 1;
