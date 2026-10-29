@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
+using System.IO;
+using System.IO.Compression;
 using KFramework.MonoGame;
+using System.Text.Json;
 
 namespace Client.MirObjects
 {
@@ -35,6 +33,25 @@ namespace Client.MirObjects
 
     internal static class Mir2MapDecoder
     {
+        // 与服务端 OriginalMapSource.DecompressIfNeeded 一致：dat 可能是 zlib(0x78) 或 gzip(0x1f8b) 压缩包，
+        // 解压后才是对齐明文（头2字节=地图数count，随后每8字节一项 id+len）。不解压会导致索引全乱、查不到地图。
+        public static byte[] DecompressIfNeeded(byte[] raw)
+        {
+            if (raw != null && raw.Length > 2 && raw[0] == 0x1f && raw[1] == 0x8b)
+            {
+                using var ms = new MemoryStream(raw);
+                using var gz = new GZipStream(ms, CompressionMode.Decompress);
+                using var o = new MemoryStream(); gz.CopyTo(o); return o.ToArray();
+            }
+            if (raw != null && raw.Length > 2 && raw[0] == 0x78 && (raw[1] == 0x01 || raw[1] == 0x9c || raw[1] == 0xda))
+            {
+                using var ms = new MemoryStream(raw);
+                using var zl = new ZLibStream(ms, CompressionMode.Decompress);
+                using var o = new MemoryStream(); zl.CopyTo(o); return o.ToArray();
+            }
+            return raw;
+        }
+
         public static List<(int Id, int Len)> ParseIndex(byte[] data)
         {
             var list = new List<(int, int)>();
@@ -208,7 +225,7 @@ namespace Client.MirObjects
                 {
                     try { data = await Mir2OriginResource.GetDataBytesAsync(p, ct).ConfigureAwait(false); }
                     catch { data = null; }
-                    if (data != null && data.Length > 0) return data;
+                    if (data != null && data.Length > 0) return Mir2MapDecoder.DecompressIfNeeded(data);
                 }
                 return null;
             });
