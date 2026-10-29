@@ -66,6 +66,7 @@ namespace Client.MirNetwork
         private static void OnNet_ClosedFunc(int code)
         {
             Connected = false;
+            CMain.SaveError(string.Format("[网络] WebSocket 已关闭（code={0}），与服务器连接断开（很可能是服务器心跳超时主动断开）。TimeOutTime={1}, CMain.Time={2}", code, TimeOutTime, CMain.Time));
         }
 
         private static void OnNet_ErrorFunc(string msg)
@@ -107,6 +108,7 @@ namespace Client.MirNetwork
                         return;
                     }
                     MirMessageBox.Show(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.LostConnectionWithServer), true);
+                    CMain.SaveError(string.Format("[网络] 与服务器失去连接（LostConnectionWithServer）。TimeOutTime={0}, CMain.Time={1}", TimeOutTime, CMain.Time));
                     Disconnect();
                     return;
                 }
@@ -137,7 +139,10 @@ namespace Client.MirNetwork
             }
 
             if (CMain.Time > TimeOutTime && _sendList.IsEmpty)
+            {
                 _sendList.Enqueue(new C.KeepAlive());
+                CMain.SaveError(string.Format("[网络] 心跳超时，发送 KeepAlive 续命（距上次活动时间约 {0}ms，超时阈值 {1}ms）。若此值远大于阈值，说明主线程曾长时间卡顿。", CMain.Time - (TimeOutTime - Settings.TimeOut), Settings.TimeOut));
+            }
 
             if (_sendList.IsEmpty) return;
 

@@ -267,6 +267,7 @@ namespace Server.MirNetwork
 
             if (Envir.Time > TimeOutTime)
             {
+                MessageQueue.Enqueue(string.Format("{0} 心跳超时断开连接：超过 {1}ms 未收到任何数据包（TimeOutTime={2}, 当前 Envir.Time={3}）。", IPAddress, Settings.TimeOut, TimeOutTime, Envir.Time));
                 Disconnect(21);
                 return;
             }
