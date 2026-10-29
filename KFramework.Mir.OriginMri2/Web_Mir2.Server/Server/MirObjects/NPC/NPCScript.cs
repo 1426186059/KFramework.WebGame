@@ -162,7 +162,7 @@ namespace Server.MirObjects
                 }
             }
             else
-                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ScriptNotFound), FileName));
+                MessageQueue.Enqueue(string.Format("Script Not Found: {0}", FileName));
         }
         public void ClearInfo()
         {
@@ -315,7 +315,7 @@ namespace Server.MirObjects
                 string path = Path.Combine(Settings.EnvirPath, split[1].Substring(1, split[1].Length - 2));
 
                 if (!File.Exists(path))
-                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.InsertScriptNotFound), path));
+                    MessageQueue.Enqueue(string.Format("INSERT Script Not Found: {0}", path));
                 else
                     newLines = File.ReadAllLines(path).ToList();
 
@@ -344,7 +344,7 @@ namespace Server.MirObjects
 
                 if (!File.Exists(path))
                 {
-                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncludeScriptNotFound), path));
+                    MessageQueue.Enqueue(string.Format("INCLUDE Script Not Found: {0}", path));
                     return parsedLines;
                 }
 
@@ -668,7 +668,7 @@ namespace Server.MirObjects
 
                     if (goods == null || Goods.Contains(goods))
                     {
-                        MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CouldNotFindItemFile), lines[i], FileName));
+                        MessageQueue.Enqueue(string.Format("Could not find Item: {0}, File: {1}", lines[i], FileName));
                         continue;
                     }
 
@@ -767,13 +767,13 @@ namespace Server.MirObjects
 
                     if (recipe == null)
                     {
-                        MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CouldNotFindRecipe), lines[i], FileName));
+                        MessageQueue.Enqueue(string.Format("Could not find recipe: {0}, File: {1}", lines[i], FileName));
                         continue;
                     }
 
                     if (recipe.Ingredients.Count == 0)
                     {
-                        MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CouldNotFindIngredients), lines[i], FileName));
+                        MessageQueue.Enqueue(string.Format("Could not find ingredients: {0}, File: {1}", lines[i], FileName));
                         continue;
                     }
 
@@ -850,7 +850,7 @@ namespace Server.MirObjects
                     {
                         var npc = NPCObject.Get(objectID);
                         string npcName = npc?.Info?.GameName ?? npc?.Name ?? "Unknown";
-                        MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerPreventedNpcAccess), player.Name, key, npcName));
+                        MessageQueue.Enqueue(string.Format("Player: {0} was prevented access to NPC key: '{1}' on NPC: {2}", player.Name, key, npcName));
                         return;
                     }
                 }

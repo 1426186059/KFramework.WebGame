@@ -1,4 +1,4 @@
-﻿using Server.MirObjects;
+using Server.MirObjects;
 using System.Text.RegularExpressions;
 using Server.MirEnvir;
 
@@ -142,7 +142,7 @@ namespace Server.MirDatabase
                 ParseFile(lines);
             }
             else
-                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.FileNotFoundQuest), fileName, Name));
+                MessageQueue.Enqueue(string.Format("File Not Found: {0}, Quest: {1}", fileName, Name));
         }
 
         public void ClearInfo()

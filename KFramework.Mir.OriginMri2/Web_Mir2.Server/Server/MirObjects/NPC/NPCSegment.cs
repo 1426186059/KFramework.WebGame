@@ -1850,7 +1850,7 @@ namespace Server.MirObjects
                         }
                         catch (ArgumentException)
                         {
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[1], Key));
+                            MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[1], Key));
                             return true;
                         }
                         break;
@@ -1908,7 +1908,7 @@ namespace Server.MirObjects
                             }
                             catch (ArgumentException)
                             {
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[0], Key));
+                                MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[0], Key));
                                 return true;
                             }
                         }
@@ -2058,7 +2058,7 @@ namespace Server.MirObjects
                         }
                         catch (ArgumentException)
                         {
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[1], Key));
+                            MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[1], Key));
                             return true;
                         }
                         break;
@@ -2115,7 +2115,7 @@ namespace Server.MirObjects
                             }
                             catch (ArgumentException)
                             {
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[0], Key));
+                                MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[0], Key));
                                 return true;
                             }
                         }
@@ -2134,7 +2134,7 @@ namespace Server.MirObjects
                         }
                         catch (ArgumentException)
                         {
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[0], Key));
+                            MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[0], Key));
                             return true;
                         }
                         break;
@@ -2151,7 +2151,7 @@ namespace Server.MirObjects
                         }
                         catch (ArgumentException)
                         {
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[0], Key));
+                            MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[0], Key));
                             return true;
                         }
                         break;
@@ -2168,7 +2168,7 @@ namespace Server.MirObjects
                         }
                         catch (ArgumentException)
                         {
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[0], Key));
+                            MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[0], Key));
                             return true;
                         }
                         break;
@@ -2302,7 +2302,7 @@ namespace Server.MirObjects
                         }
                         catch (ArgumentException)
                         {
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[0], Key));
+                            MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[0], Key));
                             return true;
                         }
                         break;
@@ -2501,7 +2501,7 @@ namespace Server.MirObjects
                         }
                         catch (ArgumentException)
                         {
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[1], Key));
+                            MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[1], Key));
                             return true;
                         }
                         break;
@@ -2592,7 +2592,7 @@ namespace Server.MirObjects
                         }
                         catch (ArgumentException)
                         {
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[0], Key));
+                            MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[0], Key));
                             return true;
                         }
                         break;
@@ -2625,7 +2625,7 @@ namespace Server.MirObjects
                         }
                         catch (ArgumentException)
                         {
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[0], Key));
+                            MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[0], Key));
                             return true;
                         }
                         break;
@@ -2658,7 +2658,7 @@ namespace Server.MirObjects
                         }
                         catch (ArgumentException)
                         {
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[0], Key));
+                            MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[0], Key));
                             return true;
                         }
                         break;
@@ -2691,7 +2691,7 @@ namespace Server.MirObjects
                         }
                         catch (ArgumentException)
                         {
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[0], Key));
+                            MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[0], Key));
                             return true;
                         }
                         break;
@@ -2724,7 +2724,7 @@ namespace Server.MirObjects
                         }
                         catch (ArgumentException)
                         {
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[0], Key));
+                            MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[0], Key));
                             return true;
                         }
                         break;
@@ -2768,7 +2768,7 @@ namespace Server.MirObjects
                         }
                         catch (ArgumentException)
                         {
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[0], Key));
+                            MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[0], Key));
                             return true;
                         }
                         break;
@@ -2795,7 +2795,7 @@ namespace Server.MirObjects
                         }
                         catch (ArgumentException)
                         {
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[0], Key));
+                            MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[0], Key));
                             return true;
                         }
                         break;
@@ -2834,7 +2834,7 @@ namespace Server.MirObjects
                             }
                             catch (ArgumentException)
                             {
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[0], Key));
+                                MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[0], Key));
                                 return true;
                             }
                         }
@@ -3334,7 +3334,7 @@ namespace Server.MirObjects
 
                             if (info == null)
                             {
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.FailedToGetItemInfoPage), param[0], Key));
+                                MessageQueue.Enqueue(string.Format("Failed to get ItemInfo: {0}, Page: {1}", param[0], Key));
                                 break;
                             }
 
@@ -3344,7 +3344,7 @@ namespace Server.MirObjects
 
                                 if (item == null)
                                 {
-                                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.FailedCreateUserItemPage), param[0], Key));
+                                    MessageQueue.Enqueue(string.Format("Failed to create UserItem: {0}, Page: {1}", param[0], Key));
                                     return;
                                 }
 
@@ -3375,7 +3375,7 @@ namespace Server.MirObjects
 
                             if (info == null)
                             {
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.FailedGetItemInfo), param[0], Key));
+                                MessageQueue.Enqueue(string.Format("Failed to get ItemInfo: {0}, Page: {1}", param[0], Key));
                                 break;
                             }
 
@@ -3907,7 +3907,7 @@ namespace Server.MirObjects
                                 }
                                 catch (ArgumentException)
                                 {
-                                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[1], Key));
+                                    MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[1], Key));
                                 }
                             }
                             else
@@ -4012,7 +4012,7 @@ namespace Server.MirObjects
 
                             if (info == null)
                             {
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.FailedGetItemInfo), param[0], Key));
+                                MessageQueue.Enqueue(string.Format("Failed to get ItemInfo: {0}, Page: {1}", param[0], Key));
                                 break;
                             }
 
@@ -4022,7 +4022,7 @@ namespace Server.MirObjects
 
                                 if (item == null)
                                 {
-                                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.FailedCreateUserItemPage), param[0], Key));
+                                    MessageQueue.Enqueue(string.Format("Failed to create UserItem: {0}, Page: {1}", param[0], Key));
                                     return;
                                 }
 
@@ -4258,14 +4258,14 @@ namespace Server.MirObjects
                                 conquest.StartType = ConquestType.Forced;
                                 conquest.StartWar(conquest.GameType);
 
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.WarStarted), conquest.Info.Name));
+                                MessageQueue.Enqueue(string.Format("{0} War Started.", conquest.Info.Name));
 
                             }
                             else
                             {
                                 conquest.WarIsOn = false;
 
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.WarStopped), conquest.Info.Name));
+                                MessageQueue.Enqueue(string.Format("{0} War Stopped.", conquest.Info.Name));
                             }
 
                             foreach (var pl in Envir.Players)
@@ -4332,7 +4332,7 @@ namespace Server.MirObjects
                             string randomTextPath = Path.Combine(Settings.NPCPath, param[0]);
                             if (!File.Exists(randomTextPath))
                             {
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.RandomTextFileNotExist), randomTextPath));
+                                MessageQueue.Enqueue(string.Format("the randomTextFile:{0} does not exist.", randomTextPath));
                             }
                             else
                             {
@@ -4675,7 +4675,7 @@ namespace Server.MirObjects
                             if (!player.IsGM)
                             {
                                 player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouNotGMCommandDisabled), ChatType.System);
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.GMCommandConquestRepairAllNonGMInvoked), player.Name));
+                                MessageQueue.Enqueue(string.Format("GM Command @CONQUESTREPAIRALL invoked by non-GM player: {0}", player.Name));
                                 return;
                             }
 
@@ -4683,16 +4683,16 @@ namespace Server.MirObjects
                             var conquest = Envir.Conquests.FirstOrDefault(z => z.Info.Index == tempInt);
                             if (conquest == null) return;
 
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ConquestRepairAllInvokedByGM), player.Name, player.Info.AccountInfo.Index));
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.Conquest), conquest.Info.Name));
+                            MessageQueue.Enqueue(string.Format("@CONQUESTREPAIRALL invoked by GM: {0} on account index: {1}", player.Name, player.Info.AccountInfo.Index));
+                            MessageQueue.Enqueue(string.Format("Conquest: {0}", conquest.Info.Name));
 
                             if (conquest.Guild != null)
                             {
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.OwnerName), conquest.Guild.Name));
+                                MessageQueue.Enqueue(string.Format("Owner: {0}", conquest.Guild.Name));
                             }
                             else
                             {
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NoCurrentOwner));
+                                MessageQueue.Enqueue("No current owner.");
                             }
 
                             int _fixed = 0;
@@ -4706,7 +4706,7 @@ namespace Server.MirObjects
                                 }
                             }
                             player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ArchersRepaired), _fixed, conquest.ArcherList.Count), ChatType.System);
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ArchersRepaired), _fixed, conquest.ArcherList.Count));
+                            MessageQueue.Enqueue(string.Format("Archers repaired: {0}/{1}", _fixed, conquest.ArcherList.Count));
 
                             _fixed = 0;
                             foreach (ConquestGuildGateInfo conquestGate in conquest.GateList)
@@ -4718,7 +4718,7 @@ namespace Server.MirObjects
                                 }
                             }
                             player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.GatesRepaired), _fixed, conquest.GateList.Count), ChatType.System);
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.GatesRepaired), _fixed, conquest.GateList.Count));
+                            MessageQueue.Enqueue(string.Format("Gates repaired: {0}/{1}", _fixed, conquest.GateList.Count));
 
                             _fixed = 0;
                             foreach (ConquestGuildWallInfo conquestWall in conquest.WallList)
@@ -4730,7 +4730,7 @@ namespace Server.MirObjects
                                 }
                             }
                             player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.WallsRepaired), _fixed, conquest.WallList.Count), ChatType.System);
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.WallsRepaired), _fixed, conquest.WallList.Count));
+                            MessageQueue.Enqueue(string.Format("Walls repaired: {0}/{1}", _fixed, conquest.WallList.Count));
 
                             _fixed = 0;
                             foreach (ConquestGuildSiegeInfo conquestSiege in conquest.SiegeList)
@@ -4742,7 +4742,7 @@ namespace Server.MirObjects
                                 }
                             }
                             player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.SiegesRepaired), _fixed, conquest.SiegeList.Count), ChatType.System);
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.SiegesRepaired), _fixed, conquest.SiegeList.Count));
+                            MessageQueue.Enqueue(string.Format("Sieges repaired: {0}/{1}", _fixed, conquest.SiegeList.Count));
 
                             break;
                         }
@@ -4890,7 +4890,7 @@ namespace Server.MirObjects
                                 }
                                 catch (ArgumentException)
                                 {
-                                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IncorrectOperatorPage), param[1], Key));
+                                    MessageQueue.Enqueue(string.Format("Incorrect operator: {0}, Page: {1}", param[1], Key));
                                 }
                             }
                             else

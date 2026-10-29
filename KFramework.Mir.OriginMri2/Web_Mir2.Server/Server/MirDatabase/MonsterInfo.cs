@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using Server.MirEnvir;
 
 namespace Server.MirDatabase
@@ -407,7 +407,7 @@ namespace Server.MirDatabase
 
                 if (drop == null)
                 {
-                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CouldNotLoadDropLine), name, lines[i]));
+                    MessageQueue.Enqueue(string.Format("Could not load Drop: {0}, Line {1}", name, lines[i]));
                     continue;
                 }
 
@@ -463,7 +463,7 @@ namespace Server.MirDatabase
 
                 if (drop == null)
                 {
-                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CouldNotLoadDropLine), name, line));
+                    MessageQueue.Enqueue(string.Format("Could not load Drop: {0}, Line {1}", name, line));
                     continue;
                 }
 

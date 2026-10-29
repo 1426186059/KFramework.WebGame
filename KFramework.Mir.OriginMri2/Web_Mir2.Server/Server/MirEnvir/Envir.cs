@@ -2197,7 +2197,7 @@ namespace Server.MirEnvir
                     // Get the line number from the stack frame
                     var line = frame.GetFileLineNumber();
 
-                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.InnerWorkloopErrorLine), line, ex));
+                    MessageQueue.Enqueue(string.Format("[inner workloop error. Line {0}]{1}", line, ex));
                 }
 
                 StopNetwork();
@@ -2215,7 +2215,7 @@ namespace Server.MirEnvir
                 // Get the line number from the stack frame
                 var line = frame.GetFileLineNumber();
 
-                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.OuterWorkloopErrorLine), line, ex));
+                MessageQueue.Enqueue(string.Format("[outer workloop error. Line {0}]{1}", line, ex));
             }
 
             _thread = null;
@@ -2287,7 +2287,7 @@ namespace Server.MirEnvir
             {
                 if (ex is ThreadInterruptedException) return;
 
-                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ThreadLoopError), ex));
+                MessageQueue.Enqueue(string.Format("[threadloop error]{0}", ex));
             }
         }
 
@@ -2848,12 +2848,12 @@ namespace Server.MirEnvir
 
                     if (LoadVersion < MinVersion)
                     {
-                        MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CannotLoadDatabaseMinSupported), LoadVersion, MinVersion));
+                        MessageQueue.Enqueue(string.Format("Cannot load a database version {0}. Mininum supported is {1}.", LoadVersion, MinVersion));
                         return false;
                     }
                     else if (LoadVersion > Version)
                     {
-                        MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CannotLoadDatabaseMaxSupported), LoadVersion, Version));
+                        MessageQueue.Enqueue(string.Format("Cannot load a database version {0}. Maximum supported is {1}.", LoadVersion, Version));
                         return false;
                     }
 
@@ -2976,12 +2976,12 @@ namespace Server.MirEnvir
 
                 if (LoadVersion < MinVersion)
                 {
-                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CannotLoadDatabaseMinSupported), LoadVersion, MinVersion));
+                    MessageQueue.Enqueue(string.Format("Cannot load a database version {0}. Mininum supported is {1}.", LoadVersion, MinVersion));
                     return false;
                 }
                 else if (LoadVersion > Version)
                 {
-                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CannotLoadDatabaseMaxSupported), LoadVersion, Version));
+                    MessageQueue.Enqueue(string.Format("Cannot load a database version {0}. Maximum supported is {1}.", LoadVersion, Version));
                     return false;
                 }
 
@@ -3399,7 +3399,7 @@ namespace Server.MirEnvir
         {
             new Thread(() =>
             {
-                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.ServerRebooting));
+                MessageQueue.Enqueue("Server rebooting...");
                 Stop();
                 Start();
             }).Start();
@@ -3430,7 +3430,7 @@ namespace Server.MirEnvir
                 BuffInfoList.Add(buff);
             }
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.BuffsLoaded), BuffInfoList.Count));
+            MessageQueue.Enqueue(string.Format("{0} Buffs Loaded.", BuffInfoList.Count));
 
             RecipeInfoList.Clear();
             foreach (var recipe in Directory.GetFiles(Settings.RecipePath, "*.txt")
@@ -3440,7 +3440,7 @@ namespace Server.MirEnvir
                 RecipeInfoList.Add(new RecipeInfo(recipe));
             }
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.RecipesLoaded), RecipeInfoList.Count));
+            MessageQueue.Enqueue(string.Format("{0} Recipes Loaded.", RecipeInfoList.Count));
 
             for (var i = 0; i < MapInfoList.Count; i++)
             {
@@ -3479,7 +3479,7 @@ namespace Server.MirEnvir
                 }
             }
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.MapsLoaded), MapInfoList.Count));
+            MessageQueue.Enqueue(string.Format("{0} Maps Loaded.", MapInfoList.Count));
 
             for (var i = 0; i < ItemInfoList.Count; i++)
             {
@@ -3502,14 +3502,14 @@ namespace Server.MirEnvir
                     if (DragonSystem.Load()) DragonSystem.Info.LoadDrops();
                 }
 
-                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.DragonLoaded));
+                MessageQueue.Enqueue("Dragon Loaded.");
             }
 
             DefaultNPC = NPCScript.GetOrAdd((uint)Random.Next(1000000, 1999999), Settings.DefaultNPCFilename, NPCScriptType.AutoPlayer);
             MonsterNPC = NPCScript.GetOrAdd((uint)Random.Next(2000000, 2999999), Settings.MonsterNPCFilename, NPCScriptType.AutoMonster);
             RobotNPC = NPCScript.GetOrAdd((uint)Random.Next(3000000, 3999999), Settings.RobotNPCFilename, NPCScriptType.Robot);
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.EnvirStarted));           
+            MessageQueue.Enqueue("Envir Started.");           
 
         }
 
@@ -3536,7 +3536,7 @@ namespace Server.MirEnvir
                 _StatusPort.BeginAcceptTcpClient(StatusConnection, null);
             }
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NetworkStarted));
+            MessageQueue.Enqueue("Network Started.");
 
             // 打印 WebSocket 监听地址与端口，方便客户端直接复制连接
             if (Settings.IPAddress == "0.0.0.0" || Settings.IPAddress == "*")
@@ -3561,7 +3561,7 @@ namespace Server.MirEnvir
 
             GC.Collect();
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.EnvirStopped));
+            MessageQueue.Enqueue("Envir Stopped.");
         }
         private void StopNetwork()
         {
@@ -3607,7 +3607,7 @@ namespace Server.MirEnvir
 
 
             StatusConnections.Clear();
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NetworkStopped));
+            MessageQueue.Enqueue("Network Stopped.");
         }
 
         private void CleanUp()
@@ -3717,7 +3717,7 @@ namespace Server.MirEnvir
                         {
                             UpdateIPBlock(ipAddress, TimeSpan.FromSeconds(Settings.IPBlockSeconds));
 
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IpAddressDisconnectedTooManyConnections), ipAddress));
+                            MessageQueue.Enqueue(string.Format("{0} Disconnected, Too many connections.", ipAddress));
                             tempTcpClient.Close();
                         }
                         else
@@ -4049,7 +4049,7 @@ namespace Server.MirEnvir
             account.LastDate = Now;
             account.LastIP = c.IPAddress;
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UserLoggedIn), account.Connection.SessionID, account.Connection.IPAddress));
+            MessageQueue.Enqueue(string.Format("{0}, {1}, User logged in.", account.Connection.SessionID, account.Connection.IPAddress));
             c.Enqueue(new ServerPackets.LoginSuccess { Characters = account.GetSelectInfo() });
         }
 
@@ -5177,7 +5177,7 @@ namespace Server.MirEnvir
             }
 
             ResetGS = false;
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.GameshopPurchaseLogsCleared));
+            MessageQueue.Enqueue("Gameshop Purchase Logs Cleared.");
         }
 
         public void Inspect(MirConnection con, uint id)
@@ -5527,7 +5527,7 @@ namespace Server.MirEnvir
                 Scripts[key].Load();
             }
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.NpcScriptsReloaded));
+            MessageQueue.Enqueue("NPC Scripts Reloaded.");
         }
 
         public void ReloadDrops()
@@ -5564,7 +5564,7 @@ namespace Server.MirEnvir
             BlackstoneDrops.Clear();
             DropInfo.Load(BlackstoneDrops, "Blackstone", Path.Combine(Settings.DropPath, Settings.BlackstoneDropFilename + ".txt"));
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.DropsLoaded));
+            MessageQueue.Enqueue("Drops Loaded.");
         }
 
         public void ReloadLineMessages()
@@ -5587,7 +5587,7 @@ namespace Server.MirEnvir
                     LineMessages.Add(lines[i]);
                 }
 
-                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.LineMessagesReloaded));
+                MessageQueue.Enqueue("LineMessages reloaded.");
             }
         }
 
@@ -5609,7 +5609,7 @@ namespace Server.MirEnvir
             GuildList.Remove(guild.Info);
 
             GuildRefreshNeeded = true;
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.GuildWillBeDeletedFromServer), guild.Info.Name));
+            MessageQueue.Enqueue(string.Format("{0} guild will be deleted from the server.", guild.Info.Name));
         }
     }
 }

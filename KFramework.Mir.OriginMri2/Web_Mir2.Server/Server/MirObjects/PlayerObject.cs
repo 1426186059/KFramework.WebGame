@@ -224,7 +224,7 @@ namespace Server.MirObjects
             if (Account.AdminAccount)
             {
                 IsGM = true;
-                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.NowGM), Name));
+                MessageQueue.Enqueue(string.Format("{0} is now a GM", Name));
             }
 
             if (Level == 0) NewCharacter();
@@ -1335,7 +1335,7 @@ namespace Server.MirObjects
 
             Report.Connected(Connection.IPAddress);
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.HasConnected), Info.Name));
+            MessageQueue.Enqueue(string.Format("{0} has connected.", Info.Name));
 
             if (IsGM)
             {
@@ -1901,13 +1901,13 @@ namespace Server.MirObjects
                 {
                     IsGM = true;
                     UpdateGMBuff();
-                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UserIsNowGM), Name));
+                    MessageQueue.Enqueue(string.Format("{0} is now a GM", Name));
                     ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.YouHaveBeenMadeGM), ChatType.System);
                     Envir.RemoveRank(Info);//remove gm chars from ranking to avoid causing bugs in rank list
                 }
                 else
                 {
-                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.AttemptedGmLogin), Name));
+                    MessageQueue.Enqueue(string.Format("{0} attempted a GM login", Name));
                     ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.LoginPasswordInvalid), ChatType.System);
                 }
                 GMLogin = false;
@@ -2313,7 +2313,7 @@ namespace Server.MirObjects
                         }
 
                         ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerChangedTo), data.Name, data.Gender), ChatType.System);
-                        MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerChangedBy), data.Name, data.Gender, Name));
+                        MessageQueue.Enqueue(string.Format("Player {0} has been changed to {1} by {2}", data.Name, data.Gender, Name));
 
                         Helpers.ChatSystem.SystemMessage(chatMessage: GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerGenderChangedByGM), data.Player.Name, data.Gender.ToString(), Name));
 
@@ -2341,7 +2341,7 @@ namespace Server.MirObjects
                                 player.LevelUp();
 
                                 ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerHasBeenLevelled), player.Name, old, player.Level), ChatType.System);
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerLevelChangedBy), player.Name, old, player.Level, Name));
+                                MessageQueue.Enqueue(string.Format("Player {0} has been Leveled {1} -> {2} by {3}", player.Name, old, player.Level, Name));
                                 Helpers.ChatSystem.SystemMessage(chatMessage: GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerLevelledByGM), player.Name, old, player.Level, Name));
 
                                 return;
@@ -2362,7 +2362,7 @@ namespace Server.MirObjects
                                 LevelUp();
 
                                 ReceiveChat(string.Format("{0} {1} -> {2}.", GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.LevelUp), old, Level), ChatType.System);
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerLevelChangedBy), Name, old, Level, Name));
+                                MessageQueue.Enqueue(string.Format("Player {0} has been Leveled {1} -> {2} by {3}", Name, old, Level, Name));
                                 return;
                             }
                         }
@@ -2389,7 +2389,7 @@ namespace Server.MirObjects
                                 hero.LevelUp();
 
                                 ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerHeroLevelled), player.Name, old, hero.Level), ChatType.System);
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerHeroLevelledBy), player.Name, old, hero.Level, Name));
+                                MessageQueue.Enqueue(string.Format("Player {0}'s hero has been Levelled {1} -> {2} by {3}", player.Name, old, hero.Level, Name));
                                 Helpers.ChatSystem.SystemMessage(chatMessage: GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerHeroLevelledByGM), player.Name, old, hero.Level, Name));
                                 return;
                             }
@@ -2412,7 +2412,7 @@ namespace Server.MirObjects
                                 hero.LevelUp();
 
                                 ReceiveChat(string.Format("{0} {1} -> {2}.", GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.LevelUp), old, hero.Level), ChatType.System);
-                                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerHeroLeveledBy), Name, old, hero.Level, Name));
+                                MessageQueue.Enqueue(string.Format("Player {0}'s hero has been Leveled {1} -> {2} by {3}", Name, old, hero.Level, Name));
                                 return;
                             }
                         }
@@ -2466,7 +2466,7 @@ namespace Server.MirObjects
                             }
 
                             ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ItemHasBeenCreated), iInfo.FriendlyName, tempCount), ChatType.System);
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerAttemptCreateItem), Name, iInfo.FriendlyName, tempCount));
+                            MessageQueue.Enqueue(string.Format("Player {0} has attempted to Create {1} x{2}", Name, iInfo.FriendlyName, tempCount));
                         }
                         break;
                     case "CLEARBUFFS":
@@ -2763,7 +2763,7 @@ namespace Server.MirObjects
                             Envir.SaveArchivedCharacter(info);
 
                             ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerHasBeenBackedUp), info.Name), ChatType.System);
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerBackedUpBy), info.Name, Name));
+                            MessageQueue.Enqueue(string.Format("Player {0} has been backed up by {1}", info.Name, Name));
                         }
                         break;
 
@@ -2799,7 +2799,7 @@ namespace Server.MirObjects
                             account.Characters.Remove(data);
 
                             ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerHasBeenArchived), data.Name), ChatType.System);
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerArchivedBy), data.Name, Name));
+                            MessageQueue.Enqueue(string.Format("Player {0} has been archived by {1}", data.Name, Name));
                         }
                         break;
 
@@ -2834,7 +2834,7 @@ namespace Server.MirObjects
                             info = bak;
 
                             ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerHasBeenLoaded), info.Name), ChatType.System);
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerLoadedBy), info.Name, Name));
+                            MessageQueue.Enqueue(string.Format("Player {0} has been loaded by {1}", info.Name, Name));
                         }
                         break;
 
@@ -2899,7 +2899,7 @@ namespace Server.MirObjects
                             }
 
                             ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerRestoredBy), data.Name, Name), ChatType.System);
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerRestoredBy), data.Name, Name));
+                            MessageQueue.Enqueue(string.Format("Player {0} has been restored by {1}", data.Name, Name));
                         }
                         break;
 
@@ -3221,7 +3221,7 @@ namespace Server.MirObjects
 
                         string creditMsg = GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerGivenCreditByGM), player.Name, count, Name);
 
-                        MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerGivenCredit), player.Name, count));
+                        MessageQueue.Enqueue(string.Format("Player {0} has been given {1} credit", player.Name, count));
                         Helpers.ChatSystem.SystemMessage(chatMessage: creditMsg);
 
                         break;
@@ -3504,7 +3504,7 @@ namespace Server.MirObjects
                         data.Class = mirClass;
 
                         ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerChangedTo), data.Name, data.Class), ChatType.System);
-                        MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerChangedBy), data.Name, data.Class, Name));
+                        MessageQueue.Enqueue(string.Format("Player {0} has been changed to {1} by {2}", data.Name, data.Class, Name));
 
                         Helpers.ChatSystem.SystemMessage(chatMessage: GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ClassChangedByGM), data.Player.Name, data.Class.ToString(), Name));
 
@@ -3941,7 +3941,7 @@ namespace Server.MirObjects
                             }
                             else return;
                             ReceiveChat(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.WarStarted), tempConq.Info.Name), ChatType.System);
-                            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.WarStarted), tempConq.Info.Name));
+                            MessageQueue.Enqueue(string.Format("{0} War Started.", tempConq.Info.Name));
 
                             foreach (var pl in Envir.Players)
                             {
@@ -8675,7 +8675,7 @@ namespace Server.MirObjects
 
                     if (auction.Sold && auction.Expired)
                     {
-                        MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.AuctionSoldAndExpired), Account.AccountID));
+                        MessageQueue.Enqueue(string.Format("Auction both sold and Expired {0}", Account.AccountID));
                         return;
                     }
 
@@ -8731,7 +8731,7 @@ namespace Server.MirObjects
             {
                 if (auction.Sold && auction.Expired)
                 {
-                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.AuctionSoldExpired), Account.AccountID));
+                    MessageQueue.Enqueue(string.Format("Auction both sold and Expired {0}", Account.AccountID));
                     return false;
                 }
 

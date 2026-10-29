@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.IO;
 using Library.Network;
@@ -84,7 +84,7 @@ namespace Server.MirNetwork
 
             Envir.UpdateIPBlock(IPAddress, TimeSpan.FromSeconds(Settings.IPBlockSeconds));
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IPAddressConnected), IPAddress));
+            MessageQueue.Enqueue(string.Format("{0}, Connected.", IPAddress));
 
             _stream = stream;
 
@@ -175,7 +175,7 @@ namespace Server.MirNetwork
             {
                 Envir.UpdateIPBlock(IPAddress, TimeSpan.FromHours(24));
 
-                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IPAddressDisconnectedInvalidPacket), IPAddress));
+                MessageQueue.Enqueue(string.Format("{0} Disconnected, Invalid packet.", IPAddress));
 
                 Disconnecting = true;
                 return;
@@ -196,7 +196,7 @@ namespace Server.MirNetwork
                     packetList.Add(cPacket.ToString());
                 }
 
-                MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.IPAddressDisconnectedLargePackets), IPAddress, String.Join(",", packetList.Distinct())));
+                MessageQueue.Enqueue(string.Format("{0} Disconnected, Large amount of Packets. LastPackets: {1}", IPAddress, String.Join(",", packetList.Distinct())));
 
                 Disconnecting = true;
                 return;
@@ -756,7 +756,7 @@ namespace Server.MirNetwork
                     DeleteItem((C.DeleteItem)p);
                     break;
                 default:
-                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.InvalidPacketReceived), p.Index));
+                    MessageQueue.Enqueue(string.Format("Invalid packet received. Index : {0}", p.Index));
                     break;
             }
         }
@@ -867,12 +867,12 @@ namespace Server.MirNetwork
 
                     BeginSend(data);
                     SoftDisconnect(10);
-                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PlayerDisconnectedWrongClientVersion), SessionID));
+                    MessageQueue.Enqueue(string.Format("{0}, Disconnnected - Wrong Client Version.", SessionID));
                     return;
                 }
             }
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ClientVersionMatched), SessionID, IPAddress));
+            MessageQueue.Enqueue(string.Format("{0}, {1}, Client version matched.", SessionID, IPAddress));
             Enqueue(new S.ClientVersion { Result = 1 });
 
             Stage = GameStage.Login;
@@ -888,14 +888,14 @@ namespace Server.MirNetwork
         {
             if (Stage != GameStage.Login) return;
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.NewAccountBeingCreated), SessionID, IPAddress));
+            MessageQueue.Enqueue(string.Format("{0}, {1}, New account being created.", SessionID, IPAddress));
             Envir.NewAccount(p, this);
         }
         private void ChangePassword(C.ChangePassword p)
         {
             if (Stage != GameStage.Login) return;
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.PasswordBeingChanged), SessionID, IPAddress));
+            MessageQueue.Enqueue(string.Format("{0}, {1}, Password being changed.", SessionID, IPAddress));
             Envir.ChangePassword(p, this);
         }
         private void UnlockStorage(C.UnlockStorage p)
@@ -1032,7 +1032,7 @@ namespace Server.MirNetwork
         {
             if (Stage != GameStage.Login) return;
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.UserLoggingIn), SessionID, IPAddress));
+            MessageQueue.Enqueue(string.Format("{0}, {1}, User logging in.", SessionID, IPAddress));
             Envir.Login(p, this);
         }
         private void NewCharacter(C.NewCharacter p)

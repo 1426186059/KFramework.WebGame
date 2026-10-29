@@ -76,8 +76,8 @@ namespace Server.MirEnvir
             {
                 if (!LoadCells())
                 {
-                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FailedToLoadMap) + Info.Title);
-                    MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.Filename) + Info.FileName);
+                    MessageQueue.Enqueue("Failed to load map: " + Info.Title);
+                    MessageQueue.Enqueue("Map file name: " + Info.FileName);
                     return false;
                 }
 
@@ -120,8 +120,8 @@ namespace Server.MirEnvir
                 MessageQueue.Enqueue(ex);
             }
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FailedToLoadMap) + Info.Title);
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.Filename) + Info.FileName);
+            MessageQueue.Enqueue("Failed to load map: " + Info.Title);
+            MessageQueue.Enqueue("Map file name: " + Info.FileName);
             return false;
         }
 
@@ -133,7 +133,7 @@ namespace Server.MirEnvir
         {
             if (!int.TryParse(Info.FileName, out int mapId))
             {
-                MessageQueue.Enqueue("地图文件名非数字，无法映射到原始数据源: " + Info.FileName);
+                MessageQueue.Enqueue("Map file name is not numeric, cannot map to original data source: " + Info.FileName);
                 return false;
             }
 
@@ -156,8 +156,8 @@ namespace Server.MirEnvir
                 return true;
             }
 
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.FailedToLoadMap) + Info.Title);
-            MessageQueue.Enqueue(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.Filename) + Info.FileName);
+            MessageQueue.Enqueue("Failed to load map: " + Info.Title);
+            MessageQueue.Enqueue("Map file name: " + Info.FileName);
             return false;
         }
 
