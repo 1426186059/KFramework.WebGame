@@ -187,18 +187,14 @@ namespace KFramework.MonoGame
             [Conditional(MacroConst.PrintLog)]
             public static void EndLog()
             {
-                foreach (var chunk in mStringBuilder.GetChunks()) Console.Out.Write(chunk.Span);
-                Console.Out.Write('\n');
-                mStringBuilder.Clear();
+                Console.Out.WriteLine(mStringBuilder);
             }
 
             [Conditional(MacroConst.DEBUG)]
             [Conditional(MacroConst.PrintLog)]
             public static void EndLogError()
             {
-                foreach (var chunk in mStringBuilder.GetChunks()) Console.Error.Write(chunk.Span);
-                Console.Error.Write('\n');
-                mStringBuilder.Clear();
+                Console.Error.WriteLine(mStringBuilder);
             }
 
             [Conditional(MacroConst.DEBUG)]
@@ -206,9 +202,8 @@ namespace KFramework.MonoGame
             public static void EndLogWarning()
             {
                 Console.Out.Write("<color=orange>".AsSpan());
-                foreach (var chunk in mStringBuilder.GetChunks()) Console.Out.Write(chunk.Span);
+                Console.Out.Write(mStringBuilder);
                 Console.Out.Write("</color>\n".AsSpan());
-                mStringBuilder.Clear();
             }
 
             [Conditional(MacroConst.DEBUG)]
@@ -216,10 +211,10 @@ namespace KFramework.MonoGame
             public static void EndLogWithColor()
             {
                 Console.Out.Write("<color=yellow>".AsSpan());
-                foreach (var chunk in mStringBuilder.GetChunks()) Console.Out.Write(chunk.Span);
+                Console.Out.Write(mStringBuilder);
                 Console.Out.Write("</color>\n".AsSpan());
-                mStringBuilder.Clear();
             }
+
         }
     }
 }

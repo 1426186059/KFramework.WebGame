@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>MapInfoEditor</AssemblyName>
+    <RootNamespace>MapInfoEditor</RootNamespace>
+    <NoWarn>$(NoWarn);CS0436</NoWarn>
+  </PropertyGroup>
+
+  <!-- Verify 子工程是独立的可执行工程，避免被本工程默认递归编译进来的 .cs 干扰 -->
+  <ItemGroup>
+    <Compile Remove="Verify\**\*.cs" />
+  </ItemGroup>
+
+</Project>
