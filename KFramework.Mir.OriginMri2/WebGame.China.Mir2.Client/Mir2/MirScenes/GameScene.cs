@@ -10240,6 +10240,10 @@ namespace Client.MirScenes
         public const int CellWidth = 48;
         public const int CellHeight = 32;
 
+        // 原始传奇 zipmap 真实瓦片纹理尺寸（jpg），每张覆盖 512×256 地图像素
+        public const int TileTexWidth = 512;
+        public const int TileTexHeight = 256;
+
         /// <summary>选中目标脚下显示的「选择环」贴图（程序化生成的白色圆环，绘制时染色）。
         /// 按传奇经典风格新增：在所选敌人/玩家脚底画一个等距椭圆环。</summary>
         private static KFramework.MonoGame.Texture2D _selectionRingTex;
@@ -10629,8 +10633,8 @@ namespace Client.MirScenes
             MapImg = Map.MapImg;
             PixelWidth = Map.PixelWidth;
             PixelHeight = Map.PixelHeight;
-            TileCols = (int)Math.Ceiling(PixelWidth / 512.0);
-            TileRows = (int)Math.Ceiling(PixelHeight / 256.0);
+            TileCols = (int)Math.Ceiling(PixelWidth / (double)TileTexWidth);
+            TileRows = (int)Math.Ceiling(PixelHeight / (double)TileTexHeight);
             _mapTileCache.Clear();
             _mapTileLoading.Clear();
             _floorDirty = true;
@@ -10929,8 +10933,8 @@ namespace Client.MirScenes
 
             // 原版传奇地板：直接由 CDN 的 assets/resource/zipmap/{MapImg}/{index}.jpg 真实瓦片拼出，
             // 取代旧 Libraries.MapLibs 瓦片索引渲染——原始传奇官方就是这么画地图的。
-            // 瓦片网格：cols=ceil(PixelWidth/512)，rows=ceil(PixelHeight/256)，index=r*cols+c+1；
-            // 每瓦片在地图像素空间占 [c*512,(c+1)*512]x[r*256,(r+1)*256]，映射到 1:1 地板 RT 后整张贴入。
+            // 瓦片网格：cols=ceil(PixelWidth/TileTexWidth)，rows=ceil(PixelHeight/TileTexHeight)，index=r*cols+c+1；
+            // 每瓦片在地图像素空间占 [c*TileTexWidth,(c+1)*TileTexWidth]x[r*TileTexHeight,(r+1)*TileTexHeight]，映射到 1:1 地板 RT 后整张贴入。
             int pending = 0;
             if (MapImg > 0 && TileCols > 0 && TileRows > 0)
             {
@@ -10939,10 +10943,10 @@ namespace Client.MirScenes
                 int startY = User.Movement.Y - ViewRangeY;
                 int endYExtended = User.Movement.Y + ViewRangeY + 5;
 
-                int colMin = (int)Math.Floor((startX * CellWidth) / 512.0) - 1;
-                int colMax = (int)Math.Floor((endX * CellWidth) / 512.0) + 1;
-                int rowMin = (int)Math.Floor((startY * CellHeight) / 256.0) - 1;
-                int rowMax = (int)Math.Floor((endYExtended * CellHeight) / 256.0) + 1;
+                int colMin = (int)Math.Floor((startX * CellWidth) / (double)TileTexWidth) - 1;
+                int colMax = (int)Math.Floor((endX * CellWidth) / (double)TileTexWidth) + 1;
+                int rowMin = (int)Math.Floor((startY * CellHeight) / (double)TileTexHeight) - 1;
+                int rowMax = (int)Math.Floor((endYExtended * CellHeight) / (double)TileTexHeight) + 1;
                 if (colMin < 0) colMin = 0;
                 if (rowMin < 0) rowMin = 0;
                 if (colMax >= TileCols) colMax = TileCols - 1;
@@ -10961,9 +10965,9 @@ namespace Client.MirScenes
                             var tex = GetMapTile(index);
                             if (tex == null) { pending++; continue; }
 
-                            int tileDrawX = c * 512 - User.Movement.X * CellWidth + OffSetX * CellWidth - OffSetX + User.OffSetMove.X;
-                            int tileDrawY = r * 256 - User.Movement.Y * CellHeight + OffSetY * CellHeight + User.OffSetMove.Y;
-                            DXManager.Draw(tex, new Rectangle(0, 0, tex.Width, tex.Height), new RectangleF(tileDrawX, tileDrawY, 512, 256), new SlimDX.Color4(1f, 1f, 1f, 1f));
+                            int tileDrawX = c * TileTexWidth - User.Movement.X * CellWidth + OffSetX * CellWidth - OffSetX + User.OffSetMove.X;
+                            int tileDrawY = r * TileTexHeight - User.Movement.Y * CellHeight + OffSetY * CellHeight + User.OffSetMove.Y;
+                            DXManager.Draw(tex, new Rectangle(0, 0, tex.Width, tex.Height), new RectangleF(tileDrawX, tileDrawY, TileTexWidth, TileTexHeight), new SlimDX.Color4(1f, 1f, 1f, 1f));
                         }
                     }
                 }
