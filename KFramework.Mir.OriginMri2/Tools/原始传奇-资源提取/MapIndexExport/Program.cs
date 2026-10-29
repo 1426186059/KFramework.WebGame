@@ -128,12 +128,19 @@ class Program
         var entries = new List<Dictionary<string, object>>();
         int idCounter = 2; // $id 从 2 起，避免与根 $id=1 冲突
         int overlayCount = 0;
+        int dropped = 0;
 
         foreach (var it in index)
         {
             int mapId = it.Id;
             configMap.TryGetValue(mapId, out var cfg);
             string name = cfg.name ?? "";
+            // 废弃地图：名称以 (没用) 结尾的直接跳过，不写入 MapInfo_Fix
+            if (name.EndsWith("(没用)"))
+            {
+                dropped++;
+                continue;
+            }
             string eid = idCounter++.ToString();
 
             var entry = new Dictionary<string, object>
@@ -188,7 +195,7 @@ class Program
         // 普通序列化即可：中文会被 \u 转义（ASCII 安全），手写 $id/$values/$ref 信封与服务器读取格式一致
         string fixPath = Path.Combine(mapsDir, "MapInfo_Fix.json");
         File.WriteAllText(fixPath, JsonSerializer.Serialize(root, new JsonSerializerOptions { WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping }));
-        Console.WriteLine($"已生成: {fixPath}  (共 {entries.Count} 张, 其中对照原版带回元数据 {overlayCount} 张)");
+        Console.WriteLine($"已生成: {fixPath}  (共 {entries.Count} 张, 其中对照原版带回元数据 {overlayCount} 张, 跳过废弃(没用) {dropped} 张)");
     }
 
     /// <summary>把原版条目里的标量玩法字段拷到新条目（保留新条目的 FileName/Title/Index/SafeZones）。</summary>

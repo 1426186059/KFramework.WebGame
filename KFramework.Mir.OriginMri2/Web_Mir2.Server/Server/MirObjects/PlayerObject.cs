@@ -1054,9 +1054,25 @@ namespace Server.MirObjects
             Enqueue(new S.NewMapInfo { MapIndex = mapInfo.Index, Info = info });
             Connection.SentMapInfo.Add(mapInfo);
         }
+        // 出生/绑定点固定为比奇省（地图 id 103），不再从所有地图的安全区里随机挑选
+        private const int HomeMapIndex = 103;
         private void SetBind()
         {
-            SafeZoneInfo szi = Envir.StartPoints[Envir.Random.Next(Envir.StartPoints.Count)];
+            SafeZoneInfo szi = null;
+
+            MapInfo home = Envir.MapInfoList.FirstOrDefault(m => m.Index == HomeMapIndex);
+            if (home != null)
+            {
+                szi = home.SafeZones.FirstOrDefault(z => z.StartPoint);
+            }
+
+            // 兜底：比奇城无起始点时，取第一个可用起始点（确定性，不再随机）
+            if (szi == null && Envir.StartPoints.Count > 0)
+            {
+                szi = Envir.StartPoints[0];
+            }
+
+            if (szi == null) return;
 
             BindMapIndex = szi.Info.Index;
             BindLocation = szi.Location;
