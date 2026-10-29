@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MapInfo 编辑器 (Web)</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; font-family: "Segoe UI", "Microsoft YaHei", sans-serif; font-size: 13px; }
+  #toolbar { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #1f2937; color: #fff; }
+  #toolbar select, #toolbar button { font-size: 13px; padding: 4px 8px; }
+  #toolbar .spacer { flex: 1; }
+  #toolbar .status { color: #9be29b; }
+  #main { display: flex; height: calc(100% - 44px); }
+  #left { width: 190px; border-right: 1px solid #ccc; display: flex; flex-direction: column; background: #fafafa; }
+  #left input.filter { margin: 6px; padding: 5px; }
+  #maplist { flex: 1; overflow: auto; margin: 0; padding: 0; list-style: none; }
+  #maplist li { padding: 5px 8px; border-bottom: 1px solid #eee; cursor: pointer; }
+  #maplist li:hover { background: #eaf2ff; }
+  #maplist li.active { background: #cfe4ff; font-weight: bold; }
+  #maplist li .id { color: #888; font-size: 11px; }
+  #mid { flex: 1; display: flex; flex-direction: column; min-width: 320px; }
+  #tabs { display: flex; border-bottom: 1px solid #ccc; background: #eee; }
+  #tabs button { border: none; background: transparent; padding: 8px 14px; cursor: pointer; font-size: 13px; }
+  #tabs button.active { background: #fff; font-weight: bold; border-bottom: 2px solid #1565ff; }
+  .tabpane { flex: 1; overflow: auto; padding: 10px; display: none; }
+  .tabpane.active { display: block; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #ddd; padding: 3px 5px; text-align: center; }
+  th { background: #f0f0f0; }
+  input[type=number] { width: 64px; padding: 2px; }
+  input[type=text] { width: 140px; padding: 2px; }
+  .row { margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+  .row .hint { color: #888; }
+  .gfield { display: flex; align-items: center; gap: 6px; margin: 4px 0; }
+  .gfield label { width: 110px; display: inline-block; }
+  #right { width: 38%; min-width: 300px; border-left: 1px solid #ccc; display: flex; flex-direction: column; background: #111; }
+  #legend { padding: 6px 10px; color: #ddd; background: #222; font-size: 12px; line-height: 1.5; }
+  #status { padding: 5px 10px; color: #ddd; background: #222; }
+  #canvasWrap { flex: 1; overflow: auto; padding: 8px; }
+  #canvas { image-rendering: pixelated; background: #000; display: block; }
+  button.action { background: #1565ff; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+  button.del { background: #c0392b; color: #fff; border: none; padding: 2px 6px; cursor: pointer; }
+</style>
+</head>
+<body>
+<div id="toolbar">
+  <button id="saveBtn" class="action">💾 保存</button>
+  <label>放置模式:
+    <select id="modeSel">
+      <option value="none">无</option>
+      <option value="safezone">安全区</option>
+      <option value="monster">怪物</option>
+      <option value="npc">NPC</option>
+    </select>
+  </label>
+  <label>怪物: <select id="monSel"></select></label>
+  <button id="zoomOut">－</button>
+  <button id="zoomIn">＋</button>
+  <span class="spacer"></span>
+  <span class="status" id="tbStatus"></span>
+</div>
+
+<div id="main">
+  <div id="left">
+    <input class="filter" id="filter" placeholder="过滤 id / 名称..." />
+    <ul id="maplist"></ul>
+  </div>
+
+  <div id="mid">
+    <div id="tabs">
+      <button data-tab="general" class="active">常规</button>
+      <button data-tab="sz">安全区</button>
+      <button data-tab="mon">怪物刷新</button>
+      <button data-tab="npc">NPC</button>
+    </div>
+
+    <div id="tab-general" class="tabpane active">
+      <div class="gfield"><label>标题 Title</label><input type="text" id="g_title" /></div>
+      <div class="gfield"><label>FileName</label><input type="text" id="g_fileName" /></div>
+      <div class="gfield"><label>MiniMap</label><input type="number" id="g_miniMap" /></div>
+      <div class="gfield"><label>BigMap</label><input type="number" id="g_bigMap" /></div>
+      <div class="gfield"><label>Music</label><input type="number" id="g_music" /></div>
+      <div class="gfield"><label>Light</label><input type="number" id="g_light" /></div>
+      <div class="gfield"><label>NoReconnectMap</label><input type="text" id="g_noReconnectMap" /></div>
+      <div id="g_bools" style="margin-top:10px"></div>
+    </div>
+
+    <div id="tab-sz" class="tabpane">
+      <div class="row"><button class="action" id="addSZ">＋ 添加</button><span class="hint">也可选“安全区”模式后点击右侧地图放置（默认半径10）</span></div>
+      <table><thead><tr><th>X</th><th>Y</th><th>半径</th><th>出生点</th><th></th></tr></thead><tbody id="szBody"></tbody></table>
+    </div>
+
+    <div id="tab-mon" class="tabpane">
+      <div class="row"><button class="action" id="addMon">＋ 添加</button><span class="hint">也可选“怪物”模式后点击右侧地图放置</span></div>
+      <table><thead><tr><th>怪物ID</th><th>名称</th><th>X</th><th>Y</th><th>数量</th><th>扩散</th><th>延迟</th><th>方向</th><th></th></tr></thead><tbody id="monBody"></tbody></table>
+    </div>
+
+    <div id="tab-npc" class="tabpane">
+      <div class="row"><button class="action" id="addNpc">＋ 添加</button><span class="hint">也可选“NPC”模式后点击右侧地图放置</span></div>
+      <table><thead><tr><th>脚本</th><th>名称</th><th>X</th><th>Y</th><th>频率</th><th>图像</th><th></th></tr></thead><tbody id="npcBody"></tbody></table>
+    </div>
+  </div>
+
+  <div id="right">
+    <div id="legend">
+      图例：<span style="color:#ebe8de">■</span>可走 &nbsp; <span style="color:#404040">■</span>墙(不可走) &nbsp;
+      <span style="color:#00cc00">□</span>安全区(亮绿=出生点) &nbsp; <span style="color:#ff2222">●</span>怪物 &nbsp;
+      <span style="color:#1565ff">○</span>Boss &nbsp; <span style="color:#00aa00">●</span>NPC<br/>
+      提示：选上方“放置模式”后，在图上点击即可放置对应元素。
+    </div>
+    <div id="status">就绪</div>
+    <div id="canvasWrap"><canvas id="canvas"></canvas></div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let maps = [], monsters = [];
+let current = null;       // 当前地图详情
+let flags = null;         // Uint8Array 解码后的 nibble 数据
+let cellPx = 4;
+let mode = 'none';
+let selectedMonster = 0;
+
+const BOOL_FIELDS = [
+  ['noTeleport','NoTeleport'], ['noReconnect','NoReconnect'], ['noRecall','NoRecall'],
+  ['noDrug','NoDrug'], ['noFight','NoFight'], ['noDropMonster','NoDropMonster'],
+  ['noNames','NoNames'], ['noMount','NoMount'], ['noGroup','NoGroup'],
+  ['requiredGroup','RequiredGroup'], ['fight','Fight'], ['fire','Fire'],
+  ['noTownTeleport','NoTownTeleport'], ['gt','GT']
+];
+
+function b64ToBytes(b64) {
+  const bin = atob(b64);
+  const a = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);
+  return a;
+}
+function setStatus(t) { $('status').textContent = t; }
+function setTb(t) { $('tbStatus').textContent = t; }
+
+async function init() {
+  const [mRes, monRes] = await Promise.all([fetch('/api/maps'), fetch('/api/monsters')]);
+  const m = await mRes.json(); maps = m.maps;
+  const mo = await monRes.json(); monsters = mo.monsters;
+  // 怪物下拉
+  const sel = $('monSel');
+  monsters.forEach(x => {
+    const o = document.createElement('option');
+    o.value = x.index; o.textContent = `${x.index} - ${x.name}${x.isBoss ? ' [Boss]' : ''}`;
+    sel.appendChild(o);
+  });
+  selectedMonster = monsters.length ? monsters[0].index : 0;
+  sel.value = selectedMonster;
+  sel.onchange = () => selectedMonster = parseInt(sel.value, 10);
+
+  $('modeSel').onchange = () => mode = $('modeSel').value;
+  $('zoomIn').onclick = () => { cellPx = Math.min(24, cellPx + 1); drawMap(); };
+  $('zoomOut').onclick = () => { cellPx = Math.max(1, cellPx - 1); drawMap(); };
+  $('saveBtn').onclick = save;
+
+  buildBoolFields();
+  renderList('');
+  wireTabs();
+  wireTables();
+  wireCanvas();
+  setTb(`已加载 ${maps.length} 张地图 / ${monsters.length} 个怪物`);
+}
+
+function buildBoolFields() {
+  const box = $('g_bools');
+  box.innerHTML = '';
+  BOOL_FIELDS.forEach(([k, label]) => {
+    const id = 'g_' + k;
+    const wrap = document.createElement('div');
+    wrap.className = 'gfield';
+    wrap.innerHTML = `<label>${label}</label><input type="checkbox" id="${id}" />`;
+    box.appendChild(wrap);
+  });
+}
+
+function renderList(filter) {
+  const f = (filter || '').trim().toLowerCase();
+  const ul = $('maplist'); ul.innerHTML = '';
+  maps.forEach(m => {
+    if (f && !(`${m.index}`.includes(f)) && !m.title.toLowerCase().includes(f) && !m.fileName.toLowerCase().includes(f)) return;
+    const li = document.createElement('li');
+    li.dataset.id = m.index;
+    li.innerHTML = `<span class="id">[${m.index}]</span> ${m.title || m.fileName}`;
+    if (current && current.index === m.index) li.classList.add('active');
+    li.onclick = () => selectMap(m.index);
+    ul.appendChild(li);
+  });
+}
+
+async function selectMap(id) {
+  setStatus('加载中...');
+  const res = await fetch('/api/maps/' + id);
+  if (!res.ok) { setStatus('加载失败: ' + (await res.text())); return; }
+  current = await res.json();
+  flags = current.map.flagsBase64 ? b64ToBytes(current.map.flagsBase64) : null;
+  cellPx = Math.max(1, Math.floor(560 / Math.max(current.map.cols || 1, current.map.rows || 1)));
+  renderList($('filter').value);
+  renderGeneral();
+  renderSZ(); renderMon(); renderNpc();
+  drawMap();
+  setStatus(`已加载：${current.title || current.fileName} (id=${current.index})`);
+}
+
+function renderGeneral() {
+  const g = current.general;
+  $('g_title').value = g.title || '';
+  $('g_fileName').value = g.fileName || '';
+  $('g_miniMap').value = g.miniMap || 0;
+  $('g_bigMap').value = g.bigMap || 0;
+  $('g_music').value = g.music || 0;
+  $('g_light').value = g.light || 0;
+  $('g_noReconnectMap').value = g.noReconnectMap || '';
+  BOOL_FIELDS.forEach(([k]) => { $('g_' + k).checked = !!g[k]; });
+}
+
+function wireTabs() {
+  document.querySelectorAll('#tabs button').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('#tabs button').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('.tabpane').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      $('tab-' + b.dataset.tab).classList.add('active');
+    };
+  });
+}
+
+function wireTables() {
+  // 安全区
+  $('addSZ').onclick = () => { current.safeZones.push({ x: Math.floor(current.map.cols/2), y: Math.floor(current.map.rows/2), size: 10, start: false }); renderSZ(); drawMap(); };
+  // 怪物
+  $('addMon').onclick = () => { current.respawns.push({ monsterIndex: selectedMonster, x: Math.floor(current.map.cols/2), y: Math.floor(current.map.rows/2), count: 1, spread: 0, delay: 0, direction: 0, isBoss: false }); renderMon(); drawMap(); };
+  // NPC
+  $('addNpc').onclick = () => { current.npcs.push({ index: 0, fileName: 'NPC', name: '新NPC', x: Math.floor(current.map.cols/2), y: Math.floor(current.map.rows/2), rate: 100, image: 0 }); renderNpc(); drawMap(); };
+
+  // 委托编辑
+  bindBody('szBody', current => current.safeZones, ['x','y','size'], ['start']);
+  bindBody('monBody', current => current.respawns, ['monsterIndex','x','y','count','spread','delay','direction'], []);
+  bindBody('npcBody', current => current.npcs, ['fileName','name','x','y','rate','image'], []);
+}
+
+function bindBody(bodyId, getArr, numFields, boolFields) {
+  const body = $(bodyId);
+  body.addEventListener('input', e => {
+    const t = e.target;
+    if (t.dataset.i === undefined) return;
+    const i = +t.dataset.i; const f = t.dataset.f;
+    const arr = getArr(current);
+    if (t.type === 'checkbox') arr[i][f] = t.checked;
+    else if (numFields.includes(f)) arr[i][f] = parseInt(t.value, 10) || 0;
+    else arr[i][f] = t.value;
+    drawMap();
+  });
+  body.addEventListener('click', e => {
+    if (e.target.dataset.del !== undefined) {
+      const i = +e.target.dataset.del;
+      getArr(current).splice(i, 1);
+      if (bodyId === 'szBody') renderSZ(); else if (bodyId === 'monBody') renderMon(); else renderNpc();
+      drawMap();
+    }
+  });
+}
+
+function renderSZ() {
+  const body = $('szBody');
+  body.innerHTML = current.safeZones.map((z, i) =>
+    `<tr>
+      <td><input type="number" data-i="${i}" data-f="x" value="${z.x}"></td>
+      <td><input type="number" data-i="${i}" data-f="y" value="${z.y}"></td>
+      <td><input type="number" data-i="${i}" data-f="size" value="${z.size}"></td>
+      <td><input type="checkbox" data-i="${i}" data-f="start" ${z.start ? 'checked' : ''}></td>
+      <td><button class="del" data-del="${i}">删</button></td>
+    </tr>`).join('');
+}
+
+function renderMon() {
+  const body = $('monBody');
+  body.innerHTML = current.respawns.map((r, i) => {
+    const mn = monsters.find(m => m.index === r.monsterIndex);
+    const name = mn ? mn.name : '(未知)';
+    return `<tr>
+      <td><input type="number" data-i="${i}" data-f="monsterIndex" value="${r.monsterIndex}"></td>
+      <td>${name}${r.isBoss ? ' [Boss]' : ''}</td>
+      <td><input type="number" data-i="${i}" data-f="x" value="${r.x}"></td>
+      <td><input type="number" data-i="${i}" data-f="y" value="${r.y}"></td>
+      <td><input type="number" data-i="${i}" data-f="count" value="${r.count}"></td>
+      <td><input type="number" data-i="${i}" data-f="spread" value="${r.spread}"></td>
+      <td><input type="number" data-i="${i}" data-f="delay" value="${r.delay}"></td>
+      <td><input type="number" data-i="${i}" data-f="direction" value="${r.direction}"></td>
+      <td><button class="del" data-del="${i}">删</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderNpc() {
+  const body = $('npcBody');
+  body.innerHTML = current.npcs.map((n, i) =>
+    `<tr>
+      <td><input type="text" data-i="${i}" data-f="fileName" value="${n.fileName || ''}"></td>
+      <td><input type="text" data-i="${i}" data-f="name" value="${n.name || ''}"></td>
+      <td><input type="number" data-i="${i}" data-f="x" value="${n.x}"></td>
+      <td><input type="number" data-i="${i}" data-f="y" value="${n.y}"></td>
+      <td><input type="number" data-i="${i}" data-f="rate" value="${n.rate}"></td>
+      <td><input type="number" data-i="${i}" data-f="image" value="${n.image}"></td>
+      <td><button class="del" data-del="${i}">删</button></td>
+    </tr>`).join('');
+}
+
+function drawMap() {
+  const c = $('canvas');
+  const m = current && current.map;
+  if (!m || !m.cols) { setStatus('无地图数据或无法解码'); return; }
+  const cols = m.cols, rows = m.rows, cell = cellPx;
+  // 离屏按像素绘制（高效）
+  const off = document.createElement('canvas');
+  off.width = cols; off.height = rows;
+  const octx = off.getContext('2d');
+  const img = octx.createImageData(cols, rows);
+  const d = img.data;
+  for (let i = 0; i < cols * rows; i++) {
+    // 解码器每格存 1 字节的 nibble 值（0~15），直接取用即可，无需再拆高低位
+    const nib = flags ? flags[i] : 0;
+    const walk = (nib & 8) === 0;
+    const safe = (nib & 2) !== 0;
+    let r, g, bl;
+    if (walk) { r = 235; g = 232; bl = 222; } else { r = 64; g = 64; bl = 64; }
+    if (safe) { if (walk) { r = 200; g = 232; bl = 200; } else { r = 40; g = 80; bl = 40; } }
+    const p = i * 4; d[p] = r; d[p + 1] = g; d[p + 2] = bl; d[p + 3] = 255;
+  }
+  octx.putImageData(img, 0, 0);
+
+  c.width = cols * cell; c.height = rows * cell;
+  const ctx = c.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(off, 0, 0, c.width, c.height);
+
+  // 安全区绿框
+  current.safeZones.forEach(z => {
+    const x0 = (z.x - z.size) * cell, y0 = (z.y - z.size) * cell, sw = (2 * z.size + 1) * cell;
+    ctx.lineWidth = z.start ? 3 : 2;
+    ctx.strokeStyle = z.start ? '#00ff00' : '#00cc00';
+    ctx.strokeRect(x0, y0, sw, sw);
+  });
+  // 怪物
+  current.respawns.forEach(r => {
+    const cx = r.x * cell + cell / 2, cy = r.y * cell + cell / 2, rad = Math.max(3, cell * 0.45);
+    if (r.isBoss) { ctx.lineWidth = 2; ctx.strokeStyle = '#1565ff'; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.stroke(); }
+    else { ctx.fillStyle = '#ff2222'; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fill(); }
+  });
+  // NPC
+  current.npcs.forEach(n => {
+    const cx = n.x * cell + cell / 2, cy = n.y * cell + cell / 2, rad = Math.max(3, cell * 0.45);
+    ctx.fillStyle = '#00aa00'; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fill();
+  });
+  setStatus(`${current.title || current.fileName} (id=${current.index})  网格 ${cols}×${rows}  可走 ${m.walkable}`);
+}
+
+function wireCanvas() {
+  $('canvas').addEventListener('click', e => {
+    if (!current || !current.map || !current.map.cols || mode === 'none') return;
+    const c = $('canvas');
+    const rect = c.getBoundingClientRect();
+    const x = Math.floor((e.clientX - rect.left) / cellPx);
+    const y = Math.floor((e.clientY - rect.top) / cellPx);
+    if (x < 0 || y < 0 || x >= current.map.cols || y >= current.map.rows) return;
+    if (mode === 'safezone') current.safeZones.push({ x, y, size: 10, start: false });
+    else if (mode === 'monster') current.respawns.push({ monsterIndex: selectedMonster, x, y, count: 1, spread: 0, delay: 0, direction: 0, isBoss: false });
+    else if (mode === 'npc') current.npcs.push({ index: 0, fileName: 'NPC', name: '新NPC', x, y, rate: 100, image: 0 });
+    if (mode === 'safezone') { document.querySelector('#tabs button[data-tab="sz"]').click(); renderSZ(); }
+    else if (mode === 'monster') { document.querySelector('#tabs button[data-tab="mon"]').click(); renderMon(); }
+    else if (mode === 'npc') { document.querySelector('#tabs button[data-tab="npc"]').click(); renderNpc(); }
+    drawMap();
+  });
+}
+
+async function save() {
+  if (!current) return;
+  const g = current.general;
+  g.title = $('g_title').value;
+  g.fileName = $('g_fileName').value;
+  g.miniMap = parseInt($('g_miniMap').value, 10) || 0;
+  g.bigMap = parseInt($('g_bigMap').value, 10) || 0;
+  g.music = parseInt($('g_music').value, 10) || 0;
+  g.light = parseInt($('g_light').value, 10) || 0;
+  g.noReconnectMap = $('g_noReconnectMap').value;
+  BOOL_FIELDS.forEach(([k]) => { g[k] = $('g_' + k).checked; });
+
+  const payload = {
+    general: g,
+    safeZones: current.safeZones,
+    respawns: current.respawns.map(r => ({ monsterIndex: r.monsterIndex, x: r.x, y: r.y, count: r.count, spread: r.spread, delay: r.delay, direction: r.direction })),
+    npcs: current.npcs.map(n => ({ fileName: n.fileName, name: n.name, x: n.x, y: n.y, rate: n.rate, image: n.image }))
+  };
+  setTb('保存中...');
+  const res = await fetch('/api/maps/' + current.index, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+  });
+  if (res.ok) { setTb('已保存 ✅'); }
+  else { setTb('保存失败: ' + (await res.text())); }
+}
+
+$('filter').addEventListener('input', e => renderList(e.target.value));
+init();
+</script>
+</body>
+</html>

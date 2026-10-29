@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Mir2Tool/">
     <Project Path="Tools/AtlasPreviewer/AtlasPreviewer.csproj" />
+    <Project Path="Tools/MapInfoEditor/MapInfoEditor.csproj" />
     <Project Path="Tools/原始传奇-资源提取/Mir2ReverseWeb/Mir2ReverseWeb.csproj" />
   </Folder>
   <Project Path="../KFramework.WebGame/KFramework.MonoGame/KFramework.MonoGame.csproj" />
