@@ -48,13 +48,13 @@
                     <pre class="help">拼法与游戏主程序 JS 的 onLoadCfgComplete2 循环完全一致：数据服务器地址 + (i + "config") + 版本号 + ".json?v=" + 版本号，
 其中 i = 0~5，共 6 个分片（totalCfgFileNum=6），全部合并进同一份配置。
 每个分片顶层每个键（map / global / item …）就是一张「配置表」，分布在各分片里（如物品表不在 0config，而在后续分片）。
-每张表可提取为两类产物：① &lt;表名&gt;Config.cs（由字段自动推断并映射 JS 对象到 C# 类）；② &lt;表名&gt;.json（保持原始形态的数据）。</pre>
+每张表可提取为两类产物：① &lt;表名&gt;Table.cs（由字段自动推断并映射 JS 对象到 C# 类，无命名空间）；② &lt;表名&gt;.json（保持原始形态的数据）。C# 类在 CSharp 子目录，JSON 在 Json 子目录。</pre>
                 </div>
 
                 <div class="card">
                     <div class="field">
                         <label>输出目录</label>
-                        <input id="configOutDir" type="text" placeholder="C# 类与 JSON 的输出目录（默认系统下载目录 / Mir2Config）" />
+                        <input id="configOutDir" type="text" placeholder="输出目录（默认系统下载目录 / Mir2Config）；其下 CSharp 放 C# 类，Json 放 JSON 数据" />
                         <button class="btn btn-ghost" data-browse="configOutDir">浏览</button>
                         <span id="dot-configOutDir" class="dot"></span>
                     </div>

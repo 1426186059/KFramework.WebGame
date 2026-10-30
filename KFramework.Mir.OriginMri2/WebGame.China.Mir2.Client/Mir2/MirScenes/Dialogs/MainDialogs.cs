@@ -1706,6 +1706,10 @@ namespace Client.MirScenes.Dialogs
         private float _fade = 1F;
         private bool _bigMode = true;
 
+        // 小地图纹理：从 CDN 按地图图像 id 取（与提取工具一致），替代老 MMap 库 + 服务端 MiniMap 索引
+        private KFramework.MonoGame.Texture2D? _miniMapTexture;
+        private int _miniMapLoadedImg = -1;
+
         public MirLabel AModeLabel, PModeLabel;
 
         public List<MirLabel> QuestIcons = new List<MirLabel>();
@@ -1832,25 +1836,24 @@ namespace Client.MirScenes.Dialogs
             MapControl map = GameScene.Scene.MapControl;
             if (map == null) return;
 
-            if (map.MiniMap == 0 && Index != 2091)
+            // 小地图改用 CDN：按地图图像 id 取 assets/resource/minimap/{img}.jpg（与提取工具同款），
+            // 不再依赖老 MMap 库 + 服务端 MiniMap 索引（原始传世这批图没有对应帧，且服务端 MiniMap 多为 0）。
+            if (map.MapImg != _miniMapLoadedImg)
             {
-                SetSmallMode();
-            }
-            else if (map.MiniMap > 0 && _bigMode && Index == 2091)
-            {
-                SetBigMode();
+                _miniMapLoadedImg = map.MapImg;
+                _miniMapTexture = null;
+                if (map.MapImg > 0) LoadMiniMapTexture(map.MapImg);
             }
 
-            if (map.MiniMap <= 0 || Index != 2090 || Libraries.MiniMap == null)
-            {
+            // 小模式(Index 2091)或未取到小地图时，仅显示外框
+            if (Index != 2090 || _miniMapTexture == null)
                 return;
-            }
 
             Rectangle viewRect = new Rectangle(0, 0, 120, 108);
             Point drawLocation = Location;
             drawLocation.Offset(3, 22);
 
-            Size miniMapSize = Libraries.MiniMap.GetSize(map.MiniMap);
+            Size miniMapSize = new Size(_miniMapTexture.Width, _miniMapTexture.Height);
             float scaleX = miniMapSize.Width / (float)map.Width;
             float scaleY = miniMapSize.Height / (float)map.Height;
 
@@ -1867,7 +1870,7 @@ namespace Client.MirScenes.Dialogs
             if (viewRect.X < 0) viewRect.X = 0;
             if (viewRect.Y < 0) viewRect.Y = 0;
 
-            Libraries.MiniMap.Draw(map.MiniMap, viewRect, drawLocation, Color.FromArgb(255, 255, 255), _fade);
+            DXManager.Draw(_miniMapTexture, viewRect, new Vector3(drawLocation.X, drawLocation.Y, 0), Color.FromArgb((int)(255 * _fade), 255, 255, 255));
 
 
             int startPointX = (int)(viewRect.X / scaleX);
@@ -1951,6 +1954,19 @@ namespace Client.MirScenes.Dialogs
                 }
 
 
+            }
+        }
+
+        private async void LoadMiniMapTexture(int img)
+        {
+            try
+            {
+                var tex = await Mir2OriginResource.GetMinimapTextureAsync(img, DXManager.GDevice);
+                if (_miniMapLoadedImg == img) _miniMapTexture = tex;
+            }
+            catch
+            {
+                // 该地图无小地图资源时保持 null（外框照常显示）
             }
         }
 
