@@ -26,22 +26,8 @@ namespace WebGame.Mir2.MonoGame.Client
         // 每帧只在耗时超过阈值时打一行，正常帧零输出，不会刷屏。
         private static DateTime _tickStart = DateTime.Now;
         private static int _libLoadedCount;
-        public const double StallLogMs = 20;
 
-        public static void LogStall(string tag, double ms)
-        {
-            //            if (ms > StallLogMs)
-                {
-                    //PrintTool.Log($"[Stall] {tag} 耗时 {ms:F0}ms");
-                }
-        }
 
-        public static void Profile(string tag, Action action)
-        {
-            var t0 = DateTime.Now;
-            action();
-            LogStall(tag, (DateTime.Now - t0).TotalMilliseconds);
-        }
         public static MirEngine.Point MPoint;
         public static Random Random = new Random();
         public static KeyBindSettings InputKeys = new KeyBindSettings();
@@ -169,14 +155,6 @@ namespace WebGame.Mir2.MonoGame.Client
 
         public static void Update(GameTime gameTime)
         {
-            // 整帧周期（上一帧 Update 开始 → 本帧 Update 开始）= Update + Draw + 引擎/浏览器开销。
-            // 这一行能直接看出“卡 3 秒”落在哪一帧的窗口里。
-            var now = DateTime.Now;
-            var gap = (now - _tickStart).TotalMilliseconds;
-            _tickStart = now;
-            if (gap > StallLogMs)
-                //PrintTool.Log($"[Stall] 整帧周期 {gap:F0}ms（CMain.Time={Time}）");
-
             UpdateTime(gameTime);
 
             CMain.MPoint = Input_Mouse.Position;
@@ -255,12 +233,9 @@ namespace WebGame.Mir2.MonoGame.Client
                 DXManager.Clean(); // Clean once a second.
             }
 
-            Profile("Network.Process", Network.Process);
-
             if (MirScene.ActiveScene != null)
             {
-                var scene = MirScene.ActiveScene;
-                Profile("Scene.Process<" + scene.GetType().Name + ">", scene.Process);
+                MirScene.ActiveScene.Process();
             }
 
             // 每帧推进动画控件/按钮的帧偏移。移植时漏掉这两段会让动画永远停在第一帧
@@ -433,8 +408,7 @@ namespace WebGame.Mir2.MonoGame.Client
 
                 if (MirScene.ActiveScene != null)
                 {
-                    var scene = MirScene.ActiveScene;
-                    Profile("Scene.Draw<" + scene.GetType().Name + ">", scene.Draw);   // 原版 ActiveScene.Draw()
+                    MirScene.ActiveScene.Draw();
                 }
 
                 DXManager.EndSprite();                               // 原版 DXManager.Sprite.End()

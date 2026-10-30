@@ -474,12 +474,12 @@ namespace Client.MirScenes
                     MirMessageBox.Show(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NoActiveMapOrStartPointFound));
                     break;
                 case 4:
-                    //KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(ActiveScene == null ? "null" : ActiveScene.GetType().Name)} → GameScene  时刻={DateTime.Now:HH:mm:ss.fff}");
-                    CMain.Profile("new GameScene() 构造", () => ActiveScene = new GameScene());
+                    ActiveScene = new GameScene();
                     Dispose();
                     break;
             }
         }
+
         private void UpdateInterface()
         {
             for (int i = 0; i < CharacterButtons.Length; i++)

@@ -166,7 +166,6 @@ namespace Client.MirObjects
                 var dict = new Dictionary<int, Mir2MapEntry>();
                 ParseMapTable(json, dict);
                 _entries = dict;
-                CMain.LogStall($"[Map] 0config map表 流式解析（{json.Length} 字节，{dict.Count} 张图）", (DateTime.Now - cfgT0).TotalMilliseconds);
             }
             catch (Exception ex)
             {

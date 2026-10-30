@@ -191,7 +191,6 @@ namespace Client.MirObjects
                     if ((data.CellFlags[idx++] & 8) != 0) c.FrontImage = 0x8000;
                     MapCells[x, y] = c;
                 }
-            CMain.LogStall($"[Map] 构建 CellInfo 网格 {Width}x{Height}={Width * Height} 格", (DateTime.Now - t0).TotalMilliseconds);
 
             //KFramework.MonoGame.PrintTool.Log($"[Map] 地图就绪: id={id} 名称={entry?.Name} img={MapImg} " +
             //    $"尺寸={Width}x{Height} 像素={PixelWidth}x{PixelHeight} 时刻={DateTime.Now:HH:mm:ss.fff}");

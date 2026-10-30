@@ -1263,20 +1263,14 @@ namespace Client.MirScenes
             }
         }
 
-        // base.DrawControl 无法在 lambda 里调用，包一层供卡顿采样传方法组。
-        private void DrawUiBase() => base.DrawControl();
-
         protected internal override void DrawControl()
         {
-            // 与原版 Crystal 一致：先 blit 地图 RT，再 blit 场景(UI) RT。
-            // 地图单独成 RT（MapControl.ControlTexture），只在动画/移动时重烤；UI 在场景 RT 中、只在变动时重烤。
-            // 场景 RT 底色为透明洋红，洋红区即透出已先画好的地图——半透明 UI 不会漏到地图层。
             if (MapControl != null && !MapControl.IsDisposed)
-                CMain.Profile("MapControl.DrawControl(地图层)", MapControl.DrawControl);
+            {
+                MapControl.DrawControl();
+            }
 
-            CMain.Profile("GameScene.UI.DrawControl(UI层烘焙)", DrawUiBase);
-
-
+            base.DrawControl();
 
             if (PickedUpGold || (SelectedCell != null && SelectedCell.Item != null))
             {
@@ -1296,10 +1290,9 @@ namespace Client.MirScenes
             for (int i = 0; i < OutputLines.Length; i++)
                 OutputLines[i].Draw();
         }
+
         public override void Process()
         {
-            // 加载蒙层：盖在 GameScene 之上，直到主场景资源（地图/角色）就绪才移除。
-            // 仅在「未就绪」时显示、并在「就绪」时只移除一次，避免反复创建导致重复下载/死循环。
             if (MapControl == null || User == null)
             {
                 return;
@@ -10655,7 +10648,6 @@ namespace Client.MirScenes
             // 与上面 CellInfo 网格同量级，同样跑在 await 之后的主线程上。
             var pfT0 = DateTime.Now;
             PathFinder = new PathFinder(this);
-            CMain.LogStall($"[Map] 构建 PathFinder 网格 {Width}x{Height}={Width * Height} 节点", (DateTime.Now - pfT0).TotalMilliseconds);
 
             try
             {
@@ -11028,7 +11020,6 @@ namespace Client.MirScenes
                 //KFramework.MonoGame.PrintTool.Log($"[Map] 地板瓦片全部到位：共重烘焙 {_floorWaitFrames} 帧 / {(DateTime.Now - _floorWaitStart).TotalMilliseconds:F0}ms，就绪 {_tilesReady} 张");
                 _floorWaitFrames = 0;
             }
-            CMain.LogStall($"[Map] DrawFloor 单次烘焙（pending={pending}）", (DateTime.Now - floorT0).TotalMilliseconds);
         }
 
         private KFramework.MonoGame.Texture2D GetMapTile(int index)
@@ -11047,8 +11038,6 @@ namespace Client.MirScenes
             var tileT0 = DateTime.Now;
             try
             {
-                // 经并发闸门（最多 6 个同时在跑）加载瓦片，避免一帧内 50+ 请求挤爆同域连接池，
-                // 并削平多个瓦片同时下完后的解码 + GPU 上传主线程尖峰。
                 var tex = await MapTileLoadGate.RunAsync(() =>
                     Mir2OriginResource.GetMapTileTextureAsync(MapImg, index, DXManager.GDevice)).ConfigureAwait(false);
                 if (tex != null) _mapTileCache[index] = tex;
@@ -11056,12 +11045,10 @@ namespace Client.MirScenes
             }
             catch (Exception ex)
             {
-                //KFramework.MonoGame.PrintTool.Log("[Map] 瓦片加载失败 img=" + MapImg + " idx=" + index + " " + ex.Message);
+                KFramework.MonoGame.PrintTool.Log("[Map] 瓦片加载失败 img=" + MapImg + " idx=" + index + " " + ex.Message);
             }
             finally
             {
-                // 含闸门排队 + 下载 + 解码 + GPU 上传；只在慢于阈值时输出。
-                CMain.LogStall($"[Map] 瓦片 idx={index} 就绪（已就绪 {_tilesReady} 张）", (DateTime.Now - tileT0).TotalMilliseconds);
                 _mapTileLoading.Remove(index);
             }
         }
