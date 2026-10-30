@@ -2280,7 +2280,7 @@ namespace Client.MirScenes
             MapControl.Weather = _forcedWeather ?? p.WeatherParticles;
             // 登录进游戏的第一张地图（服务器按角色存档下发），随后可能紧跟一个 MapChanged 纠正到实际所在图。
             MapLoadStart = DateTime.Now;   // 采样：整条地图加载链路的起点
-            KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapInformation: {p.FileName}(Index={p.MapIndex})  时刻={DateTime.Now:HH:mm:ss.fff}");
+            //KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapInformation: {p.FileName}(Index={p.MapIndex})  时刻={DateTime.Now:HH:mm:ss.fff}");
             _ = MapControl.LoadMapAsync();
             InsertControl(0, MapControl);
         }
@@ -3302,7 +3302,7 @@ namespace Client.MirScenes
                 SoundManager.StopSound(20000 + 126 * 10 + 5 + i);
 
             User = null;
-            KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(ActiveScene == null ? "null" : ActiveScene.GetType().Name)} → SelectScene  时刻={DateTime.Now:HH:mm:ss.fff}");
+            //KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(ActiveScene == null ? "null" : ActiveScene.GetType().Name)} → SelectScene  时刻={DateTime.Now:HH:mm:ss.fff}");
             ActiveScene = new SelectScene(p.Characters);
 
             Dispose();
@@ -3315,7 +3315,7 @@ namespace Client.MirScenes
         private void ReturnToLogin(S.ReturnToLogin p)
         {
             User = null;
-            KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(ActiveScene == null ? "null" : ActiveScene.GetType().Name)} → LoginScene  时刻={DateTime.Now:HH:mm:ss.fff}");
+            //KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(ActiveScene == null ? "null" : ActiveScene.GetType().Name)} → LoginScene  时刻={DateTime.Now:HH:mm:ss.fff}");
             ActiveScene = new LoginScene();
             Dispose();
             MirMessageBox.Show(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ObservedPlayerLoggedOff));
@@ -4115,7 +4115,7 @@ namespace Client.MirScenes
                 MapControl.Music = p.Music;
                 MapControl.Weather = _forcedWeather ?? p.Weather;
                 MapLoadStart = DateTime.Now;   // 采样：整条地图加载链路的起点
-                KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapChanged: {p.FileName}(Index={p.MapIndex})  切到={Path.GetFileNameWithoutExtension(MapControl.FileName)}  时刻={DateTime.Now:HH:mm:ss.fff}");
+                //KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapChanged: {p.FileName}(Index={p.MapIndex})  切到={Path.GetFileNameWithoutExtension(MapControl.FileName)}  时刻={DateTime.Now:HH:mm:ss.fff}");
                 _ = MapControl.LoadMapAsync();
             }
 
@@ -5362,7 +5362,7 @@ namespace Client.MirScenes
                 }
                 catch (Exception ex)
                 {
-                    KFramework.MonoGame.PrintTool.Log("[Buff] 添加 buff 特效失败（资源缺失）: " + buff.Type + " -> " + ex.Message);
+                    //KFramework.MonoGame.PrintTool.Log("[Buff] 添加 buff 特效失败（资源缺失）: " + buff.Type + " -> " + ex.Message);
                 }
             }
         }
@@ -10364,7 +10364,7 @@ namespace Client.MirScenes
         {
             if (CMain.Time < _lastMoveLog) return;
             _lastMoveLog = CMain.Time + 400;
-            KFramework.MonoGame.PrintTool.Log("[Move] " + msg);
+            //KFramework.MonoGame.PrintTool.Log("[Move] " + msg);
         }
 
         // 走到鼠标所指的格子（左/右键点空地都会调用）。
@@ -10627,7 +10627,7 @@ namespace Client.MirScenes
                 // 作废时要改回当前最新的那张，否则后续地图片库会按旧地图名去取。
                 string staleName = Path.GetFileNameWithoutExtension(fileName);
                 NewResConfig.CurrentMapName = Path.GetFileNameWithoutExtension(FileName);
-                KFramework.MonoGame.PrintTool.Log($"[Map] 丢弃过期地图加载: {staleName}（已有更新的切图请求，当前={NewResConfig.CurrentMapName}）");
+                //KFramework.MonoGame.PrintTool.Log($"[Map] 丢弃过期地图加载: {staleName}（已有更新的切图请求，当前={NewResConfig.CurrentMapName}）");
                 return;
             }
 
@@ -10674,7 +10674,7 @@ namespace Client.MirScenes
             SoundList.Music = Music;
 
             // 采样：从收到地图包 → 网格/寻路全部就绪的总耗时（瓦片另算，见 DrawFloor 日志）
-            KFramework.MonoGame.PrintTool.Log($"[Map] 地图加载链路总耗时（收包 → 网格+寻路就绪）：{(DateTime.Now - GameScene.MapLoadStart).TotalMilliseconds:F0}ms  时刻={DateTime.Now:HH:mm:ss.fff}");
+            //KFramework.MonoGame.PrintTool.Log($"[Map] 地图加载链路总耗时（收包 → 网格+寻路就绪）：{(DateTime.Now - GameScene.MapLoadStart).TotalMilliseconds:F0}ms  时刻={DateTime.Now:HH:mm:ss.fff}");
 
             UpdateWeather();
         }
@@ -10835,7 +10835,7 @@ namespace Client.MirScenes
                     LightSetting.Dawn => "黎明",
                     _ => setting.ToString()
                 };
-                KFramework.MonoGame.PrintTool.Log($"[DayNight] 当前地图: {dnName}");
+                //KFramework.MonoGame.PrintTool.Log($"[DayNight] 当前地图: {dnName}");
             }
 
             if (setting != LightSetting.Day || GameScene.User.Poison.HasFlag(PoisonType.Blindness))
@@ -10976,7 +10976,7 @@ namespace Client.MirScenes
                 {
                     _tileGridLogged = true;
                     int tc = colMax - colMin + 1, tr = rowMax - rowMin + 1;
-                    KFramework.MonoGame.PrintTool.Log($"[Map] 地板瓦片请求规模: {tc}x{tr}={tc * tr} 张（TileCols={TileCols} TileRows={TileRows} 地图像素={PixelWidth}x{PixelHeight}）");
+                    //KFramework.MonoGame.PrintTool.Log($"[Map] 地板瓦片请求规模: {tc}x{tr}={tc * tr} 张（TileCols={TileCols} TileRows={TileRows} 地图像素={PixelWidth}x{PixelHeight}）");
                 }
 
                 // 地板 RT 是 1:1 像素，瓦片用单位变换贴，避免被外层遗留 RenderTransform 二次缩放/偏移
@@ -11019,11 +11019,13 @@ namespace Client.MirScenes
                 if (_floorWaitFrames == 0) _floorWaitStart = DateTime.Now;
                 _floorWaitFrames++;
                 if (_floorWaitFrames % 30 == 1)
-                    KFramework.MonoGame.PrintTool.Log($"[Map] 地板重烘焙第 {_floorWaitFrames} 帧，仍缺 {pending} 张瓦片（已就绪 {_tilesReady} 张）");
+                {
+                    //KFramework.MonoGame.PrintTool.Log($"[Map] 地板重烘焙第 {_floorWaitFrames} 帧，仍缺 {pending} 张瓦片（已就绪 {_tilesReady} 张）");
+                }
             }
             else if (_floorWaitFrames > 0)
             {
-                KFramework.MonoGame.PrintTool.Log($"[Map] 地板瓦片全部到位：共重烘焙 {_floorWaitFrames} 帧 / {(DateTime.Now - _floorWaitStart).TotalMilliseconds:F0}ms，就绪 {_tilesReady} 张");
+                //KFramework.MonoGame.PrintTool.Log($"[Map] 地板瓦片全部到位：共重烘焙 {_floorWaitFrames} 帧 / {(DateTime.Now - _floorWaitStart).TotalMilliseconds:F0}ms，就绪 {_tilesReady} 张");
                 _floorWaitFrames = 0;
             }
             CMain.LogStall($"[Map] DrawFloor 单次烘焙（pending={pending}）", (DateTime.Now - floorT0).TotalMilliseconds);
@@ -11054,7 +11056,7 @@ namespace Client.MirScenes
             }
             catch (Exception ex)
             {
-                KFramework.MonoGame.PrintTool.Log("[Map] 瓦片加载失败 img=" + MapImg + " idx=" + index + " " + ex.Message);
+                //KFramework.MonoGame.PrintTool.Log("[Map] 瓦片加载失败 img=" + MapImg + " idx=" + index + " " + ex.Message);
             }
             finally
             {

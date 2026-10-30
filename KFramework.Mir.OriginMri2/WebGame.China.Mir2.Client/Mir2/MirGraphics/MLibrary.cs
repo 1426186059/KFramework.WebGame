@@ -66,11 +66,11 @@ namespace Client.MirGraphics
                     return;
                 }
 
-                KFramework.MonoGame.PrintTool.Log($"[Mir][lib] load {_fileName}");
+                //KFramework.MonoGame.PrintTool.Log($"[Mir][lib] load {_fileName}");
                 byte[] bytes = await BrowserResource.GetBytesAsync(_fileName);
                 if (bytes == null || bytes.Length == 0)
                 {
-                    KFramework.MonoGame.PrintTool.Log($"[Mir][lib] empty: {_fileName}");
+                    //KFramework.MonoGame.PrintTool.Log($"[Mir][lib] empty: {_fileName}");
                     _initialized = false;
                     // 仅当资源确属缺失（BrowserResource 多次重试后仍失败）才永久失败；
                     // 瞬时失败在 GetBytesAsync 内已重试自愈，不会走这里，故不标记 _failed，
@@ -96,7 +96,7 @@ namespace Client.MirGraphics
                 }
                 catch { }
 
-                KFramework.MonoGame.PrintTool.Log($"[Mir][lib] ok: {_fileName}（{bytes.Length} 字节{sizeInfo}）");
+                //KFramework.MonoGame.PrintTool.Log($"[Mir][lib] ok: {_fileName}（{bytes.Length} 字节{sizeInfo}）");
                 Libraries.OnLibraryLoaded();
             }
             catch (Exception ex)
@@ -104,7 +104,7 @@ namespace Client.MirGraphics
                 _initialized = false;
                 // 同上：仅确属缺失才永久失败；瞬时异常（连接尖峰下的偶发失败）不拉黑，留待重试。
                 _failed = BrowserResource.IsMissing(_fileName);
-                KFramework.MonoGame.PrintTool.LogError($"[Mir] 库加载失败 {_fileName}: {ex.Message} {ex.StackTrace}");
+                //KFramework.MonoGame.PrintTool.LogError($"[Mir] 库加载失败 {_fileName}: {ex.Message} {ex.StackTrace}");
             }
             finally
             {
@@ -120,7 +120,7 @@ namespace Client.MirGraphics
             int currentVersion = _reader.ReadInt32();
             if (currentVersion < 2)
             {
-                KFramework.MonoGame.PrintTool.Log("Wrong lib version: " + _fileName + " expecting " + LibVersion + " found " + currentVersion);
+                //KFramework.MonoGame.PrintTool.Log("Wrong lib version: " + _fileName + " expecting " + LibVersion + " found " + currentVersion);
                 return;
             }
             _count = _reader.ReadInt32();
@@ -164,9 +164,9 @@ namespace Client.MirGraphics
             if (CMain.Time <= _lastMissingLogTime) return;
 
             _lastMissingLogTime = CMain.Time + 3000;
-            KFramework.MonoGame.PrintTool.Log("[Img] 图不存在(不画): " + _fileName +
-                " index=" + index + " 图片数=" + (_images != null ? _images.Length : 0) +
-                " 累计=" + _missingImageCount);
+            //KFramework.MonoGame.PrintTool.Log("[Img] 图不存在(不画): " + _fileName +
+            //    " index=" + index + " 图片数=" + (_images != null ? _images.Length : 0) +
+            //    " 累计=" + _missingImageCount);
         }
 
         // 缺失贴图占位（马赛克）统一由 MosaicManager 管理，这里不再各自生成。
@@ -206,7 +206,9 @@ namespace Client.MirGraphics
             if (_images[index] == null)
             {
                 if (_indexList[index] + 17 > _stream.Length)
-                    KFramework.MonoGame.PrintTool.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
+                {
+                    //KFramework.MonoGame.PrintTool.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
+                }
                 _stream.Position = _indexList[index];
                 _images[index] = new MImage(_reader);
             }
@@ -233,7 +235,9 @@ namespace Client.MirGraphics
             if (_images[index] == null)
             {
                 if (_indexList[index] + 17 > _stream.Length)
-                    KFramework.MonoGame.PrintTool.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
+                {
+                    //KFramework.MonoGame.PrintTool.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
+                }
                 _stream.Seek(_indexList[index], SeekOrigin.Begin);
                 _images[index] = new MImage(_reader);
             }
@@ -256,7 +260,9 @@ namespace Client.MirGraphics
             if (_images[index] == null)
             {
                 if (_indexList[index] + 17 > _stream.Length)
-                    KFramework.MonoGame.PrintTool.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
+                {
+                    //KFramework.MonoGame.PrintTool.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
+                }
                 _stream.Seek(_indexList[index], SeekOrigin.Begin);
                 _images[index] = new MImage(_reader);
             }
@@ -273,7 +279,9 @@ namespace Client.MirGraphics
             if (_images[index] == null)
             {
                 if (_indexList[index] + 17 > _stream.Length)
-                    KFramework.MonoGame.PrintTool.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
+                {
+                    //KFramework.MonoGame.PrintTool.Log($"[Mir][坏图] {_fileName} idx={index} off={_indexList[index]} len={_stream.Length}");
+                }
                 _stream.Position = _indexList[index];
                 _images[index] = new MImage(_reader);
             }

@@ -59,7 +59,7 @@ public class BrowserResource
             }
             catch (Exception ex)
             {
-                PrintTool.Log($"[Mir] 资源加载异常(第{attempt}次) {path}: {ex.Message}");
+                //PrintTool.Log($"[Mir] 资源加载异常(第{attempt}次) {path}: {ex.Message}");
             }
 
             if (attempt < MaxAttempts)
@@ -68,7 +68,7 @@ public class BrowserResource
 
         // 多次重试仍失败 → 视为真正缺失，永久拉黑避免每帧重试风暴。
         _missing.Add(path);
-        PrintTool.Log("[Mir] 资源缺失，后续不再重试: " + path);
+        //PrintTool.Log("[Mir] 资源缺失，后续不再重试: " + path);
         return null;
     }
 

@@ -104,11 +104,11 @@ public static class Mir2AtlasLibrary
                     }
                 }
             }
-            PrintTool.Log($"[Mir2Atlas] RES 配置已加载：资源 {_fsData.Count}，分组 {_groups.Count}，子资源别名 {_alias.Count}");
+            //PrintTool.Log($"[Mir2Atlas] RES 配置已加载：资源 {_fsData.Count}，分组 {_groups.Count}，子资源别名 {_alias.Count}");
         }
         catch (Exception ex)
         {
-            PrintTool.LogError("[Mir2Atlas] RES 配置(default.res.json)加载失败，回退为直接用原始 key：" + ex);
+            //PrintTool.LogError("[Mir2Atlas] RES 配置(default.res.json)加载失败，回退为直接用原始 key：" + ex);
         }
     }
 
@@ -125,11 +125,11 @@ public static class Mir2AtlasLibrary
             {
                 await EnsureManifestAsync(ct).ConfigureAwait(false);
                 await EnsureResConfigAsync(ct).ConfigureAwait(false);
-                PrintTool.Log("[Mir2Atlas] 初始化完成（manifest + RES 配置）。");
+                //PrintTool.Log("[Mir2Atlas] 初始化完成（manifest + RES 配置）。");
             }
             catch (Exception ex)
             {
-                PrintTool.LogError("[Mir2Atlas] 初始化失败（manifest/RES 配置）：" + ex);
+                //PrintTool.LogError("[Mir2Atlas] 初始化失败（manifest/RES 配置）：" + ex);
                 _initTask = null;
             }
         }, ct);
@@ -212,12 +212,14 @@ public static class Mir2AtlasLibrary
             var pngPath = Mir2OriginResource.ResolveManifestAssetPath(pngKey);
             var texture = await Mir2OriginResource.GetTextureAsync(pngPath, device, ct: CancellationToken.None);
             if (texture == null)
-                KFramework.MonoGame.PrintTool.LogError(
-                    $"[Mir2Atlas] 图集 PNG 贴图为空：pngPath={pngPath}（resolvedPath={Mir2OriginResource.ResolveManifestAssetPath(pngKey)}，检查是否在 manifest / CDN 404 或解码失败）");
+            {
+                //KFramework.MonoGame.PrintTool.LogError(
+                //    $"[Mir2Atlas] 图集 PNG 贴图为空：pngPath={pngPath}（resolvedPath={Mir2OriginResource.ResolveManifestAssetPath(pngKey)}，检查是否在 manifest / CDN 404 或解码失败）");
+            }
 
             sheet.Build(texture);
             _sheets[key] = sheet;
-            PrintTool.Log($"[Mir2Atlas] 已加载图集 {key}：{sheet.Frames.Count} 帧");
+            //PrintTool.Log($"[Mir2Atlas] 已加载图集 {key}：{sheet.Frames.Count} 帧");
             return sheet;
         }
         catch (Exception)
@@ -256,7 +258,7 @@ public static class Mir2AtlasLibrary
         var sheet = Mir2AtlasSheet.Parse(Encoding.UTF8.GetString(jsonBytes));
         var texture = await Mir2OriginResource.GetTextureAsync(pngRelativePath, device, ct: ct);
         sheet.Build(texture);
-        PrintTool.Log($"[Mir2Atlas] 已加载直链图集 {jsonRelativePath}：{sheet.Frames.Count} 帧");
+        //PrintTool.Log($"[Mir2Atlas] 已加载直链图集 {jsonRelativePath}：{sheet.Frames.Count} 帧");
         return sheet;
     }
 

@@ -84,8 +84,10 @@ namespace Client.MirObjects
                 BodyLibrary = Libraries.Flags[Image - 1000];
 
             if (BodyLibrary == null)
-                KFramework.MonoGame.PrintTool.Log("[NPC] BodyLibrary 为空，回退默认帧集: Image=" + Image +
-                    ", NPCs.Length=" + (Libraries.NPCs != null ? Libraries.NPCs.Length : 0));
+            {
+                //KFramework.MonoGame.PrintTool.Log("[NPC] BodyLibrary 为空，回退默认帧集: Image=" + Image +
+                //    ", NPCs.Length=" + (Libraries.NPCs != null ? Libraries.NPCs.Length : 0));
+            }
         }
 
         public override void Process()

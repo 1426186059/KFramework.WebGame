@@ -30,8 +30,10 @@ namespace WebGame.Mir2.MonoGame.Client
 
         public static void LogStall(string tag, double ms)
         {
-            if (ms > StallLogMs)
-                PrintTool.Log($"[Stall] {tag} 耗时 {ms:F0}ms");
+            //            if (ms > StallLogMs)
+                {
+                    //PrintTool.Log($"[Stall] {tag} 耗时 {ms:F0}ms");
+                }
         }
 
         public static void Profile(string tag, Action action)
@@ -138,7 +140,7 @@ namespace WebGame.Mir2.MonoGame.Client
                 _libLoadedCount++;
                 // 每个库加载完都会整场景递归 Refresh → 下一帧全树重烘焙。
                 // 进 GameScene 时会首次触碰几十个库，这里计数以便确认“连续重烘焙”是不是卡顿来源。
-                PrintTool.Log($"[Stall] LibraryLoaded #{_libLoadedCount} → 整场景 Refresh");
+                //PrintTool.Log($"[Stall] LibraryLoaded #{_libLoadedCount} → 整场景 Refresh");
                 MirScene.ActiveScene?.Refresh();
 
                 // 地表（Floor）是单独烘焙到离屏 FloorTexture 的：CreateTexture 里只有
@@ -157,7 +159,7 @@ namespace WebGame.Mir2.MonoGame.Client
             // 配置表（ExcelTableMgr）已在上面并行发起、后台加载，不阻塞进 LoginScene；
             // 用到时通过 ExcelTableMgr.IsReady 校验即可。
 
-            KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(MirScene.ActiveScene == null ? "null" : MirScene.ActiveScene.GetType().Name)} → LoginScene  时刻={DateTime.Now:HH:mm:ss.fff}");
+            //KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(MirScene.ActiveScene == null ? "null" : MirScene.ActiveScene.GetType().Name)} → LoginScene  时刻={DateTime.Now:HH:mm:ss.fff}");
             MirScene.ActiveScene = new LoginScene();
             await SoundManager.CreateAsync().ConfigureAwait(false);
             ConfigureInput();
@@ -173,7 +175,7 @@ namespace WebGame.Mir2.MonoGame.Client
             var gap = (now - _tickStart).TotalMilliseconds;
             _tickStart = now;
             if (gap > StallLogMs)
-                PrintTool.Log($"[Stall] 整帧周期 {gap:F0}ms（CMain.Time={Time}）");
+                //PrintTool.Log($"[Stall] 整帧周期 {gap:F0}ms（CMain.Time={Time}）");
 
             UpdateTime(gameTime);
 

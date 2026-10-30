@@ -257,7 +257,7 @@ namespace Client.MirControls
             catch (OperationCanceledException) { }
             catch (Exception ex)
             {
-                KFramework.MonoGame.PrintTool.LogError("[MirImageControl] ImageUrl 加载失败：" + url + " -> " + ex);
+                //KFramework.MonoGame.PrintTool.LogError("[MirImageControl] ImageUrl 加载失败：" + url + " -> " + ex);
             }
         }
 

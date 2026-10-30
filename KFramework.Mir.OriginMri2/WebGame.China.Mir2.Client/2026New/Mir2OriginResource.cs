@@ -115,7 +115,7 @@ public static class Mir2OriginResource
     {
         var json = await GetBytesAsync($"allmanifest{GameVersion}.json?v=20260922111844&qufu_version=229", ct: ct);
         Manifest = Mir2AtlasManifest.Parse(json);
-        PrintTool.Log($"[Mir2Origin] manifest 已加载：{Manifest.Entries.Count} 条");
+        //PrintTool.Log($"[Mir2Origin] manifest 已加载：{Manifest.Entries.Count} 条");
     }
 
     /// <summary>把 manifest key 解析成实际相对路径：本地镜像(Keypath)→key 原路径；CDN→resource/{v前2}/{v}_{s}.{ext}。</summary>

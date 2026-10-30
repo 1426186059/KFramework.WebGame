@@ -136,7 +136,7 @@ namespace Client.MirControls
 
                 if (_sheet != null)
                 {
-                    PrintTool.Log("[LoadingDialog] preload-sheet 帧名：" + string.Join(", ", _sheet.Frames.Keys));
+                    //PrintTool.Log("[LoadingDialog] preload-sheet 帧名：" + string.Join(", ", _sheet.Frames.Keys));
                     PickBarFrames();
                     if (_useSheetBar)
                     {
@@ -146,7 +146,7 @@ namespace Client.MirControls
                 }
                 else
                 {
-                    PrintTool.Log("[LoadingDialog] preload-sheet 未取到（JSON/PNG 拉取为空），回退纯色进度条。");
+                    //PrintTool.Log("[LoadingDialog] preload-sheet 未取到（JSON/PNG 拉取为空），回退纯色进度条。");
                 }
 
                 // 预加载主界面 UI 图集（y_homeUI-sheet）：登录/进主界面后立即要用，
@@ -155,11 +155,11 @@ namespace Client.MirControls
                 try
                 {
                     await Mir2AtlasLibrary.GetSheetAsync(HomeUiSheetKey, device, _cts.Token);
-                    PrintTool.Log("[LoadingDialog] y_homeUI-sheet 预加载完成。");
+                    //PrintTool.Log("[LoadingDialog] y_homeUI-sheet 预加载完成。");
                 }
                 catch (System.Exception ex)
                 {
-                    PrintTool.LogError("[LoadingDialog] y_homeUI-sheet 预加载失败（不影响进入游戏）：" + ex);
+                    //PrintTool.LogError("[LoadingDialog] y_homeUI-sheet 预加载失败（不影响进入游戏）：" + ex);
                 }
                 _loaded = 3;
                 _status = "加载完成，正在进入游戏…";
@@ -167,7 +167,7 @@ namespace Client.MirControls
             catch (System.Exception ex)
             {
                 _status = "部分资源加载失败：" + ex.Message;
-                PrintTool.LogError("[LoadingDialog] 资源加载异常：" + ex);
+                //PrintTool.LogError("[LoadingDialog] 资源加载异常：" + ex);
                 _loaded = _total; // 失败也走完进度，避免卡在 0%
             }
             finally

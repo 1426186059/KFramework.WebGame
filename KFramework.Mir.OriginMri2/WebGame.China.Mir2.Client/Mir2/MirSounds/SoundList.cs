@@ -12,7 +12,7 @@ namespace Client.MirSounds
             byte[] bytes = await BrowserResource.GetBytesAsync(fileName).ConfigureAwait(false);
             if (bytes == null || bytes.Length == 0)
             {
-                KFramework.MonoGame.PrintTool.Log("[audio] SoundList.lst 未找到，音效索引表为空: " + fileName);
+                //KFramework.MonoGame.PrintTool.Log("[audio] SoundList.lst 未找到，音效索引表为空: " + fileName);
                 return;
             }
 
@@ -29,7 +29,7 @@ namespace Client.MirSounds
                     Indexes.Add(index, split[split.Length - 1]);
             }
 
-            KFramework.MonoGame.PrintTool.Log($"[audio] SoundList.lst 已加载，音效索引 {Indexes.Count} 条");
+            //KFramework.MonoGame.PrintTool.Log($"[audio] SoundList.lst 已加载，音效索引 {Indexes.Count} 条");
         }
 
         public static int

@@ -133,7 +133,7 @@ namespace Client.MirGraphics
         /// </summary>
         public static async Task LoadAsync()
         {
-            KFramework.MonoGame.PrintTool.Log("[Mir] LoadAsync START");
+            //KFramework.MonoGame.PrintTool.Log("[Mir] LoadAsync START");
             try
             {
                 await LoadLibrariesAsync();   // 首屏库（登录/选角界面立即需要）

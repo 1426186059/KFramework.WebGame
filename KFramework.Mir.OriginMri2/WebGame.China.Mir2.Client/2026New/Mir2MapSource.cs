@@ -168,7 +168,7 @@ namespace Client.MirObjects
             }
             catch (Exception ex)
             {
-                PrintTool.Log("[Map] 加载地图配置失败(map表): " + ex.Message);
+                //PrintTool.Log("[Map] 加载地图配置失败(map表): " + ex.Message);
             }
         }
 

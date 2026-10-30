@@ -154,7 +154,9 @@ namespace Client.MirControls
             // 故此处改用 MouseControl（鼠标按下时所在控件，松开前不会被清空）来派发 Click，
             // 否则按钮 Click 永远收不到（表现为所有按钮点击无反应）。
             if (this is LoginScene)
-                KFramework.MonoGame.PrintTool.LogError($"[Mir][Click] MC={MouseControl?.GetType().Name} over={MouseControl?.IsMouseOver(CMain.MPoint)} MP=({CMain.MPoint.X},{CMain.MPoint.Y}) loc={MouseControl?.DisplayLocation}");
+            {
+                //KFramework.MonoGame.PrintTool.LogError($"[Mir][Click] MC={MouseControl?.GetType().Name} over={MouseControl?.IsMouseOver(CMain.MPoint)} MP=({CMain.MPoint.X},{CMain.MPoint.Y}) loc={MouseControl?.DisplayLocation}");
+            }
 
             if (MouseControl != null && MouseControl != this && MouseControl.IsMouseOver(CMain.MPoint))
                 MouseControl.OnMouseClick(e);
