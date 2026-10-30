@@ -1,48 +1,13 @@
 using KFramework.MonoGame;
 
 /// <summary>
-/// 地图图片资源热更（URL 直链方案，不使用 AssetBundle）。
-/// 把每张地图用到的图片 Lib 提取到 Mir2Res/Map/&lt;地图名&gt;/ 下，运行时通过 http 从 <see cref="MapResourceBaseUrl"/>
-/// 直接拉取（Mir2Res 作为 http 根目录）；.map 文件不提取，仍走默认路径。
-/// 仅当某地图在本表的 <see cref="MapLibsRemote"/> 登记时，其图片 Lib 才从远程 URL 取；否则走默认 lib 通道。
+/// 地图资源状态记录。
+/// 原「地图图片 Lib 远程直链（按地图名从 Mir2Res/Map/&lt;地图名&gt;/ 拉取）」方案依赖本地 :5081
+/// 资源服务器，已随该服务器移除；地图 Lib 现统一走默认 lib 通道（RemoteWebSetting.LibBaseUrl
+/// 或 CDN），不按地图区分物理文件，故不再需要远程拉取与换图重载逻辑。
+/// 此处仅保留当前地图名状态（由 MapCode 进图时写入），供诊断日志使用。
 /// </summary>
 public static class NewResConfig
 {
-    public static string libBaseUrl = RemoteWebSetting.New_LibBaseUrl;
-    public const string MapRoot = "Map/";
-    public static bool Enabled = true;
-    public static bool RemoteLibEnabled { get; internal set; }
     public static string CurrentMapName { get; internal set; } = "";
-
-    private static readonly ContentManager mContentManager;
-
-    static NewResConfig()
-    {
-        mContentManager = new ContentManager("", libBaseUrl);
-    }
-
-    private static string BuildLibPath(string relPathWithoutExt)
-    {
-        string p = (relPathWithoutExt ?? "").Replace('\\', '/');
-        const string mapPrefix = "data/map/";
-        if (p.StartsWith(mapPrefix, StringComparison.OrdinalIgnoreCase))
-        {
-            p = p.Substring(mapPrefix.Length); // "WemadeMir2/Tiles"
-        }
-        return CurrentMapName + "/" + p + ".Lib";
-    }
-
-    public static async Task<byte[]?> GetRemoteLibAsync(string relPathWithoutExt)
-    {
-        if (!Enabled || !RemoteLibEnabled) return null;
-        string norm = (relPathWithoutExt ?? "").Replace('\\', '/').ToLowerInvariant();
-        if (!norm.StartsWith("data/map/")) return null;
-
-        string path = BuildLibPath(relPathWithoutExt);
-        // 远程地图 Lib 用最高优先级（priority 越大越优先，取 10）：进图后先出地面，其它资源排在其后
-        byte[] bytes = await mContentManager.LoadBytesAsync(MapRoot + path, BrowserResource.mCacheInstance, priority: 10).ConfigureAwait(false);
-        if (bytes != null && bytes.Length > 0) return bytes;
-        KFramework.MonoGame.PrintTool.Log($"[Mir][lib] 远程空: {path}");
-        return null;
-    }
 }

@@ -2956,23 +2956,20 @@ namespace Server.MirEnvir
             return true;
         }
 
-        // ===== 配置表通过 Web 从 JSON 加载（替代旧的 .db 二进制加载） =====
+        // ===== 配置表从本地 JSON 加载（替代旧的 .db 二进制加载；不再从 Web 下载，避免依赖 5082 资源服务器） =====
         private bool LoadDBFromJson()
         {
             try
             {
-                string baseUrl = Settings.ConfigBaseUrl;
-                if (string.IsNullOrWhiteSpace(baseUrl))
+                // 本地配置表目录：Web_Mir2.Server.Version/ExcelConfig/（ItemInfo/MonsterInfo/.../Meta 等 *.json）
+                string baseDir = Settings.ExcelConfigPath;
+                if (!Directory.Exists(baseDir))
                 {
-                    MessageQueue.Enqueue("ConfigBaseUrl 未配置，无法从 Web 加载配置表（请在 Setup.ini 的 [Database] 段设置 ConfigBaseUrl）。");
+                    MessageQueue.Enqueue("从本地加载配置表失败：配置目录不存在 " + baseDir);
                     return false;
                 }
-                if (!baseUrl.EndsWith("/")) baseUrl += "/";
 
-                using var client = new HttpClient { BaseAddress = new Uri(baseUrl), Timeout = TimeSpan.FromSeconds(30) };
-
-                var meta = JsonSerializer.Deserialize<ConfigMeta>(
-                    client.GetStringAsync("Crystal/Config/Meta.json").GetAwaiter().GetResult(), JsonConfigOptions);
+                var meta = LoadConfig<ConfigMeta>(baseDir, "Meta.json");
                 LoadVersion = meta.version;
                 LoadCustomVersion = meta.customVersion;
 
@@ -2993,25 +2990,25 @@ namespace Server.MirEnvir
                 foreach (MapInfo mi in MapInfoList)
                     foreach (SafeZoneInfo sz in mi.SafeZones)
                         sz.Info = mi;
-                ItemInfoList = DownloadList<ItemInfo>(client, "Crystal/Config/ItemInfo.json");
-                MonsterInfoList = DownloadList<MonsterInfo>(client, "Crystal/Config/MonsterInfo.json");
-                NPCInfoList = DownloadList<NPCInfo>(client, "Crystal/Config/NPCInfo.json");
-                QuestInfoList = DownloadList<QuestInfo>(client, "Crystal/Config/QuestInfo.json");
-                DragonInfo = Download<DragonInfo>(client, "Crystal/Config/DragonInfo.json");
-                MagicInfoList = DownloadList<MagicInfo>(client, "Crystal/Config/MagicInfo.json");
+                ItemInfoList = LoadConfigList<ItemInfo>(baseDir, "ItemInfo.json");
+                MonsterInfoList = LoadConfigList<MonsterInfo>(baseDir, "MonsterInfo.json");
+                NPCInfoList = LoadConfigList<NPCInfo>(baseDir, "NPCInfo.json");
+                QuestInfoList = LoadConfigList<QuestInfo>(baseDir, "QuestInfo.json");
+                DragonInfo = LoadConfig<DragonInfo>(baseDir, "DragonInfo.json");
+                MagicInfoList = LoadConfigList<MagicInfo>(baseDir, "MagicInfo.json");
                 if (LoadVersion >= 63)
-                    GameShopList = DownloadList<GameShopItem>(client, "Crystal/Config/GameShopItem.json");
+                    GameShopList = LoadConfigList<GameShopItem>(baseDir, "GameShopItem.json");
                 if (LoadVersion >= 66)
-                    ConquestInfoList = DownloadList<ConquestInfo>(client, "Crystal/Config/ConquestInfo.json");
+                    ConquestInfoList = LoadConfigList<ConquestInfo>(baseDir, "ConquestInfo.json");
                 if (LoadVersion > 67)
-                    RespawnTick = Download<RespawnTimer>(client, "Crystal/Config/RespawnTimer.json");
+                    RespawnTick = LoadConfig<RespawnTimer>(baseDir, "RespawnTimer.json");
 
                 PostLoadDB();
                 return true;
             }
             catch (Exception ex)
             {
-                MessageQueue.Enqueue("从 Web 加载配置表失败: " + ex.Message);
+                MessageQueue.Enqueue("从本地加载配置表失败: " + ex.Message);
                 return false;
             }
         }
@@ -3033,11 +3030,11 @@ namespace Server.MirEnvir
             Settings.LinkGuildCreationItems(ItemInfoList);
         }
 
-        private T Download<T>(HttpClient client, string path) where T : class
-            => JsonSerializer.Deserialize<T>(client.GetStringAsync(path).GetAwaiter().GetResult(), JsonConfigOptions);
+        private T LoadConfig<T>(string baseDir, string fileName) where T : class
+            => JsonSerializer.Deserialize<T>(File.ReadAllText(Path.Combine(baseDir, fileName)), JsonConfigOptions);
 
-        private List<T> DownloadList<T>(HttpClient client, string path)
-            => JsonSerializer.Deserialize<List<T>>(client.GetStringAsync(path).GetAwaiter().GetResult(), JsonConfigOptions) ?? new List<T>();
+        private List<T> LoadConfigList<T>(string baseDir, string fileName)
+            => JsonSerializer.Deserialize<List<T>>(File.ReadAllText(Path.Combine(baseDir, fileName)), JsonConfigOptions) ?? new List<T>();
 
         private sealed class ConfigMeta
         {

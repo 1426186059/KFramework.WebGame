@@ -152,8 +152,6 @@ namespace Client.MirObjects
 
         public async Task LoadAsync(CancellationToken cancellationToken)
         {
-            // 保留新资源系统的远程开关（UI 图集仍可能走远程镜像），但不依赖 .map
-            NewResConfig.RemoteLibEnabled = true;
             if (!int.TryParse(Path.GetFileNameWithoutExtension(FileName), out int id))
                 id = 0;
 

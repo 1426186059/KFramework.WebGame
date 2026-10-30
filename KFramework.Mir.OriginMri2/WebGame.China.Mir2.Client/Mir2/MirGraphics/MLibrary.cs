@@ -23,10 +23,6 @@ namespace Client.MirGraphics
         private bool _loading;   // 正在异步拉取字节（幂等，避免重复请求）
         private bool _loaded;    // 字节已就绪且索引已解析，绘制可用
         private bool _failed;    // 加载失败（缺资源/404），不再重试，避免每帧 404 风暴
-        // 本库是在哪张地图加载的（仅在 RemoteLibEnabled 时有意义）。远程地图 Lib 的物理文件随
-        // 地图名变化（Map/<地图名>/...），同一 MapLibs 槽位是静态单例，跨地图必须重新拉取，
-        // 否则会复用上一地图那份蒸馏 Lib（内容不同）→ 表现为「换图后地图显示不全」。
-        private string _loadedForMap = string.Empty;
 
         private BinaryReader _reader;
         private Stream _stream;
@@ -55,15 +51,9 @@ namespace Client.MirGraphics
         /// </summary>
         public async Task InitializeAsync()
         {
-            // 远程地图 Lib 按地图名区分物理文件（Map/<地图名>/...）。同一槽位跨地图必须重载：
-            // 已加载/已失败且是针对“另一张地图”的，放行本次重载；同图仍走幂等，避免重复请求。
-            bool staleForOtherMap = NewResConfig.RemoteLibEnabled
-                && _loadedForMap.Length > 0
-                && !string.Equals(_loadedForMap, NewResConfig.CurrentMapName, StringComparison.OrdinalIgnoreCase);
-            if ((_loaded || _failed) && !staleForOtherMap) return;
+            // 已加载/已失败则幂等返回（加载成功后永久缓存；默认 lib 通道为统一资源，不按地图区分，无需换图重载）。
+            if (_loaded || _failed) return;
             if (_loading) return;
-            if (staleForOtherMap)
-                KFramework.MonoGame.PrintTool.Log($"[Mir][lib] 换图重载 {_fileName}（旧图={_loadedForMap} → {NewResConfig.CurrentMapName}）");
             _loading = true;
             try
             {
@@ -74,24 +64,6 @@ namespace Client.MirGraphics
                     _initialized = false;
                     _failed = true;
                     return;
-                }
-
-                // 先尝试从远程（Mir2Res/Map/）按 URL 直链取（走远程的地图，其图片 Lib 已提取到该处）；命中则跳过默认通道。
-                if (NewResConfig.RemoteLibEnabled)
-                {
-                    string rel = Path.ChangeExtension(_fileName, null); // 如 "Data/Map/WemadeMir2/Tiles"
-                    byte[]? remote = await NewResConfig.GetRemoteLibAsync(rel);
-                    if (remote != null && remote.Length > 0)
-                    {
-                        KFramework.MonoGame.PrintTool.Log($"[Mir][lib] 从远程加载 {_fileName}");
-                        ParseIndex(remote);
-                        _loaded = true;
-                        _initialized = true;
-                        _loadedForMap = NewResConfig.CurrentMapName;
-                        KFramework.MonoGame.PrintTool.Log($"[Mir][lib] ok(remote): {_fileName}（{remote.Length} 字节）");
-                        Libraries.OnLibraryLoaded();
-                        return;
-                    }
                 }
 
                 KFramework.MonoGame.PrintTool.Log($"[Mir][lib] load {_fileName}");
@@ -110,7 +82,6 @@ namespace Client.MirGraphics
                 ParseIndex(bytes);
                 _loaded = true;
                 _initialized = true;
-                _loadedForMap = NewResConfig.CurrentMapName;
 
                 // 输出图数与首图尺寸：用于确认地砖规格（Tiles 为 96x96 时底图按 2x2 绘制，
                 // 48x48 时每格一张），排查"地板不显示"时非常关键。
@@ -607,7 +578,6 @@ namespace Client.MirGraphics
             _initialized = false;
             _loading = false;
             _failed = false;
-            _loadedForMap = string.Empty;
         }
 
     }
