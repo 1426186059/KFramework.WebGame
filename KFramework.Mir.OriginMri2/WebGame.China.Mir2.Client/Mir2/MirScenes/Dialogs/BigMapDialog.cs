@@ -552,6 +552,23 @@ namespace Client.MirScenes.Dialogs
         public MirImageControl[] Players;
         public static Dictionary<string, Point> PlayerLocations = new Dictionary<string, Point>();
 
+        // 大地图远程整图（替代 Libraries.MiniMap 本地库）：按地图 BigMap id 从 CDN 取，缓存到纹理。
+        private KFramework.MonoGame.Texture2D _bigMapTexture;
+        private int _bigMapLoadedIdx = -1;
+
+        private async void LoadBigMapTexture(int img)
+        {
+            try
+            {
+                var tex = await Mir2OriginResource.GetBigMapTextureAsync(img, DXManager.GDevice);
+                if (_bigMapLoadedIdx == img) _bigMapTexture = tex;
+            }
+            catch
+            {
+                // 该地图无大地图远程资源时保持 null（回退到 Libraries.MiniMap 本地库）
+            }
+        }
+
         public BigMapViewPort()
         {
             NotControl = false;
@@ -643,9 +660,17 @@ namespace Client.MirScenes.Dialogs
             if (index <= 0)
                 return;
 
+            // 大地图远程整图：按 BigMap id 从 CDN 取（替代本地 Libraries.MiniMap），缓存避免重复下载。
+            if (index != _bigMapLoadedIdx)
+            {
+                _bigMapLoadedIdx = index;
+                _bigMapTexture = null;
+                if (index > 0) LoadBigMapTexture(index);
+            }
+
             MouseMove += UpdateBigMapCoordinates;
 
-            Size = Libraries.MiniMap.GetSize(index);
+            Size = _bigMapTexture != null ? new Size(_bigMapTexture.Width, _bigMapTexture.Height) : Libraries.MiniMap.GetSize(index);
             Rectangle viewRect = new Rectangle(0, 0, Math.Min(568, Size.Width), Math.Min(380, Size.Height));
 
             viewRect.X = 14 + (568 - viewRect.Width) / 2;
@@ -672,7 +697,13 @@ namespace Client.MirScenes.Dialogs
             if (viewRect.X < 0) viewRect.X = 0;
             if (viewRect.Y < 0) viewRect.Y = 0;
 
-            Libraries.MiniMap.Draw(index, DisplayLocation, Size, Color.FromArgb(255, 255, 255));
+            if (_bigMapTexture != null)
+                DXManager.Draw(_bigMapTexture,
+                    new KFramework.MonoGame.Rectangle(0, 0, _bigMapTexture.Width, _bigMapTexture.Height),
+                    new KFramework.MonoGame.Rectangle(DisplayLocation.X, DisplayLocation.Y, Size.Width, Size.Height),
+                    Color.White);
+            else
+                Libraries.MiniMap.Draw(index, DisplayLocation, Size, Color.FromArgb(255, 255, 255));
 
             int startPointX = (int)(viewRect.X / ScaleX);
             int startPointY = (int)(viewRect.Y / ScaleY);

@@ -1724,6 +1724,10 @@ namespace Client.MirScenes.Dialogs
             BeforeDraw += MiniMap_BeforeDraw;
             AfterDraw += MiniMapDialog_AfterDraw;
 
+            // 走 MirImageControl.ImageUrl 标准远程通道：加载完成后把纹理收进 _miniMapTexture，
+            // 同时清掉 Texture（否则 DrawControl 会把整张小地图盖在边框/控件上，而小地图的视口裁剪在 BeforeDraw 手绘）。
+            RemoteImageLoaded += (s, e) => { _miniMapTexture = Texture; Texture = null; };
+
             MapNameLabel = new MirLabel
             {
                 DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
@@ -1959,15 +1963,9 @@ namespace Client.MirScenes.Dialogs
 
         private async void LoadMiniMapTexture(int img)
         {
-            try
-            {
-                var tex = await Mir2OriginResource.GetMinimapTextureAsync(img, DXManager.GDevice);
-                if (_miniMapLoadedImg == img) _miniMapTexture = tex;
-            }
-            catch
-            {
-                // 该地图无小地图资源时保持 null（外框照常显示）
-            }
+            // 走 MirImageControl.ImageUrl 标准远程通道（带取消/重试安全），
+            // 加载完成由构造函数里的 RemoteImageLoaded 收进 _miniMapTexture；失败则保持 null（外框照常显示）。
+            ImageUrl = Mir2OriginResource.MinimapPath(img);
         }
 
         public void Toggle()

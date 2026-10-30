@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Client.MirGraphics;
+using Client.MirObjects;   // Mir2OriginResource / DXManager 等
 
 namespace Client.MirControls
 {
@@ -208,6 +209,58 @@ namespace Client.MirControls
             }
         }
 
+        // —— 单张图远程加载：设一个图片 CDN 相对路径/URL，控件自动异步下载并解码为 Texture2D，
+        //    绘制走 DrawControl 顶部已有的 Texture 通道（拉伸到 Size、按 ForeColour 着色）。
+        //    可用于小地图/大地图等「按需远程取一张图」的场景。设 null/空串会清空 Texture。
+        private string _imageUrl;
+        public string ImageUrl
+        {
+            get { return _imageUrl; }
+            set
+            {
+                if (_imageUrl == value) return;
+                _imageUrl = value;
+                _ = LoadRemoteImageAsync(value);
+            }
+        }
+
+        /// <summary>远程单图加载完成事件（主线程触发）：sender=本控件，e=EventArgs.Empty。</summary>
+        public event EventHandler RemoteImageLoaded;
+
+        private CancellationTokenSource _remoteCts;
+
+        private async Task LoadRemoteImageAsync(string url)
+        {
+            // 取消上一次在途加载（重设 url / 切换资源时，避免旧结果覆盖新结果）。
+            _remoteCts?.Cancel();
+            _remoteCts?.Dispose();
+            var cts = new CancellationTokenSource();
+            _remoteCts = cts;
+            var ct = cts.Token;
+
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                Texture = null;
+                Redraw();
+                return;
+            }
+
+            try
+            {
+                var tex = await Mir2OriginResource.GetTextureAsync(url, DXManager.GDevice, ct);
+                if (ct.IsCancellationRequested) return;
+                Texture = tex;
+                Redraw();
+                ApplyAnchor();
+                RemoteImageLoaded?.Invoke(this, EventArgs.Empty);
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                KFramework.MonoGame.PrintTool.LogError("[MirImageControl] ImageUrl 加载失败：" + url + " -> " + ex);
+            }
+        }
+
         // 逐像素命中：true 时点中透明像素不算命中（透明区穿透），false 时整框都算命中。
         private bool _pixelDetect;
         protected bool PixelDetect
@@ -262,7 +315,9 @@ namespace Client.MirControls
             get
             {
                 Size result;
-                if (AutoSize && AtlasSheet != null && !string.IsNullOrEmpty(AtlasFrame)
+                if (AutoSize && Texture != null)
+                    result = new Size(Texture.Width, Texture.Height);
+                else if (AutoSize && AtlasSheet != null && !string.IsNullOrEmpty(AtlasFrame)
                     && AtlasSheet.Frames.TryGetValue(AtlasFrame, out var s))
                     result = new Size(s.SourceRectangle.Width, s.SourceRectangle.Height);
                 else if (AutoSize && Library != null && Index >= 0)

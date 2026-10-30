@@ -90,6 +90,11 @@ public static class Mir2OriginResource
     public static Task<byte[]> GetMinimapBytesAsync(int img, CancellationToken ct = default) => GetBytesAsync(MinimapPath(img), 10, ct);
     public static Task<Texture2D> GetMinimapTextureAsync(int img, GraphicsDevice device, CancellationToken ct = default) => GetTextureAsync(MinimapPath(img), device, 10, ct);
 
+    /// <summary>大地图（世界地图整图）：assets/resource/bigmap/{img}.jpg。路径按站点资源规律推断，若实际不符请调整此处。</summary>
+    public static string BigMapPath(int img) => $"assets/resource/bigmap/{img}.jpg?ver={ResourceVersion}";
+    public static Task<byte[]> GetBigMapBytesAsync(int img, CancellationToken ct = default) => GetBytesAsync(BigMapPath(img), 10, ct);
+    public static Task<Texture2D> GetBigMapTextureAsync(int img, GraphicsDevice device, CancellationToken ct = default) => GetTextureAsync(BigMapPath(img), device, 10, ct);
+
     /// <summary>配置分片：{i}config{GameVersion}.json（地图表 map 在 0config 分片）。</summary>
     public static string ConfigShardPath(int shard) => $"{shard}config{GameVersion}.json?v={GameVersion}";
     public static Task<byte[]> GetConfigShardBytesAsync(int shard, CancellationToken ct = default) => GetBytesAsync(ConfigShardPath(shard), ct: ct);
