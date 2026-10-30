@@ -8,101 +8,137 @@ using System.Text.Json.Serialization;
 
 /// <summary>配置表 "map" 的单条记录</summary>
 public class MapTable
-[JsonPropertyName("automatic")]
-public int? automatic { get; set; }
+{
+    // 地图ID
+    [JsonPropertyName("id")]
+    public int id { get; set; } = default;
 
-[JsonPropertyName("automatic1")]
-public int? automatic1 { get; set; }
+    // 贴图/小地图编号
+    [JsonPropertyName("img")]
+    public int img { get; set; } = default;
 
-[JsonPropertyName("autoRelive")]
-public string autoRelive { get; set; } = ""
+    // 地图数据文件号
+    [JsonPropertyName("data")]
+    public int data { get; set; } = default;
 
-[JsonPropertyName("canBuyRelive")]
-public int canBuyRelive { get; set; } = default
+    // 地图名称
+    [JsonPropertyName("name")]
+    public string name { get; set; } = "";
 
-[JsonPropertyName("cancross")]
-public int? cancross { get; set; }
+    // 地图宽(像素)
+    [JsonPropertyName("width")]
+    public int width { get; set; } = default;
 
-[JsonPropertyName("canDeliver")]
-public int? canDeliver { get; set; }
+    // 地图高(像素)
+    [JsonPropertyName("height")]
+    public int height { get; set; } = default;
 
-[JsonPropertyName("cls")]
-public int cls { get; set; } = default
+    // 地图分类
+    [JsonPropertyName("cls")]
+    public int cls { get; set; } = default;
 
-[JsonPropertyName("condition")]
-public string condition { get; set; } = ""
+    // 进入条件
+    [JsonPropertyName("condition")]
+    public string condition { get; set; } = "";
 
-[JsonPropertyName("convene")]
-public int? convene { get; set; }
+    // 进入提示文字
+    [JsonPropertyName("showText")]
+    public string showText { get; set; } = "";
 
-[JsonPropertyName("data")]
-public int data { get; set; } = default
+    // 可否穿行
+    [JsonPropertyName("cancross")]
+    public int? cancross { get; set; }
 
-[JsonPropertyName("deathDrop")]
-public string deathDrop { get; set; } = ""
+    // 是否安全区
+    [JsonPropertyName("safe")]
+    public int? safe { get; set; }
 
-[JsonPropertyName("deliver")]
-public int? deliver { get; set; }
+    // 是否刷假人
+    [JsonPropertyName("playerAI")]
+    public int? playerAI { get; set; }
 
-[JsonPropertyName("duplicate")]
-public int? duplicate { get; set; }
+    // 可否花钱复活
+    [JsonPropertyName("canBuyRelive")]
+    public int canBuyRelive { get; set; } = default;
 
-[JsonPropertyName("height")]
-public int height { get; set; } = default
+    // 原地复活花费
+    [JsonPropertyName("hereReliveCost")]
+    public string hereReliveCost { get; set; } = "";
 
-[JsonPropertyName("hereReliveCost")]
-public string hereReliveCost { get; set; } = ""
+    // 自动复活配置
+    [JsonPropertyName("autoRelive")]
+    public string autoRelive { get; set; } = "";
 
-[JsonPropertyName("homeXY")]
-public string homeXY { get; set; } = ""
+    // 服务器类型
+    [JsonPropertyName("serverType")]
+    public int serverType { get; set; } = default;
 
-[JsonPropertyName("homeXY2")]
-public string homeXY2 { get; set; } = ""
+    // 随机传送
+    [JsonPropertyName("random")]
+    public int? random { get; set; }
 
-[JsonPropertyName("huanshou")]
-public int? huanshou { get; set; }
+    // 回城/出生坐标
+    [JsonPropertyName("homeXY")]
+    public string homeXY { get; set; } = "";
 
-[JsonPropertyName("id")]
-public int id { get; set; } = default
+    // 可否召集
+    [JsonPropertyName("convene")]
+    public int? convene { get; set; }
 
-[JsonPropertyName("img")]
-public int img { get; set; } = default
+    // 死亡掉落
+    [JsonPropertyName("deathDrop")]
+    public string deathDrop { get; set; } = "";
 
-[JsonPropertyName("murder")]
-public int? murder { get; set; }
+    // 护盾/免PK
+    [JsonPropertyName("shield")]
+    public int? shield { get; set; }
 
-[JsonPropertyName("name")]
-public string name { get; set; } = ""
+    // 幻兽限制
+    [JsonPropertyName("huanshou")]
+    public int? huanshou { get; set; }
 
-[JsonPropertyName("pet")]
-public int? pet { get; set; }
+    // 可否带宠物
+    [JsonPropertyName("pet")]
+    public int? pet { get; set; }
 
-[JsonPropertyName("playerAI")]
-public int? playerAI { get; set; }
+    // 可否传送
+    [JsonPropertyName("canDeliver")]
+    public int? canDeliver { get; set; }
 
-[JsonPropertyName("random")]
-public int? random { get; set; }
+    // 自动设置
+    [JsonPropertyName("automatic")]
+    public int? automatic { get; set; }
 
-[JsonPropertyName("randomGo")]
-public int? randomGo { get; set; }
+    // 自动随机
+    [JsonPropertyName("zdrandom")]
+    public int? zdrandom { get; set; }
 
-[JsonPropertyName("safe")]
-public int? safe { get; set; }
+    // 随机前往
+    [JsonPropertyName("randomGo")]
+    public int? randomGo { get; set; }
 
-[JsonPropertyName("serverType")]
-public int serverType { get; set; } = default
+    // 点击交互
+    [JsonPropertyName("tap")]
+    public int? tap { get; set; }
 
-[JsonPropertyName("shield")]
-public int? shield { get; set; }
+    // 是否副本
+    [JsonPropertyName("duplicate")]
+    public int? duplicate { get; set; }
 
-[JsonPropertyName("showText")]
-public string showText { get; set; } = ""
+    // 杀人规则
+    [JsonPropertyName("murder")]
+    public int? murder { get; set; }
 
-[JsonPropertyName("tap")]
-public int? tap { get; set; }
+    // 备用回城点
+    [JsonPropertyName("homeXY2")]
+    public string homeXY2 { get; set; } = "";
 
-[JsonPropertyName("width")]
-public int width { get; set; } = default
+    // 传送点
+    [JsonPropertyName("deliver")]
+    public int? deliver { get; set; }
 
-[JsonPropertyName("zdrandom")]
-public int? zdrandom { get; set; }
+    // 自动设置2
+    [JsonPropertyName("automatic1")]
+    public int? automatic1 { get; set; }
+
+}

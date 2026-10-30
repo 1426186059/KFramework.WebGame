@@ -8,20 +8,23 @@ using System.Text.Json.Serialization;
 
 /// <summary>配置表 "starmap" 的单条记录</summary>
 public class StarmapTable
-[JsonPropertyName("coordinates")]
-public string coordinates { get; set; } = ""
+{
+    [JsonPropertyName("coordinates")]
+    public string coordinates { get; set; } = "";
 
-[JsonPropertyName("fixedItemId")]
-public string fixedItemId { get; set; } = ""
+    [JsonPropertyName("fixedItemId")]
+    public string fixedItemId { get; set; } = "";
 
-[JsonPropertyName("height")]
-public int height { get; set; } = default
+    [JsonPropertyName("height")]
+    public int height { get; set; } = default;
 
-[JsonPropertyName("mapid")]
-public int mapid { get; set; } = default
+    [JsonPropertyName("mapid")]
+    public int mapid { get; set; } = default;
 
-[JsonPropertyName("randomItemId")]
-public string randomItemId { get; set; } = ""
+    [JsonPropertyName("randomItemId")]
+    public string randomItemId { get; set; } = "";
 
-[JsonPropertyName("width")]
-public int width { get; set; } = default
+    [JsonPropertyName("width")]
+    public int width { get; set; } = default;
+
+}

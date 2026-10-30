@@ -8,17 +8,20 @@ using System.Text.Json.Serialization;
 
 /// <summary>配置表 "mapnpc" 的单条记录</summary>
 public class MapnpcTable
-[JsonPropertyName("id")]
-public int id { get; set; } = default
+{
+    [JsonPropertyName("id")]
+    public int id { get; set; } = default;
 
-[JsonPropertyName("mapid")]
-public int? mapid { get; set; }
+    [JsonPropertyName("mapid")]
+    public int? mapid { get; set; }
 
-[JsonPropertyName("npcid")]
-public int npcid { get; set; } = default
+    [JsonPropertyName("npcid")]
+    public int npcid { get; set; } = default;
 
-[JsonPropertyName("x")]
-public int? x { get; set; }
+    [JsonPropertyName("x")]
+    public int? x { get; set; }
 
-[JsonPropertyName("y")]
-public int? y { get; set; }
+    [JsonPropertyName("y")]
+    public int? y { get; set; }
+
+}

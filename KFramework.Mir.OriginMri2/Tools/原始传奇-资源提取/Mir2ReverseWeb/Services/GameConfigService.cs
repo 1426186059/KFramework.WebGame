@@ -342,6 +342,7 @@ public class GameConfigService
     private static List<ConfigTableField> InferFields(List<JsonNode> entries)
     {
         var stat = new Dictionary<string, FieldStat>();
+        var order = new List<string>();   // 记录字段在 JSON 中首次出现的顺序（保持与 JSON 一致，不再按字母排序）
         var optional = new HashSet<string>();
         foreach (var e in entries)
         {
@@ -350,7 +351,11 @@ public class GameConfigService
             foreach (var p in o)
             {
                 present.Add(p.Key);
-                if (!stat.TryGetValue(p.Key, out var s)) stat[p.Key] = s = new FieldStat();
+                if (!stat.TryGetValue(p.Key, out var s))
+                {
+                    stat[p.Key] = s = new FieldStat();
+                    order.Add(p.Key);     // 首次出现 → 按 JSON 顺序记录
+                }
                 var vk = p.Value?.GetValueKind() ?? JsonValueKind.Null;
                 s.Kinds.Add(vk);
                 if (vk == JsonValueKind.Number && p.Value is JsonValue jv && jv.TryGetValue<double>(out var d))
@@ -364,15 +369,14 @@ public class GameConfigService
                 if (!present.Contains(k)) optional.Add(k);
         }
         var fields = new List<ConfigTableField>();
-        foreach (var kv in stat)
+        foreach (var key in order)         // 按 JSON 真实顺序输出
             fields.Add(new ConfigTableField
             {
-                JsonName = kv.Key,
-                Name = kv.Key,
-                CsType = InferCsType(kv.Value),
-                Optional = optional.Contains(kv.Key)
+                JsonName = key,
+                Name = key,
+                CsType = InferCsType(stat[key]),
+                Optional = optional.Contains(key)
             });
-        fields.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase));
         return fields;
     }
 
@@ -482,10 +486,18 @@ public class GameConfigService
         var s = sb.ToString();
         if (s.Length == 0) s = "Field";
         if (char.IsDigit(s[0])) s = "_" + s;
-        // 规避 C# 关键字
-        return s == "object" || s == "string" || s == "event" || s == "base" || s == "class" || s == "namespace"
-            ? "@" + s : s;
+        // 规避 C# 关键字（params/in/out/ref/yield/var 等上下文关键字裸用作标识符会编译失败）
+        return CSharpKeywords.Contains(s) ? "@" + s : s;
     }
+
+    private static readonly HashSet<string> CSharpKeywords = new(System.StringComparer.Ordinal)
+    {
+        "object","string","event","base","class","namespace","params","in","out","ref","yield","var",
+        "dynamic","await","async","get","set","value","lock","fixed","using","default","null","new","is",
+        "as","switch","this","true","false","from","where","group","orderby","select","partial","operator"
+    };
+
+    private static bool IsCSharpKeyword(string s) => CSharpKeywords.Contains(s);
 
     /// <summary>由表元信息生成一张配置表的 C# 类源文件。</summary>
     private static string? GenerateConfigClass(string name, ConfigTableInfo info)
@@ -510,7 +522,8 @@ public class GameConfigService
             var def = f.CsType == "string" ? " = \"\"" : f.Optional ? "" : (f.CsType == "JsonElement" ? "" : " = default");
             sb.AppendLine("    [JsonPropertyName(\"" + f.JsonName + "\")]");
             if (!string.IsNullOrEmpty(f.Comment)) sb.AppendLine("    // " + f.Comment);
-            sb.AppendLine("    public " + csType + " " + CsFieldName(f.Name) + " { get; set; }" + def + "");
+            // 带初始值（= default / = ""）的属性必须补结尾分号；无初始值的 { get; set; } 无需分号
+            sb.AppendLine("    public " + csType + " " + CsFieldName(f.Name) + " { get; set; }" + def + (string.IsNullOrEmpty(def) ? "" : ";"));
             sb.AppendLine();
         }
         sb.AppendLine("}");

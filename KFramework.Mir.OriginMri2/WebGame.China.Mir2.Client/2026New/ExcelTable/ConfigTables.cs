@@ -64,6 +64,27 @@ namespace Client.MirObjects
         }
 
         /// <summary>
+        /// 通用「按表名加载」：自动从 0~5 分片里定位 tableName（顶层键），反序列化为 Dictionary&lt;int, T&gt;（key=条目id）。
+        /// 与 JS 端 cm 的合并语义一致——若同一张表出现在多个分片，后者整表覆盖前者。找不到则返回空字典（不抛异常）。
+        /// 用法：var itemTable = await ConfigTables.LoadTableAsync&lt;ItemTable&gt;("item");
+        /// 注：本泛型针对「对象型」表（{id:{...条目...}}）；数组型/标量型表请用 LoadRawTableAsync 自行处理。
+        /// </summary>
+        public static async Task<Dictionary<int, T>> LoadTableAsync<T>(string tableName, CancellationToken ct = default) where T : class
+        {
+            Dictionary<int, T>? merged = null;
+            for (int shard = 0; shard < 6; shard++)
+            {
+                var raw = await LoadRawTableAsync(shard, tableName, ct).ConfigureAwait(false);
+                if (raw.Count == 0) continue;
+                var dict = new Dictionary<int, T>(raw.Count);
+                foreach (var kv in raw)
+                    dict[kv.Key] = JsonSerializer.Deserialize<T>(kv.Value, Options)!;
+                merged = dict; // 后分片覆盖前分片（整表替换，对齐 JS 的 this[r]=i[r]）
+            }
+            return merged ?? new Dictionary<int, T>();
+        }
+
+        /// <summary>
         /// 在分片 JSON 里前向扫描，定位名为 tableName 的顶层属性，将其值整体读成 JsonElement 返回；
         /// 找不到返回 default(ValueKind=Undefined)。JsonElement 引用底层字节缓冲，调用方需保持其存活（本类已持有）。
         /// </summary>

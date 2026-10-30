@@ -8,20 +8,23 @@ using System.Text.Json.Serialization;
 
 /// <summary>配置表 "guajimap" 的单条记录</summary>
 public class GuajimapTable
-[JsonPropertyName("deliver")]
-public int deliver { get; set; } = default
+{
+    [JsonPropertyName("deliver")]
+    public int deliver { get; set; } = default;
 
-[JsonPropertyName("group")]
-public int group { get; set; } = default
+    [JsonPropertyName("group")]
+    public int group { get; set; } = default;
 
-[JsonPropertyName("groupName")]
-public string groupName { get; set; } = ""
+    [JsonPropertyName("groupName")]
+    public string groupName { get; set; } = "";
 
-[JsonPropertyName("guajikey")]
-public int guajikey { get; set; } = default
+    [JsonPropertyName("guajikey")]
+    public int guajikey { get; set; } = default;
 
-[JsonPropertyName("id")]
-public int id { get; set; } = default
+    [JsonPropertyName("id")]
+    public int id { get; set; } = default;
 
-[JsonPropertyName("name")]
-public string name { get; set; } = ""
+    [JsonPropertyName("name")]
+    public string name { get; set; } = "";
+
+}
