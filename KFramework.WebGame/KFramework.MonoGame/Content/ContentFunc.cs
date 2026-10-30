@@ -38,9 +38,9 @@ namespace KFramework.MonoGame
             {
                 if (bUseCacheInstance && mCacheInstance != null)
                 {
-                    GameProfiler.TestStart();
+                    //GameProfiler.TestStart();
                     byte[]? buf = await mCacheInstance.LoadAsync(url, cancellationToken).ConfigureAwait(false);
-                    GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 读取 {url}");
+                    //GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 读取 {url}");
                     if (buf != null) return buf;
                 }
 
@@ -67,9 +67,9 @@ namespace KFramework.MonoGame
 
                 if (bUseCacheInstance && mCacheInstance != null)
                 {
-                    GameProfiler.TestStart();
+                    //GameProfiler.TestStart();
                     await mCacheInstance.SaveAsync(url, new ArraySegment<byte>(data)).ConfigureAwait(false);
-                    GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 保存 {url} {FmtSize(data.Length)}");
+                    //GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 保存 {url} {FmtSize(data.Length)}");
                 }
                 return data;
             }
@@ -93,9 +93,9 @@ namespace KFramework.MonoGame
                 // 1) 缓存命中（与 HttpClient 版同 key，完全复用）
                 if (bUseCacheInstance && mCacheInstance != null)
                 {
-                    GameProfiler.TestStart();
+                    //GameProfiler.TestStart();
                     byte[] cached = await mCacheInstance.LoadAsync(url).ConfigureAwait(false);
-                    GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 读取 {url}");
+                    //GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 读取 {url}");
                     if (cached != null) return cached;
                 }
 
@@ -107,9 +107,9 @@ namespace KFramework.MonoGame
                 {
                     data = await ContentLoadScheduler.Default.EnqueueAsync(priority, async _ =>
                     {
-                        GameProfiler.TestStart();
+                        //GameProfiler.TestStart();
                         int len = await JSBind_Http.FetchBytesAsync(url, bUseHttpCache).ConfigureAwait(false);
-                        GameProfiler.TestFinishAndLog($"[js] fetch {url} len={len}");
+                        //GameProfiler.TestFinishAndLog($"[js] fetch {url} len={len}");
 
                         if (len < 0) return null;   // -1 = 非 2xx / 网络错误，属真实失败，不回退
 
@@ -143,9 +143,9 @@ namespace KFramework.MonoGame
                 // 3) 写回缓存（失败不影响本次结果：磁盘紧张 / 配额满时退化为每次走网络）
                 if (bUseCacheInstance && mCacheInstance != null)
                 {
-                    GameProfiler.TestStart();
+                    //GameProfiler.TestStart();
                     await mCacheInstance.SaveAsync(url, new ArraySegment<byte>(data)).ConfigureAwait(false);
-                    GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 保存 {url} {FmtSize(data.Length)}");
+                    //GameProfiler.TestFinishAndLog($"[cache] mCacheInstance 保存 {url} {FmtSize(data.Length)}");
                 }
 
                 return data;
@@ -175,14 +175,14 @@ namespace KFramework.MonoGame
                 request.Headers.CacheControl = new CacheControlHeaderValue { NoCache = true, NoStore = true };
             }
 
-            GameProfiler.TestStart();
+            //GameProfiler.TestStart();
             using var response = await httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
-            GameProfiler.TestFinishAndLog($"[http] 下载 GetAsync耗时: {url}");
+            //GameProfiler.TestFinishAndLog($"[http] 下载 GetAsync耗时: {url}");
 
-            GameProfiler.TestStart();
+            //GameProfiler.TestStart();
             byte[] buffer = await response.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
-            GameProfiler.TestFinishAndLog($"[http] 下载 ReadAsByteArrayAsync 耗时 {url} {FmtSize(buffer.Length)}");
+            //GameProfiler.TestFinishAndLog($"[http] 下载 ReadAsByteArrayAsync 耗时 {url} {FmtSize(buffer.Length)}");
             return buffer;
         }
 
