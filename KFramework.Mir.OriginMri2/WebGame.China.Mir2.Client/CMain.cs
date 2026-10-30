@@ -233,6 +233,8 @@ namespace WebGame.Mir2.MonoGame.Client
                 DXManager.Clean(); // Clean once a second.
             }
 
+            Network.Process();
+
             if (MirScene.ActiveScene != null)
             {
                 MirScene.ActiveScene.Process();
