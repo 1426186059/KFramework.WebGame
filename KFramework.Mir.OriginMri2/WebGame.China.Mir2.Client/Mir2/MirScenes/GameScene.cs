@@ -10805,7 +10805,7 @@ namespace Client.MirScenes
 
             DrawBackground();
 
-            if (FloorValid)
+            if (FloorValid && DXManager.FloorTexture != null)
             {
                 // 地板纹理(世界区域尺寸)与 ControlTexture 同尺寸，1:1 原尺寸贴图。
                 DXManager.Draw(DXManager.FloorTexture, new Rectangle(0, 0, rtW, rtH), Vector3.Zero, Color.White);
@@ -10984,13 +10984,14 @@ namespace Client.MirScenes
                 DXManager.RenderTransform = null;
                 try
                 {
+                    // 第一阶段：仅可见区。绘制已就绪瓦片、对缺失瓦片发起加载并计入 pending。
                     for (int r = rowMin; r <= rowMax; r++)
                     {
                         for (int c = colMin; c <= colMax; c++)
                         {
                             int index = r * TileCols + c + 1;
                             var tex = GetMapTile(index);
-                            if (tex == null) { pending++; continue; }
+                            if (tex == null) { tex = MosaicManager.GetFloorMosaic(TileTexWidth, TileTexHeight); pending++; } // 缺失瓦片用土/金马赛克占位（仿原始传奇），不再留黑/留空
 
                             int tileDrawX = c * TileTexWidth - User.Movement.X * CellWidth + OffSetX * CellWidth - OffSetX + User.OffSetMove.X;
                             int tileDrawY = r * TileTexHeight - User.Movement.Y * CellHeight + OffSetY * CellHeight + User.OffSetMove.Y;
@@ -11005,9 +11006,12 @@ namespace Client.MirScenes
             }
 
             DXManager.SetSurface(oldSurface);
-            // 可见瓦片尚未全部到位时继续重烘焙；全部到位则缓存停止重烘焙
-            FloorValid = pending == 0;
-            _floorDirty = false;
+            // 地板只要烘过一次就视为有效、应当上屏：缺的瓦片只留空（透明），
+            // 绝不能因“还有图没下完”就 FloorValid=false 让整张地板不绘制而全黑。
+            // 仍缺瓦片(pending>0)时保持 _floorDirty=true，下一帧继续重烘把陆续下载完的瓦片补上；
+            // 全部到位后 _floorDirty=false，停止重烘。
+            FloorValid = true;
+            _floorDirty = pending > 0;
 
             // 采样：地板重烘焙的频次与总等待时长（pending>0 期间每帧都会重烤一次）
             if (pending > 0)

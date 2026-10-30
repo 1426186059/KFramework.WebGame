@@ -169,35 +169,11 @@ namespace Client.MirGraphics
                 " 累计=" + _missingImageCount);
         }
 
-        // 缺失贴图占位：上传一次马赛克纹理，所有“无图”的绘制都复用它（避免粉色/黑块）。
-        private const int MosaicHandle = -999999;
-        private static MImage _mosaicImage;
-        private static MImage MosaicImage
-        {
-            get
-            {
-                if (_mosaicImage == null)
-                {
-                    // 国服传奇风格：未加载区域是很暗的**细密小方格**（接近黑），不刺眼也不抢画面。
-                    int s = 32;
-                    byte[] rgba = new byte[s * s * 4];
-                    for (int y = 0; y < s; y++)
-                        for (int x = 0; x < s; x++)
-                        {
-                            bool a = ((x / 4) + (y / 4)) % 2 == 0;   // 4px 小格，铺在 48px 的地图格上呈细马赛克
-                            int i = (y * s + x) * 4;
-                            if (a) { rgba[i] = 46; rgba[i + 1] = 46; rgba[i + 2] = 46; rgba[i + 3] = 255; }
-                            else { rgba[i] = 22; rgba[i + 1] = 22; rgba[i + 2] = 22; rgba[i + 3] = 255; }
-                        }
-                    _mosaicImage = new MImage { Width = (short)s, Height = (short)s, Image = DXManager.GDevice.CreateTexture(s, s, rgba), TextureValid = true };
-                }
-                return _mosaicImage;
-            }
-        }
+        // 缺失贴图占位（马赛克）统一由 MosaicManager 管理，这里不再各自生成。
 
         /// <summary>
         /// 返回可用于绘制的图像：
-        /// - MosaicImage = 尚未就绪（正在按需异步加载）/ 加载失败 / 索引越界 / 图像损坏，
+        /// - MosaicManager.MosaicImage = 尚未就绪（正在按需异步加载）/ 加载失败 / 索引越界 / 图像损坏，
         ///   统一画马赛克占位，避免地图格子与物件在资源下载完成前是一大片空洞；
         ///   库加载完成后 LibraryLoaded 会触发场景重绘，自动替换为真实贴图。
         /// - 正常 MImage = 已就绪。
@@ -211,7 +187,7 @@ namespace Client.MirGraphics
                 if (_failed) return null;
                 if (!_loading) _ = InitializeAsync();
                 // 真正"正在加载"：用马赛克占位，加载完成后自动换成真实贴图。
-                return MosaicImage;
+                return MosaicManager.MosaicImage;
             }
 
             if (_images == null) return null;
@@ -239,7 +215,7 @@ namespace Client.MirGraphics
             if (!mi.TextureValid)
             {
                 if (mi.Width == 0 || mi.Height == 0)
-                    return MosaicImage;
+                    return MosaicManager.MosaicImage;
                 _stream.Seek(_indexList[index] + 17, SeekOrigin.Begin);
                 mi.CreateTexture(_reader);
             }
