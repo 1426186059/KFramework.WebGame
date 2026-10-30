@@ -1,24 +1,38 @@
 // ExcelTableMgr 的加载实现（partial）：对应 JS 端 cm 的分片抽取。
 // 不整体 DOM 化，仅用 Utf8JsonReader 前向扫描抽取指定表，避免整份分片 Parse 卡死（实测 15s+）。
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
-using Client.MirObjects;   // Mir2OriginResource
+using Client.MirObjects;   // Mir2OriginResource / FlexIntJsonConverter
 
 public static partial class ExcelTableMgr
 {
-    // 数字字段兼容 number / 数字字符串
+    // AOT/裁剪构建下不能用反射式 JsonSerializer，必须走源生成的 AppJsonContext；
+    // ConfigTypeInfoResolver 在其基础上给所有 int 属性挂上 FlexIntJsonConverter（数字/数字字符串兼容）。
     private static readonly JsonSerializerOptions _options = new JsonSerializerOptions
     {
         AllowTrailingCommas = true,
         ReadCommentHandling = JsonCommentHandling.Skip,
+        TypeInfoResolver = new ConfigTypeInfoResolver(),
     };
 
-    static ExcelTableMgr()
+    /// <summary>源生成上下文 + FlexInt 容错的 TypeInfoResolver，避免 JsonSerializerIsReflectionDisabled。</summary>
+    private sealed class ConfigTypeInfoResolver : IJsonTypeInfoResolver
     {
-        _options.Converters.Add(new FlexIntJsonConverter());
+        private readonly IJsonTypeInfoResolver _inner = AppJsonContext.Default;
+        public JsonTypeInfo? GetTypeInfo(Type type, JsonSerializerOptions options)
+        {
+            var ti = _inner.GetTypeInfo(type, options);
+            if (ti != null)
+                foreach (var p in ti.Properties)
+                    if (p.PropertyType == typeof(int))
+                        p.CustomConverter = new FlexIntJsonConverter();
+            return ti;
+        }
     }
 
     /// <summary>
@@ -103,6 +117,32 @@ public static partial class ExcelTableMgr
             merged = dict; // 后分片覆盖前分片
         }
         return merged ?? new Dictionary<int, Dictionary<int, T>>();
+    }
+
+    // ── 单次抽取 helper：从「已下载的分片字节」里直接抽出某张表，避免每张表各扫一遍分片 ──
+
+    /// <summary>从分片字节抽出某张「对象型」表，写入 target（id→记录）；表不存在则不动 target。</summary>
+    private static void ExtractTableInto<T>(byte[] json, string tableName, Dictionary<int, T> target) where T : class
+    {
+        var table = FindTable(json, tableName);
+        if (table.ValueKind == JsonValueKind.Undefined) return;
+        foreach (var prop in table.EnumerateObject())
+            if (int.TryParse(prop.Name, out var id)) target[id] = JsonSerializer.Deserialize<T>(prop.Value, _options)!;
+    }
+
+    /// <summary>从分片字节抽出某张「嵌套表」（外层id→内层id→记录），写入 target。</summary>
+    private static void ExtractNestedInto<T>(byte[] json, string tableName, Dictionary<int, Dictionary<int, T>> target) where T : class
+    {
+        var table = FindTable(json, tableName);
+        if (table.ValueKind == JsonValueKind.Undefined) return;
+        foreach (var outer in table.EnumerateObject())
+        {
+            if (!int.TryParse(outer.Name, out var oid)) continue;
+            var inner = new Dictionary<int, T>();
+            foreach (var p in outer.Value.EnumerateObject())
+                if (int.TryParse(p.Name, out var k)) inner[k] = JsonSerializer.Deserialize<T>(p.Value, _options)!;
+            target[oid] = inner;
+        }
     }
 
     /// <summary>

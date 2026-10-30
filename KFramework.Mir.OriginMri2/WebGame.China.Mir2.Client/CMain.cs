@@ -125,7 +125,7 @@ namespace WebGame.Mir2.MonoGame.Client
             // 二者是后续所有 CDN 图集解析的前置；与首屏 Lib 加载并行发起，缩短进图等待。
             // 失败已在 Mir2AtlasLibrary 内部消化，不会中断启动；懒加载路径会兜底重试。
             var atlasInitTask = Mir2AtlasLibrary.InitializeAsync();
-            var configInitTask = ExcelTableMgr.InitializeAsync();
+            _ = ExcelTableMgr.InitializeAsync();   // 配置表后台加载，不阻塞进 LoginScene（就绪后由 IsReady 校验）
 
             // 触发 Libraries 静态构造（登记各库，不加载）
             _ = Libraries.Loaded;
@@ -154,7 +154,8 @@ namespace WebGame.Mir2.MonoGame.Client
             // 其余库（地图/怪物/装备等）不在启动时加载，绘制时按需 InitializeAsync，就绪后 LibraryLoaded 触发重绘。
             await Libraries.LoadAsync();
             await atlasInitTask;   // 通常已先完成；保证 LoginScene 之前就绪（失败已消化，不中断启动）
-            await configInitTask.ConfigureAwait(false);   // 地图相关配置表：与图集并行拉取，LoginScene 前就绪
+            // 配置表（ExcelTableMgr）已在上面并行发起、后台加载，不阻塞进 LoginScene；
+            // 用到时通过 ExcelTableMgr.IsReady 校验即可。
 
             KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(MirScene.ActiveScene == null ? "null" : MirScene.ActiveScene.GetType().Name)} → LoginScene  时刻={DateTime.Now:HH:mm:ss.fff}");
             MirScene.ActiveScene = new LoginScene();

@@ -6,8 +6,15 @@ using System.Text.Json.Serialization;
 
 [JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Default)]
 [JsonSerializable(typeof(TextMap))]
+// 配置表（ExcelTableMgr 加载的地图相关表）——AOT/裁剪构建下反序列化必须走源生成，否则抛 JsonSerializerIsReflectionDisabled
+[JsonSerializable(typeof(MapTable))]
+[JsonSerializable(typeof(MinimapTable))]
+[JsonSerializable(typeof(GuajimapTable))]
+[JsonSerializable(typeof(MapnpcTable))]
+[JsonSerializable(typeof(MapPlayTable))]
+[JsonSerializable(typeof(StarmapTable))]
+[JsonSerializable(typeof(SheepmapTable))]
+[JsonSerializable(typeof(XitongMapTable))]
 internal sealed partial class AppJsonContext : JsonSerializerContext
 {
-
 }
-
