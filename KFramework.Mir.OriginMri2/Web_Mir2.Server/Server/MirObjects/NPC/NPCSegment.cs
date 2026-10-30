@@ -3075,7 +3075,11 @@ namespace Server.MirObjects
                     case ActionType.Move:
                         {
                             Map targetmap = Envir.GetMapByNameAndInstance(param[0]);
-                            if (targetmap == null) return;
+                            if (targetmap == null)
+                            {
+                                player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.MapCouldNotBeFound, param[0], 0), ChatType.System);
+                                return;
+                            }
 
                             if (!int.TryParse(param[1], out int x)) return;
                             if (!int.TryParse(param[2], out int y)) return;
@@ -3094,7 +3098,11 @@ namespace Server.MirObjects
                             if (!int.TryParse(param[3], out int y)) return;
 
                             var targetmap = Envir.GetMapByNameAndInstance(param[0], instanceId);
-                            if (targetmap == null) return;
+                            if (targetmap == null)
+                            {
+                                player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.MapCouldNotBeFound, param[0], instanceId), ChatType.System);
+                                return;
+                            }
                             player.Teleport(targetmap, new Point(x, y));
                         }
                         break;
@@ -3867,7 +3875,11 @@ namespace Server.MirObjects
                             if (!int.TryParse(param[3], out int y)) return;
 
                             var targetmap = Envir.GetMapByNameAndInstance(param[0], tempInt);
-                            if (targetmap == null) return;
+                            if (targetmap == null)
+                            {
+                                player.ReceiveChat(GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.MapCouldNotBeFound, param[0], tempInt), ChatType.System);
+                                return;
+                            }
 
                             for (int j = 0; j < player.GroupMembers.Count(); j++)
                             {
