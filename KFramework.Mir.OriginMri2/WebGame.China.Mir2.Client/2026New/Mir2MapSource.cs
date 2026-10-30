@@ -11,7 +11,8 @@ namespace Client.MirObjects
     /// 原始传奇地图数据客户端加载器。
     /// 服务端合并 map10.25341.1.dat 每格仅 4-bit 碰撞标志位(墙/遮挡/安全区)，不含瓦片图像；
     /// 地图视觉由 MapControl 从 CDN 的 assets/resource/zipmap/{img}/{index}.jpg 真实瓦片拼出。
-    /// 解码与服务端 OriginalMapSource/OriginalMapDecoder 及提取工具 MapDecoder 完全一致。
+    /// 解码与服务端 OriginalMapSource/OriginalMapDecoder 及提取工具 MapDecoder 完全一致：
+    /// 每块开头丢弃 4 字节块头；单元格按「偶格取高 nibble、奇格取低 nibble」还原（逆向自原版 JS MapData.readData，bit3=墙）。
     /// </summary>
 
     public sealed class Mir2MapEntry
@@ -85,9 +86,10 @@ namespace Client.MirObjects
                     if (Id2 == id) break;
                     pos += 8 + Len2;
                 }
-                rawLen = Len;
-                var block = new byte[Len];
-                Buffer.BlockCopy(data, pos, block, 0, Len);
+                if (Len <= 4) return null;   // 块头 4 字节 + 至少 1 字节数据才算有效块
+                rawLen = Len - 4;             // 丢弃每块开头的 4 字节块头（与原版 JS / 服务端一致）
+                var block = new byte[Len - 4];
+                Buffer.BlockCopy(data, pos + 4, block, 0, Len - 4);
                 return block;
             }
             return null;
@@ -110,7 +112,7 @@ namespace Client.MirObjects
                 for (int x = 0; x < cols; x++)
                 {
                     byte b = block[idx / 2];
-                    byte nib = (idx % 2 == 0) ? (byte)(b & 0x0F) : (byte)((b >> 4) & 0x0F);
+                    byte nib = (idx % 2 == 0) ? (byte)((b >> 4) & 0x0F) : (byte)(b & 0x0F);   // 高 nibble 在前：偶格取高、奇格取低（与原版 JS 一致）
                     md.CellFlags[idx++] = nib;
                     if ((nib & 8) == 0) md.Walkable++;   // bit3=0 可走
                     if ((nib & 4) != 0) md.Cover++;        // bit2 遮挡
