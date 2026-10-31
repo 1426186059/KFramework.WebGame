@@ -5,23 +5,23 @@ CHECKQUEST 153 1
 #ACT
 GOTO @MAIN-1
 #ELSESAY
-Nothing happens.
+什么也没发生。
 
 [@MAIN-1]
 #IF
 LEVEL > 54
 LEVEL < 70
 #SAY
-A Mysterious Stone with Ancient symbols.
-"The still dont remain still for <long./@zumatemplea>"
-{祖玛心/LightSteelBlue} Required {Level55~70./KHAKI}
+一块刻着古老符文的神秘石头。
+"它们始终无法保持<长久/@zumatemplea>的静止"
+{祖玛心/LightSteelBlue} 需要 {Level55~70./KHAKI}
  
-<Close/@exit>
+<关闭/@exit>
 #ELSESAY
-Nothing happens.
+什么也没发生。
  
  
-<Close/@exit>
+<关闭/@exit>
 
 [@zumatemplea]
 #IF
@@ -30,4 +30,4 @@ CHECKITEM 祖玛心 1
 TAKEITEM 祖玛心 1
 MOVE 0157A 18 17
 #ELSESAY
-Nothing happens.
+什么也没发生。

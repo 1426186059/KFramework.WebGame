@@ -1,8 +1,8 @@
 [@main]
 #SAY
-Have you had enough and want to go back?
+你玩够了吗，想要回去了吗？
 
-<Yes/@yes>  <No/@exit>
+<是/@yes>  <否/@exit>
 
 [@yes]
 #ACT

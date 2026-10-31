@@ -1,8 +1,8 @@
 [@main]
 #SAY
-Ahh...where am i?
+啊……我这是在哪里？
 
-<Exit/@exit>
+<离开/@exit>
 
 
 [Quests]

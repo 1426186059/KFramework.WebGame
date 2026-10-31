@@ -2,32 +2,32 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Hey! Jude, don't make it bad... Well customer get here..
-How do you feel about my song?
-<Weapon Refine/@Refine>
-<Retrieve Weapon/@RefineCollect>
-<Check Weapon/@RefineCheck>
-<Close/@exit>
+嘿！Jude，别把事情搞砸……嗯，客人来了。
+你觉得我唱的歌怎么样？
+
+<武器精炼/@Refine>
+<取回武器/@RefineCollect>
+<查看武器/@RefineCheck>
+<关闭/@exit>
 
 [@Refine]
 #SAY
-I can upgrade weapons for you for a small fee. To make an Upgrade you 
-need {黑铁矿/LightSteelBlue}, Jewelery, Weapon and {Gold/Gold}. Do you have these 
-ready for me? 
-<Return/@main> <Close/@exit>
+我可以收取少量费用为你升级武器。要升级，你需要
+{黑铁矿/LightSteelBlue}、珠宝、武器和{Gold/Gold}。这些都准备好了吗？
+<返回/@main> <关闭/@exit>
 
 [@RefineCollect]
 
 [@RefineCheck]
 #SAY
-I can't guarrantee successfull refining each and every time.
-<Ok/@exit>
+我无法保证每次精炼都能成功。
+<好的/@exit>

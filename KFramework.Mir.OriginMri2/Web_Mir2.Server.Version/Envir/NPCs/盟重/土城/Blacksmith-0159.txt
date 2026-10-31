@@ -2,42 +2,44 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Hello, Are you looking for something particular? 
-How can I be of assistance.
+你好，您在找什么特别的东西吗？
+有什么可以帮您的？
+
+我看你佩戴着：{<$WEAPON>/CORAL}
+
+<查看/@BuySell> 商店。
+<修理/@Repair> 武器。
  
-<View/@BuySell> Store.
-<Repair/@Repair> Weapon.
- 
-<Close/@exit>
+<关闭/@exit>
 
 [@BuySell]
 #SAY
-Which item would you like to Buy or Sell?
-<Buy Back/@BuyBack>
+您想购买还是出售哪件物品？
+<回购/@BuyBack>
  
-<Back/@main>
+<返回/@main>
 
 [@BuyBack]
 #SAY
-These are the items still available to purchase back.
+这些是仍可回购的物品。
  
-<Back/@main>
+<返回/@main>
 
 [@Repair]
 #SAY
-Would you like to repair a weapon?
-Show me the weapon that needs it.
+您想修理武器吗？
+把需要修理的武器给我看看。
  
-<Back/@main>
+<返回/@main>
 
 
 [Types]
@@ -69,4 +71,3 @@ Scimitar
 钩矛
 铁刃
 长弓
-

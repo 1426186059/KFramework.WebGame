@@ -2,11 +2,11 @@
 #IF
 CHECKQUEST 105 0
 #SAY
-Someones remains.
+某人的遗骸。
 #ELSESAY
-The Remains of LostSoul.
+迷失之魂的遗骸。
 #ELSEACT
 SET [524] 1
-LOCALMESSAGE "Return to the LostSoul" Hint
+LOCALMESSAGE "返回迷失之魂" Hint
 BREAK
 CLOSE

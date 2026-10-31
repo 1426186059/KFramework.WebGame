@@ -2,44 +2,44 @@
 #IF
 CONQUESTOWNER 1
 #SAY
-Welcome <$CONQUESTOWNER(1)>,
+欢迎 <$CONQUESTOWNER(1)>，
 
-SabukWall Tax Income:                   SabukWall NPC Tax Rate:
+沙巴克税收收入：                   沙巴克 NPC 税率：
 $ <$CONQUESTGOLD(1)> {Gold/Yellow}                                              % <$CONQUESTRATE(1)> {Gold/Yellow}
 
- <Withdraw fund/@withdrawal>                                   <Sabuk Taxes/@tax>
+ <提取资金/@withdrawal>                                   <沙巴克税收/@tax>
  
-Next Conquest Date:
+下次攻城时间：
 
 * <$CONQUESTSCHEDULE(1)> {Attacking Guild/Orange}
 
- <Repair Castle/@repaircastle>             <Rehire Archers/@reliveachers>      <Exit/@exit>
+ <修缮城堡/@repaircastle>             <重新雇佣弓箭手/@reliveachers>      <离开/@exit>
 
 #ELSEACT
-LocalMessage "Come back when you own Sabuk Wall!" Hint
+LocalMessage "当你拥有沙巴克时再来！" Hint
 
 ;--------------------------------------------------
 [@withdrawal]
 #SAY
-Here you can Move your Cash from Sabuk to your Guild Bank.
+你可以在此将沙巴克资金转入行会仓库。
 
-<Withdraw fund/@withdrawal1>
+<提取资金/@withdrawal1>
 
 [@withdrawal1]
 #IF
 CHECKPERMISSION 1
 #ACT
-LocalMessage "You have withdrawn <$CONQUESTGOLD(1)> Sabuk Gold!" Hint
+LocalMessage "你已提取 <$CONQUESTGOLD(1)> 沙巴克金币！" Hint
 TAKECONQUESTGOLD 1
 
 ;--------------------------------------------------
 [@tax]
 #SAY
-Here the guild leader can change the Sabuk Tax!
+行会会长可在此调整沙巴克税率！
 
-<Tax to 10%/@tax1>		<Tax to 15%/@tax2>
+<税率设为10%/@tax1>		<税率设为15%/@tax2>
 
-<Tax to 20%/@tax3>		<Tax to 25%/@tax4>
+<税率设为20%/@tax3>		<税率设为25%/@tax4>
 
 [@tax1]
 #IF
@@ -47,7 +47,7 @@ CONQUESTOWNER 1
 CHECKPERMISSION 1
 #ACT
 SETCONQUESTRATE 1 10
-GLOBALMESSAGE "By the order of <$CONQUESTOWNER(1)> Sabuk Taxes are <$CONQUESTRATE(1)>! " Announcement 
+GLOBALMESSAGE "奉 <$CONQUESTOWNER(1)> 之命，沙巴克税率已调整为 <$CONQUESTRATE(1)>！" Announcement 
 
 [@tax2]
 #IF
@@ -55,7 +55,7 @@ CONQUESTOWNER 1
 CHECKPERMISSION 1
 #ACT
 SETCONQUESTRATE 1 15
-GLOBALMESSAGE "By the order of <$CONQUESTOWNER(1)> Sabuk Taxes are <$CONQUESTRATE(1)>! " Announcement
+GLOBALMESSAGE "奉 <$CONQUESTOWNER(1)> 之命，沙巴克税率已调整为 <$CONQUESTRATE(1)>！" Announcement
 
 [@tax3]
 #IF
@@ -63,7 +63,7 @@ CONQUESTOWNER 1
 CHECKPERMISSION 1
 #ACT
 SETCONQUESTRATE 1 20
-GLOBALMESSAGE "By the order of <$CONQUESTOWNER(1)> Sabuk Taxes are <$CONQUESTRATE(1)>! " Announcement
+GLOBALMESSAGE "奉 <$CONQUESTOWNER(1)> 之命，沙巴克税率已调整为 <$CONQUESTRATE(1)>！" Announcement
 
 [@tax4]
 #IF
@@ -71,7 +71,7 @@ CONQUESTOWNER 1
 CHECKPERMISSION 1
 #ACT
 SETCONQUESTRATE 1 25
-GLOBALMESSAGE "By the order of <$CONQUESTOWNER(1)> Sabuk Taxes are <$CONQUESTRATE(1)>! " Announcement
+GLOBALMESSAGE "奉 <$CONQUESTOWNER(1)> 之命，沙巴克税率已调整为 <$CONQUESTRATE(1)>！" Announcement
 
 
 
@@ -87,7 +87,7 @@ Here you can open and close your Main Gate!
 CONQUESTOWNER 1
 #ACT
 OPENGATE 1 1 
-LocalMessage "You have Opened the Main Gate!" Hint
+LocalMessage "你已开启主城门！" Hint
 
 
 [@closemaindoor]
@@ -95,8 +95,7 @@ LocalMessage "You have Opened the Main Gate!" Hint
 CONQUESTOWNER 1
 #ACT
 CLOSEGATE 1 1
-LocalMessage "You have Closed the Main Gate!" Hint
-
+LocalMessage "你已关闭主城门！" Hint
 
 
 
@@ -105,20 +104,19 @@ LocalMessage "You have Closed the Main Gate!" Hint
 
 [@repaircastle]
 #SAY
-The Wall Funds must be transfered to your Guild Bank,
-for Repairs and Archers.
+城墙资金须先转入行会仓库，方可用于修缮与弓箭手。
 
-Where do you want to make repairs?
+你想修缮哪一段城墙？
 
-<Main/@main>
+<返回/@main>
 
-{Left Wall/lightgreen}         <Repair/@wl>
+{左墙/lightgreen}         <修缮/@wl>
 <$CONQUESTWALL(1,1)>
 
-{Right Wall/lightgreen}        <Repair/@wr>
+{右墙/lightgreen}        <修缮/@wr>
 <$CONQUESTWALL(1,3)>
 
-{Center Wall/lightgreen}      <Repair/@wc>
+{中墙/lightgreen}      <修缮/@wc>
 <$CONQUESTWALL(1,2)>
 
 
@@ -127,18 +125,18 @@ Where do you want to make repairs?
 AFFORDGATE 1 1
 #ACT
 CONQUESTGATE 1 1
-LocalMessage "You have Repaired Main Gate!" Hint
+LocalMessage "你已修缮主城门！" Hint
 #ELSEACT
-LocalMessage "You Dont have the funds to Repair Main Gate!" Hint
+LocalMessage "你没有足够资金修缮主城门！" Hint
 
 [@wl]
 #IF
 AFFORDWALL 1 1
 #ACT
 CONQUESTWALL 1 1
-LocalMessage "You have Repaired Left Wall!" Hint
+LocalMessage "你已修缮左墙！" Hint
 #ELSEACT
-LocalMessage "You Dont have the funds to Repair Left Wall!" Hint
+LocalMessage "你没有足够资金修缮左墙！" Hint
 
 
 [@wr]
@@ -146,51 +144,50 @@ LocalMessage "You Dont have the funds to Repair Left Wall!" Hint
 AFFORDWALL 1 3
 #ACT
 CONQUESTWALL 1 3
-LocalMessage "You have Repaired Right Wall!" Hint
+LocalMessage "你已修缮右墙！" Hint
 #ELSEACT
-LocalMessage "You Dont have the funds to Repair Right Wall!" Hint
+LocalMessage "你没有足够资金修缮右墙！" Hint
 
 [@wc]
 #IF
 AFFORDWALL 1 2
 #ACT
 CONQUESTWALL 1 2
-LocalMessage "You have Repaired Center Wall!" Hint
+LocalMessage "你已修缮中墙！" Hint
 #ELSEACT
-LocalMessage "You Dont have the funds to Repair Center Wall!" Hint
+LocalMessage "你没有足够资金修缮中墙！" Hint
 
 ;-----------------------
 [@reliveachers]
 #SAY
-The Wall Funds must be transfered to your Guild Bank,
-for Repairs and Archers.
-<Page Two/@p2> <Main/@main>
+城墙资金须先转入行会仓库，方可用于修缮与弓箭手。
+<第二页/@p2> <返回/@main>
 
-{Archer One/lightgreen}                         {Archer Four/lightgreen}
+{一号弓箭手/lightgreen}                         {四号弓箭手/lightgreen}
 <$CONQUESTGUARD(1,1)>    -    <$CONQUESTGUARD(1,4)>
-<Rehire/@ach1>		                                <Rehire/@ach4>
-{Archer Two/lightgreen}                         {Archer Five/lightgreen}
+<重新雇佣/@ach1>		                                <重新雇佣/@ach4>
+{二号弓箭手/lightgreen}                         {五号弓箭手/lightgreen}
 <$CONQUESTGUARD(1,2)>    -    <$CONQUESTGUARD(1,5)>
-<Rehire/@ach2>		                                <Rehire/@ach5>
-{Archer Three/lightgreen}                       {Archer Six/lightgreen}
+<重新雇佣/@ach2>		                                <重新雇佣/@ach5>
+{三号弓箭手/lightgreen}                       {六号弓箭手/lightgreen}
 <$CONQUESTGUARD(1,3)>    -    <$CONQUESTGUARD(1,6)>
-<Rehire/@ach3>		                                <Rehire/@ach6>
+<重新雇佣/@ach3>		                                <重新雇佣/@ach6>
 
 
 [@p2]
 #SAY
-Here you can Bring your achers back to life!
-<Page One/@reliveachers> <Main/@main>
+你可以在此复活你的弓箭手！
+<第一页/@reliveachers> <返回/@main>
 
-{Archer Seven/lightgreen}                          {Archer Ten/lightgreen}
+{七号弓箭手/lightgreen}                          {十号弓箭手/lightgreen}
 <$CONQUESTGUARD(1,7)>    -    <$CONQUESTGUARD(1,10)>
-<Rehire/@ach7>		                                   <Rehire/@ach10>
-{Archer Eight/lightgreen}                           {Archer Eleven/lightgreen}
+<重新雇佣/@ach7>		                                   <重新雇佣/@ach10>
+{八号弓箭手/lightgreen}                           {十一号弓箭手/lightgreen}
 <$CONQUESTGUARD(1,8)>    -    <$CONQUESTGUARD(1,11)>
-<Rehire/@ach8>		                                   <Rehire/@ach11>
-{Archer Nine/lightgreen}                            {Archer Twelve/lightgreen}
+<重新雇佣/@ach8>		                                   <重新雇佣/@ach11>
+{九号弓箭手/lightgreen}                            {十二号弓箭手/lightgreen}
 <$CONQUESTGUARD(1,9)>    -    <$CONQUESTGUARD(1,12)>
-<Rehire/@ach9>		                                   <Rehire/@ach12>
+<重新雇佣/@ach9>		                                   <重新雇佣/@ach12>
 
 
 [@ach1]
@@ -198,105 +195,105 @@ Here you can Bring your achers back to life!
 AFFORDGUARD 1 1
 #ACT
 CONQUESTGUARD 1 1
-LocalMessage "You have rehired Archer One!" Hint
+LocalMessage "你已重新雇佣一号弓箭手！" Hint
 #ELSEACT
-LocalMessage "You dont have the funds to rehire Archer One!" Hint
+LocalMessage "你没有足够资金重新雇佣一号弓箭手！" Hint
 
 [@ach2]
 #IF
 AFFORDGUARD 1 2
 #ACT
 CONQUESTGUARD 1 2
-LocalMessage "You have rehired Archer Two!" Hint
+LocalMessage "你已重新雇佣二号弓箭手！" Hint
 #ELSEACT
-LocalMessage "You dont have the funds to rehire Archer Two!" Hint
+LocalMessage "你没有足够资金重新雇佣二号弓箭手！" Hint
 
 [@ach3]
 #IF
 AFFORDGUARD 1 3
 #ACT
 CONQUESTGUARD 1 3
-LocalMessage "You have Rehired Archer Three!" Hint
+LocalMessage "你已重新雇佣三号弓箭手！" Hint
 #ELSEACT
-LocalMessage "You dont have the funds to rehire Archer Three!" Hint
+LocalMessage "你没有足够资金重新雇佣三号弓箭手！" Hint
 
 [@ach4]
 #IF
 AFFORDGUARD 1 4
 #ACT
 CONQUESTGUARD 1 4
-LocalMessage "You have rehired Archer Four!" Hint
+LocalMessage "你已重新雇佣四号弓箭手！" Hint
 #ELSEACT
-LocalMessage "You dont have the funds to rehire Archer Four!" Hint
+LocalMessage "你没有足够资金重新雇佣四号弓箭手！" Hint
 
 [@ach5]
 #IF
 AFFORDGUARD 1 5
 #ACT
 CONQUESTGUARD 1 5
-LocalMessage "You have rehired Archer Five!" Hint
+LocalMessage "你已重新雇佣五号弓箭手！" Hint
 #ELSEACT
-LocalMessage "You dont have the funds to rehire Archer Five!" Hint
+LocalMessage "你没有足够资金重新雇佣五号弓箭手！" Hint
 
 [@ach6]
 #IF
 AFFORDGUARD 1 6
 #ACT
 CONQUESTGUARD 1 6
-LocalMessage "You have rehired Archer Six!" Hint
+LocalMessage "你已重新雇佣六号弓箭手！" Hint
 #ELSEACT
-LocalMessage "You dont have the funds to rehire Archer Six!" Hint
+LocalMessage "你没有足够资金重新雇佣六号弓箭手！" Hint
 
 [@ach7]
 #IF
 AFFORDGUARD 1 7
 #ACT
 CONQUESTGUARD 1 7
-LocalMessage "You have rehired Archer Seven!" Hint
+LocalMessage "你已重新雇佣七号弓箭手！" Hint
 #ELSEACT
-LocalMessage "You dont have the funds to rehire Archer Seven!" Hint
+LocalMessage "你没有足够资金重新雇佣七号弓箭手！" Hint
 
 [@ach8]
 #IF
 AFFORDGUARD 1 8
 #ACT
 CONQUESTGUARD 1 8
-LocalMessage "You have rehired Archer Eight!" Hint
+LocalMessage "你已重新雇佣八号弓箭手！" Hint
 #ELSEACT
-LocalMessage "You dont have the funds to rehire Archer Eight!" Hint
+LocalMessage "你没有足够资金重新雇佣八号弓箭手！" Hint
 
 [@ach9]
 #IF
 AFFORDGUARD 1 9
 #ACT
 CONQUESTGUARD 1 9
-LocalMessage "You have rehired Archer Nine!" Hint
+LocalMessage "你已重新雇佣九号弓箭手！" Hint
 #ELSEACT
-LocalMessage "You dont have the funds to rehire Archer Nine!" Hint
+LocalMessage "你没有足够资金重新雇佣九号弓箭手！" Hint
 
 [@ach10]
 #IF
 AFFORDGUARD 1 10
 #ACT
 CONQUESTGUARD 1 10
-LocalMessage "You have rehired Archer Ten!" Hint
+LocalMessage "你已重新雇佣十号弓箭手！" Hint
 #ELSEACT
-LocalMessage "You dont have the funds to rehire Archer Ten!" Hint
+LocalMessage "你没有足够资金重新雇佣十号弓箭手！" Hint
 
 [@ach11]
 #IF
 AFFORDGUARD 1 11
 #ACT
 CONQUESTGUARD 1 11
-LocalMessage "You have rehired Archer Eleven!" Hint
+LocalMessage "你已重新雇佣十一号弓箭手！" Hint
 #ELSEACT
-LocalMessage "You dont have the funds to rehire Archer Eleven!" Hint
+LocalMessage "你没有足够资金重新雇佣十一号弓箭手！" Hint
 
 [@ach12]
 #IF
 AFFORDGUARD 1 12
 #ACT
 CONQUESTGUARD 1 12
-LocalMessage "You have rehired Archer Twelve!" Hint
+LocalMessage "你已重新雇佣十二号弓箭手！" Hint
 #ELSEACT
-LocalMessage "You dont have the funds to rehire Archer Twelve!" Hint
+LocalMessage "你没有足够资金重新雇佣十二号弓箭手！" Hint

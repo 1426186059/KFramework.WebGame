@@ -2,37 +2,36 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Welcome, how may I help you?
-
-<Purchase/@BuySell> Helmets.
-<Repair/@Repair> Helmet.
+欢迎，有什么可以帮您的？
+<购买/@BuySell> 头盔。
+<修理/@Repair> 头盔。
  
-<Close/@Exit>
+<关闭/@Exit>
 
 [@BuySell]
-What Helmet do you want to buy or sell?
-<Buy Back/@BuyBack>
+您想购买还是出售哪顶头盔？
+<回购/@BuyBack>
  
-<Back/@Main>
+<返回/@Main>
 
 [@BuyBack]
-Please Choose which item you wish to repurchase.
+请选择您希望回购的物品。
  
-<Back/@Main>
+<返回/@Main>
 
 [@Repair]
-You can repair Helmets here.
+您可以在这里修理头盔。
 
-<Back/@Main>
+<返回/@Main>
 
 
 [Types]
@@ -45,4 +44,3 @@ Brass盔
 金Tiara
 骷髅盔
 巫医盔
-
