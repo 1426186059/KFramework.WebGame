@@ -1,0 +1,33 @@
+[@Description]
+旅行者，请回到{SerpentDeadMines/Yellow}，完成{Hidden卷轴/LightSteelBlue}上记载的任务。
+
+[@TaskDescription]
+消灭{Rot巫医僵尸's/Crimson}，并从{Hi巨食尸鬼/Crimson}身上取回{心之Dead/LightSteelBlue}。
+
+[@Completion]
+
+[@KillTasks]
+Rot巫医僵尸 20
+
+[@ItemTasks]
+心之Dead 1
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+武侠军刀
+矛WithHook
+Keen短剑剑
+黑铁CrowSwords
+坚韧长弓
+
+[@ExpReward]
+4800
+
+[@GoldReward]
+4800
+
+// Pickup - Merchant_Dr.Kim 0017 5 9
+// Hand In - Merchant_Dr.Kim 0017 5 9

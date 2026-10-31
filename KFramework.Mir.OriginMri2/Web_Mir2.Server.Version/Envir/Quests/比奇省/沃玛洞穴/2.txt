@@ -1,0 +1,30 @@
+[@Description]
+这些符号似乎有规律可循……也许{CastleBichon/Yellow}里有人能解读这些远古符号。
+
+[@TaskDescription]
+回到{CastleBichon/Yellow}，打听这些符号的来历。
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+
+[@FlagTasks]
+533 "在图书馆打听。"
+534 "在客栈打听。"
+535 "终于明白了解读之法。"
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+3900
+
+[@GoldReward]
+
+// Pickup - MysteriousStone D003 351 234
+// Hand In - MysteriousStone D003 351 234

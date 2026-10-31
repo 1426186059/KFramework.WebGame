@@ -239,7 +239,7 @@
     {
       "$id": "22",
       "Index": 6,
-      "Name": "Sentry",
+      "Name": "哨兵",
       "Image": 2,
       "AI": 6,
       "Effect": 0,
@@ -286,7 +286,7 @@
     {
       "$id": "26",
       "Index": 7,
-      "Name": "Trainer",
+      "Name": "训练师",
       "Image": 140,
       "AI": 56,
       "Effect": 0,
@@ -325,7 +325,7 @@
     {
       "$id": "30",
       "Index": 8,
-      "Name": "TrainingMob",
+      "Name": "训练木人",
       "Image": 123,
       "AI": 56,
       "Effect": 0,
@@ -450,7 +450,7 @@
     {
       "$id": "42",
       "Index": 11,
-      "Name": "Shinsu1",
+      "Name": "神兽",
       "Image": 80,
       "AI": 18,
       "Effect": 0,
@@ -943,7 +943,7 @@
     {
       "$id": "90",
       "Index": 23,
-      "Name": "Baekdon",
+      "Name": "白豚",
       "Image": 10004,
       "AI": 64,
       "Effect": 4,
@@ -983,7 +983,7 @@
     {
       "$id": "94",
       "Index": 24,
-      "Name": "Wimaen",
+      "Name": "维曼",
       "Image": 10005,
       "AI": 64,
       "Effect": 5,
@@ -1103,7 +1103,7 @@
     {
       "$id": "106",
       "Index": 27,
-      "Name": "OlympicFlame",
+      "Name": "圣火",
       "Image": 10008,
       "AI": 64,
       "Effect": 8,
@@ -1183,7 +1183,7 @@
     {
       "$id": "114",
       "Index": 29,
-      "Name": "Hen",
+      "Name": "母鸡",
       "Image": 3,
       "AI": 1,
       "Effect": 0,
@@ -1300,7 +1300,7 @@
     {
       "$id": "126",
       "Index": 32,
-      "Name": "Pig",
+      "Name": "猪",
       "Image": 142,
       "AI": 1,
       "Effect": 0,
@@ -1378,7 +1378,7 @@
     {
       "$id": "134",
       "Index": 34,
-      "Name": "Sheep",
+      "Name": "绵羊",
       "Image": 103,
       "AI": 2,
       "Effect": 0,
@@ -2525,7 +2525,7 @@
     {
       "$id": "250",
       "Index": 63,
-      "Name": "LargeMushroom",
+      "Name": "大蘑菇",
       "Image": 15,
       "AI": 3,
       "Effect": 0,
@@ -5821,7 +5821,7 @@
     {
       "$id": "570",
       "Index": 143,
-      "Name": "Yimoogi",
+      "Name": "伊木基",
       "Image": 113,
       "AI": 36,
       "Effect": 0,
@@ -9714,7 +9714,7 @@
     {
       "$id": "938",
       "Index": 235,
-      "Name": "KekTal",
+      "Name": "克塔尔",
       "Image": 84,
       "AI": 0,
       "Effect": 0,
@@ -9757,7 +9757,7 @@
     {
       "$id": "942",
       "Index": 236,
-      "Name": "KekTal0",
+      "Name": "克塔尔0",
       "Image": 84,
       "AI": 0,
       "Effect": 0,
@@ -9800,7 +9800,7 @@
     {
       "$id": "946",
       "Index": 237,
-      "Name": "VioletKekTal",
+      "Name": "紫克塔尔",
       "Image": 85,
       "AI": 0,
       "Effect": 0,
@@ -9843,7 +9843,7 @@
     {
       "$id": "950",
       "Index": 238,
-      "Name": "VioletKekTal0",
+      "Name": "紫克塔尔0",
       "Image": 85,
       "AI": 0,
       "Effect": 0,
@@ -9886,7 +9886,7 @@
     {
       "$id": "954",
       "Index": 239,
-      "Name": "Khazard",
+      "Name": "卡扎德",
       "Image": 86,
       "AI": 27,
       "Effect": 0,
@@ -17025,7 +17025,7 @@
     {
       "$id": "1618",
       "Index": 406,
-      "Name": "GhastlyLeecher",
+      "Name": "恐怖水蛭",
       "Image": 152,
       "AI": 0,
       "Effect": 0,
@@ -17068,7 +17068,7 @@
     {
       "$id": "1622",
       "Index": 407,
-      "Name": "MutatedManworm",
+      "Name": "变异人虫",
       "Image": 154,
       "AI": 0,
       "Effect": 0,
@@ -17111,7 +17111,7 @@
     {
       "$id": "1626",
       "Index": 408,
-      "Name": "CrazyManworm",
+      "Name": "疯狂人虫",
       "Image": 155,
       "AI": 0,
       "Effect": 0,
@@ -17154,7 +17154,7 @@
     {
       "$id": "1630",
       "Index": 409,
-      "Name": "CyanoGhast",
+      "Name": "青面恶鬼",
       "Image": 153,
       "AI": 0,
       "Effect": 0,
@@ -17929,7 +17929,7 @@
     {
       "$id": "1702",
       "Index": 427,
-      "Name": "HardenRhino",
+      "Name": "铁甲犀牛",
       "Image": 271,
       "AI": 0,
       "Effect": 0,
@@ -18058,7 +18058,7 @@
     {
       "$id": "1714",
       "Index": 430,
-      "Name": "AncBringer",
+      "Name": "远古使者",
       "Image": 272,
       "AI": 0,
       "Effect": 0,
@@ -18144,7 +18144,7 @@
     {
       "$id": "1722",
       "Index": 432,
-      "Name": "Hydra",
+      "Name": "九头蛇",
       "Image": 371,
       "AI": 181,
       "Effect": 0,
@@ -18232,7 +18232,7 @@
     {
       "$id": "1730",
       "Index": 434,
-      "Name": "Manticore",
+      "Name": "蝎狮",
       "Image": 373,
       "AI": 0,
       "Effect": 0,
@@ -18405,7 +18405,7 @@
     {
       "$id": "1746",
       "Index": 438,
-      "Name": "Lamia",
+      "Name": "拉弥亚",
       "Image": 376,
       "AI": 186,
       "Effect": 0,
@@ -18604,7 +18604,7 @@
     {
       "$id": "1766",
       "Index": 443,
-      "Name": "Leopard",
+      "Name": "豹",
       "Image": 355,
       "AI": 0,
       "Effect": 0,
@@ -20750,7 +20750,7 @@
     {
       "$id": "1966",
       "Index": 493,
-      "Name": "SinseokMiner",
+      "Name": "神石矿工",
       "Image": 387,
       "AI": 102,
       "Effect": 0,
@@ -23210,5 +23210,650 @@
         }
       }
     }
-  ]
+  ,
+        {
+      "$id": "2000",
+      "Index": 900,
+      "Name": "恶舌",
+      "Image": 374,
+      "AI": 0,
+      "Effect": 0,
+      "ViewRange": 7,
+      "CoolEye": 0,
+      "Level": 25,
+      "Light": 0,
+      "AttackSpeed": 1800,
+      "MoveSpeed": 1100,
+      "Experience": 0,
+      "DropPath": "Pets\\恶舌",
+      "Drops": {
+        "$id": "2001",
+        "$values": []
+      },
+      "CanTame": false,
+      "CanPush": true,
+      "AutoRev": false,
+      "Undead": false,
+      "CanRecall": false,
+      "IsBoss": false,
+      "HasSpawnScript": false,
+      "HasDieScript": false,
+      "Stats": {
+        "$id": "2002",
+        "Values": {
+          "$id": "2003",
+          "MinAC": 8,
+          "MaxAC": 12,
+          "MinMAC": 8,
+          "MaxMAC": 12,
+          "MinDC": 18,
+          "MaxDC": 35,
+          "Accuracy": 13,
+          "Agility": 10,
+          "HP": 600
+        }
+      }
+    },
+        {
+      "$id": "2004",
+      "Index": 901,
+      "Name": "野兽",
+      "Image": 333,
+      "AI": 0,
+      "Effect": 0,
+      "ViewRange": 7,
+      "CoolEye": 0,
+      "Level": 30,
+      "Light": 0,
+      "AttackSpeed": 1800,
+      "MoveSpeed": 1100,
+      "Experience": 0,
+      "DropPath": "Pets\\野兽",
+      "Drops": {
+        "$id": "2005",
+        "$values": []
+      },
+      "CanTame": false,
+      "CanPush": true,
+      "AutoRev": false,
+      "Undead": false,
+      "CanRecall": false,
+      "IsBoss": false,
+      "HasSpawnScript": false,
+      "HasDieScript": false,
+      "Stats": {
+        "$id": "2006",
+        "Values": {
+          "$id": "2007",
+          "MinAC": 10,
+          "MaxAC": 15,
+          "MinMAC": 10,
+          "MaxMAC": 15,
+          "MinDC": 22,
+          "MaxDC": 40,
+          "Accuracy": 14,
+          "Agility": 11,
+          "HP": 700
+        }
+      }
+    },
+        {
+      "$id": "2008",
+      "Index": 902,
+      "Name": "血鼠",
+      "Image": 310,
+      "AI": 0,
+      "Effect": 0,
+      "ViewRange": 7,
+      "CoolEye": 0,
+      "Level": 35,
+      "Light": 0,
+      "AttackSpeed": 1800,
+      "MoveSpeed": 1100,
+      "Experience": 0,
+      "DropPath": "Pets\\血鼠",
+      "Drops": {
+        "$id": "2009",
+        "$values": []
+      },
+      "CanTame": false,
+      "CanPush": true,
+      "AutoRev": false,
+      "Undead": false,
+      "CanRecall": false,
+      "IsBoss": false,
+      "HasSpawnScript": false,
+      "HasDieScript": false,
+      "Stats": {
+        "$id": "2010",
+        "Values": {
+          "$id": "2011",
+          "MinAC": 12,
+          "MaxAC": 18,
+          "MinMAC": 12,
+          "MaxMAC": 18,
+          "MinDC": 25,
+          "MaxDC": 45,
+          "Accuracy": 15,
+          "Agility": 11,
+          "HP": 800
+        }
+      }
+    },
+        {
+      "$id": "2012",
+      "Index": 903,
+      "Name": "海怪",
+      "Image": 373,
+      "AI": 0,
+      "Effect": 0,
+      "ViewRange": 7,
+      "CoolEye": 0,
+      "Level": 40,
+      "Light": 0,
+      "AttackSpeed": 1800,
+      "MoveSpeed": 1100,
+      "Experience": 0,
+      "DropPath": "Pets\\海怪",
+      "Drops": {
+        "$id": "2013",
+        "$values": []
+      },
+      "CanTame": false,
+      "CanPush": true,
+      "AutoRev": false,
+      "Undead": false,
+      "CanRecall": false,
+      "IsBoss": false,
+      "HasSpawnScript": false,
+      "HasDieScript": false,
+      "Stats": {
+        "$id": "2014",
+        "Values": {
+          "$id": "2015",
+          "MinAC": 15,
+          "MaxAC": 20,
+          "MinMAC": 15,
+          "MaxMAC": 20,
+          "MinDC": 30,
+          "MaxDC": 55,
+          "Accuracy": 16,
+          "Agility": 12,
+          "HP": 900
+        }
+      }
+    },
+        {
+      "$id": "2016",
+      "Index": 904,
+      "Name": "利爪兽",
+      "Image": 333,
+      "AI": 0,
+      "Effect": 0,
+      "ViewRange": 7,
+      "CoolEye": 0,
+      "Level": 45,
+      "Light": 0,
+      "AttackSpeed": 1800,
+      "MoveSpeed": 1100,
+      "Experience": 0,
+      "DropPath": "Pets\\利爪兽",
+      "Drops": {
+        "$id": "2017",
+        "$values": []
+      },
+      "CanTame": false,
+      "CanPush": true,
+      "AutoRev": false,
+      "Undead": false,
+      "CanRecall": false,
+      "IsBoss": false,
+      "HasSpawnScript": false,
+      "HasDieScript": false,
+      "Stats": {
+        "$id": "2018",
+        "Values": {
+          "$id": "2019",
+          "MinAC": 18,
+          "MaxAC": 22,
+          "MinMAC": 18,
+          "MaxMAC": 22,
+          "MinDC": 35,
+          "MaxDC": 60,
+          "Accuracy": 17,
+          "Agility": 12,
+          "HP": 1000
+        }
+      }
+    },
+        {
+      "$id": "2020",
+      "Index": 905,
+      "Name": "魔斩者",
+      "Image": 374,
+      "AI": 0,
+      "Effect": 0,
+      "ViewRange": 7,
+      "CoolEye": 0,
+      "Level": 50,
+      "Light": 0,
+      "AttackSpeed": 1800,
+      "MoveSpeed": 1100,
+      "Experience": 0,
+      "DropPath": "Pets\\魔斩者",
+      "Drops": {
+        "$id": "2021",
+        "$values": []
+      },
+      "CanTame": false,
+      "CanPush": true,
+      "AutoRev": false,
+      "Undead": false,
+      "CanRecall": false,
+      "IsBoss": false,
+      "HasSpawnScript": false,
+      "HasDieScript": false,
+      "Stats": {
+        "$id": "2022",
+        "Values": {
+          "$id": "2023",
+          "MinAC": 20,
+          "MaxAC": 25,
+          "MinMAC": 20,
+          "MaxMAC": 25,
+          "MinDC": 40,
+          "MaxDC": 65,
+          "Accuracy": 18,
+          "Agility": 13,
+          "HP": 1100
+        }
+      }
+    },
+        {
+      "$id": "2024",
+      "Index": 906,
+      "Name": "魔斗士",
+      "Image": 372,
+      "AI": 0,
+      "Effect": 0,
+      "ViewRange": 7,
+      "CoolEye": 0,
+      "Level": 55,
+      "Light": 0,
+      "AttackSpeed": 1800,
+      "MoveSpeed": 1100,
+      "Experience": 0,
+      "DropPath": "Pets\\魔斗士",
+      "Drops": {
+        "$id": "2025",
+        "$values": []
+      },
+      "CanTame": false,
+      "CanPush": true,
+      "AutoRev": false,
+      "Undead": false,
+      "CanRecall": false,
+      "IsBoss": false,
+      "HasSpawnScript": false,
+      "HasDieScript": false,
+      "Stats": {
+        "$id": "2026",
+        "Values": {
+          "$id": "2027",
+          "MinAC": 22,
+          "MaxAC": 28,
+          "MinMAC": 22,
+          "MaxMAC": 28,
+          "MinDC": 45,
+          "MaxDC": 70,
+          "Accuracy": 19,
+          "Agility": 13,
+          "HP": 1200
+        }
+      }
+    },
+        {
+      "$id": "2028",
+      "Index": 907,
+      "Name": "冰锤兽",
+      "Image": 310,
+      "AI": 0,
+      "Effect": 0,
+      "ViewRange": 7,
+      "CoolEye": 0,
+      "Level": 60,
+      "Light": 0,
+      "AttackSpeed": 1800,
+      "MoveSpeed": 1100,
+      "Experience": 0,
+      "DropPath": "Pets\\冰锤兽",
+      "Drops": {
+        "$id": "2029",
+        "$values": []
+      },
+      "CanTame": false,
+      "CanPush": true,
+      "AutoRev": false,
+      "Undead": false,
+      "CanRecall": false,
+      "IsBoss": false,
+      "HasSpawnScript": false,
+      "HasDieScript": false,
+      "Stats": {
+        "$id": "2030",
+        "Values": {
+          "$id": "2031",
+          "MinAC": 25,
+          "MaxAC": 30,
+          "MinMAC": 25,
+          "MaxMAC": 30,
+          "MinDC": 50,
+          "MaxDC": 75,
+          "Accuracy": 20,
+          "Agility": 14,
+          "HP": 1300
+        }
+      }
+    },
+        {
+      "$id": "2032",
+      "Index": 908,
+      "Name": "水晶爬虫",
+      "Image": 373,
+      "AI": 0,
+      "Effect": 0,
+      "ViewRange": 7,
+      "CoolEye": 0,
+      "Level": 40,
+      "Light": 0,
+      "AttackSpeed": 1800,
+      "MoveSpeed": 1100,
+      "Experience": 0,
+      "DropPath": "Pets\\水晶爬虫",
+      "Drops": {
+        "$id": "2033",
+        "$values": []
+      },
+      "CanTame": false,
+      "CanPush": true,
+      "AutoRev": false,
+      "Undead": false,
+      "CanRecall": false,
+      "IsBoss": false,
+      "HasSpawnScript": false,
+      "HasDieScript": false,
+      "Stats": {
+        "$id": "2034",
+        "Values": {
+          "$id": "2035",
+          "MinAC": 20,
+          "MaxAC": 25,
+          "MinMAC": 20,
+          "MaxMAC": 25,
+          "MinDC": 35,
+          "MaxDC": 60,
+          "Accuracy": 17,
+          "Agility": 12,
+          "HP": 1100
+        }
+      }
+    },
+        {
+      "$id": "2036",
+      "Index": 909,
+      "Name": "龙战士",
+      "Image": 374,
+      "AI": 0,
+      "Effect": 0,
+      "ViewRange": 7,
+      "CoolEye": 0,
+      "Level": 44,
+      "Light": 0,
+      "AttackSpeed": 1800,
+      "MoveSpeed": 1100,
+      "Experience": 0,
+      "DropPath": "Pets\\龙战士",
+      "Drops": {
+        "$id": "2037",
+        "$values": []
+      },
+      "CanTame": false,
+      "CanPush": true,
+      "AutoRev": false,
+      "Undead": false,
+      "CanRecall": false,
+      "IsBoss": false,
+      "HasSpawnScript": false,
+      "HasDieScript": false,
+      "Stats": {
+        "$id": "2038",
+        "Values": {
+          "$id": "2039",
+          "MinAC": 25,
+          "MaxAC": 30,
+          "MinMAC": 25,
+          "MaxMAC": 30,
+          "MinDC": 45,
+          "MaxDC": 75,
+          "Accuracy": 18,
+          "Agility": 13,
+          "HP": 1400
+        }
+      }
+    },
+        {
+      "$id": "2040",
+      "Index": 910,
+      "Name": "双头兽",
+      "Image": 310,
+      "AI": 0,
+      "Effect": 0,
+      "ViewRange": 7,
+      "CoolEye": 0,
+      "Level": 48,
+      "Light": 0,
+      "AttackSpeed": 1800,
+      "MoveSpeed": 1100,
+      "Experience": 0,
+      "DropPath": "Pets\\双头兽",
+      "Drops": {
+        "$id": "2041",
+        "$values": []
+      },
+      "CanTame": false,
+      "CanPush": true,
+      "AutoRev": false,
+      "Undead": false,
+      "CanRecall": false,
+      "IsBoss": false,
+      "HasSpawnScript": false,
+      "HasDieScript": false,
+      "Stats": {
+        "$id": "2042",
+        "Values": {
+          "$id": "2043",
+          "MinAC": 28,
+          "MaxAC": 33,
+          "MinMAC": 28,
+          "MaxMAC": 33,
+          "MinDC": 50,
+          "MaxDC": 80,
+          "Accuracy": 19,
+          "Agility": 14,
+          "HP": 1500
+        }
+      }
+    },
+        {
+      "$id": "2044",
+      "Index": 911,
+      "Name": "黑龟",
+      "Image": 372,
+      "AI": 0,
+      "Effect": 0,
+      "ViewRange": 7,
+      "CoolEye": 0,
+      "Level": 52,
+      "Light": 0,
+      "AttackSpeed": 1800,
+      "MoveSpeed": 1100,
+      "Experience": 0,
+      "DropPath": "Pets\\黑龟",
+      "Drops": {
+        "$id": "2045",
+        "$values": []
+      },
+      "CanTame": false,
+      "CanPush": true,
+      "AutoRev": false,
+      "Undead": false,
+      "CanRecall": false,
+      "IsBoss": false,
+      "HasSpawnScript": false,
+      "HasDieScript": false,
+      "Stats": {
+        "$id": "2046",
+        "Values": {
+          "$id": "2047",
+          "MinAC": 30,
+          "MaxAC": 35,
+          "MinMAC": 30,
+          "MaxMAC": 35,
+          "MinDC": 55,
+          "MaxDC": 85,
+          "Accuracy": 20,
+          "Agility": 14,
+          "HP": 1700
+        }
+      }
+    },
+        {
+      "$id": "2048",
+      "Index": 912,
+      "Name": "雪王",
+      "Image": 374,
+      "AI": 0,
+      "Effect": 0,
+      "ViewRange": 7,
+      "CoolEye": 0,
+      "Level": 56,
+      "Light": 0,
+      "AttackSpeed": 1800,
+      "MoveSpeed": 1100,
+      "Experience": 0,
+      "DropPath": "Pets\\雪王",
+      "Drops": {
+        "$id": "2049",
+        "$values": []
+      },
+      "CanTame": false,
+      "CanPush": true,
+      "AutoRev": false,
+      "Undead": false,
+      "CanRecall": false,
+      "IsBoss": false,
+      "HasSpawnScript": false,
+      "HasDieScript": false,
+      "Stats": {
+        "$id": "2050",
+        "Values": {
+          "$id": "2051",
+          "MinAC": 32,
+          "MaxAC": 38,
+          "MinMAC": 32,
+          "MaxMAC": 38,
+          "MinDC": 60,
+          "MaxDC": 90,
+          "Accuracy": 21,
+          "Agility": 15,
+          "HP": 1900
+        }
+      }
+    },
+        {
+      "$id": "2052",
+      "Index": 913,
+      "Name": "种子之爪",
+      "Image": 333,
+      "AI": 0,
+      "Effect": 0,
+      "ViewRange": 7,
+      "CoolEye": 0,
+      "Level": 60,
+      "Light": 0,
+      "AttackSpeed": 1800,
+      "MoveSpeed": 1100,
+      "Experience": 0,
+      "DropPath": "Pets\\种子之爪",
+      "Drops": {
+        "$id": "2053",
+        "$values": []
+      },
+      "CanTame": false,
+      "CanPush": true,
+      "AutoRev": false,
+      "Undead": false,
+      "CanRecall": false,
+      "IsBoss": false,
+      "HasSpawnScript": false,
+      "HasDieScript": false,
+      "Stats": {
+        "$id": "2054",
+        "Values": {
+          "$id": "2055",
+          "MinAC": 35,
+          "MaxAC": 40,
+          "MinMAC": 35,
+          "MaxMAC": 40,
+          "MinDC": 65,
+          "MaxDC": 95,
+          "Accuracy": 22,
+          "Agility": 15,
+          "HP": 2100
+        }
+      }
+    },
+        {
+      "$id": "2056",
+      "Index": 914,
+      "Name": "雪灵兽",
+      "Image": 373,
+      "AI": 0,
+      "Effect": 0,
+      "ViewRange": 7,
+      "CoolEye": 0,
+      "Level": 64,
+      "Light": 0,
+      "AttackSpeed": 1800,
+      "MoveSpeed": 1100,
+      "Experience": 0,
+      "DropPath": "Pets\\雪灵兽",
+      "Drops": {
+        "$id": "2057",
+        "$values": []
+      },
+      "CanTame": false,
+      "CanPush": true,
+      "AutoRev": false,
+      "Undead": false,
+      "CanRecall": false,
+      "IsBoss": false,
+      "HasSpawnScript": false,
+      "HasDieScript": false,
+      "Stats": {
+        "$id": "2058",
+        "Values": {
+          "$id": "2059",
+          "MinAC": 38,
+          "MaxAC": 45,
+          "MinMAC": 38,
+          "MaxMAC": 45,
+          "MinDC": 70,
+          "MaxDC": 100,
+          "Accuracy": 23,
+          "Agility": 16,
+          "HP": 2300
+        }
+      }
+    }]
 }

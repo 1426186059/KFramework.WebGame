@@ -1,0 +1,28 @@
+[@Description]
+旅行者。请进入{SerpentDeadMine/Yellow}，消除那里的威胁。
+
+[@TaskDescription]
+消灭 10 只{鬼僵尸/Crimson}和{暗祭司僵尸/Crimson}。
+
+[@Completion]
+
+[@KillTasks]
+鬼僵尸 10
+暗祭司僵尸 10
+
+[@ItemTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+4900
+
+[@GoldReward]
+4900
+
+// Pickup - VulnerableSon_Alfie 2 562 172
+// Hand In - VulnerableSon_Alfie 2 562 172

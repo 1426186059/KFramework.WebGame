@@ -1,0 +1,27 @@
+[@Description]
+我真糊涂！我把最古老的典籍弄丢了。
+我游览 {SabukWall/Yellow} 时不慎跌落，
+回过神来，已被 {僵尸/Crimson} 团团包围。
+
+[@TaskDescription]
+在 {SabukWall/Yellow} 寻找隐蔽的入口，并找到
+{BichonTales/LightSteelBlue}。
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+比奇Tales(3) 1
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+9000
+
+[@GoldReward]
+9000

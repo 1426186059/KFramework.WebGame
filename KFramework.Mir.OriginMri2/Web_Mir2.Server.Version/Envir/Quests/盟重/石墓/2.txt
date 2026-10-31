@@ -1,0 +1,28 @@
+[@Description]
+欢迎来到{MongchonProvince/Yellow}。我们一直遭到形似野猪的怪物袭击。有报告说这些怪物来自{Underground Tomb/Yellow}。你能去那里消灭它们吗？
+
+[@TaskDescription]
+在{StoneTomb/Yellow}消灭 15 只{黑野猪/Crimson}和{红野猪's/Crimson}。
+
+[@Completion]
+
+[@KillTasks]
+黑野猪 15
+红野猪 15
+
+[@ItemTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+13500
+
+[@GoldReward]
+13500
+
+// Pickup - MonghconDelegate_Michael 3 330 332
+// Hand In - MongchonDelegate_Michael 3 330 332

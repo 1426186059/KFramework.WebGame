@@ -1,0 +1,24 @@
+[@Description]
+你听说过{SerpentDeadMine/Yellow}吗？我总是听到矿里传来铁链声，快把我逼疯了。
+
+[@TaskDescription]
+消灭 15 只{Chain食尸鬼's/Crimson}。
+
+[@Completion]
+
+[@KillTasks]
+Chain食尸鬼 15
+
+[@ItemTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+4800
+
+[@GoldReward]
+4800

@@ -1,0 +1,25 @@
+[@Description]
+你好，米尔人，我还缺{Volume 1/LightSteelBlue}和{2/LightSteelBlue}，
+
+[@TaskDescription]
+请回到{Hidden Entrance/Yellow}，取回{Volume 1/LightSteelBlue}和{2/LightSteelBlue}。
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+比奇Tales(1) 1
+比奇Tales(2) 1
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+10000
+
+[@GoldReward]
+10000

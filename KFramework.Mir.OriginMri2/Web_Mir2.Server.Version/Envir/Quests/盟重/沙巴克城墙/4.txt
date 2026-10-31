@@ -1,0 +1,31 @@
+[@Description]
+这附近有{Hidden Entrances/Yellow}。它们通向某种地下城。有传言说每个入口处都有一些石柱。
+
+[@TaskDescription]
+找到{Hidden Entrances/Yellow}并搜寻那些石柱。
+
+[@Completion]
+
+[@KillTasks]
+
+[@FlagTasks]
+521 "找到奇异石柱。"
+522 "找到古怪石柱。"
+523 "找到神秘石柱。"
+
+[@ItemTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+2764
+
+[@GoldReward]
+5500
+
+// Pickup - Merchant_Mr.Wang 3 663 304
+// Hand In - Merchant_Mr.Wang 3 663 304 

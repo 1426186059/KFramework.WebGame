@@ -1,0 +1,24 @@
+[@Description]
+旅行者……旅行者。我急需你的帮助……我刚收到消息，{SerpentDeadMines/Yellow}里出现了一只非常稀有的生物，{白蛇/Crimson}听起来很有意思，不是吗？
+
+[@TaskDescription]
+在{SerpentDeadMine/Yellow}消灭{白蛇/Crimson}。
+
+[@Completion]
+
+[@KillTasks]
+白蛇 1
+
+[@ItemTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+5900
+
+[@GoldReward]
+5900

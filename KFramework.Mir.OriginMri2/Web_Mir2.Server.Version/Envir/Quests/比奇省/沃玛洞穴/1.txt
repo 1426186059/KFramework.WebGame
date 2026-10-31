@@ -1,0 +1,28 @@
+[@Description]
+一块神秘的石头……刻着未知的远古符号。一定有什么方法能解读这些符号。
+
+[@TaskDescription]
+在{OmaCavern/Yellow}寻找{远古Scyther/LightSteelBlue}。
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+远古Scyther 1
+
+[@FlagTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+3500
+
+[@GoldReward]
+
+// Pickup - MysteriousStone D003 351 234
+// Hand In - MysteriousStone D003 351 234

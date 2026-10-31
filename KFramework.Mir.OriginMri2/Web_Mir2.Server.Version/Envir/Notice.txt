@@ -1,5 +1,5 @@
-TITLE=Welcome to Legend of Mir 2
-             !!MUST READ!!
+TITLE=欢迎来到 Legend of Mir 2
+             !!必读!!
 
 
 
@@ -7,14 +7,7 @@ TITLE=Welcome to Legend of Mir 2
 
 
 
-
-
-
-
-
-
-By clicking close and continuing to play the
-game you are agreeing to the terms of
-service above.
-(LOMCN/http://LOMCN.NET)
-(DATABASE/https://github.com/Suprcode/mir2-database/tree/main/Jev)
+点击下方关闭并继续游戏，即表示你同意上述的
+服务条款。
+(官方/LOMCN:http://LOMCN.NET)
+(数据库/https://github.com/Suprcode/mir2-database/tree/main/Jev)

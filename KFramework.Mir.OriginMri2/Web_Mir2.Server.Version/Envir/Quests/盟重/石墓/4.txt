@@ -1,0 +1,29 @@
+[@Description]
+你好，米尔人，{Stone Temple/Yellow}深处潜伏着更黑暗的邪恶。在层层石壁之中，有一块石头据说能开启通往{Ancient Layer/Yellow}的通道。
+
+[@TaskDescription]
+在{Stone Temple/Yellow}中找到那块石头。
+
+[@Completion]
+
+[@FlagTasks]
+525 "在石庙中找到那块石头。"
+
+[@KillTasks]
+
+[@ItemTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+9612
+
+[@GoldReward]
+13600
+
+// Pickup - MonghconDelegate_Michael 3 330 332
+// Hand In - MongchonDelegate_Michael 3 330 332

@@ -1,0 +1,28 @@
+[@Description]
+看来这回传言成真了。请回到{Hidden Entrance/Yellow}。
+
+[@TaskDescription]
+消灭一些{CrawlerZombies/Crimson}。
+
+[@Completion]
+
+[@KillTasks]
+爬行者僵尸 50 "消灭一些爬行者僵尸"
+
+[@ItemTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+Exorcist戒
+
+[@SelectRewards]
+
+[@ExpReward]
+11000
+
+[@GoldReward]
+2750
+
+// Pickup - Merchant_Mr.Wang 3 663 304
+// Hand In - Merchant_Mr.Wang 3 663 304

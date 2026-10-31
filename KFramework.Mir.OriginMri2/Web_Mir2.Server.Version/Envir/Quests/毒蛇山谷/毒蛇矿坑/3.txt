@@ -1,0 +1,27 @@
+[@Description]
+传闻说，北边矿洞里有一把非常稀有的剑。你能帮我取来吗？
+
+[@TaskDescription]
+在{SerpentDeadMines 2F/Yellow}击杀{Hi巨食尸鬼/Crimson}，取回{BloodySword/LightSteelBlue}。
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+红匕首 1
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+4700
+
+[@GoldReward]
+4700
+
+// Pickup - Merchant_Bradley 0120 7 8
+// Hand In - Merchant_Bradley 0120 7 8

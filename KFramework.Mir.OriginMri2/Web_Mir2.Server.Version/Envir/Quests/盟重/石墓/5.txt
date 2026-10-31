@@ -1,0 +1,24 @@
+[@Description]
+根据流传的传言，你已在{Stone Temple/Yellow}找到了{Ancient Layer/Yellow}。回去，从{StoneTemple/Yellow}的远古层中收集{圣物岩石's/LightSteelBlue}。
+
+[@TaskDescription]
+击杀{AncientRedBoars/Crimson}、{AncientBlackBoars/Crimson}和{AncientWhiteBoar's/Crimson}以获取{圣物岩石's/LightSteelBlue}。
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+圣物岩石 20
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+78000
+
+[@GoldReward]
+78000

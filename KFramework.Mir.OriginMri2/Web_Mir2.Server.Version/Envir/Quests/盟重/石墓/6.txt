@@ -1,0 +1,26 @@
+[@Description]
+真的吗？你去过{Ancient Layer/Yellow}？你能回去通过击杀{AncientSnakeScorpion's/Crimson}收集 17 个{血丹/LightSteelBlue}吗？
+
+[@TaskDescription]
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+血丹 17
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+88500
+
+[@GoldReward]
+88500
+
+// Pickup - Merchant_Kevin 3 346 334
+// Hand In - Merchant_Kevin 3 346 334

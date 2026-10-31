@@ -9,7 +9,7 @@
 
 [@move1]
 #IF
-CHECKEXACTMON SinseokMiner >= 1 SnowCave_BOSS
+CHECKEXACTMON 神石矿工 >= 1 SnowCave_BOSS
 #ACT
 MOVE SnowCave_BOSS 30 37
 LocalMessage "[神石矿工] 谁敢闯入我的巢穴，必死无疑！" Shout

@@ -1,0 +1,24 @@
+[@Description]
+你好，旅行者，几天前一只{Zombies/Crimson}杀死了我的宠物。请帮我向{Zombies/Crimson}复仇！
+
+[@TaskDescription]
+在{BichonDeadMines/Yellow}消灭 30 只{Shaman Zombies/Crimson}。
+
+[@Completion]
+
+[@KillTasks]
+僵尸1 30
+
+[@ItemTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+3000
+
+[@GoldReward]
+3000

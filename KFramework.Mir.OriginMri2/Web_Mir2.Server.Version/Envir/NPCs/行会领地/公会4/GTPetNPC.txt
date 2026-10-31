@@ -31,14 +31,14 @@ GOTO @BuyP1
 你想购买哪种宠物？ <主菜单/@Main>
 
 <红毒蛇/@pet1>  {等级 20+/Red}
-<WickedTong/@pet2>  {等级 25+/Red}
-<WildBeast/@pet3>  {等级 30+/Red}
-<BloodRat/@pet4>  {等级 35+/Red}
-<SeaCreature/@pet5>  {等级 40+/Red}
-<ClawBeast/@pet6>  {等级 45+/Red}
-<DemonSlasher/@pet7>  {等级 50+/Red}
-<DemonFighter/@pet8>  {等级 55+/Red}
-<FrozenBasher/@pet9>  {等级 60+/Red}
+<恶舌/@pet2>  {等级 25+/Red}
+<野兽/@pet3>  {等级 30+/Red}
+<血鼠/@pet4>  {等级 35+/Red}
+<海怪/@pet5>  {等级 40+/Red}
+<利爪兽/@pet6>  {等级 45+/Red}
+<魔斩者/@pet7>  {等级 50+/Red}
+<魔斗士/@pet8>  {等级 55+/Red}
+<冰锤兽/@pet9>  {等级 60+/Red}
 
 
 
@@ -62,7 +62,7 @@ LEVEL < 100
 CHECKGOLD >= 45000
 #ACT
 TAKEGOLD 45000
-GIVEPET WickedTong 5
+GIVEPET 恶舌 5
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -74,7 +74,7 @@ LEVEL < 100
 CHECKGOLD >= 75000
 #ACT
 TAKEGOLD 75000
-GIVEPET WildBeast 5
+GIVEPET 野兽 5
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -86,7 +86,7 @@ LEVEL < 100
 CHECKGOLD >= 100000
 #ACT
 TAKEGOLD 100000
-GIVEPET BloodRat 5
+GIVEPET 血鼠 5
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -98,7 +98,7 @@ LEVEL < 100
 CHECKGOLD >= 150000
 #ACT
 TAKEGOLD 150000
-GIVEPET SeaCreature 5
+GIVEPET 海怪 5
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -110,7 +110,7 @@ LEVEL < 100
 CHECKGOLD >= 200000
 #ACT
 TAKEGOLD 200000
-GIVEPET ClawBeast 5
+GIVEPET 利爪兽 5
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -122,7 +122,7 @@ LEVEL < 100
 CHECKGOLD >= 250000
 #ACT
 TAKEGOLD 250000
-GIVEPET DemonSlasher 5
+GIVEPET 魔斩者 5
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -134,7 +134,7 @@ LEVEL < 100
 CHECKGOLD >= 300000
 #ACT
 TAKEGOLD 300000
-GIVEPET DemonFighter 5
+GIVEPET 魔斗士 5
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -147,7 +147,7 @@ LEVEL < 100
 CHECKGOLD >= 350000
 #ACT
 TAKEGOLD 350000
-GIVEPET FrozenBasher 5
+GIVEPET 冰锤兽 5
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -157,14 +157,14 @@ GIVEPET FrozenBasher 5
 [@PL]
 <主菜单/@Main>
 {红毒蛇/Red} 售价 25000 金币
-{WickedTong/Red} 售价 45000 金币
-{WildBeast/Red} 售价 75000 金币
-{BloodRat/Red} 售价 100000 金币
-{SeaCreature/Red} 售价 150000 金币
-{ClawBeast/Red} 售价 200000 金币
-{DemonSlasher/Red} 售价 250000 金币
-{DemonFighter/Red} 售价 300000 金币
-{FrozenBasher/Red} 售价 350000 金币
+{恶舌/Red} 售价 45000 金币
+{野兽/Red} 售价 75000 金币
+{血鼠/Red} 售价 100000 金币
+{海怪/Red} 售价 150000 金币
+{利爪兽/Red} 售价 200000 金币
+{魔斩者/Red} 售价 250000 金币
+{魔斗士/Red} 售价 300000 金币
+{冰锤兽/Red} 售价 350000 金币
 
 
 [@Buysev]
@@ -183,14 +183,14 @@ GOTO @BuysevP1
 你想购买哪种宠物？  <主菜单/@Main>
 
 <红毒蛇/@petsev1>  {等级 20+/Red}
-<WickedTong/@petsev2>  {等级 25+/Red}
-<WildBeast/@petsev3>  {等级 30+/Red}
-<BloodRat/@petsev4>  {等级 35+/Red}
-<SeaCreature/@petsev5>  {等级 40+/Red}
-<ClawBeast/@petsev6>  {等级 45+/Red}
-<DemonSlasher/@petsev7>  {等级 50+/Red}
-<DemonFighter/@petsev8>  {等级 55+/Red}
-<FrozenBasher/@petsev9>  {等级 60+/Red>
+<恶舌/@petsev2>  {等级 25+/Red}
+<野兽/@petsev3>  {等级 30+/Red}
+<血鼠/@petsev4>  {等级 35+/Red}
+<海怪/@petsev5>  {等级 40+/Red}
+<利爪兽/@petsev6>  {等级 45+/Red}
+<魔斩者/@petsev7>  {等级 50+/Red}
+<魔斗士/@petsev8>  {等级 55+/Red}
+<冰锤兽/@petsev9>  {等级 60+/Red>
 
 
 [@petsev1]
@@ -212,7 +212,7 @@ LEVEL < 100
 CHECKGOLD >= 90000
 #ACT
 TAKEGOLD 90000
-GIVEPET WickedTong 5 7
+GIVEPET 恶舌 5 7
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -224,7 +224,7 @@ LEVEL < 100
 CHECKGOLD >= 150000
 #ACT
 TAKEGOLD 150000
-GIVEPET WildBeast 5 7
+GIVEPET 野兽 5 7
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -236,7 +236,7 @@ LEVEL < 100
 CHECKGOLD >= 200000
 #ACT
 TAKEGOLD 200000
-GIVEPET BloodRat 5 7
+GIVEPET 血鼠 5 7
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -248,7 +248,7 @@ LEVEL < 100
 CHECKGOLD >= 300000
 #ACT
 TAKEGOLD 300000
-GIVEPET SeaCreature 5 7
+GIVEPET 海怪 5 7
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -260,7 +260,7 @@ LEVEL < 100
 CHECKGOLD >= 400000
 #ACT
 TAKEGOLD 400000
-GIVEPET ClawBeast 5 7
+GIVEPET 利爪兽 5 7
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -272,7 +272,7 @@ LEVEL < 100
 CHECKGOLD >= 500000
 #ACT
 TAKEGOLD 500000
-GIVEPET DemonSlasher 5 7
+GIVEPET 魔斩者 5 7
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -284,7 +284,7 @@ LEVEL < 100
 CHECKGOLD >= 500000
 #ACT
 TAKEGOLD 500000
-GIVEPET DemonFighter 5 7
+GIVEPET 魔斗士 5 7
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -296,7 +296,7 @@ LEVEL < 100
 CHECKGOLD >= 500000
 #ACT
 TAKEGOLD 500000
-GIVEPET FrozenBasher 5 7
+GIVEPET 冰锤兽 5 7
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -306,14 +306,14 @@ GIVEPET FrozenBasher 5 7
 [@PSEV]
 <主菜单/@Main>
 {红毒蛇/Red} 售价 50000 金币
-{WickedTong/Red} 售价 90000 金币
-{WildBeast/Red} 售价 150000 金币
-{BloodRat/Red} 售价 200000 金币
-{SeaCreature/Red} 售价 300000 金币
-{ClawBeast/Red} 售价 400000 金币
-{DemonSlasher/Red} 售价 500000 金币
-{DemonFighter/Red} 售价 500000 金币
-{FrozenBasher/Red} 售价 500000 金币
+{恶舌/Red} 售价 90000 金币
+{野兽/Red} 售价 150000 金币
+{血鼠/Red} 售价 200000 金币
+{海怪/Red} 售价 300000 金币
+{利爪兽/Red} 售价 400000 金币
+{魔斩者/Red} 售价 500000 金币
+{魔斗士/Red} 售价 500000 金币
+{冰锤兽/Red} 售价 500000 金币
 
 [@BUYSP]
 #IF 
@@ -329,13 +329,13 @@ GOTO @BuySP2
 你好！
 你想购买哪种宠物？  <主菜单/@Main>
                                
-<CrystalCrawler/@solo1>  {等级 40+/Red}
-<DragonWarrior/@solo2>  {等级 44+/Red}
-<TwinHeadBeast/@solo3>  {等级 48+/Red}
-<BlackTortoise/@solo4>  {等级 52+/Red}
-<SnowLord/@solo5>  {等级 56+/Red}
-<SeedingsClaw/@solo6>  {等级 60+/Red}
-<SnowBlest/@solo7>  {等级 64+/Red>
+<水晶爬虫/@solo1>  {等级 40+/Red}
+<龙战士/@solo2>  {等级 44+/Red}
+<双头兽/@solo3>  {等级 48+/Red}
+<黑龟/@solo4>  {等级 52+/Red}
+<雪王/@solo5>  {等级 56+/Red}
+<种子之爪/@solo6>  {等级 60+/Red}
+<雪灵兽/@solo7>  {等级 64+/Red>
 
 
 [@solo1]
@@ -345,7 +345,7 @@ LEVEL < 100
 CHECKGOLD >= 150000
 #ACT
 TAKEGOLD 150000
-GIVEPET CrystalCrawler 1
+GIVEPET 水晶爬虫 1
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -357,7 +357,7 @@ LEVEL < 100
 CHECKGOLD >= 200000
 #ACT
 TAKEGOLD 200000
-GIVEPET DragonWarrior 1
+GIVEPET 龙战士 1
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -369,7 +369,7 @@ LEVEL < 100
 CHECKGOLD >= 250000
 #ACT
 TAKEGOLD 250000
-GIVEPET TwinHeadBeast 1
+GIVEPET 双头兽 1
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -381,7 +381,7 @@ LEVEL < 100
 CHECKGOLD >= 300000
 #ACT
 TAKEGOLD 300000
-GIVEPET BlackTortoise  1
+GIVEPET 黑龟  1
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -393,7 +393,7 @@ LEVEL < 100
 CHECKGOLD >= 350000
 #ACT
 TAKEGOLD 350000
-GIVEPET SnowLord 1
+GIVEPET 雪王 1
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -405,7 +405,7 @@ LEVEL < 100
 CHECKGOLD >= 400000
 #ACT
 TAKEGOLD 400000
-GIVEPET SeedingsClaw 1
+GIVEPET 种子之爪 1
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -417,20 +417,20 @@ LEVEL < 100
 CHECKGOLD >= 450000
 #ACT
 TAKEGOLD 450000
-GIVEPET SnowBlest 1
+GIVEPET 雪灵兽 1
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
 
 [@PLS]
 <主菜单/@Main>
-{CrystalCrawler/Red} 售价 150000 金币
-{DragonWarrior/Red} 售价 200000 金币
-{TwinHeadBeast/Red} 售价 250000 金币
-{BlackTortoise/Red} 售价 300000 金币
-{SnowLord/Red} 售价 350000 金币
-{SeedingsClaw/Red} 售价 400000 金币
-{SnowBlest/Red} 售价 450000 金币
+{水晶爬虫/Red} 售价 150000 金币
+{龙战士/Red} 售价 200000 金币
+{双头兽/Red} 售价 250000 金币
+{黑龟/Red} 售价 300000 金币
+{雪王/Red} 售价 350000 金币
+{种子之爪/Red} 售价 400000 金币
+{雪灵兽/Red} 售价 450000 金币
 
 [@BUYSPSEV]
 #IF 
@@ -446,13 +446,13 @@ GOTO @BuySPSEV2
 你好！
 你想购买哪种宠物？  <主菜单/@Main>
 
-<CrystalCrawler/@solosev1>  {等级 40+/Red}
-<DragonWarrior/@solosev2>  {等级 44+/Red}
-<TwinHeadBeast/@solosev3>  {等级 48+/Red}
-<BlackTortoise/@solosev4>  {等级 52+/Red}
-<SnowLord/@solosev5>  {等级 56+/Red}
-<SeedingsClaw/@solosev6>  {等级 60+/Red}
-<SnowBlest/@solosev7>  {等级 64+/Red>
+<水晶爬虫/@solosev1>  {等级 40+/Red}
+<龙战士/@solosev2>  {等级 44+/Red}
+<双头兽/@solosev3>  {等级 48+/Red}
+<黑龟/@solosev4>  {等级 52+/Red}
+<雪王/@solosev5>  {等级 56+/Red}
+<种子之爪/@solosev6>  {等级 60+/Red}
+<雪灵兽/@solosev7>  {等级 64+/Red>
 
 
 [@solosev1]
@@ -462,7 +462,7 @@ LEVEL < 100
 CHECKGOLD >= 350000
 #ACT
 TAKEGOLD 350000
-GIVEPET CrystalCrawler 1 7
+GIVEPET 水晶爬虫 1 7
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -474,7 +474,7 @@ LEVEL < 100
 CHECKGOLD >= 400000
 #ACT
 TAKEGOLD 400000
-GIVEPET DragonWarrior 1 7
+GIVEPET 龙战士 1 7
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -486,7 +486,7 @@ LEVEL < 100
 CHECKGOLD >= 450000
 #ACT
 TAKEGOLD 450000
-GIVEPET TwinHeadBeast 1 7
+GIVEPET 双头兽 1 7
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -498,7 +498,7 @@ LEVEL < 100
 CHECKGOLD >= 500000
 #ACT
 TAKEGOLD 500000
-GIVEPET BlackTortoise 1 7
+GIVEPET 黑龟 1 7
 #ELSESAY
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -510,7 +510,7 @@ LEVEL < 100
 CHECKGOLD >= 550000
 #ACT
 TAKEGOLD 550000
-GIVEPET SnowLord 1 7
+GIVEPET 雪王 1 7
 #ELSESAY 
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -522,7 +522,7 @@ LEVEL < 100
 CHECKGOLD >= 550000
 #ACT
 TAKEGOLD 550000
-GIVEPET SeedingsClaw 1 7
+GIVEPET 种子之爪 1 7
 #ELSESAY 
 你的等级不符或金币不足。
 <主菜单/@Main>
@@ -534,20 +534,20 @@ LEVEL < 100
 CHECKGOLD >= 550000
 #ACT
 TAKEGOLD 550000
-GIVEPET SnowBlest 1 7
+GIVEPET 雪灵兽 1 7
 #ELSESAY 
 你的等级不符或金币不足。
 <主菜单/@Main>
 
 [@PLSEV]
 <主菜单/@Main>
-{CrystalCrawler/Red} 售价 350000 金币
-{DragonWarrior/Red} 售价 400000 金币
-{TwinHeadBeast/Red} 售价 450000 金币
-{BlackTortoise/Red} 售价 500000 金币
-{SnowLord/Red} 售价 550000 金币
-{SeedingsClaw/Red} 售价 550000 金币
-{SnowBlest/Red} 售价 550000 金币
+{水晶爬虫/Red} 售价 350000 金币
+{龙战士/Red} 售价 400000 金币
+{双头兽/Red} 售价 450000 金币
+{黑龟/Red} 售价 500000 金币
+{雪王/Red} 售价 550000 金币
+{种子之爪/Red} 售价 550000 金币
+{雪灵兽/Red} 售价 550000 金币
 
 
 
@@ -564,14 +564,14 @@ GIVEPET SnowBlest 1 7
 [@Store1]
 <主菜单/@Main>
 <寄养 红毒蛇/@Storepet1>
-<寄养 WickedTong/@Storepet2>
-<寄养 WildBeast/@Storepet3>
-<寄养 BloodRat/@Storepet4>
-<寄养 SeaCreature/@Storepet5>
-<寄养 ClawBeast/@Storepet6>
-<寄养 DemonSlasher/@Storepet7>
-<寄养 DemonFighter/@Storepet8>
-<寄养 FrozenBasher/@Storepet9>
+<寄养 恶舌/@Storepet2>
+<寄养 野兽/@Storepet3>
+<寄养 血鼠/@Storepet4>
+<寄养 海怪/@Storepet5>
+<寄养 利爪兽/@Storepet6>
+<寄养 魔斩者/@Storepet7>
+<寄养 魔斗士/@Storepet8>
+<寄养 冰锤兽/@Storepet9>
 
 [@Storepet1]
 #IF
@@ -587,7 +587,7 @@ GIVEITEM RedViperToken 1
 
 [@Storepet2]
 #IF
-CHECKPET WickedTong
+CHECKPET 恶舌
 PETLEVEL == 7
 PETCOUNT == 5
 #ACT
@@ -599,7 +599,7 @@ GIVEITEM WickedTongToken 1
 
 [@Storepet3]
 #IF
-CHECKPET WildBeast
+CHECKPET 野兽
 PETLEVEL == 7
 PETCOUNT == 5
 #ACT
@@ -611,7 +611,7 @@ GIVEITEM WildBeastToken 1
 
 [@Storepet4]
 #IF
-CHECKPET BloodRat
+CHECKPET 血鼠
 PETLEVEL == 7
 PETCOUNT == 5
 #ACT
@@ -623,7 +623,7 @@ GIVEITEM BloodRatToken 1
 
 [@Storepet5]
 #IF
-CHECKPET SeaCreature
+CHECKPET 海怪
 PETLEVEL == 7
 PETCOUNT == 5
 #ACT
@@ -635,7 +635,7 @@ GIVEITEM SeaCreatureToken 1
 
 [@Storepet6]
 #IF
-CHECKPET ClawBeast
+CHECKPET 利爪兽
 PETLEVEL == 7
 PETCOUNT == 5
 #ACT
@@ -647,7 +647,7 @@ GIVEITEM ClawBeastToken 1
 
 [@Storepet7]
 #IF
-CHECKPET DemonSlasher
+CHECKPET 魔斩者
 PETLEVEL == 7
 PETCOUNT == 5
 #ACT
@@ -659,7 +659,7 @@ GIVEITEM DemonSlasherToken 1
 
 [@Storepet8]
 #IF
-CHECKPET DemonFighter
+CHECKPET 魔斗士
 PETLEVEL == 7
 PETCOUNT == 5
 #ACT
@@ -671,7 +671,7 @@ GIVEITEM DemonFighterToken 1
 
 [@Storepet9]
 #IF
-CHECKPET FrozenBasher
+CHECKPET 冰锤兽
 PETLEVEL == 7
 PETCOUNT == 5
 #ACT
@@ -683,19 +683,19 @@ GIVEITEM FrozenBasherToken 1
 
 [@Store2]
 <主菜单/@Main>
-<寄养 CrystalCrawler/@Storesolo1>
-<寄养 DragonWarrior/@Storesolo2>
-<寄养 TwinHeadBeast/@Storesolo3>
-<寄养 BlackTortoise/@Storesolo4>
-<寄养 SnowLord/@Storesolo5>
-<寄养 SeedingsClaw/@Storesolo6>
-<寄养 SnowBlest/@Storesolo7>
+<寄养 水晶爬虫/@Storesolo1>
+<寄养 龙战士/@Storesolo2>
+<寄养 双头兽/@Storesolo3>
+<寄养 黑龟/@Storesolo4>
+<寄养 雪王/@Storesolo5>
+<寄养 种子之爪/@Storesolo6>
+<寄养 雪灵兽/@Storesolo7>
 
 
 
 [@Storesolo1]
 #IF
-CHECKPET CrystalCrawler
+CHECKPET 水晶爬虫
 PETLEVEL == 7
 PETCOUNT == 1
 #ACT
@@ -707,7 +707,7 @@ GIVEITEM CrystalCrawlerToken 1
 
 [@Storesolo2]
 #IF
-CHECKPET DragonWarrior
+CHECKPET 龙战士
 PETLEVEL == 7
 PETCOUNT == 1
 #ACT
@@ -719,7 +719,7 @@ GIVEITEM DragonWarriorToken 1
 
 [@Storesolo3]
 #IF
-CHECKPET TwinHeadBeast
+CHECKPET 双头兽
 PETLEVEL == 7
 PETCOUNT == 1
 #ACT
@@ -731,7 +731,7 @@ GIVEITEM TwinHeadBeastToken 1
 
 [@Storesolo4]
 #IF
-CHECKPET BlackTortoise
+CHECKPET 黑龟
 PETLEVEL == 7
 PETCOUNT == 1
 #ACT
@@ -743,7 +743,7 @@ GIVEITEM BlackTortoiseToken 1
 
 [@Storesolo5]
 #IF
-CHECKPET SnowLord
+CHECKPET 雪王
 PETLEVEL == 7
 PETCOUNT == 1
 #ACT
@@ -755,7 +755,7 @@ GIVEITEM SnowLordToken 1
 
 [@Storesolo6]
 #IF
-CHECKPET SeedingsClaw
+CHECKPET 种子之爪
 PETLEVEL == 7
 PETCOUNT == 1
 #ACT
@@ -767,7 +767,7 @@ GIVEITEM SeedingsClawToken 1
 
 [@Storesolo7]
 #IF
-CHECKPET SnowBlest
+CHECKPET 雪灵兽
 PETLEVEL == 7
 PETCOUNT == 1
 #ACT
@@ -799,24 +799,24 @@ GOTO @retp1
 [@retnorm]
 <主菜单/@Main>
 <红毒蛇/@Retpet1>
-<WickedTong/@Retpet2>
-<WildBeast/@Retpet3>
-<BloodRat/@Retpet4>
-<SeaCreature/@Retpet5>
-<ClawBeast/@Retpet6>
-<DemonSlasher/@Retpet7>
-<DemonFighter/@Retpet8>
-<FrozenBasher/@Retpet9>
+<恶舌/@Retpet2>
+<野兽/@Retpet3>
+<血鼠/@Retpet4>
+<海怪/@Retpet5>
+<利爪兽/@Retpet6>
+<魔斩者/@Retpet7>
+<魔斗士/@Retpet8>
+<冰锤兽/@Retpet9>
 
 [@retelite]
 <主菜单/@Main>
-<CrystalCrawler/@Retsolo1>
-<DragonWarrior/@Retsolo2>
-<TwinHeadBeast/@Retsolo3>
-<BlackTortoise/@Retsolo4>
-<SnowLord/@Retsolo5>
-<SeedingsClaw/@Retsolo6>
-<SnowBlest/@Retsolo7>
+<水晶爬虫/@Retsolo1>
+<龙战士/@Retsolo2>
+<双头兽/@Retsolo3>
+<黑龟/@Retsolo4>
+<雪王/@Retsolo5>
+<种子之爪/@Retsolo6>
+<雪灵兽/@Retsolo7>
 
 
 
@@ -840,7 +840,7 @@ LEVEL < 100
 CHECKITEM WickedTongToken 1
 #ACT
 TAKEITEM WickedTongToken 1
-GIVEPET WickedTong 5 7
+GIVEPET 恶舌 5 7
 #ELSESAY
 你需要把令牌带给我！
 <主菜单/@Main>
@@ -852,7 +852,7 @@ LEVEL < 100
 CHECKITEM WildBeastToken 1
 #ACT
 TAKEITEM WildBeastToken 1
-GIVEPET WildBeast 5 7
+GIVEPET 野兽 5 7
 #ELSESAY
 你需要把令牌带给我！
 <主菜单/@Main>
@@ -864,7 +864,7 @@ LEVEL < 100
 CHECKITEM BloodRatToken 1
 #ACT
 TAKEITEM BloodRatToken 1
-GIVEPET BloodRat 5 7
+GIVEPET 血鼠 5 7
 #ELSESAY
 你需要把令牌带给我！
 <主菜单/@Main>
@@ -876,7 +876,7 @@ LEVEL < 100
 CHECKITEM SeaCreatureToken 1
 #ACT
 TAKEITEM SeaCreatureToken 1
-GIVEPET SeaCreature 5 7
+GIVEPET 海怪 5 7
 #ELSESAY
 你需要把令牌带给我！
 <主菜单/@Main>
@@ -888,7 +888,7 @@ LEVEL < 100
 CHECKITEM ClawBeastToken 1
 #ACT
 TAKEITEM ClawBeastToken 1
-GIVEPET ClawBeast 5 7
+GIVEPET 利爪兽 5 7
 #ELSESAY
 你需要把令牌带给我！
 <主菜单/@Main>
@@ -900,7 +900,7 @@ LEVEL < 100
 CHECKITEM DemonSlasherToken 1
 #ACT
 TAKEITEM DemonSlasherToken 1
-GIVEPET DemonSlasher 5 7
+GIVEPET 魔斩者 5 7
 #ELSESAY
 你需要把令牌带给我！
 <主菜单/@Main>
@@ -912,7 +912,7 @@ LEVEL < 100
 CHECKITEM DemonFighterToken 1
 #ACT
 TAKEITEM DemonFighterToken 1
-GIVEPET DemonFighter 5 7
+GIVEPET 魔斗士 5 7
 #ELSESAY
 你需要把令牌带给我！
 <主菜单/@Main>
@@ -924,7 +924,7 @@ LEVEL < 100
 CHECKITEM FrozenBasherToken 1
 #ACT
 TAKEITEM FrozenBasherToken 1
-GIVEPET FrozenBasher 5 7
+GIVEPET 冰锤兽 5 7
 #ELSESAY
 你需要把令牌带给我！
 <主菜单/@Main>
@@ -938,7 +938,7 @@ LEVEL < 100
 CHECKITEM CrystalCrawlerToken 1
 #ACT
 TAKEITEM CrystalCrawlerToken 1
-GIVEPET CrystalCrawler 1 7
+GIVEPET 水晶爬虫 1 7
 #ELSESAY
 你需要把令牌带给我！
 <主菜单/@Main>
@@ -950,7 +950,7 @@ LEVEL < 100
 CHECKITEM DragonWarriorToken 1
 #ACT
 TAKEITEM DragonWarriorToken 1
-GIVEPET DragonWarrior 1 7
+GIVEPET 龙战士 1 7
 #ELSESAY
 你需要把令牌带给我！
 <主菜单/@Main>
@@ -962,7 +962,7 @@ LEVEL < 100
 CHECKITEM TwinHeadBeastToken 1
 #ACT
 TAKEITEM TwinHeadBeastToken 1
-GIVEPET TwinHeadBeast 1 7
+GIVEPET 双头兽 1 7
 #ELSESAY
 你需要把令牌带给我！
 <主菜单/@Main>
@@ -974,7 +974,7 @@ LEVEL < 100
 CHECKITEM BlackTortoiseToken 1
 #ACT
 TAKEITEM BlackTortoiseToken 1
-GIVEPET BlackTortoise 1 7
+GIVEPET 黑龟 1 7
 #ELSESAY
 你需要把令牌带给我！
 <主菜单/@Main>
@@ -986,7 +986,7 @@ LEVEL < 100
 CHECKITEM SnowLordToken 1
 #ACT
 TAKEITEM SnowLordToken 1
-GIVEPET SnowLord 1 7
+GIVEPET 雪王 1 7
 #ELSESAY
 你需要把令牌带给我！
 <主菜单/@Main>
@@ -998,7 +998,7 @@ LEVEL < 100
 CHECKITEM SeedingsClawToken 1
 #ACT
 TAKEITEM SeedingsClawToken 1
-GIVEPET SeedingsClaw 1 7
+GIVEPET 种子之爪 1 7
 #ELSESAY
 你需要把令牌带给我！
 <主菜单/@Main>
@@ -1010,7 +1010,7 @@ LEVEL < 100
 CHECKITEM SnowBlestToken 1
 #ACT
 TAKEITEM SnowBlestToken 1
-GIVEPET SnowBlest 1 7
+GIVEPET 雪灵兽 1 7
 #ELSESAY
 你需要把令牌带给我！
 <主菜单/@Main>

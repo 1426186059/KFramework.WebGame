@@ -28,7 +28,7 @@ GOTO @Main-1
 
 [@Meathelp]
 #SAY
-{肉/LightSteelBlue} 可从{Hens/Crimson}、{鹿/Crimson}、{Sheep/Crimson}和{Wolves/Crimson}身上获得。
+{肉/LightSteelBlue} 可从{母鸡/Crimson}、{鹿/Crimson}、{绵羊/Crimson}和{Wolves/Crimson}身上获得。
 要从上述任何动物身上取得肉，首先得把它杀死。
 杀死后，按住 ALT 键并用左键点击尸体数秒。
 随后你就能看到一块肉出现在背包里。
