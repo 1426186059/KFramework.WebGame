@@ -14,7 +14,7 @@ GOTO @Main-1
 有什么可以帮你的吗？
  
 <购买/@Buy> 酒。
-<Talk/@talk>
+<交谈/@talk>
 <关闭/@exit>
 
 [@Buy]

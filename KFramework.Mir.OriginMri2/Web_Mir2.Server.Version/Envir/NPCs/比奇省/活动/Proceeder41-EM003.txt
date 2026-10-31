@@ -15,7 +15,7 @@ GOTO @next1
 [@done2]
 #SAY
 你已经完成这个任务了！
-<Exit/@exit>
+<关闭/@exit>
 [@next1]
 #IF
 CHECK [501] 1
@@ -337,8 +337,8 @@ GOTO @say2
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start2>
-<I've had enough. Let me go./@oldman>
+<继续/@start2>
+<我受够了，放我走吧。/@oldman>
 [@start2]
 #ACT
 SET [501] 0
@@ -367,8 +367,8 @@ GOTO @say4
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start3>
-<I've had enough. Let me go./@oldman>
+<继续/@start3>
+<我受够了，放我走吧。/@oldman>
 [@start3]
 #ACT
 SET [502] 0
@@ -397,8 +397,8 @@ GOTO @say6
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start4>
-<I've had enough. Let me go./@oldman>
+<继续/@start4>
+<我受够了，放我走吧。/@oldman>
 [@start4]
 #ACT
 SET [503] 0
@@ -427,8 +427,8 @@ GOTO @say8
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start5>
-<I've had enough. Let me go./@oldman>
+<继续/@start5>
+<我受够了，放我走吧。/@oldman>
 [@start5]
 #ACT
 SET [504] 0
@@ -454,8 +454,8 @@ GOTO @say10
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start6>
-<I've had enough. Let me go./@oldman>
+<继续/@start6>
+<我受够了，放我走吧。/@oldman>
 [@start6]
 #ACT
 SET [505] 0
@@ -484,8 +484,8 @@ GOTO @say12
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start7>
-<I've had enough. Let me go./@oldman>
+<继续/@start7>
+<我受够了，放我走吧。/@oldman>
 [@start7]
 #ACT
 SET [506] 0
@@ -513,8 +513,8 @@ GOTO @say14
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start8>
-<I've had enough. Let me go./@oldman>
+<继续/@start8>
+<我受够了，放我走吧。/@oldman>
 [@start8]
 #ACT
 SET [507] 0
@@ -542,8 +542,8 @@ GOTO @say16
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start9>
-<I've had enough. Let me go./@oldman>
+<继续/@start9>
+<我受够了，放我走吧。/@oldman>
 [@start9]
 #ACT
 SET [508] 0
@@ -572,8 +572,8 @@ GOTO @say18
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start10>
-<I've had enough. Let me go./@oldman>
+<继续/@start10>
+<我受够了，放我走吧。/@oldman>
 [@start10]
 #ACT
 SET [509] 0
@@ -599,8 +599,8 @@ GOTO @say20
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start11>
-<I've had enough. Let me go./@oldman>
+<继续/@start11>
+<我受够了，放我走吧。/@oldman>
 [@start11]
 #ACT
 SET [510] 0
@@ -629,8 +629,8 @@ GOTO @say22
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start12>
-<I've had enough. Let me go./@oldman>
+<继续/@start12>
+<我受够了，放我走吧。/@oldman>
 [@start12]
 #ACT
 SET [511] 0
@@ -658,8 +658,8 @@ GOTO @say24
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start13>
-<I've had enough. Let me go./@oldman>
+<继续/@start13>
+<我受够了，放我走吧。/@oldman>
 [@start13]
 #ACT
 SET [512] 0
@@ -689,8 +689,8 @@ GOTO @say26
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start14>
-<I've had enough. Let me go./@oldman>
+<继续/@start14>
+<我受够了，放我走吧。/@oldman>
 [@start14]
 #ACT
 SET [513] 0
@@ -721,8 +721,8 @@ GOTO @say28
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start15>
-<I've had enough. Let me go./@oldman>
+<继续/@start15>
+<我受够了，放我走吧。/@oldman>
 [@start15]
 #ACT
 SET [514] 0
@@ -748,8 +748,8 @@ GOTO @say30
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start16>
-<I've had enough. Let me go./@oldman>
+<继续/@start16>
+<我受够了，放我走吧。/@oldman>
 [@start16]
 #ACT
 SET [515] 0
@@ -777,8 +777,8 @@ GOTO @say32
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start17>
-<I've had enough. Let me go./@oldman>
+<继续/@start17>
+<我受够了，放我走吧。/@oldman>
 [@start17]
 #ACT
 SET [516] 0
@@ -807,8 +807,8 @@ GOTO @say34
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start18>
-<I've had enough. Let me go./@oldman>
+<继续/@start18>
+<我受够了，放我走吧。/@oldman>
 [@start18]
 #ACT
 SET [517] 0
@@ -836,8 +836,8 @@ GOTO @say36
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start19>
-<I've had enough. Let me go./@oldman>
+<继续/@start19>
+<我受够了，放我走吧。/@oldman>
 [@start19]
 #ACT
 SET [518] 0
@@ -863,8 +863,8 @@ GOTO @say38
 你已经全部击败了。
 但还有更多关卡。
 要继续挑战吗？
-<Proceed./@start20>
-<I've had enough. Let me go./@oldman>
+<继续/@start20>
+<我受够了，放我走吧。/@oldman>
 
 [@start20]
 #ACT

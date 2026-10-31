@@ -36,7 +36,7 @@ Move 5 124 353
 你的{Gold/Gold}不足以使用我的服务！
 走开，别再来浪费我的时间！
 
-<Exit/@exit>
+<关闭/@exit>
 
 [@brdmove1]
 #IF
@@ -48,4 +48,4 @@ MOVE WHITEVILLAGE 67 93
 你的{Gold/Gold}不足以使用我的服务！
 走开，别再来浪费我的时间！
 
-<Exit/@exit>
+<关闭/@exit>
