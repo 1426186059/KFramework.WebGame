@@ -75,6 +75,7 @@ namespace Client.MirScenes
         public OptionDialog OptionDialog;
         public MenuDialog MenuDialog;
         public NPCDialog NPCDialog;
+        public NPCTeleporterDialog NPCTeleporterDialog;
         public NPCGoodsDialog NPCGoodsDialog;
         public NPCGoodsDialog NPCSubGoodsDialog;
         public NPCGoodsDialog NPCCraftGoodsDialog;
@@ -304,6 +305,13 @@ namespace Client.MirScenes
             OptionDialog = new OptionDialog { Parent = this, Visible = false };
             MenuDialog = new MenuDialog { Parent = this, Visible = false };
             NPCDialog = new NPCDialog { Parent = this, Visible = false };
+            NPCTeleporterDialog = new NPCTeleporterDialog { Parent = this, Visible = false };
+            NPCTeleporterDialog.OnTeleport += d =>
+            {
+                // TODO: 服务端尚无 deliver（传送员目的地）系统；此处应发送传送请求
+                // （新增 S/C 包下发 deliver 列表 + 客户端回传 deliverId，或复用 C.TeleportToNPC 携带 deliverId）。
+                NPCTeleporterDialog.Hide();
+            };
             NPCGoodsDialog = new NPCGoodsDialog(PanelType.Buy) { Parent = this, Visible = false };
             NPCSubGoodsDialog = new NPCGoodsDialog(PanelType.BuySub) { Parent = this, Visible = false };
             NPCCraftGoodsDialog = new NPCGoodsDialog(PanelType.Craft) { Parent = this, Visible = false };
