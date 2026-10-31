@@ -12,13 +12,13 @@
 1/1 特制魔法药
 1/1 太阳水
 1/2 太阳水
-1/3 太阳药水(M)
-1/5 太阳药水(M)
+1/3 太阳药水(男)
+1/5 太阳药水(男)
 
-1/10 Impact药(L)
-1/10 魔法药(L)
-1/10 道士药(L)
-1/10 暴药(L)
+1/10 Impact药(大)
+1/10 魔法药(大)
+1/10 道士药(大)
+1/10 暴药(大)
 
 1/15 BenedictionOil
 1/40 GoldenBenedictionOil
@@ -37,33 +37,33 @@
 1/450 龙血剑
 
 ;Weapon Rare
-1/900 黑虎Hammer
-1/900 杖之Lotus
+1/900 黑虎锤
+1/900 杖之莲
 1/900 Lethal弓
-1/900 Fan之Crane
+1/900 扇之Crane
 
 ;Armour
-1/20 Studded甲(M)
-1/20 Studded甲(F)
-1/20 钢甲(M)
-1/20 钢甲(F)
-1/20 龙袍(M)
-1/20 龙袍(F)
-1/20 Titan甲(M)
-1/20 Titan甲(F)
+1/20 Studded甲(男)
+1/20 Studded甲(女)
+1/20 钢甲(男)
+1/20 钢甲(女)
+1/20 龙袍(男)
+1/20 龙袍(女)
+1/20 泰坦甲(男)
+1/20 泰坦甲(女)
 
 ;Armour Rare
-1/500 黑虎甲(M)
-1/500 黑虎甲(F)
-1/500 Lotus甲(F)
-1/500 Lotus甲(M)
-1/500 Crane甲(F)
-1/500 Crane甲(M)
+1/500 黑虎甲(男)
+1/500 黑虎甲(女)
+1/500 莲甲(女)
+1/500 莲甲(男)
+1/500 Crane甲(女)
+1/500 Crane甲(男)
 
 ;Helmets
 1/545 ApesCrown
 1/550 Sparkling盔
-1/560 盔之Darkness
+1/560 盔之暗ness
 
 ;Helmets Rare
 1/400 AscendedHelmet
@@ -77,7 +77,7 @@
 1/400 AscendedNecklace
 
 ;Bracelets
-1/205 WildTitan护符
+1/205 Wild泰坦护符
 1/205 Enchanted护符
 1/205 五元素护符
 
@@ -103,7 +103,7 @@
 1/40 BoneBelt
 1/150 烈焰Grasp
 1/260 Sparkling腰带
-1/165 腰带之Darkness
+1/165 腰带之暗ness
 
 ;Belt Rare
 1/400 AscendedBelt
@@ -141,8 +141,8 @@
 1/1500 Counter攻击
 
 ;;Wizard
-1/60 FlameDisruptor
-1/500 Mirroring
+1/60 火焰Disruptor
+1/500 镜ing
 1/900 MeteorStrike
 1/1500 魔法Booster
 1/1500 冰Thrust
@@ -156,7 +156,7 @@
 1/1500 PetEnhancer
 
 ;;Assassion
-1/60 MPEater
+1/60 魔法Eater
 1/500 SwiftFeet
 1/900 暗Body
 1/1500 Hemorrhage

@@ -4,5 +4,5 @@ GIVEEXP 12000
 GIVEGOLD 120000
 ADDATTRIBUTEPOINT 2
 #INCLUDE [Events\Event\Event41.txt] @Main
-LOCALMESSAGE "I see you Mete Flying雕像!" Hint
+LOCALMESSAGE "我看见你遇见了Mete Flying雕像！" Hint
 

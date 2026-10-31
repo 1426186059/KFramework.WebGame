@@ -11,4 +11,4 @@ PARAM2 17
 PARAM3 21
 MONGEN 红月邪1 1
 MOVE D10071
-LocalMessage "Go slay him!" Hint
+LocalMessage "去击杀它！" Hint

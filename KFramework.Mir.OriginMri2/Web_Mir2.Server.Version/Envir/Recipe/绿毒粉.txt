@@ -8,4 +8,4 @@ Gold 100
 [Ingredients]
 乌木Fruit
 蜘蛛Teeth 2
-食人Leaf 4
+食人叶 4

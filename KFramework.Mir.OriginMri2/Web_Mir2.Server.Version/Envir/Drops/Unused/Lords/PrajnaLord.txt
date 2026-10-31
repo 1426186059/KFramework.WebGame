@@ -13,9 +13,9 @@
 1/1 太阳水
 1/1 太阳水
 1/2 太阳水
-1/1 太阳药水(M)
-1/1 太阳药水(M)
-1/2 太阳药水(M)
+1/1 太阳药水(男)
+1/1 太阳药水(男)
+1/2 太阳药水(男)
 
 1/2 BenedictionOil
 
@@ -34,10 +34,10 @@
 1/115 弓之Force
 1/115 刃之Sorcery
 1/115 天剑
-1/215 黑虎Hammer
+1/215 黑虎锤
 1/215 Lethal弓
-1/215 杖之Lotus
-1/215 Fan之Crane
+1/215 杖之莲
+1/215 扇之Crane
 1/215 Butchering刃
 1/3000 LordSlayerBlade
 1/3000 LordSlayerStaff
@@ -45,22 +45,22 @@
 1/3000 LordSlayerBlades
 
 ;Armours
-1/3000 LordSlayerArmour(M)
-1/3000 LordSlayerArmour(F)
+1/3000 LordSlayerArmour(男)
+1/3000 LordSlayerArmour(女)
 
 ;Helmet
 1/3000 LordSlayerHelmet
 
 ;Necklace
 1/45 爪项链
-1/45 Life项链
+1/45 生命项链
 1/45 珍珠项链
 1/60 绿Bead
-1/60 DemonicBells
+1/60 魔icBells
 1/60 魂项链
 1/95 Cuspid项链
 1/95 SorceryAnchor
-1/95 PurifiedMirror
+1/95 Purified镜
 1/197 邪Triangle
 1/197 CrossPurified
 1/197 Adamant项链
@@ -76,10 +76,10 @@
 1/25 之灵Reformer
 1/25 圣道轮
 1/25 BaekTa手套
-1/95 DualTitan护符
-1/95 SacredAngel护符
+1/95 Dual泰坦护符
+1/95 Sacred天使护符
 1/95 邪Whisp护符
-1/195 WildTitan护符
+1/195 Wild泰坦护符
 1/195 Enchanted护符
 1/195 五元素护符
 
@@ -133,7 +133,7 @@
 ;Warrior
 1/60 BladeStorm
 1/65 烈焰剑
-1/70 LionRoar
+1/70 狮Roar
 1/75 BladeStorm
 1/80 CrossHalf月
 1/85 刃Avalanche
@@ -145,9 +145,9 @@
 ;Wizard
 1/60 魔法盾
 1/65 冰暴
-1/70 FlameDisruptor
-1/75 Mirroring
-1/80 FlameField
+1/70 火焰Disruptor
+1/75 镜ing
+1/80 火焰Field
 1/85 Blizzard
 1/220 魔法Booster
 
@@ -172,20 +172,20 @@
 1/70 陷阱
 1/75 毒剑
 1/80 月轻
-1/120 MPEater
+1/120 魔法Eater
 1/210 SwiftFeet
 
 ;Archer
 1/40 双Shot
 1/45 Meditation
-1/50 ElementalShot
+1/50 元素alShot
 1/55 Explosive陷阱
 1/60 Concentration
 1/65 VampireShot
 1/70 召唤吸血蜘蛛
 1/75 BackStep
 1/80 DelayedExplosion
-1/120 ElementalBarrier
+1/120 元素alBarrier
 1/120 BindingShot
 1/210 召唤蟾蜍
 1/210 毒Shot

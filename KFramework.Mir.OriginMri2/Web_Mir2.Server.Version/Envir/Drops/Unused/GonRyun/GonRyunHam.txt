@@ -38,10 +38,10 @@
 1/1130 冰Marble
 1/1900 甲CastTool 
 1/1900 TranslucentCrystal
-1/1900 甲书(DC)
+1/1900 甲书(道术)
 1/1900 甲书(SC)
 1/1900 甲书(MC)
 1/1900 Rusty甲
-1/1900 Bookof之灵
+1/1900 书of之灵
 1/1900 Havoc水晶
 

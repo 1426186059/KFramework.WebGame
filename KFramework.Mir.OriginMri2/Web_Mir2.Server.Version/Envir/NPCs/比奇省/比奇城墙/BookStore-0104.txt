@@ -50,7 +50,7 @@ GOTO @Main-1
 [@War2]
 #SAY
 等级 35: 烈焰剑
-等级 36: LionRoar
+等级 36: 狮Roar
 等级 38: CrossHalf月
 等级 38: 刃Avalanche
 等级 39: 防护Field
@@ -84,9 +84,9 @@ GOTO @Main-1
 #SAY
 等级 33: Vampirism
 等级 35: IceStrom
-等级 38: FlameDisruptor
-等级 41: Mirroring
-等级 42: FlameField
+等级 38: 火焰Disruptor
+等级 41: 镜ing
+等级 42: 火焰Field
 等级 44: Blizzard
 等级 49: MeteorStrike
 等级 53: IceFreeze
@@ -96,7 +96,7 @@ GOTO @Main-1
 #SAY
 等级  7: Healing
 等级  9: 之灵剑
-等级 14: Poisoning
+等级 14: 毒ing
 等级 18: 魂火球
 等级 19: SummonSkeletonton
 等级 20: Hiding
@@ -107,7 +107,7 @@ GOTO @Main-1
 等级 21: MassHiding
 等级 22: 魂盾
 等级 23: Revelation
-等级 25: Blessed甲
+等级 25: 祝福ed甲
 等级 27: EnergyRepulsor
 等级 28: 陷阱Hexagon
 等级 30: Purification
@@ -142,7 +142,7 @@ GOTO @Main-1
 等级 33: 陷阱
 等级 34: 毒剑
 等级 36: 月轻
-等级 38: MPEater
+等级 38: 魔法Eater
 等级 40: SwiftFeet
 等级 46: 暗Body
 等级 50: MoonBlade
@@ -155,7 +155,7 @@ GOTO @Main-1
 等级 11: MentalState
 等级 14: 双Shot
 等级 19: Meditation
-等级 20: ElementalShot
+等级 20: 元素alShot
 等级 22: Explosive陷阱
 <更多/@Arc2> <返回/@helpBooks>
 
@@ -166,7 +166,7 @@ GOTO @Main-1
 等级 28: 召唤吸血蜘蛛
 等级 30: BackStep
 等级 31: DelayedExplosion
-等级 33: ElementalBarrier
+等级 33: 元素alBarrier
 等级 35: BindingShot
 <更多/@Arc3> <返回/@helpBooks>
 

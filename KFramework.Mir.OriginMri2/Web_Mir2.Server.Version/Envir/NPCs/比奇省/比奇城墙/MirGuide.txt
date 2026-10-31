@@ -220,11 +220,11 @@ GOTO @Main-1
 #SAY
 法师技能第 2 页：
 
-<魔法盾 31/@mshield>     <Mirroring 41/@mirror>
-<TurnUndead 32/@turnundead>     <FlameField 42/@ffield>
+<魔法盾 31/@mshield>     <镜ing 41/@mirror>
+<TurnUndead 32/@turnundead>     <火焰Field 42/@ffield>
 <Vampirism 33/@vamp>     <Blizzard 44/@blizzard>
 <冰暴 35/@冰暴>   <MeteorStrike 49/@meteor>
-<FlameDisruptor 38/@fdisrupt>
+<火焰Disruptor 38/@fdisrupt>
 
 <返回/@combat>                   <返回主菜单/@main>
 
@@ -234,8 +234,8 @@ GOTO @Main-1
 只有道士可以使用符咒或毒作为技能之一。
 
 <Healing 7/@healing>     <召唤骷髅 19/@summonskel>     <Revelation 23/@rev>
-<之灵剑 9/@ssword>     <Hiding 20/@hiding>     <Blessed甲 25/@blessarm>
-<Poisoning 14/@poison>     <MassHiding 21/@masshide>     <EnergyRepulsor 27/@energyrep>
+<之灵剑 9/@ssword>     <Hiding 20/@hiding>     <祝福ed甲 25/@blessarm>
+<毒ing 14/@poison>     <MassHiding 21/@masshide>     <EnergyRepulsor 27/@energyrep>
 <魂火球 18/@sfb>   <魂盾 22/@魂盾>   <陷阱Hexagon 28/@traphex>
 
 <返回/@combat>                         <下一页/@taoskill2>
@@ -260,7 +260,7 @@ GOTO @Main-1
 
 <Fatal剑 7/@Fatal剑>     <轻Body 27/@轻Body>     <毒剑 34/@毒剑>
 <双Slash 15/@双Slash>     <Heavenly剑 30/@Heavenly剑>     <月轻 36/@月轻>
-<Haste 20/@haste>     <火Burst 33/@火Burst>     <MPEater 38/@mpeater>
+<Haste 20/@haste>     <火Burst 33/@火Burst>     <魔法Eater 38/@mpeater>
 <FlashDash 25/@flashdash>     <陷阱 33/@陷阱>     <SwiftFeet 40/@swiftfeet>
 <暗Body 46/@暗Body>     <CresentSlash 50/@cresentslash>     <Hemorrhage 47/@hemorrhage>
 <月Mist 60/@月Mist>
@@ -277,9 +277,9 @@ GOTO @Main-1
 他们强健的体魄和致命的准星能让他们给任何
 被击中的人带来恐惧。
 
-<Focus 7/@focus>     <ElementalShot 20/@elementalshot>     <Backstep 30/@backstep>
+<Focus 7/@focus>     <元素alShot 20/@elementalshot>     <Backstep 30/@backstep>
 <StraightShot 9/@straightshot>     <Explosive陷阱 22/@Explosive陷阱>     <DelayedExplosion 31/@delayedexplosion>
-<MentalState 11/@mentalstate>     <Concentration 23/@concentration>     <ElementalBarrier 33/@elementalbarrier>
+<MentalState 11/@mentalstate>     <Concentration 23/@concentration>     <元素alBarrier 33/@elementalbarrier>
 <双Shot 14/@双Shot>     <VampireShot 26/@vampireshot>     <BindingShot 35/@bindingshot>
 <Meditation 19/@meditation>     <召唤吸血蜘蛛 28/@召唤吸血蜘蛛> <召唤蟾蜍 37/@召唤蟾蜍>
 
@@ -575,7 +575,7 @@ Vampirism (等级 33)
 
 [@fdisrupt]
 #SAY
-FlameDisruptor (等级 38)
+火焰Disruptor (等级 38)
 
 无论任何障碍（实体物体），在敌人身上制造
 一道强力的火柱。
@@ -585,7 +585,7 @@ FlameDisruptor (等级 38)
 
 [@mirror]
 #SAY
-Mirroring (等级 41)
+镜ing (等级 41)
 
 制造一个分身与你一同战斗。点击技能时分身出现，
 再点击一次则移除分身。
@@ -595,7 +595,7 @@ Mirroring (等级 41)
 
 [@ffield]
 #SAY
-FlameField (等级 42)
+火焰Field (等级 42)
 
 以可怕的火焰进行 5x5 范围攻击。（最多同时 24 个敌人）
 消耗魔法值。
@@ -644,7 +644,7 @@ Healing (等级 7)
 
 [@poison]
 #SAY
-Poisoning (等级 14)
+毒ing (等级 14)
 
 一种在一段时间内持续对敌人造成伤害的毒。
 消耗魔法值和毒粉。
@@ -714,7 +714,7 @@ Revelation (等级 23)
 
 [@blessarm]
 #SAY
-Blessed甲 (等级 25)
+祝福ed甲 (等级 25)
 
 提升物理防御力，并影响玩家周围的人。
 持续时间随熟练等级提升。
@@ -876,7 +876,7 @@ Meditation (等级 19)
 
 [@elementalshot]
 #SAY
-ElementalShot (等级 20)
+元素alShot (等级 20)
 
 高伤害魔法攻击。伤害随元素数量增加。
 若无元素则生成 2 个元素。若弓箭手等级更高，
@@ -937,7 +937,7 @@ DelayedExplosion (等级 31)
 
 [@elementalbarrier]
 #SAY
-ElementalBarrier (等级 33)
+元素alBarrier (等级 33)
 
 用元素屏障保护施法者。
 施放时元素越多，减伤越多。

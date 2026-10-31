@@ -4,19 +4,19 @@
 ;Fish Market
 1/500 Trout
 1/500 Walleye
-1/500 剑Fish
+1/500 剑鱼
 1/500 岩石Bass
 
 ;Armour
-1/200 甲书(DC)
+1/200 甲书(道术)
 1/200 甲书(MC)
 1/200 甲书(SC)
-1/200 甲书(ACC)
+1/200 甲书(防御C)
 1/200 Rusty甲
 1/200 Translucent
 1/200 Havoc水晶
-1/200 Bookof魔法
-1/200 Bookof之灵
+1/200 书of魔法
+1/200 书of之灵
 1/200 甲CastTool
 
 ;Gems

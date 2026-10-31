@@ -4,7 +4,7 @@
 ;Weapons
 1/15 龙剑
 1/40 战争之灵刃
-1/40 石BambooFan
+1/40 石Bamboo扇
 1/40 魔法Scythe
 1/40 冰冻刃
 1/40 轻盈弓
@@ -20,18 +20,18 @@
 1/500 弓之Force
 
 ;Armours
-1/55 钢甲(M) 
-1/55 钢甲(F) 
-1/55 龙袍(M) 
-1/55 龙袍(F) 
-1/55 Titan甲(M) 
-1/55 Titan甲(F) 
-1/55 皇家甲(M) 
-1/55 皇家甲(F) 
-1/55 Studded甲(M) 
-1/55 Studded甲(F) 
-1/1000 天甲(M) 
-1/1000 天甲(F) 
+1/55 钢甲(男) 
+1/55 钢甲(女) 
+1/55 龙袍(男) 
+1/55 龙袍(女) 
+1/55 泰坦甲(男) 
+1/55 泰坦甲(女) 
+1/55 皇家甲(男) 
+1/55 皇家甲(女) 
+1/55 Studded甲(男) 
+1/55 Studded甲(女) 
+1/1000 天甲(男) 
+1/1000 天甲(女) 
 
 ;Helmets
 1/5 巫医盔
@@ -51,8 +51,8 @@
 1/180 巨蓝狐项圈
 
 ;Bracelets
-1/500 DualTitan护符
-1/500 SacredAngel护符
+1/500 Dual泰坦护符
+1/500 Sacred天使护符
 1/500 邪Whisp护符
 1/110 紫狐手镯
 1/110 红狐手镯
@@ -107,14 +107,14 @@
 1/2 特制魔法药
 1/1 太阳水
 1/1 太阳水
-1/1 太阳药水(M)
-1/1 太阳药水(M)
-1/2 太阳药水(M)
-1/2 太阳药水(M)
-1/2 太阳药水(M)
-1/30 Impact药(L)
-1/30 魔法药(L)
-1/30 道士药(L)
+1/1 太阳药水(男)
+1/1 太阳药水(男)
+1/2 太阳药水(男)
+1/2 太阳药水(男)
+1/2 太阳药水(男)
+1/30 Impact药(大)
+1/30 魔法药(大)
+1/30 道士药(大)
 1/2 BenedictionOil
 1/2 BenedictionOil
 1/8 BenedictionOil
@@ -139,21 +139,21 @@
 1/50 毒剑
 1/175 FlashDash
 1/30 CrossHalf月
-1/30 FlameDisruptor
+1/30 火焰Disruptor
 1/30 陷阱
 1/30 UltimateEnhancer
 1/30 EnergyRepulsor
 1/50 双生龙兽刃
 1/50 Purification
-1/50 LionRoar
-1/50 Mirroring
+1/50 狮Roar
+1/50 镜ing
 1/50 月轻
 1/50 Entrapment
 1/50 Hallucination
 1/50 Vampirism
 1/50 mpeater
 1/200 召唤圣精灵
-1/200 FlameField
+1/200 火焰Field
 1/50 刃Avalanche
 1/200 防护Field
 1/200 诅咒

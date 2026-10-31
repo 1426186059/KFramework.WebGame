@@ -9,8 +9,8 @@
 1/2 特制魔法药
 1/1 太阳水
 1/1 太阳水
-1/1 太阳药水(M)
-1/1 太阳药水(M)
+1/1 太阳药水(男)
+1/1 太阳药水(男)
 1/1 太阳水
 1/1 太阳水
 1/2 太阳水
@@ -38,10 +38,10 @@
 1/800 冰封军刀
 1/800 Conqueror矛
 1/800 Bastard剑
-1/1000 黑虎Hammer
+1/1000 黑虎锤
 1/1000 Lethal弓
-1/1000 杖之Lotus
-1/1000 Fan之Crane
+1/1000 杖之莲
+1/1000 扇之Crane
 
 ;Weapons Rare
 1/1400 地狱阎罗刃
@@ -54,18 +54,18 @@
 1/6000 LordSlayerBlades
 
 ;Armour
-1/300 黑虎甲(M)
-1/300 黑虎甲(F)
-1/300 Lotus甲(M)
-1/300 Lotus甲(F)
-1/300 Crane甲(M)
-1/300 Crane甲(F)
+1/300 黑虎甲(男)
+1/300 黑虎甲(女)
+1/300 莲甲(男)
+1/300 莲甲(女)
+1/300 Crane甲(男)
+1/300 Crane甲(女)
 
 ;Armour Rare
-1/1000 TrollsRobe(M)
-1/1000 TrollsRobe(F)
-1/6000 LordSlayerArmour(M)
-1/6000 LordSlayerArmour(F)
+1/1000 TrollsRobe(男)
+1/1000 TrollsRobe(女)
+1/6000 LordSlayerArmour(男)
+1/6000 LordSlayerArmour(女)
 
 ;Helmets
 1/40 巨盔
@@ -84,7 +84,7 @@
 ;Necklace
 1/100 Cuspid项链
 1/100 SorceryAnchor
-1/100 PurifiedMirror
+1/100 Purified镜
 1/205 邪Triangle
 1/205 CrossPurified
 1/205 Adamant项链
@@ -98,10 +98,10 @@
 1/6000 LordSlayerNecklace
 
 ;Bracelets
-1/100 DualTitan护符
-1/100 SacredAngel护符
+1/100 Dual泰坦护符
+1/100 Sacred天使护符
 1/100 邪Whisp护符
-1/205 WildTitan护符
+1/205 Wild泰坦护符
 1/205 Enchanted护符
 1/205 五元素护符
 1/600 DefenderGlove
@@ -171,7 +171,7 @@
 ;Books
 1/100 SliceNDice
 1/200 召唤圣精灵
-1/200 Mirroring
+1/200 镜ing
 1/200 SwiftFeet
 1/200 刃Avalanche
 1/500 防护Field

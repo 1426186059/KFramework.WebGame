@@ -16,12 +16,12 @@
 1/2 大魔法药 LV1
 1/1 大金创药 LV1
 1/1 大魔法药 LV1
-1/1 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
-1/2 太阳药水(M) LV1
+1/1 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
+1/2 太阳药水(男) LV1
 
 
 ;Other 
@@ -37,7 +37,7 @@
 1/50 JudgementMace LV1 
 1/50 战争法师杖 LV1
 1/50 魂泉杖 LV1 
-1/50 刃之Darkness LV1
+1/50 刃之暗ness LV1
 
 
 ;Weapons Rare
@@ -45,23 +45,23 @@
 1/225 战争之灵刃 LV1 
 1/225 轻盈弓 LV1
 1/225 魔法Scythe LV1
-1/225 石BambooFan LV1
+1/225 石Bamboo扇 LV1
 
 ;Armour
-1/40 锻造甲(M) LV1
-1/40 锻造甲(F) LV1
-1/40 铁甲(M) LV1
-1/40 铁甲(F) LV1
-1/40 Wizard袍(M) LV1
-1/40 WizardRobe(F) LV1
-1/40 珍珠甲(M) LV1
-1/40 珍珠甲(F) LV1
-1/40 远古甲(M) LV1
-1/40 远古甲(F) LV1
+1/40 锻造甲(男) LV1
+1/40 锻造甲(女) LV1
+1/40 铁甲(男) LV1
+1/40 铁甲(女) LV1
+1/40 Wizard袍(男) LV1
+1/40 WizardRobe(女) LV1
+1/40 珍珠甲(男) LV1
+1/40 珍珠甲(女) LV1
+1/40 远古甲(男) LV1
+1/40 远古甲(女) LV1
 
 ;Armour Rare
-1/10000 天甲(M) LV1
-1/10000 天甲(F) LV1
+1/10000 天甲(男) LV1
+1/10000 天甲(女) LV1
 
 ;Helmets
 1/10 骷髅盔 LV1 
@@ -80,11 +80,11 @@
 1/15 BambooPipe LV1 
 1/35 爪项链 LV1
 1/35 珍珠项链 LV1 
-1/35 Life项链 LV1 
+1/35 生命项链 LV1 
 1/70 Gale项链 LV1
 
 ;Necklace Rare
-1/110 红Orchid项链 LV1 
+1/110 红兰项链 LV1 
 1/110 红花项链 LV1 
 
 ;Bracelets
@@ -96,18 +96,18 @@
 1/600 HangMa轮 LV1
 
 ;Bracelets Rare
-1/100 红Orchid手镯 LV1 
+1/100 红兰手镯 LV1 
 1/100 红花手镯 LV1 
 1/800 MajesticWheel LV1
 
 
 ;Rings Rare
-1/120 红Orchid戒 LV1 
+1/120 红兰戒 LV1 
 1/120 红花戒 LV1
 1/800 MajesticRing LV1
 1/600 Boundless戒 LV1
 1/600 Violet戒 LV1
-1/600 Titan戒 LV1
+1/600 泰坦戒 LV1
 
 
 ;Belts
@@ -134,9 +134,9 @@
 
 
 ;Stone
-1/40 DC石(L) LV1
-1/40 MC石(L) LV1
-1/40 SC石(L) LV1
+1/40 道术石(大) LV1
+1/40 MC石(大) LV1
+1/40 SC石(大) LV1
 
 
 ;Level2
@@ -157,12 +157,12 @@
 1/2 大魔法药 LV2
 1/1 大金创药 LV2
 1/1 大魔法药 LV2
-1/1 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
-1/2 太阳药水(M) LV2
+1/1 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
+1/2 太阳药水(男) LV2
 
 
 ;Other 
@@ -178,7 +178,7 @@
 1/50 JudgementMace LV2 
 1/50 战争法师杖 LV2
 1/50 魂泉杖 LV2 
-1/50 刃之Darkness LV2
+1/50 刃之暗ness LV2
 
 
 ;Weapons Rare
@@ -186,23 +186,23 @@
 1/225 战争之灵刃 LV2 
 1/225 魔法Scythe LV2
 1/225 轻盈弓 LV2
-1/225 石BambooFan LV2
+1/225 石Bamboo扇 LV2
 
 ;Armour
-1/40 锻造甲(M) LV2
-1/40 锻造甲(F) LV2
-1/40 铁甲(M) LV2
-1/40 铁甲(F) LV2
-1/40 Wizard袍(M) LV2
-1/40 WizardRobe(F) LV2
-1/40 珍珠甲(M) LV2
-1/40 珍珠甲(F) LV2
-1/40 远古甲(M) LV2
-1/40 远古甲(F) LV2
+1/40 锻造甲(男) LV2
+1/40 锻造甲(女) LV2
+1/40 铁甲(男) LV2
+1/40 铁甲(女) LV2
+1/40 Wizard袍(男) LV2
+1/40 WizardRobe(女) LV2
+1/40 珍珠甲(男) LV2
+1/40 珍珠甲(女) LV2
+1/40 远古甲(男) LV2
+1/40 远古甲(女) LV2
 
 ;Armour Rare
-1/10000 天甲(M) LV2
-1/10000 天甲(F) LV2
+1/10000 天甲(男) LV2
+1/10000 天甲(女) LV2
 
 ;Helmets
 1/10 骷髅盔 LV2 
@@ -221,11 +221,11 @@
 1/15 BambooPipe LV2 
 1/35 爪项链 LV2
 1/35 珍珠项链 LV2 
-1/35 Life项链 LV2 
+1/35 生命项链 LV2 
 1/70 Gale项链 LV2
 
 ;Necklace Rare
-1/110 红Orchid项链 LV2 
+1/110 红兰项链 LV2 
 1/110 红花项链 LV2 
 
 ;Bracelets
@@ -237,18 +237,18 @@
 1/600 HangMa轮 LV2
 
 ;Bracelets Rare
-1/100 红Orchid手镯 LV2 
+1/100 红兰手镯 LV2 
 1/100 红花手镯 LV2 
 1/800 MajesticWheel LV2
 
 
 ;Rings Rare
-1/120 红Orchid戒 LV2 
+1/120 红兰戒 LV2 
 1/120 红花戒 LV2
 1/800 MajesticRing LV2
 1/600 Boundless戒 LV2
 1/600 Violet戒 LV2
-1/600 Titan戒 LV2
+1/600 泰坦戒 LV2
 
 
 ;Belts
@@ -275,9 +275,9 @@
 
 
 ;Stone
-1/40 DC石(L) LV2
-1/40 MC石(L) LV2
-1/40 SC石(L) LV2
+1/40 道术石(大) LV2
+1/40 MC石(大) LV2
+1/40 SC石(大) LV2
 
 ;Level3
 ;Gold
@@ -297,12 +297,12 @@
 1/2 大魔法药 LV3
 1/1 大金创药 LV3
 1/1 大魔法药 LV3
-1/1 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
-1/2 太阳药水(M) LV3
+1/1 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
+1/2 太阳药水(男) LV3
 
 
 ;Other 
@@ -318,7 +318,7 @@
 1/50 JudgementMace LV3 
 1/50 战争法师杖 LV3
 1/50 魂泉杖 LV3 
-1/50 刃之Darkness LV3
+1/50 刃之暗ness LV3
 
 
 ;Weapons Rare
@@ -326,23 +326,23 @@
 1/225 轻盈弓 LV3
 1/225 战争之灵刃 LV3 
 1/225 魔法Scythe LV3
-1/225 石BambooFan LV3
+1/225 石Bamboo扇 LV3
 
 ;Armour
-1/40 锻造甲(M) LV3
-1/40 锻造甲(F) LV3
-1/40 铁甲(M) LV3
-1/40 铁甲(F) LV3
-1/40 Wizard袍(M) LV3
-1/40 WizardRobe(F) LV3
-1/40 珍珠甲(M) LV3
-1/40 珍珠甲(F) LV3
-1/40 远古甲(M) LV3
-1/40 远古甲(F) LV3
+1/40 锻造甲(男) LV3
+1/40 锻造甲(女) LV3
+1/40 铁甲(男) LV3
+1/40 铁甲(女) LV3
+1/40 Wizard袍(男) LV3
+1/40 WizardRobe(女) LV3
+1/40 珍珠甲(男) LV3
+1/40 珍珠甲(女) LV3
+1/40 远古甲(男) LV3
+1/40 远古甲(女) LV3
 
 ;Armour Rare
-1/10000 天甲(M) LV3
-1/10000 天甲(F) LV3
+1/10000 天甲(男) LV3
+1/10000 天甲(女) LV3
 
 ;Helmets
 1/10 骷髅盔 LV3 
@@ -361,11 +361,11 @@
 1/15 BambooPipe LV3 
 1/35 爪项链 LV3
 1/35 珍珠项链 LV3 
-1/35 Life项链 LV3 
+1/35 生命项链 LV3 
 1/70 Gale项链 LV3
 
 ;Necklace Rare
-1/110 红Orchid项链 LV3 
+1/110 红兰项链 LV3 
 1/110 红花项链 LV3 
 
 ;Bracelets
@@ -377,18 +377,18 @@
 1/600 HangMa轮 LV3
 
 ;Bracelets Rare
-1/100 红Orchid手镯 LV3 
+1/100 红兰手镯 LV3 
 1/100 红花手镯 LV3 
 1/800 MajesticWheel LV3
 
 
 ;Rings Rare
-1/120 红Orchid戒 LV3 
+1/120 红兰戒 LV3 
 1/120 红花戒 LV3
 1/800 MajesticRing LV3
 1/600 Boundless戒 LV3
 1/600 Violet戒 LV3
-1/600 Titan戒 LV3
+1/600 泰坦戒 LV3
 
 
 ;Belts
@@ -415,9 +415,9 @@
 
 
 ;Stone
-1/40 DC石(L) LV3
-1/40 MC石(L) LV3
-1/40 SC石(L) LV3
+1/40 道术石(大) LV3
+1/40 MC石(大) LV3
+1/40 SC石(大) LV3
 
 
 ;Level4
@@ -438,12 +438,12 @@
 1/2 大魔法药 LV4
 1/1 大金创药 LV4
 1/1 大魔法药 LV4
-1/1 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
-1/2 太阳药水(M) LV4
+1/1 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
+1/2 太阳药水(男) LV4
 
 
 ;Other 
@@ -459,7 +459,7 @@
 1/50 JudgementMace LV4 
 1/50 战争法师杖 LV4
 1/50 魂泉杖 LV4 
-1/50 刃之Darkness LV4
+1/50 刃之暗ness LV4
 
 
 ;Weapons Rare
@@ -467,23 +467,23 @@
 1/225 轻盈弓 LV4
 1/225 战争之灵刃 LV4 
 1/225 魔法Scythe LV4
-1/225 石BambooFan LV4
+1/225 石Bamboo扇 LV4
 
 ;Armour
-1/40 锻造甲(M) LV4
-1/40 锻造甲(F) LV4
-1/40 铁甲(M) LV4
-1/40 铁甲(F) LV4
-1/40 Wizard袍(M) LV4
-1/40 WizardRobe(F) LV4
-1/40 珍珠甲(M) LV4
-1/40 珍珠甲(F) LV4
-1/40 远古甲(M) LV4
-1/40 远古甲(F) LV4
+1/40 锻造甲(男) LV4
+1/40 锻造甲(女) LV4
+1/40 铁甲(男) LV4
+1/40 铁甲(女) LV4
+1/40 Wizard袍(男) LV4
+1/40 WizardRobe(女) LV4
+1/40 珍珠甲(男) LV4
+1/40 珍珠甲(女) LV4
+1/40 远古甲(男) LV4
+1/40 远古甲(女) LV4
 
 ;Armour Rare
-1/10000 天甲(M) LV4
-1/10000 天甲(F) LV4
+1/10000 天甲(男) LV4
+1/10000 天甲(女) LV4
 
 ;Helmets
 1/10 骷髅盔 LV4 
@@ -502,11 +502,11 @@
 1/15 BambooPipe LV4 
 1/35 爪项链 LV4
 1/35 珍珠项链 LV4 
-1/35 Life项链 LV4 
+1/35 生命项链 LV4 
 1/70 Gale项链 LV4
 
 ;Necklace Rare
-1/110 红Orchid项链 LV4 
+1/110 红兰项链 LV4 
 1/110 红花项链 LV4 
 
 ;Bracelets
@@ -518,18 +518,18 @@
 1/600 HangMa轮 LV4
 
 ;Bracelets Rare
-1/100 红Orchid手镯 LV4 
+1/100 红兰手镯 LV4 
 1/100 红花手镯 LV4 
 1/800 MajesticWheel LV4
 
 
 ;Rings Rare
-1/120 红Orchid戒 LV4 
+1/120 红兰戒 LV4 
 1/120 红花戒 LV4
 1/800 MajesticRing LV4
 1/600 Boundless戒 LV4
 1/600 Violet戒 LV4
-1/600 Titan戒 LV4
+1/600 泰坦戒 LV4
 
 
 ;Belts
@@ -556,9 +556,9 @@
 
 
 ;Stone
-1/40 DC石(L) LV4
-1/40 MC石(L) LV4
-1/40 SC石(L) LV4
+1/40 道术石(大) LV4
+1/40 MC石(大) LV4
+1/40 SC石(大) LV4
 
 ;Level5
 ;Gold
@@ -578,12 +578,12 @@
 1/2 大魔法药 LV5
 1/1 大金创药 LV5
 1/1 大魔法药 LV5
-1/1 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
-1/2 太阳药水(M) LV5
+1/1 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
+1/2 太阳药水(男) LV5
 
 
 ;Other 
@@ -599,7 +599,7 @@
 1/50 JudgementMace LV5 
 1/50 战争法师杖 LV5
 1/50 魂泉杖 LV5 
-1/50 刃之Darkness LV5
+1/50 刃之暗ness LV5
 
 
 ;Weapons Rare
@@ -607,23 +607,23 @@
 1/225 战争之灵刃 LV5 
 1/225 轻盈弓 LV5
 1/225 魔法Scythe LV5
-1/225 石BambooFan LV5
+1/225 石Bamboo扇 LV5
 
 ;Armour
-1/40 锻造甲(M) LV5
-1/40 锻造甲(F) LV5
-1/40 铁甲(M) LV5
-1/40 铁甲(F) LV5
-1/40 Wizard袍(M) LV5
-1/40 WizardRobe(F) LV5
-1/40 珍珠甲(M) LV5
-1/40 珍珠甲(F) LV5
-1/40 远古甲(M) LV5
-1/40 远古甲(F) LV5
+1/40 锻造甲(男) LV5
+1/40 锻造甲(女) LV5
+1/40 铁甲(男) LV5
+1/40 铁甲(女) LV5
+1/40 Wizard袍(男) LV5
+1/40 WizardRobe(女) LV5
+1/40 珍珠甲(男) LV5
+1/40 珍珠甲(女) LV5
+1/40 远古甲(男) LV5
+1/40 远古甲(女) LV5
 
 ;Armour Rare
-1/10000 天甲(M) LV5
-1/10000 天甲(F) LV5
+1/10000 天甲(男) LV5
+1/10000 天甲(女) LV5
 
 ;Helmets
 1/10 骷髅盔 LV5 
@@ -642,11 +642,11 @@
 1/15 BambooPipe LV5 
 1/35 爪项链 LV5
 1/35 珍珠项链 LV5 
-1/35 Life项链 LV5 
+1/35 生命项链 LV5 
 1/70 Gale项链 LV5
 
 ;Necklace Rare
-1/110 红Orchid项链 LV5 
+1/110 红兰项链 LV5 
 1/110 红花项链 LV5 
 
 ;Bracelets
@@ -658,18 +658,18 @@
 1/600 HangMa轮 LV5
 
 ;Bracelets Rare
-1/100 红Orchid手镯 LV5 
+1/100 红兰手镯 LV5 
 1/100 红花手镯 LV5 
 1/800 MajesticWheel LV5
 
 
 ;Rings Rare
-1/120 红Orchid戒 LV5 
+1/120 红兰戒 LV5 
 1/120 红花戒 LV5
 1/800 MajesticRing LV5
 1/600 Boundless戒 LV5
 1/600 Violet戒 LV5
-1/600 Titan戒 LV5
+1/600 泰坦戒 LV5
 
 
 ;Belts
@@ -696,9 +696,9 @@
 
 
 ;Stone
-1/40 DC石(L) LV5
-1/40 MC石(L) LV5
-1/40 SC石(L) LV5
+1/40 道术石(大) LV5
+1/40 MC石(大) LV5
+1/40 SC石(大) LV5
 
 
 ;Level6
@@ -719,12 +719,12 @@
 1/2 大魔法药 LV6
 1/1 大金创药 LV6
 1/1 大魔法药 LV6
-1/1 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
-1/2 太阳药水(M) LV6
+1/1 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
+1/2 太阳药水(男) LV6
 
 
 ;Other 
@@ -740,7 +740,7 @@
 1/50 JudgementMace LV6 
 1/50 战争法师杖 LV6
 1/50 魂泉杖 LV6 
-1/50 刃之Darkness LV6
+1/50 刃之暗ness LV6
 
 
 ;Weapons Rare
@@ -748,23 +748,23 @@
 1/225 轻盈弓 LV6
 1/225 战争之灵刃 LV6 
 1/225 魔法Scythe LV6
-1/225 石BambooFan LV6
+1/225 石Bamboo扇 LV6
 
 ;Armour
-1/40 锻造甲(M) LV6
-1/40 锻造甲(F) LV6
-1/40 铁甲(M) LV6
-1/40 铁甲(F) LV6
-1/40 Wizard袍(M) LV6
-1/40 WizardRobe(F) LV6
-1/40 珍珠甲(M) LV6
-1/40 珍珠甲(F) LV6
-1/40 远古甲(M) LV6
-1/40 远古甲(F) LV6
+1/40 锻造甲(男) LV6
+1/40 锻造甲(女) LV6
+1/40 铁甲(男) LV6
+1/40 铁甲(女) LV6
+1/40 Wizard袍(男) LV6
+1/40 WizardRobe(女) LV6
+1/40 珍珠甲(男) LV6
+1/40 珍珠甲(女) LV6
+1/40 远古甲(男) LV6
+1/40 远古甲(女) LV6
 
 ;Armour Rare
-1/10000 天甲(M) LV6
-1/10000 天甲(F) LV6
+1/10000 天甲(男) LV6
+1/10000 天甲(女) LV6
 
 ;Helmets
 1/10 骷髅盔 LV6 
@@ -783,11 +783,11 @@
 1/15 BambooPipe LV6 
 1/35 爪项链 LV6
 1/35 珍珠项链 LV6 
-1/35 Life项链 LV6 
+1/35 生命项链 LV6 
 1/70 Gale项链 LV6
 
 ;Necklace Rare
-1/110 红Orchid项链 LV6 
+1/110 红兰项链 LV6 
 1/110 红花项链 LV6 
 
 ;Bracelets
@@ -799,18 +799,18 @@
 1/600 HangMa轮 LV6
 
 ;Bracelets Rare
-1/100 红Orchid手镯 LV6 
+1/100 红兰手镯 LV6 
 1/100 红花手镯 LV6 
 1/800 MajesticWheel LV6
 
 
 ;Rings Rare
-1/120 红Orchid戒 LV6 
+1/120 红兰戒 LV6 
 1/120 红花戒 LV6
 1/800 MajesticRing LV6
 1/600 Boundless戒 LV6
 1/600 Violet戒 LV6
-1/600 Titan戒 LV6
+1/600 泰坦戒 LV6
 
 
 ;Belts
@@ -837,9 +837,9 @@
 
 
 ;Stone
-1/40 DC石(L) LV6
-1/40 MC石(L) LV6
-1/40 SC石(L) LV6
+1/40 道术石(大) LV6
+1/40 MC石(大) LV6
+1/40 SC石(大) LV6
 
 
 ;Level6
@@ -860,12 +860,12 @@
 1/2 大魔法药 LV7
 1/1 大金创药 LV7
 1/1 大魔法药 LV7
-1/1 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
-1/2 太阳药水(M) LV7
+1/1 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
+1/2 太阳药水(男) LV7
 
 
 ;Other 
@@ -881,7 +881,7 @@
 1/50 JudgementMace LV7 
 1/50 战争法师杖 LV7
 1/50 魂泉杖 LV7 
-1/50 刃之Darkness LV7
+1/50 刃之暗ness LV7
 
 
 ;Weapons Rare
@@ -889,23 +889,23 @@
 1/225 战争之灵刃 LV7 
 1/225 轻盈弓 LV7
 1/225 魔法Scythe LV7
-1/225 石BambooFan LV7
+1/225 石Bamboo扇 LV7
 
 ;Armour
-1/40 锻造甲(M) LV7
-1/40 锻造甲(F) LV7
-1/40 铁甲(M) LV7
-1/40 铁甲(F) LV7
-1/40 Wizard袍(M) LV7
-1/40 WizardRobe(F) LV7
-1/40 珍珠甲(M) LV7
-1/40 珍珠甲(F) LV7
-1/40 远古甲(M) LV7
-1/40 远古甲(F) LV7
+1/40 锻造甲(男) LV7
+1/40 锻造甲(女) LV7
+1/40 铁甲(男) LV7
+1/40 铁甲(女) LV7
+1/40 Wizard袍(男) LV7
+1/40 WizardRobe(女) LV7
+1/40 珍珠甲(男) LV7
+1/40 珍珠甲(女) LV7
+1/40 远古甲(男) LV7
+1/40 远古甲(女) LV7
 
 ;Armour Rare
-1/10000 天甲(M) LV7
-1/10000 天甲(F) LV7
+1/10000 天甲(男) LV7
+1/10000 天甲(女) LV7
 
 ;Helmets
 1/10 骷髅盔 LV7 
@@ -924,11 +924,11 @@
 1/15 BambooPipe LV7 
 1/35 爪项链 LV7
 1/35 珍珠项链 LV7 
-1/35 Life项链 LV7 
+1/35 生命项链 LV7 
 1/70 Gale项链 LV7
 
 ;Necklace Rare
-1/110 红Orchid项链 LV7 
+1/110 红兰项链 LV7 
 1/110 红花项链 LV7 
 
 ;Bracelets
@@ -940,18 +940,18 @@
 1/600 HangMa轮 LV7
 
 ;Bracelets Rare
-1/100 红Orchid手镯 LV7 
+1/100 红兰手镯 LV7 
 1/100 红花手镯 LV7 
 1/800 MajesticWheel LV7
 
 
 ;Rings Rare
-1/120 红Orchid戒 LV7 
+1/120 红兰戒 LV7 
 1/120 红花戒 LV7
 1/800 MajesticRing LV7
 1/600 Boundless戒 LV7
 1/600 Violet戒 LV7
-1/600 Titan戒 LV7
+1/600 泰坦戒 LV7
 
 
 ;Belts
@@ -978,9 +978,9 @@
 
 
 ;Stone
-1/40 DC石(L) LV7
-1/40 MC石(L) LV7
-1/40 SC石(L) LV7
+1/40 道术石(大) LV7
+1/40 MC石(大) LV7
+1/40 SC石(大) LV7
 
 ;Level8
 ;Gold
@@ -1000,12 +1000,12 @@
 1/2 大魔法药 LV8
 1/1 大金创药 LV8
 1/1 大魔法药 LV8
-1/1 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
-1/2 太阳药水(M) LV8
+1/1 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
+1/2 太阳药水(男) LV8
 
 
 ;Other 
@@ -1021,7 +1021,7 @@
 1/50 JudgementMace LV8 
 1/50 战争法师杖 LV8
 1/50 魂泉杖 LV8 
-1/50 刃之Darkness LV8
+1/50 刃之暗ness LV8
 
 
 ;Weapons Rare
@@ -1029,23 +1029,23 @@
 1/225 战争之灵刃 LV8 
 1/225 轻盈弓 LV8
 1/225 魔法Scythe LV8
-1/225 石BambooFan LV8
+1/225 石Bamboo扇 LV8
 
 ;Armour
-1/40 锻造甲(M) LV8
-1/40 锻造甲(F) LV8
-1/40 铁甲(M) LV8
-1/40 铁甲(F) LV8
-1/40 Wizard袍(M) LV8
-1/40 WizardRobe(F) LV8
-1/40 珍珠甲(M) LV8
-1/40 珍珠甲(F) LV8
-1/40 远古甲(M) LV8
-1/40 远古甲(F) LV8
+1/40 锻造甲(男) LV8
+1/40 锻造甲(女) LV8
+1/40 铁甲(男) LV8
+1/40 铁甲(女) LV8
+1/40 Wizard袍(男) LV8
+1/40 WizardRobe(女) LV8
+1/40 珍珠甲(男) LV8
+1/40 珍珠甲(女) LV8
+1/40 远古甲(男) LV8
+1/40 远古甲(女) LV8
 
 ;Armour Rare
-1/10000 天甲(M) LV8
-1/10000 天甲(F) LV8
+1/10000 天甲(男) LV8
+1/10000 天甲(女) LV8
 
 ;Helmets
 1/10 骷髅盔 LV8 
@@ -1064,11 +1064,11 @@
 1/15 BambooPipe LV8 
 1/35 爪项链 LV8
 1/35 珍珠项链 LV8 
-1/35 Life项链 LV8 
+1/35 生命项链 LV8 
 1/70 Gale项链 LV8
 
 ;Necklace Rare
-1/110 红Orchid项链 LV8 
+1/110 红兰项链 LV8 
 1/110 红花项链 LV8 
 
 ;Bracelets
@@ -1080,18 +1080,18 @@
 1/600 HangMa轮 LV8
 
 ;Bracelets Rare
-1/100 红Orchid手镯 LV8 
+1/100 红兰手镯 LV8 
 1/100 红花手镯 LV8 
 1/800 MajesticWheel LV8
 
 
 ;Rings Rare
-1/120 红Orchid戒 LV8 
+1/120 红兰戒 LV8 
 1/120 红花戒 LV8
 1/800 MajesticRing LV8
 1/600 Boundless戒 LV8
 1/600 Violet戒 LV8
-1/600 Titan戒 LV8
+1/600 泰坦戒 LV8
 
 
 ;Belts
@@ -1118,6 +1118,6 @@
 
 
 ;Stone
-1/40 DC石(L) LV8
-1/40 MC石(L) LV8
-1/40 SC石(L) LV8
+1/40 道术石(大) LV8
+1/40 MC石(大) LV8
+1/40 SC石(大) LV8

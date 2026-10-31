@@ -9,8 +9,8 @@
 1/1 特制魔法药
 1/1 太阳水
 1/1 太阳水
-1/1 太阳药水(M)
-1/1 太阳药水(M)
+1/1 太阳药水(男)
+1/1 太阳药水(男)
 
 1/1 太阳水
 1/1 太阳水
@@ -19,9 +19,9 @@
 1/1 太阳水
 1/2 太阳水
 
-1/100 Impact药(L)
-1/100 魔法药(L)
-1/100 道士药(L)
+1/100 Impact药(大)
+1/100 魔法药(大)
+1/100 道士药(大)
 
 1/1 BenedictionOil
 1/10 GoldenBenedictionOil
@@ -35,7 +35,7 @@
 1/70 战争之灵刃
 1/70 轻盈弓
 1/70 魔法Scythe
-1/70 石BambooFan
+1/70 石Bamboo扇
 1/40 冰冻刃
 1/60 黑龙斩杀
 1/60 受诅凶煞弓
@@ -50,7 +50,7 @@
 1/450 刃之Sorcery
 1/450 天剑
 1/450 刃之Magi
-1/150 Dragon's皇家刃
+1/150 龙's皇家刃
 1/600 TagandaSlayer
 1/600 TagandaStaff
 1/600 TagandaFan 
@@ -62,36 +62,36 @@
 
 
 ;Armour
-1/30 Studded甲(M)
-1/30 Studded甲(F)
-1/30 钢甲(M)
-1/30 钢甲(F)
-1/30 龙袍(M)
-1/30 龙袍(F)
-1/30 Titan甲(M)
-1/30 Titan甲(F)
-1/30 皇家甲(M)
-1/30 皇家甲(F)
-1/700 TagandaRobe(M)
-1/700 TagandaRobe(F) 
-1/700 TagandaCloak(M)
-1/700 TagandaCloak(F)
-1/700 TagandaArmour(M)
-1/700 TagandaArmour(F)
-1/1000 天甲(M)
-1/1000 天甲(F)
-1/1000 HeavenArcheyRobe(M)
-1/1000 HeavenArcheyRobe(F)
-1/1200 HeavenGrnArmour(M)
-1/1200 HeavenGrnArmour(F)
-1/1200 HeavenRedArmour(M)
-1/1200 HeavenRedArmour(F)
-1/1200 天甲(M)
-1/1200 天甲(F)
-1/1200 HeavenGoldArmour(M)
-1/1200 HeavenGoldArmour(F)
-1/6000 LordSlayerArmour(M)
-1/6000 LordSlayerArmour(F)
+1/30 Studded甲(男)
+1/30 Studded甲(女)
+1/30 钢甲(男)
+1/30 钢甲(女)
+1/30 龙袍(男)
+1/30 龙袍(女)
+1/30 泰坦甲(男)
+1/30 泰坦甲(女)
+1/30 皇家甲(男)
+1/30 皇家甲(女)
+1/700 TagandaRobe(男)
+1/700 TagandaRobe(女) 
+1/700 TagandaCloak(男)
+1/700 TagandaCloak(女)
+1/700 TagandaArmour(男)
+1/700 TagandaArmour(女)
+1/1000 天甲(男)
+1/1000 天甲(女)
+1/1000 HeavenArcheyRobe(男)
+1/1000 HeavenArcheyRobe(女)
+1/1200 HeavenGrnArmour(男)
+1/1200 HeavenGrnArmour(女)
+1/1200 HeavenRedArmour(男)
+1/1200 HeavenRedArmour(女)
+1/1200 天甲(男)
+1/1200 天甲(女)
+1/1200 HeavenGoldArmour(男)
+1/1200 HeavenGoldArmour(女)
+1/6000 LordSlayerArmour(男)
+1/6000 LordSlayerArmour(女)
 
 ;Helmets
 1/55 道Coronet
@@ -104,9 +104,9 @@
 
 ;Necklace
 1/20 爪项链
-1/20 Life项链
+1/20 生命项链
 1/20 珍珠项链
-1/55 DemonicBells
+1/55 魔icBells
 1/55 魂项链
 1/55 绿Bead
 1/85 英雄项链
@@ -122,7 +122,7 @@
 ;Bracelets
 1/20 魂泉手镯
 1/20 骑士手镯
-1/20 Purity手镯
+1/20 纯净手镯
 1/65 圣道轮
 1/65 之灵Reformer
 1/65 BaekTa手套
@@ -137,7 +137,7 @@
 1/20 铂金戒
 1/45 力量戒
 1/45 Violet戒
-1/45 Titan戒
+1/45 泰坦戒
 1/55 Boundless戒
 1/55 TaeGuk戒
 1/55 雷戒
@@ -147,7 +147,7 @@
 1/6000 LordSlayerRing
 
 
-1/320 Flame戒
+1/320 火焰戒
 1/1020 防护戒
 1/1020 Paralysis戒
 1/820 Revival戒
@@ -224,7 +224,7 @@
 1/25 烈焰剑
 1/30 CrossHalf月
 1/50 双生龙兽刃
-1/50 LionRoar
+1/50 狮Roar
 1/50 Entrapment
 1/60 BladeStorm
 1/150 刃Avalanche
@@ -238,10 +238,10 @@
 ;Wizard
 1/10 霜Crunch
 1/25 冰暴
-1/30 FlameDisruptor
-1/400 FlameField
+1/30 火焰Disruptor
+1/400 火焰Field
 1/50 Vampirism
-1/150 Mirroring
+1/150 镜ing
 1/120 Blizzard
 1/140 魔法Booster
 1/160 MeteorStrike
@@ -270,7 +270,7 @@
 ;Assassin
 1/25 CrescentSlash
 1/30 月轻
-1/50 MPEater
+1/50 魔法Eater
 1/100 SwiftFeet
 1/120 暗Body
 1/140 Hemorrhage

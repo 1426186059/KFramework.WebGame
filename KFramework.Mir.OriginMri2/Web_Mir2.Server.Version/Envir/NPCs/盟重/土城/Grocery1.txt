@@ -85,7 +85,7 @@
 Candle
 Torch
 RandomTeleport
-TownTeleport
+镇Teleport
 DungeonEscape
 护符
 RepairOil

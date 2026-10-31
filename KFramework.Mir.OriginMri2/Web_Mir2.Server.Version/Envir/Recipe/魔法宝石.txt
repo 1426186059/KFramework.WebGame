@@ -8,4 +8,4 @@ Gold 10000
 [Ingredients]
 铁矿 1 14000
 银矿 1 14000
-MC石(S)
+MC石(小)

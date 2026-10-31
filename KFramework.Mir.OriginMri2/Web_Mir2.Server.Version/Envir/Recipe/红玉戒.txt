@@ -7,5 +7,5 @@ Gold 1000
 
 [Ingredients]
 铜矿 1 12000
-Mundane戒
+普通戒
 红线 10

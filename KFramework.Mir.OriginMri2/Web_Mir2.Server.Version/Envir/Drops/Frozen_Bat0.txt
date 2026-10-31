@@ -5,9 +5,9 @@
 1/15 中金创药
 1/15 中魔法药
 
-1/30 TownTeleport 
-1/40 TownTeleport 
-1/50 TownTeleport 
+1/30 镇Teleport 
+1/40 镇Teleport 
+1/50 镇Teleport 
 
 ;Weapons
 

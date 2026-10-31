@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using Server.MirDatabase;
 using Server.MirObjects;

@@ -25,7 +25,7 @@
 1/8000 Adamant项链
 
 ;Bracelets
-1/8000 WildTitan护符
+1/8000 Wild泰坦护符
 1/8000 Enchanted护符
 1/8000 五元素护符
 

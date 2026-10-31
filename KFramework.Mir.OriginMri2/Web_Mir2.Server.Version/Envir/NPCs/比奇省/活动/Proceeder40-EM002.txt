@@ -317,9 +317,9 @@ SET [501] 1
 Param1 em002
 Param2 13
 Param3 16
-MonGen Spitting蜘蛛 2
+MonGen 吐毒蜘蛛 2
 MonGen 奥玛 3
-MonGen Raking猫 2
+MonGen 抓挠猫 2
 [@check1]
 #IF
 CHECKMON >= 1 em002
@@ -407,7 +407,7 @@ Param1 em002
 Param2 13
 Param3 16
 MonGen 沙蠕虫 3
-MonGen Visceral蠕虫 2
+MonGen 内脏蠕虫 2
 MonGen 奥玛战士 3
 MonGen 奥玛武士 1
 [@check4]
@@ -557,7 +557,7 @@ Param3 16
 MonGen 大猿 1
 MonGen 邪猿 1
 MonGen 红邪猿 1
-MonGen Grey邪猿 1
+MonGen 灰邪猿 1
 [@check9]
 #IF
 CHECKMON >= 1 em002

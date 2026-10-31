@@ -17,7 +17,7 @@
 
 1/30000 Cuspid项链
 1/30000 SorceryAnchor
-1/30000 PurifiedMirror
+1/30000 Purified镜
 1/12000 HolyHealthStone
 1/12000 HolyMagicStone
 1/12000 HolyPowerStone

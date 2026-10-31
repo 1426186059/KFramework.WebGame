@@ -8,8 +8,8 @@
 
 ;Bracelet
 ;Bracelets Rare
-1/38000 DualTitan护符
-1/38000 SacredAngel护符
+1/38000 Dual泰坦护符
+1/38000 Sacred天使护符
 1/38000 邪Whisp护符
 
 
@@ -23,16 +23,16 @@
 
 
 ;Helmet
-1/5000 黑虎甲(M)
-1/5000 黑虎甲(F)
-1/5000 Lotus甲(M)
-1/5000 Lotus甲(F)
-1/5000 Crane甲(M)
-1/5000 Crane甲(F)
-1/5000 Stealth甲(M)
-1/5000 Stealth甲(F)
-1/5000 轻锻造甲(M)
-1/5000 轻锻造甲(F)
+1/5000 黑虎甲(男)
+1/5000 黑虎甲(女)
+1/5000 莲甲(男)
+1/5000 莲甲(女)
+1/5000 Crane甲(男)
+1/5000 Crane甲(女)
+1/5000 Stealth甲(男)
+1/5000 Stealth甲(女)
+1/5000 轻锻造甲(男)
+1/5000 轻锻造甲(女)
 
 1/1125 BraveryFragment
 1/1125 MagicFragment
@@ -50,10 +50,10 @@
 1/1130 冰Marble
 1/1900 甲CastTool 
 1/1900 TranslucentCrystal
-1/1900 甲书(DC)
+1/1900 甲书(道术)
 1/1900 甲书(SC)
 1/1900 甲书(MC)
 1/1900 Rusty甲
-1/1900 Bookof之灵
+1/1900 书of之灵
 1/1900 Havoc水晶
 

@@ -42,10 +42,10 @@
 1/400 Grim弓
 1/400 Conqueror矛
 1/400 Bastard剑
-1/800 黑虎Hammer
-1/800 杖之Lotus
+1/800 黑虎锤
+1/800 杖之莲
 1/800 Lethal弓
-1/800 Fan之Crane
+1/800 扇之Crane
 1/1800 FrozenSlayer
 1/1800 FrozenStaff
 1/1800 FrozenWand
@@ -57,23 +57,23 @@
 
 
 ;Armour
-1/200 黑虎甲(M)
-1/200 黑虎甲(F)
-1/200 Lotus甲(M)
-1/200 Lotus甲(F)
-1/200 Crane甲(M)
-1/200 Crane甲(F)
-1/700 WatcherSuit(M)
-1/700 WatcherSuit(F)
-1/1400 FrozenArmour(M)
-1/1400 FrozenArmour(F)
-1/6000 LordSlayerArmour(M)
-1/6000 LordSlayerArmour(F)
+1/200 黑虎甲(男)
+1/200 黑虎甲(女)
+1/200 莲甲(男)
+1/200 莲甲(女)
+1/200 Crane甲(男)
+1/200 Crane甲(女)
+1/700 WatcherSuit(男)
+1/700 WatcherSuit(女)
+1/1400 FrozenArmour(男)
+1/1400 FrozenArmour(女)
+1/6000 LordSlayerArmour(男)
+1/6000 LordSlayerArmour(女)
 
 ;Helmets
 1/550 WatcherHelmet
 1/570 PuiYuHelmet
-1/570 盔之Darkness
+1/570 盔之暗ness
 1/1470 FrozenHelmet
 1/6000 LordSlayerHelmet
 
@@ -85,7 +85,7 @@
 1/6000 LordSlayerNecklace
 
 ;Bracelets
-1/100 WildTitan护符
+1/100 Wild泰坦护符
 1/100 Enchanted护符
 1/100 五元素护符
 1/500 WatcherGloves
@@ -101,12 +101,12 @@
 
 ;Shoes
 1/550 WatcherBoots
-1/500 靴之Darkness
+1/500 靴之暗ness
 1/1450 FrozenBoots
 1/6000 LordSlayerBoots
 
 ;Belts
-1/100 腰带之Darkness
+1/100 腰带之暗ness
 1/1400 FrozenBelt
 1/6000 LordSlayerBelt
 

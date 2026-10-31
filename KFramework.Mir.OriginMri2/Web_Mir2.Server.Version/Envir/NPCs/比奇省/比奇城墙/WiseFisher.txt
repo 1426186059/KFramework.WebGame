@@ -51,6 +51,6 @@ GOTO @Main-1
 蓝钓鱼Rod
 钓鱼Hook
 钓鱼Float
-FishDetector
+鱼Detector
 钓鱼Reel
 鱼饵 100

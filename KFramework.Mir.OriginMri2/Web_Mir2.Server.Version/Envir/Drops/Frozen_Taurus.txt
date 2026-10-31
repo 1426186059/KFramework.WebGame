@@ -11,7 +11,7 @@
 1/1 大金创药 LV1
 1/1 大魔法药 LV1
 1/2 太阳水 LV1 
-1/2 太阳药水(M) LV1
+1/2 太阳药水(男) LV1
 
 1/40 BenedictionOil LV1
 
@@ -62,37 +62,37 @@
 1/90 Fiend弓 LV1
 1/90 战争法师杖 LV1
 1/90 魂泉杖 LV1
-1/90 刃之Darkness LV1
+1/90 刃之暗ness LV1
 
 
 ;Armour
-1/10 Heavy甲(M) LV1
-1/10 Heavy甲(F) LV1
-1/10 魔法袍(M) LV1
-1/10 魔法袍(F) LV1
-1/10 魂甲(M) LV1 
-1/10 魂甲(F) LV1
-1/10 圣物甲(M) LV1
-1/10 圣物甲(F) LV1
+1/10 Heavy甲(男) LV1
+1/10 Heavy甲(女) LV1
+1/10 魔法袍(男) LV1
+1/10 魔法袍(女) LV1
+1/10 魂甲(男) LV1 
+1/10 魂甲(女) LV1
+1/10 圣物甲(男) LV1
+1/10 圣物甲(女) LV1
 
 
 ;Armour Rare
-1/120 VanguardArmour(F) LV1
-1/120 VanguardArmour(M) LV1
-1/140 铁甲(M) LV1
-1/140 铁甲(F) LV1
-1/140 锻造甲(M) LV1
-1/140 锻造甲(F) LV1
-1/140 Wizard袍(M) LV1
-1/140 WizardRobe(F) LV1
-1/140 珍珠甲(M) LV1
-1/140 珍珠甲(F) LV1
-1/140 远古甲(M) LV1
-1/140 远古甲(F) LV1
-1/10000 天甲(M) LV1
-1/10000 天甲(F) LV1
-1/10000 HeavenArcheyRobe(M) LV1
-1/10000 HeavenArcheyRobe(F) LV1
+1/120 VanguardArmour(女) LV1
+1/120 VanguardArmour(男) LV1
+1/140 铁甲(男) LV1
+1/140 铁甲(女) LV1
+1/140 锻造甲(男) LV1
+1/140 锻造甲(女) LV1
+1/140 Wizard袍(男) LV1
+1/140 WizardRobe(女) LV1
+1/140 珍珠甲(男) LV1
+1/140 珍珠甲(女) LV1
+1/140 远古甲(男) LV1
+1/140 远古甲(女) LV1
+1/10000 天甲(男) LV1
+1/10000 天甲(女) LV1
+1/10000 HeavenArcheyRobe(男) LV1
+1/10000 HeavenArcheyRobe(女) LV1
 
 ;Helmets
 1/5 骷髅盔 LV1
@@ -112,7 +112,7 @@
 1/50 爪项链 LV1
 1/60 Amethyst项链 LV1
 1/70 绿Bead LV1
-1/50 Life项链 LV1
+1/50 生命项链 LV1
 1/60 Demonicbells LV1
 1/50 珍珠项链 LV1
 1/60 魂项链 LV1
@@ -123,7 +123,7 @@
 
 
 ;Bracelets
-1/15 DeathGauntlet LV1
+1/15 死亡Gauntlet LV1
 1/20 金手镯 LV1
 1/30 骑士手镯 LV1
 1/45 钢手套 LV1
@@ -148,7 +148,7 @@
 1/60 Violet戒 LV1
 1/15 玉Snow戒 LV1
 1/40 铂金戒 LV1
-1/60 Titan戒 LV1
+1/60 泰坦戒 LV1
 
 ;Rings Rare
 1/120 VanguardRing LV1
@@ -191,20 +191,20 @@
 1/200 DefenderPads[14d] LV1
 
 ;Stones
-1/30 DC石(M) LV1
-1/65 DC石(L) LV1
-1/30 MC石(M) LV1
-1/65 MC石(L) LV1
-1/30 SC石(M) LV1
-1/65 SC石(L) LV1
+1/30 道术石(男) LV1
+1/65 道术石(大) LV1
+1/30 MC石(男) LV1
+1/65 MC石(大) LV1
+1/30 SC石(男) LV1
+1/65 SC石(大) LV1
 
 ;Stones Rare
-1/50 ACStone(M) LV1
-1/70 ACStone(L) LV1
-1/50 AMCStone(M) LV1
-1/70 AMCStone(L) LV1
-1/50 DefenseStone(M) LV1
-1/70 DefenseStone(L) LV1
+1/50 ACStone(男) LV1
+1/70 ACStone(大) LV1
+1/50 AMCStone(男) LV1
+1/70 AMCStone(大) LV1
+1/50 DefenseStone(男) LV1
+1/70 DefenseStone(大) LV1
 
 
 ;Books
@@ -233,7 +233,7 @@
 1/45 MassHiding LV1
 1/50 魂盾 LV1
 1/55 Revelation LV1
-1/60 Blessed甲 LV1
+1/60 祝福ed甲 LV1
 1/65 EnergyRepulsor LV1
 1/70 陷阱Hexagon LV1
 1/100 Purification LV1
@@ -250,7 +250,7 @@
 ;Archer
 1/30 双Shot LV1
 1/30 Meditation LV1
-1/35 ElementalShot LV1
+1/35 元素alShot LV1
 1/35 Explosive陷阱 LV1
 1/40 Concentration LV1
 1/40 VampireShot LV1
@@ -258,7 +258,7 @@
 1/45 BackStep LV1
 1/50 NapalmShot LV1
 1/100 DelayedExplosion LV1
-1/210 ElementalBarrier LV1
+1/210 元素alBarrier LV1
 
 ;Quests
 1/1 FrozenTempleMap Q LV1
@@ -277,7 +277,7 @@
 1/1 大金创药 LV2
 1/1 大魔法药 LV2
 1/2 太阳水 LV2 
-1/2 太阳药水(M) LV2
+1/2 太阳药水(男) LV2
 
 1/40 BenedictionOil LV2
 
@@ -328,37 +328,37 @@
 1/90 JudgementMace LV2
 1/90 战争法师杖 LV2
 1/90 魂泉杖 LV2
-1/90 刃之Darkness LV2
+1/90 刃之暗ness LV2
 
 
 ;Armour
-1/10 Heavy甲(M) LV2
-1/10 Heavy甲(F) LV2
-1/10 魔法袍(M) LV2
-1/10 魔法袍(F) LV2
-1/10 魂甲(M) LV2 
-1/10 魂甲(F) LV2
-1/10 圣物甲(M) LV2
-1/10 圣物甲(F) LV2
+1/10 Heavy甲(男) LV2
+1/10 Heavy甲(女) LV2
+1/10 魔法袍(男) LV2
+1/10 魔法袍(女) LV2
+1/10 魂甲(男) LV2 
+1/10 魂甲(女) LV2
+1/10 圣物甲(男) LV2
+1/10 圣物甲(女) LV2
 
 
 ;Armour Rare
-1/120 VanguardArmour(F) LV2
-1/120 VanguardArmour(M) LV2
-1/140 铁甲(M) LV2
-1/140 铁甲(F) LV2
-1/140 锻造甲(M) LV2
-1/140 锻造甲(F) LV2
-1/140 Wizard袍(M) LV2
-1/140 WizardRobe(F) LV2
-1/140 珍珠甲(M) LV2
-1/140 珍珠甲(F) LV2
-1/140 远古甲(M) LV2
-1/140 远古甲(F) LV2
-1/10000 天甲(M) LV2
-1/10000 天甲(F) LV2
-1/10000 HeavenArcheyRobe(M) LV2
-1/10000 HeavenArcheyRobe(F) LV2
+1/120 VanguardArmour(女) LV2
+1/120 VanguardArmour(男) LV2
+1/140 铁甲(男) LV2
+1/140 铁甲(女) LV2
+1/140 锻造甲(男) LV2
+1/140 锻造甲(女) LV2
+1/140 Wizard袍(男) LV2
+1/140 WizardRobe(女) LV2
+1/140 珍珠甲(男) LV2
+1/140 珍珠甲(女) LV2
+1/140 远古甲(男) LV2
+1/140 远古甲(女) LV2
+1/10000 天甲(男) LV2
+1/10000 天甲(女) LV2
+1/10000 HeavenArcheyRobe(男) LV2
+1/10000 HeavenArcheyRobe(女) LV2
 
 ;Helmets
 1/5 骷髅盔 LV2
@@ -378,7 +378,7 @@
 1/50 爪项链 LV2
 1/60 Amethyst项链 LV2
 1/70 绿Bead LV2
-1/50 Life项链 LV2
+1/50 生命项链 LV2
 1/60 Demonicbells LV2
 1/50 珍珠项链 LV2
 1/60 魂项链 LV2
@@ -389,7 +389,7 @@
 
 
 ;Bracelets
-1/15 DeathGauntlet LV2
+1/15 死亡Gauntlet LV2
 1/20 金手镯 LV2
 1/30 骑士手镯 LV2
 1/45 钢手套 LV2
@@ -414,7 +414,7 @@
 1/60 Violet戒 LV2
 1/15 玉Snow戒 LV2
 1/40 铂金戒 LV2
-1/60 Titan戒 LV2
+1/60 泰坦戒 LV2
 
 ;Rings Rare
 1/120 VanguardRing LV2
@@ -457,20 +457,20 @@
 1/200 DefenderPads[14d] LV2
 
 ;Stones
-1/30 DC石(M) LV2
-1/65 DC石(L) LV2
-1/30 MC石(M) LV2
-1/65 MC石(L) LV2
-1/30 SC石(M) LV2
-1/65 SC石(L) LV2
+1/30 道术石(男) LV2
+1/65 道术石(大) LV2
+1/30 MC石(男) LV2
+1/65 MC石(大) LV2
+1/30 SC石(男) LV2
+1/65 SC石(大) LV2
 
 ;Stones Rare
-1/50 ACStone(M) LV2
-1/70 ACStone(L) LV2
-1/50 AMCStone(M) LV2
-1/70 AMCStone(L) LV2
-1/50 DefenseStone(M) LV2
-1/70 DefenseStone(L) LV2
+1/50 ACStone(男) LV2
+1/70 ACStone(大) LV2
+1/50 AMCStone(男) LV2
+1/70 AMCStone(大) LV2
+1/50 DefenseStone(男) LV2
+1/70 DefenseStone(大) LV2
 
 
 ;Books
@@ -499,7 +499,7 @@
 1/45 MassHiding LV2
 1/50 魂盾 LV2
 1/55 Revelation LV2
-1/60 Blessed甲 LV2
+1/60 祝福ed甲 LV2
 1/65 EnergyRepulsor LV2
 1/70 陷阱Hexagon LV2
 1/100 Purification LV2
@@ -516,7 +516,7 @@
 ;Archer
 1/30 双Shot LV2
 1/30 Meditation LV2
-1/35 ElementalShot LV2
+1/35 元素alShot LV2
 1/35 Explosive陷阱 LV2
 1/40 Concentration LV2
 1/40 VampireShot LV2
@@ -524,7 +524,7 @@
 1/45 BackStep LV2
 1/50 NapalmShot LV2
 1/100 DelayedExplosion LV2
-1/210 ElementalBarrier LV2
+1/210 元素alBarrier LV2
 
 
 ;Quests
@@ -544,7 +544,7 @@
 1/1 大金创药 LV3
 1/1 大魔法药 LV3
 1/2 太阳水 LV3 
-1/2 太阳药水(M) LV3
+1/2 太阳药水(男) LV3
 
 1/40 BenedictionOil LV3
 
@@ -595,37 +595,37 @@
 1/90 Fiend弓 LV3
 1/90 战争法师杖 LV3
 1/90 魂泉杖 LV3
-1/90 刃之Darkness LV3
+1/90 刃之暗ness LV3
 
 
 ;Armour
-1/10 Heavy甲(M) LV3
-1/10 Heavy甲(F) LV3
-1/10 魔法袍(M) LV3
-1/10 魔法袍(F) LV3
-1/10 魂甲(M) LV3 
-1/10 魂甲(F) LV3
-1/10 圣物甲(M) LV3
-1/10 圣物甲(F) LV3
+1/10 Heavy甲(男) LV3
+1/10 Heavy甲(女) LV3
+1/10 魔法袍(男) LV3
+1/10 魔法袍(女) LV3
+1/10 魂甲(男) LV3 
+1/10 魂甲(女) LV3
+1/10 圣物甲(男) LV3
+1/10 圣物甲(女) LV3
 
 
 ;Armour Rare
-1/120 VanguardArmour(F) LV3
-1/120 VanguardArmour(M) LV3
-1/140 铁甲(M) LV3
-1/140 铁甲(F) LV3
-1/140 锻造甲(M) LV3
-1/140 锻造甲(F) LV3
-1/140 Wizard袍(M) LV3
-1/140 WizardRobe(F) LV3
-1/140 珍珠甲(M) LV3
-1/140 珍珠甲(F) LV3
-1/140 远古甲(M) LV3
-1/140 远古甲(F) LV3
-1/10000 天甲(M) LV3
-1/10000 天甲(F) LV3
-1/10000 HeavenArcheyRobe(M) LV3
-1/10000 HeavenArcheyRobe(F) LV3
+1/120 VanguardArmour(女) LV3
+1/120 VanguardArmour(男) LV3
+1/140 铁甲(男) LV3
+1/140 铁甲(女) LV3
+1/140 锻造甲(男) LV3
+1/140 锻造甲(女) LV3
+1/140 Wizard袍(男) LV3
+1/140 WizardRobe(女) LV3
+1/140 珍珠甲(男) LV3
+1/140 珍珠甲(女) LV3
+1/140 远古甲(男) LV3
+1/140 远古甲(女) LV3
+1/10000 天甲(男) LV3
+1/10000 天甲(女) LV3
+1/10000 HeavenArcheyRobe(男) LV3
+1/10000 HeavenArcheyRobe(女) LV3
 
 ;Helmets
 1/5 骷髅盔 LV3
@@ -645,7 +645,7 @@
 1/50 爪项链 LV3
 1/60 Amethyst项链 LV3
 1/70 绿Bead LV3
-1/50 Life项链 LV3
+1/50 生命项链 LV3
 1/60 Demonicbells LV3
 1/50 珍珠项链 LV3
 1/60 魂项链 LV3
@@ -656,7 +656,7 @@
 
 
 ;Bracelets
-1/15 DeathGauntlet LV3
+1/15 死亡Gauntlet LV3
 1/20 金手镯 LV3
 1/30 骑士手镯 LV3
 1/45 钢手套 LV3
@@ -681,7 +681,7 @@
 1/60 Violet戒 LV3
 1/15 玉Snow戒 LV3
 1/40 铂金戒 LV3
-1/60 Titan戒 LV3
+1/60 泰坦戒 LV3
 
 ;Rings Rare
 1/120 VanguardRing LV3
@@ -724,20 +724,20 @@
 1/200 DefenderPads[14d] LV3
 
 ;Stones
-1/30 DC石(M) LV3
-1/65 DC石(L) LV3
-1/30 MC石(M) LV3
-1/65 MC石(L) LV3
-1/30 SC石(M) LV3
-1/65 SC石(L) LV3
+1/30 道术石(男) LV3
+1/65 道术石(大) LV3
+1/30 MC石(男) LV3
+1/65 MC石(大) LV3
+1/30 SC石(男) LV3
+1/65 SC石(大) LV3
 
 ;Stones Rare
-1/50 ACStone(M) LV3
-1/70 ACStone(L) LV3
-1/50 AMCStone(M) LV3
-1/70 AMCStone(L) LV3
-1/50 DefenseStone(M) LV3
-1/70 DefenseStone(L) LV3
+1/50 ACStone(男) LV3
+1/70 ACStone(大) LV3
+1/50 AMCStone(男) LV3
+1/70 AMCStone(大) LV3
+1/50 DefenseStone(男) LV3
+1/70 DefenseStone(大) LV3
 
 
 ;Books
@@ -766,7 +766,7 @@
 1/45 MassHiding LV3
 1/50 魂盾 LV3
 1/55 Revelation LV3
-1/60 Blessed甲 LV3
+1/60 祝福ed甲 LV3
 1/65 EnergyRepulsor LV3
 1/70 陷阱Hexagon LV3
 1/100 Purification LV3
@@ -783,7 +783,7 @@
 ;Archer
 1/30 双Shot LV3
 1/30 Meditation LV3
-1/35 ElementalShot LV3
+1/35 元素alShot LV3
 1/35 Explosive陷阱 LV3
 1/40 Concentration LV3
 1/40 VampireShot LV3
@@ -791,7 +791,7 @@
 1/45 BackStep LV3
 1/50 NapalmShot LV3
 1/100 DelayedExplosion LV3
-1/210 ElementalBarrier LV3
+1/210 元素alBarrier LV3
 
 ;Quests
 1/1 FrozenTempleMap Q LV3
@@ -810,7 +810,7 @@
 1/1 大金创药 LV4
 1/1 大魔法药 LV4
 1/2 太阳水 LV4 
-1/2 太阳药水(M) LV4
+1/2 太阳药水(男) LV4
 
 1/40 BenedictionOil LV4
 
@@ -861,37 +861,37 @@
 1/90 Fiend弓 LV4
 1/90 战争法师杖 LV4
 1/90 魂泉杖 LV4
-1/90 刃之Darkness LV4
+1/90 刃之暗ness LV4
 
 
 ;Armour
-1/10 Heavy甲(M) LV4
-1/10 Heavy甲(F) LV4
-1/10 魔法袍(M) LV4
-1/10 魔法袍(F) LV4
-1/10 魂甲(M) LV4 
-1/10 魂甲(F) LV4
-1/10 圣物甲(M) LV4
-1/10 圣物甲(F) LV4
+1/10 Heavy甲(男) LV4
+1/10 Heavy甲(女) LV4
+1/10 魔法袍(男) LV4
+1/10 魔法袍(女) LV4
+1/10 魂甲(男) LV4 
+1/10 魂甲(女) LV4
+1/10 圣物甲(男) LV4
+1/10 圣物甲(女) LV4
 
 
 ;Armour Rare
-1/120 VanguardArmour(F) LV4
-1/120 VanguardArmour(M) LV4
-1/140 铁甲(M) LV4
-1/140 铁甲(F) LV4
-1/140 Wizard袍(M) LV4
-1/140 锻造甲(M) LV4
-1/140 锻造甲(F) LV4
-1/140 WizardRobe(F) LV4
-1/140 珍珠甲(M) LV4
-1/140 珍珠甲(F) LV4
-1/140 远古甲(M) LV4
-1/140 远古甲(F) LV4
-1/10000 天甲(M) LV4
-1/10000 天甲(F) LV4
-1/10000 HeavenArcheyRobe(M) LV4
-1/10000 HeavenArcheyRobe(F) LV4
+1/120 VanguardArmour(女) LV4
+1/120 VanguardArmour(男) LV4
+1/140 铁甲(男) LV4
+1/140 铁甲(女) LV4
+1/140 Wizard袍(男) LV4
+1/140 锻造甲(男) LV4
+1/140 锻造甲(女) LV4
+1/140 WizardRobe(女) LV4
+1/140 珍珠甲(男) LV4
+1/140 珍珠甲(女) LV4
+1/140 远古甲(男) LV4
+1/140 远古甲(女) LV4
+1/10000 天甲(男) LV4
+1/10000 天甲(女) LV4
+1/10000 HeavenArcheyRobe(男) LV4
+1/10000 HeavenArcheyRobe(女) LV4
 
 ;Helmets
 1/5 骷髅盔 LV4
@@ -911,7 +911,7 @@
 1/50 爪项链 LV4
 1/60 Amethyst项链 LV4
 1/70 绿Bead LV4
-1/50 Life项链 LV4
+1/50 生命项链 LV4
 1/60 Demonicbells LV4
 1/50 珍珠项链 LV4
 1/60 魂项链 LV4
@@ -922,7 +922,7 @@
 
 
 ;Bracelets
-1/15 DeathGauntlet LV4
+1/15 死亡Gauntlet LV4
 1/20 金手镯 LV4
 1/30 骑士手镯 LV4
 1/45 钢手套 LV4
@@ -947,7 +947,7 @@
 1/60 Violet戒 LV4
 1/15 玉Snow戒 LV4
 1/40 铂金戒 LV4
-1/60 Titan戒 LV4
+1/60 泰坦戒 LV4
 
 ;Rings Rare
 1/120 VanguardRing LV4
@@ -990,20 +990,20 @@
 1/200 DefenderPads[14d] LV4
 
 ;Stones
-1/30 DC石(M) LV4
-1/65 DC石(L) LV4
-1/30 MC石(M) LV4
-1/65 MC石(L) LV4
-1/30 SC石(M) LV4
-1/65 SC石(L) LV4
+1/30 道术石(男) LV4
+1/65 道术石(大) LV4
+1/30 MC石(男) LV4
+1/65 MC石(大) LV4
+1/30 SC石(男) LV4
+1/65 SC石(大) LV4
 
 ;Stones Rare
-1/50 ACStone(M) LV4
-1/70 ACStone(L) LV4
-1/50 AMCStone(M) LV4
-1/70 AMCStone(L) LV4
-1/50 DefenseStone(M) LV4
-1/70 DefenseStone(L) LV4
+1/50 ACStone(男) LV4
+1/70 ACStone(大) LV4
+1/50 AMCStone(男) LV4
+1/70 AMCStone(大) LV4
+1/50 DefenseStone(男) LV4
+1/70 DefenseStone(大) LV4
 
 
 ;Books
@@ -1032,7 +1032,7 @@
 1/45 MassHiding LV4
 1/50 魂盾 LV4
 1/55 Revelation LV4
-1/60 Blessed甲 LV4
+1/60 祝福ed甲 LV4
 1/65 EnergyRepulsor LV4
 1/70 陷阱Hexagon LV4
 1/100 Purification LV4
@@ -1049,7 +1049,7 @@
 ;Archer
 1/30 双Shot LV4
 1/30 Meditation LV4
-1/35 ElementalShot LV4
+1/35 元素alShot LV4
 1/35 Explosive陷阱 LV4
 1/40 Concentration LV4
 1/40 VampireShot LV4
@@ -1057,7 +1057,7 @@
 1/45 BackStep LV4
 1/50 NapalmShot LV4
 1/100 DelayedExplosion LV4
-1/210 ElementalBarrier LV4
+1/210 元素alBarrier LV4
 
 ;Quests
 1/1 FrozenTempleMap Q LV4
@@ -1076,7 +1076,7 @@
 1/1 大金创药 LV5
 1/1 大魔法药 LV5
 1/2 太阳水 LV5 
-1/2 太阳药水(M) LV5
+1/2 太阳药水(男) LV5
 
 1/40 BenedictionOil LV5
 
@@ -1127,37 +1127,37 @@
 1/90 Fiend弓 LV5
 1/90 战争法师杖 LV5
 1/90 魂泉杖 LV5
-1/90 刃之Darkness LV5
+1/90 刃之暗ness LV5
 
 
 ;Armour
-1/10 Heavy甲(M) LV5
-1/10 Heavy甲(F) LV5
-1/10 魔法袍(M) LV5
-1/10 魔法袍(F) LV5
-1/10 魂甲(M) LV5 
-1/10 魂甲(F) LV5
-1/10 圣物甲(M) LV5
-1/10 圣物甲(F) LV5
+1/10 Heavy甲(男) LV5
+1/10 Heavy甲(女) LV5
+1/10 魔法袍(男) LV5
+1/10 魔法袍(女) LV5
+1/10 魂甲(男) LV5 
+1/10 魂甲(女) LV5
+1/10 圣物甲(男) LV5
+1/10 圣物甲(女) LV5
 
 
 ;Armour Rare
-1/120 VanguardArmour(F) LV5
-1/120 VanguardArmour(M) LV5
-1/140 铁甲(M) LV5
-1/140 铁甲(F) LV5
-1/140 Wizard袍(M) LV5
-1/140 锻造甲(M) LV5
-1/140 锻造甲(F) LV5
-1/140 WizardRobe(F) LV5
-1/140 珍珠甲(M) LV5
-1/140 珍珠甲(F) LV5
-1/140 远古甲(M) LV5
-1/140 远古甲(F) LV5
-1/10000 天甲(M) LV5
-1/10000 天甲(F) LV5
-1/10000 HeavenArcheyRobe(M) LV5
-1/10000 HeavenArcheyRobe(F) LV5
+1/120 VanguardArmour(女) LV5
+1/120 VanguardArmour(男) LV5
+1/140 铁甲(男) LV5
+1/140 铁甲(女) LV5
+1/140 Wizard袍(男) LV5
+1/140 锻造甲(男) LV5
+1/140 锻造甲(女) LV5
+1/140 WizardRobe(女) LV5
+1/140 珍珠甲(男) LV5
+1/140 珍珠甲(女) LV5
+1/140 远古甲(男) LV5
+1/140 远古甲(女) LV5
+1/10000 天甲(男) LV5
+1/10000 天甲(女) LV5
+1/10000 HeavenArcheyRobe(男) LV5
+1/10000 HeavenArcheyRobe(女) LV5
 
 ;Helmets
 1/5 骷髅盔 LV5
@@ -1177,7 +1177,7 @@
 1/50 爪项链 LV5
 1/60 Amethyst项链 LV5
 1/70 绿Bead LV5
-1/50 Life项链 LV5
+1/50 生命项链 LV5
 1/60 Demonicbells LV5
 1/50 珍珠项链 LV5
 1/60 魂项链 LV5
@@ -1188,7 +1188,7 @@
 
 
 ;Bracelets
-1/15 DeathGauntlet LV5
+1/15 死亡Gauntlet LV5
 1/20 金手镯 LV5
 1/30 骑士手镯 LV5
 1/45 钢手套 LV5
@@ -1213,7 +1213,7 @@
 1/60 Violet戒 LV5
 1/15 玉Snow戒 LV5
 1/40 铂金戒 LV5
-1/60 Titan戒 LV5
+1/60 泰坦戒 LV5
 
 ;Rings Rare
 1/120 VanguardRing LV5
@@ -1256,20 +1256,20 @@
 1/200 DefenderPads[14d] LV5
 
 ;Stones
-1/30 DC石(M) LV5
-1/65 DC石(L) LV5
-1/30 MC石(M) LV5
-1/65 MC石(L) LV5
-1/30 SC石(M) LV5
-1/65 SC石(L) LV5
+1/30 道术石(男) LV5
+1/65 道术石(大) LV5
+1/30 MC石(男) LV5
+1/65 MC石(大) LV5
+1/30 SC石(男) LV5
+1/65 SC石(大) LV5
 
 ;Stones Rare
-1/50 ACStone(M) LV5
-1/70 ACStone(L) LV5
-1/50 AMCStone(M) LV5
-1/70 AMCStone(L) LV5
-1/50 DefenseStone(M) LV5
-1/70 DefenseStone(L) LV5
+1/50 ACStone(男) LV5
+1/70 ACStone(大) LV5
+1/50 AMCStone(男) LV5
+1/70 AMCStone(大) LV5
+1/50 DefenseStone(男) LV5
+1/70 DefenseStone(大) LV5
 
 
 ;Books
@@ -1298,7 +1298,7 @@
 1/45 MassHiding LV5
 1/50 魂盾 LV5
 1/55 Revelation LV5
-1/60 Blessed甲 LV5
+1/60 祝福ed甲 LV5
 1/65 EnergyRepulsor LV5
 1/70 陷阱Hexagon LV5
 1/100 Purification LV5
@@ -1315,7 +1315,7 @@
 ;Archer
 1/30 双Shot LV5
 1/30 Meditation LV5
-1/35 ElementalShot LV5
+1/35 元素alShot LV5
 1/35 Explosive陷阱 LV5
 1/40 Concentration LV5
 1/40 VampireShot LV5
@@ -1323,7 +1323,7 @@
 1/45 BackStep LV5
 1/50 NapalmShot LV5
 1/100 DelayedExplosion LV5
-1/210 ElementalBarrier LV5
+1/210 元素alBarrier LV5
 
 ;Quests
 1/1 FrozenTempleMap Q LV5
@@ -1342,7 +1342,7 @@
 1/1 大金创药 LV6
 1/1 大魔法药 LV6
 1/2 太阳水 LV6 
-1/2 太阳药水(M) LV6
+1/2 太阳药水(男) LV6
 
 1/40 BenedictionOil LV6
 
@@ -1393,37 +1393,37 @@
 1/90 Fiend弓 LV6
 1/90 战争法师杖 LV6
 1/90 魂泉杖 LV6
-1/90 刃之Darkness LV6
+1/90 刃之暗ness LV6
 
 
 ;Armour
-1/10 Heavy甲(M) LV6
-1/10 Heavy甲(F) LV6
-1/10 魔法袍(M) LV6
-1/10 魔法袍(F) LV6
-1/10 魂甲(M) LV6 
-1/10 魂甲(F) LV6
-1/10 圣物甲(M) LV6
-1/10 圣物甲(F) LV6
+1/10 Heavy甲(男) LV6
+1/10 Heavy甲(女) LV6
+1/10 魔法袍(男) LV6
+1/10 魔法袍(女) LV6
+1/10 魂甲(男) LV6 
+1/10 魂甲(女) LV6
+1/10 圣物甲(男) LV6
+1/10 圣物甲(女) LV6
 
 
 ;Armour Rare
-1/120 VanguardArmour(F) LV6
-1/120 VanguardArmour(M) LV6
-1/140 铁甲(M) LV6
-1/140 铁甲(F) LV6
-1/140 锻造甲(M) LV6
-1/140 锻造甲(F) LV6
-1/140 Wizard袍(M) LV6
-1/140 WizardRobe(F) LV6
-1/140 珍珠甲(M) LV6
-1/140 珍珠甲(F) LV6
-1/140 远古甲(M) LV6
-1/140 远古甲(F) LV6
-1/10000 天甲(M) LV6
-1/10000 天甲(F) LV6
-1/10000 HeavenArcheyRobe(M) LV6
-1/10000 HeavenArcheyRobe(F) LV6
+1/120 VanguardArmour(女) LV6
+1/120 VanguardArmour(男) LV6
+1/140 铁甲(男) LV6
+1/140 铁甲(女) LV6
+1/140 锻造甲(男) LV6
+1/140 锻造甲(女) LV6
+1/140 Wizard袍(男) LV6
+1/140 WizardRobe(女) LV6
+1/140 珍珠甲(男) LV6
+1/140 珍珠甲(女) LV6
+1/140 远古甲(男) LV6
+1/140 远古甲(女) LV6
+1/10000 天甲(男) LV6
+1/10000 天甲(女) LV6
+1/10000 HeavenArcheyRobe(男) LV6
+1/10000 HeavenArcheyRobe(女) LV6
 
 ;Helmets
 1/5 骷髅盔 LV6
@@ -1443,7 +1443,7 @@
 1/50 爪项链 LV6
 1/60 Amethyst项链 LV6
 1/70 绿Bead LV6
-1/50 Life项链 LV6
+1/50 生命项链 LV6
 1/60 Demonicbells LV6
 1/50 珍珠项链 LV6
 1/60 魂项链 LV6
@@ -1454,7 +1454,7 @@
 
 
 ;Bracelets
-1/15 DeathGauntlet LV6
+1/15 死亡Gauntlet LV6
 1/20 金手镯 LV6
 1/30 骑士手镯 LV6
 1/45 钢手套 LV6
@@ -1479,7 +1479,7 @@
 1/60 Violet戒 LV6
 1/15 玉Snow戒 LV6
 1/40 铂金戒 LV6
-1/60 Titan戒 LV6
+1/60 泰坦戒 LV6
 
 ;Rings Rare
 1/120 VanguardRing LV6
@@ -1522,20 +1522,20 @@
 1/200 DefenderPads[14d] LV6
 
 ;Stones
-1/30 DC石(M) LV6
-1/65 DC石(L) LV6
-1/30 MC石(M) LV6
-1/65 MC石(L) LV6
-1/30 SC石(M) LV6
-1/65 SC石(L) LV6
+1/30 道术石(男) LV6
+1/65 道术石(大) LV6
+1/30 MC石(男) LV6
+1/65 MC石(大) LV6
+1/30 SC石(男) LV6
+1/65 SC石(大) LV6
 
 ;Stones Rare
-1/50 ACStone(M) LV6
-1/70 ACStone(L) LV6
-1/50 AMCStone(M) LV6
-1/70 AMCStone(L) LV6
-1/50 DefenseStone(M) LV6
-1/70 DefenseStone(L) LV6
+1/50 ACStone(男) LV6
+1/70 ACStone(大) LV6
+1/50 AMCStone(男) LV6
+1/70 AMCStone(大) LV6
+1/50 DefenseStone(男) LV6
+1/70 DefenseStone(大) LV6
 
 
 ;Books
@@ -1564,7 +1564,7 @@
 1/45 MassHiding LV6
 1/50 魂盾 LV6
 1/55 Revelation LV6
-1/60 Blessed甲 LV6
+1/60 祝福ed甲 LV6
 1/65 EnergyRepulsor LV6
 1/70 陷阱Hexagon LV6
 1/100 Purification LV6
@@ -1581,7 +1581,7 @@
 ;Archer
 1/30 双Shot LV6
 1/30 Meditation LV6
-1/35 ElementalShot LV6
+1/35 元素alShot LV6
 1/35 Explosive陷阱 LV6
 1/40 Concentration LV6
 1/40 VampireShot LV6
@@ -1589,7 +1589,7 @@
 1/45 BackStep LV6
 1/50 NapalmShot LV6
 1/100 DelayedExplosion LV6
-1/210 ElementalBarrier LV6
+1/210 元素alBarrier LV6
 
 ;Quests
 1/1 FrozenTempleMap Q LV6
@@ -1608,7 +1608,7 @@
 1/1 大金创药 LV7
 1/1 大魔法药 LV7
 1/2 太阳水 LV7 
-1/2 太阳药水(M) LV7
+1/2 太阳药水(男) LV7
 
 1/40 BenedictionOil LV7
 
@@ -1660,37 +1660,37 @@
 1/90 Fiend弓 LV7
 1/90 战争法师杖 LV7
 1/90 魂泉杖 LV7
-1/90 刃之Darkness LV7
+1/90 刃之暗ness LV7
 
 
 ;Armour
-1/10 Heavy甲(M) LV7
-1/10 Heavy甲(F) LV7
-1/10 魔法袍(M) LV7
-1/10 魔法袍(F) LV7
-1/10 魂甲(M) LV7 
-1/10 魂甲(F) LV7
-1/10 圣物甲(M) LV7
-1/10 圣物甲(F) LV7
+1/10 Heavy甲(男) LV7
+1/10 Heavy甲(女) LV7
+1/10 魔法袍(男) LV7
+1/10 魔法袍(女) LV7
+1/10 魂甲(男) LV7 
+1/10 魂甲(女) LV7
+1/10 圣物甲(男) LV7
+1/10 圣物甲(女) LV7
 
 
 ;Armour Rare
-1/120 VanguardArmour(F) LV7
-1/120 VanguardArmour(M) LV7
-1/140 锻造甲(M) LV7
-1/140 锻造甲(F) LV7
-1/140 铁甲(M) LV7
-1/140 铁甲(F) LV7
-1/140 Wizard袍(M) LV7
-1/140 WizardRobe(F) LV7
-1/140 珍珠甲(M) LV7
-1/140 珍珠甲(F) LV7
-1/140 远古甲(M) LV7
-1/140 远古甲(F) LV7
-1/10000 天甲(M) LV7
-1/10000 天甲(F) LV7
-1/10000 HeavenArcheyRobe(M) LV7
-1/10000 HeavenArcheyRobe(F) LV7
+1/120 VanguardArmour(女) LV7
+1/120 VanguardArmour(男) LV7
+1/140 锻造甲(男) LV7
+1/140 锻造甲(女) LV7
+1/140 铁甲(男) LV7
+1/140 铁甲(女) LV7
+1/140 Wizard袍(男) LV7
+1/140 WizardRobe(女) LV7
+1/140 珍珠甲(男) LV7
+1/140 珍珠甲(女) LV7
+1/140 远古甲(男) LV7
+1/140 远古甲(女) LV7
+1/10000 天甲(男) LV7
+1/10000 天甲(女) LV7
+1/10000 HeavenArcheyRobe(男) LV7
+1/10000 HeavenArcheyRobe(女) LV7
 
 ;Helmets
 1/5 骷髅盔 LV7
@@ -1710,7 +1710,7 @@
 1/50 爪项链 LV7
 1/60 Amethyst项链 LV7
 1/70 绿Bead LV7
-1/50 Life项链 LV7
+1/50 生命项链 LV7
 1/60 Demonicbells LV7
 1/50 珍珠项链 LV7
 1/60 魂项链 LV7
@@ -1721,7 +1721,7 @@
 
 
 ;Bracelets
-1/15 DeathGauntlet LV7
+1/15 死亡Gauntlet LV7
 1/20 金手镯 LV7
 1/30 骑士手镯 LV7
 1/45 钢手套 LV7
@@ -1746,7 +1746,7 @@
 1/60 Violet戒 LV7
 1/15 玉Snow戒 LV7
 1/40 铂金戒 LV7
-1/60 Titan戒 LV7
+1/60 泰坦戒 LV7
 
 ;Rings Rare
 1/120 VanguardRing LV7
@@ -1789,20 +1789,20 @@
 1/200 DefenderPads[14d] LV7
 
 ;Stones
-1/30 DC石(M) LV7
-1/65 DC石(L) LV7
-1/30 MC石(M) LV7
-1/65 MC石(L) LV7
-1/30 SC石(M) LV7
-1/65 SC石(L) LV7
+1/30 道术石(男) LV7
+1/65 道术石(大) LV7
+1/30 MC石(男) LV7
+1/65 MC石(大) LV7
+1/30 SC石(男) LV7
+1/65 SC石(大) LV7
 
 ;Stones Rare
-1/50 ACStone(M) LV7
-1/70 ACStone(L) LV7
-1/50 AMCStone(M) LV7
-1/70 AMCStone(L) LV7
-1/50 DefenseStone(M) LV7
-1/70 DefenseStone(L) LV7
+1/50 ACStone(男) LV7
+1/70 ACStone(大) LV7
+1/50 AMCStone(男) LV7
+1/70 AMCStone(大) LV7
+1/50 DefenseStone(男) LV7
+1/70 DefenseStone(大) LV7
 
 
 ;Books
@@ -1831,7 +1831,7 @@
 1/45 MassHiding LV7
 1/50 魂盾 LV7
 1/55 Revelation LV7
-1/60 Blessed甲 LV7
+1/60 祝福ed甲 LV7
 1/65 EnergyRepulsor LV7
 1/70 陷阱Hexagon LV7
 1/100 Purification LV7
@@ -1848,7 +1848,7 @@
 ;Archer
 1/30 双Shot LV7
 1/30 Meditation LV7
-1/35 ElementalShot LV7
+1/35 元素alShot LV7
 1/35 Explosive陷阱 LV7
 1/40 Concentration LV7
 1/40 VampireShot LV7
@@ -1856,7 +1856,7 @@
 1/45 BackStep LV7
 1/50 NapalmShot LV7
 1/100 DelayedExplosion LV7
-1/210 ElementalBarrier LV7
+1/210 元素alBarrier LV7
 
 ;Quests
 1/1 FrozenTempleMap Q LV7
@@ -1875,7 +1875,7 @@
 1/1 大金创药 LV8
 1/1 大魔法药 LV8
 1/2 太阳水 LV8 
-1/2 太阳药水(M) LV8
+1/2 太阳药水(男) LV8
 
 1/40 BenedictionOil LV8
 
@@ -1926,37 +1926,37 @@
 1/90 Fiend弓 LV8
 1/90 战争法师杖 LV8
 1/90 魂泉杖 LV8
-1/90 刃之Darkness LV8
+1/90 刃之暗ness LV8
 
 
 ;Armour
-1/10 Heavy甲(M) LV8
-1/10 Heavy甲(F) LV8
-1/10 魔法袍(M) LV8
-1/10 魔法袍(F) LV8
-1/10 魂甲(M) LV8 
-1/10 魂甲(F) LV8
-1/10 圣物甲(M) LV8
-1/10 圣物甲(F) LV8
+1/10 Heavy甲(男) LV8
+1/10 Heavy甲(女) LV8
+1/10 魔法袍(男) LV8
+1/10 魔法袍(女) LV8
+1/10 魂甲(男) LV8 
+1/10 魂甲(女) LV8
+1/10 圣物甲(男) LV8
+1/10 圣物甲(女) LV8
 
 
 ;Armour Rare
-1/120 VanguardArmour(F) LV8
-1/120 VanguardArmour(M) LV8
-1/140 锻造甲(M) LV8
-1/140 锻造甲(F) LV8
-1/140 铁甲(M) LV8
-1/140 铁甲(F) LV8
-1/140 Wizard袍(M) LV8
-1/140 WizardRobe(F) LV8
-1/140 珍珠甲(M) LV8
-1/140 珍珠甲(F) LV8
-1/140 远古甲(M) LV8
-1/140 远古甲(F) LV8
-1/10000 天甲(M) LV8
-1/10000 天甲(F) LV8
-1/10000 HeavenArcheyRobe(M) LV8
-1/10000 HeavenArcheyRobe(F) LV8
+1/120 VanguardArmour(女) LV8
+1/120 VanguardArmour(男) LV8
+1/140 锻造甲(男) LV8
+1/140 锻造甲(女) LV8
+1/140 铁甲(男) LV8
+1/140 铁甲(女) LV8
+1/140 Wizard袍(男) LV8
+1/140 WizardRobe(女) LV8
+1/140 珍珠甲(男) LV8
+1/140 珍珠甲(女) LV8
+1/140 远古甲(男) LV8
+1/140 远古甲(女) LV8
+1/10000 天甲(男) LV8
+1/10000 天甲(女) LV8
+1/10000 HeavenArcheyRobe(男) LV8
+1/10000 HeavenArcheyRobe(女) LV8
 
 ;Helmets
 1/5 骷髅盔 LV8
@@ -1976,7 +1976,7 @@
 1/50 爪项链 LV8
 1/60 Amethyst项链 LV8
 1/70 绿Bead LV8
-1/50 Life项链 LV8
+1/50 生命项链 LV8
 1/60 Demonicbells LV8
 1/50 珍珠项链 LV8
 1/60 魂项链 LV8
@@ -1987,7 +1987,7 @@
 
 
 ;Bracelets
-1/15 DeathGauntlet LV8
+1/15 死亡Gauntlet LV8
 1/20 金手镯 LV8
 1/30 骑士手镯 LV8
 1/45 钢手套 LV8
@@ -2012,7 +2012,7 @@
 1/60 Violet戒 LV8
 1/15 玉Snow戒 LV8
 1/40 铂金戒 LV8
-1/60 Titan戒 LV8
+1/60 泰坦戒 LV8
 
 ;Rings Rare
 1/120 VanguardRing LV8
@@ -2055,20 +2055,20 @@
 1/200 DefenderPads[14d] LV8
 
 ;Stones
-1/30 DC石(M) LV8
-1/65 DC石(L) LV8
-1/30 MC石(M) LV8
-1/65 MC石(L) LV8
-1/30 SC石(M) LV8
-1/65 SC石(L) LV8
+1/30 道术石(男) LV8
+1/65 道术石(大) LV8
+1/30 MC石(男) LV8
+1/65 MC石(大) LV8
+1/30 SC石(男) LV8
+1/65 SC石(大) LV8
 
 ;Stones Rare
-1/50 ACStone(M) LV8
-1/70 ACStone(L) LV8
-1/50 AMCStone(M) LV8
-1/70 AMCStone(L) LV8
-1/50 DefenseStone(M) LV8
-1/70 DefenseStone(L) LV8
+1/50 ACStone(男) LV8
+1/70 ACStone(大) LV8
+1/50 AMCStone(男) LV8
+1/70 AMCStone(大) LV8
+1/50 DefenseStone(男) LV8
+1/70 DefenseStone(大) LV8
 
 
 ;Books
@@ -2097,7 +2097,7 @@
 1/45 MassHiding LV8
 1/50 魂盾 LV8
 1/55 Revelation LV8
-1/60 Blessed甲 LV8
+1/60 祝福ed甲 LV8
 1/65 EnergyRepulsor LV8
 1/70 陷阱Hexagon LV8
 1/100 Purification LV8
@@ -2114,7 +2114,7 @@
 ;Archer
 1/30 双Shot LV8
 1/30 Meditation LV8
-1/35 ElementalShot LV8
+1/35 元素alShot LV8
 1/35 Explosive陷阱 LV8
 1/40 Concentration LV8
 1/40 VampireShot LV8
@@ -2122,7 +2122,7 @@
 1/45 BackStep LV8
 1/50 NapalmShot LV8
 1/100 DelayedExplosion LV8
-1/210 ElementalBarrier LV8
+1/210 元素alBarrier LV8
 
 ;Quests
 1/1 FrozenTempleMap Q LV8

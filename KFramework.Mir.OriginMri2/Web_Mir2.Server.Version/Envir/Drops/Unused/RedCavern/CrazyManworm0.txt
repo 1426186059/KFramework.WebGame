@@ -26,7 +26,7 @@
 ;Necklace Rare
 1/18000 Cuspid项链
 1/18000 SorceryAnchor
-1/18000 PurifiedMirror
+1/18000 Purified镜
 
 ;Bracelets
 1/2800 钢Gauntlet
@@ -39,8 +39,8 @@
 
 
 ;Bracelets Rare
-1/18000 DualTitan护符
-1/18000 SacredAngel护符
+1/18000 Dual泰坦护符
+1/18000 Sacred天使护符
 1/18000 邪Whisp护符
 
 

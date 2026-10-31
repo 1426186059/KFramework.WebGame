@@ -5,7 +5,7 @@
 
 ;Potions
 1/30 太阳水
-1/50 太阳药水(M)
+1/50 太阳药水(男)
 
 1/12000 SmasherRing
 1/12000 BlizzardRing
@@ -19,7 +19,7 @@
 1/30000 Adamant项链
 1/30000 邪Triangle
 1/30000 CrossPurified
-1/30000 WildTitan护符
+1/30000 Wild泰坦护符
 1/30000 Enchanted护符
 1/30000 五元素护符
 1/40000 Sparkling腰带

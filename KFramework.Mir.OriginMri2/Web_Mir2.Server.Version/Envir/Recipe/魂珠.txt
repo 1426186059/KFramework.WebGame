@@ -8,6 +8,6 @@ Crafting书
 
 [Ingredients]
 SC石 
-道士药(L) 
+道士药(大) 
 大魔法药 
 大金创药 

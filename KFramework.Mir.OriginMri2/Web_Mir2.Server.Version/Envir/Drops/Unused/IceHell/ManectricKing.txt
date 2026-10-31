@@ -13,30 +13,30 @@
 2/2 特制魔法药
 2/1 太阳水
 2/2 太阳水
-2/1 太阳药水(M)
-2/2 太阳药水(M)
+2/1 太阳药水(男)
+2/2 太阳药水(男)
 1/2 BenedictionOil
 1/5 BenedictionOil
 1/5 战争神Oil
 
 ;Weapons
-1/400 黑虎Hammer
-1/500 杖之Lotus
-1/500 Fan之Crane
+1/400 黑虎锤
+1/500 杖之莲
+1/500 扇之Crane
 1/450 Butchering刃
 1/500 Lethal弓
 
 ;Armour
-1/200 黑虎甲(M)
-1/200 黑虎甲(F)
-1/200 Lotus甲(M)
-1/200 Lotus甲(F)
-1/200 Crane甲(M)
-1/200 Crane甲(F)
-1/200 Stealth甲(M)
-1/200 Stealth甲(F)
-1/200 轻锻造甲(M)
-1/200 轻锻造甲(F)
+1/200 黑虎甲(男)
+1/200 黑虎甲(女)
+1/200 莲甲(男)
+1/200 莲甲(女)
+1/200 Crane甲(男)
+1/200 Crane甲(女)
+1/200 Stealth甲(男)
+1/200 Stealth甲(女)
+1/200 轻锻造甲(男)
+1/200 轻锻造甲(女)
 
 ;Rings
 1/3000 Teleport戒
@@ -46,15 +46,15 @@
 1/3000 Clear戒
 1/500 Muscle戒
 1/500 Recovery戒
-1/250 Flame戒
+1/250 火焰戒
 1/100 Pledge戒
 1/100 Crimson红宝石戒
 1/100 五元素戒
 
 ;Bracelets
-1/100 DualTitan护符
+1/100 Dual泰坦护符
 1/100 邪Whisp护符
-1/100 SacredAngel护符
+1/100 Sacred天使护符
 
 ;Necklaces
 1/100 魔面具
@@ -76,15 +76,15 @@
 ;Books
 1/50 双生龙兽刃
 1/50 Purification
-1/50 LionRoar
-1/50 Mirroring
+1/50 狮Roar
+1/50 镜ing
 1/50 月轻
 1/50 Entrapment
 1/50 Hallucination
 1/50 Vampirism
 1/50 Mpeater
 1/200 召唤圣精灵
-1/200 FlameField
+1/200 火焰Field
 1/50 刃Avalanche
 1/200 防护Field
 1/200 诅咒

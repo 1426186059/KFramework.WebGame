@@ -20,16 +20,16 @@
 1/2 大魔法药 LV1
 1/3 大金创药 LV1
 1/3 大魔法药 LV1
-1/1 太阳药水(M) LV1
-1/2 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
-1/2 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
-1/2 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
-1/2 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
-1/2 太阳药水(M) LV1
+1/1 太阳药水(男) LV1
+1/2 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
+1/2 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
+1/2 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
+1/2 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
+1/2 太阳药水(男) LV1
 
 
 ;Other
@@ -65,23 +65,23 @@
 1/90 战争法师杖 LV1
 1/90 Fiend弓 LV1
 1/90 魂泉杖 LV1
-1/90 刃之Darkness LV1
+1/90 刃之暗ness LV1
 
 
 ;Armour
-1/20 Heavy甲(M) LV1 
-1/20 Heavy甲(F) LV1 
-1/20 魔法袍(M) LV1 
-1/20 魔法袍(F) LV1 
-1/20 魂甲(M) LV1 
-1/20 魂甲(F) LV1
-1/20 圣物甲(M) LV1
-1/20 圣物甲(F) LV1
+1/20 Heavy甲(男) LV1 
+1/20 Heavy甲(女) LV1 
+1/20 魔法袍(男) LV1 
+1/20 魔法袍(女) LV1 
+1/20 魂甲(男) LV1 
+1/20 魂甲(女) LV1
+1/20 圣物甲(男) LV1
+1/20 圣物甲(女) LV1
 
 
 ;Armour Rare
-1/200 VanguardArmour(M)
-1/200 VanguardArmour(F)
+1/200 VanguardArmour(男)
+1/200 VanguardArmour(女)
 
 
 ;Helmets
@@ -101,7 +101,7 @@
 1/15 ConvexLens LV1 
 1/15 BambooPipe LV1 
 1/50 爪项链 LV1
-1/50 Life项链 LV1
+1/50 生命项链 LV1
 1/50 珍珠项链 LV1
 
 ;Necklace Rare
@@ -164,9 +164,9 @@
 1/175 ProtectionGuards[14d] LV1
 
 ;Stone
-1/40 DC石(M) LV1
-1/40 MC石(M) LV1
-1/40 SC石(M) LV1
+1/40 道术石(男) LV1
+1/40 MC石(男) LV1
+1/40 SC石(男) LV1
 
 ;Stones Rare
 
@@ -190,7 +190,7 @@
 1/210 冰暴 LV1
 
 ;Taoist
-1/40 Blessed甲 LV1
+1/40 祝福ed甲 LV1
 1/80 EnergyRepulsor LV1
 1/120 陷阱Hexagon LV1
 1/110 UltimateEnhancer LV1
@@ -207,7 +207,7 @@
 1/40 召唤吸血蜘蛛 LV1
 1/80 BackStep LV1
 1/100 DelayedExplosion LV1
-1/120 ElementalBarrier LV1
+1/120 元素alBarrier LV1
 1/150 BindingShot LV1
 
 ;Quests
@@ -238,16 +238,16 @@
 1/2 大魔法药 LV2
 1/3 大金创药 LV2
 1/3 大魔法药 LV2
-1/1 太阳药水(M) LV2
-1/2 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
-1/2 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
-1/2 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
-1/2 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
-1/2 太阳药水(M) LV2
+1/1 太阳药水(男) LV2
+1/2 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
+1/2 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
+1/2 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
+1/2 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
+1/2 太阳药水(男) LV2
 
 
 ;Other
@@ -283,23 +283,23 @@
 1/90 Fiend弓 LV2
 1/90 战争法师杖 LV2
 1/90 魂泉杖 LV2
-1/90 刃之Darkness LV2
+1/90 刃之暗ness LV2
 
 
 ;Armour
-1/20 Heavy甲(M) LV2 
-1/20 Heavy甲(F) LV2 
-1/20 魔法袍(M) LV2 
-1/20 魔法袍(F) LV2 
-1/20 魂甲(M) LV2 
-1/20 魂甲(F) LV2
-1/20 圣物甲(M) LV2
-1/20 圣物甲(F) LV2
+1/20 Heavy甲(男) LV2 
+1/20 Heavy甲(女) LV2 
+1/20 魔法袍(男) LV2 
+1/20 魔法袍(女) LV2 
+1/20 魂甲(男) LV2 
+1/20 魂甲(女) LV2
+1/20 圣物甲(男) LV2
+1/20 圣物甲(女) LV2
 
 
 ;Armour Rare
-1/200 VanguardArmour(M)
-1/200 VanguardArmour(F)
+1/200 VanguardArmour(男)
+1/200 VanguardArmour(女)
 
 
 ;Helmets
@@ -319,7 +319,7 @@
 1/15 ConvexLens LV2 
 1/15 BambooPipe LV2 
 1/50 爪项链 LV2
-1/50 Life项链 LV2
+1/50 生命项链 LV2
 1/50 珍珠项链 LV2
 
 ;Necklace Rare
@@ -382,9 +382,9 @@
 1/175 ProtectionGuards[14d] LV2
 
 ;Stone
-1/40 DC石(M) LV2
-1/40 MC石(M) LV2
-1/40 SC石(M) LV2
+1/40 道术石(男) LV2
+1/40 MC石(男) LV2
+1/40 SC石(男) LV2
 
 ;Stones Rare
 
@@ -408,7 +408,7 @@
 1/210 冰暴 LV2
 
 ;Taoist
-1/40 Blessed甲 LV2
+1/40 祝福ed甲 LV2
 1/80 EnergyRepulsor LV2
 1/120 陷阱Hexagon LV2
 1/110 UltimateEnhancer LV2
@@ -425,7 +425,7 @@
 1/40 召唤吸血蜘蛛 LV2
 1/80 BackStep LV2
 1/100 DelayedExplosion LV2
-1/120 ElementalBarrier LV2
+1/120 元素alBarrier LV2
 1/150 BindingShot LV2
 
 ;Quests
@@ -457,16 +457,16 @@
 1/2 大魔法药 LV3
 1/3 大金创药 LV3
 1/3 大魔法药 LV3
-1/1 太阳药水(M) LV3
-1/2 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
-1/2 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
-1/2 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
-1/2 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
-1/2 太阳药水(M) LV3
+1/1 太阳药水(男) LV3
+1/2 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
+1/2 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
+1/2 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
+1/2 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
+1/2 太阳药水(男) LV3
 
 
 ;Other
@@ -502,23 +502,23 @@
 1/90 Fiend弓 LV3
 1/90 战争法师杖 LV3
 1/90 魂泉杖 LV3
-1/90 刃之Darkness LV3
+1/90 刃之暗ness LV3
 
 
 ;Armour
-1/20 Heavy甲(M) LV3 
-1/20 Heavy甲(F) LV3 
-1/20 魔法袍(M) LV3 
-1/20 魔法袍(F) LV3 
-1/20 魂甲(M) LV3 
-1/20 魂甲(F) LV3
-1/20 圣物甲(M) LV3
-1/20 圣物甲(F) LV3
+1/20 Heavy甲(男) LV3 
+1/20 Heavy甲(女) LV3 
+1/20 魔法袍(男) LV3 
+1/20 魔法袍(女) LV3 
+1/20 魂甲(男) LV3 
+1/20 魂甲(女) LV3
+1/20 圣物甲(男) LV3
+1/20 圣物甲(女) LV3
 
 
 ;Armour Rare
-1/200 VanguardArmour(M)
-1/200 VanguardArmour(F)
+1/200 VanguardArmour(男)
+1/200 VanguardArmour(女)
 
 
 ;Helmets
@@ -538,7 +538,7 @@
 1/15 ConvexLens LV3 
 1/15 BambooPipe LV3 
 1/50 爪项链 LV3
-1/50 Life项链 LV3
+1/50 生命项链 LV3
 1/50 珍珠项链 LV3
 
 ;Necklace Rare
@@ -601,9 +601,9 @@
 1/175 ProtectionGuards[14d] LV3
 
 ;Stone
-1/40 DC石(M) LV3
-1/40 MC石(M) LV3
-1/40 SC石(M) LV3
+1/40 道术石(男) LV3
+1/40 MC石(男) LV3
+1/40 SC石(男) LV3
 
 ;Stones Rare
 
@@ -627,7 +627,7 @@
 1/210 冰暴 LV3
 
 ;Taoist
-1/40 Blessed甲 LV3
+1/40 祝福ed甲 LV3
 1/80 EnergyRepulsor LV3
 1/120 陷阱Hexagon LV3
 1/110 UltimateEnhancer LV3
@@ -644,7 +644,7 @@
 1/40 召唤吸血蜘蛛 LV3
 1/80 BackStep LV3
 1/100 DelayedExplosion LV3
-1/120 ElementalBarrier LV3
+1/120 元素alBarrier LV3
 1/150 BindingShot LV3
 
 ;Quests
@@ -676,16 +676,16 @@
 1/2 大魔法药 LV4
 1/3 大金创药 LV4
 1/3 大魔法药 LV4
-1/1 太阳药水(M) LV4
-1/2 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
-1/2 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
-1/2 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
-1/2 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
-1/2 太阳药水(M) LV4
+1/1 太阳药水(男) LV4
+1/2 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
+1/2 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
+1/2 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
+1/2 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
+1/2 太阳药水(男) LV4
 
 
 ;Other
@@ -721,23 +721,23 @@
 1/90 战争法师杖 LV4
 1/90 Fiend弓 LV4
 1/90 魂泉杖 LV4
-1/90 刃之Darkness LV4
+1/90 刃之暗ness LV4
 
 
 ;Armour
-1/20 Heavy甲(M) LV4 
-1/20 Heavy甲(F) LV4 
-1/20 魔法袍(M) LV4 
-1/20 魔法袍(F) LV4 
-1/20 魂甲(M) LV4 
-1/20 魂甲(F) LV4
-1/20 圣物甲(M) LV4
-1/20 圣物甲(F) LV4
+1/20 Heavy甲(男) LV4 
+1/20 Heavy甲(女) LV4 
+1/20 魔法袍(男) LV4 
+1/20 魔法袍(女) LV4 
+1/20 魂甲(男) LV4 
+1/20 魂甲(女) LV4
+1/20 圣物甲(男) LV4
+1/20 圣物甲(女) LV4
 
 
 ;Armour Rare
-1/200 VanguardArmour(M)
-1/200 VanguardArmour(F)
+1/200 VanguardArmour(男)
+1/200 VanguardArmour(女)
 
 
 ;Helmets
@@ -757,7 +757,7 @@
 1/15 ConvexLens LV4 
 1/15 BambooPipe LV4 
 1/50 爪项链 LV4
-1/50 Life项链 LV4
+1/50 生命项链 LV4
 1/50 珍珠项链 LV4
 
 ;Necklace Rare
@@ -820,9 +820,9 @@
 1/175 ProtectionGuards[14d] LV4
 
 ;Stone
-1/40 DC石(M) LV4
-1/40 MC石(M) LV4
-1/40 SC石(M) LV4
+1/40 道术石(男) LV4
+1/40 MC石(男) LV4
+1/40 SC石(男) LV4
 
 ;Stones Rare
 
@@ -846,7 +846,7 @@
 1/210 冰暴 LV4
 
 ;Taoist
-1/40 Blessed甲 LV4
+1/40 祝福ed甲 LV4
 1/80 EnergyRepulsor LV4
 1/120 陷阱Hexagon LV4
 1/110 UltimateEnhancer LV4
@@ -863,7 +863,7 @@
 1/40 召唤吸血蜘蛛 LV4
 1/80 BackStep LV4
 1/100 DelayedExplosion LV4
-1/120 ElementalBarrier LV4
+1/120 元素alBarrier LV4
 1/150 BindingShot LV4
 
 ;Quests
@@ -894,16 +894,16 @@
 1/2 大魔法药 LV5
 1/3 大金创药 LV5
 1/3 大魔法药 LV5
-1/1 太阳药水(M) LV5
-1/2 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
-1/2 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
-1/2 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
-1/2 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
-1/2 太阳药水(M) LV5
+1/1 太阳药水(男) LV5
+1/2 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
+1/2 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
+1/2 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
+1/2 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
+1/2 太阳药水(男) LV5
 
 
 ;Other
@@ -939,23 +939,23 @@
 1/90 战争法师杖 LV5
 1/90 Fiend弓 LV5
 1/90 魂泉杖 LV5
-1/90 刃之Darkness LV5
+1/90 刃之暗ness LV5
 
 
 ;Armour
-1/20 Heavy甲(M) LV5 
-1/20 Heavy甲(F) LV5 
-1/20 魔法袍(M) LV5 
-1/20 魔法袍(F) LV5 
-1/20 魂甲(M) LV5 
-1/20 魂甲(F) LV5
-1/20 圣物甲(M) LV5
-1/20 圣物甲(F) LV5
+1/20 Heavy甲(男) LV5 
+1/20 Heavy甲(女) LV5 
+1/20 魔法袍(男) LV5 
+1/20 魔法袍(女) LV5 
+1/20 魂甲(男) LV5 
+1/20 魂甲(女) LV5
+1/20 圣物甲(男) LV5
+1/20 圣物甲(女) LV5
 
 
 ;Armour Rare
-1/200 VanguardArmour(M)
-1/200 VanguardArmour(F)
+1/200 VanguardArmour(男)
+1/200 VanguardArmour(女)
 
 
 ;Helmets
@@ -975,7 +975,7 @@
 1/15 ConvexLens LV5 
 1/15 BambooPipe LV5 
 1/50 爪项链 LV5
-1/50 Life项链 LV5
+1/50 生命项链 LV5
 1/50 珍珠项链 LV5
 
 ;Necklace Rare
@@ -1038,9 +1038,9 @@
 1/175 ProtectionGuards[14d] LV5
 
 ;Stone
-1/40 DC石(M) LV5
-1/40 MC石(M) LV5
-1/40 SC石(M) LV5
+1/40 道术石(男) LV5
+1/40 MC石(男) LV5
+1/40 SC石(男) LV5
 
 ;Stones Rare
 
@@ -1064,7 +1064,7 @@
 1/210 冰暴 LV5
 
 ;Taoist
-1/40 Blessed甲 LV5
+1/40 祝福ed甲 LV5
 1/80 EnergyRepulsor LV5
 1/120 陷阱Hexagon LV5
 1/110 UltimateEnhancer LV5
@@ -1081,7 +1081,7 @@
 1/40 召唤吸血蜘蛛 LV5
 1/80 BackStep LV5
 1/100 DelayedExplosion LV5
-1/120 ElementalBarrier LV5
+1/120 元素alBarrier LV5
 1/150 BindingShot LV5
 
 ;Gold
@@ -1105,16 +1105,16 @@
 1/2 大魔法药 LV6
 1/3 大金创药 LV6
 1/3 大魔法药 LV6
-1/1 太阳药水(M) LV6
-1/2 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
-1/2 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
-1/2 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
-1/2 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
-1/2 太阳药水(M) LV6
+1/1 太阳药水(男) LV6
+1/2 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
+1/2 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
+1/2 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
+1/2 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
+1/2 太阳药水(男) LV6
 
 
 ;Other
@@ -1150,23 +1150,23 @@
 1/90 Fiend弓 LV6
 1/90 战争法师杖 LV6
 1/90 魂泉杖 LV6
-1/90 刃之Darkness LV6
+1/90 刃之暗ness LV6
 
 
 ;Armour
-1/20 Heavy甲(M) LV6 
-1/20 Heavy甲(F) LV6 
-1/20 魔法袍(M) LV6 
-1/20 魔法袍(F) LV6 
-1/20 魂甲(M) LV6 
-1/20 魂甲(F) LV6
-1/20 圣物甲(M) LV6
-1/20 圣物甲(F) LV6
+1/20 Heavy甲(男) LV6 
+1/20 Heavy甲(女) LV6 
+1/20 魔法袍(男) LV6 
+1/20 魔法袍(女) LV6 
+1/20 魂甲(男) LV6 
+1/20 魂甲(女) LV6
+1/20 圣物甲(男) LV6
+1/20 圣物甲(女) LV6
 
 
 ;Armour Rare
-1/200 VanguardArmour(M)
-1/200 VanguardArmour(F)
+1/200 VanguardArmour(男)
+1/200 VanguardArmour(女)
 
 
 ;Helmets
@@ -1186,7 +1186,7 @@
 1/15 ConvexLens LV6 
 1/15 BambooPipe LV6 
 1/50 爪项链 LV6
-1/50 Life项链 LV6
+1/50 生命项链 LV6
 1/50 珍珠项链 LV6
 
 ;Necklace Rare
@@ -1249,9 +1249,9 @@
 1/175 ProtectionGuards[14d] LV6
 
 ;Stone
-1/40 DC石(M) LV6
-1/40 MC石(M) LV6
-1/40 SC石(M) LV6
+1/40 道术石(男) LV6
+1/40 MC石(男) LV6
+1/40 SC石(男) LV6
 
 ;Stones Rare
 
@@ -1275,7 +1275,7 @@
 1/210 冰暴 LV6
 
 ;Taoist
-1/40 Blessed甲 LV6
+1/40 祝福ed甲 LV6
 1/80 EnergyRepulsor LV6
 1/120 陷阱Hexagon LV6
 1/110 UltimateEnhancer LV6
@@ -1292,7 +1292,7 @@
 1/40 召唤吸血蜘蛛 LV6
 1/80 BackStep LV6
 1/100 DelayedExplosion LV6
-1/120 ElementalBarrier LV6
+1/120 元素alBarrier LV6
 1/150 BindingShot LV6
 
 ;Quests
@@ -1323,16 +1323,16 @@
 1/2 大魔法药 LV7
 1/3 大金创药 LV7
 1/3 大魔法药 LV7
-1/1 太阳药水(M) LV7
-1/2 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
-1/2 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
-1/2 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
-1/2 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
-1/2 太阳药水(M) LV7
+1/1 太阳药水(男) LV7
+1/2 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
+1/2 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
+1/2 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
+1/2 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
+1/2 太阳药水(男) LV7
 
 
 ;Other
@@ -1368,23 +1368,23 @@
 1/90 Fiend弓 LV7
 1/90 战争法师杖 LV7
 1/90 魂泉杖 LV7
-1/90 刃之Darkness LV7
+1/90 刃之暗ness LV7
 
 
 ;Armour
-1/20 Heavy甲(M) LV7 
-1/20 Heavy甲(F) LV7 
-1/20 魔法袍(M) LV7 
-1/20 魔法袍(F) LV7 
-1/20 魂甲(M) LV7 
-1/20 魂甲(F) LV7
-1/20 圣物甲(M) LV7
-1/20 圣物甲(F) LV7
+1/20 Heavy甲(男) LV7 
+1/20 Heavy甲(女) LV7 
+1/20 魔法袍(男) LV7 
+1/20 魔法袍(女) LV7 
+1/20 魂甲(男) LV7 
+1/20 魂甲(女) LV7
+1/20 圣物甲(男) LV7
+1/20 圣物甲(女) LV7
 
 
 ;Armour Rare
-1/200 VanguardArmour(M)
-1/200 VanguardArmour(F)
+1/200 VanguardArmour(男)
+1/200 VanguardArmour(女)
 
 
 ;Helmets
@@ -1404,7 +1404,7 @@
 1/15 ConvexLens LV7 
 1/15 BambooPipe LV7 
 1/50 爪项链 LV7
-1/50 Life项链 LV7
+1/50 生命项链 LV7
 1/50 珍珠项链 LV7
 
 ;Necklace Rare
@@ -1467,9 +1467,9 @@
 1/175 ProtectionGuards[14d] LV7
 
 ;Stone
-1/40 DC石(M) LV7
-1/40 MC石(M) LV7
-1/40 SC石(M) LV7
+1/40 道术石(男) LV7
+1/40 MC石(男) LV7
+1/40 SC石(男) LV7
 
 ;Stones Rare
 
@@ -1493,7 +1493,7 @@
 1/210 冰暴 LV7
 
 ;Taoist
-1/40 Blessed甲 LV7
+1/40 祝福ed甲 LV7
 1/80 EnergyRepulsor LV7
 1/120 陷阱Hexagon LV7
 1/110 UltimateEnhancer LV7
@@ -1510,7 +1510,7 @@
 1/40 召唤吸血蜘蛛 LV7
 1/80 BackStep LV7
 1/100 DelayedExplosion LV7
-1/120 ElementalBarrier LV7
+1/120 元素alBarrier LV7
 1/150 BindingShot LV7
 
 ;Quests
@@ -1541,16 +1541,16 @@
 1/2 大魔法药 LV8
 1/3 大金创药 LV8
 1/3 大魔法药 LV8
-1/1 太阳药水(M) LV8
-1/2 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
-1/2 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
-1/2 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
-1/2 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
-1/2 太阳药水(M) LV8
+1/1 太阳药水(男) LV8
+1/2 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
+1/2 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
+1/2 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
+1/2 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
+1/2 太阳药水(男) LV8
 
 
 ;Other
@@ -1586,23 +1586,23 @@
 1/90 Fiend弓 LV8
 1/90 战争法师杖 LV8
 1/90 魂泉杖 LV8
-1/90 刃之Darkness LV8
+1/90 刃之暗ness LV8
 
 
 ;Armour
-1/20 Heavy甲(M) LV8 
-1/20 Heavy甲(F) LV8 
-1/20 魔法袍(M) LV8 
-1/20 魔法袍(F) LV8 
-1/20 魂甲(M) LV8 
-1/20 魂甲(F) LV8
-1/20 圣物甲(M) LV8
-1/20 圣物甲(F) LV8
+1/20 Heavy甲(男) LV8 
+1/20 Heavy甲(女) LV8 
+1/20 魔法袍(男) LV8 
+1/20 魔法袍(女) LV8 
+1/20 魂甲(男) LV8 
+1/20 魂甲(女) LV8
+1/20 圣物甲(男) LV8
+1/20 圣物甲(女) LV8
 
 
 ;Armour Rare
-1/200 VanguardArmour(M)
-1/200 VanguardArmour(F)
+1/200 VanguardArmour(男)
+1/200 VanguardArmour(女)
 
 
 ;Helmets
@@ -1622,7 +1622,7 @@
 1/15 ConvexLens LV8 
 1/15 BambooPipe LV8 
 1/50 爪项链 LV8
-1/50 Life项链 LV8
+1/50 生命项链 LV8
 1/50 珍珠项链 LV8
 
 ;Necklace Rare
@@ -1685,9 +1685,9 @@
 1/175 ProtectionGuards[14d] LV8
 
 ;Stone
-1/40 DC石(M) LV8
-1/40 MC石(M) LV8
-1/40 SC石(M) LV8
+1/40 道术石(男) LV8
+1/40 MC石(男) LV8
+1/40 SC石(男) LV8
 
 ;Stones Rare
 
@@ -1711,7 +1711,7 @@
 1/210 冰暴 LV8
 
 ;Taoist
-1/40 Blessed甲 LV8
+1/40 祝福ed甲 LV8
 1/80 EnergyRepulsor LV8
 1/120 陷阱Hexagon LV8
 1/110 UltimateEnhancer LV8
@@ -1729,7 +1729,7 @@
 1/40 召唤吸血蜘蛛 LV8
 1/80 BackStep LV8
 1/100 DelayedExplosion LV8
-1/120 ElementalBarrier LV8
+1/120 元素alBarrier LV8
 1/150 BindingShot LV8
 
 ;Quests

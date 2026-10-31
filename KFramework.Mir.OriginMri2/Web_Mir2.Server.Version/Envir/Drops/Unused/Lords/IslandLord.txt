@@ -29,7 +29,7 @@
 1/1150 蛮兵剑
 1/1150 Apus弓
 1/1150 Raw剑
-1/1150 骨CarvedFan
+1/1150 骨Carved扇
 1/1150 Mad龙刃
 1/1150 HorneySlayer
 1/1150 HorneyScepter
@@ -41,18 +41,18 @@
 1/1000 LordSlayerBlades
 
 ;Armour
-1/950 HorneySuit(M)
-1/950 HorneySuit(F)
-1/1500 天甲(M)
-1/1500 天甲(F)
-1/1500 HeavenRedArmour(M)
-1/1500 HeavenRedArmour(F)
-1/1500 HeavenGrnArmour(M)
-1/1500 HeavenGrnArmour(F)
-1/1500 HeavenGoldArmour(M)
-1/1500 HeavenGoldArmour(F)
-1/1000 LordSlayerArmour(M)
-1/1000 LordSlayerArmour(F)
+1/950 HorneySuit(男)
+1/950 HorneySuit(女)
+1/1500 天甲(男)
+1/1500 天甲(女)
+1/1500 HeavenRedArmour(男)
+1/1500 HeavenRedArmour(女)
+1/1500 HeavenGrnArmour(男)
+1/1500 HeavenGrnArmour(女)
+1/1500 HeavenGoldArmour(男)
+1/1500 HeavenGoldArmour(女)
+1/1000 LordSlayerArmour(男)
+1/1000 LordSlayerArmour(女)
 
 ;Helmets
 1/1000 LordSlayerHelmet
@@ -111,7 +111,7 @@
 1/500 Counter攻击
 
 ;;Wizard
-1/100 Mirroring
+1/100 镜ing
 1/300 MeteorStrike
 1/400 魔法Booster
 1/500 冰Thrust

@@ -71,15 +71,15 @@ GOTO @Main-1
 
 [@lvl3-7]
 #SAY
-离开城镇远一些后，可狩猎钩爪猫、Raking猫、小混混、狼、
-Shell钳手、角虫等。
+离开城镇远一些后，可狩猎钩爪猫、抓挠猫、小混混、狼、
+壳钳手、角虫等。
 
 <返回/@level1-11>            <返回主页/@main>
 
 [@lvl7-11]
 #SAY
 7 级可学习特殊技能。战斗力会提升，可尝试奥玛、森林雪怪、食人花、
-Visceral蠕虫、吐丝蜘蛛等。但要特别警惕吐丝蜘蛛的毒。
+内脏蠕虫、吐丝蜘蛛等。但要特别警惕吐丝蜘蛛的毒。
 
 <返回/@level1-11>              <返回主页/@main>
 
@@ -201,11 +201,11 @@ Visceral蠕虫、吐丝蜘蛛等。但要特别警惕吐丝蜘蛛的毒。
 #SAY
 魔法师技能 第2页：
 
-<魔法盾 31/@mshield>     <Mirroring 41/@mirror>
-<TurnUndead 32/@turnundead>     <FlameField 42/@ffield>
+<魔法盾 31/@mshield>     <镜ing 41/@mirror>
+<TurnUndead 32/@turnundead>     <火焰Field 42/@ffield>
 <Vampirism 33/@vamp>     <Blizzard 44/@blizzard>
 <冰暴 35/@冰暴>   <MeteorStrike 49/@meteor>
-<FlameDisruptor 38/@fdisrupt>
+<火焰Disruptor 38/@fdisrupt>
 
 <返回/@combat>                   <返回主页/@main>
 
@@ -215,8 +215,8 @@ Visceral蠕虫、吐丝蜘蛛等。但要特别警惕吐丝蜘蛛的毒。
 只有道士能将护符或毒作为技能之一使用。
 
 <Healing 7/@healing>     <召唤骷髅 19/@summonskel>     <Revelation 23/@rev>
-<之灵剑 9/@ssword>     <Hiding 20/@hiding>     <Blessed甲 25/@blessarm>
-<Poisoning 14/@poison>     <MassHiding 21/@masshide>     <EnergyRepulsor 27/@energyrep>
+<之灵剑 9/@ssword>     <Hiding 20/@hiding>     <祝福ed甲 25/@blessarm>
+<毒ing 14/@poison>     <MassHiding 21/@masshide>     <EnergyRepulsor 27/@energyrep>
 <魂火球 18/@sfb>   <魂盾 22/@魂盾>   <陷阱Hexagon 28/@traphex>
 
 <返回/@combat>                         <下一页/@taoskill2>
@@ -484,7 +484,7 @@ Vampirism（33 级）
 
 [@fdisrupt]
 #SAY
-FlameDisruptor（38 级）
+火焰Disruptor（38 级）
 
 无视任何障碍物，在敌人身上制造一道强力光柱。
 （物理实体。）消耗魔法值。
@@ -493,7 +493,7 @@ FlameDisruptor（38 级）
 
 [@mirror]
 #SAY
-Mirroring（41 级）
+镜ing（41 级）
 
 制造一个分身一起战斗。点击技能时分身出现，再点一次移除分身。
 分身存在期间持续消耗魔法值。
@@ -502,7 +502,7 @@ Mirroring（41 级）
 
 [@ffield]
 #SAY
-FlameField（42 级）
+火焰Field（42 级）
 
 5×5 范围的可怕火焰攻击（最多 24 个敌人）。消耗魔法值。
 
@@ -549,7 +549,7 @@ Healing（7 级）
 
 [@poison]
 #SAY
-Poisoning（14 级）
+毒ing（14 级）
 
 持续一段时间内对敌人造成伤害的毒。
 消耗魔法值和毒。
@@ -613,7 +613,7 @@ Revelation（23 级）
 
 [@blessarm]
 #SAY
-Blessed甲（25 级）
+祝福ed甲（25 级）
 
 提升物理防御力，且影响玩家周围的人。
 持续时间随熟练度增加。

@@ -8,8 +8,8 @@
 1/2 特制魔法药
 1/1 太阳水
 1/1 太阳水
-1/1 太阳药水(M)
-1/1 太阳药水(M)
+1/1 太阳药水(男)
+1/1 太阳药水(男)
 1/1 太阳水
 1/1 太阳水
 1/2 太阳水
@@ -78,7 +78,7 @@
 ;Books
 1/100 SliceNDice
 1/200 召唤圣精灵
-1/200 Mirroring
+1/200 镜ing
 1/200 SwiftFeet
 1/200 刃Avalanche
 1/500 防护Field
@@ -103,7 +103,7 @@
 
 ;Archer
 1/100 DelayedExplosion
-1/200 ElementalBarrier
+1/200 元素alBarrier
 1/500 BindingShot
 1/750 召唤蟾蜍
 1/800 毒Shot

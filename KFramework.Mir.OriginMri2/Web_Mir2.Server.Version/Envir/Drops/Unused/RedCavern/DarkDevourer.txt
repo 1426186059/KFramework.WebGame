@@ -28,29 +28,29 @@
 1/2 太阳水 
 1/2 太阳水 
 1/2 太阳水 
-1/1 太阳药水(M) 
-1/1 太阳药水(M) 
-1/1 太阳药水(M) 
-1/2 太阳药水(M) 
-1/2 太阳药水(M)
+1/1 太阳药水(男) 
+1/1 太阳药水(男) 
+1/1 太阳药水(男) 
+1/2 太阳药水(男) 
+1/2 太阳药水(男)
 1/10 复活护符
 1/1 BenedictionOil
 1/10 BenedictionOil
-1/30 Impact药(L)
-1/30 魔法药(L)
-1/30 道士药(L)
-1/30 暴药(L)
+1/30 Impact药(大)
+1/30 魔法药(大)
+1/30 道士药(大)
+1/30 暴药(大)
 
 ;Weapons
 1/75 龙剑
 1/90 JudgementMace
 1/90 战争法师杖
 1/90 魂泉杖
-1/90 刃之Darkness
+1/90 刃之暗ness
 1/90 Fiend弓
 1/145 战争之灵刃
 1/145 魔法Scythe
-1/145 石BambooFan
+1/145 石Bamboo扇
 1/145 冰冻刃
 1/145 轻盈弓
 1/250 龙斩杀
@@ -77,7 +77,7 @@
 1/30 邪斩杀戒
 1/50 力量戒
 1/50 Violet戒
-1/50 Titan戒
+1/50 泰坦戒
 1/125 奥玛之灵戒
 1/125 Noble戒
 1/125 魂戒
@@ -97,7 +97,7 @@
 ;Necklace
 1/55 Gale项链
 1/35 绿Bead
-1/35 DemonicBells
+1/35 魔icBells
 1/35 魂项链
 1/10 蓝雷项链
 1/10 之灵力量项链
@@ -124,11 +124,11 @@
 1/55 CrossHalf月
 1/60 月轻
 1/60 UltimateEnhancer
-1/60 FlameDisruptor
+1/60 火焰Disruptor
 1/200 召唤圣精灵
-1/200 Mirroring
+1/200 镜ing
 1/200 刃Avalanche
-1/200 MPEater
+1/200 魔法Eater
 1/500 防护Field
 1/500 Reincarnation
 1/500 MeteorStrike
@@ -136,7 +136,7 @@
 1/500 暗Body
 1/500 Rage
 1/550 Blizzard
-1/1000 FlameField
+1/1000 火焰Field
 1/1000 诅咒
 1/1000 Hemorrhage
 1/1000 Plague

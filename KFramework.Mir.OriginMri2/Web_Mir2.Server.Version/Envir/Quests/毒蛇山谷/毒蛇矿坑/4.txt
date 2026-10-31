@@ -3,7 +3,7 @@
 我儿子曾在{SerpentDeadMine/Yellow}寻找宝藏，他长袍里的信件说他找到了金子。请回去取回{Stolen金/LightSteelBlue}。
 
 [@TaskDescription]
-在{SerpentDeadMine 2F/Yellow}击杀{RotNd僵尸/Crimson}。
+在{SerpentDeadMine 2F/Yellow}击杀{腐烂绿僵尸/Crimson}。
 
 [@Completion]
 
@@ -18,7 +18,7 @@ Stolen金 1
 
 [@SelectRewards]
 黑水晶戒
-Eyeof金蛇
+眼of金蛇
 黑珍珠戒
 
 [@ExpReward]

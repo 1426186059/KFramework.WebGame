@@ -18,22 +18,22 @@
 1/1 特制魔法药
 1/2 特制魔法药
 1/2 特制魔法药
-1/1 太阳药水(M)
-1/1 太阳药水(M)
-1/1 太阳药水(M)
-1/1 太阳药水(M)
-1/2 太阳药水(M)
-1/2 太阳药水(M)
-1/2 太阳药水(M)
-1/2 太阳药水(M)
+1/1 太阳药水(男)
+1/1 太阳药水(男)
+1/1 太阳药水(男)
+1/1 太阳药水(男)
+1/2 太阳药水(男)
+1/2 太阳药水(男)
+1/2 太阳药水(男)
+1/2 太阳药水(男)
 1/30 Apple
 1/45 Apple
 1/2 BenedictionOil
 1/5 BenedictionOil
-1/30 Impact药(L)
-1/30 魔法药(L)
-1/30 道士药(L)
-1/30 暴药(L)
+1/30 Impact药(大)
+1/30 魔法药(大)
+1/30 道士药(大)
+1/30 暴药(大)
 
 
 ;Weapons
@@ -41,10 +41,10 @@
 1/90 战争法师杖
 1/90 Fiend弓
 1/90 魂泉杖
-1/90 刃之Darkness
+1/90 刃之暗ness
 1/4100 战争之灵刃
 1/4100 魔法Scythe
-1/4100 石BambooFan
+1/4100 石Bamboo扇
 1/4100 冰冻刃
 1/1000 皇家刃
 1/1000 龙斩杀
@@ -59,36 +59,36 @@
 
 
 ;Armours
-1/45 Studded甲(M)
-1/45 Studded甲(F)
-1/45 钢甲(M)
-1/45 钢甲(F)
-1/45 龙袍(M)
-1/45 龙袍(F)
-1/45 Titan甲(M)
-1/45 Titan甲(F)
-1/45 皇家甲(M)
-1/45 皇家甲(F)
-1/1300 红暗甲(M)
-1/1300 红暗甲(F)
-1/1300 蓝暗甲(M)
-1/1300 蓝暗甲(F)
-1/1300 Scaled甲(M)
-1/1300 Scaled甲(F)
-1/1300 绿暗甲(M)
-1/1300 绿暗甲(F)
-1/1300 金暗甲(M)
-1/1300 金暗甲(F)
+1/45 Studded甲(男)
+1/45 Studded甲(女)
+1/45 钢甲(男)
+1/45 钢甲(女)
+1/45 龙袍(男)
+1/45 龙袍(女)
+1/45 泰坦甲(男)
+1/45 泰坦甲(女)
+1/45 皇家甲(男)
+1/45 皇家甲(女)
+1/1300 红暗甲(男)
+1/1300 红暗甲(女)
+1/1300 蓝暗甲(男)
+1/1300 蓝暗甲(女)
+1/1300 鳞d甲(男)
+1/1300 鳞d甲(女)
+1/1300 绿暗甲(男)
+1/1300 绿暗甲(女)
+1/1300 金暗甲(男)
+1/1300 金暗甲(女)
 
 ;Upgrade Armour
-1/11200 天甲(M)
-1/11200 天甲(F)
-1/11200 HeavenRedArmour(M)
-1/11200 HeavenRedArmour(F)
-1/11200 HeavenGrnArmour(M)
-1/11200 HeavenGrnArmour(F)
-1/11200 HeavenGoldArmour(M)
-1/11200 HeavenGoldArmour(F)
+1/11200 天甲(男)
+1/11200 天甲(女)
+1/11200 HeavenRedArmour(男)
+1/11200 HeavenRedArmour(女)
+1/11200 HeavenGrnArmour(男)
+1/11200 HeavenGrnArmour(女)
+1/11200 HeavenGoldArmour(男)
+1/11200 HeavenGoldArmour(女)
 
 
 ;Helmets
@@ -138,7 +138,7 @@
 
 ;Necklace
 1/120 Gale项链
-1/100 DemonicBells
+1/100 魔icBells
 1/100 魂项链
 1/90 英雄项链
 1/90 精金项链
@@ -175,10 +175,10 @@
 ;Books
 1/30 霜Crunch
 1/25 冰暴
-1/120 FlameDisruptor
-1/800 FlameField
+1/120 火焰Disruptor
+1/800 火焰Field
 1/100 Vampirism
-1/4100 Mirroring
+1/4100 镜ing
 1/11200 Blizzard
 1/1800 魔法Booster
 1/111200 MeteorStrike
@@ -191,7 +191,7 @@
 1/25 烈焰剑
 1/120 CrossHalf月
 1/100 双生龙兽刃
-1/100 LionRoar
+1/100 狮Roar
 1/100 Entrapment
 1/120 BladeStorm
 1/4100 刃Avalanche
@@ -204,7 +204,7 @@
 
 1/25 CrescentSlash
 1/120 月轻
-1/100 MPEater
+1/100 魔法Eater
 1/4100 SwiftFeet
 1/1800 暗Body
 

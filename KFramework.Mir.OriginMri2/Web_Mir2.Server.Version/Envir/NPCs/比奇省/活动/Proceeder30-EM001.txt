@@ -317,9 +317,9 @@ SET [501] 1
 Param1 EM001
 Param2 13
 Param3 16
-MonGen Spitting蜘蛛 1
+MonGen 吐毒蜘蛛 1
 MonGen 奥玛 2
-MonGen Raking猫 2
+MonGen 抓挠猫 2
 [@check1]
 #IF
 CHECKMON >= 1 em001

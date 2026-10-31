@@ -11,11 +11,11 @@
 1/25 大魔法药
 1/1 太阳水
 1/1 太阳水
-1/1 太阳药水(M)
-1/1 太阳药水(M)
-1/2 太阳药水(M)
-1/2 太阳药水(M)
-1/2 太阳药水(M)
+1/1 太阳药水(男)
+1/1 太阳药水(男)
+1/2 太阳药水(男)
+1/2 太阳药水(男)
+1/2 太阳药水(男)
 1/3 BenedictionOil
 1/10 BenedictionOil
 
@@ -42,48 +42,48 @@
 1/90 Bastard剑
 1/90 Zinc刃
 1/90 Grim弓
-1/350 黑虎Hammer
-1/350 杖之Lotus
-1/350 Fan之Crane
+1/350 黑虎锤
+1/350 杖之莲
+1/350 扇之Crane
 1/350 Butchering刃
 1/350 Lethal弓
 1/1000 蛮兵剑
 1/1000 Raw剑
-1/1000 骨CarvedFan
+1/1000 骨Carved扇
 1/1000 TheRipper
 1/1000 Apus弓
 
 
 ;Armours
-1/25 钢甲(M)
-1/25 钢甲(F)
-1/25 龙袍(M)
-1/25 龙袍(F)
-1/25 Titan甲(M)
-1/25 Titan甲(F)
-1/25 皇家甲(M)
-1/25 皇家甲(F)
-1/25 Studded甲(M)
-1/25 Studded甲(F)
-1/200 黑虎甲(M)
-1/200 黑虎甲(F)
-1/200 Lotus甲(M)
-1/200 Lotus甲(F)
-1/200 Crane甲(M)
-1/200 Crane甲(F)
-1/200 Stealth甲(M)
-1/200 Stealth甲(F)
-1/200 轻锻造甲(M)
-1/200 轻锻造甲(F)
-1/5000 天甲(M)
-1/5000 天甲(F)
+1/25 钢甲(男)
+1/25 钢甲(女)
+1/25 龙袍(男)
+1/25 龙袍(女)
+1/25 泰坦甲(男)
+1/25 泰坦甲(女)
+1/25 皇家甲(男)
+1/25 皇家甲(女)
+1/25 Studded甲(男)
+1/25 Studded甲(女)
+1/200 黑虎甲(男)
+1/200 黑虎甲(女)
+1/200 莲甲(男)
+1/200 莲甲(女)
+1/200 Crane甲(男)
+1/200 Crane甲(女)
+1/200 Stealth甲(男)
+1/200 Stealth甲(女)
+1/200 轻锻造甲(男)
+1/200 轻锻造甲(女)
+1/5000 天甲(男)
+1/5000 天甲(女)
 
 ;Helmet
 1/20 巨盔
 1/20 WisdomCoronet
 1/20 道Coronet
 1/20 皇家盔
-1/125 盔之Kings
+1/125 盔之王s
 1/125 盔之Sorcery
 1/125 Purified面具
 1/125 魔影
@@ -109,17 +109,17 @@
 1/300 Taji戒
 
 ;Bracelet
-1/65 DualTitan护符
+1/65 Dual泰坦护符
 1/65 邪Whisp护符
-1/65 SacredAngel护符
-1/250 WildTitan护符
+1/65 Sacred天使护符
+1/250 Wild泰坦护符
 1/250 Enchanted护符
 1/250 五元素护符
 
 ;Necklaces
 1/50 Cuspid项链
 1/50 SorceryAnchor
-1/50 PurifiedMirror
+1/50 Purified镜
 1/100 Adamant项链
 1/100 邪Triangle
 1/100 CrossPurified

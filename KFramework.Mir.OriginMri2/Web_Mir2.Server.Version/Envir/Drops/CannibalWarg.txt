@@ -18,8 +18,8 @@
 
 
 ;Bracelets Rare
-1/38000 DualTitan护符
-1/38000 SacredAngel护符
+1/38000 Dual泰坦护符
+1/38000 Sacred天使护符
 1/38000 邪Whisp护符
 
 1/50000 龙斩杀

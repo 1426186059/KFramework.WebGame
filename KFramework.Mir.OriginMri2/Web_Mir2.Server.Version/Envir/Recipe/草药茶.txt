@@ -7,5 +7,5 @@ Gold 300
 
 [Ingredients]
 食人Fruit
-食人Leaf
+食人叶
 太阳水

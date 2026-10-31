@@ -7,6 +7,6 @@ Gold 10000
 Crafting书
 
 [Ingredients]
-DC石 
-Impact药(L) 
+道术石 
+Impact药(大) 
 特制金创药 2

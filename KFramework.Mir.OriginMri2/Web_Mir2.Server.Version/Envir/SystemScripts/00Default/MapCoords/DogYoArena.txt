@@ -5,5 +5,5 @@ Level > 49
 #ACT
 ENTERMAP
 #ELSEACT
-LocalMessage "Doors are locked until you reach level 50!" Hint
+LocalMessage "门已上锁，直到你达到50级！" Hint
 }

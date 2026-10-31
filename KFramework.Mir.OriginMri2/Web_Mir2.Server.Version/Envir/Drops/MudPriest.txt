@@ -15,7 +15,7 @@
 1/15000 魔面具
 1/15000 Violet珠
 1/15000 KunroonTear
-1/20000 (H)WheelOfLunar
+1/20000 (魂)WheelOfLunar
 
 ;Weapons
 

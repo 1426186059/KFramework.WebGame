@@ -9,24 +9,24 @@
 CHECKITEM MysteriousStone
 #ACT
 GIVEBUFF Exp 0 30 TRUE
-LocalMessage "Experience Increased by 30%" Hint
+LocalMessage "经验提升30%" Hint
 #ELSEACT
-LocalMessage "You don't have Mysterious Stone!" Hint
+LocalMessage "你没有神秘石！" Hint
 
 [@_CUSTOMCOMMAND(MysteriousStoneOFF)]
 #IF
 CHECKITEM MysteriousStone
 #ACT
 REMOVEBUFF Exp
-LocalMessage "Additional Experience has been removed." Hint
+LocalMessage "附加经验已移除。" Hint
 #ELSEACT
-LocalMessage "You don't have Mysterious Stone!" Hint
+LocalMessage "你没有神秘石！" Hint
 
 
 ;;PKPoint Command.
 [@_CUSTOMCOMMAND(PKPOINT)]
 #ACT
-LocalMessage "You current have <$PKPOINT> PK Points." Hint
+LocalMessage "你当前有 <$PKPOINT> 点 PK 值。" Hint
 
 ;;Home Command.
 [@_CUSTOMCOMMAND(HOME)]
@@ -40,7 +40,7 @@ MOVE 0 328 264
 [@_CustomCommand(KillPets)]
 #ACT
 CLEARPETS
-LocalMessage "Your Pets have been killed successfully."
+LocalMessage "你的宠物已被成功击杀。"
 
 
 [@_CUSTOMCOMMAND(GM)]
@@ -48,6 +48,6 @@ LocalMessage "Your Pets have been killed successfully."
 ISADMIN
 #ACT
 MOVE r001 100 100
-LocalMessage "Moved to Gamemaster Map" Hint
+LocalMessage "已传送至管理员地图" Hint
 #ELSEACT
-LocalMessage "You are not a Gamemaster" Hint
+LocalMessage "你不是管理员" Hint

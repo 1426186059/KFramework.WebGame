@@ -300,13 +300,13 @@ namespace Server.MirEnvir
         {
             //Warrior
             if (!MagicExists(Spell.Fencing))
-                MagicInfoList.Add(new MagicInfo { Name = "Fencing", Spell = Spell.Fencing, Icon = 2, Level1 = 7, Level2 = 9, Level3 = 12, Need1 = 270, Need2 = 600, Need3 = 1300, Range = 0 });
+                MagicInfoList.Add(new MagicInfo { Name = "刺杀剑术", Spell = Spell.Fencing, Icon = 2, Level1 = 7, Level2 = 9, Level3 = 12, Need1 = 270, Need2 = 600, Need3 = 1300, Range = 0 });
             if (!MagicExists(Spell.Slaying))
-                MagicInfoList.Add(new MagicInfo { Name = "Slaying", Spell = Spell.Slaying, Icon = 6, Level1 = 15, Level2 = 17, Level3 = 20, Need1 = 500, Need2 = 1100, Need3 = 1800, Range = 0 });
+                MagicInfoList.Add(new MagicInfo { Name = "攻杀剑术", Spell = Spell.Slaying, Icon = 6, Level1 = 15, Level2 = 17, Level3 = 20, Need1 = 500, Need2 = 1100, Need3 = 1800, Range = 0 });
             if (!MagicExists(Spell.Thrusting))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Thrusting",
+                    Name = "突刺",
                     Spell = Spell.Thrusting,
                     Icon = 11,
                     Level1 = 22,
@@ -322,7 +322,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.HalfMoon))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "HalfMoon",
+                    Name = "半月弯刀",
                     Spell = Spell.HalfMoon,
                     Icon = 24,
                     Level1 = 26,
@@ -339,7 +339,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.ShoulderDash))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "ShoulderDash",
+                    Name = "野蛮冲撞",
                     Spell = Spell.ShoulderDash,
                     Icon = 26,
                     Level1 = 30,
@@ -357,7 +357,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.TwinDrakeBlade))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "TwinDrakeBlade",
+                    Name = "逐日剑法",
                     Spell = Spell.TwinDrakeBlade,
                     Icon = 37,
                     Level1 = 32,
@@ -374,7 +374,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.Entrapment))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Entrapment",
+                    Name = "擒龙手",
                     Spell = Spell.Entrapment,
                     Icon = 46,
                     Level1 = 32,
@@ -390,7 +390,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.FlamingSword))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "FlamingSword",
+                    Name = "烈火剑法",
                     Spell = Spell.FlamingSword,
                     Icon = 25,
                     Level1 = 35,
@@ -407,7 +407,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.LionRoar))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "LionRoar",
+                    Name = "狮子吼",
                     Spell = Spell.LionRoar,
                     Icon = 42,
                     Level1 = 36,
@@ -423,7 +423,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.CrossHalfMoon))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "CrossHalfMoon",
+                    Name = "圆月弯刀",
                     Spell = Spell.CrossHalfMoon,
                     Icon = 33,
                     Level1 = 38,
@@ -440,7 +440,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.BladeAvalanche))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "BladeAvalanche",
+                    Name = "崩山剑法",
                     Spell = Spell.BladeAvalanche,
                     Icon = 43,
                     Level1 = 38,
@@ -457,7 +457,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.ProtectionField))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "ProtectionField",
+                    Name = "护体神盾",
                     Spell = Spell.ProtectionField,
                     Icon = 50,
                     Level1 = 39,
@@ -472,11 +472,11 @@ namespace Server.MirEnvir
                 });
             if (!MagicExists(Spell.Rage))
                 MagicInfoList.Add(new MagicInfo
-                { Name = "Rage", Spell = Spell.Rage, Icon = 49, Level1 = 44, Level2 = 47, Level3 = 50, Need1 = 8000, Need2 = 14000, Need3 = 20000, BaseCost = 20, LevelCost = 5, Range = 0 });
+                { Name = "狂暴", Spell = Spell.Rage, Icon = 49, Level1 = 44, Level2 = 47, Level3 = 50, Need1 = 8000, Need2 = 14000, Need3 = 20000, BaseCost = 20, LevelCost = 5, Range = 0 });
             if (!MagicExists(Spell.CounterAttack))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "CounterAttack",
+                    Name = "反击术",
                     Spell = Spell.CounterAttack,
                     Icon = 72,
                     Level1 = 47,
@@ -494,7 +494,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.SlashingBurst))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "SlashingBurst",
+                    Name = "爆发斩",
                     Spell = Spell.SlashingBurst,
                     Icon = 55,
                     Level1 = 50,
@@ -516,7 +516,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.Fury))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Fury",
+                    Name = "暴怒",
                     Spell = Spell.Fury,
                     Icon = 76,
                     Level1 = 45,
@@ -534,7 +534,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.ImmortalSkin))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "ImmortalSkin",
+                    Name = "金钟罩",
                     Spell = Spell.ImmortalSkin,
                     Icon = 80,
                     Level1 = 60,
@@ -554,7 +554,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.FireBall))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "FireBall",
+                    Name = "火球术",
                     Spell = Spell.FireBall,
                     Icon = 0,
                     Level1 = 7,
@@ -572,7 +572,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.Repulsion))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Repulsion",
+                    Name = "抗拒火环",
                     Spell = Spell.Repulsion,
                     Icon = 7,
                     Level1 = 12,
@@ -589,7 +589,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.ElectricShock))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "ElectricShock",
+                    Name = "雷电术",
                     Spell = Spell.ElectricShock,
                     Icon = 19,
                     Level1 = 13,
@@ -605,7 +605,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.GreatFireBall))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "GreatFireBall",
+                    Name = "大火球",
                     Spell = Spell.GreatFireBall,
                     Icon = 4,
                     Level1 = 15,
@@ -623,7 +623,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.HellFire))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "HellFire",
+                    Name = "地狱火",
                     Spell = Spell.HellFire,
                     Icon = 8,
                     Level1 = 16,
@@ -641,7 +641,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.ThunderBolt))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "ThunderBolt",
+                    Name = "疾光电影",
                     Spell = Spell.ThunderBolt,
                     Icon = 10,
                     Level1 = 17,
@@ -659,11 +659,11 @@ namespace Server.MirEnvir
                 });
             if (!MagicExists(Spell.Teleport))
                 MagicInfoList.Add(new MagicInfo
-                { Name = "Teleport", Spell = Spell.Teleport, Icon = 20, Level1 = 19, Level2 = 22, Level3 = 25, Need1 = 350, Need2 = 1000, Need3 = 2000, BaseCost = 10, LevelCost = 3, Range = 0 });
+                { Name = "瞬息移动", Spell = Spell.Teleport, Icon = 20, Level1 = 19, Level2 = 22, Level3 = 25, Need1 = 350, Need2 = 1000, Need3 = 2000, BaseCost = 10, LevelCost = 3, Range = 0 });
             if (!MagicExists(Spell.FireBang))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "FireBang",
+                    Name = "爆裂火焰",
                     Spell = Spell.FireBang,
                     Icon = 22,
                     Level1 = 22,
@@ -681,7 +681,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.FireWall))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "FireWall",
+                    Name = "火墙",
                     Spell = Spell.FireWall,
                     Icon = 21,
                     Level1 = 24,
@@ -699,7 +699,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.Lightning))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Lightning",
+                    Name = "闪电术",
                     Spell = Spell.Lightning,
                     Icon = 9,
                     Level1 = 26,
@@ -717,7 +717,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.FrostCrunch))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "FrostCrunch",
+                    Name = "寒霜爆破",
                     Spell = Spell.FrostCrunch,
                     Icon = 38,
                     Level1 = 28,
@@ -735,7 +735,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.ThunderStorm))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "ThunderStorm",
+                    Name = "五雷轰顶",
                     Spell = Spell.ThunderStorm,
                     Icon = 23,
                     Level1 = 30,
@@ -755,7 +755,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.MagicShield))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "MagicShield",
+                    Name = "魔法盾",
                     Spell = Spell.MagicShield,
                     Icon = 30,
                     Level1 = 31,
@@ -771,7 +771,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.TurnUndead))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "TurnUndead",
+                    Name = "圣言术",
                     Spell = Spell.TurnUndead,
                     Icon = 31,
                     Level1 = 32,
@@ -787,7 +787,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.Vampirism))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Vampirism",
+                    Name = "噬血术",
                     Spell = Spell.Vampirism,
                     Icon = 47,
                     Level1 = 33,
@@ -805,7 +805,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.IceStorm))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "IceStorm",
+                    Name = "冰风暴",
                     Spell = Spell.IceStorm,
                     Icon = 32,
                     Level1 = 35,
@@ -823,7 +823,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.FlameDisruptor))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "FlameDisruptor",
+                    Name = "灭天火",
                     Spell = Spell.FlameDisruptor,
                     Icon = 34,
                     Level1 = 38,
@@ -841,11 +841,11 @@ namespace Server.MirEnvir
                 });
             if (!MagicExists(Spell.Mirroring))
                 MagicInfoList.Add(new MagicInfo
-                { Name = "Mirroring", Spell = Spell.Mirroring, Icon = 41, Level1 = 41, Level2 = 43, Level3 = 45, Need1 = 6000, Need2 = 11000, Need3 = 16000, BaseCost = 21, Range = 0 });
+                { Name = "分身术", Spell = Spell.Mirroring, Icon = 41, Level1 = 41, Level2 = 43, Level3 = 45, Need1 = 6000, Need2 = 11000, Need3 = 16000, BaseCost = 21, Range = 0 });
             if (!MagicExists(Spell.FlameField))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "FlameField",
+                    Name = "火龙气焰",
                     Spell = Spell.FlameField,
                     Icon = 44,
                     Level1 = 42,
@@ -863,7 +863,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.Blizzard))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Blizzard",
+                    Name = "冰咆哮",
                     Spell = Spell.Blizzard,
                     Icon = 51,
                     Level1 = 44,
@@ -936,12 +936,12 @@ namespace Server.MirEnvir
                 });
             if (!MagicExists(Spell.Blink))
                 MagicInfoList.Add(new MagicInfo
-                { Name = "Blink", Spell = Spell.Blink, Icon = 20, Level1 = 19, Level2 = 22, Level3 = 25, Need1 = 350, Need2 = 1000, Need3 = 2000, BaseCost = 10, LevelCost = 3, Range = 9 });
+                { Name = "闪烁", Spell = Spell.Blink, Icon = 20, Level1 = 19, Level2 = 22, Level3 = 25, Need1 = 350, Need2 = 1000, Need3 = 2000, BaseCost = 10, LevelCost = 3, Range = 9 });
             //if (!MagicExists(Spell.FastMove)) MagicInfoList.Add(new MagicInfo { Name = "FastMove", Spell = Spell.ImmortalSkin, Icon = ?, Level1 = ?, Level2 = ?, Level3 = ?, Need1 = ?, Need2 = ?, Need3 = ?, BaseCost = ?, LevelCost = ?, DelayBase = ?, DelayReduction = ? });
             if (!MagicExists(Spell.StormEscape))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "StormEscape",
+                    Name = "风暴逃脱",
                     Spell = Spell.StormEscape,
                     Icon = 23,
                     Level1 = 60,
@@ -962,7 +962,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.Healing))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Healing",
+                    Name = "治愈术",
                     Spell = Spell.Healing,
                     Icon = 1,
                     Level1 = 7,
@@ -978,14 +978,14 @@ namespace Server.MirEnvir
                 });
             if (!MagicExists(Spell.SpiritSword))
                 MagicInfoList.Add(new MagicInfo
-                { Name = "SpiritSword", Spell = Spell.SpiritSword, Icon = 3, Level1 = 9, Level2 = 12, Level3 = 15, Need1 = 350, Need2 = 1300, Need3 = 2700, Range = 0 });
+                { Name = "精神力战法", Spell = Spell.SpiritSword, Icon = 3, Level1 = 9, Level2 = 12, Level3 = 15, Need1 = 350, Need2 = 1300, Need3 = 2700, Range = 0 });
             if (!MagicExists(Spell.Poisoning))
                 MagicInfoList.Add(new MagicInfo
-                { Name = "Poisoning", Spell = Spell.Poisoning, Icon = 5, Level1 = 14, Level2 = 17, Level3 = 20, Need1 = 700, Need2 = 1300, Need3 = 2700, BaseCost = 2, LevelCost = 1, Range = 9 });
+                { Name = "施毒术", Spell = Spell.Poisoning, Icon = 5, Level1 = 14, Level2 = 17, Level3 = 20, Need1 = 700, Need2 = 1300, Need3 = 2700, BaseCost = 2, LevelCost = 1, Range = 9 });
             if (!MagicExists(Spell.SoulFireBall))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "SoulFireBall",
+                    Name = "灵魂火符",
                     Spell = Spell.SoulFireBall,
                     Icon = 12,
                     Level1 = 18,
@@ -1003,7 +1003,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.SummonSkeleton))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "SummonSkeleton",
+                    Name = "召唤骷髅",
                     Spell = Spell.SummonSkeleton,
                     Icon = 16,
                     Level1 = 19,
@@ -1018,11 +1018,11 @@ namespace Server.MirEnvir
                 });
             if (!MagicExists(Spell.Hiding))
                 MagicInfoList.Add(new MagicInfo
-                { Name = "Hiding", Spell = Spell.Hiding, Icon = 17, Level1 = 20, Level2 = 23, Level3 = 26, Need1 = 1300, Need2 = 2700, Need3 = 5300, BaseCost = 1, LevelCost = 1, Range = 0 });
+                { Name = "隐身术", Spell = Spell.Hiding, Icon = 17, Level1 = 20, Level2 = 23, Level3 = 26, Need1 = 1300, Need2 = 2700, Need3 = 5300, BaseCost = 1, LevelCost = 1, Range = 0 });
             if (!MagicExists(Spell.MassHiding))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "MassHiding",
+                    Name = "集体隐身术",
                     Spell = Spell.MassHiding,
                     Icon = 18,
                     Level1 = 21,
@@ -1038,7 +1038,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.SoulShield))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "SoulShield",
+                    Name = "幽灵盾",
                     Spell = Spell.SoulShield,
                     Icon = 13,
                     Level1 = 22,
@@ -1054,7 +1054,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.Revelation))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Revelation",
+                    Name = "显形术",
                     Spell = Spell.Revelation,
                     Icon = 27,
                     Level1 = 23,
@@ -1070,7 +1070,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.BlessedArmour))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "BlessedArmour",
+                    Name = "神圣战甲术",
                     Spell = Spell.BlessedArmour,
                     Icon = 14,
                     Level1 = 25,
@@ -1086,7 +1086,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.EnergyRepulsor))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "EnergyRepulsor",
+                    Name = "气功波",
                     Spell = Spell.EnergyRepulsor,
                     Icon = 36,
                     Level1 = 27,
@@ -1103,7 +1103,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.TrapHexagon))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "TrapHexagon",
+                    Name = "困魔咒",
                     Spell = Spell.TrapHexagon,
                     Icon = 15,
                     Level1 = 28,
@@ -1119,7 +1119,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.Purification))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Purification",
+                    Name = "净化术",
                     Spell = Spell.Purification,
                     Icon = 39,
                     Level1 = 30,
@@ -1135,7 +1135,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.MassHealing))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "MassHealing",
+                    Name = "群体治愈术",
                     Spell = Spell.MassHealing,
                     Icon = 28,
                     Level1 = 31,
@@ -1153,7 +1153,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.Hallucination))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Hallucination",
+                    Name = "幻影术",
                     Spell = Spell.Hallucination,
                     Icon = 48,
                     Level1 = 31,
@@ -1169,7 +1169,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.UltimateEnhancer))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "UltimateEnchancer",
+                    Name = "强化骷髅",
                     Spell = Spell.UltimateEnhancer,
                     Icon = 35,
                     Level1 = 33,
@@ -1185,7 +1185,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.SummonShinsu))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "SummonShinsu",
+                    Name = "召唤神兽",
                     Spell = Spell.SummonShinsu,
                     Icon = 29,
                     Level1 = 35,
@@ -1201,7 +1201,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.Reincarnation))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Reincarnation",
+                    Name = "复活术",
                     Spell = Spell.Reincarnation,
                     Icon = 53,
                     Level1 = 37,
@@ -1217,7 +1217,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.SummonHolyDeva))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "SummonHolyDeva",
+                    Name = "召唤圣兽",
                     Spell = Spell.SummonHolyDeva,
                     Icon = 40,
                     Level1 = 38,
@@ -1233,7 +1233,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.Curse))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Curse",
+                    Name = "诅咒术",
                     Spell = Spell.Curse,
                     Icon = 45,
                     Level1 = 40,
@@ -1249,11 +1249,11 @@ namespace Server.MirEnvir
                 });
             if (!MagicExists(Spell.Plague))
                 MagicInfoList.Add(new MagicInfo
-                { Name = "Plague", Spell = Spell.Plague, Icon = 74, Level1 = 42, Level2 = 44, Level3 = 47, Need1 = 5000, Need2 = 9000, Need3 = 13000, BaseCost = 20, LevelCost = 5, Range = 9 });
+                { Name = "瘟疫术", Spell = Spell.Plague, Icon = 74, Level1 = 42, Level2 = 44, Level3 = 47, Need1 = 5000, Need2 = 9000, Need3 = 13000, BaseCost = 20, LevelCost = 5, Range = 9 });
             if (!MagicExists(Spell.PoisonCloud))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "PoisonCloud",
+                    Name = "毒云术",
                     Spell = Spell.PoisonCloud,
                     Icon = 54,
                     Level1 = 43,
@@ -1273,7 +1273,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.EnergyShield))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "EnergyShield",
+                    Name = "法术护盾",
                     Spell = Spell.EnergyShield,
                     Icon = 57,
                     Level1 = 48,
@@ -1289,7 +1289,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.PetEnhancer))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "PetEnhancer",
+                    Name = "宠物强化",
                     Spell = Spell.PetEnhancer,
                     Icon = 78,
                     Level1 = 45,
@@ -1305,7 +1305,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.HealingCircle))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "HealingCircle",
+                    Name = "治愈领域",
                     Spell = Spell.HealingCircle,
                     Icon = 82,
                     Level1 = 39,
@@ -1319,17 +1319,17 @@ namespace Server.MirEnvir
                 });
             //Assassin
             if (!MagicExists(Spell.FatalSword))
-                MagicInfoList.Add(new MagicInfo { Name = "FatalSword", Spell = Spell.FatalSword, Icon = 58, Level1 = 7, Level2 = 9, Level3 = 12, Need1 = 500, Need2 = 1000, Need3 = 2300, Range = 0 });
+                MagicInfoList.Add(new MagicInfo { Name = "致命剑法", Spell = Spell.FatalSword, Icon = 58, Level1 = 7, Level2 = 9, Level3 = 12, Need1 = 500, Need2 = 1000, Need3 = 2300, Range = 0 });
             if (!MagicExists(Spell.DoubleSlash))
                 MagicInfoList.Add(new MagicInfo
-                { Name = "DoubleSlash", Spell = Spell.DoubleSlash, Icon = 59, Level1 = 15, Level2 = 17, Level3 = 19, Need1 = 700, Need2 = 1500, Need3 = 2200, BaseCost = 2, LevelCost = 1 });
+                { Name = "二连斩", Spell = Spell.DoubleSlash, Icon = 59, Level1 = 15, Level2 = 17, Level3 = 19, Need1 = 700, Need2 = 1500, Need3 = 2200, BaseCost = 2, LevelCost = 1 });
             if (!MagicExists(Spell.Haste))
                 MagicInfoList.Add(new MagicInfo
-                { Name = "Haste", Spell = Spell.Haste, Icon = 60, Level1 = 20, Level2 = 22, Level3 = 25, Need1 = 2000, Need2 = 3000, Need3 = 6000, BaseCost = 3, LevelCost = 2, Range = 0 });
+                { Name = "疾风步", Spell = Spell.Haste, Icon = 60, Level1 = 20, Level2 = 22, Level3 = 25, Need1 = 2000, Need2 = 3000, Need3 = 6000, BaseCost = 3, LevelCost = 2, Range = 0 });
             if (!MagicExists(Spell.FlashDash))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "FlashDash",
+                    Name = "瞬影步",
                     Spell = Spell.FlashDash,
                     Icon = 61,
                     Level1 = 25,
@@ -1346,7 +1346,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.LightBody))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "LightBody",
+                    Name = "轻身术",
                     Spell = Spell.LightBody,
                     Icon = 68,
                     Level1 = 27,
@@ -1362,7 +1362,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.HeavenlySword))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "HeavenlySword",
+                    Name = "天剑术",
                     Spell = Spell.HeavenlySword,
                     Icon = 62,
                     Level1 = 30,
@@ -1379,7 +1379,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.FireBurst))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "FireBurst",
+                    Name = "爆炎",
                     Spell = Spell.FireBurst,
                     Icon = 63,
                     Level1 = 33,
@@ -1395,7 +1395,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.Trap))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Trap",
+                    Name = "陷阱术",
                     Spell = Spell.Trap,
                     Icon = 64,
                     Level1 = 33,
@@ -1413,7 +1413,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.PoisonSword))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "PoisonSword",
+                    Name = "毒剑术",
                     Spell = Spell.PoisonSword,
                     Icon = 69,
                     Level1 = 34,
@@ -1429,7 +1429,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.MoonLight))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "MoonLight",
+                    Name = "月光剑法",
                     Spell = Spell.MoonLight,
                     Icon = 65,
                     Level1 = 36,
@@ -1443,11 +1443,11 @@ namespace Server.MirEnvir
                     Range = 0
                 });
             if (!MagicExists(Spell.MPEater))
-                MagicInfoList.Add(new MagicInfo { Name = "MPEater", Spell = Spell.MPEater, Icon = 66, Level1 = 38, Level2 = 41, Level3 = 44, Need1 = 5000, Need2 = 8000, Need3 = 11000, Range = 0 });
+                MagicInfoList.Add(new MagicInfo { Name = "吸魔术", Spell = Spell.MPEater, Icon = 66, Level1 = 38, Level2 = 41, Level3 = 44, Need1 = 5000, Need2 = 8000, Need3 = 11000, Range = 0 });
             if (!MagicExists(Spell.SwiftFeet))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "SwiftFeet",
+                    Name = "疾步术",
                     Spell = Spell.SwiftFeet,
                     Icon = 67,
                     Level1 = 40,
@@ -1465,7 +1465,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.DarkBody))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "DarkBody",
+                    Name = "暗影术",
                     Spell = Spell.DarkBody,
                     Icon = 70,
                     Level1 = 46,
@@ -1480,11 +1480,11 @@ namespace Server.MirEnvir
                 });
             if (!MagicExists(Spell.Hemorrhage))
                 MagicInfoList.Add(new MagicInfo
-                { Name = "Hemorrhage", Spell = Spell.Hemorrhage, Icon = 75, Level1 = 47, Level2 = 51, Level3 = 55, Need1 = 9000, Need2 = 15000, Need3 = 21000, Range = 0 });
+                { Name = "出血术", Spell = Spell.Hemorrhage, Icon = 75, Level1 = 47, Level2 = 51, Level3 = 55, Need1 = 9000, Need2 = 15000, Need3 = 21000, Range = 0 });
             if (!MagicExists(Spell.CrescentSlash))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "CresentSlash",
+                    Name = "新月斩",
                     Spell = Spell.CrescentSlash,
                     Icon = 71,
                     Level1 = 50,
@@ -1500,7 +1500,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.MoonMist))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "MoonMist",
+                    Name = "月之迷雾",
                     Spell = Spell.MoonMist,
                     Icon = 83,
                     Level1 = 48,
@@ -1517,7 +1517,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.CatTongue))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "CatTongue",
+                    Name = "猫之舌",
                     Spell = Spell.CatTongue,
                     Icon = 79,
                     Level1 = 48,
@@ -1534,11 +1534,11 @@ namespace Server.MirEnvir
 
             //Archer
             if (!MagicExists(Spell.Focus))
-                MagicInfoList.Add(new MagicInfo { Name = "Focus", Spell = Spell.Focus, Icon = 88, Level1 = 7, Level2 = 13, Level3 = 17, Need1 = 270, Need2 = 600, Need3 = 1300, Range = 0 });
+                MagicInfoList.Add(new MagicInfo { Name = "凝神", Spell = Spell.Focus, Icon = 88, Level1 = 7, Level2 = 13, Level3 = 17, Need1 = 270, Need2 = 600, Need3 = 1300, Range = 0 });
             if (!MagicExists(Spell.StraightShot))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "StraightShot",
+                    Name = "直线射击",
                     Spell = Spell.StraightShot,
                     Icon = 89,
                     Level1 = 9,
@@ -1556,7 +1556,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.DoubleShot))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "DoubleShot",
+                    Name = "双重射击",
                     Spell = Spell.DoubleShot,
                     Icon = 90,
                     Level1 = 14,
@@ -1574,7 +1574,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.ExplosiveTrap))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "ExplosiveTrap",
+                    Name = "爆裂陷阱",
                     Spell = Spell.ExplosiveTrap,
                     Icon = 91,
                     Level1 = 22,
@@ -1592,7 +1592,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.DelayedExplosion))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "DelayedExplosion",
+                    Name = "延迟爆炸",
                     Spell = Spell.DelayedExplosion,
                     Icon = 92,
                     Level1 = 31,
@@ -1610,7 +1610,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.Meditation))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Meditation",
+                    Name = "冥想",
                     Spell = Spell.Meditation,
                     Icon = 93,
                     Level1 = 19,
@@ -1626,7 +1626,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.ElementalShot))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "ElementalShot",
+                    Name = "元素射击",
                     Spell = Spell.ElementalShot,
                     Icon = 94,
                     Level1 = 20,
@@ -1644,7 +1644,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.Concentration))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "Concentration",
+                    Name = "集中",
                     Spell = Spell.Concentration,
                     Icon = 96,
                     Level1 = 23,
@@ -1660,7 +1660,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.ElementalBarrier))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "ElementalBarrier",
+                    Name = "元素屏障",
                     Spell = Spell.ElementalBarrier,
                     Icon = 98,
                     Level1 = 33,
@@ -1678,7 +1678,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.BackStep))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "BackStep",
+                    Name = "后撤步",
                     Spell = Spell.BackStep,
                     Icon = 95,
                     Level1 = 30,
@@ -1695,7 +1695,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.BindingShot))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "BindingShot",
+                    Name = "束缚射击",
                     Spell = Spell.BindingShot,
                     Icon = 97,
                     Level1 = 35,
@@ -1714,7 +1714,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.SummonVampire))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "SummonVampire",
+                    Name = "召唤蝙蝠",
                     Spell = Spell.SummonVampire,
                     Icon = 99,
                     Level1 = 28,
@@ -1730,7 +1730,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.VampireShot))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "VampireShot",
+                    Name = "吸血射击",
                     Spell = Spell.VampireShot,
                     Icon = 100,
                     Level1 = 26,
@@ -1748,7 +1748,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.SummonToad))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "SummonToad",
+                    Name = "召唤蟾蜍",
                     Spell = Spell.SummonToad,
                     Icon = 101,
                     Level1 = 37,
@@ -1764,7 +1764,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.PoisonShot))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "PoisonShot",
+                    Name = "毒射击",
                     Spell = Spell.PoisonShot,
                     Icon = 102,
                     Level1 = 40,
@@ -1782,7 +1782,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.CrippleShot))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "CrippleShot",
+                    Name = "致残射击",
                     Spell = Spell.CrippleShot,
                     Icon = 103,
                     Level1 = 43,
@@ -1801,7 +1801,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.SummonSnakes))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "SummonSnakes",
+                    Name = "召唤蛇",
                     Spell = Spell.SummonSnakes,
                     Icon = 104,
                     Level1 = 46,
@@ -1817,7 +1817,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.NapalmShot))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "NapalmShot",
+                    Name = "燃烧射击",
                     Spell = Spell.NapalmShot,
                     Icon = 105,
                     Level1 = 48,
@@ -1836,7 +1836,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.OneWithNature))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "OneWithNature",
+                    Name = "天人合一",
                     Spell = Spell.OneWithNature,
                     Icon = 106,
                     Level1 = 50,
@@ -1856,7 +1856,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.MentalState))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "MentalState",
+                    Name = "心法",
                     Spell = Spell.MentalState,
                     Icon = 81,
                     Level1 = 11,
@@ -1873,11 +1873,11 @@ namespace Server.MirEnvir
             //Custom
             if (!MagicExists(Spell.Portal))
                 MagicInfoList.Add(new MagicInfo
-                { Name = "Portal", Spell = Spell.Portal, Icon = 1, Level1 = 7, Level2 = 11, Level3 = 14, Need1 = 150, Need2 = 350, Need3 = 700, BaseCost = 3, LevelCost = 2, Range = 9 });
+                { Name = "传送门", Spell = Spell.Portal, Icon = 1, Level1 = 7, Level2 = 11, Level3 = 14, Need1 = 150, Need2 = 350, Need3 = 700, BaseCost = 3, LevelCost = 2, Range = 9 });
             if (!MagicExists(Spell.BattleCry))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "BattleCry",
+                    Name = "战吼",
                     Spell = Spell.BattleCry,
                     Icon = 42,
                     Level1 = 48,
@@ -1893,7 +1893,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.FireBounce))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "FireBounce",
+                    Name = "火焰弹射",
                     Spell = Spell.FireBounce,
                     Icon = 4,
                     Level1 = 15,
@@ -1911,7 +1911,7 @@ namespace Server.MirEnvir
             if (!MagicExists(Spell.MeteorShower))
                 MagicInfoList.Add(new MagicInfo
                 {
-                    Name = "MeteorShower",
+                    Name = "流星火雨",
                     Spell = Spell.MeteorShower,
                     Icon = 4,
                     Level1 = 15,

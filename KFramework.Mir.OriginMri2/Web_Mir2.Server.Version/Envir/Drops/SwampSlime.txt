@@ -7,16 +7,16 @@
 1/25 太阳水
 1/30 太阳水
 
-1/15000 RuinArmour(M)
-1/15000 RuinArmour(F)
-1/15000 AncientRobe(M)
-1/15000 AncientRobe(F)
-1/15000 AncientPlate(M)
-1/15000 AncientPlate(F)
-1/15000 AncientSuit(M)
-1/15000 AncientSuit(F)
-1/15000 远古皮革(M)
-1/15000 远古皮革(F)
+1/15000 RuinArmour(男)
+1/15000 RuinArmour(女)
+1/15000 AncientRobe(男)
+1/15000 AncientRobe(女)
+1/15000 AncientPlate(男)
+1/15000 AncientPlate(女)
+1/15000 AncientSuit(男)
+1/15000 AncientSuit(女)
+1/15000 远古皮革(男)
+1/15000 远古皮革(女)
 
 ;Weapons
 

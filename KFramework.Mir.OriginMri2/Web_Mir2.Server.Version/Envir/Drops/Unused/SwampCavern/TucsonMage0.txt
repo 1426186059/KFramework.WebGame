@@ -7,7 +7,7 @@
 1/50 大金创药
 1/50 大魔法药
 1/40 太阳水
-1/50 太阳药水(M)
+1/50 太阳药水(男)
 
 ;Bracelets
 1/14200 BaekTa手套
@@ -23,13 +23,13 @@
 1/12000 五弦项链
 1/12000 五弦手镯
 1/12000 五弦戒
-1/12000 Purity项链
-1/12000 Purity手镯
-1/12000 Purity戒
-1/12000 SmashPendulum
+1/12000 纯净项链
+1/12000 纯净手镯
+1/12000 纯净戒
+1/12000 粉碎Pendulum
 1/12000 DarkGhostBracelet
-1/12000 Smash轮
-1/12000 Hwan恶魔戒
+1/12000 粉碎轮
+1/12000 幻恶魔戒
 
 
 ;CraftingMaterials
@@ -41,9 +41,9 @@
 1/450 DurabilityFragment
 1/2900 甲CastTool 
 1/2900 TranslucentCrystal
-1/2900 甲书(DC)
+1/2900 甲书(道术)
 1/2900 甲书(SC)
 1/2900 甲书(MC)
 1/2900 Rusty甲
-1/2900 Bookof之灵
+1/2900 书of之灵
 1/2900 Havoc水晶

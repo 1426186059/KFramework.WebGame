@@ -3,12 +3,12 @@
 1/1 Gold 12500 LV1
 
 ;Potions
-1/1 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
-1/2 太阳药水(M) LV1
-1/2 太阳药水(M) LV1
-1/2 太阳药水(M) LV1
+1/1 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
+1/2 太阳药水(男) LV1
+1/2 太阳药水(男) LV1
+1/2 太阳药水(男) LV1
 1/1 大金创药 LV1 
 1/1 大魔法药 LV1
 1/1 大金创药 LV1 
@@ -27,38 +27,38 @@
 1/2 特制魔法药 LV1 
 1/2 大魔法药 LV1 
 1/2 特制魔法药 LV1 
-1/30 Impact药(S) LV1 
-1/30 魔法药(S) LV1 
+1/30 Impact药(小) LV1 
+1/30 魔法药(小) LV1 
 1/30 道士药(小) LV1 
 1/30 风暴药(小) LV1 
-1/30 StaminaAid(S) LV1 
-1/30 魔法Aid(S) LV1
+1/30 StaminaAid(小) LV1 
+1/30 魔法Aid(小) LV1
 
 
 ;Armours
-1/60 铁甲(M) LV1
-1/60 铁甲(F) LV1
-1/60 Wizard袍(M) LV1
-1/60 WizardRobe(F) LV1
-1/60 珍珠甲(M) LV1
-1/60 锻造甲(M) LV1
-1/60 锻造甲(F) LV1
-1/60 珍珠甲(F) LV1
-1/60 远古甲(M) LV1
-1/60 远古甲(F) LV1
+1/60 铁甲(男) LV1
+1/60 铁甲(女) LV1
+1/60 Wizard袍(男) LV1
+1/60 WizardRobe(女) LV1
+1/60 珍珠甲(男) LV1
+1/60 锻造甲(男) LV1
+1/60 锻造甲(女) LV1
+1/60 珍珠甲(女) LV1
+1/60 远古甲(男) LV1
+1/60 远古甲(女) LV1
 
 ;Rare Armours
-1/8000 天甲(M) LV1
-1/8000 天甲(F) LV1
-1/8000 HeavenArcheyRobe(M) LV1
-1/8000 HeavenArcheyRobe(F) LV1
+1/8000 天甲(男) LV1
+1/8000 天甲(女) LV1
+1/8000 HeavenArcheyRobe(男) LV1
+1/8000 HeavenArcheyRobe(女) LV1
 
 ;Weapons
 1/250 JudgementMace  LV1
 1/250 Fiend弓 LV1
 1/250 战争法师杖 LV1 
 1/250 魂泉杖 LV1
-1/250 刃之Darkness LV1
+1/250 刃之暗ness LV1
 1/4000 皇家刃 LV1 
 1/4000 龙斩杀 LV1 
 1/4000 凶煞弓 LV1
@@ -73,20 +73,20 @@
 1/600 MajesticHelmet LV1
 
 ;Necklaces
-1/90 红Orchid项链 LV1 
+1/90 红兰项链 LV1 
 1/90 红花项链 LV1 
 1/120 绿Bead LV1 
-1/120 DemonicBells LV1 
+1/120 魔icBells LV1 
 1/120 魂项链 LV1 
 1/110 爪项链 LV1 
 1/110 珍珠项链 LV1 
-1/110 Life项链 LV1 
+1/110 生命项链 LV1 
 1/60 之灵项链 LV1 
 1/150 Gale项链 LV1 
 1/500 MajesticNecklace LV1
 
 ;Bracelets
-1/90 红Orchid手镯 LV1 
+1/90 红兰手镯 LV1 
 1/90 红花手镯 LV1 
 1/105 骑士手镯 LV1 
 1/105 魂泉手镯 LV1 
@@ -94,7 +94,7 @@
 1/500 MajesticWheel LV1
 
 ;Rings
-1/90 红Orchid戒 LV1 
+1/90 红兰戒 LV1 
 1/90 红花戒 LV1 
 1/50 龙戒 LV1 
 1/50 红宝石戒 LV1 
@@ -102,7 +102,7 @@
 1/100 之灵戒 LV1 
 1/135 力量戒 LV1 
 1/135 Violet戒 LV1 
-1/135 Titan戒 LV1 
+1/135 泰坦戒 LV1 
 1/2 Expel戒 LV1 
 1/2 珊瑚戒 LV1 
 1/500 MajesticRing LV1
@@ -136,9 +136,9 @@
  
 1/50 雷暴 LV1 
 1/50 冰暴 LV1 
-1/50 FlameDisruptor LV1 
-1/4000 Mirroring LV1 
-1/6000 FlameField LV1
+1/50 火焰Disruptor LV1 
+1/4000 镜ing LV1 
+1/6000 火焰Field LV1
 1/6000 魔法Booster LV1
 1/6000 MeteorStrike LV1
 1/6000 冰Thrust LV1
@@ -165,7 +165,7 @@
 1/200 Healing轮 LV1
 1/800 SliceNDice LV1
 
-1/50 ElementalBarrier LV1
+1/50 元素alBarrier LV1
 1/50 BindingShot LV1
 1/200 召唤蟾蜍 LV1
 1/200 毒Shot LV1
@@ -194,12 +194,12 @@
 1/1 Gold 12500 LV2
 
 ;Potions
-1/1 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
-1/2 太阳药水(M) LV2
-1/2 太阳药水(M) LV2
-1/2 太阳药水(M) LV2
+1/1 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
+1/2 太阳药水(男) LV2
+1/2 太阳药水(男) LV2
+1/2 太阳药水(男) LV2
 1/1 大金创药 LV2 
 1/1 大魔法药 LV2
 1/1 大金创药 LV2 
@@ -218,38 +218,38 @@
 1/2 特制魔法药 LV2 
 1/2 大魔法药 LV2 
 1/2 特制魔法药 LV2 
-1/30 Impact药(S) LV2 
-1/30 魔法药(S) LV2 
+1/30 Impact药(小) LV2 
+1/30 魔法药(小) LV2 
 1/30 道士药(小) LV2 
 1/30 风暴药(小) LV2 
-1/30 StaminaAid(S) LV2 
-1/30 魔法Aid(S) LV2
+1/30 StaminaAid(小) LV2 
+1/30 魔法Aid(小) LV2
 
 
 ;Armours
-1/60 铁甲(M) LV2
-1/60 铁甲(F) LV2
-1/60 Wizard袍(M) LV2
-1/60 WizardRobe(F) LV2
-1/60 珍珠甲(M) LV2
-1/60 珍珠甲(F) LV2
-1/60 锻造甲(M) LV2
-1/60 锻造甲(F) LV2
-1/60 远古甲(M) LV2
-1/60 远古甲(F) LV2
+1/60 铁甲(男) LV2
+1/60 铁甲(女) LV2
+1/60 Wizard袍(男) LV2
+1/60 WizardRobe(女) LV2
+1/60 珍珠甲(男) LV2
+1/60 珍珠甲(女) LV2
+1/60 锻造甲(男) LV2
+1/60 锻造甲(女) LV2
+1/60 远古甲(男) LV2
+1/60 远古甲(女) LV2
 
 ;Rare Armours
-1/8000 天甲(M) LV2
-1/8000 天甲(F) LV2
-1/8000 HeavenArcheyRobe(M) LV2
-1/8000 HeavenArcheyRobe(F) LV2
+1/8000 天甲(男) LV2
+1/8000 天甲(女) LV2
+1/8000 HeavenArcheyRobe(男) LV2
+1/8000 HeavenArcheyRobe(女) LV2
 
 ;Weapons
 1/250 JudgementMace  LV2
 1/250 Fiend弓 LV2
 1/250 战争法师杖 LV2 
 1/250 魂泉杖 LV2
-1/250 刃之Darkness LV2
+1/250 刃之暗ness LV2
 1/4000 皇家刃 LV2 
 1/4000 龙斩杀 LV2 
 1/4000 龙杖 LV2 
@@ -264,20 +264,20 @@
 1/600 MajesticHelmet LV2
 
 ;Necklaces
-1/90 红Orchid项链 LV2 
+1/90 红兰项链 LV2 
 1/90 红花项链 LV2 
 1/120 绿Bead LV2 
-1/120 DemonicBells LV2 
+1/120 魔icBells LV2 
 1/120 魂项链 LV2 
 1/110 爪项链 LV2 
 1/110 珍珠项链 LV2 
-1/110 Life项链 LV2 
+1/110 生命项链 LV2 
 1/60 之灵项链 LV2 
 1/150 Gale项链 LV2 
 1/500 MajesticNecklace LV2
 
 ;Bracelets
-1/90 红Orchid手镯 LV2 
+1/90 红兰手镯 LV2 
 1/90 红花手镯 LV2 
 1/105 骑士手镯 LV2 
 1/105 魂泉手镯 LV2 
@@ -285,7 +285,7 @@
 1/500 MajesticWheel LV2
 
 ;Rings
-1/90 红Orchid戒 LV2 
+1/90 红兰戒 LV2 
 1/90 红花戒 LV2 
 1/50 龙戒 LV2 
 1/50 红宝石戒 LV2 
@@ -293,7 +293,7 @@
 1/100 之灵戒 LV2 
 1/135 力量戒 LV2 
 1/135 Violet戒 LV2 
-1/135 Titan戒 LV2 
+1/135 泰坦戒 LV2 
 1/2 Expel戒 LV2 
 1/2 珊瑚戒 LV2 
 1/500 MajesticRing LV2
@@ -327,9 +327,9 @@
  
 1/50 雷暴 LV2 
 1/50 冰暴 LV2 
-1/50 FlameDisruptor LV2 
-1/4000 Mirroring LV2 
-1/6000 FlameField LV2
+1/50 火焰Disruptor LV2 
+1/4000 镜ing LV2 
+1/6000 火焰Field LV2
 1/6000 魔法Booster LV2
 1/6000 MeteorStrike LV2
 1/6000 冰Thrust LV2
@@ -356,7 +356,7 @@
 1/200 Healing轮 LV2
 1/800 SliceNDice LV2
 
-1/50 ElementalBarrier LV2
+1/50 元素alBarrier LV2
 1/50 BindingShot LV2
 1/200 召唤蟾蜍 LV2
 1/200 毒Shot LV2
@@ -385,12 +385,12 @@
 1/1 Gold 12500 LV3
 
 ;Potions
-1/1 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
-1/2 太阳药水(M) LV3
-1/2 太阳药水(M) LV3
-1/2 太阳药水(M) LV3
+1/1 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
+1/2 太阳药水(男) LV3
+1/2 太阳药水(男) LV3
+1/2 太阳药水(男) LV3
 1/1 大金创药 LV3 
 1/1 大魔法药 LV3
 1/1 大金创药 LV3 
@@ -409,38 +409,38 @@
 1/2 特制魔法药 LV3 
 1/2 大魔法药 LV3 
 1/2 特制魔法药 LV3 
-1/30 Impact药(S) LV3 
-1/30 魔法药(S) LV3 
+1/30 Impact药(小) LV3 
+1/30 魔法药(小) LV3 
 1/30 道士药(小) LV3 
 1/30 风暴药(小) LV3 
-1/30 StaminaAid(S) LV3 
-1/30 魔法Aid(S) LV3
+1/30 StaminaAid(小) LV3 
+1/30 魔法Aid(小) LV3
 
 
 ;Armours
-1/60 铁甲(M) LV3
-1/60 铁甲(F) LV3
-1/60 Wizard袍(M) LV3
-1/60 WizardRobe(F) LV3
-1/60 珍珠甲(M) LV3
-1/60 锻造甲(M) LV3
-1/60 锻造甲(F) LV3
-1/60 珍珠甲(F) LV3
-1/60 远古甲(M) LV3
-1/60 远古甲(F) LV3
+1/60 铁甲(男) LV3
+1/60 铁甲(女) LV3
+1/60 Wizard袍(男) LV3
+1/60 WizardRobe(女) LV3
+1/60 珍珠甲(男) LV3
+1/60 锻造甲(男) LV3
+1/60 锻造甲(女) LV3
+1/60 珍珠甲(女) LV3
+1/60 远古甲(男) LV3
+1/60 远古甲(女) LV3
 
 ;Rare Armours
-1/8000 天甲(M) LV3
-1/8000 天甲(F) LV3
-1/8000 HeavenArcheyRobe(M) LV3
-1/8000 HeavenArcheyRobe(F) LV3
+1/8000 天甲(男) LV3
+1/8000 天甲(女) LV3
+1/8000 HeavenArcheyRobe(男) LV3
+1/8000 HeavenArcheyRobe(女) LV3
 
 ;Weapons
 1/250 JudgementMace  LV3
 1/250 Fiend弓 LV3
 1/250 战争法师杖 LV3 
 1/250 魂泉杖 LV3
-1/250 刃之Darkness LV3
+1/250 刃之暗ness LV3
 1/4000 皇家刃 LV3 
 1/4000 龙斩杀 LV3 
 1/4000 凶煞弓 LV3
@@ -455,20 +455,20 @@
 1/600 MajesticHelmet LV3
 
 ;Necklaces
-1/90 红Orchid项链 LV3 
+1/90 红兰项链 LV3 
 1/90 红花项链 LV3 
 1/120 绿Bead LV3 
-1/120 DemonicBells LV3 
+1/120 魔icBells LV3 
 1/120 魂项链 LV3 
 1/110 爪项链 LV3 
 1/110 珍珠项链 LV3 
-1/110 Life项链 LV3 
+1/110 生命项链 LV3 
 1/60 之灵项链 LV3 
 1/150 Gale项链 LV3 
 1/500 MajesticNecklace LV3
 
 ;Bracelets
-1/90 红Orchid手镯 LV3 
+1/90 红兰手镯 LV3 
 1/90 红花手镯 LV3 
 1/105 骑士手镯 LV3 
 1/105 魂泉手镯 LV3 
@@ -476,7 +476,7 @@
 1/500 MajesticWheel LV3
 
 ;Rings
-1/90 红Orchid戒 LV3 
+1/90 红兰戒 LV3 
 1/90 红花戒 LV3 
 1/50 龙戒 LV3 
 1/50 红宝石戒 LV3 
@@ -484,7 +484,7 @@
 1/100 之灵戒 LV3 
 1/135 力量戒 LV3 
 1/135 Violet戒 LV3 
-1/135 Titan戒 LV3 
+1/135 泰坦戒 LV3 
 1/2 Expel戒 LV3 
 1/2 珊瑚戒 LV3 
 1/500 MajesticRing LV3
@@ -518,9 +518,9 @@
  
 1/50 雷暴 LV3 
 1/50 冰暴 LV3 
-1/50 FlameDisruptor LV3 
-1/4000 Mirroring LV3 
-1/6000 FlameField LV3
+1/50 火焰Disruptor LV3 
+1/4000 镜ing LV3 
+1/6000 火焰Field LV3
 1/6000 魔法Booster LV3
 1/6000 MeteorStrike LV3
 1/6000 冰Thrust LV3
@@ -547,7 +547,7 @@
 1/200 Healing轮 LV3
 1/800 SliceNDice LV3
 
-1/50 ElementalBarrier LV3
+1/50 元素alBarrier LV3
 1/50 BindingShot LV3
 1/200 召唤蟾蜍 LV3
 1/200 毒Shot LV3
@@ -576,12 +576,12 @@
 1/1 Gold 12500 LV4
 
 ;Potions
-1/1 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
-1/2 太阳药水(M) LV4
-1/2 太阳药水(M) LV4
-1/2 太阳药水(M) LV4
+1/1 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
+1/2 太阳药水(男) LV4
+1/2 太阳药水(男) LV4
+1/2 太阳药水(男) LV4
 1/1 大金创药 LV4 
 1/1 大魔法药 LV4
 1/1 大金创药 LV4 
@@ -600,38 +600,38 @@
 1/2 特制魔法药 LV4 
 1/2 大魔法药 LV4 
 1/2 特制魔法药 LV4 
-1/30 Impact药(S) LV4 
-1/30 魔法药(S) LV4 
+1/30 Impact药(小) LV4 
+1/30 魔法药(小) LV4 
 1/30 道士药(小) LV4 
 1/30 风暴药(小) LV4 
-1/30 StaminaAid(S) LV4 
-1/30 魔法Aid(S) LV4
+1/30 StaminaAid(小) LV4 
+1/30 魔法Aid(小) LV4
 
 
 ;Armours
-1/60 铁甲(M) LV4
-1/60 铁甲(F) LV4
-1/60 Wizard袍(M) LV4
-1/60 WizardRobe(F) LV4
-1/60 锻造甲(M) LV4
-1/60 锻造甲(F) LV4
-1/60 珍珠甲(M) LV4
-1/60 珍珠甲(F) LV4
-1/60 远古甲(M) LV4
-1/60 远古甲(F) LV4
+1/60 铁甲(男) LV4
+1/60 铁甲(女) LV4
+1/60 Wizard袍(男) LV4
+1/60 WizardRobe(女) LV4
+1/60 锻造甲(男) LV4
+1/60 锻造甲(女) LV4
+1/60 珍珠甲(男) LV4
+1/60 珍珠甲(女) LV4
+1/60 远古甲(男) LV4
+1/60 远古甲(女) LV4
 
 ;Rare Armours
-1/8000 天甲(M) LV4
-1/8000 天甲(F) LV4
-1/8000 HeavenArcheyRobe(M) LV4
-1/8000 HeavenArcheyRobe(F) LV4
+1/8000 天甲(男) LV4
+1/8000 天甲(女) LV4
+1/8000 HeavenArcheyRobe(男) LV4
+1/8000 HeavenArcheyRobe(女) LV4
 
 ;Weapons
 1/250 JudgementMace  LV4
 1/250 战争法师杖 LV4 
 1/250 Fiend弓 LV4
 1/250 魂泉杖 LV4
-1/250 刃之Darkness LV4
+1/250 刃之暗ness LV4
 1/4000 皇家刃 LV4 
 1/4000 龙斩杀 LV4 
 1/4000 凶煞弓 LV4
@@ -646,20 +646,20 @@
 1/600 MajesticHelmet LV4
 
 ;Necklaces
-1/90 红Orchid项链 LV4 
+1/90 红兰项链 LV4 
 1/90 红花项链 LV4 
 1/120 绿Bead LV4 
-1/120 DemonicBells LV4 
+1/120 魔icBells LV4 
 1/120 魂项链 LV4 
 1/110 爪项链 LV4 
 1/110 珍珠项链 LV4 
-1/110 Life项链 LV4 
+1/110 生命项链 LV4 
 1/60 之灵项链 LV4 
 1/150 Gale项链 LV4 
 1/500 MajesticNecklace LV4
 
 ;Bracelets
-1/90 红Orchid手镯 LV4 
+1/90 红兰手镯 LV4 
 1/90 红花手镯 LV4 
 1/105 骑士手镯 LV4 
 1/105 魂泉手镯 LV4 
@@ -667,7 +667,7 @@
 1/500 MajesticWheel LV4
 
 ;Rings
-1/90 红Orchid戒 LV4 
+1/90 红兰戒 LV4 
 1/90 红花戒 LV4 
 1/50 龙戒 LV4 
 1/50 红宝石戒 LV4 
@@ -675,7 +675,7 @@
 1/100 之灵戒 LV4 
 1/135 力量戒 LV4 
 1/135 Violet戒 LV4 
-1/135 Titan戒 LV4 
+1/135 泰坦戒 LV4 
 1/2 Expel戒 LV4 
 1/2 珊瑚戒 LV4 
 1/500 MajesticRing LV4
@@ -709,9 +709,9 @@
  
 1/50 雷暴 LV4 
 1/50 冰暴 LV4 
-1/50 FlameDisruptor LV4 
-1/4000 Mirroring LV4 
-1/6000 FlameField LV4
+1/50 火焰Disruptor LV4 
+1/4000 镜ing LV4 
+1/6000 火焰Field LV4
 1/6000 魔法Booster LV4
 1/6000 MeteorStrike LV4
 1/6000 冰Thrust LV4
@@ -738,7 +738,7 @@
 1/200 Healing轮 LV4
 1/800 SliceNDice LV4
 
-1/50 ElementalBarrier LV4
+1/50 元素alBarrier LV4
 1/50 BindingShot LV4
 1/200 召唤蟾蜍 LV4
 1/200 毒Shot LV4
@@ -767,12 +767,12 @@
 1/1 Gold 12500 LV5
 
 ;Potions
-1/1 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
-1/2 太阳药水(M) LV5
-1/2 太阳药水(M) LV5
-1/2 太阳药水(M) LV5
+1/1 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
+1/2 太阳药水(男) LV5
+1/2 太阳药水(男) LV5
+1/2 太阳药水(男) LV5
 1/1 大金创药 LV5 
 1/1 大魔法药 LV5
 1/1 大金创药 LV5 
@@ -791,38 +791,38 @@
 1/2 特制魔法药 LV5 
 1/2 大魔法药 LV5 
 1/2 特制魔法药 LV5 
-1/30 Impact药(S) LV5 
-1/30 魔法药(S) LV5 
+1/30 Impact药(小) LV5 
+1/30 魔法药(小) LV5 
 1/30 道士药(小) LV5 
 1/30 风暴药(小) LV5 
-1/30 StaminaAid(S) LV5 
-1/30 魔法Aid(S) LV5
+1/30 StaminaAid(小) LV5 
+1/30 魔法Aid(小) LV5
 
 
 ;Armours
-1/60 铁甲(M) LV5
-1/60 铁甲(F) LV5
-1/60 Wizard袍(M) LV5
-1/60 WizardRobe(F) LV5
-1/60 锻造甲(M) LV5
-1/60 锻造甲(F) LV5
-1/60 珍珠甲(M) LV5
-1/60 珍珠甲(F) LV5
-1/60 远古甲(M) LV5
-1/60 远古甲(F) LV5
+1/60 铁甲(男) LV5
+1/60 铁甲(女) LV5
+1/60 Wizard袍(男) LV5
+1/60 WizardRobe(女) LV5
+1/60 锻造甲(男) LV5
+1/60 锻造甲(女) LV5
+1/60 珍珠甲(男) LV5
+1/60 珍珠甲(女) LV5
+1/60 远古甲(男) LV5
+1/60 远古甲(女) LV5
 
 ;Rare Armours
-1/8000 天甲(M) LV5
-1/8000 天甲(F) LV5
-1/8000 HeavenArcheyRobe(M) LV5
-1/8000 HeavenArcheyRobe(F) LV5
+1/8000 天甲(男) LV5
+1/8000 天甲(女) LV5
+1/8000 HeavenArcheyRobe(男) LV5
+1/8000 HeavenArcheyRobe(女) LV5
 
 ;Weapons
 1/250 JudgementMace  LV5
 1/250 Fiend弓 LV5
 1/250 战争法师杖 LV5 
 1/250 魂泉杖 LV5
-1/250 刃之Darkness LV5
+1/250 刃之暗ness LV5
 1/4000 皇家刃 LV5 
 1/4000 龙斩杀 LV5 
 1/4000 凶煞弓 LV5
@@ -837,20 +837,20 @@
 1/600 MajesticHelmet LV5
 
 ;Necklaces
-1/90 红Orchid项链 LV5 
+1/90 红兰项链 LV5 
 1/90 红花项链 LV5 
 1/120 绿Bead LV5 
-1/120 DemonicBells LV5 
+1/120 魔icBells LV5 
 1/120 魂项链 LV5 
 1/110 爪项链 LV5 
 1/110 珍珠项链 LV5 
-1/110 Life项链 LV5 
+1/110 生命项链 LV5 
 1/60 之灵项链 LV5 
 1/150 Gale项链 LV5 
 1/500 MajesticNecklace LV5
 
 ;Bracelets
-1/90 红Orchid手镯 LV5 
+1/90 红兰手镯 LV5 
 1/90 红花手镯 LV5 
 1/105 骑士手镯 LV5 
 1/105 魂泉手镯 LV5 
@@ -858,7 +858,7 @@
 1/500 MajesticWheel LV5
 
 ;Rings
-1/90 红Orchid戒 LV5 
+1/90 红兰戒 LV5 
 1/90 红花戒 LV5 
 1/50 龙戒 LV5 
 1/50 红宝石戒 LV5 
@@ -866,7 +866,7 @@
 1/100 之灵戒 LV5 
 1/135 力量戒 LV5 
 1/135 Violet戒 LV5 
-1/135 Titan戒 LV5 
+1/135 泰坦戒 LV5 
 1/2 Expel戒 LV5 
 1/2 珊瑚戒 LV5 
 1/500 MajesticRing LV5
@@ -900,9 +900,9 @@
  
 1/50 雷暴 LV5 
 1/50 冰暴 LV5 
-1/50 FlameDisruptor LV5 
-1/4000 Mirroring LV5 
-1/6000 FlameField LV5
+1/50 火焰Disruptor LV5 
+1/4000 镜ing LV5 
+1/6000 火焰Field LV5
 1/6000 魔法Booster LV5
 1/6000 MeteorStrike LV5
 1/6000 冰Thrust LV5
@@ -929,7 +929,7 @@
 1/200 Healing轮 LV5
 1/800 SliceNDice LV5
 
-1/50 ElementalBarrier LV5
+1/50 元素alBarrier LV5
 1/50 BindingShot LV5
 1/200 召唤蟾蜍 LV5
 1/200 毒Shot LV5
@@ -958,12 +958,12 @@
 1/1 Gold 12500 LV6
 
 ;Potions
-1/1 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
-1/2 太阳药水(M) LV6
-1/2 太阳药水(M) LV6
-1/2 太阳药水(M) LV6
+1/1 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
+1/2 太阳药水(男) LV6
+1/2 太阳药水(男) LV6
+1/2 太阳药水(男) LV6
 1/1 大金创药 LV6 
 1/1 大魔法药 LV6
 1/1 大金创药 LV6 
@@ -982,38 +982,38 @@
 1/2 特制魔法药 LV6 
 1/2 大魔法药 LV6 
 1/2 特制魔法药 LV6 
-1/30 Impact药(S) LV6 
-1/30 魔法药(S) LV6 
+1/30 Impact药(小) LV6 
+1/30 魔法药(小) LV6 
 1/30 道士药(小) LV6 
 1/30 风暴药(小) LV6 
-1/30 StaminaAid(S) LV6 
-1/30 魔法Aid(S) LV6
+1/30 StaminaAid(小) LV6 
+1/30 魔法Aid(小) LV6
 
 
 ;Armours
-1/60 铁甲(M) LV6
-1/60 铁甲(F) LV6
-1/60 锻造甲(M) LV6
-1/60 锻造甲(F) LV6
-1/60 Wizard袍(M) LV6
-1/60 WizardRobe(F) LV6
-1/60 珍珠甲(M) LV6
-1/60 珍珠甲(F) LV6
-1/60 远古甲(M) LV6
-1/60 远古甲(F) LV6
+1/60 铁甲(男) LV6
+1/60 铁甲(女) LV6
+1/60 锻造甲(男) LV6
+1/60 锻造甲(女) LV6
+1/60 Wizard袍(男) LV6
+1/60 WizardRobe(女) LV6
+1/60 珍珠甲(男) LV6
+1/60 珍珠甲(女) LV6
+1/60 远古甲(男) LV6
+1/60 远古甲(女) LV6
 
 ;Rare Armours
-1/8000 天甲(M) LV6
-1/8000 天甲(F) LV6
-1/8000 HeavenArcheyRobe(M) LV6
-1/8000 HeavenArcheyRobe(F) LV6
+1/8000 天甲(男) LV6
+1/8000 天甲(女) LV6
+1/8000 HeavenArcheyRobe(男) LV6
+1/8000 HeavenArcheyRobe(女) LV6
 
 ;Weapons
 1/250 JudgementMace  LV6
 1/250 战争法师杖 LV6 
 1/250 Fiend弓 LV6
 1/250 魂泉杖 LV6
-1/250 刃之Darkness LV6
+1/250 刃之暗ness LV6
 1/4000 皇家刃 LV6 
 1/4000 龙斩杀 LV6 
 1/4000 龙杖 LV6 
@@ -1028,20 +1028,20 @@
 1/600 MajesticHelmet LV6
 
 ;Necklaces
-1/90 红Orchid项链 LV6 
+1/90 红兰项链 LV6 
 1/90 红花项链 LV6 
 1/120 绿Bead LV6 
-1/120 DemonicBells LV6 
+1/120 魔icBells LV6 
 1/120 魂项链 LV6 
 1/110 爪项链 LV6 
 1/110 珍珠项链 LV6 
-1/110 Life项链 LV6 
+1/110 生命项链 LV6 
 1/60 之灵项链 LV6 
 1/150 Gale项链 LV6 
 1/500 MajesticNecklace LV6
 
 ;Bracelets
-1/90 红Orchid手镯 LV6 
+1/90 红兰手镯 LV6 
 1/90 红花手镯 LV6 
 1/105 骑士手镯 LV6 
 1/105 魂泉手镯 LV6 
@@ -1049,7 +1049,7 @@
 1/500 MajesticWheel LV6
 
 ;Rings
-1/90 红Orchid戒 LV6 
+1/90 红兰戒 LV6 
 1/90 红花戒 LV6 
 1/50 龙戒 LV6 
 1/50 红宝石戒 LV6 
@@ -1057,7 +1057,7 @@
 1/100 之灵戒 LV6 
 1/135 力量戒 LV6 
 1/135 Violet戒 LV6 
-1/135 Titan戒 LV6 
+1/135 泰坦戒 LV6 
 1/2 Expel戒 LV6 
 1/2 珊瑚戒 LV6 
 1/500 MajesticRing LV6
@@ -1091,9 +1091,9 @@
  
 1/50 雷暴 LV6 
 1/50 冰暴 LV6 
-1/50 FlameDisruptor LV6 
-1/4000 Mirroring LV6 
-1/6000 FlameField LV6
+1/50 火焰Disruptor LV6 
+1/4000 镜ing LV6 
+1/6000 火焰Field LV6
 1/6000 魔法Booster LV6
 1/6000 MeteorStrike LV6
 1/6000 冰Thrust LV6
@@ -1120,7 +1120,7 @@
 1/200 Healing轮 LV6
 1/800 SliceNDice LV6
 
-1/50 ElementalBarrier LV6
+1/50 元素alBarrier LV6
 1/50 BindingShot LV6
 1/200 召唤蟾蜍 LV6
 1/200 毒Shot LV6
@@ -1149,12 +1149,12 @@
 1/1 Gold 12500 LV7
 
 ;Potions
-1/1 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
-1/2 太阳药水(M) LV7
-1/2 太阳药水(M) LV7
-1/2 太阳药水(M) LV7
+1/1 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
+1/2 太阳药水(男) LV7
+1/2 太阳药水(男) LV7
+1/2 太阳药水(男) LV7
 1/1 大金创药 LV7 
 1/1 大魔法药 LV7
 1/1 大金创药 LV7 
@@ -1173,38 +1173,38 @@
 1/2 特制魔法药 LV7 
 1/2 大魔法药 LV7 
 1/2 特制魔法药 LV7 
-1/30 Impact药(S) LV7 
-1/30 魔法药(S) LV7 
+1/30 Impact药(小) LV7 
+1/30 魔法药(小) LV7 
 1/30 道士药(小) LV7 
 1/30 风暴药(小) LV7 
-1/30 StaminaAid(S) LV7 
-1/30 魔法Aid(S) LV7
+1/30 StaminaAid(小) LV7 
+1/30 魔法Aid(小) LV7
 
 
 ;Armours
-1/60 铁甲(M) LV7
-1/60 铁甲(F) LV7
-1/60 锻造甲(M) LV7
-1/60 锻造甲(F) LV7
-1/60 Wizard袍(M) LV7
-1/60 WizardRobe(F) LV7
-1/60 珍珠甲(M) LV7
-1/60 珍珠甲(F) LV7
-1/60 远古甲(M) LV7
-1/60 远古甲(F) LV7
+1/60 铁甲(男) LV7
+1/60 铁甲(女) LV7
+1/60 锻造甲(男) LV7
+1/60 锻造甲(女) LV7
+1/60 Wizard袍(男) LV7
+1/60 WizardRobe(女) LV7
+1/60 珍珠甲(男) LV7
+1/60 珍珠甲(女) LV7
+1/60 远古甲(男) LV7
+1/60 远古甲(女) LV7
 
 ;Rare Armours
-1/8000 天甲(M) LV7
-1/8000 天甲(F) LV7
-1/8000 HeavenArcheyRobe(M) LV7
-1/8000 HeavenArcheyRobe(F) LV7
+1/8000 天甲(男) LV7
+1/8000 天甲(女) LV7
+1/8000 HeavenArcheyRobe(男) LV7
+1/8000 HeavenArcheyRobe(女) LV7
 
 ;Weapons
 1/250 JudgementMace  LV7
 1/250 战争法师杖 LV7 
 1/250 Fiend弓 LV7
 1/250 魂泉杖 LV7
-1/250 刃之Darkness LV7
+1/250 刃之暗ness LV7
 1/4000 皇家刃 LV7 
 1/4000 龙斩杀 LV7 
 1/4000 龙杖 LV7 
@@ -1219,20 +1219,20 @@
 1/600 MajesticHelmet LV7
 
 ;Necklaces
-1/90 红Orchid项链 LV7 
+1/90 红兰项链 LV7 
 1/90 红花项链 LV7 
 1/120 绿Bead LV7 
-1/120 DemonicBells LV7 
+1/120 魔icBells LV7 
 1/120 魂项链 LV7 
 1/110 爪项链 LV7 
 1/110 珍珠项链 LV7 
-1/110 Life项链 LV7 
+1/110 生命项链 LV7 
 1/60 之灵项链 LV7 
 1/150 Gale项链 LV7 
 1/500 MajesticNecklace LV7
 
 ;Bracelets
-1/90 红Orchid手镯 LV7 
+1/90 红兰手镯 LV7 
 1/90 红花手镯 LV7 
 1/105 骑士手镯 LV7 
 1/105 魂泉手镯 LV7 
@@ -1240,7 +1240,7 @@
 1/500 MajesticWheel LV7
 
 ;Rings
-1/90 红Orchid戒 LV7 
+1/90 红兰戒 LV7 
 1/90 红花戒 LV7 
 1/50 龙戒 LV7 
 1/50 红宝石戒 LV7 
@@ -1248,7 +1248,7 @@
 1/100 之灵戒 LV7 
 1/135 力量戒 LV7 
 1/135 Violet戒 LV7 
-1/135 Titan戒 LV7 
+1/135 泰坦戒 LV7 
 1/2 Expel戒 LV7 
 1/2 珊瑚戒 LV7 
 1/500 MajesticRing LV7
@@ -1282,9 +1282,9 @@
  
 1/50 雷暴 LV7 
 1/50 冰暴 LV7 
-1/50 FlameDisruptor LV7 
-1/4000 Mirroring LV7 
-1/6000 FlameField LV7
+1/50 火焰Disruptor LV7 
+1/4000 镜ing LV7 
+1/6000 火焰Field LV7
 1/6000 魔法Booster LV7
 1/6000 MeteorStrike LV7
 1/6000 冰Thrust LV7
@@ -1311,7 +1311,7 @@
 1/200 Healing轮 LV7
 1/800 SliceNDice LV7
 
-1/50 ElementalBarrier LV7
+1/50 元素alBarrier LV7
 1/50 BindingShot LV7
 1/200 召唤蟾蜍 LV7
 1/200 毒Shot LV7
@@ -1340,12 +1340,12 @@
 1/1 Gold 12500 LV8
 
 ;Potions
-1/1 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
-1/2 太阳药水(M) LV8
-1/2 太阳药水(M) LV8
-1/2 太阳药水(M) LV8
+1/1 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
+1/2 太阳药水(男) LV8
+1/2 太阳药水(男) LV8
+1/2 太阳药水(男) LV8
 1/1 大金创药 LV8 
 1/1 大魔法药 LV8
 1/1 大金创药 LV8 
@@ -1364,38 +1364,38 @@
 1/2 特制魔法药 LV8 
 1/2 大魔法药 LV8 
 1/2 特制魔法药 LV8 
-1/30 Impact药(S) LV8 
-1/30 魔法药(S) LV8 
+1/30 Impact药(小) LV8 
+1/30 魔法药(小) LV8 
 1/30 道士药(小) LV8 
 1/30 风暴药(小) LV8 
-1/30 StaminaAid(S) LV8 
-1/30 魔法Aid(S) LV8
+1/30 StaminaAid(小) LV8 
+1/30 魔法Aid(小) LV8
 
 
 ;Armours
-1/60 铁甲(M) LV8
-1/60 铁甲(F) LV8
-1/60 锻造甲(M) LV8
-1/60 锻造甲(F) LV8
-1/60 Wizard袍(M) LV8
-1/60 WizardRobe(F) LV8
-1/60 珍珠甲(M) LV8
-1/60 珍珠甲(F) LV8
-1/60 远古甲(M) LV8
-1/60 远古甲(F) LV8
+1/60 铁甲(男) LV8
+1/60 铁甲(女) LV8
+1/60 锻造甲(男) LV8
+1/60 锻造甲(女) LV8
+1/60 Wizard袍(男) LV8
+1/60 WizardRobe(女) LV8
+1/60 珍珠甲(男) LV8
+1/60 珍珠甲(女) LV8
+1/60 远古甲(男) LV8
+1/60 远古甲(女) LV8
 
 ;Rare Armours
-1/8000 天甲(M) LV8
-1/8000 天甲(F) LV8
-1/8000 HeavenArcheyRobe(M) LV8
-1/8000 HeavenArcheyRobe(F) LV8
+1/8000 天甲(男) LV8
+1/8000 天甲(女) LV8
+1/8000 HeavenArcheyRobe(男) LV8
+1/8000 HeavenArcheyRobe(女) LV8
 
 ;Weapons
 1/250 JudgementMace  LV8
 1/250 战争法师杖 LV8 
 1/250 Fiend弓 LV8
 1/250 魂泉杖 LV8
-1/250 刃之Darkness LV8
+1/250 刃之暗ness LV8
 1/4000 皇家刃 LV8 
 1/4000 龙斩杀 LV8 
 1/4000 凶煞弓 LV8
@@ -1410,20 +1410,20 @@
 1/600 MajesticHelmet LV8
 
 ;Necklaces
-1/90 红Orchid项链 LV8 
+1/90 红兰项链 LV8 
 1/90 红花项链 LV8 
 1/120 绿Bead LV8 
-1/120 DemonicBells LV8 
+1/120 魔icBells LV8 
 1/120 魂项链 LV8 
 1/110 爪项链 LV8 
 1/110 珍珠项链 LV8 
-1/110 Life项链 LV8 
+1/110 生命项链 LV8 
 1/60 之灵项链 LV8 
 1/150 Gale项链 LV8 
 1/500 MajesticNecklace LV8
 
 ;Bracelets
-1/90 红Orchid手镯 LV8 
+1/90 红兰手镯 LV8 
 1/90 红花手镯 LV8 
 1/105 骑士手镯 LV8 
 1/105 魂泉手镯 LV8 
@@ -1431,7 +1431,7 @@
 1/500 MajesticWheel LV8
 
 ;Rings
-1/90 红Orchid戒 LV8 
+1/90 红兰戒 LV8 
 1/90 红花戒 LV8 
 1/50 龙戒 LV8 
 1/50 红宝石戒 LV8 
@@ -1439,7 +1439,7 @@
 1/100 之灵戒 LV8 
 1/135 力量戒 LV8 
 1/135 Violet戒 LV8 
-1/135 Titan戒 LV8 
+1/135 泰坦戒 LV8 
 1/2 Expel戒 LV8 
 1/2 珊瑚戒 LV8 
 1/500 MajesticRing LV8
@@ -1473,9 +1473,9 @@
  
 1/50 雷暴 LV8 
 1/50 冰暴 LV8 
-1/50 FlameDisruptor LV8 
-1/4000 Mirroring LV8 
-1/6000 FlameField LV8
+1/50 火焰Disruptor LV8 
+1/4000 镜ing LV8 
+1/6000 火焰Field LV8
 1/6000 魔法Booster LV8
 1/6000 MeteorStrike LV8
 1/6000 冰Thrust LV8
@@ -1502,7 +1502,7 @@
 1/200 Healing轮 LV8
 1/800 SliceNDice LV8
 
-1/50 ElementalBarrier LV8
+1/50 元素alBarrier LV8
 1/50 BindingShot LV8
 1/200 召唤蟾蜍 LV8
 1/200 毒Shot LV8

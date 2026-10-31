@@ -13,16 +13,16 @@ REDUCEPKPOINT 100
 CHECKGENDER Male
 #ACT
 CHANGEGENDER
-LocalMessage "Gender Changed to Female. Please relog to take effect." Hint
+LocalMessage "性别已变更为女性。请重新登录生效。" Hint
 #ELSEACT
 CHANGEGENDER
-LocalMessage "Gender Changed to Male. Please relog to take effect." Hint
+LocalMessage "性别已变更为男性。请重新登录生效。" Hint
 
 ;;ExtraDrop 24Hour
 [@_UseItem(6)]
 #ACT
 GIVEBUFF Drop 86400 20
-LocalMessage "Drop Increased by 20% for 1 Day." Hint
+LocalMessage "掉率提升20%，持续1天。" Hint
 
 ;;蓝Octagonal箱
 [@_UseItem(7)]
@@ -30,7 +30,7 @@ LocalMessage "Drop Increased by 20% for 1 Day." Hint
 GIVEITEM EXP30%3 1
 GIVEITEM 生命酒 1
 GIVEITEM Destruction烈酒 1
-GIVEITEM DCTorch3 1
+GIVEITEM 道术Torch3 1
 GIVEITEM Gale药水 1
 GIVEITEM Resurrection卷轴 1
 
@@ -39,7 +39,7 @@ GIVEITEM Resurrection卷轴 1
 #ACT
 GIVEITEM EXP30%3 1
 GIVEITEM 生命酒 1
-GIVEITEM Magical烈酒 1
+GIVEITEM 魔法al烈酒 1
 GIVEITEM MCTorch3 1
 GIVEITEM Resurrection卷轴 1
 
@@ -84,7 +84,7 @@ GIVEITEM 尊享Bait 7200
 CHECKGOLD <= 4293967295
 #ACT
 GIVEGOLD 1000000
-LocalMessage "Gained 1 Million Gold" Hint
+LocalMessage "获得100万金币" Hint
 #ELSEACT
 GIVEITEM 金Bar 1
 
@@ -93,7 +93,7 @@ GIVEITEM 金Bar 1
 CHECKGOLD <= 4289967295
 #ACT
 GIVEGOLD 5000000
-LocalMessage "Gained 5 Million Gold" Hint
+LocalMessage "获得500万金币" Hint
 #ELSEACT
 GIVEITEM 金BarBundle 1
 
@@ -102,6 +102,6 @@ GIVEITEM 金BarBundle 1
 CHECKGOLD <= 4284967295
 #ACT
 GIVEGOLD 10000000
-LocalMessage "Gained 10 Million Gold" Hint
+LocalMessage "获得1000万金币" Hint
 #ELSEACT
 GIVEITEM 金Chest 1

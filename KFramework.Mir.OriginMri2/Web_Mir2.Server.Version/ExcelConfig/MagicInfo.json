@@ -3,7 +3,7 @@
   "$values": [
     {
       "$id": "2",
-      "Name": "Fencing",
+      "Name": "刺杀剑术",
       "Spell": 1,
       "BaseCost": 0,
       "LevelCost": 0,
@@ -26,7 +26,7 @@
     },
     {
       "$id": "3",
-      "Name": "Slaying",
+      "Name": "攻杀剑术",
       "Spell": 2,
       "BaseCost": 0,
       "LevelCost": 0,
@@ -49,7 +49,7 @@
     },
     {
       "$id": "4",
-      "Name": "Thrusting",
+      "Name": "突刺",
       "Spell": 3,
       "BaseCost": 0,
       "LevelCost": 0,
@@ -72,7 +72,7 @@
     },
     {
       "$id": "5",
-      "Name": "HalfMoon",
+      "Name": "半月弯刀",
       "Spell": 4,
       "BaseCost": 3,
       "LevelCost": 0,
@@ -95,7 +95,7 @@
     },
     {
       "$id": "6",
-      "Name": "ShoulderDash",
+      "Name": "野蛮冲撞",
       "Spell": 5,
       "BaseCost": 4,
       "LevelCost": 4,
@@ -118,7 +118,7 @@
     },
     {
       "$id": "7",
-      "Name": "TwinDrakeBlade",
+      "Name": "逐日剑法",
       "Spell": 6,
       "BaseCost": 10,
       "LevelCost": 0,
@@ -141,7 +141,7 @@
     },
     {
       "$id": "8",
-      "Name": "Entrapment",
+      "Name": "擒龙手",
       "Spell": 7,
       "BaseCost": 15,
       "LevelCost": 3,
@@ -164,7 +164,7 @@
     },
     {
       "$id": "9",
-      "Name": "FlamingSword",
+      "Name": "烈火剑法",
       "Spell": 8,
       "BaseCost": 7,
       "LevelCost": 0,
@@ -187,7 +187,7 @@
     },
     {
       "$id": "10",
-      "Name": "LionRoar",
+      "Name": "狮子吼",
       "Spell": 9,
       "BaseCost": 14,
       "LevelCost": 4,
@@ -210,7 +210,7 @@
     },
     {
       "$id": "11",
-      "Name": "CrossHalfMoon",
+      "Name": "圆月弯刀",
       "Spell": 10,
       "BaseCost": 6,
       "LevelCost": 0,
@@ -233,7 +233,7 @@
     },
     {
       "$id": "12",
-      "Name": "BladeAvalanche",
+      "Name": "崩山剑法",
       "Spell": 11,
       "BaseCost": 14,
       "LevelCost": 4,
@@ -256,7 +256,7 @@
     },
     {
       "$id": "13",
-      "Name": "ProtectionField",
+      "Name": "护体神盾",
       "Spell": 12,
       "BaseCost": 23,
       "LevelCost": 6,
@@ -279,7 +279,7 @@
     },
     {
       "$id": "14",
-      "Name": "Rage",
+      "Name": "狂暴",
       "Spell": 13,
       "BaseCost": 20,
       "LevelCost": 5,
@@ -302,7 +302,7 @@
     },
     {
       "$id": "15",
-      "Name": "CounterAttack",
+      "Name": "反击术",
       "Spell": 14,
       "BaseCost": 12,
       "LevelCost": 4,
@@ -325,7 +325,7 @@
     },
     {
       "$id": "16",
-      "Name": "SlashingBurst",
+      "Name": "爆发斩",
       "Spell": 15,
       "BaseCost": 25,
       "LevelCost": 4,
@@ -348,7 +348,7 @@
     },
     {
       "$id": "17",
-      "Name": "Fury",
+      "Name": "暴怒",
       "Spell": 16,
       "BaseCost": 10,
       "LevelCost": 4,
@@ -371,7 +371,7 @@
     },
     {
       "$id": "18",
-      "Name": "FireBall",
+      "Name": "火球术",
       "Spell": 31,
       "BaseCost": 3,
       "LevelCost": 2,
@@ -394,7 +394,7 @@
     },
     {
       "$id": "19",
-      "Name": "Repulsion",
+      "Name": "抗拒火环",
       "Spell": 32,
       "BaseCost": 2,
       "LevelCost": 2,
@@ -417,7 +417,7 @@
     },
     {
       "$id": "20",
-      "Name": "ElectricShock",
+      "Name": "雷电术",
       "Spell": 33,
       "BaseCost": 3,
       "LevelCost": 1,
@@ -440,7 +440,7 @@
     },
     {
       "$id": "21",
-      "Name": "GreatFireBall",
+      "Name": "大火球",
       "Spell": 34,
       "BaseCost": 5,
       "LevelCost": 1,
@@ -463,7 +463,7 @@
     },
     {
       "$id": "22",
-      "Name": "HellFire",
+      "Name": "地狱火",
       "Spell": 35,
       "BaseCost": 10,
       "LevelCost": 3,
@@ -486,7 +486,7 @@
     },
     {
       "$id": "23",
-      "Name": "ThunderBolt",
+      "Name": "疾光电影",
       "Spell": 36,
       "BaseCost": 9,
       "LevelCost": 2,
@@ -509,7 +509,7 @@
     },
     {
       "$id": "24",
-      "Name": "Teleport",
+      "Name": "瞬息移动",
       "Spell": 37,
       "BaseCost": 10,
       "LevelCost": 3,
@@ -532,7 +532,7 @@
     },
     {
       "$id": "25",
-      "Name": "FireBang",
+      "Name": "爆裂火焰",
       "Spell": 38,
       "BaseCost": 14,
       "LevelCost": 4,
@@ -555,7 +555,7 @@
     },
     {
       "$id": "26",
-      "Name": "FireWall",
+      "Name": "火墙",
       "Spell": 39,
       "BaseCost": 30,
       "LevelCost": 5,
@@ -578,7 +578,7 @@
     },
     {
       "$id": "27",
-      "Name": "Lightning",
+      "Name": "闪电术",
       "Spell": 40,
       "BaseCost": 38,
       "LevelCost": 7,
@@ -601,7 +601,7 @@
     },
     {
       "$id": "28",
-      "Name": "FrostCrunch",
+      "Name": "寒霜爆破",
       "Spell": 41,
       "BaseCost": 15,
       "LevelCost": 3,
@@ -624,7 +624,7 @@
     },
     {
       "$id": "29",
-      "Name": "ThunderStorm",
+      "Name": "五雷轰顶",
       "Spell": 42,
       "BaseCost": 29,
       "LevelCost": 9,
@@ -647,7 +647,7 @@
     },
     {
       "$id": "30",
-      "Name": "MagicShield",
+      "Name": "魔法盾",
       "Spell": 43,
       "BaseCost": 35,
       "LevelCost": 5,
@@ -670,7 +670,7 @@
     },
     {
       "$id": "31",
-      "Name": "TurnUndead",
+      "Name": "圣言术",
       "Spell": 44,
       "BaseCost": 52,
       "LevelCost": 13,
@@ -693,7 +693,7 @@
     },
     {
       "$id": "32",
-      "Name": "Vampirism",
+      "Name": "噬血术",
       "Spell": 45,
       "BaseCost": 26,
       "LevelCost": 13,
@@ -716,7 +716,7 @@
     },
     {
       "$id": "33",
-      "Name": "IceStorm",
+      "Name": "冰风暴",
       "Spell": 46,
       "BaseCost": 33,
       "LevelCost": 3,
@@ -739,7 +739,7 @@
     },
     {
       "$id": "34",
-      "Name": "FlameDisruptor",
+      "Name": "灭天火",
       "Spell": 47,
       "BaseCost": 28,
       "LevelCost": 3,
@@ -762,7 +762,7 @@
     },
     {
       "$id": "35",
-      "Name": "Mirroring",
+      "Name": "分身术",
       "Spell": 48,
       "BaseCost": 21,
       "LevelCost": 0,
@@ -785,7 +785,7 @@
     },
     {
       "$id": "36",
-      "Name": "FlameField",
+      "Name": "火龙气焰",
       "Spell": 49,
       "BaseCost": 45,
       "LevelCost": 8,
@@ -808,7 +808,7 @@
     },
     {
       "$id": "37",
-      "Name": "Blizzard",
+      "Name": "冰咆哮",
       "Spell": 50,
       "BaseCost": 65,
       "LevelCost": 10,
@@ -831,7 +831,7 @@
     },
     {
       "$id": "38",
-      "Name": "MagicBooster",
+      "Name": "魔法强化",
       "Spell": 51,
       "BaseCost": 150,
       "LevelCost": 15,
@@ -854,7 +854,7 @@
     },
     {
       "$id": "39",
-      "Name": "MeteorStrike",
+      "Name": "陨石术",
       "Spell": 52,
       "BaseCost": 115,
       "LevelCost": 17,
@@ -877,7 +877,7 @@
     },
     {
       "$id": "40",
-      "Name": "IceThrust",
+      "Name": "冰锥术",
       "Spell": 53,
       "BaseCost": 100,
       "LevelCost": 20,
@@ -900,7 +900,7 @@
     },
     {
       "$id": "41",
-      "Name": "Blink",
+      "Name": "闪烁",
       "Spell": 54,
       "BaseCost": 10,
       "LevelCost": 3,
@@ -923,7 +923,7 @@
     },
     {
       "$id": "42",
-      "Name": "Healing",
+      "Name": "治愈术",
       "Spell": 61,
       "BaseCost": 3,
       "LevelCost": 2,
@@ -946,7 +946,7 @@
     },
     {
       "$id": "43",
-      "Name": "SpiritSword",
+      "Name": "精神力战法",
       "Spell": 62,
       "BaseCost": 0,
       "LevelCost": 0,
@@ -969,7 +969,7 @@
     },
     {
       "$id": "44",
-      "Name": "Poisoning",
+      "Name": "施毒术",
       "Spell": 63,
       "BaseCost": 2,
       "LevelCost": 1,
@@ -992,7 +992,7 @@
     },
     {
       "$id": "45",
-      "Name": "SoulFireBall",
+      "Name": "灵魂火符",
       "Spell": 64,
       "BaseCost": 3,
       "LevelCost": 1,
@@ -1015,7 +1015,7 @@
     },
     {
       "$id": "46",
-      "Name": "SummonSkeleton",
+      "Name": "召唤骷髅",
       "Spell": 65,
       "BaseCost": 12,
       "LevelCost": 4,
@@ -1038,7 +1038,7 @@
     },
     {
       "$id": "47",
-      "Name": "Hiding",
+      "Name": "隐身术",
       "Spell": 67,
       "BaseCost": 1,
       "LevelCost": 1,
@@ -1061,7 +1061,7 @@
     },
     {
       "$id": "48",
-      "Name": "MassHiding",
+      "Name": "集体隐身术",
       "Spell": 68,
       "BaseCost": 2,
       "LevelCost": 2,
@@ -1084,7 +1084,7 @@
     },
     {
       "$id": "49",
-      "Name": "SoulShield",
+      "Name": "幽灵盾",
       "Spell": 69,
       "BaseCost": 2,
       "LevelCost": 2,
@@ -1107,7 +1107,7 @@
     },
     {
       "$id": "50",
-      "Name": "Revelation",
+      "Name": "显形术",
       "Spell": 70,
       "BaseCost": 4,
       "LevelCost": 4,
@@ -1130,7 +1130,7 @@
     },
     {
       "$id": "51",
-      "Name": "BlessedArmour",
+      "Name": "神圣战甲术",
       "Spell": 71,
       "BaseCost": 2,
       "LevelCost": 2,
@@ -1153,7 +1153,7 @@
     },
     {
       "$id": "52",
-      "Name": "EnergyRepulsor",
+      "Name": "气功波",
       "Spell": 72,
       "BaseCost": 2,
       "LevelCost": 2,
@@ -1176,7 +1176,7 @@
     },
     {
       "$id": "53",
-      "Name": "TrapHexagon",
+      "Name": "困魔咒",
       "Spell": 73,
       "BaseCost": 7,
       "LevelCost": 3,
@@ -1199,7 +1199,7 @@
     },
     {
       "$id": "54",
-      "Name": "Purification",
+      "Name": "净化术",
       "Spell": 74,
       "BaseCost": 14,
       "LevelCost": 2,
@@ -1222,7 +1222,7 @@
     },
     {
       "$id": "55",
-      "Name": "MassHealing",
+      "Name": "群体治愈术",
       "Spell": 75,
       "BaseCost": 28,
       "LevelCost": 3,
@@ -1245,7 +1245,7 @@
     },
     {
       "$id": "56",
-      "Name": "Hallucination",
+      "Name": "幻影术",
       "Spell": 76,
       "BaseCost": 22,
       "LevelCost": 10,
@@ -1268,7 +1268,7 @@
     },
     {
       "$id": "57",
-      "Name": "UltimateEnchancer",
+      "Name": "强化骷髅",
       "Spell": 77,
       "BaseCost": 28,
       "LevelCost": 4,
@@ -1291,7 +1291,7 @@
     },
     {
       "$id": "58",
-      "Name": "SummonShinsu",
+      "Name": "召唤神兽",
       "Spell": 78,
       "BaseCost": 28,
       "LevelCost": 4,
@@ -1314,7 +1314,7 @@
     },
     {
       "$id": "59",
-      "Name": "Reincarnation",
+      "Name": "复活术",
       "Spell": 79,
       "BaseCost": 125,
       "LevelCost": 17,
@@ -1337,7 +1337,7 @@
     },
     {
       "$id": "60",
-      "Name": "SummonHolyDeva",
+      "Name": "召唤圣兽",
       "Spell": 80,
       "BaseCost": 28,
       "LevelCost": 4,
@@ -1360,7 +1360,7 @@
     },
     {
       "$id": "61",
-      "Name": "Curse",
+      "Name": "诅咒术",
       "Spell": 81,
       "BaseCost": 17,
       "LevelCost": 3,
@@ -1383,7 +1383,7 @@
     },
     {
       "$id": "62",
-      "Name": "Plague",
+      "Name": "瘟疫术",
       "Spell": 82,
       "BaseCost": 20,
       "LevelCost": 5,
@@ -1406,7 +1406,7 @@
     },
     {
       "$id": "63",
-      "Name": "PoisonCloud",
+      "Name": "毒云术",
       "Spell": 83,
       "BaseCost": 30,
       "LevelCost": 5,
@@ -1429,7 +1429,7 @@
     },
     {
       "$id": "64",
-      "Name": "EnergyShield",
+      "Name": "法术护盾",
       "Spell": 84,
       "BaseCost": 50,
       "LevelCost": 20,
@@ -1452,7 +1452,7 @@
     },
     {
       "$id": "65",
-      "Name": "PetEnhancer",
+      "Name": "宠物强化",
       "Spell": 85,
       "BaseCost": 30,
       "LevelCost": 40,
@@ -1475,7 +1475,7 @@
     },
     {
       "$id": "66",
-      "Name": "FatalSword",
+      "Name": "致命剑法",
       "Spell": 91,
       "BaseCost": 0,
       "LevelCost": 0,
@@ -1498,7 +1498,7 @@
     },
     {
       "$id": "67",
-      "Name": "DoubleSlash",
+      "Name": "二连斩",
       "Spell": 92,
       "BaseCost": 2,
       "LevelCost": 1,
@@ -1521,7 +1521,7 @@
     },
     {
       "$id": "68",
-      "Name": "Haste",
+      "Name": "疾风步",
       "Spell": 93,
       "BaseCost": 3,
       "LevelCost": 2,
@@ -1544,7 +1544,7 @@
     },
     {
       "$id": "69",
-      "Name": "FlashDash",
+      "Name": "瞬影步",
       "Spell": 94,
       "BaseCost": 12,
       "LevelCost": 2,
@@ -1567,7 +1567,7 @@
     },
     {
       "$id": "70",
-      "Name": "LightBody",
+      "Name": "轻身术",
       "Spell": 95,
       "BaseCost": 11,
       "LevelCost": 2,
@@ -1590,7 +1590,7 @@
     },
     {
       "$id": "71",
-      "Name": "HeavenlySword",
+      "Name": "天剑术",
       "Spell": 96,
       "BaseCost": 13,
       "LevelCost": 2,
@@ -1613,7 +1613,7 @@
     },
     {
       "$id": "72",
-      "Name": "FireBurst",
+      "Name": "爆炎",
       "Spell": 97,
       "BaseCost": 10,
       "LevelCost": 1,
@@ -1636,7 +1636,7 @@
     },
     {
       "$id": "73",
-      "Name": "Trap",
+      "Name": "陷阱术",
       "Spell": 98,
       "BaseCost": 14,
       "LevelCost": 2,
@@ -1659,7 +1659,7 @@
     },
     {
       "$id": "74",
-      "Name": "PoisonSword",
+      "Name": "毒剑术",
       "Spell": 99,
       "BaseCost": 14,
       "LevelCost": 3,
@@ -1682,7 +1682,7 @@
     },
     {
       "$id": "75",
-      "Name": "MoonLight",
+      "Name": "月光剑法",
       "Spell": 100,
       "BaseCost": 36,
       "LevelCost": 3,
@@ -1705,7 +1705,7 @@
     },
     {
       "$id": "76",
-      "Name": "MPEater",
+      "Name": "吸魔术",
       "Spell": 101,
       "BaseCost": 0,
       "LevelCost": 0,
@@ -1728,7 +1728,7 @@
     },
     {
       "$id": "77",
-      "Name": "SwiftFeet",
+      "Name": "疾步术",
       "Spell": 102,
       "BaseCost": 17,
       "LevelCost": 5,
@@ -1751,7 +1751,7 @@
     },
     {
       "$id": "78",
-      "Name": "DarkBody",
+      "Name": "暗影术",
       "Spell": 103,
       "BaseCost": 40,
       "LevelCost": 7,
@@ -1774,7 +1774,7 @@
     },
     {
       "$id": "79",
-      "Name": "Hemorrhage",
+      "Name": "出血术",
       "Spell": 104,
       "BaseCost": 0,
       "LevelCost": 0,
@@ -1797,7 +1797,7 @@
     },
     {
       "$id": "80",
-      "Name": "CresentSlash",
+      "Name": "新月斩",
       "Spell": 105,
       "BaseCost": 19,
       "LevelCost": 5,
@@ -1820,7 +1820,7 @@
     },
     {
       "$id": "81",
-      "Name": "Focus",
+      "Name": "凝神",
       "Spell": 121,
       "BaseCost": 0,
       "LevelCost": 0,
@@ -1843,7 +1843,7 @@
     },
     {
       "$id": "82",
-      "Name": "StraightShot",
+      "Name": "直线射击",
       "Spell": 122,
       "BaseCost": 3,
       "LevelCost": 2,
@@ -1866,7 +1866,7 @@
     },
     {
       "$id": "83",
-      "Name": "DoubleShot",
+      "Name": "双重射击",
       "Spell": 123,
       "BaseCost": 3,
       "LevelCost": 2,
@@ -1889,7 +1889,7 @@
     },
     {
       "$id": "84",
-      "Name": "ExplosiveTrap",
+      "Name": "爆裂陷阱",
       "Spell": 124,
       "BaseCost": 10,
       "LevelCost": 3,
@@ -1912,7 +1912,7 @@
     },
     {
       "$id": "85",
-      "Name": "DelayedExplosion",
+      "Name": "延迟爆炸",
       "Spell": 125,
       "BaseCost": 8,
       "LevelCost": 2,
@@ -1935,7 +1935,7 @@
     },
     {
       "$id": "86",
-      "Name": "Meditation",
+      "Name": "冥想",
       "Spell": 126,
       "BaseCost": 8,
       "LevelCost": 2,
@@ -1958,7 +1958,7 @@
     },
     {
       "$id": "87",
-      "Name": "ElementalShot",
+      "Name": "元素射击",
       "Spell": 128,
       "BaseCost": 8,
       "LevelCost": 2,
@@ -1981,7 +1981,7 @@
     },
     {
       "$id": "88",
-      "Name": "Concentration",
+      "Name": "集中",
       "Spell": 129,
       "BaseCost": 8,
       "LevelCost": 2,
@@ -2004,7 +2004,7 @@
     },
     {
       "$id": "89",
-      "Name": "ElementalBarrier",
+      "Name": "元素屏障",
       "Spell": 131,
       "BaseCost": 10,
       "LevelCost": 2,
@@ -2027,7 +2027,7 @@
     },
     {
       "$id": "90",
-      "Name": "BackStep",
+      "Name": "后撤步",
       "Spell": 127,
       "BaseCost": 12,
       "LevelCost": 2,
@@ -2050,7 +2050,7 @@
     },
     {
       "$id": "91",
-      "Name": "BindingShot",
+      "Name": "束缚射击",
       "Spell": 140,
       "BaseCost": 7,
       "LevelCost": 3,
@@ -2073,7 +2073,7 @@
     },
     {
       "$id": "92",
-      "Name": "SummonVampire",
+      "Name": "召唤蝙蝠",
       "Spell": 132,
       "BaseCost": 10,
       "LevelCost": 5,
@@ -2096,7 +2096,7 @@
     },
     {
       "$id": "93",
-      "Name": "VampireShot",
+      "Name": "吸血射击",
       "Spell": 133,
       "BaseCost": 12,
       "LevelCost": 3,
@@ -2119,7 +2119,7 @@
     },
     {
       "$id": "94",
-      "Name": "SummonToad",
+      "Name": "召唤蟾蜍",
       "Spell": 134,
       "BaseCost": 10,
       "LevelCost": 5,
@@ -2142,7 +2142,7 @@
     },
     {
       "$id": "95",
-      "Name": "PoisonShot",
+      "Name": "毒射击",
       "Spell": 135,
       "BaseCost": 10,
       "LevelCost": 4,
@@ -2165,7 +2165,7 @@
     },
     {
       "$id": "96",
-      "Name": "CrippleShot",
+      "Name": "致残射击",
       "Spell": 136,
       "BaseCost": 15,
       "LevelCost": 3,
@@ -2188,7 +2188,7 @@
     },
     {
       "$id": "97",
-      "Name": "SummonSnakes",
+      "Name": "召唤蛇",
       "Spell": 137,
       "BaseCost": 10,
       "LevelCost": 5,
@@ -2211,7 +2211,7 @@
     },
     {
       "$id": "98",
-      "Name": "NapalmShot",
+      "Name": "燃烧射击",
       "Spell": 138,
       "BaseCost": 40,
       "LevelCost": 10,
@@ -2234,7 +2234,7 @@
     },
     {
       "$id": "99",
-      "Name": "OneWithNature",
+      "Name": "天人合一",
       "Spell": 139,
       "BaseCost": 80,
       "LevelCost": 15,
@@ -2257,7 +2257,7 @@
     },
     {
       "$id": "100",
-      "Name": "MentalState",
+      "Name": "心法",
       "Spell": 141,
       "BaseCost": 1,
       "LevelCost": 1,
@@ -2280,7 +2280,7 @@
     },
     {
       "$id": "101",
-      "Name": "Portal",
+      "Name": "传送门",
       "Spell": 150,
       "BaseCost": 3,
       "LevelCost": 2,
@@ -2303,7 +2303,7 @@
     },
     {
       "$id": "102",
-      "Name": "Blink",
+      "Name": "闪烁",
       "Spell": 151,
       "BaseCost": 10,
       "LevelCost": 3,
@@ -2326,7 +2326,7 @@
     },
     {
       "$id": "103",
-      "Name": "Portal",
+      "Name": "传送门",
       "Spell": 152,
       "BaseCost": 3,
       "LevelCost": 2,
@@ -2349,7 +2349,7 @@
     },
     {
       "$id": "104",
-      "Name": "StormEscape",
+      "Name": "风暴逃脱",
       "Spell": 55,
       "BaseCost": 65,
       "LevelCost": 8,
@@ -2372,7 +2372,7 @@
     },
     {
       "$id": "105",
-      "Name": "ImmortalSkin",
+      "Name": "金钟罩",
       "Spell": 17,
       "BaseCost": 10,
       "LevelCost": 4,
@@ -2395,7 +2395,7 @@
     },
     {
       "$id": "106",
-      "Name": "BattleCry",
+      "Name": "战吼",
       "Spell": 153,
       "BaseCost": 22,
       "LevelCost": 10,
@@ -2418,7 +2418,7 @@
     },
     {
       "$id": "107",
-      "Name": "FireBounce",
+      "Name": "火焰弹射",
       "Spell": 154,
       "BaseCost": 5,
       "LevelCost": 1,
@@ -2441,7 +2441,7 @@
     },
     {
       "$id": "108",
-      "Name": "MeteorShower",
+      "Name": "流星火雨",
       "Spell": 155,
       "BaseCost": 28,
       "LevelCost": 1,
@@ -2464,7 +2464,7 @@
     },
     {
       "$id": "109",
-      "Name": "HealingCircle",
+      "Name": "治愈领域",
       "Spell": 86,
       "BaseCost": 10,
       "LevelCost": 100,
@@ -2487,7 +2487,7 @@
     },
     {
       "$id": "110",
-      "Name": "MoonMist",
+      "Name": "月之迷雾",
       "Spell": 106,
       "BaseCost": 30,
       "LevelCost": 5,
@@ -2510,7 +2510,7 @@
     },
     {
       "$id": "111",
-      "Name": "CatTongue",
+      "Name": "猫之舌",
       "Spell": 107,
       "BaseCost": 30,
       "LevelCost": 5,
@@ -2533,7 +2533,7 @@
     },
     {
       "$id": "112",
-      "Name": "StoneTrap",
+      "Name": "石化陷阱",
       "Spell": 130,
       "BaseCost": 7,
       "LevelCost": 3,

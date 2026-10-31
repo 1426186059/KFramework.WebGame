@@ -9,8 +9,8 @@
 1/2 特制魔法药
 1/1 太阳水
 1/2 太阳水
-1/1 太阳药水(M)
-1/2 太阳药水(M)
+1/1 太阳药水(男)
+1/2 太阳药水(男)
 1/1 太阳水
 1/1 太阳水
 1/2 太阳水
@@ -37,15 +37,15 @@
 1/800 Zinc刃
 1/800 Grim弓
 
-1/1000 黑虎Hammer
+1/1000 黑虎锤
 1/1000 Lethal弓
-1/1000 杖之Lotus
-1/1000 Fan之Crane
+1/1000 杖之莲
+1/1000 扇之Crane
 1/1000 Butchering刃
 
 1/1100 蛮兵剑
 1/1100 Raw剑
-1/1100 骨CarvedFan
+1/1100 骨Carved扇
 1/1100 Mad龙刃
 1/1100 Apus弓
 
@@ -56,24 +56,24 @@
 1/1600 HeatsBanes
 
 ;Armour
-1/300 黑虎甲(M)
-1/300 黑虎甲(F)
-1/300 Lotus甲(M)
-1/300 Lotus甲(F)
-1/300 Crane甲(M)
-1/300 Crane甲(F)
-1/300 Stealth甲(M)
-1/300 Stealth甲(F)
+1/300 黑虎甲(男)
+1/300 黑虎甲(女)
+1/300 莲甲(男)
+1/300 莲甲(女)
+1/300 Crane甲(男)
+1/300 Crane甲(女)
+1/300 Stealth甲(男)
+1/300 Stealth甲(女)
 
 ;Armour Rare
-1/11500 天甲(M)
-1/11500 天甲(F)
-1/11500 HeavenRedArmour(M)
-1/11500 HeavenRedArmour(F)
-1/11500 HeavenGrnArmour(M)
-1/11500 HeavenGrnArmour(F)
-1/11500 HeavenGoldArmour(M)
-1/11500 HeavenGoldArmour(F)
+1/11500 天甲(男)
+1/11500 天甲(女)
+1/11500 HeavenRedArmour(男)
+1/11500 HeavenRedArmour(女)
+1/11500 HeavenGrnArmour(男)
+1/11500 HeavenGrnArmour(女)
+1/11500 HeavenGoldArmour(男)
+1/11500 HeavenGoldArmour(女)
 
 
 ;Helmets
@@ -93,7 +93,7 @@
 ;Necklace
 1/50 Cuspid项链
 1/50 SorceryAnchor
-1/50 PurifiedMirror
+1/50 Purified镜
 1/150 邪Triangle
 1/150 CrossPurified
 1/150 Adamant项链
@@ -104,10 +104,10 @@
 
 
 ;Bracelets
-1/50 DualTitan护符
-1/50 SacredAngel护符
+1/50 Dual泰坦护符
+1/50 Sacred天使护符
 1/50 邪Whisp护符
-1/150 WildTitan护符
+1/150 Wild泰坦护符
 1/150 Enchanted护符
 1/150 五元素护符
 1/440 DemonWheel
@@ -152,7 +152,7 @@
 ;;Warrior
 1/100 SliceNDice
 1/105 烈焰剑
-1/110 LionRoar
+1/110 狮Roar
 1/115 BladeStorm
 1/120 CrossHalf月
 1/125 刃Avalanche
@@ -164,9 +164,9 @@
 
 ;;Wizard
 1/105 冰暴
-1/110 FlameDisruptor
-1/115 Mirroring
-1/120 FlameField
+1/110 火焰Disruptor
+1/115 镜ing
+1/120 火焰Field
 1/135 Blizzard
 1/140 魔法Booster
 1/700 LavaKing
@@ -195,7 +195,7 @@
 ;;Archer
 1/90 NapalmShot
 1/100 DelayedExplosion
-1/200 ElementalBarrier
+1/200 元素alBarrier
 1/500 BindingShot
 1/750 召唤蟾蜍
 1/800 毒Shot

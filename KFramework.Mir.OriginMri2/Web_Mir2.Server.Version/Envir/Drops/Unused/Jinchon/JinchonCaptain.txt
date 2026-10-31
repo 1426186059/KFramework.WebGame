@@ -93,7 +93,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV1
-1/110 LionRoar LV1
+1/110 狮Roar LV1
 1/115 BladeStorm LV1
 1/120 CrossHalf月 LV1
 1/125 刃Avalanche LV1
@@ -108,9 +108,9 @@
 ;Wizard
 1/90 Vampirism LV1
 1/105 冰暴 LV1
-1/110 FlameDisruptor LV1
-1/115 Mirroring LV1
-1/120 FlameField LV1
+1/110 火焰Disruptor LV1
+1/115 镜ing LV1
+1/120 火焰Field LV1
 1/125 Blizzard LV1
 1/130 FrozenRains LV1
 1/135 魔法Booster LV1
@@ -142,11 +142,11 @@
 1/105 陷阱 LV1
 1/110 毒剑 LV1
 1/115 月轻 LV1
-1/120 MPEater LV1
+1/120 魔法Eater LV1
 1/125 SwiftFeet LV1
 1/150 暗Body LV1
 
-1/80 ElementalBarrier LV1
+1/80 元素alBarrier LV1
 1/85 BindingShot LV1
 1/105 召唤蟾蜍 LV1
 1/110 毒Shot LV1
@@ -253,7 +253,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV2
-1/110 LionRoar LV2
+1/110 狮Roar LV2
 1/115 BladeStorm LV2
 1/120 CrossHalf月 LV2
 1/125 刃Avalanche LV2
@@ -268,9 +268,9 @@
 ;Wizard
 1/90 Vampirism LV2
 1/105 冰暴 LV2
-1/110 FlameDisruptor LV2
-1/115 Mirroring LV2
-1/120 FlameField LV2
+1/110 火焰Disruptor LV2
+1/115 镜ing LV2
+1/120 火焰Field LV2
 1/125 Blizzard LV2
 1/130 FrozenRains LV2
 1/135 魔法Booster LV2
@@ -302,11 +302,11 @@
 1/105 陷阱 LV2
 1/110 毒剑 LV2
 1/115 月轻 LV2
-1/120 MPEater LV2
+1/120 魔法Eater LV2
 1/125 SwiftFeet LV2
 1/150 暗Body LV2
 
-1/80 ElementalBarrier LV2
+1/80 元素alBarrier LV2
 1/85 BindingShot LV2
 1/105 召唤蟾蜍 LV2
 1/110 毒Shot LV2
@@ -415,7 +415,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV3
-1/110 LionRoar LV3
+1/110 狮Roar LV3
 1/115 BladeStorm LV3
 1/120 CrossHalf月 LV3
 1/125 刃Avalanche LV3
@@ -430,9 +430,9 @@
 ;Wizard
 1/90 Vampirism LV3
 1/105 冰暴 LV3
-1/110 FlameDisruptor LV3
-1/115 Mirroring LV3
-1/120 FlameField LV3
+1/110 火焰Disruptor LV3
+1/115 镜ing LV3
+1/120 火焰Field LV3
 1/125 Blizzard LV3
 1/130 FrozenRains LV3
 1/135 魔法Booster LV3
@@ -464,11 +464,11 @@
 1/105 陷阱 LV3
 1/110 毒剑 LV3
 1/115 月轻 LV3
-1/120 MPEater LV3
+1/120 魔法Eater LV3
 1/125 SwiftFeet LV3
 1/150 暗Body LV3
 
-1/80 ElementalBarrier LV3
+1/80 元素alBarrier LV3
 1/85 BindingShot LV3
 1/105 召唤蟾蜍 LV3
 1/110 毒Shot LV3
@@ -576,7 +576,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV4
-1/110 LionRoar LV4
+1/110 狮Roar LV4
 1/115 BladeStorm LV4
 1/120 CrossHalf月 LV4
 1/125 刃Avalanche LV4
@@ -591,9 +591,9 @@
 ;Wizard
 1/90 Vampirism LV4
 1/105 冰暴 LV4
-1/110 FlameDisruptor LV4
-1/115 Mirroring LV4
-1/120 FlameField LV4
+1/110 火焰Disruptor LV4
+1/115 镜ing LV4
+1/120 火焰Field LV4
 1/125 Blizzard LV4
 1/130 FrozenRains LV4
 1/135 魔法Booster LV4
@@ -625,11 +625,11 @@
 1/105 陷阱 LV4
 1/110 毒剑 LV4
 1/115 月轻 LV4
-1/120 MPEater LV4
+1/120 魔法Eater LV4
 1/125 SwiftFeet LV4
 1/150 暗Body LV4
 
-1/80 ElementalBarrier LV4
+1/80 元素alBarrier LV4
 1/85 BindingShot LV4
 1/105 召唤蟾蜍 LV4
 1/110 毒Shot LV4
@@ -737,7 +737,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV5
-1/110 LionRoar LV5
+1/110 狮Roar LV5
 1/115 BladeStorm LV5
 1/120 CrossHalf月 LV5
 1/125 刃Avalanche LV5
@@ -752,9 +752,9 @@
 ;Wizard
 1/90 Vampirism LV5
 1/105 冰暴 LV5
-1/110 FlameDisruptor LV5
-1/115 Mirroring LV5
-1/120 FlameField LV5
+1/110 火焰Disruptor LV5
+1/115 镜ing LV5
+1/120 火焰Field LV5
 1/125 Blizzard LV5
 1/130 FrozenRains LV5
 1/135 魔法Booster LV5
@@ -786,11 +786,11 @@
 1/105 陷阱 LV5
 1/110 毒剑 LV5
 1/115 月轻 LV5
-1/120 MPEater LV5
+1/120 魔法Eater LV5
 1/125 SwiftFeet LV5
 1/150 暗Body LV5
 
-1/80 ElementalBarrier LV5
+1/80 元素alBarrier LV5
 1/85 BindingShot LV5
 1/105 召唤蟾蜍 LV5
 1/110 毒Shot LV5
@@ -899,7 +899,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV6
-1/110 LionRoar LV6
+1/110 狮Roar LV6
 1/115 BladeStorm LV6
 1/120 CrossHalf月 LV6
 1/125 刃Avalanche LV6
@@ -914,9 +914,9 @@
 ;Wizard
 1/90 Vampirism LV6
 1/105 冰暴 LV6
-1/110 FlameDisruptor LV6
-1/115 Mirroring LV6
-1/120 FlameField LV6
+1/110 火焰Disruptor LV6
+1/115 镜ing LV6
+1/120 火焰Field LV6
 1/125 Blizzard LV6
 1/130 FrozenRains LV6
 1/135 魔法Booster LV6
@@ -948,11 +948,11 @@
 1/105 陷阱 LV6
 1/110 毒剑 LV6
 1/115 月轻 LV6
-1/120 MPEater LV6
+1/120 魔法Eater LV6
 1/125 SwiftFeet LV6
 1/150 暗Body LV6
 
-1/80 ElementalBarrier LV6
+1/80 元素alBarrier LV6
 1/85 BindingShot LV6
 1/105 召唤蟾蜍 LV6
 1/110 毒Shot LV6
@@ -1060,7 +1060,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV7
-1/110 LionRoar LV7
+1/110 狮Roar LV7
 1/115 BladeStorm LV7
 1/120 CrossHalf月 LV7
 1/125 刃Avalanche LV7
@@ -1075,9 +1075,9 @@
 ;Wizard
 1/90 Vampirism LV7
 1/105 冰暴 LV7
-1/110 FlameDisruptor LV7
-1/115 Mirroring LV7
-1/120 FlameField LV7
+1/110 火焰Disruptor LV7
+1/115 镜ing LV7
+1/120 火焰Field LV7
 1/125 Blizzard LV7
 1/130 FrozenRains LV7
 1/135 魔法Booster LV7
@@ -1109,11 +1109,11 @@
 1/105 陷阱 LV7
 1/110 毒剑 LV7
 1/115 月轻 LV7
-1/120 MPEater LV7
+1/120 魔法Eater LV7
 1/125 SwiftFeet LV7
 1/150 暗Body LV7
 
-1/80 ElementalBarrier LV7
+1/80 元素alBarrier LV7
 1/85 BindingShot LV7
 1/105 召唤蟾蜍 LV7
 1/110 毒Shot LV7
@@ -1221,7 +1221,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV8
-1/110 LionRoar LV8
+1/110 狮Roar LV8
 1/115 BladeStorm LV8
 1/120 CrossHalf月 LV8
 1/125 刃Avalanche LV8
@@ -1236,9 +1236,9 @@
 ;Wizard
 1/90 Vampirism LV8
 1/105 冰暴 LV8
-1/110 FlameDisruptor LV8
-1/115 Mirroring LV8
-1/120 FlameField LV8
+1/110 火焰Disruptor LV8
+1/115 镜ing LV8
+1/120 火焰Field LV8
 1/125 Blizzard LV8
 1/130 FrozenRains LV8
 1/135 魔法Booster LV8
@@ -1270,11 +1270,11 @@
 1/105 陷阱 LV8
 1/110 毒剑 LV8
 1/115 月轻 LV8
-1/120 MPEater LV8
+1/120 魔法Eater LV8
 1/125 SwiftFeet LV8
 1/150 暗Body LV8
 
-1/80 ElementalBarrier LV8
+1/80 元素alBarrier LV8
 1/85 BindingShot LV8
 1/105 召唤蟾蜍 LV8
 1/110 毒Shot LV8

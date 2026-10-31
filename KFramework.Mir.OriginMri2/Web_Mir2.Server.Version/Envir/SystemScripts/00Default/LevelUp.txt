@@ -49,16 +49,16 @@ GOTO @_LevelUp7
 #IF
 LEVEL == 20
 #ACT
-GLOBALMESSAGE "Congratulations to <$USERNAME> for reaching Level 20!" Announcement
+GLOBALMESSAGE "恭喜 <$USERNAME> 达到20级！" Announcement
 
 [@_LevelUp8]
 #IF
 LEVEL == 40
 #ACT
-GLOBALMESSAGE "Congratulations to <$USERNAME> for reaching Level 40!" Announcement
+GLOBALMESSAGE "恭喜 <$USERNAME> 达到40级！" Announcement
 
 [@_LevelUp9]
 #IF
 LEVEL == 60
 #ACT
-GLOBALMESSAGE "Congratulations to <$USERNAME> for reaching Level 60!" Announcement
+GLOBALMESSAGE "恭喜 <$USERNAME> 达到60级！" Announcement

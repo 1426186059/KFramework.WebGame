@@ -12,45 +12,45 @@
 1/1 太阳水 LV1
 1/1 太阳水 LV1
 1/1 太阳水 LV1
-1/1 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
+1/1 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
 1/1 太阳水 LV1
 1/2 BenedictionOil LV1
 1/5 金Bar LV1
 
-1/140 黑虎甲(M) LV1
-1/140 黑虎甲(F) LV1
-1/140 Lotus甲(M) LV1
-1/140 Lotus甲(F) LV1
-1/140 Crane甲(M) LV1
-1/140 Crane甲(F) LV1
-1/140 Stealth甲(M) LV1
-1/140 Stealth甲(F) LV1
-1/170 红暗甲(M) LV1
-1/170 红暗甲(F) LV1
-1/170 蓝暗甲(M) LV1
-1/170 蓝暗甲(F) LV1
-1/170 Scaled甲(M) LV1
-1/170 Scaled甲(F) LV1
-1/170 绿暗甲(M) LV1
-1/170 绿暗甲(F) LV1
-1/170 金暗甲(M) LV1
-1/170 GoldDarkArmour(F)v
-1/400 WatcherSuit(M) LV1
-1/400 WatcherSuit(F) LV1
-1/1700 HeavenRedArmour(M) LV1
-1/1700 HeavenRedArmour(F) LV1
-1/1700 HeavenGrnArmour(M) LV1
-1/1700 HeavenGrnArmour(F) LV1
-1/1700 天甲(M) LV1
-1/1700 天甲(F) LV1
-1/1700 HeavenGoldArmour(M) LV1
-1/1700 HeavenGoldArmour(F) LV1
+1/140 黑虎甲(男) LV1
+1/140 黑虎甲(女) LV1
+1/140 莲甲(男) LV1
+1/140 莲甲(女) LV1
+1/140 Crane甲(男) LV1
+1/140 Crane甲(女) LV1
+1/140 Stealth甲(男) LV1
+1/140 Stealth甲(女) LV1
+1/170 红暗甲(男) LV1
+1/170 红暗甲(女) LV1
+1/170 蓝暗甲(男) LV1
+1/170 蓝暗甲(女) LV1
+1/170 鳞d甲(男) LV1
+1/170 鳞d甲(女) LV1
+1/170 绿暗甲(男) LV1
+1/170 绿暗甲(女) LV1
+1/170 金暗甲(男) LV1
+1/170 GoldDarkArmour(女)v
+1/400 WatcherSuit(男) LV1
+1/400 WatcherSuit(女) LV1
+1/1700 HeavenRedArmour(男) LV1
+1/1700 HeavenRedArmour(女) LV1
+1/1700 HeavenGrnArmour(男) LV1
+1/1700 HeavenGrnArmour(女) LV1
+1/1700 天甲(男) LV1
+1/1700 天甲(女) LV1
+1/1700 HeavenGoldArmour(男) LV1
+1/1700 HeavenGoldArmour(女) LV1
 
 1/100 刃之Magi LV1
 1/300 剑之战争神 LV1
@@ -62,16 +62,16 @@
 1/50 Zinc刃 LV1
 1/50 Conqueror矛 LV1
 1/50 Bastard剑 LV1
-1/450 黑虎Hammer LV1
+1/450 黑虎锤 LV1
 1/450 Lethal弓 LV1
 1/450 Butchering刃 LV1
-1/450 杖之Lotus LV1
-1/450 Fan之Crane LV1
+1/450 杖之莲 LV1
+1/450 扇之Crane LV1
 1/700 蛮兵剑 LV1
 1/700 Apus弓 LV1
 1/700 Raw剑 LV1
 1/700 Mad龙刃 LV1
-1/700 骨CarvedFan LV1
+1/700 骨Carved扇 LV1
 
 1/40 巨盔 LV1
 1/40 WisdomCoronet LV1
@@ -89,17 +89,17 @@
 1/105 邪Expel戒 LV1
 1/155 金龙戒 LV1
 
-1/50 DualTitan护符 LV1
-1/50 SacredAngel护符 LV1
+1/50 Dual泰坦护符 LV1
+1/50 Sacred天使护符 LV1
 1/50 邪Whisp护符 LV1
-1/105 WildTitan护符 LV1
+1/105 Wild泰坦护符 LV1
 1/105 Enchanted护符 LV1
 1/105 五元素护符 LV1
 1/155 WatcherGloves LV1
 
 1/50 Cuspid项链 LV1
 1/50 SorceryAnchor LV1
-1/50 PurifiedMirror LV1
+1/50 Purified镜 LV1
 1/100 邪Triangle LV1
 1/100 CrossPurified LV1
 1/100 Adamant项链 LV1
@@ -139,13 +139,13 @@
 1/300 DefenderRing LV1
 1/300 DefenderGlove LV1
 1/300 DefenderNecklace LV1
-1/100 (H)魔面具 LV1
-1/100 (H)Violet珠 LV1
-1/100 (H)KunroonTear LV1
-1/100 (H)WheelOfLunar LV1
-1/100 (H)红魔戒 LV1
-1/100 (H)Cloud戒 LV1
-1/100 (H)毒戒 LV1
+1/100 (魂)魔面具 LV1
+1/100 (魂)Violet珠 LV1
+1/100 (魂)KunroonTear LV1
+1/100 (魂)WheelOfLunar LV1
+1/100 (魂)红魔戒 LV1
+1/100 (魂)Cloud戒 LV1
+1/100 (魂)毒戒 LV1
 1/80 ArmouredMedal LV1
 1/50 HollowMedal LV1
 1/200 AscendedRing LV1
@@ -177,8 +177,8 @@
 1/200 TerrapinBracelet LV1
 1/200 TerrapinRing LV1
 1/300 TerrapinShield LV1
-1/500 TrollsRobe(M) LV1
-1/500 TrollsRobe(F) LV1
+1/500 TrollsRobe(男) LV1
+1/500 TrollsRobe(女) LV1
 
 1/100 DefensiveMedal LV1
 1/100 OffensiveMedal LV1
@@ -196,14 +196,14 @@
 1/100 MistyRing  LV1
 1/100 SlicerRing LV1
 
-1/900 HavokBraveArmour(M) LV1
-1/900 HavokBraveArmour(F) LV1
-1/900 HavokMagicArmour(M) LV1
-1/900 HavokMagicArmour(F) LV1
-1/900 HavokSoulArmour(M) LV1
-1/900 HavokSoulArmour(F) LV1
-1/900 HavokSinArmour(M) LV1
-1/900 HavokSinArmour(F) LV1
+1/900 HavokBraveArmour(男) LV1
+1/900 HavokBraveArmour(女) LV1
+1/900 HavokMagicArmour(男) LV1
+1/900 HavokMagicArmour(女) LV1
+1/900 HavokSoulArmour(男) LV1
+1/900 HavokSoulArmour(女) LV1
+1/900 HavokSinArmour(男) LV1
+1/900 HavokSinArmour(女) LV1
 
 1/400 项链之痛苦 LV1
 1/400 手镯之痛苦 LV1
@@ -225,7 +225,7 @@
 1/25 烈焰剑 LV1
 1/30 CrossHalf月 LV1
 1/50 双生龙兽刃 LV1
-1/60 LionRoar LV1
+1/60 狮Roar LV1
 1/70 Entrapment LV1
 1/120 SliceNDice LV1
 1/140 BladeStorm LV1
@@ -239,11 +239,11 @@
 ;Wizard
 1/10 霜Crunch LV1
 1/25 冰暴 LV1
-1/30 FlameDisruptor LV1
+1/30 火焰Disruptor LV1
 1/50 Vampirism LV1
 1/100 DragNet LV1
-1/150 Mirroring LV1
-1/190 FlameField LV1
+1/150 镜ing LV1
+1/190 火焰Field LV1
 1/700 Blizzard LV1
 1/800 魔法Booster LV1
 1/900 MeteorStrike LV1
@@ -277,7 +277,7 @@
 1/600 暗Body LV1
 
 ;Archer
-1/50 ElementalBarrier LV1
+1/50 元素alBarrier LV1
 1/60 BindingShot LV1
 1/75 召唤蟾蜍 LV1
 1/75 毒Shot LV1
@@ -299,45 +299,45 @@
 1/1 太阳水 LV2
 1/1 太阳水 LV2
 1/1 太阳水 LV2
-1/1 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
+1/1 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
 1/1 太阳水 LV2
 1/2 BenedictionOil LV2
 1/5 金Bar LV2
 
-1/140 黑虎甲(M) LV2
-1/140 黑虎甲(F) LV2
-1/140 Lotus甲(M) LV2
-1/140 Lotus甲(F) LV2
-1/140 Crane甲(M) LV2
-1/140 Crane甲(F) LV2
-1/140 Stealth甲(M) LV2
-1/140 Stealth甲(F) LV2
-1/170 红暗甲(M) LV2
-1/170 红暗甲(F) LV2
-1/170 蓝暗甲(M) LV2
-1/170 蓝暗甲(F) LV2
-1/170 Scaled甲(M) LV2
-1/170 Scaled甲(F) LV2
-1/170 绿暗甲(M) LV2
-1/170 绿暗甲(F) LV2
-1/170 金暗甲(M) LV2
-1/170 GoldDarkArmour(F)v
-1/400 WatcherSuit(M) LV2
-1/400 WatcherSuit(F) LV2
-1/1700 HeavenRedArmour(M) LV2
-1/1700 HeavenRedArmour(F) LV2
-1/1700 HeavenGrnArmour(M) LV2
-1/1700 HeavenGrnArmour(F) LV2
-1/1700 天甲(M) LV2
-1/1700 天甲(F) LV2
-1/1700 HeavenGoldArmour(M) LV2
-1/1700 HeavenGoldArmour(F) LV2
+1/140 黑虎甲(男) LV2
+1/140 黑虎甲(女) LV2
+1/140 莲甲(男) LV2
+1/140 莲甲(女) LV2
+1/140 Crane甲(男) LV2
+1/140 Crane甲(女) LV2
+1/140 Stealth甲(男) LV2
+1/140 Stealth甲(女) LV2
+1/170 红暗甲(男) LV2
+1/170 红暗甲(女) LV2
+1/170 蓝暗甲(男) LV2
+1/170 蓝暗甲(女) LV2
+1/170 鳞d甲(男) LV2
+1/170 鳞d甲(女) LV2
+1/170 绿暗甲(男) LV2
+1/170 绿暗甲(女) LV2
+1/170 金暗甲(男) LV2
+1/170 GoldDarkArmour(女)v
+1/400 WatcherSuit(男) LV2
+1/400 WatcherSuit(女) LV2
+1/1700 HeavenRedArmour(男) LV2
+1/1700 HeavenRedArmour(女) LV2
+1/1700 HeavenGrnArmour(男) LV2
+1/1700 HeavenGrnArmour(女) LV2
+1/1700 天甲(男) LV2
+1/1700 天甲(女) LV2
+1/1700 HeavenGoldArmour(男) LV2
+1/1700 HeavenGoldArmour(女) LV2
 
 1/100 刃之Magi LV2
 1/300 剑之战争神 LV2
@@ -349,16 +349,16 @@
 1/50 Zinc刃 LV2
 1/50 Conqueror矛 LV2
 1/50 Bastard剑 LV2
-1/450 黑虎Hammer LV2
+1/450 黑虎锤 LV2
 1/450 Lethal弓 LV2
 1/450 Butchering刃 LV2
-1/450 杖之Lotus LV2
-1/450 Fan之Crane LV2
+1/450 杖之莲 LV2
+1/450 扇之Crane LV2
 1/700 Apus弓 LV2
 1/700 蛮兵剑 LV2
 1/700 Raw剑 LV2
 1/700 Mad龙刃 LV2
-1/700 骨CarvedFan LV2
+1/700 骨Carved扇 LV2
 
 1/40 巨盔 LV2
 1/40 WisdomCoronet LV2
@@ -376,17 +376,17 @@
 1/105 邪Expel戒 LV2
 1/155 金龙戒 LV2
 
-1/50 DualTitan护符 LV2
-1/50 SacredAngel护符 LV2
+1/50 Dual泰坦护符 LV2
+1/50 Sacred天使护符 LV2
 1/50 邪Whisp护符 LV2
-1/105 WildTitan护符 LV2
+1/105 Wild泰坦护符 LV2
 1/105 Enchanted护符 LV2
 1/105 五元素护符 LV2
 1/155 WatcherGloves LV2
 
 1/50 Cuspid项链 LV2
 1/50 SorceryAnchor LV2
-1/50 PurifiedMirror LV2
+1/50 Purified镜 LV2
 1/100 邪Triangle LV2
 1/100 CrossPurified LV2
 1/100 Adamant项链 LV2
@@ -426,13 +426,13 @@
 1/300 DefenderRing LV2
 1/300 DefenderGlove LV2
 1/300 DefenderNecklace LV2
-1/100 (H)魔面具 LV2
-1/100 (H)Violet珠 LV2
-1/100 (H)KunroonTear LV2
-1/100 (H)WheelOfLunar LV2
-1/100 (H)红魔戒 LV2
-1/100 (H)Cloud戒 LV2
-1/100 (H)毒戒 LV2
+1/100 (魂)魔面具 LV2
+1/100 (魂)Violet珠 LV2
+1/100 (魂)KunroonTear LV2
+1/100 (魂)WheelOfLunar LV2
+1/100 (魂)红魔戒 LV2
+1/100 (魂)Cloud戒 LV2
+1/100 (魂)毒戒 LV2
 1/80 ArmouredMedal LV2
 1/50 HollowMedal LV2
 1/200 AscendedRing LV2
@@ -464,8 +464,8 @@
 1/200 TerrapinBracelet LV2
 1/200 TerrapinRing LV2
 1/300 TerrapinShield LV2
-1/500 TrollsRobe(M) LV2
-1/500 TrollsRobe(F) LV2
+1/500 TrollsRobe(男) LV2
+1/500 TrollsRobe(女) LV2
 
 1/100 DefensiveMedal LV2
 1/100 OffensiveMedal LV2
@@ -483,14 +483,14 @@
 1/100 MistyRing  LV2
 1/100 SlicerRing LV2
 
-1/900 HavokBraveArmour(M) LV2
-1/900 HavokBraveArmour(F) LV2
-1/900 HavokMagicArmour(M) LV2
-1/900 HavokMagicArmour(F) LV2
-1/900 HavokSoulArmour(M) LV2
-1/900 HavokSoulArmour(F) LV2
-1/900 HavokSinArmour(M) LV2
-1/900 HavokSinArmour(F) LV2
+1/900 HavokBraveArmour(男) LV2
+1/900 HavokBraveArmour(女) LV2
+1/900 HavokMagicArmour(男) LV2
+1/900 HavokMagicArmour(女) LV2
+1/900 HavokSoulArmour(男) LV2
+1/900 HavokSoulArmour(女) LV2
+1/900 HavokSinArmour(男) LV2
+1/900 HavokSinArmour(女) LV2
 
 1/400 项链之痛苦 LV2
 1/400 手镯之痛苦 LV2
@@ -513,7 +513,7 @@
 1/25 烈焰剑 LV2
 1/30 CrossHalf月 LV2
 1/50 双生龙兽刃 LV2
-1/60 LionRoar LV2
+1/60 狮Roar LV2
 1/70 Entrapment LV2
 1/120 SliceNDice LV2
 1/140 BladeStorm LV2
@@ -527,11 +527,11 @@
 ;Wizard
 1/10 霜Crunch LV2
 1/25 冰暴 LV2
-1/30 FlameDisruptor LV2
+1/30 火焰Disruptor LV2
 1/50 Vampirism LV2
 1/100 DragNet LV2
-1/150 Mirroring LV2
-1/190 FlameField LV2
+1/150 镜ing LV2
+1/190 火焰Field LV2
 1/700 Blizzard LV2
 1/800 魔法Booster LV2
 1/900 MeteorStrike LV2
@@ -565,7 +565,7 @@
 1/600 暗Body LV2
 
 ;Archer
-1/50 ElementalBarrier LV2
+1/50 元素alBarrier LV2
 1/60 BindingShot LV2
 1/75 召唤蟾蜍 LV2
 1/75 毒Shot LV2
@@ -588,45 +588,45 @@
 1/1 太阳水 LV3
 1/1 太阳水 LV3
 1/1 太阳水 LV3
-1/1 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
+1/1 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
 1/1 太阳水 LV3
 1/2 BenedictionOil LV3
 1/5 金Bar LV3
 
-1/140 黑虎甲(M) LV3
-1/140 黑虎甲(F) LV3
-1/140 Lotus甲(M) LV3
-1/140 Lotus甲(F) LV3
-1/140 Crane甲(M) LV3
-1/140 Crane甲(F) LV3
-1/140 Stealth甲(M) LV3
-1/140 Stealth甲(F) LV3
-1/170 红暗甲(M) LV3
-1/170 红暗甲(F) LV3
-1/170 Scaled甲(M) LV3
-1/170 Scaled甲(F) LV3
-1/170 蓝暗甲(M) LV3
-1/170 蓝暗甲(F) LV3
-1/170 绿暗甲(M) LV3
-1/170 绿暗甲(F) LV3
-1/170 金暗甲(M) LV3
-1/170 GoldDarkArmour(F)v
-1/400 WatcherSuit(M) LV3
-1/400 WatcherSuit(F) LV3
-1/1700 HeavenRedArmour(M) LV3
-1/1700 HeavenRedArmour(F) LV3
-1/1700 HeavenGrnArmour(M) LV3
-1/1700 HeavenGrnArmour(F) LV3
-1/1700 天甲(M) LV3
-1/1700 天甲(F) LV3
-1/1700 HeavenGoldArmour(M) LV3
-1/1700 HeavenGoldArmour(F) LV3
+1/140 黑虎甲(男) LV3
+1/140 黑虎甲(女) LV3
+1/140 莲甲(男) LV3
+1/140 莲甲(女) LV3
+1/140 Crane甲(男) LV3
+1/140 Crane甲(女) LV3
+1/140 Stealth甲(男) LV3
+1/140 Stealth甲(女) LV3
+1/170 红暗甲(男) LV3
+1/170 红暗甲(女) LV3
+1/170 鳞d甲(男) LV3
+1/170 鳞d甲(女) LV3
+1/170 蓝暗甲(男) LV3
+1/170 蓝暗甲(女) LV3
+1/170 绿暗甲(男) LV3
+1/170 绿暗甲(女) LV3
+1/170 金暗甲(男) LV3
+1/170 GoldDarkArmour(女)v
+1/400 WatcherSuit(男) LV3
+1/400 WatcherSuit(女) LV3
+1/1700 HeavenRedArmour(男) LV3
+1/1700 HeavenRedArmour(女) LV3
+1/1700 HeavenGrnArmour(男) LV3
+1/1700 HeavenGrnArmour(女) LV3
+1/1700 天甲(男) LV3
+1/1700 天甲(女) LV3
+1/1700 HeavenGoldArmour(男) LV3
+1/1700 HeavenGoldArmour(女) LV3
 
 1/100 刃之Magi LV3
 1/300 剑之战争神 LV3
@@ -638,16 +638,16 @@
 1/50 Zinc刃 LV3
 1/50 Conqueror矛 LV3
 1/50 Bastard剑 LV3
-1/450 黑虎Hammer LV3
+1/450 黑虎锤 LV3
 1/450 Butchering刃 LV3
 1/450 Lethal弓 LV3
-1/450 杖之Lotus LV3
-1/450 Fan之Crane LV3
+1/450 杖之莲 LV3
+1/450 扇之Crane LV3
 1/700 蛮兵剑 LV3
 1/700 Raw剑 LV3
 1/700 Apus弓 LV3
 1/700 Mad龙刃 LV3
-1/700 骨CarvedFan LV3
+1/700 骨Carved扇 LV3
 
 1/40 巨盔 LV3
 1/40 WisdomCoronet LV3
@@ -665,17 +665,17 @@
 1/105 邪Expel戒 LV3
 1/155 金龙戒 LV3
 
-1/50 DualTitan护符 LV3
-1/50 SacredAngel护符 LV3
+1/50 Dual泰坦护符 LV3
+1/50 Sacred天使护符 LV3
 1/50 邪Whisp护符 LV3
-1/105 WildTitan护符 LV3
+1/105 Wild泰坦护符 LV3
 1/105 Enchanted护符 LV3
 1/105 五元素护符 LV3
 1/155 WatcherGloves LV3
 
 1/50 Cuspid项链 LV3
 1/50 SorceryAnchor LV3
-1/50 PurifiedMirror LV3
+1/50 Purified镜 LV3
 1/100 邪Triangle LV3
 1/100 CrossPurified LV3
 1/100 Adamant项链 LV3
@@ -715,13 +715,13 @@
 1/300 DefenderRing LV3
 1/300 DefenderGlove LV3
 1/300 DefenderNecklace LV3
-1/100 (H)魔面具 LV3
-1/100 (H)Violet珠 LV3
-1/100 (H)KunroonTear LV3
-1/100 (H)WheelOfLunar LV3
-1/100 (H)红魔戒 LV3
-1/100 (H)Cloud戒 LV3
-1/100 (H)毒戒 LV3
+1/100 (魂)魔面具 LV3
+1/100 (魂)Violet珠 LV3
+1/100 (魂)KunroonTear LV3
+1/100 (魂)WheelOfLunar LV3
+1/100 (魂)红魔戒 LV3
+1/100 (魂)Cloud戒 LV3
+1/100 (魂)毒戒 LV3
 1/80 ArmouredMedal LV3
 1/50 HollowMedal LV3
 1/200 AscendedRing LV3
@@ -753,8 +753,8 @@
 1/200 TerrapinBracelet LV3
 1/200 TerrapinRing LV3
 1/300 TerrapinShield LV3
-1/500 TrollsRobe(M) LV3
-1/500 TrollsRobe(F) LV3
+1/500 TrollsRobe(男) LV3
+1/500 TrollsRobe(女) LV3
 
 1/100 DefensiveMedal LV3
 1/100 OffensiveMedal LV3
@@ -772,14 +772,14 @@
 1/100 MistyRing  LV3
 1/100 SlicerRing LV3
 
-1/900 HavokBraveArmour(M) LV3
-1/900 HavokBraveArmour(F) LV3
-1/900 HavokMagicArmour(M) LV3
-1/900 HavokMagicArmour(F) LV3
-1/900 HavokSoulArmour(M) LV3
-1/900 HavokSoulArmour(F) LV3
-1/900 HavokSinArmour(M) LV3
-1/900 HavokSinArmour(F) LV3
+1/900 HavokBraveArmour(男) LV3
+1/900 HavokBraveArmour(女) LV3
+1/900 HavokMagicArmour(男) LV3
+1/900 HavokMagicArmour(女) LV3
+1/900 HavokSoulArmour(男) LV3
+1/900 HavokSoulArmour(女) LV3
+1/900 HavokSinArmour(男) LV3
+1/900 HavokSinArmour(女) LV3
 
 1/400 项链之痛苦 LV3
 1/400 手镯之痛苦 LV3
@@ -802,7 +802,7 @@
 1/25 烈焰剑 LV3
 1/30 CrossHalf月 LV3
 1/50 双生龙兽刃 LV3
-1/60 LionRoar LV3
+1/60 狮Roar LV3
 1/70 Entrapment LV3
 1/120 SliceNDice LV3
 1/140 BladeStorm LV3
@@ -816,11 +816,11 @@
 ;Wizard
 1/10 霜Crunch LV3
 1/25 冰暴 LV3
-1/30 FlameDisruptor LV3
+1/30 火焰Disruptor LV3
 1/50 Vampirism LV3
 1/100 DragNet LV3
-1/150 Mirroring LV3
-1/190 FlameField LV3
+1/150 镜ing LV3
+1/190 火焰Field LV3
 1/700 Blizzard LV3
 1/800 魔法Booster LV3
 1/900 MeteorStrike LV3
@@ -854,7 +854,7 @@
 1/600 暗Body LV3
 
 ;Archer
-1/50 ElementalBarrier LV3
+1/50 元素alBarrier LV3
 1/60 BindingShot LV3
 1/75 召唤蟾蜍 LV3
 1/75 毒Shot LV3
@@ -876,45 +876,45 @@
 1/1 太阳水 LV4
 1/1 太阳水 LV4
 1/1 太阳水 LV4
-1/1 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
+1/1 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
 1/1 太阳水 LV4
 1/2 BenedictionOil LV4
 1/5 金Bar LV4
 
-1/140 黑虎甲(M) LV4
-1/140 黑虎甲(F) LV4
-1/140 Lotus甲(M) LV4
-1/140 Lotus甲(F) LV4
-1/140 Crane甲(M) LV4
-1/140 Crane甲(F) LV4
-1/140 Stealth甲(M) LV4
-1/140 Stealth甲(F) LV4
-1/170 红暗甲(M) LV4
-1/170 红暗甲(F) LV4
-1/170 蓝暗甲(M) LV4
-1/170 蓝暗甲(F) LV4
-1/170 Scaled甲(M) LV4
-1/170 Scaled甲(F) LV4
-1/170 绿暗甲(M) LV4
-1/170 绿暗甲(F) LV4
-1/170 金暗甲(M) LV4
-1/170 GoldDarkArmour(F)v
-1/400 WatcherSuit(M) LV4
-1/400 WatcherSuit(F) LV4
-1/1700 HeavenRedArmour(M) LV4
-1/1700 HeavenRedArmour(F) LV4
-1/1700 HeavenGrnArmour(M) LV4
-1/1700 HeavenGrnArmour(F) LV4
-1/1700 天甲(M) LV4
-1/1700 天甲(F) LV4
-1/1700 HeavenGoldArmour(M) LV4
-1/1700 HeavenGoldArmour(F) LV4
+1/140 黑虎甲(男) LV4
+1/140 黑虎甲(女) LV4
+1/140 莲甲(男) LV4
+1/140 莲甲(女) LV4
+1/140 Crane甲(男) LV4
+1/140 Crane甲(女) LV4
+1/140 Stealth甲(男) LV4
+1/140 Stealth甲(女) LV4
+1/170 红暗甲(男) LV4
+1/170 红暗甲(女) LV4
+1/170 蓝暗甲(男) LV4
+1/170 蓝暗甲(女) LV4
+1/170 鳞d甲(男) LV4
+1/170 鳞d甲(女) LV4
+1/170 绿暗甲(男) LV4
+1/170 绿暗甲(女) LV4
+1/170 金暗甲(男) LV4
+1/170 GoldDarkArmour(女)v
+1/400 WatcherSuit(男) LV4
+1/400 WatcherSuit(女) LV4
+1/1700 HeavenRedArmour(男) LV4
+1/1700 HeavenRedArmour(女) LV4
+1/1700 HeavenGrnArmour(男) LV4
+1/1700 HeavenGrnArmour(女) LV4
+1/1700 天甲(男) LV4
+1/1700 天甲(女) LV4
+1/1700 HeavenGoldArmour(男) LV4
+1/1700 HeavenGoldArmour(女) LV4
 
 1/100 刃之Magi LV4
 1/300 剑之战争神 LV4
@@ -926,15 +926,15 @@
 1/50 Grim弓 LV4
 1/50 Conqueror矛 LV4
 1/50 Bastard剑 LV4
-1/450 黑虎Hammer LV4
+1/450 黑虎锤 LV4
 1/450 Lethal弓 LV4
 1/450 Butchering刃 LV4
-1/450 杖之Lotus LV4
-1/450 Fan之Crane LV4
+1/450 杖之莲 LV4
+1/450 扇之Crane LV4
 1/700 蛮兵剑 LV4
 1/700 Raw剑 LV4
 1/700 Mad龙刃 LV4
-1/700 骨CarvedFan LV4
+1/700 骨Carved扇 LV4
 1/700 Apus弓 LV4
 
 1/40 巨盔 LV4
@@ -953,17 +953,17 @@
 1/105 邪Expel戒 LV4
 1/155 金龙戒 LV4
 
-1/50 DualTitan护符 LV4
-1/50 SacredAngel护符 LV4
+1/50 Dual泰坦护符 LV4
+1/50 Sacred天使护符 LV4
 1/50 邪Whisp护符 LV4
-1/105 WildTitan护符 LV4
+1/105 Wild泰坦护符 LV4
 1/105 Enchanted护符 LV4
 1/105 五元素护符 LV4
 1/155 WatcherGloves LV4
 
 1/50 Cuspid项链 LV4
 1/50 SorceryAnchor LV4
-1/50 PurifiedMirror LV4
+1/50 Purified镜 LV4
 1/100 邪Triangle LV4
 1/100 CrossPurified LV4
 1/100 Adamant项链 LV4
@@ -1003,13 +1003,13 @@
 1/300 DefenderRing LV4
 1/300 DefenderGlove LV4
 1/300 DefenderNecklace LV4
-1/100 (H)魔面具 LV4
-1/100 (H)Violet珠 LV4
-1/100 (H)KunroonTear LV4
-1/100 (H)WheelOfLunar LV4
-1/100 (H)红魔戒 LV4
-1/100 (H)Cloud戒 LV4
-1/100 (H)毒戒 LV4
+1/100 (魂)魔面具 LV4
+1/100 (魂)Violet珠 LV4
+1/100 (魂)KunroonTear LV4
+1/100 (魂)WheelOfLunar LV4
+1/100 (魂)红魔戒 LV4
+1/100 (魂)Cloud戒 LV4
+1/100 (魂)毒戒 LV4
 1/80 ArmouredMedal LV4
 1/50 HollowMedal LV4
 1/200 AscendedRing LV4
@@ -1041,8 +1041,8 @@
 1/200 TerrapinBracelet LV4
 1/200 TerrapinRing LV4
 1/300 TerrapinShield LV4
-1/500 TrollsRobe(M) LV4
-1/500 TrollsRobe(F) LV4
+1/500 TrollsRobe(男) LV4
+1/500 TrollsRobe(女) LV4
 
 1/100 DefensiveMedal LV4
 1/100 OffensiveMedal LV4
@@ -1060,14 +1060,14 @@
 1/100 MistyRing  LV4
 1/100 SlicerRing LV4
 
-1/900 HavokBraveArmour(M) LV4
-1/900 HavokBraveArmour(F) LV4
-1/900 HavokMagicArmour(M) LV4
-1/900 HavokMagicArmour(F) LV4
-1/900 HavokSoulArmour(M) LV4
-1/900 HavokSoulArmour(F) LV4
-1/900 HavokSinArmour(M) LV4
-1/900 HavokSinArmour(F) LV4
+1/900 HavokBraveArmour(男) LV4
+1/900 HavokBraveArmour(女) LV4
+1/900 HavokMagicArmour(男) LV4
+1/900 HavokMagicArmour(女) LV4
+1/900 HavokSoulArmour(男) LV4
+1/900 HavokSoulArmour(女) LV4
+1/900 HavokSinArmour(男) LV4
+1/900 HavokSinArmour(女) LV4
 
 1/400 项链之痛苦 LV4
 1/400 手镯之痛苦 LV4
@@ -1089,7 +1089,7 @@
 1/25 烈焰剑 LV4
 1/30 CrossHalf月 LV4
 1/50 双生龙兽刃 LV4
-1/60 LionRoar LV4
+1/60 狮Roar LV4
 1/70 Entrapment LV4
 1/120 SliceNDice LV4
 1/140 BladeStorm LV4
@@ -1103,11 +1103,11 @@
 ;Wizard
 1/10 霜Crunch LV4
 1/25 冰暴 LV4
-1/30 FlameDisruptor LV4
+1/30 火焰Disruptor LV4
 1/50 Vampirism LV4
 1/100 DragNet LV4
-1/150 Mirroring LV4
-1/190 FlameField LV4
+1/150 镜ing LV4
+1/190 火焰Field LV4
 1/700 Blizzard LV4
 1/800 魔法Booster LV4
 1/900 MeteorStrike LV4
@@ -1141,7 +1141,7 @@
 1/600 暗Body LV4
 
 ;Archer
-1/50 ElementalBarrier LV4
+1/50 元素alBarrier LV4
 1/60 BindingShot LV4
 1/75 召唤蟾蜍 LV4
 1/75 毒Shot LV4
@@ -1164,45 +1164,45 @@
 1/1 太阳水 LV5
 1/1 太阳水 LV5
 1/1 太阳水 LV5
-1/1 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
+1/1 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
 1/1 太阳水 LV5
 1/2 BenedictionOil LV5
 1/5 金Bar LV5
 
-1/140 黑虎甲(M) LV5
-1/140 黑虎甲(F) LV5
-1/140 Lotus甲(M) LV5
-1/140 Lotus甲(F) LV5
-1/140 Crane甲(M) LV5
-1/140 Crane甲(F) LV5
-1/140 Stealth甲(M) LV5
-1/140 Stealth甲(F) LV5
-1/170 红暗甲(M) LV5
-1/170 红暗甲(F) LV5
-1/170 蓝暗甲(M) LV5
-1/170 蓝暗甲(F) LV5
-1/170 Scaled甲(M) LV5
-1/170 Scaled甲(F) LV5
-1/170 绿暗甲(M) LV5
-1/170 绿暗甲(F) LV5
-1/170 金暗甲(M) LV5
-1/170 GoldDarkArmour(F)v
-1/400 WatcherSuit(M) LV5
-1/400 WatcherSuit(F) LV5
-1/1700 HeavenRedArmour(M) LV5
-1/1700 HeavenRedArmour(F) LV5
-1/1700 HeavenGrnArmour(M) LV5
-1/1700 HeavenGrnArmour(F) LV5
-1/1700 天甲(M) LV5
-1/1700 天甲(F) LV5
-1/1700 HeavenGoldArmour(M) LV5
-1/1700 HeavenGoldArmour(F) LV5
+1/140 黑虎甲(男) LV5
+1/140 黑虎甲(女) LV5
+1/140 莲甲(男) LV5
+1/140 莲甲(女) LV5
+1/140 Crane甲(男) LV5
+1/140 Crane甲(女) LV5
+1/140 Stealth甲(男) LV5
+1/140 Stealth甲(女) LV5
+1/170 红暗甲(男) LV5
+1/170 红暗甲(女) LV5
+1/170 蓝暗甲(男) LV5
+1/170 蓝暗甲(女) LV5
+1/170 鳞d甲(男) LV5
+1/170 鳞d甲(女) LV5
+1/170 绿暗甲(男) LV5
+1/170 绿暗甲(女) LV5
+1/170 金暗甲(男) LV5
+1/170 GoldDarkArmour(女)v
+1/400 WatcherSuit(男) LV5
+1/400 WatcherSuit(女) LV5
+1/1700 HeavenRedArmour(男) LV5
+1/1700 HeavenRedArmour(女) LV5
+1/1700 HeavenGrnArmour(男) LV5
+1/1700 HeavenGrnArmour(女) LV5
+1/1700 天甲(男) LV5
+1/1700 天甲(女) LV5
+1/1700 HeavenGoldArmour(男) LV5
+1/1700 HeavenGoldArmour(女) LV5
 
 1/100 刃之Magi LV5
 1/300 剑之战争神 LV5
@@ -1214,15 +1214,15 @@
 1/50 Grim弓 LV5
 1/50 Conqueror矛 LV5
 1/50 Bastard剑 LV5
-1/450 黑虎Hammer LV5
+1/450 黑虎锤 LV5
 1/450 Lethal弓 LV5
 1/450 Butchering刃 LV5
-1/450 杖之Lotus LV5
-1/450 Fan之Crane LV5
+1/450 杖之莲 LV5
+1/450 扇之Crane LV5
 1/700 蛮兵剑 LV5
 1/700 Raw剑 LV5
 1/700 Mad龙刃 LV5
-1/700 骨CarvedFan LV5
+1/700 骨Carved扇 LV5
 1/700 Apus弓 LV5
 
 1/40 巨盔 LV5
@@ -1241,17 +1241,17 @@
 1/105 邪Expel戒 LV5
 1/155 金龙戒 LV5
 
-1/50 DualTitan护符 LV5
-1/50 SacredAngel护符 LV5
+1/50 Dual泰坦护符 LV5
+1/50 Sacred天使护符 LV5
 1/50 邪Whisp护符 LV5
-1/105 WildTitan护符 LV5
+1/105 Wild泰坦护符 LV5
 1/105 Enchanted护符 LV5
 1/105 五元素护符 LV5
 1/155 WatcherGloves LV5
 
 1/50 Cuspid项链 LV5
 1/50 SorceryAnchor LV5
-1/50 PurifiedMirror LV5
+1/50 Purified镜 LV5
 1/100 邪Triangle LV5
 1/100 CrossPurified LV5
 1/100 Adamant项链 LV5
@@ -1291,13 +1291,13 @@
 1/300 DefenderRing LV5
 1/300 DefenderGlove LV5
 1/300 DefenderNecklace LV5
-1/100 (H)魔面具 LV5
-1/100 (H)Violet珠 LV5
-1/100 (H)KunroonTear LV5
-1/100 (H)WheelOfLunar LV5
-1/100 (H)红魔戒 LV5
-1/100 (H)Cloud戒 LV5
-1/100 (H)毒戒 LV5
+1/100 (魂)魔面具 LV5
+1/100 (魂)Violet珠 LV5
+1/100 (魂)KunroonTear LV5
+1/100 (魂)WheelOfLunar LV5
+1/100 (魂)红魔戒 LV5
+1/100 (魂)Cloud戒 LV5
+1/100 (魂)毒戒 LV5
 1/80 ArmouredMedal LV5
 1/50 HollowMedal LV5
 1/200 AscendedRing LV5
@@ -1329,8 +1329,8 @@
 1/200 TerrapinBracelet LV5
 1/200 TerrapinRing LV5
 1/300 TerrapinShield LV5
-1/500 TrollsRobe(M) LV5
-1/500 TrollsRobe(F) LV5
+1/500 TrollsRobe(男) LV5
+1/500 TrollsRobe(女) LV5
 
 1/100 DefensiveMedal LV5
 1/100 OffensiveMedal LV5
@@ -1348,14 +1348,14 @@
 1/100 MistyRing  LV5
 1/100 SlicerRing LV5
 
-1/900 HavokBraveArmour(M) LV5
-1/900 HavokBraveArmour(F) LV5
-1/900 HavokMagicArmour(M) LV5
-1/900 HavokMagicArmour(F) LV5
-1/900 HavokSoulArmour(M) LV5
-1/900 HavokSoulArmour(F) LV5
-1/900 HavokSinArmour(M) LV5
-1/900 HavokSinArmour(F) LV5
+1/900 HavokBraveArmour(男) LV5
+1/900 HavokBraveArmour(女) LV5
+1/900 HavokMagicArmour(男) LV5
+1/900 HavokMagicArmour(女) LV5
+1/900 HavokSoulArmour(男) LV5
+1/900 HavokSoulArmour(女) LV5
+1/900 HavokSinArmour(男) LV5
+1/900 HavokSinArmour(女) LV5
 
 1/400 项链之痛苦 LV5
 1/400 手镯之痛苦 LV5
@@ -1377,7 +1377,7 @@
 1/25 烈焰剑 LV5
 1/30 CrossHalf月 LV5
 1/50 双生龙兽刃 LV5
-1/60 LionRoar LV5
+1/60 狮Roar LV5
 1/70 Entrapment LV5
 1/120 SliceNDice LV5
 1/140 BladeStorm LV5
@@ -1391,11 +1391,11 @@
 ;Wizard
 1/10 霜Crunch LV5
 1/25 冰暴 LV5
-1/30 FlameDisruptor LV5
+1/30 火焰Disruptor LV5
 1/50 Vampirism LV5
 1/100 DragNet LV5
-1/150 Mirroring LV5
-1/190 FlameField LV5
+1/150 镜ing LV5
+1/190 火焰Field LV5
 1/700 Blizzard LV5
 1/800 魔法Booster LV5
 1/900 MeteorStrike LV5
@@ -1429,7 +1429,7 @@
 1/600 暗Body LV5
 
 ;Archer
-1/50 ElementalBarrier LV5
+1/50 元素alBarrier LV5
 1/60 BindingShot LV5
 1/75 召唤蟾蜍 LV5
 1/75 毒Shot LV5
@@ -1452,45 +1452,45 @@
 1/1 太阳水 LV6
 1/1 太阳水 LV6
 1/1 太阳水 LV6
-1/1 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
+1/1 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
 1/1 太阳水 LV6
 1/2 BenedictionOil LV6
 1/5 金Bar LV6
 
-1/140 黑虎甲(M) LV6
-1/140 黑虎甲(F) LV6
-1/140 Lotus甲(M) LV6
-1/140 Lotus甲(F) LV6
-1/140 Crane甲(M) LV6
-1/140 Crane甲(F) LV6
-1/140 Stealth甲(M) LV6
-1/140 Stealth甲(F) LV6
-1/170 红暗甲(M) LV6
-1/170 红暗甲(F) LV6
-1/170 蓝暗甲(M) LV6
-1/170 蓝暗甲(F) LV6
-1/170 Scaled甲(M) LV6
-1/170 Scaled甲(F) LV6
-1/170 绿暗甲(M) LV6
-1/170 绿暗甲(F) LV6
-1/170 金暗甲(M) LV6
-1/170 GoldDarkArmour(F)v
-1/400 WatcherSuit(M) LV6
-1/400 WatcherSuit(F) LV6
-1/1700 HeavenRedArmour(M) LV6
-1/1700 HeavenRedArmour(F) LV6
-1/1700 HeavenGrnArmour(M) LV6
-1/1700 HeavenGrnArmour(F) LV6
-1/1700 天甲(M) LV6
-1/1700 天甲(F) LV6
-1/1700 HeavenGoldArmour(M) LV6
-1/1700 HeavenGoldArmour(F) LV6
+1/140 黑虎甲(男) LV6
+1/140 黑虎甲(女) LV6
+1/140 莲甲(男) LV6
+1/140 莲甲(女) LV6
+1/140 Crane甲(男) LV6
+1/140 Crane甲(女) LV6
+1/140 Stealth甲(男) LV6
+1/140 Stealth甲(女) LV6
+1/170 红暗甲(男) LV6
+1/170 红暗甲(女) LV6
+1/170 蓝暗甲(男) LV6
+1/170 蓝暗甲(女) LV6
+1/170 鳞d甲(男) LV6
+1/170 鳞d甲(女) LV6
+1/170 绿暗甲(男) LV6
+1/170 绿暗甲(女) LV6
+1/170 金暗甲(男) LV6
+1/170 GoldDarkArmour(女)v
+1/400 WatcherSuit(男) LV6
+1/400 WatcherSuit(女) LV6
+1/1700 HeavenRedArmour(男) LV6
+1/1700 HeavenRedArmour(女) LV6
+1/1700 HeavenGrnArmour(男) LV6
+1/1700 HeavenGrnArmour(女) LV6
+1/1700 天甲(男) LV6
+1/1700 天甲(女) LV6
+1/1700 HeavenGoldArmour(男) LV6
+1/1700 HeavenGoldArmour(女) LV6
 
 1/100 刃之Magi LV6
 1/300 剑之战争神 LV6
@@ -1502,16 +1502,16 @@
 1/50 Zinc刃 LV6
 1/50 Conqueror矛 LV6
 1/50 Bastard剑 LV6
-1/450 黑虎Hammer LV6
+1/450 黑虎锤 LV6
 1/450 Butchering刃 LV6
 1/450 Lethal弓 LV6
-1/450 杖之Lotus LV6
-1/450 Fan之Crane LV6
+1/450 杖之莲 LV6
+1/450 扇之Crane LV6
 1/700 蛮兵剑 LV6
 1/700 Raw剑 LV6
 1/700 Mad龙刃 LV6
 1/700 Apus弓 LV6
-1/700 骨CarvedFan LV6
+1/700 骨Carved扇 LV6
 
 1/40 巨盔 LV6
 1/40 WisdomCoronet LV6
@@ -1529,17 +1529,17 @@
 1/105 邪Expel戒 LV6
 1/155 金龙戒 LV6
 
-1/50 DualTitan护符 LV6
-1/50 SacredAngel护符 LV6
+1/50 Dual泰坦护符 LV6
+1/50 Sacred天使护符 LV6
 1/50 邪Whisp护符 LV6
-1/105 WildTitan护符 LV6
+1/105 Wild泰坦护符 LV6
 1/105 Enchanted护符 LV6
 1/105 五元素护符 LV6
 1/155 WatcherGloves LV6
 
 1/50 Cuspid项链 LV6
 1/50 SorceryAnchor LV6
-1/50 PurifiedMirror LV6
+1/50 Purified镜 LV6
 1/100 邪Triangle LV6
 1/100 CrossPurified LV6
 1/100 Adamant项链 LV6
@@ -1579,13 +1579,13 @@
 1/300 DefenderRing LV6
 1/300 DefenderGlove LV6
 1/300 DefenderNecklace LV6
-1/100 (H)魔面具 LV6
-1/100 (H)Violet珠 LV6
-1/100 (H)KunroonTear LV6
-1/100 (H)WheelOfLunar LV6
-1/100 (H)红魔戒 LV6
-1/100 (H)Cloud戒 LV6
-1/100 (H)毒戒 LV6
+1/100 (魂)魔面具 LV6
+1/100 (魂)Violet珠 LV6
+1/100 (魂)KunroonTear LV6
+1/100 (魂)WheelOfLunar LV6
+1/100 (魂)红魔戒 LV6
+1/100 (魂)Cloud戒 LV6
+1/100 (魂)毒戒 LV6
 1/80 ArmouredMedal LV6
 1/50 HollowMedal LV6
 1/200 AscendedRing LV6
@@ -1617,8 +1617,8 @@
 1/200 TerrapinBracelet LV6
 1/200 TerrapinRing LV6
 1/300 TerrapinShield LV6
-1/500 TrollsRobe(M) LV6
-1/500 TrollsRobe(F) LV6
+1/500 TrollsRobe(男) LV6
+1/500 TrollsRobe(女) LV6
 
 1/100 DefensiveMedal LV6
 1/100 OffensiveMedal LV6
@@ -1636,14 +1636,14 @@
 1/100 MistyRing  LV6
 1/100 SlicerRing LV6
 
-1/900 HavokBraveArmour(M) LV6
-1/900 HavokBraveArmour(F) LV6
-1/900 HavokMagicArmour(M) LV6
-1/900 HavokMagicArmour(F) LV6
-1/900 HavokSoulArmour(M) LV6
-1/900 HavokSoulArmour(F) LV6
-1/900 HavokSinArmour(M) LV6
-1/900 HavokSinArmour(F) LV6
+1/900 HavokBraveArmour(男) LV6
+1/900 HavokBraveArmour(女) LV6
+1/900 HavokMagicArmour(男) LV6
+1/900 HavokMagicArmour(女) LV6
+1/900 HavokSoulArmour(男) LV6
+1/900 HavokSoulArmour(女) LV6
+1/900 HavokSinArmour(男) LV6
+1/900 HavokSinArmour(女) LV6
 
 1/400 项链之痛苦 LV6
 1/400 手镯之痛苦 LV6
@@ -1665,7 +1665,7 @@
 1/25 烈焰剑 LV6
 1/30 CrossHalf月 LV6
 1/50 双生龙兽刃 LV6
-1/60 LionRoar LV6
+1/60 狮Roar LV6
 1/70 Entrapment LV6
 1/120 SliceNDice LV6
 1/140 BladeStorm LV6
@@ -1679,11 +1679,11 @@
 ;Wizard
 1/10 霜Crunch LV6
 1/25 冰暴 LV6
-1/30 FlameDisruptor LV6
+1/30 火焰Disruptor LV6
 1/50 Vampirism LV6
 1/100 DragNet LV6
-1/150 Mirroring LV6
-1/190 FlameField LV6
+1/150 镜ing LV6
+1/190 火焰Field LV6
 1/700 Blizzard LV6
 1/800 魔法Booster LV6
 1/900 MeteorStrike LV6
@@ -1717,7 +1717,7 @@
 1/600 暗Body LV6
 
 ;Archer
-1/50 ElementalBarrier LV6
+1/50 元素alBarrier LV6
 1/60 BindingShot LV6
 1/75 召唤蟾蜍 LV6
 1/75 毒Shot LV6
@@ -1741,45 +1741,45 @@
 1/1 太阳水 LV7
 1/1 太阳水 LV7
 1/1 太阳水 LV7
-1/1 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
+1/1 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
 1/1 太阳水 LV7
 1/2 BenedictionOil LV7
 1/5 金Bar LV7
 
-1/140 黑虎甲(M) LV7
-1/140 黑虎甲(F) LV7
-1/140 Lotus甲(M) LV7
-1/140 Lotus甲(F) LV7
-1/140 Crane甲(M) LV7
-1/140 Crane甲(F) LV7
-1/140 Stealth甲(M) LV7
-1/140 Stealth甲(F) LV7
-1/170 红暗甲(M) LV7
-1/170 红暗甲(F) LV7
-1/170 蓝暗甲(M) LV7
-1/170 蓝暗甲(F) LV7
-1/170 Scaled甲(M) LV7
-1/170 Scaled甲(F) LV7
-1/170 绿暗甲(M) LV7
-1/170 绿暗甲(F) LV7
-1/170 金暗甲(M) LV7
-1/170 GoldDarkArmour(F)v
-1/400 WatcherSuit(M) LV7
-1/400 WatcherSuit(F) LV7
-1/1700 HeavenRedArmour(M) LV7
-1/1700 HeavenRedArmour(F) LV7
-1/1700 HeavenGrnArmour(M) LV7
-1/1700 HeavenGrnArmour(F) LV7
-1/1700 天甲(M) LV7
-1/1700 天甲(F) LV7
-1/1700 HeavenGoldArmour(M) LV7
-1/1700 HeavenGoldArmour(F) LV7
+1/140 黑虎甲(男) LV7
+1/140 黑虎甲(女) LV7
+1/140 莲甲(男) LV7
+1/140 莲甲(女) LV7
+1/140 Crane甲(男) LV7
+1/140 Crane甲(女) LV7
+1/140 Stealth甲(男) LV7
+1/140 Stealth甲(女) LV7
+1/170 红暗甲(男) LV7
+1/170 红暗甲(女) LV7
+1/170 蓝暗甲(男) LV7
+1/170 蓝暗甲(女) LV7
+1/170 鳞d甲(男) LV7
+1/170 鳞d甲(女) LV7
+1/170 绿暗甲(男) LV7
+1/170 绿暗甲(女) LV7
+1/170 金暗甲(男) LV7
+1/170 GoldDarkArmour(女)v
+1/400 WatcherSuit(男) LV7
+1/400 WatcherSuit(女) LV7
+1/1700 HeavenRedArmour(男) LV7
+1/1700 HeavenRedArmour(女) LV7
+1/1700 HeavenGrnArmour(男) LV7
+1/1700 HeavenGrnArmour(女) LV7
+1/1700 天甲(男) LV7
+1/1700 天甲(女) LV7
+1/1700 HeavenGoldArmour(男) LV7
+1/1700 HeavenGoldArmour(女) LV7
 
 1/100 刃之Magi LV7
 1/300 剑之战争神 LV7
@@ -1791,15 +1791,15 @@
 1/50 Zinc刃 LV7
 1/50 Conqueror矛 LV7
 1/50 Bastard剑 LV7
-1/450 黑虎Hammer LV7
+1/450 黑虎锤 LV7
 1/450 Lethal弓 LV7
 1/450 Butchering刃 LV7
-1/450 杖之Lotus LV7
-1/450 Fan之Crane LV7
+1/450 杖之莲 LV7
+1/450 扇之Crane LV7
 1/700 蛮兵剑 LV7
 1/700 Raw剑 LV7
 1/700 Mad龙刃 LV7
-1/700 骨CarvedFan LV7
+1/700 骨Carved扇 LV7
 1/700 Apus弓 LV7
 
 1/40 巨盔 LV7
@@ -1818,17 +1818,17 @@
 1/105 邪Expel戒 LV7
 1/155 金龙戒 LV7
 
-1/50 DualTitan护符 LV7
-1/50 SacredAngel护符 LV7
+1/50 Dual泰坦护符 LV7
+1/50 Sacred天使护符 LV7
 1/50 邪Whisp护符 LV7
-1/105 WildTitan护符 LV7
+1/105 Wild泰坦护符 LV7
 1/105 Enchanted护符 LV7
 1/105 五元素护符 LV7
 1/155 WatcherGloves LV7
 
 1/50 Cuspid项链 LV7
 1/50 SorceryAnchor LV7
-1/50 PurifiedMirror LV7
+1/50 Purified镜 LV7
 1/100 邪Triangle LV7
 1/100 CrossPurified LV7
 1/100 Adamant项链 LV7
@@ -1868,13 +1868,13 @@
 1/300 DefenderRing LV7
 1/300 DefenderGlove LV7
 1/300 DefenderNecklace LV7
-1/100 (H)魔面具 LV7
-1/100 (H)Violet珠 LV7
-1/100 (H)KunroonTear LV7
-1/100 (H)WheelOfLunar LV7
-1/100 (H)红魔戒 LV7
-1/100 (H)Cloud戒 LV7
-1/100 (H)毒戒 LV7
+1/100 (魂)魔面具 LV7
+1/100 (魂)Violet珠 LV7
+1/100 (魂)KunroonTear LV7
+1/100 (魂)WheelOfLunar LV7
+1/100 (魂)红魔戒 LV7
+1/100 (魂)Cloud戒 LV7
+1/100 (魂)毒戒 LV7
 1/80 ArmouredMedal LV7
 1/50 HollowMedal LV7
 1/200 AscendedRing LV7
@@ -1906,8 +1906,8 @@
 1/200 TerrapinBracelet LV7
 1/200 TerrapinRing LV7
 1/300 TerrapinShield LV7
-1/500 TrollsRobe(M) LV7
-1/500 TrollsRobe(F) LV7
+1/500 TrollsRobe(男) LV7
+1/500 TrollsRobe(女) LV7
 
 1/100 DefensiveMedal LV7
 1/100 OffensiveMedal LV7
@@ -1925,14 +1925,14 @@
 1/100 MistyRing  LV7
 1/100 SlicerRing LV7
 
-1/900 HavokBraveArmour(M) LV7
-1/900 HavokBraveArmour(F) LV7
-1/900 HavokMagicArmour(M) LV7
-1/900 HavokMagicArmour(F) LV7
-1/900 HavokSoulArmour(M) LV7
-1/900 HavokSoulArmour(F) LV7
-1/900 HavokSinArmour(M) LV7
-1/900 HavokSinArmour(F) LV7
+1/900 HavokBraveArmour(男) LV7
+1/900 HavokBraveArmour(女) LV7
+1/900 HavokMagicArmour(男) LV7
+1/900 HavokMagicArmour(女) LV7
+1/900 HavokSoulArmour(男) LV7
+1/900 HavokSoulArmour(女) LV7
+1/900 HavokSinArmour(男) LV7
+1/900 HavokSinArmour(女) LV7
 
 1/400 项链之痛苦 LV7
 1/400 手镯之痛苦 LV7
@@ -1954,7 +1954,7 @@
 1/25 烈焰剑 LV7
 1/30 CrossHalf月 LV7
 1/50 双生龙兽刃 LV7
-1/60 LionRoar LV7
+1/60 狮Roar LV7
 1/70 Entrapment LV7
 1/120 SliceNDice LV7
 1/140 BladeStorm LV7
@@ -1968,11 +1968,11 @@
 ;Wizard
 1/10 霜Crunch LV7
 1/25 冰暴 LV7
-1/30 FlameDisruptor LV7
+1/30 火焰Disruptor LV7
 1/50 Vampirism LV7
 1/100 DragNet LV7
-1/150 Mirroring LV7
-1/190 FlameField LV7
+1/150 镜ing LV7
+1/190 火焰Field LV7
 1/700 Blizzard LV7
 1/800 魔法Booster LV7
 1/900 MeteorStrike LV7
@@ -2006,7 +2006,7 @@
 1/600 暗Body LV7
 
 ;Archer
-1/50 ElementalBarrier LV7
+1/50 元素alBarrier LV7
 1/60 BindingShot LV7
 1/75 召唤蟾蜍 LV7
 1/75 毒Shot LV7
@@ -2030,45 +2030,45 @@
 1/1 太阳水 LV8
 1/1 太阳水 LV8
 1/1 太阳水 LV8
-1/1 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
+1/1 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
 1/1 太阳水 LV8
 1/2 BenedictionOil LV8
 1/5 金Bar LV8
 
-1/140 黑虎甲(M) LV8
-1/140 黑虎甲(F) LV8
-1/140 Lotus甲(M) LV8
-1/140 Lotus甲(F) LV8
-1/140 Crane甲(M) LV8
-1/140 Crane甲(F) LV8
-1/140 Stealth甲(M) LV8
-1/140 Stealth甲(F) LV8
-1/170 红暗甲(M) LV8
-1/170 红暗甲(F) LV8
-1/170 蓝暗甲(M) LV8
-1/170 蓝暗甲(F) LV8
-1/170 Scaled甲(M) LV8
-1/170 Scaled甲(F) LV8
-1/170 绿暗甲(M) LV8
-1/170 绿暗甲(F) LV8
-1/170 金暗甲(M) LV8
-1/170 GoldDarkArmour(F)v
-1/400 WatcherSuit(M) LV8
-1/400 WatcherSuit(F) LV8
-1/1700 HeavenRedArmour(M) LV8
-1/1700 HeavenRedArmour(F) LV8
-1/1700 HeavenGrnArmour(M) LV8
-1/1700 HeavenGrnArmour(F) LV8
-1/1700 天甲(M) LV8
-1/1700 天甲(F) LV8
-1/1700 HeavenGoldArmour(M) LV8
-1/1700 HeavenGoldArmour(F) LV8
+1/140 黑虎甲(男) LV8
+1/140 黑虎甲(女) LV8
+1/140 莲甲(男) LV8
+1/140 莲甲(女) LV8
+1/140 Crane甲(男) LV8
+1/140 Crane甲(女) LV8
+1/140 Stealth甲(男) LV8
+1/140 Stealth甲(女) LV8
+1/170 红暗甲(男) LV8
+1/170 红暗甲(女) LV8
+1/170 蓝暗甲(男) LV8
+1/170 蓝暗甲(女) LV8
+1/170 鳞d甲(男) LV8
+1/170 鳞d甲(女) LV8
+1/170 绿暗甲(男) LV8
+1/170 绿暗甲(女) LV8
+1/170 金暗甲(男) LV8
+1/170 GoldDarkArmour(女)v
+1/400 WatcherSuit(男) LV8
+1/400 WatcherSuit(女) LV8
+1/1700 HeavenRedArmour(男) LV8
+1/1700 HeavenRedArmour(女) LV8
+1/1700 HeavenGrnArmour(男) LV8
+1/1700 HeavenGrnArmour(女) LV8
+1/1700 天甲(男) LV8
+1/1700 天甲(女) LV8
+1/1700 HeavenGoldArmour(男) LV8
+1/1700 HeavenGoldArmour(女) LV8
 
 1/100 刃之Magi LV8
 1/300 剑之战争神 LV8
@@ -2081,14 +2081,14 @@
 1/50 Conqueror矛 LV8
 1/50 Bastard剑 LV8
 1/450 Lethal弓 LV8
-1/450 黑虎Hammer LV8
+1/450 黑虎锤 LV8
 1/450 Butchering刃 LV8
-1/450 杖之Lotus LV8
-1/450 Fan之Crane LV8
+1/450 杖之莲 LV8
+1/450 扇之Crane LV8
 1/700 蛮兵剑 LV8
 1/700 Raw剑 LV8
 1/700 Mad龙刃 LV8
-1/700 骨CarvedFan LV8
+1/700 骨Carved扇 LV8
 1/700 Apus弓 LV8
 
 1/40 巨盔 LV8
@@ -2107,17 +2107,17 @@
 1/105 邪Expel戒 LV8
 1/155 金龙戒 LV8
 
-1/50 DualTitan护符 LV8
-1/50 SacredAngel护符 LV8
+1/50 Dual泰坦护符 LV8
+1/50 Sacred天使护符 LV8
 1/50 邪Whisp护符 LV8
-1/105 WildTitan护符 LV8
+1/105 Wild泰坦护符 LV8
 1/105 Enchanted护符 LV8
 1/105 五元素护符 LV8
 1/155 WatcherGloves LV8
 
 1/50 Cuspid项链 LV8
 1/50 SorceryAnchor LV8
-1/50 PurifiedMirror LV8
+1/50 Purified镜 LV8
 1/100 邪Triangle LV8
 1/100 CrossPurified LV8
 1/100 Adamant项链 LV8
@@ -2157,13 +2157,13 @@
 1/300 DefenderRing LV8
 1/300 DefenderGlove LV8
 1/300 DefenderNecklace LV8
-1/100 (H)魔面具 LV8
-1/100 (H)Violet珠 LV8
-1/100 (H)KunroonTear LV8
-1/100 (H)WheelOfLunar LV8
-1/100 (H)红魔戒 LV8
-1/100 (H)Cloud戒 LV8
-1/100 (H)毒戒 LV8
+1/100 (魂)魔面具 LV8
+1/100 (魂)Violet珠 LV8
+1/100 (魂)KunroonTear LV8
+1/100 (魂)WheelOfLunar LV8
+1/100 (魂)红魔戒 LV8
+1/100 (魂)Cloud戒 LV8
+1/100 (魂)毒戒 LV8
 1/80 ArmouredMedal LV8
 1/50 HollowMedal LV8
 1/200 AscendedRing LV8
@@ -2195,8 +2195,8 @@
 1/200 TerrapinBracelet LV8
 1/200 TerrapinRing LV8
 1/300 TerrapinShield LV8
-1/500 TrollsRobe(M) LV8
-1/500 TrollsRobe(F) LV8
+1/500 TrollsRobe(男) LV8
+1/500 TrollsRobe(女) LV8
 
 1/100 DefensiveMedal LV8
 1/100 OffensiveMedal LV8
@@ -2214,14 +2214,14 @@
 1/100 MistyRing  LV8
 1/100 SlicerRing LV8
 
-1/900 HavokBraveArmour(M) LV8
-1/900 HavokBraveArmour(F) LV8
-1/900 HavokMagicArmour(M) LV8
-1/900 HavokMagicArmour(F) LV8
-1/900 HavokSoulArmour(M) LV8
-1/900 HavokSoulArmour(F) LV8
-1/900 HavokSinArmour(M) LV8
-1/900 HavokSinArmour(F) LV8
+1/900 HavokBraveArmour(男) LV8
+1/900 HavokBraveArmour(女) LV8
+1/900 HavokMagicArmour(男) LV8
+1/900 HavokMagicArmour(女) LV8
+1/900 HavokSoulArmour(男) LV8
+1/900 HavokSoulArmour(女) LV8
+1/900 HavokSinArmour(男) LV8
+1/900 HavokSinArmour(女) LV8
 
 1/400 项链之痛苦 LV8
 1/400 手镯之痛苦 LV8
@@ -2243,7 +2243,7 @@
 1/25 烈焰剑 LV8
 1/30 CrossHalf月 LV8
 1/50 双生龙兽刃 LV8
-1/60 LionRoar LV8
+1/60 狮Roar LV8
 1/70 Entrapment LV8
 1/120 SliceNDice LV8
 1/140 BladeStorm LV8
@@ -2257,11 +2257,11 @@
 ;Wizard
 1/10 霜Crunch LV8
 1/25 冰暴 LV8
-1/30 FlameDisruptor LV8
+1/30 火焰Disruptor LV8
 1/50 Vampirism LV8
 1/100 DragNet LV8
-1/150 Mirroring LV8
-1/190 FlameField LV8
+1/150 镜ing LV8
+1/190 火焰Field LV8
 1/700 Blizzard LV8
 1/800 魔法Booster LV8
 1/900 MeteorStrike LV8
@@ -2295,7 +2295,7 @@
 1/600 暗Body LV8
 
 ;Archer
-1/50 ElementalBarrier LV8
+1/50 元素alBarrier LV8
 1/60 BindingShot LV8
 1/75 召唤蟾蜍 LV8
 1/75 毒Shot LV8

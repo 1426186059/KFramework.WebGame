@@ -19,20 +19,20 @@
 ;Warrior
 1/100 冰封军刀 LV1
 1/100 Grim弓 LV1
-1/250 黑虎Hammer LV1
+1/250 黑虎锤 LV1
 1/250 Lethal弓 LV1
 1/550 蛮兵剑 LV1
 1/550 Apus弓 LV
 
 ;Wizard
 1/100 Conqueror矛 LV1
-1/250 杖之Lotus LV1
+1/250 杖之莲 LV1
 1/550 Raw剑 LV1
 
 ;Taoist
 1/100 Bastard剑 LV1
-1/250 Fan之Crane LV1
-1/550 骨CarvedFan LV1
+1/250 扇之Crane LV1
+1/550 骨Carved扇 LV1
 
 ;Assassin
 1/100 Zinc刃 LV1
@@ -50,8 +50,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(M) LV1
-1/2100 WyvernArmour(F) LV1
+1/2100 WyvernArmour(男) LV1
+1/2100 WyvernArmour(女) LV1
 
 ;Helmets
 1/2100 CrystalHelmet LV1
@@ -116,20 +116,20 @@
 ;Warrior
 1/100 冰封军刀 LV2
 1/100 Grim弓 LV2
-1/250 黑虎Hammer LV2
+1/250 黑虎锤 LV2
 1/250 Lethal弓 LV2
 1/550 Apus弓 LV2
 1/550 蛮兵剑 LV2
 
 ;Wizard
 1/100 Conqueror矛 LV2
-1/250 杖之Lotus LV2
+1/250 杖之莲 LV2
 1/550 Raw剑 LV2
 
 ;Taoist
 1/100 Bastard剑 LV2
-1/250 Fan之Crane LV2
-1/550 骨CarvedFan LV2
+1/250 扇之Crane LV2
+1/550 骨Carved扇 LV2
 
 ;Assassin
 1/100 Zinc刃 LV2
@@ -147,8 +147,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(M) LV2
-1/2100 WyvernArmour(F) LV2
+1/2100 WyvernArmour(男) LV2
+1/2100 WyvernArmour(女) LV2
 
 ;Helmets
 1/2100 CrystalHelmet LV2
@@ -212,20 +212,20 @@
 ;Warrior
 1/100 冰封军刀 LV3
 1/100 Grim弓 LV3
-1/250 黑虎Hammer LV3
+1/250 黑虎锤 LV3
 1/550 Apus弓 LV3
 1/250 Lethal弓 LV3
 1/550 蛮兵剑 LV3
 
 ;Wizard
 1/100 Conqueror矛 LV3
-1/250 杖之Lotus LV3
+1/250 杖之莲 LV3
 1/550 Raw剑 LV3
 
 ;Taoist
 1/100 Bastard剑 LV3
-1/250 Fan之Crane LV2
-1/550 骨CarvedFan LV2
+1/250 扇之Crane LV2
+1/550 骨Carved扇 LV2
 
 ;Assassin
 1/100 Zinc刃 LV3
@@ -243,8 +243,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(M) LV3
-1/2100 WyvernArmour(F) LV3
+1/2100 WyvernArmour(男) LV3
+1/2100 WyvernArmour(女) LV3
 
 ;Helmets
 1/2100 CrystalHelmet LV3
@@ -308,20 +308,20 @@
 ;Warrior
 1/100 冰封军刀 LV4
 1/100 Grim弓 LV4
-1/250 黑虎Hammer LV4
+1/250 黑虎锤 LV4
 1/250 Lethal弓 LV4
 1/550 Apus弓 LV4
 1/550 蛮兵剑 LV4
 
 ;Wizard
 1/100 Conqueror矛 LV4
-1/250 杖之Lotus LV4
+1/250 杖之莲 LV4
 1/550 Raw剑 LV4
 
 ;Taoist
 1/100 Bastard剑 LV4
-1/250 Fan之Crane LV4
-1/550 骨CarvedFan LV4
+1/250 扇之Crane LV4
+1/550 骨Carved扇 LV4
 
 ;Assassin
 1/100 Zinc刃 LV4
@@ -339,8 +339,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(M) LV4
-1/2100 WyvernArmour(F) LV4
+1/2100 WyvernArmour(男) LV4
+1/2100 WyvernArmour(女) LV4
 
 ;Helmets
 1/2100 CrystalHelmet LV4
@@ -405,20 +405,20 @@
 ;Warrior
 1/100 冰封军刀 LV5
 1/100 Grim弓 LV5
-1/250 黑虎Hammer LV5
+1/250 黑虎锤 LV5
 1/250 Lethal弓 LV5
 1/550 蛮兵剑 LV5
 1/550 Apus弓 LV5
 
 ;Wizard
 1/100 Conqueror矛 LV5
-1/250 杖之Lotus LV5
+1/250 杖之莲 LV5
 1/550 Raw剑 LV5
 
 ;Taoist
 1/100 Bastard剑 LV5
-1/250 Fan之Crane LV5
-1/550 骨CarvedFan LV5
+1/250 扇之Crane LV5
+1/550 骨Carved扇 LV5
 
 ;Assassin
 1/100 Zinc刃 LV5
@@ -436,8 +436,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(M) LV5
-1/2100 WyvernArmour(F) LV5
+1/2100 WyvernArmour(男) LV5
+1/2100 WyvernArmour(女) LV5
 
 ;Helmets
 1/2100 CrystalHelmet LV5
@@ -501,20 +501,20 @@
 ;Warrior
 1/100 冰封军刀 LV6
 1/100 Grim弓 LV6
-1/250 黑虎Hammer LV6
+1/250 黑虎锤 LV6
 1/550 Apus弓 LV6
 1/250 Lethal弓 LV6
 1/550 蛮兵剑 LV6
 
 ;Wizard
 1/100 Conqueror矛 LV6
-1/250 杖之Lotus LV6
+1/250 杖之莲 LV6
 1/550 Raw剑 LV6
 
 ;Taoist
 1/100 Bastard剑 LV6
-1/250 Fan之Crane LV6
-1/550 骨CarvedFan LV6
+1/250 扇之Crane LV6
+1/550 骨Carved扇 LV6
 
 ;Assassin
 1/100 Zinc刃 LV6
@@ -532,8 +532,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(M) LV6
-1/2100 WyvernArmour(F) LV6
+1/2100 WyvernArmour(男) LV6
+1/2100 WyvernArmour(女) LV6
 
 ;Helmets
 1/2100 CrystalHelmet LV6
@@ -598,20 +598,20 @@
 ;Warrior
 1/100 冰封军刀 LV7
 1/100 Grim弓 LV7
-1/250 黑虎Hammer LV7
+1/250 黑虎锤 LV7
 1/250 Lethal弓 LV7
 1/550 蛮兵剑 LV7
 1/550 Apus弓 LV7
 
 ;Wizard
 1/100 Conqueror矛 LV7
-1/250 杖之Lotus LV7
+1/250 杖之莲 LV7
 1/550 Raw剑 LV7
 
 ;Taoist
 1/100 Bastard剑 LV7
-1/250 Fan之Crane LV7
-1/550 骨CarvedFan LV7
+1/250 扇之Crane LV7
+1/550 骨Carved扇 LV7
 
 ;Assassin
 1/100 Zinc刃 LV7
@@ -629,8 +629,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(M) LV7
-1/2100 WyvernArmour(F) LV7
+1/2100 WyvernArmour(男) LV7
+1/2100 WyvernArmour(女) LV7
 
 ;Helmets
 1/2100 CrystalHelmet LV7
@@ -695,20 +695,20 @@
 ;Warrior
 1/100 冰封军刀 LV8
 1/100 Grim弓 LV8
-1/250 黑虎Hammer LV8
+1/250 黑虎锤 LV8
 1/250 Lethal弓 LV8
 1/550 Apus弓 LV8
 1/550 蛮兵剑 LV8
 
 ;Wizard
 1/100 Conqueror矛 LV8
-1/250 杖之Lotus LV8
+1/250 杖之莲 LV8
 1/550 Raw剑 LV8
 
 ;Taoist
 1/100 Bastard剑 LV8
-1/250 Fan之Crane LV8
-1/550 骨CarvedFan LV8
+1/250 扇之Crane LV8
+1/550 骨Carved扇 LV8
 
 ;Assassin
 1/100 Zinc刃 LV8
@@ -726,8 +726,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(M) LV8
-1/2100 WyvernArmour(F) LV8
+1/2100 WyvernArmour(男) LV8
+1/2100 WyvernArmour(女) LV8
 
 ;Helmets
 1/2100 CrystalHelmet LV8

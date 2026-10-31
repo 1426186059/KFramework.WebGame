@@ -5,5 +5,5 @@ CHECKPKPOINT > 199
 #ACT
 ENTERMAP
 #ELSEACT
-LocalMessage "A Mysterious evil force seems to be pushing you back." Hint
+LocalMessage "一股神秘邪恶力量似乎在将你推回。" Hint
 }

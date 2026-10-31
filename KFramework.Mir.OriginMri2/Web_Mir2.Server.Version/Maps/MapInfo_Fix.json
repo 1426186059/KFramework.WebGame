@@ -80599,7 +80599,7 @@
         "Delay": 0,
         "RandomDelay": 0,
         "Direction": 0,
-        "RoutePath": "MudWall/MWPatrol1",
+        "RoutePath": "土墙/MWPatrol1",
         "RespawnIndex": 2187,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
@@ -84339,7 +84339,7 @@
         "Delay": 1,
         "RandomDelay": 0,
         "Direction": 5,
-        "RoutePath": "WhiteValley/WVPatrol2",
+        "RoutePath": "白谷/WVPatrol2",
         "RespawnIndex": 5904,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
@@ -84419,7 +84419,7 @@
         "Delay": 1,
         "RandomDelay": 0,
         "Direction": 3,
-        "RoutePath": "WhiteValley/WVPatrol3",
+        "RoutePath": "白谷/WVPatrol3",
         "RespawnIndex": 5909,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
@@ -84483,7 +84483,7 @@
         "Delay": 1,
         "RandomDelay": 0,
         "Direction": 3,
-        "RoutePath": "WhiteValley/WVPatrol1",
+        "RoutePath": "白谷/WVPatrol1",
         "RespawnIndex": 5913,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
@@ -90131,7 +90131,7 @@
         "Delay": 0,
         "RandomDelay": 0,
         "Direction": 0,
-        "RoutePath": "WoomyonWoods(S)/WWPatrol1",
+        "RoutePath": "沃木森林(南)/WWPatrol1",
         "RespawnIndex": 716,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
@@ -90771,7 +90771,7 @@
         "Delay": 0,
         "RandomDelay": 0,
         "Direction": 0,
-        "RoutePath": "TaoVillage/TVPatrol1",
+        "RoutePath": "道观/TVPatrol1",
         "RespawnIndex": 1379,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
@@ -90787,7 +90787,7 @@
         "Delay": 0,
         "RandomDelay": 0,
         "Direction": 0,
-        "RoutePath": "TaoVillage/TVPatrol2",
+        "RoutePath": "道观/TVPatrol2",
         "RespawnIndex": 1380,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
@@ -90803,7 +90803,7 @@
         "Delay": 0,
         "RandomDelay": 0,
         "Direction": 0,
-        "RoutePath": "TaoVillage/TVPatrol3",
+        "RoutePath": "道观/TVPatrol3",
         "RespawnIndex": 1381,
         "SaveRespawnTime": false,
         "RespawnTicks": 0

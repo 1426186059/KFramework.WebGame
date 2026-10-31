@@ -9,8 +9,8 @@
 1/2 特制魔法药 LV1
 1/1 太阳水 LV1
 1/1 太阳水 LV1
-1/1 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
+1/1 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
 1/1 太阳水 LV1
 1/1 太阳水 LV1
 1/2 太阳水 LV1
@@ -41,22 +41,22 @@
 1/700 冰封军刀 LV1
 1/700 Conqueror矛 LV1
 1/700 Bastard剑 LV1
-1/900 黑虎Hammer LV1
+1/900 黑虎锤 LV1
 1/900 Lethal弓 LV1
-1/900 杖之Lotus LV1
-1/900 Fan之Crane LV1
+1/900 杖之莲 LV1
+1/900 扇之Crane LV1
 1/1100 蛮兵剑 LV1
 1/1100 Apus弓 LV1
 1/1100 Raw剑 LV1
-1/1100 骨CarvedFan LV1
+1/1100 骨Carved扇 LV1
 
 ;Armour
-1/300 黑虎甲(M) LV1
-1/300 黑虎甲(F) LV1
-1/300 Lotus甲(M) LV1
-1/300 Lotus甲(F) LV1
-1/300 Crane甲(M) LV1
-1/300 Crane甲(F) LV1
+1/300 黑虎甲(男) LV1
+1/300 黑虎甲(女) LV1
+1/300 莲甲(男) LV1
+1/300 莲甲(女) LV1
+1/300 Crane甲(男) LV1
+1/300 Crane甲(女) LV1
 
 ;Helmets
 1/30 黑铁盔 LV1
@@ -69,7 +69,7 @@
 ;Necklace
 1/150 Cuspid项链 LV1
 1/150 SorceryAnchor LV1
-1/150 PurifiedMirror LV1
+1/150 Purified镜 LV1
 1/475 邪Triangle LV1
 1/475 CrossPurified LV1
 1/475 Adamant项链 LV1
@@ -78,10 +78,10 @@
 1/1000 InfernoNecklace LV1
 
 ;Bracelets
-1/150 DualTitan护符 LV1
-1/150 SacredAngel护符 LV1
+1/150 Dual泰坦护符 LV1
+1/150 Sacred天使护符 LV1
 1/150 邪Whisp护符 LV1
-1/475 WildTitan护符 LV1
+1/475 Wild泰坦护符 LV1
 1/475 Enchanted护符 LV1
 1/475 五元素护符 LV1
 1/600 DefenderGlove LV1
@@ -135,7 +135,7 @@
 ;Books
 1/100 SliceNDice LV1
 1/200 召唤圣精灵 LV1
-1/200 Mirroring LV1
+1/200 镜ing LV1
 1/200 SwiftFeet LV1
 1/200 刃Avalanche LV1
 1/500 防护Field LV1
@@ -180,8 +180,8 @@
 1/2 特制魔法药 LV2
 1/1 太阳水 LV2
 1/1 太阳水 LV2
-1/1 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
+1/1 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
 1/1 太阳水 LV2
 1/1 太阳水 LV2
 1/2 太阳水 LV2
@@ -211,22 +211,22 @@
 1/700 Grim弓 LV2
 1/700 Conqueror矛 LV2
 1/700 Bastard剑 LV2
-1/900 黑虎Hammer LV2
+1/900 黑虎锤 LV2
 1/900 Lethal弓 LV2
-1/900 杖之Lotus LV2
-1/900 Fan之Crane LV2
+1/900 杖之莲 LV2
+1/900 扇之Crane LV2
 1/1100 蛮兵剑 LV2
 1/1100 Raw剑 LV2
-1/1100 骨CarvedFan LV2
+1/1100 骨Carved扇 LV2
 1/1100 Apus弓 LV2
 
 ;Armour
-1/300 黑虎甲(M) LV2
-1/300 黑虎甲(F) LV2
-1/300 Lotus甲(M) LV2
-1/300 Lotus甲(F) LV2
-1/300 Crane甲(M) LV2
-1/300 Crane甲(F) LV2
+1/300 黑虎甲(男) LV2
+1/300 黑虎甲(女) LV2
+1/300 莲甲(男) LV2
+1/300 莲甲(女) LV2
+1/300 Crane甲(男) LV2
+1/300 Crane甲(女) LV2
 
 ;Helmets
 1/30 黑铁盔 LV2
@@ -239,7 +239,7 @@
 ;Necklace
 1/150 Cuspid项链 LV2
 1/150 SorceryAnchor LV2
-1/150 PurifiedMirror LV2
+1/150 Purified镜 LV2
 1/475 邪Triangle LV2
 1/475 CrossPurified LV2
 1/475 Adamant项链 LV2
@@ -248,10 +248,10 @@
 1/1000 InfernoNecklace LV2
 
 ;Bracelets
-1/150 DualTitan护符 LV2
-1/150 SacredAngel护符 LV2
+1/150 Dual泰坦护符 LV2
+1/150 Sacred天使护符 LV2
 1/150 邪Whisp护符 LV2
-1/475 WildTitan护符 LV2
+1/475 Wild泰坦护符 LV2
 1/475 Enchanted护符 LV2
 1/475 五元素护符 LV2
 1/600 DefenderGlove LV2
@@ -305,7 +305,7 @@
 ;Books
 1/100 SliceNDice LV2
 1/200 召唤圣精灵 LV2
-1/200 Mirroring LV2
+1/200 镜ing LV2
 1/200 SwiftFeet LV2
 1/200 刃Avalanche LV2
 1/500 防护Field LV2
@@ -350,8 +350,8 @@
 1/2 特制魔法药 LV3
 1/1 太阳水 LV3
 1/1 太阳水 LV3
-1/1 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
+1/1 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
 1/1 太阳水 LV3
 1/1 太阳水 LV3
 1/2 太阳水 LV3
@@ -381,22 +381,22 @@
 1/700 Grim弓 LV3
 1/700 Conqueror矛 LV3
 1/700 Bastard剑 LV3
-1/900 黑虎Hammer LV3
+1/900 黑虎锤 LV3
 1/900 Lethal弓 LV3
-1/900 杖之Lotus LV3
-1/900 Fan之Crane LV3
+1/900 杖之莲 LV3
+1/900 扇之Crane LV3
 1/1100 蛮兵剑 LV3
 1/1100 Raw剑 LV3
-1/1100 骨CarvedFan LV3
+1/1100 骨Carved扇 LV3
 1/1100 Apus弓 LV3
 
 ;Armour
-1/300 黑虎甲(M) LV3
-1/300 黑虎甲(F) LV3
-1/300 Lotus甲(M) LV3
-1/300 Lotus甲(F) LV3
-1/300 Crane甲(M) LV3
-1/300 Crane甲(F) LV3
+1/300 黑虎甲(男) LV3
+1/300 黑虎甲(女) LV3
+1/300 莲甲(男) LV3
+1/300 莲甲(女) LV3
+1/300 Crane甲(男) LV3
+1/300 Crane甲(女) LV3
 
 ;Helmets
 1/30 黑铁盔 LV3
@@ -409,7 +409,7 @@
 ;Necklace
 1/150 Cuspid项链 LV3
 1/150 SorceryAnchor LV3
-1/150 PurifiedMirror LV3
+1/150 Purified镜 LV3
 1/475 邪Triangle LV3
 1/475 CrossPurified LV3
 1/475 Adamant项链 LV3
@@ -418,10 +418,10 @@
 1/1000 InfernoNecklace LV3
 
 ;Bracelets
-1/150 DualTitan护符 LV3
-1/150 SacredAngel护符 LV3
+1/150 Dual泰坦护符 LV3
+1/150 Sacred天使护符 LV3
 1/150 邪Whisp护符 LV3
-1/475 WildTitan护符 LV3
+1/475 Wild泰坦护符 LV3
 1/475 Enchanted护符 LV3
 1/475 五元素护符 LV3
 1/600 DefenderGlove LV3
@@ -475,7 +475,7 @@
 ;Books
 1/100 SliceNDice LV3
 1/200 召唤圣精灵 LV3
-1/200 Mirroring LV3
+1/200 镜ing LV3
 1/200 SwiftFeet LV3
 1/200 刃Avalanche LV3
 1/500 防护Field LV3
@@ -513,8 +513,8 @@
 1/2 特制魔法药 LV4
 1/1 太阳水 LV4
 1/1 太阳水 LV4
-1/1 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
+1/1 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
 1/1 太阳水 LV4
 1/1 太阳水 LV4
 1/2 太阳水 LV4
@@ -544,22 +544,22 @@
 1/700 冰封军刀 LV4
 1/700 Conqueror矛 LV4
 1/700 Bastard剑 LV4
-1/900 黑虎Hammer LV4
+1/900 黑虎锤 LV4
 1/900 Lethal弓 LV4
-1/900 杖之Lotus LV4
-1/900 Fan之Crane LV4
+1/900 杖之莲 LV4
+1/900 扇之Crane LV4
 1/1100 蛮兵剑 LV4
 1/1100 Raw剑 LV4
-1/1100 骨CarvedFan LV4
+1/1100 骨Carved扇 LV4
 1/1100 Apus弓 LV4
 
 ;Armour
-1/300 黑虎甲(M) LV4
-1/300 黑虎甲(F) LV4
-1/300 Lotus甲(M) LV4
-1/300 Lotus甲(F) LV4
-1/300 Crane甲(M) LV4
-1/300 Crane甲(F) LV4
+1/300 黑虎甲(男) LV4
+1/300 黑虎甲(女) LV4
+1/300 莲甲(男) LV4
+1/300 莲甲(女) LV4
+1/300 Crane甲(男) LV4
+1/300 Crane甲(女) LV4
 
 ;Helmets
 1/30 黑铁盔 LV4
@@ -572,7 +572,7 @@
 ;Necklace
 1/150 Cuspid项链 LV4
 1/150 SorceryAnchor LV4
-1/150 PurifiedMirror LV4
+1/150 Purified镜 LV4
 1/475 邪Triangle LV4
 1/475 CrossPurified LV4
 1/475 Adamant项链 LV4
@@ -581,10 +581,10 @@
 1/1000 InfernoNecklace LV4
 
 ;Bracelets
-1/150 DualTitan护符 LV4
-1/150 SacredAngel护符 LV4
+1/150 Dual泰坦护符 LV4
+1/150 Sacred天使护符 LV4
 1/150 邪Whisp护符 LV4
-1/475 WildTitan护符 LV4
+1/475 Wild泰坦护符 LV4
 1/475 Enchanted护符 LV4
 1/475 五元素护符 LV4
 1/600 DefenderGlove LV4
@@ -638,7 +638,7 @@
 ;Books
 1/100 SliceNDice LV4
 1/200 召唤圣精灵 LV4
-1/200 Mirroring LV4
+1/200 镜ing LV4
 1/200 SwiftFeet LV4
 1/200 刃Avalanche LV4
 1/500 防护Field LV4
@@ -676,8 +676,8 @@
 1/2 特制魔法药 LV5
 1/1 太阳水 LV5
 1/1 太阳水 LV5
-1/1 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
+1/1 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
 1/1 太阳水 LV5
 1/1 太阳水 LV5
 1/2 太阳水 LV5
@@ -708,22 +708,22 @@
 1/700 Grim弓 LV5
 1/700 Conqueror矛 LV5
 1/700 Bastard剑 LV5
-1/900 黑虎Hammer LV5
+1/900 黑虎锤 LV5
 1/900 Lethal弓 LV5
-1/900 杖之Lotus LV5
-1/900 Fan之Crane LV5
+1/900 杖之莲 LV5
+1/900 扇之Crane LV5
 1/1100 蛮兵剑 LV5
 1/1100 Raw剑 LV5
-1/1100 骨CarvedFan LV5
+1/1100 骨Carved扇 LV5
 1/1100 Apus弓 LV5
 
 ;Armour
-1/300 黑虎甲(M) LV5
-1/300 黑虎甲(F) LV5
-1/300 Lotus甲(M) LV5
-1/300 Lotus甲(F) LV5
-1/300 Crane甲(M) LV5
-1/300 Crane甲(F) LV5
+1/300 黑虎甲(男) LV5
+1/300 黑虎甲(女) LV5
+1/300 莲甲(男) LV5
+1/300 莲甲(女) LV5
+1/300 Crane甲(男) LV5
+1/300 Crane甲(女) LV5
 
 ;Helmets
 1/30 黑铁盔 LV5
@@ -736,7 +736,7 @@
 ;Necklace
 1/150 Cuspid项链 LV5
 1/150 SorceryAnchor LV5
-1/150 PurifiedMirror LV5
+1/150 Purified镜 LV5
 1/475 邪Triangle LV5
 1/475 CrossPurified LV5
 1/475 Adamant项链 LV5
@@ -745,10 +745,10 @@
 1/1000 InfernoNecklace LV5
 
 ;Bracelets
-1/150 DualTitan护符 LV5
-1/150 SacredAngel护符 LV5
+1/150 Dual泰坦护符 LV5
+1/150 Sacred天使护符 LV5
 1/150 邪Whisp护符 LV5
-1/475 WildTitan护符 LV5
+1/475 Wild泰坦护符 LV5
 1/475 Enchanted护符 LV5
 1/475 五元素护符 LV5
 1/600 DefenderGlove LV5
@@ -802,7 +802,7 @@
 ;Books
 1/100 SliceNDice LV5
 1/200 召唤圣精灵 LV5
-1/200 Mirroring LV5
+1/200 镜ing LV5
 1/200 SwiftFeet LV5
 1/200 刃Avalanche LV5
 1/500 防护Field LV5
@@ -840,8 +840,8 @@
 1/2 特制魔法药 LV6
 1/1 太阳水 LV6
 1/1 太阳水 LV6
-1/1 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
+1/1 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
 1/1 太阳水 LV6
 1/1 太阳水 LV6
 1/2 太阳水 LV6
@@ -872,22 +872,22 @@
 1/700 Grim弓 LV6
 1/700 Conqueror矛 LV6
 1/700 Bastard剑 LV6
-1/900 黑虎Hammer LV6
+1/900 黑虎锤 LV6
 1/900 Lethal弓 LV6
-1/900 杖之Lotus LV6
-1/900 Fan之Crane LV6
+1/900 杖之莲 LV6
+1/900 扇之Crane LV6
 1/1100 蛮兵剑 LV6
 1/1100 Raw剑 LV6
-1/1100 骨CarvedFan LV6
+1/1100 骨Carved扇 LV6
 1/1100 Apus弓 LV6
 
 ;Armour
-1/300 黑虎甲(M) LV6
-1/300 黑虎甲(F) LV6
-1/300 Lotus甲(M) LV6
-1/300 Lotus甲(F) LV6
-1/300 Crane甲(M) LV6
-1/300 Crane甲(F) LV6
+1/300 黑虎甲(男) LV6
+1/300 黑虎甲(女) LV6
+1/300 莲甲(男) LV6
+1/300 莲甲(女) LV6
+1/300 Crane甲(男) LV6
+1/300 Crane甲(女) LV6
 
 ;Helmets
 1/30 黑铁盔 LV6
@@ -900,7 +900,7 @@
 ;Necklace
 1/150 Cuspid项链 LV6
 1/150 SorceryAnchor LV6
-1/150 PurifiedMirror LV6
+1/150 Purified镜 LV6
 1/475 邪Triangle LV6
 1/475 CrossPurified LV6
 1/475 Adamant项链 LV6
@@ -909,10 +909,10 @@
 1/1000 InfernoNecklace LV6
 
 ;Bracelets
-1/150 DualTitan护符 LV6
-1/150 SacredAngel护符 LV6
+1/150 Dual泰坦护符 LV6
+1/150 Sacred天使护符 LV6
 1/150 邪Whisp护符 LV6
-1/475 WildTitan护符 LV6
+1/475 Wild泰坦护符 LV6
 1/475 Enchanted护符 LV6
 1/475 五元素护符 LV6
 1/600 DefenderGlove LV6
@@ -966,7 +966,7 @@
 ;Books
 1/100 SliceNDice LV6
 1/200 召唤圣精灵 LV6
-1/200 Mirroring LV6
+1/200 镜ing LV6
 1/200 SwiftFeet LV6
 1/200 刃Avalanche LV6
 1/500 防护Field LV6
@@ -1004,8 +1004,8 @@
 1/2 特制魔法药 LV7
 1/1 太阳水 LV7
 1/1 太阳水 LV7
-1/1 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
+1/1 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
 1/1 太阳水 LV7
 1/1 太阳水 LV7
 1/2 太阳水 LV7
@@ -1035,22 +1035,22 @@
 1/700 Grim弓 LV7
 1/700 Conqueror矛 LV7
 1/700 Bastard剑 LV7
-1/900 黑虎Hammer LV7
+1/900 黑虎锤 LV7
 1/900 Lethal弓 LV7
-1/900 杖之Lotus LV7
-1/900 Fan之Crane LV7
+1/900 杖之莲 LV7
+1/900 扇之Crane LV7
 1/1100 蛮兵剑 LV7
 1/1100 Raw剑 LV7
-1/1100 骨CarvedFan LV7
+1/1100 骨Carved扇 LV7
 1/1100 Apus弓 LV7
 
 ;Armour
-1/300 黑虎甲(M) LV7
-1/300 黑虎甲(F) LV7
-1/300 Lotus甲(M) LV7
-1/300 Lotus甲(F) LV7
-1/300 Crane甲(M) LV7
-1/300 Crane甲(F) LV7
+1/300 黑虎甲(男) LV7
+1/300 黑虎甲(女) LV7
+1/300 莲甲(男) LV7
+1/300 莲甲(女) LV7
+1/300 Crane甲(男) LV7
+1/300 Crane甲(女) LV7
 
 ;Helmets
 1/30 黑铁盔 LV7
@@ -1063,7 +1063,7 @@
 ;Necklace
 1/150 Cuspid项链 LV7
 1/150 SorceryAnchor LV7
-1/150 PurifiedMirror LV7
+1/150 Purified镜 LV7
 1/475 邪Triangle LV7
 1/475 CrossPurified LV7
 1/475 Adamant项链 LV7
@@ -1072,10 +1072,10 @@
 1/1000 InfernoNecklace LV7
 
 ;Bracelets
-1/150 DualTitan护符 LV7
-1/150 SacredAngel护符 LV7
+1/150 Dual泰坦护符 LV7
+1/150 Sacred天使护符 LV7
 1/150 邪Whisp护符 LV7
-1/475 WildTitan护符 LV7
+1/475 Wild泰坦护符 LV7
 1/475 Enchanted护符 LV7
 1/475 五元素护符 LV7
 1/600 DefenderGlove LV7
@@ -1129,7 +1129,7 @@
 ;Books
 1/100 SliceNDice LV7
 1/200 召唤圣精灵 LV7
-1/200 Mirroring LV7
+1/200 镜ing LV7
 1/200 SwiftFeet LV7
 1/200 刃Avalanche LV7
 1/500 防护Field LV7
@@ -1167,8 +1167,8 @@
 1/2 特制魔法药 LV8
 1/1 太阳水 LV8
 1/1 太阳水 LV8
-1/1 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
+1/1 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
 1/1 太阳水 LV8
 1/1 太阳水 LV8
 1/2 太阳水 LV8
@@ -1199,22 +1199,22 @@
 1/700 Grim弓 LV8
 1/700 Conqueror矛 LV8
 1/700 Bastard剑 LV8
-1/900 黑虎Hammer LV8
+1/900 黑虎锤 LV8
 1/900 Lethal弓 LV8
-1/900 杖之Lotus LV8
-1/900 Fan之Crane LV8
+1/900 杖之莲 LV8
+1/900 扇之Crane LV8
 1/1100 蛮兵剑 LV8
 1/1100 Raw剑 LV8
-1/1100 骨CarvedFan LV8
+1/1100 骨Carved扇 LV8
 1/1100 Apus弓 LV8
 
 ;Armour
-1/300 黑虎甲(M) LV8
-1/300 黑虎甲(F) LV8
-1/300 Lotus甲(M) LV8
-1/300 Lotus甲(F) LV8
-1/300 Crane甲(M) LV8
-1/300 Crane甲(F) LV8
+1/300 黑虎甲(男) LV8
+1/300 黑虎甲(女) LV8
+1/300 莲甲(男) LV8
+1/300 莲甲(女) LV8
+1/300 Crane甲(男) LV8
+1/300 Crane甲(女) LV8
 
 ;Helmets
 1/30 黑铁盔 LV8
@@ -1227,7 +1227,7 @@
 ;Necklace
 1/150 Cuspid项链 LV8
 1/150 SorceryAnchor LV8
-1/150 PurifiedMirror LV8
+1/150 Purified镜 LV8
 1/475 邪Triangle LV8
 1/475 CrossPurified LV8
 1/475 Adamant项链 LV8
@@ -1236,10 +1236,10 @@
 1/1000 InfernoNecklace LV8
 
 ;Bracelets
-1/150 DualTitan护符 LV8
-1/150 SacredAngel护符 LV8
+1/150 Dual泰坦护符 LV8
+1/150 Sacred天使护符 LV8
 1/150 邪Whisp护符 LV8
-1/475 WildTitan护符 LV8
+1/475 Wild泰坦护符 LV8
 1/475 Enchanted护符 LV8
 1/475 五元素护符 LV8
 1/600 DefenderGlove LV8
@@ -1293,7 +1293,7 @@
 ;Books
 1/100 SliceNDice LV8
 1/200 召唤圣精灵 LV8
-1/200 Mirroring LV8
+1/200 镜ing LV8
 1/200 SwiftFeet LV8
 1/200 刃Avalanche LV8
 1/500 防护Field LV8

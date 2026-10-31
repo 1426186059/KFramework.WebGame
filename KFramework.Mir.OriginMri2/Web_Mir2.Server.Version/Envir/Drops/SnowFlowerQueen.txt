@@ -29,36 +29,36 @@
 1/200 Grim弓 LV1
 1/200 Conqueror矛 LV1
 1/200 Bastard剑 LV1
-1/250 黑虎Hammer LV1
+1/250 黑虎锤 LV1
 1/250 Lethal弓 LV1
-1/250 杖之Lotus LV1
-1/250 Fan之Crane LV1
+1/250 杖之莲 LV1
+1/250 扇之Crane LV1
 1/550 蛮兵剑 LV1
 1/550 Apus弓 LV1
 1/550 Raw剑 LV1
-1/550 骨CarvedFan LV1
+1/550 骨Carved扇 LV1
 1/2000 WinterSlayer LV1
 1/2000 WinterStaff LV1
 1/2000 SnowFeather LV1
 
 ;Armours
-1/2000 PrismArmour(M) LV1
-1/2000 PrismArmour(F) LV1
+1/2000 PrismArmour(男) LV1
+1/2000 PrismArmour(女) LV1
 
 1/150 WatcherHelmet LV1
 1/200 PuiYuHelmet LV1
-1/200 盔之Darkness LV1
+1/200 盔之暗ness LV1
 1/100 Sparkling盔 LV1
 1/100 Sparkling腰带 LV1
 1/100 Sparkling靴 LV1
  
-1/100 (H)魔面具 LV1
-1/100 (H)Violet珠 LV1
-1/100 (H)KunroonTear LV1
-1/100 (H)WheelOfLunar LV1
-1/100 (H)红魔戒 LV1
-1/100 (H)Cloud戒 LV1
-1/100 (H)毒戒 LV1
+1/100 (魂)魔面具 LV1
+1/100 (魂)Violet珠 LV1
+1/100 (魂)KunroonTear LV1
+1/100 (魂)WheelOfLunar LV1
+1/100 (魂)红魔戒 LV1
+1/100 (魂)Cloud戒 LV1
+1/100 (魂)毒戒 LV1
 1/80 ArmouredMedal LV1
 1/50 HollowMedal LV1
 
@@ -173,36 +173,36 @@
 1/200 Grim弓 LV2
 1/200 Conqueror矛 LV2
 1/200 Bastard剑 LV2
-1/250 黑虎Hammer LV2
+1/250 黑虎锤 LV2
 1/250 Lethal弓 LV2
-1/250 杖之Lotus LV2
-1/250 Fan之Crane LV2
+1/250 杖之莲 LV2
+1/250 扇之Crane LV2
 1/550 蛮兵剑 LV2
 1/550 Apus弓 LV2
 1/550 Raw剑 LV2
-1/550 骨CarvedFan LV2
+1/550 骨Carved扇 LV2
 1/2000 WinterSlayer LV2
 1/2000 WinterStaff LV2
 1/2000 SnowFeather LV2
 
 ;Armours
-1/2000 PrismArmour(M) LV2
-1/2000 PrismArmour(F) LV2
+1/2000 PrismArmour(男) LV2
+1/2000 PrismArmour(女) LV2
 
 1/150 WatcherHelmet LV2
 1/200 PuiYuHelmet LV2
-1/200 盔之Darkness LV2
+1/200 盔之暗ness LV2
 1/100 Sparkling盔 LV2
 1/100 Sparkling腰带 LV2
 1/100 Sparkling靴 LV2
  
-1/100 (H)魔面具 LV2
-1/100 (H)Violet珠 LV2
-1/100 (H)KunroonTear LV2
-1/100 (H)WheelOfLunar LV2
-1/100 (H)红魔戒 LV2
-1/100 (H)Cloud戒 LV2
-1/100 (H)毒戒 LV2
+1/100 (魂)魔面具 LV2
+1/100 (魂)Violet珠 LV2
+1/100 (魂)KunroonTear LV2
+1/100 (魂)WheelOfLunar LV2
+1/100 (魂)红魔戒 LV2
+1/100 (魂)Cloud戒 LV2
+1/100 (魂)毒戒 LV2
 1/80 ArmouredMedal LV2
 1/50 HollowMedal LV2
 
@@ -317,36 +317,36 @@
 1/200 Grim弓 LV3
 1/200 Conqueror矛 LV3
 1/200 Bastard剑 LV3
-1/250 黑虎Hammer LV3
+1/250 黑虎锤 LV3
 1/250 Lethal弓 LV3
-1/250 杖之Lotus LV3
-1/250 Fan之Crane LV3
+1/250 杖之莲 LV3
+1/250 扇之Crane LV3
 1/550 蛮兵剑 LV3
 1/550 Raw剑 LV3
-1/550 骨CarvedFan LV3
+1/550 骨Carved扇 LV3
 1/550 Apus弓 LV3
 1/2000 WinterSlayer LV3
 1/2000 WinterStaff LV3
 1/2000 SnowFeather LV3
 
 ;Armours
-1/2000 PrismArmour(M) LV3
-1/2000 PrismArmour(F) LV3
+1/2000 PrismArmour(男) LV3
+1/2000 PrismArmour(女) LV3
 
 1/150 WatcherHelmet LV3
 1/200 PuiYuHelmet LV3
-1/200 盔之Darkness LV3
+1/200 盔之暗ness LV3
 1/100 Sparkling盔 LV3
 1/100 Sparkling腰带 LV3
 1/100 Sparkling靴 LV3
  
-1/100 (H)魔面具 LV3
-1/100 (H)Violet珠 LV3
-1/100 (H)KunroonTear LV3
-1/100 (H)WheelOfLunar LV3
-1/100 (H)红魔戒 LV3
-1/100 (H)Cloud戒 LV3
-1/100 (H)毒戒 LV3
+1/100 (魂)魔面具 LV3
+1/100 (魂)Violet珠 LV3
+1/100 (魂)KunroonTear LV3
+1/100 (魂)WheelOfLunar LV3
+1/100 (魂)红魔戒 LV3
+1/100 (魂)Cloud戒 LV3
+1/100 (魂)毒戒 LV3
 1/80 ArmouredMedal LV3
 1/50 HollowMedal LV3
 
@@ -462,36 +462,36 @@
 1/200 Grim弓 LV4
 1/200 Conqueror矛 LV4
 1/200 Bastard剑 LV4
-1/250 黑虎Hammer LV4
+1/250 黑虎锤 LV4
 1/250 Lethal弓 LV4
-1/250 杖之Lotus LV4
-1/250 Fan之Crane LV4
+1/250 杖之莲 LV4
+1/250 扇之Crane LV4
 1/550 蛮兵剑 LV4
 1/550 Raw剑 LV4
 1/550 Apus弓 LV4
-1/550 骨CarvedFan LV4
+1/550 骨Carved扇 LV4
 1/2000 WinterSlayer LV4
 1/2000 WinterStaff LV4
 1/2000 SnowFeather LV4
 
 ;Armours
-1/2000 PrismArmour(M) LV4
-1/2000 PrismArmour(F) LV4
+1/2000 PrismArmour(男) LV4
+1/2000 PrismArmour(女) LV4
 
 1/150 WatcherHelmet LV4
 1/200 PuiYuHelmet LV4
-1/200 盔之Darkness LV4
+1/200 盔之暗ness LV4
 1/100 Sparkling盔 LV4
 1/100 Sparkling腰带 LV4
 1/100 Sparkling靴 LV4
  
-1/100 (H)魔面具 LV4
-1/100 (H)Violet珠 LV4
-1/100 (H)KunroonTear LV4
-1/100 (H)WheelOfLunar LV4
-1/100 (H)红魔戒 LV4
-1/100 (H)Cloud戒 LV4
-1/100 (H)毒戒 LV4
+1/100 (魂)魔面具 LV4
+1/100 (魂)Violet珠 LV4
+1/100 (魂)KunroonTear LV4
+1/100 (魂)WheelOfLunar LV4
+1/100 (魂)红魔戒 LV4
+1/100 (魂)Cloud戒 LV4
+1/100 (魂)毒戒 LV4
 1/80 ArmouredMedal LV4
 1/50 HollowMedal LV4
 
@@ -609,36 +609,36 @@
 1/200 Grim弓 LV5
 1/200 Conqueror矛 LV5
 1/200 Bastard剑 LV5
-1/250 黑虎Hammer LV5
+1/250 黑虎锤 LV5
 1/250 Lethal弓 LV5
-1/250 杖之Lotus LV5
-1/250 Fan之Crane LV5
+1/250 杖之莲 LV5
+1/250 扇之Crane LV5
 1/550 蛮兵剑 LV5
 1/550 Raw剑 LV5
 1/550 Apus弓 LV5
-1/550 骨CarvedFan LV5
+1/550 骨Carved扇 LV5
 1/2000 WinterSlayer LV5
 1/2000 WinterStaff LV5
 1/2000 SnowFeather LV5
 
 ;Armours
-1/2000 PrismArmour(M) LV5
-1/2000 PrismArmour(F) LV5
+1/2000 PrismArmour(男) LV5
+1/2000 PrismArmour(女) LV5
 
 1/150 WatcherHelmet LV5
 1/200 PuiYuHelmet LV5
-1/200 盔之Darkness LV5
+1/200 盔之暗ness LV5
 1/100 Sparkling盔 LV5
 1/100 Sparkling腰带 LV5
 1/100 Sparkling靴 LV5
  
-1/100 (H)魔面具 LV5
-1/100 (H)Violet珠 LV5
-1/100 (H)KunroonTear LV5
-1/100 (H)WheelOfLunar LV5
-1/100 (H)红魔戒 LV5
-1/100 (H)Cloud戒 LV5
-1/100 (H)毒戒 LV5
+1/100 (魂)魔面具 LV5
+1/100 (魂)Violet珠 LV5
+1/100 (魂)KunroonTear LV5
+1/100 (魂)WheelOfLunar LV5
+1/100 (魂)红魔戒 LV5
+1/100 (魂)Cloud戒 LV5
+1/100 (魂)毒戒 LV5
 1/80 ArmouredMedal LV5
 1/50 HollowMedal LV5
 
@@ -752,36 +752,36 @@
 1/200 Grim弓 LV6
 1/200 Conqueror矛 LV6
 1/200 Bastard剑 LV6
-1/250 黑虎Hammer LV6
+1/250 黑虎锤 LV6
 1/250 Lethal弓 LV6
-1/250 杖之Lotus LV6
-1/250 Fan之Crane LV6
+1/250 杖之莲 LV6
+1/250 扇之Crane LV6
 1/550 蛮兵剑 LV6
 1/550 Raw剑 LV6
-1/550 骨CarvedFan LV6
+1/550 骨Carved扇 LV6
 1/550 Apus弓 LV6
 1/2000 WinterSlayer LV6
 1/2000 WinterStaff LV6
 1/2000 SnowFeather LV6
 
 ;Armours
-1/2000 PrismArmour(M) LV6
-1/2000 PrismArmour(F) LV6
+1/2000 PrismArmour(男) LV6
+1/2000 PrismArmour(女) LV6
 
 1/150 WatcherHelmet LV6
 1/200 PuiYuHelmet LV6
-1/200 盔之Darkness LV6
+1/200 盔之暗ness LV6
 1/100 Sparkling盔 LV6
 1/100 Sparkling腰带 LV6
 1/100 Sparkling靴 LV6
  
-1/100 (H)魔面具 LV6
-1/100 (H)Violet珠 LV6
-1/100 (H)KunroonTear LV6
-1/100 (H)WheelOfLunar LV6
-1/100 (H)红魔戒 LV6
-1/100 (H)Cloud戒 LV6
-1/100 (H)毒戒 LV6
+1/100 (魂)魔面具 LV6
+1/100 (魂)Violet珠 LV6
+1/100 (魂)KunroonTear LV6
+1/100 (魂)WheelOfLunar LV6
+1/100 (魂)红魔戒 LV6
+1/100 (魂)Cloud戒 LV6
+1/100 (魂)毒戒 LV6
 1/80 ArmouredMedal LV6
 1/50 HollowMedal LV6
 
@@ -896,36 +896,36 @@
 1/200 Grim弓 LV7
 1/200 Conqueror矛 LV7
 1/200 Bastard剑 LV7
-1/250 黑虎Hammer LV7
+1/250 黑虎锤 LV7
 1/250 Lethal弓 LV7
-1/250 杖之Lotus LV7
-1/250 Fan之Crane LV7
+1/250 杖之莲 LV7
+1/250 扇之Crane LV7
 1/550 蛮兵剑 LV7
 1/550 Raw剑 LV7
 1/550 Apus弓 LV7
-1/550 骨CarvedFan LV7
+1/550 骨Carved扇 LV7
 1/2000 WinterSlayer LV7
 1/2000 WinterStaff LV7
 1/2000 SnowFeather LV7
 
 ;Armours
-1/2000 PrismArmour(M) LV7
-1/2000 PrismArmour(F) LV7
+1/2000 PrismArmour(男) LV7
+1/2000 PrismArmour(女) LV7
 
 1/150 WatcherHelmet LV7
 1/200 PuiYuHelmet LV7
-1/200 盔之Darkness LV7
+1/200 盔之暗ness LV7
 1/100 Sparkling盔 LV7
 1/100 Sparkling腰带 LV7
 1/100 Sparkling靴 LV7
  
-1/100 (H)魔面具 LV7
-1/100 (H)Violet珠 LV7
-1/100 (H)KunroonTear LV7
-1/100 (H)WheelOfLunar LV7
-1/100 (H)红魔戒 LV7
-1/100 (H)Cloud戒 LV7
-1/100 (H)毒戒 LV7
+1/100 (魂)魔面具 LV7
+1/100 (魂)Violet珠 LV7
+1/100 (魂)KunroonTear LV7
+1/100 (魂)WheelOfLunar LV7
+1/100 (魂)红魔戒 LV7
+1/100 (魂)Cloud戒 LV7
+1/100 (魂)毒戒 LV7
 1/80 ArmouredMedal LV7
 1/50 HollowMedal LV7
 
@@ -1040,36 +1040,36 @@
 1/200 Grim弓 LV8
 1/200 Conqueror矛 LV8
 1/200 Bastard剑 LV8
-1/250 黑虎Hammer LV8
+1/250 黑虎锤 LV8
 1/250 Lethal弓 LV8
-1/250 杖之Lotus LV8
-1/250 Fan之Crane LV8
+1/250 杖之莲 LV8
+1/250 扇之Crane LV8
 1/550 蛮兵剑 LV8
 1/550 Raw剑 LV8
 1/550 Apus弓 LV8
-1/550 骨CarvedFan LV8
+1/550 骨Carved扇 LV8
 1/2000 WinterSlayer LV8
 1/2000 WinterStaff LV8
 1/2000 SnowFeather LV8
 
 ;Armours
-1/2000 PrismArmour(M) LV8
-1/2000 PrismArmour(F) LV8
+1/2000 PrismArmour(男) LV8
+1/2000 PrismArmour(女) LV8
 
 1/150 WatcherHelmet LV8
 1/200 PuiYuHelmet LV8
-1/200 盔之Darkness LV8
+1/200 盔之暗ness LV8
 1/100 Sparkling盔 LV8
 1/100 Sparkling腰带 LV8
 1/100 Sparkling靴 LV8
  
-1/100 (H)魔面具 LV8
-1/100 (H)Violet珠 LV8
-1/100 (H)KunroonTear LV8
-1/100 (H)WheelOfLunar LV8
-1/100 (H)红魔戒 LV8
-1/100 (H)Cloud戒 LV8
-1/100 (H)毒戒 LV8
+1/100 (魂)魔面具 LV8
+1/100 (魂)Violet珠 LV8
+1/100 (魂)KunroonTear LV8
+1/100 (魂)WheelOfLunar LV8
+1/100 (魂)红魔戒 LV8
+1/100 (魂)Cloud戒 LV8
+1/100 (魂)毒戒 LV8
 1/80 ArmouredMedal LV8
 1/50 HollowMedal LV8
 

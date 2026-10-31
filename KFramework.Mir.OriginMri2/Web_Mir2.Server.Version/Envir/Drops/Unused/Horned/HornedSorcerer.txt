@@ -22,7 +22,7 @@
 1/2150 蛮兵剑
 1/2150 Apus弓
 1/2150 Raw剑
-1/2150 骨CarvedFan
+1/2150 骨Carved扇
 1/2150 Mad龙刃
 1/3150 HorneySlayer
 1/3150 HorneyScepter
@@ -30,38 +30,38 @@
 1/3150 HorneyKives
 
 ;Armour
-1/400 黑虎甲(M)
-1/400 黑虎甲(F)
-1/400 Lotus甲(M)
-1/400 Lotus甲(F)
-1/400 Crane甲(M)
-1/400 Crane甲(F)
-1/400 Stealth甲(M)
-1/400 Stealth甲(F)
-1/550 红暗甲(M)
-1/550 红暗甲(F)
-1/550 蓝暗甲(M)
-1/550 蓝暗甲(F)
-1/550 Scaled甲(M)
-1/550 Scaled甲(F)
-1/550 绿暗甲(M)
-1/550 绿暗甲(F)
-1/550 金暗甲(M)
-1/550 金暗甲(F)
-1/850 WatcherSuit(M)
-1/850 WatcherSuit(F)
-1/950 HorneySuit(M)
-1/950 HorneySuit(F)
+1/400 黑虎甲(男)
+1/400 黑虎甲(女)
+1/400 莲甲(男)
+1/400 莲甲(女)
+1/400 Crane甲(男)
+1/400 Crane甲(女)
+1/400 Stealth甲(男)
+1/400 Stealth甲(女)
+1/550 红暗甲(男)
+1/550 红暗甲(女)
+1/550 蓝暗甲(男)
+1/550 蓝暗甲(女)
+1/550 鳞d甲(男)
+1/550 鳞d甲(女)
+1/550 绿暗甲(男)
+1/550 绿暗甲(女)
+1/550 金暗甲(男)
+1/550 金暗甲(女)
+1/850 WatcherSuit(男)
+1/850 WatcherSuit(女)
+1/950 HorneySuit(男)
+1/950 HorneySuit(女)
 
 ;Armour Rare
-1/5500 天甲(M)
-1/5500 天甲(F)
-1/5500 HeavenRedArmour(M)
-1/5500 HeavenRedArmour(F)
-1/5500 HeavenGrnArmour(M)
-1/5500 HeavenGrnArmour(F)
-1/5500 HeavenGoldArmour(M)
-1/5500 HeavenGoldArmour(F)
+1/5500 天甲(男)
+1/5500 天甲(女)
+1/5500 HeavenRedArmour(男)
+1/5500 HeavenRedArmour(女)
+1/5500 HeavenGrnArmour(男)
+1/5500 HeavenGrnArmour(女)
+1/5500 HeavenGoldArmour(男)
+1/5500 HeavenGoldArmour(女)
 
 ;Helmets
 1/50 巨盔
@@ -78,7 +78,7 @@
 ;Necklace
 1/60 Cuspid项链
 1/60 SorceryAnchor
-1/60 PurifiedMirror
+1/60 Purified镜
 1/375 邪Triangle
 1/375 CrossPurified
 1/375 Adamant项链
@@ -88,10 +88,10 @@
 1/700 HornedSorcerersPendant
 
 ;Bracelets
-1/60 DualTitan护符
-1/60 SacredAngel护符
+1/60 Dual泰坦护符
+1/60 Sacred天使护符
 1/60 邪Whisp护符
-1/370 WildTitan护符
+1/370 Wild泰坦护符
 1/375 Enchanted护符
 1/375 五元素护符
 1/675 WatcherGloves
@@ -158,7 +158,7 @@
 1/600 Counter攻击
 
 ;;Wizard
-1/200 Mirroring
+1/200 镜ing
 1/400 MeteorStrike
 1/500 魔法Booster
 1/600 冰Thrust

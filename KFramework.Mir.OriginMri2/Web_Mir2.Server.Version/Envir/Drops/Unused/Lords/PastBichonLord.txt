@@ -7,8 +7,8 @@
 1/1 特制魔法药 
 1/1 太阳水 
 1/2 太阳水 
-1/1 太阳药水(M) 
-1/2 太阳药水(M) 
+1/1 太阳药水(男) 
+1/2 太阳药水(男) 
 1/1 太阳水 
 1/1 太阳水 
 1/1 太阳水 
@@ -29,10 +29,10 @@
 1/50 Grim弓
 1/50 Conqueror矛 
 1/50 Bastard剑 
-1/100 黑虎Hammer 
-1/100 杖之Lotus 
+1/100 黑虎锤 
+1/100 杖之莲 
 1/100 Lethal弓
-1/100 Fan之Crane 
+1/100 扇之Crane 
 
 ;Weapon Rare
 1/3000 EvilMirSword
@@ -45,32 +45,32 @@
 1/3000 LordSlayerBlades
 
 ;Armour
-1/100 黑虎甲(M) 
-1/100 黑虎甲(F) 
-1/100 Lotus甲(M) 
-1/100 Lotus甲(F) 
-1/100 Crane甲(M) 
-1/100 Crane甲(F) 
-1/200 WatcherSuit(M) 
-1/200 WatcherSuit(F) 
+1/100 黑虎甲(男) 
+1/100 黑虎甲(女) 
+1/100 莲甲(男) 
+1/100 莲甲(女) 
+1/100 Crane甲(男) 
+1/100 Crane甲(女) 
+1/200 WatcherSuit(男) 
+1/200 WatcherSuit(女) 
 
 ;Armour Rare
-1/700 天甲(M) 
-1/700 天甲(F) 
-1/700 HeavenArcheyRobe(M)
-1/700 HeavenArcheyRobe(F)
-1/750 天甲(M) 
-1/750 天甲(F) 
-1/750 HeavenRedArmour(M) 
-1/750 HeavenRedArmour(F) 
-1/750 HeavenGrnArmour(M) 
-1/750 HeavenGrnArmour(F) 
-1/750 HeavenGoldArmour(M) 
-1/750 HeavenGoldArmour(F) 
-1/3000 EvilMirArmour(M) 
-1/3000 EvilMirArmour(F) 
-1/3000 LordSlayerArmour(M)
-1/3000 LordSlayerArmour(F)
+1/700 天甲(男) 
+1/700 天甲(女) 
+1/700 HeavenArcheyRobe(男)
+1/700 HeavenArcheyRobe(女)
+1/750 天甲(男) 
+1/750 天甲(女) 
+1/750 HeavenRedArmour(男) 
+1/750 HeavenRedArmour(女) 
+1/750 HeavenGrnArmour(男) 
+1/750 HeavenGrnArmour(女) 
+1/750 HeavenGoldArmour(男) 
+1/750 HeavenGoldArmour(女) 
+1/3000 EvilMirArmour(男) 
+1/3000 EvilMirArmour(女) 
+1/3000 LordSlayerArmour(男)
+1/3000 LordSlayerArmour(女)
 
 ;Helmets
 1/20 Sparkling盔 
@@ -83,7 +83,7 @@
 ;Necklace
 1/75 Cuspid项链 
 1/75 SorceryAnchor 
-1/75 PurifiedMirror 
+1/75 Purified镜 
 1/150 邪Triangle 
 1/150 CrossPurified 
 1/150 Adamant项链 
@@ -93,10 +93,10 @@
 1/3000 LordSlayerNecklace
 
 ;Bracelets
-1/50 DualTitan护符 
-1/50 SacredAngel护符 
+1/50 Dual泰坦护符 
+1/50 Sacred天使护符 
 1/50 邪Whisp护符 
-1/100 WildTitan护符 
+1/100 Wild泰坦护符 
 1/100 Enchanted护符 
 1/100 五元素护符 
 
@@ -165,7 +165,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 
-1/110 LionRoar 
+1/110 狮Roar 
 1/115 BladeStorm 
 1/120 CrossHalf月 
 1/125 刃Avalanche 
@@ -180,9 +180,9 @@
 ;Wizard
 1/90 Vampirism 
 1/105 冰暴 
-1/110 FlameDisruptor 
-1/115 Mirroring 
-1/120 FlameField 
+1/110 火焰Disruptor 
+1/115 镜ing 
+1/120 火焰Field 
 1/125 Blizzard 
 1/130 FrozenRains 
 1/135 魔法Booster 
@@ -214,11 +214,11 @@
 1/105 陷阱 
 1/110 毒剑 
 1/115 月轻 
-1/120 MPEater 
+1/120 魔法Eater 
 1/125 SwiftFeet 
 1/150 暗Body 
 
-1/80 ElementalBarrier
+1/80 元素alBarrier
 1/85 BindingShot
 1/110 召唤蟾蜍
 1/120 毒Shot

@@ -10,24 +10,24 @@ GOTO @Main-1
 
 [@Main-1]
 #SAY
-Welcome to the Official Crystal Mir Test Server.
-Thankyou for testing.
- 
-<Game Commands/@GCommands> 
-<Town & Caves/@TownCaves>
+欢迎来到官方 Crystal Mir 测试服务器。
+感谢你的测试。
+
+<游戏指令/@GCommands>
+<城镇与洞穴/@TownCaves>
 
 [@TownCaves]
 #SAY
-<GameMaster/@R001>
-<Bichon/@GMBichon>
-<Woomyon/@GMWoomyon>
-<CastleGi/@GMCastle>
-<TaoVillage/@GMTaoVillage>
-<SerpentValley/@GMSerpent>
-<Mongchon/@GMMongchon>
-<PrajnaIsland/@GMPrajna>
-<PastBichon SafeZone/@GMPastBichon>
-<Back/@_UseItem(1)>
+<游戏管理员/@R001>
+<比奇/@GMBichon>
+<沃木/@GMWoomyon>
+<城堡吉龙/@GMCastle>
+<道观/@GMTaoVillage>
+<毒蛇山谷/@GMSerpent>
+<盟重/@GMMongchon>
+<般若岛/@GMPrajna>
+<旧比奇安全区/@GMPastBichon>
+<返回/@_UseItem(1)>
 
 [@R001]
 #ACT
@@ -41,11 +41,11 @@ CLOSE
 
 [@GMBichon]
 #SAY
-<BichonWall SafeZone/@BichonSZ>
-<OmaCave/@BichonOmaCave>
-<DeadMines/@BichonMines>
-<ContestRoom/@BichonContest>
-<Back/@_UseItem(1)>
+<比奇城墙安全区/@BichonSZ>
+<沃玛洞穴/@BichonOmaCave>
+<死亡矿坑/@BichonMines>
+<竞赛房间/@BichonContest>
+<返回/@_UseItem(1)>
 
 [@BichonContest]
 #ACT
@@ -69,10 +69,10 @@ CLOSE
 
 [@GMWoomyon]
 #SAY
-<Woomyon SafeZone/@WoomyonSZ>
-<InsectCave/@WoomyonInsect>
-<WoomaTemple/@WoomyonWoomaT>
-<Back/@_UseItem(1)>
+<沃木安全区/@WoomyonSZ>
+<虫穴/@WoomyonInsect>
+<沃玛寺庙/@WoomyonWoomaT>
+<返回/@_UseItem(1)>
 
 [@WoomyonSZ]
 #ACT
@@ -91,9 +91,9 @@ CLOSE
 
 [@GMSerpent]
 #SAY
-<SerpentValley SafeZone/@SerpentSZ>
-<SerpentMines/@SerpentMines>
-<Back/@_UseItem(1)>
+<毒蛇山谷安全区/@SerpentSZ>
+<毒蛇矿坑/@SerpentMines>
+<返回/@_UseItem(1)>
 
 [@SerpentSZ]
 #ACT
@@ -106,17 +106,17 @@ MOVE 2 561 174
 CLOSE
 
 [@GMMongchon]
-<MudWall SafeZone/@MWSafeZone>
-<BugCave/@MWBugCave>
-<StoneTemple/@MWStoneTemple>
-<ZumaTemple/@MWZumaTemple>
-<FoxCave/@MWFoxCave>
-<Penal/@MWPenal>
-<SabukWall/@MWSabuk>
-<SecretCave/@MWSabukSecret>
-<Swamp/@MWSwamp>
-<ForgottenCity/@MWForgottenCity>
-<Back/@_UseItem(1)>
+<土墙安全区/@MWSafeZone>
+<虫穴/@MWBugCave>
+<石墓/@MWStoneTemple>
+<祖玛寺庙/@MWZumaTemple>
+<狐月洞穴/@MWFoxCave>
+<监狱/@MWPenal>
+<沙巴克城墙/@MWSabuk>
+<密洞/@MWSabukSecret>
+<沼泽/@MWSwamp>
+<遗忘之城/@MWForgottenCity>
+<返回/@_UseItem(1)>
 
 [@MWSafeZone]
 #ACT
@@ -170,11 +170,11 @@ CLOSE
 
 [@GMCastle]
 #SAY
-<CastleGi SafeZone/@CastleGISZ>
-<BlackDragonDungeon/@BDD>
-<IceTemple/@CastleIceTemp>
-<DragonSwamp/@CastleDragonSwamp>
-<Back/@_UseItem(1)>
+<城堡吉龙安全区/@CastleGISZ>
+<黑龙地牢/@BDD>
+<冰殿/@CastleIceTemp>
+<龙沼/@CastleDragonSwamp>
+<返回/@_UseItem(1)>
 
 [@CastleGISZ]
 #ACT
@@ -198,10 +198,10 @@ CLOSE
 
 [@GMPrajna]
 #SAY
-<PrajnaIsland SafeZone/@PrajnaSZ>
-<PrajnaCave/@PrajnaCave>
-<PrajnaTemple/@PrajnaTemple>
-<Back/@_UseItem(1)>
+<般若岛安全区/@PrajnaSZ>
+<般若石洞/@PrajnaCave>
+<般若寺庙/@PrajnaTemple>
+<返回/@_UseItem(1)>
 
 [@PrajnaSZ]
 #ACT
@@ -220,13 +220,13 @@ CLOSE
 
 [@GMTaoVillage]
 #SAY
-<TaoVillage SafeZone/@TaoSafeZone>
-<MineralMines/@TaoMineralMines>
-<TreePath/@TaoTreePath>
-<DarkForest/@TaoDarkForest>
-<RedValley/@TaoRedValley>
-<Lunar/@TaoLunar>
-<Back/@_UseItem(1)>
+<道观安全区/@TaoSafeZone>
+<矿产矿场/@TaoMineralMines>
+<树径/@TaoTreePath>
+<黑森林/@TaoDarkForest>
+<红谷/@TaoRedValley>
+<月之境/@TaoLunar>
+<返回/@_UseItem(1)>
 
 [@TaoSafeZone]
 #ACT
@@ -260,7 +260,7 @@ CLOSE
 
 [@GCommands]
 #SAY
-Player:
+玩家：
 @AllowGuild     @LeaveGuild
 @AllowTrade     @Map
 @Move X,Y       @EnableGroupRecall
@@ -270,12 +270,12 @@ Player:
 @Die            @AddInventory
 @ToggleTransform
 
-GameMaster:
+游戏管理员：
 @MapMove (Map,X,Y)  @Mob
 @Make               @Gamemaster
 @Superman           @Level
 @Goto               @RecallMob
 @GiveSkill          @Info
-<Back/@_UseItem(1)>
+<返回/@_UseItem(1)>
 
 }

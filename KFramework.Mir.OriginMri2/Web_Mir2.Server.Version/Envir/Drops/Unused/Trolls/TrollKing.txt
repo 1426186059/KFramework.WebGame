@@ -10,8 +10,8 @@
 1/2 特制魔法药 LV1
 1/1 太阳水 LV1
 1/1 太阳水 LV1
-1/1 太阳药水(M) LV1
-1/1 太阳药水(M) LV1
+1/1 太阳药水(男) LV1
+1/1 太阳药水(男) LV1
 1/1 太阳水 LV1
 1/1 太阳水 LV1
 1/2 太阳水 LV1
@@ -38,10 +38,10 @@
 1/800 Grim弓 LV1
 1/800 Conqueror矛 LV1
 1/800 Bastard剑 LV1
-1/1000 黑虎Hammer LV1
-1/1000 杖之Lotus LV1
+1/1000 黑虎锤 LV1
+1/1000 杖之莲 LV1
 1/1000 Lethal弓 LV1
-1/1000 Fan之Crane LV1
+1/1000 扇之Crane LV1
 
 ;Weapons Rare
 1/1600 WidowsWail LV1
@@ -49,16 +49,16 @@
 1/1600 OathKeeper LV1
 
 ;Armour
-1/300 黑虎甲(M) LV1
-1/300 黑虎甲(F) LV1
-1/300 Lotus甲(M) LV1
-1/300 Lotus甲(F) LV1
-1/300 Crane甲(M) LV1
-1/300 Crane甲(F) LV1
+1/300 黑虎甲(男) LV1
+1/300 黑虎甲(女) LV1
+1/300 莲甲(男) LV1
+1/300 莲甲(女) LV1
+1/300 Crane甲(男) LV1
+1/300 Crane甲(女) LV1
 
 ;Armour Rare
-1/1000 TrollsRobe(M) LV1
-1/1000 TrollsRobe(F) LV1
+1/1000 TrollsRobe(男) LV1
+1/1000 TrollsRobe(女) LV1
 
 ;Helmets
 1/40 巨盔 LV1
@@ -74,7 +74,7 @@
 ;Necklace
 1/100 Cuspid项链 LV1
 1/100 SorceryAnchor LV1
-1/100 PurifiedMirror LV1
+1/100 Purified镜 LV1
 1/205 邪Triangle LV1
 1/205 CrossPurified LV1
 1/205 Adamant项链 LV1
@@ -83,10 +83,10 @@
 1/1000 TrollChains LV1
 
 ;Bracelets
-1/100 DualTitan护符 LV1
-1/100 SacredAngel护符 LV1
+1/100 Dual泰坦护符 LV1
+1/100 Sacred天使护符 LV1
 1/100 邪Whisp护符 LV1
-1/205 WildTitan护符 LV1
+1/205 Wild泰坦护符 LV1
 1/205 Enchanted护符 LV1
 1/205 五元素护符 LV1
 
@@ -125,7 +125,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV1
-1/110 LionRoar LV1
+1/110 狮Roar LV1
 1/115 BladeStorm LV1
 1/120 CrossHalf月 LV1
 1/125 刃Avalanche LV1
@@ -135,9 +135,9 @@
 
 ;Wizard
 1/105 冰暴 LV1
-1/110 FlameDisruptor LV1
-1/115 Mirroring LV1
-1/120 FlameField LV1
+1/110 火焰Disruptor LV1
+1/115 镜ing LV1
+1/120 火焰Field LV1
 1/135 Blizzard LV1
 1/140 魔法Booster LV1
 
@@ -154,13 +154,13 @@
 1/105 陷阱 LV1
 1/110 毒剑 LV1
 1/115 月轻 LV1
-1/120 MPEater LV1
+1/120 魔法Eater LV1
 1/125 SwiftFeet LV1
 1/130 暗Body LV1
 1/135 Hemorrhage LV1
 
 1/105 DelayedExplosion LV1
-1/110 ElementalBarrier LV1
+1/110 元素alBarrier LV1
 1/115 BindingShot LV1
 1/120 召唤蟾蜍 LV1
 1/125 毒Shot LV1
@@ -184,8 +184,8 @@
 1/2 特制魔法药 LV2
 1/1 太阳水 LV2
 1/1 太阳水 LV2
-1/1 太阳药水(M) LV2
-1/1 太阳药水(M) LV2
+1/1 太阳药水(男) LV2
+1/1 太阳药水(男) LV2
 1/1 太阳水 LV2
 1/1 太阳水 LV2
 1/2 太阳水 LV2
@@ -212,10 +212,10 @@
 1/800 Grim弓 LV2
 1/800 Conqueror矛 LV2
 1/800 Bastard剑 LV2
-1/1000 黑虎Hammer LV2
-1/1000 杖之Lotus LV2
+1/1000 黑虎锤 LV2
+1/1000 杖之莲 LV2
 1/1000 Lethal弓 LV2
-1/1000 Fan之Crane LV2
+1/1000 扇之Crane LV2
 
 ;Weapons Rare
 1/1600 WidowsWail LV2
@@ -223,16 +223,16 @@
 1/1600 OathKeeper LV2
 
 ;Armour
-1/300 黑虎甲(M) LV2
-1/300 黑虎甲(F) LV2
-1/300 Lotus甲(M) LV2
-1/300 Lotus甲(F) LV2
-1/300 Crane甲(M) LV2
-1/300 Crane甲(F) LV2
+1/300 黑虎甲(男) LV2
+1/300 黑虎甲(女) LV2
+1/300 莲甲(男) LV2
+1/300 莲甲(女) LV2
+1/300 Crane甲(男) LV2
+1/300 Crane甲(女) LV2
 
 ;Armour Rare
-1/1000 TrollsRobe(M) LV2
-1/1000 TrollsRobe(F) LV2
+1/1000 TrollsRobe(男) LV2
+1/1000 TrollsRobe(女) LV2
 
 ;Helmets
 1/40 巨盔 LV2
@@ -248,7 +248,7 @@
 ;Necklace
 1/100 Cuspid项链 LV2
 1/100 SorceryAnchor LV2
-1/100 PurifiedMirror LV2
+1/100 Purified镜 LV2
 1/205 邪Triangle LV2
 1/205 CrossPurified LV2
 1/205 Adamant项链 LV2
@@ -257,10 +257,10 @@
 1/1000 TrollChains LV2
 
 ;Bracelets
-1/100 DualTitan护符 LV2
-1/100 SacredAngel护符 LV2
+1/100 Dual泰坦护符 LV2
+1/100 Sacred天使护符 LV2
 1/100 邪Whisp护符 LV2
-1/205 WildTitan护符 LV2
+1/205 Wild泰坦护符 LV2
 1/205 Enchanted护符 LV2
 1/205 五元素护符 LV2
 
@@ -299,7 +299,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV2
-1/110 LionRoar LV2
+1/110 狮Roar LV2
 1/115 BladeStorm LV2
 1/120 CrossHalf月 LV2
 1/125 刃Avalanche LV2
@@ -309,9 +309,9 @@
 
 ;Wizard
 1/105 冰暴 LV2
-1/110 FlameDisruptor LV2
-1/115 Mirroring LV2
-1/120 FlameField LV2
+1/110 火焰Disruptor LV2
+1/115 镜ing LV2
+1/120 火焰Field LV2
 1/135 Blizzard LV2
 1/140 魔法Booster LV2
 
@@ -328,13 +328,13 @@
 1/105 陷阱 LV2
 1/110 毒剑 LV2
 1/115 月轻 LV2
-1/120 MPEater LV2
+1/120 魔法Eater LV2
 1/125 SwiftFeet LV2
 1/130 暗Body LV2
 1/135 Hemorrhage LV2
 
 1/105 DelayedExplosion LV2
-1/110 ElementalBarrier LV2
+1/110 元素alBarrier LV2
 1/115 BindingShot LV2
 1/120 召唤蟾蜍 LV2
 1/125 毒Shot LV2
@@ -360,8 +360,8 @@
 1/2 特制魔法药 LV3
 1/1 太阳水 LV3
 1/1 太阳水 LV3
-1/1 太阳药水(M) LV3
-1/1 太阳药水(M) LV3
+1/1 太阳药水(男) LV3
+1/1 太阳药水(男) LV3
 1/1 太阳水 LV3
 1/1 太阳水 LV3
 1/2 太阳水 LV3
@@ -388,10 +388,10 @@
 1/800 Grim弓 LV3
 1/800 Conqueror矛 LV3
 1/800 Bastard剑 LV3
-1/1000 黑虎Hammer LV3
+1/1000 黑虎锤 LV3
 1/1000 Lethal弓 LV3
-1/1000 杖之Lotus LV3
-1/1000 Fan之Crane LV3
+1/1000 杖之莲 LV3
+1/1000 扇之Crane LV3
 
 ;Weapons Rare
 1/1600 WidowsWail LV3
@@ -399,16 +399,16 @@
 1/1600 OathKeeper LV3
 
 ;Armour
-1/300 黑虎甲(M) LV3
-1/300 黑虎甲(F) LV3
-1/300 Lotus甲(M) LV3
-1/300 Lotus甲(F) LV3
-1/300 Crane甲(M) LV3
-1/300 Crane甲(F) LV3
+1/300 黑虎甲(男) LV3
+1/300 黑虎甲(女) LV3
+1/300 莲甲(男) LV3
+1/300 莲甲(女) LV3
+1/300 Crane甲(男) LV3
+1/300 Crane甲(女) LV3
 
 ;Armour Rare
-1/1000 TrollsRobe(M) LV3
-1/1000 TrollsRobe(F) LV3
+1/1000 TrollsRobe(男) LV3
+1/1000 TrollsRobe(女) LV3
 
 ;Helmets
 1/40 巨盔 LV3
@@ -424,7 +424,7 @@
 ;Necklace
 1/100 Cuspid项链 LV3
 1/100 SorceryAnchor LV3
-1/100 PurifiedMirror LV3
+1/100 Purified镜 LV3
 1/205 邪Triangle LV3
 1/205 CrossPurified LV3
 1/205 Adamant项链 LV3
@@ -433,10 +433,10 @@
 1/1000 TrollChains LV3
 
 ;Bracelets
-1/100 DualTitan护符 LV3
-1/100 SacredAngel护符 LV3
+1/100 Dual泰坦护符 LV3
+1/100 Sacred天使护符 LV3
 1/100 邪Whisp护符 LV3
-1/205 WildTitan护符 LV3
+1/205 Wild泰坦护符 LV3
 1/205 Enchanted护符 LV3
 1/205 五元素护符 LV3
 
@@ -475,7 +475,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV3
-1/110 LionRoar LV3
+1/110 狮Roar LV3
 1/115 BladeStorm LV3
 1/120 CrossHalf月 LV3
 1/125 刃Avalanche LV3
@@ -485,9 +485,9 @@
 
 ;Wizard
 1/105 冰暴 LV3
-1/110 FlameDisruptor LV3
-1/115 Mirroring LV3
-1/120 FlameField LV3
+1/110 火焰Disruptor LV3
+1/115 镜ing LV3
+1/120 火焰Field LV3
 1/135 Blizzard LV3
 1/140 魔法Booster LV3
 
@@ -504,13 +504,13 @@
 1/105 陷阱 LV3
 1/110 毒剑 LV3
 1/115 月轻 LV3
-1/120 MPEater LV3
+1/120 魔法Eater LV3
 1/125 SwiftFeet LV3
 1/130 暗Body LV3
 1/135 Hemorrhage LV3
 
 1/105 DelayedExplosion LV3
-1/110 ElementalBarrier LV3
+1/110 元素alBarrier LV3
 1/115 BindingShot LV3
 1/120 召唤蟾蜍 LV3
 1/125 毒Shot LV3
@@ -534,8 +534,8 @@
 1/2 特制魔法药 LV4
 1/1 太阳水 LV4
 1/1 太阳水 LV4
-1/1 太阳药水(M) LV4
-1/1 太阳药水(M) LV4
+1/1 太阳药水(男) LV4
+1/1 太阳药水(男) LV4
 1/1 太阳水 LV4
 1/1 太阳水 LV4
 1/2 太阳水 LV4
@@ -562,10 +562,10 @@
 1/800 Grim弓 LV4
 1/800 Conqueror矛 LV4
 1/800 Bastard剑 LV4
-1/1000 黑虎Hammer LV4
+1/1000 黑虎锤 LV4
 1/1000 Lethal弓 LV4
-1/1000 杖之Lotus LV4
-1/1000 Fan之Crane LV4
+1/1000 杖之莲 LV4
+1/1000 扇之Crane LV4
 
 ;Weapons Rare
 1/1600 WidowsWail LV4
@@ -573,16 +573,16 @@
 1/1600 OathKeeper LV4
 
 ;Armour
-1/300 黑虎甲(M) LV4
-1/300 黑虎甲(F) LV4
-1/300 Lotus甲(M) LV4
-1/300 Lotus甲(F) LV4
-1/300 Crane甲(M) LV4
-1/300 Crane甲(F) LV4
+1/300 黑虎甲(男) LV4
+1/300 黑虎甲(女) LV4
+1/300 莲甲(男) LV4
+1/300 莲甲(女) LV4
+1/300 Crane甲(男) LV4
+1/300 Crane甲(女) LV4
 
 ;Armour Rare
-1/1000 TrollsRobe(M) LV4
-1/1000 TrollsRobe(F) LV4
+1/1000 TrollsRobe(男) LV4
+1/1000 TrollsRobe(女) LV4
 
 ;Helmets
 1/40 巨盔 LV4
@@ -598,7 +598,7 @@
 ;Necklace
 1/100 Cuspid项链 LV4
 1/100 SorceryAnchor LV4
-1/100 PurifiedMirror LV4
+1/100 Purified镜 LV4
 1/205 邪Triangle LV4
 1/205 CrossPurified LV4
 1/205 Adamant项链 LV4
@@ -607,10 +607,10 @@
 1/1000 TrollChains LV4
 
 ;Bracelets
-1/100 DualTitan护符 LV4
-1/100 SacredAngel护符 LV4
+1/100 Dual泰坦护符 LV4
+1/100 Sacred天使护符 LV4
 1/100 邪Whisp护符 LV4
-1/205 WildTitan护符 LV4
+1/205 Wild泰坦护符 LV4
 1/205 Enchanted护符 LV4
 1/205 五元素护符 LV4
 
@@ -649,7 +649,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV4
-1/110 LionRoar LV4
+1/110 狮Roar LV4
 1/115 BladeStorm LV4
 1/120 CrossHalf月 LV4
 1/125 刃Avalanche LV4
@@ -659,9 +659,9 @@
 
 ;Wizard
 1/105 冰暴 LV4
-1/110 FlameDisruptor LV4
-1/115 Mirroring LV4
-1/120 FlameField LV4
+1/110 火焰Disruptor LV4
+1/115 镜ing LV4
+1/120 火焰Field LV4
 1/135 Blizzard LV4
 1/140 魔法Booster LV4
 
@@ -678,13 +678,13 @@
 1/105 陷阱 LV4
 1/110 毒剑 LV4
 1/115 月轻 LV4
-1/120 MPEater LV4
+1/120 魔法Eater LV4
 1/125 SwiftFeet LV4
 1/130 暗Body LV4
 1/135 Hemorrhage LV4
 
 1/105 DelayedExplosion LV4
-1/110 ElementalBarrier LV4
+1/110 元素alBarrier LV4
 1/115 BindingShot LV4
 1/120 召唤蟾蜍 LV4
 1/125 毒Shot LV4
@@ -710,8 +710,8 @@
 1/2 特制魔法药 LV5
 1/1 太阳水 LV5
 1/1 太阳水 LV5
-1/1 太阳药水(M) LV5
-1/1 太阳药水(M) LV5
+1/1 太阳药水(男) LV5
+1/1 太阳药水(男) LV5
 1/1 太阳水 LV5
 1/1 太阳水 LV5
 1/2 太阳水 LV5
@@ -738,10 +738,10 @@
 1/800 Grim弓 LV5
 1/800 Conqueror矛 LV5
 1/800 Bastard剑 LV5
-1/1000 黑虎Hammer LV5
-1/1000 杖之Lotus LV5
+1/1000 黑虎锤 LV5
+1/1000 杖之莲 LV5
 1/1000 Lethal弓 LV5
-1/1000 Fan之Crane LV5
+1/1000 扇之Crane LV5
 
 ;Weapons Rare
 1/1600 WidowsWail LV5
@@ -749,16 +749,16 @@
 1/1600 OathKeeper LV5
 
 ;Armour
-1/300 黑虎甲(M) LV5
-1/300 黑虎甲(F) LV5
-1/300 Lotus甲(M) LV5
-1/300 Lotus甲(F) LV5
-1/300 Crane甲(M) LV5
-1/300 Crane甲(F) LV5
+1/300 黑虎甲(男) LV5
+1/300 黑虎甲(女) LV5
+1/300 莲甲(男) LV5
+1/300 莲甲(女) LV5
+1/300 Crane甲(男) LV5
+1/300 Crane甲(女) LV5
 
 ;Armour Rare
-1/1000 TrollsRobe(M) LV5
-1/1000 TrollsRobe(F) LV5
+1/1000 TrollsRobe(男) LV5
+1/1000 TrollsRobe(女) LV5
 
 ;Helmets
 1/40 巨盔 LV5
@@ -774,7 +774,7 @@
 ;Necklace
 1/100 Cuspid项链 LV5
 1/100 SorceryAnchor LV5
-1/100 PurifiedMirror LV5
+1/100 Purified镜 LV5
 1/205 邪Triangle LV5
 1/205 CrossPurified LV5
 1/205 Adamant项链 LV5
@@ -783,10 +783,10 @@
 1/1000 TrollChains LV5
 
 ;Bracelets
-1/100 DualTitan护符 LV5
-1/100 SacredAngel护符 LV5
+1/100 Dual泰坦护符 LV5
+1/100 Sacred天使护符 LV5
 1/100 邪Whisp护符 LV5
-1/205 WildTitan护符 LV5
+1/205 Wild泰坦护符 LV5
 1/205 Enchanted护符 LV5
 1/205 五元素护符 LV5
 
@@ -825,7 +825,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV5
-1/110 LionRoar LV5
+1/110 狮Roar LV5
 1/115 BladeStorm LV5
 1/120 CrossHalf月 LV5
 1/125 刃Avalanche LV5
@@ -835,9 +835,9 @@
 
 ;Wizard
 1/105 冰暴 LV5
-1/110 FlameDisruptor LV5
-1/115 Mirroring LV5
-1/120 FlameField LV5
+1/110 火焰Disruptor LV5
+1/115 镜ing LV5
+1/120 火焰Field LV5
 1/135 Blizzard LV5
 1/140 魔法Booster LV5
 
@@ -854,13 +854,13 @@
 1/105 陷阱 LV5
 1/110 毒剑 LV5
 1/115 月轻 LV5
-1/120 MPEater LV5
+1/120 魔法Eater LV5
 1/125 SwiftFeet LV5
 1/130 暗Body LV5
 1/135 Hemorrhage LV5
 
 1/105 DelayedExplosion LV5
-1/110 ElementalBarrier LV5
+1/110 元素alBarrier LV5
 1/115 BindingShot LV5
 1/120 召唤蟾蜍 LV5
 1/125 毒Shot LV5
@@ -886,8 +886,8 @@
 1/2 特制魔法药 LV6
 1/1 太阳水 LV6
 1/1 太阳水 LV6
-1/1 太阳药水(M) LV6
-1/1 太阳药水(M) LV6
+1/1 太阳药水(男) LV6
+1/1 太阳药水(男) LV6
 1/1 太阳水 LV6
 1/1 太阳水 LV6
 1/2 太阳水 LV6
@@ -914,10 +914,10 @@
 1/800 Grim弓 LV6
 1/800 Conqueror矛 LV6
 1/800 Bastard剑 LV6
-1/1000 黑虎Hammer LV6
+1/1000 黑虎锤 LV6
 1/1000 Lethal弓 LV6
-1/1000 杖之Lotus LV6
-1/1000 Fan之Crane LV6
+1/1000 杖之莲 LV6
+1/1000 扇之Crane LV6
 
 ;Weapons Rare
 1/1600 WidowsWail LV6
@@ -925,16 +925,16 @@
 1/1600 OathKeeper LV6
 
 ;Armour
-1/300 黑虎甲(M) LV6
-1/300 黑虎甲(F) LV6
-1/300 Lotus甲(M) LV6
-1/300 Lotus甲(F) LV6
-1/300 Crane甲(M) LV6
-1/300 Crane甲(F) LV6
+1/300 黑虎甲(男) LV6
+1/300 黑虎甲(女) LV6
+1/300 莲甲(男) LV6
+1/300 莲甲(女) LV6
+1/300 Crane甲(男) LV6
+1/300 Crane甲(女) LV6
 
 ;Armour Rare
-1/1000 TrollsRobe(M) LV6
-1/1000 TrollsRobe(F) LV6
+1/1000 TrollsRobe(男) LV6
+1/1000 TrollsRobe(女) LV6
 
 ;Helmets
 1/40 巨盔 LV6
@@ -950,7 +950,7 @@
 ;Necklace
 1/100 Cuspid项链 LV6
 1/100 SorceryAnchor LV6
-1/100 PurifiedMirror LV6
+1/100 Purified镜 LV6
 1/205 邪Triangle LV6
 1/205 CrossPurified LV6
 1/205 Adamant项链 LV6
@@ -959,10 +959,10 @@
 1/1000 TrollChains LV6
 
 ;Bracelets
-1/100 DualTitan护符 LV6
-1/100 SacredAngel护符 LV6
+1/100 Dual泰坦护符 LV6
+1/100 Sacred天使护符 LV6
 1/100 邪Whisp护符 LV6
-1/205 WildTitan护符 LV6
+1/205 Wild泰坦护符 LV6
 1/205 Enchanted护符 LV6
 1/205 五元素护符 LV6
 
@@ -1001,7 +1001,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV6
-1/110 LionRoar LV6
+1/110 狮Roar LV6
 1/115 BladeStorm LV6
 1/120 CrossHalf月 LV6
 1/125 刃Avalanche LV6
@@ -1011,9 +1011,9 @@
 
 ;Wizard
 1/105 冰暴 LV6
-1/110 FlameDisruptor LV6
-1/115 Mirroring LV6
-1/120 FlameField LV6
+1/110 火焰Disruptor LV6
+1/115 镜ing LV6
+1/120 火焰Field LV6
 1/135 Blizzard LV6
 1/140 魔法Booster LV6
 
@@ -1030,13 +1030,13 @@
 1/105 陷阱 LV6
 1/110 毒剑 LV6
 1/115 月轻 LV6
-1/120 MPEater LV6
+1/120 魔法Eater LV6
 1/125 SwiftFeet LV6
 1/130 暗Body LV6
 1/135 Hemorrhage LV6
 
 1/105 DelayedExplosion LV6
-1/110 ElementalBarrier LV6
+1/110 元素alBarrier LV6
 1/115 BindingShot LV6
 1/120 召唤蟾蜍 LV6
 1/125 毒Shot LV6
@@ -1061,8 +1061,8 @@
 1/2 特制魔法药 LV7
 1/1 太阳水 LV7
 1/1 太阳水 LV7
-1/1 太阳药水(M) LV7
-1/1 太阳药水(M) LV7
+1/1 太阳药水(男) LV7
+1/1 太阳药水(男) LV7
 1/1 太阳水 LV7
 1/1 太阳水 LV7
 1/2 太阳水 LV7
@@ -1089,10 +1089,10 @@
 1/800 Grim弓 LV7
 1/800 Conqueror矛 LV7
 1/800 Bastard剑 LV7
-1/1000 黑虎Hammer LV7
+1/1000 黑虎锤 LV7
 1/1000 Lethal弓 LV7
-1/1000 杖之Lotus LV7
-1/1000 Fan之Crane LV7
+1/1000 杖之莲 LV7
+1/1000 扇之Crane LV7
 
 ;Weapons Rare
 1/1600 WidowsWail LV7
@@ -1100,16 +1100,16 @@
 1/1600 OathKeeper LV7
 
 ;Armour
-1/300 黑虎甲(M) LV7
-1/300 黑虎甲(F) LV7
-1/300 Lotus甲(M) LV7
-1/300 Lotus甲(F) LV7
-1/300 Crane甲(M) LV7
-1/300 Crane甲(F) LV7
+1/300 黑虎甲(男) LV7
+1/300 黑虎甲(女) LV7
+1/300 莲甲(男) LV7
+1/300 莲甲(女) LV7
+1/300 Crane甲(男) LV7
+1/300 Crane甲(女) LV7
 
 ;Armour Rare
-1/1000 TrollsRobe(M) LV7
-1/1000 TrollsRobe(F) LV7
+1/1000 TrollsRobe(男) LV7
+1/1000 TrollsRobe(女) LV7
 
 ;Helmets
 1/40 巨盔 LV7
@@ -1125,7 +1125,7 @@
 ;Necklace
 1/100 Cuspid项链 LV7
 1/100 SorceryAnchor LV7
-1/100 PurifiedMirror LV7
+1/100 Purified镜 LV7
 1/205 邪Triangle LV7
 1/205 CrossPurified LV7
 1/205 Adamant项链 LV7
@@ -1134,10 +1134,10 @@
 1/1000 TrollChains LV7
 
 ;Bracelets
-1/100 DualTitan护符 LV7
-1/100 SacredAngel护符 LV7
+1/100 Dual泰坦护符 LV7
+1/100 Sacred天使护符 LV7
 1/100 邪Whisp护符 LV7
-1/205 WildTitan护符 LV7
+1/205 Wild泰坦护符 LV7
 1/205 Enchanted护符 LV7
 1/205 五元素护符 LV7
 
@@ -1176,7 +1176,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV7
-1/110 LionRoar LV7
+1/110 狮Roar LV7
 1/115 BladeStorm LV7
 1/120 CrossHalf月 LV7
 1/125 刃Avalanche LV7
@@ -1186,9 +1186,9 @@
 
 ;Wizard
 1/105 冰暴 LV7
-1/110 FlameDisruptor LV7
-1/115 Mirroring LV7
-1/120 FlameField LV7
+1/110 火焰Disruptor LV7
+1/115 镜ing LV7
+1/120 火焰Field LV7
 1/135 Blizzard LV7
 1/140 魔法Booster LV7
 
@@ -1205,13 +1205,13 @@
 1/105 陷阱 LV7
 1/110 毒剑 LV7
 1/115 月轻 LV7
-1/120 MPEater LV7
+1/120 魔法Eater LV7
 1/125 SwiftFeet LV7
 1/130 暗Body LV7
 1/135 Hemorrhage LV7
 
 1/105 DelayedExplosion LV7
-1/110 ElementalBarrier LV7
+1/110 元素alBarrier LV7
 1/115 BindingShot LV7
 1/120 召唤蟾蜍 LV7
 1/125 毒Shot LV7
@@ -1237,8 +1237,8 @@
 1/2 特制魔法药 LV8
 1/1 太阳水 LV8
 1/1 太阳水 LV8
-1/1 太阳药水(M) LV8
-1/1 太阳药水(M) LV8
+1/1 太阳药水(男) LV8
+1/1 太阳药水(男) LV8
 1/1 太阳水 LV8
 1/1 太阳水 LV8
 1/2 太阳水 LV8
@@ -1265,10 +1265,10 @@
 1/800 Grim弓 LV8
 1/800 Conqueror矛 LV8
 1/800 Bastard剑 LV8
-1/1000 黑虎Hammer LV8
+1/1000 黑虎锤 LV8
 1/1000 Lethal弓 LV8
-1/1000 杖之Lotus LV8
-1/1000 Fan之Crane LV8
+1/1000 杖之莲 LV8
+1/1000 扇之Crane LV8
 
 ;Weapons Rare
 1/1600 WidowsWail LV8
@@ -1276,16 +1276,16 @@
 1/1600 OathKeeper LV8
 
 ;Armour
-1/300 黑虎甲(M) LV8
-1/300 黑虎甲(F) LV8
-1/300 Lotus甲(M) LV8
-1/300 Lotus甲(F) LV8
-1/300 Crane甲(M) LV8
-1/300 Crane甲(F) LV8
+1/300 黑虎甲(男) LV8
+1/300 黑虎甲(女) LV8
+1/300 莲甲(男) LV8
+1/300 莲甲(女) LV8
+1/300 Crane甲(男) LV8
+1/300 Crane甲(女) LV8
 
 ;Armour Rare
-1/1000 TrollsRobe(M) LV8
-1/1000 TrollsRobe(F) LV8
+1/1000 TrollsRobe(男) LV8
+1/1000 TrollsRobe(女) LV8
 
 ;Helmets
 1/40 巨盔 LV8
@@ -1301,7 +1301,7 @@
 ;Necklace
 1/100 Cuspid项链 LV8
 1/100 SorceryAnchor LV8
-1/100 PurifiedMirror LV8
+1/100 Purified镜 LV8
 1/205 邪Triangle LV8
 1/205 CrossPurified LV8
 1/205 Adamant项链 LV8
@@ -1310,10 +1310,10 @@
 1/1000 TrollChains LV8
 
 ;Bracelets
-1/100 DualTitan护符 LV8
-1/100 SacredAngel护符 LV8
+1/100 Dual泰坦护符 LV8
+1/100 Sacred天使护符 LV8
 1/100 邪Whisp护符 LV8
-1/205 WildTitan护符 LV8
+1/205 Wild泰坦护符 LV8
 1/205 Enchanted护符 LV8
 1/205 五元素护符 LV8
 
@@ -1352,7 +1352,7 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV8
-1/110 LionRoar LV8
+1/110 狮Roar LV8
 1/115 BladeStorm LV8
 1/120 CrossHalf月 LV8
 1/125 刃Avalanche LV8
@@ -1362,9 +1362,9 @@
 
 ;Wizard
 1/105 冰暴 LV8
-1/110 FlameDisruptor LV8
-1/115 Mirroring LV8
-1/120 FlameField LV8
+1/110 火焰Disruptor LV8
+1/115 镜ing LV8
+1/120 火焰Field LV8
 1/135 Blizzard LV8
 1/140 魔法Booster LV8
 
@@ -1381,13 +1381,13 @@
 1/105 陷阱 LV8
 1/110 毒剑 LV8
 1/115 月轻 LV8
-1/120 MPEater LV8
+1/120 魔法Eater LV8
 1/125 SwiftFeet LV8
 1/130 暗Body LV8
 1/135 Hemorrhage LV8
 
 1/105 DelayedExplosion LV8
-1/110 ElementalBarrier LV8
+1/110 元素alBarrier LV8
 1/115 BindingShot LV8
 1/120 召唤蟾蜍 LV8
 1/125 毒Shot LV8

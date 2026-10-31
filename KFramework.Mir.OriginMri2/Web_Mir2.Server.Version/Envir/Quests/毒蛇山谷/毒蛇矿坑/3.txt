@@ -2,7 +2,7 @@
 传闻说，北边矿洞里有一把非常稀有的剑。你能帮我取来吗？
 
 [@TaskDescription]
-在{SerpentDeadMines 2F/Yellow}击杀{Hi巨食尸鬼/Crimson}，取回{BloodySword/LightSteelBlue}。
+在{SerpentDeadMines 2F/Yellow}击杀{高大食尸鬼/Crimson}，取回{BloodySword/LightSteelBlue}。
 
 [@Completion]
 

@@ -29,23 +29,23 @@
 1/600 Conqueror矛
 1/600 Grim弓
 1/600 Bastard剑
-1/900 黑虎Hammer
+1/900 黑虎锤
 1/900 Lethal弓
-1/900 杖之Lotus
-1/900 Fan之Crane
+1/900 杖之莲
+1/900 扇之Crane
 1/1100 蛮兵剑
 1/1100 Raw剑
 1/1100 Apus弓
-1/1100 骨CarvedFan
+1/1100 骨Carved扇
 
 
 ;Armour
-1/1300 HavokBraveArmour(M)
-1/1300 HavokBraveArmour(F)
-1/1300 HavokMagicArmour(M)
-1/1300 HavokMagicArmour(F)
-1/1300 HavokSoulArmour(M)
-1/1300 HavokSoulArmour(F)
+1/1300 HavokBraveArmour(男)
+1/1300 HavokBraveArmour(女)
+1/1300 HavokMagicArmour(男)
+1/1300 HavokMagicArmour(女)
+1/1300 HavokSoulArmour(男)
+1/1300 HavokSoulArmour(女)
 
 ;Helmets
 1/400 PuiYuHelmet

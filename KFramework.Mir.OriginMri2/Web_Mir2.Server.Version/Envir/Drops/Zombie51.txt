@@ -23,8 +23,8 @@
 1/35 长弓 
 
 ;Armours
-1/25 轻甲(M) 
-1/25 轻甲(F) 
+1/25 轻甲(男) 
+1/25 轻甲(女) 
 
 ;Helmets
 1/15 青铜盔 
@@ -66,7 +66,7 @@
 1/10 Repulsion 
 1/10 雷电Shock 
 1/10 之灵剑 
-1/10 Poisoning 
+1/10 毒ing 
 1/20 StraightShot 
 1/20 雷弩箭 
 1/20 巨火球 
@@ -85,16 +85,16 @@
 1/50 Thrusting 
 1/50 雷 
 1/50 Revelation 
-1/50 Blessed甲 
+1/50 祝福ed甲 
 1/50 FlashDash 
 1/15 Explosive陷阱 
 1/20 Meditation 
 1/25 召唤吸血蜘蛛 
 1/50 DelayedExplosion 
 1/70 BackStep 
-1/100 ElementalShot 
+1/100 元素alShot 
 1/40 双Shot 
 
 ;Quest
 1/5 僵尸眼 Q
-1/5 RareCopper矿 Q
+1/5 Rare铜矿 Q

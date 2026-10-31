@@ -16,18 +16,18 @@
 1/2000 短剑剑 LV1
 
 ;Armour
-1/15000 钢甲(M) LV1
-1/15000 钢甲(F) LV1
-1/15000 龙袍(M) LV1
-1/15000 龙袍(F) LV1
-1/15000 Titan甲(M) LV1
-1/15000 Titan甲(F) LV1
-1/50000 黑虎甲(M) LV1
-1/50000 黑虎甲(F) LV1
-1/50000 Lotus甲(F) LV1
-1/50000 Lotus甲(M) LV1
-1/50000 Crane甲(F) LV1
-1/50000 Crane甲(M) LV1
+1/15000 钢甲(男) LV1
+1/15000 钢甲(女) LV1
+1/15000 龙袍(男) LV1
+1/15000 龙袍(女) LV1
+1/15000 泰坦甲(男) LV1
+1/15000 泰坦甲(女) LV1
+1/50000 黑虎甲(男) LV1
+1/50000 黑虎甲(女) LV1
+1/50000 莲甲(女) LV1
+1/50000 莲甲(男) LV1
+1/50000 Crane甲(女) LV1
+1/50000 Crane甲(男) LV1
 
 ;Helmets
 1/10000 巨盔 LV1
@@ -85,12 +85,12 @@
 1/1800 MysteriousGuards[1d] LV1
 
 ;Stone
-1/500 DC石(L) LV1
-1/500 MC石(L) LV1
-1/500 SC石(L) LV1
-1/1500 DC石(XL) LV1
-1/1500 MC石(XL) LV1
-1/1500 SC石(XL) LV1
+1/500 道术石(大) LV1
+1/500 MC石(大) LV1
+1/500 SC石(大) LV1
+1/1500 道术石(特大) LV1
+1/1500 MC石(特大) LV1
+1/1500 SC石(特大) LV1
 1/3500 ItemMineJewl[1d] LV1
 1/3500 ExperienceMineJewl[1d] LV1
 1/5000 BloodJewl[1d] LV1
@@ -114,14 +114,14 @@
 
 ;Taoist
 1/5000 之灵剑 LV1
-1/5000 Poisoning LV1
+1/5000 毒ing LV1
 1/8000 魂火球 LV1
 1/8000 召唤骷髅 LV1
 1/8500 Hiding LV1
 1/8500 MassHiding LV1
 1/8500 魂盾 LV1
 1/10000 Revelation LV1
-1/10000 Blessed甲 LV1
+1/10000 祝福ed甲 LV1
 
 ;Assassion
 1/5000 Fatal剑 LV1
@@ -135,7 +135,7 @@
 1/5000 MentalState LV1
 1/8000 双Shot LV1
 1/8000 Meditation LV1
-1/8000 ElementalShot LV1
+1/8000 元素alShot LV1
 1/10000 Explosive陷阱 LV1
 1/10000 Concentration LV1
 1/10000 VampireShot LV1
@@ -164,18 +164,18 @@
 1/2000 短剑剑 LV2
 
 ;Armour
-1/15000 钢甲(M) LV2
-1/15000 钢甲(F) LV2
-1/15000 龙袍(M) LV2
-1/15000 龙袍(F) LV2
-1/15000 Titan甲(M) LV2
-1/15000 Titan甲(F) LV2
-1/50000 黑虎甲(M) LV2
-1/50000 黑虎甲(F) LV2
-1/50000 Lotus甲(F) LV2
-1/50000 Lotus甲(M) LV2
-1/50000 Crane甲(F) LV2
-1/50000 Crane甲(M) LV2
+1/15000 钢甲(男) LV2
+1/15000 钢甲(女) LV2
+1/15000 龙袍(男) LV2
+1/15000 龙袍(女) LV2
+1/15000 泰坦甲(男) LV2
+1/15000 泰坦甲(女) LV2
+1/50000 黑虎甲(男) LV2
+1/50000 黑虎甲(女) LV2
+1/50000 莲甲(女) LV2
+1/50000 莲甲(男) LV2
+1/50000 Crane甲(女) LV2
+1/50000 Crane甲(男) LV2
 
 ;Helmets
 1/10000 巨盔 LV2
@@ -233,12 +233,12 @@
 1/1800 MysteriousGuards[1d] LV2
 
 ;Stone
-1/500 DC石(L) LV2
-1/500 MC石(L) LV2
-1/500 SC石(L) LV2
-1/1500 DC石(XL) LV2
-1/1500 MC石(XL) LV2
-1/1500 SC石(XL) LV2
+1/500 道术石(大) LV2
+1/500 MC石(大) LV2
+1/500 SC石(大) LV2
+1/1500 道术石(特大) LV2
+1/1500 MC石(特大) LV2
+1/1500 SC石(特大) LV2
 1/3500 ItemMineJewl[1d] LV2
 1/3500 ExperienceMineJewl[1d] LV2
 1/5000 BloodJewl[1d] LV2
@@ -262,14 +262,14 @@
 
 ;Taoist
 1/5000 之灵剑 LV2
-1/5000 Poisoning LV2
+1/5000 毒ing LV2
 1/8000 魂火球 LV2
 1/8000 召唤骷髅 LV2
 1/8500 Hiding LV2
 1/8500 MassHiding LV2
 1/8500 魂盾 LV2
 1/10000 Revelation LV2
-1/10000 Blessed甲 LV2
+1/10000 祝福ed甲 LV2
 
 ;Assassion
 1/5000 Fatal剑 LV2
@@ -283,7 +283,7 @@
 1/5000 MentalState LV2
 1/8000 双Shot LV2
 1/8000 Meditation LV2
-1/8000 ElementalShot LV2
+1/8000 元素alShot LV2
 1/10000 Explosive陷阱 LV2
 1/10000 Concentration LV2
 1/10000 VampireShot LV2
@@ -312,18 +312,18 @@
 1/2000 短剑剑 LV3
 
 ;Armour
-1/15000 钢甲(M) LV3
-1/15000 钢甲(F) LV3
-1/15000 龙袍(M) LV3
-1/15000 龙袍(F) LV3
-1/15000 Titan甲(M) LV3
-1/15000 Titan甲(F) LV3
-1/50000 黑虎甲(M) LV3
-1/50000 黑虎甲(F) LV3
-1/50000 Lotus甲(F) LV3
-1/50000 Lotus甲(M) LV3
-1/50000 Crane甲(F) LV3
-1/50000 Crane甲(M) LV3
+1/15000 钢甲(男) LV3
+1/15000 钢甲(女) LV3
+1/15000 龙袍(男) LV3
+1/15000 龙袍(女) LV3
+1/15000 泰坦甲(男) LV3
+1/15000 泰坦甲(女) LV3
+1/50000 黑虎甲(男) LV3
+1/50000 黑虎甲(女) LV3
+1/50000 莲甲(女) LV3
+1/50000 莲甲(男) LV3
+1/50000 Crane甲(女) LV3
+1/50000 Crane甲(男) LV3
 
 ;Helmets
 1/10000 巨盔 LV3
@@ -381,12 +381,12 @@
 1/1800 MysteriousGuards[1d] LV3
 
 ;Stone
-1/500 DC石(L) LV3
-1/500 MC石(L) LV3
-1/500 SC石(L) LV3
-1/1500 DC石(XL) LV3
-1/1500 MC石(XL) LV3
-1/1500 SC石(XL) LV3
+1/500 道术石(大) LV3
+1/500 MC石(大) LV3
+1/500 SC石(大) LV3
+1/1500 道术石(特大) LV3
+1/1500 MC石(特大) LV3
+1/1500 SC石(特大) LV3
 1/3500 ItemMineJewl[1d] LV3
 1/3500 ExperienceMineJewl[1d] LV3
 1/5000 BloodJewl[1d] LV3
@@ -410,14 +410,14 @@
 
 ;Taoist
 1/5000 之灵剑 LV3
-1/5000 Poisoning LV3
+1/5000 毒ing LV3
 1/8000 魂火球 LV3
 1/8000 召唤骷髅 LV3
 1/8500 Hiding LV3
 1/8500 MassHiding LV3
 1/8500 魂盾 LV3
 1/10000 Revelation LV3
-1/10000 Blessed甲 LV3
+1/10000 祝福ed甲 LV3
 
 ;Assassion
 1/5000 Fatal剑 LV3
@@ -431,7 +431,7 @@
 1/5000 MentalState LV3
 1/8000 双Shot LV3
 1/8000 Meditation LV3
-1/8000 ElementalShot LV3
+1/8000 元素alShot LV3
 1/10000 Explosive陷阱 LV3
 1/10000 Concentration LV3
 1/10000 VampireShot LV3
@@ -460,18 +460,18 @@
 1/2000 短剑剑 LV4
 
 ;Armour
-1/15000 钢甲(M) LV4
-1/15000 钢甲(F) LV4
-1/15000 龙袍(M) LV4
-1/15000 龙袍(F) LV4
-1/15000 Titan甲(M) LV4
-1/15000 Titan甲(F) LV4
-1/50000 黑虎甲(M) LV4
-1/50000 黑虎甲(F) LV4
-1/50000 Lotus甲(F) LV4
-1/50000 Lotus甲(M) LV4
-1/50000 Crane甲(F) LV4
-1/50000 Crane甲(M) LV4
+1/15000 钢甲(男) LV4
+1/15000 钢甲(女) LV4
+1/15000 龙袍(男) LV4
+1/15000 龙袍(女) LV4
+1/15000 泰坦甲(男) LV4
+1/15000 泰坦甲(女) LV4
+1/50000 黑虎甲(男) LV4
+1/50000 黑虎甲(女) LV4
+1/50000 莲甲(女) LV4
+1/50000 莲甲(男) LV4
+1/50000 Crane甲(女) LV4
+1/50000 Crane甲(男) LV4
 
 ;Helmets
 1/10000 巨盔 LV4
@@ -529,12 +529,12 @@
 1/1800 MysteriousGuards[1d] LV4
 
 ;Stone
-1/500 DC石(L) LV4
-1/500 MC石(L) LV4
-1/500 SC石(L) LV4
-1/1500 DC石(XL) LV4
-1/1500 MC石(XL) LV4
-1/1500 SC石(XL) LV4
+1/500 道术石(大) LV4
+1/500 MC石(大) LV4
+1/500 SC石(大) LV4
+1/1500 道术石(特大) LV4
+1/1500 MC石(特大) LV4
+1/1500 SC石(特大) LV4
 1/3500 ItemMineJewl[1d] LV4
 1/3500 ExperienceMineJewl[1d] LV4
 1/5000 BloodJewl[1d] LV4
@@ -558,14 +558,14 @@
 
 ;Taoist
 1/5000 之灵剑 LV4
-1/5000 Poisoning LV4
+1/5000 毒ing LV4
 1/8000 魂火球 LV4
 1/8000 召唤骷髅 LV4
 1/8500 Hiding LV4
 1/8500 MassHiding LV4
 1/8500 魂盾 LV4
 1/10000 Revelation LV4
-1/10000 Blessed甲 LV4
+1/10000 祝福ed甲 LV4
 
 ;Assassion
 1/5000 Fatal剑 LV4
@@ -579,7 +579,7 @@
 1/5000 MentalState LV4
 1/8000 双Shot LV4
 1/8000 Meditation LV4
-1/8000 ElementalShot LV4
+1/8000 元素alShot LV4
 1/10000 Explosive陷阱 LV4
 1/10000 Concentration LV4
 1/10000 VampireShot LV4
@@ -608,18 +608,18 @@
 1/2000 短剑剑 LV5
 
 ;Armour
-1/15000 钢甲(M) LV5
-1/15000 钢甲(F) LV5
-1/15000 龙袍(M) LV5
-1/15000 龙袍(F) LV5
-1/15000 Titan甲(M) LV5
-1/15000 Titan甲(F) LV5
-1/50000 黑虎甲(M) LV5
-1/50000 黑虎甲(F) LV5
-1/50000 Lotus甲(F) LV5
-1/50000 Lotus甲(M) LV5
-1/50000 Crane甲(F) LV5
-1/50000 Crane甲(M) LV5
+1/15000 钢甲(男) LV5
+1/15000 钢甲(女) LV5
+1/15000 龙袍(男) LV5
+1/15000 龙袍(女) LV5
+1/15000 泰坦甲(男) LV5
+1/15000 泰坦甲(女) LV5
+1/50000 黑虎甲(男) LV5
+1/50000 黑虎甲(女) LV5
+1/50000 莲甲(女) LV5
+1/50000 莲甲(男) LV5
+1/50000 Crane甲(女) LV5
+1/50000 Crane甲(男) LV5
 
 ;Helmets
 1/10000 巨盔 LV5
@@ -677,12 +677,12 @@
 1/1800 MysteriousGuards[1d] LV5
 
 ;Stone
-1/500 DC石(L) LV5
-1/500 MC石(L) LV5
-1/500 SC石(L) LV5
-1/1500 DC石(XL) LV5
-1/1500 MC石(XL) LV5
-1/1500 SC石(XL) LV5
+1/500 道术石(大) LV5
+1/500 MC石(大) LV5
+1/500 SC石(大) LV5
+1/1500 道术石(特大) LV5
+1/1500 MC石(特大) LV5
+1/1500 SC石(特大) LV5
 1/3500 ItemMineJewl[1d] LV5
 1/3500 ExperienceMineJewl[1d] LV5
 1/5000 BloodJewl[1d] LV5
@@ -706,14 +706,14 @@
 
 ;Taoist
 1/5000 之灵剑 LV5
-1/5000 Poisoning LV5
+1/5000 毒ing LV5
 1/8000 魂火球 LV5
 1/8000 召唤骷髅 LV5
 1/8500 Hiding LV5
 1/8500 MassHiding LV5
 1/8500 魂盾 LV5
 1/10000 Revelation LV5
-1/10000 Blessed甲 LV5
+1/10000 祝福ed甲 LV5
 
 ;Assassion
 1/5000 Fatal剑 LV5
@@ -727,7 +727,7 @@
 1/5000 MentalState LV5
 1/8000 双Shot LV5
 1/8000 Meditation LV5
-1/8000 ElementalShot LV5
+1/8000 元素alShot LV5
 1/10000 Explosive陷阱 LV5
 1/10000 Concentration LV5
 1/10000 VampireShot LV5
@@ -757,18 +757,18 @@
 1/2000 短剑剑 LV6
 
 ;Armour
-1/15000 钢甲(M) LV6
-1/15000 钢甲(F) LV6
-1/15000 龙袍(M) LV6
-1/15000 龙袍(F) LV6
-1/15000 Titan甲(M) LV6
-1/15000 Titan甲(F) LV6
-1/50000 黑虎甲(M) LV6
-1/50000 黑虎甲(F) LV6
-1/50000 Lotus甲(F) LV6
-1/50000 Lotus甲(M) LV6
-1/50000 Crane甲(F) LV6
-1/50000 Crane甲(M) LV6
+1/15000 钢甲(男) LV6
+1/15000 钢甲(女) LV6
+1/15000 龙袍(男) LV6
+1/15000 龙袍(女) LV6
+1/15000 泰坦甲(男) LV6
+1/15000 泰坦甲(女) LV6
+1/50000 黑虎甲(男) LV6
+1/50000 黑虎甲(女) LV6
+1/50000 莲甲(女) LV6
+1/50000 莲甲(男) LV6
+1/50000 Crane甲(女) LV6
+1/50000 Crane甲(男) LV6
 
 ;Helmets
 1/10000 巨盔 LV6
@@ -826,12 +826,12 @@
 1/1800 MysteriousGuards[1d] LV6
 
 ;Stone
-1/500 DC石(L) LV6
-1/500 MC石(L) LV6
-1/500 SC石(L) LV6
-1/1500 DC石(XL) LV6
-1/1500 MC石(XL) LV6
-1/1500 SC石(XL) LV6
+1/500 道术石(大) LV6
+1/500 MC石(大) LV6
+1/500 SC石(大) LV6
+1/1500 道术石(特大) LV6
+1/1500 MC石(特大) LV6
+1/1500 SC石(特大) LV6
 1/3500 ItemMineJewl[1d] LV6
 1/3500 ExperienceMineJewl[1d] LV6
 1/5000 BloodJewl[1d] LV6
@@ -855,14 +855,14 @@
 
 ;Taoist
 1/5000 之灵剑 LV6
-1/5000 Poisoning LV6
+1/5000 毒ing LV6
 1/8000 魂火球 LV6
 1/8000 召唤骷髅 LV6
 1/8500 Hiding LV6
 1/8500 MassHiding LV6
 1/8500 魂盾 LV6
 1/10000 Revelation LV6
-1/10000 Blessed甲 LV6
+1/10000 祝福ed甲 LV6
 
 ;Assassion
 1/5000 Fatal剑 LV6
@@ -876,7 +876,7 @@
 1/5000 MentalState LV6
 1/8000 双Shot LV6
 1/8000 Meditation LV6
-1/8000 ElementalShot LV6
+1/8000 元素alShot LV6
 1/10000 Explosive陷阱 LV6
 1/10000 Concentration LV6
 1/10000 VampireShot LV6
@@ -905,18 +905,18 @@
 1/2000 短剑剑 LV7
 
 ;Armour
-1/15000 钢甲(M) LV7
-1/15000 钢甲(F) LV7
-1/15000 龙袍(M) LV7
-1/15000 龙袍(F) LV7
-1/15000 Titan甲(M) LV7
-1/15000 Titan甲(F) LV7
-1/50000 黑虎甲(M) LV7
-1/50000 黑虎甲(F) LV7
-1/50000 Lotus甲(F) LV7
-1/50000 Lotus甲(M) LV7
-1/50000 Crane甲(F) LV7
-1/50000 Crane甲(M) LV7
+1/15000 钢甲(男) LV7
+1/15000 钢甲(女) LV7
+1/15000 龙袍(男) LV7
+1/15000 龙袍(女) LV7
+1/15000 泰坦甲(男) LV7
+1/15000 泰坦甲(女) LV7
+1/50000 黑虎甲(男) LV7
+1/50000 黑虎甲(女) LV7
+1/50000 莲甲(女) LV7
+1/50000 莲甲(男) LV7
+1/50000 Crane甲(女) LV7
+1/50000 Crane甲(男) LV7
 
 ;Helmets
 1/10000 巨盔 LV7
@@ -974,12 +974,12 @@
 1/1800 MysteriousGuards[1d] LV7
 
 ;Stone
-1/500 DC石(L) LV7
-1/500 MC石(L) LV7
-1/500 SC石(L) LV7
-1/1500 DC石(XL) LV7
-1/1500 MC石(XL) LV7
-1/1500 SC石(XL) LV7
+1/500 道术石(大) LV7
+1/500 MC石(大) LV7
+1/500 SC石(大) LV7
+1/1500 道术石(特大) LV7
+1/1500 MC石(特大) LV7
+1/1500 SC石(特大) LV7
 1/3500 ItemMineJewl[1d] LV7
 1/3500 ExperienceMineJewl[1d] LV7
 1/5000 BloodJewl[1d] LV7
@@ -1003,14 +1003,14 @@
 
 ;Taoist
 1/5000 之灵剑 LV7
-1/5000 Poisoning LV7
+1/5000 毒ing LV7
 1/8000 魂火球 LV7
 1/8000 召唤骷髅 LV7
 1/8500 Hiding LV7
 1/8500 MassHiding LV7
 1/8500 魂盾 LV7
 1/10000 Revelation LV7
-1/10000 Blessed甲 LV7
+1/10000 祝福ed甲 LV7
 
 ;Assassion
 1/5000 Fatal剑 LV7
@@ -1024,7 +1024,7 @@
 1/5000 MentalState LV7
 1/8000 双Shot LV7
 1/8000 Meditation LV7
-1/8000 ElementalShot LV7
+1/8000 元素alShot LV7
 1/10000 Explosive陷阱 LV7
 1/10000 Concentration LV7
 1/10000 VampireShot LV7
@@ -1053,18 +1053,18 @@
 1/2000 短剑剑 LV8
 
 ;Armour
-1/15000 钢甲(M) LV8
-1/15000 钢甲(F) LV8
-1/15000 龙袍(M) LV8
-1/15000 龙袍(F) LV8
-1/15000 Titan甲(M) LV8
-1/15000 Titan甲(F) LV8
-1/50000 黑虎甲(M) LV8
-1/50000 黑虎甲(F) LV8
-1/50000 Lotus甲(F) LV8
-1/50000 Lotus甲(M) LV8
-1/50000 Crane甲(F) LV8
-1/50000 Crane甲(M) LV8
+1/15000 钢甲(男) LV8
+1/15000 钢甲(女) LV8
+1/15000 龙袍(男) LV8
+1/15000 龙袍(女) LV8
+1/15000 泰坦甲(男) LV8
+1/15000 泰坦甲(女) LV8
+1/50000 黑虎甲(男) LV8
+1/50000 黑虎甲(女) LV8
+1/50000 莲甲(女) LV8
+1/50000 莲甲(男) LV8
+1/50000 Crane甲(女) LV8
+1/50000 Crane甲(男) LV8
 
 ;Helmets
 1/10000 巨盔 LV8
@@ -1122,12 +1122,12 @@
 1/1800 MysteriousGuards[1d] LV8
 
 ;Stone
-1/500 DC石(L) LV8
-1/500 MC石(L) LV8
-1/500 SC石(L) LV8
-1/1500 DC石(XL) LV8
-1/1500 MC石(XL) LV8
-1/1500 SC石(XL) LV8
+1/500 道术石(大) LV8
+1/500 MC石(大) LV8
+1/500 SC石(大) LV8
+1/1500 道术石(特大) LV8
+1/1500 MC石(特大) LV8
+1/1500 SC石(特大) LV8
 1/3500 ItemMineJewl[1d] LV8
 1/3500 ExperienceMineJewl[1d] LV8
 1/5000 BloodJewl[1d] LV8
@@ -1151,14 +1151,14 @@
 
 ;Taoist
 1/5000 之灵剑 LV8
-1/5000 Poisoning LV8
+1/5000 毒ing LV8
 1/8000 魂火球 LV8
 1/8000 召唤骷髅 LV8
 1/8500 Hiding LV8
 1/8500 MassHiding LV8
 1/8500 魂盾 LV8
 1/10000 Revelation LV8
-1/10000 Blessed甲 LV8
+1/10000 祝福ed甲 LV8
 
 ;Assassion
 1/5000 Fatal剑 LV8
@@ -1172,7 +1172,7 @@
 1/5000 MentalState LV8
 1/8000 双Shot LV8
 1/8000 Meditation LV8
-1/8000 ElementalShot LV8
+1/8000 元素alShot LV8
 1/10000 Explosive陷阱 LV8
 1/10000 Concentration LV8
 1/10000 VampireShot LV8

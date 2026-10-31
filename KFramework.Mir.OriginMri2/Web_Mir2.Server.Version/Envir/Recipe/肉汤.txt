@@ -8,4 +8,4 @@ Gold 500
 [Ingredients]
 肉
 老山参
-StaminaAid(S)
+StaminaAid(小)

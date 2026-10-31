@@ -47,7 +47,7 @@
 
 
 ;CraftingMaterials
-1/200 AntidoteMarble
+1/200 蚁idoteMarble
 
 ;Quests
 

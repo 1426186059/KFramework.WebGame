@@ -8,9 +8,9 @@
 1/15 太阳水
 
 
-1/30000 DualTitan护符
+1/30000 Dual泰坦护符
 1/30000 邪Whisp护符
-1/30000 SacredAngel护符
+1/30000 Sacred天使护符
 1/40000 烈焰Grasp
 1/15000 Cloud戒
 1/15000 红魔戒
@@ -18,7 +18,7 @@
 1/15000 魔面具
 1/15000 Violet珠
 1/15000 KunroonTear
-1/20000 (H)WheelOfLunar
+1/20000 (魂)WheelOfLunar
 1/7000 BenedictionOil
 1/25000 DestinyRing 
 1/25000 奥玛之灵戒
