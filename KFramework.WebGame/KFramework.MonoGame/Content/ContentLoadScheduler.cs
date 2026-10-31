@@ -57,7 +57,7 @@ namespace KFramework.MonoGame
             {
                 // PriorityQueue 是最小堆（数值小的先出队）；对外约定 priority 越大越优先，故取负入队。
                 _queue.Enqueue(job, (-priority, _seq++));
-                PrintTool.Log("当前 ContentLoadScheduler Queue Count: ", _queue.Count);
+                //PrintTool.Log("当前 ContentLoadScheduler Queue Count: ", _queue.Count);
             }
             Pump();
             return job.Completion.Task;
@@ -85,7 +85,7 @@ namespace KFramework.MonoGame
                 {
                     if (_queue.TryDequeue(out job, out _))
                     {
-                        PrintTool.Log("当前 ContentLoadScheduler Queue Count: ", _queue.Count);
+                        //PrintTool.Log("当前 ContentLoadScheduler Queue Count: ", _queue.Count);
                     }
                     else
                     {
