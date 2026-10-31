@@ -26,12 +26,15 @@ namespace Client.MirObjects
 
     public sealed class Mir2MapData
     {
+        public int Width;        // 像素宽（来自配置）
+        public int Height;       // 像素高（来自配置）
         public int Cols;
         public int Rows;
         public byte[] CellFlags;   // 每格 4-bit 标志（半字节），长度 = Cols*Rows
         public int Walkable;
         public int Cover;
         public int Safe;
+        public string Warn;        // 网格估算告警（配置与数据不符时）
     }
 
     internal static class Mir2MapDecoder
@@ -55,42 +58,28 @@ namespace Client.MirObjects
             return raw;
         }
 
-        public static List<(int Id, int Len)> ParseIndex(byte[] data)
+        public static byte[] ExtractMapBlock(byte[] data, int id, out int rawLen)
         {
-            var list = new List<(int, int)>();
-            if (data == null || data.Length < 2) return list;
+            rawLen = 0;
+            if (data == null || data.Length < 2) return null;
             int count = (data[0] << 8) | data[1];
             int pos = 2;
             for (int i = 0; i < count && pos + 8 <= data.Length; i++)
             {
-                int id = (data[pos] << 24) | (data[pos + 1] << 16) | (data[pos + 2] << 8) | data[pos + 3];
+                if (pos + 8 > data.Length) break;
+                int mid = (data[pos] << 24) | (data[pos + 1] << 16) | (data[pos + 2] << 8) | data[pos + 3];
                 int len = (data[pos + 4] << 24) | (data[pos + 5] << 16) | (data[pos + 6] << 8) | data[pos + 7];
-                pos += 8;
+                pos += 8;                              // 越过 8 字节条目头(id+len)
                 if (len < 0 || len > data.Length - pos) break;
-                list.Add((id, len));
-                pos += len;
-            }
-            return list;
-        }
-
-        public static byte[] ExtractMapBlock(byte[] data, int id, out int rawLen)
-        {
-            rawLen = 0;
-            var idx = ParseIndex(data);
-            foreach (var (Id, Len) in idx)
-            {
-                if (Id != id) continue;
-                int pos = 2;
-                foreach (var (Id2, Len2) in idx)
+                if (mid == id)
                 {
-                    if (Id2 == id) break;
-                    pos += 8 + Len2;
+                    if (len <= 4) return null;          // 至少 1 字节数据才算有效块
+                    rawLen = len - 4;                   // 再丢弃每块开头的 4 字节块头（与原版 JS / 服务端一致）
+                    var block = new byte[len - 4];
+                    Buffer.BlockCopy(data, pos + 4, block, 0, len - 4);
+                    return block;
                 }
-                if (Len <= 4) return null;   // 块头 4 字节 + 至少 1 字节数据才算有效块
-                rawLen = Len - 4;             // 丢弃每块开头的 4 字节块头（与原版 JS / 服务端一致）
-                var block = new byte[Len - 4];
-                Buffer.BlockCopy(data, pos + 4, block, 0, Len - 4);
-                return block;
+                pos += len;
             }
             return null;
         }
@@ -98,14 +87,27 @@ namespace Client.MirObjects
         // gridW/gridH = 单格像素(48/32)。Cols 由配置像素宽推算，Rows 由总格数反推，保证 Cols*Rows 与块长一致。
         public static Mir2MapData Decode(int id, byte[] block, int pixelWidth, int pixelHeight, int gridW, int gridH)
         {
-            var md = new Mir2MapData();
-            int totalCells = block.Length * 2;
-            int cols = (int)Math.Ceiling(pixelWidth / (double)gridW);
-            if (cols <= 0) cols = 1;
-            int rows = totalCells / cols;
+            var md = new Mir2MapData
+            {
+                Width = pixelWidth,
+                Height = pixelHeight,
+            };
+            int rawCells = block.Length * 2;
+            // 优先用配置格（宽高换算），与服务器 OriginalMapDecoder 完全一致；数据不足以铺满才退化按数据长度估算。
+            int cfgCols = pixelWidth > 0 ? (int)Math.Ceiling(pixelWidth / (double)gridW) : 0;
+            int cfgRows = pixelHeight > 0 ? (int)Math.Ceiling(pixelHeight / (double)gridH) : 0;
+            int cfgCells = cfgCols * cfgRows;
+            int cols = cfgCols, rows = cfgRows;
+            if (cfgCells <= 0 || rawCells < cfgCells)
+            {
+                cols = cfgCols > 0 ? cfgCols : 1;
+                rows = rawCells / cols;
+                md.Warn = $"地图{id} 配置格数({cfgCells})与数据块格数({rawCells})不符，已按数据长度估算网格 {cols}x{rows}";
+            }
             md.Cols = cols;
             md.Rows = rows;
-            md.CellFlags = new byte[totalCells];
+            int maxCells = cols * rows;
+            md.CellFlags = new byte[maxCells];
             int idx = 0;
             for (int y = 0; y < rows; y++)
             {
@@ -270,7 +272,6 @@ namespace Client.MirObjects
 
         public static async Task<(Mir2MapData data, Mir2MapEntry entry)> LoadAsync(int id, CancellationToken ct)
         {
-            GameProfiler.TestStart();
             await Mir2MapConfig.EnsureLoadedAsync(ct).ConfigureAwait(false);
             Mir2MapConfig.TryGetEntry(id, out var entry);
             int img = entry?.Img ?? id;
@@ -278,18 +279,13 @@ namespace Client.MirObjects
             int ph = entry?.Height ?? 0;
 
             byte[] dat = await EnsureDatAsync(ct).ConfigureAwait(false);
-            if (dat == null) { GameProfiler.TestFinishAndLog($"[Map] LoadAsync(地图{id}) dat为空"); return (null, entry); }
+            if (dat == null) return (null, entry);
 
             int rawLen;
-            GameProfiler.TestStart();
             byte[] block = Mir2MapDecoder.ExtractMapBlock(dat, id, out rawLen);
-            GameProfiler.TestFinishAndLog($"[Map] ExtractMapBlock block={block?.Length ?? 0}字节");
-            if (block == null || rawLen == 0) { GameProfiler.TestFinishAndLog($"[Map] LoadAsync(地图{id}) block为空"); return (null, entry); }
+            if (block == null || rawLen == 0) return (null, entry);
 
-            GameProfiler.TestStart();
             var md = Mir2MapDecoder.Decode(id, block, pw, ph, 48, 32);
-            GameProfiler.TestFinishAndLog($"[Map] Decode cols={md.Cols} rows={md.Rows} 总格={md.Cols * md.Rows}");
-            GameProfiler.TestFinishAndLog($"[Map] LoadAsync(地图{id}) 完成");
             return (md, entry);
         }
 
@@ -301,7 +297,6 @@ namespace Client.MirObjects
             // 文件名版本号随游戏更新（如 10.25487.1），并带 ?ver= 缓存破坏参数。
             _datTask = Task.Run(async () =>
             {
-                GameProfiler.TestStart();
                 byte[] data = null;
                 string[] candidates = { "map10.25487.1.dat?ver=1.0.2", "map10.25487.1.dat" };
                 foreach (var p in candidates)
@@ -310,12 +305,9 @@ namespace Client.MirObjects
                     catch { data = null; }
                     if (data != null && data.Length > 0)
                     {
-                        var d = Mir2MapDecoder.DecompressIfNeeded(data);
-                        GameProfiler.TestFinishAndLog($"[Map] dat 下载+解压 原始{data.Length}→解压{d.Length}字节");
-                        return d;
+                        return Mir2MapDecoder.DecompressIfNeeded(data);
                     }
                 }
-                GameProfiler.TestFinishAndLog($"[Map] dat 下载+解压 未取到数据");
                 return null;
             });
             var result = await _datTask.ConfigureAwait(false);
