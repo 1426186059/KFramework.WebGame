@@ -11,7 +11,7 @@ $ <$CONQUESTGOLD(1)> {Gold/Yellow}                                              
  
 下次攻城时间：
 
-* <$CONQUESTSCHEDULE(1)> {Attacking Guild/Orange}
+* <$CONQUESTSCHEDULE(1)> {攻方公会/Orange}
 
  <修缮城堡/@repaircastle>             <重新雇佣弓箭手/@reliveachers>      <离开/@exit>
 
@@ -79,8 +79,8 @@ GLOBALMESSAGE "奉 <$CONQUESTOWNER(1)> 之命，沙巴克税率已调整为 <$CO
 ;gate regulation
 
 [@treatdoor]
-Here you can open and close your Main Gate!
-<Main/@main>
+你可以在此开启或关闭主城门！
+<返回/@main>
 
 [@openmaindoor]
 #IF

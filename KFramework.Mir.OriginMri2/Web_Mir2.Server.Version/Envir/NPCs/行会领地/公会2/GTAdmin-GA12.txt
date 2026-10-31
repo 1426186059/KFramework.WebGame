@@ -1,45 +1,45 @@
 [@Main]
 #SAY
-How are you. <$USERNAME>. I am the 'Guild Territory Steward'.
-How can I help you?
-Rental days remaining: <$GUILDGTRENTALDAYSLEFT>.
-I want to <Extend/@extend> the rental period.
-I want to <Summon/@summon> members to the territory.
-I want to <Apply or Cancel/@appcancel> sale of my guild territory.
+你好，<$USERNAME>。我是"公会领地管家"。
+有什么可以帮你的吗？
+剩余租赁天数：<$GUILDGTRENTALDAYSLEFT>。
+我想<延长/@extend>租赁期。
+我想<召唤/@summon>成员到领地。
+我想<申请或取消/@appcancel>出售我的公会领地。
 
 [@summon]
 #SAY
-I will summon the members scattered in the Mir continent now.
-<Total summon/@agitrecall>
-<Individual summon/@agitonerecall>
-<Back/@main>
+我现在将散落在米尔大陆的成员召唤过来。
+<全体召唤/@agitrecall>
+<单人召唤/@agitonerecall>
+<返回/@main>
 
 [@extend]
 #SAY
-<$GUILDEXTENDFEE> gold is required. 
-To extend the rental period of this territory for 7 additional days.
-After the rental period expiration, the guild is given 7 days
-to extend. If no fee is paid even within the additional 7 days,
-the ownership of the guild territory will be completely removed.
-<Extend rental period/@agitextend>
-<Back/@main>
+需要 <$GUILDEXTENDFEE> 金币。
+为本领地额外延长 7 天租赁期。
+租赁期到期后，公会还有 7 天时间
+可以续租。若连这额外的 7 天内都未缴费，
+公会领地的所有权将被彻底移除。
+<延长租赁期/@agitextend>
+<返回/@main>
 
 #ELSEACT
-LocalMessage "Come back when you own this territory!" Hint
+LocalMessage "当你拥有这片领地时再来吧！" Hint
 
 [@agitextend]
 #IF
 HASGT
 #ACT
 EXTENDGT
-LOCALMESSAGE "Rental extend 7 additional days." Hint
+LOCALMESSAGE "租赁已延长 7 天。" Hint
 
 [@agitrecall]
 #ACT
 AGITRECALL
 
 [@agitonerecall]
-<Who do you wish to summon?/@@summontest>
+<你想召唤谁？/@@summontest>
 
 [@@summontest]
 #ACT
@@ -48,11 +48,11 @@ AGITONERRECALL <$OUTPUT(A1)>
 
 [@appcancel]
 #SAY
-I will start & cancel the sale of guild territory.
-After a successful transaction, the ownership shall be
-transferred to the buyer 24 hours later.
-The master and members of the guild that sold the territory
-willbe booted out automatically.
-<Apply for sale of Guild territory/@@agitforsale>
-<Cancel sale of Guild territory/@agitforsalecancel>
-<Back/@main>
+我将开始或取消公会领地的出售。
+交易成功后，所有权将在 24 小时后
+转移给买家。
+出售领地的公会会长与成员
+将被自动踢出。
+<申请出售公会领地/@@agitforsale>
+<取消出售公会领地/@agitforsalecancel>
+<返回/@main>

@@ -1,8 +1,7 @@
 [@main]
-<Move/@move3nd> to the 3rd floor.
-<Move/@move1st> to the 1st floor.
-<Close/@exit>
-
+<移动到/@move3nd> 3 层。
+<移动到/@move1st> 1 层。
+<关闭/@exit>
 
 [@move3nd]
 #ACT
