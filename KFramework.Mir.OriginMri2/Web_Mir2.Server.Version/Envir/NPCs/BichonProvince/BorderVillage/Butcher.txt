@@ -2,40 +2,38 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
- 
- 
-<Close/@exit>
+我不会帮助像你这样的恶人……
+
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Welcome, what can I do for you?
- 
-<Sell/@Sell> 肉.
-<Ask/@Meathelp> about how to gain 肉.
- 
-<Close/@Exit>
+欢迎，有什么可以帮你的吗？
+
+<出售/@Sell> 肉。
+<询问/@Meathelp> 如何获得肉。
+
+<关闭/@Exit>
 
 [@Sell]
 #SAY
-I will buy high quality for high price.
-but if the 肉 is stained with soil or burned with fire
-I'll buy it at low price.
- 
-<Back/@Main>
+品质好的肉，我出高价收购。
+但若肉沾了泥土或被火烧过，
+我只会低价收购。
+
+<返回/@Main>
 
 [@Meathelp]
 #SAY
-{肉/LightSteelBlue} can be gained from {Hens/Crimson}, {鹿/Crimson}, {Sheep/Crimson}, and {Wolves/Crimson}.
-To get 肉 from any of the above, first of all kill the animal.
-Once you have killed it, press the ALT button, while left clicking
-on the dead body for a few seconds.
-You should then see a piece of 肉 appear in your inventory.
-Using magic to kill an animal burns the 肉, reducing its quality to 0.
- 
-<Back/@Main>
+{肉/LightSteelBlue} 可从{Hens/Crimson}、{鹿/Crimson}、{Sheep/Crimson}和{Wolves/Crimson}身上获得。
+要从上述任何动物身上取得肉，首先得把它杀死。
+杀死后，按住 ALT 键并用左键点击尸体数秒。
+随后你就能看到一块肉出现在背包里。
+用魔法击杀动物会把肉烧焦，使其品质降为 0。
+
+<返回/@Main>
 
 [Types]
 15

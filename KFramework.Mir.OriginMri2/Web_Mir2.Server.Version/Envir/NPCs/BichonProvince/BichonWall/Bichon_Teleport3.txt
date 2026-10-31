@@ -2,95 +2,86 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Hello i'm Kyle, the wandering warrior.
-I transport men and goods to other places fast and safe. 
-Just pay the fee then ill escort you to anywhere.
-So what do you say?
+你好，我是 Kyle，一名流浪武士。
+我能快速而安全地把人和货物送往其他地方。
+只要支付费用，我就会护送你去任何地方。
+你觉得怎么样？
  
-I'll use this <Service/@tele>
-Maybe next <Time/@exit> 
+我要使用这项<服务/@tele>
+也许<改天/@exit>
 
 [@tele]
 #SAY
-Which place would you like to go?
+你想去哪个地方？
 
-My service fee is 2000 gold.
+我的服务费是 2000 金币。
 
-<<BorderVillage/@Border>>
-<<SerpentValley/@Serpent>>
-<<MudWall/@MudWall>>
-<<TaoistSchool/@TaoVillage>>
-<<CastleGi-Ryoong/@CastleGi>>
-<<WoomyonCamp/@Camp>>
+<<比奇省/@比奇省>>
+<<毒蛇山谷/@毒蛇山谷>>
+<<盟重/@盟重>>
+<<白日门/@白日门>>
+<<沙城外城/@沙城外城>>
 
-[@Border]
+[@比奇省]
 #IF
 CHECKGOLD > 1999
 #ACT
-MOVE 0 289 617
+MOVE 103
 TAKEGOLD 2000
 #ELSEACT
 GOTO @gold
 
-[@Serpent]
+[@毒蛇山谷]
 #IF
 CHECKGOLD > 1999
 #ACT
-MOVE 2 500 485
+MOVE 5427
 TAKEGOLD 2000
 #ELSEACT
 GOTO @gold
 
-[@MudWall]
+[@盟重]
 #IF
 CHECKGOLD > 1999
 #ACT
-MOVE 3 361 342
+MOVE 154
 TAKEGOLD 2000
 #ELSEACT
 GOTO @gold
 
-[@TaoVillage]
+[@白日门]
 #IF
 CHECKGOLD > 1999
 #ACT
-MOVE 11 163 337
+MOVE 5384
 TAKEGOLD 2000
 #ELSEACT
 GOTO @gold
 
-[@CastleGi]
+[@沙城外城]
 #IF
 CHECKGOLD > 1999
 #ACT
-MOVE 4 264 257
+MOVE 962
 TAKEGOLD 2000
 #ELSEACT
 GOTO @gold
 
-[@Camp]
-#IF
-CHECKGOLD > 1999
-#ACT
-MOVE 1 315 82
-TAKEGOLD 2000
-#ELSEACT
-GOTO @gold
 
 [@gold]
 #SAY
-Sorry you do not have enough gold.
+抱歉，你的金币不足。
 
-<Exit/@Exit>
+<退出/@Exit>
 
 [Quests]
 -57

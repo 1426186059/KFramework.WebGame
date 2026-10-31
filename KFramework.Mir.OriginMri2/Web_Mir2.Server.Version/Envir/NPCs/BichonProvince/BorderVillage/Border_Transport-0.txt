@@ -2,54 +2,71 @@
 #IF
 CHECKPKPOINT > 100
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Hello i'm Gilbert, the wandering warrior.
-I transport men and goods to other places fast and safe. 
-Just pay the fee then ill escort you to anywhere.
-So what do you say?
+你好，我是 Gilbert，一名流浪武士。
+我能快速而安全地把人和货物送往其他地方。
+只要支付费用，我就会护送你去任何地方。
+你觉得怎么样？
  
-I'll use this <Service/@tele>
-Maybe next <Time/@exit> 
+我要使用这项<服务/@tele>
+也许<改天/@exit>
+<回城/@recall>
 
 [@tele]
 #SAY
-Which place would you like to go?
+你想去哪个地方？
  
-<<BorderVillage/@Border>>
-<<BichonWall/@BichonWall>>
-<<SerpentValley/@Serpent>>
-<<MudWall/@MudWall>>
-<<TaoistSchool/@TaoVillage>>
-<<CastleGi-Ryoong/@CastleGi>>
+<<比奇省/@比奇省>>
+<<比奇城墙/@比奇城墙>>
+<<毒蛇山谷/@毒蛇山谷>>
+<<盟重/@盟重>>
+<<白日门/@白日门>>
+<<沙城外城/@沙城外城>>
 
-[@Border]
+[@比奇省]
 #ACT
-MOVE 0 289 617
+MOVE 103
 
-[@BichonWall]
+[@比奇城墙]
 #ACT
-MOVE 0 296 222
+MOVE 103
 
-[@Serpent]
+[@毒蛇山谷]
 #ACT
-MOVE 2 500 485
+MOVE 5427
 
-[@MudWall]
+[@盟重]
 #ACT
-MOVE 3 361 342
+MOVE 154
 
-[@TaoVillage]
+[@白日门]
 #ACT
-MOVE 11 163 337
+MOVE 5384
 
-[@CastleGi]
+[@沙城外城]
 #ACT
-MOVE 4 264 257
+MOVE 962
+
+[@recall]
+#IF
+LEVEL < 10
+#ACT
+MOVE 103
+#ELSEACT
+GOTO @recall_mid
+
+[@recall_mid]
+#IF
+LEVEL < 20
+#ACT
+MOVE 103
+#ELSEACT
+MOVE 154

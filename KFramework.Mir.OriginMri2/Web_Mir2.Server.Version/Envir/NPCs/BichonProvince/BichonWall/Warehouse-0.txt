@@ -2,29 +2,25 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
- 
- 
-<Close/@exit>
+我不会帮助像你这样的恶人……
+
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Hello traveller. How can i help you?
- 
-<Access/@Storage> Storage
+你好，旅行者。有什么可以帮你的吗？
 
-You have <$PARCELAMOUNT> parcels waiting for you.
-Please visit Mary inside the Inn
- 
-<Close/@exit>
+<存取/@Storage> 仓库
 
+你有 <$PARCELAMOUNT> 个包裹等待领取。
+请到客栈里的玛丽处领取
 
+<关闭/@exit>
 
 [@Storage]
 #SAY
-What item do you want to store or withdraw?
- 
-<Back/@Main> - <Close/@exit>
+你想存放或取出什么物品？
 
+<返回/@Main> - <关闭/@exit>
