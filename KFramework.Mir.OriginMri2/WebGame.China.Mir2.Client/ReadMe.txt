@@ -1,5 +1,5 @@
 ====================================================================
-WebGame.Mir2 (MonoGame.Client) —— 基于 KFramework.MonoGame 重构的传奇客户端
+WebGame.China.Mir2.Client —— 基于 KFramework.MonoGame 重构的传奇客户端
             （内含 UI 编写指南：原 UI_ReadMe.txt 已合并至第八节）
 ====================================================================
 
@@ -31,7 +31,7 @@ WebGame.Mir2 (MonoGame.Client) —— 基于 KFramework.MonoGame 重构的传奇
 
 一、项目定位
 --------------------------------------------------------------------
-本项目（WebGame.Mir2.MonoGame.Client）是经典网游《传奇》（Mir2 / 热血传奇）的
+本项目（WebGame.China.Mir2.Client）是经典网游《传奇》（Mir2 / 热血传奇）的
 浏览器化客户端。它最重要的工程意义在于：
 
     >>> 用 KFramework.MonoGame 彻底重构了底层基础设施 <<<
@@ -77,7 +77,7 @@ WebGame.Mir2 (MonoGame.Client) —— 基于 KFramework.MonoGame 重构的传奇
     浏览器桥接层 TSEngine ────────┘        ▲
             │                              │ ProjectReference
             ▼                              │
-       wwwroot/jsengine (dist 产物)    WebGame.Mir2.MonoGame.Client
+       wwwroot/jsengine (dist 产物)    WebGame.China.Mir2.Client
 
 核心组件：
 
@@ -106,18 +106,21 @@ WebGame.Mir2 (MonoGame.Client) —— 基于 KFramework.MonoGame 重构的传奇
 
 四、目录结构（节选）
 --------------------------------------------------------------------
-WebGame.Mir2.MonoGame.Client/
+WebGame.China.Mir2.Client/
 ├── CMain.cs                    # 游戏主机 + WASM 入口（Main）
 ├── MirGame.cs                  # 游戏引导（MonoGame 化 Game 子类）
-├── WebGame.Mir2.MonoGame.Client.csproj
+├── WebGame.China.Mir2.Client.csproj
 ├── Mir2/
-│   ├── Host/                   # （历史目录；引导/主机类已上移到项目根 CMain.cs / MirGame.cs）
-│   ├── MirScenes/              # 登录 / 选角 / 游戏场景
-│   ├── MirControls/            # UI 控件
+│   ├── MirControls/            # MirControl 基类、MirScene 场景基类、各类 UI 控件
+│   ├── MirScenes/              # 登录 / 选角 / 游戏场景（GameScene、MapControl）
 │   ├── MirGraphics/            # DXManager、MLibrary、纹理库
 │   ├── MirNetwork/             # Network（引用 CMain.Form）
 │   ├── MirSounds/              # 音频
 │   └── ...                     # 地图 / 物品 / 技能等业务逻辑
+├── 2026New/                    # 《原始传奇》原版资源加载层（地图 dat / 图集 / 配置分片）
+│   ├── Mir2OriginResource.cs   # CDN 资源拉取（合并全图碰撞 dat 等）
+│   ├── Mir2MapSource.cs        # 地图加载：从原版 .dat 解码碰撞 / 遮挡 / 安全区
+│   └── Mir2MapDecoder.cs       # 原版 .dat 解码（ExtractMapBlock / Decode），与服务端一致
 ├── Shared/                     # 与原版共享的纯逻辑
 ├── Shims/                      # 浏览器垫片（Forms / Drawing / SlimDX / NAudio 高仿）
 └── wwwroot/
@@ -152,6 +155,10 @@ WebGame.Mir2.MonoGame.Client/
 - 原生依赖（SlimDX / NAudio / System.Windows.Forms / System.Drawing）【不再引用】，
   全部由本工程 Shims/ 自提供；
 - 底层图形 / 输入 / 音频 / 资源【统一走 KFramework.MonoGame】。
+- 地图资源已切换为《原始传奇》原版 .dat：经 2026New/Mir2MapSource + Mir2MapDecoder
+  解码（CDN 合并全图碰撞数据 map10.25487.1.dat），与服务端 OriginalMapDecoder
+  同一套算法（先跳 8 字节条目头、再跳 4 字节块头、高 nibble 在前的 4-bit 格标志），
+  不再使用旧版内置地图格式。
 
 
 七、运行约束：底层统一走 KFramework.MonoGame，且本项目禁止 [JSExport] 和 [JSImport]
@@ -160,7 +167,7 @@ WebGame.Mir2.MonoGame.Client/
    【完全由 KFramework.MonoGame 提供】。wwwroot/jsengine/ 是 KFramework.TSEngine
    （KFramework.MonoGame 的 JS 引擎层）的编译产物。
 
-2) 禁止 [JSExport]：WebGame.Mir2.MonoGame.Client 内【不允许出现任何 [JSExport]】。
+2) 禁止 [JSExport]：WebGame.China.Mir2.Client 内【不允许出现任何 [JSExport]】。
    所有 JS 互操作基础设施都由 KFramework.MonoGame 以 JSBind_* 形式提供
    （如 JSBind_GameHost、JSBind_Net_WebSocket 等）。业务工程只写纯 C#，
    通过框架注入的 GraphicsDevice / SpriteBatch / Input / Audio 等能力工作，
@@ -187,50 +194,57 @@ WebGame.Mir2.MonoGame.Client/
 ====================================================================
 八、UI 编写指南（合并自原 UI_ReadMe.txt）
 ====================================================================
-适用代码：WebGame.Mir2.MonoGame.Client
-最后核对：2026-09-21（基于当前 2026New 分层渲染 + 恒等变换）
+适用代码：WebGame.China.Mir2.Client
+最后核对：2026-10-31（基于当前「无分层」结构：场景本身即 UI 容器，地图由 GameScene
+下的 MapControl 子控件直接绘制；MapControl 按全屏 / 窗口原生分辨率 1:1 渲染）
 
 --------------------------------------------------------------------------------
 8.0 一句话结论
 --------------------------------------------------------------------------------
-UI 是「场景(MirScene) → 两个层(WorldLayerControl / UILayerControl) → 控件树」
-的三层结构。所有界面控件挂在 UILayer 下，按画布原生分辨率 1:1 布局，窗口
-尺寸变化由「锚点重排」负责，不做任何 x/y 拉伸缩放。
+UI 是「场景(MirScene) → 控件树」的两层结构：MirScene 自身即是 UI 容器，
+地图由挂在场景下的 MapControl 子控件直接绘制（世界坐标）。所有界面控件直接
+挂到场景或其子容器，按画布原生分辨率 1:1 布局，窗口尺寸变化由「锚点重排」
+负责，不做任何 x/y 拉伸缩放。
+
+注意：本项目【已移除】原 WorldLayerControl / UILayerControl 两个分层容器控件。
+取而代之的是渲染合成层面的「地图 RT + UI RT」双缓冲：地图先由 MapControl 画到
+它的离屏纹理，UI 再由场景(MirScene)本身画到另一张离屏纹理，两张 RT 靠
+「透明洋红键(alpha=0)」合成上屏（UI 区域外的洋红区透出地图）—— 拓扑等价于
+原版 Crystal 的「地图 RT + UI RT、洋红=透明键」，但控件树只有一层，没有容器层。
 
 --------------------------------------------------------------------------------
-8.1 三层结构
+8.1 当前结构（无分层容器）
 --------------------------------------------------------------------------------
-- MirScene（场景基类）：只有两个直接子 —— WorldLayerControl、UILayerControl。
-    （MirScene.cs:21、38 处 UILayer/WorldLayer 字段初始化并 Parent=this）
-- 世界层 WorldLayerControl：地图、角色、物品等【世界坐标】内容。
-    恒等变换（1:1），世界像素不缩放，窗口变大只是"看到更多世界"。
-- UI 层 UILayerControl：对话框 / HUD / 按钮等界面控件。
-    恒等变换（1:1），UI 以画布像素布局，1:1 上屏。
-    （两个层都覆写 GetLayerTransform 返回 CreateScaleTranslation(1,1,0,0)，
-     见 UILayerControl.cs:21-24、WorldLayerControl.cs:10-11）
-
-注意：基类 MirControl.GetLayerTransform 原本按高度缩放（h/768），但当前两个
-层都已覆写为恒等，所以「逻辑坐标 == 画布像素」成立。
+- MirScene（场景基类，位于 Mir2/MirControls/MirScene.cs）：本身即 UI 容器。
+    其 ControlTexture 就是 UI 离屏纹理（底色透明洋红 alpha=0），只装 UI、
+    不装地图；窗口/画布尺寸变化时按锚点重排整棵控件树。
+- MapControl（位于 Mir2/MirScenes/MapControl.cs）：挂在 GameScene 下的子控件，
+    负责绘制【世界坐标】内容（地图/地板/角色/物品，瓦片固定 48x32 世界单位）。
+    它在 GameScene.DrawControl 中先于场景 UI 绘制，UI RT 叠加其上、靠洋红键透出地图。
+- 控件树只有一层：UI 对话框、HUD、按钮等全部直接挂在场景（或其子容器控件）之下，
+    不再有 WorldLayer / UILayer 路由。逻辑坐标 == 画布像素（1:1 上屏）。
 
 --------------------------------------------------------------------------------
 8.2 怎么挂一个控件（最关键的一步）
 --------------------------------------------------------------------------------
-(1) 在 GameScene 里：
-        new XxxDialog { Parent = this };          // 走 MirScene.AddControl 路由
-    MirScene.AddControl 会把控件路由进 UILayer（UI）/ WorldLayer（地图）。
-    ★ 现在路由用的是 Insert 而非 Add：Insert 会同步 control._parent = UILayer，
-      否则置顶/排序逻辑会把它写回场景根导致「画不出、点不动」。
-      （MirScene.cs:48-56，AddControl 内 UILayer.Insert(末尾)）
+控件通过 Parent 直接挂到目标控件（场景或其子容器）的 Controls 列表，不再经过
+UILayer / WorldLayer 路由（这两个容器控件已移除）。设置 Parent 会触发
+MirControl.AddControl → Controls.Add，并同步 _parent。
 
-(2) 在 LoginScene / SelectScene 里：
-        Parent = this.UILayer;                    // 直接挂 UI 层
-    （LoginScene.cs:48、SelectScene.cs:38/47 已是这种写法）
+(1) 在任意场景里：
+        new XxxDialog { Parent = this };          // 直接挂到场景（UI 容器）
+    GameScene 下的 MapControl 也是用同样方式作为子控件挂上的；UI 对话框与地图
+    同处一棵控件树，靠渲染合成（洋红键）分层显示。
+
+(2) 在 LoginScene / SelectScene 里，写法完全一致：
+        Parent = this;                            // 直接挂到场景
 
 (3) 千万不要：
-    - GameScene.Controls.Add(ctrl)        // 绕过路由，控件落在场景根、永不被烘焙
-    - 直接操作 Parent.Controls（Remove/Add）// TrySort / OnVisibleChanged /
+    - Scene.Controls.Add(ctrl)                    // 绕过 Parent 直接 Add，_parent
+      不会被设置，命中链/绘制链断裂 → 画不出、点不动
+    - 直接操作 Parent.Controls（Remove/Add）      // TrySort / OnVisibleChanged /
       BringToFront 内部就是这么写的，一旦 Parent 与真实容器不一致就会把控件
-      踢回场景根（这一坑已通过 (1) 的 Insert 修掉）
+      踢回场景根
 
 --------------------------------------------------------------------------------
 8.3 常用控件
@@ -249,19 +263,21 @@ UI 是「场景(MirScene) → 两个层(WorldLayerControl / UILayerControl) → 
 8.4 绘制原理（为什么画图片"不用 Size"）
 --------------------------------------------------------------------------------
 每帧链路：
-    CMain.Loop → ActiveScene.Draw → MirScene.DrawControl
-      → WorldLayer.Bake()  +  UILayer.Bake()          (MirScene.cs:102-103)
-      → 两层 RT 各 PresentToScreen 上屏（先世界后 UI 叠加）
+    CMain.Loop → ActiveScene.Draw → MirScene.Draw
+      → GameScene 先 MapControl.DrawControl（地图 RT：世界坐标内容）
+      → 再 base.DrawControl（场景 UI RT：递归 DrawChildControls 画 UI 控件）
+      → 两张 RT 靠「透明洋红键(alpha=0)」合成上屏（先地图后 UI 叠加；
+        UI 区域外的洋红区透出地图）
 
-层 Bake（LayerControl.CreateTexture）：
-    为层创建 Size = DXManager.FullScreenSize 的 RT（不是 Size！），
-    再 DrawChildControls 递归画子控件。
+场景/控件 RT（MirScene.CreateTexture）：
+    为场景创建 Size = (Settings.ScreenWidth, Settings.ScreenHeight) 的 UI RT，
+    再 DrawChildControls 递归画子控件（不含地图，地图由 MapControl 单独画）。
 
 子控件绘制：
     Ctrl.Draw → DrawControl：
       a) base.DrawControl：若 DrawControlTexture=true，按 Size 建自身
          ControlTexture，再 DrawOpaque(ControlTexture, rect(0,0,Size), DisplayLocation)
-         贴回父层 RT —— 这是"底"。
+         贴回父 RT —— 这是"底"。
       b) MirImageControl 额外调用：
          Library.Draw(Index, DisplayLocation, ForeColour, ...)   (MirImageControl.cs:177-189)
          ★ 这个调用只用「图索引 + 位置」，根本不传 Size；
@@ -273,26 +289,27 @@ UI 是「场景(MirScene) → 两个层(WorldLayerControl / UILayerControl) → 
 
 超屏剔除守卫：
     MirControl.Draw：Size.Width > Settings.ScreenWidth || Size.Height > Settings.ScreenHeight
-    时直接 return 不画（MirControl.cs:773-776）。全屏层必须绕开 Size，用 FullScreenSize。
+    时直接 return 不画。全屏控件必须绕开 Size，用 FullScreenSize（地图 MapControl
+    即把 ControlTexture 设为窗口原生分辨率，由 DrawControl 1:1 合成，避免触发该守卫）。
 
 --------------------------------------------------------------------------------
 8.5 尺寸与坐标（重点坑）
 --------------------------------------------------------------------------------
 三套口径：
     - Size          ：控件自身逻辑尺寸（资源图/代码常量），用于框、命中、底图 RT
-    - FullScreenSize：画布后备缓冲真实像素（如 1461x799），所有层 RT 按它建
-    - GetLayerTransform：逻辑坐标→RT 像素的映射（当前 UI/世界层都是恒等 1:1）
+    - FullScreenSize：画布后备缓冲真实像素（如 1461x799），全屏控件/地图 RT 按它建
+    - 逻辑坐标→RT 像素：当前为恒等 1:1（无分层缩放变换）
 
 坐标系要点：
     - DisplayLocation = Parent.DisplayLocation + Location，一路累加到场景根
       （MirControl.cs:13）。这是逻辑坐标。
-    - 当前恒等变换下逻辑坐标 == 画布像素，UI 按真实像素布局。
+    - 当前恒等映射下逻辑坐标 == 画布像素，UI 按真实像素布局。
     - Settings.ScreenWidth = DXManager.GDevice.Viewport.Width。浏览器宿主下
       Viewport 可能读到 0 或逻辑尺寸，DXManager.Initialize 已强行校正成
       BackBuffer 尺寸（DXManager.cs:83-96），但仍不要在构造期依赖它做硬编码定位。
     - 命中测试 IsMouseOver 用 DisplayRectangle = (DisplayLocation, Size)，
-      鼠标已在输入入口转过一次（KCamera.ScreenToWorldPos 只减视口原点、不逆缩放，
-      因为层是恒等变换）。渲染口径与命中口径必须一致，否则「画得出点不动」。
+      鼠标已在输入入口转过一次（屏幕坐标即逻辑坐标，因为映射是恒等 1:1）。
+      渲染口径与命中口径必须一致，否则「画得出点不动」。
 
 常见副作用：手动把 Size 设得比图小 → 图溢出框照画（Library.Draw 不裁剪到 Size），
 看得见但点击区只有框那么大。
@@ -314,19 +331,19 @@ UI 是「场景(MirScene) → 两个层(WorldLayerControl / UILayerControl) → 
 8.7 常见坑清单
 --------------------------------------------------------------------------------
 [1] 控件消失 / 点不动
-     → 多半掉出 UILayer（被踢回场景根）。挂控件用 Parent=this（GameScene）/
-       Parent=this.UILayer（登录/选人），别直接 Controls.Add。
+     → 多半掉出场景(被踢回场景根)。挂控件用 Parent=this（GameScene）/
+       Parent=this（登录/选人），别直接 Controls.Add。
 [2] UI 只铺左上角 + 四周洋红底
-     → 层 RT 尺寸用了 Size 而非 FullScreenSize；上屏是 1:1，RT 必须按画布建。
+     → 场景 UI RT 尺寸用了 Size 而非全屏；上屏是 1:1，RT 必须按画布(全屏)建。
 [3] 图溢出框（画得出、点不准）
      → 手动 Size 小于图；设 AutoSize=true 让框等于图，或别改 Size。
 [4] 画得出点不动
      → 渲染与命中坐标口径不一致。检查 DisplayLocation / IsMouseOver 用的是否
        都是逻辑坐标，鼠标入口是否已转过一次。
 [5] UI 变形（圆变椭圆、字体压扁）
-     → 层变换被改成非等比缩放；当前两层都是恒等，改回 1:1。
+     → 给场景/控件加了非等比缩放变换；当前为恒等 1:1，去掉缩放变换。
 [6] 整层不画
-     → Size > Settings.ScreenWidth 守卫触发；全屏层必须绕开 Size、用 FullScreenSize。
+     → Size > Settings.ScreenWidth 守卫触发；全屏控件(含 MapControl)必须绕开 Size、用 FullScreenSize。
 [7] 浏览器下对话框跑到负坐标
      → 构造期依赖 Settings.ScreenWidth 读到 0；DXManager.Initialize 已校正，
        但定位优先用锚点而非构造期硬编码。
@@ -337,7 +354,7 @@ UI 是「场景(MirScene) → 两个层(WorldLayerControl / UILayerControl) → 
        （见 MirControl.cs:335-355）。它的 Size 停在构造时图片固定尺寸
        （ChrSel 首图 1024x768），不随 resize 变大。
        - 窗口 ≤ 1024x768 时：_background 居中后整块盖住窗口，命中链
-         Scene→UILayer→_background→LoginDialog→按钮 全程通过 → 按钮可点；
+         Scene→_background→LoginDialog→按钮 全程通过 → 按钮可点；
        - 最大化（>1024x768）时：_background 只占屏幕中间一块，LoginDialog/
          按钮按屏幕中心布局探出它的命中矩形（如按钮在 x≈1489 处），
          OnMouseMove 子控件循环里 _background.IsMouseOver=false 直接跳过
@@ -352,10 +369,10 @@ UI 是「场景(MirScene) → 两个层(WorldLayerControl / UILayerControl) → 
 --------------------------------------------------------------------------------
 8.8 最小示例
 --------------------------------------------------------------------------------
-// GameScene 里创建对话框（自动路由进 UILayer）
+// GameScene 里创建对话框（直接挂到场景，无分层路由）
 CharacterDialog = new CharacterDialog(MirGridType.Equipment, User)
 {
-    Parent  = this,                          // 路由进 UILayer（Insert 同步 _parent）
+    Parent  = this,                          // 直接挂到场景（UI 容器）
     Index   = 504,
     Library = Libraries.Title,
     Location = new Point(Settings.ScreenWidth - 264, 0),
@@ -381,7 +398,7 @@ CloseButton.AnchorPos = new Point(4, 4);
 --------------------------------------------------------------------------------
 8.9 排查口诀
 --------------------------------------------------------------------------------
-- 谁决定最终像素：FullScreenSize（RT 尺寸）+ GetLayerTransform（映射）+ PresentToScreen（1:1 铺）
+- 谁决定最终像素：FullScreenSize（RT 尺寸）+ 恒等 1:1 映射 + 洋红键合成上屏
 - Size 只决定：自身纹理大小、命中矩形、底图 RT
 - 看到「只占一角 / 突然不画 / 能画不能点」先查三件事：
     RT 是不是按 FullScreenSize 建的？
@@ -398,12 +415,12 @@ CloseButton.AnchorPos = new Point(4, 4);
 需评估后再实施。
 
 
-十、世界层/相机原则：等比铺满会放大世界坐标（重要）
+十、地图/世界坐标原则：等比铺满会放大世界坐标（重要）
 --------------------------------------------------------------------
-世界层(WorldLayer)承载的是【世界坐标】内容（地图/角色/物品，瓦片固定 48x32 世界单位）。
-其投影变换 MirScene.WorldLayer.LayerTransform 严禁用 aspect-fill（等比铺满 / Math.Max）去
-“铺满”窗口——那会把整个世界放大（1280 窗口下放大 1.25×），既违背世界坐标的语义，
-也会与鼠标→世界命中（以 48x32 世界像素计、与屏幕 1:1）错位。
+地图由 GameScene 下的 MapControl 子控件直接渲染，承载【世界坐标】内容
+（地图/角色/物品，瓦片固定 48x32 世界单位）。地图的投影严禁用 aspect-fill
+（等比铺满 / Math.Max）去“铺满”窗口——那会把整个世界放大（1280 窗口下放大 1.25×），
+既违背世界坐标的语义，也会与鼠标→世界命中（以 48x32 世界像素计、与屏幕 1:1）错位。
 
 正确做法（参照本仓库兄弟工程 Mir2_Unity_2027 的重制版：
 Assets/KFramework/Rumtime/Tools/SafeAreaFit.cs 的“改相机渲染区域(rect)而非缩放”，
@@ -414,11 +431,11 @@ Assets/KFramework/Rumtime/Tools/SafeAreaFit.cs 的“改相机渲染区域(rect)
   - 渲染与命中共用同一投影（KCamera 的 Window↔World 换算）。
 
 当前实现（MapControl 按全屏 / 窗口原生分辨率渲染）：
-  - WorldLayer = 1:1 单位变换（见 MirScene.WorldLayer.LayerTransform），不缩放、不 aspect-fill；
+  - MapControl 世界坐标为 1:1 单位映射（不缩放、不 aspect-fill）；
   - MapControl 按【全屏/窗口原生分辨率】烘焙世界，地板 1:1 铺满、无黑边、无放大；
   - 窗口更大只是“看到更多世界”（以 48x32 世界像素为单位的视口更大），而非放大世界坐标；
   - 命中：MapControl 内鼠标即世界像素（与屏幕 1:1），与 OffSetX/Y、ViewRangeX/Y 一致；
-    KCamera.ScreenToWorldPos 的 s=h/768 只服务于【UI 层逻辑坐标】，与世界层无关。
+    KCamera.ScreenToWorldPos 的 s=h/768 只服务于【UI 逻辑坐标】，与世界坐标无关。
   - MapControl.Size 保持 1024x768（受 MirControl.Draw 的 Size>ScreenWidth 裁剪守卫约束），
     只把 ControlTexture 设为窗口原生分辨率，由 DrawControl 1:1 合成，避免触发该守卫。
   - 关键结论：等比铺满(scale-fill)会放大世界坐标，而世界坐标不应被放大——这是错的。
