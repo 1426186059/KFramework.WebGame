@@ -1,244 +1,206 @@
 [
-    {
-      
-      "Index": 1,
-      "FullMap": false,
-      "Location": {
-        "X": 641,
-        "Y": 287
+  {
+    "Index": 1,
+    "FullMap": false,
+    "Location": {
+      "X": 641,
+      "Y": 287
+    },
+    "Size": 30,
+    "Name": "Sabuk Wall",
+    "MapIndex": 172,
+    "PalaceIndex": 245,
+    "ExtraMaps": [],
+    "ConquestGuards": [
+      {
+        "Index": 1,
+        "Location": {
+          "X": 662,
+          "Y": 333
+        },
+        "MobIndex": 499,
+        "Name": "Guard",
+        "RepairCost": 1000
       },
-      "Size": 30,
-      "Name": "Sabuk Wall",
-      "MapIndex": 172,
-      "PalaceIndex": 245,
-      "ExtraMaps": {
-        
-        "$values": []
+      {
+        "Index": 2,
+        "Location": {
+          "X": 664,
+          "Y": 331
+        },
+        "MobIndex": 499,
+        "Name": "Guard",
+        "RepairCost": 1000
       },
-      "ConquestGuards": {
-        
-        "$values": [
-          {
-            
-            "Index": 1,
-            "Location": {
-              "X": 662,
-              "Y": 333
-            },
-            "MobIndex": 499,
-            "Name": "Guard",
-            "RepairCost": 1000
-          },
-          {
-            
-            "Index": 2,
-            "Location": {
-              "X": 664,
-              "Y": 331
-            },
-            "MobIndex": 499,
-            "Name": "Guard",
-            "RepairCost": 1000
-          },
-          {
-            
-            "Index": 3,
-            "Location": {
-              "X": 666,
-              "Y": 329
-            },
-            "MobIndex": 499,
-            "Name": "Guard",
-            "RepairCost": 1000
-          },
-          {
-            
-            "Index": 4,
-            "Location": {
-              "X": 676,
-              "Y": 319
-            },
-            "MobIndex": 499,
-            "Name": "Guard",
-            "RepairCost": 1000
-          },
-          {
-            
-            "Index": 5,
-            "Location": {
-              "X": 678,
-              "Y": 317
-            },
-            "MobIndex": 499,
-            "Name": "Guard",
-            "RepairCost": 1000
-          },
-          {
-            
-            "Index": 6,
-            "Location": {
-              "X": 681,
-              "Y": 314
-            },
-            "MobIndex": 499,
-            "Name": "Guard",
-            "RepairCost": 1000
-          },
-          {
-            
-            "Index": 7,
-            "Location": {
-              "X": 628,
-              "Y": 271
-            },
-            "MobIndex": 499,
-            "Name": "Guard",
-            "RepairCost": 1000
-          },
-          {
-            
-            "Index": 8,
-            "Location": {
-              "X": 632,
-              "Y": 267
-            },
-            "MobIndex": 499,
-            "Name": "Guard",
-            "RepairCost": 1000
-          },
-          {
-            
-            "Index": 9,
-            "Location": {
-              "X": 670,
-              "Y": 335
-            },
-            "MobIndex": 499,
-            "Name": "Guard",
-            "RepairCost": 1000
-          },
-          {
-            
-            "Index": 10,
-            "Location": {
-              "X": 671,
-              "Y": 334
-            },
-            "MobIndex": 499,
-            "Name": "Guard",
-            "RepairCost": 1000
-          },
-          {
-            
-            "Index": 11,
-            "Location": {
-              "X": 675,
-              "Y": 330
-            },
-            "MobIndex": 499,
-            "Name": "Guard",
-            "RepairCost": 1000
-          },
-          {
-            
-            "Index": 12,
-            "Location": {
-              "X": 671,
-              "Y": 334
-            },
-            "MobIndex": 499,
-            "Name": "Guard",
-            "RepairCost": 1000
-          }
-        ]
+      {
+        "Index": 3,
+        "Location": {
+          "X": 666,
+          "Y": 329
+        },
+        "MobIndex": 499,
+        "Name": "Guard",
+        "RepairCost": 1000
       },
-      "ConquestGates": {
-        
-        "$values": [
-          {
-            
-            "Index": 1,
-            "Location": {
-              "X": 672,
-              "Y": 330
-            },
-            "MobIndex": 568,
-            "Name": "SabukGate",
-            "RepairCost": 1000
-          }
-        ]
+      {
+        "Index": 4,
+        "Location": {
+          "X": 676,
+          "Y": 319
+        },
+        "MobIndex": 499,
+        "Name": "Guard",
+        "RepairCost": 1000
       },
-      "ConquestWalls": {
-        
-        "$values": [
-          {
-            
-            "Index": 1,
-            "Location": {
-              "X": 624,
-              "Y": 278
-            },
-            "MobIndex": 569,
-            "Name": "LeftWall",
-            "RepairCost": 1000
-          },
-          {
-            
-            "Index": 2,
-            "Location": {
-              "X": 627,
-              "Y": 278
-            },
-            "MobIndex": 570,
-            "Name": "CenterWall",
-            "RepairCost": 1000
-          },
-          {
-            
-            "Index": 3,
-            "Location": {
-              "X": 634,
-              "Y": 271
-            },
-            "MobIndex": 571,
-            "Name": "RightWall",
-            "RepairCost": 1000
-          }
-        ]
+      {
+        "Index": 5,
+        "Location": {
+          "X": 678,
+          "Y": 317
+        },
+        "MobIndex": 499,
+        "Name": "Guard",
+        "RepairCost": 1000
       },
-      "ConquestSieges": {
-        
-        "$values": []
+      {
+        "Index": 6,
+        "Location": {
+          "X": 681,
+          "Y": 314
+        },
+        "MobIndex": 499,
+        "Name": "Guard",
+        "RepairCost": 1000
       },
-      "ConquestFlags": {
-        
-        "$values": []
+      {
+        "Index": 7,
+        "Location": {
+          "X": 628,
+          "Y": 271
+        },
+        "MobIndex": 499,
+        "Name": "Guard",
+        "RepairCost": 1000
       },
-      "GuardIndex": 12,
-      "GateIndex": 1,
-      "WallIndex": 3,
-      "SiegeIndex": 0,
-      "FlagIndex": 0,
-      "StartHour": 18,
-      "WarLength": 30,
-      "Type": 0,
-      "Game": 3,
-      "Monday": true,
-      "Tuesday": true,
-      "Wednesday": true,
-      "Thursday": true,
-      "Friday": true,
-      "Saturday": true,
-      "Sunday": true,
-      "KingLocation": {
-        "X": 0,
-        "Y": 0
+      {
+        "Index": 8,
+        "Location": {
+          "X": 632,
+          "Y": 267
+        },
+        "MobIndex": 499,
+        "Name": "Guard",
+        "RepairCost": 1000
       },
-      "KingSize": 0,
-      "ControlPoints": {
-        
-        "$values": []
+      {
+        "Index": 9,
+        "Location": {
+          "X": 670,
+          "Y": 335
+        },
+        "MobIndex": 499,
+        "Name": "Guard",
+        "RepairCost": 1000
       },
-      "ControlPointIndex": 0
-    }
-  ]
+      {
+        "Index": 10,
+        "Location": {
+          "X": 671,
+          "Y": 334
+        },
+        "MobIndex": 499,
+        "Name": "Guard",
+        "RepairCost": 1000
+      },
+      {
+        "Index": 11,
+        "Location": {
+          "X": 675,
+          "Y": 330
+        },
+        "MobIndex": 499,
+        "Name": "Guard",
+        "RepairCost": 1000
+      },
+      {
+        "Index": 12,
+        "Location": {
+          "X": 671,
+          "Y": 334
+        },
+        "MobIndex": 499,
+        "Name": "Guard",
+        "RepairCost": 1000
+      }
+    ],
+    "ConquestGates": [
+      {
+        "Index": 1,
+        "Location": {
+          "X": 672,
+          "Y": 330
+        },
+        "MobIndex": 568,
+        "Name": "SabukGate",
+        "RepairCost": 1000
+      }
+    ],
+    "ConquestWalls": [
+      {
+        "Index": 1,
+        "Location": {
+          "X": 624,
+          "Y": 278
+        },
+        "MobIndex": 569,
+        "Name": "LeftWall",
+        "RepairCost": 1000
+      },
+      {
+        "Index": 2,
+        "Location": {
+          "X": 627,
+          "Y": 278
+        },
+        "MobIndex": 570,
+        "Name": "CenterWall",
+        "RepairCost": 1000
+      },
+      {
+        "Index": 3,
+        "Location": {
+          "X": 634,
+          "Y": 271
+        },
+        "MobIndex": 571,
+        "Name": "RightWall",
+        "RepairCost": 1000
+      }
+    ],
+    "ConquestSieges": [],
+    "ConquestFlags": [],
+    "GuardIndex": 12,
+    "GateIndex": 1,
+    "WallIndex": 3,
+    "SiegeIndex": 0,
+    "FlagIndex": 0,
+    "StartHour": 18,
+    "WarLength": 30,
+    "Type": 0,
+    "Game": 3,
+    "Monday": true,
+    "Tuesday": true,
+    "Wednesday": true,
+    "Thursday": true,
+    "Friday": true,
+    "Saturday": true,
+    "Sunday": true,
+    "KingLocation": {
+      "X": 0,
+      "Y": 0
+    },
+    "KingSize": 0,
+    "ControlPoints": [],
+    "ControlPointIndex": 0
+  }
+]

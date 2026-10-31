@@ -1,18 +1,13 @@
 {
-  
   "BaseSpawnRate": 20,
   "CurrentTickcounter": 275,
   "LastTick": 0,
   "LastUsercount": 0,
   "CurrentDelay": 1200000,
-  "Respawn": {
-    
-    "$values": [
-      {
-        
-        "UserCount": 0,
-        "DelayLoss": 1
-      }
-    ]
-  }
+  "Respawn": [
+    {
+      "UserCount": 0,
+      "DelayLoss": 1
+    }
+  ]
 }

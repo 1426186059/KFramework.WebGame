@@ -3042,10 +3042,10 @@ namespace Server.MirEnvir
             public int customVersion;
         }
 
+        // 与 MapInfo 一致：不再使用 ReferenceHandler.Preserve，配置表里禁止出现 $id/$ref/$values 元数据。
         private static readonly JsonSerializerOptions JsonConfigOptions = new JsonSerializerOptions
         {
             IncludeFields = true,
-            ReferenceHandler = ReferenceHandler.Preserve,
             TypeInfoResolver = new JsonConfigResolver(),
         };
 
