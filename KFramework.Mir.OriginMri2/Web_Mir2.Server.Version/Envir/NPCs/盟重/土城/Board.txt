@@ -1,14 +1,14 @@
 [@MAIN]
-<Use./@main-1> teleport to village stores
+<使用/@main-1> 传送至村内商店
 
 [@main-1]
 #SAY
-I can send you several places nearby.
+我可以送你去附近的几个地方。
 
-<Blacksmith/@weapon>   <Armour shop/@armour>
-<Accessory shop/@access>   <Inn/@store>
+<铁匠铺/@weapon>   <防具店/@armour>
+<饰品店/@access>   <客栈/@store>
 
-I will be back <later/@Exit>
+我稍后回来 <离开/@Exit>
 
 [@weapon]
 #ACT

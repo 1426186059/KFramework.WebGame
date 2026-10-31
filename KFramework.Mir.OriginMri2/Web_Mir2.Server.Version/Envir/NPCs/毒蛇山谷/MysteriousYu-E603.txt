@@ -1,9 +1,10 @@
 [@Main]
-What brought you in this dangerous place?
-I wonder if you can get out of here easily...
-
-<Talk with/@talkwith_1>
-<Leave/@Exit>
+#SAY
+是什么把你带到了这个危险之地？
+我很好奇你能否轻易离开这里……
+ 
+<交谈/@talkwith_1>
+<离开/@Exit>
 
 
 [@talkwith_1]
@@ -24,47 +25,47 @@ goto talkwith_2
 goto untalkwith
    
 [@talkwith_2]
-As you came here and talked to me
-I'll give you good information... There is a cave that nobody knows around here.
-This cave is different from the others....
-I just have heard about it only one time
-I never been there, but you need a certificate to go there
-If you got a certificate, you can try.
-
-<Try/@talkwith_3>
-<Cancel/@Exit>
+#SAY
+既然你来到这里并与我交谈，
+我就给你一条有用的情报……这附近有一处无人知晓的洞穴。
+它与众不同……
+我只听过一次关于它的传说，
+从未去过那里，但你需要一份凭证才能进入。
+如果你有凭证，可以一试。
+ 
+<尝试/@talkwith_3>
+<取消/@Exit>
 
 [@talkwith_3]
 #SAY
-Hey you... I'll let you get into the dungeon
-You will be right here after 3 hours.. Take care of yourself
-
-<Get in/@talkwith_4>
+嘿，你……我会让你进入地牢。
+三个小时后你会出现在此处……保重。
+ 
+<进入/@talkwith_4>
    
 [@talkwith_4]
 #SAY
-I want to show you the way, but I'm exhausted
-I can't help you... Just wait a little while..
-
-<Close/@Exit>
+我想给你指路，但我筋疲力尽了。
+我帮不了你……稍等片刻……
+ 
+<关闭/@Exit>
 
 #ELSEACT
 MOVE M001
 
 [@untalkwith]
 #SAY
-Have you ever heard about the unknown dungeon?
-I can't explain more..
-but the time to get into dungeon is at weekend evening
-If you came to me again at this time
-I can take you there
-see you then...
-
-<Back/@Main>
+你听说过那座未知地牢吗？
+我无法多说……
+但进入地牢的时间是周末傍晚。
+若你在此刻再来找我，
+我便能带你去那里。
+到时见……
+ 
+<返回/@Main>
 
 #ELSESAY
-I have nothing to tell you...
-Get out of here please
-
-<Back/@Main>
-
+我没什么可告诉你的……
+请离开这里。
+ 
+<返回/@Main>

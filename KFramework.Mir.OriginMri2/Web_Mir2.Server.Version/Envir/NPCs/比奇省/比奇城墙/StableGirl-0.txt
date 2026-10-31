@@ -2,28 +2,28 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Welcome traveller,
-I sell Items for your Tiger! Please take alook!
+欢迎，旅行者，
+我出售你的猛虎所需的物品！请随便看看！
  
-<View/@BuySell> Store.
+<查看/@BuySell> 商店。
  
-<Close/@exit>
+<关闭/@exit>
 
 
 [@BuySell]
 #SAY
-What would you like to purchase?
+你想购买什么？
  
-<Back/@main>
+<返回/@main>
 
 [Types]
 19

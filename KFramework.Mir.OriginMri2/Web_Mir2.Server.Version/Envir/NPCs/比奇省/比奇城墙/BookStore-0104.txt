@@ -2,186 +2,183 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Welcome, How many i help you?
+欢迎，有什么可以帮你的吗？
  
-<View/@BuySell> Store.
-Listen to the <explanation/@helpbooks> about skills.
-Seeking <Information/@information>
+<查看/@BuySell> 商店。
+收听关于技能的<说明/@helpbooks>。
+寻求<信息/@information>
  
-<Close/@exit>
+<关闭/@exit>
 
 [@BuySell]
 #SAY
-Please select the Book you either want to Buy or Sell.
-<Buy Back/@BuyBack>
+请选择你想购买或出售的书籍。
+<回购/@BuyBack>
  
-<Back/@Main>
+<返回/@Main>
 
 [@helpbooks]
 #SAY
-What kind of Books are you interested in?
+你对哪类书籍感兴趣？
  
-Warrior:  <Skill List/@War1>
-Wizard:   <Skill List/@Wiz1>
-Taoist:   <Skill List/@Tao1>
-Assassin: <Skill List/@Assa1>
-Archer:   <Skill List/@Arc1>
-
+战士：<技能列表/@War1>
+法师：<技能列表/@Wiz1>
+道士：<技能列表/@Tao1>
+刺客：<技能列表/@Assa1>
+弓箭手：<技能列表/@Arc1>
 
 [@War1]
 #SAY
-Level  7: Fencing
-Level 15: Slaying
-Level 22: Thrusting
-Level 26: Half月
-Level 30: ShoulderDash
-Level 32: TwinDragonBlade
-Level 32: Entrapment
-<More/@War2> <Back/@helpbooks>
+等级  7: Fencing
+等级 15: Slaying
+等级 22: Thrusting
+等级 26: Half月
+等级 30: ShoulderDash
+等级 32: TwinDragonBlade
+等级 32: Entrapment
+<更多/@War2> <返回/@helpbooks>
 
 [@War2]
 #SAY
-Level 35: 烈焰剑
-Level 36: LionRoar
-Level 38: CrossHalf月
-Level 38: 刃Avalanche
-Level 39: 防护Field
-Level 44: Rage
-Level 50: SlashingBurst
-<Back/@helpbooks>
+等级 35: 烈焰剑
+等级 36: LionRoar
+等级 38: CrossHalf月
+等级 38: 刃Avalanche
+等级 39: 防护Field
+等级 44: Rage
+等级 50: SlashingBurst
+<返回/@helpbooks>
 
 [@Wiz1]
 #SAY
-Level  7: 火球
-Level 12: Repulsion
-Level 13: 雷电Shock
-Level 15: 巨火球
-Level 16: 地狱火
-Level 17: 雷弩箭
-<More/@Wiz2> <Back/@helpbooks>
+等级  7: 火球
+等级 12: Repulsion
+等级 13: 雷电Shock
+等级 15: 巨火球
+等级 16: 地狱火
+等级 17: 雷弩箭
+<更多/@Wiz2> <返回/@helpbooks>
 
 [@Wiz2]
 #SAY
-Level 19: Teleport
-Level 22: 火Bang
-Level 24: 火墙
-Level 26: 雷
-Level 28: 霜Crunch
-Level 30: 雷暴
-Level 31: 魔法盾
-Level 32: TurnUndead
-<More/@Wiz3> <Back/@helpBooks>
+等级 19: Teleport
+等级 22: 火Bang
+等级 24: 火墙
+等级 26: 雷
+等级 28: 霜Crunch
+等级 30: 雷暴
+等级 31: 魔法盾
+等级 32: TurnUndead
+<更多/@Wiz3> <返回/@helpBooks>
 
 [@Wiz3]
 #SAY
-Level 33: Vampirism
-Level 35: IceStrom
-Level 38: FlameDisruptor
-Level 41: Mirroring
-Level 42: FlameField
-Level 44: Blizzard
-Level 49: MeteorStrike
-Level 53: IceFreeze
-<Back/@helpBooks>
+等级 33: Vampirism
+等级 35: IceStrom
+等级 38: FlameDisruptor
+等级 41: Mirroring
+等级 42: FlameField
+等级 44: Blizzard
+等级 49: MeteorStrike
+等级 53: IceFreeze
+<返回/@helpBooks>
 
 [@Tao1]
 #SAY
-Level  7: Healing
-Level  9: 之灵剑
-Level 14: Poisoning
-Level 18: 魂火球
-Level 19: SummonSkeletonton
-Level 20: Hiding
-<More/@Tao2> <Back/@helpbooks>
+等级  7: Healing
+等级  9: 之灵剑
+等级 14: Poisoning
+等级 18: 魂火球
+等级 19: SummonSkeletonton
+等级 20: Hiding
+<更多/@Tao2> <返回/@helpbooks>
 
 [@Tao2]
 #SAY
-Level 21: MassHiding
-Level 22: 魂盾
-Level 23: Revelation
-Level 25: Blessed甲
-Level 27: EnergyRepulsor
-Level 28: 陷阱Hexagon
-Level 30: Purification
-<More/@Tao3> <Back/@helpBooks>
+等级 21: MassHiding
+等级 22: 魂盾
+等级 23: Revelation
+等级 25: Blessed甲
+等级 27: EnergyRepulsor
+等级 28: 陷阱Hexagon
+等级 30: Purification
+<更多/@Tao3> <返回/@helpBooks>
 
 [@Tao3]
 #SAY
-Level 31: MassHealing
-Level 31: Hallucination
-Level 33: UltimateEnhancer
-Level 35: 召唤神兽
-Level 37: Reincarnation
-Level 38: 召唤圣精灵
-Level 40: 诅咒
-Level 43: 毒Cloud
-Level 48: CelestalShield
-<Back/@helpBooks>
-
+等级 31: MassHealing
+等级 31: Hallucination
+等级 33: UltimateEnhancer
+等级 35: 召唤神兽
+等级 37: Reincarnation
+等级 38: 召唤圣精灵
+等级 40: 诅咒
+等级 43: 毒Cloud
+等级 48: CelestalShield
+<返回/@helpBooks>
 
 [@Assa1]
 #SAY
-Level  7: Fatal剑
-Level 15: 双Slash
-Level 20: Haste
-Level 25: FlashDash
-Level 27: 轻Body
-Level 30: Heavenly剑
-Level 33: 火Burst
-<More/@Assa2> <Back/@helpBooks>
+等级  7: Fatal剑
+等级 15: 双Slash
+等级 20: Haste
+等级 25: FlashDash
+等级 27: 轻Body
+等级 30: Heavenly剑
+等级 33: 火Burst
+<更多/@Assa2> <返回/@helpBooks>
 
 [@Assa2]
 #SAY
-Level 33: 陷阱
-Level 34: 毒剑
-Level 36: 月轻
-Level 38: MPEater
-Level 40: SwiftFeet
-Level 46: 暗Body
-Level 50: MoonBlade
-<Back/@helpBooks>
-
+等级 33: 陷阱
+等级 34: 毒剑
+等级 36: 月轻
+等级 38: MPEater
+等级 40: SwiftFeet
+等级 46: 暗Body
+等级 50: MoonBlade
+<返回/@helpBooks>
 
 [@Arc1]
 #SAY
-Level  7: Focus
-Level  9: StraightShot
-Level 11: MentalState
-Level 14: 双Shot
-Level 19: Meditation
-Level 20: ElementalShot
-Level 22: Explosive陷阱
-<More/@Arc2> <Back/@helpBooks>
+等级  7: Focus
+等级  9: StraightShot
+等级 11: MentalState
+等级 14: 双Shot
+等级 19: Meditation
+等级 20: ElementalShot
+等级 22: Explosive陷阱
+<更多/@Arc2> <返回/@helpBooks>
 
 [@Arc2]
 #SAY
-Level 23: Concentration
-Level 26: VampireShot
-Level 28: 召唤吸血蜘蛛
-Level 30: BackStep
-Level 31: DelayedExplosion
-Level 33: ElementalBarrier
-Level 35: BindingShot
-<More/@Arc3> <Back/@helpBooks>
+等级 23: Concentration
+等级 26: VampireShot
+等级 28: 召唤吸血蜘蛛
+等级 30: BackStep
+等级 31: DelayedExplosion
+等级 33: ElementalBarrier
+等级 35: BindingShot
+<更多/@Arc3> <返回/@helpBooks>
 
 [@Arc3]
 #SAY
-Level 37: 召唤蟾蜍
-Level 40: 毒Shot
-Level 43: CrippleShot
-Level 46: 召唤魅惑之蛇
-Level 48: NapalmShot
-Level 50: OneWith自然
-<Back/@helpBooks>
+等级 37: 召唤蟾蜍
+等级 40: 毒Shot
+等级 43: CrippleShot
+等级 46: 召唤魅惑之蛇
+等级 48: NapalmShot
+等级 50: OneWith自然
+<返回/@helpBooks>
 
 [@Information]
 #IF
@@ -189,10 +186,10 @@ CHECKQUEST 152 1
 #ACT
 SET [533] 1
 #SAY
-Hmm... Think ive seen those symbols before...
-Sir Mogu was asking about that language many years ago.
-Travel to the Tavern and talk to him about it.
-<Thank You/@exit>
+嗯……我好像以前见过那些符号……
+很多年前，莫古爵士曾向我打听那种文字。
+去酒馆找他谈谈吧。
+<谢谢/@exit>
 
 
 [Types]

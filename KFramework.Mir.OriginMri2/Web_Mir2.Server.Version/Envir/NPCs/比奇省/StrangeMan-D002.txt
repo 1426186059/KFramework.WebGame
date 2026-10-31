@@ -1,7 +1,6 @@
 [@MAIN]
 #SAY
-A strong monster called 骨精英 lives in OmaCave
-It's difficult to kill the monster.. If you face
-the monster.. run away!
-<Ok/@exit>
+奥玛洞穴里住着一只叫骨精英的强大怪物。
+击杀这只怪物很困难……若你面对它……快逃！
 
+<好的/@exit>

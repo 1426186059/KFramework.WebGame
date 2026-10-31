@@ -24,14 +24,14 @@ GOTO @Main-2
 
 [@Main-1]
 #SAY
-<$USERNAME>, Forgive me I shouldn't of judged him based on my anger.
-I am thankful to him.. He keeps us Safe.
+<$USERNAME>，请原谅我，我不该因一时的愤怒而评判他。
+我感激他……他保护着我们的安全。
  
-<Close/@exit>
+<关闭/@exit>
 
 [@MAIN-2]
 #SAY
-<$USERNAME>, I'm starving... What does that Emperor do? Nothing!
-In his palace probably waiting for his FEAST!
+<$USERNAME>，我快饿死了……那个大帝在干什么？什么都没干！
+大概正待在宫殿里等着他的盛宴吧！
  
-<Close/@exit>
+<关闭/@exit>

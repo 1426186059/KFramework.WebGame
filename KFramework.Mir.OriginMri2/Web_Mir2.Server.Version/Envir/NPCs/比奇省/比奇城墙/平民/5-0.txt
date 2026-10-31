@@ -16,37 +16,37 @@ GOTO @MAIN-3
 
 [@MAIN-1]
 #SAY
-Hello traveler.. I have been hearing good things about 
-the Emperors good deeds.
+你好，旅行者……我听到不少关于
+大帝善行的好消息。
  
-<Close/@exit>
+<关闭/@exit>
 
 [@MAIN-2]
 #SAY
-Hello again traveler.. Its a fine day is it not.
+又见到你了，旅行者……今天天气真不错，不是吗。
  
-<Close/@exit>
+<关闭/@exit>
 
 [@MAIN-3]
 #IF
 CHECKQUEST 157 1
 #SAY
-Thankyou traveler you have saved me some time.
-And boy o boy doesn't she talk a lot of rubbish..
+谢谢你，旅行者，你为我节省了些时间。
+天哪，她真是废话连篇……
  
-So you want my help spreading the good deed's of the <Emperor/@Emperor>?
-<Close/@exit>
+那么你愿意帮我传播大帝的<善行/@Emperor>吗？
+<关闭/@exit>
 #ELSESAY
-How about you do something for me first? 
+要不你先帮我做点事？
  
-<Close@exit>
+<关闭/@exit>
 
 [@Emperor]
 #ACT
 SET [541] 1
 #SAY
-Very well traveler.. 
+好吧，旅行者……
  
-<Close/@exit>
+<关闭/@exit>
 [Quests]
 156

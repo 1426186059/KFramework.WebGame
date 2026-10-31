@@ -1,7 +1,6 @@
 [@main]
 #SAY
-Looks like these bones been laying
-here for a long time.
+看来这些骨头已经在这里躺了很久了。
 
 [Quests]
 -63

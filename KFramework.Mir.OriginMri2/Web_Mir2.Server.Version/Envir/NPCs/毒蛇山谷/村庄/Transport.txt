@@ -2,35 +2,35 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Hello I'm Chandler, the wandering warrior.
-I transport men and goods to other places fast and safe. 
-Just pay the fee then I'll escort you to anywhere.
-So what do you say?
+你好，我是钱德勒，一名流浪战士。
+我安全快速地运送人员和货物。
+只需支付费用，我便护送你前往任何地方。
+那么，你意下如何？
  
-I'll use this <Service/@tele>
-Maybe next <Time/@exit> 
+我用这项<服务/@tele>
+或许下次<有空/@exit>
 
 [@tele]
 #SAY
-Which place would you like to go?
+你想前往何处？
  
-My service fee is 2000 gold.
-
-<<BorderVillage/@Border>>
-<<BichonWall/@BichonWall>>
-<<MudWall/@MudWall>>
-<<TaoistSchool/@TaoVillage>>
-<<CastleGi-Ryoong/@CastleGi>>
-<<WoomyonCamp/@Camp>>
+我的服务费为 2000 金币。
+ 
+<边境村/@Border>
+<比奇城墙/@BichonWall>
+<土城墙/@MudWall>
+<道观/@TaoVillage>
+<城堡吉龙/@CastleGi>
+<沃妙营地/@Camp>
 
 [@Border]
 #IF
@@ -88,8 +88,8 @@ GOTO @gold
 
 [@gold]
 #SAY
-Sorry you do not have enough gold.
-
-<Exit/@Exit>
+抱歉，你的金币不足。
+ 
+<退出/@Exit>
 
 [Quests]

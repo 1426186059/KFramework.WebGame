@@ -1,24 +1,25 @@
 [@MAIN]
 #SAY
-In Memory Of John Schwartz Better known as Iceman
-May he Rest In Peace <3
+谨以此纪念约翰·施瓦茨，人称 Iceman（冰人）
+愿他安息 <3
 
 
-<Read/@RM> More
+<阅读/@RM> 更多
 
 [@RM]
 #SAY
-Iceman was a pillar of the LOMCN community since he joined
-in 2003, He released multiple servers throughout his time with us.
+自 2003 年加入以来，Iceman 一直是 LOMCN 社区的中坚力量，
+在我们共事期间发布了多个服务器。
 
-He created his own Mir 2 Files from Crystal and called it Eden Elite,
-the files have been used and will continue to be used by many.
-Giving hundreds around the globe enjoyment of a beloved game,
-Sadly on 05/05/2023 at 4:12pm EST he passed away after a hard battle
-with sepsis.
+他基于 Crystal 创建了自己的 Mir 2 文件并命名为 Eden Elite，
+这些文件已被并将继续被许多人使用。
+让全球数百人享受到这款深受喜爱的游戏，
 
-Iceman was a kind and loving gentleman that will be missed by hundreds,
-may he live on within our community.
+遗憾的是，2023 年 5 月 5 日下午 4:12（美东时间），
+他在与败血症的艰苦抗争后离世。
 
-From all of us at LOMCN,
-We would like to send our love to his family and friends.
+Iceman 是一位善良而充满爱心的绅士，数百人会怀念他，
+愿他在我们的社区中永存。
+
+代表 LOMCN 全体成员，
+我们向他的家人与朋友致以最深切的慰问。

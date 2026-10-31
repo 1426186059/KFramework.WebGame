@@ -1,20 +1,18 @@
 [@Main]
 #SAY
-(Hmm?! There is a note left in the 骷髅兵 pile?)
+（嗯？！骷髅兵堆里似乎留着一张字条？）
  
-<Read/@Read>
+<阅读/@Read>
  
-<Close/@exit>
-
+<关闭/@exit>
 
 [@Read]
 #SAY
-"From another being who endlessly wanders this place,"
-"Obtain the scroll and bring it to me."
+“致另一位在这片土地上无尽游荡的存在，”
+“取得那卷卷轴并带给我。”
  
-(Is this the scroll?)
-(<I should try it out./@Enter>)
-
+（这就是那卷卷轴吗？）
+（<不妨一试。/@Enter>）
 
 [@Enter]
 #IF
@@ -24,7 +22,6 @@ TAKEITEM 卷轴之印 1
 MOVE LABY01
 
 #ELSESAY
-You need to have the {卷轴之印/LightSteelBlue} to enter!
+你需要持有 {卷轴之印/LightSteelBlue} 才能进入！
  
-<Close/@Exit>
-
+<关闭/@Exit>

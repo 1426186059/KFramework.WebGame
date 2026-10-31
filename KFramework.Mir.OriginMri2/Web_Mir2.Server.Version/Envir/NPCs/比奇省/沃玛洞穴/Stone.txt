@@ -4,10 +4,10 @@
 #IF
 CHECK [536] 1
 #SAY
-A Mysterious Stone with Ancient symbols.
-"<Dungeon of the Ancient Ones/@omacavea>" {Level10~60./KHAKI}
+刻着远古符号的神秘石。
+"<远古者地牢/@omacavea>" {等级10~60./KHAKI}
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @MAIN-1
 
@@ -17,9 +17,9 @@ CHECK [535] 1
 #ACT
 SET [536] 1
 #ELSESAY
-A Mysterious Stone with Unknown symbols.
+刻着未知符号的神秘石。
   
-<Close/@exit>
+<关闭/@exit>
 
 [@omacavea]
 #IF
@@ -28,7 +28,7 @@ LEVEL < 60
 #ACT
 MOVE D001A
 #ELSESAY
-Nothing happens.
+什么也没发生。
 
 [Quests]
 152

@@ -1,28 +1,27 @@
 [@Main]
 #SAY
-<Use./@main-1> teleport to the village stores
-<News/@ask> of the village
+<使用/@main-1> 传送至村内商店
+<村庄/@ask> 新闻
 
-<<Create Hero/@CreateHero/Green>>
-<<ReviveHero/@ReviveHero/Red>>
-<<SealHero/@SealHero/Yellow>>
+<<创建英雄/@CreateHero/Green>>
+<<复活英雄/@ReviveHero/Red>>
+<<封印英雄/@SealHero/Yellow>>
 
 [@main-1]
 #SAY
-<Weapon shop/@go-weap>   <Armour shop/@go-cloth>   <Inn/@go-inn>
-<Accessory shop/@go-access>   <Reagent Store/@go-pot>   <Bichon Inner Wall/@go-palace>
-<Book store/@go-book>  <Butcher's shop/@go-肉>
+<武器店/@go-weap>   <防具店/@go-cloth>   <客栈/@go-inn>
+<饰品店/@go-access>   <药剂店/@go-pot>   <比奇内城墙/@go-palace>
+<书店/@go-book>  <屠夫铺/@go-肉>
 
-<Close/@Exit>
+<关闭/@Exit>
  
 
 [@ask]
 #SAY
-News: 
+新闻：
 
 
-
-<Back/@Main>
+<返回/@Main>
 
 [@go-weap]
 #ACT

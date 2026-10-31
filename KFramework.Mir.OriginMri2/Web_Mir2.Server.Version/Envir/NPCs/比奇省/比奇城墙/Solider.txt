@@ -2,20 +2,19 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-The empty lot across the bridge is the site
-where stone statues of the top 10 World Heroes
-and 10 Continental Heroes, who brought the glory to
-Mir continent, will be erected.
-If you wish to know the names of the heroes,
-go over there and look at the statues.
+桥对面的空地，是将要竖立
+为世界十大英雄与大陆十大英雄
+石像的地点，他们曾为米尔大陆
+带来荣耀。如果你想了解英雄的名字，
+过去看看那些雕像吧。
  
-<Close/@exit>
+<关闭/@exit>

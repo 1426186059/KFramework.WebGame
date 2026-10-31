@@ -1,14 +1,14 @@
 [@Main]
-<Use./@main-1> teleport to village stores
+<使用/@main-1> 传送至村内商店
 
 [@main-1]
 #SAY
-I will guide you to the desired store.
-Where shall I teleport you?
-
-<Weapon shop/@Weapon>   <Reagent store/@reagent>
-
-I will be back <later/@Exit>
+我可以为你引路前往所需的商店。
+你想传送去哪里？
+ 
+<武器店/@Weapon>   <试剂店/@reagent>
+ 
+改日<再来/@Exit>
 
 [@reagent]
 #ACT
@@ -17,4 +17,3 @@ MOVE 0117
 [@Weapon]
 #ACT
 MOVE 0120
-

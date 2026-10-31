@@ -2,20 +2,20 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-How can i help you? 
+有什么可以帮你的吗？
  
-<Purchase/@Buy> 酒.
+<购买/@Buy> 酒。
 <Talk/@talk>
-<Close/@exit>
+<关闭/@exit>
 
 [@Buy]
 #INCLUDE [SystemScripts/SharedNPCS/Tavern.txt] @Main
@@ -25,43 +25,42 @@ How can i help you?
 CHECK [533] 1
 CHECK [534] 1
 #SAY
-Rumours... Rumours... What have people have saying about me now?
+谣言……谣言……人们现在又在说我什么了？
  
-"You once researched a Ancient <Language/@Lang>."
-"You are a crazy old <fool/@Fool>."
-"Would rather not say.. Have you seen this <before?/@Before1>"
-"Never <Mind/@exit>
+"你曾经研究过一种古老的<语言/@Lang>。"
+"你是个疯老头<傻瓜/@Fool>。"
+"还是别说为好……你以前见过这<个吗？/@Before1>"
+"算了，<不想说/@exit>
 #ELSESAY
-Sorry, I dont have anything to tell you.
+抱歉，我没什么可告诉你的。
  
-<Close/@exit> 
+<关闭/@exit> 
 
 [@Lang]
 #ACT
 SET [537] 1
 #SAY
-Well guess the rumours are true this time.. 
-Yes I researched a Ancient Language... I didn't have much luck
-though. The most helpful information i found was at the Palace.
-Speak with Emperor Far, he is crazy though but also lazy... I would take
-him some 酒 to motivate him.
-<Close/@exit>
+嗯，看来这次谣言是真的……
+是的，我曾研究过一种古老的语言……不过运气不佳。
+我找到最有用的信息是在王宫里。
+去和法尔大帝谈谈吧，他虽然疯疯癫癫但也很懒……我建议你
+带些酒去激励他。
+<关闭/@exit>
 
 [@fool]
 #SAY
-What a crazy old fool, I would like to know told you that. 
-I will show them a crazy old fool.
-"Have you seen this Language <Before/@before1>?"
-<Close/@exit>
+真是个疯老头，我很想知道是谁告诉你的。
+我会让他们看看什么叫疯老头。
+"你以前见过这种<语言吗/@before1>？"
+<关闭/@exit>
 
 [@before1>
 #ACT
 SET [537] 1
 #SAY
-Oh yes... I have seen that language before... I spent years 
-researching it. Go speak to Emperor Far in the Palace he knows
-quite alot about it.
-<Close/@exit>
+哦，是的……我以前见过那种语言……我花了多年
+研究它。去王宫找法尔大帝吧，他对此相当了解。
+<关闭/@exit>
 
 [Quests]
 -95

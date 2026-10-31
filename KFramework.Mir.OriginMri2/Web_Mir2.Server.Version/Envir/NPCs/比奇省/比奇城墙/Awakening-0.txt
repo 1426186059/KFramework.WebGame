@@ -2,36 +2,36 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Welcome <$USERNAME>, I am the Awakening Master.
-<Awaken/@Awakening> Item.
-<Disassemble/@Disassemble> Item.
+欢迎 <$USERNAME>，我是觉醒大师。
+<觉醒/@Awakening> 物品。
+<分解/@Disassemble> 物品。
  
-=== Resetting Features ===
-<Downgrade/@Downgrade> Item <Reset/@Reset> Item.
+=== 重置功能 ===
+<降级/@Downgrade> 物品 <重置/@Reset> 物品。
 
 [@Disassemble]
 #SAY
-Choose which Item you wish to Disassemble.
+选择你想要分解的物品。
  
-<Back/@Main>
+<返回/@Main>
 
 [@Downgrade]
 #SAY
-Choose which Item you wish to Downgrade.
+选择你想要降级的物品。
  
-<Back/@Main>
+<返回/@Main>
 
 [@Reset]
 #SAY
-Choose which Item you wish to Reset.
+选择你想要重置的物品。
  
-<Back/@Main>
+<返回/@Main>

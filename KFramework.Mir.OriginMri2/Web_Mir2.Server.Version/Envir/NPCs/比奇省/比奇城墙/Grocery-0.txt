@@ -1,93 +1,82 @@
-;;540
 [@MAIN]
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Hello traveller, How may I help you?
+你好，旅行者。有什么可以帮你的吗？
  
-<View/@BuySell> Store. 
-<Ask/@Ask> about Item.
+<查看/@BuySell> 商店。 
+<询问/@Ask> 关于物品。
  
-<Close/@exit>
+<关闭/@exit>
 
 [@BuySell]
 #SAY
-What Item would you like to buy or sell?
-<BuyBack/@BuyBack>
+你想购买或出售哪件物品？
+<回购/@BuyBack>
  
-<Back/@Main>
+<返回/@Main>
 
 [@BuyBack]
 #SAY
-These are the items still available to purchase back.
+这些是仍可回购的物品。
  
-<Back/@Main>
+<返回/@Main>
 
 [@Ask]
 #SAY
-I deal with <Candle/candle>,<Dungeonescape/dungeonescape>,
-<RandomTeleport/randomteleport>,<RepairOil/repairoil> and so on forth.
-I have heard that there are <Townteleport/townteleport> which come
-from monsters only
+我经营 <Candle/candle>、<Dungeonescape/dungeonescape>、
+<RandomTeleport/randomteleport>、<RepairOil/repairoil> 等物品。
+我听说 <Townteleport/townteleport> 只从怪物身上掉落。
  
-<Back/@Main>
+<返回/@Main>
 
 [@candle]
 #SAY
-Candles are needed when it's 暗. without a Candle
-you can not see anything-even your foot for darkness.
+天色变暗时需要蜡烛。没有蜡烛，
+你将什么都看不见——漆黑中连自己的脚都看不到。
  
-<Back/@Ask>
+<返回/@Ask>
 
 [@dungeonescape]
 #SAY
-A Dungeonescape scroll is a magic paper that moves you promptly
-to certain fields near the last village you visited.
-The power of Dungeonescape scroll is weak compared with
-TownTeleport scrolls but it could still save your life.
+地牢逃脱卷是一张魔法符纸，可迅速将你传送到
+最近访问过的村庄附近的特定区域。
+比起回城卷，地牢逃脱卷的力量较弱，但仍能救你一命。
  
-<Back/@Ask>
+<返回/@Ask>
 
 [@randomteleport]
 #SAY
-A Randomteleport scroll is a magic paper that can
-make you randonly move to another place in the same map.
-For example if you were in a dungeon 1st floor, you will
-move to another place on that floor by using the RT.
-If situation is dangerous but you still have potions, use this
-to help you out of a tight situation.
+随机传送卷是一张魔法符纸，可让你在同一张地图内
+随机移动到另一处。例如你若在地下一层，使用它
+便会移动到该层的另一处。若处境危险但仍有药水，
+可用它脱困。
  
-<Back/@Ask>
+<返回/@Ask>
 
 [@repairoil]
 #SAY
-A RepairOil makes the durabillity of you hand weapon rise,
-but this oil doesn't special repair your weapon, so
-remember that then maximum durabillity of the weapon
-goes down as time goes by.
-If the weapon at your hand was not expensive,
-repair with this oil sometimes during hunting.
-This will make hunts last longer.
+修理油能提升你手持武器的耐久，但它不能进行特殊修理，
+且武器的最大耐久会随时间下降。若你手中的武器并不昂贵，
+狩猎时偶尔用它修理，能让狩猎更持久。
  
-<Back/@Ask>
+<返回/@Ask>
 
 [@townteleport]
 #SAY
-TownTeleport scrolls carn't be made now because the ancient
-skill is lost.... however....
-I have heard that it may come randomly from Monsters
-and you can return to a village promptly by using it...
+回城卷如今已无法制作，因为古老的技艺已经失传……不过……
+我听说它可能从怪物身上随机掉落，使用后便能迅速返回村庄……
  
-<Back/@Ask>
+<返回/@Ask>
 
 [Types]
 8
@@ -119,16 +108,14 @@ GOTO @MAIN1-2
 #ACT
 SET [540] 0
 #SAY
-Ah your the traveler.. Ive been hearing about.
-Well I refuse to tell anyone about the Emperor!
+啊，你就是那位旅行者……我听说过你。
+不过我拒绝向任何人透露皇帝的事！
  
-<Close/exit>
+<关闭/@exit>
 
 [@MAIN1-2]
 #SAY
-Have you ever heard about the Emperor? 
-Hes such a lazy good for nothing fool. Sooner we remove him
-from the throne the better. Its time for the free folk to 
-govern these lands.
+你听说过皇帝吗？他是个懒惰无能的蠢货。
+越早把他赶下王座越好。是时候让自由之民来治理这片土地了。
  
-<Close/@exit>
+<关闭/@exit>

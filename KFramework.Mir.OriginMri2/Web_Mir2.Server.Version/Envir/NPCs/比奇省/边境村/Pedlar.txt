@@ -1,84 +1,84 @@
 [@MAIN]
 #SAY
-Hello traveller, How may I help you?
+你好，旅行者。有什么可以帮你的吗？
 
-I see you're holding: {<$TORCH>/CORAL}
-I see you're holding: {<$护符>/CORAL}
+我看到你手持：{<$TORCH>/CORAL}
+我看到你手持：{<$护符>/CORAL}
 
-<View/@BuySell> Store. 
-<Ask/@Ask> about Item.
+<查看/@BuySell> 商店。 
+<询问/@Ask> 物品。
  
-<Close/@exit>
+<关闭/@exit>
 
 [@BuySell]
 #SAY
-What Item would you like to buy or sell?
-<BuyBack/@BuyBack>
+你想购买或出售哪件物品？
+<回购/@BuyBack>
  
-<Back/@Main>
+<返回/@Main>
 
 [@BuyBack]
 #SAY
-These are the items still available to purchase back.
+这些是仍可回购的物品。
  
-<Back/@Main>
+<返回/@Main>
 
 [@Ask]
 #SAY
-I deal with <Candle/candle>,<Dungeonescape/dungeonescape>,
-<RandomTeleport/randomteleport>,<RepairOil/repairoil> and so on forth.
-I have heard that there are <Townteleport/townteleport> which come
-from monsters only
+我经营 <Candle/candle>、<Dungeonescape/dungeonescape>、
+<RandomTeleport/randomteleport>、<RepairOil/repairoil> 等物品。
+我听说 <Townteleport/townteleport> 只能从
+怪物身上掉落。
  
-<Back/@Main>
+<返回/@Main>
 
 [@candle]
 #SAY
-Candles are needed when it's 暗. without a Candle
-you can not see anything-even your foot for darkness.
+黑暗中需要蜡烛。没有蜡烛
+你连自己的脚都看不见。
  
-<Back/@Ask>
+<返回/@Ask>
 
 [@dungeonescape]
 #SAY
-A Dungeonescape scroll is a magic paper that moves you promptly
-to certain fields near the last village you visited.
-The power of Dungeonescape scroll is weak compared with
-TownTeleport scrolls but it could still save your life.
+地牢逃脱卷是一张魔法纸，可把你迅速
+传送到上次访问的村庄附近的某些区域。
+地牢逃脱卷的力量虽比不上
+回城卷，但仍能救你一命。
  
-<Back/@Ask>
+<返回/@Ask>
 
 [@randomteleport]
 #SAY
-A Randomteleport scroll is a magic paper that can
-make you randonly move to another place in the same map.
-For example if you were in a dungeon 1st floor, you will
-move to another place on that floor by using the RT.
-If situation is dangerous but you still have potions, use this
-to help you out of a tight situation.
+随机传送卷是一张魔法纸，可让你
+在同一张地图内随机移动到另一个地点。
+例如你若在地牢一层，使用随机传送卷
+便会移动到该层的另一个位置。
+若处境危险但药水尚足，可用它
+帮你脱离险境。
  
-<Back/@Ask>
+<返回/@Ask>
 
 [@repairoil]
 #SAY
-A RepairOil makes the durabillity of you hand weapon rise,
-but this oil doesn't special repair your weapon, so
-remember that then maximum durabillity of the weapon
-goes down as time goes by.
-If the weapon at your hand was not expensive,
-repair with this oil sometimes during hunting.
-This will make hunts last longer.
+修理油可提升你手持武器的耐久度，
+但这种油无法进行特殊修理，所以
+请记住，武器的最大耐久度会
+随着时间推移而下降。
+若你手中的武器并不贵重，
+狩猎时可偶尔用它修理。
+这样能让狩猎持续更久。
  
-<Back/@Ask>
+<返回/@Ask>
 
 [@townteleport]
 #SAY
-TownTeleport scrolls carn't be made now because the ancient
-skill is lost.... however....
-I have heard that it may come randomly from Monsters
-and you can return to a village promptly by using it...
+回城卷目前无法制作，因为古老的
+技艺已经失传……然而……
+我听说它可能随机从怪物身上掉落，
+使用它你便能迅速返回村庄……
  
-<Back/@Ask>
+<返回/@Ask>
 
 [Types]
 8
@@ -95,4 +95,4 @@ RepairOil
 
 [Quests]
  
-<Close/@exit>
+<关闭/@exit>

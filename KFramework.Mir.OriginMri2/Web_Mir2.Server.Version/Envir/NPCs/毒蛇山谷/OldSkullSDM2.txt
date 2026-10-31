@@ -1,9 +1,8 @@
 [@Main]
 #SAY
-A pile of skull and bones.
+一堆头骨与枯骨。
  
-<Close/@exit>
-
+<关闭/@exit>
 
 [Quests]
 77

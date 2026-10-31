@@ -1,9 +1,9 @@
 [@Main]
 #SAY
-I am the MasterMage Don, What's your name?
-Welcome to my house..
+我是大魔法师唐，你叫什么名字？
+欢迎来到我的家……
 
-<Close/@exit>
+<关闭/@exit>
 
 [Quests]
 -10

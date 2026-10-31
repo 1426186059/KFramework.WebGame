@@ -1,19 +1,19 @@
 [@MAIN]
 #SAY
-I am craft lady, specialized in the creation of new items.
-I have been sent here to check the living conditions of people.
-Unfortunately, it seems that many people are still suffering from
-poverty. So, I would like to help them with my making skills.
-If you also want anything to be made, you may as well ask me.
-<Crafting/@Craft>
+我是工艺师，擅长制作新物品。
+我被派来这里查看人们的生活状况。
+遗憾的是，似乎仍有许多人饱受贫困之苦。
+所以，我想用我的手艺帮助他们。
+如果你也想制作些什么，尽管来找我。
+<制作/@Craft>
 
 [@Craft]
 太阳水
 
 [@BuySell]
 #SAY
-Please select the Recipe you either want to Buy or Sell.
-<Buy Back/@BuyBack>
+请选择你想购买或出售的配方。
+<回购/@BuyBack>
 
 [RECIPE]
 特制金创药

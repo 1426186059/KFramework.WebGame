@@ -2,40 +2,32 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Hello. I am the 'Commission Merchant'. I am in charge
-of commission sales. We are located at five places of
-Bichon Province, Mongchon Province, Tao Village, Prajna
-Island and Past Bichon, the item sales information are
-all shared by the five merchants.
+你好。我是"寄售商人"。我负责寄售业务。
+我们在比奇省、盟重、道士村、般若岛和过去比奇这五个地方设有据点，
+物品售卖信息由这五位商人共享。
  
-<View Market/@Market>.
+<查看市场/@Market>。
 
-
-
-<Close/@exit> <Help/@help>
+<关闭/@exit> <帮助/@help>
 
 [@help]
 #SAY
-The following are 'cautions' in the commission sale.
-1. Consignment fee: After confirming the sale,
-   1% of the selling price is paid.
-2. Trust money: when it is consigned, '1,000 {Gold/Gold}' is paid.
-3. Commission period: After 100 days of item sale registration,
-   the item will be automatically deleted from the list.
-4. Number of commission items: Maximum 30 items are allowed
-   for sale
-5. Trust money amount: can be set in the range of
-   1,000 - 50,000,000 {Gold/Gold}. 
-<Back/@main>
+以下是寄售的"注意事项"。
+1. 寄售费：成交后，支付售价的 1%。
+2. 保证金：寄售时，需支付"1,000 {Gold/Gold}"。
+3. 寄售期限：物品登记寄售 100 天后，将自动从列表中删除。
+4. 寄售数量：最多可寄售 30 件物品。
+5. 保证金金额：可设置为 1,000 - 50,000,000 {Gold/Gold} 之间。
+<返回/@main>
 
 [@Market]
 #SAY
@@ -43,4 +35,4 @@ The following are 'cautions' in the commission sale.
 
 [@Consignment]
 #SAY
-What would you like to sell?
+你想出售什么？

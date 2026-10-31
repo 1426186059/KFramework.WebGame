@@ -14,7 +14,7 @@ GOTO @done2
 GOTO @next1
 [@done2]
 #SAY
-You have already completed this quest!
+你已经完成这个任务了！
 <Exit/@exit>
 [@next1]
 #IF
@@ -297,14 +297,14 @@ GOTO @check20
 GOTO @starting
 [@starting]
 #SAY
-Welcome.
-From now on many monsters will appear in this chamber.
-Test what you are capable of by defeating the monsters.
-There are 20 stages altogether.
-I wonder if you can beat them all...
-Will you start the challenge?
+欢迎。
+从现在起，这个房间将出现许多怪物。
+击败它们，检验你的实力。
+总共 20 关。
+我不知道你能否全部通过……
+你要开始挑战吗？
 
-<I'm ready./@start1>
+<我准备好了。/@start1>
 
 [@oldman]
 #ACT
@@ -329,15 +329,14 @@ GOTO @say1
 GOTO @say2
 [@say1]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say2]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start2>
 <I've had enough. Let me go./@oldman>
 [@start2]
@@ -360,15 +359,14 @@ GOTO @say3
 GOTO @say4
 [@say3]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say4]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start3>
 <I've had enough. Let me go./@oldman>
 [@start3]
@@ -391,15 +389,14 @@ GOTO @say5
 GOTO @say6
 [@say5]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say6]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start4>
 <I've had enough. Let me go./@oldman>
 [@start4]
@@ -422,15 +419,14 @@ GOTO @say7
 GOTO @say8
 [@say7]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say8]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start5>
 <I've had enough. Let me go./@oldman>
 [@start5]
@@ -450,15 +446,14 @@ GOTO @say9
 GOTO @say10
 [@say9]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say10]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start6>
 <I've had enough. Let me go./@oldman>
 [@start6]
@@ -481,15 +476,14 @@ GOTO @say11
 GOTO @say12
 [@say11]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say12]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start7>
 <I've had enough. Let me go./@oldman>
 [@start7]
@@ -511,15 +505,14 @@ GOTO @say13
 GOTO @say14
 [@say13]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say14]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start8>
 <I've had enough. Let me go./@oldman>
 [@start8]
@@ -541,15 +534,14 @@ GOTO @say15
 GOTO @say16
 [@say15]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say16]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start9>
 <I've had enough. Let me go./@oldman>
 [@start9]
@@ -572,15 +564,14 @@ GOTO @say17
 GOTO @say18
 [@say17]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say18]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start10>
 <I've had enough. Let me go./@oldman>
 [@start10]
@@ -600,15 +591,14 @@ GOTO @say19
 GOTO @say20
 [@say19]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say20]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start11>
 <I've had enough. Let me go./@oldman>
 [@start11]
@@ -631,15 +621,14 @@ GOTO @say21
 GOTO @say22
 [@say21]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say22]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start12>
 <I've had enough. Let me go./@oldman>
 [@start12]
@@ -661,15 +650,14 @@ GOTO @say23
 GOTO @say24
 [@say23]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say24]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start13>
 <I've had enough. Let me go./@oldman>
 [@start13]
@@ -693,15 +681,14 @@ GOTO @say25
 GOTO @say26
 [@say25]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say26]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start14>
 <I've had enough. Let me go./@oldman>
 [@start14]
@@ -726,15 +713,14 @@ GOTO @say27
 GOTO @say28
 [@say27]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say28]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start15>
 <I've had enough. Let me go./@oldman>
 [@start15]
@@ -754,15 +740,14 @@ GOTO @say29
 GOTO @say30
 [@say29]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say30]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start16>
 <I've had enough. Let me go./@oldman>
 [@start16]
@@ -784,15 +769,14 @@ GOTO @say31
 GOTO @say32
 [@say31]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say32]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start17>
 <I've had enough. Let me go./@oldman>
 [@start17]
@@ -815,15 +799,14 @@ GOTO @say33
 GOTO @say34
 [@say33]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say34]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start18>
 <I've had enough. Let me go./@oldman>
 [@start18]
@@ -845,15 +828,14 @@ GOTO @say35
 GOTO @say36
 [@say35]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say36]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start19>
 <I've had enough. Let me go./@oldman>
 [@start19]
@@ -873,15 +855,14 @@ GOTO @say37
 GOTO @say38
 [@say37]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say38]
 #SAY
-You defeated them all already.
-But there are still more to go.
-Will you continue the challenge?
+你已经全部击败了。
+但还有更多关卡。
+要继续挑战吗？
 <Proceed./@start20>
 <I've had enough. Let me go./@oldman>
 
@@ -902,19 +883,17 @@ GOTO @say39
 GOTO @say40
 [@say39]
 #SAY
-You haven't beat them yet.
-Before deafeating the monsters,
-You cannot proceed to the next stage.
-<Okay./@exit>
+你还没击败它们。
+在击败怪物之前，无法进入下一关。
+<好的。/@exit>
 [@say40]
 #SAY
-Wow, you defeated them all!!
-Oh... how can someone be so mighty...
-I'm so honored to meet you.
-You are the true hero can save the continent
-when the crisis arrives.
-I'll send you back to the village with a prize.
-<Thank you./@finish>
+哇，你全部击败了！！
+哦……怎么会有人如此强大……
+能见到你是我的荣幸。
+当危机降临时，你就是能拯救大陆的真正英雄。
+我会送你回村庄并送上奖励。
+<谢谢。/@finish>
 [@finish]
 #IF
 CHECK [520] 1

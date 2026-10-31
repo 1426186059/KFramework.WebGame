@@ -2,45 +2,45 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Hello traveller. How can i help you?
-<Access/@Storage> Storage
-<Exchange/@mbind> Stuff
-<Purchase/@Buy>
-You have <$PARCELAMOUNT> parcels awaiting collection.
-<Send/@SendParcel> Parcel
-<Collect/@CollectParcel> Parcels
-Seeking <Information/@Information> 
-
+你好，旅行者。有什么可以帮你的吗？
+<存取/@Storage> 仓库
+<兑换/@mbind> 物品
+<购买/@Buy>
+你有 <$PARCELAMOUNT> 个包裹等待领取。
+<寄送/@SendParcel> 包裹
+<领取/@CollectParcel> 包裹
+寻求<信息/@Information>
+ 
 [@Storage]
 #SAY
-What item do you want to store or withdraw?
+你想存放或取出什么物品？
  
-<Back/@Main> - <Close/@exit>
+<返回/@Main> - <关闭/@exit>
 
 [@Buy]
 #SAY
-What would like to purchase?
+你想购买什么？
  
-<Back/@Main> - <Close/@exit>
+<返回/@Main> - <关闭/@exit>
 
 [@mbind]
 #SAY
-I can exchange GoldBars,Bundles and Chests back in {Gold/Gold}.
-Tell me your wishes.
+我可以将金条、金条捆和金箱兑换回 {Gold/Gold}。
+请告诉我你的需求。
  
-Exchange: <金Bar/@GBar> into {Gold/GOLD} - Commission {(2000 Gold)/Gold}
-Exchange: <金BarBundle/@GBBundle> into {Gold/GOLD} - Commission {(10000 Gold)/Gold}
-Exchange: <金Chest/@GChest> into {Gold/GOLD} - Commission {(20000 Gold)/Gold}
-<Back/@main> - <Close/@exit>
+兑换：<金Bar/@GBar> 换成 {Gold/GOLD} - 手续费 {(2000 Gold)/Gold}
+兑换：<金BarBundle/@GBundle> 换成 {Gold/GOLD} - 手续费 {(10000 Gold)/Gold}
+兑换：<金Chest/@GChest> 换成 {Gold/GOLD} - 手续费 {(20000 Gold)/Gold}
+<返回/@main> - <关闭/@exit>
 
 [@GBar]
 #IF
@@ -49,22 +49,22 @@ CHECKITEM 金Bar 1
 TAKEITEM 金Bar 1
 GIVEGOLD 998000
 #ELSESAY
-You have no 金Bar for me to Exchange...
-Come back only if u do have one.
+你没有可供我兑换的 金Bar……
+只有当你确实拥有时才回来吧。
  
-<Back/@mbind> - <Close/@exit>
+<返回/@mbind> - <关闭/@exit>
 
-[@GBBundle]
+[@GBundle]
 #IF
 CHECKITEM 金BarBundle 1
 #ACT
 TAKEITEM 金BarBundle 1
 GIVEGOLD 4990000
 #ELSESAY
-You have no 金BarBundle for me to Exchange...
-Come back only if u do have one.
+你没有可供我兑换的 金BarBundle……
+只有当你确实拥有时才回来吧。
  
-<Back/@mbind> - <Close/@exit>
+<返回/@mbind> - <关闭/@exit>
 
 [@GChest]
 #IF
@@ -73,10 +73,10 @@ CHECKITEM 金Chest 1
 TAKEITEM 金Chest 1
 GIVEGOLD 9980000
 #ELSESAY
-You have no 金Chest for me to Exchange...
-Come back only if u do have one.
+你没有可供我兑换的 金Chest……
+只有当你确实拥有时才回来吧。
  
-<Back/@mbind> - <Close/@exit>
+<返回/@mbind> - <关闭/@exit>
 
 [@Information]
 #IF
@@ -84,10 +84,10 @@ CHECKQUEST 152 1
 #ACT
 SET [534] 1
 #SAY
-I'm afraid I dont know anything about that.
-Rumours are theres a crazy old fool inside the Tavern.
-He was also enquiring about an ancient language.
-<Thank You/@exit>
+恐怕我对此一无所知。
+听说酒馆里有个疯疯癫癫的老头。
+他也在打听一种古老的语言。
+<谢谢/@exit>
 
 [Types]
 1

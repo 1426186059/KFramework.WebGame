@@ -2,28 +2,29 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Welcome <$USERNAME>, I Purchase Awakening Items
+欢迎 <$USERNAME>，我收购觉醒物品
  
-<Sell/@Sell> Awakening Items.
-<Disassemble/@Disassemble> Items.
+<出售/@Sell> 觉醒物品。
+<分解/@Disassemble> 物品。
  
+
 [@Sell]
 #SAY
-Show me the Item you wish to Sell.
+把你想出售的物品给我看看。
  
-<Back/@main>
+<返回/@main>
 
 [@Disassemble]
 #SAY
-Choose which Item you wish to Disassemble.
+选择你想要分解的物品。
  
-<Back/@Main>
+<返回/@Main>

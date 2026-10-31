@@ -2,42 +2,42 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Glad to see you, how can I help you?
+很高兴见到你，有什么可以帮你的吗？
  
-<Purchase/@Buy> Fishing Stuff.
-<Sell/@sell> Fish.
+<购买/@Buy> 钓鱼用品。
+<出售/@sell> 鱼。
  
-<Close/@exit>
+<关闭/@exit>
 
 
 [@Buy]
 #SAY
-Please select what you want to buy
-<Buy Back/@BuyBack>
+请选择你想购买的商品
+<回购/@BuyBack>
  
-<Back/@main>
+<返回/@main>
 
 [@sell]
 #SAY
-Lay down your fishies to be sold
+把你要卖的鱼放下来
  
  
- <Back/@main>
+ <返回/@main>
 
 [@BuyBack]
 #SAY
-Item's you are still able to purchase back.
+你仍可回购的物品。
  
-<Back/@Main>
+<返回/@Main>
 
 [Trade]
 蓝钓鱼Rod

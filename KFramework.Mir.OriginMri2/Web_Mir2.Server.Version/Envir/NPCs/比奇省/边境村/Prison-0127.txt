@@ -3,8 +3,8 @@
 CHECKBUFF PRISON
 #ACT
 MOVE 0127 13 16
-LOCALMESSAGE "[Prison 守卫] <$USERNAME> you are now free togo." Hint
+LOCALMESSAGE "[监狱守卫] <$USERNAME> 你现在可以离开了。" Hint
 #ELSESAY
-<$USERNAME> You cannot leave just yet. 
+<$USERNAME> 你还不能离开。 
  
-<Close/@exit>
+<关闭/@exit>

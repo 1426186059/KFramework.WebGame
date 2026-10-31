@@ -2,45 +2,45 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Hello Traveller. What can I do for you? 
+你好，旅行者。有什么可以帮你的吗？
 
-I see you're wearing: {<$ARMOUR>/CORAL}
-I see you're wearing: {<$HELMET>/CORAL}
-I see you're wearing: {<$BELT>/CORAL}
-I see you're wearing: {<$BOOTS>/CORAL}
+我看到你穿着：{<$ARMOUR>/CORAL}
+我看到你穿着：{<$HELMET>/CORAL}
+我看到你穿着：{<$BELT>/CORAL}
+我看到你穿着：{<$BOOTS>/CORAL}
 
-<View/@BuySell> Store.
-<Repair/@Repair> Drapery pieces.
+<查看/@BuySell> 商店。
+<修理/@Repair> 布甲部件。
  
-<Close/@exit>
+<关闭/@exit>
 
 [@BuySell]
 #SAY
-Which item would you like to Buy or Sell?
-<Buy Back/@BuyBack>
+你想购买或出售哪件物品？
+<回购/@BuyBack>
  
-<Back/@main>
+<返回/@main>
 
 [@BuyBack]
 #SAY
-These are the items still available to purchase back.
+这些是仍可回购的物品。
  
-<Back/@main>
+<返回/@main>
 
 [@Repair]
 #SAY
-Would you like to repair a drapery piece?
+你想修理一件布甲部件吗？
  
-<Back/@main>
+<返回/@main>
 
 
 [Types]

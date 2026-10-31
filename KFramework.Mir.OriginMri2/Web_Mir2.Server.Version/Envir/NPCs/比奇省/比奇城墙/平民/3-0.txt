@@ -24,14 +24,14 @@ GOTO @Main-2
 
 [@Main-1]
 #SAY
-Traveler. You heard the latest?
+旅行者。你听到最新的消息了吗？
  
-<Close/@exit>
+<关闭/@exit>
 
 [@MAIN-2]
 #SAY
-Traveler. There's rumors floating about trying to remove 
-the Emperor from the Throne. I shall keep digging for the 
-Information come back to me soon.
+旅行者。有谣言在流传，说要罢黜
+大帝的皇位。我会继续打听
+消息，过些时候再来找我。
  
-<Close/@exit>
+<关闭/@exit>

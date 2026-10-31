@@ -1,65 +1,65 @@
 [@Main]
 #SAY
-Hey <$USERNAME>!!
-Can you call yourself a true Mirian fighter?
-Then will you test your power in the Infinite
-Bout for unlimited challenges? <Next/@next>
+嘿 <$USERNAME>！！
+你能称自己为真正的米尔战士吗？
+那么，你愿意在无限
+竞技场中考验自己的力量，接受无尽的挑战吗？<下一位/@next>
 
 
 [@next]
 #SAY
-The fee is only '3000 {Gold/Gold}'. What? Too expensive?
-You can get 3000 {Gold/Gold} just by collecting and
-selling 10 Brown Chestnuts!
+费用仅为 '3000 {Gold/Gold}'。什么？太贵了？
+你只需收集并出售 10 颗板栗，
+就能赚到 3000 {Gold/Gold}！
 
-<What is the/@info1> Infinite Bout?
-<I Will Challenge/@challenge1>
-<Maybe next time/@Exit>
+<什么是/@info1> 无限竞技场？
+<我要挑战/@challenge1>
+<也许下次吧/@Exit>
 
 [@info1]
 #SAY
-Ah! What is the Infinite Bout?
-In the Infinite Bout, you have to slay all the
-monsters that will keep appearing all by themself.
-It is a chance to prove your true power and
-potential to the very limit.
+啊！什么是无限竞技场？
+在无限竞技场中，你必须独自斩杀
+不断涌出的所有怪物。
+这是将你真正的力量与潜力
+逼到极限的机会。
 
-<What/@info2> should I 熊 in mind?
+<我该牢记/@info2> 些什么？
 
 [@info2]
 #SAY
-My advice is simple.
-You must rely on your own power only.
-And the time limit is two hours
-So don't lose your valuable items by being reckless.
-Have thorough preparation, OK?
+我的建议很简单。
+你必须只依靠自己的力量。
+而且时间限制是两个小时，
+所以不要因为鲁莽而失去珍贵的物品。
+做好充分的准备，好吗？
 
-<I will/@info3>
+<我愿意/@info3>
 
 [@info3]
 #SAY
-I told you everything I can.
-Do you want to listen to it again?
-Or give it a go?
+我能告诉你的都告诉你了。
+你想再听一遍吗？
+还是去试一试？
 
-I want to <hear it again./@info1>
-<Challenge!/@challenge2>
-<Maybe next time/@Exit>
+我想<再听一遍。/@info1>
+<挑战！/@challenge2>
+<也许下次吧/@Exit>
 
 [@challenge1]
 #SAY
-Oh, if you fall down during the fight,
-You may lose the items you are equipped with.
-Are you still willing to go ahead?
+哦，如果你在战斗中倒下，
+你可能会失去身上装备的物品。
+你仍愿意继续吗？
 
-<Sure, Bring it on!/@challenge2>
+<当然，放马过来！/@challenge2>
 
 [@challenge2]
 #SAY
-Good! you are a true Mirian fighter!
+好！你是一位真正的米尔战士！
 
 
-<Okay/@MOVE10101>
+<好的/@MOVE10101>
 
 [@MOVE10101]
 #ACT

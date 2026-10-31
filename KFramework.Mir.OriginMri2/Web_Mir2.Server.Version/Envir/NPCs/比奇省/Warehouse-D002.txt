@@ -1,16 +1,15 @@
 [@MAIN]
 #SAY
-Hello traveller. How can i help you?
+你好，旅行者。有什么可以帮您的？
  
-<Access/@Storage> Storage
+<存取/@Storage> 仓库
 
-<Close/@exit>
+<关闭/@exit>
 
 
 
 [@Storage]
 #SAY
-What item do you want to store or withdraw?
+您想存放还是取出什么物品？
  
-<Back/@Main> - <Close/@exit>
-
+<返回/@Main> - <关闭/@exit>

@@ -8,11 +8,11 @@ GOTO @NPCNUMBER
 
 [@YOUREAPKER]
 #SAY
-I will not speak to such a person like you.
+我不会和像你这样的人说话。
  
-Your PK POINTS: <$PKPOINT>
+你的 PK 点数：<$PKPOINT>
  
-<Exit/@Exit>
+<离开/@Exit>
 
 [@NPCNUMBER]
 #IF
@@ -88,23 +88,23 @@ GOTO @NPCNUMBER
 
 [@FailedNumber]
 #SAY
-NPC didnt select a number
+NPC 未选中数字
 
 [@MainPage]
 #SAY
-Hello, Do you want to play a game?
-All you have to do is guess what number I'm thinking
-If you guess correctly you will be gifted 100,000 {Gold/GOLD}
-However if you guess wrongly you will lose 10,000 {Gold/GOLD}
+你好，想玩个游戏吗？
+你只需猜出我在想的数字
+若猜对，将获得 100,000 {Gold/GOLD} 奖励
+但若猜错，将损失 10,000 {Gold/GOLD}
  
-Would you like to <Play/@PLAY>?
+你想<游玩/@PLAY>吗？
  
  
-<Close/@EXIT>
+<关闭/@EXIT>
 
 [@Play]
-The rules are simple. All you have to do is guess the number
-that I'm thinking of. What is your guess?
+游戏规则很简单。你只需猜出
+我在想的数字。你猜几？
 <[ 1 ]/@Guess(1)>
 <[ 2 ]/@Guess(2)>
 <[ 3 ]/@Guess(3)>
@@ -129,14 +129,15 @@ CHECKGOLD < 10000
 #ACT
 GOTO @NotEnoughGold
 #ELSESAY
-Congratulations, you Won! Enjoy your 100,000 {Gold/GOLD} Coins.
+恭喜，你赢了！收下你的 100,000 {Gold/GOLD} 金币。
  
  
  
  
  
  
-<Play again/@NPCNUMBER> - <Close/@EXIT>
+ 
+<再玩一次/@NPCNUMBER> - <关闭/@EXIT>
 #ELSEACT
 GIVEGOLD 100000
 
@@ -146,26 +147,22 @@ CHECKGOLD < 10000
 #ACT
 GOTO @NotEnoughGold
 #ELSESAY
-Unfortunately you lost, better luck next time.
+很遗憾你输了，下次好运。
  
  
  
  
  
  
-<Play again/@NPCNUMBER> - <Close/@EXIT>
+<再玩一次/@NPCNUMBER> - <关闭/@EXIT>
 #ELSEACT
 TAKEGOLD 10000
 
 [@NotEnoughGold]
-You do not have 10,000 {Gold/GOLD}
-Please come back when you have the funds to gamble.
+你没有 10,000 {Gold/GOLD}
+有了赌资再来吧。
  
  
  
-<Close/@EXIT>
-
-[Trade]
-
-[Quests]
-
+ 
+<关闭/@EXIT>

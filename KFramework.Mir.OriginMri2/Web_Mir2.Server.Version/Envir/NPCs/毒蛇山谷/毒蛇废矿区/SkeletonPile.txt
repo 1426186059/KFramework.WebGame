@@ -1,8 +1,8 @@
 [@MAIN]
 #SAY
-The Bones.. They look freshly eaten.
+这些骨头……看起来像是刚被啃食过。
  
-<Close/@exit>
+<关闭/@exit>
 
 [Quests]
 -79

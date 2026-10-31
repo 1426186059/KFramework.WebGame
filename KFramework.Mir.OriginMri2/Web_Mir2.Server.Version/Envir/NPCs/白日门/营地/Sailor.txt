@@ -1,26 +1,27 @@
 [@main]
 #SAY
- The boat goes many places. The boat will depart soon
- Passengers, Please board the ship.
+这艘船去往许多地方。船马上就要启航了，
+乘客们，请登船。
  
- <To Bichon Province/@wvmove> Pay 10,000 {Gold/Gold} and Board.
- <To Prajna Island/@wvmove1> Pay 12,000 {Gold/Gold} and Board.
- <Talk/@talk> about each frontiers.
+<前往比奇省/@wvmove> 支付 10,000 {Gold/Gold} 登船。
+<前往般若岛/@wvmove1> 支付 12,000 {Gold/Gold} 登船。
+<询问/@talk> 各地边境。
  
 [@talk]
 #SAY
- Which frontier do you want to talk about?
-
- <Prajna Island/@talkPI> 
- <Back/@main>
+你想了解哪个边境？
+ 
+<般若岛/@talkPI> 
+ 
+<返回/@main>
 
 [@talkPI]
- Prajna Island is full of rampaging monsters.
- Some braves may take this opportunity to boost and raise
- their reputation and fame but for the locals,it ain't nothing but just hell.
-
- <Back/@talk>
-
+#SAY
+般若岛遍布横冲直撞的怪物。
+一些勇者会借此机会提升并扬名立万，
+但对当地人而言，那不过就是地狱罢了。
+ 
+<返回/@talk>
 
 [@wvmove]
 #IF
@@ -30,10 +31,10 @@ TAKEGOLD 10000
 MOVE 0 253 673
 BREAK
 #ELSESAY
-You Dont Have enough {Gold/Gold} to use my Service!
-Be gone, don't waste my time again!
+你的 {Gold/Gold} 不足以使用我的服务！
+走开，别再浪费我的时间！
  
-<Exit/@exit>
+<退出/@exit>
 
 [@wvmove1]
 #IF
@@ -43,7 +44,7 @@ TAKEGOLD 12000
 Move 5 124 353
 break
 #ELSESAY
-You Dont Have enough {Gold/Gold} to use my Service!
-Be gone, don't waste my time again!
+你的 {Gold/Gold} 不足以使用我的服务！
+走开，别再浪费我的时间！
  
-<Exit/@exit>
+<退出/@exit>

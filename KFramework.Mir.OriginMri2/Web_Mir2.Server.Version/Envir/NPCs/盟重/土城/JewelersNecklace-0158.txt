@@ -2,41 +2,41 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Welcome. What can I do for you?
+欢迎。我能为您做些什么？
  
-<View/@BuySell> Store.
-<Repair/@Repair> Necklace.
+<查看/@BuySell> 商店。
+<修理/@Repair> 项链。
  
-<Close/@Exit>
+<关闭/@Exit>
 
 [@BuySell]
 #SAY
-Which necklace do you want to buy or sell?
-<Buy Back/@BuyBack> 
+您想购买还是出售哪条项链？
+<回购/@BuyBack> 
  
-<Back/@Main>
+<返回/@Main>
 
 [@BuyBack]
 #SAY
-These are the items still available to purchase back.
+这些是仍可回购的物品。
  
-<Back/@Main>
+<返回/@Main>
 
 [@Repair]
 #SAY
-Would you like to repair a necklace?
+您想修理一条项链吗？
  
  
-<Back/@Main>
+<返回/@Main>
 
 [Types]
 5

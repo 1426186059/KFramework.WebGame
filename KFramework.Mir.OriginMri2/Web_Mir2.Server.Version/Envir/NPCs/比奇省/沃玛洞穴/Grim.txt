@@ -2,42 +2,42 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Hello Traveller. You found me hiding away from
-the scary monsters.
+你好，旅行者。你发现我躲在这里，避开那些可怕的怪物。
  
-<View/@BuySell> Store.
-<Repair/@Repair> Drapery pieces.
-<Talk/@talk> about CastleBichon
+<查看/@BuySell> 商店。
+<修理/@Repair> 布甲部件。
+<交谈/@talk> 关于比奇城堡
  
-<Close/@exit>
+<关闭/@exit>
 
 [@BuySell]
 #SAY
-Which item would you like to Buy or Sell?
-<Buy Back/@BuyBack>
+您想购买还是出售哪件物品？
+<回购/@BuyBack>
  
-<Back/@main>
+<返回/@main>
 
 [@BuyBack]
 #SAY
-These are the items still available to purchase back.
+这些是仍可回购的物品。
  
-<Back/@main>
+<返回/@main>
 
 [@Repair]
 #SAY
-Would you like to repair a drapery piece?
+您想修理一件布甲部件吗？
  
-<Back/@main>
+<返回/@main>
+
 
 
 [Types]
@@ -57,7 +57,3 @@ Medium甲(F)
 魔法盔
 皮革腰带
 Low鞋
-
-
-
-

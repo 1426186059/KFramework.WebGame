@@ -2,30 +2,30 @@
 #IF
 CHECKPKPOINT > 199
 #SAY
-I will not help an evil person like you...
+我不会帮助像你这样的恶人……
  
  
-<Close/@exit>
+<关闭/@exit>
 #ELSEACT
 GOTO @Main-1
 
 [@Main-1]
 #SAY
-Hello there <$USERNAME>,
-I'm currently on the look out for many types of materials
+你好 <$USERNAME>，
+我目前正在收购多种材料。
  
-Did you know material's can make many wonderful items
-which can help on your travels?
-I pay well.. if ever wish to sell anything come back
-and ill take alook.
+你知道吗，材料可以制作许多
+有助于你旅行的奇妙物品。
+我出价不菲……如果你有东西想卖，随时回来，
+我会帮你看看。
  
-<Sell/@Sell> Materials.
+<出售/@Sell> 材料。
  
-<Close/@exit>
+<关闭/@exit>
 
 [@Sell]
 #SAY
-Show me the Material's..
+把你的材料给我看看……
 
 [Types]
 16

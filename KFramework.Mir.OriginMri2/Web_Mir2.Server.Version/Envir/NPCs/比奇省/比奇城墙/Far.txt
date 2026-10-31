@@ -12,12 +12,12 @@ CHECK [537] 1
 #ACT
 TAKEITEM 酒 1
 #SAY
-HAHA... Mogu sent you...
-Ah those symbols... Theres not much information about the Language.
-But this is what the Stone says. 
+哈哈……莫古派你来的……
+啊，那些符号……关于这种文字的信息不多。
+但石碑上是这么说的。 
       "{Dungeon of the Ancient Ones./Gray}"
  
-Thank you <Emperor Far/@THX2>
+谢谢你<法尔大帝/@THX2>
 #ELSEACT
 GOTO @MAIN-3
 
@@ -25,12 +25,12 @@ GOTO @MAIN-3
 #IF
 CHECK [534] 1
 #SAY
-Ah those symbols... I helped Sir Mogu with them in the past.
-Theres not much information about the Language..
-But this is what the Stone says. 
+啊，那些符号……我过去曾帮过莫古爵士解读它们。
+关于这种文字的信息不多……
+但石碑上是这么说的。 
       "{Dungeon of the Ancient Ones./Gray}"
  
-Thank you <Emperor Far/@THX>
+谢谢你<法尔大帝/@THX>
 #ELSEACT
 GOTO @MAIN-3
 
@@ -38,10 +38,10 @@ GOTO @MAIN-3
 #ACT
 SET [535] 1
 #SAY
-Hmm... Think ive seen those symbols before...
-Sir Mogu was asking about that language many years ago.
-Travel to the Tavern and talk to him about it.
-<Thank You/@exit>
+嗯……我想我以前见过那些符号……
+莫古爵士多年前曾打听那种文字。
+去酒馆找他谈谈这件事吧。
+<谢谢/@exit>
 
 [@THX2]
 #ACT
@@ -50,7 +50,7 @@ SET [538] 1
 
 [@MAIN-3]
 #SAY
-More to come.
+敬请期待。
 
 [Quests]
 -154

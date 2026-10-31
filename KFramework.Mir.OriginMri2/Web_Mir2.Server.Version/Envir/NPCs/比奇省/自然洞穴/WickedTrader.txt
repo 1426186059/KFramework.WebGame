@@ -1,27 +1,27 @@
 [@Main]
-Welcome, how may I help you?
+欢迎，我能为您做些什么？
  
-<View/@BuySell> Store.
-<Repair/@repair> Item.
-<Close/@exit>
+<查看/@BuySell> 商店。
+<修理/@repair> 物品。
+<关闭/@exit>
 
 [@BuySell]
 #SAY
-What item do you want to buy or sell?
-<Buy Back/@BuyBack>
-  
-<Back/@main>
+您想购买还是出售哪件物品？
+<回购/@BuyBack>
+ 
+<返回/@main>
 
 [@BuyBack]
 #SAY
-Item's you are still able to purchase back.
+这些是仍可回购的物品。
  
-<Back/@Main>
+<返回/@Main>
 
 [@Repair]
-Show me the items you wish to repair.
+把需要修理的物品给我看看。
  
-<Back/@main>
+<返回/@main>
 
 [Types]
 1
