@@ -1,8 +1,6 @@
-{
-  "$id": "1",
-  "$values": [
+[
     {
-      "$id": "2",
+      
       "Index": 1,
       "FullMap": false,
       "Location": {
@@ -14,14 +12,14 @@
       "MapIndex": 172,
       "PalaceIndex": 245,
       "ExtraMaps": {
-        "$id": "3",
+        
         "$values": []
       },
       "ConquestGuards": {
-        "$id": "4",
+        
         "$values": [
           {
-            "$id": "5",
+            
             "Index": 1,
             "Location": {
               "X": 662,
@@ -32,7 +30,7 @@
             "RepairCost": 1000
           },
           {
-            "$id": "6",
+            
             "Index": 2,
             "Location": {
               "X": 664,
@@ -43,7 +41,7 @@
             "RepairCost": 1000
           },
           {
-            "$id": "7",
+            
             "Index": 3,
             "Location": {
               "X": 666,
@@ -54,7 +52,7 @@
             "RepairCost": 1000
           },
           {
-            "$id": "8",
+            
             "Index": 4,
             "Location": {
               "X": 676,
@@ -65,7 +63,7 @@
             "RepairCost": 1000
           },
           {
-            "$id": "9",
+            
             "Index": 5,
             "Location": {
               "X": 678,
@@ -76,7 +74,7 @@
             "RepairCost": 1000
           },
           {
-            "$id": "10",
+            
             "Index": 6,
             "Location": {
               "X": 681,
@@ -87,7 +85,7 @@
             "RepairCost": 1000
           },
           {
-            "$id": "11",
+            
             "Index": 7,
             "Location": {
               "X": 628,
@@ -98,7 +96,7 @@
             "RepairCost": 1000
           },
           {
-            "$id": "12",
+            
             "Index": 8,
             "Location": {
               "X": 632,
@@ -109,7 +107,7 @@
             "RepairCost": 1000
           },
           {
-            "$id": "13",
+            
             "Index": 9,
             "Location": {
               "X": 670,
@@ -120,7 +118,7 @@
             "RepairCost": 1000
           },
           {
-            "$id": "14",
+            
             "Index": 10,
             "Location": {
               "X": 671,
@@ -131,7 +129,7 @@
             "RepairCost": 1000
           },
           {
-            "$id": "15",
+            
             "Index": 11,
             "Location": {
               "X": 675,
@@ -142,7 +140,7 @@
             "RepairCost": 1000
           },
           {
-            "$id": "16",
+            
             "Index": 12,
             "Location": {
               "X": 671,
@@ -155,10 +153,10 @@
         ]
       },
       "ConquestGates": {
-        "$id": "17",
+        
         "$values": [
           {
-            "$id": "18",
+            
             "Index": 1,
             "Location": {
               "X": 672,
@@ -171,10 +169,10 @@
         ]
       },
       "ConquestWalls": {
-        "$id": "19",
+        
         "$values": [
           {
-            "$id": "20",
+            
             "Index": 1,
             "Location": {
               "X": 624,
@@ -185,7 +183,7 @@
             "RepairCost": 1000
           },
           {
-            "$id": "21",
+            
             "Index": 2,
             "Location": {
               "X": 627,
@@ -196,7 +194,7 @@
             "RepairCost": 1000
           },
           {
-            "$id": "22",
+            
             "Index": 3,
             "Location": {
               "X": 634,
@@ -209,11 +207,11 @@
         ]
       },
       "ConquestSieges": {
-        "$id": "23",
+        
         "$values": []
       },
       "ConquestFlags": {
-        "$id": "24",
+        
         "$values": []
       },
       "GuardIndex": 12,
@@ -238,10 +236,9 @@
       },
       "KingSize": 0,
       "ControlPoints": {
-        "$id": "25",
+        
         "$values": []
       },
       "ControlPointIndex": 0
     }
   ]
-}

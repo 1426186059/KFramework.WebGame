@@ -1,5 +1,5 @@
 {
-  "$id": "1",
+  
   "Enabled": true,
   "MapFileName": "D2083",
   "MonsterName": "邪米尔",
@@ -18,55 +18,55 @@
   },
   "Drops": [
     {
-      "$id": "2",
+      
       "$values": []
     },
     {
-      "$id": "3",
+      
       "$values": []
     },
     {
-      "$id": "4",
+      
       "$values": []
     },
     {
-      "$id": "5",
+      
       "$values": []
     },
     {
-      "$id": "6",
+      
       "$values": []
     },
     {
-      "$id": "7",
+      
       "$values": []
     },
     {
-      "$id": "8",
+      
       "$values": []
     },
     {
-      "$id": "9",
+      
       "$values": []
     },
     {
-      "$id": "10",
+      
       "$values": []
     },
     {
-      "$id": "11",
+      
       "$values": []
     },
     {
-      "$id": "12",
+      
       "$values": []
     },
     {
-      "$id": "13",
+      
       "$values": []
     },
     {
-      "$id": "14",
+      
       "$values": []
     }
   ],
