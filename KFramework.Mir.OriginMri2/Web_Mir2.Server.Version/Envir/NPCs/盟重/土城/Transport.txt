@@ -15,7 +15,7 @@
 
 <Exit/@Exit>
 
-[MainCities]
+[@MainCities]
 #SAY
 <比奇省/@mv_103>
 <盟重/@mv_154>
@@ -31,7 +31,7 @@
 
 <Main Menu/@Main> - <Exit/@Exit>
 
-[Bichon]
+[@Bichon]
 #SAY
 <比奇省/@mv_103>
 <比奇矿区/@mv_5011>
@@ -43,7 +43,7 @@
 
 <Main Menu/@Main> - <Exit/@Exit>
 
-[Mongcon]
+[@Mongcon]
 #SAY
 <盟重/@mv_154>
 <沙巴克皇宫/@mv_1025>
@@ -55,7 +55,7 @@
 
 <Main Menu/@Main> - <Exit/@Exit>
 
-[WhiteGate]
+[@WhiteGate]
 #SAY
 <白日门/@mv_5384>
 <沃玛寺庙入口/@mv_5416>
@@ -72,7 +72,7 @@
 
 <Main Menu/@Main> - <Exit/@Exit>
 
-[Fengmo]
+[@Fengmo]
 #SAY
 <封魔谷/@mv_5392>
 <封魔殿/@mv_5393>
@@ -86,7 +86,7 @@
 
 <Main Menu/@Main> - <Exit/@Exit>
 
-[Cangyue]
+[@Cangyue]
 #SAY
 <苍月岛/@mv_5402>
 <苍月岛/@mv_5800>
@@ -97,7 +97,7 @@
 
 <Main Menu/@Main> - <Exit/@Exit>
 
-[Molong]
+[@Molong]
 #SAY
 <魔龙城/@mv_5414>
 <魔龙岭/@mv_5415>
@@ -117,7 +117,7 @@
 
 <Main Menu/@Main> - <Exit/@Exit>
 
-[Danger]
+[@Danger]
 #SAY
 <世界BOSS/@mv_4902>
 <四方迷阵/@mv_4901>
@@ -137,7 +137,7 @@
 
 <Main Menu/@Main> - <Exit/@Exit>
 
-[Mirage]
+[@Mirage]
 #SAY
 <幻境一层/@mv_5210>
 <幻境二层/@mv_5211>
@@ -152,7 +152,7 @@
 
 <Main Menu/@Main> - <Exit/@Exit>
 
-[Member]
+[@Member]
 #SAY
 <会员之家①层/@mv_5248>
 <会员之家②层/@mv_5249>
@@ -163,7 +163,7 @@
 
 <Main Menu/@Main> - <Exit/@Exit>
 
-[Maya]
+[@Maya]
 #SAY
 <玛雅神殿一层/@mv_5242>
 <玛雅神殿二层/@mv_5243>
@@ -178,391 +178,391 @@
 
 [@mv_103]
 #ACT
-MOVE 103 0 0
+MOVE 103 288 616
 
 [@mv_154]
 #ACT
-MOVE 154 0 0
+MOVE 154 496 400
 
 [@mv_5384]
 #ACT
-MOVE 5384 0 0
+MOVE 5384 245 248
 
 [@mv_5426]
 #ACT
-MOVE 5426 0 0
+MOVE 5426 272 272
 
 [@mv_5427]
 #ACT
-MOVE 5427 0 0
+MOVE 5427 298 300
 
 [@mv_5392]
 #ACT
-MOVE 5392 0 0
+MOVE 5392 245 248
 
 [@mv_5402]
 #ACT
-MOVE 5402 0 0
+MOVE 5402 400 400
 
 [@mv_5414]
 #ACT
-MOVE 5414 0 0
+MOVE 5414 245 248
 
 [@mv_1025]
 #ACT
-MOVE 1025 0 0
+MOVE 1025 35 35
 
 [@mv_5258]
 #ACT
-MOVE 5258 0 0
+MOVE 5258 75 75
 
 [@mv_1000]
 #ACT
-MOVE 1000 0 0
+MOVE 1000 96 128
 
 [@mv_5011]
 #ACT
-MOVE 5011 0 0
+MOVE 5011 100 100
 
 [@mv_5012]
 #ACT
-MOVE 5012 0 0
+MOVE 5012 50 50
 
 [@mv_5014]
 #ACT
-MOVE 5014 0 0
+MOVE 5014 100 100
 
 [@mv_5022]
 #ACT
-MOVE 5022 0 0
+MOVE 5022 100 100
 
 [@mv_5016]
 #ACT
-MOVE 5016 0 0
+MOVE 5016 100 100
 
 [@mv_5087]
 #ACT
-MOVE 5087 0 0
+MOVE 5087 100 100
 
 [@mv_962]
 #ACT
-MOVE 962 0 0
+MOVE 962 103 111
 
 [@mv_1026]
 #ACT
-MOVE 1026 0 0
+MOVE 1026 104 104
 
 [@mv_5311]
 #ACT
-MOVE 5311 0 0
+MOVE 5311 96 100
 
 [@mv_5355]
 #ACT
-MOVE 5355 0 0
+MOVE 5355 50 50
 
 [@mv_5365]
 #ACT
-MOVE 5365 0 0
+MOVE 5365 25 25
 
 [@mv_5416]
 #ACT
-MOVE 5416 0 0
+MOVE 5416 50 50
 
 [@mv_5417]
 #ACT
-MOVE 5417 0 0
+MOVE 5417 245 248
 
 [@mv_5418]
 #ACT
-MOVE 5418 0 0
+MOVE 5418 197 200
 
 [@mv_5410]
 #ACT
-MOVE 5410 0 0
+MOVE 5410 28 30
 
 [@mv_5412]
 #ACT
-MOVE 5412 0 0
+MOVE 5412 50 50
 
 [@mv_5419]
 #ACT
-MOVE 5419 0 0
+MOVE 5419 149 148
 
 [@mv_5425]
 #ACT
-MOVE 5425 0 0
+MOVE 5425 149 148
 
 [@mv_5155]
 #ACT
-MOVE 5155 0 0
+MOVE 5155 100 100
 
 [@mv_5157]
 #ACT
-MOVE 5157 0 0
+MOVE 5157 100 100
 
 [@mv_5152]
 #ACT
-MOVE 5152 0 0
+MOVE 5152 100 100
 
 [@mv_5153]
 #ACT
-MOVE 5153 0 0
+MOVE 5153 50 50
 
 [@mv_5393]
 #ACT
-MOVE 5393 0 0
+MOVE 5393 50 50
 
 [@mv_5394]
 #ACT
-MOVE 5394 0 0
+MOVE 5394 20 20
 
 [@mv_5138]
 #ACT
-MOVE 5138 0 0
+MOVE 5138 100 100
 
 [@mv_5141]
 #ACT
-MOVE 5141 0 0
+MOVE 5141 149 148
 
 [@mv_5146]
 #ACT
-MOVE 5146 0 0
+MOVE 5146 50 50
 
 [@mv_5148]
 #ACT
-MOVE 5148 0 0
+MOVE 5148 149 148
 
 [@mv_5149]
 #ACT
-MOVE 5149 0 0
+MOVE 5149 50 50
 
 [@mv_5150]
 #ACT
-MOVE 5150 0 0
+MOVE 5150 50 50
 
 [@mv_5800]
 #ACT
-MOVE 5800 0 0
+MOVE 5800 400 400
 
 [@mv_5409]
 #ACT
-MOVE 5409 0 0
+MOVE 5409 149 148
 
 [@mv_5413]
 #ACT
-MOVE 5413 0 0
+MOVE 5413 75 75
 
 [@mv_5415]
 #ACT
-MOVE 5415 0 0
+MOVE 5415 149 200
 
 [@mv_5259]
 #ACT
-MOVE 5259 0 0
+MOVE 5259 96 248
 
 [@mv_5261]
 #ACT
-MOVE 5261 0 0
+MOVE 5261 96 248
 
 [@mv_5262]
 #ACT
-MOVE 5262 0 0
+MOVE 5262 100 100
 
 [@mv_5263]
 #ACT
-MOVE 5263 0 0
+MOVE 5263 197 148
 
 [@mv_5265]
 #ACT
-MOVE 5265 0 0
+MOVE 5265 149 148
 
 [@mv_5269]
 #ACT
-MOVE 5269 0 0
+MOVE 5269 149 148
 
 [@mv_5270]
 #ACT
-MOVE 5270 0 0
+MOVE 5270 149 100
 
 [@mv_5271]
 #ACT
-MOVE 5271 0 0
+MOVE 5271 149 148
 
 [@mv_5307]
 #ACT
-MOVE 5307 0 0
+MOVE 5307 20 25
 
 [@mv_5308]
 #ACT
-MOVE 5308 0 0
+MOVE 5308 15 17
 
 [@mv_5272]
 #ACT
-MOVE 5272 0 0
+MOVE 5272 197 200
 
 [@mv_5273]
 #ACT
-MOVE 5273 0 0
+MOVE 5273 197 200
 
 [@mv_5274]
 #ACT
-MOVE 5274 0 0
+MOVE 5274 40 45
 
 [@mv_4902]
 #ACT
-MOVE 4902 0 0
+MOVE 4902 43 43
 
 [@mv_4901]
 #ACT
-MOVE 4901 0 0
+MOVE 4901 56 63
 
 [@mv_4903]
 #ACT
-MOVE 4903 0 0
+MOVE 4903 58 64
 
 [@mv_5124]
 #ACT
-MOVE 5124 0 0
+MOVE 5124 15 15
 
 [@mv_5120]
 #ACT
-MOVE 5120 0 0
+MOVE 5120 197 200
 
 [@mv_5233]
 #ACT
-MOVE 5233 0 0
+MOVE 5233 15 15
 
 [@mv_5229]
 #ACT
-MOVE 5229 0 0
+MOVE 5229 15 17
 
 [@mv_5230]
 #ACT
-MOVE 5230 0 0
+MOVE 5230 50 50
 
 [@mv_5231]
 #ACT
-MOVE 5231 0 0
+MOVE 5231 25 25
 
 [@mv_5232]
 #ACT
-MOVE 5232 0 0
+MOVE 5232 20 20
 
 [@mv_5135]
 #ACT
-MOVE 5135 0 0
+MOVE 5135 15 15
 
 [@mv_5132]
 #ACT
-MOVE 5132 0 0
+MOVE 5132 149 148
 
 [@mv_5133]
 #ACT
-MOVE 5133 0 0
+MOVE 5133 100 100
 
 [@mv_5136]
 #ACT
-MOVE 5136 0 0
+MOVE 5136 20 20
 
 [@mv_5137]
 #ACT
-MOVE 5137 0 0
+MOVE 5137 50 50
 
 [@mv_5210]
 #ACT
-MOVE 5210 0 0
+MOVE 5210 75 75
 
 [@mv_5211]
 #ACT
-MOVE 5211 0 0
+MOVE 5211 197 200
 
 [@mv_5212]
 #ACT
-MOVE 5212 0 0
+MOVE 5212 50 50
 
 [@mv_5213]
 #ACT
-MOVE 5213 0 0
+MOVE 5213 100 100
 
 [@mv_5214]
 #ACT
-MOVE 5214 0 0
+MOVE 5214 149 148
 
 [@mv_5215]
 #ACT
-MOVE 5215 0 0
+MOVE 5215 50 50
 
 [@mv_5216]
 #ACT
-MOVE 5216 0 0
+MOVE 5216 100 100
 
 [@mv_5224]
 #ACT
-MOVE 5224 0 0
+MOVE 5224 50 50
 
 [@mv_5225]
 #ACT
-MOVE 5225 0 0
+MOVE 5225 149 148
 
 [@mv_5217]
 #ACT
-MOVE 5217 0 0
+MOVE 5217 20 20
 
 [@mv_5248]
 #ACT
-MOVE 5248 0 0
+MOVE 5248 96 100
 
 [@mv_5249]
 #ACT
-MOVE 5249 0 0
+MOVE 5249 96 100
 
 [@mv_5250]
 #ACT
-MOVE 5250 0 0
+MOVE 5250 96 100
 
 [@mv_5251]
 #ACT
-MOVE 5251 0 0
+MOVE 5251 150 150
 
 [@mv_5507]
 #ACT
-MOVE 5507 0 0
+MOVE 5507 110 110
 
 [@mv_5546]
 #ACT
-MOVE 5546 0 0
+MOVE 5546 110 110
 
 [@mv_5242]
 #ACT
-MOVE 5242 0 0
+MOVE 5242 50 50
 
 [@mv_5243]
 #ACT
-MOVE 5243 0 0
+MOVE 5243 50 50
 
 [@mv_5244]
 #ACT
-MOVE 5244 0 0
+MOVE 5244 50 50
 
 [@mv_5245]
 #ACT
-MOVE 5245 0 0
+MOVE 5245 50 50
 
 [@mv_5246]
 #ACT
-MOVE 5246 0 0
+MOVE 5246 50 50
 
 [@mv_5247]
 #ACT
-MOVE 5247 0 0
+MOVE 5247 50 50
 
 [@mv_5252]
 #ACT
-MOVE 5252 0 0
+MOVE 5252 50 50
 
 [@mv_5253]
 #ACT
-MOVE 5253 0 0
+MOVE 5253 50 50
 
 [@Exit]
 #SAY
