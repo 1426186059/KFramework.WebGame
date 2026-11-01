@@ -1280,16 +1280,28 @@ namespace Client.MirScenes
                         NPCObject npc = MapObject.MouseObject as NPCObject;
                         if (npc != null)
                         {
+                            // 城市传送员：弹出分类传送对话框，隐藏原脚本菜单；关闭后可再次点击重开。
+                            if (TeleporterData.IsCityTeleporter(npc.Name))
+                            {
+                                GameScene.NPCID = npc.ObjectID;
+                                GameScene.NPCTime = CMain.Time + 5000;
+                                if (!GameScene.Scene.NPCTeleporterDialog.Visible)
+                                {
+                                    GameScene.Scene.NPCDialog.Hide();
+                                    GameScene.Scene.NPCTeleporterDialog.Open("传送员", TeleporterData.GetDestinations(), npc.ObjectID);
+                                }
+                                return;
+                            }
+
                             if (npc.ObjectID == GameScene.NPCID &&
                                 (CMain.Time <= GameScene.NPCTime || GameScene.Scene.NPCDialog.Visible))
                             {
                                 return;
                             }
 
-                            //GameScene.Scene.NPCDialog.Hide();
-
                             GameScene.NPCTime = CMain.Time + 5000;
                             GameScene.NPCID = npc.ObjectID;
+                            GameScene.Scene.NPCTeleporterDialog.Hide();
                             Network.Enqueue(new C.CallNPC { ObjectID = npc.ObjectID, Key = "[@Main]" });
                         }
                     }

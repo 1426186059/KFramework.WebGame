@@ -24,6 +24,7 @@ namespace Client.MirScenes.Dialogs
         public int Cost;          // 消耗（元宝/金币），0 表示免费
         public string CostText;   // 自定义消耗文本（优先于 Cost 展示）
         public string Description;// 悬浮/副标题说明（可选）
+        public string Action;     // 服务端 @mv_xxx 页键（不含 @），点击即发 C.CallNPC 到该页执行 MOVE
     }
 
     /// <summary>
@@ -34,6 +35,7 @@ namespace Client.MirScenes.Dialogs
     public sealed class NPCTeleporterDialog : MirImageControl
     {
         public event Action<DeliverDestination> OnTeleport;
+        public uint CurrentNPCID;   // 当前交互的传送员 NPC ObjectID（OnTeleport 时发包用）
 
         private const string Sheet = "y_common-sheet";
         private const string BgUrl = "resource/assets/gameui4/jpg/y_cs_bg.jpg";
@@ -159,8 +161,9 @@ namespace Client.MirScenes.Dialogs
         }
 
         /// <summary>填充并显示：title=窗口标题，items=该 NPC 的全部传送目的地。</summary>
-        public void Open(string title, List<DeliverDestination> items)
+        public void Open(string title, List<DeliverDestination> items, uint npcId = 0)
         {
+            CurrentNPCID = npcId;
             _titleLabel.Text = string.IsNullOrEmpty(title) ? "传送员" : title;
             _allItems = items ?? new List<DeliverDestination>();
 

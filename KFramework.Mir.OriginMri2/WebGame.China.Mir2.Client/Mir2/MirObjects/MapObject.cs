@@ -176,6 +176,7 @@ namespace Client.MirObjects
 
             GameScene.NPCID = 0;
             GameScene.Scene.NPCDialog.Hide();
+            GameScene.Scene.NPCTeleporterDialog.Hide();
         }
 
         public abstract void Process();

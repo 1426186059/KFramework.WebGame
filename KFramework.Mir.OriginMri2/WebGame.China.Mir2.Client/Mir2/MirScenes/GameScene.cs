@@ -308,8 +308,8 @@ namespace Client.MirScenes
             NPCTeleporterDialog = new NPCTeleporterDialog { Parent = this, Visible = false };
             NPCTeleporterDialog.OnTeleport += d =>
             {
-                // TODO: 服务端尚无 deliver（传送员目的地）系统；此处应发送传送请求
-                // （新增 S/C 包下发 deliver 列表 + 客户端回传 deliverId，或复用 C.TeleportToNPC 携带 deliverId）。
+                // 复用现有 NPC 脚本机制：发 C.CallNPC 到对应的 @mv_xxx 页（服务端执行 MOVE），无需新增服务端包。
+                Network.Enqueue(new C.CallNPC { ObjectID = NPCTeleporterDialog.CurrentNPCID, Key = "[@" + d.Action + "]" });
                 NPCTeleporterDialog.Hide();
             };
             NPCGoodsDialog = new NPCGoodsDialog(PanelType.Buy) { Parent = this, Visible = false };
@@ -3997,6 +3997,7 @@ namespace Client.MirScenes
             NPCTime = 0;
             NPCDialog.BigButtons.Clear();
             NPCDialog.BigButtonDialog.Hide();
+            NPCTeleporterDialog.Hide();
             NPCDialog.NewText(p.Page);
 
             if (p.Page.Count > 0 || NPCDialog.BigButtons.Count > 0)
