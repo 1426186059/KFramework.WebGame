@@ -83,7 +83,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = "传送员",
                 Parent = this,
-                Location = new Point(16, 2),
+                Location = new Point(16, 10),
                 AutoSize = true,
                 ForeColour = Color.BurlyWood,
                 Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
@@ -95,6 +95,7 @@ namespace Client.MirScenes.Dialogs
                 AtlasNameKey = Sheet + "#com_line_h",
                 Parent = this,
                 Location = new Point(10, 36),
+                AutoSize = false,
                 Size = new Size(PanelW - 20, 2),
             };
 
@@ -114,7 +115,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Location = new Point(CatMenuX, CatMenuY),
-                Size = new Size(CatMenuW, CatMenuH),
+                Size = new Size(CatMenuW, 500),
             };
             _catScroll.ShowScrollBar = false;
 
@@ -123,7 +124,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Location = new Point(DestX, DestY),
-                Size = new Size(DestW, DestH),
+                Size = new Size(DestW, 500),
             };
             _destScroll.ShowScrollBar = false;
 
@@ -148,7 +149,10 @@ namespace Client.MirScenes.Dialogs
         private void BuildCategories()
         {
             foreach (var b in _categoryButtons)
+            {
                 b.Dispose();
+            }
+
             _categoryButtons.Clear();
             _categoryNames.Clear();
 
@@ -176,17 +180,18 @@ namespace Client.MirScenes.Dialogs
                 {
                     AtlasNameKey = Sheet,
                     AtlasFrame = "com_z_btn_2_1",
-                    PressedAtlasFrame = "com_z_btn_2",
                     Parent = _catScroll.Content,
                     Location = new Point(bx, y),
                     Size = new Size(CatBtnW, CatBtnH),
                     CenterText = true,
                     Text = string.IsNullOrEmpty(cat) ? "全部" : cat,
                     Sound = SoundList.ButtonA,
+                    OnlyDrawWhenActive = false,
                 };
                 int idx = i;
                 btn.Click += (o, e) => SelectCategory(idx);
                 _categoryButtons.Add(btn);
+               
                 _categoryNames.Add(string.IsNullOrEmpty(cat) ? "全部" : cat);
                 y += CatStep;
             }
@@ -200,8 +205,7 @@ namespace Client.MirScenes.Dialogs
             for (int i = 0; i < _categoryButtons.Count; i++)
             {
                 bool sel = (i == index);
-                _categoryButtons[i].AtlasFrame = sel ? "com_z_btn_2_1" : "com_z_btn_2";
-                _categoryButtons[i].PressedAtlasFrame = sel ? "com_z_btn_2_1" : "com_z_btn_2";
+                _categoryButtons[i].AtlasFrame = sel ? "com_z_btn_2" : "com_z_btn_2_1";
             }
 
             string cat = (index >= 0 && index < _categoryNames.Count) ? _categoryNames[index] : "";
