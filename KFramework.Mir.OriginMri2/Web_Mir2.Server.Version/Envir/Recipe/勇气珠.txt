@@ -8,5 +8,5 @@ Crafting书
 
 [Ingredients]
 道术石 
-Impact药(大) 
+Impact药(L) 
 特制金创药 2

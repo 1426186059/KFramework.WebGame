@@ -1896,7 +1896,7 @@
     {
       
       "Index": 45,
-      "Name": "米尔甲(男)",
+      "Name": "米尔甲(M)",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -1943,7 +1943,7 @@
     {
       
       "Index": 46,
-      "Name": "米尔甲(男)1",
+      "Name": "米尔甲(M)1",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -1992,7 +1992,7 @@
     {
       
       "Index": 47,
-      "Name": "米尔甲(男)2",
+      "Name": "米尔甲(M)2",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -2041,7 +2041,7 @@
     {
       
       "Index": 48,
-      "Name": "米尔甲(男)3",
+      "Name": "米尔甲(M)3",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -2090,7 +2090,7 @@
     {
       
       "Index": 49,
-      "Name": "米尔甲(男)4",
+      "Name": "米尔甲(M)4",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -2139,7 +2139,7 @@
     {
       
       "Index": 50,
-      "Name": "米尔甲(男)5",
+      "Name": "米尔甲(M)5",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -2190,7 +2190,7 @@
     {
       
       "Index": 51,
-      "Name": "米尔甲(女)",
+      "Name": "米尔甲(F)",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -2237,7 +2237,7 @@
     {
       
       "Index": 52,
-      "Name": "米尔甲(女)1",
+      "Name": "米尔甲(F)1",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -2286,7 +2286,7 @@
     {
       
       "Index": 53,
-      "Name": "米尔甲(女)2",
+      "Name": "米尔甲(F)2",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -2335,7 +2335,7 @@
     {
       
       "Index": 54,
-      "Name": "米尔甲(女)3",
+      "Name": "米尔甲(F)3",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -2384,7 +2384,7 @@
     {
       
       "Index": 55,
-      "Name": "米尔甲(女)4",
+      "Name": "米尔甲(F)4",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -2433,7 +2433,7 @@
     {
       
       "Index": 56,
-      "Name": "米尔甲(女)5",
+      "Name": "米尔甲(F)5",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -3702,7 +3702,7 @@
     {
       
       "Index": 84,
-      "Name": "骨袍(男)",
+      "Name": "骨袍(M)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -3746,7 +3746,7 @@
     {
       
       "Index": 85,
-      "Name": "骨袍(女)",
+      "Name": "骨袍(F)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -4179,7 +4179,7 @@
     {
       
       "Index": 95,
-      "Name": "白金腰带(魂)",
+      "Name": "白金腰带(H)",
       "Type": 9,
       "Grade": 1,
       "RequiredType": 0,
@@ -4221,7 +4221,7 @@
     {
       
       "Index": 96,
-      "Name": "白金鞋(魂)",
+      "Name": "白金鞋(H)",
       "Type": 10,
       "Grade": 1,
       "RequiredType": 0,
@@ -4265,7 +4265,7 @@
     {
       
       "Index": 97,
-      "Name": "白金项链(魂)",
+      "Name": "白金项链(H)",
       "Type": 5,
       "Grade": 1,
       "RequiredType": 0,
@@ -4306,7 +4306,7 @@
     {
       
       "Index": 98,
-      "Name": "白金手镯(魂)",
+      "Name": "白金手镯(H)",
       "Type": 6,
       "Grade": 1,
       "RequiredType": 0,
@@ -4349,7 +4349,7 @@
     {
       
       "Index": 99,
-      "Name": "白金戒(魂)",
+      "Name": "白金戒(H)",
       "Type": 7,
       "Grade": 1,
       "RequiredType": 0,
@@ -4601,7 +4601,7 @@
     {
       
       "Index": 105,
-      "Name": "红玉腰带(魂)",
+      "Name": "红玉腰带(H)",
       "Type": 9,
       "Grade": 1,
       "RequiredType": 0,
@@ -4643,7 +4643,7 @@
     {
       
       "Index": 106,
-      "Name": "红玉鞋(魂)",
+      "Name": "红玉鞋(H)",
       "Type": 10,
       "Grade": 1,
       "RequiredType": 0,
@@ -4687,7 +4687,7 @@
     {
       
       "Index": 107,
-      "Name": "红玉项链(魂)",
+      "Name": "红玉项链(H)",
       "Type": 5,
       "Grade": 1,
       "RequiredType": 0,
@@ -4728,7 +4728,7 @@
     {
       
       "Index": 108,
-      "Name": "红玉手镯(魂)",
+      "Name": "红玉手镯(H)",
       "Type": 6,
       "Grade": 1,
       "RequiredType": 0,
@@ -4771,7 +4771,7 @@
     {
       
       "Index": 109,
-      "Name": "红玉戒(魂)",
+      "Name": "红玉戒(H)",
       "Type": 7,
       "Grade": 1,
       "RequiredType": 0,
@@ -5023,7 +5023,7 @@
     {
       
       "Index": 115,
-      "Name": "碧玉腰带(魂)",
+      "Name": "碧玉腰带(H)",
       "Type": 9,
       "Grade": 1,
       "RequiredType": 0,
@@ -5065,7 +5065,7 @@
     {
       
       "Index": 116,
-      "Name": "碧玉鞋(魂)",
+      "Name": "碧玉鞋(H)",
       "Type": 10,
       "Grade": 1,
       "RequiredType": 0,
@@ -5109,7 +5109,7 @@
     {
       
       "Index": 117,
-      "Name": "碧玉项链(魂)",
+      "Name": "碧玉项链(H)",
       "Type": 5,
       "Grade": 1,
       "RequiredType": 0,
@@ -5150,7 +5150,7 @@
     {
       
       "Index": 118,
-      "Name": "碧玉手镯(魂)",
+      "Name": "碧玉手镯(H)",
       "Type": 6,
       "Grade": 1,
       "RequiredType": 0,
@@ -5193,7 +5193,7 @@
     {
       
       "Index": 119,
-      "Name": "碧玉戒(魂)",
+      "Name": "碧玉戒(H)",
       "Type": 7,
       "Grade": 1,
       "RequiredType": 0,
@@ -6099,7 +6099,7 @@
     {
       
       "Index": 140,
-      "Name": "塔拉贡甲(男)",
+      "Name": "塔拉贡甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -6138,7 +6138,7 @@
     {
       
       "Index": 141,
-      "Name": "塔拉贡甲(男)1",
+      "Name": "塔拉贡甲(M)1",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -6183,7 +6183,7 @@
     {
       
       "Index": 142,
-      "Name": "塔拉贡甲(男)2",
+      "Name": "塔拉贡甲(M)2",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -6228,7 +6228,7 @@
     {
       
       "Index": 143,
-      "Name": "塔拉贡甲(男)3",
+      "Name": "塔拉贡甲(M)3",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -6273,7 +6273,7 @@
     {
       
       "Index": 144,
-      "Name": "塔拉贡甲(男)4",
+      "Name": "塔拉贡甲(M)4",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -6319,7 +6319,7 @@
     {
       
       "Index": 145,
-      "Name": "塔拉贡甲(男)5",
+      "Name": "塔拉贡甲(M)5",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -6365,7 +6365,7 @@
     {
       
       "Index": 146,
-      "Name": "塔拉贡甲(女)",
+      "Name": "塔拉贡甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -6404,7 +6404,7 @@
     {
       
       "Index": 147,
-      "Name": "塔拉贡甲(女)1",
+      "Name": "塔拉贡甲(F)1",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -6449,7 +6449,7 @@
     {
       
       "Index": 148,
-      "Name": "塔拉贡甲(女)2",
+      "Name": "塔拉贡甲(F)2",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -6494,7 +6494,7 @@
     {
       
       "Index": 149,
-      "Name": "塔拉贡甲(女)3",
+      "Name": "塔拉贡甲(F)3",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -6539,7 +6539,7 @@
     {
       
       "Index": 150,
-      "Name": "塔拉贡甲(女)4",
+      "Name": "塔拉贡甲(F)4",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -6585,7 +6585,7 @@
     {
       
       "Index": 151,
-      "Name": "塔拉贡甲(女)5",
+      "Name": "塔拉贡甲(F)5",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -6631,7 +6631,7 @@
     {
       
       "Index": 152,
-      "Name": "掠夺者甲(男)",
+      "Name": "掠夺者甲(M)",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -6670,7 +6670,7 @@
     {
       
       "Index": 153,
-      "Name": "掠夺者甲(男)1",
+      "Name": "掠夺者甲(M)1",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -6716,7 +6716,7 @@
     {
       
       "Index": 154,
-      "Name": "掠夺者甲(男)2",
+      "Name": "掠夺者甲(M)2",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -6761,7 +6761,7 @@
     {
       
       "Index": 155,
-      "Name": "掠夺者甲(男)3",
+      "Name": "掠夺者甲(M)3",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -6809,7 +6809,7 @@
     {
       
       "Index": 156,
-      "Name": "掠夺者甲(男)4",
+      "Name": "掠夺者甲(M)4",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -6855,7 +6855,7 @@
     {
       
       "Index": 157,
-      "Name": "掠夺者甲(男)5",
+      "Name": "掠夺者甲(M)5",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -6901,7 +6901,7 @@
     {
       
       "Index": 158,
-      "Name": "掠夺者甲(女)",
+      "Name": "掠夺者甲(F)",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -6940,7 +6940,7 @@
     {
       
       "Index": 159,
-      "Name": "掠夺者甲(女)1",
+      "Name": "掠夺者甲(F)1",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -6986,7 +6986,7 @@
     {
       
       "Index": 160,
-      "Name": "掠夺者甲(女)2",
+      "Name": "掠夺者甲(F)2",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -7031,7 +7031,7 @@
     {
       
       "Index": 161,
-      "Name": "掠夺者甲(女)3",
+      "Name": "掠夺者甲(F)3",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -7079,7 +7079,7 @@
     {
       
       "Index": 162,
-      "Name": "掠夺者甲(女)4",
+      "Name": "掠夺者甲(F)4",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -7125,7 +7125,7 @@
     {
       
       "Index": 163,
-      "Name": "掠夺者甲(女)5",
+      "Name": "掠夺者甲(F)5",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -13849,7 +13849,7 @@
     {
       
       "Index": 317,
-      "Name": "基础布衣(男)",
+      "Name": "基础布衣(M)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -13892,7 +13892,7 @@
     {
       
       "Index": 318,
-      "Name": "基础布衣(女)",
+      "Name": "基础布衣(F)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -13935,7 +13935,7 @@
     {
       
       "Index": 319,
-      "Name": "轻甲(男)",
+      "Name": "轻甲(M)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -13979,7 +13979,7 @@
     {
       
       "Index": 320,
-      "Name": "轻甲(女)",
+      "Name": "轻甲(F)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14023,7 +14023,7 @@
     {
       
       "Index": 321,
-      "Name": "Medium甲(男)",
+      "Name": "Medium甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -14070,7 +14070,7 @@
     {
       
       "Index": 322,
-      "Name": "Medium甲(女)",
+      "Name": "Medium甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -14117,7 +14117,7 @@
     {
       
       "Index": 323,
-      "Name": "Heavy甲(男)",
+      "Name": "Heavy甲(M)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14161,7 +14161,7 @@
     {
       
       "Index": 324,
-      "Name": "Heavy甲(女)",
+      "Name": "Heavy甲(F)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14205,7 +14205,7 @@
     {
       
       "Index": 325,
-      "Name": "魔法袍(男)",
+      "Name": "魔法袍(M)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14250,7 +14250,7 @@
     {
       
       "Index": 326,
-      "Name": "魔法袍(女)",
+      "Name": "魔法袍(F)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14295,7 +14295,7 @@
     {
       
       "Index": 327,
-      "Name": "魂甲(男)",
+      "Name": "魂甲(M)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14340,7 +14340,7 @@
     {
       
       "Index": 328,
-      "Name": "魂甲(女)",
+      "Name": "魂甲(F)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14385,7 +14385,7 @@
     {
       
       "Index": 329,
-      "Name": "圣物甲(男)",
+      "Name": "圣物甲(M)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14429,7 +14429,7 @@
     {
       
       "Index": 330,
-      "Name": "圣物甲(女)",
+      "Name": "圣物甲(F)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14473,7 +14473,7 @@
     {
       
       "Index": 331,
-      "Name": "轻皮革甲(男)",
+      "Name": "轻皮革甲(M)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14519,7 +14519,7 @@
     {
       
       "Index": 332,
-      "Name": "轻皮革甲(女)",
+      "Name": "轻皮革甲(F)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14565,7 +14565,7 @@
     {
       
       "Index": 333,
-      "Name": "铁甲(男)",
+      "Name": "铁甲(M)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14609,7 +14609,7 @@
     {
       
       "Index": 334,
-      "Name": "铁甲(女)",
+      "Name": "铁甲(F)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14653,7 +14653,7 @@
     {
       
       "Index": 335,
-      "Name": "Wizard袍(男)",
+      "Name": "Wizard袍(M)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14698,7 +14698,7 @@
     {
       
       "Index": 336,
-      "Name": "女巫袍(女)",
+      "Name": "女巫袍(F)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14743,7 +14743,7 @@
     {
       
       "Index": 337,
-      "Name": "珍珠甲(男)",
+      "Name": "珍珠甲(M)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14788,7 +14788,7 @@
     {
       
       "Index": 338,
-      "Name": "珍珠甲(女)",
+      "Name": "珍珠甲(F)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14833,7 +14833,7 @@
     {
       
       "Index": 339,
-      "Name": "远古甲(男)",
+      "Name": "远古甲(M)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14877,7 +14877,7 @@
     {
       
       "Index": 340,
-      "Name": "远古甲(女)",
+      "Name": "远古甲(F)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14921,7 +14921,7 @@
     {
       
       "Index": 341,
-      "Name": "锻造甲(男)",
+      "Name": "锻造甲(M)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -14968,7 +14968,7 @@
     {
       
       "Index": 342,
-      "Name": "锻造甲(女)",
+      "Name": "锻造甲(F)",
       "Type": 2,
       "Grade": 1,
       "RequiredType": 0,
@@ -15015,7 +15015,7 @@
     {
       
       "Index": 343,
-      "Name": "钢甲(男)",
+      "Name": "钢甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15059,7 +15059,7 @@
     {
       
       "Index": 344,
-      "Name": "钢甲(女)",
+      "Name": "钢甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15103,7 +15103,7 @@
     {
       
       "Index": 345,
-      "Name": "龙袍(男)",
+      "Name": "龙袍(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15148,7 +15148,7 @@
     {
       
       "Index": 346,
-      "Name": "龙袍(女)",
+      "Name": "龙袍(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15193,7 +15193,7 @@
     {
       
       "Index": 347,
-      "Name": "泰坦甲(男)",
+      "Name": "泰坦甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15238,7 +15238,7 @@
     {
       
       "Index": 348,
-      "Name": "泰坦甲(女)",
+      "Name": "泰坦甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15283,7 +15283,7 @@
     {
       
       "Index": 349,
-      "Name": "皇家甲(男)",
+      "Name": "皇家甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15327,7 +15327,7 @@
     {
       
       "Index": 350,
-      "Name": "皇家甲(女)",
+      "Name": "皇家甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15371,7 +15371,7 @@
     {
       
       "Index": 351,
-      "Name": "Studded甲(男)",
+      "Name": "Studded甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15418,7 +15418,7 @@
     {
       
       "Index": 352,
-      "Name": "Studded甲(女)",
+      "Name": "Studded甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15465,7 +15465,7 @@
     {
       
       "Index": 353,
-      "Name": "黑虎甲(男)",
+      "Name": "黑虎甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15511,7 +15511,7 @@
     {
       
       "Index": 354,
-      "Name": "黑虎甲(女)",
+      "Name": "黑虎甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15557,7 +15557,7 @@
     {
       
       "Index": 355,
-      "Name": "莲甲(男)",
+      "Name": "莲甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15602,7 +15602,7 @@
     {
       
       "Index": 356,
-      "Name": "莲甲(女)",
+      "Name": "莲甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15647,7 +15647,7 @@
     {
       
       "Index": 357,
-      "Name": "Crane甲(男)",
+      "Name": "Crane甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15694,7 +15694,7 @@
     {
       
       "Index": 358,
-      "Name": "Crane甲(女)",
+      "Name": "Crane甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15741,7 +15741,7 @@
     {
       
       "Index": 359,
-      "Name": "Stealth甲(男)",
+      "Name": "Stealth甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15787,7 +15787,7 @@
     {
       
       "Index": 360,
-      "Name": "Stealth甲(女)",
+      "Name": "Stealth甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15833,7 +15833,7 @@
     {
       
       "Index": 361,
-      "Name": "轻锻造甲(男)",
+      "Name": "轻锻造甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15881,7 +15881,7 @@
     {
       
       "Index": 362,
-      "Name": "轻锻造甲(女)",
+      "Name": "轻锻造甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15929,7 +15929,7 @@
     {
       
       "Index": 363,
-      "Name": "蓝暗甲(男)",
+      "Name": "蓝暗甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -15979,7 +15979,7 @@
     {
       
       "Index": 364,
-      "Name": "蓝暗甲(女)",
+      "Name": "蓝暗甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -16029,7 +16029,7 @@
     {
       
       "Index": 365,
-      "Name": "红暗甲(男)",
+      "Name": "红暗甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -16079,7 +16079,7 @@
     {
       
       "Index": 366,
-      "Name": "红暗甲(女)",
+      "Name": "红暗甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -16129,7 +16129,7 @@
     {
       
       "Index": 367,
-      "Name": "绿暗甲(男)",
+      "Name": "绿暗甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -16181,7 +16181,7 @@
     {
       
       "Index": 368,
-      "Name": "绿暗甲(女)",
+      "Name": "绿暗甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -16233,7 +16233,7 @@
     {
       
       "Index": 369,
-      "Name": "金暗甲(男)",
+      "Name": "金暗甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -16285,7 +16285,7 @@
     {
       
       "Index": 370,
-      "Name": "金暗甲(女)",
+      "Name": "金暗甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -16337,7 +16337,7 @@
     {
       
       "Index": 371,
-      "Name": "鳞d甲(男)",
+      "Name": "鳞d甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -16388,7 +16388,7 @@
     {
       
       "Index": 372,
-      "Name": "鳞d甲(女)",
+      "Name": "鳞d甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -16439,7 +16439,7 @@
     {
       
       "Index": 373,
-      "Name": "水晶甲(男)",
+      "Name": "水晶甲(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -16489,7 +16489,7 @@
     {
       
       "Index": 374,
-      "Name": "水晶甲(女)",
+      "Name": "水晶甲(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -16539,7 +16539,7 @@
     {
       
       "Index": 375,
-      "Name": "天甲(男)",
+      "Name": "天甲(M)",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -16586,7 +16586,7 @@
     {
       
       "Index": 376,
-      "Name": "天甲(男)1",
+      "Name": "天甲(M)1",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -16634,7 +16634,7 @@
     {
       
       "Index": 377,
-      "Name": "天甲(男)2",
+      "Name": "天甲(M)2",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -16682,7 +16682,7 @@
     {
       
       "Index": 378,
-      "Name": "天甲(男)3",
+      "Name": "天甲(M)3",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -16730,7 +16730,7 @@
     {
       
       "Index": 379,
-      "Name": "天甲(女)",
+      "Name": "天甲(F)",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -16777,7 +16777,7 @@
     {
       
       "Index": 380,
-      "Name": "天甲(女)1",
+      "Name": "天甲(F)1",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -16825,7 +16825,7 @@
     {
       
       "Index": 381,
-      "Name": "天甲(女)2",
+      "Name": "天甲(F)2",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -16873,7 +16873,7 @@
     {
       
       "Index": 382,
-      "Name": "天甲(女)3",
+      "Name": "天甲(F)3",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -16921,7 +16921,7 @@
     {
       
       "Index": 383,
-      "Name": "奥玛王袍(男)",
+      "Name": "奥玛王袍(M)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -16967,7 +16967,7 @@
     {
       
       "Index": 384,
-      "Name": "奥玛王袍(男)1",
+      "Name": "奥玛王袍(M)1",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -17013,7 +17013,7 @@
     {
       
       "Index": 385,
-      "Name": "奥玛王袍(男)2",
+      "Name": "奥玛王袍(M)2",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -17059,7 +17059,7 @@
     {
       
       "Index": 386,
-      "Name": "奥玛王袍(男)3",
+      "Name": "奥玛王袍(M)3",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -17105,7 +17105,7 @@
     {
       
       "Index": 387,
-      "Name": "奥玛王袍(男)4",
+      "Name": "奥玛王袍(M)4",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -17151,7 +17151,7 @@
     {
       
       "Index": 388,
-      "Name": "奥玛王袍(男)5",
+      "Name": "奥玛王袍(M)5",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -17197,7 +17197,7 @@
     {
       
       "Index": 389,
-      "Name": "奥玛王袍(女)",
+      "Name": "奥玛王袍(F)",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -17243,7 +17243,7 @@
     {
       
       "Index": 390,
-      "Name": "奥玛王袍(女)1",
+      "Name": "奥玛王袍(F)1",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -17289,7 +17289,7 @@
     {
       
       "Index": 391,
-      "Name": "奥玛王袍(女)2",
+      "Name": "奥玛王袍(F)2",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -17335,7 +17335,7 @@
     {
       
       "Index": 392,
-      "Name": "奥玛王袍(女)3",
+      "Name": "奥玛王袍(F)3",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -17381,7 +17381,7 @@
     {
       
       "Index": 393,
-      "Name": "奥玛王袍(女)4",
+      "Name": "奥玛王袍(F)4",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -17427,7 +17427,7 @@
     {
       
       "Index": 394,
-      "Name": "奥玛王袍(女)5",
+      "Name": "奥玛王袍(F)5",
       "Type": 2,
       "Grade": 2,
       "RequiredType": 0,
@@ -27375,7 +27375,7 @@
     {
       
       "Index": 627,
-      "Name": "生命石(小)",
+      "Name": "生命石(S)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -27416,7 +27416,7 @@
     {
       
       "Index": 628,
-      "Name": "生命石(男)",
+      "Name": "生命石(M)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -27457,7 +27457,7 @@
     {
       
       "Index": 629,
-      "Name": "生命石(大)",
+      "Name": "生命石(L)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -27498,7 +27498,7 @@
     {
       
       "Index": 630,
-      "Name": "生命石(特大)",
+      "Name": "生命石(XL)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -27580,7 +27580,7 @@
     {
       
       "Index": 632,
-      "Name": "魔法石(小)",
+      "Name": "魔法石(S)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -27621,7 +27621,7 @@
     {
       
       "Index": 633,
-      "Name": "魔法石(男)",
+      "Name": "魔法石(M)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -27662,7 +27662,7 @@
     {
       
       "Index": 634,
-      "Name": "魔法石(大)",
+      "Name": "魔法石(L)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -27703,7 +27703,7 @@
     {
       
       "Index": 635,
-      "Name": "魔法石(特大)",
+      "Name": "魔法石(XL)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -27785,7 +27785,7 @@
     {
       
       "Index": 637,
-      "Name": "力量石(小)",
+      "Name": "力量石(S)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -27827,7 +27827,7 @@
     {
       
       "Index": 638,
-      "Name": "力量石(男)",
+      "Name": "力量石(M)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -27869,7 +27869,7 @@
     {
       
       "Index": 639,
-      "Name": "力量石(大)",
+      "Name": "力量石(L)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -27911,7 +27911,7 @@
     {
       
       "Index": 640,
-      "Name": "力量石(特大)",
+      "Name": "力量石(XL)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -27995,7 +27995,7 @@
     {
       
       "Index": 642,
-      "Name": "道术石(小)",
+      "Name": "道术石(S)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -28036,7 +28036,7 @@
     {
       
       "Index": 643,
-      "Name": "道术石(男)",
+      "Name": "道术石(M)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -28078,7 +28078,7 @@
     {
       
       "Index": 644,
-      "Name": "道术石(大)",
+      "Name": "道术石(L)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -28120,7 +28120,7 @@
     {
       
       "Index": 645,
-      "Name": "道术石(特大)",
+      "Name": "道术石(XL)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -28203,7 +28203,7 @@
     {
       
       "Index": 647,
-      "Name": "MC石(小)",
+      "Name": "MC石(S)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -28244,7 +28244,7 @@
     {
       
       "Index": 648,
-      "Name": "MC石(男)",
+      "Name": "MC石(M)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -28286,7 +28286,7 @@
     {
       
       "Index": 649,
-      "Name": "MC石(大)",
+      "Name": "MC石(L)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -28328,7 +28328,7 @@
     {
       
       "Index": 650,
-      "Name": "MC石(特大)",
+      "Name": "MC石(XL)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -28411,7 +28411,7 @@
     {
       
       "Index": 652,
-      "Name": "SC石(小)",
+      "Name": "SC石(S)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -28452,7 +28452,7 @@
     {
       
       "Index": 653,
-      "Name": "SC石(男)",
+      "Name": "SC石(M)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -28494,7 +28494,7 @@
     {
       
       "Index": 654,
-      "Name": "SC石(大)",
+      "Name": "SC石(L)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -28536,7 +28536,7 @@
     {
       
       "Index": 655,
-      "Name": "SC石(特大)",
+      "Name": "SC石(XL)",
       "Type": 11,
       "Grade": 0,
       "RequiredType": 0,
@@ -29198,7 +29198,7 @@
     {
       
       "Index": 671,
-      "Name": "太阳药水(男)",
+      "Name": "太阳药水(M)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29370,7 +29370,7 @@
     {
       
       "Index": 675,
-      "Name": "Impact药(小)",
+      "Name": "Impact药(S)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29411,7 +29411,7 @@
     {
       
       "Index": 676,
-      "Name": "Impact药(男)",
+      "Name": "Impact药(M)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29452,7 +29452,7 @@
     {
       
       "Index": 677,
-      "Name": "Impact药(大)",
+      "Name": "Impact药(L)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29493,7 +29493,7 @@
     {
       
       "Index": 678,
-      "Name": "魔法药(小)",
+      "Name": "魔法药(S)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29534,7 +29534,7 @@
     {
       
       "Index": 679,
-      "Name": "魔法药(男)",
+      "Name": "魔法药(M)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29575,7 +29575,7 @@
     {
       
       "Index": 680,
-      "Name": "魔法药(大)",
+      "Name": "魔法药(L)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29616,7 +29616,7 @@
     {
       
       "Index": 681,
-      "Name": "道士药(小)",
+      "Name": "道士药(S)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29657,7 +29657,7 @@
     {
       
       "Index": 682,
-      "Name": "道士药(男)",
+      "Name": "道士药(M)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29698,7 +29698,7 @@
     {
       
       "Index": 683,
-      "Name": "道士药(大)",
+      "Name": "道士药(L)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29739,7 +29739,7 @@
     {
       
       "Index": 684,
-      "Name": "风暴药(小)",
+      "Name": "风暴药(S)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29780,7 +29780,7 @@
     {
       
       "Index": 685,
-      "Name": "暴药(男)",
+      "Name": "暴药(M)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29821,7 +29821,7 @@
     {
       
       "Index": 686,
-      "Name": "暴药(大)",
+      "Name": "暴药(L)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29862,7 +29862,7 @@
     {
       
       "Index": 687,
-      "Name": "StaminaAid(小)",
+      "Name": "StaminaAid(S)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29903,7 +29903,7 @@
     {
       
       "Index": 688,
-      "Name": "StaminaAid(男)",
+      "Name": "StaminaAid(M)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29944,7 +29944,7 @@
     {
       
       "Index": 689,
-      "Name": "StaminaAid(大)",
+      "Name": "StaminaAid(L)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -29985,7 +29985,7 @@
     {
       
       "Index": 690,
-      "Name": "魔法Aid(小)",
+      "Name": "魔法Aid(S)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -30026,7 +30026,7 @@
     {
       
       "Index": 691,
-      "Name": "魔法Aid(男)",
+      "Name": "魔法Aid(M)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -30067,7 +30067,7 @@
     {
       
       "Index": 692,
-      "Name": "魔法Aid(大)",
+      "Name": "魔法Aid(L)",
       "Type": 13,
       "Grade": 0,
       "RequiredType": 0,
@@ -31421,7 +31421,7 @@
     {
       
       "Index": 727,
-      "Name": "HardTorch(小)",
+      "Name": "HardTorch(S)",
       "Type": 12,
       "Grade": 0,
       "RequiredType": 0,
@@ -31460,7 +31460,7 @@
     {
       
       "Index": 728,
-      "Name": "HardTorch(男)",
+      "Name": "HardTorch(M)",
       "Type": 12,
       "Grade": 0,
       "RequiredType": 0,
@@ -31499,7 +31499,7 @@
     {
       
       "Index": 729,
-      "Name": "HardTorch(大)",
+      "Name": "HardTorch(L)",
       "Type": 12,
       "Grade": 0,
       "RequiredType": 0,
@@ -31538,7 +31538,7 @@
     {
       
       "Index": 730,
-      "Name": "KnowledgeTorch(小)",
+      "Name": "KnowledgeTorch(S)",
       "Type": 12,
       "Grade": 0,
       "RequiredType": 0,
@@ -31577,7 +31577,7 @@
     {
       
       "Index": 731,
-      "Name": "KnowledgeTorch(男)",
+      "Name": "KnowledgeTorch(M)",
       "Type": 12,
       "Grade": 0,
       "RequiredType": 0,
@@ -31616,7 +31616,7 @@
     {
       
       "Index": 732,
-      "Name": "KnowledgeTorch(大)",
+      "Name": "KnowledgeTorch(L)",
       "Type": 12,
       "Grade": 0,
       "RequiredType": 0,
@@ -40880,7 +40880,7 @@
     {
       
       "Index": 960,
-      "Name": "奇箱(小)",
+      "Name": "奇箱(S)",
       "Type": 36,
       "Grade": 0,
       "RequiredType": 0,
@@ -40919,7 +40919,7 @@
     {
       
       "Index": 961,
-      "Name": "奇箱(男)",
+      "Name": "奇箱(M)",
       "Type": 36,
       "Grade": 0,
       "RequiredType": 0,
@@ -40958,7 +40958,7 @@
     {
       
       "Index": 962,
-      "Name": "奇箱(大)",
+      "Name": "奇箱(L)",
       "Type": 36,
       "Grade": 0,
       "RequiredType": 0,
@@ -41270,7 +41270,7 @@
     {
       
       "Index": 970,
-      "Name": "Knapsack(小)",
+      "Name": "Knapsack(S)",
       "Type": 36,
       "Grade": 0,
       "RequiredType": 0,
@@ -41311,7 +41311,7 @@
     {
       
       "Index": 971,
-      "Name": "Knapsack(男)",
+      "Name": "Knapsack(M)",
       "Type": 36,
       "Grade": 0,
       "RequiredType": 0,
@@ -41352,7 +41352,7 @@
     {
       
       "Index": 972,
-      "Name": "Knapsack(大)",
+      "Name": "Knapsack(L)",
       "Type": 36,
       "Grade": 0,
       "RequiredType": 0,
@@ -45767,7 +45767,7 @@
     {
       
       "Index": 1085,
-      "Name": "Ninja(男)",
+      "Name": "Ninja(M)",
       "Type": 37,
       "Grade": 0,
       "RequiredType": 0,
@@ -45808,7 +45808,7 @@
     {
       
       "Index": 1086,
-      "Name": "Ninja(女)",
+      "Name": "Ninja(F)",
       "Type": 37,
       "Grade": 0,
       "RequiredType": 0,
@@ -46095,7 +46095,7 @@
     {
       
       "Index": 1093,
-      "Name": "礼(男)",
+      "Name": "礼(M)",
       "Type": 37,
       "Grade": 0,
       "RequiredType": 0,
@@ -46123,7 +46123,7 @@
       "Bind": 0,
       "Unique": 0,
       "RandomStatsId": 0,
-      "ToolTip": "RedOverAlls(男)",
+      "ToolTip": "RedOverAlls(M)",
       "Slots": 0,
       "Stats": {
         
@@ -46136,7 +46136,7 @@
     {
       
       "Index": 1094,
-      "Name": "礼(女)",
+      "Name": "礼(F)",
       "Type": 37,
       "Grade": 0,
       "RequiredType": 0,
@@ -46164,7 +46164,7 @@
       "Bind": 0,
       "Unique": 0,
       "RandomStatsId": 0,
-      "ToolTip": "Red/Yellow(女)",
+      "ToolTip": "Red/Yellow(F)",
       "Slots": 0,
       "Stats": {
         
@@ -46177,7 +46177,7 @@
     {
       
       "Index": 1095,
-      "Name": "礼1(男)",
+      "Name": "礼1(M)",
       "Type": 37,
       "Grade": 0,
       "RequiredType": 0,
@@ -46205,7 +46205,7 @@
       "Bind": 0,
       "Unique": 0,
       "RandomStatsId": 0,
-      "ToolTip": "Blue(男)",
+      "ToolTip": "Blue(M)",
       "Slots": 0,
       "Stats": {
         
@@ -46218,7 +46218,7 @@
     {
       
       "Index": 1096,
-      "Name": "礼1(女)",
+      "Name": "礼1(F)",
       "Type": 37,
       "Grade": 0,
       "RequiredType": 0,
@@ -46246,7 +46246,7 @@
       "Bind": 0,
       "Unique": 0,
       "RandomStatsId": 0,
-      "ToolTip": "Red/White(女)",
+      "ToolTip": "Red/White(F)",
       "Slots": 0,
       "Stats": {
         
@@ -46328,7 +46328,7 @@
       "Bind": 0,
       "Unique": 0,
       "RandomStatsId": 0,
-      "ToolTip": "White Dress RedTrident(女)",
+      "ToolTip": "White Dress RedTrident(F)",
       "Slots": 0,
       "Stats": {
         
@@ -46341,7 +46341,7 @@
     {
       
       "Index": 1099,
-      "Name": "礼2(女)",
+      "Name": "礼2(F)",
       "Type": 37,
       "Grade": 0,
       "RequiredType": 0,
@@ -46382,7 +46382,7 @@
     {
       
       "Index": 1100,
-      "Name": "礼2(男)",
+      "Name": "礼2(M)",
       "Type": 37,
       "Grade": 0,
       "RequiredType": 0,
@@ -46410,7 +46410,7 @@
       "Bind": 0,
       "Unique": 0,
       "RandomStatsId": 0,
-      "ToolTip": "Black Sword(男)",
+      "ToolTip": "Black Sword(M)",
       "Slots": 0,
       "Stats": {
         
@@ -46451,7 +46451,7 @@
       "Bind": 0,
       "Unique": 0,
       "RandomStatsId": 0,
-      "ToolTip": "Gold Armour + Scythe(男)",
+      "ToolTip": "Gold Armour + Scythe(M)",
       "Slots": 0,
       "Stats": {
         
@@ -46792,7 +46792,7 @@
     {
       
       "Index": 1110,
-      "Name": "礼2(男)",
+      "Name": "礼2(M)",
       "Type": 37,
       "Grade": 0,
       "RequiredType": 0,
@@ -49972,7 +49972,7 @@
     {
       
       "Index": 1190,
-      "Name": "坚硬甲(男)",
+      "Name": "坚硬甲(M)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -50016,7 +50016,7 @@
     {
       
       "Index": 1191,
-      "Name": "坚硬甲(女)",
+      "Name": "坚硬甲(F)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -51294,7 +51294,7 @@
     {
       
       "Index": 1221,
-      "Name": "Thick甲(男)",
+      "Name": "Thick甲(M)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -51338,7 +51338,7 @@
     {
       
       "Index": 1222,
-      "Name": "Thick甲(女)",
+      "Name": "Thick甲(F)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -51382,7 +51382,7 @@
     {
       
       "Index": 1223,
-      "Name": "火魔法袍(男)",
+      "Name": "火魔法袍(M)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -51428,7 +51428,7 @@
     {
       
       "Index": 1224,
-      "Name": "火魔法袍(女)",
+      "Name": "火魔法袍(F)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -51474,7 +51474,7 @@
     {
       
       "Index": 1225,
-      "Name": "道甲(男)",
+      "Name": "道甲(M)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -51520,7 +51520,7 @@
     {
       
       "Index": 1226,
-      "Name": "道甲(女)",
+      "Name": "道甲(F)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -51566,7 +51566,7 @@
     {
       
       "Index": 1227,
-      "Name": "之灵袍(男)",
+      "Name": "之灵袍(M)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -51610,7 +51610,7 @@
     {
       
       "Index": 1228,
-      "Name": "之灵袍(女)",
+      "Name": "之灵袍(F)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -51654,7 +51654,7 @@
     {
       
       "Index": 1229,
-      "Name": "皮革甲(男)",
+      "Name": "皮革甲(M)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -51701,7 +51701,7 @@
     {
       
       "Index": 1230,
-      "Name": "皮革甲(女)",
+      "Name": "皮革甲(F)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -52395,7 +52395,7 @@
     {
       
       "Index": 1246,
-      "Name": "Fine铁甲(男)",
+      "Name": "Fine铁甲(M)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -52439,7 +52439,7 @@
     {
       
       "Index": 1247,
-      "Name": "Fine铁甲(女)",
+      "Name": "Fine铁甲(F)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -52483,7 +52483,7 @@
     {
       
       "Index": 1248,
-      "Name": "火袍(男)",
+      "Name": "火袍(M)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -52528,7 +52528,7 @@
     {
       
       "Index": 1249,
-      "Name": "火袍(女)",
+      "Name": "火袍(F)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -52573,7 +52573,7 @@
     {
       
       "Index": 1250,
-      "Name": "Ying阳袍(男)",
+      "Name": "Ying阳袍(M)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -52618,7 +52618,7 @@
     {
       
       "Index": 1251,
-      "Name": "Ying阳袍(女)",
+      "Name": "Ying阳袍(F)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -52663,7 +52663,7 @@
     {
       
       "Index": 1252,
-      "Name": "烈焰红甲(男)",
+      "Name": "烈焰红甲(M)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -52707,7 +52707,7 @@
     {
       
       "Index": 1253,
-      "Name": "烈焰红甲(女)",
+      "Name": "烈焰红甲(F)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -52751,7 +52751,7 @@
     {
       
       "Index": 1254,
-      "Name": "Hard锻造甲(男)",
+      "Name": "Hard锻造甲(M)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -52798,7 +52798,7 @@
     {
       
       "Index": 1255,
-      "Name": "Hard锻造甲(女)",
+      "Name": "Hard锻造甲(F)",
       "Type": 2,
       "Grade": 0,
       "RequiredType": 0,
@@ -56628,7 +56628,7 @@
     {
       
       "Index": 1351,
-      "Name": "黑虎(女)",
+      "Name": "黑虎(F)",
       "Type": 37,
       "Grade": 0,
       "RequiredType": 0,
@@ -56656,7 +56656,7 @@
       "Bind": 0,
       "Unique": 0,
       "RandomStatsId": 0,
-      "ToolTip": "BlackTiger(女)",
+      "ToolTip": "BlackTiger(F)",
       "Slots": 0,
       "Stats": {
         
@@ -56674,7 +56674,7 @@
     {
       
       "Index": 1352,
-      "Name": "黑虎(男)",
+      "Name": "黑虎(M)",
       "Type": 37,
       "Grade": 0,
       "RequiredType": 0,
@@ -56702,7 +56702,7 @@
       "Bind": 0,
       "Unique": 0,
       "RandomStatsId": 0,
-      "ToolTip": "BlackTiger(男)",
+      "ToolTip": "BlackTiger(M)",
       "Slots": 0,
       "Stats": {
         
@@ -56720,7 +56720,7 @@
     {
       
       "Index": 1353,
-      "Name": "Bossy(女)",
+      "Name": "Bossy(F)",
       "Type": 37,
       "Grade": 0,
       "RequiredType": 0,
@@ -56748,7 +56748,7 @@
       "Bind": 0,
       "Unique": 0,
       "RandomStatsId": 0,
-      "ToolTip": "Bossy(女)",
+      "ToolTip": "Bossy(F)",
       "Slots": 0,
       "Stats": {
         
@@ -56764,7 +56764,7 @@
     {
       
       "Index": 1354,
-      "Name": "Bossy(男)",
+      "Name": "Bossy(M)",
       "Type": 37,
       "Grade": 0,
       "RequiredType": 0,
@@ -56792,7 +56792,7 @@
       "Bind": 0,
       "Unique": 0,
       "RandomStatsId": 0,
-      "ToolTip": "Bossy(男)",
+      "ToolTip": "Bossy(M)",
       "Slots": 0,
       "Stats": {
         
@@ -57993,7 +57993,7 @@
     {
       
       "Index": 1384,
-      "Name": "豹TattooSuit(男)",
+      "Name": "豹TattooSuit(M)",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -58042,7 +58042,7 @@
     {
       
       "Index": 1385,
-      "Name": "豹TattooSuit(女)",
+      "Name": "豹TattooSuit(F)",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -59761,7 +59761,7 @@
     {
       
       "Index": 1425,
-      "Name": "黑龙甲(女)5",
+      "Name": "黑龙甲(F)5",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -59809,7 +59809,7 @@
     {
       
       "Index": 1426,
-      "Name": "黑龙甲(女)",
+      "Name": "黑龙甲(F)",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -59851,7 +59851,7 @@
     {
       
       "Index": 1427,
-      "Name": "黑龙甲(女)1",
+      "Name": "黑龙甲(F)1",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -59896,7 +59896,7 @@
     {
       
       "Index": 1428,
-      "Name": "黑龙甲(女)2",
+      "Name": "黑龙甲(F)2",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -59943,7 +59943,7 @@
     {
       
       "Index": 1429,
-      "Name": "黑龙甲(女)3",
+      "Name": "黑龙甲(F)3",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -59990,7 +59990,7 @@
     {
       
       "Index": 1431,
-      "Name": "黑龙甲(女)4",
+      "Name": "黑龙甲(F)4",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -60036,7 +60036,7 @@
     {
       
       "Index": 1436,
-      "Name": "黑龙甲(男)",
+      "Name": "黑龙甲(M)",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -60078,7 +60078,7 @@
     {
       
       "Index": 1437,
-      "Name": "黑龙甲(男)1",
+      "Name": "黑龙甲(M)1",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -60123,7 +60123,7 @@
     {
       
       "Index": 1438,
-      "Name": "黑龙甲(男)2",
+      "Name": "黑龙甲(M)2",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -60170,7 +60170,7 @@
     {
       
       "Index": 1439,
-      "Name": "黑龙甲(男)3",
+      "Name": "黑龙甲(M)3",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -60217,7 +60217,7 @@
     {
       
       "Index": 1440,
-      "Name": "黑龙甲(男)5",
+      "Name": "黑龙甲(M)5",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -60265,7 +60265,7 @@
     {
       
       "Index": 1441,
-      "Name": "黑龙甲(男)4",
+      "Name": "黑龙甲(M)4",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -60311,7 +60311,7 @@
     {
       
       "Index": 1442,
-      "Name": "兔(女)",
+      "Name": "兔(F)",
       "Type": 37,
       "Grade": 0,
       "RequiredType": 0,
@@ -60362,7 +60362,7 @@
     {
       
       "Index": 1443,
-      "Name": "兔(男)",
+      "Name": "兔(M)",
       "Type": 37,
       "Grade": 0,
       "RequiredType": 0,
@@ -66216,7 +66216,7 @@
     {
       
       "Index": 1575,
-      "Name": "Gonryunyongdrama(寶)(女)",
+      "Name": "Gonryunyongdrama(寶)(F)",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -66257,7 +66257,7 @@
     {
       
       "Index": 1576,
-      "Name": "Gonryunyongdrama(寶)(女)1",
+      "Name": "Gonryunyongdrama(寶)(F)1",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -66302,7 +66302,7 @@
     {
       
       "Index": 1577,
-      "Name": "Gonryunyongdrama(寶)(女)2",
+      "Name": "Gonryunyongdrama(寶)(F)2",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -66347,7 +66347,7 @@
     {
       
       "Index": 1578,
-      "Name": "Gonryunyongdrama(寶)(女)3",
+      "Name": "Gonryunyongdrama(寶)(F)3",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -66392,7 +66392,7 @@
     {
       
       "Index": 1579,
-      "Name": "Gonryunyongdrama(寶)(女)4",
+      "Name": "Gonryunyongdrama(寶)(F)4",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -66437,7 +66437,7 @@
     {
       
       "Index": 1580,
-      "Name": "Gonryunyongdrama(寶)(女)5",
+      "Name": "Gonryunyongdrama(寶)(F)5",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -66482,7 +66482,7 @@
     {
       
       "Index": 1581,
-      "Name": "Gonryunyongdrama(寶)(男)",
+      "Name": "Gonryunyongdrama(寶)(M)",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -66523,7 +66523,7 @@
     {
       
       "Index": 1582,
-      "Name": "Gonryunyongdrama(寶)(男)1",
+      "Name": "Gonryunyongdrama(寶)(M)1",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -66568,7 +66568,7 @@
     {
       
       "Index": 1583,
-      "Name": "Gonryunyongdrama(寶)(男)2",
+      "Name": "Gonryunyongdrama(寶)(M)2",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -66614,7 +66614,7 @@
     {
       
       "Index": 1584,
-      "Name": "Gonryunyongdrama(寶)(男)3",
+      "Name": "Gonryunyongdrama(寶)(M)3",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -66659,7 +66659,7 @@
     {
       
       "Index": 1585,
-      "Name": "Gonryunyongdrama(寶)(男)4",
+      "Name": "Gonryunyongdrama(寶)(M)4",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -66704,7 +66704,7 @@
     {
       
       "Index": 1586,
-      "Name": "Gonryunyongdrama(寶)(男)5",
+      "Name": "Gonryunyongdrama(寶)(M)5",
       "Type": 2,
       "Grade": 3,
       "RequiredType": 0,
@@ -67298,7 +67298,7 @@
     {
       
       "Index": 1600,
-      "Name": "Gonryunyongdrama(聖)(女)",
+      "Name": "Gonryunyongdrama(聖)(F)",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -67339,7 +67339,7 @@
     {
       
       "Index": 1601,
-      "Name": "Gonryunyongdrama(聖)(女)1",
+      "Name": "Gonryunyongdrama(聖)(F)1",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -67384,7 +67384,7 @@
     {
       
       "Index": 1602,
-      "Name": "Gonryunyongdrama(聖)(女)2",
+      "Name": "Gonryunyongdrama(聖)(F)2",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -67429,7 +67429,7 @@
     {
       
       "Index": 1603,
-      "Name": "Gonryunyongdrama(聖)(女)3",
+      "Name": "Gonryunyongdrama(聖)(F)3",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -67474,7 +67474,7 @@
     {
       
       "Index": 1604,
-      "Name": "Gonryunyongdrama(聖)(女)4",
+      "Name": "Gonryunyongdrama(聖)(F)4",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -67519,7 +67519,7 @@
     {
       
       "Index": 1605,
-      "Name": "Gonryunyongdrama(聖)(女)5",
+      "Name": "Gonryunyongdrama(聖)(F)5",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -67564,7 +67564,7 @@
     {
       
       "Index": 1606,
-      "Name": "Gonryunyongdrama(聖)(男)",
+      "Name": "Gonryunyongdrama(聖)(M)",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -67605,7 +67605,7 @@
     {
       
       "Index": 1607,
-      "Name": "Gonryunyongdrama(聖)(男)1",
+      "Name": "Gonryunyongdrama(聖)(M)1",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -67650,7 +67650,7 @@
     {
       
       "Index": 1608,
-      "Name": "Gonryunyongdrama(聖)(男)2",
+      "Name": "Gonryunyongdrama(聖)(M)2",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -67695,7 +67695,7 @@
     {
       
       "Index": 1609,
-      "Name": "Gonryunyongdrama(聖)(男)3",
+      "Name": "Gonryunyongdrama(聖)(M)3",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -67740,7 +67740,7 @@
     {
       
       "Index": 1610,
-      "Name": "Gonryunyongdrama(聖)(男)4",
+      "Name": "Gonryunyongdrama(聖)(M)4",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,
@@ -67785,7 +67785,7 @@
     {
       
       "Index": 1611,
-      "Name": "Gonryunyongdrama(聖)(男)5",
+      "Name": "Gonryunyongdrama(聖)(M)5",
       "Type": 2,
       "Grade": 4,
       "RequiredType": 0,

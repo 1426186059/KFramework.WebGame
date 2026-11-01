@@ -18,7 +18,7 @@
 1/15000 魔面具
 1/15000 Violet珠
 1/15000 KunroonTear
-1/20000 (魂)WheelOfLunar
+1/20000 (H)WheelOfLunar
 1/7000 BenedictionOil
 1/25000 DestinyRing 
 1/25000 奥玛之灵戒

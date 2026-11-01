@@ -9,8 +9,8 @@
 1/2 特制魔法药
 1/1 太阳水
 1/1 太阳水
-1/1 太阳药水(男)
-1/1 太阳药水(男)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
 1/1 太阳水
 1/1 太阳水
 1/2 太阳水
@@ -54,18 +54,18 @@
 1/6000 LordSlayerBlades
 
 ;Armour
-1/300 黑虎甲(男)
-1/300 黑虎甲(女)
-1/300 莲甲(男)
-1/300 莲甲(女)
-1/300 Crane甲(男)
-1/300 Crane甲(女)
+1/300 黑虎甲(M)
+1/300 黑虎甲(F)
+1/300 莲甲(M)
+1/300 莲甲(F)
+1/300 Crane甲(M)
+1/300 Crane甲(F)
 
 ;Armour Rare
-1/1000 TrollsRobe(男)
-1/1000 TrollsRobe(女)
-1/6000 LordSlayerArmour(男)
-1/6000 LordSlayerArmour(女)
+1/1000 TrollsRobe(M)
+1/1000 TrollsRobe(F)
+1/6000 LordSlayerArmour(M)
+1/6000 LordSlayerArmour(F)
 
 ;Helmets
 1/40 巨盔

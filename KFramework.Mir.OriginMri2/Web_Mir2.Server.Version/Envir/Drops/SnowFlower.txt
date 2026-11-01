@@ -41,8 +41,8 @@
 1/2000 SnowFeather LV1
 
 ;Armours
-1/2000 PrismArmour(男) LV1
-1/2000 PrismArmour(女) LV1
+1/2000 PrismArmour(M) LV1
+1/2000 PrismArmour(F) LV1
 
 1/150 WatcherHelmet LV1
 1/200 PuiYuHelmet LV1
@@ -51,13 +51,13 @@
 1/100 Sparkling腰带 LV1
 1/100 Sparkling靴 LV1
  
-1/100 (魂)魔面具 LV1
-1/100 (魂)Violet珠 LV1
-1/100 (魂)KunroonTear LV1
-1/100 (魂)WheelOfLunar LV1
-1/100 (魂)红魔戒 LV1
-1/100 (魂)Cloud戒 LV1
-1/100 (魂)毒戒 LV1
+1/100 (H)魔面具 LV1
+1/100 (H)Violet珠 LV1
+1/100 (H)KunroonTear LV1
+1/100 (H)WheelOfLunar LV1
+1/100 (H)红魔戒 LV1
+1/100 (H)Cloud戒 LV1
+1/100 (H)毒戒 LV1
 1/80 ArmouredMedal LV1
 1/50 HollowMedal LV1
 
@@ -185,8 +185,8 @@
 1/2000 SnowFeather LV2
 
 ;Armours
-1/2000 PrismArmour(男) LV2
-1/2000 PrismArmour(女) LV2
+1/2000 PrismArmour(M) LV2
+1/2000 PrismArmour(F) LV2
 
 1/150 WatcherHelmet LV2
 1/200 PuiYuHelmet LV2
@@ -195,13 +195,13 @@
 1/100 Sparkling腰带 LV2
 1/100 Sparkling靴 LV2
  
-1/100 (魂)魔面具 LV2
-1/100 (魂)Violet珠 LV2
-1/100 (魂)KunroonTear LV2
-1/100 (魂)WheelOfLunar LV2
-1/100 (魂)红魔戒 LV2
-1/100 (魂)Cloud戒 LV2
-1/100 (魂)毒戒 LV2
+1/100 (H)魔面具 LV2
+1/100 (H)Violet珠 LV2
+1/100 (H)KunroonTear LV2
+1/100 (H)WheelOfLunar LV2
+1/100 (H)红魔戒 LV2
+1/100 (H)Cloud戒 LV2
+1/100 (H)毒戒 LV2
 1/80 ArmouredMedal LV2
 1/50 HollowMedal LV2
 
@@ -327,8 +327,8 @@
 1/2000 SnowFeather LV3
 
 ;Armours
-1/2000 PrismArmour(男) LV3
-1/2000 PrismArmour(女) LV3
+1/2000 PrismArmour(M) LV3
+1/2000 PrismArmour(F) LV3
 
 1/150 WatcherHelmet LV3
 1/200 PuiYuHelmet LV3
@@ -337,13 +337,13 @@
 1/100 Sparkling腰带 LV3
 1/100 Sparkling靴 LV3
  
-1/100 (魂)魔面具 LV3
-1/100 (魂)Violet珠 LV3
-1/100 (魂)KunroonTear LV3
-1/100 (魂)WheelOfLunar LV3
-1/100 (魂)红魔戒 LV3
-1/100 (魂)Cloud戒 LV3
-1/100 (魂)毒戒 LV3
+1/100 (H)魔面具 LV3
+1/100 (H)Violet珠 LV3
+1/100 (H)KunroonTear LV3
+1/100 (H)WheelOfLunar LV3
+1/100 (H)红魔戒 LV3
+1/100 (H)Cloud戒 LV3
+1/100 (H)毒戒 LV3
 1/80 ArmouredMedal LV3
 1/50 HollowMedal LV3
 
@@ -469,8 +469,8 @@
 1/2000 SnowFeather LV4
 
 ;Armours
-1/2000 PrismArmour(男) LV4
-1/2000 PrismArmour(女) LV4
+1/2000 PrismArmour(M) LV4
+1/2000 PrismArmour(F) LV4
 
 1/150 WatcherHelmet LV4
 1/200 PuiYuHelmet LV4
@@ -479,13 +479,13 @@
 1/100 Sparkling腰带 LV4
 1/100 Sparkling靴 LV4
  
-1/100 (魂)魔面具 LV4
-1/100 (魂)Violet珠 LV4
-1/100 (魂)KunroonTear LV4
-1/100 (魂)WheelOfLunar LV4
-1/100 (魂)红魔戒 LV4
-1/100 (魂)Cloud戒 LV4
-1/100 (魂)毒戒 LV4
+1/100 (H)魔面具 LV4
+1/100 (H)Violet珠 LV4
+1/100 (H)KunroonTear LV4
+1/100 (H)WheelOfLunar LV4
+1/100 (H)红魔戒 LV4
+1/100 (H)Cloud戒 LV4
+1/100 (H)毒戒 LV4
 1/80 ArmouredMedal LV4
 1/50 HollowMedal LV4
 
@@ -613,8 +613,8 @@
 1/2000 SnowFeather LV5
 
 ;Armours
-1/2000 PrismArmour(男) LV5
-1/2000 PrismArmour(女) LV5
+1/2000 PrismArmour(M) LV5
+1/2000 PrismArmour(F) LV5
 
 1/150 WatcherHelmet LV5
 1/200 PuiYuHelmet LV5
@@ -623,13 +623,13 @@
 1/100 Sparkling腰带 LV5
 1/100 Sparkling靴 LV5
  
-1/100 (魂)魔面具 LV5
-1/100 (魂)Violet珠 LV5
-1/100 (魂)KunroonTear LV5
-1/100 (魂)WheelOfLunar LV5
-1/100 (魂)红魔戒 LV5
-1/100 (魂)Cloud戒 LV5
-1/100 (魂)毒戒 LV5
+1/100 (H)魔面具 LV5
+1/100 (H)Violet珠 LV5
+1/100 (H)KunroonTear LV5
+1/100 (H)WheelOfLunar LV5
+1/100 (H)红魔戒 LV5
+1/100 (H)Cloud戒 LV5
+1/100 (H)毒戒 LV5
 1/80 ArmouredMedal LV5
 1/50 HollowMedal LV5
 
@@ -755,8 +755,8 @@
 1/2000 SnowFeather LV6
 
 ;Armours
-1/2000 PrismArmour(男) LV6
-1/2000 PrismArmour(女) LV6
+1/2000 PrismArmour(M) LV6
+1/2000 PrismArmour(F) LV6
 
 1/150 WatcherHelmet LV6
 1/200 PuiYuHelmet LV6
@@ -765,13 +765,13 @@
 1/100 Sparkling腰带 LV6
 1/100 Sparkling靴 LV6
  
-1/100 (魂)魔面具 LV6
-1/100 (魂)Violet珠 LV6
-1/100 (魂)KunroonTear LV6
-1/100 (魂)WheelOfLunar LV6
-1/100 (魂)红魔戒 LV6
-1/100 (魂)Cloud戒 LV6
-1/100 (魂)毒戒 LV6
+1/100 (H)魔面具 LV6
+1/100 (H)Violet珠 LV6
+1/100 (H)KunroonTear LV6
+1/100 (H)WheelOfLunar LV6
+1/100 (H)红魔戒 LV6
+1/100 (H)Cloud戒 LV6
+1/100 (H)毒戒 LV6
 1/80 ArmouredMedal LV6
 1/50 HollowMedal LV6
 
@@ -897,8 +897,8 @@
 1/2000 SnowFeather LV7
 
 ;Armours
-1/2000 PrismArmour(男) LV7
-1/2000 PrismArmour(女) LV7
+1/2000 PrismArmour(M) LV7
+1/2000 PrismArmour(F) LV7
 
 1/150 WatcherHelmet LV7
 1/200 PuiYuHelmet LV7
@@ -907,13 +907,13 @@
 1/100 Sparkling腰带 LV7
 1/100 Sparkling靴 LV7
  
-1/100 (魂)魔面具 LV7
-1/100 (魂)Violet珠 LV7
-1/100 (魂)KunroonTear LV7
-1/100 (魂)WheelOfLunar LV7
-1/100 (魂)红魔戒 LV7
-1/100 (魂)Cloud戒 LV7
-1/100 (魂)毒戒 LV7
+1/100 (H)魔面具 LV7
+1/100 (H)Violet珠 LV7
+1/100 (H)KunroonTear LV7
+1/100 (H)WheelOfLunar LV7
+1/100 (H)红魔戒 LV7
+1/100 (H)Cloud戒 LV7
+1/100 (H)毒戒 LV7
 1/80 ArmouredMedal LV7
 1/50 HollowMedal LV7
 
@@ -1040,8 +1040,8 @@
 
 
 ;Armours
-1/2000 PrismArmour(男) LV8
-1/2000 PrismArmour(女) LV8
+1/2000 PrismArmour(M) LV8
+1/2000 PrismArmour(F) LV8
 
 1/150 WatcherHelmet LV8
 1/200 PuiYuHelmet LV8
@@ -1050,13 +1050,13 @@
 1/100 Sparkling腰带 LV8
 1/100 Sparkling靴 LV8
  
-1/100 (魂)魔面具 LV8
-1/100 (魂)Violet珠 LV8
-1/100 (魂)KunroonTear LV8
-1/100 (魂)WheelOfLunar LV8
-1/100 (魂)红魔戒 LV8
-1/100 (魂)Cloud戒 LV8
-1/100 (魂)毒戒 LV8
+1/100 (H)魔面具 LV8
+1/100 (H)Violet珠 LV8
+1/100 (H)KunroonTear LV8
+1/100 (H)WheelOfLunar LV8
+1/100 (H)红魔戒 LV8
+1/100 (H)Cloud戒 LV8
+1/100 (H)毒戒 LV8
 1/80 ArmouredMedal LV8
 1/50 HollowMedal LV8
 

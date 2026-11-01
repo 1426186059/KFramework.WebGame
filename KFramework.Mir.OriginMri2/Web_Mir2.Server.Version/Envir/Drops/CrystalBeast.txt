@@ -50,8 +50,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(男) LV1
-1/2100 WyvernArmour(女) LV1
+1/2100 WyvernArmour(M) LV1
+1/2100 WyvernArmour(F) LV1
 
 ;Helmets
 1/2100 CrystalHelmet LV1
@@ -147,8 +147,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(男) LV2
-1/2100 WyvernArmour(女) LV2
+1/2100 WyvernArmour(M) LV2
+1/2100 WyvernArmour(F) LV2
 
 ;Helmets
 1/2100 CrystalHelmet LV2
@@ -243,8 +243,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(男) LV3
-1/2100 WyvernArmour(女) LV3
+1/2100 WyvernArmour(M) LV3
+1/2100 WyvernArmour(F) LV3
 
 ;Helmets
 1/2100 CrystalHelmet LV3
@@ -339,8 +339,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(男) LV4
-1/2100 WyvernArmour(女) LV4
+1/2100 WyvernArmour(M) LV4
+1/2100 WyvernArmour(F) LV4
 
 ;Helmets
 1/2100 CrystalHelmet LV4
@@ -436,8 +436,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(男) LV5
-1/2100 WyvernArmour(女) LV5
+1/2100 WyvernArmour(M) LV5
+1/2100 WyvernArmour(F) LV5
 
 ;Helmets
 1/2100 CrystalHelmet LV5
@@ -532,8 +532,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(男) LV6
-1/2100 WyvernArmour(女) LV6
+1/2100 WyvernArmour(M) LV6
+1/2100 WyvernArmour(F) LV6
 
 ;Helmets
 1/2100 CrystalHelmet LV6
@@ -629,8 +629,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(男) LV7
-1/2100 WyvernArmour(女) LV7
+1/2100 WyvernArmour(M) LV7
+1/2100 WyvernArmour(F) LV7
 
 ;Helmets
 1/2100 CrystalHelmet LV7
@@ -726,8 +726,8 @@
 
 
 ;Armour Rare
-1/2100 WyvernArmour(男) LV8
-1/2100 WyvernArmour(女) LV8
+1/2100 WyvernArmour(M) LV8
+1/2100 WyvernArmour(F) LV8
 
 ;Helmets
 1/2100 CrystalHelmet LV8

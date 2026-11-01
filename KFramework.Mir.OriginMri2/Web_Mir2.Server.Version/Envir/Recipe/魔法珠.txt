@@ -8,5 +8,5 @@ Crafting书
 
 [Ingredients]
 MC石
-魔法药(大)
+魔法药(L)
 特制魔法药

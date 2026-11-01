@@ -40,30 +40,30 @@
 1/1150 Apus弓 LV1
 
 ;Armour
-1/300 黑虎甲(男) LV1
-1/300 黑虎甲(女) LV1
-1/300 莲甲(男) LV1
-1/300 莲甲(女) LV1
-1/300 Crane甲(男) LV1
-1/300 Crane甲(女) LV1
-1/450 红暗甲(男) LV1
-1/450 红暗甲(女) LV1
-1/450 蓝暗甲(男) LV1
-1/450 蓝暗甲(女) LV1
-1/450 绿暗甲(男) LV1
-1/450 绿暗甲(女) LV1
-1/750 WatcherSuit(男) LV1
-1/750 WatcherSuit(女) LV1
-1/750 鳞d甲(男) LV1
-1/750 鳞d甲(女) LV1
+1/300 黑虎甲(M) LV1
+1/300 黑虎甲(F) LV1
+1/300 莲甲(M) LV1
+1/300 莲甲(F) LV1
+1/300 Crane甲(M) LV1
+1/300 Crane甲(F) LV1
+1/450 红暗甲(M) LV1
+1/450 红暗甲(F) LV1
+1/450 蓝暗甲(M) LV1
+1/450 蓝暗甲(F) LV1
+1/450 绿暗甲(M) LV1
+1/450 绿暗甲(F) LV1
+1/750 WatcherSuit(M) LV1
+1/750 WatcherSuit(F) LV1
+1/750 鳞d甲(M) LV1
+1/750 鳞d甲(F) LV1
 
 ;Upgrade Armour
-1/4500 天甲(男) LV1
-1/4500 天甲(女) LV1
-1/4500 HeavenRedArmour(男) LV1
-1/4500 HeavenRedArmour(女) LV1
-1/4500 HeavenGrnArmour(男) LV1
-1/4500 HeavenGrnArmour(女) LV1
+1/4500 天甲(M) LV1
+1/4500 天甲(F) LV1
+1/4500 HeavenRedArmour(M) LV1
+1/4500 HeavenRedArmour(F) LV1
+1/4500 HeavenGrnArmour(M) LV1
+1/4500 HeavenGrnArmour(F) LV1
 
 ;Helmets
 1/40 巨盔 LV1
@@ -235,30 +235,30 @@
 1/1150 骨Carved扇 LV2
 
 ;Armour
-1/300 黑虎甲(男) LV2
-1/300 黑虎甲(女) LV2
-1/300 莲甲(男) LV2
-1/300 莲甲(女) LV2
-1/300 Crane甲(男) LV2
-1/300 Crane甲(女) LV2
-1/450 红暗甲(男) LV2
-1/450 红暗甲(女) LV2
-1/450 蓝暗甲(男) LV2
-1/450 蓝暗甲(女) LV2
-1/450 绿暗甲(男) LV2
-1/450 绿暗甲(女) LV2
-1/750 WatcherSuit(男) LV2
-1/750 WatcherSuit(女) LV2
-1/750 鳞d甲(男) LV2
-1/750 鳞d甲(女) LV2
+1/300 黑虎甲(M) LV2
+1/300 黑虎甲(F) LV2
+1/300 莲甲(M) LV2
+1/300 莲甲(F) LV2
+1/300 Crane甲(M) LV2
+1/300 Crane甲(F) LV2
+1/450 红暗甲(M) LV2
+1/450 红暗甲(F) LV2
+1/450 蓝暗甲(M) LV2
+1/450 蓝暗甲(F) LV2
+1/450 绿暗甲(M) LV2
+1/450 绿暗甲(F) LV2
+1/750 WatcherSuit(M) LV2
+1/750 WatcherSuit(F) LV2
+1/750 鳞d甲(M) LV2
+1/750 鳞d甲(F) LV2
 
 ;Upgrade Armour
-1/4500 天甲(男) LV2
-1/4500 天甲(女) LV2
-1/4500 HeavenRedArmour(男) LV2
-1/4500 HeavenRedArmour(女) LV2
-1/4500 HeavenGrnArmour(男) LV2
-1/4500 HeavenGrnArmour(女) LV2
+1/4500 天甲(M) LV2
+1/4500 天甲(F) LV2
+1/4500 HeavenRedArmour(M) LV2
+1/4500 HeavenRedArmour(F) LV2
+1/4500 HeavenGrnArmour(M) LV2
+1/4500 HeavenGrnArmour(F) LV2
 
 ;Helmets
 1/40 巨盔 LV2
@@ -429,30 +429,30 @@
 1/1150 Apus弓 LV3
 
 ;Armour
-1/300 黑虎甲(男) LV3
-1/300 黑虎甲(女) LV3
-1/300 莲甲(男) LV3
-1/300 莲甲(女) LV3
-1/300 Crane甲(男) LV3
-1/300 Crane甲(女) LV3
-1/450 红暗甲(男) LV3
-1/450 红暗甲(女) LV3
-1/450 蓝暗甲(男) LV3
-1/450 蓝暗甲(女) LV3
-1/450 绿暗甲(男) LV3
-1/450 绿暗甲(女) LV3
-1/750 WatcherSuit(男) LV3
-1/750 WatcherSuit(女) LV3
-1/750 鳞d甲(男) LV3
-1/750 鳞d甲(女) LV3
+1/300 黑虎甲(M) LV3
+1/300 黑虎甲(F) LV3
+1/300 莲甲(M) LV3
+1/300 莲甲(F) LV3
+1/300 Crane甲(M) LV3
+1/300 Crane甲(F) LV3
+1/450 红暗甲(M) LV3
+1/450 红暗甲(F) LV3
+1/450 蓝暗甲(M) LV3
+1/450 蓝暗甲(F) LV3
+1/450 绿暗甲(M) LV3
+1/450 绿暗甲(F) LV3
+1/750 WatcherSuit(M) LV3
+1/750 WatcherSuit(F) LV3
+1/750 鳞d甲(M) LV3
+1/750 鳞d甲(F) LV3
 
 ;Upgrade Armour
-1/4500 天甲(男) LV3
-1/4500 天甲(女) LV3
-1/4500 HeavenRedArmour(男) LV3
-1/4500 HeavenRedArmour(女) LV3
-1/4500 HeavenGrnArmour(男) LV3
-1/4500 HeavenGrnArmour(女) LV3
+1/4500 天甲(M) LV3
+1/4500 天甲(F) LV3
+1/4500 HeavenRedArmour(M) LV3
+1/4500 HeavenRedArmour(F) LV3
+1/4500 HeavenGrnArmour(M) LV3
+1/4500 HeavenGrnArmour(F) LV3
 
 ;Helmets
 1/40 巨盔 LV3
@@ -623,30 +623,30 @@
 1/1150 骨Carved扇 LV4
 
 ;Armour
-1/300 黑虎甲(男) LV4
-1/300 黑虎甲(女) LV4
-1/300 莲甲(男) LV4
-1/300 莲甲(女) LV4
-1/300 Crane甲(男) LV4
-1/300 Crane甲(女) LV4
-1/450 红暗甲(男) LV4
-1/450 红暗甲(女) LV4
-1/450 蓝暗甲(男) LV4
-1/450 蓝暗甲(女) LV4
-1/450 绿暗甲(男) LV4
-1/450 绿暗甲(女) LV4
-1/750 WatcherSuit(男) LV4
-1/750 WatcherSuit(女) LV4
-1/750 鳞d甲(男) LV4
-1/750 鳞d甲(女) LV4
+1/300 黑虎甲(M) LV4
+1/300 黑虎甲(F) LV4
+1/300 莲甲(M) LV4
+1/300 莲甲(F) LV4
+1/300 Crane甲(M) LV4
+1/300 Crane甲(F) LV4
+1/450 红暗甲(M) LV4
+1/450 红暗甲(F) LV4
+1/450 蓝暗甲(M) LV4
+1/450 蓝暗甲(F) LV4
+1/450 绿暗甲(M) LV4
+1/450 绿暗甲(F) LV4
+1/750 WatcherSuit(M) LV4
+1/750 WatcherSuit(F) LV4
+1/750 鳞d甲(M) LV4
+1/750 鳞d甲(F) LV4
 
 ;Upgrade Armour
-1/4500 天甲(男) LV4
-1/4500 天甲(女) LV4
-1/4500 HeavenRedArmour(男) LV4
-1/4500 HeavenRedArmour(女) LV4
-1/4500 HeavenGrnArmour(男) LV4
-1/4500 HeavenGrnArmour(女) LV4
+1/4500 天甲(M) LV4
+1/4500 天甲(F) LV4
+1/4500 HeavenRedArmour(M) LV4
+1/4500 HeavenRedArmour(F) LV4
+1/4500 HeavenGrnArmour(M) LV4
+1/4500 HeavenGrnArmour(F) LV4
 
 ;Helmets
 1/40 巨盔 LV4
@@ -816,30 +816,30 @@
 1/1150 骨Carved扇 LV5
 
 ;Armour
-1/300 黑虎甲(男) LV5
-1/300 黑虎甲(女) LV5
-1/300 莲甲(男) LV5
-1/300 莲甲(女) LV5
-1/300 Crane甲(男) LV5
-1/300 Crane甲(女) LV5
-1/450 红暗甲(男) LV5
-1/450 红暗甲(女) LV5
-1/450 蓝暗甲(男) LV5
-1/450 蓝暗甲(女) LV5
-1/450 绿暗甲(男) LV5
-1/450 绿暗甲(女) LV5
-1/750 WatcherSuit(男) LV5
-1/750 WatcherSuit(女) LV5
-1/750 鳞d甲(男) LV5
-1/750 鳞d甲(女) LV5
+1/300 黑虎甲(M) LV5
+1/300 黑虎甲(F) LV5
+1/300 莲甲(M) LV5
+1/300 莲甲(F) LV5
+1/300 Crane甲(M) LV5
+1/300 Crane甲(F) LV5
+1/450 红暗甲(M) LV5
+1/450 红暗甲(F) LV5
+1/450 蓝暗甲(M) LV5
+1/450 蓝暗甲(F) LV5
+1/450 绿暗甲(M) LV5
+1/450 绿暗甲(F) LV5
+1/750 WatcherSuit(M) LV5
+1/750 WatcherSuit(F) LV5
+1/750 鳞d甲(M) LV5
+1/750 鳞d甲(F) LV5
 
 ;Upgrade Armour
-1/4500 天甲(男) LV5
-1/4500 天甲(女) LV5
-1/4500 HeavenRedArmour(男) LV5
-1/4500 HeavenRedArmour(女) LV5
-1/4500 HeavenGrnArmour(男) LV5
-1/4500 HeavenGrnArmour(女) LV5
+1/4500 天甲(M) LV5
+1/4500 天甲(F) LV5
+1/4500 HeavenRedArmour(M) LV5
+1/4500 HeavenRedArmour(F) LV5
+1/4500 HeavenGrnArmour(M) LV5
+1/4500 HeavenGrnArmour(F) LV5
 
 ;Helmets
 1/40 巨盔 LV5
@@ -1010,30 +1010,30 @@
 1/1150 骨Carved扇 LV6
 
 ;Armour
-1/300 黑虎甲(男) LV6
-1/300 黑虎甲(女) LV6
-1/300 莲甲(男) LV6
-1/300 莲甲(女) LV6
-1/300 Crane甲(男) LV6
-1/300 Crane甲(女) LV6
-1/450 红暗甲(男) LV6
-1/450 红暗甲(女) LV6
-1/450 蓝暗甲(男) LV6
-1/450 蓝暗甲(女) LV6
-1/450 绿暗甲(男) LV6
-1/450 绿暗甲(女) LV6
-1/750 WatcherSuit(男) LV6
-1/750 WatcherSuit(女) LV6
-1/750 鳞d甲(男) LV6
-1/750 鳞d甲(女) LV6
+1/300 黑虎甲(M) LV6
+1/300 黑虎甲(F) LV6
+1/300 莲甲(M) LV6
+1/300 莲甲(F) LV6
+1/300 Crane甲(M) LV6
+1/300 Crane甲(F) LV6
+1/450 红暗甲(M) LV6
+1/450 红暗甲(F) LV6
+1/450 蓝暗甲(M) LV6
+1/450 蓝暗甲(F) LV6
+1/450 绿暗甲(M) LV6
+1/450 绿暗甲(F) LV6
+1/750 WatcherSuit(M) LV6
+1/750 WatcherSuit(F) LV6
+1/750 鳞d甲(M) LV6
+1/750 鳞d甲(F) LV6
 
 ;Upgrade Armour
-1/4500 天甲(男) LV6
-1/4500 天甲(女) LV6
-1/4500 HeavenRedArmour(男) LV6
-1/4500 HeavenRedArmour(女) LV6
-1/4500 HeavenGrnArmour(男) LV6
-1/4500 HeavenGrnArmour(女) LV6
+1/4500 天甲(M) LV6
+1/4500 天甲(F) LV6
+1/4500 HeavenRedArmour(M) LV6
+1/4500 HeavenRedArmour(F) LV6
+1/4500 HeavenGrnArmour(M) LV6
+1/4500 HeavenGrnArmour(F) LV6
 
 ;Helmets
 1/40 巨盔 LV6
@@ -1204,30 +1204,30 @@
 1/1150 骨Carved扇 LV7
 
 ;Armour
-1/300 黑虎甲(男) LV7
-1/300 黑虎甲(女) LV7
-1/300 莲甲(男) LV7
-1/300 莲甲(女) LV7
-1/300 Crane甲(男) LV7
-1/300 Crane甲(女) LV7
-1/450 红暗甲(男) LV7
-1/450 红暗甲(女) LV7
-1/450 蓝暗甲(男) LV7
-1/450 蓝暗甲(女) LV7
-1/450 绿暗甲(男) LV7
-1/450 绿暗甲(女) LV7
-1/750 WatcherSuit(男) LV7
-1/750 WatcherSuit(女) LV7
-1/750 鳞d甲(男) LV7
-1/750 鳞d甲(女) LV7
+1/300 黑虎甲(M) LV7
+1/300 黑虎甲(F) LV7
+1/300 莲甲(M) LV7
+1/300 莲甲(F) LV7
+1/300 Crane甲(M) LV7
+1/300 Crane甲(F) LV7
+1/450 红暗甲(M) LV7
+1/450 红暗甲(F) LV7
+1/450 蓝暗甲(M) LV7
+1/450 蓝暗甲(F) LV7
+1/450 绿暗甲(M) LV7
+1/450 绿暗甲(F) LV7
+1/750 WatcherSuit(M) LV7
+1/750 WatcherSuit(F) LV7
+1/750 鳞d甲(M) LV7
+1/750 鳞d甲(F) LV7
 
 ;Upgrade Armour
-1/4500 天甲(男) LV7
-1/4500 天甲(女) LV7
-1/4500 HeavenRedArmour(男) LV7
-1/4500 HeavenRedArmour(女) LV7
-1/4500 HeavenGrnArmour(男) LV7
-1/4500 HeavenGrnArmour(女) LV7
+1/4500 天甲(M) LV7
+1/4500 天甲(F) LV7
+1/4500 HeavenRedArmour(M) LV7
+1/4500 HeavenRedArmour(F) LV7
+1/4500 HeavenGrnArmour(M) LV7
+1/4500 HeavenGrnArmour(F) LV7
 
 ;Helmets
 1/40 巨盔 LV7
@@ -1397,30 +1397,30 @@
 1/1150 骨Carved扇 LV8
 
 ;Armour
-1/300 黑虎甲(男) LV8
-1/300 黑虎甲(女) LV8
-1/300 莲甲(男) LV8
-1/300 莲甲(女) LV8
-1/300 Crane甲(男) LV8
-1/300 Crane甲(女) LV8
-1/450 红暗甲(男) LV8
-1/450 红暗甲(女) LV8
-1/450 蓝暗甲(男) LV8
-1/450 蓝暗甲(女) LV8
-1/450 绿暗甲(男) LV8
-1/450 绿暗甲(女) LV8
-1/750 WatcherSuit(男) LV8
-1/750 WatcherSuit(女) LV8
-1/750 鳞d甲(男) LV8
-1/750 鳞d甲(女) LV8
+1/300 黑虎甲(M) LV8
+1/300 黑虎甲(F) LV8
+1/300 莲甲(M) LV8
+1/300 莲甲(F) LV8
+1/300 Crane甲(M) LV8
+1/300 Crane甲(F) LV8
+1/450 红暗甲(M) LV8
+1/450 红暗甲(F) LV8
+1/450 蓝暗甲(M) LV8
+1/450 蓝暗甲(F) LV8
+1/450 绿暗甲(M) LV8
+1/450 绿暗甲(F) LV8
+1/750 WatcherSuit(M) LV8
+1/750 WatcherSuit(F) LV8
+1/750 鳞d甲(M) LV8
+1/750 鳞d甲(F) LV8
 
 ;Upgrade Armour
-1/4500 天甲(男) LV8
-1/4500 天甲(女) LV8
-1/4500 HeavenRedArmour(男) LV8
-1/4500 HeavenRedArmour(女) LV8
-1/4500 HeavenGrnArmour(男) LV8
-1/4500 HeavenGrnArmour(女) LV8
+1/4500 天甲(M) LV8
+1/4500 天甲(F) LV8
+1/4500 HeavenRedArmour(M) LV8
+1/4500 HeavenRedArmour(F) LV8
+1/4500 HeavenGrnArmour(M) LV8
+1/4500 HeavenGrnArmour(F) LV8
 
 ;Helmets
 1/40 巨盔 LV8

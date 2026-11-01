@@ -159,6 +159,26 @@ namespace Client.MirGraphics
                 tex.PlainTexture = GDevice.CreateTexture(w, h, data);
                 Lights.Add(tex);
             }
+
+            // 雷达点 / 毒点：浏览器端原为空纹理占位（RadarTexture / PoisonDotBackground 恒为 null），
+            // 导致小地图/大地图的玩家点、NPC/怪物点、毒点全部不渲染（Draw 对 null 纹理直接 return）。
+            // 这里程序化造白色/黑色实心点纹理，绘制时由 colour 参数染色（与桌面端等价）。
+            if (RadarTexture == null)
+            {
+                int s = 4;
+                byte[] d = new byte[s * s * 4];
+                for (int i = 0; i < s * s; i++) { d[i * 4] = 255; d[i * 4 + 1] = 255; d[i * 4 + 2] = 255; d[i * 4 + 3] = 255; }
+                RadarTexture = new SlimDX.Direct3D9.Texture(Device, s, s, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+                RadarTexture.PlainTexture = GDevice.CreateTexture(s, s, d);
+            }
+            if (PoisonDotBackground == null)
+            {
+                int s = 6;
+                byte[] d = new byte[s * s * 4];
+                for (int i = 0; i < s * s; i++) { d[i * 4] = 0; d[i * 4 + 1] = 0; d[i * 4 + 2] = 0; d[i * 4 + 3] = 255; }
+                PoisonDotBackground = new SlimDX.Direct3D9.Texture(Device, s, s, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+                PoisonDotBackground.PlainTexture = GDevice.CreateTexture(s, s, d);
+            }
         }
 
         public static void Create()

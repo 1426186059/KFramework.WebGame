@@ -27,8 +27,8 @@ GOTO @Assassin
 
 [@Warrior]
 #ACT
-GIVEITEM 黑虎甲(男) 1
-GIVEITEM 黑虎甲(女) 1
+GIVEITEM 黑虎甲(M) 1
+GIVEITEM 黑虎甲(F) 1
 GIVEITEM 盔之王s 1
 GIVEITEM 黑虎锤 1
 GIVEITEM 塔拉贡项链 1	
@@ -64,8 +64,8 @@ GIVESKILL ImmortalSkin 3
 
 [@Wizard]
 #ACT
-GIVEITEM 莲甲(男) 1
-GIVEITEM 莲甲(女) 1
+GIVEITEM 莲甲(M) 1
+GIVEITEM 莲甲(F) 1
 GIVEITEM 盔之Sorcery 1
 GIVEITEM 塔拉贡项链 1
 GIVEITEM 邪Whisp护符 2
@@ -108,8 +108,8 @@ GIVESKILL FireBounce 3
 
 [@Taoist]
 #ACT
-GIVEITEM Crane甲(男) 1
-GIVEITEM Crane甲(女) 1
+GIVEITEM Crane甲(M) 1
+GIVEITEM Crane甲(F) 1
 GIVEITEM Purified面具 1
 GIVEITEM 塔拉贡项链 1
 GIVEITEM Sacred天使护符 2
@@ -152,8 +152,8 @@ GIVESKILL Healing轮 3
 
 [@Assassin]
 #ACT
-GIVEITEM Stealth甲(男) 1
-GIVEITEM Stealth甲(女) 1
+GIVEITEM Stealth甲(M) 1
+GIVEITEM Stealth甲(F) 1
 GIVEITEM 魔影 1
 GIVEITEM 塔拉贡项链 1
 GIVEITEM Dual泰坦护符 2

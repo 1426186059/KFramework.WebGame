@@ -7,8 +7,8 @@
 1/1 特制魔法药 
 1/1 太阳水 
 1/2 太阳水 
-1/1 太阳药水(男) 
-1/2 太阳药水(男) 
+1/1 太阳药水(M) 
+1/2 太阳药水(M) 
 1/1 太阳水 
 1/1 太阳水 
 1/1 太阳水 
@@ -45,32 +45,32 @@
 1/3000 LordSlayerBlades
 
 ;Armour
-1/100 黑虎甲(男) 
-1/100 黑虎甲(女) 
-1/100 莲甲(男) 
-1/100 莲甲(女) 
-1/100 Crane甲(男) 
-1/100 Crane甲(女) 
-1/200 WatcherSuit(男) 
-1/200 WatcherSuit(女) 
+1/100 黑虎甲(M) 
+1/100 黑虎甲(F) 
+1/100 莲甲(M) 
+1/100 莲甲(F) 
+1/100 Crane甲(M) 
+1/100 Crane甲(F) 
+1/200 WatcherSuit(M) 
+1/200 WatcherSuit(F) 
 
 ;Armour Rare
-1/700 天甲(男) 
-1/700 天甲(女) 
-1/700 HeavenArcheyRobe(男)
-1/700 HeavenArcheyRobe(女)
-1/750 天甲(男) 
-1/750 天甲(女) 
-1/750 HeavenRedArmour(男) 
-1/750 HeavenRedArmour(女) 
-1/750 HeavenGrnArmour(男) 
-1/750 HeavenGrnArmour(女) 
-1/750 HeavenGoldArmour(男) 
-1/750 HeavenGoldArmour(女) 
-1/3000 EvilMirArmour(男) 
-1/3000 EvilMirArmour(女) 
-1/3000 LordSlayerArmour(男)
-1/3000 LordSlayerArmour(女)
+1/700 天甲(M) 
+1/700 天甲(F) 
+1/700 HeavenArcheyRobe(M)
+1/700 HeavenArcheyRobe(F)
+1/750 天甲(M) 
+1/750 天甲(F) 
+1/750 HeavenRedArmour(M) 
+1/750 HeavenRedArmour(F) 
+1/750 HeavenGrnArmour(M) 
+1/750 HeavenGrnArmour(F) 
+1/750 HeavenGoldArmour(M) 
+1/750 HeavenGoldArmour(F) 
+1/3000 EvilMirArmour(M) 
+1/3000 EvilMirArmour(F) 
+1/3000 LordSlayerArmour(M)
+1/3000 LordSlayerArmour(F)
 
 ;Helmets
 1/20 Sparkling盔 

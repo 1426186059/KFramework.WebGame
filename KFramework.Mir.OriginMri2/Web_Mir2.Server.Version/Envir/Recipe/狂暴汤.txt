@@ -8,4 +8,4 @@ Gold 500
 [Ingredients]
 蜂f
 老山参
-魔法Aid(小)
+魔法Aid(S)

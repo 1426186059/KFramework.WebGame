@@ -41,12 +41,12 @@
 
 
 ;Armour
-1/1300 HavokBraveArmour(男)
-1/1300 HavokBraveArmour(女)
-1/1300 HavokMagicArmour(男)
-1/1300 HavokMagicArmour(女)
-1/1300 HavokSoulArmour(男)
-1/1300 HavokSoulArmour(女)
+1/1300 HavokBraveArmour(M)
+1/1300 HavokBraveArmour(F)
+1/1300 HavokMagicArmour(M)
+1/1300 HavokMagicArmour(F)
+1/1300 HavokSoulArmour(M)
+1/1300 HavokSoulArmour(F)
 
 ;Helmets
 1/400 PuiYuHelmet

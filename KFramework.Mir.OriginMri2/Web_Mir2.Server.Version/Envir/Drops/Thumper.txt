@@ -8,23 +8,23 @@
 1/2 (MP)Booster
 1/2 太阳水
 1/2 太阳水
-1/2 太阳药水(男)
-1/2 太阳药水(男)
-1/2 太阳药水(男)
-1/2 太阳药水(男)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
+1/2 太阳药水(M)
 
-1/25 Impact药(大) 
-1/25 魔法药(大) 
-1/25 道士药(大) 
-1/25 暴药(大) 
-1/25 StaminaAid(大) 
-1/25 魔法Aid(大) 
+1/25 Impact药(L) 
+1/25 魔法药(L) 
+1/25 道士药(L) 
+1/25 暴药(L) 
+1/25 StaminaAid(L) 
+1/25 魔法Aid(L) 
 
 1/55 Awakeningbox
 1/80 觉醒魂0
 
-;;1/150 EasterRobe(男)[1d]
-;;1/150 EasterRobe(女)[1d]
+;;1/150 EasterRobe(M)[1d]
+;;1/150 EasterRobe(F)[1d]
 1/250 CuteRatEgg
 
 ;Pads

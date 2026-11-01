@@ -42,26 +42,26 @@
 1/1100 Apus弓 LV1
 
 ;Armour
-1/1000 天甲(男) LV1
-1/1000 天甲(女) LV1
-1/1000 HeavenArcheyRobe(男) LV1
-1/1000 HeavenArcheyRobe(女) LV1
-1/1200 HeavenGrnArmour(男) LV1
-1/1200 HeavenGrnArmour(女) LV1
-1/1200 HeavenRedArmour(男) LV1
-1/1200 HeavenRedArmour(女) LV1
-1/1200 天甲(男) LV1
-1/1200 天甲(女) LV1
-1/1200 HeavenGoldArmour(男) LV1
-1/1200 HeavenGoldArmour(女) LV1
-1/1300 WargBraveArmour(男) LV1
-1/1300 WargBraveArmour(女) LV1
-1/1300 WargMagicArmour(男) LV1
-1/1300 WargMagicArmour(女) LV1
-1/1300 WargSoulArmour(男) LV1
-1/1300 WargSoulArmour(女) LV1
-1/1300 WargArmour(男) LV1
-1/1300 WargArmour(女) LV1
+1/1000 天甲(M) LV1
+1/1000 天甲(F) LV1
+1/1000 HeavenArcheyRobe(M) LV1
+1/1000 HeavenArcheyRobe(F) LV1
+1/1200 HeavenGrnArmour(M) LV1
+1/1200 HeavenGrnArmour(F) LV1
+1/1200 HeavenRedArmour(M) LV1
+1/1200 HeavenRedArmour(F) LV1
+1/1200 天甲(M) LV1
+1/1200 天甲(F) LV1
+1/1200 HeavenGoldArmour(M) LV1
+1/1200 HeavenGoldArmour(F) LV1
+1/1300 WargBraveArmour(M) LV1
+1/1300 WargBraveArmour(F) LV1
+1/1300 WargMagicArmour(M) LV1
+1/1300 WargMagicArmour(F) LV1
+1/1300 WargSoulArmour(M) LV1
+1/1300 WargSoulArmour(F) LV1
+1/1300 WargArmour(M) LV1
+1/1300 WargArmour(F) LV1
  
 ;Helmets
 
@@ -211,26 +211,26 @@
 1/1100 Apus弓 LV2
 
 ;Armour
-1/1000 天甲(男) LV2
-1/1000 天甲(女) LV2
-1/1000 HeavenArcheyRobe(男) LV2
-1/1000 HeavenArcheyRobe(女) LV2
-1/1200 HeavenGrnArmour(男) LV2
-1/1200 HeavenGrnArmour(女) LV2
-1/1200 HeavenRedArmour(男) LV2
-1/1200 HeavenRedArmour(女) LV2
-1/1200 天甲(男) LV2
-1/1200 天甲(女) LV2
-1/1200 HeavenGoldArmour(男) LV2
-1/1200 HeavenGoldArmour(女) LV2
-1/1300 WargBraveArmour(男) LV2
-1/1300 WargBraveArmour(女) LV2
-1/1300 WargMagicArmour(男) LV2
-1/1300 WargMagicArmour(女) LV2
-1/1300 WargSoulArmour(男) LV2
-1/1300 WargSoulArmour(女) LV2
-1/1300 WargArmour(男) LV1
-1/1300 WargArmour(女) LV1
+1/1000 天甲(M) LV2
+1/1000 天甲(F) LV2
+1/1000 HeavenArcheyRobe(M) LV2
+1/1000 HeavenArcheyRobe(F) LV2
+1/1200 HeavenGrnArmour(M) LV2
+1/1200 HeavenGrnArmour(F) LV2
+1/1200 HeavenRedArmour(M) LV2
+1/1200 HeavenRedArmour(F) LV2
+1/1200 天甲(M) LV2
+1/1200 天甲(F) LV2
+1/1200 HeavenGoldArmour(M) LV2
+1/1200 HeavenGoldArmour(F) LV2
+1/1300 WargBraveArmour(M) LV2
+1/1300 WargBraveArmour(F) LV2
+1/1300 WargMagicArmour(M) LV2
+1/1300 WargMagicArmour(F) LV2
+1/1300 WargSoulArmour(M) LV2
+1/1300 WargSoulArmour(F) LV2
+1/1300 WargArmour(M) LV1
+1/1300 WargArmour(F) LV1
  
 ;Helmets
 
@@ -380,26 +380,26 @@
 1/1100 Apus弓 LV3
 
 ;Armour
-1/1000 天甲(男) LV3
-1/1000 天甲(女) LV3
-1/1200 HeavenGrnArmour(男) LV3
-1/1200 HeavenGrnArmour(女) LV3
-1/1000 HeavenArcheyRobe(男) LV3
-1/1000 HeavenArcheyRobe(女) LV3
-1/1200 HeavenRedArmour(男) LV3
-1/1200 HeavenRedArmour(女) LV3
-1/1200 天甲(男) LV3
-1/1200 天甲(女) LV3
-1/1200 HeavenGoldArmour(男) LV3
-1/1200 HeavenGoldArmour(女) LV3
-1/1300 WargBraveArmour(男) LV3
-1/1300 WargBraveArmour(女) LV3
-1/1300 WargMagicArmour(男) LV3
-1/1300 WargMagicArmour(女) LV3
-1/1300 WargSoulArmour(男) LV3
-1/1300 WargSoulArmour(女) LV3
-1/1300 WargArmour(男) LV3
-1/1300 WargArmour(女) LV3
+1/1000 天甲(M) LV3
+1/1000 天甲(F) LV3
+1/1200 HeavenGrnArmour(M) LV3
+1/1200 HeavenGrnArmour(F) LV3
+1/1000 HeavenArcheyRobe(M) LV3
+1/1000 HeavenArcheyRobe(F) LV3
+1/1200 HeavenRedArmour(M) LV3
+1/1200 HeavenRedArmour(F) LV3
+1/1200 天甲(M) LV3
+1/1200 天甲(F) LV3
+1/1200 HeavenGoldArmour(M) LV3
+1/1200 HeavenGoldArmour(F) LV3
+1/1300 WargBraveArmour(M) LV3
+1/1300 WargBraveArmour(F) LV3
+1/1300 WargMagicArmour(M) LV3
+1/1300 WargMagicArmour(F) LV3
+1/1300 WargSoulArmour(M) LV3
+1/1300 WargSoulArmour(F) LV3
+1/1300 WargArmour(M) LV3
+1/1300 WargArmour(F) LV3
  
 ;Helmets
 
@@ -550,26 +550,26 @@
 1/1100 Apus弓 LV4
 
 ;Armour
-1/1000 天甲(男) LV4
-1/1000 天甲(女) LV4
-1/1000 HeavenArcheyRobe(男) LV4
-1/1000 HeavenArcheyRobe(女) LV4
-1/1200 HeavenGrnArmour(男) LV4
-1/1200 HeavenGrnArmour(女) LV4
-1/1200 HeavenRedArmour(男) LV4
-1/1200 HeavenRedArmour(女) LV4
-1/1200 天甲(男) LV4
-1/1200 天甲(女) LV4
-1/1200 HeavenGoldArmour(男) LV4
-1/1200 HeavenGoldArmour(女) LV4
-1/1300 WargBraveArmour(男) LV4
-1/1300 WargBraveArmour(女) LV4
-1/1300 WargMagicArmour(男) LV4
-1/1300 WargMagicArmour(女) LV4
-1/1300 WargSoulArmour(男) LV4
-1/1300 WargSoulArmour(女) LV4
-1/1300 WargArmour(男) LV4
-1/1300 WargArmour(女) LV4
+1/1000 天甲(M) LV4
+1/1000 天甲(F) LV4
+1/1000 HeavenArcheyRobe(M) LV4
+1/1000 HeavenArcheyRobe(F) LV4
+1/1200 HeavenGrnArmour(M) LV4
+1/1200 HeavenGrnArmour(F) LV4
+1/1200 HeavenRedArmour(M) LV4
+1/1200 HeavenRedArmour(F) LV4
+1/1200 天甲(M) LV4
+1/1200 天甲(F) LV4
+1/1200 HeavenGoldArmour(M) LV4
+1/1200 HeavenGoldArmour(F) LV4
+1/1300 WargBraveArmour(M) LV4
+1/1300 WargBraveArmour(F) LV4
+1/1300 WargMagicArmour(M) LV4
+1/1300 WargMagicArmour(F) LV4
+1/1300 WargSoulArmour(M) LV4
+1/1300 WargSoulArmour(F) LV4
+1/1300 WargArmour(M) LV4
+1/1300 WargArmour(F) LV4
 
 
 ;Helmets
@@ -722,26 +722,26 @@
 1/1100 骨Carved扇 LV5
 
 ;Armour
-1/1000 天甲(男) LV5
-1/1000 天甲(女) LV5
-1/1000 HeavenArcheyRobe(男) LV5
-1/1000 HeavenArcheyRobe(女) LV5
-1/1200 HeavenGrnArmour(男) LV5
-1/1200 HeavenGrnArmour(女) LV5
-1/1200 HeavenRedArmour(男) LV5
-1/1200 HeavenRedArmour(女) LV5
-1/1200 天甲(男) LV5
-1/1200 天甲(女) LV5
-1/1200 HeavenGoldArmour(男) LV5
-1/1200 HeavenGoldArmour(女) LV5
-1/1300 WargBraveArmour(男) LV5
-1/1300 WargBraveArmour(女) LV5
-1/1300 WargMagicArmour(男) LV5
-1/1300 WargMagicArmour(女) LV5
-1/1300 WargSoulArmour(男) LV5
-1/1300 WargSoulArmour(女) LV5
-1/1300 WargArmour(男) LV5
-1/1300 WargArmour(女) LV5
+1/1000 天甲(M) LV5
+1/1000 天甲(F) LV5
+1/1000 HeavenArcheyRobe(M) LV5
+1/1000 HeavenArcheyRobe(F) LV5
+1/1200 HeavenGrnArmour(M) LV5
+1/1200 HeavenGrnArmour(F) LV5
+1/1200 HeavenRedArmour(M) LV5
+1/1200 HeavenRedArmour(F) LV5
+1/1200 天甲(M) LV5
+1/1200 天甲(F) LV5
+1/1200 HeavenGoldArmour(M) LV5
+1/1200 HeavenGoldArmour(F) LV5
+1/1300 WargBraveArmour(M) LV5
+1/1300 WargBraveArmour(F) LV5
+1/1300 WargMagicArmour(M) LV5
+1/1300 WargMagicArmour(F) LV5
+1/1300 WargSoulArmour(M) LV5
+1/1300 WargSoulArmour(F) LV5
+1/1300 WargArmour(M) LV5
+1/1300 WargArmour(F) LV5
  
 ;Helmets
 
@@ -893,26 +893,26 @@
 1/1100 Apus弓 LV6
 
 ;Armour
-1/1000 天甲(男) LV6
-1/1000 天甲(女) LV6
-1/1000 HeavenArcheyRobe(男) LV6
-1/1000 HeavenArcheyRobe(女) LV6
-1/1200 HeavenGrnArmour(男) LV6
-1/1200 HeavenGrnArmour(女) LV6
-1/1200 HeavenRedArmour(男) LV6
-1/1200 HeavenRedArmour(女) LV6
-1/1200 天甲(男) LV6
-1/1200 天甲(女) LV6
-1/1200 HeavenGoldArmour(男) LV6
-1/1200 HeavenGoldArmour(女) LV6
-1/1300 WargBraveArmour(男) LV6
-1/1300 WargBraveArmour(女) LV6
-1/1300 WargMagicArmour(男) LV6
-1/1300 WargMagicArmour(女) LV6
-1/1300 WargSoulArmour(男) LV6
-1/1300 WargSoulArmour(女) LV6
-1/1300 WargArmour(男) LV6
-1/1300 WargArmour(女) LV6
+1/1000 天甲(M) LV6
+1/1000 天甲(F) LV6
+1/1000 HeavenArcheyRobe(M) LV6
+1/1000 HeavenArcheyRobe(F) LV6
+1/1200 HeavenGrnArmour(M) LV6
+1/1200 HeavenGrnArmour(F) LV6
+1/1200 HeavenRedArmour(M) LV6
+1/1200 HeavenRedArmour(F) LV6
+1/1200 天甲(M) LV6
+1/1200 天甲(F) LV6
+1/1200 HeavenGoldArmour(M) LV6
+1/1200 HeavenGoldArmour(F) LV6
+1/1300 WargBraveArmour(M) LV6
+1/1300 WargBraveArmour(F) LV6
+1/1300 WargMagicArmour(M) LV6
+1/1300 WargMagicArmour(F) LV6
+1/1300 WargSoulArmour(M) LV6
+1/1300 WargSoulArmour(F) LV6
+1/1300 WargArmour(M) LV6
+1/1300 WargArmour(F) LV6
  
 ;Helmets
 
@@ -1063,26 +1063,26 @@
 1/1100 Apus弓 LV7
 
 ;Armour
-1/1000 天甲(男) LV7
-1/1000 天甲(女) LV7
-1/1000 HeavenArcheyRobe(男) LV7
-1/1000 HeavenArcheyRobe(女) LV7
-1/1200 HeavenGrnArmour(男) LV7
-1/1200 HeavenGrnArmour(女) LV7
-1/1200 HeavenRedArmour(男) LV7
-1/1200 HeavenRedArmour(女) LV7
-1/1200 天甲(男) LV7
-1/1200 天甲(女) LV7
-1/1200 HeavenGoldArmour(男) LV7
-1/1200 HeavenGoldArmour(女) LV7
-1/1300 WargBraveArmour(男) LV7
-1/1300 WargBraveArmour(女) LV7
-1/1300 WargMagicArmour(男) LV7
-1/1300 WargMagicArmour(女) LV7
-1/1300 WargSoulArmour(男) LV7
-1/1300 WargSoulArmour(女) LV7
-1/1300 WargArmour(男) LV7
-1/1300 WargArmour(女) LV7
+1/1000 天甲(M) LV7
+1/1000 天甲(F) LV7
+1/1000 HeavenArcheyRobe(M) LV7
+1/1000 HeavenArcheyRobe(F) LV7
+1/1200 HeavenGrnArmour(M) LV7
+1/1200 HeavenGrnArmour(F) LV7
+1/1200 HeavenRedArmour(M) LV7
+1/1200 HeavenRedArmour(F) LV7
+1/1200 天甲(M) LV7
+1/1200 天甲(F) LV7
+1/1200 HeavenGoldArmour(M) LV7
+1/1200 HeavenGoldArmour(F) LV7
+1/1300 WargBraveArmour(M) LV7
+1/1300 WargBraveArmour(F) LV7
+1/1300 WargMagicArmour(M) LV7
+1/1300 WargMagicArmour(F) LV7
+1/1300 WargSoulArmour(M) LV7
+1/1300 WargSoulArmour(F) LV7
+1/1300 WargArmour(M) LV7
+1/1300 WargArmour(F) LV7
 
 ;Helmets
 
@@ -1235,26 +1235,26 @@
 1/1100 Apus弓 LV8
 
 ;Armour
-1/1000 天甲(男) LV8
-1/1000 天甲(女) LV8
-1/1000 HeavenArcheyRobe(男) LV8
-1/1000 HeavenArcheyRobe(女) LV8
-1/1200 HeavenGrnArmour(男) LV8
-1/1200 HeavenGrnArmour(女) LV8
-1/1200 HeavenRedArmour(男) LV8
-1/1200 HeavenRedArmour(女) LV8
-1/1200 天甲(男) LV8
-1/1200 天甲(女) LV8
-1/1200 HeavenGoldArmour(男) LV8
-1/1200 HeavenGoldArmour(女) LV8
-1/1300 WargBraveArmour(男) LV8
-1/1300 WargBraveArmour(女) LV8
-1/1300 WargMagicArmour(男) LV8
-1/1300 WargMagicArmour(女) LV8
-1/1300 WargSoulArmour(男) LV8
-1/1300 WargSoulArmour(女) LV8
-1/1300 WargArmour(男) LV8
-1/1300 WargArmour(女) LV8
+1/1000 天甲(M) LV8
+1/1000 天甲(F) LV8
+1/1000 HeavenArcheyRobe(M) LV8
+1/1000 HeavenArcheyRobe(F) LV8
+1/1200 HeavenGrnArmour(M) LV8
+1/1200 HeavenGrnArmour(F) LV8
+1/1200 HeavenRedArmour(M) LV8
+1/1200 HeavenRedArmour(F) LV8
+1/1200 天甲(M) LV8
+1/1200 天甲(F) LV8
+1/1200 HeavenGoldArmour(M) LV8
+1/1200 HeavenGoldArmour(F) LV8
+1/1300 WargBraveArmour(M) LV8
+1/1300 WargBraveArmour(F) LV8
+1/1300 WargMagicArmour(M) LV8
+1/1300 WargMagicArmour(F) LV8
+1/1300 WargSoulArmour(M) LV8
+1/1300 WargSoulArmour(F) LV8
+1/1300 WargArmour(M) LV8
+1/1300 WargArmour(F) LV8
 
 ;Helmets
 

@@ -5,7 +5,7 @@
 
 ;Potions
 1/30 太阳水
-1/50 太阳药水(男)
+1/50 太阳药水(M)
 
 1/12000 SmasherRing
 1/12000 BlizzardRing

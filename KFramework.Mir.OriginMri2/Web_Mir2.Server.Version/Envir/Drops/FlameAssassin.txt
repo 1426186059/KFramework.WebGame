@@ -5,7 +5,7 @@
 
 ;Potions
 1/30 太阳水
-1/50 太阳药水(男)
+1/50 太阳药水(M)
 
 ;Crafting Material
 1/200 风Marble

@@ -34,8 +34,8 @@
 
 
 ;Armour
-1/700 GonRyunRobe(男) LV1
-1/700 GonRyunRobe(女) LV1 
+1/700 GonRyunRobe(M) LV1
+1/700 GonRyunRobe(F) LV1 
 
 
 ;Helmets
@@ -211,8 +211,8 @@
 
 
 ;Armour
-1/700 GonRyunRobe(男) LV2
-1/700 GonRyunRobe(女) LV2 
+1/700 GonRyunRobe(M) LV2
+1/700 GonRyunRobe(F) LV2 
 
 
 ;Helmets
@@ -388,8 +388,8 @@
 
 
 ;Armour
-1/700 GonRyunRobe(男) LV3
-1/700 GonRyunRobe(女) LV3 
+1/700 GonRyunRobe(M) LV3
+1/700 GonRyunRobe(F) LV3 
 
 
 ;Helmets
@@ -565,8 +565,8 @@
 
 
 ;Armour
-1/700 GonRyunRobe(男) LV4
-1/700 GonRyunRobe(女) LV4 
+1/700 GonRyunRobe(M) LV4
+1/700 GonRyunRobe(F) LV4 
 
 
 ;Helmets
@@ -741,8 +741,8 @@
 
 
 ;Armour
-1/700 GonRyunRobe(男) LV5
-1/700 GonRyunRobe(女) LV5 
+1/700 GonRyunRobe(M) LV5
+1/700 GonRyunRobe(F) LV5 
 
 
 ;Helmets
@@ -917,8 +917,8 @@
 
 
 ;Armour
-1/700 GonRyunRobe(男) LV6
-1/700 GonRyunRobe(女) LV6 
+1/700 GonRyunRobe(M) LV6
+1/700 GonRyunRobe(F) LV6 
 
 
 ;Helmets
@@ -1092,8 +1092,8 @@
 
 
 ;Armour
-1/700 GonRyunRobe(男) LV7
-1/700 GonRyunRobe(女) LV7 
+1/700 GonRyunRobe(M) LV7
+1/700 GonRyunRobe(F) LV7 
 
 
 ;Helmets
@@ -1267,8 +1267,8 @@
 
 
 ;Armour
-1/700 GonRyunRobe(男) LV8
-1/700 GonRyunRobe(女) LV8 
+1/700 GonRyunRobe(M) LV8
+1/700 GonRyunRobe(F) LV8 
 
 
 ;Helmets

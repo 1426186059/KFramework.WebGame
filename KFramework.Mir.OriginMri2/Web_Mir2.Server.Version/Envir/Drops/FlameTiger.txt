@@ -3,12 +3,12 @@
 1/1 Gold 12500 LV1
 
 ;Potions
-1/1 太阳药水(男) LV1
-1/1 太阳药水(男) LV1
-1/1 太阳药水(男) LV1
-1/2 太阳药水(男) LV1
-1/2 太阳药水(男) LV1
-1/2 太阳药水(男) LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/1 太阳药水(M) LV1
+1/2 太阳药水(M) LV1
+1/2 太阳药水(M) LV1
+1/2 太阳药水(M) LV1
 1/1 大金创药 LV1 
 1/1 大魔法药 LV1
 1/1 大金创药 LV1 
@@ -27,31 +27,31 @@
 1/2 特制魔法药 LV1 
 1/2 大魔法药 LV1 
 1/2 特制魔法药 LV1 
-1/30 Impact药(小) LV1 
-1/30 魔法药(小) LV1 
-1/30 道士药(小) LV1 
-1/30 风暴药(小) LV1 
-1/30 StaminaAid(小) LV1 
-1/30 魔法Aid(小) LV1
+1/30 Impact药(S) LV1 
+1/30 魔法药(S) LV1 
+1/30 道士药(S) LV1 
+1/30 风暴药(S) LV1 
+1/30 StaminaAid(S) LV1 
+1/30 魔法Aid(S) LV1
 
 
 ;Armours
-1/60 铁甲(男) LV1
-1/60 铁甲(女) LV1
-1/60 Wizard袍(男) LV1
-1/60 WizardRobe(女) LV1
-1/60 珍珠甲(男) LV1
-1/60 锻造甲(男) LV1
-1/60 锻造甲(女) LV1
-1/60 珍珠甲(女) LV1
-1/60 远古甲(男) LV1
-1/60 远古甲(女) LV1
+1/60 铁甲(M) LV1
+1/60 铁甲(F) LV1
+1/60 Wizard袍(M) LV1
+1/60 WizardRobe(F) LV1
+1/60 珍珠甲(M) LV1
+1/60 锻造甲(M) LV1
+1/60 锻造甲(F) LV1
+1/60 珍珠甲(F) LV1
+1/60 远古甲(M) LV1
+1/60 远古甲(F) LV1
 
 ;Rare Armours
-1/8000 天甲(男) LV1
-1/8000 天甲(女) LV1
-1/8000 HeavenArcheyRobe(男) LV1
-1/8000 HeavenArcheyRobe(女) LV1
+1/8000 天甲(M) LV1
+1/8000 天甲(F) LV1
+1/8000 HeavenArcheyRobe(M) LV1
+1/8000 HeavenArcheyRobe(F) LV1
 
 ;Weapons
 1/250 JudgementMace  LV1
@@ -194,12 +194,12 @@
 1/1 Gold 12500 LV2
 
 ;Potions
-1/1 太阳药水(男) LV2
-1/1 太阳药水(男) LV2
-1/1 太阳药水(男) LV2
-1/2 太阳药水(男) LV2
-1/2 太阳药水(男) LV2
-1/2 太阳药水(男) LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/1 太阳药水(M) LV2
+1/2 太阳药水(M) LV2
+1/2 太阳药水(M) LV2
+1/2 太阳药水(M) LV2
 1/1 大金创药 LV2 
 1/1 大魔法药 LV2
 1/1 大金创药 LV2 
@@ -218,31 +218,31 @@
 1/2 特制魔法药 LV2 
 1/2 大魔法药 LV2 
 1/2 特制魔法药 LV2 
-1/30 Impact药(小) LV2 
-1/30 魔法药(小) LV2 
-1/30 道士药(小) LV2 
-1/30 风暴药(小) LV2 
-1/30 StaminaAid(小) LV2 
-1/30 魔法Aid(小) LV2
+1/30 Impact药(S) LV2 
+1/30 魔法药(S) LV2 
+1/30 道士药(S) LV2 
+1/30 风暴药(S) LV2 
+1/30 StaminaAid(S) LV2 
+1/30 魔法Aid(S) LV2
 
 
 ;Armours
-1/60 铁甲(男) LV2
-1/60 铁甲(女) LV2
-1/60 Wizard袍(男) LV2
-1/60 WizardRobe(女) LV2
-1/60 珍珠甲(男) LV2
-1/60 珍珠甲(女) LV2
-1/60 锻造甲(男) LV2
-1/60 锻造甲(女) LV2
-1/60 远古甲(男) LV2
-1/60 远古甲(女) LV2
+1/60 铁甲(M) LV2
+1/60 铁甲(F) LV2
+1/60 Wizard袍(M) LV2
+1/60 WizardRobe(F) LV2
+1/60 珍珠甲(M) LV2
+1/60 珍珠甲(F) LV2
+1/60 锻造甲(M) LV2
+1/60 锻造甲(F) LV2
+1/60 远古甲(M) LV2
+1/60 远古甲(F) LV2
 
 ;Rare Armours
-1/8000 天甲(男) LV2
-1/8000 天甲(女) LV2
-1/8000 HeavenArcheyRobe(男) LV2
-1/8000 HeavenArcheyRobe(女) LV2
+1/8000 天甲(M) LV2
+1/8000 天甲(F) LV2
+1/8000 HeavenArcheyRobe(M) LV2
+1/8000 HeavenArcheyRobe(F) LV2
 
 ;Weapons
 1/250 JudgementMace  LV2
@@ -385,12 +385,12 @@
 1/1 Gold 12500 LV3
 
 ;Potions
-1/1 太阳药水(男) LV3
-1/1 太阳药水(男) LV3
-1/1 太阳药水(男) LV3
-1/2 太阳药水(男) LV3
-1/2 太阳药水(男) LV3
-1/2 太阳药水(男) LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/1 太阳药水(M) LV3
+1/2 太阳药水(M) LV3
+1/2 太阳药水(M) LV3
+1/2 太阳药水(M) LV3
 1/1 大金创药 LV3 
 1/1 大魔法药 LV3
 1/1 大金创药 LV3 
@@ -409,31 +409,31 @@
 1/2 特制魔法药 LV3 
 1/2 大魔法药 LV3 
 1/2 特制魔法药 LV3 
-1/30 Impact药(小) LV3 
-1/30 魔法药(小) LV3 
-1/30 道士药(小) LV3 
-1/30 风暴药(小) LV3 
-1/30 StaminaAid(小) LV3 
-1/30 魔法Aid(小) LV3
+1/30 Impact药(S) LV3 
+1/30 魔法药(S) LV3 
+1/30 道士药(S) LV3 
+1/30 风暴药(S) LV3 
+1/30 StaminaAid(S) LV3 
+1/30 魔法Aid(S) LV3
 
 
 ;Armours
-1/60 铁甲(男) LV3
-1/60 铁甲(女) LV3
-1/60 Wizard袍(男) LV3
-1/60 WizardRobe(女) LV3
-1/60 珍珠甲(男) LV3
-1/60 锻造甲(男) LV3
-1/60 锻造甲(女) LV3
-1/60 珍珠甲(女) LV3
-1/60 远古甲(男) LV3
-1/60 远古甲(女) LV3
+1/60 铁甲(M) LV3
+1/60 铁甲(F) LV3
+1/60 Wizard袍(M) LV3
+1/60 WizardRobe(F) LV3
+1/60 珍珠甲(M) LV3
+1/60 锻造甲(M) LV3
+1/60 锻造甲(F) LV3
+1/60 珍珠甲(F) LV3
+1/60 远古甲(M) LV3
+1/60 远古甲(F) LV3
 
 ;Rare Armours
-1/8000 天甲(男) LV3
-1/8000 天甲(女) LV3
-1/8000 HeavenArcheyRobe(男) LV3
-1/8000 HeavenArcheyRobe(女) LV3
+1/8000 天甲(M) LV3
+1/8000 天甲(F) LV3
+1/8000 HeavenArcheyRobe(M) LV3
+1/8000 HeavenArcheyRobe(F) LV3
 
 ;Weapons
 1/250 JudgementMace  LV3
@@ -576,12 +576,12 @@
 1/1 Gold 12500 LV4
 
 ;Potions
-1/1 太阳药水(男) LV4
-1/1 太阳药水(男) LV4
-1/1 太阳药水(男) LV4
-1/2 太阳药水(男) LV4
-1/2 太阳药水(男) LV4
-1/2 太阳药水(男) LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/1 太阳药水(M) LV4
+1/2 太阳药水(M) LV4
+1/2 太阳药水(M) LV4
+1/2 太阳药水(M) LV4
 1/1 大金创药 LV4 
 1/1 大魔法药 LV4
 1/1 大金创药 LV4 
@@ -600,31 +600,31 @@
 1/2 特制魔法药 LV4 
 1/2 大魔法药 LV4 
 1/2 特制魔法药 LV4 
-1/30 Impact药(小) LV4 
-1/30 魔法药(小) LV4 
-1/30 道士药(小) LV4 
-1/30 风暴药(小) LV4 
-1/30 StaminaAid(小) LV4 
-1/30 魔法Aid(小) LV4
+1/30 Impact药(S) LV4 
+1/30 魔法药(S) LV4 
+1/30 道士药(S) LV4 
+1/30 风暴药(S) LV4 
+1/30 StaminaAid(S) LV4 
+1/30 魔法Aid(S) LV4
 
 
 ;Armours
-1/60 铁甲(男) LV4
-1/60 铁甲(女) LV4
-1/60 Wizard袍(男) LV4
-1/60 WizardRobe(女) LV4
-1/60 锻造甲(男) LV4
-1/60 锻造甲(女) LV4
-1/60 珍珠甲(男) LV4
-1/60 珍珠甲(女) LV4
-1/60 远古甲(男) LV4
-1/60 远古甲(女) LV4
+1/60 铁甲(M) LV4
+1/60 铁甲(F) LV4
+1/60 Wizard袍(M) LV4
+1/60 WizardRobe(F) LV4
+1/60 锻造甲(M) LV4
+1/60 锻造甲(F) LV4
+1/60 珍珠甲(M) LV4
+1/60 珍珠甲(F) LV4
+1/60 远古甲(M) LV4
+1/60 远古甲(F) LV4
 
 ;Rare Armours
-1/8000 天甲(男) LV4
-1/8000 天甲(女) LV4
-1/8000 HeavenArcheyRobe(男) LV4
-1/8000 HeavenArcheyRobe(女) LV4
+1/8000 天甲(M) LV4
+1/8000 天甲(F) LV4
+1/8000 HeavenArcheyRobe(M) LV4
+1/8000 HeavenArcheyRobe(F) LV4
 
 ;Weapons
 1/250 JudgementMace  LV4
@@ -767,12 +767,12 @@
 1/1 Gold 12500 LV5
 
 ;Potions
-1/1 太阳药水(男) LV5
-1/1 太阳药水(男) LV5
-1/1 太阳药水(男) LV5
-1/2 太阳药水(男) LV5
-1/2 太阳药水(男) LV5
-1/2 太阳药水(男) LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/1 太阳药水(M) LV5
+1/2 太阳药水(M) LV5
+1/2 太阳药水(M) LV5
+1/2 太阳药水(M) LV5
 1/1 大金创药 LV5 
 1/1 大魔法药 LV5
 1/1 大金创药 LV5 
@@ -791,31 +791,31 @@
 1/2 特制魔法药 LV5 
 1/2 大魔法药 LV5 
 1/2 特制魔法药 LV5 
-1/30 Impact药(小) LV5 
-1/30 魔法药(小) LV5 
-1/30 道士药(小) LV5 
-1/30 风暴药(小) LV5 
-1/30 StaminaAid(小) LV5 
-1/30 魔法Aid(小) LV5
+1/30 Impact药(S) LV5 
+1/30 魔法药(S) LV5 
+1/30 道士药(S) LV5 
+1/30 风暴药(S) LV5 
+1/30 StaminaAid(S) LV5 
+1/30 魔法Aid(S) LV5
 
 
 ;Armours
-1/60 铁甲(男) LV5
-1/60 铁甲(女) LV5
-1/60 Wizard袍(男) LV5
-1/60 WizardRobe(女) LV5
-1/60 锻造甲(男) LV5
-1/60 锻造甲(女) LV5
-1/60 珍珠甲(男) LV5
-1/60 珍珠甲(女) LV5
-1/60 远古甲(男) LV5
-1/60 远古甲(女) LV5
+1/60 铁甲(M) LV5
+1/60 铁甲(F) LV5
+1/60 Wizard袍(M) LV5
+1/60 WizardRobe(F) LV5
+1/60 锻造甲(M) LV5
+1/60 锻造甲(F) LV5
+1/60 珍珠甲(M) LV5
+1/60 珍珠甲(F) LV5
+1/60 远古甲(M) LV5
+1/60 远古甲(F) LV5
 
 ;Rare Armours
-1/8000 天甲(男) LV5
-1/8000 天甲(女) LV5
-1/8000 HeavenArcheyRobe(男) LV5
-1/8000 HeavenArcheyRobe(女) LV5
+1/8000 天甲(M) LV5
+1/8000 天甲(F) LV5
+1/8000 HeavenArcheyRobe(M) LV5
+1/8000 HeavenArcheyRobe(F) LV5
 
 ;Weapons
 1/250 JudgementMace  LV5
@@ -958,12 +958,12 @@
 1/1 Gold 12500 LV6
 
 ;Potions
-1/1 太阳药水(男) LV6
-1/1 太阳药水(男) LV6
-1/1 太阳药水(男) LV6
-1/2 太阳药水(男) LV6
-1/2 太阳药水(男) LV6
-1/2 太阳药水(男) LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/1 太阳药水(M) LV6
+1/2 太阳药水(M) LV6
+1/2 太阳药水(M) LV6
+1/2 太阳药水(M) LV6
 1/1 大金创药 LV6 
 1/1 大魔法药 LV6
 1/1 大金创药 LV6 
@@ -982,31 +982,31 @@
 1/2 特制魔法药 LV6 
 1/2 大魔法药 LV6 
 1/2 特制魔法药 LV6 
-1/30 Impact药(小) LV6 
-1/30 魔法药(小) LV6 
-1/30 道士药(小) LV6 
-1/30 风暴药(小) LV6 
-1/30 StaminaAid(小) LV6 
-1/30 魔法Aid(小) LV6
+1/30 Impact药(S) LV6 
+1/30 魔法药(S) LV6 
+1/30 道士药(S) LV6 
+1/30 风暴药(S) LV6 
+1/30 StaminaAid(S) LV6 
+1/30 魔法Aid(S) LV6
 
 
 ;Armours
-1/60 铁甲(男) LV6
-1/60 铁甲(女) LV6
-1/60 锻造甲(男) LV6
-1/60 锻造甲(女) LV6
-1/60 Wizard袍(男) LV6
-1/60 WizardRobe(女) LV6
-1/60 珍珠甲(男) LV6
-1/60 珍珠甲(女) LV6
-1/60 远古甲(男) LV6
-1/60 远古甲(女) LV6
+1/60 铁甲(M) LV6
+1/60 铁甲(F) LV6
+1/60 锻造甲(M) LV6
+1/60 锻造甲(F) LV6
+1/60 Wizard袍(M) LV6
+1/60 WizardRobe(F) LV6
+1/60 珍珠甲(M) LV6
+1/60 珍珠甲(F) LV6
+1/60 远古甲(M) LV6
+1/60 远古甲(F) LV6
 
 ;Rare Armours
-1/8000 天甲(男) LV6
-1/8000 天甲(女) LV6
-1/8000 HeavenArcheyRobe(男) LV6
-1/8000 HeavenArcheyRobe(女) LV6
+1/8000 天甲(M) LV6
+1/8000 天甲(F) LV6
+1/8000 HeavenArcheyRobe(M) LV6
+1/8000 HeavenArcheyRobe(F) LV6
 
 ;Weapons
 1/250 JudgementMace  LV6
@@ -1149,12 +1149,12 @@
 1/1 Gold 12500 LV7
 
 ;Potions
-1/1 太阳药水(男) LV7
-1/1 太阳药水(男) LV7
-1/1 太阳药水(男) LV7
-1/2 太阳药水(男) LV7
-1/2 太阳药水(男) LV7
-1/2 太阳药水(男) LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/1 太阳药水(M) LV7
+1/2 太阳药水(M) LV7
+1/2 太阳药水(M) LV7
+1/2 太阳药水(M) LV7
 1/1 大金创药 LV7 
 1/1 大魔法药 LV7
 1/1 大金创药 LV7 
@@ -1173,31 +1173,31 @@
 1/2 特制魔法药 LV7 
 1/2 大魔法药 LV7 
 1/2 特制魔法药 LV7 
-1/30 Impact药(小) LV7 
-1/30 魔法药(小) LV7 
-1/30 道士药(小) LV7 
-1/30 风暴药(小) LV7 
-1/30 StaminaAid(小) LV7 
-1/30 魔法Aid(小) LV7
+1/30 Impact药(S) LV7 
+1/30 魔法药(S) LV7 
+1/30 道士药(S) LV7 
+1/30 风暴药(S) LV7 
+1/30 StaminaAid(S) LV7 
+1/30 魔法Aid(S) LV7
 
 
 ;Armours
-1/60 铁甲(男) LV7
-1/60 铁甲(女) LV7
-1/60 锻造甲(男) LV7
-1/60 锻造甲(女) LV7
-1/60 Wizard袍(男) LV7
-1/60 WizardRobe(女) LV7
-1/60 珍珠甲(男) LV7
-1/60 珍珠甲(女) LV7
-1/60 远古甲(男) LV7
-1/60 远古甲(女) LV7
+1/60 铁甲(M) LV7
+1/60 铁甲(F) LV7
+1/60 锻造甲(M) LV7
+1/60 锻造甲(F) LV7
+1/60 Wizard袍(M) LV7
+1/60 WizardRobe(F) LV7
+1/60 珍珠甲(M) LV7
+1/60 珍珠甲(F) LV7
+1/60 远古甲(M) LV7
+1/60 远古甲(F) LV7
 
 ;Rare Armours
-1/8000 天甲(男) LV7
-1/8000 天甲(女) LV7
-1/8000 HeavenArcheyRobe(男) LV7
-1/8000 HeavenArcheyRobe(女) LV7
+1/8000 天甲(M) LV7
+1/8000 天甲(F) LV7
+1/8000 HeavenArcheyRobe(M) LV7
+1/8000 HeavenArcheyRobe(F) LV7
 
 ;Weapons
 1/250 JudgementMace  LV7
@@ -1340,12 +1340,12 @@
 1/1 Gold 12500 LV8
 
 ;Potions
-1/1 太阳药水(男) LV8
-1/1 太阳药水(男) LV8
-1/1 太阳药水(男) LV8
-1/2 太阳药水(男) LV8
-1/2 太阳药水(男) LV8
-1/2 太阳药水(男) LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/1 太阳药水(M) LV8
+1/2 太阳药水(M) LV8
+1/2 太阳药水(M) LV8
+1/2 太阳药水(M) LV8
 1/1 大金创药 LV8 
 1/1 大魔法药 LV8
 1/1 大金创药 LV8 
@@ -1364,31 +1364,31 @@
 1/2 特制魔法药 LV8 
 1/2 大魔法药 LV8 
 1/2 特制魔法药 LV8 
-1/30 Impact药(小) LV8 
-1/30 魔法药(小) LV8 
-1/30 道士药(小) LV8 
-1/30 风暴药(小) LV8 
-1/30 StaminaAid(小) LV8 
-1/30 魔法Aid(小) LV8
+1/30 Impact药(S) LV8 
+1/30 魔法药(S) LV8 
+1/30 道士药(S) LV8 
+1/30 风暴药(S) LV8 
+1/30 StaminaAid(S) LV8 
+1/30 魔法Aid(S) LV8
 
 
 ;Armours
-1/60 铁甲(男) LV8
-1/60 铁甲(女) LV8
-1/60 锻造甲(男) LV8
-1/60 锻造甲(女) LV8
-1/60 Wizard袍(男) LV8
-1/60 WizardRobe(女) LV8
-1/60 珍珠甲(男) LV8
-1/60 珍珠甲(女) LV8
-1/60 远古甲(男) LV8
-1/60 远古甲(女) LV8
+1/60 铁甲(M) LV8
+1/60 铁甲(F) LV8
+1/60 锻造甲(M) LV8
+1/60 锻造甲(F) LV8
+1/60 Wizard袍(M) LV8
+1/60 WizardRobe(F) LV8
+1/60 珍珠甲(M) LV8
+1/60 珍珠甲(F) LV8
+1/60 远古甲(M) LV8
+1/60 远古甲(F) LV8
 
 ;Rare Armours
-1/8000 天甲(男) LV8
-1/8000 天甲(女) LV8
-1/8000 HeavenArcheyRobe(男) LV8
-1/8000 HeavenArcheyRobe(女) LV8
+1/8000 天甲(M) LV8
+1/8000 天甲(F) LV8
+1/8000 HeavenArcheyRobe(M) LV8
+1/8000 HeavenArcheyRobe(F) LV8
 
 ;Weapons
 1/250 JudgementMace  LV8

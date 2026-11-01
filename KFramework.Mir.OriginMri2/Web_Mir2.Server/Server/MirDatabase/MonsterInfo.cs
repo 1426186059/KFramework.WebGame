@@ -389,6 +389,8 @@ namespace Server.MirDatabase
                         ";Stone",
                     };
 
+                    var dropDir = System.IO.Path.GetDirectoryName(path);
+                    if (!string.IsNullOrEmpty(dropDir)) System.IO.Directory.CreateDirectory(dropDir);
                     File.WriteAllLines(path, contents);
                 }
 

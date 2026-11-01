@@ -14,8 +14,8 @@
 1/2 特制魔法药
 1/1 太阳水
 1/1 太阳水
-1/1 太阳药水(男)
-1/1 太阳药水(男)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
 1/1 BenedictionOil
 1/4 BenedictionOil
 
@@ -42,25 +42,25 @@
 1/400 Stiletto
 
 ;Armour
-1/200 黑虎甲(男)
-1/200 黑虎甲(女)
-1/200 莲甲(男)
-1/200 莲甲(女)
-1/200 Crane甲(男)
-1/200 Crane甲(女)
-1/200 Stealth甲(男)
-1/200 Stealth甲(女)
+1/200 黑虎甲(M)
+1/200 黑虎甲(F)
+1/200 莲甲(M)
+1/200 莲甲(F)
+1/200 Crane甲(M)
+1/200 Crane甲(F)
+1/200 Stealth甲(M)
+1/200 Stealth甲(F)
 
 
 ;Armour Rare
-1/11500 天甲(男)
-1/11500 天甲(女)
-1/11500 HeavenRedArmour(男)
-1/11500 HeavenRedArmour(女)
-1/11500 HeavenGrnArmour(男)
-1/11500 HeavenGrnArmour(女)
-1/1500 HeavenGoldArmour(男)
-1/1500 HeavenGoldArmour(女)
+1/11500 天甲(M)
+1/11500 天甲(F)
+1/11500 HeavenRedArmour(M)
+1/11500 HeavenRedArmour(F)
+1/11500 HeavenGrnArmour(M)
+1/11500 HeavenGrnArmour(F)
+1/1500 HeavenGoldArmour(M)
+1/1500 HeavenGoldArmour(F)
 
 ;Helmets
 1/345 ApesCrown

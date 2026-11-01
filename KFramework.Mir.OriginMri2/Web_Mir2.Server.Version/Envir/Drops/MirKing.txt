@@ -21,13 +21,13 @@
 1/2 特制魔法药 LV1
 1/1 太阳水 LV1
 1/2 太阳水 LV1
-1/1 太阳药水(男) LV1
-1/2 太阳药水(男) LV1
+1/1 太阳药水(M) LV1
+1/2 太阳药水(M) LV1
 
-1/10 Impact药(大) LV1
-1/10 魔法药(大) LV1
-1/10 道士药(大) LV1
-1/10 暴药(大) LV1
+1/10 Impact药(L) LV1
+1/10 魔法药(L) LV1
+1/10 道士药(L) LV1
+1/10 暴药(L) LV1
 
 1/1 BenedictionOil LV1
 1/3 GoldenBenedictionOil LV1
@@ -88,33 +88,33 @@
 
 
 ;Armour
-1/15 Studded甲(男) LV1
-1/15 Studded甲(女) LV1
-1/15 钢甲(男) LV1
-1/15 钢甲(女) LV1
-1/15 龙袍(男) LV1
-1/15 龙袍(女) LV1
-1/15 泰坦甲(男) LV1
-1/15 泰坦甲(女) LV1
-1/15 皇家甲(男) LV1
-1/15 皇家甲(女) LV1
+1/15 Studded甲(M) LV1
+1/15 Studded甲(F) LV1
+1/15 钢甲(M) LV1
+1/15 钢甲(F) LV1
+1/15 龙袍(M) LV1
+1/15 龙袍(F) LV1
+1/15 泰坦甲(M) LV1
+1/15 泰坦甲(F) LV1
+1/15 皇家甲(M) LV1
+1/15 皇家甲(F) LV1
 
 
 ;Armour Rare
-1/1200 天甲(男) LV1
-1/1200 天甲(女) LV1
-1/1200 HeavenArcheyRobe(男) LV1
-1/1200 HeavenArcheyRobe(女) LV1
-1/1500 天甲(男) LV1
-1/1500 天甲(女) LV1
-1/1500 HeavenRedArmour(男) LV1
-1/1500 HeavenRedArmour(女) LV1
-1/1500 HeavenGrnArmour(男) LV1
-1/1500 HeavenGrnArmour(女) LV1
-1/1500 HeavenGoldArmour(男) LV1
-1/1500 HeavenGoldArmour(女) LV1
-1/1700 米尔甲(男) LV1
-1/1700 米尔甲(女) LV1
+1/1200 天甲(M) LV1
+1/1200 天甲(F) LV1
+1/1200 HeavenArcheyRobe(M) LV1
+1/1200 HeavenArcheyRobe(F) LV1
+1/1500 天甲(M) LV1
+1/1500 天甲(F) LV1
+1/1500 HeavenRedArmour(M) LV1
+1/1500 HeavenRedArmour(F) LV1
+1/1500 HeavenGrnArmour(M) LV1
+1/1500 HeavenGrnArmour(F) LV1
+1/1500 HeavenGoldArmour(M) LV1
+1/1500 HeavenGoldArmour(F) LV1
+1/1700 米尔甲(M) LV1
+1/1700 米尔甲(F) LV1
 
 
 ;Helmets
@@ -369,13 +369,13 @@
 1/2 特制魔法药 LV2
 1/1 太阳水 LV2
 1/2 太阳水 LV2
-1/1 太阳药水(男) LV2
-1/2 太阳药水(男) LV2
+1/1 太阳药水(M) LV2
+1/2 太阳药水(M) LV2
 
-1/10 Impact药(大) LV2
-1/10 魔法药(大) LV2
-1/10 道士药(大) LV2
-1/10 暴药(大) LV2
+1/10 Impact药(L) LV2
+1/10 魔法药(L) LV2
+1/10 道士药(L) LV2
+1/10 暴药(L) LV2
 
 1/1 BenedictionOil LV2
 1/3 GoldenBenedictionOil LV2
@@ -436,33 +436,33 @@
 
 
 ;Armour
-1/15 Studded甲(男) LV2
-1/15 Studded甲(女) LV2
-1/15 钢甲(男) LV2
-1/15 钢甲(女) LV2
-1/15 龙袍(男) LV2
-1/15 龙袍(女) LV2
-1/15 泰坦甲(男) LV2
-1/15 泰坦甲(女) LV2
-1/15 皇家甲(男) LV2
-1/15 皇家甲(女) LV2
+1/15 Studded甲(M) LV2
+1/15 Studded甲(F) LV2
+1/15 钢甲(M) LV2
+1/15 钢甲(F) LV2
+1/15 龙袍(M) LV2
+1/15 龙袍(F) LV2
+1/15 泰坦甲(M) LV2
+1/15 泰坦甲(F) LV2
+1/15 皇家甲(M) LV2
+1/15 皇家甲(F) LV2
 
 
 ;Armour Rare
-1/1200 天甲(男) LV2
-1/1200 天甲(女) LV2
-1/1200 HeavenArcheyRobe(男) LV2
-1/1200 HeavenArcheyRobe(女) LV2
-1/1500 天甲(男) LV2
-1/1500 天甲(女) LV2
-1/1500 HeavenRedArmour(男) LV2
-1/1500 HeavenRedArmour(女) LV2
-1/1500 HeavenGrnArmour(男) LV2
-1/1500 HeavenGrnArmour(女) LV2
-1/1500 HeavenGoldArmour(男) LV2
-1/1500 HeavenGoldArmour(女) LV2
-1/1700 米尔甲(男) LV2
-1/1700 米尔甲(女) LV2
+1/1200 天甲(M) LV2
+1/1200 天甲(F) LV2
+1/1200 HeavenArcheyRobe(M) LV2
+1/1200 HeavenArcheyRobe(F) LV2
+1/1500 天甲(M) LV2
+1/1500 天甲(F) LV2
+1/1500 HeavenRedArmour(M) LV2
+1/1500 HeavenRedArmour(F) LV2
+1/1500 HeavenGrnArmour(M) LV2
+1/1500 HeavenGrnArmour(F) LV2
+1/1500 HeavenGoldArmour(M) LV2
+1/1500 HeavenGoldArmour(F) LV2
+1/1700 米尔甲(M) LV2
+1/1700 米尔甲(F) LV2
 
 
 ;Helmets
@@ -701,13 +701,13 @@
 1/2 特制魔法药 LV3
 1/1 太阳水 LV3
 1/2 太阳水 LV3
-1/1 太阳药水(男) LV3
-1/2 太阳药水(男) LV3
+1/1 太阳药水(M) LV3
+1/2 太阳药水(M) LV3
 
-1/10 Impact药(大) LV3
-1/10 魔法药(大) LV3
-1/10 道士药(大) LV3
-1/10 暴药(大) LV3
+1/10 Impact药(L) LV3
+1/10 魔法药(L) LV3
+1/10 道士药(L) LV3
+1/10 暴药(L) LV3
 
 1/1 BenedictionOil LV3
 1/3 GoldenBenedictionOil LV3
@@ -767,33 +767,33 @@
 
 
 ;Armour
-1/15 Studded甲(男) LV3
-1/15 Studded甲(女) LV3
-1/15 钢甲(男) LV3
-1/15 钢甲(女) LV3
-1/15 龙袍(男) LV3
-1/15 龙袍(女) LV3
-1/15 泰坦甲(男) LV3
-1/15 泰坦甲(女) LV3
-1/15 皇家甲(男) LV3
-1/15 皇家甲(女) LV3
+1/15 Studded甲(M) LV3
+1/15 Studded甲(F) LV3
+1/15 钢甲(M) LV3
+1/15 钢甲(F) LV3
+1/15 龙袍(M) LV3
+1/15 龙袍(F) LV3
+1/15 泰坦甲(M) LV3
+1/15 泰坦甲(F) LV3
+1/15 皇家甲(M) LV3
+1/15 皇家甲(F) LV3
 
 
 ;Armour Rare
-1/1200 天甲(男) LV3
-1/1200 天甲(女) LV3
-1/1200 HeavenArcheyRobe(男) LV3
-1/1200 HeavenArcheyRobe(女) LV3
-1/1500 天甲(男) LV3
-1/1500 天甲(女) LV3
-1/1500 HeavenRedArmour(男) LV3
-1/1500 HeavenRedArmour(女) LV3
-1/1500 HeavenGrnArmour(男) LV3
-1/1500 HeavenGrnArmour(女) LV3
-1/1500 HeavenGoldArmour(男) LV3
-1/1500 HeavenGoldArmour(女) LV3
-1/1700 米尔甲(男) LV3
-1/1700 米尔甲(女) LV3
+1/1200 天甲(M) LV3
+1/1200 天甲(F) LV3
+1/1200 HeavenArcheyRobe(M) LV3
+1/1200 HeavenArcheyRobe(F) LV3
+1/1500 天甲(M) LV3
+1/1500 天甲(F) LV3
+1/1500 HeavenRedArmour(M) LV3
+1/1500 HeavenRedArmour(F) LV3
+1/1500 HeavenGrnArmour(M) LV3
+1/1500 HeavenGrnArmour(F) LV3
+1/1500 HeavenGoldArmour(M) LV3
+1/1500 HeavenGoldArmour(F) LV3
+1/1700 米尔甲(M) LV3
+1/1700 米尔甲(F) LV3
 
 
 ;Helmets
@@ -1032,13 +1032,13 @@
 1/2 特制魔法药 LV4
 1/1 太阳水 LV4
 1/2 太阳水 LV4
-1/1 太阳药水(男) LV4
-1/2 太阳药水(男) LV4
+1/1 太阳药水(M) LV4
+1/2 太阳药水(M) LV4
 
-1/10 Impact药(大) LV4
-1/10 魔法药(大) LV4
-1/10 道士药(大) LV4
-1/10 暴药(大) LV4
+1/10 Impact药(L) LV4
+1/10 魔法药(L) LV4
+1/10 道士药(L) LV4
+1/10 暴药(L) LV4
 
 1/1 BenedictionOil LV4
 1/3 GoldenBenedictionOil LV4
@@ -1099,33 +1099,33 @@
 
 
 ;Armour
-1/15 Studded甲(男) LV4
-1/15 Studded甲(女) LV4
-1/15 钢甲(男) LV4
-1/15 钢甲(女) LV4
-1/15 龙袍(男) LV4
-1/15 龙袍(女) LV4
-1/15 泰坦甲(男) LV4
-1/15 泰坦甲(女) LV4
-1/15 皇家甲(男) LV4
-1/15 皇家甲(女) LV4
+1/15 Studded甲(M) LV4
+1/15 Studded甲(F) LV4
+1/15 钢甲(M) LV4
+1/15 钢甲(F) LV4
+1/15 龙袍(M) LV4
+1/15 龙袍(F) LV4
+1/15 泰坦甲(M) LV4
+1/15 泰坦甲(F) LV4
+1/15 皇家甲(M) LV4
+1/15 皇家甲(F) LV4
 
 
 ;Armour Rare
-1/1200 天甲(男) LV4
-1/1200 天甲(女) LV4
-1/1200 HeavenArcheyRobe(男) LV4
-1/1200 HeavenArcheyRobe(女) LV4
-1/1500 天甲(男) LV4
-1/1500 天甲(女) LV4
-1/1500 HeavenRedArmour(男) LV4
-1/1500 HeavenRedArmour(女) LV4
-1/1500 HeavenGrnArmour(男) LV4
-1/1500 HeavenGrnArmour(女) LV4
-1/1500 HeavenGoldArmour(男) LV4
-1/1500 HeavenGoldArmour(女) LV4
-1/1700 米尔甲(男) LV4
-1/1700 米尔甲(女) LV4
+1/1200 天甲(M) LV4
+1/1200 天甲(F) LV4
+1/1200 HeavenArcheyRobe(M) LV4
+1/1200 HeavenArcheyRobe(F) LV4
+1/1500 天甲(M) LV4
+1/1500 天甲(F) LV4
+1/1500 HeavenRedArmour(M) LV4
+1/1500 HeavenRedArmour(F) LV4
+1/1500 HeavenGrnArmour(M) LV4
+1/1500 HeavenGrnArmour(F) LV4
+1/1500 HeavenGoldArmour(M) LV4
+1/1500 HeavenGoldArmour(F) LV4
+1/1700 米尔甲(M) LV4
+1/1700 米尔甲(F) LV4
 
 
 ;Helmets
@@ -1364,13 +1364,13 @@
 1/2 特制魔法药 LV5
 1/1 太阳水 LV5
 1/2 太阳水 LV5
-1/1 太阳药水(男) LV5
-1/2 太阳药水(男) LV5
+1/1 太阳药水(M) LV5
+1/2 太阳药水(M) LV5
 
-1/10 Impact药(大) LV5
-1/10 魔法药(大) LV5
-1/10 道士药(大) LV5
-1/10 暴药(大) LV5
+1/10 Impact药(L) LV5
+1/10 魔法药(L) LV5
+1/10 道士药(L) LV5
+1/10 暴药(L) LV5
 
 1/1 BenedictionOil LV5
 1/3 GoldenBenedictionOil LV5
@@ -1431,33 +1431,33 @@
 
 
 ;Armour
-1/15 Studded甲(男) LV5
-1/15 Studded甲(女) LV5
-1/15 钢甲(男) LV5
-1/15 钢甲(女) LV5
-1/15 龙袍(男) LV5
-1/15 龙袍(女) LV5
-1/15 泰坦甲(男) LV5
-1/15 泰坦甲(女) LV5
-1/15 皇家甲(男) LV5
-1/15 皇家甲(女) LV5
+1/15 Studded甲(M) LV5
+1/15 Studded甲(F) LV5
+1/15 钢甲(M) LV5
+1/15 钢甲(F) LV5
+1/15 龙袍(M) LV5
+1/15 龙袍(F) LV5
+1/15 泰坦甲(M) LV5
+1/15 泰坦甲(F) LV5
+1/15 皇家甲(M) LV5
+1/15 皇家甲(F) LV5
 
 
 ;Armour Rare
-1/1200 天甲(男) LV5
-1/1200 天甲(女) LV5
-1/1200 HeavenArcheyRobe(男) LV5
-1/1200 HeavenArcheyRobe(女) LV5
-1/1500 天甲(男) LV5
-1/1500 天甲(女) LV5
-1/1500 HeavenRedArmour(男) LV5
-1/1500 HeavenRedArmour(女) LV5
-1/1500 HeavenGrnArmour(男) LV5
-1/1500 HeavenGrnArmour(女) LV5
-1/1500 HeavenGoldArmour(男) LV5
-1/1500 HeavenGoldArmour(女) LV5
-1/1700 米尔甲(男) LV5
-1/1700 米尔甲(女) LV5
+1/1200 天甲(M) LV5
+1/1200 天甲(F) LV5
+1/1200 HeavenArcheyRobe(M) LV5
+1/1200 HeavenArcheyRobe(F) LV5
+1/1500 天甲(M) LV5
+1/1500 天甲(F) LV5
+1/1500 HeavenRedArmour(M) LV5
+1/1500 HeavenRedArmour(F) LV5
+1/1500 HeavenGrnArmour(M) LV5
+1/1500 HeavenGrnArmour(F) LV5
+1/1500 HeavenGoldArmour(M) LV5
+1/1500 HeavenGoldArmour(F) LV5
+1/1700 米尔甲(M) LV5
+1/1700 米尔甲(F) LV5
 
 
 ;Helmets
@@ -1696,13 +1696,13 @@
 1/2 特制魔法药 LV6
 1/1 太阳水 LV6
 1/2 太阳水 LV6
-1/1 太阳药水(男) LV6
-1/2 太阳药水(男) LV6
+1/1 太阳药水(M) LV6
+1/2 太阳药水(M) LV6
 
-1/10 Impact药(大) LV6
-1/10 魔法药(大) LV6
-1/10 道士药(大) LV6
-1/10 暴药(大) LV6
+1/10 Impact药(L) LV6
+1/10 魔法药(L) LV6
+1/10 道士药(L) LV6
+1/10 暴药(L) LV6
 
 1/1 BenedictionOil LV6
 1/3 GoldenBenedictionOil LV6
@@ -1763,33 +1763,33 @@
 
 
 ;Armour
-1/15 Studded甲(男) LV6
-1/15 Studded甲(女) LV6
-1/15 钢甲(男) LV6
-1/15 钢甲(女) LV6
-1/15 龙袍(男) LV6
-1/15 龙袍(女) LV6
-1/15 泰坦甲(男) LV6
-1/15 泰坦甲(女) LV6
-1/15 皇家甲(男) LV6
-1/15 皇家甲(女) LV6
+1/15 Studded甲(M) LV6
+1/15 Studded甲(F) LV6
+1/15 钢甲(M) LV6
+1/15 钢甲(F) LV6
+1/15 龙袍(M) LV6
+1/15 龙袍(F) LV6
+1/15 泰坦甲(M) LV6
+1/15 泰坦甲(F) LV6
+1/15 皇家甲(M) LV6
+1/15 皇家甲(F) LV6
 
 
 ;Armour Rare
-1/1200 天甲(男) LV6
-1/1200 天甲(女) LV6
-1/1200 HeavenArcheyRobe(男) LV6
-1/1200 HeavenArcheyRobe(女) LV6
-1/1500 天甲(男) LV6
-1/1500 天甲(女) LV6
-1/1500 HeavenRedArmour(男) LV6
-1/1500 HeavenRedArmour(女) LV6
-1/1500 HeavenGrnArmour(男) LV6
-1/1500 HeavenGrnArmour(女) LV6
-1/1500 HeavenGoldArmour(男) LV6
-1/1500 HeavenGoldArmour(女) LV6
-1/1700 米尔甲(男) LV6
-1/1700 米尔甲(女) LV6
+1/1200 天甲(M) LV6
+1/1200 天甲(F) LV6
+1/1200 HeavenArcheyRobe(M) LV6
+1/1200 HeavenArcheyRobe(F) LV6
+1/1500 天甲(M) LV6
+1/1500 天甲(F) LV6
+1/1500 HeavenRedArmour(M) LV6
+1/1500 HeavenRedArmour(F) LV6
+1/1500 HeavenGrnArmour(M) LV6
+1/1500 HeavenGrnArmour(F) LV6
+1/1500 HeavenGoldArmour(M) LV6
+1/1500 HeavenGoldArmour(F) LV6
+1/1700 米尔甲(M) LV6
+1/1700 米尔甲(F) LV6
 
 
 ;Helmets
@@ -2028,13 +2028,13 @@
 1/2 特制魔法药 LV7
 1/1 太阳水 LV7
 1/2 太阳水 LV7
-1/1 太阳药水(男) LV7
-1/2 太阳药水(男) LV7
+1/1 太阳药水(M) LV7
+1/2 太阳药水(M) LV7
 
-1/10 Impact药(大) LV7
-1/10 魔法药(大) LV7
-1/10 道士药(大) LV7
-1/10 暴药(大) LV7
+1/10 Impact药(L) LV7
+1/10 魔法药(L) LV7
+1/10 道士药(L) LV7
+1/10 暴药(L) LV7
 
 1/1 BenedictionOil LV7
 1/3 GoldenBenedictionOil LV7
@@ -2095,33 +2095,33 @@
 
 
 ;Armour
-1/15 Studded甲(男) LV7
-1/15 Studded甲(女) LV7
-1/15 钢甲(男) LV7
-1/15 钢甲(女) LV7
-1/15 龙袍(男) LV7
-1/15 龙袍(女) LV7
-1/15 泰坦甲(男) LV7
-1/15 泰坦甲(女) LV7
-1/15 皇家甲(男) LV7
-1/15 皇家甲(女) LV7
+1/15 Studded甲(M) LV7
+1/15 Studded甲(F) LV7
+1/15 钢甲(M) LV7
+1/15 钢甲(F) LV7
+1/15 龙袍(M) LV7
+1/15 龙袍(F) LV7
+1/15 泰坦甲(M) LV7
+1/15 泰坦甲(F) LV7
+1/15 皇家甲(M) LV7
+1/15 皇家甲(F) LV7
 
 
 ;Armour Rare
-1/1200 天甲(男) LV7
-1/1200 天甲(女) LV7
-1/1200 HeavenArcheyRobe(男) LV7
-1/1200 HeavenArcheyRobe(女) LV7
-1/1500 天甲(男) LV7
-1/1500 天甲(女) LV7
-1/1500 HeavenRedArmour(男) LV7
-1/1500 HeavenRedArmour(女) LV7
-1/1500 HeavenGrnArmour(男) LV7
-1/1500 HeavenGrnArmour(女) LV7
-1/1500 HeavenGoldArmour(男) LV7
-1/1500 HeavenGoldArmour(女) LV7
-1/1700 米尔甲(男) LV7
-1/1700 米尔甲(女) LV7
+1/1200 天甲(M) LV7
+1/1200 天甲(F) LV7
+1/1200 HeavenArcheyRobe(M) LV7
+1/1200 HeavenArcheyRobe(F) LV7
+1/1500 天甲(M) LV7
+1/1500 天甲(F) LV7
+1/1500 HeavenRedArmour(M) LV7
+1/1500 HeavenRedArmour(F) LV7
+1/1500 HeavenGrnArmour(M) LV7
+1/1500 HeavenGrnArmour(F) LV7
+1/1500 HeavenGoldArmour(M) LV7
+1/1500 HeavenGoldArmour(F) LV7
+1/1700 米尔甲(M) LV7
+1/1700 米尔甲(F) LV7
 
 
 ;Helmets
@@ -2361,13 +2361,13 @@
 1/2 特制魔法药 LV8
 1/1 太阳水 LV8
 1/2 太阳水 LV8
-1/1 太阳药水(男) LV8
-1/2 太阳药水(男) LV8
+1/1 太阳药水(M) LV8
+1/2 太阳药水(M) LV8
 
-1/10 Impact药(大) LV8
-1/10 魔法药(大) LV8
-1/10 道士药(大) LV8
-1/10 暴药(大) LV8
+1/10 Impact药(L) LV8
+1/10 魔法药(L) LV8
+1/10 道士药(L) LV8
+1/10 暴药(L) LV8
 
 1/1 BenedictionOil LV8
 1/3 GoldenBenedictionOil LV8
@@ -2428,33 +2428,33 @@
 
 
 ;Armour
-1/15 Studded甲(男) LV8
-1/15 Studded甲(女) LV8
-1/15 钢甲(男) LV8
-1/15 钢甲(女) LV8
-1/15 龙袍(男) LV8
-1/15 龙袍(女) LV8
-1/15 泰坦甲(男) LV8
-1/15 泰坦甲(女) LV8
-1/15 皇家甲(男) LV8
-1/15 皇家甲(女) LV8
+1/15 Studded甲(M) LV8
+1/15 Studded甲(F) LV8
+1/15 钢甲(M) LV8
+1/15 钢甲(F) LV8
+1/15 龙袍(M) LV8
+1/15 龙袍(F) LV8
+1/15 泰坦甲(M) LV8
+1/15 泰坦甲(F) LV8
+1/15 皇家甲(M) LV8
+1/15 皇家甲(F) LV8
 
 
 ;Armour Rare
-1/1200 天甲(男) LV8
-1/1200 天甲(女) LV8
-1/1200 HeavenArcheyRobe(男) LV8
-1/1200 HeavenArcheyRobe(女) LV8
-1/1500 天甲(男) LV8
-1/1500 天甲(女) LV8
-1/1500 HeavenRedArmour(男) LV8
-1/1500 HeavenRedArmour(女) LV8
-1/1500 HeavenGrnArmour(男) LV8
-1/1500 HeavenGrnArmour(女) LV8
-1/1500 HeavenGoldArmour(男) LV8
-1/1500 HeavenGoldArmour(女) LV8
-1/1700 米尔甲(男) LV8
-1/1700 米尔甲(女) LV8
+1/1200 天甲(M) LV8
+1/1200 天甲(F) LV8
+1/1200 HeavenArcheyRobe(M) LV8
+1/1200 HeavenArcheyRobe(F) LV8
+1/1500 天甲(M) LV8
+1/1500 天甲(F) LV8
+1/1500 HeavenRedArmour(M) LV8
+1/1500 HeavenRedArmour(F) LV8
+1/1500 HeavenGrnArmour(M) LV8
+1/1500 HeavenGrnArmour(F) LV8
+1/1500 HeavenGoldArmour(M) LV8
+1/1500 HeavenGoldArmour(F) LV8
+1/1700 米尔甲(M) LV8
+1/1700 米尔甲(F) LV8
 
 
 ;Helmets

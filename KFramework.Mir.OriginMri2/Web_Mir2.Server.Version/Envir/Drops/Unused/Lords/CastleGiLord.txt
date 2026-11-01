@@ -9,8 +9,8 @@
 1/1 特制魔法药
 1/1 太阳水
 1/1 太阳水
-1/1 太阳药水(男)
-1/1 太阳药水(男)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
 
 1/1 太阳水
 1/1 太阳水
@@ -19,9 +19,9 @@
 1/1 太阳水
 1/2 太阳水
 
-1/100 Impact药(大)
-1/100 魔法药(大)
-1/100 道士药(大)
+1/100 Impact药(L)
+1/100 魔法药(L)
+1/100 道士药(L)
 
 1/1 BenedictionOil
 1/10 GoldenBenedictionOil
@@ -62,36 +62,36 @@
 
 
 ;Armour
-1/30 Studded甲(男)
-1/30 Studded甲(女)
-1/30 钢甲(男)
-1/30 钢甲(女)
-1/30 龙袍(男)
-1/30 龙袍(女)
-1/30 泰坦甲(男)
-1/30 泰坦甲(女)
-1/30 皇家甲(男)
-1/30 皇家甲(女)
-1/700 TagandaRobe(男)
-1/700 TagandaRobe(女) 
-1/700 TagandaCloak(男)
-1/700 TagandaCloak(女)
-1/700 TagandaArmour(男)
-1/700 TagandaArmour(女)
-1/1000 天甲(男)
-1/1000 天甲(女)
-1/1000 HeavenArcheyRobe(男)
-1/1000 HeavenArcheyRobe(女)
-1/1200 HeavenGrnArmour(男)
-1/1200 HeavenGrnArmour(女)
-1/1200 HeavenRedArmour(男)
-1/1200 HeavenRedArmour(女)
-1/1200 天甲(男)
-1/1200 天甲(女)
-1/1200 HeavenGoldArmour(男)
-1/1200 HeavenGoldArmour(女)
-1/6000 LordSlayerArmour(男)
-1/6000 LordSlayerArmour(女)
+1/30 Studded甲(M)
+1/30 Studded甲(F)
+1/30 钢甲(M)
+1/30 钢甲(F)
+1/30 龙袍(M)
+1/30 龙袍(F)
+1/30 泰坦甲(M)
+1/30 泰坦甲(F)
+1/30 皇家甲(M)
+1/30 皇家甲(F)
+1/700 TagandaRobe(M)
+1/700 TagandaRobe(F) 
+1/700 TagandaCloak(M)
+1/700 TagandaCloak(F)
+1/700 TagandaArmour(M)
+1/700 TagandaArmour(F)
+1/1000 天甲(M)
+1/1000 天甲(F)
+1/1000 HeavenArcheyRobe(M)
+1/1000 HeavenArcheyRobe(F)
+1/1200 HeavenGrnArmour(M)
+1/1200 HeavenGrnArmour(F)
+1/1200 HeavenRedArmour(M)
+1/1200 HeavenRedArmour(F)
+1/1200 天甲(M)
+1/1200 天甲(F)
+1/1200 HeavenGoldArmour(M)
+1/1200 HeavenGoldArmour(F)
+1/6000 LordSlayerArmour(M)
+1/6000 LordSlayerArmour(F)
 
 ;Helmets
 1/55 道Coronet

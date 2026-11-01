@@ -24,20 +24,20 @@
 1/6000 VanguardBlades
 
 ;Armour
-1/500 轻皮革甲(男)
-1/500 轻皮革甲(女)
-1/600 Heavy甲(男) 
-1/600 Heavy甲(女) 
-1/600 魔法袍(男) 
-1/600 魔法袍(女) 
-1/600 魂甲(男) 
-1/600 魂甲(女) 
-1/600 圣物甲(男)
-1/600 圣物甲(女)
+1/500 轻皮革甲(M)
+1/500 轻皮革甲(F)
+1/600 Heavy甲(M) 
+1/600 Heavy甲(F) 
+1/600 魔法袍(M) 
+1/600 魔法袍(F) 
+1/600 魂甲(M) 
+1/600 魂甲(F) 
+1/600 圣物甲(M)
+1/600 圣物甲(F)
 
 ;Armour Rare
-1/7600 VanguardArmour(男)
-1/7600 VanguardArmour(女)
+1/7600 VanguardArmour(M)
+1/7600 VanguardArmour(F)
 
 ;Helmets Rare
 1/6600 VanguardHelmet

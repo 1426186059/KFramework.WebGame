@@ -63,7 +63,7 @@ Scimitar
 Candle
 DungeonEscape
 RandomTeleport
-基础布衣(男)
-基础布衣(女)
-轻甲(男)
-轻甲(女)
+基础布衣(M)
+基础布衣(F)
+轻甲(M)
+轻甲(F)

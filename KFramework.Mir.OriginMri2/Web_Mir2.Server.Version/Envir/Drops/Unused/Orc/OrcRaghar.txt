@@ -34,20 +34,20 @@
 1/1800 扇之Crane LV1
 
 ;Armour
-1/500 黑虎甲(男) LV1
-1/500 黑虎甲(女) LV1
-1/500 莲甲(男) LV1
-1/500 莲甲(女) LV1
-1/500 Crane甲(男) LV1
-1/500 Crane甲(女) LV1
-1/750 红暗甲(男) LV1
-1/750 红暗甲(女) LV1
-1/750 蓝暗甲(男) LV1
-1/750 蓝暗甲(女) LV1
-1/750 绿暗甲(男) LV1
-1/750 绿暗甲(女) LV1
-1/750 鳞d甲(男) LV1
-1/750 鳞d甲(女) LV1
+1/500 黑虎甲(M) LV1
+1/500 黑虎甲(F) LV1
+1/500 莲甲(M) LV1
+1/500 莲甲(F) LV1
+1/500 Crane甲(M) LV1
+1/500 Crane甲(F) LV1
+1/750 红暗甲(M) LV1
+1/750 红暗甲(F) LV1
+1/750 蓝暗甲(M) LV1
+1/750 蓝暗甲(F) LV1
+1/750 绿暗甲(M) LV1
+1/750 绿暗甲(F) LV1
+1/750 鳞d甲(M) LV1
+1/750 鳞d甲(F) LV1
 
 ;Helmets
 1/40 巨盔 LV1
@@ -99,12 +99,12 @@
 
 
 ;Stone
-1/20 道术石(特大) LV1
-1/20 MC石(特大) LV1
-1/20 SC石(特大) LV1
-1/35 ACStone(特大) LV1
+1/20 道术石(XL) LV1
+1/20 MC石(XL) LV1
+1/20 SC石(XL) LV1
+1/35 ACStone(XL) LV1
 1/40 HolyAcStone LV1
-1/35 AMCStone(特大) LV1
+1/35 AMCStone(XL) LV1
 1/40 HolyAmcStone LV1
 
 ;Gems/Orbs
@@ -196,20 +196,20 @@
 1/1800 扇之Crane LV2
 
 ;Armour
-1/500 黑虎甲(男) LV2
-1/500 黑虎甲(女) LV2
-1/500 莲甲(男) LV2
-1/500 莲甲(女) LV2
-1/500 Crane甲(男) LV2
-1/500 Crane甲(女) LV2
-1/750 红暗甲(男) LV2
-1/750 红暗甲(女) LV2
-1/750 蓝暗甲(男) LV2
-1/750 蓝暗甲(女) LV2
-1/750 绿暗甲(男) LV2
-1/750 绿暗甲(女) LV2
-1/750 鳞d甲(男) LV2
-1/750 鳞d甲(女) LV2
+1/500 黑虎甲(M) LV2
+1/500 黑虎甲(F) LV2
+1/500 莲甲(M) LV2
+1/500 莲甲(F) LV2
+1/500 Crane甲(M) LV2
+1/500 Crane甲(F) LV2
+1/750 红暗甲(M) LV2
+1/750 红暗甲(F) LV2
+1/750 蓝暗甲(M) LV2
+1/750 蓝暗甲(F) LV2
+1/750 绿暗甲(M) LV2
+1/750 绿暗甲(F) LV2
+1/750 鳞d甲(M) LV2
+1/750 鳞d甲(F) LV2
 
 ;Helmets
 1/40 巨盔 LV2
@@ -261,12 +261,12 @@
 
 
 ;Stone
-1/20 道术石(特大) LV2
-1/20 MC石(特大) LV2
-1/20 SC石(特大) LV2
-1/35 ACStone(特大) LV2
+1/20 道术石(XL) LV2
+1/20 MC石(XL) LV2
+1/20 SC石(XL) LV2
+1/35 ACStone(XL) LV2
 1/40 HolyAcStone LV2
-1/35 AMCStone(特大) LV2
+1/35 AMCStone(XL) LV2
 1/40 HolyAmcStone LV2
 
 ;Gems/Orbs
@@ -359,20 +359,20 @@
 1/1800 扇之Crane LV3
 
 ;Armour
-1/500 黑虎甲(男) LV3
-1/500 黑虎甲(女) LV3
-1/500 莲甲(男) LV3
-1/500 莲甲(女) LV3
-1/500 Crane甲(男) LV3
-1/500 Crane甲(女) LV3
-1/750 红暗甲(男) LV3
-1/750 红暗甲(女) LV3
-1/750 蓝暗甲(男) LV3
-1/750 蓝暗甲(女) LV3
-1/750 绿暗甲(男) LV3
-1/750 鳞d甲(男) LV3
-1/750 鳞d甲(女) LV3
-1/750 绿暗甲(女) LV3
+1/500 黑虎甲(M) LV3
+1/500 黑虎甲(F) LV3
+1/500 莲甲(M) LV3
+1/500 莲甲(F) LV3
+1/500 Crane甲(M) LV3
+1/500 Crane甲(F) LV3
+1/750 红暗甲(M) LV3
+1/750 红暗甲(F) LV3
+1/750 蓝暗甲(M) LV3
+1/750 蓝暗甲(F) LV3
+1/750 绿暗甲(M) LV3
+1/750 鳞d甲(M) LV3
+1/750 鳞d甲(F) LV3
+1/750 绿暗甲(F) LV3
 
 ;Helmets
 1/40 巨盔 LV3
@@ -424,12 +424,12 @@
 
 
 ;Stone
-1/20 道术石(特大) LV3
-1/20 MC石(特大) LV3
-1/20 SC石(特大) LV3
-1/35 ACStone(特大) LV3
+1/20 道术石(XL) LV3
+1/20 MC石(XL) LV3
+1/20 SC石(XL) LV3
+1/35 ACStone(XL) LV3
 1/40 HolyAcStone LV3
-1/35 AMCStone(特大) LV3
+1/35 AMCStone(XL) LV3
 1/40 HolyAmcStone LV3
 
 ;Gems/Orbs
@@ -521,20 +521,20 @@
 1/1800 扇之Crane LV4
 
 ;Armour
-1/500 黑虎甲(男) LV4
-1/500 黑虎甲(女) LV4
-1/500 莲甲(男) LV4
-1/500 莲甲(女) LV4
-1/500 Crane甲(男) LV4
-1/500 Crane甲(女) LV4
-1/750 红暗甲(男) LV4
-1/750 红暗甲(女) LV4
-1/750 蓝暗甲(男) LV4
-1/750 蓝暗甲(女) LV4
-1/750 绿暗甲(男) LV4
-1/750 绿暗甲(女) LV4
-1/750 鳞d甲(男) LV4
-1/750 鳞d甲(女) LV4
+1/500 黑虎甲(M) LV4
+1/500 黑虎甲(F) LV4
+1/500 莲甲(M) LV4
+1/500 莲甲(F) LV4
+1/500 Crane甲(M) LV4
+1/500 Crane甲(F) LV4
+1/750 红暗甲(M) LV4
+1/750 红暗甲(F) LV4
+1/750 蓝暗甲(M) LV4
+1/750 蓝暗甲(F) LV4
+1/750 绿暗甲(M) LV4
+1/750 绿暗甲(F) LV4
+1/750 鳞d甲(M) LV4
+1/750 鳞d甲(F) LV4
 
 ;Helmets
 1/40 巨盔 LV4
@@ -586,12 +586,12 @@
 
 
 ;Stone
-1/20 道术石(特大) LV4
-1/20 MC石(特大) LV4
-1/20 SC石(特大) LV4
-1/35 ACStone(特大) LV4
+1/20 道术石(XL) LV4
+1/20 MC石(XL) LV4
+1/20 SC石(XL) LV4
+1/35 ACStone(XL) LV4
 1/40 HolyAcStone LV4
-1/35 AMCStone(特大) LV4
+1/35 AMCStone(XL) LV4
 1/40 HolyAmcStone LV4
 
 ;Gems/Orbs
@@ -684,20 +684,20 @@
 1/1800 扇之Crane LV5
 
 ;Armour
-1/500 黑虎甲(男) LV5
-1/500 黑虎甲(女) LV5
-1/500 莲甲(男) LV5
-1/500 莲甲(女) LV5
-1/500 Crane甲(男) LV5
-1/500 Crane甲(女) LV5
-1/750 红暗甲(男) LV5
-1/750 红暗甲(女) LV5
-1/750 蓝暗甲(男) LV5
-1/750 蓝暗甲(女) LV5
-1/750 绿暗甲(男) LV5
-1/750 绿暗甲(女) LV5
-1/750 鳞d甲(男) LV5
-1/750 鳞d甲(女) LV5
+1/500 黑虎甲(M) LV5
+1/500 黑虎甲(F) LV5
+1/500 莲甲(M) LV5
+1/500 莲甲(F) LV5
+1/500 Crane甲(M) LV5
+1/500 Crane甲(F) LV5
+1/750 红暗甲(M) LV5
+1/750 红暗甲(F) LV5
+1/750 蓝暗甲(M) LV5
+1/750 蓝暗甲(F) LV5
+1/750 绿暗甲(M) LV5
+1/750 绿暗甲(F) LV5
+1/750 鳞d甲(M) LV5
+1/750 鳞d甲(F) LV5
 
 ;Helmets
 1/40 巨盔 LV5
@@ -749,12 +749,12 @@
 
 
 ;Stone
-1/20 道术石(特大) LV5
-1/20 MC石(特大) LV5
-1/20 SC石(特大) LV5
-1/35 ACStone(特大) LV5
+1/20 道术石(XL) LV5
+1/20 MC石(XL) LV5
+1/20 SC石(XL) LV5
+1/35 ACStone(XL) LV5
 1/40 HolyAcStone LV5
-1/35 AMCStone(特大) LV5
+1/35 AMCStone(XL) LV5
 1/40 HolyAmcStone LV5
 
 ;Gems/Orbs
@@ -847,20 +847,20 @@
 1/1800 扇之Crane LV6
 
 ;Armour
-1/500 黑虎甲(男) LV6
-1/500 黑虎甲(女) LV6
-1/500 莲甲(男) LV6
-1/500 莲甲(女) LV6
-1/500 Crane甲(男) LV6
-1/500 Crane甲(女) LV6
-1/750 红暗甲(男) LV6
-1/750 红暗甲(女) LV6
-1/750 蓝暗甲(男) LV6
-1/750 蓝暗甲(女) LV6
-1/750 绿暗甲(男) LV6
-1/750 绿暗甲(女) LV6
-1/750 鳞d甲(男) LV6
-1/750 鳞d甲(女) LV6
+1/500 黑虎甲(M) LV6
+1/500 黑虎甲(F) LV6
+1/500 莲甲(M) LV6
+1/500 莲甲(F) LV6
+1/500 Crane甲(M) LV6
+1/500 Crane甲(F) LV6
+1/750 红暗甲(M) LV6
+1/750 红暗甲(F) LV6
+1/750 蓝暗甲(M) LV6
+1/750 蓝暗甲(F) LV6
+1/750 绿暗甲(M) LV6
+1/750 绿暗甲(F) LV6
+1/750 鳞d甲(M) LV6
+1/750 鳞d甲(F) LV6
 
 ;Helmets
 1/40 巨盔 LV6
@@ -912,12 +912,12 @@
 
 
 ;Stone
-1/20 道术石(特大) LV6
-1/20 MC石(特大) LV6
-1/20 SC石(特大) LV6
-1/35 ACStone(特大) LV6
+1/20 道术石(XL) LV6
+1/20 MC石(XL) LV6
+1/20 SC石(XL) LV6
+1/35 ACStone(XL) LV6
 1/40 HolyAcStone LV6
-1/35 AMCStone(特大) LV6
+1/35 AMCStone(XL) LV6
 1/40 HolyAmcStone LV6
 
 ;Gems/Orbs
@@ -1010,20 +1010,20 @@
 1/1800 扇之Crane LV7
 
 ;Armour
-1/500 黑虎甲(男) LV7
-1/500 黑虎甲(女) LV7
-1/500 莲甲(男) LV7
-1/500 莲甲(女) LV7
-1/500 Crane甲(男) LV7
-1/500 Crane甲(女) LV7
-1/750 红暗甲(男) LV7
-1/750 红暗甲(女) LV7
-1/750 蓝暗甲(男) LV7
-1/750 蓝暗甲(女) LV7
-1/750 鳞d甲(男) LV7
-1/750 鳞d甲(女) LV7
-1/750 绿暗甲(男) LV7
-1/750 绿暗甲(女) LV7
+1/500 黑虎甲(M) LV7
+1/500 黑虎甲(F) LV7
+1/500 莲甲(M) LV7
+1/500 莲甲(F) LV7
+1/500 Crane甲(M) LV7
+1/500 Crane甲(F) LV7
+1/750 红暗甲(M) LV7
+1/750 红暗甲(F) LV7
+1/750 蓝暗甲(M) LV7
+1/750 蓝暗甲(F) LV7
+1/750 鳞d甲(M) LV7
+1/750 鳞d甲(F) LV7
+1/750 绿暗甲(M) LV7
+1/750 绿暗甲(F) LV7
 
 ;Helmets
 1/40 巨盔 LV7
@@ -1075,12 +1075,12 @@
 
 
 ;Stone
-1/20 道术石(特大) LV7
-1/20 MC石(特大) LV7
-1/20 SC石(特大) LV7
-1/35 ACStone(特大) LV7
+1/20 道术石(XL) LV7
+1/20 MC石(XL) LV7
+1/20 SC石(XL) LV7
+1/35 ACStone(XL) LV7
 1/40 HolyAcStone LV7
-1/35 AMCStone(特大) LV7
+1/35 AMCStone(XL) LV7
 1/40 HolyAmcStone LV7
 
 ;Gems/Orbs
@@ -1173,20 +1173,20 @@
 1/1800 扇之Crane LV8
 
 ;Armour
-1/500 黑虎甲(男) LV8
-1/500 黑虎甲(女) LV8
-1/500 莲甲(男) LV8
-1/500 莲甲(女) LV8
-1/500 Crane甲(男) LV8
-1/500 Crane甲(女) LV8
-1/750 红暗甲(男) LV8
-1/750 红暗甲(女) LV8
-1/750 蓝暗甲(男) LV8
-1/750 蓝暗甲(女) LV8
-1/750 绿暗甲(男) LV8
-1/750 绿暗甲(女) LV8
-1/750 鳞d甲(男) LV8
-1/750 鳞d甲(女) LV8
+1/500 黑虎甲(M) LV8
+1/500 黑虎甲(F) LV8
+1/500 莲甲(M) LV8
+1/500 莲甲(F) LV8
+1/500 Crane甲(M) LV8
+1/500 Crane甲(F) LV8
+1/750 红暗甲(M) LV8
+1/750 红暗甲(F) LV8
+1/750 蓝暗甲(M) LV8
+1/750 蓝暗甲(F) LV8
+1/750 绿暗甲(M) LV8
+1/750 绿暗甲(F) LV8
+1/750 鳞d甲(M) LV8
+1/750 鳞d甲(F) LV8
 
 ;Helmets
 1/40 巨盔 LV8
@@ -1238,12 +1238,12 @@
 
 
 ;Stone
-1/20 道术石(特大) LV8
-1/20 MC石(特大) LV8
-1/20 SC石(特大) LV8
-1/35 ACStone(特大) LV8
+1/20 道术石(XL) LV8
+1/20 MC石(XL) LV8
+1/20 SC石(XL) LV8
+1/35 ACStone(XL) LV8
 1/40 HolyAcStone LV8
-1/35 AMCStone(特大) LV8
+1/35 AMCStone(XL) LV8
 1/40 HolyAmcStone LV8
 
 ;Gems/Orbs

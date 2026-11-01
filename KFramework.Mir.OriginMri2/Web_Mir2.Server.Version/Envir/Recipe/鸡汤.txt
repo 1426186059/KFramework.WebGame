@@ -8,4 +8,4 @@ Gold 1000
 [Ingredients]
 Chicken
 老山参
-StaminaAid(小)
+StaminaAid(S)

@@ -287,7 +287,8 @@ namespace Client.MirScenes.Dialogs
         public override void Show()
         {
             var map = GameScene.Scene.MapControl;
-            if (map.BigMap <= 0) return;
+            // PC 地图 BigMap 多为 0，回退到瓦片 img（小地图已验证可用）也能开大地图窗口
+            if (map.BigMap <= 0 && map.MapImg <= 0) return;
 
             SearchTextBox.Enabled = false;
 
@@ -556,16 +557,18 @@ namespace Client.MirScenes.Dialogs
         private KFramework.MonoGame.Texture2D _bigMapTexture;
         private int _bigMapLoadedIdx = -1;
 
+        // 大地图整图：原始传奇中与小地图共用 assets/resource/minimap/{img}.jpg（CDN 经核查无 bigmap/ 目录），
+        // 故直接取 minimap 整图；img 为 MapImg（当前地图）或 BigMap（其它地图）。
         private async void LoadBigMapTexture(int img)
         {
             try
             {
-                var tex = await Mir2OriginResource.GetBigMapTextureAsync(img, DXManager.GDevice);
+                var tex = await Mir2OriginResource.GetMinimapTextureAsync(img, DXManager.GDevice);
                 if (_bigMapLoadedIdx == img) _bigMapTexture = tex;
             }
             catch
             {
-                // 该地图无大地图远程资源时保持 null（回退到 Libraries.MiniMap 本地库）
+                // 该地图无 minimap 远程资源时保持 null
             }
         }
 
@@ -648,6 +651,10 @@ namespace Client.MirScenes.Dialogs
         {
             if (!Parent.Visible) return;
 
+            // ParentDialog 由 ParentChanged 事件赋值，事件可能晚于首次绘制触发，此处从非空的 Parent 兜底解析，避免 NRE。
+            if (ParentDialog == null) ParentDialog = Parent as BigMapDialog;
+            if (ParentDialog == null) return;
+
             MouseMove -= UpdateBigMapCoordinates;
 
             BigMapRecord currentRecord;
@@ -656,6 +663,10 @@ namespace Client.MirScenes.Dialogs
 
             ParentDialog.CurrentRecord = currentRecord;
             int index = currentRecord.MapInfo.BigMap;
+            // 原始传奇大地图与小地图共用 assets/resource/minimap/{img}.jpg 同一张图（CDN 无 bigmap/ 目录）；
+            // PC 地图 BigMap 多为 0，查看当前地图时回退到瓦片 img（即正在显示的小地图同一张图）。
+            if (index <= 0 && ParentDialog.TargetMapIndex == GameScene.Scene.MapControl.Index)
+                index = GameScene.Scene.MapControl.MapImg;
 
             if (index <= 0)
                 return;
@@ -731,7 +742,7 @@ namespace Client.MirScenes.Dialogs
                     else
                         colour = Color.FromArgb(255, 0, 0);
 
-                    DXManager.Draw(DXManager.RadarTexture, new Rectangle(0, 0, 2, 2), new Vector3((float)(x - 0.5), (float)(y - 0.5), 0.0F), colour);
+                    DXManager.Draw(DXManager.RadarTexture, new Rectangle(0, 0, 4, 4), new Vector3((float)(x - 0.5), (float)(y - 0.5), 0.0F), colour);
                 }
 
                 x = MapObject.User.CurrentLocation.X * ScaleX;

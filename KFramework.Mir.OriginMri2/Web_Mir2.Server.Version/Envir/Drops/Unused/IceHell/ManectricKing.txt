@@ -13,8 +13,8 @@
 2/2 特制魔法药
 2/1 太阳水
 2/2 太阳水
-2/1 太阳药水(男)
-2/2 太阳药水(男)
+2/1 太阳药水(M)
+2/2 太阳药水(M)
 1/2 BenedictionOil
 1/5 BenedictionOil
 1/5 战争神Oil
@@ -27,16 +27,16 @@
 1/500 Lethal弓
 
 ;Armour
-1/200 黑虎甲(男)
-1/200 黑虎甲(女)
-1/200 莲甲(男)
-1/200 莲甲(女)
-1/200 Crane甲(男)
-1/200 Crane甲(女)
-1/200 Stealth甲(男)
-1/200 Stealth甲(女)
-1/200 轻锻造甲(男)
-1/200 轻锻造甲(女)
+1/200 黑虎甲(M)
+1/200 黑虎甲(F)
+1/200 莲甲(M)
+1/200 莲甲(F)
+1/200 Crane甲(M)
+1/200 Crane甲(F)
+1/200 Stealth甲(M)
+1/200 Stealth甲(F)
+1/200 轻锻造甲(M)
+1/200 轻锻造甲(F)
 
 ;Rings
 1/3000 Teleport戒
@@ -82,7 +82,6 @@
 1/50 Entrapment
 1/50 Hallucination
 1/50 Vampirism
-1/50 Mpeater
 1/200 召唤圣精灵
 1/200 火焰Field
 1/50 刃Avalanche

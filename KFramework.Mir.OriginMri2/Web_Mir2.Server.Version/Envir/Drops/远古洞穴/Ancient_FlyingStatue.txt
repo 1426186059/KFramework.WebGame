@@ -10,9 +10,9 @@
 1/1 特制魔法药
 1/1 特制金创药
 1/1 特制魔法药
-1/1 太阳药水(男)
-1/1 太阳药水(男)
-1/1 太阳药水(男)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
+1/1 太阳药水(M)
 1/1 BenedictionOil
 1/2 BenedictionOil
 
@@ -47,9 +47,9 @@
 1/630 魔面具
 1/630 Violet珠
 1/630 KunroonTear
-1/800 (魂)魔面具
-1/800 (魂)Violet珠
-1/800 (魂)KunroonTear
+1/800 (H)魔面具
+1/800 (H)Violet珠
+1/800 (H)KunroonTear
 
 
 ;Bracelets
@@ -57,7 +57,7 @@
 1/155 Enchanted护符
 1/155 五元素护符
 1/600 WheelOfLunar
-1/800 (魂)WheelOfLunar
+1/800 (H)WheelOfLunar
 
 
 ;Rings
@@ -67,9 +67,9 @@
 1/620 红魔戒
 1/620 Cloud戒
 1/620 毒戒
-1/800 (魂)红魔戒
-1/800 (魂)Cloud戒
-1/800 (魂)毒戒
+1/800 (H)红魔戒
+1/800 (H)Cloud戒
+1/800 (H)毒戒
 
 
 ;Belt

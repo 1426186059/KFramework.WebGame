@@ -98,36 +98,36 @@ GtTeleport
 GtInvite
 护符 1
 护符 100
-护符(男) 1
-护符(男) 400
-护符(大) 1
-护符(大) 600
-护符(特大) 1
-护符(特大) 800
+护符(M) 1
+护符(M) 400
+护符(L) 1
+护符(L) 600
+护符(XL) 1
+护符(XL) 800
 AmuletRevival
-复活护符(大)
-绿毒粉(小) 1
-绿毒粉(小) 100
-红毒粉(小) 1
-红毒粉(小) 100
-绿毒粉(男) 1
-绿毒粉(男) 400
-红毒粉(男) 1
-红毒粉(男) 400
-绿毒粉(大) 1
-绿毒粉(大) 600
-绿毒粉(特大) 1
-绿毒粉(特大) 800
-红毒粉(大) 1
-红毒粉(大) 600
-红毒粉(特大) 1
-红毒粉(特大) 800
-BluePoison(小) 1
-BluePoison(小) 200
-BluePoison(男) 1
-BluePoison(男) 400
-BluePoison(大) 1
-BluePoison(大) 600
-BluePoison(特大) 1
-BluePoison(特大) 800
+复活护符(L)
+绿毒粉(S) 1
+绿毒粉(S) 100
+红毒粉(S) 1
+红毒粉(S) 100
+绿毒粉(M) 1
+绿毒粉(M) 400
+红毒粉(M) 1
+红毒粉(M) 400
+绿毒粉(L) 1
+绿毒粉(L) 600
+绿毒粉(XL) 1
+绿毒粉(XL) 800
+红毒粉(L) 1
+红毒粉(L) 600
+红毒粉(XL) 1
+红毒粉(XL) 800
+BluePoison(S) 1
+BluePoison(S) 200
+BluePoison(M) 1
+BluePoison(M) 400
+BluePoison(L) 1
+BluePoison(L) 600
+BluePoison(XL) 1
+BluePoison(XL) 800
 战争神Oil
