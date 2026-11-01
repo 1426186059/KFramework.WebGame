@@ -4,6 +4,13 @@ using Client.MirControls;
 using Client.MirSounds;
 using MirEngine;
 
+/*
+ * 原始传奇传送员（NPC id 600）标准分组结构 —— 本对话框左侧“分类列(Category)”的权威参考：
+ *   主城传送 / 比奇省 / 盟重省 / 白日门 / 封魔谷 / 苍月岛 / 魔龙城 / 危险地图 / 幻境传送 / 会员之家 / 玛雅神殿
+ * 服务端土城传送员 Envir/NPCs/盟重/土城/Transport.txt 即按此 11 分组组织菜单，
+ * 目的地采用服务器真实地图 FileName（= 数字索引，如 比奇省=103、盟重=154、白日门=5384、沃玛森林=5426、毒蛇山谷=5427…）。
+ */
+
 namespace Client.MirScenes.Dialogs
 {
     /// <summary>

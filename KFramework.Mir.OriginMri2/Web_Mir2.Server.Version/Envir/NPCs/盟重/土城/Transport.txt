@@ -1,96 +1,569 @@
-[@MAIN]
-#IF
-CHECKPKPOINT > 199
+﻿[@Main]
 #SAY
-我不会帮助像你这样的恶人……
- 
- 
-<关闭/@exit>
-#ELSEACT
-GOTO @Main-1
+请选择传送目的地：
+<主城传送/@MainCities>
+<比奇省/@Bichon>
+<盟重省/@Mongcon>
+<白日门/@WhiteGate>
+<封魔谷/@Fengmo>
+<苍月岛/@Cangyue>
+<魔龙城/@Molong>
+<危险地图/@Danger>
+<幻境传送/@Mirage>
+<会员之家/@Member>
+<玛雅神殿/@Maya>
 
-[@Main-1]
+<Exit/@Exit>
+
+[MainCities]
 #SAY
-你好，我是埃德温，流浪的战士。
-我以快速安全的方式将人和货物运送到其他地方。
-只需支付费用，我就会护送你去任何地方。
-那么，你觉得如何？
- 
-我将使用此<服务/@tele>
-或许下次<再会/@exit> 
+<比奇省/@mv_103>
+<盟重/@mv_154>
+<白日门/@mv_5384>
+<沃玛森林/@mv_5426>
+<毒蛇山谷/@mv_5427>
+<封魔谷/@mv_5392>
+<苍月岛/@mv_5402>
+<魔龙城/@mv_5414>
+<沙巴克皇宫/@mv_1025>
+<庄园/@mv_5258>
+<隐世小岛/@mv_1000>
 
-[@tele]
+<Main Menu/@Main> - <Exit/@Exit>
+
+[Bichon]
 #SAY
-你想去哪里？
- 
-我的服务费是 2000 金币。
+<比奇省/@mv_103>
+<比奇矿区/@mv_5011>
+<北部矿区/@mv_5012>
+<东部矿区/@mv_5014>
+<南部矿区/@mv_5022>
+<废矿区一层/@mv_5016>
+<桃源之门/@mv_5087>
 
-<<边境村/@Border>>
-<<比奇城墙/@BichonWall>>
-<<毒蛇山谷/@Serpent>>
-<<道士院校/@TaoVillage>>
-<<CastleGi-Ryoong/@CastleGi>>
-<<沃妙森营地/@Camp>>
+<Main Menu/@Main> - <Exit/@Exit>
 
-[@Border]
-#IF
-CHECKGOLD > 1999
-#ACT
-MOVE 0 289 617
-TAKEGOLD 2000
-#ELSEACT
-GOTO @gold
-
-[@BichonWall]
-#IF
-CHECKGOLD > 1999
-#ACT
-MOVE 0 296 222
-TAKEGOLD 2000
-#ELSEACT
-GOTO @gold
-
-[@Serpent]
-#IF
-CHECKGOLD > 1999
-#ACT
-MOVE 2 500 485
-TAKEGOLD 2000
-#ELSEACT
-GOTO @gold
-
-[@TaoVillage]
-#IF
-CHECKGOLD > 1999
-#ACT
-MOVE 11 163 337
-TAKEGOLD 2000
-#ELSEACT
-GOTO @gold
-
-[@CastleGi]
-#IF
-CHECKGOLD > 1999
-#ACT
-MOVE 4 264 257
-TAKEGOLD 2000
-#ELSEACT
-GOTO @gold
-
-[@Camp]
-#IF
-CHECKGOLD > 1999
-#ACT
-MOVE 1 315 82
-TAKEGOLD 2000
-#ELSEACT
-GOTO @gold
-
-[@gold]
+[Mongcon]
 #SAY
-抱歉，你的金币不足。
+<盟重/@mv_154>
+<沙巴克皇宫/@mv_1025>
+<沙城外城/@mv_962>
+<沙巴克外城/@mv_1026>
+<沙城秘密通道/@mv_5311>
+<沃玛教主大殿/@mv_5355>
+<土城监狱/@mv_5365>
 
-<离开/@Exit>
+<Main Menu/@Main> - <Exit/@Exit>
 
-[Quests]
--102
+[WhiteGate]
+#SAY
+<白日门/@mv_5384>
+<沃玛寺庙入口/@mv_5416>
+<沃玛寺庙一层/@mv_5417>
+<沃玛寺庙二层/@mv_5418>
+<牛魔寺庙出入口/@mv_5410>
+<牛魔寺庙大厅/@mv_5412>
+<牛魔寺一层/@mv_5419>
+<牛魔寺六层/@mv_5425>
+<骨魔洞一层/@mv_5155>
+<骨魔洞三层/@mv_5157>
+<尸魔洞一层/@mv_5152>
+<尸魔洞三层/@mv_5153>
+
+<Main Menu/@Main> - <Exit/@Exit>
+
+[Fengmo]
+#SAY
+<封魔谷/@mv_5392>
+<封魔殿/@mv_5393>
+<封魔皇宫/@mv_5394>
+<封魔矿区/@mv_5138>
+<封魔道/@mv_5141>
+<霸者大厅/@mv_5146>
+<纵横道/@mv_5148>
+<魔魂殿/@mv_5149>
+<炼狱回廊/@mv_5150>
+
+<Main Menu/@Main> - <Exit/@Exit>
+
+[Cangyue]
+#SAY
+<苍月岛/@mv_5402>
+<苍月岛/@mv_5800>
+<牛魔寺庙出入口/@mv_5410>
+<牛魔寺庙大厅/@mv_5412>
+<骨魔洞五层/@mv_5409>
+<庄园/@mv_5413>
+
+<Main Menu/@Main> - <Exit/@Exit>
+
+[Molong]
+#SAY
+<魔龙城/@mv_5414>
+<魔龙岭/@mv_5415>
+<魔龙东郊/@mv_5259>
+<魔龙旧寨/@mv_5261>
+<魔龙祭坛/@mv_5262>
+<魔龙西郊/@mv_5263>
+<魔龙沼泽/@mv_5265>
+<魔龙谷/@mv_5269>
+<魔龙血路/@mv_5270>
+<魔龙血域/@mv_5271>
+<魔龙宫殿/@mv_5307>
+<魔龙殿/@mv_5308>
+<火龙洞窟/@mv_5272>
+<火龙地带/@mv_5273>
+<火龙殿/@mv_5274>
+
+<Main Menu/@Main> - <Exit/@Exit>
+
+[Danger]
+#SAY
+<世界BOSS/@mv_4902>
+<四方迷阵/@mv_4901>
+<神兽降临/@mv_4903>
+<尸王殿/@mv_5124>
+<未知暗殿/@mv_5120>
+<困惑殿堂/@mv_5233>
+<死亡神殿/@mv_5229>
+<深渊魔域/@mv_5230>
+<钳虫巢穴/@mv_5231>
+<地狱烈焰/@mv_5232>
+<恶魔祭坛/@mv_5135>
+<抉择之地/@mv_5132>
+<山谷秘道/@mv_5133>
+<赤月魔巢穴/@mv_5136>
+<邪恶之都/@mv_5137>
+
+<Main Menu/@Main> - <Exit/@Exit>
+
+[Mirage]
+#SAY
+<幻境一层/@mv_5210>
+<幻境二层/@mv_5211>
+<幻境三层/@mv_5212>
+<幻境四层/@mv_5213>
+<幻境五层/@mv_5214>
+<幻境六层/@mv_5215>
+<幻境七层/@mv_5216>
+<幻境八层/@mv_5224>
+<幻境九层/@mv_5225>
+<幻境迷宫/@mv_5217>
+
+<Main Menu/@Main> - <Exit/@Exit>
+
+[Member]
+#SAY
+<会员之家①层/@mv_5248>
+<会员之家②层/@mv_5249>
+<会员之家③层/@mv_5250>
+<会员圣地/@mv_5251>
+<会员小镇/@mv_5507>
+<会员都市/@mv_5546>
+
+<Main Menu/@Main> - <Exit/@Exit>
+
+[Maya]
+#SAY
+<玛雅神殿一层/@mv_5242>
+<玛雅神殿二层/@mv_5243>
+<玛雅神殿三层/@mv_5244>
+<玛雅神殿四层/@mv_5245>
+<玛雅神殿五层/@mv_5246>
+<玛雅神殿六层/@mv_5247>
+<玛雅圣殿一层/@mv_5252>
+<玛雅圣殿二层/@mv_5253>
+
+<Main Menu/@Main> - <Exit/@Exit>
+
+[@mv_103]
+#ACT
+MOVE 103 0 0
+
+[@mv_154]
+#ACT
+MOVE 154 0 0
+
+[@mv_5384]
+#ACT
+MOVE 5384 0 0
+
+[@mv_5426]
+#ACT
+MOVE 5426 0 0
+
+[@mv_5427]
+#ACT
+MOVE 5427 0 0
+
+[@mv_5392]
+#ACT
+MOVE 5392 0 0
+
+[@mv_5402]
+#ACT
+MOVE 5402 0 0
+
+[@mv_5414]
+#ACT
+MOVE 5414 0 0
+
+[@mv_1025]
+#ACT
+MOVE 1025 0 0
+
+[@mv_5258]
+#ACT
+MOVE 5258 0 0
+
+[@mv_1000]
+#ACT
+MOVE 1000 0 0
+
+[@mv_5011]
+#ACT
+MOVE 5011 0 0
+
+[@mv_5012]
+#ACT
+MOVE 5012 0 0
+
+[@mv_5014]
+#ACT
+MOVE 5014 0 0
+
+[@mv_5022]
+#ACT
+MOVE 5022 0 0
+
+[@mv_5016]
+#ACT
+MOVE 5016 0 0
+
+[@mv_5087]
+#ACT
+MOVE 5087 0 0
+
+[@mv_962]
+#ACT
+MOVE 962 0 0
+
+[@mv_1026]
+#ACT
+MOVE 1026 0 0
+
+[@mv_5311]
+#ACT
+MOVE 5311 0 0
+
+[@mv_5355]
+#ACT
+MOVE 5355 0 0
+
+[@mv_5365]
+#ACT
+MOVE 5365 0 0
+
+[@mv_5416]
+#ACT
+MOVE 5416 0 0
+
+[@mv_5417]
+#ACT
+MOVE 5417 0 0
+
+[@mv_5418]
+#ACT
+MOVE 5418 0 0
+
+[@mv_5410]
+#ACT
+MOVE 5410 0 0
+
+[@mv_5412]
+#ACT
+MOVE 5412 0 0
+
+[@mv_5419]
+#ACT
+MOVE 5419 0 0
+
+[@mv_5425]
+#ACT
+MOVE 5425 0 0
+
+[@mv_5155]
+#ACT
+MOVE 5155 0 0
+
+[@mv_5157]
+#ACT
+MOVE 5157 0 0
+
+[@mv_5152]
+#ACT
+MOVE 5152 0 0
+
+[@mv_5153]
+#ACT
+MOVE 5153 0 0
+
+[@mv_5393]
+#ACT
+MOVE 5393 0 0
+
+[@mv_5394]
+#ACT
+MOVE 5394 0 0
+
+[@mv_5138]
+#ACT
+MOVE 5138 0 0
+
+[@mv_5141]
+#ACT
+MOVE 5141 0 0
+
+[@mv_5146]
+#ACT
+MOVE 5146 0 0
+
+[@mv_5148]
+#ACT
+MOVE 5148 0 0
+
+[@mv_5149]
+#ACT
+MOVE 5149 0 0
+
+[@mv_5150]
+#ACT
+MOVE 5150 0 0
+
+[@mv_5800]
+#ACT
+MOVE 5800 0 0
+
+[@mv_5409]
+#ACT
+MOVE 5409 0 0
+
+[@mv_5413]
+#ACT
+MOVE 5413 0 0
+
+[@mv_5415]
+#ACT
+MOVE 5415 0 0
+
+[@mv_5259]
+#ACT
+MOVE 5259 0 0
+
+[@mv_5261]
+#ACT
+MOVE 5261 0 0
+
+[@mv_5262]
+#ACT
+MOVE 5262 0 0
+
+[@mv_5263]
+#ACT
+MOVE 5263 0 0
+
+[@mv_5265]
+#ACT
+MOVE 5265 0 0
+
+[@mv_5269]
+#ACT
+MOVE 5269 0 0
+
+[@mv_5270]
+#ACT
+MOVE 5270 0 0
+
+[@mv_5271]
+#ACT
+MOVE 5271 0 0
+
+[@mv_5307]
+#ACT
+MOVE 5307 0 0
+
+[@mv_5308]
+#ACT
+MOVE 5308 0 0
+
+[@mv_5272]
+#ACT
+MOVE 5272 0 0
+
+[@mv_5273]
+#ACT
+MOVE 5273 0 0
+
+[@mv_5274]
+#ACT
+MOVE 5274 0 0
+
+[@mv_4902]
+#ACT
+MOVE 4902 0 0
+
+[@mv_4901]
+#ACT
+MOVE 4901 0 0
+
+[@mv_4903]
+#ACT
+MOVE 4903 0 0
+
+[@mv_5124]
+#ACT
+MOVE 5124 0 0
+
+[@mv_5120]
+#ACT
+MOVE 5120 0 0
+
+[@mv_5233]
+#ACT
+MOVE 5233 0 0
+
+[@mv_5229]
+#ACT
+MOVE 5229 0 0
+
+[@mv_5230]
+#ACT
+MOVE 5230 0 0
+
+[@mv_5231]
+#ACT
+MOVE 5231 0 0
+
+[@mv_5232]
+#ACT
+MOVE 5232 0 0
+
+[@mv_5135]
+#ACT
+MOVE 5135 0 0
+
+[@mv_5132]
+#ACT
+MOVE 5132 0 0
+
+[@mv_5133]
+#ACT
+MOVE 5133 0 0
+
+[@mv_5136]
+#ACT
+MOVE 5136 0 0
+
+[@mv_5137]
+#ACT
+MOVE 5137 0 0
+
+[@mv_5210]
+#ACT
+MOVE 5210 0 0
+
+[@mv_5211]
+#ACT
+MOVE 5211 0 0
+
+[@mv_5212]
+#ACT
+MOVE 5212 0 0
+
+[@mv_5213]
+#ACT
+MOVE 5213 0 0
+
+[@mv_5214]
+#ACT
+MOVE 5214 0 0
+
+[@mv_5215]
+#ACT
+MOVE 5215 0 0
+
+[@mv_5216]
+#ACT
+MOVE 5216 0 0
+
+[@mv_5224]
+#ACT
+MOVE 5224 0 0
+
+[@mv_5225]
+#ACT
+MOVE 5225 0 0
+
+[@mv_5217]
+#ACT
+MOVE 5217 0 0
+
+[@mv_5248]
+#ACT
+MOVE 5248 0 0
+
+[@mv_5249]
+#ACT
+MOVE 5249 0 0
+
+[@mv_5250]
+#ACT
+MOVE 5250 0 0
+
+[@mv_5251]
+#ACT
+MOVE 5251 0 0
+
+[@mv_5507]
+#ACT
+MOVE 5507 0 0
+
+[@mv_5546]
+#ACT
+MOVE 5546 0 0
+
+[@mv_5242]
+#ACT
+MOVE 5242 0 0
+
+[@mv_5243]
+#ACT
+MOVE 5243 0 0
+
+[@mv_5244]
+#ACT
+MOVE 5244 0 0
+
+[@mv_5245]
+#ACT
+MOVE 5245 0 0
+
+[@mv_5246]
+#ACT
+MOVE 5246 0 0
+
+[@mv_5247]
+#ACT
+MOVE 5247 0 0
+
+[@mv_5252]
+#ACT
+MOVE 5252 0 0
+
+[@mv_5253]
+#ACT
+MOVE 5253 0 0
+
+[@Exit]
+#SAY
+一路顺风。
