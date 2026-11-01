@@ -1,13 +1,9 @@
 using Client.MirControls;
 using Client.MirGraphics;
-using Client.MirGraphics.Particles;
 using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirScenes.Dialogs;
 using Client.MirSounds;
-
-using SlimDX;
-using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
 using Effect = Client.MirObjects.Effect;
