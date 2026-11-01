@@ -261,6 +261,43 @@ namespace Client.MirControls
             }
         }
 
+        /// <summary>按 manifest key 加载远程单图（如 gameui4/jpg/*.jpg 这类独立 jpg 底图）。
+        /// 与 ImageUrl 的区别：ImageUrl 直接把 url 当路径拼到资源根，在 CDN 上会 404；
+        /// 本方法经 Mir2AtlasManifest 把 key 解析成 CDN 哈希布局路径 resource/{hash前2}/{hash}_{s}.ext 再下载。
+        /// 复用 _remoteCts 取消上一次在途加载，避免旧结果覆盖新结果。</summary>
+        public async Task SetManifestImageAsync(string key)
+        {
+            _remoteCts?.Cancel();
+            _remoteCts?.Dispose();
+            var cts = new CancellationTokenSource();
+            _remoteCts = cts;
+            var ct = cts.Token;
+
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                Texture = null;
+                Redraw();
+                return;
+            }
+
+            try
+            {
+                if (Mir2OriginResource.Manifest == null)
+                    await Mir2OriginResource.LoadManifestAsync(ct);
+                var tex = await Mir2OriginResource.GetManifestAssetTextureAsync(key, DXManager.GDevice, ct);
+                if (ct.IsCancellationRequested) return;
+                Texture = tex;
+                Redraw();
+                ApplyAnchor();
+                RemoteImageLoaded?.Invoke(this, EventArgs.Empty);
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                KFramework.MonoGame.PrintTool.LogError("[MirImageControl] manifest 图片加载失败：" + key + " -> " + ex);
+            }
+        }
+
         // 逐像素命中：true 时点中透明像素不算命中（透明区穿透），false 时整框都算命中。
         private bool _pixelDetect;
         protected bool PixelDetect

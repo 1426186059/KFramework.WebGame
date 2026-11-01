@@ -63,7 +63,7 @@ namespace Client.MirScenes.Dialogs
 
         public NPCTeleporterDialog()
         {
-            ImageUrl = BgUrl;                 // 传送员面板底图（y_cs_bg）
+            _ = SetManifestImageAsync(BgUrl);   // 背景走 manifest 解析（CDN 哈希布局），避免 404；通用方法见 MirImageControl
             Size = new Size(PanelW, PanelH);
             Movable = true;
             Sort = true;
