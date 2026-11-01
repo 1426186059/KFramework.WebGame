@@ -124,9 +124,16 @@ namespace Client.MirGraphics.Particles
         {
             try
             {
+                // WASM 资源异步加载：粒子创建瞬间 Weather 等库可能尚未就绪，
+                // 构造时 GetSize 拿到的是 Empty(0,0)，会导致漂移粒子(雾/雪)永不回卷、
+                // 整块漂走后暴露出矩形边沿(穿帮)。这里惰性补全尺寸(库加载后自然生效)。
                 if (ImageInfo.Size.Height == 0 || ImageInfo.Size.Width == 0)
-                    return;
-                
+                {
+                    Size s = ImageInfo.Library.GetSize(ImageInfo.BaseIndex);
+                    if (s.Height == 0 || s.Width == 0) return;
+                    ImageInfo.Size = s;
+                }
+
                 int xwidth = (int)(ImageInfo.Size.Width * (Math.Ceiling(Settings.ScreenWidth / (decimal)ImageInfo.Size.Width) + 2));
                 int ywidth = (int)(ImageInfo.Size.Height * (Math.Ceiling(Settings.ScreenHeight / (decimal)ImageInfo.Size.Height) + 2));
                 Vector2 xreset = new Vector2(xwidth, 0);

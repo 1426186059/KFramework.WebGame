@@ -216,8 +216,7 @@ namespace Client.MirScenes
             if (Libraries.Magic3 == null) return;
 
             var offset = MouseLocation.Subtract(ToMouseLocation(target));
-            // 原版落点环（Magic3#500）默认 Light=6，会被 DrawLights 当成光源画光晕进光照 RT，
-            // 使点击区域被照亮——这是原版既有行为，故保留默认发光，不做改动。
+            // 原版落点环（Magic3#500），保留默认发光，不做改动。
             Effects.Add(new Effect(Libraries.Magic3, 500, 10, 600, target) { DrawOffset = offset.Subtract(8, 15) });
         }
 
@@ -277,11 +276,8 @@ namespace Client.MirScenes
 
         public string Title = String.Empty;
         public ushort MiniMap, BigMap, Music, SetMusic;
-        public LightSetting Lights;
         public bool Lightning, Fire;
-        public byte MapDarkLight;
         public long LightningTime, FireTime;
-        public WeatherSetting Weather = WeatherSetting.None;
         public bool FloorValid, LightsValid;
 
         public long OutputDelay;
@@ -311,8 +307,6 @@ namespace Client.MirScenes
             }
 
         }
-        // [DayNight] 当前地图昼夜状态（仅变化时打印，避免每帧刷屏）
-        internal static LightSetting _dnLastSetting = (LightSetting)0xFF;
 
         public static bool AutoHit;
 
@@ -462,8 +456,6 @@ namespace Client.MirScenes
 
             // 采样：从收到地图包 → 网格/寻路全部就绪的总耗时（瓦片另算，见 DrawFloor 日志）
             //KFramework.MonoGame.PrintTool.Log($"[Map] 地图加载链路总耗时（收包 → 网格+寻路就绪）：{(DateTime.Now - GameScene.MapLoadStart).TotalMilliseconds:F0}ms  时刻={DateTime.Now:HH:mm:ss.fff}");
-
-            UpdateWeather();
         }
 
 
@@ -599,36 +591,6 @@ namespace Client.MirScenes
             }
 
             DrawObjects();
-
-            //render weather
-            foreach (ParticleEngine engine in GameScene.Scene.ParticleEngines)
-            {
-                engine.Draw();
-            }
-
-            //Render Death, 
-
-            LightSetting setting = Lights == LightSetting.Normal ? GameScene.Scene.Lights : Lights;
-
-            if (_dnLastSetting != setting)
-            {
-                _dnLastSetting = setting;
-                string dnName = setting switch
-                {
-                    LightSetting.Day => "白天",
-                    LightSetting.Normal => "白天",
-                    LightSetting.Night => "黑夜",
-                    LightSetting.Evening => "黄昏",
-                    LightSetting.Dawn => "黎明",
-                    _ => setting.ToString()
-                };
-                //KFramework.MonoGame.PrintTool.Log($"[DayNight] 当前地图: {dnName}");
-            }
-
-            if (setting != LightSetting.Day || GameScene.User.Poison.HasFlag(PoisonType.Blindness))
-            {
-                DrawLights(setting);
-            }
 
             if (Settings.DropView || GameScene.DropViewTime > CMain.Time)
             {
@@ -981,275 +943,7 @@ namespace Client.MirScenes
             }
         }
 
-        private Color GetBlindLight(Color light)
-        {
-            if (MapObject.User.BlindTime <= CMain.Time && MapObject.User.BlindCount < 25)
-            {
-                MapObject.User.BlindTime = CMain.Time + 100;
-                MapObject.User.BlindCount++;
-            }
 
-            int count = MapObject.User.BlindCount;
-            light = Color.FromArgb(255, Math.Max(20, light.R - (count * 10)), Math.Max(20, light.G - (count * 10)), Math.Max(20, light.B - (count * 10)));
-
-            return light;
-        }
-
-        private void DrawLights(LightSetting setting)
-        {
-            // 灯贴图（DXManager.Lights）未就绪时直接跳过昼夜压暗，避免整屏黑；CreateLights 填充后自然走原版压暗+火把逻辑。
-            if (DXManager.Lights == null || DXManager.Lights.Count == 0) return;
-
-            var vp = DXManager.GDevice.Viewport;
-            int lw = vp.Width, lh = vp.Height;
-            if (DXManager.LightTexture == null || DXManager.LightTexture.Disposed
-                || DXManager.LightTexture.Width != lw || DXManager.LightTexture.Height != lh)
-            {
-                DXManager.LightTexture = new Texture(DXManager.Device, lw, lh, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
-                DXManager.LightSurface = DXManager.LightTexture.GetSurfaceLevel(0);
-            }
-
-            Surface oldSurface = DXManager.CurrentSurface;
-            DXManager.SetSurface(DXManager.LightSurface);
-
-            // DrawLights 全部在屏幕空间绘制（光照 RT 与合成全屏矩形都不应被世界相机变换影响）。
-            // DXManager.Draw 会把 RenderTransform 套到顶点，故此处临时清空，方法结束再恢复。
-            var _savedRT = DXManager.RenderTransform;
-            DXManager.RenderTransform = null;
-
-            Color darkness;
-
-            switch (setting)
-            {
-                case LightSetting.Night:
-                    {
-                        switch (MapDarkLight)
-                        {
-                            case 1:
-                                darkness = Color.FromArgb(255, 20, 20, 20);
-                                break;
-                            case 2:
-                                darkness = Color.LightSlateGray;
-                                break;
-                            case 3:
-                                darkness = Color.SkyBlue;
-                                break;
-                            case 4:
-                                darkness = Color.Goldenrod;
-                                break;
-                            default:
-                                darkness = Color.Black;
-                                break;
-                        }
-                    }
-                    break;
-                case LightSetting.Evening:
-                case LightSetting.Dawn:
-                    darkness = Color.FromArgb(255, 50, 50, 50);
-                    break;
-                default:
-                case LightSetting.Day:
-                    darkness = Color.FromArgb(255, 255, 255, 255);
-                    break;
-            }
-
-            if (MapObject.User.Poison.HasFlag(PoisonType.Blindness))
-            {
-                darkness = GetBlindLight(darkness);
-            }
-
-            // 光照 RT：照原版传奇，先清空为「暗度色」darkness（而非全透明）；
-            // 下面的发光体（火把/法术/地图灯）再以加法叠加到这层暗度之上。
-            DXManager.Device.Clear(ClearFlags.Target, darkness, 0, 0);
-
-            // 灯贴图（火把/法术/地图灯）在浏览器端暂未加载（DXManager.Lights 为空）。此时仍要执行上面的环境昼夜压暗，
-            // 仅跳过下面的"发光体"绘制以免 Lights[-1] 越界崩溃；日后补齐灯光资源后这段会自动生效。
-            if (DXManager.Lights.Count > 0)
-            {
-                int light;
-                Point p;
-                DXManager.SetBlend(true);
-                DXManager.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-                DXManager.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
-
-                foreach (var ob in Objects.Values)
-                {
-                    if (ob.Light > 0 && (!ob.Dead || ob == MapObject.User || ob.Race == ObjectType.Spell))
-                    {
-                        light = ob.Light;
-
-                        int lightRange = light % 15;
-                        if (lightRange >= DXManager.Lights.Count)
-                            lightRange = DXManager.Lights.Count - 1;
-
-                        p = ob.DrawLocation;
-
-                        Color lightColour = ob.LightColour;
-
-                        if (ob.Race == ObjectType.Player)
-                        {
-                            switch (light / 15)
-                            {
-                                case 0://no light source
-                                    lightColour = Color.FromArgb(255, 60, 60, 60);
-                                    break;
-                                case 1:
-                                    lightColour = Color.FromArgb(255, 120, 120, 120);
-                                    break;
-                                case 2://Candle
-                                    lightColour = Color.FromArgb(255, 180, 180, 180);
-                                    break;
-                                case 3://Torch
-                                    lightColour = Color.FromArgb(255, 240, 240, 240);
-                                    break;
-                                default://Peddler Torch
-                                    lightColour = Color.FromArgb(255, 255, 255, 255);
-                                    break;
-                            }
-                        }
-                        else if (ob.Race == ObjectType.Merchant)
-                        {
-                            lightColour = Color.FromArgb(255, 120, 120, 120);
-                        }
-
-                        if (MapObject.User.Poison.HasFlag(PoisonType.Blindness))
-                        {
-                            lightColour = GetBlindLight(lightColour);
-                        }
-
-                        if (DXManager.Lights[lightRange] != null && !DXManager.Lights[lightRange].Disposed)
-                        {
-                            p.Offset(-(DXManager.LightSizes[lightRange].X / 2) - (CellWidth / 2), -(DXManager.LightSizes[lightRange].Y / 2) - (CellHeight / 2) - 5);
-                            DXManager.Draw(DXManager.Lights[lightRange], null, new Vector3((float)p.X, (float)p.Y, 0.0F), lightColour);
-                        }
-                    }
-
-                    if (!Settings.Effect) continue;
-                    for (int e = 0; e < ob.Effects.Count; e++)
-                    {
-                        Effect effect = ob.Effects[e];
-                        if (!effect.Blend || CMain.Time < effect.Start || (!(effect is Missile) && effect.Light < ob.Light)) continue;
-
-                        light = effect.Light;
-
-                        p = effect.DrawLocation;
-
-                        var lightColour = effect.LightColour;
-
-                        if (MapObject.User.Poison.HasFlag(PoisonType.Blindness))
-                        {
-                            lightColour = GetBlindLight(lightColour);
-                        }
-
-                        if (DXManager.Lights[light] != null && !DXManager.Lights[light].Disposed)
-                        {
-                            p.Offset(-(DXManager.LightSizes[light].X / 2) - (CellWidth / 2), -(DXManager.LightSizes[light].Y / 2) - (CellHeight / 2) - 5);
-                            DXManager.Draw(DXManager.Lights[light], null, new Vector3((float)p.X, (float)p.Y, 0.0F), lightColour);
-                        }
-
-                    }
-                }
-
-                if (Settings.Effect)
-                {
-                    for (int e = 0; e < Effects.Count; e++)
-                    {
-                        Effect effect = Effects[e];
-                        if (!effect.Blend || CMain.Time < effect.Start) continue;
-
-                        light = effect.Light;
-                        if (light == 0) continue;
-
-                        p = effect.DrawLocation;
-
-                        var lightColour = Color.White;
-
-                        if (MapObject.User.Poison.HasFlag(PoisonType.Blindness))
-                        {
-                            lightColour = GetBlindLight(lightColour);
-                        }
-
-                        if (DXManager.Lights[light] != null && !DXManager.Lights[light].Disposed)
-                        {
-                            p.Offset(-(DXManager.LightSizes[light].X / 2) - (CellWidth / 2), -(DXManager.LightSizes[light].Y / 2) - (CellHeight / 2) - 5);
-                            DXManager.Draw(DXManager.Lights[light], null, new Vector3((float)p.X, (float)p.Y, 0.0F), lightColour);
-                        }
-                    }
-                }
-
-                for (int y = MapObject.User.Movement.Y - ViewRangeY - 24; y <= MapObject.User.Movement.Y + ViewRangeY + 24; y++)
-                {
-                    if (y < 0) continue;
-                    if (y >= Height) break;
-                    for (int x = MapObject.User.Movement.X - ViewRangeX - 24; x < MapObject.User.Movement.X + ViewRangeX + 24; x++)
-                    {
-                        if (x < 0) continue;
-                        if (x >= Width) break;
-                        int imageIndex = (M2CellInfo[x, y].FrontImage & 0x7FFF) - 1;
-                        if (imageIndex == -1) continue;
-                        int fileIndex = M2CellInfo[x, y].FrontIndex;
-                        if (fileIndex == -1) continue;
-                        if (M2CellInfo[x, y].Light <= 0 || M2CellInfo[x, y].Light >= 10) continue;
-                        if (M2CellInfo[x, y].Light == 0) continue;
-
-                        Color lightIntensity;
-
-                        light = (M2CellInfo[x, y].Light % 10) * 3;
-
-                        switch (M2CellInfo[x, y].Light / 10)
-                        {
-                            case 1:
-                                lightIntensity = Color.FromArgb(255, 255, 255, 255);
-                                break;
-                            case 2:
-                                lightIntensity = Color.FromArgb(255, 120, 180, 255);
-                                break;
-                            case 3:
-                                lightIntensity = Color.FromArgb(255, 255, 180, 120);
-                                break;
-                            case 4:
-                                lightIntensity = Color.FromArgb(255, 22, 160, 5);
-                                break;
-                            default:
-                                lightIntensity = Color.FromArgb(255, 255, 255, 255);
-                                break;
-                        }
-
-                        if (MapObject.User.Poison.HasFlag(PoisonType.Blindness))
-                        {
-                            lightIntensity = GetBlindLight(lightIntensity);
-                        }
-
-                        p = new Point(
-                            (x + OffSetX - MapObject.User.Movement.X) * CellWidth + MapObject.User.OffSetMove.X,
-                            (y + OffSetY - MapObject.User.Movement.Y) * CellHeight + MapObject.User.OffSetMove.Y + 32);
-
-                        if (light >= DXManager.Lights.Count)
-                            light = DXManager.Lights.Count - 1;
-
-                        if (DXManager.Lights[light] != null && !DXManager.Lights[light].Disposed)
-                        {
-                            p.Offset(-(DXManager.LightSizes[light].X / 2) - (CellWidth / 2) + 10, -(DXManager.LightSizes[light].Y / 2) - (CellHeight / 2) - 5);
-                            DXManager.Draw(DXManager.Lights[light], null, new Vector3((float)p.X, (float)p.Y, 0.0F), lightIntensity);
-                        }
-                    }
-                }
-            } // 关闭 if (DXManager.Lights.Count > 0)
-
-            DXManager.SetBlend(false);
-            DXManager.SetSurface(oldSurface);
-
-            // —— 合成（照原版传奇）——
-            // 光照 RT 此刻 = 暗度色 darkness + 加法叠加的发光体（火把/法术/地图灯）。
-            // 原版用 D3D9 固定功能混合 SourceBlend=Zero, DestinationBlend=SourceColor，即
-            // Final = 主画面 × 光照图，逐像素乘法压暗回主画面；这里用等价的 MirBlend.Multiply。
-            var vpSize = DXManager.GDevice.Viewport;
-            DXManager.Draw(DXManager.LightTexture, new Rectangle(0, 0, vpSize.Width, vpSize.Height), Vector3.Zero, Color.White, MirBlend.Multiply.ToBlendState());
-
-            DXManager.Sprite.End();
-            DXManager.Sprite.Begin(SpriteFlags.AlphaBlend);
-            DXManager.RenderTransform = _savedRT;
-        }
 
         private static void OnMouseClick(object sender, EventArgs e)
         {
@@ -2280,10 +1974,8 @@ namespace Client.MirScenes
                 Title = String.Empty;
                 MiniMap = 0;
                 BigMap = 0;
-                Lights = 0;
                 FloorValid = false;
                 LightsValid = false;
-                MapDarkLight = 0;
                 Music = 0;
 
                 AnimationCount = 0;
@@ -2294,177 +1986,6 @@ namespace Client.MirScenes
         }
 
 
-        public void UpdateWeather()
-        {
-            for (int i = GameScene.Scene.ParticleEngines.Count - 1; i > 0; i--)
-                GameScene.Scene.ParticleEngines[i].Dispose();
-
-            GameScene.Scene.ParticleEngines.Clear();
-            List<ParticleImageInfo> textures = new List<ParticleImageInfo>();
-            foreach (WeatherSetting itemWeather in Enum.GetValues(typeof(WeatherSetting)).Cast<object>().ToArray())
-            {
-                //if not enabled skip
-                if ((Weather & itemWeather) != itemWeather)
-                    continue;
-
-                //foreach (WeatherSetting itemWeather in Weather)
-                //{
-                switch (itemWeather)
-                {
-                    case WeatherSetting.Leaves:
-                        textures = new List<ParticleImageInfo>();
-                        textures.Add(new ParticleImageInfo(Libraries.Weather, 359, 170, 50));
-                        textures.Add(new ParticleImageInfo(Libraries.Weather, 531, 55, 50));
-                        textures.Add(new ParticleImageInfo(Libraries.Weather, 587, 200, 50));
-
-
-                        ParticleEngine LeavesEngine2 = new ParticleEngine(textures, new Vector2(2f, 0), ParticleType.Leaves);
-                        Vector2 lVelocity = new Vector2(0F, 0F);
-                        for (int y = 512 * -1; y < Settings.ScreenHeight + 512; y += 512)
-                            for (int x = 512 * -1; x < Settings.ScreenWidth + 512; x += 512)
-                            {
-                                Particle part = LeavesEngine2.GenerateNewParticle(ParticleType.Leaves);
-                                part.Position = new Vector2(x, y);
-                                part.Velocity = lVelocity;
-                            }
-                        LeavesEngine2.GenerateParticles = false;
-                        GameScene.Scene.ParticleEngines.Add(LeavesEngine2);
-                        break;
-                    case WeatherSetting.FireyLeaves:
-                        textures = new List<ParticleImageInfo>();
-                        textures.Add(new ParticleImageInfo(Libraries.Weather, 359, 170, 50));
-                        textures.Add(new ParticleImageInfo(Libraries.Weather, 531, 55, 50));
-                        textures.Add(new ParticleImageInfo(Libraries.Weather, 587, 200, 50));
-
-
-                        ParticleEngine FLeavesEngine2 = new ParticleEngine(textures, new Vector2(2f, 0), ParticleType.FireyLeaves);
-                        Vector2 FlVelocity = new Vector2(0F, 0F);
-                        for (int y = 512 * -1; y < Settings.ScreenHeight + 512; y += 512)
-                            for (int x = 512 * -1; x < Settings.ScreenWidth + 512; x += 512)
-                            {
-                                Particle part = FLeavesEngine2.GenerateNewParticle(ParticleType.FireyLeaves);
-                                part.Position = new Vector2(x, y);
-                                part.Velocity = FlVelocity;
-                            }
-                        FLeavesEngine2.GenerateParticles = false;
-                        GameScene.Scene.ParticleEngines.Add(FLeavesEngine2);
-                        break;
-                    case WeatherSetting.Rain:
-                        textures = new List<ParticleImageInfo>();
-                        //Rain
-                        textures.Add(new ParticleImageInfo(Libraries.Weather, 164, 150, 50));
-
-
-                        ParticleEngine RainEngine2 = new ParticleEngine(textures, new Vector2(2f, 0), ParticleType.Rain);
-                        Vector2 rsevelocity = new Vector2(0F, 0F);
-                        var xVar = 512;
-                        var yVar = 512;
-                        for (int y = yVar * -1; y < Settings.ScreenHeight + yVar; y += yVar)
-                            for (int x = xVar * -1; x < Settings.ScreenWidth + xVar; x += xVar)
-                            {
-                                Particle part = RainEngine2.GenerateNewParticle(ParticleType.Rain);
-                                part.Position = new Vector2(x, y);
-                                part.Velocity = rsevelocity;
-                            }
-                        RainEngine2.GenerateParticles = false;
-                        GameScene.Scene.ParticleEngines.Add(RainEngine2);
-                        break;
-
-                    case WeatherSetting.Snow:
-                        textures = new List<ParticleImageInfo>();
-                        textures.Add(new ParticleImageInfo(Libraries.Weather, 43, 20, 50));
-
-                        ParticleEngine RainEngine = new ParticleEngine(textures, new Vector2(0, 0), ParticleType.Snow);
-                        Vector2 rsvelocity = new Vector2(1F, -1F);
-
-                        for (int y = -400; y < Settings.ScreenHeight + 400; y += 400)
-                            for (int x = -400; x < Settings.ScreenWidth + 400; x += 400)
-                            {
-                                Particle part = RainEngine.GenerateNewParticle(ParticleType.Snow);
-                                part.Position = new Vector2(x, y);
-                                part.Velocity = rsvelocity;
-                            }
-                        RainEngine.GenerateParticles = false;
-                        GameScene.Scene.ParticleEngines.Add(RainEngine);
-
-                        break;
-                    case WeatherSetting.Fog:
-                        List<ParticleImageInfo> ftextures = new List<ParticleImageInfo>();
-                        ftextures.Add(new ParticleImageInfo(Libraries.Weather, 0));
-                        ParticleEngine fengine = new ParticleEngine(ftextures, new Vector2(0, 0), ParticleType.Fog);
-                        fengine.UpdateDelay = TimeSpan.FromMilliseconds(20);
-
-                        Vector2 fvelocity = new Vector2(2F, -2F);
-                        for (int y = -512; y < Settings.ScreenHeight + 512; y += 512)
-                            for (int x = -512; x < Settings.ScreenWidth + 512; x += 512)
-                            {
-                                Particle part = fengine.GenerateNewParticle(ParticleType.Fog);
-                                part.Position = new Vector2(x, y);
-                                part.Velocity = fvelocity;
-                            }
-
-
-                        fengine.GenerateParticles = false;
-                        GameScene.Scene.ParticleEngines.Add(fengine);
-                        break;
-                    case WeatherSetting.RedEmber:
-                        var rtextures = new List<ParticleImageInfo>();
-                        rtextures.Add(new ParticleImageInfo(Libraries.Weather, 1, 9, 150));
-
-                        var rengine = new ParticleEngine(rtextures, new Vector2(0, 0), ParticleType.RedFogEmber);
-                        GameScene.Scene.ParticleEngines.Add(rengine);
-                        break;
-                    case WeatherSetting.WhiteEmber:
-
-                        textures = new List<ParticleImageInfo>();
-                        textures.Add(new ParticleImageInfo(Libraries.Weather, 1, 9, 150));
-                        var whiteEmberEngine = new ParticleEngine(textures, new Vector2(0, 0), ParticleType.WhiteEmber);
-                        GameScene.Scene.ParticleEngines.Add(whiteEmberEngine);
-                        break;
-                    case WeatherSetting.PurpleLeaves:
-
-                        textures = new List<ParticleImageInfo>();
-                        textures.Add(new ParticleImageInfo(Libraries.Weather, 359, 170, 50));
-                        textures.Add(new ParticleImageInfo(Libraries.Weather, 531, 55, 50));
-                        textures.Add(new ParticleImageInfo(Libraries.Weather, 587, 200, 50));
-                        //textures.Add(new ParticleImageInfo(Libraries.Weather, 10, 20, 50));
-
-                        var pEmberEngine = new ParticleEngine(textures, new Vector2(0, 0), ParticleType.PurpleLeaves);
-
-                        for (int y = 512 * -1; y < Settings.ScreenHeight + 512; y += 512)
-                            for (int x = 512 * -1; x < Settings.ScreenWidth + 512; x += 512)
-                            {
-                                Particle part = pEmberEngine.GenerateNewParticle(ParticleType.PurpleLeaves);
-                                part.Position = new Vector2(x, y);
-                                part.Velocity = new Vector2(0, 0);
-                            }
-                        pEmberEngine.GenerateParticles = false;
-                        GameScene.Scene.ParticleEngines.Add(pEmberEngine);
-                        break;
-
-                    case WeatherSetting.YellowEmber:
-
-                        textures = new List<ParticleImageInfo>();
-                        textures.Add(new ParticleImageInfo(Libraries.Weather, 1, 9, 100));
-
-                        var yellowEmberEngine = new ParticleEngine(textures, new Vector2(0, 0), ParticleType.YellowEmber);
-                        GameScene.Scene.ParticleEngines.Add(yellowEmberEngine);
-                        break;
-                    case WeatherSetting.FireParticle:
-
-                        textures = new List<ParticleImageInfo>();
-                        //textures.Add(new ParticleImageInfo(Libraries.StateEffect, 640)); << TODO - Win
-                        //   textures.Add(new ParticleImageInfo(Libraries.Prguse4, 642));
-                        var fEmberEngine = new ParticleEngine(textures, new Vector2(0, 0), ParticleType.Bird);
-                        GameScene.Scene.ParticleEngines.Add(fEmberEngine);
-                        break;
-
-
-                }
-
-            }
-
-        }
 
         private bool InMapBounds(int x, int y)
         {

@@ -462,8 +462,6 @@ namespace WebGame.Mir2.MonoGame.Client
                 GameScene.Scene.MapControl.FloorValid = false;
                 DXManager.FloorTexture?.Dispose(); DXManager.FloorTexture = null;
                 DXManager.FloorSurface = null;
-                DXManager.LightTexture?.Dispose(); DXManager.LightTexture = null;
-                DXManager.LightSurface = null;
             }
 
             MirScene.ActiveScene?.ApplyAnchors();

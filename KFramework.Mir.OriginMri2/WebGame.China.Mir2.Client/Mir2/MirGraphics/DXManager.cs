@@ -43,18 +43,12 @@ namespace Client.MirGraphics
 
         public static bool GrayScale;
 
-        // 光照 / 雷达 / 地板等特效资源占位（浏览器端为可选视觉，暂以空纹理承载，不阻塞编译与基本运行）。
+        // 雷达 / 地板等特效资源占位（浏览器端为可选视觉，暂以空纹理承载，不阻塞编译与基本运行）。
+        // 注：昼夜光照系统已彻底移除，故不再声明 Lights / LightSizes / LightTexture / LightSurface。
         public static SlimDX.Direct3D9.Texture RadarTexture;
-        public static List<SlimDX.Direct3D9.Texture> Lights = new List<SlimDX.Direct3D9.Texture>();
         public static SlimDX.Direct3D9.Texture PoisonDotBackground;
-        public static SlimDX.Direct3D9.Texture FloorTexture, LightTexture;
-        public static SlimDX.Direct3D9.Surface FloorSurface, LightSurface;
-        public static Point[] LightSizes =
-        {
-            new Point(125,95), new Point(205,156), new Point(285,217), new Point(365,277),
-            new Point(445,338), new Point(525,399), new Point(605,460), new Point(685,521),
-            new Point(765,581), new Point(845,642), new Point(925,703)
-        };
+        public static SlimDX.Direct3D9.Texture FloorTexture;
+        public static SlimDX.Direct3D9.Surface FloorSurface;
 
         public static int DPSCounter;
 
@@ -103,62 +97,14 @@ namespace Client.MirGraphics
             // 清屏由每帧 CMain.RenderEnvironment 的显式 Clear 负责；默认 DiscardContents 保持 XNA/MonoGame 兼容。
             GDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
 
-            // 浏览器端程序化生成灯贴图（光晕），填充 DXManager.Lights，使昼夜系统的蜡烛/火把/地图灯能照亮。
-            CreateLights();
+            // 浏览器端程序化生成雷达点 / 毒点等占位纹理（昼夜光照系统已移除，灯光不再生成）。
+            CreatePlaceholderTextures();
         }
 
-        // 程序化生成灯贴图（光晕）填充 Lights：传统桌面实现用 GDI+ PathGradientBrush 绘制径向渐变，
-        // 浏览器端 WebGL 无 GDI+，改为 CPU 逐像素生成等价光晕（中心白→边缘透明），按 LightSizes 的 15 档生成 14 张。
-        public static void CreateLights()
+        // 程序化生成雷达点 / 毒点等占位纹理（昼夜光照系统已移除，灯光部分不再生成）。
+        public static void CreatePlaceholderTextures()
         {
             if (GDevice == null) return;
-            for (int i = Lights.Count - 1; i >= 0; i--)
-                Lights[i]?.Dispose();
-            Lights.Clear();
-
-            float[] positions = { 0f, .20f, .40f, .60f, .80f, 1.0f };
-            // 径向渐变停靠色（A,R,G,B），中心白、边缘透明，与桌面端 GDI+ 的 PathGradientBrush 一致。
-            byte[][] swatches = new byte[][]
-            {
-                new byte[] { 255, 255, 255, 255 },
-                new byte[] { 255, 210, 210, 210 },
-                new byte[] { 255, 160, 160, 160 },
-                new byte[] { 255, 70, 70, 70 },
-                new byte[] { 255, 40, 40, 40 },
-                new byte[] { 0, 0, 0, 0 },
-            };
-
-            for (int i = 1; i < LightSizes.Length; i++)
-            {
-                int w = LightSizes[i].X, h = LightSizes[i].Y;
-                byte[] data = new byte[w * h * 4];
-                float cx = w / 2f, cy = h / 2f;
-                float rx = w / 2f, ry = h / 2f;
-                for (int y = 0; y < h; y++)
-                {
-                    for (int x = 0; x < w; x++)
-                    {
-                        float nx = (x + 0.5f - cx) / rx;
-                        float ny = (y + 0.5f - cy) / ry;
-                        float r = (float)System.Math.Sqrt(nx * nx + ny * ny);
-                        int idx = (y * w + x) * 4;
-                        if (r > 1f) continue; // 椭圆外保持透明
-
-                        int k = 0;
-                        while (k < positions.Length - 1 && r > positions[k + 1]) k++;
-                        float t = (r - positions[k]) / (positions[k + 1] - positions[k]);
-                        byte[] a = swatches[k], b = swatches[k + 1];
-                        data[idx]     = (byte)(a[1] + (b[1] - a[1]) * t); // R
-                        data[idx + 1] = (byte)(a[2] + (b[2] - a[2]) * t); // G
-                        data[idx + 2] = (byte)(a[3] + (b[3] - a[3]) * t); // B
-                        data[idx + 3] = (byte)(a[0] + (b[0] - a[0]) * t); // A
-                    }
-                }
-
-                var tex = new SlimDX.Direct3D9.Texture(Device, w, h, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
-                tex.PlainTexture = GDevice.CreateTexture(w, h, data);
-                Lights.Add(tex);
-            }
 
             // 雷达点 / 毒点：浏览器端原为空纹理占位（RadarTexture / PoisonDotBackground 恒为 null），
             // 导致小地图/大地图的玩家点、NPC/怪物点、毒点全部不渲染（Draw 对 null 纹理直接 return）。

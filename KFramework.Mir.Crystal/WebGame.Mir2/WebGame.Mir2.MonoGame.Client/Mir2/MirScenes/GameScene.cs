@@ -286,6 +286,7 @@ namespace Client.MirScenes
             MoveTime = CMain.Time;
 
             KeyDown += GameScene_KeyDown;
+            KeyUp += GameScene_KeyUp;
 
             MainDialog = new MainDialog { Parent = this };
             ChatDialog = new ChatDialog { Parent = this };
@@ -500,8 +501,103 @@ namespace Client.MirScenes
                 }
             }
         }
+        // ── 天气/昼夜 调试和弦（按住 W + 数字）─────────────────────────
+        // 0=昼夜切换, 1=无(晴), 2=雨, 3=雪, 4=雾, 5=落叶, 6=火落叶, 7=红余烬, 8=白余烬, 9=紫叶
+        private bool _wKeyHeld;
+        private WeatherSetting? _forcedWeather;   // null=跟随服务端；有值=本地强制天气
+        private LightSetting? _forcedLights;      // null=跟随服务端；有值=本地强制昼夜
+
+        private void GameScene_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.KeyW) _wKeyHeld = false;
+        }
+
+        private static bool IsWeatherChordKey(Keys key)
+        {
+            return (key >= Keys.Digit0 && key <= Keys.Digit9)
+                || (key >= Keys.Numpad0 && key <= Keys.Numpad9);
+        }
+
+        private void HandleWeatherChord(Keys key)
+        {
+            if (MapControl == null) return;
+            switch (key)
+            {
+                case Keys.Digit0:
+                case Keys.Numpad0:
+                    ToggleDayNight();
+                    return;
+                case Keys.Digit1:
+                case Keys.Numpad1:
+                    SetLocalWeather(WeatherSetting.None);
+                    return;
+                case Keys.Digit2:
+                case Keys.Numpad2:
+                    SetLocalWeather(WeatherSetting.Rain);
+                    return;
+                case Keys.Digit3:
+                case Keys.Numpad3:
+                    SetLocalWeather(WeatherSetting.Snow);
+                    return;
+                case Keys.Digit4:
+                case Keys.Numpad4:
+                    SetLocalWeather(WeatherSetting.Fog);
+                    return;
+                case Keys.Digit5:
+                case Keys.Numpad5:
+                    SetLocalWeather(WeatherSetting.Leaves);
+                    return;
+                case Keys.Digit6:
+                case Keys.Numpad6:
+                    SetLocalWeather(WeatherSetting.FireyLeaves);
+                    return;
+                case Keys.Digit7:
+                case Keys.Numpad7:
+                    SetLocalWeather(WeatherSetting.RedEmber);
+                    return;
+                case Keys.Digit8:
+                case Keys.Numpad8:
+                    SetLocalWeather(WeatherSetting.WhiteEmber);
+                    return;
+                case Keys.Digit9:
+                case Keys.Numpad9:
+                    SetLocalWeather(WeatherSetting.PurpleLeaves);
+                    return;
+            }
+        }
+
+        private void SetLocalWeather(WeatherSetting ws)
+        {
+            _forcedWeather = ws;
+            MapControl.Weather = ws;
+            MapControl.UpdateWeather();
+        }
+
+        private void ToggleDayNight()
+        {
+            LightSetting next = (MapControl.Lights == LightSetting.Night
+                                || MapControl.Lights == LightSetting.Evening
+                                || MapControl.Lights == LightSetting.Dawn)
+                ? LightSetting.Day
+                : LightSetting.Night;
+            _forcedLights = next;
+            MapControl.Lights = next;
+            Lights = next;
+            if (MiniMapDialog != null)
+                MiniMapDialog.LightSetting.Index = next == LightSetting.Night ? 2092 : 2093;
+        }
+
         private void GameScene_KeyDown(object sender, KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.KeyW) _wKeyHeld = true;
+
+            // 和弦：按住 W + 数字键 → 切换天气/昼夜（return 跳过原有数字绑定，避免误触腰带等）
+            if (_wKeyHeld && IsWeatherChordKey(e.KeyCode))
+            {
+                HandleWeatherChord(e.KeyCode);
+                return;
+            }
+
             if (GameScene.Scene.KeyboardLayoutDialog.WaitingForBind != null)
             {
                 GameScene.Scene.KeyboardLayoutDialog.CheckNewInput(e);
@@ -2144,13 +2240,13 @@ namespace Client.MirScenes
                 Title = p.Title,
                 MiniMap = p.MiniMap,
                 BigMap = p.BigMap,
-                Lights = p.Lights,
+                Lights = _forcedLights ?? p.Lights,
                 Lightning = p.Lightning,
                 Fire = p.Fire,
                 MapDarkLight = p.MapDarkLight,
                 Music = p.Music
             };
-            MapControl.Weather = p.WeatherParticles;
+            MapControl.Weather = _forcedWeather ?? p.WeatherParticles;
             // 登录进游戏的第一张地图（服务器按角色存档下发），随后可能紧跟一个 MapChanged 纠正到实际所在图。
             KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapInformation: {p.FileName}(Index={p.MapIndex})  时刻={DateTime.Now:HH:mm:ss.fff}");
             _ = MapControl.LoadMapAsync();
@@ -3195,7 +3291,7 @@ namespace Client.MirScenes
 
         private void TimeOfDay(S.TimeOfDay p)
         {
-            Lights = p.Lights;
+            Lights = _forcedLights ?? p.Lights;
             switch (Lights)
             {
                 case LightSetting.Day:
@@ -3982,10 +4078,10 @@ namespace Client.MirScenes
                 MapControl.Title = p.Title;
                 MapControl.MiniMap = p.MiniMap;
                 MapControl.BigMap = p.BigMap;
-                MapControl.Lights = p.Lights;
+                MapControl.Lights = _forcedLights ?? p.Lights;
                 MapControl.MapDarkLight = p.MapDarkLight;
                 MapControl.Music = p.Music;
-                MapControl.Weather = p.Weather;
+                MapControl.Weather = _forcedWeather ?? p.Weather;
                 KFramework.MonoGame.PrintTool.Log($"[Map] 收到 MapChanged: {p.FileName}(Index={p.MapIndex})  切到={Path.GetFileNameWithoutExtension(MapControl.FileName)}  时刻={DateTime.Now:HH:mm:ss.fff}");
                 _ = MapControl.LoadMapAsync();
             }

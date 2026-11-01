@@ -52,6 +52,9 @@ namespace Client.MirControls
         /// <summary>当前滚动偏移（像素，内容相对视口左上角的位移，>=0）。</summary>
         public Point ScrollOffset { get; private set; }
 
+        /// <summary>是否显示竖直滚动条（默认 true）。设为 false 可隐藏滚动条，仅保留滚轮/拖拽滚动。</summary>
+        public bool ShowScrollBar { get; set; } = true;
+
         /// <summary>滚动偏移变化（SetScrollOffset / ScrollBy / 滚轮 / 拖拽）后触发，参数为本控件。可用于做"可见窗口"优化。</summary>
         public event Action<MirScrollView> ScrollChanged;
 
@@ -122,7 +125,7 @@ namespace Client.MirControls
         private void UpdateScrollBar()
         {
             int maxY = Math.Max(0, _content.Size.Height - Size.Height);
-            bool scrollable = maxY > 0;
+            bool scrollable = maxY > 0 && ShowScrollBar;
             _track.Visible = scrollable;
             _thumb.Visible = scrollable;
             if (!scrollable) return;
