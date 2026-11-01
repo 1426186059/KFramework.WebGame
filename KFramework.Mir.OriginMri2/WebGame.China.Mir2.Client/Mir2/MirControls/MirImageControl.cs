@@ -402,7 +402,10 @@ namespace Client.MirControls
             {
                 Color drawColor = ForeColour;
                 if (Opacity < 1f)
+                {
                     drawColor = new Color(drawColor.R, drawColor.G, drawColor.B, (byte)(drawColor.A * Opacity));
+                }
+
                 Size drawSize = Size;
                 int px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
                 int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);

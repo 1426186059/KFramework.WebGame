@@ -50,13 +50,13 @@ namespace Client.MirScenes.Dialogs
         private const int PanelH = 573;
 
         // 左侧竖排一级菜单（MirScrollView 容器尺寸；按钮尺寸对齐 com_z_btn_2 帧 92×35）
-        private const int CatMenuX = 15, CatMenuY = 42, CatMenuW = 110, CatMenuH = 262;
+        private const int CatMenuX = 10, CatMenuY = 45, CatMenuW = 110, CatMenuH = 262;
         private const int CatBtnW = 92, CatBtnH = 35, CatGap = 4;
         private const int CatStep = CatBtnH + CatGap;   // 单项纵向步进
 
         // 右侧二级入口（MirScrollView 内的 2 列网格；按钮尺寸对齐 com_z_btn_1 帧 106×40）
-        private const int DestX = 140, DestY = 42, DestW = 245, DestH = 262;
-        private const int CellW = 106, CellH = 40, ColGap = 5, RowGap = 10;
+        private const int DestX = 130, DestY = 45, DestW = 245, DestH = 262;
+        private const int CellW = 106, CellH = 40, ColGap = 10, RowGap = 10;
 
         private MirLabel _titleLabel;
         private MirImageControl _sepLine;
@@ -74,7 +74,7 @@ namespace Client.MirScenes.Dialogs
         public NPCTeleporterDialog()
         {
             _ = SetManifestImageAsync(BgUrl);   // 背景走 manifest 解析（CDN 哈希布局），避免 404
-            Size = new Size(PanelW, PanelH);
+            Size = new Size(PanelW + 26, PanelH);
             Movable = true;
             Sort = true;
 
@@ -83,7 +83,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Text = "传送员",
                 Parent = this,
-                Location = new Point(16, 10),
+                Location = new Point(16, 15),
                 AutoSize = true,
                 ForeColour = Color.BurlyWood,
                 Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
@@ -99,12 +99,22 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(PanelW - 20, 2),
             };
 
+            // 分隔线（标题下方一条竖线；线上用 z_com_line1，本工程用 com_line_h）
+            var Line2 = new MirImageControl
+            {
+                AtlasNameKey = Sheet + "#com_line_v",
+                Parent = this,
+                Location = new Point(120, 36),
+                AutoSize = false,
+                Size = new Size(2, PanelH - 38),
+            };
+
             // 关闭按钮（右上角；线上 btn_close 用 z_com_btn_close7，本工程用 com_btn_close0）
             _closeButton = new MirButton
             {
                 AtlasNameKey = Sheet + "#com_btn_close0",
                 Parent = this,
-                Location = new Point(PanelW - 30, 2),
+                Location = new Point(PanelW, 2),
                 Size = new Size(26, 26),
                 Sound = SoundList.ButtonA,
             };
