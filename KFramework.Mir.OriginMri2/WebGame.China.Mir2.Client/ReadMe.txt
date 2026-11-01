@@ -456,3 +456,35 @@ Assets/KFramework/Rumtime/Tools/SafeAreaFit.cs 的“改相机渲染区域(rect)
    尺寸不更新”；改资源查“冷库首帧空白”。
 6. 写注释说明偏离：凡与原版不同处（不挂 Parent、显式 DisposeTexture、预热库、
    批次缓存、F12 被浏览器吃掉等）都加注释写清“为什么 Web 要这样”，方便后人对照。
+
+
+十二、为什么彻底移除天气 / 昼夜系统（体验取舍）
+--------------------------------------------------------------------
+《传奇》（Mir2 / 热血传奇）本质是【多人实时 RPG】——玩家在地图上 PK、打怪、抢怪、组队、
+攻沙，胜负高度依赖“看得清场面”。参考源（Web 页游《原始传奇》/ 桌面端）自带一套天气与
+昼夜光照：
+
+  - 天气粒子：雨、雪、雾、落叶、余烬等（ParticleEngine + Weather 贴图库）
+  - 昼夜光照：白天 / 黄昏 / 黎明 / 黑夜，并伴随 DrawLights 把蜡烛/火把/地图灯画进
+    光照 RT，环境还会被整体压暗（DXManager.Lights + 环境暗化）
+
+这套系统在单机或弱交互场景下只是氛围加成，但在【多人 RPG】里会直接伤害核心体验：
+
+  - 夜晚 / 暴风雪 / 大雾把屏幕压暗或蒙上粒子，严重遮挡怪物、技能弹道、敌人走位；
+  - 视线受阻 = 战斗信息缺失，PK 与攻沙的公平性、反应速度都被拖累；
+  - 玩家无法像现实里那样“扭头避开恶劣天气”，只能被动接受，纯属负收益。
+
+因此我们决定在本工程【彻底移除】客户端天气与昼夜系统（不是移植、也不是留开关）：
+
+  - 渲染层：删 MapControl 的 DrawLights / UpdateWeather / 天气粒子绘制循环，
+    以及昼夜所需的环境压暗（DXManager.Lights / WhitePixel / LightTexture / LightSurface）；
+  - 资源层：不再加载 Weather 贴图库（Libraries.Weather）；
+  - 逻辑层：删 GameScene 的天气调试快捷键（W+数字和弦）、TimeOfDay 昼夜包处理、
+    Lights / MapDarkLight / Weather 字段与赋值；
+  - 协议层：保留 ServerPackets / ClientPackets 中的 Lights / MapDarkLight / Weather 字段
+    与 WeatherSetting / LightSetting 枚举（仅“读取并忽略”，不进入任何渲染分支），
+    以保持客户端-服务器协议兼容，不因客户端改动而断包。
+
+效果：所有地图恒定“白天、视线清晰”，不再有因天气/昼夜导致的视线干扰，
+回归传奇作为多人 RPG 应有的可读性。这属于有意的体验取舍（偏离参考源的既有行为），
+凡涉及天气/昼夜的“为什么删”都以此节为准。
