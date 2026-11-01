@@ -49,17 +49,17 @@ namespace Client.MirScenes.Dialogs
         private const string BgUrl = "resource/assets/gameui4/jpg/y_cs_bg.jpg";
 
         // —— 布局：左竖排一级菜单 + 右二级入口（按线上当前结构）——
-        private const int PanelW = 510;
-        private const int PanelH = 312;
+        private const int PanelW = 400;
+        private const int PanelH = 573;
 
         // 左侧竖排一级菜单（纵向略宽松，超出可视区可上下翻页）
-        private const int CatMenuX = 8, CatMenuY = 42, CatMenuW = 110, CatMenuH = 262;
-        private const int CatBtnH = 26, CatGap = 4;
+        private const int CatMenuX = 15, CatMenuY = 42, CatMenuW = 110, CatMenuH = 262;
+        private const int CatBtnH = 35, CatGap = 4;
         private const int CatStep = CatBtnH + CatGap;   // 单项步进 30
 
         // 右侧二级入口（目的地 2 列网格，左右紧凑）
-        private const int DestX = 126, DestY = 42, DestW = 358, DestH = 262;
-        private const int CellW = 166, CellH = 56, ColGap = 6, RowGap = 8;
+        private const int DestX = 140, DestY = 42, DestW = 358, DestH = 262;
+        private const int CellW = 106, CellH = 40, ColGap = 5, RowGap = 10;
         private const int Cols = 2, Rows = 4;          // 右侧可见 2×4 = 8 格
         private const int MaxVisible = Cols * Rows;
 
@@ -128,20 +128,6 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(CatMenuW, CatMenuH),
             };
 
-            // 左侧菜单上下翻页箭头（内容超出可视区时显示，叠加在菜单右上/右下角）
-            _catUp = new MirButton
-            {
-                Parent = this, Location = new Point(CatMenuX + CatMenuW - 16, CatMenuY), Size = new Size(14, 14),
-                CenterText = true, Text = "▲", Sound = SoundList.ButtonA, Visible = false,
-            };
-            _catDown = new MirButton
-            {
-                Parent = this, Location = new Point(CatMenuX + CatMenuW - 16, CatMenuY + CatMenuH - 14), Size = new Size(14, 14),
-                CenterText = true, Text = "▼", Sound = SoundList.ButtonA, Visible = false,
-            };
-            _catUp.Click += (o, e) => { if (_catOffsetY > 0) { _catOffsetY = Math.Max(0, _catOffsetY - CatStep); ApplyCatScroll(); } };
-            _catDown.Click += (o, e) => { int max = Math.Max(0, _catTotalH - CatMenuH); if (_catOffsetY < max) { _catOffsetY = Math.Min(max, _catOffsetY + CatStep); ApplyCatScroll(); } };
-
             // 右侧二级入口网格（2 列；上下翻页）
             for (int r = 0; r < Rows; r++)
             {
@@ -150,8 +136,9 @@ namespace Client.MirScenes.Dialogs
                     int index = r * Cols + c;
                     var btn = new MirButton
                     {
-                        AtlasNameKey = Sheet + "#com_z_btn_2",
-                        HoverAtlasFrame = "com_z_btn_2_1",
+                        AtlasNameKey = Sheet,
+                        AtlasFrame = "com_z_btn_1",
+                        PressedAtlasFrame = "com_z_btn_1_1",
                         Parent = this,
                         Location = new Point(DestX + c * (CellW + ColGap), DestY + r * (CellH + RowGap)),
                         Size = new Size(CellW, CellH),
@@ -184,8 +171,6 @@ namespace Client.MirScenes.Dialogs
             _downButton.Click += (o, e) => { if (_destStart + MaxVisible < _visibleItems.Count) { _destStart += Cols; RefreshDestList(); } };
 
             _closeButton.BringToFront();   // 置顶：避免同区域控件遮挡导致“关闭无响应”
-            _catUp.BringToFront();          // 翻页箭头置顶，确保可点
-            _catDown.BringToFront();
         }
 
         /// <summary>填充并显示：title=窗口标题，items=该 NPC 的全部传送目的地。</summary>
@@ -231,11 +216,12 @@ namespace Client.MirScenes.Dialogs
                 var cat = cats[i];
                 var btn = new MirButton
                 {
-                    AtlasNameKey = Sheet + "#com_z_btn_1",
-                    HoverAtlasFrame = "com_z_btn_1_1",
+                    AtlasNameKey = Sheet,
+                    AtlasFrame = "com_z_btn_2_1",
+                    PressedAtlasFrame = "com_z_btn_2",
                     Parent = _catMenu,
                     Location = new Point(0, y),
-                    Size = new Size(CatMenuW, CatBtnH),
+                    Size = new Size(92, 35),
                     CenterText = true,
                     Text = string.IsNullOrEmpty(cat) ? "全部" : cat,
                     Sound = SoundList.ButtonA,
@@ -249,9 +235,6 @@ namespace Client.MirScenes.Dialogs
             _catTotalH = y - CatGap;          // 末项多算一个 gap，扣掉
             _catOffsetY = 0;
             ApplyCatScroll();
-            bool catOverflow = _catTotalH > CatMenuH;
-            _catUp.Visible = catOverflow;
-            _catDown.Visible = catOverflow;
 
             SelectCategory(0);
         }
@@ -269,7 +252,11 @@ namespace Client.MirScenes.Dialogs
         private void SelectCategory(int index)
         {
             for (int i = 0; i < _categoryButtons.Count; i++)
-                _categoryButtons[i].AtlasNameKey = (i == index) ? Sheet + "#com_z_btn_1_1" : Sheet + "#com_z_btn_1";
+            {
+                _categoryButtons[i].AtlasNameKey = Sheet;
+                _categoryButtons[i].AtlasFrame = "com_z_btn_2_1";
+                _categoryButtons[i].PressedAtlasFrame = "com_z_btn_2";
+            }
 
             string cat = (index >= 0 && index < _categoryNames.Count) ? _categoryNames[index] : "";
             _visibleItems = new List<DeliverDestination>();
