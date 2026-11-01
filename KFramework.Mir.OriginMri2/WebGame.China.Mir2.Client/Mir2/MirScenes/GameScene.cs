@@ -2288,7 +2288,6 @@ namespace Client.MirScenes
 
         private void WorldMapSetup(S.WorldMapSetupInfo info)
         {
-            BigMapDialog.WorldMapSetup(info.Setup);
             TeleportToNPCCost = info.TeleportToNPCCost;
         }
 
@@ -2302,37 +2301,21 @@ namespace Client.MirScenes
         private void CreateBigMapButtons(BigMapRecord record)
         {
             record.MovementButtons.Clear();
-            record.NPCButtons.Clear();
 
             foreach (ClientMovementInfo mInfo in record.MapInfo.Movements)
             {
-                MirButton button = new MirButton()
+                // 地名图标改为不可点击的文字标签：去掉图标与点击音效，仅以文字标明地点名
+                MirLabel label = new MirLabel()
                 {
-                    Library = Libraries.MapLinkIcon,
-                    Index = mInfo.Icon,
-                    PressedIndex = mInfo.Icon,
-                    Sound = SoundList.ButtonA,
+                    Text = mInfo.Title,
                     Parent = BigMapDialog.ViewPort,
-                    Location = new Point(20, 38),
-                    Hint = mInfo.Title,
-                    Visible = false
+                    AutoSize = true,
+                    ForeColour = Color.Gold,
+                    OutLine = true,
+                    Visible = false,
+                    NotControl = true,
                 };
-                button.MouseEnter += (o, e) =>
-                {
-                    BigMapDialog.MouseLocation = mInfo.Location;
-                };
-
-                button.Click += (o, e) =>
-                {
-                    BigMapDialog.SetTargetMap(mInfo.Destination);
-                };
-                record.MovementButtons.Add(mInfo, button);
-            }
-
-            foreach (ClientNPCInfo npcInfo in record.MapInfo.NPCs)
-            {
-                BigMapNPCRow row = new BigMapNPCRow(npcInfo) { Parent = BigMapDialog };
-                record.NPCButtons.Add(row);
+                record.MovementButtons.Add(mInfo, label);
             }
         }
 
@@ -2344,16 +2327,6 @@ namespace Client.MirScenes
 
         private void SearchMapResult(S.SearchMapResult info)
         {
-            if (info.MapIndex == -1 && info.NPCIndex == 0)
-            {
-                MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.NothingFound), MirMessageBoxButtons.OK);
-                messageBox.OKButton.Click += (o, a) => { BigMapDialog.SearchTextBox.SetFocus(); };
-                messageBox.Show();
-                return;
-            }
-
-            BigMapDialog.SetTargetMap(info.MapIndex);
-            BigMapDialog.SetTargetNPC(info.NPCIndex);
         }
         private void UserInformation(S.UserInformation p)
         {
