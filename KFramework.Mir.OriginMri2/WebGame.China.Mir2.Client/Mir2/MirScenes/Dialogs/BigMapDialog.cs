@@ -52,6 +52,12 @@ namespace Client.MirScenes.Dialogs
             Index = 820;
             Library = Libraries.Title;
             Sort = true;
+            // 浏览器端资源异步加载，MirImageControl 在 AutoSize 下 GetTrueSize 可能返回 0，
+            // 导致对话框 Size 为 0、整个窗口收不到鼠标（关闭按钮与地图点击全部失效）。
+            // 显式关闭 AutoSize 并给出确定尺寸：优先用真实贴图尺寸，否则用经典大地图框尺寸兜底。
+            AutoSize = false;
+            Size = (Library != null && Index >= 0) ? Library.GetTrueSize(Index) : Size.Empty;
+            if (Size.IsEmpty) Size = new Size(596, 460);
             Location = Center;
             NotControl = false;
 
@@ -251,6 +257,16 @@ namespace Client.MirScenes.Dialogs
             MouseDown += OnMouseClick;
         }
 
+        // 重写 OnMouseDown：基类 MirControl.OnMouseDown 会调用 TrySort() 把本控件提到
+        // 父对话框子控件列表最前（置顶），而本视口是覆盖大半个对话框的大面积控件，
+        // 一旦置顶就会盖住关闭按钮，导致“点过地图后关闭按钮点不动”。地图视口不需要置顶/拖动，
+        // 故这里只触发 MouseDown 事件（进而由 OnMouseClick 做寻路），不调用基类的 Activate/TrySort。
+        public override void OnMouseDown(MouseEventArgs e)
+        {
+            if (!Enabled) return;
+            if (MouseDown != null) MouseDown.Invoke(this, e);
+        }
+
         private void SetParent()
         {
             ParentDialog = (BigMapDialog)Parent;
@@ -267,10 +283,22 @@ namespace Client.MirScenes.Dialogs
 
         private void OnMouseClick(object sender, MouseEventArgs e)
         {
+            if (ScaleX <= 0 || ScaleY <= 0) return;
+
             int X = (int)((e.Location.X - BigMap_MouseCoordsProcessing_OffsetX) / ScaleX);
             int Y = (int)((e.Location.Y - BigMap_MouseCoordsProcessing_OffsetY) / ScaleY);
 
-            var path = GameScene.Scene.MapControl.PathFinder.FindPath(MapObject.User.CurrentLocation, new Point(X, Y));
+            var map = GameScene.Scene.MapControl;
+
+            // 越界或目标格不可走：直接提示并 return，避免对不可达点做全图 A* 寻路导致卡顿
+            // （FindPath 的 MaxNodes 默认 0 仅限制“找到后”的路径长度，对不可达点仍会搜索整张地图）。
+            if (X < 0 || Y < 0 || X >= map.Width || Y >= map.Height || !map.EmptyCell(new Point(X, Y)))
+            {
+                GameScene.Scene.ChatDialog.ReceiveChat(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CouldNotFindPath), ChatType.System);
+                return;
+            }
+
+            var path = map.PathFinder.FindPath(MapObject.User.CurrentLocation, new Point(X, Y));
 
             if (path == null || path.Count == 0)
             {
@@ -278,8 +306,8 @@ namespace Client.MirScenes.Dialogs
             }
             else
             {
-                GameScene.Scene.MapControl.CurrentPath = path;
-                GameScene.Scene.MapControl.AutoPath = true;
+                map.CurrentPath = path;
+                map.AutoPath = true;
             }
         }
 
@@ -443,6 +471,27 @@ namespace Client.MirScenes.Dialogs
                 var s = label.Size;
 
                 label.Location = new Point((int)x - s.Width / 2, (int)y - s.Height / 2);
+            }
+
+            // 大地图点击后的寻路路线（白色点点点）：读取 MapControl.CurrentPath，
+            // 按屏幕最小间距取样绘制，避免过密连成线；随角色走动实时缩短。
+            if (GameScene.Scene.MapControl.AutoPath && GameScene.Scene.MapControl.CurrentPath != null)
+            {
+                var mc = GameScene.Scene.MapControl;
+                float minDist = 12F; // 相邻点的最小屏幕间距（像素）
+                float lastX = float.MinValue, lastY = float.MinValue;
+                for (int i = 0; i < mc.CurrentPath.Count; i++)
+                {
+                    Node node = mc.CurrentPath[i];
+                    float rx = ((node.Location.X - startPointX) * ScaleX) + DisplayLocation.X;
+                    float ry = ((node.Location.Y - startPointY) * ScaleY) + DisplayLocation.Y;
+                    float dx = rx - lastX, dy = ry - lastY;
+                    if (i == 0 || dx * dx + dy * dy >= minDist * minDist)
+                    {
+                        DXManager.Draw(DXManager.RadarTexture, new Rectangle(0, 0, 4, 4), new Vector3(rx - 2F, ry - 2F, 0.0F), Color.White);
+                        lastX = rx; lastY = ry;
+                    }
+                }
             }
         }
     }
