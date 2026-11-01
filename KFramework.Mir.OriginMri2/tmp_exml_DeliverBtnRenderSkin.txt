@@ -1,0 +1,74 @@
+﻿(function (_super) {
+	__extends(DeliverBtnRenderSkin, _super);
+	var DeliverBtnRenderSkin$Skin37 = 	(function (_super) {
+		__extends(DeliverBtnRenderSkin$Skin37, _super);
+		function DeliverBtnRenderSkin$Skin37() {
+			_super.call(this);
+			this.skinParts = ["labelDisplay"];
+			
+			this.elementsContent = [this._Image1_i(),this.labelDisplay_i()];
+			this.states = [
+				new eui.State ("up",
+					[
+					])
+				,
+				new eui.State ("down",
+					[
+					])
+				,
+				new eui.State ("disabled",
+					[
+					])
+			];
+		}
+		var _proto = DeliverBtnRenderSkin$Skin37.prototype;
+
+		_proto._Image1_i = function () {
+			var t = new eui.Image();
+			t.percentHeight = 100;
+			t.source = "z_boss_img0";
+			t.percentWidth = 100;
+			return t;
+		};
+		_proto.labelDisplay_i = function () {
+			var t = new eui.Label();
+			this.labelDisplay = t;
+			t.horizontalCenter = 0;
+			t.verticalCenter = 0;
+			return t;
+		};
+		return DeliverBtnRenderSkin$Skin37;
+	})(eui.Skin);
+
+	function DeliverBtnRenderSkin() {
+		_super.call(this);
+		this.skinParts = ["btn_go","txt_name"];
+		
+		this.height = 69;
+		this.width = 149;
+		this.elementsContent = [this.btn_go_i(),this.txt_name_i()];
+	}
+	var _proto = DeliverBtnRenderSkin.prototype;
+
+	_proto.btn_go_i = function () {
+		var t = new eui.Button();
+		this.btn_go = t;
+		t.label = "";
+		t.skinName = DeliverBtnRenderSkin$Skin37;
+		return t;
+	};
+	_proto.txt_name_i = function () {
+		var t = new eui.Label();
+		this.txt_name = t;
+		t.style = "57";
+		t.horizontalCenter = 0;
+		t.lineSpacing = 10;
+		t.text = "Label";
+		t.textAlign = "center";
+		t.touchEnabled = false;
+		t.verticalCenter = 0;
+		return t;
+	};
+	return DeliverBtnRenderSkin;
+})(eui.Skin);",
+		

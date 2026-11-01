@@ -1,0 +1,3 @@
+﻿DeliverDialogSkin marker NOT FOUND
+DeliverPageRenderSkin ("btn"]) NOT FOUND
+DeliverBtnRenderSkin ("btn_go","txt_name") NOT FOUND

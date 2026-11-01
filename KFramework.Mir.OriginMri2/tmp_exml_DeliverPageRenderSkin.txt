@@ -1,0 +1,64 @@
+﻿(function (_super) {
+	__extends(DeliverPageRenderSkin, _super);
+	var DeliverPageRenderSkin$Skin39 = 	(function (_super) {
+		__extends(DeliverPageRenderSkin$Skin39, _super);
+		function DeliverPageRenderSkin$Skin39() {
+			_super.call(this);
+			this.skinParts = ["labelDisplay"];
+			
+			this.elementsContent = [this._Image1_i(),this.labelDisplay_i()];
+			this.states = [
+				new eui.State ("up",
+					[
+					])
+				,
+				new eui.State ("down",
+					[
+						new eui.SetProperty("_Image1","source","com_z_btn_6"),
+						new eui.SetProperty("labelDisplay","style","212")
+					])
+				,
+				new eui.State ("disabled",
+					[
+					])
+			];
+		}
+		var _proto = DeliverPageRenderSkin$Skin39.prototype;
+
+		_proto._Image1_i = function () {
+			var t = new eui.Image();
+			this._Image1 = t;
+			t.percentHeight = 100;
+			t.source = "com_z_btn_6_1";
+			t.percentWidth = 100;
+			return t;
+		};
+		_proto.labelDisplay_i = function () {
+			var t = new eui.Label();
+			this.labelDisplay = t;
+			t.style = "213";
+			t.horizontalCenter = 0;
+			t.verticalCenter = 1;
+			return t;
+		};
+		return DeliverPageRenderSkin$Skin39;
+	})(eui.Skin);
+
+	function DeliverPageRenderSkin() {
+		_super.call(this);
+		this.skinParts = ["btn"];
+		
+		this.elementsContent = [this.btn_i()];
+	}
+	var _proto = DeliverPageRenderSkin.prototype;
+
+	_proto.btn_i = function () {
+		var t = new eui.RadioButton();
+		this.btn = t;
+		t.label = "";
+		t.skinName = DeliverPageRenderSkin$Skin39;
+		return t;
+	};
+	return DeliverPageRenderSkin;
+})(eui.Skin);",
+		

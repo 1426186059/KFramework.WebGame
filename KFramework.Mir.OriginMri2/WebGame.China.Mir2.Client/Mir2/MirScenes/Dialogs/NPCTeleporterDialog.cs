@@ -10,9 +10,9 @@ using MirEngine;
  * 服务端土城传送员 Envir/NPCs/盟重/土城/Transport.txt 即按此 11 分组组织菜单，
  * 目的地采用服务器真实地图 FileName（= 数字索引，如 比奇省=103、盟重=154、白日门=5384…）。
  *
- * 布局严格对齐线上游戏 EXML（DeliverDialogSkin / DeliverPageRenderSkin / DeliverBtnRenderSkin）：
- *   面板 510×312；顶部横向分类 tab（list_page，HorizontalLayout，可左右翻页）；
- *   下方 3 列目的地网格（list_content，TileLayout 3 列，可上下翻页）；分隔线；右上关闭。
+ * 布局按线上当前结构重做：左侧竖排一级菜单（分类），右侧二级入口（目的地网格）。
+ *   面板 510×312；左侧竖排分类（com_z_btn_1 / _1_1 选中）；右侧 2 列目的地网格
+ *   （com_z_btn_2 / _2_1），可上下翻页；标题下方分隔线；右上关闭。
  * 注：线上背景为 gameui3/jpg/delieve_bgi.png、按钮帧为 com_z_btn_6 / z_boss_img0 / z_com_line1 /
  *     z_com_btn_close7 —— 这些 gameui3 资源不在本工程 manifest 中，故改用同图集现成帧替代：
  *     分类按钮 com_z_btn_1(_1) / 目的地按钮 com_z_btn_2(_2) / 分隔线 com_line_h / 关闭 com_btn_close0；
@@ -48,39 +48,39 @@ namespace Client.MirScenes.Dialogs
         // 背景：manifest 中存在的 gameui4/jpg/y_cs_bg.jpg（线上原图为 gameui3/jpg/delieve_bgi.png，本工程无该资源）。
         private const string BgUrl = "resource/assets/gameui4/jpg/y_cs_bg.jpg";
 
-        // —— 对齐 DeliverDialogSkin 的坐标 ——
+        // —— 布局：左竖排一级菜单 + 右二级入口（按线上当前结构）——
         private const int PanelW = 510;
         private const int PanelH = 312;
 
-        private const int CatRowX = 20, CatRowY = 20, CatRowW = 448, CatRowH = 30;
-        private const int CatBtnH = 28, CatGap = 6;
-        private const int CatArrowY = 22;
+        // 左侧竖排一级菜单（纵向略宽松，超出可视区可上下翻页）
+        private const int CatMenuX = 8, CatMenuY = 42, CatMenuW = 110, CatMenuH = 262;
+        private const int CatBtnH = 26, CatGap = 4;
+        private const int CatStep = CatBtnH + CatGap;   // 单项步进 30
 
-        private const int SepX = 10, SepY = 58, SepW = 488;
-
-        private const int DestX = 22, DestY = 68, DestW = 467, DestH = 230;
-        private const int CellW = 149, CellH = 69, ColGap = 10, RowGap = 10;
-        private const int Cols = 3, Rows = 3;   // TileLayout requestedColumnCount=3；9 格可见
+        // 右侧二级入口（目的地 2 列网格，左右紧凑）
+        private const int DestX = 126, DestY = 42, DestW = 358, DestH = 262;
+        private const int CellW = 166, CellH = 56, ColGap = 6, RowGap = 8;
+        private const int Cols = 2, Rows = 4;          // 右侧可见 2×4 = 8 格
         private const int MaxVisible = Cols * Rows;
 
-        private const int DestArrowX = 489;     // 网格右侧上下翻页箭头
+        private const int DestArrowX = DestX + CellW * Cols + ColGap + 2;   // 右网格右侧外，紧贴网格
 
         private MirLabel _titleLabel;
         private MirImageControl _sepLine;
         private MirButton _closeButton;
-        private MirButton _catLeft, _catRight;
-        private MirControl _catRow;             // 横向分类容器（Clip）
+        private MirControl _catMenu;            // 左侧竖排一级菜单容器
         private MirButton _upButton, _downButton;
+        private MirButton _catUp, _catDown;     // 左菜单上下翻页
+        private int _catOffsetY;                // 左菜单纵向滚动偏移
+        private int _catTotalH;                 // 左菜单内容总高
 
         private readonly List<MirButton> _categoryButtons = new List<MirButton>();
-        private readonly List<int> _catBaseX = new List<int>();   // 分类按钮基准 X（未偏移）
-        private int _catOffset;                 // 横向滚动偏移
-        private int _catTotalW;
+        private readonly List<string> _categoryNames = new List<string>();   // 分类标签（Text 只写，需单独存）
 
         private List<DeliverDestination> _allItems = new List<DeliverDestination>();
         private List<DeliverDestination> _visibleItems = new List<DeliverDestination>();
         private readonly List<MirButton> _destButtons = new List<MirButton>();
-        private int _destStart;                 // 网格起始下标（3 的倍数）
+        private int _destStart;                 // 右网格起始下标（每次滚动 Cols）
 
         public NPCTeleporterDialog()
         {
@@ -100,16 +100,16 @@ namespace Client.MirScenes.Dialogs
                 Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
             };
 
-            // 分隔线（对齐 _Image2：x=10,y=58,width=488；线上用 z_com_line1，本工程用 com_line_h）
+            // 分隔线（标题下方一条横线；线上用 z_com_line1，本工程用 com_line_h）
             _sepLine = new MirImageControl
             {
                 AtlasNameKey = Sheet + "#com_line_h",
                 Parent = this,
-                Location = new Point(SepX, SepY),
-                Size = new Size(SepW, 2),
+                Location = new Point(10, 36),
+                Size = new Size(PanelW - 20, 2),
             };
 
-            // 关闭按钮（对齐 btn_close：right=-28,top=0；本工程用 com_btn_close0）
+            // 关闭按钮（右上角；线上 btn_close 用 z_com_btn_close7，本工程用 com_btn_close0）
             _closeButton = new MirButton
             {
                 AtlasNameKey = Sheet + "#com_btn_close0",
@@ -120,30 +120,29 @@ namespace Client.MirScenes.Dialogs
             };
             _closeButton.Click += (o, e) => Hide();
 
-            // 分类横向翻页箭头（替代线上 Scroller1 的触摸横滑）
-            _catLeft = new MirButton
-            {
-                Parent = this, Location = new Point(2, CatArrowY), Size = new Size(16, 16),
-                CenterText = true, Text = "◀", Sound = SoundList.ButtonA, Visible = false,
-            };
-            _catRight = new MirButton
-            {
-                Parent = this, Location = new Point(CatRowX + CatRowW - 18, CatArrowY), Size = new Size(16, 16),
-                CenterText = true, Text = "▶", Sound = SoundList.ButtonA, Visible = false,
-            };
-            _catLeft.Click += (o, e) => { if (_catOffset > 0) { _catOffset = Math.Max(0, _catOffset - 100); ApplyCatOffset(); } };
-            _catRight.Click += (o, e) => { int max = Math.Max(0, _catTotalW - CatRowW); if (_catOffset < max) { _catOffset = Math.Min(max, _catOffset + 100); ApplyCatOffset(); } };
-
-            // 分类容器（Clip）
-            _catRow = new MirControl
+            // 左侧竖排一级菜单容器（本引擎无 Clip，分类按钮在 BuildCategories 里纵向堆叠）
+            _catMenu = new MirControl
             {
                 Parent = this,
-                Location = new Point(CatRowX, CatRowY),
-                Size = new Size(CatRowW, CatRowH),
-                Clip = true,
+                Location = new Point(CatMenuX, CatMenuY),
+                Size = new Size(CatMenuW, CatMenuH),
             };
 
-            // 目的地网格（对齐 Scroller2：x=22,y=68,width=467,height=230；TileLayout 3 列）
+            // 左侧菜单上下翻页箭头（内容超出可视区时显示，叠加在菜单右上/右下角）
+            _catUp = new MirButton
+            {
+                Parent = this, Location = new Point(CatMenuX + CatMenuW - 16, CatMenuY), Size = new Size(14, 14),
+                CenterText = true, Text = "▲", Sound = SoundList.ButtonA, Visible = false,
+            };
+            _catDown = new MirButton
+            {
+                Parent = this, Location = new Point(CatMenuX + CatMenuW - 16, CatMenuY + CatMenuH - 14), Size = new Size(14, 14),
+                CenterText = true, Text = "▼", Sound = SoundList.ButtonA, Visible = false,
+            };
+            _catUp.Click += (o, e) => { if (_catOffsetY > 0) { _catOffsetY = Math.Max(0, _catOffsetY - CatStep); ApplyCatScroll(); } };
+            _catDown.Click += (o, e) => { int max = Math.Max(0, _catTotalH - CatMenuH); if (_catOffsetY < max) { _catOffsetY = Math.Min(max, _catOffsetY + CatStep); ApplyCatScroll(); } };
+
+            // 右侧二级入口网格（2 列；上下翻页）
             for (int r = 0; r < Rows; r++)
             {
                 for (int c = 0; c < Cols; c++)
@@ -173,18 +172,20 @@ namespace Client.MirScenes.Dialogs
 
             _upButton = new MirButton
             {
-                Parent = this, Location = new Point(DestArrowX, DestY), Size = new Size(20, 20),
+                Parent = this, Location = new Point(DestArrowX, DestY), Size = new Size(18, 18),
                 CenterText = true, Text = "▲", Sound = SoundList.ButtonA, Visible = false,
             };
             _downButton = new MirButton
             {
-                Parent = this, Location = new Point(DestArrowX, DestY + DestH - 20), Size = new Size(20, 20),
+                Parent = this, Location = new Point(DestArrowX, DestY + DestH - 18), Size = new Size(18, 18),
                 CenterText = true, Text = "▼", Sound = SoundList.ButtonA, Visible = false,
             };
             _upButton.Click += (o, e) => { if (_destStart >= Cols) { _destStart -= Cols; RefreshDestList(); } };
             _downButton.Click += (o, e) => { if (_destStart + MaxVisible < _visibleItems.Count) { _destStart += Cols; RefreshDestList(); } };
 
             _closeButton.BringToFront();   // 置顶：避免同区域控件遮挡导致“关闭无响应”
+            _catUp.BringToFront();          // 翻页箭头置顶，确保可点
+            _catDown.BringToFront();
         }
 
         /// <summary>填充并显示：title=窗口标题，items=该 NPC 的全部传送目的地。</summary>
@@ -207,9 +208,7 @@ namespace Client.MirScenes.Dialogs
             foreach (var b in _categoryButtons)
                 b.Dispose();
             _categoryButtons.Clear();
-            _catBaseX.Clear();
-            _catOffset = 0;
-            _catTotalW = 0;
+            _categoryNames.Clear();
 
             var cats = new List<string>();
             bool anyCat = false;
@@ -225,18 +224,18 @@ namespace Client.MirScenes.Dialogs
                 cats.Add("");
             }
 
-            int x = 0;
+            // 左侧竖排一级菜单：纵向堆叠，超出可视区（本引擎无 Clip）直接隐藏
+            int y = 0;
             for (int i = 0; i < cats.Count; i++)
             {
                 var cat = cats[i];
-                int w = (cat.Length == 0 ? 2 : cat.Length) * 13 + 18;   // 中文约 13px/字 + padding
                 var btn = new MirButton
                 {
                     AtlasNameKey = Sheet + "#com_z_btn_1",
                     HoverAtlasFrame = "com_z_btn_1_1",
-                    Parent = _catRow,
-                    Location = new Point(x, 1),
-                    Size = new Size(w, CatBtnH),
+                    Parent = _catMenu,
+                    Location = new Point(0, y),
+                    Size = new Size(CatMenuW, CatBtnH),
                     CenterText = true,
                     Text = string.IsNullOrEmpty(cat) ? "全部" : cat,
                     Sound = SoundList.ButtonA,
@@ -244,22 +243,27 @@ namespace Client.MirScenes.Dialogs
                 int idx = i;
                 btn.Click += (o, e) => SelectCategory(idx);
                 _categoryButtons.Add(btn);
-                _catBaseX.Add(x);
-                x += w + CatGap;
+                _categoryNames.Add(string.IsNullOrEmpty(cat) ? "全部" : cat);
+                y += CatStep;
             }
-            _catTotalW = x;
-
-            bool overflow = _catTotalW > CatRowW;
-            _catLeft.Visible = overflow;
-            _catRight.Visible = overflow;
+            _catTotalH = y - CatGap;          // 末项多算一个 gap，扣掉
+            _catOffsetY = 0;
+            ApplyCatScroll();
+            bool catOverflow = _catTotalH > CatMenuH;
+            _catUp.Visible = catOverflow;
+            _catDown.Visible = catOverflow;
 
             SelectCategory(0);
         }
 
-        private void ApplyCatOffset()
+        private void ApplyCatScroll()
         {
             for (int i = 0; i < _categoryButtons.Count; i++)
-                _categoryButtons[i].Location = new Point(_catBaseX[i] - _catOffset, 1);
+            {
+                int by = i * CatStep - _catOffsetY;
+                _categoryButtons[i].Location = new Point(0, by);
+                _categoryButtons[i].Visible = by + CatBtnH > 0 && by < CatMenuH;
+            }
         }
 
         private void SelectCategory(int index)
@@ -267,12 +271,12 @@ namespace Client.MirScenes.Dialogs
             for (int i = 0; i < _categoryButtons.Count; i++)
                 _categoryButtons[i].AtlasNameKey = (i == index) ? Sheet + "#com_z_btn_1_1" : Sheet + "#com_z_btn_1";
 
-            string cat = (index >= 0 && index < _categoryButtons.Count) ? _categoryButtons[index].Text : "";
+            string cat = (index >= 0 && index < _categoryNames.Count) ? _categoryNames[index] : "";
             _visibleItems = new List<DeliverDestination>();
             foreach (var it in _allItems)
             {
                 string c = it.Category ?? "";
-                if (index == 0 && _categoryButtons[0].Text == "全部")
+                if (index == 0 && _categoryNames[0] == "全部")
                     _visibleItems.Add(it);   // 第一项“全部”
                 else if (c == cat)
                     _visibleItems.Add(it);
