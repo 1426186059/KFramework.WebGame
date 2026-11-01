@@ -148,6 +148,8 @@ namespace Client.MirScenes
         // 限频输出移动诊断日志：每次点击只打一条，便于判断是"点击没送到"、
         // "坐标算错"还是"目标格被阻挡"，而不是靠猜。
         private static long _lastMoveLog;
+        // 自动寻路绕行重算的限频时间戳：避免每帧都跑全量 A*（长路径下会严重卡顿）。
+        private static long _lastAutoRepathTime;
         private static void LogMove(string msg)
         {
             if (CMain.Time < _lastMoveLog) return;
@@ -1731,14 +1733,21 @@ namespace Client.MirScenes
                     return;
                 }
 
-                var path = GameScene.Scene.MapControl.PathFinder.FindPath(MapObject.User.CurrentLocation, CurrentPath.Last().Location);
-
-                if (path != null && path.Count > 0)
-                    GameScene.Scene.MapControl.CurrentPath = path;
-                else
+                // 自动寻路“自愈 + 限频”：原版每帧全量 A* 会在长路径下严重卡顿，但完全不重算又会在
+                // 路径脱轨（如被经过的玩家/怪物临时挡了一下、或某帧位置与路径对不上）后前后抖动。
+                // 这里改为限频重算：当前位置偏离剩余路径(脱轨)→尽快纠偏(≥150ms)，否则每 ≥400ms 重算一次绕行/纠偏。
+                bool offPath = !CurrentPath.Any(x => x.Location == User.CurrentLocation);
+                if (offPath ? (CMain.Time >= _lastAutoRepathTime + 150) : (CMain.Time >= _lastAutoRepathTime + 400))
                 {
-                    AutoPath = false;
-                    return;
+                    _lastAutoRepathTime = CMain.Time;
+                    var repath = GameScene.Scene.MapControl.PathFinder.FindPath(MapObject.User.CurrentLocation, CurrentPath.Last().Location);
+                    if (repath != null && repath.Count > 0)
+                        GameScene.Scene.MapControl.CurrentPath = repath;
+                    else
+                    {
+                        AutoPath = false;
+                        return;
+                    }
                 }
 
                 Node currentNode = CurrentPath.SingleOrDefault(x => User.CurrentLocation == x.Location);

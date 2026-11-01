@@ -85,6 +85,7 @@ namespace Client.MirScenes.Dialogs
                 ForeColour = Color.White,
                 Location = new Point(519, 435),
                 Parent = this,
+                NotControl = true,
             };
 
             TitleLabel = new MirLabel
@@ -93,6 +94,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 AutoSize = false,
                 Size = new Size(699, 20),
+                NotControl = true,
                 Location = new Point(19, 6),
                 Font = new Font(Settings.FontName, 9F, KFramework.MonoGame.FontStyle.Bold),
                 DrawFormat = TextFormatFlags.HorizontalCenter
@@ -227,6 +229,9 @@ namespace Client.MirScenes.Dialogs
         public BigMapViewPort()
         {
             NotControl = false;
+            // Sort=false：防止点地图时基类 OnMouseDown 调 TrySort() 把这个大面积视口置顶，
+            // 从而盖住关闭按钮导致“点过地图后关不掉”。置顶逻辑仍对对话框本身生效（保持大地图在最前）。
+            Sort = false;
             Size = new Size(568, 380);
 
             UserRadarDot = new MirImageControl
@@ -255,16 +260,6 @@ namespace Client.MirScenes.Dialogs
             MouseMove += UpdateBigMapCoordinates;
             ParentChanged += (o, e) => SetParent();
             MouseDown += OnMouseClick;
-        }
-
-        // 重写 OnMouseDown：基类 MirControl.OnMouseDown 会调用 TrySort() 把本控件提到
-        // 父对话框子控件列表最前（置顶），而本视口是覆盖大半个对话框的大面积控件，
-        // 一旦置顶就会盖住关闭按钮，导致“点过地图后关闭按钮点不动”。地图视口不需要置顶/拖动，
-        // 故这里只触发 MouseDown 事件（进而由 OnMouseClick 做寻路），不调用基类的 Activate/TrySort。
-        public override void OnMouseDown(MouseEventArgs e)
-        {
-            if (!Enabled) return;
-            if (MouseDown != null) MouseDown.Invoke(this, e);
         }
 
         private void SetParent()
