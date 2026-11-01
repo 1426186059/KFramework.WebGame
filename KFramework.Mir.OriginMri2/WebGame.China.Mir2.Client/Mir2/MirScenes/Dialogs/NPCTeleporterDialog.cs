@@ -154,19 +154,6 @@ namespace Client.MirScenes.Dialogs
                 }
             }
 
-            _upButton = new MirButton
-            {
-                Parent = this, Location = new Point(DestArrowX, DestY), Size = new Size(18, 18),
-                CenterText = true, Text = "▲", Sound = SoundList.ButtonA, Visible = false,
-            };
-            _downButton = new MirButton
-            {
-                Parent = this, Location = new Point(DestArrowX, DestY + DestH - 18), Size = new Size(18, 18),
-                CenterText = true, Text = "▼", Sound = SoundList.ButtonA, Visible = false,
-            };
-            _upButton.Click += (o, e) => { if (_destStart >= Cols) { _destStart -= Cols; RefreshDestList(); } };
-            _downButton.Click += (o, e) => { if (_destStart + MaxVisible < _visibleItems.Count) { _destStart += Cols; RefreshDestList(); } };
-
             _closeButton.BringToFront();   // 置顶：避免同区域控件遮挡导致“关闭无响应”
         }
 
@@ -288,10 +275,6 @@ namespace Client.MirScenes.Dialogs
                     btn.Visible = false;
                 }
             }
-
-            bool canScroll = _visibleItems.Count > MaxVisible;
-            _upButton.Visible = canScroll && _destStart > 0;
-            _downButton.Visible = canScroll && _destStart + MaxVisible < _visibleItems.Count;
         }
 
         private void SelectDestination(DeliverDestination item)
