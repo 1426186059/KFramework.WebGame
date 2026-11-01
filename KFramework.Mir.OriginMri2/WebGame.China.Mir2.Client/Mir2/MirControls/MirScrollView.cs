@@ -90,6 +90,12 @@ namespace Client.MirControls
         public void ScrollBy(Point delta)
             => SetScrollOffset(new Point(ScrollOffset.X + delta.X, ScrollOffset.Y + delta.Y));
 
+        /// <summary>强制令本控件离屏纹理失效，下次 Draw 重新烘焙内容（子控件外观变化如高亮/选中态切换后调用）。</summary>
+        public void InvalidateTexture()
+        {
+            TextureValid = false;
+        }
+
         /// <summary>按归一化比例(0..1)设置竖直滚动位置（滚动条拖拽用）。</summary>
         internal void SetScrollNormalizedY(float t)
         {
@@ -141,6 +147,20 @@ namespace Client.MirControls
             int thumbTop = travel > 0 ? (int)(travel * (ScrollOffset.Y / (float)maxY)) : 0;
             _thumb.Size = new Size(ScrollBarWidth - TrackPad * 2, thumbH);
             _thumb.Location = new Point(stripX + TrackPad, TrackPad + thumbTop);
+        }
+
+        /// <summary>
+        /// 子控件（按钮等）高亮/按下/选中态变化时会自置 TextureValid=false；这里让滚动视图跟着失效并重烘，
+        /// 否则子控件在滚动视图内的选中/高亮/按下视觉不会刷新。
+        /// </summary>
+        protected override void BeforeDrawControl()
+        {
+            base.BeforeDrawControl();
+            if (TextureValid)
+            {
+                foreach (MirControl c in _content.Controls)
+                    if (!c.TextureValid) { TextureValid = false; break; }
+            }
         }
 
         /// <summary>

@@ -74,7 +74,7 @@ namespace Client.MirScenes.Dialogs
         public NPCTeleporterDialog()
         {
             _ = SetManifestImageAsync(BgUrl);   // 背景走 manifest 解析（CDN 哈希布局），避免 404
-            Size = new Size(PanelW + 26, PanelH);
+            Size = new Size(PanelW, PanelH);
             Movable = true;
             Sort = true;
 
@@ -114,7 +114,9 @@ namespace Client.MirScenes.Dialogs
             {
                 AtlasNameKey = Sheet + "#com_btn_close0",
                 Parent = this,
-                Location = new Point(PanelW, 2),
+                // 必须落在 this.Size 内：命中测试先判断父控件 DisplayRectangle，按钮越界则永不进入子控件递归 → 点击无响应。
+                // 想做成"原始传奇那样压在右上边框"只需把 this.Size 宽度放大到能包住按钮即可（不必越界）。
+                Location = new Point(Size.Width - 26, 2),
                 Size = new Size(26, 26),
                 Sound = SoundList.ButtonA,
             };
@@ -154,6 +156,18 @@ namespace Client.MirScenes.Dialogs
                                  (Settings.ScreenHeight - Size.Height) / 2);
             Visible = true;
             BringToFront();
+        }
+
+        /// <summary>仿 Unity ScrollRect：鼠标在面板任意位置（不限于滚动条/列表）都滚动对应侧列表——左栏区域滚分类、其余滚目的地。</summary>
+        public override void OnMouseWheel(MouseEventArgs e)
+        {
+            bool overCat = e.Location.X < CatMenuX + CatMenuW;
+            var target = overCat ? _catScroll : _destScroll;
+            int notches = Math.Abs(e.Delta) >= 120 ? e.Delta / 120 : e.Delta;
+            if (notches != 0)
+                target.ScrollBy(new Point(0, notches * 30));
+            e.Handled = true;
+            base.OnMouseWheel(e);
         }
 
         private void BuildCategories()
@@ -217,6 +231,7 @@ namespace Client.MirScenes.Dialogs
                 bool sel = (i == index);
                 _categoryButtons[i].AtlasFrame = sel ? "com_z_btn_2" : "com_z_btn_2_1";
             }
+            _catScroll.InvalidateTexture();   // 类别高亮切换后让左侧滚动视图重烘，否则选中态不刷新
 
             string cat = (index >= 0 && index < _categoryNames.Count) ? _categoryNames[index] : "";
             _visibleItems = new List<DeliverDestination>();
