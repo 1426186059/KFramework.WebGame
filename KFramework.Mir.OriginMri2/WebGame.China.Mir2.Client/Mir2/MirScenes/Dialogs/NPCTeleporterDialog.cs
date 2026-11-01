@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
 using Client.MirControls;
 using Client.MirSounds;
-using MirEngine;
 
 /*
  * 原始传奇传送员（NPC id 600）标准分组结构 —— 本对话框分类(Category)的权威参考：
