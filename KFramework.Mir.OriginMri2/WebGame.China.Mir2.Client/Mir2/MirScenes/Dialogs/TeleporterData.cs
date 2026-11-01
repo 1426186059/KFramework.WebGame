@@ -10,6 +10,9 @@ namespace Client.MirScenes.Dialogs
     /// </summary>
     public static class TeleporterData
     {
+        /// <summary>是否启用自定义分类传送对话框。默认 false：暂用原 NPC 脚本菜单显示传送员。</summary>
+        public static bool UseCustomDialog = false;
+
         public static List<DeliverDestination> GetDestinations()
         {
             var list = new List<DeliverDestination>();

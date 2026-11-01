@@ -41,6 +41,10 @@ namespace Client.MirScenes.Dialogs
         public event Action<DeliverDestination> OnTeleport;
         public uint CurrentNPCID;   // 当前交互的传送员 NPC ObjectID（OnTeleport 时发包用）
 
+        /// <summary>自定义传送对话框模式下：发送 @Main 仅用于“开起”服务端对话（设置 NPCObjectID/NPCScriptID），
+        /// 其回包（原菜单文本）需忽略——置此标记后 NPCResponse 会跳过显示原菜单、且不隐藏本框。</summary>
+        public static bool SuppressNpcDialog;
+
         private const string Sheet = "y_common-sheet";
         // 背景：manifest 中存在的 gameui4/jpg/y_cs_bg.jpg（线上原图为 gameui3/jpg/delieve_bgi.png，本工程无该资源）。
         private const string BgUrl = "resource/assets/gameui4/jpg/y_cs_bg.jpg";

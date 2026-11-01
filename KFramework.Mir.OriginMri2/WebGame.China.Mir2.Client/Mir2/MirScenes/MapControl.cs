@@ -974,14 +974,19 @@ namespace Client.MirScenes
                         NPCObject npc = MapObject.MouseObject as NPCObject;
                         if (npc != null)
                         {
-                            // 城市传送员：弹出分类传送对话框，隐藏原脚本菜单；关闭后可再次点击重开。
-                            if (TeleporterData.IsCityTeleporter(npc.Name))
+                            // 城市传送员：自定义分类传送对话框（开关 TeleporterData.UseCustomDialog，默认关，暂用原 NPC 脚本菜单）。
+                            if (TeleporterData.UseCustomDialog && TeleporterData.IsCityTeleporter(npc.Name))
                             {
                                 GameScene.NPCID = npc.ObjectID;
                                 GameScene.NPCTime = CMain.Time + 5000;
                                 if (!GameScene.Scene.NPCTeleporterDialog.Visible)
                                 {
+                                    // 先发 @Main 在服务端“开起”与传送员的对话（设置 NPCObjectID/NPCScriptID）；
+                                    // 否则后续点目的地发 [@mv_xxx] 时服务端对话上下文不对，会落到随机传送。
+                                    // 该回包仅用于建立对话，SuppressNpcDialog 让 NPCResponse 忽略它，不弹原菜单。
+                                    NPCTeleporterDialog.SuppressNpcDialog = true;
                                     GameScene.Scene.NPCDialog.Hide();
+                                    Network.Enqueue(new C.CallNPC { ObjectID = npc.ObjectID, Key = "[@Main]" });
                                     GameScene.Scene.NPCTeleporterDialog.Open("传送员", TeleporterData.GetDestinations(), npc.ObjectID);
                                 }
                                 return;

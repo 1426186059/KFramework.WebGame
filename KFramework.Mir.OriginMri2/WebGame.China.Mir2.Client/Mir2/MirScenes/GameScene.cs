@@ -3869,6 +3869,13 @@ namespace Client.MirScenes
             NPCTime = 0;
             NPCDialog.BigButtons.Clear();
             NPCDialog.BigButtonDialog.Hide();
+            if (NPCTeleporterDialog.SuppressNpcDialog)
+            {
+                // 自定义传送对话框模式：发 @Main 仅为在服务端“开起”与传送员的对话（设置 NPCObjectID/NPCScriptID），
+                // 其回包（原菜单文本）须忽略，否则会弹出原始 NPC 菜单并覆盖自定义框。
+                NPCTeleporterDialog.SuppressNpcDialog = false;
+                return;
+            }
             NPCTeleporterDialog.Hide();
             NPCDialog.NewText(p.Page);
 
