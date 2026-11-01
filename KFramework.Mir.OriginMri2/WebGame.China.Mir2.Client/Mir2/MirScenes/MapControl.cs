@@ -1742,7 +1742,9 @@ namespace Client.MirScenes
                     _lastAutoRepathTime = CMain.Time;
                     var repath = GameScene.Scene.MapControl.PathFinder.FindPath(MapObject.User.CurrentLocation, CurrentPath.Last().Location);
                     if (repath != null && repath.Count > 0)
+                    {
                         GameScene.Scene.MapControl.CurrentPath = repath;
+                    }
                     else
                     {
                         AutoPath = false;
@@ -1757,9 +1759,10 @@ namespace Client.MirScenes
                     {
                         Node first = CurrentPath.First();
                         CurrentPath.Remove(first);
-
                         if (first == currentNode)
+                        {
                             break;
+                        }
                     }
                 }
 
@@ -1772,10 +1775,10 @@ namespace Client.MirScenes
                         User.QueuedAction = new QueuedAction { Action = MirAction.Running, Direction = dir, Location = Functions.PointMove(User.CurrentLocation, dir, User.RidingMount ? 3 : 2) };
                         return;
                     }
+
                     if (CanWalk(dir))
                     {
                         User.QueuedAction = new QueuedAction { Action = MirAction.Walking, Direction = dir, Location = Functions.PointMove(User.CurrentLocation, dir, 1) };
-
                         return;
                     }
                 }
