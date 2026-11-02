@@ -22,7 +22,8 @@ namespace MapInfoEditor
     public class SzRow
     {
         public JsonObject Node;
-        public int X, Y, Size;
+        public int X, Y, Size, SizeY;
+        public float Rotation;
         public bool Start;
     }
 
@@ -333,6 +334,8 @@ namespace MapInfoEditor
                     X = loc["X"]?.GetValue<int>() ?? 0,
                     Y = loc["Y"]?.GetValue<int>() ?? 0,
                     Size = z["Size"]?.GetValue<int>() ?? 0,
+                    SizeY = z["SizeY"]?.GetValue<int>() ?? 0,
+                    Rotation = z["Rotation"]?.GetValue<float>() ?? 0f,
                     Start = z["StartPoint"]?.GetValue<bool>() ?? false
                 });
             }
@@ -407,13 +410,15 @@ namespace MapInfoEditor
         }
 
         // ---------- 新增 ----------
-        public void AddSafeZone(MapEntry e, int x, int y, int size, bool start)
+        public void AddSafeZone(MapEntry e, int x, int y, int size, bool start, int sizeY = 0, float rotation = 0f)
         {
             var arr = GetValues(e, "SafeZones");
             var z = new JsonObject
             {
                 ["Location"] = new JsonObject { ["X"] = JsonValue.Create(x), ["Y"] = JsonValue.Create(y) },
                 ["Size"] = JsonValue.Create(size),
+                ["SizeY"] = JsonValue.Create(sizeY),
+                ["Rotation"] = JsonValue.Create(rotation),
                 ["StartPoint"] = JsonValue.Create(start)
             };
             arr.Add(z);

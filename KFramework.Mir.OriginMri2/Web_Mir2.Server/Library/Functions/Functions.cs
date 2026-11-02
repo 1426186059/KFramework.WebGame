@@ -73,6 +73,22 @@ public static class Functions
         return Math.Abs(a.X - b.X) <= i && Math.Abs(a.Y - b.Y) <= i;
     }
 
+    /// <summary>旋转矩形包含判定：把点 p 绕 center 反向旋转 -rotDeg，再按轴对齐半长 hx/hy 判定。</summary>
+    public static bool InRotatedRange(Point center, Point p, int hx, int hy, float rotDeg)
+    {
+        if (rotDeg == 0f)
+            return Math.Abs(center.X - p.X) <= hx && Math.Abs(center.Y - p.Y) <= hy;
+
+        double rad = rotDeg * Math.PI / 180.0;
+        double cos = Math.Cos(rad), sin = Math.Sin(rad);
+        double dx = p.X - center.X;
+        double dy = p.Y - center.Y;
+        // 将点 p 旋转到矩形本地坐标系
+        double lx = dx * cos + dy * sin;
+        double ly = -dx * sin + dy * cos;
+        return Math.Abs(lx) <= hx && Math.Abs(ly) <= hy;
+    }
+
     public static bool FacingEachOther(MirDirection dirA, Point pointA, MirDirection dirB, Point pointB)
     {
         if (dirA == DirectionFromPoint(pointA, pointB) && dirB == DirectionFromPoint(pointB, pointA))

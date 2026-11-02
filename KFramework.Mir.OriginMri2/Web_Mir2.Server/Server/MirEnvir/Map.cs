@@ -153,17 +153,41 @@ namespace Server.MirEnvir
 
         private void CreateSafeZone(SafeZoneInfo info)
         {
+            int hx = info.Size;
+            int hy = info.SizeY > 0 ? info.SizeY : info.Size;
+            float rot = info.Rotation;
+            double rad = rot * Math.PI / 180.0;
+            double absCos = Math.Abs(Math.Cos(rad)), absSin = Math.Abs(Math.Sin(rad));
+
+            // 旋转矩形在轴对齐坐标系下的包围盒半长（最小 AABB）
+            int spanX = (int)Math.Ceiling(hx * absCos + hy * absSin);
+            int spanY = (int)Math.Ceiling(hx * absSin + hy * absCos);
+
+            int minX = Math.Max(info.Location.X - spanX, 0);
+            int maxX = Math.Min(info.Location.X + spanX, Width - 1);
+            int minY = Math.Max(info.Location.Y - spanY, 0);
+            int maxY = Math.Min(info.Location.Y + spanY, Height - 1);
+            if (maxX < minX || maxY < minY) return;
+
+            bool[,] inside = new bool[maxX - minX + 1, maxY - minY + 1];
+            for (int y = minY; y <= maxY; y++)
+                for (int x = minX; x <= maxX; x++)
+                    inside[x - minX, y - minY] = Functions.InRotatedRange(info.Location, new Point(x, y), hx, hy, rot);
+
             if (Settings.SafeZoneBorder)
             {
-                for (int y = info.Location.Y - info.Size; y <= info.Location.Y + info.Size; y++)
+                for (int y = minY; y <= maxY; y++)
                 {
-                    if (y < 0) continue;
-                    if (y >= Height) break;
-                    for (int x = info.Location.X - info.Size; x <= info.Location.X + info.Size; x += Math.Abs(y - info.Location.Y) == info.Size ? 1 : info.Size * 2)
+                    for (int x = minX; x <= maxX; x++)
                     {
-                        if (x < 0) continue;
-                        if (x >= Width) break;
-                        if (!Cells[x, y].Valid) continue;
+                        if (!inside[x - minX, y - minY] || !Cells[x, y].Valid) continue;
+                        // 边框 = 任一四邻不在矩形内
+                        bool border =
+                            (x <= minX || !inside[x - 1 - minX, y - minY]) ||
+                            (x >= maxX || !inside[x + 1 - minX, y - minY]) ||
+                            (y <= minY || !inside[x - minX, y - 1 - minY]) ||
+                            (y >= maxY || !inside[x - minX, y + 1 - minY]);
+                        if (!border) continue;
 
                         SpellObject spell = new SpellObject
                         {
@@ -176,7 +200,6 @@ namespace Server.MirEnvir
                         };
 
                         Cells[x, y].Add(spell);
-
                         spell.Spawned();
                     }
                 }
@@ -184,28 +207,23 @@ namespace Server.MirEnvir
 
             if (Settings.SafeZoneHealing)
             {
-                for (int y = info.Location.Y - info.Size; y <= info.Location.Y + info.Size; y++)
+                for (int y = minY; y <= maxY; y++)
                 {
-                    if (y < 0) continue;
-                    if (y >= Height) break;
-                    for (int x = info.Location.X - info.Size; x <= info.Location.X + info.Size; x++)
+                    for (int x = minX; x <= maxX; x++)
                     {
-                        if (x < 0) continue;
-                        if (x >= Width) break;
-                        if (!Cells[x, y].Valid) continue;
+                        if (!inside[x - minX, y - minY] || !Cells[x, y].Valid) continue;
 
                         SpellObject spell = new SpellObject
-                            {
-                                ExpireTime = long.MaxValue,
-                                Value = 25,
-                                TickSpeed = 2000,
-                                Spell = Spell.Healing,
-                                CurrentLocation = new Point(x, y),
-                                CurrentMap = this
-                            };
+                        {
+                            ExpireTime = long.MaxValue,
+                            Value = 25,
+                            TickSpeed = 2000,
+                            Spell = Spell.Healing,
+                            CurrentLocation = new Point(x, y),
+                            CurrentMap = this
+                        };
 
                         Cells[x, y].Add(spell);
-
                         spell.Spawned();
                     }
                 }
@@ -2000,7 +2018,9 @@ namespace Server.MirEnvir
             for (int i = 0; i < Info.SafeZones.Count; i++)
             {
                 SafeZoneInfo szi = Info.SafeZones[i];
-                if (Functions.InRange(szi.Location, location, szi.Size))
+                int hx = szi.Size;
+                int hy = szi.SizeY > 0 ? szi.SizeY : szi.Size;
+                if (Functions.InRotatedRange(szi.Location, location, hx, hy, szi.Rotation))
                     return szi;
             }
             return null;

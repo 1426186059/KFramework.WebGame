@@ -41,6 +41,21 @@ app.MapGet("/api/monsters", () =>
     return Results.Ok(new { monsters = list });
 });
 
+// ---------- 数据源路径（供前端展示“数据从哪来”） ----------
+app.MapGet("/api/info", () => Results.Ok(new
+{
+    versionRoot = MapInfoStore.VersionRoot,
+    // 读取来源
+    mapInfo = store.MapInfoPath,
+    dat = store.DatPath,
+    monsterInfo = store.MonsterInfoPath,
+    npcInfo = store.NpcInfoPath,
+    excelConfig = Path.Combine(MapInfoStore.VersionRoot, "ExcelConfig"),
+    // 保存路径（写回目标）
+    saveMapInfo = store.MapInfoPath,
+    saveNpcInfo = store.NpcInfoPath
+}));
+
 // ---------- 单张地图详情 + 解码网格 ----------
 app.MapGet("/api/maps/{id:int}", (int id) =>
 {
@@ -82,7 +97,7 @@ app.MapGet("/api/maps/{id:int}", (int id) =>
     };
 
     var safeZones = store.GetSafeZones(e)
-        .Select(z => new { x = z.X, y = z.Y, size = z.Size, start = z.Start }).ToList();
+        .Select(z => new { x = z.X, y = z.Y, size = z.Size, sizeY = z.SizeY, rotation = z.Rotation, start = z.Start }).ToList();
 
     var respawns = store.GetRespawns(e).Select(r =>
     {
@@ -160,6 +175,8 @@ app.MapPost("/api/maps/{id:int}", async (int id, HttpContext ctx) =>
         {
             ["Location"] = new JsonObject { ["X"] = JsonValue.Create(it.GetProperty("x").GetInt32()), ["Y"] = JsonValue.Create(it.GetProperty("y").GetInt32()) },
             ["Size"] = JsonValue.Create(it.GetProperty("size").GetInt32()),
+            ["SizeY"] = it.TryGetProperty("sizeY", out var szY) ? JsonValue.Create(szY.GetInt32()) : JsonValue.Create(0),
+            ["Rotation"] = it.TryGetProperty("rotation", out var rot) ? JsonValue.Create(rot.GetSingle()) : JsonValue.Create(0f),
             ["StartPoint"] = JsonValue.Create(it.GetProperty("start").GetBoolean())
         });
     });

@@ -79752,39 +79752,13 @@
     "SafeZones": [
       {
         "Location": {
-          "X": 496,
-          "Y": 400
+          "X": 328,
+          "Y": 335
         },
         "Size": 10,
-        "StartPoint": true,
-        "Info": {}
-      },
-      {
-        "Location": {
-          "X": 330,
-          "Y": 330
-        },
-        "Size": 10,
-        "StartPoint": false,
-        "Info": {}
-      },
-      {
-        "Location": {
-          "X": 301,
-          "Y": 372
-        },
-        "Size": 10,
-        "StartPoint": false,
-        "Info": {}
-      },
-      {
-        "Location": {
-          "X": 848,
-          "Y": 674
-        },
-        "Size": 10,
-        "StartPoint": false,
-        "Info": {}
+        "SizeY": 0,
+        "Rotation": -45,
+        "StartPoint": true
       }
     ],
     "Respawns": [
@@ -79800,7 +79774,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2137,
+        "RespawnIndex": 103,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -79816,7 +79790,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2138,
+        "RespawnIndex": 104,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -79832,7 +79806,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2139,
+        "RespawnIndex": 105,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -79848,7 +79822,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2140,
+        "RespawnIndex": 106,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -79864,7 +79838,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2141,
+        "RespawnIndex": 107,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -79880,7 +79854,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2142,
+        "RespawnIndex": 108,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -79896,7 +79870,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2143,
+        "RespawnIndex": 109,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -79912,7 +79886,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2144,
+        "RespawnIndex": 110,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -79928,7 +79902,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2145,
+        "RespawnIndex": 111,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -79944,7 +79918,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2146,
+        "RespawnIndex": 112,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -79960,7 +79934,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2147,
+        "RespawnIndex": 113,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -79976,7 +79950,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2148,
+        "RespawnIndex": 114,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -79992,7 +79966,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2149,
+        "RespawnIndex": 115,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80008,7 +79982,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2150,
+        "RespawnIndex": 116,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80024,7 +79998,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2151,
+        "RespawnIndex": 117,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80040,7 +80014,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2152,
+        "RespawnIndex": 118,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80056,7 +80030,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2153,
+        "RespawnIndex": 119,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80072,7 +80046,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2154,
+        "RespawnIndex": 120,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80088,7 +80062,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2155,
+        "RespawnIndex": 121,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80104,7 +80078,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2156,
+        "RespawnIndex": 122,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80120,7 +80094,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2157,
+        "RespawnIndex": 123,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80136,7 +80110,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2158,
+        "RespawnIndex": 124,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80152,7 +80126,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2159,
+        "RespawnIndex": 125,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80168,7 +80142,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2160,
+        "RespawnIndex": 126,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80184,7 +80158,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2161,
+        "RespawnIndex": 127,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80200,7 +80174,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2162,
+        "RespawnIndex": 128,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80216,7 +80190,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2163,
+        "RespawnIndex": 129,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80232,7 +80206,7 @@
         "RandomDelay": 0,
         "Direction": 5,
         "RoutePath": "",
-        "RespawnIndex": 2164,
+        "RespawnIndex": 130,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80248,7 +80222,7 @@
         "RandomDelay": 0,
         "Direction": 3,
         "RoutePath": "",
-        "RespawnIndex": 2165,
+        "RespawnIndex": 131,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80264,7 +80238,7 @@
         "RandomDelay": 0,
         "Direction": 5,
         "RoutePath": "",
-        "RespawnIndex": 2166,
+        "RespawnIndex": 132,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80280,7 +80254,7 @@
         "RandomDelay": 0,
         "Direction": 5,
         "RoutePath": "",
-        "RespawnIndex": 2167,
+        "RespawnIndex": 133,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80296,7 +80270,7 @@
         "RandomDelay": 0,
         "Direction": 4,
         "RoutePath": "",
-        "RespawnIndex": 2168,
+        "RespawnIndex": 134,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80312,7 +80286,7 @@
         "RandomDelay": 0,
         "Direction": 3,
         "RoutePath": "",
-        "RespawnIndex": 2169,
+        "RespawnIndex": 135,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80328,7 +80302,7 @@
         "RandomDelay": 0,
         "Direction": 5,
         "RoutePath": "",
-        "RespawnIndex": 2170,
+        "RespawnIndex": 136,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80344,7 +80318,7 @@
         "RandomDelay": 0,
         "Direction": 5,
         "RoutePath": "",
-        "RespawnIndex": 2171,
+        "RespawnIndex": 137,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80360,7 +80334,7 @@
         "RandomDelay": 0,
         "Direction": 4,
         "RoutePath": "",
-        "RespawnIndex": 2172,
+        "RespawnIndex": 138,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80376,7 +80350,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2173,
+        "RespawnIndex": 139,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80392,7 +80366,7 @@
         "RandomDelay": 0,
         "Direction": 4,
         "RoutePath": "",
-        "RespawnIndex": 2174,
+        "RespawnIndex": 140,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80408,7 +80382,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2175,
+        "RespawnIndex": 141,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80424,7 +80398,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2176,
+        "RespawnIndex": 142,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80440,7 +80414,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2177,
+        "RespawnIndex": 143,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80456,7 +80430,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2178,
+        "RespawnIndex": 144,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80472,7 +80446,7 @@
         "RandomDelay": 0,
         "Direction": 3,
         "RoutePath": "",
-        "RespawnIndex": 2179,
+        "RespawnIndex": 145,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80488,7 +80462,7 @@
         "RandomDelay": 0,
         "Direction": 3,
         "RoutePath": "",
-        "RespawnIndex": 2180,
+        "RespawnIndex": 146,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80504,7 +80478,7 @@
         "RandomDelay": 0,
         "Direction": 3,
         "RoutePath": "",
-        "RespawnIndex": 2181,
+        "RespawnIndex": 147,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80520,7 +80494,7 @@
         "RandomDelay": 0,
         "Direction": 3,
         "RoutePath": "",
-        "RespawnIndex": 2182,
+        "RespawnIndex": 148,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80536,7 +80510,7 @@
         "RandomDelay": 0,
         "Direction": 1,
         "RoutePath": "",
-        "RespawnIndex": 2183,
+        "RespawnIndex": 149,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80552,7 +80526,7 @@
         "RandomDelay": 0,
         "Direction": 3,
         "RoutePath": "",
-        "RespawnIndex": 2184,
+        "RespawnIndex": 150,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80568,7 +80542,7 @@
         "RandomDelay": 0,
         "Direction": 7,
         "RoutePath": "",
-        "RespawnIndex": 2185,
+        "RespawnIndex": 151,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80584,7 +80558,7 @@
         "RandomDelay": 0,
         "Direction": 7,
         "RoutePath": "",
-        "RespawnIndex": 2186,
+        "RespawnIndex": 152,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -80599,8 +80573,8 @@
         "Delay": 0,
         "RandomDelay": 0,
         "Direction": 0,
-        "RoutePath": "土墙/MWPatrol1",
-        "RespawnIndex": 2187,
+        "RoutePath": "",
+        "RespawnIndex": 153,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       }
@@ -80618,9 +80592,9 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": true,
         "ConquestIndex": 0,
-        "Icon": 31
+        "ShowOnBigMap": false,
+        "Icon": 0
       },
       {
         "MapIndex": 5427,
@@ -80634,8 +80608,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80650,8 +80624,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80666,8 +80640,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80682,8 +80656,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80698,8 +80672,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80714,8 +80688,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80730,8 +80704,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80746,8 +80720,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80762,8 +80736,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80778,8 +80752,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80794,8 +80768,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80810,8 +80784,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80826,8 +80800,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80842,9 +80816,9 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": true,
         "ConquestIndex": 0,
-        "Icon": 31
+        "ShowOnBigMap": false,
+        "Icon": 0
       },
       {
         "MapIndex": 5427,
@@ -80858,8 +80832,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80874,8 +80848,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80890,8 +80864,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80906,8 +80880,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80922,8 +80896,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80938,8 +80912,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80954,8 +80928,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80970,8 +80944,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -80986,8 +80960,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81002,8 +80976,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81018,8 +80992,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81034,8 +81008,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81050,8 +81024,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81066,8 +81040,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81082,8 +81056,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81098,8 +81072,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81114,8 +81088,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81130,8 +81104,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81146,8 +81120,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81162,8 +81136,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81178,8 +81152,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81194,8 +81168,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81210,8 +81184,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81226,8 +81200,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81242,8 +81216,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81258,8 +81232,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81274,9 +81248,9 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": true,
         "ConquestIndex": 0,
-        "Icon": 33
+        "ShowOnBigMap": false,
+        "Icon": 0
       },
       {
         "MapIndex": 5311,
@@ -81290,8 +81264,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81306,8 +81280,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81322,8 +81296,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81338,8 +81312,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81354,8 +81328,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81370,8 +81344,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81386,8 +81360,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81402,8 +81376,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81418,8 +81392,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81434,8 +81408,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81450,8 +81424,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81466,8 +81440,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81482,8 +81456,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81498,8 +81472,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81514,8 +81488,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81530,8 +81504,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81546,9 +81520,9 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": true,
         "ConquestIndex": 0,
-        "Icon": 33
+        "ShowOnBigMap": false,
+        "Icon": 0
       },
       {
         "MapIndex": 5379,
@@ -81562,8 +81536,8 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": false,
         "ConquestIndex": 0,
+        "ShowOnBigMap": false,
         "Icon": 0
       },
       {
@@ -81578,9 +81552,9 @@
         },
         "NeedHole": false,
         "NeedMove": false,
-        "ShowOnBigMap": true,
         "ConquestIndex": 0,
-        "Icon": 33
+        "ShowOnBigMap": false,
+        "Icon": 0
       }
     ]
   },

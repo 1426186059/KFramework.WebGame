@@ -41,23 +41,20 @@
   #canvas { image-rendering: pixelated; background: #000; display: block; }
   button.action { background: #1565ff; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
   button.del { background: #c0392b; color: #fff; border: none; padding: 2px 6px; cursor: pointer; }
+  #monBody .monpick { background: #e3f2fd; border: 1px solid #90caf9; border-radius: 3px; padding: 3px 8px; cursor: pointer; text-align: left; min-width: 160px; font-size: 12px; }
+  #monBody .monpick:hover { background: #d0e7fb; }
+  #monPicker { position: fixed; z-index: 1000; min-width: 220px; max-height: 320px; overflow-y: auto; background: #fff; border: 1px solid #90caf9; border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,.2); padding: 4px; transform: translateY(-8px); opacity: 0; pointer-events: none; transition: transform .15s ease, opacity .15s ease; }
+  #monPicker.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+  #monPicker .pick-head { padding: 4px 8px 6px; font-weight: bold; color: #555; border-bottom: 1px solid #eee; margin-bottom: 4px; }
+  #monPicker .pick-item { display: block; width: 100%; text-align: left; border: none; background: #fff; padding: 6px 8px; cursor: pointer; border-radius: 4px; font-size: 12px; }
+  #monPicker .pick-item:hover { background: #e3f2fd; }
+  #mvBody .mvmap { background: #e3f2fd; border: 1px solid #90caf9; border-radius: 3px; padding: 3px 8px; min-width: 160px; font-size: 12px; }
 </style>
 </head>
 <body>
 <div id="toolbar">
   <button id="saveBtn" class="action">💾 保存</button>
-  <label>放置模式:
-    <select id="modeSel">
-      <option value="none">无</option>
-      <option value="safezone">安全区</option>
-      <option value="monster">怪物</option>
-      <option value="npc">NPC</option>
-      <option value="movement">传送点</option>
-    </select>
-  </label>
-  <label>怪物: <select id="monSel"></select></label>
-  <button id="zoomOut">－</button>
-  <button id="zoomIn">＋</button>
+  <button id="srcBtn" class="action">📂 数据来源</button>
   <span class="spacer"></span>
   <span class="status" id="tbStatus"></span>
 </div>
@@ -89,22 +86,22 @@
     </div>
 
     <div id="tab-sz" class="tabpane">
-      <div class="row"><button class="action" id="addSZ">＋ 添加</button><span class="hint">也可选“安全区”模式后点击右侧地图放置（默认半径10）</span></div>
-      <table><thead><tr><th>X</th><th>Y</th><th>半径</th><th>出生点</th><th></th></tr></thead><tbody id="szBody"></tbody></table>
+      <div class="row"><button class="action" id="addSZ">＋ 添加</button><span class="hint">新增安全区默认在图中心（半宽/半高10、不旋转），可手动修改</span></div>
+      <table><thead><tr><th>X</th><th>Y</th><th>半宽X</th><th>半高Y</th><th>旋转°</th><th>出生点</th><th></th></tr></thead><tbody id="szBody"></tbody></table>
     </div>
 
     <div id="tab-mon" class="tabpane">
-      <div class="row"><button class="action" id="addMon">＋ 添加</button><span class="hint">也可选“怪物”模式后点击右侧地图放置</span></div>
-      <table><thead><tr><th>怪物ID</th><th>名称</th><th>X</th><th>Y</th><th>数量</th><th>扩散</th><th>延迟</th><th>方向</th><th></th></tr></thead><tbody id="monBody"></tbody></table>
+      <div class="row"><button class="action" id="addMon">＋ 添加</button><span class="hint">怪物名用下拉选择</span></div>
+      <table><thead><tr><th>怪物</th><th>X</th><th>Y</th><th>数量</th><th>扩散</th><th>延迟</th><th>方向</th><th></th></tr></thead><tbody id="monBody"></tbody></table>
     </div>
 
     <div id="tab-npc" class="tabpane">
-      <div class="row"><button class="action" id="addNpc">＋ 添加</button><span class="hint">新增 NPC 写入全局 NPC 表；也可选“NPC”模式点击地图放置</span></div>
-      <table><thead><tr><th>ID</th><th>脚本</th><th>名称</th><th>X</th><th>Y</th><th>频率</th><th>图像</th><th></th></tr></thead><tbody id="npcBody"></tbody></table>
+      <div class="row"><span class="hint">（只读）NPC 来自全局表 <b>NPCInfo</b>，请直接修改 NPCInfo 表后刷新页面即可生效。</span></div>
+      <table><thead><tr><th>ID</th><th>脚本</th><th>名称</th><th>X</th><th>Y</th><th>频率</th><th>图像</th></tr></thead><tbody id="npcBody"></tbody></table>
     </div>
 
     <div id="tab-mv" class="tabpane">
-      <div class="row"><button class="action" id="addMv">＋ 添加</button><span class="hint">新增传送点写入本图；也可选“传送点”模式点击地图设置源坐标</span></div>
+      <div class="row"><button class="action" id="addMv">＋ 添加</button><span class="hint">新增传送点写入本图（源坐标默认图中心，可手动修改）</span></div>
       <table><thead><tr><th>目标地图</th><th>源X</th><th>源Y</th><th>目标X</th><th>目标Y</th><th>NeedHole</th><th>NeedMove</th><th></th></tr></thead><tbody id="mvBody"></tbody></table>
     </div>
   </div>
@@ -114,22 +111,20 @@
       图例：<span style="color:#ebe8de">■</span>可走 &nbsp; <span style="color:#404040">■</span>墙(不可走) &nbsp;
       <span style="color:#00cc00">□</span>安全区(亮绿=出生点) &nbsp; <span style="color:#ff2222">●</span>怪物 &nbsp;
       <span style="color:#1565ff">○</span>Boss &nbsp; <span style="color:#00aa00">●</span>NPC &nbsp;
-      <span style="color:#ff9900">■</span>传送点(源)<br/>
-      提示：选上方“放置模式”后，在图上点击即可放置对应元素。
+      <span style="color:#ff9900">■</span>传送点(源)
     </div>
     <div id="status">就绪</div>
     <div id="canvasWrap"><canvas id="canvas"></canvas></div>
   </div>
 </div>
 
+<div id="monPicker"></div>
 <script>
 const $ = id => document.getElementById(id);
 let maps = [], monsters = [];
 let current = null;       // 当前地图详情
 let flags = null;         // Uint8Array 解码后的 nibble 数据
 let cellPx = 4;
-let mode = 'none';
-let selectedMonster = 0;
 
 const BOOL_FIELDS = [
   ['noTeleport','NoTeleport'], ['noReconnect','NoReconnect'], ['noRecall','NoRecall'],
@@ -152,27 +147,14 @@ async function init() {
   const [mRes, monRes] = await Promise.all([fetch('/api/maps'), fetch('/api/monsters')]);
   const m = await mRes.json(); maps = m.maps;
   const mo = await monRes.json(); monsters = mo.monsters;
-  // 怪物下拉
-  const sel = $('monSel');
-  monsters.forEach(x => {
-    const o = document.createElement('option');
-    o.value = x.index; o.textContent = `${x.index} - ${x.name}${x.isBoss ? ' [Boss]' : ''}`;
-    sel.appendChild(o);
-  });
-  selectedMonster = monsters.length ? monsters[0].index : 0;
-  sel.value = selectedMonster;
-  sel.onchange = () => selectedMonster = parseInt(sel.value, 10);
 
-  $('modeSel').onchange = () => mode = $('modeSel').value;
-  $('zoomIn').onclick = () => { cellPx = Math.min(24, cellPx + 1); drawMap(); };
-  $('zoomOut').onclick = () => { cellPx = Math.max(1, cellPx - 1); drawMap(); };
   $('saveBtn').onclick = save;
+  $('srcBtn').onclick = () => window.open('/sources.html', '_blank');
 
   buildBoolFields();
   renderList('');
   wireTabs();
   wireTables();
-  wireCanvas();
   setTb(`已加载 ${maps.length} 张地图 / ${monsters.length} 个怪物`);
 }
 
@@ -245,56 +227,21 @@ function wireTabs() {
 
 function wireTables() {
   // 安全区
-  $('addSZ').onclick = () => { current.safeZones.push({ x: Math.floor(current.map.cols/2), y: Math.floor(current.map.rows/2), size: 10, start: false }); renderSZ(); drawMap(); };
+  $('addSZ').onclick = () => { current.safeZones.push({ x: Math.floor(current.map.cols/2), y: Math.floor(current.map.rows/2), size: 10, sizeY: 10, rotation: 0, start: false }); renderSZ(); drawMap(); };
   // 怪物
-  $('addMon').onclick = () => { current.respawns.push({ monsterIndex: selectedMonster, x: Math.floor(current.map.cols/2), y: Math.floor(current.map.rows/2), count: 1, spread: 0, delay: 0, direction: 0, isBoss: false }); renderMon(); drawMap(); };
+  $('addMon').onclick = () => { const mi = monsters.length ? monsters[0].index : 0; current.respawns.push({ monsterIndex: mi, x: Math.floor(current.map.cols/2), y: Math.floor(current.map.rows/2), count: 1, spread: 0, delay: 0, direction: 0 }); renderMon(); drawMap(); };
   // 传送点
   $('addMv').onclick = () => { current.movements.push({ destMapIndex: current.index, sourceX: Math.floor(current.map.cols/2), sourceY: Math.floor(current.map.rows/2), destX: 0, destY: 0, needHole: false, needMove: false }); renderMv(); drawMap(); };
-  // NPC：新增走服务端（全局 NPC 表）
-  $('addNpc').onclick = () => addNpcAt(Math.floor(current.map.cols/2), Math.floor(current.map.rows/2));
-
   // 委托编辑（安全区/怪物/传送点：本地修改，保存时随地图一起写入 MapInfo_Fix）
-  bindBody('szBody', current => current.safeZones, ['x','y','size'], ['start']);
+  bindBody('szBody', current => current.safeZones, ['x','y','size','sizeY','rotation'], ['start']);
   bindBody('monBody', current => current.respawns, ['monsterIndex','x','y','count','spread','delay','direction'], []);
   bindBody('mvBody', current => current.movements, ['destMapIndex','sourceX','sourceY','destX','destY'], ['needHole','needMove']);
-  // 传送点目标地图：输入索引时实时刷新旁边的地图名
-  $('mvBody').addEventListener('input', e => {
-    const t = e.target;
-    if (t.dataset.f === 'destMapIndex') {
-      const span = t.parentNode.querySelector('.mvname');
-      if (span) span.textContent = mapNameById(parseInt(t.value, 10) || 0);
-    }
-  });
-
-  // NPC 表格：内联编辑 -> PUT；删除 -> DELETE（均作用于全局 NPC 表）
-  $('npcBody').addEventListener('input', async e => {
-    const t = e.target;
-    if (t.dataset.idx === undefined) return;
-    const idx = +t.dataset.idx;
-    const i = +t.dataset.i;
-    const arr = current.npcs;
-    const f = t.dataset.f;
-    if (t.type === 'checkbox') arr[i][f] = t.checked;
-    else if (['rate','image','x','y'].includes(f)) arr[i][f] = parseInt(t.value, 10) || 0;
-    else arr[i][f] = t.value;
-    drawMap();
-    try {
-      await fetch('/api/npcs/' + idx, { method:'PUT', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ fileName: arr[i].fileName, name: arr[i].name, x: arr[i].x, y: arr[i].y, rate: arr[i].rate, image: arr[i].image }) });
-    } catch (_) {}
-  });
-  $('npcBody').addEventListener('click', async e => {
-    if (e.target.dataset.del !== undefined) {
-      const idx = +e.target.dataset.del;
-      const res = await fetch('/api/npcs/' + idx, { method:'DELETE' });
-      if (res.ok) await reloadMap(); else setStatus('NPC 删除失败');
-    }
-  });
+  // 注意：NPC 列表为只读（来自全局 NPCInfo 表），此处不再绑定编辑/删除事件。
 }
 
 function bindBody(bodyId, getArr, numFields, boolFields) {
   const body = $(bodyId);
-  body.addEventListener('input', e => {
+  const onEdit = e => {
     const t = e.target;
     if (t.dataset.i === undefined) return;
     const i = +t.dataset.i; const f = t.dataset.f;
@@ -303,7 +250,10 @@ function bindBody(bodyId, getArr, numFields, boolFields) {
     else if (numFields.includes(f)) arr[i][f] = parseInt(t.value, 10) || 0;
     else arr[i][f] = t.value;
     drawMap();
-  });
+  };
+  // 'input' 覆盖文本框/数字框，'change' 覆盖下拉框（select）
+  body.addEventListener('input', onEdit);
+  body.addEventListener('change', onEdit);
   body.addEventListener('click', e => {
     if (e.target.dataset.del !== undefined) {
       const i = +e.target.dataset.del;
@@ -314,27 +264,64 @@ function bindBody(bodyId, getArr, numFields, boolFields) {
   });
 }
 
+// ---- 怪物选择：点击按钮弹出滑动列表 ----
+let pickerRow = -1;
+const monPicker = $('monPicker');
+function openMonPicker(i, anchor) {
+  pickerRow = i;
+  monPicker.innerHTML = '<div class="pick-head">选择怪物（共 ' + monsters.length + '）</div>' +
+    monsters.map(m => `<button class="pick-item" data-idx="${m.index}">${m.index} - ${m.name}${m.isBoss ? ' [Boss]' : ''}</button>`).join('');
+  const r = anchor.getBoundingClientRect();
+  let left = Math.min(r.left, window.innerWidth - 240);
+  left = Math.max(8, left);
+  let top = r.bottom + 4;
+  if (top + 320 > window.innerHeight) top = Math.max(8, r.top - 320);
+  monPicker.style.left = left + 'px';
+  monPicker.style.top = top + 'px';
+  monPicker.classList.add('show');
+}
+function closeMonPicker() { monPicker.classList.remove('show'); pickerRow = -1; }
+
+$('monBody').addEventListener('click', e => {
+  const btn = e.target.closest('.monpick');
+  if (btn) { openMonPicker(+btn.dataset.i, btn); e.stopPropagation(); }
+});
+monPicker.addEventListener('click', e => {
+  const item = e.target.closest('.pick-item');
+  if (!item) return;
+  const idx = +item.dataset.idx;
+  if (pickerRow >= 0) {
+    current.respawns[pickerRow].monsterIndex = idx;
+    renderMon();
+    drawMap();
+  }
+  closeMonPicker();
+});
+document.addEventListener('click', e => {
+  if (monPicker.classList.contains('show') && !monPicker.contains(e.target) && !e.target.closest('.monpick')) closeMonPicker();
+});
+
 function renderSZ() {
   const body = $('szBody');
   body.innerHTML = current.safeZones.map((z, i) =>
-    `<tr>
-      <td><input type="number" data-i="${i}" data-f="x" value="${z.x}"></td>
-      <td><input type="number" data-i="${i}" data-f="y" value="${z.y}"></td>
-      <td><input type="number" data-i="${i}" data-f="size" value="${z.size}"></td>
-      <td><input type="checkbox" data-i="${i}" data-f="start" ${z.start ? 'checked' : ''}></td>
-      <td><button class="del" data-del="${i}">删</button></td>
-    </tr>`).join('');
+  `<tr>
+    <td><input type="number" data-i="${i}" data-f="x" value="${z.x}"></td>
+    <td><input type="number" data-i="${i}" data-f="y" value="${z.y}"></td>
+    <td><input type="number" data-i="${i}" data-f="size" value="${z.size}"></td>
+    <td><input type="number" data-i="${i}" data-f="sizeY" value="${z.sizeY || z.size}"></td>
+    <td><input type="number" data-i="${i}" data-f="rotation" value="${z.rotation || 0}"></td>
+    <td><input type="checkbox" data-i="${i}" data-f="start" ${z.start ? 'checked' : ''}></td>
+    <td><button class="del" data-del="${i}">删</button></td>
+  </tr>`).join('');
 }
 
 function renderMon() {
   const body = $('monBody');
   body.innerHTML = current.respawns.map((r, i) => {
     const mn = monsters.find(m => m.index === r.monsterIndex);
-    const name = mn ? mn.name : '(未知)';
-    const boss = mn ? mn.isBoss : false;
+    const label = mn ? `${mn.index} - ${mn.name}${mn.isBoss ? ' [Boss]' : ''}` : `(未知: ${r.monsterIndex})`;
     return `<tr>
-      <td><input type="number" data-i="${i}" data-f="monsterIndex" value="${r.monsterIndex}"></td>
-      <td>${name}${boss ? ' [Boss]' : ''}</td>
+      <td><button class="monpick" data-i="${i}">${label} ▾</button></td>
       <td><input type="number" data-i="${i}" data-f="x" value="${r.x}"></td>
       <td><input type="number" data-i="${i}" data-f="y" value="${r.y}"></td>
       <td><input type="number" data-i="${i}" data-f="count" value="${r.count}"></td>
@@ -351,27 +338,21 @@ function renderNpc() {
   body.innerHTML = current.npcs.map((n, i) =>
     `<tr>
       <td>${n.index}</td>
-      <td><input type="text" data-i="${i}" data-idx="${n.index}" data-f="fileName" value="${n.fileName || ''}"></td>
-      <td><input type="text" data-i="${i}" data-idx="${n.index}" data-f="name" value="${n.name || ''}"></td>
-      <td><input type="number" data-i="${i}" data-idx="${n.index}" data-f="x" value="${n.x}"></td>
-      <td><input type="number" data-i="${i}" data-idx="${n.index}" data-f="y" value="${n.y}"></td>
-      <td><input type="number" data-i="${i}" data-idx="${n.index}" data-f="rate" value="${n.rate}"></td>
-      <td><input type="number" data-i="${i}" data-idx="${n.index}" data-f="image" value="${n.image}"></td>
-      <td><button class="del" data-del="${n.index}">删</button></td>
+      <td><input type="text" value="${n.fileName || ''}" disabled></td>
+      <td><input type="text" value="${n.name || ''}" disabled></td>
+      <td><input type="number" value="${n.x}" disabled></td>
+      <td><input type="number" value="${n.y}" disabled></td>
+      <td><input type="number" value="${n.rate}" disabled></td>
+      <td><input type="number" value="${n.image}" disabled></td>
     </tr>`).join('');
-}
-
-function mapNameById(idx) {
-  const m = (typeof maps !== 'undefined' && maps) ? maps.find(x => x.index === idx) : null;
-  if (!m) return '未知(' + idx + ')';
-  return (m.title || m.fileName || ('#' + idx));
 }
 
 function renderMv() {
   const body = $('mvBody');
-  body.innerHTML = current.movements.map((m, i) =>
-    `<tr>
-      <td><input type="number" data-i="${i}" data-f="destMapIndex" value="${m.destMapIndex}"><span class="mvname" style="color:#1565ff;margin-left:5px;">${mapNameById(m.destMapIndex)}</span></td>
+  body.innerHTML = current.movements.map((m, i) => {
+    const mapOpts = maps.map(x => `<option value="${x.index}" ${x.index === m.destMapIndex ? 'selected' : ''}>${x.index} - ${x.title || x.fileName}</option>`).join('');
+    return `<tr>
+      <td><select class="mvmap" data-i="${i}" data-f="destMapIndex">${mapOpts}</select></td>
       <td><input type="number" data-i="${i}" data-f="sourceX" value="${m.sourceX}"></td>
       <td><input type="number" data-i="${i}" data-f="sourceY" value="${m.sourceY}"></td>
       <td><input type="number" data-i="${i}" data-f="destX" value="${m.destX}"></td>
@@ -379,7 +360,8 @@ function renderMv() {
       <td><input type="checkbox" data-i="${i}" data-f="needHole" ${m.needHole ? 'checked' : ''}></td>
       <td><input type="checkbox" data-i="${i}" data-f="needMove" ${m.needMove ? 'checked' : ''}></td>
       <td><button class="del" data-del="${i}">删</button></td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 }
 
 function drawMap() {
@@ -410,12 +392,19 @@ function drawMap() {
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(off, 0, 0, c.width, c.height);
 
-  // 安全区绿框
+  // 安全区（支持矩形 + 旋转）：以中心点旋转绘制半宽/半高矩形
+  const deg2rad = Math.PI / 180;
   current.safeZones.forEach(z => {
-    const x0 = (z.x - z.size) * cell, y0 = (z.y - z.size) * cell, sw = (2 * z.size + 1) * cell;
+    const hw = z.size * cell;
+    const hh = ((z.sizeY && z.sizeY > 0) ? z.sizeY : z.size) * cell;
+    const cx = z.x * cell + cell / 2, cy = z.y * cell + cell / 2;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate((z.rotation || 0) * deg2rad);
     ctx.lineWidth = z.start ? 3 : 2;
     ctx.strokeStyle = z.start ? '#00ff00' : '#00cc00';
-    ctx.strokeRect(x0, y0, sw, sw);
+    ctx.strokeRect(-hw, -hh, 2 * hw, 2 * hh);
+    ctx.restore();
   });
   // 怪物
   current.respawns.forEach(r => {
@@ -436,33 +425,6 @@ function drawMap() {
     ctx.fillStyle = '#ff9900'; ctx.fillRect(cx - s / 2, cy - s / 2, s, s);
   });
   setStatus(`${current.title || current.fileName} (id=${current.index})  网格 ${cols}×${rows}  可走 ${m.walkable}`);
-}
-
-function wireCanvas() {
-  $('canvas').addEventListener('click', e => {
-    if (!current || !current.map || !current.map.cols || mode === 'none') return;
-    const c = $('canvas');
-    const rect = c.getBoundingClientRect();
-    const x = Math.floor((e.clientX - rect.left) / cellPx);
-    const y = Math.floor((e.clientY - rect.top) / cellPx);
-    if (x < 0 || y < 0 || x >= current.map.cols || y >= current.map.rows) return;
-    if (mode === 'safezone') current.safeZones.push({ x, y, size: 10, start: false });
-    else if (mode === 'monster') current.respawns.push({ monsterIndex: selectedMonster, x, y, count: 1, spread: 0, delay: 0, direction: 0, isBoss: false });
-    else if (mode === 'npc') { addNpcAt(x, y); return; }
-    else if (mode === 'movement') current.movements.push({ destMapIndex: current.index, sourceX: x, sourceY: y, destX: 0, destY: 0, needHole: false, needMove: false });
-    if (mode === 'safezone') { document.querySelector('#tabs button[data-tab="sz"]').click(); renderSZ(); }
-    else if (mode === 'monster') { document.querySelector('#tabs button[data-tab="mon"]').click(); renderMon(); }
-    else if (mode === 'movement') { document.querySelector('#tabs button[data-tab="mv"]').click(); renderMv(); }
-    drawMap();
-  });
-}
-
-async function addNpcAt(x, y) {
-  const res = await fetch('/api/npcs', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ mapIndex: current.index, fileName: 'NPC', name: '新NPC', x, y, rate: 100, image: 0 })
-  });
-  if (res.ok) await reloadMap(); else setStatus('NPC 添加失败');
 }
 
 async function save() {

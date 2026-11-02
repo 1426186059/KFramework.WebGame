@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>数据来源与保存路径 - MapInfoEditor</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; margin: 0; padding: 24px 28px; color: #222; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: #888; font-size: 13px; margin-bottom: 16px; }
+  h2 { font-size: 15px; margin: 22px 0 8px; border-left: 4px solid #1565ff; padding-left: 8px; }
+  .row { display: flex; gap: 14px; padding: 9px 0; border-bottom: 1px solid #eee; }
+  .tag { flex: 0 0 200px; font-weight: bold; color: #333; }
+  .path { flex: 1; font-family: Consolas, "Courier New", monospace; color: #1565ff; word-break: break-all; }
+  .note { color: #888; font-size: 12px; margin-top: 4px; }
+  button { padding: 6px 14px; cursor: pointer; border: 1px solid #1565ff; background: #1565ff; color: #fff; border-radius: 3px; }
+</style>
+</head>
+<body>
+  <h1>MapInfoEditor · 数据来源与保存路径</h1>
+  <div class="sub">所有路径均由后端 <code>/api/info</code> 实时返回（取自 MapInfoStore 的实际配置）。</div>
+  <button onclick="location.reload()">↻ 刷新</button>
+
+  <h2>数据来源（读取）</h2>
+  <div id="sources"></div>
+
+  <h2>保存路径（写入）</h2>
+  <div id="saves"></div>
+
+  <p class="note">说明：地图（安全区 / 怪物刷新 / 传送点 / 常规字段）点击「保存」后写回“地图信息”文件；
+  NPC 列表当前为只读，其写回目标仍是“NPC 表”。</p>
+
+<script>
+async function main() {
+  let info;
+  try {
+    const res = await fetch('/api/info');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    info = await res.json();
+  } catch (e) {
+    document.body.insertAdjacentHTML('beforeend', '<p style="color:#c0392b">无法获取 /api/info：' + e.message + '</p>');
+    return;
+  }
+
+  const src = [
+    ['地图信息', info.mapInfo, '安全区 / 怪物刷新 / 传送点 / 常规字段'],
+    ['地图网格(.dat)', info.dat, '可走 / 不可走网格解码（Maps 目录下首个 .dat）'],
+    ['怪物表', info.monsterInfo, '怪物下拉与名称'],
+    ['NPC 表', info.npcInfo, 'NPC 列表（只读）'],
+    ['地图配置(尺寸/名称)', info.excelConfig, '地图宽高与中文名（*config*.json）']
+  ];
+  const save = [
+    ['地图保存', info.saveMapInfo, '“保存”按钮写回此文件'],
+    ['NPC 表保存', info.saveNpcInfo, 'NPC 表写回目标（当前只读）']
+  ];
+
+  const render = (items) => items.map(([k, v, note]) =>
+    `<div class="row"><div class="tag">${k}</div><div><div class="path">${v}</div><div class="note">${note || ''}</div></div></div>`
+  ).join('');
+
+  document.getElementById('sources').innerHTML = render(src);
+  document.getElementById('saves').innerHTML = render(save);
+}
+main();
+</script>
+</body>
+</html>
