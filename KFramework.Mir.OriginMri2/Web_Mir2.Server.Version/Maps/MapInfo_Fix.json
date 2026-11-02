@@ -374,16 +374,31 @@
     "SafeZones": [
       {
         "Location": {
-          "X": 35,
-          "Y": 35
+          "X": 31,
+          "Y": 41
         },
-        "Size": 10,
-        "StartPoint": true,
-        "Info": {}
+        "Size": 5,
+        "SizeY": 5,
+        "Rotation": 0,
+        "StartPoint": true
       }
     ],
     "Respawns": [],
-    "Movements": []
+    "Movements": [],
+    "NoTeleport": false,
+    "NoReconnect": false,
+    "NoRecall": false,
+    "NoDrug": false,
+    "NoFight": false,
+    "NoDropMonster": false,
+    "NoNames": false,
+    "NoMount": false,
+    "NoGroup": false,
+    "RequiredGroup": false,
+    "Fight": false,
+    "Fire": false,
+    "NoTownTeleport": false,
+    "GT": false
   },
   {
     "Index": 1026,
@@ -85164,8 +85179,8 @@
     "SafeZones": [
       {
         "Location": {
-          "X": 245,
-          "Y": 215
+          "X": 241,
+          "Y": 196
         },
         "Size": 10,
         "SizeY": 0,
@@ -85547,8 +85562,8 @@
     "SafeZones": [
       {
         "Location": {
-          "X": 400,
-          "Y": 400
+          "X": 137,
+          "Y": 336
         },
         "Size": 10,
         "SizeY": 0,
