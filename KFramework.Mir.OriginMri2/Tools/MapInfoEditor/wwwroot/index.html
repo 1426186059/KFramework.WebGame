@@ -43,12 +43,24 @@
   button.del { background: #c0392b; color: #fff; border: none; padding: 2px 6px; cursor: pointer; }
   #monBody .monpick { background: #e3f2fd; border: 1px solid #90caf9; border-radius: 3px; padding: 3px 8px; cursor: pointer; text-align: left; min-width: 160px; font-size: 12px; }
   #monBody .monpick:hover { background: #d0e7fb; }
-  #monPicker { position: fixed; z-index: 1000; min-width: 220px; max-height: 320px; overflow-y: auto; background: #fff; border: 1px solid #90caf9; border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,.2); padding: 4px; transform: translateY(-8px); opacity: 0; pointer-events: none; transition: transform .15s ease, opacity .15s ease; }
+  #monPicker { position: fixed; z-index: 1000; width: 360px; max-height: 70vh; overflow: hidden; background: #fff; border: 1px solid #90caf9; border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,.3); padding: 6px; transform: translateY(-8px); opacity: 0; pointer-events: none; transition: transform .15s ease, opacity .15s ease; }
   #monPicker.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
-  #monPicker .pick-head { padding: 4px 8px 6px; font-weight: bold; color: #555; border-bottom: 1px solid #eee; margin-bottom: 4px; }
-  #monPicker .pick-item { display: block; width: 100%; text-align: left; border: none; background: #fff; padding: 6px 8px; cursor: pointer; border-radius: 4px; font-size: 12px; }
+  #monPicker .pick-head { padding: 6px 10px 8px; font-weight: bold; color: #555; border-bottom: 1px solid #eee; margin-bottom: 6px; font-size: 13px; }
+  #monPicker .pick-item { display: block; width: 100%; text-align: left; border: none; background: #fff; padding: 8px 10px; cursor: pointer; border-radius: 4px; font-size: 13px; }
   #monPicker .pick-item:hover { background: #e3f2fd; }
-  #mvBody .mvmap { background: #e3f2fd; border: 1px solid #90caf9; border-radius: 3px; padding: 3px 8px; min-width: 160px; font-size: 12px; }
+  #mvBody .mvpick { background: #e3f2fd; border: 1px solid #90caf9; border-radius: 3px; padding: 3px 8px; cursor: pointer; text-align: left; min-width: 160px; font-size: 12px; }
+  #mvBody .mvpick:hover { background: #d0e7fb; }
+  #mvPicker { position: fixed; z-index: 1000; width: 360px; max-height: 70vh; overflow: hidden; background: #fff; border: 1px solid #90caf9; border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,.3); padding: 6px; transform: translateY(-8px); opacity: 0; pointer-events: none; transition: transform .15s ease, opacity .15s ease; }
+  #mvPicker.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+  #mvPicker .pick-head { padding: 6px 10px 8px; font-weight: bold; color: #555; border-bottom: 1px solid #eee; margin-bottom: 6px; font-size: 13px; }
+  #mvPicker .mv-item { display: block; width: 100%; text-align: left; border: none; background: #fff; padding: 8px 10px; cursor: pointer; border-radius: 4px; font-size: 13px; }
+  #mvPicker .mv-item:hover { background: #e3f2fd; }
+  .pick-search { display: flex; gap: 4px; padding: 4px 6px 6px; border-bottom: 1px solid #eee; margin-bottom: 4px; }
+  .pick-input { flex: 1; min-width: 0; border: 1px solid #bbb; border-radius: 4px; padding: 4px 6px; font-size: 12px; }
+  .pick-go { border: 1px solid #90caf9; background: #e3f2fd; border-radius: 4px; padding: 4px 10px; cursor: pointer; font-size: 12px; }
+  .pick-go:hover { background: #d0e7fb; }
+  .pick-list { max-height: calc(70vh - 70px); overflow-y: auto; }
+  .pick-empty { padding: 10px; color: #999; text-align: center; font-size: 12px; }
 </style>
 </head>
 <body>
@@ -119,6 +131,7 @@
 </div>
 
 <div id="monPicker"></div>
+<div id="mvPicker"></div>
 <script>
 const $ = id => document.getElementById(id);
 let maps = [], monsters = [];
@@ -267,18 +280,34 @@ function bindBody(bodyId, getArr, numFields, boolFields) {
 // ---- 怪物选择：点击按钮弹出滑动列表 ----
 let pickerRow = -1;
 const monPicker = $('monPicker');
+// 面板水平居中于条目（按钮）中心 X，竖直贴在其下方（溢出则翻到上方）
+function positionPicker(panel, anchor) {
+  const r = anchor.getBoundingClientRect();
+  const w = panel.offsetWidth || 360;
+  let left = r.left + r.width / 2 - w / 2;
+  left = Math.max(8, Math.min(left, window.innerWidth - w - 8));
+  let top = r.bottom + 4;
+  const ph = panel.offsetHeight || window.innerHeight * 0.7;
+  if (top + ph > window.innerHeight) top = Math.max(8, r.top - ph - 4);
+  panel.style.left = left + 'px';
+  panel.style.top = top + 'px';
+}
 function openMonPicker(i, anchor) {
   pickerRow = i;
   monPicker.innerHTML = '<div class="pick-head">选择怪物（共 ' + monsters.length + '）</div>' +
-    monsters.map(m => `<button class="pick-item" data-idx="${m.index}">${m.index} - ${m.name}${m.isBoss ? ' [Boss]' : ''}</button>`).join('');
-  const r = anchor.getBoundingClientRect();
-  let left = Math.min(r.left, window.innerWidth - 240);
-  left = Math.max(8, left);
-  let top = r.bottom + 4;
-  if (top + 320 > window.innerHeight) top = Math.max(8, r.top - 320);
-  monPicker.style.left = left + 'px';
-  monPicker.style.top = top + 'px';
+    '<div class="pick-search"><input class="pick-input" placeholder="搜索 id / 名称..." /><button class="pick-go">搜索</button></div>' +
+    '<div class="pick-list"></div>';
+  renderMonList('');
+  positionPicker(monPicker, anchor);
   monPicker.classList.add('show');
+}
+function renderMonList(q) {
+  q = (q || '').trim().toLowerCase();
+  const list = monPicker.querySelector('.pick-list');
+  const items = monsters.filter(m => !q || String(m.index).includes(q) || (m.name || '').toLowerCase().includes(q));
+  list.innerHTML = items.length
+    ? items.map(m => `<button class="pick-item" data-idx="${m.index}">${m.index} - ${m.name}${m.isBoss ? ' [Boss]' : ''}</button>`).join('')
+    : '<div class="pick-empty">无匹配结果</div>';
 }
 function closeMonPicker() { monPicker.classList.remove('show'); pickerRow = -1; }
 
@@ -297,6 +326,8 @@ monPicker.addEventListener('click', e => {
   }
   closeMonPicker();
 });
+monPicker.addEventListener('input', e => { if (e.target.classList.contains('pick-input')) renderMonList(e.target.value); });
+monPicker.addEventListener('click', e => { if (e.target.classList.contains('pick-go')) renderMonList(monPicker.querySelector('.pick-input').value); });
 document.addEventListener('click', e => {
   if (monPicker.classList.contains('show') && !monPicker.contains(e.target) && !e.target.closest('.monpick')) closeMonPicker();
 });
@@ -347,12 +378,56 @@ function renderNpc() {
     </tr>`).join('');
 }
 
+// ---- 目标地图选择：Button + 居中滚动列表 ----
+let mvPickerRow = -1;
+const mvPicker = $('mvPicker');
+function openMvPicker(i, anchor) {
+  mvPickerRow = i;
+  mvPicker.innerHTML = '<div class="pick-head">选择目标地图（共 ' + maps.length + '）</div>' +
+    '<div class="pick-search"><input class="pick-input" placeholder="搜索 id / 名称..." /><button class="pick-go">搜索</button></div>' +
+    '<div class="pick-list"></div>';
+  renderMvList('');
+  positionPicker(mvPicker, anchor);
+  mvPicker.classList.add('show');
+}
+function renderMvList(q) {
+  q = (q || '').trim().toLowerCase();
+  const list = mvPicker.querySelector('.pick-list');
+  const items = maps.filter(m => !q || String(m.index).includes(q) || (m.title || m.fileName || '').toLowerCase().includes(q));
+  list.innerHTML = items.length
+    ? items.map(m => `<button class="mv-item" data-idx="${m.index}">${m.index} - ${m.title || m.fileName}</button>`).join('')
+    : '<div class="pick-empty">无匹配结果</div>';
+}
+function closeMvPicker() { mvPicker.classList.remove('show'); mvPickerRow = -1; }
+
+$('mvBody').addEventListener('click', e => {
+  const btn = e.target.closest('.mvpick');
+  if (btn) { openMvPicker(+btn.dataset.i, btn); e.stopPropagation(); }
+});
+mvPicker.addEventListener('click', e => {
+  const item = e.target.closest('.mv-item');
+  if (!item) return;
+  const idx = +item.dataset.idx;
+  if (mvPickerRow >= 0) {
+    current.movements[mvPickerRow].destMapIndex = idx;
+    renderMv();
+    drawMap();
+  }
+  closeMvPicker();
+});
+mvPicker.addEventListener('input', e => { if (e.target.classList.contains('pick-input')) renderMvList(e.target.value); });
+mvPicker.addEventListener('click', e => { if (e.target.classList.contains('pick-go')) renderMvList(mvPicker.querySelector('.pick-input').value); });
+document.addEventListener('click', e => {
+  if (mvPicker.classList.contains('show') && !mvPicker.contains(e.target) && !e.target.closest('.mvpick')) closeMvPicker();
+});
+
 function renderMv() {
   const body = $('mvBody');
   body.innerHTML = current.movements.map((m, i) => {
-    const mapOpts = maps.map(x => `<option value="${x.index}" ${x.index === m.destMapIndex ? 'selected' : ''}>${x.index} - ${x.title || x.fileName}</option>`).join('');
+    const mm = maps.find(x => x.index === m.destMapIndex);
+    const label = mm ? `${m.destMapIndex} - ${mm.title || mm.fileName}` : `未知(${m.destMapIndex})`;
     return `<tr>
-      <td><select class="mvmap" data-i="${i}" data-f="destMapIndex">${mapOpts}</select></td>
+      <td><button class="mvpick" data-i="${i}">${label} ▾</button></td>
       <td><input type="number" data-i="${i}" data-f="sourceX" value="${m.sourceX}"></td>
       <td><input type="number" data-i="${i}" data-f="sourceY" value="${m.sourceY}"></td>
       <td><input type="number" data-i="${i}" data-f="destX" value="${m.destX}"></td>
