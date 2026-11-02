@@ -131,13 +131,13 @@
     </div>
 
     <div id="tab-npc" class="tabpane">
-      <div class="row"><span class="hint">（只读）NPC 来自全局表 <b>NPCInfo</b>，请直接修改 NPCInfo 表后刷新页面即可生效。</span></div>
+      <div class="row"><span class="hint">NPC 来自全局表 <b>NPCInfo</b>：可直接改 <b>名称 / X / Y</b>（点 ID 选中并在地图上高亮）；点“保存”时随本图一起覆写 NPCInfo 表（按 Index 更新，不影响其它地图）。</span></div>
       <table><thead><tr><th>ID</th><th>脚本</th><th>名称</th><th>X</th><th>Y</th><th>频率</th><th>图像</th></tr></thead><tbody id="npcBody"></tbody></table>
     </div>
 
     <div id="tab-mv" class="tabpane">
       <div class="row"><button class="action" id="addMv">＋ 添加</button><span class="hint">新增传送点写入本图（源坐标默认图中心，可手动修改）</span></div>
-      <table><thead><tr><th>目标地图</th><th>源X</th><th>源Y</th><th>目标X</th><th>目标Y</th><th>NeedHole</th><th>NeedMove</th><th></th></tr></thead><tbody id="mvBody"></tbody></table>
+      <table><thead><tr><th>序号</th><th>目标地图</th><th>源X</th><th>源Y</th><th>目标X</th><th>目标Y</th><th>NeedHole</th><th>NeedMove</th><th></th></tr></thead><tbody id="mvBody"></tbody></table>
     </div>
   </div>
 
@@ -176,6 +176,7 @@
 <div id="mvPicker"></div>
 <script>
 const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 let maps = [], monsters = [];
 let mapFilter = 'all';     // 左侧 Toggle：'all' 全部 / 'has' 仅显示有安全区 / 'sp' 仅显示有出生点(StartPoint)
 let current = null;       // 当前地图详情
@@ -185,6 +186,7 @@ let renderMode = 'grid';  // 'grid' 灰白网格 | 'real' 真实地图(CDN 瓦�
 let realImg = null;       // 已加载的真实地图 Image 对象
 let realReady = false;    // 真实地图是否就绪（切换按钮是否点亮）
 let selectedMv = -1;      // 当前选中的传送点条目索引（-1 表示无）
+let selectedNpc = -1;     // 当前选中的 NPC 条目索引（-1 表示无）
 
 const BOOL_FIELDS = [
   ['noTeleport','NoTeleport'], ['noReconnect','NoReconnect'], ['noRecall','NoRecall'],
@@ -256,6 +258,7 @@ async function selectMap(id) {
   if (!current.npcs) current.npcs = [];
   if (!current.movements) current.movements = [];
   selectedMv = -1;
+  selectedNpc = -1;
   flags = current.map.flagsBase64 ? b64ToBytes(current.map.flagsBase64) : null;
   fitZoom();
   loadRealMap(current.index);
@@ -302,7 +305,8 @@ function wireTables() {
   bindBody('szBody', current => current.safeZones, ['x','y','size','sizeY','rotation'], ['start']);
   bindBody('monBody', current => current.respawns, ['monsterIndex','x','y','count','spread','delay','direction'], []);
   bindBody('mvBody', current => current.movements, ['destMapIndex','sourceX','sourceY','destX','destY'], ['needHole','needMove']);
-  // 注意：NPC 列表为只读（来自全局 NPCInfo 表），此处不再绑定编辑/删除事件。
+  // NPC：可编辑 名称 / X / Y，保存本图时一并覆写全局 NPCInfo 表（按 Index 更新，不影响其它地图的 NPC）
+  bindBody('npcBody', current => current.npcs, ['x','y','rate','image'], []);
 }
 
 function bindBody(bodyId, getArr, numFields, boolFields) {
@@ -420,12 +424,12 @@ function renderMon() {
 function renderNpc() {
   const body = $('npcBody');
   body.innerHTML = current.npcs.map((n, i) =>
-    `<tr>
-      <td>${n.index}</td>
-      <td><input type="text" value="${n.fileName || ''}" disabled></td>
-      <td><input type="text" value="${n.name || ''}" disabled></td>
-      <td><input type="number" value="${n.x}" disabled></td>
-      <td><input type="number" value="${n.y}" disabled></td>
+    `<tr class="${i === selectedNpc ? 'sel' : ''}">
+      <td class="rowpick" data-row="${i}" title="选中此项（地图标记高亮）">${n.index}</td>
+      <td><input type="text" value="${esc(n.fileName || '')}" disabled></td>
+      <td><input type="text" data-i="${i}" data-f="name" value="${esc(n.name || '')}"></td>
+      <td><input type="number" data-i="${i}" data-f="x" value="${n.x}"></td>
+      <td><input type="number" data-i="${i}" data-f="y" value="${n.y}"></td>
       <td><input type="number" value="${n.rate}" disabled></td>
       <td><input type="number" value="${n.image}" disabled></td>
     </tr>`).join('');
@@ -461,6 +465,11 @@ $('mvBody').addEventListener('click', e => {
 $('mvBody').addEventListener('click', e => {
   const rp = e.target.closest('.rowpick');
   if (rp) { selectedMv = +rp.dataset.row; renderMv(); drawMap(); }
+});
+// 点击 NPC 列表的 ID 列：选中并高亮地图标记
+$('npcBody').addEventListener('click', e => {
+  const rp = e.target.closest('.rowpick');
+  if (rp) { selectedNpc = +rp.dataset.row; renderNpc(); drawMap(); }
 });
 mvPicker.addEventListener('click', e => {
   const item = e.target.closest('.mv-item');
@@ -567,14 +576,21 @@ function drawMap() {
       ctx.lineWidth = 1.5; ctx.strokeStyle = '#fff'; ctx.stroke();
     });
   }
-  // NPC（醒目青色圆形）
+  // NPC（青色圆形；选中项黄底蓝环高亮并标注名称）
   if (layerVisible.npc) {
-    current.npcs.forEach(n => {
+    current.npcs.forEach((n, i) => {
       const cx = n.x * cellX + cellX / 2, cy = n.y * cellY + cellY / 2;
-      const rad = Math.max(3, sc * 0.5);
+      const sel = (i === selectedNpc);
+      const rad = Math.max(3, sc * (sel ? 0.62 : 0.5));
       ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2);
-      ctx.fillStyle = '#00e5ff'; ctx.fill();
-      ctx.lineWidth = 1.5; ctx.strokeStyle = '#00363a'; ctx.stroke();
+      if (sel) { ctx.fillStyle = '#ffeb3b'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#1565ff'; ctx.stroke(); }
+      else { ctx.fillStyle = '#00e5ff'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#00363a'; ctx.stroke(); }
+      if (sc >= 8 && n.name) {
+        ctx.fillStyle = sel ? '#7a0033' : '#00363a';
+        ctx.font = Math.max(9, Math.floor(sc)) + 'px sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(n.name, cx, cy - rad - Math.max(4, sc * 0.4));
+      }
     });
   }
   // 传送点（醒目橙色圆形 = 源坐标；选中项黄底粉环高亮并标注目标地图编号）
@@ -609,12 +625,13 @@ async function save() {
   g.noReconnectMap = $('g_noReconnectMap').value;
   BOOL_FIELDS.forEach(([k]) => { g[k] = $('g_' + k).checked; });
 
-  // 注意：NPC 不在此处保存（NPC 属于全局 NPC 表，已通过独立接口增删改）
+  // NPC：把当前图编辑后的 NPC（名称 / X / Y 等）一并提交，后端按 Index 覆写 NPCInfo 表（不影响其它地图）
   const payload = {
     general: g,
     safeZones: current.safeZones,
     respawns: current.respawns.map(r => ({ monsterIndex: r.monsterIndex, x: r.x, y: r.y, count: r.count, spread: r.spread, delay: r.delay, direction: r.direction })),
-    movements: current.movements.map(m => ({ destMapIndex: m.destMapIndex, sourceX: m.sourceX, sourceY: m.sourceY, destX: m.destX, destY: m.destY, needHole: m.needHole, needMove: m.needMove }))
+    movements: current.movements.map(m => ({ destMapIndex: m.destMapIndex, sourceX: m.sourceX, sourceY: m.sourceY, destX: m.destX, destY: m.destY, needHole: m.needHole, needMove: m.needMove })),
+    npcs: current.npcs.map(n => ({ index: n.index, fileName: n.fileName, name: n.name, x: n.x, y: n.y, rate: n.rate, image: n.image }))
   };
   setTb('保存中...');
   const res = await fetch('/api/maps/' + current.index, {

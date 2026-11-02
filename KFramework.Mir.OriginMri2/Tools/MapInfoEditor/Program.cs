@@ -218,6 +218,23 @@ app.MapPost("/api/maps/{id:int}", async (int id, HttpContext ctx) =>
         });
     });
 
+    // NPC（全局 NPCInfo 表）：按 Index 更新当前图提交的这些，不影响其它地图的 NPC
+    if (body.TryGetProperty("npcs", out var npcEl))
+    {
+        foreach (var it in npcEl.EnumerateArray())
+        {
+            int nidx = it.GetProperty("index").GetInt32();
+            string nf = it.GetProperty("fileName").GetString() ?? "";
+            string nn = it.GetProperty("name").GetString() ?? "";
+            int nx = it.GetProperty("x").GetInt32();
+            int ny = it.GetProperty("y").GetInt32();
+            int nr = it.TryGetProperty("rate", out var rr) ? rr.GetInt32() : 100;
+            int ni = it.TryGetProperty("image", out var ii) ? ii.GetInt32() : 0;
+            store.UpdateNpc(nidx, nf, nn, nx, ny, nr, ni);
+        }
+        store.SaveNpc();
+    }
+
     store.Save();
     return Results.Ok(new { ok = true });
 });

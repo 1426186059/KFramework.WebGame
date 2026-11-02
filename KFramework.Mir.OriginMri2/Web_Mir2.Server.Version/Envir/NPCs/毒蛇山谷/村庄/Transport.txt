@@ -26,7 +26,7 @@ GOTO @Main-1
 我的服务费为 2000 金币。
  
 <边境村/@Border>
-<比奇城墙/@BichonWall>
+<比奇城/@BichonWall>
 <土城墙/@MudWall>
 <道观/@TaoVillage>
 <城堡吉龙/@CastleGi>

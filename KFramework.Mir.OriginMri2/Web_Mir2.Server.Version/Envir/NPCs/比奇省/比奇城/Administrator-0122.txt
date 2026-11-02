@@ -11,7 +11,7 @@ GOTO @Main-1
 
 [@Main-1]
 #SAY
-这里是比奇城墙的宫殿。
+这里是比奇城的宫殿。
 我是管理员。我能为您做些什么？
 <申请创建行会/@CREATEGUILD>
 <申请行会战/@REQUESTWAR>

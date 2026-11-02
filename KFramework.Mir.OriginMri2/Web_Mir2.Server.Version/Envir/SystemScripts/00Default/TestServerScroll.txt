@@ -41,7 +41,7 @@ CLOSE
 
 [@GMBichon]
 #SAY
-<比奇城墙安全区/@BichonSZ>
+<比奇城安全区/@BichonSZ>
 <沃玛洞穴/@BichonOmaCave>
 <死亡矿坑/@BichonMines>
 <竞赛房间/@BichonContest>

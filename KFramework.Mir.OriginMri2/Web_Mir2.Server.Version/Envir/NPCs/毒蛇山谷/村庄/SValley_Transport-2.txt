@@ -24,7 +24,7 @@ GOTO @Main-1
 你想前往何处？
  
 <边境村/@Border>
-<比奇城墙/@BichonWall>
+<比奇城/@BichonWall>
 <毒蛇山谷/@Serpent>
 <土城墙/@MudWall>
 <道观/@TaoVillage>

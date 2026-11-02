@@ -3,7 +3,7 @@
            	             {在线玩家/Red} <$USERCOUNT> - {你的/Red} <$PKPOINT> {PK 点/Red}
 			                        {下次沙巴克攻城 - <$CONQUESTSCHEDULE(1)> /LightBlue}
 
-传送到：<比奇城墙/@move0>
+传送到：<比奇城/@move0>
 传送到：<沃妙森林/@move1>
 传送到：<城堡吉龙/@move2>
 传送到：<毒蛇山谷/@move3>
