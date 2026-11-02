@@ -40,7 +40,7 @@ CHECKITEM 尊享通行[15]
 #ACT
 GOTO @PremCaveMenu
 #ELSESAY
-你没有 {Premium Pass/LightSteelBlue}。
+你没有 {尊享通行/LightSteelBlue}。
 
 ;;尊享地牢菜单。
 [@PremCaveMenu]

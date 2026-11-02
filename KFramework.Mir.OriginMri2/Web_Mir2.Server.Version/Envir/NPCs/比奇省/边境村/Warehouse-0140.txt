@@ -34,7 +34,7 @@ GOTO @Main-1
 
 [@mbind]
 #SAY
-我可以将金Bar、金Bar捆和金Chest兑换回 {Gold/Gold}。
+我可以将金Bar、金Bar捆和金Chest兑换回 {金币/Gold}。
 告诉我你的需求。
  
 兑换：<金Bar/@GBar> 换成 {Gold/GOLD} - 手续费 {(2000 Gold)/Gold}

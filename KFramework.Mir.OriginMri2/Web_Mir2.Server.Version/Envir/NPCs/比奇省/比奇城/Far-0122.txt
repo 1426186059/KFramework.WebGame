@@ -15,7 +15,7 @@ TAKEITEM 酒 1
 哈哈……莫古派你来的……
 啊，那些符号……关于这种文字的信息不多。
 但石碑上是这么说的。 
-      "{Dungeon of the Ancient Ones./Gray}"
+      "{远古者之牢。/Gray}"
  
 谢谢你<法尔大帝/@THX2>
 #ELSEACT
@@ -28,7 +28,7 @@ CHECK [537] 1
 啊，那些符号……我过去曾帮过莫古爵士解读它们。
 关于这种文字的信息不多……
 但石碑上是这么说的。 
-      "{Dungeon of the Ancient Ones./Gray}"
+      "{远古者之牢。/Gray}"
  
 谢谢你<法尔大帝/@THX>
 #ELSEACT

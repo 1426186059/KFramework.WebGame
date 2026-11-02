@@ -2,7 +2,7 @@
 #IF
 CHECKHUM 1 D10071
 #SAY 
-There is already someone trying before you!
+已经有人比你先尝试了！
 <请稍后再来/@exit>
 #ELSEACT
 MONCLEAR D10071

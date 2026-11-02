@@ -33,34 +33,34 @@ GOTO @Main-1
 
 [@Ask]
 #SAY
-我经营 <Candle/candle>、<Dungeonescape/dungeonescape>、
-<RandomTeleport/randomteleport>、<RepairOil/repairoil> 等物品。
-我听说 <Townteleport/townteleport> 只能从
+我经营 <蜡烛/candle>、<地牢逃脱/dungeonescape>、
+<随机传送/randomteleport>、<修复油/repairoil> 等物品。
+我听说 <镇传送/townteleport> 只能从
 怪物身上掉落。
  
 <返回/@Main>
 
 [@candle]
 #SAY
-黑暗中需要Candle。没有Candle
+黑暗中需要蜡烛。没有蜡烛
 你连自己的脚都看不见。
  
 <返回/@Ask>
 
 [@dungeonescape]
 #SAY
-DungeonEscape卷是一张魔法纸，可把你迅速
+地牢逃脱卷是一张魔法纸，可把你迅速
 传送到上次访问的村庄附近的某些区域。
-DungeonEscape卷的力量虽比不上
-TeleportHome，但仍能救你一命。
+地牢逃脱卷的力量虽比不上
+回城卷，但仍能救你一命。
  
 <返回/@Ask>
 
 [@randomteleport]
 #SAY
-RandomTeleport卷是一张魔法纸，可让你
+随机传送卷是一张魔法纸，可让你
 在同一张地图内随机移动到另一个地点。
-例如你若在地牢一层，使用RandomTeleport卷
+例如你若在地牢一层，使用随机传送卷
 便会移动到该层的另一个位置。
 若处境危险但药水尚足，可用它
 帮你脱离险境。
@@ -69,7 +69,7 @@ RandomTeleport卷是一张魔法纸，可让你
 
 [@repairoil]
 #SAY
-RepairOil可提升你手持武器的耐久度，
+修复油可提升你手持武器的耐久度，
 但这种油无法进行特殊修理，所以
 请记住，武器的最大耐久度会
 随着时间推移而下降。
@@ -81,7 +81,7 @@ RepairOil可提升你手持武器的耐久度，
 
 [@townteleport]
 #SAY
-TeleportHome目前无法制作，因为古老的
+回城卷目前无法制作，因为古老的
 技艺已经失传……然而……
 我听说它可能随机从怪物身上掉落，
 使用它你便能迅速返回村庄……

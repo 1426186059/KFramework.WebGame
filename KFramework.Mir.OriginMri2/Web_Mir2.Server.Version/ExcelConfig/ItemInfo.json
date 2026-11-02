@@ -24165,7 +24165,7 @@
     "Bind": 0,
     "Unique": 256,
     "RandomStatsId": 0,
-    "ToolTip": "wont",
+    "ToolTip": "无",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -27176,7 +27176,7 @@
     "Bind": 0,
     "Unique": 1536,
     "RandomStatsId": 0,
-    "ToolTip": "Instantly heals player.",
+    "ToolTip": "立即恢复玩家生命。",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -27215,7 +27215,7 @@
     "Bind": 0,
     "Unique": 1536,
     "RandomStatsId": 0,
-    "ToolTip": "Instantly heals player.",
+    "ToolTip": "立即恢复玩家生命。",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -28589,7 +28589,7 @@
     "Bind": 0,
     "Unique": 1536,
     "RandomStatsId": 0,
-    "ToolTip": "Repairs equipped weapons durability to maximum.",
+    "ToolTip": "将已装备武器的持久修复至最大。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -28625,7 +28625,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 255,
-    "ToolTip": "Repairs equipped weapons durability to maximum.",
+    "ToolTip": "将已装备武器的持久修复至最大。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -28661,7 +28661,7 @@
     "Bind": 0,
     "Unique": 1536,
     "RandomStatsId": 0,
-    "ToolTip": "wont",
+    "ToolTip": "无",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -28805,7 +28805,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Bundle which contains total of 3000 Amulets",
+    "ToolTip": "内含共计 3000 个护身符的包裹。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -29021,7 +29021,7 @@
     "Bind": 0,
     "Unique": 1536,
     "RandomStatsId": 0,
-    "ToolTip": "Teleports player to their last saved safezone.",
+    "ToolTip": "将玩家传送至上次保存的安全区。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37205,7 +37205,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Required for each upgrade.",
+    "ToolTip": "每次升级所需材料。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37241,7 +37241,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Required for each upgrade.",
+    "ToolTip": "每次升级所需材料。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37277,7 +37277,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Required for each upgrade.",
+    "ToolTip": "每次升级所需材料。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37313,7 +37313,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Required for each upgrade.",
+    "ToolTip": "每次升级所需材料。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37349,7 +37349,7 @@
     "Bind": 132,
     "Unique": 1024,
     "RandomStatsId": 0,
-    "ToolTip": "Click this egg to obtain a Creature.\r\nA Creature can pickup your items for you while you can continue the fight.",
+    "ToolTip": "点击此蛋可获得一只战宠。\r\n战宠可帮你拾取物品，让你专注于战斗。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37385,7 +37385,7 @@
     "Bind": 132,
     "Unique": 1024,
     "RandomStatsId": 0,
-    "ToolTip": "Click this egg to obtain a Creature.\r\nA Creature can pickup your items for you while you can continue the fight.",
+    "ToolTip": "点击此蛋可获得一只战宠。\r\n战宠可帮你拾取物品，让你专注于战斗。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37421,7 +37421,7 @@
     "Bind": 132,
     "Unique": 1024,
     "RandomStatsId": 0,
-    "ToolTip": "Click this egg to obtain a Creature.\r\nA Creature can pickup your items for you while you can continue the fight.",
+    "ToolTip": "点击此蛋可获得一只战宠。\r\n战宠可帮你拾取物品，让你专注于战斗。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37457,7 +37457,7 @@
     "Bind": 132,
     "Unique": 1024,
     "RandomStatsId": 0,
-    "ToolTip": "Click this egg to obtain a Creature.\r\nA Creature can pickup your items for you while you can continue the fight.",
+    "ToolTip": "点击此蛋可获得一只战宠。\r\n战宠可帮你拾取物品，让你专注于战斗。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37493,7 +37493,7 @@
     "Bind": 132,
     "Unique": 1024,
     "RandomStatsId": 0,
-    "ToolTip": "Click this egg to obtain a Creature.\r\nA Creature can pickup your items for you while you can continue the fight.",
+    "ToolTip": "点击此蛋可获得一只战宠。\r\n战宠可帮你拾取物品，让你专注于战斗。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37529,7 +37529,7 @@
     "Bind": 132,
     "Unique": 1024,
     "RandomStatsId": 0,
-    "ToolTip": "Click this egg to obtain a Creature.\r\nA Creature can pickup your items for you while you can continue the fight.",
+    "ToolTip": "点击此蛋可获得一只战宠。\r\n战宠可帮你拾取物品，让你专注于战斗。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37565,7 +37565,7 @@
     "Bind": 132,
     "Unique": 1024,
     "RandomStatsId": 0,
-    "ToolTip": "Click this egg to obtain a Creature.\r\nA Creature can pickup your items for you while you can continue the fight.",
+    "ToolTip": "点击此蛋可获得一只战宠。\r\n战宠可帮你拾取物品，让你专注于战斗。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37601,7 +37601,7 @@
     "Bind": 132,
     "Unique": 1024,
     "RandomStatsId": 0,
-    "ToolTip": "Click this egg to obtain a Creature.\r\nA Creature can pickup your items for you while you can continue the fight.",
+    "ToolTip": "点击此蛋可获得一只战宠。\r\n战宠可帮你拾取物品，让你专注于战斗。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37637,7 +37637,7 @@
     "Bind": 132,
     "Unique": 1024,
     "RandomStatsId": 0,
-    "ToolTip": "Click this egg to obtain a Creature.\r\nA Creature can pickup your items for you while you can continue the fight.",
+    "ToolTip": "点击此蛋可获得一只战宠。\r\n战宠可帮你拾取物品，让你专注于战斗。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37673,7 +37673,7 @@
     "Bind": 132,
     "Unique": 1024,
     "RandomStatsId": 0,
-    "ToolTip": "Click this egg to obtain a Creature.\r\nA Creature can pickup your items for you while you can continue the fight.",
+    "ToolTip": "点击此蛋可获得一只战宠。\r\n战宠可帮你拾取物品，让你专注于战斗。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37709,7 +37709,7 @@
     "Bind": 132,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Click this egg to obtain a Creature.\r\nA Creature can pickup your items for you while you can continue the fight.",
+    "ToolTip": "点击此蛋可获得一只战宠。\r\n战宠可帮你拾取物品，让你专注于战斗。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37745,7 +37745,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "With this mirror you can rename a creature.",
+    "ToolTip": "使用此镜可为战宠改名。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37853,7 +37853,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "You can give this to your creature.\r\n25%",
+    "ToolTip": "可喂食给你的战宠。\r\n25%",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37889,7 +37889,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "You can give this to your creature.\r\n50%",
+    "ToolTip": "可喂食给你的战宠。\r\n50%",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37925,7 +37925,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "You can give this to your creature.\r\n75%",
+    "ToolTip": "可喂食给你的战宠。\r\n75%",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37961,7 +37961,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "You can give this to your creature.\r\n100%",
+    "ToolTip": "可喂食给你的战宠。\r\n100%",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37997,7 +37997,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "When a creature's feeding reaches 0",
+    "ToolTip": "当战宠的饱食度降为 0 时",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38033,7 +38033,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Open this box to receive a random wonder.\r\nWonderStrength is based on BoxStrength.",
+    "ToolTip": "打开此盒可获得随机奇物。\r\n奇物强度取决于盒子的强度。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38069,7 +38069,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Open this box to receive a random wonder.\r\nWonderStrength is based on BoxStrength.",
+    "ToolTip": "打开此盒可获得随机奇物。\r\n奇物强度取决于盒子的强度。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38105,7 +38105,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Open this box to receive a random wonder.\r\nWonderStrength is based on BoxStrength.",
+    "ToolTip": "打开此盒可获得随机奇物。\r\n奇物强度取决于盒子的强度。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38543,7 +38543,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Your weapon becomes infused with strength",
+    "ToolTip": "你的武器被注入力量",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38579,7 +38579,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Increases the distance of your attack",
+    "ToolTip": "增加你的攻击距离",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38615,7 +38615,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Curves the swing of the weapon allowing\r\nyou to hit up to 4 targets at once.\r\n",
+    "ToolTip": "使武器的挥砍呈弧形，\r\n可同时攻击最多 4 个目标。\r\n",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38651,7 +38651,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Charge at your target pushing them back",
+    "ToolTip": "向目标冲锋并将其击退",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38687,7 +38687,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "The weapon performs 2 swings in one motion.\r\nTarget has a chance of becoming stunned\r\nallowing more damage.",
+    "ToolTip": "武器一次挥出两击。\r\n目标有几率被击晕，\r\n从而承受更多伤害。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38759,7 +38759,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Summons the spirit of fire causing a devastating\r\nblow to the target.",
+    "ToolTip": "召唤火焰之灵，\r\n对目标造成毁灭性打击。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38795,7 +38795,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "The warrior lets out a bellowing roar",
+    "ToolTip": "战士发出震天怒吼",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38831,7 +38831,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Perform 2 curving swings with their weapon\r\nallowing them to hit up to 8 targets at once.",
+    "ToolTip": "挥出两次弧形攻击，\r\n可同时命中最多 8 个目标。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38867,7 +38867,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Performs a thrust like action in 3 directions.",
+    "ToolTip": "向三个方向刺击。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38939,7 +38939,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Warrior enters a enraged state of mind where\r\neach weapon swing hits harder.",
+    "ToolTip": "战士进入暴怒状态，\r\n每次挥砍伤害更高。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38975,7 +38975,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improves all defenses and has a chance\r\nto reflect damage to the attacker.",
+    "ToolTip": "提升所有防御，并有几率\r\n将伤害反射给攻击者。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39011,7 +39011,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Warrior charges into his foes parting them\r\nlike waves while dealing additional damage.",
+    "ToolTip": "战士冲入敌阵，如破浪般将敌人分开，\r\n同时造成额外伤害。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39155,7 +39155,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Pushes away monsters and people surrounding\r\nyou.",
+    "ToolTip": "推开包围你的\r\n怪物与其他玩家。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39191,7 +39191,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Stuns and confuses monsters. Can also be\r\nused to tame monsters.",
+    "ToolTip": "击晕并迷惑怪物，\r\n也可用于驯服怪物。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39263,7 +39263,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Throws a column of flame 5 squares straight\r\nahead of the caster.",
+    "ToolTip": "在施法者正前方直线\r\n射出 5 格火焰柱。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39299,7 +39299,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Calls a thunderbolt to attack target from the sky.",
+    "ToolTip": "召唤雷电从天而降攻击目标。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39335,7 +39335,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Spell that moves you randomly within a province\r\nand used to escape dungeons.",
+    "ToolTip": "可将你在区域内随机传送，\r\n用于逃离地牢。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39371,7 +39371,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Creates an explosion of fire in 3x3 square causing\r\ndamage in its range.\r\n",
+    "ToolTip": "在 3x3 范围内引发火焰爆炸，\r\n对范围内目标造成伤害。\r\n",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39407,7 +39407,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Creates a wall of fire on the ground.",
+    "ToolTip": "在地面制造一道火墙。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39443,7 +39443,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "The caster creates a bolt of lightning",
+    "ToolTip": "施法者凝聚一道闪电",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39515,7 +39515,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "A spell that creates a thunder storm around the\r\ncaster causing a shock on monsters into a\r\nstate of confusion.",
+    "ToolTip": "在施法者周围引发雷暴，\r\n使怪物陷入混乱状态。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39551,7 +39551,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Creates a protective field around caster that\r\nabsorbs any damage taken.",
+    "ToolTip": "在施法者周围形成护盾，\r\n吸收所承受的伤害。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39623,7 +39623,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Draws health from the victim to replenish the\r\ncasters own health.",
+    "ToolTip": "从受害者身上汲取生命，\r\n补充施法者自身气血。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39659,7 +39659,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Casts a powerful ice storm that circles the\r\nenemy causing damage on rotation.",
+    "ToolTip": "施放强力冰风暴环绕敌人，\r\n持续造成旋转伤害。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39695,7 +39695,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Casts a powerful column of fire that burns its\r\ntarget.",
+    "ToolTip": "施放强力火柱灼烧目标。",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -39733,7 +39733,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Summons an indentical clone of the caster\r\nwhich will aid with attacks.",
+    "ToolTip": "召唤与施法者完全相同的分身，\r\n协助进行攻击。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39769,7 +39769,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Creates a huge burst of fire damaging anything\r\nin its range.",
+    "ToolTip": "引发巨大火球，对范围内一切造成损伤。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39805,7 +39805,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "The caster will summon a storm from the sky \r\nwhich drops shards of ice upon the target in a \r\n5x5 range.",
+    "ToolTip": "施法者从天空召唤风暴，\r\n在 5x5 范围内向目标降下冰锥。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39877,7 +39877,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Caster summons a meteor storm from the sky \r\nwhich drops molten rock on the enemies in a \r\n5x5 range.",
+    "ToolTip": "施法者从天空召唤流星雨，\r\n在 5x5 范围内向敌人降下熔岩。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40057,7 +40057,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Applies a heal over time effect on yourself or \r\nother friendly targets.",
+    "ToolTip": "对自己或友方目标\r\n施加持续治疗效果。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40093,7 +40093,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Infuses your weapon with the power of spirit",
+    "ToolTip": "为你的武器注入灵魂之力",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40345,7 +40345,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Reveals the targets health above their head.",
+    "ToolTip": "在目标头顶显示其生命值。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40417,7 +40417,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Creates a wave of energy that repulses foes\r\naway from you.",
+    "ToolTip": "释放能量波，将敌人\r\n从身边击退。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40525,7 +40525,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Applies a heal over time effect to yourself or \r\nfriendly targets in a 3x3 range.",
+    "ToolTip": "对自身或 3x3 范围内的友方目标\r\n施加持续治疗效果。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40597,7 +40597,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Increases each class's primary offensive stat.",
+    "ToolTip": "提升各职业的主要攻击属性。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40633,7 +40633,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Summons a fire breathing beast which will aid \r\nyour attacks.",
+    "ToolTip": "召唤一只喷火猛兽，\r\n协助你的攻击。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40669,7 +40669,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "The taoist can bring back a dead player into \r\nthe living realm.",
+    "ToolTip": "道士可将死亡的玩家\r\n复活回生者之境。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40705,7 +40705,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Summons an ancient spirit of thunder to aid \r\ntheir attacks.",
+    "ToolTip": "召唤远古雷灵，\r\n协助其攻击。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40849,7 +40849,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Castable on self and friendly targets",
+    "ToolTip": "可对自身及友方目标施放",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40957,7 +40957,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Increases attack damage. Passive Skill.",
+    "ToolTip": "提升攻击伤害。被动技能。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -42469,7 +42469,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "DollyMask",
+    "ToolTip": "玩偶面具",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -42507,7 +42507,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Jack Sparrow",
+    "ToolTip": "杰克船长",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -42545,7 +42545,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Male Assassin",
+    "ToolTip": "男性刺客",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -42583,7 +42583,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Female Assassin",
+    "ToolTip": "女性刺客",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -42621,7 +42621,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Santa Claus with Candy cane.",
+    "ToolTip": "圣诞老人（糖果手杖）",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -42659,7 +42659,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Santa's best friend",
+    "ToolTip": "圣诞老人的好友",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -42697,7 +42697,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Spider(Scythe)",
+    "ToolTip": "蜘蛛（镰刀）",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -42735,7 +42735,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Manectric Club\t",
+    "ToolTip": "电犬棍棒",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -42773,7 +42773,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Manectric Hammer",
+    "ToolTip": "电犬锤",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -42811,7 +42811,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Spider(BarbarianScythe)",
+    "ToolTip": "蜘蛛（蛮族镰刀）",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -42849,7 +42849,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "RedOverAlls(M)",
+    "ToolTip": "红色背带装（男）",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -42887,7 +42887,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Red/Yellow(F)",
+    "ToolTip": "红/黄（女）",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -42925,7 +42925,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Blue(M)",
+    "ToolTip": "蓝色（男）",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -42963,7 +42963,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Red/White(F)",
+    "ToolTip": "红/白（女）",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -43001,7 +43001,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Football Red",
+    "ToolTip": "足球·红队",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -43039,7 +43039,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "White Dress RedTrident(F)",
+    "ToolTip": "白裙红三叉（女）",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -43077,7 +43077,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Black Dress Fan",
+    "ToolTip": "黑裙扇",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -43115,7 +43115,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Black Sword(M)",
+    "ToolTip": "黑剑（男）",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -43153,7 +43153,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Gold Armour + Scythe(M)",
+    "ToolTip": "金甲+镰刀（男）",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -43191,7 +43191,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Ice King",
+    "ToolTip": "冰之王",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -43229,7 +43229,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Football Player Black uniform",
+    "ToolTip": "足球运动员·黑队制服",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -43267,7 +43267,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Football Player Red and Blue uniform",
+    "ToolTip": "足球运动员·红蓝队制服",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -43305,7 +43305,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Football Player White Blue stripe uniform",
+    "ToolTip": "足球运动员·白蓝条制服",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -43343,7 +43343,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Football Player White uniform",
+    "ToolTip": "足球运动员·白队制服",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -43381,7 +43381,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Football Player Pink and Blue uniform",
+    "ToolTip": "足球运动员·粉蓝队制服",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -43419,7 +43419,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "WhiteDress Blue/Red Trident",
+    "ToolTip": "白裙蓝/红三叉",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -43457,7 +43457,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Angry Sheep",
+    "ToolTip": "愤怒的羊",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -43495,7 +43495,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Formal Male",
+    "ToolTip": "正装（男）",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50388,7 +50388,7 @@
     "Bind": 129,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Ancient Horn which ables you to shout across a location.\r\n-Shout in Green across a location.\r\n-Useage Once.",
+    "ToolTip": "远古号角，可跨区域喊话。\r\n-绿色喊话，覆盖一个区域。\r\n-限用一次。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -50424,7 +50424,7 @@
     "Bind": 129,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Ancient Horn which ables you to shout across the nation.\r\n-Shout in Purple across the nation.\r\n-Useage Once.",
+    "ToolTip": "远古号角，可全国喊话。\r\n-紫色喊话，覆盖全国。\r\n-限用一次。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -52098,7 +52098,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Medicine which reduces your PK Point by 10.",
+    "ToolTip": "可降低 10 点 PK 值的药物。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -52578,7 +52578,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Costume Girl",
+    "ToolTip": "盛装少女",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -52614,7 +52614,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "BlackTiger(F)",
+    "ToolTip": "黑虎（女）",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -52657,7 +52657,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "BlackTiger(M)",
+    "ToolTip": "黑虎（男）",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -52700,7 +52700,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Bossy(F)",
+    "ToolTip": "霸气（女）",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -52741,7 +52741,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Bossy(M)",
+    "ToolTip": "霸气（男）",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -52782,7 +52782,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "GymnasticsQueen",
+    "ToolTip": "体操女王",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -52818,7 +52818,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "OldManFishing",
+    "ToolTip": "垂钓老翁",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -52854,7 +52854,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Pig",
+    "ToolTip": "猪",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -52890,7 +52890,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "SkiKid",
+    "ToolTip": "滑雪少年",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -52926,7 +52926,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Sportman",
+    "ToolTip": "运动健将",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -52962,7 +52962,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Yizhili",
+    "ToolTip": "毅力",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -57492,7 +57492,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Shoes that allow you to walk quickly as if you have wings, as if you are walking on air without touching the ground. \\ \\When combining each set effect item with a holy relic + divine relic grade, the holy relic set effect is applied.",
+    "ToolTip": "如履薄冰、健步如飞的靴子，行走时仿佛腾空不沾地。\r\n当将每件套装效果物品与圣物+神物等级组合时，应用圣物套装效果。",
     "Slots": 0,
     "Stats": {
       "Values": {

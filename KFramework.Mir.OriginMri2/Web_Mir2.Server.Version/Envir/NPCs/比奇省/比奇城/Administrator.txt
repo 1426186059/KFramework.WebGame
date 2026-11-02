@@ -15,7 +15,7 @@ GOTO @Main-1
 我是管理员。我能为您做些什么？
 <申请创建行会/@CREATEGUILD>
 <申请行会战/@REQUESTWAR>
-所需 {Gold/Gold}：<$GUILDWARFEE>，持续 <$GUILDWARTIME> 分钟。
+所需 {金币/Gold}：<$GUILDWARFEE>，持续 <$GUILDWARTIME> 分钟。
 <申请沙巴克攻城战/@requestcastlewar>
 <如何创建行会/@buildguildexp> || <关于行会战/@guildwarexp>
 
@@ -24,7 +24,7 @@ GOTO @Main-1
 #SAY
 要获得创建行会的资格，
 你需要给我带来几样物品：——
-一百万 {Gold/Gold} 以及沃玛教主的号角，它居住于
+一百万 {金币/Gold} 以及沃玛教主的号角，它居住于
 沃妙森森林深处沃玛寺庙的最深处。
 请注意，行会名称中
 不允许使用特殊字符。
@@ -38,7 +38,7 @@ GOTO @Main-1
 事实上，由于行会众多且彼此争斗，
 政府批准<合法/@warrule>行会战。 
 当<提出申请/@propose>后，战争将被允许持续 3 小时。 
-你需要支付 <$GUILDWARFEE> {Gold/Gold} 作为申请费用。 
+你需要支付 <$GUILDWARFEE> {金币/Gold} 作为申请费用。 
  
 <返回/@main>
 

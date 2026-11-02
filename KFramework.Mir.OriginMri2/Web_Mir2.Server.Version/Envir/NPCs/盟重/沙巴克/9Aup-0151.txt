@@ -22,7 +22,7 @@ GOTO @Main-1
 [@Refine]
 #SAY
 我可以收取少量费用为你升级武器。要升级，你需要
-{黑铁矿/LightSteelBlue}、珠宝、武器和{Gold/Gold}。这些都准备好了吗？
+{黑铁矿/LightSteelBlue}、珠宝、武器和{金币/Gold}。这些都准备好了吗？
 <返回/@main> <关闭/@exit>
 
 [@RefineCollect]

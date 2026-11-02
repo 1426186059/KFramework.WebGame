@@ -42,7 +42,7 @@ GOTO @Main-1
 等级 22: 刺杀剑术
 等级 26: 半月
 等级 30: 野蛮冲撞
-等级 32: TwinDragonBlade
+等级 32: 双龙刃
 等级 32: 擒龙手
 <更多/@War2> <返回/@helpbooks>
 
@@ -82,13 +82,13 @@ GOTO @Main-1
 [@Wiz3]
 #SAY
 等级 33: 嗜血术
-等级 35: IceStrom
+等级 35: 冰风暴
 等级 38: 火焰破坏术
 等级 41: 镜
 等级 42: 火焰场
 等级 44: 暴风雪
 等级 49: 流星火雨
-等级 53: IceFreeze
+等级 53: 冰冻结
 <返回/@helpBooks>
 
 [@Tao1]
@@ -97,7 +97,7 @@ GOTO @Main-1
 等级  9: 之灵剑
 等级 14: 毒
 等级 18: 魂火球
-等级 19: SummonSkeletonton
+等级 19: 召唤骷髅
 等级 20: 隐身术
 <更多/@Tao2> <返回/@helpbooks>
 
@@ -122,7 +122,7 @@ GOTO @Main-1
 等级 38: 召唤圣精灵
 等级 40: 诅咒
 等级 43: 毒云
-等级 48: CelestalShield
+等级 48: 天盾
 <返回/@helpBooks>
 
 [@Assa1]

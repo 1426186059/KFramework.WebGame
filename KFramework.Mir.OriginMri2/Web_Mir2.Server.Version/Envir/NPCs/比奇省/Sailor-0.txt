@@ -33,7 +33,7 @@ CHECKGOLD > 2000
 TAKEGOLD 2000
 Move 5 124 353
 #ELSESAY
-你的{Gold/Gold}不足以使用我的服务！
+你的{金币/Gold}不足以使用我的服务！
 走开，别再来浪费我的时间！
 
 <关闭/@exit>
@@ -45,7 +45,7 @@ CHECKGOLD > 10000
 TAKEGOLD 10000
 MOVE WHITEVILLAGE 67 93
 #ELSESAY
-你的{Gold/Gold}不足以使用我的服务！
+你的{金币/Gold}不足以使用我的服务！
 走开，别再来浪费我的时间！
 
 <关闭/@exit>
