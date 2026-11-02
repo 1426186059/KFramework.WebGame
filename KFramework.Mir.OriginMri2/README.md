@@ -140,3 +140,33 @@ dotnet build WebGame.Mir2.MonoGame.Client/WebGame.China.Mir2.Client.csproj
 
 更多客户端细节（三层结构、UI 编写指南、世界层 / 相机原则、已知体验取舍）
 见 [`WebGame.Mir2.MonoGame.Client/ReadMe.txt`](WebGame.Mir2.MonoGame.Client/ReadMe.txt)。
+
+---
+
+## 七、服务端配置：安全区发光边框（SafeZoneBorder）
+
+安全区“四边发光”的效果**完全是服务端开关驱动**的，不是客户端自定义绘制。
+
+### 工作原理
+
+- 安全区“四边发光”由服务端 `SafeZoneBorder` 开关控制（`Settings.SafeZoneBorder == true`）。
+- 该效果**与 `TrapHexagon` spell 无关**；边框的渲染由客户端既有逻辑负责（与服务端 / 桌面端 Crystal 表现对齐），
+  本工程不在客户端自定义绘制。
+
+### ⚠️ 配置位置陷阱（最容易踩的坑）
+
+`SafeZoneBorder` 写在 `Setup.ini`，但工程里**有两份**必须同时改、保持同步：
+
+| 文件 | 角色 |
+| --- | --- |
+| `Web_Mir2.Server/Configs/Setup.ini` | 源码模板（提交进仓库的“标准值”） |
+| `Web_Mir2.Server.Version/Configs/Setup.ini` | **实际部署 / 运行**时服务端读取的配置副本 |
+
+只改其中一份（尤其只改了源码模板、没改运行的 `Version` 那份）就会“明明设了 `True` 却不生效”。
+两份都要设成：
+
+```ini
+SafeZoneBorder=True
+```
+
+改完需**重启服务端并重新加载地图**（`SafeZoneBorder` 相关逻辑在地图加载时执行，已加载进内存的地图不会即时补边框）。
