@@ -55,7 +55,19 @@ namespace MapInfoEditor
         public string MapInfoPath = Path.Combine(VersionRoot, "Maps", "MapInfo_Fix.json");
         public Dictionary<int, string> NameById = new();
         // dat 与 MapInfo_Fix 同目录（Maps/），编辑器按 id 解码网格。切勿指向 ExcelConfig（那里没有 dat）。
-        public string DatPath = Path.Combine(VersionRoot, "Maps", "map10.25341.1.dat");
+        // 文件名带版本号（如 map10.25487.1.dat），会随资源更新漂移，故不再写死：在 Maps 目录动态找第一个 .dat，
+        // 找不到再回退到历史默认名，避免“文件不存在 → _datBytes 为 null → 全部地图预览不显示”。
+        public string DatPath
+        {
+            get
+            {
+                var mapsDir = Path.Combine(VersionRoot, "Maps");
+                var files = Directory.Exists(mapsDir)
+                    ? Directory.GetFiles(mapsDir, "*.dat")
+                    : Array.Empty<string>();
+                return files.Length > 0 ? files[0] : Path.Combine(mapsDir, "map10.25341.1.dat");
+            }
+        }
         // NPC / 怪物 等“全局配置表”走本地 ExcelConfig（已与 Crystal/Config 同步拷贝）：
         // 服务器 Web 模式下载的即此类文件，编辑这份即可让游戏读到。
         public string MonsterInfoPath = Path.Combine(VersionRoot, "ExcelConfig", "MonsterInfo.json");
