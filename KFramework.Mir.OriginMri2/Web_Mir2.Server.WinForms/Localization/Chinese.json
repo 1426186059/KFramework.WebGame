@@ -765,7 +765,9 @@
     "IntelligentCreaturesCannotBeSummonedOnMap": "此地图无法召唤仆从。",
     "CannotSummonHeroOnMap": "你无法在此地图中召唤你的英雄。",
     "CannotFollowIntoMapWaitHere": "{0} 无法跟随你进入此地图，将在这里等待。",
-    "HasReturnedToYourSide": "{0} 已回到你身边。"
+    "HasReturnedToYourSide": "{0} 已回到你身边。",
+    "HeroDesummonCountdown": "你的英雄刚刚脱离战斗，请等待 {0} 秒后再召回。",
+    "StoragePasswordCleared": "已清除 {0} 的仓库密码。"
   },
   "Enum": {}
 }
