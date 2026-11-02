@@ -1,5 +1,7 @@
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
+using SkiaSharp;
 using System.Text.Json.Nodes;
 using MapInfoEditor;
 
@@ -267,5 +269,129 @@ void ReplaceArray(MapEntry e, string field, JsonElement items, Action<JsonArray,
     arr.Clear();
     foreach (var it in items.EnumerateArray()) addOne(arr, it);
 }
+
+// ---------- 真实地图预览（从原始传奇 CDN 拉 zipmap 瓦片拼成整图，供前端“真实地图”切换） ----------
+// 与 Mir2ReverseWeb 同一套机制：{CdnBase}/assets/resource/zipmap/{img}/{idx}.jpg（512×256/张）
+const string CdnBase = "https://cdn.yscq-wy.yscq.com/fugu_20201203";
+const string CdnResourceVer = "1.0.2";
+const string CdnGameVer = "10.25341.1";
+const int ZTILE_W = 512, ZTILE_H = 256;
+const long ZTILE_SAFE_MAX = 4000;   // 瓦片过多时跳过拼接，避免内存爆掉
+
+var _cdnHttp = MakeCdnClient();
+var _cdnMetaLock = new object();
+var _cdnMapMeta = new Dictionary<int, (string Img, int Width, int Height, string Name)>();
+
+HttpClient MakeCdnClient()
+{
+    var h = new HttpClient { Timeout = TimeSpan.FromSeconds(120) };
+    // 伪装旧 UA：CDN 会按 UA 返回不同编码，旧 UA 才返回干净 UTF-8
+    h.DefaultRequestHeaders.UserAgent.ParseAdd(
+        "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)");
+    return h;
+}
+
+string StrOrNum(JsonElement v, string prop)
+{
+    if (!v.TryGetProperty(prop, out var e)) return "";
+    if (e.ValueKind == JsonValueKind.String) return e.GetString() ?? "";
+    if (e.ValueKind == JsonValueKind.Number) return e.GetRawText();
+    return "";
+}
+
+async Task<(string Img, int Width, int Height, string Name)?> GetCdnMapMeta(int id)
+{
+    lock (_cdnMetaLock) { if (_cdnMapMeta.TryGetValue(id, out var m)) return m; }
+    try
+    {
+        var bytes = await _cdnHttp.GetByteArrayAsync($"{CdnBase}/0config{CdnGameVer}.json?v={CdnGameVer}");
+        string text;
+        try { text = new System.Text.UTF8Encoding(false, true).GetString(bytes); }
+        catch (DecoderFallbackException) { text = System.Text.Encoding.GetEncoding("gbk").GetString(bytes); }
+        using var doc = JsonDocument.Parse(text);
+        var root = doc.RootElement;
+        // 结构：{ "map": { "154": { id, name, width, height, img, ... }, ... } }（个别配置 map 在根）
+        if (root.TryGetProperty("map", out var mapEl) && mapEl.ValueKind == JsonValueKind.Object) root = mapEl;
+        var dict = new Dictionary<int, (string, int, int, string)>();
+        if (root.ValueKind == JsonValueKind.Object)
+        {
+            foreach (var prop in root.EnumerateObject())
+            {
+                if (prop.Value.ValueKind != JsonValueKind.Object) continue;
+                var v = prop.Value;
+                int mid = (v.TryGetProperty("id", out var ip) && ip.TryGetInt32(out var mi))
+                    ? mi : (int.TryParse(prop.Name, out var pn) ? pn : 0);
+                if (mid == 0) continue;
+                string img = StrOrNum(v, "img");
+                if (string.IsNullOrEmpty(img) && v.TryGetProperty("id", out var idp2)) img = idp2.GetInt32().ToString();
+                int w = v.TryGetProperty("width", out var wp) ? wp.GetInt32() : 0;
+                int h = v.TryGetProperty("height", out var hp) ? hp.GetInt32() : 0;
+                string name = StrOrNum(v, "name");
+                dict[mid] = (img, w, h, name);
+            }
+        }
+        lock (_cdnMetaLock) { _cdnMapMeta = dict; }
+        if (dict.TryGetValue(id, out var found)) return found;
+    }
+    catch (Exception) { /* 配置拉取失败 → 视为无真实地图 */ }
+    return null;
+}
+
+async Task<IResult> MapImage(int id)
+{
+    var meta = await GetCdnMapMeta(id);
+    if (meta == null)
+        return Results.NotFound(new { error = $"未找到该地图的 CDN 真实地图配置(id={id})，可能该地图没有线上瓦片资源" });
+    var (img, w, h, name) = meta.Value;
+    if (string.IsNullOrWhiteSpace(img)) img = id.ToString();
+    int cols = Math.Max(1, (int)Math.Ceiling(w / (double)ZTILE_W));
+    int rows = Math.Max(1, (int)Math.Ceiling(h / (double)ZTILE_H));
+    long n = (long)cols * rows;
+    if (n > ZTILE_SAFE_MAX)
+        return Results.BadRequest(new { error = $"地图瓦片过多({n} 张)，预览已跳过（请改用 Mir2ReverseWeb 工具提取）" });
+
+    // 并发下载所有瓦片（SKCanvas 非线程安全，先收齐字节再串行绘制）
+    var tileBytes = new byte[n + 1][];   // 1-based 索引
+    var sem = new SemaphoreSlim(16);
+    var tasks = new List<Task>();
+    for (int i = 1; i <= n; i++)
+    {
+        int idx = i;
+        await sem.WaitAsync();
+        tasks.Add(Task.Run(async () =>
+        {
+            try { tileBytes[idx] = await _cdnHttp.GetByteArrayAsync($"{CdnBase}/assets/resource/zipmap/{img}/{idx}.jpg?ver={CdnResourceVer}"); }
+            catch { tileBytes[idx] = null; }
+            finally { sem.Release(); }
+        }));
+    }
+    await Task.WhenAll(tasks);
+
+    using var bmp = new SKBitmap(cols * ZTILE_W, rows * ZTILE_H);
+    using (var canvas = new SKCanvas(bmp))
+    {
+        canvas.Clear(SKColors.Black);
+        for (int i = 1; i <= n; i++)
+        {
+            var tb = tileBytes[i];
+            if (tb == null || tb.Length == 0) continue;
+            try
+            {
+                using var stream = new MemoryStream(tb);
+                using var tile = SKBitmap.Decode(stream);
+                if (tile == null) continue;
+                int r = (i - 1) / cols, c = (i - 1) % cols;
+                canvas.DrawBitmap(tile, new SKRect(c * ZTILE_W, r * ZTILE_H, (c + 1) * ZTILE_W, (r + 1) * ZTILE_H), new SKSamplingOptions());
+            }
+            catch { }
+        }
+    }
+    using var skImg = SKImage.FromBitmap(bmp);
+    using var png = skImg.Encode(SKEncodedImageFormat.Png, 90);
+    return Results.File(png.ToArray(), "image/png");
+}
+
+// 返回拼接好的真实地图 PNG（image/png）。失败返回 404/400。
+app.MapGet("/api/mapimage/{id:int}", async (int id) => await MapImage(id));
 
 app.Run();

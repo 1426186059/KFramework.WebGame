@@ -14,6 +14,12 @@
        拷贝到输出目录（静态 Web 资产仅按 .staticwebassets.runtime.json 里的源路径解析），
        导致 / 返回 404、index.html 打不开。这里显式在 Build 后把 wwwroot 复制到输出目录，
        使 exe 可独立运行（dotnet run 本来就基于项目目录内容根，不受影响）。 -->
+  <ItemGroup>
+    <!-- 真实地图预览：CDN zipmap 瓦片拼接需要 SkiaSharp（与逆作坊 Mir2ReverseWeb 同版本） -->
+    <PackageReference Include="SkiaSharp" Version="4.152.0" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="4.152.0" />
+  </ItemGroup>
+
   <Target Name="CopyWwwrootToOutput" AfterTargets="Build">
     <ItemGroup>
       <_WwwrootFiles Include="wwwroot\**\*" />

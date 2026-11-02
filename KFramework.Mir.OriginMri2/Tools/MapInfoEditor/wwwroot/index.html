@@ -40,6 +40,20 @@
   .gfield label { width: 110px; display: inline-block; }
   #right { width: 38%; min-width: 300px; border-left: 1px solid #ccc; display: flex; flex-direction: column; background: #111; }
   #legend { padding: 6px 10px; color: #ddd; background: #222; font-size: 12px; line-height: 1.5; }
+  #layerBar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 8px 10px; background: #1a1a1a; border-bottom: 1px solid #333; }
+  #layerBar .lbl { color: #ddd; font-size: 12px; margin-right: 2px; }
+  #layerBar .lt { border: 1px solid #555; background: #2a2a2a; color: #ccc; padding: 4px 10px; border-radius: 14px; cursor: pointer; font-size: 12px; }
+  #layerBar .lt.on { background: #1565ff; color: #fff; border-color: #1565ff; }
+  #mapCtl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 8px 10px; background: #1f2937; border-bottom: 1px solid #333; }
+  #mapCtl .grp { display: flex; align-items: center; gap: 4px; }
+  #mapCtl .glabel { color: #9aa; font-size: 12px; margin-right: 2px; }
+  #mapCtl button { border: 1px solid #555; background: #2a2a2a; color: #ccc; padding: 4px 10px; border-radius: 14px; cursor: pointer; font-size: 12px; }
+  #mapCtl button.on { background: #1565ff; color: #fff; border-color: #1565ff; }
+  #mapCtl button:disabled { opacity: .45; cursor: not-allowed; }
+  #mapCtl #zoomLbl { color: #cdd; min-width: 42px; text-align: center; font-size: 12px; }
+  #mvBody tr.sel { background: #33415c; }                 /* 选中的传送点行：深色高亮 */
+  #mvBody .rowpick { cursor: pointer; color: #9cf; user-select: none; width: 26px; text-align: center; font-weight: bold; }
+  #mvBody .rowpick:hover { color: #fff; }
   #status { padding: 5px 10px; color: #ddd; background: #222; }
   #canvasWrap { flex: 1; overflow: auto; padding: 8px; }
   #canvas { image-rendering: pixelated; background: #000; display: block; }
@@ -128,11 +142,30 @@
   </div>
 
   <div id="right">
+    <div id="mapCtl">
+      <div class="grp"><span class="glabel">视图</span>
+        <button id="viewGrid" class="on">网格</button>
+        <button id="viewReal" disabled>真实地图(加载中…)</button>
+      </div>
+      <div class="grp"><span class="glabel">缩放</span>
+        <button id="zoomOut">－</button>
+        <span id="zoomLbl">4px</span>
+        <button id="zoomIn">＋</button>
+        <button id="zoomFit">适应</button>
+      </div>
+    </div>
     <div id="legend">
       图例：<span style="color:#ebe8de">■</span>可走 &nbsp; <span style="color:#404040">■</span>墙(不可走) &nbsp;
       <span style="color:#00cc00">□</span>安全区(亮绿=出生点) &nbsp; <span style="color:#ff2222">●</span>怪物 &nbsp;
       <span style="color:#1565ff">○</span>Boss &nbsp; <span style="color:#00aa00">●</span>NPC &nbsp;
       <span style="color:#ff9900">■</span>传送点(源)
+    </div>
+    <div id="layerBar">
+      <span class="lbl">图层:</span>
+      <button class="lt on" data-layer="safe">安全区</button>
+      <button class="lt on" data-layer="npc">NPC</button>
+      <button class="lt on" data-layer="mon">怪物</button>
+      <button class="lt on" data-layer="mv">传送点</button>
     </div>
     <div id="status">就绪</div>
     <div id="canvasWrap"><canvas id="canvas"></canvas></div>
@@ -148,6 +181,10 @@ let mapFilter = 'all';     // 左侧 Toggle：'all' 全部 / 'has' 仅显示有�
 let current = null;       // 当前地图详情
 let flags = null;         // Uint8Array 解码后的 nibble 数据
 let cellPx = 4;
+let renderMode = 'grid';  // 'grid' 灰白网格 | 'real' 真实地图(CDN 瓦片)
+let realImg = null;       // 已加载的真实地图 Image 对象
+let realReady = false;    // 真实地图是否就绪（切换按钮是否点亮）
+let selectedMv = -1;      // 当前选中的传送点条目索引（-1 表示无）
 
 const BOOL_FIELDS = [
   ['noTeleport','NoTeleport'], ['noReconnect','NoReconnect'], ['noRecall','NoRecall'],
@@ -218,8 +255,10 @@ async function selectMap(id) {
   current = await res.json();
   if (!current.npcs) current.npcs = [];
   if (!current.movements) current.movements = [];
+  selectedMv = -1;
   flags = current.map.flagsBase64 ? b64ToBytes(current.map.flagsBase64) : null;
-  cellPx = Math.max(1, Math.floor(560 / Math.max(current.map.cols || 1, current.map.rows || 1)));
+  fitZoom();
+  loadRealMap(current.index);
   renderList($('filter').value);
   renderGeneral();
   renderSZ(); renderMon(); renderNpc(); renderMv();
@@ -418,6 +457,11 @@ $('mvBody').addEventListener('click', e => {
   const btn = e.target.closest('.mvpick');
   if (btn) { openMvPicker(+btn.dataset.i, btn); e.stopPropagation(); }
 });
+// 点击行号：选中该传送点（高亮列表行 + 地图标记）
+$('mvBody').addEventListener('click', e => {
+  const rp = e.target.closest('.rowpick');
+  if (rp) { selectedMv = +rp.dataset.row; renderMv(); drawMap(); }
+});
 mvPicker.addEventListener('click', e => {
   const item = e.target.closest('.mv-item');
   if (!item) return;
@@ -440,7 +484,8 @@ function renderMv() {
   body.innerHTML = current.movements.map((m, i) => {
     const mm = maps.find(x => x.index === m.destMapIndex);
     const label = mm ? `${m.destMapIndex} - ${mm.title || mm.fileName}` : `未知(${m.destMapIndex})`;
-    return `<tr>
+    return `<tr class="${i === selectedMv ? 'sel' : ''}">
+      <td class="rowpick" data-row="${i}" title="选中此项（地图标记高亮）">${i + 1}</td>
       <td><button class="mvpick" data-i="${i}">${label} ▾</button></td>
       <td><input type="number" data-i="${i}" data-f="sourceX" value="${m.sourceX}"></td>
       <td><input type="number" data-i="${i}" data-f="sourceY" value="${m.sourceY}"></td>
@@ -458,61 +503,90 @@ function drawMap() {
   const m = current && current.map;
   if (!m || !m.cols) { setStatus('无地图数据或无法解码'); return; }
   const cols = m.cols, rows = m.rows, cell = cellPx;
-  // 离屏按像素绘制（高效）
-  const off = document.createElement('canvas');
-  off.width = cols; off.height = rows;
-  const octx = off.getContext('2d');
-  const img = octx.createImageData(cols, rows);
-  const d = img.data;
-  for (let i = 0; i < cols * rows; i++) {
-    // 解码器每格存 1 字节的 nibble 值（0~15），直接取用即可，无需再拆高低位
-    const nib = flags ? flags[i] : 0;
-    const walk = (nib & 8) === 0;
-    const safe = (nib & 2) !== 0;
-    let r, g, bl;
-    if (walk) { r = 235; g = 232; bl = 222; } else { r = 64; g = 64; bl = 64; }
-    if (safe) { if (walk) { r = 200; g = 232; bl = 200; } else { r = 40; g = 80; bl = 40; } }
-    const p = i * 4; d[p] = r; d[p + 1] = g; d[p + 2] = bl; d[p + 3] = 255;
-  }
-  octx.putImageData(img, 0, 0);
-
   c.width = cols * cell; c.height = rows * cell;
   const ctx = c.getContext('2d');
   ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(off, 0, 0, c.width, c.height);
+
+  // 底层：真实地图（CDN 瓦片拼接）或灰白可走网格
+  if (renderMode === 'real' && realImg) {
+    ctx.drawImage(realImg, 0, 0, c.width, c.height);
+  } else {
+    // 离屏按像素绘制（高效）
+    const off = document.createElement('canvas');
+    off.width = cols; off.height = rows;
+    const octx = off.getContext('2d');
+    const img = octx.createImageData(cols, rows);
+    const d = img.data;
+    for (let i = 0; i < cols * rows; i++) {
+      // 解码器每格存 1 字节的 nibble 值（0~15），直接取用即可，无需再拆高低位
+      const nib = flags ? flags[i] : 0;
+      const walk = (nib & 8) === 0;
+      const safe = (nib & 2) !== 0;
+      let r, g, bl;
+      if (walk) { r = 235; g = 232; bl = 222; } else { r = 64; g = 64; bl = 64; }
+      if (safe) { if (walk) { r = 200; g = 232; bl = 200; } else { r = 40; g = 80; bl = 40; } }
+      const p = i * 4; d[p] = r; d[p + 1] = g; d[p + 2] = bl; d[p + 3] = 255;
+    }
+    octx.putImageData(img, 0, 0);
+    ctx.drawImage(off, 0, 0, c.width, c.height);
+  }
 
   // 安全区（支持矩形 + 旋转）：以中心点旋转绘制半宽/半高矩形
-  const deg2rad = Math.PI / 180;
-  current.safeZones.forEach(z => {
-    const hw = z.size * cell;
-    const hh = ((z.sizeY && z.sizeY > 0) ? z.sizeY : z.size) * cell;
-    const cx = z.x * cell + cell / 2, cy = z.y * cell + cell / 2;
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.rotate((z.rotation || 0) * deg2rad);
-    ctx.lineWidth = z.start ? 3 : 2;
-    ctx.strokeStyle = z.start ? '#00ff00' : '#00cc00';
-    ctx.strokeRect(-hw, -hh, 2 * hw, 2 * hh);
-    ctx.restore();
-  });
-  // 怪物
-  current.respawns.forEach(r => {
-    const mn = monsters.find(m => m.index === r.monsterIndex);
-    const boss = mn ? mn.isBoss : false;
-    const cx = r.x * cell + cell / 2, cy = r.y * cell + cell / 2, rad = Math.max(3, cell * 0.45);
-    if (boss) { ctx.lineWidth = 2; ctx.strokeStyle = '#1565ff'; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.stroke(); }
-    else { ctx.fillStyle = '#ff2222'; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fill(); }
-  });
-  // NPC（绿点）
-  current.npcs.forEach(n => {
-    const cx = n.x * cell + cell / 2, cy = n.y * cell + cell / 2, rad = Math.max(3, cell * 0.45);
-    ctx.fillStyle = '#00aa00'; ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fill();
-  });
-  // 传送点（橙色方块 = 源坐标）
-  current.movements.forEach(mv => {
-    const cx = mv.sourceX * cell + cell / 2, cy = mv.sourceY * cell + cell / 2, s = Math.max(3, cell * 0.6);
-    ctx.fillStyle = '#ff9900'; ctx.fillRect(cx - s / 2, cy - s / 2, s, s);
-  });
+  if (layerVisible.safe) {
+    const deg2rad = Math.PI / 180;
+    current.safeZones.forEach(z => {
+      const hw = z.size * cell;
+      const hh = ((z.sizeY && z.sizeY > 0) ? z.sizeY : z.size) * cell;
+      const cx = z.x * cell + cell / 2, cy = z.y * cell + cell / 2;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate((z.rotation || 0) * deg2rad);
+      ctx.lineWidth = z.start ? 3 : 2;
+      ctx.strokeStyle = z.start ? '#00ff00' : '#00cc00';
+      ctx.strokeRect(-hw, -hh, 2 * hw, 2 * hh);
+      ctx.restore();
+    });
+  }
+  // 怪物（醒目圆形：普通=红，Boss=紫）
+  if (layerVisible.mon) {
+    current.respawns.forEach(r => {
+      const mn = monsters.find(m => m.index === r.monsterIndex);
+      const boss = mn ? mn.isBoss : false;
+      const cx = r.x * cell + cell / 2, cy = r.y * cell + cell / 2;
+      const rad = Math.max(4, cell * 0.5);
+      ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+      ctx.fillStyle = boss ? '#d500f9' : '#ff1744';
+      ctx.fill();
+      ctx.lineWidth = 1.5; ctx.strokeStyle = '#fff'; ctx.stroke();
+    });
+  }
+  // NPC（醒目青色圆形）
+  if (layerVisible.npc) {
+    current.npcs.forEach(n => {
+      const cx = n.x * cell + cell / 2, cy = n.y * cell + cell / 2;
+      const rad = Math.max(4, cell * 0.5);
+      ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+      ctx.fillStyle = '#00e5ff'; ctx.fill();
+      ctx.lineWidth = 1.5; ctx.strokeStyle = '#00363a'; ctx.stroke();
+    });
+  }
+  // 传送点（醒目橙色圆形 = 源坐标；选中项黄底粉环高亮并标注目标地图编号）
+  if (layerVisible.mv) {
+    current.movements.forEach((mv, i) => {
+      const cx = mv.sourceX * cell + cell / 2, cy = mv.sourceY * cell + cell / 2;
+      const sel = (i === selectedMv);
+      const rad = Math.max(4, cell * (sel ? 0.62 : 0.5));
+      ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+      if (sel) { ctx.fillStyle = '#ffeb3b'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#ff00aa'; ctx.stroke(); }
+      else { ctx.fillStyle = '#ff9100'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#fff'; ctx.stroke(); }
+      if (cell >= 8) {
+        ctx.fillStyle = sel ? '#7a0033' : '#fff';
+        ctx.font = Math.max(9, Math.floor(cell)) + 'px sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(String(mv.destMapIndex), cx, cy - rad - Math.max(4, cell * 0.4));
+      }
+    });
+  }
   setStatus(`${current.title || current.fileName} (id=${current.index})  网格 ${cols}×${rows}  可走 ${m.walkable}`);
 }
 
@@ -553,6 +627,61 @@ document.querySelectorAll('.seg-btn').forEach(b => {
     renderList($('filter').value);
   });
 });
+
+// 图层显隐开关：安全区 / NPC / 怪物 / 传送点 各自独立
+const layerVisible = { safe: true, npc: true, mon: true, mv: true };
+document.querySelectorAll('#layerBar .lt').forEach(b => {
+  b.addEventListener('click', () => {
+    const k = b.dataset.layer;
+    layerVisible[k] = !layerVisible[k];
+    b.classList.toggle('on', layerVisible[k]);
+    drawMap();
+  });
+});
+
+// ---------- 缩放 ----------
+function fitZoom() {
+  const m = current && current.map;
+  if (!m || !m.cols) return;
+  cellPx = Math.max(1, Math.floor(560 / Math.max(m.cols, m.rows)));
+  $('zoomLbl').textContent = cellPx + 'px';
+}
+function setZoom(px) {
+  cellPx = Math.max(1, Math.min(64, px));
+  $('zoomLbl').textContent = cellPx + 'px';
+  drawMap();
+}
+
+// ---------- 真实地图（CDN 瓦片拼接）异步加载 + 按钮置灰/点亮 ----------
+async function loadRealMap(id) {
+  realReady = false; realImg = null;
+  updateViewBtns();
+  try {
+    const res = await fetch('/api/mapimage/' + id);
+    if (!res.ok) { updateViewBtns('无真实地图'); return; }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const im = new Image();
+    im.onload = () => { if (id !== current.index) return; realImg = im; realReady = true; updateViewBtns(); if (renderMode === 'real') drawMap(); };
+    im.onerror = () => { realReady = false; updateViewBtns('图加载失败'); };
+    im.src = url;
+  } catch (e) { updateViewBtns('加载失败'); }
+}
+function updateViewBtns(msg) {
+  const g = $('viewGrid'), r = $('viewReal');
+  g.classList.toggle('on', renderMode === 'grid');
+  r.disabled = !realReady;
+  r.classList.toggle('on', realReady && renderMode === 'real');
+  r.textContent = realReady ? '真实地图' : (msg || '真实地图(加载中…)');
+}
+
+// 视图切换：网格 / 真实地图
+$('viewGrid').onclick = () => { renderMode = 'grid'; updateViewBtns(); drawMap(); };
+$('viewReal').onclick = () => { if (!realReady) return; renderMode = 'real'; updateViewBtns(); drawMap(); };
+// 缩放按钮
+$('zoomIn').onclick = () => setZoom(cellPx + (cellPx < 8 ? 1 : Math.max(1, Math.round(cellPx * 0.25))));
+$('zoomOut').onclick = () => setZoom(cellPx - (cellPx <= 2 ? 1 : Math.max(1, Math.round(cellPx * 0.2))));
+$('zoomFit').onclick = () => fitZoom();
 init();
 </script>
 </body>
