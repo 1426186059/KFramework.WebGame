@@ -1079,8 +1079,12 @@ namespace Server.MirObjects
         }
         protected override void SetBindSafeZone(SafeZoneInfo szi)
         {
-            BindLocation = szi.Location;
-            BindMapIndex = CurrentMapIndex;
+            // 仅“城镇/出生点”安全区(StartPoint)才更新绑定城镇，避免进入普通安全区(如矿区)即覆盖回城点
+            if (szi.StartPoint)
+            {
+                BindLocation = szi.Location;
+                BindMapIndex = CurrentMapIndex;
+            }
         }
         public void StartGame()
         {
@@ -4364,8 +4368,11 @@ namespace Server.MirObjects
 
                 if (szi != null)
                 {
-                    BindLocation = szi.Location;
-                    BindMapIndex = CurrentMapIndex;
+                    if (szi.StartPoint)
+                    {
+                        BindLocation = szi.Location;
+                        BindMapIndex = CurrentMapIndex;
+                    }
                     InSafeZone = true;
                 }
                 else
@@ -4670,12 +4677,15 @@ namespace Server.MirObjects
 
             GetObjects();
 
-            // Safe-zone / bind update
+            // Safe-zone / bind update（仅城镇/出生点安全区更新绑定，避免覆盖回城点）
             SafeZoneInfo szi = CurrentMap.GetSafeZone(CurrentLocation);
             if (szi != null)
             {
-                BindLocation = szi.Location;
-                BindMapIndex = CurrentMapIndex;
+                if (szi.StartPoint)
+                {
+                    BindLocation = szi.Location;
+                    BindMapIndex = CurrentMapIndex;
+                }
                 InSafeZone = true;
             }
             else InSafeZone = false;
