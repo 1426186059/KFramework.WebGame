@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>数据来源 - MirDB 解析器</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; margin: 0; padding: 24px 28px; color: #222; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: #888; font-size: 13px; margin-bottom: 16px; }
+  h2 { font-size: 15px; margin: 22px 0 8px; border-left: 4px solid #1565ff; padding-left: 8px; }
+  .row { display: flex; gap: 14px; padding: 9px 0; border-bottom: 1px solid #eee; }
+  .tag { flex: 0 0 200px; font-weight: bold; color: #333; }
+  .path { flex: 1; font-family: Consolas, "Courier New", monospace; color: #1565ff; word-break: break-all; }
+  .note { color: #888; font-size: 12px; margin-top: 4px; }
+  button { padding: 6px 14px; cursor: pointer; border: 1px solid #1565ff; background: #1565ff; color: #fff; border-radius: 3px; }
+  .counts span { background: #eef3fb; border: 1px solid #d6e2f3; border-radius: 10px; padding: 2px 9px; margin: 0 6px 4px 0; display: inline-block; font-size: 12px; }
+</style>
+</head>
+<body>
+  <h1>MirDB 解析器 · 数据来源</h1>
+  <div class="sub">本页与首页顶部 banner 的数据均来自后端 <code>/api/info</code> 实时返回（取自最近一次解析的 Server.MirDB）。</div>
+  <button onclick="location.href='/'">← 返回解析器</button>
+
+  <h2>当前数据来源</h2>
+  <div id="sources"><div class="note">尚未解析任何文件。</div></div>
+
+  <h2>解析内容统计</h2>
+  <div id="counts" class="counts"></div>
+
+  <p class="note">说明：本工具与控制台版 <code>MirDBToJson</code> 使用同一套官方 <code>Server.MirDatabase</code> 反序列化器，
+  直接读取 <code>Server.MirDB</code> 二进制数据库（地图 / 物品 / 怪物 / NPC / 任务 / 技能 / 商城 / 行会战等静态配置）。
+  解析结果中的数据（如「比奇矿区」的安全区、出生点）完全来自该文件，未做任何改写。</p>
+
+<script>
+async function main() {
+  let info;
+  try {
+    const res = await fetch('/api/info');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    info = await res.json();
+  } catch (e) {
+    document.getElementById('sources').innerHTML = '<p style="color:#c0392b">无法获取 /api/info：' + e.message + '</p>';
+    return;
+  }
+
+  if (!info.loaded) {
+    document.getElementById('sources').innerHTML = '<div class="note">' + (info.note || '尚未解析文件') + '</div>';
+    return;
+  }
+
+  const i = info.info;
+  const items = [
+    ['来源', i.sourceType],
+    ['文件', i.fileName],
+    ['大小', fmtSize(i.sizeBytes)],
+    ['MirDB 版本', i.version + '.' + i.customVersion],
+    ['解析时间', i.parsedAt]
+  ];
+  document.getElementById('sources').innerHTML = items.map(([k, v]) =>
+    `<div class="row"><div class="tag">${k}</div><div><div class="path">${v}</div></div></div>`
+  ).join('') + `<div class="note">${i.note}</div>`;
+
+  const counts = [
+    ['地图', i.mapCount], ['物品', i.itemCount], ['怪物', i.monsterCount], ['NPC', i.npcCount],
+    ['任务', i.questCount], ['技能', i.magicCount], ['商城', i.gameShopCount], ['行会战', i.conquestCount]
+  ];
+  document.getElementById('counts').innerHTML = counts.map(([k, v]) => `<span>${k}：${v}</span>`).join('');
+}
+function fmtSize(n) { if (n < 1024) return n + ' B'; if (n < 1048576) return (n / 1024).toFixed(1) + ' KB'; return (n / 1048576).toFixed(2) + ' MB'; }
+main();
+</script>
+</body>
+</html>

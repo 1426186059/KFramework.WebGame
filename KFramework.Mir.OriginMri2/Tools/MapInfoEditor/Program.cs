@@ -27,7 +27,7 @@ catch (Exception ex)
 app.MapGet("/api/maps", () =>
 {
     var list = store.Maps.OrderBy(m => m.Index)
-        .Select(m => new { index = m.Index, fileName = m.FileName, title = m.Title })
+        .Select(m => new { index = m.Index, fileName = m.FileName, title = m.Title, safeZoneCount = store.GetSafeZones(m).Count })
         .ToList();
     return Results.Ok(new { count = list.Count, maps = list });
 });

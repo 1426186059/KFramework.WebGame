@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MirDB 解析器 (Web)</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; margin: 0; color: #222; }
+  #toolbar { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #1f2937; color: #fff; }
+  #toolbar h1 { font-size: 15px; margin: 0; font-weight: 600; }
+  #toolbar .spacer { flex: 1; }
+  #toolbar .status { color: #9be29b; font-size: 13px; }
+  .wrap { max-width: 1200px; margin: 14px auto; padding: 0 14px; }
+  button.action { background: #1565ff; color: #fff; border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer; font-size: 13px; }
+  button.action:hover { background: #0d57e6; }
+
+  /* 数据来源 banner（顶部醒目） */
+  .source { background: #fff; border: 1px solid #d6dee8; border-left: 4px solid #1565ff; border-radius: 6px; padding: 12px 16px; margin-bottom: 14px; }
+  .source h2 { margin: 0 0 8px; font-size: 14px; color: #1565ff; }
+  .source .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 6px 18px; }
+  .source .grid > div { font-size: 13px; }
+  .source .k { color: #8a97a5; display: inline-block; min-width: 96px; }
+  .source .v { font-weight: 600; word-break: break-all; }
+  .source .counts { margin-top: 8px; }
+  .source .counts span { background: #eef3fb; border: 1px solid #d6e2f3; border-radius: 10px; padding: 2px 9px; margin: 0 6px 4px 0; display: inline-block; font-size: 12px; }
+
+  .controls { background: #fff; border: 1px solid #d6dee8; border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; }
+  .mode { margin: 6px 0; font-size: 13px; }
+  .mode label { display: inline-block; min-width: 150px; color: #555; }
+  input[type=text], input[type=file] { padding: 5px 8px; border: 1px solid #ccd4de; border-radius: 4px; }
+  .status { margin-top: 8px; font-size: 13px; min-height: 18px; }
+  .status.err { color: #c0392b; }
+  .status.ok { color: #2a8a3e; }
+
+  .tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+  .tabs button { border: none; background: #e7edf4; color: #344; border-radius: 4px 4px 0 0; padding: 7px 13px; cursor: pointer; font-size: 13px; }
+  .tabs button.active { background: #1565ff; color: #fff; }
+
+  .panel { background: #fff; border: 1px solid #d6dee8; border-radius: 6px; padding: 12px 16px; }
+  .filters { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; flex-wrap: wrap; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th, td { border: 1px solid #e3e9f0; padding: 5px 8px; text-align: left; vertical-align: top; }
+  th { background: #f0f4f9; position: sticky; top: 0; }
+  tr:nth-child(even) td { background: #fafcfe; }
+  .sz { display: inline-block; margin: 1px 4px 1px 0; padding: 1px 6px; border-radius: 3px; background: #eef3fb; font-size: 11px; }
+  .sz.sp { background: #fde8e8; color: #c0392b; font-weight: 700; }
+  .muted { color: #98a4b0; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div id="toolbar">
+  <h1>MirDB 解析器 (Web)</h1>
+  <button class="action" id="srcBtn">📂 数据来源</button>
+  <span class="spacer"></span>
+  <span class="status" id="tbStatus"></span>
+</div>
+
+<div class="wrap">
+  <section id="source" class="source hidden">
+    <h2>数据来源（解析结果来自以下文件）</h2>
+    <div class="grid">
+      <div><span class="k">来源</span><span class="v" id="s-source"></span></div>
+      <div><span class="k">文件</span><span class="v" id="s-file"></span></div>
+      <div><span class="k">大小</span><span class="v" id="s-size"></span></div>
+      <div><span class="k">MirDB 版本</span><span class="v" id="s-ver"></span></div>
+      <div><span class="k">解析时间</span><span class="v" id="s-time"></span></div>
+    </div>
+    <div class="counts" id="s-counts"></div>
+  </section>
+
+  <section class="controls">
+    <div class="mode">
+      <label>① 上传 Server.MirDB：</label>
+      <input type="file" id="fileInput" accept=".MirDB,.db,.bin,.dat">
+      <button class="action" id="uploadBtn">解析上传文件</button>
+    </div>
+    <div class="mode">
+      <label>② 或直接填路径：</label>
+      <input type="text" id="pathInput" placeholder="例如 D:\OpenSource\Crystal\Build\Server\Debug\Server.MirDB" style="width:460px">
+      <button class="action" id="pathBtn">从路径解析</button>
+    </div>
+    <div id="status" class="status"></div>
+  </section>
+
+  <div id="tabs" class="tabs hidden">
+    <button data-tab="maps" class="active">地图 Maps</button>
+    <button data-tab="items">物品 Items</button>
+    <button data-tab="monsters">怪物 Monsters</button>
+    <button data-tab="npcs">NPC</button>
+    <button data-tab="quests">任务 Quests</button>
+    <button data-tab="magics">技能 Magics</button>
+    <button data-tab="gameshop">商城 GameShop</button>
+    <button data-tab="conquests">行会战 Conquests</button>
+  </div>
+
+  <section id="panel" class="panel hidden">
+    <div class="filters">
+      <input type="text" id="search" placeholder="搜索 索引/标题/名称..." style="width:260px">
+      <label id="spFilterWrap" class="hidden"><input type="checkbox" id="spOnly"> 只看含出生点(StartPoint)安全区的地图</label>
+      <span id="rowCount" class="muted"></span>
+    </div>
+    <div id="result"></div>
+  </section>
+</div>
+
+<script>
+  let DATA = null;
+  let TAB = 'maps';
+  const $ = id => document.getElementById(id);
+
+  function setStatus(msg, cls) { const s = $('status'); s.textContent = msg; s.className = 'status ' + (cls || ''); }
+  function setTb(msg) { $('tbStatus').textContent = msg; }
+
+  $('srcBtn').onclick = () => window.open('/sources.html', '_blank');
+
+  // 默认路径：直接取 Crystal 的 Server.MirDB（页面打开即自动解析）
+  const DEFAULT_PATH = 'D:\\OpenSource\\Crystal\\Build\\Server\\Debug\\Server.MirDB';
+  $('pathInput').value = DEFAULT_PATH;
+
+  async function parseUpload() {
+    const f = $('fileInput').files[0];
+    if (!f) { setStatus('请先选择 Server.MirDB 文件', 'err'); return; }
+    setStatus('解析中…');
+    try {
+      const fd = new FormData();
+      fd.append('db', f);
+      const res = await fetch('/api/parse', { method: 'POST', body: fd });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || json.title || '解析失败');
+      render(json);
+      setStatus('解析成功', 'ok');
+      setTb(`已加载 ${json.mapCount} 张地图 / ${json.itemCount} 个物品`);
+    } catch (e) { setStatus('错误：' + e.message, 'err'); }
+  }
+
+  async function parsePath() {
+    const p = $('pathInput').value.trim();
+    if (!p) { setStatus('请填写 MirDB 路径', 'err'); return; }
+    setStatus('解析中…');
+    try {
+      const res = await fetch('/api/parse-path', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ path: p }) });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || json.title || '解析失败');
+      render(json);
+      setStatus('解析成功', 'ok');
+      setTb(`已加载 ${json.mapCount} 张地图 / ${json.itemCount} 个物品`);
+    } catch (e) { setStatus('错误：' + e.message, 'err'); }
+  }
+
+  function fmtSize(n) { if (n < 1024) return n + ' B'; if (n < 1048576) return (n / 1024).toFixed(1) + ' KB'; return (n / 1048576).toFixed(2) + ' MB'; }
+
+  function render(json) {
+    DATA = json;
+    $('source').classList.remove('hidden');
+    $('s-source').textContent = json.source === 'path' ? '本地路径' : '浏览器上传';
+    $('s-file').textContent = json.fileName;
+    $('s-size').textContent = fmtSize(json.sizeBytes);
+    $('s-ver').textContent = json.meta.version + '.' + json.meta.customVersion;
+    $('s-time').textContent = new Date(json.parsedAt).toLocaleString();
+    $('s-counts').innerHTML = [
+      ['地图', json.mapCount], ['物品', json.itemCount], ['怪物', json.monsterCount], ['NPC', json.npcCount],
+      ['任务', json.questCount], ['技能', json.magicCount], ['商城', json.gameShopCount], ['行会战', json.conquestCount]
+    ].map(([k, v]) => `<span>${k}：${v}</span>`).join('');
+
+    $('tabs').classList.remove('hidden');
+    $('panel').classList.remove('hidden');
+    $('spFilterWrap').classList.toggle('hidden', TAB !== 'maps');
+    $('search').value = '';
+    draw();
+  }
+
+  $('tabs').addEventListener('click', e => {
+    if (e.target.tagName !== 'BUTTON') return;
+    TAB = e.target.dataset.tab;
+    [...$('tabs').children].forEach(b => b.classList.toggle('active', b === e.target));
+    $('spFilterWrap').classList.toggle('hidden', TAB !== 'maps');
+    $('search').value = '';
+    draw();
+  });
+  $('uploadBtn').onclick = parseUpload;
+  $('pathBtn').onclick = parsePath;
+  $('search').oninput = draw;
+  $('spOnly').onchange = draw;
+
+  // 页面加载即按默认路径解析
+  parsePath();
+
+  function esc(s) { return (s == null ? '' : String(s)).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
+
+  function draw() {
+    if (!DATA) return;
+    const q = $('search').value.trim().toLowerCase();
+    const spOnly = $('spOnly').checked;
+    if (TAB === 'maps') return drawMaps(q, spOnly);
+    return drawSimple(TAB, q);
+  }
+
+  function drawMaps(q, spOnly) {
+    let rows = DATA.maps.filter(m => {
+      if (spOnly && !(m.safeZones || []).some(z => z.startPoint)) return false;
+      if (q && !(String(m.index).includes(q) || (m.title || '').toLowerCase().includes(q) || (m.fileName || '').toLowerCase().includes(q))) return false;
+      return true;
+    });
+    $('rowCount').textContent = '共 ' + rows.length + ' 张地图';
+    let html = '<table><thead><tr><th>索引</th><th>标题</th><th>文件名</th><th>安全区</th><th>传送</th><th>刷怪</th><th>NPC</th><th>禁传送/召回/重连</th></tr></thead><tbody>';
+    for (const m of rows) {
+      const sz = (m.safeZones || []).map(z =>
+        `<span class="sz${z.startPoint ? ' sp' : ''}">(${z.x},${z.y}) r${z.size}${z.startPoint ? ' ·出生点' : ''}</span>`).join('') || '<span class="muted">无</span>';
+      html += `<tr>
+        <td>${m.index}</td>
+        <td><b>${esc(m.title)}</b></td>
+        <td>${esc(m.fileName)}</td>
+        <td>${sz}</td>
+        <td>${m.movementCount}</td>
+        <td>${m.respawnCount}</td>
+        <td>${m.npcCount}</td>
+        <td>${(m.noTeleport ? '禁传送 ' : '') + (m.noRecall ? '禁召回 ' : '') + (m.noReconnect ? '禁重连' : '') || '<span class="muted">—</span>'}</td>
+      </tr>`;
+    }
+    html += '</tbody></table>';
+    $('result').innerHTML = html;
+  }
+
+  function drawSimple(tab, q) {
+    const list = DATA[tab] || [];
+    const rows = list.filter(r => !q || String(r.index).includes(q) || (r.name || '').toLowerCase().includes(q));
+    $('rowCount').textContent = '共 ' + rows.length + ' 条';
+    const nameLabel = (tab === 'npcs') ? '名称 / 地图 / 坐标' : '名称';
+    let html = `<table><thead><tr><th>索引</th><th>${nameLabel}</th></tr></thead><tbody>`;
+    for (const r of rows) {
+      let extra = '';
+      if (tab === 'npcs') extra = ` <span class="muted">· 地图${r.mapIndex} (${r.x},${r.y})</span>`;
+      html += `<tr><td>${r.index}</td><td>${esc(r.name)}${extra}</td></tr>`;
+    }
+    html += '</tbody></table>';
+    $('result').innerHTML = html;
+  }
+</script>
+</body>
+</html>

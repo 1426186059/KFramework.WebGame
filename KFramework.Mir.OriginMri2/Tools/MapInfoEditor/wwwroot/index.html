@@ -14,6 +14,10 @@
   #main { display: flex; height: calc(100% - 44px); }
   #left { width: 190px; border-right: 1px solid #ccc; display: flex; flex-direction: column; background: #fafafa; }
   #left input.filter { margin: 6px; padding: 5px; }
+  .seg { display: flex; margin: 6px 6px 0; border: 1px solid #ccd4de; border-radius: 4px; overflow: hidden; }
+  .seg-btn { flex: 1; border: none; background: #fff; padding: 6px 4px; cursor: pointer; font-size: 12px; color: #344; }
+  .seg-btn + .seg-btn { border-left: 1px solid #ccd4de; }
+  .seg-btn.active { background: #1565ff; color: #fff; font-weight: bold; }
   #maplist { flex: 1; overflow: auto; margin: 0; padding: 0; list-style: none; }
   #maplist li { padding: 5px 8px; border-bottom: 1px solid #eee; cursor: pointer; }
   #maplist li:hover { background: #eaf2ff; }
@@ -73,6 +77,10 @@
 
 <div id="main">
   <div id="left">
+    <div class="seg">
+      <button class="seg-btn active" data-sz="all">全部地图</button>
+      <button class="seg-btn" data-sz="has">有安全区</button>
+    </div>
     <input class="filter" id="filter" placeholder="过滤 id / 名称..." />
     <ul id="maplist"></ul>
   </div>
@@ -135,6 +143,7 @@
 <script>
 const $ = id => document.getElementById(id);
 let maps = [], monsters = [];
+let szFilter = 'all';      // 左侧 Toggle：'all' 全部 / 'has' 仅显示有安全区的地图
 let current = null;       // 当前地图详情
 let flags = null;         // Uint8Array 解码后的 nibble 数据
 let cellPx = 4;
@@ -187,6 +196,9 @@ function renderList(filter) {
   const f = (filter || '').trim().toLowerCase();
   const ul = $('maplist'); ul.innerHTML = '';
   maps.forEach(m => {
+    // Toggle 过滤：仅“有安全区”时，过滤掉安全区数量为 0 的地图
+    if (szFilter === 'has' && (m.safeZoneCount || 0) === 0) return;
+    // 文字搜索：id / 标题 / 文件名
     if (f && !(`${m.index}`.includes(f)) && !m.title.toLowerCase().includes(f) && !m.fileName.toLowerCase().includes(f)) return;
     const li = document.createElement('li');
     li.dataset.id = m.index;
@@ -530,6 +542,15 @@ async function save() {
 }
 
 $('filter').addEventListener('input', e => renderList(e.target.value));
+// 安全区 Toggle：切换“全部地图 / 有安全区”并重渲染列表
+document.querySelectorAll('.seg-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.seg-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    szFilter = b.dataset.sz;
+    renderList($('filter').value);
+  });
+});
 init();
 </script>
 </body>

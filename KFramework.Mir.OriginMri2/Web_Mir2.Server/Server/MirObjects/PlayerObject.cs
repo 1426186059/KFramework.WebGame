@@ -1079,12 +1079,8 @@ namespace Server.MirObjects
         }
         protected override void SetBindSafeZone(SafeZoneInfo szi)
         {
-            // 仅“城镇/出生点”安全区(StartPoint)才更新绑定城镇，避免进入普通安全区(如矿区)即覆盖回城点
-            if (szi.StartPoint)
-            {
-                BindLocation = szi.Location;
-                BindMapIndex = CurrentMapIndex;
-            }
+            BindLocation = szi.Location;
+            BindMapIndex = CurrentMapIndex;
         }
         public void StartGame()
         {
@@ -1434,6 +1430,12 @@ namespace Server.MirObjects
         public void TownRevive()
         {
             if (!Dead) return;
+
+            // 若绑定地图并非真正的“城镇/出生点”（如被误标为 StartPoint 的矿区或数据异常），
+            // 重置到合法出生点，避免死亡后原地复活循环。
+            bool bindIsTown = false;
+            foreach (SafeZoneInfo sp in Envir.StartPoints) { if (sp.Info.Index == BindMapIndex) { bindIsTown = true; break; } }
+            if (!bindIsTown) SetBind();
 
             Map temp = Envir.GetMap(BindMapIndex);
             Point bindLocation = BindLocation;
@@ -4368,11 +4370,8 @@ namespace Server.MirObjects
 
                 if (szi != null)
                 {
-                    if (szi.StartPoint)
-                    {
-                        BindLocation = szi.Location;
-                        BindMapIndex = CurrentMapIndex;
-                    }
+                    BindLocation = szi.Location;
+                    BindMapIndex = CurrentMapIndex;
                     InSafeZone = true;
                 }
                 else
@@ -4677,15 +4676,12 @@ namespace Server.MirObjects
 
             GetObjects();
 
-            // Safe-zone / bind update（仅城镇/出生点安全区更新绑定，避免覆盖回城点）
+            // Safe-zone / bind update
             SafeZoneInfo szi = CurrentMap.GetSafeZone(CurrentLocation);
             if (szi != null)
             {
-                if (szi.StartPoint)
-                {
-                    BindLocation = szi.Location;
-                    BindMapIndex = CurrentMapIndex;
-                }
+                BindLocation = szi.Location;
+                BindMapIndex = CurrentMapIndex;
                 InSafeZone = true;
             }
             else InSafeZone = false;
