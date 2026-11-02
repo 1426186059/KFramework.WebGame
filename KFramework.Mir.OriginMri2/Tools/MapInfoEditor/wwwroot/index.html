@@ -502,8 +502,15 @@ function drawMap() {
   const c = $('canvas');
   const m = current && current.map;
   if (!m || !m.cols) { setStatus('无地图数据或无法解码'); return; }
-  const cols = m.cols, rows = m.rows, cell = cellPx;
-  c.width = cols * cell; c.height = rows * cell;
+  const cols = m.cols, rows = m.rows;
+  // 真实地图瓦片为 48x32（非正方形），横/纵需按比例分别缩放以保持宽高比，否则会被拉变形
+  let cellX = cellPx, cellY = cellPx;
+  if (renderMode === 'real' && realImg && realImg.naturalWidth) {
+    const iw = realImg.naturalWidth / cols, ih = realImg.naturalHeight / rows;
+    cellY = cellX * (ih / iw);
+  }
+  const sc = Math.min(cellX, cellY);
+  c.width = cols * cellX; c.height = rows * cellY;
   const ctx = c.getContext('2d');
   ctx.imageSmoothingEnabled = false;
 
@@ -535,9 +542,9 @@ function drawMap() {
   if (layerVisible.safe) {
     const deg2rad = Math.PI / 180;
     current.safeZones.forEach(z => {
-      const hw = z.size * cell;
-      const hh = ((z.sizeY && z.sizeY > 0) ? z.sizeY : z.size) * cell;
-      const cx = z.x * cell + cell / 2, cy = z.y * cell + cell / 2;
+      const hw = z.size * cellX;
+      const hh = ((z.sizeY && z.sizeY > 0) ? z.sizeY : z.size) * cellY;
+      const cx = z.x * cellX + cellX / 2, cy = z.y * cellY + cellY / 2;
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate((z.rotation || 0) * deg2rad);
@@ -552,8 +559,8 @@ function drawMap() {
     current.respawns.forEach(r => {
       const mn = monsters.find(m => m.index === r.monsterIndex);
       const boss = mn ? mn.isBoss : false;
-      const cx = r.x * cell + cell / 2, cy = r.y * cell + cell / 2;
-      const rad = Math.max(4, cell * 0.5);
+      const cx = r.x * cellX + cellX / 2, cy = r.y * cellY + cellY / 2;
+      const rad = Math.max(3, sc * 0.5);
       ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2);
       ctx.fillStyle = boss ? '#d500f9' : '#ff1744';
       ctx.fill();
@@ -563,8 +570,8 @@ function drawMap() {
   // NPC（醒目青色圆形）
   if (layerVisible.npc) {
     current.npcs.forEach(n => {
-      const cx = n.x * cell + cell / 2, cy = n.y * cell + cell / 2;
-      const rad = Math.max(4, cell * 0.5);
+      const cx = n.x * cellX + cellX / 2, cy = n.y * cellY + cellY / 2;
+      const rad = Math.max(3, sc * 0.5);
       ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2);
       ctx.fillStyle = '#00e5ff'; ctx.fill();
       ctx.lineWidth = 1.5; ctx.strokeStyle = '#00363a'; ctx.stroke();
@@ -573,17 +580,17 @@ function drawMap() {
   // 传送点（醒目橙色圆形 = 源坐标；选中项黄底粉环高亮并标注目标地图编号）
   if (layerVisible.mv) {
     current.movements.forEach((mv, i) => {
-      const cx = mv.sourceX * cell + cell / 2, cy = mv.sourceY * cell + cell / 2;
+      const cx = mv.sourceX * cellX + cellX / 2, cy = mv.sourceY * cellY + cellY / 2;
       const sel = (i === selectedMv);
-      const rad = Math.max(4, cell * (sel ? 0.62 : 0.5));
+      const rad = Math.max(3, sc * (sel ? 0.62 : 0.5));
       ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2);
       if (sel) { ctx.fillStyle = '#ffeb3b'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#ff00aa'; ctx.stroke(); }
       else { ctx.fillStyle = '#ff9100'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#fff'; ctx.stroke(); }
-      if (cell >= 8) {
+      if (sc >= 8) {
         ctx.fillStyle = sel ? '#7a0033' : '#fff';
-        ctx.font = Math.max(9, Math.floor(cell)) + 'px sans-serif';
+        ctx.font = Math.max(9, Math.floor(sc)) + 'px sans-serif';
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(String(mv.destMapIndex), cx, cy - rad - Math.max(4, cell * 0.4));
+        ctx.fillText(String(mv.destMapIndex), cx, cy - rad - Math.max(4, sc * 0.4));
       }
     });
   }

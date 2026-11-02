@@ -155,37 +155,6 @@
   "FinishQuestIndexes": []
  },
  {
-  "Index": 6,
-  "FileName": "比奇省/边境村/BookStore",
-  "Name": "图书管理员",
-  "MapIndex": 29,
-  "Location": {
-   "X": 5,
-   "Y": 18
-  },
-  "Rate": 100,
-  "Image": 2,
-  "Colour": {},
-  "TimeVisible": false,
-  "HourStart": 0,
-  "MinuteStart": 0,
-  "HourEnd": 0,
-  "MinuteEnd": 1,
-  "MinLev": 0,
-  "MaxLev": 0,
-  "DayofWeek": "",
-  "ClassRequired": "",
-  "Sabuk": false,
-  "FlagNeeded": 0,
-  "Conquest": 0,
-  "ShowOnBigMap": true,
-  "BigMapIcon": 107,
-  "CanTeleportTo": false,
-  "ConquestVisible": true,
-  "CollectQuestIndexes": [],
-  "FinishQuestIndexes": []
- },
- {
   "Index": 7,
   "FileName": "比奇省/边境村/Butcher",
   "Name": "杂货商",
@@ -1358,37 +1327,6 @@
   "Conquest": 0,
   "ShowOnBigMap": true,
   "BigMapIcon": 120,
-  "CanTeleportTo": false,
-  "ConquestVisible": true,
-  "CollectQuestIndexes": [],
-  "FinishQuestIndexes": []
- },
- {
-  "Index": 45,
-  "FileName": "比奇省/比奇城墙/BookStore",
-  "Name": "图书管理员",
-  "MapIndex": 6,
-  "Location": {
-   "X": 5,
-   "Y": 8
-  },
-  "Rate": 100,
-  "Image": 2,
-  "Colour": {},
-  "TimeVisible": false,
-  "HourStart": 0,
-  "MinuteStart": 0,
-  "HourEnd": 0,
-  "MinuteEnd": 1,
-  "MinLev": 0,
-  "MaxLev": 0,
-  "DayofWeek": "",
-  "ClassRequired": "",
-  "Sabuk": false,
-  "FlagNeeded": 0,
-  "Conquest": 0,
-  "ShowOnBigMap": true,
-  "BigMapIcon": 107,
   "CanTeleportTo": false,
   "ConquestVisible": true,
   "CollectQuestIndexes": [],
@@ -7786,8 +7724,8 @@
   "Name": "图书管理员",
   "MapIndex": 5047,
   "Location": {
-   "X": 5,
-   "Y": 18
+   "X": 10,
+   "Y": 21
   },
   "Rate": 100,
   "Image": 2,
@@ -8995,8 +8933,8 @@
   "Name": "图书管理员",
   "MapIndex": 5047,
   "Location": {
-   "X": 5,
-   "Y": 8
+   "X": 18,
+   "Y": 13
   },
   "Rate": 100,
   "Image": 2,
