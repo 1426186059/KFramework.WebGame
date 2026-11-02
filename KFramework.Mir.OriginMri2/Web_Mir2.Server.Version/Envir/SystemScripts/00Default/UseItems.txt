@@ -27,30 +27,30 @@ LocalMessage "掉率提升20%，持续1天。" Hint
 ;;蓝Octagonal箱
 [@_UseItem(7)]
 #ACT
-GIVEITEM EXP30%3 1
+GIVEITEM 经验丹30%(3) 1
 GIVEITEM 生命酒 1
-GIVEITEM Destruction烈酒 1
-GIVEITEM 道术Torch3 1
-GIVEITEM Gale药水 1
-GIVEITEM Resurrection卷轴 1
+GIVEITEM 毁灭烈酒 1
+GIVEITEM 道术火把 1
+GIVEITEM 疾风药水 1
+GIVEITEM 复活卷轴 1
 
 ;;红Octagonal箱
 [@_UseItem(8)]
 #ACT
-GIVEITEM EXP30%3 1
+GIVEITEM 经验丹30%(3) 1
 GIVEITEM 生命酒 1
-GIVEITEM 魔法al烈酒 1
-GIVEITEM MCTorch3 1
-GIVEITEM Resurrection卷轴 1
+GIVEITEM 魔法烈酒 1
+GIVEITEM 魔法火把3 1
+GIVEITEM 复活卷轴 1
 
 ;;绿Octagonal箱
 [@_UseItem(9)]
 #ACT
-GIVEITEM EXP30%3 1
+GIVEITEM 经验丹30%(3) 1
 GIVEITEM 生命酒 1
 GIVEITEM 魂烈酒 1
-GIVEITEM SCTorch3 1
-GIVEITEM Resurrection卷轴 1
+GIVEITEM 道术火把3 1
+GIVEITEM 复活卷轴 1
 
 [@_UseItem(10)]
 #ACT
@@ -64,19 +64,19 @@ REDUCEPKPOINT 10
 ;;BoxOfHolyWater 1 Day
 [@_UseItem(12)]
 #ACT
-GIVEITEM Elixir之Might[1d] 1
-GIVEITEM Elixir之Defensive[1d] 1
+GIVEITEM 灵药之力量[1] 1
+GIVEITEM 灵药之防御[1] 1
 GIVEITEM Elixir之山参[1d] 1
-GIVEITEM EXP20%[1d] 1
+GIVEITEM 经验丹20%[1天] 1
 
 ;;钓鱼Package
 [@_UseItem(13)]
 #ACT
-GIVEITEM 红钓鱼Rod[6M] 1
-GIVEITEM 尊享Reel 1
-GIVEITEM 尊享Float 1
-GIVEITEM 尊享Finder 1
-GIVEITEM 尊享Bait 7200
+GIVEITEM 红钓鱼杖[6男] 1
+GIVEITEM 尊享卷线器 1
+GIVEITEM 尊享浮漂 1
+GIVEITEM 尊享探测器 1
+GIVEITEM 尊享饵 7200
 
 ;;金Bar/金BarBundle/金Chest
 [@_UseItem(500)]
@@ -86,7 +86,7 @@ CHECKGOLD <= 4293967295
 GIVEGOLD 1000000
 LocalMessage "获得100万金币" Hint
 #ELSEACT
-GIVEITEM 金Bar 1
+GIVEITEM 金条 1
 
 [@_UseItem(501)]
 #IF
@@ -95,7 +95,7 @@ CHECKGOLD <= 4289967295
 GIVEGOLD 5000000
 LocalMessage "获得500万金币" Hint
 #ELSEACT
-GIVEITEM 金BarBundle 1
+GIVEITEM 金条包 1
 
 [@_UseItem(502)]
 #IF
@@ -104,4 +104,4 @@ CHECKGOLD <= 4284967295
 GIVEGOLD 10000000
 LocalMessage "获得1000万金币" Hint
 #ELSEACT
-GIVEITEM 金Chest 1
+GIVEITEM 金箱 1

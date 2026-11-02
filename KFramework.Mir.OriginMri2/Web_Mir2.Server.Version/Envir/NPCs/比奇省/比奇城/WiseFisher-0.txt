@@ -48,9 +48,9 @@ GOTO @Main-1
 33
 
 [Trade]
-蓝钓鱼Rod
-钓鱼Hook
-钓鱼Float
-鱼Detector
-钓鱼Reel
+蓝钓鱼杖
+钓鱼钩
+钓鱼浮漂
+鱼探测器
+钓鱼卷线器
 鱼饵 100

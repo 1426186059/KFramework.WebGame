@@ -12,15 +12,15 @@
 1/1 特制魔法药
 1/1 太阳水
 1/2 太阳水
-1/3 太阳药水(M)
-1/5 太阳药水(M)
+1/3 太阳药水(男)
+1/5 太阳药水(男)
 
-1/10 Impact药(L)
-1/10 魔法药(L)
-1/10 道士药(L)
-1/10 暴药(L)
+1/10 冲击药(大)
+1/10 魔法药(大)
+1/10 道士药(大)
+1/10 暴药(大)
 
-1/15 BenedictionOil
+1/15 祝福油
 1/40 GoldenBenedictionOil
 
 1/40 觉醒魂0
@@ -31,54 +31,54 @@
 1/250 龙斩杀
 1/250 龙杖
 1/250 魂军刀
-1/450 Burst剑
-1/450 Dread弓
+1/450 烈火剑
+1/450 恐惧弓
 1/450 圣血矛
 1/450 龙血剑
 
 ;Weapon Rare
 1/900 黑虎锤
 1/900 杖之莲
-1/900 Lethal弓
-1/900 扇之Crane
+1/900 致命弓
+1/900 扇之鹤
 
 ;Armour
-1/20 Studded甲(M)
-1/20 Studded甲(F)
-1/20 钢甲(M)
-1/20 钢甲(F)
-1/20 龙袍(M)
-1/20 龙袍(F)
-1/20 泰坦甲(M)
-1/20 泰坦甲(F)
+1/20 钉甲(男)
+1/20 钉甲(女)
+1/20 钢甲(男)
+1/20 钢甲(女)
+1/20 龙袍(男)
+1/20 龙袍(女)
+1/20 泰坦甲(男)
+1/20 泰坦甲(女)
 
 ;Armour Rare
-1/500 黑虎甲(M)
-1/500 黑虎甲(F)
-1/500 莲甲(F)
-1/500 莲甲(M)
-1/500 Crane甲(F)
-1/500 Crane甲(M)
+1/500 黑虎甲(男)
+1/500 黑虎甲(女)
+1/500 莲甲(女)
+1/500 莲甲(男)
+1/500 鹤甲(女)
+1/500 鹤甲(男)
 
 ;Helmets
 1/545 ApesCrown
-1/550 Sparkling盔
-1/560 盔之暗ness
+1/550 闪耀盔
+1/560 盔之暗黑
 
 ;Helmets Rare
 1/400 AscendedHelmet
 
 ;Necklace
-1/205 邪Triangle
-1/205 CrossPurified
-1/205 Adamant项链
+1/205 邪三角
+1/205 净化十字
+1/205 精钢项链
 
 ;Necklace Rare
 1/400 AscendedNecklace
 
 ;Bracelets
-1/205 Wild泰坦护符
-1/205 Enchanted护符
+1/205 野泰坦护符
+1/205 附魔护符
 1/205 五元素护符
 
 ;Bracelets Rare
@@ -86,7 +86,7 @@
 
 ;Rings
 1/205 魔红宝石戒
-1/205 邪Expel戒
+1/205 邪驱散戒
 1/205 金龙戒
 
 ;Ring Rare
@@ -101,9 +101,9 @@
 
 ;Belts
 1/40 BoneBelt
-1/150 烈焰Grasp
-1/260 Sparkling腰带
-1/165 腰带之暗ness
+1/150 烈焰握
+1/260 闪耀腰带
+1/165 腰带之暗黑
 
 ;Belt Rare
 1/400 AscendedBelt
@@ -135,31 +135,31 @@
 
 ;Books
 ;;Warrior
-1/500 刃Avalanche
-1/700 防护Field
-1/900 Rage
-1/1500 Counter攻击
+1/500 崩山剑法
+1/700 防护场
+1/900 怒之煞
+1/1500 反击
 
 ;;Wizard
-1/60 火焰Disruptor
-1/500 镜ing
-1/900 MeteorStrike
-1/1500 魔法Booster
-1/1500 冰Thrust
+1/60 火焰破坏术
+1/500 镜
+1/900 流星火雨
+1/1500 魔法增益
+1/1500 冰刺
 
 ;;Toaist
-1/60 UltimateEnhancer
+1/60 强化火符
 1/500 召唤圣精灵
-1/700 Reincarnation
-1/900 毒Cloud
-1/900 Plague
-1/1500 PetEnhancer
+1/700 复活术
+1/900 毒云
+1/900 瘟疫术
+1/1500 宠物强化
 
 ;;Assassion
-1/60 魔法Eater
-1/500 SwiftFeet
-1/900 暗Body
-1/1500 Hemorrhage
+1/60 魔法噬
+1/500 疾风步
+1/900 暗身
+1/1500 出血术
 
 ;CraftingMaterials
 

@@ -5,7 +5,7 @@
 
 ;Potions
 1/30 太阳水
-1/50 太阳药水(M)
+1/50 太阳药水(男)
 
 
 1/12000 HolyHealthStone
@@ -17,9 +17,9 @@
 1/12000 HolyAcStone
 1/12000 HolyDefenseStone
 
-1/40000 Sparkling腰带
-1/40000 Sparkling靴
-1/40000 Sparkling盔
+1/40000 闪耀腰带
+1/40000 闪耀靴
+1/40000 闪耀盔
 1/60000 PuiYuHelmet
 
-1/7000 BenedictionOil
+1/7000 祝福油

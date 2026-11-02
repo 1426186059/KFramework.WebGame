@@ -6,17 +6,17 @@
 1/15 大魔法药
 
 ;Crafting Material
-1/20 Undead皮革
+1/20 亡灵皮革
 1/10 BraveryFragment
 1/10 MagicFragment
 1/10 SoulFragment
 1/10 ProtectionFragment
 1/10 EvilSlayerFragment
 1/10 DurabilityFragment
-1/10 风Marble
-1/10 EvasionMarble
-1/10 FocusMarble
-1/10 毒Marble
-1/10 冰Marble
-1/10 WillMarble
-1/10 蚁idoteMarble
+1/10 风珠
+1/10 闪避珠
+1/10 集中珠
+1/10 毒珠
+1/10 冰珠
+1/10 意志珠
+1/10 蚁毒珠

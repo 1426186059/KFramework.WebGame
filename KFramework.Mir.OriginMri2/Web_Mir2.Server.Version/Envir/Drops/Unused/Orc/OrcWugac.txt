@@ -13,10 +13,10 @@
 1/15000 SlicerRing
 
 ;Assassin
-1/45100 Zinc刃
-1/55250 Butchering刃
-1/55550 Mad龙刃
-1/55650 TheRipper
+1/45100 锌刃
+1/55250 屠刃
+1/55550 狂龙刃
+1/55650 撕裂者
 
 1/4000 HolyHealthStone
 1/4000 HolyMagicStone
@@ -27,5 +27,5 @@
 1/4000 HolyAcStone
 1/4000 HolyDefenseStone
 
-1/2000 BenedictionOil
+1/2000 祝福油
 

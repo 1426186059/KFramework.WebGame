@@ -10,7 +10,7 @@
 [@KillTasks]
 
 [@ItemTasks]
-Stolen金 1
+盗金 1
 
 [@CarryItems]
 
@@ -18,7 +18,7 @@ Stolen金 1
 
 [@SelectRewards]
 黑水晶戒
-眼of金蛇
+眼金蛇
 黑珍珠戒
 
 [@ExpReward]

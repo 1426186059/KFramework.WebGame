@@ -81,7 +81,7 @@ GOTO @gold
 #SAY
 抱歉，你的金币不足。
 
-<退出/@Exit>
+<退出/@退出>
 
 [Quests]
 -57

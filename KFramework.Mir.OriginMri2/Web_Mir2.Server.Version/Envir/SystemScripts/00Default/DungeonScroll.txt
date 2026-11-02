@@ -1,4 +1,4 @@
-;;地下城回城卷
+;;地下城TeleportHome
 [@_UseItem(4)]
 #SAY
 你想前往哪个地下城？

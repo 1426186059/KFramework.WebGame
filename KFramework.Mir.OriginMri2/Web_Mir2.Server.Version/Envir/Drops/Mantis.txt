@@ -16,7 +16,7 @@
 1/12000 HolyAcStone
 1/12000 HolyDefenseStone
 
-1/7000 BenedictionOil
+1/7000 祝福油
 
 ;Weapons
 

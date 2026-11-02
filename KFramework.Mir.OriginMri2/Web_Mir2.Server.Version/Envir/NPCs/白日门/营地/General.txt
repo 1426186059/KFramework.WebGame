@@ -48,10 +48,10 @@ GOTO @Main-1
 大魔法药 1
 大魔法药 5
 大魔法药 10
-Candle
-Torch
-RandomTeleport
-DungeonEscape
+蜡烛
+火把
+随机传送
+地牢逃脱
 护符
 绿毒粉
 红毒粉

@@ -3,10 +3,10 @@
 
 ;Crafting Materials
 1/4 食人叶 
-1/5 食人Fruit 
+1/5 食人果 
 1/20 食人毒 
 
 ;Quest
-1/3 食人Stem Q
+1/3 食人茎 Q
 1/3 食人种子 Q
 

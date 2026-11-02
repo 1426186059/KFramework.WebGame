@@ -6,7 +6,7 @@
 1/10 中魔法药
 1/35 大金创药
 1/35 大魔法药
-1/10000  BenedictionOil
+1/10000  祝福油
 
 
 ;Crafting Materials

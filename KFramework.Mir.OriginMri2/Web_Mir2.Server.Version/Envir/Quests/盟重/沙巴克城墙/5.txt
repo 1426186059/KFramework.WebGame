@@ -14,7 +14,7 @@
 [@CarryItems]
 
 [@FixedRewards]
-Exorcist戒
+驱魔戒
 
 [@SelectRewards]
 

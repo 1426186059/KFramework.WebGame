@@ -1,7 +1,7 @@
 ;Level 1
 ;Gold
 1/1 Gold 30000 LV1
-1/20 金Bar LV1
+1/20 金条 LV1
 
 ;Pots + Other
 1/1 太阳水 LV1
@@ -17,7 +17,7 @@
 1/1 太阳水 LV1
 1/3 太阳水 LV1
 
-1/1 BenedictionOil LV1
+1/1 祝福油 LV1
 1/10 GoldenBenedictionOil LV1
 
 1/2 觉醒魂0 LV1
@@ -93,64 +93,64 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV1
-1/110 狮Roar LV1
+1/110 狮子吼 LV1
 1/115 BladeStorm LV1
-1/120 CrossHalf月 LV1
-1/125 刃Avalanche LV1
-1/130 防护Field LV1
-1/135 Rage LV1
-1/140 Counter攻击 LV1
-1/145 SlashingBurst LV1
-1/150 Fury LV1
-1/155 ImmortalSkin LV1
+1/120 十字半月 LV1
+1/125 崩山剑法 LV1
+1/130 防护场 LV1
+1/135 怒之煞 LV1
+1/140 反击 LV1
+1/145 逐日剑法 LV1
+1/150 狂怒 LV1
+1/155 金刚不坏 LV1
 
 
 ;Wizard
-1/90 Vampirism LV1
+1/90 嗜血术 LV1
 1/105 冰暴 LV1
-1/110 火焰Disruptor LV1
-1/115 镜ing LV1
-1/120 火焰Field LV1
-1/125 Blizzard LV1
+1/110 火焰破坏术 LV1
+1/115 镜 LV1
+1/120 火焰场 LV1
+1/125 暴风雪 LV1
 1/130 FrozenRains LV1
-1/135 魔法Booster LV1
-1/140 MeteorStrike LV1
+1/135 魔法增益 LV1
+1/140 流星火雨 LV1
 1/145 LavaKing LV1
-1/150 冰Thrust LV1
-1/155 暴Escape LV1
-1/160 FastMove LV1
+1/150 冰刺 LV1
+1/155 暴走 LV1
+1/160 疾步 LV1
 
 
 ;Taoist
-1/90 UltimateEnhancer LV1
-1/100 Healing轮 LV1
+1/90 强化火符 LV1
+1/100 治愈轮 LV1
 1/105 召唤神兽 LV1
-1/110 Reincarnation LV1
+1/110 复活术 LV1
 1/115 召唤圣精灵 LV1
 1/120 诅咒 LV1
-1/125 Plague LV1
-1/130 毒Cloud LV1
-1/135 Energy盾 LV1
-1/140 PetEnhancer LV1
+1/125 瘟疫术 LV1
+1/130 毒云 LV1
+1/135 能量盾 LV1
+1/140 宠物强化 LV1
 1/145 HeadShot LV1
 1/150 HolyShield LV1
 
 
 ;Assassin
-1/80 火Burst LV1
+1/80 火爆术 LV1
 1/85 CrescentSlash LV1
 1/105 陷阱 LV1
 1/110 毒剑 LV1
 1/115 月轻 LV1
-1/120 魔法Eater LV1
-1/125 SwiftFeet LV1
-1/150 暗Body LV1
+1/120 魔法噬 LV1
+1/125 疾风步 LV1
+1/150 暗身 LV1
 
-1/80 元素alBarrier LV1
-1/85 BindingShot LV1
+1/80 元素屏障 LV1
+1/85 束缚射击 LV1
 1/105 召唤蟾蜍 LV1
-1/110 毒Shot LV1
-1/125 CrippleShot LV1
+1/110 毒射 LV1
+1/125 致残射击 LV1
 1/150 召唤魅惑之蛇 LV1
 
 ;CraftingMaterials
@@ -161,7 +161,7 @@
 ;Level 2
 ;Gold
 1/1 Gold 30000 LV2
-1/20 金Bar LV2
+1/20 金条 LV2
 
 ;Pots + Other
 1/1 太阳水 LV2
@@ -177,7 +177,7 @@
 1/1 太阳水 LV2
 1/3 太阳水 LV2
 
-1/1 BenedictionOil LV2
+1/1 祝福油 LV2
 1/10 GoldenBenedictionOil LV2
 
 1/2 觉醒魂0 LV2
@@ -253,64 +253,64 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV2
-1/110 狮Roar LV2
+1/110 狮子吼 LV2
 1/115 BladeStorm LV2
-1/120 CrossHalf月 LV2
-1/125 刃Avalanche LV2
-1/130 防护Field LV2
-1/135 Rage LV2
-1/140 Counter攻击 LV2
-1/145 SlashingBurst LV2
-1/150 Fury LV2
-1/155 ImmortalSkin LV2
+1/120 十字半月 LV2
+1/125 崩山剑法 LV2
+1/130 防护场 LV2
+1/135 怒之煞 LV2
+1/140 反击 LV2
+1/145 逐日剑法 LV2
+1/150 狂怒 LV2
+1/155 金刚不坏 LV2
 
 
 ;Wizard
-1/90 Vampirism LV2
+1/90 嗜血术 LV2
 1/105 冰暴 LV2
-1/110 火焰Disruptor LV2
-1/115 镜ing LV2
-1/120 火焰Field LV2
-1/125 Blizzard LV2
+1/110 火焰破坏术 LV2
+1/115 镜 LV2
+1/120 火焰场 LV2
+1/125 暴风雪 LV2
 1/130 FrozenRains LV2
-1/135 魔法Booster LV2
-1/140 MeteorStrike LV2
+1/135 魔法增益 LV2
+1/140 流星火雨 LV2
 1/145 LavaKing LV2
-1/150 冰Thrust LV2
-1/155 暴Escape LV2
-1/160 FastMove LV2
+1/150 冰刺 LV2
+1/155 暴走 LV2
+1/160 疾步 LV2
 
 
 ;Taoist
-1/90 UltimateEnhancer LV2
-1/100 Healing轮 LV2
+1/90 强化火符 LV2
+1/100 治愈轮 LV2
 1/105 召唤神兽 LV2
-1/110 Reincarnation LV2
+1/110 复活术 LV2
 1/115 召唤圣精灵 LV2
 1/120 诅咒 LV2
-1/125 Plague LV2
-1/130 毒Cloud LV2
-1/135 Energy盾 LV2
-1/140 PetEnhancer LV2
+1/125 瘟疫术 LV2
+1/130 毒云 LV2
+1/135 能量盾 LV2
+1/140 宠物强化 LV2
 1/145 HeadShot LV2
 1/150 HolyShield LV2
 
 
 ;Assassin
-1/80 火Burst LV2
+1/80 火爆术 LV2
 1/85 CrescentSlash LV2
 1/105 陷阱 LV2
 1/110 毒剑 LV2
 1/115 月轻 LV2
-1/120 魔法Eater LV2
-1/125 SwiftFeet LV2
-1/150 暗Body LV2
+1/120 魔法噬 LV2
+1/125 疾风步 LV2
+1/150 暗身 LV2
 
-1/80 元素alBarrier LV2
-1/85 BindingShot LV2
+1/80 元素屏障 LV2
+1/85 束缚射击 LV2
 1/105 召唤蟾蜍 LV2
-1/110 毒Shot LV2
-1/125 CrippleShot LV2
+1/110 毒射 LV2
+1/125 致残射击 LV2
 1/150 召唤魅惑之蛇 LV2
 
 
@@ -322,7 +322,7 @@
 ;Level 3
 ;Gold
 1/1 Gold 30000 LV3
-1/20 金Bar LV3
+1/20 金条 LV3
 
 ;Pots + Other
 1/1 太阳水 LV3
@@ -338,7 +338,7 @@
 1/1 太阳水 LV3
 1/3 太阳水 LV3
 
-1/1 BenedictionOil LV3
+1/1 祝福油 LV3
 1/10 GoldenBenedictionOil LV3
 
 1/2 觉醒魂0 LV3
@@ -415,64 +415,64 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV3
-1/110 狮Roar LV3
+1/110 狮子吼 LV3
 1/115 BladeStorm LV3
-1/120 CrossHalf月 LV3
-1/125 刃Avalanche LV3
-1/130 防护Field LV3
-1/135 Rage LV3
-1/140 Counter攻击 LV3
-1/145 SlashingBurst LV3
-1/150 Fury LV3
-1/155 ImmortalSkin LV3
+1/120 十字半月 LV3
+1/125 崩山剑法 LV3
+1/130 防护场 LV3
+1/135 怒之煞 LV3
+1/140 反击 LV3
+1/145 逐日剑法 LV3
+1/150 狂怒 LV3
+1/155 金刚不坏 LV3
 
 
 ;Wizard
-1/90 Vampirism LV3
+1/90 嗜血术 LV3
 1/105 冰暴 LV3
-1/110 火焰Disruptor LV3
-1/115 镜ing LV3
-1/120 火焰Field LV3
-1/125 Blizzard LV3
+1/110 火焰破坏术 LV3
+1/115 镜 LV3
+1/120 火焰场 LV3
+1/125 暴风雪 LV3
 1/130 FrozenRains LV3
-1/135 魔法Booster LV3
-1/140 MeteorStrike LV3
+1/135 魔法增益 LV3
+1/140 流星火雨 LV3
 1/145 LavaKing LV3
-1/150 冰Thrust LV3
-1/155 暴Escape LV3
-1/160 FastMove LV3
+1/150 冰刺 LV3
+1/155 暴走 LV3
+1/160 疾步 LV3
 
 
 ;Taoist
-1/90 UltimateEnhancer LV3
-1/100 Healing轮 LV3
+1/90 强化火符 LV3
+1/100 治愈轮 LV3
 1/105 召唤神兽 LV3
-1/110 Reincarnation LV3
+1/110 复活术 LV3
 1/115 召唤圣精灵 LV3
 1/120 诅咒 LV3
-1/125 Plague LV3
-1/130 毒Cloud LV3
-1/135 Energy盾 LV3
-1/140 PetEnhancer LV3
+1/125 瘟疫术 LV3
+1/130 毒云 LV3
+1/135 能量盾 LV3
+1/140 宠物强化 LV3
 1/145 HeadShot LV3
 1/150 HolyShield LV3
 
 
 ;Assassin
-1/80 火Burst LV3
+1/80 火爆术 LV3
 1/85 CrescentSlash LV3
 1/105 陷阱 LV3
 1/110 毒剑 LV3
 1/115 月轻 LV3
-1/120 魔法Eater LV3
-1/125 SwiftFeet LV3
-1/150 暗Body LV3
+1/120 魔法噬 LV3
+1/125 疾风步 LV3
+1/150 暗身 LV3
 
-1/80 元素alBarrier LV3
-1/85 BindingShot LV3
+1/80 元素屏障 LV3
+1/85 束缚射击 LV3
 1/105 召唤蟾蜍 LV3
-1/110 毒Shot LV3
-1/125 CrippleShot LV3
+1/110 毒射 LV3
+1/125 致残射击 LV3
 1/150 召唤魅惑之蛇 LV3
 
 
@@ -484,7 +484,7 @@
 ;Level 4
 ;Gold
 1/1 Gold 30000 LV4
-1/20 金Bar LV4
+1/20 金条 LV4
 
 ;Pots + Other
 1/1 太阳水 LV4
@@ -500,7 +500,7 @@
 1/1 太阳水 LV4
 1/3 太阳水 LV4
 
-1/1 BenedictionOil LV4
+1/1 祝福油 LV4
 1/10 GoldenBenedictionOil LV4
 
 1/2 觉醒魂0 LV4
@@ -576,64 +576,64 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV4
-1/110 狮Roar LV4
+1/110 狮子吼 LV4
 1/115 BladeStorm LV4
-1/120 CrossHalf月 LV4
-1/125 刃Avalanche LV4
-1/130 防护Field LV4
-1/135 Rage LV4
-1/140 Counter攻击 LV4
-1/145 SlashingBurst LV4
-1/150 Fury LV4
-1/155 ImmortalSkin LV4
+1/120 十字半月 LV4
+1/125 崩山剑法 LV4
+1/130 防护场 LV4
+1/135 怒之煞 LV4
+1/140 反击 LV4
+1/145 逐日剑法 LV4
+1/150 狂怒 LV4
+1/155 金刚不坏 LV4
 
 
 ;Wizard
-1/90 Vampirism LV4
+1/90 嗜血术 LV4
 1/105 冰暴 LV4
-1/110 火焰Disruptor LV4
-1/115 镜ing LV4
-1/120 火焰Field LV4
-1/125 Blizzard LV4
+1/110 火焰破坏术 LV4
+1/115 镜 LV4
+1/120 火焰场 LV4
+1/125 暴风雪 LV4
 1/130 FrozenRains LV4
-1/135 魔法Booster LV4
-1/140 MeteorStrike LV4
+1/135 魔法增益 LV4
+1/140 流星火雨 LV4
 1/145 LavaKing LV4
-1/150 冰Thrust LV4
-1/155 暴Escape LV4
-1/160 FastMove LV4
+1/150 冰刺 LV4
+1/155 暴走 LV4
+1/160 疾步 LV4
 
 
 ;Taoist
-1/90 UltimateEnhancer LV4
-1/100 Healing轮 LV4
+1/90 强化火符 LV4
+1/100 治愈轮 LV4
 1/105 召唤神兽 LV4
-1/110 Reincarnation LV4
+1/110 复活术 LV4
 1/115 召唤圣精灵 LV4
 1/120 诅咒 LV4
-1/125 Plague LV4
-1/130 毒Cloud LV4
-1/135 Energy盾 LV4
-1/140 PetEnhancer LV4
+1/125 瘟疫术 LV4
+1/130 毒云 LV4
+1/135 能量盾 LV4
+1/140 宠物强化 LV4
 1/145 HeadShot LV4
 1/150 HolyShield LV4
 
 
 ;Assassin
-1/80 火Burst LV4
+1/80 火爆术 LV4
 1/85 CrescentSlash LV4
 1/105 陷阱 LV4
 1/110 毒剑 LV4
 1/115 月轻 LV4
-1/120 魔法Eater LV4
-1/125 SwiftFeet LV4
-1/150 暗Body LV4
+1/120 魔法噬 LV4
+1/125 疾风步 LV4
+1/150 暗身 LV4
 
-1/80 元素alBarrier LV4
-1/85 BindingShot LV4
+1/80 元素屏障 LV4
+1/85 束缚射击 LV4
 1/105 召唤蟾蜍 LV4
-1/110 毒Shot LV4
-1/125 CrippleShot LV4
+1/110 毒射 LV4
+1/125 致残射击 LV4
 1/150 召唤魅惑之蛇 LV4
 
 
@@ -645,7 +645,7 @@
 ;Level 5
 ;Gold
 1/1 Gold 30000 LV5
-1/20 金Bar LV5
+1/20 金条 LV5
 
 ;Pots + Other
 1/1 太阳水 LV5
@@ -661,7 +661,7 @@
 1/1 太阳水 LV5
 1/3 太阳水 LV5
 
-1/1 BenedictionOil LV5
+1/1 祝福油 LV5
 1/10 GoldenBenedictionOil LV5
 
 1/2 觉醒魂0 LV5
@@ -737,64 +737,64 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV5
-1/110 狮Roar LV5
+1/110 狮子吼 LV5
 1/115 BladeStorm LV5
-1/120 CrossHalf月 LV5
-1/125 刃Avalanche LV5
-1/130 防护Field LV5
-1/135 Rage LV5
-1/140 Counter攻击 LV5
-1/145 SlashingBurst LV5
-1/150 Fury LV5
-1/155 ImmortalSkin LV5
+1/120 十字半月 LV5
+1/125 崩山剑法 LV5
+1/130 防护场 LV5
+1/135 怒之煞 LV5
+1/140 反击 LV5
+1/145 逐日剑法 LV5
+1/150 狂怒 LV5
+1/155 金刚不坏 LV5
 
 
 ;Wizard
-1/90 Vampirism LV5
+1/90 嗜血术 LV5
 1/105 冰暴 LV5
-1/110 火焰Disruptor LV5
-1/115 镜ing LV5
-1/120 火焰Field LV5
-1/125 Blizzard LV5
+1/110 火焰破坏术 LV5
+1/115 镜 LV5
+1/120 火焰场 LV5
+1/125 暴风雪 LV5
 1/130 FrozenRains LV5
-1/135 魔法Booster LV5
-1/140 MeteorStrike LV5
+1/135 魔法增益 LV5
+1/140 流星火雨 LV5
 1/145 LavaKing LV5
-1/150 冰Thrust LV5
-1/155 暴Escape LV5
-1/160 FastMove LV5
+1/150 冰刺 LV5
+1/155 暴走 LV5
+1/160 疾步 LV5
 
 
 ;Taoist
-1/90 UltimateEnhancer LV5
-1/100 Healing轮 LV5
+1/90 强化火符 LV5
+1/100 治愈轮 LV5
 1/105 召唤神兽 LV5
-1/110 Reincarnation LV5
+1/110 复活术 LV5
 1/115 召唤圣精灵 LV5
 1/120 诅咒 LV5
-1/125 Plague LV5
-1/130 毒Cloud LV5
-1/135 Energy盾 LV5
-1/140 PetEnhancer LV5
+1/125 瘟疫术 LV5
+1/130 毒云 LV5
+1/135 能量盾 LV5
+1/140 宠物强化 LV5
 1/145 HeadShot LV5
 1/150 HolyShield LV5
 
 
 ;Assassin
-1/80 火Burst LV5
+1/80 火爆术 LV5
 1/85 CrescentSlash LV5
 1/105 陷阱 LV5
 1/110 毒剑 LV5
 1/115 月轻 LV5
-1/120 魔法Eater LV5
-1/125 SwiftFeet LV5
-1/150 暗Body LV5
+1/120 魔法噬 LV5
+1/125 疾风步 LV5
+1/150 暗身 LV5
 
-1/80 元素alBarrier LV5
-1/85 BindingShot LV5
+1/80 元素屏障 LV5
+1/85 束缚射击 LV5
 1/105 召唤蟾蜍 LV5
-1/110 毒Shot LV5
-1/125 CrippleShot LV5
+1/110 毒射 LV5
+1/125 致残射击 LV5
 1/150 召唤魅惑之蛇 LV5
 
 
@@ -806,7 +806,7 @@
 ;Level 6
 ;Gold
 1/1 Gold 30000 LV6
-1/20 金Bar LV6
+1/20 金条 LV6
 
 ;Pots + Other
 1/1 太阳水 LV6
@@ -822,7 +822,7 @@
 1/1 太阳水 LV6
 1/3 太阳水 LV6
 
-1/1 BenedictionOil LV6
+1/1 祝福油 LV6
 1/10 GoldenBenedictionOil LV6
 
 1/2 觉醒魂0 LV6
@@ -899,64 +899,64 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV6
-1/110 狮Roar LV6
+1/110 狮子吼 LV6
 1/115 BladeStorm LV6
-1/120 CrossHalf月 LV6
-1/125 刃Avalanche LV6
-1/130 防护Field LV6
-1/135 Rage LV6
-1/140 Counter攻击 LV6
-1/145 SlashingBurst LV6
-1/150 Fury LV6
-1/155 ImmortalSkin LV6
+1/120 十字半月 LV6
+1/125 崩山剑法 LV6
+1/130 防护场 LV6
+1/135 怒之煞 LV6
+1/140 反击 LV6
+1/145 逐日剑法 LV6
+1/150 狂怒 LV6
+1/155 金刚不坏 LV6
 
 
 ;Wizard
-1/90 Vampirism LV6
+1/90 嗜血术 LV6
 1/105 冰暴 LV6
-1/110 火焰Disruptor LV6
-1/115 镜ing LV6
-1/120 火焰Field LV6
-1/125 Blizzard LV6
+1/110 火焰破坏术 LV6
+1/115 镜 LV6
+1/120 火焰场 LV6
+1/125 暴风雪 LV6
 1/130 FrozenRains LV6
-1/135 魔法Booster LV6
-1/140 MeteorStrike LV6
+1/135 魔法增益 LV6
+1/140 流星火雨 LV6
 1/145 LavaKing LV6
-1/150 冰Thrust LV6
-1/155 暴Escape LV6
-1/160 FastMove LV6
+1/150 冰刺 LV6
+1/155 暴走 LV6
+1/160 疾步 LV6
 
 
 ;Taoist
-1/90 UltimateEnhancer LV6
-1/100 Healing轮 LV6
+1/90 强化火符 LV6
+1/100 治愈轮 LV6
 1/105 召唤神兽 LV6
-1/110 Reincarnation LV6
+1/110 复活术 LV6
 1/115 召唤圣精灵 LV6
 1/120 诅咒 LV6
-1/125 Plague LV6
-1/130 毒Cloud LV6
-1/135 Energy盾 LV6
-1/140 PetEnhancer LV6
+1/125 瘟疫术 LV6
+1/130 毒云 LV6
+1/135 能量盾 LV6
+1/140 宠物强化 LV6
 1/145 HeadShot LV6
 1/150 HolyShield LV6
 
 
 ;Assassin
-1/80 火Burst LV6
+1/80 火爆术 LV6
 1/85 CrescentSlash LV6
 1/105 陷阱 LV6
 1/110 毒剑 LV6
 1/115 月轻 LV6
-1/120 魔法Eater LV6
-1/125 SwiftFeet LV6
-1/150 暗Body LV6
+1/120 魔法噬 LV6
+1/125 疾风步 LV6
+1/150 暗身 LV6
 
-1/80 元素alBarrier LV6
-1/85 BindingShot LV6
+1/80 元素屏障 LV6
+1/85 束缚射击 LV6
 1/105 召唤蟾蜍 LV6
-1/110 毒Shot LV6
-1/125 CrippleShot LV6
+1/110 毒射 LV6
+1/125 致残射击 LV6
 1/150 召唤魅惑之蛇 LV6
 
 
@@ -968,7 +968,7 @@
 ;Level 7
 ;Gold
 1/1 Gold 30000 LV7
-1/20 金Bar LV7
+1/20 金条 LV7
 
 ;Pots + Other
 1/1 太阳水 LV7
@@ -984,7 +984,7 @@
 1/1 太阳水 LV7
 1/3 太阳水 LV7
 
-1/1 BenedictionOil LV7
+1/1 祝福油 LV7
 1/10 GoldenBenedictionOil LV7
 
 1/2 觉醒魂0 LV7
@@ -1060,64 +1060,64 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV7
-1/110 狮Roar LV7
+1/110 狮子吼 LV7
 1/115 BladeStorm LV7
-1/120 CrossHalf月 LV7
-1/125 刃Avalanche LV7
-1/130 防护Field LV7
-1/135 Rage LV7
-1/140 Counter攻击 LV7
-1/145 SlashingBurst LV7
-1/150 Fury LV7
-1/155 ImmortalSkin LV7
+1/120 十字半月 LV7
+1/125 崩山剑法 LV7
+1/130 防护场 LV7
+1/135 怒之煞 LV7
+1/140 反击 LV7
+1/145 逐日剑法 LV7
+1/150 狂怒 LV7
+1/155 金刚不坏 LV7
 
 
 ;Wizard
-1/90 Vampirism LV7
+1/90 嗜血术 LV7
 1/105 冰暴 LV7
-1/110 火焰Disruptor LV7
-1/115 镜ing LV7
-1/120 火焰Field LV7
-1/125 Blizzard LV7
+1/110 火焰破坏术 LV7
+1/115 镜 LV7
+1/120 火焰场 LV7
+1/125 暴风雪 LV7
 1/130 FrozenRains LV7
-1/135 魔法Booster LV7
-1/140 MeteorStrike LV7
+1/135 魔法增益 LV7
+1/140 流星火雨 LV7
 1/145 LavaKing LV7
-1/150 冰Thrust LV7
-1/155 暴Escape LV7
-1/160 FastMove LV7
+1/150 冰刺 LV7
+1/155 暴走 LV7
+1/160 疾步 LV7
 
 
 ;Taoist
-1/90 UltimateEnhancer LV7
-1/100 Healing轮 LV7
+1/90 强化火符 LV7
+1/100 治愈轮 LV7
 1/105 召唤神兽 LV7
-1/110 Reincarnation LV7
+1/110 复活术 LV7
 1/115 召唤圣精灵 LV7
 1/120 诅咒 LV7
-1/125 Plague LV7
-1/130 毒Cloud LV7
-1/135 Energy盾 LV7
-1/140 PetEnhancer LV7
+1/125 瘟疫术 LV7
+1/130 毒云 LV7
+1/135 能量盾 LV7
+1/140 宠物强化 LV7
 1/145 HeadShot LV7
 1/150 HolyShield LV7
 
 
 ;Assassin
-1/80 火Burst LV7
+1/80 火爆术 LV7
 1/85 CrescentSlash LV7
 1/105 陷阱 LV7
 1/110 毒剑 LV7
 1/115 月轻 LV7
-1/120 魔法Eater LV7
-1/125 SwiftFeet LV7
-1/150 暗Body LV7
+1/120 魔法噬 LV7
+1/125 疾风步 LV7
+1/150 暗身 LV7
 
-1/80 元素alBarrier LV7
-1/85 BindingShot LV7
+1/80 元素屏障 LV7
+1/85 束缚射击 LV7
 1/105 召唤蟾蜍 LV7
-1/110 毒Shot LV7
-1/125 CrippleShot LV7
+1/110 毒射 LV7
+1/125 致残射击 LV7
 1/150 召唤魅惑之蛇 LV7
 
 
@@ -1129,7 +1129,7 @@
 ;Level 8
 ;Gold
 1/1 Gold 30000 LV8
-1/20 金Bar LV8
+1/20 金条 LV8
 
 ;Pots + Other
 1/1 太阳水 LV8
@@ -1145,7 +1145,7 @@
 1/1 太阳水 LV8
 1/3 太阳水 LV8
 
-1/1 BenedictionOil LV8
+1/1 祝福油 LV8
 1/10 GoldenBenedictionOil LV8
 
 1/2 觉醒魂0 LV8
@@ -1221,64 +1221,64 @@
 ;Books
 ;Warrior
 1/105 烈焰剑 LV8
-1/110 狮Roar LV8
+1/110 狮子吼 LV8
 1/115 BladeStorm LV8
-1/120 CrossHalf月 LV8
-1/125 刃Avalanche LV8
-1/130 防护Field LV8
-1/135 Rage LV8
-1/140 Counter攻击 LV8
-1/145 SlashingBurst LV8
-1/150 Fury LV8
-1/155 ImmortalSkin LV8
+1/120 十字半月 LV8
+1/125 崩山剑法 LV8
+1/130 防护场 LV8
+1/135 怒之煞 LV8
+1/140 反击 LV8
+1/145 逐日剑法 LV8
+1/150 狂怒 LV8
+1/155 金刚不坏 LV8
 
 
 ;Wizard
-1/90 Vampirism LV8
+1/90 嗜血术 LV8
 1/105 冰暴 LV8
-1/110 火焰Disruptor LV8
-1/115 镜ing LV8
-1/120 火焰Field LV8
-1/125 Blizzard LV8
+1/110 火焰破坏术 LV8
+1/115 镜 LV8
+1/120 火焰场 LV8
+1/125 暴风雪 LV8
 1/130 FrozenRains LV8
-1/135 魔法Booster LV8
-1/140 MeteorStrike LV8
+1/135 魔法增益 LV8
+1/140 流星火雨 LV8
 1/145 LavaKing LV8
-1/150 冰Thrust LV8
-1/155 暴Escape LV8
-1/160 FastMove LV8
+1/150 冰刺 LV8
+1/155 暴走 LV8
+1/160 疾步 LV8
 
 
 ;Taoist
-1/90 UltimateEnhancer LV8
-1/100 Healing轮 LV8
+1/90 强化火符 LV8
+1/100 治愈轮 LV8
 1/105 召唤神兽 LV8
-1/110 Reincarnation LV8
+1/110 复活术 LV8
 1/115 召唤圣精灵 LV8
 1/120 诅咒 LV8
-1/125 Plague LV8
-1/130 毒Cloud LV8
-1/135 Energy盾 LV8
-1/140 PetEnhancer LV8
+1/125 瘟疫术 LV8
+1/130 毒云 LV8
+1/135 能量盾 LV8
+1/140 宠物强化 LV8
 1/145 HeadShot LV8
 1/150 HolyShield LV8
 
 
 ;Assassin
-1/80 火Burst LV8
+1/80 火爆术 LV8
 1/85 CrescentSlash LV8
 1/105 陷阱 LV8
 1/110 毒剑 LV8
 1/115 月轻 LV8
-1/120 魔法Eater LV8
-1/125 SwiftFeet LV8
-1/150 暗Body LV8
+1/120 魔法噬 LV8
+1/125 疾风步 LV8
+1/150 暗身 LV8
 
-1/80 元素alBarrier LV8
-1/85 BindingShot LV8
+1/80 元素屏障 LV8
+1/85 束缚射击 LV8
 1/105 召唤蟾蜍 LV8
-1/110 毒Shot LV8
-1/125 CrippleShot LV8
+1/110 毒射 LV8
+1/125 致残射击 LV8
 1/150 召唤魅惑之蛇 LV8
 
 ;CraftingMaterials

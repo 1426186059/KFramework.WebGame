@@ -55,17 +55,17 @@ GOTO @Main-1
 乌木弓
 青铜剑
 锋利豪剑
-Short剑
-Short弓
+短剑
+短弓
 铁剑
 骨弓
 青铜斧
 钩剑
-Trident
-Scimitar
-刃之Velocity
+三叉戟
+弯刀
+刃之疾速
 复合弓
-Pick斧
+镐斧
 
 [Quests]
 63

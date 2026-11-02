@@ -43,10 +43,10 @@ GOTO @Main-1
 7
 
 [Trade]
-Naga项链
+娜迦项链
 PheonixBead
-Amber项链
-Lantern项链
+琥珀项链
+灯笼项链
 角戒
 铁戒
 白玉戒
@@ -56,7 +56,7 @@ Lantern项链
 珍珠戒
 金戒
 钢手镯
-Large手镯
-Strain手镯
-Monk手镯
+大手镯
+张力手镯
+僧手镯
 乌木手镯

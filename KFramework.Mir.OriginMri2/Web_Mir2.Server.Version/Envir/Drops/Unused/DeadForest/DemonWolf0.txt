@@ -9,4 +9,4 @@
 ;Crafting Material
 1/60 魔皮革
 1/80 甲书(道术)
-1/80 Rusty甲
+1/80 锈甲

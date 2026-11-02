@@ -8,7 +8,7 @@
  
 <武器店/@Weapon>   <试剂店/@reagent>
  
-改日<再来/@Exit>
+改日<再来/@退出>
 
 [@reagent]
 #ACT

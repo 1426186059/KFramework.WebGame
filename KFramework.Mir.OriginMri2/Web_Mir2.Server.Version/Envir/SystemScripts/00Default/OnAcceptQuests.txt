@@ -3,7 +3,7 @@
 CHECKHUM 1 D10071
 #SAY 
 There is already someone trying before you!
-<Come back later/@exit>
+<请稍后再来/@exit>
 #ELSEACT
 MONCLEAR D10071
 PARAM1 D10071

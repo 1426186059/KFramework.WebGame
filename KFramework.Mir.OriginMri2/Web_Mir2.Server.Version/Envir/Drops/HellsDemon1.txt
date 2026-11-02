@@ -47,7 +47,7 @@
 
 
 ;CraftingMaterials
-1/200 WillMarble
+1/200 意志珠
 
 ;Quests
 

@@ -7898,7 +7898,7 @@
   },
   {
     "Index": 224,
-    "Name": "刺猬KekTal",
+    "Name": "刺猬",
     "Image": 135,
     "AI": 51,
     "Effect": 0,
@@ -7935,7 +7935,7 @@
   },
   {
     "Index": 225,
-    "Name": "大刺猬KekTal",
+    "Name": "大刺猬",
     "Image": 136,
     "AI": 51,
     "Effect": 0,
@@ -10059,7 +10059,7 @@
   },
   {
     "Index": 283,
-    "Name": "化身WT",
+    "Name": "化身",
     "Image": 34,
     "AI": 11,
     "Effect": 0,
@@ -10096,7 +10096,7 @@
   },
   {
     "Index": 284,
-    "Name": "化身ZT",
+    "Name": "化身",
     "Image": 68,
     "AI": 22,
     "Effect": 0,
@@ -11642,7 +11642,7 @@
   },
   {
     "Index": 326,
-    "Name": "邪猿Sobo",
+    "Name": "邪猿",
     "Image": 58,
     "AI": 0,
     "Effect": 0,
@@ -16071,7 +16071,7 @@
   },
   {
     "Index": 447,
-    "Name": "爪牙Rouge",
+    "Name": "爪牙",
     "Image": 3,
     "AI": 0,
     "Effect": 0,
@@ -16211,7 +16211,7 @@
   },
   {
     "Index": 451,
-    "Name": "酋长Rouge",
+    "Name": "酋长",
     "Image": 224,
     "AI": 44,
     "Effect": 0,
@@ -18259,7 +18259,7 @@
   },
   {
     "Index": 505,
-    "Name": "PK之灵",
+    "Name": "击杀之灵",
     "Image": 226,
     "AI": 38,
     "Effect": 0,

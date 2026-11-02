@@ -13,11 +13,11 @@
 1/1 太阳水
 1/1 太阳水
 1/2 太阳水
-1/1 太阳药水(M)
-1/1 太阳药水(M)
-1/2 太阳药水(M)
+1/1 太阳药水(男)
+1/1 太阳药水(男)
+1/2 太阳药水(男)
 
-1/2 BenedictionOil
+1/2 祝福油
 
 
 1/1 Awakeningbox 
@@ -29,16 +29,16 @@
 1/90 皇家刃
 1/90 龙杖
 1/90 魂军刀
-1/165 刃之Magi
+1/165 刃之秘法
 1/115 剑之战争神
-1/115 弓之Force
-1/115 刃之Sorcery
+1/115 弓之力
+1/115 刃之魔法
 1/115 天剑
 1/215 黑虎锤
-1/215 Lethal弓
+1/215 致命弓
 1/215 杖之莲
-1/215 扇之Crane
-1/215 Butchering刃
+1/215 扇之鹤
+1/215 屠刃
 1/3000 LordSlayerBlade
 1/3000 LordSlayerStaff
 1/3000 LordSlayerFan
@@ -55,32 +55,32 @@
 1/45 爪项链
 1/45 生命项链
 1/45 珍珠项链
-1/60 绿Bead
-1/60 魔icBells
+1/60 绿珠
+1/60 魔法铃铛
 1/60 魂项链
-1/95 Cuspid项链
-1/95 SorceryAnchor
-1/95 Purified镜
-1/197 邪Triangle
-1/197 CrossPurified
-1/197 Adamant项链
+1/95 尖牙项链
+1/95 魔法锚
+1/95 净化镜
+1/197 邪三角
+1/197 净化十字
+1/197 精钢项链
 
 ;Necklace Rare
 1/1400 TerrapinNecklace
 1/3000 LordSlayerNecklace
 
 ;Bracelets
-1/10 HangMa轮
-1/10 BokMa轮
-1/10 8Trigram轮
-1/25 之灵Reformer
+1/10 降魔轮
+1/10 伏魔轮
+1/10 八卦轮
+1/25 之灵改革者
 1/25 圣道轮
-1/25 BaekTa手套
-1/95 Dual泰坦护符
-1/95 Sacred天使护符
-1/95 邪Whisp护符
-1/195 Wild泰坦护符
-1/195 Enchanted护符
+1/25 白打手套
+1/95 双泰坦护符
+1/95 圣天使护符
+1/95 邪灵护符
+1/195 野泰坦护符
+1/195 附魔护符
 1/195 五元素护符
 
 ;Bracelets Rare
@@ -90,16 +90,16 @@
 ;Rings
 1/10 奥玛之灵戒
 1/10 DestinyRing 
-1/10 Noble戒
+1/10 高贵戒
 1/10 魂戒
-1/15 Boundless戒
+1/15 无量戒
 1/15 雷戒
-1/15 TaeGuk戒
-1/95 Pledge戒
+1/15 太极戒
+1/95 誓约戒
 1/95 五元素戒
-1/95 Crimson红宝石戒
+1/95 深红红宝石戒
 1/195 魔红宝石戒
-1/195 邪Expel戒
+1/195 邪驱散戒
 1/195 金龙戒
 
 ;Rings Rare
@@ -133,62 +133,62 @@
 ;Warrior
 1/60 BladeStorm
 1/65 烈焰剑
-1/70 狮Roar
+1/70 狮子吼
 1/75 BladeStorm
-1/80 CrossHalf月
-1/85 刃Avalanche
-1/90 防护Field
-1/95 Rage
-1/100 Fury
-1/220 Counter攻击
+1/80 十字半月
+1/85 崩山剑法
+1/90 防护场
+1/95 怒之煞
+1/100 狂怒
+1/220 反击
 
 ;Wizard
 1/60 魔法盾
 1/65 冰暴
-1/70 火焰Disruptor
-1/75 镜ing
-1/80 火焰Field
-1/85 Blizzard
-1/220 魔法Booster
+1/70 火焰破坏术
+1/75 镜
+1/80 火焰场
+1/85 暴风雪
+1/220 魔法增益
 
 ;Taoist
-1/60 UltimateEnhancer
-1/65 Healing轮
+1/60 强化火符
+1/65 治愈轮
 1/70 召唤神兽
-1/75 Reincarnation
+1/75 复活术
 1/80 召唤圣精灵
 1/85 诅咒
-1/90 毒Cloud
-1/95 PetEnhancer
-1/220 Energy盾
+1/90 毒云
+1/95 宠物强化
+1/220 能量盾
 
 ;Assassin
-1/40 Haste
-1/45 FlashDash
-1/50 轻Body
-1/55 Heavenly剑
-1/60 火Burst
+1/40 加速术
+1/45 闪现
+1/50 轻身
+1/55 天剑诀
+1/60 火爆术
 1/65 CrescentSlash
 1/70 陷阱
 1/75 毒剑
 1/80 月轻
-1/120 魔法Eater
-1/210 SwiftFeet
+1/120 魔法噬
+1/210 疾风步
 
 ;Archer
-1/40 双Shot
-1/45 Meditation
-1/50 元素alShot
-1/55 Explosive陷阱
-1/60 Concentration
-1/65 VampireShot
+1/40 双射
+1/45 冥想术
+1/50 元素射
+1/55 爆裂陷阱
+1/60 凝神术
+1/65 吸血射击
 1/70 召唤吸血蜘蛛
-1/75 BackStep
-1/80 DelayedExplosion
-1/120 元素alBarrier
-1/120 BindingShot
+1/75 后撤步
+1/80 延时爆炸
+1/120 元素屏障
+1/120 束缚射击
 1/210 召唤蟾蜍
-1/210 毒Shot
+1/210 毒射
 
 ;CraftingMaterials
 1/25 BraveryFragment

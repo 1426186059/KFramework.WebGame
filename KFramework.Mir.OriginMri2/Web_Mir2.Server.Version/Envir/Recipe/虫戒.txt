@@ -6,7 +6,7 @@ Gold 1000
 [Tools]
 
 [Ingredients]
-蜘蛛Teeth 10
+蜘蛛牙 10
 蛇眼戒
 银矿 1 12000
-蜘蛛Web 15
+蜘蛛蛛网 15

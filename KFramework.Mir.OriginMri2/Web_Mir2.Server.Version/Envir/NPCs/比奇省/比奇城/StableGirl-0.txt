@@ -35,7 +35,7 @@ GOTO @Main-1
 26
 
 [Trade]
-Bengal虎
-Saddle
-Raw肉
-Lean肉
+孟加拉虎
+马鞍
+生肉
+瘦肉

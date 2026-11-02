@@ -27,8 +27,8 @@
 ;Ores
 
 ;肉
-1/5 Mutton 
-1/10 Mutton 
+1/5 羊肉 
+1/10 羊肉 
 
 ;Crafting Materials
 

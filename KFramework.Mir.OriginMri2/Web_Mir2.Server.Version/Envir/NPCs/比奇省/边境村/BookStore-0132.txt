@@ -37,31 +37,31 @@ GOTO @Main-1
 
 [@War1]
 #SAY
-等级  7: Fencing
-等级 15: Slaying
-等级 22: Thrusting
-等级 26: Half月
-等级 30: ShoulderDash
+等级  7: 基本剑术
+等级 15: 攻杀剑术
+等级 22: 刺杀剑术
+等级 26: 半月
+等级 30: 野蛮冲撞
 等级 32: TwinDragonBlade
-等级 32: Entrapment
+等级 32: 擒龙手
 <更多/@War2> <返回/@helpbooks>
 
 [@War2]
 #SAY
 等级 35: 烈焰剑
-等级 36: 狮Roar
-等级 38: CrossHalf月
-等级 38: 刃Avalanche
-等级 39: 防护Field
-等级 44: Rage
-等级 50: SlashingBurst
+等级 36: 狮子吼
+等级 38: 十字半月
+等级 38: 崩山剑法
+等级 39: 防护场
+等级 44: 怒之煞
+等级 50: 逐日剑法
 <返回/@helpbooks>
 
 [@Wiz1]
 #SAY
 等级  7: 火球
-等级 12: Repulsion
-等级 13: 雷电Shock
+等级 12: 抗拒火环
+等级 13: 雷电术
 等级 15: 巨火球
 等级 16: 地狱火
 等级 17: 雷弩箭
@@ -69,71 +69,71 @@ GOTO @Main-1
 
 [@Wiz2]
 #SAY
-等级 19: Teleport
-等级 22: 火Bang
+等级 19: 瞬息移动
+等级 22: 火爆
 等级 24: 火墙
 等级 26: 雷
-等级 28: 霜Crunch
+等级 28: 冰咆哮
 等级 30: 雷暴
 等级 31: 魔法盾
-等级 32: TurnUndead
+等级 32: 圣言术
 <更多/@Wiz3> <返回/@helpBooks>
 
 [@Wiz3]
 #SAY
-等级 33: Vampirism
+等级 33: 嗜血术
 等级 35: IceStrom
-等级 38: 火焰Disruptor
-等级 41: 镜ing
-等级 42: 火焰Field
-等级 44: Blizzard
-等级 49: MeteorStrike
+等级 38: 火焰破坏术
+等级 41: 镜
+等级 42: 火焰场
+等级 44: 暴风雪
+等级 49: 流星火雨
 等级 53: IceFreeze
 <返回/@helpBooks>
 
 [@Tao1]
 #SAY
-等级  7: Healing
+等级  7: 治愈术
 等级  9: 之灵剑
-等级 14: 毒ing
+等级 14: 毒
 等级 18: 魂火球
 等级 19: SummonSkeletonton
-等级 20: Hiding
+等级 20: 隐身术
 <更多/@Tao2> <返回/@helpbooks>
 
 [@Tao2]
 #SAY
-等级 21: MassHiding
+等级 21: 集体隐身术
 等级 22: 魂盾
-等级 23: Revelation
-等级 25: 祝福ed甲
-等级 27: EnergyRepulsor
-等级 28: 陷阱Hexagon
-等级 30: Purification
+等级 23: 心灵启示
+等级 25: 祝福甲
+等级 27: 气功波
+等级 28: 陷阱六角
+等级 30: 净化术
 <更多/@Tao3> <返回/@helpBooks>
 
 [@Tao3]
 #SAY
-等级 31: MassHealing
-等级 31: Hallucination
-等级 33: UltimateEnhancer
+等级 31: 集体治愈术
+等级 31: 迷魂术
+等级 33: 强化火符
 等级 35: 召唤神兽
-等级 37: Reincarnation
+等级 37: 复活术
 等级 38: 召唤圣精灵
 等级 40: 诅咒
-等级 43: 毒Cloud
+等级 43: 毒云
 等级 48: CelestalShield
 <返回/@helpBooks>
 
 [@Assa1]
 #SAY
-等级  7: Fatal剑
-等级 15: 双Slash
-等级 20: Haste
-等级 25: FlashDash
-等级 27: 轻Body
-等级 30: Heavenly剑
-等级 33: 火Burst
+等级  7: 致命剑
+等级 15: 双斩
+等级 20: 加速术
+等级 25: 闪现
+等级 27: 轻身
+等级 30: 天剑诀
+等级 33: 火爆术
 <更多/@Assa2> <返回/@helpBooks>
 
 [@Assa2]
@@ -141,56 +141,56 @@ GOTO @Main-1
 等级 33: 陷阱
 等级 34: 毒剑
 等级 36: 月轻
-等级 38: 魔法Eater
-等级 40: SwiftFeet
-等级 46: 暗Body
-等级 47: Hemorrhage
-等级 50: CresentSlash
+等级 38: 魔法噬
+等级 40: 疾风步
+等级 46: 暗身
+等级 47: 出血术
+等级 50: 残月斩
 <返回/@helpBooks>
 
 [@Arc1]
 #SAY
-等级  7: Focus
-等级  9: StraightShot
-等级 11: MentalState
-等级 14: 双Shot
-等级 19: Meditation
-等级 20: 元素alShot
-等级 22: Explosive陷阱
+等级  7: 专注
+等级  9: 直线射击
+等级 11: 心智术
+等级 14: 双射
+等级 19: 冥想术
+等级 20: 元素射
+等级 22: 爆裂陷阱
 <更多/@Arc2> <返回/@helpBooks>
 
 [@Arc2]
 #SAY
-等级 23: Concentration
-等级 26: VampireShot
+等级 23: 凝神术
+等级 26: 吸血射击
 等级 28: 召唤吸血蜘蛛
-等级 30: BackStep
-等级 31: DelayedExplosion
-等级 33: 元素alBarrier
-等级 35: BindingShot
+等级 30: 后撤步
+等级 31: 延时爆炸
+等级 33: 元素屏障
+等级 35: 束缚射击
 <更多/@Arc3> <返回/@helpBooks>
 
 [@Arc3]
 #SAY
 等级 37: 召唤蟾蜍
-等级 40: 毒Shot
-等级 43: CrippleShot
+等级 40: 毒射
+等级 43: 致残射击
 等级 46: 召唤魅惑之蛇
-等级 48: NapalmShot
-等级 50: OneWith自然
+等级 48: 燃烧射击
+等级 50: 自然合一
 <返回/@helpBooks>
 
 [Types]
 20
 
 [Trade]
-Fencing
-Slaying
+基本剑术
+攻杀剑术
 火球
-Repulsion
-Healing
+抗拒火环
+治愈术
 之灵剑
-Fatal剑
-双Slash
-Focus
-StraightShot
+致命剑
+双斩
+专注
+直线射击

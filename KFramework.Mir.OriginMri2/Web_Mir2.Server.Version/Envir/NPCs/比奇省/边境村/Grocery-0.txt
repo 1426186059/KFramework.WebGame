@@ -48,10 +48,10 @@ GOTO @Main-1
 中魔法药 1
 中魔法药 5
 中魔法药 10
-Candle
-Torch
-RandomTeleport
-DungeonEscape
+蜡烛
+火把
+随机传送
+地牢逃脱
 护符
 
 [Quests]

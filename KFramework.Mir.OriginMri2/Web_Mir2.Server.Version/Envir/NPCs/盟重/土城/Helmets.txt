@@ -16,7 +16,7 @@ GOTO @Main-1
 <购买/@BuySell> 头盔。
 <修理/@Repair> 头盔。
  
-<关闭/@Exit>
+<关闭/@退出>
 
 [@BuySell]
 您想购买还是出售哪顶头盔？
@@ -41,7 +41,7 @@ GOTO @Main-1
 [Trade]
 青铜盔
 魔法盔
-Brass盔
-金Tiara
+黄铜盔
+金冠
 骷髅盔
 巫医盔

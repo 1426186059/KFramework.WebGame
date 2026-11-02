@@ -9,7 +9,7 @@
 <书店/@book>   <饰品店/@access>
 <客栈/@store>
 
-我稍后回来 <离开/@Exit>
+我稍后回来 <离开/@退出>
 
 [@weapon]
 #ACT

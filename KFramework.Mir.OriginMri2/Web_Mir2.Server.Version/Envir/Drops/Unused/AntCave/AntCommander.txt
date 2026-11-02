@@ -13,10 +13,10 @@
 1/3 大魔法药
 1/1 太阳水
 1/2 太阳水
-1/1 太阳药水(M)
-1/2 太阳药水(M)
+1/1 太阳药水(男)
+1/2 太阳药水(男)
 
-1/15 BenedictionOil
+1/15 祝福油
 
 1/40 觉醒魂0
 1/40 觉醒魂0
@@ -28,13 +28,13 @@
 1/50 巨斧
 1/50 银弓
 1/55 龙剑
-1/90 Fiend弓
-1/90 JudgementMace
+1/90 魔弓
+1/90 审判权杖
 
 ;Wizard
 1/20 钩矛
 1/30 法师杖
-1/50 血Stealer剑
+1/50 血噬剑
 1/90 战争法师杖 
 
 ;Taoist
@@ -47,19 +47,19 @@
 ;Weapons Rare
 1/125 轻盈弓
 1/125 战争之灵刃 
-1/125 魔法Scythe 
-1/125 石Bamboo扇
+1/125 魔法镰 
+1/125 石竹扇
 1/150 CommanderSword
 
 ;Armours
-1/40 锻造甲(M)
-1/40 锻造甲(F)
-1/30 铁甲(M) 
-1/30 铁甲(F) 
-1/30 Wizard袍(M) 
+1/40 锻造甲(男)
+1/40 锻造甲(女)
+1/30 铁甲(男) 
+1/30 铁甲(女) 
+1/30 法师袍(男) 
 1/30 WizardRobe(F) 
-1/30 珍珠甲(M) 
-1/30 珍珠甲(F) 
+1/30 珍珠甲(男) 
+1/30 珍珠甲(女) 
 
 ;Armours Rare
 1/130 AntArmour(M)
@@ -69,7 +69,7 @@
 ;Helmets
 1/10 骷髅盔 
 1/10 巫医盔 
-1/15 金Tiara
+1/15 金冠
 1/40 黑铁盔 
 
 ;Helmets Rare
@@ -79,17 +79,17 @@
 ;Warrior
 1/15 蓝玉项链 
 1/30 爪项链 
-1/60 Amethyst项链
-1/70 绿Bead
+1/60 紫水晶项链
+1/70 绿珠
 
 ;Wizard
-1/15 ConvexLens 
+1/15 凸镜 
 1/30 蓝雷项链
 1/30 生命项链
 1/70 Demonicbells
 
 ;Taoist
-1/15 BambooPipe 
+1/15 竹笛 
 1/30 之灵力量项链
 1/30 珍珠项链 
 1/70 魂项链
@@ -97,7 +97,7 @@
 
 ;Necklaces Rare
 1/250 MajesticNecklace
-1/110 粉碎Pendulum
+1/110 粉碎钟摆
 1/110 幻恶魔项链
 1/110 纯净项链
 1/110 DarkGhostChain
@@ -110,12 +110,12 @@
 1/100 骑士手镯 
 
 ;Wizard
-1/100 Spell手镯
+1/100 法术手镯
 1/100 龙手镯 
 1/100 BraceletOfMagic
 
 ;Taoist 
-1/100 3rd眼手镯 
+1/100 第三眼手镯 
 1/100 魂泉手镯
 1/100 道力量手镯
 
@@ -123,7 +123,7 @@
 1/325 MajesticWheel
 1/80 粉碎轮
 1/80 DarkGhostBracelet
-1/80 HangMa轮
+1/80 降魔轮
 1/80 纯净手镯
 
 ;Rings
@@ -135,7 +135,7 @@
 1/30 红宝石戒 
 
 ;Taoist
-1/15 玉Snow戒
+1/15 玉雪戒
 1/30 铂金戒 
 
 ;Rings Rare
@@ -179,12 +179,12 @@
 1/300 DefenderPads[14d]
 
 ;Stones
-1/60 生命石(L) 
-1/60 魔法石(L) 
-1/60 力量石(L) 
-1/65 道术石(L) 
-1/65 MC石(L) 
-1/65 SC石(L) 
+1/60 生命石(大) 
+1/60 魔法石(大) 
+1/60 力量石(大) 
+1/65 道术石(大) 
+1/65 魔石(大) 
+1/65 道石(大) 
 
 ;Stones Rare
 1/100 ACStone(L)
@@ -194,53 +194,53 @@
 
 ;Books
 ;Warrior
-1/40 Thrusting
-1/45 Half月
-1/50 ShoulderDash
+1/40 刺杀剑术
+1/45 半月
+1/50 野蛮冲撞
 1/55 SliceNDice
 1/60 双生龙兽刃
-1/65 Entrapment
+1/65 擒龙手
 1/100 BladeStorm
 1/210 烈焰剑
 
 ;Wizard
-1/40 Teleport
-1/45 火Bang
+1/40 瞬息移动
+1/45 火爆
 1/50 火墙
 1/55 雷
-1/60 霜Crunch
+1/60 冰咆哮
 1/65 雷暴
 1/120 魔法盾
 1/210 冰暴
 
 ;Taoist
-1/40 MassHiding
+1/40 集体隐身术
 1/45 魂盾
-1/50 Revelation
-1/55 祝福ed甲
-1/60 EnergyRepulsor
-1/65 陷阱Hexagon
-1/70 Purification
-1/120 MassHealing
-1/210 Hallucination
+1/50 心灵启示
+1/55 祝福甲
+1/60 气功波
+1/65 陷阱六角
+1/70 净化术
+1/120 集体治愈术
+1/210 迷魂术
 
 ;Assassin
-1/40 FlashDash
-1/45 轻Body
-1/50 Heavenly剑
-1/55 火Burst
+1/40 闪现
+1/45 轻身
+1/50 天剑诀
+1/55 火爆术
 1/60 陷阱
 1/120 CrescentSlash
 1/210 毒剑
 
 ;Archer
-1/40 Meditation 
-1/45 元素alShot
-1/50 Explosive陷阱
-1/55 Concentration
-1/60 VampireShot
+1/40 冥想术 
+1/45 元素射
+1/50 爆裂陷阱
+1/55 凝神术
+1/60 吸血射击
 1/65 召唤吸血蜘蛛
-1/70 BackStep
-1/120 DelayedExplosion
-1/120 元素alBarrier
-1/210 BindingShot
+1/70 后撤步
+1/120 延时爆炸
+1/120 元素屏障
+1/210 束缚射击

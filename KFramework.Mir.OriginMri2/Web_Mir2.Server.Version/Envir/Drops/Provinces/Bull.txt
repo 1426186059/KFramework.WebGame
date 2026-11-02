@@ -27,8 +27,8 @@
 ;Ores
 
 ;肉
-1/5 蜂f 
-1/10 蜂f 
+1/5 蜂 
+1/10 蜂 
 
 ;Crafting Materials
 

@@ -8,9 +8,9 @@
 1/10 太阳水
 
 
-1/45100 Grim弓
-1/55550 Lethal弓
-1/55650 Apus弓
+1/45100 严酷弓
+1/55550 致命弓
+1/55650 天燕弓
 
 1/15000 SmasherNecklace
 1/15000 SmasherGlove

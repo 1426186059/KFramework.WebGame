@@ -6,6 +6,6 @@ Gold 500
 [Tools]
 
 [Ingredients]
-蜂f
+蜂
 老山参
-魔法Aid(S)
+魔法辅助(小)

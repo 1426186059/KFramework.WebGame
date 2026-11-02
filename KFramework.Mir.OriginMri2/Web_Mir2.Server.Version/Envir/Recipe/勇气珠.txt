@@ -4,9 +4,9 @@ Chance 20
 Gold 10000
 
 [Tools]
-Crafting书
+制作书
 
 [Ingredients]
 道术石 
-Impact药(L) 
+冲击药(大) 
 特制金创药 2

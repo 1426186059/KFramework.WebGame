@@ -10,7 +10,7 @@
 1/1 太阳水 LV1
 1/1 太阳水 LV1
 
-1/1 BenedictionOil LV1
+1/1 祝福油 LV1
 1/2 GoldenBenedictionOil LV1
 1/1 觉醒魂0 LV1
 1/1 觉醒魂0 LV1
@@ -18,27 +18,27 @@
 ;Weapons
 ;Warrior
 1/100 冰封军刀 LV1
-1/100 Grim弓 LV1
+1/100 严酷弓 LV1
 1/250 黑虎锤 LV1
-1/250 Lethal弓 LV1
+1/250 致命弓 LV1
 1/550 蛮兵剑 LV1
-1/550 Apus弓 LV
+1/550 天燕弓 LV
 
 ;Wizard
-1/100 Conqueror矛 LV1
+1/100 征服者矛 LV1
 1/250 杖之莲 LV1
-1/550 Raw剑 LV1
+1/550 生剑 LV1
 
 ;Taoist
-1/100 Bastard剑 LV1
-1/250 扇之Crane LV1
-1/550 骨Carved扇 LV1
+1/100 浪人剑 LV1
+1/250 扇之鹤 LV1
+1/550 骨雕扇 LV1
 
 ;Assassin
-1/100 Zinc刃 LV1
-1/250 Butchering刃 LV1
-1/550 Mad龙刃 LV1
-1/650 TheRipper LV1
+1/100 锌刃 LV1
+1/250 屠刃 LV1
+1/550 狂龙刃 LV1
+1/650 撕裂者 LV1
 
 ;Weapon Rare
 1/2100 CrystalSlayer LV1
@@ -104,7 +104,7 @@
 1/1 太阳水 LV2
 1/1 太阳水 LV2
 
-1/1 BenedictionOil LV2
+1/1 祝福油 LV2
 1/2 GoldenBenedictionOil LV2
 
 
@@ -115,27 +115,27 @@
 ;Weapons
 ;Warrior
 1/100 冰封军刀 LV2
-1/100 Grim弓 LV2
+1/100 严酷弓 LV2
 1/250 黑虎锤 LV2
-1/250 Lethal弓 LV2
-1/550 Apus弓 LV2
+1/250 致命弓 LV2
+1/550 天燕弓 LV2
 1/550 蛮兵剑 LV2
 
 ;Wizard
-1/100 Conqueror矛 LV2
+1/100 征服者矛 LV2
 1/250 杖之莲 LV2
-1/550 Raw剑 LV2
+1/550 生剑 LV2
 
 ;Taoist
-1/100 Bastard剑 LV2
-1/250 扇之Crane LV2
-1/550 骨Carved扇 LV2
+1/100 浪人剑 LV2
+1/250 扇之鹤 LV2
+1/550 骨雕扇 LV2
 
 ;Assassin
-1/100 Zinc刃 LV2
-1/250 Butchering刃 LV2
-1/550 Mad龙刃 LV2
-1/650 TheRipper LV2
+1/100 锌刃 LV2
+1/250 屠刃 LV2
+1/550 狂龙刃 LV2
+1/650 撕裂者 LV2
 
 ;Weapon Rare
 1/2100 CrystalSlayer LV2
@@ -201,7 +201,7 @@
 1/1 太阳水 LV3
 1/1 太阳水 LV3
 
-1/1 BenedictionOil LV3
+1/1 祝福油 LV3
 1/2 GoldenBenedictionOil LV3
 
 
@@ -211,27 +211,27 @@
 ;Weapons
 ;Warrior
 1/100 冰封军刀 LV3
-1/100 Grim弓 LV3
+1/100 严酷弓 LV3
 1/250 黑虎锤 LV3
-1/550 Apus弓 LV3
-1/250 Lethal弓 LV3
+1/550 天燕弓 LV3
+1/250 致命弓 LV3
 1/550 蛮兵剑 LV3
 
 ;Wizard
-1/100 Conqueror矛 LV3
+1/100 征服者矛 LV3
 1/250 杖之莲 LV3
-1/550 Raw剑 LV3
+1/550 生剑 LV3
 
 ;Taoist
-1/100 Bastard剑 LV3
-1/250 扇之Crane LV2
-1/550 骨Carved扇 LV2
+1/100 浪人剑 LV3
+1/250 扇之鹤 LV2
+1/550 骨雕扇 LV2
 
 ;Assassin
-1/100 Zinc刃 LV3
-1/250 Butchering刃 LV3
-1/550 Mad龙刃 LV3
-1/650 TheRipper LV3
+1/100 锌刃 LV3
+1/250 屠刃 LV3
+1/550 狂龙刃 LV3
+1/650 撕裂者 LV3
 
 ;Weapon Rare
 1/2100 CrystalSlayer LV3
@@ -297,7 +297,7 @@
 1/1 太阳水 LV4
 1/1 太阳水 LV4
 
-1/1 BenedictionOil LV4
+1/1 祝福油 LV4
 1/2 GoldenBenedictionOil LV4
 
 
@@ -307,27 +307,27 @@
 ;Weapons
 ;Warrior
 1/100 冰封军刀 LV4
-1/100 Grim弓 LV4
+1/100 严酷弓 LV4
 1/250 黑虎锤 LV4
-1/250 Lethal弓 LV4
-1/550 Apus弓 LV4
+1/250 致命弓 LV4
+1/550 天燕弓 LV4
 1/550 蛮兵剑 LV4
 
 ;Wizard
-1/100 Conqueror矛 LV4
+1/100 征服者矛 LV4
 1/250 杖之莲 LV4
-1/550 Raw剑 LV4
+1/550 生剑 LV4
 
 ;Taoist
-1/100 Bastard剑 LV4
-1/250 扇之Crane LV4
-1/550 骨Carved扇 LV4
+1/100 浪人剑 LV4
+1/250 扇之鹤 LV4
+1/550 骨雕扇 LV4
 
 ;Assassin
-1/100 Zinc刃 LV4
-1/250 Butchering刃 LV4
-1/550 Mad龙刃 LV4
-1/650 TheRipper LV4
+1/100 锌刃 LV4
+1/250 屠刃 LV4
+1/550 狂龙刃 LV4
+1/650 撕裂者 LV4
 
 ;Weapon Rare
 1/2100 CrystalSlayer LV4
@@ -393,7 +393,7 @@
 1/1 太阳水 LV5
 1/1 太阳水 LV5
 
-1/1 BenedictionOil LV5
+1/1 祝福油 LV5
 1/2 GoldenBenedictionOil LV5
 
 
@@ -404,27 +404,27 @@
 ;Weapons
 ;Warrior
 1/100 冰封军刀 LV5
-1/100 Grim弓 LV5
+1/100 严酷弓 LV5
 1/250 黑虎锤 LV5
-1/250 Lethal弓 LV5
+1/250 致命弓 LV5
 1/550 蛮兵剑 LV5
-1/550 Apus弓 LV5
+1/550 天燕弓 LV5
 
 ;Wizard
-1/100 Conqueror矛 LV5
+1/100 征服者矛 LV5
 1/250 杖之莲 LV5
-1/550 Raw剑 LV5
+1/550 生剑 LV5
 
 ;Taoist
-1/100 Bastard剑 LV5
-1/250 扇之Crane LV5
-1/550 骨Carved扇 LV5
+1/100 浪人剑 LV5
+1/250 扇之鹤 LV5
+1/550 骨雕扇 LV5
 
 ;Assassin
-1/100 Zinc刃 LV5
-1/250 Butchering刃 LV5
-1/550 Mad龙刃 LV5
-1/650 TheRipper LV5
+1/100 锌刃 LV5
+1/250 屠刃 LV5
+1/550 狂龙刃 LV5
+1/650 撕裂者 LV5
 
 ;Weapon Rare
 1/2100 CrystalSlayer LV5
@@ -490,7 +490,7 @@
 1/1 太阳水 LV6
 1/1 太阳水 LV6
 
-1/1 BenedictionOil LV6
+1/1 祝福油 LV6
 1/2 GoldenBenedictionOil LV6
 
 
@@ -500,27 +500,27 @@
 ;Weapons
 ;Warrior
 1/100 冰封军刀 LV6
-1/100 Grim弓 LV6
+1/100 严酷弓 LV6
 1/250 黑虎锤 LV6
-1/550 Apus弓 LV6
-1/250 Lethal弓 LV6
+1/550 天燕弓 LV6
+1/250 致命弓 LV6
 1/550 蛮兵剑 LV6
 
 ;Wizard
-1/100 Conqueror矛 LV6
+1/100 征服者矛 LV6
 1/250 杖之莲 LV6
-1/550 Raw剑 LV6
+1/550 生剑 LV6
 
 ;Taoist
-1/100 Bastard剑 LV6
-1/250 扇之Crane LV6
-1/550 骨Carved扇 LV6
+1/100 浪人剑 LV6
+1/250 扇之鹤 LV6
+1/550 骨雕扇 LV6
 
 ;Assassin
-1/100 Zinc刃 LV6
-1/250 Butchering刃 LV6
-1/550 Mad龙刃 LV6
-1/650 TheRipper LV6
+1/100 锌刃 LV6
+1/250 屠刃 LV6
+1/550 狂龙刃 LV6
+1/650 撕裂者 LV6
 
 ;Weapon Rare
 1/2100 CrystalSlayer LV6
@@ -586,7 +586,7 @@
 1/1 太阳水 LV7
 1/1 太阳水 LV7
 
-1/1 BenedictionOil LV7
+1/1 祝福油 LV7
 1/2 GoldenBenedictionOil LV7
 
 
@@ -597,27 +597,27 @@
 ;Weapons
 ;Warrior
 1/100 冰封军刀 LV7
-1/100 Grim弓 LV7
+1/100 严酷弓 LV7
 1/250 黑虎锤 LV7
-1/250 Lethal弓 LV7
+1/250 致命弓 LV7
 1/550 蛮兵剑 LV7
-1/550 Apus弓 LV7
+1/550 天燕弓 LV7
 
 ;Wizard
-1/100 Conqueror矛 LV7
+1/100 征服者矛 LV7
 1/250 杖之莲 LV7
-1/550 Raw剑 LV7
+1/550 生剑 LV7
 
 ;Taoist
-1/100 Bastard剑 LV7
-1/250 扇之Crane LV7
-1/550 骨Carved扇 LV7
+1/100 浪人剑 LV7
+1/250 扇之鹤 LV7
+1/550 骨雕扇 LV7
 
 ;Assassin
-1/100 Zinc刃 LV7
-1/250 Butchering刃 LV7
-1/550 Mad龙刃 LV7
-1/650 TheRipper LV7
+1/100 锌刃 LV7
+1/250 屠刃 LV7
+1/550 狂龙刃 LV7
+1/650 撕裂者 LV7
 
 ;Weapon Rare
 1/2100 CrystalSlayer LV7
@@ -683,7 +683,7 @@
 1/1 太阳水 LV8
 1/1 太阳水 LV8
 
-1/1 BenedictionOil LV8
+1/1 祝福油 LV8
 1/2 GoldenBenedictionOil LV8
 
 
@@ -694,27 +694,27 @@
 ;Weapons
 ;Warrior
 1/100 冰封军刀 LV8
-1/100 Grim弓 LV8
+1/100 严酷弓 LV8
 1/250 黑虎锤 LV8
-1/250 Lethal弓 LV8
-1/550 Apus弓 LV8
+1/250 致命弓 LV8
+1/550 天燕弓 LV8
 1/550 蛮兵剑 LV8
 
 ;Wizard
-1/100 Conqueror矛 LV8
+1/100 征服者矛 LV8
 1/250 杖之莲 LV8
-1/550 Raw剑 LV8
+1/550 生剑 LV8
 
 ;Taoist
-1/100 Bastard剑 LV8
-1/250 扇之Crane LV8
-1/550 骨Carved扇 LV8
+1/100 浪人剑 LV8
+1/250 扇之鹤 LV8
+1/550 骨雕扇 LV8
 
 ;Assassin
-1/100 Zinc刃 LV8
-1/250 Butchering刃 LV8
-1/550 Mad龙刃 LV8
-1/650 TheRipper LV8
+1/100 锌刃 LV8
+1/250 屠刃 LV8
+1/550 狂龙刃 LV8
+1/650 撕裂者 LV8
 
 ;Weapon Rare
 1/2100 CrystalSlayer LV8

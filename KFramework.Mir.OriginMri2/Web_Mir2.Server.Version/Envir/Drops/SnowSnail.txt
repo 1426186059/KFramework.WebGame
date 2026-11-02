@@ -8,12 +8,12 @@
 1/15 太阳水
 
 
-1/15000 Cloud戒
+1/15000 云戒
 1/15000 红魔戒
 1/15000 毒戒
 1/15000 魔面具
-1/15000 Violet珠
-1/15000 KunroonTear
+1/15000 紫珠
+1/15000 昆伦之泪
 1/20000 (H)WheelOfLunar
 
 1/12000 HolyHealthStone
@@ -25,7 +25,7 @@
 1/12000 HolyAcStone
 1/12000 HolyDefenseStone
 
-1/7000 BenedictionOil
+1/7000 祝福油
 
 ;Armours
 

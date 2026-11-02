@@ -16,7 +16,7 @@
 1/1 太阳水 LV1
 1/2 太阳水 LV1
 
-1/1 BenedictionOil LV1
+1/1 祝福油 LV1
 1/10 GoldenBenedictionOil LV1
 1/150 TagandaRune LV1
 
@@ -36,16 +36,16 @@
 1/700 TagandaArmour(F) LV1
 1/700 TagandaSuit(M) LV1
 1/700 TagandaSuit(F) LV1
-1/1000 天甲(M) LV1
-1/1000 天甲(F) LV1
+1/1000 天甲(男) LV1
+1/1000 天甲(女) LV1
 1/1000 HeavenArcheyRobe(M) LV1
 1/1000 HeavenArcheyRobe(F) LV1
 1/1200 HeavenGrnArmour(M) LV1
 1/1200 HeavenGrnArmour(F) LV1
 1/1200 HeavenRedArmour(M) LV1
 1/1200 HeavenRedArmour(F) LV1
-1/1200 天甲(M) LV1
-1/1200 天甲(F) LV1
+1/1200 天甲(男) LV1
+1/1200 天甲(女) LV1
 1/1200 HeavenGoldArmour(M) LV1
 1/1200 HeavenGoldArmour(F) LV1
 
@@ -62,18 +62,18 @@
 1/700 TagandaRing LV1
 1/320 火焰戒 LV1
 1/1020 防护戒 LV1
-1/1020 Paralysis戒 LV1
-1/820 Revival戒 LV1
-1/760 Clear戒 LV1
-1/1320 Teleport戒 LV1
+1/1020 麻痹戒 LV1
+1/820 复活戒 LV1
+1/760 清明戒 LV1
+1/1320 传送戒 LV1
 
 ;Shoes
 1/700 TagandaBoots LV1
-1/100 Sparkling靴 LV1
+1/100 闪耀靴 LV1
 
 ;Belts
 1/700 TagandaBelt LV1
-1/100 Sparkling腰带 LV1
+1/100 闪耀腰带 LV1
 
 ;Medals
 1/300 TagandaMedal LV1
@@ -136,76 +136,76 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV1
-1/30 CrossHalf月 LV1
+1/30 十字半月 LV1
 1/50 双生龙兽刃 LV1
-1/50 狮Roar LV1
-1/50 Entrapment LV1
+1/50 狮子吼 LV1
+1/50 擒龙手 LV1
 1/60 BladeStorm LV1
-1/150 刃Avalanche LV1
-1/120 防护Field LV1
-1/140 Rage LV1
-1/160 Fury LV1
-1/200 Counter攻击 LV1
-1/260 ImmortalSkin LV1
+1/150 崩山剑法 LV1
+1/120 防护场 LV1
+1/140 怒之煞 LV1
+1/160 狂怒 LV1
+1/200 反击 LV1
+1/260 金刚不坏 LV1
 
 ;Wizard
-1/10 霜Crunch LV1
+1/10 冰咆哮 LV1
 1/25 冰暴 LV1
-1/30 火焰Disruptor LV1
-1/400 火焰Field LV1
-1/50 Vampirism LV1
-1/150 镜ing LV1
-1/120 Blizzard LV1
-1/140 魔法Booster LV1
-1/160 MeteorStrike LV1
-1/200 FastMove LV1
-1/220 冰Thrust LV1
+1/30 火焰破坏术 LV1
+1/400 火焰场 LV1
+1/50 嗜血术 LV1
+1/150 镜 LV1
+1/120 暴风雪 LV1
+1/140 魔法增益 LV1
+1/160 流星火雨 LV1
+1/200 疾步 LV1
+1/220 冰刺 LV1
 1/240 FrozenRains LV1
 1/260 LavaKing LV1
-1/300 暴Escape LV1
+1/300 暴走 LV1
 
 
 ;Taosit
 1/25 召唤神兽 LV1
-1/30 UltimateEnhancer LV1
-1/30 EnergyRepulsor LV1
-1/50 Purification LV1
-1/50 Hallucination LV1
-1/100 Healing轮 LV1
+1/30 强化火符 LV1
+1/30 气功波 LV1
+1/50 净化术 LV1
+1/50 迷魂术 LV1
+1/100 治愈轮 LV1
 1/100 召唤圣精灵 LV1
 1/120 诅咒 LV1
-1/140 毒Cloud LV1
-1/180 PetEnhancer LV1
-1/200 Energy盾 LV1
+1/140 毒云 LV1
+1/180 宠物强化 LV1
+1/200 能量盾 LV1
 1/230 HolyShield LV1
 1/260 HeadShot LV1
 
 ;Assassin
-1/25 火Burst LV1
+1/25 火爆术 LV1
 1/30 陷阱 LV1
 1/30 CrescentSlash LV1
 1/30 毒剑 LV1
 1/50 月轻 LV1
-1/50 魔法Eater LV1
-1/100 SwiftFeet LV1
-1/140 暗Body LV1
-1/180 Hemorrhage LV1
-1/200 月Mist LV1
+1/50 魔法噬 LV1
+1/100 疾风步 LV1
+1/140 暗身 LV1
+1/180 出血术 LV1
+1/200 月雾 LV1
 1/230 FuryWaves LV1
 1/260 ShadowStep LV1
 
 ;Archer
-1/25 VampireShot LV1
+1/25 吸血射击 LV1
 1/25 召唤吸血蜘蛛 LV1
-1/30 BackStep LV1
-1/30 DelayedExplosion LV1
-1/50 元素alBarrier LV1
-1/50 BindingShot LV1
+1/30 后撤步 LV1
+1/30 延时爆炸 LV1
+1/50 元素屏障 LV1
+1/50 束缚射击 LV1
 1/100 召唤蟾蜍 LV1
-1/140 毒Shot LV1
-1/180 CrippleShot LV1
+1/140 毒射 LV1
+1/180 致残射击 LV1
 1/200 召唤魅惑之蛇 LV1
-1/110 NapalmShot LV1
+1/110 燃烧射击 LV1
 
 
 ;CraftingMaterials
@@ -232,7 +232,7 @@
 1/1 太阳水 LV2
 1/2 太阳水 LV2
 
-1/1 BenedictionOil LV2
+1/1 祝福油 LV2
 1/10 GoldenBenedictionOil LV2
 1/150 TagandaRune LV2
 
@@ -252,16 +252,16 @@
 1/700 TagandaArmour(F) LV2
 1/700 TagandaSuit(M) LV2
 1/700 TagandaSuit(F) LV2
-1/1000 天甲(M) LV2
-1/1000 天甲(F) LV2
+1/1000 天甲(男) LV2
+1/1000 天甲(女) LV2
 1/1000 HeavenArcheyRobe(M) LV2
 1/1000 HeavenArcheyRobe(F) LV2
 1/1200 HeavenGrnArmour(M) LV2
 1/1200 HeavenGrnArmour(F) LV2
 1/1200 HeavenRedArmour(M) LV2
 1/1200 HeavenRedArmour(F) LV2
-1/1200 天甲(M) LV2
-1/1200 天甲(F) LV2
+1/1200 天甲(男) LV2
+1/1200 天甲(女) LV2
 1/1200 HeavenGoldArmour(M) LV2
 1/1200 HeavenGoldArmour(F) LV2
 
@@ -278,18 +278,18 @@
 1/700 TagandaRing LV2
 1/320 火焰戒 LV2
 1/1020 防护戒 LV2
-1/1020 Paralysis戒 LV2
-1/820 Revival戒 LV2
-1/760 Clear戒 LV2
-1/1320 Teleport戒 LV2
+1/1020 麻痹戒 LV2
+1/820 复活戒 LV2
+1/760 清明戒 LV2
+1/1320 传送戒 LV2
 
 ;Shoes
 1/700 TagandaBoots LV2
-1/100 Sparkling靴 LV2
+1/100 闪耀靴 LV2
 
 ;Belts
 1/700 TagandaBelt LV2
-1/100 Sparkling腰带 LV2
+1/100 闪耀腰带 LV2
 
 ;Medals
 1/300 TagandaMedal LV2
@@ -352,76 +352,76 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV2
-1/30 CrossHalf月 LV2
+1/30 十字半月 LV2
 1/50 双生龙兽刃 LV2
-1/50 狮Roar LV2
-1/50 Entrapment LV2
+1/50 狮子吼 LV2
+1/50 擒龙手 LV2
 1/60 BladeStorm LV2
-1/150 刃Avalanche LV2
-1/120 防护Field LV2
-1/140 Rage LV2
-1/160 Fury LV2
-1/200 Counter攻击 LV2
-1/260 ImmortalSkin LV2
+1/150 崩山剑法 LV2
+1/120 防护场 LV2
+1/140 怒之煞 LV2
+1/160 狂怒 LV2
+1/200 反击 LV2
+1/260 金刚不坏 LV2
 
 ;Wizard
-1/10 霜Crunch LV2
+1/10 冰咆哮 LV2
 1/25 冰暴 LV2
-1/30 火焰Disruptor LV2
-1/400 火焰Field LV2
-1/50 Vampirism LV2
-1/150 镜ing LV2
-1/120 Blizzard LV2
-1/140 魔法Booster LV2
-1/160 MeteorStrike LV2
-1/200 FastMove LV2
-1/220 冰Thrust LV2
+1/30 火焰破坏术 LV2
+1/400 火焰场 LV2
+1/50 嗜血术 LV2
+1/150 镜 LV2
+1/120 暴风雪 LV2
+1/140 魔法增益 LV2
+1/160 流星火雨 LV2
+1/200 疾步 LV2
+1/220 冰刺 LV2
 1/240 FrozenRains LV2
 1/260 LavaKing LV2
-1/300 暴Escape LV2
+1/300 暴走 LV2
 
 
 ;Taosit
 1/25 召唤神兽 LV2
-1/30 UltimateEnhancer LV2
-1/30 EnergyRepulsor LV2
-1/50 Purification LV2
-1/50 Hallucination LV2
-1/100 Healing轮 LV2
+1/30 强化火符 LV2
+1/30 气功波 LV2
+1/50 净化术 LV2
+1/50 迷魂术 LV2
+1/100 治愈轮 LV2
 1/100 召唤圣精灵 LV2
 1/120 诅咒 LV2
-1/140 毒Cloud LV2
-1/180 PetEnhancer LV2
-1/200 Energy盾 LV2
+1/140 毒云 LV2
+1/180 宠物强化 LV2
+1/200 能量盾 LV2
 1/230 HolyShield LV2
 1/260 HeadShot LV2
 
 ;Assassin
-1/25 火Burst LV2
+1/25 火爆术 LV2
 1/30 陷阱 LV2
 1/30 CrescentSlash LV2
 1/30 毒剑 LV2
 1/50 月轻 LV2
-1/50 魔法Eater LV2
-1/100 SwiftFeet LV2
-1/140 暗Body LV2
-1/180 Hemorrhage LV2
-1/200 月Mist LV2
+1/50 魔法噬 LV2
+1/100 疾风步 LV2
+1/140 暗身 LV2
+1/180 出血术 LV2
+1/200 月雾 LV2
 1/230 FuryWaves LV2
 1/260 ShadowStep LV2
 
 ;Archer
-1/25 VampireShot LV2
+1/25 吸血射击 LV2
 1/25 召唤吸血蜘蛛 LV2
-1/30 BackStep LV2
-1/30 DelayedExplosion LV2
-1/50 元素alBarrier LV2
-1/50 BindingShot LV2
+1/30 后撤步 LV2
+1/30 延时爆炸 LV2
+1/50 元素屏障 LV2
+1/50 束缚射击 LV2
 1/100 召唤蟾蜍 LV2
-1/140 毒Shot LV2
-1/180 CrippleShot LV2
+1/140 毒射 LV2
+1/180 致残射击 LV2
 1/200 召唤魅惑之蛇 LV2
-1/110 NapalmShot LV2
+1/110 燃烧射击 LV2
 
 
 ;CraftingMaterials
@@ -448,7 +448,7 @@
 1/1 太阳水 LV3
 1/2 太阳水 LV3
 
-1/1 BenedictionOil LV3
+1/1 祝福油 LV3
 1/10 GoldenBenedictionOil LV3
 1/150 TagandaRune LV3
 
@@ -468,16 +468,16 @@
 1/700 TagandaArmour(F) LV3
 1/700 TagandaSuit(M) LV3
 1/700 TagandaSuit(F) LV3
-1/1000 天甲(M) LV3
-1/1000 天甲(F) LV3
+1/1000 天甲(男) LV3
+1/1000 天甲(女) LV3
 1/1000 HeavenArcheyRobe(M) LV3
 1/1000 HeavenArcheyRobe(F) LV3
 1/1200 HeavenGrnArmour(M) LV3
 1/1200 HeavenGrnArmour(F) LV3
 1/1200 HeavenRedArmour(M) LV3
 1/1200 HeavenRedArmour(F) LV3
-1/1200 天甲(M) LV3
-1/1200 天甲(F) LV3
+1/1200 天甲(男) LV3
+1/1200 天甲(女) LV3
 1/1200 HeavenGoldArmour(M) LV3
 1/1200 HeavenGoldArmour(F) LV3
 
@@ -494,18 +494,18 @@
 1/700 TagandaRing LV3
 1/320 火焰戒 LV3
 1/1020 防护戒 LV3
-1/1020 Paralysis戒 LV3
-1/820 Revival戒 LV3
-1/760 Clear戒 LV3
-1/1320 Teleport戒 LV3
+1/1020 麻痹戒 LV3
+1/820 复活戒 LV3
+1/760 清明戒 LV3
+1/1320 传送戒 LV3
 
 ;Shoes
 1/700 TagandaBoots LV3
-1/100 Sparkling靴 LV3
+1/100 闪耀靴 LV3
 
 ;Belts
 1/700 TagandaBelt LV3
-1/100 Sparkling腰带 LV3
+1/100 闪耀腰带 LV3
 
 ;Medals
 1/300 TagandaMedal LV3
@@ -568,76 +568,76 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV3
-1/30 CrossHalf月 LV3
+1/30 十字半月 LV3
 1/50 双生龙兽刃 LV3
-1/50 狮Roar LV3
-1/50 Entrapment LV3
+1/50 狮子吼 LV3
+1/50 擒龙手 LV3
 1/60 BladeStorm LV3
-1/150 刃Avalanche LV3
-1/120 防护Field LV3
-1/140 Rage LV3
-1/160 Fury LV3
-1/200 Counter攻击 LV3
-1/260 ImmortalSkin LV3
+1/150 崩山剑法 LV3
+1/120 防护场 LV3
+1/140 怒之煞 LV3
+1/160 狂怒 LV3
+1/200 反击 LV3
+1/260 金刚不坏 LV3
 
 ;Wizard
-1/10 霜Crunch LV3
+1/10 冰咆哮 LV3
 1/25 冰暴 LV3
-1/30 火焰Disruptor LV3
-1/400 火焰Field LV3
-1/50 Vampirism LV3
-1/150 镜ing LV3
-1/120 Blizzard LV3
-1/140 魔法Booster LV3
-1/160 MeteorStrike LV3
-1/200 FastMove LV3
-1/220 冰Thrust LV3
+1/30 火焰破坏术 LV3
+1/400 火焰场 LV3
+1/50 嗜血术 LV3
+1/150 镜 LV3
+1/120 暴风雪 LV3
+1/140 魔法增益 LV3
+1/160 流星火雨 LV3
+1/200 疾步 LV3
+1/220 冰刺 LV3
 1/240 FrozenRains LV3
 1/260 LavaKing LV3
-1/300 暴Escape LV3
+1/300 暴走 LV3
 
 
 ;Taosit
 1/25 召唤神兽 LV3
-1/30 UltimateEnhancer LV3
-1/30 EnergyRepulsor LV3
-1/50 Purification LV3
-1/50 Hallucination LV3
-1/100 Healing轮 LV3
+1/30 强化火符 LV3
+1/30 气功波 LV3
+1/50 净化术 LV3
+1/50 迷魂术 LV3
+1/100 治愈轮 LV3
 1/100 召唤圣精灵 LV3
 1/120 诅咒 LV3
-1/140 毒Cloud LV3
-1/180 PetEnhancer LV3
-1/200 Energy盾 LV3
+1/140 毒云 LV3
+1/180 宠物强化 LV3
+1/200 能量盾 LV3
 1/230 HolyShield LV3
 1/260 HeadShot LV3
 
 ;Assassin
-1/25 火Burst LV3
+1/25 火爆术 LV3
 1/30 陷阱 LV3
 1/30 CrescentSlash LV3
 1/30 毒剑 LV3
 1/50 月轻 LV3
-1/50 魔法Eater LV3
-1/100 SwiftFeet LV3
-1/140 暗Body LV3
-1/180 Hemorrhage LV3
-1/200 月Mist LV3
+1/50 魔法噬 LV3
+1/100 疾风步 LV3
+1/140 暗身 LV3
+1/180 出血术 LV3
+1/200 月雾 LV3
 1/230 FuryWaves LV3
 1/260 ShadowStep LV3
 
 ;Archer
-1/25 VampireShot LV3
+1/25 吸血射击 LV3
 1/25 召唤吸血蜘蛛 LV3
-1/30 BackStep LV3
-1/30 DelayedExplosion LV3
-1/50 元素alBarrier LV3
-1/50 BindingShot LV3
+1/30 后撤步 LV3
+1/30 延时爆炸 LV3
+1/50 元素屏障 LV3
+1/50 束缚射击 LV3
 1/100 召唤蟾蜍 LV3
-1/140 毒Shot LV3
-1/180 CrippleShot LV3
+1/140 毒射 LV3
+1/180 致残射击 LV3
 1/200 召唤魅惑之蛇 LV3
-1/110 NapalmShot LV3
+1/110 燃烧射击 LV3
 
 
 ;CraftingMaterials
@@ -664,7 +664,7 @@
 1/1 太阳水 LV4
 1/2 太阳水 LV4
 
-1/1 BenedictionOil LV4
+1/1 祝福油 LV4
 1/10 GoldenBenedictionOil LV4
 1/150 TagandaRune LV4
 
@@ -684,16 +684,16 @@
 1/700 TagandaArmour(F) LV4
 1/700 TagandaSuit(M) LV4
 1/700 TagandaSuit(F) LV4
-1/1000 天甲(M) LV4
-1/1000 天甲(F) LV4
+1/1000 天甲(男) LV4
+1/1000 天甲(女) LV4
 1/1000 HeavenArcheyRobe(M) LV4
 1/1000 HeavenArcheyRobe(F) LV4
 1/1200 HeavenGrnArmour(M) LV4
 1/1200 HeavenGrnArmour(F) LV4
 1/1200 HeavenRedArmour(M) LV4
 1/1200 HeavenRedArmour(F) LV4
-1/1200 天甲(M) LV4
-1/1200 天甲(F) LV4
+1/1200 天甲(男) LV4
+1/1200 天甲(女) LV4
 1/1200 HeavenGoldArmour(M) LV4
 1/1200 HeavenGoldArmour(F) LV4
 
@@ -710,18 +710,18 @@
 1/700 TagandaRing LV4
 1/320 火焰戒 LV4
 1/1020 防护戒 LV4
-1/1020 Paralysis戒 LV4
-1/820 Revival戒 LV4
-1/760 Clear戒 LV4
-1/1320 Teleport戒 LV4
+1/1020 麻痹戒 LV4
+1/820 复活戒 LV4
+1/760 清明戒 LV4
+1/1320 传送戒 LV4
 
 ;Shoes
 1/700 TagandaBoots LV4
-1/100 Sparkling靴 LV4
+1/100 闪耀靴 LV4
 
 ;Belts
 1/700 TagandaBelt LV4
-1/100 Sparkling腰带 LV4
+1/100 闪耀腰带 LV4
 
 ;Medals
 1/300 TagandaMedal LV4
@@ -784,76 +784,76 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV4
-1/30 CrossHalf月 LV4
+1/30 十字半月 LV4
 1/50 双生龙兽刃 LV4
-1/50 狮Roar LV4
-1/50 Entrapment LV4
+1/50 狮子吼 LV4
+1/50 擒龙手 LV4
 1/60 BladeStorm LV4
-1/150 刃Avalanche LV4
-1/120 防护Field LV4
-1/140 Rage LV4
-1/160 Fury LV4
-1/200 Counter攻击 LV4
-1/260 ImmortalSkin LV4
+1/150 崩山剑法 LV4
+1/120 防护场 LV4
+1/140 怒之煞 LV4
+1/160 狂怒 LV4
+1/200 反击 LV4
+1/260 金刚不坏 LV4
 
 ;Wizard
-1/10 霜Crunch LV4
+1/10 冰咆哮 LV4
 1/25 冰暴 LV4
-1/30 火焰Disruptor LV4
-1/400 火焰Field LV4
-1/50 Vampirism LV4
-1/150 镜ing LV4
-1/120 Blizzard LV4
-1/140 魔法Booster LV4
-1/160 MeteorStrike LV4
-1/200 FastMove LV4
-1/220 冰Thrust LV4
+1/30 火焰破坏术 LV4
+1/400 火焰场 LV4
+1/50 嗜血术 LV4
+1/150 镜 LV4
+1/120 暴风雪 LV4
+1/140 魔法增益 LV4
+1/160 流星火雨 LV4
+1/200 疾步 LV4
+1/220 冰刺 LV4
 1/240 FrozenRains LV4
 1/260 LavaKing LV4
-1/300 暴Escape LV4
+1/300 暴走 LV4
 
 
 ;Taosit
 1/25 召唤神兽 LV4
-1/30 UltimateEnhancer LV4
-1/30 EnergyRepulsor LV4
-1/50 Purification LV4
-1/50 Hallucination LV4
-1/100 Healing轮 LV4
+1/30 强化火符 LV4
+1/30 气功波 LV4
+1/50 净化术 LV4
+1/50 迷魂术 LV4
+1/100 治愈轮 LV4
 1/100 召唤圣精灵 LV4
 1/120 诅咒 LV4
-1/140 毒Cloud LV4
-1/180 PetEnhancer LV4
-1/200 Energy盾 LV4
+1/140 毒云 LV4
+1/180 宠物强化 LV4
+1/200 能量盾 LV4
 1/230 HolyShield LV4
 1/260 HeadShot LV4
 
 ;Assassin
-1/25 火Burst LV4
+1/25 火爆术 LV4
 1/30 陷阱 LV4
 1/30 CrescentSlash LV4
 1/30 毒剑 LV4
 1/50 月轻 LV4
-1/50 魔法Eater LV4
-1/100 SwiftFeet LV4
-1/140 暗Body LV4
-1/180 Hemorrhage LV4
-1/200 月Mist LV4
+1/50 魔法噬 LV4
+1/100 疾风步 LV4
+1/140 暗身 LV4
+1/180 出血术 LV4
+1/200 月雾 LV4
 1/230 FuryWaves LV4
 1/260 ShadowStep LV4
 
 ;Archer
-1/25 VampireShot LV4
+1/25 吸血射击 LV4
 1/25 召唤吸血蜘蛛 LV4
-1/30 BackStep LV4
-1/30 DelayedExplosion LV4
-1/50 元素alBarrier LV4
-1/50 BindingShot LV4
+1/30 后撤步 LV4
+1/30 延时爆炸 LV4
+1/50 元素屏障 LV4
+1/50 束缚射击 LV4
 1/100 召唤蟾蜍 LV4
-1/140 毒Shot LV4
-1/180 CrippleShot LV4
+1/140 毒射 LV4
+1/180 致残射击 LV4
 1/200 召唤魅惑之蛇 LV4
-1/110 NapalmShot LV4
+1/110 燃烧射击 LV4
 
 ;CraftingMaterials
 
@@ -879,7 +879,7 @@
 1/1 太阳水 LV5
 1/2 太阳水 LV5
 
-1/1 BenedictionOil LV5
+1/1 祝福油 LV5
 1/10 GoldenBenedictionOil LV5
 1/150 TagandaRune LV5
 
@@ -899,16 +899,16 @@
 1/700 TagandaArmour(F) LV5
 1/700 TagandaSuit(M) LV5
 1/700 TagandaSuit(F) LV5
-1/1000 天甲(M) LV5
-1/1000 天甲(F) LV5
+1/1000 天甲(男) LV5
+1/1000 天甲(女) LV5
 1/1000 HeavenArcheyRobe(M) LV5
 1/1000 HeavenArcheyRobe(F) LV5
 1/1200 HeavenGrnArmour(M) LV5
 1/1200 HeavenGrnArmour(F) LV5
 1/1200 HeavenRedArmour(M) LV5
 1/1200 HeavenRedArmour(F) LV5
-1/1200 天甲(M) LV5
-1/1200 天甲(F) LV5
+1/1200 天甲(男) LV5
+1/1200 天甲(女) LV5
 1/1200 HeavenGoldArmour(M) LV5
 1/1200 HeavenGoldArmour(F) LV5
 
@@ -925,18 +925,18 @@
 1/700 TagandaRing LV5
 1/320 火焰戒 LV5
 1/1020 防护戒 LV5
-1/1020 Paralysis戒 LV5
-1/820 Revival戒 LV5
-1/760 Clear戒 LV5
-1/1320 Teleport戒 LV5
+1/1020 麻痹戒 LV5
+1/820 复活戒 LV5
+1/760 清明戒 LV5
+1/1320 传送戒 LV5
 
 ;Shoes
 1/700 TagandaBoots LV5
-1/100 Sparkling靴 LV5
+1/100 闪耀靴 LV5
 
 ;Belts
 1/700 TagandaBelt LV5
-1/100 Sparkling腰带 LV5
+1/100 闪耀腰带 LV5
 
 ;Medals
 1/300 TagandaMedal LV5
@@ -999,76 +999,76 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV5
-1/30 CrossHalf月 LV5
+1/30 十字半月 LV5
 1/50 双生龙兽刃 LV5
-1/50 狮Roar LV5
-1/50 Entrapment LV5
+1/50 狮子吼 LV5
+1/50 擒龙手 LV5
 1/60 BladeStorm LV5
-1/150 刃Avalanche LV5
-1/120 防护Field LV5
-1/140 Rage LV5
-1/160 Fury LV5
-1/200 Counter攻击 LV5
-1/260 ImmortalSkin LV5
+1/150 崩山剑法 LV5
+1/120 防护场 LV5
+1/140 怒之煞 LV5
+1/160 狂怒 LV5
+1/200 反击 LV5
+1/260 金刚不坏 LV5
 
 ;Wizard
-1/10 霜Crunch LV5
+1/10 冰咆哮 LV5
 1/25 冰暴 LV5
-1/30 火焰Disruptor LV5
-1/400 火焰Field LV5
-1/50 Vampirism LV5
-1/150 镜ing LV5
-1/120 Blizzard LV5
-1/140 魔法Booster LV5
-1/160 MeteorStrike LV5
-1/200 FastMove LV5
-1/220 冰Thrust LV5
+1/30 火焰破坏术 LV5
+1/400 火焰场 LV5
+1/50 嗜血术 LV5
+1/150 镜 LV5
+1/120 暴风雪 LV5
+1/140 魔法增益 LV5
+1/160 流星火雨 LV5
+1/200 疾步 LV5
+1/220 冰刺 LV5
 1/240 FrozenRains LV5
 1/260 LavaKing LV5
-1/300 暴Escape LV5
+1/300 暴走 LV5
 
 
 ;Taosit
 1/25 召唤神兽 LV5
-1/30 UltimateEnhancer LV5
-1/30 EnergyRepulsor LV5
-1/50 Purification LV5
-1/50 Hallucination LV5
-1/100 Healing轮 LV5
+1/30 强化火符 LV5
+1/30 气功波 LV5
+1/50 净化术 LV5
+1/50 迷魂术 LV5
+1/100 治愈轮 LV5
 1/100 召唤圣精灵 LV5
 1/120 诅咒 LV5
-1/140 毒Cloud LV5
-1/180 PetEnhancer LV5
-1/200 Energy盾 LV5
+1/140 毒云 LV5
+1/180 宠物强化 LV5
+1/200 能量盾 LV5
 1/230 HolyShield LV5
 1/260 HeadShot LV5
 
 ;Assassin
-1/25 火Burst LV5
+1/25 火爆术 LV5
 1/30 陷阱 LV5
 1/30 CrescentSlash LV5
 1/30 毒剑 LV5
 1/50 月轻 LV5
-1/50 魔法Eater LV5
-1/100 SwiftFeet LV5
-1/140 暗Body LV5
-1/180 Hemorrhage LV5
-1/200 月Mist LV5
+1/50 魔法噬 LV5
+1/100 疾风步 LV5
+1/140 暗身 LV5
+1/180 出血术 LV5
+1/200 月雾 LV5
 1/230 FuryWaves LV5
 1/260 ShadowStep LV5
 
 ;Archer
-1/25 VampireShot LV5
+1/25 吸血射击 LV5
 1/25 召唤吸血蜘蛛 LV5
-1/30 BackStep LV5
-1/30 DelayedExplosion LV5
-1/50 元素alBarrier LV5
-1/50 BindingShot LV5
+1/30 后撤步 LV5
+1/30 延时爆炸 LV5
+1/50 元素屏障 LV5
+1/50 束缚射击 LV5
 1/100 召唤蟾蜍 LV5
-1/140 毒Shot LV5
-1/180 CrippleShot LV5
+1/140 毒射 LV5
+1/180 致残射击 LV5
 1/200 召唤魅惑之蛇 LV5
-1/110 NapalmShot LV5
+1/110 燃烧射击 LV5
 
 
 ;CraftingMaterials
@@ -1095,7 +1095,7 @@
 1/1 太阳水 LV6
 1/2 太阳水 LV6
 
-1/1 BenedictionOil LV6
+1/1 祝福油 LV6
 1/10 GoldenBenedictionOil LV6
 1/150 TagandaRune LV6
 
@@ -1115,16 +1115,16 @@
 1/700 TagandaArmour(F) LV6
 1/700 TagandaSuit(M) LV6
 1/700 TagandaSuit(F) LV6
-1/1000 天甲(M) LV6
-1/1000 天甲(F) LV6
+1/1000 天甲(男) LV6
+1/1000 天甲(女) LV6
 1/1200 HeavenGrnArmour(M) LV6
 1/1000 HeavenArcheyRobe(M) LV6
 1/1000 HeavenArcheyRobe(F) LV6
 1/1200 HeavenGrnArmour(F) LV6
 1/1200 HeavenRedArmour(M) LV6
 1/1200 HeavenRedArmour(F) LV6
-1/1200 天甲(M) LV6
-1/1200 天甲(F) LV6
+1/1200 天甲(男) LV6
+1/1200 天甲(女) LV6
 1/1200 HeavenGoldArmour(M) LV6
 1/1200 HeavenGoldArmour(F) LV6
 
@@ -1141,18 +1141,18 @@
 1/700 TagandaRing LV6
 1/320 火焰戒 LV6
 1/1020 防护戒 LV6
-1/1020 Paralysis戒 LV6
-1/820 Revival戒 LV6
-1/760 Clear戒 LV6
-1/1320 Teleport戒 LV6
+1/1020 麻痹戒 LV6
+1/820 复活戒 LV6
+1/760 清明戒 LV6
+1/1320 传送戒 LV6
 
 ;Shoes
 1/700 TagandaBoots LV6
-1/100 Sparkling靴 LV6
+1/100 闪耀靴 LV6
 
 ;Belts
 1/700 TagandaBelt LV6
-1/100 Sparkling腰带 LV6
+1/100 闪耀腰带 LV6
 
 ;Medals
 1/300 TagandaMedal LV6
@@ -1215,76 +1215,76 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV6
-1/30 CrossHalf月 LV6
+1/30 十字半月 LV6
 1/50 双生龙兽刃 LV6
-1/50 狮Roar LV6
-1/50 Entrapment LV6
+1/50 狮子吼 LV6
+1/50 擒龙手 LV6
 1/60 BladeStorm LV6
-1/150 刃Avalanche LV6
-1/120 防护Field LV6
-1/140 Rage LV6
-1/160 Fury LV6
-1/200 Counter攻击 LV6
-1/260 ImmortalSkin LV6
+1/150 崩山剑法 LV6
+1/120 防护场 LV6
+1/140 怒之煞 LV6
+1/160 狂怒 LV6
+1/200 反击 LV6
+1/260 金刚不坏 LV6
 
 ;Wizard
-1/10 霜Crunch LV6
+1/10 冰咆哮 LV6
 1/25 冰暴 LV6
-1/30 火焰Disruptor LV6
-1/400 火焰Field LV6
-1/50 Vampirism LV6
-1/150 镜ing LV6
-1/120 Blizzard LV6
-1/140 魔法Booster LV6
-1/160 MeteorStrike LV6
-1/200 FastMove LV6
-1/220 冰Thrust LV6
+1/30 火焰破坏术 LV6
+1/400 火焰场 LV6
+1/50 嗜血术 LV6
+1/150 镜 LV6
+1/120 暴风雪 LV6
+1/140 魔法增益 LV6
+1/160 流星火雨 LV6
+1/200 疾步 LV6
+1/220 冰刺 LV6
 1/240 FrozenRains LV6
 1/260 LavaKing LV6
-1/300 暴Escape LV6
+1/300 暴走 LV6
 
 
 ;Taosit
 1/25 召唤神兽 LV6
-1/30 UltimateEnhancer LV6
-1/30 EnergyRepulsor LV6
-1/50 Purification LV6
-1/50 Hallucination LV6
-1/100 Healing轮 LV6
+1/30 强化火符 LV6
+1/30 气功波 LV6
+1/50 净化术 LV6
+1/50 迷魂术 LV6
+1/100 治愈轮 LV6
 1/100 召唤圣精灵 LV6
 1/120 诅咒 LV6
-1/140 毒Cloud LV6
-1/180 PetEnhancer LV6
-1/200 Energy盾 LV6
+1/140 毒云 LV6
+1/180 宠物强化 LV6
+1/200 能量盾 LV6
 1/230 HolyShield LV6
 1/260 HeadShot LV6
 
 ;Assassin
-1/25 火Burst LV6
+1/25 火爆术 LV6
 1/30 陷阱 LV6
 1/30 CrescentSlash LV6
 1/30 毒剑 LV6
 1/50 月轻 LV6
-1/50 魔法Eater LV6
-1/100 SwiftFeet LV6
-1/140 暗Body LV6
-1/180 Hemorrhage LV6
-1/200 月Mist LV6
+1/50 魔法噬 LV6
+1/100 疾风步 LV6
+1/140 暗身 LV6
+1/180 出血术 LV6
+1/200 月雾 LV6
 1/230 FuryWaves LV6
 1/260 ShadowStep LV6
 
 ;Archer
-1/25 VampireShot LV6
+1/25 吸血射击 LV6
 1/25 召唤吸血蜘蛛 LV6
-1/30 BackStep LV6
-1/30 DelayedExplosion LV6
-1/50 元素alBarrier LV6
-1/50 BindingShot LV6
+1/30 后撤步 LV6
+1/30 延时爆炸 LV6
+1/50 元素屏障 LV6
+1/50 束缚射击 LV6
 1/100 召唤蟾蜍 LV6
-1/140 毒Shot LV6
-1/180 CrippleShot LV6
+1/140 毒射 LV6
+1/180 致残射击 LV6
 1/200 召唤魅惑之蛇 LV6
-1/110 NapalmShot LV6
+1/110 燃烧射击 LV6
 
 ;CraftingMaterials
 
@@ -1310,7 +1310,7 @@
 1/1 太阳水 LV7
 1/2 太阳水 LV7
 
-1/1 BenedictionOil LV7
+1/1 祝福油 LV7
 1/10 GoldenBenedictionOil LV7
 1/150 TagandaRune LV7
 
@@ -1330,16 +1330,16 @@
 1/700 TagandaArmour(F) LV7
 1/700 TagandaSuit(M) LV7
 1/700 TagandaSuit(F) LV7
-1/1000 天甲(M) LV7
-1/1000 天甲(F) LV7
+1/1000 天甲(男) LV7
+1/1000 天甲(女) LV7
 1/1000 HeavenArcheyRobe(M) LV7
 1/1000 HeavenArcheyRobe(F) LV7
 1/1200 HeavenGrnArmour(M) LV7
 1/1200 HeavenGrnArmour(F) LV7
 1/1200 HeavenRedArmour(M) LV7
 1/1200 HeavenRedArmour(F) LV7
-1/1200 天甲(M) LV7
-1/1200 天甲(F) LV7
+1/1200 天甲(男) LV7
+1/1200 天甲(女) LV7
 1/1200 HeavenGoldArmour(M) LV7
 1/1200 HeavenGoldArmour(F) LV7
 
@@ -1356,18 +1356,18 @@
 1/700 TagandaRing LV7
 1/320 火焰戒 LV7
 1/1020 防护戒 LV7
-1/1020 Paralysis戒 LV7
-1/820 Revival戒 LV7
-1/760 Clear戒 LV7
-1/1320 Teleport戒 LV7
+1/1020 麻痹戒 LV7
+1/820 复活戒 LV7
+1/760 清明戒 LV7
+1/1320 传送戒 LV7
 
 ;Shoes
 1/700 TagandaBoots LV7
-1/100 Sparkling靴 LV7
+1/100 闪耀靴 LV7
 
 ;Belts
 1/700 TagandaBelt LV7
-1/100 Sparkling腰带 LV7
+1/100 闪耀腰带 LV7
 
 ;Medals
 1/300 TagandaMedal LV7
@@ -1430,76 +1430,76 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV7
-1/30 CrossHalf月 LV7
+1/30 十字半月 LV7
 1/50 双生龙兽刃 LV7
-1/50 狮Roar LV7
-1/50 Entrapment LV7
+1/50 狮子吼 LV7
+1/50 擒龙手 LV7
 1/60 BladeStorm LV7
-1/150 刃Avalanche LV7
-1/120 防护Field LV7
-1/140 Rage LV7
-1/160 Fury LV7
-1/200 Counter攻击 LV7
-1/260 ImmortalSkin LV7
+1/150 崩山剑法 LV7
+1/120 防护场 LV7
+1/140 怒之煞 LV7
+1/160 狂怒 LV7
+1/200 反击 LV7
+1/260 金刚不坏 LV7
 
 ;Wizard
-1/10 霜Crunch LV7
+1/10 冰咆哮 LV7
 1/25 冰暴 LV7
-1/30 火焰Disruptor LV7
-1/400 火焰Field LV7
-1/50 Vampirism LV7
-1/150 镜ing LV7
-1/120 Blizzard LV7
-1/140 魔法Booster LV7
-1/160 MeteorStrike LV7
-1/200 FastMove LV7
-1/220 冰Thrust LV7
+1/30 火焰破坏术 LV7
+1/400 火焰场 LV7
+1/50 嗜血术 LV7
+1/150 镜 LV7
+1/120 暴风雪 LV7
+1/140 魔法增益 LV7
+1/160 流星火雨 LV7
+1/200 疾步 LV7
+1/220 冰刺 LV7
 1/240 FrozenRains LV7
 1/260 LavaKing LV7
-1/300 暴Escape LV7
+1/300 暴走 LV7
 
 
 ;Taosit
 1/25 召唤神兽 LV7
-1/30 UltimateEnhancer LV7
-1/30 EnergyRepulsor LV7
-1/50 Purification LV7
-1/50 Hallucination LV7
-1/100 Healing轮 LV7
+1/30 强化火符 LV7
+1/30 气功波 LV7
+1/50 净化术 LV7
+1/50 迷魂术 LV7
+1/100 治愈轮 LV7
 1/100 召唤圣精灵 LV7
 1/120 诅咒 LV7
-1/140 毒Cloud LV7
-1/180 PetEnhancer LV7
-1/200 Energy盾 LV7
+1/140 毒云 LV7
+1/180 宠物强化 LV7
+1/200 能量盾 LV7
 1/230 HolyShield LV7
 1/260 HeadShot LV7
 
 ;Assassin
-1/25 火Burst LV7
+1/25 火爆术 LV7
 1/30 陷阱 LV7
 1/30 CrescentSlash LV7
 1/30 毒剑 LV7
 1/50 月轻 LV7
-1/50 魔法Eater LV7
-1/100 SwiftFeet LV7
-1/140 暗Body LV7
-1/180 Hemorrhage LV7
-1/200 月Mist LV7
+1/50 魔法噬 LV7
+1/100 疾风步 LV7
+1/140 暗身 LV7
+1/180 出血术 LV7
+1/200 月雾 LV7
 1/230 FuryWaves LV7
 1/260 ShadowStep LV7
 
 ;Archer
-1/25 VampireShot LV7
+1/25 吸血射击 LV7
 1/25 召唤吸血蜘蛛 LV7
-1/30 BackStep LV7
-1/30 DelayedExplosion LV7
-1/50 元素alBarrier LV7
-1/50 BindingShot LV7
+1/30 后撤步 LV7
+1/30 延时爆炸 LV7
+1/50 元素屏障 LV7
+1/50 束缚射击 LV7
 1/100 召唤蟾蜍 LV7
-1/140 毒Shot LV7
-1/180 CrippleShot LV7
+1/140 毒射 LV7
+1/180 致残射击 LV7
 1/200 召唤魅惑之蛇 LV7
-1/110 NapalmShot LV7
+1/110 燃烧射击 LV7
 
 ;CraftingMaterials
 
@@ -1525,7 +1525,7 @@
 1/1 太阳水 LV8
 1/2 太阳水 LV8
 
-1/1 BenedictionOil LV8
+1/1 祝福油 LV8
 1/10 GoldenBenedictionOil LV8
 1/150 TagandaRune LV8
 
@@ -1545,16 +1545,16 @@
 1/700 TagandaArmour(F) LV8
 1/700 TagandaSuit(M) LV8
 1/700 TagandaSuit(F) LV8
-1/1000 天甲(M) LV8
-1/1000 天甲(F) LV8
+1/1000 天甲(男) LV8
+1/1000 天甲(女) LV8
 1/1000 HeavenArcheyRobe(M) LV8
 1/1000 HeavenArcheyRobe(F) LV8
 1/1200 HeavenGrnArmour(M) LV8
 1/1200 HeavenGrnArmour(F) LV8
 1/1200 HeavenRedArmour(M) LV8
 1/1200 HeavenRedArmour(F) LV8
-1/1200 天甲(M) LV8
-1/1200 天甲(F) LV8
+1/1200 天甲(男) LV8
+1/1200 天甲(女) LV8
 1/1200 HeavenGoldArmour(M) LV8
 1/1200 HeavenGoldArmour(F) LV8
 
@@ -1571,18 +1571,18 @@
 1/700 TagandaRing LV8
 1/320 火焰戒 LV8
 1/1020 防护戒 LV8
-1/1020 Paralysis戒 LV8
-1/820 Revival戒 LV8
-1/760 Clear戒 LV8
-1/1320 Teleport戒 LV8
+1/1020 麻痹戒 LV8
+1/820 复活戒 LV8
+1/760 清明戒 LV8
+1/1320 传送戒 LV8
 
 ;Shoes
 1/700 TagandaBoots LV8
-1/100 Sparkling靴 LV8
+1/100 闪耀靴 LV8
 
 ;Belts
 1/700 TagandaBelt LV8
-1/100 Sparkling腰带 LV8
+1/100 闪耀腰带 LV8
 
 ;Medals
 1/300 TagandaMedal LV8
@@ -1645,76 +1645,76 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV8
-1/30 CrossHalf月 LV8
+1/30 十字半月 LV8
 1/50 双生龙兽刃 LV8
-1/50 狮Roar LV8
-1/50 Entrapment LV8
+1/50 狮子吼 LV8
+1/50 擒龙手 LV8
 1/60 BladeStorm LV8
-1/150 刃Avalanche LV8
-1/120 防护Field LV8
-1/140 Rage LV8
-1/160 Fury LV8
-1/200 Counter攻击 LV8
-1/260 ImmortalSkin LV8
+1/150 崩山剑法 LV8
+1/120 防护场 LV8
+1/140 怒之煞 LV8
+1/160 狂怒 LV8
+1/200 反击 LV8
+1/260 金刚不坏 LV8
 
 ;Wizard
-1/10 霜Crunch LV8
+1/10 冰咆哮 LV8
 1/25 冰暴 LV8
-1/30 火焰Disruptor LV8
-1/400 火焰Field LV8
-1/50 Vampirism LV8
-1/150 镜ing LV8
-1/120 Blizzard LV8
-1/140 魔法Booster LV8
-1/160 MeteorStrike LV8
-1/200 FastMove LV8
-1/220 冰Thrust LV8
+1/30 火焰破坏术 LV8
+1/400 火焰场 LV8
+1/50 嗜血术 LV8
+1/150 镜 LV8
+1/120 暴风雪 LV8
+1/140 魔法增益 LV8
+1/160 流星火雨 LV8
+1/200 疾步 LV8
+1/220 冰刺 LV8
 1/240 FrozenRains LV8
 1/260 LavaKing LV8
-1/300 暴Escape LV8
+1/300 暴走 LV8
 
 
 ;Taosit
 1/25 召唤神兽 LV8
-1/30 UltimateEnhancer LV8
-1/30 EnergyRepulsor LV8
-1/50 Purification LV8
-1/50 Hallucination LV8
-1/100 Healing轮 LV8
+1/30 强化火符 LV8
+1/30 气功波 LV8
+1/50 净化术 LV8
+1/50 迷魂术 LV8
+1/100 治愈轮 LV8
 1/100 召唤圣精灵 LV8
 1/120 诅咒 LV8
-1/140 毒Cloud LV8
-1/180 PetEnhancer LV8
-1/200 Energy盾 LV8
+1/140 毒云 LV8
+1/180 宠物强化 LV8
+1/200 能量盾 LV8
 1/230 HolyShield LV8
 1/260 HeadShot LV8
 
 ;Assassin
-1/25 火Burst LV8
+1/25 火爆术 LV8
 1/30 陷阱 LV8
 1/30 CrescentSlash LV8
 1/30 毒剑 LV8
 1/50 月轻 LV8
-1/50 魔法Eater LV8
-1/100 SwiftFeet LV8
-1/140 暗Body LV8
-1/180 Hemorrhage LV8
-1/200 月Mist LV8
+1/50 魔法噬 LV8
+1/100 疾风步 LV8
+1/140 暗身 LV8
+1/180 出血术 LV8
+1/200 月雾 LV8
 1/230 FuryWaves LV8
 1/260 ShadowStep LV8
 
 ;Archer
-1/25 VampireShot LV8
+1/25 吸血射击 LV8
 1/25 召唤吸血蜘蛛 LV8
-1/30 BackStep LV8
-1/30 DelayedExplosion LV8
-1/50 元素alBarrier LV8
-1/50 BindingShot LV8
+1/30 后撤步 LV8
+1/30 延时爆炸 LV8
+1/50 元素屏障 LV8
+1/50 束缚射击 LV8
 1/100 召唤蟾蜍 LV8
-1/140 毒Shot LV8
-1/180 CrippleShot LV8
+1/140 毒射 LV8
+1/180 致残射击 LV8
 1/200 召唤魅惑之蛇 LV8
-1/110 NapalmShot LV8
+1/110 燃烧射击 LV8
 
 ;CraftingMaterials
 

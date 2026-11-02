@@ -9,7 +9,7 @@
 [@KillTasks]
 
 [@ItemTasks]
-远古Scyther 1
+远古镰 1
 
 [@FlagTasks]
 

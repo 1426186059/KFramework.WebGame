@@ -47,7 +47,7 @@
 
 
 ;CraftingMaterials
-1/200 蚁idoteMarble
+1/200 蚁毒珠
 
 ;Quests
 

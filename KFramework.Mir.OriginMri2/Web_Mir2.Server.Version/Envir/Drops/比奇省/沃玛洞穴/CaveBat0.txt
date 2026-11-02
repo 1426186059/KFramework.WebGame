@@ -8,13 +8,13 @@
 1/5 小魔法药 
 
 ;Scrolls
-1/1 镇Teleport 
-1/1 镇Teleport 
-1/1 镇Teleport 
-1/2 镇Teleport 
-1/2 镇Teleport 
+1/1 镇传送 
+1/1 镇传送 
+1/1 镇传送 
+1/2 镇传送 
+1/2 镇传送 
 
 ;Quest
-1/5 蝙蝠Teeth Q
-1/6 蝙蝠翼s Q
-1/200 远古Scyther Q
+1/5 蝙蝠牙 Q
+1/6 蝙蝠翼 Q
+1/200 远古镰 Q

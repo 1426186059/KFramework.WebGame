@@ -41,22 +41,22 @@ GOTO @Main-1
 
 [@candle]
 #SAY
-天色变暗时需要蜡烛。没有蜡烛，
+天色变暗时需要Candle。没有Candle，
 你将什么都看不见——漆黑中连自己的脚都看不到。
  
 <返回/@Ask>
 
 [@dungeonescape]
 #SAY
-地牢逃脱卷是一张魔法符纸，可迅速将你传送到
+DungeonEscape卷是一张魔法符纸，可迅速将你传送到
 最近访问过的村庄附近的特定区域。
-比起回城卷，地牢逃脱卷的力量较弱，但仍能救你一命。
+比起TeleportHome，DungeonEscape卷的力量较弱，但仍能救你一命。
  
 <返回/@Ask>
 
 [@randomteleport]
 #SAY
-随机传送卷是一张魔法符纸，可让你在同一张地图内
+RandomTeleport卷是一张魔法符纸，可让你在同一张地图内
 随机移动到另一处。例如你若在地下一层，使用它
 便会移动到该层的另一处。若处境危险但仍有药水，
 可用它脱困。
@@ -65,7 +65,7 @@ GOTO @Main-1
 
 [@repairoil]
 #SAY
-修理油能提升你手持武器的耐久，但它不能进行特殊修理，
+RepairOil能提升你手持武器的耐久，但它不能进行特殊修理，
 且武器的最大耐久会随时间下降。若你手中的武器并不昂贵，
 狩猎时偶尔用它修理，能让狩猎更持久。
  
@@ -73,7 +73,7 @@ GOTO @Main-1
 
 [@townteleport]
 #SAY
-回城卷如今已无法制作，因为古老的技艺已经失传……不过……
+TeleportHome如今已无法制作，因为古老的技艺已经失传……不过……
 我听说它可能从怪物身上随机掉落，使用后便能迅速返回村庄……
  
 <返回/@Ask>
@@ -84,13 +84,13 @@ GOTO @Main-1
 17
 
 [Trade]
-Candle
-Torch
-RandomTeleport
-镇Teleport
-DungeonEscape
+蜡烛
+火把
+随机传送
+镇传送
+地牢逃脱
 护符
-RepairOil
+修理油
 
 [Quests]
 42

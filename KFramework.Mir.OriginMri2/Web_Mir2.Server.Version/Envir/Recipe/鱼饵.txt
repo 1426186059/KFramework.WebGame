@@ -6,7 +6,7 @@ Gold 100
 [Tools]
 
 [Ingredients]
-虫Leg 10
+虫腿 10
 奥玛之牙 10
 虫眼 10
-虫Shell 10
+虫壳 10

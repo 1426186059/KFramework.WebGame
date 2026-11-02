@@ -21,5 +21,5 @@ Template.
 
 [@GoldReward]
 
-// Pickup - Teleport_Jason 0 292 216
-// Hand In - Teleport_Kyle 0 371 314
+// Pickup - 瞬息移动_Jason 0 292 216
+// Hand In - 瞬息移动_Kyle 0 371 314

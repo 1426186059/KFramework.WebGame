@@ -23,7 +23,7 @@ break
 
 [@checkorb]
 #IF
-CHECKITEM Admission珠 1
+CHECKITEM 入场珠 1
 #SAY
 （*风中传来轻微的低语：*）
 "你是队伍队长，你的队伍也在场，
@@ -36,9 +36,9 @@ CHECKITEM Admission珠 1
 
 [@pass]
 #IF
-CHECKITEM Admission珠 1
+CHECKITEM 入场珠 1
 #ACT
-TAKEITEM Admission珠 1
+TAKEITEM 入场珠 1
 GROUPTELEPORT FOX03 47 21
 break
 #ELSESAY

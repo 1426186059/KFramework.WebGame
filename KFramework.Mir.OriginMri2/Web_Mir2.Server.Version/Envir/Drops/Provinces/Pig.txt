@@ -27,8 +27,8 @@
 ;Ores
 
 ;肉
-1/5 Pork 
-1/10 Pork 
+1/5 猪肉 
+1/10 猪肉 
 
 ;Crafting Materials
 

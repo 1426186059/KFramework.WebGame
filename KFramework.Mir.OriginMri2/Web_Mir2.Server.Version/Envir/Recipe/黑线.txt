@@ -6,5 +6,5 @@ Gold 10
 [Tools]
 
 [Ingredients]
-蜘蛛Web 10
-虫Shell
+蜘蛛蛛网 10
+虫壳

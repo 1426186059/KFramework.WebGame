@@ -10,24 +10,24 @@
 1/1 特制魔法药
 1/1 特制金创药
 1/1 特制魔法药
-1/1 太阳药水(M)
-1/1 太阳药水(M)
-1/1 太阳药水(M)
-1/1 BenedictionOil
-1/2 BenedictionOil
+1/1 太阳药水(男)
+1/1 太阳药水(男)
+1/1 太阳药水(男)
+1/1 祝福油
+1/2 祝福油
 
 1/10 觉醒魂0
 
 
 ;Weapons
 1/900 冰封军刀
-1/900 Grim弓
-1/900 Conqueror矛
-1/900 Bastard剑
+1/900 严酷弓
+1/900 征服者矛
+1/900 浪人剑
 1/1100 黑虎锤
-1/1100 Lethal弓
+1/1100 致命弓
 1/1100 杖之莲
-1/1100 扇之Crane
+1/1100 扇之鹤
 1/1300 地狱阎罗刃
 
 ;Armour
@@ -36,26 +36,26 @@
 
 ;Helmets
 1/390 ApesCrown
-1/500 Sparkling盔
-1/520 盔之暗ness
+1/500 闪耀盔
+1/520 盔之暗黑
 1/460 PuiYuHelmet
 1/1450 BloodDragonHelmet
 
 ;Necklace
-1/155 邪Triangle
-1/155 CrossPurified
-1/155 Adamant项链
+1/155 邪三角
+1/155 净化十字
+1/155 精钢项链
 1/630 魔面具
-1/630 Violet珠
-1/630 KunroonTear
+1/630 紫珠
+1/630 昆伦之泪
 1/800 (H)魔面具
 1/800 (H)Violet珠
 1/800 (H)KunroonTear
 1/1550 BloodDragonNecklace
 
 ;Bracelets
-1/155 Wild泰坦护符
-1/155 Enchanted护符
+1/155 野泰坦护符
+1/155 附魔护符
 1/155 五元素护符
 1/600 WheelOfLunar
 1/800 (H)WheelOfLunar
@@ -63,10 +63,10 @@
 
 ;Rings
 1/155 魔红宝石戒
-1/155 邪Expel戒
+1/155 邪驱散戒
 1/155 金龙戒
 1/620 红魔戒
-1/620 Cloud戒
+1/620 云戒
 1/620 毒戒
 1/800 (H)红魔戒
 1/800 (H)Cloud戒
@@ -97,45 +97,45 @@
 
 ;Books
 ;;Warrior
-1/800 防护Field
-1/800 Rage
-1/800 Counter攻击
-1/800 SlashingBurst
-1/800 Fury
-1/900 ImmortalSkin
+1/800 防护场
+1/800 怒之煞
+1/800 反击
+1/800 逐日剑法
+1/800 狂怒
+1/900 金刚不坏
 
 ;;Wizard
-1/800 冰Thrust
-1/800 MeteorStrike
-1/800 魔法Booster
-1/900 暴Escape
-1/900 FastMove
+1/800 冰刺
+1/800 流星火雨
+1/800 魔法增益
+1/900 暴走
+1/900 疾步
 1/1500 LavaKing
 1/1550 FrozenRains
 
 ;;Taoist
-1/800 毒Cloud
-1/800 Reincarnation
-1/900 PetEnhancer
-1/900 Plague
-1/900 Energy盾
+1/800 毒云
+1/800 复活术
+1/900 宠物强化
+1/900 瘟疫术
+1/900 能量盾
 1/1650 HeadShot
 1/1800 HolyShield
 
 ;;Assassion
-1/800 SwiftFeet
-1/800 暗Body
-1/900 Hemorrhage
-1/900 月Mist
+1/800 疾风步
+1/800 暗身
+1/900 出血术
+1/900 月雾
 1/1650 FuryWaves
 1/1650 ShadowStep
 
 ;Archer
-1/800 毒Shot
-1/800 CrippleShot
+1/800 毒射
+1/800 致残射击
 1/900 召唤魅惑之蛇
-1/90 NapalmShot
-1/1650 OneWith自然
+1/90 燃烧射击
+1/1650 自然合一
 
 ;CraftingMaterials
 

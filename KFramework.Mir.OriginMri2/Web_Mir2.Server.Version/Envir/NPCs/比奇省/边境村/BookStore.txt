@@ -39,7 +39,7 @@ GOTO @Main-1
 等级  7: 基本剑术
 等级 15: 攻杀剑术
 等级 22: 刺杀剑术
-等级 26: 半月弯刀
+等级 26: Half月Scimitar
 等级 30: 野蛮冲撞
 等级 32: 双龙剑法
 等级 32: 擒龙手
@@ -120,7 +120,7 @@ GOTO @Main-1
 等级 37: 复活术
 等级 38: 召唤圣精灵
 等级 40: 诅咒术
-等级 43: 毒云术
+等级 43: 毒云术术
 等级 48: 天界护盾
 <返回/@helpbooks>
 
@@ -183,13 +183,13 @@ GOTO @Main-1
 20
 
 [Trade]
-Fencing
-Slaying
+基本剑术
+攻杀剑术
 火球
-Repulsion
-Healing
+抗拒火环
+治愈术
 之灵剑
-Fatal剑
-双Slash
-Focus
-StraightShot
+致命剑
+双斩
+专注
+直线射击

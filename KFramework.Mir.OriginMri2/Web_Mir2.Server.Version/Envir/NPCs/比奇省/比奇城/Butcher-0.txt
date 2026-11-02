@@ -15,7 +15,7 @@ GOTO @Main-1
 <出售/@Sell> 肉。
 <询问/@Meathelp> 如何获得肉。
 
-<关闭/@Exit>
+<关闭/@退出>
 
 [@Sell]
 #SAY

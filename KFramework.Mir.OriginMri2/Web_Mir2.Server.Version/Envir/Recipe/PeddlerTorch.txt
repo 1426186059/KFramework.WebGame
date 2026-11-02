@@ -8,5 +8,5 @@ Gold 100
 [Ingredients]
 红线
 骨头
-Candle
-RepairOil
+蜡烛
+修理油

@@ -4,11 +4,11 @@
 
 ;Potions
 1/2 太阳水 LV1 
-1/2 太阳药水(M) LV1
+1/2 太阳药水(男) LV1
 1/2 太阳水 LV1 
-1/2 太阳药水(M) LV1 
+1/2 太阳药水(男) LV1 
 1/2 太阳水 LV1 
-1/2 太阳药水(M) LV1 
+1/2 太阳药水(男) LV1 
 1/1 中金创药 LV1 
 1/1 中魔法药 LV1 
 1/1 大金创药 LV1 
@@ -17,12 +17,12 @@
 1/1 中魔法药 LV1 
 1/1 大金创药 LV1 
 1/1 大魔法药 LV1 
-1/30 Impact药(S) LV1 
-1/30 魔法药(S) LV1 
-1/30 道士药(S) LV1 
-1/30 风暴药(S) LV1 
-1/30 StaminaAid(S) LV1 
-1/30 魔法Aid(S) LV1
+1/30 冲击药(小) LV1 
+1/30 魔法药(小) LV1 
+1/30 道士药(小) LV1 
+1/30 风暴药(小) LV1 
+1/30 体力药剂(小) LV1 
+1/30 魔法辅助(小) LV1
 
 1/15 卷轴之印 LV1
 
@@ -33,21 +33,21 @@
 1/10 武侠剑 LV1
 1/10 钩矛 LV1 
 1/10 铁刃 LV1
-1/25 血Stealer剑 LV1
-1/10 Scimitar LV1
+1/25 血噬剑 LV1
+1/10 弯刀 LV1
 1/15 短剑剑 LV1
 
 ;Armours
-1/25 Medium甲(M) LV1 
-1/25 Medium甲(F) LV1 
-1/25 Heavy甲(M) LV1
-1/25 Heavy甲(F) LV1
-1/25 魂甲(M) LV1
-1/25 魂甲(F) LV1
-1/25 魔法袍(M) LV1
-1/25 魔法袍(F) LV1
-1/25 圣物甲(M) LV1
-1/25 圣物甲(F) LV1
+1/25 中甲(男) LV1 
+1/25 中甲(女) LV1 
+1/25 重甲(男) LV1
+1/25 重甲(女) LV1
+1/25 魂甲(男) LV1
+1/25 魂甲(女) LV1
+1/25 魔法袍(男) LV1
+1/25 魔法袍(女) LV1
+1/25 圣物甲(男) LV1
+1/25 圣物甲(女) LV1
 
 ;Helmets
 1/15 青铜盔 LV1 
@@ -58,23 +58,23 @@
 
 ;Necklaces
 1/25 蓝玉项链 LV1 
-1/25 ConvexLens LV1 
-1/25 BambooPipe LV1 
-1/6 Lantern项链 LV1 
+1/25 凸镜 LV1 
+1/25 竹笛 LV1 
+1/6 灯笼项链 LV1 
 1/6 虎项链 LV1 
 1/6 铂金项链 LV1 
-1/5 Naga项链 LV1 
-1/5 Amber项链 LV1 
-1/5 凤凰Bead LV1
+1/5 娜迦项链 LV1 
+1/5 琥珀项链 LV1 
+1/5 凤凰珠 LV1
 
 ;Bracelets
-1/30 死亡Gauntlet LV1 
+1/30 死亡护手 LV1 
 1/20 金手镯 LV1 
 1/6 乌木手镯 LV1 
-1/6 Monk手镯 LV1 
-1/6 Strain手镯 LV1 
+1/6 僧手镯 LV1 
+1/6 张力手镯 LV1 
 1/5 钢手镯 LV1 
-1/10 Hard手套 LV1 
+1/10 硬手套 LV1 
 1/10 魔法手镯 LV1 
 1/100 普通手套 LV1
 1/100 诺奇轮 LV1
@@ -82,8 +82,8 @@
 
 ;Rings
 1/10 金戒 LV1 
-1/10 Charm戒 LV1 
-1/10 Moral戒 LV1
+1/10 符戒 LV1 
+1/10 道德戒 LV1
 1/6 黑戒 LV1
 1/6 蛇眼戒 LV1 
 1/130 铂金戒 LV1
@@ -98,7 +98,7 @@
 
 ;Belts
 1/10 皮革腰带 LV1
-1/15 Chain腰带 LV1
+1/15 链腰带 LV1
 1/35 青铜腰带 LV1
 1/50 钢腰带 LV1
 
@@ -108,12 +108,12 @@
 1/45 黑靴 LV1
 
 ;Stones
-1/30 道术石(M) LV1
-1/65 道术石(L) LV1
-1/30 MC石(M) LV1
-1/65 MC石(L) LV1
-1/30 SC石(M) LV1
-1/65 SC石(L) LV1 
+1/30 道术石(男) LV1
+1/65 道术石(大) LV1
+1/30 魔石(男) LV1
+1/65 魔石(大) LV1
+1/30 道石(男) LV1
+1/65 道石(大) LV1 
 
 ;Gems
 1/250 勇气宝石 LV1
@@ -129,33 +129,33 @@
 1/350 暴宝石 LV1
 
 ;Books
-1/22 ShoulderDash LV1
+1/22 野蛮冲撞 LV1
 1/100 双生龙兽刃 LV1
-1/20 Entrapment LV1
+1/20 擒龙手 LV1
 1/25 烈焰剑 LV1
-1/400 CrossHalf月 LV1
+1/400 十字半月 LV1
 
-1/150 霜Crunch LV1
-1/100 Vampirism LV1
+1/150 冰咆哮 LV1
+1/100 嗜血术 LV1
 1/12 火墙 LV1
 1/25 魔法盾 LV1
 1/20 雷暴 LV1
-1/400 TurnUndead LV1
+1/400 圣言术 LV1
 
 1/50 陷阱 LV1
-1/12 EnergyRepulsor LV1
-1/20 陷阱Hexagon LV1
-1/25 Purification LV1
-1/450 Reincarnation LV1
+1/12 气功波 LV1
+1/20 陷阱六角 LV1
+1/25 净化术 LV1
+1/450 复活术 LV1
 1/100 召唤神兽 LV1
 1/300 召唤圣精灵 LV1
 
-1/12 FlashDash LV1
-1/25 Heavenly剑 LV1
+1/12 闪现 LV1
+1/25 天剑诀 LV1
 
-1/12 VampireShot LV1
+1/12 吸血射击 LV1
 1/25 召唤吸血蜘蛛 LV1
-1/100 BackStep LV1
+1/100 后撤步 LV1
 
 ;Level2
 ;Gold
@@ -163,11 +163,11 @@
 
 ;Potions
 1/2 太阳水 LV2 
-1/2 太阳药水(M) LV2
+1/2 太阳药水(男) LV2
 1/2 太阳水 LV2 
-1/2 太阳药水(M) LV2 
+1/2 太阳药水(男) LV2 
 1/2 太阳水 LV2 
-1/2 太阳药水(M) LV2 
+1/2 太阳药水(男) LV2 
 1/1 中金创药 LV2 
 1/1 中魔法药 LV2 
 1/1 大金创药 LV2 
@@ -176,12 +176,12 @@
 1/1 中魔法药 LV2 
 1/1 大金创药 LV2 
 1/1 大魔法药 LV2 
-1/30 Impact药(S) LV2 
-1/30 魔法药(S) LV2 
-1/30 道士药(S) LV2 
-1/30 风暴药(S) LV2 
-1/30 StaminaAid(S) LV2 
-1/30 魔法Aid(S) LV2
+1/30 冲击药(小) LV2 
+1/30 魔法药(小) LV2 
+1/30 道士药(小) LV2 
+1/30 风暴药(小) LV2 
+1/30 体力药剂(小) LV2 
+1/30 魔法辅助(小) LV2
 
 1/15 卷轴之印 LV2
 
@@ -192,21 +192,21 @@
 1/10 武侠剑 LV2
 1/10 钩矛 LV2 
 1/10 铁刃 LV2
-1/25 血Stealer剑 LV2
-1/10 Scimitar LV2
+1/25 血噬剑 LV2
+1/10 弯刀 LV2
 1/15 短剑剑 LV2
 
 ;Armours
-1/25 Medium甲(M) LV2 
-1/25 Medium甲(F) LV2 
-1/25 Heavy甲(M) LV2
-1/25 Heavy甲(F) LV2
-1/25 魂甲(M) LV2
-1/25 魂甲(F) LV2
-1/25 魔法袍(M) LV2
-1/25 魔法袍(F) LV2
-1/25 圣物甲(M) LV2
-1/25 圣物甲(F) LV2
+1/25 中甲(男) LV2 
+1/25 中甲(女) LV2 
+1/25 重甲(男) LV2
+1/25 重甲(女) LV2
+1/25 魂甲(男) LV2
+1/25 魂甲(女) LV2
+1/25 魔法袍(男) LV2
+1/25 魔法袍(女) LV2
+1/25 圣物甲(男) LV2
+1/25 圣物甲(女) LV2
 
 ;Helmets
 1/15 青铜盔 LV2 
@@ -217,23 +217,23 @@
 
 ;Necklaces
 1/25 蓝玉项链 LV2 
-1/25 ConvexLens LV2 
-1/25 BambooPipe LV2 
-1/6 Lantern项链 LV2 
+1/25 凸镜 LV2 
+1/25 竹笛 LV2 
+1/6 灯笼项链 LV2 
 1/6 虎项链 LV2 
 1/6 铂金项链 LV2 
-1/5 Naga项链 LV2 
-1/5 Amber项链 LV2 
-1/5 凤凰Bead LV2
+1/5 娜迦项链 LV2 
+1/5 琥珀项链 LV2 
+1/5 凤凰珠 LV2
 
 ;Bracelets
-1/30 死亡Gauntlet LV2 
+1/30 死亡护手 LV2 
 1/20 金手镯 LV2 
 1/6 乌木手镯 LV2 
-1/6 Monk手镯 LV2 
-1/6 Strain手镯 LV2 
+1/6 僧手镯 LV2 
+1/6 张力手镯 LV2 
 1/5 钢手镯 LV2 
-1/10 Hard手套 LV2 
+1/10 硬手套 LV2 
 1/10 魔法手镯 LV2 
 1/100 普通手套 LV2
 1/100 诺奇轮 LV2
@@ -241,8 +241,8 @@
 
 ;Rings
 1/10 金戒 LV2 
-1/10 Charm戒 LV2 
-1/10 Moral戒 LV2
+1/10 符戒 LV2 
+1/10 道德戒 LV2
 1/6 黑戒 LV2
 1/6 蛇眼戒 LV2 
 1/130 铂金戒 LV2
@@ -257,7 +257,7 @@
 
 ;Belts
 1/10 皮革腰带 LV2
-1/15 Chain腰带 LV2
+1/15 链腰带 LV2
 1/35 青铜腰带 LV2
 1/50 钢腰带 LV2
 
@@ -267,12 +267,12 @@
 1/45 黑靴 LV2
 
 ;Stones
-1/30 道术石(M) LV2
-1/65 道术石(L) LV2
-1/30 MC石(M) LV2
-1/65 MC石(L) LV2
-1/30 SC石(M) LV2
-1/65 SC石(L) LV2 
+1/30 道术石(男) LV2
+1/65 道术石(大) LV2
+1/30 魔石(男) LV2
+1/65 魔石(大) LV2
+1/30 道石(男) LV2
+1/65 道石(大) LV2 
 
 ;Gems
 1/250 勇气宝石 LV2
@@ -288,34 +288,34 @@
 1/350 暴宝石 LV2
 
 ;Books
-1/22 ShoulderDash LV2
+1/22 野蛮冲撞 LV2
 1/100 双生龙兽刃 LV2
-1/20 Entrapment LV2
+1/20 擒龙手 LV2
 1/25 烈焰剑 LV2
-1/400 CrossHalf月 LV2
+1/400 十字半月 LV2
 
-1/150 霜Crunch LV2
-1/100 Vampirism LV2
+1/150 冰咆哮 LV2
+1/100 嗜血术 LV2
 1/12 火墙 LV2
 1/25 魔法盾 LV2
 1/20 雷暴 LV2
-1/400 TurnUndead LV2
+1/400 圣言术 LV2
 
 1/50 陷阱 LV2
-1/12 EnergyRepulsor LV2
-1/20 陷阱Hexagon LV2
-1/25 Purification LV2
-1/450 Reincarnation LV2
+1/12 气功波 LV2
+1/20 陷阱六角 LV2
+1/25 净化术 LV2
+1/450 复活术 LV2
 1/100 召唤神兽 LV2
 1/300 召唤圣精灵 LV2
 
-1/12 FlashDash LV2
-1/25 Heavenly剑 LV2
+1/12 闪现 LV2
+1/25 天剑诀 LV2
 
 
-1/12 VampireShot LV2
+1/12 吸血射击 LV2
 1/25 召唤吸血蜘蛛 LV2
-1/100 BackStep LV2
+1/100 后撤步 LV2
 
 
 ;Level3
@@ -324,11 +324,11 @@
 
 ;Potions
 1/2 太阳水 LV3 
-1/2 太阳药水(M) LV3
+1/2 太阳药水(男) LV3
 1/2 太阳水 LV3 
-1/2 太阳药水(M) LV3 
+1/2 太阳药水(男) LV3 
 1/2 太阳水 LV3 
-1/2 太阳药水(M) LV3 
+1/2 太阳药水(男) LV3 
 1/1 中金创药 LV3 
 1/1 中魔法药 LV3 
 1/1 大金创药 LV3 
@@ -337,12 +337,12 @@
 1/1 中魔法药 LV3 
 1/1 大金创药 LV3 
 1/1 大魔法药 LV3 
-1/30 Impact药(S) LV3 
-1/30 魔法药(S) LV3 
-1/30 道士药(S) LV3 
-1/30 风暴药(S) LV3 
-1/30 StaminaAid(S) LV3 
-1/30 魔法Aid(S) LV3
+1/30 冲击药(小) LV3 
+1/30 魔法药(小) LV3 
+1/30 道士药(小) LV3 
+1/30 风暴药(小) LV3 
+1/30 体力药剂(小) LV3 
+1/30 魔法辅助(小) LV3
 
 1/15 卷轴之印 LV3
 
@@ -353,21 +353,21 @@
 1/10 武侠剑 LV3
 1/10 钩矛 LV3 
 1/10 铁刃 LV3
-1/25 血Stealer剑 LV3
-1/10 Scimitar LV3
+1/25 血噬剑 LV3
+1/10 弯刀 LV3
 1/15 短剑剑 LV3
 
 ;Armours
-1/25 Medium甲(M) LV3 
-1/25 Medium甲(F) LV3 
-1/25 Heavy甲(M) LV3
-1/25 Heavy甲(F) LV3
-1/25 魂甲(M) LV3
-1/25 魂甲(F) LV3
-1/25 魔法袍(M) LV3
-1/25 魔法袍(F) LV3
-1/25 圣物甲(M) LV3
-1/25 圣物甲(F) LV3
+1/25 中甲(男) LV3 
+1/25 中甲(女) LV3 
+1/25 重甲(男) LV3
+1/25 重甲(女) LV3
+1/25 魂甲(男) LV3
+1/25 魂甲(女) LV3
+1/25 魔法袍(男) LV3
+1/25 魔法袍(女) LV3
+1/25 圣物甲(男) LV3
+1/25 圣物甲(女) LV3
 
 ;Helmets
 1/15 青铜盔 LV3 
@@ -378,23 +378,23 @@
 
 ;Necklaces
 1/25 蓝玉项链 LV3 
-1/25 ConvexLens LV3 
-1/25 BambooPipe LV3 
-1/6 Lantern项链 LV3 
+1/25 凸镜 LV3 
+1/25 竹笛 LV3 
+1/6 灯笼项链 LV3 
 1/6 虎项链 LV3 
 1/6 铂金项链 LV3 
-1/5 Naga项链 LV3 
-1/5 Amber项链 LV3 
-1/5 凤凰Bead LV3
+1/5 娜迦项链 LV3 
+1/5 琥珀项链 LV3 
+1/5 凤凰珠 LV3
 
 ;Bracelets
-1/30 死亡Gauntlet LV3 
+1/30 死亡护手 LV3 
 1/20 金手镯 LV3 
 1/6 乌木手镯 LV3 
-1/6 Monk手镯 LV3 
-1/6 Strain手镯 LV3 
+1/6 僧手镯 LV3 
+1/6 张力手镯 LV3 
 1/5 钢手镯 LV3 
-1/10 Hard手套 LV3 
+1/10 硬手套 LV3 
 1/10 魔法手镯 LV3 
 1/100 普通手套 LV3
 1/100 诺奇轮 LV3
@@ -402,8 +402,8 @@
 
 ;Rings
 1/10 金戒 LV3 
-1/10 Charm戒 LV3 
-1/10 Moral戒 LV3
+1/10 符戒 LV3 
+1/10 道德戒 LV3
 1/6 黑戒 LV3
 1/6 蛇眼戒 LV3 
 1/130 铂金戒 LV3
@@ -418,7 +418,7 @@
 
 ;Belts
 1/10 皮革腰带 LV3
-1/15 Chain腰带 LV3
+1/15 链腰带 LV3
 1/35 青铜腰带 LV3
 1/50 钢腰带 LV3
 
@@ -428,12 +428,12 @@
 1/45 黑靴 LV3
 
 ;Stones
-1/30 道术石(M) LV3
-1/65 道术石(L) LV3
-1/30 MC石(M) LV3
-1/65 MC石(L) LV3
-1/30 SC石(M) LV3
-1/65 SC石(L) LV3 
+1/30 道术石(男) LV3
+1/65 道术石(大) LV3
+1/30 魔石(男) LV3
+1/65 魔石(大) LV3
+1/30 道石(男) LV3
+1/65 道石(大) LV3 
 
 ;Gems
 1/250 勇气宝石 LV3
@@ -449,33 +449,33 @@
 1/350 暴宝石 LV3
 
 ;Books
-1/22 ShoulderDash LV3
+1/22 野蛮冲撞 LV3
 1/100 双生龙兽刃 LV3
-1/20 Entrapment LV3
+1/20 擒龙手 LV3
 1/25 烈焰剑 LV3
-1/400 CrossHalf月 LV3
+1/400 十字半月 LV3
 
-1/150 霜Crunch LV3
-1/100 Vampirism LV3
+1/150 冰咆哮 LV3
+1/100 嗜血术 LV3
 1/12 火墙 LV3
 1/25 魔法盾 LV3
 1/20 雷暴 LV3
-1/400 TurnUndead LV3
+1/400 圣言术 LV3
 
 1/50 陷阱 LV3
-1/12 EnergyRepulsor LV3
-1/20 陷阱Hexagon LV3
-1/25 Purification LV3
-1/450 Reincarnation LV3
+1/12 气功波 LV3
+1/20 陷阱六角 LV3
+1/25 净化术 LV3
+1/450 复活术 LV3
 1/100 召唤神兽 LV3
 1/300 召唤圣精灵 LV3
 
-1/12 FlashDash LV3
-1/25 Heavenly剑 LV3
+1/12 闪现 LV3
+1/25 天剑诀 LV3
 
-1/12 VampireShot LV3
+1/12 吸血射击 LV3
 1/25 召唤吸血蜘蛛 LV3
-1/100 BackStep LV3
+1/100 后撤步 LV3
 
 ;Level4
 ;Gold
@@ -483,11 +483,11 @@
 
 ;Potions
 1/2 太阳水 LV4 
-1/2 太阳药水(M) LV4
+1/2 太阳药水(男) LV4
 1/2 太阳水 LV4 
-1/2 太阳药水(M) LV4 
+1/2 太阳药水(男) LV4 
 1/2 太阳水 LV4 
-1/2 太阳药水(M) LV4 
+1/2 太阳药水(男) LV4 
 1/1 中金创药 LV4 
 1/1 中魔法药 LV4 
 1/1 大金创药 LV4 
@@ -496,12 +496,12 @@
 1/1 中魔法药 LV4 
 1/1 大金创药 LV4 
 1/1 大魔法药 LV4 
-1/30 Impact药(S) LV4 
-1/30 魔法药(S) LV4 
-1/30 道士药(S) LV4 
-1/30 风暴药(S) LV4 
-1/30 StaminaAid(S) LV4 
-1/30 魔法Aid(S) LV4
+1/30 冲击药(小) LV4 
+1/30 魔法药(小) LV4 
+1/30 道士药(小) LV4 
+1/30 风暴药(小) LV4 
+1/30 体力药剂(小) LV4 
+1/30 魔法辅助(小) LV4
 
 1/15 卷轴之印 LV4
 
@@ -512,21 +512,21 @@
 1/10 武侠剑 LV4
 1/10 钩矛 LV4 
 1/10 铁刃 LV4
-1/25 血Stealer剑 LV4
-1/10 Scimitar LV4
+1/25 血噬剑 LV4
+1/10 弯刀 LV4
 1/15 短剑剑 LV4
 
 ;Armours
-1/25 Medium甲(M) LV4 
-1/25 Medium甲(F) LV4 
-1/25 Heavy甲(M) LV4
-1/25 Heavy甲(F) LV4
-1/25 魂甲(M) LV4
-1/25 魂甲(F) LV4
-1/25 魔法袍(M) LV4
-1/25 魔法袍(F) LV4
-1/25 圣物甲(M) LV4
-1/25 圣物甲(F) LV4
+1/25 中甲(男) LV4 
+1/25 中甲(女) LV4 
+1/25 重甲(男) LV4
+1/25 重甲(女) LV4
+1/25 魂甲(男) LV4
+1/25 魂甲(女) LV4
+1/25 魔法袍(男) LV4
+1/25 魔法袍(女) LV4
+1/25 圣物甲(男) LV4
+1/25 圣物甲(女) LV4
 
 ;Helmets
 1/15 青铜盔 LV4 
@@ -537,23 +537,23 @@
 
 ;Necklaces
 1/25 蓝玉项链 LV4 
-1/25 ConvexLens LV4 
-1/25 BambooPipe LV4 
-1/6 Lantern项链 LV4 
+1/25 凸镜 LV4 
+1/25 竹笛 LV4 
+1/6 灯笼项链 LV4 
 1/6 虎项链 LV4 
 1/6 铂金项链 LV4 
-1/5 Naga项链 LV4 
-1/5 Amber项链 LV4 
-1/5 凤凰Bead LV4
+1/5 娜迦项链 LV4 
+1/5 琥珀项链 LV4 
+1/5 凤凰珠 LV4
 
 ;Bracelets
-1/30 死亡Gauntlet LV4 
+1/30 死亡护手 LV4 
 1/20 金手镯 LV4 
 1/6 乌木手镯 LV4 
-1/6 Monk手镯 LV4 
-1/6 Strain手镯 LV4 
+1/6 僧手镯 LV4 
+1/6 张力手镯 LV4 
 1/5 钢手镯 LV4 
-1/10 Hard手套 LV4 
+1/10 硬手套 LV4 
 1/10 魔法手镯 LV4 
 1/100 普通手套 LV4
 1/100 诺奇轮 LV4
@@ -561,8 +561,8 @@
 
 ;Rings
 1/10 金戒 LV4 
-1/10 Charm戒 LV4 
-1/10 Moral戒 LV4
+1/10 符戒 LV4 
+1/10 道德戒 LV4
 1/6 黑戒 LV4
 1/6 蛇眼戒 LV4 
 1/130 铂金戒 LV4
@@ -577,7 +577,7 @@
 
 ;Belts
 1/10 皮革腰带 LV4
-1/15 Chain腰带 LV4
+1/15 链腰带 LV4
 1/35 青铜腰带 LV4
 1/50 钢腰带 LV4
 
@@ -587,12 +587,12 @@
 1/45 黑靴 LV4
 
 ;Stones
-1/30 道术石(M) LV4
-1/65 道术石(L) LV4
-1/30 MC石(M) LV4
-1/65 MC石(L) LV4
-1/30 SC石(M) LV4
-1/65 SC石(L) LV4 
+1/30 道术石(男) LV4
+1/65 道术石(大) LV4
+1/30 魔石(男) LV4
+1/65 魔石(大) LV4
+1/30 道石(男) LV4
+1/65 道石(大) LV4 
 
 ;Gems
 1/250 勇气宝石 LV4
@@ -608,33 +608,33 @@
 1/350 暴宝石 LV4
 
 ;Books
-1/22 ShoulderDash LV4
+1/22 野蛮冲撞 LV4
 1/100 双生龙兽刃 LV4
-1/20 Entrapment LV4
+1/20 擒龙手 LV4
 1/25 烈焰剑 LV4
-1/400 CrossHalf月 LV4
+1/400 十字半月 LV4
 
-1/150 霜Crunch LV4
-1/100 Vampirism LV4
+1/150 冰咆哮 LV4
+1/100 嗜血术 LV4
 1/12 火墙 LV4
 1/25 魔法盾 LV4
 1/20 雷暴 LV4
-1/400 TurnUndead LV4
+1/400 圣言术 LV4
 
 1/50 陷阱 LV4
-1/12 EnergyRepulsor LV4
-1/20 陷阱Hexagon LV4
-1/25 Purification LV4
-1/450 Reincarnation LV4
+1/12 气功波 LV4
+1/20 陷阱六角 LV4
+1/25 净化术 LV4
+1/450 复活术 LV4
 1/100 召唤神兽 LV4
 1/300 召唤圣精灵 LV4
 
-1/12 FlashDash LV4
-1/25 Heavenly剑 LV4
+1/12 闪现 LV4
+1/25 天剑诀 LV4
 
-1/12 VampireShot LV4
+1/12 吸血射击 LV4
 1/25 召唤吸血蜘蛛 LV4
-1/100 BackStep LV4
+1/100 后撤步 LV4
 
 ;Level5
 ;Gold
@@ -642,11 +642,11 @@
 
 ;Potions
 1/2 太阳水 LV5 
-1/2 太阳药水(M) LV5
+1/2 太阳药水(男) LV5
 1/2 太阳水 LV5 
-1/2 太阳药水(M) LV5 
+1/2 太阳药水(男) LV5 
 1/2 太阳水 LV5 
-1/2 太阳药水(M) LV5 
+1/2 太阳药水(男) LV5 
 1/1 中金创药 LV5 
 1/1 中魔法药 LV5 
 1/1 大金创药 LV5 
@@ -655,12 +655,12 @@
 1/1 中魔法药 LV5 
 1/1 大金创药 LV5 
 1/1 大魔法药 LV5 
-1/30 Impact药(S) LV5 
-1/30 魔法药(S) LV5 
-1/30 道士药(S) LV5 
-1/30 风暴药(S) LV5 
-1/30 StaminaAid(S) LV5 
-1/30 魔法Aid(S) LV5
+1/30 冲击药(小) LV5 
+1/30 魔法药(小) LV5 
+1/30 道士药(小) LV5 
+1/30 风暴药(小) LV5 
+1/30 体力药剂(小) LV5 
+1/30 魔法辅助(小) LV5
 
 1/15 卷轴之印 LV5
 
@@ -671,21 +671,21 @@
 1/10 武侠剑 LV5
 1/10 钩矛 LV5 
 1/10 铁刃 LV5
-1/25 血Stealer剑 LV5
-1/10 Scimitar LV5
+1/25 血噬剑 LV5
+1/10 弯刀 LV5
 1/15 短剑剑 LV5
 
 ;Armours
-1/25 Medium甲(M) LV5 
-1/25 Medium甲(F) LV5 
-1/25 Heavy甲(M) LV5
-1/25 Heavy甲(F) LV5
-1/25 魂甲(M) LV5
-1/25 魂甲(F) LV5
-1/25 魔法袍(M) LV5
-1/25 魔法袍(F) LV5
-1/25 圣物甲(M) LV5
-1/25 圣物甲(F) LV5
+1/25 中甲(男) LV5 
+1/25 中甲(女) LV5 
+1/25 重甲(男) LV5
+1/25 重甲(女) LV5
+1/25 魂甲(男) LV5
+1/25 魂甲(女) LV5
+1/25 魔法袍(男) LV5
+1/25 魔法袍(女) LV5
+1/25 圣物甲(男) LV5
+1/25 圣物甲(女) LV5
 
 ;Helmets
 1/15 青铜盔 LV5 
@@ -696,23 +696,23 @@
 
 ;Necklaces
 1/25 蓝玉项链 LV5 
-1/25 ConvexLens LV5 
-1/25 BambooPipe LV5 
-1/6 Lantern项链 LV5 
+1/25 凸镜 LV5 
+1/25 竹笛 LV5 
+1/6 灯笼项链 LV5 
 1/6 虎项链 LV5 
 1/6 铂金项链 LV5 
-1/5 Naga项链 LV5 
-1/5 Amber项链 LV5 
-1/5 凤凰Bead LV5
+1/5 娜迦项链 LV5 
+1/5 琥珀项链 LV5 
+1/5 凤凰珠 LV5
 
 ;Bracelets
-1/30 死亡Gauntlet LV5 
+1/30 死亡护手 LV5 
 1/20 金手镯 LV5 
 1/6 乌木手镯 LV5 
-1/6 Monk手镯 LV5 
-1/6 Strain手镯 LV5 
+1/6 僧手镯 LV5 
+1/6 张力手镯 LV5 
 1/5 钢手镯 LV5 
-1/10 Hard手套 LV5 
+1/10 硬手套 LV5 
 1/10 魔法手镯 LV5 
 1/100 普通手套 LV5
 1/100 诺奇轮 LV5
@@ -720,8 +720,8 @@
 
 ;Rings
 1/10 金戒 LV5 
-1/10 Charm戒 LV5 
-1/10 Moral戒 LV5
+1/10 符戒 LV5 
+1/10 道德戒 LV5
 1/6 黑戒 LV5
 1/6 蛇眼戒 LV5 
 1/130 铂金戒 LV5
@@ -736,7 +736,7 @@
 
 ;Belts
 1/10 皮革腰带 LV5
-1/15 Chain腰带 LV5
+1/15 链腰带 LV5
 1/35 青铜腰带 LV5
 1/50 钢腰带 LV5
 
@@ -746,12 +746,12 @@
 1/45 黑靴 LV5
 
 ;Stones
-1/30 道术石(M) LV5
-1/65 道术石(L) LV5
-1/30 MC石(M) LV5
-1/65 MC石(L) LV5
-1/30 SC石(M) LV5
-1/65 SC石(L) LV5 
+1/30 道术石(男) LV5
+1/65 道术石(大) LV5
+1/30 魔石(男) LV5
+1/65 魔石(大) LV5
+1/30 道石(男) LV5
+1/65 道石(大) LV5 
 
 ;Gems
 1/250 勇气宝石 LV5
@@ -767,33 +767,33 @@
 1/350 暴宝石 LV5
 
 ;Books
-1/22 ShoulderDash LV5
+1/22 野蛮冲撞 LV5
 1/100 双生龙兽刃 LV5
-1/20 Entrapment LV5
+1/20 擒龙手 LV5
 1/25 烈焰剑 LV5
-1/400 CrossHalf月 LV5
+1/400 十字半月 LV5
 
-1/150 霜Crunch LV5
-1/100 Vampirism LV5
+1/150 冰咆哮 LV5
+1/100 嗜血术 LV5
 1/12 火墙 LV5
 1/25 魔法盾 LV5
 1/20 雷暴 LV5
-1/400 TurnUndead LV5
+1/400 圣言术 LV5
 
 1/50 陷阱 LV5
-1/12 EnergyRepulsor LV5
-1/20 陷阱Hexagon LV5
-1/25 Purification LV5
-1/450 Reincarnation LV5
+1/12 气功波 LV5
+1/20 陷阱六角 LV5
+1/25 净化术 LV5
+1/450 复活术 LV5
 1/100 召唤神兽 LV5
 1/300 召唤圣精灵 LV5
 
-1/12 FlashDash LV5
-1/25 Heavenly剑 LV5
+1/12 闪现 LV5
+1/25 天剑诀 LV5
 
-1/12 VampireShot LV5
+1/12 吸血射击 LV5
 1/25 召唤吸血蜘蛛 LV5
-1/100 BackStep LV5
+1/100 后撤步 LV5
 
 
 ;Level6
@@ -802,11 +802,11 @@
 
 ;Potions
 1/2 太阳水 LV6 
-1/2 太阳药水(M) LV6
+1/2 太阳药水(男) LV6
 1/2 太阳水 LV6 
-1/2 太阳药水(M) LV6 
+1/2 太阳药水(男) LV6 
 1/2 太阳水 LV6 
-1/2 太阳药水(M) LV6 
+1/2 太阳药水(男) LV6 
 1/1 中金创药 LV6 
 1/1 中魔法药 LV6 
 1/1 大金创药 LV6 
@@ -815,12 +815,12 @@
 1/1 中魔法药 LV6 
 1/1 大金创药 LV6 
 1/1 大魔法药 LV6 
-1/30 Impact药(S) LV6 
-1/30 魔法药(S) LV6 
-1/30 道士药(S) LV6 
-1/30 风暴药(S) LV6 
-1/30 StaminaAid(S) LV6 
-1/30 魔法Aid(S) LV6
+1/30 冲击药(小) LV6 
+1/30 魔法药(小) LV6 
+1/30 道士药(小) LV6 
+1/30 风暴药(小) LV6 
+1/30 体力药剂(小) LV6 
+1/30 魔法辅助(小) LV6
 
 1/15 卷轴之印 LV6
 
@@ -831,21 +831,21 @@
 1/10 武侠剑 LV6
 1/10 钩矛 LV6 
 1/10 铁刃 LV6
-1/25 血Stealer剑 LV6
-1/10 Scimitar LV6
+1/25 血噬剑 LV6
+1/10 弯刀 LV6
 1/15 短剑剑 LV6
 
 ;Armours
-1/25 Medium甲(M) LV6 
-1/25 Medium甲(F) LV6 
-1/25 Heavy甲(M) LV6
-1/25 Heavy甲(F) LV6
-1/25 魂甲(M) LV6
-1/25 魂甲(F) LV6
-1/25 魔法袍(M) LV6
-1/25 魔法袍(F) LV6
-1/25 圣物甲(M) LV6
-1/25 圣物甲(F) LV6
+1/25 中甲(男) LV6 
+1/25 中甲(女) LV6 
+1/25 重甲(男) LV6
+1/25 重甲(女) LV6
+1/25 魂甲(男) LV6
+1/25 魂甲(女) LV6
+1/25 魔法袍(男) LV6
+1/25 魔法袍(女) LV6
+1/25 圣物甲(男) LV6
+1/25 圣物甲(女) LV6
 
 ;Helmets
 1/15 青铜盔 LV6 
@@ -856,23 +856,23 @@
 
 ;Necklaces
 1/25 蓝玉项链 LV6 
-1/25 ConvexLens LV6 
-1/25 BambooPipe LV6 
-1/6 Lantern项链 LV6 
+1/25 凸镜 LV6 
+1/25 竹笛 LV6 
+1/6 灯笼项链 LV6 
 1/6 虎项链 LV6 
 1/6 铂金项链 LV6 
-1/5 Naga项链 LV6 
-1/5 Amber项链 LV6 
-1/5 凤凰Bead LV6
+1/5 娜迦项链 LV6 
+1/5 琥珀项链 LV6 
+1/5 凤凰珠 LV6
 
 ;Bracelets
-1/30 死亡Gauntlet LV6 
+1/30 死亡护手 LV6 
 1/20 金手镯 LV6 
 1/6 乌木手镯 LV6 
-1/6 Monk手镯 LV6 
-1/6 Strain手镯 LV6 
+1/6 僧手镯 LV6 
+1/6 张力手镯 LV6 
 1/5 钢手镯 LV6 
-1/10 Hard手套 LV6 
+1/10 硬手套 LV6 
 1/10 魔法手镯 LV6 
 1/100 普通手套 LV6
 1/100 诺奇轮 LV6
@@ -880,8 +880,8 @@
 
 ;Rings
 1/10 金戒 LV6 
-1/10 Charm戒 LV6 
-1/10 Moral戒 LV6
+1/10 符戒 LV6 
+1/10 道德戒 LV6
 1/6 黑戒 LV6
 1/6 蛇眼戒 LV6 
 1/130 铂金戒 LV6
@@ -896,7 +896,7 @@
 
 ;Belts
 1/10 皮革腰带 LV6
-1/15 Chain腰带 LV6
+1/15 链腰带 LV6
 1/35 青铜腰带 LV6
 1/50 钢腰带 LV6
 
@@ -906,12 +906,12 @@
 1/45 黑靴 LV6
 
 ;Stones
-1/30 道术石(M) LV6
-1/65 道术石(L) LV6
-1/30 MC石(M) LV6
-1/65 MC石(L) LV6
-1/30 SC石(M) LV6
-1/65 SC石(L) LV6 
+1/30 道术石(男) LV6
+1/65 道术石(大) LV6
+1/30 魔石(男) LV6
+1/65 魔石(大) LV6
+1/30 道石(男) LV6
+1/65 道石(大) LV6 
 
 ;Gems
 1/250 勇气宝石 LV6
@@ -927,34 +927,34 @@
 1/350 暴宝石 LV6
 
 ;Books
-1/22 ShoulderDash LV6
+1/22 野蛮冲撞 LV6
 1/100 双生龙兽刃 LV6
-1/20 Entrapment LV6
+1/20 擒龙手 LV6
 1/25 烈焰剑 LV6
-1/400 CrossHalf月 LV6
+1/400 十字半月 LV6
 
-1/150 霜Crunch LV6
-1/100 Vampirism LV6
+1/150 冰咆哮 LV6
+1/100 嗜血术 LV6
 1/12 火墙 LV6
 1/25 魔法盾 LV6
 1/20 雷暴 LV6
-1/400 TurnUndead LV6
+1/400 圣言术 LV6
 
 1/50 陷阱 LV6
-1/12 EnergyRepulsor LV6
-1/20 陷阱Hexagon LV6
-1/25 Purification LV6
-1/450 Reincarnation LV6
+1/12 气功波 LV6
+1/20 陷阱六角 LV6
+1/25 净化术 LV6
+1/450 复活术 LV6
 1/100 召唤神兽 LV6
 1/300 召唤圣精灵 LV6
 
-1/12 FlashDash LV6
-1/25 Heavenly剑 LV6
+1/12 闪现 LV6
+1/25 天剑诀 LV6
 
 
-1/12 VampireShot LV6
+1/12 吸血射击 LV6
 1/25 召唤吸血蜘蛛 LV6
-1/100 BackStep LV6
+1/100 后撤步 LV6
 
 
 ;Level7
@@ -963,11 +963,11 @@
 
 ;Potions
 1/2 太阳水 LV7 
-1/2 太阳药水(M) LV7
+1/2 太阳药水(男) LV7
 1/2 太阳水 LV7 
-1/2 太阳药水(M) LV7 
+1/2 太阳药水(男) LV7 
 1/2 太阳水 LV7 
-1/2 太阳药水(M) LV7 
+1/2 太阳药水(男) LV7 
 1/1 中金创药 LV7 
 1/1 中魔法药 LV7 
 1/1 大金创药 LV7 
@@ -976,12 +976,12 @@
 1/1 中魔法药 LV7 
 1/1 大金创药 LV7 
 1/1 大魔法药 LV7 
-1/30 Impact药(S) LV7 
-1/30 魔法药(S) LV7 
-1/30 道士药(S) LV7 
-1/30 风暴药(S) LV7 
-1/30 StaminaAid(S) LV7 
-1/30 魔法Aid(S) LV7
+1/30 冲击药(小) LV7 
+1/30 魔法药(小) LV7 
+1/30 道士药(小) LV7 
+1/30 风暴药(小) LV7 
+1/30 体力药剂(小) LV7 
+1/30 魔法辅助(小) LV7
 
 1/15 卷轴之印 LV7
 
@@ -992,21 +992,21 @@
 1/10 武侠剑 LV7
 1/10 钩矛 LV7 
 1/10 铁刃 LV7
-1/25 血Stealer剑 LV7
-1/10 Scimitar LV7
+1/25 血噬剑 LV7
+1/10 弯刀 LV7
 1/15 短剑剑 LV7
 
 ;Armours
-1/25 Medium甲(M) LV7 
-1/25 Medium甲(F) LV7 
-1/25 Heavy甲(M) LV7
-1/25 Heavy甲(F) LV7
-1/25 魂甲(M) LV7
-1/25 魂甲(F) LV7
-1/25 魔法袍(M) LV7
-1/25 魔法袍(F) LV7
-1/25 圣物甲(M) LV7
-1/25 圣物甲(F) LV7
+1/25 中甲(男) LV7 
+1/25 中甲(女) LV7 
+1/25 重甲(男) LV7
+1/25 重甲(女) LV7
+1/25 魂甲(男) LV7
+1/25 魂甲(女) LV7
+1/25 魔法袍(男) LV7
+1/25 魔法袍(女) LV7
+1/25 圣物甲(男) LV7
+1/25 圣物甲(女) LV7
 
 ;Helmets
 1/15 青铜盔 LV7 
@@ -1017,23 +1017,23 @@
 
 ;Necklaces
 1/25 蓝玉项链 LV7 
-1/25 ConvexLens LV7 
-1/25 BambooPipe LV7 
-1/6 Lantern项链 LV7 
+1/25 凸镜 LV7 
+1/25 竹笛 LV7 
+1/6 灯笼项链 LV7 
 1/6 虎项链 LV7 
 1/6 铂金项链 LV7 
-1/5 Naga项链 LV7 
-1/5 Amber项链 LV7 
-1/5 凤凰Bead LV7
+1/5 娜迦项链 LV7 
+1/5 琥珀项链 LV7 
+1/5 凤凰珠 LV7
 
 ;Bracelets
-1/30 死亡Gauntlet LV7 
+1/30 死亡护手 LV7 
 1/20 金手镯 LV7 
 1/6 乌木手镯 LV7 
-1/6 Monk手镯 LV7 
-1/6 Strain手镯 LV7 
+1/6 僧手镯 LV7 
+1/6 张力手镯 LV7 
 1/5 钢手镯 LV7 
-1/10 Hard手套 LV7 
+1/10 硬手套 LV7 
 1/10 魔法手镯 LV7 
 1/100 普通手套 LV7
 1/100 诺奇轮 LV7
@@ -1041,8 +1041,8 @@
 
 ;Rings
 1/10 金戒 LV7 
-1/10 Charm戒 LV7 
-1/10 Moral戒 LV7
+1/10 符戒 LV7 
+1/10 道德戒 LV7
 1/6 黑戒 LV7
 1/6 蛇眼戒 LV7 
 1/130 铂金戒 LV7
@@ -1057,7 +1057,7 @@
 
 ;Belts
 1/10 皮革腰带 LV7
-1/15 Chain腰带 LV7
+1/15 链腰带 LV7
 1/35 青铜腰带 LV7
 1/50 钢腰带 LV7
 
@@ -1067,12 +1067,12 @@
 1/45 黑靴 LV7
 
 ;Stones
-1/30 道术石(M) LV7
-1/65 道术石(L) LV7
-1/30 MC石(M) LV7
-1/65 MC石(L) LV7
-1/30 SC石(M) LV7
-1/65 SC石(L) LV7 
+1/30 道术石(男) LV7
+1/65 道术石(大) LV7
+1/30 魔石(男) LV7
+1/65 魔石(大) LV7
+1/30 道石(男) LV7
+1/65 道石(大) LV7 
 
 ;Gems
 1/250 勇气宝石 LV7
@@ -1088,33 +1088,33 @@
 1/350 暴宝石 LV7
 
 ;Books
-1/22 ShoulderDash LV7
+1/22 野蛮冲撞 LV7
 1/100 双生龙兽刃 LV7
-1/20 Entrapment LV7
+1/20 擒龙手 LV7
 1/25 烈焰剑 LV7
-1/400 CrossHalf月 LV7
+1/400 十字半月 LV7
 
-1/150 霜Crunch LV7
-1/100 Vampirism LV7
+1/150 冰咆哮 LV7
+1/100 嗜血术 LV7
 1/12 火墙 LV7
 1/25 魔法盾 LV7
 1/20 雷暴 LV7
-1/400 TurnUndead LV7
+1/400 圣言术 LV7
 
 1/50 陷阱 LV7
-1/12 EnergyRepulsor LV7
-1/20 陷阱Hexagon LV7
-1/25 Purification LV7
-1/450 Reincarnation LV7
+1/12 气功波 LV7
+1/20 陷阱六角 LV7
+1/25 净化术 LV7
+1/450 复活术 LV7
 1/100 召唤神兽 LV7
 1/300 召唤圣精灵 LV7
 
-1/12 FlashDash LV7
-1/25 Heavenly剑 LV7
+1/12 闪现 LV7
+1/25 天剑诀 LV7
 
-1/12 VampireShot LV7
+1/12 吸血射击 LV7
 1/25 召唤吸血蜘蛛 LV7
-1/100 BackStep LV7
+1/100 后撤步 LV7
 
 
 ;Level8
@@ -1123,11 +1123,11 @@
 
 ;Potions
 1/2 太阳水 LV8 
-1/2 太阳药水(M) LV8
+1/2 太阳药水(男) LV8
 1/2 太阳水 LV8 
-1/2 太阳药水(M) LV8 
+1/2 太阳药水(男) LV8 
 1/2 太阳水 LV8 
-1/2 太阳药水(M) LV8 
+1/2 太阳药水(男) LV8 
 1/1 中金创药 LV8 
 1/1 中魔法药 LV8 
 1/1 大金创药 LV8 
@@ -1136,12 +1136,12 @@
 1/1 中魔法药 LV8 
 1/1 大金创药 LV8 
 1/1 大魔法药 LV8 
-1/30 Impact药(S) LV8 
-1/30 魔法药(S) LV8 
-1/30 道士药(S) LV8 
-1/30 风暴药(S) LV8 
-1/30 StaminaAid(S) LV8 
-1/30 魔法Aid(S) LV8
+1/30 冲击药(小) LV8 
+1/30 魔法药(小) LV8 
+1/30 道士药(小) LV8 
+1/30 风暴药(小) LV8 
+1/30 体力药剂(小) LV8 
+1/30 魔法辅助(小) LV8
 
 1/15 卷轴之印 LV8
 
@@ -1152,21 +1152,21 @@
 1/10 武侠剑 LV8
 1/10 钩矛 LV8 
 1/10 铁刃 LV8
-1/25 血Stealer剑 LV8
-1/10 Scimitar LV8
+1/25 血噬剑 LV8
+1/10 弯刀 LV8
 1/15 短剑剑 LV8
 
 ;Armours
-1/25 Medium甲(M) LV8 
-1/25 Medium甲(F) LV8 
-1/25 Heavy甲(M) LV8
-1/25 Heavy甲(F) LV8
-1/25 魂甲(M) LV8
-1/25 魂甲(F) LV8
-1/25 魔法袍(M) LV8
-1/25 魔法袍(F) LV8
-1/25 圣物甲(M) LV8
-1/25 圣物甲(F) LV8
+1/25 中甲(男) LV8 
+1/25 中甲(女) LV8 
+1/25 重甲(男) LV8
+1/25 重甲(女) LV8
+1/25 魂甲(男) LV8
+1/25 魂甲(女) LV8
+1/25 魔法袍(男) LV8
+1/25 魔法袍(女) LV8
+1/25 圣物甲(男) LV8
+1/25 圣物甲(女) LV8
 
 ;Helmets
 1/15 青铜盔 LV8 
@@ -1177,23 +1177,23 @@
 
 ;Necklaces
 1/25 蓝玉项链 LV8 
-1/25 ConvexLens LV8 
-1/25 BambooPipe LV8 
-1/6 Lantern项链 LV8 
+1/25 凸镜 LV8 
+1/25 竹笛 LV8 
+1/6 灯笼项链 LV8 
 1/6 虎项链 LV8 
 1/6 铂金项链 LV8 
-1/5 Naga项链 LV8 
-1/5 Amber项链 LV8 
-1/5 凤凰Bead LV8
+1/5 娜迦项链 LV8 
+1/5 琥珀项链 LV8 
+1/5 凤凰珠 LV8
 
 ;Bracelets
-1/30 死亡Gauntlet LV8 
+1/30 死亡护手 LV8 
 1/20 金手镯 LV8 
 1/6 乌木手镯 LV8 
-1/6 Monk手镯 LV8 
-1/6 Strain手镯 LV8 
+1/6 僧手镯 LV8 
+1/6 张力手镯 LV8 
 1/5 钢手镯 LV8 
-1/10 Hard手套 LV8 
+1/10 硬手套 LV8 
 1/10 魔法手镯 LV8 
 1/100 普通手套 LV8
 1/100 诺奇轮 LV8
@@ -1201,8 +1201,8 @@
 
 ;Rings
 1/10 金戒 LV8 
-1/10 Charm戒 LV8 
-1/10 Moral戒 LV8
+1/10 符戒 LV8 
+1/10 道德戒 LV8
 1/6 黑戒 LV8
 1/6 蛇眼戒 LV8 
 1/130 铂金戒 LV8
@@ -1217,7 +1217,7 @@
 
 ;Belts
 1/10 皮革腰带 LV8
-1/15 Chain腰带 LV8
+1/15 链腰带 LV8
 1/35 青铜腰带 LV8
 1/50 钢腰带 LV8
 
@@ -1227,12 +1227,12 @@
 1/45 黑靴 LV8
 
 ;Stones
-1/30 道术石(M) LV8
-1/65 道术石(L) LV8
-1/30 MC石(M) LV8
-1/65 MC石(L) LV8
-1/30 SC石(M) LV8
-1/65 SC石(L) LV8 
+1/30 道术石(男) LV8
+1/65 道术石(大) LV8
+1/30 魔石(男) LV8
+1/65 魔石(大) LV8
+1/30 道石(男) LV8
+1/65 道石(大) LV8 
 
 ;Gems
 1/250 勇气宝石 LV8
@@ -1248,30 +1248,30 @@
 1/350 暴宝石 LV8
 
 ;Books
-1/22 ShoulderDash LV8
+1/22 野蛮冲撞 LV8
 1/100 双生龙兽刃 LV8
-1/20 Entrapment LV8
+1/20 擒龙手 LV8
 1/25 烈焰剑 LV8
-1/400 CrossHalf月 LV8
+1/400 十字半月 LV8
 
-1/150 霜Crunch LV8
-1/100 Vampirism LV8
+1/150 冰咆哮 LV8
+1/100 嗜血术 LV8
 1/12 火墙 LV8
 1/25 魔法盾 LV8
 1/20 雷暴 LV8
-1/400 TurnUndead LV8
+1/400 圣言术 LV8
 
 1/50 陷阱 LV8
-1/12 EnergyRepulsor LV8
-1/20 陷阱Hexagon LV8
-1/25 Purification LV8
-1/450 Reincarnation LV8
+1/12 气功波 LV8
+1/20 陷阱六角 LV8
+1/25 净化术 LV8
+1/450 复活术 LV8
 1/100 召唤神兽 LV8
 1/300 召唤圣精灵 LV8
 
-1/12 FlashDash LV8
-1/25 Heavenly剑 LV8
+1/12 闪现 LV8
+1/25 天剑诀 LV8
 
-1/12 VampireShot LV8
+1/12 吸血射击 LV8
 1/25 召唤吸血蜘蛛 LV8
-1/100 BackStep LV8
+1/100 后撤步 LV8

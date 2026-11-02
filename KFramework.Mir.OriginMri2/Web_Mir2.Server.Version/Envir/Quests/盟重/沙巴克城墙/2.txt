@@ -9,8 +9,8 @@
 [@KillTasks]
 
 [@ItemTasks]
-比奇Tales(1) 1
-比奇Tales(2) 1
+比奇传说(1) 1
+比奇传说(2) 1
 
 [@CarryItems]
 

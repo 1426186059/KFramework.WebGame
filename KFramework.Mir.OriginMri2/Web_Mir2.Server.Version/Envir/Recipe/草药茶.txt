@@ -6,6 +6,6 @@ Gold 300
 [Tools]
 
 [Ingredients]
-食人Fruit
+食人果
 食人叶
 太阳水

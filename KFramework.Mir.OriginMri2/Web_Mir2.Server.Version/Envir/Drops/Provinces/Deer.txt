@@ -27,7 +27,7 @@
 ;Ores
 
 ;肉
-1/1 Venison 
+1/1 野鹿肉 
 
 ;Crafting Materials
 

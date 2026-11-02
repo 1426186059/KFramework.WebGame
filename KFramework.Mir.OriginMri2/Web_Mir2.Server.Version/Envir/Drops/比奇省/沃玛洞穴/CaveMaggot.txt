@@ -49,5 +49,5 @@
 1/10 蛆丹 
 
 ;Quests
-1/5 Relics Q
-1/200 远古Scyther Q
+1/5 圣物 Q
+1/200 远古镰 Q

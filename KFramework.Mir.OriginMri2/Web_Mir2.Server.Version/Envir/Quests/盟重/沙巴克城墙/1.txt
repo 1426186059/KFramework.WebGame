@@ -12,7 +12,7 @@
 [@KillTasks]
 
 [@ItemTasks]
-比奇Tales(3) 1
+比奇传说(3) 1
 
 [@CarryItems]
 

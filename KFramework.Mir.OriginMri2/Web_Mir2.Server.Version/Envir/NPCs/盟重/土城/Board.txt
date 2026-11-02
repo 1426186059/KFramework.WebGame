@@ -8,7 +8,7 @@
 <铁匠铺/@weapon>   <防具店/@armour>
 <饰品店/@access>   <客栈/@store>
 
-我稍后回来 <离开/@Exit>
+我稍后回来 <离开/@退出>
 
 [@weapon]
 #ACT

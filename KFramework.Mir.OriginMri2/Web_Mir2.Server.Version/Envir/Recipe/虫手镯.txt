@@ -7,7 +7,7 @@ Gold 1000
 
 
 [Ingredients]
-虫Leg 15
-Monk手镯 
+虫腿 15
+僧手镯 
 银矿 1 12000
-蜘蛛Web 15
+蜘蛛蛛网 15

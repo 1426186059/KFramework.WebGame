@@ -10,7 +10,7 @@
 腐烂巫医僵尸 20
 
 [@ItemTasks]
-心之Dead 1
+心之亡 1
 
 [@CarryItems]
 
@@ -18,9 +18,9 @@
 
 [@SelectRewards]
 武侠军刀
-矛WithHook
-Keen短剑剑
-黑铁Crow剑s
+矛与钩
+锋利短剑剑
+黑铁乌鸦剑
 坚韧长弓
 
 [@ExpReward]

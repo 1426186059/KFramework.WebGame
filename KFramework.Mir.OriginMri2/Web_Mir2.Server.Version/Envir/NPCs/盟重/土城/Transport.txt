@@ -1,4 +1,4 @@
-﻿[@Main]
+[@Main]
 #SAY
 请选择传送目的地：
 <主城传送/@MainCities>
@@ -13,7 +13,7 @@
 <会员之家/@Member>
 <玛雅神殿/@Maya>
 
-<Exit/@Exit>
+<退出/@退出>
 
 [@MainCities]
 #SAY
@@ -26,7 +26,7 @@
 <魔龙城/@mv_5414>
 <庄园/@mv_5258>
 
-<Main Menu/@Main> - <Exit/@Exit>
+<主菜单/@Main> - <退出/@退出>
 
 [@Bichon]
 #SAY
@@ -38,7 +38,7 @@
 <废矿区一层/@mv_5016>
 <桃源之门/@mv_5087>
 
-<Main Menu/@Main> - <Exit/@Exit>
+<主菜单/@Main> - <退出/@退出>
 
 [@Mongcon]
 #SAY
@@ -50,7 +50,7 @@
 <沃玛教主大殿/@mv_5355>
 <土城监狱/@mv_5365>
 
-<Main Menu/@Main> - <Exit/@Exit>
+<主菜单/@Main> - <退出/@退出>
 
 [@WhiteGate]
 #SAY
@@ -67,7 +67,7 @@
 <尸魔洞一层/@mv_5152>
 <尸魔洞三层/@mv_5153>
 
-<Main Menu/@Main> - <Exit/@Exit>
+<主菜单/@Main> - <退出/@退出>
 
 [@Fengmo]
 #SAY
@@ -81,7 +81,7 @@
 <魔魂殿/@mv_5149>
 <炼狱回廊/@mv_5150>
 
-<Main Menu/@Main> - <Exit/@Exit>
+<主菜单/@Main> - <退出/@退出>
 
 [@Cangyue]
 #SAY
@@ -92,7 +92,7 @@
 <骨魔洞五层/@mv_5409>
 <庄园/@mv_5413>
 
-<Main Menu/@Main> - <Exit/@Exit>
+<主菜单/@Main> - <退出/@退出>
 
 [@Molong]
 #SAY
@@ -112,7 +112,7 @@
 <火龙地带/@mv_5273>
 <火龙殿/@mv_5274>
 
-<Main Menu/@Main> - <Exit/@Exit>
+<主菜单/@Main> - <退出/@退出>
 
 [@Danger]
 #SAY
@@ -132,7 +132,7 @@
 <赤月魔巢穴/@mv_5136>
 <邪恶之都/@mv_5137>
 
-<Main Menu/@Main> - <Exit/@Exit>
+<主菜单/@Main> - <退出/@退出>
 
 [@Mirage]
 #SAY
@@ -147,7 +147,7 @@
 <幻境九层/@mv_5225>
 <幻境迷宫/@mv_5217>
 
-<Main Menu/@Main> - <Exit/@Exit>
+<主菜单/@Main> - <退出/@退出>
 
 [@Member]
 #SAY
@@ -158,7 +158,7 @@
 <会员小镇/@mv_5507>
 <会员都市/@mv_5546>
 
-<Main Menu/@Main> - <Exit/@Exit>
+<主菜单/@Main> - <退出/@退出>
 
 [@Maya]
 #SAY
@@ -171,7 +171,7 @@
 <玛雅圣殿一层/@mv_5252>
 <玛雅圣殿二层/@mv_5253>
 
-<Main Menu/@Main> - <Exit/@Exit>
+<主菜单/@Main> - <退出/@退出>
 
 [@mv_103]
 #ACT
@@ -561,6 +561,6 @@ MOVE 5252 50 50
 #ACT
 MOVE 5253 50 50
 
-[@Exit]
+[@退出]
 #SAY
 一路顺风。

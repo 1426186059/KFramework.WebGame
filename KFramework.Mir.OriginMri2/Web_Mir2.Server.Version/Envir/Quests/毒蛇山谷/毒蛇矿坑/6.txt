@@ -11,7 +11,7 @@
 [@ItemTasks]
 
 [@CarryItems]
-Hidden卷轴 2
+隐藏卷轴 2
 
 [@FixedRewards]
 

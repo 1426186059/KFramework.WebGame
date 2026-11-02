@@ -23,36 +23,36 @@
 
 [@Repair]
 #SAY
-你可以修理各种火把。
+你可以修理各种Torch。
 
 [@Ask]
 #SAY
-我经营 <蜡烛/@candle>、<地牢逃脱/@dungeonescape>、<随机传送/@randomteleport>、
-<修理油/@repairoil> 等物品。
+我经营 <Candle/@candle>、<DungeonEscape/@dungeonescape>、<RandomTeleport/@randomteleport>、
+<RepairOil/@repairoil> 等物品。
 我听说存在 <回城传送/@townteleport>，由怪物掉落。
  
 <返回/@Main>
 
 [@candle]
 #SAY
-黑暗中需要蜡烛。没有蜡烛你什么都看不见。
+黑暗中需要Candle。没有Candle你什么都看不见。
  
 <返回/@Ask>
 
 [@dungeonescape]
 #SAY
-地牢逃脱卷是一张魔法纸，可把你迅速
+DungeonEscape卷是一张魔法纸，可把你迅速
 传送到上次访问的村庄附近的某些区域。
-地牢逃脱卷的力量虽比不上
-回城卷，但仍能救你一命。
+DungeonEscape卷的力量虽比不上
+TeleportHome，但仍能救你一命。
  
 <返回/@Ask>
 
 [@randomteleport]
 #SAY
-随机传送卷是一张魔法纸，可让你
+RandomTeleport卷是一张魔法纸，可让你
 在同一张地图内随机移动到另一个地点。
-例如你若在地牢一层，使用随机传送卷
+例如你若在地牢一层，使用RandomTeleport卷
 便会移动到该层的另一个位置。
 若处境危险但药水尚足，可用它
 帮你脱离险境。
@@ -61,7 +61,7 @@
 
 [@repairoil]
 #SAY
-修理油可提升你手持武器的耐久度，
+RepairOil可提升你手持武器的耐久度，
 但这种油无法进行特殊修理，所以
 请记住，武器的最大耐久度会
 随着时间推移而下降。
@@ -73,7 +73,7 @@
 
 [@townteleport]
 #SAY
-回城卷目前无法制作，因为古老的
+TeleportHome目前无法制作，因为古老的
 技艺已经失传……然而……
 我听说它可能随机从怪物身上掉落，
 使用它你便能迅速返回村庄……
@@ -87,41 +87,41 @@
 13
 
 [Trade]
-Candle
-Torch
+蜡烛
+火把
 EternalFlame
-镇Teleport
-RandomTeleport
-DungeonEscape
-TeleportHome
-GtTeleport
-GtInvite
+镇传送
+随机传送
+地牢逃脱
+回城卷
+行会传送
+行会邀请
 护符 1
 护符 100
-护符(M) 1
-护符(M) 400
-护符(L) 1
-护符(L) 600
-护符(XL) 1
-护符(XL) 800
+护符 1
+护符 400
+护符 1
+护符 600
+护符 1
+护符 800
 AmuletRevival
-复活护符(L)
-绿毒粉(S) 1
-绿毒粉(S) 100
-红毒粉(S) 1
-红毒粉(S) 100
-绿毒粉(M) 1
-绿毒粉(M) 400
-红毒粉(M) 1
-红毒粉(M) 400
-绿毒粉(L) 1
-绿毒粉(L) 600
-绿毒粉(XL) 1
-绿毒粉(XL) 800
-红毒粉(L) 1
-红毒粉(L) 600
-红毒粉(XL) 1
-红毒粉(XL) 800
+复活护符
+绿毒粉 1
+绿毒粉 100
+红毒粉 1
+红毒粉 100
+绿毒粉 1
+绿毒粉 400
+红毒粉 1
+红毒粉 400
+绿毒粉 1
+绿毒粉 600
+绿毒粉 1
+绿毒粉 800
+红毒粉 1
+红毒粉 600
+红毒粉 1
+红毒粉 800
 BluePoison(S) 1
 BluePoison(S) 200
 BluePoison(M) 1
@@ -130,4 +130,4 @@ BluePoison(L) 1
 BluePoison(L) 600
 BluePoison(XL) 1
 BluePoison(XL) 800
-战争神Oil
+战争神油

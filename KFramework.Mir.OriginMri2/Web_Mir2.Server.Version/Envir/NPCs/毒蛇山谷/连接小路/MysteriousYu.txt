@@ -4,7 +4,7 @@
 我很好奇你能否轻易离开这里……
  
 <交谈/@talkwith_1>
-<离开/@Exit>
+<离开/@退出>
 
 
 [@talkwith_1]
@@ -34,7 +34,7 @@ goto untalkwith
 如果你有凭证，可以一试。
  
 <尝试/@talkwith_3>
-<取消/@Exit>
+<取消/@退出>
 
 [@talkwith_3]
 #SAY
@@ -48,7 +48,7 @@ goto untalkwith
 我想给你指路，但我筋疲力尽了。
 我帮不了你……稍等片刻……
  
-<关闭/@Exit>
+<关闭/@退出>
 
 #ELSEACT
 MOVE M001

@@ -21,15 +21,15 @@
 1/2 特制魔法药 LV1
 1/1 太阳水 LV1
 1/2 太阳水 LV1
-1/1 太阳药水(M) LV1
-1/2 太阳药水(M) LV1
+1/1 太阳药水(男) LV1
+1/2 太阳药水(男) LV1
 
-1/10 Impact药(L) LV1
-1/10 魔法药(L) LV1
-1/10 道士药(L) LV1
-1/10 暴药(L) LV1
+1/10 冲击药(大) LV1
+1/10 魔法药(大) LV1
+1/10 道士药(大) LV1
+1/10 暴药(大) LV1
 
-1/1 BenedictionOil LV1
+1/1 祝福油 LV1
 1/3 GoldenBenedictionOil LV1
 
 1/100 MirKingRune LV1
@@ -41,105 +41,105 @@
 
 ;Weapons
 ;Warrior
-1/75 JudgementMace LV1
-1/75 Fiend弓 LV1
+1/75 审判权杖 LV1
+1/75 魔弓 LV1
 1/100 战争之灵刃 LV1
 1/100 轻盈弓 LV
 1/125 龙斩杀 LV1
 1/125 凶煞弓 LV1
 1/150 剑之战争神 LV1
-1/150 弓之Force LV1
+1/150 弓之力 LV1
 
 ;Wizard
 1/75 战争法师杖 LV1
-1/100 魔法Scythe LV1
+1/100 魔法镰 LV1
 1/125 龙杖 LV1
-1/150 刃之Sorcery LV1
+1/150 刃之魔法 LV1
 
 ;Taoist
 1/75 魂泉杖 LV1
-1/100 石Bamboo扇 LV1
+1/100 石竹扇 LV1
 1/125 魂军刀 LV1
 1/150 天剑 LV1
 
 ;Assassin
-1/75 刃之暗ness LV1
+1/75 刃之暗黑 LV1
 1/100 冰冻刃 LV1
 1/125 皇家刃 LV1
-1/150 刃之Magi LV1
+1/150 刃之秘法 LV1
 
 ;Weapons Rare
 1/300 冰封军刀 LV1
-1/300 Grim弓 LV1
-1/300 Conqueror矛 LV1
-1/300 Bastard剑 LV1
-1/300 Zinc刃 LV1
+1/300 严酷弓 LV1
+1/300 征服者矛 LV1
+1/300 浪人剑 LV1
+1/300 锌刃 LV1
 1/400 黑虎锤 LV1
-1/400 Lethal弓 LV1
+1/400 致命弓 LV1
 1/400 杖之莲 LV1
-1/400 扇之Crane LV1
-1/400 Butchering刃 LV1
+1/400 扇之鹤 LV1
+1/400 屠刃 LV1
 1/500 蛮兵剑 LV1
-1/500 Apus弓 LV1
-1/500 Raw剑 LV1
-1/500 骨Carved扇 LV1
-1/500 Mad龙刃 LV1
+1/500 天燕弓 LV1
+1/500 生剑 LV1
+1/500 骨雕扇 LV1
+1/500 狂龙刃 LV1
 1/1700 米尔剑 LV1
 
 
 ;Armour
-1/15 Studded甲(M) LV1
-1/15 Studded甲(F) LV1
-1/15 钢甲(M) LV1
-1/15 钢甲(F) LV1
-1/15 龙袍(M) LV1
-1/15 龙袍(F) LV1
-1/15 泰坦甲(M) LV1
-1/15 泰坦甲(F) LV1
-1/15 皇家甲(M) LV1
-1/15 皇家甲(F) LV1
+1/15 钉甲(男) LV1
+1/15 钉甲(女) LV1
+1/15 钢甲(男) LV1
+1/15 钢甲(女) LV1
+1/15 龙袍(男) LV1
+1/15 龙袍(女) LV1
+1/15 泰坦甲(男) LV1
+1/15 泰坦甲(女) LV1
+1/15 皇家甲(男) LV1
+1/15 皇家甲(女) LV1
 
 
 ;Armour Rare
-1/1200 天甲(M) LV1
-1/1200 天甲(F) LV1
+1/1200 天甲(男) LV1
+1/1200 天甲(女) LV1
 1/1200 HeavenArcheyRobe(M) LV1
 1/1200 HeavenArcheyRobe(F) LV1
-1/1500 天甲(M) LV1
-1/1500 天甲(F) LV1
+1/1500 天甲(男) LV1
+1/1500 天甲(女) LV1
 1/1500 HeavenRedArmour(M) LV1
 1/1500 HeavenRedArmour(F) LV1
 1/1500 HeavenGrnArmour(M) LV1
 1/1500 HeavenGrnArmour(F) LV1
 1/1500 HeavenGoldArmour(M) LV1
 1/1500 HeavenGoldArmour(F) LV1
-1/1700 米尔甲(M) LV1
-1/1700 米尔甲(F) LV1
+1/1700 米尔甲(男) LV1
+1/1700 米尔甲(女) LV1
 
 
 ;Helmets
 1/30 黑铁盔 LV1
 1/10 盔之英雄 LV1
 1/35 巨盔 LV1
-1/40 WisdomCoronet LV1
-1/40 道Coronet LV1
+1/40 智慧冠 LV1
+1/40 道冠 LV1
 
 
 ;Helmets Rare
 1/200 MajesticHelmet LV1
 1/400 ExternalHelmet LV1
-1/500 Sparkling盔 LV1
+1/500 闪耀盔 LV1
 1/600 PuiYuHelmet LV1
 1/2000 米尔盔 LV1
 
 
 ;Necklace
-1/50 绿Bead LV1
-1/50 魔icBells LV1
+1/50 绿珠 LV1
+1/50 魔法铃铛 LV1
 1/50 魂项链 LV1
 1/90 英雄项链 LV1
 1/90 精金项链 LV1
-1/90 Requiem项链 LV1
+1/90 安魂项链 LV1
 
 1/100 MeteoriteOfArchey LV1
 1/100 MeteoriteOfArchey LV2
@@ -152,42 +152,42 @@
 ;Necklace Rare
 1/255 MajesticNecklace LV1
 1/400 ExternalNecklace LV1
-1/500 Cuspid项链 LV1
-1/500 SorceryAnchor LV1
-1/500 Purified镜 LV1
-1/750 邪Triangle LV1
-1/750 CrossPurified LV1
-1/750 Adamant项链 LV1
+1/500 尖牙项链 LV1
+1/500 魔法锚 LV1
+1/500 净化镜 LV1
+1/750 邪三角 LV1
+1/750 净化十字 LV1
+1/750 精钢项链 LV1
 1/2000 米尔项链 LV1
 
 
 ;Bracelets
-1/170 8Trigram轮 LV1
-1/170 HangMa轮 LV1
-1/170 BokMa轮 LV1
-1/190 BaekTa手套 LV1
-1/190 之灵Reformer LV1
+1/170 八卦轮 LV1
+1/170 降魔轮 LV1
+1/170 伏魔轮 LV1
+1/190 白打手套 LV1
+1/190 之灵改革者 LV1
 1/190 圣道轮 LV1
 
 ;Bracelets Rare
 1/205 MajesticWheel LV1
 1/400 ExternalWheel LV1
-1/500 Dual泰坦护符 LV1
-1/500 Sacred天使护符 LV1
-1/500 邪Whisp护符 LV1
-1/750 Wild泰坦护符 LV1
-1/750 Enchanted护符 LV1
+1/500 双泰坦护符 LV1
+1/500 圣天使护符 LV1
+1/500 邪灵护符 LV1
+1/750 野泰坦护符 LV1
+1/750 附魔护符 LV1
 1/750 五元素护符 LV1
 1/2000 米尔轮 LV1
 
 
 ;Rings
 1/50 奥玛之灵戒 LV1
-1/60 Noble戒 LV1
+1/60 高贵戒 LV1
 1/60 魂戒 LV1
-1/70 Boundless戒 LV1
+1/70 无量戒 LV1
 1/70 雷戒 LV1
-1/70 TaeGuk戒 LV1
+1/70 太极戒 LV1
 
 1/150 DestinyRing LV1
 1/150 DestinyRing LV2
@@ -200,11 +200,11 @@
 ;Rings Rare
 1/200 MajesticRing LV1
 1/400 ExternalRing LV1
-1/500 Pledge戒 LV1
+1/500 誓约戒 LV1
 1/500 五元素戒 LV1
-1/500 Crimson红宝石戒 LV1
+1/500 深红红宝石戒 LV1
 1/750 魔红宝石戒 LV1
-1/750 邪Expel戒 LV1
+1/750 邪驱散戒 LV1
 1/750 金龙戒 LV1
 1/2000 米尔戒 LV1
 
@@ -277,47 +277,47 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV1
-1/30 CrossHalf月 LV1
+1/30 十字半月 LV1
 1/50 双生龙兽刃 LV1
-1/50 狮Roar LV1
-1/50 Entrapment LV1
+1/50 狮子吼 LV1
+1/50 擒龙手 LV1
 1/60 BladeStorm LV1
-1/150 刃Avalanche LV1
-1/1200 防护Field LV1
-1/1400 Rage LV1
-1/1600 Fury LV1
-1/2000 Counter攻击 LV1
-1/2600 ImmortalSkin LV1
+1/150 崩山剑法 LV1
+1/1200 防护场 LV1
+1/1400 怒之煞 LV1
+1/1600 狂怒 LV1
+1/2000 反击 LV1
+1/2600 金刚不坏 LV1
 
 ;Wizard
-1/10 霜Crunch LV1
+1/10 冰咆哮 LV1
 1/25 冰暴 LV1
-1/30 火焰Disruptor LV1
-1/400 火焰Field LV1
-1/50 Vampirism LV1
-1/150 镜ing LV1
-1/1200 Blizzard LV1
-1/1400 魔法Booster LV1
-1/1600 MeteorStrike LV1
-1/2000 FastMove LV1
-1/2200 冰Thrust LV1
+1/30 火焰破坏术 LV1
+1/400 火焰场 LV1
+1/50 嗜血术 LV1
+1/150 镜 LV1
+1/1200 暴风雪 LV1
+1/1400 魔法增益 LV1
+1/1600 流星火雨 LV1
+1/2000 疾步 LV1
+1/2200 冰刺 LV1
 1/2400 FrozenRains LV1
 1/2600 LavaKing LV1
-1/3000 暴Escape LV1
+1/3000 暴走 LV1
 
 
 ;Taosit
 1/25 召唤神兽 LV1
-1/30 UltimateEnhancer LV1
-1/30 EnergyRepulsor LV1
-1/50 Purification LV1
-1/50 Hallucination LV1
-1/100 Healing轮 LV1
+1/30 强化火符 LV1
+1/30 气功波 LV1
+1/50 净化术 LV1
+1/50 迷魂术 LV1
+1/100 治愈轮 LV1
 1/200 召唤圣精灵 LV1
 1/1200 诅咒 LV1
-1/1400 毒Cloud LV1
-1/1800 PetEnhancer LV1
-1/2000 Energy盾 LV1
+1/1400 毒云 LV1
+1/1800 宠物强化 LV1
+1/2000 能量盾 LV1
 1/2300 HolyShield LV1
 1/2600 HeadShot LV1
 
@@ -326,19 +326,19 @@
 1/30 陷阱 LV1
 1/30 毒剑 LV1
 1/50 月轻 LV1
-1/50 魔法Eater LV1
-1/100 SwiftFeet LV1
-1/200 暗Body LV1
-1/1200 Hemorrhage LV1
+1/50 魔法噬 LV1
+1/100 疾风步 LV1
+1/200 暗身 LV1
+1/1200 出血术 LV1
 1/1400 FuryWaves LV1
 
-1/25 BindingShot LV1
+1/25 束缚射击 LV1
 1/30 召唤蟾蜍 LV1
-1/30 毒Shot LV1
-1/50 CrippleShot LV1
+1/30 毒射 LV1
+1/50 致残射击 LV1
 1/50 召唤魅惑之蛇 LV1
-1/90 NapalmShot LV1
-1/1400 OneWith自然 LV1
+1/90 燃烧射击 LV1
+1/1400 自然合一 LV1
 
 ;CraftingMaterials
 
@@ -369,15 +369,15 @@
 1/2 特制魔法药 LV2
 1/1 太阳水 LV2
 1/2 太阳水 LV2
-1/1 太阳药水(M) LV2
-1/2 太阳药水(M) LV2
+1/1 太阳药水(男) LV2
+1/2 太阳药水(男) LV2
 
-1/10 Impact药(L) LV2
-1/10 魔法药(L) LV2
-1/10 道士药(L) LV2
-1/10 暴药(L) LV2
+1/10 冲击药(大) LV2
+1/10 魔法药(大) LV2
+1/10 道士药(大) LV2
+1/10 暴药(大) LV2
 
-1/1 BenedictionOil LV2
+1/1 祝福油 LV2
 1/3 GoldenBenedictionOil LV2
 
 1/100 MirKingRune LV2
@@ -389,154 +389,154 @@
 
 ;Weapons
 ;Warrior
-1/75 JudgementMace LV2
-1/75 Fiend弓 LV2
+1/75 审判权杖 LV2
+1/75 魔弓 LV2
 1/100 战争之灵刃 LV2
 1/100 轻盈弓 LV2
 1/125 龙斩杀 LV2
 1/125 凶煞弓 LV2
 1/150 剑之战争神 LV2
-1/150 弓之Force LV2
+1/150 弓之力 LV2
 
 ;Wizard
 1/75 战争法师杖 LV2
-1/100 魔法Scythe LV2
+1/100 魔法镰 LV2
 1/125 龙杖 LV2
-1/150 刃之Sorcery LV2
+1/150 刃之魔法 LV2
 
 ;Taoist
 1/75 魂泉杖 LV2
-1/100 石Bamboo扇 LV2
+1/100 石竹扇 LV2
 1/125 魂军刀 LV2
 1/150 天剑 LV2
 
 ;Assassin
-1/75 刃之暗ness LV2
+1/75 刃之暗黑 LV2
 1/100 冰冻刃 LV2
 1/125 皇家刃 LV2
-1/150 刃之Magi LV2
+1/150 刃之秘法 LV2
 
 ;Weapons Rare
 1/300 冰封军刀 LV2
-1/300 Conqueror矛 LV2
-1/300 Grim弓 LV2
-1/300 Bastard剑 LV2
-1/300 Zinc刃 LV2
+1/300 征服者矛 LV2
+1/300 严酷弓 LV2
+1/300 浪人剑 LV2
+1/300 锌刃 LV2
 1/400 黑虎锤 LV2
-1/400 Lethal弓 LV2
+1/400 致命弓 LV2
 1/400 杖之莲 LV2
-1/400 扇之Crane LV2
-1/400 Butchering刃 LV2
+1/400 扇之鹤 LV2
+1/400 屠刃 LV2
 1/500 蛮兵剑 LV2
-1/500 Raw剑 LV2
-1/500 Apus弓 LV2
-1/500 骨Carved扇 LV2
-1/500 Mad龙刃 LV2
+1/500 生剑 LV2
+1/500 天燕弓 LV2
+1/500 骨雕扇 LV2
+1/500 狂龙刃 LV2
 1/1700 米尔剑 LV2
 
 
 ;Armour
-1/15 Studded甲(M) LV2
-1/15 Studded甲(F) LV2
-1/15 钢甲(M) LV2
-1/15 钢甲(F) LV2
-1/15 龙袍(M) LV2
-1/15 龙袍(F) LV2
-1/15 泰坦甲(M) LV2
-1/15 泰坦甲(F) LV2
-1/15 皇家甲(M) LV2
-1/15 皇家甲(F) LV2
+1/15 钉甲(男) LV2
+1/15 钉甲(女) LV2
+1/15 钢甲(男) LV2
+1/15 钢甲(女) LV2
+1/15 龙袍(男) LV2
+1/15 龙袍(女) LV2
+1/15 泰坦甲(男) LV2
+1/15 泰坦甲(女) LV2
+1/15 皇家甲(男) LV2
+1/15 皇家甲(女) LV2
 
 
 ;Armour Rare
-1/1200 天甲(M) LV2
-1/1200 天甲(F) LV2
+1/1200 天甲(男) LV2
+1/1200 天甲(女) LV2
 1/1200 HeavenArcheyRobe(M) LV2
 1/1200 HeavenArcheyRobe(F) LV2
-1/1500 天甲(M) LV2
-1/1500 天甲(F) LV2
+1/1500 天甲(男) LV2
+1/1500 天甲(女) LV2
 1/1500 HeavenRedArmour(M) LV2
 1/1500 HeavenRedArmour(F) LV2
 1/1500 HeavenGrnArmour(M) LV2
 1/1500 HeavenGrnArmour(F) LV2
 1/1500 HeavenGoldArmour(M) LV2
 1/1500 HeavenGoldArmour(F) LV2
-1/1700 米尔甲(M) LV2
-1/1700 米尔甲(F) LV2
+1/1700 米尔甲(男) LV2
+1/1700 米尔甲(女) LV2
 
 
 ;Helmets
 1/30 黑铁盔 LV2
 1/10 盔之英雄 LV2
 1/35 巨盔 LV2
-1/40 WisdomCoronet LV2
-1/40 道Coronet LV2
+1/40 智慧冠 LV2
+1/40 道冠 LV2
 
 
 ;Helmets Rare
 1/200 MajesticHelmet LV2
 1/400 ExternalHelmet LV2
-1/500 Sparkling盔 LV2
+1/500 闪耀盔 LV2
 1/600 PuiYuHelmet LV2
 1/2000 米尔盔 LV2
 
 
 ;Necklace
-1/50 绿Bead LV2
-1/50 魔icBells LV2
+1/50 绿珠 LV2
+1/50 魔法铃铛 LV2
 1/50 魂项链 LV2
 1/90 英雄项链 LV2
 1/90 精金项链 LV2
-1/90 Requiem项链 LV2
+1/90 安魂项链 LV2
 
 ;Necklace Rare
 1/255 MajesticNecklace LV2
 1/400 ExternalNecklace LV2
-1/500 Cuspid项链 LV2
-1/500 SorceryAnchor LV2
-1/500 Purified镜 LV2
-1/750 邪Triangle LV2
-1/750 CrossPurified LV2
-1/750 Adamant项链 LV2
+1/500 尖牙项链 LV2
+1/500 魔法锚 LV2
+1/500 净化镜 LV2
+1/750 邪三角 LV2
+1/750 净化十字 LV2
+1/750 精钢项链 LV2
 1/2000 米尔项链 LV2
 
 
 ;Bracelets
-1/170 8Trigram轮 LV2
-1/170 HangMa轮 LV2
-1/170 BokMa轮 LV2
-1/190 BaekTa手套 LV2
-1/190 之灵Reformer LV2
+1/170 八卦轮 LV2
+1/170 降魔轮 LV2
+1/170 伏魔轮 LV2
+1/190 白打手套 LV2
+1/190 之灵改革者 LV2
 1/190 圣道轮 LV2
 
 ;Bracelets Rare
 1/205 MajesticWheel LV2
 1/400 ExternalWheel LV2
-1/500 Dual泰坦护符 LV2
-1/500 Sacred天使护符 LV2
-1/500 邪Whisp护符 LV2
-1/750 Wild泰坦护符 LV2
-1/750 Enchanted护符 LV2
+1/500 双泰坦护符 LV2
+1/500 圣天使护符 LV2
+1/500 邪灵护符 LV2
+1/750 野泰坦护符 LV2
+1/750 附魔护符 LV2
 1/750 五元素护符 LV2
 1/2000 米尔轮 LV2
 
 
 ;Rings
 1/50 奥玛之灵戒 LV2
-1/60 Noble戒 LV2
+1/60 高贵戒 LV2
 1/60 魂戒 LV2
-1/70 Boundless戒 LV2
+1/70 无量戒 LV2
 1/70 雷戒 LV2
-1/70 TaeGuk戒 LV2
+1/70 太极戒 LV2
 
 ;Rings Rare
 1/200 MajesticRing LV2
 1/400 ExternalRing LV2
-1/500 Pledge戒 LV2
+1/500 誓约戒 LV2
 1/500 五元素戒 LV2
-1/500 Crimson红宝石戒 LV2
+1/500 深红红宝石戒 LV2
 1/750 魔红宝石戒 LV2
-1/750 邪Expel戒 LV2
+1/750 邪驱散戒 LV2
 1/750 金龙戒 LV2
 1/2000 米尔戒 LV2
 
@@ -609,47 +609,47 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV2
-1/30 CrossHalf月 LV2
+1/30 十字半月 LV2
 1/50 双生龙兽刃 LV2
-1/50 狮Roar LV2
-1/50 Entrapment LV2
+1/50 狮子吼 LV2
+1/50 擒龙手 LV2
 1/60 BladeStorm LV2
-1/150 刃Avalanche LV2
-1/1200 防护Field LV2
-1/1400 Rage LV2
-1/1600 Fury LV2
-1/2000 Counter攻击 LV2
-1/2600 ImmortalSkin LV2
+1/150 崩山剑法 LV2
+1/1200 防护场 LV2
+1/1400 怒之煞 LV2
+1/1600 狂怒 LV2
+1/2000 反击 LV2
+1/2600 金刚不坏 LV2
 
 ;Wizard
-1/10 霜Crunch LV2
+1/10 冰咆哮 LV2
 1/25 冰暴 LV2
-1/30 火焰Disruptor LV2
-1/400 火焰Field LV2
-1/50 Vampirism LV2
-1/150 镜ing LV2
-1/1200 Blizzard LV2
-1/1400 魔法Booster LV2
-1/1600 MeteorStrike LV2
-1/2000 FastMove LV2
-1/2200 冰Thrust LV2
+1/30 火焰破坏术 LV2
+1/400 火焰场 LV2
+1/50 嗜血术 LV2
+1/150 镜 LV2
+1/1200 暴风雪 LV2
+1/1400 魔法增益 LV2
+1/1600 流星火雨 LV2
+1/2000 疾步 LV2
+1/2200 冰刺 LV2
 1/2400 FrozenRains LV2
 1/2600 LavaKing LV2
-1/3000 暴Escape LV2
+1/3000 暴走 LV2
 
 
 ;Taosit
 1/25 召唤神兽 LV2
-1/30 UltimateEnhancer LV2
-1/30 EnergyRepulsor LV2
-1/50 Purification LV2
-1/50 Hallucination LV2
-1/100 Healing轮 LV2
+1/30 强化火符 LV2
+1/30 气功波 LV2
+1/50 净化术 LV2
+1/50 迷魂术 LV2
+1/100 治愈轮 LV2
 1/200 召唤圣精灵 LV2
 1/1200 诅咒 LV2
-1/1400 毒Cloud LV2
-1/1800 PetEnhancer LV2
-1/2000 Energy盾 LV2
+1/1400 毒云 LV2
+1/1800 宠物强化 LV2
+1/2000 能量盾 LV2
 1/2300 HolyShield LV2
 1/2600 HeadShot LV2
 
@@ -658,19 +658,19 @@
 1/30 陷阱 LV2
 1/30 毒剑 LV2
 1/50 月轻 LV2
-1/50 魔法Eater LV2
-1/100 SwiftFeet LV2
-1/200 暗Body LV2
-1/1200 Hemorrhage LV2
+1/50 魔法噬 LV2
+1/100 疾风步 LV2
+1/200 暗身 LV2
+1/1200 出血术 LV2
 1/1400 FuryWaves LV2
 
-1/25 BindingShot LV2
+1/25 束缚射击 LV2
 1/30 召唤蟾蜍 LV2
-1/30 毒Shot LV2
-1/50 CrippleShot LV2
+1/30 毒射 LV2
+1/50 致残射击 LV2
 1/50 召唤魅惑之蛇 LV2
-1/90 NapalmShot LV2
-1/1400 OneWith自然 LV2
+1/90 燃烧射击 LV2
+1/1400 自然合一 LV2
 
 
 ;CraftingMaterials
@@ -701,15 +701,15 @@
 1/2 特制魔法药 LV3
 1/1 太阳水 LV3
 1/2 太阳水 LV3
-1/1 太阳药水(M) LV3
-1/2 太阳药水(M) LV3
+1/1 太阳药水(男) LV3
+1/2 太阳药水(男) LV3
 
-1/10 Impact药(L) LV3
-1/10 魔法药(L) LV3
-1/10 道士药(L) LV3
-1/10 暴药(L) LV3
+1/10 冲击药(大) LV3
+1/10 魔法药(大) LV3
+1/10 道士药(大) LV3
+1/10 暴药(大) LV3
 
-1/1 BenedictionOil LV3
+1/1 祝福油 LV3
 1/3 GoldenBenedictionOil LV3
 
 1/100 MirKingRune LV3
@@ -720,154 +720,154 @@
 
 ;Weapons
 ;Warrior
-1/75 JudgementMace LV3
-1/75 Fiend弓 LV3
+1/75 审判权杖 LV3
+1/75 魔弓 LV3
 1/100 战争之灵刃 LV3
 1/100 轻盈弓 LV3
 1/125 龙斩杀 LV3
 1/125 凶煞弓 LV3
 1/150 剑之战争神 LV3
-1/150 弓之Force LV3
+1/150 弓之力 LV3
 
 ;Wizard
 1/75 战争法师杖 LV3
-1/100 魔法Scythe LV3
+1/100 魔法镰 LV3
 1/125 龙杖 LV3
-1/150 刃之Sorcery LV3
+1/150 刃之魔法 LV3
 
 ;Taoist
 1/75 魂泉杖 LV3
-1/100 石Bamboo扇 LV3
+1/100 石竹扇 LV3
 1/125 魂军刀 LV3
 1/150 天剑 LV3
 
 ;Assassin
-1/75 刃之暗ness LV3
+1/75 刃之暗黑 LV3
 1/100 冰冻刃 LV3
 1/125 皇家刃 LV3
-1/150 刃之Magi LV3
+1/150 刃之秘法 LV3
 
 ;Weapons Rare
 1/300 冰封军刀 LV3
-1/300 Grim弓 LV3
-1/300 Conqueror矛 LV3
-1/300 Bastard剑 LV3
-1/300 Zinc刃 LV3
+1/300 严酷弓 LV3
+1/300 征服者矛 LV3
+1/300 浪人剑 LV3
+1/300 锌刃 LV3
 1/400 黑虎锤 LV3
 1/400 杖之莲 LV3
-1/400 Lethal弓 LV3
-1/400 扇之Crane LV3
-1/400 Butchering刃 LV3
+1/400 致命弓 LV3
+1/400 扇之鹤 LV3
+1/400 屠刃 LV3
 1/500 蛮兵剑 LV3
-1/500 Raw剑 LV3
-1/500 Apus弓 LV3
-1/500 骨Carved扇 LV3
-1/500 Mad龙刃 LV3
+1/500 生剑 LV3
+1/500 天燕弓 LV3
+1/500 骨雕扇 LV3
+1/500 狂龙刃 LV3
 1/1700 米尔剑 LV3
 
 
 ;Armour
-1/15 Studded甲(M) LV3
-1/15 Studded甲(F) LV3
-1/15 钢甲(M) LV3
-1/15 钢甲(F) LV3
-1/15 龙袍(M) LV3
-1/15 龙袍(F) LV3
-1/15 泰坦甲(M) LV3
-1/15 泰坦甲(F) LV3
-1/15 皇家甲(M) LV3
-1/15 皇家甲(F) LV3
+1/15 钉甲(男) LV3
+1/15 钉甲(女) LV3
+1/15 钢甲(男) LV3
+1/15 钢甲(女) LV3
+1/15 龙袍(男) LV3
+1/15 龙袍(女) LV3
+1/15 泰坦甲(男) LV3
+1/15 泰坦甲(女) LV3
+1/15 皇家甲(男) LV3
+1/15 皇家甲(女) LV3
 
 
 ;Armour Rare
-1/1200 天甲(M) LV3
-1/1200 天甲(F) LV3
+1/1200 天甲(男) LV3
+1/1200 天甲(女) LV3
 1/1200 HeavenArcheyRobe(M) LV3
 1/1200 HeavenArcheyRobe(F) LV3
-1/1500 天甲(M) LV3
-1/1500 天甲(F) LV3
+1/1500 天甲(男) LV3
+1/1500 天甲(女) LV3
 1/1500 HeavenRedArmour(M) LV3
 1/1500 HeavenRedArmour(F) LV3
 1/1500 HeavenGrnArmour(M) LV3
 1/1500 HeavenGrnArmour(F) LV3
 1/1500 HeavenGoldArmour(M) LV3
 1/1500 HeavenGoldArmour(F) LV3
-1/1700 米尔甲(M) LV3
-1/1700 米尔甲(F) LV3
+1/1700 米尔甲(男) LV3
+1/1700 米尔甲(女) LV3
 
 
 ;Helmets
 1/30 黑铁盔 LV3
 1/10 盔之英雄 LV3
 1/35 巨盔 LV3
-1/40 WisdomCoronet LV3
-1/40 道Coronet LV3
+1/40 智慧冠 LV3
+1/40 道冠 LV3
 
 
 ;Helmets Rare
 1/200 MajesticHelmet LV3
 1/400 ExternalHelmet LV3
-1/500 Sparkling盔 LV3
+1/500 闪耀盔 LV3
 1/600 PuiYuHelmet LV3
 1/2000 米尔盔 LV3
 
 
 ;Necklace
-1/50 绿Bead LV3
-1/50 魔icBells LV3
+1/50 绿珠 LV3
+1/50 魔法铃铛 LV3
 1/50 魂项链 LV3
 1/90 英雄项链 LV3
 1/90 精金项链 LV3
-1/90 Requiem项链 LV3
+1/90 安魂项链 LV3
 
 ;Necklace Rare
 1/255 MajesticNecklace LV3
 1/400 ExternalNecklace LV3
-1/500 Cuspid项链 LV3
-1/500 SorceryAnchor LV3
-1/500 Purified镜 LV3
-1/750 邪Triangle LV3
-1/750 CrossPurified LV3
-1/750 Adamant项链 LV3
+1/500 尖牙项链 LV3
+1/500 魔法锚 LV3
+1/500 净化镜 LV3
+1/750 邪三角 LV3
+1/750 净化十字 LV3
+1/750 精钢项链 LV3
 1/2000 米尔项链 LV3
 
 
 ;Bracelets
-1/170 8Trigram轮 LV3
-1/170 HangMa轮 LV3
-1/170 BokMa轮 LV3
-1/190 BaekTa手套 LV3
-1/190 之灵Reformer LV3
+1/170 八卦轮 LV3
+1/170 降魔轮 LV3
+1/170 伏魔轮 LV3
+1/190 白打手套 LV3
+1/190 之灵改革者 LV3
 1/190 圣道轮 LV3
 
 ;Bracelets Rare
 1/205 MajesticWheel LV3
 1/400 ExternalWheel LV3
-1/500 Dual泰坦护符 LV3
-1/500 Sacred天使护符 LV3
-1/500 邪Whisp护符 LV3
-1/750 Wild泰坦护符 LV3
-1/750 Enchanted护符 LV3
+1/500 双泰坦护符 LV3
+1/500 圣天使护符 LV3
+1/500 邪灵护符 LV3
+1/750 野泰坦护符 LV3
+1/750 附魔护符 LV3
 1/750 五元素护符 LV3
 1/2000 米尔轮 LV3
 
 
 ;Rings
 1/50 奥玛之灵戒 LV3
-1/60 Noble戒 LV3
+1/60 高贵戒 LV3
 1/60 魂戒 LV3
-1/70 Boundless戒 LV3
+1/70 无量戒 LV3
 1/70 雷戒 LV3
-1/70 TaeGuk戒 LV3
+1/70 太极戒 LV3
 
 ;Rings Rare
 1/200 MajesticRing LV3
 1/400 ExternalRing LV3
-1/500 Pledge戒 LV3
+1/500 誓约戒 LV3
 1/500 五元素戒 LV3
-1/500 Crimson红宝石戒 LV3
+1/500 深红红宝石戒 LV3
 1/750 魔红宝石戒 LV3
-1/750 邪Expel戒 LV3
+1/750 邪驱散戒 LV3
 1/750 金龙戒 LV3
 1/2000 米尔戒 LV3
 
@@ -940,47 +940,47 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV3
-1/30 CrossHalf月 LV3
+1/30 十字半月 LV3
 1/50 双生龙兽刃 LV3
-1/50 狮Roar LV3
-1/50 Entrapment LV3
+1/50 狮子吼 LV3
+1/50 擒龙手 LV3
 1/60 BladeStorm LV3
-1/150 刃Avalanche LV3
-1/1200 防护Field LV3
-1/1400 Rage LV3
-1/1600 Fury LV3
-1/2000 Counter攻击 LV3
-1/2600 ImmortalSkin LV3
+1/150 崩山剑法 LV3
+1/1200 防护场 LV3
+1/1400 怒之煞 LV3
+1/1600 狂怒 LV3
+1/2000 反击 LV3
+1/2600 金刚不坏 LV3
 
 ;Wizard
-1/10 霜Crunch LV3
+1/10 冰咆哮 LV3
 1/25 冰暴 LV3
-1/30 火焰Disruptor LV3
-1/400 火焰Field LV3
-1/50 Vampirism LV3
-1/150 镜ing LV3
-1/1200 Blizzard LV3
-1/1400 魔法Booster LV3
-1/1600 MeteorStrike LV3
-1/2000 FastMove LV3
-1/2200 冰Thrust LV3
+1/30 火焰破坏术 LV3
+1/400 火焰场 LV3
+1/50 嗜血术 LV3
+1/150 镜 LV3
+1/1200 暴风雪 LV3
+1/1400 魔法增益 LV3
+1/1600 流星火雨 LV3
+1/2000 疾步 LV3
+1/2200 冰刺 LV3
 1/2400 FrozenRains LV3
 1/2600 LavaKing LV3
-1/3000 暴Escape LV3
+1/3000 暴走 LV3
 
 
 ;Taosit
 1/25 召唤神兽 LV3
-1/30 UltimateEnhancer LV3
-1/30 EnergyRepulsor LV3
-1/50 Purification LV3
-1/50 Hallucination LV3
-1/100 Healing轮 LV3
+1/30 强化火符 LV3
+1/30 气功波 LV3
+1/50 净化术 LV3
+1/50 迷魂术 LV3
+1/100 治愈轮 LV3
 1/200 召唤圣精灵 LV3
 1/1200 诅咒 LV3
-1/1400 毒Cloud LV3
-1/1800 PetEnhancer LV3
-1/2000 Energy盾 LV3
+1/1400 毒云 LV3
+1/1800 宠物强化 LV3
+1/2000 能量盾 LV3
 1/2300 HolyShield LV3
 1/2600 HeadShot LV3
 
@@ -989,19 +989,19 @@
 1/30 陷阱 LV3
 1/30 毒剑 LV3
 1/50 月轻 LV3
-1/50 魔法Eater LV3
-1/100 SwiftFeet LV3
-1/200 暗Body LV3
-1/1200 Hemorrhage LV3
+1/50 魔法噬 LV3
+1/100 疾风步 LV3
+1/200 暗身 LV3
+1/1200 出血术 LV3
 1/1400 FuryWaves LV3
 
-1/25 BindingShot LV3
+1/25 束缚射击 LV3
 1/30 召唤蟾蜍 LV3
-1/30 毒Shot LV3
-1/50 CrippleShot LV3
+1/30 毒射 LV3
+1/50 致残射击 LV3
 1/50 召唤魅惑之蛇 LV3
-1/90 NapalmShot LV3
-1/1400 OneWith自然 LV3
+1/90 燃烧射击 LV3
+1/1400 自然合一 LV3
 
 
 ;CraftingMaterials
@@ -1032,15 +1032,15 @@
 1/2 特制魔法药 LV4
 1/1 太阳水 LV4
 1/2 太阳水 LV4
-1/1 太阳药水(M) LV4
-1/2 太阳药水(M) LV4
+1/1 太阳药水(男) LV4
+1/2 太阳药水(男) LV4
 
-1/10 Impact药(L) LV4
-1/10 魔法药(L) LV4
-1/10 道士药(L) LV4
-1/10 暴药(L) LV4
+1/10 冲击药(大) LV4
+1/10 魔法药(大) LV4
+1/10 道士药(大) LV4
+1/10 暴药(大) LV4
 
-1/1 BenedictionOil LV4
+1/1 祝福油 LV4
 1/3 GoldenBenedictionOil LV4
 
 1/100 MirKingRune LV4
@@ -1052,154 +1052,154 @@
 
 ;Weapons
 ;Warrior
-1/75 JudgementMace LV4
-1/75 Fiend弓 LV4
+1/75 审判权杖 LV4
+1/75 魔弓 LV4
 1/100 轻盈弓 LV4
 1/100 战争之灵刃 LV4
 1/125 凶煞弓 LV4
 1/125 龙斩杀 LV4
 1/150 剑之战争神 LV4
-1/150 弓之Force LV4
+1/150 弓之力 LV4
 
 ;Wizard
 1/75 战争法师杖 LV4
-1/100 魔法Scythe LV4
+1/100 魔法镰 LV4
 1/125 龙杖 LV4
-1/150 刃之Sorcery LV4
+1/150 刃之魔法 LV4
 
 ;Taoist
 1/75 魂泉杖 LV4
-1/100 石Bamboo扇 LV4
+1/100 石竹扇 LV4
 1/125 魂军刀 LV4
 1/150 天剑 LV4
 
 ;Assassin
-1/75 刃之暗ness LV4
+1/75 刃之暗黑 LV4
 1/100 冰冻刃 LV4
 1/125 皇家刃 LV4
-1/150 刃之Magi LV4
+1/150 刃之秘法 LV4
 
 ;Weapons Rare
 1/300 冰封军刀 LV4
-1/300 Grim弓 LV4
-1/300 Conqueror矛 LV4
-1/300 Bastard剑 LV4
-1/300 Zinc刃 LV4
+1/300 严酷弓 LV4
+1/300 征服者矛 LV4
+1/300 浪人剑 LV4
+1/300 锌刃 LV4
 1/400 黑虎锤 LV4
 1/400 杖之莲 LV4
-1/400 Lethal弓 LV4
-1/400 扇之Crane LV4
-1/400 Butchering刃 LV4
+1/400 致命弓 LV4
+1/400 扇之鹤 LV4
+1/400 屠刃 LV4
 1/500 蛮兵剑 LV4
-1/500 Raw剑 LV4
-1/500 Apus弓 LV4
-1/500 骨Carved扇 LV4
-1/500 Mad龙刃 LV4
+1/500 生剑 LV4
+1/500 天燕弓 LV4
+1/500 骨雕扇 LV4
+1/500 狂龙刃 LV4
 1/1700 米尔剑 LV4
 
 
 ;Armour
-1/15 Studded甲(M) LV4
-1/15 Studded甲(F) LV4
-1/15 钢甲(M) LV4
-1/15 钢甲(F) LV4
-1/15 龙袍(M) LV4
-1/15 龙袍(F) LV4
-1/15 泰坦甲(M) LV4
-1/15 泰坦甲(F) LV4
-1/15 皇家甲(M) LV4
-1/15 皇家甲(F) LV4
+1/15 钉甲(男) LV4
+1/15 钉甲(女) LV4
+1/15 钢甲(男) LV4
+1/15 钢甲(女) LV4
+1/15 龙袍(男) LV4
+1/15 龙袍(女) LV4
+1/15 泰坦甲(男) LV4
+1/15 泰坦甲(女) LV4
+1/15 皇家甲(男) LV4
+1/15 皇家甲(女) LV4
 
 
 ;Armour Rare
-1/1200 天甲(M) LV4
-1/1200 天甲(F) LV4
+1/1200 天甲(男) LV4
+1/1200 天甲(女) LV4
 1/1200 HeavenArcheyRobe(M) LV4
 1/1200 HeavenArcheyRobe(F) LV4
-1/1500 天甲(M) LV4
-1/1500 天甲(F) LV4
+1/1500 天甲(男) LV4
+1/1500 天甲(女) LV4
 1/1500 HeavenRedArmour(M) LV4
 1/1500 HeavenRedArmour(F) LV4
 1/1500 HeavenGrnArmour(M) LV4
 1/1500 HeavenGrnArmour(F) LV4
 1/1500 HeavenGoldArmour(M) LV4
 1/1500 HeavenGoldArmour(F) LV4
-1/1700 米尔甲(M) LV4
-1/1700 米尔甲(F) LV4
+1/1700 米尔甲(男) LV4
+1/1700 米尔甲(女) LV4
 
 
 ;Helmets
 1/30 黑铁盔 LV4
 1/10 盔之英雄 LV4
 1/35 巨盔 LV4
-1/40 WisdomCoronet LV4
-1/40 道Coronet LV4
+1/40 智慧冠 LV4
+1/40 道冠 LV4
 
 
 ;Helmets Rare
 1/200 MajesticHelmet LV4
 1/400 ExternalHelmet LV4
-1/500 Sparkling盔 LV4
+1/500 闪耀盔 LV4
 1/600 PuiYuHelmet LV4
 1/2000 米尔盔 LV4
 
 
 ;Necklace
-1/50 绿Bead LV4
-1/50 魔icBells LV4
+1/50 绿珠 LV4
+1/50 魔法铃铛 LV4
 1/50 魂项链 LV4
 1/90 英雄项链 LV4
 1/90 精金项链 LV4
-1/90 Requiem项链 LV4
+1/90 安魂项链 LV4
 
 ;Necklace Rare
 1/255 MajesticNecklace LV4
 1/400 ExternalNecklace LV4
-1/500 Cuspid项链 LV4
-1/500 SorceryAnchor LV4
-1/500 Purified镜 LV4
-1/750 邪Triangle LV4
-1/750 CrossPurified LV4
-1/750 Adamant项链 LV4
+1/500 尖牙项链 LV4
+1/500 魔法锚 LV4
+1/500 净化镜 LV4
+1/750 邪三角 LV4
+1/750 净化十字 LV4
+1/750 精钢项链 LV4
 1/2000 米尔项链 LV4
 
 
 ;Bracelets
-1/170 8Trigram轮 LV4
-1/170 HangMa轮 LV4
-1/170 BokMa轮 LV4
-1/190 BaekTa手套 LV4
-1/190 之灵Reformer LV4
+1/170 八卦轮 LV4
+1/170 降魔轮 LV4
+1/170 伏魔轮 LV4
+1/190 白打手套 LV4
+1/190 之灵改革者 LV4
 1/190 圣道轮 LV4
 
 ;Bracelets Rare
 1/205 MajesticWheel LV4
 1/400 ExternalWheel LV4
-1/500 Dual泰坦护符 LV4
-1/500 Sacred天使护符 LV4
-1/500 邪Whisp护符 LV4
-1/750 Wild泰坦护符 LV4
-1/750 Enchanted护符 LV4
+1/500 双泰坦护符 LV4
+1/500 圣天使护符 LV4
+1/500 邪灵护符 LV4
+1/750 野泰坦护符 LV4
+1/750 附魔护符 LV4
 1/750 五元素护符 LV4
 1/2000 米尔轮 LV4
 
 
 ;Rings
 1/50 奥玛之灵戒 LV4
-1/60 Noble戒 LV4
+1/60 高贵戒 LV4
 1/60 魂戒 LV4
-1/70 Boundless戒 LV4
+1/70 无量戒 LV4
 1/70 雷戒 LV4
-1/70 TaeGuk戒 LV4
+1/70 太极戒 LV4
 
 ;Rings Rare
 1/200 MajesticRing LV4
 1/400 ExternalRing LV4
-1/500 Pledge戒 LV4
+1/500 誓约戒 LV4
 1/500 五元素戒 LV4
-1/500 Crimson红宝石戒 LV4
+1/500 深红红宝石戒 LV4
 1/750 魔红宝石戒 LV4
-1/750 邪Expel戒 LV4
+1/750 邪驱散戒 LV4
 1/750 金龙戒 LV4
 1/2000 米尔戒 LV4
 
@@ -1272,47 +1272,47 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV4
-1/30 CrossHalf月 LV4
+1/30 十字半月 LV4
 1/50 双生龙兽刃 LV4
-1/50 狮Roar LV4
-1/50 Entrapment LV4
+1/50 狮子吼 LV4
+1/50 擒龙手 LV4
 1/60 BladeStorm LV4
-1/150 刃Avalanche LV4
-1/1200 防护Field LV4
-1/1400 Rage LV4
-1/1600 Fury LV4
-1/2000 Counter攻击 LV4
-1/2600 ImmortalSkin LV4
+1/150 崩山剑法 LV4
+1/1200 防护场 LV4
+1/1400 怒之煞 LV4
+1/1600 狂怒 LV4
+1/2000 反击 LV4
+1/2600 金刚不坏 LV4
 
 ;Wizard
-1/10 霜Crunch LV4
+1/10 冰咆哮 LV4
 1/25 冰暴 LV4
-1/30 火焰Disruptor LV4
-1/400 火焰Field LV4
-1/50 Vampirism LV4
-1/150 镜ing LV4
-1/1200 Blizzard LV4
-1/1400 魔法Booster LV4
-1/1600 MeteorStrike LV4
-1/2000 FastMove LV4
-1/2200 冰Thrust LV4
+1/30 火焰破坏术 LV4
+1/400 火焰场 LV4
+1/50 嗜血术 LV4
+1/150 镜 LV4
+1/1200 暴风雪 LV4
+1/1400 魔法增益 LV4
+1/1600 流星火雨 LV4
+1/2000 疾步 LV4
+1/2200 冰刺 LV4
 1/2400 FrozenRains LV4
 1/2600 LavaKing LV4
-1/3000 暴Escape LV4
+1/3000 暴走 LV4
 
 
 ;Taosit
 1/25 召唤神兽 LV4
-1/30 UltimateEnhancer LV4
-1/30 EnergyRepulsor LV4
-1/50 Purification LV4
-1/50 Hallucination LV4
-1/100 Healing轮 LV4
+1/30 强化火符 LV4
+1/30 气功波 LV4
+1/50 净化术 LV4
+1/50 迷魂术 LV4
+1/100 治愈轮 LV4
 1/200 召唤圣精灵 LV4
 1/1200 诅咒 LV4
-1/1400 毒Cloud LV4
-1/1800 PetEnhancer LV4
-1/2000 Energy盾 LV4
+1/1400 毒云 LV4
+1/1800 宠物强化 LV4
+1/2000 能量盾 LV4
 1/2300 HolyShield LV4
 1/2600 HeadShot LV4
 
@@ -1321,19 +1321,19 @@
 1/30 陷阱 LV4
 1/30 毒剑 LV4
 1/50 月轻 LV4
-1/50 魔法Eater LV4
-1/100 SwiftFeet LV4
-1/200 暗Body LV4
-1/1200 Hemorrhage LV4
+1/50 魔法噬 LV4
+1/100 疾风步 LV4
+1/200 暗身 LV4
+1/1200 出血术 LV4
 1/1400 FuryWaves LV4
 
-1/25 BindingShot LV4
+1/25 束缚射击 LV4
 1/30 召唤蟾蜍 LV4
-1/30 毒Shot LV4
-1/50 CrippleShot LV4
+1/30 毒射 LV4
+1/50 致残射击 LV4
 1/50 召唤魅惑之蛇 LV4
-1/90 NapalmShot LV4
-1/1400 OneWith自然 LV4
+1/90 燃烧射击 LV4
+1/1400 自然合一 LV4
 
 
 ;CraftingMaterials
@@ -1364,15 +1364,15 @@
 1/2 特制魔法药 LV5
 1/1 太阳水 LV5
 1/2 太阳水 LV5
-1/1 太阳药水(M) LV5
-1/2 太阳药水(M) LV5
+1/1 太阳药水(男) LV5
+1/2 太阳药水(男) LV5
 
-1/10 Impact药(L) LV5
-1/10 魔法药(L) LV5
-1/10 道士药(L) LV5
-1/10 暴药(L) LV5
+1/10 冲击药(大) LV5
+1/10 魔法药(大) LV5
+1/10 道士药(大) LV5
+1/10 暴药(大) LV5
 
-1/1 BenedictionOil LV5
+1/1 祝福油 LV5
 1/3 GoldenBenedictionOil LV5
 
 1/100 MirKingRune LV5
@@ -1384,154 +1384,154 @@
 
 ;Weapons
 ;Warrior
-1/75 JudgementMace LV5
-1/75 Fiend弓 LV5
+1/75 审判权杖 LV5
+1/75 魔弓 LV5
 1/100 战争之灵刃 LV5
 1/100 轻盈弓 LV5
 1/125 凶煞弓 LV5
 1/125 龙斩杀 LV5
 1/150 剑之战争神 LV5
-1/150 弓之Force LV5
+1/150 弓之力 LV5
 
 ;Wizard
 1/75 战争法师杖 LV5
-1/100 魔法Scythe LV5
+1/100 魔法镰 LV5
 1/125 龙杖 LV5
-1/150 刃之Sorcery LV5
+1/150 刃之魔法 LV5
 
 ;Taoist
 1/75 魂泉杖 LV5
-1/100 石Bamboo扇 LV5
+1/100 石竹扇 LV5
 1/125 魂军刀 LV5
 1/150 天剑 LV5
 
 ;Assassin
-1/75 刃之暗ness LV5
+1/75 刃之暗黑 LV5
 1/100 冰冻刃 LV5
 1/125 皇家刃 LV5
-1/150 刃之Magi LV5
+1/150 刃之秘法 LV5
 
 ;Weapons Rare
 1/300 冰封军刀 LV5
-1/300 Grim弓 LV5
-1/300 Conqueror矛 LV5
-1/300 Bastard剑 LV5
-1/300 Zinc刃 LV5
+1/300 严酷弓 LV5
+1/300 征服者矛 LV5
+1/300 浪人剑 LV5
+1/300 锌刃 LV5
 1/400 黑虎锤 LV5
-1/400 Lethal弓 LV5
+1/400 致命弓 LV5
 1/400 杖之莲 LV5
-1/400 扇之Crane LV5
-1/400 Butchering刃 LV5
+1/400 扇之鹤 LV5
+1/400 屠刃 LV5
 1/500 蛮兵剑 LV5
-1/500 Apus弓 LV5
-1/500 Raw剑 LV5
-1/500 骨Carved扇 LV5
-1/500 Mad龙刃 LV5
+1/500 天燕弓 LV5
+1/500 生剑 LV5
+1/500 骨雕扇 LV5
+1/500 狂龙刃 LV5
 1/1700 米尔剑 LV5
 
 
 ;Armour
-1/15 Studded甲(M) LV5
-1/15 Studded甲(F) LV5
-1/15 钢甲(M) LV5
-1/15 钢甲(F) LV5
-1/15 龙袍(M) LV5
-1/15 龙袍(F) LV5
-1/15 泰坦甲(M) LV5
-1/15 泰坦甲(F) LV5
-1/15 皇家甲(M) LV5
-1/15 皇家甲(F) LV5
+1/15 钉甲(男) LV5
+1/15 钉甲(女) LV5
+1/15 钢甲(男) LV5
+1/15 钢甲(女) LV5
+1/15 龙袍(男) LV5
+1/15 龙袍(女) LV5
+1/15 泰坦甲(男) LV5
+1/15 泰坦甲(女) LV5
+1/15 皇家甲(男) LV5
+1/15 皇家甲(女) LV5
 
 
 ;Armour Rare
-1/1200 天甲(M) LV5
-1/1200 天甲(F) LV5
+1/1200 天甲(男) LV5
+1/1200 天甲(女) LV5
 1/1200 HeavenArcheyRobe(M) LV5
 1/1200 HeavenArcheyRobe(F) LV5
-1/1500 天甲(M) LV5
-1/1500 天甲(F) LV5
+1/1500 天甲(男) LV5
+1/1500 天甲(女) LV5
 1/1500 HeavenRedArmour(M) LV5
 1/1500 HeavenRedArmour(F) LV5
 1/1500 HeavenGrnArmour(M) LV5
 1/1500 HeavenGrnArmour(F) LV5
 1/1500 HeavenGoldArmour(M) LV5
 1/1500 HeavenGoldArmour(F) LV5
-1/1700 米尔甲(M) LV5
-1/1700 米尔甲(F) LV5
+1/1700 米尔甲(男) LV5
+1/1700 米尔甲(女) LV5
 
 
 ;Helmets
 1/30 黑铁盔 LV5
 1/10 盔之英雄 LV5
 1/35 巨盔 LV5
-1/40 WisdomCoronet LV5
-1/40 道Coronet LV5
+1/40 智慧冠 LV5
+1/40 道冠 LV5
 
 
 ;Helmets Rare
 1/200 MajesticHelmet LV5
 1/400 ExternalHelmet LV5
-1/500 Sparkling盔 LV5
+1/500 闪耀盔 LV5
 1/600 PuiYuHelmet LV5
 1/2000 米尔盔 LV5
 
 
 ;Necklace
-1/50 绿Bead LV5
-1/50 魔icBells LV5
+1/50 绿珠 LV5
+1/50 魔法铃铛 LV5
 1/50 魂项链 LV5
 1/90 英雄项链 LV5
 1/90 精金项链 LV5
-1/90 Requiem项链 LV5
+1/90 安魂项链 LV5
 
 ;Necklace Rare
 1/255 MajesticNecklace LV5
 1/400 ExternalNecklace LV5
-1/500 Cuspid项链 LV5
-1/500 SorceryAnchor LV5
-1/500 Purified镜 LV5
-1/750 邪Triangle LV5
-1/750 CrossPurified LV5
-1/750 Adamant项链 LV5
+1/500 尖牙项链 LV5
+1/500 魔法锚 LV5
+1/500 净化镜 LV5
+1/750 邪三角 LV5
+1/750 净化十字 LV5
+1/750 精钢项链 LV5
 1/2000 米尔项链 LV5
 
 
 ;Bracelets
-1/170 8Trigram轮 LV5
-1/170 HangMa轮 LV5
-1/170 BokMa轮 LV5
-1/190 BaekTa手套 LV5
-1/190 之灵Reformer LV5
+1/170 八卦轮 LV5
+1/170 降魔轮 LV5
+1/170 伏魔轮 LV5
+1/190 白打手套 LV5
+1/190 之灵改革者 LV5
 1/190 圣道轮 LV5
 
 ;Bracelets Rare
 1/205 MajesticWheel LV5
 1/400 ExternalWheel LV5
-1/500 Dual泰坦护符 LV5
-1/500 Sacred天使护符 LV5
-1/500 邪Whisp护符 LV5
-1/750 Wild泰坦护符 LV5
-1/750 Enchanted护符 LV5
+1/500 双泰坦护符 LV5
+1/500 圣天使护符 LV5
+1/500 邪灵护符 LV5
+1/750 野泰坦护符 LV5
+1/750 附魔护符 LV5
 1/750 五元素护符 LV5
 1/2000 米尔轮 LV5
 
 
 ;Rings
 1/50 奥玛之灵戒 LV5
-1/60 Noble戒 LV5
+1/60 高贵戒 LV5
 1/60 魂戒 LV5
-1/70 Boundless戒 LV5
+1/70 无量戒 LV5
 1/70 雷戒 LV5
-1/70 TaeGuk戒 LV5
+1/70 太极戒 LV5
 
 ;Rings Rare
 1/200 MajesticRing LV5
 1/400 ExternalRing LV5
-1/500 Pledge戒 LV5
+1/500 誓约戒 LV5
 1/500 五元素戒 LV5
-1/500 Crimson红宝石戒 LV5
+1/500 深红红宝石戒 LV5
 1/750 魔红宝石戒 LV5
-1/750 邪Expel戒 LV5
+1/750 邪驱散戒 LV5
 1/750 金龙戒 LV5
 1/2000 米尔戒 LV5
 
@@ -1604,47 +1604,47 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV5
-1/30 CrossHalf月 LV5
+1/30 十字半月 LV5
 1/50 双生龙兽刃 LV5
-1/50 狮Roar LV5
-1/50 Entrapment LV5
+1/50 狮子吼 LV5
+1/50 擒龙手 LV5
 1/60 BladeStorm LV5
-1/150 刃Avalanche LV5
-1/1200 防护Field LV5
-1/1400 Rage LV5
-1/1600 Fury LV5
-1/2000 Counter攻击 LV5
-1/2600 ImmortalSkin LV5
+1/150 崩山剑法 LV5
+1/1200 防护场 LV5
+1/1400 怒之煞 LV5
+1/1600 狂怒 LV5
+1/2000 反击 LV5
+1/2600 金刚不坏 LV5
 
 ;Wizard
-1/10 霜Crunch LV5
+1/10 冰咆哮 LV5
 1/25 冰暴 LV5
-1/30 火焰Disruptor LV5
-1/400 火焰Field LV5
-1/50 Vampirism LV5
-1/150 镜ing LV5
-1/1200 Blizzard LV5
-1/1400 魔法Booster LV5
-1/1600 MeteorStrike LV5
-1/2000 FastMove LV5
-1/2200 冰Thrust LV5
+1/30 火焰破坏术 LV5
+1/400 火焰场 LV5
+1/50 嗜血术 LV5
+1/150 镜 LV5
+1/1200 暴风雪 LV5
+1/1400 魔法增益 LV5
+1/1600 流星火雨 LV5
+1/2000 疾步 LV5
+1/2200 冰刺 LV5
 1/2400 FrozenRains LV5
 1/2600 LavaKing LV5
-1/3000 暴Escape LV5
+1/3000 暴走 LV5
 
 
 ;Taosit
 1/25 召唤神兽 LV5
-1/30 UltimateEnhancer LV5
-1/30 EnergyRepulsor LV5
-1/50 Purification LV5
-1/50 Hallucination LV5
-1/100 Healing轮 LV5
+1/30 强化火符 LV5
+1/30 气功波 LV5
+1/50 净化术 LV5
+1/50 迷魂术 LV5
+1/100 治愈轮 LV5
 1/200 召唤圣精灵 LV5
 1/1200 诅咒 LV5
-1/1400 毒Cloud LV5
-1/1800 PetEnhancer LV5
-1/2000 Energy盾 LV5
+1/1400 毒云 LV5
+1/1800 宠物强化 LV5
+1/2000 能量盾 LV5
 1/2300 HolyShield LV5
 1/2600 HeadShot LV5
 
@@ -1653,19 +1653,19 @@
 1/30 陷阱 LV5
 1/30 毒剑 LV5
 1/50 月轻 LV5
-1/50 魔法Eater LV5
-1/100 SwiftFeet LV5
-1/200 暗Body LV5
-1/1200 Hemorrhage LV5
+1/50 魔法噬 LV5
+1/100 疾风步 LV5
+1/200 暗身 LV5
+1/1200 出血术 LV5
 1/1400 FuryWaves LV5
 
-1/25 BindingShot LV5
+1/25 束缚射击 LV5
 1/30 召唤蟾蜍 LV5
-1/30 毒Shot LV5
-1/50 CrippleShot LV5
+1/30 毒射 LV5
+1/50 致残射击 LV5
 1/50 召唤魅惑之蛇 LV5
-1/90 NapalmShot LV5
-1/1400 OneWith自然 LV5
+1/90 燃烧射击 LV5
+1/1400 自然合一 LV5
 
 
 ;CraftingMaterials
@@ -1696,15 +1696,15 @@
 1/2 特制魔法药 LV6
 1/1 太阳水 LV6
 1/2 太阳水 LV6
-1/1 太阳药水(M) LV6
-1/2 太阳药水(M) LV6
+1/1 太阳药水(男) LV6
+1/2 太阳药水(男) LV6
 
-1/10 Impact药(L) LV6
-1/10 魔法药(L) LV6
-1/10 道士药(L) LV6
-1/10 暴药(L) LV6
+1/10 冲击药(大) LV6
+1/10 魔法药(大) LV6
+1/10 道士药(大) LV6
+1/10 暴药(大) LV6
 
-1/1 BenedictionOil LV6
+1/1 祝福油 LV6
 1/3 GoldenBenedictionOil LV6
 
 1/100 MirKingRune LV6
@@ -1716,154 +1716,154 @@
 
 ;Weapons
 ;Warrior
-1/75 JudgementMace LV6
-1/75 Fiend弓 LV6
+1/75 审判权杖 LV6
+1/75 魔弓 LV6
 1/100 轻盈弓 LV6
 1/100 战争之灵刃 LV6
 1/125 龙斩杀 LV6
 1/150 剑之战争神 LV6
 1/125 凶煞弓 LV6
-1/150 弓之Force LV6
+1/150 弓之力 LV6
 
 ;Wizard
 1/75 战争法师杖 LV6
-1/100 魔法Scythe LV6
+1/100 魔法镰 LV6
 1/125 龙杖 LV6
-1/150 刃之Sorcery LV6
+1/150 刃之魔法 LV6
 
 ;Taoist
 1/75 魂泉杖 LV6
-1/100 石Bamboo扇 LV6
+1/100 石竹扇 LV6
 1/125 魂军刀 LV6
 1/150 天剑 LV6
 
 ;Assassin
-1/75 刃之暗ness LV6
+1/75 刃之暗黑 LV6
 1/100 冰冻刃 LV6
 1/125 皇家刃 LV6
-1/150 刃之Magi LV6
+1/150 刃之秘法 LV6
 
 ;Weapons Rare
 1/300 冰封军刀 LV6
-1/300 Grim弓 LV6
-1/300 Conqueror矛 LV6
-1/300 Bastard剑 LV6
-1/300 Zinc刃 LV6
+1/300 严酷弓 LV6
+1/300 征服者矛 LV6
+1/300 浪人剑 LV6
+1/300 锌刃 LV6
 1/400 黑虎锤 LV6
-1/400 Lethal弓 LV6
+1/400 致命弓 LV6
 1/400 杖之莲 LV6
-1/400 扇之Crane LV6
-1/400 Butchering刃 LV6
+1/400 扇之鹤 LV6
+1/400 屠刃 LV6
 1/500 蛮兵剑 LV6
-1/500 Raw剑 LV6
-1/500 Apus弓 LV6
-1/500 骨Carved扇 LV6
-1/500 Mad龙刃 LV6
+1/500 生剑 LV6
+1/500 天燕弓 LV6
+1/500 骨雕扇 LV6
+1/500 狂龙刃 LV6
 1/1700 米尔剑 LV6
 
 
 ;Armour
-1/15 Studded甲(M) LV6
-1/15 Studded甲(F) LV6
-1/15 钢甲(M) LV6
-1/15 钢甲(F) LV6
-1/15 龙袍(M) LV6
-1/15 龙袍(F) LV6
-1/15 泰坦甲(M) LV6
-1/15 泰坦甲(F) LV6
-1/15 皇家甲(M) LV6
-1/15 皇家甲(F) LV6
+1/15 钉甲(男) LV6
+1/15 钉甲(女) LV6
+1/15 钢甲(男) LV6
+1/15 钢甲(女) LV6
+1/15 龙袍(男) LV6
+1/15 龙袍(女) LV6
+1/15 泰坦甲(男) LV6
+1/15 泰坦甲(女) LV6
+1/15 皇家甲(男) LV6
+1/15 皇家甲(女) LV6
 
 
 ;Armour Rare
-1/1200 天甲(M) LV6
-1/1200 天甲(F) LV6
+1/1200 天甲(男) LV6
+1/1200 天甲(女) LV6
 1/1200 HeavenArcheyRobe(M) LV6
 1/1200 HeavenArcheyRobe(F) LV6
-1/1500 天甲(M) LV6
-1/1500 天甲(F) LV6
+1/1500 天甲(男) LV6
+1/1500 天甲(女) LV6
 1/1500 HeavenRedArmour(M) LV6
 1/1500 HeavenRedArmour(F) LV6
 1/1500 HeavenGrnArmour(M) LV6
 1/1500 HeavenGrnArmour(F) LV6
 1/1500 HeavenGoldArmour(M) LV6
 1/1500 HeavenGoldArmour(F) LV6
-1/1700 米尔甲(M) LV6
-1/1700 米尔甲(F) LV6
+1/1700 米尔甲(男) LV6
+1/1700 米尔甲(女) LV6
 
 
 ;Helmets
 1/30 黑铁盔 LV6
 1/10 盔之英雄 LV6
 1/35 巨盔 LV6
-1/40 WisdomCoronet LV6
-1/40 道Coronet LV6
+1/40 智慧冠 LV6
+1/40 道冠 LV6
 
 
 ;Helmets Rare
 1/200 MajesticHelmet LV6
 1/400 ExternalHelmet LV6
-1/500 Sparkling盔 LV6
+1/500 闪耀盔 LV6
 1/600 PuiYuHelmet LV6
 1/2000 米尔盔 LV6
 
 
 ;Necklace
-1/50 绿Bead LV6
-1/50 魔icBells LV6
+1/50 绿珠 LV6
+1/50 魔法铃铛 LV6
 1/50 魂项链 LV6
 1/90 英雄项链 LV6
 1/90 精金项链 LV6
-1/90 Requiem项链 LV6
+1/90 安魂项链 LV6
 
 ;Necklace Rare
 1/255 MajesticNecklace LV6
 1/400 ExternalNecklace LV6
-1/500 Cuspid项链 LV6
-1/500 SorceryAnchor LV6
-1/500 Purified镜 LV6
-1/750 邪Triangle LV6
-1/750 CrossPurified LV6
-1/750 Adamant项链 LV6
+1/500 尖牙项链 LV6
+1/500 魔法锚 LV6
+1/500 净化镜 LV6
+1/750 邪三角 LV6
+1/750 净化十字 LV6
+1/750 精钢项链 LV6
 1/2000 米尔项链 LV6
 
 
 ;Bracelets
-1/170 8Trigram轮 LV6
-1/170 HangMa轮 LV6
-1/170 BokMa轮 LV6
-1/190 BaekTa手套 LV6
-1/190 之灵Reformer LV6
+1/170 八卦轮 LV6
+1/170 降魔轮 LV6
+1/170 伏魔轮 LV6
+1/190 白打手套 LV6
+1/190 之灵改革者 LV6
 1/190 圣道轮 LV6
 
 ;Bracelets Rare
 1/205 MajesticWheel LV6
 1/400 ExternalWheel LV6
-1/500 Dual泰坦护符 LV6
-1/500 Sacred天使护符 LV6
-1/500 邪Whisp护符 LV6
-1/750 Wild泰坦护符 LV6
-1/750 Enchanted护符 LV6
+1/500 双泰坦护符 LV6
+1/500 圣天使护符 LV6
+1/500 邪灵护符 LV6
+1/750 野泰坦护符 LV6
+1/750 附魔护符 LV6
 1/750 五元素护符 LV6
 1/2000 米尔轮 LV6
 
 
 ;Rings
 1/50 奥玛之灵戒 LV6
-1/60 Noble戒 LV6
+1/60 高贵戒 LV6
 1/60 魂戒 LV6
-1/70 Boundless戒 LV6
+1/70 无量戒 LV6
 1/70 雷戒 LV6
-1/70 TaeGuk戒 LV6
+1/70 太极戒 LV6
 
 ;Rings Rare
 1/200 MajesticRing LV6
 1/400 ExternalRing LV6
-1/500 Pledge戒 LV6
+1/500 誓约戒 LV6
 1/500 五元素戒 LV6
-1/500 Crimson红宝石戒 LV6
+1/500 深红红宝石戒 LV6
 1/750 魔红宝石戒 LV6
-1/750 邪Expel戒 LV6
+1/750 邪驱散戒 LV6
 1/750 金龙戒 LV6
 1/2000 米尔戒 LV6
 
@@ -1936,47 +1936,47 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV6
-1/30 CrossHalf月 LV6
+1/30 十字半月 LV6
 1/50 双生龙兽刃 LV6
-1/50 狮Roar LV6
-1/50 Entrapment LV6
+1/50 狮子吼 LV6
+1/50 擒龙手 LV6
 1/60 BladeStorm LV6
-1/150 刃Avalanche LV6
-1/1200 防护Field LV6
-1/1400 Rage LV6
-1/1600 Fury LV6
-1/2000 Counter攻击 LV6
-1/2600 ImmortalSkin LV6
+1/150 崩山剑法 LV6
+1/1200 防护场 LV6
+1/1400 怒之煞 LV6
+1/1600 狂怒 LV6
+1/2000 反击 LV6
+1/2600 金刚不坏 LV6
 
 ;Wizard
-1/10 霜Crunch LV6
+1/10 冰咆哮 LV6
 1/25 冰暴 LV6
-1/30 火焰Disruptor LV6
-1/400 火焰Field LV6
-1/50 Vampirism LV6
-1/150 镜ing LV6
-1/1200 Blizzard LV6
-1/1400 魔法Booster LV6
-1/1600 MeteorStrike LV6
-1/2000 FastMove LV6
-1/2200 冰Thrust LV6
+1/30 火焰破坏术 LV6
+1/400 火焰场 LV6
+1/50 嗜血术 LV6
+1/150 镜 LV6
+1/1200 暴风雪 LV6
+1/1400 魔法增益 LV6
+1/1600 流星火雨 LV6
+1/2000 疾步 LV6
+1/2200 冰刺 LV6
 1/2400 FrozenRains LV6
 1/2600 LavaKing LV6
-1/3000 暴Escape LV6
+1/3000 暴走 LV6
 
 
 ;Taosit
 1/25 召唤神兽 LV6
-1/30 UltimateEnhancer LV6
-1/30 EnergyRepulsor LV6
-1/50 Purification LV6
-1/50 Hallucination LV6
-1/100 Healing轮 LV6
+1/30 强化火符 LV6
+1/30 气功波 LV6
+1/50 净化术 LV6
+1/50 迷魂术 LV6
+1/100 治愈轮 LV6
 1/200 召唤圣精灵 LV6
 1/1200 诅咒 LV6
-1/1400 毒Cloud LV6
-1/1800 PetEnhancer LV6
-1/2000 Energy盾 LV6
+1/1400 毒云 LV6
+1/1800 宠物强化 LV6
+1/2000 能量盾 LV6
 1/2300 HolyShield LV6
 1/2600 HeadShot LV6
 
@@ -1985,19 +1985,19 @@
 1/30 陷阱 LV6
 1/30 毒剑 LV6
 1/50 月轻 LV6
-1/50 魔法Eater LV6
-1/100 SwiftFeet LV6
-1/200 暗Body LV6
-1/1200 Hemorrhage LV6
+1/50 魔法噬 LV6
+1/100 疾风步 LV6
+1/200 暗身 LV6
+1/1200 出血术 LV6
 1/1400 FuryWaves LV6
 
-1/25 BindingShot LV6
+1/25 束缚射击 LV6
 1/30 召唤蟾蜍 LV6
-1/30 毒Shot LV6
-1/50 CrippleShot LV6
+1/30 毒射 LV6
+1/50 致残射击 LV6
 1/50 召唤魅惑之蛇 LV6
-1/90 NapalmShot LV6
-1/1400 OneWith自然 LV6
+1/90 燃烧射击 LV6
+1/1400 自然合一 LV6
 
 
 ;CraftingMaterials
@@ -2028,15 +2028,15 @@
 1/2 特制魔法药 LV7
 1/1 太阳水 LV7
 1/2 太阳水 LV7
-1/1 太阳药水(M) LV7
-1/2 太阳药水(M) LV7
+1/1 太阳药水(男) LV7
+1/2 太阳药水(男) LV7
 
-1/10 Impact药(L) LV7
-1/10 魔法药(L) LV7
-1/10 道士药(L) LV7
-1/10 暴药(L) LV7
+1/10 冲击药(大) LV7
+1/10 魔法药(大) LV7
+1/10 道士药(大) LV7
+1/10 暴药(大) LV7
 
-1/1 BenedictionOil LV7
+1/1 祝福油 LV7
 1/3 GoldenBenedictionOil LV7
 
 1/100 MirKingRune LV7
@@ -2048,154 +2048,154 @@
 
 ;Weapons
 ;Warrior
-1/75 JudgementMace LV7
+1/75 审判权杖 LV7
 1/100 战争之灵刃 LV7
 1/100 轻盈弓 LV7
 1/125 龙斩杀 LV7
 1/125 凶煞弓 LV7
 1/150 剑之战争神 LV7
-1/150 弓之Force LV7
-1/75 Fiend弓 LV7
+1/150 弓之力 LV7
+1/75 魔弓 LV7
 
 ;Wizard
 1/75 战争法师杖 LV7
-1/100 魔法Scythe LV7
+1/100 魔法镰 LV7
 1/125 龙杖 LV7
-1/150 刃之Sorcery LV7
+1/150 刃之魔法 LV7
 
 ;Taoist
 1/75 魂泉杖 LV7
-1/100 石Bamboo扇 LV7
+1/100 石竹扇 LV7
 1/125 魂军刀 LV7
 1/150 天剑 LV7
 
 ;Assassin
-1/75 刃之暗ness LV7
+1/75 刃之暗黑 LV7
 1/100 冰冻刃 LV7
 1/125 皇家刃 LV7
-1/150 刃之Magi LV7
+1/150 刃之秘法 LV7
 
 ;Weapons Rare
 1/300 冰封军刀 LV7
-1/300 Grim弓 LV7
-1/300 Conqueror矛 LV7
-1/300 Bastard剑 LV7
-1/300 Zinc刃 LV7
+1/300 严酷弓 LV7
+1/300 征服者矛 LV7
+1/300 浪人剑 LV7
+1/300 锌刃 LV7
 1/400 黑虎锤 LV7
-1/400 Lethal弓 LV7
+1/400 致命弓 LV7
 1/400 杖之莲 LV7
-1/400 扇之Crane LV7
-1/400 Butchering刃 LV7
+1/400 扇之鹤 LV7
+1/400 屠刃 LV7
 1/500 蛮兵剑 LV7
-1/500 Raw剑 LV7
-1/500 Apus弓 LV7
-1/500 骨Carved扇 LV7
-1/500 Mad龙刃 LV7
+1/500 生剑 LV7
+1/500 天燕弓 LV7
+1/500 骨雕扇 LV7
+1/500 狂龙刃 LV7
 1/1700 米尔剑 LV7
 
 
 ;Armour
-1/15 Studded甲(M) LV7
-1/15 Studded甲(F) LV7
-1/15 钢甲(M) LV7
-1/15 钢甲(F) LV7
-1/15 龙袍(M) LV7
-1/15 龙袍(F) LV7
-1/15 泰坦甲(M) LV7
-1/15 泰坦甲(F) LV7
-1/15 皇家甲(M) LV7
-1/15 皇家甲(F) LV7
+1/15 钉甲(男) LV7
+1/15 钉甲(女) LV7
+1/15 钢甲(男) LV7
+1/15 钢甲(女) LV7
+1/15 龙袍(男) LV7
+1/15 龙袍(女) LV7
+1/15 泰坦甲(男) LV7
+1/15 泰坦甲(女) LV7
+1/15 皇家甲(男) LV7
+1/15 皇家甲(女) LV7
 
 
 ;Armour Rare
-1/1200 天甲(M) LV7
-1/1200 天甲(F) LV7
+1/1200 天甲(男) LV7
+1/1200 天甲(女) LV7
 1/1200 HeavenArcheyRobe(M) LV7
 1/1200 HeavenArcheyRobe(F) LV7
-1/1500 天甲(M) LV7
-1/1500 天甲(F) LV7
+1/1500 天甲(男) LV7
+1/1500 天甲(女) LV7
 1/1500 HeavenRedArmour(M) LV7
 1/1500 HeavenRedArmour(F) LV7
 1/1500 HeavenGrnArmour(M) LV7
 1/1500 HeavenGrnArmour(F) LV7
 1/1500 HeavenGoldArmour(M) LV7
 1/1500 HeavenGoldArmour(F) LV7
-1/1700 米尔甲(M) LV7
-1/1700 米尔甲(F) LV7
+1/1700 米尔甲(男) LV7
+1/1700 米尔甲(女) LV7
 
 
 ;Helmets
 1/30 黑铁盔 LV7
 1/10 盔之英雄 LV7
 1/35 巨盔 LV7
-1/40 WisdomCoronet LV7
-1/40 道Coronet LV7
+1/40 智慧冠 LV7
+1/40 道冠 LV7
 
 
 ;Helmets Rare
 1/200 MajesticHelmet LV7
 1/400 ExternalHelmet LV7
-1/500 Sparkling盔 LV7
+1/500 闪耀盔 LV7
 1/600 PuiYuHelmet LV7
 1/2000 米尔盔 LV7
 
 
 ;Necklace
-1/50 绿Bead LV7
-1/50 魔icBells LV7
+1/50 绿珠 LV7
+1/50 魔法铃铛 LV7
 1/50 魂项链 LV7
 1/90 英雄项链 LV7
 1/90 精金项链 LV7
-1/90 Requiem项链 LV7
+1/90 安魂项链 LV7
 
 ;Necklace Rare
 1/255 MajesticNecklace LV7
 1/400 ExternalNecklace LV7
-1/500 Cuspid项链 LV7
-1/500 SorceryAnchor LV7
-1/500 Purified镜 LV7
-1/750 邪Triangle LV7
-1/750 CrossPurified LV7
-1/750 Adamant项链 LV7
+1/500 尖牙项链 LV7
+1/500 魔法锚 LV7
+1/500 净化镜 LV7
+1/750 邪三角 LV7
+1/750 净化十字 LV7
+1/750 精钢项链 LV7
 1/2000 米尔项链 LV7
 
 
 ;Bracelets
-1/170 8Trigram轮 LV7
-1/170 HangMa轮 LV7
-1/170 BokMa轮 LV7
-1/190 BaekTa手套 LV7
-1/190 之灵Reformer LV7
+1/170 八卦轮 LV7
+1/170 降魔轮 LV7
+1/170 伏魔轮 LV7
+1/190 白打手套 LV7
+1/190 之灵改革者 LV7
 1/190 圣道轮 LV7
 
 ;Bracelets Rare
 1/205 MajesticWheel LV7
 1/400 ExternalWheel LV7
-1/500 Dual泰坦护符 LV7
-1/500 Sacred天使护符 LV7
-1/500 邪Whisp护符 LV7
-1/750 Wild泰坦护符 LV7
-1/750 Enchanted护符 LV7
+1/500 双泰坦护符 LV7
+1/500 圣天使护符 LV7
+1/500 邪灵护符 LV7
+1/750 野泰坦护符 LV7
+1/750 附魔护符 LV7
 1/750 五元素护符 LV7
 1/2000 米尔轮 LV7
 
 
 ;Rings
 1/50 奥玛之灵戒 LV7
-1/60 Noble戒 LV7
+1/60 高贵戒 LV7
 1/60 魂戒 LV7
-1/70 Boundless戒 LV7
+1/70 无量戒 LV7
 1/70 雷戒 LV7
-1/70 TaeGuk戒 LV7
+1/70 太极戒 LV7
 
 ;Rings Rare
 1/200 MajesticRing LV7
 1/400 ExternalRing LV7
-1/500 Pledge戒 LV7
+1/500 誓约戒 LV7
 1/500 五元素戒 LV7
-1/500 Crimson红宝石戒 LV7
+1/500 深红红宝石戒 LV7
 1/750 魔红宝石戒 LV7
-1/750 邪Expel戒 LV7
+1/750 邪驱散戒 LV7
 1/750 金龙戒 LV7
 1/2000 米尔戒 LV7
 
@@ -2268,47 +2268,47 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV7
-1/30 CrossHalf月 LV7
+1/30 十字半月 LV7
 1/50 双生龙兽刃 LV7
-1/50 狮Roar LV7
-1/50 Entrapment LV7
+1/50 狮子吼 LV7
+1/50 擒龙手 LV7
 1/60 BladeStorm LV7
-1/150 刃Avalanche LV7
-1/1200 防护Field LV7
-1/1400 Rage LV7
-1/1600 Fury LV7
-1/2000 Counter攻击 LV7
-1/2600 ImmortalSkin LV7
+1/150 崩山剑法 LV7
+1/1200 防护场 LV7
+1/1400 怒之煞 LV7
+1/1600 狂怒 LV7
+1/2000 反击 LV7
+1/2600 金刚不坏 LV7
 
 ;Wizard
-1/10 霜Crunch LV7
+1/10 冰咆哮 LV7
 1/25 冰暴 LV7
-1/30 火焰Disruptor LV7
-1/400 火焰Field LV7
-1/50 Vampirism LV7
-1/150 镜ing LV7
-1/1200 Blizzard LV7
-1/1400 魔法Booster LV7
-1/1600 MeteorStrike LV7
-1/2000 FastMove LV7
-1/2200 冰Thrust LV7
+1/30 火焰破坏术 LV7
+1/400 火焰场 LV7
+1/50 嗜血术 LV7
+1/150 镜 LV7
+1/1200 暴风雪 LV7
+1/1400 魔法增益 LV7
+1/1600 流星火雨 LV7
+1/2000 疾步 LV7
+1/2200 冰刺 LV7
 1/2400 FrozenRains LV7
 1/2600 LavaKing LV7
-1/3000 暴Escape LV7
+1/3000 暴走 LV7
 
 
 ;Taosit
 1/25 召唤神兽 LV7
-1/30 UltimateEnhancer LV7
-1/30 EnergyRepulsor LV7
-1/50 Purification LV7
-1/50 Hallucination LV7
-1/100 Healing轮 LV7
+1/30 强化火符 LV7
+1/30 气功波 LV7
+1/50 净化术 LV7
+1/50 迷魂术 LV7
+1/100 治愈轮 LV7
 1/200 召唤圣精灵 LV7
 1/1200 诅咒 LV7
-1/1400 毒Cloud LV7
-1/1800 PetEnhancer LV7
-1/2000 Energy盾 LV7
+1/1400 毒云 LV7
+1/1800 宠物强化 LV7
+1/2000 能量盾 LV7
 1/2300 HolyShield LV7
 1/2600 HeadShot LV7
 
@@ -2317,19 +2317,19 @@
 1/30 陷阱 LV7
 1/30 毒剑 LV7
 1/50 月轻 LV7
-1/50 魔法Eater LV7
-1/100 SwiftFeet LV7
-1/200 暗Body LV7
-1/1200 Hemorrhage LV7
+1/50 魔法噬 LV7
+1/100 疾风步 LV7
+1/200 暗身 LV7
+1/1200 出血术 LV7
 1/1400 FuryWaves LV7
 
-1/25 BindingShot LV7
+1/25 束缚射击 LV7
 1/30 召唤蟾蜍 LV7
-1/30 毒Shot LV7
-1/50 CrippleShot LV7
+1/30 毒射 LV7
+1/50 致残射击 LV7
 1/50 召唤魅惑之蛇 LV7
-1/90 NapalmShot LV7
-1/1400 OneWith自然 LV7
+1/90 燃烧射击 LV7
+1/1400 自然合一 LV7
 
 
 ;CraftingMaterials
@@ -2361,15 +2361,15 @@
 1/2 特制魔法药 LV8
 1/1 太阳水 LV8
 1/2 太阳水 LV8
-1/1 太阳药水(M) LV8
-1/2 太阳药水(M) LV8
+1/1 太阳药水(男) LV8
+1/2 太阳药水(男) LV8
 
-1/10 Impact药(L) LV8
-1/10 魔法药(L) LV8
-1/10 道士药(L) LV8
-1/10 暴药(L) LV8
+1/10 冲击药(大) LV8
+1/10 魔法药(大) LV8
+1/10 道士药(大) LV8
+1/10 暴药(大) LV8
 
-1/1 BenedictionOil LV8
+1/1 祝福油 LV8
 1/3 GoldenBenedictionOil LV8
 
 1/100 MirKingRune LV8
@@ -2381,154 +2381,154 @@
 
 ;Weapons
 ;Warrior
-1/75 JudgementMace LV8
-1/75 Fiend弓 LV8
+1/75 审判权杖 LV8
+1/75 魔弓 LV8
 1/100 战争之灵刃 LV8
 1/100 轻盈弓 LV8
 1/125 龙斩杀 LV8
 1/125 凶煞弓 LV8
 1/150 剑之战争神 LV8
-1/150 弓之Force LV8
+1/150 弓之力 LV8
 
 ;Wizard
 1/75 战争法师杖 LV8
-1/100 魔法Scythe LV8
+1/100 魔法镰 LV8
 1/125 龙杖 LV8
-1/150 刃之Sorcery LV8
+1/150 刃之魔法 LV8
 
 ;Taoist
 1/75 魂泉杖 LV8
-1/100 石Bamboo扇 LV8
+1/100 石竹扇 LV8
 1/125 魂军刀 LV8
 1/150 天剑 LV8
 
 ;Assassin
-1/75 刃之暗ness LV8
+1/75 刃之暗黑 LV8
 1/100 冰冻刃 LV8
 1/125 皇家刃 LV8
-1/150 刃之Magi LV8
+1/150 刃之秘法 LV8
 
 ;Weapons Rare
 1/300 冰封军刀 LV8
-1/300 Grim弓 LV8
-1/300 Conqueror矛 LV8
-1/300 Bastard剑 LV8
-1/300 Zinc刃 LV8
+1/300 严酷弓 LV8
+1/300 征服者矛 LV8
+1/300 浪人剑 LV8
+1/300 锌刃 LV8
 1/400 黑虎锤 LV8
-1/400 Lethal弓 LV8
+1/400 致命弓 LV8
 1/400 杖之莲 LV8
-1/400 扇之Crane LV8
-1/400 Butchering刃 LV8
+1/400 扇之鹤 LV8
+1/400 屠刃 LV8
 1/500 蛮兵剑 LV8
-1/500 Raw剑 LV8
-1/500 Apus弓 LV8
-1/500 骨Carved扇 LV8
-1/500 Mad龙刃 LV8
+1/500 生剑 LV8
+1/500 天燕弓 LV8
+1/500 骨雕扇 LV8
+1/500 狂龙刃 LV8
 1/1700 米尔剑 LV8
 
 
 ;Armour
-1/15 Studded甲(M) LV8
-1/15 Studded甲(F) LV8
-1/15 钢甲(M) LV8
-1/15 钢甲(F) LV8
-1/15 龙袍(M) LV8
-1/15 龙袍(F) LV8
-1/15 泰坦甲(M) LV8
-1/15 泰坦甲(F) LV8
-1/15 皇家甲(M) LV8
-1/15 皇家甲(F) LV8
+1/15 钉甲(男) LV8
+1/15 钉甲(女) LV8
+1/15 钢甲(男) LV8
+1/15 钢甲(女) LV8
+1/15 龙袍(男) LV8
+1/15 龙袍(女) LV8
+1/15 泰坦甲(男) LV8
+1/15 泰坦甲(女) LV8
+1/15 皇家甲(男) LV8
+1/15 皇家甲(女) LV8
 
 
 ;Armour Rare
-1/1200 天甲(M) LV8
-1/1200 天甲(F) LV8
+1/1200 天甲(男) LV8
+1/1200 天甲(女) LV8
 1/1200 HeavenArcheyRobe(M) LV8
 1/1200 HeavenArcheyRobe(F) LV8
-1/1500 天甲(M) LV8
-1/1500 天甲(F) LV8
+1/1500 天甲(男) LV8
+1/1500 天甲(女) LV8
 1/1500 HeavenRedArmour(M) LV8
 1/1500 HeavenRedArmour(F) LV8
 1/1500 HeavenGrnArmour(M) LV8
 1/1500 HeavenGrnArmour(F) LV8
 1/1500 HeavenGoldArmour(M) LV8
 1/1500 HeavenGoldArmour(F) LV8
-1/1700 米尔甲(M) LV8
-1/1700 米尔甲(F) LV8
+1/1700 米尔甲(男) LV8
+1/1700 米尔甲(女) LV8
 
 
 ;Helmets
 1/30 黑铁盔 LV8
 1/10 盔之英雄 LV8
 1/35 巨盔 LV8
-1/40 WisdomCoronet LV8
-1/40 道Coronet LV8
+1/40 智慧冠 LV8
+1/40 道冠 LV8
 
 
 ;Helmets Rare
 1/200 MajesticHelmet LV8
 1/400 ExternalHelmet LV8
-1/500 Sparkling盔 LV8
+1/500 闪耀盔 LV8
 1/600 PuiYuHelmet LV8
 1/2000 米尔盔 LV8
 
 
 ;Necklace
-1/50 绿Bead LV8
-1/50 魔icBells LV8
+1/50 绿珠 LV8
+1/50 魔法铃铛 LV8
 1/50 魂项链 LV8
 1/90 英雄项链 LV8
 1/90 精金项链 LV8
-1/90 Requiem项链 LV8
+1/90 安魂项链 LV8
 
 ;Necklace Rare
 1/255 MajesticNecklace LV8
 1/400 ExternalNecklace LV8
-1/500 Cuspid项链 LV8
-1/500 SorceryAnchor LV8
-1/500 Purified镜 LV8
-1/750 邪Triangle LV8
-1/750 CrossPurified LV8
-1/750 Adamant项链 LV8
+1/500 尖牙项链 LV8
+1/500 魔法锚 LV8
+1/500 净化镜 LV8
+1/750 邪三角 LV8
+1/750 净化十字 LV8
+1/750 精钢项链 LV8
 1/2000 米尔项链 LV8
 
 
 ;Bracelets
-1/170 8Trigram轮 LV8
-1/170 HangMa轮 LV8
-1/170 BokMa轮 LV8
-1/190 BaekTa手套 LV8
-1/190 之灵Reformer LV8
+1/170 八卦轮 LV8
+1/170 降魔轮 LV8
+1/170 伏魔轮 LV8
+1/190 白打手套 LV8
+1/190 之灵改革者 LV8
 1/190 圣道轮 LV8
 
 ;Bracelets Rare
 1/205 MajesticWheel LV8
 1/400 ExternalWheel LV8
-1/500 Dual泰坦护符 LV8
-1/500 Sacred天使护符 LV8
-1/500 邪Whisp护符 LV8
-1/750 Wild泰坦护符 LV8
-1/750 Enchanted护符 LV8
+1/500 双泰坦护符 LV8
+1/500 圣天使护符 LV8
+1/500 邪灵护符 LV8
+1/750 野泰坦护符 LV8
+1/750 附魔护符 LV8
 1/750 五元素护符 LV8
 1/2000 米尔轮 LV8
 
 
 ;Rings
 1/50 奥玛之灵戒 LV8
-1/60 Noble戒 LV8
+1/60 高贵戒 LV8
 1/60 魂戒 LV8
-1/70 Boundless戒 LV8
+1/70 无量戒 LV8
 1/70 雷戒 LV8
-1/70 TaeGuk戒 LV8
+1/70 太极戒 LV8
 
 ;Rings Rare
 1/200 MajesticRing LV8
 1/400 ExternalRing LV8
-1/500 Pledge戒 LV8
+1/500 誓约戒 LV8
 1/500 五元素戒 LV8
-1/500 Crimson红宝石戒 LV8
+1/500 深红红宝石戒 LV8
 1/750 魔红宝石戒 LV8
-1/750 邪Expel戒 LV8
+1/750 邪驱散戒 LV8
 1/750 金龙戒 LV8
 1/2000 米尔戒 LV8
 
@@ -2601,47 +2601,47 @@
 ;Books
 ;Warrior
 1/25 烈焰剑 LV8
-1/30 CrossHalf月 LV8
+1/30 十字半月 LV8
 1/50 双生龙兽刃 LV8
-1/50 狮Roar LV8
-1/50 Entrapment LV8
+1/50 狮子吼 LV8
+1/50 擒龙手 LV8
 1/60 BladeStorm LV8
-1/150 刃Avalanche LV8
-1/1200 防护Field LV8
-1/1400 Rage LV8
-1/1600 Fury LV8
-1/2000 Counter攻击 LV8
-1/2600 ImmortalSkin LV8
+1/150 崩山剑法 LV8
+1/1200 防护场 LV8
+1/1400 怒之煞 LV8
+1/1600 狂怒 LV8
+1/2000 反击 LV8
+1/2600 金刚不坏 LV8
 
 ;Wizard
-1/10 霜Crunch LV8
+1/10 冰咆哮 LV8
 1/25 冰暴 LV8
-1/30 火焰Disruptor LV8
-1/400 火焰Field LV8
-1/50 Vampirism LV8
-1/150 镜ing LV8
-1/1200 Blizzard LV8
-1/1400 魔法Booster LV8
-1/1600 MeteorStrike LV8
-1/2000 FastMove LV8
-1/2200 冰Thrust LV8
+1/30 火焰破坏术 LV8
+1/400 火焰场 LV8
+1/50 嗜血术 LV8
+1/150 镜 LV8
+1/1200 暴风雪 LV8
+1/1400 魔法增益 LV8
+1/1600 流星火雨 LV8
+1/2000 疾步 LV8
+1/2200 冰刺 LV8
 1/2400 FrozenRains LV8
 1/2600 LavaKing LV8
-1/3000 暴Escape LV8
+1/3000 暴走 LV8
 
 
 ;Taosit
 1/25 召唤神兽 LV8
-1/30 UltimateEnhancer LV8
-1/30 EnergyRepulsor LV8
-1/50 Purification LV8
-1/50 Hallucination LV8
-1/100 Healing轮 LV8
+1/30 强化火符 LV8
+1/30 气功波 LV8
+1/50 净化术 LV8
+1/50 迷魂术 LV8
+1/100 治愈轮 LV8
 1/200 召唤圣精灵 LV8
 1/1200 诅咒 LV8
-1/1400 毒Cloud LV8
-1/1800 PetEnhancer LV8
-1/2000 Energy盾 LV8
+1/1400 毒云 LV8
+1/1800 宠物强化 LV8
+1/2000 能量盾 LV8
 1/2300 HolyShield LV8
 1/2600 HeadShot LV8
 
@@ -2650,19 +2650,19 @@
 1/30 陷阱 LV8
 1/30 毒剑 LV8
 1/50 月轻 LV8
-1/50 魔法Eater LV8
-1/100 SwiftFeet LV8
-1/200 暗Body LV8
-1/1200 Hemorrhage LV8
+1/50 魔法噬 LV8
+1/100 疾风步 LV8
+1/200 暗身 LV8
+1/1200 出血术 LV8
 1/1400 FuryWaves LV8
 
-1/25 BindingShot LV8
+1/25 束缚射击 LV8
 1/30 召唤蟾蜍 LV8
-1/30 毒Shot LV8
-1/50 CrippleShot LV8
+1/30 毒射 LV8
+1/50 致残射击 LV8
 1/50 召唤魅惑之蛇 LV8
-1/90 NapalmShot LV8
-1/1400 OneWith自然 LV8
+1/90 燃烧射击 LV8
+1/1400 自然合一 LV8
 
 
 ;CraftingMaterials

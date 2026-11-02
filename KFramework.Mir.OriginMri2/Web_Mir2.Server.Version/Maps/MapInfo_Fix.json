@@ -40789,7 +40789,7 @@
   {
     "Index": 5086,
     "FileName": "5086",
-    "Title": "药品出售间",
+    "Title": "Medicine出售间",
     "MiniMap": 5086,
     "BigMap": 5086,
     "Music": 0,
@@ -41013,7 +41013,7 @@
   {
     "Index": 5094,
     "FileName": "5094",
-    "Title": "铁灯笼屋",
+    "Title": "铁Lantern屋",
     "MiniMap": 5094,
     "BigMap": 5094,
     "Music": 0,
@@ -41041,7 +41041,7 @@
   {
     "Index": 5095,
     "FileName": "5095",
-    "Title": "紫水晶屋",
+    "Title": "Amethyst屋",
     "MiniMap": 5095,
     "BigMap": 5095,
     "Music": 0,
@@ -82469,7 +82469,7 @@
   {
     "Index": 5375,
     "FileName": "5375",
-    "Title": "药品店",
+    "Title": "Medicine店",
     "MiniMap": 5375,
     "BigMap": 5375,
     "Music": 0,

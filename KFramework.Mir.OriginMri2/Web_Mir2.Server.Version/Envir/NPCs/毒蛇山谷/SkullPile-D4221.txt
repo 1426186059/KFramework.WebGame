@@ -24,4 +24,4 @@ MOVE LABY01
 #ELSESAY
 你需要持有 {卷轴之印/LightSteelBlue} 才能进入！
  
-<关闭/@Exit>
+<关闭/@退出>

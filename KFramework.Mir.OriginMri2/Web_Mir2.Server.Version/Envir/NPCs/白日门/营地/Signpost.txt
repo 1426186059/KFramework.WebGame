@@ -7,7 +7,7 @@
 <武器店/@go-weap>   <防具店/@go-cloth>   <饰品店/@go-access>   
 <杂货店/@go-pot>   <书店/@go-book>
 
-<关闭/@Exit>
+<关闭/@退出>
  
 [@go-weap]
 #ACT

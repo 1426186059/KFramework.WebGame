@@ -18,7 +18,7 @@ GOTO @Main-1
  
 <List/@Buy> 可购买的蛋。
  
-<关闭/@Exit>
+<关闭/@退出>
 
 [@Buy]
 #SAY

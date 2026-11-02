@@ -12,7 +12,7 @@ GOTO @NPCNUMBER
  
 你的 PK 点数：<$PKPOINT>
  
-<离开/@Exit>
+<离开/@退出>
 
 [@NPCNUMBER]
 #IF

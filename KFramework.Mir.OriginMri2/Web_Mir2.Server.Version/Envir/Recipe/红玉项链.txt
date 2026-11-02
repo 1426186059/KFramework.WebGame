@@ -7,5 +7,5 @@ Gold 1000
 
 [Ingredients]
 铜矿 1 12000
-Amber项链
+琥珀项链
 红线 10

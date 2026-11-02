@@ -45,7 +45,7 @@ GOTO @Main-1
 [@lvl1-3]
 #SAY
 如果你想要安全的狩猎，可以试试城镇附近的
-母鸡、鹿和绵羊。它们在你攻击之前不会反击。
+母鸡、鹿和绵羊。它们在你攻击之前不会Counter攻击。
 事实上，你可以获得一些新鲜的<肉/@slicemeat>，
 把它卖给任意城镇的屠夫，就能换到钱。
 
@@ -56,7 +56,7 @@ GOTO @Main-1
 切肉：从鸡、鹿等家养动物身上获取肉。
 点击这些动物的尸体（Alt+左键），切肉后即可获得肉。
 
-采矿：装备 Pick斧 进行挖矿。左键点击会自动进行采矿。
+采矿：装备 镐斧 进行挖矿。左键点击会自动进行采矿。
 获得的矿石将作为合成物品或出售的原材料。
 
 <返回/@basic>              <下一页/@slicemeatnext>
@@ -92,7 +92,7 @@ GOTO @Main-1
 [@level11-21]
 #SAY
 11 级开始可以进入地牢。那是一个黑暗的地方，
-蜡烛和地牢逃脱卷被认为是必备物品。
+Candle和DungeonEscape卷被认为是必备物品。
 此外，由于远离城镇，请准备好足够的药水。
 
 <LV 11~14/@lvl11-14>      <LV 14~17/@lvl14-17>      <LV 17~22/@lvl17-22>
@@ -113,7 +113,7 @@ GOTO @Main-1
 如果你想要更高经验的洞穴，去比奇省西北方的
 奥玛洞穴。这是米尔世界中第一个地牢，会出现
 洞穴蝙蝠、洞穴蛆和骷髅。
-带上蜡烛、回城卷和足够的药水。
+带上Candle、TeleportHome和足够的药水。
 它位于远离城镇的地方。
 但要特别当心洞穴蛆的毒，你可能会麻痹。
 
@@ -196,11 +196,11 @@ GOTO @Main-1
 选择你想了解的任何技能。
 记住，战士技能全部为近战类型。
 
-<Fencing 7/@fencing>      <ShoulderDash 30/@sdash>     <LionsRoar 36/@lionsroar>
-<Slaying 15/@slaying>     <双生龙兽刃 32/@tdb>     <CrossHalf月 38/@chm>
-<Thrusting 22/@thrusting>     <Entrapment 32/@entrapment>     <刃Avalanche 38/@BA>
-<Half月 26/@Half月>     <烈焰剑 35/@fsword>     <Rage 44/@rage>
-<防护Field 39/@profield>
+<基本剑术 7/@fencing>      <野蛮冲撞 30/@sdash>     <狮吼 36/@lionsroar>
+<攻杀剑术 15/@slaying>     <双生龙兽刃 32/@tdb>     <十字半月 38/@chm>
+<刺杀剑术 22/@thrusting>     <擒龙手 32/@entrapment>     <崩山剑法 38/@BA>
+<半月弯刀 26/@半月弯刀>     <烈焰剑 35/@fsword>     <怒之煞 44/@rage>
+<防护领域 39/@profield>
 
 <返回/@combat>                 <返回主菜单/@main>
 
@@ -211,9 +211,9 @@ GOTO @Main-1
 进行多重攻击。但消耗大量魔法值。
 
 <火球 7/@火球>     <地狱火 16/@地狱火>     <火墙 24/@fwall>
-<Repulsion 12/@repulse>     <雷弩箭 17/@tbolt>     <雷 26/@雷>
-<ElecShock 13/@eshock>     <Teleport 19/@tele>     <霜Crunch 28/@fcrunch>
-<巨火球 15/@gfball>     <火Bang 22/@fbang>     <雷暴 30/@tstorm>
+<抗拒火环 12/@repulse>     <雷弩箭 17/@tbolt>     <雷 26/@雷>
+<电击术 13/@eshock>     <瞬息移动 19/@tele>     <冰咆哮 28/@fcrunch>
+<巨火球 15/@gfball>     <火爆 22/@fbang>     <雷暴 30/@tstorm>
 
 <返回/@combat>              <下一页/@wizskill2>
 
@@ -221,11 +221,11 @@ GOTO @Main-1
 #SAY
 法师技能第 2 页：
 
-<魔法盾 31/@mshield>     <镜ing 41/@mirror>
-<TurnUndead 32/@turnundead>     <火焰Field 42/@ffield>
-<Vampirism 33/@vamp>     <Blizzard 44/@blizzard>
-<冰暴 35/@冰暴>   <MeteorStrike 49/@meteor>
-<火焰Disruptor 38/@fdisrupt>
+<魔法盾 31/@mshield>     <镜 41/@mirror>
+<圣言术 32/@turnundead>     <火焰领域 42/@ffield>
+<嗜血术 33/@vamp>     <暴风雪 44/@blizzard>
+<冰暴 35/@冰暴>   <流星火雨 49/@meteor>
+<火焰破坏者 38/@fdisrupt>
 
 <返回/@combat>                   <返回主菜单/@main>
 
@@ -234,10 +234,10 @@ GOTO @Main-1
 道士技能第 1 页：
 只有道士可以使用符咒或毒作为技能之一。
 
-<Healing 7/@healing>     <召唤骷髅 19/@summonskel>     <Revelation 23/@rev>
-<之灵剑 9/@ssword>     <Hiding 20/@hiding>     <祝福ed甲 25/@blessarm>
-<毒ing 14/@poison>     <MassHiding 21/@masshide>     <EnergyRepulsor 27/@energyrep>
-<魂火球 18/@sfb>   <魂盾 22/@魂盾>   <陷阱Hexagon 28/@traphex>
+<治愈术 7/@healing>     <召唤骷髅 19/@summonskel>     <启示术 23/@rev>
+<之灵剑 9/@ssword>     <隐身术 20/@hiding>     <祝福之甲 25/@blessarm>
+<毒 14/@poison>     <群体隐身术 21/@masshide>     <能量冲击 27/@energyrep>
+<魂火球 18/@sfb>   <魂盾 22/@魂盾>   <六边陷阱 28/@traphex>
 
 <返回/@combat>                         <下一页/@taoskill2>
 
@@ -245,9 +245,9 @@ GOTO @Main-1
 #SAY
 道士技能第 2 页：
 
-<Purification 30/@puri>     <MassHealing 31/@massheal>     <Hallucination 31/@halluc>
-<UltimateEnhancer 33/@ultimateenhance>     <召唤神兽 35/@summonshin>     <Reincarnation 37/@rein>
-<召唤圣精灵 38/@summondeva>     <诅咒 40/@诅咒>     <毒Cloud 43/@毒Cloud>
+<净化 30/@puri>     <群体治疗 31/@massheal>     <幻觉术 31/@halluc>
+<终极强化 33/@ultimateenhance>     <召唤神兽 35/@summonshin>     <轮回 37/@rein>
+<召唤圣精灵 38/@summondeva>     <诅咒 40/@诅咒>     <毒云术 43/@毒云术>
 
 <返回/@combat>                         <返回主菜单/@main>
 
@@ -263,7 +263,7 @@ GOTO @Main-1
 <双Slash 15/@双Slash>     <Heavenly剑 30/@Heavenly剑>     <月轻 36/@月轻>
 <Haste 20/@haste>     <火Burst 33/@火Burst>     <魔法Eater 38/@mpeater>
 <FlashDash 25/@flashdash>     <陷阱 33/@陷阱>     <SwiftFeet 40/@swiftfeet>
-<暗Body 46/@暗Body>     <CresentSlash 50/@cresentslash>     <Hemorrhage 47/@hemorrhage>
+<暗Body 46/@暗Body>     <CresentSlash 50/@cresentslash>     <出血 47/@hemorrhage>
 
 <返回/@combat>              <返回主菜单/@main>
 
@@ -278,9 +278,9 @@ GOTO @Main-1
 被击中的人带来恐惧。
 
 <Focus 7/@focus>     <元素alShot 20/@elementalshot>     <Backstep 30/@backstep>
-<StraightShot 9/@straightshot>     <Explosive陷阱 22/@Explosive陷阱>     <DelayedExplosion 31/@delayedexplosion>
-<MentalState 11/@mentalstate>     <Concentration 23/@concentration>     <元素alBarrier 33/@elementalbarrier>
-<双Shot 14/@双Shot>     <VampireShot 26/@vampireshot>     <BindingShot 35/@bindingshot>
+<直射射击 9/@straightshot>     <爆炸陷阱 22/@爆炸陷阱>     <DelayedExplosion 31/@delayedexplosion>
+<MentalState 11/@mentalstate>     <Concentration 23/@concentration>     <元素屏障 33/@elementalbarrier>
+<双Shot 14/@双Shot>     <吸血射击 26/@vampireshot>     <束缚射击 35/@bindingshot>
 <Meditation 19/@meditation>     <召唤吸血蜘蛛 28/@召唤吸血蜘蛛>
 
 <返回/@combat>              <下一页/@arcskill2>
@@ -289,8 +289,8 @@ GOTO @Main-1
 #SAY
 弓箭手技能第 2 页：
 
-<召唤蟾蜍 37/@召唤蟾蜍>     <毒Shot 40/@毒Shot>     <CrippleShot 43/@crippleshot>
-<召唤魅惑之蛇 46/@召唤魅惑之蛇>     <NapalmShot 48/@napalmshot>     <OneWith自然 50/@OneWith自然>
+<召唤蟾蜍 37/@召唤蟾蜍>     <毒Shot 40/@毒Shot>     <致残射击 43/@crippleshot>
+<召唤魅惑之蛇 46/@召唤魅惑之蛇>     <燃烧射击 48/@napalmshot>     <OneWith自然 50/@OneWith自然>
 
 <返回/@combat>                         <返回主菜单/@main>
 
@@ -299,7 +299,7 @@ GOTO @Main-1
 
 [@fencing]
 #SAY
-Fencing (等级 7)
+基本剑术 (等级 7)
 
 命中准确率会随着熟练等级的提升而增加。
 
@@ -307,7 +307,7 @@ Fencing (等级 7)
 
 [@slaying]
 #SAY
-Slaying (等级 15)
+攻杀剑术 (等级 15)
 
 命中准确率和破坏力会随着熟练等级的提升而增加。
 
@@ -315,16 +315,16 @@ Slaying (等级 15)
 
 [@thrusting]
 #SAY
-Thrusting (等级 22)
+刺杀剑术 (等级 22)
 
 连续攻击正前方两人。点击以开启或关闭技能。
 不消耗魔法值。
 
 <返回/@warrskill>                     <返回主菜单/@main>
 
-[@Half月]
+[@半月弯刀]
 #SAY
-Half月 (等级 26)
+半月 (等级 26)
 
 一次性伤害附近的 4 个敌人。消耗魔法值。
 
@@ -332,7 +332,7 @@ Half月 (等级 26)
 
 [@sdash]
 #SAY
-ShoulderDash (等级 30)
+野蛮冲撞 (等级 30)
 
 用肩膀冲撞将敌人推开，若撞到障碍物则造成伤害。
 对高等级敌人无效。
@@ -353,7 +353,7 @@ ShoulderDash (等级 30)
 
 [@entrapment]
 #SAY
-Entrapment (等级 32)
+擒龙手 (等级 32)
 
 拉拽附近的一名敌人。
 消耗魔法值。
@@ -372,7 +372,7 @@ Entrapment (等级 32)
 
 [@lionsroar]
 #SAY
-LionsRoar (等级 36)
+狮吼 (等级 36)
 
 以一定概率麻痹 5x5 范围内的敌人。
 对高等级敌人无效。
@@ -382,7 +382,7 @@ LionsRoar (等级 36)
 
 [@chm]
 #SAY
-CrossHalf月 (等级 38)
+十字半月 (等级 38)
 
 一次性攻击附近 8 点钟方向的所有敌人。
 必须点击技能键。消耗魔法值。
@@ -391,7 +391,7 @@ CrossHalf月 (等级 38)
 
 [@BA]
 #SAY
-刃Avalanche (等级 38)
+崩山剑法 (等级 38)
 
 对远处敌人进行多重范围攻击。
 消耗魔法值。
@@ -400,7 +400,7 @@ CrossHalf月 (等级 38)
 
 [@rage]
 #SAY
-Rage (等级 44)
+怒之煞 (等级 44)
 
 增强内力，在一段时间内提升其威力。
 防御力和持续时间取决于技能等级。
@@ -410,7 +410,7 @@ Rage (等级 44)
 
 [@profield]
 #SAY
-防护Field (等级 39)
+防护场 (等级 39)
 
 凝聚内力并将其扩散到全身。
 这会增强对敌人的防护。
@@ -430,7 +430,7 @@ Rage (等级 44)
 
 [@repulse]
 #SAY
-Repulsion (等级 12)
+抗拒火环 (等级 12)
 
 可将 8 点钟方向的怪物和人推开。
 对高等级敌人无效。
@@ -440,7 +440,7 @@ Repulsion (等级 12)
 
 [@eshock]
 #SAY
-ElecShock (等级 13)
+电击术 (等级 13)
 
 一种通过瞬间释放强电击来麻痹或迷惑敌人的技能，
 对驯服怪物也很有用。
@@ -479,7 +479,7 @@ ElecShock (等级 13)
 
 [@tele]
 #SAY
-Teleport (等级 19)
+瞬息移动 (等级 19)
 
 让法师瞬间移动到比奇省内的随机地点。
 技能训练会提高降落在城镇附近的概率。
@@ -489,7 +489,7 @@ Teleport (等级 19)
 
 [@fbang]
 #SAY
-火Bang (等级 22)
+火爆 (等级 22)
 
 制造一个 3x3 方格的高温火闪，
 瞬间伤害范围内的每个敌人。
@@ -517,7 +517,7 @@ Teleport (等级 19)
 
 [@fcrunch]
 #SAY
-霜Crunch (等级 28)
+冰咆哮 (等级 28)
 
 利用冰之力量进行冻结的技艺。
 施放时会随机冻结敌人，冻结后它们的
@@ -548,7 +548,7 @@ Teleport (等级 19)
 
 [@turnundead]
 #SAY
-TurnUndead (等级 32)
+圣言术 (等级 32)
 
 专克不死系怪物。
 技能等级达到最高时，可一击必杀。
@@ -558,7 +558,7 @@ TurnUndead (等级 32)
 
 [@vamp]
 #SAY
-Vampirism (等级 33)
+嗜血术 (等级 33)
 吸收敌人的力量来恢复玩家自身的力量。
 消耗魔法值。
 
@@ -575,7 +575,7 @@ Vampirism (等级 33)
 
 [@fdisrupt]
 #SAY
-火焰Disruptor (等级 38)
+火焰破坏术 (等级 38)
 
 无论任何障碍（实体物体），在敌人身上制造
 一道强力的火柱。
@@ -585,7 +585,7 @@ Vampirism (等级 33)
 
 [@mirror]
 #SAY
-镜ing (等级 41)
+镜 (等级 41)
 
 制造一个分身与你一同战斗。点击技能时分身出现，
 再点击一次则移除分身。
@@ -595,7 +595,7 @@ Vampirism (等级 33)
 
 [@ffield]
 #SAY
-火焰Field (等级 42)
+火焰场 (等级 42)
 
 以可怕的火焰进行 5x5 范围攻击。（最多同时 24 个敌人）
 消耗魔法值。
@@ -604,7 +604,7 @@ Vampirism (等级 33)
 
 [@blizzard]
 #SAY
-Blizzard (等级 44)
+暴风雪 (等级 44)
 
 用从天而降的火流星攻击某一区域内的所有怪物。
 这会烧毁区域内的所有物体。
@@ -616,7 +616,7 @@ Blizzard (等级 44)
 
 [@meteor]
 #SAY
-MeteorStrike (等级 49)
+流星火雨 (等级 49)
 
 用从天而降的火流星攻击某一区域内的所有怪物。
 这会烧毁区域内的所有物体。
@@ -628,7 +628,7 @@ MeteorStrike (等级 49)
 ------------------------------------------------------------------------------------------------------
 [@healing]
 #SAY
-Healing (等级 7)
+治愈术 (等级 7)
 治疗自己或其他玩家。
 消耗魔法值。
 
@@ -644,7 +644,7 @@ Healing (等级 7)
 
 [@poison]
 #SAY
-毒ing (等级 14)
+毒 (等级 14)
 
 一种在一段时间内持续对敌人造成伤害的毒。
 消耗魔法值和毒粉。
@@ -673,7 +673,7 @@ Healing (等级 7)
 
 [@hiding]
 #SAY
-Hiding (等级 20)
+隐身术 (等级 20)
 
 通过隐藏踪迹使怪物无法看见你。使用此技能后，
 只要不移动或攻击，就不会被看见。
@@ -685,7 +685,7 @@ Hiding (等级 20)
 
 [@masshide]
 #SAY
-MassHiding (等级 21)
+集体隐身术 (等级 21)
 
 隐身技能的升级版，也能让其他玩家隐身。
 若所有人都在 3x3 方格区域内，最多 9 人可隐身。
@@ -705,7 +705,7 @@ MassHiding (等级 21)
 
 [@rev]
 #SAY
-Revelation (等级 23)
+心灵启示 (等级 23)
 揭示其他人的血量（玩家或怪物）。
 其持续时间会随着熟练等级和道术力量而延长。
 消耗魔法值。
@@ -714,7 +714,7 @@ Revelation (等级 23)
 
 [@blessarm]
 #SAY
-祝福ed甲 (等级 25)
+祝福甲 (等级 25)
 
 提升物理防御力，并影响玩家周围的人。
 持续时间随熟练等级提升。
@@ -724,7 +724,7 @@ Revelation (等级 23)
 
 [@energyrep]
 #SAY
-EnergyRepulsor (等级 27)
+气功波 (等级 27)
 
 一股能量波，将站在旁边（8 点钟方向）的
 任何物体击退。
@@ -735,7 +735,7 @@ EnergyRepulsor (等级 27)
 
 [@traphex]
 #SAY
-陷阱Hexagon (等级 28)
+陷阱六角 (等级 28)
 
 困住一只怪物——将其与外界隔离。
 如果靠近六边形，陷阱会消失。
@@ -748,7 +748,7 @@ EnergyRepulsor (等级 27)
 
 [@puri]
 #SAY
-Purification (等级 30)
+净化术 (等级 30)
 
 用暗之力净化中毒或腐坏的身体。
 消耗魔法值和护符。
@@ -757,7 +757,7 @@ Purification (等级 30)
 
 [@massheal]
 #SAY
-MassHealing (等级 31)
+集体治愈术 (等级 31)
 
 同时治疗数名玩家，3x3 方格最多 9 人。
 消耗魔法值。
@@ -766,7 +766,7 @@ MassHealing (等级 31)
 
 [@halluc]
 #SAY
-Hallucination (等级 31)
+迷魂术 (等级 31)
 
 使敌人陷入混乱，自相残杀。
 消耗魔法值和护符。
@@ -775,7 +775,7 @@ Hallucination (等级 31)
 
 [@ultimateenhance]
 #SAY
-UltimateEnhancer (等级 33)
+强化火符 (等级 33)
 
 提升物理攻击。
 消耗魔法值和护符。
@@ -810,7 +810,7 @@ UltimateEnhancer (等级 33)
 
 [@rein]
 #SAY
-Reincarnation (等级 37)
+复活术 (等级 37)
 
 道士的至高技能，可以复活死亡的玩家。
 此技能需要较长的施法时间，若被攻击施法会取消。
@@ -819,11 +819,11 @@ Reincarnation (等级 37)
 
 <返回/@taoskill>                     <返回主菜单/@main>
 
-[@毒Cloud]
+[@毒云术]
 #SAY
-毒Cloud (等级 43)
+毒云 (等级 43)
 
-投掷护符后，区域内会出现一团极强的毒云。
+投掷护符后，区域内会出现一团极强的毒云术。
 这需要高度的道术和意念集中。
 使用技能后，必须等待才能再次使用。
 需要灰毒。
@@ -834,7 +834,7 @@ Reincarnation (等级 37)
 
 [@focus]
 #SAY
-Focus (等级 7)
+专注 (等级 7)
 
 被动提升物理攻击的命中几率。
 并可触发暴击造成额外伤害。
@@ -843,7 +843,7 @@ Focus (等级 7)
 
 [@straightshot]
 #SAY
-StraightShot (等级 9)
+直线射击 (等级 9)
 
 为你的箭注入魔力以造成额外伤害。
 
@@ -851,7 +851,7 @@ StraightShot (等级 9)
 
 [@mentalstate]
 #SAY
-MentalState (等级 11)
+心智术 (等级 11)
 
 待补充
 
@@ -859,7 +859,7 @@ MentalState (等级 11)
 
 [@双Shot]
 #SAY
-双Shot (等级 14)
+双射 (等级 14)
 
 向目标射出双箭。
 
@@ -867,7 +867,7 @@ MentalState (等级 11)
 
 [@meditation]
 #SAY
-Meditation (等级 19)
+冥想术 (等级 19)
 
 攻击怪物时可聚集元素。
 最多可获得 4 个元素。
@@ -876,7 +876,7 @@ Meditation (等级 19)
 
 [@elementalshot]
 #SAY
-元素alShot (等级 20)
+元素射 (等级 20)
 
 高伤害魔法攻击。伤害随元素数量增加。
 若无元素则生成 2 个元素。若弓箭手等级更高，
@@ -884,9 +884,9 @@ Meditation (等级 19)
 
 <返回/@arcskill>                     <返回主菜单/@main>
 
-[@Explosive陷阱]
+[@爆炸陷阱]
 #SAY
-Explosive陷阱 (等级 22)
+爆裂陷阱 (等级 22)
 
 布置一排接触敌人即爆炸的陷阱。
 
@@ -894,7 +894,7 @@ Explosive陷阱 (等级 22)
 
 [@concentration]
 #SAY
-Concentration (等级 23)
+凝神术 (等级 23)
 
 激活时提升聚集元素的几率。
 
@@ -920,7 +920,7 @@ VamnpireShot (等级 26)
 
 [@backstep]
 #SAY
-BackStep (等级 30)
+后撤步 (等级 30)
 
 向后跳跃脱离危险。
 
@@ -928,7 +928,7 @@ BackStep (等级 30)
 
 [@delayedexplosion]
 #SAY
-DelayedExplosion (等级 31)
+延时爆炸 (等级 31)
 
 射出一支延迟爆炸的箭。
 聚集更多元素可造成更高伤害。
@@ -937,7 +937,7 @@ DelayedExplosion (等级 31)
 
 [@elementalbarrier]
 #SAY
-元素alBarrier (等级 33)
+元素屏障 (等级 33)
 
 用元素屏障保护施法者。
 施放时元素越多，减伤越多。
@@ -946,7 +946,7 @@ DelayedExplosion (等级 31)
 
 [@bindingshot]
 #SAY
-BindingShot (等级 35)
+束缚射击 (等级 35)
 
 待补充
 
@@ -963,7 +963,7 @@ BindingShot (等级 35)
 
 [@毒Shot]
 #SAY
-毒Shot (等级 40)
+毒射 (等级 40)
 
 向绿毒敌人射出毒箭。
 最多持续 15 秒。有几率获得毒 Buff，
@@ -973,7 +973,7 @@ BindingShot (等级 35)
 
 [@crippleshot]
 #SAY
-CrippleShot (等级 43)
+致残射击 (等级 43)
 
 一种具有增强效果的特殊箭。
 毒 Shot Buff 会让残废箭产生 3×3 的 AOE 毒攻击。
@@ -991,7 +991,7 @@ CrippleShot (等级 43)
 
 [@napalmshot]
 #SAY
-NapalmShot (等级 48)
+燃烧射击 (等级 48)
 
 射出一支在目标周围 5×5 半径内爆炸的箭。
 
@@ -999,7 +999,7 @@ NapalmShot (等级 48)
 
 [@OneWith自然]
 #SAY
-OneWith自然 (等级 50)
+自然合一 (等级 50)
 
 在弓箭手周围召唤一个元素环，对弓箭手
 5×5 半径内的所有目标造成伤害。

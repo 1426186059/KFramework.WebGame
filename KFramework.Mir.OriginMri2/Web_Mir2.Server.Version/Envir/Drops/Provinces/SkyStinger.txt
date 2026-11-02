@@ -6,9 +6,9 @@
 1/5 小魔法药 
 
 ;Scrolls
-1/50 镇Teleport 
-1/40 镇Teleport 
-1/50 镇Teleport 
+1/50 镇传送 
+1/40 镇传送 
+1/50 镇传送 
 
 ;Crafting Materials
 1/100 天毒刺蛋

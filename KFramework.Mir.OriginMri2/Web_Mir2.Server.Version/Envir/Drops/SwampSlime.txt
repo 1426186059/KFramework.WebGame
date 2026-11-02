@@ -15,7 +15,7 @@
 1/15000 AncientPlate(F)
 1/15000 AncientSuit(M)
 1/15000 AncientSuit(F)
-1/15000 远古皮革(M)
+1/15000 远古皮革
 1/15000 远古皮革(F)
 
 ;Weapons

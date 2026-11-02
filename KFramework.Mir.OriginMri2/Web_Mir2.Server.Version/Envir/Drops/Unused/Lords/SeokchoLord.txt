@@ -10,7 +10,7 @@
 1/1 太阳水
 1/1 太阳水
 1/1 太阳水
-1/1 BenedictionOil
+1/1 祝福油
 1/10 GoldenBenedictionOil
 
 1/1 觉醒魂0
@@ -20,25 +20,25 @@
 
 ;Weapons
 1/100 冰封军刀
-1/100 Grim弓
-1/100 Conqueror矛
-1/100 Bastard剑
+1/100 严酷弓
+1/100 征服者矛
+1/100 浪人剑
 1/200 黑虎锤
-1/200 Lethal弓
+1/200 致命弓
 1/200 杖之莲
-1/200 扇之Crane
+1/200 扇之鹤
 1/300 剑之战争神
-1/300 弓之Force
-1/300 刃之Sorcery
+1/300 弓之力
+1/300 刃之魔法
 1/300 天剑
-1/400 Burst剑
-1/400 Dread弓
+1/400 烈火剑
+1/400 恐惧弓
 1/400 圣血矛
 1/400 龙血剑
-1/600 Apus弓
+1/600 天燕弓
 1/600 蛮兵剑
-1/600 Raw剑
-1/900 骨Carved扇
+1/600 生剑
+1/900 骨雕扇
 1/1300 地狱阎罗刃
 1/2000 PriestSlayer
 1/2000 PriestStaff
@@ -51,16 +51,16 @@
 
 
 ;Armour
-1/1000 天甲(M)
-1/1000 天甲(F)
+1/1000 天甲(男)
+1/1000 天甲(女)
 1/1000 HeavenArcheyRobe(M)
 1/1000 HeavenArcheyRobe(F)
 1/1200 HeavenGrnArmour(M)
 1/1200 HeavenGrnArmour(F)
 1/1200 HeavenRedArmour(M)
 1/1200 HeavenRedArmour(F)
-1/1200 天甲(M)
-1/1200 天甲(F)
+1/1200 天甲(男)
+1/1200 天甲(女)
 1/1200 HeavenGoldArmour(M)
 1/1200 HeavenGoldArmour(F)
 1/650 BloodDragonArmour(M)
@@ -90,20 +90,20 @@
 ;Helmets
 1/2000 MantisHelmet
 1/90 ApesCrown
-1/60 Sparkling盔
-1/520 盔之暗ness
+1/60 闪耀盔
+1/520 盔之暗黑
 1/100 PuiYuHelmet
 1/450 BloodDragonHelmet
 1/6000 LordSlayerHelmet
 
 ;Necklace
 1/2000 RhinoChains
-1/100 邪Triangle
-1/100 CrossPurified
-1/100 Adamant项链
+1/100 邪三角
+1/100 净化十字
+1/100 精钢项链
 1/150 魔面具
-1/150 Violet珠
-1/150 KunroonTear
+1/150 紫珠
+1/150 昆伦之泪
 1/200 (H)魔面具
 1/200 (H)Violet珠
 1/200 (H)KunroonTear
@@ -113,8 +113,8 @@
 
 ;Bracelets
 1/2000 SlimeBracelet
-1/155 Wild泰坦护符
-1/155 Enchanted护符
+1/155 野泰坦护符
+1/155 附魔护符
 1/155 五元素护符
 1/250 WheelOfLunar
 1/300 (H)WheelOfLunar
@@ -125,10 +125,10 @@
 ;Rings
 1/2000 BirdRing
 1/155 魔红宝石戒
-1/155 邪Expel戒
+1/155 邪驱散戒
 1/155 金龙戒
 1/120 红魔戒
-1/120 Cloud戒
+1/120 云戒
 1/120 毒戒
 1/200 (H)红魔戒
 1/200 (H)Cloud戒
@@ -199,44 +199,44 @@
 
 ;Books
 ;Warrior
-1/500 Counter攻击
-1/500 ImmortalSkin
-1/250 Fury
-1/80 防护Field
-1/80 Rage
+1/500 反击
+1/500 金刚不坏
+1/250 狂怒
+1/80 防护场
+1/80 怒之煞
 
 ;Wizard
-1/80 MeteorStrike
-1/120 魔法Booster
-1/200 暴Escape
-1/250 FastMove
-1/500 冰Thrust
+1/80 流星火雨
+1/120 魔法增益
+1/200 暴走
+1/250 疾步
+1/500 冰刺
 1/500 LavaKing
 1/500 FrozenRains
 
 ;Taoist
-1/80 MeteorStrike
-1/120 魔法Booster
-1/200 暴Escape
-1/250 FastMove
-1/400 Plague
+1/80 流星火雨
+1/120 魔法增益
+1/200 暴走
+1/250 疾步
+1/400 瘟疫术
 1/500 HeadShot
 1/500 HolyShield
 1/2000 FortuneTeller
 
 ;Assassin
-1/500 Hemorrhage
-1/800 SwiftFeet
-1/800 暗Body
-1/1200 月Mist
+1/500 出血术
+1/800 疾风步
+1/800 暗身
+1/1200 月雾
 1/1650 FuryWaves
 1/2000 BackStab
 1/2200 ShadowStep
 
-1/500 毒Shot
-1/800 CrippleShot
+1/500 毒射
+1/800 致残射击
 1/1200 召唤魅惑之蛇
-1/1650 NapalmShot
-1/2000 OneWith自然
+1/1650 燃烧射击
+1/2000 自然合一
 
 ;CraftingMaterials

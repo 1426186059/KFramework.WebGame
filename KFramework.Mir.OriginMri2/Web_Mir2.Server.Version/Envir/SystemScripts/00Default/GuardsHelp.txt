@@ -1,7 +1,7 @@
 [@Main]
 {
 #IF
-CHECKITEM 守卫Rental[7d]
+CHECKITEM 守卫租赁[7]
 #ACT
 GOTO @Next-2
 #ELSEACT

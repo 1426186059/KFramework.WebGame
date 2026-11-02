@@ -1,4 +1,4 @@
-;;城镇回城卷
+;;城镇TeleportHome
 [@_UseItem(3)]
 #SAY
 你想前往哪个城镇或村庄？

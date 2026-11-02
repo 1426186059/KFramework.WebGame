@@ -46,23 +46,23 @@
 
 ;Books
 ;Warrior
-1/16000 Counter攻击
+1/16000 反击
 
 ;Taoist
-1/16000 Plague
-1/16000 PetEnhancer
+1/16000 瘟疫术
+1/16000 宠物强化
 
 ;Wizard
-1/16000 魔法Booster
-1/16000 冰Thrust
+1/16000 魔法增益
+1/16000 冰刺
 
 ;Assassin
-1/16000 Hemorrhage
+1/16000 出血术
 
 
 
 ;CraftingMaterials
-1/200 FocusMarble
+1/200 集中珠
 
 ;Quests
 

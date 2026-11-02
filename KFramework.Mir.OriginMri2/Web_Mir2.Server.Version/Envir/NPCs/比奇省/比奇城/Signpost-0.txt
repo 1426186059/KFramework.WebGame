@@ -13,7 +13,7 @@
 <饰品店/@go-access>   <药剂店/@go-pot>   <比奇内城墙/@go-palace>
 <书店/@go-book>  <屠夫铺/@go-肉>
 
-<关闭/@Exit>
+<关闭/@退出>
  
 
 [@ask]

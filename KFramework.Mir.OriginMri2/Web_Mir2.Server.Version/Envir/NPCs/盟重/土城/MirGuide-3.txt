@@ -54,7 +54,7 @@ GOTO @Main-1
 #SAY
 切肉：从母鸡、鹿等家畜身上获取肉，点击其尸体（Alt+左键）切肉后获得肉。
 
-挖矿：装备镐斧进行挖掘。左键点击会自动挖矿。
+挖矿：装备Pick斧进行挖掘。左键点击会自动挖矿。
 获得的矿物将用作制作物品或出售的原材料。
 
 <返回/@basic>              <下一页/@slicemeatnext>
@@ -85,7 +85,7 @@ GOTO @Main-1
 
 [@level11-21]
 #SAY
-11 级起可进入地牢。那里很暗，蜡烛和回城卷轴被视为必备物品。
+11 级起可进入地牢。那里很暗，Candle和TeleportHome轴被视为必备物品。
 此外，由于远离城镇，请备足药水。
 
 <11~14级/@lvl11-14>      <14~17级/@lvl14-17>      <17~22级/@lvl17-22>
@@ -103,7 +103,7 @@ GOTO @Main-1
 #SAY
 若想获得更高经验，去比奇省西北的奥玛洞穴。
 这是传奇世界第一个地牢，会出现洞穴蝙蝠、洞穴蛆和骷髅兵。
-带上蜡烛、回城卷轴和足够的药水。它远离城镇。
+带上Candle、TeleportHome轴和足够的药水。它远离城镇。
 但要特别警惕洞穴蛆的毒，你可能会被麻痹。
 
 <返回/@level11-21>                 <返回主页/@main>
@@ -177,11 +177,11 @@ GOTO @Main-1
 选择你想了解的任意技能。
 记住，战士技能全部是近战类型。
 
-<Fencing 7/@fencing>      <ShoulderDash 30/@sdash>     <LionsRoar 36/@lionsroar>
-<Slaying 15/@slaying>     <双生龙兽刃 32/@tdb>     <CrossHalf月 38/@chm>
-<Thrusting 22/@thrusting>     <Entrapment 32/@entrapment>     <刃Avalanche 38/@BA>
-<Half月 26/@Half月>     <烈焰剑 35/@fsword>     <Rage 44/@rage>
-<防护Field 39/@profield>
+<基本剑术 7/@fencing>      <野蛮冲撞 30/@sdash>     <狮吼 36/@lionsroar>
+<攻杀剑术 15/@slaying>     <双生龙兽刃 32/@tdb>     <十字半月 38/@chm>
+<刺杀剑术 22/@thrusting>     <擒龙手 32/@entrapment>     <崩山剑法 38/@BA>
+<半月弯刀 26/@半月弯刀>     <烈焰剑 35/@fsword>     <怒之煞 44/@rage>
+<防护领域 39/@profield>
 
 <返回/@combat>                 <返回主页/@main>
 
@@ -191,9 +191,9 @@ GOTO @Main-1
 魔法师技能的特点是全为远程攻击，部分可多重攻击。但消耗大量魔法值。
 
 <火球 7/@火球>     <地狱火 16/@地狱火>     <火墙 24/@fwall>
-<Repulsion 12/@repulse>     <雷弩箭 17/@tbolt>     <雷 26/@雷>
-<ElecShock 13/@eshock>     <Teleport 19/@tele>     <霜Crunch 28/@fcrunch>
-<巨火球 15/@gfball>     <火Bang 22/@fbang>     <雷暴 30/@tstorm>
+<抗拒火环 12/@repulse>     <雷弩箭 17/@tbolt>     <雷 26/@雷>
+<电击术 13/@eshock>     <瞬息移动 19/@tele>     <冰咆哮 28/@fcrunch>
+<巨火球 15/@gfball>     <火爆 22/@fbang>     <雷暴 30/@tstorm>
 
 <返回/@combat>              <下一页/@wizskill2>
 
@@ -201,11 +201,11 @@ GOTO @Main-1
 #SAY
 魔法师技能 第2页：
 
-<魔法盾 31/@mshield>     <镜ing 41/@mirror>
-<TurnUndead 32/@turnundead>     <火焰Field 42/@ffield>
-<Vampirism 33/@vamp>     <Blizzard 44/@blizzard>
-<冰暴 35/@冰暴>   <MeteorStrike 49/@meteor>
-<火焰Disruptor 38/@fdisrupt>
+<魔法盾 31/@mshield>     <镜 41/@mirror>
+<圣言术 32/@turnundead>     <火焰领域 42/@ffield>
+<嗜血术 33/@vamp>     <暴风雪 44/@blizzard>
+<冰暴 35/@冰暴>   <流星火雨 49/@meteor>
+<火焰破坏者 38/@fdisrupt>
 
 <返回/@combat>                   <返回主页/@main>
 
@@ -214,10 +214,10 @@ GOTO @Main-1
 道士技能 第1页：
 只有道士能将护符或毒作为技能之一使用。
 
-<Healing 7/@healing>     <召唤骷髅 19/@summonskel>     <Revelation 23/@rev>
-<之灵剑 9/@ssword>     <Hiding 20/@hiding>     <祝福ed甲 25/@blessarm>
-<毒ing 14/@poison>     <MassHiding 21/@masshide>     <EnergyRepulsor 27/@energyrep>
-<魂火球 18/@sfb>   <魂盾 22/@魂盾>   <陷阱Hexagon 28/@traphex>
+<治愈术 7/@healing>     <召唤骷髅 19/@summonskel>     <启示术 23/@rev>
+<之灵剑 9/@ssword>     <隐身术 20/@hiding>     <祝福之甲 25/@blessarm>
+<毒 14/@poison>     <群体隐身术 21/@masshide>     <能量冲击 27/@energyrep>
+<魂火球 18/@sfb>   <魂盾 22/@魂盾>   <六边陷阱 28/@traphex>
 
 <返回/@combat>                         <下一页/@taoskill2>
 
@@ -225,15 +225,15 @@ GOTO @Main-1
 #SAY
 道士技能 第2页：
 
-<Purification 30/@puri>     <MassHealing 31/@massheal>     <Hallucination 31/@halluc>
-<UltimateEnhancer 33/@ultimateenhance>     <召唤神兽 35/@summonshin>     <Reincarnation 37/@rein>
-<召唤圣精灵 38/@summondeva>     <诅咒 40/@诅咒>     <毒Cloud 43/@毒Cloud>
+<净化 30/@puri>     <群体治疗 31/@massheal>     <幻觉术 31/@halluc>
+<终极强化 33/@ultimateenhance>     <召唤神兽 35/@summonshin>     <轮回 37/@rein>
+<召唤圣精灵 38/@summondeva>     <诅咒 40/@诅咒>     <毒云术 43/@毒云术>
 
 <返回/@combat>                         <返回主页/@main>
 
 [@fencing]
 #SAY
-Fencing（7 级）
+基本剑术（7 级）
 
 命中精准度将随熟练度提升而增加。
 
@@ -241,7 +241,7 @@ Fencing（7 级）
 
 [@slaying]
 #SAY
-Slaying（15 级）
+攻杀剑术（15 级）
 
 命中精准度和破坏力将随熟练度提升而增加。
 
@@ -249,15 +249,15 @@ Slaying（15 级）
 
 [@thrusting]
 #SAY
-Thrusting（22 级）
+刺杀剑术（22 级）
 
 连续直线攻击两人。点击激活或取消该技能。不消耗魔法值。
 
 <返回/@warrskill>                     <返回主页/@main>
 
-[@Half月]
+[@半月弯刀]
 #SAY
-Half月（26 级）
+半月弯刀（26 级）
 
 同时伤害附近的 4 个敌人。消耗魔法值。
 
@@ -265,7 +265,7 @@ Half月（26 级）
 
 [@sdash]
 #SAY
-ShoulderDash（30 级）
+野蛮冲撞（30 级）
 
 用肩膀冲撞将敌人推开，若撞到障碍物则造成伤害。
 对高级敌人无效。消耗魔法值。
@@ -284,7 +284,7 @@ ShoulderDash（30 级）
 
 [@entrapment]
 #SAY
-Entrapment（32 级）
+擒龙手（32 级）
 
 拉拢附近的一个敌人。消耗魔法值。
 
@@ -301,7 +301,7 @@ Entrapment（32 级）
 
 [@lionsroar]
 #SAY
-LionsRoar（36 级）
+狮吼（36 级）
 
 以一定概率麻痹 5×5 范围内的敌人。
 对高级敌人无效。消耗魔法值。
@@ -310,7 +310,7 @@ LionsRoar（36 级）
 
 [@chm]
 #SAY
-CrossHalf月（38 级）
+十字半月（38 级）
 
 一次性攻击 8 点钟方向附近的所有敌人。
 需要点击技能键。消耗魔法值。
@@ -319,7 +319,7 @@ CrossHalf月（38 级）
 
 [@BA]
 #SAY
-刃Avalanche（38 级）
+崩山剑法（38 级）
 
 对远处的敌人进行多重范围攻击。消耗魔法值。
 
@@ -327,7 +327,7 @@ CrossHalf月（38 级）
 
 [@rage]
 #SAY
-Rage（44 级）
+怒之煞（44 级）
 
 增强自身内力，在一段时间内提升其威力。
 防御力和持续时间取决于技能等级。
@@ -337,7 +337,7 @@ Rage（44 级）
 
 [@profield]
 #SAY
-防护Field（39 级）
+防护领域（39 级）
 
 凝聚内力并将其散布到全身。
 这将增强对敌人的防护。
@@ -357,7 +357,7 @@ Rage（44 级）
 
 [@repulse]
 #SAY
-Repulsion（12 级）
+抗拒火环（12 级）
 
 可将 8 点钟方向的怪物和玩家推开。
 对高级敌人无效。消耗魔法值。
@@ -366,7 +366,7 @@ Repulsion（12 级）
 
 [@eshock]
 #SAY
-ElecShock（13 级）
+电击术（13 级）
 
 释放强烈电击使敌人麻痹或混乱的技能。对驯服怪物也很有用。
 对高级敌人无效。消耗魔法值。
@@ -400,7 +400,7 @@ ElecShock（13 级）
 
 [@tele]
 #SAY
-Teleport（19 级）
+瞬息移动（19 级）
 
 让魔法师瞬间移动到玛丽安省内的随机地点。
 技能训练会提高降落在城镇附近的概率。消耗魔法值。
@@ -409,7 +409,7 @@ Teleport（19 级）
 
 [@fbang]
 #SAY
-火Bang（22 级）
+火爆（22 级）
 
 制造 3×3 范围的高温火闪，瞬间伤害范围内所有敌人。消耗魔法值。
 
@@ -433,7 +433,7 @@ Teleport（19 级）
 
 [@fcrunch]
 #SAY
-霜Crunch（28 级）
+冰咆哮（28 级）
 
 利用冰之力量冻结的技艺。
 施放时随机冻结敌人，冻结后其速度显著下降。消耗魔法值。
@@ -460,7 +460,7 @@ Teleport（19 级）
 
 [@turnundead]
 #SAY
-TurnUndead（32 级）
+圣言术（32 级）
 
 专精于不死系怪物。
 技能等级达到上限时，可做到一击必杀。消耗魔法值。
@@ -469,7 +469,7 @@ TurnUndead（32 级）
 
 [@vamp]
 #SAY
-Vampirism（33 级）
+嗜血术（33 级）
 吸收敌人力量来恢复玩家体力。消耗魔法值。
 
 <返回/@wizskill>                     <返回主页/@main>
@@ -484,7 +484,7 @@ Vampirism（33 级）
 
 [@fdisrupt]
 #SAY
-火焰Disruptor（38 级）
+火焰破坏者（38 级）
 
 无视任何障碍物，在敌人身上制造一道强力光柱。
 （物理实体。）消耗魔法值。
@@ -493,7 +493,7 @@ Vampirism（33 级）
 
 [@mirror]
 #SAY
-镜ing（41 级）
+镜（41 级）
 
 制造一个分身一起战斗。点击技能时分身出现，再点一次移除分身。
 分身存在期间持续消耗魔法值。
@@ -502,7 +502,7 @@ Vampirism（33 级）
 
 [@ffield]
 #SAY
-火焰Field（42 级）
+火焰领域（42 级）
 
 5×5 范围的可怕火焰攻击（最多 24 个敌人）。消耗魔法值。
 
@@ -510,7 +510,7 @@ Vampirism（33 级）
 
 [@blizzard]
 #SAY
-Blizzard（44 级）
+暴风雪（44 级）
 
 用从天而降的火流星攻击某一区域内的所有怪物。
 这会烧毁区域内所有物体。
@@ -522,7 +522,7 @@ Blizzard（44 级）
 
 [@meteor]
 #SAY
-MeteorStrike（49 级）
+流星火雨（49 级）
 
 用从天而降的火流星攻击某一区域内的所有怪物。
 这会烧毁区域内所有物体。
@@ -534,7 +534,7 @@ MeteorStrike（49 级）
 
 [@healing]
 #SAY
-Healing（7 级）
+治愈术（7 级）
 治疗自己或其他玩家。消耗魔法值。
 
 <返回/@taoskill>                     <返回主页/@main>
@@ -549,7 +549,7 @@ Healing（7 级）
 
 [@poison]
 #SAY
-毒ing（14 级）
+毒（14 级）
 
 持续一段时间内对敌人造成伤害的毒。
 消耗魔法值和毒。
@@ -576,7 +576,7 @@ Healing（7 级）
 
 [@hiding]
 #SAY
-Hiding（20 级）
+隐身术（20 级）
 
 通过隐藏踪迹使怪物看不见你。使用此技能后，只要不移动或攻击，就不会被看见。
 这是个有用的技能，可制造 1 对 1 的局面：你可以隐藏并远程攻击，只有被攻击的怪物会靠近你。
@@ -585,7 +585,7 @@ Hiding（20 级）
 
 [@masshide]
 #SAY
-MassHiding（21 级）
+群体隐身术（21 级）
 
 隐身技能的升级版，也能让其他玩家隐身。
 若都在 3×3 范围内，最多 9 人可隐身。
@@ -605,7 +605,7 @@ MassHiding（21 级）
 
 [@rev]
 #SAY
-Revelation（23 级）
+启示术（23 级）
 显示其他目标（玩家或怪物）的生命值。
 持续时间随熟练度和道术强度延长。消耗魔法值。
 
@@ -613,7 +613,7 @@ Revelation（23 级）
 
 [@blessarm]
 #SAY
-祝福ed甲（25 级）
+祝福之甲（25 级）
 
 提升物理防御力，且影响玩家周围的人。
 持续时间随熟练度增加。
@@ -623,7 +623,7 @@ Revelation（23 级）
 
 [@energyrep]
 #SAY
-EnergyRepulsor（27 级）
+能量冲击（27 级）
 
 一道能量波将站在 8 点钟方向附近的一切击退。
 对高级敌人无效。消耗魔法值。
@@ -632,7 +632,7 @@ EnergyRepulsor（27 级）
 
 [@traphex]
 #SAY
-陷阱Hexagon（28 级）
+六边陷阱（28 级）
 
 陷阱困住一个怪物——将其与外界隔绝。
 若靠近六边形，此陷阱会消失。
@@ -644,7 +644,7 @@ EnergyRepulsor（27 级）
 
 [@puri]
 #SAY
-Purification（30 级）
+净化（30 级）
 
 用暗之力净化中毒或腐败的身体。
 消耗魔法值和护符。
@@ -653,7 +653,7 @@ Purification（30 级）
 
 [@massheal]
 #SAY
-MassHealing（31 级）
+群体治疗（31 级）
 
 同时治疗多名玩家，3×3 范围，最多 9 人。
 消耗魔法值。
@@ -662,7 +662,7 @@ MassHealing（31 级）
 
 [@halluc]
 #SAY
-Hallucination（31 级）
+幻觉术（31 级）
 
 使敌人陷入混乱，互相攻击。
 消耗魔法值和护符。
@@ -671,7 +671,7 @@ Hallucination（31 级）
 
 [@ultimateenhance]
 #SAY
-UltimateEnhancer（33 级）
+终极强化（33 级）
 
 提升物理攻击力。
 消耗魔法值和护符。
@@ -706,7 +706,7 @@ UltimateEnhancer（33 级）
 
 [@rein]
 #SAY
-Reincarnation（37 级）
+轮回（37 级）
 
 道士的至高技能，可复活死亡的玩家。
 此技能施法时间长，被攻击会取消。
@@ -715,12 +715,12 @@ Reincarnation（37 级）
 
 <返回/@taoskill>                     <返回主页/@main>
 
-[@毒Cloud]
+[@毒云术]
 #SAY
-毒Cloud（43 级）
+毒云术（43 级）
 
-投掷护符，区域内会出现极强的毒云。
-这需要高度的道术和心智专注。
+投掷护符，区域内会出现极强的毒云术。
+这需要高度的道术和心智Focus。
 一旦使用该技能，需等待才能再次使用。
 需要灰色毒粉。
 

@@ -27,8 +27,8 @@
 ;Ores
 
 ;肉
-1/1 Chicken 
-1/20 Feather 
+1/1 鸡肉 
+1/20 羽毛 
 
 ;Crafting Materials
 

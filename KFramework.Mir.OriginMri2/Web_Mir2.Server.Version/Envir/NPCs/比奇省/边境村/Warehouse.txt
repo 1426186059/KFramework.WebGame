@@ -33,7 +33,7 @@ GOTO @Main-1
 
 [@mbind]
 #SAY
-我可以将金条、金砖和金箱兑换回{Gold/Gold}。
+我可以将金Bar、金砖和金Chest兑换回{Gold/Gold}。
 告诉我你的需求。
 
 兑换：<金Bar/@GBar> 换 {Gold/GOLD} - 手续费 {(2000 Gold)/Gold}
@@ -43,20 +43,20 @@ GOTO @Main-1
 
 [@GBar]
 #IF
-CHECKITEM 金Bar 1
+CHECKITEM 金条 1
 #ACT
-TAKEITEM 金Bar 1
+TAKEITEM 金条 1
 GIVEGOLD 998000
 #ELSESAY
 你没有可以兑换的 金Bar……
-只有当你确实有金条时再来吧。
+只有当你确实有金Bar时再来吧。
 <返回/@mbind> - <关闭/@exit>
 
 [@GBundle]
 #IF
-CHECKITEM 金BarBundle 1
+CHECKITEM 金条包 1
 #ACT
-TAKEITEM 金BarBundle 1
+TAKEITEM 金条包 1
 GIVEGOLD 4990000
 #ELSESAY
 你没有可以兑换的 金BarBundle……
@@ -65,20 +65,20 @@ GIVEGOLD 4990000
 
 [@GChest]
 #IF
-CHECKITEM 金Chest 1
+CHECKITEM 金箱 1
 #ACT
-TAKEITEM 金Chest 1
+TAKEITEM 金箱 1
 GIVEGOLD 9980000
 #ELSESAY
 你没有可以兑换的 金Chest……
-只有当你确实有金箱时再来吧。
+只有当你确实有金Chest时再来吧。
 <返回/@mbind> - <关闭/@exit>
 
 [Types]
 1
 
 [Trade]
-Stamp
-金Bar
-金BarBundle
-金Chest
+印章
+金条
+金条包
+金箱

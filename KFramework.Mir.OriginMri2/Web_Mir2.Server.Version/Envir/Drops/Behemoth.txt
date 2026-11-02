@@ -14,10 +14,10 @@
 1/2 特制魔法药
 1/1 太阳水
 1/1 太阳水
-1/1 太阳药水(M)
-1/1 太阳药水(M)
-1/1 BenedictionOil
-1/4 BenedictionOil
+1/1 太阳药水(男)
+1/1 太阳药水(男)
+1/1 祝福油
+1/4 祝福油
 
 
 1/10 觉醒魂0
@@ -30,31 +30,31 @@
 1/150 魂军刀
 1/150 皇家刃
 1/200 剑之战争神
-1/200 刃之Sorcery
+1/200 刃之魔法
 1/200 天剑
-1/200 刃之Magi
+1/200 刃之秘法
 
 ;Weapons Rare
-1/400 Burst剑
-1/400 Dread弓
+1/400 烈火剑
+1/400 恐惧弓
 1/400 圣血矛
 1/400 龙血剑
-1/400 Stiletto
+1/400 钢匕首
 
 ;Armour
-1/200 黑虎甲(M)
-1/200 黑虎甲(F)
-1/200 莲甲(M)
-1/200 莲甲(F)
-1/200 Crane甲(M)
-1/200 Crane甲(F)
-1/200 Stealth甲(M)
-1/200 Stealth甲(F)
+1/200 黑虎甲(男)
+1/200 黑虎甲(女)
+1/200 莲甲(男)
+1/200 莲甲(女)
+1/200 鹤甲(男)
+1/200 鹤甲(女)
+1/200 潜行甲(男)
+1/200 潜行甲(女)
 
 
 ;Armour Rare
-1/11500 天甲(M)
-1/11500 天甲(F)
+1/11500 天甲(男)
+1/11500 天甲(女)
 1/11500 HeavenRedArmour(M)
 1/11500 HeavenRedArmour(F)
 1/11500 HeavenGrnArmour(M)
@@ -64,37 +64,37 @@
 
 ;Helmets
 1/345 ApesCrown
-1/250 Sparkling盔
+1/250 闪耀盔
 1/350 ExternalHelmet
 1/450 PuiYuHelmet
 
 ;Necklace
 1/100 ExternalNecklace
-1/150 Cuspid项链
-1/150 SorceryAnchor
-1/150 Purified镜
+1/150 尖牙项链
+1/150 魔法锚
+1/150 净化镜
 
 ;Bracelets
 1/100 ExternalWheel
-1/150 Dual泰坦护符
-1/150 Sacred天使护符
-1/150 邪Whisp护符
+1/150 双泰坦护符
+1/150 圣天使护符
+1/150 邪灵护符
 
 ;Rings
 1/100 ExternalRing
-1/150 Pledge戒
+1/150 誓约戒
 1/150 五元素戒
-1/150 Crimson红宝石戒
+1/150 深红红宝石戒
 
 ;Shoes
 1/350 ExternalBoots
-1/400 Sparkling靴
+1/400 闪耀靴
 
 ;Belts
 1/40 BoneBelt
-1/50 烈焰Grasp
+1/50 烈焰握
 1/350 ExternalBelt
-1/400 Sparkling腰带
+1/400 闪耀腰带
 
 ;Medals
 
@@ -134,38 +134,38 @@
 ;Books
 ;Warrior
 1/105 烈焰剑
-1/110 狮Roar
+1/110 狮子吼
 1/115 BladeStorm
-1/120 CrossHalf月
-1/125 刃Avalanche
-1/130 防护Field
+1/120 十字半月
+1/125 崩山剑法
+1/130 防护场
 
 ;Wizard
 1/105 冰暴
-1/110 火焰Disruptor
-1/115 镜ing
-1/120 火焰Field
+1/110 火焰破坏术
+1/115 镜
+1/120 火焰场
 
 ;Archer
-1/105 BindingShot
+1/105 束缚射击
 1/110 召唤蟾蜍
-1/115 毒Shot
-1/120 CrippleShot
+1/115 毒射
+1/120 致残射击
 
 
 ;Taoist
 1/105 召唤神兽
-1/110 Reincarnation
+1/110 复活术
 1/115 召唤圣精灵
 1/120 诅咒
-1/125 毒Cloud
+1/125 毒云
 
 ;Assassin
 1/105 陷阱
 1/110 毒剑
 1/115 月轻
-1/120 魔法Eater
-1/125 SwiftFeet
+1/120 魔法噬
+1/125 疾风步
 
 ;CraftingMaterials
 

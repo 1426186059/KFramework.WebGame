@@ -26,6 +26,6 @@ GOTO @Main-1
 36
 
 [Trade]
-奇箱(L)
-奇箱(M)
+奇箱(大)
+奇箱(男)
 WonderBox(H)

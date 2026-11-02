@@ -6,6 +6,6 @@ Gold 300
 [Tools]
 
 [Ingredients]
-Chicken
+鸡肉
 老山参
 太阳水

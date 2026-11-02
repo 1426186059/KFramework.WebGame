@@ -11,13 +11,13 @@
 1/25000 英雄项链
 1/25000 MeteoriteOfArchey 
 1/25000 精金项链
-1/25000 Requiem项链
+1/25000 安魂项链
 
 
 
-1/30000 Cuspid项链
-1/30000 SorceryAnchor
-1/30000 Purified镜
+1/30000 尖牙项链
+1/30000 魔法锚
+1/30000 净化镜
 1/12000 HolyHealthStone
 1/12000 HolyMagicStone
 1/12000 HolyPowerStone

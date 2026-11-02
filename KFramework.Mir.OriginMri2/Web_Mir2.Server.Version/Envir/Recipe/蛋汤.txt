@@ -8,4 +8,4 @@ Gold 1000
 [Ingredients]
 天毒刺蛋
 老山参
-魔法Aid(S)
+魔法辅助(小)
