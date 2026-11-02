@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "Index": 1,
     "FileName": "盟重/土城/Transport",
@@ -12493,68 +12493,6 @@
     "FinishQuestIndexes": []
   },
   {
-    "Index": 607,
-    "FileName": "盟重/土城/Transport",
-    "Name": "传送员",
-    "MapIndex": 1000,
-    "Location": {
-      "X": 96,
-      "Y": 128
-    },
-    "Rate": 100,
-    "Image": 15,
-    "Colour": {},
-    "TimeVisible": false,
-    "HourStart": 0,
-    "MinuteStart": 0,
-    "HourEnd": 0,
-    "MinuteEnd": 1,
-    "MinLev": 0,
-    "MaxLev": 0,
-    "DayofWeek": "",
-    "ClassRequired": "",
-    "Sabuk": false,
-    "FlagNeeded": 0,
-    "Conquest": 0,
-    "ShowOnBigMap": true,
-    "BigMapIcon": 120,
-    "CanTeleportTo": false,
-    "ConquestVisible": true,
-    "CollectQuestIndexes": [],
-    "FinishQuestIndexes": []
-  },
-  {
-    "Index": 608,
-    "FileName": "盟重/土城/Transport",
-    "Name": "传送员",
-    "MapIndex": 1025,
-    "Location": {
-      "X": 35,
-      "Y": 35
-    },
-    "Rate": 100,
-    "Image": 15,
-    "Colour": {},
-    "TimeVisible": false,
-    "HourStart": 0,
-    "MinuteStart": 0,
-    "HourEnd": 0,
-    "MinuteEnd": 1,
-    "MinLev": 0,
-    "MaxLev": 0,
-    "DayofWeek": "",
-    "ClassRequired": "",
-    "Sabuk": false,
-    "FlagNeeded": 0,
-    "Conquest": 0,
-    "ShowOnBigMap": true,
-    "BigMapIcon": 120,
-    "CanTeleportTo": false,
-    "ConquestVisible": true,
-    "CollectQuestIndexes": [],
-    "FinishQuestIndexes": []
-  },
-  {
     "Index": 609,
     "FileName": "盟重/土城/Transport",
     "Name": "传送员",
@@ -12562,37 +12500,6 @@
     "Location": {
       "X": 75,
       "Y": 75
-    },
-    "Rate": 100,
-    "Image": 15,
-    "Colour": {},
-    "TimeVisible": false,
-    "HourStart": 0,
-    "MinuteStart": 0,
-    "HourEnd": 0,
-    "MinuteEnd": 1,
-    "MinLev": 0,
-    "MaxLev": 0,
-    "DayofWeek": "",
-    "ClassRequired": "",
-    "Sabuk": false,
-    "FlagNeeded": 0,
-    "Conquest": 0,
-    "ShowOnBigMap": true,
-    "BigMapIcon": 120,
-    "CanTeleportTo": false,
-    "ConquestVisible": true,
-    "CollectQuestIndexes": [],
-    "FinishQuestIndexes": []
-  },
-  {
-    "Index": 610,
-    "FileName": "盟重/土城/Transport",
-    "Name": "传送员",
-    "MapIndex": 5384,
-    "Location": {
-      "X": 174,
-      "Y": 321
     },
     "Rate": 100,
     "Image": 15,
@@ -12710,13 +12617,13 @@
     "FinishQuestIndexes": []
   },
   {
-    "Index": 614,
+    "Index": 610,
     "FileName": "盟重/土城/Transport",
     "Name": "传送员",
-    "MapIndex": 5426,
+    "MapIndex": 5384,
     "Location": {
-      "X": 272,
-      "Y": 272
+      "X": 174,
+      "Y": 321
     },
     "Rate": 100,
     "Image": 15,

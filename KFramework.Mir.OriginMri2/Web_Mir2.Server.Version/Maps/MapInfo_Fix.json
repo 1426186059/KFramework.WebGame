@@ -348,7 +348,7 @@
           "Y": 128
         },
         "Size": 10,
-        "StartPoint": true,
+        "StartPoint": false,
         "Info": {}
       }
     ],
@@ -380,7 +380,7 @@
         "Size": 5,
         "SizeY": 5,
         "Rotation": 0,
-        "StartPoint": true
+        "StartPoint": false
       }
     ],
     "Respawns": [],
@@ -87969,7 +87969,7 @@
         "Size": 10,
         "SizeY": 0,
         "Rotation": 0,
-        "StartPoint": true
+        "StartPoint": false
       }
     ],
     "Respawns": [
