@@ -2188,7 +2188,7 @@
           "Y": 100
         },
         "Size": 10,
-        "StartPoint": true,
+        "StartPoint": false,
         "Info": {}
       }
     ],
