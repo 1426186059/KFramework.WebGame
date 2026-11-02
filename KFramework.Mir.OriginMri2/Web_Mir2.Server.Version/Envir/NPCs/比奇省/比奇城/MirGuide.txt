@@ -261,7 +261,6 @@ GOTO @Main-1
 <Fatal剑 7/@Fatal剑>     <轻Body 27/@轻Body>     <毒剑 34/@毒剑>
 <双Slash 15/@双Slash>     <Heavenly剑 30/@Heavenly剑>     <月轻 36/@月轻>
 <Haste 20/@haste>     <火Burst 33/@火Burst>     <魔法Eater 38/@mpeater>
-<FlashDash 25/@flashdash>     <陷阱 33/@陷阱>     <SwiftFeet 40/@swiftfeet>
 <暗Body 46/@暗Body>     <CresentSlash 50/@cresentslash>     <出血 47/@hemorrhage>
 <月Mist 60/@月Mist>
 
