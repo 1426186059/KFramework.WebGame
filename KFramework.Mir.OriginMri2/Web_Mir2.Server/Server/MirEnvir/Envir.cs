@@ -61,11 +61,9 @@ namespace Server.MirEnvir
         public const int MinVersion = 60;
         public const int Version = 117;
         public const int CustomVersion = 0;
-        public static readonly string DatabasePath = Path.Combine(Settings.VersionRoot, "Server.MirDB");
         public static readonly string AccountPath = Path.Combine(Settings.VersionRoot, "Server.MirADB");
         public static readonly string BackUpPath = Path.Combine(".", "Back Up");
         public static readonly string AccountsBackUpPath = Path.Combine(".", "Back Up", "Accounts");
-        public static readonly string DatabaseBackUpPath = Path.Combine(".", "Back Up", "Database");
         public static readonly string ArchivePath = Path.Combine(".", "Archive");
         public bool ResetGS = false;
         public bool GuildRefreshNeeded;
@@ -2154,7 +2152,6 @@ namespace Server.MirEnvir
                         {
                             saveTime = Time + Settings.SaveDelay * Settings.Minute;
                             BeginSaveAccounts();
-                            SaveDB();
                             SaveGuilds();
                             SaveGoods();
                             SaveConquests();
@@ -2442,75 +2439,6 @@ namespace Server.MirEnvir
             }
         }
 
-        public void SaveDB()
-        {
-            if (File.Exists(DatabasePath))
-            {
-                if (!Directory.Exists(DatabaseBackUpPath)) Directory.CreateDirectory(DatabaseBackUpPath);
-
-                var fileName =
-                    $"Database {Now.Year:0000}-{Now.Month:00}-{Now.Day:00} {Now.Hour:00}-{Now.Minute:00}-{Now.Second:00}.bak";
-
-                var backupFile = Path.Combine(DatabaseBackUpPath, fileName);
-
-                if (File.Exists(backupFile)) File.Delete(backupFile);
-                File.Copy(DatabasePath, backupFile);
-            }
-
-            using (var stream = File.Create(DatabasePath))
-            using (var writer = new BinaryWriter(stream))
-            {
-                writer.Write(Version);
-                writer.Write(CustomVersion);
-                writer.Write(MapIndex);
-                writer.Write(ItemIndex);
-                writer.Write(MonsterIndex);
-                writer.Write(NPCIndex);
-                writer.Write(QuestIndex);
-                writer.Write(GameshopIndex);
-                writer.Write(ConquestIndex);
-                writer.Write(RespawnIndex);
-
-                writer.Write(MapInfoList.Count);
-                for (var i = 0; i < MapInfoList.Count; i++)
-                    MapInfoList[i].Save(writer);
-
-                writer.Write(ItemInfoList.Count);
-                for (var i = 0; i < ItemInfoList.Count; i++)
-                    ItemInfoList[i].Save(writer);
-
-                writer.Write(MonsterInfoList.Count);
-                for (var i = 0; i < MonsterInfoList.Count; i++)
-                    MonsterInfoList[i].Save(writer);
-
-                writer.Write(NPCInfoList.Count);
-                for (var i = 0; i < NPCInfoList.Count; i++)
-                    NPCInfoList[i].Save(writer);
-
-                writer.Write(QuestInfoList.Count);
-                for (var i = 0; i < QuestInfoList.Count; i++)
-                    QuestInfoList[i].Save(writer);
-
-                DragonInfo.Save(writer);
-                writer.Write(MagicInfoList.Count);
-                for (var i = 0; i < MagicInfoList.Count; i++)
-                    MagicInfoList[i].Save(writer);
-
-                writer.Write(GameShopList.Count);
-                for (var i = 0; i < GameShopList.Count; i++)
-                    GameShopList[i].Save(writer);
-
-                writer.Write(ConquestInfoList.Count);
-                for (var i = 0; i < ConquestInfoList.Count; i++)
-                    ConquestInfoList[i].Save(writer);
-
-                RespawnTick.Save(writer);
-
-                writer.Write(GTMapList.Count);
-                for (var i = 0; i < GTMapList.Count; i++)
-                    GTMapList[i].Save(writer);
-            }
-        }
 
 
         public CharacterInfo GetArchivedCharacter(string name)
@@ -2832,129 +2760,6 @@ namespace Server.MirEnvir
             }
         }
 
-        // ===== 旧的 .db 二进制加载路径（已弃用：配置表改为通过 Web 从 JSON 加载；保留以备紧急手动回退） =====
-        private bool LoadDBFromBinary_DEPRECATED()
-        {
-            lock (LoadLock)
-            {
-                if (!File.Exists(DatabasePath))
-                {
-                    SaveDB();
-                }
-
-                using (var stream = File.OpenRead(DatabasePath))
-                using (var reader = new BinaryReader(stream))
-                {
-                    LoadVersion = reader.ReadInt32();
-                    LoadCustomVersion = reader.ReadInt32();
-
-                    if (LoadVersion < MinVersion)
-                    {
-                        MessageQueue.Enqueue(string.Format("Cannot load a database version {0}. Mininum supported is {1}.", LoadVersion, MinVersion));
-                        return false;
-                    }
-                    else if (LoadVersion > Version)
-                    {
-                        MessageQueue.Enqueue(string.Format("Cannot load a database version {0}. Maximum supported is {1}.", LoadVersion, Version));
-                        return false;
-                    }
-
-                    MapIndex = reader.ReadInt32();
-                    ItemIndex = reader.ReadInt32();
-                    MonsterIndex = reader.ReadInt32();
-
-                    NPCIndex = reader.ReadInt32();
-                    QuestIndex = reader.ReadInt32();
-
-                    if (LoadVersion >= 63)
-                    {
-                        GameshopIndex = reader.ReadInt32();
-                    }
-
-                    if (LoadVersion >= 66)
-                    {
-                        ConquestIndex = reader.ReadInt32();
-                    }
-
-                    if (LoadVersion >= 68)
-                        RespawnIndex = reader.ReadInt32();
-
-
-                    var count = reader.ReadInt32();
-                    MapInfoList.Clear();
-                    for (var i = 0; i < count; i++)
-                        MapInfoList.Add(new MapInfo(reader));
-
-                    count = reader.ReadInt32();
-                    ItemInfoList.Clear();
-                    for (var i = 0; i < count; i++)
-                    {
-                        ItemInfoList.Add(new ItemInfo(reader, LoadVersion, LoadCustomVersion));
-                        if (ItemInfoList[i] != null && ItemInfoList[i].RandomStatsId < Settings.RandomItemStatsList.Count)
-                        {
-                            ItemInfoList[i].RandomStats = Settings.RandomItemStatsList[ItemInfoList[i].RandomStatsId];
-                        }
-                    }
-                    count = reader.ReadInt32();
-                    MonsterInfoList.Clear();
-                    for (var i = 0; i < count; i++)
-                        MonsterInfoList.Add(new MonsterInfo(reader));
-
-                    count = reader.ReadInt32();
-                    NPCInfoList.Clear();
-                    for (var i = 0; i < count; i++)
-                        NPCInfoList.Add(new NPCInfo(reader));
-
-                    count = reader.ReadInt32();
-                    QuestInfoList.Clear();
-                    for (var i = 0; i < count; i++)
-                        QuestInfoList.Add(new QuestInfo(reader));
-
-                    DragonInfo = new DragonInfo(reader);
-                    count = reader.ReadInt32();
-                    for (var i = 0; i < count; i++)
-                    {
-                        var m = new MagicInfo(reader, LoadVersion, LoadCustomVersion);
-                        if (!MagicExists(m.Spell))
-                            MagicInfoList.Add(m);
-                    }
-
-                    FillMagicInfoList();
-                    if (LoadVersion <= 70)
-                        UpdateMagicInfo();
-
-                    if (LoadVersion >= 63)
-                    {
-                        count = reader.ReadInt32();
-                        GameShopList.Clear();
-                        for (var i = 0; i < count; i++)
-                        {
-                            var item = new GameShopItem(reader, LoadVersion, LoadCustomVersion);
-                            if (Main.BindGameShop(item))
-                            {
-                                GameShopList.Add(item);
-                            }
-                        }
-                    }
-
-                    if (LoadVersion >= 66)
-                    {
-                        ConquestInfoList.Clear();
-                        count = reader.ReadInt32();
-                        for (var i = 0; i < count; i++)
-                        {
-                            ConquestInfoList.Add(new ConquestInfo(reader));
-                        }
-                    }
-
-                    if (LoadVersion > 67)
-                        RespawnTick = new RespawnTimer(reader);
-                }
-                Settings.LinkGuildCreationItems(ItemInfoList);
-            }
-
-            return true;
-        }
 
         // ===== 配置表从本地 JSON 加载（替代旧的 .db 二进制加载；不再从 Web 下载，避免依赖 5082 资源服务器） =====
         private bool LoadDBFromJson()

@@ -28733,7 +28733,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Used in certain Taoist spells to give red 毒 (reduces defences)",
+    "ToolTip": "用于某些道士法术，赋予红毒（降低防御）",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -28769,7 +28769,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Required 护符 for most Taoist spells.",
+    "ToolTip": "大多数道士法术需要护符。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -28841,7 +28841,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Required 护符 for the Taoists 复活 spell.",
+    "ToolTip": "道士的复活法术需要护符。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -28913,7 +28913,7 @@
     "Bind": -20239,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Strange 卷轴 that can take you back to your 公会's Home",
+    "ToolTip": "可将你送回公会之家的奇异卷轴",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -32017,7 +32017,7 @@
     "Bind": 4,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "高级钓鱼 Rod purchasable from the GameShop.\r\n-持续时间 6 Months",
+    "ToolTip": "可从商城购买的高级钓鱼鱼竿。\r\n-持续时间 6 个月",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -37781,7 +37781,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Special creatures produce these rare stones every 3 小时.\r\nBreaking this stone will grant you a random item.",
+    "ToolTip": "特殊生物每3小时产出这些稀有矿石。\r\n击碎此石可获得随机物品。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -37817,7 +37817,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Maintain food level  for 10 小时.",
+    "ToolTip": "维持食物等级 10 小时。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38141,7 +38141,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Increase 经验 by 5% for 1 小时.",
+    "ToolTip": "在1小时内提升经验 5%。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38177,7 +38177,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Increase 掉落率 by 10% for 1 小时.",
+    "ToolTip": "在1小时内提升掉落率 10%。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38213,7 +38213,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Increase 最大生命 by 50 for 1 小时.",
+    "ToolTip": "在1小时内提升最大生命 50。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38249,7 +38249,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Increase 最大魔法 by 50 for 1 小时.",
+    "ToolTip": "在1小时内提升最大魔法 50。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38285,7 +38285,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Increase 防御 1-1 for 1 小时.",
+    "ToolTip": "在1小时内提升防御 1-1。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38321,7 +38321,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Increase 魔防 1-1 for 1 小时.",
+    "ToolTip": "在1小时内提升魔防 1-1。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38357,7 +38357,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Increase 速度 for 30m.",
+    "ToolTip": "在30分钟内提升速度。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38393,7 +38393,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Increase 背包重量 by 3 for 5 小时.",
+    "ToolTip": "在5小时内提升背包重量 3。",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -38431,7 +38431,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Increase 背包重量 by 5 for 5 小时.",
+    "ToolTip": "在5小时内提升背包重量 5。",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -38469,7 +38469,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Increase 背包重量 by 9 for 5 小时.",
+    "ToolTip": "在5小时内提升背包重量 9。",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -38507,7 +38507,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Hitting 命中 is increased per spell level.",
+    "ToolTip": "每次技能等级提升，命中随之增加。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38723,7 +38723,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Paralyses 怪物 and pulls them towards \r\nthe caster.",
+    "ToolTip": "使怪物麻痹并将其拉向施法者。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -38903,7 +38903,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Warrior enters a hardened state of mind where\r\nany 物理 damage taken is reduced.",
+    "ToolTip": "战士进入坚毅状态，所受物理伤害降低。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39047,7 +39047,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Increases the warriors 攻击速度 for\r\na set period of time. ",
+    "ToolTip": "在一段时间内提升战士的攻击速度。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39119,7 +39119,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Long distance attack by hurling a 火球术",
+    "ToolTip": "投掷火球术进行远程攻击",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39227,7 +39227,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "A powerful version of the 火球术 spell.",
+    "ToolTip": "火球术的强化版本。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39479,7 +39479,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Casts a ball of ice which damages the target \r\nwith a chance of impairing their movement \r\n速度 or freezing them.",
+    "ToolTip": "发出冰球伤害目标，并有几率减缓其移动速度或将其冻结。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39587,7 +39587,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Chance to kill any undead 怪物 that meets the\r\nlevel requirements in a single cast.",
+    "ToolTip": "有几率一击击杀任何符合等级要求的亡灵怪物。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -39841,7 +39841,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Summons a 魔法 eye allowing the caster to \r\nsee his enemies weakness's.",
+    "ToolTip": "召唤魔法之眼，使施法者洞察敌人的弱点。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40129,7 +40129,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Casts harmful 毒 onto target.",
+    "ToolTip": "向目标释放有害的毒。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40165,7 +40165,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Casts a flaming 护符 at the target inflicting \r\nfire damage.",
+    "ToolTip": "向目标发射燃烧的护符，造成火焰伤害。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40201,7 +40201,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Summons a 骷髅 that will aid your attacks.",
+    "ToolTip": "召唤一个骷髅协助你的攻击。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40237,7 +40237,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Hide into the shadows making it difficult for \r\n怪物 to see you.",
+    "ToolTip": "隐入阴影，使怪物难以看见你。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40273,7 +40273,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Cast in 3x3 square all those effected hide into\r\nthe shadows making it difficult for 怪物 to see \r\nthem.",
+    "ToolTip": "在3x3范围内，使所有受影响的目标隐入阴影，令怪物难以看见他们。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40309,7 +40309,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Casts a 魔法 glyph into the sky",
+    "ToolTip": "在空中绘制魔法符文",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40381,7 +40381,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Casts a 魔法 glyph into the sky",
+    "ToolTip": "在空中绘制魔法符文",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40453,7 +40453,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Traps multiple 怪物 inside a hexagon prism \r\nmaking them immobile.",
+    "ToolTip": "将多个怪物困于六边棱镜中，使其无法移动。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40489,7 +40489,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Removes harmful effects from self or friendly \r\ntargets such as 毒",
+    "ToolTip": "解除自身或友方目标的有害效果，如毒",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40561,7 +40561,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Confuses 怪物 and enslaves them to fight for \r\nyou for a limited time.",
+    "ToolTip": "使怪物陷入混乱，并驱使它们为你作战一段时间。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40741,7 +40741,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Casts a 魔法 glyph into the sky",
+    "ToolTip": "在空中绘制魔法符文",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40777,7 +40777,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Casts a variation of poisons and debuff affects\r\nin a 3x3 square area. Changes affects \r\ndepending on 毒 equipped.",
+    "ToolTip": "在3x3范围内释放多种毒与减益效果。效果随装备的毒变化。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40813,7 +40813,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Casts a toxic 毒 cloud in a 3x3 square \r\narea",
+    "ToolTip": "在3x3范围内释放毒云",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -40885,7 +40885,7 @@
     "Bind": -32768,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Increases pets defence and attack power for \r\na 持续时间 of time.",
+    "ToolTip": "在一段时间内提升宠物的防御与攻击力。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -49524,7 +49524,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of 破坏 for a certain period of time.\r\n-持续时间 1 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的破坏。\r\n-持续时间 1 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -49562,7 +49562,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of 破坏 for a certain period of time.\r\n-持续时间 3 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的破坏。\r\n-持续时间 3 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -49600,7 +49600,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of 破坏 for a certain period of time.\r\n-持续时间 5 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的破坏。\r\n-持续时间 5 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -49638,7 +49638,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of 魔法 for a certain period of time.\r\n-持续时间 1 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的魔法。\r\n-持续时间 1 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -49676,7 +49676,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of 魔法 for a certain period of time.\r\n-持续时间 3 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的魔法。\r\n-持续时间 3 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -49714,7 +49714,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of 魔法 for a certain period of time.\r\n-持续时间 5 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的魔法。\r\n-持续时间 5 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -49752,7 +49752,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of 灵魂 魔法 for a certain period of time.\r\n-持续时间 1 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的灵魂 魔法。\r\n-持续时间 1 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -49790,7 +49790,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of 灵魂 魔法 for a certain period of time.\r\n-持续时间 3 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的灵魂 魔法。\r\n-持续时间 3 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -49828,7 +49828,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of 灵魂 魔法 for a certain period of time.\r\n-持续时间 5 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的灵魂 魔法。\r\n-持续时间 5 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -49866,7 +49866,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of your Health for a certain period of time.\r\n-持续时间 1 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的生命。\r\n-持续时间 1 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -49904,7 +49904,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of your Health for a certain period of time.\r\n-持续时间 3 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的生命。\r\n-持续时间 3 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -49942,7 +49942,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of your Health for a certain period of time.\r\n-持续时间 5 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的生命。\r\n-持续时间 5 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -49980,7 +49980,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of your Mana for a certain period of time.\r\n-持续时间 1 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的魔法值。\r\n-持续时间 1 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50018,7 +50018,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of your Mana for a certain period of time.\r\n-持续时间 3 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的魔法值。\r\n-持续时间 3 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50056,7 +50056,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of your Mana for a certain period of time.\r\n-持续时间 5 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的魔法值。\r\n-持续时间 5 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50094,7 +50094,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of your 攻击速度 for a certain period of time.\r\n-持续时间 1 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的攻击速度。\r\n-持续时间 1 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50132,7 +50132,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of your 攻击速度 for a certain period of time.\r\n-持续时间 3 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的攻击速度。\r\n-持续时间 3 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50170,7 +50170,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of your 攻击速度 for a certain period of time.\r\n-持续时间 5 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的攻击速度。\r\n-持续时间 5 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50208,7 +50208,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "卷轴 which revives you from death.\r\nRessurection 生命 100%\r\nRessurection 魔法 100%\r\n ",
+    "ToolTip": "复活卷轴。\r\n复活生命 100%\r\n复活魔法 100%\r\n",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -50244,7 +50244,7 @@
     "Bind": 129,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "卷轴 which reduces your PK Score.\r\n-PK Point reduced by 100\r\n-Useage Once.\r\n",
+    "ToolTip": "降低PK值的卷轴。\r\n-PK点数减少 100\r\n-使用一次。\r\n",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -50280,7 +50280,7 @@
     "Bind": 129,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "A mysterious 卷轴 with locations of all the towns.\r\n-Useage Once.",
+    "ToolTip": "记载所有城镇位置的神秘卷轴\r\n-使用一次。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -50316,7 +50316,7 @@
     "Bind": 129,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "A mysterious 卷轴 with locations of all the \r\ndungeon entrances.\r\n-Useage Once.",
+    "ToolTip": "记载所有地下城入口位置的神秘卷轴\r\n-使用一次。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -50352,7 +50352,7 @@
     "Bind": 149,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "A 卷轴 which allow you to Summon One Guard.\r\n-Summons One Guard.\r\n-持续时间 7 天.\r\n-Command @GuardsHelp",
+    "ToolTip": "可召唤一名护卫的卷轴。\r\n-召唤一名护卫。\r\n-持续时间 7 天。\r\n-命令 @GuardsHelp",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -50460,7 +50460,7 @@
     "Bind": 129,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Mysterious 卷轴. Which changes your Gender.\r\n-Useage Once.",
+    "ToolTip": "改变性别的神秘卷轴。\r\n-使用一次。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -50496,7 +50496,7 @@
     "Bind": 149,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Mysterious Stone. Which Gives you additional 经验.\r\n-Additional 经验 30%\r\n-不可堆叠\r\n-Command @MysteriousStoneON\r\n-Command @MysteriousStoneOFF\r\n                  ",
+    "ToolTip": "神秘石。为你提供额外经验。\r\n-额外经验 30%\r\n-不可堆叠\r\n-命令 @MysteriousStoneON\r\n-命令 @MysteriousStoneOFF\r\n ",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -50532,7 +50532,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Premium 火把 purchased from the GameShop.\r\n-破坏 Power +1\r\n-持续时间 3 小时",
+    "ToolTip": "从商城购买的高级火把。\r\n-破坏 +1\r\n-持续时间 3 小时",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50570,7 +50570,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Premium 火把 purchased from the GameShop.\r\n-魔法 Power +1\r\n-持续时间 3 小时",
+    "ToolTip": "从商城购买的高级火把。\r\n-魔法 +1\r\n-持续时间 3 小时",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50608,7 +50608,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Premium 火把 purchased from the GameShop.\r\n-灵魂 Power +1\r\n-持续时间 3 小时",
+    "ToolTip": "从商城购买的高级火把。\r\n-灵魂 +1\r\n-持续时间 3 小时",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50646,7 +50646,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Premium 火把 purchased from the GameShop.\r\n-破坏 Power +3\r\n-持续时间 2 小时",
+    "ToolTip": "从商城购买的高级火把。\r\n-破坏 +3\r\n-持续时间 2 小时",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50684,7 +50684,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Premium 火把 purchased from the GameShop.\r\n-魔法 Power +3\r\n-持续时间 2 小时",
+    "ToolTip": "从商城购买的高级火把。\r\n-魔法 +3\r\n-持续时间 2 小时",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50722,7 +50722,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Premium 火把 purchased from the GameShop.\r\n-灵魂 Power +3\r\n-持续时间 2 小时",
+    "ToolTip": "从商城购买的高级火把。\r\n-灵魂 +3\r\n-持续时间 2 小时",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50760,7 +50760,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Additional 经验 acquired for a period of time.\r\n-Additional 经验 30%\r\n-持续时间 1 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内获得额外经验。\r\n-额外经验 30%\r\n-持续时间 1 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50798,7 +50798,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Additional 经验 acquired for a period of time.\r\n-Additional 经验 30%\r\n-持续时间 3 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内获得额外经验。\r\n-额外经验 30%\r\n-持续时间 3 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50836,7 +50836,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Additional 经验 acquired for a period of time.\r\n-Additional 经验 30%\r\n-持续时间 5 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内获得额外经验。\r\n-额外经验 30%\r\n-持续时间 5 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50874,7 +50874,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Additional 经验 acquired for a period of time.\r\n-Additional 经验 30%\r\n-持续时间 1 天\r\n-不可堆叠",
+    "ToolTip": "在一定时间内获得额外经验。\r\n-额外经验 30%\r\n-持续时间 1 天\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50912,7 +50912,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Additional 经验 acquired for a period of time.\r\n-Additional 经验 50%\r\n-持续时间 1 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内获得额外经验。\r\n-额外经验 50%\r\n-持续时间 1 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50950,7 +50950,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Additional 经验 acquired for a period of time.\r\n-Additional 经验 50%\r\n-持续时间 3 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内获得额外经验。\r\n-额外经验 50%\r\n-持续时间 3 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -50988,7 +50988,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Additional 经验 acquired for a period of time.\r\n-Additional 经验 50%\r\n-持续时间 5 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内获得额外经验。\r\n-额外经验 50%\r\n-持续时间 5 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51026,7 +51026,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Additional 经验 acquired for a period of time.\r\n-Additional 经验 50%\r\n-持续时间 1 天\r\n-不可堆叠",
+    "ToolTip": "在一定时间内获得额外经验。\r\n-额外经验 50%\r\n-持续时间 1 天\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51064,7 +51064,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Additional 掉落 Rate acquired for a period of time.\r\n-Additional 掉落 Increase by 20%\r\n-持续时间 1 天\r\n-不可堆叠",
+    "ToolTip": "在一定时间内获得额外掉落率。\r\n-额外掉落率提升 20%\r\n-持续时间 1 天\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -51100,7 +51100,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Limited Item.\r\nPotion which gives the following enhancements.\r\n-持续时间 3 小时\r\n-不可堆叠",
+    "ToolTip": "限定道具。\r\n提供以下强化的药水。\r\n-持续时间 3 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51142,7 +51142,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Limited Item.\r\nPotion which gives the following enhancements.\r\n-持续时间 7 小时\r\n-不可堆叠",
+    "ToolTip": "限定道具。\r\n提供以下强化的药水。\r\n-持续时间 7 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51184,7 +51184,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Limited Item.\r\nPotion which gives the following enhancements.\r\n-持续时间 3 小时\r\n-不可堆叠",
+    "ToolTip": "限定道具。\r\n提供以下强化的药水。\r\n-持续时间 3 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51226,7 +51226,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Limited Item.\r\nPotion which gives the following enhancements.\r\n-持续时间 7 小时\r\n-不可堆叠",
+    "ToolTip": "限定道具。\r\n提供以下强化的药水。\r\n-持续时间 7 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51268,7 +51268,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Limited Item.\r\nPotion which gives the following enhancements.\r\n-持续时间 3 小时\r\n-不可堆叠",
+    "ToolTip": "限定道具。\r\n提供以下强化的药水。\r\n-持续时间 3 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51310,7 +51310,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Limited Item.\r\nPotion which gives the following enhancements.\r\n-持续时间 7 小时\r\n-不可堆叠",
+    "ToolTip": "限定道具。\r\n提供以下强化的药水。\r\n-持续时间 7 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51352,7 +51352,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Limited Item.\r\nPotion which gives the following enhancements.\r\n-持续时间 3 小时\r\n-不可堆叠",
+    "ToolTip": "限定道具。\r\n提供以下强化的药水。\r\n-持续时间 3 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51394,7 +51394,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Limited Item.\r\nPotion which gives the following enhancements.\r\n-持续时间 7 小时\r\n-不可堆叠",
+    "ToolTip": "限定道具。\r\n提供以下强化的药水。\r\n-持续时间 7 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51436,7 +51436,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of your 物理防御 for a certain period of time.\r\n-物理防御 + 7\r\n-持续时间 1 天\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的物理防御。\r\n-物理防御 + 7\r\n-持续时间 1 天\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51474,7 +51474,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of your 命中 for a certain period of time.\r\n-持续时间 1 小时\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的命中。\r\n-持续时间 1 小时\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51512,7 +51512,7 @@
     "Bind": 20,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "物理 狩猎礼包 consists of.\r\n-经验 + 30%\r\n-最大生命 + 180\r\n-破坏 + 9\r\n-破坏火把\r\n-攻击速度 + 8\r\n-复活 卷轴 *ALL ARE 30 MINS*",
+    "ToolTip": "物理 狩猎礼包 包含：.\r\n-经验 + 30%\r\n-最大生命 + 180\r\n-破坏 + 9\r\n-破坏火把\r\n-攻击速度 + 8\r\n-复活 卷轴 *全部 30 分钟*",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -51548,7 +51548,7 @@
     "Bind": 3,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "魔法 狩猎礼包 consists of.\r\n-经验 + 30%\r\n-最大生命 + 180\r\n-魔法 + 7\r\n-魔法火把\r\n-复活 卷轴 *ALL ARE 30 MINS*",
+    "ToolTip": "魔法 狩猎礼包 包含：.\r\n-经验 + 30%\r\n-最大生命 + 180\r\n-魔法 + 7\r\n-魔法火把\r\n-复活 卷轴 *全部 30 分钟*",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -51584,7 +51584,7 @@
     "Bind": 3,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "灵魂 狩猎礼包 consists of.\r\n-经验 + 30%\r\n-最大生命 + 180\r\n-灵魂 + 7\r\n-灵魂火把\r\n-复活 卷轴 *ALL ARE 30 MINS*",
+    "ToolTip": "灵魂 狩猎礼包 包含：.\r\n-经验 + 30%\r\n-最大生命 + 180\r\n-灵魂 + 7\r\n-灵魂火把\r\n-复活 卷轴 *全部 30 分钟*",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -51620,7 +51620,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of 破坏 for a certain period of time.\r\n-持续时间 30 分钟\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的破坏。\r\n-持续时间 30 分钟\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51658,7 +51658,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of 魔法 for a certain period of time.\r\n-持续时间 30 分钟\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的魔法。\r\n-持续时间 30 分钟\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51696,7 +51696,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of 灵魂 魔法 for a certain period of time.\r\n-持续时间 30 分钟\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的灵魂 魔法。\r\n-持续时间 30 分钟\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51734,7 +51734,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of your Health for a certain period of time.\r\n-持续时间 30 分钟\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的生命。\r\n-持续时间 30 分钟\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -51772,7 +51772,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Improvement of your 攻击速度 for a certain period of time.\r\n-持续时间 30 分钟\r\n-不可堆叠",
+    "ToolTip": "在一定时间内提升你的攻击速度。\r\n-持续时间 30 分钟\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -52134,7 +52134,7 @@
     "Bind": 131,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Quest reward item.\r\nA mysterious box with the contents consist of:\r\n-力量丹[1]\r\n-防御丹[1]\r\n-人参丹[1]\r\n-经验20%[1]\r\n-持续时间  1 天",
+    "ToolTip": "任务奖励道具。\r\n内含以下物品的神秘宝箱：\r\n-力量丹[1]\r\n-防御丹[1]\r\n-人参丹[1]\r\n-经验20%[1]\r\n-持续时间 1 天",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -52170,7 +52170,7 @@
     "Bind": 131,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "A Mysterious potion contained from a 圣水盒\r\n-破坏 + 7\r\n-魔法 + 5\r\n-灵魂 + 5\r\n-持续时间 1 天\r\n-不可堆叠",
+    "ToolTip": "从圣水盒取出的神秘药水\r\n-破坏 + 7\r\n-魔法 + 5\r\n-灵魂 + 5\r\n-持续时间 1 天\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -52210,7 +52210,7 @@
     "Bind": 131,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "A Mysterious potion contained from a 圣水盒\r\n-物理防御 + 7\r\n-魔法防御 + 5\r\n-持续时间 1 天\r\n-不可堆叠",
+    "ToolTip": "从圣水盒取出的神秘药水\r\n-物理防御 + 7\r\n-魔法防御 + 5\r\n-持续时间 1 天\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -52249,7 +52249,7 @@
     "Bind": 131,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "A Mysterious potion contained from a 圣水盒\r\n-最大生命 + 50\r\n-最大魔法 + 70\r\n-持续时间 1 天\r\n-不可堆叠",
+    "ToolTip": "从圣水盒取出的神秘药水\r\n-最大生命 + 50\r\n-最大魔法 + 70\r\n-持续时间 1 天\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -52288,7 +52288,7 @@
     "Bind": 131,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Additional 经验 acquired for a period of time.\r\n-Additional 经验 20%\r\n-持续时间 1 天\r\n-不可堆叠",
+    "ToolTip": "在一定时间内获得额外经验。\r\n-额外经验 20%\r\n-持续时间 1 天\r\n-不可堆叠",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -52326,7 +52326,7 @@
     "Bind": 131,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "-Allows Entry to the Premium Dungeon\r\n-持续时间 1 天",
+    "ToolTip": "-允许进入会员地下城\r\n-持续时间 1 天",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -52362,7 +52362,7 @@
     "Bind": 131,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "-Allows Entry to the Premium Dungeon\r\n-持续时间 3 天",
+    "ToolTip": "-允许进入会员地下城\r\n-持续时间 3 天",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -52398,7 +52398,7 @@
     "Bind": 131,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "-Allows Entry to the Premium Dungeon\r\n-持续时间 7 天",
+    "ToolTip": "-允许进入会员地下城\r\n-持续时间 7 天",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -52434,7 +52434,7 @@
     "Bind": 131,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "-Allows Entry to the Premium Dungeon\r\n-持续时间 15 天",
+    "ToolTip": "-允许进入会员地下城\r\n-持续时间 15 天",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -52470,7 +52470,7 @@
     "Bind": 131,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "高级钓鱼 Package.\r\nPurchased from the GameShop package consists of:\r\n:红钓竿 (6 Months)\r\n:高级卷线器\r\n:高级浮漂\r\n:高级探测器\r\n:高级鱼饵 x7200",
+    "ToolTip": "高级钓鱼礼包。\r\n从商城购买的礼包包含：\r\n:红钓竿 (6 个月)\r\n:高级卷线器\r\n:高级浮漂\r\n:高级探测器\r\n:高级鱼饵 x7200",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -53004,7 +53004,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Premium 火把 purchased from the GameShop.\r\n-破坏 Power +3\r\n-持续时间 30 分钟",
+    "ToolTip": "从商城购买的高级火把。\r\n-破坏 +3\r\n-持续时间 30 分钟",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -53040,7 +53040,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Premium 火把 purchased from the GameShop.\r\n-魔法 Power +1\r\n-持续时间 30 分钟",
+    "ToolTip": "从商城购买的高级火把。\r\n-魔法 +1\r\n-持续时间 30 分钟",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -53076,7 +53076,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Premium 火把 purchased from the GameShop.\r\n-灵魂 Power +3\r\n-持续时间 30 分钟",
+    "ToolTip": "从商城购买的高级火把。\r\n-灵魂 +3\r\n-持续时间 30 分钟",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -53220,7 +53220,7 @@
     "Bind": 0,
     "Unique": 0,
     "RandomStatsId": 0,
-    "ToolTip": "Invite players to your 公会领地.",
+    "ToolTip": "邀请玩家前往你的公会领地。",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -53973,7 +53973,7 @@
     "Bind": -12274,
     "Unique": 0,
     "RandomStatsId": 5,
-    "ToolTip": "In the 昆仑 region, it seems to have lost its strength",
+    "ToolTip": "在昆仑地区，它似乎已失去力量",
     "Slots": 0,
     "Stats": {
       "Values": {}
@@ -54047,7 +54047,7 @@
     "Bind": -12274,
     "Unique": 0,
     "RandomStatsId": 5,
-    "ToolTip": "In the 昆仑 region, it seems to have lost its strength",
+    "ToolTip": "在昆仑地区，它似乎已失去力量",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -54086,7 +54086,7 @@
     "Bind": -12274,
     "Unique": 0,
     "RandomStatsId": 5,
-    "ToolTip": "In the 昆仑 region, it seems to have lost its strength",
+    "ToolTip": "在昆仑地区，它似乎已失去力量",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -54125,7 +54125,7 @@
     "Bind": -12274,
     "Unique": 0,
     "RandomStatsId": 5,
-    "ToolTip": "In the 昆仑 region, it seems to have lost its strength",
+    "ToolTip": "在昆仑地区，它似乎已失去力量",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -54164,7 +54164,7 @@
     "Bind": -12274,
     "Unique": 0,
     "RandomStatsId": 5,
-    "ToolTip": "In the 昆仑 region, it seems to have lost its strength",
+    "ToolTip": "在昆仑地区，它似乎已失去力量",
     "Slots": 0,
     "Stats": {
       "Values": {
@@ -54205,7 +54205,7 @@
     "Bind": -12274,
     "Unique": 0,
     "RandomStatsId": 5,
-    "ToolTip": "In the 昆仑 region, it seems to have lost its strength",
+    "ToolTip": "在昆仑地区，它似乎已失去力量",
     "Slots": 0,
     "Stats": {
       "Values": {
