@@ -1,16 +1,21 @@
-[@Description]你好，旅人，我有件事想拜托你。我弄丢了
+[@Description]
+你好，旅人，我有件事想拜托你。我弄丢了
 我在{奥玛洞穴/Yellow}狩猎时弄丢的姐姐的戒指。
 
-[@TaskDescription]在{奥玛洞穴/Yellow}找到{奥利维亚戒/LightSteelBlue}
+[@TaskDescription]
+在{奥玛洞穴/Yellow}找到{奥利维亚戒/LightSteelBlue}
 
 [@Completion]
 
 [@KillTasks]
-[@ItemTasks]奥利维亚戒 1
+[@ItemTasks]
+奥利维亚戒 1
 
 [@CarryItems]
 [@FixedRewards]
 [@SelectRewards]
-[@ExpReward]1400
+[@ExpReward]
+1400
 
-[@GoldReward]1400
+[@GoldReward]
+1400

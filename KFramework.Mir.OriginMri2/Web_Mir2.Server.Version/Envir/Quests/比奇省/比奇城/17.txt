@@ -1,19 +1,24 @@
-[@Description]你尝过{蝙蝠翼/LightSteelBlue}吗？那可是一道
+[@Description]
+你尝过{蝙蝠翼/LightSteelBlue}吗？那可是一道
 美味。我最近卖了不少。你
 觉得你能再帮我弄点翅膀吗？
 
-[@TaskDescription]收集10个{蝙蝠翼/LightSteelBlue}并交给{莎拉/LimeGreen}
+[@TaskDescription]
+收集10个{蝙蝠翼/LightSteelBlue}并交给{莎拉/LimeGreen}
 
 [@Completion]
 [@KillTasks]
-[@ItemTasks]蝙蝠翼 10
+[@ItemTasks]
+蝙蝠翼 10
 
 [@CarryItems]
 [@FixedRewards]
 [@SelectRewards]
-[@ExpReward]2500
+[@ExpReward]
+2500
 
-[@GoldReward]2500
+[@GoldReward]
+2500
 
 // Pickup - Merchant_Sarah 0 313 271
 // Hand In - Merchant_Sarah 0 313 271

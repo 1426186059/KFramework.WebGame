@@ -1,21 +1,26 @@
-[@Description]我的师父让我去寻找炼制
+[@Description]
+我的师父让我去寻找炼制
 药品。你只能从
 {浪人食尸鬼/Crimson}，可我无法靠近它们。
 你能帮我弄些{军团花/LightSteelBlue}吗？
 
-[@TaskDescription]前往般若岛，通过猎杀收集10个{军团花/LightSteelBlue}
+[@TaskDescription]
+前往般若岛，通过猎杀收集10个{军团花/LightSteelBlue}
 猎杀{浪人食尸鬼/Crimson}
 
 [@Completion]
 [@KillTasks]
-[@ItemTasks]军团花 10
+[@ItemTasks]
+军团花 10
 
 [@CarryItems]
 [@FixedRewards]
 [@SelectRewards]
-[@ExpReward]18500
+[@ExpReward]
+18500
 
-[@GoldReward]18500
+[@GoldReward]
+18500
 
 // Pickup - Alchemist_Samuel 324 291
 // Hand In - Alchemist_Samuel 324 291

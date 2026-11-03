@@ -1,21 +1,26 @@
-[@Description]嗯……这消息似乎指的是
+[@Description]
+嗯……这消息似乎指的是
 {骨精英/Crimson}。你能帮我们猎杀
 这只怪物？我们没法离开镇子，因为
 我们也遭到了袭击。
 
-[@TaskDescription]请消灭{骨精英/Crimson}并取回他的
+[@TaskDescription]
+请消灭{骨精英/Crimson}并取回他的
 {首领/LightSteelBlue}。
 
 [@Completion]
 [@KillTasks]
-[@ItemTasks]骷髅头 1
+[@ItemTasks]
+骷髅头 1
 
 [@CarryItems]
 [@FixedRewards]
 [@SelectRewards]
-[@ExpReward]2500
+[@ExpReward]
+2500
 
-[@GoldReward]2500
+[@GoldReward]
+2500
 
 // Pickup - Teleport_Kyle 0 371 314
 // Hand In - Teleport_Kyle 0 371 314

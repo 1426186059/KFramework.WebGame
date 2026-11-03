@@ -1,19 +1,24 @@
-[@Description]{乌苗森林/Yellow}的{屠夫/LimeGreen}刚开了一家
+[@Description]
+{乌苗森林/Yellow}的{屠夫/LimeGreen}刚开了一家
 新店。他找我帮点忙。
 
-[@TaskDescription]击杀{沃玛士兵/Crimson}以收集10个{蜂肋/LightSteelBlue}
+[@TaskDescription]
+击杀{沃玛士兵/Crimson}以收集10个{蜂肋/LightSteelBlue}
 并交给{乌苗森林/Yellow}的{屠夫/LimeGreen}
 
 [@Completion]
 [@KillTasks]
-[@ItemTasks]蜂肋 10
+[@ItemTasks]
+蜂肋 10
 
 [@CarryItems]
 [@FixedRewards]
 [@SelectRewards]
-[@ExpReward]8200
+[@ExpReward]
+8200
 
-[@GoldReward]8200
+[@GoldReward]
+8200
 
 // Pickup - 
 // Hand In - Merchant_Hans 1 328 86

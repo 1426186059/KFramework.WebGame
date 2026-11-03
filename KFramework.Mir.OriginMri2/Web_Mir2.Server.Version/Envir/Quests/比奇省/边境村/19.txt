@@ -1,9 +1,11 @@
-[@Description]你好，旅人。你听说过
+[@Description]
+你好，旅人。你听说过
 弓手队长目前正在守护
 区域？有传言说他们在寻找
 弟子以助战
 
-[@TaskDescription]在坐标320:476与{杰拉德/LimeGreen}交谈
+[@TaskDescription]
+在坐标320:476与{杰拉德/LimeGreen}交谈
 
 [@Completion]
 [@KillTasks]
@@ -11,9 +13,11 @@
 [@CarryItems]
 [@FixedRewards]
 [@SelectRewards]
-[@ExpReward]48
+[@ExpReward]
+48
 
-[@GoldReward]60
+[@GoldReward]
+60
 
 // Pickup - 助手简 0 284 606
 // Hand In - Captain_Jerald 0 320 476

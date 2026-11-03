@@ -1,23 +1,29 @@
-[@Description]一封推荐信……这还是头一回。
+[@Description]
+一封推荐信……这还是头一回。
 我们需要所有能帮忙的人来应对这场战争。
 无论他们是否加入守卫队。
 能否请你帮我个忙。
 
-[@TaskDescription]消灭10只{奥玛/Crimson}和{抓挠猫/Crimson}
+[@TaskDescription]
+消灭10只{奥玛/Crimson}和{抓挠猫/Crimson}
 
 [@Completion]
-[@KillTasks]奥玛 10
+[@KillTasks]
+奥玛 10
 抓挠猫 10
 
 [@ItemTasks]
 [@CarryItems]
-[@FixedRewards]老懒汉
+[@FixedRewards]
+老懒汉
 专注
 
 [@SelectRewards]
-[@ExpReward]180
+[@ExpReward]
+180
 
-[@GoldReward]45
+[@GoldReward]
+45
 
 // Pickup - Captain_Jerald 0 320 476
 // Hand In - Captain_Jerald 0 320 476

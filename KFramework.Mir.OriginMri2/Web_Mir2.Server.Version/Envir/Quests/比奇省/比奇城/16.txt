@@ -1,23 +1,29 @@
-[@Description]请帮帮我。我需要补点货，我的
+[@Description]
+请帮帮我。我需要补点货，我的
 补给。能否请你找来材料
 来自{比奇/Yellow}附近的{洞穴/Yellow}吗？
 
-[@TaskDescription]请从……收集5个{蝙蝠牙/LightSteelBlue}和{骷髅/LightSteelBlue}
+[@TaskDescription]
+请从……收集5个{蝙蝠牙/LightSteelBlue}和{骷髅/LightSteelBlue}
 {沃玛洞穴/Yellow}，以及来自{比奇死亡矿坑/Yellow}的{僵尸眼/LightSteelBlue}。
 
-[@Completion]万分感谢，勇敢的旅人。
+[@Completion]
+万分感谢，勇敢的旅人。
 
 [@KillTasks]
-[@ItemTasks]蝙蝠牙 5
+[@ItemTasks]
+蝙蝠牙 5
 骷髅 5
 僵尸眼 5
 
 [@CarryItems]
 [@FixedRewards]
 [@SelectRewards]
-[@ExpReward]2550
+[@ExpReward]
+2550
 
-[@GoldReward]2550
+[@GoldReward]
+2550
 
 // Pickup - CraftsLady_Alice 0 321 265
 // Hand In - CraftsLady_Alice 0 321 265

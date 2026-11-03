@@ -1,10 +1,12 @@
-[@Description]你好，旅人。你听说过
+[@Description]
+你好，旅人。你听说过
 本区域的刺客教头？
 他可是所有刺客的大师。我听说
 他最近一直在物色新弟子。
 那也许只是个谣言
 
-[@TaskDescription]在坐标101:411与{克劳德/LimeGreen}交谈
+[@TaskDescription]
+在坐标101:411与{克劳德/LimeGreen}交谈
 
 [@Completion]
 [@KillTasks]
@@ -12,9 +14,11 @@
 [@CarryItems]
 [@FixedRewards]
 [@SelectRewards]
-[@ExpReward]48
+[@ExpReward]
+48
 
-[@GoldReward]60
+[@GoldReward]
+60
 
 // Pickup - 助手简 0 284 606
 // Hand In - HighAssassin_Cloud 0 101 411

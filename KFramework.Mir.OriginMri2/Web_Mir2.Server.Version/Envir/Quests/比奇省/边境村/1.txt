@@ -1,18 +1,23 @@
-[@Description]欢迎来到{边境村/Yellow}，年轻的旅人。
+[@Description]
+欢迎来到{边境村/Yellow}，年轻的旅人。
 在你启程之前
 能否请你帮我个小忙？
 
-[@TaskDescription]把{食人叶/LightSteelBlue}运给{工匠大娘/LimeGreen}
+[@TaskDescription]
+把{食人叶/LightSteelBlue}运给{工匠大娘/LimeGreen}
 
 [@Completion]
 [@KillTasks]
 [@ItemTasks]
-[@CarryItems]食人叶 5
+[@CarryItems]
+食人叶 5
 
-[@FixedRewards]小金创药
+[@FixedRewards]
+小金创药
 
 [@SelectRewards]
-[@ExpReward]10
+[@ExpReward]
+10
 
 [@GoldReward]
 // Pickup - 助手简 0 284 606

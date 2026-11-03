@@ -1,11 +1,14 @@
-[@Description]我打造武器所需的材料
+[@Description]
+我打造武器所需的材料
 可以在{死亡矿坑入口/Yellow}找到，但那一带
 到处都是{僵尸/Crimson}。
 
-[@TaskDescription]在{矿坑/Yellow}各消灭5只{僵尸/Crimson}。
+[@TaskDescription]
+在{矿坑/Yellow}各消灭5只{僵尸/Crimson}。
 
 [@Completion]
-[@KillTasks]僵尸5 5
+[@KillTasks]
+僵尸5 5
 僵尸2 5
 僵尸3 5
 僵尸4 5
@@ -14,13 +17,16 @@
 [@ItemTasks]
 [@CarryItems]
 [@FixedRewards]
-[@SelectRewards]老娜迦项链
+[@SelectRewards]
+老娜迦项链
 琥珀坠子
 旧珠凤凰
 
-[@ExpReward]2700
+[@ExpReward]
+2700
 
-[@GoldReward]675
+[@GoldReward]
+675
 
 // Pickup - Blacksmith_Bill 0 302 221
 // Hand In - Blacksmith_Bill 0 302 221

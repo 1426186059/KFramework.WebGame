@@ -1,18 +1,23 @@
-[@Description]比奇城悬赏已提交。
+[@Description]
+比奇城悬赏已提交。
 
-[@TaskDescription]收集{金栗子/LightSteelBlue}。
+[@TaskDescription]
+收集{金栗子/LightSteelBlue}。
 
 [@Completion]
 [@KillTasks]
-[@ItemTasks]金栗子 5
+[@ItemTasks]
+金栗子 5
 
 [@FlagTasks]
 [@CarryItems]
 [@FixedRewards]
 [@SelectRewards]
-[@ExpReward]1500
+[@ExpReward]
+1500
 
-[@GoldReward]10000
+[@GoldReward]
+10000
 
 // Pickup - BichonWall_Board 0 334 259
 // Hand In - BichonWall_Board 0 334 259

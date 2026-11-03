@@ -1,23 +1,29 @@
-[@Description]你去过{比奇/Yellow}附近的地下城吗？
+[@Description]
+你去过{比奇/Yellow}附近的地下城吗？
 {骷髅兵/Crimson}就在那里。附近的守卫
 地下城报告说{骷髅兵/Crimson}的数量
 最近越来越多。你觉得你
 能去消灭25只{骷髅兵/Crimson}吗？这是为了
 {比奇/Yellow}的安危。
 
-[@TaskDescription]消灭25只{骷髅兵/Crimson}
+[@TaskDescription]
+消灭25只{骷髅兵/Crimson}
 
 [@Completion]
-[@KillTasks]骷髅兵 25
+[@KillTasks]
+骷髅兵 25
 
 [@ItemTasks]
 [@CarryItems]
-[@FixedRewards]优魔法盔
+[@FixedRewards]
+优魔法盔
 
 [@SelectRewards]
-[@ExpReward]1500
+[@ExpReward]
+1500
 
-[@GoldReward]375
+[@GoldReward]
+375
 
 // Pickup - Teleport_Jason 0 292 216
 // Hand In - Teleport_Jason 0 292 216

@@ -1,9 +1,11 @@
-[@Description]{铁匠张/LimeGreen}请求一些帮助。
+[@Description]
+{铁匠张/LimeGreen}请求一些帮助。
 能否请你去和他谈谈，他就在
 在{乌苗森林/Yellow}，如果你沿着向北的小路
 它会把你引到{乌苗森林/Yellow}的城镇。
 
-[@TaskDescription]前往{乌苗森林/Yellow}与{张/LimeGreen}交谈。
+[@TaskDescription]
+前往{乌苗森林/Yellow}与{张/LimeGreen}交谈。
 
 [@Completion]
 [@KillTasks]
@@ -11,6 +13,8 @@
 [@CarryItems]
 [@FixedRewards]
 [@SelectRewards]
-[@ExpReward]120
+[@ExpReward]
+120
 
-[@GoldReward]200
+[@GoldReward]
+200

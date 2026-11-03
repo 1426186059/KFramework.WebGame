@@ -1,22 +1,28 @@
-[@Description]最近数量一直在增加的是
+[@Description]
+最近数量一直在增加的是
 镇子周围的{吐毒蜘蛛/Crimson}。这只怪物
 有毒，而解药只能由
 取自{毒囊/LightSteelBlue}。
 
-[@TaskDescription]请通过猎杀来寻找{毒囊/LightSteelBlue}
+[@TaskDescription]
+请通过猎杀来寻找{毒囊/LightSteelBlue}
 {吐毒蜘蛛/Crimson}。
 
 [@Completion]
 [@KillTasks]
-[@ItemTasks]毒囊 10
+[@ItemTasks]
+毒囊 10
 
 [@CarryItems]
-[@FixedRewards]强皮革腰带
+[@FixedRewards]
+强皮革腰带
 
 [@SelectRewards]
-[@ExpReward]500
+[@ExpReward]
+500
 
-[@GoldReward]125
+[@GoldReward]
+125
 
 // Pickup - 
 // Hand In - MirGuide_Peter 0 328 258

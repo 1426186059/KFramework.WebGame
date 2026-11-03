@@ -1,19 +1,24 @@
-[@Description]我正在用{稀有铜矿/LightSteelBlue}打造特制铠甲。
+[@Description]
+我正在用{稀有铜矿/LightSteelBlue}打造特制铠甲。
 你可以在……的{僵尸/Crimson}身上找到这些
 {死亡矿坑/Yellow}。
 
-[@TaskDescription]猎杀{僵尸/Crimson}寻找10个{稀有铜矿/LightSteelBlue}。
+[@TaskDescription]
+猎杀{僵尸/Crimson}寻找10个{稀有铜矿/LightSteelBlue}。
 
 [@Completion]
 [@KillTasks]
-[@ItemTasks]稀有铜矿 10
+[@ItemTasks]
+稀有铜矿 10
 
 [@CarryItems]
 [@FixedRewards]
 [@SelectRewards]
-[@ExpReward]3000
+[@ExpReward]
+3000
 
-[@GoldReward]3000
+[@GoldReward]
+3000
 
 // Pickup - Blacksmith_Bill 0 302 221
 // Hand In - Blacksmith_Bill 0 302 221

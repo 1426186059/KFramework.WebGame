@@ -1,6 +1,8 @@
-[@Description]在{道尧县/Yellow}与{洞窟向导/LimeGreen}对话
+[@Description]
+在{道尧县/Yellow}与{洞窟向导/LimeGreen}对话
 
-[@TaskDescription]前往{道尧县/Yellow}以西，与
+[@TaskDescription]
+前往{道尧县/Yellow}以西，与
 与{洞窟向导/LimeGreen}一起。
 
 [@Completion]
@@ -9,9 +11,11 @@
 [@CarryItems]
 [@FixedRewards]
 [@SelectRewards]
-[@ExpReward]4144
+[@ExpReward]
+4144
 
-[@GoldReward]7750
+[@GoldReward]
+7750
 
 // Pickup - Examiner_Tony 0 340 257
 // Hand In - CaveGuide_Paddy 11 119 293
