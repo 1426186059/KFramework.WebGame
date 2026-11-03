@@ -397,6 +397,7 @@ namespace Client.MirControls
         protected internal override void DrawControl()
         {
             base.DrawControl();
+            if (!DrawImage) return;
 
             if (Texture != null)
             {
@@ -414,8 +415,6 @@ namespace Client.MirControls
                 DXManager.Draw(Texture, srcRect, dstRect, drawColor, (Blending ? MirBlend.Additive : MirBlend.Normal).ToBlendState(), FlipEffects);
                 return;
             }
-
-            if (!DrawImage) return;
 
             if (AtlasSheet != null && !string.IsNullOrEmpty(AtlasFrame)
                 && AtlasSheet.Frames.TryGetValue(AtlasFrame, out var atlasSprite))
