@@ -25,7 +25,7 @@ namespace KFramework.Example.Tank
 
             await ContentManager.Default.LoadAsync().ConfigureAwait(false);
 
-            KSceneMgr.SetMainSceneAsync(new GameScene());
+            await KSceneMgr.SetMainSceneAsync(new GameScene());
         }
     }
 

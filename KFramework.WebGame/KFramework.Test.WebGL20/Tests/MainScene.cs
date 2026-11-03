@@ -97,7 +97,7 @@ namespace KFramework.Test.WebGL20.Tests
         private readonly List<Rectangle> _rows = [];
 
         /// <summary>回到总纲（供各测试页的「← 总纲」与 Esc 调用）。</summary>
-        public static void Open() => KSceneMgr.SetMainSceneAsync(new MainScene());
+        public static async void Open() => await KSceneMgr.SetMainSceneAsync(new MainScene());
 
         private GraphicsDevice Device => KSceneMgr.Game.GraphicsDevice;
 
@@ -105,7 +105,7 @@ namespace KFramework.Test.WebGL20.Tests
 
         private IFont Font => KDefaultRes.DefaultSpriteFont;
 
-        public override void Update()
+        public override async void Update()
         {
             // 命中矩形必须在这里也布一次：Update 先于 Draw 执行，若只在 Draw 里填充，首帧点击会落空。
             LayoutRows();
@@ -117,7 +117,7 @@ namespace KFramework.Test.WebGL20.Tests
                 {
                     if (_rows[i].Contains(p))
                     {
-                        KSceneMgr.SetMainSceneAsync(TestRegistry.Entries[i].Factory());
+                        await KSceneMgr.SetMainSceneAsync(TestRegistry.Entries[i].Factory());
                         return;
                     }
                 }
@@ -129,7 +129,7 @@ namespace KFramework.Test.WebGL20.Tests
             {
                 if (Input_KeyBoard.GetKeyDown(digits[i]))
                 {
-                    KSceneMgr.SetMainSceneAsync(TestRegistry.Entries[i].Factory());
+                    await KSceneMgr.SetMainSceneAsync(TestRegistry.Entries[i].Factory());
                     return;
                 }
             }

@@ -71,7 +71,7 @@ namespace KFramework.Test.Common
             // 加载全部 AssetBundle（含 Content/raw/Bundles/fonts 下的 ttf 字体）
             await ContentManager.Default.LoadAsync().ConfigureAwait(false);
 
-            KSceneMgr.SetMainSceneAsync(new TestMainScene());
+            await KSceneMgr.SetMainSceneAsync(new TestMainScene());
         }
     }
 

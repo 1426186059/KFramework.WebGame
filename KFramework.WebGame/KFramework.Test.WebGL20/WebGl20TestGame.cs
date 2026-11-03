@@ -42,13 +42,13 @@ namespace KFramework.Test.WebGL20
             base.Initialize();
         }
 
-        protected override Task LoadContentAsync()
+        protected override async Task LoadContentAsync()
         {
             // 测试界面用程序化生成的系统字体，不依赖任何字体资源。
             KDefaultRes.DefaultSpriteFont = new SpriteFont(20f);
 
-            KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
-            return Task.CompletedTask;
+            await KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
+            return;
         }
 
         protected override void Update(GameTime gameTime)
@@ -61,11 +61,11 @@ namespace KFramework.Test.WebGL20
         /// 全局按键：在任何测试页都能切换，不必先退回总纲。
         /// 数字 1..4 直达对应测试页，Esc 回总纲（各页左上角的返回逻辑同样有效）。
         /// </summary>
-        private void HandleGlobalKeys()
+        private async void HandleGlobalKeys()
         {
             if (Input_KeyBoard.GetKeyDown(Keys.Escape))
             {
-                KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
+                await KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
                 return;
             }
 
@@ -74,7 +74,7 @@ namespace KFramework.Test.WebGL20
             {
                 if (Input_KeyBoard.GetKeyDown(digits[i]))
                 {
-                    KSceneMgr.SetMainSceneAsync(Tests.TestRegistry.Entries[i].Factory());
+                    await KSceneMgr.SetMainSceneAsync(Tests.TestRegistry.Entries[i].Factory());
                     return;
                 }
             }

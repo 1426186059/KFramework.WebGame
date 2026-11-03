@@ -27,13 +27,13 @@ namespace KFramework.Test.Canvas2D
             Components.Add(new KEngineComponent(this));
         }
 
-        protected override Task LoadContentAsync()
+        protected override async Task LoadContentAsync()
         {
             // 测试界面用程序化生成的系统字体，不依赖任何字体资源。
             KDefaultRes.DefaultSpriteFont = new SpriteFont(20f);
 
-            KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
-            return Task.CompletedTask;
+            await KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
+            return;
         }
 
         protected override void Update(GameTime gameTime)
@@ -43,11 +43,11 @@ namespace KFramework.Test.Canvas2D
         }
 
         /// <summary>全局按键：数字 1..9 直达对应测试页，Esc 回总纲。</summary>
-        private void HandleGlobalKeys()
+        private async void HandleGlobalKeys()
         {
             if (Input_KeyBoard.GetKeyDown(Keys.Escape))
             {
-                KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
+                await KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
                 return;
             }
 
@@ -56,7 +56,7 @@ namespace KFramework.Test.Canvas2D
             {
                 if (Input_KeyBoard.GetKeyDown(digits[i]))
                 {
-                    KSceneMgr.SetMainSceneAsync(Tests.TestRegistry.Entries[i].Factory());
+                    await KSceneMgr.SetMainSceneAsync(Tests.TestRegistry.Entries[i].Factory());
                     return;
                 }
             }

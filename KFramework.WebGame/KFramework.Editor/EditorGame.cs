@@ -19,7 +19,7 @@ namespace KFramework.Editor
         {
             KDefaultRes.DefaultSpriteFont = new SpriteFont(18f);
             await ContentManager.Default.LoadAsync();
-            KSceneMgr.SetMainSceneAsync(new EditorScene());     // 切到编辑器主场景
+            await KSceneMgr.SetMainSceneAsync(new EditorScene());     // 切到编辑器主场景
         }
     }
 }

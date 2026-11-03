@@ -52,12 +52,12 @@ namespace KFramework.Test.WebGPU
             base.Initialize();
         }
 
-        protected override Task LoadContentAsync()
+        protected override async Task LoadContentAsync()
         {
             KDefaultRes.DefaultSpriteFont = new SpriteFont(20f);
 
-            KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
-            return Task.CompletedTask;
+            await KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
+            return;
         }
 
         protected override void Update(GameTime gameTime)
@@ -70,11 +70,11 @@ namespace KFramework.Test.WebGPU
         /// 全局按键：在任何测试页都能切换，不必先退回总纲。
         /// 数字 1..3 直达对应测试页，Esc 回总纲（各页左上角的「← 总纲」按钮同样有效）。
         /// </summary>
-        private void HandleGlobalKeys()
+        private async void HandleGlobalKeys()
         {
             if (Input_KeyBoard.GetKeyDown(Keys.Escape))
             {
-                KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
+                await KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
                 return;
             }
 
@@ -83,7 +83,7 @@ namespace KFramework.Test.WebGPU
             {
                 if (Input_KeyBoard.GetKeyDown(digits[i]))
                 {
-                    KSceneMgr.SetMainSceneAsync(Tests.TestRegistry.Entries[i].Factory());
+                    await KSceneMgr.SetMainSceneAsync(Tests.TestRegistry.Entries[i].Factory());
                     return;
                 }
             }

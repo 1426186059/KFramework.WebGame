@@ -21,7 +21,7 @@ namespace KFramework.Test.Common.Tests
         private bool _built;
 
         /// <summary>回到测试总屏（各测试场景的「返回」用）。</summary>
-        public static void Open() => KSceneMgr.SetMainSceneAsync(new TestMainScene());
+        public static async void Open() => await KSceneMgr.SetMainSceneAsync(new TestMainScene());
 
         public override void Update()
         {
@@ -124,7 +124,7 @@ namespace KFramework.Test.Common.Tests
             }
         }
 
-        private static void Enter(int index) => KSceneMgr.SetMainSceneAsync(TestRegistry.Entries[index].Factory());
+        private static async void Enter(int index) => await KSceneMgr.SetMainSceneAsync(TestRegistry.Entries[index].Factory());
 
         public override void Draw()
         {
