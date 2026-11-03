@@ -1,0 +1,28 @@
+[@Description]
+这条项链是我的{生命石/LightSteelBlue}……这就是我
+回来的原因。请帮我找回我的{生命石/LightSteelBlue}。
+
+[@TaskDescription]
+猎杀{巨蠕虫/Crimson}并归还{旧项链/LightSteelBlue}。
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+旧项链 1
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+8000
+
+[@GoldReward]
+8000
+
+// Pickup - LostSoul D601 202 204
+// Hand In - LostSoul D601 202 204

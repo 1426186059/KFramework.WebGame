@@ -1,0 +1,30 @@
+[@Description]
+土城悬赏已提交。
+
+[@TaskDescription]
+前往{石墓/Yellow}消灭{野猪/Crimson}并
+收集{猪牙/LightSteelBlue}。
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+猪牙 75 "收集野猪的獠牙"
+
+[@FlagTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+10000
+
+[@GoldReward]
+25000
+
+// Pickup - MudWall_Board 3 330 325
+// Hand In - MudWall_Board 3 330 325

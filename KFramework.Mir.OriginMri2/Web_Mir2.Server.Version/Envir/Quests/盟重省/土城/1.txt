@@ -1,0 +1,31 @@
+[@Description]
+请向我在{比奇省/Yellow}的指挥官报到。
+
+[@TaskDescription]
+向{占领管理员/LimeGreen}报到。
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+实心巨斧
+青铜实心杖
+蛇形实心剑
+实心双刃
+银质实心弓
+
+[@ExpReward]
+6688
+
+[@GoldReward]
+13000
+
+// Pickup - MongchonDelegate_Michael 3 330 332
+// Hand In - SubjagationManager_James 0 343 182

@@ -1,0 +1,26 @@
+[@Description]
+我去{死亡山谷/Yellow}狩猎时，遇到了一些{钳虫/Crimson}。
+我原以为那是只首领级怪物。撤退时，我不小心
+丢了我心爱的剑。
+
+[@TaskDescription]
+前往{死亡山谷/Yellow}，击杀{钳虫/Crimson}取回{查理之剑/LightSteelBlue}。
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+查理之剑 1
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+9500
+
+[@GoldReward]
+9500

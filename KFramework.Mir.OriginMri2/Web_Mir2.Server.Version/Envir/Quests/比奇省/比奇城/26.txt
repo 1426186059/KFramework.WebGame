@@ -1,0 +1,33 @@
+[@Description]
+{皇帝/LIMEGREEN}由我保护。
+城市的士气令人向往。证明你
+值得托付。
+
+[@TaskDescription]
+在城中宣扬关于{皇帝/LIMEGREEN}的良好士气。
+我会陪你去向他禀报当前的士气状况。
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+
+[@FlagTasks]
+539 "宣扬皇帝的威望"
+540 "宣扬皇帝的威望"
+541 "宣扬皇帝的威望"
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+550
+
+[@GoldReward]
+
+[@CreditReward]
+150

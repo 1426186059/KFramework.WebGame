@@ -1,0 +1,32 @@
+[@Description]
+有人跟你提起过{死亡山谷/Yellow}吗？那是个
+布满悬崖与岩石的地方。这片区域的昆虫
+变得异常巨大。我研究它们多年。几天前我
+想抓一只{哀鸣蜂/Crimson}的{标本/LightSteelBlue}，
+却被它们袭击了。
+
+[@TaskDescription]
+消灭{哀鸣蜂/Crimson}以收集{虫标本/LightSteelBlue}，
+可在{死亡山谷/Yellow}找到。
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+虫标本 10
+
+[@CarryItems]
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+8800
+
+[@GoldReward]
+8800
+
+// Pickup - Merchant_Daniel 3 361 335
+// Hand In - Merchant_Daniel 3 361 335

@@ -1,0 +1,30 @@
+[@Description]
+请将我的{生命石/LightSteelBlue}交还给我的女儿
+{蕾切尔/LimeGreen}。她会明白它的意义。
+感谢你的帮助，我现在安息了。
+
+[@TaskDescription]
+请将{旧项链/LightSteelBlue}交给{蕾切尔/LimeGreen}。
+地点在{盟重省/Yellow}。
+
+[@Completion]
+
+[@KillTasks]
+
+[@ItemTasks]
+
+[@CarryItems]
+旧项链 1
+
+[@FixedRewards]
+
+[@SelectRewards]
+
+[@ExpReward]
+3801
+
+[@GoldReward]
+1781
+
+// Pickup - LostSoul D601 202 204
+// Hand In - Merchant_Rachel 0158 4 21

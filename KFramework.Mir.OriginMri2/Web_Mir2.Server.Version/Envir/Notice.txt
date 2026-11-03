@@ -1,13 +1,4 @@
-TITLE=欢迎来到 传奇 2
-             !!必读!!
+TITLE= 公告
 
-
-
-
-
-
-
-点击下方关闭并继续游戏，即表示你同意上述的
-服务条款。
-(官方/LOMCN:http://LOMCN.NET)
-(数据库/https://github.com/Suprcode/mir2-database/tree/main/Jev)
+欢迎来到 许珂制作的 传奇2 游戏
+开始战斗吧！勇士们!
