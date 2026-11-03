@@ -1,7 +1,7 @@
-﻿[
+[
   {
     "Index": 1,
-    "FileName": "盟重/土城/Transport",
+    "FileName": "盟重/土城/传送",
     "Name": "传送员",
     "MapIndex": 1,
     "Location": {
@@ -32,7 +32,7 @@
   },
   {
     "Index": 2,
-    "FileName": "比奇省/边境村/BountyBoard",
+    "FileName": "比奇省/边境村/悬赏告示板",
     "Name": "边境村告示",
     "MapIndex": 1,
     "Location": {
@@ -63,7 +63,7 @@
   },
   {
     "Index": 3,
-    "FileName": "比奇省/边境村/Jane",
+    "FileName": "比奇省/边境村/简",
     "Name": "助手",
     "MapIndex": 1,
     "Location": {
@@ -94,7 +94,7 @@
   },
   {
     "Index": 4,
-    "FileName": "比奇省/边境村/CraftLady",
+    "FileName": "比奇省/边境村/工匠大娘",
     "Name": "工匠大娘",
     "MapIndex": 1,
     "Location": {
@@ -125,7 +125,7 @@
   },
   {
     "Index": 5,
-    "FileName": "比奇省/边境村/Blacksmith",
+    "FileName": "比奇省/边境村/铁匠",
     "Name": "铁匠",
     "MapIndex": 1,
     "Location": {
@@ -156,7 +156,7 @@
   },
   {
     "Index": 7,
-    "FileName": "比奇省/边境村/Butcher",
+    "FileName": "比奇省/边境村/屠夫",
     "Name": "杂货商",
     "MapIndex": 1,
     "Location": {
@@ -187,7 +187,7 @@
   },
   {
     "Index": 8,
-    "FileName": "比奇省/边境村/Drapery",
+    "FileName": "比奇省/边境村/布庄",
     "Name": "杂货商",
     "MapIndex": 1,
     "Location": {
@@ -218,7 +218,7 @@
   },
   {
     "Index": 9,
-    "FileName": "比奇省/边境村/Grocery",
+    "FileName": "比奇省/边境村/杂货店",
     "Name": "杂货商",
     "MapIndex": 1,
     "Location": {
@@ -249,7 +249,7 @@
   },
   {
     "Index": 10,
-    "FileName": "比奇省/边境村/Warehouse",
+    "FileName": "比奇省/边境村/仓库",
     "Name": "旅店老板",
     "MapIndex": 32,
     "Location": {
@@ -280,7 +280,7 @@
   },
   {
     "Index": 11,
-    "FileName": "比奇省/边境村/Ring",
+    "FileName": "比奇省/边境村/戒指",
     "Name": "杂货商",
     "MapIndex": 31,
     "Location": {
@@ -311,7 +311,7 @@
   },
   {
     "Index": 12,
-    "FileName": "比奇省/边境村/Bracelet",
+    "FileName": "比奇省/边境村/手镯",
     "Name": "杂货商",
     "MapIndex": 31,
     "Location": {
@@ -342,7 +342,7 @@
   },
   {
     "Index": 13,
-    "FileName": "比奇省/边境村/Necklace",
+    "FileName": "比奇省/边境村/项链",
     "Name": "杂货商",
     "MapIndex": 31,
     "Location": {
@@ -373,7 +373,7 @@
   },
   {
     "Index": 14,
-    "FileName": "比奇省/边境村/Prison",
+    "FileName": "比奇省/边境村/监狱",
     "Name": "狱卒",
     "MapIndex": 25,
     "Location": {
@@ -404,7 +404,7 @@
   },
   {
     "Index": 15,
-    "FileName": "比奇省/Sailor",
+    "FileName": "比奇省/水手",
     "Name": "水手",
     "MapIndex": 1,
     "Location": {
@@ -435,7 +435,7 @@
   },
   {
     "Index": 16,
-    "FileName": "比奇省/Wa-Master",
+    "FileName": "比奇省/瓦师傅",
     "Name": "师傅",
     "MapIndex": 1,
     "Location": {
@@ -466,7 +466,7 @@
   },
   {
     "Index": 17,
-    "FileName": "比奇省/HighPriest",
+    "FileName": "比奇省/大祭司",
     "Name": "大祭司",
     "MapIndex": 1,
     "Location": {
@@ -497,7 +497,7 @@
   },
   {
     "Index": 18,
-    "FileName": "比奇省/HighPriestShinsu",
+    "FileName": "比奇省/大祭司神兽",
     "Name": "神兽",
     "MapIndex": 1,
     "Location": {
@@ -528,7 +528,7 @@
   },
   {
     "Index": 19,
-    "FileName": "比奇省/SinCloud",
+    "FileName": "比奇省/辛云",
     "Name": "刺客导师",
     "MapIndex": 1,
     "Location": {
@@ -559,7 +559,7 @@
   },
   {
     "Index": 20,
-    "FileName": "比奇省/ArcherCaptain",
+    "FileName": "比奇省/弓手队长",
     "Name": "队长",
     "MapIndex": 1,
     "Location": {
@@ -590,7 +590,7 @@
   },
   {
     "Index": 21,
-    "FileName": "比奇省/ArcherMage",
+    "FileName": "比奇省/弓手法师",
     "Name": "魔法导师",
     "MapIndex": 33,
     "Location": {
@@ -621,7 +621,7 @@
   },
   {
     "Index": 22,
-    "FileName": "比奇省/比奇城/Bichon_Teleport1",
+    "FileName": "比奇省/比奇城/比奇传送1",
     "Name": "传送员",
     "MapIndex": 1,
     "Location": {
@@ -652,7 +652,7 @@
   },
   {
     "Index": 23,
-    "FileName": "比奇省/比奇城/Bichon_Teleport2",
+    "FileName": "比奇省/比奇城/比奇传送2",
     "Name": "传送员",
     "MapIndex": 1,
     "Location": {
@@ -683,7 +683,7 @@
   },
   {
     "Index": 24,
-    "FileName": "比奇省/比奇城/Bichon_Teleport3",
+    "FileName": "比奇省/比奇城/比奇传送3",
     "Name": "传送员",
     "MapIndex": 1,
     "Location": {
@@ -714,7 +714,7 @@
   },
   {
     "Index": 25,
-    "FileName": "比奇省/比奇城/Butcher1",
+    "FileName": "比奇省/比奇城/屠夫1",
     "Name": "杂货商",
     "MapIndex": 1,
     "Location": {
@@ -745,7 +745,7 @@
   },
   {
     "Index": 26,
-    "FileName": "比奇省/比奇城/Butcher2",
+    "FileName": "比奇省/比奇城/屠夫2",
     "Name": "杂货商",
     "MapIndex": 3,
     "Location": {
@@ -776,7 +776,7 @@
   },
   {
     "Index": 27,
-    "FileName": "比奇省/比奇城/Blacksmith",
+    "FileName": "比奇省/比奇城/铁匠",
     "Name": "铁匠",
     "MapIndex": 1,
     "Location": {
@@ -807,7 +807,7 @@
   },
   {
     "Index": 28,
-    "FileName": "比奇省/比奇城/Potion1",
+    "FileName": "比奇省/比奇城/药水1",
     "Name": "药店老板",
     "MapIndex": 1,
     "Location": {
@@ -838,7 +838,7 @@
   },
   {
     "Index": 29,
-    "FileName": "比奇省/比奇城/Potion2",
+    "FileName": "比奇省/比奇城/药水2",
     "Name": "药店老板",
     "MapIndex": 4,
     "Location": {
@@ -869,7 +869,7 @@
   },
   {
     "Index": 30,
-    "FileName": "比奇省/比奇城/Potion3",
+    "FileName": "比奇省/比奇城/药水3",
     "Name": "专家",
     "MapIndex": 5,
     "Location": {
@@ -900,7 +900,7 @@
   },
   {
     "Index": 31,
-    "FileName": "比奇省/比奇城/Warehouse1",
+    "FileName": "比奇省/比奇城/仓库1",
     "Name": "旅店老板",
     "MapIndex": 1,
     "Location": {
@@ -931,7 +931,7 @@
   },
   {
     "Index": 32,
-    "FileName": "比奇省/比奇城/Warehouse2",
+    "FileName": "比奇省/比奇城/仓库2",
     "Name": "旅店老板",
     "MapIndex": 8,
     "Location": {
@@ -962,7 +962,7 @@
   },
   {
     "Index": 33,
-    "FileName": "比奇省/比奇城/Grocery",
+    "FileName": "比奇省/比奇城/杂货店",
     "Name": "杂货商",
     "MapIndex": 1,
     "Location": {
@@ -993,7 +993,7 @@
   },
   {
     "Index": 34,
-    "FileName": "比奇省/比奇城/Lottery",
+    "FileName": "比奇省/比奇城/彩票",
     "Name": "彩票管理员",
     "MapIndex": 1,
     "Location": {
@@ -1024,7 +1024,7 @@
   },
   {
     "Index": 35,
-    "FileName": "比奇省/比奇城/Board",
+    "FileName": "比奇省/比奇城/告示板",
     "Name": "比奇城告示",
     "MapIndex": 1,
     "Location": {
@@ -1055,7 +1055,7 @@
   },
   {
     "Index": 36,
-    "FileName": "比奇省/比奇城/Materials",
+    "FileName": "比奇省/比奇城/材料",
     "Name": "材料商人",
     "MapIndex": 1,
     "Location": {
@@ -1086,7 +1086,7 @@
   },
   {
     "Index": 37,
-    "FileName": "比奇省/比奇城/MirGuide",
+    "FileName": "比奇省/比奇城/米尔向导",
     "Name": "向导",
     "MapIndex": 1,
     "Location": {
@@ -1117,7 +1117,7 @@
   },
   {
     "Index": 38,
-    "FileName": "比奇省/比奇城/Examiner",
+    "FileName": "比奇省/比奇城/考核官",
     "Name": "考核官",
     "MapIndex": 1,
     "Location": {
@@ -1148,7 +1148,7 @@
   },
   {
     "Index": 39,
-    "FileName": "比奇省/比奇城/WiseFisher",
+    "FileName": "比奇省/比奇城/智者渔夫",
     "Name": "老渔夫",
     "MapIndex": 1,
     "Location": {
@@ -1179,7 +1179,7 @@
   },
   {
     "Index": 40,
-    "FileName": "比奇省/比奇城/StableGirl",
+    "FileName": "比奇省/比奇城/马厩女孩",
     "Name": "马夫",
     "MapIndex": 1,
     "Location": {
@@ -1210,7 +1210,7 @@
   },
   {
     "Index": 41,
-    "FileName": "比奇省/比奇城/Solider",
+    "FileName": "比奇省/比奇城/士兵",
     "Name": "士兵",
     "MapIndex": 1,
     "Location": {
@@ -1241,7 +1241,7 @@
   },
   {
     "Index": 42,
-    "FileName": "比奇省/比奇城/TrustMerchant",
+    "FileName": "比奇省/比奇城/可信商人",
     "Name": "寄存商人",
     "MapIndex": 1,
     "Location": {
@@ -1272,7 +1272,7 @@
   },
   {
     "Index": 43,
-    "FileName": "比奇省/比奇城/GTMerchant",
+    "FileName": "比奇省/比奇城/商人",
     "Name": "沙巴克商人",
     "MapIndex": 1,
     "Location": {
@@ -1303,7 +1303,7 @@
   },
   {
     "Index": 44,
-    "FileName": "比奇省/比奇城/Administrator",
+    "FileName": "比奇省/比奇城/管理员",
     "Name": "管理员",
     "MapIndex": 2,
     "Location": {
@@ -1334,7 +1334,7 @@
   },
   {
     "Index": 46,
-    "FileName": "比奇省/比奇城/Blacksmith1",
+    "FileName": "比奇省/比奇城/铁匠1",
     "Name": "杂货商",
     "MapIndex": 10,
     "Location": {
@@ -1365,7 +1365,7 @@
   },
   {
     "Index": 47,
-    "FileName": "比奇省/比奇城/Bracelet",
+    "FileName": "比奇省/比奇城/手镯",
     "Name": "杂货商",
     "MapIndex": 11,
     "Location": {
@@ -1396,7 +1396,7 @@
   },
   {
     "Index": 48,
-    "FileName": "比奇省/比奇城/Ring",
+    "FileName": "比奇省/比奇城/戒指",
     "Name": "杂货商",
     "MapIndex": 11,
     "Location": {
@@ -1427,7 +1427,7 @@
   },
   {
     "Index": 49,
-    "FileName": "比奇省/比奇城/Necklace",
+    "FileName": "比奇省/比奇城/项链",
     "Name": "杂货商",
     "MapIndex": 11,
     "Location": {
@@ -1458,7 +1458,7 @@
   },
   {
     "Index": 50,
-    "FileName": "比奇省/比奇城/Clothing",
+    "FileName": "比奇省/比奇城/服饰",
     "Name": "杂货商",
     "MapIndex": 12,
     "Location": {
@@ -1489,7 +1489,7 @@
   },
   {
     "Index": 51,
-    "FileName": "比奇省/比奇城/OldmanInfinity",
+    "FileName": "比奇省/比奇城/无限老人",
     "Name": "试炼老人",
     "MapIndex": 13,
     "Location": {
@@ -1520,7 +1520,7 @@
   },
   {
     "Index": 52,
-    "FileName": "比奇省/比奇城/MongchonScout",
+    "FileName": "比奇省/比奇城/蒙村斥候",
     "Name": "盟重斥候",
     "MapIndex": 14,
     "Location": {
@@ -1551,7 +1551,7 @@
   },
   {
     "Index": 53,
-    "FileName": "比奇省/比奇城/Sir.Mogu",
+    "FileName": "比奇省/比奇城/莫古爵士",
     "Name": "莫古爵士",
     "MapIndex": 13,
     "Location": {
@@ -1582,7 +1582,7 @@
   },
   {
     "Index": 54,
-    "FileName": "比奇省/比奇城/SubjagationManager",
+    "FileName": "比奇省/比奇城/占领管理员",
     "Name": "占领管理员",
     "MapIndex": 1,
     "Location": {
@@ -1613,7 +1613,7 @@
   },
   {
     "Index": 55,
-    "FileName": "比奇省/比奇城/CraftsLady",
+    "FileName": "比奇省/比奇城/工匠大娘",
     "Name": "工匠大娘",
     "MapIndex": 1,
     "Location": {
@@ -1644,7 +1644,7 @@
   },
   {
     "Index": 56,
-    "FileName": "比奇省/比奇城/Awakening",
+    "FileName": "比奇省/比奇城/觉醒",
     "Name": "师傅",
     "MapIndex": 1,
     "Location": {
@@ -1675,7 +1675,7 @@
   },
   {
     "Index": 57,
-    "FileName": "比奇省/比奇城/Downgrade",
+    "FileName": "比奇省/比奇城/降级",
     "Name": "助手",
     "MapIndex": 1,
     "Location": {
@@ -1706,7 +1706,7 @@
   },
   {
     "Index": 58,
-    "FileName": "比奇省/比奇城/PetStore",
+    "FileName": "比奇省/比奇城/宠物店",
     "Name": "宠物大师",
     "MapIndex": 8,
     "Location": {
@@ -1737,7 +1737,7 @@
   },
   {
     "Index": 59,
-    "FileName": "比奇省/比奇城/PearlStore",
+    "FileName": "比奇省/比奇城/珍珠店",
     "Name": "杂货商",
     "MapIndex": 13,
     "Location": {
@@ -1768,7 +1768,7 @@
   },
   {
     "Index": 60,
-    "FileName": "比奇省/比奇城/Premium",
+    "FileName": "比奇省/比奇城/高级",
     "Name": "会员管理员",
     "MapIndex": 1,
     "Location": {
@@ -1799,7 +1799,7 @@
   },
   {
     "Index": 61,
-    "FileName": "比奇省/比奇城/Far",
+    "FileName": "比奇省/比奇城/远方",
     "Name": "法老",
     "MapIndex": 2,
     "Location": {
@@ -1830,7 +1830,7 @@
   },
   {
     "Index": 62,
-    "FileName": "比奇省/比奇城/Luke",
+    "FileName": "比奇省/比奇城/卢克",
     "Name": "指挥官",
     "MapIndex": 1,
     "Location": {
@@ -1861,7 +1861,7 @@
   },
   {
     "Index": 63,
-    "FileName": "比奇省/沃玛洞穴/Warehouse",
+    "FileName": "比奇省/沃玛洞穴/仓库",
     "Name": "仓库管理员",
     "MapIndex": 40,
     "Location": {
@@ -1892,7 +1892,7 @@
   },
   {
     "Index": 64,
-    "FileName": "比奇省/沃玛洞穴/StrangeMan",
+    "FileName": "比奇省/沃玛洞穴/怪人",
     "Name": "陌生人",
     "MapIndex": 40,
     "Location": {
@@ -1923,7 +1923,7 @@
   },
   {
     "Index": 65,
-    "FileName": "比奇省/自然洞穴/WickedTrader",
+    "FileName": "比奇省/自然洞穴/邪恶商人",
     "Name": "奸商",
     "MapIndex": 36,
     "Location": {
@@ -1954,7 +1954,7 @@
   },
   {
     "Index": 66,
-    "FileName": "比奇省/废矿区/OldSkeleton",
+    "FileName": "比奇省/废矿区/老骷髅",
     "Name": "老骷髅",
     "MapIndex": 52,
     "Location": {
@@ -1985,7 +1985,7 @@
   },
   {
     "Index": 67,
-    "FileName": "比奇省/沃玛洞穴/Stone",
+    "FileName": "比奇省/沃玛洞穴/石头",
     "Name": "神秘石",
     "MapIndex": 43,
     "Location": {
@@ -2016,7 +2016,7 @@
   },
   {
     "Index": 128,
-    "FileName": "毒蛇山谷/村庄/Grocery",
+    "FileName": "毒蛇山谷/村庄/杂货店",
     "Name": "杂货商",
     "MapIndex": 144,
     "Location": {
@@ -2047,7 +2047,7 @@
   },
   {
     "Index": 129,
-    "FileName": "毒蛇山谷/村庄/Clothes",
+    "FileName": "毒蛇山谷/村庄/服装",
     "Name": "杂货商",
     "MapIndex": 144,
     "Location": {
@@ -2078,7 +2078,7 @@
   },
   {
     "Index": 130,
-    "FileName": "毒蛇山谷/村庄/Warehouse",
+    "FileName": "毒蛇山谷/村庄/仓库",
     "Name": "旅店老板",
     "MapIndex": 144,
     "Location": {
@@ -2109,7 +2109,7 @@
   },
   {
     "Index": 131,
-    "FileName": "毒蛇山谷/村庄/Transport",
+    "FileName": "毒蛇山谷/村庄/传送",
     "Name": "传送员",
     "MapIndex": 144,
     "Location": {
@@ -2140,7 +2140,7 @@
   },
   {
     "Index": 132,
-    "FileName": "毒蛇山谷/村庄/Signpost",
+    "FileName": "毒蛇山谷/村庄/路标",
     "Name": "路标",
     "MapIndex": 144,
     "Location": {
@@ -2171,7 +2171,7 @@
   },
   {
     "Index": 133,
-    "FileName": "毒蛇山谷/村庄/MirGuide",
+    "FileName": "毒蛇山谷/村庄/米尔向导",
     "Name": "向导",
     "MapIndex": 144,
     "Location": {
@@ -2202,7 +2202,7 @@
   },
   {
     "Index": 134,
-    "FileName": "毒蛇山谷/村庄/Potion",
+    "FileName": "毒蛇山谷/村庄/药水",
     "Name": "杂货商",
     "MapIndex": 146,
     "Location": {
@@ -2233,7 +2233,7 @@
   },
   {
     "Index": 135,
-    "FileName": "毒蛇山谷/村庄/Blacksmith",
+    "FileName": "毒蛇山谷/村庄/铁匠",
     "Name": "杂货商",
     "MapIndex": 147,
     "Location": {
@@ -2264,7 +2264,7 @@
   },
   {
     "Index": 136,
-    "FileName": "毒蛇山谷/村庄/Crafting",
+    "FileName": "毒蛇山谷/村庄/锻造",
     "Name": "工匠大娘",
     "MapIndex": 144,
     "Location": {
@@ -2295,7 +2295,7 @@
   },
   {
     "Index": 137,
-    "FileName": "毒蛇山谷/VulnerableSon",
+    "FileName": "毒蛇山谷/弱子",
     "Name": "弱子",
     "MapIndex": 144,
     "Location": {
@@ -2326,7 +2326,7 @@
   },
   {
     "Index": 138,
-    "FileName": "毒蛇山谷/毒蛇废矿区/SkullPile",
+    "FileName": "毒蛇山谷/毒蛇废矿区/头骨堆",
     "Name": "骷髅堆",
     "MapIndex": 151,
     "Location": {
@@ -2357,7 +2357,7 @@
   },
   {
     "Index": 139,
-    "FileName": "毒蛇山谷/连接小路/MysteriousYu",
+    "FileName": "毒蛇山谷/连接小路/神秘禹",
     "Name": "神秘人",
     "MapIndex": 168,
     "Location": {
@@ -2388,7 +2388,7 @@
   },
   {
     "Index": 140,
-    "FileName": "毒蛇山谷/毒蛇废矿区/OldSkull",
+    "FileName": "毒蛇山谷/毒蛇废矿区/老头骨",
     "Name": "老骷髅",
     "MapIndex": 150,
     "Location": {
@@ -2419,7 +2419,7 @@
   },
   {
     "Index": 141,
-    "FileName": "毒蛇山谷/毒蛇废矿区/SkeletonPile",
+    "FileName": "毒蛇山谷/毒蛇废矿区/骷髅堆",
     "Name": "骷髅堆",
     "MapIndex": 150,
     "Location": {
@@ -2450,7 +2450,7 @@
   },
   {
     "Index": 142,
-    "FileName": "盟重/土城/Warehouse",
+    "FileName": "盟重/土城/仓库",
     "Name": "旅店老板",
     "MapIndex": 172,
     "Location": {
@@ -2481,7 +2481,7 @@
   },
   {
     "Index": 143,
-    "FileName": "盟重/土城/Grocery",
+    "FileName": "盟重/土城/杂货店",
     "Name": "杂货商",
     "MapIndex": 172,
     "Location": {
@@ -2512,7 +2512,7 @@
   },
   {
     "Index": 144,
-    "FileName": "盟重/土城/Butcher",
+    "FileName": "盟重/土城/屠夫",
     "Name": "杂货商",
     "MapIndex": 172,
     "Location": {
@@ -2543,7 +2543,7 @@
   },
   {
     "Index": 145,
-    "FileName": "盟重/土城/Potion",
+    "FileName": "盟重/土城/药水",
     "Name": "杂货商",
     "MapIndex": 172,
     "Location": {
@@ -2574,7 +2574,7 @@
   },
   {
     "Index": 146,
-    "FileName": "盟重/土城/Transport",
+    "FileName": "盟重/土城/传送",
     "Name": "传送员",
     "MapIndex": 172,
     "Location": {
@@ -2605,7 +2605,7 @@
   },
   {
     "Index": 147,
-    "FileName": "盟重/土城/Grocery1",
+    "FileName": "盟重/土城/杂货店1",
     "Name": "杂货商",
     "MapIndex": 172,
     "Location": {
@@ -2636,7 +2636,7 @@
   },
   {
     "Index": 148,
-    "FileName": "盟重/土城/Board",
+    "FileName": "盟重/土城/告示板",
     "Name": "土城告示",
     "MapIndex": 172,
     "Location": {
@@ -2667,7 +2667,7 @@
   },
   {
     "Index": 149,
-    "FileName": "盟重/土城/TrustMerchant",
+    "FileName": "盟重/土城/可信商人",
     "Name": "寄存商人",
     "MapIndex": 172,
     "Location": {
@@ -2698,7 +2698,7 @@
   },
   {
     "Index": 150,
-    "FileName": "盟重/土城/MirGuide",
+    "FileName": "盟重/土城/米尔向导",
     "Name": "向导",
     "MapIndex": 172,
     "Location": {
@@ -2729,7 +2729,7 @@
   },
   {
     "Index": 151,
-    "FileName": "盟重/土城/Warehouse1",
+    "FileName": "盟重/土城/仓库1",
     "Name": "旅店老板",
     "MapIndex": 175,
     "Location": {
@@ -2760,7 +2760,7 @@
   },
   {
     "Index": 152,
-    "FileName": "盟重/土城/Clothes",
+    "FileName": "盟重/土城/服装",
     "Name": "杂货商",
     "MapIndex": 178,
     "Location": {
@@ -2791,7 +2791,7 @@
   },
   {
     "Index": 153,
-    "FileName": "盟重/土城/Bracelet",
+    "FileName": "盟重/土城/手镯",
     "Name": "杂货商",
     "MapIndex": 178,
     "Location": {
@@ -2822,7 +2822,7 @@
   },
   {
     "Index": 154,
-    "FileName": "盟重/土城/Helmets",
+    "FileName": "盟重/土城/头盔店",
     "Name": "杂货商",
     "MapIndex": 178,
     "Location": {
@@ -2853,7 +2853,7 @@
   },
   {
     "Index": 155,
-    "FileName": "盟重/土城/Ring",
+    "FileName": "盟重/土城/戒指",
     "Name": "杂货商",
     "MapIndex": 179,
     "Location": {
@@ -2884,7 +2884,7 @@
   },
   {
     "Index": 156,
-    "FileName": "盟重/土城/Bracelet1",
+    "FileName": "盟重/土城/手镯1",
     "Name": "杂货商",
     "MapIndex": 179,
     "Location": {
@@ -2915,7 +2915,7 @@
   },
   {
     "Index": 157,
-    "FileName": "盟重/土城/Necklace",
+    "FileName": "盟重/土城/项链",
     "Name": "杂货商",
     "MapIndex": 179,
     "Location": {
@@ -2946,7 +2946,7 @@
   },
   {
     "Index": 158,
-    "FileName": "盟重/土城/Blacksmith",
+    "FileName": "盟重/土城/铁匠",
     "Name": "杂货商",
     "MapIndex": 180,
     "Location": {
@@ -2977,7 +2977,7 @@
   },
   {
     "Index": 159,
-    "FileName": "盟重/土城/Potion1",
+    "FileName": "盟重/土城/药水1",
     "Name": "杂货商",
     "MapIndex": 181,
     "Location": {
@@ -3008,7 +3008,7 @@
   },
   {
     "Index": 160,
-    "FileName": "盟重/土城/Lottery",
+    "FileName": "盟重/土城/彩票",
     "Name": "彩票管理员",
     "MapIndex": 172,
     "Location": {
@@ -3039,7 +3039,7 @@
   },
   {
     "Index": 161,
-    "FileName": "盟重/土城/Crafting",
+    "FileName": "盟重/土城/锻造",
     "Name": "工匠大娘",
     "MapIndex": 172,
     "Location": {
@@ -3070,7 +3070,7 @@
   },
   {
     "Index": 162,
-    "FileName": "盟重/土城/GT",
+    "FileName": "盟重/土城/行会领地",
     "Name": "沙巴克商人",
     "MapIndex": 172,
     "Location": {
@@ -3101,7 +3101,7 @@
   },
   {
     "Index": 163,
-    "FileName": "盟重/土城/Warehouse2",
+    "FileName": "盟重/土城/仓库2",
     "Name": "旅店老板",
     "MapIndex": 176,
     "Location": {
@@ -3132,7 +3132,7 @@
   },
   {
     "Index": 164,
-    "FileName": "盟重/土城/MonDelegate",
+    "FileName": "盟重/土城/蒙村代表",
     "Name": "盟重代表",
     "MapIndex": 172,
     "Location": {
@@ -3163,7 +3163,7 @@
   },
   {
     "Index": 165,
-    "FileName": "盟重/沙巴克/Butcher",
+    "FileName": "盟重/沙巴克/屠夫",
     "Name": "杂货商",
     "MapIndex": 172,
     "Location": {
@@ -3194,7 +3194,7 @@
   },
   {
     "Index": 166,
-    "FileName": "盟重/沙巴克/Peddlar",
+    "FileName": "盟重/沙巴克/小贩",
     "Name": "杂货商",
     "MapIndex": 172,
     "Location": {
@@ -3225,7 +3225,7 @@
   },
   {
     "Index": 167,
-    "FileName": "盟重/沙巴克/Blacksmith",
+    "FileName": "盟重/沙巴克/铁匠",
     "Name": "铁匠",
     "MapIndex": 246,
     "Location": {
@@ -3256,7 +3256,7 @@
   },
   {
     "Index": 168,
-    "FileName": "盟重/沙巴克/Weaponsmith",
+    "FileName": "盟重/沙巴克/武器匠",
     "Name": "杂货商",
     "MapIndex": 246,
     "Location": {
@@ -3287,7 +3287,7 @@
   },
   {
     "Index": 169,
-    "FileName": "盟重/沙巴克/Clothes",
+    "FileName": "盟重/沙巴克/服装",
     "Name": "杂货商",
     "MapIndex": 250,
     "Location": {
@@ -3318,7 +3318,7 @@
   },
   {
     "Index": 170,
-    "FileName": "盟重/沙巴克/Helmet",
+    "FileName": "盟重/沙巴克/头盔",
     "Name": "杂货商",
     "MapIndex": 250,
     "Location": {
@@ -3349,7 +3349,7 @@
   },
   {
     "Index": 171,
-    "FileName": "盟重/沙巴克/Potion1",
+    "FileName": "盟重/沙巴克/药水1",
     "Name": "专家",
     "MapIndex": 248,
     "Location": {
@@ -3380,7 +3380,7 @@
   },
   {
     "Index": 172,
-    "FileName": "盟重/沙巴克/Potion",
+    "FileName": "盟重/沙巴克/药水",
     "Name": "杂货商",
     "MapIndex": 248,
     "Location": {
@@ -3411,7 +3411,7 @@
   },
   {
     "Index": 173,
-    "FileName": "盟重/沙巴克/Warehouse",
+    "FileName": "盟重/沙巴克/仓库",
     "Name": "旅店老板",
     "MapIndex": 247,
     "Location": {
@@ -3442,7 +3442,7 @@
   },
   {
     "Index": 174,
-    "FileName": "盟重/沙巴克/Bracelet",
+    "FileName": "盟重/沙巴克/手镯",
     "Name": "杂货商",
     "MapIndex": 249,
     "Location": {
@@ -3473,7 +3473,7 @@
   },
   {
     "Index": 175,
-    "FileName": "盟重/沙巴克/Necklace",
+    "FileName": "盟重/沙巴克/项链",
     "Name": "杂货商",
     "MapIndex": 249,
     "Location": {
@@ -3504,7 +3504,7 @@
   },
   {
     "Index": 176,
-    "FileName": "盟重/沙巴克/Ring",
+    "FileName": "盟重/沙巴克/戒指",
     "Name": "杂货商",
     "MapIndex": 249,
     "Location": {
@@ -3535,7 +3535,7 @@
   },
   {
     "Index": 177,
-    "FileName": "盟重/沙巴克/Blacksmith1",
+    "FileName": "盟重/沙巴克/铁匠1",
     "Name": "铁匠",
     "MapIndex": 246,
     "Location": {
@@ -3566,7 +3566,7 @@
   },
   {
     "Index": 178,
-    "FileName": "盟重/沙巴克/SwampNPC",
+    "FileName": "盟重/沙巴克/沼泽使者",
     "Name": "守护者",
     "MapIndex": 172,
     "Location": {
@@ -3597,7 +3597,7 @@
   },
   {
     "Index": 179,
-    "FileName": "盟重/WierdPillar",
+    "FileName": "盟重/诡异石柱",
     "Name": "诡异石柱",
     "MapIndex": 244,
     "Location": {
@@ -3628,7 +3628,7 @@
   },
   {
     "Index": 180,
-    "FileName": "盟重/StrangePillar",
+    "FileName": "盟重/怪异石柱",
     "Name": "怪异石柱",
     "MapIndex": 244,
     "Location": {
@@ -3659,7 +3659,7 @@
   },
   {
     "Index": 181,
-    "FileName": "盟重/MysteriousPillar",
+    "FileName": "盟重/神秘石柱",
     "Name": "神秘石柱",
     "MapIndex": 244,
     "Location": {
@@ -3690,7 +3690,7 @@
   },
   {
     "Index": 182,
-    "FileName": "盟重/Ashes",
+    "FileName": "盟重/灰烬",
     "Name": "骨灰",
     "MapIndex": 185,
     "Location": {
@@ -3721,7 +3721,7 @@
   },
   {
     "Index": 183,
-    "FileName": "盟重/虫穴/Clothes",
+    "FileName": "盟重/虫穴/服装",
     "Name": "服装店老板",
     "MapIndex": 189,
     "Location": {
@@ -3752,7 +3752,7 @@
   },
   {
     "Index": 184,
-    "FileName": "盟重/虫穴/LostSoul",
+    "FileName": "盟重/虫穴/迷失之魂",
     "Name": "迷失之魂",
     "MapIndex": 182,
     "Location": {
@@ -3783,7 +3783,7 @@
   },
   {
     "Index": 185,
-    "FileName": "盟重/沼泽/Bones",
+    "FileName": "盟重/沼泽/骸骨",
     "Name": "尸骨",
     "MapIndex": 286,
     "Location": {
@@ -3814,7 +3814,7 @@
   },
   {
     "Index": 186,
-    "FileName": "盟重/狐穴/Rock",
+    "FileName": "盟重/狐穴/岩石",
     "Name": "守护石",
     "MapIndex": 282,
     "Location": {
@@ -3845,7 +3845,7 @@
   },
   {
     "Index": 187,
-    "FileName": "盟重/石墓/Stone",
+    "FileName": "盟重/石墓/石头",
     "Name": "神秘石",
     "MapIndex": 204,
     "Location": {
@@ -3876,7 +3876,7 @@
   },
   {
     "Index": 188,
-    "FileName": "盟重/祖玛寺庙/Stone",
+    "FileName": "盟重/祖玛寺庙/石头",
     "Name": "神秘石",
     "MapIndex": 257,
     "Location": {
@@ -3907,7 +3907,7 @@
   },
   {
     "Index": 233,
-    "FileName": "白日门/营地/Sailor",
+    "FileName": "白日门/营地/水手",
     "Name": "水手",
     "MapIndex": 366,
     "Location": {
@@ -3938,7 +3938,7 @@
   },
   {
     "Index": 234,
-    "FileName": "白日门/营地/Storage",
+    "FileName": "白日门/营地/储物",
     "Name": "仓库管理员",
     "MapIndex": 366,
     "Location": {
@@ -3969,7 +3969,7 @@
   },
   {
     "Index": 235,
-    "FileName": "白日门/营地/Blacksmith",
+    "FileName": "白日门/营地/铁匠",
     "Name": "铁匠",
     "MapIndex": 374,
     "Location": {
@@ -4000,7 +4000,7 @@
   },
   {
     "Index": 236,
-    "FileName": "白日门/营地/Drapery",
+    "FileName": "白日门/营地/布庄",
     "Name": "服装店老板",
     "MapIndex": 370,
     "Location": {
@@ -4031,7 +4031,7 @@
   },
   {
     "Index": 237,
-    "FileName": "白日门/营地/Accessory",
+    "FileName": "白日门/营地/饰品",
     "Name": "首饰商人",
     "MapIndex": 367,
     "Location": {
@@ -4062,7 +4062,7 @@
   },
   {
     "Index": 238,
-    "FileName": "白日门/营地/Book",
+    "FileName": "白日门/营地/书",
     "Name": "书店老板",
     "MapIndex": 373,
     "Location": {
@@ -4093,7 +4093,7 @@
   },
   {
     "Index": 239,
-    "FileName": "白日门/营地/General",
+    "FileName": "白日门/营地/将军",
     "Name": "将军",
     "MapIndex": 367,
     "Location": {
@@ -4124,7 +4124,7 @@
   },
   {
     "Index": 240,
-    "FileName": "白日门/营地/Fisheries",
+    "FileName": "白日门/营地/渔业",
     "Name": "鱼贩",
     "MapIndex": 368,
     "Location": {
@@ -4155,7 +4155,7 @@
   },
   {
     "Index": 241,
-    "FileName": "白日门/营地/Captain",
+    "FileName": "白日门/营地/队长",
     "Name": "队长",
     "MapIndex": 366,
     "Location": {
@@ -4186,7 +4186,7 @@
   },
   {
     "Index": 242,
-    "FileName": "白日门/营地/Signpost",
+    "FileName": "白日门/营地/路标",
     "Name": "路标",
     "MapIndex": 366,
     "Location": {
@@ -4217,7 +4217,7 @@
   },
   {
     "Index": 243,
-    "FileName": "白日门/营地/TrustMerchant",
+    "FileName": "白日门/营地/可信商人",
     "Name": "寄存商人",
     "MapIndex": 366,
     "Location": {
@@ -4248,7 +4248,7 @@
   },
   {
     "Index": 244,
-    "FileName": "白日门/营地/CaveGuard",
+    "FileName": "白日门/营地/洞窟守卫",
     "Name": "守望者",
     "MapIndex": 366,
     "Location": {
@@ -4279,7 +4279,7 @@
   },
   {
     "Index": 245,
-    "FileName": "白日门/SquadLeader",
+    "FileName": "白日门/小队长",
     "Name": "小队长",
     "MapIndex": 377,
     "Location": {
@@ -4310,7 +4310,7 @@
   },
   {
     "Index": 246,
-    "FileName": "白日门/SnowMonument",
+    "FileName": "白日门/雪碑",
     "Name": "纪念碑",
     "MapIndex": 378,
     "Location": {
@@ -4341,7 +4341,7 @@
   },
   {
     "Index": 247,
-    "FileName": "比奇省/活动/MissDo-EM000",
+    "FileName": "比奇省/活动/杜小姐-000",
     "Name": "杜小姐",
     "MapIndex": 380,
     "Location": {
@@ -4372,7 +4372,7 @@
   },
   {
     "Index": 248,
-    "FileName": "比奇省/活动/MissMi-EM000",
+    "FileName": "比奇省/活动/米小姐-000",
     "Name": "米小姐",
     "MapIndex": 380,
     "Location": {
@@ -4403,7 +4403,7 @@
   },
   {
     "Index": 249,
-    "FileName": "比奇省/活动/MissRe-EM000",
+    "FileName": "比奇省/活动/瑞小姐-000",
     "Name": "瑞小姐",
     "MapIndex": 380,
     "Location": {
@@ -4434,7 +4434,7 @@
   },
   {
     "Index": 250,
-    "FileName": "比奇省/活动/Proceeder30-EM001",
+    "FileName": "比奇省/活动/推进者30-001",
     "Name": "引路人",
     "MapIndex": 381,
     "Location": {
@@ -4465,7 +4465,7 @@
   },
   {
     "Index": 251,
-    "FileName": "比奇省/活动/Proceeder40-EM002",
+    "FileName": "比奇省/活动/推进者40-002",
     "Name": "引路人",
     "MapIndex": 382,
     "Location": {
@@ -4496,7 +4496,7 @@
   },
   {
     "Index": 252,
-    "FileName": "比奇省/活动/Proceeder41-EM003",
+    "FileName": "比奇省/活动/推进者41-003",
     "Name": "引路人",
     "MapIndex": 383,
     "Location": {
@@ -4527,7 +4527,7 @@
   },
   {
     "Index": 276,
-    "FileName": "合成传送门/Bichon",
+    "FileName": "合成传送门/比奇",
     "Name": "锻造村传送门",
     "MapIndex": 1,
     "Location": {
@@ -4558,7 +4558,7 @@
   },
   {
     "Index": 277,
-    "FileName": "合成传送门/Border",
+    "FileName": "合成传送门/边境",
     "Name": "锻造村传送门",
     "MapIndex": 1,
     "Location": {
@@ -4589,7 +4589,7 @@
   },
   {
     "Index": 278,
-    "FileName": "合成传送门/Serpent",
+    "FileName": "合成传送门/毒蛇",
     "Name": "锻造村传送门",
     "MapIndex": 144,
     "Location": {
@@ -4620,7 +4620,7 @@
   },
   {
     "Index": 279,
-    "FileName": "合成传送门/MudWall",
+    "FileName": "合成传送门/土城城墙",
     "Name": "锻造村传送门",
     "MapIndex": 172,
     "Location": {
@@ -4651,7 +4651,7 @@
   },
   {
     "Index": 280,
-    "FileName": "合成传送门/CastleGI",
+    "FileName": "合成传送门/锻造村",
     "Name": "锻造村传送门",
     "MapIndex": 77,
     "Location": {
@@ -4682,7 +4682,7 @@
   },
   {
     "Index": 281,
-    "FileName": "合成传送门/Prajna",
+    "FileName": "合成传送门/般若",
     "Name": "锻造村传送门",
     "MapIndex": 289,
     "Location": {
@@ -4713,7 +4713,7 @@
   },
   {
     "Index": 282,
-    "FileName": "合成传送门/PastBichon",
+    "FileName": "合成传送门/旧比奇",
     "Name": "锻造村传送门",
     "MapIndex": 316,
     "Location": {
@@ -4744,7 +4744,7 @@
   },
   {
     "Index": 283,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 1,
     "Location": {
@@ -4775,7 +4775,7 @@
   },
   {
     "Index": 284,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 1,
     "Location": {
@@ -4806,7 +4806,7 @@
   },
   {
     "Index": 285,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 64,
     "Location": {
@@ -4837,7 +4837,7 @@
   },
   {
     "Index": 286,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 77,
     "Location": {
@@ -4868,7 +4868,7 @@
   },
   {
     "Index": 287,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 108,
     "Location": {
@@ -4899,7 +4899,7 @@
   },
   {
     "Index": 288,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 103,
     "Location": {
@@ -4930,7 +4930,7 @@
   },
   {
     "Index": 289,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 144,
     "Location": {
@@ -4961,7 +4961,7 @@
   },
   {
     "Index": 290,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 172,
     "Location": {
@@ -4992,7 +4992,7 @@
   },
   {
     "Index": 291,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 172,
     "Location": {
@@ -5023,7 +5023,7 @@
   },
   {
     "Index": 292,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 289,
     "Location": {
@@ -5054,7 +5054,7 @@
   },
   {
     "Index": 293,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 366,
     "Location": {
@@ -5085,7 +5085,7 @@
   },
   {
     "Index": 295,
-    "FileName": "比奇省/边境村/Pedlar",
+    "FileName": "比奇省/边境村/小贩",
     "Name": "杂货商",
     "MapIndex": 1,
     "Location": {
@@ -5116,7 +5116,7 @@
   },
   {
     "Index": 296,
-    "FileName": "比奇省/比奇城/Hairdresser",
+    "FileName": "比奇省/比奇城/理发师",
     "Name": "理发师",
     "MapIndex": 7,
     "Location": {
@@ -5147,7 +5147,7 @@
   },
   {
     "Index": 298,
-    "FileName": "盟重/沼泽/Transporter",
+    "FileName": "盟重/沼泽/传送者",
     "Name": "将军",
     "MapIndex": 287,
     "Location": {
@@ -5178,7 +5178,7 @@
   },
   {
     "Index": 299,
-    "FileName": "盟重/沼泽/Transporter1",
+    "FileName": "盟重/沼泽/传送者1",
     "Name": "将军",
     "MapIndex": 286,
     "Location": {
@@ -5209,7 +5209,7 @@
   },
   {
     "Index": 301,
-    "FileName": "比奇省/沃玛洞穴/Grim",
+    "FileName": "比奇省/沃玛洞穴/格雷姆",
     "Name": "神秘人",
     "MapIndex": 41,
     "Location": {
@@ -5240,7 +5240,7 @@
   },
   {
     "Index": 302,
-    "FileName": "比奇省/边境村/Materials",
+    "FileName": "比奇省/边境村/材料",
     "Name": "材料商人",
     "MapIndex": 1,
     "Location": {
@@ -5271,7 +5271,7 @@
   },
   {
     "Index": 303,
-    "FileName": "比奇省/比奇城/LukeStatue",
+    "FileName": "比奇省/比奇城/卢克雕像",
     "Name": "卢克",
     "MapIndex": 1,
     "Location": {
@@ -5302,7 +5302,7 @@
   },
   {
     "Index": 304,
-    "FileName": "盟重/沙巴克/Conquest",
+    "FileName": "盟重/沙巴克/征服",
     "Name": "管理员",
     "MapIndex": 245,
     "Location": {
@@ -5333,7 +5333,7 @@
   },
   {
     "Index": 305,
-    "FileName": "白日门/Wanderer_Charlotte",
+    "FileName": "白日门/流浪者夏洛特",
     "Name": "流浪者",
     "MapIndex": 366,
     "Location": {
@@ -5364,7 +5364,7 @@
   },
   {
     "Index": 307,
-    "FileName": "行会领地/公会0/GTStore-GA0",
+    "FileName": "行会领地/公会0/商店-0",
     "Name": "沙巴克商店",
     "MapIndex": 396,
     "Location": {
@@ -5395,7 +5395,7 @@
   },
   {
     "Index": 308,
-    "FileName": "行会领地/公会0/GTTeleporter-GA0",
+    "FileName": "行会领地/公会0/传送-0",
     "Name": "沙巴克传送员",
     "MapIndex": 396,
     "Location": {
@@ -5426,7 +5426,7 @@
   },
   {
     "Index": 309,
-    "FileName": "行会领地/公会0/GTBulletinBoard-GA0",
+    "FileName": "行会领地/公会0/告示板-0",
     "Name": "沙巴克公告板",
     "MapIndex": 396,
     "Location": {
@@ -5457,7 +5457,7 @@
   },
   {
     "Index": 310,
-    "FileName": "行会领地/公会0/GTPeddler-GA0",
+    "FileName": "行会领地/公会0/小贩-0",
     "Name": "沙巴克小贩",
     "MapIndex": 396,
     "Location": {
@@ -5488,7 +5488,7 @@
   },
   {
     "Index": 311,
-    "FileName": "行会领地/公会0/GTAdmin-GA10",
+    "FileName": "行会领地/公会0/管理员-10",
     "Name": "沙巴克管家",
     "MapIndex": 406,
     "Location": {
@@ -5519,7 +5519,7 @@
   },
   {
     "Index": 312,
-    "FileName": "行会领地/公会0/GTStairs-GA10",
+    "FileName": "行会领地/公会0/楼梯-10",
     "Name": "石阶",
     "MapIndex": 406,
     "Location": {
@@ -5550,7 +5550,7 @@
   },
   {
     "Index": 313,
-    "FileName": "行会领地/公会0/GTStairs-GA20",
+    "FileName": "行会领地/公会0/楼梯-20",
     "Name": "石阶",
     "MapIndex": 416,
     "Location": {
@@ -5581,7 +5581,7 @@
   },
   {
     "Index": 314,
-    "FileName": "行会领地/公会1/GTStore-GA1",
+    "FileName": "行会领地/公会1/商店-1",
     "Name": "沙巴克商店",
     "MapIndex": 397,
     "Location": {
@@ -5612,7 +5612,7 @@
   },
   {
     "Index": 315,
-    "FileName": "行会领地/公会1/GTTeleporter-GA1",
+    "FileName": "行会领地/公会1/传送-1",
     "Name": "沙巴克传送员",
     "MapIndex": 397,
     "Location": {
@@ -5643,7 +5643,7 @@
   },
   {
     "Index": 316,
-    "FileName": "行会领地/公会1/GTBulletinBoard-GA1",
+    "FileName": "行会领地/公会1/告示板-1",
     "Name": "沙巴克公告板",
     "MapIndex": 397,
     "Location": {
@@ -5674,7 +5674,7 @@
   },
   {
     "Index": 317,
-    "FileName": "行会领地/公会1/GTPeddler-GA1",
+    "FileName": "行会领地/公会1/小贩-1",
     "Name": "沙巴克小贩",
     "MapIndex": 397,
     "Location": {
@@ -5705,7 +5705,7 @@
   },
   {
     "Index": 318,
-    "FileName": "行会领地/公会1/GTAdmin-GA11",
+    "FileName": "行会领地/公会1/管理员-11",
     "Name": "沙巴克管家",
     "MapIndex": 407,
     "Location": {
@@ -5736,7 +5736,7 @@
   },
   {
     "Index": 319,
-    "FileName": "行会领地/公会1/GTStairs-GA11",
+    "FileName": "行会领地/公会1/楼梯-11",
     "Name": "石阶",
     "MapIndex": 407,
     "Location": {
@@ -5767,7 +5767,7 @@
   },
   {
     "Index": 320,
-    "FileName": "行会领地/公会1/GTStairs-GA21",
+    "FileName": "行会领地/公会1/楼梯-21",
     "Name": "石阶",
     "MapIndex": 417,
     "Location": {
@@ -5798,7 +5798,7 @@
   },
   {
     "Index": 321,
-    "FileName": "行会领地/公会2/GTStore-GA2",
+    "FileName": "行会领地/公会2/商店-2",
     "Name": "沙巴克商店",
     "MapIndex": 398,
     "Location": {
@@ -5829,7 +5829,7 @@
   },
   {
     "Index": 322,
-    "FileName": "行会领地/公会2/GTTeleporter-GA2",
+    "FileName": "行会领地/公会2/传送-2",
     "Name": "沙巴克传送员",
     "MapIndex": 398,
     "Location": {
@@ -5860,7 +5860,7 @@
   },
   {
     "Index": 323,
-    "FileName": "行会领地/公会2/GTBulletinBoard-GA2",
+    "FileName": "行会领地/公会2/告示板-2",
     "Name": "沙巴克公告板",
     "MapIndex": 398,
     "Location": {
@@ -5891,7 +5891,7 @@
   },
   {
     "Index": 324,
-    "FileName": "行会领地/公会2/GTPeddler-GA2",
+    "FileName": "行会领地/公会2/小贩-2",
     "Name": "沙巴克小贩",
     "MapIndex": 398,
     "Location": {
@@ -5922,7 +5922,7 @@
   },
   {
     "Index": 325,
-    "FileName": "行会领地/公会2/GTAdmin-GA12",
+    "FileName": "行会领地/公会2/管理员-12",
     "Name": "沙巴克管家",
     "MapIndex": 408,
     "Location": {
@@ -5953,7 +5953,7 @@
   },
   {
     "Index": 326,
-    "FileName": "行会领地/公会2/GTStairs-GA12",
+    "FileName": "行会领地/公会2/楼梯-12",
     "Name": "石阶",
     "MapIndex": 408,
     "Location": {
@@ -5984,7 +5984,7 @@
   },
   {
     "Index": 327,
-    "FileName": "行会领地/公会2/GTStairs-GA22",
+    "FileName": "行会领地/公会2/楼梯-22",
     "Name": "石阶",
     "MapIndex": 418,
     "Location": {
@@ -6015,7 +6015,7 @@
   },
   {
     "Index": 328,
-    "FileName": "行会领地/公会3/GTStore-GA3",
+    "FileName": "行会领地/公会3/商店-3",
     "Name": "沙巴克商店",
     "MapIndex": 399,
     "Location": {
@@ -6046,7 +6046,7 @@
   },
   {
     "Index": 329,
-    "FileName": "行会领地/公会3/GTTeleporter-GA3",
+    "FileName": "行会领地/公会3/传送-3",
     "Name": "沙巴克传送员",
     "MapIndex": 399,
     "Location": {
@@ -6077,7 +6077,7 @@
   },
   {
     "Index": 330,
-    "FileName": "行会领地/公会3/GTBulletinBoard-GA3",
+    "FileName": "行会领地/公会3/告示板-3",
     "Name": "沙巴克公告板",
     "MapIndex": 399,
     "Location": {
@@ -6108,7 +6108,7 @@
   },
   {
     "Index": 331,
-    "FileName": "行会领地/公会3/GTPeddler-GA3",
+    "FileName": "行会领地/公会3/小贩-3",
     "Name": "沙巴克小贩",
     "MapIndex": 399,
     "Location": {
@@ -6139,7 +6139,7 @@
   },
   {
     "Index": 332,
-    "FileName": "行会领地/公会3/GTAdmin-GA13",
+    "FileName": "行会领地/公会3/管理员-13",
     "Name": "沙巴克管家",
     "MapIndex": 409,
     "Location": {
@@ -6170,7 +6170,7 @@
   },
   {
     "Index": 333,
-    "FileName": "行会领地/公会3/GTStairs-GA13",
+    "FileName": "行会领地/公会3/楼梯-13",
     "Name": "石阶",
     "MapIndex": 409,
     "Location": {
@@ -6201,7 +6201,7 @@
   },
   {
     "Index": 334,
-    "FileName": "行会领地/公会3/GTStairs-GA23",
+    "FileName": "行会领地/公会3/楼梯-23",
     "Name": "石阶",
     "MapIndex": 419,
     "Location": {
@@ -6232,7 +6232,7 @@
   },
   {
     "Index": 335,
-    "FileName": "行会领地/公会4/GTStore-GA4",
+    "FileName": "行会领地/公会4/商店-4",
     "Name": "沙巴克商店",
     "MapIndex": 400,
     "Location": {
@@ -6263,7 +6263,7 @@
   },
   {
     "Index": 336,
-    "FileName": "行会领地/公会4/GTTeleporter-GA4",
+    "FileName": "行会领地/公会4/传送-4",
     "Name": "沙巴克传送员",
     "MapIndex": 400,
     "Location": {
@@ -6294,7 +6294,7 @@
   },
   {
     "Index": 337,
-    "FileName": "行会领地/公会4/GTBulletinBoard-GA4",
+    "FileName": "行会领地/公会4/告示板-4",
     "Name": "沙巴克公告板",
     "MapIndex": 400,
     "Location": {
@@ -6325,7 +6325,7 @@
   },
   {
     "Index": 338,
-    "FileName": "行会领地/公会4/GTPeddler-GA4",
+    "FileName": "行会领地/公会4/小贩-4",
     "Name": "沙巴克小贩",
     "MapIndex": 400,
     "Location": {
@@ -6356,7 +6356,7 @@
   },
   {
     "Index": 339,
-    "FileName": "行会领地/公会4/GTAdmin-GA14",
+    "FileName": "行会领地/公会4/管理员-14",
     "Name": "沙巴克管家",
     "MapIndex": 410,
     "Location": {
@@ -6387,7 +6387,7 @@
   },
   {
     "Index": 340,
-    "FileName": "行会领地/公会4/GTStairs-GA14",
+    "FileName": "行会领地/公会4/楼梯-14",
     "Name": "石阶",
     "MapIndex": 410,
     "Location": {
@@ -6418,7 +6418,7 @@
   },
   {
     "Index": 341,
-    "FileName": "行会领地/公会4/GTStairs-GA24",
+    "FileName": "行会领地/公会4/楼梯-24",
     "Name": "石阶",
     "MapIndex": 420,
     "Location": {
@@ -6449,7 +6449,7 @@
   },
   {
     "Index": 342,
-    "FileName": "行会领地/公会5/GTStore-GA5",
+    "FileName": "行会领地/公会5/商店-5",
     "Name": "沙巴克商店",
     "MapIndex": 401,
     "Location": {
@@ -6480,7 +6480,7 @@
   },
   {
     "Index": 343,
-    "FileName": "行会领地/公会5/GTTeleporter-GA5",
+    "FileName": "行会领地/公会5/传送-5",
     "Name": "沙巴克传送员",
     "MapIndex": 401,
     "Location": {
@@ -6511,7 +6511,7 @@
   },
   {
     "Index": 344,
-    "FileName": "行会领地/公会5/GTBulletinBoard-GA5",
+    "FileName": "行会领地/公会5/告示板-5",
     "Name": "沙巴克公告板",
     "MapIndex": 401,
     "Location": {
@@ -6542,7 +6542,7 @@
   },
   {
     "Index": 345,
-    "FileName": "行会领地/公会5/GTPeddler-GA5",
+    "FileName": "行会领地/公会5/小贩-5",
     "Name": "沙巴克小贩",
     "MapIndex": 401,
     "Location": {
@@ -6573,7 +6573,7 @@
   },
   {
     "Index": 346,
-    "FileName": "行会领地/公会5/GTAdmin-GA15",
+    "FileName": "行会领地/公会5/管理员-15",
     "Name": "沙巴克管家",
     "MapIndex": 411,
     "Location": {
@@ -6604,7 +6604,7 @@
   },
   {
     "Index": 347,
-    "FileName": "行会领地/公会5/GTStairs-GA15",
+    "FileName": "行会领地/公会5/楼梯-15",
     "Name": "石阶",
     "MapIndex": 411,
     "Location": {
@@ -6635,7 +6635,7 @@
   },
   {
     "Index": 348,
-    "FileName": "行会领地/公会5/GTStairs-GA25",
+    "FileName": "行会领地/公会5/楼梯-25",
     "Name": "石阶",
     "MapIndex": 421,
     "Location": {
@@ -6666,7 +6666,7 @@
   },
   {
     "Index": 349,
-    "FileName": "行会领地/公会6/GTStore-GA6",
+    "FileName": "行会领地/公会6/商店-6",
     "Name": "沙巴克商店",
     "MapIndex": 402,
     "Location": {
@@ -6697,7 +6697,7 @@
   },
   {
     "Index": 350,
-    "FileName": "行会领地/公会6/GTTeleporter-GA6",
+    "FileName": "行会领地/公会6/传送-6",
     "Name": "沙巴克传送员",
     "MapIndex": 402,
     "Location": {
@@ -6728,7 +6728,7 @@
   },
   {
     "Index": 351,
-    "FileName": "行会领地/公会6/GTBulletinBoard-GA6",
+    "FileName": "行会领地/公会6/告示板-6",
     "Name": "沙巴克公告板",
     "MapIndex": 402,
     "Location": {
@@ -6759,7 +6759,7 @@
   },
   {
     "Index": 352,
-    "FileName": "行会领地/公会6/GTPeddler-GA6",
+    "FileName": "行会领地/公会6/小贩-6",
     "Name": "沙巴克小贩",
     "MapIndex": 402,
     "Location": {
@@ -6790,7 +6790,7 @@
   },
   {
     "Index": 353,
-    "FileName": "行会领地/公会6/GTAdmin-GA16",
+    "FileName": "行会领地/公会6/管理员-16",
     "Name": "沙巴克管家",
     "MapIndex": 412,
     "Location": {
@@ -6821,7 +6821,7 @@
   },
   {
     "Index": 354,
-    "FileName": "行会领地/公会6/GTStairs-GA16",
+    "FileName": "行会领地/公会6/楼梯-16",
     "Name": "石阶",
     "MapIndex": 412,
     "Location": {
@@ -6852,7 +6852,7 @@
   },
   {
     "Index": 355,
-    "FileName": "行会领地/公会6/GTStairs-GA26",
+    "FileName": "行会领地/公会6/楼梯-26",
     "Name": "石阶",
     "MapIndex": 422,
     "Location": {
@@ -6883,7 +6883,7 @@
   },
   {
     "Index": 356,
-    "FileName": "行会领地/公会7/GTStore-GA7",
+    "FileName": "行会领地/公会7/商店-7",
     "Name": "沙巴克商店",
     "MapIndex": 403,
     "Location": {
@@ -6914,7 +6914,7 @@
   },
   {
     "Index": 357,
-    "FileName": "行会领地/公会7/GTTeleporter-GA7",
+    "FileName": "行会领地/公会7/传送-7",
     "Name": "沙巴克传送员",
     "MapIndex": 403,
     "Location": {
@@ -6945,7 +6945,7 @@
   },
   {
     "Index": 358,
-    "FileName": "行会领地/公会7/GTBulletinBoard-GA7",
+    "FileName": "行会领地/公会7/告示板-7",
     "Name": "沙巴克公告板",
     "MapIndex": 403,
     "Location": {
@@ -6976,7 +6976,7 @@
   },
   {
     "Index": 359,
-    "FileName": "行会领地/公会7/GTPeddler-GA7",
+    "FileName": "行会领地/公会7/小贩-7",
     "Name": "沙巴克小贩",
     "MapIndex": 403,
     "Location": {
@@ -7007,7 +7007,7 @@
   },
   {
     "Index": 360,
-    "FileName": "行会领地/公会7/GTAdmin-GA17",
+    "FileName": "行会领地/公会7/管理员-17",
     "Name": "沙巴克管家",
     "MapIndex": 413,
     "Location": {
@@ -7038,7 +7038,7 @@
   },
   {
     "Index": 361,
-    "FileName": "行会领地/公会7/GTStairs-GA17",
+    "FileName": "行会领地/公会7/楼梯-17",
     "Name": "石阶",
     "MapIndex": 413,
     "Location": {
@@ -7069,7 +7069,7 @@
   },
   {
     "Index": 362,
-    "FileName": "行会领地/公会7/GTStairs-GA27",
+    "FileName": "行会领地/公会7/楼梯-27",
     "Name": "石阶",
     "MapIndex": 423,
     "Location": {
@@ -7100,7 +7100,7 @@
   },
   {
     "Index": 363,
-    "FileName": "行会领地/公会8/GTStore-GA8",
+    "FileName": "行会领地/公会8/商店-8",
     "Name": "沙巴克商店",
     "MapIndex": 404,
     "Location": {
@@ -7131,7 +7131,7 @@
   },
   {
     "Index": 364,
-    "FileName": "行会领地/公会8/GTTeleporter-GA8",
+    "FileName": "行会领地/公会8/传送-8",
     "Name": "沙巴克传送员",
     "MapIndex": 404,
     "Location": {
@@ -7162,7 +7162,7 @@
   },
   {
     "Index": 365,
-    "FileName": "行会领地/公会8/GTBulletinBoard-GA8",
+    "FileName": "行会领地/公会8/告示板-8",
     "Name": "沙巴克公告板",
     "MapIndex": 404,
     "Location": {
@@ -7193,7 +7193,7 @@
   },
   {
     "Index": 366,
-    "FileName": "行会领地/公会8/GTPeddler-GA8",
+    "FileName": "行会领地/公会8/小贩-8",
     "Name": "沙巴克小贩",
     "MapIndex": 404,
     "Location": {
@@ -7224,7 +7224,7 @@
   },
   {
     "Index": 367,
-    "FileName": "行会领地/公会8/GTAdmin-GA18",
+    "FileName": "行会领地/公会8/管理员-18",
     "Name": "沙巴克管家",
     "MapIndex": 414,
     "Location": {
@@ -7255,7 +7255,7 @@
   },
   {
     "Index": 368,
-    "FileName": "行会领地/公会8/GTStairs-GA18",
+    "FileName": "行会领地/公会8/楼梯-18",
     "Name": "石阶",
     "MapIndex": 414,
     "Location": {
@@ -7286,7 +7286,7 @@
   },
   {
     "Index": 369,
-    "FileName": "行会领地/公会8/GTStairs-GA28",
+    "FileName": "行会领地/公会8/楼梯-28",
     "Name": "石阶",
     "MapIndex": 424,
     "Location": {
@@ -7317,7 +7317,7 @@
   },
   {
     "Index": 370,
-    "FileName": "行会领地/公会9/GTStore-GA9",
+    "FileName": "行会领地/公会9/商店-9",
     "Name": "沙巴克商店",
     "MapIndex": 405,
     "Location": {
@@ -7348,7 +7348,7 @@
   },
   {
     "Index": 371,
-    "FileName": "行会领地/公会9/GTTeleporter-GA9",
+    "FileName": "行会领地/公会9/传送-9",
     "Name": "沙巴克传送员",
     "MapIndex": 405,
     "Location": {
@@ -7379,7 +7379,7 @@
   },
   {
     "Index": 372,
-    "FileName": "行会领地/公会9/GTBulletinBoard-GA9",
+    "FileName": "行会领地/公会9/告示板-9",
     "Name": "沙巴克公告板",
     "MapIndex": 405,
     "Location": {
@@ -7410,7 +7410,7 @@
   },
   {
     "Index": 373,
-    "FileName": "行会领地/公会9/GTPeddler-GA9",
+    "FileName": "行会领地/公会9/小贩-9",
     "Name": "沙巴克小贩",
     "MapIndex": 405,
     "Location": {
@@ -7441,7 +7441,7 @@
   },
   {
     "Index": 374,
-    "FileName": "行会领地/公会9/GTAdmin-GA19",
+    "FileName": "行会领地/公会9/管理员-19",
     "Name": "沙巴克管家",
     "MapIndex": 415,
     "Location": {
@@ -7472,7 +7472,7 @@
   },
   {
     "Index": 375,
-    "FileName": "行会领地/公会9/GTStairs-GA19",
+    "FileName": "行会领地/公会9/楼梯-19",
     "Name": "石阶",
     "MapIndex": 415,
     "Location": {
@@ -7503,7 +7503,7 @@
   },
   {
     "Index": 376,
-    "FileName": "行会领地/公会9/GTStairs-GA29",
+    "FileName": "行会领地/公会9/楼梯-29",
     "Name": "石阶",
     "MapIndex": 425,
     "Location": {
@@ -7534,7 +7534,7 @@
   },
   {
     "Index": 386,
-    "FileName": "比奇省/比奇城/IcemanStatue",
+    "FileName": "比奇省/比奇城/冰人雕像",
     "Name": "约翰",
     "MapIndex": 1,
     "Location": {
@@ -7565,7 +7565,7 @@
   },
   {
     "Index": 387,
-    "FileName": "盟重/土城/Transport",
+    "FileName": "盟重/土城/传送",
     "Name": "传送员",
     "MapIndex": 103,
     "Location": {
@@ -7596,7 +7596,7 @@
   },
   {
     "Index": 388,
-    "FileName": "比奇省/边境村/BountyBoard",
+    "FileName": "比奇省/边境村/悬赏告示板",
     "Name": "边境村告示",
     "MapIndex": 103,
     "Location": {
@@ -7627,7 +7627,7 @@
   },
   {
     "Index": 389,
-    "FileName": "比奇省/边境村/Jane",
+    "FileName": "比奇省/边境村/简",
     "Name": "助手",
     "MapIndex": 103,
     "Location": {
@@ -7658,7 +7658,7 @@
   },
   {
     "Index": 390,
-    "FileName": "比奇省/边境村/CraftLady",
+    "FileName": "比奇省/边境村/工匠大娘",
     "Name": "工匠大娘",
     "MapIndex": 103,
     "Location": {
@@ -7689,7 +7689,7 @@
   },
   {
     "Index": 391,
-    "FileName": "比奇省/边境村/Blacksmith",
+    "FileName": "比奇省/边境村/铁匠",
     "Name": "铁匠",
     "MapIndex": 103,
     "Location": {
@@ -7720,7 +7720,7 @@
   },
   {
     "Index": 392,
-    "FileName": "比奇省/边境村/BookStore",
+    "FileName": "比奇省/边境村/书店",
     "Name": "图书管理员",
     "MapIndex": 103,
     "Location": {
@@ -7751,7 +7751,7 @@
   },
   {
     "Index": 393,
-    "FileName": "比奇省/边境村/Butcher",
+    "FileName": "比奇省/边境村/屠夫",
     "Name": "杂货商",
     "MapIndex": 103,
     "Location": {
@@ -7782,7 +7782,7 @@
   },
   {
     "Index": 394,
-    "FileName": "比奇省/边境村/Drapery",
+    "FileName": "比奇省/边境村/布庄",
     "Name": "杂货商",
     "MapIndex": 103,
     "Location": {
@@ -7813,7 +7813,7 @@
   },
   {
     "Index": 395,
-    "FileName": "比奇省/边境村/Grocery",
+    "FileName": "比奇省/边境村/杂货店",
     "Name": "杂货商",
     "MapIndex": 103,
     "Location": {
@@ -7844,7 +7844,7 @@
   },
   {
     "Index": 396,
-    "FileName": "比奇省/边境村/Warehouse",
+    "FileName": "比奇省/边境村/仓库",
     "Name": "旅店老板",
     "MapIndex": 5312,
     "Location": {
@@ -7875,7 +7875,7 @@
   },
   {
     "Index": 397,
-    "FileName": "比奇省/边境村/Ring",
+    "FileName": "比奇省/边境村/戒指",
     "Name": "杂货商",
     "MapIndex": 5376,
     "Location": {
@@ -7906,7 +7906,7 @@
   },
   {
     "Index": 398,
-    "FileName": "比奇省/边境村/Bracelet",
+    "FileName": "比奇省/边境村/手镯",
     "Name": "杂货商",
     "MapIndex": 5376,
     "Location": {
@@ -7937,7 +7937,7 @@
   },
   {
     "Index": 399,
-    "FileName": "比奇省/边境村/Necklace",
+    "FileName": "比奇省/边境村/项链",
     "Name": "杂货商",
     "MapIndex": 5376,
     "Location": {
@@ -7968,7 +7968,7 @@
   },
   {
     "Index": 400,
-    "FileName": "比奇省/边境村/Prison",
+    "FileName": "比奇省/边境村/监狱",
     "Name": "狱卒",
     "MapIndex": 5342,
     "Location": {
@@ -7999,7 +7999,7 @@
   },
   {
     "Index": 401,
-    "FileName": "比奇省/Sailor",
+    "FileName": "比奇省/水手",
     "Name": "水手",
     "MapIndex": 103,
     "Location": {
@@ -8030,7 +8030,7 @@
   },
   {
     "Index": 402,
-    "FileName": "比奇省/Wa-Master",
+    "FileName": "比奇省/瓦师傅",
     "Name": "师傅",
     "MapIndex": 103,
     "Location": {
@@ -8061,7 +8061,7 @@
   },
   {
     "Index": 403,
-    "FileName": "比奇省/HighPriest",
+    "FileName": "比奇省/大祭司",
     "Name": "大祭司",
     "MapIndex": 103,
     "Location": {
@@ -8092,7 +8092,7 @@
   },
   {
     "Index": 404,
-    "FileName": "比奇省/HighPriestShinsu",
+    "FileName": "比奇省/大祭司神兽",
     "Name": "神兽",
     "MapIndex": 103,
     "Location": {
@@ -8123,7 +8123,7 @@
   },
   {
     "Index": 405,
-    "FileName": "比奇省/SinCloud",
+    "FileName": "比奇省/辛云",
     "Name": "刺客导师",
     "MapIndex": 103,
     "Location": {
@@ -8154,7 +8154,7 @@
   },
   {
     "Index": 406,
-    "FileName": "比奇省/ArcherCaptain",
+    "FileName": "比奇省/弓手队长",
     "Name": "队长",
     "MapIndex": 103,
     "Location": {
@@ -8185,7 +8185,7 @@
   },
   {
     "Index": 407,
-    "FileName": "比奇省/ArcherMage",
+    "FileName": "比奇省/弓手法师",
     "Name": "魔法导师",
     "MapIndex": 5047,
     "Location": {
@@ -8216,7 +8216,7 @@
   },
   {
     "Index": 408,
-    "FileName": "比奇省/比奇城/Bichon_Teleport1",
+    "FileName": "比奇省/比奇城/比奇传送1",
     "Name": "传送员",
     "MapIndex": 103,
     "Location": {
@@ -8247,7 +8247,7 @@
   },
   {
     "Index": 409,
-    "FileName": "比奇省/比奇城/Bichon_Teleport2",
+    "FileName": "比奇省/比奇城/比奇传送2",
     "Name": "传送员",
     "MapIndex": 103,
     "Location": {
@@ -8278,7 +8278,7 @@
   },
   {
     "Index": 410,
-    "FileName": "比奇省/比奇城/Bichon_Teleport3",
+    "FileName": "比奇省/比奇城/比奇传送3",
     "Name": "传送员",
     "MapIndex": 103,
     "Location": {
@@ -8309,7 +8309,7 @@
   },
   {
     "Index": 411,
-    "FileName": "比奇省/比奇城/Butcher1",
+    "FileName": "比奇省/比奇城/屠夫1",
     "Name": "杂货商",
     "MapIndex": 103,
     "Location": {
@@ -8340,7 +8340,7 @@
   },
   {
     "Index": 412,
-    "FileName": "比奇省/比奇城/Butcher2",
+    "FileName": "比奇省/比奇城/屠夫2",
     "Name": "杂货商",
     "MapIndex": 5323,
     "Location": {
@@ -8371,7 +8371,7 @@
   },
   {
     "Index": 413,
-    "FileName": "比奇省/比奇城/Blacksmith",
+    "FileName": "比奇省/比奇城/铁匠",
     "Name": "铁匠",
     "MapIndex": 103,
     "Location": {
@@ -8402,7 +8402,7 @@
   },
   {
     "Index": 414,
-    "FileName": "比奇省/比奇城/Potion1",
+    "FileName": "比奇省/比奇城/药水1",
     "Name": "药店老板",
     "MapIndex": 103,
     "Location": {
@@ -8433,7 +8433,7 @@
   },
   {
     "Index": 415,
-    "FileName": "比奇省/比奇城/Potion2",
+    "FileName": "比奇省/比奇城/药水2",
     "Name": "药店老板",
     "MapIndex": 5370,
     "Location": {
@@ -8464,7 +8464,7 @@
   },
   {
     "Index": 416,
-    "FileName": "比奇省/比奇城/Potion3",
+    "FileName": "比奇省/比奇城/药水3",
     "Name": "专家",
     "MapIndex": 5370,
     "Location": {
@@ -8495,7 +8495,7 @@
   },
   {
     "Index": 417,
-    "FileName": "比奇省/比奇城/Warehouse1",
+    "FileName": "比奇省/比奇城/仓库1",
     "Name": "旅店老板",
     "MapIndex": 103,
     "Location": {
@@ -8526,7 +8526,7 @@
   },
   {
     "Index": 418,
-    "FileName": "比奇省/比奇城/Warehouse2",
+    "FileName": "比奇省/比奇城/仓库2",
     "Name": "旅店老板",
     "MapIndex": 5342,
     "Location": {
@@ -8557,7 +8557,7 @@
   },
   {
     "Index": 419,
-    "FileName": "比奇省/比奇城/Grocery",
+    "FileName": "比奇省/比奇城/杂货店",
     "Name": "杂货商",
     "MapIndex": 103,
     "Location": {
@@ -8588,7 +8588,7 @@
   },
   {
     "Index": 420,
-    "FileName": "比奇省/比奇城/Lottery",
+    "FileName": "比奇省/比奇城/彩票",
     "Name": "彩票管理员",
     "MapIndex": 103,
     "Location": {
@@ -8619,7 +8619,7 @@
   },
   {
     "Index": 421,
-    "FileName": "比奇省/比奇城/Board",
+    "FileName": "比奇省/比奇城/告示板",
     "Name": "比奇城告示",
     "MapIndex": 103,
     "Location": {
@@ -8650,7 +8650,7 @@
   },
   {
     "Index": 422,
-    "FileName": "比奇省/比奇城/Materials",
+    "FileName": "比奇省/比奇城/材料",
     "Name": "材料商人",
     "MapIndex": 103,
     "Location": {
@@ -8681,7 +8681,7 @@
   },
   {
     "Index": 423,
-    "FileName": "比奇省/比奇城/MirGuide",
+    "FileName": "比奇省/比奇城/米尔向导",
     "Name": "向导",
     "MapIndex": 103,
     "Location": {
@@ -8712,7 +8712,7 @@
   },
   {
     "Index": 424,
-    "FileName": "比奇省/比奇城/Examiner",
+    "FileName": "比奇省/比奇城/考核官",
     "Name": "考核官",
     "MapIndex": 103,
     "Location": {
@@ -8743,7 +8743,7 @@
   },
   {
     "Index": 425,
-    "FileName": "比奇省/比奇城/WiseFisher",
+    "FileName": "比奇省/比奇城/智者渔夫",
     "Name": "老渔夫",
     "MapIndex": 103,
     "Location": {
@@ -8774,7 +8774,7 @@
   },
   {
     "Index": 426,
-    "FileName": "比奇省/比奇城/StableGirl",
+    "FileName": "比奇省/比奇城/马厩女孩",
     "Name": "马夫",
     "MapIndex": 103,
     "Location": {
@@ -8805,7 +8805,7 @@
   },
   {
     "Index": 427,
-    "FileName": "比奇省/比奇城/Solider",
+    "FileName": "比奇省/比奇城/士兵",
     "Name": "士兵",
     "MapIndex": 103,
     "Location": {
@@ -8836,7 +8836,7 @@
   },
   {
     "Index": 428,
-    "FileName": "比奇省/比奇城/TrustMerchant",
+    "FileName": "比奇省/比奇城/可信商人",
     "Name": "寄存商人",
     "MapIndex": 103,
     "Location": {
@@ -8867,7 +8867,7 @@
   },
   {
     "Index": 429,
-    "FileName": "比奇省/比奇城/GTMerchant",
+    "FileName": "比奇省/比奇城/商人",
     "Name": "沙巴克商人",
     "MapIndex": 103,
     "Location": {
@@ -8898,7 +8898,7 @@
   },
   {
     "Index": 430,
-    "FileName": "比奇省/比奇城/Administrator",
+    "FileName": "比奇省/比奇城/管理员",
     "Name": "管理员",
     "MapIndex": 5001,
     "Location": {
@@ -8929,7 +8929,7 @@
   },
   {
     "Index": 431,
-    "FileName": "比奇省/边境村/BookStore",
+    "FileName": "比奇省/边境村/书店",
     "Name": "书店老板",
     "MapIndex": 5351,
     "Location": {
@@ -8960,7 +8960,7 @@
   },
   {
     "Index": 432,
-    "FileName": "比奇省/比奇城/Blacksmith1",
+    "FileName": "比奇省/比奇城/铁匠1",
     "Name": "杂货商",
     "MapIndex": 5369,
     "Location": {
@@ -8991,7 +8991,7 @@
   },
   {
     "Index": 433,
-    "FileName": "比奇省/比奇城/Bracelet",
+    "FileName": "比奇省/比奇城/手镯",
     "Name": "杂货商",
     "MapIndex": 5397,
     "Location": {
@@ -9022,7 +9022,7 @@
   },
   {
     "Index": 434,
-    "FileName": "比奇省/比奇城/Ring",
+    "FileName": "比奇省/比奇城/戒指",
     "Name": "杂货商",
     "MapIndex": 5397,
     "Location": {
@@ -9053,7 +9053,7 @@
   },
   {
     "Index": 435,
-    "FileName": "比奇省/比奇城/Necklace",
+    "FileName": "比奇省/比奇城/项链",
     "Name": "杂货商",
     "MapIndex": 5397,
     "Location": {
@@ -9084,7 +9084,7 @@
   },
   {
     "Index": 436,
-    "FileName": "比奇省/比奇城/Clothing",
+    "FileName": "比奇省/比奇城/服饰",
     "Name": "杂货商",
     "MapIndex": 5374,
     "Location": {
@@ -9115,7 +9115,7 @@
   },
   {
     "Index": 437,
-    "FileName": "比奇省/比奇城/OldmanInfinity",
+    "FileName": "比奇省/比奇城/无限老人",
     "Name": "试炼老人",
     "MapIndex": 200,
     "Location": {
@@ -9146,7 +9146,7 @@
   },
   {
     "Index": 438,
-    "FileName": "比奇省/比奇城/MongchonScout",
+    "FileName": "比奇省/比奇城/蒙村斥候",
     "Name": "盟重斥候",
     "MapIndex": 5334,
     "Location": {
@@ -9177,7 +9177,7 @@
   },
   {
     "Index": 439,
-    "FileName": "比奇省/比奇城/Sir.Mogu",
+    "FileName": "比奇省/比奇城/莫古爵士",
     "Name": "莫古爵士",
     "MapIndex": 200,
     "Location": {
@@ -9208,7 +9208,7 @@
   },
   {
     "Index": 440,
-    "FileName": "比奇省/比奇城/SubjagationManager",
+    "FileName": "比奇省/比奇城/占领管理员",
     "Name": "占领管理员",
     "MapIndex": 103,
     "Location": {
@@ -9239,7 +9239,7 @@
   },
   {
     "Index": 441,
-    "FileName": "比奇省/比奇城/CraftsLady",
+    "FileName": "比奇省/比奇城/工匠大娘",
     "Name": "工匠大娘",
     "MapIndex": 103,
     "Location": {
@@ -9270,7 +9270,7 @@
   },
   {
     "Index": 442,
-    "FileName": "比奇省/比奇城/Awakening",
+    "FileName": "比奇省/比奇城/觉醒",
     "Name": "师傅",
     "MapIndex": 103,
     "Location": {
@@ -9301,7 +9301,7 @@
   },
   {
     "Index": 443,
-    "FileName": "比奇省/比奇城/Downgrade",
+    "FileName": "比奇省/比奇城/降级",
     "Name": "助手",
     "MapIndex": 103,
     "Location": {
@@ -9332,7 +9332,7 @@
   },
   {
     "Index": 444,
-    "FileName": "比奇省/比奇城/PetStore",
+    "FileName": "比奇省/比奇城/宠物店",
     "Name": "宠物大师",
     "MapIndex": 5342,
     "Location": {
@@ -9363,7 +9363,7 @@
   },
   {
     "Index": 445,
-    "FileName": "比奇省/比奇城/PearlStore",
+    "FileName": "比奇省/比奇城/珍珠店",
     "Name": "杂货商",
     "MapIndex": 200,
     "Location": {
@@ -9394,7 +9394,7 @@
   },
   {
     "Index": 446,
-    "FileName": "比奇省/比奇城/Premium",
+    "FileName": "比奇省/比奇城/高级",
     "Name": "会员管理员",
     "MapIndex": 103,
     "Location": {
@@ -9425,7 +9425,7 @@
   },
   {
     "Index": 447,
-    "FileName": "比奇省/比奇城/Far",
+    "FileName": "比奇省/比奇城/远方",
     "Name": "法老",
     "MapIndex": 5001,
     "Location": {
@@ -9456,7 +9456,7 @@
   },
   {
     "Index": 448,
-    "FileName": "比奇省/比奇城/Luke",
+    "FileName": "比奇省/比奇城/卢克",
     "Name": "指挥官",
     "MapIndex": 103,
     "Location": {
@@ -9487,7 +9487,7 @@
   },
   {
     "Index": 449,
-    "FileName": "比奇省/沃玛洞穴/Warehouse",
+    "FileName": "比奇省/沃玛洞穴/仓库",
     "Name": "仓库管理员",
     "MapIndex": 5110,
     "Location": {
@@ -9518,7 +9518,7 @@
   },
   {
     "Index": 450,
-    "FileName": "比奇省/沃玛洞穴/StrangeMan",
+    "FileName": "比奇省/沃玛洞穴/怪人",
     "Name": "陌生人",
     "MapIndex": 5110,
     "Location": {
@@ -9549,7 +9549,7 @@
   },
   {
     "Index": 451,
-    "FileName": "比奇省/自然洞穴/WickedTrader",
+    "FileName": "比奇省/自然洞穴/邪恶商人",
     "Name": "奸商",
     "MapIndex": 5227,
     "Location": {
@@ -9580,7 +9580,7 @@
   },
   {
     "Index": 452,
-    "FileName": "比奇省/废矿区/OldSkeleton",
+    "FileName": "比奇省/废矿区/老骷髅",
     "Name": "老骷髅",
     "MapIndex": 5016,
     "Location": {
@@ -9611,7 +9611,7 @@
   },
   {
     "Index": 453,
-    "FileName": "比奇省/沃玛洞穴/Stone",
+    "FileName": "比奇省/沃玛洞穴/石头",
     "Name": "神秘石",
     "MapIndex": 5109,
     "Location": {
@@ -9642,7 +9642,7 @@
   },
   {
     "Index": 493,
-    "FileName": "毒蛇山谷/村庄/Grocery",
+    "FileName": "毒蛇山谷/村庄/杂货店",
     "Name": "杂货商",
     "MapIndex": 5427,
     "Location": {
@@ -9673,7 +9673,7 @@
   },
   {
     "Index": 494,
-    "FileName": "毒蛇山谷/村庄/Clothes",
+    "FileName": "毒蛇山谷/村庄/服装",
     "Name": "杂货商",
     "MapIndex": 5427,
     "Location": {
@@ -9704,7 +9704,7 @@
   },
   {
     "Index": 495,
-    "FileName": "毒蛇山谷/村庄/Warehouse",
+    "FileName": "毒蛇山谷/村庄/仓库",
     "Name": "旅店老板",
     "MapIndex": 5427,
     "Location": {
@@ -9735,7 +9735,7 @@
   },
   {
     "Index": 496,
-    "FileName": "盟重/土城/Transport",
+    "FileName": "盟重/土城/传送",
     "Name": "传送员",
     "MapIndex": 5427,
     "Location": {
@@ -9766,7 +9766,7 @@
   },
   {
     "Index": 497,
-    "FileName": "毒蛇山谷/村庄/Signpost",
+    "FileName": "毒蛇山谷/村庄/路标",
     "Name": "路标",
     "MapIndex": 5427,
     "Location": {
@@ -9797,7 +9797,7 @@
   },
   {
     "Index": 498,
-    "FileName": "毒蛇山谷/村庄/MirGuide",
+    "FileName": "毒蛇山谷/村庄/米尔向导",
     "Name": "向导",
     "MapIndex": 5427,
     "Location": {
@@ -9828,7 +9828,7 @@
   },
   {
     "Index": 499,
-    "FileName": "毒蛇山谷/村庄/Potion",
+    "FileName": "毒蛇山谷/村庄/药水",
     "Name": "杂货商",
     "MapIndex": 5370,
     "Location": {
@@ -9859,7 +9859,7 @@
   },
   {
     "Index": 500,
-    "FileName": "毒蛇山谷/村庄/Blacksmith",
+    "FileName": "毒蛇山谷/村庄/铁匠",
     "Name": "杂货商",
     "MapIndex": 5083,
     "Location": {
@@ -9890,7 +9890,7 @@
   },
   {
     "Index": 501,
-    "FileName": "毒蛇山谷/村庄/Crafting",
+    "FileName": "毒蛇山谷/村庄/锻造",
     "Name": "工匠大娘",
     "MapIndex": 5427,
     "Location": {
@@ -9921,7 +9921,7 @@
   },
   {
     "Index": 502,
-    "FileName": "毒蛇山谷/VulnerableSon",
+    "FileName": "毒蛇山谷/弱子",
     "Name": "弱子",
     "MapIndex": 5427,
     "Location": {
@@ -9952,7 +9952,7 @@
   },
   {
     "Index": 503,
-    "FileName": "毒蛇山谷/毒蛇废矿区/SkullPile",
+    "FileName": "毒蛇山谷/毒蛇废矿区/头骨堆",
     "Name": "骷髅堆",
     "MapIndex": 5016,
     "Location": {
@@ -9983,7 +9983,7 @@
   },
   {
     "Index": 504,
-    "FileName": "毒蛇山谷/连接小路/MysteriousYu",
+    "FileName": "毒蛇山谷/连接小路/神秘禹",
     "Name": "神秘人",
     "MapIndex": 5119,
     "Location": {
@@ -10014,7 +10014,7 @@
   },
   {
     "Index": 505,
-    "FileName": "毒蛇山谷/毒蛇废矿区/OldSkull",
+    "FileName": "毒蛇山谷/毒蛇废矿区/老头骨",
     "Name": "老骷髅",
     "MapIndex": 5016,
     "Location": {
@@ -10045,7 +10045,7 @@
   },
   {
     "Index": 506,
-    "FileName": "毒蛇山谷/毒蛇废矿区/SkeletonPile",
+    "FileName": "毒蛇山谷/毒蛇废矿区/骷髅堆",
     "Name": "骷髅堆",
     "MapIndex": 5016,
     "Location": {
@@ -10076,7 +10076,7 @@
   },
   {
     "Index": 507,
-    "FileName": "盟重/土城/Warehouse",
+    "FileName": "盟重/土城/仓库",
     "Name": "旅店老板",
     "MapIndex": 154,
     "Location": {
@@ -10107,7 +10107,7 @@
   },
   {
     "Index": 508,
-    "FileName": "盟重/土城/Grocery",
+    "FileName": "盟重/土城/杂货店",
     "Name": "杂货商",
     "MapIndex": 154,
     "Location": {
@@ -10138,7 +10138,7 @@
   },
   {
     "Index": 509,
-    "FileName": "盟重/土城/Butcher",
+    "FileName": "盟重/土城/屠夫",
     "Name": "杂货商",
     "MapIndex": 154,
     "Location": {
@@ -10169,7 +10169,7 @@
   },
   {
     "Index": 510,
-    "FileName": "盟重/土城/Potion",
+    "FileName": "盟重/土城/药水",
     "Name": "杂货商",
     "MapIndex": 154,
     "Location": {
@@ -10200,7 +10200,7 @@
   },
   {
     "Index": 511,
-    "FileName": "盟重/土城/Transport",
+    "FileName": "盟重/土城/传送",
     "Name": "传送员",
     "MapIndex": 154,
     "Location": {
@@ -10231,7 +10231,7 @@
   },
   {
     "Index": 512,
-    "FileName": "盟重/土城/Grocery1",
+    "FileName": "盟重/土城/杂货店1",
     "Name": "杂货商",
     "MapIndex": 154,
     "Location": {
@@ -10262,7 +10262,7 @@
   },
   {
     "Index": 513,
-    "FileName": "盟重/土城/Board",
+    "FileName": "盟重/土城/告示板",
     "Name": "土城告示",
     "MapIndex": 154,
     "Location": {
@@ -10293,7 +10293,7 @@
   },
   {
     "Index": 514,
-    "FileName": "盟重/土城/TrustMerchant",
+    "FileName": "盟重/土城/可信商人",
     "Name": "寄存商人",
     "MapIndex": 154,
     "Location": {
@@ -10324,7 +10324,7 @@
   },
   {
     "Index": 515,
-    "FileName": "盟重/土城/MirGuide",
+    "FileName": "盟重/土城/米尔向导",
     "Name": "向导",
     "MapIndex": 154,
     "Location": {
@@ -10355,7 +10355,7 @@
   },
   {
     "Index": 516,
-    "FileName": "盟重/土城/Warehouse1",
+    "FileName": "盟重/土城/仓库1",
     "Name": "旅店老板",
     "MapIndex": 5342,
     "Location": {
@@ -10386,7 +10386,7 @@
   },
   {
     "Index": 517,
-    "FileName": "盟重/土城/Clothes",
+    "FileName": "盟重/土城/服装",
     "Name": "杂货商",
     "MapIndex": 5374,
     "Location": {
@@ -10417,7 +10417,7 @@
   },
   {
     "Index": 518,
-    "FileName": "盟重/土城/Bracelet",
+    "FileName": "盟重/土城/手镯",
     "Name": "杂货商",
     "MapIndex": 5374,
     "Location": {
@@ -10448,7 +10448,7 @@
   },
   {
     "Index": 519,
-    "FileName": "盟重/土城/Helmets",
+    "FileName": "盟重/土城/头盔店",
     "Name": "杂货商",
     "MapIndex": 5374,
     "Location": {
@@ -10479,7 +10479,7 @@
   },
   {
     "Index": 520,
-    "FileName": "盟重/土城/Lottery",
+    "FileName": "盟重/土城/彩票",
     "Name": "彩票管理员",
     "MapIndex": 154,
     "Location": {
@@ -10510,7 +10510,7 @@
   },
   {
     "Index": 521,
-    "FileName": "盟重/土城/Crafting",
+    "FileName": "盟重/土城/锻造",
     "Name": "工匠大娘",
     "MapIndex": 154,
     "Location": {
@@ -10541,7 +10541,7 @@
   },
   {
     "Index": 522,
-    "FileName": "盟重/土城/GT",
+    "FileName": "盟重/土城/行会领地",
     "Name": "沙巴克商人",
     "MapIndex": 154,
     "Location": {
@@ -10572,7 +10572,7 @@
   },
   {
     "Index": 523,
-    "FileName": "盟重/土城/Warehouse2",
+    "FileName": "盟重/土城/仓库2",
     "Name": "旅店老板",
     "MapIndex": 5333,
     "Location": {
@@ -10603,7 +10603,7 @@
   },
   {
     "Index": 524,
-    "FileName": "盟重/土城/MonDelegate",
+    "FileName": "盟重/土城/蒙村代表",
     "Name": "盟重代表",
     "MapIndex": 154,
     "Location": {
@@ -10634,7 +10634,7 @@
   },
   {
     "Index": 525,
-    "FileName": "盟重/沙巴克/Butcher",
+    "FileName": "盟重/沙巴克/屠夫",
     "Name": "杂货商",
     "MapIndex": 154,
     "Location": {
@@ -10665,7 +10665,7 @@
   },
   {
     "Index": 526,
-    "FileName": "盟重/沙巴克/Peddlar",
+    "FileName": "盟重/沙巴克/小贩",
     "Name": "杂货商",
     "MapIndex": 154,
     "Location": {
@@ -10696,7 +10696,7 @@
   },
   {
     "Index": 527,
-    "FileName": "盟重/沙巴克/Blacksmith",
+    "FileName": "盟重/沙巴克/铁匠",
     "Name": "铁匠",
     "MapIndex": 5083,
     "Location": {
@@ -10727,7 +10727,7 @@
   },
   {
     "Index": 528,
-    "FileName": "盟重/沙巴克/Weaponsmith",
+    "FileName": "盟重/沙巴克/武器匠",
     "Name": "杂货商",
     "MapIndex": 5083,
     "Location": {
@@ -10758,7 +10758,7 @@
   },
   {
     "Index": 529,
-    "FileName": "盟重/沙巴克/Clothes",
+    "FileName": "盟重/沙巴克/服装",
     "Name": "杂货商",
     "MapIndex": 5370,
     "Location": {
@@ -10789,7 +10789,7 @@
   },
   {
     "Index": 530,
-    "FileName": "盟重/沙巴克/Helmet",
+    "FileName": "盟重/沙巴克/头盔",
     "Name": "杂货商",
     "MapIndex": 5370,
     "Location": {
@@ -10820,7 +10820,7 @@
   },
   {
     "Index": 531,
-    "FileName": "盟重/沙巴克/Potion1",
+    "FileName": "盟重/沙巴克/药水1",
     "Name": "专家",
     "MapIndex": 5370,
     "Location": {
@@ -10851,7 +10851,7 @@
   },
   {
     "Index": 532,
-    "FileName": "盟重/沙巴克/Potion",
+    "FileName": "盟重/沙巴克/药水",
     "Name": "杂货商",
     "MapIndex": 5370,
     "Location": {
@@ -10882,7 +10882,7 @@
   },
   {
     "Index": 533,
-    "FileName": "盟重/沙巴克/Warehouse",
+    "FileName": "盟重/沙巴克/仓库",
     "Name": "旅店老板",
     "MapIndex": 5312,
     "Location": {
@@ -10913,7 +10913,7 @@
   },
   {
     "Index": 534,
-    "FileName": "盟重/沙巴克/Bracelet",
+    "FileName": "盟重/沙巴克/手镯",
     "Name": "杂货商",
     "MapIndex": 5370,
     "Location": {
@@ -10944,7 +10944,7 @@
   },
   {
     "Index": 535,
-    "FileName": "盟重/沙巴克/Necklace",
+    "FileName": "盟重/沙巴克/项链",
     "Name": "杂货商",
     "MapIndex": 5370,
     "Location": {
@@ -10975,7 +10975,7 @@
   },
   {
     "Index": 536,
-    "FileName": "盟重/沙巴克/Ring",
+    "FileName": "盟重/沙巴克/戒指",
     "Name": "杂货商",
     "MapIndex": 5370,
     "Location": {
@@ -11006,7 +11006,7 @@
   },
   {
     "Index": 537,
-    "FileName": "盟重/沙巴克/Blacksmith1",
+    "FileName": "盟重/沙巴克/铁匠1",
     "Name": "铁匠",
     "MapIndex": 5083,
     "Location": {
@@ -11037,7 +11037,7 @@
   },
   {
     "Index": 538,
-    "FileName": "盟重/沙巴克/SwampNPC",
+    "FileName": "盟重/沙巴克/沼泽使者",
     "Name": "守护者",
     "MapIndex": 154,
     "Location": {
@@ -11068,7 +11068,7 @@
   },
   {
     "Index": 539,
-    "FileName": "盟重/WierdPillar",
+    "FileName": "盟重/诡异石柱",
     "Name": "诡异石柱",
     "MapIndex": 5311,
     "Location": {
@@ -11099,7 +11099,7 @@
   },
   {
     "Index": 540,
-    "FileName": "盟重/StrangePillar",
+    "FileName": "盟重/怪异石柱",
     "Name": "怪异石柱",
     "MapIndex": 5311,
     "Location": {
@@ -11130,7 +11130,7 @@
   },
   {
     "Index": 541,
-    "FileName": "盟重/MysteriousPillar",
+    "FileName": "盟重/神秘石柱",
     "Name": "神秘石柱",
     "MapIndex": 5311,
     "Location": {
@@ -11161,7 +11161,7 @@
   },
   {
     "Index": 542,
-    "FileName": "盟重/沼泽/Bones",
+    "FileName": "盟重/沼泽/骸骨",
     "Name": "尸骨",
     "MapIndex": 5444,
     "Location": {
@@ -11192,7 +11192,7 @@
   },
   {
     "Index": 543,
-    "FileName": "盟重/狐穴/Rock",
+    "FileName": "盟重/狐穴/岩石",
     "Name": "守护石",
     "MapIndex": 5284,
     "Location": {
@@ -11223,7 +11223,7 @@
   },
   {
     "Index": 544,
-    "FileName": "盟重/石墓/Stone",
+    "FileName": "盟重/石墓/石头",
     "Name": "神秘石",
     "MapIndex": 5055,
     "Location": {
@@ -11254,7 +11254,7 @@
   },
   {
     "Index": 545,
-    "FileName": "盟重/祖玛寺庙/Stone",
+    "FileName": "盟重/祖玛寺庙/石头",
     "Name": "神秘石",
     "MapIndex": 5029,
     "Location": {
@@ -11285,7 +11285,7 @@
   },
   {
     "Index": 567,
-    "FileName": "白日门/营地/Sailor",
+    "FileName": "白日门/营地/水手",
     "Name": "水手",
     "MapIndex": 5384,
     "Location": {
@@ -11316,7 +11316,7 @@
   },
   {
     "Index": 568,
-    "FileName": "白日门/营地/Storage",
+    "FileName": "白日门/营地/储物",
     "Name": "仓库管理员",
     "MapIndex": 5384,
     "Location": {
@@ -11347,7 +11347,7 @@
   },
   {
     "Index": 569,
-    "FileName": "白日门/营地/Blacksmith",
+    "FileName": "白日门/营地/铁匠",
     "Name": "铁匠",
     "MapIndex": 5385,
     "Location": {
@@ -11378,7 +11378,7 @@
   },
   {
     "Index": 570,
-    "FileName": "白日门/营地/Drapery",
+    "FileName": "白日门/营地/布庄",
     "Name": "服装店老板",
     "MapIndex": 5387,
     "Location": {
@@ -11409,7 +11409,7 @@
   },
   {
     "Index": 571,
-    "FileName": "白日门/营地/Accessory",
+    "FileName": "白日门/营地/饰品",
     "Name": "首饰商人",
     "MapIndex": 5391,
     "Location": {
@@ -11440,7 +11440,7 @@
   },
   {
     "Index": 572,
-    "FileName": "白日门/营地/Book",
+    "FileName": "白日门/营地/书",
     "Name": "书店老板",
     "MapIndex": 5388,
     "Location": {
@@ -11471,7 +11471,7 @@
   },
   {
     "Index": 573,
-    "FileName": "白日门/营地/General",
+    "FileName": "白日门/营地/将军",
     "Name": "将军",
     "MapIndex": 5391,
     "Location": {
@@ -11502,7 +11502,7 @@
   },
   {
     "Index": 574,
-    "FileName": "白日门/营地/Fisheries",
+    "FileName": "白日门/营地/渔业",
     "Name": "鱼贩",
     "MapIndex": 5384,
     "Location": {
@@ -11533,7 +11533,7 @@
   },
   {
     "Index": 575,
-    "FileName": "白日门/营地/Captain",
+    "FileName": "白日门/营地/队长",
     "Name": "队长",
     "MapIndex": 5384,
     "Location": {
@@ -11564,7 +11564,7 @@
   },
   {
     "Index": 576,
-    "FileName": "白日门/营地/Signpost",
+    "FileName": "白日门/营地/路标",
     "Name": "路标",
     "MapIndex": 5384,
     "Location": {
@@ -11595,7 +11595,7 @@
   },
   {
     "Index": 577,
-    "FileName": "白日门/营地/TrustMerchant",
+    "FileName": "白日门/营地/可信商人",
     "Name": "寄存商人",
     "MapIndex": 5384,
     "Location": {
@@ -11626,7 +11626,7 @@
   },
   {
     "Index": 578,
-    "FileName": "白日门/营地/CaveGuard",
+    "FileName": "白日门/营地/洞窟守卫",
     "Name": "守望者",
     "MapIndex": 5384,
     "Location": {
@@ -11657,7 +11657,7 @@
   },
   {
     "Index": 579,
-    "FileName": "白日门/SquadLeader",
+    "FileName": "白日门/小队长",
     "Name": "小队长",
     "MapIndex": 5287,
     "Location": {
@@ -11688,7 +11688,7 @@
   },
   {
     "Index": 580,
-    "FileName": "白日门/SnowMonument",
+    "FileName": "白日门/雪碑",
     "Name": "纪念碑",
     "MapIndex": 5288,
     "Location": {
@@ -11719,7 +11719,7 @@
   },
   {
     "Index": 581,
-    "FileName": "比奇省/活动/Proceeder30-EM001",
+    "FileName": "比奇省/活动/推进者30-001",
     "Name": "引路人",
     "MapIndex": 5339,
     "Location": {
@@ -11750,7 +11750,7 @@
   },
   {
     "Index": 584,
-    "FileName": "合成传送门/Bichon",
+    "FileName": "合成传送门/比奇",
     "Name": "锻造村传送门",
     "MapIndex": 103,
     "Location": {
@@ -11781,7 +11781,7 @@
   },
   {
     "Index": 585,
-    "FileName": "合成传送门/Border",
+    "FileName": "合成传送门/边境",
     "Name": "锻造村传送门",
     "MapIndex": 103,
     "Location": {
@@ -11812,7 +11812,7 @@
   },
   {
     "Index": 586,
-    "FileName": "合成传送门/Serpent",
+    "FileName": "合成传送门/毒蛇",
     "Name": "锻造村传送门",
     "MapIndex": 5427,
     "Location": {
@@ -11843,7 +11843,7 @@
   },
   {
     "Index": 587,
-    "FileName": "合成传送门/MudWall",
+    "FileName": "合成传送门/土城城墙",
     "Name": "锻造村传送门",
     "MapIndex": 154,
     "Location": {
@@ -11874,7 +11874,7 @@
   },
   {
     "Index": 588,
-    "FileName": "合成传送门/PastBichon",
+    "FileName": "合成传送门/旧比奇",
     "Name": "锻造村传送门",
     "MapIndex": 5016,
     "Location": {
@@ -11905,7 +11905,7 @@
   },
   {
     "Index": 589,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 103,
     "Location": {
@@ -11936,7 +11936,7 @@
   },
   {
     "Index": 590,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 103,
     "Location": {
@@ -11967,7 +11967,7 @@
   },
   {
     "Index": 591,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 5426,
     "Location": {
@@ -11998,7 +11998,7 @@
   },
   {
     "Index": 592,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 5426,
     "Location": {
@@ -12029,7 +12029,7 @@
   },
   {
     "Index": 593,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 5427,
     "Location": {
@@ -12060,7 +12060,7 @@
   },
   {
     "Index": 594,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 154,
     "Location": {
@@ -12091,7 +12091,7 @@
   },
   {
     "Index": 595,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 154,
     "Location": {
@@ -12122,7 +12122,7 @@
   },
   {
     "Index": 596,
-    "FileName": "TravellingMerchant",
+    "FileName": "行商",
     "Name": "行商",
     "MapIndex": 5384,
     "Location": {
@@ -12153,7 +12153,7 @@
   },
   {
     "Index": 597,
-    "FileName": "比奇省/边境村/Pedlar",
+    "FileName": "比奇省/边境村/小贩",
     "Name": "杂货商",
     "MapIndex": 103,
     "Location": {
@@ -12184,7 +12184,7 @@
   },
   {
     "Index": 598,
-    "FileName": "比奇省/比奇城/Hairdresser",
+    "FileName": "比奇省/比奇城/理发师",
     "Name": "理发师",
     "MapIndex": 5338,
     "Location": {
@@ -12215,7 +12215,7 @@
   },
   {
     "Index": 600,
-    "FileName": "盟重/沼泽/Transporter",
+    "FileName": "盟重/沼泽/传送者",
     "Name": "将军",
     "MapIndex": 5445,
     "Location": {
@@ -12246,7 +12246,7 @@
   },
   {
     "Index": 601,
-    "FileName": "盟重/沼泽/Transporter1",
+    "FileName": "盟重/沼泽/传送者1",
     "Name": "将军",
     "MapIndex": 5444,
     "Location": {
@@ -12277,7 +12277,7 @@
   },
   {
     "Index": 602,
-    "FileName": "比奇省/沃玛洞穴/Grim",
+    "FileName": "比奇省/沃玛洞穴/格雷姆",
     "Name": "神秘人",
     "MapIndex": 5227,
     "Location": {
@@ -12308,7 +12308,7 @@
   },
   {
     "Index": 603,
-    "FileName": "比奇省/边境村/Materials",
+    "FileName": "比奇省/边境村/材料",
     "Name": "材料商人",
     "MapIndex": 103,
     "Location": {
@@ -12339,7 +12339,7 @@
   },
   {
     "Index": 604,
-    "FileName": "比奇省/比奇城/LukeStatue",
+    "FileName": "比奇省/比奇城/卢克雕像",
     "Name": "卢克",
     "MapIndex": 103,
     "Location": {
@@ -12370,7 +12370,7 @@
   },
   {
     "Index": 605,
-    "FileName": "白日门/Wanderer_Charlotte",
+    "FileName": "白日门/流浪者夏洛特",
     "Name": "流浪者",
     "MapIndex": 5384,
     "Location": {
@@ -12401,7 +12401,7 @@
   },
   {
     "Index": 606,
-    "FileName": "比奇省/比奇城/IcemanStatue",
+    "FileName": "比奇省/比奇城/冰人雕像",
     "Name": "约翰",
     "MapIndex": 103,
     "Location": {
@@ -12432,7 +12432,7 @@
   },
   {
     "Index": 609,
-    "FileName": "盟重/土城/Transport",
+    "FileName": "盟重/土城/传送",
     "Name": "传送员",
     "MapIndex": 5258,
     "Location": {
@@ -12463,7 +12463,7 @@
   },
   {
     "Index": 611,
-    "FileName": "盟重/土城/Transport",
+    "FileName": "盟重/土城/传送",
     "Name": "传送员",
     "MapIndex": 5392,
     "Location": {
@@ -12494,7 +12494,7 @@
   },
   {
     "Index": 612,
-    "FileName": "盟重/土城/Transport",
+    "FileName": "盟重/土城/传送",
     "Name": "传送员",
     "MapIndex": 5402,
     "Location": {
@@ -12525,7 +12525,7 @@
   },
   {
     "Index": 613,
-    "FileName": "盟重/土城/Transport",
+    "FileName": "盟重/土城/传送",
     "Name": "传送员",
     "MapIndex": 5414,
     "Location": {
@@ -12556,7 +12556,7 @@
   },
   {
     "Index": 610,
-    "FileName": "盟重/土城/Transport",
+    "FileName": "盟重/土城/传送",
     "Name": "传送员",
     "MapIndex": 5384,
     "Location": {
@@ -12587,7 +12587,7 @@
   },
   {
     "Index": 615,
-    "FileName": "盟重/土城/Clothes",
+    "FileName": "盟重/土城/服装",
     "Name": "服装店老板",
     "MapIndex": 154,
     "Location": {
@@ -12618,7 +12618,7 @@
   },
   {
     "Index": 616,
-    "FileName": "盟重/土城/Helmets",
+    "FileName": "盟重/土城/头盔店",
     "Name": "头盔店",
     "MapIndex": 154,
     "Location": {
@@ -12649,7 +12649,7 @@
   },
   {
     "Index": 617,
-    "FileName": "盟重/土城/Necklace",
+    "FileName": "盟重/土城/项链",
     "Name": "项链店",
     "MapIndex": 154,
     "Location": {
@@ -12680,7 +12680,7 @@
   },
   {
     "Index": 618,
-    "FileName": "盟重/土城/Ring",
+    "FileName": "盟重/土城/戒指",
     "Name": "戒指店",
     "MapIndex": 154,
     "Location": {
@@ -12711,7 +12711,7 @@
   },
   {
     "Index": 619,
-    "FileName": "盟重/土城/Bracelet",
+    "FileName": "盟重/土城/手镯",
     "Name": "手镯店",
     "MapIndex": 154,
     "Location": {
@@ -12742,7 +12742,7 @@
   },
   {
     "Index": 620,
-    "FileName": "盟重/土城/JewelersRing-0158",
+    "FileName": "盟重/土城/珠宝戒指-0158",
     "Name": "首饰店",
     "MapIndex": 154,
     "Location": {

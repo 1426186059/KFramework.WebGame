@@ -1,4 +1,4 @@
-欢迎来到 Crystal Mir 2（由 Suprcode 发布）。
-请关注 JevLomcn 的 github 以获取最新数据库更新。
+欢迎来到水晶传奇2（由 Suprcode 发布）。
+请关注 JevLomcn 的 GitHub 以获取最新数据库更新。
 www.LOMCN.net
 现已运行于 Net.8
