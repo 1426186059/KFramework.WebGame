@@ -25,11 +25,11 @@ namespace WebGame.Mir2.MonoGame.Client
             // Initialize 时设备已就绪，Game.SpriteBatch 必然可用。
             DXManager.Initialize(GraphicsDevice, Game.SpriteBatch);
             Window.SizeChanged += () => CMain.OnWindowSizeChanged(Window.Width, Window.Height);
-            KSceneMgr.SetMainScene(new KMainScene());
         }
 
         protected override async Task LoadContentAsync()
         {
+            await KSceneMgr.SetMainSceneAsync(new KMainScene()).ConfigureAwait(false);
             await CMain.Init().ConfigureAwait(false);
         }
 

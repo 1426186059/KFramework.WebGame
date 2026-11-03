@@ -104,24 +104,11 @@ namespace MirEngine
     /// </summary>
     public static class FontFactory
     {
-        /// <summary>当前设备。DXManager.Initialize 时赋值一次。</summary>
-        public static GraphicsDevice Device { get; set; }
-
         private static readonly Dictionary<string, SpriteFont> _cache = new Dictionary<string, SpriteFont>();
-        private static GraphicsDevice _cacheDevice;
 
         public static SpriteFont Resolve(Font font)
         {
             if (font == null) return null;
-
-            GraphicsDevice device = Device;
-            if (device == null) return null;
-
-            if (!ReferenceEquals(_cacheDevice, device))
-            {
-                _cache.Clear();
-                _cacheDevice = device;
-            }
 
             string key = $"{font.Name}|{font.Size}|{(int)font.Unit}|{(int)font.Style}";
             if (_cache.TryGetValue(key, out SpriteFont cached)) return cached;
@@ -132,7 +119,7 @@ namespace MirEngine
                 family.IndexOf("monospace", StringComparison.OrdinalIgnoreCase) < 0)
                 family += ", sans-serif";
 
-            SpriteFont sf = new SpriteFont(device, font.GetPixelSize(), family, font.Bold);
+            SpriteFont sf = new SpriteFont(font.GetPixelSize(), family, font.Bold);
             _cache[key] = sf;
             return sf;
         }
