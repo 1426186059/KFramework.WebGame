@@ -2799,6 +2799,9 @@ namespace Server.MirEnvir
                 MonsterInfoList = LoadConfigList<MonsterInfo>(baseDir, "MonsterInfo.json");
                 NPCInfoList = LoadConfigList<NPCInfo>(baseDir, "NPCInfo.json");
                 QuestInfoList = LoadConfigList<QuestInfo>(baseDir, "QuestInfo.json");
+                // JSON 反序列化走无参构造函数，不会触发 QuestInfo.LoadInfo()，
+                // 需手动读取 FileName 指向的 .txt，填充 Description/任务/奖励等。
+                foreach (var quest in QuestInfoList) quest.LoadInfo();
                 DragonInfo = LoadConfig<DragonInfo>(baseDir, "DragonInfo.json");
                 MagicInfoList = LoadConfigList<MagicInfo>(baseDir, "MagicInfo.json");
                 if (LoadVersion >= 63)
