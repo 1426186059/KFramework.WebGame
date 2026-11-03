@@ -1,0 +1,18 @@
+[@Description]你听说过{甘露茶/LightSteelBlue}吗？那可是最好的茶
+……过。我也想尝尝，可这东西得来不易
+去取。你能请{工匠大娘/LimeGreen}
+给我做点{甘露茶/LightSteelBlue}好吗？
+ 
+[@TaskDescription]
+[@Completion]
+[@KillTasks]
+[@ItemTasks]
+[@CarryItems]
+[@FixedRewards]
+[@SelectRewards]
+[@ExpReward]439
+
+[@GoldReward]580
+
+// Pickup - 
+// Hand In - CraftsLady_Alice 0 321 265

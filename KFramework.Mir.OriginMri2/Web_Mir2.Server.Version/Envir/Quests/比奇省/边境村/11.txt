@@ -1,0 +1,23 @@
+[@Description]{助手简/LimeGreen}派你来的？
+只要是她推荐的，我都不能拒绝
+推荐的，但我不能随便收
+做我的弟子。你必须通过我的考验。
+
+[@TaskDescription]消灭10只{奥玛/Crimson}和{抓挠猫/Crimson}
+
+[@Completion]
+[@KillTasks]奥玛 10
+抓挠猫 10
+
+[@ItemTasks]
+[@CarryItems]
+[@FixedRewards]老懒汉
+火球
+
+[@SelectRewards]
+[@ExpReward]180
+
+[@GoldReward]45
+
+// Pickup - ArchMage_Robert 0 8 11
+// Hand In - ArchMage_Robert 0 8 11

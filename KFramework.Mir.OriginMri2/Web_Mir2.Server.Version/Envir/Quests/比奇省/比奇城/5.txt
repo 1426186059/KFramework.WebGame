@@ -1,0 +1,18 @@
+[@Description]你来得太及时了。{蒙村斥候/LimeGreen}刚才
+之前来过，给你留了口信。请去
+前往{酒馆/Yellow}
+
+[@TaskDescription]去{酒馆/Yellow}找{蒙村斥候/LimeGreen}谈谈
+
+[@Completion]
+[@KillTasks]
+[@ItemTasks]
+[@CarryItems]
+[@FixedRewards]
+[@SelectRewards]
+[@ExpReward]1104
+
+[@GoldReward]1200
+
+// Pickup - 
+// Hand In - MongchonScout_Brian 0100 4 10

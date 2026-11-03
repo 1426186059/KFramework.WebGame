@@ -1,0 +1,18 @@
+[@Description]哦，你好，旅人。
+你听说过{蒙村省/Yellow}吗？
+他们亟需帮助。
+
+[@TaskDescription]在{蒙村省/Yellow}与{埃德温/LimeGreen}交谈。
+
+[@Completion]
+[@KillTasks]
+[@ItemTasks]
+[@CarryItems]
+[@FixedRewards]
+[@SelectRewards]
+[@ExpReward]2534
+
+[@GoldReward]4750
+
+// Pickup - Teleport_Harrison 0 291 296
+// Hand In - Transport_Edwin 3 365 340

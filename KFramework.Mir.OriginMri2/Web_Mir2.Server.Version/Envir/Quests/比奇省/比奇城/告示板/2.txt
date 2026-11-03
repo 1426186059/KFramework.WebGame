@@ -1,0 +1,18 @@
+[@Description]比奇城悬赏已提交。
+
+[@TaskDescription]前往{奥玛洞穴/Yellow}收集{骷髅骨/LightSteelBlue}。
+
+[@Completion]
+[@KillTasks]
+[@ItemTasks]骷髅骨 15
+
+[@FlagTasks]
+[@CarryItems]
+[@FixedRewards]
+[@SelectRewards]
+[@ExpReward]6500
+
+[@GoldReward]5000
+
+// Pickup - BichonWall_Board 0 334 259
+// Hand In - BichonWall_Board 0 334 259

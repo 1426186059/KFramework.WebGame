@@ -1,0 +1,20 @@
+[@Description]能否请你帮个忙。你能
+把这些交给{毒蛇山谷/Yellow}的{布拉德利/LimeGreen}吗？
+他的{修理油/LightSteelBlue}用光了。可他还急需它们
+去修理武器。请尽快送去。
+
+[@TaskDescription]把{修理油/LightSteelBlue}交给{布拉德利/LimeGreen}。
+
+[@Completion]
+[@KillTasks]
+[@ItemTasks]
+[@CarryItems]修理油 2
+
+[@FixedRewards]
+[@SelectRewards]
+[@ExpReward]411
+
+[@GoldReward]600
+
+// Pickup - Blacksmith_Bill 0 302 221
+// Hand In - Merchant_Bradley 0120 7 8

@@ -1,0 +1,19 @@
+[@Description]这是你要的茶。请把这
+趁还没凉。
+
+[@TaskDescription]把{甘露茶/LightSteelBlue}交给{米尔向导/LimeGreen}
+
+[@Completion]
+[@KillTasks]
+[@ItemTasks]
+[@CarryItems]甘露茶 2
+
+[@FixedRewards]钢扣
+
+[@SelectRewards]
+[@ExpReward]439
+
+[@GoldReward]145
+
+// Pickup - CraftsLady_Alice 0 321 265 
+// Hand In - 

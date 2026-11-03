@@ -1,0 +1,20 @@
+[@Description]你好，旅人……
+{屠夫约翰/LimeGreen}正在寻求帮手。
+我想这是件要紧事。
+
+[@TaskDescription]在坐标293:603与{屠夫约翰/LimeGreen}对话
+
+[@Completion]
+[@KillTasks]
+[@ItemTasks]
+[@CarryItems]
+[@FixedRewards]
+[@SelectRewards]锋利匕首
+坚韧豪剑
+僵硬木弓
+
+[@ExpReward]10
+
+[@GoldReward]
+// Pickup - 助手简 0 284 606
+// Hand In - Merchant_John 0 292 604

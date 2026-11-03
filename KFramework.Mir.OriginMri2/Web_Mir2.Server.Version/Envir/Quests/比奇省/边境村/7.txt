@@ -1,0 +1,20 @@
+[@Description]你好，年轻的旅人。你听说过
+本区域的战士教头？
+他可是所有战士的宗师。我听说
+他最近一直在物色新弟子。
+那也许只是个谣言。
+
+[@TaskDescription]在坐标110:317与{瓦师傅/LimeGreen}交谈
+
+[@Completion]
+[@KillTasks]
+[@ItemTasks]
+[@CarryItems]
+[@FixedRewards]
+[@SelectRewards]
+[@ExpReward]48
+
+[@GoldReward]60
+
+// Pickup - 助手简 0 284 606
+// Hand In - 瓦师傅 0 110 317

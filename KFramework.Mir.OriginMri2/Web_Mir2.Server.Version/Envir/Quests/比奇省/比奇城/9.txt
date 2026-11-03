@@ -1,0 +1,24 @@
+[@Description]{奥玛洞穴/Yellow}位于
+{比奇省/Yellow}。这个洞穴里满是强大的
+怪物。那里很黑，简直像迷宫
+里面。你觉得你准备好展现你的
+勇气吗？
+
+[@TaskDescription]在{奥玛洞穴/Yellow}击杀{骷髅兵/Crimson}并收集
+{骷髅骨/LightSteelBlue}
+
+[@Completion]
+[@KillTasks]
+[@ItemTasks]骷髅骨 15
+
+[@CarryItems]
+[@FixedRewards]
+[@SelectRewards]锋利剑
+锋利三叉戟
+锋利弯刀
+锋利军刀
+坚韧弓
+
+[@ExpReward]1400
+
+[@GoldReward]350

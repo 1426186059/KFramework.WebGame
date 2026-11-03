@@ -1,0 +1,19 @@
+[@Description]你是想让我给你做杯{甘露茶/LightSteelBlue}吗？嗯……
+我的材料用光了。你觉得你能
+帮我拿10个{食人叶/LightSteelBlue}和10个{食人种子/LightSteelBlue}好吗？
+
+[@TaskDescription]从……收集10个{食人叶/LightSteelBlue}和10个{食人种子/LightSteelBlue}
+{食人花/Crimson}
+
+[@Completion]
+[@KillTasks]
+[@ItemTasks]食人叶 10
+食人种子 10
+
+[@CarryItems]
+[@FixedRewards]
+[@SelectRewards]
+[@ExpReward]
+[@GoldReward]
+// Pickup - CraftsLady_Alice 0 321 265
+// Hand In - CraftsLady_Alice 0 321 265

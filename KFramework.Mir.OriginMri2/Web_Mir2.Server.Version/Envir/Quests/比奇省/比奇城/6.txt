@@ -1,0 +1,23 @@
+[@Description]你好，旅人。你在这一带可是小有名气。
+这里。你也能帮帮我吗？
+药品的需求一直在增加，
+而我们正缺少炼制
+药品。我们尤其缺{蛛网/LightSteelBlue}
+可从{吐毒蜘蛛/Crimson}身上找到，你能
+请帮我弄点来好吗？
+
+[@TaskDescription]请从{吐毒蜘蛛/Crimson}身上收集10个{蛛网/LightSteelBlue}
+
+[@Completion]
+[@KillTasks]
+[@ItemTasks]蛛网 10
+
+[@CarryItems]
+[@FixedRewards]
+[@SelectRewards]
+[@ExpReward]500
+
+[@GoldReward]500
+
+// Pickup - Alchemist_Samuel 0 324 291
+// Hand In - Alchemist_Samuel 0 324 291

@@ -1,0 +1,22 @@
+[@Description]外面有一些名为{奥玛/Crimson}的生物
+{比奇城/Yellow}以及其他城镇。
+它们非常强大且凶暴。它们
+一直在袭击商人。嘿，你能
+能帮我们消灭那个威胁吗？
+
+[@TaskDescription]请猎杀{奥玛/Crimson}并带回10个
+{奥玛之牙/LightSteelBlue}
+
+[@Completion]
+[@KillTasks]
+[@ItemTasks]奥玛之牙 10
+
+[@CarryItems]
+[@FixedRewards]
+[@SelectRewards]青铜短剑
+青铜豪剑
+麋鹿木弓
+
+[@ExpReward]300
+
+[@GoldReward]83

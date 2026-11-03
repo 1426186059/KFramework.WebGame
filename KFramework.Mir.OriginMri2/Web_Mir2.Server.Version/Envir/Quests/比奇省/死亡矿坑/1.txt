@@ -1,7 +1,7 @@
 [@Description]
-你帮了 {Bichon/Yellow} 许多人大忙。
+你帮了 {比奇/Yellow} 许多人大忙。
 你还有空帮我吗？很久以前，我有个
-一同打猎的朋友。有一天我们去了 {BichonDeadMine/Yellow}，
+一同打猎的朋友。有一天我们去了 {比奇死亡矿坑/Yellow}，
 却被危险的生物包围。我们试图逃脱，但
 它们实在太多了。我的朋友在战斗中受伤，
 决定留下断后，让我出去搬救兵。我本想
@@ -11,7 +11,7 @@
 
 [@TaskDescription]
 试着寻找 {Vincent's/LimeGreen} 的朋友，他最后现身在
-{B2 of DeadMine/Yellow}。
+{死亡矿坑B2层/Yellow}。
 
 [@Completion]
 
@@ -33,3 +33,4 @@
 
 // Pickup - 
 // Hand In - OldSkeleton D404 104 101
+
