@@ -78,7 +78,7 @@ namespace Client.MirControls
             DrawChildControls();
             AfterDrawControl();
 
-            DXManager.Sprite.Flush();
+            DXManager.FlushSprite();
 
             DXManager.SetSurface(oldSurface);
             TextureValid = true;

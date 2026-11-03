@@ -872,7 +872,7 @@ namespace Client.MirScenes
                 }
             }
 
-            DXManager.Sprite.Flush();
+            DXManager.FlushSprite();
             float oldOpacity = DXManager.Opacity;
             DXManager.SetOpacity(0.4F);
 

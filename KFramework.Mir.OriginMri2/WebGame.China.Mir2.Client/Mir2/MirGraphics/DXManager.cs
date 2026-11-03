@@ -144,12 +144,13 @@ namespace Client.MirGraphics
         //   Sprite.End()         收批（幂等）—— 换混合（SetBlend）、异常恢复（AttemptRecovery）、帧末各调一次；
         //   Sprite.Flush()       提交已排队绘制但不收批 —— 切渲染目标（SetSurface）前调用。
         // 本引擎 SpriteBatch 严格配对、且材质/投影在 Begin 时捕获，故用下面三个方法等价实现：
-        //   BeginSprite —— 材质 / 世界变换没变则忽略（= 原版容忍的重复 Begin）；变了先 End 再 Begin（原版这一步在 SetBlend 里）。
-        //   EndSprite   —— 收批；FlushSprite —— 提交（本引擎只能靠 End 提交）。
+        //   BeginSprite —— 材质 / 世界变换没变则忽略（= 原版容忍的重复 Begin）；变了先 AutoEndBatch 再 Begin（原版这一步在 SetBlend 里）。
+        //   EndSprite   —— 收批（= AutoEndBatch）；FlushSprite —— 提交（本引擎只能靠 End 提交，故同 EndSprite）。
+        // 原版 Sprite.Flush()（提交不收批）在本引擎的对应原语就是 SpriteBatch.AutoEndBatch：批活跃才提交、否则 no-op；
+        // 收/提批不再自维护 _batchBegun 标志，改由 _batchMaterial 是否非 null 推断开批状态（Begin 置值、End/Flush 置 null）。
         //
         // 安全性依据：所有离屏绘制（MirLabel 文本、MirTextBox、控件/层烘焙）都经 DXManager.SetSurface
-        // 切目标，而 SetSurface 会先 FlushSprite，故不会出现"同目标内批次交错提交"的乱序。
-        private static bool _batchBegun;
+        // 切目标，而 SetSurface 会先 FlushSprite（→ AutoEndBatch），故不会出现"同目标内批次交错提交"的乱序。
         private static KFramework.MonoGame.Material _batchMaterial;
         private static KFramework.MonoGame.Matrix4x4? _batchTransform;
 
@@ -320,10 +321,10 @@ void main()
         public static void BeginSprite(KFramework.MonoGame.Material material, KFramework.MonoGame.Matrix4x4? transform = null)
         {
             material = ApplyCurrentEffect(material);
-            if (_batchBegun && ReferenceEquals(_batchMaterial, material) && Nullable.Equals(_batchTransform, transform)) return;
-            if (_batchBegun) Batch.End();
+            // 材质 / 世界变换都没变 → 沿用当前批（对齐原版容忍的重复 Begin）。
+            if (_batchMaterial != null && ReferenceEquals(_batchMaterial, material) && Nullable.Equals(_batchTransform, transform)) return;
+            Batch.AutoEndBatch();   // 安全收掉旧批（未开批则为 no-op，= 原版 Sprite.Flush 的"提交不收批"语义）
             Batch.Begin(material, KFramework.MonoGame.SpriteSortMode.Deferred, transform);
-            _batchBegun = true;
             _batchMaterial = material;
             _batchTransform = transform;
         }
@@ -335,9 +336,9 @@ void main()
         // 对齐 Sprite.End()：收批（幂等）。切渲染目标 / 帧末 / 异常恢复都要调用。
         public static void EndSprite()
         {
-            if (!_batchBegun) return;
-            Batch.End();
-            _batchBegun = false;
+            Batch.AutoEndBatch();   // AutoEndBatch 已封装"批活跃才 End"，无需再自维护 _batchBegun 标志
+            _batchMaterial = null;
+            _batchTransform = null;
         }
 
         // 对齐 Sprite.Flush()：提交当前批次（本引擎只能靠 End 提交，故等价于 EndSprite）。

@@ -782,7 +782,7 @@ namespace Client.MirControls
         {
             if (!Border || BorderInfo == null)
                 return;
-            DXManager.Sprite.Flush();
+            DXManager.FlushSprite();
             DXManager.Line.Draw(BorderInfo, _borderColour);
         }
         protected void AfterDrawControl()
