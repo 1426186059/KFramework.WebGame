@@ -1,112 +1,195 @@
+using System.Collections.Generic;
 using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 
 namespace KFramework.Test.WebGL20.Tests
 {
     /// <summary>
-    /// 混合测试：把一张"半透明黑"图（RGB=0,0,0，A&lt;255）以不同的 BlendState 画到棋盘格背景上，
-    /// 直观对比它在各种混合下"到底是什么颜色"。
-    /// <list type="bullet">
-    ///   <item><description>AlphaBlend / NonPremultiplied：白底被 a 加权压暗 → 灰色（标准透明）。</description></item>
-    ///   <item><description>Additive / AdditiveFull：黑色加性无贡献 → 背景几乎不动（图"看不见"）。</description></item>
-    ///   <item><description>Multiply：背景 × 黑(0) → 整格黑。</description></item>
-    ///   <item><description>Opaque：关闭混合、整像素覆盖 → 纯黑（忽略 alpha）。</description></item>
-    /// </list>
+    /// 混合最小对比：只测三种情况，全程只用「默认混合」。下层永远比上层大，混合区域居中、四周是纯底层，区分明显。
+    /// <para>上层用 <c>Bundles/lefttopbg.png</c>（半透明黑图，RGB=0, A&lt;255）叠在不透明纯色大底上。</para>
+    /// <para>① 正常：大底 + 小上层直接画到屏幕，默认混合 = <see cref="BlendState.NonPremultiplied"/>（源非预乘原色，alpha 直线）。</para>
+    /// <para>② 两个 RT：底层 RT + 上层 RT 分别用 <see cref="BlendState.AlphaBlend"/> 合成到屏幕（RT 内已是预乘 rgb，颜色源=One 读取）。</para>
+    /// <para>③ 嵌套 RT：把上层 RT 绘制进底层 RT（在 RT 上再合成一层），最终只呈现底层 RT。
+    /// 关键：底层 RT 激活时画上层 RT 也要用 <see cref="BlendState.AlphaBlend"/> 读预乘，不能再用 NonPremultiplied 二次预乘。</para>
+    /// <para>三种情况最终结果应当完全一致（半透明黑把大底中央压暗）。</para>
     /// </summary>
     public sealed class BlendTestScene : DemoScene
     {
-        public override string Title => "混合测试：lefttopbg 半透明黑 × 各 BlendState";
+        private const int Big = 256;   // 底层 RT / 底层纹理边长（大）
+        private const int Small = 128; // 上层 RT 边长（小，明显小于底层）
+
+        private Texture2D? _tex;       // 上层：Bundles/lefttopbg.png（半透明黑图）
+        private Texture2D? _bottomTex; // 下层：不透明纯色大底（土色，衬托半透明）
+        private RenderTarget2D? _rtBottom;  // ②/③ 底层 RT（大）
+        private RenderTarget2D? _rtTop;     // ②/③ 上层 RT（小）
+        private RenderTarget2D? _rtCombined;// ③ 嵌套合成后的底层 RT
+        private bool _rtDirty = true;
+
+        public override string Title => "混合对比：① 正常直绘 / ② 两个RT / ③ 嵌套RT";
 
         protected override string Description
-            => "同一张半透明黑图(RGB=0,0,0, A<255)以不同混合画到棋盘底；白底→灰=标准透明，加性→看不见，乘性→黑，Opaque→纯黑";
-
-        // 每个格子：名称 + 混合状态 + 一句话说明（在棋盘底上的可见颜色）。
-        // 土色纯底色：便于看清半透明黑在不同混合下的颜色（替代棋盘格）。
-        private static readonly Color EarthColor = new Color(168, 124, 80);
-
-        private static readonly (string Name, BlendState Blend, string Note)[] Modes =
-        [
-            ("AlphaBlend(预乘)", BlendState.AlphaBlend, "土底被a压暗→深土"),
-            ("NonPremultiplied", BlendState.NonPremultiplied, "标准透明→深土"),
-            ("Old_NonPremultiplied", BlendState.Old_NonPremultiplied, "颜色同深土(α²仅坑烘焙)"),
-            ("Additive", BlendState.Additive, "黑无贡献→图看不见"),
-            ("AdditiveFull", BlendState.AdditiveFull, "黑+土底→不变"),
-            ("Multiply", BlendState.Multiply, "土底×黑→整格黑"),
-            ("Opaque", BlendState.Opaque, "关混合→纯黑(忽略a)"),
-        ];
-
-        private Texture2D? _tex;
-        private Texture2D? _white;
-
+            => "只用默认混合：直绘=NonPremultiplied；合成RT=AlphaBlend。下层比上层大，混合居中。三种情况结果应一致。";
 
         public override async Task LoadContentAsync()
         {
             await base.LoadContentAsync();
             var mBundle = await ContentManager.Default.LoadBundleAsync("Bundles");
             _tex = mBundle.LoadTexture("Bundles/lefttopbg.png");
+            _bottomTex = Device.CreateTexture(Big, Big, Solid(168, 124, 80, 255)); // 不透明土色大底
+            _rtBottom = new RenderTarget2D(Device, Big, Big);
+            _rtTop = new RenderTarget2D(Device, Small, Small);
+            _rtCombined = new RenderTarget2D(Device, Big, Big);
         }
 
         public override void Draw()
         {
             SpriteBatch batch = Batch;
 
-            _white ??= Device.CreateTexture(1, 1, new byte[] { 255, 255, 255, 255 });
-
-            float top = 92f;
-            float gapX = 16f, gapY = 64f;
-            // 自适应列数（上限 4 列，避免每图被压得太小），行数随之；单图尽量大
-            int cols = Math.Min(4, Modes.Length);
-            cols = Math.Max(1, Math.Min(cols, (int)((Device.Viewport.Width - 40f) / 300f)));
-            int rows = (Modes.Length + cols - 1) / cols;
-            float availW = Device.Viewport.Width - 40f - (cols - 1) * gapX;
-            float availH = (Device.Viewport.Height - 40f) - top - (rows - 1) * gapY;
-            float cellW = availW / cols;
-            float cellH = Math.Min(availH / rows, cellW * 0.85f);
-
-            // —— 背景层（默认混合，不透明）：画棋盘底 + 名称条 ——
-            batch.Begin();
-            DrawHeader(batch);
-            for (int i = 0; i < Modes.Length; i++)
-            {
-                var (x, y) = Cell(i, top, cellW, cellH, gapX, gapY, cols);
-                batch.Draw(_white, new Rectangle((int)x, (int)y, (int)cellW, (int)cellH), null, EarthColor);
-            }
-            DrawFooter(batch);
-            batch.End();
-
-            // —— 混合层：每个格子用对应 BlendState 画测试图（与棋盘底混合）——
-            if (_tex != null)
-            {
-                for (int i = 0; i < Modes.Length; i++)
-                {
-                    var (x, y) = Cell(i, top, cellW, cellH, gapX, gapY, cols);
-                    batch.Begin(SpriteSortMode.Deferred, Modes[i].Blend);
-                    batch.Draw(_tex, new Rectangle((int)x, (int)y, _tex.Width, _tex.Height), null, Color.White);
-                    batch.End();
-                }
-            }
-            else
+            if (_tex == null || _bottomTex == null || _rtBottom == null || _rtTop == null || _rtCombined == null)
             {
                 batch.Begin();
-                batch.DrawString(Font, "正在加载测试图 lefttopbg.png ...", new Vector2(20f, top), Color.White);
+                DrawHeader(batch);
+                batch.DrawString(Font, "正在加载 Bundles/lefttopbg.png ...", new Vector2(20f, 110f), Color.White);
+                DrawFooter(batch);
                 batch.End();
+                return;
             }
 
-            // —— 标签层（默认混合，画在混合图之上）：名称 + 说明 ——
+            if (_rtDirty) { BakeRTs(); _rtDirty = false; }
+
+            float top = 96f;
+            float cell = 300f, gap = 46f;
+            float x0 = 30f;
+            Rectangle rc1 = new((int)x0, (int)top, (int)cell, (int)cell);
+            Rectangle rc2 = new((int)(x0 + cell + gap), (int)top, (int)cell, (int)cell);
+            Rectangle rc3 = new((int)(x0 + 2 * (cell + gap)), (int)top, (int)cell, (int)cell);
+
+            // 上层小图在小矩形内居中（显示尺寸 = 底层显示的一半，保证「下层比上层大」）
+            int smallView = (int)(cell / 2);
+            int off = (int)((cell - smallView) / 2);
+            Rectangle smallAt(Rectangle big) => new(big.X + off, big.Y + off, smallView, smallView);
+
+            // —— ① 正常直绘（默认混合 NonPremultiplied）——
+            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            batch.Draw(_bottomTex, rc1, null, Color.White); // 大底
+            batch.Draw(_tex, smallAt(rc1), null, Color.White); // 小上层（居中）
+            batch.End();
+
+            // —— ② 两个 RT 分别合成到屏幕（RT 内预乘，合成用 AlphaBlend）——
+            batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            batch.Draw(_rtBottom, rc2, null, Color.White);
+            batch.Draw(_rtTop, smallAt(rc2), null, Color.White);
+            batch.End();
+
+            // —— ③ 嵌套 RT：最终只呈现底层 RT（上层 RT 已合成进其中）——
+            batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            batch.Draw(_rtCombined, rc3, null, Color.White);
+            batch.End();
+
+            // —— 标签与说明（自动折行，避免横向重叠）——
             batch.Begin();
-            for (int i = 0; i < Modes.Length; i++)
-            {
-                var (x, y) = Cell(i, top, cellW, cellH, gapX, gapY, cols);
-                batch.DrawString(Font, Modes[i].Name, new Vector2(x, y - 19f), new Color(126, 200, 255));
-                batch.DrawString(Font, Modes[i].Note, new Vector2(x, y + cellH + 4f), new Color(210, 220, 235));
-            }
+            DrawHeader(batch);
+
+            float lh = Font.LineSpacing + 4f;
+            float titleY = top + cell + 8f;
+            float descY = titleY + lh + 4f;
+            float colW = cell;
+
+            // 列标题（短，单行）
+            batch.DrawString(Font, "① 正常直绘", new Vector2(x0, titleY), new Color(255, 206, 110));
+            batch.DrawString(Font, "② 两个RT", new Vector2(x0 + cell + gap, titleY), new Color(255, 206, 110));
+            batch.DrawString(Font, "③ 嵌套RT", new Vector2(x0 + 2 * (cell + gap), titleY), new Color(255, 206, 110));
+
+            // 列说明（折行，限制在本列宽度内）
+            DrawWrapped(batch, "大底 + 小上层 直接画屏幕（NonPremultiplied）", new Vector2(x0, descY), Color.LightGray, colW);
+            DrawWrapped(batch, "底层RT + 上层RT 分别合成到屏幕（AlphaBlend）", new Vector2(x0 + cell + gap, descY), Color.LightGray, colW);
+            DrawWrapped(batch, "把上层RT绘进底层RT，最终只呈现底层RT", new Vector2(x0 + 2 * (cell + gap), descY), Color.LightGray, colW);
+
+            // 底部总结（横跨，折行）
+            float sumY = descY + 3 * lh + 12f;
+            float sumW = (x0 + 3 * (cell + gap)) - x0 - 10f;
+            DrawWrapped(batch,
+                "下层(大)比上层(小)大，混合居中；三种情况结果应完全一致（半透明黑压暗大底中央）。",
+                new Vector2(x0, sumY), new Color(150, 200, 255), sumW);
+            DrawWrapped(batch,
+                "区别：直绘默认 = NonPremultiplied；合成 RT = AlphaBlend（RT 内预乘 rgb，颜色源=One 读，不能二次预乘）。",
+                new Vector2(x0, sumY + 2 * lh + 6f), Color.LightGray, sumW);
+
+            DrawFooter(batch);
             batch.End();
         }
 
-        private static (float X, float Y) Cell(int i, float top, float cellW, float cellH, float gapX, float gapY, int cols)
+        // 按最大宽度折行：以空格分词，超过 maxW 则换行。
+        private static List<string> Wrap(IFont font, string text, float maxW)
         {
-            int r = i / cols, c = i % cols;
-            return (20f + c * (cellW + gapX), top + r * (cellH + gapY));
+            var lines = new List<string>();
+            var sb = "";
+            foreach (string word in text.Split(' '))
+            {
+                string test = sb.Length == 0 ? word : sb + " " + word;
+                if (font.Measure(test).X > maxW && sb.Length > 0)
+                {
+                    lines.Add(sb);
+                    sb = word;
+                }
+                else sb = test;
+            }
+            if (sb.Length > 0) lines.Add(sb);
+            return lines;
+        }
+
+        private void DrawWrapped(SpriteBatch b, string text, Vector2 pos, Color color, float maxW)
+        {
+            float lh = Font.LineSpacing + 4f;
+            foreach (string ln in Wrap(Font, text, maxW))
+            {
+                b.DrawString(Font, ln, pos, color);
+                pos.Y += lh;
+            }
+        }
+
+        // 烘焙 RT：底层（大土色）、上层（小 lefttopbg）、以及「嵌套合成」的底层 RT。
+        // 全部用 NonPremultiplied 烘焙（保证 RT 内 alpha 直线、颜色预乘）；嵌套那一步改用 AlphaBlend 读预乘上层 RT。
+        private void BakeRTs()
+        {
+            // 底层 RT（大，土色，不透明）
+            Device.SetRenderTarget(_rtBottom);
+            Device.Clear(Color.Transparent);
+            Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            Batch.Draw(_bottomTex, new Rectangle(0, 0, Big, Big), null, Color.White);
+            Batch.End();
+            Device.SetRenderTarget(null);
+
+            // 上层 RT（小，lefttopbg 半透明）
+            Device.SetRenderTarget(_rtTop);
+            Device.Clear(Color.Transparent);
+            Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            Batch.Draw(_tex, new Rectangle(0, 0, Small, Small), null, Color.White);
+            Batch.End();
+            Device.SetRenderTarget(null);
+
+            // 嵌套 RT：土色大底 + 把上层 RT 绘制进底层 RT（在 RT 上再合成一层）
+            Device.SetRenderTarget(_rtCombined);
+            Device.Clear(Color.Transparent);
+            Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            Batch.Draw(_bottomTex, new Rectangle(0, 0, Big, Big), null, Color.White);
+            Batch.End();
+            // 底层 RT 仍激活：用 AlphaBlend 把上层 RT（预乘 rgb）合成进来
+            int m = (Big - Small) / 2;
+            Batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            Batch.Draw(_rtTop, new Rectangle(m, m, Small, Small), null, Color.White);
+            Batch.End();
+            Device.SetRenderTarget(null);
+        }
+
+        private static byte[] Solid(byte r, byte g, byte b, byte a)
+        {
+            byte[] d = new byte[Big * Big * 4];
+            for (int i = 0; i < d.Length; i += 4)
+            {
+                d[i] = r; d[i + 1] = g; d[i + 2] = b; d[i + 3] = a;
+            }
+            return d;
         }
     }
 }
