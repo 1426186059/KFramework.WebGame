@@ -1,8 +1,8 @@
 [@Description]
-你好。最近{MongchonProvince/Yellow}的昆虫太多了。夜里吵得我无法入睡。你能去猎杀这些昆虫吗？
+你好。最近{盟重/Yellow}的昆虫太多了。夜里吵得我无法入睡。你能去猎杀这些昆虫吗？
 
 [@TaskDescription]
-前往{Stone Tomb/Yellow}消灭 10 只{黑蛆/Crimson}和{楔蛾/Crimson}。
+前往{石墓/Yellow}消灭 10 只{黑蛆/Crimson}和{楔蛾/Crimson}。
 
 [@Completion]
 

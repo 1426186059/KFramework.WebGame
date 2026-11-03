@@ -1,8 +1,8 @@
 [@Description]
-从{Mine/Yellow}传来一股暗黑而邪恶的气息。
+从{矿坑/Yellow}传来一股暗黑而邪恶的气息。
 
 [@TaskDescription]
-调查{SerpentDeadMine/Yellow}中邪恶的源头。
+调查{毒蛇矿坑/Yellow}中邪恶的源头。
 
 [@Completion]
 

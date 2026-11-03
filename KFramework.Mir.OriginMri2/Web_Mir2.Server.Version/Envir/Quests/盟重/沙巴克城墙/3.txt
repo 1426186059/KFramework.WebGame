@@ -1,5 +1,5 @@
 [@Description]
-请前往 {SabukWall/Yellow} 与 {Mr.Wang/LimeGreen} 交谈。
+请前往 {沙巴克城墙/Yellow} 与 {王先生/LimeGreen} 交谈。
 
 [@TaskDescription]
 

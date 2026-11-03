@@ -10,8 +10,8 @@
 他总是随身戴着那条项链。
 
 [@TaskDescription]
-试着寻找 {Vincent's/LimeGreen} 的朋友，他最后现身在
-{死亡矿坑B2层/Yellow}。
+试着寻找 {文森特/LimeGreen} 的朋友，他最后现身在
+{死亡矿坑2层/Yellow}。
 
 [@Completion]
 

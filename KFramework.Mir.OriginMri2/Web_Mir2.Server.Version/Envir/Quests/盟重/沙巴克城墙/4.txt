@@ -1,8 +1,8 @@
 [@Description]
-这附近有{Hidden Entrances/Yellow}。它们通向某种地下城。有传言说每个入口处都有一些石柱。
+这附近有{隐藏入口/Yellow}。它们通向某种地下城。有传言说每个入口处都有一些石柱。
 
 [@TaskDescription]
-找到{Hidden Entrances/Yellow}并搜寻那些石柱。
+找到{隐藏入口/Yellow}并搜寻那些石柱。
 
 [@Completion]
 

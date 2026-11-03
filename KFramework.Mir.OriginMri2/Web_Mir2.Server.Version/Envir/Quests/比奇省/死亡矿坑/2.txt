@@ -2,7 +2,7 @@
 你好，旅行者，几天前一只{僵尸/Crimson}杀死了我的宠物。请帮我向{僵尸/Crimson}复仇！
 
 [@TaskDescription]
-在{BichonDeadMines/Yellow}消灭 30 只{Shaman 僵尸/Crimson}。
+在{比奇死亡矿坑/Yellow}消灭 30 只{萨满僵尸/Crimson}。
 
 [@Completion]
 

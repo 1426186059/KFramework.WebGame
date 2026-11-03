@@ -1,8 +1,8 @@
 [@Description]
-你好，米尔人，{Stone Temple/Yellow}深处潜伏着更黑暗的邪恶。在层层石壁之中，有一块石头据说能开启通往{Ancient Layer/Yellow}的通道。
+你好，米尔人，{石墓/Yellow}深处潜伏着更黑暗的邪恶。在层层石壁之中，有一块石头据说能开启通往{远古矿层/Yellow}的通道。
 
 [@TaskDescription]
-在{Stone Temple/Yellow}中找到那块石头。
+在{石墓/Yellow}中找到那块石头。
 
 [@Completion]
 

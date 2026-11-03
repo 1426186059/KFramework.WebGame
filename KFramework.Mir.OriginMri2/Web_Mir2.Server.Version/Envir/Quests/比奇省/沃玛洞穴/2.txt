@@ -1,8 +1,8 @@
 [@Description]
-这些符号似乎有规律可循……也许{CastleBichon/Yellow}里有人能解读这些远古符号。
+这些符号似乎有规律可循……也许{比奇城堡/Yellow}里有人能解读这些远古符号。
 
 [@TaskDescription]
-回到{CastleBichon/Yellow}，打听这些符号的来历。
+回到{比奇城堡/Yellow}，打听这些符号的来历。
 
 [@Completion]
 

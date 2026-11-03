@@ -1,8 +1,8 @@
 [@Description]
-旅行者，请回到{SerpentDeadMines/Yellow}，完成{Hidden卷轴/LightSteelBlue}上记载的任务。
+旅行者，请回到{毒蛇矿坑/Yellow}，完成{隐藏卷轴/LightSteelBlue}上记载的任务。
 
 [@TaskDescription]
-消灭{腐烂巫医僵尸's/Crimson}，并从{高大食尸鬼/Crimson}身上取回{心之Dead/LightSteelBlue}。
+消灭{腐烂巫医僵尸/Crimson}，并从{高大食尸鬼/Crimson}身上取回{心之亡/LightSteelBlue}。
 
 [@Completion]
 

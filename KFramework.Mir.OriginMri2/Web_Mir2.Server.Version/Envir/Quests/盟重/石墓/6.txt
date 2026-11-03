@@ -1,5 +1,5 @@
 [@Description]
-真的吗？你去过{Ancient Layer/Yellow}？你能回去通过击杀{AncientSnakeScorpion's/Crimson}收集 17 个{血丹/LightSteelBlue}吗？
+真的吗？你去过{远古矿层/Yellow}？你能回去通过击杀{远古蛇蝎/Crimson}收集 17 个{血丹/LightSteelBlue}吗？
 
 [@TaskDescription]
 

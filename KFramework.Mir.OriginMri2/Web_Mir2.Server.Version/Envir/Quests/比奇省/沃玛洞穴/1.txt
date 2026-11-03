@@ -2,7 +2,7 @@
 一块神秘的石头……刻着未知的远古符号。一定有什么方法能解读这些符号。
 
 [@TaskDescription]
-在{OmaCavern/Yellow}寻找{远古Scyther/LightSteelBlue}。
+在{沃玛洞穴/Yellow}寻找{远古镰/LightSteelBlue}。
 
 [@Completion]
 

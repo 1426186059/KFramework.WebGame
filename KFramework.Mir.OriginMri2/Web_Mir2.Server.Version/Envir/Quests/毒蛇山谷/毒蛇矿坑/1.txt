@@ -1,5 +1,5 @@
 [@Description]
-旅行者。请进入{SerpentDeadMine/Yellow}，消除那里的威胁。
+旅行者。请进入{毒蛇矿坑/Yellow}，消除那里的威胁。
 
 [@TaskDescription]
 消灭 10 只{鬼僵尸/Crimson}和{暗祭司僵尸/Crimson}。

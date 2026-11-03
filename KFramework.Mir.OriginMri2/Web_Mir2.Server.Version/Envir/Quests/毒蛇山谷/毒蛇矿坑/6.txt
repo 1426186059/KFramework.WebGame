@@ -2,7 +2,7 @@
 一卷写有说明的卷轴，一定很重要。
 
 [@TaskDescription]
-把{Hidden卷轴/LightSteelBlue}交给{Dr.Kim/LimeGreen}。
+把{隐藏卷轴/LightSteelBlue}交给{金博士/LimeGreen}。
 
 [@Completion]
 

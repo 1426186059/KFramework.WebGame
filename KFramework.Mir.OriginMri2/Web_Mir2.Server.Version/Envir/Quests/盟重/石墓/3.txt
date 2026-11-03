@@ -1,5 +1,5 @@
 [@Description]
-你深入过{Stone Temple/Yellow}多深？{白野猪/Crimson}潜伏在最深处。
+你深入过{石墓/Yellow}多深？{白野猪/Crimson}潜伏在最深处。
 
 [@TaskDescription]
 消灭{白野猪/Crimson}。

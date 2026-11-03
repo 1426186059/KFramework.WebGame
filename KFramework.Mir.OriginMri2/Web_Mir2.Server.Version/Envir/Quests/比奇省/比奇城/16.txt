@@ -3,7 +3,7 @@
 来自{比奇/Yellow}附近的{洞穴/Yellow}吗？
 
 [@TaskDescription]请从……收集5个{蝙蝠牙/LightSteelBlue}和{骷髅/LightSteelBlue}
-{奥玛洞穴/Yellow}，以及来自{比奇死亡矿坑/Yellow}的{僵尸眼/LightSteelBlue}。
+{沃玛洞穴/Yellow}，以及来自{比奇死亡矿坑/Yellow}的{僵尸眼/LightSteelBlue}。
 
 [@Completion]万分感谢，勇敢的旅人。
 

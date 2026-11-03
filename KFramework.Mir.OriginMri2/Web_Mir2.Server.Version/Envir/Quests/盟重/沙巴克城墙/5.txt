@@ -1,8 +1,8 @@
 [@Description]
-看来这回传言成真了。请回到{Hidden Entrance/Yellow}。
+看来这回传言成真了。请回到{隐藏入口/Yellow}。
 
 [@TaskDescription]
-消灭一些{CrawlerZombies/Crimson}。
+消灭一些{爬行僵尸/Crimson}。
 
 [@Completion]
 
