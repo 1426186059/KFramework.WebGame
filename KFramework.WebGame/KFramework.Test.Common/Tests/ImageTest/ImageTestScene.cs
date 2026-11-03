@@ -139,7 +139,7 @@ namespace KFramework.Test.Common.Tests.ImageTest
                     if (e.Type != ContentAssetType.Texture) continue;
                     try
                     {
-                        Texture2D tex = bundle.LoadTexture(e.Path, Device);
+                        Texture2D tex = bundle.LoadTexture(e.Path);
                         _bundle.Add(new ImgItem($"{bName}/{e.Path}", tex,
                             $"{e.Width}×{e.Height} {e.Format} OK"));
                     }

@@ -58,11 +58,11 @@ namespace KFramework.Example.Tank
 
         // ===================== 加载 =====================
 
-        public override void LoadContent()
+        public override async Task LoadContentAsync()
         {
             AssetBundle Bundle = _content.GetBundle("main", false);
 
-            _res = ResCenter.Load(Bundle, _gd);
+            _res = ResCenter.Load(Bundle);
             _sounds = SoundCenter.Load(Bundle);
             _hud = new Hud(_gd);
 

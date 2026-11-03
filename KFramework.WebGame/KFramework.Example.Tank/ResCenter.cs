@@ -46,9 +46,9 @@ namespace KFramework.Example.Tank
         public SpriteSheet Misc3 { get; private init; }
         public SpriteSheet UIView { get; private init; }
 
-        public static ResCenter Load(AssetBundle bundle, GraphicsDevice device)
+        public static ResCenter Load(AssetBundle bundle)
         {
-            var loader = new SpriteSheetLoader(bundle, device);
+            var loader = new SpriteSheetLoader(bundle);
 
             SpriteSheet map = loader.Load("main/MyRes/Atlas/Map.atlas.txt");
             SpriteSheet player1 = loader.Load("main/MyRes/Atlas/Player1.atlas.txt");
@@ -82,12 +82,12 @@ namespace KFramework.Example.Tank
                 Heart = map.Sprite("Map_5"),
 
                 // 散图：独立纹理，经资源管线打包后按完整路径取用
-                Explode1 = LoadTexture(bundle, device, "main/MyRes/Textures/Explode1.png"),
-                Explode2 = LoadTexture(bundle, device, "main/MyRes/Textures/Explode2.png"),
-                Flag = LoadTexture(bundle, device, "main/MyRes/Textures/Flag.png"),
-                Shield = LoadTexture(bundle, device, "main/MyRes/Textures/Shield.png"),
-                Title = LoadTexture(bundle, device, "main/MyRes/Textures/Title.png"),
-                UIGameOver = LoadTexture(bundle, device, "main/MyRes/Textures/UIGameOver.png"),
+                Explode1 = LoadTexture(bundle, "main/MyRes/Textures/Explode1.png"),
+                Explode2 = LoadTexture(bundle, "main/MyRes/Textures/Explode2.png"),
+                Flag = LoadTexture(bundle, "main/MyRes/Textures/Flag.png"),
+                Shield = LoadTexture(bundle, "main/MyRes/Textures/Shield.png"),
+                Title = LoadTexture(bundle, "main/MyRes/Textures/Title.png"),
+                UIGameOver = LoadTexture(bundle, "main/MyRes/Textures/UIGameOver.png"),
 
                 // 序列帧数组：帧名前缀 + 序号，顺序即原版动画帧顺序
                 Player = Range(player1, "Player1_", 32),
@@ -98,9 +98,9 @@ namespace KFramework.Example.Tank
             };
         }
 
-        private static KSprite LoadTexture(AssetBundle bundle, GraphicsDevice device, string name)
+        private static KSprite LoadTexture(AssetBundle bundle, string name)
         {
-            bundle.TryLoadTexture(name, device, out Texture2D? tex);
+            bundle.TryLoadTexture(name, out Texture2D? tex);
             return tex is null ? default : new KSprite(tex);
         }
 

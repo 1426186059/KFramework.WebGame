@@ -91,7 +91,7 @@ namespace KFramework.Example.Mario
             // 异步加载本关卡依赖的 Bundle（资源全部从 Bundle 中读取）
             await content.LoadBundleAsync("MyRes/Atlas", cancellationToken).ConfigureAwait(false);
             AssetBundle atlasBundle = content.GetBundle("MyRes/Atlas")!;
-            SpriteSheetLoader mLoader = new SpriteSheetLoader(atlasBundle, KSceneMgr.Game.GraphicsDevice);
+            SpriteSheetLoader mLoader = new SpriteSheetLoader(atlasBundle);
             SpriteSheet characters = await mLoader.LoadAsync("MyRes/Atlas/characters.atlas.txt");
             SpriteSheet misc3 = await mLoader.LoadAsync("MyRes/Atlas/misc-3.atlas.txt");
             

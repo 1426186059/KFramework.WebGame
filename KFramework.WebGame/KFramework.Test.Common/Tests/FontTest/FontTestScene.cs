@@ -94,14 +94,14 @@ namespace KFramework.Test.Common.Tests.FontTest
         private int _linesWidth = -1;
         private int _drawnLines;
 
-        public override void LoadContent()
+        public override async Task LoadContentAsync()
         {
             GraphicsDevice device = Device;
 
             // ① 系统字体：直接构造即可（浏览器已有 family；引擎内多图集，页满自动开新页）
-            _sys24 = Own(new SpriteFont(device, 24f));
-            _sysBold = Own(new SpriteFont(device, 24f, "system-ui, sans-serif", FontStyle.Bold));
-            _sysItalic = Own(new SpriteFont(device, 24f, "system-ui, sans-serif", FontStyle.Italic));
+            _sys24 = Own(new SpriteFont(24f));
+            _sysBold = Own(new SpriteFont(24f, "system-ui, sans-serif", FontStyle.Bold));
+            _sysItalic = Own(new SpriteFont(24f, "system-ui, sans-serif", FontStyle.Italic));
 
             // ② 包内矢量字体：等包加载完再构造（解析 ttf 表需要字体字节）
             _ = LoadBundleFontsAsync();
@@ -193,7 +193,7 @@ namespace KFramework.Test.Common.Tests.FontTest
 
             try
             {
-                return Own(new KFont(Device, size, bytes, atlasSize, 0f, obliqueDegrees, boldPixels));
+                return Own(new KFont(size, bytes, atlasSize, 0f, obliqueDegrees, boldPixels));
             }
             catch (Exception ex)
             {

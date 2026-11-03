@@ -86,10 +86,9 @@ namespace KFramework.MonoGame
         /// 图集页按 .fnt 里的 <c>page file</c> 解析：先按「.fnt 同目录 + 文件名」精确取，
         /// 取不到再退化为按文件名关键字匹配（部分工具会在 file 里写绝对路径）。
         /// </summary>
-        public static BitmapFont FromBundle(AssetBundle bundle, GraphicsDevice device, string fntPath, bool strict = true)
+        public static BitmapFont FromBundle(AssetBundle bundle, string fntPath, bool strict = true)
         {
             ArgumentNullException.ThrowIfNull(bundle);
-            ArgumentNullException.ThrowIfNull(device);
             ArgumentException.ThrowIfNullOrWhiteSpace(fntPath);
 
             BmFontData data = BmFontData.Parse(bundle.LoadText(fntPath, strict));
@@ -98,8 +97,8 @@ namespace KFramework.MonoGame
             foreach (string pageFile in data.PageFiles)
             {
                 string pagePath = ResolvePagePath(fntPath, pageFile);
-                if (!bundle.TryLoadTexture(pagePath, device, out Texture2D? tex, strict)
-                    && !bundle.TryLoadTexture(pageFile, device, out tex, false))
+                if (!bundle.TryLoadTexture(pagePath, out Texture2D? tex, strict)
+                    && !bundle.TryLoadTexture(pageFile, out tex, false))
                 {
                     throw new KeyNotFoundException($"位图字体“{fntPath}”的图集页未找到：{pagePath}");
                 }

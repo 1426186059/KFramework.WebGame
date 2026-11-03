@@ -54,7 +54,7 @@ namespace KFramework.Test.Common.Tests.BlendTest
 
         private T Own<T>(T d) where T : IDisposable { _owned.Add(d); return d; }
 
-        public override void LoadContent()
+        public override async Task LoadContentAsync()
         {
             const int w = 256, h = 256;
             _baseTex = Own(MakeBaseTexture(Device, w, h));

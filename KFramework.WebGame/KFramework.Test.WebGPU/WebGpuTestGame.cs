@@ -54,9 +54,9 @@ namespace KFramework.Test.WebGPU
 
         protected override Task LoadContentAsync()
         {
-            KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 20f);
+            KDefaultRes.DefaultSpriteFont = new SpriteFont(20f);
 
-            KSceneMgr.SetMainScene(new Tests.MainScene());
+            KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
             return Task.CompletedTask;
         }
 
@@ -74,7 +74,7 @@ namespace KFramework.Test.WebGPU
         {
             if (Input_KeyBoard.GetKeyDown(Keys.Escape))
             {
-                KSceneMgr.SetMainScene(new Tests.MainScene());
+                KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
                 return;
             }
 
@@ -83,7 +83,7 @@ namespace KFramework.Test.WebGPU
             {
                 if (Input_KeyBoard.GetKeyDown(digits[i]))
                 {
-                    KSceneMgr.SetMainScene(Tests.TestRegistry.Entries[i].Factory());
+                    KSceneMgr.SetMainSceneAsync(Tests.TestRegistry.Entries[i].Factory());
                     return;
                 }
             }

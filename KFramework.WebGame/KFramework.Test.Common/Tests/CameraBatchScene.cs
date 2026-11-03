@@ -24,7 +24,7 @@ namespace KFramework.Test.Common.Tests
         private readonly List<SpriteRenderer> _uiSprites = new();
         private int _frame;
 
-        public override void LoadContent()
+        public override async Task LoadContentAsync()
         {
             var device = KSceneMgr.Game.GraphicsDevice;
             _rt = new RenderTarget2D(device, 512, 512, false,

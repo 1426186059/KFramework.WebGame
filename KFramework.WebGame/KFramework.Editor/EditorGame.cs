@@ -17,9 +17,9 @@ namespace KFramework.Editor
 
         protected override async Task LoadContentAsync()
         {
-            KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 18f);
+            KDefaultRes.DefaultSpriteFont = new SpriteFont(18f);
             await ContentManager.Default.LoadAsync();
-            KSceneMgr.SetMainScene(new EditorScene());     // 切到编辑器主场景
+            KSceneMgr.SetMainSceneAsync(new EditorScene());     // 切到编辑器主场景
         }
     }
 }

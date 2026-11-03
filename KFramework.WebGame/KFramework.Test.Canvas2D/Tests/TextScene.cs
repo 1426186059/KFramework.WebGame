@@ -25,12 +25,12 @@ namespace KFramework.Test.Canvas2D.Tests
         private SpriteFont? _fBold;
         private int _frame;
 
-        public override void LoadContent()
+        public override async Task LoadContentAsync()
         {
-            _f24 = new SpriteFont(Device, 24f);
-            _f32 = new SpriteFont(Device, 32f);
-            _f48 = new SpriteFont(Device, 48f);
-            _fBold = new SpriteFont(Device, 28f, "system-ui, sans-serif", FontStyle.Bold);
+            _f24 = new SpriteFont(24f);
+            _f32 = new SpriteFont(32f);
+            _f48 = new SpriteFont(48f);
+            _fBold = new SpriteFont(28f, "system-ui, sans-serif", FontStyle.Bold);
         }
 
         public override void Dispose()

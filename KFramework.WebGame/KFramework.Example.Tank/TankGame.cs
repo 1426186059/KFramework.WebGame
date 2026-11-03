@@ -21,11 +21,11 @@ namespace KFramework.Example.Tank
         protected override async Task LoadContentAsync()
         {
             // 节点树 UI 文本需要默认字体
-            KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 40f);
+            KDefaultRes.DefaultSpriteFont = new SpriteFont(40f);
 
             await ContentManager.Default.LoadAsync().ConfigureAwait(false);
 
-            KSceneMgr.SetMainScene(new GameScene());
+            KSceneMgr.SetMainSceneAsync(new GameScene());
         }
     }
 

@@ -66,7 +66,7 @@ namespace KFramework.Test.Common.Tests.UITest
 
         private IFont _font;
 
-        public override void LoadContent()
+        public override async Task LoadContentAsync()
         {
             _font = KDefaultRes.DefaultSpriteFont;
             _canvas = KUIRoot.Instance.GetCanvas(CanvasLayer);

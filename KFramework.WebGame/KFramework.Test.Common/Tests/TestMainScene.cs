@@ -21,7 +21,7 @@ namespace KFramework.Test.Common.Tests
         private bool _built;
 
         /// <summary>回到测试总屏（各测试场景的「返回」用）。</summary>
-        public static void Open() => KSceneMgr.SetMainScene(new TestMainScene());
+        public static void Open() => KSceneMgr.SetMainSceneAsync(new TestMainScene());
 
         public override void Update()
         {
@@ -49,7 +49,7 @@ namespace KFramework.Test.Common.Tests
             _built = true;
 
             _font = KDefaultRes.DefaultSpriteFont;
-            _descFont = new SpriteFont(KSceneMgr.Game.GraphicsDevice, 13f);
+            _descFont = new SpriteFont(13f);
 
             // 关键：KCanvas 挂在场景自己的 SceneNodeRoot 下 —— 框架递归遍历会自动驱动它，且随场景切换销毁
             _canvas = new KCanvas { Parent = SceneNodeRoot };
@@ -124,7 +124,7 @@ namespace KFramework.Test.Common.Tests
             }
         }
 
-        private static void Enter(int index) => KSceneMgr.SetMainScene(TestRegistry.Entries[index].Factory());
+        private static void Enter(int index) => KSceneMgr.SetMainSceneAsync(TestRegistry.Entries[index].Factory());
 
         public override void Draw()
         {

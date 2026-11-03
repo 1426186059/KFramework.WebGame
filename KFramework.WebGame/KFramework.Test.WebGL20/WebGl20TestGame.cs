@@ -45,9 +45,9 @@ namespace KFramework.Test.WebGL20
         protected override Task LoadContentAsync()
         {
             // 测试界面用程序化生成的系统字体，不依赖任何字体资源。
-            KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 20f);
+            KDefaultRes.DefaultSpriteFont = new SpriteFont(20f);
 
-            KSceneMgr.SetMainScene(new Tests.MainScene());
+            KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
             return Task.CompletedTask;
         }
 
@@ -65,7 +65,7 @@ namespace KFramework.Test.WebGL20
         {
             if (Input_KeyBoard.GetKeyDown(Keys.Escape))
             {
-                KSceneMgr.SetMainScene(new Tests.MainScene());
+                KSceneMgr.SetMainSceneAsync(new Tests.MainScene());
                 return;
             }
 
@@ -74,7 +74,7 @@ namespace KFramework.Test.WebGL20
             {
                 if (Input_KeyBoard.GetKeyDown(digits[i]))
                 {
-                    KSceneMgr.SetMainScene(Tests.TestRegistry.Entries[i].Factory());
+                    KSceneMgr.SetMainSceneAsync(Tests.TestRegistry.Entries[i].Factory());
                     return;
                 }
             }

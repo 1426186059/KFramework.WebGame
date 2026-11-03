@@ -34,8 +34,7 @@ namespace KFramework.MonoGame
         /// <summary>图集页数上限（每页 <see cref="AtlasSize"/>² RGBA ≈ 4MB，16 页 ≈ 64MB 封顶，防病态字集吃光显存）。</summary>
         private const int MaxAtlasPages = 16;
 
-        private readonly GraphicsDevice _device;
-        private readonly string _fontCss;
+                private readonly string _fontCss;
         private readonly float _letterSpacing;
         private readonly Dictionary<char, Glyph> _glyphs = new();
 
@@ -77,8 +76,8 @@ namespace KFramework.MonoGame
         public float LineSpacing => LineHeight;
 
         /// <summary>用系统字体（浏览器已可用的 family）构造；<paramref name="bold"/> 为 true 时按粗体光栅化。</summary>
-        public SpriteFont(GraphicsDevice device, float size = 20f, string family = "system-ui, sans-serif", bool bold = false)
-            : this(device, size, family, bold ? FontStyle.Bold : FontStyle.Regular)
+        public SpriteFont(float size = 20f, string family = "system-ui, sans-serif", bool bold = false)
+            : this(size, family, bold ? FontStyle.Bold : FontStyle.Regular)
         {
         }
 
@@ -86,11 +85,9 @@ namespace KFramework.MonoGame
         /// 用系统字体或已注册的自定义字体构造，可指定斜体 / 字重 / 字形宽度 / 字距。
         /// <paramref name="weight"/> 为 0 时字重由 <paramref name="style"/> 决定；非 0 时按 1~1000 精确指定（如 600 半粗）。
         /// </summary>
-        public SpriteFont(GraphicsDevice device, float size, string family, FontStyle style,
+        public SpriteFont(float size, string family, FontStyle style,
                           int weight = 0, FontStretch stretch = FontStretch.Normal, float letterSpacing = 0f)
-        {
-            _device = device;
-            Size = size;
+        {            Size = size;
             Family = family;
             Style = style;
             Weight = weight;
@@ -98,7 +95,7 @@ namespace KFramework.MonoGame
             LetterSpacing = letterSpacing;
             _letterSpacing = letterSpacing;
             _fontCss = FontCss.Build(size, family, style, weight, stretch);
-            _atlases.Add(device.CreateTexture(AtlasSize, AtlasSize));
+            _atlases.Add(Game.Current.GraphicsDevice.CreateTexture(AtlasSize, AtlasSize));
 
             Span<short> metrics = stackalloc short[4];
             JSBind_Text.Measure("Hg", _fontCss, _letterSpacing, metrics);
@@ -124,7 +121,6 @@ namespace KFramework.MonoGame
 
         /// <summary>注册自定义字体（字节）并直接产出可绘制的 <see cref="SpriteFont"/>；注册失败抛 <see cref="InvalidOperationException"/>。</summary>
         public static async Task<SpriteFont> FromFontAsync(
-            GraphicsDevice device, 
             string family, 
             float size, 
             byte[] bytes,
@@ -135,12 +131,11 @@ namespace KFramework.MonoGame
         {
             bool ok = await RegisterFontAsync(family, bytes).ConfigureAwait(false);
             if (!ok) throw new InvalidOperationException($"自定义字体注册失败（字节不是合法字体或格式不支持）：{family}");
-            return new SpriteFont(device, size, family, style, weight, stretch, letterSpacing);
+            return new SpriteFont(size, family, style, weight, stretch, letterSpacing);
         }
 
         /// <summary>注册自定义字体（URL）并直接产出可绘制的 <see cref="SpriteFont"/>；注册失败抛 <see cref="InvalidOperationException"/>。</summary>
         public static async Task<SpriteFont> FromFontAsync(
-            GraphicsDevice device, 
             string family, 
             float size, 
             string url,
@@ -151,7 +146,7 @@ namespace KFramework.MonoGame
         {
             bool ok = await RegisterFontAsync(family, url).ConfigureAwait(false);
             if (!ok) throw new InvalidOperationException($"自定义字体加载失败（URL 不可达或格式不支持）：{url}");
-            return new SpriteFont(device, size, family, style, weight, stretch, letterSpacing);
+            return new SpriteFont(size, family, style, weight, stretch, letterSpacing);
         }
 
 
@@ -256,7 +251,7 @@ namespace KFramework.MonoGame
         {
             if (_atlases.Count >= MaxAtlasPages) return false;
 
-            _atlases.Add(_device.CreateTexture(AtlasSize, AtlasSize));
+            _atlases.Add(Game.Current.GraphicsDevice.CreateTexture(AtlasSize, AtlasSize));
             PrintTool.Log($"[SpriteFont] {Family} 字号 {Size}：第 {_atlases.Count - 1} 页已满，新建第 {_atlases.Count} 页（{AtlasSize}²）");
             return true;
         }

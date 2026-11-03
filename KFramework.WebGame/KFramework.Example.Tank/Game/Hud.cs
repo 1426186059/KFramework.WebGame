@@ -15,8 +15,8 @@ namespace KFramework.Example.Tank
 
         public Hud(GraphicsDevice device)
         {
-            _font = new SpriteFont(device, 16f);
-            _bigFont = new SpriteFont(device, 32f);
+            _font = new SpriteFont(16f);
+            _bigFont = new SpriteFont(32f);
         }
 
         public void Draw(SpriteBatch batch, int level, int lives, int enemiesRemaining, int enemiesOnField,

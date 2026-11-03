@@ -1,6 +1,7 @@
 using KFramework.MonoGame;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace KFramework.MonoGameExtend
 {
@@ -61,7 +62,7 @@ namespace KFramework.MonoGameExtend
 
         private static void OnWindowSizeChangedForward() => OnScreenSizeChanged(Game, EventArgs.Empty);
 
-        public static void SetMainScene(KSceneBase mainScene)
+        public static async Task SetMainSceneAsync(KSceneBase mainScene)
         {
             KSceneBase oldScene = m_Main;
             if (oldScene != null)
@@ -70,13 +71,12 @@ namespace KFramework.MonoGameExtend
             }
             
             m_Main = mainScene;
-            AddScene(m_Main);
+            await AddSceneAsync(m_Main);
 
             if (_cacheMetricsScreen == null)
             {
                 _cacheMetricsScreen = new MetricsScreen();
             }
-
         }
 
         public static void Update(GameTime gameTime)
@@ -110,14 +110,14 @@ namespace KFramework.MonoGameExtend
             KTransformHelper.Do_Draw_AllChildList(DontDestroyOnLoadRoot);
         }
 
-        public static void AddScene(KSceneBase mScene)
+        public static async Task AddSceneAsync(KSceneBase mScene)
         {
             if (mScene == null || mScene.SceneEntry.List != null)
             {
                 return;
             }
 
-            mScene.LoadContent();
+            await mScene.LoadContentAsync();
             mSceneList.AddLast(mScene.SceneEntry);
         }
 

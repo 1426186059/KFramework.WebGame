@@ -80,6 +80,12 @@ namespace KFramework.Test.WebGL20.Tests
                 Desc = "CPU 合批的规模测试：空格切换精灵数，读数给出 DrawCall 增量（同一张纹理也受「单次 4096 个四边形」限制）、CPU 侧带宽与提交耗时拆分；可与第 7 页 GPU 实例化对照",
                 Factory = static () => new SpriteBatchPerfScene(),
             },
+            new TestEntry
+            {
+                Name = "混合测试（lefttopbg 半透明黑 × 各 BlendState）",
+                Desc = "同一张半透明黑图在 AlphaBlend / NonPremultiplied / Additive / Multiply / Opaque 等混合下的颜色对比",
+                Factory = static () => new BlendTestScene(),
+            },
         ];
     }
 
@@ -91,7 +97,7 @@ namespace KFramework.Test.WebGL20.Tests
         private readonly List<Rectangle> _rows = [];
 
         /// <summary>回到总纲（供各测试页的「← 总纲」与 Esc 调用）。</summary>
-        public static void Open() => KSceneMgr.SetMainScene(new MainScene());
+        public static void Open() => KSceneMgr.SetMainSceneAsync(new MainScene());
 
         private GraphicsDevice Device => KSceneMgr.Game.GraphicsDevice;
 
@@ -111,7 +117,7 @@ namespace KFramework.Test.WebGL20.Tests
                 {
                     if (_rows[i].Contains(p))
                     {
-                        KSceneMgr.SetMainScene(TestRegistry.Entries[i].Factory());
+                        KSceneMgr.SetMainSceneAsync(TestRegistry.Entries[i].Factory());
                         return;
                     }
                 }
@@ -123,7 +129,7 @@ namespace KFramework.Test.WebGL20.Tests
             {
                 if (Input_KeyBoard.GetKeyDown(digits[i]))
                 {
-                    KSceneMgr.SetMainScene(TestRegistry.Entries[i].Factory());
+                    KSceneMgr.SetMainSceneAsync(TestRegistry.Entries[i].Factory());
                     return;
                 }
             }

@@ -93,7 +93,7 @@ namespace KFramework.Test.Common.Tests.KCanvasTest
         private const string WrapSample =
             "KLabel.HorizontalWrap = Wrap：超过控件宽度就在这里折行（内部走 TextRenderer 的折行）。";
 
-        public override void LoadContent()
+        public override async Task LoadContentAsync()
         {
             _font = KDefaultRes.DefaultSpriteFont;
 

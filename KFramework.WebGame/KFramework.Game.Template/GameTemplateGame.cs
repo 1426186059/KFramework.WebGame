@@ -22,7 +22,7 @@ namespace KFramework.Game.Template
         protected override Task LoadContentAsync()
         {
             // 程序化生成的系统字体，不依赖任何字体资源文件。
-            KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 22f);
+            KDefaultRes.DefaultSpriteFont = new SpriteFont(22f);
             // 一张 1×1 白纹理，用来画纯色矩形（拉伸即可）。
             _white = GraphicsDevice.CreateTexture(1, 1, new byte[] { 255, 255, 255, 255 });
             return Task.CompletedTask;

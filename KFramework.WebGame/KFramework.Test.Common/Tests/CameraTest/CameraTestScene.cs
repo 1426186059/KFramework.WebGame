@@ -59,7 +59,7 @@ namespace KFramework.Test.Common.Tests.CameraTest
         private int _inCount, _total;
         private bool _roundTripOk;
 
-        public override void LoadContent()
+        public override async Task LoadContentAsync()
         {
             _cam2d = new KCamera
             {

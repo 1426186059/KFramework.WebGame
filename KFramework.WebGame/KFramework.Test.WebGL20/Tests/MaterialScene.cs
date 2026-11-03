@@ -64,7 +64,7 @@ namespace KFramework.Test.WebGL20.Tests
             "uParams",
         ];
 
-        public override void LoadContent()
+        public override async Task LoadContentAsync()
         {
             _chart = MakeChart(256);
             _mask = MakeChecker(256, Color.White, new Color(115, 125, 150));

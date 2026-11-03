@@ -75,7 +75,7 @@ namespace KFramework.Test.Common.Tests.TextRenderTest
         private const string VWrapSample =
             "第 1 行（VerticalWrapMode）\n第 2 行\n第 3 行\n第 4 行\n第 5 行 —— Truncate 到框底就停，Overflow 会画到框外。";
 
-        public override void LoadContent()
+        public override async Task LoadContentAsync()
         {
             _font = KDefaultRes.DefaultSpriteFont;
 

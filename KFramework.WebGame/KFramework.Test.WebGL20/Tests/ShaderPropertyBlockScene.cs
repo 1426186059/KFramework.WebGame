@@ -85,10 +85,10 @@ namespace KFramework.Test.WebGL20.Tests
         private SubmitMode _mode = SubmitMode.NoBlock;
         private long _lastDrawCalls;
 
-        public override void LoadContent()
+        public override async Task LoadContentAsync()
         {
             _chart = MakeChecker(64, Color.White, new Color(38, 48, 70));
-            _small = new SpriteFont(Device, 13f);
+            _small = new SpriteFont(13f);
             _block = new ShaderPropertyBlock();
             _material = new Material
             {

@@ -66,12 +66,12 @@ namespace KFramework.Test.Common
         protected override async Task LoadContentAsync()
         {
             // 测试界面用程序化生成的系统字体，不依赖任何字体资源
-            KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 20f);
+            KDefaultRes.DefaultSpriteFont = new SpriteFont(20f);
 
             // 加载全部 AssetBundle（含 Content/raw/Bundles/fonts 下的 ttf 字体）
             await ContentManager.Default.LoadAsync().ConfigureAwait(false);
 
-            KSceneMgr.SetMainScene(new TestMainScene());
+            KSceneMgr.SetMainSceneAsync(new TestMainScene());
         }
     }
 

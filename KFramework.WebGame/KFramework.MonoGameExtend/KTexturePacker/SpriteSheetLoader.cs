@@ -8,12 +8,10 @@ namespace KFramework.MonoGameExtend
     public class SpriteSheetLoader
     {
         private readonly AssetBundle _bundle;
-        private readonly GraphicsDevice _device;
 
-        public SpriteSheetLoader(AssetBundle bundle, GraphicsDevice device)
+        public SpriteSheetLoader(AssetBundle bundle)
         {
             _bundle = bundle;
-            _device = device;
         }
 
         /// <summary>
@@ -33,7 +31,7 @@ namespace KFramework.MonoGameExtend
             {
                 string texturePath = dir != null ? 
                     Path.Combine(dir, Path.GetFileName(v.Image)) : Path.GetFileName(v.Image); ;
-                Texture2D texture = mBundle.LoadTexture(texturePath, _device, strict);
+                Texture2D texture = mBundle.LoadTexture(texturePath, strict);
                 foreach (var v2 in v.Regions)
                 {
                     bool isRotated = v2.Rotated;

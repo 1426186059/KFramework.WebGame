@@ -40,7 +40,7 @@ namespace KFramework.Test.Common.Tests.WebSocketTest
         private string _status = "未连接";
         private string _input = "";
 
-        public override void LoadContent() => Input_KeyBoard.KeyDown += OnKeyDown;
+        public override async Task LoadContentAsync() { Input_KeyBoard.KeyDown += OnKeyDown; }
 
         public override void Dispose()
         {

@@ -19,11 +19,11 @@ namespace KFramework.Example.Mario
         protected override async Task LoadContentAsync()
         {
             // 节点树 UI 文本需要默认字体（程序化生成，避免依赖 .spritefont 内容文件）
-            KDefaultRes.DefaultSpriteFont = new SpriteFont(GraphicsDevice, 18f);
+            KDefaultRes.DefaultSpriteFont = new SpriteFont(18f);
 
             await ContentManager.Default.LoadAsync().ConfigureAwait(false);
 
-            KSceneMgr.SetMainScene(new MainScene());
+            KSceneMgr.SetMainSceneAsync(new MainScene());
         }
     }
 

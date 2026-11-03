@@ -61,7 +61,7 @@ namespace KFramework.Example.Mario
             {
                 await contentManager.LoadBundleAsync("MyRes/Atlas").ConfigureAwait(false);
                 var atlasBundle = contentManager.GetBundle("MyRes/Atlas")!;
-                SpriteSheetLoader mLoader = new SpriteSheetLoader(atlasBundle, KSceneMgr.Game.GraphicsDevice);
+                SpriteSheetLoader mLoader = new SpriteSheetLoader(atlasBundle);
                 _spriteSheet = await mLoader.LoadAsync("MyRes/Atlas/characters.atlas");
                 _sprite = _spriteSheet.Sprite("characters_256");
                 _texture = _sprite.Texture;

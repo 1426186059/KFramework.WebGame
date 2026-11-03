@@ -46,7 +46,7 @@ namespace KFramework.Test.Common.Tests.RenderTargetTest
 
         public override string Title => "离屏渲染 RenderTarget2D：开 / 关 对比（几千个精灵）";
 
-        public override void LoadContent()
+        public override async Task LoadContentAsync()
         {
             // 程序化生成一张带光照的球（RGBA8），省掉图片资源与打包流程；绘制时再用 Color 着色。
             _ball = Own(TestSpriteTexture.MakeBall(Device, 32));

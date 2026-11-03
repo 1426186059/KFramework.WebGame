@@ -122,8 +122,9 @@ namespace KFramework.MonoGame
         /// <summary>同步取一张整图纹理（图集请改用 <see cref="KFramework.MonoGameExtend.SpriteSheetLoader"/> 加载）。
         /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个纹理。</summary>
         /// <remarks>解码已在 <see cref="DecodeTexturesAsync"/>（LoadBundle 异步阶段）完成并缓存；此处仅做 GPU 上传。</remarks>
-        public Texture2D LoadTexture(string name, GraphicsDevice device, bool strict = true)
+        public Texture2D LoadTexture(string name, bool strict = true)
         {
+            GraphicsDevice device = Game.Current.GraphicsDevice;
             AssetBundleEntry? info = GetAssetInfo(name, strict);
             if (info == null)
             {
@@ -195,9 +196,9 @@ namespace KFramework.MonoGame
 
         /// <summary>同步尝试取一张纹理；找不到返回 false。
         /// <paramref name="strict"/> 为 true 时按精确路径匹配；为 false 时按关键字（Path 包含）匹配首个纹理。</summary>
-        public bool TryLoadTexture(string name, GraphicsDevice device, out Texture2D? tex, bool strict = true)
+        public bool TryLoadTexture(string name, out Texture2D? tex, bool strict = true)
         {
-            try { tex = LoadTexture(name, device, strict); return true; }
+            try { tex = LoadTexture(name, strict); return true; }
             catch (KeyNotFoundException) { tex = null; return false; }
         }
 

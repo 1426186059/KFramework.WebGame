@@ -54,7 +54,7 @@ namespace KFramework.Test.WebGPU.Tests
         private readonly List<Rectangle> _rows = [];
 
         /// <summary>回到总纲（供各测试页的「← 总纲」与 Esc 调用）。</summary>
-        public static void Open() => KSceneMgr.SetMainScene(new MainScene());
+        public static void Open() => KSceneMgr.SetMainSceneAsync(new MainScene());
 
         private GraphicsDevice Device => KSceneMgr.Game.GraphicsDevice;
 
@@ -75,7 +75,7 @@ namespace KFramework.Test.WebGPU.Tests
                 {
                     if (_rows[i].Contains(p))
                     {
-                        KSceneMgr.SetMainScene(TestRegistry.Entries[i].Factory());
+                        KSceneMgr.SetMainSceneAsync(TestRegistry.Entries[i].Factory());
                         return;
                     }
                 }
@@ -87,7 +87,7 @@ namespace KFramework.Test.WebGPU.Tests
             {
                 if (Input_KeyBoard.GetKeyDown(digits[i]))
                 {
-                    KSceneMgr.SetMainScene(TestRegistry.Entries[i].Factory());
+                    KSceneMgr.SetMainSceneAsync(TestRegistry.Entries[i].Factory());
                     return;
                 }
             }

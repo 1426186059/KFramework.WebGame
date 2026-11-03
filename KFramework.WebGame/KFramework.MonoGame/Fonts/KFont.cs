@@ -34,8 +34,7 @@ namespace KFramework.MonoGame
         /// <summary>字形四周留白（像素），避免相邻字形互相渗色。</summary>
         private const int Padding = 2;
 
-        private readonly GraphicsDevice _device;
-        private readonly TrueTypeFace _face;
+                private readonly TrueTypeFace _face;
         private readonly float _scale;
         private readonly float _skewTan;
         private readonly int _boldPixels;
@@ -88,17 +87,12 @@ namespace KFramework.MonoGame
         /// <param name="letterSpacing">字距（像素）。</param>
         /// <param name="obliqueDegrees">斜切角度（度，合成斜体）；0 为正体。</param>
         /// <param name="boldPixels">合成加粗强度（像素膨胀半径）；0 为不加粗。</param>
-        public KFont(GraphicsDevice device, float size, byte[] fontBytes, int atlasSize = 1024,
+        public KFont(float size, byte[] fontBytes, int atlasSize = 1024,
                      float letterSpacing = 0f, float obliqueDegrees = 0f, int boldPixels = 0)
-        {
-            ArgumentNullException.ThrowIfNull(device);
-            ArgumentNullException.ThrowIfNull(fontBytes);
+        {            ArgumentNullException.ThrowIfNull(fontBytes);
             ArgumentOutOfRangeException.ThrowIfLessThan(size, 1f);
             ArgumentOutOfRangeException.ThrowIfNegative(boldPixels);
-            if (atlasSize < 128) throw new ArgumentOutOfRangeException(nameof(atlasSize), "图集边长至少 128 像素。");
-
-            _device = device;
-            Size = size;
+            if (atlasSize < 128) throw new ArgumentOutOfRangeException(nameof(atlasSize), "图集边长至少 128 像素。");            Size = size;
             _letterSpacing = letterSpacing;
             _boldPixels = boldPixels;
             ObliqueDegrees = obliqueDegrees;
@@ -112,24 +106,24 @@ namespace KFramework.MonoGame
             Descent = -_face.Descender * _scale;
             LineHeight = (_face.Ascender - _face.Descender + _face.LineGap) * _scale;
 
-            _atlas = device.CreateTexture(atlasSize, atlasSize);
+            _atlas = Game.Current.GraphicsDevice.CreateTexture(atlasSize, atlasSize);
 
             PrintTool.Log($"[KFont] {Family} 字号 {Size} | upem {UnitsPerEm} | 基线 {Ascent:F1} | 行高 {LineHeight:F1} | 图集 {atlasSize}²");
         }
 
         /// <summary>用字体字节构造（<see cref="KFont(GraphicsDevice, float, byte[], int, float, float, int)"/> 的具名入口）。</summary>
-        public static KFont FromBytes(GraphicsDevice device, float size, byte[] fontBytes, int atlasSize = 1024,
+        public static KFont FromBytes(float size, byte[] fontBytes, int atlasSize = 1024,
                                       float letterSpacing = 0f, float obliqueDegrees = 0f, int boldPixels = 0)
-            => new(device, size, fontBytes, atlasSize, letterSpacing, obliqueDegrees, boldPixels);
+            => new(size, fontBytes, atlasSize, letterSpacing, obliqueDegrees, boldPixels);
 
         /// <summary>从已加载的 AssetBundle 取字体文件字节构造（包里放 ttf / otf / woff 即可）。</summary>
-        public static KFont FromBundle(AssetBundle bundle, GraphicsDevice device, string fontPath, float size,
+        public static KFont FromBundle(AssetBundle bundle, string fontPath, float size,
                                        int atlasSize = 1024, float letterSpacing = 0f,
                                        float obliqueDegrees = 0f, int boldPixels = 0)
         {
             ArgumentNullException.ThrowIfNull(bundle);
             ArgumentException.ThrowIfNullOrWhiteSpace(fontPath);
-            return new KFont(device, size, bundle.LoadAsset(fontPath), atlasSize, letterSpacing, obliqueDegrees, boldPixels);
+            return new KFont(size, bundle.LoadAsset(fontPath), atlasSize, letterSpacing, obliqueDegrees, boldPixels);
         }
 
         /// <summary>Measure 的 MonoGame 命名别名。</summary>

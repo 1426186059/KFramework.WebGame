@@ -43,6 +43,14 @@
     <Copy SourceFiles="@(_Engine)" DestinationFiles="@(_Engine->'$(MSBuildThisFileDirectory)wwwroot\jsengine\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 
-  <!-- 本工程是纯渲染测试：不依赖 AssetBundle 内容包，故不跑 BuildGameContent。 -->
+	<!-- 1. 运行内容管线：Content/raw -> Content/hot_update_res
+       2. 把发布后的 hot_update_res 同步到 wwwroot/hot_update_res 供浏览器 HTTP 访问 -->
+	<Target Name="BuildGameContent" BeforeTargets="BeforeBuild">
+		<Exec Command="dotnet run --project &quot;$(MSBuildThisFileDirectory)..\KFramework.Content.Cli\KFramework.Content.Cli.csproj&quot; -v q --nologo -- --root &quot;$(MSBuildThisFileDirectory)Content&quot;" />
+		<ItemGroup>
+			<_PublishedContent Include="$(MSBuildThisFileDirectory)Content\hot_update_res\**\*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_PublishedContent)" DestinationFiles="@(_PublishedContent->'$(MSBuildThisFileDirectory)wwwroot\hot_update_res\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+	</Target>
 
 </Project>

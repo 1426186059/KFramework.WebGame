@@ -1,0 +1,13 @@
+{
+  "rawDir": "raw",
+  "outDir": "hot_update_res",
+  "tempDir": "temp",
+  "AssetBundleDir": [
+    "Bundles"
+  ],
+  "autoAtlas": false,
+  "BundleSplitMode": "Whole",
+  "TextureSwitchTarget": "Webp",
+  "Ktx2ExePath": null,
+  "copy_to_wwwroot": true
+}

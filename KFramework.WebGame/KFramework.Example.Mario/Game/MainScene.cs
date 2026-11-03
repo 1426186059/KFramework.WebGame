@@ -14,10 +14,10 @@ namespace KFramework.Example.Mario
         public int nLevelIndex;
         public Level? mLevel;
 
-        public override void LoadContent()
+        public override async Task LoadContentAsync()
         {
-            Font1 = new SpriteFont(KSceneMgr.Game.GraphicsDevice, 28f);
-            Font2 = new SpriteFont(KSceneMgr.Game.GraphicsDevice, 28f);
+            Font1 = new SpriteFont(28f);
+            Font2 = new SpriteFont(28f);
 
             KDefaultRes.DefaultSpriteFont = Font2;
 

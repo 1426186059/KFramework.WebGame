@@ -69,10 +69,10 @@ namespace KFramework.Test.WebGL20.Tests
         private double _frameMs;
         private long _lastFrameTicks;
 
-        public override void LoadContent()
+        public override async Task LoadContentAsync()
         {
             _chart = MakeChecker(64, Color.White, new Color(36, 46, 66));
-            _small = new SpriteFont(Device, 13f);
+            _small = new SpriteFont(13f);
 
             // 材质与 SpriteBatch 一样在 Begin 里给，不再进构造函数。
             _material = new Material();

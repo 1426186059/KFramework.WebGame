@@ -1,6 +1,7 @@
 using KFramework.MonoGame;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace KFramework.MonoGameExtend
 {
@@ -17,9 +18,9 @@ namespace KFramework.MonoGameExtend
             SceneEntry = new LinkedListNode<KSceneBase>(this);
         }
 
-        public virtual void LoadContent()
+        public virtual async Task LoadContentAsync()
         {
-
+            await Task.CompletedTask;
         }
         
         public virtual void Update()
