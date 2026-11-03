@@ -41,7 +41,6 @@ namespace Server
         }
         private void MapInfoForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Envir.SaveDB();
         }
 
 

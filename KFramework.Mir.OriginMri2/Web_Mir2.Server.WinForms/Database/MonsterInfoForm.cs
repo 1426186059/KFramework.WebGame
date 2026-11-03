@@ -594,7 +594,6 @@ namespace Server
         }
         private void MonsterInfoForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Envir.SaveDB();
         }
 
         private void PasteMButton_Click(object sender, EventArgs e)

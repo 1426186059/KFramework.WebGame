@@ -653,7 +653,6 @@ namespace Server.Database
         private void monsterInfoFormNew_FormClosed(object sender, FormClosedEventArgs e)
         {
             SaveForm();
-            Envir.SaveDB();
         }
 
         private void monsterInfoGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)

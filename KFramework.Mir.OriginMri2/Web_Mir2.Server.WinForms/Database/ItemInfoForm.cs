@@ -1046,7 +1046,6 @@ namespace Server
 
         private void ItemInfoForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Envir.SaveDB();
         }
 
         private void PasteButton_Click(object sender, EventArgs e)
@@ -1892,7 +1891,6 @@ namespace Server
         {
             for (int i = 0; i < _selectedItemInfos.Count; i++)
                 Envir.AddToGameShop(_selectedItemInfos[i]);
-            Envir.SaveDB();
         }
 
         private void NoWeddingRingcheckbox_CheckedChanged(object sender, EventArgs e)

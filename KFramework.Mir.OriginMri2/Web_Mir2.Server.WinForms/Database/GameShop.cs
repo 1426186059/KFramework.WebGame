@@ -27,7 +27,6 @@ namespace Server
 
         private void GameShop_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Envir.SaveDB();
         }
 
         public class ListBoxItem
@@ -441,9 +440,6 @@ namespace Server
 
             // Set ComboBox to the first item's name
             ItemComboBox.SelectedItem = $"{defaultItem.Name}";
-
-            // Save the database
-            Envir.SaveDB();
         }
 
         private void ItemComboBox_SelectedIndexChanged(object sender, EventArgs e)

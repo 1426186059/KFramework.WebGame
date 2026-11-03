@@ -188,9 +188,6 @@ namespace Server
 
             if (HeroesChanged)
                 Settings.SaveHeroSettings();
-
-            if (SpawnChanged)
-                Envir.SaveDB();
         }
 
         #region Fishing

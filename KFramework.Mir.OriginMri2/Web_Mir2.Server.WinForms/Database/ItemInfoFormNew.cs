@@ -1057,7 +1057,6 @@ namespace Server.Database
                 }
             }
 
-            Envir.SaveDB();
         }
 
         private void CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -1119,7 +1118,6 @@ namespace Server.Database
             }
 
             SaveForm();
-            Envir.SaveDB();
         }
 
         private void MapHeaderText()

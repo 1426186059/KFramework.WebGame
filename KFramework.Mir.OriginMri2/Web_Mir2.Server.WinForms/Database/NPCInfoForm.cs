@@ -277,7 +277,6 @@ namespace Server
 
         private void NPCInfoForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Envir.SaveDB();
         }
 
 
