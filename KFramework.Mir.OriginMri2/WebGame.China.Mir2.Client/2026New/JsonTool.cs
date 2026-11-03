@@ -11,13 +11,3 @@ using System.Text.Json.Serialization.Metadata;
 internal sealed partial class AppJsonContext : JsonSerializerContext
 {
 }
-
-/// <summary>AOT 安全的 JSON 工具类：所有序列化/反序列化都通过源生成的 JsonTypeInfo 完成。</summary>
-public static class JsonTool
-{
-    public static string ToJson<T>(T value, JsonTypeInfo<T> typeInfo)
-        => JsonSerializer.Serialize(value, typeInfo);
-
-    public static T? FromJson<T>(string json, JsonTypeInfo<T> typeInfo)
-        => JsonSerializer.Deserialize(json, typeInfo);
-}
