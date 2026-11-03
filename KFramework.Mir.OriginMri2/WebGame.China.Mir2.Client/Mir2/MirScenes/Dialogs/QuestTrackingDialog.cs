@@ -1,5 +1,6 @@
 ﻿using Client.MirControls;
 using Client.MirObjects;
+using KFramework.MonoGameExtend;
 
 namespace Client.MirScenes.Dialogs
 {
@@ -12,12 +13,43 @@ namespace Client.MirScenes.Dialogs
         public Font QuestFont = new Font(Settings.FontName, 8F);
 
         private MirLabel _questNameLabel, _questTaskLabel;
+        private MirImageControl m_ShowNode;
+        private MirImageControl m_HideNode;
 
         public QuestTrackingDialog()
         {
-            Movable = true;
             Location = new Point(0, 100);
-            Sort = false;
+            AutoSize = false;
+            Size = new Size(300, 300);
+            Texture = KDefaultRes.DefaultTexture2D;
+
+            m_ShowNode = new MirImageControl
+            {
+                AtlasNameKey = "y_lefttop-sheet",
+                AtlasFrame = "lefttopbg",
+                Location = new Point(0, 0),
+                Parent = this,
+                Size = new Size(150, 20),
+            };
+
+            m_HideNode = new MirImageControl
+            {
+                AtlasNameKey = "y_lefttop-sheet",
+                AtlasFrame = "lefttop_leftbg2",
+                Location = new Point(0, 0),
+                Parent = this,
+                Size = new Size(19, 188),
+                Visible = false,
+            };
+
+            var m_HideNode_JianTou = new MirImageControl
+            {
+                AtlasNameKey = "y_lefttop-sheet",
+                AtlasFrame = "lefttop_leftbg0",
+                Parent = m_HideNode,
+                Location = Center,
+            };
+
         }
 
         public void DisplayQuests()

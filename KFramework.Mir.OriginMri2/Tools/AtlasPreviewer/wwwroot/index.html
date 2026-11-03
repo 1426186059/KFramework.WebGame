@@ -37,7 +37,7 @@
 <header>
   <div class="bar">
     <h1>原始传奇 图集预览</h1>
-    <input id="rootPath" type="text" placeholder="把本地图集文件夹路径粘贴到这里，例如 D:\xxx\assets" />
+    <input id="rootPath" type="text" value="D:/OpenSource/KFramework.WebGame/KFramework.Mir.OriginMri2/Mir2Res" placeholder="把本地图集文件夹路径粘贴到这里，例如 D:\xxx\assets" />
     <button id="loadBtn">加载</button>
   </div>
   <div class="bar">
@@ -72,6 +72,8 @@ const grid = document.getElementById('grid');
 const filterInput = document.getElementById('filter');
 const countEl = document.getElementById('count');
 const rootInput = document.getElementById('rootPath');
+const DEFAULT_ROOT = "D:/OpenSource/KFramework.WebGame/KFramework.Mir.OriginMri2/Mir2Res";
+if (!rootInput.value) rootInput.value = DEFAULT_ROOT;
 const loadBtn = document.getElementById('loadBtn');
 const atlasSelect = document.getElementById('atlasSelect');
 const atlasSearch = document.getElementById('atlasSearch');
