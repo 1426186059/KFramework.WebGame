@@ -20,10 +20,8 @@ namespace KFramework.Example.Mario
         {
             // 节点树 UI 文本需要默认字体（程序化生成，避免依赖 .spritefont 内容文件）
             KDefaultRes.DefaultSpriteFont = new SpriteFont(18f);
-
             await ContentManager.Default.LoadAsync().ConfigureAwait(false);
-
-            KSceneMgr.SetMainSceneAsync(new MainScene());
+            await KSceneMgr.SetMainSceneAsync(new MainScene());
         }
     }
 

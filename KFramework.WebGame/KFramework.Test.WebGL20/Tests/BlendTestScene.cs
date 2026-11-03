@@ -43,7 +43,7 @@ namespace KFramework.Test.WebGL20.Tests
         {
             await base.LoadContentAsync();
             var mBundle = await ContentManager.Default.LoadBundleAsync("Bundles");
-            _tex = mBundle.LoadTexture("lefttopbg.png");
+            _tex = mBundle.LoadTexture("Bundles/lefttopbg.png");
         }
 
         public override void Draw()
