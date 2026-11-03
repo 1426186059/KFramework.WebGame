@@ -20,17 +20,8 @@ namespace Client.MirScenes.Dialogs
         {
             Location = new Point(0, 100);
             AutoSize = false;
-            Size = new Size(300, 300);
-            Texture = KDefaultRes.DefaultTexture2D;
-
-            m_ShowNode = new MirImageControl
-            {
-                AtlasNameKey = "y_lefttop-sheet",
-                AtlasFrame = "lefttopbg",
-                Location = new Point(0, 0),
-                Parent = this,
-                Size = new Size(150, 20),
-            };
+            Size = new Size(265, 188);
+            //Texture = KDefaultRes.DefaultTexture2D;
 
             m_HideNode = new MirImageControl
             {
@@ -48,6 +39,62 @@ namespace Client.MirScenes.Dialogs
                 AtlasFrame = "lefttop_leftbg0",
                 Parent = m_HideNode,
                 Location = Center,
+            };
+
+            m_ShowNode = new MirImageControl
+            {
+                Parent = this,
+                Texture = KDefaultRes.DefaultTexture2D,
+                ForeColour = Color.Blue,
+                Location = new Point(0, 0),
+                Size = new Size(265, 188),
+            };
+
+            var mShowNode_Bg = new MirImageControl
+            {
+                Parent = m_ShowNode,
+                AtlasNameKey = "y_lefttop-sheet",
+                AtlasFrame = "lefttopbg",
+                Location = new Point(40, 0),
+            };
+
+            var mShowNode_HideBtn = new MirButton
+            {
+                Parent = m_ShowNode,
+                AtlasNameKey = "y_lefttop-sheet",
+                AtlasFrame = "lefttop_leftbg2",
+                Location = new Point(245, 0),
+                Size = new Size(19, 188),
+            };
+
+            mShowNode_HideBtn.LabelImage.AtlasNameKey = "y_lefttop-sheet";
+            mShowNode_HideBtn.LabelImage.AtlasFrame = "lefttop_leftbg1";
+            mShowNode_HideBtn.LabelImage.Location = mShowNode_HideBtn.LabelImage.Center;
+            mShowNode_HideBtn.LabelImage.Visible = true;
+
+            var mSwitchBtn = new MirButton
+            {
+                Parent = m_ShowNode,
+                AtlasNameKey = "y_lefttop-sheet",
+                AtlasFrame = "lefttop_change0",
+                PressedAtlasFrame = "lefttop_change0_1",
+            };
+            mSwitchBtn.Location = new Point(0, 188 / 2 - 20);
+
+            var mTaskBtn = new MirButton
+            {
+                Parent = m_ShowNode,
+                AtlasNameKey = "y_lefttop-sheet",
+                AtlasFrame = "lefttop_bg0_1",
+                Location = new Point(0, 0),
+            };
+
+            var mTeamBtn = new MirButton
+            {
+                Parent = m_ShowNode,
+                AtlasNameKey = "y_lefttop-sheet",
+                AtlasFrame = "lefttop_bg1_1",
+                Location = new Point(0, 188 - 85),
             };
 
         }
