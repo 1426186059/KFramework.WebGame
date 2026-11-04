@@ -97,7 +97,7 @@ namespace KFramework.Test.WebGL20.Tests
             batch.Begin();
             DrawHeader(batch);
             DrawLine(batch, "① 直绘：背景 + 下 + 上 直接画（NonPremultiplied）", x0, top + colH + 8f, new Color(255, 206, 110));
-            DrawLine(batch, "② RT：背景直绘 + 下+上进RT→上屏（AlphaBlend 合成）", x0 + colW + gap, top + colH + 8f, new Color(255, 206, 110));
+            DrawLine(batch, "② RT：背景直绘 + 下+上进RT→上屏（NonPremultiplied 合成）", x0 + colW + gap, top + colH + 8f, new Color(255, 206, 110));
             DrawLine(batch,
                 $"大背景颜色索引 {_bgIndex}（按空格切换）。两种混合结果应完全一致（半透明下/上层叠在背景上）。",
                 x0, top + colH + 34f, new Color(150, 200, 255));
