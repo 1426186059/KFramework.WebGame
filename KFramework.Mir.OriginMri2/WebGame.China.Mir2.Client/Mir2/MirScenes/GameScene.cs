@@ -283,6 +283,7 @@ namespace Client.MirScenes
             RequestedMonsterInfo.Clear();
             RequestedNPCInfo.Clear();
 
+            //Color.Transparent 会让 UI层 半透黑区域，变为 半透白。
             //BackColour = Color.Transparent;
             BackColour = new Color(0, 0, 0, 0);
 
