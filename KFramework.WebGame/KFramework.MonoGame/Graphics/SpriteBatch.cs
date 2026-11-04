@@ -66,7 +66,7 @@ namespace KFramework.MonoGame
             // 复用本批材质快照 _cache_Mat（避免每次 Begin 都 new），填好参数后交给 BeginInternal。
             _cache_Mat.Reset();
             _cache_Mat.Effect = effect;
-            _cache_Mat.Blend = blendState ?? BlendState.NonPremultiplied;
+            _cache_Mat.Blend = blendState ?? BlendState.DefaultBlend;
             _cache_Mat.Sampler = samplerState ?? SamplerState.Point;
             _cache_Mat.DepthStencil = depthStencilState ?? DepthStencilState.None;
             _cache_Mat.Rasterizer = rasterizerState ?? RasterizerState.CullNone;

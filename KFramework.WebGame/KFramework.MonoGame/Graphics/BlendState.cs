@@ -39,36 +39,59 @@ namespace KFramework.MonoGame
                 BlendMode.Zero,
                 enabled: false);
 
+        //本引擎默认的混合方式，与 Unity 保持一致
+        public static readonly BlendState DefaultBlend =
+            new(BlendMode.One, 
+                BlendMode.OneMinusSrcAlpha, 
+                BlendMode.One, 
+                BlendMode.OneMinusSrcAlpha);
+        
         /// <summary>
         /// 得在 Shader 片元着色器里  rgb *= alpha 之后再输出，才能正确混合。
         /// 这就是 预乘 alpha 的标准混合
         public static readonly BlendState AlphaBlend =
-            new(BlendMode.One, BlendMode.OneMinusSrcAlpha, BlendMode.One, BlendMode.OneMinusSrcAlpha);
+            new(BlendMode.One, 
+                BlendMode.OneMinusSrcAlpha, 
+                BlendMode.One, 
+                BlendMode.OneMinusSrcAlpha);
 
         // 这个存在严重的一个问题，就是一个 半透明的图 与 完全不透明的图 混合，会漏底。
         // 比如 0.5A 得图 和 1.0A 得图 混合，烘出来得 颜色是 0.5² + 1×(1-0.5) = 0.75，层下就漏底了。
         [Obsolete("Use NonPremultiplied instead.")]
         public static readonly BlendState Old_NonPremultiplied =
-            new(BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha);
+            new(BlendMode.SrcAlpha, 
+                BlendMode.OneMinusSrcAlpha, 
+                BlendMode.SrcAlpha, 
+                BlendMode.OneMinusSrcAlpha);
 
         //非预乘（NonPremultiplied）：Shader里 RGB 没有预乘 alpha，
         //这个是Old_NonPremultiplied 得改进版, 解决了上面漏底问题
         public static readonly BlendState NonPremultiplied =
-            new(BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, BlendMode.One, BlendMode.OneMinusSrcAlpha);
+            new(BlendMode.SrcAlpha, 
+                BlendMode.OneMinusSrcAlpha, 
+                BlendMode.One, 
+                BlendMode.OneMinusSrcAlpha);
 
         /// <summary>
         /// 叠加发光，用于粒子、爆炸、激光。
         /// <para>公式：Final = S×Sa + D；FinalA = Sa×Sa + Da。</para>
         /// </summary>
         public static readonly BlendState Additive =
-            new(BlendMode.SrcAlpha, BlendMode.One, BlendMode.SrcAlpha, BlendMode.One);
+            new(BlendMode.SrcAlpha, BlendMode.One, 
+                BlendMode.SrcAlpha, BlendMode.One);
 
         /// <summary>
         /// 完全不混合：整像素覆盖（等价于关闭 BLEND）。
         /// <para>公式（混合关闭时）：Final = S；FinalA = Sa（目标被整像素替换）。</para>
         /// </summary>
         public static readonly BlendState Opaque =
-            new(BlendMode.One, BlendMode.Zero, BlendOp.Add, BlendMode.One, BlendMode.Zero, BlendOp.Add, enabled: false);
+            new(BlendMode.One, 
+                BlendMode.Zero, 
+                BlendOp.Add, 
+                BlendMode.One, 
+                BlendMode.Zero, 
+                BlendOp.Add, 
+                enabled: false);
 
         /// <summary>
         /// 乘法混合：Final = Dest × SrcColor。传奇 / 传奇昼夜系统用它把「暗度色 + 发光体」的光照图
@@ -76,7 +99,8 @@ namespace KFramework.MonoGame
         /// <para>公式：Final = D × S；FinalA = Da × Sa。</para>
         /// </summary>
         public static readonly BlendState Multiply =
-            new(BlendMode.Zero, BlendMode.SrcColor, BlendMode.Zero, BlendMode.SrcColor);
+            new(BlendMode.Zero, BlendMode.SrcColor, 
+                BlendMode.Zero, BlendMode.SrcColor);
 
         /// <summary>
         /// 全加法发光：Final = Dest + Src（忽略 alpha 权重），用于把火把 / 法术等发光体累积进光照 RT。
@@ -84,6 +108,7 @@ namespace KFramework.MonoGame
         /// <para>公式：Final = S + D；FinalA = Sa + Da（各自相加，超过 1 截断）。</para>
         /// </summary>
         public static readonly BlendState AdditiveFull =
-            new(BlendMode.One, BlendMode.One, BlendMode.One, BlendMode.One);
+            new(BlendMode.One, BlendMode.One, 
+                BlendMode.One, BlendMode.One);
     }
 }

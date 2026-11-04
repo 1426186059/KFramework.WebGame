@@ -23,7 +23,7 @@ namespace KFramework.MonoGame
         public ShaderEffect? Effect;
 
         /// <summary>混合状态（照 MonoGame 的 BlendState，对应 Unity Shader 的 Blend 命令）。</summary>
-        public BlendState Blend = BlendState.NonPremultiplied;
+        public BlendState Blend = BlendState.DefaultBlend;
 
         /// <summary>采样参数（照 MonoGame 的 SamplerState，对应 Unity 纹理的 filterMode/wrapMode 或 SRP 的 SamplerState 对象）。</summary>
         public SamplerState Sampler = SamplerState.Point;

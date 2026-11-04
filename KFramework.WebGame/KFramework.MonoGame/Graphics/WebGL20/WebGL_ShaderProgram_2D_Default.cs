@@ -57,6 +57,7 @@ namespace KFramework.MonoGame
             void main()
             {
                 fragColor = texture(uTexture, vTexCoord) * vColor;
+                fragColor.rgb *= fragColor.a;
             }
             """;
 

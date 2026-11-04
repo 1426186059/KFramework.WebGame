@@ -276,7 +276,7 @@ namespace KFramework.MonoGame
             ApplyRasterizerState();
             _depthStencilState = DepthStencilState.None;
             ApplyDepthStencilState();
-            SetBlendState(BlendState.NonPremultiplied);
+            SetBlendState(BlendState.DefaultBlend);
 
             PrintTool.Log($"[KFramework.MonoGame] {Backend.Name} 就绪 | {Renderer} | 画布 {Viewport.Width}x{Viewport.Height} | 最大纹理 {MaxTextureSize}");
         }
