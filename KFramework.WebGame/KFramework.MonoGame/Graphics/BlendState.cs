@@ -49,6 +49,9 @@ namespace KFramework.MonoGame
         /// <summary>
         /// 得在 Shader 片元着色器里  rgb *= alpha 之后再输出，才能正确混合。
         /// 这就是 预乘 alpha 的标准混合
+        /// 但实际上 预乘和非预乘 通常指的是 原始图片像素 RGB 是否预乘了 Alpha
+        /// 一般 Png图片都是 非预乘的，jpg图片没有 alpha 通道，所以也算是非预乘
+        /// 图片文件 预乘的好处就是 节省了GPU一次乘法运算
         public static readonly BlendState AlphaBlend =
             new(BlendMode.One, 
                 BlendMode.OneMinusSrcAlpha, 
