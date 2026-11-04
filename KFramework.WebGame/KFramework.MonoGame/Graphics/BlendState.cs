@@ -40,8 +40,8 @@ namespace KFramework.MonoGame
                 enabled: false);
 
         //本引擎默认的混合方式，与 Unity 保持一致
-        public static readonly BlendState DefaultBlend = 
-            new(BlendMode.One,
+        public static readonly BlendState DefaultBlend =
+            new(BlendMode.SrcAlpha,
                 BlendMode.OneMinusSrcAlpha,
                 BlendMode.One,
                 BlendMode.OneMinusSrcAlpha);
