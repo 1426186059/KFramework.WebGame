@@ -40,12 +40,12 @@ namespace KFramework.MonoGame
                 enabled: false);
 
         //本引擎默认的混合方式，与 Unity 保持一致
-        public static readonly BlendState DefaultBlend =
-            new(BlendMode.One, 
-                BlendMode.OneMinusSrcAlpha, 
-                BlendMode.One, 
+        public static readonly BlendState DefaultBlend = 
+            new(BlendMode.One,
+                BlendMode.OneMinusSrcAlpha,
+                BlendMode.One,
                 BlendMode.OneMinusSrcAlpha);
-        
+
         /// <summary>
         /// 得在 Shader 片元着色器里  rgb *= alpha 之后再输出，才能正确混合。
         /// 这就是 预乘 alpha 的标准混合
