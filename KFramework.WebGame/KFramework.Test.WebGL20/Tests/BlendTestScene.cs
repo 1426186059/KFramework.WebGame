@@ -4,37 +4,33 @@ namespace KFramework.Test.WebGL20.Tests
 {
     public sealed class BlendTestScene : DemoScene
     {
-        private const int Big = 256;   // 底层 RT / 底层纹理边长（大）
-        private const int Small = 128; // 上层 RT 边长（小，明显小于底层）
+        private const int Big = 256;   // RT / 纹理边长
 
-        private Texture2D? _tex;       // 上层：Bundles/lefttopbg.png（半透明黑图）
-        private Texture2D? _bottomTex; // 下层：不透明纯色大底（土色，衬托半透明）
-        private RenderTarget2D? _rtBottom;  // ②/③ 底层 RT（大）
-        private RenderTarget2D? _rtTop;     // ②/③ 上层 RT（小）
-        private RenderTarget2D? _rtCombined;// ③ 嵌套合成后的底层 RT
+        private Texture2D? _bottomTex; // 下层：不透明土色大底（全组共用）
+        private Texture2D? _blackTex;  // ④⑤ 半透黑遮罩源（模拟传奇 半黑 dim）
+        private RenderTarget2D? _rtDimBug;  // ④⑤ 中间 RT：只装半透黑遮罩（NonPremultiplied 烘 → 预乘内容）
+        private Texture2D? _worldTex;  // ④⑤ 明亮世界底（衬托半透黑）
         private bool _rtDirty = true;
 
-        public override string Title => "混合对比：① 正常直绘 / ② 两个RT / ③ 嵌套RT";
+        public override string Title => "混合对照：三组用同一张上层图/下层图，只差底层是否不透明";
 
-        protected override string Description
-            => "只用默认混合：直绘=NonPremultiplied；合成RT=AlphaBlend。下层比上层大，混合居中。三种情况结果应一致。";
+        protected override string Description => "";
 
         public override async Task LoadContentAsync()
         {
             await base.LoadContentAsync();
             var mBundle = await ContentManager.Default.LoadBundleAsync("Bundles");
-            _tex = mBundle.LoadTexture("Bundles/lefttopbg.png");
-            _bottomTex = Device.CreateTexture(Big, Big, Solid(168, 124, 80, 255)); // 不透明土色大底
-            _rtBottom = new RenderTarget2D(Device, Big, Big);
-            _rtTop = new RenderTarget2D(Device, Small, Small);
-            _rtCombined = new RenderTarget2D(Device, Big, Big);
+            _bottomTex = Device.CreateTexture(Big, Big, Solid(168, 124, 80, 255)); // 不透明土色大底（全组共用）
+            _blackTex = Device.CreateTexture(Big, Big, Solid(50, 50, 50, 130)); // 50 灰, ~0.51 alpha（模拟半黑 dim）
+            _rtDimBug = new RenderTarget2D(Device, Big, Big);
+            _worldTex = Device.CreateTexture(Big, Big, Solid(225, 225, 230, 255)); // 明亮世界底
         }
 
         public override void Draw()
         {
             SpriteBatch batch = Batch;
 
-            if (_tex == null || _bottomTex == null || _rtBottom == null || _rtTop == null || _rtCombined == null)
+            if (_bottomTex == null || _blackTex == null || _rtDimBug == null || _worldTex == null)
             {
                 batch.Begin();
                 DrawHeader(batch);
@@ -46,76 +42,90 @@ namespace KFramework.Test.WebGL20.Tests
 
             if (_rtDirty) { BakeRTs(); _rtDirty = false; }
 
-            float top = 96f;
-            float cell = 300f, gap = 46f;
-            float x0 = 30f;
-            Rectangle rc1 = new((int)x0, (int)top, (int)cell, (int)cell);
-            Rectangle rc2 = new((int)(x0 + cell + gap), (int)top, (int)cell, (int)cell);
-            Rectangle rc3 = new((int)(x0 + 2 * (cell + gap)), (int)top, (int)cell, (int)cell);
+            // ===== 严格对照：三组用【同一张上层图 A】+【同一张下层图 B】，只差“底层是否不透明” =====
+            float rowTop = 110f;
+            float rowH = 168f;
+            float boxTop = 18f;
+            float aX = 165f, aSz = 104f;             // A 上层图
+            float bX = 300f, bSz = 104f;             // B 下层图
+            float cX = 440f, cW = 188f, cH = 104f;   // C 最终
 
-            // 上层小图在小矩形内居中（显示尺寸 = 底层显示的一半，保证「下层比上层大」）
-            int smallView = (int)(cell / 2);
-            int off = (int)((cell - smallView) / 2);
-            Rectangle smallAt(Rectangle big) => new(big.X + off, big.Y + off, smallView, smallView);
+            // 居中半透小图（显示尺寸 = 盒子一半）
+            Rectangle half(Rectangle big)
+            {
+                int sz = (int)(big.Width / 2);
+                int o = (int)((big.Width - sz) / 2);
+                return new Rectangle(big.X + o, big.Y + o, sz, sz);
+            }
+            Rectangle aBox(float y) => new((int)aX, (int)(y + boxTop), (int)aSz, (int)aSz);
+            Rectangle bBox(float y) => new((int)bX, (int)(y + boxTop), (int)bSz, (int)bSz);
+            Rectangle cBox(float y) => new((int)cX, (int)(y + boxTop), (int)cW, (int)cH);
 
-            // —— ① 正常直绘（默认混合 NonPremultiplied）——
-            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
-            batch.Draw(_bottomTex, rc1, null, Color.White); // 大底
-            batch.Draw(_tex, smallAt(rc1), null, Color.White); // 小上层（居中）
-            batch.End();
-
-            // —— ② 两个 RT 分别合成到屏幕（RT 内预乘，合成用 AlphaBlend）——
-            batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            batch.Draw(_rtBottom, rc2, null, Color.White);
-            batch.Draw(_rtTop, smallAt(rc2), null, Color.White);
-            batch.End();
-
-            // —— ③ 嵌套 RT：最终只呈现底层 RT（上层 RT 已合成进其中）——
-            batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            batch.Draw(_rtCombined, rc3, null, Color.White);
-            batch.End();
-
-            // —— 标签与说明（自动折行，避免横向重叠）——
+            // —— 文字层：只标 A/B/C 与组号，删掉大段说明 ——
             batch.Begin();
             DrawHeader(batch);
-
-            float lh = Font.LineSpacing + 4f;
-            float titleY = top + cell + 8f;
-            float descY = titleY + lh + 4f;
-            float colW = cell;
-
-            // 列标题（短，单行）
-            batch.DrawString(Font, "① 正常直绘", new Vector2(x0, titleY), new Color(255, 206, 110));
-            batch.DrawString(Font, "② 两个RT", new Vector2(x0 + cell + gap, titleY), new Color(255, 206, 110));
-            batch.DrawString(Font, "③ 嵌套RT", new Vector2(x0 + 2 * (cell + gap), titleY), new Color(255, 206, 110));
-
-            // 列说明（折行，限制在本列宽度内）
-            DrawWrapped(batch, "大底 + 小上层 直接画屏幕（NonPremultiplied）", new Vector2(x0, descY), Color.LightGray, colW);
-            DrawWrapped(batch, "底层RT + 上层RT 分别合成到屏幕（AlphaBlend）", new Vector2(x0 + cell + gap, descY), Color.LightGray, colW);
-            DrawWrapped(batch, "把上层RT绘进底层RT，最终只呈现底层RT", new Vector2(x0 + 2 * (cell + gap), descY), Color.LightGray, colW);
-
-            // 底部总结（横跨，折行）
-            float sumY = descY + 3 * lh + 12f;
-            float sumW = (x0 + 3 * (cell + gap)) - x0 - 10f;
-            DrawWrapped(batch,
-                "下层(大)比上层(小)大，混合居中；三种情况结果应完全一致（半透明黑压暗大底中央）。",
-                new Vector2(x0, sumY), new Color(150, 200, 255), sumW);
+            void Lab(float x, float y, string s, Color c) => batch.DrawString(Font, s, new Vector2(x, y), c);
+            for (int i = 0; i < 3; i++)
+            {
+                float y = rowTop + i * rowH;
+                string name = i == 0 ? "① 参考" : i == 1 ? "④ 传奇现状(发白)" : "⑤ 修正(不透明底)";
+                Color nc = i == 1 ? new Color(255, 120, 120) : i == 2 ? new Color(120, 255, 120) : new Color(255, 206, 110);
+                Lab(24f, y + 44f, name, nc);
+                Lab(aX, y + 2f, "A 上层图", new Color(180, 180, 180));
+                Lab(bX, y + 2f, "B 下层图", new Color(180, 180, 180));
+                Lab(cX, y + 2f, "C 最终", new Color(180, 180, 180));
+                Lab(aX + aSz + 10f, y + boxTop + aSz / 2f - 8f, "+", Color.LightGray);
+                Lab(bX + bSz + 12f, y + boxTop + bSz / 2f - 8f, "->", Color.LightGray);
+                if (i == 1) Lab(bX + 6f, y + boxTop + 40f, "透明", new Color(150, 150, 150)); // ④ 下层无底层
+            }
             DrawFooter(batch);
+            batch.End();
+
+            // —— 纹理层：A 全组相同(_rtDimBug)，B 全组相同(_bottomTex)，只差 C 的合成 ——
+            // ① 参考：B(不透明) + A，NonPremult
+            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            batch.Draw(_rtDimBug, aBox(rowTop), null, Color.White);
+            batch.Draw(_bottomTex, bBox(rowTop), null, Color.White);
+            batch.Draw(_bottomTex, cBox(rowTop), null, Color.White);
+            batch.Draw(_rtDimBug, half(cBox(rowTop)), null, Color.White);
+            batch.End();
+
+            // ④ 现状(bug)：无透明底层，半透 A 上屏后 alpha<1，白底(页面)透出 → 发白
+            float y4 = rowTop + rowH;
+            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            batch.Draw(_rtDimBug, aBox(y4), null, Color.White);
+            batch.Draw(_worldTex, cBox(y4), null, Color.White); // 白底(页面)
+            batch.Draw(_rtDimBug, half(cBox(y4)), null, Color.White);
+            batch.End();
+
+            // ⑤ 修正：B(不透明) + A，NonPremult（与①同图，证明“底层不透明即可”）
+            float y5 = rowTop + 2 * rowH;
+            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            batch.Draw(_rtDimBug, aBox(y5), null, Color.White);
+            batch.Draw(_bottomTex, bBox(y5), null, Color.White);
+            batch.Draw(_bottomTex, cBox(y5), null, Color.White);
+            batch.Draw(_rtDimBug, half(cBox(y5)), null, Color.White);
             batch.End();
         }
 
-        // 按最大宽度折行：以空格分词，超过 maxW 则换行。
+        // 折行：优先在空格处断（英文单词不乱切），否则按字符断（中文无空格也能折行，不再整行溢出）。
         private static List<string> Wrap(IFont font, string text, float maxW)
         {
             var lines = new List<string>();
             var sb = "";
-            foreach (string word in text.Split(' '))
+            foreach (char ch in text)
             {
-                string test = sb.Length == 0 ? word : sb + " " + word;
+                if (ch == ' ' && sb.Length > 0)
+                {
+                    lines.Add(sb);
+                    sb = "";
+                    continue;
+                }
+                string test = sb + ch;
                 if (font.Measure(test).X > maxW && sb.Length > 0)
                 {
                     lines.Add(sb);
-                    sb = word;
+                    sb = ch == ' ' ? "" : ch.ToString();
                 }
                 else sb = test;
             }
@@ -133,35 +143,13 @@ namespace KFramework.Test.WebGL20.Tests
             }
         }
 
-        // 烘焙 RT：底层（大土色）、上层（小 lefttopbg）、以及「嵌套合成」的底层 RT。
+        // 烘焙 RT：只烘 ④⑤ 用的 dim RT（半透黑遮罩，NonPremultiplied 烘 → 预乘内容）
         private void BakeRTs()
         {
-            // 底层 RT（大，土色，不透明）
-            Device.SetRenderTarget(_rtBottom);
+            Device.SetRenderTarget(_rtDimBug);
             Device.Clear(Color.Transparent);
             Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
-            Batch.Draw(_bottomTex, new Rectangle(0, 0, Big, Big), null, Color.White);
-            Batch.End();
-            Device.SetRenderTarget(null);
-
-            // 上层 RT（小，lefttopbg 半透明）
-            Device.SetRenderTarget(_rtTop);
-            Device.Clear(Color.Transparent);
-            Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
-            Batch.Draw(_tex, new Rectangle(0, 0, Small, Small), null, Color.White);
-            Batch.End();
-            Device.SetRenderTarget(null);
-
-            // 嵌套 RT：土色大底 + 把上层 RT 绘制进底层 RT（在 RT 上再合成一层）
-            Device.SetRenderTarget(_rtCombined);
-            Device.Clear(Color.Transparent);
-            Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
-            Batch.Draw(_bottomTex, new Rectangle(0, 0, Big, Big), null, Color.White);
-            Batch.End();
-            // 底层 RT 仍激活：把上层 RT 合成进来
-            int m = (Big - Small) / 2;
-            Batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            Batch.Draw(_rtTop, new Rectangle(m, m, Small, Small), null, Color.White);
+            Batch.Draw(_blackTex, new Rectangle(0, 0, Big, Big), null, Color.White);
             Batch.End();
             Device.SetRenderTarget(null);
         }
