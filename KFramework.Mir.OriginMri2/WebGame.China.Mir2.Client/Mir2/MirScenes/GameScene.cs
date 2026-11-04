@@ -282,7 +282,10 @@ namespace Client.MirScenes
             RequestedItemInfo.Clear();
             RequestedMonsterInfo.Clear();
             RequestedNPCInfo.Clear();
-            BackColour = Color.Transparent;
+
+            //BackColour = Color.Transparent;
+            BackColour = new Color(0, 0, 0, 0);
+
             MoveTime = CMain.Time;
 
             KeyDown += GameScene_KeyDown;
