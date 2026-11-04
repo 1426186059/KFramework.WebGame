@@ -734,7 +734,7 @@ namespace Client.MirControls
 
         public virtual void Draw()
         {
-            //2026-0--25 超出屏幕，我依然让他显示
+            //2026-09-25 超出屏幕，我依然让他显示
             if (IsDisposed || !Visible)
                 return;
 
