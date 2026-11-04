@@ -284,8 +284,9 @@ namespace Client.MirScenes
             RequestedNPCInfo.Clear();
 
             //Color.Transparent 会让 UI层 半透黑区域，变为 半透白。
+            //这是原版也存在的问题，用默认的Color.Empty 即可
             //BackColour = Color.Transparent;
-            BackColour = new Color(0, 0, 0, 0);
+            BackColour = Color.Empty;
 
             MoveTime = CMain.Time;
 
