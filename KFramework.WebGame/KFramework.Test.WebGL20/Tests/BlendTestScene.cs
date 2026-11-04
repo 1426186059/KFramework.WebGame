@@ -100,10 +100,6 @@ namespace KFramework.Test.WebGL20.Tests
             DrawWrapped(batch,
                 "下层(大)比上层(小)大，混合居中；三种情况结果应完全一致（半透明黑压暗大底中央）。",
                 new Vector2(x0, sumY), new Color(150, 200, 255), sumW);
-            DrawWrapped(batch,
-                "区别：直绘默认 = NonPremultiplied；合成 RT = AlphaBlend（RT 内预乘 rgb，颜色源=One 读，不能二次预乘）。",
-                new Vector2(x0, sumY + 2 * lh + 6f), Color.LightGray, sumW);
-
             DrawFooter(batch);
             batch.End();
         }
@@ -138,7 +134,6 @@ namespace KFramework.Test.WebGL20.Tests
         }
 
         // 烘焙 RT：底层（大土色）、上层（小 lefttopbg）、以及「嵌套合成」的底层 RT。
-        // 全部用 NonPremultiplied 烘焙（保证 RT 内 alpha 直线、颜色预乘）；嵌套那一步改用 AlphaBlend 读预乘上层 RT。
         private void BakeRTs()
         {
             // 底层 RT（大，土色，不透明）
@@ -163,7 +158,7 @@ namespace KFramework.Test.WebGL20.Tests
             Batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
             Batch.Draw(_bottomTex, new Rectangle(0, 0, Big, Big), null, Color.White);
             Batch.End();
-            // 底层 RT 仍激活：用 AlphaBlend 把上层 RT（预乘 rgb）合成进来
+            // 底层 RT 仍激活：把上层 RT 合成进来
             int m = (Big - Small) / 2;
             Batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             Batch.Draw(_rtTop, new Rectangle(m, m, Small, Small), null, Color.White);

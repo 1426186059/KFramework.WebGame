@@ -10,7 +10,7 @@ namespace Client.MirGraphics
     ///   <item><term>Normal</term><description>正常 alpha 合成 = 引擎 NonPremultiplied（已修正：α 源因子=One，alpha 保持直线 a；修掉半透明漏底 / 整图变透）。</description></item>
     ///   <item><term>Additive</term><description>加法发光 / 叠加 = 引擎 Additive（等价原版 SetBlend(true)）。</description></item>
     ///   <item><term>Multiply</term><description>乘法压暗 = 引擎 Multiply（传奇昼夜 / 光照系统把光照图乘回主画面）。</description></item>
-    ///   <item><term>AlphaBlend</term><description>预乘读取 = 引擎 AlphaBlend（颜色源=One，按已预乘方式读取预乘 RT）。</description></item>
+    ///   <item><term>AlphaBlend</term><description>颜色源因子=One 的覆盖混合 = 引擎 AlphaBlend（源 rgb 须已由 shader 乘过 alpha，否则用 Normal）。</description></item>
     /// </list>
     /// </summary>
     public enum MirBlend
@@ -21,7 +21,7 @@ namespace Client.MirGraphics
         Additive,
         /// <summary>乘法压暗（引擎 Multiply；昼夜 / 光照）。</summary>
         Multiply,
-        /// <summary>预乘读取（引擎 AlphaBlend；读取预乘 RT 用）。</summary>
+        /// <summary>颜色源因子=One 的覆盖混合（引擎 AlphaBlend）。</summary>
         AlphaBlend,
     }
 
