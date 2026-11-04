@@ -43,9 +43,6 @@ namespace KFramework.MonoGame
         /// <summary>
         /// 得在 Shader 片元着色器里  rgb *= alpha 之后再输出，才能正确混合。
         /// 这就是 预乘 alpha 的标准混合
-        /// 但实际上 预乘和非预乘 通常指的是 原始图片像素 RGB 是否预乘了 Alpha
-        /// 一般 Png图片都是 非预乘的，jpg图片没有 alpha 通道，所以也算是非预乘
-        /// 图片文件 预乘的好处就是 节省了GPU一次乘法运算
         public static readonly BlendState AlphaBlend =
             new(BlendMode.One, 
                 BlendMode.OneMinusSrcAlpha, 
@@ -63,6 +60,12 @@ namespace KFramework.MonoGame
 
         //非预乘（NonPremultiplied）：Shader里 RGB 没有预乘 alpha，
         //这个是Old_NonPremultiplied 得改进版, 解决了上面漏底问题
+        //但实际上 预乘和非预乘 通常指的是 原始图片像素 RGB 是否预乘了 Alpha
+        //一般 Png图片都是 非预乘的，jpg图片没有 alpha 通道，所以也算是非预乘
+        //图片文件 预乘的好处就是 节省了GPU一次乘法运算
+        // 
+        //注意 RT 混合，RT 实际上 是把一个纹理 color.rgb * alpha 进行了两次，所以看起来会更暗，
+        //这会导致 屏幕上呈现的图和实际的图不一样，尤其是半透明的图，RT混合后会更暗
         public static readonly BlendState NonPremultiplied =
             new(BlendMode.SrcAlpha, 
                 BlendMode.OneMinusSrcAlpha, 
