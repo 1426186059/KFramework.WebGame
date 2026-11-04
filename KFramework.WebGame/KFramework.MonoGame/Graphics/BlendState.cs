@@ -40,8 +40,8 @@ namespace KFramework.MonoGame
                 enabled: false);
 
         /// <summary>
-        /// 不预乘 alpha 的标准混合
         /// 得在 Shader 片元着色器里  rgb *= alpha 之后再输出，才能正确混合。
+        /// 这就是 预乘 alpha 的标准混合
         public static readonly BlendState AlphaBlend =
             new(BlendMode.One, BlendMode.OneMinusSrcAlpha, BlendMode.One, BlendMode.OneMinusSrcAlpha);
 
@@ -51,6 +51,7 @@ namespace KFramework.MonoGame
         public static readonly BlendState Old_NonPremultiplied =
             new(BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha);
 
+        //非预乘（NonPremultiplied）：Shader里 RGB 没有预乘 alpha，
         //这个是Old_NonPremultiplied 得改进版, 解决了上面漏底问题
         public static readonly BlendState NonPremultiplied =
             new(BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, BlendMode.One, BlendMode.OneMinusSrcAlpha);
