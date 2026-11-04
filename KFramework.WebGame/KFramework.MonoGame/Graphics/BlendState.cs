@@ -32,19 +32,13 @@ namespace KFramework.MonoGame
             AlphaBlendOperation = alphaOp;
         }
 
+        //不混和
         public static readonly BlendState NoneBlend =
             new(BlendMode.Zero,
                 BlendMode.Zero,
                 BlendMode.Zero,
                 BlendMode.Zero,
                 enabled: false);
-
-        //本引擎默认的混合方式，与 Unity 保持一致
-        public static readonly BlendState DefaultBlend =
-            new(BlendMode.SrcAlpha,
-                BlendMode.OneMinusSrcAlpha,
-                BlendMode.One,
-                BlendMode.OneMinusSrcAlpha);
 
         /// <summary>
         /// 得在 Shader 片元着色器里  rgb *= alpha 之后再输出，才能正确混合。
@@ -113,5 +107,8 @@ namespace KFramework.MonoGame
         public static readonly BlendState AdditiveFull =
             new(BlendMode.One, BlendMode.One, 
                 BlendMode.One, BlendMode.One);
+
+        //本引擎默认的混合方式，与 Unity 保持一致
+        public static readonly BlendState DefaultBlend = NonPremultiplied;
     }
 }
