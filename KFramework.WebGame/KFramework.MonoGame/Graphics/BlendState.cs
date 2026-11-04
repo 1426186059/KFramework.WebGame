@@ -47,6 +47,7 @@ namespace KFramework.MonoGame
 
         // 这个存在严重的一个问题，就是一个 半透明的图 与 完全不透明的图 混合，会漏底。
         // 比如 0.5A 得图 和 1.0A 得图 混合，烘出来得 颜色是 0.5² + 1×(1-0.5) = 0.75，层下就漏底了。
+        [Obsolete("Use NonPremultiplied instead.")]
         public static readonly BlendState Old_NonPremultiplied =
             new(BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha);
 
