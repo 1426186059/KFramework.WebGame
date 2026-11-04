@@ -82,9 +82,15 @@ namespace KFramework.Test.WebGL20.Tests
             },
             new TestEntry
             {
-                Name = "混合测试（lefttopbg 半透明黑 × 各 BlendState）",
-                Desc = "同一张半透明黑图在 AlphaBlend / NonPremultiplied / Additive / Multiply / Opaque 等混合下的颜色对比",
+                Name = "混合对比（默认混合 vs 两个RT / 嵌套RT / 真实资源）",
+                Desc = "① 正常直绘 ② 两个RT ③ 嵌套RT ④ 真实资源三层；只用默认混合，区分直绘与合成RT的差异",
                 Factory = static () => new BlendTestScene(),
+            },
+            new TestEntry
+            {
+                Name = "SimpleBlend（大背景可调 + 下层 + 上层）",
+                Desc = "三层默认混合叠加；按空格切换大背景颜色。下层=lefttop_leftbg2，上层=lefttop_leftbg1",
+                Factory = static () => new SimpleBlend(),
             },
         ];
     }
