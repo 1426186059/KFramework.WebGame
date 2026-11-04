@@ -86,14 +86,12 @@ namespace KFramework.MonoGame
         public static readonly BlendState AlphaBlend =
             new(BlendMode.One, BlendMode.OneMinusSrcAlpha, BlendMode.One, BlendMode.OneMinusSrcAlpha);
 
-        // 这个存在严重得一个问题，就是一个半透明得图层烘到透明 RT 上，
-        // RT 的 alpha 会被算成 a²（源因子=SrcAlpha），导致层下漏底。
-        // 比如 0.5A 得图 和 1.0A 得图烘到同一张透明 RT 上，
-        // RT 的 alpha 会被算成 0.5² + 1×(1-0.5) = 0.75，层下就漏底了。
+        // 这个存在严重的一个问题，就是一个 半透明的图 与 完全不透明的图 混合，会漏底。
+        // 比如 0.5A 得图 和 1.0A 得图 混合，烘出来得 RT 颜色是 0.5² + 1×(1-0.5) = 0.75，层下就漏底了。
         public static readonly BlendState Old_NonPremultiplied =
             new(BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha);
 
-        //这个是Old_NonPremultiplied 得改进版
+        //这个是Old_NonPremultiplied 得改进版, 解决了上面漏底问题
         public static readonly BlendState NonPremultiplied =
             new(BlendMode.SrcAlpha, BlendMode.OneMinusSrcAlpha, BlendMode.One, BlendMode.OneMinusSrcAlpha);
 
