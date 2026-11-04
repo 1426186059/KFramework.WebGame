@@ -14,7 +14,7 @@ namespace Client.MirScenes.Dialogs
 
         private MirLabel _questNameLabel, _questTaskLabel;
         private MirImageControl m_ShowNode;
-        private MirImageControl m_HideNode;
+        private MirButton m_HideNode;
 
         public QuestTrackingDialog()
         {
@@ -23,7 +23,7 @@ namespace Client.MirScenes.Dialogs
             Size = new Size(265, 188);
             //Texture = KDefaultRes.DefaultTexture2D;
 
-            m_HideNode = new MirImageControl
+            m_HideNode = new MirButton
             {
                 AtlasNameKey = "y_lefttop-sheet",
                 AtlasFrame = "lefttop_leftbg2",
@@ -32,14 +32,11 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(19, 188),
                 Visible = false,
             };
-
-            var m_HideNode_JianTou = new MirImageControl
-            {
-                AtlasNameKey = "y_lefttop-sheet",
-                AtlasFrame = "lefttop_leftbg0",
-                Parent = m_HideNode,
-                Location = Center,
-            };
+            m_HideNode.LabelImage.AtlasNameKey = "y_lefttop-sheet";
+            m_HideNode.LabelImage.AtlasFrame = "lefttop_leftbg0";
+            m_HideNode.LabelImage.Size = new Size(12, 46);
+            m_HideNode.LabelImage.Location = m_HideNode.LabelImage.Center;
+            m_HideNode.LabelImage.Visible = true;
 
             m_ShowNode = new MirImageControl
             {
@@ -69,6 +66,7 @@ namespace Client.MirScenes.Dialogs
 
             mShowNode_HideBtn.LabelImage.AtlasNameKey = "y_lefttop-sheet";
             mShowNode_HideBtn.LabelImage.AtlasFrame = "lefttop_leftbg1";
+            mShowNode_HideBtn.LabelImage.Size = new Size(12, 46);
             mShowNode_HideBtn.LabelImage.Location = mShowNode_HideBtn.LabelImage.Center;
             mShowNode_HideBtn.LabelImage.Visible = true;
 
@@ -127,7 +125,7 @@ namespace Client.MirScenes.Dialogs
                     BackColour = Color.Transparent,
                     Font = QuestFont,
                     ForeColour = Color.LimeGreen,
-                    Location = new Point(5, 20 + y),
+                    Location = new Point(45, 20 + y),
                     OutLine = true,
                     Parent = this,
                     Visible = true,
@@ -147,7 +145,7 @@ namespace Client.MirScenes.Dialogs
                         BackColour = Color.Transparent,
                         Font = QuestFont,
                         ForeColour = Color.White, //trackedQuest.Contains("(Completed)") ? Color.LimeGreen : 
-                        Location = new Point(25, 20 + y),
+                        Location = new Point(45, 20 + y),
                         OutLine = true,
                         Parent = this,
                         Visible = true,
