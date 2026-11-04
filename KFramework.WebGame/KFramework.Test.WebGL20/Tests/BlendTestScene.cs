@@ -1,18 +1,7 @@
-using System.Collections.Generic;
 using KFramework.MonoGame;
-using KFramework.MonoGameExtend;
 
 namespace KFramework.Test.WebGL20.Tests
 {
-    /// <summary>
-    /// 混合最小对比：只测三种情况，全程只用「默认混合」。下层永远比上层大，混合区域居中、四周是纯底层，区分明显。
-    /// <para>上层用 <c>Bundles/lefttopbg.png</c>（半透明黑图，RGB=0, A&lt;255）叠在不透明纯色大底上。</para>
-    /// <para>① 正常：大底 + 小上层直接画到屏幕，默认混合 = <see cref="BlendState.NonPremultiplied"/>（源非预乘原色，alpha 直线）。</para>
-    /// <para>② 两个 RT：底层 RT + 上层 RT 分别用 <see cref="BlendState.AlphaBlend"/> 合成到屏幕（RT 内已是预乘 rgb，颜色源=One 读取）。</para>
-    /// <para>③ 嵌套 RT：把上层 RT 绘制进底层 RT（在 RT 上再合成一层），最终只呈现底层 RT。
-    /// 关键：底层 RT 激活时画上层 RT 也要用 <see cref="BlendState.AlphaBlend"/> 读预乘，不能再用 NonPremultiplied 二次预乘。</para>
-    /// <para>三种情况最终结果应当完全一致（半透明黑把大底中央压暗）。</para>
-    /// </summary>
     public sealed class BlendTestScene : DemoScene
     {
         private const int Big = 256;   // 底层 RT / 底层纹理边长（大）

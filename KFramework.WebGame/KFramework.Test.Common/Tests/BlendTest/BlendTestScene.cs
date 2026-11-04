@@ -19,12 +19,8 @@ namespace KFramework.Test.Common.Tests.BlendTest
         private Texture2D _whiteTex = null!;    // 纯白（用于着色成半透明/加法/覆盖叠加）
         private Texture2D _mirLightTex = null!; // 传奇光照图：暗度灰铺底 + 中心火把白光池（RGB 烘焙）
 
-        // —— 模式②：3 层 / 3 色 演示（4 组对照）——
-        // 同一组「底红(最大·不透明)/中绿(中等·不透明)/顶蓝(最小·半透明)」，用不同数量的 RT 渲染，横向对比结果：
-        // ① 3 个 Draw 直接画（无 RT）；② 1 张 RT（三层合一）；③ 2 张 RT（底 / 中上）；④ 3 张 RT（每层各自）。
         private static readonly byte[] AlphaLevels = [40, 80, 120, 160, 200, 240]; // 顶层半透明蓝的浓度（≈0.16 / 0.31 / 0.47 / 0.63 / 0.78 / 0.94）
 
-        // 三层的配色方案（底·最大不透明 / 中·中等不透明 / 顶·最小半透明）。可点击切换，方便看清层间漏下效果。
         private sealed record ColorScheme(string Name, Color Bottom, Color Mid, Color Top);
         private static readonly ColorScheme[] ColorSchemes = [
             new("红/绿/蓝",   new Color(220, 70, 70),  new Color(70, 200, 110), new Color(90, 150, 240)),
@@ -82,7 +78,6 @@ namespace KFramework.Test.Common.Tests.BlendTest
 
         protected override void DrawBody(SpriteBatch batch, Vector2 origin)
         {
-            // 基类 Draw() 已用默认混合 Begin 并画了返回/标题，这里先收掉，再按各模式开关批次。
             batch.End();
 
             // —— 顶部模式切换按钮（两种模式都显示）——
@@ -222,8 +217,6 @@ namespace KFramework.Test.Common.Tests.BlendTest
             b.Draw(KDefaultRes.DefaultTexture2D, new Rectangle(x + bi, y + bi, w - 2 * bi, h - 2 * bi), null, cTop);
         }
 
-        // 烘焙 5 张 RT（组②③④ 用）。统一用 BlendState.NonPremultiplied（颜色预乘、alpha 直线）+ 透明清屏，
-        // 显示端用 AlphaBlend 读取；这样 RT 内是「预乘 rgb + 直线 alpha」，与不拆 RT 直接画逐像素一致。
         private void BakeAllRTs()
         {
             int a = AlphaLevels[_alphaIndex];
@@ -278,7 +271,6 @@ namespace KFramework.Test.Common.Tests.BlendTest
             int startX = (int)origin.X;
             int startY = (int)(ContentTop + 40);
 
-            // 自适应：4 行在「可用高度」内尽量大，且每行之间留固定空隙（不挤、也不溢出屏幕）。
             int bottomMargin = 64;                 // 底部说明预留
             int gap = 12, arrowW = 24;
             int labelH = 20, capH = 18, interRowGap = 18;
@@ -288,8 +280,6 @@ namespace KFramework.Test.Common.Tests.BlendTest
             int thumbW = (int)(thumbH * 1.5f + 0.5f); // 保持 3:2
             int rowStep = thumbH + labelH + capH + interRowGap;
 
-            // 4 组对照，各占一行（A 无RT / B 1RT / C 2RT / D 3RT）。
-            // 每行：左侧「中间产生的 RT」缩略图（没有就不显示）+ "→" + 右侧「最终合成图」（4 个最终图对齐成一列便于比较）。
             string[] labels = {
                 "A　3 个 Draw 直接画（无中间 RT）",
                 "B　1 张 RT（三层合一）",
@@ -311,8 +301,6 @@ namespace KFramework.Test.Common.Tests.BlendTest
 
             int finalX = startX + 3 * (thumbW + gap) + arrowW + gap;
 
-            // RT 缩略图与「最终图(B/C/D)」：RT 内含预乘 alpha，必须用 premultiplied（AlphaBlend）显示，
-            // 否则半透明层会被二次预乘 → 颜色发暗/偏透（这正是之前 4 组不一致的根因）。
             batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             for (int i = 0; i < 4; i++)
             {
@@ -410,8 +398,6 @@ namespace KFramework.Test.Common.Tests.BlendTest
 
         private static Texture2D MakeMirLightTexture(GraphicsDevice device, int w, int h)
         {
-            // 传奇光照图：暗度灰铺底（夜晚压暗），中心一个白色火把光池（局部提亮）。
-            // 用 Multiply 合成回主画面时：Final = 主画面 × 本图 → 整体压暗，中心火把处保持明亮。
             byte[] data = new byte[w * h * 4];
             const byte dr = 55, dg = 60, db = 75; // 夜晚暗度（接近纯暗）
             for (int y = 0; y < h; y++)
