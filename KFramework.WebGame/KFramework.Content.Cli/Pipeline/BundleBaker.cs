@@ -144,14 +144,21 @@ namespace KFramework.Content.Cli
 
         private static SKBitmap DecodeToRgba(byte[] bytes)
         {
-            SKBitmap src = SKBitmap.Decode(bytes);
-            if (src is null) return null;
-            // 不透明/Unknown 源强制为 Opaque；真正带透明通道（Premul/Straight）的图则保留透明度
-            bool forceOpaque = (src.AlphaType == SKAlphaType.Opaque || src.AlphaType == SKAlphaType.Unknown);
-            SKBitmap dst = src.Copy(SKColorType.Rgba8888);
-            src.Dispose();
+            // 用 SKImageInfo 显式指定 SKAlphaType.Unpremul：SKBitmap.Decode(byte[]) 默认解成 Premul
+            // （rgb 已被 alpha 乘过），而下游 EncodeWebpFromRgba/Png/Ktx2 把它当 straight 编码写进
+            // Bundle，运行端再叠加 shader 的 rgb*=a 就二次预乘（白边 a² 发淡）。这里让解码器直接产出
+            // 非预乘 RGBA，避免后续任何手动反算。
+            using var codec = SKCodec.Create(new MemoryStream(bytes));
+            if (codec is null) return null;
+            SKImageInfo srcInfo = codec.Info;
+            SKImageInfo dstInfo = new SKImageInfo(srcInfo.Width, srcInfo.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+
+            SKBitmap dst = SKBitmap.Decode(bytes, dstInfo);
             if (dst is null)
-                throw new InvalidOperationException("纹理解码/格式转换失败：无法复制到 Rgba8888");
+                throw new InvalidOperationException("纹理解码/格式转换失败：无法解码为 Rgba8888(Unpremul)");
+
+            // 不透明/Unknown 源强制为 Opaque（alpha 置 255）；真正带透明通道的图保留透明度
+            bool forceOpaque = (srcInfo.AlphaType == SKAlphaType.Opaque || srcInfo.AlphaType == SKAlphaType.Unknown);
             if (forceOpaque)
             {
                 using var pix = dst.PeekPixels();
