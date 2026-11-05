@@ -1760,6 +1760,7 @@ public enum ClientPacketIds : short
     RequestNPCInfo,
     RequestItemInfo,
     TeleportToNPC,
+    TeleportToQuestTarget,
     SearchMap,
     Inspect,
     Observe,

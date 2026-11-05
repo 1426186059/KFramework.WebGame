@@ -426,6 +426,9 @@ namespace Server.MirNetwork
                 case (short)ClientPacketIds.TeleportToNPC:
                     TeleportToNPC((C.TeleportToNPC)p);
                     break;
+                case (short)ClientPacketIds.TeleportToQuestTarget:
+                    TeleportToQuestTarget((C.TeleportToQuestTarget)p);
+                    break;
                 case (short)ClientPacketIds.SearchMap:
                     SearchMap((C.SearchMap)p);
                     break;
@@ -1418,6 +1421,13 @@ namespace Server.MirNetwork
             if (Stage != GameStage.Game) return;
 
             Player.TeleportToNPC(p.ObjectID);
+        }
+
+        private void TeleportToQuestTarget(C.TeleportToQuestTarget p)
+        {
+            if (Stage != GameStage.Game) return;
+
+            Player.TeleportToQuestTarget(p.MapIndex, p.X, p.Y);
         }
 
         private void SearchMap(C.SearchMap p)

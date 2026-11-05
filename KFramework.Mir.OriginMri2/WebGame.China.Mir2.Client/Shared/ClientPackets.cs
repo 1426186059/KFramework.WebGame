@@ -1098,6 +1098,28 @@ namespace ClientPackets
         }
     }
 
+    public sealed class TeleportToQuestTarget : Packet
+    {
+        public override short Index { get { return (short)ClientPacketIds.TeleportToQuestTarget; } }
+
+        public uint MapIndex;
+        public int X;
+        public int Y;
+
+        protected override void ReadPacket(BinaryReader reader)
+        {
+            MapIndex = reader.ReadUInt32();
+            X = reader.ReadInt32();
+            Y = reader.ReadInt32();
+        }
+        protected override void WritePacket(BinaryWriter writer)
+        {
+            writer.Write(MapIndex);
+            writer.Write(X);
+            writer.Write(Y);
+        }
+    }
+
     public sealed class SearchMap : Packet
     {
         public override short Index { get { return (short)ClientPacketIds.SearchMap; } }

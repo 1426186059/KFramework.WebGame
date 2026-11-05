@@ -537,6 +537,9 @@ public class ClientQuestProgress
     public bool Completed;
     public bool New;
 
+    // 任务追踪栏“点击传送”用：每个任务行对应的目标（怪物/NPC）+ 地图坐标。
+    public List<QuestTaskTarget> Targets = new List<QuestTaskTarget>();
+
     public QuestIcon Icon
     {
         get
@@ -559,6 +562,10 @@ public class ClientQuestProgress
         Taken = reader.ReadBoolean();
         Completed = reader.ReadBoolean();
         New = reader.ReadBoolean();
+
+        int targetCount = reader.ReadInt32();
+        for (int i = 0; i < targetCount; i++)
+            Targets.Add(new QuestTaskTarget(reader));
     }
 
     public void Save(BinaryWriter writer)
@@ -573,10 +580,49 @@ public class ClientQuestProgress
         writer.Write(Taken);
         writer.Write(Completed);
         writer.Write(New);
+
+        writer.Write(Targets.Count);
+        for (int i = 0; i < Targets.Count; i++)
+            Targets[i].Save(writer);
     }
 }
 
-public class ClientBuff
+public enum QuestTargetType : byte
+{
+    Monster = 0,
+    NPC = 1,
+}
+
+public class QuestTaskTarget
+{
+    public QuestTargetType Type;
+    public string Name = string.Empty;
+    public uint MapIndex;
+    public int X;
+    public int Y;
+
+    public QuestTaskTarget() { }
+    public QuestTaskTarget(BinaryReader reader) { Read(reader); }
+
+    public void Read(BinaryReader reader)
+    {
+        Type = (QuestTargetType)reader.ReadByte();
+        Name = reader.ReadString();
+        MapIndex = reader.ReadUInt32();
+        X = reader.ReadInt32();
+        Y = reader.ReadInt32();
+    }
+    public void Save(BinaryWriter writer)
+    {
+        writer.Write((byte)Type);
+        writer.Write(Name);
+        writer.Write(MapIndex);
+        writer.Write(X);
+        writer.Write(Y);
+    }
+}
+
+    public class ClientBuff
 {
     public BuffType Type;
     public string Caster;

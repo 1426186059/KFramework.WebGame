@@ -131,6 +131,19 @@ namespace Client.MirControls
                 OutLineColourChanged.Invoke(this, EventArgs.Empty);
         }
 
+        // 下划线装饰（opt-in）：引擎字体走 Canvas2D，FontStyle 无 Underline，这里在文字底部画一条 1px 线。
+        private bool _underLine;
+        public bool UnderLine
+        {
+            get { return _underLine; }
+            set
+            {
+                if (_underLine == value)
+                    return;
+                _underLine = value;
+                TextureValid = false;
+            }
+        }
 
         private void GetSize()
         {
@@ -180,7 +193,7 @@ namespace Client.MirControls
             DrawControlTexture = true;
             _drawFormat = TextFormatFlags.WordBreak;
 
-            _font = ScaleFont(new Font(Settings.FontName, 8F));
+            _font = ScaleFont(new Font(Settings.FontName, 12F));
             _outLine = true;
             _outLineColour = Color.Black; 
             _text = string.Empty;
@@ -234,6 +247,17 @@ namespace Client.MirControls
                         TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(1, 2, Size.Width, Size.Height), outline, format);
                     }
                     TextRenderer.DrawText(Text, Font, new MirEngine.Rectangle(1, 1, Size.Width, Size.Height), fore, format);
+
+                    if (_underLine)
+                    {
+                        int uy = Size.Height - 2;
+                        if (uy > 0)
+                            DXManager.DrawLines(new SlimDX.Vector2[]
+                            {
+                                new SlimDX.Vector2(1, uy),
+                                new SlimDX.Vector2(Size.Width - 1, uy),
+                            }, 1F, ForeColour);
+                    }
                 }
                 finally
                 {

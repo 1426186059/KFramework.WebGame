@@ -312,7 +312,7 @@ namespace Client.MirControls
                 TextureSize = Size;
             }
 
-            Font font = TextBox.Font ?? new Font(Settings.FontName, Settings.FontSize);
+            Font font = TextBox.Font ?? new Font(Settings.FontName, 8F);
             int fore = (TextBox.ForeColor != Color.Empty ? TextBox.ForeColor : Color.White).ToArgb();
             int back = (TextBox.BackColor != Color.Empty && TextBox.BackColor.A > 0) ? TextBox.BackColor.ToArgb() : 0;
             int selBack = Color.FromArgb(128, 51, 153, 255).ToArgb();

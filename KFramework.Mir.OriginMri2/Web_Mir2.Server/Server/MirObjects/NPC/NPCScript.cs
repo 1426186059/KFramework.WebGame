@@ -709,7 +709,10 @@ namespace Server.MirObjects
                     if (info == null) return;
 
                     if (index > 0)
+                    {
                         info.NpcIndex = LoadedObjectID;
+                        info.NpcInfo = loadedNPC.Info;
+                    }
                     else
                         info.FinishNpcIndex = LoadedObjectID;
 

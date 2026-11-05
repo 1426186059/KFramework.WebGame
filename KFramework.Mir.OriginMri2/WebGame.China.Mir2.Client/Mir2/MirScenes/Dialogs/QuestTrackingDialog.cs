@@ -1,6 +1,9 @@
 ﻿using Client.MirControls;
 using Client.MirObjects;
 using KFramework.MonoGameExtend;
+using Client.MirNetwork;
+using Client.MirGraphics;
+using ClientPackets;
 
 namespace Client.MirScenes.Dialogs
 {
@@ -10,7 +13,7 @@ namespace Client.MirScenes.Dialogs
         public List<int> TrackedQuestsIds = new List<int>();
         public List<MirLabel> TaskLines = new List<MirLabel>();
 
-        public Font QuestFont = new Font(Settings.FontName, 8F);
+        public Font QuestFont = new Font(Settings.FontName, 12F);
 
         private MirLabel _questNameLabel, _questTaskLabel;
         private MirImageControl m_ShowNode;
@@ -134,11 +137,88 @@ namespace Client.MirScenes.Dialogs
 
                 TaskLines.Add(_questNameLabel);
 
+                int ti = 0;
                 foreach (string questToTrack in questsToTrack[i].TaskList)
                 {
                     y += 15;
 
                     string trackedQuest = questToTrack;
+                    QuestTaskTarget tgt = (questsToTrack[i].Targets != null && ti < questsToTrack[i].Targets.Count) ? questsToTrack[i].Targets[ti] : null;
+                    ti++;
+
+                    if (tgt != null && !string.IsNullOrEmpty(tgt.Name))
+                    {
+                        int idx = trackedQuest.IndexOf(tgt.Name, System.StringComparison.Ordinal);
+
+                        if (idx >= 0)
+                        {
+                            // 拆分：前缀（白） + 目标名+进度（绿、下划线、可点击传送）
+                            string prefix = trackedQuest.Substring(0, idx);
+                            string tgtText = trackedQuest.Substring(idx);
+
+                            var prefixLabel = new MirLabel
+                            {
+                                Text = prefix,
+                                AutoSize = true,
+                                BackColour = Color.Transparent,
+                                Font = QuestFont,
+                                ForeColour = Color.White,
+                                Location = new Point(45, 20 + y),
+                                OutLine = true,
+                                Parent = this,
+                                Visible = true
+                            };
+                            TaskLines.Add(prefixLabel);
+
+                            int prefixW = TextRenderer.MeasureText(prefix, QuestFont).Width + 2;
+                            var tgtLabel = new MirLabel
+                            {
+                                Text = tgtText,
+                                
+                                AutoSize = true,
+                                BackColour = Color.Transparent,
+                                Font = QuestFont,
+                                ForeColour = Color.Green,
+                                Location = new Point(45 + prefixW, 20 + y),
+                                OutLine = true,
+                                UnderLine = true,
+                                Parent = this,
+                                Visible = true
+                            };
+                            tgtLabel.Click += (s, e) => Network.Enqueue(new TeleportToQuestTarget
+                            {
+                                MapIndex = tgt.MapIndex,
+                                X = tgt.X,
+                                Y = tgt.Y
+                            });
+                            TaskLines.Add(tgtLabel);
+                            continue;
+                        }
+
+                        // 目标名未出现在文本中（如自定义对话描述）：整行绿色下划线可点击
+                        _questTaskLabel = new MirLabel
+                        {
+                            Text = trackedQuest,
+                            AutoSize = true,
+                            BackColour = Color.Transparent,
+                            Font = QuestFont,
+                            ForeColour = Color.Green,
+                            Location = new Point(45, 20 + y),
+                            OutLine = true,
+                            UnderLine = true,
+                            Parent = this,
+                            Visible = true,
+                        };
+                        _questTaskLabel.Click += (s, e) => Network.Enqueue(new TeleportToQuestTarget
+                        {
+                            MapIndex = tgt.MapIndex,
+                            X = tgt.X,
+                            Y = tgt.Y
+                        });
+                        TaskLines.Add(_questTaskLabel);
+                        continue;
+                    }
+
                     _questTaskLabel = new MirLabel
                     {
                         Text = trackedQuest,

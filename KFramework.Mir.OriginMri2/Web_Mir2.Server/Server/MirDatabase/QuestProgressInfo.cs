@@ -25,6 +25,9 @@ namespace Server.MirDatabase
 
         public List<string> TaskList = new List<string>();
 
+        // 任务追踪栏“点击传送”目标（与 TaskList 一一对应：怪物/NPC + 地图坐标）。
+        public List<QuestTaskTarget> Targets = new List<QuestTaskTarget>();
+
         public bool IsOrphan { get; private set; }
         
         public bool Taken
@@ -428,6 +431,7 @@ namespace Server.MirDatabase
         public void UpdateTasks()
         {
             TaskList = new List<string>();
+            Targets = new List<QuestTaskTarget>();
 
             UpdateKillTasks();
             UpdateItemTasks();
@@ -448,6 +452,7 @@ namespace Server.MirDatabase
                 }
 
                 TaskList.Add(string.Format("{0} {1}", Info.KillMessage, allComplete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                Targets.Add(KillTaskCount.Count > 0 ? MakeMonsterTarget(KillTaskCount[0].Info.Monster) : null);
                 return;
             }
 
@@ -457,10 +462,12 @@ namespace Server.MirDatabase
                 {
                     TaskList.Add(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.KillCountProgress), KillTaskCount[i].Info.Monster.GameName, KillTaskCount[i].Count,
                         KillTaskCount[i].Info.Count, KillTaskCount[i].Complete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                    Targets.Add(MakeMonsterTarget(KillTaskCount[i].Info.Monster));
                 }
                 else
                 {
                     TaskList.Add(string.Format("{0} {1}", Info.KillTasks[i].Message, KillTaskCount[i].Complete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                    Targets.Add(MakeMonsterTarget(KillTaskCount[i].Info.Monster));
                 }
             }
         }
@@ -478,6 +485,7 @@ namespace Server.MirDatabase
                 }
                 
                 TaskList.Add(string.Format("{0} {1}", Info.ItemMessage, allComplete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                Targets.Add(MakeNPCTarget());
                 return;
             }
 
@@ -487,10 +495,12 @@ namespace Server.MirDatabase
                 {
                     TaskList.Add(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CollectProgress), Info.ItemTasks[i].Item.FriendlyName, ItemTaskCount[i].Count,
                         Info.ItemTasks[i].Count, ItemTaskCount[i].Complete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                    Targets.Add(MakeNPCTarget());
                 }
                 else
                 {
                     TaskList.Add(string.Format("{0} {1}", Info.ItemTasks[i].Message, ItemTaskCount[i].Complete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                    Targets.Add(MakeNPCTarget());
                 }
             }
         }
@@ -508,6 +518,7 @@ namespace Server.MirDatabase
                 }
                 
                 TaskList.Add(string.Format("{0} {1}", Info.FlagMessage, allComplete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                Targets.Add(MakeNPCTarget());
                 return;
             }
 
@@ -516,10 +527,12 @@ namespace Server.MirDatabase
                 if (string.IsNullOrEmpty(Info.FlagTasks[i].Message))
                 {
                     TaskList.Add(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ActivateFlag), Info.FlagTasks[i].Number, FlagTaskSet[i].Complete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                    Targets.Add(MakeNPCTarget());
                 }
                 else
                 {
                     TaskList.Add(string.Format("{0} {1}", Info.FlagTasks[i].Message, FlagTaskSet[i].Complete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                    Targets.Add(MakeNPCTarget());
                 }
             }
         }
@@ -529,7 +542,49 @@ namespace Server.MirDatabase
             if (Info.GotoMessage.Length <= 0 || !Completed) return;
             
             TaskList.Add(Info.GotoMessage);
+            Targets.Add(MakeNPCTarget());
         }
+
+        #region Quest Target Helpers
+
+        private QuestTaskTarget MakeMonsterTarget(MonsterInfo monster)
+        {
+            if (monster == null) return null;
+
+            for (int i = 0; i < Envir.SavedSpawns.Count; i++)
+            {
+                MapRespawn spawn = Envir.SavedSpawns[i];
+                if (spawn.Info == null || spawn.Map == null) continue;
+                if (spawn.Info.MonsterIndex != monster.Index) continue;
+
+                return new QuestTaskTarget
+                {
+                    Type = QuestTargetType.Monster,
+                    Name = monster.GameName,
+                    MapIndex = (uint)spawn.Map.Info.Index,
+                    X = spawn.Info.Location.X,
+                    Y = spawn.Info.Location.Y
+                };
+            }
+            return null;
+        }
+
+        private QuestTaskTarget MakeNPCTarget()
+        {
+            NPCInfo npc = Info.NpcInfo;
+            if (npc == null) return null;
+
+            return new QuestTaskTarget
+            {
+                Type = QuestTargetType.NPC,
+                Name = npc.Name,
+                MapIndex = (uint)npc.MapIndex,
+                X = npc.Location.X,
+                Y = npc.Location.Y
+            };
+        }
+
+        #endregion
 
         #endregion
 
@@ -579,6 +634,7 @@ namespace Server.MirDatabase
             {
                 Id = Index,
                 TaskList = TaskList,
+                Targets = new List<QuestTaskTarget>(Targets),
                 Taken = Taken,
                 Completed = Completed,
                 New = New

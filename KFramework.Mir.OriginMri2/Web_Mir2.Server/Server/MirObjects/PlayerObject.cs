@@ -7706,6 +7706,69 @@ namespace Server.MirObjects
                 break;
             }
         }
+
+        /// <summary>
+        /// 任务追踪栏“点击传送”：免费跨图传送到任务目标（怪物刷点 / NPC）周边。
+        /// 仅当请求的坐标匹配玩家当前任务里某个未完成任务的目标时才放行，防止被滥用为任意坐标免费传送。
+        /// </summary>
+        public void TeleportToQuestTarget(uint mapIndex, int x, int y)
+        {
+            if (!HasQuestTarget(mapIndex, x, y)) return;
+
+            Map map = Envir.GetMap((int)mapIndex);
+            if (map == null) return;
+
+            Point p = new Point(x, y);
+            if (!map.ValidPoint(p))
+            {
+                Point? near = FindNearbyValid(map, x, y);
+                if (near == null) return;
+                p = near.Value;
+            }
+
+            Teleport(map, p);
+        }
+
+        private bool HasQuestTarget(uint mapIndex, int x, int y)
+        {
+            for (int i = 0; i < CurrentQuests.Count; i++)
+            {
+                QuestProgressInfo quest = CurrentQuests[i];
+                if (quest == null || quest.Completed) continue;
+                if (quest.Targets == null || quest.Targets.Count == 0)
+                    quest.UpdateTasks();
+                if (quest.Targets == null) continue;
+
+                for (int j = 0; j < quest.Targets.Count; j++)
+                {
+                    QuestTaskTarget t = quest.Targets[j];
+                    if (t == null) continue;
+                    if (t.MapIndex == mapIndex && Math.Abs(t.X - x) <= 3 && Math.Abs(t.Y - y) <= 3)
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        private Point? FindNearbyValid(Map map, int x, int y)
+        {
+            for (int r = 1; r <= 12; r++)
+            {
+                for (int dx = -r; dx <= r; dx++)
+                {
+                    for (int dy = -r; dy <= r; dy++)
+                    {
+                        if (Math.Abs(dx) != r && Math.Abs(dy) != r) continue;
+
+                        Point q = new Point(x + dx, y + dy);
+                        if (map.ValidPoint(q))
+                            return q;
+                    }
+                }
+            }
+            return null;
+        }
+
         public void SearchMap(string text)
         {
             if (string.IsNullOrWhiteSpace(text) || text.Length < 3) return;
