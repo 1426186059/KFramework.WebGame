@@ -50,6 +50,8 @@ namespace Client.MirScenes.Dialogs
             m_ShowNode = new MirImageControl
             {
                 Parent = this,
+                AutoSize = false,
+                DrawImage = false,
                 Texture = KDefaultRes.DefaultTexture2D,
                 ForeColour = Color.Blue,
                 Location = new Point(0, 0),
