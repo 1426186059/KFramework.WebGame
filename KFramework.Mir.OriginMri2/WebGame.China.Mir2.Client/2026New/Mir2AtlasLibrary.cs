@@ -2,6 +2,7 @@ using KFramework.MonoGame;
 using KFramework.MonoGameExtend;
 using System.Collections.Concurrent;
 using System.Text;
+using System.IO;
 using System.Text.Json.Nodes;
 using Color = KFramework.MonoGame.Color;
 using Rectangle = KFramework.MonoGame.Rectangle;
@@ -208,13 +209,16 @@ public static class Mir2AtlasLibrary
             }
 
             var sheet = Mir2AtlasSheet.Parse(Encoding.UTF8.GetString(jsonBytes));
-            var pngKey = SheetPngKey(key, sheet.File);
+            // 普通精灵图集从 JSON 的 "file" 取 PNG 名；MovieClip（mc/res 格式，无 "file"）则按 JSON 同名推断（task_complete.json → task_complete.png）。
+            var pngFile = sheet.File;
+            if (string.IsNullOrEmpty(pngFile)) pngFile = Path.GetFileNameWithoutExtension(key) + ".png";
+            var pngKey = SheetPngKey(key, pngFile);
             var pngPath = Mir2OriginResource.ResolveManifestAssetPath(pngKey);
             var texture = await Mir2OriginResource.GetTextureAsync(pngPath, device, ct: CancellationToken.None);
             if (texture == null)
             {
-                //KFramework.MonoGame.PrintTool.LogError(
-                //    $"[Mir2Atlas] 图集 PNG 贴图为空：pngPath={pngPath}（resolvedPath={Mir2OriginResource.ResolveManifestAssetPath(pngKey)}，检查是否在 manifest / CDN 404 或解码失败）");
+                KFramework.MonoGame.PrintTool.LogError(
+                    $"[Mir2Atlas] 图集 PNG 贴图为空：pngPath={pngPath}（resolvedPath={Mir2OriginResource.ResolveManifestAssetPath(pngKey)}，检查是否在 manifest / CDN 404 或解码失败）");
             }
 
             sheet.Build(texture);

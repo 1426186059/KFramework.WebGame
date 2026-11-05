@@ -26,6 +26,9 @@ public sealed class Mir2AtlasSheet
     /// <summary>帧名 → KSpriteInfo（整页贴图上的子图，Build 后可用）。</summary>
     public Dictionary<string, KSpriteInfo> Frames { get; private set; }
 
+    /// <summary>MovieClip 播放顺序（取 mc 首个时间线 frames 的 res 引用序列）；普通精灵图集为空。</summary>
+    public List<string> PlayOrder { get; private set; }
+
     private List<FrameDef> _defs = new();
 
     private sealed class FrameDef
@@ -57,6 +60,43 @@ public sealed class Mir2AtlasSheet
                             SourceRect = new Rectangle(x, y, w, h),
                             Size = new Vector2(sw, sh)
                         });
+                    }
+                }
+            }
+            // Egret MovieClip 导出格式：无 "frames"，改用 "res"（子图在大图上的矩形）+ "mc"（时间线帧序列）。
+            else if (obj["res"] is JsonObject resNode)
+            {
+                foreach (var kv in resNode)
+                {
+                    if (kv.Value is JsonObject o)
+                    {
+                        int x = GetInt(o, "x"), y = GetInt(o, "y"), w = GetInt(o, "w"), h = GetInt(o, "h");
+                        sheet._defs.Add(new FrameDef
+                        {
+                            Name = kv.Key,
+                            SourceRect = new Rectangle(x, y, w, h),
+                            Size = new Vector2(w, h)
+                        });
+                    }
+                }
+                // 取首个 mc 时间线的帧序列作为播放顺序（如 mc["1"].frames = [{res:"0001"}, ...]）。
+                if (obj["mc"] is JsonObject mcNode && mcNode.Count > 0)
+                {
+                    JsonObject first = null;
+                    foreach (var kvp in mcNode)
+                    {
+                        first = kvp.Value as JsonObject;
+                        break;
+                    }
+                    if (first != null && first["frames"] is JsonArray mframes)
+                    {
+                        var order = new List<string>();
+                        foreach (var mf in mframes)
+                        {
+                            if (mf is JsonObject fo && fo["res"] is JsonValue rv && rv.TryGetValue<string>(out var resId))
+                                order.Add(resId);
+                        }
+                        sheet.PlayOrder = order;
                     }
                 }
             }

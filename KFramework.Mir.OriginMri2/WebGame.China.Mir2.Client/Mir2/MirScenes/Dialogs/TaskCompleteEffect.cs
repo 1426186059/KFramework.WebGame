@@ -20,7 +20,7 @@ namespace Client.MirScenes.Dialogs
     public sealed class TaskCompleteEffect : MirControl
     {
         // 原始传奇“完成任务”特效图集（manifest key，运行时由 GetSheetAsync 解析成 CDN 哈希路径）。
-        private const string SheetKey = "task_complete.json";
+        private const string SheetKey = "resource/assets/gameui4/movieClip/task_complete.json";
 
         private MirAtlasAnimatedControl _ani;
         private bool _sheetReady;
@@ -60,8 +60,10 @@ namespace Client.MirScenes.Dialogs
                 if (sheet == null) return;
 
                 _ani.AtlasSheet = sheet;
-                // 帧名按末尾数字后缀排序，保证播放顺序正确（命名无所谓，直接取图集里的全部帧）。
-                var frames = sheet.Frames.Keys.OrderBy(FrameIndex).ToList();
+                // MovieClip 用 mc 时间线给出的播放顺序；普通图集退化为按帧名末尾数字排序。
+                var frames = (sheet.PlayOrder != null && sheet.PlayOrder.Count > 0)
+                    ? sheet.PlayOrder.ToList()
+                    : sheet.Frames.Keys.OrderBy(FrameIndex).ToList();
                 _ani.SetFrames(frames.ToArray());
 
                 _sheetReady = true;
