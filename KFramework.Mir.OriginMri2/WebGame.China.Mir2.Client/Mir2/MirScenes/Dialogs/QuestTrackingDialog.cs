@@ -24,7 +24,7 @@ namespace Client.MirScenes.Dialogs
             Location = new Point(0, 0);
             AutoSize = false;
             Size = new Size(265, 188);
-            //Texture = KDefaultRes.DefaultTexture2D;
+            Texture = KDefaultRes.DefaultTexture2D;
 
             m_HideNode = new MirButton
             {
@@ -76,6 +76,7 @@ namespace Client.MirScenes.Dialogs
             {
                 m_ShowNode.Visible = false;
                 m_HideNode.Visible = true;
+                KFramework.MonoGame.PrintTool.Log("mShowNode_HideBtn.Click");
             };
 
             mShowNode_HideBtn.LabelImage.AtlasNameKey = "y_lefttop-sheet";
@@ -142,6 +143,7 @@ namespace Client.MirScenes.Dialogs
                     ForeColour = Color.LimeGreen,
                     Location = new Point(45, 20 + y),
                     OutLine = true,
+                    NotControl = true,
                     Parent = this,
                     Visible = true,
                 };
@@ -176,6 +178,7 @@ namespace Client.MirScenes.Dialogs
                                 ForeColour = Color.White,
                                 Location = new Point(45, 20 + y),
                                 OutLine = true,
+                                NotControl = true,
                                 Parent = this,
                                 Visible = true
                             };
@@ -239,6 +242,7 @@ namespace Client.MirScenes.Dialogs
                         ForeColour = Color.White, //trackedQuest.Contains("(Completed)") ? Color.LimeGreen : 
                         Location = new Point(45, 20 + y),
                         OutLine = true,
+                        NotControl = true,
                         Parent = this,
                         Visible = true,
                     };
