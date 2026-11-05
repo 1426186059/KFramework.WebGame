@@ -452,22 +452,24 @@ namespace Server.MirDatabase
                 }
 
                 TaskList.Add(string.Format("{0} {1}", Info.KillMessage, allComplete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
-                Targets.Add(KillTaskCount.Count > 0 ? MakeMonsterTarget(KillTaskCount[0].Info.Monster) : null);
+                Targets.Add(KillTaskCount.Count > 0 ? MakeMonsterTarget(KillTaskCount[0].Info.Monster) ?? MakeNPCTarget() : MakeNPCTarget());
                 return;
             }
 
             for (int i = 0; i < KillTaskCount.Count; i++)
             {
+                if (KillTaskCount[i].Complete) continue;
+
                 if (string.IsNullOrEmpty(Info.KillTasks[i].Message))
                 {
                     TaskList.Add(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.KillCountProgress), KillTaskCount[i].Info.Monster.GameName, KillTaskCount[i].Count,
-                        KillTaskCount[i].Info.Count, KillTaskCount[i].Complete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
-                    Targets.Add(MakeMonsterTarget(KillTaskCount[i].Info.Monster));
+                        KillTaskCount[i].Info.Count, ""));
+                    Targets.Add(MakeMonsterTarget(KillTaskCount[i].Info.Monster) ?? MakeNPCTarget());
                 }
                 else
                 {
-                    TaskList.Add(string.Format("{0} {1}", Info.KillTasks[i].Message, KillTaskCount[i].Complete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
-                    Targets.Add(MakeMonsterTarget(KillTaskCount[i].Info.Monster));
+                    TaskList.Add(string.Format(Info.KillTasks[i].Message, KillTaskCount[i].Count, KillTaskCount[i].Info.Count));
+                    Targets.Add(MakeMonsterTarget(KillTaskCount[i].Info.Monster) ?? MakeNPCTarget());
                 }
             }
         }
@@ -484,22 +486,24 @@ namespace Server.MirDatabase
                     allComplete = false;
                 }
                 
-                TaskList.Add(string.Format("{0} {1}", Info.ItemMessage, allComplete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                TaskList.Add(Info.ItemMessage);
                 Targets.Add(MakeItemTarget());
                 return;
             }
 
             for (int i = 0; i < ItemTaskCount.Count; i++)
             {
+                if (ItemTaskCount[i].Complete) continue;
+
                 if (string.IsNullOrEmpty(Info.ItemTasks[i].Message))
                 {
                     TaskList.Add(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CollectProgress), Info.ItemTasks[i].Item.FriendlyName, ItemTaskCount[i].Count,
-                        Info.ItemTasks[i].Count, ItemTaskCount[i].Complete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                        Info.ItemTasks[i].Count, ""));
                     Targets.Add(MakeItemTarget());
                 }
                 else
                 {
-                    TaskList.Add(string.Format("{0} {1}", Info.ItemTasks[i].Message, ItemTaskCount[i].Complete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                    TaskList.Add(string.Format(Info.ItemTasks[i].Message, ItemTaskCount[i].Count, Info.ItemTasks[i].Count));
                     Targets.Add(MakeItemTarget());
                 }
             }
@@ -517,21 +521,23 @@ namespace Server.MirDatabase
                     allComplete = false;
                 }
                 
-                TaskList.Add(string.Format("{0} {1}", Info.FlagMessage, allComplete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                TaskList.Add(Info.FlagMessage);
                 Targets.Add(MakeNPCTarget());
                 return;
             }
 
             for (int i = 0; i < FlagTaskSet.Count; i++)
             {
+                if (FlagTaskSet[i].Complete) continue;
+
                 if (string.IsNullOrEmpty(Info.FlagTasks[i].Message))
                 {
-                    TaskList.Add(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ActivateFlag), Info.FlagTasks[i].Number, FlagTaskSet[i].Complete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                    TaskList.Add(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.ActivateFlag), Info.FlagTasks[i].Number, ""));
                     Targets.Add(MakeNPCTarget());
                 }
                 else
                 {
-                    TaskList.Add(string.Format("{0} {1}", Info.FlagTasks[i].Message, FlagTaskSet[i].Complete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
+                    TaskList.Add(Info.FlagTasks[i].Message);
                     Targets.Add(MakeNPCTarget());
                 }
             }
@@ -542,7 +548,7 @@ namespace Server.MirDatabase
             if (Info.GotoMessage.Length <= 0 || !Completed) return;
             
             TaskList.Add(Info.GotoMessage);
-            Targets.Add(MakeNPCTarget());
+            Targets.Add(MakeFinishNPCTarget());
         }
 
         #region Quest Target Helpers
@@ -551,6 +557,7 @@ namespace Server.MirDatabase
         {
             if (monster == null) return null;
 
+            // 1) 已持久化的刷点（开启 SaveRespawnTime 的怪物）
             for (int i = 0; i < Envir.SavedSpawns.Count; i++)
             {
                 MapRespawn spawn = Envir.SavedSpawns[i];
@@ -566,12 +573,41 @@ namespace Server.MirDatabase
                     Y = spawn.Info.Location.Y
                 };
             }
+
+            // 2) 兜底：扫描所有已加载地图的实时刷怪点，覆盖未开启 SaveRespawnTime 的怪物（如稻草人）
+            for (int m = 0; m < Envir.MapList.Count; m++)
+            {
+                Map map = Envir.MapList[m];
+                if (map == null || map.Info == null) continue;
+
+                for (int i = 0; i < map.Respawns.Count; i++)
+                {
+                    MapRespawn spawn = map.Respawns[i];
+                    if (spawn?.Info == null || spawn.Map == null) continue;
+                    if (spawn.Info.MonsterIndex != monster.Index) continue;
+
+                    return new QuestTaskTarget
+                    {
+                        Type = QuestTargetType.Monster,
+                        Name = monster.GameName,
+                        MapIndex = (uint)map.Info.Index,
+                        X = spawn.Info.Location.X,
+                        Y = spawn.Info.Location.Y
+                    };
+                }
+            }
+
             return null;
         }
 
         private QuestTaskTarget MakeNPCTarget()
         {
             NPCInfo npc = Info.NpcInfo;
+            // 兜底解析：部分任务可能尚未绑定 NpcInfo，尝试用索引定位 NPC
+            if (npc == null && Info.NpcIndex != 0)
+                npc = Envir.GetNPCInfo((int)Info.NpcIndex);
+            if (npc == null && Info.FinishNpcIndex != 0)
+                npc = Envir.GetNPCInfo((int)Info.FinishNpcIndex);
             if (npc == null) return null;
 
             return new QuestTaskTarget
@@ -584,12 +620,35 @@ namespace Server.MirDatabase
             };
         }
 
+        private QuestTaskTarget MakeFinishNPCTarget()
+        {
+            // 交任务（返回）目标：使用 FinishNpcIndex（运行时 NPC ObjectID）定位真正的交任务 NPC，
+            // 而不是发放/起始 NPC（NpcInfo）。
+            if (Info.FinishNpcIndex != 0)
+            {
+                var npc = Envir.NPCs.FirstOrDefault(x => x.ObjectID == Info.FinishNpcIndex);
+                if (npc != null && npc.CurrentMap != null)
+                    return new QuestTaskTarget
+                    {
+                        Type = QuestTargetType.NPC,
+                        Name = npc.Name,
+                        MapIndex = (uint)npc.CurrentMap.Info.Index,
+                        X = npc.CurrentLocation.X,
+                        Y = npc.CurrentLocation.Y
+                    };
+            }
+            return MakeNPCTarget();
+        }
+
         private QuestTaskTarget MakeItemTarget()
         {
             // 收集任务：优先传送到“掉落该物品的怪物”（通常是本任务的击杀目标，例如杀稻草人掉姜茶），
-            // 没有击杀怪可参考时再退回交任务 NPC。
+            // 没有击杀怪可参考、或该怪物无刷点信息时，退回交任务 NPC。
             if (KillTaskCount.Count > 0 && KillTaskCount[0].Info?.Monster != null)
-                return MakeMonsterTarget(KillTaskCount[0].Info.Monster);
+            {
+                var t = MakeMonsterTarget(KillTaskCount[0].Info.Monster);
+                if (t != null) return t;
+            }
             return MakeNPCTarget();
         }
 

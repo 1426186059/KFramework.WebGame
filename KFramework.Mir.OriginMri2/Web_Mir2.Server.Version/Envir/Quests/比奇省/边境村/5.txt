@@ -9,8 +9,8 @@
 
 [@Completion]
 [@KillTasks]
-鹿 10
-稻草人 10
+鹿 10 "击杀鹿 {0}/{1}"
+稻草人 10 "击杀稻草人 {0}/{1}"
 
 [@ItemTasks]
 [@CarryItems]

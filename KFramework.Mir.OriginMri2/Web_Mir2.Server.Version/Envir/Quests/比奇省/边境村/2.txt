@@ -10,7 +10,7 @@
 [@Completion]
 [@KillTasks]
 [@ItemTasks]
-姜茶 1
+姜茶 1 "击杀稻草人, 收集姜茶 {0}/{1}"
 
 [@CarryItems]
 [@FixedRewards]
