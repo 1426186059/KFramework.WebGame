@@ -21,7 +21,7 @@ namespace Client.MirScenes.Dialogs
 
         public QuestTrackingDialog()
         {
-            Location = new Point(0, 0);
+            Location = new Point(0, 50);
             AutoSize = false;
             Size = new Size(265, 188);
             Texture = KDefaultRes.DefaultTexture2D;

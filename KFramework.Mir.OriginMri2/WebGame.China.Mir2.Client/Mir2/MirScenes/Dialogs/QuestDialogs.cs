@@ -17,6 +17,7 @@ namespace Client.MirScenes.Dialogs
     {
         private readonly MirButton _acceptButton, _finishButton;
         private MirLabel _availableQuestLabel;
+        private MirLabel _npcNameLabel, _descLabel, _finishLabel;
 
         public List<ClientQuestProgress> Quests = new List<ClientQuestProgress>();
 
@@ -24,7 +25,7 @@ namespace Client.MirScenes.Dialogs
 
         public ClientQuestProgress SelectedQuest;
         public QuestMessage Message;
-        public QuestRewards Reward;
+        //public QuestRewards Reward;
 
         public QuestRow[] Rows = new QuestRow[5];
 
@@ -34,88 +35,17 @@ namespace Client.MirScenes.Dialogs
 
         public QuestListDialog()
         {
-            // 背景改用原始传奇资源（y_task_bg.png，manifest 解析为 resource/2a/2a3d3cc4_79142.png）
-            _ = SetManifestImageAsync("resource/assets/gameui4/jpg/y_task_bg.png");
-            Movable = true;
+            Movable = false;
             Sort = true;
-            Location = new Point(GameScene.Scene.NPCDialog.Size.Width + 47, 0);
+            AutoSize = false;
+            Size = new Size(600, 180);
+            Location = new Point(0, 0);
 
-            MirImageControl TitleLabel = new MirImageControl
+            MirImageControl BG = new MirImageControl
             {
-                Index = 14,
-                Library = Libraries.Title,
-                Location = new Point(18, 9), //Y = 9
-                Parent = this
-            };
-
-
-            MirButton upQuestButton = new MirButton
-            {
-                Index = 951,
-                HoverIndex = 952,
-                PressedIndex = 953,
-                Library = Libraries.Prguse,
                 Parent = this,
-                Location = new Point(291, 35),
-                Sound = SoundList.ButtonA,
-            };
-            upQuestButton.Click += (o, e) =>
-            {
-                if (SelectedQuest != null)
-                {
-                    SelectedIndex = FindSelectedIndex();
-
-                    if (SelectedIndex > 0)
-                        SelectedIndex--;
-                    else
-                        StartIndex--;
-                }
-
-                RefreshInterface();
-            };
-
-            MirButton downQuestButton = new MirButton
-            {
-                Index = 957,
-                HoverIndex = 958,
-                PressedIndex = 959,
-                Library = Libraries.Prguse,
-                Parent = this,
-                Location = new Point(291, 83),
-                Sound = SoundList.ButtonA,
-            };
-            downQuestButton.Click += (o, e) =>
-            {
-                if (SelectedQuest != null)
-                {
-                    SelectedIndex = FindSelectedIndex();
-
-                    if (SelectedIndex < Rows.Length - 1)
-                        SelectedIndex++;
-                    else
-                        StartIndex++;
-                }
-
-                RefreshInterface();
-            };
-
-
-            _acceptButton = new MirButton
-            {
-                Index = 270,
-                HoverIndex = 271,
-                PressedIndex = 272,
-                Library = Libraries.Title,
-                Parent = this,
-                Location = new Point(40, 436),
-                Sound = SoundList.ButtonA,
-            };
-            _acceptButton.Click += (o, e) =>
-            {
-                if (Reward == null || SelectedQuest.Taken) return;
-
-                Network.Enqueue(new C.AcceptQuest { NPCIndex = SelectedQuest.QuestInfo.NPCIndex, QuestIndex = SelectedQuest.QuestInfo.Index });
-                //Hide();
+                Location = new Point(0, 0), //Y = 9
+                ImageKey = "resource/assets/gameui4/jpg/y_task_bg.png"
             };
 
             _finishButton = new MirButton
@@ -129,83 +59,31 @@ namespace Client.MirScenes.Dialogs
                 Sound = SoundList.ButtonA,
                 Visible = false
             };
+
             _finishButton.Click += (o, e) =>
             {
-                if (Reward == null || !SelectedQuest.Completed) return;
+                //if (Reward == null || !SelectedQuest.Completed) return;
 
-                if (Reward.SelectedItemIndex < 0 && SelectedQuest.QuestInfo.RewardsSelectItem.Count > 0)
-                {
-                    MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouMustSelectRewardItem));
-                    messageBox.Show();
-                    return;
-                }
+                //if (Reward.SelectedItemIndex < 0 && SelectedQuest.QuestInfo.RewardsSelectItem.Count > 0)
+                //{
+                //    MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouMustSelectRewardItem));
+                //    messageBox.Show();
+                //    return;
+                //}
 
-                Network.Enqueue(new C.FinishQuest { QuestIndex = SelectedQuest.QuestInfo.Index, SelectedItemIndex = Reward.SelectedItemIndex });
+                Network.Enqueue(new C.FinishQuest { QuestIndex = SelectedQuest.QuestInfo.Index });
                 //Hide();
             };
 
-            MirButton leaveButton = new MirButton
-            {
-                Index = 276,
-                HoverIndex = 277,
-                PressedIndex = 278,
-                Library = Libraries.Title,
-                Parent = this,
-                Location = new Point(205, 436),
-                Sound = SoundList.ButtonA,
-            };
-            leaveButton.Click += (o, e) => Hide();
-
-
-
-            MirButton upButton = new MirButton
-            {
-                Index = 197,
-                HoverIndex = 198,
-                PressedIndex = 199,
-                Library = Libraries.Prguse2,
-                Parent = this,
-                Size = new Size(16, 14),
-                Location = new Point(292, 136),
-                Sound = SoundList.ButtonA,
-                Visible = true
-            };
-
-            MirButton downButton = new MirButton
-            {
-                Index = 207,
-                HoverIndex = 208,
-                Library = Libraries.Prguse2,
-                PressedIndex = 209,
-                Parent = this,
-                Size = new Size(16, 14),
-                Location = new Point(292, 282),
-                Sound = SoundList.ButtonA,
-                Visible = true
-            };
-
-            MirButton positionBar = new MirButton
-            {
-                Index = 205,
-                HoverIndex = 206,
-                PressedIndex = 206,
-                Library = Libraries.Prguse2,
-                Location = new Point(292, 149),
-                Parent = this,
-                Movable = true,
-                Sound = SoundList.None,
-                Visible = false
-            };
-
-            Message = new QuestMessage(upButton, downButton, positionBar, 10)
-            {
-                Font = new Font(Settings.FontName, 9F),
-                Parent = this,
-                Size = new Size(280, 160),
-                Location = new Point(10, 135),
-                PosMinY = 149,
-                PosMaxY = 263
-            };
+            //Message = new QuestMessage(upButton, downButton, positionBar, 10)
+            //{
+            //    Font = new Font(Settings.FontName, 9F),
+            //    Parent = this,
+            //    Size = new Size(280, 160),
+            //    Location = new Point(10, 135),
+            //    PosMinY = 149,
+            //    PosMaxY = 263
+            //};
 
 
 
@@ -215,6 +93,53 @@ namespace Client.MirScenes.Dialogs
                 Visible = false,
                 Size = new Size(313, 130),
                 Location = new Point(5, 307)
+            };
+
+            // 精简后的任务详情：第一行 NPC 名，第二行 任务描述，末行 “Finish” 下划线黄字（点此交任务）。
+            // 隐藏原本冗长的滚动文本与滚动条。
+            //Message.Visible = false;
+            _npcNameLabel = new MirLabel
+            {
+                Parent = this,
+                AutoSize = true,
+                Location = new Point(10, 132),
+                Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
+                ForeColour = Color.Yellow,
+            };
+
+            _descLabel = new MirLabel
+            {
+                Parent = this,
+                Location = new Point(10, 152),
+                Size = new Size(280, 130),
+                DrawFormat = TextFormatFlags.WordBreak,
+                ForeColour = Color.White,
+            };
+
+            _finishLabel = new MirLabel
+            {
+                Parent = this,
+                AutoSize = true,
+                Location = new Point(10, 288),
+                Text = "Finish",
+                ForeColour = Color.Yellow,
+                UnderLine = true,
+                Sound = SoundList.ButtonA,
+                NotControl = false,
+                Visible = false,
+            };
+            _finishLabel.Click += (o, e) =>
+            {
+                //if (Reward == null || !SelectedQuest.Completed) return;
+
+                //if (Reward.SelectedItemIndex < 0 && SelectedQuest.QuestInfo.RewardsSelectItem.Count > 0)
+                //{
+                //    MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouMustSelectRewardItem));
+                //    messageBox.Show();
+                //    return;
+                //}
+
+                Network.Enqueue(new C.FinishQuest { QuestIndex = SelectedQuest.QuestInfo.Index });
             };
 
 
@@ -228,28 +153,14 @@ namespace Client.MirScenes.Dialogs
 
             MirButton closeButton = new MirButton
             {
-                Index = 360,
-                HoverIndex = 361,
-                PressedIndex = 362,
-                Library = Libraries.Prguse2,
+                AtlasNameKey = "y_common-sheet",
+                AtlasFrame = "com_btn_close0",
+                PressedAtlasFrame = "com_btn_close1",
                 Parent = this,
-                Location = new Point(289, 3),
+                Location = new Point(546, 3),
                 Sound = SoundList.ButtonA,
             };
             closeButton.Click += (o, e) => Hide();
-
-            MirButton helpButton = new MirButton
-            {
-                Index = 257,
-                HoverIndex = 258,
-                PressedIndex = 259,
-                Library = Libraries.Prguse2,
-                Parent = this,
-                Location = new Point(266, 3),
-                Sound = SoundList.ButtonA,
-            };
-            helpButton.Click += (o, e) => GameScene.Scene.HelpDialog.DisplayPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Quests));
-
         }
 
         public override void Show()
@@ -297,8 +208,8 @@ namespace Client.MirScenes.Dialogs
             SelectedIndex = 0;
             SelectedQuest = null;
 
-            Message.Visible = false;
-            Reward.Visible = false;
+            //Message.Visible = false;
+            //Reward.Visible = false;
 
             for (int i = 0; i < Rows.Length; i++)
             {
@@ -348,8 +259,8 @@ namespace Client.MirScenes.Dialogs
                     if (row.Quest != SelectedQuest)
                     {
                         SelectedQuest = row.Quest;
-                        Reward.UpdateRewards(SelectedQuest);
-                        Message.UpdateQuest(SelectedQuest);
+                        //Reward.UpdateRewards(SelectedQuest);
+                        UpdateSimpleDetail();
                         SelectedIndex = FindSelectedIndex();
                         UpdateRows();
 
@@ -362,8 +273,8 @@ namespace Client.MirScenes.Dialogs
                     if (SelectedIndex == i)
                     {
                         SelectedQuest = Rows[i].Quest;
-                        Reward.UpdateRewards(SelectedQuest);
-                        Message.UpdateQuest(SelectedQuest);
+                        //Reward.UpdateRewards(SelectedQuest);
+                        UpdateSimpleDetail();
                     }
                 }
             }
@@ -380,8 +291,8 @@ namespace Client.MirScenes.Dialogs
                 if (Rows[0] == null) return;
 
                 SelectedQuest = Rows[0].Quest;
-                Reward.UpdateRewards(SelectedQuest);
-                Message.UpdateQuest(SelectedQuest);
+                //Reward.UpdateRewards(SelectedQuest);
+                UpdateSimpleDetail();
             }
 
             for (int i = 0; i < Rows.Length; i++)
@@ -402,22 +313,51 @@ namespace Client.MirScenes.Dialogs
         public void ReDisplayButtons()
         {
             _acceptButton.Visible = false;
-            _finishButton.Visible = false;
+            _finishLabel.Visible = false;
 
-            if (Reward != null)
-            {
-                Reward.Visible = true;
-                Message.Visible = true;
-            }
+            //if (Reward != null)
+            //    Reward.Visible = true;
 
             if (SelectedQuest != null)
             {
                 if (!SelectedQuest.Taken && MapControl.User.CurrentQuests.Count < Globals.MaxConcurrentQuests)
                     _acceptButton.Visible = true;
 
-                if (SelectedQuest.Completed && Reward != null)
-                    _finishButton.Visible = true;
+                if (SelectedQuest.Completed)
+                    _finishLabel.Visible = true;
             }
+        }
+
+        // 精简后的任务详情：第一行 NPC 名，第二行 任务描述，末行 “Finish” 由 _finishLabel 负责。
+        private void UpdateSimpleDetail()
+        {
+            if (SelectedQuest == null)
+            {
+                _npcNameLabel.Text = "";
+                _descLabel.Text = "";
+                _finishLabel.Visible = false;
+                return;
+            }
+
+            // 第一行：当前 NPC 名字
+            string npcName = "";
+            if (GameScene.NPCID != 0)
+            {
+                var npc = MapControl.GetObject(GameScene.NPCID) as NPCObject;
+                if (npc != null) npcName = npc.Name;
+            }
+            _npcNameLabel.Text = npcName;
+
+            // 第二行：任务描述（交任务且站在 FinishNPC 旁时用完成描述，否则用普通描述）
+            List<string> desc;
+            if (SelectedQuest.Taken && !SelectedQuest.QuestInfo.SameFinishNPC
+                && SelectedQuest.QuestInfo.CompletionDescription.Count > 0
+                && GameScene.NPCID == SelectedQuest.QuestInfo.FinishNPCIndex)
+                desc = SelectedQuest.QuestInfo.CompletionDescription;
+            else
+                desc = SelectedQuest.QuestInfo.Description;
+
+            _descLabel.Text = desc.Count > 0 ? string.Join("\n", desc) : "";
         }
 
         public int FindSelectedIndex()
@@ -444,7 +384,6 @@ namespace Client.MirScenes.Dialogs
 
             SelectedQuest = null;
             Message = null;
-            Reward = null;
 
             foreach (QuestRow row in Rows.Where(row => row != null && !row.IsDisposed))
             {

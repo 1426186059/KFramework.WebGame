@@ -224,6 +224,21 @@ namespace Client.MirControls
             }
         }
 
+        // —— 按 manifest key 加载单图背景：设一个资源逻辑路径（如 resource/assets/gameui4/jpg/y_task_bg.png），
+        //    控件自动经 manifest 解析成 CDN 哈希路径并异步下载解码为 Texture。等价于调用 SetManifestImageAsync，
+        //    适合「用 manifest 资源当背景」的场景（区别于 ImageUrl 直接拼 CDN 相对路径会 404）。设 null/空串清空 Texture。
+        private string _imageKey;
+        public string ImageKey
+        {
+            get { return _imageKey; }
+            set
+            {
+                if (_imageKey == value) return;
+                _imageKey = value;
+                _ = SetManifestImageAsync(value);
+            }
+        }
+
         /// <summary>远程单图加载完成事件（主线程触发）：sender=本控件，e=EventArgs.Empty。</summary>
         public event EventHandler RemoteImageLoaded;
 
