@@ -34,8 +34,8 @@ namespace Client.MirScenes.Dialogs
 
         public QuestListDialog()
         {
-            Index = 950;
-            Library = Libraries.Prguse;
+            // 背景改用原始传奇资源（y_task_bg.png，manifest 解析为 resource/2a/2a3d3cc4_79142.png）
+            _ = SetManifestImageAsync("resource/assets/gameui4/jpg/y_task_bg.png");
             Movable = true;
             Sort = true;
             Location = new Point(GameScene.Scene.NPCDialog.Size.Width + 47, 0);

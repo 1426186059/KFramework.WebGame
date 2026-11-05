@@ -3921,10 +3921,29 @@ namespace Client.MirScenes
             NPCTeleporterDialog.Hide();
             NPCDialog.NewText(p.Page);
 
-            if (p.Page.Count > 0 || NPCDialog.BigButtons.Count > 0)
-                NPCDialog.Show();
-            else
+            // NPC 有可接/可交任务：直接弹任务面板，不再弹 NPC 菜单（省得玩家多一步点击）
+            bool npcHasQuest = false;
+            try
+            {
+                var npcForQuest = NPCID != 0 ? MapControl.GetObject(NPCID) as NPCObject : null;
+                if (npcForQuest != null && npcForQuest.GetAvailableQuests().Count > 0)
+                    npcHasQuest = true;
+            }
+            catch { npcHasQuest = false; }
+
+            if (npcHasQuest)
+            {
                 NPCDialog.Hide();
+                QuestListDialog.Show();
+            }
+            else if (p.Page.Count > 0 || NPCDialog.BigButtons.Count > 0)
+            {
+                NPCDialog.Show();
+            }
+            else
+            {
+                NPCDialog.Hide();
+            }
 
             NPCGoodsDialog.Hide();
             NPCSubGoodsDialog.Hide();
@@ -3935,7 +3954,8 @@ namespace Client.MirScenes
             RefineDialog.Hide();
             StorageDialog.Hide();
             TrustMerchantDialog.Hide();
-            QuestListDialog.Hide();
+            if (!npcHasQuest)
+                QuestListDialog.Hide();
         }
 
         private void NPCUpdate(S.NPCUpdate p)

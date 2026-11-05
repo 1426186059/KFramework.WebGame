@@ -50,8 +50,9 @@ namespace Client.MirScenes.Dialogs
         
         public NPCDialog()
         {
-            Index = 995;
-            Library = Libraries.Prguse;
+            // 背景改用原始传奇资源（y_task_bg.png，manifest 解析为 resource/2a/2a3d3cc4_79142.png）
+            AutoSize = true;
+            _ = SetManifestImageAsync("resource/assets/gameui4/jpg/y_task_bg.png");
 
             // Hide tooltip when dialog is clicked
             this.MouseDown += (o, e) => HideTooltip();
@@ -59,8 +60,6 @@ namespace Client.MirScenes.Dialogs
             TextLabel = new MirLabel[30];
             TextButtons = new List<MirLabel>();
             BigButtons = new List<BigButton>();
-            Size = Size;
-            AutoSize = false;
 
             MouseWheel += NPCDialog_MouseWheel;
 
