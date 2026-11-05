@@ -26,7 +26,7 @@ namespace Client.MirScenes.Dialogs
         public static Regex NPCLink = new Regex(@"\[NPC:(?<idx>\d+)(\|(?<name>[^\]]+))?\]|<\$NPC:(?<idx>\d+)>", RegexOptions.IgnoreCase);
         public static Regex ItemLink = new Regex(@"\[ITEM:(?<idx>\d+)(\|(?<name>[^\]]+))?\]|<\$ITEM:(?<idx>\d+)>", RegexOptions.IgnoreCase);
 
-        public MirButton CloseButton, UpButton, DownButton, PositionBar, QuestButton, HelpButton;
+        public MirButton CloseButton, UpButton, DownButton, PositionBar, HelpButton;
         public MirLabel[] TextLabel;
         public List<MirLabel> TextButtons;
         public List<BigButton> BigButtons;
@@ -162,24 +162,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,               
             };
 
-            QuestButton = new MirAnimatedButton()
-            {
-                Animated = true,
-                AnimationCount = 10,
-                Loop = true,
-                AnimationDelay = 130,
-                Index = 530,
-                HoverIndex = 284,
-                PressedIndex = 286,
-                Library = Libraries.Title,
-                Parent = this,
-                Size = new Size(96, 25),
-                Sound = SoundList.ButtonA,
-                Visible = false
-            };
 
-            QuestButton.Click += (o, e) => GameScene.Scene.QuestListDialog.Toggle();
-            
             // Initialize tooltip panel
             InitializeTooltipPanel();
         }
@@ -390,8 +373,6 @@ namespace Client.MirScenes.Dialogs
                 DownButton.Visible = false;
                 PositionBar.Visible = false;                
             }         
-
-            QuestButton.Location = new Point(172, Size.Height - 30);
 
             for (int i = 0; i < TextButtons.Count; i++)
                 TextButtons[i].Dispose();
@@ -992,20 +973,15 @@ namespace Client.MirScenes.Dialogs
             return new Point((int)Math.Round(x), (int)Math.Round(y));
         }
 
-        public void CheckQuestButtonDisplay()
+        public void UpdateNPCName()
         {
             NameLabel.Text = string.Empty;
-
-            QuestButton.Visible = false;
 
             NPCObject npc = (NPCObject)MapControl.GetObject(GameScene.NPCID);
             if (npc != null)
             {
                 string[] nameSplit = npc.Name.Split('_');
                 NameLabel.Text = nameSplit[0];
-
-                if (npc.GetAvailableQuests().Any())
-                    QuestButton.Visible = true;
             }
         }
 
@@ -1033,7 +1009,7 @@ namespace Client.MirScenes.Dialogs
             GameScene.Scene.InventoryDialog.Location = new Point(Size.Width + 5, 0);
             Visible = true;
 
-            CheckQuestButtonDisplay();
+            UpdateNPCName();
         }
 
     }

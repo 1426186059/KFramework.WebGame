@@ -1,22 +1,15 @@
-﻿using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Client.MirControls;
+﻿using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirSounds;
-using SlimDX.Direct3D9;
+using System.Text.RegularExpressions;
 using C = ClientPackets;
-using MirEngine;
-using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirScenes.Dialogs
 {
     public sealed class QuestListDialog : MirImageControl
     {
-        private readonly MirButton _acceptButton, _finishButton;
-        private MirLabel _availableQuestLabel;
         private MirLabel _npcNameLabel, _descLabel, _finishLabel;
 
         public List<ClientQuestProgress> Quests = new List<ClientQuestProgress>();
@@ -25,9 +18,9 @@ namespace Client.MirScenes.Dialogs
 
         public ClientQuestProgress SelectedQuest;
         public QuestMessage Message;
-        //public QuestRewards Reward;
+        public QuestRewards Reward;
 
-        public QuestRow[] Rows = new QuestRow[5];
+        public QuestRow[] Rows = new QuestRow[1];
 
         public int StartIndex = 0;
 
@@ -47,52 +40,13 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(0, 0), //Y = 9
                 ImageKey = "resource/assets/gameui4/jpg/y_task_bg.png"
             };
-
-            _finishButton = new MirButton
-            {
-                Index = 273,
-                HoverIndex = 274,
-                PressedIndex = 275,
-                Library = Libraries.Title,
-                Parent = this,
-                Location = new Point(40, 436),
-                Sound = SoundList.ButtonA,
-                Visible = false
-            };
-
-            _finishButton.Click += (o, e) =>
-            {
-                //if (Reward == null || !SelectedQuest.Completed) return;
-
-                //if (Reward.SelectedItemIndex < 0 && SelectedQuest.QuestInfo.RewardsSelectItem.Count > 0)
-                //{
-                //    MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouMustSelectRewardItem));
-                //    messageBox.Show();
-                //    return;
-                //}
-
-                Network.Enqueue(new C.FinishQuest { QuestIndex = SelectedQuest.QuestInfo.Index });
-                //Hide();
-            };
-
-            //Message = new QuestMessage(upButton, downButton, positionBar, 10)
-            //{
-            //    Font = new Font(Settings.FontName, 9F),
-            //    Parent = this,
-            //    Size = new Size(280, 160),
-            //    Location = new Point(10, 135),
-            //    PosMinY = 149,
-            //    PosMaxY = 263
-            //};
-
-
-
+                
             Reward = new QuestRewards
             {
                 Parent = this,
                 Visible = false,
                 Size = new Size(313, 130),
-                Location = new Point(5, 307)
+                Location = new Point(5, 120)
             };
 
             // 精简后的任务详情：第一行 NPC 名，第二行 任务描述，末行 “Finish” 下划线黄字（点此交任务）。
@@ -102,7 +56,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 AutoSize = true,
-                Location = new Point(10, 132),
+                Location = new Point(10, 30),
                 Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
                 ForeColour = Color.Yellow,
             };
@@ -110,7 +64,7 @@ namespace Client.MirScenes.Dialogs
             _descLabel = new MirLabel
             {
                 Parent = this,
-                Location = new Point(10, 152),
+                Location = new Point(10, 50),
                 Size = new Size(280, 130),
                 DrawFormat = TextFormatFlags.WordBreak,
                 ForeColour = Color.White,
@@ -120,7 +74,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 AutoSize = true,
-                Location = new Point(10, 288),
+                Location = new Point(30, 145),
                 Text = "Finish",
                 ForeColour = Color.Yellow,
                 UnderLine = true,
@@ -130,25 +84,9 @@ namespace Client.MirScenes.Dialogs
             };
             _finishLabel.Click += (o, e) =>
             {
-                //if (Reward == null || !SelectedQuest.Completed) return;
-
-                //if (Reward.SelectedItemIndex < 0 && SelectedQuest.QuestInfo.RewardsSelectItem.Count > 0)
-                //{
-                //    MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.YouMustSelectRewardItem));
-                //    messageBox.Show();
-                //    return;
-                //}
+                if (Reward == null || !SelectedQuest.Completed) return;
 
                 Network.Enqueue(new C.FinishQuest { QuestIndex = SelectedQuest.QuestInfo.Index });
-            };
-
-
-            _availableQuestLabel = new MirLabel
-            {
-                Font = new Font(Settings.FontName, 8F),
-                Parent = this,
-                AutoSize = true,
-                Location = new Point(210, 8)
             };
 
             MirButton closeButton = new MirButton
@@ -232,12 +170,14 @@ namespace Client.MirScenes.Dialogs
 
         public void RefreshInterface()
         {
-            _availableQuestLabel.Text = GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.AvailableQuestList), Quests.Count);
-
             int maxIndex = Quests.Count - Rows.Length;
 
             if (StartIndex > maxIndex) StartIndex = maxIndex;
             if (StartIndex < 0) StartIndex = 0;
+
+            // 只显示「当前所在的任务」（已接取的任务）；任务是自动接取的，未接时不会走到这里
+            ClientQuestProgress current = Quests.FirstOrDefault(q => q.Taken);
+            if (current == null) return;
 
             for (int i = 0; i < Rows.Length; i++)
             {
@@ -248,8 +188,8 @@ namespace Client.MirScenes.Dialogs
 
                 Rows[i] = new QuestRow
                 {
-                    Quest = Quests[i + StartIndex],
-                    Location = new Point(9, 36 + i * 19),
+                    Quest = current,
+                    Location = new Point(9, 10 + i * 19),
                     Parent = this,
                 };
                 Rows[i].Click += (o, e) =>
@@ -259,7 +199,7 @@ namespace Client.MirScenes.Dialogs
                     if (row.Quest != SelectedQuest)
                     {
                         SelectedQuest = row.Quest;
-                        //Reward.UpdateRewards(SelectedQuest);
+                        Reward.UpdateRewards(SelectedQuest);
                         UpdateSimpleDetail();
                         SelectedIndex = FindSelectedIndex();
                         UpdateRows();
@@ -273,7 +213,7 @@ namespace Client.MirScenes.Dialogs
                     if (SelectedIndex == i)
                     {
                         SelectedQuest = Rows[i].Quest;
-                        //Reward.UpdateRewards(SelectedQuest);
+                        Reward.UpdateRewards(SelectedQuest);
                         UpdateSimpleDetail();
                     }
                 }
@@ -291,7 +231,7 @@ namespace Client.MirScenes.Dialogs
                 if (Rows[0] == null) return;
 
                 SelectedQuest = Rows[0].Quest;
-                //Reward.UpdateRewards(SelectedQuest);
+                Reward.UpdateRewards(SelectedQuest);
                 UpdateSimpleDetail();
             }
 
@@ -312,23 +252,23 @@ namespace Client.MirScenes.Dialogs
 
         public void ReDisplayButtons()
         {
-            _acceptButton.Visible = false;
-            _finishLabel.Visible = false;
+            _finishLabel.Text = "继续";
+            _finishLabel.Visible = true;
 
-            //if (Reward != null)
-            //    Reward.Visible = true;
+            if (Reward != null)
+            {
+                Reward.Visible = true;
+            }
 
             if (SelectedQuest != null)
             {
-                if (!SelectedQuest.Taken && MapControl.User.CurrentQuests.Count < Globals.MaxConcurrentQuests)
-                    _acceptButton.Visible = true;
-
                 if (SelectedQuest.Completed)
-                    _finishLabel.Visible = true;
+                {
+                    _finishLabel.Text = "完成";
+                }
             }
         }
 
-        // 精简后的任务详情：第一行 NPC 名，第二行 任务描述，末行 “Finish” 由 _finishLabel 负责。
         private void UpdateSimpleDetail()
         {
             if (SelectedQuest == null)
@@ -339,7 +279,6 @@ namespace Client.MirScenes.Dialogs
                 return;
             }
 
-            // 第一行：当前 NPC 名字
             string npcName = "";
             if (GameScene.NPCID != 0)
             {
@@ -348,14 +287,17 @@ namespace Client.MirScenes.Dialogs
             }
             _npcNameLabel.Text = npcName;
 
-            // 第二行：任务描述（交任务且站在 FinishNPC 旁时用完成描述，否则用普通描述）
             List<string> desc;
             if (SelectedQuest.Taken && !SelectedQuest.QuestInfo.SameFinishNPC
                 && SelectedQuest.QuestInfo.CompletionDescription.Count > 0
                 && GameScene.NPCID == SelectedQuest.QuestInfo.FinishNPCIndex)
+            {
                 desc = SelectedQuest.QuestInfo.CompletionDescription;
+            }
             else
+            {
                 desc = SelectedQuest.QuestInfo.Description;
+            }
 
             _descLabel.Text = desc.Count > 0 ? string.Join("\n", desc) : "";
         }
@@ -398,7 +340,7 @@ namespace Client.MirScenes.Dialogs
     {
         public ClientQuestProgress Quest;
         public MirLabel NameLabel, RequirementLabel;
-        public MirImageControl SelectedImage, IconImage;
+        public MirImageControl IconImage;
 
         public bool Selected = false;
 
@@ -408,15 +350,6 @@ namespace Client.MirScenes.Dialogs
             Size = new Size(200, 17);
 
             BeforeDraw += QuestRow_BeforeDraw;
-
-            SelectedImage = new MirImageControl
-            {
-                Index = 956,
-                Library = Libraries.Prguse,
-                Location = new Point(25, 0),
-                Parent = this,
-                Visible = false
-            };
 
             IconImage = new MirImageControl
             {
@@ -464,8 +397,6 @@ namespace Client.MirScenes.Dialogs
 
             NameLabel.Text = Quest.QuestInfo.Name;
             RequirementLabel.Text = Quest.QuestInfo.MinLevelNeeded > 0 ? "Lv " + Quest.QuestInfo.MinLevelNeeded : "";
-
-            SelectedImage.Visible = Selected;
         }
 
         protected override void Dispose(bool disposing)
@@ -475,7 +406,6 @@ namespace Client.MirScenes.Dialogs
             Quest = null;
             NameLabel = null;
             RequirementLabel = null;
-            SelectedImage = null;
             IconImage = null;
 
             Selected = false;
@@ -876,201 +806,113 @@ namespace Client.MirScenes.Dialogs
     }
     public sealed class QuestRewards : MirControl
     {
-        private readonly MirLabel _goldLabel,  _expLabel, _creditLabel;
-
         public ClientQuestProgress Quest;
 
-        public int SelectedItemIndex = -1;
-        public ItemInfo SelectedItem = null;
-
-        public static QuestCell[] FixedItems = new QuestCell[5];
-        public static QuestCell[] SelectItems = new QuestCell[5];
-
-        public QuestRewards()
-        {
-            _expLabel = new MirLabel
-            {
-                Size = new Size(75, 20),
-                Location = new Point(40, 0),
-                Parent = this
-            };
-
-            _goldLabel = new MirLabel
-            {
-                Size = new Size(75, 20),
-                Parent = this
-            };
-
-            _creditLabel = new MirLabel
-            {
-                Size = new Size(75, 20),
-                Location = new Point(60, 0),
-                Parent = this
-            };
-
-            BeforeDraw += QuestReward_BeforeDraw;
-        }
+        private readonly List<MirLabel> _labels = new List<MirLabel>();
 
         public void UpdateRewards(ClientQuestProgress quest)
         {
             Quest = quest;
-
-            CleanRewards();
-            UpdateInterface();
-            Redraw();
-        }
-
-        void QuestReward_BeforeDraw(object sender, EventArgs e)
-        {
+            ClearLabels();
 
             if (Quest == null) return;
 
-            ClientQuestInfo quest = Quest.QuestInfo;
+            ClientQuestInfo info = Quest.QuestInfo;
+            int x = 8; // 一行内的左内边距
 
-            int goldXOffset = 0;
-            int creditXOffset = 0;
+            if (info.RewardExp > 0)
+                x = AddSegment(x, "经验 " + info.RewardExp.ToString("###0"));
+            if (info.RewardGold > 0)
+                x = AddSegment(x, "金币 " + info.RewardGold.ToString("###0"));
+            if (info.RewardCredit > 0)
+                x = AddSegment(x, "元宝 " + info.RewardCredit.ToString("###0"));
 
-            if (quest.RewardExp > 0)
-                Libraries.Prguse.Draw(966, DisplayLocation.X + 10, DisplayLocation.Y + 2);
-            else
-            {
-                goldXOffset = -90;
-                creditXOffset -= 90;
-            }
-                
+            // 固定奖励物品
+            foreach (var r in FilterRewards(info.RewardsFixedItem))
+                x = AddItemSegment(x, r.Item, r.Count);
 
-            if (quest.RewardGold > 0)
-                Libraries.Prguse.Draw(965, DisplayLocation.X + 100 + goldXOffset, DisplayLocation.Y + 2);
-            else
-            {
-                creditXOffset -= 90;
-            }
+            // 可选奖励物品（一行内全部列出，仅作展示、全部发放）
+            foreach (var r in FilterRewards(info.RewardsSelectItem))
+                x = AddItemSegment(x, r.Item, r.Count);
 
-            if (quest.RewardCredit > 0)
-                Libraries.Prguse.Draw(2447, DisplayLocation.X + 190 + creditXOffset, DisplayLocation.Y + 2);
-
-            Libraries.Title.Draw(17, DisplayLocation.X + 20, DisplayLocation.Y + 66);
+            Redraw();
         }
 
-
-        public void CleanRewards()
+        // 非物品奖励（经验/金币/元宝）：整段下划线黄字，字号 8
+        private int AddSegment(int x, string text)
         {
-            foreach (QuestCell item in SelectItems.Where(item => item != null))
+            var label = new MirLabel
             {
-                item.Dispose();
-            }
+                Parent = this,
+                AutoSize = true,
+                Location = new Point(x, 2),
+                Text = text,
+                ForeColour = Color.Yellow,
+                UnderLine = true,
+                NotControl = false,
+                Font = new Font(Settings.FontName, 8F),
+            };
 
-            foreach (QuestCell item in FixedItems.Where(item => item != null))
-            {
-                item.Dispose();
-            }
+            _labels.Add(label);
 
-            SelectedItemIndex = -1;
-            SelectedItem = null;
+            return x + label.Size.Width + 12;
         }
 
-        public void UpdateInterface()
+        // 物品奖励：物品名（下划线、悬浮/点击弹背包同款提示） + 其后 " x数量"
+        private int AddItemSegment(int x, ItemInfo item, int count)
         {
-            ClientQuestInfo quest = Quest.QuestInfo;
-
-            _goldLabel.Visible = false;
-            _expLabel.Visible = false;
-            _creditLabel.Visible = false;
-
-            int goldXOffset = 0;
-            int creditXOffset = 0;
-
-            if (quest.RewardExp > 0)
+            var nameLabel = new MirLabel
             {
-                _expLabel.Text = quest.RewardExp.ToString();
-                _expLabel.Visible = true;
-            }
-            else
-            {
-                goldXOffset = -90;
-                creditXOffset -= 90;
-            }
+                Parent = this,
+                AutoSize = true,
+                Location = new Point(x, 2),
+                Text = item.Name,
+                ForeColour = Color.Yellow,
+                UnderLine = true,
+                NotControl = false,
+                Font = new Font(Settings.FontName, 8F),
+            };
 
-            if (quest.RewardGold > 0)
-            {
-                _goldLabel.Text = quest.RewardGold.ToString();
-                _goldLabel.Location = new Point(120 + goldXOffset, 0);
-                _goldLabel.Visible = true;
-            }
-            else
-            {
-                creditXOffset -= 90;
-            }
+            _labels.Add(nameLabel);
 
-            if (quest.RewardCredit > 0)
+            UserItem showItem = new UserItem(item) { MaxDura = item.Durability, CurrentDura = item.Durability };
+            nameLabel.MouseEnter += (o, e) => GameScene.Scene.CreateItemLabel(showItem);
+            nameLabel.Click += (o, e) => GameScene.Scene.CreateItemLabel(showItem);
+            nameLabel.MouseLeave += (o, e) => GameScene.Scene.DisposeItemLabel();
+
+            x += nameLabel.Size.Width;
+
+            if (count > 1)
             {
-                _creditLabel.Text = quest.RewardCredit.ToString();
-                _creditLabel.Location = new Point(210 + creditXOffset, 0);
-                _creditLabel.Visible = true;
-            }
-
-
-            if (quest.RewardsFixedItem.Count > 0)
-            {
-                //var fixedRewards = FilterRewards(quest.RewardsFixedItem);
-
-                for (int i = 0; i < FixedItems.Length; i++)
+                var countLabel = new MirLabel
                 {
-                    if (i >= quest.RewardsFixedItem.Count) break;
+                    Parent = this,
+                    AutoSize = true,
+                    Location = new Point(x, 2),
+                    Text = " x" + count,
+                    ForeColour = Color.Yellow,
+                    NotControl = false,
+                    Font = new Font(Settings.FontName, 8F),
+                };
 
-                    FixedItems[i] = new QuestCell
-                    {
-                        Item = quest.RewardsFixedItem[i].Item,
-                        Count = quest.RewardsFixedItem[i].Count,
-                        Parent = this,
-                        Location = new Point(i * 45 + 15, 24),
-                        Fixed = true
-                    };
-                }
+                _labels.Add(countLabel);
+                x += countLabel.Size.Width;
             }
 
-            if (quest.RewardsSelectItem.Count > 0)
-            {
-                var selRewards = FilterRewards(quest.RewardsSelectItem);
+            return x + 12;
+        }
 
-                for (int i = 0; i < SelectItems.Length; i++)
-                {
-                    if (i >= selRewards.Count) break;
-
-                    SelectItems[i] = new QuestCell
-                    {
-                        Item = selRewards[i].Item,
-                        Count = selRewards[i].Count,
-                        Parent = this,
-                        Location = new Point(i * 45 + 15, 89),
-                    };
-                    SelectItems[i].Click += (o, e) =>
-                    {
-                        foreach (var itm in SelectItems)
-                        {
-                            if (itm == null) continue;
-
-                            if (itm == o)
-                            {
-                                itm.Selected = true;
-                                SelectedItem = itm.Item;
-                                SelectedItemIndex = FindSelectedItemIndex();
-                            }
-                            else
-                                itm.Selected = false;
-                        }
-
-                        Redraw();
-                    };
-                }
-            }
+        private void ClearLabels()
+        {
+            foreach (var l in _labels)
+                if (l != null && !l.IsDisposed) l.Dispose();
+            _labels.Clear();
         }
 
         public List<QuestItemReward> FilterRewards(List<QuestItemReward> rewardItems)
         {
-            List<QuestItemReward> filteredRewards = new List<QuestItemReward>();
-
-            //Only display same sex items
+            List<QuestItemReward> filtered = new List<QuestItemReward>();
+            if (rewardItems == null) return filtered;
             foreach (var reward in rewardItems)
             {
                 ItemInfo item = reward.Item;
@@ -1085,27 +927,10 @@ namespace Client.MirScenes.Dialogs
                         break;
                 }
 
-                filteredRewards.Add(reward);
+                filtered.Add(reward);
             }
 
-            return filteredRewards;
-        }
-
-        public int FindSelectedItemIndex()
-        {
-            int selectedItemIndex = 0;
-            if (SelectedItem == null) return selectedItemIndex;
-
-            for (int i = 0; i < Quest.QuestInfo.RewardsSelectItem.Count; i++)
-            {
-                ItemInfo item = Quest.QuestInfo.RewardsSelectItem[i].Item;
-
-                if (item == null || SelectedItem != item) continue;
-
-                selectedItemIndex = i;
-            }
-
-            return selectedItemIndex;
+            return filtered;
         }
 
         protected override void Dispose(bool disposing)
@@ -1113,16 +938,7 @@ namespace Client.MirScenes.Dialogs
             base.Dispose(disposing);
 
             Quest = null;
-
-            foreach (QuestCell cell in FixedItems.Where(cell => cell != null && !cell.IsDisposed))
-            {
-                cell.Dispose();
-            }
-
-            foreach (QuestCell cell in SelectItems.Where(cell => cell != null && !cell.IsDisposed))
-            {
-                cell.Dispose();
-            }
+            ClearLabels();
         }
 
     }

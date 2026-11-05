@@ -1963,7 +1963,7 @@ namespace Server.MirNetwork
         {
             if (Stage != GameStage.Game) return;
 
-            Player.FinishQuest(p.QuestIndex, p.SelectedItemIndex);
+            Player.FinishQuest(p.QuestIndex);
         }
 
         private void AbandonQuest(C.AbandonQuest p)

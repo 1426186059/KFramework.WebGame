@@ -11529,7 +11529,7 @@ namespace Server.MirObjects
             CallDefaultNPC(DefaultNPCType.OnAcceptQuest, index);
         }
 
-        public void FinishQuest(int questIndex, int selectedItemIndex = -1)
+        public void FinishQuest(int questIndex)
         {
             QuestProgressInfo quest = CurrentQuests.FirstOrDefault(e => e.Info.Index == questIndex);
 
@@ -11573,31 +11573,27 @@ namespace Server.MirObjects
                 }
             }
 
-            if (selectedItemIndex >= 0)
+            // 可选奖励全部发放（不再要求玩家选择）
+            foreach (var selectReward in quest.Info.SelectRewards)
             {
-                for (int i = 0; i < quest.Info.SelectRewards.Count; i++)
+                ushort count = selectReward.Count;
+                UserItem rewardItem;
+
+                while (count > 0)
                 {
-                    if (selectedItemIndex != i) continue;
-
-                    ushort count = quest.Info.SelectRewards[i].Count;
-                    UserItem rewardItem;
-
-                    while (count > 0)
+                    rewardItem = Envir.CreateFreshItem(selectReward.Item);
+                    if (selectReward.Item.StackSize >= count)
                     {
-                        rewardItem = Envir.CreateFreshItem(quest.Info.SelectRewards[i].Item);
-                        if (quest.Info.SelectRewards[i].Item.StackSize >= count)
-                        {
-                            rewardItem.Count = count;
-                            count = 0;
-                        }
-                        else
-                        {
-                            rewardItem.Count = quest.Info.SelectRewards[i].Item.StackSize;
-                            count -= quest.Info.SelectRewards[i].Item.StackSize;
-                        }
-
-                        rewardItems.Add(rewardItem);
+                        rewardItem.Count = count;
+                        count = 0;
                     }
+                    else
+                    {
+                        rewardItem.Count = selectReward.Item.StackSize;
+                        count -= selectReward.Item.StackSize;
+                    }
+
+                    rewardItems.Add(rewardItem);
                 }
             }
 
