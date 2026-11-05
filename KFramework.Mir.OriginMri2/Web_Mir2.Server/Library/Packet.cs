@@ -185,6 +185,8 @@ public abstract class Packet
                 return new C.RequestItemInfo();
             case (short)ClientPacketIds.TeleportToNPC:
                 return new C.TeleportToNPC();
+            case (short)ClientPacketIds.TeleportToQuestTarget:
+                return new C.TeleportToQuestTarget();
             case (short)ClientPacketIds.SearchMap:
                 return new C.SearchMap();
             case (short)ClientPacketIds.Inspect:

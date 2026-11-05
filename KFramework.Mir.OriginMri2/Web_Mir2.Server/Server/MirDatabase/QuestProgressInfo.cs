@@ -485,7 +485,7 @@ namespace Server.MirDatabase
                 }
                 
                 TaskList.Add(string.Format("{0} {1}", Info.ItemMessage, allComplete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
-                Targets.Add(MakeNPCTarget());
+                Targets.Add(MakeItemTarget());
                 return;
             }
 
@@ -495,12 +495,12 @@ namespace Server.MirDatabase
                 {
                     TaskList.Add(GameLanguage.ServerTextMap.GetLocalization((ServerTextKeys.CollectProgress), Info.ItemTasks[i].Item.FriendlyName, ItemTaskCount[i].Count,
                         Info.ItemTasks[i].Count, ItemTaskCount[i].Complete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
-                    Targets.Add(MakeNPCTarget());
+                    Targets.Add(MakeItemTarget());
                 }
                 else
                 {
                     TaskList.Add(string.Format("{0} {1}", Info.ItemTasks[i].Message, ItemTaskCount[i].Complete ? GameLanguage.ServerTextMap.GetLocalization(ServerTextKeys.TaskCompleted) : ""));
-                    Targets.Add(MakeNPCTarget());
+                    Targets.Add(MakeItemTarget());
                 }
             }
         }
@@ -582,6 +582,15 @@ namespace Server.MirDatabase
                 X = npc.Location.X,
                 Y = npc.Location.Y
             };
+        }
+
+        private QuestTaskTarget MakeItemTarget()
+        {
+            // 收集任务：优先传送到“掉落该物品的怪物”（通常是本任务的击杀目标，例如杀稻草人掉姜茶），
+            // 没有击杀怪可参考时再退回交任务 NPC。
+            if (KillTaskCount.Count > 0 && KillTaskCount[0].Info?.Monster != null)
+                return MakeMonsterTarget(KillTaskCount[0].Info.Monster);
+            return MakeNPCTarget();
         }
 
         #endregion

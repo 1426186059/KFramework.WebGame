@@ -7713,40 +7713,63 @@ namespace Server.MirObjects
         /// </summary>
         public void TeleportToQuestTarget(uint mapIndex, int x, int y)
         {
-            if (!HasQuestTarget(mapIndex, x, y)) return;
+            MessageQueue.Enqueue($"[传送诊断] 收到 TeleportToQuestTarget map={mapIndex} x={x} y={y}");
+
+            if (!HasQuestTarget(mapIndex, x, y))
+            {
+                MessageQueue.Enqueue($"[传送诊断] HasQuestTarget 返回 false, 不放行传送");
+                return;
+            }
 
             Map map = Envir.GetMap((int)mapIndex);
-            if (map == null) return;
+            if (map == null)
+            {
+                MessageQueue.Enqueue($"[传送诊断] GetMap({mapIndex}) 返回 null, 地图不存在");
+                return;
+            }
 
             Point p = new Point(x, y);
             if (!map.ValidPoint(p))
             {
                 Point? near = FindNearbyValid(map, x, y);
-                if (near == null) return;
+                if (near == null)
+                {
+                    MessageQueue.Enqueue($"[传送诊断] ({x},{y}) 非法且无附近合法点, map={mapIndex}");
+                    return;
+                }
+                MessageQueue.Enqueue($"[传送诊断] ({x},{y}) 非法, 改用附近点 ({near.Value.X},{near.Value.Y})");
                 p = near.Value;
             }
 
+            MessageQueue.Enqueue($"[传送诊断] 执行传送 -> map={mapIndex} ({p.X},{p.Y})");
             Teleport(map, p);
         }
 
         private bool HasQuestTarget(uint mapIndex, int x, int y)
         {
+            MessageQueue.Enqueue($"[传送诊断] HasQuestTarget 开始, CurrentQuests.Count={CurrentQuests.Count}, 请求 map={mapIndex} x={x} y={y}");
             for (int i = 0; i < CurrentQuests.Count; i++)
             {
                 QuestProgressInfo quest = CurrentQuests[i];
-                if (quest == null || quest.Completed) continue;
+                if (quest == null) continue;
+                // 不跳过 Completed：已完成待交任务的“去找 NPC”目标正是 Completed 时才写入 Targets，
+                // 需要允许玩家免费传送到交任务 NPC。任务交完后即移出 CurrentQuests，无副作用。
                 if (quest.Targets == null || quest.Targets.Count == 0)
                     quest.UpdateTasks();
                 if (quest.Targets == null) continue;
 
+                MessageQueue.Enqueue($"[传送诊断]   任务[{i}] Index={quest.Index} Completed={quest.Completed} Targets.Count={quest.Targets.Count}");
                 for (int j = 0; j < quest.Targets.Count; j++)
                 {
                     QuestTaskTarget t = quest.Targets[j];
                     if (t == null) continue;
-                    if (t.MapIndex == mapIndex && Math.Abs(t.X - x) <= 3 && Math.Abs(t.Y - y) <= 3)
+                    bool match = t.MapIndex == mapIndex && Math.Abs(t.X - x) <= 3 && Math.Abs(t.Y - y) <= 3;
+                    MessageQueue.Enqueue($"[传送诊断]     目标[{j}] map={t.MapIndex} x={t.X} y={t.Y} match={match}");
+                    if (match)
                         return true;
                 }
             }
+            MessageQueue.Enqueue($"[传送诊断] 未匹配到任何任务目标");
             return false;
         }
 

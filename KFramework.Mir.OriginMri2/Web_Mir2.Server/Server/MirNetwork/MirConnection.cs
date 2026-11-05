@@ -256,7 +256,15 @@ namespace Server.MirNetwork
                 _lastPackets.Enqueue(p);
 
                 TimeOutTime = Envir.Time + Settings.TimeOut;
-                ProcessPacket(p);
+                try
+                {
+                    ProcessPacket(p);
+                }
+                catch (Exception ex)
+                {
+                    MessageQueue.Enqueue(string.Format("{0} 处理数据包(Index={1})时抛出异常，已忽略以免断连：", IPAddress, p != null ? p.Index : -1));
+                    MessageQueue.Enqueue(ex);
+                }
 
                 if (_receiveList == null)
                     return;
@@ -1425,7 +1433,12 @@ namespace Server.MirNetwork
 
         private void TeleportToQuestTarget(C.TeleportToQuestTarget p)
         {
-            if (Stage != GameStage.Game) return;
+            MessageQueue.Enqueue($"[传送诊断] 派发收到 TeleportToQuestTarget map={p.MapIndex} x={p.X} y={p.Y} Stage={Stage}");
+            if (Stage != GameStage.Game)
+            {
+                MessageQueue.Enqueue($"[传送诊断] Stage != Game, 不放行 (当前 Stage={Stage})");
+                return;
+            }
 
             Player.TeleportToQuestTarget(p.MapIndex, p.X, p.Y);
         }

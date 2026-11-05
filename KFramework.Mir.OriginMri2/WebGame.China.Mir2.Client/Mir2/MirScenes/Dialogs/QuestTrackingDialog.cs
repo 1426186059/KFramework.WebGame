@@ -178,7 +178,7 @@ namespace Client.MirScenes.Dialogs
                                 BackColour = Color.Transparent,
                                 Font = QuestFont,
                                 ForeColour = Color.White,
-                                Location = new Point(45, 20 + y),
+                                Location = new Point(45, 25 + y),
                                 OutLine = true,
                                 NotControl = true,
                                 Parent = this,
@@ -195,18 +195,22 @@ namespace Client.MirScenes.Dialogs
                                 BackColour = Color.Transparent,
                                 Font = QuestFont,
                                 ForeColour = Color.Green,
-                                Location = new Point(45 + prefixW, 20 + y),
+                                Location = new Point(45 + prefixW, 25 + y),
                                 OutLine = true,
                                 UnderLine = true,
                                 Parent = this,
                                 Visible = true
                             };
-                            tgtLabel.Click += (s, e) => Network.Enqueue(new TeleportToQuestTarget
+                            tgtLabel.Click += (s, e) =>
                             {
-                                MapIndex = tgt.MapIndex,
-                                X = tgt.X,
-                                Y = tgt.Y
-                            });
+                                KFramework.MonoGame.PrintTool.Log($"tgtLabel.Click map={tgt.MapIndex} x={tgt.X} y={tgt.Y}");
+                                Network.Enqueue(new TeleportToQuestTarget
+                                {
+                                    MapIndex = tgt.MapIndex,
+                                    X = tgt.X,
+                                    Y = tgt.Y
+                                });
+                            };
                             TaskLines.Add(tgtLabel);
                             continue;
                         }
@@ -219,18 +223,22 @@ namespace Client.MirScenes.Dialogs
                             BackColour = Color.Transparent,
                             Font = QuestFont,
                             ForeColour = Color.Green,
-                            Location = new Point(45, 20 + y),
+                            Location = new Point(45, 25 + y),
                             OutLine = true,
                             UnderLine = true,
                             Parent = this,
                             Visible = true,
                         };
-                        _questTaskLabel.Click += (s, e) => Network.Enqueue(new TeleportToQuestTarget
+                        _questTaskLabel.Click += (s, e) =>
                         {
-                            MapIndex = tgt.MapIndex,
-                            X = tgt.X,
-                            Y = tgt.Y
-                        });
+                            KFramework.MonoGame.PrintTool.Log($"questTaskLabel.Click map={tgt.MapIndex} x={tgt.X} y={tgt.Y}");
+                            Network.Enqueue(new TeleportToQuestTarget
+                            {
+                                MapIndex = tgt.MapIndex,
+                                X = tgt.X,
+                                Y = tgt.Y
+                            });
+                        };
                         TaskLines.Add(_questTaskLabel);
                         continue;
                     }
@@ -242,7 +250,7 @@ namespace Client.MirScenes.Dialogs
                         BackColour = Color.Transparent,
                         Font = QuestFont,
                         ForeColour = Color.White, //trackedQuest.Contains("(Completed)") ? Color.LimeGreen : 
-                        Location = new Point(45, 20 + y),
+                        Location = new Point(45, 25 + y),
                         OutLine = true,
                         NotControl = true,
                         Parent = this,
