@@ -385,6 +385,8 @@ public class ClientQuestInfo
 
     public uint FinishNPCIndex;
 
+    public int NextQuest;
+
     public bool SameFinishNPC
     {
         get { return NPCIndex == FinishNPCIndex; }
@@ -437,6 +439,7 @@ public class ClientQuestInfo
             RewardsSelectItem.Add(new QuestItemReward(reader));
 
         FinishNPCIndex = reader.ReadUInt32();
+        NextQuest = reader.ReadInt32();
     }
     public void Save(BinaryWriter writer)
     {
@@ -482,6 +485,7 @@ public class ClientQuestInfo
             RewardsSelectItem[i].Save(writer);
 
         writer.Write(FinishNPCIndex);
+        writer.Write(NextQuest);
     }
 
     public QuestIcon GetQuestIcon(bool taken = false, bool completed = false)

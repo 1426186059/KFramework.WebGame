@@ -57,6 +57,7 @@ namespace Server.MirDatabase
         public List<string> CompletionDescription = new List<string>();
 
         public int RequiredMinLevel, RequiredMaxLevel, RequiredQuest;
+        public int NextQuest;
         public RequiredClass RequiredClass = RequiredClass.None;
 
         public QuestType Type;
@@ -404,6 +405,7 @@ namespace Server.MirDatabase
                 MaxLevelNeeded = RequiredMaxLevel,
                 ClassNeeded = RequiredClass,
                 QuestNeeded = RequiredQuest,
+                NextQuest = NextQuest,
                 Type = Type,
                 TimeLimitInSeconds = TimeLimitInSeconds,
                 RewardGold = GoldReward,
@@ -474,13 +476,15 @@ namespace Server.MirDatabase
 
             info.RequiredClass = (RequiredClass)temp;
 
+            if (data.Length > 13) int.TryParse(data[13], out info.NextQuest);
+
             if (isNew) EditEnvir.QuestInfoList.Add(info);
         }
 
         public string ToText()
         {
-            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}",
-                Index, Name, Group, (byte)Type, FileName, GotoMessage, KillMessage, ItemMessage, FlagMessage, RequiredMinLevel, RequiredMaxLevel, RequiredQuest, (byte)RequiredClass);
+            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}",
+                Index, Name, Group, (byte)Type, FileName, GotoMessage, KillMessage, ItemMessage, FlagMessage, RequiredMinLevel, RequiredMaxLevel, RequiredQuest, (byte)RequiredClass, NextQuest);
         }
 
         public override string ToString()
