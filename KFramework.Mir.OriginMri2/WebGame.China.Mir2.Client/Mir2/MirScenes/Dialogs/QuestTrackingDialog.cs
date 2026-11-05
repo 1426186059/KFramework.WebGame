@@ -41,6 +41,12 @@ namespace Client.MirScenes.Dialogs
             m_HideNode.LabelImage.Location = m_HideNode.LabelImage.Center;
             m_HideNode.LabelImage.Visible = true;
 
+            m_HideNode.Click += (o, e) =>
+            {
+                m_ShowNode.Visible = true;
+                m_HideNode.Visible = false;
+            };
+
             m_ShowNode = new MirImageControl
             {
                 Parent = this,
@@ -65,6 +71,11 @@ namespace Client.MirScenes.Dialogs
                 AtlasFrame = "lefttop_leftbg2",
                 Location = new Point(245, 0),
                 Size = new Size(19, 188),
+            };
+            mShowNode_HideBtn.Click += (o, e) =>
+            {
+                m_ShowNode.Visible = false;
+                m_HideNode.Visible = true;
             };
 
             mShowNode_HideBtn.LabelImage.AtlasNameKey = "y_lefttop-sheet";
