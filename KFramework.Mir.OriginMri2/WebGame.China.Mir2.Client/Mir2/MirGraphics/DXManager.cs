@@ -57,11 +57,12 @@ namespace Client.MirGraphics
                 GDevice.Viewport = vp;
             }
 
+            GDevice.PresentationParameters.PresentationInterval = Settings.FPSCap ? KFramework.MonoGame.PresentInterval.One : KFramework.MonoGame.PresentInterval.Immediate;
             GDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
-            CreatePlaceholderTextures();
+            LoadTextures();
         }
 
-        public static void CreatePlaceholderTextures()
+        private static void LoadTextures()
         {
             if (GDevice == null) return;
             if (RadarTexture == null)
@@ -400,10 +401,27 @@ void main()
         public static void SetOpacity(float opacity) { Opacity = opacity; _opacity = opacity; _effectVersion++; }
         public static void SetBlend(bool value, float rate = 1F, BlendMode mode = BlendMode.NORMAL)
         {
-            if (value == Blending && rate == BlendingRate && mode == BlendingMode) return;
-            Blending = value; BlendingRate = rate; BlendingMode = mode;
+            if (value == Blending &&
+                rate == BlendingRate &&
+                mode == BlendingMode)
+            {
+                return;
+            }
+
+            Blending = value; 
+            BlendingRate = rate; 
+            BlendingMode = mode;
             EndSprite();
-            BeginSprite(Blending ? MirBlend.Additive : MirBlend.Normal, RenderTransform);
+            if (Blending)
+            {
+                BeginSprite(Blending ? MirBlend.Additive : MirBlend.Normal, RenderTransform);
+            }
+            else
+            {
+                BeginSprite(MirBlend.AlphaBlend);
+            }
+
+            Device.SetRenderTarget(0, CurrentSurface);
         }
 
         public static void SetNormal(float blend, Color tintcolor)
