@@ -3101,6 +3101,11 @@ namespace Client.MirScenes
                         GameScene.Scene.QuestTrackingDialog.AddQuest(p.Quest);
                     }
 
+                    if (p.AutoGuide)
+                    {
+                        AutoGuideToQuestNPC(p.Quest.QuestInfo.NPCIndex);
+                    }
+
                     break;
                 case QuestState.Update:
                     for (int i = 0; i < User.CurrentQuests.Count; i++)
@@ -3139,6 +3144,37 @@ namespace Client.MirScenes
             {
                 Scene.QuestLogDialog.DisplayQuests();
             }
+        }
+
+        /// <summary>
+        /// 自动接龙引导：寻路走到任务关联的发放 NPC。
+        /// ClientQuestInfo.NPCIndex 是服务端运行时写入的 NPC ObjectID（由 NPC 脚本 [Quests] 段绑定），
+        /// 因此客户端可直接按 ObjectID 在 MapControl.Objects 里找到该 NPC 并走过去。
+        /// 该 NPC 必须在当前地图才有效；跨图时客户端没有这个 NPC 对象，自动寻路自然 no-op，
+        /// 由任务追踪栏继续给出指引（跨图自动移动需另行接传送逻辑）。
+        /// </summary>
+        private void AutoGuideToQuestNPC(uint npcObjectID)
+        {
+            if (npcObjectID == 0) return;
+            if (MapObject.User == null) return;
+
+            var map = Scene.MapControl;
+            if (map.M2CellInfo == null) return;
+
+            if (!MapControl.Objects.TryGetValue(npcObjectID, out MapObject ob) || !(ob is NPCObject npc))
+                return;
+
+            Point target = npc.CurrentLocation;
+            Point from = MapObject.User.CurrentLocation;
+            if (target.X < 0 || target.Y < 0 || target.X >= map.Width || target.Y >= map.Height)
+                return;
+
+            var path = map.PathFinder.FindPath(from, target, 20);
+            if (path == null || path.Count == 0) return;
+
+            map.CurrentPath = path;
+            map.AutoPath = true;
+            map.ShowClickEffect(target);
         }
 
         private void PlayerUpdate(S.PlayerUpdate p)

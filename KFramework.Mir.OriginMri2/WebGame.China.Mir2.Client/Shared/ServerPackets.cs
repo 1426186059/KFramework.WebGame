@@ -5221,18 +5221,23 @@ namespace ServerPackets
         public ClientQuestProgress Quest = new ClientQuestProgress();
         public QuestState QuestState;
         public bool TrackQuest;
+        // 自动接龙引导：仅当该任务由“完成上一环后自动接取”时置 true，
+        // 客户端据此自动寻路走到该任务关联的 NPC（发放 NPC）。
+        public bool AutoGuide;
 
         protected override void ReadPacket(BinaryReader reader)
         {
             Quest = new ClientQuestProgress(reader);
             QuestState = (QuestState)reader.ReadByte();
             TrackQuest = reader.ReadBoolean();
+            AutoGuide = reader.ReadBoolean();
         }
         protected override void WritePacket(BinaryWriter writer)
         {
             Quest.Save(writer);
             writer.Write((byte)QuestState);
             writer.Write(TrackQuest);
+            writer.Write(AutoGuide);
         }
     }
 

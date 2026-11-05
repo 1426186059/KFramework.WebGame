@@ -11554,6 +11554,34 @@ namespace Server.MirObjects
             GainCredit(quest.Info.CreditReward);
 
             CallDefaultNPC(DefaultNPCType.OnFinishQuest, questIndex);
+
+            // 自动接龙：主线顺序链——完成当前任务后自动接取下一环（无需手动去点 NPC）。
+            // 下一环会因 TrackQuest=true 自动进入追踪栏，引导玩家继续推进。
+            AutoAcceptQuest(quest.Info.NextQuest);
+        }
+
+        /// <summary>
+        /// 自动接取指定任务（用于主线顺序链的 NextQuest）。
+        /// 不要求玩家身处 NPC 附近——这是与手动 AcceptQuest 的关键区别，
+        /// 目的是让任务"一个接一个"地推给玩家。
+        /// </summary>
+        public void AutoAcceptQuest(int index)
+        {
+            if (index <= 0) return;
+            if (CurrentQuests.Exists(e => e.Index == index)) return;
+
+            QuestInfo info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
+            if (info == null) return;
+            if (CompletedQuests.Contains(index)) return;
+            if (!info.CanAccept(this)) return;
+            if (CurrentQuests.Count >= Globals.MaxConcurrentQuests) return;
+
+            QuestProgressInfo quest = new QuestProgressInfo(index);
+            quest.Init(this);
+
+            SendUpdateQuest(quest, QuestState.Add, true, true);
+
+            CallDefaultNPC(DefaultNPCType.OnAcceptQuest, index);
         }
         public void AbandonQuest(int questIndex)
         {
@@ -11725,7 +11753,7 @@ namespace Server.MirObjects
             }
         }
 
-        public void SendUpdateQuest(QuestProgressInfo quest, QuestState state, bool trackQuest = false)
+        public void SendUpdateQuest(QuestProgressInfo quest, QuestState state, bool trackQuest = false, bool autoGuide = false)
         {
             quest.CheckCompleted();
 
@@ -11751,7 +11779,8 @@ namespace Server.MirObjects
             {
                 Quest = quest.CreateClientQuestProgress(),
                 QuestState = state,
-                TrackQuest = trackQuest
+                TrackQuest = trackQuest,
+                AutoGuide = autoGuide
             });
         }
 

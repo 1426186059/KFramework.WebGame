@@ -18,7 +18,7 @@ namespace Client.MirScenes.Dialogs
 
         public QuestTrackingDialog()
         {
-            Location = new Point(0, 100);
+            Location = new Point(0, 0);
             AutoSize = false;
             Size = new Size(265, 188);
             //Texture = KDefaultRes.DefaultTexture2D;
@@ -110,7 +110,8 @@ namespace Client.MirScenes.Dialogs
 
             if (questsToTrack.Count < 1)
             {
-                Hide();
+                // 无任务也常驻左上角显示（与原始传奇一致）：仅清空任务行，不隐藏整个面板。
+                Show();
                 return;
             }
 
