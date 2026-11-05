@@ -3,6 +3,7 @@ using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirSounds;
+using KFramework.MonoGameExtend;
 using System.Text.RegularExpressions;
 using C = ClientPackets;
 
@@ -33,21 +34,14 @@ namespace Client.MirScenes.Dialogs
             AutoSize = false;
             Size = new Size(600, 180);
             Location = new Point(0, 0);
+            //Texture = KDefaultRes.DefaultTexture2D;
 
             MirImageControl BG = new MirImageControl
             {
                 Parent = this,
                 Location = new Point(0, 0), //Y = 9
                 ImageKey = "resource/assets/gameui4/jpg/y_task_bg.png"
-            };
-                
-            Reward = new QuestRewards
-            {
-                Parent = this,
-                Visible = false,
-                Size = new Size(313, 130),
-                Location = new Point(5, 120)
-            };
+            }; 
 
             // 精简后的任务详情：第一行 NPC 名，第二行 任务描述，末行 “Finish” 下划线黄字（点此交任务）。
             // 隐藏原本冗长的滚动文本与滚动条。
@@ -65,9 +59,17 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Location = new Point(10, 50),
-                Size = new Size(280, 130),
+                Size = new Size(500, 130),
                 DrawFormat = TextFormatFlags.WordBreak,
                 ForeColour = Color.White,
+            };
+
+            Reward = new QuestRewards
+            {
+                Parent = this,
+                Visible = false,
+                Size = new Size(313, 130),
+                Location = new Point(5, 120)
             };
 
             _finishLabel = new MirLabel
@@ -875,10 +877,26 @@ namespace Client.MirScenes.Dialogs
 
             _labels.Add(nameLabel);
 
+            KFramework.MonoGame.PrintTool.LogError($"[QuestReward] AddItemSegment 创建 label item={item.Name}");
+
             UserItem showItem = new UserItem(item) { MaxDura = item.Durability, CurrentDura = item.Durability };
-            nameLabel.MouseEnter += (o, e) => GameScene.Scene.CreateItemLabel(showItem);
-            nameLabel.Click += (o, e) => GameScene.Scene.CreateItemLabel(showItem);
-            nameLabel.MouseLeave += (o, e) => GameScene.Scene.DisposeItemLabel();
+            nameLabel.MouseEnter += (o, e) =>
+            {
+                KFramework.MonoGame.PrintTool.LogError($"[QuestReward] MouseEnter item={item.Name}");
+                try { GameScene.Scene.CreateItemLabel(showItem); }
+                catch (Exception ex) { KFramework.MonoGame.PrintTool.LogError("[QuestReward] CreateItemLabel 失败: " + ex); }
+            };
+            nameLabel.Click += (o, e) =>
+            {
+                KFramework.MonoGame.PrintTool.LogError($"[QuestReward] Click item={item.Name}");
+                try { GameScene.Scene.CreateItemLabel(showItem); }
+                catch (Exception ex) { KFramework.MonoGame.PrintTool.LogError("[QuestReward] CreateItemLabel 失败: " + ex); }
+            };
+            nameLabel.MouseLeave += (o, e) =>
+            {
+                KFramework.MonoGame.PrintTool.LogError($"[QuestReward] MouseLeave item={item.Name}");
+                GameScene.Scene.DisposeItemLabel();
+            };
 
             x += nameLabel.Size.Width;
 

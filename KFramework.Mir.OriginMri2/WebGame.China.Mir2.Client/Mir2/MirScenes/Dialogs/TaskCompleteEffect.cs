@@ -20,7 +20,7 @@ namespace Client.MirScenes.Dialogs
     public sealed class TaskCompleteEffect : MirControl
     {
         // 原始传奇“完成任务”特效图集（manifest key，运行时由 GetSheetAsync 解析成 CDN 哈希路径）。
-        private const string SheetKey = "resource/assets/gameui4/movieClip/task_complete.json";
+        private const string SheetKey = "task_complete.json";
 
         private MirAtlasAnimatedControl _ani;
         private bool _sheetReady;
