@@ -540,6 +540,9 @@ public class ClientQuestProgress
     // 任务追踪栏“点击传送”用：每个任务行对应的目标（怪物/NPC）+ 地图坐标。
     public List<QuestTaskTarget> Targets = new List<QuestTaskTarget>();
 
+    /// <summary>已完成子任务数（击杀/收集/标记），客户端据此检测“逐任务完成”以播放特效。</summary>
+    public int TaskCompletedCount;
+
     public QuestIcon Icon
     {
         get
@@ -566,6 +569,8 @@ public class ClientQuestProgress
         int targetCount = reader.ReadInt32();
         for (int i = 0; i < targetCount; i++)
             Targets.Add(new QuestTaskTarget(reader));
+
+        TaskCompletedCount = reader.ReadInt32();
     }
 
     public void Save(BinaryWriter writer)
@@ -584,6 +589,8 @@ public class ClientQuestProgress
         writer.Write(Targets.Count);
         for (int i = 0; i < Targets.Count; i++)
             Targets[i].Save(writer);
+
+        writer.Write(TaskCompletedCount);
     }
 }
 

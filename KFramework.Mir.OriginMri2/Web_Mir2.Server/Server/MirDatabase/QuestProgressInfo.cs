@@ -698,6 +698,11 @@ namespace Server.MirDatabase
 
         public ClientQuestProgress CreateClientQuestProgress()
         {
+            int done = 0;
+            for (int i = 0; i < KillTaskCount.Count; i++) if (KillTaskCount[i].Complete) done++;
+            for (int i = 0; i < ItemTaskCount.Count; i++) if (ItemTaskCount[i].Complete) done++;
+            for (int i = 0; i < FlagTaskSet.Count; i++) if (FlagTaskSet[i].Complete) done++;
+
             return new ClientQuestProgress
             {
                 Id = Index,
@@ -705,7 +710,8 @@ namespace Server.MirDatabase
                 Targets = new List<QuestTaskTarget>(Targets),
                 Taken = Taken,
                 Completed = Completed,
-                New = New
+                New = New,
+                TaskCompletedCount = done
             };
         }
     }

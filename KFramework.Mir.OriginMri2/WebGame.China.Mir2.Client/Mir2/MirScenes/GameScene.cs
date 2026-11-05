@@ -108,6 +108,7 @@ namespace Client.MirScenes
         public QuestDetailDialog QuestDetailDialog;
         public QuestDiaryDialog QuestLogDialog;
         public QuestTrackingDialog QuestTrackingDialog;
+        public TaskCompleteEffect TaskCompleteEffect;
 
         public RankingDialog RankingDialog;
 
@@ -365,6 +366,7 @@ namespace Client.MirScenes
             QuestDetailDialog = new QuestDetailDialog { Parent = this, Visible = false };
             QuestTrackingDialog = new QuestTrackingDialog { Parent = this, Visible = false };
             QuestLogDialog = new QuestDiaryDialog { Parent = this, Visible = false };
+            TaskCompleteEffect = new TaskCompleteEffect { Parent = this };
 
             RankingDialog = new RankingDialog { Parent = this, Visible = false };
 
@@ -3112,7 +3114,10 @@ namespace Client.MirScenes
                     {
                         if (User.CurrentQuests[i].Id != p.Quest.Id) continue;
 
+                        int oldDone = User.CurrentQuests[i].TaskCompletedCount;
                         User.CurrentQuests[i] = p.Quest;
+                        if (p.Quest.TaskCompletedCount > oldDone && TaskCompleteEffect != null)
+                            TaskCompleteEffect.Play();
                     }
 
                     foreach (ClientQuestProgress quest in User.CurrentQuests)

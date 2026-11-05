@@ -4,6 +4,7 @@ using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirScenes;
+using Client.MirScenes.Dialogs;
 using Client.MirSounds;
 using KFramework.MonoGame;
 using MG = KFramework.MonoGame;
