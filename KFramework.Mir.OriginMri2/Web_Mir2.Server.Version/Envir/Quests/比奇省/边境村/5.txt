@@ -1,7 +1,6 @@
 [@Description]
 年轻的旅人，我叫{史密斯/LimeGreen}。
-村外有太多怪物了
-我不知道该怎么才能到达{比奇城/Yellow}
+村外有太多怪物了，我不知道该怎么才能到达{比奇城/Yellow}
 你能帮帮我吗？
 
 [@TaskDescription]

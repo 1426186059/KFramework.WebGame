@@ -1,7 +1,6 @@
 [@Description]
-{边境村/Yellow}有难了！更多守卫正
-因频繁遭到
-怪物。{鲁本/LimeGreen}为伤员索要{圣物/LightSteelBlue}。
+{边境村/Yellow}有难了！更多守卫正因频繁遭到怪物。
+{鲁本/LimeGreen}为伤员索要{圣物/LightSteelBlue}。
 
 [@TaskDescription]
 猎杀{洞穴蛆/Crimson}以收集10个{圣物/LightSteelBlue}

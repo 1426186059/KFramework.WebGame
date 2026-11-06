@@ -1,8 +1,7 @@
 [@Description]
 你就是{简/LimeGreen}推荐的那位旅人。
-能否请你猎杀{鹿/Crimson}并给我带些
-{鹿肉/LightSteelBlue}。如果你想了解更多关于
-屠宰时请按"H"。
+能否请你猎杀{鹿/Crimson}并给我带些{鹿肉/LightSteelBlue}。
+如果你想了解更多关于屠宰时请按"H"。
 
 [@TaskDescription]
 猎杀{鹿/Crimson}以收集{鹿肉/LightSteelBlue}
@@ -10,7 +9,7 @@
 [@Completion]
 [@KillTasks]
 [@ItemTasks]
-鹿肉 5
+鹿肉 5 "击杀鹿，收集鹿肉 {0}/{1}"
 
 [@CarryItems]
 [@FixedRewards]

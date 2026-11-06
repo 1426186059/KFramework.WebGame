@@ -4,6 +4,7 @@ using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirSounds;
 using KFramework.MonoGameExtend;
+using MirEngine;
 using System.Text.RegularExpressions;
 using C = ClientPackets;
 
@@ -12,6 +13,7 @@ namespace Client.MirScenes.Dialogs
     public sealed class QuestListDialog : MirImageControl
     {
         private MirLabel _npcNameLabel, _descLabel, _finishLabel;
+        private List<MirLabel> _descSegments = new List<MirLabel>(); // 描述渲染出的彩色/链接覆盖层（含每行底色标签），刷新时整体释放
 
         public List<ClientQuestProgress> Quests = new List<ClientQuestProgress>();
 
@@ -276,7 +278,7 @@ namespace Client.MirScenes.Dialogs
             if (SelectedQuest == null)
             {
                 _npcNameLabel.Text = "";
-                _descLabel.Text = "";
+                ClearDescription();
                 _finishLabel.Visible = false;
                 return;
             }
@@ -301,7 +303,136 @@ namespace Client.MirScenes.Dialogs
                 desc = SelectedQuest.QuestInfo.Description;
             }
 
-            _descLabel.Text = desc.Count > 0 ? string.Join("\n", desc) : "";
+            RenderDescription(desc);
+        }
+
+        // 渲染任务描述：解析内联颜色/链接标签（{文字/颜色}、[ITEM:idx|名] 等，与 NPC 对话同一套格式）。
+        // 底色白字由 _descLabel（WordBreak 自动换行）承载，彩色/链接词作为覆盖层叠在其上，
+        // 复用 NPCDialogs 的公开正则与取色逻辑，确保描述与 NPC 对话表现一致。
+        private void RenderDescription(List<string> lines)
+        {
+            ClearDescription();
+
+            Font font = _descLabel.Font ?? new Font(Settings.FontName, 9F, KFramework.MonoGame.FontStyle.Regular);
+            int x = _descLabel.Location.X;
+            int baseY = _descLabel.Location.Y;
+            int lineH = 16;
+
+            var stripped = new List<string>(lines.Count);
+            for (int i = 0; i < lines.Count; i++)
+            {
+                string currentLine = lines[i];
+                int oldLength = currentLine.Length;
+
+                var matchList = new List<Match>();
+                matchList.AddRange(NPCDialog.R.Matches(currentLine).Cast<Match>());
+                matchList.AddRange(NPCDialog.C.Matches(currentLine).Cast<Match>());
+                matchList.AddRange(NPCDialog.L.Matches(currentLine).Cast<Match>());
+                matchList.AddRange(NPCDialog.MonsterLink.Matches(currentLine).Cast<Match>());
+                matchList.AddRange(NPCDialog.NPCLink.Matches(currentLine).Cast<Match>());
+                matchList.AddRange(NPCDialog.ItemLink.Matches(currentLine).Cast<Match>());
+
+                foreach (Match match in matchList.OrderBy(o => o.Index).ToList())
+                {
+                    int offSet = oldLength - currentLine.Length;
+
+                    bool isMonster = NPCDialog.MonsterLink.Match(match.Value).Success;
+                    bool isNpc = NPCDialog.NPCLink.Match(match.Value).Success;
+                    bool isItem = NPCDialog.ItemLink.Match(match.Value).Success;
+
+                    if (isMonster || isNpc || isItem)
+                    {
+                        string linkIdx = match.Groups["idx"].Captures.Count > 0 ? match.Groups["idx"].Captures[0].Value : match.Groups["idx"].Value;
+                        string providedName = match.Groups["name"].Success ? match.Groups["name"].Captures[0].Value : null;
+                        string linkType = isMonster ? "MONSTER" : isNpc ? "NPC" : "ITEM";
+                        string displayName = NPCDialog.GetDisplayNameForLink(linkType, linkIdx, providedName);
+                        if (string.IsNullOrEmpty(displayName)) displayName = $"LINK_{linkIdx}";
+
+                        int matchStart = match.Index - offSet;
+                        int matchLength = match.Length;
+                        currentLine = currentLine.Remove(matchStart, matchLength).Insert(matchStart, displayName);
+
+                        string prefixText = currentLine.Substring(0, matchStart);
+                        int prefixWidth = TextRenderer.MeasureText(prefixText, font).Width;
+
+                        var linkLbl = new MirLabel
+                        {
+                            Parent = this,
+                            AutoSize = true,
+                            Visible = true,
+                            Location = new Point(x + prefixWidth, baseY + i * lineH),
+                            Text = displayName,
+                            ForeColour = Color.Cyan,
+                            Font = font,
+                            NotControl = false,
+                        };
+                        string capturedType = linkType, capturedIdx = linkIdx;
+                        linkLbl.MouseEnter += (o, e) =>
+                        {
+                            linkLbl.ForeColour = Color.Orange;
+                            NPCDialog.ShowTooltipForLink(capturedType, capturedIdx, linkLbl.DisplayLocation);
+                        };
+                        linkLbl.MouseLeave += (o, e) => { linkLbl.ForeColour = Color.Cyan; };
+                        _descSegments.Add(linkLbl);
+                        continue;
+                    }
+
+                    bool hasMultiple = match.Groups.Count > 3 && match.Groups[2].Captures.Count > 0 && match.Groups[3].Captures.Count > 0;
+                    if (hasMultiple)
+                    {
+                        string txt = match.Groups[2].Captures[0].Value;
+                        string colour = match.Groups[3].Captures[0].Value;
+                        Capture capture = match.Groups[1].Captures[0];
+                        currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, txt);
+                        string prefixText = currentLine.Substring(0, capture.Index - 1 - offSet);
+                        int prefixWidth = TextRenderer.MeasureText(prefixText, font).Width;
+
+                        if (NPCDialog.C.Match(match.Value).Success)
+                        {
+                            Color c = ColorTranslator.FromHtml(colour);
+                            var cl = new MirLabel
+                            {
+                                Parent = this,
+                                AutoSize = true,
+                                Visible = true,
+                                Location = new Point(x + prefixWidth, baseY + i * lineH),
+                                Text = txt,
+                                ForeColour = c,
+                                Font = font,
+                                NotControl = true,
+                            };
+                            _descSegments.Add(cl);
+                        }
+                        else if (NPCDialog.R.Match(match.Value).Success || NPCDialog.L.Match(match.Value).Success)
+                        {
+                            var bl = new MirLabel
+                            {
+                                Parent = this,
+                                AutoSize = true,
+                                Visible = true,
+                                Location = new Point(x + prefixWidth, baseY + i * lineH),
+                                Text = txt,
+                                ForeColour = Color.Yellow,
+                                Font = font,
+                                NotControl = true,
+                            };
+                            _descSegments.Add(bl);
+                        }
+                    }
+                }
+                stripped.Add(currentLine);
+            }
+
+            _descLabel.Text = string.Join("\n", stripped);
+            _descLabel.Visible = true;
+        }
+
+        private void ClearDescription()
+        {
+            foreach (var s in _descSegments) s.Dispose();
+            _descSegments.Clear();
+            _descLabel.Visible = false;
+            _descLabel.Text = "";
         }
 
         public int FindSelectedIndex()
