@@ -7727,7 +7727,7 @@ namespace Server.MirObjects
         {
             MessageQueue.Enqueue($"[传送诊断] 收到 TeleportToQuestTarget map={mapIndex} x={x} y={y} monster={monsterIndex}");
 
-            if (!HasQuestTarget(mapIndex, x, y))
+            if (!HasQuestTarget(mapIndex, x, y, out uint npcObjectId))
             {
                 MessageQueue.Enqueue($"[传送诊断] HasQuestTarget 返回 false, 不放行传送");
                 return;
@@ -7765,22 +7765,23 @@ namespace Server.MirObjects
                 p = near.Value;
             }
 
-            MessageQueue.Enqueue($"[传送诊断] 执行传送 -> map={mapIndex} ({p.X},{p.Y})");
-            Teleport(map, p);
-
-            // 目标为 NPC：传送后自动打开该 NPC 面板，便于直接接取/交付任务。
-            // 怪物类目标附近无 NPC，FindNearbyValid 又从半径 1 起步，故不会误弹面板。
-            NPCObject targetNpc = null;
-            for (int i = 0; i < map.NPCs.Count; i++)
+            // 已在目标点同图且范围内：无需传送，直接打开面板（避免“明明就在 NPC 旁还被传送”）
+            bool alreadyThere = (CurrentMap == map) && Functions.InRange(CurrentLocation, p, Globals.DataRange);
+            if (!alreadyThere)
             {
-                if (Functions.InRange(map.NPCs[i].CurrentLocation, p, Globals.DataRange))
-                {
-                    targetNpc = map.NPCs[i];
-                    break;
-                }
+                MessageQueue.Enqueue($"[传送诊断] 执行传送 -> map={mapIndex} ({p.X},{p.Y})");
+                Teleport(map, p);
             }
-            if (targetNpc != null && !Dead)
-                CallNPC(targetNpc.ObjectID, "@Main");
+
+            // 打开面板：直接用服务器自身任务数据解析出的 NPC 运行时 ObjectID，按 ID 精确 CallNPC，
+            // 不再靠坐标猜“附近哪个 NPC”——避免紧邻 NPC 串台（如工匠大娘/传送员）。
+            // 怪物类目标 npcObjectId 为 0，不会误开面板。
+            if (npcObjectId != 0)
+            {
+                NPCObject targetNpc = Envir.NPCs.FirstOrDefault(n => n.ObjectID == npcObjectId);
+                if (targetNpc != null && !Dead)
+                    CallNPC(targetNpc.ObjectID, NPCScript.MainKey);
+            }
         }
 
         private Point? FindLiveMonsterSpot(Map map, uint monsterIndex)
@@ -7802,8 +7803,13 @@ namespace Server.MirObjects
             return null;
         }
 
-        private bool HasQuestTarget(uint mapIndex, int x, int y)
+        // 校验 (map,x,y) 是否匹配玩家当前任务目标；若匹配且目标是 NPC，则一并通过 out 返回
+        // 该目标对应的 NPC 运行时 ObjectID（取自任务数据本身，无需客户端额外传字段）。
+        // 交付/返回类目标用 FinishNpcIndex，接取/寻找类目标用起始 NpcIndex；
+        // EnsureQuestNPC 已把这两者覆盖为运行时世界唯一索引(ObjectID)。
+        private bool HasQuestTarget(uint mapIndex, int x, int y, out uint npcObjectId)
         {
+            npcObjectId = 0;
             MessageQueue.Enqueue($"[传送诊断] HasQuestTarget 开始, CurrentQuests.Count={CurrentQuests.Count}, 请求 map={mapIndex} x={x} y={y}");
             for (int i = 0; i < CurrentQuests.Count; i++)
             {
@@ -7821,9 +7827,14 @@ namespace Server.MirObjects
                     QuestTaskTarget t = quest.Targets[j];
                     if (t == null) continue;
                     bool match = t.MapIndex == mapIndex && Math.Abs(t.X - x) <= 3 && Math.Abs(t.Y - y) <= 3;
-                    MessageQueue.Enqueue($"[传送诊断]     目标[{j}] map={t.MapIndex} x={t.X} y={t.Y} match={match}");
+                    MessageQueue.Enqueue($"[传送诊断]     目标[{j}] map={t.MapIndex} x={t.X} y={t.Y} type={t.Type} match={match}");
                     if (match)
+                    {
+                        // 仅 NPC 类目标需要打开面板；怪物类目标（打怪/收集）不打扰附近 NPC。
+                        if (t.Type == QuestTargetType.NPC)
+                            npcObjectId = quest.Completed ? (uint)quest.Info.FinishNpcIndex : (uint)quest.Info.NpcIndex;
                         return true;
+                    }
                 }
             }
             MessageQueue.Enqueue($"[传送诊断] 未匹配到任何任务目标");

@@ -30,7 +30,7 @@ namespace Client.MirScenes.Dialogs
         public uint CurrentNPCID = 0;
 
         // 任务面板内各控件相对背景的统一左缩进，调这个值即可整体左右平移（默认 20）
-        private const int PanelIndent = 20;
+        private const int PanelIndent = 40;
 
         public QuestListDialog()
         {
@@ -74,7 +74,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Visible = false,
                 Size = new Size(313, 130),
-                Location = new Point(PanelIndent, 120)
+                Location = new Point(PanelIndent, 115)
             };
 
             _PlayerTaskTalk = new MirLabel
@@ -95,13 +95,16 @@ namespace Client.MirScenes.Dialogs
 
                 if (!SelectedQuest.Taken)
                 {
-                    // 尚未接取：在 NPC 旁点击“接取任务”（玩家已通过“寻找NPC”传送至该 NPC 范围内）
+                    // 尚未接取：在 NPC 旁点击“接取任务”
                     Network.Enqueue(new C.AcceptQuest { QuestIndex = SelectedQuest.QuestInfo.Index, Navigate = false });
                 }
                 else if (SelectedQuest.Completed)
                 {
                     Network.Enqueue(new C.FinishQuest { QuestIndex = SelectedQuest.QuestInfo.Index });
                 }
+                // 无论哪种状态（接取/继续/领取），点击后都关闭 NPC 任务面板
+                // （Visible=false，后续服务器状态包因条件不满足也不会再弹出来）
+                Hide();
             };
 
             MirButton closeButton = new MirButton
@@ -892,14 +895,14 @@ namespace Client.MirScenes.Dialogs
             if (Quest == null) return;
 
             ClientQuestInfo info = Quest.QuestInfo;
-            int x = 8; // 一行内的左内边距
+            int x = 0; // 一行内的左内边距
 
             if (info.RewardExp > 0)
-                x = AddSegment(x, "经验 " + info.RewardExp.ToString("###0"));
+                x = AddSegment(x, "经验", info.RewardExp.ToString("###0"));
             if (info.RewardGold > 0)
-                x = AddSegment(x, "金币 " + info.RewardGold.ToString("###0"));
+                x = AddSegment(x, "金币", info.RewardGold.ToString("###0"));
             if (info.RewardCredit > 0)
-                x = AddSegment(x, "元宝 " + info.RewardCredit.ToString("###0"));
+                x = AddSegment(x, "元宝", info.RewardCredit.ToString("###0"));
 
             // 固定奖励物品
             foreach (var r in FilterRewards(info.RewardsFixedItem))
@@ -912,24 +915,38 @@ namespace Client.MirScenes.Dialogs
             Redraw();
         }
 
-        // 非物品奖励（经验/金币/元宝）：整段下划线黄字，字号 8
-        private int AddSegment(int x, string text)
+        // 非物品奖励（经验/金币/元宝）：标签绿字+下划线，数量白字无下划线，字号 12
+        private int AddSegment(int x, string label, string value)
         {
-            var label = new MirLabel
+            var wordLbl = new MirLabel
             {
                 Parent = this,
                 AutoSize = true,
                 Location = new Point(x, 2),
-                Text = text,
-                ForeColour = Color.Yellow,
+                Text = label,
+                ForeColour = Color.LimeGreen,
                 UnderLine = true,
                 NotControl = false,
                 Font = new Font(Settings.FontName, 12F),
             };
+            _labels.Add(wordLbl);
+            x += wordLbl.Size.Width;
 
-            _labels.Add(label);
+            var valLbl = new MirLabel
+            {
+                Parent = this,
+                AutoSize = true,
+                Location = new Point(x, 2),
+                Text = " " + value,
+                ForeColour = Color.White,
+                UnderLine = false,
+                NotControl = false,
+                Font = new Font(Settings.FontName, 12F),
+            };
+            _labels.Add(valLbl);
+            x += valLbl.Size.Width;
 
-            return x + label.Size.Width + 12;
+            return x + 12;
         }
 
         // 物品奖励：物品名（下划线、悬浮/点击弹背包同款提示） + 其后 " x数量"
@@ -941,7 +958,7 @@ namespace Client.MirScenes.Dialogs
                 AutoSize = true,
                 Location = new Point(x, 2),
                 Text = item.Name,
-                ForeColour = Color.Yellow,
+                ForeColour = Color.LimeGreen,
                 UnderLine = true,
                 NotControl = false,
                 Font = new Font(Settings.FontName, 12F),
@@ -980,7 +997,8 @@ namespace Client.MirScenes.Dialogs
                     AutoSize = true,
                     Location = new Point(x, 2),
                     Text = " x" + count,
-                    ForeColour = Color.Yellow,
+                    ForeColour = Color.White,
+                    UnderLine = false,
                     NotControl = false,
                     Font = new Font(Settings.FontName, 12F),
                 };
