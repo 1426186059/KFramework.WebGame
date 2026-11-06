@@ -404,15 +404,31 @@ namespace Server.MirDatabase
             var returnDescription = LinkFormatter.ReplacePlaceholders(ReturnDescription, (type, index) => EnsureLinkInfo(viewer, type, index)) ?? new List<string>();
             var completionDescription = LinkFormatter.ReplacePlaceholders(CompletionDescription, (type, index) => EnsureLinkInfo(viewer, type, index)) ?? new List<string>();
 
-            // 发放 NPC 名称：优先用已链接的 info.NpcInfo（NPCScript.ParseQuests 在 NPC 生成时填入），
-            // 兜底再按 NpcIndex 查找。避免登录下发任务列表时因索引查找/时序问题取不到名字。
+            // 发放 NPC：优先用已链接的 info.NpcInfo（NPCScript.ParseQuests 在 NPC 生成时填入），兜底按 NpcIndex 配置索引反查。
             var startNpc = NpcInfo ?? Envir.Main.NPCInfoList.FirstOrDefault(n => n.Index == (int)NpcIndex);
+            var finishNpc = Envir.Main.NPCInfoList.FirstOrDefault(n => n.Index == (int)FinishNpcIndex);
+
+            // 客户端按“运行时世界唯一索引(ObjectID)”匹配 NPC（NPCObject.Quests / GetAvailableQuests 用 NPCIndex == ObjectID），
+            // 故把配置索引解析成对应 NPC 实例的 ObjectID 下发；取不到运行时实例则回退配置索引（仍能显示名字）。
+            uint startNpcObjectID = NpcIndex;
+            if (startNpc != null)
+            {
+                var npcObj = Envir.Main.NPCs.FirstOrDefault(n => n.Info == startNpc);
+                if (npcObj != null) startNpcObjectID = npcObj.ObjectID;
+            }
+
+            uint finishNpcObjectID = FinishNpcIndex;
+            if (finishNpc != null)
+            {
+                var npcObj = Envir.Main.NPCs.FirstOrDefault(n => n.Info == finishNpc);
+                if (npcObj != null) finishNpcObjectID = npcObj.ObjectID;
+            }
 
             return new ClientQuestInfo
             {
                 Index = Index,
-                NPCIndex = NpcIndex,
-                FinishNPCIndex = FinishNpcIndex,
+                NPCIndex = startNpcObjectID,
+                FinishNPCIndex = finishNpcObjectID,
                 Name = Name,
                 Group = Group,
                 Description = description,

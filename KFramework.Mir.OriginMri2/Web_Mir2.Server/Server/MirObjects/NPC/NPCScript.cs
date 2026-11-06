@@ -713,6 +713,8 @@ namespace Server.MirObjects
 
                     if (index > 0)
                     {
+                        // NpcIndex / FinishNpcIndex 存“运行时世界唯一索引”(NPCObject.ObjectID)，
+                        // 与客户端/服务端按 ObjectID 查找保持一致；NPCInfo 引用另存，用于精确反查运行时实例。
                         info.NpcIndex = LoadedObjectID;
                         info.NpcInfo = loadedNPC.Info;
                     }

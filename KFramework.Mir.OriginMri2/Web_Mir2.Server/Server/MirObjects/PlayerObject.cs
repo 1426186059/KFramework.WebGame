@@ -8140,6 +8140,10 @@ namespace Server.MirObjects
         {
             if (Dead) return;
 
+            // 先告知客户端当前交互的 NPC（GameScene.NPCID），否则 S.NPCResponse 处理时取不到 NPC，
+            // 任务面板/对话面板的“与谁对话”判定会失效，导致面板不弹出。
+            Enqueue(new S.NPCUpdate { NPCID = objectID });
+
             key = key.ToUpper();
 
             for (int i = 0; i < CurrentMap.NPCs.Count; i++)
@@ -11496,34 +11500,31 @@ namespace Server.MirObjects
             QuestInfo info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
             if (info == null) return;
 
-            // 从“寻找NPC”追踪入口进入：先传送至发放 NPC 旁，再接取（无需身处附近）
+            EnsureQuestNPC(info);
+
+            // 从“寻找NPC”追踪入口进入：传送至发放 NPC 旁并打开其任务面板，
+            // 由玩家在面板内点击“领取”确认接取（不自动领取）。
             if (navigate)
             {
-                // info.NpcIndex 即发放 NPC 的运行时 ObjectID（由 NPCScript.ParseQuests 写入），
-                // 故按 ObjectID 取 NPC，而非按 NPCInfo.Index（二者编号体系不同，直接比对会取不到）。
-                NPCObject npcObj = NPCObject.Get(info.NpcIndex);
+                NPCObject npcObj = GetQuestStartNPC(info);
                 if (npcObj != null)
                 {
                     bool inRange = Functions.InRange(npcObj.CurrentLocation, CurrentLocation, Globals.DataRange);
                     if (!inRange)
                         Teleport(npcObj.CurrentMap, npcObj.CurrentLocation);
+
+                    // 打开发放 NPC 的任务面板/对话（客户端据此隐藏任务跟踪面板）
+                    if (!Dead)
+                        CallNPC(npcObj.ObjectID, "@Main");
                 }
+                return;
             }
 
-            NPCObject npc = null;
-
-            if (!navigate)
-            {
-                for (int i = CurrentMap.NPCs.Count - 1; i >= 0; i--)
-                {
-                    if (CurrentMap.NPCs[i].ObjectID != info.NpcIndex) continue;
-
-                    if (!Functions.InRange(CurrentMap.NPCs[i].CurrentLocation, CurrentLocation, Globals.DataRange)) break;
-                    npc = CurrentMap.NPCs[i];
-                    break;
-                }
-                if (npc == null || !npc.VisibleLog[Info.Index] || !npc.Visible) return;
-            }
+            // 站在 NPC 旁接取：用已链接的 NpcInfo 反查运行时 NPC（比按 ObjectID 比对更可靠）
+            NPCObject npc = GetQuestStartNPC(info);
+            if (npc == null || npc.CurrentMap != CurrentMap ||
+                !Functions.InRange(npc.CurrentLocation, CurrentLocation, Globals.DataRange) ||
+                !npc.VisibleLog[Info.Index] || !npc.Visible) return;
 
             if (!info.CanAccept(this))
             {
@@ -11605,12 +11606,64 @@ namespace Server.MirObjects
             SendUpdateQuest(quest, QuestState.Add, true);
 
             CallDefaultNPC(DefaultNPCType.OnAcceptQuest, index);
+        }
 
-            // “寻找NPC”入口：传送+接取后，自动打开发放 NPC 的面板（任务面板/对话），
-            // 让玩家看到 NPC 交互界面（客户端会据此隐藏任务跟踪面板）。
-            NPCObject startNpc = NPCObject.Get(info.NpcIndex);
-            if (startNpc != null)
-                CallNPC(startNpc.ObjectID, "@Main");
+        // 确保任务已解析出起始/交付 NPC 的运行时信息（NpcInfo 引用 + 世界唯一索引 ObjectID）。
+        // 若任务写在某 NPC 脚本 [Quests] 段，ParseQuests 已写入；否则按配置索引(NpcIndex/FinishNpcIndex) 反查 NPCInfo，
+        // 再从已生成的 NPC 实例中取运行时 ObjectID，供客户端按 ObjectID 匹配、以及服务端反查 NPC 实例使用。
+        // 不依赖任务是否登记在脚本里，避免 NpcIndex=0 时“寻找NPC”整体失效（任务追踪栏只是回退显示任务名）。
+        private void EnsureQuestNPC(QuestInfo info)
+        {
+            if (info == null) return;
+
+            if (info.NpcInfo == null && info.NpcIndex != 0)
+                info.NpcInfo = Envir.Main.NPCInfoList.FirstOrDefault(n => n.Index == (int)info.NpcIndex);
+
+            if (info.NpcInfo != null)
+            {
+                var npc = Envir.NPCs.FirstOrDefault(n => n.Info == info.NpcInfo);
+                if (npc != null) info.NpcIndex = npc.ObjectID; // 覆盖为运行时世界唯一索引，供客户端/服务端按 ObjectID 匹配
+            }
+
+            if (info.FinishNpcIndex != 0)
+            {
+                var finishInfo = Envir.Main.NPCInfoList.FirstOrDefault(n => n.Index == (int)info.FinishNpcIndex);
+                if (finishInfo != null)
+                {
+                    var fnpc = Envir.NPCs.FirstOrDefault(n => n.Info == finishInfo);
+                    if (fnpc != null) info.FinishNpcIndex = fnpc.ObjectID;
+                }
+            }
+        }
+
+        // 按已链接的发放 NPC 信息反查运行时 NPC 实例。
+        // NpcIndex/FinishNpcIndex 实际存的是“运行时世界唯一索引”(NPCObject.ObjectID)，故优先按 ObjectID 查找；
+        // 另用 info.NpcInfo 引用做精确兜底（ParseQuests 写入），再退而按配置表索引(NPCInfo.Index) 兜底。
+        private NPCObject GetQuestStartNPC(QuestInfo info)
+        {
+            if (info == null) return null;
+
+            // 1. 已链接的 NPCInfo 引用（ParseQuests 写入，最精确）
+            if (info.NpcInfo != null)
+            {
+                foreach (var ob in Envir.NPCs)
+                    if (ob is NPCObject npc && npc.Info == info.NpcInfo)
+                        return npc;
+            }
+
+            if (info.NpcIndex != 0)
+            {
+                // 2. 按运行时 ObjectID 查找（NpcIndex 即世界唯一索引）
+                NPCObject byId = NPCObject.Get(info.NpcIndex);
+                if (byId != null) return byId;
+
+                // 3. 兜底：按配置表索引匹配 NPCInfo.Index（若某处写入的是配置索引）
+                foreach (var ob in Envir.NPCs)
+                    if (ob is NPCObject npc && npc.Info != null && npc.Info.Index == (int)info.NpcIndex)
+                        return npc;
+            }
+
+            return null;
         }
 
         public void FinishQuest(int questIndex)
@@ -11766,6 +11819,8 @@ namespace Server.MirObjects
             if (!info.CanAccept(this)) return;
 
             OfferedQuests.Add(index);
+
+            EnsureQuestNPC(info); // 解析起始 NPC 的运行时世界索引，供客户端按 ObjectID 匹配任务面板
 
             // CreateClientQuestInfo() 已按 info.NpcInfo / NpcIndex 解析好起始 NPC 名（StartNpcName），此处无需重复覆盖。
             ClientQuestInfo cqi = info.CreateClientQuestInfo();

@@ -88,9 +88,17 @@ namespace Client.MirScenes.Dialogs
             };
             _PlayerTaskTalk.Click += (o, e) =>
             {
-                if (Reward == null || SelectedQuest == null || SelectedQuest.QuestInfo == null || !SelectedQuest.Completed) return;
+                if (SelectedQuest == null || SelectedQuest.QuestInfo == null) return;
 
-                Network.Enqueue(new C.FinishQuest { QuestIndex = SelectedQuest.QuestInfo.Index });
+                if (!SelectedQuest.Taken)
+                {
+                    // 尚未接取：在 NPC 旁点击“接取任务”（玩家已通过“寻找NPC”传送至该 NPC 范围内）
+                    Network.Enqueue(new C.AcceptQuest { QuestIndex = SelectedQuest.QuestInfo.Index, Navigate = false });
+                }
+                else if (SelectedQuest.Completed)
+                {
+                    Network.Enqueue(new C.FinishQuest { QuestIndex = SelectedQuest.QuestInfo.Index });
+                }
             };
 
             MirButton closeButton = new MirButton
@@ -181,8 +189,8 @@ namespace Client.MirScenes.Dialogs
             if (StartIndex > maxIndex) StartIndex = maxIndex;
             if (StartIndex < 0) StartIndex = 0;
 
-            // 只显示「当前所在的任务」（已接取的任务）；任务是自动接取的，未接时不会走到这里
-            ClientQuestProgress current = Quests.FirstOrDefault(q => q.Taken);
+            // 优先显示「当前任务」（已接取），否则显示可接取的悬赏任务（如从“寻找NPC”打开面板时尚未领取）
+            ClientQuestProgress current = Quests.FirstOrDefault(q => q.Taken) ?? Quests.FirstOrDefault(q => !q.Taken);
             if (current == null) return;
 
             for (int i = 0; i < Rows.Length; i++)
@@ -259,7 +267,6 @@ namespace Client.MirScenes.Dialogs
 
         public void ReDisplayButtons()
         {
-            _PlayerTaskTalk.Text = "继续";
             _PlayerTaskTalk.Visible = true;
 
             if (Reward != null)
@@ -267,12 +274,20 @@ namespace Client.MirScenes.Dialogs
                 Reward.Visible = true;
             }
 
-            if (SelectedQuest != null)
+            if (SelectedQuest == null) return;
+
+            if (!SelectedQuest.Taken)
             {
-                if (SelectedQuest.Completed)
-                {
-                    _PlayerTaskTalk.Text = "恭喜, 任务完成了,领取你的奖励吧。";
-                }
+                // 尚未接取：提示玩家点击接取
+                _PlayerTaskTalk.Text = "接取任务";
+            }
+            else if (SelectedQuest.Completed)
+            {
+                _PlayerTaskTalk.Text = "恭喜, 任务完成了,领取你的奖励吧。";
+            }
+            else
+            {
+                _PlayerTaskTalk.Text = "继续";
             }
         }
 
