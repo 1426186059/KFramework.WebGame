@@ -23,11 +23,14 @@ namespace Client.MirScenes.Dialogs
         public QuestMessage Message;
         public QuestRewards Reward;
 
-        public QuestRow[] Rows = new QuestRow[1];
+        public QuestRow[] Rows = new QuestRow[0];
 
         public int StartIndex = 0;
 
         public uint CurrentNPCID = 0;
+
+        // 任务面板内各控件相对背景的统一左缩进，调这个值即可整体左右平移（默认 20）
+        private const int PanelIndent = 20;
 
         public QuestListDialog()
         {
@@ -52,15 +55,15 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 AutoSize = true,
-                Location = new Point(10, 30),
-                Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
+                Location = new Point(PanelIndent, 10),
+                Font = new Font(Settings.FontName, 12F, KFramework.MonoGame.FontStyle.Bold),
                 ForeColour = Color.Yellow,
             };
 
             _descLabel = new MirLabel
             {
                 Parent = this,
-                Location = new Point(10, 50),
+                Location = new Point(PanelIndent, 34),
                 Size = new Size(500, 130),
                 DrawFormat = TextFormatFlags.WordBreak,
                 ForeColour = Color.White,
@@ -71,14 +74,14 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Visible = false,
                 Size = new Size(313, 130),
-                Location = new Point(5, 120)
+                Location = new Point(PanelIndent, 120)
             };
 
             _PlayerTaskTalk = new MirLabel
             {
                 Parent = this,
                 AutoSize = true,
-                Location = new Point(30, 145),
+                Location = new Point(PanelIndent, 145),
                 Text = "Finish",
                 ForeColour = Color.Yellow,
                 UnderLine = true,
@@ -278,8 +281,9 @@ namespace Client.MirScenes.Dialogs
 
             if (!SelectedQuest.Taken)
             {
-                // 尚未接取：提示玩家点击接取
-                _PlayerTaskTalk.Text = "接取任务";
+                // 尚未接取：按钮文本取玩家任务台词（PlayerTaskTalk），无台词则回退“接取任务”
+                var talk = SelectedQuest.QuestInfo.PlayerTaskTalk;
+                _PlayerTaskTalk.Text = (talk != null && talk.Count > 0 && !string.IsNullOrWhiteSpace(talk[0])) ? talk[0] : "接取任务";
             }
             else if (SelectedQuest.Completed)
             {
@@ -321,149 +325,47 @@ namespace Client.MirScenes.Dialogs
                 desc = SelectedQuest.QuestInfo.Description;
             }
 
-            RenderDescription(desc, SelectedQuest.QuestInfo.PlayerTaskTalk);
+            RenderDescription(desc);
         }
 
         // 渲染任务描述：解析内联颜色/链接标签（{文字/颜色}、[ITEM:idx|名] 等，与 NPC 对话同一套格式）。
         // 底色白字由 _descLabel（WordBreak 自动换行）承载，彩色/链接词作为覆盖层叠在其上，
         // 复用 NPCDialogs 的公开正则与取色逻辑，确保描述与 NPC 对话表现一致。
-        private void RenderDescription(List<string> lines, List<string> playerLines = null)
+        private static readonly Regex _colorTag = new Regex(@"\{([^/]*)/[^}]*\}", RegexOptions.Compiled);
+        private static readonly Regex _linkTagNamed = new Regex(@"\[[^\]]*\|\s*([^\]]*)\]", RegexOptions.Compiled);
+        private static readonly Regex _linkTagPlain = new Regex(@"\[([^\]|]*)\]", RegexOptions.Compiled);
+
+        // 渲染任务描述：去掉所有颜色/链接富文本标记，纯白字显示，并浓缩为最多两行（其余合并进第二行）。
+        private void RenderDescription(List<string> lines)
         {
             ClearDescription();
 
-            Font font = _descLabel.Font ?? new Font(Settings.FontName, 9F, KFramework.MonoGame.FontStyle.Regular);
-            int x = _descLabel.Location.X;
-            int baseY = _descLabel.Location.Y;
-            int lineH = 16;
-
-            var stripped = new List<string>(lines.Count);
-            for (int i = 0; i < lines.Count; i++)
+            var plain = new List<string>();
+            foreach (var raw in lines)
             {
-                string currentLine = lines[i];
-                int oldLength = currentLine.Length;
-
-                var matchList = new List<Match>();
-                matchList.AddRange(NPCDialog.R.Matches(currentLine).Cast<Match>());
-                matchList.AddRange(NPCDialog.C.Matches(currentLine).Cast<Match>());
-                matchList.AddRange(NPCDialog.L.Matches(currentLine).Cast<Match>());
-                matchList.AddRange(NPCDialog.MonsterLink.Matches(currentLine).Cast<Match>());
-                matchList.AddRange(NPCDialog.NPCLink.Matches(currentLine).Cast<Match>());
-                matchList.AddRange(NPCDialog.ItemLink.Matches(currentLine).Cast<Match>());
-
-                foreach (Match match in matchList.OrderBy(o => o.Index).ToList())
-                {
-                    int offSet = oldLength - currentLine.Length;
-
-                    bool isMonster = NPCDialog.MonsterLink.Match(match.Value).Success;
-                    bool isNpc = NPCDialog.NPCLink.Match(match.Value).Success;
-                    bool isItem = NPCDialog.ItemLink.Match(match.Value).Success;
-
-                    if (isMonster || isNpc || isItem)
-                    {
-                        string linkIdx = match.Groups["idx"].Captures.Count > 0 ? match.Groups["idx"].Captures[0].Value : match.Groups["idx"].Value;
-                        string providedName = match.Groups["name"].Success ? match.Groups["name"].Captures[0].Value : null;
-                        string linkType = isMonster ? "MONSTER" : isNpc ? "NPC" : "ITEM";
-                        string displayName = NPCDialog.GetDisplayNameForLink(linkType, linkIdx, providedName);
-                        if (string.IsNullOrEmpty(displayName)) displayName = $"LINK_{linkIdx}";
-
-                        int matchStart = match.Index - offSet;
-                        int matchLength = match.Length;
-                        currentLine = currentLine.Remove(matchStart, matchLength).Insert(matchStart, displayName);
-
-                        string prefixText = currentLine.Substring(0, matchStart);
-                        int prefixWidth = TextRenderer.MeasureText(prefixText, font).Width;
-
-                        var linkLbl = new MirLabel
-                        {
-                            Parent = this,
-                            AutoSize = true,
-                            Visible = true,
-                            Location = new Point(x + prefixWidth, baseY + i * lineH),
-                            Text = displayName,
-                            ForeColour = Color.Cyan,
-                            Font = font,
-                            NotControl = false,
-                        };
-                        string capturedType = linkType, capturedIdx = linkIdx;
-                        linkLbl.MouseEnter += (o, e) =>
-                        {
-                            linkLbl.ForeColour = Color.Orange;
-                            NPCDialog.ShowTooltipForLink(capturedType, capturedIdx, linkLbl.DisplayLocation);
-                        };
-                        linkLbl.MouseLeave += (o, e) => { linkLbl.ForeColour = Color.Cyan; };
-                        _descSegments.Add(linkLbl);
-                        continue;
-                    }
-
-                    bool hasMultiple = match.Groups.Count > 3 && match.Groups[2].Captures.Count > 0 && match.Groups[3].Captures.Count > 0;
-                    if (hasMultiple)
-                    {
-                        string txt = match.Groups[2].Captures[0].Value;
-                        string colour = match.Groups[3].Captures[0].Value;
-                        Capture capture = match.Groups[1].Captures[0];
-                        currentLine = currentLine.Remove(capture.Index - 1 - offSet, capture.Length + 2).Insert(capture.Index - 1 - offSet, txt);
-                        string prefixText = currentLine.Substring(0, capture.Index - 1 - offSet);
-                        int prefixWidth = TextRenderer.MeasureText(prefixText, font).Width;
-
-                        if (NPCDialog.C.Match(match.Value).Success)
-                        {
-                            Color c = ColorTranslator.FromHtml(colour);
-                            var cl = new MirLabel
-                            {
-                                Parent = this,
-                                AutoSize = true,
-                                Visible = true,
-                                Location = new Point(x + prefixWidth, baseY + i * lineH),
-                                Text = txt,
-                                ForeColour = c,
-                                Font = font,
-                                NotControl = true,
-                            };
-                            _descSegments.Add(cl);
-                        }
-                        else if (NPCDialog.R.Match(match.Value).Success || NPCDialog.L.Match(match.Value).Success)
-                        {
-                            var bl = new MirLabel
-                            {
-                                Parent = this,
-                                AutoSize = true,
-                                Visible = true,
-                                Location = new Point(x + prefixWidth, baseY + i * lineH),
-                                Text = txt,
-                                ForeColour = Color.Yellow,
-                                Font = font,
-                                NotControl = true,
-                            };
-                            _descSegments.Add(bl);
-                        }
-                    }
-                }
-                stripped.Add(currentLine);
+                string s = StripQuestRichText(raw);
+                if (!string.IsNullOrWhiteSpace(s)) plain.Add(s);
             }
 
-            _descLabel.Text = string.Join("\n", stripped);
+            string text;
+            if (plain.Count <= 2)
+                text = string.Join("\n", plain);
+            else
+                text = plain[0] + "\n" + string.Join(" ", plain.GetRange(1, plain.Count - 1));
+
+            _descLabel.ForeColour = Color.White;
+            _descLabel.Text = text;
             _descLabel.Visible = true;
+        }
 
-            // 玩家任务台词：在 NPC 台词下方以绿色“▸ 我：”呈现，形成一问一答。
-            if (playerLines != null)
-            {
-                int startIdx = lines.Count;
-                for (int p = 0; p < playerLines.Count; p++)
-                {
-                    var pl = new MirLabel
-                    {
-                        Parent = this,
-                        AutoSize = true,
-                        Visible = true,
-                        Location = new Point(x, baseY + (startIdx + p) * lineH),
-                        Text = "▸ 我：" + playerLines[p],
-                        ForeColour = Color.LimeGreen,
-                        Font = font,
-                        NotControl = true
-                    };
-                    _descSegments.Add(pl);
-                }
-            }
+        // 去除任务描述里的 {文字/颜色} 与 [TYPE:idx|名字] / [名字] 标记，仅保留可阅读文本。
+        private static string StripQuestRichText(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return s;
+            s = _colorTag.Replace(s, "$1");      // {文字/颜色} -> 文字
+            s = _linkTagNamed.Replace(s, "$1");  // [TYPE:idx|名字] -> 名字
+            s = _linkTagPlain.Replace(s, "$1");  // [名字] -> 名字
+            return s.Trim();
         }
 
         private void ClearDescription()
@@ -1022,7 +924,7 @@ namespace Client.MirScenes.Dialogs
                 ForeColour = Color.Yellow,
                 UnderLine = true,
                 NotControl = false,
-                Font = new Font(Settings.FontName, 8F),
+                Font = new Font(Settings.FontName, 12F),
             };
 
             _labels.Add(label);
@@ -1042,7 +944,7 @@ namespace Client.MirScenes.Dialogs
                 ForeColour = Color.Yellow,
                 UnderLine = true,
                 NotControl = false,
-                Font = new Font(Settings.FontName, 8F),
+                Font = new Font(Settings.FontName, 12F),
             };
 
             _labels.Add(nameLabel);
@@ -1080,7 +982,7 @@ namespace Client.MirScenes.Dialogs
                     Text = " x" + count,
                     ForeColour = Color.Yellow,
                     NotControl = false,
-                    Font = new Font(Settings.FontName, 8F),
+                    Font = new Font(Settings.FontName, 12F),
                 };
 
                 _labels.Add(countLabel);

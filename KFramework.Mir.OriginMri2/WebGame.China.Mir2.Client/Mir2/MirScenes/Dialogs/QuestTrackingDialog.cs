@@ -272,7 +272,9 @@ namespace Client.MirScenes.Dialogs
 
             // 已开放（未接取）任务：上方显示任务名，下方“寻找 NPC”可点击传送接取（参考原始传奇：先寻找NPC，再开面板）
             if (MapObject.User.OfferedQuests.Count > 0 && questsToTrack.Count > 0)
+            {
                 y += 15;
+            }
 
             foreach (ClientQuestProgress offered in MapObject.User.OfferedQuests)
             {
