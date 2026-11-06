@@ -101,6 +101,8 @@ namespace Client.MirScenes.Dialogs
                 else if (SelectedQuest.Completed)
                 {
                     Network.Enqueue(new C.FinishQuest { QuestIndex = SelectedQuest.QuestInfo.Index });
+                    // 领取奖励时直接播放“任务完成”特效
+                    GameScene.Scene?.TaskCompleteEffect?.Play();
                 }
                 // 无论哪种状态（接取/继续/领取），点击后都关闭 NPC 任务面板
                 // （Visible=false，后续服务器状态包因条件不满足也不会再弹出来）

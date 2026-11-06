@@ -3119,10 +3119,7 @@ namespace Client.MirScenes
                     {
                         if (User.CurrentQuests[i].Id != p.Quest.Id) continue;
 
-                        int oldDone = User.CurrentQuests[i].TaskCompletedCount;
                         User.CurrentQuests[i] = p.Quest;
-                        if (p.Quest.TaskCompletedCount > oldDone && TaskCompleteEffect != null)
-                            TaskCompleteEffect.Play();
                     }
 
                     foreach (ClientQuestProgress quest in User.CurrentQuests)

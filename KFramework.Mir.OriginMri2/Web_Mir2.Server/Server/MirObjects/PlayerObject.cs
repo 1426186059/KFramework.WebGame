@@ -7623,6 +7623,15 @@ namespace Server.MirObjects
 
                 if (item.Item != null)
                 {
+                    // 先检查此物品是否为当前任务所需：是则收集进任务背包（并移除地面物品），
+                    // 否则只进普通背包会导致任务收集进度（ProcessItem）不更新。原 PickUp 漏了这步。
+                    if (CheckGroupQuestItem(item.Item))
+                    {
+                        CurrentMap.RemoveObject(ob);
+                        ob.Despawn();
+                        return;
+                    }
+
                     if (!CanGainItem(item.Item)) continue;
 
                     if (item.Item.Info.ShowGroupPickup && IsGroupMember(this))

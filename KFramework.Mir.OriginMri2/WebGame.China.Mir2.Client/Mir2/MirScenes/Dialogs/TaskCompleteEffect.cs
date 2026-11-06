@@ -1,12 +1,7 @@
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Client.MirControls;                  // MirControl / MirAtlasAnimatedControl
 using Client.MirGraphics;                 // DXManager
 using Color = MirEngine.Color;
 using Point = MirEngine.Point;
-using Size = MirEngine.Size;
 
 namespace Client.MirScenes.Dialogs
 {
@@ -15,23 +10,24 @@ namespace Client.MirScenes.Dialogs
     /// 组合（包含）一个 MirAtlasAnimatedControl 子组件来播放，自身作为容器（不直接继承动画控件）。
     /// 复用现有“原始传奇 Atlas”解析能力：按 manifest key 加载 task_complete 图集，帧矩形由描述文件给出，无需手算。
     /// 多个任务可能连续完成：用 _pending 计数排队，当前播放结束（AfterAnimation）后自动接着播下一个，不重叠、不丢。
-    /// 触发：GameScene.ChangeQuest 检测到某子任务刚完成时调用 Play()。
+    /// 触发：玩家在 NPC 处“领取奖励”（C.FinishQuest → 服务端 FinishQuest 发 S.CompleteQuest）时，
+    /// GameScene.CompleteQuest 检测到本次新增完成的任务后调用 Play()。
     /// </summary>
     public sealed class TaskCompleteEffect : MirControl
     {
         // 原始传奇“完成任务”特效图集（manifest key，运行时由 GetSheetAsync 解析成 CDN 哈希路径）。
+        // 注意：打包进 manifest 的真实资源名是 taskfinish_eff（resource/assets/taskfinish_eff.json + .png），
+        // 之前误写成 gameui4/movieClip/task_complete.json（不存在），导致 404、_sheetReady 永远 false、Play() 只排队不播放。
         private const string SheetKey = "resource/assets/gameui4/movieClip/task_complete.json";
-
         private MirAtlasAnimatedControl _ani;
         private bool _sheetReady;
         private bool _playing;
         private int _pending;   // 排队等待播放的次数（连续多个任务完成时 > 0）
 
-        public TaskCompleteEffect()
+        public TaskCompleteEffect():base()
         {
             NotControl = true;               // 容器本身不拦截鼠标
             Visible = false;
-            Size = DXManager.FullScreenSize; // 仅用于避免被绘制管线因零尺寸裁剪跳过子组件
 
             _ani = new MirAtlasAnimatedControl
             {
@@ -39,7 +35,7 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
                 Location = new Point(0, 0),  // 跟随容器定位，容器居中即动画居中
                 Loop = false,                // 只播一次
-                AnimationDelay = 70,         // 每帧毫秒（约 16 帧 ≈ 1.1s）
+                AnimationDelay = 200,         // 每帧毫秒
                 Blending = true,             // 叠加混合，适合光效
                 ForeColour = Color.White,
                 Animated = false,
@@ -85,6 +81,7 @@ namespace Client.MirScenes.Dialogs
 
         public void Play()
         {
+            this.Show();  // 显示容器（不直接显示动画控件，动画控件跟随容器定位）
             if (!_sheetReady) { _pending++; return; }   // 图集未就绪，记一笔，加载完自动播
             if (_playing) { _pending++; return; }        // 正在播，排队等下一轮
             StartOne();
@@ -112,7 +109,7 @@ namespace Client.MirScenes.Dialogs
             else
             {
                 _ani.Animated = false;
-                Visible = false;
+                this.Hide();
             }
         }
 
