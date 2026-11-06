@@ -80,7 +80,11 @@ namespace Server.MirEnvir
                 for (int i = 0; i < Info.NPCs.Count; i++)
                 {
                     NPCInfo info = Info.NPCs[i];
-                    if (!ValidPoint(info.Location)) continue;
+                    if (!ValidPoint(info.Location))
+                    {
+                        MessageQueue.Enqueue($"[地图NPC放置] NPC '{info.Name}'(Index={info.Index}, 文件={info.FileName}) 落在地图 '{Info.Title}'(Index={Info.Index}) 的不可行走或越界坐标 ({info.Location.X},{info.Location.Y})，已跳过加载。");
+                        continue;
+                    }
 
                     AddObject(new NPCObject(info) { CurrentMap = this });
                 }

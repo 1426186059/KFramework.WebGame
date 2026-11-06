@@ -4508,13 +4508,6 @@
     "CollectQuestIndexes": [],
     "FinishQuestIndexes": []
   },
-
-
-
-
-
-
-
   {
     "Index": 283,
     "FileName": "行商",
@@ -7478,8 +7471,8 @@
     "Name": "铁匠",
     "MapIndex": 103,
     "Location": {
-      "X": 296,
-      "Y": 613
+      "X": 293,
+      "Y": 614
     },
     "Rate": 100,
     "Image": 0,
@@ -11574,11 +11567,6 @@
     "CollectQuestIndexes": [],
     "FinishQuestIndexes": []
   },
-
-
-
-
-
   {
     "Index": 589,
     "FileName": "行商",
