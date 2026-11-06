@@ -1,4 +1,5 @@
 using Server.MirObjects;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Server.MirEnvir;
 
@@ -28,6 +29,8 @@ namespace Server.MirDatabase
         // （见 NPCScript.ParseQuests：正数任务索引 -> info.NpcIndex = LoadedObjectID），
         // 对应 NPCInfo 中声明的接取任务索引。
         // 因此不要在 QuestInfo.json 里手动维护本字段，它会在运行时被自动填充。
+        // 该字段仅存在于运行期，不参与 JSON 序列化（避免写入无意义的 0 或被误改）。
+        [JsonIgnore]
         public uint NpcIndex;
         public NPCInfo NpcInfo;
 
