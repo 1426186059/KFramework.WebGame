@@ -1,0 +1,45 @@
+[@MAIN]
+#IF
+CHECKQUEST 154 COMPLETE
+#ACT
+GOTO @MAIN-1
+#ELSEACT
+GOTO @MayNotEnter
+
+[@MayNotEnter]
+#SAY
+站住！你不得通行。
+我是法尔大帝忠实的指挥官。
+"我可以 <贿赂/@Bribe> 你金币让你过去。"
+"我需要 <面见/@see> 大帝！"
+<关闭/@exit>
+
+[@see]
+#SAY
+抱歉，旅行者，我不信任你。
+如果你为我完成一项任务，我就护送你去见大帝！
+
+<关闭/@exit>
+
+[@Bribe]
+#SAY
+旅行者……你竟想贿赂第七阶指挥官。
+你知道这有多严重吗？
+<是/@yes> 我清楚。
+<否/@no> 我不清楚。
+<关闭/@exit>
+
+[@no]
+#SAY
+我建议你离开，免得在牢里待上一阵子。
+
+<关闭/@exit>
+
+[@yes]
+#ACT
+GIVEBUFF PRISON 3600
+MOVE 0127 7 11
+LOCALMESSAGE "[卢克指挥官] 好好想想吧。" Hint
+
+[Quests]
+154

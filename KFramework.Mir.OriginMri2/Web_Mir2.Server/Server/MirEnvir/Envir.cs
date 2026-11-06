@@ -2798,6 +2798,8 @@ namespace Server.MirEnvir
                 ItemInfoList = LoadConfigList<ItemInfo>(baseDir, "ItemInfo.json");
                 MonsterInfoList = LoadConfigList<MonsterInfo>(baseDir, "MonsterInfo.json");
                 NPCInfoList = LoadConfigList<NPCInfo>(baseDir, "NPCInfo.json");
+                // NameUI 为空时默认等于 Name（界面显示名），需显式配置的（重名 NPC）以配置为准。
+                foreach (var npc in NPCInfoList) if (string.IsNullOrEmpty(npc.NameUI)) npc.NameUI = npc.Name;
                 QuestInfoList = LoadConfigList<QuestInfo>(baseDir, "QuestInfo.json");
                 // JSON 反序列化走无参构造函数，不会触发 QuestInfo.LoadInfo()，
                 // 需手动读取 FileName 指向的 .txt，填充 Description/任务/奖励等。
@@ -4633,7 +4635,7 @@ namespace Server.MirEnvir
 
         public NPCObject GetNPC(string name)
         {
-            return MapList.SelectMany(t1 => t1.NPCs.Where(t => t.Info.Name == name)).FirstOrDefault();
+            return MapList.SelectMany(t1 => t1.NPCs.Where(t => t.Info.NameUI == name || t.Info.Name == name)).FirstOrDefault();
         }
 
         public NPCObject GetWorldMapNPC(string name)

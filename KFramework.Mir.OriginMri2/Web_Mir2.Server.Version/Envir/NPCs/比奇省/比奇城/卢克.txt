@@ -1,45 +1,27 @@
 [@MAIN]
-#IF
-CHECKQUEST 154 COMPLETE
-#ACT
-GOTO @MAIN-1
-#ELSEACT
-GOTO @MayNotEnter
-
-[@MayNotEnter]
 #SAY
-站住！你不得通行。
-我是法尔大帝忠实的指挥官。
-"我可以 <贿赂/@Bribe> 你金币让你过去。"
-"我需要 <面见/@see> 大帝！"
-<关闭/@exit>
+纪念 Luke Thompson
+愿他安息 <3
 
-[@see]
+(募捐活动/http://www.lost-hours.co.uk/fundraising/luanthompson2022?fbclid=IwAR3i4257oBmQtlvLksYhwSS3kJiEn8JjZyZaaEpB29c75DyYDiNeveHou2Q)
+
+<阅读/@RM> 更多
+
+[@RM]
 #SAY
-抱歉，旅行者，我不信任你。
-如果你为我完成一项任务，我就护送你去见大帝！
+英国每周有 125 人因自杀离世。
+这令人痛心。因此今年十月，我
+参加了 CALM 的“迷失时光”徒步活动，与
+全国各地的参与者一起，打破
+围绕自杀的沉默。我所募集的善款将
+用于 CALM 的救生服务，
+以便他们能在任何人挣扎时
+伸出援手，无论发生什么。
 
-<关闭/@exit>
+我们知道，谈论自杀可能
+令人尴尬和不适——但它也可能
+是你有过的最重要的对话。
+任何人都可能产生轻生念头。但我们每个人
+都能帮助挽救一条生命。
 
-[@Bribe]
-#SAY
-旅行者……你竟想贿赂第七阶指挥官。
-你知道这有多严重吗？
-<是/@yes> 我清楚。
-<否/@no> 我不清楚。
-<关闭/@exit>
-
-[@no]
-#SAY
-我建议你离开，免得在牢里待上一阵子。
-
-<关闭/@exit>
-
-[@yes]
-#ACT
-GIVEBUFF PRISON 3600
-MOVE 0127 7 11
-LOCALMESSAGE "[卢克指挥官] 好好想想吧。" Hint
-
-[Quests]
-154
+-Liam Thompson

@@ -60,6 +60,11 @@ namespace Server.MirObjects
 
         private void LoadScript()
         {
+            // NPC 脚本文件名必须与配置表里的 Name 一致，否则直接打印错误
+            string scriptName = System.IO.Path.GetFileNameWithoutExtension(Info.FileName);
+            if (!string.Equals(scriptName, Info.Name, StringComparison.Ordinal))
+                MessageQueue.Enqueue($"[NPC脚本] 文件名与配置名字不匹配: NPC='{Info.Name}' 脚本='{Info.FileName}'");
+
             var script = NPCScript.GetOrAdd(ObjectID, Info.FileName, NPCScriptType.Normal);
 
             ScriptID = script.ScriptID;
@@ -384,6 +389,7 @@ namespace Server.MirObjects
             {
                 ObjectID = ObjectID,
                 Name = Name,
+                NameUI = Info.NameUI,
                 NameColour = NameColour,
                 Image = Info.Image,
                 Colour = Info.Colour,

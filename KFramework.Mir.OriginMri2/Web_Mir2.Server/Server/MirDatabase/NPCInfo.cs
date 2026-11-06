@@ -12,7 +12,7 @@ namespace Server.MirDatabase
 
         public int Index;
 
-        public string FileName = string.Empty, Name = string.Empty;
+        public string FileName = string.Empty, Name = string.Empty, NameUI = string.Empty;
 
         public int MapIndex;
         public Point Location;

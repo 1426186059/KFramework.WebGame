@@ -50,7 +50,7 @@ namespace Client.MirObjects
 
         public void Load(S.ObjectNPC info)
         {
-            Name = info.Name;
+            Name = string.IsNullOrEmpty(info.NameUI) ? info.Name : info.NameUI;
             NameColour = info.NameColour;
             CurrentLocation = info.Location;
             Direction = info.Direction;

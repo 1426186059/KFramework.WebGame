@@ -2850,6 +2850,7 @@ namespace ServerPackets
 
         public uint ObjectID;
         public string Name = string.Empty;
+        public string NameUI = string.Empty;
 
         public Color NameColour;
         public ushort Image;
@@ -2862,6 +2863,7 @@ namespace ServerPackets
         {
             ObjectID = reader.ReadUInt32();
             Name = reader.ReadString();
+            NameUI = reader.ReadString();
             NameColour = Color.FromArgb(reader.ReadInt32());
             Image = reader.ReadUInt16();
             Colour = Color.FromArgb(reader.ReadInt32());
@@ -2877,6 +2879,7 @@ namespace ServerPackets
         {
             writer.Write(ObjectID);
             writer.Write(Name);
+            writer.Write(NameUI);
             writer.Write(NameColour.ToArgb());
             writer.Write(Image);
             writer.Write(Colour.ToArgb());
