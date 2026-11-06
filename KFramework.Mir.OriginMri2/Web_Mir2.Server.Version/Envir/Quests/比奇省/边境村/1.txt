@@ -1,14 +1,20 @@
-[@Description]
+[@NPC_TASK_TALK]
 欢迎来到{边境村/Yellow}，年轻的旅人。
 在你启程之前
 能否请你帮我个小忙？
+
+[@PLAYER_TASK_TALK]
+没问题，这件事就交给我吧。
 
 [@TaskDescription]
 把{食人叶/LightSteelBlue}运给{工匠大娘/LimeGreen}
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
+
 [@CarryItems]
 食人叶 5
 
@@ -16,6 +22,7 @@
 小金创药
 
 [@SelectRewards]
+
 [@ExpReward]
 10
 

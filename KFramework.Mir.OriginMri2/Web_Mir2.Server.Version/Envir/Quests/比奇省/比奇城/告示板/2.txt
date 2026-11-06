@@ -1,18 +1,27 @@
-[@Description]
+[@NPC_TASK_TALK]
 比奇城悬赏已提交。
+
+[@PLAYER_TASK_TALK]
+我明白了，这就去办。
 
 [@TaskDescription]
 前往{奥玛洞穴/Yellow}收集{骷髅骨/LightSteelBlue}。
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
 骷髅骨 15
 
 [@FlagTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
+
 [@ExpReward]
 6500
 

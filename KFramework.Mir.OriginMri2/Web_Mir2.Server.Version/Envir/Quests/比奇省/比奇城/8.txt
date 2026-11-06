@@ -1,7 +1,10 @@
-[@Description]
+[@NPC_TASK_TALK]
 你好，年轻的米尔人。我正打算经常前往{盟重省/Yellow}，
 但因为路上有蛇，我一直没能离开这座城镇。
 你觉得你能替我消灭一些那些蛇吗？
+
+[@PLAYER_TASK_TALK]
+包在我身上，我这就去把它们解决掉。
 
 [@TaskDescription]
 消灭 15 只{红蝰蛇/Crimson}和{虎蝰蛇/Crimson}。

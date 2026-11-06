@@ -1,5 +1,8 @@
-[@Description]
+[@NPC_TASK_TALK]
 请向我在{比奇省/Yellow}的指挥官报到。
+
+[@PLAYER_TASK_TALK]
+没问题，这件事就交给我吧。
 
 [@TaskDescription]
 向{占领管理员/LimeGreen}报到。

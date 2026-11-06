@@ -1,4 +1,4 @@
-[@Description]
+[@NPC_TASK_TALK]
 你去过{比奇/Yellow}附近的地下城吗？
 {骷髅兵/Crimson}就在那里。附近的守卫
 地下城报告说{骷髅兵/Crimson}的数量
@@ -6,19 +6,26 @@
 能去消灭25只{骷髅兵/Crimson}吗？这是为了
 {比奇/Yellow}的安危。
 
+[@PLAYER_TASK_TALK]
+包在我身上，我这就去把它们解决掉。
+
 [@TaskDescription]
 消灭25只{骷髅兵/Crimson}
 
 [@Completion]
+
 [@KillTasks]
 骷髅兵 25
 
 [@ItemTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
 优魔法盔
 
 [@SelectRewards]
+
 [@ExpReward]
 1500
 

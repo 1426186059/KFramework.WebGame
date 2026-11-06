@@ -1,16 +1,24 @@
-[@Description]
+[@NPC_TASK_TALK]
 你好，旅人……
 {屠夫约翰/LimeGreen}正在寻求帮手。
 我想这是件要紧事。
+
+[@PLAYER_TASK_TALK]
+好，我马上动身过去。
 
 [@TaskDescription]
 在坐标293:603与{屠夫约翰/LimeGreen}对话
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
 锋利匕首
 坚韧豪剑

@@ -1,5 +1,8 @@
-[@Description]
+[@NPC_TASK_TALK]
 欢迎来到{盟重省/Yellow}。我们一直遭到形似野猪的怪物袭击。有报告说这些怪物来自{地下墓穴/Yellow}。你能去那里消灭它们吗？
+
+[@PLAYER_TASK_TALK]
+包在我身上，我这就去把它们解决掉。
 
 [@TaskDescription]
 在{石墓/Yellow}消灭 15 只{黑野猪/Crimson}和{红野猪/Crimson}。

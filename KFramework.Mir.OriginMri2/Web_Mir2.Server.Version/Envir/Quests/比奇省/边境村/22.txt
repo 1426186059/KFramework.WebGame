@@ -1,17 +1,26 @@
-[@Description]
+[@NPC_TASK_TALK]
 {边境村/Yellow}有难了！更多守卫正因频繁遭到怪物。
 {鲁本/LimeGreen}为伤员索要{圣物/LightSteelBlue}。
 
+[@PLAYER_TASK_TALK]
+我明白了，这就去办。
+
 [@TaskDescription]
 猎杀{洞穴蛆/Crimson}以收集10个{圣物/LightSteelBlue}
+
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
 圣物 10
 
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
+
 [@ExpReward]
 1700
 

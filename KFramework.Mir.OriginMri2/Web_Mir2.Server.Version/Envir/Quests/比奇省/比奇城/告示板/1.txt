@@ -1,18 +1,27 @@
-[@Description]
+[@NPC_TASK_TALK]
 比奇城悬赏已提交。
+
+[@PLAYER_TASK_TALK]
+我明白了，这就去办。
 
 [@TaskDescription]
 收集{金栗子/LightSteelBlue}。
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
 金栗子 5
 
 [@FlagTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
+
 [@ExpReward]
 1500
 

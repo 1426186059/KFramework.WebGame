@@ -1,5 +1,8 @@
-[@Description]
+[@NPC_TASK_TALK]
 土城悬赏已提交。
+
+[@PLAYER_TASK_TALK]
+我明白了，这就去办。
 
 [@TaskDescription]
 前往{石墓/Yellow}消灭{野猪/Crimson}并

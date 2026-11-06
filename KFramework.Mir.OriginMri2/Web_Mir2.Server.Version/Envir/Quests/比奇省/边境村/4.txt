@@ -1,21 +1,28 @@
-[@Description]
+[@NPC_TASK_TALK]
 你就是{简/LimeGreen}推荐的那位旅人。
 能否请你猎杀{鹿/Crimson}并给我带些{鹿肉/LightSteelBlue}。
 如果你想了解更多关于屠宰时请按"H"。
+
+[@PLAYER_TASK_TALK]
+包在我身上，我这就去把它们解决掉。
 
 [@TaskDescription]
 猎杀{鹿/Crimson}以收集{鹿肉/LightSteelBlue}
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
 鹿肉 5 "击杀鹿，收集鹿肉 {0}/{1}"
 
 [@CarryItems]
+
 [@FixedRewards]
 老铜戒
 
 [@SelectRewards]
+
 [@ExpReward]
 80
 

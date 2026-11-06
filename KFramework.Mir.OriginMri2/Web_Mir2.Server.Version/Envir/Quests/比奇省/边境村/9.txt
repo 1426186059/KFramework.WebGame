@@ -1,17 +1,26 @@
-[@Description]
+[@NPC_TASK_TALK]
 你现在更像一名训练有素的战士了。
-我已经请彼得给你安排点活儿
-去做。奖励应该能在多方面帮到你，
+我已经请彼得给你安排点活儿去做。
+奖励应该能在多方面帮到你，
+
+[@PLAYER_TASK_TALK]
+没问题，这件事就交给我吧。
 
 [@TaskDescription]
 在坐标328:258与{米尔向导彼得/LimeGreen}对话
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
+
 [@ExpReward]
 48
 

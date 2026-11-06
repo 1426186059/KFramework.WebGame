@@ -200,6 +200,9 @@ namespace Server.MirObjects
             get { return Info.CompletedQuests; }
         }
 
+        private QuestScheduler _questScheduler;
+        public QuestScheduler QuestScheduler => _questScheduler ?? (_questScheduler = new QuestScheduler(this));
+
         public PlayerObject() { }
 
         public PlayerObject(CharacterInfo info, MirConnection connection) : base(info, connection) { }
@@ -934,6 +937,9 @@ namespace Server.MirObjects
             CallDefaultNPC(DefaultNPCType.LevelUp);
 
             base.LevelUp();
+
+            // 升级时由任务调度器接取因等级达成而新开放的任务（等级任务）。
+            QuestScheduler.CheckLevelUp(Level);
 
             Enqueue(new S.LevelChanged { Level = Level, Experience = Experience, MaxExperience = MaxExperience });
 
@@ -1778,6 +1784,9 @@ namespace Server.MirObjects
             {
                 CheckQuestInfo(Envir.QuestInfoList[i]);
             }
+
+            // 登录时由任务调度器接取已达等级的等级任务（如 10 级“前往比奇城”）。
+            QuestScheduler.CheckLevelUp(Level);
         }
         private void GetRecipeInfo()
         {
@@ -11668,13 +11677,13 @@ namespace Server.MirObjects
 
             CallDefaultNPC(DefaultNPCType.OnFinishQuest, questIndex);
 
-            // 自动接龙：主线顺序链——完成当前任务后自动接取下一环（无需手动去点 NPC）。
-            // 下一环会因 TrackQuest=true 自动进入追踪栏，引导玩家继续推进。
-            AutoAcceptQuest(quest.Info.NextQuest);
+            // 任务调度器：完成当前任务后，按“已完成 Index +1”自动接取下一满足条件的任务。
+            // 空洞(已删索引)自然越过；仅职业不符可跳过(限职业数)；等级/前置不符则停止。
+            QuestScheduler.AdvanceAfterComplete(quest.Info.Index);
         }
 
         /// <summary>
-        /// 自动接取指定任务（用于主线顺序链的 NextQuest）。
+        /// 自动接取指定任务（被任务调度器 / NPC 脚本调用）。
         /// 不要求玩家身处 NPC 附近——这是与手动 AcceptQuest 的关键区别，
         /// 目的是让任务"一个接一个"地推给玩家。
         /// </summary>

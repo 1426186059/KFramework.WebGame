@@ -1,17 +1,24 @@
-[@Description]
+[@NPC_TASK_TALK]
 旅人……我还是觉得外面太危险了。
 你能再帮我一个忙吗？
+
+[@PLAYER_TASK_TALK]
+没问题，这件事就交给我吧。
 
 [@TaskDescription]
 消灭10只{钩爪猫/Crimson}
 
 [@Completion]
+
 [@KillTasks]
 钩爪猫 10
 
 [@ItemTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
 青铜武士剑
 强豪剑

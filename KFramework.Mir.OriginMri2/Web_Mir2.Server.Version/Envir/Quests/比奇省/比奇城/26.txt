@@ -1,7 +1,10 @@
-[@Description]
+[@NPC_TASK_TALK]
 {皇帝/LIMEGREEN}由我保护。
 城市的士气令人向往。证明你
 值得托付。
+
+[@PLAYER_TASK_TALK]
+我明白了，这就去办。
 
 [@TaskDescription]
 在城中宣扬关于{皇帝/LIMEGREEN}的良好士气。

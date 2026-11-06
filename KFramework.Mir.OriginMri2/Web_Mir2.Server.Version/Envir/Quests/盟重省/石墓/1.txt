@@ -1,5 +1,8 @@
-[@Description]
+[@NPC_TASK_TALK]
 你好。最近{盟重省/Yellow}的昆虫太多了。夜里吵得我无法入睡。你能去猎杀这些昆虫吗？
+
+[@PLAYER_TASK_TALK]
+包在我身上，我这就去把它们解决掉。
 
 [@TaskDescription]
 前往{石墓/Yellow}消灭 10 只{黑蛆/Crimson}和{楔蛾/Crimson}。

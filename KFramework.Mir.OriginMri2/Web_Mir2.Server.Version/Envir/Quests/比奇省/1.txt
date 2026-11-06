@@ -1,15 +1,27 @@
-[@Description]
+[@NPC_TASK_TALK]
 模板。
 
+[@PLAYER_TASK_TALK]
+我明白了，这就去办。
+
 [@TaskDescription]
+
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
+
 [@FlagTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
+
 [@ExpReward]
+
 [@GoldReward]
 // Pickup - Teleport_Jason 0 292 216
 // Hand In - Teleport_Kyle 0 371 314

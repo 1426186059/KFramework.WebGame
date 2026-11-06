@@ -1,21 +1,29 @@
-[@Description]
+[@NPC_TASK_TALK]
 嗯……这消息似乎指的是
 {骨精英/Crimson}。你能帮我们猎杀
 这只怪物？我们没法离开镇子，因为
 我们也遭到了袭击。
+
+[@PLAYER_TASK_TALK]
+包在我身上，我这就去把它们解决掉。
 
 [@TaskDescription]
 请消灭{骨精英/Crimson}并取回他的
 {首领/LightSteelBlue}。
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
 骷髅头 1
 
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
+
 [@ExpReward]
 2500
 

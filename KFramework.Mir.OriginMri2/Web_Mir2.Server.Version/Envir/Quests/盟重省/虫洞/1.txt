@@ -1,9 +1,12 @@
-[@Description]
+[@NPC_TASK_TALK]
 有人跟你提起过{死亡山谷/Yellow}吗？那是个
 布满悬崖与岩石的地方。这片区域的昆虫
 变得异常巨大。我研究它们多年。几天前我
 想抓一只{哀鸣蜂/Crimson}的{标本/LightSteelBlue}，
 却被它们袭击了。
+
+[@PLAYER_TASK_TALK]
+没问题，这件事就交给我吧。
 
 [@TaskDescription]
 消灭{哀鸣蜂/Crimson}以收集{虫标本/LightSteelBlue}，

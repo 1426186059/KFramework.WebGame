@@ -1,4 +1,4 @@
-[@Description]
+[@NPC_TASK_TALK]
 你帮了 {比奇/Yellow} 许多人大忙。
 你还有空帮我吗？很久以前，我有个
 一同打猎的朋友。有一天我们去了 {比奇死亡矿坑/Yellow}，
@@ -8,6 +8,9 @@
 找人帮忙，却没人敢随我回去救他。
 如今为时已晚，但你能去寻回我好友的遗骸吗？
 他总是随身戴着那条项链。
+
+[@PLAYER_TASK_TALK]
+包在我身上，我这就去把它们解决掉。
 
 [@TaskDescription]
 试着寻找 {文森特/LimeGreen} 的朋友，他最后现身在
@@ -33,4 +36,3 @@
 
 // Pickup - 
 // Hand In - OldSkeleton D404 104 101
-

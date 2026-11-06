@@ -1,21 +1,29 @@
-[@Description]
+[@NPC_TASK_TALK]
 {比奇/Yellow}附近有个小农场。这个农场
 正遭到昆虫袭击。报告说
 说这些昆虫栖息在{昆虫洞窟/Yellow}。
 你能帮我在{昆虫洞窟/Yellow}猎杀它们吗？
+
+[@PLAYER_TASK_TALK]
+包在我身上，我这就去把它们解决掉。
 
 [@TaskDescription]
 沿着向北的小路前往{乌苗森林/Yellow}，然后
 在{昆虫洞窟/Yellow}消灭25只{蜘蛛蛙/Crimson}
 
 [@Completion]
+
 [@KillTasks]
 蜘蛛蛙 25
 
 [@ItemTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
+
 [@ExpReward]
 3100
 

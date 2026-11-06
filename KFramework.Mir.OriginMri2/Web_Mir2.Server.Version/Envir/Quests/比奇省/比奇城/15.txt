@@ -1,12 +1,16 @@
-[@Description]
+[@NPC_TASK_TALK]
 我打造武器所需的材料
 可以在{死亡矿坑入口/Yellow}找到，但那一带
 到处都是{僵尸/Crimson}。
+
+[@PLAYER_TASK_TALK]
+包在我身上，我这就去把它们解决掉。
 
 [@TaskDescription]
 在{矿坑/Yellow}各消灭5只{僵尸/Crimson}。
 
 [@Completion]
+
 [@KillTasks]
 僵尸5 5
 僵尸2 5
@@ -15,8 +19,11 @@
 僵尸1 5
 
 [@ItemTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
 老娜迦项链
 琥珀坠子

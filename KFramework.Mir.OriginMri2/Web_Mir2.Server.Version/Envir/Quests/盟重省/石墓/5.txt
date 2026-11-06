@@ -1,5 +1,8 @@
-[@Description]
+[@NPC_TASK_TALK]
 根据流传的传言，你已在{石墓/Yellow}找到了{远古矿层/Yellow}。回去，从{石墓/Yellow}的远古层中收集{圣物岩石/LightSteelBlue}。
+
+[@PLAYER_TASK_TALK]
+好，我马上动身过去。
 
 [@TaskDescription]
 击杀{远古红野猪/Crimson}、{远古黑野猪/Crimson}和{远古白野猪/Crimson}以获取{圣物岩石/LightSteelBlue}。

@@ -1,16 +1,25 @@
-[@Description]
+[@NPC_TASK_TALK]
 {铁匠张/LimeGreen}请求一些帮助。
 能否请你去和他谈谈，他就在在{乌苗森林/Yellow}，如果你沿着向北的小路, 它会把你引到{乌苗森林/Yellow}的城镇。
+
+[@PLAYER_TASK_TALK]
+没问题，这件事就交给我吧。
 
 [@TaskDescription]
 前往{乌苗森林/Yellow}与{张/LimeGreen}交谈。
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
+
 [@ExpReward]
 120
 

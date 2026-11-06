@@ -12,7 +12,7 @@ namespace Client.MirScenes.Dialogs
 {
     public sealed class QuestListDialog : MirImageControl
     {
-        private MirLabel _npcNameLabel, _descLabel, _finishLabel;
+        private MirLabel _npcNameLabel, _descLabel, _PlayerTaskTalk;
         private List<MirLabel> _descSegments = new List<MirLabel>(); // 描述渲染出的彩色/链接覆盖层（含每行底色标签），刷新时整体释放
 
         public List<ClientQuestProgress> Quests = new List<ClientQuestProgress>();
@@ -74,7 +74,7 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(5, 120)
             };
 
-            _finishLabel = new MirLabel
+            _PlayerTaskTalk = new MirLabel
             {
                 Parent = this,
                 AutoSize = true,
@@ -86,7 +86,7 @@ namespace Client.MirScenes.Dialogs
                 NotControl = false,
                 Visible = false,
             };
-            _finishLabel.Click += (o, e) =>
+            _PlayerTaskTalk.Click += (o, e) =>
             {
                 if (Reward == null || !SelectedQuest.Completed) return;
 
@@ -256,8 +256,8 @@ namespace Client.MirScenes.Dialogs
 
         public void ReDisplayButtons()
         {
-            _finishLabel.Text = "继续";
-            _finishLabel.Visible = true;
+            _PlayerTaskTalk.Text = "继续";
+            _PlayerTaskTalk.Visible = true;
 
             if (Reward != null)
             {
@@ -268,7 +268,7 @@ namespace Client.MirScenes.Dialogs
             {
                 if (SelectedQuest.Completed)
                 {
-                    _finishLabel.Text = "完成";
+                    _PlayerTaskTalk.Text = "恭喜, 任务完成了,领取你的奖励吧。";
                 }
             }
         }
@@ -279,7 +279,7 @@ namespace Client.MirScenes.Dialogs
             {
                 _npcNameLabel.Text = "";
                 ClearDescription();
-                _finishLabel.Visible = false;
+                _PlayerTaskTalk.Visible = false;
                 return;
             }
 
@@ -303,13 +303,13 @@ namespace Client.MirScenes.Dialogs
                 desc = SelectedQuest.QuestInfo.Description;
             }
 
-            RenderDescription(desc);
+            RenderDescription(desc, SelectedQuest.QuestInfo.PlayerTaskTalk);
         }
 
         // 渲染任务描述：解析内联颜色/链接标签（{文字/颜色}、[ITEM:idx|名] 等，与 NPC 对话同一套格式）。
         // 底色白字由 _descLabel（WordBreak 自动换行）承载，彩色/链接词作为覆盖层叠在其上，
         // 复用 NPCDialogs 的公开正则与取色逻辑，确保描述与 NPC 对话表现一致。
-        private void RenderDescription(List<string> lines)
+        private void RenderDescription(List<string> lines, List<string> playerLines = null)
         {
             ClearDescription();
 
@@ -425,6 +425,27 @@ namespace Client.MirScenes.Dialogs
 
             _descLabel.Text = string.Join("\n", stripped);
             _descLabel.Visible = true;
+
+            // 玩家任务台词：在 NPC 台词下方以绿色“▸ 我：”呈现，形成一问一答。
+            if (playerLines != null)
+            {
+                int startIdx = lines.Count;
+                for (int p = 0; p < playerLines.Count; p++)
+                {
+                    var pl = new MirLabel
+                    {
+                        Parent = this,
+                        AutoSize = true,
+                        Visible = true,
+                        Location = new Point(x, baseY + (startIdx + p) * lineH),
+                        Text = "▸ 我：" + playerLines[p],
+                        ForeColour = Color.LimeGreen,
+                        Font = font,
+                        NotControl = true
+                    };
+                    _descSegments.Add(pl);
+                }
+            }
         }
 
         private void ClearDescription()

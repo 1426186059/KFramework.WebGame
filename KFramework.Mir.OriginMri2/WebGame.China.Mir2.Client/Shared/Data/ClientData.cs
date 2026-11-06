@@ -368,6 +368,7 @@ public class ClientQuestInfo
     public List<string> TaskDescription = new List<string>();
     public List<string> ReturnDescription = new List<string>();
     public List<string> CompletionDescription = new List<string>();
+    public List<string> PlayerTaskTalk = new List<string>();
 
     public int MinLevelNeeded, MaxLevelNeeded;
     public int QuestNeeded;
@@ -384,8 +385,6 @@ public class ClientQuestInfo
     public List<QuestItemReward> RewardsSelectItem = new List<QuestItemReward>();
 
     public uint FinishNPCIndex;
-
-    public int NextQuest;
 
     public bool SameFinishNPC
     {
@@ -417,6 +416,10 @@ public class ClientQuestInfo
         for (int i = 0; i < count; i++)
             CompletionDescription.Add(reader.ReadString());
 
+        count = reader.ReadInt32();
+        for (int i = 0; i < count; i++)
+            PlayerTaskTalk.Add(reader.ReadString());
+
         MinLevelNeeded = reader.ReadInt32();
         MaxLevelNeeded = reader.ReadInt32();
         QuestNeeded = reader.ReadInt32();
@@ -439,7 +442,6 @@ public class ClientQuestInfo
             RewardsSelectItem.Add(new QuestItemReward(reader));
 
         FinishNPCIndex = reader.ReadUInt32();
-        NextQuest = reader.ReadInt32();
     }
     public void Save(BinaryWriter writer)
     {
@@ -464,6 +466,10 @@ public class ClientQuestInfo
         for (int i = 0; i < CompletionDescription.Count; i++)
             writer.Write(CompletionDescription[i]);
 
+        writer.Write(PlayerTaskTalk.Count);
+        for (int i = 0; i < PlayerTaskTalk.Count; i++)
+            writer.Write(PlayerTaskTalk[i]);
+
         writer.Write(MinLevelNeeded);
         writer.Write(MaxLevelNeeded);
         writer.Write(QuestNeeded);
@@ -485,7 +491,6 @@ public class ClientQuestInfo
             RewardsSelectItem[i].Save(writer);
 
         writer.Write(FinishNPCIndex);
-        writer.Write(NextQuest);
     }
 
     public QuestIcon GetQuestIcon(bool taken = false, bool completed = false)

@@ -1,13 +1,19 @@
-[@Description]
+[@NPC_TASK_TALK]
 这是你要的茶。请把这
 趁还没凉。
+
+[@PLAYER_TASK_TALK]
+没问题，这件事就交给我吧。
 
 [@TaskDescription]
 把{甘露茶/LightSteelBlue}交给{米尔向导/LimeGreen}
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
+
 [@CarryItems]
 甘露茶 2
 
@@ -15,6 +21,7 @@
 钢扣
 
 [@SelectRewards]
+
 [@ExpReward]
 439
 

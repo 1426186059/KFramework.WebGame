@@ -1,16 +1,25 @@
-[@Description]
+[@NPC_TASK_TALK]
 你好，旅人。你听说过弓手队长目前正在守护区域？
 有传言说他们在寻找弟子以助战
+
+[@PLAYER_TASK_TALK]
+好，我马上动身过去。
 
 [@TaskDescription]
 在坐标320:476与{杰拉德/LimeGreen}交谈
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
+
 [@ExpReward]
 48
 

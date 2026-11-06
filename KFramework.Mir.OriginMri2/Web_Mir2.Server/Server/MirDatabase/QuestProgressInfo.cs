@@ -610,7 +610,18 @@ namespace Server.MirDatabase
                 npc = Envir.GetNPCInfo((int)Info.NpcIndex);
             if (npc == null && Info.FinishNpcIndex != 0)
                 npc = Envir.GetNPCInfo((int)Info.FinishNpcIndex);
-            if (npc == null) return null;
+            if (npc == null)
+            {
+                // 仍未找到：返回“不可导航”的占位目标，避免 Targets 出现 null 导致序列化崩溃
+                return new QuestTaskTarget
+                {
+                    Type = QuestTargetType.NPC,
+                    Name = string.Empty,
+                    MapIndex = 0,
+                    X = 0,
+                    Y = 0
+                };
+            }
 
             return new QuestTaskTarget
             {
@@ -624,10 +635,21 @@ namespace Server.MirDatabase
 
         private QuestTaskTarget MakeFinishNPCTarget()
         {
-            // 交任务（返回）目标：使用 FinishNpcIndex（运行时 NPC ObjectID）定位真正的交任务 NPC，
-            // 而不是发放/起始 NPC（NpcInfo）。
+            // 交任务（返回）目标：使用 FinishNpcIndex（静态 NPCInfo 索引）定位交任务 NPC；
+            // 兼容旧数据把 FinishNpcIndex 存为运行时 ObjectID 的情况。
             if (Info.FinishNpcIndex != 0)
             {
+                NPCInfo npcInfo = Envir.GetNPCInfo((int)Info.FinishNpcIndex);
+                if (npcInfo != null)
+                    return new QuestTaskTarget
+                    {
+                        Type = QuestTargetType.NPC,
+                        Name = npcInfo.Name,
+                        MapIndex = (uint)npcInfo.MapIndex,
+                        X = npcInfo.Location.X,
+                        Y = npcInfo.Location.Y
+                    };
+
                 var npc = Envir.NPCs.FirstOrDefault(x => x.ObjectID == Info.FinishNpcIndex);
                 if (npc != null && npc.CurrentMap != null)
                     return new QuestTaskTarget

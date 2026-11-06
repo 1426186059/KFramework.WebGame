@@ -1,5 +1,8 @@
-[@Description]
+[@NPC_TASK_TALK]
 看来这回传言成真了。请回到{隐藏入口/Yellow}。
+
+[@PLAYER_TASK_TALK]
+没问题，这件事就交给我吧。
 
 [@TaskDescription]
 消灭一些{爬行僵尸/Crimson}。

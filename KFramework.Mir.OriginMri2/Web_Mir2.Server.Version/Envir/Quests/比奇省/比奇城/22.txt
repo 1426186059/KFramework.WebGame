@@ -1,19 +1,27 @@
-[@Description]
+[@NPC_TASK_TALK]
 {乌苗森林/Yellow}的{屠夫/LimeGreen}刚开了一家
 新店。他找我帮点忙。
+
+[@PLAYER_TASK_TALK]
+好，我马上动身过去。
 
 [@TaskDescription]
 击杀{沃玛士兵/Crimson}以收集10个{蜂肋/LightSteelBlue}
 并交给{乌苗森林/Yellow}的{屠夫/LimeGreen}
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
 蜂肋 10
 
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
+
 [@ExpReward]
 8200
 

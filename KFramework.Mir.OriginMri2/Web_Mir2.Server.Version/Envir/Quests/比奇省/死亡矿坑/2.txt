@@ -1,5 +1,8 @@
-[@Description]
+[@NPC_TASK_TALK]
 你好，旅行者，几天前一只{僵尸/Crimson}杀死了我的宠物。请帮我向{僵尸/Crimson}复仇！
+
+[@PLAYER_TASK_TALK]
+包在我身上，我这就去把它们解决掉。
 
 [@TaskDescription]
 在{比奇死亡矿坑/Yellow}消灭 30 只{萨满僵尸/Crimson}。

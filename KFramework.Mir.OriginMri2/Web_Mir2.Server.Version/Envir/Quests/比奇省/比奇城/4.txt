@@ -1,23 +1,30 @@
-[@Description]
+[@NPC_TASK_TALK]
 最近数量一直在增加的是
 镇子周围的{吐毒蜘蛛/Crimson}。这只怪物
 有毒，而解药只能由
 取自{毒囊/LightSteelBlue}。
+
+[@PLAYER_TASK_TALK]
+我明白了，这就去办。
 
 [@TaskDescription]
 请通过猎杀来寻找{毒囊/LightSteelBlue}
 {吐毒蜘蛛/Crimson}。
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
 毒囊 10
 
 [@CarryItems]
+
 [@FixedRewards]
 强皮革腰带
 
 [@SelectRewards]
+
 [@ExpReward]
 500
 

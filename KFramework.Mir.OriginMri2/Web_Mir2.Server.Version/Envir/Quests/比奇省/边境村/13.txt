@@ -1,7 +1,10 @@
-[@Description]
+[@NPC_TASK_TALK]
 你好，旅人。你听说过本区域的道士教头？
 他可是所有道士的大师。我听说他最近一直在物色新弟子。
 那也许只是个谣言
+
+[@PLAYER_TASK_TALK]
+没问题，这件事就交给我吧。
 
 [@TaskDescription]
 与{高级道士/LimeGreen}谈谈，他最后出现在
@@ -9,11 +12,17 @@
 西北方向。
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
+
 [@ExpReward]
 48
 

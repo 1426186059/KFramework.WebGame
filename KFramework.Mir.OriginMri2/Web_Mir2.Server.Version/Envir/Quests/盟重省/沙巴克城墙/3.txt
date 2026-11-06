@@ -1,5 +1,8 @@
-[@Description]
+[@NPC_TASK_TALK]
 请前往 {沙巴克城墙/Yellow} 与 {王先生/LimeGreen} 交谈。
+
+[@PLAYER_TASK_TALK]
+好，我马上动身过去。
 
 [@TaskDescription]
 

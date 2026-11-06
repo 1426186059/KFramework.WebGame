@@ -1,4 +1,7 @@
-[@Description]
+[@NPC_TASK_TALK]
+
+[@PLAYER_TASK_TALK]
+我明白了，这就去办。
 
 [@TaskDescription]
 

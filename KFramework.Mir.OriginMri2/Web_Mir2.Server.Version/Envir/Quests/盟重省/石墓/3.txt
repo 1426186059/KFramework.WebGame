@@ -1,5 +1,8 @@
-[@Description]
+[@NPC_TASK_TALK]
 你深入过{石墓/Yellow}多深？{白野猪/Crimson}潜伏在最深处。
+
+[@PLAYER_TASK_TALK]
+没问题，这件事就交给我吧。
 
 [@TaskDescription]
 消灭{白野猪/Crimson}。

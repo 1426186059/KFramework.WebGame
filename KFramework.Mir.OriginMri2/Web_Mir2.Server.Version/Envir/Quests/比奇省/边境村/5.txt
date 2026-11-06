@@ -1,22 +1,29 @@
-[@Description]
+[@NPC_TASK_TALK]
 年轻的旅人，我叫{史密斯/LimeGreen}。
 村外有太多怪物了，我不知道该怎么才能到达{比奇城/Yellow}
 你能帮帮我吗？
+
+[@PLAYER_TASK_TALK]
+没问题，这件事就交给我吧。
 
 [@TaskDescription]
 消灭10只{鹿/Crimson}和{稻草人/Crimson}。
 
 [@Completion]
+
 [@KillTasks]
 鹿 10 "击杀鹿 {0}/{1}"
 稻草人 10 "击杀稻草人 {0}/{1}"
 
 [@ItemTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
 旧铁手镯
 
 [@SelectRewards]
+
 [@ExpReward]
 120
 

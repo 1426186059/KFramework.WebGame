@@ -1,6 +1,9 @@
-[@Description]
+[@NPC_TASK_TALK]
 这条项链是我的{生命石/LightSteelBlue}……这就是我
 回来的原因。请帮我找回我的{生命石/LightSteelBlue}。
+
+[@PLAYER_TASK_TALK]
+好，我马上动身过去。
 
 [@TaskDescription]
 猎杀{巨蠕虫/Crimson}并归还{旧项链/LightSteelBlue}。

@@ -1,18 +1,25 @@
-[@Description]
+[@NPC_TASK_TALK]
 那具尸体似乎是{文森特/LimeGreen}正在寻找的
 的。这条项链与描述相符
 {文森特/LimeGreen}给的。
+
+[@PLAYER_TASK_TALK]
+好，我马上动身过去。
 
 [@TaskDescription]
 把{老项链/LightSteelBlue}还给{文森特/LimeGreen}。
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
+
 [@CarryItems]
 老项链 1
 
 [@FixedRewards]
+
 [@SelectRewards]
 坚韧手套
 魔法手环

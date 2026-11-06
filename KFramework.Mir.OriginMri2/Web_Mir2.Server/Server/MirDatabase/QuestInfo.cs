@@ -55,9 +55,10 @@ namespace Server.MirDatabase
         public List<string> TaskDescription = new List<string>();
         public List<string> ReturnDescription = new List<string>();
         public List<string> CompletionDescription = new List<string>();
+        // 玩家任务台词：NPC 说完（Description / @NPC_TASK_TALK）后，玩家自动回复的话语（@PLAYER_TASK_TALK），形成一问一答。
+        public List<string> PlayerTaskTalk = new List<string>();
 
         public int RequiredMinLevel, RequiredMaxLevel, RequiredQuest;
-        public int NextQuest;
         public RequiredClass RequiredClass = RequiredClass.None;
 
         public QuestType Type;
@@ -149,6 +150,7 @@ namespace Server.MirDatabase
         public void ClearInfo()
         {
             Description.Clear();
+            PlayerTaskTalk.Clear();
             KillTasks = new List<QuestKillTask>();
             ItemTasks = new List<QuestItemTask>();
             FlagTasks = new List<QuestFlagTask>();
@@ -162,7 +164,8 @@ namespace Server.MirDatabase
         public void ParseFile(List<string> lines)
         {
             const string
-                descriptionCollectKey = "[@DESCRIPTION]",
+                npcTaskTalkKey = "[@NPC_TASK_TALK]",
+                descriptionLegacyKey = "[@DESCRIPTION]",
                 descriptionTaskKey = "[@TASKDESCRIPTION]",
                 descriptionReturnKey = "[@RETURNDESCRIPTION]",
                 descriptionCompletionKey = "[@COMPLETION]",
@@ -174,13 +177,15 @@ namespace Server.MirDatabase
                 selectRewardsKey = "[@SELECTREWARDS]",
                 expRewardKey = "[@EXPREWARD]",
                 goldRewardKey = "[@GOLDREWARD]",
-                creditRewardKey = "[@CREDITREWARD]";
+                creditRewardKey = "[@CREDITREWARD]",
+                playerTaskTalkKey = "[@PLAYER_TASK_TALK]";
 
             List<string> headers = new List<string>
             {
-                descriptionCollectKey, descriptionTaskKey, descriptionCompletionKey,
+                npcTaskTalkKey, descriptionLegacyKey, descriptionTaskKey, descriptionCompletionKey,
                 carryItemsKey, killTasksKey, itemTasksKey, flagTasksKey,
-                fixedRewardsKey, selectRewardsKey, expRewardKey, goldRewardKey, creditRewardKey, descriptionReturnKey
+                fixedRewardsKey, selectRewardsKey, expRewardKey, goldRewardKey, creditRewardKey, descriptionReturnKey,
+                playerTaskTalkKey
             };
 
             int currentHeader = 0;
@@ -202,7 +207,8 @@ namespace Server.MirDatabase
 
                         switch (line)
                         {
-                            case descriptionCollectKey:
+                            case npcTaskTalkKey:
+                            case descriptionLegacyKey:
                                 Description.Add(innerLine);
                                 break;
                             case descriptionTaskKey:
@@ -210,6 +216,9 @@ namespace Server.MirDatabase
                                 break;
                             case descriptionReturnKey:
                                 ReturnDescription.Add(innerLine);
+                                break;
+                            case playerTaskTalkKey:
+                                PlayerTaskTalk.Add(innerLine);
                                 break;
                             case descriptionCompletionKey:
                                 CompletionDescription.Add(innerLine);
@@ -401,11 +410,11 @@ namespace Server.MirDatabase
                 TaskDescription = taskDescription,
                 ReturnDescription = returnDescription,
                 CompletionDescription = completionDescription,
+                PlayerTaskTalk = PlayerTaskTalk,
                 MinLevelNeeded = RequiredMinLevel,
                 MaxLevelNeeded = RequiredMaxLevel,
                 ClassNeeded = RequiredClass,
                 QuestNeeded = RequiredQuest,
-                NextQuest = NextQuest,
                 Type = Type,
                 TimeLimitInSeconds = TimeLimitInSeconds,
                 RewardGold = GoldReward,
@@ -476,15 +485,13 @@ namespace Server.MirDatabase
 
             info.RequiredClass = (RequiredClass)temp;
 
-            if (data.Length > 13) int.TryParse(data[13], out info.NextQuest);
-
             if (isNew) EditEnvir.QuestInfoList.Add(info);
         }
 
         public string ToText()
         {
-            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}",
-                Index, Name, Group, (byte)Type, FileName, GotoMessage, KillMessage, ItemMessage, FlagMessage, RequiredMinLevel, RequiredMaxLevel, RequiredQuest, (byte)RequiredClass, NextQuest);
+            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}",
+                Index, Name, Group, (byte)Type, FileName, GotoMessage, KillMessage, ItemMessage, FlagMessage, RequiredMinLevel, RequiredMaxLevel, RequiredQuest, (byte)RequiredClass);
         }
 
         public override string ToString()

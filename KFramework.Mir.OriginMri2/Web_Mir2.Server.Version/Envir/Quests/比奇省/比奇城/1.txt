@@ -1,21 +1,28 @@
-[@Description]
+[@NPC_TASK_TALK]
 我接到报告说{森林雪怪/Crimson}正在
 最近只袭击新晋的战士。
 你觉得你能帮忙吗？
+
+[@PLAYER_TASK_TALK]
+没问题，这件事就交给我吧。
 
 [@TaskDescription]
 消灭5只{森林雪怪/Crimson}。
 
 [@Completion]
+
 [@KillTasks]
 森林雪怪 5
 
 [@ItemTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
 精准坠子
 
 [@SelectRewards]
+
 [@ExpReward]
 200
 

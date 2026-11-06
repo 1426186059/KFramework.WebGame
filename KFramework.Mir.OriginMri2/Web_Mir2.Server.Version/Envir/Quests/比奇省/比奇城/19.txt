@@ -1,19 +1,27 @@
-[@Description]
+[@NPC_TASK_TALK]
 我正在用{稀有铜矿/LightSteelBlue}打造特制铠甲。
 你可以在……的{僵尸/Crimson}身上找到这些
 {死亡矿坑/Yellow}。
+
+[@PLAYER_TASK_TALK]
+包在我身上，我这就去把它们解决掉。
 
 [@TaskDescription]
 猎杀{僵尸/Crimson}寻找10个{稀有铜矿/LightSteelBlue}。
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
 稀有铜矿 10
 
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
+
 [@ExpReward]
 3000
 

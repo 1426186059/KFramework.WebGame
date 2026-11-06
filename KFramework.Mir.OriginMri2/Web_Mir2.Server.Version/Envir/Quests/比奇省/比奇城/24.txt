@@ -1,16 +1,25 @@
-[@Description]
+[@NPC_TASK_TALK]
 在{道尧县/Yellow}与{洞窟向导/LimeGreen}对话
+
+[@PLAYER_TASK_TALK]
+我明白了，这就去办。
 
 [@TaskDescription]
 前往{道尧县/Yellow}以西，与
 与{洞窟向导/LimeGreen}一起。
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
+
 [@ExpReward]
 4144
 

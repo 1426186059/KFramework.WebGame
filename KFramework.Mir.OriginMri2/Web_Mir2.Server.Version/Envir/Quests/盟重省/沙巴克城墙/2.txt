@@ -1,5 +1,8 @@
-[@Description]
+[@NPC_TASK_TALK]
 你好，米尔人，我还缺{比奇传说(1)/LightSteelBlue}和{比奇传说(2)/LightSteelBlue}，
+
+[@PLAYER_TASK_TALK]
+我明白了，这就去办。
 
 [@TaskDescription]
 请回到{隐藏入口/Yellow}，取回{比奇传说(1)/LightSteelBlue}和{比奇传说(2)/LightSteelBlue}。

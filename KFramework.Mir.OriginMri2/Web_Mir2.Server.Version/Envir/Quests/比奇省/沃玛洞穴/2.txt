@@ -1,5 +1,8 @@
-[@Description]
+[@NPC_TASK_TALK]
 这些符号似乎有规律可循……也许{比奇城堡/Yellow}里有人能解读这些远古符号。
+
+[@PLAYER_TASK_TALK]
+我明白了，这就去办。
 
 [@TaskDescription]
 回到{比奇城堡/Yellow}，打听这些符号的来历。
@@ -25,6 +28,5 @@
 3900
 
 [@GoldReward]
-
 // Pickup - MysteriousStone D003 351 234
 // Hand In - MysteriousStone D003 351 234

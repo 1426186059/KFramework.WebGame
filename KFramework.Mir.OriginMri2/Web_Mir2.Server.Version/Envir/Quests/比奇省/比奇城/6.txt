@@ -1,4 +1,4 @@
-[@Description]
+[@NPC_TASK_TALK]
 你好，旅人。你在这一带可是小有名气。
 这里。你也能帮帮我吗？
 药品的需求一直在增加，
@@ -7,17 +7,25 @@
 可从{吐毒蜘蛛/Crimson}身上找到，你能
 请帮我弄点来好吗？
 
+[@PLAYER_TASK_TALK]
+好，我马上动身过去。
+
 [@TaskDescription]
 请从{吐毒蜘蛛/Crimson}身上收集10个{蛛网/LightSteelBlue}
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
 蛛网 10
 
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
+
 [@ExpReward]
 500
 

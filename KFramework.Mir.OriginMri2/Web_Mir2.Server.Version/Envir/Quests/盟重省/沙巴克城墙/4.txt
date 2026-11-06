@@ -1,5 +1,8 @@
-[@Description]
+[@NPC_TASK_TALK]
 这附近有{隐藏入口/Yellow}。它们通向某种地下城。有传言说每个入口处都有一些石柱。
+
+[@PLAYER_TASK_TALK]
+我明白了，这就去办。
 
 [@TaskDescription]
 找到{隐藏入口/Yellow}并搜寻那些石柱。

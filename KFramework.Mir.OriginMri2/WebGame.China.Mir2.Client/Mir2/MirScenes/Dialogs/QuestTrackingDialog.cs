@@ -161,7 +161,7 @@ namespace Client.MirScenes.Dialogs
                     QuestTaskTarget tgt = (questsToTrack[i].Targets != null && ti < questsToTrack[i].Targets.Count) ? questsToTrack[i].Targets[ti] : null;
                     ti++;
 
-                    if (tgt != null && !string.IsNullOrEmpty(tgt.Name))
+                    if (tgt != null && tgt.MapIndex > 0 && !string.IsNullOrEmpty(tgt.Name))
                     {
                         int idx = trackedQuest.IndexOf(tgt.Name, System.StringComparison.Ordinal);
 
@@ -216,31 +216,35 @@ namespace Client.MirScenes.Dialogs
                             continue;
                         }
 
-                        // 目标名未出现在文本中（如自定义对话描述）：整行绿色下划线可点击
+                        // 目标名未出现在文本中（如自定义对话描述）
+                        bool navigable = tgt != null && tgt.MapIndex > 0;
                         _questTaskLabel = new MirLabel
                         {
                             Text = trackedQuest,
                             AutoSize = true,
                             BackColour = Color.Transparent,
                             Font = QuestFont,
-                            ForeColour = Color.Green,
+                            ForeColour = navigable ? Color.Green : Color.White,
                             Location = new Point(45, 25 + y),
                             OutLine = true,
-                            UnderLine = true,
+                            UnderLine = navigable,
                             Parent = this,
                             Visible = true,
                         };
-                        _questTaskLabel.Click += (s, e) =>
+                        if (navigable)
                         {
-                            KFramework.MonoGame.PrintTool.Log($"questTaskLabel.Click map={tgt.MapIndex} x={tgt.X} y={tgt.Y} monster={tgt.MonsterIndex}");
-                            Network.Enqueue(new TeleportToQuestTarget
+                            _questTaskLabel.Click += (s, e) =>
                             {
-                                MapIndex = tgt.MapIndex,
-                                X = tgt.X,
-                                Y = tgt.Y,
-                                MonsterIndex = tgt.MonsterIndex
-                            });
-                        };
+                                KFramework.MonoGame.PrintTool.Log($"questTaskLabel.Click map={tgt.MapIndex} x={tgt.X} y={tgt.Y} monster={tgt.MonsterIndex}");
+                                Network.Enqueue(new TeleportToQuestTarget
+                                {
+                                    MapIndex = tgt.MapIndex,
+                                    X = tgt.X,
+                                    Y = tgt.Y,
+                                    MonsterIndex = tgt.MonsterIndex
+                                });
+                            };
+                        }
                         TaskLines.Add(_questTaskLabel);
                         continue;
                     }

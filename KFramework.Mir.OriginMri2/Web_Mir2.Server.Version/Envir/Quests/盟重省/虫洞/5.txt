@@ -1,7 +1,10 @@
-[@Description]
+[@NPC_TASK_TALK]
 请将我的{生命石/LightSteelBlue}交还给我的女儿
 {蕾切尔/LimeGreen}。她会明白它的意义。
 感谢你的帮助，我现在安息了。
+
+[@PLAYER_TASK_TALK]
+没问题，这件事就交给我吧。
 
 [@TaskDescription]
 请将{旧项链/LightSteelBlue}交给{蕾切尔/LimeGreen}。

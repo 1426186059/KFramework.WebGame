@@ -1,17 +1,26 @@
-[@Description]
+[@NPC_TASK_TALK]
 你来得太及时了。{蒙村斥候/LimeGreen}刚才
 之前来过，给你留了口信。请去
 前往{酒馆/Yellow}
+
+[@PLAYER_TASK_TALK]
+好，我马上动身过去。
 
 [@TaskDescription]
 去{酒馆/Yellow}找{蒙村斥候/LimeGreen}谈谈
 
 [@Completion]
+
 [@KillTasks]
+
 [@ItemTasks]
+
 [@CarryItems]
+
 [@FixedRewards]
+
 [@SelectRewards]
+
 [@ExpReward]
 1104
 

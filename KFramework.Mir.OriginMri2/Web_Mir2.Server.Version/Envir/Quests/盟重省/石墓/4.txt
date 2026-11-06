@@ -1,5 +1,8 @@
-[@Description]
+[@NPC_TASK_TALK]
 你好，米尔人，{石墓/Yellow}深处潜伏着更黑暗的邪恶。在层层石壁之中，有一块石头据说能开启通往{远古矿层/Yellow}的通道。
+
+[@PLAYER_TASK_TALK]
+我明白了，这就去办。
 
 [@TaskDescription]
 在{石墓/Yellow}中找到那块石头。
