@@ -200,6 +200,9 @@ namespace Server.MirObjects
             get { return Info.CompletedQuests; }
         }
 
+        // 已开放（未接取）的任务索引：左上角追踪栏显示“寻找 NPC”，玩家前往后才正式接取。
+        public List<int> OfferedQuests = new List<int>();
+
         private QuestScheduler _questScheduler;
         public QuestScheduler QuestScheduler => _questScheduler ?? (_questScheduler = new QuestScheduler(this));
 
@@ -7764,6 +7767,20 @@ namespace Server.MirObjects
 
             MessageQueue.Enqueue($"[传送诊断] 执行传送 -> map={mapIndex} ({p.X},{p.Y})");
             Teleport(map, p);
+
+            // 目标为 NPC：传送后自动打开该 NPC 面板，便于直接接取/交付任务。
+            // 怪物类目标附近无 NPC，FindNearbyValid 又从半径 1 起步，故不会误弹面板。
+            NPCObject targetNpc = null;
+            for (int i = 0; i < map.NPCs.Count; i++)
+            {
+                if (Functions.InRange(map.NPCs[i].CurrentLocation, p, Globals.DataRange))
+                {
+                    targetNpc = map.NPCs[i];
+                    break;
+                }
+            }
+            if (targetNpc != null && !Dead)
+                CallNPC(targetNpc.ObjectID, "@Main");
         }
 
         private Point? FindLiveMonsterSpot(Map map, uint monsterIndex)
@@ -11470,25 +11487,43 @@ namespace Server.MirObjects
 
         #region Quests
 
-        public void AcceptQuest(int index)
+        public void AcceptQuest(int index, bool navigate = false)
         {
             bool canAccept = true;
 
             if (CurrentQuests.Exists(e => e.Index == index)) return; //e.Info.NpcIndex == npcIndex && 
 
             QuestInfo info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
+            if (info == null) return;
+
+            // 从“寻找NPC”追踪入口进入：先传送至发放 NPC 旁，再接取（无需身处附近）
+            if (navigate)
+            {
+                // info.NpcIndex 即发放 NPC 的运行时 ObjectID（由 NPCScript.ParseQuests 写入），
+                // 故按 ObjectID 取 NPC，而非按 NPCInfo.Index（二者编号体系不同，直接比对会取不到）。
+                NPCObject npcObj = NPCObject.Get(info.NpcIndex);
+                if (npcObj != null)
+                {
+                    bool inRange = Functions.InRange(npcObj.CurrentLocation, CurrentLocation, Globals.DataRange);
+                    if (!inRange)
+                        Teleport(npcObj.CurrentMap, npcObj.CurrentLocation);
+                }
+            }
 
             NPCObject npc = null;
 
-            for (int i = CurrentMap.NPCs.Count - 1; i >= 0; i--)
+            if (!navigate)
             {
-                if (CurrentMap.NPCs[i].ObjectID != info.NpcIndex) continue;
+                for (int i = CurrentMap.NPCs.Count - 1; i >= 0; i--)
+                {
+                    if (CurrentMap.NPCs[i].ObjectID != info.NpcIndex) continue;
 
-                if (!Functions.InRange(CurrentMap.NPCs[i].CurrentLocation, CurrentLocation, Globals.DataRange)) break;
-                npc = CurrentMap.NPCs[i];
-                break;
+                    if (!Functions.InRange(CurrentMap.NPCs[i].CurrentLocation, CurrentLocation, Globals.DataRange)) break;
+                    npc = CurrentMap.NPCs[i];
+                    break;
+                }
+                if (npc == null || !npc.VisibleLog[Info.Index] || !npc.Visible) return;
             }
-            if (npc == null || !npc.VisibleLog[Info.Index] || !npc.Visible) return;
 
             if (!info.CanAccept(this))
             {
@@ -11564,9 +11599,18 @@ namespace Server.MirObjects
 
             quest.Init(this);
 
+            OfferedQuests.Remove(index);
+            Enqueue(new S.ChangeQuest { Quest = new ClientQuestProgress { Id = index }, QuestState = QuestState.Remove });
+
             SendUpdateQuest(quest, QuestState.Add, true);
 
             CallDefaultNPC(DefaultNPCType.OnAcceptQuest, index);
+
+            // “寻找NPC”入口：传送+接取后，自动打开发放 NPC 的面板（任务面板/对话），
+            // 让玩家看到 NPC 交互界面（客户端会据此隐藏任务跟踪面板）。
+            NPCObject startNpc = NPCObject.Get(info.NpcIndex);
+            if (startNpc != null)
+                CallNPC(startNpc.ObjectID, "@Main");
         }
 
         public void FinishQuest(int questIndex)
@@ -11705,6 +11749,34 @@ namespace Server.MirObjects
 
             CallDefaultNPC(DefaultNPCType.OnAcceptQuest, index);
         }
+
+        /// <summary>
+        /// 开放（未接取）任务：进入“已开放”状态并下发，左上角追踪栏显示“寻找 NPC”。
+        /// 与 AutoAcceptQuest 的区别：不写入 CurrentQuests，需玩家前往 NPC（点击追踪条目传送）后才正式接取。
+        /// </summary>
+        public void OfferQuest(int index)
+        {
+            if (index <= 0) return;
+            if (CurrentQuests.Exists(e => e.Index == index)) return;
+            if (OfferedQuests.Contains(index)) return;
+            if (CompletedQuests.Contains(index)) return;
+
+            QuestInfo info = Envir.QuestInfoList.FirstOrDefault(d => d.Index == index);
+            if (info == null) return;
+            if (!info.CanAccept(this)) return;
+
+            OfferedQuests.Add(index);
+
+            // CreateClientQuestInfo() 已按 info.NpcInfo / NpcIndex 解析好起始 NPC 名（StartNpcName），此处无需重复覆盖。
+            ClientQuestInfo cqi = info.CreateClientQuestInfo();
+
+            Enqueue(new S.ChangeQuest
+            {
+                Quest = new ClientQuestProgress { Id = info.Index, QuestInfo = cqi },
+                QuestState = QuestState.Offered
+            });
+        }
+
         public void AbandonQuest(int questIndex)
         {
             QuestProgressInfo quest = CurrentQuests.FirstOrDefault(e => e.Info.Index == questIndex);

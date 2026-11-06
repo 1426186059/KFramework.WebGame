@@ -369,6 +369,7 @@ public class ClientQuestInfo
     public List<string> ReturnDescription = new List<string>();
     public List<string> CompletionDescription = new List<string>();
     public List<string> PlayerTaskTalk = new List<string>();
+    public string StartNpcName = string.Empty;
 
     public int MinLevelNeeded, MaxLevelNeeded;
     public int QuestNeeded;
@@ -420,6 +421,8 @@ public class ClientQuestInfo
         for (int i = 0; i < count; i++)
             PlayerTaskTalk.Add(reader.ReadString());
 
+        StartNpcName = reader.ReadString();
+
         MinLevelNeeded = reader.ReadInt32();
         MaxLevelNeeded = reader.ReadInt32();
         QuestNeeded = reader.ReadInt32();
@@ -469,6 +472,8 @@ public class ClientQuestInfo
         writer.Write(PlayerTaskTalk.Count);
         for (int i = 0; i < PlayerTaskTalk.Count; i++)
             writer.Write(PlayerTaskTalk[i]);
+
+        writer.Write(StartNpcName);
 
         writer.Write(MinLevelNeeded);
         writer.Write(MaxLevelNeeded);

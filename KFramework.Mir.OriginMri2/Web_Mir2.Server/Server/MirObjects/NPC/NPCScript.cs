@@ -704,6 +704,9 @@ namespace Server.MirObjects
 
                     if (index == 0) continue;
 
+                    // [Quests] 段每行一个任务索引，符号约定：
+                    //   正数 -> 由本 NPC 发放（起始）：写入 QuestInfo.NpcIndex（即 CollectQuestIndexes）。
+                    //   负数 -> 需在本 NPC 处交付（完成）：写入 QuestInfo.FinishNpcIndex（即 FinishQuestIndexes）。
                     QuestInfo info = Envir.GetQuestInfo(Math.Abs(index));
 
                     if (info == null) return;

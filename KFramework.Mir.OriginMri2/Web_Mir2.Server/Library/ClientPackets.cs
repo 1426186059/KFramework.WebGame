@@ -1953,16 +1953,19 @@ namespace ClientPackets
 
         public uint NPCIndex;
         public int QuestIndex;
+        public bool Navigate;
 
         protected override void ReadPacket(BinaryReader reader)
         {
             NPCIndex = reader.ReadUInt32();
             QuestIndex = reader.ReadInt32();
+            Navigate = reader.ReadBoolean();
         }
         protected override void WritePacket(BinaryWriter writer)
         {
             writer.Write(NPCIndex);
             writer.Write(QuestIndex);
+            writer.Write(Navigate);
         }
     }
 

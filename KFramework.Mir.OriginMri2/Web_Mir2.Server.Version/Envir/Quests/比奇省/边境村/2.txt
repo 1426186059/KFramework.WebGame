@@ -8,7 +8,7 @@
 
 [@TaskDescription]
 从{稻草人/Crimson}处取得{姜茶/LightSteelBlue}并交付
-交给{边境村/Yellow}的{助手简/LimeGreen}。
+交给{边境村/Yellow}的{助手琳娜/LimeGreen}。
 
 [@Completion]
 
@@ -32,4 +32,4 @@
 200
 
 // Pickup - 工匠大娘 0 294 619
-// Hand In - 助手简 0 284 606
+// Hand In - 助手琳娜 0 284 606

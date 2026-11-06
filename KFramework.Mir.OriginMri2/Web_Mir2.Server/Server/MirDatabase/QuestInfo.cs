@@ -23,6 +23,11 @@ namespace Server.MirDatabase
 
         public int Index;
 
+        // 发放（起始）NPC 索引。
+        // 注意：此字段由发放 NPC 在加载其脚本 [Quests] 段时自动回填
+        // （见 NPCScript.ParseQuests：正数任务索引 -> info.NpcIndex = LoadedObjectID），
+        // 对应 NPCInfo 中声明的接取任务索引。
+        // 因此不要在 QuestInfo.json 里手动维护本字段，它会在运行时被自动填充。
         public uint NpcIndex;
         public NPCInfo NpcInfo;
 
@@ -399,6 +404,10 @@ namespace Server.MirDatabase
             var returnDescription = LinkFormatter.ReplacePlaceholders(ReturnDescription, (type, index) => EnsureLinkInfo(viewer, type, index)) ?? new List<string>();
             var completionDescription = LinkFormatter.ReplacePlaceholders(CompletionDescription, (type, index) => EnsureLinkInfo(viewer, type, index)) ?? new List<string>();
 
+            // 发放 NPC 名称：优先用已链接的 info.NpcInfo（NPCScript.ParseQuests 在 NPC 生成时填入），
+            // 兜底再按 NpcIndex 查找。避免登录下发任务列表时因索引查找/时序问题取不到名字。
+            var startNpc = NpcInfo ?? Envir.Main.NPCInfoList.FirstOrDefault(n => n.Index == (int)NpcIndex);
+
             return new ClientQuestInfo
             {
                 Index = Index,
@@ -421,7 +430,8 @@ namespace Server.MirDatabase
                 RewardExp = ExpReward,
                 RewardCredit = CreditReward,
                 RewardsFixedItem = FixedRewards,
-                RewardsSelectItem = SelectRewards
+                RewardsSelectItem = SelectRewards,
+                StartNpcName = startNpc != null ? startNpc.Name : string.Empty
             };
         }
 

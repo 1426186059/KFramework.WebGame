@@ -54,6 +54,8 @@ namespace Client.MirObjects
 
         public List<ClientQuestProgress> CurrentQuests = new List<ClientQuestProgress>();
         public List<int> CompletedQuests = new List<int>();
+        // 已开放（未接取）任务：左上角显示“寻找 NPC”，玩家前往后才正式接取。
+        public List<ClientQuestProgress> OfferedQuests = new List<ClientQuestProgress>();
         public List<ClientMail> Mail = new List<ClientMail>();
 
         public bool Slaying, Thrusting, HalfMoon, CrossHalfMoon, DoubleSlash, TwinDrakeBlade, FlamingSword;

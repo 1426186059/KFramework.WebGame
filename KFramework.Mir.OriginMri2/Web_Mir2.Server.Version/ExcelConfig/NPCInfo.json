@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "Index": 1,
     "FileName": "盟重/土城/传送",
@@ -56,37 +56,6 @@
     "Conquest": 0,
     "ShowOnBigMap": true,
     "BigMapIcon": 118,
-    "CanTeleportTo": false,
-    "ConquestVisible": true,
-    "CollectQuestIndexes": [],
-    "FinishQuestIndexes": []
-  },
-  {
-    "Index": 3,
-    "FileName": "比奇省/边境村/简",
-    "Name": "助手",
-    "MapIndex": 1,
-    "Location": {
-      "X": 284,
-      "Y": 606
-    },
-    "Rate": 100,
-    "Image": 5,
-    "Colour": {},
-    "TimeVisible": false,
-    "HourStart": 0,
-    "MinuteStart": 0,
-    "HourEnd": 0,
-    "MinuteEnd": 1,
-    "MinLev": 0,
-    "MaxLev": 0,
-    "DayofWeek": "",
-    "ClassRequired": "",
-    "Sabuk": false,
-    "FlagNeeded": 0,
-    "Conquest": 0,
-    "ShowOnBigMap": true,
-    "BigMapIcon": 120,
     "CanTeleportTo": false,
     "ConquestVisible": true,
     "CollectQuestIndexes": [],
@@ -1653,37 +1622,6 @@
     },
     "Rate": 100,
     "Image": 0,
-    "Colour": {},
-    "TimeVisible": false,
-    "HourStart": 0,
-    "MinuteStart": 0,
-    "HourEnd": 0,
-    "MinuteEnd": 1,
-    "MinLev": 0,
-    "MaxLev": 0,
-    "DayofWeek": "",
-    "ClassRequired": "",
-    "Sabuk": false,
-    "FlagNeeded": 0,
-    "Conquest": 0,
-    "ShowOnBigMap": true,
-    "BigMapIcon": 120,
-    "CanTeleportTo": false,
-    "ConquestVisible": true,
-    "CollectQuestIndexes": [],
-    "FinishQuestIndexes": []
-  },
-  {
-    "Index": 57,
-    "FileName": "比奇省/比奇城/降级",
-    "Name": "助手",
-    "MapIndex": 1,
-    "Location": {
-      "X": 331,
-      "Y": 340
-    },
-    "Rate": 100,
-    "Image": 6,
     "Colour": {},
     "TimeVisible": false,
     "HourStart": 0,
@@ -7628,7 +7566,7 @@
   {
     "Index": 389,
     "FileName": "比奇省/边境村/简",
-    "Name": "助手",
+    "Name": "助手琳娜",
     "MapIndex": 103,
     "Location": {
       "X": 284,
@@ -9302,7 +9240,7 @@
   {
     "Index": 443,
     "FileName": "比奇省/比奇城/降级",
-    "Name": "助手",
+    "Name": "助手卡卡",
     "MapIndex": 103,
     "Location": {
       "X": 331,

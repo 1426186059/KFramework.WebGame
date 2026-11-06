@@ -53,9 +53,9 @@ namespace Server.MirObjects
                     cand++;
                     continue;
                 }
-                if (q.CanAccept(_player))            // 满足条件：接取并结束
+                if (q.CanAccept(_player))            // 满足条件：开放（寻找NPC）并结束
                 {
-                    _player.AutoAcceptQuest(cand);
+                    _player.OfferQuest(cand);
                     return;
                 }
                 if (!IsClassEligible(q))              // 仅职业不符可跳过
@@ -82,7 +82,7 @@ namespace Server.MirObjects
                 if (q.RequiredMaxLevel > 0 && q.RequiredMaxLevel < newLevel) continue;
                 if (_player.CompletedQuests.Contains(q.Index)) continue;
                 if (_player.CurrentQuests.Exists(e => e.Index == q.Index)) continue;
-                if (q.CanAccept(_player)) _player.AutoAcceptQuest(q.Index);
+                if (q.CanAccept(_player)) _player.OfferQuest(q.Index);
             }
         }
 

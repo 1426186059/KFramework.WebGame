@@ -28,5 +28,5 @@
 10
 
 [@GoldReward]
-// Pickup - 助手简 0 284 606
+// Pickup - 助手琳娜 0 284 606
 // Hand In - Merchant_John 0 292 604

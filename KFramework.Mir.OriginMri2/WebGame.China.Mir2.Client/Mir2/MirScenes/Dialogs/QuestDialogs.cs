@@ -88,7 +88,7 @@ namespace Client.MirScenes.Dialogs
             };
             _PlayerTaskTalk.Click += (o, e) =>
             {
-                if (Reward == null || !SelectedQuest.Completed) return;
+                if (Reward == null || SelectedQuest == null || SelectedQuest.QuestInfo == null || !SelectedQuest.Completed) return;
 
                 Network.Enqueue(new C.FinishQuest { QuestIndex = SelectedQuest.QuestInfo.Index });
             };
@@ -115,6 +115,7 @@ namespace Client.MirScenes.Dialogs
             Reset();
 
             DisplayInfo();
+            GameScene.Scene.QuestTrackingDialog.SyncWithNpcPanels();
         }
 
         public override void Hide()
@@ -123,6 +124,7 @@ namespace Client.MirScenes.Dialogs
             Visible = false;
 
             GameScene.Scene.NPCDialog.Hide();
+            GameScene.Scene.QuestTrackingDialog.SyncWithNpcPanels();
         }
 
         public void Toggle()
@@ -232,9 +234,10 @@ namespace Client.MirScenes.Dialogs
         {
             if (SelectedQuest == null)
             {
-                if (Rows[0] == null) return;
+                // 直接选「当前任务」（已接取的任务），不再依赖 Rows[0]（可能为空或错位）
+                SelectedQuest = Quests.FirstOrDefault(q => q.Taken) ?? Quests.FirstOrDefault();
+                if (SelectedQuest == null) return;
 
-                SelectedQuest = Rows[0].Quest;
                 Reward.UpdateRewards(SelectedQuest);
                 UpdateSimpleDetail();
             }

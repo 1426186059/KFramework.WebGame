@@ -179,7 +179,8 @@ public enum QuestState : byte
 {
     Add,
     Update,
-    Remove
+    Remove,
+    Offered
 }
 
 public enum QuestAction : byte

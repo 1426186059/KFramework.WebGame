@@ -3089,7 +3089,8 @@ namespace Client.MirScenes
             switch (p.QuestState)
             {
                 case QuestState.Add:
-                    User.CurrentQuests.Add(p.Quest);
+                    if (!User.CurrentQuests.Any(q => q.Id == p.Quest.Id))
+                        User.CurrentQuests.Add(p.Quest);
 
                     foreach (ClientQuestProgress quest in User.CurrentQuests)
                         BindQuest(quest);
@@ -3133,9 +3134,32 @@ namespace Client.MirScenes
                         User.CurrentQuests.RemoveAt(i);
                     }
 
+                    for (int i = User.OfferedQuests.Count - 1; i >= 0; i--)
+                    {
+                        if (User.OfferedQuests[i].Id != p.Quest.Id) continue;
+
+                        User.OfferedQuests.RemoveAt(i);
+                    }
+
                     GameScene.Scene.QuestTrackingDialog.RemoveQuest(p.Quest);
 
                     break;
+
+                case QuestState.Offered:
+                {
+                    // 服务端在 S.ChangeQuest 中已按发放 NPC 解析好 StartNpcName；
+                    // BindQuest 会用本地 QuestInfoList 覆盖 QuestInfo，若本地条目缺 StartNpcName 则保留服务端下发的值。
+                    string serverStartNpc = p.Quest.QuestInfo != null ? p.Quest.QuestInfo.StartNpcName : string.Empty;
+                    BindQuest(p.Quest);
+                    if (string.IsNullOrEmpty(p.Quest.QuestInfo?.StartNpcName) && !string.IsNullOrEmpty(serverStartNpc))
+                        p.Quest.QuestInfo.StartNpcName = serverStartNpc;
+
+                    if (!User.OfferedQuests.Any(q => q.Id == p.Quest.Id))
+                        User.OfferedQuests.Add(p.Quest);
+
+                    GameScene.Scene.QuestTrackingDialog.DisplayQuests();
+                    break;
+                }
             }
 
             GameScene.Scene.QuestTrackingDialog.DisplayQuests();

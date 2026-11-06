@@ -125,10 +125,10 @@ namespace Client.MirScenes.Dialogs
 
             questsToTrack.AddRange(from quest in MapObject.User.CurrentQuests from id in TrackedQuestsIds.Where(id => quest.Id == id) select quest);
 
-            if (questsToTrack.Count < 1)
+            if (questsToTrack.Count < 1 && MapObject.User.OfferedQuests.Count < 1)
             {
                 // 无任务也常驻左上角显示（与原始传奇一致）：仅清空任务行，不隐藏整个面板。
-                Show();
+                SyncWithNpcPanels();
                 return;
             }
 
@@ -271,9 +271,61 @@ namespace Client.MirScenes.Dialogs
                 y += 30;
             }
 
+            // 已开放（未接取）任务：上方显示任务名，下方“寻找 NPC”可点击传送接取（参考原始传奇：先寻找NPC，再开面板）
+            if (MapObject.User.OfferedQuests.Count > 0 && questsToTrack.Count > 0)
+                y += 15;
+
+            foreach (ClientQuestProgress offered in MapObject.User.OfferedQuests)
+            {
+                if (offered.QuestInfo == null) continue;
+
+                // 任务名（与已接取任务同款样式）
+                _questNameLabel = new MirLabel
+                {
+                    Text = offered.QuestInfo.Name,
+                    AutoSize = true,
+                    BackColour = Color.Transparent,
+                    Font = QuestFont,
+                    ForeColour = Color.LimeGreen,
+                    Location = new Point(45, 20 + y),
+                    OutLine = true,
+                    NotControl = true,
+                    Parent = this,
+                    Visible = true,
+                };
+                TaskLines.Add(_questNameLabel);
+
+                y += 15;
+
+                // “寻找 NPC” 提示（可点击：传送并接取）
+                ClientQuestProgress q = offered;
+                string npcName = !string.IsNullOrEmpty(offered.QuestInfo.StartNpcName) ? offered.QuestInfo.StartNpcName : offered.QuestInfo.Name;
+                var offeredLabel = new MirLabel
+                {
+                    Text = "寻找 " + npcName,
+                    AutoSize = true,
+                    BackColour = Color.Transparent,
+                    Font = QuestFont,
+                    ForeColour = Color.Gold,
+                    Location = new Point(45, 25 + y),
+                    OutLine = true,
+                    UnderLine = true,
+                    Parent = this,
+                    Visible = true
+                };
+                offeredLabel.Click += (s, e) =>
+                {
+                    KFramework.MonoGame.PrintTool.Log($"offeredLabel.Click quest={q.Id}");
+                    Network.Enqueue(new AcceptQuest { QuestIndex = q.Id, Navigate = true });
+                };
+                TaskLines.Add(offeredLabel);
+
+                y += 30;
+            }
+
             //Size = new Size(150, 20 + y + 30);
 
-            Show();
+            SyncWithNpcPanels();
         }
 
         public void AddQuest(ClientQuestProgress quest, bool New = false)
@@ -308,6 +360,13 @@ namespace Client.MirScenes.Dialogs
             }
 
             Settings.SaveTrackedQuests(GameScene.User.Name);
+        }
+
+        // 与 NPC 面板联动：任一 NPC 面板（对话 NPCDialog / 任务面板 QuestListDialog）打开时隐藏跟踪面板，
+        // 两者都关闭时恢复显示。
+        public void SyncWithNpcPanels()
+        {
+            Visible = !(GameScene.Scene.NPCDialog.Visible || GameScene.Scene.QuestListDialog.Visible);
         }
 
     }

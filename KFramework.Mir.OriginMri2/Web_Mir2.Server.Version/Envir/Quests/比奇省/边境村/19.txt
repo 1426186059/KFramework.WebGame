@@ -26,5 +26,5 @@
 [@GoldReward]
 60
 
-// Pickup - 助手简 0 284 606
+// Pickup - 助手琳娜 0 284 606
 // Hand In - Captain_Jerald 0 320 476

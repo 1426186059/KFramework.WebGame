@@ -1956,7 +1956,7 @@ namespace Server.MirNetwork
         {
             if (Stage != GameStage.Game) return;
 
-            Player.AcceptQuest(p.QuestIndex); //p.NPCIndex,
+            Player.AcceptQuest(p.QuestIndex, p.Navigate); //p.NPCIndex,
         }
 
         private void FinishQuest(C.FinishQuest p)
