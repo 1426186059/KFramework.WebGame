@@ -1105,18 +1105,21 @@ namespace ClientPackets
         public uint MapIndex;
         public int X;
         public int Y;
+        public uint MonsterIndex;
 
         protected override void ReadPacket(BinaryReader reader)
         {
             MapIndex = reader.ReadUInt32();
             X = reader.ReadInt32();
             Y = reader.ReadInt32();
+            MonsterIndex = reader.ReadUInt32();
         }
         protected override void WritePacket(BinaryWriter writer)
         {
             writer.Write(MapIndex);
             writer.Write(X);
             writer.Write(Y);
+            writer.Write(MonsterIndex);
         }
     }
 

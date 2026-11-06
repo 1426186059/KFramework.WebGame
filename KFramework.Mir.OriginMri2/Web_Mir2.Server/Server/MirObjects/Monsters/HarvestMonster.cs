@@ -7,19 +7,34 @@ namespace Server.MirObjects.Monsters
     {
         protected short Quality;
         protected int RemainingSkinCount;
-
         private List<UserItem> _drops;
-
 
         protected internal HarvestMonster(MonsterInfo info)
             : base(info)
         {
             RemainingSkinCount = 2;
+
+            // 掉落肉类的收割怪（鹿/鸡/牛等）：改为击杀直接掉落，不再需要收割动作
+            //for (int i = 0; i < Info.Drops.Count; i++)
+            //{
+            //    if (Info.Drops[i]?.Item?.Type == ItemType.Meat)
+            //    {
+            //        _dropsMeat = true;
+            //        break;
+            //    }
+            //}
         }
 
-        protected override void Drop() { }
+        protected override void Drop()
+        {
+            base.Drop();
+        }
+
         public override bool Harvest(PlayerObject player)
         {
+            // 肉类收割怪已改为击杀掉落，禁用收割动作，避免重复获得
+            return false;
+
             if (RemainingSkinCount == 0)
             {
                 for (int i = _drops.Count - 1; i >= 0; i--)

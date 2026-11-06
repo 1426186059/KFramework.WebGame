@@ -1440,7 +1440,7 @@ namespace Server.MirNetwork
                 return;
             }
 
-            Player.TeleportToQuestTarget(p.MapIndex, p.X, p.Y);
+            Player.TeleportToQuestTarget(p.MapIndex, p.X, p.Y, p.MonsterIndex);
         }
 
         private void SearchMap(C.SearchMap p)

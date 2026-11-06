@@ -203,12 +203,13 @@ namespace Client.MirScenes.Dialogs
                             };
                             tgtLabel.Click += (s, e) =>
                             {
-                                KFramework.MonoGame.PrintTool.Log($"tgtLabel.Click map={tgt.MapIndex} x={tgt.X} y={tgt.Y}");
+                                KFramework.MonoGame.PrintTool.Log($"tgtLabel.Click map={tgt.MapIndex} x={tgt.X} y={tgt.Y} monster={tgt.MonsterIndex}");
                                 Network.Enqueue(new TeleportToQuestTarget
                                 {
                                     MapIndex = tgt.MapIndex,
                                     X = tgt.X,
-                                    Y = tgt.Y
+                                    Y = tgt.Y,
+                                    MonsterIndex = tgt.MonsterIndex
                                 });
                             };
                             TaskLines.Add(tgtLabel);
@@ -231,12 +232,13 @@ namespace Client.MirScenes.Dialogs
                         };
                         _questTaskLabel.Click += (s, e) =>
                         {
-                            KFramework.MonoGame.PrintTool.Log($"questTaskLabel.Click map={tgt.MapIndex} x={tgt.X} y={tgt.Y}");
+                            KFramework.MonoGame.PrintTool.Log($"questTaskLabel.Click map={tgt.MapIndex} x={tgt.X} y={tgt.Y} monster={tgt.MonsterIndex}");
                             Network.Enqueue(new TeleportToQuestTarget
                             {
                                 MapIndex = tgt.MapIndex,
                                 X = tgt.X,
-                                Y = tgt.Y
+                                Y = tgt.Y,
+                                MonsterIndex = tgt.MonsterIndex
                             });
                         };
                         TaskLines.Add(_questTaskLabel);

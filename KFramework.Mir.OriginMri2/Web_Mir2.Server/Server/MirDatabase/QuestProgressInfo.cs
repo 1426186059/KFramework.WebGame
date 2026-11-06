@@ -570,7 +570,8 @@ namespace Server.MirDatabase
                     Name = monster.GameName,
                     MapIndex = (uint)spawn.Map.Info.Index,
                     X = spawn.Info.Location.X,
-                    Y = spawn.Info.Location.Y
+                    Y = spawn.Info.Location.Y,
+                    MonsterIndex = (uint)monster.Index
                 };
             }
 
@@ -592,7 +593,8 @@ namespace Server.MirDatabase
                         Name = monster.GameName,
                         MapIndex = (uint)map.Info.Index,
                         X = spawn.Info.Location.X,
-                        Y = spawn.Info.Location.Y
+                        Y = spawn.Info.Location.Y,
+                        MonsterIndex = (uint)monster.Index
                     };
                 }
             }
@@ -643,13 +645,53 @@ namespace Server.MirDatabase
         private QuestTaskTarget MakeItemTarget()
         {
             // 收集任务：优先传送到“掉落该物品的怪物”（通常是本任务的击杀目标，例如杀稻草人掉姜茶），
-            // 没有击杀怪可参考、或该怪物无刷点信息时，退回交任务 NPC。
+            // 没有击杀怪可参考、或该怪物无刷点信息时，尝试反查“掉落本任务物品”的怪物（如收割鹿得肉），
+            // 仍找不到再退回交任务 NPC。
             if (KillTaskCount.Count > 0 && KillTaskCount[0].Info?.Monster != null)
             {
                 var t = MakeMonsterTarget(KillTaskCount[0].Info.Monster);
                 if (t != null) return t;
             }
+
+            var dropTarget = MakeDropSourceTarget();
+            if (dropTarget != null) return dropTarget;
+
             return MakeNPCTarget();
+        }
+
+        private QuestTaskTarget MakeDropSourceTarget()
+        {
+            // 反查“掉落本任务所需物品”的怪物，并传送到其刷点（例如收集鹿肉 → 鹿）。
+            // 覆盖纯收集类任务（无击杀任务，如收割鹿取肉）以及击杀目标无刷点时的退化场景。
+            if (ItemTaskCount == null || ItemTaskCount.Count == 0) return null;
+
+            foreach (var it in ItemTaskCount)
+            {
+                if (it?.Info?.Item == null) continue;
+                int itemIndex = it.Info.Item.Index;
+
+                for (int m = 0; m < Envir.MonsterInfoList.Count; m++)
+                {
+                    MonsterInfo monster = Envir.MonsterInfoList[m];
+                    if (monster?.Drops == null) continue;
+
+                    bool dropsItem = false;
+                    for (int d = 0; d < monster.Drops.Count; d++)
+                    {
+                        DropInfo drop = monster.Drops[d];
+                        if (drop?.Item != null && drop.Item.Index == itemIndex)
+                        {
+                            dropsItem = true;
+                            break;
+                        }
+                    }
+                    if (!dropsItem) continue;
+
+                    QuestTaskTarget t = MakeMonsterTarget(monster);
+                    if (t != null) return t;
+                }
+            }
+            return null;
         }
 
         #endregion

@@ -607,6 +607,7 @@ public class QuestTaskTarget
     public uint MapIndex;
     public int X;
     public int Y;
+    public uint MonsterIndex;   // 怪物类目标：怪物索引，传送时用于定位活体怪物落在旁边
 
     public QuestTaskTarget() { }
     public QuestTaskTarget(BinaryReader reader) { Read(reader); }
@@ -618,6 +619,7 @@ public class QuestTaskTarget
         MapIndex = reader.ReadUInt32();
         X = reader.ReadInt32();
         Y = reader.ReadInt32();
+        MonsterIndex = reader.ReadUInt32();
     }
     public void Save(BinaryWriter writer)
     {
@@ -626,6 +628,7 @@ public class QuestTaskTarget
         writer.Write(MapIndex);
         writer.Write(X);
         writer.Write(Y);
+        writer.Write(MonsterIndex);
     }
 }
 

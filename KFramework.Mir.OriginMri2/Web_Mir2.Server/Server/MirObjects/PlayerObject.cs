@@ -7711,9 +7711,9 @@ namespace Server.MirObjects
         /// 任务追踪栏“点击传送”：免费跨图传送到任务目标（怪物刷点 / NPC）周边。
         /// 仅当请求的坐标匹配玩家当前任务里某个未完成任务的目标时才放行，防止被滥用为任意坐标免费传送。
         /// </summary>
-        public void TeleportToQuestTarget(uint mapIndex, int x, int y)
+        public void TeleportToQuestTarget(uint mapIndex, int x, int y, uint monsterIndex = 0)
         {
-            MessageQueue.Enqueue($"[传送诊断] 收到 TeleportToQuestTarget map={mapIndex} x={x} y={y}");
+            MessageQueue.Enqueue($"[传送诊断] 收到 TeleportToQuestTarget map={mapIndex} x={x} y={y} monster={monsterIndex}");
 
             if (!HasQuestTarget(mapIndex, x, y))
             {
@@ -7729,6 +7729,18 @@ namespace Server.MirObjects
             }
 
             Point p = new Point(x, y);
+
+            // 怪物类目标：遍历怪物对象，传送到第一只活体怪物旁边，避免落在刷点却附近无怪
+            if (monsterIndex > 0)
+            {
+                Point? live = FindLiveMonsterSpot(map, monsterIndex);
+                if (live != null)
+                {
+                    MessageQueue.Enqueue($"[传送诊断] 找到活体怪物, 传送到 ({live.Value.X},{live.Value.Y})");
+                    p = live.Value;
+                }
+            }
+
             if (!map.ValidPoint(p))
             {
                 Point? near = FindNearbyValid(map, x, y);
@@ -7743,6 +7755,25 @@ namespace Server.MirObjects
 
             MessageQueue.Enqueue($"[传送诊断] 执行传送 -> map={mapIndex} ({p.X},{p.Y})");
             Teleport(map, p);
+        }
+
+        private Point? FindLiveMonsterSpot(Map map, uint monsterIndex)
+        {
+            // 遍历当前地图的全部怪物对象，传送到第一只匹配的活体怪物旁边
+            List<MapObject> monsters = Envir.GetObjects(map.Info.Index, ObjectType.Monster);
+            for (int i = 0; i < monsters.Count; i++)
+            {
+                MapObject ob = monsters[i];
+                if (ob == null || ob.Dead) continue;
+                MonsterObject mon = ob as MonsterObject;
+                if (mon == null || mon.Info == null || mon.Info.Index != (int)monsterIndex) continue;
+
+                // 传送到第一只活体怪物旁边（FindNearbyValid 从半径1开始，不会踩在怪物格上）
+                Point? spot = FindNearbyValid(map, mon.CurrentLocation.X, mon.CurrentLocation.Y);
+                if (spot != null) return spot;
+                return mon.CurrentLocation;
+            }
+            return null;
         }
 
         private bool HasQuestTarget(uint mapIndex, int x, int y)
