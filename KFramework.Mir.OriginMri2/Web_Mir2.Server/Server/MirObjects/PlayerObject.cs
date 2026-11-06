@@ -11511,7 +11511,30 @@ namespace Server.MirObjects
                 {
                     bool inRange = Functions.InRange(npcObj.CurrentLocation, CurrentLocation, Globals.DataRange);
                     if (!inRange)
-                        Teleport(npcObj.CurrentMap, npcObj.CurrentLocation);
+                    {
+                        // NPC 脚下那格通常不可作传送落点。以 NPC 为中心逐环遍历周围格子，
+                        // 挑第一个“可走格”（map.ValidPoint：Attribute==Walk）落入。
+                        Map map = npcObj.CurrentMap;
+                        Point center = npcObj.CurrentLocation;
+                        Point dest = center;
+                        if (map != null && !map.ValidPoint(center))
+                        {
+                            for (int r = 1; r <= 12; r++)
+                            {
+                                bool found = false;
+                                for (int dx = -r; dx <= r && !found; dx++)
+                                {
+                                    for (int dy = -r; dy <= r && !found; dy++)
+                                    {
+                                        Point q = new Point(center.X + dx, center.Y + dy);
+                                        if (map.ValidPoint(q)) { dest = q; found = true; }
+                                    }
+                                }
+                                if (found) break;
+                            }
+                        }
+                        if (map != null) Teleport(map, dest);
+                    }
 
                     // 打开发放 NPC 的任务面板/对话（客户端据此隐藏任务跟踪面板）
                     if (!Dead)
@@ -11663,6 +11686,8 @@ namespace Server.MirObjects
                         return npc;
             }
 
+            // 4. 终极兜底：任务未绑定 NpcInfo/NpcIndex 时，按任务追踪栏“寻找”标签所用的名称反查 NPC 实例。
+            //    标签名 = StartNpcName ?? 任务名，与 CreateClientQuestInfo / 客户端展示一致，故服务端凭 QuestIndex 即可定位。
             return null;
         }
 

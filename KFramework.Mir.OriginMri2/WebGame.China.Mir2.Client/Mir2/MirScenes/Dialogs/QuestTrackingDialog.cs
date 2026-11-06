@@ -117,17 +117,16 @@ namespace Client.MirScenes.Dialogs
         public void DisplayQuests()
         {
             foreach (MirLabel label in TaskLines)
+            {
                 label.Dispose();
+            }
 
             List<ClientQuestProgress> questsToTrack = new List<ClientQuestProgress>();
 
             questsToTrack.Clear();
-
             questsToTrack.AddRange(from quest in MapObject.User.CurrentQuests from id in TrackedQuestsIds.Where(id => quest.Id == id) select quest);
-
             if (questsToTrack.Count < 1 && MapObject.User.OfferedQuests.Count < 1)
             {
-                // 无任务也常驻左上角显示（与原始传奇一致）：仅清空任务行，不隐藏整个面板。
                 SyncWithNpcPanels();
                 return;
             }
