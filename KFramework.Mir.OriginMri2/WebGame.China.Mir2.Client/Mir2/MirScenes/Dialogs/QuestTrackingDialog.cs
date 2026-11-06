@@ -24,6 +24,7 @@ namespace Client.MirScenes.Dialogs
             Location = new Point(0, 50);
             AutoSize = false;
             Size = new Size(265, 188);
+            DrawImage = false;
             Texture = KDefaultRes.DefaultTexture2D;
 
             m_HideNode = new MirButton

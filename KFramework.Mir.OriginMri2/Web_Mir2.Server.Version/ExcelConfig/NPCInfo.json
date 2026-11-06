@@ -3,7 +3,7 @@
     "Index": 1,
     "FileName": "盟重/土城/传送员",
     "Name": "传送员",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 287,
       "Y": 615
@@ -34,7 +34,7 @@
     "Index": 2,
     "FileName": "比奇省/边境村/边境村告示",
     "Name": "边境村告示",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 284,
       "Y": 615
@@ -65,7 +65,7 @@
     "Index": 4,
     "FileName": "比奇省/边境村/工匠大娘",
     "Name": "工匠大娘",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 294,
       "Y": 619
@@ -96,7 +96,7 @@
     "Index": 5,
     "FileName": "比奇省/边境村/铁匠",
     "Name": "铁匠",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 296,
       "Y": 613
@@ -128,7 +128,7 @@
     "FileName": "比奇省/边境村/杂货商-阿强",
     "Name": "杂货商-阿强",
     "NameUI": "杂货商",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 292,
       "Y": 603
@@ -160,7 +160,7 @@
     "FileName": "比奇省/边境村/杂货商-张四",
     "Name": "杂货商-张四",
     "NameUI": "杂货商",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 305,
       "Y": 608
@@ -192,7 +192,7 @@
     "FileName": "比奇省/边境村/杂货商-老王",
     "Name": "杂货商-老王",
     "NameUI": "杂货商",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 288,
       "Y": 608
@@ -380,7 +380,7 @@
     "Index": 15,
     "FileName": "比奇省/水手",
     "Name": "水手",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 251,
       "Y": 677
@@ -411,7 +411,7 @@
     "Index": 16,
     "FileName": "比奇省/师傅",
     "Name": "师傅",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 110,
       "Y": 317
@@ -442,7 +442,7 @@
     "Index": 17,
     "FileName": "比奇省/大祭司",
     "Name": "大祭司",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 429,
       "Y": 475
@@ -473,7 +473,7 @@
     "Index": 18,
     "FileName": "比奇省/神兽",
     "Name": "神兽",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 428,
       "Y": 474
@@ -504,7 +504,7 @@
     "Index": 19,
     "FileName": "比奇省/刺客导师",
     "Name": "刺客导师",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 101,
       "Y": 411
@@ -535,7 +535,7 @@
     "Index": 20,
     "FileName": "比奇省/队长",
     "Name": "队长",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 320,
       "Y": 476
@@ -597,7 +597,7 @@
     "Index": 22,
     "FileName": "比奇省/比奇城/传送员",
     "Name": "传送员",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 292,
       "Y": 216
@@ -629,7 +629,7 @@
     "FileName": "比奇省/比奇城/传送员-张四",
     "Name": "传送员-张四",
     "NameUI": "传送员",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 291,
       "Y": 296
@@ -661,7 +661,7 @@
     "FileName": "比奇省/比奇城/传送员-小李",
     "Name": "传送员-小李",
     "NameUI": "传送员",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 371,
       "Y": 314
@@ -693,7 +693,7 @@
     "FileName": "比奇省/比奇城/杂货商-二狗",
     "Name": "杂货商-二狗",
     "NameUI": "杂货商",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 313,
       "Y": 271
@@ -755,7 +755,7 @@
     "Index": 27,
     "FileName": "比奇省/比奇城/铁匠",
     "Name": "铁匠",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 302,
       "Y": 221
@@ -786,7 +786,7 @@
     "Index": 28,
     "FileName": "比奇省/比奇城/药店老板",
     "Name": "药店老板",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 324,
       "Y": 291
@@ -881,7 +881,7 @@
     "FileName": "比奇省/比奇城/旅店老板-小李",
     "Name": "旅店老板-小李",
     "NameUI": "旅店老板",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 301,
       "Y": 257
@@ -944,7 +944,7 @@
     "FileName": "比奇省/比奇城/杂货商-小李",
     "Name": "杂货商-小李",
     "NameUI": "杂货商",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 374,
       "Y": 296
@@ -975,7 +975,7 @@
     "Index": 34,
     "FileName": "比奇省/比奇城/彩票管理员",
     "Name": "彩票管理员",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 298,
       "Y": 317
@@ -1006,7 +1006,7 @@
     "Index": 35,
     "FileName": "比奇省/比奇城/比奇城告示",
     "Name": "比奇城告示",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 334,
       "Y": 259
@@ -1037,7 +1037,7 @@
     "Index": 36,
     "FileName": "比奇省/比奇城/材料商人",
     "Name": "材料商人",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 303,
       "Y": 255
@@ -1068,7 +1068,7 @@
     "Index": 37,
     "FileName": "比奇省/比奇城/向导",
     "Name": "向导",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 328,
       "Y": 258
@@ -1099,7 +1099,7 @@
     "Index": 38,
     "FileName": "比奇省/比奇城/考核官",
     "Name": "考核官",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 340,
       "Y": 257
@@ -1130,7 +1130,7 @@
     "Index": 39,
     "FileName": "比奇省/比奇城/老渔夫",
     "Name": "老渔夫",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 341,
       "Y": 243
@@ -1161,7 +1161,7 @@
     "Index": 40,
     "FileName": "比奇省/比奇城/马夫",
     "Name": "马夫",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 353,
       "Y": 278
@@ -1192,7 +1192,7 @@
     "Index": 41,
     "FileName": "比奇省/比奇城/士兵",
     "Name": "士兵",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 337,
       "Y": 254
@@ -1223,7 +1223,7 @@
     "Index": 42,
     "FileName": "比奇省/比奇城/寄存商人",
     "Name": "寄存商人",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 267,
       "Y": 256
@@ -1254,7 +1254,7 @@
     "Index": 43,
     "FileName": "比奇省/比奇城/沙巴克商人",
     "Name": "沙巴克商人",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 335,
       "Y": 265
@@ -1569,7 +1569,7 @@
     "Index": 54,
     "FileName": "比奇省/比奇城/占领管理员",
     "Name": "占领管理员",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 343,
       "Y": 182
@@ -1600,7 +1600,7 @@
     "Index": 55,
     "FileName": "比奇省/比奇城/工匠大娘",
     "Name": "工匠大娘",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 321,
       "Y": 265
@@ -1631,7 +1631,7 @@
     "Index": 56,
     "FileName": "比奇省/比奇城/师傅",
     "Name": "师傅",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 338,
       "Y": 338
@@ -1725,7 +1725,7 @@
     "Index": 60,
     "FileName": "比奇省/比奇城/会员管理员",
     "Name": "会员管理员",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 328,
       "Y": 271
@@ -1787,7 +1787,7 @@
     "Index": 62,
     "FileName": "比奇省/比奇城/指挥官",
     "Name": "指挥官",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 345,
       "Y": 191
@@ -4519,7 +4519,7 @@
     "Index": 283,
     "FileName": "行商",
     "Name": "行商",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 287,
       "Y": 606
@@ -4550,7 +4550,7 @@
     "Index": 284,
     "FileName": "行商",
     "Name": "行商",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 325,
       "Y": 250
@@ -4861,7 +4861,7 @@
     "FileName": "比奇省/边境村/杂货商-阿三",
     "Name": "杂货商-阿三",
     "NameUI": "杂货商",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 291,
       "Y": 610
@@ -5017,7 +5017,7 @@
     "Index": 302,
     "FileName": "比奇省/边境村/材料商人",
     "Name": "材料商人",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 295,
       "Y": 605
@@ -5048,7 +5048,7 @@
     "Index": 303,
     "FileName": "比奇省/比奇城/卢克",
     "Name": "卢克",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 360,
       "Y": 231
@@ -7321,7 +7321,7 @@
     "Index": 386,
     "FileName": "比奇省/比奇城/约翰",
     "Name": "约翰",
-    "MapIndex": 1,
+    "MapIndex": 103,
     "Location": {
       "X": 362,
       "Y": 233
