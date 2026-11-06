@@ -11538,7 +11538,7 @@ namespace Server.MirObjects
 
                     // 打开发放 NPC 的任务面板/对话（客户端据此隐藏任务跟踪面板）
                     if (!Dead)
-                        CallNPC(npcObj.ObjectID, "@Main");
+                        CallNPC(npcObj.ObjectID, NPCScript.MainKey);
                 }
                 return;
             }
