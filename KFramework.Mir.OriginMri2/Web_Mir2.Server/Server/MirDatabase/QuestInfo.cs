@@ -5,6 +5,57 @@ using Server.MirEnvir;
 
 namespace Server.MirDatabase
 {
+    // 原始传奇任务内嵌配置：非 null 表示任务内容直接来自配置表，不走 Envir/Quests/*.txt。
+    public class QuestOriginSettings
+    {
+        public int OriginTaskId;
+        public string Source = "";
+
+        public int StartNpcId, FinishNpcId;
+        public string StartNpcName = "", FinishNpcName = "";
+        public int NextQuestId, RequiredQuestId;
+
+        public int TaskGroupId, OriginalType;
+        public string Condition = "", ConditionText = "";
+
+        public string Rewards = "", RewardText = "", Tip3 = "", CompleteInfo = "";
+
+        public int GoalId, GoalType, GoalCount, GoalMapId, GoalX, GoalY;
+        public string GoalInfo = "", GoalParams = "";
+        public bool GoalMultiTarget;
+
+        // 按 Index 精确引用，服务器启动时解析成 ItemInfo / MonsterInfo，避开按名字查找重名的问题。
+        public List<QuestOriginReward> FixedRewards = new List<QuestOriginReward>();
+        public List<QuestOriginKill> KillTasks = new List<QuestOriginKill>();
+
+        // 2config._task_tx 是同一套 id 的另一条任务线文本，按 id 合并为备选文本。
+        public QuestOriginAlternate Alternate;
+
+        public Dictionary<string, string> Raw = new Dictionary<string, string>();
+    }
+
+    public class QuestOriginReward
+    {
+        public int ItemIndex;
+        public uint Count;
+        public string ItemName = "";
+        public bool ItemResolved;
+    }
+
+    public class QuestOriginKill
+    {
+        public int MonsterIndex;
+        public int Count;
+        public string MonsterName = "";
+        public bool MonsterResolved;
+    }
+
+    public class QuestOriginAlternate
+    {
+        public string Name = "", Tip3 = "", RewardText = "", CompleteInfo = "", Rewards = "";
+        public int StartNpcId, FinishNpcId;
+    }
+
     public class QuestInfo
     {
         protected static Envir Envir
@@ -23,6 +74,9 @@ namespace Server.MirDatabase
         }
 
         public int Index;
+
+        // 旧表没有该字段（反序列化为 null），继续走 FileName 指向的 Envir/Quests/*.txt 脚本。
+        public QuestOriginSettings OriginSettings;
 
         // 发放（起始）NPC 索引。
         // 注意：此字段由发放 NPC 在加载其脚本 [Quests] 段时自动回填
@@ -141,6 +195,13 @@ namespace Server.MirDatabase
         {
             if (clear) ClearInfo();
 
+            // 内嵌配置的任务没有脚本文件，直接从配置表按 Index 解析引用，避免刷 File Not Found。
+            if (OriginSettings != null)
+            {
+                LoadFromOrigin();
+                return;
+            }
+
             if (!Directory.Exists(Settings.QuestPath)) return;
 
             string fileName = Path.Combine(Settings.QuestPath, FileName + ".txt");
@@ -167,6 +228,69 @@ namespace Server.MirDatabase
             ExpReward = 0;
             GoldReward = 0;
             CreditReward = 0;
+        }
+
+        // 把内嵌配置展开成运行时对象：文本段落 + 按 Index 解析的物品奖励/击杀目标。
+        // GoldReward / ExpReward 已由转换器从伪道具（499 金币 / 4 经验）算好并写进 JSON，这里不再改动。
+        public void LoadFromOrigin()
+        {
+            var o = OriginSettings;
+            if (o == null) return;
+
+            Description.Clear();
+            TaskDescription.Clear();
+            ReturnDescription.Clear();
+            CompletionDescription.Clear();
+            PlayerTaskTalk.Clear();
+            FixedRewards.Clear();
+            KillTasks.Clear();
+
+            AddLines(Description, o.Tip3);
+            AddLines(TaskDescription, o.GoalInfo.Length > 0 ? o.GoalInfo : o.CompleteInfo);
+            AddLines(ReturnDescription, o.CompleteInfo);
+
+            string[] rewardParts = o.RewardText.Split('#', 2);
+            AddLines(CompletionDescription, rewardParts[0]);
+            if (rewardParts.Length > 1) AddLines(PlayerTaskTalk, rewardParts[1]);
+
+            GotoMessage = o.CompleteInfo.Length > 0 ? o.CompleteInfo : o.GoalInfo;
+
+            if (o.FixedRewards != null)
+            {
+                foreach (var r in o.FixedRewards)
+                {
+                    ItemInfo item = Envir.GetItemInfo(r.ItemIndex);
+                    if (item == null) continue;
+
+                    FixedRewards.Add(new QuestItemReward
+                    {
+                        Item = item,
+                        Count = (ushort)Math.Min(r.Count, ushort.MaxValue)
+                    });
+                }
+            }
+
+            if (o.KillTasks != null)
+            {
+                foreach (var k in o.KillTasks)
+                {
+                    MonsterInfo monster = Envir.GetMonsterInfo(k.MonsterIndex);
+                    if (monster == null) continue;
+
+                    KillTasks.Add(new QuestKillTask { Monster = monster, Count = k.Count, Message = "" });
+                }
+            }
+        }
+
+        private static void AddLines(List<string> target, string text)
+        {
+            if (string.IsNullOrEmpty(text)) return;
+
+            foreach (var line in text.Split('\n'))
+            {
+                string t = line.Trim();
+                if (t.Length > 0) target.Add(t);
+            }
         }
 
         public void ParseFile(List<string> lines)
@@ -410,6 +534,12 @@ namespace Server.MirDatabase
             // 发放 NPC：优先用已链接的 info.NpcInfo（NPCScript.ParseQuests 在 NPC 生成时填入），兜底按 NpcIndex 配置索引反查。
             var startNpc = NpcInfo ?? Envir.Main.NPCInfoList.FirstOrDefault(n => n.Index == (int)NpcIndex);
             var finishNpc = Envir.Main.NPCInfoList.FirstOrDefault(n => n.Index == (int)FinishNpcIndex);
+
+            // 内嵌配置任务还没被 NPC 脚本绑定时，按 OriginSettings 里的 NPC id 兜底显示名字。
+            if (startNpc == null && OriginSettings != null)
+                startNpc = Envir.Main.NPCInfoList.FirstOrDefault(n => n.Index == OriginSettings.StartNpcId);
+            if (finishNpc == null && OriginSettings != null)
+                finishNpc = Envir.Main.NPCInfoList.FirstOrDefault(n => n.Index == OriginSettings.FinishNpcId);
 
             // 客户端按“运行时世界唯一索引(ObjectID)”匹配 NPC（NPCObject.Quests / GetAvailableQuests 用 NPCIndex == ObjectID），
             // 故把配置索引解析成对应 NPC 实例的 ObjectID 下发；取不到运行时实例则回退配置索引（仍能显示名字）。

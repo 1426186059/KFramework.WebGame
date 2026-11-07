@@ -62,12 +62,35 @@ namespace Server.MirObjects
         {
             // NPC 脚本文件名必须与配置表里的 Name 一致，否则直接打印错误
             string scriptName = System.IO.Path.GetFileNameWithoutExtension(Info.FileName);
-            if (!string.Equals(scriptName, Info.Name, StringComparison.Ordinal))
+            if (Info.OriginSettings == null && !string.Equals(scriptName, Info.Name, StringComparison.Ordinal))
                 MessageQueue.Enqueue($"[NPC脚本] 文件名与配置名字不匹配: NPC='{Info.Name}' 脚本='{Info.FileName}'");
+
+            // 内嵌配置的 NPC 没有 [Quests] 脚本段，按 OriginSettings 的 fnpc/tnpc 直接绑定任务实例。
+            if (Info.OriginSettings != null)
+                BindOriginQuests();
 
             var script = NPCScript.GetOrAdd(ObjectID, Info.FileName, NPCScriptType.Normal);
 
             ScriptID = script.ScriptID;
+        }
+
+        private void BindOriginQuests()
+        {
+            foreach (var quest in Envir.QuestInfoList)
+            {
+                var o = quest.OriginSettings;
+                if (o == null) continue;
+
+                if (o.StartNpcId == Info.Index)
+                {
+                    quest.NpcIndex = ObjectID;
+                    quest.NpcInfo = Info;
+                    if (!Quests.Contains(quest)) Quests.Add(quest);
+                }
+
+                if (o.FinishNpcId == Info.Index)
+                    quest.FinishNpcIndex = ObjectID;
+            }
         }
 
         public void ProcessGoods(bool clear = false)

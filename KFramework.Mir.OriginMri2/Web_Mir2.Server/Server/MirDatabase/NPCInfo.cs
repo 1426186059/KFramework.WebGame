@@ -3,6 +3,25 @@ using Server.MirEnvir;
 
 namespace Server.MirDatabase
 {
+    // 原始传奇 NPC 内嵌配置：非 null 表示对话/功能数据直接来自配置表，不走 Envir/NPCs/*.txt。
+    public class NPCOriginSettings
+    {
+        public int OriginNpcId;
+        public string Title = "", Depiction = "", Button = "", Function = "", Deliver = "";
+        public int StoreId;
+        public string OpenCondition = "", ShowCondition = "", Tips = "";
+        public List<NPCPlacement> Placements = new();
+        public Dictionary<string, string> Raw = new();
+    }
+
+    public class NPCPlacement
+    {
+        public int MapId;
+        public int X;
+        public int Y;
+        public bool MapResolved;
+    }
+
     public class NPCInfo
     {
         protected static Envir EditEnvir
@@ -43,6 +62,9 @@ namespace Server.MirDatabase
         // 即：NPCInfo 是“谁发放/谁交付某任务”的权威来源，QuestInfo.NpcIndex 由这里自动推导，无需在 QuestInfo 中手动维护。
         public List<int> CollectQuestIndexes = new List<int>();
         public List<int> FinishQuestIndexes = new List<int>();
+
+        // 旧表没有该字段（反序列化为 null），继续走 FileName 指向的脚本。
+        public NPCOriginSettings OriginSettings;
 
         public NPCInfo() { }
         public NPCInfo(BinaryReader reader)

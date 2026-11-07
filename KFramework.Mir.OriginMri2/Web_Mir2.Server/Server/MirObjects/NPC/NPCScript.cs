@@ -137,6 +137,9 @@ namespace Server.MirObjects
         {
             ClearInfo();
 
+            // 内嵌配置的 NPC 没有脚本文件，直接跳过，避免刷 Script Not Found。
+            if (string.IsNullOrEmpty(FileName)) return;
+
             if (!Directory.Exists(Settings.NPCPath)) return;
 
             string fileName = Path.Combine(Settings.NPCPath, FileName + ".txt");
