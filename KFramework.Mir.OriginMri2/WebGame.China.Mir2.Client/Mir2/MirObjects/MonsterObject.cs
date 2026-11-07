@@ -45,10 +45,13 @@ namespace Client.MirObjects
         }
 
         public Monster BaseImage;
-        // 换表后服务端下发的 Image 是原始传奇页游的 model 号（普遍 4000+），与客户端 .Lib 怪物图集
-        // 编号不同源；Load / Draw / Effects 里有 20 多处 Libraries.Monsters[(ushort)BaseImage] 裸索引，
-        // 越界会抛 IndexOutOfRange 并终止主循环。这里统一回退到 Guard，后续接入怪物资源映射再撤销。
-        private static bool _imageOutOfRangeLogged;
+
+        /// <summary>
+        /// 非零 = 本怪走原始传奇 CDN 独立图集：值是服务器 MonsterInfo.Image（页游 model 号）。
+        /// 该编号与 Crystal 的 Monster 枚举完全不同源，旧的 .Lib switch 分支必须整段跳过。
+        /// </summary>
+        private int _originModel;
+        private static bool _originImageLogged;
         public byte Effect;
         public bool Skeleton;
 
@@ -82,16 +85,16 @@ namespace Client.MirObjects
             NameColour = info.NameColour;
             BaseImage = info.Image;
 
-            // 怪物图集槽位固定 1024，服务端下发的 model 号可能远大于它。
-            // 归一化成有效索引，避免后面 Libraries.Monsters[(ushort)BaseImage] 越界终止主循环。
-            if ((ushort)BaseImage >= Libraries.Monsters.Length)
+            // 服务器下发的 Image 是原始传奇页游 model 号（1083~65535），不是 Crystal .Lib 图集编号。
+            // 保留原值，改由 Mir2OriginObjectLibrary 按 model/动作/方向加载 CDN 独立图集；
+            // 旧的 .Lib switch（含 Gates/Pets/Siege 等基于旧枚举的分支）整段跳过，避免误命中越界。
+            _originModel = (int)info.Image;
+            Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel,
+                                            Mir2OriginObjectLibrary.ActionStand, 0);
+            if (_originModel >= Libraries.Monsters.Length && !_originImageLogged)
             {
-                if (!_imageOutOfRangeLogged)
-                {
-                    _imageOutOfRangeLogged = true;
-                    CMain.SaveError($"[怪物] Image={(ushort)info.Image} 超出客户端怪物库容量 {Libraries.Monsters.Length}，已回退到 Guard；原始传奇 model 号需另做资源映射。");
-                }
-                BaseImage = Monster.Guard;
+                _originImageLogged = true;
+                CMain.SaveError($"[怪物] model={_originModel} 非 .Lib 图集号，已切换到原始传奇 CDN 独立图集。");
             }
 
             OldNameColor = NameColour;
@@ -164,7 +167,12 @@ namespace Client.MirObjects
             Stage = info.ExtraByte;
 
             //Library
-            switch (BaseImage)
+            if (_originModel > 0)
+            {
+                // 原始传奇 model 号：占位库仅用于满足 BodyLibrary 非空，实际绘制在 Draw() 里走 CDN。
+                BodyLibrary = Libraries.Monsters[0];
+            }
+            else switch (BaseImage)
             {
                 case Monster.EvilMir:
                 case Monster.DragonStatue:
@@ -4317,6 +4325,23 @@ namespace Client.MirObjects
 
             bool oldGrayScale = DXManager.GrayScale;
             Color drawColour = ApplyDrawColour();
+
+            // 原始传奇 CDN 独立图集优先：model 号直接来自服务器 MonsterInfo.Image，
+            // 动作/方向按 2config.modelInfo + DirectionType 映射。资源未就绪（首次进图的异步下载窗口）
+            // 时才回落到 .Lib 占位库，不会崩，也不会每帧重复发起请求。
+            if (_originModel > 0)
+            {
+                int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
+                int dir = Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.DefaultTotalDir, (int)Direction);
+                Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel, action, dir);
+                if (Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Monster, _originModel, action, dir,
+                                                         FrameIndex, DrawLocation.X, DrawLocation.Y, drawColour))
+                {
+                    DXManager.SetGrayscale(oldGrayScale);
+                    DXManager.SetOpacity(oldOpacity);
+                    return;
+                }
+            }
 
             if (!DXManager.Blending && Frame.Blend)
                 BodyLibrary.DrawBlend(DrawFrame, DrawLocation, drawColour, true);

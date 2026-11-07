@@ -27,6 +27,9 @@ namespace Client.MirObjects
         public ushort Image;
         public Color Colour = Color.White;
 
+        /// <summary>非零 = NPCInfo.Image 是原始传奇 model 号，走 Mir2OriginObjectLibrary 的独立图集。</summary>
+        private int _originModel;
+
         public QuestIcon QuestIcon = QuestIcon.None;
 
         private bool _canChangeDir = true;
@@ -62,6 +65,14 @@ namespace Client.MirObjects
 
             Image = info.Image;
             Colour = info.Colour;
+
+            // 换成原始传奇 NPC 表后 Image 就是页游 model 号（如 医师=1078）；旧表只有 0~185，
+            // 用 1000 作阈值区分，两套表都能安全运行，CDN 资源就绪后自动生效。
+            _originModel = info.Image >= 1000 ? (int)info.Image : 0;
+            if (_originModel > 0)
+                Mir2OriginObjectLibrary.Request(Mir2ObjectKind.NPC, _originModel,
+                                                Mir2OriginObjectLibrary.ActionStand,
+                                                Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.NPCTotalDir, 0));
 
             LoadLibrary();
 
@@ -300,13 +311,27 @@ namespace Client.MirObjects
         }
         public override void Draw()
         {
-            if (BodyLibrary == null) return;
+            // 换表后 Image 是原始传奇 model 号（1000+），与 .Lib 图集无关，LoadLibrary 常常返回 null。
+            // 因此 CDN 分支必须先于 BodyLibrary 判空执行，否则 NPC 会整个不画。
+            // 2config.modelInfo 里 NPC 待机动作 totaldir=1，方向一律折叠到 NONE(=4)。
+            bool drawnByCdn = false;
+            if (_originModel > 0)
+            {
+                int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
+                int dir = Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.NPCTotalDir, (int)Direction);
+                Mir2OriginObjectLibrary.Request(Mir2ObjectKind.NPC, _originModel, action, dir);
+                drawnByCdn = Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.NPC, _originModel, action, dir,
+                                                                   FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour);
+            }
 
-            //BodyLibrary.Draw(DrawFrame, DrawLocation, DrawColour, true);
-
-            BodyLibrary.DrawTinted(DrawFrame, DrawLocation, DrawColour, Colour, true);
+            if (!drawnByCdn)
+            {
+                if (BodyLibrary == null) return;
+                BodyLibrary.DrawTinted(DrawFrame, DrawLocation, DrawColour, Colour, true);
+            }
 
             if (QuestIcon == QuestIcon.None) return;
+            if (BodyLibrary == null) return;
 
             var offSet = BodyLibrary.GetOffSet(BaseIndex);
             var size = BodyLibrary.GetSize(BaseIndex);

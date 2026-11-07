@@ -2441,6 +2441,16 @@ namespace Client.MirControls
             return true;
         }
 
+        // 物品图标统一走 Mir2OriginObjectLibrary：ItemInfo.Image 是原始传奇 1config.item 的 col19
+        // 图标号，对应 assets/resource/{版本}/icon/tool/{图标号}.png。资源未就绪时回落到 .Lib 图集。
+        private bool DrawOriginItem(uint iconId, Point drawAt, KFramework.MonoGame.Color colour)
+        {
+            int id = (int)iconId;
+            Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Item, id);
+            return Mir2OriginObjectLibrary.DrawSpriteAt(Mir2ObjectKind.Item, id, 0, 0, 0,
+                                                         drawAt.X, drawAt.Y, colour);
+        }
+
         protected internal override void DrawControl()
         {
             if (Item != null && GameScene.SelectedCell != this && Locked != true)
@@ -2460,7 +2470,8 @@ namespace Client.MirControls
                         Libraries.Prguse.Draw(1121, DisplayLocation.Add(new Point(-2, -1)), Color.White, UseOffSet, 0.8F);
                     }
 
-                    Library.Draw(image, DisplayLocation.Add(offSet), ForeColour, UseOffSet, 1F);
+                    if (!DrawOriginItem(Item.Info.Image, DisplayLocation.Add(offSet), ForeColour))
+                        Library.Draw(image, DisplayLocation.Add(offSet), ForeColour, UseOffSet, 1F);
 
                     if (Item.SealedInfo != null && Item.SealedInfo.ExpiryDate > CMain.Now)
                     {
@@ -2480,7 +2491,8 @@ namespace Client.MirControls
 
                     Point offSet = new Point((Size.Width - imgSize.Width) / 2, (Size.Height - imgSize.Height) / 2);
 
-                    Library.Draw(image, DisplayLocation.Add(offSet), Color.DimGray, UseOffSet, 0.8F);
+                    if (!DrawOriginItem(Item.Info.Image, DisplayLocation.Add(offSet), Color.DimGray))
+                        Library.Draw(image, DisplayLocation.Add(offSet), Color.DimGray, UseOffSet, 0.8F);
                 }
             }
             else if (ShadowItem != null)
@@ -2500,7 +2512,8 @@ namespace Client.MirControls
                         Libraries.Prguse.Draw(1121, DisplayLocation.Add(new Point(-2, -1)), Color.White, UseOffSet, 0.8F);
                     }
 
-                    Library.Draw(image, DisplayLocation.Add(offSet), Color.DimGray, UseOffSet, 0.8F);
+                    if (!DrawOriginItem(ShadowItem.Info.Image, DisplayLocation.Add(offSet), Color.DimGray))
+                        Library.Draw(image, DisplayLocation.Add(offSet), Color.DimGray, UseOffSet, 0.8F);
                 }
             }
             else

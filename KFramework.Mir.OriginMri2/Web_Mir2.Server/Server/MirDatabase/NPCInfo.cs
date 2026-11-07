@@ -67,6 +67,19 @@ namespace Server.MirDatabase
         public NPCOriginSettings OriginSettings;
 
         public NPCInfo() { }
+
+        /// <summary>
+        /// 按 mapnpc 表的一个摆放点生成浅拷贝：共享静态配置（名字 / model / OriginSettings / 任务），
+        /// 只覆盖 Location，使同一个 NPC 定义能在多张地图、多个坐标各生成一个实例。
+        /// 仅运行时使用，不写回配置表。
+        /// </summary>
+        public NPCInfo CloneAt(int x, int y)
+        {
+            var copy = (NPCInfo)MemberwiseClone();
+            copy.Location = new Point(x, y);
+            return copy;
+        }
+
         public NPCInfo(BinaryReader reader)
         {
             Index = reader.ReadInt32();

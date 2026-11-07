@@ -118,6 +118,9 @@ namespace Server.MirEnvir
         public List<MonsterInfo> MonsterInfoList = new List<MonsterInfo>();
         public List<MagicInfo> MagicInfoList = new List<MagicInfo>();
         public List<NPCInfo> NPCInfoList = new List<NPCInfo>();
+
+        /// <summary>mapnpc 表：NPC id → 全部摆放点。由 LoadMapNpcPlacements 从 5config 分片读取。</summary>
+        public Dictionary<int, List<NPCPlacement>> MapNpcPlacements = new Dictionary<int, List<NPCPlacement>>();
         public DragonInfo DragonInfo = new DragonInfo();
         public List<QuestInfo> QuestInfoList = new List<QuestInfo>();
         public List<GameShopItem> GameShopList = new List<GameShopItem>();
@@ -2800,6 +2803,8 @@ namespace Server.MirEnvir
                 NPCInfoList = LoadConfigList<NPCInfo>(baseDir, "NPCInfo.json");
                 // NameUI 为空时默认等于 Name（界面显示名），需显式配置的（重名 NPC）以配置为准。
                 foreach (var npc in NPCInfoList) if (string.IsNullOrEmpty(npc.NameUI)) npc.NameUI = npc.Name;
+                // 地图 NPC 摆放直接读 5config 分片的 mapnpc 表（权威源），不依赖单条 MapIndex/Location。
+                LoadMapNpcPlacements(baseDir);
                 QuestInfoList = LoadConfigList<QuestInfo>(baseDir, "QuestInfo.json");
                 // JSON 反序列化走无参构造函数，不会触发 QuestInfo.LoadInfo()，
                 // 需手动读取 FileName 指向的 .txt，填充 Description/任务/奖励等。
@@ -2838,6 +2843,68 @@ namespace Server.MirEnvir
                     Main.BindGameShop(GameShopList[i]);
             }
             Settings.LinkGuildCreationItems(ItemInfoList);
+        }
+
+        /// <summary>
+        /// 地图 NPC 摆放读原始传奇 5config 分片的 mapnpc 表（权威源，键是 npc.id = NPCInfo.Index）。
+        /// 分片不存在或解析失败时回退到 NPCInfo.OriginSettings.Placements（构建期转换器内嵌的同源数据）。
+        /// MapInfo.CreateMap 会按 MapId 把每个摆放点挂到对应地图，一个 NPC 定义可生成多个实例。
+        /// </summary>
+        private void LoadMapNpcPlacements(string baseDir)
+        {
+            MapNpcPlacements.Clear();
+            string path = Directory.GetFiles(baseDir, "5config*.json").FirstOrDefault();
+
+            if (path != null)
+            {
+                try
+                {
+                    using var doc = JsonDocument.Parse(File.ReadAllText(path).TrimStart('\uFEFF'));
+                    if (doc.RootElement.TryGetProperty("mapnpc", out var table) && table.ValueKind == JsonValueKind.Object)
+                    {
+                        foreach (var entry in table.EnumerateObject())
+                        {
+                            var o = entry.Value;
+                            int npcId = ReadConfigInt(o, "npcid");
+                            if (npcId <= 0) continue;
+                            int mapId = ReadConfigInt(o, "mapid");
+                            int x = ReadConfigInt(o, "x");
+                            int y = ReadConfigInt(o, "y");
+
+                            if (!MapNpcPlacements.TryGetValue(npcId, out var list))
+                            {
+                                list = new List<NPCPlacement>();
+                                MapNpcPlacements[npcId] = list;
+                            }
+                            list.Add(new NPCPlacement { MapId = mapId, X = x, Y = y, MapResolved = mapId > 0 });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageQueue.Enqueue($"mapnpc 表读取失败，改用 NPCInfo 内嵌摆放点: {ex.Message}");
+                    MapNpcPlacements.Clear();
+                }
+            }
+
+            if (MapNpcPlacements.Count == 0)
+            {
+                foreach (var npc in NPCInfoList)
+                    if (npc.OriginSettings?.Placements != null && npc.OriginSettings.Placements.Count > 0)
+                        MapNpcPlacements[npc.Index] = npc.OriginSettings.Placements;
+            }
+
+            MessageQueue.Enqueue($"mapnpc 摆放点: {MapNpcPlacements.Sum(kv => kv.Value.Count)} 处 / {MapNpcPlacements.Count} 个 NPC" +
+                                 (path != null ? $"（{Path.GetFileName(path)}）" : "（NPCInfo 内嵌回退）"));
+        }
+
+        // 配置分片里的数值既可能是 JSON 数字也可能是数字字符串，两种都要兼容。
+        private static int ReadConfigInt(JsonElement o, string name)
+        {
+            if (!o.TryGetProperty(name, out var v)) return 0;
+            if (v.ValueKind == JsonValueKind.Number && v.TryGetInt32(out int n)) return n;
+            if (v.ValueKind == JsonValueKind.String && int.TryParse(v.GetString(), out int s)) return s;
+            return 0;
         }
 
         private T LoadConfig<T>(string baseDir, string fileName) where T : class

@@ -198,9 +198,22 @@ namespace Server.MirDatabase
         {
             for (int j = 0; j < Envir.NPCInfoList.Count; j++)
             {
-                if (Envir.NPCInfoList[j].MapIndex != Index) continue;
+                NPCInfo npc = Envir.NPCInfoList[j];
 
-                NPCs.Add(Envir.NPCInfoList[j]);
+                // 原始传奇 NPC：摆放点以 5config.mapnpc 表为准，一个定义可落在多张地图 / 多个坐标。
+                // 内嵌配置（OriginSettings）没有摆放点时，才退回旧的单个 MapIndex + Location。
+                if (Envir.MapNpcPlacements.TryGetValue(npc.Index, out var placements) && placements.Count > 0)
+                {
+                    for (int p = 0; p < placements.Count; p++)
+                    {
+                        if (placements[p].MapId != Index) continue;
+                        NPCs.Add(npc.CloneAt(placements[p].X, placements[p].Y));
+                    }
+                    continue;
+                }
+
+                if (npc.MapIndex != Index) continue;
+                NPCs.Add(npc);
             }
 
             Map map = new Map(this);

@@ -184,6 +184,10 @@ namespace Server.MirObjects
         {
             var loadedNPC = NPCObject.Get(LoadedObjectID);
 
+            // 原始传奇内嵌配置 NPC（Index 复用旧表 1..840）不读旧的 Goods/*.msd 商店存档，
+            // 否则会把旧表 NPC 的回购/寄售数据串到同名不同人的 NPC 上。
+            if (loadedNPC?.Info?.OriginSettings != null) return;
+
             if (loadedNPC != null)
             {
                 loadedNPC.UsedGoods.Clear();
