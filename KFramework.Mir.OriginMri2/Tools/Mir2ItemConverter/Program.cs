@@ -88,7 +88,7 @@ public static class Program
     public static int Main(string[] args)
     {
         string input = @"C:\Users\Administrator\Downloads\Mir2Config\Json\item.json";
-        string output = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Web_Mir2.Server.Version\ExcelConfig\ItemInfo.fromOriginal.json";
+        string output = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Tools\原始传奇-资源提取\migration-preview\ItemInfo.fromOriginal.json";
         // 属性来源已由客户端 JS 核实为 col40，默认开启；--no-stats 可回到空属性。
         bool withStats = true;
         string? attrsPath = null;

@@ -5387,18 +5387,32 @@ namespace Server.MirEnvir
 
         public void ReloadDrops()
         {
+            int configDrops = 0, scriptDrops = 0;
             for (var i = 0; i < MonsterInfoList.Count; i++)
             {
-                string path = Path.Combine(Settings.DropPath, MonsterInfoList[i].Name + ".txt");
+                var monster = MonsterInfoList[i];
+                monster.Drops.Clear();
 
-                if (!string.IsNullOrEmpty(MonsterInfoList[i].DropPath))
+                if (monster.DropSettings != null)
                 {
-                    path = Path.Combine(Settings.DropPath, MonsterInfoList[i].DropPath + ".txt");
+                    foreach (var setting in monster.DropSettings)
+                    {
+                        var drop = DropInfo.FromSetting(setting);
+                        if (drop != null) monster.Drops.Add(drop);
+                    }
+                    configDrops++;
+                    continue;
                 }
 
-                MonsterInfoList[i].Drops.Clear();
+                string path = Path.Combine(Settings.DropPath, monster.Name + ".txt");
 
-                DropInfo.Load(MonsterInfoList[i].Drops, MonsterInfoList[i].Name, path, 0, true);
+                if (!string.IsNullOrEmpty(monster.DropPath))
+                {
+                    path = Path.Combine(Settings.DropPath, monster.DropPath + ".txt");
+                }
+
+                DropInfo.Load(monster.Drops, monster.Name, path, 0, true);
+                scriptDrops++;
             }
 
             FishingDrops.Clear();
@@ -5419,7 +5433,7 @@ namespace Server.MirEnvir
             BlackstoneDrops.Clear();
             DropInfo.Load(BlackstoneDrops, "Blackstone", Path.Combine(Settings.DropPath, Settings.BlackstoneDropFilename + ".txt"));
 
-            MessageQueue.Enqueue("Drops Loaded.");
+            MessageQueue.Enqueue($"Drops Loaded. (配置表 {configDrops} / 脚本 {scriptDrops})");
         }
 
         public void ReloadLineMessages()

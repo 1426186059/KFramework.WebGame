@@ -436,3 +436,6 @@ FodyWeavers.xsd
 # 由工具产生、体积大，不入库）
 Mir2Res/
 .ai/
+
+# 原始传奇配置迁移：转换器生成的预览表/报告/备份，体积大且不入库
+Tools/原始传奇-资源提取/migration-preview/

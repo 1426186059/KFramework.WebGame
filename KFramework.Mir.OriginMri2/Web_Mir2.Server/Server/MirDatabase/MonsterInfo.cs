@@ -34,6 +34,10 @@ namespace Server.MirDatabase
 
         public string DropPath = "";
         
+        // 配置表里出现 DropSettings 字段（哪怕是空数组）就完全走配置表掉落；
+        // 旧表没有该字段，反序列化后为 null，继续走 Drops/*.txt 脚本。
+        public List<MonsterDropSetting> DropSettings;
+
         public List<DropInfo> Drops = new List<DropInfo>();
 
         public bool CanTame = true, CanPush = true, AutoRev = true, Undead = false;
@@ -305,6 +309,20 @@ namespace Server.MirDatabase
         public bool First;
     }
 
+    // 怪物表内嵌掉落配置：Chance 为 1/N；ItemIndexes 非空时表示一组候选，
+    // Random=true 从组内随机掉 1 件（对应旧脚本的 GROUP*）。
+    public class MonsterDropSetting
+    {
+        public int Chance = 1;
+        public int ItemIndex;
+        public uint Gold;
+        public bool QuestRequired;
+        public byte Type;
+        public bool Random;
+        public bool First;
+        public List<int> ItemIndexes = new List<int>();
+    }
+
     public class DropInfo
     {
         protected static Envir Envir
@@ -325,6 +343,48 @@ namespace Server.MirDatabase
         public byte Type;
         public bool QuestRequired;
 
+        public static DropInfo FromSetting(MonsterDropSetting setting)
+        {
+            if (setting == null) return null;
+
+            var info = new DropInfo
+            {
+                Chance = setting.Chance > 0 ? setting.Chance : 1,
+                Gold = setting.Gold,
+                QuestRequired = setting.QuestRequired,
+                Type = setting.Type
+            };
+
+            if (setting.ItemIndex > 0)
+            {
+                info.Item = Envir.GetItemInfo(setting.ItemIndex);
+                if (info.Item == null)
+                {
+                    MessageQueue.Enqueue($"Could not find Item(Index): {setting.ItemIndex}");
+                    return null;
+                }
+            }
+
+            if (setting.ItemIndexes != null && setting.ItemIndexes.Count > 0)
+            {
+                info.GroupedDrop = new GroupDropInfo { Random = setting.Random, First = setting.First };
+                foreach (int index in setting.ItemIndexes)
+                {
+                    var item = Envir.GetItemInfo(index);
+                    if (item == null)
+                    {
+                        MessageQueue.Enqueue($"Could not find Item(Index): {index}");
+                        continue;
+                    }
+                    info.GroupedDrop.Add(new DropInfo { Chance = 1, Item = item });
+                }
+                if (info.GroupedDrop.Count == 0) info.GroupedDrop = null;
+            }
+
+            if (info.Item == null && info.Gold == 0 && info.GroupedDrop == null) return null;
+            return info;
+        }
+
         public static DropInfo FromLine(string s)
         {
             string[] parts = s.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
@@ -342,6 +402,18 @@ namespace Server.MirDatabase
             {
                 if (parts.Length < 3) return null;
                 if (!uint.TryParse(parts[2], out info.Gold) || info.Gold == 0) return null;
+            }
+            else if (parts[1].Length > 1 && parts[1][0] == '@' &&
+                     int.TryParse(parts[1].Substring(1), out int itemIndex))
+            {
+                // 构建期转换器按原始传奇 itemId 引用物品，避免同名物品解析到错误 Index。
+                info.Item = Envir.GetItemInfo(itemIndex);
+                if (info.Item == null) return null;
+
+                if (parts.Length > 2 && string.Equals(parts[2], "Q", StringComparison.OrdinalIgnoreCase))
+                {
+                    info.QuestRequired = true;
+                }
             }
             else if (parts[1].ToUpper().StartsWith("GROUP"))
             {
