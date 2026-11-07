@@ -14,7 +14,8 @@ public class ItemInfo
     public short Shape;
     public byte Weight, Light, RequiredAmount;
 
-    public ushort Image, Durability;
+    public uint Image;
+    public ushort Durability;
 
     public uint Price;
     public ushort StackSize = 1;
@@ -672,7 +673,9 @@ public class UserItem
 
             #endregion
 
-            return Info.Image;
+            // 原始传奇图标 ID 可能超过 ushort；数据层(ImageInfo.Image=uint)已完整保留，
+            // 运行时/客户端图标仍走 ushort 截断（客户端尚未接入原始图标资源，截断不影响）。
+            return (ushort)Info.Image;
         }
     }
 
