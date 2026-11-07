@@ -18,11 +18,18 @@ namespace Client.MirNetwork
         public static bool ErrorShown;
         public static bool Connected;
         public static long TimeOutTime, TimeConnected, RetryTime = CMain.Time + 5000;
+        // 断连期间「点了没反应也没日志」的节流提示（每 5 秒最多一条）。
+        private static long _nextDisconnectedLog;
 
         private static ConcurrentQueue<Packet> _receiveList = new ConcurrentQueue<Packet>();
         private static ConcurrentQueue<Packet> _sendList = new ConcurrentQueue<Packet>();
-        private static readonly NetBufferCache receive_byte_list = new NetBufferCache(1024, 1024 * 64);
-        private static readonly NetBufferCache send_byte_list = new NetBufferCache(1024, 1024 * 64);
+        // 服务器 MirConnection.Process() 把整个 _sendList 合并成【一条】WebSocket 消息下发。
+        // 换表后（物品 12594 / 怪物 4848 / NPC 840 / 任务 464）进游戏那一帧的合并包远超 64KB，
+        // 会触发 "KBufferCache: Exceed MaxAllocLength 65536"，收包异常导致主循环 / KeepAlive 停摆。
+        // 上限必须是 2 的幂（构造函数有断言）；NetBufferCache 按需 Realloc，不会一次性占用这么大内存。
+        private const int NetBufferMaxSize = 1024 * 1024 * 4;
+        private static readonly NetBufferCache receive_byte_list = new NetBufferCache(1024, NetBufferMaxSize);
+        private static readonly NetBufferCache send_byte_list = new NetBufferCache(1024, NetBufferMaxSize);
 
         public static void Connect()
         {
@@ -165,6 +172,16 @@ namespace Client.MirNetwork
 
         public static void Enqueue(Packet p)
         {
+            // 服务器未启动 / 断连后自动重连期间，包只是入队、永远发不出去；而 Connected 一直是 false，
+            // Process() 不会弹「失去连接」，表现就是点「开始游戏 / 创建角色」毫无反应且没有任何日志。
+            // 这里给一条节流提示，明确告知操作未送达。
+            if (_ws == null && !Connected && p != null && CMain.Time >= _nextDisconnectedLog)
+            {
+                _nextDisconnectedLog = CMain.Time + 5000;
+                KFramework.MonoGame.PrintTool.Log(
+                    $"[Mir][网络] 未连接服务器，{p.GetType().Name} 仅入队、不会送达；请确认服务器已启动并监听 ws://127.0.0.1:8000。");
+            }
+
             if (_sendList != null && p != null)
                 _sendList.Enqueue(p);
         }

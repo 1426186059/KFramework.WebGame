@@ -51,6 +51,9 @@ namespace Server.MirNetwork
         public readonly long TimeConnected;
         public long TimeDisconnected, TimeOutTime;
 
+        // 单条 WebSocket 消息超 64KB 的诊断日志节流（Envir.Time，毫秒），避免进游戏时连续几帧刷屏。
+        private long _lastLargeSendLogTime;
+
         byte[] _rawData = new byte[0];
         byte[] _rawBytes = new byte[8 * 1024];
 
@@ -284,14 +287,58 @@ namespace Server.MirNetwork
 
             List<byte> data = new List<byte>();
 
+            // —— 大包诊断（只统计，不拆分）——
+            // 这里把整个 _sendList 合并成【一条】WebSocket 消息，一次 BeginSend 发出。
+            // 客户端 NetBufferCache 已扩到 4MB，245KB 消息可完整接收。
+            // 切勿按 64KB 分帧发送：WebSocketStream.BeginWrite 底层是 WebSocket.SendAsync，
+            // 同一 socket 并发 SendAsync 会造成帧交错，客户端解析出 Format_Bad7BitInt。
+            // 超阈值时只记录「哪个包把累计量推过 64KB」和按类型聚合 Top8，供后续压缩 / 按需下发优化。
+            const int LargeSendThreshold = 64 * 1024;
+            var typeStats = new Dictionary<string, (int Count, long Bytes)>();
+            var oversizedSingles = new List<string>();
+            int packetNo = 0, crossingPacketNo = -1;
+            string crossingPacket = "无";
+
             while (!_sendList.IsEmpty)
             {
                 Packet p;
                 if (!_sendList.TryDequeue(out p) || p == null) continue;
+
+                packetNo++;
+                string name = p.GetType().Name;
+
+                // GetPacketBytes() 返回 IEnumerable<byte>：用 AddRange 前后的 Count 差取长度，
+                // 避免为测长度额外 ToArray 或重复枚举。
+                int before = data.Count;
                 data.AddRange(p.GetPacketBytes());
+                int len = data.Count - before;
+
+                typeStats.TryGetValue(name, out var stat);
+                typeStats[name] = (stat.Count + 1, stat.Bytes + len);
+
+                if (crossingPacketNo < 0 && before < LargeSendThreshold && data.Count >= LargeSendThreshold)
+                {
+                    crossingPacketNo = packetNo;
+                    crossingPacket = $"{name}(Index={p.Index}, {len} 字节, 累计 {before} → {data.Count})";
+                }
+                if (len >= LargeSendThreshold)
+                    oversizedSingles.Add($"{name}(Index={p.Index}, {len} 字节)");
             }
 
-            BeginSend(data);
+            // 每秒最多一条，只在真正超阈值时输出；正常帧零开销（仅上面几个计数/字典）。
+            if (data.Count >= LargeSendThreshold && Envir.Time - _lastLargeSendLogTime >= 1000)
+            {
+                _lastLargeSendLogTime = Envir.Time;
+                var top = string.Join("; ", typeStats.OrderByDescending(kv => kv.Value.Bytes).Take(8)
+                    .Select(kv => $"{kv.Key} x{kv.Value.Count} = {kv.Value.Bytes} 字节"));
+                MessageQueue.Enqueue(
+                    $"[网络][大包] 单条 WS 消息 {data.Count} 字节 / {packetNo} 个包，超过 64KB 阈值，IP={IPAddress}；" +
+                    $"推过阈值的是第 {crossingPacketNo} 个包 {crossingPacket}；" +
+                    $"单包超阈值: {(oversizedSingles.Count > 0 ? string.Join("; ", oversizedSingles) : "无")}；" +
+                    $"按类型占用 Top8: {top}");
+            }
+
+            if (data.Count > 0) BeginSend(data);
         }
         private void ProcessPacket(Packet p)
         {
