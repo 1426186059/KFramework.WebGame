@@ -45,6 +45,10 @@ namespace Client.MirObjects
         }
 
         public Monster BaseImage;
+        // 换表后服务端下发的 Image 是原始传奇页游的 model 号（普遍 4000+），与客户端 .Lib 怪物图集
+        // 编号不同源；Load / Draw / Effects 里有 20 多处 Libraries.Monsters[(ushort)BaseImage] 裸索引，
+        // 越界会抛 IndexOutOfRange 并终止主循环。这里统一回退到 Guard，后续接入怪物资源映射再撤销。
+        private static bool _imageOutOfRangeLogged;
         public byte Effect;
         public bool Skeleton;
 
@@ -77,6 +81,18 @@ namespace Client.MirObjects
             Name = info.Name;
             NameColour = info.NameColour;
             BaseImage = info.Image;
+
+            // 怪物图集槽位固定 1024，服务端下发的 model 号可能远大于它。
+            // 归一化成有效索引，避免后面 Libraries.Monsters[(ushort)BaseImage] 越界终止主循环。
+            if ((ushort)BaseImage >= Libraries.Monsters.Length)
+            {
+                if (!_imageOutOfRangeLogged)
+                {
+                    _imageOutOfRangeLogged = true;
+                    CMain.SaveError($"[怪物] Image={(ushort)info.Image} 超出客户端怪物库容量 {Libraries.Monsters.Length}，已回退到 Guard；原始传奇 model 号需另做资源映射。");
+                }
+                BaseImage = Monster.Guard;
+            }
 
             OldNameColor = NameColour;
 
