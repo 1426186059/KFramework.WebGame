@@ -39,7 +39,7 @@ namespace MapInfoEditor
     {
         public JsonObject Node;
         public int Index, X, Y, Rate, Image;
-        public string FileName = "", Name = "";
+        public string FileName = "", Name = "", NameUI = "";
     }
 
     /// <summary>传送点视图（Movements，属于 MapInfo_Fix）。</summary>
@@ -378,6 +378,7 @@ namespace MapInfoEditor
                     Index = n["Index"]?.GetValue<int>() ?? 0,
                     FileName = n["FileName"]?.GetValue<string>() ?? "",
                     Name = n["Name"]?.GetValue<string>() ?? "",
+                    NameUI = n["NameUI"]?.GetValue<string>() ?? "",
                     X = loc["X"]?.GetValue<int>() ?? 0,
                     Y = loc["Y"]?.GetValue<int>() ?? 0,
                     Rate = n["Rate"]?.GetValue<int>() ?? 0,
@@ -489,11 +490,13 @@ namespace MapInfoEditor
             return newIndex;
         }
 
-        public bool UpdateNpc(int npcIndex, string fileName, string name, int x, int y, int rate, int image)
+        public bool UpdateNpc(int npcIndex, string fileName, string name, int x, int y, int rate, int image, string nameUI)
         {
             if (!NpcByIndex.TryGetValue(npcIndex, out var n)) return false;
             n["FileName"] = JsonValue.Create(fileName);
             n["Name"] = JsonValue.Create(name);
+            if (string.IsNullOrEmpty(nameUI)) n.Remove("NameUI");
+            else n["NameUI"] = JsonValue.Create(nameUI);
             n["Location"] = new JsonObject { ["X"] = JsonValue.Create(x), ["Y"] = JsonValue.Create(y) };
             n["Rate"] = JsonValue.Create(rate);
             n["Image"] = JsonValue.Create(image);

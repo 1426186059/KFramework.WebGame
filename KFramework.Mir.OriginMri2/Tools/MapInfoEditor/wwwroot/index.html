@@ -133,8 +133,8 @@
     </div>
 
     <div id="tab-npc" class="tabpane">
-      <div class="row"><span class="hint">NPC 来自全局表 <b>NPCInfo</b>：可直接改 <b>名称 / X / Y</b>（点序号列选中并在地图上高亮放大）；点“保存”时随本图一起覆写 NPCInfo 表（按 Index 更新，不影响其它地图）。</span></div>
-      <table><thead><tr><th>序</th><th>ID</th><th>脚本</th><th>名称</th><th>X</th><th>Y</th><th>频率</th><th>图像</th></tr></thead><tbody id="npcBody"></tbody></table>
+      <div class="row"><span class="hint">NPC 来自全局表 <b>NPCInfo</b>：可直接改 <b>名称 / NameUI / X / Y</b>（点序号列选中并在地图上高亮放大）；点“保存”时随本图一起覆写 NPCInfo 表（按 Index 更新，不影响其它地图）。</span></div>
+      <table><thead><tr><th>序</th><th>ID</th><th>脚本</th><th>名称</th><th>NameUI</th><th>X</th><th>Y</th><th>频率</th><th>图像</th></tr></thead><tbody id="npcBody"></tbody></table>
     </div>
 
     <div id="tab-mv" class="tabpane">
@@ -453,6 +453,7 @@ function renderNpc() {
       <td>${n.index}</td>
       <td><input type="text" value="${esc(n.fileName || '')}" disabled></td>
       <td><input type="text" data-i="${i}" data-f="name" value="${esc(n.name || '')}"></td>
+      <td><input type="text" data-i="${i}" data-f="nameUI" value="${esc(n.nameUI || '')}" placeholder="(空)"></td>
       <td><input type="number" data-i="${i}" data-f="x" value="${n.x}"${coordStyle(n.x, n.y)}></td>
       <td><input type="number" data-i="${i}" data-f="y" value="${n.y}"${coordStyle(n.x, n.y)}></td>
       <td><input type="number" value="${n.rate}" disabled></td>
@@ -667,7 +668,7 @@ async function save() {
     safeZones: current.safeZones,
     respawns: current.respawns.map(r => ({ monsterIndex: r.monsterIndex, x: r.x, y: r.y, count: r.count, spread: r.spread, delay: r.delay, direction: r.direction })),
     movements: current.movements.map(m => ({ destMapIndex: m.destMapIndex, sourceX: m.sourceX, sourceY: m.sourceY, destX: m.destX, destY: m.destY, needHole: m.needHole, needMove: m.needMove })),
-    npcs: current.npcs.map(n => ({ index: n.index, fileName: n.fileName, name: n.name, x: n.x, y: n.y, rate: n.rate, image: n.image }))
+    npcs: current.npcs.map(n => ({ index: n.index, fileName: n.fileName, name: n.name, nameUI: n.nameUI || '', x: n.x, y: n.y, rate: n.rate, image: n.image }))
   };
   setTb('保存中...');
   const res = await fetch('/api/maps/' + current.index, {

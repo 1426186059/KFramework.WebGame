@@ -114,7 +114,7 @@ app.MapGet("/api/maps/{id:int}", (int id) =>
 
     // NPC 来自全局 NPC 表（按 MapIndex 关联），不放在 MapInfo_Fix 里
     var npcs = store.GetNpcs(e.Index)
-        .Select(n => new { index = n.Index, fileName = n.FileName, name = n.Name, x = n.X, y = n.Y, rate = n.Rate, image = n.Image }).ToList();
+        .Select(n => new { index = n.Index, fileName = n.FileName, name = n.Name, nameUI = n.NameUI, x = n.X, y = n.Y, rate = n.Rate, image = n.Image }).ToList();
 
     var movements = store.GetMovements(e).Select(mv => new
     {
@@ -230,7 +230,8 @@ app.MapPost("/api/maps/{id:int}", async (int id, HttpContext ctx) =>
             int ny = it.GetProperty("y").GetInt32();
             int nr = it.TryGetProperty("rate", out var rr) ? rr.GetInt32() : 100;
             int ni = it.TryGetProperty("image", out var ii) ? ii.GetInt32() : 0;
-            store.UpdateNpc(nidx, nf, nn, nx, ny, nr, ni);
+            string nui = it.TryGetProperty("nameUI", out var nu) ? (nu.GetString() ?? "") : "";
+            store.UpdateNpc(nidx, nf, nn, nx, ny, nr, ni, nui);
         }
         store.SaveNpc();
     }
@@ -266,7 +267,8 @@ app.MapPut("/api/npcs/{index:int}", async (int index, HttpContext ctx) =>
     int y = b.GetProperty("y").GetInt32();
     int rate = b.GetProperty("rate").GetInt32();
     int image = b.GetProperty("image").GetInt32();
-    bool ok = store.UpdateNpc(index, fileName, name, x, y, rate, image);
+    string nameUI = b.TryGetProperty("nameUI", out var nui) ? (nui.GetString() ?? "") : "";
+    bool ok = store.UpdateNpc(index, fileName, name, x, y, rate, image, nameUI);
     if (!ok) return Results.NotFound(new { error = "未找到 NPC index=" + index });
     store.SaveNpc();
     return Results.Ok(new { ok = true });
