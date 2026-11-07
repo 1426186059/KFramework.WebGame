@@ -411,4 +411,82 @@ async Task<IResult> MapImage(int id)
 // 返回拼接好的真实地图 PNG（image/png）。失败返回 404/400。
 app.MapGet("/api/mapimage/{id:int}", async (int id) => await MapImage(id));
 
+// ---------- 全局修复：扫描所有 NPC，把不可走/越界坐标就近挪到可走格并写回 NPCInfo.json ----------
+// 从 (x,y) 出发按环向外搜索最近的可走且未占用格；找不到返回 null。idx = y*cols + x。
+static int? FindNearbyWalkable(OriginalMapData data, int x, int y, HashSet<int> occupied, int maxRadius)
+{
+    int cols = data.Cols, rows = data.Rows;
+    for (int r = 1; r <= maxRadius; r++)
+    {
+        for (int dx = -r; dx <= r; dx++)
+        {
+            for (int dy = -r; dy <= r; dy++)
+            {
+                if (Math.Abs(dx) != r && Math.Abs(dy) != r) continue; // 只检查当前半径的环
+                int cx = x + dx, cy = y + dy;
+                if (cx < 0 || cy < 0 || cx >= cols || cy >= rows) continue;
+                int idx = cy * cols + cx;
+                if (occupied.Contains(idx)) continue;
+                if ((data.CellFlags[idx] & 8) == 0) return idx;
+            }
+        }
+    }
+    return null;
+}
+
+app.MapPost("/api/fixnpcs", () =>
+{
+    int scanned = 0, fixedCount = 0, skippedNoMap = 0;
+    var fixes = new List<object>();
+
+    // 按 MapIndex 分组，避免同一张地图重复解码网格
+    var byMap = new Dictionary<int, List<JsonObject>>();
+    foreach (var kv in store.NpcByIndex)
+    {
+        int mapIndex = kv.Value["MapIndex"]?.GetValue<int>() ?? -1;
+        if (!byMap.TryGetValue(mapIndex, out var list)) byMap[mapIndex] = list = new List<JsonObject>();
+        list.Add(kv.Value);
+    }
+
+    foreach (var grp in byMap)
+    {
+        int mapIndex = grp.Key;
+        var data = store.DecodeMap(mapIndex);
+        if (data == null || data.CellFlags.Length < data.Cols * data.Rows)
+        {
+            skippedNoMap += grp.Value.Count; // 该地图无网格数据，无法判定可走性，整体跳过
+            continue;
+        }
+        var occupied = new HashSet<int>(); // 本轮已落子格，避免多个 NPC 挤到同一格
+        foreach (var n in grp.Value)
+        {
+            scanned++;
+            if (n["Location"] is not JsonObject loc) { skippedNoMap++; continue; }
+            int x = loc["X"]?.GetValue<int>() ?? 0;
+            int y = loc["Y"]?.GetValue<int>() ?? 0;
+            int cols = data.Cols, rows = data.Rows;
+            bool walkable = x >= 0 && y >= 0 && x < cols && y < rows && (data.CellFlags[y * cols + x] & 8) == 0;
+            if (walkable && !occupied.Contains(y * cols + x)) { occupied.Add(y * cols + x); continue; }
+
+            int? found = FindNearbyWalkable(data, x, y, occupied, 200);
+            if (found == null) { skippedNoMap++; continue; }
+            int nx = found.Value % cols, ny = found.Value / cols;
+            occupied.Add(found.Value);
+            n["Location"] = new JsonObject { ["X"] = JsonValue.Create(nx), ["Y"] = JsonValue.Create(ny) };
+            fixedCount++;
+            fixes.Add(new
+            {
+                index = n["Index"]?.GetValue<int>() ?? 0,
+                name = n["Name"]?.GetValue<string>() ?? "",
+                fileName = n["FileName"]?.GetValue<string>() ?? "",
+                mapIndex,
+                fromX = x, fromY = y, toX = nx, toY = ny
+            });
+        }
+    }
+
+    if (fixedCount > 0) store.SaveNpc(); // 仅在有修复时才写回 NPCInfo.json
+    return Results.Ok(new { ok = true, scanned, fixedCount, skippedNoMap, fixes });
+});
+
 app.Run();

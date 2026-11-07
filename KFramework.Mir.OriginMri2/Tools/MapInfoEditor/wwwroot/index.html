@@ -51,7 +51,7 @@
   #mapCtl button.on { background: #1565ff; color: #fff; border-color: #1565ff; }
   #mapCtl button:disabled { opacity: .45; cursor: not-allowed; }
   #mapCtl #zoomLbl { color: #cdd; min-width: 42px; text-align: center; font-size: 12px; }
-  #mvBody tr.sel { background: #33415c; }                 /* 选中的传送点行：深色高亮 */
+  #mvBody tr.sel, #npcBody tr.sel, #monBody tr.sel { background: #33415c; }   /* 选中的传送点/NPC/怪物行：深色高亮 */
   #mvBody .rowpick { cursor: pointer; color: #9cf; user-select: none; width: 26px; text-align: center; font-weight: bold; }
   #mvBody .rowpick:hover { color: #fff; }
   #status { padding: 5px 10px; color: #ddd; background: #222; }
@@ -79,12 +79,14 @@
   .pick-go:hover { background: #d0e7fb; }
   .pick-list { max-height: calc(70vh - 70px); overflow-y: auto; }
   .pick-empty { padding: 10px; color: #999; text-align: center; font-size: 12px; }
+
 </style>
 </head>
 <body>
 <div id="toolbar">
   <button id="saveBtn" class="action">💾 保存</button>
   <button id="srcBtn" class="action">📂 数据来源</button>
+  <button id="globalBtn" class="action">⚙ 全局设置</button>
   <span class="spacer"></span>
   <span class="status" id="tbStatus"></span>
 </div>
@@ -127,12 +129,12 @@
 
     <div id="tab-mon" class="tabpane">
       <div class="row"><button class="action" id="addMon">＋ 添加</button><span class="hint">怪物名用下拉选择</span></div>
-      <table><thead><tr><th>怪物</th><th>X</th><th>Y</th><th>数量</th><th>扩散</th><th>延迟</th><th>方向</th><th></th></tr></thead><tbody id="monBody"></tbody></table>
+      <table><thead><tr><th>序</th><th>怪物</th><th>X</th><th>Y</th><th>数量</th><th>扩散</th><th>延迟</th><th>方向</th><th></th></tr></thead><tbody id="monBody"></tbody></table>
     </div>
 
     <div id="tab-npc" class="tabpane">
-      <div class="row"><span class="hint">NPC 来自全局表 <b>NPCInfo</b>：可直接改 <b>名称 / X / Y</b>（点 ID 选中并在地图上高亮）；点“保存”时随本图一起覆写 NPCInfo 表（按 Index 更新，不影响其它地图）。</span></div>
-      <table><thead><tr><th>ID</th><th>脚本</th><th>名称</th><th>X</th><th>Y</th><th>频率</th><th>图像</th></tr></thead><tbody id="npcBody"></tbody></table>
+      <div class="row"><span class="hint">NPC 来自全局表 <b>NPCInfo</b>：可直接改 <b>名称 / X / Y</b>（点序号列选中并在地图上高亮放大）；点“保存”时随本图一起覆写 NPCInfo 表（按 Index 更新，不影响其它地图）。</span></div>
+      <table><thead><tr><th>序</th><th>ID</th><th>脚本</th><th>名称</th><th>X</th><th>Y</th><th>频率</th><th>图像</th></tr></thead><tbody id="npcBody"></tbody></table>
     </div>
 
     <div id="tab-mv" class="tabpane">
@@ -174,6 +176,7 @@
 
 <div id="monPicker"></div>
 <div id="mvPicker"></div>
+
 <script>
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
@@ -187,6 +190,7 @@ let realImg = null;       // 已加载的真实地图 Image 对象
 let realReady = false;    // 真实地图是否就绪（切换按钮是否点亮）
 let selectedMv = -1;      // 当前选中的传送点条目索引（-1 表示无）
 let selectedNpc = -1;     // 当前选中的 NPC 条目索引（-1 表示无）
+let selectedMon = -1;     // 当前选中的怪物条目索引（-1 表示无）
 
 const BOOL_FIELDS = [
   ['noTeleport','NoTeleport'], ['noReconnect','NoReconnect'], ['noRecall','NoRecall'],
@@ -202,6 +206,23 @@ function b64ToBytes(b64) {
   for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);
   return a;
 }
+
+// 判断某格是否可走：解码标志字节的第 3 位(bit 8)未置位即可走（与 drawMap 一致）。
+// flags 为空（地图网格解码失败）时按“可走”处理，避免误报红字。
+function isWalkable(x, y) {
+  const m = current && current.map;
+  if (!m || !m.cols || !m.rows) return true;
+  if (x < 0 || y < 0 || x >= m.cols || y >= m.rows) return false;
+  if (!flags || flags.length < m.cols * m.rows) return true;
+  const idx = y * m.cols + x;
+  if (idx < 0 || idx >= flags.length) return false;
+  return (flags[idx] & 8) === 0;
+}
+// 不可走坐标的红色加粗样式（NPC/怪物/传送点列表复用）
+function coordStyle(x, y) {
+  return isWalkable(x, y) ? '' : ' style="color:#e53935;font-weight:bold" title="坐标不可走"';
+}
+
 function setStatus(t) { $('status').textContent = t; }
 function setTb(t) { $('tbStatus').textContent = t; }
 
@@ -259,6 +280,7 @@ async function selectMap(id) {
   if (!current.movements) current.movements = [];
   selectedMv = -1;
   selectedNpc = -1;
+  selectedMon = -1;
   flags = current.map.flagsBase64 ? b64ToBytes(current.map.flagsBase64) : null;
   fitZoom();
   loadRealMap(current.index);
@@ -408,10 +430,12 @@ function renderMon() {
   body.innerHTML = current.respawns.map((r, i) => {
     const mn = monsters.find(m => m.index === r.monsterIndex);
     const label = mn ? `${mn.index} - ${mn.name}${mn.isBoss ? ' [Boss]' : ''}` : `(未知: ${r.monsterIndex})`;
-    return `<tr>
+    const sel = (i === selectedMon);
+    return `<tr class="${sel ? 'sel' : ''}">
+      <td class="rowpick" data-row="${i}" title="选中此项（地图标记高亮放大）">${i + 1}</td>
       <td><button class="monpick" data-i="${i}">${label} ▾</button></td>
-      <td><input type="number" data-i="${i}" data-f="x" value="${r.x}"></td>
-      <td><input type="number" data-i="${i}" data-f="y" value="${r.y}"></td>
+      <td><input type="number" data-i="${i}" data-f="x" value="${r.x}"${coordStyle(r.x, r.y)}></td>
+      <td><input type="number" data-i="${i}" data-f="y" value="${r.y}"${coordStyle(r.x, r.y)}></td>
       <td><input type="number" data-i="${i}" data-f="count" value="${r.count}"></td>
       <td><input type="number" data-i="${i}" data-f="spread" value="${r.spread}"></td>
       <td><input type="number" data-i="${i}" data-f="delay" value="${r.delay}"></td>
@@ -425,11 +449,12 @@ function renderNpc() {
   const body = $('npcBody');
   body.innerHTML = current.npcs.map((n, i) =>
     `<tr class="${i === selectedNpc ? 'sel' : ''}">
-      <td class="rowpick" data-row="${i}" title="选中此项（地图标记高亮）">${n.index}</td>
+      <td class="rowpick" data-row="${i}" title="选中此项（地图标记高亮放大）">${i + 1}</td>
+      <td>${n.index}</td>
       <td><input type="text" value="${esc(n.fileName || '')}" disabled></td>
       <td><input type="text" data-i="${i}" data-f="name" value="${esc(n.name || '')}"></td>
-      <td><input type="number" data-i="${i}" data-f="x" value="${n.x}"></td>
-      <td><input type="number" data-i="${i}" data-f="y" value="${n.y}"></td>
+      <td><input type="number" data-i="${i}" data-f="x" value="${n.x}"${coordStyle(n.x, n.y)}></td>
+      <td><input type="number" data-i="${i}" data-f="y" value="${n.y}"${coordStyle(n.x, n.y)}></td>
       <td><input type="number" value="${n.rate}" disabled></td>
       <td><input type="number" value="${n.image}" disabled></td>
     </tr>`).join('');
@@ -471,6 +496,11 @@ $('npcBody').addEventListener('click', e => {
   const rp = e.target.closest('.rowpick');
   if (rp) { selectedNpc = +rp.dataset.row; renderNpc(); drawMap(); }
 });
+// 点击怪物列表的序号列：选中并高亮地图标记（与传送点/NPC 一致）
+$('monBody').addEventListener('click', e => {
+  const rp = e.target.closest('.rowpick');
+  if (rp) { selectedMon = +rp.dataset.row; renderMon(); drawMap(); }
+});
 mvPicker.addEventListener('click', e => {
   const item = e.target.closest('.mv-item');
   if (!item) return;
@@ -496,8 +526,8 @@ function renderMv() {
     return `<tr class="${i === selectedMv ? 'sel' : ''}">
       <td class="rowpick" data-row="${i}" title="选中此项（地图标记高亮）">${i + 1}</td>
       <td><button class="mvpick" data-i="${i}">${label} ▾</button></td>
-      <td><input type="number" data-i="${i}" data-f="sourceX" value="${m.sourceX}"></td>
-      <td><input type="number" data-i="${i}" data-f="sourceY" value="${m.sourceY}"></td>
+      <td><input type="number" data-i="${i}" data-f="sourceX" value="${m.sourceX}"${coordStyle(m.sourceX, m.sourceY)}></td>
+      <td><input type="number" data-i="${i}" data-f="sourceY" value="${m.sourceY}"${coordStyle(m.sourceX, m.sourceY)}></td>
       <td><input type="number" data-i="${i}" data-f="destX" value="${m.destX}"></td>
       <td><input type="number" data-i="${i}" data-f="destY" value="${m.destY}"></td>
       <td><input type="checkbox" data-i="${i}" data-f="needHole" ${m.needHole ? 'checked' : ''}></td>
@@ -563,17 +593,23 @@ function drawMap() {
       ctx.restore();
     });
   }
-  // 怪物（醒目圆形：普通=红，Boss=紫）
+  // 怪物（醒目圆形：普通=红，Boss=紫；选中项黄底红环高亮放大并标注名称）
   if (layerVisible.mon) {
-    current.respawns.forEach(r => {
+    current.respawns.forEach((r, i) => {
       const mn = monsters.find(m => m.index === r.monsterIndex);
       const boss = mn ? mn.isBoss : false;
+      const sel = (i === selectedMon);
       const cx = r.x * cellX + cellX / 2, cy = r.y * cellY + cellY / 2;
-      const rad = Math.max(3, sc * 0.5);
+      const rad = sel ? Math.max(6, sc * 0.85) : Math.max(3, sc * 0.5);
       ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2);
-      ctx.fillStyle = boss ? '#d500f9' : '#ff1744';
-      ctx.fill();
-      ctx.lineWidth = 1.5; ctx.strokeStyle = '#fff'; ctx.stroke();
+      if (sel) { ctx.fillStyle = '#ffeb3b'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#ff00aa'; ctx.stroke(); }
+      else { ctx.fillStyle = boss ? '#d500f9' : '#ff1744'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#fff'; ctx.stroke(); }
+      if (sel && mn && mn.name && sc >= 6) {
+        ctx.fillStyle = '#7a0033';
+        ctx.font = Math.max(9, Math.floor(sc)) + 'px sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(mn.name, cx, cy - rad - Math.max(4, sc * 0.4));
+      }
     });
   }
   // NPC（青色圆形；选中项黄底蓝环高亮并标注名称）
@@ -581,9 +617,9 @@ function drawMap() {
     current.npcs.forEach((n, i) => {
       const cx = n.x * cellX + cellX / 2, cy = n.y * cellY + cellY / 2;
       const sel = (i === selectedNpc);
-      const rad = Math.max(3, sc * (sel ? 0.62 : 0.5));
+      const rad = sel ? Math.max(6, sc * 0.85) : Math.max(3, sc * 0.5);
       ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2);
-      if (sel) { ctx.fillStyle = '#ffeb3b'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#1565ff'; ctx.stroke(); }
+      if (sel) { ctx.fillStyle = '#ffeb3b'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#ff00aa'; ctx.stroke(); }
       else { ctx.fillStyle = '#00e5ff'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#00363a'; ctx.stroke(); }
       if (sc >= 8 && n.name) {
         ctx.fillStyle = sel ? '#7a0033' : '#00363a';
@@ -598,7 +634,7 @@ function drawMap() {
     current.movements.forEach((mv, i) => {
       const cx = mv.sourceX * cellX + cellX / 2, cy = mv.sourceY * cellY + cellY / 2;
       const sel = (i === selectedMv);
-      const rad = Math.max(3, sc * (sel ? 0.62 : 0.5));
+      const rad = sel ? Math.max(6, sc * 0.85) : Math.max(3, sc * 0.5);
       ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2);
       if (sel) { ctx.fillStyle = '#ffeb3b'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = '#ff00aa'; ctx.stroke(); }
       else { ctx.fillStyle = '#ff9100'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#fff'; ctx.stroke(); }
@@ -706,6 +742,10 @@ $('viewReal').onclick = () => { if (!realReady) return; renderMode = 'real'; upd
 $('zoomIn').onclick = () => setZoom(cellPx + (cellPx < 8 ? 1 : Math.max(1, Math.round(cellPx * 0.25))));
 $('zoomOut').onclick = () => setZoom(cellPx - (cellPx <= 2 ? 1 : Math.max(1, Math.round(cellPx * 0.2))));
 $('zoomFit').onclick = () => fitZoom();
+
+// ---------- 全局设置：独立页面 ----------
+$('globalBtn').onclick = () => window.open('/globalsettings.html', '_blank');
+
 init();
 </script>
 </body>
