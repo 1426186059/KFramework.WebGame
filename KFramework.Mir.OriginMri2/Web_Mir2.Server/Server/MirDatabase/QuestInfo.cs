@@ -450,7 +450,7 @@ namespace Server.MirDatabase
                 RewardCredit = CreditReward,
                 RewardsFixedItem = FixedRewards,
                 RewardsSelectItem = SelectRewards,
-                StartNpcName = startNpc != null ? startNpc.Name : string.Empty
+                StartNpcName = startNpc != null ? startNpc.Name : "???NPC???"
             };
         }
 
