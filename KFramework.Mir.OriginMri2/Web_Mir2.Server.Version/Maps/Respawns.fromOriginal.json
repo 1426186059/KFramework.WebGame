@@ -1,0 +1,511 @@
+{
+  "source": "mir2-capture-spawns.js 运行时采集（服务端 67001 / emIns.createEntity）",
+  "generated": "2026-11-07T17:11:21.836298+00:00",
+  "coordinateSystem": "原始传奇格坐标，1 格 = 48x32 像素",
+  "delayNote": "Delay 单位分钟，由 cm.monster[mid].reliveDelay(ms)/60000 换算，最小 1 分钟",
+  "clusterRadius": 12,
+  "batchFiles": [
+    "mir2-spawns-batch2.txt",
+    "mir2-spawns-raw.txt"
+  ],
+  "batchCount": 2,
+  "sampleRowCount": 340,
+  "mapCount": 4,
+  "respawnCount": 20,
+  "maps": [
+    {
+      "Index": 103,
+      "FileName": "103",
+      "Title": "比奇省",
+      "Width": 33280,
+      "Height": 22272,
+      "Respawns": [
+        {
+          "MonsterIndex": 5004002,
+          "Location": {
+            "X": 662,
+            "Y": 588
+          },
+          "Count": 1,
+          "Spread": 3,
+          "Delay": 1,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6001,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 5004002,
+          "Location": {
+            "X": 626,
+            "Y": 596
+          },
+          "Count": 1,
+          "Spread": 3,
+          "Delay": 1,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6002,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 5004002,
+          "Location": {
+            "X": 337,
+            "Y": 257
+          },
+          "Count": 2,
+          "Spread": 3,
+          "Delay": 1,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6003,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 5004002,
+          "Location": {
+            "X": 280,
+            "Y": 319
+          },
+          "Count": 2,
+          "Spread": 4,
+          "Delay": 1,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6004,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 5004002,
+          "Location": {
+            "X": 278,
+            "Y": 602
+          },
+          "Count": 2,
+          "Spread": 3,
+          "Delay": 1,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6005,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 6000001,
+          "Location": {
+            "X": 284,
+            "Y": 608
+          },
+          "Count": 21,
+          "Spread": 7,
+          "Delay": 1,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6006,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 6000002,
+          "Location": {
+            "X": 280,
+            "Y": 573
+          },
+          "Count": 21,
+          "Spread": 9,
+          "Delay": 1,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6007,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 6000004,
+          "Location": {
+            "X": 240,
+            "Y": 414
+          },
+          "Count": 21,
+          "Spread": 9,
+          "Delay": 1,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6008,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 6000009,
+          "Location": {
+            "X": 251,
+            "Y": 351
+          },
+          "Count": 21,
+          "Spread": 7,
+          "Delay": 1,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6009,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 6000016,
+          "Location": {
+            "X": 231,
+            "Y": 373
+          },
+          "Count": 21,
+          "Spread": 13,
+          "Delay": 1,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6010,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 6000030,
+          "Location": {
+            "X": 244,
+            "Y": 504
+          },
+          "Count": 21,
+          "Spread": 13,
+          "Delay": 1,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6011,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 6000032,
+          "Location": {
+            "X": 247,
+            "Y": 465
+          },
+          "Count": 21,
+          "Spread": 14,
+          "Delay": 1,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6012,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 6000034,
+          "Location": {
+            "X": 252,
+            "Y": 549
+          },
+          "Count": 21,
+          "Spread": 6,
+          "Delay": 1,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6013,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 6000123,
+          "Location": {
+            "X": 310,
+            "Y": 227
+          },
+          "Count": 1,
+          "Spread": 3,
+          "Delay": 5,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6014,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 6000123,
+          "Location": {
+            "X": 318,
+            "Y": 244
+          },
+          "Count": 1,
+          "Spread": 3,
+          "Delay": 5,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6015,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 6000123,
+          "Location": {
+            "X": 309,
+            "Y": 286
+          },
+          "Count": 1,
+          "Spread": 3,
+          "Delay": 5,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6016,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        }
+      ],
+      "Meta": {
+        "5004002": {
+          "Name": "卫士",
+          "Level": 99,
+          "MType": 11,
+          "ReliveDelayMs": 5000,
+          "DelayMinutes": 1,
+          "SampleCount": 11,
+          "UniquePoints": 8,
+          "Areas": 5
+        },
+        "6000001": {
+          "Name": "鸡",
+          "Level": 5,
+          "MType": 1,
+          "ReliveDelayMs": 1000,
+          "DelayMinutes": 1,
+          "SampleCount": 42,
+          "UniquePoints": 37,
+          "Areas": 1
+        },
+        "6000002": {
+          "Name": "鹿",
+          "Level": 12,
+          "MType": 1,
+          "ReliveDelayMs": 1000,
+          "DelayMinutes": 1,
+          "SampleCount": 42,
+          "UniquePoints": 39,
+          "Areas": 1
+        },
+        "6000004": {
+          "Name": "半兽人",
+          "Level": 15,
+          "MType": 1,
+          "ReliveDelayMs": 1000,
+          "DelayMinutes": 1,
+          "SampleCount": 21,
+          "UniquePoints": 21,
+          "Areas": 1
+        },
+        "6000009": {
+          "Name": "毒蜘蛛",
+          "Level": 16,
+          "MType": 1,
+          "ReliveDelayMs": 1000,
+          "DelayMinutes": 1,
+          "SampleCount": 42,
+          "UniquePoints": 36,
+          "Areas": 1
+        },
+        "6000016": {
+          "Name": "森林雪人",
+          "Level": 16,
+          "MType": 1,
+          "ReliveDelayMs": 1000,
+          "DelayMinutes": 1,
+          "SampleCount": 21,
+          "UniquePoints": 21,
+          "Areas": 1
+        },
+        "6000030": {
+          "Name": "多钩猫",
+          "Level": 13,
+          "MType": 1,
+          "ReliveDelayMs": 1000,
+          "DelayMinutes": 1,
+          "SampleCount": 42,
+          "UniquePoints": 39,
+          "Areas": 1
+        },
+        "6000032": {
+          "Name": "钉耙猫",
+          "Level": 13,
+          "MType": 1,
+          "ReliveDelayMs": 1000,
+          "DelayMinutes": 1,
+          "SampleCount": 42,
+          "UniquePoints": 37,
+          "Areas": 1
+        },
+        "6000034": {
+          "Name": "稻草人",
+          "Level": 10,
+          "MType": 1,
+          "ReliveDelayMs": 1000,
+          "DelayMinutes": 1,
+          "SampleCount": 41,
+          "UniquePoints": 38,
+          "Areas": 1
+        },
+        "6000123": {
+          "Name": "弓箭护卫",
+          "Level": 200,
+          "MType": 11,
+          "ReliveDelayMs": 300000,
+          "DelayMinutes": 5,
+          "SampleCount": 3,
+          "UniquePoints": 3,
+          "Areas": 3
+        }
+      }
+    },
+    {
+      "Index": 154,
+      "FileName": "154",
+      "Title": "盟重",
+      "Width": 47616,
+      "Height": 25600,
+      "Respawns": [
+        {
+          "MonsterIndex": 6000123,
+          "Location": {
+            "X": 351,
+            "Y": 327
+          },
+          "Count": 1,
+          "Spread": 3,
+          "Delay": 5,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6017,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        }
+      ],
+      "Meta": {
+        "6000123": {
+          "Name": "弓箭护卫",
+          "Level": 200,
+          "MType": 11,
+          "ReliveDelayMs": 300000,
+          "DelayMinutes": 5,
+          "SampleCount": 1,
+          "UniquePoints": 1,
+          "Areas": 1
+        }
+      }
+    },
+    {
+      "Index": 5002,
+      "FileName": "5002",
+      "Title": "半兽古墓一层",
+      "Width": 18944,
+      "Height": 12800,
+      "Respawns": [
+        {
+          "MonsterIndex": 6000029,
+          "Location": {
+            "X": 269,
+            "Y": 207
+          },
+          "Count": 28,
+          "Spread": 10,
+          "Delay": 1,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6018,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        }
+      ],
+      "Meta": {
+        "6000029": {
+          "Name": "洞蛆",
+          "Level": 21,
+          "MType": 1,
+          "ReliveDelayMs": 1000,
+          "DelayMinutes": 1,
+          "SampleCount": 28,
+          "UniquePoints": 28,
+          "Areas": 1
+        }
+      }
+    },
+    {
+      "Index": 6301,
+      "FileName": "6301",
+      "Title": "魂灵之境",
+      "Width": 7680,
+      "Height": 5888,
+      "Respawns": [
+        {
+          "MonsterIndex": 8204000,
+          "Location": {
+            "X": 86,
+            "Y": 73
+          },
+          "Count": 1,
+          "Spread": 3,
+          "Delay": 30,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6019,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        },
+        {
+          "MonsterIndex": 8204000,
+          "Location": {
+            "X": 105,
+            "Y": 96
+          },
+          "Count": 3,
+          "Spread": 3,
+          "Delay": 30,
+          "RandomDelay": 0,
+          "Direction": 0,
+          "RoutePath": "",
+          "RespawnIndex": 6020,
+          "SaveRespawnTime": false,
+          "RespawnTicks": 0
+        }
+      ],
+      "Meta": {
+        "8204000": {
+          "Name": "[魂]魂灵守卫",
+          "Level": 60,
+          "MType": 4,
+          "ReliveDelayMs": 1800000,
+          "DelayMinutes": 30,
+          "SampleCount": 4,
+          "UniquePoints": 4,
+          "Areas": 2
+        }
+      }
+    }
+  ]
+}
