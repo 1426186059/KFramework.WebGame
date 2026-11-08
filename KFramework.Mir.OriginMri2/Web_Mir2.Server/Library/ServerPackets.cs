@@ -934,6 +934,31 @@ namespace ServerPackets
 
         public LevelEffects LevelEffects;
 
+        // 原始传奇 origin 分层渲染：各层页游 id，由服务端下发（客户端查 cm.item[col17] 或 cm.title[id].model 得模型号）。
+        // cm.title 十大类（radioName）：装扮0 / 幻武1 / 足迹2 / 称号3 / 徽记4 / 法阵5 / 旋光7 / 灵宠8(独立宠物,不在此) / 坐骑9 / 羽翼13。
+        // 本服务端版本仅追踪 坐骑(MountType) 与 翅膀(Looks_Wings)；其余装扮类 cosmetics 暂未追踪，默认 0（不画），待装扮系统补上即点亮。
+        public int OriginArmourID;    // 盔甲槽页游物品 id → cm.item[col17]（身体）
+        public int OriginWeaponID;    // 武器槽页游物品 id → cm.item[col17]（武器）
+        public int OriginWingID;      // = Looks_Wings（羽翼/光翼外观 id，待接 cm.title type13）
+        public int OriginMountID;     // = MountType（坐骑外观 id）
+        public int OriginZhuangBanID; // 装扮 type0（时装身体，覆盖身体）
+        public int OriginHuanWuID;    // 幻武 type1（时装武器，覆盖武器）
+        public int OriginFootID;      // 足迹 type2
+        public int OriginTitleID;     // 称号 type3
+        public int OriginHuiJiID;     // 徽记 type4
+        public int OriginZhenfaID;    // 法阵 type5
+        public int OriginXuanGuangID; // 旋光 type7
+
+        // 页游装饰装备层（cm.item[type] 角色精灵；type：斗笠50/勋章51/玉佩52/护盾53/护肩54/披风55/面纱406/疗伤石）。默认 0 = 不绘制。
+        public int OriginDouLiID;     // 斗笠（头部）
+        public int OriginMianShaID;   // 面纱（面部）
+        public int OriginYuPeiID;     // 玉佩
+        public int OriginXunZhangID;  // 勋章（荣誉勋章）
+        public int OriginHuDunID;     // 护盾
+        public int OriginHuJianID;    // 护肩
+        public int OriginPiFengID;    // 披风
+        public int OriginLiaoShangID; // 疗伤石
+
         public List<BuffType> Buffs = new List<BuffType>();
 
         protected override void ReadPacket(BinaryReader reader)
@@ -976,6 +1001,25 @@ namespace ServerPackets
             }
 
             LevelEffects = (LevelEffects)reader.ReadUInt16();
+            OriginArmourID = reader.ReadInt32();
+            OriginWeaponID = reader.ReadInt32();
+            OriginWingID = reader.ReadInt32();
+            OriginMountID = reader.ReadInt32();
+            OriginZhuangBanID = reader.ReadInt32();
+            OriginHuanWuID = reader.ReadInt32();
+            OriginFootID = reader.ReadInt32();
+            OriginTitleID = reader.ReadInt32();
+            OriginHuiJiID = reader.ReadInt32();
+            OriginZhenfaID = reader.ReadInt32();
+            OriginXuanGuangID = reader.ReadInt32();
+            OriginDouLiID = reader.ReadInt32();
+            OriginMianShaID = reader.ReadInt32();
+            OriginYuPeiID = reader.ReadInt32();
+            OriginXunZhangID = reader.ReadInt32();
+            OriginHuDunID = reader.ReadInt32();
+            OriginHuJianID = reader.ReadInt32();
+            OriginPiFengID = reader.ReadInt32();
+            OriginLiaoShangID = reader.ReadInt32();
         }
 
         protected override void WritePacket(BinaryWriter writer)
@@ -1019,6 +1063,25 @@ namespace ServerPackets
             }
 
             writer.Write((ushort)LevelEffects);
+            writer.Write(OriginArmourID);
+            writer.Write(OriginWeaponID);
+            writer.Write(OriginWingID);
+            writer.Write(OriginMountID);
+            writer.Write(OriginZhuangBanID);
+            writer.Write(OriginHuanWuID);
+            writer.Write(OriginFootID);
+            writer.Write(OriginTitleID);
+            writer.Write(OriginHuiJiID);
+            writer.Write(OriginZhenfaID);
+            writer.Write(OriginXuanGuangID);
+            writer.Write(OriginDouLiID);
+            writer.Write(OriginMianShaID);
+            writer.Write(OriginYuPeiID);
+            writer.Write(OriginXunZhangID);
+            writer.Write(OriginHuDunID);
+            writer.Write(OriginHuJianID);
+            writer.Write(OriginPiFengID);
+            writer.Write(OriginLiaoShangID);
         }
     }
 

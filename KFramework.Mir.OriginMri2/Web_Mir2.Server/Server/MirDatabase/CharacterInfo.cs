@@ -97,6 +97,27 @@ namespace Server.MirDatabase
         public PlayerObject Player;
         public MountInfo Mount;
 
+        // 装扮系统（页游 cm.title，type 区分）当前激活的外观 id；0 = 未激活。
+        // type: 装扮0 / 幻武1 / 足迹2 / 称号3 / 徽记4 / 法阵5 / 旋光7。客户端据此查 cm.title[id].model 出 origin 光环层。
+        public int ActiveZhuangBan;   // 装扮（时装身体，覆盖普通盔甲）
+        public int ActiveHuanWu;      // 幻武（时装武器，覆盖普通武器）
+        public int ActiveFoot;        // 足迹
+        public int ActiveTitle;       // 称号
+        public int ActiveHuiJi;       // 徽记
+        public int ActiveZhenFa;      // 法阵
+        public int ActiveXuanGuang;   // 旋光
+
+        // 页游装饰装备层（cm.item[type] 的角色精灵，type：斗笠50/勋章51/玉佩52/护盾53/护肩54/披风55/面纱406/疗伤石）。
+        // 本服务端版本无这些独立装备槽，暂以 Active* 字段承载（装扮系统/装备槽接入后即可填充，默认 0 = 不绘制）。
+        public int ActiveDouLi;       // 斗笠（头部）
+        public int ActiveMianSha;     // 面纱（面部）
+        public int ActiveYuPei;       // 玉佩
+        public int ActiveXunZhang;    // 勋章（荣誉勋章）
+        public int ActiveHuDun;       // 护盾
+        public int ActiveHuJian;      // 护肩
+        public int ActivePiFeng;      // 披风
+        public int ActiveLiaoShang;   // 疗伤石（通常为纯属性，无精灵；保留字段以备）
+
         public Dictionary<int, int> GSpurchases = new Dictionary<int, int>();
         public int[] Rank = new int[2];//dont save this in db!(and dont send it to clients :p)
         
@@ -386,6 +407,31 @@ namespace Server.MirDatabase
 
             if (version > 100)
                 HeroBehaviour = (HeroBehaviour)reader.ReadByte();
+
+            // 装扮系统 active id（Envir.Version 117 → 118 新增；旧档(version<=117)无此段，跳过保持默认 0）
+            if (version > 117)
+            {
+                ActiveZhuangBan = reader.ReadInt32();
+                ActiveHuanWu = reader.ReadInt32();
+                ActiveFoot = reader.ReadInt32();
+                ActiveTitle = reader.ReadInt32();
+                ActiveHuiJi = reader.ReadInt32();
+                ActiveZhenFa = reader.ReadInt32();
+                ActiveXuanGuang = reader.ReadInt32();
+            }
+
+            // 页游装饰装备层 active id（Envir.Version 118 → 119 新增；旧档跳过）
+            if (version > 118)
+            {
+                ActiveDouLi = reader.ReadInt32();
+                ActiveMianSha = reader.ReadInt32();
+                ActiveYuPei = reader.ReadInt32();
+                ActiveXunZhang = reader.ReadInt32();
+                ActiveHuDun = reader.ReadInt32();
+                ActiveHuJian = reader.ReadInt32();
+                ActivePiFeng = reader.ReadInt32();
+                ActiveLiaoShang = reader.ReadInt32();
+            }
         }
 
         public virtual void Save(BinaryWriter writer)
@@ -567,6 +613,25 @@ namespace Server.MirDatabase
             writer.Write(CurrentHeroIndex);
             writer.Write(HeroSpawned);
             writer.Write((byte)HeroBehaviour);
+
+            // 装扮系统 active id（与 Load 的 version>117 段对应；Save 无条件写入，由调用方写入版本号）
+            writer.Write(ActiveZhuangBan);
+            writer.Write(ActiveHuanWu);
+            writer.Write(ActiveFoot);
+            writer.Write(ActiveTitle);
+            writer.Write(ActiveHuiJi);
+            writer.Write(ActiveZhenFa);
+            writer.Write(ActiveXuanGuang);
+
+            // 页游装饰装备层 active id（与 Load 的 version>118 段对应）
+            writer.Write(ActiveDouLi);
+            writer.Write(ActiveMianSha);
+            writer.Write(ActiveYuPei);
+            writer.Write(ActiveXunZhang);
+            writer.Write(ActiveHuDun);
+            writer.Write(ActiveHuJian);
+            writer.Write(ActivePiFeng);
+            writer.Write(ActiveLiaoShang);
         }
 
         public SelectInfo ToSelectInfo()

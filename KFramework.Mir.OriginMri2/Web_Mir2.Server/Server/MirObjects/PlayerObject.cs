@@ -2802,6 +2802,57 @@ namespace Server.MirObjects
                         }
                         break;
 
+                    case "COSTUME":
+                        {
+                            if (!IsGM) return;
+
+                            if (parts.Length < 3)
+                            {
+                                ReceiveChat("用法: @COSTUME <zhuangban|huanwu|foot|title|huiji|zhenfa|xuanguang|douli|miansha|yupei|xunzhang|hudun|hujian|pifeng|liaoshang|all> <id|0>", ChatType.System);
+                                return;
+                            }
+
+                            string cat = parts[1].ToLower();
+                            if (!int.TryParse(parts[2], out int id))
+                            {
+                                ReceiveChat("id 必须是数字 (0 = 清除当前层)", ChatType.System);
+                                return;
+                            }
+
+                            switch (cat)
+                            {
+                                case "zhuangban": Info.ActiveZhuangBan = id; break;
+                                case "huanwu":    Info.ActiveHuanWu = id; break;
+                                case "foot":      Info.ActiveFoot = id; break;
+                                case "title":     Info.ActiveTitle = id; break;
+                                case "huiji":     Info.ActiveHuiJi = id; break;
+                                case "zhenfa":    Info.ActiveZhenFa = id; break;
+                                case "xuanguang": Info.ActiveXuanGuang = id; break;
+                                case "douli":     Info.ActiveDouLi = id; break;
+                                case "miansha":   Info.ActiveMianSha = id; break;
+                                case "yupei":     Info.ActiveYuPei = id; break;
+                                case "xunzhang":  Info.ActiveXunZhang = id; break;
+                                case "hudun":     Info.ActiveHuDun = id; break;
+                                case "hujian":    Info.ActiveHuJian = id; break;
+                                case "pifeng":    Info.ActivePiFeng = id; break;
+                                case "liaoshang": Info.ActiveLiaoShang = id; break;
+                                case "all":
+                                    Info.ActiveZhuangBan = Info.ActiveHuanWu = Info.ActiveFoot = Info.ActiveTitle =
+                                        Info.ActiveHuiJi = Info.ActiveZhenFa = Info.ActiveXuanGuang =
+                                        Info.ActiveDouLi = Info.ActiveMianSha = Info.ActiveYuPei = Info.ActiveXunZhang =
+                                        Info.ActiveHuDun = Info.ActiveHuJian = Info.ActivePiFeng = Info.ActiveLiaoShang = id;
+                                    break;
+                                default:
+                                    ReceiveChat("未知分类，可用: zhuangban/huanwu/foot/title/huiji/zhenfa/xuanguang/douli/miansha/yupei/xunzhang/hudun/hujian/pifeng/liaoshang/all", ChatType.System);
+                                    return;
+                            }
+
+                            // 立即重绘：广播新的 ObjectPlayer 包给视野内玩家（含自己），客户端收到后重新 Load 即点亮对应层。
+                            BroadcastInfo();
+                            ReceiveChat(string.Format("已设置装扮层 [{0}] = {1}（已重绘；若本机未即时更新，移动一下或重登即可）", cat, id), ChatType.System);
+                        }
+                        break;
+
                     case "MAP":
                         var mapName = CurrentMap.Info.FileName;
                         var mapTitle = CurrentMap.Info.Title;
@@ -4928,6 +4979,29 @@ namespace Server.MirObjects
                 Buffs = Buffs.Where(d => d.Info.Visible).Select(e => e.Type).ToList(),
 
                 LevelEffects = LevelEffects,
+
+                // 原始传奇 origin 分层渲染：下发各层页游 id（客户端查 cm.item[col17] 或 cm.title[id].model 得模型号）。
+                // 坐骑(MountType)/翅膀(Looks_Wings) 由服务端既有字段提供；装扮类由 CharacterInfo 的 Active* 字段提供（装扮系统激活后填充，默认 0 = 不绘制）。
+                OriginArmourID = Info.Equipment[(int)EquipmentSlot.Armour]?.Info.Index ?? 0,
+                OriginWeaponID = Info.Equipment[(int)EquipmentSlot.Weapon]?.Info.Index ?? 0,
+                OriginWingID = Looks_Wings,
+                OriginMountID = Mount != null ? Mount.MountType : 0,
+                OriginZhuangBanID = Info.ActiveZhuangBan,  // 装扮（时装身体）
+                OriginHuanWuID = Info.ActiveHuanWu,        // 幻武（时装武器）
+                OriginFootID = Info.ActiveFoot,            // 足迹
+                OriginTitleID = Info.ActiveTitle,          // 称号
+                OriginHuiJiID = Info.ActiveHuiJi,          // 徽记
+                OriginZhenfaID = Info.ActiveZhenFa,        // 法阵
+                OriginXuanGuangID = Info.ActiveXuanGuang,  // 旋光
+                // 页游装饰装备层（cm.item[type] 角色精灵；type：斗笠50/勋章51/玉佩52/护盾53/护肩54/披风55/面纱406/疗伤石）。默认 0 = 不绘制。
+                OriginDouLiID = Info.ActiveDouLi,
+                OriginMianShaID = Info.ActiveMianSha,
+                OriginYuPeiID = Info.ActiveYuPei,
+                OriginXunZhangID = Info.ActiveXunZhang,
+                OriginHuDunID = Info.ActiveHuDun,
+                OriginHuJianID = Info.ActiveHuJian,
+                OriginPiFengID = Info.ActivePiFeng,
+                OriginLiaoShangID = Info.ActiveLiaoShang,
             };
         }
         public void EquipSlotItem(MirGridType grid, ulong id, int to, MirGridType gridTo, ulong idTo)

@@ -28,6 +28,54 @@ namespace Client.MirObjects
         public ushort Level;
 
         public MLibrary WeaponLibrary1, WeaponEffectLibrary1, WeaponLibrary2, HairLibrary, WingLibrary, MountLibrary;
+
+        // 原始传奇玩家角色模型号（按 职业+性别 映射，参考模型 9027）。0 = 不走 origin（回退 .Lib 分层绘制）。
+        private int _originModel;
+
+        // 各层【页游 id】（服务端在 ObjectPlayer 下发）。0 = 走裸身/不绘制回退。
+        // 身体/武器来自 cm.item[col17]；装扮类(装扮/幻武/足迹/称号/徽记/法阵/旋光)来自 cm.title[id].model。
+        private int _pgArmour, _pgWeapon, _pgWing, _pgMount;
+        private int _pgZhuangBan, _pgHuanWu, _pgFoot, _pgTitle, _pgHuiJi, _pgZhenfa, _pgXuanGuang;
+        // 页游装饰装备层（cm.item[type] 角色精灵）：斗笠/面纱/玉佩/勋章/护盾/护肩/披风/疗伤石。
+        private int _pgDouLi, _pgMianSha, _pgYuPei, _pgXunZhang, _pgHuDun, _pgHuJian, _pgPiFeng, _pgLiaoShang;
+
+        // 原始页游玩家外观是【分层复合精灵】（仿 animal.init2 / updateEquipments）：
+        //   坐骑(底) → 翅膀(后) → 身体 → 武器 → 帽/时装(前)
+        // 每层各自一个 origin model/{n}，坐标系统一，叠在 DrawLocation 即合成。
+        // 身体模型（经逆向页游 Logic.getEquipId 默认值确认）：裸身 男=9001 / 女=9002（页游 sex: 2=女）。
+        // 穿衣时身体 = cm.item[盔甲id][17]；武器 = cm.item[武器id][17]；武器特效 = col18；翅膀 = cm.ring[wingId].model；坐骑 = fashionMount。
+        // 9027 是某职业/盔甲/时装的具体身体模型（用户参考）。解算：Mir2OriginModelResolver.GetModel(页游物品id, 性别, 回退)。
+        private static int PlayerBodyModel(MirClass cls, MirGender gender)
+            => gender == MirGender.Female ? 9002 : 9001;
+
+        // 身体层：优先【装扮 type0】（时装身体，覆盖普通盔甲）；否则盔甲槽 cm.item[col17]；无则裸身 9001/9002。
+        private int PlayerBodyModelResolved()
+            => Mir2OriginModelResolver.GetTitleModel(_pgZhuangBan, Gender == MirGender.Female,
+                Mir2OriginModelResolver.GetModel(_pgArmour, Gender == MirGender.Female, Gender == MirGender.Female ? 9002 : 9001));
+        // 武器层：优先【幻武 type1】（时装武器，覆盖普通武器）；否则武器槽 cm.item[col17]；无则 0 不绘制。
+        private int PlayerWeaponModel()
+            => Mir2OriginModelResolver.GetTitleModel(_pgHuanWu, Gender == MirGender.Female,
+                Mir2OriginModelResolver.GetModel(_pgWeapon, Gender == MirGender.Female, 0));
+        // 翅膀层模型号：本客户端 Looks_Wings 是另一套（byte，且页游羽翼在 cm.title type13），暂无「Looks_Wings → 页游羽翼id」映射，暂返回 0。
+        // 待接 cm.title[yuyiId].model 后即可点亮。
+        private int PlayerWingModel() => 0;
+        // 坐骑层模型号：页游把 fashionMount 直接作为 origin 模型号传给 animal.init2（main.min.js 实锤），OriginMountID = 服务端 Mount.MountType 即模型号。
+        private int PlayerMountModel() => _pgMount;
+        // 以下装扮类均来自 cm.title[id].model（type 区分）：称号3 / 足迹2 / 徽记4 / 法阵5 / 旋光7。id 由服务端下发（当前默认 0）。
+        private int PlayerTitleModel() => Mir2OriginModelResolver.GetTitleModel(_pgTitle, Gender == MirGender.Female, 0);    // 称号
+        private int PlayerFootModel() => Mir2OriginModelResolver.GetTitleModel(_pgFoot, Gender == MirGender.Female, 0);      // 足迹
+        private int PlayerHuiJiModel() => Mir2OriginModelResolver.GetTitleModel(_pgHuiJi, Gender == MirGender.Female, 0);    // 徽记
+        private int PlayerZhenfaModel() => Mir2OriginModelResolver.GetTitleModel(_pgZhenfa, Gender == MirGender.Female, 0);  // 法阵
+        private int PlayerXuanGuangModel() => Mir2OriginModelResolver.GetTitleModel(_pgXuanGuang, Gender == MirGender.Female, 0); // 旋光
+        // 以下装饰装备层均来自 cm.item[type] 角色精灵（type：斗笠50/勋章51/玉佩52/护盾53/护肩54/披风55/面纱406）。id 由服务端下发（默认 0）。
+        private int PlayerDouLiModel() => Mir2OriginModelResolver.GetModel(_pgDouLi, Gender == MirGender.Female, 0);      // 斗笠（头部）
+        private int PlayerMianShaModel() => Mir2OriginModelResolver.GetModel(_pgMianSha, Gender == MirGender.Female, 0);   // 面纱（面部）
+        private int PlayerYuPeiModel() => Mir2OriginModelResolver.GetModel(_pgYuPei, Gender == MirGender.Female, 0);        // 玉佩
+        private int PlayerXunZhangModel() => Mir2OriginModelResolver.GetModel(_pgXunZhang, Gender == MirGender.Female, 0);  // 勋章（荣誉勋章）
+        private int PlayerHuDunModel() => Mir2OriginModelResolver.GetModel(_pgHuDun, Gender == MirGender.Female, 0);        // 护盾
+        private int PlayerHuJianModel() => Mir2OriginModelResolver.GetModel(_pgHuJian, Gender == MirGender.Female, 0);      // 护肩
+        private int PlayerPiFengModel() => Mir2OriginModelResolver.GetModel(_pgPiFeng, Gender == MirGender.Female, 0);      // 披风
+        private int PlayerLiaoShangModel() => Mir2OriginModelResolver.GetModel(_pgLiaoShang, Gender == MirGender.Female, 0); // 疗伤石（页游多为纯属性，无精灵）
         public int Armour, Weapon, WeaponEffect, ArmourOffSet, HairOffSet, WeaponOffSet, WingOffset, MountOffset;
 
         public int DieSound, FlinchSound, AttackSound;
@@ -119,6 +167,26 @@ namespace Client.MirObjects
             GuildRankName = info.GuildRankName;
             Class = info.Class;
             Gender = info.Gender;
+            _pgArmour = info.OriginArmourID;
+            _pgWeapon = info.OriginWeaponID;
+            _pgWing = info.OriginWingID;
+            _pgMount = info.OriginMountID;
+            _pgZhuangBan = info.OriginZhuangBanID;
+            _pgHuanWu = info.OriginHuanWuID;
+            _pgFoot = info.OriginFootID;
+            _pgTitle = info.OriginTitleID;
+            _pgHuiJi = info.OriginHuiJiID;
+            _pgZhenfa = info.OriginZhenfaID;
+            _pgXuanGuang = info.OriginXuanGuangID;
+            _pgDouLi = info.OriginDouLiID;
+            _pgMianSha = info.OriginMianShaID;
+            _pgYuPei = info.OriginYuPeiID;
+            _pgXunZhang = info.OriginXunZhangID;
+            _pgHuDun = info.OriginHuDunID;
+            _pgHuJian = info.OriginHuJianID;
+            _pgPiFeng = info.OriginPiFengID;
+            _pgLiaoShang = info.OriginLiaoShangID;
+            _originModel = PlayerBodyModelResolved();
             Level = info.Level;
 
             CurrentLocation = info.Location;
@@ -4583,6 +4651,49 @@ namespace Client.MirObjects
             float oldOpacity = DXManager.Opacity;
             if (Hidden && !DXManager.Blending) DXManager.SetOpacity(0.5F);
 
+            // 原始传奇 CDN 独立图集优先：分层复合（法阵→足迹→坐骑→翅膀→身体→武器→旋光→称号→徽记），每层一个 origin model/{n}。
+            // 身体/武器来自 cm.item[col17]（装扮/幻武可覆盖）；装扮类来自 cm.title[id].model。资源未就绪时回落到 .Lib 分层绘制。
+            if (_originModel > 0)
+            {
+                int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
+                int dir = Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.DefaultTotalDir, (int)Direction);
+                // 原始传奇 5 方向精灵：逻辑方向 5/6/7（左下/左/左上）复用右侧真帧 3/2/1，绘制时需水平翻转。
+                bool mirror = (int)Direction >= 5;
+                KFramework.MonoGame.SpriteEffects fx = mirror ? KFramework.MonoGame.SpriteEffects.FlipHorizontally : KFramework.MonoGame.SpriteEffects.None;
+                bool drawn = false;
+                // 局部：绘制一个 origin 层（请求+锚定绘制），成功则置 drawn。
+                void DrawLayer(int m)
+                {
+                    if (m <= 0) return;
+                    Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Player, m, action, dir);
+                    if (Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Player, m, action, dir, FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour, fx))
+                        drawn = true;
+                }
+                // 分层顺序（底→顶）：法阵→足迹→坐骑→翅膀→披风(后)→身体→护肩/玉佩/勋章/斗笠/面纱(覆盖)→武器→护盾(副手)→疗伤石→旋光/称号/徽记(顶)
+                DrawLayer(PlayerZhenfaModel());    // 法阵（type5，地面法阵）
+                DrawLayer(PlayerFootModel());      // 足迹（type2，脚下痕迹）
+                DrawLayer(PlayerMountModel());     // 坐骑（底）
+                DrawLayer(PlayerWingModel());      // 翅膀（后）
+                DrawLayer(PlayerPiFengModel());    // 披风（背后）
+                DrawLayer(_originModel);           // 身体（中，含装扮覆盖）
+                DrawLayer(PlayerHuJianModel());    // 护肩
+                DrawLayer(PlayerYuPeiModel());     // 玉佩
+                DrawLayer(PlayerXunZhangModel());  // 勋章（荣誉勋章）
+                DrawLayer(PlayerDouLiModel());     // 斗笠（头部）
+                DrawLayer(PlayerMianShaModel());   // 面纱（面部）
+                DrawLayer(PlayerWeaponModel());    // 武器（前，含幻武覆盖）
+                DrawLayer(PlayerHuDunModel());     // 护盾（副手）
+                DrawLayer(PlayerLiaoShangModel()); // 疗伤石（无精灵，保留）
+                DrawLayer(PlayerXuanGuangModel()); // 旋光（type7，环绕光效）
+                DrawLayer(PlayerTitleModel());     // 称号（type3，头顶光环/称号）
+                DrawLayer(PlayerHuiJiModel());     // 徽记（type4，徽印）
+                if (drawn)
+                {
+                    DXManager.SetOpacity(oldOpacity);
+                    return;
+                }
+            }
+
             DrawMount();
 
             if (!RidingMount)
@@ -4891,6 +5002,14 @@ namespace Client.MirObjects
 
         public override bool MouseOver(Point p)
         {
+            if (_originModel > 0)
+            {
+                int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
+                int dir = Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.DefaultTotalDir, (int)Direction);
+                if (Mir2OriginObjectLibrary.TryGetDrawRect(Mir2ObjectKind.Player, _originModel, action, dir, FrameIndex,
+                                                          DrawLocation.X, DrawLocation.Y, out KFramework.MonoGame.Rectangle krect, 1f))
+                    return krect.Contains(p.X, p.Y);
+            }
             return MapControl.MapLocation == CurrentLocation || BodyLibrary != null && BodyLibrary.VisiblePixel(DrawFrame + ArmourOffSet, p.Subtract(FinalDrawLocation), false);
         }
 

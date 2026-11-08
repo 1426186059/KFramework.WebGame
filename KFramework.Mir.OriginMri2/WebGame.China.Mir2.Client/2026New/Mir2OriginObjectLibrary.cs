@@ -10,7 +10,7 @@ using KFramework.MonoGame;
 using KFramework.MonoGameExtend;       // KSpriteInfo
 using Rectangle = KFramework.MonoGame.Rectangle;
 
-/// <summary>需要走原始传奇 CDN 独立图集的三类对象。</summary>
+/// <summary>需要走原始传奇 CDN 独立图集的对象类型（玩家与怪物/NPC 同一套 model 资源）。</summary>
 public enum Mir2ObjectKind
 {
     /// <summary>怪物：model/{模型号}/{sourceId}.png|json，按动作+方向分图集。</summary>
@@ -18,11 +18,13 @@ public enum Mir2ObjectKind
     /// <summary>NPC：与怪物同一套 model 资源，独立图集、独立缓存键。</summary>
     NPC,
     /// <summary>物品：icon/tool/{图标号}.png，单张图即一帧，无独立 json。</summary>
-    Item
+    Item,
+    /// <summary>玩家角色：与怪物同一套 model 资源（参考模型 9027），按 职业+性别 选模型号。</summary>
+    Player
 }
 
 /// <summary>
-/// 原始传奇「怪物 / NPC / 物品」三类【独立图集】的统一资源管理器。
+/// 原始传奇「怪物 / NPC / 物品 / 玩家」四类【独立图集】的统一资源管理器。
 ///
 /// 与 Mir2AtlasLibrary（UI 共享图集，按 manifest key + default.res.json 别名解析）是两套体系：
 /// UI 图集是「一张大盘 + 很多帧」，而对象资源是「每个模型/每个动作方向 各自一张 png + 一张 json」，
