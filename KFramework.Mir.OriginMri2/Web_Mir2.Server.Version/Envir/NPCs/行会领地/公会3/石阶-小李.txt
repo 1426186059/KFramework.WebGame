@@ -1,7 +1,0 @@
-[@main]
-<移动到/@move2nd> 2 层。
-<关闭/@exit>
-
-[@move2nd]
-#ACT
-MOVE GA23 15 42

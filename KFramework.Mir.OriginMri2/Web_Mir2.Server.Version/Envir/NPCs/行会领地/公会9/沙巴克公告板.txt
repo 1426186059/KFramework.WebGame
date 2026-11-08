@@ -1,6 +1,0 @@
-[@main]
-#SAY
-你好 <$USERNAME>！
-这里是公会领地公告板。
-<查看/@TOWNBOARDLIST> 公会领地公告板。
-<跳过/@exit> 公会领地公告板。

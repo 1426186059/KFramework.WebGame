@@ -1,9 +1,0 @@
-[@main]
-#SAY
-你玩够了吗，想要回去了吗？
-
-<是/@yes>  <否/@exit>
-
-[@yes]
-#ACT
-MOVE EBEE03 204 255
