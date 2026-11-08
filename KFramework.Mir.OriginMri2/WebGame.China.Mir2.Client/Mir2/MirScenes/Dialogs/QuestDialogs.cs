@@ -361,6 +361,16 @@ namespace Client.MirScenes.Dialogs
             _descLabel.ForeColour = Color.White;
             _descLabel.Text = text;
             _descLabel.Visible = true;
+
+            // 奖励提示紧挨着任务描述的下一行：按描述实际换行高度动态定位 Reward（Finish 按钮保持原位置不动）。
+            int descWidth = _descLabel.Size.Width;
+            var measured = TextRenderer.MeasureText(text, _descLabel.Font, new Size(descWidth, 2000), TextFormatFlags.WordBreak);
+            int descHeight = Math.Max(16, measured.Height);
+            _descLabel.Size = new Size(descWidth, descHeight);
+
+            const int gap = 6;
+            int rewardY = _descLabel.Location.Y + descHeight + gap;
+            Reward.Location = new Point(PanelIndent, rewardY);
         }
 
         // 去除任务描述里的 {文字/颜色} 与 [TYPE:idx|名字] / [名字] 标记，仅保留可阅读文本。
