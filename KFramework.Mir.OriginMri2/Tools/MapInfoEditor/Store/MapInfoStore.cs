@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -529,6 +530,194 @@ namespace MapInfoEditor
                     return;
                 }
             }
+        }
+
+        // ---------- 全局修复：从原始 .dat 重新生成所有地图的安全区 ----------
+        // 复用解码网格（CellFlags bit1=安全区），把安全格聚成连通分量，对每簇求最小朝向矩形（旋转卡壳），
+        // 写回 SafeZones（Location 中心 + Size/SizeY 半轴 + Rotation）。与引擎 InRotatedRange 同款旋转公式，
+        // 保证生成矩形完整包含该簇所有安全格。仅处理能成功解码（dat 有块且有配置宽高）的地图；其余保持原样。
+        public object FixAllSafeZones()
+        {
+            string backup = MapInfoPath + ".bak";
+            try { if (File.Exists(MapInfoPath)) File.Copy(MapInfoPath, backup, true); }
+            catch { backup = ""; }
+
+            int mapsProcessed = 0, skippedNoData = 0, mapsChanged = 0, zonesCreated = 0;
+            var details = new List<object>();
+
+            foreach (var e in Maps)
+            {
+                var data = DecodeMap(e.Index);
+                if (data == null) { skippedNoData++; continue; }
+                // 仅在能用配置宽高精确解码时才重算（否则网格为估算，坐标不可信，保持原 SafeZones 不动）
+                ConfigDims.TryGetValue(e.Index, out var dim);
+                if (dim.w <= 0 || dim.h <= 0 || !string.IsNullOrEmpty(data.Warn)) { skippedNoData++; continue; }
+
+                var safe = new List<(int c, int r)>();
+                for (int i = 0; i < data.Cols * data.Rows; i++)
+                    if ((data.CellFlags[i] & 2) != 0)
+                        safe.Add((i % data.Cols, i / data.Cols));
+
+                mapsProcessed++;
+
+                var oldZones = GetSafeZones(e);
+                bool hadStart = oldZones.Any(z => z.Start);
+                var oldStartCenters = oldZones.Where(z => z.Start).Select(z => (z.X, z.Y)).ToList();
+
+                var arr = GetValues(e, "SafeZones");
+                bool hadZones = arr.Count > 0;
+                arr.Clear();
+
+                if (safe.Count == 0)
+                {
+                    if (hadZones) mapsChanged++;
+                    continue;
+                }
+
+                var clusters = ClusterSafeCells(safe);
+
+                // 若原图标记过 StartPoint，挑离旧 StartPoint 中心最近的簇继承该标记（保持“城镇/出生点”语义）
+                int startClusterIdx = -1;
+                if (hadStart && clusters.Count > 0)
+                {
+                    double best = double.MaxValue;
+                    for (int ci = 0; ci < clusters.Count; ci++)
+                    {
+                        var rect = MinAreaRect(clusters[ci]);
+                        foreach (var sc in oldStartCenters)
+                        {
+                            double d = (rect.cx - sc.X) * (rect.cx - sc.X) + (rect.cy - sc.Y) * (rect.cy - sc.Y);
+                            if (d < best) { best = d; startClusterIdx = ci; }
+                        }
+                    }
+                }
+
+                for (int ci = 0; ci < clusters.Count; ci++)
+                {
+                    var comp = clusters[ci];
+                    var rect = MinAreaRect(comp);
+                    double rot = rect.rot;
+                    int cx = (int)Math.Round(rect.cx);
+                    int cy = (int)Math.Round(rect.cy);
+                    // 用整数中心重算半轴，确保整数坐标下仍完整包含该簇（ceil 防止边界差 0.5 漏格）
+                    double ux = Math.Cos(rot * Math.PI / 180.0);
+                    double uy = Math.Sin(rot * Math.PI / 180.0);
+                    double vx = -uy, vy = ux;
+                    double maxU = 0, maxV = 0;
+                    foreach (var p in comp)
+                    {
+                        double pu = (p.c - cx) * ux + (p.r - cy) * uy;
+                        double pv = (p.c - cx) * vx + (p.r - cy) * vy;
+                        if (Math.Abs(pu) > maxU) maxU = Math.Abs(pu);
+                        if (Math.Abs(pv) > maxV) maxV = Math.Abs(pv);
+                    }
+                    int hx = (int)Math.Ceiling(maxU);
+                    int hy = (int)Math.Ceiling(maxV);
+                    bool start = (ci == startClusterIdx);
+                    AddSafeZone(e, cx, cy, hx, start, hy, (float)rot);
+                    zonesCreated++;
+                }
+                mapsChanged++;
+                details.Add(new { index = e.Index, title = e.Title, safeCells = safe.Count, clusters = clusters.Count });
+            }
+
+            Save();
+            return new { ok = true, mapsProcessed, skippedNoData, mapsChanged, zonesCreated, backup, details };
+        }
+
+        // 8 邻接连通分量聚类
+        private static List<List<(int c, int r)>> ClusterSafeCells(List<(int c, int r)> cells)
+        {
+            var set = new HashSet<(int, int)>(cells);
+            var seen = new HashSet<(int, int)>();
+            var result = new List<List<(int c, int r)>>();
+            foreach (var p in cells)
+            {
+                if (!seen.Add(p)) continue;
+                var comp = new List<(int c, int r)>();
+                var stack = new Stack<(int c, int r)>();
+                stack.Push(p);
+                while (stack.Count > 0)
+                {
+                    var cur = stack.Pop();
+                    comp.Add(cur);
+                    for (int dc = -1; dc <= 1; dc++)
+                        for (int dr = -1; dr <= 1; dr++)
+                        {
+                            if (dc == 0 && dr == 0) continue;
+                            var q = (cur.c + dc, cur.r + dr);
+                            if (set.Contains(q) && seen.Add(q)) stack.Push(q);
+                        }
+                }
+                result.Add(comp);
+            }
+            return result;
+        }
+
+        // 最小朝向矩形（旋转卡壳 on 凸包）：返回 (中心cx,cy, 半宽hx, 半高hy, 旋转角rot°)
+        private static (double cx, double cy, double hx, double hy, double rot) MinAreaRect(List<(int c, int r)> pts)
+        {
+            if (pts.Count == 0) return (0, 0, 0, 0, 0);
+            if (pts.Count <= 2)
+            {
+                int minc = int.MaxValue, maxc = int.MinValue, minr = int.MaxValue, maxr = int.MinValue;
+                foreach (var p in pts) { if (p.c < minc) minc = p.c; if (p.c > maxc) maxc = p.c; if (p.r < minr) minr = p.r; if (p.r > maxr) maxr = p.r; }
+                double hx = (maxc - minc) / 2.0, hy = (maxr - minr) / 2.0;
+                return ((minc + maxc) / 2.0, (minr + maxr) / 2.0, hx, hy, 0.0);
+            }
+            var hull = ConvexHull(pts);
+            double bestArea = double.MaxValue;
+            double bux = 1, buy = 0, bcx = 0, bcy = 0, bhx = 0, bhy = 0;
+            int n = hull.Count;
+            for (int i = 0; i < n; i++)
+            {
+                var p1 = hull[i]; var p2 = hull[(i + 1) % n];
+                double dx = p2.c - p1.c, dy = p2.r - p1.r;
+                double L = Math.Sqrt(dx * dx + dy * dy);
+                if (L < 1e-9) continue;
+                double ux = dx / L, uy = dy / L;
+                double vx = -uy, vy = ux;
+                double minU = double.MaxValue, maxU = double.MinValue, minV = double.MaxValue, maxV = double.MinValue;
+                foreach (var p in pts)
+                {
+                    double pu = p.c * ux + p.r * uy;
+                    double pv = p.c * vx + p.r * vy;
+                    if (pu < minU) minU = pu; if (pu > maxU) maxU = pu;
+                    if (pv < minV) minV = pv; if (pv > maxV) maxV = pv;
+                }
+                double area = (maxU - minU) * (maxV - minV);
+                if (area < bestArea - 1e-9)
+                {
+                    bestArea = area; bux = ux; buy = uy;
+                    bcx = (minU + maxU) / 2; bcy = (minV + maxV) / 2;
+                    bhx = (maxU - minU) / 2; bhy = (maxV - minV) / 2;
+                }
+            }
+            double cx = bcx * bux + bcy * (-buy);
+            double cy = bcx * buy + bcy * bux;
+            double rot = Math.Atan2(buy, bux) * 180.0 / Math.PI;
+            // 矩形与旋转角 ±180° 等价（点对称重合），规范化到 (-90°,90] 避免出现 135° 这类等价但难读的角
+            if (rot > 90) rot -= 180;
+            else if (rot <= -90) rot += 180;
+            return (cx, cy, bhx, bhy, rot);
+        }
+
+        // 单调链凸包
+        private static List<(int c, int r)> ConvexHull(List<(int c, int r)> pts)
+        {
+            var ps = pts.Distinct().ToList();
+            ps.Sort((a, b) => a.c != b.c ? a.c.CompareTo(b.c) : a.r.CompareTo(b.r));
+            if (ps.Count <= 2) return ps;
+            double Cross((int c, int r) o, (int c, int r) a, (int c, int r) b)
+                => (a.c - o.c) * (double)(b.r - o.r) - (a.r - o.r) * (double)(b.c - o.c);
+            var lower = new List<(int c, int r)>();
+            foreach (var p in ps) { while (lower.Count >= 2 && Cross(lower[lower.Count - 2], lower[lower.Count - 1], p) <= 0) lower.RemoveAt(lower.Count - 1); lower.Add(p); }
+            var upper = new List<(int c, int r)>();
+            for (int i = ps.Count - 1; i >= 0; i--) { var p = ps[i]; while (upper.Count >= 2 && Cross(upper[upper.Count - 2], upper[upper.Count - 1], p) <= 0) upper.RemoveAt(upper.Count - 1); upper.Add(p); }
+            lower.RemoveAt(lower.Count - 1);
+            upper.RemoveAt(upper.Count - 1);
+            lower.AddRange(upper);
+            return lower;
         }
     }
 }

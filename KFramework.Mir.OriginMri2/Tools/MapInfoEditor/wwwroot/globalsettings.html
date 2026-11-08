@@ -39,6 +39,13 @@
     <button id="fixNpcBtn" class="action">🔧 扫描并修复所有 NPC 不可走点</button>
     <div id="globalResult" class="gs-result"></div>
   </div>
+
+  <div class="panel">
+    <div class="gs-title">安全区修正</div>
+    <p class="gs-desc">从原始地图 .dat（权威源）重新生成全部地图的安全区：取每个格的“安全区”标记，聚成连通分量后求最小朝向矩形，覆盖写入 MapInfo_Fix 的 SafeZones（写前自动备份为 MapInfo_Fix.json.bak）。无法解码（无 .dat 块或无配置宽高）的地图保持原样。</p>
+    <button id="fixSafeBtn" class="action">🛡 修正所有地图安全区（从 .dat 重算）</button>
+    <div id="safeResult" class="gs-result"></div>
+  </div>
 </div>
 
 <script>
@@ -63,6 +70,22 @@ $('fixNpcBtn').onclick = async () => {
       $('globalResult').innerHTML = html;
     }
   } catch (e) { $('globalResult').textContent = '异常: ' + e.message; }
+  finally { btn.disabled = false; }
+};
+
+$('fixSafeBtn').onclick = async () => {
+  const btn = $('fixSafeBtn');
+  btn.disabled = true; $('safeResult').textContent = '重算中...';
+  try {
+    const res = await fetch('/api/fixsafzones', { method: 'POST' });
+    const j = await res.json();
+    if (!res.ok) { $('safeResult').textContent = '失败: ' + (j.error || res.status); }
+    else {
+      let html = `处理 ${j.mapsProcessed} 张地图（跳过 ${j.skippedNoData} 张无数据），改写 ${j.mapsChanged} 张，生成 ${j.zonesCreated} 个安全区矩形。`;
+      if (j.backup) html += `<br/>原文件已备份：${esc(j.backup)}`;
+      $('safeResult').innerHTML = html;
+    }
+  } catch (e) { $('safeResult').textContent = '异常: ' + e.message; }
   finally { btn.disabled = false; }
 };
 </script>

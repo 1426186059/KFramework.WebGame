@@ -491,4 +491,11 @@ app.MapPost("/api/fixnpcs", () =>
     return Results.Ok(new { ok = true, scanned, fixedCount, skippedNoMap, fixes });
 });
 
+// ---------- 全局修复：从原始 .dat 重新生成所有地图安全区（覆盖现有 SafeZones） ----------
+app.MapPost("/api/fixsafzones", () =>
+{
+    var result = store.FixAllSafeZones();
+    return Results.Ok(result);
+});
+
 app.Run();
