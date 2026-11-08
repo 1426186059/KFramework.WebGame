@@ -458,23 +458,50 @@ public static class Mir2OriginObjectLibrary
     }
 
     /// <summary>
-    /// 按注册点绘制模型帧（怪物/NPC/玩家）：模型图集 frames 数组里的 offX/offY 是帧在虚拟画布
-    /// sourceW×sourceH 中的位置，以该模型该动作的 standx/standy（来自 2config.modelInfo，见内嵌
-    /// modelInfo_stand.json）作为枢轴对齐到 (screenX, screenY)，复刻原始传奇“脚底对齐角色点、
-    /// 容器绕角色点翻面”的复合方式；查不到枢轴时回落画布中心。物品自动退化为直接按位置绘制。
+    /// 按注册点绘制模型帧（怪物/NPC/玩家）。该页游资源为 8 方向独立精灵（CDN 上 0..7 各自有真帧），
+    /// 因此翻面请求优先改用对应 8 向真帧直接绘制（不再运行时翻面），避免“翻出的 3/2/1 镜像”与
+    /// “真正的 5/6/7 姿势”不一致造成的转身跳变；仅当 8 向真帧确实缺失（5 向模型）才回落镜像逻辑。
+    /// 枢轴取该模型该动作的 standx/standy（来自 2config.modelInfo，见内嵌 modelInfo_stand.json），
+    /// 使脚底对齐角色点；查不到时回落画布中心。物品自动退化为直接按位置绘制。
     /// 数据由 Mir2AtlasSheet 解析（Anchors / SourceW / SourceH），本类只负责统一调度。
     /// </summary>
     public static bool DrawAnchored(Mir2ObjectKind kind, int id, int action, int direction, int frameIndex,
                                     int screenX, int screenY, KFramework.MonoGame.Color? colour = null,
                                     SpriteEffects effects = SpriteEffects.None, float scale = 1f)
     {
-        var key = CacheKey(kind, id, action, direction);
+        // 该页游资源为 8 方向独立精灵：逻辑方向 5/6/7 在 CDN 上各自有真帧，并非“5 向 + 运行时翻面”。
+        // 翻面请求时，若对应的 8 向真帧已就绪（或尚未拉取），则直接用它、不再运行时翻面，
+        // 避免“翻出来的 3/2/1 镜像”与“真正的 5/6/7 姿势”不一致导致的转身跳变。
+        // 若 8 向真帧确实缺失（5 向模型），回落到原 5 向镜像逻辑，行为不变。
+        int loadDir = direction;
+        bool flip = (effects & SpriteEffects.FlipHorizontally) != 0;
+        if (flip)
+        {
+            int rawDir = 8 - direction;                 // 由 5 向折叠值还原出真实 8 向朝向
+            var key8 = CacheKey(kind, id, action, rawDir);
+            bool has8 = _sheets.TryGetValue(key8, out var s8) && s8 != null && s8.IsCompletedSuccessfully
+                        && s8.Result != null && s8.Result.Frames != null && s8.Result.Frames.Count > 0;
+            if (has8)
+            {
+                loadDir = rawDir;
+                flip = false;
+            }
+            else if (!_missing.ContainsKey(key8))
+            {
+                Request(kind, id, action, rawDir);     // 试拉 8 向真帧；未就绪时本帧不绘，下一帧生效
+                loadDir = rawDir;
+                flip = false;
+            }
+        }
+        var drawEffects = flip ? effects : (effects & ~SpriteEffects.FlipHorizontally);
+
+        var key = CacheKey(kind, id, action, loadDir);
         if (_missing.ContainsKey(key)) return false;
 
         if (kind == Mir2ObjectKind.Item)
-            return DrawSpriteAt(kind, id, action, direction, frameIndex, screenX, screenY, colour, effects);
+            return DrawSpriteAt(kind, id, action, loadDir, frameIndex, screenX, screenY, colour, drawEffects);
 
-        if (!_sheets.TryGetValue(key, out var st) || st == null || !st.IsCompletedSuccessfully) return false;
+        if (!_sheets.TryGetValue(key, out var st) || st == null || !st.IsCompletedSuccessfully) { Request(kind, id, action, loadDir); return false; }
         var sheet = st.Result;
         if (sheet == null || sheet.Frames == null || sheet.Frames.Count == 0) return false;
         if (!sheet.TryGetFrameName(frameIndex, out var frameName)) return false;
@@ -502,13 +529,13 @@ public static class Mir2OriginObjectLibrary
         int dw = (int)Math.Round(src.Width * scale);
         int dh = (int)Math.Round(src.Height * scale);
         int dx = x + (src.Width - dw) / 2;
-        // 镜像（绕角色点翻面，复刻原版容器 scaleX=-1）：把目标矩形整体以 screenX 为轴镜像，
-        // 脚底保持不动；DXManager.Draw 的 FlipHorizontally 在矩形内翻面，二者合起来即绕角色点翻。
-        if ((effects & SpriteEffects.FlipHorizontally) != 0)
+        // 镜像（仅 5 向模型回落路径会走到这里）：把目标矩形整体以 screenX 为轴镜像，脚底保持不动；
+        // DXManager.Draw 的 FlipHorizontally 在矩形内翻面，二者合起来即绕角色点翻。
+        if (flip)
             dx = 2 * screenX - dx - dw;
         int dy = y + (src.Height - dh);
         DXManager.Draw(sprite.Texture, src, new Rectangle(dx, dy, Math.Max(1, dw), Math.Max(1, dh)),
-                       colour ?? KFramework.MonoGame.Color.White, MirBlend.Normal.ToBlendState(), effects);
+                       colour ?? KFramework.MonoGame.Color.White, MirBlend.Normal.ToBlendState(), drawEffects);
         return true;
     }
 
@@ -552,14 +579,29 @@ public static class Mir2OriginObjectLibrary
         return new KFramework.MonoGame.Size(r.Width, r.Height);
     }
 
-    /// <summary>获取模型帧的实际绘制矩形（屏幕坐标），用于鼠标命中检测；与 DrawAnchored 同一套坐标公式，
-    /// 保证命中框与显示像素完全对齐。资源未就绪或缺失返回 false。</summary>
+    /// <summary>获取模型帧的实际绘制矩形（屏幕坐标），用于鼠标命中检测；与 DrawAnchored 完全一致的坐标公式
+    /// （8 向真帧优先、standx/standy 枢轴、镜像绕角色点），保证命中框与显示像素完全对齐。
+    /// 资源未就绪或缺失返回 false。mirror 表示逻辑方向 5..7（需绕角色点翻面）。</summary>
     public static bool TryGetDrawRect(Mir2ObjectKind kind, int id, int action, int direction, int frameIndex,
-                                      int screenX, int screenY, out Rectangle rect, float scale = 1f)
+                                      int screenX, int screenY, out Rectangle rect, float scale = 1f, bool mirror = false)
     {
         rect = default(Rectangle);
         if (kind == Mir2ObjectKind.Item) return false;
-        var key = CacheKey(kind, id, action, direction);
+
+        // 与 DrawAnchored 一致：优先用 8 向真帧，否则回落 5 向镜像。
+        int loadDir = direction;
+        bool flip = mirror;
+        if (flip)
+        {
+            int rawDir = 8 - direction;
+            var key8 = CacheKey(kind, id, action, rawDir);
+            bool has8 = _sheets.TryGetValue(key8, out var s8) && s8 != null && s8.IsCompletedSuccessfully
+                        && s8.Result != null && s8.Result.Frames != null && s8.Result.Frames.Count > 0;
+            if (has8) { loadDir = rawDir; flip = false; }
+            else if (!_missing.ContainsKey(key8)) { loadDir = rawDir; flip = false; }
+        }
+
+        var key = CacheKey(kind, id, action, loadDir);
         if (_missing.ContainsKey(key)) return false;
         if (!_sheets.TryGetValue(key, out var st) || st == null || !st.IsCompletedSuccessfully) return false;
         var sheet = st.Result;
@@ -570,13 +612,18 @@ public static class Mir2OriginObjectLibrary
         if (sheet.Anchors != null && sheet.Anchors.TryGetValue(frameName, out var a))
         { ox = (int)a.X; oy = (int)a.Y; }
         var src = sprite.SourceRectangle;
-        int cx = sheet.SourceW > 0 ? sheet.SourceW / 2 : src.Width / 2;
-        int cy = sheet.SourceH > 0 ? sheet.SourceH / 2 : src.Height / 2;
+        int cx, cy;
+        if (!TryGetStand(id, action, out cx, out cy))
+        {
+            cx = sheet.SourceW > 0 ? sheet.SourceW / 2 : src.Width / 2;
+            cy = sheet.SourceH > 0 ? sheet.SourceH / 2 : src.Height / 2;
+        }
         int x = screenX + ox - cx;
         int y = screenY + oy - cy;
         int dw = (int)Math.Round(src.Width * scale);
         int dh = (int)Math.Round(src.Height * scale);
         int dx = x + (src.Width - dw) / 2;
+        if (flip) dx = 2 * screenX - dx - dw;
         int dy = y + (src.Height - dh);
         rect = new Rectangle(dx, dy, Math.Max(1, dw), Math.Max(1, dh));
         return true;

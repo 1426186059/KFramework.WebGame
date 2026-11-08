@@ -4949,7 +4949,8 @@ namespace Client.MirObjects
                 int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
                 int dir = Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.DefaultTotalDir, (int)Direction);
                 if (Mir2OriginObjectLibrary.TryGetDrawRect(Mir2ObjectKind.Player, _originModel, action, dir, FrameIndex,
-                                                          DrawLocation.X, DrawLocation.Y, out KFramework.MonoGame.Rectangle krect, 1f))
+                                                          DrawLocation.X, DrawLocation.Y, out KFramework.MonoGame.Rectangle krect, 1f,
+                                                          mirror: (int)Direction >= 5))
                     return krect.Contains(p.X, p.Y);
             }
             return MapControl.MapLocation == CurrentLocation || BodyLibrary != null && BodyLibrary.VisiblePixel(DrawFrame + ArmourOffSet, p.Subtract(FinalDrawLocation), false);
