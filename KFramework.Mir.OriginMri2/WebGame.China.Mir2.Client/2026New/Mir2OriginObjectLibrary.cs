@@ -75,6 +75,9 @@ public static class Mir2OriginObjectLibrary
         new(StringComparer.OrdinalIgnoreCase);
     private static readonly ConcurrentDictionary<string, byte> _missing =
         new(StringComparer.OrdinalIgnoreCase);
+    // 已打印过“加载失败”的 key，避免每帧刷日志。
+    private static readonly ConcurrentDictionary<string, byte> _loggedMissing =
+        new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>版本表是否就绪。未就绪时仍可用无版本段路径加载，只是可能 404。</summary>
     public static bool IsReady => _versionsReady;
@@ -264,6 +267,12 @@ public static class Mir2OriginObjectLibrary
             var tex = await Mir2OriginResource.GetTextureAsync(pngPath, device, CancellationToken.None);
             if (tex == null)
             {
+                if (!_loggedMissing.ContainsKey(key))
+                {
+                    _loggedMissing[key] = 1;
+                    KFramework.MonoGame.PrintTool.LogError(
+                        $"[Mir2ObjectAtlas] 模型图集加载失败(404/不可达) key={key} url={Mir2OriginResource.ImageBaseUrl}/{pngPath}");
+                }
                 MarkMissing(key);
                 return null;
             }

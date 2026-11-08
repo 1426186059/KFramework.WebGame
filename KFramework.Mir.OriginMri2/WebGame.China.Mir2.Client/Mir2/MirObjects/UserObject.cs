@@ -83,6 +83,9 @@ namespace Client.MirObjects
             Gender = info.Gender;
             Level = info.Level;
 
+            // 纯线上：本地玩家也必须从 Equipment 反推并设置 origin 分层模型号，否则 _originModel=0 会跳过整个 origin 绘制分支（整人黑屏）。
+            SetUserOriginModels(info.Equipment);
+
             CurrentLocation = info.Location;
             MapLocation = info.Location;
             GameScene.Scene.MapControl.AddObject(this);
@@ -131,6 +134,7 @@ namespace Client.MirObjects
             Equipment = p.Equipment;
 
             BindAllItems();
+            SetUserOriginModels(Equipment);   // 装备变化后刷新 origin 分层模型号（与 Load 保持一致）
             RefreshStats();
         }
 

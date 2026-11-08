@@ -42,16 +42,33 @@ namespace Client.MirObjects
         // 原始页游玩家外观是【分层复合精灵】（仿 animal.init2 / updateEquipments）：
         //   坐骑(底) → 翅膀(后) → 身体 → 武器 → 帽/时装(前)
         // 每层各自一个 origin model/{n}，坐标系统一，叠在 DrawLocation 即合成。
-        // 身体模型（经逆向页游 Logic.getEquipId 默认值确认）：裸身 男=9001 / 女=9002（页游 sex: 2=女）。
+        // 身体模型（经逆向页游 main.min.js 确认）：身体 = 穿了盔甲/时装就用其模型，否则裸身 男=9001 / 女=9002。
+        //   页游原码：l = null!=i && i>0 ? i : 2==t.sex ? 9002 : 9001   —— 仅按【性别】，不按职业！
+        //   职业差异由所穿盔甲的 cm.item[col17] 体现（见下方 GetModel(_pgArmour)），故裸身不需要职业分支。
         // 穿衣时身体 = cm.item[盔甲id][17]；武器 = cm.item[武器id][17]；武器特效 = col18；翅膀 = cm.ring[wingId].model；坐骑 = fashionMount。
-        // 9027 是某职业/盔甲/时装的具体身体模型（用户参考）。解算：Mir2OriginModelResolver.GetModel(页游物品id, 性别, 回退)。
-        private static int PlayerBodyModel(MirClass cls, MirGender gender)
-            => gender == MirGender.Female ? 9002 : 9001;
 
-        // 身体层：优先【装扮 type0】（时装身体，覆盖普通盔甲）；否则盔甲槽 cm.item[col17]；无则裸身 9001/9002。
+        // 已记录过“身体模型缺失、回落裸身”的模型号，避免每帧刷日志。
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<int, byte> _loggedBodyFallback = new();
+
+        // 身体层：装扮 type0（时装身体，覆盖盔甲） > 盔甲槽 cm.item[col17] > 裸身 9001(男)/9002(女)。
         private int PlayerBodyModelResolved()
-            => Mir2OriginModelResolver.GetTitleModel(_pgZhuangBan, Gender == MirGender.Female,
-                Mir2OriginModelResolver.GetModel(_pgArmour, Gender == MirGender.Female, Gender == MirGender.Female ? 9002 : 9001));
+        {
+            int costume = Mir2OriginModelResolver.GetTitleModel(_pgZhuangBan, Gender == MirGender.Female, 0);
+            if (costume > 0) return costume;                       // 时装身体（覆盖盔甲）
+            int armour = Mir2OriginModelResolver.GetModel(_pgArmour, Gender == MirGender.Female, 0);
+            if (armour > 0) return armour;                         // 普通盔甲（含职业差异）
+            return Gender == MirGender.Female ? 9002 : 9001;       // 裸身：男 9001 / 女 9002（仅按性别）
+        }
+        // 本地玩家(UserObject)没有 ObjectPlayer 包，需从自身 Equipment 反推各层 origin 模型号（页游物品 id = ItemInfo.Index）。
+        // 与服务端 ObjectPlayer.OriginArmourID = Equipment[Armour]?.Info.Index 同义；盔甲/武器/坐骑来自装备槽。
+        // 翅膀/装扮等本服务端未在下发的 UserInformation 中追踪，回落 0（不绘制）。仅按传入 Equipment 解算；装备变化(SetSlots)时再次调用刷新。
+        protected void SetUserOriginModels(UserItem[] equipment)
+        {
+            _pgArmour = equipment[(int)EquipmentSlot.Armour]?.Info?.Index ?? 0;   // 身体（穿盔甲用其模型，否则裸身）
+            _pgWeapon = equipment[(int)EquipmentSlot.Weapon]?.Info?.Index ?? 0;  // 武器层
+            _pgMount  = equipment[(int)EquipmentSlot.Mount]?.Info?.Index ?? 0;   // 坐骑层
+            _originModel = PlayerBodyModelResolved();
+        }
         // 武器层：优先【幻武 type1】（时装武器，覆盖普通武器）；否则武器槽 cm.item[col17]；无则 0 不绘制。
         private int PlayerWeaponModel()
             => Mir2OriginModelResolver.GetTitleModel(_pgHuanWu, Gender == MirGender.Female,
@@ -4651,8 +4668,9 @@ namespace Client.MirObjects
             float oldOpacity = DXManager.Opacity;
             if (Hidden && !DXManager.Blending) DXManager.SetOpacity(0.5F);
 
-            // 原始传奇 CDN 独立图集优先：分层复合（法阵→足迹→坐骑→翅膀→身体→武器→旋光→称号→徽记），每层一个 origin model/{n}。
-            // 身体/武器来自 cm.item[col17]（装扮/幻武可覆盖）；装扮类来自 cm.title[id].model。资源未就绪时回落到 .Lib 分层绘制。
+            // 原始传奇 CDN 独立图集：分层复合（法阵→足迹→坐骑→翅膀→身体→武器→旋光→称号→徽记），每层一个 origin model/{n}。
+            // 身体/武器来自 cm.item[col17]（装扮/幻武可覆盖）；装扮类来自 cm.title[id].model。
+            // 纯线上：origin 未就绪/缺失时不再回落 .Lib，直接跳过模型绘制（仅保留通用特效层）。
             if (_originModel > 0)
             {
                 int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
@@ -4675,7 +4693,20 @@ namespace Client.MirObjects
                 DrawLayer(PlayerMountModel());     // 坐骑（底）
                 DrawLayer(PlayerWingModel());      // 翅膀（后）
                 DrawLayer(PlayerPiFengModel());    // 披风（背后）
-                DrawLayer(_originModel);           // 身体（中，含装扮覆盖）
+                // 身体层：主模型（盔甲/时装，由 _originModel 给出）若在 CDN 确认缺失，回落裸身 9001/9002。
+                // 仍走 origin 独立图集（非旧 .Lib），保证玩家始终可见，而不是整人消失。
+                int bodyModel = _originModel;
+                if (Mir2OriginObjectLibrary.IsMissing(Mir2ObjectKind.Player, bodyModel, action, dir))
+                {
+                    int naked = Gender == MirGender.Female ? 9002 : 9001;
+                    if (!_loggedBodyFallback.ContainsKey(bodyModel))
+                    {
+                        _loggedBodyFallback[bodyModel] = 1;
+                        CMain.SaveError($"[玩家] 身体模型 {bodyModel} 在 CDN 缺失，回落裸身 {naked}（仍走 origin，非旧 .Lib）。");
+                    }
+                    bodyModel = naked;
+                }
+                DrawLayer(bodyModel);                  // 身体（中，含装扮覆盖）
                 DrawLayer(PlayerHuJianModel());    // 护肩
                 DrawLayer(PlayerYuPeiModel());     // 玉佩
                 DrawLayer(PlayerXunZhangModel());  // 勋章（荣誉勋章）
@@ -4694,47 +4725,10 @@ namespace Client.MirObjects
                 }
             }
 
-            DrawMount();
 
-            if (!RidingMount)
-            {
-                if (Direction == MirDirection.Left || Direction == MirDirection.Up || Direction == MirDirection.UpLeft || Direction == MirDirection.DownLeft)
-                    DrawWeapon();
-                else
-                    DrawWeapon2();
-            }
-
-            DrawBody();
-
-            if (Direction == MirDirection.Up || Direction == MirDirection.UpLeft || Direction == MirDirection.UpRight || Direction == MirDirection.Right || Direction == MirDirection.Left)
-            {
-                DrawHead();
-                if (this != User)
-                {
-                    DrawWings();
-                }
-            }
-            else
-            {
-                if (this != User)
-                {
-                    DrawWings();
-                }
-                DrawHead();
-            }
             
 
-            if (!RidingMount)
-            {
-                if (Direction == MirDirection.UpRight || Direction == MirDirection.Right || Direction == MirDirection.DownRight || Direction == MirDirection.Down)
-                    DrawWeapon();
-                else
-                    DrawWeapon2();
-
-                if (Class == MirClass.Archer && HasClassWeapon)
-                    DrawWeapon2();
-            }
-
+            // 纯线上：origin 未就绪/缺失时不回落 .Lib，直接跳过模型绘制（通用特效层仍由 DrawBehindEffects/DrawEffects 负责）。
             DXManager.SetOpacity(oldOpacity);
         }
 
@@ -4849,58 +4843,7 @@ namespace Client.MirObjects
             Draw();
             DXManager.SetBlend(false);
         }
-        public void DrawBody()
-        {
-            bool oldGrayScale = DXManager.GrayScale;
-            Color drawColour = ApplyDrawColour();                     
 
-            if (BodyLibrary != null)
-                BodyLibrary.Draw(DrawFrame + ArmourOffSet, DrawLocation, drawColour, true);
-
-            DXManager.SetGrayscale(oldGrayScale);
-
-            //BodyLibrary.DrawTinted(DrawFrame + ArmourOffSet, DrawLocation, DrawColour, Color.DarkSeaGreen);
-        }
-        public void DrawHead()
-        {
-            if (HairLibrary != null)
-                HairLibrary.Draw(DrawFrame + HairOffSet, DrawLocation, DrawColour, true);
-        }
-		public void DrawWeapon()
-		{
-			if (Weapon < 0) return;
-
-			if (WeaponLibrary1 != null)
-			{
-				WeaponLibrary1.Draw(DrawFrame + WeaponOffSet, DrawLocation, DrawColour, true); //original
-
-				if (WeaponEffectLibrary1 != null)
-					WeaponEffectLibrary1.DrawBlend(DrawFrame + WeaponOffSet, DrawLocation, DrawColour, true, 0.4F);
-			}
-		}
-		public void DrawWeapon2()
-        {
-            if (Weapon == -1) return;
-
-            if (WeaponLibrary2 != null)
-                WeaponLibrary2.Draw(DrawFrame + WeaponOffSet, DrawLocation, DrawColour, true);
-        }
-        public void DrawWings()
-        {
-            if (WingEffect <= 0 || WingEffect >= 100) return;
-
-            if (WingLibrary != null)
-                WingLibrary.DrawBlend(DrawWingFrame + WingOffset, DrawLocation, DrawColour, true);
-        }
-
-
-        public void DrawMount()
-        {
-            if (MountType < 0 || !RidingMount) return;
-
-            if (MountLibrary != null)
-                MountLibrary.Draw(DrawFrame - 416 + MountOffset, DrawLocation, DrawColour, true);
-        }
 
         private bool IsVitalEffect(Effect effect)
         {

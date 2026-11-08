@@ -408,8 +408,9 @@ namespace Server.MirDatabase
             if (version > 100)
                 HeroBehaviour = (HeroBehaviour)reader.ReadByte();
 
-            // 装扮系统 active id（Envir.Version 117 → 118 新增；旧档(version<=117)无此段，跳过保持默认 0）
-            if (version > 117)
+            // 装扮系统 active id（Envir.Version 117 → 118 新增；旧档(version<=117)无此段，跳过保持默认 0）。
+            // 额外用剩余字节数防御：避免 v118 过渡档（仅写了 7 个 int）在更高版本下读越界。
+            if (version > 117 && reader.BaseStream.Position + 7 * 4 <= reader.BaseStream.Length)
             {
                 ActiveZhuangBan = reader.ReadInt32();
                 ActiveHuanWu = reader.ReadInt32();
@@ -420,8 +421,8 @@ namespace Server.MirDatabase
                 ActiveXuanGuang = reader.ReadInt32();
             }
 
-            // 页游装饰装备层 active id（Envir.Version 118 → 119 新增；旧档跳过）
-            if (version > 118)
+            // 页游装饰装备层 active id（Envir.Version 118 → 119 新增；旧档跳过）。同样做剩余字节防御。
+            if (version > 118 && reader.BaseStream.Position + 8 * 4 <= reader.BaseStream.Length)
             {
                 ActiveDouLi = reader.ReadInt32();
                 ActiveMianSha = reader.ReadInt32();

@@ -4326,9 +4326,8 @@ namespace Client.MirObjects
             bool oldGrayScale = DXManager.GrayScale;
             Color drawColour = ApplyDrawColour();
 
-            // 原始传奇 CDN 独立图集优先：model 号直接来自服务器 MonsterInfo.Image，
-            // 动作/方向按 2config.modelInfo + DirectionType 映射。资源未就绪（首次进图的异步下载窗口）
-            // 时才回落到 .Lib 占位库，不会崩，也不会每帧重复发起请求。
+            // 原始传奇 CDN 独立图集：model 号直接来自服务器 MonsterInfo.Image，
+            // 动作/方向按 2config.modelInfo + DirectionType 映射。纯线上：origin 未就绪/缺失时不再回落 .Lib，直接不绘制。
             if (_originModel > 0)
             {
                 int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
@@ -4346,11 +4345,6 @@ namespace Client.MirObjects
                     return;
                 }
             }
-
-            if (!DXManager.Blending && Frame.Blend)
-                BodyLibrary.DrawBlend(DrawFrame, DrawLocation, drawColour, true);
-            else
-                BodyLibrary.Draw(DrawFrame, DrawLocation, drawColour, true);
 
             DXManager.SetGrayscale(oldGrayScale);
             DXManager.SetOpacity(oldOpacity);

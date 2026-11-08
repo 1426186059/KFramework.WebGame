@@ -876,24 +876,8 @@ namespace Client.MirScenes
             float oldOpacity = DXManager.Opacity;
             DXManager.SetOpacity(0.4F);
 
-            //MapObject.User.DrawMount();
-
-            MapObject.User.DrawBody();
-
-            if ((MapObject.User.Direction == MirDirection.Up) ||
-                (MapObject.User.Direction == MirDirection.UpLeft) ||
-                (MapObject.User.Direction == MirDirection.UpRight) ||
-                (MapObject.User.Direction == MirDirection.Right) ||
-                (MapObject.User.Direction == MirDirection.Left))
-            {
-                MapObject.User.DrawHead();
-                MapObject.User.DrawWings();
-            }
-            else
-            {
-                MapObject.User.DrawWings();
-                MapObject.User.DrawHead();
-            }
+            // 纯线上：本地玩家同样走 origin（User.Draw 已只绘制 origin 模型），不再用旧 .Lib 分层绘制。
+            MapObject.User.Draw();
 
             DXManager.SetOpacity(oldOpacity);
 

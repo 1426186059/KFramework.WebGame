@@ -311,8 +311,7 @@ namespace Client.MirObjects
         }
         public override void Draw()
         {
-            // 换表后 Image 是原始传奇 model 号（1000+），与 .Lib 图集无关，LoadLibrary 常常返回 null。
-            // 因此 CDN 分支必须先于 BodyLibrary 判空执行，否则 NPC 会整个不画。
+            // 换表后 Image 是原始传奇 model 号（1000+），与 .Lib 图集无关。纯线上：origin 未就绪/缺失时不再回落 .Lib，直接不绘制。
             // 2config.modelInfo 里 NPC 待机动作 totaldir=1，方向一律折叠到 NONE(=4)。
             bool drawnByCdn = false;
             if (_originModel > 0)
@@ -322,17 +321,11 @@ namespace Client.MirObjects
                 Mir2OriginObjectLibrary.Request(Mir2ObjectKind.NPC, _originModel, action, dir);
                 drawnByCdn = Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.NPC, _originModel, action, dir,
                                                                    FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour, scale: Scale);
-                // 回退：当前动作帧未就绪（如误播到缺失图集）时改画已就绪的待机帧，保证 NPC 始终可见、不闪退消失。
+                // 回退：当前动作帧未就绪时改画已就绪的待机帧，保证 NPC 始终可见（仍走 origin，非 .Lib）。
                 if (!drawnByCdn)
                     drawnByCdn = Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.NPC, _originModel,
                                                                       Mir2OriginObjectLibrary.ActionStand, dir, 0,
                                                                       DrawLocation.X, DrawLocation.Y, DrawColour, scale: Scale);
-            }
-
-            if (!drawnByCdn)
-            {
-                if (BodyLibrary == null) return;
-                BodyLibrary.DrawTinted(DrawFrame, DrawLocation, DrawColour, Colour, true);
             }
 
             if (QuestIcon == QuestIcon.None) return;
