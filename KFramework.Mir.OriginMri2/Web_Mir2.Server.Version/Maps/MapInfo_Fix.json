@@ -49909,7 +49909,7 @@
         "Size": 5,
         "SizeY": 5,
         "Rotation": -45,
-        "StartPoint": false
+        "StartPoint": true
       }
     ],
     "Respawns": [

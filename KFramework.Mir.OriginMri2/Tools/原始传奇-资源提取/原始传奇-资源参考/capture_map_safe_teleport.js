@@ -1,15 +1,15 @@
 // ============================================================================
-// 原始传奇(JS版) —— 安全区 + 传送点 捕获脚本（含 传送点/边界 自动判别）
+// 原始传奇(JS版) —— 传送点 捕获脚本（含 传送点/边界 自动判别）
 // 用法：在【原始传奇】游戏网页按 F12 打开控制台，粘贴本脚本回车运行。
 //
 // 前提（已逆向确认）：
-//   原始传奇客户端 MapData.readData 只读 可走性(4bit) + 摆摊区 + 挂机区 + 安全区，
-//   客户端/配置/地图数据里没有 door/teleport 静态清单（JS 中 door/传送点 关键字 0 命中），
+//   原始传奇客户端/配置/地图数据里没有 door/teleport 静态清单（JS 中 door/传送点 关键字 0 命中），
 //   传送点由服务端决定。因此：
-//     · 安全区 —— 直接从 gd.map.safeArea / _safeDic 静态抓取。
 //     · 传送点 —— 运行时钩取：在玩家“准备进入某地图”的瞬间，记下
 //                 当前地图名 + 玩家所在格子坐标(x,y) + 目标地图，
 //                 并按“是否处于地图边缘”自动判别 传送点 / 边界走图，边玩边抓。
+//
+// 注：安全区已改为从原始地图 .dat 提取（见 MapInfoEditor 全局设置“修正所有地图安全区”），本脚本不再采集。
 //
 // 判别规则：用 map.config.width/height 反推网格行列(GRID 48×32)，若 (x,y) 落在
 //   距边缘 <= __TP_EDGE_MARGIN(默认2) 格内 → 边界走图；否则 → 传送点。
@@ -23,20 +23,7 @@
   window.__teleportLog = [];
   window.__TP_EDGE_MARGIN = window.__TP_EDGE_MARGIN || 2; // 边缘容差（格），可调
 
-  const toXY = a => ({ x: a[0], y: a[1] });
-
-  // ---------- 1) 安全区（静态，直接抓）----------
-  const cfg0 = map.config || {};
-  const safe = {
-    mapId: cfg0.id,
-    mapName: cfg0.name,
-    安全区: (map.safeArea || []).map(toXY),
-    摆摊区: (map.stallageArea || []).map(toXY),
-    挂机区: (map.guajiArea || []).map(toXY),
-    安全格数量: map._safeDic ? Object.keys(map._safeDic).length : 0
-  };
-  console.log('==== 当前地图 安全区 ====');
-  console.log(JSON.stringify(safe, null, 2));
+  // 注：安全区改为从原始地图 .dat 提取（见 MapInfoEditor 全局设置“修正所有地图安全区”），本脚本不再采集。
 
   // ---------- 网格行列（用于边缘判别）----------
   function gridDims() {
@@ -139,7 +126,6 @@
       else unknowns.push(r);
     }
     const data = {
-      安全区: safe,
       传送点: teleports,
       边界走图: borders,
       未判别: unknowns,
@@ -151,10 +137,11 @@
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      const sid = safe.mapId != null ? safe.mapId : '?';
-      a.download = `origin_map_${sid}_safe_tp.json`;
+      const first = window.__teleportLog[0];
+      const sid = (first && (first.sourceMap != null ? first.sourceMap : first.mapId)) || '?';
+      a.download = `origin_map_${sid}_tp.json`;
       document.body.appendChild(a); a.click(); a.remove();
-      console.log('[capture] 已下载 origin_map_' + sid + '_safe_tp.json');
+      console.log('[capture] 已下载 origin_map_' + sid + '_tp.json');
     }
     return data;
   };
