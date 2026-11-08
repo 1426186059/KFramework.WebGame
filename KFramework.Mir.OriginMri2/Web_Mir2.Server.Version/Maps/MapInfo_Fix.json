@@ -49925,7 +49925,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 1,
+        "RespawnIndex": 161,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -49941,7 +49941,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 2,
+        "RespawnIndex": 162,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -49957,7 +49957,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 3,
+        "RespawnIndex": 163,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -49973,7 +49973,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 4,
+        "RespawnIndex": 164,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -49989,7 +49989,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 5,
+        "RespawnIndex": 165,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -50005,7 +50005,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 6,
+        "RespawnIndex": 166,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -50021,7 +50021,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 7,
+        "RespawnIndex": 167,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -50037,7 +50037,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 8,
+        "RespawnIndex": 168,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -50053,7 +50053,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 9,
+        "RespawnIndex": 169,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -50069,7 +50069,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 10,
+        "RespawnIndex": 170,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -50085,7 +50085,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 11,
+        "RespawnIndex": 171,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -50101,7 +50101,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 12,
+        "RespawnIndex": 172,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -50117,7 +50117,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 13,
+        "RespawnIndex": 173,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -50133,7 +50133,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 14,
+        "RespawnIndex": 174,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -50149,7 +50149,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 15,
+        "RespawnIndex": 175,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       },
@@ -50165,7 +50165,7 @@
         "RandomDelay": 0,
         "Direction": 0,
         "RoutePath": "",
-        "RespawnIndex": 16,
+        "RespawnIndex": 176,
         "SaveRespawnTime": false,
         "RespawnTicks": 0
       }
@@ -50212,38 +50212,6 @@
         "Destination": {
           "X": 17,
           "Y": 19
-        },
-        "NeedHole": false,
-        "NeedMove": false,
-        "ConquestIndex": 0,
-        "ShowOnBigMap": false,
-        "Icon": 0
-      },
-      {
-        "MapIndex": 5002,
-        "Source": {
-          "X": 284,
-          "Y": 638
-        },
-        "Destination": {
-          "X": 309,
-          "Y": 85
-        },
-        "NeedHole": false,
-        "NeedMove": false,
-        "ConquestIndex": 0,
-        "ShowOnBigMap": false,
-        "Icon": 0
-      },
-      {
-        "MapIndex": 5002,
-        "Source": {
-          "X": 152,
-          "Y": 41
-        },
-        "Destination": {
-          "X": 148,
-          "Y": 366
         },
         "NeedHole": false,
         "NeedMove": false,

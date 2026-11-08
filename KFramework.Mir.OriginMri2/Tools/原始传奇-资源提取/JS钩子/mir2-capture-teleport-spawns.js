@@ -1,7 +1,7 @@
 /* 《原始传奇》合并捕获钩子：传送点 + 怪物刷新点 —— 在游戏 frame 的 DevTools Console 粘贴执行
  *
  * 合并自：
- *   · capture_map_safe_teleport.js（传送点：钩 gd.map.prepareToEnterMap，按边缘自动判别 传送点/边界走图）
+ *   · capture_map_safe_teleport.js（传送点：钩 gd.map.prepareToEnterMap；边界走图视为传送点的一种，统一记录）
  *   · mir2-capture-spawns.js      （怪物刷新点：钩 emIns.createEntity，按“首次出现=刷出位置”去重）
  *
  * 注：安全区已改为从原始地图 .dat 提取（见 MapInfoEditor 全局设置“修正所有地图安全区”），本脚本不再采集。
@@ -14,12 +14,12 @@
  *   3) 多切几张图后：
  *        __dumpTP()              单独看传送点汇总（__dumpTP(true) 下载 JSON）
  *        __mir2spawns.export()   单独看刷怪点 CSV（复制到剪贴板）
- *        __dumpAll()             合并导出【传送点 + 边界走图 + 怪物刷新点】到一个 JSON（__dumpAll(true) 下载）
+ *        __dumpAll()             合并导出【传送点 + 怪物刷新点】到一个 JSON（__dumpAll(true) 下载）
  *        __mir2spawns.status()   看进度 / __mir2spawns.reset() 清空刷怪记录
  *        __clearTP()             清空传送点记录
  *   重复粘贴不会丢已采数据，也不会叠加钩子。
  *
- * 传送点判别规则：用 map.config.width/height 反推网格(GRID 48×32)，若 (x,y) 距边缘 <= __TP_EDGE_MARGIN(默认2) 格 → 边界走图；否则 → 传送点。
+ * 传送点判别规则：任意 (源地图,坐标)→目标地图 的过渡都记为传送点；边界走图（走到地图边缘进相邻图）也归为传送点，不再单列。
  * 刷怪点前提：type===4 仅怪物“被创建”时调用一次；bean.monsterid=怪物种类，bean.bornX/bornY=出生格坐标，cm.monster[mid].reliveDelay=刷新间隔(ms)。
  */
 (function () {
@@ -35,14 +35,6 @@
   if (map) {
     // 复用已有记录（重复粘贴不丢数据）；如需清空用 __clearTP()
     if (!W.__teleportLog) W.__teleportLog = [];
-    W.__TP_EDGE_MARGIN = W.__TP_EDGE_MARGIN || 2; // 边缘容差（格），可调
-
-    function gridDims() {
-      var c = map.config || {};
-      if (!c.width || !c.height) return null;
-      var GW = 48, GH = 32; // GameDefine.MAP_GRID_WIDTH/HEIGHT
-      return { cols: Math.ceil(c.width / GW), rows: Math.ceil(c.height / GH) };
-    }
     function readCoord(obj, name) {
       if (!obj) return null;
       if (obj[name] != null) return obj[name];
@@ -62,12 +54,11 @@
       if (y == null) y = readCoord(fo, 'Y'); if (y == null) y = readCoord(p, 'Y');
       return (x != null && y != null) ? { x: x, y: y } : null;
     }
+    // 边界走图属传送点的一种（走到地图边缘进相邻图），不再单列，统一记为 teleport；
+    // 仅当坐标缺失无法判定时才返回 unknown。
     function classify(x, y) {
-      var d = gridDims();
-      if (!d || x == null || y == null) return 'unknown';
-      var M = W.__TP_EDGE_MARGIN;
-      if (x <= M || y <= M || x >= d.cols - 1 - M || y >= d.rows - 1 - M) return 'border'; // 边界走图
-      return 'teleport'; // 地图内部 → 传送点
+      if (x == null || y == null) return 'unknown';
+      return 'teleport';
     }
 
     if (!W.__tpHooked) {
@@ -91,7 +82,7 @@
         };
         W.__tpHooked = true;
         TELEPORT_HOOKED = true;
-        console.log(TAG + ' 已钩取 gd.map.prepareToEnterMap —— 记录 (源地图,坐标,目标地图) 并自动判别 传送点/边界。');
+        console.log(TAG + ' 已钩取 gd.map.prepareToEnterMap —— 记录 (源地图,坐标,目标地图)，统一记为传送点（含边界走图）。');
       } else {
         console.warn(TAG + ' 未找到 gd.map.prepareToEnterMap，传送点钩取失败；可手动执行 __hookEnter() 改钩 enterMap。');
       }
@@ -125,19 +116,17 @@
         if (rHas && !pHas) best.set(k, r);
         else if (rHas && pHas) best.set(k, prev);
       });
-      var teleports = [], borders = [], unknowns = [];
+      var teleports = [], unknowns = [];
       best.forEach(function (r) {
         if (r.type === 'teleport') teleports.push(r);
-        else if (r.type === 'border') borders.push(r);
         else unknowns.push(r);
       });
       var data = {
         传送点: teleports,
-        边界走图: borders,
         未判别: unknowns,
-        统计: { 传送点: teleports.length, 边界走图: borders.length, 未判别: unknowns.length, 原始记录: W.__teleportLog.length }
+        统计: { 传送点: teleports.length, 未判别: unknowns.length, 原始记录: W.__teleportLog.length }
       };
-      console.log('==== 传送点汇总（传送点 ' + teleports.length + ' / 边界 ' + borders.length + ' / 未判别 ' + unknowns.length + '）====');
+      console.log('==== 传送点汇总（传送点 ' + teleports.length + ' / 未判别 ' + unknowns.length + '）====');
       console.log(JSON.stringify(data, null, 2));
       if (download) {
         var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -308,7 +297,7 @@
     status: spawnStatus
   };
 
-  // ===================== C) 合并导出（传送点 + 边界走图 + 怪物刷新点）=====================
+  // ===================== C) 合并导出（传送点 + 怪物刷新点）=====================
   W.__dumpAll = function (download) {
     // —— 传送点汇总（与 __dumpTP 同逻辑）——
     var norm = function (r) {
@@ -332,27 +321,25 @@
       if (rHas && !pHas) best.set(k, r);
       else if (rHas && pHas) best.set(k, prev);
     });
-    var teleports = [], borders = [], unknowns = [];
+    var teleports = [], unknowns = [];
     best.forEach(function (r) {
       if (r.type === 'teleport') teleports.push(r);
-      else if (r.type === 'border') borders.push(r);
       else unknowns.push(r);
     });
 
     var spawns = EVENTS;
     var data = {
       传送点: teleports,
-      边界走图: borders,
       未判别: unknowns,
       怪物刷新点: spawns,
       统计: {
-        传送点: teleports.length, 边界走图: borders.length, 未判别: unknowns.length,
+        传送点: teleports.length, 未判别: unknowns.length,
         怪物刷新点: spawns.length,
         原始传送记录: (W.__teleportLog || []).length,
         原始刷怪事件: spawns.length
       }
     };
-    console.log('==== 合并汇总（传送点 ' + teleports.length + ' / 边界 ' + borders.length + ' / 未判别 ' + unknowns.length + ' / 刷怪点 ' + spawns.length + '）====');
+    console.log('==== 合并汇总（传送点 ' + teleports.length + ' / 未判别 ' + unknowns.length + ' / 刷怪点 ' + spawns.length + '）====');
     var json = JSON.stringify(data, null, 2);
     console.log(json);
     try { copy(json); console.log(TAG + ' 合并 JSON 已复制到剪贴板（大文件可能失败，可用下载）。'); } catch (e) {}
@@ -369,7 +356,7 @@
     return data;
   };
 
-  // 便捷入口：A() 立即补扫一次视野内怪物并合并导出全部（传送点+边界走图+怪物刷新点）；A(true) 另下载 JSON
+  // 便捷入口：A() 立即补扫一次视野内怪物并合并导出全部（传送点+怪物刷新点）；A(true) 另下载 JSON
   W.A = function (download) {
     if (W.__mir2spawns && W.__mir2spawns.scan) W.__mir2spawns.scan();
     return W.__dumpAll(download);
