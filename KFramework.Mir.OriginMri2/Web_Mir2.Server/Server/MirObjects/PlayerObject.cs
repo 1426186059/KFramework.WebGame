@@ -200,7 +200,7 @@ namespace Server.MirObjects
             get { return Info.CompletedQuests; }
         }
 
-        // 已开放（未接取）的任务索引：左上角追踪栏显示“寻找 NPC”，玩家前往后才正式接取。
+        // 已开放（未接取）的任务索引：左上角追踪栏显示"寻找 NPC"，玩家前往后才正式接取。
         public List<int> OfferedQuests = new List<int>();
 
         private QuestScheduler _questScheduler;
@@ -1088,7 +1088,7 @@ namespace Server.MirObjects
         }
         protected override void SetBindSafeZone(SafeZoneInfo szi)
         {
-            // 仅“城镇/出生点”安全区(StartPoint)才更新绑定城镇；普通安全区(如矿区入口)只提供庇护，不覆盖回城点
+            // 仅"城镇/出生点"安全区(StartPoint)才更新绑定城镇；普通安全区(如矿区入口)只提供庇护，不覆盖回城点
             if (szi.StartPoint)
             {
                 BindLocation = szi.Location;
@@ -1121,7 +1121,7 @@ namespace Server.MirObjects
 
                     if (temp == null || !temp.ValidPoint(BindLocation))
                     {
-                        // [出生诊断] 精确打印失败原因，定位是“地图实例未加载”还是“出生格被判成墙/越界”。
+                        // [出生诊断] 精确打印失败原因，定位是"地图实例未加载"还是"出生格被判成墙/越界"。
                         MessageQueue.Enqueue($"[出生诊断] BindMapIndex={BindMapIndex}, BindLocation={BindLocation}, mapNull={(temp == null)}");
                         if (temp != null)
                         {
@@ -1444,7 +1444,7 @@ namespace Server.MirObjects
         {
             if (!Dead) return;
 
-            // 若绑定地图并非真正的“城镇/出生点”（如被误标为 StartPoint 的矿区或数据异常），
+            // 若绑定地图并非真正的"城镇/出生点"（如被误标为 StartPoint 的矿区或数据异常），
             // 重置到合法出生点，避免死亡后原地复活循环。
             bool bindIsTown = false;
             foreach (SafeZoneInfo sp in Envir.StartPoints) { if (sp.Info.Index == BindMapIndex) { bindIsTown = true; break; } }
@@ -1788,7 +1788,7 @@ namespace Server.MirObjects
                 CheckQuestInfo(Envir.QuestInfoList[i]);
             }
 
-            // 登录时由任务调度器接取已达等级的等级任务（如 10 级“前往比奇城”）。
+            // 登录时由任务调度器接取已达等级的等级任务（如 10 级"前往比奇城"）。
             QuestScheduler.CheckLevelUp(Level);
         }
         private void GetRecipeInfo()
@@ -7729,7 +7729,7 @@ namespace Server.MirObjects
         }
 
         /// <summary>
-        /// 任务追踪栏“点击传送”：免费跨图传送到任务目标（怪物刷点 / NPC）周边。
+        /// 任务追踪栏"点击传送"：免费跨图传送到任务目标（怪物刷点 / NPC）周边。
         /// 仅当请求的坐标匹配玩家当前任务里某个未完成任务的目标时才放行，防止被滥用为任意坐标免费传送。
         /// </summary>
         public void TeleportToQuestTarget(uint mapIndex, int x, int y, uint monsterIndex = 0)
@@ -7774,7 +7774,7 @@ namespace Server.MirObjects
                 p = near.Value;
             }
 
-            // 已在目标点同图且范围内：无需传送，直接打开面板（避免“明明就在 NPC 旁还被传送”）
+            // 已在目标点同图且范围内：无需传送，直接打开面板（避免"明明就在 NPC 旁还被传送"）
             bool alreadyThere = (CurrentMap == map) && Functions.InRange(CurrentLocation, p, Globals.DataRange);
             if (!alreadyThere)
             {
@@ -7783,7 +7783,7 @@ namespace Server.MirObjects
             }
 
             // 打开面板：直接用服务器自身任务数据解析出的 NPC 运行时 ObjectID，按 ID 精确 CallNPC，
-            // 不再靠坐标猜“附近哪个 NPC”——避免紧邻 NPC 串台（如工匠大娘/传送员）。
+            // 不再靠坐标猜"附近哪个 NPC"——避免紧邻 NPC 串台（如工匠大娘/传送员）。
             // 怪物类目标 npcObjectId 为 0，不会误开面板。
             if (npcObjectId != 0)
             {
@@ -7824,7 +7824,7 @@ namespace Server.MirObjects
             {
                 QuestProgressInfo quest = CurrentQuests[i];
                 if (quest == null) continue;
-                // 不跳过 Completed：已完成待交任务的“去找 NPC”目标正是 Completed 时才写入 Targets，
+                // 不跳过 Completed：已完成待交任务的"去找 NPC"目标正是 Completed 时才写入 Targets，
                 // 需要允许玩家免费传送到交任务 NPC。任务交完后即移出 CurrentQuests，无副作用。
                 if (quest.Targets == null || quest.Targets.Count == 0)
                     quest.UpdateTasks();
@@ -8158,23 +8158,39 @@ namespace Server.MirObjects
 
         public void CallNPC(uint objectID, string key)
         {
-            if (Dead) return;
+            if (Dead)
+            {
+                MessageQueue.Enqueue($"[NPC诊断] CallNPC 被拒: 玩家已死亡");
+                return;
+            }
 
             // 先告知客户端当前交互的 NPC（GameScene.NPCID），否则 S.NPCResponse 处理时取不到 NPC，
-            // 任务面板/对话面板的“与谁对话”判定会失效，导致面板不弹出。
+            // 任务面板/对话面板的"与谁对话"判定会失效，导致面板不弹出。
             Enqueue(new S.NPCUpdate { NPCID = objectID });
 
             key = key.ToUpper();
+            MessageQueue.Enqueue($"[NPC诊断] Player.CallNPC: objectID={objectID} key={key} Map={CurrentMap.Info.Index} NPCs.Count={CurrentMap.NPCs.Count} NPCObjectID(本次交互)={NPCObjectID}");
 
+            bool found = false;
             for (int i = 0; i < CurrentMap.NPCs.Count; i++)
             {
                 NPCObject ob = CurrentMap.NPCs[i];
                 if (ob.ObjectID != objectID) continue;
-                if (!Functions.InRange(ob.CurrentLocation, CurrentLocation, Globals.DataRange)) return;
-
+                found = true;
+                bool inRange = Functions.InRange(ob.CurrentLocation, CurrentLocation, Globals.DataRange);
                 ob.CheckVisible(this);
-
-                if (!ob.VisibleLog[Info.Index] || !ob.Visible) return;
+                bool vis = ob.VisibleLog.ContainsKey(Info.Index) && ob.VisibleLog[Info.Index] && ob.Visible;
+                MessageQueue.Enqueue($"[NPC诊断] 匹配到 NPC: Name={ob.Name} ObjectID={ob.ObjectID} InRange={inRange} Visible={vis} ScriptID={ob.ScriptID} NPCInfo.Index={ob.Info.Index}");
+                if (!inRange)
+                {
+                    MessageQueue.Enqueue($"[NPC诊断] 距离超限 (DataRange={Globals.DataRange})，return");
+                    return;
+                }
+                if (!vis)
+                {
+                    MessageQueue.Enqueue($"[NPC诊断] NPC 不可见，return");
+                    return;
+                }
 
                 var scriptID = NPCScriptID;
                 if (objectID != NPCObjectID || key == NPCScript.MainKey)
@@ -8183,10 +8199,15 @@ namespace Server.MirObjects
                 }
 
                 var script = NPCScript.Get(scriptID);
+                MessageQueue.Enqueue($"[NPC诊断] NPCScript.Get(scriptID={scriptID}) => {(script == null ? "null" : "OK")}");
+                if (script != null)
+                    MessageQueue.Enqueue($"[NPC诊断] 脚本 FileName={script.FileName}");
                 script.Call(this, objectID, key);
 
                 break;
             }
+
+            if (!found) MessageQueue.Enqueue($"[NPC诊断] 未在 CurrentMap.NPCs 找到 ObjectID={objectID}（可能来自其他地图或客户端发错 ID）");
 
             CallNPCNextPage();
         }
@@ -9484,7 +9505,7 @@ namespace Server.MirObjects
             if (AllowGroup == allow) return;
             AllowGroup = allow;
 
-            // If we just disabled grouping and we’re in a party, leave immediately
+            // If we just disabled grouping and we're in a party, leave immediately
             if (!AllowGroup && GroupMembers != null)
                 LeaveGroup();
         }
@@ -11522,8 +11543,8 @@ namespace Server.MirObjects
 
             EnsureQuestNPC(info);
 
-            // 从“寻找NPC”追踪入口进入：传送至发放 NPC 旁并打开其任务面板，
-            // 由玩家在面板内点击“领取”确认接取（不自动领取）。
+            // 从"寻找NPC"追踪入口进入：传送至发放 NPC 旁并打开其任务面板，
+            // 由玩家在面板内点击"领取"确认接取（不自动领取）。
             if (navigate)
             {
                 NPCObject npcObj = GetQuestStartNPC(info);
@@ -11533,7 +11554,7 @@ namespace Server.MirObjects
                     if (!inRange)
                     {
                         // NPC 脚下那格通常不可作传送落点。以 NPC 为中心逐环遍历周围格子，
-                        // 挑第一个“可走格”（map.ValidPoint：Attribute==Walk）落入。
+                        // 挑第一个"可走格"（map.ValidPoint：Attribute==Walk）落入。
                         Map map = npcObj.CurrentMap;
                         Point center = npcObj.CurrentLocation;
                         Point dest = center;
@@ -11654,7 +11675,7 @@ namespace Server.MirObjects
         // 确保任务已解析出起始/交付 NPC 的运行时信息（NpcInfo 引用 + 世界唯一索引 ObjectID）。
         // 若任务写在某 NPC 脚本 [Quests] 段，ParseQuests 已写入；否则按配置索引(NpcIndex/FinishNpcIndex) 反查 NPCInfo，
         // 再从已生成的 NPC 实例中取运行时 ObjectID，供客户端按 ObjectID 匹配、以及服务端反查 NPC 实例使用。
-        // 不依赖任务是否登记在脚本里，避免 NpcIndex=0 时“寻找NPC”整体失效（任务追踪栏只是回退显示任务名）。
+        // 不依赖任务是否登记在脚本里，避免 NpcIndex=0 时"寻找NPC"整体失效（任务追踪栏只是回退显示任务名）。
         private void EnsureQuestNPC(QuestInfo info)
         {
             if (info == null) return;
@@ -11680,7 +11701,7 @@ namespace Server.MirObjects
         }
 
         // 按已链接的发放 NPC 信息反查运行时 NPC 实例。
-        // NpcIndex/FinishNpcIndex 实际存的是“运行时世界唯一索引”(NPCObject.ObjectID)，故优先按 ObjectID 查找；
+        // NpcIndex/FinishNpcIndex 实际存的是"运行时世界唯一索引"(NPCObject.ObjectID)，故优先按 ObjectID 查找；
         // 另用 info.NpcInfo 引用做精确兜底（ParseQuests 写入），再退而按配置表索引(NPCInfo.Index) 兜底。
         private NPCObject GetQuestStartNPC(QuestInfo info)
         {
@@ -11706,7 +11727,7 @@ namespace Server.MirObjects
                         return npc;
             }
 
-            // 4. 终极兜底：任务未绑定 NpcInfo/NpcIndex 时，按任务追踪栏“寻找”标签所用的名称反查 NPC 实例。
+            // 4. 终极兜底：任务未绑定 NpcInfo/NpcIndex 时，按任务追踪栏"寻找"标签所用的名称反查 NPC 实例。
             //    标签名 = StartNpcName ?? 任务名，与 CreateClientQuestInfo / 客户端展示一致，故服务端凭 QuestIndex 即可定位。
             return null;
         }
@@ -11819,7 +11840,7 @@ namespace Server.MirObjects
 
             CallDefaultNPC(DefaultNPCType.OnFinishQuest, questIndex);
 
-            // 任务调度器：完成当前任务后，按“已完成 Index +1”自动接取下一满足条件的任务。
+            // 任务调度器：完成当前任务后，按"已完成 Index +1"自动接取下一满足条件的任务。
             // 空洞(已删索引)自然越过；仅职业不符可跳过(限职业数)；等级/前置不符则停止。
             QuestScheduler.AdvanceAfterComplete(quest.Info.Index);
         }
@@ -11849,7 +11870,7 @@ namespace Server.MirObjects
         }
 
         /// <summary>
-        /// 开放（未接取）任务：进入“已开放”状态并下发，左上角追踪栏显示“寻找 NPC”。
+        /// 开放（未接取）任务：进入"已开放"状态并下发，左上角追踪栏显示"寻找 NPC"。
         /// 与 AutoAcceptQuest 的区别：不写入 CurrentQuests，需玩家前往 NPC（点击追踪条目传送）后才正式接取。
         /// </summary>
         public void OfferQuest(int index)

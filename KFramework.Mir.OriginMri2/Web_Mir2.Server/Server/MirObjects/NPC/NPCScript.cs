@@ -842,6 +842,9 @@ namespace Server.MirObjects
         public void Call(PlayerObject player, uint objectID, string key)
         {
             key = key.ToUpper();
+            MessageQueue.Enqueue($"[NPC诊断] NPCScript.Call(玩家): script={FileName} key={key} NPCDelayed={player.NPCDelayed} NPCObjectID={player.NPCObjectID} targetObjectID={objectID} NPCPages.Count={NPCPages.Count}");
+            var matchedPages = NPCPages.Where(pg => string.Equals(pg.Key, key, StringComparison.CurrentCultureIgnoreCase)).ToList();
+            MessageQueue.Enqueue($"[NPC诊断]   匹配 key={key} 的页面数={matchedPages.Count}" + (matchedPages.Count == 0 ? " （[@MAIN] 可能缺失或脚本未加载）" : ""));
 
             if (!player.NPCDelayed)
             {

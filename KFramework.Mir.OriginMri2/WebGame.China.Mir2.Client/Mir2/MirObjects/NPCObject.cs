@@ -337,11 +337,8 @@ namespace Client.MirObjects
 
         public override bool MouseOver(Point p)
         {
-            if (MapControl.MapLocation == CurrentLocation) return true;
-
-            // CDN 渲染的 NPC（_originModel>0）没有 BodyLibrary 像素数据，VisiblePixel 恒失败。
-            // 改用 CDN 精灵的实际绘制矩形命中（与 DrawAnchored 同公式，精确对齐显示像素）；
-            // 资源未就绪时退化为格子包围盒兜底，保证至少能点中（避免永久点不到）。
+            // CDN 渲染的 NPC（_originModel>0）：图没（未就绪/缺失）直接不可点击；
+            // 有图时用精灵实际绘制矩形精确命中（与 DrawAnchored 同公式，对齐显示像素）。
             if (_originModel > 0)
             {
                 int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
@@ -351,12 +348,10 @@ namespace Client.MirObjects
                     && p.X >= krect.X && p.X < krect.X + krect.Width
                     && p.Y >= krect.Y && p.Y < krect.Y + krect.Height)
                     return true;
-
-                int cw = MapControl.CellWidth, ch = MapControl.CellHeight;
-                return p.X >= DrawLocation.X - cw && p.X < DrawLocation.X + cw * 2
-                    && p.Y >= DrawLocation.Y - ch * 3 && p.Y < DrawLocation.Y + ch;
+                return false;
             }
 
+            if (MapControl.MapLocation == CurrentLocation) return true;
             return BodyLibrary != null && BodyLibrary.VisiblePixel(DrawFrame, p.Subtract(FinalDrawLocation), false);
         }
 

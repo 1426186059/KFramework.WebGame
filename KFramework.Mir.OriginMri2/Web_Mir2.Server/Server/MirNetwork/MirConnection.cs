@@ -1572,6 +1572,7 @@ namespace Server.MirNetwork
         private void CallNPC(C.CallNPC p)
         {
             if (Stage != GameStage.Game) return;
+            MessageQueue.Enqueue($"[NPC诊断] 收到 CallNPC 包: ObjectID={p.ObjectID} Key={p.Key} Stage={Stage}");
 
             if (p.Key.Length > 30) //No NPC Key should be that long.
             {
@@ -1581,6 +1582,7 @@ namespace Server.MirNetwork
 
             if (p.ObjectID == Envir.DefaultNPC.LoadedObjectID && Player.NPCObjectID == Envir.DefaultNPC.LoadedObjectID)
             {
+                MessageQueue.Enqueue($"[NPC诊断] 走 DefaultNPC(服务端) 分支: Key={p.Key}");
                 Player.CallDefaultNPC(p.Key);
                 return;
             }
@@ -1591,6 +1593,7 @@ namespace Server.MirNetwork
                 return;
             }
 
+            MessageQueue.Enqueue($"[NPC诊断] 转发到 Player.CallNPC: ObjectID={p.ObjectID} Key={p.Key}");
             Player.CallNPC(p.ObjectID, p.Key);
         }
 
