@@ -1,0 +1,15 @@
+[@Main]
+高家铺子，货真价实，勇士看看？
+<购买/@buy>
+<出售/@sell>
+<离开/@exit>
+
+[@buy]
+#BUY
+
+[@sell]
+#SELL
+
+[@exit]
+#SAY
+慢走，常来。
