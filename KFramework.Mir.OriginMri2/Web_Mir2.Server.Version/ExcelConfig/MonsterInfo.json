@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "Index": 1,
     "Name": "疯狗",
@@ -23514,7 +23514,7 @@
     "Index": 6000001,
     "Name": "鸡",
     "Image": 4160,
-    "AI": 0,
+    "AI": 1,
     "Effect": 0,
     "ViewRange": 7,
     "CoolEye": 0,
@@ -57846,7 +57846,7 @@
     "Index": 6000812,
     "Name": "鸡",
     "Image": 4160,
-    "AI": 0,
+    "AI": 1,
     "Effect": 0,
     "ViewRange": 7,
     "CoolEye": 0,
@@ -76892,7 +76892,7 @@
     "Index": 6001211,
     "Name": "鸡",
     "Image": 4160,
-    "AI": 0,
+    "AI": 1,
     "Effect": 0,
     "ViewRange": 7,
     "CoolEye": 0,
