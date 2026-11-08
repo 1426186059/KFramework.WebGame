@@ -1,15 +1,23 @@
 [@Main]
 新鲜的肉类和食材，勇士要不要来点？吃饱了才有力气打怪。
-<购买/@buy>
-<出售/@sell>
+<购买/@BuySell>
+<出售/@Sell>
 <离开/@exit>
 
-[@buy]
-#BUY
+[@BuySell]
+#SAY
+请选择您要购买或出售的物品。
+<买回/@BuyBack>
+<返回/@Main>
 
-[@sell]
-#SELL
+[@Sell]
+#SAY
+请把要出售的物品交给我看看。
+<返回/@Main>
 
 [@exit]
 #SAY
 慢走，常来。
+
+[@BuyBack]
+#SAY

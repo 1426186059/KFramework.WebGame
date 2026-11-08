@@ -1,15 +1,23 @@
 [@Main]
 白家服装，男装女装布衣盔甲样样齐全，勇士换身行头？
-<购买/@buy>
-<出售/@sell>
+<购买/@BuySell>
+<出售/@Sell>
 <离开/@exit>
 
-[@buy]
-#BUY
+[@BuySell]
+#SAY
+请选择您要购买或出售的物品。
+<买回/@BuyBack>
+<返回/@Main>
 
-[@sell]
-#SELL
+[@Sell]
+#SAY
+请把要出售的物品交给我看看。
+<返回/@Main>
 
 [@exit]
 #SAY
 穿上新衣，威风凛凛。
+
+[@BuyBack]
+#SAY

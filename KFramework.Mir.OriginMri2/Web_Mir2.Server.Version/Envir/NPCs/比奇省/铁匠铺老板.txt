@@ -1,11 +1,16 @@
 [@Main]
 我是比奇城铁匠，可以为你修理装备、打造兵器。
-<修理装备/@repair>
+<修理装备/@Repair>
 <离开/@exit>
 
-[@repair]
-#REPAIR
+[@Repair]
+#SAY
+请把需要修理的装备交给我。
+<返回/@Main>
 
 [@exit]
 #SAY
 再见，勇士，装备要好好保养。
+
+[@BuyBack]
+#SAY

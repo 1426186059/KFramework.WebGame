@@ -1,15 +1,23 @@
 [@Main]
 欢迎来到比奇城书店，勇士需要什么书籍？
-<购买书籍/@buy>
-<出售物品/@sell>
+<购买书籍/@BuySell>
+<出售物品/@Sell>
 <离开/@exit>
 
-[@buy]
-#BUY
+[@BuySell]
+#SAY
+请选择您要购买或出售的物品。
+<买回/@BuyBack>
+<返回/@Main>
 
-[@sell]
-#SELL
+[@Sell]
+#SAY
+请把要出售的物品交给我看看。
+<返回/@Main>
 
 [@exit]
 #SAY
 慢走，勇士。愿知识与你同在。
+
+[@BuyBack]
+#SAY
