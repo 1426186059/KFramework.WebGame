@@ -4681,14 +4681,12 @@ namespace Client.MirObjects
                 // 原始传奇 5 方向精灵：逻辑方向 5/6/7（左下/左/左上）复用右侧真帧 3/2/1，绘制时需水平翻转。
                 bool mirror = (int)Direction >= 5;
                 KFramework.MonoGame.SpriteEffects fx = mirror ? KFramework.MonoGame.SpriteEffects.FlipHorizontally : KFramework.MonoGame.SpriteEffects.None;
-                bool drawn = false;
-                // 局部：绘制一个 origin 层（请求+锚定绘制），成功则置 drawn。
+                // 局部：绘制一个 origin 层（请求+锚定绘制）。
                 void DrawLayer(int m)
                 {
                     if (m <= 0) return;
                     Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Player, m, action, dir);
-                    if (Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Player, m, action, dir, FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour, fx))
-                        drawn = true;
+                    Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Player, m, action, dir, FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour, fx);
                 }
                 // 分层顺序（底→顶）：法阵→足迹→坐骑→翅膀→披风(后)→身体→护肩/玉佩/勋章/斗笠/面纱(覆盖)→武器→护盾(副手)→疗伤石→旋光/称号/徽记(顶)
                 DrawLayer(PlayerZhenfaModel());    // 法阵（type5，地面法阵）
@@ -4710,6 +4708,8 @@ namespace Client.MirObjects
                     bodyModel = naked;
                 }
                 DrawLayer(bodyModel);                  // 身体（中，含装扮覆盖）
+                // 头发：原始传奇里头发是叠在（光头）身体之上的独立 origin 层，按各自 standx/standy 枢轴对齐
+                // （9498 的 536/531 与身体 9001 的 537/530 仅差 ~1px），直接锚定绘制即自然对齐，无需额外补偿。
                 DrawLayer(PlayerHairModel());          // 头发（叠在光头身体之上，位于斗笠/面纱之下）
                 DrawLayer(PlayerHuJianModel());    // 护肩
                 DrawLayer(PlayerYuPeiModel());     // 玉佩
@@ -4722,11 +4722,6 @@ namespace Client.MirObjects
                 DrawLayer(PlayerXuanGuangModel()); // 旋光（type7，环绕光效）
                 DrawLayer(PlayerTitleModel());     // 称号（type3，头顶光环/称号）
                 DrawLayer(PlayerHuiJiModel());     // 徽记（type4，徽印）
-                if (drawn)
-                {
-                    DXManager.SetOpacity(oldOpacity);
-                    return;
-                }
             }
 
 

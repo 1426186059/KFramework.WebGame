@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Client.MirGraphics;              // DXManager / MirBlend
@@ -79,14 +80,73 @@ public static class Mir2OriginObjectLibrary
     private static readonly ConcurrentDictionary<string, byte> _loggedMissing =
         new(StringComparer.OrdinalIgnoreCase);
 
+    // —— 枢轴表：modelInfo[model][action].standx/standy（原始传奇每个部件按自身枢轴对齐）——
+    // 键 = model*1000 + action；值 = [standx, standy]。缺失时回落画布中心，不影响渲染。
+    private static readonly Dictionary<long, int[]> _stand = new();
+    private static volatile bool _standReady;
+
     /// <summary>版本表是否就绪。未就绪时仍可用无版本段路径加载，只是可能 404。</summary>
     public static bool IsReady => _versionsReady;
+
+    // ===================== 枢轴表（modelInfo.standx/standy）=====================
+
+    /// <summary>加载内嵌的 modelInfo_stand.json（每模型每动作的 standx/standy 枢轴）。
+    /// 原始传奇每个部件按自身枢轴对齐角色点，并绕该点翻面；复刻它的关键是这里。
+    /// 解析失败/缺失则回落画布中心（DrawAnchored 内部处理），不影响渲染。</summary>
+    private static void LoadStandTable()
+    {
+        if (_standReady) return;
+        _standReady = true;
+        try
+        {
+            var asm = typeof(Mir2OriginObjectLibrary).Assembly;
+            var resName = asm.GetManifestResourceNames()
+                .FirstOrDefault(n => n.EndsWith("modelInfo_stand.json", StringComparison.OrdinalIgnoreCase));
+            if (resName == null) return;
+            using var stream = asm.GetManifestResourceStream(resName);
+            if (stream == null) return;
+            using var doc = JsonDocument.Parse(stream);
+            foreach (var modelElem in doc.RootElement.EnumerateObject())
+            {
+                if (!int.TryParse(modelElem.Name, out int model)) continue;
+                foreach (var actElem in modelElem.Value.EnumerateObject())
+                {
+                    if (!int.TryParse(actElem.Name, out int action)) continue;
+                    if (actElem.Value.ValueKind == JsonValueKind.Array && actElem.Value.GetArrayLength() >= 2)
+                    {
+                        int sx = actElem.Value[0].GetInt32();
+                        int sy = actElem.Value[1].GetInt32();
+                        _stand[(long)model * 1000 + action] = new[] { sx, sy };
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // 忽略：回落画布中心即可
+        }
+    }
+
+    /// <summary>查 (model, action) 的枢轴 standx/standy；查不到返回 false（调用方回落 SourceW/2）。</summary>
+    public static bool TryGetStand(int model, int action, out int standx, out int standy)
+    {
+        if (_stand.TryGetValue((long)model * 1000 + action, out var v))
+        {
+            standx = v[0];
+            standy = v[1];
+            return true;
+        }
+        standx = 0;
+        standy = 0;
+        return false;
+    }
 
     // ===================== 初始化 =====================
 
     /// <summary>拉取 resourceVersion.json（并发安全、失败可重试）。失败不抛，后续按无版本段路径兜底。</summary>
     public static Task InitializeAsync(CancellationToken ct = default)
     {
+        LoadStandTable();
         if (_versionsReady) return Task.CompletedTask;
         var t = _initTask;
         if (t != null && !t.IsFaulted && !t.IsCanceled) return t;
@@ -398,9 +458,10 @@ public static class Mir2OriginObjectLibrary
     }
 
     /// <summary>
-    /// 按注册点绘制模型帧（怪物/NPC）：模型图集 frames 数组里的 offX/offY 是帧在虚拟画布
-    /// sourceW×sourceH 中的位置，以画布中心作为角色脚底对齐到 (screenX, screenY)，
-    /// 保证人物站在格子上而不是整张画布左上角漂出去。物品自动退化为直接按位置绘制。
+    /// 按注册点绘制模型帧（怪物/NPC/玩家）：模型图集 frames 数组里的 offX/offY 是帧在虚拟画布
+    /// sourceW×sourceH 中的位置，以该模型该动作的 standx/standy（来自 2config.modelInfo，见内嵌
+    /// modelInfo_stand.json）作为枢轴对齐到 (screenX, screenY)，复刻原始传奇“脚底对齐角色点、
+    /// 容器绕角色点翻面”的复合方式；查不到枢轴时回落画布中心。物品自动退化为直接按位置绘制。
     /// 数据由 Mir2AtlasSheet 解析（Anchors / SourceW / SourceH），本类只负责统一调度。
     /// </summary>
     public static bool DrawAnchored(Mir2ObjectKind kind, int id, int action, int direction, int frameIndex,
@@ -426,8 +487,14 @@ public static class Mir2OriginObjectLibrary
             oy = (int)a.Y;
         }
         var src = sprite.SourceRectangle;
-        int cx = sheet.SourceW > 0 ? sheet.SourceW / 2 : src.Width / 2;
-        int cy = sheet.SourceH > 0 ? sheet.SourceH / 2 : src.Height / 2;
+        // 枢轴取该模型该动作的 standx/standy（原始传奇每个部件按自身枢轴对齐角色点，
+        // 见 2config.modelInfo）；查不到时回落画布中心，行为与旧逻辑一致。
+        int cx, cy;
+        if (!TryGetStand(id, action, out cx, out cy))
+        {
+            cx = sheet.SourceW > 0 ? sheet.SourceW / 2 : src.Width / 2;
+            cy = sheet.SourceH > 0 ? sheet.SourceH / 2 : src.Height / 2;
+        }
         int x = screenX + ox - cx;
         int y = screenY + oy - cy;
 
@@ -435,6 +502,10 @@ public static class Mir2OriginObjectLibrary
         int dw = (int)Math.Round(src.Width * scale);
         int dh = (int)Math.Round(src.Height * scale);
         int dx = x + (src.Width - dw) / 2;
+        // 镜像（绕角色点翻面，复刻原版容器 scaleX=-1）：把目标矩形整体以 screenX 为轴镜像，
+        // 脚底保持不动；DXManager.Draw 的 FlipHorizontally 在矩形内翻面，二者合起来即绕角色点翻。
+        if ((effects & SpriteEffects.FlipHorizontally) != 0)
+            dx = 2 * screenX - dx - dw;
         int dy = y + (src.Height - dh);
         DXManager.Draw(sprite.Texture, src, new Rectangle(dx, dy, Math.Max(1, dw), Math.Max(1, dh)),
                        colour ?? KFramework.MonoGame.Color.White, MirBlend.Normal.ToBlendState(), effects);

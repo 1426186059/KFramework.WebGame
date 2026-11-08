@@ -26,6 +26,12 @@
     <Folder Include="Content\" />
   </ItemGroup>
 
+  <!-- 原始传奇 2config.modelInfo 精简出的 standx/standy 枢轴表（每模型每动作），供 DrawAnchored
+       按部件自身枢轴对齐（复刻原版“脚底对齐角色点、容器绕角色点翻面”），而非写死画布中心 512。 -->
+  <ItemGroup>
+    <EmbeddedResource Include="2026New\modelInfo_stand.json" />
+  </ItemGroup>
+
   <!-- 原 WinForms 原生版本（Forms/**、Mir2/Program.cs、Utils/BrowserHelper.cs）已彻底移除；
        浏览器版入口/窗体由 Host/ 下的 CMain、Program(partial) 与 Shims/ 提供。 -->
 
