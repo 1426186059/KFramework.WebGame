@@ -93,6 +93,9 @@ namespace Client.MirObjects
         private int PlayerHuJianModel() => Mir2OriginModelResolver.GetModel(_pgHuJian, Gender == MirGender.Female, 0);      // 护肩
         private int PlayerPiFengModel() => Mir2OriginModelResolver.GetModel(_pgPiFeng, Gender == MirGender.Female, 0);      // 披风
         private int PlayerLiaoShangModel() => Mir2OriginModelResolver.GetModel(_pgLiaoShang, Gender == MirGender.Female, 0); // 疗伤石（页游多为纯属性，无精灵）
+        // 头发层：原始传奇里头发是叠在（光头）身体底模之上的独立 origin 模型层；已确认 model/9498 男、model/9499 女（CDN 版本 10.1393.1，含完整角色动画 1/2/3/4/5/10/21/23/99）。
+        // 与经典 Mir2 一致：身体底模（9001/9002 等）不含头发，头发需单独叠绘。本版本 CDN 仅两套头发模型，按性别取（Hair 发型字段暂不参与模型选择）。
+        private int PlayerHairModel() => Gender == MirGender.Female ? 9499 : 9498;
         public int Armour, Weapon, WeaponEffect, ArmourOffSet, HairOffSet, WeaponOffSet, WingOffset, MountOffset;
 
         public int DieSound, FlinchSound, AttackSound;
@@ -4707,6 +4710,7 @@ namespace Client.MirObjects
                     bodyModel = naked;
                 }
                 DrawLayer(bodyModel);                  // 身体（中，含装扮覆盖）
+                DrawLayer(PlayerHairModel());          // 头发（叠在光头身体之上，位于斗笠/面纱之下）
                 DrawLayer(PlayerHuJianModel());    // 护肩
                 DrawLayer(PlayerYuPeiModel());     // 玉佩
                 DrawLayer(PlayerXunZhangModel());  // 勋章（荣誉勋章）
