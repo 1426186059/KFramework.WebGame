@@ -464,4 +464,30 @@ public static class Mir2OriginObjectLibrary
         var r = sprite.SourceRectangle;
         return new KFramework.MonoGame.Size(r.Width, r.Height);
     }
+
+    /// <summary>获取模型帧的实际绘制矩形（屏幕坐标），用于鼠标命中检测；与 DrawAnchored 同一套坐标公式，
+    /// 保证命中框与显示像素完全对齐。资源未就绪或缺失返回 false。</summary>
+    public static bool TryGetDrawRect(Mir2ObjectKind kind, int id, int action, int direction, int frameIndex,
+                                      int screenX, int screenY, out Rectangle rect)
+    {
+        rect = default(Rectangle);
+        if (kind == Mir2ObjectKind.Item) return false;
+        var key = CacheKey(kind, id, action, direction);
+        if (_missing.ContainsKey(key)) return false;
+        if (!_sheets.TryGetValue(key, out var st) || st == null || !st.IsCompletedSuccessfully) return false;
+        var sheet = st.Result;
+        if (sheet == null || sheet.Frames == null || sheet.Frames.Count == 0) return false;
+        if (!sheet.TryGetFrameName(frameIndex, out var frameName)) return false;
+        if (!sheet.Frames.TryGetValue(frameName, out var sprite) || sprite == null) return false;
+        int ox = 0, oy = 0;
+        if (sheet.Anchors != null && sheet.Anchors.TryGetValue(frameName, out var a))
+        { ox = (int)a.X; oy = (int)a.Y; }
+        var src = sprite.SourceRectangle;
+        int cx = sheet.SourceW > 0 ? sheet.SourceW / 2 : src.Width / 2;
+        int cy = sheet.SourceH > 0 ? sheet.SourceH / 2 : src.Height / 2;
+        int x = screenX + ox - cx;
+        int y = screenY + oy - cy;
+        rect = new Rectangle(x, y, src.Width, src.Height);
+        return true;
+    }
 }
