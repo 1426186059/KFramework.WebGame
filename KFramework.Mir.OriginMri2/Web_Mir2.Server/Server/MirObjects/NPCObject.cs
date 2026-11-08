@@ -419,7 +419,9 @@ namespace Server.MirObjects
                 Location = CurrentLocation,
                 Direction = Direction,
                 QuestIDs = (from q in Quests
-                            select q.Index).ToList()
+                            select q.Index).ToList(),
+                // 原始页游 NPC 显示缩放：NPCInfo.OriginSettings.Raw["scale"] 是百分比（如 "40"/"90"），除以 100 得倍率。
+                Scale = (Info.OriginSettings != null && Info.OriginSettings.Raw.TryGetValue("scale", out var sc) && float.TryParse(sc, out var sv)) ? sv / 100f : 1f
             };
         }
 

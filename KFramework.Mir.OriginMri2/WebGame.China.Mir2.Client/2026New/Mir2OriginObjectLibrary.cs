@@ -394,7 +394,7 @@ public static class Mir2OriginObjectLibrary
     /// </summary>
     public static bool DrawAnchored(Mir2ObjectKind kind, int id, int action, int direction, int frameIndex,
                                     int screenX, int screenY, KFramework.MonoGame.Color? colour = null,
-                                    SpriteEffects effects = SpriteEffects.None)
+                                    SpriteEffects effects = SpriteEffects.None, float scale = 1f)
     {
         var key = CacheKey(kind, id, action, direction);
         if (_missing.ContainsKey(key)) return false;
@@ -420,7 +420,12 @@ public static class Mir2OriginObjectLibrary
         int x = screenX + ox - cx;
         int y = screenY + oy - cy;
 
-        DXManager.Draw(sprite.Texture, src, new Rectangle(x, y, src.Width, src.Height),
+        // 按 scale 缩放：水平中心保持不变，脚底(底边)锚定到 (screenX,screenY)，缩放时不上下漂移。
+        int dw = (int)Math.Round(src.Width * scale);
+        int dh = (int)Math.Round(src.Height * scale);
+        int dx = x + (src.Width - dw) / 2;
+        int dy = y + (src.Height - dh);
+        DXManager.Draw(sprite.Texture, src, new Rectangle(dx, dy, Math.Max(1, dw), Math.Max(1, dh)),
                        colour ?? KFramework.MonoGame.Color.White, MirBlend.Normal.ToBlendState(), effects);
         return true;
     }
@@ -468,7 +473,7 @@ public static class Mir2OriginObjectLibrary
     /// <summary>获取模型帧的实际绘制矩形（屏幕坐标），用于鼠标命中检测；与 DrawAnchored 同一套坐标公式，
     /// 保证命中框与显示像素完全对齐。资源未就绪或缺失返回 false。</summary>
     public static bool TryGetDrawRect(Mir2ObjectKind kind, int id, int action, int direction, int frameIndex,
-                                      int screenX, int screenY, out Rectangle rect)
+                                      int screenX, int screenY, out Rectangle rect, float scale = 1f)
     {
         rect = default(Rectangle);
         if (kind == Mir2ObjectKind.Item) return false;
@@ -487,7 +492,11 @@ public static class Mir2OriginObjectLibrary
         int cy = sheet.SourceH > 0 ? sheet.SourceH / 2 : src.Height / 2;
         int x = screenX + ox - cx;
         int y = screenY + oy - cy;
-        rect = new Rectangle(x, y, src.Width, src.Height);
+        int dw = (int)Math.Round(src.Width * scale);
+        int dh = (int)Math.Round(src.Height * scale);
+        int dx = x + (src.Width - dw) / 2;
+        int dy = y + (src.Height - dh);
+        rect = new Rectangle(dx, dy, Math.Max(1, dw), Math.Max(1, dh));
         return true;
     }
 }

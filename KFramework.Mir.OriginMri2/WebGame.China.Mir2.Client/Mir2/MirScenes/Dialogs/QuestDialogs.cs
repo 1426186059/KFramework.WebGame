@@ -64,7 +64,7 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Location = new Point(PanelIndent, 34),
-                Size = new Size(500, 130),
+                Size = new Size(450, 130),
                 DrawFormat = TextFormatFlags.WordBreak,
                 ForeColour = Color.White,
             };

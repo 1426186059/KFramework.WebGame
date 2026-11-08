@@ -26,6 +26,8 @@ namespace Client.MirObjects
 
         public ushort Image;
         public Color Colour = Color.White;
+        /// <summary>原始页游 NPC 显示缩放（来自 ObjectNPC.Scale，即 NPCInfo.OriginSettings.Raw["scale"]/100）。</summary>
+        public float Scale = 1f;
 
         /// <summary>非零 = NPCInfo.Image 是原始传奇 model 号，走 Mir2OriginObjectLibrary 的独立图集。</summary>
         private int _originModel;
@@ -64,6 +66,7 @@ namespace Client.MirObjects
             Quests = GameScene.QuestInfoList.Where(c => c.NPCIndex == ObjectID).ToList();
 
             Image = info.Image;
+            Scale = info.Scale;
             Colour = info.Colour;
 
             // 换成原始传奇 NPC 表后 Image 就是页游 model 号（如 医师=1078）；旧表只有 0~185，
@@ -245,7 +248,10 @@ namespace Client.MirObjects
         {
             if (ActionFeed.Count == 0)
             {
-                if (CMain.Random.Next(2) == 0 && Frames.Count > 1)
+                // 原始页游 NPC（走 CDN 独立图集）：只播待机，避免随机切到 Harvest→Attack 图集缺失/未预取导致整段消失。
+                if (_originModel > 0)
+                    CurrentAction = MirAction.Standing;
+                else if (CMain.Random.Next(2) == 0 && Frames.Count > 1)
                     CurrentAction = MirAction.Harvest;
                 else
                     CurrentAction = MirAction.Standing;
@@ -315,7 +321,12 @@ namespace Client.MirObjects
                 int dir = Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.NPCTotalDir, (int)Direction);
                 Mir2OriginObjectLibrary.Request(Mir2ObjectKind.NPC, _originModel, action, dir);
                 drawnByCdn = Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.NPC, _originModel, action, dir,
-                                                                   FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour);
+                                                                   FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour, scale: Scale);
+                // 回退：当前动作帧未就绪（如误播到缺失图集）时改画已就绪的待机帧，保证 NPC 始终可见、不闪退消失。
+                if (!drawnByCdn)
+                    drawnByCdn = Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.NPC, _originModel,
+                                                                      Mir2OriginObjectLibrary.ActionStand, dir, 0,
+                                                                      DrawLocation.X, DrawLocation.Y, DrawColour, scale: Scale);
             }
 
             if (!drawnByCdn)
@@ -344,7 +355,7 @@ namespace Client.MirObjects
                 int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
                 int dir = Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.NPCTotalDir, (int)Direction);
                 if (Mir2OriginObjectLibrary.TryGetDrawRect(Mir2ObjectKind.NPC, _originModel, action, dir, FrameIndex,
-                                                          DrawLocation.X, DrawLocation.Y, out KFramework.MonoGame.Rectangle krect)
+                                                          DrawLocation.X, DrawLocation.Y, out KFramework.MonoGame.Rectangle krect, Scale)
                     && p.X >= krect.X && p.X < krect.X + krect.Width
                     && p.Y >= krect.Y && p.Y < krect.Y + krect.Height)
                     return true;

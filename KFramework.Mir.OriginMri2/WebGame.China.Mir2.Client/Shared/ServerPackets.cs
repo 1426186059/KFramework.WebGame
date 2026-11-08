@@ -2859,6 +2859,9 @@ namespace ServerPackets
         public MirDirection Direction;
         public List<int> QuestIDs = new List<int>();
 
+        /// <summary>原始页游 NPC 显示缩放（NPCInfo.OriginSettings.Raw["scale"] / 100，默认 1）。客户端按此倍率绘制。</summary>
+        public float Scale = 1f;
+
         protected override void ReadPacket(BinaryReader reader)
         {
             ObjectID = reader.ReadUInt32();
@@ -2874,6 +2877,8 @@ namespace ServerPackets
 
             for (var i = 0; i < count; i++)
                 QuestIDs.Add(reader.ReadInt32());
+
+            Scale = reader.ReadSingle();
         }
         protected override void WritePacket(BinaryWriter writer)
         {
@@ -2891,6 +2896,8 @@ namespace ServerPackets
 
             for (int i = 0; i < QuestIDs.Count; i++)
                 writer.Write(QuestIDs[i]);
+
+            writer.Write(Scale);
         }
     }
     public sealed class NPCResponse : Packet
