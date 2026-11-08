@@ -4333,9 +4333,13 @@ namespace Client.MirObjects
             {
                 int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
                 int dir = Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.DefaultTotalDir, (int)Direction);
+                // 原始传奇 5 方向精灵：逻辑方向 5/6/7（左下/左/左上）复用右侧真帧 3/2/1，绘制时需水平翻转。
+                // 缺翻转会让"向左走"显示成"向右的姿势"，左右移动本就是侧面帧，表现为"横着走且朝向反"。
+                bool mirror = (int)Direction >= 5;
+                KFramework.MonoGame.SpriteEffects fx = mirror ? KFramework.MonoGame.SpriteEffects.FlipHorizontally : KFramework.MonoGame.SpriteEffects.None;
                 Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel, action, dir);
                 if (Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Monster, _originModel, action, dir,
-                                                         FrameIndex, DrawLocation.X, DrawLocation.Y, drawColour))
+                                                         FrameIndex, DrawLocation.X, DrawLocation.Y, drawColour, fx))
                 {
                     DXManager.SetGrayscale(oldGrayScale);
                     DXManager.SetOpacity(oldOpacity);
