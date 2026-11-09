@@ -98,6 +98,9 @@ namespace Client.MirObjects
             _originModel = (int)info.Image;
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel,
                                             Mir2OriginObjectLibrary.ActionStand, 0, Mir2OriginObjectLibrary.PriorityVisible);
+            // 死亡帧(action=12)在出场即预载：否则死亡瞬间才以临时请求去拉，会被连接池挤占而超时→被 _missing 永久拉黑，
+            // 表现为“多杀几只后死亡动画就消失了”。与 PlayerObject 用 PreloadModel 预载全部动作（含死亡）对齐。
+            Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.ActionDie, Mir2OriginObjectLibrary.PriorityUser);
             if (_originModel >= Libraries.Monsters.Length && !_originImageLogged)
             {
                 _originImageLogged = true;
@@ -549,6 +552,8 @@ namespace Client.MirObjects
 
                 FrameIndex = 0;
 
+                EnsureCdnFrame();
+
                 if (Frame == null) return false;
 
                 FrameInterval = Frame.Interval;
@@ -670,6 +675,8 @@ namespace Client.MirObjects
                 }
 
                 FrameIndex = 0;
+
+                EnsureCdnFrame();
 
                 if (Frame == null) return false;
 
@@ -1110,129 +1117,6 @@ namespace Client.MirObjects
                         }
                         break;
                     case MirAction.Die:
-                        switch (BaseImage)
-                        {
-                            case Monster.ManectricKing:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.ManectricKing], 504 + (int)Direction * 9, 9, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.DarkDevil:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.DarkDevil], 336, 6, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.ShamanZombie:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.ShamanZombie], 224, 8, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.RoninGhoul:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.RoninGhoul], 224, 10, Frame.Count * FrameInterval, this));
-                                break;
-                            case Monster.BoneCaptain:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.BoneCaptain], 224 + (int)Direction * 10, 10, Frame.Count * FrameInterval, this));
-                                break;
-                            case Monster.RightGuard:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.RightGuard], 296, 5, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.LeftGuard:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.LeftGuard], 296 + (int)Direction * 5, 5, 5 * Frame.Interval, this));
-                                break;
-                            case Monster.FrostTiger:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.FrostTiger], 304, 10, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.Yimoogi:
-                            case Monster.RedYimoogi:
-                            case Monster.Snake10:
-                            case Monster.Snake11:
-                            case Monster.Snake12:
-                            case Monster.Snake13:
-                            case Monster.Snake14:
-                            case Monster.Snake15:
-                            case Monster.Snake16:
-                            case Monster.Snake17:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.Yimoogi], 352, 10, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.YinDevilNode:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.YinDevilNode], 52, 20, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.YangDevilNode:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.YangDevilNode], 52, 20, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.BlackFoxman:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.BlackFoxman], 224, 10, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.VampireSpider:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.VampireSpider], 296, 5, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.CharmedSnake:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.CharmedSnake], 40, 8, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.Manticore:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.Manticore], 592, 9, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.ValeBat:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.ValeBat], 224, 20, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.SpiderBat:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.SpiderBat], 224, 20, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.VenomWeaver:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.VenomWeaver], 224, 6, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.HellBolt:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.HellBolt], 325, 10, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.SabukGate:
-                                Effects.Add(new Effect(Libraries.Gates[(ushort)Monster.SabukGate - 950], 24, 10, Frame.Count * Frame.Interval, this) { Light = -1 });
-                                break;
-                            case Monster.WingedTigerLord:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.WingedTigerLord], 650 + (int)Direction * 5, 5, Frame.Count * FrameInterval, this));
-                                break;
-                            case Monster.HellKnight1:
-                            case Monster.HellKnight2:
-                            case Monster.HellKnight3:
-                            case Monster.HellKnight4:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)BaseImage], 448, 10, 600, this));
-                                break;
-                            case Monster.IceGuard:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.IceGuard], 256, 6, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.DeathCrawler:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.DeathCrawler], 313, 11, Frame.Count * Frame.Interval, this));
-                                MapControl.Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.DeathCrawler], 304, 9, 900, CurrentLocation, CMain.Time + 900));
-                                break;
-                            case Monster.BurningZombie:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.BurningZombie], 373, 10, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.FrozenZombie:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.FrozenZombie], 360, 10, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.EarthGolem:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.EarthGolem], 432, 9, 9 * Frame.Interval, this));
-                                break;
-                            case Monster.CreeperPlant:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.CreeperPlant], 266, 6, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.SackWarrior:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.SackWarrior], 384, 9, Frame.Count * Frame.Interval, this));
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.SackWarrior], 393, 10, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.FrozenSoldier:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.FrozenSoldier], 256, 10, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.FrozenGolem:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.FrozenGolem], 456, 7, Frame.Count * Frame.Interval, this));
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.FrozenGolem], 463, 10, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.DragonWarrior:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.DragonWarrior], 504 + (int)Direction * 6, 6, 6 * Frame.Interval, this));
-                                break;
-                            case Monster.FloatingRock:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.FloatingRock], 152, 8, Frame.Count * Frame.Interval, this));
-                                break;
-                            case Monster.AvengingSpirit:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.AvengingSpirit], 442 + (int)Direction * 10, 10, 10 * Frame.Interval, this));
-                                break;
-                            case Monster.TaoistScroll:
-                                Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.TaoistScroll], 282, 11, 11 * Frame.Interval, this));
-                                break;
-                        }
                         PlayDieSound();
                         break;
                     case MirAction.Dead:
@@ -1291,6 +1175,22 @@ namespace Client.MirObjects
 
         }
 
+
+        /// <summary>
+        /// 原始传奇 CDN 怪物（_originModel&gt;0）没有 .Lib 帧表，Frames 为空→Frame 为 null→ProcessFrames 直接 return，
+        /// 导致 FrameIndex 永不前进、所有动作（含死亡）卡第 0 帧（死亡动画不播/卡死的根因）。
+        /// 这里用 CDN 图集真实帧数 + intval 合成一个 Frame，让 ProcessFrames 正常推进动画。
+        /// 图集未就绪时回落 1 帧（死亡帧已在出场时预载，开始时通常已就绪）。
+        /// </summary>
+        private void EnsureCdnFrame()
+        {
+            if (_originModel <= 0 || Frame != null) return;
+            int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
+            int dir = Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.DefaultTotalDir, (int)Direction);
+            Mir2OriginObjectLibrary.TryGetFrameCount(Mir2ObjectKind.Monster, _originModel, action, dir, out int count);
+            int interval = (Mir2OriginObjectLibrary.TryGetInterval(_originModel, action, out int iv) && iv > 0) ? iv : 120;
+            Frame = new Frame(0, count > 0 ? count : 1, 0, interval);
+        }
 
         private void ProcessFrames()
         {
@@ -3691,80 +3591,17 @@ namespace Client.MirObjects
                             switch (FrameIndex)
                             {
                                 case 1:
-                                    switch (BaseImage)
-                                    {
-
-                                        // Sanjian
-                                        case Monster.FurbolgCommander:
-                                            Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.FurbolgCommander], 320, 5, 5 * Frame.Interval, this));
-                                            break;
-                                        case Monster.Furball:
-                                            Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.Furball], 288, 8, Frame.Count * Frame.Interval, this));
-                                            break;
-                                        case Monster.GlacierBeast:
-                                            Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.GlacierBeast], 342, 12, 1200, this) { Blend = true });
-                                            break;
-
-
-                                        case Monster.PoisonHugger:
-                                            Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.PoisonHugger], 224, 5, Frame.Count * FrameInterval, this));
-                                            break;
-                                        case Monster.Hugger:
-                                            Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.Hugger], 256, 8, Frame.Count * FrameInterval, this));
-                                            break;
-                                        case Monster.MutatedHugger:
-                                            Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.MutatedHugger], 128, 7, Frame.Count * FrameInterval, this));
-                                            break;
-                                        case Monster.CyanoGhast:
-                                            Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.CyanoGhast], 681, 7, Frame.Count * FrameInterval, this));
-                                            break;
-                                        case Monster.Hydrax:
-                                            Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.Hydrax], 240, 5, 5 * Frame.Interval, this));
-                                            break;
-                                    }
                                     break;
                                 case 3:
                                     PlayDeadSound();
-                                    switch (BaseImage)
-                                    {
-                                        case Monster.BoneSpearman:
-                                        case Monster.BoneBlademan:
-                                        case Monster.BoneArcher:
-                                            Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.BoneSpearman], 224, 8, Frame.Count * FrameInterval, this));
-                                            break;
-                                        case Monster.WoodBox:
-                                            Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.WoodBox], 104, 6, 6 * Frame.Interval, this) { Blend = true });
-                                            break;
-                                        case Monster.BoulderSpirit:
-                                            Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.BoulderSpirit], 64, 8, 8 * Frame.Interval, this) { Blend = true });
-                                            break;
-                                    }
                                     break;
                                 // Sanjian
                                 case 4:
                                     PlayDeadSound();
                                     break;
                                 case 5:
-                                    switch (BaseImage)
-                                    {
-                                        case Monster.KingHydrax:
-                                            Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.KingHydrax], 543 + (int)Direction * 7, 7, 700, this));
-                                            break;
-                                        case Monster.Bear:
-                                            Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.Bear], 353, 9, Frame.Count * Frame.Interval, this));
-                                            break;
-                                        case Monster.SnowWolfKing:
-                                            Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.SnowWolfKing], 605, 10, 10 * Frame.Interval, this) { DrawBehind = true });
-                                            break;
-                                    }
                                     break;
                                 case 9:
-                                    switch (BaseImage)
-                                    {
-                                        case Monster.IcePhantom:
-                                            MapControl.Effects.Add(new Effect(Libraries.Monsters[(ushort)Monster.IcePhantom], 692 + (int)Direction * 10, 10, 10 * Frame.Interval, CurrentLocation));
-                                            break;
-                                    }
                                     break;
                             }
 

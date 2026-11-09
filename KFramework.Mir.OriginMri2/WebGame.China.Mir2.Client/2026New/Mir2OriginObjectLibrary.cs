@@ -529,6 +529,32 @@ public static class Mir2OriginObjectLibrary
     }
 
     /// <summary>
+    /// 取已就绪的独立图集帧数（死亡/各动作动画推进需要知道“共几帧”）。
+    /// 未加载完成 / 缺失返回 false（调用方回落默认帧数）。各方向同模型帧数一致，
+    /// 优先取请求方向，缺失时回落 dir=0。
+    /// </summary>
+    public static bool TryGetFrameCount(Mir2ObjectKind kind, int id, int action, int direction, out int count)
+    {
+        count = 0;
+        var key = CacheKey(kind, id, action, direction);
+        if (_sheets.TryGetValue(key, out var st) && st != null && st.IsCompletedSuccessfully
+            && st.Result != null && st.Result.Frames != null)
+        {
+            count = st.Result.Frames.Count;
+            return true;
+        }
+        // 回落 dir=0（同模型各方向帧数相同）
+        key = CacheKey(kind, id, action, 0);
+        if (_sheets.TryGetValue(key, out st) && st != null && st.IsCompletedSuccessfully
+            && st.Result != null && st.Result.Frames != null)
+        {
+            count = st.Result.Frames.Count;
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
     /// 按注册点绘制模型帧（怪物/NPC/玩家）。该页游资源为 8 方向独立精灵（CDN 上 0..7 各自有真帧），
     /// 因此翻面请求优先改用对应 8 向真帧直接绘制（不再运行时翻面），避免“翻出的 3/2/1 镜像”与
     /// “真正的 5/6/7 姿势”不一致造成的转身跳变；仅当 8 向真帧确实缺失（5 向模型）才回落镜像逻辑。
