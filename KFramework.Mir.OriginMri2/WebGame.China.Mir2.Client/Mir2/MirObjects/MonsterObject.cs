@@ -1177,17 +1177,21 @@ namespace Client.MirObjects
 
 
         /// <summary>
-        /// 原始传奇 CDN 怪物（_originModel&gt;0）没有 .Lib 帧表，Frames 为空→Frame 为 null→ProcessFrames 直接 return，
-        /// 导致 FrameIndex 永不前进、所有动作（含死亡）卡第 0 帧（死亡动画不播/卡死的根因）。
-        /// 这里用 CDN 图集真实帧数 + intval 合成一个 Frame，让 ProcessFrames 正常推进动画。
+        /// 原始传奇 CDN 怪物（_originModel&gt;0）没有 .Lib 帧表，Load() 里 Frames 回落成占位 FrameSet.DefaultMonster，
+        /// 其 Standing/Die/... 是写死的假帧数/间隔（如 Die=10帧@100ms）。若直接用那些值，死亡会被截断/提速。
+        /// 这里对 CDN 怪物【始终】用 CDN 图集真实帧数 + intval 覆盖合成 Frame，让 ProcessFrames 按真实节奏推进动画。
         /// 图集未就绪时回落 1 帧（死亡帧已在出场时预载，开始时通常已就绪）。
+        /// 非 CDN 怪物（_originModel&lt;=0，如 GreatFoxSpirit/DragonStatue 等走 .Lib）不动，保留其 .Lib 帧表。
         /// </summary>
         private void EnsureCdnFrame()
         {
-            if (_originModel <= 0 || Frame != null) return;
+            if (_originModel <= 0) return;
             int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
             int dir = Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.DefaultTotalDir, (int)Direction);
-            Mir2OriginObjectLibrary.TryGetFrameCount(Mir2ObjectKind.Monster, _originModel, action, dir, out int count);
+            // 实际绘制方向：逻辑方向 5/6/7 在 DrawAnchored 内会改写为真实 8 向 rawDir=8-dir（见其 flip 分支），
+            // 取帧数必须与实际绘制方向一致，否则与 drawn 帧数不一致→死亡末帧空白/提前截断（表现为闪/颤抖）。
+            int drawDir = (int)Direction >= 5 ? (8 - dir) : dir;
+            Mir2OriginObjectLibrary.TryGetFrameCount(Mir2ObjectKind.Monster, _originModel, action, drawDir, out int count);
             int interval = (Mir2OriginObjectLibrary.TryGetInterval(_originModel, action, out int iv) && iv > 0) ? iv : 120;
             Frame = new Frame(0, count > 0 ? count : 1, 0, interval);
         }

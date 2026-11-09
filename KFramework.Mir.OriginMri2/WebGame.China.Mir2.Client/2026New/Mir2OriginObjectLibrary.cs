@@ -466,7 +466,7 @@ public static class Mir2OriginObjectLibrary
             foreach (var a in acts)
             {
                 int td = _totaldir.TryGetValue((long)id * 1000 + a, out var t) ? t : 8;
-                int maxDir = td == 1 ? 4 : (td == 5 ? 4 : 7);
+                int maxDir = td == 1 ? 4 : 7;
                 for (int d = 0; d <= maxDir; d++) Request(kind, id, a, d, priority);
             }
         }
