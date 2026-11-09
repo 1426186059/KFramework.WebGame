@@ -540,6 +540,7 @@ namespace Client.MirObjects
             {
                 CurrentAction = Stoned ? MirAction.Stoned : MirAction.Standing;
                 if (CurrentAction == MirAction.Standing) CurrentAction = SitDown ? MirAction.SitDown : MirAction.Standing;
+                if (Dead) Console.WriteLine($"DBG:SetAction-EmptyFeed-Dead id={ObjectID} -> {CurrentAction}");
 
                 Frames.TryGetValue(CurrentAction, out Frame);
 
@@ -574,6 +575,8 @@ namespace Client.MirObjects
 
                 CurrentActionLevel = 0;
                 CurrentAction = action.Action;
+                if (Dead && action.Action != MirAction.Dead && action.Action != MirAction.Skeleton && action.Action != MirAction.Revive)
+                    Console.WriteLine($"DBG:SetAction-Dead->{action.Action} id={ObjectID}");
                 CurrentLocation = action.Location;
                 Direction = action.Direction;
 
@@ -1201,9 +1204,22 @@ namespace Client.MirObjects
             // 实际绘制方向：逻辑方向 5/6/7 在 DrawAnchored 内会改写为真实 8 向 rawDir=8-dir（见其 flip 分支），
             // 取帧数必须与实际绘制方向一致，否则与 drawn 帧数不一致→死亡末帧空白/提前截断（表现为闪/颤抖）。
             int drawDir = (int)Direction >= 5 ? (8 - dir) : dir;
-            Mir2OriginObjectLibrary.TryGetFrameCount(Mir2ObjectKind.Monster, _originModel, action, drawDir, out int count);
-            int interval = (Mir2OriginObjectLibrary.TryGetInterval(_originModel, action, out int iv) && iv > 0) ? iv : 120;
-            Frame = new Frame(0, count > 0 ? count : 1, 0, interval);
+
+            // 图集就绪：用真实帧数 + intval 合成 Frame（频率/帧数正确）。
+            if (Mir2OriginObjectLibrary.TryGetFrameCount(Mir2ObjectKind.Monster, _originModel, action, drawDir, out int count) && count > 0)
+            {
+                int interval = (Mir2OriginObjectLibrary.TryGetInterval(_originModel, action, out int iv) && iv > 0) ? iv : 120;
+                Frame = new Frame(0, count, 0, interval);
+            }
+            // 图集未就绪：保留 Frames.TryGetValue 已设好的占位 DefaultMonster[action]（如 Standing=4 帧/Walking=6 帧），
+            // 避免被算成 1 帧导致动画卡死；图集加载后、下次换动作（含待机自循环）会自然取到真实帧数。
+            else if (Frame == null)
+            {
+                if (Mir2OriginObjectLibrary.IsMissing(Mir2ObjectKind.Monster, _originModel, action, drawDir)
+                    || Mir2OriginObjectLibrary.IsMissing(Mir2ObjectKind.Monster, _originModel, action, 0))
+                    Console.WriteLine($"DBG:EnsureCdnFrame-空动画 id={ObjectID} model={_originModel} 切到 [{Mir2OriginObjectLibrary.ActionName(action)}] 但图集已缺失");
+                Frame = new Frame(0, 1, 0, 120);
+            }
         }
 
         private void ProcessFrames()

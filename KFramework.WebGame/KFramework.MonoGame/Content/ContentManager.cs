@@ -119,6 +119,9 @@ namespace KFramework.MonoGame
         public async Task<Texture2D> LoadTexture2DAsync(string relativePath, GraphicsDevice device, Caching mCacheInstance = null, int priority = 0, CancellationToken cancellationToken = default)
         {
             byte[] data = await ContentFunc.LoadCacheOrDownloadAsync(_http, ResolveRooted(relativePath), mCacheInstance, priority, cancellationToken).ConfigureAwait(false);
+            // 下载返回 null（资源缺失/404/网络错）：直接返回 null，交给上层 LoadSheetAsync 走 tex==null 的
+            // 404 优雅处理（标记缺失 + 回落），而不是在下面的 new ArraySegment<byte>(data) 抛 ArgumentNull("array")。
+            if (data == null) return null;
             return await LoadTexture2DAsync(data, device).ConfigureAwait(false);
         }
 

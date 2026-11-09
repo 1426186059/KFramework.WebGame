@@ -2283,7 +2283,10 @@ namespace Client.MirScenes
             if (p.ObjectID == User.ObjectID) return;
 
             if (MapControl.Objects.TryGetValue(p.ObjectID, out MapObject ob))
+            {
+                if (ob.Race == ObjectType.Monster) Console.WriteLine($"DBG:ObjectRemove id={p.ObjectID}");
                 ob.Remove();
+            }
         }
         private void ObjectTurn(S.ObjectTurn p)
         {
@@ -3351,17 +3354,27 @@ namespace Client.MirScenes
         {
             if (MapControl.Objects.TryGetValue(p.ObjectID, out var ob) && ob is MonsterObject mob)
             {
+                Console.WriteLine($"DBG:ObjectMonster id={p.ObjectID} p.Dead={p.Dead} p.Skel={p.Skeleton} mob.Dead={mob.Dead}");
+                // 已死亡的尸体不被“还活着”的刷新包复活：否则会被重新 Load，Dead 被覆盖回 false，
+                // SetAction() 把怪物重置成 Standing→尸体站起来播待机。仅当刷新包也确认死亡/化为骸骨时才允许更新
+                //（尸体→骸骨是合法转换）。
+                if (mob.Dead && !p.Dead && !p.Skeleton)
+                    return;
                 mob.Load(p, true);
                 return;
             }
 
             mob = new MonsterObject(p.ObjectID);
+            Console.WriteLine($"DBG:ObjectMonster-SPAWN id={p.ObjectID} p.Dead={p.Dead} p.Skel={p.Skeleton}");
             mob.Load(p, false);
         }
 
         private void ObjectAttack(S.ObjectAttack p)
         {
             if (p.ObjectID == User.ObjectID && !Observing) return;
+
+            if (MapControl.Objects.TryGetValue(p.ObjectID, out var atkOb) && atkOb.Race == ObjectType.Monster)
+                Console.WriteLine($"DBG:ObjectAttack id={p.ObjectID} type={p.Type}");
 
             QueuedAction action = null;
 
@@ -3484,6 +3497,7 @@ namespace Client.MirScenes
 
             if (MapControl.Objects.TryGetValue(p.ObjectID, out var ob))
             {
+                if (ob.Race == ObjectType.Monster) Console.WriteLine($"DBG:ObjectStruck id={p.ObjectID}");
                 if (ob.SkipFrames) return;
                 if (ob.ActionFeed.Count > 0 && ob.ActionFeed[ob.ActionFeed.Count - 1].Action == MirAction.Struck) return;
 
@@ -3825,6 +3839,7 @@ namespace Client.MirScenes
                 switch (p.Type)
                 {
                     default:
+                        if (ob.Race == ObjectType.Monster) Console.WriteLine($"DBG:ObjectDied id={p.ObjectID}");
                         ob.ActionFeed.Add(new QueuedAction { Action = MirAction.Die, Direction = p.Direction, Location = p.Location });
                         ob.Dead = true;
                         break;

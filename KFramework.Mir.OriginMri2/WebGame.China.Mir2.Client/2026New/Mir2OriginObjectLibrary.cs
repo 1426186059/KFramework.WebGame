@@ -84,12 +84,13 @@ public static class Mir2OriginObjectLibrary
         new(StringComparer.OrdinalIgnoreCase);
     private static readonly ConcurrentDictionary<string, Task<Texture2D>> _images =
         new(StringComparer.OrdinalIgnoreCase);
-    // 缺失缓存：确认「加载失败」的资源 key 集合（永久，不再重试）。
-    // 重试由更底层全部兜底：浏览器原生层 → ContentManager.LoadCacheOrDownloadAsync →
-    // BrowserResource.GetBytesAsync(内置 3 次退避重试) → 上层 Draw 每帧重请求。
-    // 这里只是“更底层重试全部耗尽后仍失败”的终态硬停，避免每帧对确缺失(真 404/不可达)的资源
-    // 再发请求刷屏、拖垮 CDN。一旦进入即永久，不自愈——真缺失不会自己变好。
-    private static readonly ConcurrentDictionary<string, byte> _missing =
+    // 缺失缓存：确认「加载失败」的资源 key → 失败时间戳（自愈，不再永久硬停）。
+    // 设计动机：原先是“永久黑名单”，一次瞬时失败（如连接池被 404 刷屏占满导致 action12 死亡帧超时）
+    // 就会把该动画永久拉黑、永不恢复，表现为“杀几只后死亡动画没了 / 待机切不出来”。
+    // 现改为带 TTL 的软黑名单：过期后自动重试。真缺失的资源也只每隔 MissingTtlMs 才重试一次，
+    // 不会每帧刷屏（注释里担心的“占满单域名/拖垮 CDN”靠 TTL 节流即可，无需永久屏蔽）。
+    private const long MissingTtlMs = 60_000;
+    private static readonly ConcurrentDictionary<string, long> _missing =
         new(StringComparer.OrdinalIgnoreCase);
     // 已打印过“加载失败”的 key，避免每帧刷日志。
     private static readonly ConcurrentDictionary<string, byte> _loggedMissing =
@@ -274,6 +275,17 @@ public static class Mir2OriginObjectLibrary
         }
     }
 
+    /// <summary>动作号 → 可读名，便于日志点名是哪个动画出问题。</summary>
+    public static string ActionName(int action)
+    {
+        if (action == ActionStand) return "Standing(待机)";
+        if (action == ActionWalk) return "Walk(走)";
+        if (action == ActionAttack) return "Attack(攻)";
+        if (action == ActionStruck) return "Struck(受击)";
+        if (action == ActionDie) return "Die(死亡)";
+        return "Action" + action;
+    }
+
     /// <summary>
     /// 原始传奇 getDir(totaldir, dir)：把 8 个逻辑朝向映射为实际存储朝向。
     /// totaldir=1→NONE(4)；2→{1,3} 两向镜像；5→真帧 0..4，5..7 镜像成 3/2/1；其余→原样 8 向。
@@ -392,11 +404,17 @@ public static class Mir2OriginObjectLibrary
 
             var sheet = Mir2AtlasSheet.Parse(json);
             sheet.Build(tex);
+            if (sheet.Frames == null || sheet.Frames.Count == 0)
+            {
+                KFramework.MonoGame.PrintTool.LogError(
+                    $"[Mir2ObjectAtlas] 图集帧数为0(空动画) key={key} action={ActionName(action)} png={pngPath} jsonLen={(jsonBytes?.Length ?? -1)} tex={tex?.Width}x{tex?.Height}");
+            }
             return sheet;
         }
         catch (Exception ex)
         {
-            KFramework.MonoGame.PrintTool.LogError($"[Mir2ObjectAtlas] 图集加载失败 key={key}：{ex.Message}");
+            KFramework.MonoGame.PrintTool.LogError(
+                $"[Mir2ObjectAtlas] 图集加载失败 key={key} action={ActionName(action)} png={pngPath} jsonLen={(jsonBytes?.Length ?? -1)} tex={tex?.Width}x{tex?.Height}\n{ex}");
             RecordFailure(key);
             return null;
         }
@@ -439,16 +457,23 @@ public static class Mir2OriginObjectLibrary
         }
     }
 
-    /// <summary>判定某 key 是否已被确认缺失（不参与加载/绘制）。永久，不重试。</summary>
-    private static bool IsMissing(string key) => _missing.ContainsKey(key);
+    /// <summary>判定某 key 是否处于「缺失冷却」中（失败未超过 TTL 才视为缺失，过期自动重试）。</summary>
+    private static bool IsMissing(string key)
+    {
+        if (_missing.TryGetValue(key, out long ts))
+            return (Environment.TickCount64 - ts) < MissingTtlMs;
+        return false;
+    }
 
-    /// <summary>记录一次「确认缺失」：仅加入永久黑名单，不再发起任何请求。
-    /// 本层不做重试——重试已由 浏览器原生层 / ContentManager.LoadCacheOrDownloadAsync /
-    /// BrowserResource(内置 3 次退避) / 上层 Draw 每帧重请求 全部兜底；这里只是更底层重试耗尽后的终态。
-    /// 日志去重由各调用点用 _loggedMissing 控制，避免每帧刷屏。</summary>
+    /// <summary>记录一次「加载失败」：写入失败时间戳（带 TTL 的自愈黑名单，过期后自动重试）。
+    /// 本层不做立即重试——重试已由 浏览器原生层 / ContentManager.LoadCacheOrDownloadAsync /
+    /// BrowserResource(内置 3 次退避) / 上层 Draw 每帧重请求 全部兜底；这里只是更底层重试耗尽后
+    /// 的短时冷却，避免每帧对真缺失(真 404/不可达)资源刷屏、拖垮 CDN，同时让瞬时失败(超时/连接池占满)
+    /// 能在 TTL 后自动恢复，不再把动画永久拉黑。
+    /// 日志去重由各调用点用 _loggedMissing 控制，避免重复刷屏。</summary>
     private static void RecordFailure(string key)
     {
-        _missing.TryAdd(key, 0);
+        _missing[key] = Environment.TickCount64;
         _sheets.TryRemove(key, out _);
         _images.TryRemove(key, out _);
     }
