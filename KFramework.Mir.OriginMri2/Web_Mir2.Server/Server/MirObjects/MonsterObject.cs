@@ -908,8 +908,8 @@ namespace Server.MirObjects
 
             if (!Dead && HP == 0) Die();
 
-            //  HealthChanged = true;
-            BroadcastHealthChange();
+            // 血量归零时 Die() 已向全图广播血条 0，避免重复发包。
+            if (!Dead) BroadcastHealthChange();
         }
         public virtual void ChangeHP(int amount)
         {
@@ -924,8 +924,8 @@ namespace Server.MirObjects
 
             if (!Dead && HP == 0) Die();
 
-            // HealthChanged = true;
-            BroadcastHealthChange();
+            // 血量归零时 Die() 已向全图广播血条 0，避免重复发包。
+            if (!Dead) BroadcastHealthChange();
         }
 
         //use this so you can have mobs take no/reduced poison damage
@@ -971,6 +971,12 @@ namespace Server.MirObjects
             Dead = true;
 
             DeadTime = Envir.Time + DeadDelay;
+
+            // 先让视野内所有客户端血条归零，再广播死亡动画。
+            // 原本血量包只在 ChangeHP/SetHP 末尾（即 Die() 之后）按 EXPOwner 定向发送，客户端会先收到
+            // ObjectDied 播死亡、血条却还停在上一击的残血；脚本/自爆等非 HP 归零路径更是一点都不发。
+            if (CurrentMap != null)
+                CurrentMap.Broadcast(new S.ObjectHealth { ObjectID = ObjectID, Percent = 0, Expire = 5 }, CurrentLocation);
 
             Broadcast(new S.ObjectDied { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation });
 

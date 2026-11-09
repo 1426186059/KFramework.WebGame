@@ -165,6 +165,11 @@ namespace Client.MirScenes
         private static readonly HashSet<int> RequestedMonsterInfo = new HashSet<int>();
         private static readonly HashSet<int> RequestedNPCInfo = new HashSet<int>();
 
+        // ObjectID 级尸体锁：收到 ObjectDied 后就锁住该 ID，直到 ObjectRemove / ObjectRevived。
+        // 视野刷新包在本工程里几乎全部走 SPAWN（new MonsterObject 会先 Remove 旧对象再 Load(p,false)），
+        // 对象实例上的 Dead 字段会被新建对象重置，必须在包处理层按 ID 记住"这只已经死了"。
+        private static readonly HashSet<uint> CorpseObjectIds = new HashSet<uint>();
+
         public static void RequestItemInfo(int index)
         {
             if (index <= 0 || HasItemInfo(index) || !RequestedItemInfo.Add(index)) return;
@@ -2282,6 +2287,8 @@ namespace Client.MirScenes
         {
             if (p.ObjectID == User.ObjectID) return;
 
+            CorpseObjectIds.Remove(p.ObjectID);
+
             if (MapControl.Objects.TryGetValue(p.ObjectID, out MapObject ob))
             {
                 if (ob.Race == ObjectType.Monster) Console.WriteLine($"DBG:ObjectRemove id={p.ObjectID}");
@@ -3352,6 +3359,14 @@ namespace Client.MirScenes
         }
         private void ObjectMonster(S.ObjectMonster p)
         {
+            // 尸体锁：已收到 ObjectDied 的 ID，不接受"还活着"的刷新包。
+            // 这类包会走 SPAWN 分支新建 MonsterObject（Dead 初值 false），把尸体重新画成站立并卡在待机。
+            if (CorpseObjectIds.Contains(p.ObjectID) && !p.Dead && !p.Skeleton)
+            {
+                Console.WriteLine($"DBG:ObjectMonster-尸体锁拦截 id={p.ObjectID} p.Dead={p.Dead}");
+                return;
+            }
+
             if (MapControl.Objects.TryGetValue(p.ObjectID, out var ob) && ob is MonsterObject mob)
             {
                 Console.WriteLine($"DBG:ObjectMonster id={p.ObjectID} p.Dead={p.Dead} p.Skel={p.Skeleton} mob.Dead={mob.Dead}");
@@ -3840,8 +3855,11 @@ namespace Client.MirScenes
                 {
                     default:
                         if (ob.Race == ObjectType.Monster) Console.WriteLine($"DBG:ObjectDied id={p.ObjectID} originModel={(ob is MonsterObject mo ? mo.OriginModel : 0)} name={ob.Name}");
-                        ob.ActionFeed.Add(new QueuedAction { Action = MirAction.Die, Direction = p.Direction, Location = p.Location });
+                        // 重复死亡包会把死亡动画再播一遍，看上去像"还没死就先播了一次死亡"。
+                        if (ob.Race == ObjectType.Monster && ob.Dead) return;
                         ob.Dead = true;
+                        if (ob.Race == ObjectType.Monster) CorpseObjectIds.Add(p.ObjectID);
+                        ob.ActionFeed.Add(new QueuedAction { Action = MirAction.Die, Direction = p.Direction, Location = p.Location });
                         break;
                     case 1:
                         MapControl.Effects.Add(new Effect(Libraries.Magic2, 690, 10, 1000, ob.CurrentLocation));
@@ -5106,6 +5124,9 @@ namespace Client.MirScenes
         }
         private void ObjectRevived(S.ObjectRevived p)
         {
+            Console.WriteLine($"DBG:ObjectRevived id={p.ObjectID} 尸体锁={CorpseObjectIds.Contains(p.ObjectID)}");
+            CorpseObjectIds.Remove(p.ObjectID);
+
             if (MapControl.Objects.TryGetValue(p.ObjectID, out var ob))
             {
                 if (p.Effect)

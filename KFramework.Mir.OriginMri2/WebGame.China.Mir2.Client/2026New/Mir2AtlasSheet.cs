@@ -35,6 +35,13 @@ public sealed class Mir2AtlasSheet
     /// <summary>MovieClip 播放顺序（取 mc 首个时间线 frames 的 res 引用序列）；普通精灵图集为空。</summary>
     public List<string> PlayOrder { get; private set; }
 
+    /// <summary>实际可播放帧数：必须与 TryGetFrameName 的取帧口径一致。
+    /// MovieClip 图集的时间线长度往往不等于子图数（同一子图会被重复引用做定格），
+    /// 若用 Frames.Count 当帧数，FrameIndex 会被 % 时间线长度绕到中间帧上，尸体可能停在站立帧。</summary>
+    public int PlayableFrameCount => PlayOrder != null && PlayOrder.Count > 0
+        ? PlayOrder.Count
+        : (Frames != null ? Frames.Count : 0);
+
     /// <summary>帧名 → (offX, offY) 注册点偏移。仅模型帧（frames 数组）格式非零，UI 图集全为 0。</summary>
     public Dictionary<string, Vector2> Anchors { get; private set; } = new(StringComparer.OrdinalIgnoreCase);
 

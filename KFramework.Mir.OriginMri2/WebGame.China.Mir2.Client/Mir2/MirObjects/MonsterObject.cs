@@ -62,6 +62,9 @@ namespace Client.MirObjects
                 Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), Mir2OriginObjectLibrary.PriorityBackground);
         }
         private static bool _originImageLogged;
+        private bool _corpseRecoverLogged;
+        private MirAction? _lastLoggedAction;
+        private bool _lastLoggedDead;
         public byte Effect;
         public bool Skeleton;
 
@@ -91,6 +94,12 @@ namespace Client.MirObjects
 
         public void Load(S.ObjectMonster info, bool update = false)
         {
+            // 服务器每隔一段时间会重发视野内对象的 ObjectMonster（尸体包 Dead=true）。
+            // 记录刷新前的状态：已经是尸体的刷新包只同步数据，绝不能再入队动作 / 调 SetAction，
+            // 否则会打断正在播的死亡动画，或消费掉队列里迟到的 Standing 动作把尸体画成待机。
+            bool wasDead = Dead;
+            bool wasSkeleton = Skeleton;
+
             Name = info.Name;
             NameColour = info.NameColour;
             BaseImage = info.Image;
@@ -101,7 +110,7 @@ namespace Client.MirObjects
             _originModel = (int)info.Image;
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel,
                                             Mir2OriginObjectLibrary.ActionStand, 0, Mir2OriginObjectLibrary.PriorityVisible);
-            // 死亡帧(action=12)在出场即预载：否则死亡瞬间才以临时请求去拉，会被连接池挤占而超时→被 _missing 永久拉黑，
+            // 死亡帧(action=10)在出场即预载：否则死亡瞬间才以临时请求去拉，会被连接池挤占而超时→被 _missing 永久拉黑，
             // 表现为“多杀几只后死亡动画就消失了”。与 PlayerObject 用 PreloadModel 预载全部动作（含死亡）对齐。
             Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.ActionDie, Mir2OriginObjectLibrary.PriorityUser);
             if (_originModel >= Libraries.Monsters.Length && !_originImageLogged)
@@ -121,7 +130,11 @@ namespace Client.MirObjects
             Light = info.Light;
 
             Direction = info.Direction;
-            Dead = info.Dead;
+            // 死亡态以 ObjectDied 为准：服务器周期性 ObjectMonster 更新包(info.Dead=false) 会在下方 Load 末尾(319行)调 SetAction()，
+            // 若此处写成 Dead = info.Dead，尸体刚被设的 true 会被更新包清回 false，随后 SetAction 的 if 分支把尸体误“复活”成站立
+            // （即用户看到的“死亡→待机、卡在待机”）。普通怪物不存在被正常复活的机制，尸体靠 ObjectRemove 移除，
+            // 故一旦死亡即保持 Dead=true，更新包不再能清回 false。
+            Dead = Dead || info.Dead;
             Poison = info.Poison;
             Skeleton = info.Skeleton;
             Hidden = info.Hidden;
@@ -133,8 +146,6 @@ namespace Client.MirObjects
 
             if (MasterObjectId == 0 && Rarity != MonsterType.Normal)
             {
-                //Moving the rarity tag processing from the server to the client allows for more complex tag displays in the future, such as adding special markers on monster health bars.
-                //Add localization for rarity text
                 Name = $"{Rarity.ToLocalizedString()}_{Name}";
             }
             Buffs = info.Buffs;
@@ -185,72 +196,8 @@ namespace Client.MirObjects
                 // 原始传奇 model 号：占位库仅用于满足 BodyLibrary 非空，实际绘制在 Draw() 里走 CDN。
                 BodyLibrary = Libraries.Monsters[0];
             }
-            else switch (BaseImage)
-            {
-                case Monster.EvilMir:
-                case Monster.DragonStatue:
-                    BodyLibrary = Libraries.Dragon;
-                    break;
-                case Monster.EvilMirBody:
-                    break;
-                case Monster.Catapult:
-                case Monster.ChariotBallista:
-                case Monster.Ballista:
-                case Monster.Trebuchet:
-                case Monster.CanonTrebuchet:
-                    BodyLibrary = Libraries.Siege[((ushort)BaseImage) - 940];
-                    break;
-                case Monster.SabukGate:
-                case Monster.PalaceWallLeft:
-                case Monster.PalaceWall1:
-                case Monster.PalaceWall2:
-                case Monster.GiGateSouth:
-                case Monster.GiGateEast:
-                case Monster.GiGateWest:
-                case Monster.SSabukWall1:
-                case Monster.SSabukWall2:
-                case Monster.SSabukWall3:
-                case Monster.NammandGate1:
-                case Monster.NammandGate2:
-                case Monster.SabukWallSection:
-                case Monster.NammandWallSection:
-                case Monster.FrozenDoor:
-                    BodyLibrary = Libraries.Gates[((ushort)BaseImage) - 950];
-                    break;
-                case Monster.BabyPig:
-                case Monster.Chick:
-                case Monster.Kitten:
-                case Monster.BabySkeleton:
-                case Monster.Baekdon:
-                case Monster.Wimaen:
-                case Monster.BlackKitten:
-                case Monster.BabyDragon:
-                case Monster.OlympicFlame:
-                case Monster.BabySnowMan:
-                case Monster.Frog:
-                case Monster.BabyMonkey:
-                case Monster.AngryBird:
-                case Monster.Foxey:
-                case Monster.MedicalRat:
-                    BodyLibrary = Libraries.Pets[((ushort)BaseImage) - 10000];
-                    break;
-                case Monster.HellBomb1:
-                case Monster.HellBomb2:
-                case Monster.HellBomb3:
-                    BodyLibrary = Libraries.Monsters[(ushort)Monster.HellLord];
-                    break;
-                case Monster.CaveStatue:
-                    BodyLibrary = Libraries.Monsters[(ushort)Monster.CaveStatue];
-                    break;
-                default:
-                    BodyLibrary = Libraries.Monsters[(ushort)BaseImage];
-                    break;
-            }
-
-            if (Skeleton)
-                ActionFeed.Add(new QueuedAction { Action = MirAction.Skeleton, Direction = Direction, Location = CurrentLocation });
-            else if (Dead)
-                ActionFeed.Add(new QueuedAction { Action = MirAction.Dead, Direction = Direction, Location = CurrentLocation });
+  
+            // 尸体/骸骨动作统一在 Special Actions 之后重排（见下方），避免特殊动作混进队列。
 
             BaseSound = (ushort)BaseImage * 10;
 
@@ -292,28 +239,28 @@ namespace Client.MirObjects
             }
 
             //Frames
-            switch (BaseImage)
+            if (BodyLibrary != null)
             {
-                case Monster.GreatFoxSpirit:
-                    Frames = FrameSet.GreatFoxSpirit[Stage];
-                    break;
-                case Monster.DragonStatue:
-                    Frames = FrameSet.DragonStatue[(byte)Direction];
-                    break;
-                case Monster.HellBomb1:
-                case Monster.HellBomb2:
-                case Monster.HellBomb3:
-                    Frames = FrameSet.HellBomb[((ushort)BaseImage) - 903];
-                    break;
-                case Monster.CaveStatue:
-                    Frames = FrameSet.CaveStatue[(byte)Direction];
-                    break;
-                default:
-                    if (BodyLibrary != null)
-                    {
-                        Frames = BodyLibrary.Frames ?? FrameSet.DefaultMonster;
-                    }
-                    break;
+                Frames = BodyLibrary.Frames ?? FrameSet.DefaultMonster;
+            }
+
+            // 已死尸体的周期刷新包：数据已同步完毕，动画/帧索引/NextMotion 全部保持原状。
+            // 只有"尸体→骸骨"这种合法状态切换（Skeleton 首次为 true）才继续走 SetAction。
+            if (update && wasDead && !(Skeleton && !wasSkeleton))
+                return;
+
+            // 尸体/骸骨只保留终态动作：Special Actions（Appear / Stoned / SitDown ...）在 origin 移植后
+            // 都会经 MapAction 落到待机图集；一旦混进队列，SetAction 取到它就会把死鹿画成站立并卡在待机。
+            // 页游 model 号（如鹿 4161）还可能误命中旧 .Lib 枚举分支，所以这里无条件清空重排。
+            if (Dead || Skeleton)
+            {
+                ActionFeed.Clear();
+                ActionFeed.Add(new QueuedAction
+                {
+                    Action = Skeleton ? MirAction.Skeleton : MirAction.Dead,
+                    Direction = Direction,
+                    Location = CurrentLocation
+                });
             }
 
             SetAction();
@@ -380,6 +327,15 @@ namespace Client.MirObjects
 
         public override void Process()
         {
+            // 状态探针：只在 Dead / CurrentAction 变化时打印一次，供日志确认"待机"出现时
+            // 客户端到底处于哪个动作、Dead 是 true 还是 false、绘制用的是哪个 CDN action 号。
+            if (_originModel > 0 && (_lastLoggedAction != CurrentAction || _lastLoggedDead != Dead))
+            {
+                _lastLoggedAction = CurrentAction;
+                _lastLoggedDead = Dead;
+                Console.WriteLine($"DBG:ACTION id={ObjectID} Dead={Dead} cur={CurrentAction} act={Mir2OriginObjectLibrary.MapAction(CurrentAction)} idx={FrameIndex} cnt={Frame?.Count} feed={ActionFeed.Count}");
+            }
+
             bool update = CMain.Time >= NextMotion || GameScene.CanMove;
             SkipFrames = ActionFeed.Count > 1;
 
@@ -539,6 +495,13 @@ namespace Client.MirObjects
                     break;
             }
 
+            // 尸体/骸骨只接受终态与复活动作：死亡之后仍可能到达迟到的 Turn/Walk/Struck 包，
+            // 或周期刷新包塞进 Standing；一旦被取为 CurrentAction，尸体就会站起来并卡在待机。
+            // 仅限尸体态，死亡动画播放中（CurrentAction=Die）仍按原顺序播完受击→死亡。
+            if (Dead && (CurrentAction == MirAction.Dead || CurrentAction == MirAction.Skeleton))
+                ActionFeed.RemoveAll(a => a.Action != MirAction.Die && a.Action != MirAction.Dead &&
+                                          a.Action != MirAction.Skeleton && a.Action != MirAction.Revive);
+
             if (ActionFeed.Count == 0)
             {
                 if (Dead)
@@ -554,6 +517,7 @@ namespace Client.MirObjects
                 {
                     CurrentAction = Stoned ? MirAction.Stoned : MirAction.Standing;
                     if (CurrentAction == MirAction.Standing) CurrentAction = SitDown ? MirAction.SitDown : MirAction.Standing;
+                    if (Dead && CurrentAction == MirAction.Standing) Console.WriteLine($"DBG:BUG-DeadToStanding id={ObjectID}");
                 }
                 if (Dead) Console.WriteLine($"DBG:SetAction-EmptyFeed-Dead id={ObjectID} -> {CurrentAction}");
 
@@ -573,14 +537,10 @@ namespace Client.MirObjects
                 if (Frame == null) return false;
 
                 FrameInterval = Frame.Interval;
-                // 跟随原始传奇：用该怪物模型该动作的 intval（逐模型逐动作每帧毫秒）覆盖帧间隔；
-                // 非 origin 怪物/缺失动作时回落 Frame.Interval。
                 if (_originModel > 0 && Mir2OriginObjectLibrary.TryGetInterval(_originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), out int oiv) && oiv > 0)
                     FrameInterval = oiv;
 
-                // 尸体(Dead)与死亡动画共用同一张图集(action=12)，倒地姿势就是死亡动画的最后一帧；
-                // SetAction 把 FrameIndex 重置为 0 会画到第 0 帧(刚倒下/站立起始)，故尸体态强制停在最后一帧。
-                if (CurrentAction == MirAction.Dead && Frame.Count > 0)
+                if ((CurrentAction == MirAction.Dead || CurrentAction == MirAction.Skeleton) && Frame.Count > 0)
                     FrameIndex = Frame.Count - 1;
             }
             else
@@ -709,9 +669,9 @@ namespace Client.MirObjects
                 if (_originModel > 0 && Mir2OriginObjectLibrary.TryGetInterval(_originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), out int oiv) && oiv > 0)
                     FrameInterval = oiv;
 
-                // 尸体(Dead)与死亡动画共用同一张图集(action=12)，倒地姿势就是死亡动画的最后一帧；
+                // 尸体(Dead)与死亡动画共用同一张图集(action=10)，倒地姿势就是死亡动画的最后一帧；
                 // SetAction 把 FrameIndex 重置为 0 会画到第 0 帧(刚倒下/站立起始)，故尸体态强制停在最后一帧。
-                if (CurrentAction == MirAction.Dead && Frame.Count > 0)
+                if ((CurrentAction == MirAction.Dead || CurrentAction == MirAction.Skeleton) && Frame.Count > 0)
                     FrameIndex = Frame.Count - 1;
 
                 Point front = Functions.PointMove(CurrentLocation, Direction, 1);
@@ -1239,6 +1199,26 @@ namespace Client.MirObjects
 
         private void ProcessFrames()
         {
+            // 尸体兜底自愈：origin 移植后绘制完全按 CurrentAction 选帧，任何路径（刷新包、迟到动作包、
+            // 特殊动作）把 Dead 对象改回 Standing/Appear/Stoned 都会画成"站起来"并卡在待机。
+            // 这里每帧兜底纠正回尸体末帧；Die/Struck 是死亡过渡动作，保留不干预。
+            // 队列里还有 Die 说明死亡动画尚待播放，此时不能跳到尸体末帧，否则死亡动画会被吞掉。
+            if (Dead && !ActionFeed.Exists(a => a.Action == MirAction.Die) &&
+                CurrentAction != MirAction.Die && CurrentAction != MirAction.Struck &&
+                CurrentAction != MirAction.Dead && CurrentAction != MirAction.Skeleton && CurrentAction != MirAction.Revive)
+            {
+                if (!_corpseRecoverLogged)
+                {
+                    _corpseRecoverLogged = true;
+                    Console.WriteLine($"DBG:CORPSE-RECOVER id={ObjectID} from={CurrentAction} -> Dead");
+                }
+                CurrentAction = MirAction.Dead;
+                Frames.TryGetValue(CurrentAction, out Frame);
+                EnsureCdnFrame();
+                if (Frame != null && Frame.Count > 0) FrameIndex = Frame.Count - 1;
+                return;
+            }
+
             if (Frame == null) return;
 
             switch (CurrentAction)
@@ -3629,6 +3609,7 @@ namespace Client.MirObjects
                             FrameIndex = Frame.Count - 1;
                             ActionFeed.Clear();
                             ActionFeed.Add(new QueuedAction { Action = MirAction.Dead, Direction = Direction, Location = CurrentLocation });
+                            Console.WriteLine($"DBG:DIE-COMPLETE id={ObjectID} Dead={Dead}");
                             SetAction();
                         }
                         else
@@ -3676,6 +3657,7 @@ namespace Client.MirObjects
                         }
                     }
                     break;
+                case MirAction.Skeleton:
                 case MirAction.Dead:
                     break;
 
@@ -3683,7 +3665,9 @@ namespace Client.MirObjects
 
             if ((CurrentAction == MirAction.Standing || CurrentAction == MirAction.SitDown) && NextAction != null)
                 SetAction();
-            else if (CurrentAction == MirAction.Dead && NextAction != null && (NextAction.Action == MirAction.Skeleton || NextAction.Action == MirAction.Revive))
+            else if ((CurrentAction == MirAction.Dead || CurrentAction == MirAction.Skeleton) && NextAction != null &&
+                     (NextAction.Action == MirAction.Die || NextAction.Action == MirAction.Dead ||
+                      NextAction.Action == MirAction.Skeleton || NextAction.Action == MirAction.Revive))
                 SetAction();
         }
 
@@ -4233,6 +4217,18 @@ namespace Client.MirObjects
                 // 缺翻转会让"向左走"显示成"向右的姿势"，左右移动本就是侧面帧，表现为"横着走且朝向反"。
                 bool mirror = (int)Direction >= 5;
                 KFramework.MonoGame.SpriteEffects fx = mirror ? KFramework.MonoGame.SpriteEffects.FlipHorizontally : KFramework.MonoGame.SpriteEffects.None;
+
+                // 画面层兜底：只要 Dead 且死亡动画已播完，一律按 action=10 时间线末帧绘制。
+                // 状态机若被任何路径改回 Standing/Appear，MapAction 会落到待机图集(action=1)，
+                // 尸体就会"站起来"并卡住；这里不信任 CurrentAction，直接锁死死亡图集与末帧。
+                if (Dead && CurrentAction != MirAction.Die && CurrentAction != MirAction.Struck)
+                {
+                    action = Mir2OriginObjectLibrary.ActionDie;
+                    if (Mir2OriginObjectLibrary.TryGetFrameCount(Mir2ObjectKind.Monster, _originModel,
+                            action, dir, out int corpseFrames) && corpseFrames > 0)
+                        FrameIndex = corpseFrames - 1;
+                }
+
                 Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel, action, dir, Mir2OriginObjectLibrary.PriorityVisible);
                 if (Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Monster, _originModel, action, dir,
                                                          FrameIndex, DrawLocation.X, DrawLocation.Y, drawColour, fx))

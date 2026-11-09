@@ -55,8 +55,11 @@ public static class Mir2OriginObjectLibrary
 
     /// <summary>待机动作号：2config.modelInfo 里每个模型都登记了 action=1。</summary>
     public const int ActionStand = 1;
-    /// <summary>其它常见动作号（2config.modelInfo 全表动作频次）。</summary>
-    public const int ActionWalk = 2, ActionAttack = 4, ActionStruck = 10, ActionDie = 12;
+    /// <summary>死亡=10：原始 JS 里 10==_currentActionType 会触发末帧定格；2config.modelInfo 全表 2261/4725
+    /// 个模型登记了 action=10，图集是"站立→倒地"多帧序列（鹿 4161 为 10 帧），尸体停在末帧。
+    /// action=12 仅 482 个模型有，且是 2 帧站立姿势（4000 等模型直接请求 404）。
+    /// 历史错误：把 10 当受击、12 当死亡，导致"攻击时播倒地动画、死亡后停回站立帧"。</summary>
+    public const int ActionWalk = 2, ActionAttack = 4, ActionStruck = 12, ActionDie = 10;
     /// <summary>怪物默认存储方向数：totaldir=5 → 真帧方向 0..4，5..7 为镜像。</summary>
     public const int DefaultTotalDir = 5;
     /// <summary>NPC 待机动作在 2config.modelInfo 里是 totaldir=1 → 只有 NONE(=4) 一帧。</summary>
@@ -264,10 +267,13 @@ public static class Mir2OriginObjectLibrary
 
             case MirAction.Struck:
             case MirAction.Stoned:
-                return ActionStruck;
+                // 原版怪物受击只有闪色/顿帧，没有独立动画：action=12 只有 10% 模型有且是站立姿势，
+                // 用它当受击会 404 刷屏；统一回落待机图集。
+                return ActionStand;
 
             case MirAction.Die:
             case MirAction.Dead:
+            case MirAction.Skeleton: // 挖肉后的骸骨仍是尸体：原始传奇无骸骨图集，用死亡末帧，绝不能落到待机
                 return ActionDie;
 
             default:
@@ -567,16 +573,18 @@ public static class Mir2OriginObjectLibrary
         if (_sheets.TryGetValue(key, out var st) && st != null && st.IsCompletedSuccessfully
             && st.Result != null && st.Result.Frames != null)
         {
-            count = st.Result.Frames.Count;
-            return true;
+            // 用 PlayableFrameCount（MovieClip 时间线长度 / 普通图集子图数），
+            // 与 TryGetFrameName 的取帧口径一致，避免 FrameIndex 被取模绕到错误帧。
+            count = st.Result.PlayableFrameCount;
+            return count > 0;
         }
         // 回落 dir=0（同模型各方向帧数相同）
         key = CacheKey(kind, id, action, 0);
         if (_sheets.TryGetValue(key, out st) && st != null && st.IsCompletedSuccessfully
             && st.Result != null && st.Result.Frames != null)
         {
-            count = st.Result.Frames.Count;
-            return true;
+            count = st.Result.PlayableFrameCount;
+            return count > 0;
         }
         return false;
     }
