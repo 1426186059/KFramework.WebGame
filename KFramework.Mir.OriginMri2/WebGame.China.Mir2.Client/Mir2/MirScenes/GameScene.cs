@@ -3365,7 +3365,7 @@ namespace Client.MirScenes
             }
 
             mob = new MonsterObject(p.ObjectID);
-            Console.WriteLine($"DBG:ObjectMonster-SPAWN id={p.ObjectID} p.Dead={p.Dead} p.Skel={p.Skeleton}");
+            Console.WriteLine($"DBG:ObjectMonster-SPAWN id={p.ObjectID} p.Dead={p.Dead} p.Skel={p.Skeleton} originModel={mob.OriginModel} name={p.Name}");
             mob.Load(p, false);
         }
 
@@ -3839,7 +3839,7 @@ namespace Client.MirScenes
                 switch (p.Type)
                 {
                     default:
-                        if (ob.Race == ObjectType.Monster) Console.WriteLine($"DBG:ObjectDied id={p.ObjectID}");
+                        if (ob.Race == ObjectType.Monster) Console.WriteLine($"DBG:ObjectDied id={p.ObjectID} originModel={(ob is MonsterObject mo ? mo.OriginModel : 0)} name={ob.Name}");
                         ob.ActionFeed.Add(new QueuedAction { Action = MirAction.Die, Direction = p.Direction, Location = p.Location });
                         ob.Dead = true;
                         break;

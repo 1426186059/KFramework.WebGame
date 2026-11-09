@@ -52,6 +52,9 @@ namespace Client.MirObjects
         /// </summary>
         private int _originModel;
 
+        /// <summary>暴露给调试日志：本怪走 CDN 独立图集时的页游 model 号（服务器 MonsterInfo.Image）。</summary>
+        public int OriginModel => _originModel;
+
         /// <summary>后台懒预取：把自己当前动作的各方向暖好，转身不跳帧（低优先级，空闲才下）。</summary>
         public override void PrefetchBackground()
         {
@@ -538,8 +541,20 @@ namespace Client.MirObjects
 
             if (ActionFeed.Count == 0)
             {
-                CurrentAction = Stoned ? MirAction.Stoned : MirAction.Standing;
-                if (CurrentAction == MirAction.Standing) CurrentAction = SitDown ? MirAction.SitDown : MirAction.Standing;
+                if (Dead)
+                {
+                    // 死亡怪物保持尸体态(Dead)，绝不再回落 Standing。
+                    // 原版 Mir2 靠 Draw 里 if(Dead) 画尸体帧兜底，所以 CurrentAction 被改回 Standing 也无碍；
+                    // 但 origin 移植后绘制按 CurrentAction 选帧（Draw/EnsureCdnFrame 都用 MapAction(CurrentAction)），
+                    // 回落 Standing 会把死鹿画成“站起来”——即用户看到的“死亡→待机、卡在待机”。
+                    // 保持 Dead 后，下面那行 FrameIndex=Frame.Count-1 才会生效，尸体停在倒地末帧。
+                    CurrentAction = MirAction.Dead;
+                }
+                else
+                {
+                    CurrentAction = Stoned ? MirAction.Stoned : MirAction.Standing;
+                    if (CurrentAction == MirAction.Standing) CurrentAction = SitDown ? MirAction.SitDown : MirAction.Standing;
+                }
                 if (Dead) Console.WriteLine($"DBG:SetAction-EmptyFeed-Dead id={ObjectID} -> {CurrentAction}");
 
                 Frames.TryGetValue(CurrentAction, out Frame);

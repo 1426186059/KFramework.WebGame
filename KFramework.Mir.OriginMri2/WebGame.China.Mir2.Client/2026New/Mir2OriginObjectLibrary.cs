@@ -366,14 +366,17 @@ public static class Mir2OriginObjectLibrary
     private static async Task<Mir2AtlasSheet> LoadSheetAsync(string key, int model, int action, int direction,
                                                              GraphicsDevice device, int priority = PriorityBackground)
     {
+        string pngPath = null, jsonPath = null;
+        Texture2D tex = null;
+        byte[] jsonBytes = null;
         try
         {
             if (!_versionsReady) await InitializeAsync(CancellationToken.None);
 
-            string pngPath = ModelFramePath(model, action, direction, "png");
-            string jsonPath = ModelFramePath(model, action, direction, "json");
+            pngPath = ModelFramePath(model, action, direction, "png");
+            jsonPath = ModelFramePath(model, action, direction, "json");
 
-            var tex = await Mir2OriginResource.GetTextureAsync(pngPath, device, priority, CancellationToken.None);
+            tex = await Mir2OriginResource.GetTextureAsync(pngPath, device, priority, CancellationToken.None);
             if (tex == null)
             {
                 if (!_loggedMissing.ContainsKey(key))
@@ -386,7 +389,6 @@ public static class Mir2OriginObjectLibrary
                 return null;
             }
 
-            byte[] jsonBytes = null;
             try { jsonBytes = await Mir2OriginResource.GetBytesAsync(jsonPath, priority, CancellationToken.None); }
             catch { /* 无 json 视为整图单帧 */ }
 
