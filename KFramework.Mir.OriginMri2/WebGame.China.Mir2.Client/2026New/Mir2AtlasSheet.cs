@@ -43,6 +43,10 @@ public sealed class Mir2AtlasSheet
 
     private List<FrameDef> _defs = new();
 
+    /// <summary>按帧名字典序预排序的帧名序列（模型帧名 "0","1"... 正好即播放顺序）。Build 时一次性算好，
+    /// 避免 TryGetFrameName / TryGetSprite 每帧 new List + Sort 造成 GC 压力。</summary>
+    private List<string> _frameNames;
+
     private sealed class FrameDef
     {
         public string Name;
@@ -157,6 +161,8 @@ public sealed class Mir2AtlasSheet
         }
         Frames = frames;
         Anchors = anchors;
+        _frameNames = new List<string>(frames.Keys);
+        _frameNames.Sort(StringComparer.Ordinal);
     }
 
     /// <summary>
@@ -172,9 +178,12 @@ public sealed class Mir2AtlasSheet
             frameName = PlayOrder[n % PlayOrder.Count];
             return true;
         }
-        var names = new List<string>(Frames.Keys);
-        names.Sort(StringComparer.Ordinal);
-        frameName = names[n % names.Count];
+        if (_frameNames == null)
+        {
+            _frameNames = new List<string>(Frames.Keys);
+            _frameNames.Sort(StringComparer.Ordinal);
+        }
+        frameName = _frameNames[n % _frameNames.Count];
         return true;
     }
 

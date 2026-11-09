@@ -545,6 +545,10 @@ namespace Client.MirObjects
                 if (Frame == null) return false;
 
                 FrameInterval = Frame.Interval;
+                // 跟随原始传奇：用该怪物模型该动作的 intval（逐模型逐动作每帧毫秒）覆盖帧间隔；
+                // 非 origin 怪物/缺失动作时回落 Frame.Interval。
+                if (_originModel > 0 && Mir2OriginObjectLibrary.TryGetInterval(_originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), out int oiv) && oiv > 0)
+                    FrameInterval = oiv;
             }
             else
             {
@@ -663,6 +667,10 @@ namespace Client.MirObjects
                 if (Frame == null) return false;
 
                 FrameInterval = Frame.Interval;
+                // 跟随原始传奇：用该怪物模型该动作的 intval（逐模型逐动作每帧毫秒）覆盖帧间隔；
+                // 非 origin 怪物/缺失动作时回落 Frame.Interval。
+                if (_originModel > 0 && Mir2OriginObjectLibrary.TryGetInterval(_originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), out int oiv) && oiv > 0)
+                    FrameInterval = oiv;
 
                 Point front = Functions.PointMove(CurrentLocation, Direction, 1);
 

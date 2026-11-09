@@ -83,6 +83,9 @@ public static class Mir2OriginObjectLibrary
     // —— 枢轴表：modelInfo[model][action].standx/standy（原始传奇每个部件按自身枢轴对齐）——
     // 键 = model*1000 + action；值 = [standx, standy]。缺失时回落画布中心，不影响渲染。
     private static readonly Dictionary<long, int[]> _stand = new();
+    // —— 帧间隔表：modelInfo[model][action].intval（原始传奇逐模型逐动作的每帧毫秒）——
+    // 键 = model*1000 + action；值 = 每帧毫秒。玩家动画速度据此跟随原版；缺失时回落 Frame.Interval。
+    private static readonly Dictionary<long, int> _intval = new();
     private static volatile bool _standReady;
 
     /// <summary>版本表是否就绪。未就绪时仍可用无版本段路径加载，只是可能 404。</summary>
@@ -117,6 +120,11 @@ public static class Mir2OriginObjectLibrary
                         int sx = actElem.Value[0].GetInt32();
                         int sy = actElem.Value[1].GetInt32();
                         _stand[(long)model * 1000 + action] = new[] { sx, sy };
+                        if (actElem.Value.GetArrayLength() >= 3)
+                        {
+                            int iv = actElem.Value[2].GetInt32();
+                            if (iv > 0) _intval[(long)model * 1000 + action] = iv;
+                        }
                     }
                 }
             }
@@ -139,6 +147,13 @@ public static class Mir2OriginObjectLibrary
         standx = 0;
         standy = 0;
         return false;
+    }
+
+    /// <summary>查 (model, action) 的逐帧毫秒 intval（原始传奇逐模型逐动作配置）。
+    /// 查不到或值无效返回 false（调用方回落 Frame.Interval）。</summary>
+    public static bool TryGetInterval(int model, int action, out int interval)
+    {
+        return _intval.TryGetValue((long)model * 1000 + action, out interval);
     }
 
     // ===================== 初始化 =====================
@@ -404,16 +419,6 @@ public static class Mir2OriginObjectLibrary
     public static bool IsMissing(Mir2ObjectKind kind, int id, int action = ActionStand, int direction = 0)
         => _missing.ContainsKey(CacheKey(kind, id, action, direction));
 
-    /// <summary>该资源是否还在下载（未就绪、未失败）。用于上层决定是否等待重绘。</summary>
-    public static bool IsPending(Mir2ObjectKind kind, int id, int action = ActionStand, int direction = 0)
-    {
-        var key = CacheKey(kind, id, action, direction);
-        if (_missing.ContainsKey(key)) return false;
-        if (_sheets.TryGetValue(key, out var t)) return t != null && !t.IsCompleted;
-        if (_images.TryGetValue(key, out var i)) return i != null && !i.IsCompleted;
-        return true;
-    }
-
     // ===================== 统一取帧 / 绘制 =====================
 
     /// <summary>
@@ -442,18 +447,7 @@ public static class Mir2OriginObjectLibrary
         var sheet = st.Result;
         if (sheet == null || sheet.Frames == null || sheet.Frames.Count == 0) return false;
 
-        int n = Math.Abs(frameIndex);
-        string frameName;
-        if (sheet.PlayOrder != null && sheet.PlayOrder.Count > 0)
-        {
-            frameName = sheet.PlayOrder[n % sheet.PlayOrder.Count];
-        }
-        else
-        {
-            var names = new List<string>(sheet.Frames.Keys);
-            names.Sort(StringComparer.Ordinal);
-            frameName = names[n % names.Count];
-        }
+        if (!sheet.TryGetFrameName(frameIndex, out var frameName)) return false;
         return sheet.Frames.TryGetValue(frameName, out sprite);
     }
 
@@ -477,18 +471,14 @@ public static class Mir2OriginObjectLibrary
         bool flip = (effects & SpriteEffects.FlipHorizontally) != 0;
         if (flip)
         {
-            int rawDir = 8 - direction;                 // 由 5 向折叠值还原出真实 8 向朝向
+            // 8 向独立精灵：逻辑方向 5/6/7 在 CDN 各自有真帧。把镜像请求改写成对应 8 向真帧（rawDir），
+            // 交给下方统一逻辑加载/绘制；若该 8 向真帧确已 404（5 向模型），_missing 命中后回落镜像。
+            int rawDir = 8 - direction;
             var key8 = CacheKey(kind, id, action, rawDir);
             bool has8 = _sheets.TryGetValue(key8, out var s8) && s8 != null && s8.IsCompletedSuccessfully
                         && s8.Result != null && s8.Result.Frames != null && s8.Result.Frames.Count > 0;
-            if (has8)
+            if (has8 || !_missing.ContainsKey(key8))
             {
-                loadDir = rawDir;
-                flip = false;
-            }
-            else if (!_missing.ContainsKey(key8))
-            {
-                Request(kind, id, action, rawDir);     // 试拉 8 向真帧；未就绪时本帧不绘，下一帧生效
                 loadDir = rawDir;
                 flip = false;
             }
@@ -555,28 +545,6 @@ public static class Mir2OriginObjectLibrary
         DXManager.Draw(sprite.Texture, src, new Rectangle(x, y, src.Width, src.Height),
                        colour ?? KFramework.MonoGame.Color.White, MirBlend.Normal.ToBlendState(), effects);
         return true;
-    }
-
-    /// <summary>按指定目标矩形绘制（缩放/拉伸用）。</summary>
-    public static bool DrawSprite(Mir2ObjectKind kind, int id, int action, int direction, int frameIndex,
-                                  Rectangle dest, KFramework.MonoGame.Color? colour = null,
-                                  SpriteEffects effects = SpriteEffects.None)
-    {
-        if (!TryGetSprite(kind, id, action, direction, frameIndex, out var sprite) || sprite == null)
-            return false;
-
-        DXManager.Draw(sprite.Texture, sprite.SourceRectangle, dest,
-                       colour ?? KFramework.MonoGame.Color.White, MirBlend.Normal.ToBlendState(), effects);
-        return true;
-    }
-
-    /// <summary>帧的原始尺寸（用于布局/命中框）；未就绪返回 Empty。</summary>
-    public static KFramework.MonoGame.Size GetSpriteSize(Mir2ObjectKind kind, int id, int action, int direction, int frameIndex)
-    {
-        if (!TryGetSprite(kind, id, action, direction, frameIndex, out var sprite) || sprite == null)
-            return KFramework.MonoGame.Size.Empty;
-        var r = sprite.SourceRectangle;
-        return new KFramework.MonoGame.Size(r.Width, r.Height);
     }
 
     /// <summary>获取模型帧的实际绘制矩形（屏幕坐标），用于鼠标命中检测；与 DrawAnchored 完全一致的坐标公式

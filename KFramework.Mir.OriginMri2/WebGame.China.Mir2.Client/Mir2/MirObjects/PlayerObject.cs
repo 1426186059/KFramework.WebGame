@@ -1005,6 +1005,10 @@ namespace Client.MirObjects
                 if (Frame == null) return;
 
                 FrameInterval = Frame.Interval;
+                // 跟随原始传奇：用该身体模型该动作的 intval（逐模型逐动作每帧毫秒，站250/走90/攻100…）
+                // 覆盖帧间隔；无配置（非 origin 玩家/缺失动作）时回落 Frame.Interval。攻击/施法的全局速度倍率仍在其后叠加。
+                if (_originModel > 0 && Mir2OriginObjectLibrary.TryGetInterval(_originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), out int oiv) && oiv > 0)
+                    FrameInterval = oiv;
                 EffectFrameInterval = Frame.EffectInterval;
 
                 SetLibraries();
@@ -1349,6 +1353,10 @@ namespace Client.MirObjects
                 if (Frame == null) return;
 
                 FrameInterval = Frame.Interval;
+                // 跟随原始传奇：用该身体模型该动作的 intval（逐模型逐动作每帧毫秒，站250/走90/攻100…）
+                // 覆盖帧间隔；无配置（非 origin 玩家/缺失动作）时回落 Frame.Interval。攻击/施法的全局速度倍率仍在其后叠加。
+                if (_originModel > 0 && Mir2OriginObjectLibrary.TryGetInterval(_originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), out int oiv) && oiv > 0)
+                    FrameInterval = oiv;
                 EffectFrameInterval = Frame.EffectInterval;
 
                 if (this == User)
