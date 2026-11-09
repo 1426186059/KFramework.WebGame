@@ -561,6 +561,11 @@ namespace Client.MirObjects
                 // 非 origin 怪物/缺失动作时回落 Frame.Interval。
                 if (_originModel > 0 && Mir2OriginObjectLibrary.TryGetInterval(_originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), out int oiv) && oiv > 0)
                     FrameInterval = oiv;
+
+                // 尸体(Dead)与死亡动画共用同一张图集(action=12)，倒地姿势就是死亡动画的最后一帧；
+                // SetAction 把 FrameIndex 重置为 0 会画到第 0 帧(刚倒下/站立起始)，故尸体态强制停在最后一帧。
+                if (CurrentAction == MirAction.Dead && Frame.Count > 0)
+                    FrameIndex = Frame.Count - 1;
             }
             else
             {
@@ -685,6 +690,11 @@ namespace Client.MirObjects
                 // 非 origin 怪物/缺失动作时回落 Frame.Interval。
                 if (_originModel > 0 && Mir2OriginObjectLibrary.TryGetInterval(_originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), out int oiv) && oiv > 0)
                     FrameInterval = oiv;
+
+                // 尸体(Dead)与死亡动画共用同一张图集(action=12)，倒地姿势就是死亡动画的最后一帧；
+                // SetAction 把 FrameIndex 重置为 0 会画到第 0 帧(刚倒下/站立起始)，故尸体态强制停在最后一帧。
+                if (CurrentAction == MirAction.Dead && Frame.Count > 0)
+                    FrameIndex = Frame.Count - 1;
 
                 Point front = Functions.PointMove(CurrentLocation, Direction, 1);
 
