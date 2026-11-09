@@ -59,8 +59,7 @@ public sealed class QuestOriginSettingsOut
     // 2config._task_tx 是同一套 id 的另一条任务线文本，按 id 合并为备选文本，不另占 Index。
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public QuestOriginAlternateOut? Alternate;
 
-    // 原始行全部字段（已语义化的除外），保证零丢失。
-    public Dictionary<string, string> Raw = new();
+
 }
 
 public sealed class QuestOriginRewardOut
@@ -91,12 +90,6 @@ public static class Program
 
     private const int PseudoItemExp = 4;    // 主角经验
     private const int PseudoItemGold = 499; // 金币
-
-    private static readonly HashSet<string> SemanticKeys = new(StringComparer.Ordinal)
-    {
-        "id", "name", "next", "condition", "rewards", "reward", "fnpc", "tnpc",
-        "tip3", "completeinfo", "goals", "type", "taskgroupid"
-    };
 
     private sealed record ConditionRow(int Type, string Param, string Txt);
     private sealed record GoalRow(int Type, string Param, int Count, string Info, int MapId, int X, int Y);
@@ -302,8 +295,7 @@ public static class Program
                 GoalX = goal?.X ?? 0,
                 GoalY = goal?.Y ?? 0,
                 GoalInfo = goalInfo,
-                GoalParams = goal?.Param ?? "",
-                Raw = BuildRaw(o)
+                GoalParams = goal?.Param ?? ""
             };
 
             // rewards: "itemId#数量&itemId#数量..."；4=经验、499=金币是伪道具，直接落到数值字段。
@@ -430,7 +422,7 @@ public static class Program
             w.WriteLine("  RequiredQuest <- 反查 _task.next（谁指向本任务，谁就是前置任务）");
             w.WriteLine("  Type         <- taskgroupid 1..6 记 Story(3)，其余 General(0)；不用 Daily/Repeatable 避免每日重置");
             w.WriteLine("  GoldReward / ExpReward <- rewards 里伪道具 499=金币 / 4=主角经验");
-            w.WriteLine("  OriginSettings <- 内嵌：「原始字段 Raw + 条件/目标/奖励/NPC/任务链 + 另一条任务线 Alternate」");
+            w.WriteLine("  OriginSettings <- 内嵌：条件/目标/奖励/NPC/任务链 + 另一条任务线 Alternate（不再复制原始 Raw）");
             w.WriteLine("      FixedRewards / KillTasks 用 ItemIndex / MonsterIndex 精确引用，服务器启动按 Index 解析，");
             w.WriteLine("      避开按名字查找（换表后旧名字大量失配）的问题。");
             w.WriteLine();
@@ -458,7 +450,7 @@ public static class Program
             w.WriteLine("  - goals 里非 335 类型（升级/副本/收集等）只保留 GoalInfo 文本，未映射成服务器任务类型。");
             w.WriteLine("  - condition=10999 的「需要等级999」按原样落到 RequiredMinLevel，服务器按等级门槛不会接取；");
             w.WriteLine($"    共 {highLevelGate} 个，多为活动/精英任务，原版由其他系统触发，需后续接活动逻辑。");
-            w.WriteLine("  - 任务自动寻路/自动战斗/传送(chuansong/overchuan/autopathing/...) 只保留在 Raw，未实现。");
+            w.WriteLine("  - 任务自动寻路/自动战斗/传送(chuansong/overchuan/autopathing/...) 未实现，也不再落运行时表；需要时按 OriginTaskId 回查 2config/5config 分片。");
             w.WriteLine("  - 换 Index 会波及玩家任务存档、NPC 脚本 [Quests]、客户端协议；上线前需整批核对（含 NPC/地图）。");
             w.WriteLine();
             w.WriteLine("【五、使用方式（确认后再动线上）】");
@@ -493,25 +485,6 @@ public static class Program
             map[idx] = GetStr(e, "Name");
         }
         return map;
-    }
-
-    static Dictionary<string, string> BuildRaw(JsonElement o)
-    {
-        var raw = new Dictionary<string, string>(StringComparer.Ordinal);
-        if (o.ValueKind != JsonValueKind.Object) return raw;
-        foreach (var p in o.EnumerateObject())
-        {
-            if (SemanticKeys.Contains(p.Name)) continue;
-            raw[p.Name] = p.Value.ValueKind switch
-            {
-                JsonValueKind.String => p.Value.GetString() ?? "",
-                JsonValueKind.Number => p.Value.GetRawText(),
-                JsonValueKind.True => "1",
-                JsonValueKind.False => "0",
-                _ => p.Value.GetRawText()
-            };
-        }
-        return raw;
     }
 
     static List<string> Lines(string s)

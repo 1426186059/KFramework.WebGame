@@ -81,18 +81,6 @@
         "Rewards": "115001#1",
         "StartNpcId": 10011,
         "FinishNpcId": 10011
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -185,18 +173,6 @@
         "Rewards": "115002#1",
         "StartNpcId": 3000,
         "FinishNpcId": 3000
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -282,18 +258,6 @@
         "Rewards": "115003#1",
         "StartNpcId": 3000,
         "FinishNpcId": 3001
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -386,18 +350,6 @@
         "Rewards": "115004#1",
         "StartNpcId": 3001,
         "FinishNpcId": 3002
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -483,18 +435,6 @@
         "Rewards": "115005#1",
         "StartNpcId": 3002,
         "FinishNpcId": 3003
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -580,18 +520,6 @@
         "Rewards": "115006#1",
         "StartNpcId": 3003,
         "FinishNpcId": 3004
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -677,18 +605,6 @@
         "Rewards": "115007#1",
         "StartNpcId": 3004,
         "FinishNpcId": 3005
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -774,18 +690,6 @@
         "Rewards": "115008#1",
         "StartNpcId": 3005,
         "FinishNpcId": 3006
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -871,18 +775,6 @@
         "Rewards": "115009#1",
         "StartNpcId": 3006,
         "FinishNpcId": 3007
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -975,18 +867,6 @@
         "Rewards": "115010#1",
         "StartNpcId": 3007,
         "FinishNpcId": 10201
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -1065,18 +945,6 @@
         "Rewards": "4#1000&499#60000",
         "StartNpcId": 10201,
         "FinishNpcId": 10201
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -1162,18 +1030,6 @@
         "Rewards": "115011#1&4#1000&499#60000",
         "StartNpcId": 10201,
         "FinishNpcId": 10201
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -1259,18 +1115,6 @@
         "Rewards": "115012#1",
         "StartNpcId": 10201,
         "FinishNpcId": 10121
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -1356,18 +1200,6 @@
         "Rewards": "115013#1&115012#1",
         "StartNpcId": 10121,
         "FinishNpcId": 10121
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -1453,18 +1285,6 @@
         "Rewards": "115014#1",
         "StartNpcId": 10121,
         "FinishNpcId": 10031
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "1",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -1550,18 +1370,6 @@
         "Rewards": "115015#1",
         "StartNpcId": 10071,
         "FinishNpcId": 13791
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -1647,18 +1455,6 @@
         "Rewards": "115016#1&115015#1",
         "StartNpcId": 10031,
         "FinishNpcId": 13791
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -1744,18 +1540,6 @@
         "Rewards": "115017#1",
         "StartNpcId": 13791,
         "FinishNpcId": 13791
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -1841,18 +1625,6 @@
         "Rewards": "115018#1&115019#1",
         "StartNpcId": 13791,
         "FinishNpcId": 10781
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -1938,18 +1710,6 @@
         "Rewards": "115019#1",
         "StartNpcId": 13811,
         "FinishNpcId": 13821
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -2035,18 +1795,6 @@
         "Rewards": "115020#1",
         "StartNpcId": 13821,
         "FinishNpcId": 14091
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -2132,18 +1880,6 @@
         "Rewards": "115021#1",
         "StartNpcId": 14091,
         "FinishNpcId": 13831
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -2229,18 +1965,6 @@
         "Rewards": "115022#1&115020#1&115021#1",
         "StartNpcId": 10781,
         "FinishNpcId": 21009
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "1",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -2326,18 +2050,6 @@
         "Rewards": "115023#1&4#250000",
         "StartNpcId": 21009,
         "FinishNpcId": 21009
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -2423,18 +2135,6 @@
         "Rewards": "115024#1",
         "StartNpcId": 10091,
         "FinishNpcId": 13031
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -2520,18 +2220,6 @@
         "Rewards": "115025#1&115024#1",
         "StartNpcId": 21009,
         "FinishNpcId": 10771
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "1",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -2617,19 +2305,6 @@
         "Rewards": "115026#1",
         "StartNpcId": 10771,
         "FinishNpcId": 10761
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "tradebox": "240702044",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -2715,18 +2390,6 @@
         "Rewards": "115027#1",
         "StartNpcId": 10761,
         "FinishNpcId": 13851
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -2812,18 +2475,6 @@
         "Rewards": "115028#1&115029#1&115030#1&115031#1",
         "StartNpcId": 13851,
         "FinishNpcId": 13861
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -2909,18 +2560,6 @@
         "Rewards": "115029#1",
         "StartNpcId": 13861,
         "FinishNpcId": 13871
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -3006,18 +2645,6 @@
         "Rewards": "115030#1",
         "StartNpcId": 13871,
         "FinishNpcId": 12981
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -3103,18 +2730,6 @@
         "Rewards": "115031#1",
         "StartNpcId": 12981,
         "FinishNpcId": 12971
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -3200,18 +2815,6 @@
         "Rewards": "115032#1",
         "StartNpcId": 12971,
         "FinishNpcId": 10201
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "1",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -3297,18 +2900,6 @@
         "Rewards": "115033#1&115032#1&4#500000",
         "StartNpcId": 10761,
         "FinishNpcId": 10761
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -3394,18 +2985,6 @@
         "Rewards": "115034#1",
         "StartNpcId": 10761,
         "FinishNpcId": 13051
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -3491,18 +3070,6 @@
         "Rewards": "115035#1",
         "StartNpcId": 13881,
         "FinishNpcId": 13891
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -3588,18 +3155,6 @@
         "Rewards": "115036#1&115035#1",
         "StartNpcId": 13901,
         "FinishNpcId": 13901
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -3685,18 +3240,6 @@
         "Rewards": "115037#1",
         "StartNpcId": 13901,
         "FinishNpcId": 13911
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -3789,18 +3332,6 @@
         "Rewards": "115038#1&4#200000",
         "StartNpcId": 13911,
         "FinishNpcId": 14101
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -3886,18 +3417,6 @@
         "Rewards": "115039#1&115037#1&115037#1&4#500000",
         "StartNpcId": 10821,
         "FinishNpcId": 10821
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "1",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -3983,18 +3502,6 @@
         "Rewards": "115040#1&4#400000",
         "StartNpcId": 12441,
         "FinishNpcId": 12441
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "1",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -4080,18 +3587,6 @@
         "Rewards": "115041#1&4#500000",
         "StartNpcId": 10821,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -4177,18 +3672,6 @@
         "Rewards": "115042#1",
         "StartNpcId": 10811,
         "FinishNpcId": 13921
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -4274,18 +3757,6 @@
         "Rewards": "115043#1",
         "StartNpcId": 13921,
         "FinishNpcId": 13931
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -4371,18 +3842,6 @@
         "Rewards": "115044#1&115042#1&115043#1",
         "StartNpcId": 10811,
         "FinishNpcId": 13941
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -4468,18 +3927,6 @@
         "Rewards": "115045#1",
         "StartNpcId": 13941,
         "FinishNpcId": 14111
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -4565,18 +4012,6 @@
         "Rewards": "115046#1",
         "StartNpcId": 14111,
         "FinishNpcId": 14121
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -4662,18 +4097,6 @@
         "Rewards": "115047#1&115045#1&115046#1",
         "StartNpcId": 14121,
         "FinishNpcId": 10821
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "1",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -4759,18 +4182,6 @@
         "Rewards": "115048#1&4#500000",
         "StartNpcId": 10821,
         "FinishNpcId": 10771
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -4856,19 +4267,6 @@
         "Rewards": "115049#1",
         "StartNpcId": 13051,
         "FinishNpcId": 14131
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "showboss": "4#19#10",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -4954,18 +4352,6 @@
         "Rewards": "115050#1",
         "StartNpcId": 14131,
         "FinishNpcId": 14141
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -5051,18 +4437,6 @@
         "Rewards": "115051#1",
         "StartNpcId": 14141,
         "FinishNpcId": 14151
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -5148,18 +4522,6 @@
         "Rewards": "115052#1",
         "StartNpcId": 14151,
         "FinishNpcId": 14161
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -5245,18 +4607,6 @@
         "Rewards": "115053#1",
         "StartNpcId": 14161,
         "FinishNpcId": 14171
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -5342,18 +4692,6 @@
         "Rewards": "115054#1&115050#1&115051#1&115052#1&115053#1",
         "StartNpcId": 14171,
         "FinishNpcId": 14181
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -5439,18 +4777,6 @@
         "Rewards": "115055#1",
         "StartNpcId": 14181,
         "FinishNpcId": 10771
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "1",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -5529,19 +4855,6 @@
         "Rewards": "4#200000",
         "StartNpcId": 12431,
         "FinishNpcId": 12431
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "showboss": "4#20#10",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -5620,18 +4933,6 @@
         "Rewards": "4#200000",
         "StartNpcId": 14631,
         "FinishNpcId": 14581
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "1",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -5717,19 +5018,6 @@
         "Rewards": "4#300000",
         "StartNpcId": 12921,
         "FinishNpcId": 12921
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "showboss": "4#21#10",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -5815,18 +5103,6 @@
         "Rewards": "4#300000",
         "StartNpcId": 10821,
         "FinishNpcId": 10821
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -5912,19 +5188,6 @@
         "Rewards": "4#300000",
         "StartNpcId": 10821,
         "FinishNpcId": 11371
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "1",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "showboss": "4#22#10",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -6010,18 +5273,6 @@
         "Rewards": "4#300000",
         "StartNpcId": 11371,
         "FinishNpcId": 11371
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -6107,18 +5358,6 @@
         "Rewards": "4#300000",
         "StartNpcId": 11371,
         "FinishNpcId": 14511
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -6204,18 +5443,6 @@
         "Rewards": "4#300000",
         "StartNpcId": 14511,
         "FinishNpcId": 14521
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -6301,19 +5528,6 @@
         "Rewards": "4#300000",
         "StartNpcId": 12921,
         "FinishNpcId": 12921
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "showboss": "4#23#10",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -6399,19 +5613,6 @@
         "Rewards": "4#300000",
         "StartNpcId": 12331,
         "FinishNpcId": 12331
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "showboss": "4#24#10",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -6497,18 +5698,6 @@
         "Rewards": "4#900000",
         "StartNpcId": 10821,
         "FinishNpcId": 10821
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -6594,18 +5783,6 @@
         "Rewards": "4#900000",
         "StartNpcId": 10821,
         "FinishNpcId": 10821
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -6691,19 +5868,6 @@
         "Rewards": "4#600000",
         "StartNpcId": 10821,
         "FinishNpcId": 10821
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "2",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "showboss": "4#25#10",
-        "mode": "1",
-        "nofly": "1"
       }
     }
   },
@@ -6778,16 +5942,6 @@
         "Rewards": "4#200000",
         "StartNpcId": 56,
         "FinishNpcId": 56
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -6862,16 +6016,6 @@
         "Rewards": "4#200000",
         "StartNpcId": 56,
         "FinishNpcId": 56
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -6946,16 +6090,6 @@
         "Rewards": "4#200000",
         "StartNpcId": 56,
         "FinishNpcId": 56
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -7030,16 +6164,6 @@
         "Rewards": "4#200000",
         "StartNpcId": 56,
         "FinishNpcId": 56
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -7121,18 +6245,6 @@
         "Rewards": "499#39000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#20#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -7214,18 +6326,6 @@
         "Rewards": "499#39000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#20#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -7307,18 +6407,6 @@
         "Rewards": "499#39000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#20#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -7400,18 +6488,6 @@
         "Rewards": "499#39000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#20#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -7493,18 +6569,6 @@
         "Rewards": "499#52000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#20#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -7586,18 +6650,6 @@
         "Rewards": "499#52000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#20#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -7679,18 +6731,6 @@
         "Rewards": "499#52000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#20#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -7772,18 +6812,6 @@
         "Rewards": "499#52000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -7865,18 +6893,6 @@
         "Rewards": "499#65000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -7958,18 +6974,6 @@
         "Rewards": "499#65000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -8051,18 +7055,6 @@
         "Rewards": "499#78000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -8144,18 +7136,6 @@
         "Rewards": "499#78000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -8237,18 +7217,6 @@
         "Rewards": "499#42000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -8330,18 +7298,6 @@
         "Rewards": "499#42000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -8423,18 +7379,6 @@
         "Rewards": "499#42000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -8516,18 +7460,6 @@
         "Rewards": "499#42000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -8609,18 +7541,6 @@
         "Rewards": "499#56000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -8702,18 +7622,6 @@
         "Rewards": "499#56000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -8795,18 +7703,6 @@
         "Rewards": "499#56000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -8888,18 +7784,6 @@
         "Rewards": "499#56000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -8981,18 +7865,6 @@
         "Rewards": "499#70000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -9074,18 +7946,6 @@
         "Rewards": "499#70000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -9167,18 +8027,6 @@
         "Rewards": "499#84000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -9260,18 +8108,6 @@
         "Rewards": "499#84000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -9353,18 +8189,6 @@
         "Rewards": "499#45000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -9446,18 +8270,6 @@
         "Rewards": "499#45000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -9539,18 +8351,6 @@
         "Rewards": "499#45000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -9632,18 +8432,6 @@
         "Rewards": "499#45000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -9725,18 +8513,6 @@
         "Rewards": "499#60000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -9818,18 +8594,6 @@
         "Rewards": "499#60000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -9911,18 +8675,6 @@
         "Rewards": "499#60000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -10004,18 +8756,6 @@
         "Rewards": "499#60000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -10097,18 +8837,6 @@
         "Rewards": "499#75000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -10190,18 +8918,6 @@
         "Rewards": "499#75000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -10283,18 +8999,6 @@
         "Rewards": "499#90000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -10376,18 +9080,6 @@
         "Rewards": "499#90000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -10469,18 +9161,6 @@
         "Rewards": "499#48000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -10562,18 +9242,6 @@
         "Rewards": "499#48000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -10655,18 +9323,6 @@
         "Rewards": "499#48000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -10748,18 +9404,6 @@
         "Rewards": "499#48000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -10841,18 +9485,6 @@
         "Rewards": "499#64000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -10934,18 +9566,6 @@
         "Rewards": "499#64000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -11027,18 +9647,6 @@
         "Rewards": "499#64000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -11120,18 +9728,6 @@
         "Rewards": "499#64000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -11213,18 +9809,6 @@
         "Rewards": "499#80000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -11306,18 +9890,6 @@
         "Rewards": "499#80000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -11399,18 +9971,6 @@
         "Rewards": "499#96000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -11492,18 +10052,6 @@
         "Rewards": "499#96000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -11585,18 +10133,6 @@
         "Rewards": "499#51000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -11678,18 +10214,6 @@
         "Rewards": "499#51000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -11771,18 +10295,6 @@
         "Rewards": "499#51000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -11864,18 +10376,6 @@
         "Rewards": "499#51000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -11957,18 +10457,6 @@
         "Rewards": "499#68000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -12050,18 +10538,6 @@
         "Rewards": "499#68000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -12143,18 +10619,6 @@
         "Rewards": "499#68000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -12236,18 +10700,6 @@
         "Rewards": "499#68000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -12329,18 +10781,6 @@
         "Rewards": "499#85000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -12422,18 +10862,6 @@
         "Rewards": "499#85000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -12515,18 +10943,6 @@
         "Rewards": "499#102000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -12608,18 +11024,6 @@
         "Rewards": "499#102000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -12701,18 +11105,6 @@
         "Rewards": "499#54000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -12794,18 +11186,6 @@
         "Rewards": "499#54000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -12887,18 +11267,6 @@
         "Rewards": "499#54000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -12980,18 +11348,6 @@
         "Rewards": "499#54000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -13073,18 +11429,6 @@
         "Rewards": "499#72000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -13166,18 +11510,6 @@
         "Rewards": "499#72000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -13259,18 +11591,6 @@
         "Rewards": "499#72000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -13352,18 +11672,6 @@
         "Rewards": "499#72000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -13445,18 +11753,6 @@
         "Rewards": "499#90000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -13538,18 +11834,6 @@
         "Rewards": "499#90000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -13631,18 +11915,6 @@
         "Rewards": "499#108000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -13724,18 +11996,6 @@
         "Rewards": "499#108000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -13817,18 +12077,6 @@
         "Rewards": "499#57000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -13910,18 +12158,6 @@
         "Rewards": "499#57000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -14003,18 +12239,6 @@
         "Rewards": "499#57000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -14096,18 +12320,6 @@
         "Rewards": "499#57000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -14189,18 +12401,6 @@
         "Rewards": "499#76000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -14282,18 +12482,6 @@
         "Rewards": "499#76000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -14375,18 +12563,6 @@
         "Rewards": "499#76000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -14468,18 +12644,6 @@
         "Rewards": "499#76000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -14561,18 +12725,6 @@
         "Rewards": "499#95000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -14654,18 +12806,6 @@
         "Rewards": "499#95000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -14747,18 +12887,6 @@
         "Rewards": "499#114000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -14840,18 +12968,6 @@
         "Rewards": "499#114000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -14933,18 +13049,6 @@
         "Rewards": "499#60000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -15026,18 +13130,6 @@
         "Rewards": "499#60000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -15119,18 +13211,6 @@
         "Rewards": "499#60000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -15212,18 +13292,6 @@
         "Rewards": "499#60000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -15305,18 +13373,6 @@
         "Rewards": "499#80000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -15398,18 +13454,6 @@
         "Rewards": "499#80000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -15491,18 +13535,6 @@
         "Rewards": "499#80000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -15584,18 +13616,6 @@
         "Rewards": "499#80000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -15677,18 +13697,6 @@
         "Rewards": "499#100000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -15770,18 +13778,6 @@
         "Rewards": "499#100000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -15863,18 +13859,6 @@
         "Rewards": "499#120000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -15956,18 +13940,6 @@
         "Rewards": "499#120000&8237#1",
         "StartNpcId": 10811,
         "FinishNpcId": 10811
-      },
-      "Raw": {
-        "chuansong": "2",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#40#2",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -16055,17 +14027,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -16153,17 +14114,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -16251,17 +14201,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -16349,17 +14288,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -16447,17 +14375,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -16545,17 +14462,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -16643,17 +14549,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -16741,17 +14636,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -16839,17 +14723,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -16937,17 +14810,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -17035,17 +14897,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -17133,17 +14984,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -17231,17 +15071,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -17329,17 +15158,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -17427,17 +15245,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -17525,17 +15332,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -17623,17 +15419,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -17721,17 +15506,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -17826,17 +15600,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -17931,17 +15694,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -18036,17 +15788,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -18141,17 +15882,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -18246,17 +15976,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -18351,17 +16070,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -18449,17 +16157,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -18547,17 +16244,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -18645,17 +16331,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -18743,17 +16418,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -18841,17 +16505,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -18939,17 +16592,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -19037,17 +16679,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -19135,17 +16766,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -19233,17 +16853,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -19331,17 +16940,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -19429,17 +17027,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -19527,17 +17114,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -19625,17 +17201,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -19723,17 +17288,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -19821,17 +17375,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -19919,17 +17462,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -20017,17 +17549,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -20115,17 +17636,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -20220,17 +17730,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -20325,17 +17824,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -20430,17 +17918,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -20535,17 +18012,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -20640,17 +18106,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -20745,17 +18200,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -20843,17 +18287,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -20941,17 +18374,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -21039,17 +18461,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -21137,17 +18548,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -21235,17 +18635,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -21333,17 +18722,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -21431,17 +18809,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -21529,17 +18896,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -21627,17 +18983,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -21725,17 +19070,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -21823,17 +19157,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -21921,17 +19244,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -22019,17 +19331,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -22117,17 +19418,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -22215,17 +19505,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -22313,17 +19592,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -22411,17 +19679,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -22509,17 +19766,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -22614,17 +19860,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -22719,17 +19954,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -22824,17 +20048,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -22929,17 +20142,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -23034,17 +20236,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -23139,17 +20330,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -23237,17 +20417,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -23335,17 +20504,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -23433,17 +20591,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -23531,17 +20678,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -23629,17 +20765,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -23727,17 +20852,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -23825,17 +20939,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -23923,17 +21026,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -24021,17 +21113,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -24119,17 +21200,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -24217,17 +21287,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -24315,17 +21374,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -24413,17 +21461,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -24511,17 +21548,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -24609,17 +21635,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -24707,17 +21722,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -24805,17 +21809,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -24903,17 +21896,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -25008,17 +21990,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -25113,17 +22084,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -25218,17 +22178,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -25323,17 +22272,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -25428,17 +22366,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -25533,17 +22460,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -25631,17 +22547,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -25729,17 +22634,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -25827,17 +22721,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -25925,17 +22808,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -26023,17 +22895,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -26121,17 +22982,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -26219,17 +23069,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -26317,17 +23156,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -26415,17 +23243,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -26513,17 +23330,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -26611,17 +23417,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -26709,17 +23504,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -26807,17 +23591,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -26905,17 +23678,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -27003,17 +23765,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -27101,17 +23852,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -27199,17 +23939,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -27297,17 +24026,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -27402,17 +24120,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -27507,17 +24214,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -27612,17 +24308,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -27717,17 +24402,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -27822,17 +24496,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -27927,17 +24590,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -28025,17 +24677,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -28123,17 +24764,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -28221,17 +24851,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -28319,17 +24938,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -28417,17 +25025,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -28515,17 +25112,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -28613,17 +25199,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -28711,17 +25286,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -28809,17 +25373,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -28907,17 +25460,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -29005,17 +25547,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -29103,17 +25634,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -29201,17 +25721,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -29299,17 +25808,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -29397,17 +25895,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -29495,17 +25982,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -29593,17 +26069,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -29691,17 +26156,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -29796,17 +26250,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -29901,17 +26344,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -30006,17 +26438,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -30111,17 +26532,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -30216,17 +26626,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -30321,17 +26720,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -30419,17 +26807,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -30517,17 +26894,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -30615,17 +26981,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -30713,17 +27068,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -30811,17 +27155,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -30909,17 +27242,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -31007,17 +27329,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -31105,17 +27416,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -31203,17 +27503,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -31301,17 +27590,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -31399,17 +27677,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -31497,17 +27764,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -31595,17 +27851,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -31693,17 +27938,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -31791,17 +28025,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -31896,17 +28119,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -32001,17 +28213,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -32106,17 +28307,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -32211,17 +28401,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -32316,17 +28495,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -32421,17 +28589,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -32519,17 +28676,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -32617,17 +28763,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -32715,17 +28850,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -32813,17 +28937,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -32911,17 +29024,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -33009,17 +29111,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -33107,17 +29198,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -33205,17 +29285,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -33303,17 +29372,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -33401,17 +29459,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -33499,17 +29546,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -33597,17 +29633,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -33695,17 +29720,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -33793,17 +29807,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -33891,17 +29894,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -33996,17 +29988,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -34101,17 +30082,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -34206,17 +30176,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -34311,17 +30270,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -34416,17 +30364,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -34521,17 +30458,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -34619,17 +30545,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -34717,17 +30632,6 @@
         "Rewards": "8245#1&8291#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -34815,17 +30719,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -34913,17 +30806,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -35011,17 +30893,6 @@
         "Rewards": "8245#1&8292#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "1",
-        "nofly": "1"
       }
     }
   },
@@ -35109,17 +30980,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -35207,17 +31067,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -35305,17 +31154,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -35403,17 +31241,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -35501,17 +31328,6 @@
         "Rewards": "8495#1&8293#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "2",
-        "nofly": "1"
       }
     }
   },
@@ -35599,17 +31415,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -35697,17 +31502,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -35795,17 +31589,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -35893,17 +31676,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -35991,17 +31763,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -36096,17 +31857,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -36201,17 +31951,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -36306,17 +32045,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -36411,17 +32139,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -36516,17 +32233,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -36621,17 +32327,6 @@
         "Rewards": "8495#1&8294#1",
         "StartNpcId": 13951,
         "FinishNpcId": 13951
-      },
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "3",
-        "nofly": "1"
       }
     }
   },
@@ -36719,18 +32414,6 @@
         "Rewards": "86#10&1131#1",
         "StartNpcId": 55,
         "FinishNpcId": 55
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#200#2",
-        "autofinsh": "0",
-        "star": "1",
-        "showboss": "15#5",
-        "nofly": "1"
       }
     }
   },
@@ -36818,18 +32501,6 @@
         "Rewards": "86#20&1131#1",
         "StartNpcId": 55,
         "FinishNpcId": 55
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#200#2",
-        "autofinsh": "0",
-        "star": "2",
-        "showboss": "15#5",
-        "nofly": "1"
       }
     }
   },
@@ -36917,18 +32588,6 @@
         "Rewards": "86#30&1131#1",
         "StartNpcId": 55,
         "FinishNpcId": 55
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#200#2",
-        "autofinsh": "0",
-        "star": "3",
-        "showboss": "15#5",
-        "nofly": "1"
       }
     }
   },
@@ -37016,18 +32675,6 @@
         "Rewards": "86#40&1131#1",
         "StartNpcId": 55,
         "FinishNpcId": 55
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#200#2",
-        "autofinsh": "0",
-        "star": "4",
-        "showboss": "15#5",
-        "nofly": "1"
       }
     }
   },
@@ -37115,18 +32762,6 @@
         "Rewards": "86#50&1131#1",
         "StartNpcId": 55,
         "FinishNpcId": 55
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#200#2",
-        "autofinsh": "0",
-        "star": "5",
-        "showboss": "15#5",
-        "nofly": "1"
       }
     }
   },
@@ -37214,18 +32849,6 @@
         "Rewards": "86#60&1131#1",
         "StartNpcId": 55,
         "FinishNpcId": 55
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#200#2",
-        "autofinsh": "0",
-        "star": "6",
-        "showboss": "15#5",
-        "nofly": "1"
       }
     }
   },
@@ -37313,18 +32936,6 @@
         "Rewards": "86#70&1131#1",
         "StartNpcId": 55,
         "FinishNpcId": 55
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#200#2",
-        "autofinsh": "0",
-        "star": "7",
-        "showboss": "15#5",
-        "nofly": "1"
       }
     }
   },
@@ -37412,18 +33023,6 @@
         "Rewards": "86#80&1131#1",
         "StartNpcId": 55,
         "FinishNpcId": 55
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#200#2",
-        "autofinsh": "0",
-        "star": "8",
-        "showboss": "15#5",
-        "nofly": "1"
       }
     }
   },
@@ -37511,18 +33110,6 @@
         "Rewards": "86#90&1131#1",
         "StartNpcId": 55,
         "FinishNpcId": 55
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#200#2",
-        "autofinsh": "0",
-        "star": "9",
-        "showboss": "15#5",
-        "nofly": "1"
       }
     }
   },
@@ -37610,18 +33197,6 @@
         "Rewards": "86#10&1131#1",
         "StartNpcId": 55,
         "FinishNpcId": 55
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#200#2",
-        "autofinsh": "0",
-        "star": "1",
-        "showboss": "15#5",
-        "nofly": "1"
       }
     }
   },
@@ -37709,18 +33284,6 @@
         "Rewards": "86#20&1131#1",
         "StartNpcId": 55,
         "FinishNpcId": 55
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "mutireward": "6#200#2",
-        "autofinsh": "0",
-        "star": "2",
-        "showboss": "15#5",
-        "nofly": "1"
       }
     }
   },
@@ -37802,16 +33365,6 @@
         "Rewards": "1#1",
         "StartNpcId": 20,
         "FinishNpcId": 20
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -37893,16 +33446,6 @@
         "Rewards": "1#1",
         "StartNpcId": 20,
         "FinishNpcId": 20
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -37984,16 +33527,6 @@
         "Rewards": "1#1",
         "StartNpcId": 20,
         "FinishNpcId": 20
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -38075,16 +33608,6 @@
         "Rewards": "1#1",
         "StartNpcId": 20,
         "FinishNpcId": 20
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -38166,16 +33689,6 @@
         "Rewards": "1#1",
         "StartNpcId": 20,
         "FinishNpcId": 20
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -38257,16 +33770,6 @@
         "Rewards": "1#1",
         "StartNpcId": 20,
         "FinishNpcId": 20
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -38355,16 +33858,6 @@
         "Rewards": "1#1",
         "StartNpcId": 20,
         "FinishNpcId": 20
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -38453,16 +33946,6 @@
         "Rewards": "1#1",
         "StartNpcId": 20,
         "FinishNpcId": 20
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -38551,16 +34034,6 @@
         "Rewards": "1#1",
         "StartNpcId": 20,
         "FinishNpcId": 20
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -38649,16 +34122,6 @@
         "Rewards": "1#1",
         "StartNpcId": 20,
         "FinishNpcId": 20
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "autopathing": "1",
-        "autofight": "1",
-        "autofinsh": "0",
-        "star": "0",
-        "nofly": "1"
       }
     }
   },
@@ -38727,10 +34190,6 @@
         "Rewards": "",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "chuansong": "0",
-        "state": "1"
       }
     }
   },
@@ -38805,12 +34264,6 @@
         "Rewards": "499#100000",
         "StartNpcId": 1003,
         "FinishNpcId": 1003
-      },
-      "Raw": {
-        "chuansong": "0",
-        "limit": "1",
-        "state": "1",
-        "nofly": "1"
       }
     }
   },
@@ -38883,8 +34336,7 @@
         "Rewards": "4#10000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -38956,8 +34408,7 @@
         "Rewards": "4#10000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -39029,8 +34480,7 @@
         "Rewards": "4#10000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -39102,8 +34552,7 @@
         "Rewards": "4#10000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -39175,8 +34624,7 @@
         "Rewards": "4#10000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -39248,8 +34696,7 @@
         "Rewards": "4#10000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -39321,8 +34768,7 @@
         "Rewards": "4#200000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -39394,8 +34840,7 @@
         "Rewards": "4#400000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -39467,8 +34912,7 @@
         "Rewards": "4#600000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -39540,8 +34984,7 @@
         "Rewards": "4#800000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -39613,8 +35056,7 @@
         "Rewards": "4#1200000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -39693,8 +35135,7 @@
         "Rewards": "8404#1",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -39773,8 +35214,7 @@
         "Rewards": "8404#1",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -39853,8 +35293,7 @@
         "Rewards": "8404#1",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -39933,8 +35372,7 @@
         "Rewards": "8404#1",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -40006,8 +35444,7 @@
         "Rewards": "4#30000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -40086,8 +35523,7 @@
         "Rewards": "20#200",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -40166,8 +35602,7 @@
         "Rewards": "20#200",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -40239,8 +35674,7 @@
         "Rewards": "4#200000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -40312,8 +35746,7 @@
         "Rewards": "4#400000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -40385,8 +35818,7 @@
         "Rewards": "4#600000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -40458,8 +35890,7 @@
         "Rewards": "4#800000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -40531,8 +35962,7 @@
         "Rewards": "4#1200000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -40604,8 +36034,7 @@
         "Rewards": "4#10000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -40677,8 +36106,7 @@
         "Rewards": "4#10000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -40757,8 +36185,7 @@
         "Rewards": "1#10000",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {}
+      }
     }
   },
   {
@@ -40821,8 +36248,7 @@
       "GoalParams": "6001600#6001601#6001602",
       "GoalMultiTarget": true,
       "FixedRewards": [],
-      "KillTasks": [],
-      "Raw": {}
+      "KillTasks": []
     }
   },
   {
@@ -40889,13 +36315,7 @@
       "GoalParams": "",
       "GoalMultiTarget": false,
       "FixedRewards": [],
-      "KillTasks": [],
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "state": "1",
-        "autofinsh": "0"
-      }
+      "KillTasks": []
     }
   },
   {
@@ -40975,13 +36395,7 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "state": "1",
-        "autofinsh": "0"
-      }
+      "KillTasks": []
     }
   },
   {
@@ -41048,13 +36462,7 @@
       "GoalParams": "1001",
       "GoalMultiTarget": false,
       "FixedRewards": [],
-      "KillTasks": [],
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "state": "1",
-        "autofinsh": "0"
-      }
+      "KillTasks": []
     }
   },
   {
@@ -41121,13 +36529,7 @@
       "GoalParams": "",
       "GoalMultiTarget": false,
       "FixedRewards": [],
-      "KillTasks": [],
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "state": "1",
-        "autofinsh": "0"
-      }
+      "KillTasks": []
     }
   },
   {
@@ -41201,13 +36603,7 @@
           "ItemResolved": true
         }
       ],
-      "KillTasks": [],
-      "Raw": {
-        "chuansong": "0",
-        "overchuan": "0",
-        "state": "1",
-        "autofinsh": "0"
-      }
+      "KillTasks": []
     }
   },
   {
@@ -41281,9 +36677,6 @@
         "Rewards": "",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "1"
       }
     }
   },
@@ -41365,9 +36758,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "1"
       }
     }
   },
@@ -41449,10 +36839,6 @@
         "Rewards": "8491#1",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "1",
-        "item": "null"
       }
     }
   },
@@ -41527,9 +36913,6 @@
         "Rewards": "",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "2"
       }
     }
   },
@@ -41611,9 +36994,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "2"
       }
     }
   },
@@ -41695,10 +37075,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "2",
-        "item": "null"
       }
     }
   },
@@ -41773,9 +37149,6 @@
         "Rewards": "",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "3"
       }
     }
   },
@@ -41857,9 +37230,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "3"
       }
     }
   },
@@ -41941,10 +37311,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "3",
-        "item": "null"
       }
     }
   },
@@ -42019,9 +37385,6 @@
         "Rewards": "",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "4"
       }
     }
   },
@@ -42103,9 +37466,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "4"
       }
     }
   },
@@ -42187,10 +37547,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "4",
-        "item": "null"
       }
     }
   },
@@ -42265,9 +37621,6 @@
         "Rewards": "",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "5"
       }
     }
   },
@@ -42349,9 +37702,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "5"
       }
     }
   },
@@ -42433,10 +37783,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "5",
-        "item": "null"
       }
     }
   },
@@ -42511,9 +37857,6 @@
         "Rewards": "",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "6"
       }
     }
   },
@@ -42595,9 +37938,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "6"
       }
     }
   },
@@ -42679,10 +38019,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "6",
-        "item": "null"
       }
     }
   },
@@ -42757,9 +38093,6 @@
         "Rewards": "",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "7"
       }
     }
   },
@@ -42841,9 +38174,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "7"
       }
     }
   },
@@ -42925,10 +38255,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "7",
-        "item": "null"
       }
     }
   },
@@ -43003,9 +38329,6 @@
         "Rewards": "",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "8"
       }
     }
   },
@@ -43087,9 +38410,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "8"
       }
     }
   },
@@ -43171,10 +38491,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "8",
-        "item": "null"
       }
     }
   },
@@ -43249,9 +38565,6 @@
         "Rewards": "",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "9"
       }
     }
   },
@@ -43333,9 +38646,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "9"
       }
     }
   },
@@ -43417,10 +38727,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "9",
-        "item": "null"
       }
     }
   },
@@ -43495,9 +38801,6 @@
         "Rewards": "",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "10"
       }
     }
   },
@@ -43579,9 +38882,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "10"
       }
     }
   },
@@ -43663,10 +38963,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "10",
-        "item": "null"
       }
     }
   },
@@ -43741,9 +39037,6 @@
         "Rewards": "",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "11"
       }
     }
   },
@@ -43825,9 +39118,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "11"
       }
     }
   },
@@ -43909,10 +39199,6 @@
         "Rewards": "20#500",
         "StartNpcId": 0,
         "FinishNpcId": 0
-      },
-      "Raw": {
-        "star": "11",
-        "item": "null"
       }
     }
   }

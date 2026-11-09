@@ -1,4 +1,5 @@
-﻿using Server.MirEnvir;
+﻿using System;
+using Server.MirEnvir;
 using S = ServerPackets;
 
 namespace Server.MirDatabase
@@ -10,6 +11,7 @@ namespace Server.MirDatabase
             get { return Envir.Main; }
         }
 
+        // 旧 Mir2 字段：现有战斗逻辑按这些数值运行，换表后保留为兼容视图。
         public string Name;
         public Spell Spell;
         public byte BaseCost, LevelCost, Icon;
@@ -20,6 +22,16 @@ namespace Server.MirDatabase
         public ushort MPowerBase, MPowerBonus;
         public float MultiplierBase = 1.0f, MultiplierBonus;
         public byte Range = 9;
+
+        // 《原始传奇》5config.skill 的字段直接平铺在本表，不再内嵌原始记录副本。
+        // 重复语义由转换器统一派生：DelayBase=cdTime、Range=releaseDis、Spell=skill.id。
+        // 未纳入的全量原始列用 OriginId 回查 5config10.25341.1.json 的 skill 表即可，不在运行时表里存第二份。
+        public int OriginId;
+        public string OriginIcon = "", ConditionText = "", Tips1 = "";
+        public int Cls, Career, IsShow, Condition, HandlerType, Aoe, MaxTarget, CanUp;
+        public int TargetType, Action, HurtDelay, ReleaseDis, ReleaseDis2, ReleaseType;
+        public int AreaDir, AreaDis, CommonCd, SkillParams, NotargetEff, Passive, IsAuto, OriginIndex, Piaozi;
+        public int[] EffectIds = Array.Empty<int>();
 
         public override string ToString()
         {
@@ -34,7 +46,7 @@ namespace Server.MirDatabase
         public MagicInfo (BinaryReader reader, int version = int.MaxValue, int Customversion = int.MaxValue)
         {
             Name = reader.ReadString();
-            Spell = (Spell)reader.ReadByte();
+            Spell = (Spell)reader.ReadInt32();
             BaseCost = reader.ReadByte();
             LevelCost = reader.ReadByte();
             Icon = reader.ReadByte();
@@ -63,7 +75,7 @@ namespace Server.MirDatabase
         public void Save(BinaryWriter writer)
         {
             writer.Write(Name);
-            writer.Write((byte)Spell);
+            writer.Write((int)Spell);
             writer.Write(BaseCost);
             writer.Write(LevelCost);
             writer.Write(Icon);
@@ -119,7 +131,7 @@ namespace Server.MirDatabase
         }
         public UserMagic(BinaryReader reader, int version, int customVersion)
         {
-            Spell = (Spell) reader.ReadByte();
+            Spell = (Spell)reader.ReadInt32();
             Info = GetMagicInfo(Spell);
 
             Level = reader.ReadByte();
@@ -134,7 +146,7 @@ namespace Server.MirDatabase
         }
         public void Save(BinaryWriter writer)
         {
-            writer.Write((byte) Spell);
+            writer.Write((int)Spell);
 
             writer.Write(Level);
             writer.Write(Key);

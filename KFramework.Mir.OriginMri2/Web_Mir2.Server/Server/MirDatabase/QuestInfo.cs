@@ -30,8 +30,6 @@ namespace Server.MirDatabase
 
         // 2config._task_tx 是同一套 id 的另一条任务线文本，按 id 合并为备选文本。
         public QuestOriginAlternate Alternate;
-
-        public Dictionary<string, string> Raw = new Dictionary<string, string>();
     }
 
     public class QuestOriginReward

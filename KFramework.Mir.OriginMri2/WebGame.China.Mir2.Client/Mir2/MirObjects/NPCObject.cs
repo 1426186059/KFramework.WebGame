@@ -26,7 +26,7 @@ namespace Client.MirObjects
 
         public ushort Image;
         public Color Colour = Color.White;
-        /// <summary>原始页游 NPC 显示缩放（来自 ObjectNPC.Scale，即 NPCInfo.OriginSettings.Raw["scale"]/100）。</summary>
+        /// <summary>原始页游 NPC 显示缩放（来自 ObjectNPC.Scale，即 NPCInfo.OriginSettings.ScalePercent/100）。</summary>
         public float Scale = 1f;
 
         /// <summary>非零 = NPCInfo.Image 是原始传奇 model 号，走 Mir2OriginObjectLibrary 的独立图集。</summary>

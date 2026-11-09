@@ -1142,7 +1142,7 @@ public enum ItemSet : byte
     BlueFrostH = 39
 }
 
-public enum Spell : byte
+public enum Spell : int
 {
     None = 0,
 

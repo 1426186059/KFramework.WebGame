@@ -55,8 +55,8 @@ public sealed class NPCOriginSettingsOut
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public string? Tips;
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public List<NPCPlacementOut>? Placements;
 
-    // 原始行全部字段（已语义化的除外），保证零丢失
-    public Dictionary<string, string> Raw = new();
+    // 3config.npc.scale：显示缩放百分比，100 = 原尺寸
+    public int ScalePercent = 100;
 }
 
 public sealed class NPCPlacementOut
@@ -70,13 +70,6 @@ public sealed class NPCPlacementOut
 public static class Program
 {
     private const string ConfigVersion = "10.25341.1";
-
-    // 已在 NPCOriginSettingsOut 里语义化的键，不再重复放进 Raw
-    private static readonly HashSet<string> SemanticKeys = new(StringComparer.Ordinal)
-    {
-        "title", "depiction", "button", "function", "deliver", "storeId",
-        "openCondition", "showcondition", "tips"
-    };
 
     public static int Main(string[] args)
     {
@@ -194,7 +187,7 @@ public static class Program
                 ShowCondition = NullIfEmpty(showCond),
                 Tips = NullIfEmpty(tips),
                 Placements = placements.Count > 0 ? placements : null,
-                Raw = BuildRaw(o)
+                ScalePercent = ParseScale(o)
             };
 
             var outNpc = new NPCInfoOut
@@ -267,7 +260,7 @@ public static class Program
             w.WriteLine("  OriginSettings <- 新增字段，把原始 NPC 内容直接内嵌进配置表：");
             w.WriteLine("      Title/Depiction/Button/Function/Deliver/StoreId/OpenCondition/ShowCondition/Tips");
             w.WriteLine("      Placements：该 NPC 的全部摆放点（含 MapResolved 标记）");
-            w.WriteLine("      Raw：原始行所有字段（已语义化的除外），保证零丢失");
+            w.WriteLine("      ScalePercent：3config.npc.scale 显示缩放百分比；其余原始列不落运行时表，按 id 回查分片");
             w.WriteLine("  Rate=100 / ShowOnBigMap=false / ConquestVisible=true 等：服务器默认值");
             w.WriteLine();
             w.WriteLine("【二、配套服务器改动】");
@@ -324,23 +317,12 @@ public static class Program
         return 0;
     }
 
-    static Dictionary<string, string> BuildRaw(JsonElement o)
+    static int ParseScale(JsonElement o)
     {
-        var raw = new Dictionary<string, string>(StringComparer.Ordinal);
-        if (o.ValueKind != JsonValueKind.Object) return raw;
-        foreach (var p in o.EnumerateObject())
-        {
-            if (SemanticKeys.Contains(p.Name)) continue;
-            raw[p.Name] = p.Value.ValueKind switch
-            {
-                JsonValueKind.String => p.Value.GetString() ?? "",
-                JsonValueKind.Number => p.Value.GetRawText(),
-                JsonValueKind.True => "1",
-                JsonValueKind.False => "0",
-                _ => p.Value.GetRawText()
-            };
-        }
-        return raw;
+        if (o.ValueKind != JsonValueKind.Object || !o.TryGetProperty("scale", out var v)) return 100;
+        if (v.ValueKind == JsonValueKind.Number && v.TryGetInt32(out int n)) return n;
+        if (v.ValueKind == JsonValueKind.String && int.TryParse(v.GetString(), out n)) return n;
+        return 100;
     }
 
     static string? NullIfEmpty(string s) => string.IsNullOrWhiteSpace(s) ? null : s;

@@ -31,8 +31,12 @@ namespace Server
         /// 注意：版本号必须与客户端 Mir2MapDataLoader 加载的 map{ver}.dat 保持一致（当前客户端为 map10.25487.1.dat），
         /// 否则服务端碰撞数据会与客户端地图脱节，出现「看着能走、服务端却拦下」的格子。</summary>
         public const string OriginalMapDatPath = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Web_Mir2.Server.Version\Maps\map10.25487.1.dat";
-        /// <summary>原始传奇地图配置表目录（0config~5config*.json，提供每图像素宽高，反推网格）</summary>
-        public const string OriginalMapConfigPath = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Web_Mir2.Server.Version\ExcelConfig";
+        /// <summary>原始传奇配置分片（0config~5config*.json）的唯一权威源目录。
+        /// ExcelConfig 只放构建期转换器生成的运行时表，不再存分片副本。</summary>
+        public static readonly string OriginalConfigDir = Path.Combine(VersionRoot, "..", "Tools", "原始传奇-资源提取", "原始传奇-资源参考");
+
+        /// <summary>地图像素尺寸来源（0config.map），指向权威源目录；OriginalMapSource 按 *config*.json 扫描。</summary>
+        public static readonly string OriginalMapConfigPath = OriginalConfigDir;
 
         public static string NPCPath => Path.Combine(EnvirPath, "NPCs");
         public static string GoodsPath => Path.Combine(EnvirPath, "Goods");

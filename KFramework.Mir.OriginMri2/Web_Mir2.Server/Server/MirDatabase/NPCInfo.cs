@@ -11,7 +11,9 @@ namespace Server.MirDatabase
         public int StoreId;
         public string OpenCondition = "", ShowCondition = "", Tips = "";
         public List<NPCPlacement> Placements = new();
-        public Dictionary<string, string> Raw = new();
+
+        /// <summary>原始页游显示缩放百分比（3config.npc.scale），100 = 原尺寸。</summary>
+        public int ScalePercent = 100;
     }
 
     public class NPCPlacement

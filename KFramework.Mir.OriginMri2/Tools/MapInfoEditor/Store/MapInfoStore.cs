@@ -108,7 +108,8 @@ namespace MapInfoEditor
             // 既用于反推网格，也用于解析地图中文名（MapInfo_Fix 里很多是 "???"）。
             ConfigDims.Clear();
             NameById.Clear();
-            string excelCfg = Path.Combine(VersionRoot, "ExcelConfig");
+            // 唯一权威源：资源提取工具下的 0config~5config 分片（ExcelConfig 只放运行时表）。
+            string excelCfg = Path.Combine(VersionRoot, "..", "Tools", "原始传奇-资源提取", "原始传奇-资源参考");
             if (Directory.Exists(excelCfg))
             {
                 foreach (var cfg in Directory.GetFiles(excelCfg, "*config*.json"))
