@@ -59,7 +59,7 @@ public static class Mir2OriginObjectLibrary
     /// 个模型登记了 action=10，图集是"站立→倒地"多帧序列（鹿 4161 为 10 帧），尸体停在末帧。
     /// action=12 仅 482 个模型有，且是 2 帧站立姿势（4000 等模型直接请求 404）。
     /// 历史错误：把 10 当受击、12 当死亡，导致"攻击时播倒地动画、死亡后停回站立帧"。</summary>
-    public const int ActionWalk = 2, ActionAttack = 4, ActionStruck = 12, ActionDie = 10;
+    public const int ActionWalk = 2, ActionRun = 3, ActionAttack = 4, ActionStruck = 12, ActionDie = 10;
     /// <summary>怪物默认存储方向数：totaldir=5 → 真帧方向 0..4，5..7 为镜像。</summary>
     public const int DefaultTotalDir = 5;
     /// <summary>NPC 待机动作在 2config.modelInfo 里是 totaldir=1 → 只有 NONE(=4) 一帧。</summary>
@@ -240,15 +240,19 @@ public static class Mir2OriginObjectLibrary
     {
         switch (action)
         {
+            // 原始传奇把走(2)和跑(3)做成两套独立图集：9027023 小步 w≈75，9027033 大步腾空 w≈100。
+            // 全表 1727/4725 模型登记了 action=3；此前 Walking/Running 都映射到 2，所以只会走不会跑。
             case MirAction.Walking:
-            case MirAction.Running:
             case MirAction.Pushed:
-            case MirAction.DashL:
-            case MirAction.DashR:
             case MirAction.Sneek:
             case MirAction.WalkingBow:
-            case MirAction.RunningBow:
                 return ActionWalk;
+
+            case MirAction.Running:
+            case MirAction.RunningBow:
+            case MirAction.DashL:
+            case MirAction.DashR:
+                return ActionRun;
 
             case MirAction.Attack1:
             case MirAction.Attack2:
@@ -286,6 +290,7 @@ public static class Mir2OriginObjectLibrary
     {
         if (action == ActionStand) return "Standing(待机)";
         if (action == ActionWalk) return "Walk(走)";
+        if (action == ActionRun) return "Run(跑)";
         if (action == ActionAttack) return "Attack(攻)";
         if (action == ActionStruck) return "Struck(受击)";
         if (action == ActionDie) return "Die(死亡)";
@@ -624,6 +629,13 @@ public static class Mir2OriginObjectLibrary
         var drawEffects = flip ? effects : (effects & ~SpriteEffects.FlipHorizontally);
 
         var key = CacheKey(kind, id, action, loadDir);
+        // 约 2/3 模型没有 action=3（跑）图集：确认 404 后回落到走，否则这些角色一跑就整个不绘制。
+        // 不能用内嵌 modelInfo 判断（9027 等玩家模型不在表里但 CDN 上确实有 3），只认实际加载结果。
+        if (action == ActionRun && IsMissing(key))
+        {
+            action = ActionWalk;
+            key = CacheKey(kind, id, action, loadDir);
+        }
         if (IsMissing(key)) return false;
 
         if (kind == Mir2ObjectKind.Item)
@@ -708,6 +720,12 @@ public static class Mir2OriginObjectLibrary
         }
 
         var key = CacheKey(kind, id, action, loadDir);
+        // 与 DrawAnchored 保持一致：没有跑图集的模型回落到走。
+        if (action == ActionRun && IsMissing(key))
+        {
+            action = ActionWalk;
+            key = CacheKey(kind, id, action, loadDir);
+        }
         if (IsMissing(key)) return false;
         if (!_sheets.TryGetValue(key, out var st) || st == null || !st.IsCompletedSuccessfully) return false;
         var sheet = st.Result;
