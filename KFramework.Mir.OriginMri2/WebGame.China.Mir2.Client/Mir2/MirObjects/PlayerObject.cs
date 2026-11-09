@@ -68,6 +68,40 @@ namespace Client.MirObjects
             _pgWeapon = equipment[(int)EquipmentSlot.Weapon]?.Info?.Index ?? 0;  // 武器层
             _pgMount  = equipment[(int)EquipmentSlot.Mount]?.Info?.Index ?? 0;   // 坐骑层
             _originModel = PlayerBodyModelResolved();
+            PreloadSelfModels();   // 出场（Loading）/换装即开始预载自己全部装备层（急队列，不等待绘制）
+        }
+
+        /// <summary>后台静默预载「自己」的全部装备层（身体/头发/护肩/武器/坐骑/装饰…），对齐原始 ActionLoader 的急队列：
+        /// 出场即开始加载，不等待绘制；装备变化(SetSlots)时再次刷新。仅对 User 调用（this != User 直接返回）。</summary>
+        private void PreloadSelfModels()
+        {
+            if (this != User) return;
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, _originModel, Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHairModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHuJianModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHuiJiModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerWeaponModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerMountModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerZhenfaModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerFootModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerPiFengModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerDouLiModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerMianShaModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerYuPeiModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerXunZhangModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerHuDunModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerXuanGuangModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerTitleModel(), Mir2OriginObjectLibrary.PriorityUser);
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, PlayerWingModel(), Mir2OriginObjectLibrary.PriorityUser);
+            // 裸身兜底模型（身体 CDN 缺失时回落 9001/9002）也预载，避免回退时再等待。
+            Mir2OriginObjectLibrary.PreloadModel(Mir2ObjectKind.Player, Gender == MirGender.Female ? 9002 : 9001, Mir2OriginObjectLibrary.PriorityUser);
+        }
+
+        /// <summary>后台懒预取：把自己当前动作的各方向暖好，转身/换动作不跳帧（低优先级，空闲才下）。</summary>
+        public override void PrefetchBackground()
+        {
+            if (_originModel > 0)
+                Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Player, _originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), Mir2OriginObjectLibrary.PriorityBackground);
         }
         // 武器层：优先【幻武 type1】（时装武器，覆盖普通武器）；否则武器槽 cm.item[col17]；无则 0 不绘制。
         private int PlayerWeaponModel()
@@ -4693,7 +4727,8 @@ namespace Client.MirObjects
                 void DrawLayer(int m)
                 {
                     if (m <= 0) return;
-                    Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Player, m, action, dir);
+                    int pr = (this == User) ? Mir2OriginObjectLibrary.PriorityUser : Mir2OriginObjectLibrary.PriorityVisible;
+                    Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Player, m, action, dir, pr);
                     Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Player, m, action, dir, FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour, fx);
                 }
                 // 分层顺序（底→顶）：法阵→足迹→坐骑→翅膀→披风(后)→身体→护肩/玉佩/勋章/斗笠/面纱(覆盖)→武器→护盾(副手)→疗伤石→旋光/称号/徽记(顶)

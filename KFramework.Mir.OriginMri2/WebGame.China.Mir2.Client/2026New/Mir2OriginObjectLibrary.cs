@@ -62,6 +62,16 @@ public static class Mir2OriginObjectLibrary
     /// <summary>NPC 待机动作在 2config.modelInfo 里是 totaldir=1 → 只有 NONE(=4) 一帧。</summary>
     public const int NPCTotalDir = 1;
 
+    // —— 加载优先级层级（对齐原始 ActionLoader 的 急/懒 双队列：自己=急、他人=懒）——
+    /// <summary>自己（本体+装备）：最高，先于他人出；低于地图瓦片(10)以保地面先出。</summary>
+    public const int PriorityUser = 8;
+    /// <summary>当前在屏、正在绘制的他人/怪物/NPC：次高。</summary>
+    public const int PriorityVisible = 5;
+    /// <summary>后台静默预载（懒队列）：最低，仅在无更急请求时空闲暖缓存。</summary>
+    public const int PriorityBackground = 0;
+    /// <summary>物品图标（背包/地面），同屏可见。</summary>
+    public const int PriorityItem = 5;
+
     // —— 版本表（resourceVersion.json：资源名 -> 版本号）——
     private static Dictionary<string, string> _versions = new(StringComparer.OrdinalIgnoreCase);
     private static volatile bool _versionsReady;
@@ -86,6 +96,9 @@ public static class Mir2OriginObjectLibrary
     // —— 帧间隔表：modelInfo[model][action].intval（原始传奇逐模型逐动作的每帧毫秒）——
     // 键 = model*1000 + action；值 = 每帧毫秒。玩家动画速度据此跟随原版；缺失时回落 Frame.Interval。
     private static readonly Dictionary<long, int> _intval = new();
+    // —— 每模型的动作清单（用于 PreloadModel 全动作预载）与 totaldir（决定预载方向数）——
+    private static readonly Dictionary<int, List<int>> _modelActions = new();
+    private static readonly Dictionary<long, int> _totaldir = new();
     private static volatile bool _standReady;
 
     /// <summary>版本表是否就绪。未就绪时仍可用无版本段路径加载，只是可能 404。</summary>
@@ -125,6 +138,10 @@ public static class Mir2OriginObjectLibrary
                             int iv = actElem.Value[2].GetInt32();
                             if (iv > 0) _intval[(long)model * 1000 + action] = iv;
                         }
+                        if (actElem.Value.GetArrayLength() >= 4)
+                            _totaldir[(long)model * 1000 + action] = actElem.Value[3].GetInt32();
+                        if (!_modelActions.TryGetValue(model, out var al)) { al = new List<int>(); _modelActions[model] = al; }
+                        al.Add(action);
                     }
                 }
             }
@@ -300,7 +317,7 @@ public static class Mir2OriginObjectLibrary
     /// 发起异步预取，不等待结果。绘制路径每帧调用本方法是安全的：命中缓存/在途任务直接返回，
     /// 已确认 404 的资源进 _missing 不再重试（避免每帧 404 风暴）。
     /// </summary>
-    public static void Request(Mir2ObjectKind kind, int id, int action = ActionStand, int direction = 0)
+    public static void Request(Mir2ObjectKind kind, int id, int action = ActionStand, int direction = 0, int priority = PriorityBackground)
     {
         if (id <= 0) return;
         var key = CacheKey(kind, id, action, direction);
@@ -310,14 +327,14 @@ public static class Mir2OriginObjectLibrary
         if (device == null) return;
 
         if (kind == Mir2ObjectKind.Item)
-            _ = GetItemTextureAsync(id, device);
+            _ = GetItemTextureAsync(id, device, priority: priority);
         else
-            _ = GetSheetAsync(kind, id, action, direction, device);
+            _ = GetSheetAsync(kind, id, action, direction, device, priority);
     }
 
     /// <summary>取得（或异步加载）一份模型独立图集。同 key 并发只发一次下载。</summary>
     public static Task<Mir2AtlasSheet> GetSheetAsync(Mir2ObjectKind kind, int id, int action, int direction,
-                                                     GraphicsDevice device, CancellationToken ct = default)
+                                                     GraphicsDevice device, int priority = PriorityBackground, CancellationToken ct = default)
     {
         if (kind == Mir2ObjectKind.Item || id <= 0 || device == null)
             return Task.FromResult<Mir2AtlasSheet>(null);
@@ -326,11 +343,11 @@ public static class Mir2OriginObjectLibrary
         if (_missing.ContainsKey(key)) return Task.FromResult<Mir2AtlasSheet>(null);
         if (_sheets.TryGetValue(key, out var cached) && cached != null) return cached;
 
-        return _sheets.GetOrAdd(key, k => LoadSheetAsync(k, id, action, direction, device));
+        return _sheets.GetOrAdd(key, k => LoadSheetAsync(k, id, action, direction, device, priority));
     }
 
     private static async Task<Mir2AtlasSheet> LoadSheetAsync(string key, int model, int action, int direction,
-                                                             GraphicsDevice device)
+                                                             GraphicsDevice device, int priority = PriorityBackground)
     {
         try
         {
@@ -339,7 +356,7 @@ public static class Mir2OriginObjectLibrary
             string pngPath = ModelFramePath(model, action, direction, "png");
             string jsonPath = ModelFramePath(model, action, direction, "json");
 
-            var tex = await Mir2OriginResource.GetTextureAsync(pngPath, device, CancellationToken.None);
+            var tex = await Mir2OriginResource.GetTextureAsync(pngPath, device, priority, CancellationToken.None);
             if (tex == null)
             {
                 if (!_loggedMissing.ContainsKey(key))
@@ -353,7 +370,7 @@ public static class Mir2OriginObjectLibrary
             }
 
             byte[] jsonBytes = null;
-            try { jsonBytes = await Mir2OriginResource.GetBytesAsync(jsonPath, CancellationToken.None); }
+            try { jsonBytes = await Mir2OriginResource.GetBytesAsync(jsonPath, priority, CancellationToken.None); }
             catch { /* 无 json 视为整图单帧 */ }
 
             string json;
@@ -382,22 +399,22 @@ public static class Mir2OriginObjectLibrary
 
     /// <summary>取得（或异步加载）一张物品图标纹理。同 iconId 并发只发一次下载。</summary>
     public static Task<Texture2D> GetItemTextureAsync(int iconId, GraphicsDevice device,
-                                                      string iconSubDir = "tool", CancellationToken ct = default)
+                                                      string iconSubDir = "tool", int priority = PriorityItem, CancellationToken ct = default)
     {
         var key = CacheKey(Mir2ObjectKind.Item, iconId, 0, 0);
         if (iconId <= 0 || device == null) return Task.FromResult<Texture2D>(null);
         if (_missing.ContainsKey(key)) return Task.FromResult<Texture2D>(null);
         if (_images.TryGetValue(key, out var cached) && cached != null) return cached;
 
-        return _images.GetOrAdd(key, k => LoadItemAsync(k, iconId, device, iconSubDir));
+        return _images.GetOrAdd(key, k => LoadItemAsync(k, iconId, device, iconSubDir, priority));
     }
 
-    private static async Task<Texture2D> LoadItemAsync(string key, int iconId, GraphicsDevice device, string iconSubDir)
+    private static async Task<Texture2D> LoadItemAsync(string key, int iconId, GraphicsDevice device, string iconSubDir, int priority = PriorityItem)
     {
         try
         {
             if (!_versionsReady) await InitializeAsync(CancellationToken.None);
-            var tex = await Mir2OriginResource.GetTextureAsync(ItemIconPath(iconId, iconSubDir), device, CancellationToken.None);
+            var tex = await Mir2OriginResource.GetTextureAsync(ItemIconPath(iconId, iconSubDir), device, priority, CancellationToken.None);
             if (tex == null) MarkMissing(key);
             return tex;
         }
@@ -413,6 +430,40 @@ public static class Mir2OriginObjectLibrary
         _missing[key] = 1;
         _sheets.TryRemove(key, out _);
         _images.TryRemove(key, out _);
+    }
+
+    // ===================== 预加载（对齐原始 ActionLoader 急/懒双队列）=====================
+
+    /// <summary>预载某模型所有登记动作 × 所需方向（自己=急队列，出场/换装即齐，不等待绘制）。
+    /// 方向数按 modelInfo.totaldir（1→仅 NONE(4)；5→0..4；其余→0..7）；模型不在内嵌表时兜底预载常见动作 0..7。
+    /// 仅发起异步请求（命中缓存/在途任务直接返回），不阻塞；缺失帧由 _missing 缓存，不会重复请求。</summary>
+    public static void PreloadModel(Mir2ObjectKind kind, int id, int priority = PriorityUser)
+    {
+        if (id <= 0) return;
+        if (_modelActions.TryGetValue(id, out var acts))
+        {
+            foreach (var a in acts)
+            {
+                int td = _totaldir.TryGetValue((long)id * 1000 + a, out var t) ? t : 8;
+                int maxDir = td == 1 ? 4 : (td == 5 ? 4 : 7);
+                for (int d = 0; d <= maxDir; d++) Request(kind, id, a, d, priority);
+            }
+        }
+        else
+        {
+            foreach (var a in new[] { 1, 2, 3, 4, 5, 10, 21, 23, 99 })
+                for (int d = 0; d <= 7; d++) Request(kind, id, a, d, priority);
+        }
+    }
+
+    /// <summary>预载某模型单个动作的全部方向（后台懒队列用）：对齐原始 ActionLoader，实体转身/切换动作前先把同动作各方向暖好，避免转向跳帧。
+    /// 方向数按该动作的 totaldir（1→仅 NONE(4)；5→0..4；其余→0..7）。</summary>
+    public static void PreloadAction(Mir2ObjectKind kind, int id, int action, int priority = PriorityBackground)
+    {
+        if (id <= 0) return;
+        int td = _totaldir.TryGetValue((long)id * 1000 + action, out var t) ? t : DefaultTotalDir;
+        int maxDir = td == 1 ? 4 : (td == 5 ? 4 : 7);
+        for (int d = 0; d <= maxDir; d++) Request(kind, id, action, d, priority);
     }
 
     /// <summary>该资源已确认缺失（不再重试）。</summary>

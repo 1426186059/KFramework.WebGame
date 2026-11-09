@@ -457,6 +457,8 @@ namespace Client.MirScenes
         }
 
 
+        private long _nextPrefetch;
+
         public void Process()
         {
             Processdoors();
@@ -469,6 +471,15 @@ namespace Client.MirScenes
 
             for (int i = Effects.Count - 1; i >= 0; i--)
                 Effects[i].Process();
+
+            // 后台静默预取（懒队列）：每 500ms 让各实体低优先级暖自己当前动作的各方向，转身/换动作不跳帧；
+            // 已缓存/已缺失的 key 由 Request 直接短路，稳态零网络开销。
+            if (CMain.Time >= _nextPrefetch)
+            {
+                _nextPrefetch = CMain.Time + 500;
+                for (int i = ObjectsList.Count - 1; i >= 0; i--)
+                    ObjectsList[i].PrefetchBackground();
+            }
 
             if (MapObject.TargetObject != null && MapObject.TargetObject is MonsterObject && MapObject.TargetObject.AI == 64)
                 MapObject.TargetObjectID = 0;

@@ -51,6 +51,13 @@ namespace Client.MirObjects
         /// 该编号与 Crystal 的 Monster 枚举完全不同源，旧的 .Lib switch 分支必须整段跳过。
         /// </summary>
         private int _originModel;
+
+        /// <summary>后台懒预取：把自己当前动作的各方向暖好，转身不跳帧（低优先级，空闲才下）。</summary>
+        public override void PrefetchBackground()
+        {
+            if (_originModel > 0)
+                Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.Monster, _originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), Mir2OriginObjectLibrary.PriorityBackground);
+        }
         private static bool _originImageLogged;
         public byte Effect;
         public bool Skeleton;
@@ -90,7 +97,7 @@ namespace Client.MirObjects
             // 旧的 .Lib switch（含 Gates/Pets/Siege 等基于旧枚举的分支）整段跳过，避免误命中越界。
             _originModel = (int)info.Image;
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel,
-                                            Mir2OriginObjectLibrary.ActionStand, 0);
+                                            Mir2OriginObjectLibrary.ActionStand, 0, Mir2OriginObjectLibrary.PriorityVisible);
             if (_originModel >= Libraries.Monsters.Length && !_originImageLogged)
             {
                 _originImageLogged = true;
@@ -4344,7 +4351,7 @@ namespace Client.MirObjects
                 // 缺翻转会让"向左走"显示成"向右的姿势"，左右移动本就是侧面帧，表现为"横着走且朝向反"。
                 bool mirror = (int)Direction >= 5;
                 KFramework.MonoGame.SpriteEffects fx = mirror ? KFramework.MonoGame.SpriteEffects.FlipHorizontally : KFramework.MonoGame.SpriteEffects.None;
-                Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel, action, dir);
+                Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, _originModel, action, dir, Mir2OriginObjectLibrary.PriorityVisible);
                 if (Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Monster, _originModel, action, dir,
                                                          FrameIndex, DrawLocation.X, DrawLocation.Y, drawColour, fx))
                 {

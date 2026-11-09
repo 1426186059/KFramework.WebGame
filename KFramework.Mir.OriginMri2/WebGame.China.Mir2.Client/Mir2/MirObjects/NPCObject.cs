@@ -32,6 +32,13 @@ namespace Client.MirObjects
         /// <summary>非零 = NPCInfo.Image 是原始传奇 model 号，走 Mir2OriginObjectLibrary 的独立图集。</summary>
         private int _originModel;
 
+        /// <summary>后台懒预取：把自己当前动作的各方向暖好（低优先级，空闲才下）。</summary>
+        public override void PrefetchBackground()
+        {
+            if (_originModel > 0)
+                Mir2OriginObjectLibrary.PreloadAction(Mir2ObjectKind.NPC, _originModel, Mir2OriginObjectLibrary.MapAction(CurrentAction), Mir2OriginObjectLibrary.PriorityBackground);
+        }
+
         public QuestIcon QuestIcon = QuestIcon.None;
 
         private bool _canChangeDir = true;
@@ -75,7 +82,7 @@ namespace Client.MirObjects
             if (_originModel > 0)
                 Mir2OriginObjectLibrary.Request(Mir2ObjectKind.NPC, _originModel,
                                                 Mir2OriginObjectLibrary.ActionStand,
-                                                Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.NPCTotalDir, 0));
+                                                Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.NPCTotalDir, 0), Mir2OriginObjectLibrary.PriorityVisible);
 
             LoadLibrary();
 
@@ -326,7 +333,7 @@ namespace Client.MirObjects
             {
                 int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
                 int dir = Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.NPCTotalDir, (int)Direction);
-                Mir2OriginObjectLibrary.Request(Mir2ObjectKind.NPC, _originModel, action, dir);
+                Mir2OriginObjectLibrary.Request(Mir2ObjectKind.NPC, _originModel, action, dir, Mir2OriginObjectLibrary.PriorityVisible);
                 drawnByCdn = Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.NPC, _originModel, action, dir,
                                                                    FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour, scale: Scale);
                 // 回退：当前动作帧未就绪时改画已就绪的待机帧，保证 NPC 始终可见（仍走 origin，非 .Lib）。

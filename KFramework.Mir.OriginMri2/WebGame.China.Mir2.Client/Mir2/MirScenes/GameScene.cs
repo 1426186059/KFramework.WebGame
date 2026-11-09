@@ -55,7 +55,6 @@ namespace Client.MirScenes
         public HeroSpawnState HeroSpawnState;
         public MapControl MapControl;
         public MainDialog MainDialog;
-        private LoadingDialog _loadingDialog;
         public ChatDialog ChatDialog;
         public InventoryDialog InventoryDialog;
         public CharacterDialog CharacterDialog;
@@ -426,7 +425,7 @@ namespace Client.MirScenes
                 RecreateBigMapButtons();
             }
 
-            _loadingDialog = new LoadingDialog { Parent = this };
+            CMain.ShowLoadingDialog();   // 触发创建全屏加载蒙层（由 CMain 在场景绘制之后单独 Draw，层级最高）
         }
 
         private void UpdateMouseCursor()
@@ -1209,18 +1208,6 @@ namespace Client.MirScenes
             if (MapControl == null || User == null)
             {
                 return;
-            }
-
-            if(_loadingDialog != null)
-            {
-                _loadingDialog.Tick();
-
-                if (_loadingDialog.Done)
-                {
-                    _loadingDialog.Cancel();
-                    _loadingDialog.Dispose();
-                    _loadingDialog = null;
-                }
             }
 
             if (CMain.Time >= MoveTime)

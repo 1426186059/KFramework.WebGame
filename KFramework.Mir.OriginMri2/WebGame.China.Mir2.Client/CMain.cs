@@ -76,6 +76,30 @@ namespace WebGame.Mir2.MonoGame.Client
         public static MirLabel HintTextLabel;
         public static FPSDialog DebugDialog;
         public static string DebugText = "";
+
+        // 进入游戏时的全屏加载蒙层：由 GameScene 触发创建，但【不挂在任何场景控件树下】，
+        // 而是由 CMain 在场景绘制之后单独 Draw（RenderEnvironment），从而层级最高、盖在所有 UI/浮层之上。
+        public static LoadingDialog LoadingDialog;
+
+        /// <summary>GameScene 进入时调用：创建加载蒙层（已存在则忽略，避免重连重建场景时重复创建）。</summary>
+        public static void ShowLoadingDialog()
+        {
+            if (LoadingDialog != null && !LoadingDialog.IsDisposed) return;
+            LoadingDialog = new LoadingDialog();   // 无 Parent：由 CMain 在场景之后 Draw，层级最高
+        }
+
+        /// <summary>每帧推进加载蒙层进度；完成后取消后台资源任务并释放。</summary>
+        private static void UpdateLoadingDialog()
+        {
+            if (LoadingDialog == null || LoadingDialog.IsDisposed) return;
+            LoadingDialog.Tick();
+            if (LoadingDialog.Done)
+            {
+                LoadingDialog.Cancel();
+                LoadingDialog.Dispose();
+                LoadingDialog = null;
+            }
+        }
         public static long PingTime;
         public static long NextPing = 10000;
 
@@ -243,6 +267,9 @@ namespace WebGame.Mir2.MonoGame.Client
             {
                 MirScene.ActiveScene.Process();
             }
+
+            // 加载蒙层（进图期间存在）：每帧推进进度；完成即释放。不挂场景树，由 CMain.Draw 在场景之后单独绘制。
+            UpdateLoadingDialog();
 
             // 每帧推进动画控件/按钮的帧偏移。移植时漏掉这两段会让动画永远停在第一帧
             //（表现为登录/选人界面动画不播放）。必须在 Draw 之前执行。
@@ -416,6 +443,10 @@ namespace WebGame.Mir2.MonoGame.Client
                 {
                     MirScene.ActiveScene.Draw();
                 }
+
+                // 加载蒙层（若有）在场景绘制之后单独 Draw —— 层级最高，盖在所有 UI/Debug/Hint 浮层之上。
+                if (LoadingDialog != null && !LoadingDialog.IsDisposed)
+                    LoadingDialog.Draw();
 
                 DXManager.EndSprite();                               // 原版 DXManager.Sprite.End()
                 DXManager.Device.EndScene();
