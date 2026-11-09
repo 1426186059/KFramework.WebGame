@@ -11,7 +11,10 @@ namespace Server.MirDatabase
             get { return Envir.Main; }
         }
 
-        // 旧 Mir2 字段：现有战斗逻辑按这些数值运行，换表后保留为兼容视图。
+        // 战斗数值字段：字段名沿用现有引擎公式（GetDamage/GetPower/GetDelay/MagicCost），
+        // 值由 Tools/Mir2SkillConverter 从《原始传奇》2config.skills_condition 按等级映射，
+        // MagicCost=BaseCost+LevelCost*Level、GetMultiplier=MultiplierBase+Level*MultiplierBonus，
+        // 因此 LevelCost/MultiplierBonus/DelayReduction 存 Lv2-Lv1 增量；战斗代码无需改动。
         public string Name;
         public Spell Spell;
         public byte BaseCost, LevelCost, Icon;
@@ -24,8 +27,9 @@ namespace Server.MirDatabase
         public byte Range = 9;
 
         // 《原始传奇》5config.skill 的字段直接平铺在本表，不再内嵌原始记录副本。
-        // 重复语义由转换器统一派生：DelayBase=cdTime、Range=releaseDis、Spell=skill.id。
-        // 未纳入的全量原始列用 OriginId 回查 5config10.25341.1.json 的 skill 表即可，不在运行时表里存第二份。
+        // 重复语义由转换器统一派生：Range=releaseDis、Spell=skill.id（38 条沿用引擎效果分发键）。
+        // DelayBase 取 2config.skills_condition 的 cdTime（JS checkSkillCDs 的口径）。
+        // 未纳入的全量原始列用 OriginId 回查权威分片即可，不在运行时表里存第二份。
         public int OriginId;
         public string OriginIcon = "", ConditionText = "", Tips1 = "";
         public int Cls, Career, IsShow, Condition, HandlerType, Aoe, MaxTarget, CanUp;
