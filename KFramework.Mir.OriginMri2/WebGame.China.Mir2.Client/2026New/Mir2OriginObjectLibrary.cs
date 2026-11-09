@@ -53,13 +53,31 @@ public static class Mir2OriginObjectLibrary
     private const string VerQuery = "?ver=" + Mir2OriginResource.ResourceVersion;
     private const string VersionManifest = "resourceVersion.json";
 
-    /// <summary>待机动作号：2config.modelInfo 里每个模型都登记了 action=1。</summary>
-    public const int ActionStand = 1;
-    /// <summary>死亡=10：原始 JS 里 10==_currentActionType 会触发末帧定格；2config.modelInfo 全表 2261/4725
-    /// 个模型登记了 action=10，图集是"站立→倒地"多帧序列（鹿 4161 为 10 帧），尸体停在末帧。
-    /// action=12 仅 482 个模型有，且是 2 帧站立姿势（4000 等模型直接请求 404）。
-    /// 历史错误：把 10 当受击、12 当死亡，导致"攻击时播倒地动画、死亡后停回站立帧"。</summary>
-    public const int ActionWalk = 2, ActionRun = 3, ActionAttack = 4, ActionStruck = 12, ActionDie = 10;
+    // ===================== 原始传奇动作号全表（不要再加"猜一个号补一个"）=====================
+    // 官方 ModelChange 调试面板（main10.25341.1.min.js @4128362）列出的 action 按钮共 11 个：
+    //   action_1 / 2 / 3 / 4 / 5 / 10 / 21 / 23 / 24 / 98 / 99
+    // 2config.modelInfo 全表实际登记 14 个号（括号内为该号覆盖的模型数 / 共 4725）：
+    //   1(4583) 2(2440) 3(1727) 4(2480) 5(1727) 10(2261) 12(482) 21(1475)
+    //   23(1517) 24(92) 25(357) 26(3) 27(1) 99(2456)
+    // 两表并集 15 个号：上面 14 个 + 98（仅调试面板，无模型资源）。
+    //
+    // JS 硬编码语义（证据，不是推断）：
+    //   1 站立：_currentActionType=1 默认值；setAction(1) 用于复位 / onCollectEnter / onDigCorpseEnter
+    //   2 走：onEnterMove 里 movestep!=2 → _moveAction=true → setAction(2)；图集 9027023 小步 w≈75
+    //   3 跑：movestep==2 → _moveAction=false → setAction(3)；图集 9027033 大步腾空 w≈100；_moveSort
+    //   4 普攻：skill.action==0 → setAction(4)；_attackSort
+    //   5 技能攻/连击：skill.action==1 → setAction(5)；_attackSort2
+    //   10 死亡：die(){setAction(10,DirectionType.DOWN)}；10==_currentActionType 末帧定格
+    //   21 挖矿：onDigEnter(){setAction(21)}
+    //   24 模型预览：UI 里 setAction(24,DirectionType.DOWN)
+    //   99 单次播放占位：justShowOnce 结束 setAction(99,NONE)
+    //   12/23/25/26/27/98 在 JS 中无语义字面量（配置/特效模型专用，26 仅鹿等 3 个可采集动物有）。
+    // 方向枚举是另外一套 DirectionType(0..7, NONE=4)，别混进来。
+    public const int ActionStand = 1, ActionWalk = 2, ActionRun = 3, ActionAttack = 4,
+                     ActionSkillAttack = 5, ActionDie = 10, ActionMine = 21,
+                     ActionShow = 24, ActionOnce = 99;
+    /// <summary>兼容旧代码：页游没有独立受击动作，受击统一回落待机 + 闪色。</summary>
+    public const int ActionStruck = 12;
     /// <summary>怪物默认存储方向数：totaldir=5 → 真帧方向 0..4，5..7 为镜像。</summary>
     public const int DefaultTotalDir = 5;
     /// <summary>NPC 待机动作在 2config.modelInfo 里是 totaldir=1 → 只有 NONE(=4) 一帧。</summary>
@@ -235,51 +253,60 @@ public static class Mir2OriginObjectLibrary
 
     // ===================== 动作 / 方向（2config.modelInfo + DirectionType）=====================
 
-    /// <summary>Crystal 的 MirAction → 原始传奇动作号。未登记的动作一律回退到待机帧。</summary>
+    /// <summary>Crystal 的 MirAction → 原始传奇动作号（完整动作号表见上方常量区注释）。
+    /// 页游只有 11 个官方动作号，Crystal 的 43 个动作里大部分没有对应图集，一律回落待机(1)，
+    /// 靠闪色 / 特效 / UI 表现；不要再为单个动作臆造动作号。</summary>
     public static int MapAction(MirAction action)
     {
         switch (action)
         {
-            // 原始传奇把走(2)和跑(3)做成两套独立图集：9027023 小步 w≈75，9027033 大步腾空 w≈100。
-            // 全表 1727/4725 模型登记了 action=3；此前 Walking/Running 都映射到 2，所以只会走不会跑。
+            // 走：onEnterMove 里 movestep!=2 → _moveAction=true → setAction(2)
             case MirAction.Walking:
+            case MirAction.WalkingBow:
             case MirAction.Pushed:
             case MirAction.Sneek:
-            case MirAction.WalkingBow:
+            case MirAction.MountWalking:
                 return ActionWalk;
 
+            // 跑：movestep==2 → _moveAction=false → setAction(3)
             case MirAction.Running:
             case MirAction.RunningBow:
             case MirAction.DashL:
             case MirAction.DashR:
+            case MirAction.DashAttack:
+            case MirAction.Lunge:
+            case MirAction.Jump:
+            case MirAction.MountRunning:
                 return ActionRun;
 
+            // 普攻：skill.action==0 → setAction(4)
             case MirAction.Attack1:
             case MirAction.Attack2:
             case MirAction.Attack3:
             case MirAction.Attack4:
-            case MirAction.Attack5:
             case MirAction.AttackRange1:
             case MirAction.AttackRange2:
             case MirAction.AttackRange3:
-            case MirAction.Harvest:
-            case MirAction.Mine:
-            case MirAction.Spell:
-            case MirAction.DashAttack:
-            case MirAction.Lunge:
+            case MirAction.MountAttack:
                 return ActionAttack;
 
-            case MirAction.Struck:
-            case MirAction.Stoned:
-                // 原版怪物受击只有闪色/顿帧，没有独立动画：action=12 只有 10% 模型有且是站立姿势，
-                // 用它当受击会 404 刷屏；统一回落待机图集。
-                return ActionStand;
+            // 技能攻 / 连击：skill.action==1 → setAction(5)
+            case MirAction.Attack5:
+            case MirAction.Spell:
+            case MirAction.Special:
+                return ActionSkillAttack;
 
+            // 挖矿：onDigEnter → setAction(21)（挖尸体 onDigCorpseEnter 用的是 1）
+            case MirAction.Mine:
+                return ActionMine;
+
+            // 死亡：die() → setAction(10, DirectionType.DOWN)
             case MirAction.Die:
             case MirAction.Dead:
-            case MirAction.Skeleton: // 挖肉后的骸骨仍是尸体：原始传奇无骸骨图集，用死亡末帧，绝不能落到待机
+            case MirAction.Skeleton:
                 return ActionDie;
 
+            // 受击、骑乘待机、架势、显隐、坐下、复活、钓鱼、挖肉等：页游无独立图集，回落待机。
             default:
                 return ActionStand;
         }
@@ -291,9 +318,13 @@ public static class Mir2OriginObjectLibrary
         if (action == ActionStand) return "Standing(待机)";
         if (action == ActionWalk) return "Walk(走)";
         if (action == ActionRun) return "Run(跑)";
-        if (action == ActionAttack) return "Attack(攻)";
-        if (action == ActionStruck) return "Struck(受击)";
+        if (action == ActionAttack) return "Attack(普攻)";
+        if (action == ActionSkillAttack) return "SkillAttack(技能攻)";
         if (action == ActionDie) return "Die(死亡)";
+        if (action == ActionMine) return "Mine(挖矿)";
+        if (action == ActionShow) return "Show(模型预览)";
+        if (action == ActionOnce) return "Once(单次占位)";
+        if (action == ActionStruck) return "Action12(无语义)";
         return "Action" + action;
     }
 
@@ -510,11 +541,10 @@ public static class Mir2OriginObjectLibrary
         }
         else
         {
-            // 兜底只预载「各模型必有」的通用动作：1站 2走 3转 4攻 5跑 10受击 12死亡。
-            // 原列表里的 21/23/99 在 CDN 上根本不存在（已 HEAD 核验 99→404），整批预载只会刷 404 并挤占
-            // 浏览器到 CDN 的并发连接（见 SoundManager 注释“占满单域名”），间接导致死亡帧 action12 在怪物死亡
-            // 那一刻因连接被占满而超时→被 _missing 拉黑，表现为“多杀几只后死亡动画就没了”。
-            // 把 12 加进来：死亡帧在进场时即预载好，死亡瞬间不再临时请求，从根上避免该问题。
+            // 兜底预载官方 11 个动作号里各模型最常见的：1站 2走 3跑 4普攻 5技能攻 10死亡。
+            // 12 是早期误把"死亡=12"时留下的（JS 无语义、仅 482 模型有），保留只为兼容个别特效模型。
+            // 21/23/24/25/26/27/98/99 是挖矿 / 预览 / 特效 / 单次占位专用，不能整批预载（多数模型 404），
+            // 否则会占满浏览器到 CDN 的单域名并发连接，死亡帧在死亡瞬间拉取超时会被 _missing 拉黑。
             foreach (var a in new[] { 1, 2, 3, 4, 5, 10, 12 })
                 for (int d = 0; d <= 7; d++) Request(kind, id, a, d, priority);
         }
