@@ -84,6 +84,11 @@ public static class Mir2OriginObjectLibrary
         new(StringComparer.OrdinalIgnoreCase);
     private static readonly ConcurrentDictionary<string, Task<Texture2D>> _images =
         new(StringComparer.OrdinalIgnoreCase);
+    // 缺失缓存：确认「加载失败」的资源 key 集合（永久，不再重试）。
+    // 重试由更底层全部兜底：浏览器原生层 → ContentManager.LoadCacheOrDownloadAsync →
+    // BrowserResource.GetBytesAsync(内置 3 次退避重试) → 上层 Draw 每帧重请求。
+    // 这里只是“更底层重试全部耗尽后仍失败”的终态硬停，避免每帧对确缺失(真 404/不可达)的资源
+    // 再发请求刷屏、拖垮 CDN。一旦进入即永久，不自愈——真缺失不会自己变好。
     private static readonly ConcurrentDictionary<string, byte> _missing =
         new(StringComparer.OrdinalIgnoreCase);
     // 已打印过“加载失败”的 key，避免每帧刷日志。
@@ -321,7 +326,7 @@ public static class Mir2OriginObjectLibrary
     {
         if (id <= 0) return;
         var key = CacheKey(kind, id, action, direction);
-        if (_missing.ContainsKey(key)) return;
+        if (IsMissing(key)) return;
 
         var device = DXManager.GDevice;
         if (device == null) return;
@@ -340,7 +345,7 @@ public static class Mir2OriginObjectLibrary
             return Task.FromResult<Mir2AtlasSheet>(null);
 
         var key = CacheKey(kind, id, action, direction);
-        if (_missing.ContainsKey(key)) return Task.FromResult<Mir2AtlasSheet>(null);
+        if (IsMissing(key)) return Task.FromResult<Mir2AtlasSheet>(null);
         if (_sheets.TryGetValue(key, out var cached) && cached != null) return cached;
 
         return _sheets.GetOrAdd(key, k => LoadSheetAsync(k, id, action, direction, device, priority));
@@ -365,7 +370,7 @@ public static class Mir2OriginObjectLibrary
                     KFramework.MonoGame.PrintTool.LogError(
                         $"[Mir2ObjectAtlas] 模型图集加载失败(404/不可达) key={key} url={Mir2OriginResource.ImageBaseUrl}/{pngPath}");
                 }
-                MarkMissing(key);
+                RecordFailure(key);
                 return null;
             }
 
@@ -392,7 +397,7 @@ public static class Mir2OriginObjectLibrary
         catch (Exception ex)
         {
             KFramework.MonoGame.PrintTool.LogError($"[Mir2ObjectAtlas] 图集加载失败 key={key}：{ex.Message}");
-            MarkMissing(key);
+            RecordFailure(key);
             return null;
         }
     }
@@ -403,7 +408,7 @@ public static class Mir2OriginObjectLibrary
     {
         var key = CacheKey(Mir2ObjectKind.Item, iconId, 0, 0);
         if (iconId <= 0 || device == null) return Task.FromResult<Texture2D>(null);
-        if (_missing.ContainsKey(key)) return Task.FromResult<Texture2D>(null);
+        if (IsMissing(key)) return Task.FromResult<Texture2D>(null);
         if (_images.TryGetValue(key, out var cached) && cached != null) return cached;
 
         return _images.GetOrAdd(key, k => LoadItemAsync(k, iconId, device, iconSubDir, priority));
@@ -415,19 +420,35 @@ public static class Mir2OriginObjectLibrary
         {
             if (!_versionsReady) await InitializeAsync(CancellationToken.None);
             var tex = await Mir2OriginResource.GetTextureAsync(ItemIconPath(iconId, iconSubDir), device, priority, CancellationToken.None);
-            if (tex == null) MarkMissing(key);
+            if (tex == null)
+            {
+                if (!_loggedMissing.ContainsKey(key))
+                {
+                    _loggedMissing[key] = 1;
+                    KFramework.MonoGame.PrintTool.LogError(
+                        $"[Mir2ObjectAtlas] 物品图标加载失败(404/不可达) key={key}");
+                }
+                RecordFailure(key);
+            }
             return tex;
         }
         catch
         {
-            MarkMissing(key);
+            RecordFailure(key);
             return null;
         }
     }
 
-    private static void MarkMissing(string key)
+    /// <summary>判定某 key 是否已被确认缺失（不参与加载/绘制）。永久，不重试。</summary>
+    private static bool IsMissing(string key) => _missing.ContainsKey(key);
+
+    /// <summary>记录一次「确认缺失」：仅加入永久黑名单，不再发起任何请求。
+    /// 本层不做重试——重试已由 浏览器原生层 / ContentManager.LoadCacheOrDownloadAsync /
+    /// BrowserResource(内置 3 次退避) / 上层 Draw 每帧重请求 全部兜底；这里只是更底层重试耗尽后的终态。
+    /// 日志去重由各调用点用 _loggedMissing 控制，避免每帧刷屏。</summary>
+    private static void RecordFailure(string key)
     {
-        _missing[key] = 1;
+        _missing.TryAdd(key, 0);
         _sheets.TryRemove(key, out _);
         _images.TryRemove(key, out _);
     }
@@ -451,7 +472,12 @@ public static class Mir2OriginObjectLibrary
         }
         else
         {
-            foreach (var a in new[] { 1, 2, 3, 4, 5, 10, 21, 23, 99 })
+            // 兜底只预载「各模型必有」的通用动作：1站 2走 3转 4攻 5跑 10受击 12死亡。
+            // 原列表里的 21/23/99 在 CDN 上根本不存在（已 HEAD 核验 99→404），整批预载只会刷 404 并挤占
+            // 浏览器到 CDN 的并发连接（见 SoundManager 注释“占满单域名”），间接导致死亡帧 action12 在怪物死亡
+            // 那一刻因连接被占满而超时→被 _missing 拉黑，表现为“多杀几只后死亡动画就没了”。
+            // 把 12 加进来：死亡帧在进场时即预载好，死亡瞬间不再临时请求，从根上避免该问题。
+            foreach (var a in new[] { 1, 2, 3, 4, 5, 10, 12 })
                 for (int d = 0; d <= 7; d++) Request(kind, id, a, d, priority);
         }
     }
@@ -466,9 +492,9 @@ public static class Mir2OriginObjectLibrary
         for (int d = 0; d <= maxDir; d++) Request(kind, id, action, d, priority);
     }
 
-    /// <summary>该资源已确认缺失（不再重试）。</summary>
+    /// <summary>该资源当前是否缺失（瞬时缺失在 TTL 内 true；永久缺失永远 true；超时/未缺失 false）。</summary>
     public static bool IsMissing(Mir2ObjectKind kind, int id, int action = ActionStand, int direction = 0)
-        => _missing.ContainsKey(CacheKey(kind, id, action, direction));
+        => IsMissing(CacheKey(kind, id, action, direction));
 
     // ===================== 统一取帧 / 绘制 =====================
 
@@ -482,7 +508,7 @@ public static class Mir2OriginObjectLibrary
     {
         sprite = null;
         var key = CacheKey(kind, id, action, direction);
-        if (_missing.ContainsKey(key)) return false;
+        if (IsMissing(key)) return false;
 
         if (kind == Mir2ObjectKind.Item)
         {
@@ -528,7 +554,7 @@ public static class Mir2OriginObjectLibrary
             var key8 = CacheKey(kind, id, action, rawDir);
             bool has8 = _sheets.TryGetValue(key8, out var s8) && s8 != null && s8.IsCompletedSuccessfully
                         && s8.Result != null && s8.Result.Frames != null && s8.Result.Frames.Count > 0;
-            if (has8 || !_missing.ContainsKey(key8))
+            if (has8 || !IsMissing(key8))
             {
                 loadDir = rawDir;
                 flip = false;
@@ -537,7 +563,7 @@ public static class Mir2OriginObjectLibrary
         var drawEffects = flip ? effects : (effects & ~SpriteEffects.FlipHorizontally);
 
         var key = CacheKey(kind, id, action, loadDir);
-        if (_missing.ContainsKey(key)) return false;
+        if (IsMissing(key)) return false;
 
         if (kind == Mir2ObjectKind.Item)
             return DrawSpriteAt(kind, id, action, loadDir, frameIndex, screenX, screenY, colour, drawEffects);
@@ -617,11 +643,11 @@ public static class Mir2OriginObjectLibrary
             bool has8 = _sheets.TryGetValue(key8, out var s8) && s8 != null && s8.IsCompletedSuccessfully
                         && s8.Result != null && s8.Result.Frames != null && s8.Result.Frames.Count > 0;
             if (has8) { loadDir = rawDir; flip = false; }
-            else if (!_missing.ContainsKey(key8)) { loadDir = rawDir; flip = false; }
+            else if (!IsMissing(key8)) { loadDir = rawDir; flip = false; }
         }
 
         var key = CacheKey(kind, id, action, loadDir);
-        if (_missing.ContainsKey(key)) return false;
+        if (IsMissing(key)) return false;
         if (!_sheets.TryGetValue(key, out var st) || st == null || !st.IsCompletedSuccessfully) return false;
         var sheet = st.Result;
         if (sheet == null || sheet.Frames == null || sheet.Frames.Count == 0) return false;
