@@ -11,49 +11,48 @@ using S = ServerPackets;
 
 namespace Client.MirScenes
 {
-    // 《原始传奇》选人界面移植（fugu_20201203），直接覆盖旧 Mir2 选人场景。
+    // 《原始传奇》选人/创角界面（fugu_20201203）1:1 移植，覆盖旧 Mir2 选人场景。
     //
-    // 版式与交互一律以 qufu1.min.js 里 CreateRoleUICtrl3 / CreateRoleUICtrl4 的「运行几何」为准，
-    // 不用 gameEui.json / default.thm.json 的皮肤快照（那批 exml 是构建期旧快照，实测与实际 UI 不匹配）：
-    //   createmovieCreate : _createClip.x=415 / 778, y=233      -> 两个角色槽中心，间距 363
-    //   startmovieCreate  : _startClip.x=658, y=630              -> 开始游戏按钮中心
-    //   createrole        : create_grp.x=376（已有角色1）/ 735   -> 创角面板落点
-    //   showmodel         : maskShape.drawRect(0,0,300,360)      -> 角色立绘区 300x360
-    //   movieCreate       : img_model0.x=30,y=-60                -> 立绘相对槽的偏移
-    //   changecarrer      : maskShape.y 223 -> -137, 1500ms      -> 换槽滑入动画
-    //   createChildren    : INIT_TIMER=30 / START_TIMER          -> 倒计时自动创建或进入
-    //   setinfo           : roleName1/roleName2 决定 0/1/2 个槽
-    //   onChangeUIType(1) : 职业/性别切换并高亮、刷新立绘
-    //   ToCDB             : 全角字符转半角（名字规范化）
-    //   getcarrer         : 1战士 2法师 3道士
+    // 布局来源：gameEui.json 的 "CreateRoleSkin3"（= default.thm*.json 里
+    // resource/eui_skins/createrole/CreateRoleSkinNew3.exml，gjs 30KB），
+    // $bs = 1390x960，$eleC 里 60+ 个控件的 x/y/width/height/source 全部照抄。
+    // 之前只用 qufu1.min.js 里几个硬编码坐标（415/778、658/630）自己摆，是错的：
+    // 那些是创建特效/按钮特效的位置，不是控件布局；且把 1390x860 的主背景图
+    // 误当成 1390x960 的设计尺寸。
     //
-    // 美术取自 allmanifest10.25341.1.json + y_createrole-sheet_json：
-    //   bg_cjzy_02.jpg(1390x860) 主背景、bg_cjzy_03/06.png 槽底、
-    //   img_carrer{1..3}_{1..2} 立绘、btn_kaishiyouxi/btn_chuangjian/btn_shanchurenwu/btn_fanhui/
-    //   btn_tijiao/btn_cjzy_01 按钮、bg_cjzy_01_2 创角面板底。
-    //   注意：页游按钮贴图本身不含文字（文字是 EXML 里单独叠的 eui.Label），
-    //   所以本实现给每个按钮补一层居中中文 MirLabel，否则就是一排没字的色块。
+    // 交互来源：qufu1.min.js 的 CreateRoleUICtrl3（setinfo / createrole / startgame /
+    // changecarrer / randomcarrer / ToCDB / getcarrer / setTimeLimit / errtips），
+    // main10.25487.1.min.js 的 CreateRoleUICtrlNew3 逻辑一致。
+    //   setinfo: 0 角色 -> create_grp.visible=true 且隐藏所有角色信息标签；
+    //            1 角色 -> 只显示 txt_name0/level0/c0；
+    //            2 角色 -> 六个标签全显示，立绘 source = img_carrer{career}_{sex}。
+    //   createrole: create_grp.x = 376（已有角色1）/ 735（空号）。
     //
-    // 网络协议完全用本工程 C.* / S.*，不照搬页游 QufuMessageHandler 的 VarInt 协议：
-    //   进入游戏 C.StartGame{CharacterIndex}，创建 C.NewCharacter{Name,Class,Gender}，
-    //   删除 C.DeleteCharacter{CharacterIndex}。
+    // 按钮帧名来自 CreateRoleSkinNew3.exml 的 gjs：
+    //   btn_choose1/2 = btn_cjzy_01 / btn_cjzy_02；
+    //   btn_start = btn_kaishiyouxi_01；btn_create = btn_chuangjian_01；
+    //   btn_huifu = btn_huifurenwu_01；btn_return = btn_fanhui_01；
+    //   btn_delete = btn_shanchurenwu_01；btn_close = com_btn_close0（y_common-sheet）；
+    //   btn_carrer1/2/3 = icon_cjzy_01/02/03；btn_sex1/2 = icon_cjzy_06/05；
+    //   btn_tj = btn_tijiao_01；btn_random = btn_cjzy_03。
+    // 皮肤里的 word_cjzy_01..05 / txt_* 是独立 eui.Label（按钮贴图本身不含文字），
+    // 本实现全部补成中文 MirLabel，位置照抄 EXML。
+    //
+    // 网络协议完全用本工程 C.* / S.*，不照搬页游 QufuMessageHandler 的 VarInt 协议。
     public sealed class SelectScene : MirScene
     {
-        // 主背景尺寸即设计坐标系；整块 UI 等比缩放后居中，对应 JS onResize 的 (stageW-skinW)>>1。
-        private const int DesignW = 1390, DesignH = 860;
+        private const int DesignW = 1390, DesignH = 960;
         private const int InitTimerSeconds = 30;
         private const int SlideMilliseconds = 1500;
 
         private const string Atlas = "y_createrole-sheet";
         private static readonly Random Rnd = new Random();
-        private static readonly int[] SlotCenterX = { 415, 778 };
 
         private static float ScaleF
         {
             get { return Math.Min(Settings.ScreenWidth / (float)DesignW, Settings.ScreenHeight / (float)DesignH); }
         }
 
-        // 屏幕绝对坐标（用于根容器）。
         private static Point P(int x, int y)
         {
             float s = ScaleF;
@@ -62,7 +61,6 @@ namespace Client.MirScenes
                 (int)((Settings.ScreenHeight - DesignH * s) / 2 + y * s));
         }
 
-        // 容器内部的相对坐标。
         private static Point R(int x, int y)
         {
             float s = ScaleF;
@@ -78,17 +76,18 @@ namespace Client.MirScenes
         public List<SelectInfo> Characters = new List<SelectInfo>();
         private int _selected;
 
-        private MirImageControl _root;
+        private MirImageControl _root, _mainBg;
         private readonly MirImageControl[] _slotBg = new MirImageControl[2];
         private readonly MirImageControl[] _slotModel = new MirImageControl[2];
-        private readonly MirLabel[] _slotName = new MirLabel[2];
-        private readonly MirLabel[] _slotInfo = new MirLabel[2];
-        private MirButton _startButton, _createButton, _deleteButton, _exitButton;
-        private MirLabel _countdownLabel, _errorLabel, _serverLabel, _lastAccessLabel;
+        private readonly MirLabel[][] _slotCaption = new MirLabel[2][];
+        private readonly MirLabel[][] _slotValue = new MirLabel[2][];
 
-        // 内嵌创角面板，对应 JS 的 create_grp（不是模态对话框）。
+        private readonly MirButton[] _chooseButton = new MirButton[2];
+        private MirButton _startButton, _createButton, _deleteButton, _exitButton, _huifuButton;
+        private MirLabel _limitLabel, _errorLabel, _qufuLabel, _lastAccessLabel;
+
+        // create_grp：EXML (735,198) 322x428，内部控件坐标都是相对该 Group。
         private MirImageControl _createPanel;
-        private MirImageControl _createModel;
         private MirTextBox _nameBox;
         private readonly MirButton[] _classButtons = new MirButton[3];
         private readonly MirButton[] _sexButtons = new MirButton[2];
@@ -105,6 +104,7 @@ namespace Client.MirScenes
             SoundManager.PlayMusic(SoundList.SelectMusic, true);
             Disposing += (o, e) => SoundManager.StopMusic();
 
+            // EXML 的 bg 是 1920x1080 居中黑色 eui.Rect，容器底部 100px 就是这块黑底。
             BackColour = Color.Black;
 
             Characters = characters ?? new List<SelectInfo>();
@@ -125,86 +125,127 @@ namespace Client.MirScenes
                 NotControl = true,
                 Location = P(0, 0),
                 Size = Sz(DesignW, DesignH),
-                ImageKey = "resource/assets/gameui4/jpg/bg_cjzy_02.jpg",
             };
 
-            _serverLabel = new MirLabel
-            {
-                Parent = _root,
-                NotControl = true,
-                Location = R(24, 18),
-                Size = Sz(400, 28),
-                Text = "原始传奇",
-                ForeColour = Color.White,
-            };
+            // _Image1 (0,-1) 1390x860 —— 注意不是铺满 960 的设计高度。
+            _mainBg = Image(_root, "resource/assets/gameui4/jpg/bg_cjzy_02.jpg", 0, -1, DesignW, 860);
 
-            // 两个角色槽：中心 415 / 778（JS _createClip）。暗色底 bg_cjzy_03，选中改用亮龙纹 bg_cjzy_06。
+            // _Image2 / _Image3：两个槽底板，EXML (377,206) / (724,206)。
+            _slotBg[0] = Image(_root, "resource/assets/gameui4/jpg/bg_cjzy_03.png", 377, 206, 334, 392);
+            _slotBg[1] = Image(_root, "resource/assets/gameui4/jpg/bg_cjzy_04.png", 724, 206, 346, 399);
+
+            // _Image4/5/6：底部三块信息面板底图。
+            AtlasImage(_root, "bg_cjzy_01", 320, 618, 217, 170);
+            Image(_root, "resource/assets/gameui4/jpg/bg_cjzy_01_2.png", 545, 617, 347, 170);
+            AtlasImage(_root, "bg_cjzy_01_1", 897, 618, 217, 170);
+
+            // _Image7 + txt_qufu：顶部区服名条。
+            AtlasImage(_root, "bg_cjzy_05", 623, 155, 195, 37);
+            _qufuLabel = Label(_root, 658, 160, 119, 24, "不删档999服");
+
+            // _Image8..13：两槽各 3 条 120x20 信息底条（名字/等级/职业）。
             for (int i = 0; i < 2; i++)
             {
-                int x = SlotCenterX[i];
+                int x = i == 0 ? 387 : 959;
+                AtlasImage(_root, "bg_cjzy_00", x, 690, 120, 20);
+                AtlasImage(_root, "bg_cjzy_00", x, 717, 120, 20);
+                AtlasImage(_root, "bg_cjzy_00", x, 744, 120, 20);
+            }
 
-                _slotBg[i] = new MirImageControl
-                {
-                    Parent = _root,
-                    AutoSize = false,
-                    NotControl = true,
-                    Location = R(x - 167, 120),
-                    Size = Sz(334, 392),
-                    ImageKey = "resource/assets/gameui4/jpg/bg_cjzy_03.png",
-                };
+            // word_cjzy_04 / 05：两槽标题文字（图片字，这里用中文 Label 替代）。
+            Label(_root, 343, 653, 80, 24, "角色信息");
+            Label(_root, 918, 652, 80, 24, "角色信息");
 
-                // 立绘：JS movieCreate 用 img_carrer{career}_{sex}，300x360 遮罩。
+            // img_role1 / img_role2：EXML (415,223) / (765,217)，立绘 source=img_carrer{career}_{sex}。
+            for (int i = 0; i < 2; i++)
+            {
                 _slotModel[i] = new MirImageControl
                 {
                     Parent = _root,
                     AutoSize = false,
                     NotControl = true,
-                    Location = R(x - 150, 140),
-                    Size = Sz(300, 360),
+                    Location = R(i == 0 ? 415 : 765, i == 0 ? 223 : 217),
+                    Size = Sz(150, 322),
                     Visible = false,
                 };
+            }
+            _modelBaseY = R(0, 223).Y;
 
-                _slotName[i] = MakeLabel(_root, x - 120, 505, 240, 24, "");
-                _slotInfo[i] = MakeLabel(_root, x - 120, 529, 240, 24, "");
-
-                // 透明命中层：MirButton 无 Library/Atlas 时什么都不画，只提供点击区。
-                int idx = i;
-                MirButton hit = new MirButton
+            // _Label1..3 / txt_name0..c0（槽1），_Label4..6 / txt_name1..c1（槽2）。
+            string[] fieldNames = { "名字", "等级", "职业" };
+            for (int i = 0; i < 2; i++)
+            {
+                int cx = i == 0 ? 344 : 919;
+                int vx = i == 0 ? 391 : 966;
+                int[] cy = i == 0 ? new[] { 693, 720, 747 } : new[] { 692, 719, 746 };
+                int[] vy = i == 0 ? new[] { 693, 720, 746 } : new[] { 692, 719, 745 };
+                _slotCaption[i] = new MirLabel[3];
+                _slotValue[i] = new MirLabel[3];
+                for (int k = 0; k < 3; k++)
                 {
-                    Parent = _root,
-                    AutoSize = false,
-                    Location = R(x - 167, 120),
-                    Size = Sz(334, 392),
-                    Sound = SoundList.ButtonA,
-                };
-                hit.Click += (o, e) => ChangeSlot(idx);
+                    _slotCaption[i][k] = Label(_root, cx, cy[k], 44, 24, fieldNames[k]);
+                    _slotValue[i][k] = Label(_root, vx, vy[k], 110, 24, "");
+                }
             }
 
-            _modelBaseY = R(0, 140).Y;
+            // 按钮群（EXML 坐标）。这些按钮在原版里坐标有部分重叠，由状态/可见性切换；
+            // 本实现按角色数与创角面板状态显式控制，避免同时糊在一起。
+            _chooseButton[0] = Button(_root, "btn_cjzy_01", "btn_cjzy_01_1", 393, 624, 132, 65, "选择角色");
+            _chooseButton[0].Click += (o, e) => ChangeSlot(0);
+            _chooseButton[1] = Button(_root, "btn_cjzy_02", "btn_cjzy_02_1", 970, 624, 132, 65, "选择角色");
+            _chooseButton[1].Click += (o, e) => ChangeSlot(1);
 
-            // 主界面四个按钮统一排在底部一行，尺寸严格按图集帧原始大小，不再东一个西一个。
-            // 开始游戏中心对齐 JS startbtn_eff @ (658,630)；其余三个等距排在下一行。
-            _startButton = MakeButton("btn_kaishiyouxi_01", "btn_kaishiyouxi_01_1", 587, 590, 143, 62, "进入游戏");
+            _startButton = Button(_root, "btn_kaishiyouxi_01", "btn_kaishiyouxi_01_1", 648, 628, 143, 62, "进入游戏");
             _startButton.Click += (o, e) => StartGame();
 
-            _createButton = MakeButton("btn_chuangjian_01", "btn_chuangjian_01_1", 300, 690, 132, 59, "创建角色");
+            _createButton = Button(_root, "btn_chuangjian_01", "btn_chuangjian_01_1", 550, 674, 132, 59, "创建角色");
             _createButton.Click += (o, e) => OpenCreate();
 
-            _deleteButton = MakeButton("btn_shanchurenwu_01", "btn_shanchurenwu_01_1", 460, 690, 132, 59, "删除角色");
-            _deleteButton.Click += (o, e) => DeleteCharacter();
+            _huifuButton = Button(_root, "btn_huifurenwu_01", "btn_huifurenwu_01_1", 661, 677, 119, 54, "恢复人物");
+            _huifuButton.Click += (o, e) => ShowError("本服暂不支持恢复人物");
 
-            _exitButton = MakeButton("btn_fanhui_01", "btn_fanhui_01_1", 620, 690, 118, 52, "返回");
+            _exitButton = Button(_root, "btn_fanhui_01", "btn_fanhui_01_1", 762, 678, 118, 52, "返回");
             _exitButton.Click += (o, e) => CMain.Instance.Close();
 
-            _countdownLabel = MakeLabel(_root, 568, 665, 180, 26, "");
-            _errorLabel = MakeLabel(_root, 508, 548, 300, 28, "");
+            _deleteButton = Button(_root, "btn_shanchurenwu_01", "btn_shanchurenwu_01_1", 649, 716, 132, 59, "删除角色");
+            _deleteButton.Click += (o, e) => DeleteCharacter();
+
+            // txt_limitTime (770,652) "(30)"
+            _limitLabel = Label(_root, 770, 652, 100, 24, "");
+            _errorLabel = Label(_root, 545, 590, 300, 28, "");
             _errorLabel.Visible = false;
-            _lastAccessLabel = MakeLabel(_root, 24, 810, 600, 24, "");
+            _lastAccessLabel = Label(_root, 24, 920, 700, 24, "");
 
             BuildCreatePanel();
         }
 
-        private static MirLabel MakeLabel(MirControl parent, int x, int y, int w, int h, string text)
+        private static MirImageControl Image(MirControl parent, string key, int x, int y, int w, int h)
+        {
+            return new MirImageControl
+            {
+                Parent = parent,
+                AutoSize = false,
+                NotControl = true,
+                ImageKey = key,
+                Location = R(x, y),
+                Size = Sz(w, h),
+            };
+        }
+
+        private static MirImageControl AtlasImage(MirControl parent, string frame, int x, int y, int w, int h)
+        {
+            return new MirImageControl
+            {
+                Parent = parent,
+                AutoSize = false,
+                NotControl = true,
+                AtlasNameKey = Atlas + "#" + frame,
+                Location = R(x, y),
+                Size = Sz(w, h),
+            };
+        }
+
+        private static MirLabel Label(MirControl parent, int x, int y, int w, int h, string text)
         {
             return new MirLabel
             {
@@ -218,25 +259,11 @@ namespace Client.MirScenes
             };
         }
 
-        // 按钮贴图不含文字，统一补一层居中文字标签；标签 NotControl，点击仍落到按钮上。
-        private static void AddCaption(MirControl parent, int x, int y, int w, int h, string caption)
-        {
-            new MirLabel
-            {
-                Parent = parent,
-                NotControl = true,
-                Location = R(x, y),
-                Size = Sz(w, h),
-                Text = caption,
-                ForeColour = Color.White,
-                DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
-            };
-        }
-
-        private static MirButton MakeButtonCore(MirControl parent, string normal, string pressed,
+        // 按钮贴图不含文字（EXML 里靠 labelDisplay / 独立 txt_* 标签），补一层居中中文。
+        private static MirButton Button(MirControl parent, string normal, string pressed,
             int x, int y, int w, int h, string caption)
         {
-            MirButton button = new MirButton
+            MirButton b = new MirButton
             {
                 Parent = parent,
                 AutoSize = false,
@@ -247,63 +274,63 @@ namespace Client.MirScenes
                 PressedAtlasFrame = pressed,
                 Sound = SoundList.ButtonA,
             };
-            AddCaption(parent, x, y, w, h, caption);
-            return button;
+            Label(parent, x, y, w, h, caption);
+            return b;
         }
 
-        private MirButton MakeButton(string normal, string pressed, int x, int y, int w, int h, string caption)
-        {
-            return MakeButtonCore(_root, normal, pressed, x, y, w, h, caption);
-        }
-
-        // 创角面板：JS create_grp，x=376（已有角色1时开在槽2）/ 735（空号时）。
-        // 面板内按钮统一用 btn_cjzy_01(132x65) 帧 + 中文标题，等宽等高排整齐，
-        // 不再用 icon_cjzy_* 那种 53x46 小图标当按钮（挤在一起会显得杂乱）。
+        // create_grp (735,198) 322x428，子元素坐标全部相对该 Group，照抄 EXML。
         private void BuildCreatePanel()
         {
             _createPanel = new MirImageControl
             {
                 Parent = _root,
                 AutoSize = false,
-                Location = R(735, 240),
-                Size = Sz(347, 360),
-                AtlasNameKey = Atlas + "#bg_cjzy_01_2",
-                DrawMode = MirImageDrawMode.NineGrid,
-                BorderLeft = 20, BorderTop = 20, BorderRight = 20, BorderBottom = 20,
+                Location = R(735, 198),
+                Size = Sz(322, 428),
                 Visible = false,
             };
 
-            MakeLabel(_createPanel, 20, 10, 260, 26, "创建角色");
+            Image(_createPanel, "resource/assets/gameui4/jpg/bg_cjzy_06.png", 0, 0, 322, 428);
 
-            _createModel = new MirImageControl
-            {
-                Parent = _createPanel,
-                AutoSize = false,
-                NotControl = true,
-                Location = R(100, 40),
-                Size = Sz(150, 170),
-            };
+            // _Image18/19/20 = word_cjzy_01/02/03（标题图片字）
+            Label(_createPanel, 113, 41, 90, 27, "创建角色");
+            Label(_createPanel, 113, 134, 90, 26, "选择职业");
+            Label(_createPanel, 113, 248, 90, 27, "选择性别");
 
+            // _Image17 输入框底 (69,77) 158x31；txt_input (78,80) 141x25。
+            AtlasImage(_createPanel, "bg_cjzy_00", 69, 77, 158, 31);
             _nameBox = new MirTextBox
             {
                 Parent = _createPanel,
-                Location = R(20, 220),
-                Size = Sz(200, 24),
+                Location = R(78, 80),
+                Size = Sz(141, 25),
                 MaxLength = Globals.MaxCharacterNameLength,
             };
 
-            _randomNameButton = MakeSmallButton("btn_cjzy_01", "btn_cjzy_01_1", 230, 215, 100, 34, "随机名");
-            _randomNameButton.Click += (o, e) =>
-            {
-                _nameBox.Text = RandomName(_newGender);
-                ResetCountdown();
-            };
+            // btn_random (206,70) 34x37；btn_close (258,22) 26x42。
+            _randomNameButton = CreateButton("btn_cjzy_03", "btn_cjzy_03_1", 206, 70, 34, 37, "换");
+            _randomNameButton.Click += (o, e) => { _nameBox.Text = RandomName(_newGender); ResetCountdown(); };
 
+            _closeCreateButton = new MirButton
+            {
+                Parent = _createPanel,
+                AutoSize = false,
+                Location = R(258, 22),
+                Size = Sz(26, 42),
+                AtlasNameKey = "y_common-sheet#com_btn_close0",
+                HoverAtlasFrame = "com_btn_close1",
+                PressedAtlasFrame = "com_btn_close1",
+                Sound = SoundList.ButtonA,
+            };
+            _closeCreateButton.Click += (o, e) => CloseCreate();
+
+            // btn_carrer1/2/3 (46/116/188,162) 53x46；txt_carrer* (64/134/206,216)。
             string[] careers = { "战士", "法师", "道士" };
             for (int i = 0; i < 3; i++)
             {
-                _classButtons[i] = MakeSmallButton("btn_cjzy_01", "btn_cjzy_01_1",
-                    20 + i * 105, 255, 90, 40, careers[i]);
+                _classButtons[i] = CreateButton("icon_cjzy_0" + (i + 1), "icon_cjzy_0" + (i + 1) + "_1",
+                    46 + i * 70, 162, 53, 46, "");
+                Label(_createPanel, 64 + i * 70, 216, 53, 24, careers[i]);
                 int idx = i;
                 _classButtons[i].Click += (o, e) =>
                 {
@@ -313,11 +340,14 @@ namespace Client.MirScenes
                 };
             }
 
+            // btn_sex1/2 (93/136,275/276) 52x44；txt_sex* (119/165,327)。
             string[] sexes = { "男", "女" };
+            string[] sexFrames = { "icon_cjzy_06", "icon_cjzy_05" };
             for (int i = 0; i < 2; i++)
             {
-                _sexButtons[i] = MakeSmallButton("btn_cjzy_01", "btn_cjzy_01_1",
-                    20 + i * 105, 305, 90, 40, sexes[i]);
+                _sexButtons[i] = CreateButton(sexFrames[i], sexFrames[i] + "_1",
+                    93 + i * 43, 275 + i, 52, 44, "");
+                Label(_createPanel, 119 + i * 46, 327, 40, 24, sexes[i]);
                 int idx = i;
                 _sexButtons[i].Click += (o, e) =>
                 {
@@ -327,19 +357,17 @@ namespace Client.MirScenes
                 };
             }
 
-            _submitButton = MakeSmallButton("btn_tijiao_01", "btn_tijiao_01_1", 215, 305, 120, 40, "创建角色");
+            // btn_tj (96,358) 109x57
+            _submitButton = CreateButton("btn_tijiao_01", "btn_tijiao_01_1", 96, 358, 109, 57, "创建");
             _submitButton.Click += (o, e) => SubmitCreate();
-
-            _closeCreateButton = MakeSmallButton("btn_cjzy_03", "btn_cjzy_03_1", 295, 10, 40, 30, "×");
-            _closeCreateButton.Click += (o, e) => CloseCreate();
 
             SetCreateVisible(false);
         }
 
-        // 用裸图集名 + 显式 AtlasFrame：异步加载完成时不会覆盖 RefreshCreateSelection 设置的选中帧。
-        private MirButton MakeSmallButton(string normal, string pressed, int x, int y, int w, int h, string caption)
+        // 用裸图集名 + 显式 AtlasFrame，异步加载完成时不会盖掉 RefreshCreateSelection 的选中帧。
+        private MirButton CreateButton(string normal, string pressed, int x, int y, int w, int h, string caption)
         {
-            MirButton button = new MirButton
+            MirButton b = new MirButton
             {
                 Parent = _createPanel,
                 AutoSize = false,
@@ -351,87 +379,82 @@ namespace Client.MirScenes
                 PressedAtlasFrame = pressed,
                 Sound = SoundList.ButtonA,
             };
-            AddCaption(_createPanel, x, y, w, h, caption);
-            return button;
+            if (!string.IsNullOrEmpty(caption)) Label(_createPanel, x, y, w, h, caption);
+            return b;
         }
 
-        // 面板隐藏时连子控件一起关掉，避免输入框仍抢焦点 / 按钮仍参与命中。
         private void SetCreateVisible(bool visible)
         {
             _createPanel.Visible = visible;
-            _createModel.Visible = visible;
-            _nameBox.Visible = visible;
-            for (int i = 0; i < 3; i++) _classButtons[i].Visible = visible;
-            for (int i = 0; i < 2; i++) _sexButtons[i].Visible = visible;
-            _submitButton.Visible = visible;
-            _randomNameButton.Visible = visible;
-            _closeCreateButton.Visible = visible;
+            foreach (MirControl c in _createPanel.Controls) c.Visible = visible;
         }
 
         // ---- JS 逻辑移植 ----------------------------------------------------
 
-        // JS setinfo()：按已有角色数填充两个槽，默认选中最后登录（本工程按 LastAccess 排序后的第一个）。
+        // JS setinfo()：0 角色直接展开创角面板；1/2 角色按数量显示两组信息标签。
         private void SetInfo()
         {
+            int count = Math.Min(2, Characters.Count);
+            if (_selected >= count) _selected = 0;
+
             for (int i = 0; i < 2; i++)
             {
-                bool has = i < Characters.Count;
+                bool has = i < count;
                 _slotModel[i].Visible = has;
-                _slotName[i].Visible = has;
-                _slotInfo[i].Visible = has;
+                for (int k = 0; k < 3; k++)
+                {
+                    _slotCaption[i][k].Visible = has;
+                    _slotValue[i][k].Visible = has;
+                }
 
                 if (has)
                 {
                     SelectInfo info = Characters[i];
                     _slotModel[i].AtlasNameKey = Atlas + "#" + ModelKey(info.Class, info.Gender);
-                    _slotName[i].Text = info.Name;
-                    _slotInfo[i].Text = ClassName(info.Class) + "  等级 " + info.Level;
+                    _slotValue[i][0].Text = info.Name;
+                    _slotValue[i][1].Text = info.Level.ToString();
+                    _slotValue[i][2].Text = ClassName(info.Class);
                 }
                 else
                 {
-                    _slotName[i].Text = "";
-                    _slotInfo[i].Text = "";
+                    for (int k = 0; k < 3; k++) _slotValue[i][k].Text = "";
                 }
             }
 
-            if (_selected >= Characters.Count) _selected = 0;
-
-            // 选中槽用亮龙纹底，未选用暗底（对应 JS img_roleg.filters=getgray 的反义表达）。
             for (int i = 0; i < 2; i++)
-                _slotBg[i].ImageKey = i == _selected && _selected < Characters.Count
+                _slotBg[i].ImageKey = i == _selected && count > 0
                     ? "resource/assets/gameui4/jpg/bg_cjzy_06.png"
-                    : "resource/assets/gameui4/jpg/bg_cjzy_03.png";
+                    : (i == 0
+                        ? "resource/assets/gameui4/jpg/bg_cjzy_03.png"
+                        : "resource/assets/gameui4/jpg/bg_cjzy_04.png");
 
-            _startButton.Enabled = Characters.Count > 0 && _selected < Characters.Count;
-            _deleteButton.Enabled = _startButton.Enabled;
-            _createButton.Enabled = Characters.Count < 2;
+            bool hasChar = count > 0;
+            _startButton.Visible = hasChar;
+            _startButton.Enabled = hasChar;
+            _deleteButton.Visible = hasChar;
+            _deleteButton.Enabled = hasChar;
+            _chooseButton[0].Visible = count > 1;
+            _chooseButton[1].Visible = count > 1;
+            _createButton.Visible = count < 2;
+            _createButton.Enabled = count < 2;
+            _huifuButton.Visible = false;   // 本工程协议没有恢复人物
+            _exitButton.Visible = true;
 
-            if (Characters.Count > 0 && _selected < Characters.Count)
-            {
-                DateTime last = Characters[_selected].LastAccess;
-                _lastAccessLabel.Text = last == DateTime.MinValue
-                    ? "上次登录：从未"
-                    : "上次登录：" + last.ToString("yyyy/MM/dd HH:mm:ss");
-            }
-            else
-            {
-                _lastAccessLabel.Text = "";
-            }
-
-            // 页游只有两个角色槽；若本工程服务端返回更多角色，明确提示而不是静默藏起来。
+            _lastAccessLabel.Text = hasChar
+                ? "上次登录：" + (Characters[_selected].LastAccess == DateTime.MinValue
+                    ? "从未" : Characters[_selected].LastAccess.ToString("yyyy/MM/dd HH:mm:ss"))
+                : "";
             if (Characters.Count > 2)
                 _lastAccessLabel.Text += "（还有 " + (Characters.Count - 2) + " 个角色未显示：原版选人界面只有 2 个槽）";
         }
 
         private static string ModelKey(MirClass c, MirGender g)
         {
-            // JS career 1..3、sex 1..2；本工程枚举从 0 起，超出的职业（刺客/弓手）回落到战士立绘。
             int career = Math.Min(3, (int)c + 1);
             int sex = Math.Min(2, (int)g + 1);
             return "img_carrer" + career + "_" + sex;
         }
 
-        // JS getcarrer()
         private static string ClassName(MirClass c)
         {
             switch (c)
@@ -445,7 +468,6 @@ namespace Client.MirScenes
             }
         }
 
-        // JS ToCDB()：全角转半角，名字规范化后再发包。
         private static string ToCDB(string text)
         {
             if (string.IsNullOrEmpty(text)) return string.Empty;
@@ -459,8 +481,6 @@ namespace Client.MirScenes
             return new string(chars);
         }
 
-        // 页游随机名走 CMDReqRandomNameMessage（本工程协议里没有），改为本地按性别生成，
-        // 语义与 JS updateName() 一致：把随机名填进 txt_input。
         private static readonly string[] NamePrefix = { "风云", "烈焰", "苍月", "铁血", "逐日", "龙吟", "寒霜", "破军" };
         private static readonly string[] MaleSuffix = { "战神", "霸王", "狂刀", "天尊", "无双", "傲天" };
         private static readonly string[] FemaleSuffix = { "飞雪", "清影", "月华", "凝霜", "如烟", "灵儿" };
@@ -471,37 +491,33 @@ namespace Client.MirScenes
             return NamePrefix[Rnd.Next(NamePrefix.Length)] + suffix[Rnd.Next(suffix.Length)];
         }
 
-        // JS changecarrer()：换槽 + 1500ms 滑入（原版 maskShape.y 223 -> -137，位移 360）。
         private void ChangeSlot(int index)
         {
-            if (index >= Characters.Count || index == _selected) return;
-
+            if (index >= Math.Min(2, Characters.Count) || index == _selected) return;
             _selected = index;
             SetInfo();
-
             _slideSlot = index;
             _slideEnd = CMain.Time + SlideMilliseconds;
             _slideRunning = true;
             ResetCountdown();
         }
 
-        // JS createrole()：打开内嵌创角面板，随机职业、性别归位、给一个随机名。
         private void OpenCreate()
         {
             if (Characters.Count >= 2) { ShowError("角色已满"); return; }
 
-            _createPanel.Location = R(Characters.Count > 0 ? 376 : 735, 240);
+            // JS createrole(): create_grp.x = 376（已有角色1）/ 735（空号）
+            _createPanel.Location = R(Characters.Count > 0 ? 376 : 735, 198);
             SetCreateVisible(true);
-            _newClass = (MirClass)Rnd.Next(0, 3); // JS randomcarrer()
-            _newGender = 0;                       // JS nowsex = 1
-            _nameBox.Text = RandomName(_newGender); // JS sendReqRandomNameMessage + updateName
+            _newClass = (MirClass)Rnd.Next(0, 3);
+            _newGender = 0;
+            _nameBox.Text = RandomName(_newGender);
             _nameBox.SetFocus();
             _submitButton.Enabled = true;
             RefreshCreateSelection();
             ResetCountdown();
         }
 
-        // JS closecreate()
         private void CloseCreate()
         {
             SetCreateVisible(false);
@@ -511,33 +527,25 @@ namespace Client.MirScenes
 
         private void RefreshCreateSelection()
         {
+            string[] careers = { "icon_cjzy_01", "icon_cjzy_02", "icon_cjzy_03" };
+            string[] sexes = { "icon_cjzy_06", "icon_cjzy_05" };
             for (int i = 0; i < 3; i++)
-                _classButtons[i].AtlasFrame = i == (int)_newClass ? "btn_cjzy_01_1" : "btn_cjzy_01";
+                _classButtons[i].AtlasFrame = i == (int)_newClass ? careers[i] + "_1" : careers[i];
             for (int i = 0; i < 2; i++)
-                _sexButtons[i].AtlasFrame = i == (int)_newGender ? "btn_cjzy_01_1" : "btn_cjzy_01";
-
-            _createModel.AtlasNameKey = Atlas + "#" + ModelKey(_newClass, _newGender);
+                _sexButtons[i].AtlasFrame = i == (int)_newGender ? sexes[i] + "_1" : sexes[i];
         }
 
-        // JS startgame() / putcreaterole()：名字规范化后发创建包；不照搬 VarInt 协议。
         private void SubmitCreate()
         {
             string name = ToCDB(_nameBox.Text);
             _nameBox.Text = name;
-
             if (name.Length < Globals.MinCharacterNameLength || name.Length > Globals.MaxCharacterNameLength)
             {
                 ShowError("角色名长度不符合要求");
                 return;
             }
-
             _submitButton.Enabled = false;
-            Network.Enqueue(new C.NewCharacter
-            {
-                Name = name,
-                Class = _newClass,
-                Gender = _newGender,
-            });
+            Network.Enqueue(new C.NewCharacter { Name = name, Class = _newClass, Gender = _newGender });
             ResetCountdown();
         }
 
@@ -546,7 +554,6 @@ namespace Client.MirScenes
             if (_createPanel.Visible) { SubmitCreate(); return; }
             if (_selected < 0 || _selected >= Characters.Count) return;
             if (!Libraries.Loaded) { ShowError("资源加载中，请稍候"); ResetCountdown(); return; }
-
             _startButton.Enabled = false;
             Network.Enqueue(new C.StartGame { CharacterIndex = Characters[_selected].Index });
         }
@@ -554,11 +561,9 @@ namespace Client.MirScenes
         private void DeleteCharacter()
         {
             if (_selected < 0 || _selected >= Characters.Count) return;
-
             MirMessageBox message = new MirMessageBox("确定删除角色 " + Characters[_selected].Name + "？", MirMessageBoxButtons.YesNo);
             int index = Characters[_selected].Index;
             string name = Characters[_selected].Name;
-
             message.YesButton.Click += (o1, e1) =>
             {
                 MirInputBox inputBox = new MirInputBox("请输入角色名确认");
@@ -569,10 +574,7 @@ namespace Client.MirScenes
                         _deleteButton.Enabled = false;
                         Network.Enqueue(new C.DeleteCharacter { CharacterIndex = index });
                     }
-                    else
-                    {
-                        MirMessageBox.Show("输入不正确");
-                    }
+                    else MirMessageBox.Show("输入不正确");
                     inputBox.Dispose();
                 };
                 inputBox.Show();
@@ -582,21 +584,16 @@ namespace Client.MirScenes
 
         public void SortList()
         {
-            if (Characters != null)
-                Characters.Sort((c1, c2) => c2.LastAccess.CompareTo(c1.LastAccess));
+            if (Characters != null) Characters.Sort((c1, c2) => c2.LastAccess.CompareTo(c1.LastAccess));
         }
 
-        // JS setTimeLimit()：30 秒倒计时，超时自动提交创建或进入游戏。
-        private void ResetCountdown()
-        {
-            _countdownEnd = CMain.Time + InitTimerSeconds * 1000L;
-        }
+        private void ResetCountdown() { _countdownEnd = CMain.Time + InitTimerSeconds * 1000L; }
 
         private void ShowError(string text)
         {
             _errorLabel.Text = text;
             _errorLabel.Visible = true;
-            _errorUntil = CMain.Time + 2000; // JS errtips 的 2e3
+            _errorUntil = CMain.Time + 2000;
         }
 
         private void OnKeyPress(object sender, KeyPressEventArgs e)
@@ -610,27 +607,20 @@ namespace Client.MirScenes
         public override void Process()
         {
             long now = CMain.Time;
-
             if (_countdownEnd > 0)
             {
                 long left = _countdownEnd - now;
                 if (left <= 0)
                 {
                     _countdownEnd = 0;
-                    _countdownLabel.Text = "";
+                    _limitLabel.Text = "";
                     if (_createPanel.Visible) SubmitCreate();
                     else if (_startButton.Enabled) StartGame();
                 }
-                else
-                {
-                    _countdownLabel.Text = "（" + (int)Math.Ceiling(left / 1000M) + "）";
-                }
+                else _limitLabel.Text = "（" + (int)Math.Ceiling(left / 1000M) + "）";
             }
+            if (_errorLabel.Visible && now >= _errorUntil) _errorLabel.Visible = false;
 
-            if (_errorLabel.Visible && now >= _errorUntil)
-                _errorLabel.Visible = false;
-
-            // 换槽滑入动画：1500ms 内立绘从 +360 滑回原位。
             if (_slideRunning)
             {
                 float t = 1f - (_slideEnd - now) / (float)SlideMilliseconds;
@@ -695,13 +685,7 @@ namespace Client.MirScenes
             _deleteButton.Enabled = true;
             MirMessageBox.Show("角色删除成功");
             for (int i = 0; i < Characters.Count; i++)
-            {
-                if (Characters[i].Index == p.CharacterIndex)
-                {
-                    Characters.RemoveAt(i);
-                    break;
-                }
-            }
+                if (Characters[i].Index == p.CharacterIndex) { Characters.RemoveAt(i); break; }
             SetInfo();
             ResetCountdown();
         }
@@ -711,12 +695,7 @@ namespace Client.MirScenes
             _startButton.Enabled = true;
             long time = CMain.Time + p.Milliseconds;
             MirMessageBox message = new MirMessageBox("请稍候后再进入游戏", MirMessageBoxButtons.OK);
-            message.AfterDraw += (o, e) =>
-            {
-                if (CMain.Time <= time) return;
-                message.Dispose();
-                StartGame();
-            };
+            message.AfterDraw += (o, e) => { if (CMain.Time > time) { message.Dispose(); StartGame(); } };
             message.Show();
         }
 
@@ -735,10 +714,7 @@ namespace Client.MirScenes
                 case 1: ShowError("尚未登录"); break;
                 case 2: ShowError("角色不存在"); break;
                 case 3: ShowError("未找到有效地图或出生点"); break;
-                case 4:
-                    ActiveScene = new GameScene();
-                    Dispose();
-                    break;
+                case 4: ActiveScene = new GameScene(); Dispose(); break;
             }
         }
 
@@ -747,16 +723,17 @@ namespace Client.MirScenes
             if (disposing)
             {
                 _root = null;
+                _mainBg = null;
                 _startButton = null;
                 _createButton = null;
                 _deleteButton = null;
                 _exitButton = null;
-                _countdownLabel = null;
+                _huifuButton = null;
+                _limitLabel = null;
                 _errorLabel = null;
-                _serverLabel = null;
+                _qufuLabel = null;
                 _lastAccessLabel = null;
                 _createPanel = null;
-                _createModel = null;
                 _nameBox = null;
                 _submitButton = null;
                 _randomNameButton = null;
