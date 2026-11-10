@@ -35,30 +35,38 @@ namespace Client.MirScenes.Dialogs
             Movable = true;
             Sort = true;            
 
-            // 《原始传奇》皮肤：通用窗口底图九宫格铺满。父面板仍用 .Lib 图决定 Size/坐标，
-            // 这里只加一层绘制在其它子控件之下的底图，布局一点不动。
-            // 子控件在父 DrawControl 之后绘制，故盖住老底图；CDN 图集未就绪时 AtlasSheet 为空，
-            // 本控件什么都不画，自动露出原 .Lib 背景作为回退。
+            // 《原始传奇》角色面板外框：resource/assets/gameui4/jpg/bag_bg.png
+            // （CDN resource/7e/7e5fcb4c_104188.png，318×475，金色拱顶 + 金属边框）。
+            // 父面板仍由 .Lib 图决定 Size/坐标，这里只叠加绘制在最底下的背景，布局一点不动；
+            // 图片异步加载完成前 Texture 为空，自动露出老 .Lib 背景作为回退。
             var originBackground = new MirImageControl
             {
                 Parent = this,
-                AtlasNameKey = "y_common-sheet#com_bg3",
+                ImageKey = "resource/assets/gameui4/jpg/bag_bg.png",
                 AutoSize = false,
-                DrawMode = MirImageDrawMode.NineGrid,
-                BorderLeft = 10, BorderTop = 8, BorderRight = 10, BorderBottom = 8,
                 NotControl = true,
             };
             originBackground.BeforeDraw += (o, e) => originBackground.Size = Size;
 
-            // 标题栏分隔线（《原始传奇》通用图集），纯装饰。
-            new MirImageControl
+            // 叠在外框之上的内页底图：resource/assets/gameui4/jpg/bag_bg2.jpg
+            // （CDN resource/99/99e56c43_10166.jpg，286×396，龙纹 + 人物圆台）。
+            // 比例取自 gameEui.json 的 RolePopSkin：外框容器 354×475，group_page = 286×396 @ (15,66)；
+            // 按外框图实际 318×475 归一化，随父面板尺寸等比缩放，拱顶/边框保持露出。
+            var originInner = new MirImageControl
             {
                 Parent = this,
-                AtlasNameKey = "y_common-sheet#com_line_h",
+                ImageKey = "resource/assets/gameui4/jpg/bag_bg2.jpg",
                 AutoSize = false,
-                Size = new Size(248, 2),
-                Location = new Point(8, 64),
                 NotControl = true,
+            };
+            originInner.BeforeDraw += (o, e) =>
+            {
+                originInner.Location = new Point(
+                    (int)(Size.Width * 15f / 318f),
+                    (int)(Size.Height * 66f / 475f));
+                originInner.Size = new Size(
+                    (int)(Size.Width * 286f / 318f),
+                    (int)(Size.Height * 396f / 475f));
             };
 
             BeforeDraw += (o, e) => RefreshInterface();

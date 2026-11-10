@@ -31,44 +31,28 @@ namespace Client.MirScenes.Dialogs
             Sort = true;
             Visible = false;
 
-            // 《原始传奇》皮肤：窗口底图九宫格铺满 + 一层 8×5 格子底。
-            // Grid 两页与 QuestGrid 共用同一套坐标（y % 5 折叠），所以只需一层 40 个底框，
-            // 翻页时不需跟着 MirItemCell 的 Visible 切换。图集未就绪则自动露出老 .Lib 背景。
+            // 《原始传奇》背包背景：manifest 逻辑名 resource/assets/gameui4/jpg/bag_bg3.png
+            // （CDN 哈希 resource/73/73844c34_153164.png，542×464，自带 8×6 格子线与底部金币条）。
+            // 必须走 ImageKey 经 manifest 解析，直接拼 CDN 路径会 404。整图拉伸到面板尺寸，
+            // 背景已画好格子，故不再额外叠格子底框；加载失败时自动露出老 .Lib 背景。
             var originBackground = new MirImageControl
             {
                 Parent = this,
-                AtlasNameKey = "y_common-sheet#com_bg3",
+                ImageKey = "resource/assets/gameui4/jpg/bag_bg3.png",
                 AutoSize = false,
-                DrawMode = MirImageDrawMode.NineGrid,
-                BorderLeft = 10, BorderTop = 8, BorderRight = 10, BorderBottom = 8,
                 NotControl = true,
             };
             originBackground.BeforeDraw += (o, e) => originBackground.Size = Size;
 
-            for (int y = 0; y < 5; y++)
-            {
-                for (int x = 0; x < 8; x++)
-                {
-                    new MirImageControl
-                    {
-                        Parent = this,
-                        AtlasNameKey = "y_common-sheet#bag_bg0",
-                        AutoSize = false,
-                        Size = new Size(36, 32),
-                        Location = new Point(x * 36 + 9 + x, y * 32 + 37 + y),
-                        NotControl = true,
-                    };
-                }
-            }
-
-            // 金币图标（《原始传奇》背包图集），放在 GoldLabel 左侧。
+            // 金币堆：y_bag-sheet 的 bag_coin0 原生 35×21，按原比例贴在 GoldLabel 左侧，
+            // 正好落在 bag_bg3 背景左下角的圆形凹槽里。
             new MirImageControl
             {
                 Parent = this,
                 AtlasNameKey = "y_bag-sheet#bag_coin0",
                 AutoSize = false,
-                Size = new Size(18, 18),
-                Location = new Point(20, 210),
+                Size = new Size(35, 21),
+                Location = new Point(4, 209),
                 NotControl = true,
             };
 
@@ -82,6 +66,8 @@ namespace Client.MirScenes.Dialogs
                 NotControl = true,
             };
 
+            // 三个页签用《原始传奇》背包按钮底：bag_Btn0(蓝/选中)、bag_Btn1(棕/未选中)，原生 82×29。
+            // AutoSize=false 固定成原来的 72×23 命中区，页签间距不变；图集未就绪时老 .Lib 帧仍是回退。
             ItemButton = new MirButton
             {
                 Index = 197,
@@ -90,6 +76,9 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Size = new Size(72, 23),
                 Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_bag-sheet",
+                AtlasFrame = "bag_Btn0",
+                AutoSize = false,
             };
             ItemButton.Click += Button_Click;
 
@@ -101,6 +90,9 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Size = new Size(72, 23),
                 Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_bag-sheet",
+                AtlasFrame = "bag_Btn1",
+                AutoSize = false,
             };
             ItemButton2.Click += Button_Click;
 
@@ -112,6 +104,9 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 Size = new Size(72, 23),
                 Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_bag-sheet",
+                AtlasFrame = "bag_Btn1",
+                AutoSize = false,
             };
             QuestButton.Click += Button_Click;
 
@@ -157,6 +152,9 @@ namespace Client.MirScenes.Dialogs
             };
             CloseButton.Click += (o, e) => Hide();
 
+            // 删除物品开关仍用老 .Lib 图标：y_bag-sheet 里 bag_recy1 是 87×23 的「快速回收」标题文字，
+            // 不是小图标，压成 18×18 会糊掉；底部条也没有放下整块文字的空间，故暂不接入。
+            // 同图集的 storageSuo（锁，43×49）对应 LockBar，尺寸/可见性逻辑不同，也先不动。
             DelItemButton = new MirButton
             {
                 Index = 366,
@@ -166,10 +164,6 @@ namespace Client.MirScenes.Dialogs
                 Library = Libraries.Prguse2,
                 Parent = this,
                 Sound = SoundList.ButtonA,
-                // 原始传奇背包的「回收」按钮，对应本工程的删除物品开关。
-                AtlasNameKey = "y_bag-sheet#bag_recy1",
-                AutoSize = false,
-                Size = new Size(18, 18),
             };
             DelItemButton.Click += DelItemButton_Click;
 
@@ -301,6 +295,7 @@ namespace Client.MirScenes.Dialogs
                 else if (sender == QuestButton)
                 {
                     Reset();
+                    SetBagTab(2);
 
                     ItemButton.Index = 737;
                     ItemButton2.Index = 738;
@@ -363,6 +358,15 @@ namespace Client.MirScenes.Dialogs
             return null;
         }
 
+        // 页签选中态由 AtlasFrame 接管：AtlasNameKey 用裸图集名（不带 #帧），
+        // 加载完成时不会覆盖这里设置的帧；未加载好时老 .Lib 的 Index 切换照常回退。
+        private void SetBagTab(int active)
+        {
+            ItemButton.AtlasFrame = active == 0 ? "bag_Btn0" : "bag_Btn1";
+            ItemButton2.AtlasFrame = active == 1 ? "bag_Btn0" : "bag_Btn1";
+            QuestButton.AtlasFrame = active == 2 ? "bag_Btn0" : "bag_Btn1";
+        }
+
         void Reset()
         {
             foreach (MirItemCell grid in QuestGrid)
@@ -388,6 +392,7 @@ namespace Client.MirScenes.Dialogs
         public void RefreshInventory()
         {
             Reset();
+            SetBagTab(0);
 
             ItemButton.Index = 197;
             ItemButton2.Index = 738;
@@ -410,6 +415,7 @@ namespace Client.MirScenes.Dialogs
         public void RefreshInventory2()
         {
             Reset();
+            SetBagTab(1);
 
             ItemButton.Index = 737;
             ItemButton2.Index = 168;
