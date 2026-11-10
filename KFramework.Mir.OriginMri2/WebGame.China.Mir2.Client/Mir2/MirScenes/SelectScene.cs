@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Threading.Tasks;
 using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
@@ -79,6 +81,9 @@ namespace Client.MirScenes
         private MirImageControl _root, _mainBg;
         private readonly MirImageControl[] _slotBg = new MirImageControl[2];
         private readonly MirImageControl[] _slotModel = new MirImageControl[2];
+        // 页游 eff_grp0/1 里的角色待机 MovieClip：resource/assets/gameui4/movieClip/carrer{c}_{s}.json。
+        private readonly MirAtlasAnimatedControl[] _slotAnim = new MirAtlasAnimatedControl[2];
+        private readonly string[] _slotAnimKey = new string[2];
         private readonly MirLabel[][] _slotCaption = new MirLabel[2][];
         private readonly MirLabel[][] _slotValue = new MirLabel[2][];
 
@@ -118,11 +123,13 @@ namespace Client.MirScenes
 
         private void BuildUI()
         {
+            // 根容器绝不能设 NotControl：MirControl.OnMouseMove 是「父控件自身
+            // IsMouseOver 命中后才递归子控件」，根一旦 NotControl，整棵 UI 树都
+            // 收不到鼠标事件（表现为所有按钮点不动）。只给纯装饰控件设 NotControl。
             _root = new MirImageControl
             {
                 Parent = this,
                 AutoSize = false,
-                NotControl = true,
                 Location = P(0, 0),
                 Size = Sz(DesignW, DesignH),
             };
@@ -165,8 +172,25 @@ namespace Client.MirScenes
                     AutoSize = false,
                     NotControl = true,
                     Location = R(i == 0 ? 415 : 765, i == 0 ? 223 : 217),
+                    // 图集就绪后 FitAtlasSizeDynamic 换成帧的真实尺寸（134x322 等），避免拉伸变形。
                     Size = Sz(150, 322),
                     Visible = false,
+                };
+                FitAtlasSizeDynamic(_slotModel[i]);
+
+                // 动画层与静态立绘完全重合叠在上层：静态立绘始终保留，
+                // 动画没播出来也不会把角色弄没。不在逐帧回调里改 Size ——
+                // 那会每帧 Redraw 重烘焙场景，回调抛异常还会打断 CMain 渲染循环导致整屏 UI 消失。
+                _slotAnim[i] = new MirAtlasAnimatedControl
+                {
+                    Parent = _root,
+                    AutoSize = false,
+                    NotControl = true,
+                    Location = R(i == 0 ? 415 : 765, i == 0 ? 223 : 217),
+                    Size = Sz(150, 322),
+                    Visible = false,
+                    Loop = true,
+                    AnimationDelay = 250,   // 6 组 carrer*.json 实测 frameRate=4
                 };
             }
             _modelBaseY = R(0, 223).Y;
@@ -219,6 +243,36 @@ namespace Client.MirScenes
             BuildCreatePanel();
         }
 
+        // gameEui.json 里绝大多数 eui.Image / eui.Button 只有 x/y/source，没有 width/height，
+        // 页游是「源图多大就画多大」。之前给每个控件硬编码 w/h 会把帧拉伸变形（立绘最明显）。
+        // 图集异步加载完成后按帧的 SourceRectangle 重设 Size；Sz(w,h) 仅作加载前的占位/兜底。
+        // 尺寸仍乘 ScaleF，保证与坐标、整体缩放一致。
+        private static void FitAtlasSize(MirImageControl c, string frame)
+        {
+            EventHandler apply = (o, e) =>
+            {
+                if (c.IsDisposed || c.AtlasSheet == null || c.AtlasSheet.Frames == null) return;
+                if (c.AtlasSheet.Frames.TryGetValue(frame, out var f))
+                    c.Size = Sz(f.SourceRectangle.Width, f.SourceRectangle.Height);
+            };
+            c.AtlasLoaded += apply;
+            if (c.AtlasSheet != null) apply(c, EventArgs.Empty);
+        }
+
+        // 立绘的帧名会随角色职业/性别变化（SetInfo 里重设 AtlasNameKey），故按当前帧名取尺寸。
+        private static void FitAtlasSizeDynamic(MirImageControl c)
+        {
+            EventHandler apply = (o, e) =>
+            {
+                if (c.IsDisposed || c.AtlasSheet == null || c.AtlasSheet.Frames == null) return;
+                string frame = c.AtlasFrame;
+                if (!string.IsNullOrEmpty(frame) && c.AtlasSheet.Frames.TryGetValue(frame, out var f))
+                    c.Size = Sz(f.SourceRectangle.Width, f.SourceRectangle.Height);
+            };
+            c.AtlasLoaded += apply;
+            if (c.AtlasSheet != null) apply(c, EventArgs.Empty);
+        }
+
         private static MirImageControl Image(MirControl parent, string key, int x, int y, int w, int h)
         {
             return new MirImageControl
@@ -234,6 +288,9 @@ namespace Client.MirScenes
 
         private static MirImageControl AtlasImage(MirControl parent, string frame, int x, int y, int w, int h)
         {
+            // EXML 里这些背景条明确写了 width/height（如 _Image8..13 是 120x20），
+            // 页游是把 158x31 的 bg_cjzy_00 帧缩放显示；不要按帧原尺寸改 Size，
+            // 否则底条撑大、字和背景的排布全乱。
             return new MirImageControl
             {
                 Parent = parent,
@@ -274,7 +331,14 @@ namespace Client.MirScenes
                 PressedAtlasFrame = pressed,
                 Sound = SoundList.ButtonA,
             };
-            Label(parent, x, y, w, h, caption);
+            FitAtlasSize(b, normal);
+            if (!string.IsNullOrEmpty(caption))
+            {
+                MirLabel cap = Label(parent, x, y, w, h, caption);
+                // 按钮真实尺寸/可见性变化时，文字层同步，避免文字错位或按钮隐藏后字还在。
+                b.SizeChanged += (o, e) => { if (!cap.IsDisposed) cap.Size = b.Size; };
+                b.VisibleChanged += (o, e) => { if (!cap.IsDisposed) cap.Visible = b.Visible; };
+            }
             return b;
         }
 
@@ -379,7 +443,13 @@ namespace Client.MirScenes
                 PressedAtlasFrame = pressed,
                 Sound = SoundList.ButtonA,
             };
-            if (!string.IsNullOrEmpty(caption)) Label(_createPanel, x, y, w, h, caption);
+            FitAtlasSize(b, normal);
+            if (!string.IsNullOrEmpty(caption))
+            {
+                MirLabel cap = Label(_createPanel, x, y, w, h, caption);
+                b.SizeChanged += (o, e) => { if (!cap.IsDisposed) cap.Size = b.Size; };
+                b.VisibleChanged += (o, e) => { if (!cap.IsDisposed) cap.Visible = b.Visible; };
+            }
             return b;
         }
 
@@ -400,12 +470,11 @@ namespace Client.MirScenes
             for (int i = 0; i < 2; i++)
             {
                 bool has = i < count;
-                _slotModel[i].Visible = has;
-                for (int k = 0; k < 3; k++)
-                {
-                    _slotCaption[i][k].Visible = has;
-                    _slotValue[i][k].Visible = has;
-                }
+
+                // JS setinfo() 只切 txt_name*/txt_level*/txt_c* 的可见性；
+                // _Label1..6（"名字/等级/职业"）是独立字段标题，始终显示。
+                // 之前把标题一起按 has 隐藏，槽一空连这些字都看不到了。
+                for (int k = 0; k < 3; k++) _slotCaption[i][k].Visible = true;
 
                 if (has)
                 {
@@ -414,20 +483,33 @@ namespace Client.MirScenes
                     _slotValue[i][0].Text = info.Name;
                     _slotValue[i][1].Text = info.Level.ToString();
                     _slotValue[i][2].Text = ClassName(info.Class);
+                    for (int k = 0; k < 3; k++) _slotValue[i][k].Visible = true;
+                    UpdateSlotAnimation(i, MovieKey(info.Class, info.Gender), true);
                 }
                 else
                 {
-                    for (int k = 0; k < 3; k++) _slotValue[i][k].Text = "";
+                    for (int k = 0; k < 3; k++)
+                    {
+                        _slotValue[i][k].Text = "";
+                        _slotValue[i][k].Visible = false;
+                    }
+                    UpdateSlotAnimation(i, null, false);
                 }
+
+                // 静态立绘始终显示：动画只是叠在上层的效果，绝不因动画就绪而把角色藏掉。
+                _slotModel[i].Visible = has;
+
+                // 未选中的槽变暗（页游 img_roleg* 的 getgray()）。
+                // 只用 ForeColour 压暗，不动全局灰度状态/不透明度，避免影响整屏其它控件。
+                bool dim = has && i != _selected;
+                Color tint = dim ? Color.FromArgb(255, 130, 130, 130) : Color.White;
+                _slotModel[i].ForeColour = tint;
+                _slotAnim[i].ForeColour = tint;
             }
 
-            for (int i = 0; i < 2; i++)
-                _slotBg[i].ImageKey = i == _selected && count > 0
-                    ? "resource/assets/gameui4/jpg/bg_cjzy_06.png"
-                    : (i == 0
-                        ? "resource/assets/gameui4/jpg/bg_cjzy_03.png"
-                        : "resource/assets/gameui4/jpg/bg_cjzy_04.png");
-
+            // 槽底板固定用 EXML 的 _Image2/_Image3 两张图，不要按选中态换图：
+            // 之前误用 bg_cjzy_06.png（那是 create_grp 的 322x428 面板背景）当高亮底，
+            // 被拉伸到 334x392 后整个槽看起来尺寸/样式都不对。
             bool hasChar = count > 0;
             _startButton.Visible = hasChar;
             _startButton.Enabled = hasChar;
@@ -453,6 +535,112 @@ namespace Client.MirScenes
             int career = Math.Min(3, (int)c + 1);
             int sex = Math.Min(2, (int)g + 1);
             return "img_carrer" + career + "_" + sex;
+        }
+
+        // 页游 loadres()：RES.getResByUrl("img/carrer"+career+"_"+sex+".json")，
+        // 在 CDN 上的实际 manifest key 是下面这条（两个版本 manifest 都有 6 组）。
+        private static string MovieKey(MirClass c, MirGender g)
+        {
+            int career = Math.Min(3, (int)c + 1);
+            int sex = Math.Min(2, (int)g + 1);
+            return "resource/assets/gameui4/movieClip/carrer" + career + "_" + sex + ".json";
+        }
+
+        private void UpdateSlotAnimation(int slot, string key, bool active)
+        {
+            MirAtlasAnimatedControl anim = _slotAnim[slot];
+            if (!active)
+            {
+                _slotAnimKey[slot] = null;
+                anim.Animated = false;
+                anim.Visible = false;
+                return;
+            }
+
+            if (_slotAnimKey[slot] == key)
+            {
+                // 已加载过：SetInfo 重入（切槽/创建/删除）时恢复播放即可。
+                bool ready = anim.AtlasSheet != null
+                    && anim.AtlasAnimationFrames != null && anim.AtlasAnimationFrames.Count > 0;
+                anim.Animated = ready;
+                anim.Visible = ready;
+                return;
+            }
+
+            _slotAnimKey[slot] = key;
+            anim.Animated = false;
+            anim.Visible = false;
+            _ = LoadSlotAnimationAsync(slot, key);
+        }
+
+        private async Task LoadSlotAnimationAsync(int slot, string key)
+        {
+            try
+            {
+                // MovieClip（mc/res）图集：Mir2AtlasSheet 会解出 PlayOrder 时间线，
+                // LoadSheetCoreAsync 用同名 png 补齐整页贴图（carrerX_Y.json -> carrerX_Y.png）。
+                Mir2AtlasSheet sheet = await Mir2AtlasLibrary.GetSheetAsync(key, DXManager.GDevice);
+                MirAtlasAnimatedControl anim = _slotAnim[slot];
+                // 角色已切换或场景销毁：丢弃旧结果，避免动画盖到新角色上。
+                if (anim.IsDisposed || _slotAnim[slot] != anim || _slotAnimKey[slot] != key) return;
+
+                // mc 的 frameRate Mir2AtlasSheet 未暴露，补读一次 JSON（同一路径，命中缓存）。
+                byte[] raw = null;
+                try { raw = await Mir2OriginResource.GetBytesAsync(Mir2OriginResource.ResolveManifestAssetPath(key)); }
+                catch { }
+                ReadMovieMeta(raw, out long delay, out _, out _);
+                anim.AnimationDelay = delay;
+                // 动画层保持与静态立绘同坐标；不套用 mc.frames[].x/y，
+                // 否则会在旁边多出一个错位的角色。
+
+                anim.AtlasSheet = sheet;
+                // 优先 mc 时间线；万一该资源是普通 frames 图集，退化为按帧名顺序播放。
+                List<string> order = sheet.PlayOrder != null && sheet.PlayOrder.Count > 0
+                    ? new List<string>(sheet.PlayOrder)
+                    : (sheet.Frames != null ? new List<string>(sheet.Frames.Keys) : null);
+                if (order == null || order.Count == 0) return;
+                anim.AtlasAnimationFrames = order;
+                anim.Animated = true;
+                anim.Visible = true;
+                // 静态立绘保留在下面，动画只是叠加效果，绝不隐藏。
+            }
+            catch (Exception ex)
+            {
+                KFramework.MonoGame.PrintTool.LogError("[SelectScene] 角色动画加载失败：" + key + " -> " + ex);
+            }
+        }
+
+        // Egret MovieClip 首个时间线的 frameRate 与首帧绘制偏移（Mir2AtlasSheet 未暴露这两项）。
+        // 实测 6 组 carrer*.json：frameRate=4、timeline=16 帧，首帧 x/y 因职业性别而异。
+        private static void ReadMovieMeta(byte[] bytes, out long delay, out int x, out int y)
+        {
+            delay = 250;
+            x = 0;
+            y = 0;
+            if (bytes == null || bytes.Length == 0) return;
+            try
+            {
+                using (JsonDocument doc = JsonDocument.Parse(bytes))
+                {
+                    JsonElement root = doc.RootElement;
+                    if (!root.TryGetProperty("mc", out JsonElement mc)) return;
+                    foreach (JsonProperty timeline in mc.EnumerateObject())
+                    {
+                        if (timeline.Value.TryGetProperty("frameRate", out JsonElement fr)
+                            && fr.TryGetInt32(out int fps) && fps > 0)
+                            delay = 1000L / fps;
+                        if (timeline.Value.TryGetProperty("frames", out JsonElement frames)
+                            && frames.ValueKind == JsonValueKind.Array && frames.GetArrayLength() > 0)
+                        {
+                            JsonElement first = frames[0];
+                            if (first.TryGetProperty("x", out JsonElement jx)) jx.TryGetInt32(out x);
+                            if (first.TryGetProperty("y", out JsonElement jy)) jy.TryGetInt32(out y);
+                        }
+                        break;   // 与 Mir2AtlasSheet.Parse 一致：只取首个时间线
+                    }
+                }
+            }
+            catch { }
         }
 
         private static string ClassName(MirClass c)
