@@ -195,23 +195,6 @@ namespace Client.MirScenes
             }
             _modelBaseY = R(0, 223).Y;
 
-            // _Label1..3 / txt_name0..c0（槽1），_Label4..6 / txt_name1..c1（槽2）。
-            string[] fieldNames = { "名字", "等级", "职业" };
-            for (int i = 0; i < 2; i++)
-            {
-                int cx = i == 0 ? 344 : 919;
-                int vx = i == 0 ? 391 : 966;
-                int[] cy = i == 0 ? new[] { 693, 720, 747 } : new[] { 692, 719, 746 };
-                int[] vy = i == 0 ? new[] { 693, 720, 746 } : new[] { 692, 719, 745 };
-                _slotCaption[i] = new MirLabel[3];
-                _slotValue[i] = new MirLabel[3];
-                for (int k = 0; k < 3; k++)
-                {
-                    _slotCaption[i][k] = Label(_root, cx, cy[k], 44, 24, fieldNames[k]);
-                    _slotValue[i][k] = Label(_root, vx, vy[k], 110, 24, "");
-                }
-            }
-
             // 按钮群（EXML 坐标）。这些按钮在原版里坐标有部分重叠，由状态/可见性切换；
             // 本实现按角色数与创角面板状态显式控制，避免同时糊在一起。
             _chooseButton[0] = Button(_root, "btn_cjzy_01", "btn_cjzy_01_1", 393, 624, 132, 65, "选择角色");
@@ -239,6 +222,24 @@ namespace Client.MirScenes
             _errorLabel = Label(_root, 545, 590, 300, 28, "");
             _errorLabel.Visible = false;
             _lastAccessLabel = Label(_root, 24, 920, 700, 24, "");
+
+            // 角色信息标签（名字/等级/职业 + 值）放到控件树末尾创建，确保在最上层不被遮挡；
+            // 标签框放大到 70/220×26，否则 44×24 在缩放后几乎看不清。
+            string[] fieldNames = { "名字", "等级", "职业" };
+            for (int i = 0; i < 2; i++)
+            {
+                int cx = i == 0 ? 344 : 919;
+                int vx = i == 0 ? 391 : 966;
+                int[] cy = i == 0 ? new[] { 693, 720, 747 } : new[] { 692, 719, 746 };
+                int[] vy = i == 0 ? new[] { 693, 720, 746 } : new[] { 692, 719, 745 };
+                _slotCaption[i] = new MirLabel[3];
+                _slotValue[i] = new MirLabel[3];
+                for (int k = 0; k < 3; k++)
+                {
+                    _slotCaption[i][k] = Label(_root, cx, cy[k], 70, 26, fieldNames[k]);
+                    _slotValue[i][k] = Label(_root, vx, vy[k], 220, 26, "");
+                }
+            }
 
             BuildCreatePanel();
         }
@@ -496,8 +497,10 @@ namespace Client.MirScenes
                     UpdateSlotAnimation(i, null, false);
                 }
 
-                // 静态立绘始终显示：动画只是叠在上层的效果，绝不因动画就绪而把角色藏掉。
-                _slotModel[i].Visible = has;
+                // 动画就绪后隐藏静态立绘（动画层在它上方播放）；未加载完/加载失败则静态立绘继续占位。
+                bool animReady = _slotAnim[i].Animated && _slotAnim[i].AtlasSheet != null
+                    && _slotAnim[i].AtlasAnimationFrames != null && _slotAnim[i].AtlasAnimationFrames.Count > 0;
+                _slotModel[i].Visible = has && !animReady;
 
                 // 未选中的槽变暗（页游 img_roleg* 的 getgray()）。
                 // 只用 ForeColour 压暗，不动全局灰度状态/不透明度，避免影响整屏其它控件。
@@ -559,11 +562,8 @@ namespace Client.MirScenes
 
             if (_slotAnimKey[slot] == key)
             {
-                // 已加载过：SetInfo 重入（切槽/创建/删除）时恢复播放即可。
-                bool ready = anim.AtlasSheet != null
-                    && anim.AtlasAnimationFrames != null && anim.AtlasAnimationFrames.Count > 0;
-                anim.Animated = ready;
-                anim.Visible = ready;
+                // 已加载过：SetInfo 重入（切槽/创建/删除）时按选中态决定播放/停帧。
+                SetAnimPlayState(slot);
                 return;
             }
 
@@ -571,6 +571,26 @@ namespace Client.MirScenes
             anim.Animated = false;
             anim.Visible = false;
             _ = LoadSlotAnimationAsync(slot, key);
+        }
+
+        // 选中槽播放待机动画；未选中槽停在 MovieClip 第一帧（不播放）。
+        private void SetAnimPlayState(int slot)
+        {
+            MirAtlasAnimatedControl anim = _slotAnim[slot];
+            bool ready = anim.AtlasSheet != null
+                && anim.AtlasAnimationFrames != null && anim.AtlasAnimationFrames.Count > 0;
+            if (!ready) return;
+            if (slot == _selected)
+            {
+                anim.Animated = true;
+            }
+            else
+            {
+                anim.Animated = false;
+                anim.AtlasFrame = anim.AtlasAnimationFrames[0];   // 停在第一帧
+            }
+            anim.Visible = true;
+            _slotModel[slot].Visible = false;   // 动画层接管该槽显示
         }
 
         private async Task LoadSlotAnimationAsync(int slot, string key)
@@ -600,9 +620,10 @@ namespace Client.MirScenes
                     : (sheet.Frames != null ? new List<string>(sheet.Frames.Keys) : null);
                 if (order == null || order.Count == 0) return;
                 anim.AtlasAnimationFrames = order;
-                anim.Animated = true;
-                anim.Visible = true;
-                // 静态立绘保留在下面，动画只是叠加效果，绝不隐藏。
+                // 按首帧真实尺寸显示，避免拉伸变形（静态层也用 FitAtlasSizeDynamic 自适应）。
+                if (sheet.Frames != null && sheet.Frames.TryGetValue(order[0], out var firstFrame))
+                    anim.Size = Sz(firstFrame.SourceRectangle.Width, firstFrame.SourceRectangle.Height);
+                SetAnimPlayState(slot);   // 选中播放 / 未选中停第一帧，动画层接管显示
             }
             catch (Exception ex)
             {
