@@ -35,6 +35,32 @@ namespace Client.MirScenes.Dialogs
             Movable = true;
             Sort = true;            
 
+            // 《原始传奇》皮肤：通用窗口底图九宫格铺满。父面板仍用 .Lib 图决定 Size/坐标，
+            // 这里只加一层绘制在其它子控件之下的底图，布局一点不动。
+            // 子控件在父 DrawControl 之后绘制，故盖住老底图；CDN 图集未就绪时 AtlasSheet 为空，
+            // 本控件什么都不画，自动露出原 .Lib 背景作为回退。
+            var originBackground = new MirImageControl
+            {
+                Parent = this,
+                AtlasNameKey = "y_common-sheet#com_bg3",
+                AutoSize = false,
+                DrawMode = MirImageDrawMode.NineGrid,
+                BorderLeft = 10, BorderTop = 8, BorderRight = 10, BorderBottom = 8,
+                NotControl = true,
+            };
+            originBackground.BeforeDraw += (o, e) => originBackground.Size = Size;
+
+            // 标题栏分隔线（《原始传奇》通用图集），纯装饰。
+            new MirImageControl
+            {
+                Parent = this,
+                AtlasNameKey = "y_common-sheet#com_line_h",
+                AutoSize = false,
+                Size = new Size(248, 2),
+                Location = new Point(8, 64),
+                NotControl = true,
+            };
+
             BeforeDraw += (o, e) => RefreshInterface();
 
             CharacterPage = new MirImageControl
@@ -196,6 +222,11 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 362,
                 Sound = SoundList.ButtonA,
+                // 换用《原始传奇》关闭按钮；图集未就绪时上面的 .Lib 帧仍是回退。
+                AtlasNameKey = "y_common-sheet#com_btn_close0",
+                HoverAtlasFrame = "com_btn_close1",
+                AutoSize = false,
+                Size = new Size(20, 20),
             };
             CloseButton.Click += (o, e) => Hide();
 

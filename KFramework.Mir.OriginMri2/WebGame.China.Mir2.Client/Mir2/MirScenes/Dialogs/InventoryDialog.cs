@@ -31,6 +31,47 @@ namespace Client.MirScenes.Dialogs
             Sort = true;
             Visible = false;
 
+            // 《原始传奇》皮肤：窗口底图九宫格铺满 + 一层 8×5 格子底。
+            // Grid 两页与 QuestGrid 共用同一套坐标（y % 5 折叠），所以只需一层 40 个底框，
+            // 翻页时不需跟着 MirItemCell 的 Visible 切换。图集未就绪则自动露出老 .Lib 背景。
+            var originBackground = new MirImageControl
+            {
+                Parent = this,
+                AtlasNameKey = "y_common-sheet#com_bg3",
+                AutoSize = false,
+                DrawMode = MirImageDrawMode.NineGrid,
+                BorderLeft = 10, BorderTop = 8, BorderRight = 10, BorderBottom = 8,
+                NotControl = true,
+            };
+            originBackground.BeforeDraw += (o, e) => originBackground.Size = Size;
+
+            for (int y = 0; y < 5; y++)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    new MirImageControl
+                    {
+                        Parent = this,
+                        AtlasNameKey = "y_common-sheet#bag_bg0",
+                        AutoSize = false,
+                        Size = new Size(36, 32),
+                        Location = new Point(x * 36 + 9 + x, y * 32 + 37 + y),
+                        NotControl = true,
+                    };
+                }
+            }
+
+            // 金币图标（《原始传奇》背包图集），放在 GoldLabel 左侧。
+            new MirImageControl
+            {
+                Parent = this,
+                AtlasNameKey = "y_bag-sheet#bag_coin0",
+                AutoSize = false,
+                Size = new Size(18, 18),
+                Location = new Point(20, 210),
+                NotControl = true,
+            };
+
             WeightBar = new MirImageControl
             {
                 Index = 24,
@@ -108,6 +149,11 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 PressedIndex = 362,
                 Sound = SoundList.ButtonA,
+                // 《原始传奇》关闭按钮；图集未就绪时上面的 .Lib 帧仍是回退。
+                AtlasNameKey = "y_common-sheet#com_btn_close0",
+                HoverAtlasFrame = "com_btn_close1",
+                AutoSize = false,
+                Size = new Size(20, 20),
             };
             CloseButton.Click += (o, e) => Hide();
 
@@ -120,6 +166,10 @@ namespace Client.MirScenes.Dialogs
                 Library = Libraries.Prguse2,
                 Parent = this,
                 Sound = SoundList.ButtonA,
+                // 原始传奇背包的「回收」按钮，对应本工程的删除物品开关。
+                AtlasNameKey = "y_bag-sheet#bag_recy1",
+                AutoSize = false,
+                Size = new Size(18, 18),
             };
             DelItemButton.Click += DelItemButton_Click;
 
