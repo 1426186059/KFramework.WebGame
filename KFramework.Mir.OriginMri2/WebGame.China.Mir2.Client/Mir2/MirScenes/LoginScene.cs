@@ -37,18 +37,17 @@ namespace Client.MirScenes
             SoundManager.PlayMusic(SoundList.IntroMusic, true);
             Disposing += (o, e) => SoundManager.StopMusic();
 
-            // 登陆场景没有世界地图，场景 RT 底色用黑而非基类洋红（洋红在此会显粉红，露出未盖满的背景）。
-            BackColour = Color.Black;
+            // 默认背景：无 Lib 依赖的深蓝底（“默认图片”背景），不再用黑屏。
+            BackColour = Color.FromArgb(16, 20, 34);
 
             _background = new MirAnimatedControl
                 {
                     Animated = false,
-                    AnimationCount = 19,
-                    AnimationDelay = 100,
-                    Index = 0,
-                    Library = Libraries.ChrSel,
-                    Loop = false,
                     Parent = this,
+                    Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight),
+                    BackColour = Color.FromArgb(26, 32, 54),
+                    Border = true,
+                    BorderColour = Color.FromArgb(70, 84, 130),
                 };
 
             _background.Anchor = EAnchorType.MiddleCenter;
@@ -104,8 +103,6 @@ namespace Client.MirScenes
 
             TestLabel = new MirImageControl
             {
-                Index = 79,
-                Library = Libraries.Prguse,
                 Parent = this,
                 Location = new Point(Settings.ScreenWidth - 116, 10),
                 Visible = Settings.UseTestConfig
@@ -367,13 +364,9 @@ namespace Client.MirScenes
             _login.Dispose();
             if(_ViewKey != null && !_ViewKey.IsDisposed) _ViewKey.Dispose();
             SoundManager.PlaySound(SoundList.LoginEffect);
-            _background.Animated = true;
-            _background.AfterAnimation += (o, e) =>
-            {
-                Dispose();
-                //KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(ActiveScene == null ? "null" : ActiveScene.GetType().Name)} → SelectScene  时刻={DateTime.Now:HH:mm:ss.fff}");
-                ActiveScene = new SelectScene(p.Characters);
-            };
+            _pendingLogin = p;
+            // 原过场动画依赖已删除的 ChrSel 库，不再可用；改为短延时后由 Process() 兜底切换到选人界面。
+            _switchToSelectAt = CMain.Time + 400;
         }
 
         // 切到选人界面：销毁登录场景并创建 SelectScene。重入安全（动画回调与到点兜底只会生效一次）。
@@ -391,95 +384,99 @@ namespace Client.MirScenes
 
         public sealed class LoginDialog : MirImageControl
         {
-            public MirImageControl TitleLabel, AccountIDLabel, PassLabel;
+            public MirLabel TitleLabel, AccountIDLabel, PassLabel;
             public MirButton AccountButton, CloseButton, OKButton, PassButton, ViewKeyButton;
             public MirTextBox AccountIDTextBox, PasswordTextBox;
             private bool _accountIDValid, _passwordValid;
 
             public LoginDialog()
             {
-                Index = 1084;
-                Library = Libraries.Prguse;
+                // 无 Lib 依赖：纯色面板 + 文字标签 + 带文字的按钮（“默认图片”默认样式）。
+                AutoSize = false;
+                Size = new Size(320, 215);
+                BackColour = Color.FromArgb(210, 24, 24, 24);
+                Border = true;
+                BorderColour = Color.Gray;
                 PixelDetect = false;
-                //Size = new Size(328, 220);
-                AutoSize = true;
 
-                TitleLabel = new MirImageControl
+                TitleLabel = new MirLabel
                     {
-                        Index = 30,
-                        Library = Libraries.Title,
+                        Text = "登录",
+                        AutoSize = true,
+                        ForeColour = Color.Gold,
                         Parent = this,
                     };
-                TitleLabel.Location = new Point((Size.Width - TitleLabel.Size.Width)/2, 12);
+                TitleLabel.Location = new Point((Size.Width - TitleLabel.Size.Width) / 2, 12);
 
-                AccountIDLabel = new MirImageControl
+                AccountIDLabel = new MirLabel
                     {
-                        Index = 31,
-                        Library = Libraries.Title,
+                        Text = "账号",
+                        AutoSize = true,
+                        ForeColour = Color.White,
                         Parent = this,
-                        Location = new Point(52, 83),
+                        Location = new Point(40, 82),
                     };
 
-                PassLabel = new MirImageControl
+                PassLabel = new MirLabel
                     {
-                        Index = 32,
-                        Library = Libraries.Title,
+                        Text = "密码",
+                        AutoSize = true,
+                        ForeColour = Color.White,
                         Parent = this,
-                        Location = new Point(43, 105)
+                        Location = new Point(40, 108),
                     };
 
                 OKButton = new MirButton
                     {
-                        Enabled = false,
-                        Size = new Size(42,42),
-                        HoverIndex = 321,
-                        Index = 320,
-                        Library = Libraries.Title,
-                        Location = new Point(227, 81),
+                        Text = "登录",
+                        Size = new Size(80, 30),
+                        Location = new Point(210, 80),
                         Parent = this,
-                        PressedIndex = 322
+                        BackColour = Color.FromArgb(60, 90, 150),
+                        Border = true,
+                        BorderColour = Color.LightBlue,
                     };
                 OKButton.Click += (o, e) => Login();
 
                 AccountButton = new MirButton
                     {
-                        HoverIndex = 324,
-                        Index = 323,
-                        Library = Libraries.Title,
-                        Location = new Point(60, 163),
+                        Text = "注册",
+                        Size = new Size(90, 28),
+                        Location = new Point(40, 160),
                         Parent = this,
-                        PressedIndex = 325,
+                        BackColour = Color.FromArgb(60, 90, 150),
+                        Border = true,
                     };
 
                 PassButton = new MirButton
                     {
-                        HoverIndex = 327,
-                        Index = 326,
-                        Library = Libraries.Title,
-                        Location = new Point(166, 163),
+                        Text = "改密",
+                        Size = new Size(90, 28),
+                        Location = new Point(150, 160),
                         Parent = this,
-                        PressedIndex = 328,
+                        BackColour = Color.FromArgb(60, 90, 150),
+                        Border = true,
                     };
 
                 ViewKeyButton = new MirButton
                 {
-                    HoverIndex = 333,
-                    Index = 332,
-                    Library = Libraries.Title,
-                    Location = new Point(60, 189),
+                    Text = "密保",
+                    Size = new Size(90, 28),
+                    Location = new Point(40, 192),
                     Parent = this,
-                    PressedIndex = 334,
+                    BackColour = Color.FromArgb(60, 90, 150),
+                    Border = true,
                 };
 
                 CloseButton = new MirButton
-                    {
-                        HoverIndex = 330,
-                        Index = 329,
-                        Library = Libraries.Title,
-                        Location = new Point(166, 189),
-                        Parent = this,
-                        PressedIndex = 331,
-                    };
+                {
+                    Text = "关闭",
+                    Size = new Size(90, 28),
+                    Location = new Point(150, 192),
+                    Parent = this,
+                    BackColour = Color.FromArgb(90, 50, 50),
+                    Border = true,
+                };
                 CloseButton.Click += (o, e) => CMain.Instance.Close();
 
                 PasswordTextBox = new MirTextBox
@@ -594,7 +591,9 @@ namespace Client.MirScenes
             }
             private void RefreshLoginButton()
             {
-                OKButton.Enabled = _accountIDValid && _passwordValid;
+                // 无 Lib 依赖的默认登录界面：始终允许点击登录，凭据合法性交由服务端校验。
+                // 否则在本地正则不通过（或没有已保存凭据）时按钮会停在禁用态、点击“没反应”。
+                OKButton.Enabled = true;
             }
             
             private async void Login()

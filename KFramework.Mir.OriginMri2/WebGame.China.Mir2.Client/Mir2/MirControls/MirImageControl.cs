@@ -493,6 +493,13 @@ namespace Client.MirControls
 
             if (Library != null)
             {
+                // 资源缺失 / 尚未就绪：绘制默认占位图（灰色块），实现“无依赖 / 默认图片”兜底，避免界面空白。
+                // （Index<0 是 Mir2“该层无图”的正常标记，保持透明不画占位。）
+                if (Index >= 0 && Library.GetTrueSize(Index) == Size.Empty)
+                {
+                    DrawDefaultImage();
+                    return;
+                }
                 bool oldGray = DXManager.GrayScale;
 
                 if (GrayScale)
@@ -545,6 +552,21 @@ namespace Client.MirControls
 
                 if (GrayScale) DXManager.SetGrayscale(oldGray);
             }
+        }
+
+        // 默认占位图：无有效图资源时绘制一个灰色半透明矩形，作为“默认图片”兜底。
+        private void DrawDefaultImage()
+        {
+            var tex = KFramework.MonoGameExtend.KDefaultRes.DefaultTexture2D;
+            if (tex == null) return;
+            Size drawSize = Size;
+            if (drawSize.Width <= 0 || drawSize.Height <= 0) return;
+            int px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
+            int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
+            var srcRect = new KFramework.MonoGame.Rectangle(0, 0, tex.Width, tex.Height);
+            var dstRect = new KFramework.MonoGame.Rectangle(px, py, drawSize.Width, drawSize.Height);
+            Color drawColor = new Color(70, 70, 70, 160);
+            DXManager.Draw(tex, srcRect, dstRect, drawColor, (Blending ? MirBlend.Additive : MirBlend.Normal).ToBlendState(), FlipEffects);
         }
 
         // 按 FillAmount / FillOrigin 把整图源/目标矩形裁剪为可见部分（不拉伸图像，仅按比例显隐）。

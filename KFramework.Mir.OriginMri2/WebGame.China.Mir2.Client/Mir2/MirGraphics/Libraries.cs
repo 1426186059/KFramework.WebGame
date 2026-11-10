@@ -196,17 +196,10 @@ namespace Client.MirGraphics
             }
         }
 
-        /// <summary>首屏库（登录场景的背景 / UI 立即需要），优先并发加载、不等队列。</summary>
+        /// <summary>首屏库预加载：经典 .Lib 资源已从资源包移除（现仅保留音效 / 多国语言），
+        /// 不再在此预加载，改由绘制时按需加载（缺失则绘制占位并触发 LibraryLoaded 重绘）。</summary>
         static async Task LoadLibrariesAsync()
         {
-            await Task.WhenAll(
-                ChrSel.InitializeAsync(),
-                Prguse.InitializeAsync(),
-                Prguse2.InitializeAsync(),
-                Prguse3.InitializeAsync(),
-                UI_32bit.InitializeAsync(),
-                Title.InitializeAsync());
-
             Progress += 6;
         }
 
