@@ -13,7 +13,6 @@ namespace Client.MirControls
         // 切本地镜像时按 key 原路径取，不写死 CDN 哈希路径，两种取数来源才能统一切换。
         private const string PanelImageKey = "resource/assets/gameui4/jpg/y_alert_bg.png";
         private static readonly Size PanelSize = new Size(450, 179);
-        private static readonly Color BackdropColour = Color.FromArgb(160, 0, 0, 0);
 
         // AlertDialogSkin / Button23Skin（gameEui.json）：按钮 106x40，y=122。
         // JS showAlert()：单按钮 horizontalCenter=0；双按钮 agree +105 / cancel -105。
@@ -37,6 +36,7 @@ namespace Client.MirControls
         {
             Buttons = b;
             AllowKeyPress = allowKeys;
+            // 模态：显示期间所有鼠标事件被本消息框接管，背景界面点不动（详见 MirControl.Modal 注释）。
             Modal = true;
             Movable = false;
 
@@ -44,7 +44,7 @@ namespace Client.MirControls
             AutoSize = false;
             Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
             Location = new Point(0, 0);
-            BackColour = BackdropColour;
+            BackColour = CommonColor.ModalBackdrop;
             DrawControlTexture = true;
             Border = false;
             ForeColour = Color.White;

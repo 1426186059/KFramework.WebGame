@@ -357,6 +357,13 @@ namespace Client.MirControls
                 HintChanged.Invoke(this, e);
         }
 
+        // 模态标记：设 true 后，本控件显示期间「接管所有鼠标命中」，用来实现模态对话框。
+        // 实现只有 IsMouseOver() 一处：DisplayRectangle.Contains(p) || Moving || Modal，
+        // 也就是不管鼠标在屏幕哪个位置都算命中本控件。OnMouseMove 倒序遍历子控件时它优先命中，
+        // 经 Highlight() 成为 MouseControl，MirScene 的 Down / Up / Click 就只派发给它，
+        // 背景界面的按钮收不到鼠标事件；Dispose() / Hide() 后才恢复。
+        // 注意：Modal 不改变绘制层级、不自动加遮罩或置灰、也不拦截键盘输入 ——
+        // 遮罩要自己画（如 MirMessageBox 的全屏半透明黑底），键盘要自己处理。
         private bool _modal;
         public bool Modal
         {
