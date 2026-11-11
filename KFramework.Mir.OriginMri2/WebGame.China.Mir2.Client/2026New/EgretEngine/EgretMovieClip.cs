@@ -1,18 +1,24 @@
+using System;
+using System.Collections.Generic;
 using System.Text.Json.Nodes;
+using KFramework.MonoGame;
+
 using Rectangle = KFramework.MonoGame.Rectangle;
 
 // 白鹭(Egret) MovieClip 解析：与 egret.MovieClipDataFactory / egret.MovieClipData / egret.MovieClip 一一对应。
 //
 // 白鹭引擎里“普通图集”与“Movie 图集”的类关系：
 //   * 普通图集 = SpriteSheet（TextureAtlas）：只有 res/frames 子图矩形 + 整页贴图，无时间线。
-//     对应本工程 Mir2AtlasSheet.Frames（res 子图矩形）—— 即 Egret 的 SpriteSheet。
+//     对应本工程 EgretAtlas.Frames（res 子图矩形）—— 即 Egret 的 SpriteSheet。
 //   * Movie 图集 = 在普通图集 JSON 基础上额外带 "mc" 段：mc 是若干“时间线”，每条时间线是一组
 //     按顺序排列的帧；每帧引用一个 res 子图，并带相对注册点的偏移(x,y)与停留时长(duration)。
 //     MovieClipDataFactory 把 "mc" 时间线 + "res" 子图矩形绑定到整页贴图，产出 MovieClipData；
 //     MovieClip(display) 再消费 MovieClipData 播放。
 //
-// 本文件把上述解析独立出来（去掉原来散落在 Mir2AtlasSheet.Parse 与 SelectScene.ReadMovieMeta 的内联解析），
-// 让“白鹭 Movie”成为可复用的独立单元。
+// 所以本工程分成三类、职责互不混：
+//   EgretAtlas            普通图集（静态坐标映射）
+//   EgretMovieClipAtlas    MovieClip 图集（继承 EgretAtlas，多一份 mc 时序）
+//   EgretMovieClip         时序对象，【引入（持有）一个 EgretAtlas】，负责播放序列 + 统一注册点
 
 /// <summary>白鹭 MovieClip 的一帧（对应 egret.MovieClipDataFrame）。</summary>
 public sealed class EgretMovieClipDataFrame
@@ -37,7 +43,14 @@ public sealed class EgretMovieClipLabel
     public int Frame;
 }
 
-/// <summary>白鹭 MovieClip 的一条时间线（对应 egret.MovieClipData）。</summary>
+/// <summary>白鹭 MovieClip 的帧事件（对应 Egret MovieClipData.events，可选）。</summary>
+public sealed class EgretMovieClipEvent
+{
+    public string Name;
+    public int Frame;
+}
+
+/// <summary>白鹭 MovieClip 的一条时间线（对应 egret.MovieClipData）。只含时序，不含贴图。</summary>
 public sealed class EgretMovieClipData
 {
     public string Name;
@@ -54,7 +67,10 @@ public sealed class EgretMovieClipData
     /// <summary>命名标签（Egret labels，可选）。</summary>
     public List<EgretMovieClipLabel> Labels = new();
 
-    /// <summary>未展开的时间线 res 引用序列（每帧一个 res）。可直接作为 AtlasAnimationFrames。</summary>
+    /// <summary>帧事件（Egret events，可选）。</summary>
+    public List<EgretMovieClipEvent> Events = new();
+
+    /// <summary>未展开的时间线 res 引用序列（每帧一个 res）。</summary>
     public List<string> TimelineResIds
     {
         get
@@ -84,10 +100,95 @@ public sealed class EgretMovieClipData
 }
 
 /// <summary>
+/// 白鹭 MovieClip 播放对象：把【时间线 mc】与【图集 EgretAtlas】绑在一起。
+/// 必须持有图集才能工作：mc 每帧只有 x/y 偏移和 res 名，子图的真实 w/h 在图集里；
+/// 只有两者结合才能算出「所有帧共用的统一注册点」，保证脚底/人物不随帧跳动。
+/// </summary>
+public sealed class EgretMovieClip
+{
+    /// <summary>本 MovieClip 引入的图集（子图矩形 + 整页贴图）。</summary>
+    public EgretAtlas Atlas { get; }
+
+    public EgretMovieClipData Data { get; }
+
+    public string Name => Data.Name;
+
+    /// <summary>每帧间隔(ms)。</summary>
+    public long DelayMs => Data.DelayMs;
+
+    /// <summary>展开 duration 后的播放帧序列（res 名）。</summary>
+    public List<string> PlayOrder { get; private set; }
+
+    /// <summary>未展开的时间线 res 序列。缓存一份，避免每帧取帧名时重建列表。</summary>
+    public List<string> TimelineResIds { get; private set; }
+
+    /// <summary>
+    /// res 名 → 该帧在【统一注册点坐标系】里的完整绘制矩形 (x,y,w,h)，逻辑像素、未缩放。
+    /// 左下脚底与水平中心在所有帧里严格对齐；控件只需整体乘一次缩放即可绘制。
+    /// </summary>
+    public Dictionary<string, Rectangle> Layouts { get; private set; }
+        = new Dictionary<string, Rectangle>(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>所有帧的包围盒（已归一化到 0,0 起点），用于控件布局框。</summary>
+    public Rectangle Bounds { get; private set; }
+
+    public EgretMovieClip(EgretAtlas atlas, EgretMovieClipData data)
+    {
+        Atlas = atlas ?? throw new ArgumentNullException(nameof(atlas));
+        Data = data ?? throw new ArgumentNullException(nameof(data));
+        TimelineResIds = Data.TimelineResIds;
+        PlayOrder = Data.PlayOrder;
+    }
+
+    /// <summary>
+    /// 用图集子图的真实 w/h + 时间线每帧 x/y 重算统一注册点。
+    /// 白鹭原始语义：每帧子图画在 (frame.x, frame.y)，尺寸就是子图自己的 w/h。
+    /// 实测 carrer1_1 里 frame.y + h 恒为 348（脚底对齐），frame.x + w/2 只在 185~188 间
+    /// （原动画自带的轻微呼吸）。因此直接取所有帧的外接框左上角作为统一原点即可，
+    /// 不做拉伸、不做逐帧比例换算 —— 那样才会出现「忽左忽右 / 脚在动」。
+    /// </summary>
+    public void RebuildLayouts(EgretAtlas atlas)
+    {
+        Layouts.Clear();
+        if (Data.Frames.Count == 0) return;
+
+        var sizes = new Dictionary<string, (int w, int h)>(StringComparer.OrdinalIgnoreCase);
+        foreach (var f in Data.Frames)
+        {
+            if (string.IsNullOrEmpty(f.ResId)) continue;
+            if (atlas?.Frames != null && atlas.Frames.TryGetValue(f.ResId, out var sprite))
+                sizes[f.ResId] = (sprite.SourceRectangle.Width, sprite.SourceRectangle.Height);
+            else if (atlas is EgretMovieClipAtlas mca && mca.MovieFactory != null
+                     && mca.MovieFactory.ResRects.TryGetValue(f.ResId, out var r))
+                sizes[f.ResId] = (r.Width, r.Height);
+        }
+
+        // 第一轮：求所有帧的外接框，确定统一注册点原点。
+        int minX = int.MaxValue, minY = int.MaxValue, maxR = int.MinValue, maxB = int.MinValue;
+        foreach (var f in Data.Frames)
+        {
+            if (!sizes.TryGetValue(f.ResId, out var wh) || wh.w <= 0 || wh.h <= 0) continue;
+            minX = Math.Min(minX, f.X);
+            minY = Math.Min(minY, f.Y);
+            maxR = Math.Max(maxR, f.X + wh.w);
+            maxB = Math.Max(maxB, f.Y + wh.h);
+        }
+        if (minX == int.MaxValue) return;   // 图集还没绑定贴图，等 Build 后 OnBuilt 再算
+
+        // 第二轮：每帧归一化到统一原点，矩形用子图原始尺寸（不拉伸）。
+        foreach (var f in Data.Frames)
+        {
+            if (!sizes.TryGetValue(f.ResId, out var wh) || wh.w <= 0 || wh.h <= 0) continue;
+            Layouts[f.ResId] = new Rectangle(f.X - minX, f.Y - minY, wh.w, wh.h);
+        }
+        Bounds = new Rectangle(0, 0, maxR - minX, maxB - minY);
+    }
+}
+
+/// <summary>
 /// 白鹭 MovieClip 数据工厂（对应 egret.MovieClipDataFactory）。
-/// 输入一个图集 JSON 的 "res"(子图矩形) + "mc"(时间线) 两段，
+/// 输入一个图集 JSON 的 "res"(子图矩形) + "mc"(时间线/标签/事件) 两段，
 /// 产出每个时间线一个 EgretMovieClipData。普通图集（无 "mc"）工厂为空。
-/// 与 Egret 一致：res 子图矩形 = 普通图集的 SpriteSheet，mc 时间线 = MovieClipData，本工厂 = MovieClipDataFactory。
 /// </summary>
 public sealed class EgretMovieClipDataFactory
 {
@@ -145,9 +246,7 @@ public sealed class EgretMovieClipDataFactory
                         movie.FrameRate = fps;
 
                     if (m["labels"] is JsonArray labels)
-                    {
                         foreach (var la in labels)
-                        {
                             if (la is JsonObject lo)
                             {
                                 var lab = new EgretMovieClipLabel
@@ -157,13 +256,31 @@ public sealed class EgretMovieClipDataFactory
                                 };
                                 if (!string.IsNullOrEmpty(lab.Name)) movie.Labels.Add(lab);
                             }
-                        }
-                    }
+
+                    // 帧事件：labels 之外的 events（部分 Movie 用 events:[{name,frame}]）。
+                    if (m["events"] is JsonArray events)
+                        foreach (var ev in events)
+                            if (ev is JsonObject eo)
+                            {
+                                var e = new EgretMovieClipEvent
+                                {
+                                    Name = eo["name"]?.GetValue<string>(),
+                                    Frame = JInt(eo, "frame")
+                                };
+                                if (!string.IsNullOrEmpty(e.Name)) movie.Events.Add(e);
+                            }
+                    // 兼容 events 为 {"1":"eventName"} 的形式。
+                    else if (m["events"] is JsonObject eventDict)
+                        foreach (var eventPair in eventDict)
+                            if (int.TryParse(eventPair.Key, out var frame))
+                                movie.Events.Add(new EgretMovieClipEvent
+                                {
+                                    Name = eventPair.Value?.GetValue<string>(),
+                                    Frame = frame
+                                });
 
                     if (m["frames"] is JsonArray frames)
-                    {
                         foreach (var f in frames)
-                        {
                             if (f is JsonObject fo)
                             {
                                 var df = new EgretMovieClipDataFrame
@@ -176,8 +293,6 @@ public sealed class EgretMovieClipDataFactory
                                 if (df.Duration < 1) df.Duration = 1;
                                 if (!string.IsNullOrEmpty(df.ResId)) movie.Frames.Add(df);
                             }
-                        }
-                    }
                 }
                 factory._movies[kv.Key] = movie;
                 if (factory._firstName == null) factory._firstName = kv.Key;
@@ -186,6 +301,6 @@ public sealed class EgretMovieClipDataFactory
         return factory;
     }
 
-    private static int JInt(JsonObject o, string k, int fallback = 0) =>
-        o[k] is JsonValue v && v.TryGetValue<int>(out var i) ? i : fallback;
+    private static int JInt(JsonObject o, string k, int fallback = 0)
+        => o[k] is JsonValue v && v.TryGetValue<int>(out var i) ? i : fallback;
 }
