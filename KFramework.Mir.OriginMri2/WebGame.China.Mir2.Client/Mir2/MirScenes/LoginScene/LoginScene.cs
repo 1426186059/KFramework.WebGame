@@ -81,13 +81,6 @@ namespace Client.MirScenes
                     }
                 };
 
-            _login.ViewKeyButton.Click += (o, e) =>     //ADD
-            {
-                if (_ViewKey != null && !_ViewKey.IsDisposed) return;
-
-                _ViewKey = new InputKeyDialog(_login) { Parent = _background };
-            };
-
             Version = new MirLabel
             {
                 AutoSize = true,

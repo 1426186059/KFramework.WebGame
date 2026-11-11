@@ -66,22 +66,6 @@ namespace Client.MirScenes
                 PassButton = new LoginArtButton(LoginSceneLayout.BtnChangePwdUp, LoginSceneLayout.BtnChangePwdDown,
                     LoginSceneLayout.LoginChangePwdAt, LoginSceneLayout.LoginChangePwdSz, this);
 
-                // FGUI 没有密保软键盘入口，保留我们的功能，放在账号输入框右侧的空位。
-                ViewKeyButton = new MirButton
-                {
-                    Text = "密保",
-                    Size = LoginSceneLayout.LoginViewKeySz,
-                    Location = LoginSceneLayout.LoginViewKeyAt,
-                    Parent = this,
-                    BackColour = Color.FromArgb(120, 40, 40, 48),
-                    Border = true,
-                    BorderColour = Color.FromArgb(160, 190, 170, 120),
-                };
-
-                CloseButton = new LoginArtButton(LoginSceneLayout.BtnCloseUp, LoginSceneLayout.BtnCloseDown,
-                    LoginSceneLayout.LoginCloseAt, LoginSceneLayout.LoginCloseSz, this);
-                CloseButton.Click += (o, e) => CMain.Instance.Close();
-
                 // FGUI：DEditPasswd(156,199,211x26)、DEditAccount(156,142,211x32)。
                 PasswordTextBox = new MirTextBox
                 {
