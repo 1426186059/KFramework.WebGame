@@ -17,8 +17,8 @@ using System.Text.Json.Serialization;
 /// <summary>manifest 中单条记录：{ v: 文件哈希, s: 体积(字节) }。</summary>
 public sealed class ManifestEntryJson
 {
-    [JsonPropertyName("v")] public string Hash = "";   // 文件哈希（CDN 真实文件名前缀）
-    [JsonPropertyName("s")] public long Size;          // 体积（字节），用于拼 CDN 文件名 {hash}_{size}.{ext}
+    [JsonPropertyName("v")] public string Hash { get; set; } = "";   // 文件哈希（CDN 真实文件名前缀）
+    [JsonPropertyName("s")] public long Size { get; set; }          // 体积（字节），用于拼 CDN 文件名 {hash}_{size}.{ext}
 }
 
 /// <summary>原始传奇资源总索引 manifest 的强类型视图。</summary>
