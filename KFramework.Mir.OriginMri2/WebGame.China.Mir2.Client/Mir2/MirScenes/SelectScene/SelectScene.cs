@@ -90,9 +90,6 @@ namespace Client.MirScenes
 
         private void BuildUI()
         {
-            // 根容器绝不能设 NotControl：MirControl.OnMouseMove 是「父控件自身
-            // IsMouseOver 命中后才递归子控件」，根一旦 NotControl，整棵 UI 树都
-            // 收不到鼠标事件（表现为所有按钮点不动）。只给纯装饰控件设 NotControl。
             _root = new MirImageControl
             {
                 Parent = this,
@@ -101,10 +98,8 @@ namespace Client.MirScenes
                 Size = Sz(DesignW, DesignH),
             };
 
-            // _Image1 (0,-1) 1390x860 —— 注意不是铺满 960 的设计高度。
             _mainBg = Image(_root, "resource/assets/gameui4/jpg/bg_cjzy_02.jpg", 0, -1, DesignW, 860);
 
-            // _Image2 / _Image3：两个槽底板，EXML (377,206) / (724,206)。
             _slotBg[0] = Image(_root, "resource/assets/gameui4/jpg/bg_cjzy_03.png", 377, 206, 334, 392);
             _slotBg[1] = Image(_root, "resource/assets/gameui4/jpg/bg_cjzy_04.png", 724, 206, 346, 399);
 
@@ -126,10 +121,6 @@ namespace Client.MirScenes
                 AtlasImage(_root, "bg_cjzy_00", x, 744, 120, 20);
             }
 
-            // word_cjzy_04 / 05：两槽标题文字（图片字，这里用中文 Label 替代）。
-            Label(_root, 343, 653, 80, 24, "角色信息");
-            Label(_root, 918, 652, 80, 24, "角色信息");
-
             // img_role1 / img_role2：EXML (415,223) / (765,217)，立绘 source=img_carrer{career}_{sex}。
             for (int i = 0; i < 2; i++)
             {
@@ -139,15 +130,11 @@ namespace Client.MirScenes
                     AutoSize = false,
                     NotControl = true,
                     Location = R(i == 0 ? 415 : 765, i == 0 ? 223 : 217),
-                    // 图集就绪后 FitAtlasSizeDynamic 换成帧的真实尺寸（134x322 等），避免拉伸变形。
                     Size = Sz(150, 322),
                     Visible = false,
                 };
                 FitAtlasSizeDynamic(_slotModel[i]);
 
-                // 动画层与静态立绘完全重合叠在上层：静态立绘始终保留，
-                // 动画没播出来也不会把角色弄没。不在逐帧回调里改 Size ——
-                // 那会每帧 Redraw 重烘焙场景，回调抛异常还会打断 CMain 渲染循环导致整屏 UI 消失。
                 _slotAnim[i] = new MirAnimatedAtlasControl
                 {
                     Parent = _root,
@@ -195,10 +182,10 @@ namespace Client.MirScenes
             string[] fieldNames = { "名字", "等级", "职业" };
             for (int i = 0; i < 2; i++)
             {
-                int cx = i == 0 ? 344 : 919;
-                int vx = i == 0 ? 391 : 966;
-                int[] cy = i == 0 ? new[] { 693, 720, 747 } : new[] { 692, 719, 746 };
-                int[] vy = i == 0 ? new[] { 693, 720, 746 } : new[] { 692, 719, 745 };
+                int cx = i == 0 ? 330 : 905;
+                int vx = i == 0 ? 320 : 900;
+                int[] cy = i == 0 ? new[] { 685, 715, 740 } : new[] { 685, 715, 740 };
+                int[] vy = i == 0 ? new[] { 685, 715, 740 } : new[] { 685, 715, 740 };
                 _slotCaption[i] = new MirLabel[3];
                 _slotValue[i] = new MirLabel[3];
                 for (int k = 0; k < 3; k++)
