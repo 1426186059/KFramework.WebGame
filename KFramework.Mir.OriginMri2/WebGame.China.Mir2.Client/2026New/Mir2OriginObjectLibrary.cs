@@ -232,14 +232,10 @@ public static class Mir2OriginObjectLibrary
                 var bytes = await Mir2OriginResource.GetBytesAsync(VersionManifest + suffix, ct);
                 if (bytes == null || bytes.Length == 0) continue;
 
-                var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                using (var doc = JsonDocument.Parse(bytes))
-                {
-                    foreach (var p in doc.RootElement.EnumerateObject())
-                        if (p.Value.ValueKind == JsonValueKind.String)
-                            dict[p.Name] = p.Value.GetString() ?? "";
-                }
-                if (dict.Count == 0) continue;
+                // 用 OriginMir2.ResourceVersionJson DTO 反序列化（替代原先 JsonDocument 手解析）。
+                var table = ResourceVersionJson.Parse(bytes);
+                var dict = table?.Entries;
+                if (dict == null || dict.Count == 0) continue;
 
                 _versions = dict;
                 _versionsReady = true;
