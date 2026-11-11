@@ -1,13 +1,16 @@
 // 本地资源服务器（Node，仅开发用）：把客户端资源目录通过 HTTP 暴露给浏览器页面。
 // 目的：资源动辄 8GB+，不复制进 wwwroot（省磁盘），让浏览器直接从源目录按需拉取。
 //
-// 用法：
+// 用法（一般由同目录 start-assets.bat 调用，root 指向仓库根的 Mir2Res/）：
 //   node asset-server.js --port 5080 --root "<Mir2 资源根目录>"
-//   node asset-server.js --port 5081 --root "D:\OpenSource\Zircon\Debug\Client"
 //
 // 路径映射（root = Mir2Res）：
-//   /MyRes/...         -> /hot_update_res/...   兼容旧客户端把资源挂 MyRes 前缀的写法
-//   其余路径（/Map/...、/hot_update_res/...、未来 /UI/...）原样相对 root 解析
+//   /Localization/...  -> Localization/   语言包（Chinese.json）
+//   /Sound/...         -> Sound/         音效 wav + SoundList.lst
+//   /resource/...      -> resource/      图集 png / json / fnt 与 default.res.json
+//   /assets/...        -> assets/        地图瓦片 jpg
+//   /MyRes/...         -> /hot_update_res/...  兼容旧客户端把资源挂 MyRes 前缀的写法
+//   其余路径原样相对 root 解析
 // 特性：CORS（跨域必需）、Range（为按需分段加载预留）、防目录穿越。
 
 const http = require('http');
@@ -48,6 +51,8 @@ const MIME = {
   '.bmp': 'image/bmp',
   '.ini': 'text/plain',
   '.txt': 'text/plain; charset=utf-8',
+  '.lst': 'text/plain; charset=utf-8',
+  '.fnt': 'text/plain; charset=utf-8',
   '.json': 'application/json',
 };
 

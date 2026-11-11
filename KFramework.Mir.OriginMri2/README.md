@@ -83,9 +83,9 @@
    npm install
    ```
 
-2. **本地资源服务**：`Tools/资源服务器/start-assets.bat` 启动两个静态 HTTP 服务
-   （`:5080` = 客户端贴图库根目录，`:5081` = Mir2Res http 根，提供地图 Lib / 热更包）。
-   地址统一写在 `WebGame.Mir2.MonoGame.Client/2026New/RemoteWebSetting.cs`
+2. **本地资源服务**：`Tools/资源服务器/start-assets.bat` 启动一个静态 HTTP 服务
+   （`:5080`，根目录 = 仓库根 `Mir2Res/`，提供语言包 / 音效 / 图集 / 地图瓦片）。
+   地址统一写在 `WebGame.China.Mir2.Client/2026New/RemoteWebSetting.cs`
    （Web 端没有“本地”概念，部署时只改这一个文件）。
 
 3. **游戏网关**：`RemoteWebSetting.GameServerUrl`（默认 `ws://127.0.0.1:8000`）。
@@ -123,12 +123,13 @@ dotnet build WebGame.Mir2.MonoGame.Client/WebGame.China.Mir2.Client.csproj
 | `Tools/Mir2Tool/LibraryExtract/` | 素材库批量提取 |
 | `Tools/Mir2Tool/MapExtract/`、`MapExtract2/`、`MapExtractVerify/` | 地图 `.map` 提取与校验 |
 | `Tools/Mir2Tool/TextureToWebP/` | 贴图转 WebP（减小 Web 传输体积） |
-| `Tools/资源服务器/` | 本地静态资源 HTTP 服务（`:5080` / `:5081`） |
+| `Tools/资源服务器/` | 本地静态资源 HTTP 服务（`:5080`，根 = `Mir2Res/`） |
+| `Mir2Res/` | 本地资源镜像：`Localization/`、`Sound/`、`resource/`、`assets/` |
 | `Tools/compare-wwwroot-size.mjs` | 发布产物体积对比 |
 
-> 注：部分历史工具脚本 / 配置（如 `Tools/资源服务器/start-assets.bat`、`Tools/Mir2Tool/*.config.json`）
-> 里的**素材源目录**仍指向旧的 Crystal Build 目录——那只是资源提取来源，不是行为标准；
-> 随资源全面切到《原始传奇》CDN 后会一并替换。
+> 注：部分历史工具配置（如 `Tools/Mir2Tool/*.config.json`）里的**素材源目录**仍指向旧的
+> Crystal Build 目录——那只是资源提取来源，不是运行时行为标准。
+> `Tools/资源服务器/start-assets.bat` 已改为相对路径指向仓库根 `Mir2Res/`。
 
 ---
 

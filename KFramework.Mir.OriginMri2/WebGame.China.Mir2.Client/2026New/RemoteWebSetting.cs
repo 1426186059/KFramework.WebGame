@@ -8,9 +8,9 @@
 
 public static class RemoteWebSetting
 {
-    // 默认资源 lib 服务器（原 CMain.Init 写死的 :5080，根=本地 Mir2 资源目录，松加载原始 .Lib）
-    // 注：原 :5081(Mir2Res) 本地资源服务器已移除，地图图片 Lib 统一走本地址（或 CDN），
-    //     不再有「远程直链按地图名拉 Lib」的分支（见 MLibrary / NewResConfig）。
+    // 默认资源服务器（原 CMain.Init 写死的 :5080）。根 = 仓库根 Mir2Res/，
+    // 由 Tools/资源服务器/start-assets.bat 以 HTTP 暴露；提供语言包、音效、图集等本地资源。
+    // 注：不再有 :5081(Mir2Res) 与「远程直链按地图名拉 Lib」的分支（见 MLibrary / NewResConfig）。
     public const string LibBaseUrl = "http://127.0.0.1:5080/";
 
     // 游戏 WS 网关（原 Settings.IPAddress:Port）。Web 下连接地址由部署决定，不从本地 ini 取。
