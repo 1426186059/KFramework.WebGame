@@ -68,7 +68,7 @@ namespace Client.MirControls
 
         /// <summary>
         /// 装配一个白鹭 MovieClip：帧序 / 帧率 / 统一注册点布局 / 缩放 / 布局包围盒
-        /// 全部由 EgretMovieClip + EgretMovieClipAtlas 提供，控件只负责按当前帧取矩形来画。
+        /// 全部由 Mir2AtlasSheet 组合的 EgretMovieClip 提供，控件只负责按当前帧取矩形来画。
         /// scale = 界面缩放系数（如 SelectScene.ScaleF）。
         /// 返回 false 表示图集为空或没有可播放帧；同一 MovieClip 重复调用不重装配，不打断播放。
         /// </summary>

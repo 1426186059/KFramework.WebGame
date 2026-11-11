@@ -93,7 +93,8 @@ public sealed class EgretMovieClipJson
         catch (JsonException) { return null; }
     }
 
-    public static bool IsMovieClip(string json) => TryDeserialize(json) != null;
+    /// <summary>类型判定统一交给 EgretJsonDetector（只探测根字段，不做完整反序列化）。</summary>
+    public static bool IsMovieClip(string json) => EgretJsonDetector.IsMovieClip(json);
 
     public string Serialize() =>
         KFramework.MonoGame.JsonTool.ToJson(this, AppJsonContext.Default.EgretMovieClipJson);
