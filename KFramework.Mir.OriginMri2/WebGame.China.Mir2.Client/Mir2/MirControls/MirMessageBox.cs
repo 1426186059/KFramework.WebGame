@@ -15,7 +15,15 @@ namespace Client.MirControls
         private static readonly Size PanelSize = new Size(450, 179);
         private static readonly Color BackdropColour = Color.FromArgb(160, 0, 0, 0);
 
-        private const int ButtonWidth = 88, ButtonHeight = 34, ButtonGap = 22;
+        // AlertDialogSkin / Button23Skin（gameEui.json）：按钮 106x40，y=122。
+        // JS showAlert()：单按钮 horizontalCenter=0；双按钮 agree +105 / cancel -105。
+        private const int ButtonWidth = 106, ButtonHeight = 40, ButtonY = 122;
+        private const int TwinOffset = 105, TripleOffset = 140;
+
+        // 按钮贴图在 y_common-sheet：up=com_z_btn_1，down/hover=com_z_btn_1_1（均 106x40）。
+        private const string ButtonAtlas = "y_common-sheet";
+        private const string ButtonUpFrame = "com_z_btn_1";
+        private const string ButtonDownFrame = "com_z_btn_1_1";
 
         public MirLabel Label;
         public MirButton OKButton, CancelButton, NoButton, YesButton;
@@ -66,8 +74,8 @@ namespace Client.MirControls
                 DrawFormat = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
             };
 
-            // 按钮统一居中排在面板底部。原 Libraries.Title 图集在浏览器端不可用（会画成灰块），
-            // 这里改成带中文文字的描边按钮，后续要换 FGUI 贴图只改 MakeButton 一处。
+            // 按钮按 AlertDialogSkin（gameEui.json）还原：Button23Skin + y_common-sheet 的两态贴图，
+            // 文字叠在图上；位置与数量由 JS showAlert() 的规则决定。
             string[] captions;
             switch (Buttons)
             {
@@ -79,12 +87,16 @@ namespace Client.MirControls
                 default: captions = new[] { "确定" }; break;
             }
 
-            int totalW = captions.Length * ButtonWidth + (captions.Length - 1) * ButtonGap;
-            int x0 = (PanelSize.Width - totalW) / 2;
-            int y = PanelSize.Height - ButtonHeight - 20;
+            // 1 个居中；2 个左右 ±105（确定/是在右，取消/否在左，与 JS 一致）；3 个等距铺开。
+            int[] offsets;
+            if (captions.Length == 1) offsets = new[] { 0 };
+            else if (captions.Length == 2) offsets = new[] { TwinOffset, -TwinOffset };
+            else offsets = new[] { TripleOffset, 0, -TripleOffset };
+
+            int centerX = PanelSize.Width / 2;
             MirButton[] made = new MirButton[captions.Length];
             for (int i = 0; i < captions.Length; i++)
-                made[i] = MakeButton(captions[i], x0 + i * (ButtonWidth + ButtonGap), y);
+                made[i] = MakeButton(captions[i], centerX + offsets[i] - ButtonWidth / 2, ButtonY);
 
             switch (Buttons)
             {
@@ -106,15 +118,19 @@ namespace Client.MirControls
 
         private MirButton MakeButton(string caption, int x, int y)
         {
+            // Button23Skin：icon 用 com_z_btn_1，down 态切 com_z_btn_1_1；图片不含文字，
+            // 文字由 MirButton 内建 label 居中叠加（对应 EXML 的 labelDisplay）。
             MirButton btn = new MirButton
             {
                 Parent = _panel,
                 AutoSize = false,
                 Size = new Size(ButtonWidth, ButtonHeight),
                 Location = new Point(x, y),
-                BackColour = Color.FromArgb(210, 42, 34, 28),
-                Border = true,
-                BorderColour = Color.FromArgb(210, 176, 142, 86),
+                AtlasNameKey = ButtonAtlas + "#" + ButtonUpFrame,
+                HoverAtlasFrame = ButtonDownFrame,
+                PressedAtlasFrame = ButtonDownFrame,
+                BackColour = Color.FromArgb(0, 0, 0, 0),
+                Border = false,
                 Text = caption,
             };
             btn.CenterText = true;
