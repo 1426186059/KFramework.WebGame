@@ -1,7 +1,6 @@
 ﻿using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirScenes;
-using WebGame.China.Mir2.Client.Mir2.MirScenes.GameScene;
 using WebGame.Mir2.MonoGame.Client;
 using S = ServerPackets;
 

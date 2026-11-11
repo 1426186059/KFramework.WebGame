@@ -7,7 +7,6 @@ using SlimDX;
 using MirEngine;
 using C = ClientPackets;
 using WebGame.Mir2.MonoGame.Client;
-using WebGame.China.Mir2.Client.Mir2.MirScenes.GameScene;
 
 namespace Client.MirScenes.Dialogs
 {

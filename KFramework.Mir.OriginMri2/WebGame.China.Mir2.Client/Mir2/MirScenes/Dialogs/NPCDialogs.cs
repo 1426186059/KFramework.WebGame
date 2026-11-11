@@ -11,7 +11,6 @@ using C = ClientPackets;
 using S = ServerPackets;
 using System.Diagnostics;
 using WebGame.Mir2.MonoGame.Client;
-using WebGame.China.Mir2.Client.Mir2.MirScenes.GameScene;
 
 namespace Client.MirScenes.Dialogs
 {

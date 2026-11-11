@@ -4,7 +4,6 @@ using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirSounds;
 using MirEngine;
-using WebGame.China.Mir2.Client.Mir2.MirScenes.GameScene;
 using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
 

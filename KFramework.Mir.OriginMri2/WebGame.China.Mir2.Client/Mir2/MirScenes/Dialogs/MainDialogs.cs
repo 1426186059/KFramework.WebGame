@@ -5,7 +5,6 @@ using Client.MirObjects;
 using Client.MirSounds;
 using SlimDX;
 using System.Text.RegularExpressions;
-using WebGame.China.Mir2.Client.Mir2.MirScenes.GameScene;
 using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
 

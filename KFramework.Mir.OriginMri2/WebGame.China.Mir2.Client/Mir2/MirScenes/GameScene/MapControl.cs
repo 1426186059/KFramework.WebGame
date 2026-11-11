@@ -3,6 +3,7 @@ using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
+using Client.MirScenes;
 using Client.MirScenes.Dialogs;
 using Client.MirSounds;
 
