@@ -1,6 +1,7 @@
 ﻿using Client.MirGraphics;
 using Client.MirScenes;
 using Client.MirSounds;
+using WebGame.China.Mir2.Client.Mir2.MirScenes.GameScene;
 using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirObjects

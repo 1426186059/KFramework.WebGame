@@ -1,4 +1,4 @@
-﻿using Client.MirScenes;
+﻿using WebGame.China.Mir2.Client.Mir2.MirScenes.GameScene;
 
 namespace Client.MirObjects
 {

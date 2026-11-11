@@ -2,6 +2,7 @@
 using Client.MirScenes;
 using S = ServerPackets;
 using System.Text.RegularExpressions;
+using WebGame.China.Mir2.Client.Mir2.MirScenes.GameScene;
 
 namespace Client.MirObjects
 {

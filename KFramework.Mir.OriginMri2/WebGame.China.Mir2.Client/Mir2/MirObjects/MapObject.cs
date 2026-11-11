@@ -5,6 +5,7 @@ using Client.MirSounds;
 using Client.MirScenes.Dialogs;
 using SlimDX;
 using WebGame.Mir2.MonoGame.Client;
+using WebGame.China.Mir2.Client.Mir2.MirScenes.GameScene;
 
 namespace Client.MirObjects
 {

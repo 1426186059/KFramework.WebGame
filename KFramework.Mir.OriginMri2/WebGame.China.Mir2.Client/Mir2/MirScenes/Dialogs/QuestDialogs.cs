@@ -6,6 +6,7 @@ using Client.MirSounds;
 using KFramework.MonoGameExtend;
 using MirEngine;
 using System.Text.RegularExpressions;
+using WebGame.China.Mir2.Client.Mir2.MirScenes.GameScene;
 using C = ClientPackets;
 
 namespace Client.MirScenes.Dialogs
