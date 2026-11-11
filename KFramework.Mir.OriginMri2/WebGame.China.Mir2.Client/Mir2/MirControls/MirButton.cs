@@ -169,6 +169,37 @@ namespace Client.MirControls
                 DisabledIndexChanged.Invoke(this, EventArgs.Empty);
         }
 
+        // —— 禁用态统一表现 ——
+        // 不可点击由 MirControl.OnMouseClick 的 !Enabled 拦截，这里只管视觉置灰：
+        // GrayScale 由 MirImageControl.DrawControl 应用（AtlasFrame / Library 通道）。
+        // 已有专门禁用帧（DisabledIndex / DisabledAtlasFrame）或不想置灰的按钮，把开关设为 false。
+        public bool AutoGrayWhenDisabled { get; set; } = true;
+        public Color DisabledLabelColour { get; set; } = Color.Gray;
+        private Color? _enabledLabelColour;
+
+        protected override void OnEnabledChanged()
+        {
+            base.OnEnabledChanged();
+
+            if (AutoGrayWhenDisabled)
+                GrayScale = !Enabled;
+
+            // 内建文字层是独立子控件，父级的 GrayScale 不会作用到它；
+            // 记住并还原启用态颜色，避免覆盖使用方通过 FontColour 设过的自定义色。
+            if (_label == null || _label.IsDisposed) return;
+            if (!Enabled)
+            {
+                if (_enabledLabelColour == null)
+                    _enabledLabelColour = _label.ForeColour;
+                _label.ForeColour = DisabledLabelColour;
+            }
+            else if (_enabledLabelColour != null)
+            {
+                _label.ForeColour = _enabledLabelColour.Value;
+                _enabledLabelColour = null;
+            }
+        }
+
         protected override void OnSizeChanged()
         {
             base.OnSizeChanged();

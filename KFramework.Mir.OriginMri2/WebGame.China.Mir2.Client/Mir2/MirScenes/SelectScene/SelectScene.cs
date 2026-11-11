@@ -287,9 +287,17 @@ namespace Client.MirScenes
                 Sound = SoundList.ButtonA,
             };
             FitAtlasSize(b, normal);
+
+            // 按钮本体的置灰已由 MirButton.OnEnabledChanged() 统一处理，这里只管外部 caption：
+            // 它是挂在 parent 上的独立 MirLabel（不是 MirButton 的内建文字层），需单独同步变灰。
             if (!string.IsNullOrEmpty(caption))
             {
                 MirLabel cap = Label(parent, x, y, w, h, caption);
+                cap.ForeColour = b.Enabled ? Color.White : Color.Gray;
+                b.EnabledChanged += (o, e) =>
+                {
+                    if (!cap.IsDisposed) cap.ForeColour = b.Enabled ? Color.White : Color.Gray;
+                };
                 // 按钮真实尺寸/可见性变化时，文字层同步，避免文字错位或按钮隐藏后字还在。
                 b.SizeChanged += (o, e) => { if (!cap.IsDisposed) cap.Size = b.Size; };
                 b.VisibleChanged += (o, e) => { if (!cap.IsDisposed) cap.Visible = b.Visible; };
@@ -467,16 +475,25 @@ namespace Client.MirScenes
             // 槽底板固定用 EXML 的 _Image2/_Image3 两张图，不要按选中态换图：
             // 之前误用 bg_cjzy_06.png（那是 create_grp 的 322x428 面板背景）当高亮底，
             // 被拉伸到 334x392 后整个槽看起来尺寸/样式都不对。
+            // 按钮一律常驻可见：不可用时只禁用 + 置灰（Button() 里订阅 EnabledChanged 统一处理），
+            // 不再按角色数把按钮藏起来，避免界面上忽隐忽现。
             bool hasChar = count > 0;
-            _startButton.Visible = hasChar;
+            bool canSwitch = count > 1;
+            bool canCreate = count < 2;
+
+            _startButton.Visible = true;
             _startButton.Enabled = hasChar;
-            _deleteButton.Visible = hasChar;
+            _deleteButton.Visible = true;
             _deleteButton.Enabled = hasChar;
-            _chooseButton[0].Visible = count > 1;
-            _chooseButton[1].Visible = count > 1;
-            _createButton.Visible = count < 2;
-            _createButton.Enabled = count < 2;
-            _huifuButton.Visible = false;   // 本工程协议没有恢复人物
+            _chooseButton[0].Visible = true;
+            _chooseButton[0].Enabled = canSwitch;
+            _chooseButton[1].Visible = true;
+            _chooseButton[1].Enabled = canSwitch;
+            _createButton.Visible = true;
+            _createButton.Enabled = canCreate;
+            // 恢复人物：本工程协议没有对应包，且它的坐标与开始/创建/返回/删除按钮都有重叠，
+            // 所以仍不显示；若也要常驻占位，改成 Visible = true; Enabled = false 即可（会自动置灰）。
+            _huifuButton.Visible = false;
             _exitButton.Visible = true;
 
             _lastAccessLabel.Text = hasChar
