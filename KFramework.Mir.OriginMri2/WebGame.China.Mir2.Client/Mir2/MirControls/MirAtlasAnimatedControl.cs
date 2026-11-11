@@ -169,6 +169,20 @@ namespace Client.MirControls
             set { base.AtlasFrame = value; }
         }
 
+        // 白鹭 MovieClip 每帧 (x,y) 偏移表：key = res 子图名。按当前帧名查表，对齐原始 MovieClip 表现。
+        public Dictionary<string, Point> AtlasFrameOffsets { get; set; }
+
+        protected override Point FrameDrawOffset
+        {
+            get
+            {
+                if (AtlasFrameOffsets != null && !string.IsNullOrEmpty(AtlasFrame)
+                    && AtlasFrameOffsets.TryGetValue(AtlasFrame, out var off))
+                    return off;
+                return default;
+            }
+        }
+
 
         private bool _loop;
         public event EventHandler LoopChanged;

@@ -35,6 +35,9 @@ public sealed class Mir2AtlasSheet
     /// <summary>MovieClip 播放顺序（取 mc 首个时间线 frames 的 res 引用序列）；普通精灵图集为空。</summary>
     public List<string> PlayOrder { get; private set; }
 
+    /// <summary>白鹭 MovieClip 工厂（Egret Movie 图集解析结果）；普通图集为 null。</summary>
+    public EgretMovieClipDataFactory MovieFactory { get; private set; }
+
     /// <summary>实际可播放帧数：必须与 TryGetFrameName 的取帧口径一致。
     /// MovieClip 图集的时间线长度往往不等于子图数（同一子图会被重复引用做定格），
     /// 若用 Frames.Count 当帧数，FrameIndex 会被 % 时间线长度绕到中间帧上，尸体可能停在站立帧。</summary>
@@ -63,97 +66,83 @@ public sealed class Mir2AtlasSheet
     }
 
     /// <summary>仅解析 JSON（不含贴图）。返回的实例需再调用 Build(整页贴图) 才能得到 Frames。</summary>
+    /// <remarks>
+    /// 解析结构对齐白鹭 Egret（见 js/game.min.js 的 egret.MovieClipData / MovieClipDataFactory 源码）：
+    ///   · 子图矩形层（egret.SpriteSheet / textureData）：普通图集的 frames(字典) 与 Movie 图集的 res(字典)
+    ///     都是“整页贴图上的一组命名矩形”，结构等价（res 即 Movie 的 textureData；子图查找见
+    ///     egret.MovieClipData.getTextureByResName → textureData[res]）。
+    ///   · 时间线层（egret.MovieClipDataFactory）：mc 段把子图按序引用成动画；每帧带 res 引用 +
+    ///     相对偏移(x,y)（egret.$getOffsetByFrame）+ 定格时长 duration（fillFramesData 按 duration 展开占位帧）。
+    /// 模型图集（frames 为数组）是原始传奇自定义格式（非 Egret 标准），单独处理 offX/offY 注册点。
+    /// </remarks>
     public static Mir2AtlasSheet Parse(string json)
     {
         var sheet = new Mir2AtlasSheet();
-        var node = JsonNode.Parse(json);
-        if (node is JsonObject obj)
+        if (JsonNode.Parse(json) is not JsonObject obj) return sheet;
+        if (obj["file"] is JsonValue fv && fv.TryGetValue<string>(out var f)) sheet.File = f;
+
+        // 子图矩形层（SpriteSheet）：frames(字典) 与 res(字典) 等价（都是命名矩形）；frames(数组) 为模型自定义格式。
+        if (obj["frames"] is JsonObject framesDict)
+            ParseSheetFrames(sheet, framesDict);          // 普通 UI/通用图集（Egret SpriteSheet 标准）
+        else if (obj["frames"] is JsonArray framesArr)
+            ParseModelFrames(sheet, framesArr);           // 模型独立图集（自定义格式）
+        else if (obj["res"] is JsonObject resDict)
+            ParseSheetFrames(sheet, resDict);             // Movie 图集的子图（≡ Egret textureData）
+
+        // 时间线层（MovieClipDataFactory）：mc 段把子图按序引用成动画，与白鹭 MovieClipData 对齐。
+        // 注意：frames(字典) + mc 共存的合并图集也能正确解析（普通子图 + Movie 时间线）。
+        if (obj["mc"] is JsonObject)
         {
-            if (obj["file"] is JsonValue fv && fv.TryGetValue<string>(out var f)) sheet.File = f;
-            if (obj["frames"] is JsonObject fr)
-            {
-                foreach (var kv in fr)
-                {
-                    if (kv.Value is JsonObject o)
-                    {
-                        int x = GetInt(o, "x"), y = GetInt(o, "y"), w = GetInt(o, "w"), h = GetInt(o, "h");
-                        int sw = GetInt(o, "sourceW", w), sh = GetInt(o, "sourceH", h);
-                        sheet._defs.Add(new FrameDef
-                        {
-                            Name = kv.Key,
-                            SourceRect = new Rectangle(x, y, w, h),
-                            Size = new Vector2(sw, sh)
-                        });
-                    }
-                }
-            }
-            // 模型独立图集：frames 是数组，每帧自带 offX/offY 注册点与虚拟画布 sourceW/sourceH。
-            else if (obj["frames"] is JsonArray modelFrames)
-            {
-                int i = 0;
-                foreach (var frameNode in modelFrames)
-                {
-                    if (frameNode is JsonObject o)
-                    {
-                        int x = GetInt(o, "x"), y = GetInt(o, "y"), w = GetInt(o, "w"), h = GetInt(o, "h");
-                        int sw = GetInt(o, "sourceW", w), sh = GetInt(o, "sourceH", h);
-                        if (sheet.SourceW == 0 && sw > 0 && sh > 0)
-                        {
-                            sheet.SourceW = sw;
-                            sheet.SourceH = sh;
-                        }
-                        sheet._defs.Add(new FrameDef
-                        {
-                            Name = i.ToString(),
-                            SourceRect = new Rectangle(x, y, w, h),
-                            Size = new Vector2(w, h),
-                            OffX = GetInt(o, "offX"),
-                            OffY = GetInt(o, "offY")
-                        });
-                    }
-                    i++;
-                }
-            }
-            // Egret MovieClip 导出格式：无 "frames"，改用 "res"（子图在大图上的矩形）+ "mc"（时间线帧序列）。
-            else if (obj["res"] is JsonObject resNode)
-            {
-                foreach (var kv in resNode)
-                {
-                    if (kv.Value is JsonObject o)
-                    {
-                        int x = GetInt(o, "x"), y = GetInt(o, "y"), w = GetInt(o, "w"), h = GetInt(o, "h");
-                        sheet._defs.Add(new FrameDef
-                        {
-                            Name = kv.Key,
-                            SourceRect = new Rectangle(x, y, w, h),
-                            Size = new Vector2(w, h)
-                        });
-                    }
-                }
-                // 取首个 mc 时间线的帧序列作为播放顺序（如 mc["1"].frames = [{res:"0001"}, ...]）。
-                if (obj["mc"] is JsonObject mcNode && mcNode.Count > 0)
-                {
-                    JsonObject first = null;
-                    foreach (var kvp in mcNode)
-                    {
-                        first = kvp.Value as JsonObject;
-                        break;
-                    }
-                    if (first != null && first["frames"] is JsonArray mframes)
-                    {
-                        var order = new List<string>();
-                        foreach (var mf in mframes)
-                        {
-                            if (mf is JsonObject fo && fo["res"] is JsonValue rv && rv.TryGetValue<string>(out var resId))
-                                order.Add(resId);
-                        }
-                        sheet.PlayOrder = order;
-                    }
-                }
-            }
+            sheet.MovieFactory = EgretMovieClipDataFactory.Parse(obj);
+            sheet.PlayOrder = sheet.MovieFactory.First?.TimelineResIds ?? new List<string>();
         }
         return sheet;
     }
+
+    // 普通 UI 图集 frames(字典) 与 Movie 图集 res(字典) 共用：子图矩形 = {x,y,w,h[,sourceW,sourceH]}。
+    // sourceW/sourceH 缺省回退到 w/h（Movie 子图通常只给 x,y,w,h）。
+    private static void ParseSheetFrames(Mir2AtlasSheet sheet, JsonObject frames)
+    {
+        foreach (var kv in frames)
+        {
+            if (kv.Value is not JsonObject o) continue;
+            var (x, y, w, h) = ReadRect(o);
+            int sw = GetInt(o, "sourceW", w), sh = GetInt(o, "sourceH", h);
+            sheet._defs.Add(new FrameDef
+            {
+                Name = kv.Key,
+                SourceRect = new Rectangle(x, y, w, h),
+                Size = new Vector2(sw, sh)
+            });
+        }
+    }
+
+    // 模型独立图集：frames 为数组，每帧自带 offX/offY 注册点 + 虚拟画布 sourceW/sourceH（自定义格式）。
+    private static void ParseModelFrames(Mir2AtlasSheet sheet, JsonArray frames)
+    {
+        int i = 0;
+        foreach (var node in frames)
+        {
+            if (node is JsonObject o)
+            {
+                var (x, y, w, h) = ReadRect(o);
+                int sw = GetInt(o, "sourceW", w), sh = GetInt(o, "sourceH", h);
+                if (sheet.SourceW == 0 && sw > 0 && sh > 0) { sheet.SourceW = sw; sheet.SourceH = sh; }
+                sheet._defs.Add(new FrameDef
+                {
+                    Name = i.ToString(),
+                    SourceRect = new Rectangle(x, y, w, h),
+                    Size = new Vector2(w, h),
+                    OffX = GetInt(o, "offX"),
+                    OffY = GetInt(o, "offY")
+                });
+            }
+            i++;
+        }
+    }
+
+    private static (int x, int y, int w, int h) ReadRect(JsonObject o)
+        => (GetInt(o, "x"), GetInt(o, "y"), GetInt(o, "w"), GetInt(o, "h"));
 
     /// <summary>绑定整页贴图，构建每帧的 KSpriteInfo（pivot 默认左上、不旋转，与框架 SpriteSheetLoader 一致）。</summary>
     public void Build(Texture2D pageTexture)

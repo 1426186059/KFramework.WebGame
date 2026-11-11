@@ -361,6 +361,9 @@ namespace Client.MirControls
             set { if (_pivot == value) return; _pivot = value; Redraw(); }
         }
 
+        // 逐帧绘制偏移（白鹭 MovieClip 每帧 x/y）：默认无偏移；动画控件按当前帧覆盖，对齐原始 MovieClip 表现。
+        protected virtual Point FrameDrawOffset => default;
+
         public override Size Size
         {
             set { base.Size = value; }
@@ -452,6 +455,15 @@ namespace Client.MirControls
                 int px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
                 int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
                 KFramework.MonoGame.Rectangle srcFull = atlasSprite.SourceRectangle;
+
+                // 逐帧偏移（白鹭 MovieClip 每帧 x/y）：动画控件按当前帧位移，对齐原始 MovieClip 表现（随缩放回算）。
+                if ((FrameDrawOffset.X != 0 || FrameDrawOffset.Y != 0) && srcFull.Width > 0 && srcFull.Height > 0)
+                {
+                    float sx = (float)drawSize.Width / srcFull.Width;
+                    float sy = (float)drawSize.Height / srcFull.Height;
+                    px += (int)(FrameDrawOffset.X * sx);
+                    py += (int)(FrameDrawOffset.Y * sy);
+                }
 
                 // 混合状态对齐原版 Crystal：用【控件自身的 Blending 属性】决定，而非全局 DXManager.Blending。
                 var imgBlend = (Blending

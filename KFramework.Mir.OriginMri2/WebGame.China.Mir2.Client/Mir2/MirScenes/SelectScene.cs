@@ -604,21 +604,28 @@ namespace Client.MirScenes
                 // 角色已切换或场景销毁：丢弃旧结果，避免动画盖到新角色上。
                 if (anim.IsDisposed || _slotAnim[slot] != anim || _slotAnimKey[slot] != key) return;
 
-                // mc 的 frameRate Mir2AtlasSheet 未暴露，补读一次 JSON（同一路径，命中缓存）。
-                byte[] raw = null;
-                try { raw = await Mir2OriginResource.GetBytesAsync(Mir2OriginResource.ResolveManifestAssetPath(key)); }
-                catch { }
-                ReadMovieMeta(raw, out long delay, out _, out _);
-                anim.AnimationDelay = delay;
-                // 动画层保持与静态立绘同坐标；不套用 mc.frames[].x/y，
-                // 否则会在旁边多出一个错位的角色。
-
-                anim.AtlasSheet = sheet;
-                // 优先 mc 时间线；万一该资源是普通 frames 图集，退化为按帧名顺序播放。
-                List<string> order = sheet.PlayOrder != null && sheet.PlayOrder.Count > 0
-                    ? new List<string>(sheet.PlayOrder)
-                    : (sheet.Frames != null ? new List<string>(sheet.Frames.Keys) : null);
+                // 帧率(delay)/逐帧偏移/播放顺序统一由 EgretMovieClipDataFactory 解析（白鹭 MovieClip 对齐）。
+                long delay = 250;
+                List<string> order = null;
+                Dictionary<string, Point> offsets = null;
+                if (sheet.MovieFactory != null && sheet.MovieFactory.First != null)
+                {
+                    var movie = sheet.MovieFactory.First;
+                    delay = movie.DelayMs;
+                    order = movie.PlayOrder;                 // 已按 duration 展开，逐帧定格时长还原
+                    offsets = new Dictionary<string, Point>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var f in movie.Frames)
+                        offsets[f.ResId] = new Point(f.X, f.Y);
+                }
+                if (order == null)
+                    order = sheet.PlayOrder != null && sheet.PlayOrder.Count > 0
+                        ? new List<string>(sheet.PlayOrder)
+                        : (sheet.Frames != null ? new List<string>(sheet.Frames.Keys) : null);
                 if (order == null || order.Count == 0) return;
+
+                anim.AnimationDelay = delay;
+                anim.AtlasFrameOffsets = offsets;
+                anim.AtlasSheet = sheet;
                 anim.AtlasAnimationFrames = order;
                 // 按首帧真实尺寸显示，避免拉伸变形（静态层也用 FitAtlasSizeDynamic 自适应）。
                 if (sheet.Frames != null && sheet.Frames.TryGetValue(order[0], out var firstFrame))
@@ -629,39 +636,6 @@ namespace Client.MirScenes
             {
                 KFramework.MonoGame.PrintTool.LogError("[SelectScene] 角色动画加载失败：" + key + " -> " + ex);
             }
-        }
-
-        // Egret MovieClip 首个时间线的 frameRate 与首帧绘制偏移（Mir2AtlasSheet 未暴露这两项）。
-        // 实测 6 组 carrer*.json：frameRate=4、timeline=16 帧，首帧 x/y 因职业性别而异。
-        private static void ReadMovieMeta(byte[] bytes, out long delay, out int x, out int y)
-        {
-            delay = 250;
-            x = 0;
-            y = 0;
-            if (bytes == null || bytes.Length == 0) return;
-            try
-            {
-                using (JsonDocument doc = JsonDocument.Parse(bytes))
-                {
-                    JsonElement root = doc.RootElement;
-                    if (!root.TryGetProperty("mc", out JsonElement mc)) return;
-                    foreach (JsonProperty timeline in mc.EnumerateObject())
-                    {
-                        if (timeline.Value.TryGetProperty("frameRate", out JsonElement fr)
-                            && fr.TryGetInt32(out int fps) && fps > 0)
-                            delay = 1000L / fps;
-                        if (timeline.Value.TryGetProperty("frames", out JsonElement frames)
-                            && frames.ValueKind == JsonValueKind.Array && frames.GetArrayLength() > 0)
-                        {
-                            JsonElement first = frames[0];
-                            if (first.TryGetProperty("x", out JsonElement jx)) jx.TryGetInt32(out x);
-                            if (first.TryGetProperty("y", out JsonElement jy)) jy.TryGetInt32(out y);
-                        }
-                        break;   // 与 Mir2AtlasSheet.Parse 一致：只取首个时间线
-                    }
-                }
-            }
-            catch { }
         }
 
         private static string ClassName(MirClass c)
