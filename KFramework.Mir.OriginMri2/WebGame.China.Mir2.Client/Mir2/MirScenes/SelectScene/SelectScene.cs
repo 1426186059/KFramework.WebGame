@@ -1,47 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Client;
-using Client.MirControls;
+﻿using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
-using Client.MirScenes;
-using Client.MirScenes.Dialogs;
 using Client.MirSounds;
 using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
 using S = ServerPackets;
 
-
-// 《原始传奇》选人/创角界面（fugu_20201203）1:1 移植，覆盖旧 Mir2 选人场景。
-//
-// 布局来源：gameEui.json 的 "CreateRoleSkin3"（= default.thm*.json 里
-// resource/eui_skins/createrole/CreateRoleSkinNew3.exml，gjs 30KB），
-// $bs = 1390x960，$eleC 里 60+ 个控件的 x/y/width/height/source 全部照抄。
-// 之前只用 qufu1.min.js 里几个硬编码坐标（415/778、658/630）自己摆，是错的：
-// 那些是创建特效/按钮特效的位置，不是控件布局；且把 1390x860 的主背景图
-// 误当成 1390x960 的设计尺寸。
-//
-// 交互来源：qufu1.min.js 的 CreateRoleUICtrl3（setinfo / createrole / startgame /
-// changecarrer / randomcarrer / ToCDB / getcarrer / setTimeLimit / errtips），
-// main10.25487.1.min.js 的 CreateRoleUICtrlNew3 逻辑一致。
-//   setinfo: 0 角色 -> create_grp.visible=true 且隐藏所有角色信息标签；
-//            1 角色 -> 只显示 txt_name0/level0/c0；
-//            2 角色 -> 六个标签全显示，立绘 source = img_carrer{career}_{sex}。
-//   createrole: create_grp.x = 376（已有角色1）/ 735（空号）。
-//
-// 按钮帧名来自 CreateRoleSkinNew3.exml 的 gjs：
-//   btn_choose1/2 = btn_cjzy_01 / btn_cjzy_02；
-//   btn_start = btn_kaishiyouxi_01；btn_create = btn_chuangjian_01；
-//   btn_huifu = btn_huifurenwu_01；btn_return = btn_fanhui_01；
-//   btn_delete = btn_shanchurenwu_01；btn_close = com_btn_close0（y_common-sheet）；
-//   btn_carrer1/2/3 = icon_cjzy_01/02/03；btn_sex1/2 = icon_cjzy_06/05；
-//   btn_tj = btn_tijiao_01；btn_random = btn_cjzy_03。
-// 皮肤里的 word_cjzy_01..05 / txt_* 是独立 eui.Label（按钮贴图本身不含文字），
-// 本实现全部补成中文 MirLabel，位置照抄 EXML。
-//
-// 网络协议完全用本工程 C.* / S.*，不照搬页游 QufuMessageHandler 的 VarInt 协议。
 namespace Client.MirScenes
 {
     public sealed class SelectScene : MirScene
