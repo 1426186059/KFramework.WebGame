@@ -372,6 +372,15 @@ namespace Client.MirControls
         // 逐帧绘制偏移（白鹭 MovieClip 每帧 x/y）：默认无偏移；动画控件按当前帧覆盖，对齐原始 MovieClip 表现。
         protected virtual Point FrameDrawOffset => default;
 
+        // MovieClip 统一注册点路径：返回当前帧的【完整矩形】(x,y,w,h)，逻辑像素、未缩放。
+        // 由 EgretMovieClip 用「时间线 x/y + 图集子图 w/h」一次性算好，所有帧共用同一原点，
+        // 脚底 (Y+Height) 全帧恒定。返回 true 时绘制侧只做一次整体缩放，不再拆偏移/尺寸换算。
+        protected virtual bool TryGetMovieClipFrameRect(out KFramework.MonoGame.Rectangle rect)
+        {
+            rect = default;
+            return false;
+        }
+
         public override Size Size
         {
             set { base.Size = value; }
@@ -461,32 +470,47 @@ namespace Client.MirControls
                 // Size 已含 SizeScale（见 Size 重写），此处直接用 Size，避免重复乘。
                 KFramework.MonoGame.Rectangle srcFull = atlasSprite.SourceRectangle;
 
-                // MovieClip 每帧子图尺寸并不相同（carrer1_1：w 124~134、h 322~326），
-                // mc.frames 的 x/y 是相对【同一个注册点】的偏移（实测 y+h 恒为 348，即脚底对齐）。
-                // 所以每帧必须按自身原始尺寸绘制，且所有帧共用同一个缩放系数；
-                // 若把每帧拉伸到固定 Size、再用 drawSize.Width/srcFull.Width 逐帧换算偏移，
-                // 同一个 x 会被乘出不同像素值，人物就会随帧忽左忽右。
-                Size drawSize = Size;
-                float offsetScaleX, offsetScaleY;
-                if (AtlasFrameNativeSize && srcFull.Width > 0 && srcFull.Height > 0)
+                Size drawSize;
+                int px, py;
+                if (TryGetMovieClipFrameRect(out var clipRect))
                 {
-                    drawSize = new Size((int)Math.Round(srcFull.Width * AtlasFrameScale),
-                                        (int)Math.Round(srcFull.Height * AtlasFrameScale));
-                    offsetScaleX = offsetScaleY = AtlasFrameScale;
+                    // MovieClip 统一注册点：整帧矩形 (x,y,w,h) 都在「同一原点」下。
+                    // 用四条边各自缩放取整，而不是「top + Round(height)」——后者在
+                    // 逐帧 w/h 不同时会因两次独立取整让脚底抖 1px。
+                    // clipRect.Y + clipRect.Height 全帧恒定，所以 bottom 严格恒定，脚不会动。
+                    float s = AtlasFrameScale;
+                    int left = DisplayLocation.X + (int)Math.Round(clipRect.X * s);
+                    int right = DisplayLocation.X + (int)Math.Round((clipRect.X + clipRect.Width) * s);
+                    int top = DisplayLocation.Y + (int)Math.Round(clipRect.Y * s);
+                    int bottom = DisplayLocation.Y + (int)Math.Round((clipRect.Y + clipRect.Height) * s);
+                    drawSize = new Size(right - left, bottom - top);
+                    px = left - (int)(_pivot.X * drawSize.Width);
+                    py = top - (int)(_pivot.Y * drawSize.Height);
                 }
                 else
                 {
-                    offsetScaleX = srcFull.Width > 0 ? (float)drawSize.Width / srcFull.Width : 1f;
-                    offsetScaleY = srcFull.Height > 0 ? (float)drawSize.Height / srcFull.Height : 1f;
-                }
-                int px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
-                int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
+                    // 非 MovieClip 的普通图集帧：按 Size 绘制，沿用旧的比例换算与逐帧偏移。
+                    drawSize = Size;
+                    float offsetScaleX, offsetScaleY;
+                    if (AtlasFrameNativeSize && srcFull.Width > 0 && srcFull.Height > 0)
+                    {
+                        drawSize = new Size((int)Math.Round(srcFull.Width * AtlasFrameScale),
+                                            (int)Math.Round(srcFull.Height * AtlasFrameScale));
+                        offsetScaleX = offsetScaleY = AtlasFrameScale;
+                    }
+                    else
+                    {
+                        offsetScaleX = srcFull.Width > 0 ? (float)drawSize.Width / srcFull.Width : 1f;
+                        offsetScaleY = srcFull.Height > 0 ? (float)drawSize.Height / srcFull.Height : 1f;
+                    }
+                    px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
+                    py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
 
-                // 逐帧偏移（白鹭 MovieClip 每帧 x/y）：动画控件按当前帧位移，对齐原始 MovieClip 表现。
-                if (FrameDrawOffset.X != 0 || FrameDrawOffset.Y != 0)
-                {
-                    px += (int)(FrameDrawOffset.X * offsetScaleX);
-                    py += (int)(FrameDrawOffset.Y * offsetScaleY);
+                    if (FrameDrawOffset.X != 0 || FrameDrawOffset.Y != 0)
+                    {
+                        px += (int)(FrameDrawOffset.X * offsetScaleX);
+                        py += (int)(FrameDrawOffset.Y * offsetScaleY);
+                    }
                 }
 
                 // 混合状态对齐原版 Crystal：用【控件自身的 Blending 属性】决定，而非全局 DXManager.Blending。
