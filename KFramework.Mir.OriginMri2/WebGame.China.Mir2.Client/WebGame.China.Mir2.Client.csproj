@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="2026New\OriginMir2\" />
     <Folder Include="Content\" />
   </ItemGroup>
 

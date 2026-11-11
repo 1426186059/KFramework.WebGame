@@ -25,6 +25,8 @@ using System.Text.Json.Serialization;
 [JsonSerializable(typeof(EgretMovieClipEventJson))]
 [JsonSerializable(typeof(Dictionary<string, EgretRectJson>))]
 [JsonSerializable(typeof(List<EgretRectJson>))]
+// 原始传奇枢轴表 modelInfo_stand.json：{ model: { action: [standx,standy,intval?,totaldir?] } }，小数用 double[] 容错。
+[JsonSerializable(typeof(Dictionary<int, Dictionary<int, double[]>>), TypeInfoPropertyName = "ModelInfoStandTable")]
 internal sealed partial class AppJsonContext : JsonSerializerContext
 {
 }

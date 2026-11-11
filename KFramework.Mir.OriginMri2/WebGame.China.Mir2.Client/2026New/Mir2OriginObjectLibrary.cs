@@ -148,26 +148,29 @@ public static class Mir2OriginObjectLibrary
             if (resName == null) return;
             using var stream = asm.GetManifestResourceStream(resName);
             if (stream == null) return;
-            using var doc = JsonDocument.Parse(stream);
-            foreach (var modelElem in doc.RootElement.EnumerateObject())
+            string json;
+            using (var reader = new System.IO.StreamReader(stream))
+                json = reader.ReadToEnd();
+
+            // 用 OriginMir2.ModelInfoStandJson 反序列化（double[] 容小数），替代原先 JsonDocument 手解析。
+            var data = ModelInfoStandJson.Deserialize(json);
+            if (data?.Table == null) return;
+            foreach (var mkv in data.Table)
             {
-                if (!int.TryParse(modelElem.Name, out int model)) continue;
-                foreach (var actElem in modelElem.Value.EnumerateObject())
+                int model = mkv.Key;
+                if (!_modelActions.TryGetValue(model, out var al))
                 {
-                    if (!int.TryParse(actElem.Name, out int action)) continue;
-                    if (actElem.Value.ValueKind == JsonValueKind.Array && actElem.Value.GetArrayLength() >= 2)
+                    al = new List<int>();
+                    _modelActions[model] = al;
+                }
+                foreach (var akv in mkv.Value)
+                {
+                    int action = akv.Key;
+                    if (data.TryGet(model, action, out int sx, out int sy, out int iv, out int td))
                     {
-                        int sx = actElem.Value[0].GetInt32();
-                        int sy = actElem.Value[1].GetInt32();
                         _stand[(long)model * 1000 + action] = new[] { sx, sy };
-                        if (actElem.Value.GetArrayLength() >= 3)
-                        {
-                            int iv = actElem.Value[2].GetInt32();
-                            if (iv > 0) _intval[(long)model * 1000 + action] = iv;
-                        }
-                        if (actElem.Value.GetArrayLength() >= 4)
-                            _totaldir[(long)model * 1000 + action] = actElem.Value[3].GetInt32();
-                        if (!_modelActions.TryGetValue(model, out var al)) { al = new List<int>(); _modelActions[model] = al; }
+                        if (iv > 0) _intval[(long)model * 1000 + action] = iv;
+                        if (td != 0) _totaldir[(long)model * 1000 + action] = td;
                         al.Add(action);
                     }
                 }
