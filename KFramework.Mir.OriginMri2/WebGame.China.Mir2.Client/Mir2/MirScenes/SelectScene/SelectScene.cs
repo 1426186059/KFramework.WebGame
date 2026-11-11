@@ -568,14 +568,13 @@ namespace Client.MirScenes
         {
             try
             {
-                // MovieClip（mc/res）图集：Mir2AtlasSheet 会解出 PlayOrder 时间线，
-                // LoadSheetCoreAsync 用同名 png 补齐整页贴图（carrerX_Y.json -> carrerX_Y.png）。
                 Mir2AtlasSheet sheet = await Mir2AtlasLibrary.GetSheetAsync(key, DXManager.GDevice);
                 MirAnimatedAtlasControl anim = _slotAnim[slot];
-                // 角色已切换或场景销毁：丢弃旧结果，避免动画盖到新角色上。
-                if (anim.IsDisposed || _slotAnim[slot] != anim || _slotAnimKey[slot] != key) return;
+                if (anim.IsDisposed || _slotAnim[slot] != anim || _slotAnimKey[slot] != key)
+                {
+                    return;
+                }
 
-                // 帧率(delay)/逐帧偏移/播放顺序统一由 EgretMovieClipDataFactory 解析（白鹭 MovieClip 对齐）。
                 long delay = 250;
                 List<string> order = null;
                 Dictionary<string, Point> offsets = null;
@@ -586,13 +585,22 @@ namespace Client.MirScenes
                     order = movie.PlayOrder;                 // 已按 duration 展开，逐帧定格时长还原
                     offsets = new Dictionary<string, Point>(StringComparer.OrdinalIgnoreCase);
                     foreach (var f in movie.Frames)
+                    {
                         offsets[f.ResId] = new Point(f.X, f.Y);
+                    }
                 }
+
                 if (order == null)
+                { 
                     order = sheet.PlayOrder != null && sheet.PlayOrder.Count > 0
                         ? new List<string>(sheet.PlayOrder)
                         : (sheet.Frames != null ? new List<string>(sheet.Frames.Keys) : null);
-                if (order == null || order.Count == 0) return;
+                }
+
+                if (order == null || order.Count == 0)
+                {
+                    return;
+                }
 
                 anim.AnimationDelay = delay;
                 anim.AtlasFrameOffsets = offsets;
@@ -600,7 +608,9 @@ namespace Client.MirScenes
                 anim.AtlasAnimationFrames = order;
                 // 按首帧真实尺寸显示，避免拉伸变形（静态层也用 FitAtlasSizeDynamic 自适应）。
                 if (sheet.Frames != null && sheet.Frames.TryGetValue(order[0], out var firstFrame))
+                {
                     anim.Size = Sz(firstFrame.SourceRectangle.Width, firstFrame.SourceRectangle.Height);
+                }
                 SetAnimPlayState(slot);   // 选中播放 / 未选中停第一帧，动画层接管显示
             }
             catch (Exception ex)
