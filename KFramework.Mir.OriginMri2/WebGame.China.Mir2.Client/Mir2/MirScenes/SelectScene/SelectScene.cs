@@ -129,7 +129,7 @@ namespace Client.MirScenes
                     Parent = _root,
                     AutoSize = false,
                     NotControl = true,
-                    Location = R(i == 0 ? 415 : 765, i == 0 ? 223 : 217),
+                    Location = R(i == 0 ? 415 : 730, i == 0 ? 223 : 217),
                     Size = Sz(150, 322),
                     Visible = false,
                 };
@@ -140,7 +140,7 @@ namespace Client.MirScenes
                     Parent = _root,
                     AutoSize = false,
                     NotControl = true,
-                    Location = R(i == 0 ? 415 : 765, i == 0 ? 223 : 217),
+                    Location = R(i == 0 ? 415 : 730, i == 0 ? 223 : 217),
                     Size = Sz(150, 322),
                     Visible = false,
                     Loop = true,
@@ -460,7 +460,7 @@ namespace Client.MirScenes
                 }
 
                 // 动画就绪后隐藏静态立绘（动画层在它上方播放）；未加载完/加载失败则静态立绘继续占位。
-                bool animReady = _slotAnim[i].Animated && _slotAnim[i].AtlasSheet != null
+                bool animReady = _slotAnim[i].AtlasSheet != null
                     && _slotAnim[i].AtlasAnimationFrames != null && _slotAnim[i].AtlasAnimationFrames.Count > 0;
                 _slotModel[i].Visible = has && !animReady;
 
