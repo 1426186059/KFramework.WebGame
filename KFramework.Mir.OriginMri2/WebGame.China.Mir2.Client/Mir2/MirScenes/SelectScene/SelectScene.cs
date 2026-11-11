@@ -85,7 +85,7 @@ namespace Client.MirScenes
         private readonly MirImageControl[] _slotBg = new MirImageControl[2];
         private readonly MirImageControl[] _slotModel = new MirImageControl[2];
         // 页游 eff_grp0/1 里的角色待机 MovieClip：resource/assets/gameui4/movieClip/carrer{c}_{s}.json。
-        private readonly MirAtlasAnimatedControl[] _slotAnim = new MirAtlasAnimatedControl[2];
+        private readonly MirAnimatedAtlasControl[] _slotAnim = new MirAnimatedAtlasControl[2];
         private readonly string[] _slotAnimKey = new string[2];
         private readonly MirLabel[][] _slotCaption = new MirLabel[2][];
         private readonly MirLabel[][] _slotValue = new MirLabel[2][];
@@ -184,7 +184,7 @@ namespace Client.MirScenes
                 // 动画层与静态立绘完全重合叠在上层：静态立绘始终保留，
                 // 动画没播出来也不会把角色弄没。不在逐帧回调里改 Size ——
                 // 那会每帧 Redraw 重烘焙场景，回调抛异常还会打断 CMain 渲染循环导致整屏 UI 消失。
-                _slotAnim[i] = new MirAtlasAnimatedControl
+                _slotAnim[i] = new MirAnimatedAtlasControl
                 {
                     Parent = _root,
                     AutoSize = false,
@@ -554,7 +554,7 @@ namespace Client.MirScenes
 
         private void UpdateSlotAnimation(int slot, string key, bool active)
         {
-            MirAtlasAnimatedControl anim = _slotAnim[slot];
+            MirAnimatedAtlasControl anim = _slotAnim[slot];
             if (!active)
             {
                 _slotAnimKey[slot] = null;
@@ -579,7 +579,7 @@ namespace Client.MirScenes
         // 选中槽播放待机动画；未选中槽停在 MovieClip 第一帧（不播放）。
         private void SetAnimPlayState(int slot)
         {
-            MirAtlasAnimatedControl anim = _slotAnim[slot];
+            MirAnimatedAtlasControl anim = _slotAnim[slot];
             bool ready = anim.AtlasSheet != null
                 && anim.AtlasAnimationFrames != null && anim.AtlasAnimationFrames.Count > 0;
             if (!ready) return;
@@ -603,7 +603,7 @@ namespace Client.MirScenes
                 // MovieClip（mc/res）图集：Mir2AtlasSheet 会解出 PlayOrder 时间线，
                 // LoadSheetCoreAsync 用同名 png 补齐整页贴图（carrerX_Y.json -> carrerX_Y.png）。
                 Mir2AtlasSheet sheet = await Mir2AtlasLibrary.GetSheetAsync(key, DXManager.GDevice);
-                MirAtlasAnimatedControl anim = _slotAnim[slot];
+                MirAnimatedAtlasControl anim = _slotAnim[slot];
                 // 角色已切换或场景销毁：丢弃旧结果，避免动画盖到新角色上。
                 if (anim.IsDisposed || _slotAnim[slot] != anim || _slotAnimKey[slot] != key) return;
 

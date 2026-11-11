@@ -1,4 +1,4 @@
-using Client.MirControls;                  // MirControl / MirAtlasAnimatedControl
+using Client.MirControls;                  // MirControl / MirAnimatedAtlasControl
 using Client.MirGraphics;                 // DXManager
 using Color = MirEngine.Color;
 using Point = MirEngine.Point;
@@ -7,7 +7,7 @@ namespace Client.MirScenes.Dialogs
 {
     /// <summary>
     /// 任务完成时在屏幕中央播放的序列帧特效。
-    /// 组合（包含）一个 MirAtlasAnimatedControl 子组件来播放，自身作为容器（不直接继承动画控件）。
+    /// 组合（包含）一个 MirAnimatedAtlasControl 子组件来播放，自身作为容器（不直接继承动画控件）。
     /// 复用现有“原始传奇 Atlas”解析能力：按 manifest key 加载 task_complete 图集，帧矩形由描述文件给出，无需手算。
     /// 多个任务可能连续完成：用 _pending 计数排队，当前播放结束（AfterAnimation）后自动接着播下一个，不重叠、不丢。
     /// 触发：玩家在 NPC 处“领取奖励”（C.FinishQuest → 服务端 FinishQuest 发 S.CompleteQuest）时，
@@ -19,7 +19,7 @@ namespace Client.MirScenes.Dialogs
         // 注意：打包进 manifest 的真实资源名是 taskfinish_eff（resource/assets/taskfinish_eff.json + .png），
         // 之前误写成 gameui4/movieClip/task_complete.json（不存在），导致 404、_sheetReady 永远 false、Play() 只排队不播放。
         private const string SheetKey = "resource/assets/gameui4/movieClip/task_complete.json";
-        private MirAtlasAnimatedControl _ani;
+        private MirAnimatedAtlasControl _ani;
         private bool _sheetReady;
         private bool _playing;
         private int _pending;   // 排队等待播放的次数（连续多个任务完成时 > 0）
@@ -29,7 +29,7 @@ namespace Client.MirScenes.Dialogs
             NotControl = true;               // 容器本身不拦截鼠标
             Visible = false;
 
-            _ani = new MirAtlasAnimatedControl
+            _ani = new MirAnimatedAtlasControl
             {
                 Parent = this,
                 NotControl = true,

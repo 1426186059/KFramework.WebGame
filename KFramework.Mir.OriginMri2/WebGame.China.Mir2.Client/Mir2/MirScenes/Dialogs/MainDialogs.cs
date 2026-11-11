@@ -27,7 +27,7 @@ namespace Client.MirScenes.Dialogs
 
         public MirButton HeroMenuButton, HeroSummonButton;
 
-        MirAtlasAnimatedControl mHPAni, mHPAni1, mMPAni, mMPAni1;
+        MirAnimatedAtlasControl mHPAni, mHPAni1, mMPAni, mMPAni1;
 
         public MirButton RankBtn, GuildBtn, HeChengBtn, QiangXingBtn, ZhuangBanBtn, RongLuBtn, SheJiaoBtn, TianShenBtn, ShenChongBtn;
 
@@ -53,7 +53,7 @@ namespace Client.MirScenes.Dialogs
             };
             HealthOrb.BeforeDraw += HealthOrb_BeforeDraw;
 
-            this.mHPAni = new MirAtlasAnimatedControl
+            this.mHPAni = new MirAnimatedAtlasControl
             {
                 Parent = HealthOrb,
                 Location = new Point(0, 0),
@@ -67,7 +67,7 @@ namespace Client.MirScenes.Dialogs
             };
             this.mHPAni.SetFrames("y_h_hp_", 0, 9);
 
-            this.mHPAni1 = new MirAtlasAnimatedControl
+            this.mHPAni1 = new MirAnimatedAtlasControl
             {
                 Parent = mHPAni,
                 Location = new Point(0, 0),
@@ -80,7 +80,7 @@ namespace Client.MirScenes.Dialogs
             };
             this.mHPAni1.SetFrames("y_h_pl_", 0, 9);
 
-            this.mMPAni = new MirAtlasAnimatedControl
+            this.mMPAni = new MirAnimatedAtlasControl
             {
                 Parent = HealthOrb,
                 Location = new Point(0, 0),
@@ -93,7 +93,7 @@ namespace Client.MirScenes.Dialogs
             };
             this.mMPAni.SetFrames("y_h_mp_", 0, 9);
 
-            this.mMPAni1 = new MirAtlasAnimatedControl
+            this.mMPAni1 = new MirAnimatedAtlasControl
             {
                 Parent = mMPAni,
                 Location = new Point(0, 0),

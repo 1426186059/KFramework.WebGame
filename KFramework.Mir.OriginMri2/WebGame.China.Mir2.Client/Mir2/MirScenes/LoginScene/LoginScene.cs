@@ -10,7 +10,7 @@ namespace Client.MirScenes
     public sealed partial class LoginScene : MirScene
     {
         private MirAnimatedControl _background;
-        private MirTextureAnimatedControl _cutscene;
+        private MirAnimatedTexture2DControl _cutscene;
         public MirLabel Version;
 
         private LoginDialog _login;
@@ -21,7 +21,7 @@ namespace Client.MirScenes
 
         private InputKeyDialog _ViewKey;
 
-        // 登录成功后的过场：MirTextureAnimatedControl 播完 9 帧才切到选人界面（对齐 Crystal
+        // 登录成功后的过场：MirAnimatedTexture2DControl 播完 9 帧才切到选人界面（对齐 Crystal
         // 的 _background.Animated = true / AfterAnimation 流程）。浏览器端 AfterAnimation 仍存在
         // 不触发的风险，故额外记录切换时刻，由 Process() 到点兜底，避免卡在空场景。
         private S.LoginSuccess _pendingLogin;
@@ -372,7 +372,7 @@ namespace Client.MirScenes
                 // 对齐 Crystal：登录成功后启动背景过场动画（Animated=true / Loop=false），
                 // 播完由 AfterAnimation 切到选人场景。帧是 UI 皮肤包的 597x406 序列图，
                 // 作为独立控件叠在 1280x720 登录背景上居中播放。
-                _cutscene = new MirTextureAnimatedControl
+                _cutscene = new MirAnimatedTexture2DControl
                 {
                     Parent = _background,
                     Size = LoginSceneLayout.CutsceneSize,

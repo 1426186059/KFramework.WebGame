@@ -278,8 +278,9 @@ namespace WebGame.Mir2.MonoGame.Client
             for (int i = 0; i < MirAnimatedButton.Animations.Count; i++)
                 MirAnimatedButton.Animations[i].UpdateOffSet();
 
-            for (int i = 0; i < MirAtlasAnimatedControl.Animations.Count; i++)
-                MirAtlasAnimatedControl.Animations[i].UpdateOffSet();
+            // MirAnimatedBase 统一驱动图集帧动画与 Texture2D 序列动画（两者共用计时 / 循环逻辑）。
+            for (int i = 0; i < MirAnimatedBase.Animations.Count; i++)
+                MirAnimatedBase.Animations[i].UpdateOffSet();
 
             // CreateHintLabel() / CreateDebugLabel()（传奇客户端主机类的两个浮层）。
             // 逐帧刷新：Hint 浮层跟随鼠标所在控件的 Hint 文本；Debug 浮层由 Settings.DebugMode（F12）开关，
