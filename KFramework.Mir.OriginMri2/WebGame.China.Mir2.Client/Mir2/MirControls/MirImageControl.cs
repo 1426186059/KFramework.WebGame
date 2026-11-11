@@ -372,9 +372,9 @@ namespace Client.MirControls
         // 逐帧绘制偏移（白鹭 MovieClip 每帧 x/y）：默认无偏移；动画控件按当前帧覆盖，对齐原始 MovieClip 表现。
         protected virtual Point FrameDrawOffset => default;
 
-        // MovieClip 统一注册点路径：返回当前帧的【完整矩形】(x,y,w,h)，逻辑像素、未缩放。
-        // 由 EgretMovieClip 用「时间线 x/y + 图集子图 w/h」一次性算好，所有帧共用同一原点，
-        // 脚底 (Y+Height) 全帧恒定。返回 true 时绘制侧只做一次整体缩放，不再拆偏移/尺寸换算。
+        // MovieClip 路径：返回当前帧在【MovieClip 局部坐标系】的完整矩形 (x,y,w,h)，逻辑像素、未缩放。
+        // 由 EgretMovieClip 原样取「mc.frames 的 x/y + res 子图 w/h」，与白鹭 offsetPoint 一致，
+        // 脚底 (Y+Height) 由导出资源保证恒定。返回 true 时绘制侧只做一次整体缩放，不再拆偏移/尺寸换算。
         protected virtual bool TryGetMovieClipFrameRect(out KFramework.MonoGame.Rectangle rect)
         {
             rect = default;
@@ -474,10 +474,11 @@ namespace Client.MirControls
                 int px, py;
                 if (TryGetMovieClipFrameRect(out var clipRect))
                 {
-                    // MovieClip 统一注册点：整帧矩形 (x,y,w,h) 都在「同一原点」下。
+                    // MovieClip：整帧矩形 (x,y,w,h) 都在 MovieClip 局部原点下，x/y 是导出时的
+                    // 透明边补偿偏移，直接乘缩放即可，不能再做归一化或逐帧比例换算。
                     // 用四条边各自缩放取整，而不是「top + Round(height)」——后者在
-                    // 逐帧 w/h 不同时会因两次独立取整让脚底抖 1px。
-                    // clipRect.Y + clipRect.Height 全帧恒定，所以 bottom 严格恒定，脚不会动。
+                    // 逐帧 w/h 不同时会因两次独立取整额外抖 1px。
+                    // clipRect.Y + clipRect.Height 由资源保证恒定，所以 bottom 恒定，脚不会动。
                     float s = AtlasFrameScale;
                     int left = DisplayLocation.X + (int)Math.Round(clipRect.X * s);
                     int right = DisplayLocation.X + (int)Math.Round((clipRect.X + clipRect.Width) * s);

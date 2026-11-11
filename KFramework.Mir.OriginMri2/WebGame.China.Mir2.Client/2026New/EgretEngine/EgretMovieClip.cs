@@ -123,13 +123,18 @@ public sealed class EgretMovieClip
     public List<string> TimelineResIds { get; private set; }
 
     /// <summary>
-    /// res 名 → 该帧在【统一注册点坐标系】里的完整绘制矩形 (x,y,w,h)，逻辑像素、未缩放。
-    /// 左下脚底与水平中心在所有帧里严格对齐；控件只需整体乘一次缩放即可绘制。
+    /// res 名 → 该帧在【MovieClip 局部坐标系】里的完整绘制矩形 (x,y,w,h)，逻辑像素、未缩放。
+    /// 与白鹭一致，直接使用 mc.frames 的原始 x/y（不做 minX/minY 归一化）：
+    /// MovieClip 的 (0,0) 就是引擎挂载点，各组资源不同的 x/y 本身就是导出时算好的位置补偿。
+    /// 控件只需整体乘一次缩放即可绘制；脚底 (Y+Height) 由资源保证恒定。
     /// </summary>
     public Dictionary<string, Rectangle> Layouts { get; private set; }
         = new Dictionary<string, Rectangle>(StringComparer.OrdinalIgnoreCase);
 
-    /// <summary>所有帧的包围盒（已归一化到 0,0 起点），用于控件布局框。</summary>
+    /// <summary>
+    /// 内容包围盒 (0,0,max(x+w),max(y+h))，对应 Egret 的
+    /// setWidth(textureWidth + offsetPoint.x) / setHeight(textureHeight + offsetPoint.y)。
+    /// </summary>
     public Rectangle Bounds { get; private set; }
 
     public EgretMovieClip(EgretAtlas atlas, EgretMovieClipData data)
@@ -141,11 +146,22 @@ public sealed class EgretMovieClip
     }
 
     /// <summary>
-    /// 用图集子图的真实 w/h + 时间线每帧 x/y 重算统一注册点。
-    /// 白鹭原始语义：每帧子图画在 (frame.x, frame.y)，尺寸就是子图自己的 w/h。
-    /// 实测 carrer1_1 里 frame.y + h 恒为 348（脚底对齐），frame.x + w/2 只在 185~188 间
-    /// （原动画自带的轻微呼吸）。因此直接取所有帧的外接框左上角作为统一原点即可，
-    /// 不做拉伸、不做逐帧比例换算 —— 那样才会出现「忽左忽右 / 脚在动」。
+    /// 用图集子图的真实 w/h + 时间线每帧 x/y 生成每帧绘制矩形。
+    ///
+    /// 白鹭引擎（js/game.min.js）不做任何「统一注册点」计算：
+    ///   MovieClipData.$getOffsetByFrame()  → offsetPoint.setTo(0|frame.x, 0|frame.y)
+    ///   MovieClipData.getTextureByFrame()  → SpriteSheet.createTexture(res, x,y,w,h)，尺寸即 res.w/h
+    ///   MovieClip.constructFrame()         → 设置 texture + offsetPoint
+    ///   MovieClip.$updateRenderNode()      → BitmapNode 用 Math.round(offsetPoint) 作绘制偏移
+    ///   MovieClip.$measureContentBounds()  → bounds.setTo(offsetPoint.x, offsetPoint.y, w, h)
+    /// 即每帧子图直接画在 MovieClip 局部坐标 (frame.x, frame.y)，不减 minX/minY、不拉伸。
+    ///
+    /// 对齐是【导出工具】的责任：它裁掉各帧透明边后再用 x/y 把裁掉的部分补回去，
+    /// 所以帧高矮不一但 frame.y + h 恒定 = 脚底不动。实测 6 组 carrer*.json：
+    ///   1_1/1_2 全帧恒定 348/335；2_1/2_2/3_1/3_2 仅 ±1px 的原始取整抖动。
+    /// 原版 JS 里 6 组 MovieClip 都挂在同一个 (30,-60)，没有任何按职业的补偿，
+    /// 而各组 minX 从 16 到 121 不等 —— 若在这里减去 minX/minY，
+    /// 不同职业会在同一槽位横向错位最多 105px，且整体相对原版左移/上移。
     /// </summary>
     public void RebuildLayouts(EgretAtlas atlas)
     {
@@ -163,25 +179,17 @@ public sealed class EgretMovieClip
                 sizes[f.ResId] = (r.Width, r.Height);
         }
 
-        // 第一轮：求所有帧的外接框，确定统一注册点原点。
-        int minX = int.MaxValue, minY = int.MaxValue, maxR = int.MinValue, maxB = int.MinValue;
+        int maxR = 0, maxB = 0;
         foreach (var f in Data.Frames)
         {
             if (!sizes.TryGetValue(f.ResId, out var wh) || wh.w <= 0 || wh.h <= 0) continue;
-            minX = Math.Min(minX, f.X);
-            minY = Math.Min(minY, f.Y);
+            // 原样保留 mc.frames 的 x/y：MovieClip 局部原点就是引擎挂载点。
+            Layouts[f.ResId] = new Rectangle(f.X, f.Y, wh.w, wh.h);
             maxR = Math.Max(maxR, f.X + wh.w);
             maxB = Math.Max(maxB, f.Y + wh.h);
         }
-        if (minX == int.MaxValue) return;   // 图集还没绑定贴图，等 Build 后 OnBuilt 再算
-
-        // 第二轮：每帧归一化到统一原点，矩形用子图原始尺寸（不拉伸）。
-        foreach (var f in Data.Frames)
-        {
-            if (!sizes.TryGetValue(f.ResId, out var wh) || wh.w <= 0 || wh.h <= 0) continue;
-            Layouts[f.ResId] = new Rectangle(f.X - minX, f.Y - minY, wh.w, wh.h);
-        }
-        Bounds = new Rectangle(0, 0, maxR - minX, maxB - minY);
+        if (Layouts.Count == 0) return;   // 图集还没绑定贴图，等 Build 后 OnBuilt 再算
+        Bounds = new Rectangle(0, 0, maxR, maxB);
     }
 }
 
