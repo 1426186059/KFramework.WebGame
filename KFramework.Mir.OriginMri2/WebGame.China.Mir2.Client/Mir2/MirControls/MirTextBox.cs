@@ -418,6 +418,18 @@ namespace Client.MirControls
                 TextBox.Focus();
         }
 
+        // 文本框是否位于某个弹窗的子树内。弹窗里的输入框常常不是弹窗的直接子控件，
+        // 而是套在一层背景面板里（如 MirInputBox 的 mBg），只看直接 Parent 会把它误判成
+        // 「弹窗外的文本框」→ TextBox.Visible=false → 引擎 Focus() 因 visible=false 不打开
+        // DOM/IME 覆盖层，字符只能走全局键盘 ASCII 兜底（全小写、中文进不来）。
+        private bool IsInside(MirControl dialog)
+        {
+            if (dialog == null) return false;
+            for (MirControl p = Parent; p != null; p = p.Parent)
+                if (ReferenceEquals(p, dialog)) return true;
+            return false;
+        }
+
         public void DialogChanged()
         {
             MirMessageBox box1 = null;
@@ -432,7 +444,7 @@ namespace Client.MirControls
             }
 
 
-            if ((box1 != null && box1 != Parent) || (box2 != null && box2 != Parent)  || (box3 != null && box3 != Parent))
+            if ((box1 != null && !IsInside(box1)) || (box2 != null && !IsInside(box2))  || (box3 != null && !IsInside(box3)))
                 TextBox.Visible = false;
             else
                 ApplyNativeTextBoxState();
