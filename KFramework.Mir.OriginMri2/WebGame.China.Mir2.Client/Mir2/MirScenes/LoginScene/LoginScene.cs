@@ -10,6 +10,7 @@ namespace Client.MirScenes
     public sealed partial class LoginScene : MirScene
     {
         private MirAnimatedControl _background;
+        private MirTextureAnimatedControl _cutscene;
         public MirLabel Version;
 
         private LoginDialog _login;
@@ -20,9 +21,9 @@ namespace Client.MirScenes
 
         private InputKeyDialog _ViewKey;
 
-        // 登录成功后的过场：动画播完才切到选人界面。浏览器端 MirAnimatedControl.AfterAnimation
-        // 存在不触发的风险（一旦不触发就会永久卡在"登录框已销毁、选人界面不出来"的空场景），
-        // 因此额外记录切换时刻，由 Process() 到点兜底切换。
+        // 登录成功后的过场：MirTextureAnimatedControl 播完 9 帧才切到选人界面（对齐 Crystal
+        // 的 _background.Animated = true / AfterAnimation 流程）。浏览器端 AfterAnimation 仍存在
+        // 不触发的风险，故额外记录切换时刻，由 Process() 到点兜底，避免卡在空场景。
         private S.LoginSuccess _pendingLogin;
         private long _switchToSelectAt = -1;
         private bool _selectCreated;
@@ -364,8 +365,38 @@ namespace Client.MirScenes
             if (_ViewKey != null && !_ViewKey.IsDisposed) _ViewKey.Dispose();
             SoundManager.PlaySound(SoundList.LoginEffect);
             _pendingLogin = p;
-            // 原过场动画依赖已删除的 ChrSel 库，不再可用；改为短延时后由 Process() 兜底切换到选人界面。
-            _switchToSelectAt = CMain.Time + 400;
+
+            var frames = LoginSceneLayout.CutsceneFrames;
+            if (LoginSceneLayout.CutsceneReady && frames != null && frames.Length > 0)
+            {
+                // 对齐 Crystal：登录成功后启动背景过场动画（Animated=true / Loop=false），
+                // 播完由 AfterAnimation 切到选人场景。帧是 UI 皮肤包的 597x406 序列图，
+                // 作为独立控件叠在 1280x720 登录背景上居中播放。
+                _cutscene = new MirTextureAnimatedControl
+                {
+                    Parent = _background,
+                    Size = LoginSceneLayout.CutsceneSize,
+                    Frames = frames,
+                    AnimationDelay = LoginSceneLayout.CutsceneFrameDelay,
+                    // 基类在 Animated=true 时把 _nextOffSet 重置为 CMain.Time + FadeInDelay，
+                    // 给它一个帧间隔，让第 0 帧完整停留后再推进，9 帧才不会少放一张。
+                    FadeInDelay = LoginSceneLayout.CutsceneFrameDelay,
+                };
+                _cutscene.Anchor = EAnchorType.MiddleCenter;
+                _cutscene.ApplyAnchor();
+
+                // 回调里只把切换时刻提前到当前帧，真正销毁场景放到 Process() 去做：
+                // 避免在 CMain 遍历 Animations 的循环里 Dispose 控件导致集合被改动。
+                _cutscene.AfterAnimation += (o, e) => _switchToSelectAt = CMain.Time;
+                // 兜底：回调万一没触发，超过整段时长一点也必须切，不能卡在空场景。
+                _switchToSelectAt = CMain.Time + LoginSceneLayout.CutsceneFrameDelay * (frames.Length + 4);
+                _cutscene.Animated = true;
+            }
+            else
+            {
+                // 预载尚未完成（服务器很快回包 / 资源失败）：保持原来的短延时直接切换。
+                _switchToSelectAt = CMain.Time + 400;
+            }
         }
 
         // 切到选人界面：销毁登录场景并创建 SelectScene。重入安全（动画回调与到点兜底只会生效一次）。
@@ -373,6 +404,7 @@ namespace Client.MirScenes
         {
             if (_selectCreated) return;
             _selectCreated = true;
+            _switchToSelectAt = -1;
 
             var p = _pendingLogin;
             //KFramework.MonoGame.PrintTool.Log("[Login] 切换到选人界面，角色数: " + (p != null && p.Characters != null ? p.Characters.Count : 0));
@@ -386,6 +418,7 @@ namespace Client.MirScenes
             if (disposing)
             {
                 _background = null;
+                _cutscene = null;
                 Version = null;
 
                 _login = null;

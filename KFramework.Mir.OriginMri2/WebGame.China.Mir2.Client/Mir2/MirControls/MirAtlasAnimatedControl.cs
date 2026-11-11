@@ -122,7 +122,9 @@ namespace Client.MirControls
         protected virtual void OnFadeInRateChanged(EventArgs e)
         {
             if (FadeInRateChanged != null)
+            {
                 FadeInRateChanged.Invoke(this, e);
+            }
         }
 
 

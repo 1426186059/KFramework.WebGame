@@ -118,6 +118,9 @@ namespace Client.MirScenes
         }
 
         // ===== 登录过场动画：FGUI LoginUI 的 Login_00049~00057（9 帧，597x406）=====
+        public static readonly Size CutsceneSize = new Size(597, 406);
+        // 每帧毫秒，与 Crystal 客户端 ChrSel 过场（AnimationDelay = 100）一致。
+        public const long CutsceneFrameDelay = 100;
         public static readonly string[] CutsceneFrameFiles =
         {
             "Login_00049.png", "Login_00050.png", "Login_00051.png", "Login_00052.png",
