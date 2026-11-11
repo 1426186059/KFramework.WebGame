@@ -34,7 +34,7 @@ namespace Client.MirScenes
             SoundManager.PlayMusic(SoundList.IntroMusic, true);
             Disposing += (o, e) => SoundManager.StopMusic();
 
-            // 登录全屏背景：FGUI「DLoginBg.xml」的 Login_00012.png (1280x720)，拉伸铺满画布。
+            // 登录背景：FGUI「DLoginBg.xml」的 Login_00012.png，按 1280x720 原尺寸 1:1 显示，不缩放。
             BackColour = Color.FromArgb(16, 20, 34);
 
             _background = new MirAnimatedControl
@@ -45,7 +45,7 @@ namespace Client.MirScenes
                 Border = false,
             };
             LoginSceneLayout.SetPanel(_background, LoginSceneLayout.BgFullScreen,
-                new Size(Settings.ScreenWidth, Settings.ScreenHeight));
+                LoginSceneLayout.LoginBgSize);
 
             _background.Anchor = EAnchorType.MiddleCenter;
             _background.ApplyAnchor();
@@ -112,6 +112,9 @@ namespace Client.MirScenes
                     Network.Connect();
                     _connectBox.Show();
                 };
+
+            // 登录界面一显示就在后台静默预载过场动画 9 帧（Login_00049~00057），不阻塞首屏。
+            LoginSceneLayout.PreloadCutscene();
         }
 
         public override void Process()
@@ -203,14 +206,13 @@ namespace Client.MirScenes
         }
 
         /// <summary>
-        /// 画布尺寸变化后：背景必须重新铺满整屏。
-        /// ApplyAnchor 只重算 Location、不改 Size，所以尺寸在这里单独同步；
+        /// 画布尺寸变化后：背景始终保持 1280x720 原尺寸（不随屏幕缩放），只需重算居中位置；
         /// 其余 UI 交给基类按锚点重算（base.ApplyAnchors）。
         /// </summary>
         public override void ApplyAnchors()
         {
             if (_background != null && !_background.IsDisposed)
-                _background.Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight);
+                _background.Size = LoginSceneLayout.LoginBgSize;
 
             base.ApplyAnchors();
         }

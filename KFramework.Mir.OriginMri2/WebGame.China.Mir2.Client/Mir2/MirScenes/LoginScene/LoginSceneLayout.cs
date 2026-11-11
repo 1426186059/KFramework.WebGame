@@ -28,6 +28,9 @@ namespace Client.MirScenes
         public const string BgCreateAccount = "Login_00047.png"; // 创建账户_CreateAccountUI.xml 918x670
         public const string BgChangePassword = "Login_00048.png"; // 修改密码_DChangePasswordUI.xml 639x452
 
+        // 登录背景按原尺寸 1:1 显示，不随画布缩放（FGUI DLoginBg component size = 1280,720，与图片一致）。
+        public static readonly Size LoginBgSize = new Size(1280, 720);
+
         // ===== 按钮贴图的 up / down 两态（FGUI Button controller: 0,2=up/over；1,3=down）=====
         public const string BtnCloseUp = "Login_00000.png";
         public const string BtnCloseDown = "Login_00001.png";
@@ -112,6 +115,62 @@ namespace Client.MirScenes
             var content = BrowserResource.Content
                           ?? new KFramework.MonoGame.ContentManager("", RemoteWebSetting.LibBaseUrl);
             return content.LoadTexture2DAsync(ArtRoot + png, DXManager.GDevice, BrowserResource.mCacheInstance);
+        }
+
+        // ===== 登录过场动画：FGUI LoginUI 的 Login_00049~00057（9 帧，597x406）=====
+        public static readonly string[] CutsceneFrameFiles =
+        {
+            "Login_00049.png", "Login_00050.png", "Login_00051.png", "Login_00052.png",
+            "Login_00053.png", "Login_00054.png", "Login_00055.png", "Login_00056.png",
+            "Login_00057.png",
+        };
+
+        private static readonly Texture2D[] _cutsceneFrames = new Texture2D[CutsceneFrameFiles.Length];
+        /// <summary>预载完成的过场帧（顺序同 CutsceneFrameFiles），尚未到位的位置为 null。</summary>
+        public static Texture2D[] CutsceneFrames => _cutsceneFrames;
+        /// <summary>9 帧是否全部就绪。</summary>
+        public static bool CutsceneReady { get; private set; }
+        private static bool _cutsceneLoading;
+
+        /// <summary>
+        /// 登录界面一显示就在后台静默预载过场帧：串行、用普通优先级（与登录 UI 同级但排在其后），
+        /// 不阻塞也不抢占首屏。结果同时进浏览器 Cache Storage 与静态数组，后续播放时零等待。
+        /// </summary>
+        public static void PreloadCutscene()
+        {
+            // MirScene.ActiveScene 的静态初始化那次 GDevice 还没就绪，直接跳过，
+            // 等 CMain.Init 构造的正式场景再启动，避免空跑一遍把帧全记成 null。
+            if (_cutsceneLoading || CutsceneReady || DXManager.GDevice == null) return;
+            _cutsceneLoading = true;
+            _ = PreloadCutsceneAsync();
+        }
+
+        private static async Task PreloadCutsceneAsync()
+        {
+            try
+            {
+                for (int i = 0; i < CutsceneFrameFiles.Length; i++)
+                {
+                    try
+                    {
+                        _cutsceneFrames[i] = await LoadArtAsync(CutsceneFrameFiles[i]);
+                    }
+                    catch (Exception ex)
+                    {
+                        KFramework.MonoGame.PrintTool.Log("[LoginUI] 过场帧加载失败 " +
+                            CutsceneFrameFiles[i] + ": " + ex.Message);
+                    }
+                }
+
+                bool all = true;
+                foreach (Texture2D frame in _cutsceneFrames)
+                    if (frame == null) { all = false; break; }
+                CutsceneReady = all;
+            }
+            finally
+            {
+                _cutsceneLoading = false;
+            }
         }
 
         /// <summary>把 FGUI 底图贴到面板上：固定尺寸、异步到位后重绘。</summary>

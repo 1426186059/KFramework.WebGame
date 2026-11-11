@@ -21,11 +21,14 @@ namespace Client.MirControls
                 OnAnimatedChanged(EventArgs.Empty);
             }
         }
+
         protected virtual void OnAnimatedChanged(EventArgs e)
         {
             Redraw();
             if (AnimatedChanged != null)
+            {
                 AnimatedChanged.Invoke(this, e);
+            }
         }
 
 
@@ -36,18 +39,23 @@ namespace Client.MirControls
             get { return _animationCount; }
             set
             {
-                if (_animationCount == value) return;
+                if (_animationCount == value)
+                {
+                    return;
+                }
                 _animationCount = value;
                 OnAnimationCountChanged(EventArgs.Empty);
             }
         }
+
         protected virtual void OnAnimationCountChanged(EventArgs e)
         {
             if (AnimationCountChanged != null)
+            {
                 AnimationCountChanged.Invoke(this, e);
+            }
         }
-
-
+            
         private long _animationDelay;
         public event EventHandler AnimationDelayChanged;
         public long AnimationDelay
@@ -55,17 +63,22 @@ namespace Client.MirControls
             get { return _animationDelay; }
             set
             {
-                if (_animationDelay == value) return;
+                if (_animationDelay == value)
+                {
+                    return;
+                }
                 _animationDelay = value;
                 OnAnimationDelayChanged();
             }
         }
+
         protected virtual void OnAnimationDelayChanged()
         {
             if (AnimationDelayChanged != null)
+            {
                 AnimationDelayChanged.Invoke(this, EventArgs.Empty);
+            }
         }
-
 
         private long _nextFadeTime;
         private bool _fadeIn;
@@ -75,16 +88,22 @@ namespace Client.MirControls
             get { return _fadeIn; }
             set
             {
-                if (_fadeIn == value) return;
+                if (_fadeIn == value)
+                {
+                    return;
+                }
                 _nextFadeTime = CMain.Time + _fadeInDelay;
                 _fadeIn = value;
                 OnFadeInChanged(EventArgs.Empty);
             }
         }
+
         protected virtual void OnFadeInChanged(EventArgs e)
         {
             if (FadeInChanged != null)
+            {
                 FadeInChanged.Invoke(this, e);
+            }
         }
 
 
@@ -138,17 +157,25 @@ namespace Client.MirControls
             {
                 _atlasAnimationFrames = value;
                 if (_atlasAnimationFrames != null && _atlasAnimationFrames.Count > 0)
+                {
                     AnimationCount = _atlasAnimationFrames.Count;
+                }
             }
         }
 
         // 按“前缀 + 索引”批量生成逐帧帧名（prefix + i，i 从 beginIndex 到 endIndex，含两端）。
         public void SetFrames(string prefix, int beginIndex, int endIndex)
         {
-            if (string.IsNullOrEmpty(prefix) || endIndex < beginIndex) return;
+            if (string.IsNullOrEmpty(prefix) || endIndex < beginIndex)
+            {
+                return;
+            }
+
             var frames = new List<string>(endIndex - beginIndex + 1);
             for (int i = beginIndex; i <= endIndex; i++)
+            {
                 frames.Add(prefix + i);
+            }
             AtlasAnimationFrames = frames;
         }
 
@@ -176,9 +203,12 @@ namespace Client.MirControls
         {
             get
             {
-                if (AtlasFrameOffsets != null && !string.IsNullOrEmpty(AtlasFrame)
+                if (AtlasFrameOffsets != null &&
+                    !string.IsNullOrEmpty(AtlasFrame)
                     && AtlasFrameOffsets.TryGetValue(AtlasFrame, out var off))
+                {
                     return off;
+                }
                 return default;
             }
         }
