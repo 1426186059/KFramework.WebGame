@@ -570,47 +570,13 @@ namespace Client.MirScenes
             {
                 Mir2AtlasSheet sheet = await Mir2AtlasLibrary.GetSheetAsync(key, DXManager.GDevice);
                 MirAnimatedAtlasControl anim = _slotAnim[slot];
-                if (anim.IsDisposed || _slotAnim[slot] != anim || _slotAnimKey[slot] != key)
+                if (sheet == null || anim.IsDisposed || _slotAnim[slot] != anim || _slotAnimKey[slot] != key)
                 {
                     return;
                 }
 
-                long delay = 250;
-                List<string> order = null;
-                Dictionary<string, Point> offsets = null;
-                if (sheet.MovieFactory != null && sheet.MovieFactory.First != null)
-                {
-                    var movie = sheet.MovieFactory.First;
-                    delay = movie.DelayMs;
-                    order = movie.PlayOrder;                 // 已按 duration 展开，逐帧定格时长还原
-                    offsets = new Dictionary<string, Point>(StringComparer.OrdinalIgnoreCase);
-                    foreach (var f in movie.Frames)
-                    {
-                        offsets[f.ResId] = new Point(f.X, f.Y);
-                    }
-                }
-
-                if (order == null)
-                { 
-                    order = sheet.PlayOrder != null && sheet.PlayOrder.Count > 0
-                        ? new List<string>(sheet.PlayOrder)
-                        : (sheet.Frames != null ? new List<string>(sheet.Frames.Keys) : null);
-                }
-
-                if (order == null || order.Count == 0)
-                {
-                    return;
-                }
-
-                anim.AnimationDelay = delay;
-                anim.AtlasFrameOffsets = offsets;
-                anim.AtlasSheet = sheet;
-                anim.AtlasAnimationFrames = order;
-                // 按首帧真实尺寸显示，避免拉伸变形（静态层也用 FitAtlasSizeDynamic 自适应）。
-                if (sheet.Frames != null && sheet.Frames.TryGetValue(order[0], out var firstFrame))
-                {
-                    anim.Size = Sz(firstFrame.SourceRectangle.Width, firstFrame.SourceRectangle.Height);
-                }
+                // 帧序 / 帧率 / 注册点偏移 / 原生帧尺寸 / 缩放 / 包围盒都由动画控件内部统一装配。
+                if (!anim.SetMovieClip(sheet, ScaleF)) return;
                 SetAnimPlayState(slot);   // 选中播放 / 未选中停第一帧，动画层接管显示
             }
             catch (Exception ex)

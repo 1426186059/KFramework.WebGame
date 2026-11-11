@@ -20,6 +20,14 @@ namespace Client.MirControls
         // 绘制尺寸缩放（仅影响本控件图像绘制，不影响布局/命中）。默认 1 = 原尺寸。
         public float SizeScale { get; set; } = 1f;
 
+        // 白鹭 MovieClip 原生帧对齐：开启后图集帧按【子图原始尺寸】绘制（不拉伸到 Size），
+        // 且逐帧偏移用下面的统一缩放换算。默认关闭，其它控件行为不变。
+        // 由 MirAnimatedAtlasControl.SetMovieClip 统一装配，外部不要逐个赋值。
+        protected bool AtlasFrameNativeSize { get; set; }
+
+        // AtlasFrameNativeSize 开启时，帧尺寸与逐帧偏移共用的统一缩放系数（如界面 ScaleF）。
+        protected float AtlasFrameScale { get; set; } = 1f;
+
         // 填充裁剪（类似 Unity Image.fillAmount）：FillAmount<1 时只绘制图像的指定比例部分，不拉伸图像。
         // 用于固定形状（如半月血条）按比例显隐，避免改 Size 把形状压变形。
         public float FillAmount { get; set; } = 1f;
@@ -451,18 +459,34 @@ namespace Client.MirControls
 
                 // 目标矩形按 Pivot（归一化锚点，默认左上）对齐：图像以自身 Pivot 点落在 DisplayLocation。
                 // Size 已含 SizeScale（见 Size 重写），此处直接用 Size，避免重复乘。
-                Size drawSize = Size;
-                int px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
-                int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
                 KFramework.MonoGame.Rectangle srcFull = atlasSprite.SourceRectangle;
 
-                // 逐帧偏移（白鹭 MovieClip 每帧 x/y）：动画控件按当前帧位移，对齐原始 MovieClip 表现（随缩放回算）。
-                if ((FrameDrawOffset.X != 0 || FrameDrawOffset.Y != 0) && srcFull.Width > 0 && srcFull.Height > 0)
+                // MovieClip 每帧子图尺寸并不相同（carrer1_1：w 124~134、h 322~326），
+                // mc.frames 的 x/y 是相对【同一个注册点】的偏移（实测 y+h 恒为 348，即脚底对齐）。
+                // 所以每帧必须按自身原始尺寸绘制，且所有帧共用同一个缩放系数；
+                // 若把每帧拉伸到固定 Size、再用 drawSize.Width/srcFull.Width 逐帧换算偏移，
+                // 同一个 x 会被乘出不同像素值，人物就会随帧忽左忽右。
+                Size drawSize = Size;
+                float offsetScaleX, offsetScaleY;
+                if (AtlasFrameNativeSize && srcFull.Width > 0 && srcFull.Height > 0)
                 {
-                    float sx = (float)drawSize.Width / srcFull.Width;
-                    float sy = (float)drawSize.Height / srcFull.Height;
-                    px += (int)(FrameDrawOffset.X * sx);
-                    py += (int)(FrameDrawOffset.Y * sy);
+                    drawSize = new Size((int)Math.Round(srcFull.Width * AtlasFrameScale),
+                                        (int)Math.Round(srcFull.Height * AtlasFrameScale));
+                    offsetScaleX = offsetScaleY = AtlasFrameScale;
+                }
+                else
+                {
+                    offsetScaleX = srcFull.Width > 0 ? (float)drawSize.Width / srcFull.Width : 1f;
+                    offsetScaleY = srcFull.Height > 0 ? (float)drawSize.Height / srcFull.Height : 1f;
+                }
+                int px = DisplayLocation.X - (int)(_pivot.X * drawSize.Width);
+                int py = DisplayLocation.Y - (int)(_pivot.Y * drawSize.Height);
+
+                // 逐帧偏移（白鹭 MovieClip 每帧 x/y）：动画控件按当前帧位移，对齐原始 MovieClip 表现。
+                if (FrameDrawOffset.X != 0 || FrameDrawOffset.Y != 0)
+                {
+                    px += (int)(FrameDrawOffset.X * offsetScaleX);
+                    py += (int)(FrameDrawOffset.Y * offsetScaleY);
                 }
 
                 // 混合状态对齐原版 Crystal：用【控件自身的 Blending 属性】决定，而非全局 DXManager.Blending。
