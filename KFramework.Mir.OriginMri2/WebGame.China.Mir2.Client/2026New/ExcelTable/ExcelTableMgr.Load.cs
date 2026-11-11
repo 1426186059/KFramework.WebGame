@@ -22,24 +22,4 @@ public static partial class ExcelTableMgr
         }
     }
 
-    // 在分片 JSON 里前向扫描，定位名为 tableName 的顶层属性，返回其 JsonElement；找不到返回 Undefined。
-    private static JsonElement FindTable(byte[] json, string tableName)
-    {
-        var opts = new JsonReaderOptions { AllowTrailingCommas = true, CommentHandling = JsonCommentHandling.Skip };
-        var reader = new Utf8JsonReader(json, opts);
-        if (!reader.Read() || reader.TokenType != JsonTokenType.StartObject) return default;
-        var nameUtf8 = Encoding.UTF8.GetBytes(tableName);
-        while (reader.Read())
-        {
-            if (reader.TokenType == JsonTokenType.EndObject) return default;
-            if (reader.TokenType != JsonTokenType.PropertyName) continue;
-            if (reader.ValueTextEquals(nameUtf8))
-            {
-                reader.Read();
-                return JsonElement.ParseValue(ref reader);
-            }
-            reader.Skip();
-        }
-        return default;
-    }
 }

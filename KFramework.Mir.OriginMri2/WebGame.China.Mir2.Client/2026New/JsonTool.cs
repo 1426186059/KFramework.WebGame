@@ -14,6 +14,7 @@ using System.Text.Json.Serialization;
     AllowTrailingCommas = true)]
 [JsonSerializable(typeof(TextMap))]
 [JsonSerializable(typeof(MapTable))]
+[JsonSerializable(typeof(ModelInfoTable))]
 
 // 图集 JSON 核心数据：普通图集 / MovieClip 图集及其嵌套类型与 frames 的两种集合形态。
 [JsonSerializable(typeof(EgretAtlasJson))]
@@ -25,8 +26,6 @@ using System.Text.Json.Serialization;
 [JsonSerializable(typeof(EgretMovieClipEventJson))]
 [JsonSerializable(typeof(Dictionary<string, EgretRectJson>))]
 [JsonSerializable(typeof(List<EgretRectJson>))]
-// 原始传奇枢轴表 modelInfo_stand.json：{ model: { action: [standx,standy,intval?,totaldir?] } }，小数用 double[] 容错。
-[JsonSerializable(typeof(Dictionary<int, Dictionary<int, double[]>>), TypeInfoPropertyName = "ModelInfoStandTable")]
 // 资源总索引 manifest（allmanifest{ver}.json）：根即字典 { key: { v, s } }。
 [JsonSerializable(typeof(Dictionary<string, ManifestEntryJson>), TypeInfoPropertyName = "ManifestEntryDictionary")]
 // 白鹭资源清单 default.res.json：{ resources:[...], groups:[...] }。

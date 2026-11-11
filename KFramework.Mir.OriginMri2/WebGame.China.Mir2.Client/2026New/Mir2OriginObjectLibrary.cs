@@ -117,104 +117,45 @@ public static class Mir2OriginObjectLibrary
     private static readonly ConcurrentDictionary<string, byte> _loggedMissing =
         new(StringComparer.OrdinalIgnoreCase);
 
-    // —— 枢轴表：modelInfo[model][action].standx/standy（原始传奇每个部件按自身枢轴对齐）——
-    // 键 = model*1000 + action；值 = [standx, standy]。缺失时回落画布中心，不影响渲染。
-    private static readonly Dictionary<long, int[]> _stand = new();
-    // —— 帧间隔表：modelInfo[model][action].intval（原始传奇逐模型逐动作的每帧毫秒）——
-    // 键 = model*1000 + action；值 = 每帧毫秒。玩家动画速度据此跟随原版；缺失时回落 Frame.Interval。
-    private static readonly Dictionary<long, int> _intval = new();
-    // —— 每模型的动作清单（用于 PreloadModel 全动作预载）与 totaldir（决定预载方向数）——
-    private static readonly Dictionary<int, List<int>> _modelActions = new();
-    private static readonly Dictionary<long, int> _totaldir = new();
-    private static volatile bool _standReady;
+    // 枢轴/帧间隔/方向数/动作清单等模型元数据现已统一由 ModelInfoTable 从 2config.modelInfo 加载，
+    // 见 ModelInfoTable.cs。本类仅做转发，不再持有这些字典、也不再内嵌 modelInfo_stand.json。
 
     /// <summary>版本表是否就绪。未就绪时仍可用无版本段路径加载，只是可能 404。</summary>
     public static bool IsReady => _versionsReady;
 
-    // ===================== 枢轴表（modelInfo.standx/standy）=====================
+    // ===================== 枢轴表（来自 ModelInfoTable / 2config.modelInfo）=====================
 
-    /// <summary>加载内嵌的 modelInfo_stand.json（每模型每动作的 standx/standy 枢轴）。
-    /// 原始传奇每个部件按自身枢轴对齐角色点，并绕该点翻面；复刻它的关键是这里。
-    /// 解析失败/缺失则回落画布中心（DrawAnchored 内部处理），不影响渲染。</summary>
-    private static void LoadStandTable()
-    {
-        if (_standReady) return;
-        _standReady = true;
-        try
-        {
-            var asm = typeof(Mir2OriginObjectLibrary).Assembly;
-            var resName = asm.GetManifestResourceNames()
-                .FirstOrDefault(n => n.EndsWith("modelInfo_stand.json", StringComparison.OrdinalIgnoreCase));
-            if (resName == null) return;
-            using var stream = asm.GetManifestResourceStream(resName);
-            if (stream == null) return;
-            string json;
-            using (var reader = new System.IO.StreamReader(stream))
-                json = reader.ReadToEnd();
-
-            // 用 OriginMir2.ModelInfoStandJson 反序列化（double[] 容小数），替代原先 JsonDocument 手解析。
-            var data = ModelInfoStandJson.Deserialize(json);
-            if (data?.Table == null) return;
-            foreach (var mkv in data.Table)
-            {
-                int model = mkv.Key;
-                if (!_modelActions.TryGetValue(model, out var al))
-                {
-                    al = new List<int>();
-                    _modelActions[model] = al;
-                }
-                foreach (var akv in mkv.Value)
-                {
-                    int action = akv.Key;
-                    if (data.TryGet(model, action, out int sx, out int sy, out int iv, out int td))
-                    {
-                        _stand[(long)model * 1000 + action] = new[] { sx, sy };
-                        if (iv > 0) _intval[(long)model * 1000 + action] = iv;
-                        if (td != 0) _totaldir[(long)model * 1000 + action] = td;
-                        al.Add(action);
-                    }
-                }
-            }
-        }
-        catch
-        {
-            // 忽略：回落画布中心即可
-        }
-    }
-
-    /// <summary>查 (model, action) 的枢轴 standx/standy；查不到返回 false（调用方回落 SourceW/2）。</summary>
+    /// <summary>查 (model, action) 的枢轴 standx/standy（来自 ModelInfoTable，即 2config.modelInfo）；
+    /// 查不到返回 false（调用方回落 SourceW/2）。</summary>
     public static bool TryGetStand(int model, int action, out int standx, out int standy)
-    {
-        if (_stand.TryGetValue((long)model * 1000 + action, out var v))
         {
-            standx = v[0];
-            standy = v[1];
-            return true;
+            if (ExcelTableMgr.ModelInfos.TryGetValue((long)model * 1000 + action, out var r))
+            {
+                standx = (int)Math.Round(r.standx);
+                standy = (int)Math.Round(r.standy);
+                return true;
+            }
+            standx = 0; standy = 0; return false;
         }
-        standx = 0;
-        standy = 0;
-        return false;
-    }
 
-    /// <summary>查 (model, action) 的逐帧毫秒 intval（原始传奇逐模型逐动作配置）。
-    /// 查不到或值无效返回 false（调用方回落 Frame.Interval）。</summary>
+    /// <summary>查 (model, action) 的逐帧毫秒 intval（来自 2config.modelInfo 的 intval 字段）。</summary>
     public static bool TryGetInterval(int model, int action, out int interval)
-    {
-        return _intval.TryGetValue((long)model * 1000 + action, out interval);
-    }
+        {
+            if (ExcelTableMgr.ModelInfos.TryGetValue((long)model * 1000 + action, out var r)) { interval = r.intval; return true; }
+            interval = 0; return false;
+        }
 
     // ===================== 初始化 =====================
 
     /// <summary>拉取 resourceVersion.json（并发安全、失败可重试）。失败不抛，后续按无版本段路径兜底。</summary>
-    public static Task InitializeAsync(CancellationToken ct = default)
+    public static async Task InitializeAsync(CancellationToken ct = default)
     {
-        LoadStandTable();
-        if (_versionsReady) return Task.CompletedTask;
+        if (_versionsReady) return;
         var t = _initTask;
-        if (t != null && !t.IsFaulted && !t.IsCanceled) return t;
+        if (t != null && !t.IsFaulted && !t.IsCanceled) { await t.ConfigureAwait(false); return; }
         t = LoadVersionsAsync(ct);
         _initTask = t;
-        return t;
+        await t.ConfigureAwait(false);
     }
 
     private static async Task LoadVersionsAsync(CancellationToken ct)
@@ -529,11 +470,11 @@ public static class Mir2OriginObjectLibrary
     public static void PreloadModel(Mir2ObjectKind kind, int id, int priority = PriorityUser)
     {
         if (id <= 0) return;
-        if (_modelActions.TryGetValue(id, out var acts))
+        if (ExcelTableMgr.ModelActions.TryGetValue(id, out var acts))
         {
             foreach (var a in acts)
             {
-                int td = _totaldir.TryGetValue((long)id * 1000 + a, out var t) ? t : 8;
+                int td = ExcelTableMgr.ModelInfos.TryGetValue((long)id * 1000 + a, out var r) ? r.totaldir : 8;
                 int maxDir = td == 1 ? 4 : 7;
                 for (int d = 0; d <= maxDir; d++) Request(kind, id, a, d, priority);
             }
@@ -554,7 +495,7 @@ public static class Mir2OriginObjectLibrary
     public static void PreloadAction(Mir2ObjectKind kind, int id, int action, int priority = PriorityBackground)
     {
         if (id <= 0) return;
-        int td = _totaldir.TryGetValue((long)id * 1000 + action, out var t) ? t : DefaultTotalDir;
+        int td = ExcelTableMgr.ModelInfos.TryGetValue((long)id * 1000 + action, out var r) ? r.totaldir : DefaultTotalDir;
         int maxDir = td == 1 ? 4 : (td == 5 ? 4 : 7);
         for (int d = 0; d <= maxDir; d++) Request(kind, id, action, d, priority);
     }
