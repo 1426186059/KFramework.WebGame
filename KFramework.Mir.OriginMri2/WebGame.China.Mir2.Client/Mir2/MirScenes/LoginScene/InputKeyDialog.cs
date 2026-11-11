@@ -21,9 +21,11 @@ namespace Client.MirScenes
             {
                 _loginDialog = loginDialog;
 
-                Index = 1080;
-                Library = Libraries.Prguse;
+                // FGUI 登录模块没有对应软键盘，这里保留咱们自己的纯色面板（不套 FGUI 底图）。
                 Visible = true;
+                BackColour = Color.FromArgb(235, 24, 24, 34);
+                Border = true;
+                BorderColour = Color.FromArgb(160, 190, 170, 120);
 
                 KeyEscButton = new MirButton
                 {
@@ -91,22 +93,9 @@ namespace Client.MirScenes
 
                 UpdateKeys();
 
-                // 浏览器端资源异步加载，MirImageControl 在 AutoSize 下依赖的 GetTrueSize 可能返回 0，
-                // 导致 Recenter 把对话框定位到屏幕正中、子控件全被甩到屏幕外（点击“输入密保”无反应）。
-                // 显式关闭 AutoSize 并给出确定尺寸：优先用真实贴图尺寸，否则用子控件包围盒兜底，确保对话框可见且居中。
+                // 尺寸按软键盘按键包围盒固定，不依赖贴图库真实尺寸。
                 AutoSize = false;
-                Size = (Library != null && Index >= 0) ? Library.GetTrueSize(Index) : Size.Empty;
-                if (Size.IsEmpty)
-                {
-                    int maxX = 0, maxY = 0;
-                    foreach (MirControl c in Controls)
-                    {
-                        if (c == null || c.IsDisposed) continue;
-                        maxX = Math.Max(maxX, c.Location.X + c.Size.Width);
-                        maxY = Math.Max(maxY, c.Location.Y + c.Size.Height);
-                    }
-                    Size = new Size(Math.Max(maxX, 1), Math.Max(maxY, 1));
-                }
+                Size = new Size(220, 290);
 
                 Anchor = EAnchorType.MiddleCenter;
                 AnchorPos = new Point(285, 150);

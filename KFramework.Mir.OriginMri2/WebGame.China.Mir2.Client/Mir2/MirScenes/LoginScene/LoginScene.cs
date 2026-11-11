@@ -34,18 +34,18 @@ namespace Client.MirScenes
             SoundManager.PlayMusic(SoundList.IntroMusic, true);
             Disposing += (o, e) => SoundManager.StopMusic();
 
-            // 默认背景：无 Lib 依赖的深蓝底（“默认图片”背景），不再用黑屏。
+            // 登录全屏背景：FGUI「DLoginBg.xml」的 Login_00012.png (1280x720)，拉伸铺满画布。
             BackColour = Color.FromArgb(16, 20, 34);
 
             _background = new MirAnimatedControl
             {
                 Animated = false,
                 Parent = this,
-                Size = new Size(Settings.ScreenWidth, Settings.ScreenHeight),
-                BackColour = Color.FromArgb(26, 32, 54),
-                Border = true,
-                BorderColour = Color.FromArgb(70, 84, 130),
+                BackColour = Color.FromArgb(0, 0, 0, 0),
+                Border = false,
             };
+            LoginSceneLayout.SetPanel(_background, LoginSceneLayout.BgFullScreen,
+                new Size(Settings.ScreenWidth, Settings.ScreenHeight));
 
             _background.Anchor = EAnchorType.MiddleCenter;
             _background.ApplyAnchor();

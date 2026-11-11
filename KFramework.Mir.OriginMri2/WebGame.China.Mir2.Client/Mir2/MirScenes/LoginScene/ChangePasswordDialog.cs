@@ -25,30 +25,17 @@ namespace Client.MirScenes
 
             public ChangePasswordDialog()
             {
-                Index = 50;
-                Library = Libraries.Prguse;
+                // 布局照 FGUI「修改密码_DChangePasswordUI.xml」：底图 639x452 + 4 个输入框 + 确定/取消。
+                BackColour = Color.FromArgb(0, 0, 0, 0);
+                Border = false;
+                LoginSceneLayout.SetPanel(this, LoginSceneLayout.BgChangePassword, LoginSceneLayout.ChangePanel);
 
-                CancelButton = new MirButton
-                {
-                    HoverIndex = 111,
-                    Index = 110,
-                    Library = Libraries.Title,
-                    Location = new Point(222, 236),
-                    Parent = this,
-                    PressedIndex = 112
-                };
+                CancelButton = new LoginArtButton(LoginSceneLayout.BtnCancelUp, LoginSceneLayout.BtnCancelDown,
+                    LoginSceneLayout.ChangeCancelAt, LoginSceneLayout.ChangeCancelSz, this);
                 CancelButton.Click += (o, e) => Dispose();
 
-                OKButton = new MirButton
-                {
-                    Enabled = false,
-                    HoverIndex = 108,
-                    Index = 107,
-                    Library = Libraries.Title,
-                    Location = new Point(80, 236),
-                    Parent = this,
-                    PressedIndex = 109,
-                };
+                OKButton = new LoginArtButton(LoginSceneLayout.BtnChangePwdOkUp, LoginSceneLayout.BtnChangePwdOkDown,
+                    LoginSceneLayout.ChangeOkAt, LoginSceneLayout.ChangeOkSz, this) { Enabled = false };
                 OKButton.Click += (o, e) => ChangePassword();
 
 
@@ -104,22 +91,8 @@ namespace Client.MirScenes
                 };
                 NewPassword2TextBox.TextBox.TextChanged += NewPassword2TextBox_TextChanged;
 
-                // 浏览器端资源异步加载，MirImageControl 在 AutoSize 下依赖的 GetTrueSize 可能返回 0，
-                // 导致 Recenter 把对话框定位到屏幕正中、子控件全被甩到屏幕外（点击“新账户/修改密码”无反应）。
-                // 显式关闭 AutoSize 并给出确定尺寸：优先用真实贴图尺寸，否则用子控件包围盒兜底，确保对话框可见且居中。
-                AutoSize = false;
-                Size = (Library != null && Index >= 0) ? Library.GetTrueSize(Index) : Size.Empty;
-                if (Size.IsEmpty)
-                {
-                    int maxX = 0, maxY = 0;
-                    foreach (MirControl c in Controls)
-                    {
-                        if (c == null || c.IsDisposed) continue;
-                        maxX = Math.Max(maxX, c.Location.X + c.Size.Width);
-                        maxY = Math.Max(maxY, c.Location.Y + c.Size.Height);
-                    }
-                    Size = new Size(Math.Max(maxX, 1), Math.Max(maxY, 1));
-                }
+                // 面板尺寸由 FGUI 组件固定；4 个输入框坐标集中在 ApplyLayout()。
+                ApplyLayout();
 
                 Anchor = EAnchorType.MiddleCenter;
                 ApplyAnchor();
@@ -127,6 +100,19 @@ namespace Client.MirScenes
             }
 
             private void Libraries_LibraryLoaded() => ApplyAnchor();
+
+            /// <summary>把 4 个输入框摆到 FGUI 修改密码界面的对应槽位。</summary>
+            private void ApplyLayout()
+            {
+                AccountIDTextBox.Location = LoginSceneLayout.ChangeAccountAt;
+                AccountIDTextBox.Size = LoginSceneLayout.ChangeAccountSz;
+                CurrentPasswordTextBox.Location = LoginSceneLayout.ChangeCurrentAt;
+                CurrentPasswordTextBox.Size = LoginSceneLayout.ChangeCurrentSz;
+                NewPassword1TextBox.Location = LoginSceneLayout.ChangeNew1At;
+                NewPassword1TextBox.Size = LoginSceneLayout.ChangeNew1Sz;
+                NewPassword2TextBox.Location = LoginSceneLayout.ChangeNew2At;
+                NewPassword2TextBox.Size = LoginSceneLayout.ChangeNew2Sz;
+            }
 
             void RefreshConfirmButton()
             {

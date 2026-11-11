@@ -18,13 +18,14 @@ namespace Client.MirScenes
 
             public LoginDialog()
             {
-                // 无 Lib 依赖：纯色面板 + 文字标签 + 带文字的按钮（“默认图片”默认样式）。
+                // 布局照 FGUI「登录_LoginUI.xml」(460x400)：底图自带标题与账号/密码字样，
+                // 原本的纯色面板、边框、文字标签让位给美术图（标签实例保留，只是不显示）。
                 AutoSize = false;
-                Size = new Size(320, 215);
-                BackColour = Color.FromArgb(210, 24, 24, 24);
-                Border = true;
-                BorderColour = Color.Gray;
+                Size = LoginSceneLayout.LoginPanel;
+                BackColour = Color.FromArgb(0, 0, 0, 0);
+                Border = false;
                 PixelDetect = false;
+                LoginSceneLayout.SetPanel(this, LoginSceneLayout.BgLogin, LoginSceneLayout.LoginPanel);
 
                 TitleLabel = new MirLabel
                 {
@@ -32,8 +33,8 @@ namespace Client.MirScenes
                     AutoSize = true,
                     ForeColour = Color.Gold,
                     Parent = this,
+                    Visible = false,
                 };
-                TitleLabel.Location = new Point((Size.Width - TitleLabel.Size.Width) / 2, 12);
 
                 AccountIDLabel = new MirLabel
                 {
@@ -41,7 +42,7 @@ namespace Client.MirScenes
                     AutoSize = true,
                     ForeColour = Color.White,
                     Parent = this,
-                    Location = new Point(40, 82),
+                    Visible = false,
                 };
 
                 PassLabel = new MirLabel
@@ -50,68 +51,44 @@ namespace Client.MirScenes
                     AutoSize = true,
                     ForeColour = Color.White,
                     Parent = this,
-                    Location = new Point(40, 108),
+                    Visible = false,
                 };
 
-                OKButton = new MirButton
-                {
-                    Text = "登录",
-                    Size = new Size(80, 30),
-                    Location = new Point(210, 80),
-                    Parent = this,
-                    BackColour = Color.FromArgb(60, 90, 150),
-                    Border = true,
-                    BorderColour = Color.LightBlue,
-                };
+                // FGUI displayList：DBtnLoginOK(264,238)、DBtnNewUser(50,303)、
+                // DBtnChangPasswd(210,303)、DBtnLoginUIClose(379,55)，尺寸见各自组件 XML。
+                OKButton = new LoginArtButton(LoginSceneLayout.BtnLoginUp, LoginSceneLayout.BtnLoginDown,
+                    LoginSceneLayout.LoginOkAt, LoginSceneLayout.LoginOkSz, this);
                 OKButton.Click += (o, e) => Login();
 
-                AccountButton = new MirButton
-                {
-                    Text = "注册",
-                    Size = new Size(90, 28),
-                    Location = new Point(40, 160),
-                    Parent = this,
-                    BackColour = Color.FromArgb(60, 90, 150),
-                    Border = true,
-                };
+                AccountButton = new LoginArtButton(LoginSceneLayout.BtnNewUserUp, LoginSceneLayout.BtnNewUserDown,
+                    LoginSceneLayout.LoginNewUserAt, LoginSceneLayout.LoginNewUserSz, this);
 
-                PassButton = new MirButton
-                {
-                    Text = "改密",
-                    Size = new Size(90, 28),
-                    Location = new Point(150, 160),
-                    Parent = this,
-                    BackColour = Color.FromArgb(60, 90, 150),
-                    Border = true,
-                };
+                PassButton = new LoginArtButton(LoginSceneLayout.BtnChangePwdUp, LoginSceneLayout.BtnChangePwdDown,
+                    LoginSceneLayout.LoginChangePwdAt, LoginSceneLayout.LoginChangePwdSz, this);
 
+                // FGUI 没有密保软键盘入口，保留我们的功能，放在账号输入框右侧的空位。
                 ViewKeyButton = new MirButton
                 {
                     Text = "密保",
-                    Size = new Size(90, 28),
-                    Location = new Point(40, 192),
+                    Size = LoginSceneLayout.LoginViewKeySz,
+                    Location = LoginSceneLayout.LoginViewKeyAt,
                     Parent = this,
-                    BackColour = Color.FromArgb(60, 90, 150),
+                    BackColour = Color.FromArgb(120, 40, 40, 48),
                     Border = true,
+                    BorderColour = Color.FromArgb(160, 190, 170, 120),
                 };
 
-                CloseButton = new MirButton
-                {
-                    Text = "关闭",
-                    Size = new Size(90, 28),
-                    Location = new Point(150, 192),
-                    Parent = this,
-                    BackColour = Color.FromArgb(90, 50, 50),
-                    Border = true,
-                };
+                CloseButton = new LoginArtButton(LoginSceneLayout.BtnCloseUp, LoginSceneLayout.BtnCloseDown,
+                    LoginSceneLayout.LoginCloseAt, LoginSceneLayout.LoginCloseSz, this);
                 CloseButton.Click += (o, e) => CMain.Instance.Close();
 
+                // FGUI：DEditPasswd(156,199,211x26)、DEditAccount(156,142,211x32)。
                 PasswordTextBox = new MirTextBox
                 {
-                    Location = new Point(85, 108),
+                    Location = LoginSceneLayout.LoginPasswordAt,
                     Parent = this,
                     Password = true,
-                    Size = new Size(136, 15),
+                    Size = LoginSceneLayout.LoginPasswordSz,
                     MaxLength = Globals.MaxPasswordLength
                 };
 
@@ -121,9 +98,9 @@ namespace Client.MirScenes
 
                 AccountIDTextBox = new MirTextBox
                 {
-                    Location = new Point(85, 85),
+                    Location = LoginSceneLayout.LoginAccountAt,
                     Parent = this,
-                    Size = new Size(136, 15),
+                    Size = LoginSceneLayout.LoginAccountSz,
                     MaxLength = Globals.MaxAccountIDLength
                 };
 
@@ -146,8 +123,7 @@ namespace Client.MirScenes
                     PasswordTextBox_TextChanged(PasswordTextBox, EventArgs.Empty);
                 };
 
-                // 资源（贴图库）异步加载：构造时图像尺寸可能为 0，导致初始 Location 偏移到屏幕中心附近。
-                // 订阅库加载完成事件，库就绪后按真实尺寸重新居中；构造与显示时也兜底计算一次。
+                // 尺寸由 FGUI 布局常量固定（不再依赖贴图库真实尺寸），底图异步到位后再重算一次锚点。
                 Anchor = EAnchorType.MiddleCenter;
                 AnchorPos = new Point(0, 0);
                 ApplyAnchor();

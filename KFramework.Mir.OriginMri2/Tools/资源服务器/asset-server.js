@@ -5,12 +5,13 @@
 //   node asset-server.js --port 5080 --root "<Mir2 资源根目录>"
 //
 // 路径映射（root = Mir2Res）：
-//   /Localization/...  -> Localization/   语言包（Chinese.json）
-//   /Sound/...         -> Sound/         音效 wav + SoundList.lst
-//   /resource/...      -> resource/      图集 png / json / fnt 与 default.res.json
-//   /assets/...        -> assets/        地图瓦片 jpg
-//   /MyRes/...         -> /hot_update_res/...  兼容旧客户端把资源挂 MyRes 前缀的写法
-//   其余路径原样相对 root 解析
+//   /MyRes/Localization/... -> MyRes/Localization/  语言包（Chinese.json）
+//   /MyRes/Sound/...        -> MyRes/Sound/         音效 wav + SoundList.lst
+//   /MyRes/Login/...        -> MyRes/Login/         登录 UI 美术 PNG
+//   /resource/...           -> resource/            图集 png / json / fnt 与 default.res.json
+//   /assets/...             -> assets/              地图瓦片 jpg
+//   旧 /Localization/、/Sound/ 前缀自动回落到 /MyRes/ 同名目录（兼容历史写法）
+//   其余路径原样相对 root 解析（/MyRes/ 不再重写到 /hot_update_res/）
 // 特性：CORS（跨域必需）、Range（为按需分段加载预留）、防目录穿越。
 
 const http = require('http');
@@ -70,7 +71,11 @@ const server = http.createServer((req, res) => {
     return res.end('bad request');
   }
 
-  pathname = pathname.replace(/^\/MyRes\//i, '/hot_update_res/');
+  // 客户端 ContentManager 用 http.BaseAddress + "/xxx" 拼串，可能带出 "//MyRes/..."，
+  // 折叠开头的连续斜杠，避免被 url.parse 当成 protocol-relative 的 host 而丢掉目录名。
+  pathname = '/' + pathname.replace(/^\/+/, '');
+  // 语言包 / 音效已移到 Mir2Res/MyRes/ 下，旧 URL 继续兼容（客户端已改用 /MyRes/...）。
+  pathname = pathname.replace(/^\/(Localization|Sound)\//i, '/MyRes/$1/');
   const filePath = path.resolve(rootResolved, '.' + path.normalize(pathname));
 
   if (!filePath.startsWith(rootResolved)) {
@@ -118,5 +123,5 @@ const server = http.createServer((req, res) => {
 
 server.listen(port, '127.0.0.1', () => {
   console.log('[assets] root = ' + rootResolved);
-  console.log('[assets] url  = http://127.0.0.1:' + port + '/   (/Map/ -> root/Map, /hot_update_res/ -> root/hot_update_res, /MyRes/ -> /hot_update_res/)');
+  console.log('[assets] url  = http://127.0.0.1:' + port + '/   (/MyRes/{Localization,Sound,Login}/, /resource/, /assets/ 按 root 下同名目录解析；旧 /Localization/、/Sound/ 自动兼容)');
 });

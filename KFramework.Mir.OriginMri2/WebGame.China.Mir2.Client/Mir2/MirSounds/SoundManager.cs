@@ -11,7 +11,7 @@ namespace Client.MirSounds
     /// </summary>
     public static class SoundManager
     {
-        // 索引 -> 文件名，来自 Sound/SoundList.lst（浏览器端经资源服务器读取）
+        // 索引 -> 文件名，来自 MyRes/Sound/SoundList.lst（浏览器端经资源服务器读取）
         private static readonly Dictionary<int, string> _indexList = SoundList.Indexes;
         private static readonly List<KeyValuePair<long, int>> _delayList = new List<KeyValuePair<long, int>>();
         private static readonly Dictionary<int, LoopProvider> _loopingSounds = new Dictionary<int, LoopProvider>();
@@ -63,7 +63,7 @@ namespace Client.MirSounds
         }
 
         /// <summary>
-        /// 把声音索引解析成可请求的资源路径（如 ".\Sound\1.wav"）。
+        /// 把声音索引解析成可请求的资源路径（如 ".\MyRes\Sound\1.wav"）。
         /// 表里没有的索引按原版命名规则推测文件名。
         /// </summary>
         public static string ResolveSoundFile(int index)

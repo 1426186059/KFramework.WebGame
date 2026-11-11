@@ -35,31 +35,18 @@ namespace Client.MirScenes
 
             public NewAccountDialog()
             {
-                Index = 63;
-                Library = Libraries.Prguse;
-                Size = new Size();
+                // 布局照 FGUI「创建账户_CreateAccountUI.xml」(918x670)：底图 + 8 个输入框 + 确定/取消。
+                // 具体坐标集中在 LoginSceneLayout 与 ApplyLayout()，改样式不必翻遍整个构造函数。
+                BackColour = Color.FromArgb(0, 0, 0, 0);
+                Border = false;
+                LoginSceneLayout.SetPanel(this, LoginSceneLayout.BgCreateAccount, LoginSceneLayout.CreatePanel);
 
-                CancelButton = new MirButton
-                {
-                    HoverIndex = 204,
-                    Index = 203,
-                    Library = Libraries.Title,
-                    Location = new Point(409, 425),
-                    Parent = this,
-                    PressedIndex = 205
-                };
+                CancelButton = new LoginArtButton(LoginSceneLayout.BtnCancelUp, LoginSceneLayout.BtnCancelDown,
+                    LoginSceneLayout.CreateCancelAt, LoginSceneLayout.CreateCancelSz, this);
                 CancelButton.Click += (o, e) => Dispose();
 
-                OKButton = new MirButton
-                {
-                    Enabled = false,
-                    HoverIndex = 201,
-                    Index = 200,
-                    Library = Libraries.Title,
-                    Location = new Point(135, 425),
-                    Parent = this,
-                    PressedIndex = 202,
-                };
+                OKButton = new LoginArtButton(LoginSceneLayout.BtnOkUp, LoginSceneLayout.BtnOkDown,
+                    LoginSceneLayout.CreateOkAt, LoginSceneLayout.CreateOkSz, this) { Enabled = false };
                 OKButton.Click += (o, e) => CreateAccount();
 
                 Password1TextBox = new MirTextBox
@@ -181,22 +168,8 @@ namespace Client.MirScenes
                 AccountIDTextBox.TextBox.TextChanged += AccountIDTextBox_TextChanged;
                 AccountIDTextBox.TextBox.GotFocus += AccountIDTextBox_GotFocus;
 
-                // 浏览器端资源异步加载，MirImageControl 在 AutoSize 下依赖的 GetTrueSize 可能返回 0，
-                // 导致 Recenter 把对话框定位到屏幕正中、子控件全被甩到屏幕外（点击“新账户/修改密码”无反应）。
-                // 显式关闭 AutoSize 并给出确定尺寸：优先用真实贴图尺寸，否则用子控件包围盒兜底，确保对话框可见且居中。
-                AutoSize = false;
-                Size = (Library != null && Index >= 0) ? Library.GetTrueSize(Index) : Size.Empty;
-                if (Size.IsEmpty)
-                {
-                    int maxX = 0, maxY = 0;
-                    foreach (MirControl c in Controls)
-                    {
-                        if (c == null || c.IsDisposed) continue;
-                        maxX = Math.Max(maxX, c.Location.X + c.Size.Width);
-                        maxY = Math.Max(maxY, c.Location.Y + c.Size.Height);
-                    }
-                    Size = new Size(Math.Max(maxX, 1), Math.Max(maxY, 1));
-                }
+                // 面板尺寸已由 FGUI 组件固定；子控件坐标统一在 ApplyLayout() 里按 displayList 摆放。
+                ApplyLayout();
 
                 Anchor = EAnchorType.MiddleCenter;
                 ApplyAnchor();
@@ -204,6 +177,33 @@ namespace Client.MirScenes
             }
 
             private void Libraries_LibraryLoaded() => ApplyAnchor();
+
+            /// <summary>把 8 个输入框与字段说明摆到 FGUI 创建账户界面的对应槽位。</summary>
+            private void ApplyLayout()
+            {
+                AccountIDTextBox.Location = LoginSceneLayout.CreateAccountAt;
+                AccountIDTextBox.Size = LoginSceneLayout.CreateAccountSz;
+                Password1TextBox.Location = LoginSceneLayout.CreatePassword1At;
+                Password1TextBox.Size = LoginSceneLayout.CreatePassword1Sz;
+                Password2TextBox.Location = LoginSceneLayout.CreatePassword2At;
+                Password2TextBox.Size = LoginSceneLayout.CreatePassword2Sz;
+                EMailTextBox.Location = LoginSceneLayout.CreateEMailAt;
+                EMailTextBox.Size = LoginSceneLayout.CreateEMailSz;
+                UserNameTextBox.Location = LoginSceneLayout.CreateUserNameAt;
+                UserNameTextBox.Size = LoginSceneLayout.CreateUserNameSz;
+                BirthDateTextBox.Location = LoginSceneLayout.CreateBirthDateAt;
+                BirthDateTextBox.Size = LoginSceneLayout.CreateBirthDateSz;
+                QuestionTextBox.Location = LoginSceneLayout.CreateQuestionAt;
+                QuestionTextBox.Size = LoginSceneLayout.CreateQuestionSz;
+                AnswerTextBox.Location = LoginSceneLayout.CreateAnswerAt;
+                AnswerTextBox.Size = LoginSceneLayout.CreateAnswerSz;
+
+                // richtext FGUIBaseCom14 在右侧，用作字段说明（GotFocus 时才显示）。
+                Description.Location = LoginSceneLayout.CreateDescriptionAt;
+                Description.Size = LoginSceneLayout.CreateDescriptionSz;
+                Description.Border = false;
+                Description.ForeColour = Color.White;
+            }
 
 
             private void AccountIDTextBox_TextChanged(object sender, EventArgs e)

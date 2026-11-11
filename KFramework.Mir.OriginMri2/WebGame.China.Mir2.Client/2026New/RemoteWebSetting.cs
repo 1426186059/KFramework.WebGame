@@ -16,9 +16,10 @@ public static class RemoteWebSetting
     // 游戏 WS 网关（原 Settings.IPAddress:Port）。Web 下连接地址由部署决定，不从本地 ini 取。
     public const string GameServerUrl = "ws://127.0.0.1:8000";
 
-    // 语言包相对地址（相对 LibBaseUrl）。例如 Chinese.json -> <LibBaseUrl>i18n/Chinese.json。
+    // 语言包相对地址（相对 LibBaseUrl）。语言包已移到 Mir2Res/MyRes/Localization/，
+    // 例如 Chinese.json -> <LibBaseUrl>MyRes/Localization/Chinese.json。
     // 启动时会尝试从此处下载默认词库覆盖代码内置默认；下载失败则保留代码内置默认。
-    public const string LanguageBaseRootDir = "Localization/";
+    public const string LanguageBaseRootDir = "MyRes/Localization/";
 
     public static async Task Load()
     {

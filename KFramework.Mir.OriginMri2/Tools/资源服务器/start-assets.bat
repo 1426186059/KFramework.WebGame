@@ -4,10 +4,11 @@ REM   资源根目录 -> D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginM
 REM   对外地址   -> http://127.0.0.1:5080/
 REM
 REM   Mir2Res/ 下的目录与客户端请求路径一一对应：
-REM     Localization/  语言包（Chinese.json）
-REM     Sound/         音效 wav + SoundList.lst
-REM     resource/      图集 png / json / fnt、default.res.json 等索引
-REM     assets/        地图瓦片 jpg
+REM     MyRes/Localization/  语言包（Chinese.json）
+REM     MyRes/Sound/         音效 wav + SoundList.lst
+REM     MyRes/Login/         登录 UI 美术 PNG
+REM     resource/            图集 png / json / fnt、default.res.json 等索引
+REM     assets/              地图瓦片 jpg
 REM   客户端侧基址见 WebGame.China.Mir2.Client/2026New/RemoteWebSetting.cs (LibBaseUrl)。
 
 set TOOLS=%~dp0

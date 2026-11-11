@@ -124,7 +124,7 @@ dotnet build WebGame.Mir2.MonoGame.Client/WebGame.China.Mir2.Client.csproj
 | `Tools/Mir2Tool/MapExtract/`、`MapExtract2/`、`MapExtractVerify/` | 地图 `.map` 提取与校验 |
 | `Tools/Mir2Tool/TextureToWebP/` | 贴图转 WebP（减小 Web 传输体积） |
 | `Tools/资源服务器/` | 本地静态资源 HTTP 服务（`:5080`，根 = `Mir2Res/`） |
-| `Mir2Res/` | 本地资源镜像：`Localization/`、`Sound/`、`resource/`、`assets/` |
+| `Mir2Res/` | 本地资源镜像：`MyRes/`（`Localization/`、`Sound/`、`Login/`）、`resource/`、`assets/` |
 | `Tools/compare-wwwroot-size.mjs` | 发布产物体积对比 |
 
 > 注：部分历史工具配置（如 `Tools/Mir2Tool/*.config.json`）里的**素材源目录**仍指向旧的
