@@ -3,7 +3,6 @@ using KFramework.MonoGameExtend;
 using System.Collections.Concurrent;
 using System.Text;
 using System.IO;
-using System.Text.Json.Nodes;
 using Color = KFramework.MonoGame.Color;
 using Rectangle = KFramework.MonoGame.Rectangle;
 
@@ -61,47 +60,37 @@ public static class Mir2AtlasLibrary
                 return;
             }
 
-            if (JsonNode.Parse(Encoding.UTF8.GetString(bytes)) is JsonObject root)
+            // 用 OriginMir2.DefaultResJson DTO 反序列化（替代原先 JsonNode 手解析）。
+            var cfg = DefaultResJson.Deserialize(Encoding.UTF8.GetString(bytes));
+            if (cfg != null)
             {
-                if (root["resources"] is JsonArray rs)
+                if (cfg.Resources != null)
                 {
-                    foreach (var item in rs)
+                    foreach (var item in cfg.Resources)
                     {
-                        var name = item["name"]?.GetValue<string>();
-                        var url = item["url"]?.GetValue<string>();
-                        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(url))
-                        {
+                        if (string.IsNullOrEmpty(item.Name) || string.IsNullOrEmpty(item.Url))
                             continue;
-                        }
 
-                        var type = item["type"]?.GetValue<string>() ?? "";
-                        var subRaw = item["subkeys"]?.GetValue<string>();
-                        var subs = string.IsNullOrEmpty(subRaw)
+                        var subs = string.IsNullOrEmpty(item.Subkeys)
                             ? Array.Empty<string>()
-                            : subRaw.Split(',');
-
-                        var it = new Mir2ResItem { Name = name, Url = url, Type = type, Subkeys = subs };
-                        _fsData[name] = it;
+                            : item.Subkeys.Split(',');
+                        var it = new Mir2ResItem { Name = item.Name, Url = item.Url, Type = item.Type ?? "", Subkeys = subs };
+                        _fsData[item.Name] = it;
                         foreach (var t in subs)
                         {
                             if (string.IsNullOrEmpty(t)) continue;
-                            _alias[t] = name + "#" + t;
-                            _alias[name + "." + t] = name + "#" + t;
+                            _alias[t] = item.Name + "#" + t;
+                            _alias[item.Name + "." + t] = item.Name + "#" + t;
                         }
                     }
                 }
 
-                if (root["groups"] is JsonArray gs)
+                if (cfg.Groups != null)
                 {
-                    foreach (var item in gs)
+                    foreach (var g in cfg.Groups)
                     {
-                        var gname = item["name"]?.GetValue<string>();
-                        var keys = item["keys"]?.GetValue<string>() ?? "";
-                        if (!string.IsNullOrEmpty(gname))
-                        {
-                            _groups[gname] = keys == "" ? Array.Empty<string>() : keys.Split(',');
-
-                        }
+                        if (!string.IsNullOrEmpty(g.Name))
+                            _groups[g.Name] = string.IsNullOrEmpty(g.Keys) ? Array.Empty<string>() : g.Keys.Split(',');
                     }
                 }
             }

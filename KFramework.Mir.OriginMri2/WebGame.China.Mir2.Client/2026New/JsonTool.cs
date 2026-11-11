@@ -27,6 +27,10 @@ using System.Text.Json.Serialization;
 [JsonSerializable(typeof(List<EgretRectJson>))]
 // 原始传奇枢轴表 modelInfo_stand.json：{ model: { action: [standx,standy,intval?,totaldir?] } }，小数用 double[] 容错。
 [JsonSerializable(typeof(Dictionary<int, Dictionary<int, double[]>>), TypeInfoPropertyName = "ModelInfoStandTable")]
+// 资源总索引 manifest（allmanifest{ver}.json）：根即字典 { key: { v, s } }。
+[JsonSerializable(typeof(Dictionary<string, ManifestEntryJson>), TypeInfoPropertyName = "ManifestEntryDictionary")]
+// 白鹭资源清单 default.res.json：{ resources:[...], groups:[...] }。
+[JsonSerializable(typeof(DefaultResJson))]
 internal sealed partial class AppJsonContext : JsonSerializerContext
 {
 }
