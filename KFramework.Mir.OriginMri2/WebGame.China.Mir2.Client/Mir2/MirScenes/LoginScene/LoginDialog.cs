@@ -1,14 +1,9 @@
-using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
-using Client.MirSounds;
-using S = ServerPackets;
-using C = ClientPackets;
+using System.Text.RegularExpressions;
 using WebGame.Mir2.MonoGame.Client;
-using Client;
-using Client.MirScenes;
+using C = ClientPackets;
 
 namespace Client.MirScenes
 {
