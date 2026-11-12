@@ -6,9 +6,9 @@ namespace KFramework.Test.WebGL20.Tests
     /// <summary>
     /// SimpleBlend（独立模块）：大背景（颜色可调，直绘）+ 混合下层(lefttop_leftbg2) + 混合上层(lefttop_leftbg1)，
     /// 三种情况对照：
-    /// <para>① 直绘 Bundle：背景 + 下(Bundle) + 上(Bundle) 直接画（AlphaBlend）。</para>
-    /// <para>② RT 烘焙 Bundle：背景直绘 + 把 下+上(Bundle) 渲染进 RT，再把 RT 合成到屏幕（AlphaBlend 读预乘）。</para>
-    /// <para>③ 直绘 外部PNG：背景 + 下(外部原始PNG，绕开Bundle打包) + 上(Bundle) 直接画（AlphaBlend）。</para>
+    /// <para>① 直绘 Bundle：背景 + 下(Bundle) + 上(Bundle) 直接画（DefaultBlend）。</para>
+    /// <para>② RT 烘焙 Bundle：背景直绘 + 把 下+上(Bundle) 渲染进 RT，再把 RT 合成到屏幕（DefaultBlend 读预乘）。</para>
+    /// <para>③ 直绘 外部PNG：背景 + 下(外部原始PNG，绕开Bundle打包) + 上(Bundle) 直接画（DefaultBlend）。</para>
     /// <para>下层/上层用图集原图尺寸绘制（不拉伸），背景始终直绘。①③同为直绘、仅下层来源不同，用于对照白框清晰度。</para>
     /// </summary>
     public sealed class SimpleBlend : DemoScene
@@ -73,9 +73,9 @@ namespace KFramework.Test.WebGL20.Tests
             const int n = 3;
             float colW = (Device.Viewport.Width - x0 * 2 - gap * (n - 1)) / n;
             float colH = Device.Viewport.Height - top - 150f;
-            var cols = new Rectangle[n];
+            var cols = new RectangleF[n];
             for (int i = 0; i < n; i++)
-                cols[i] = new Rectangle((int)(x0 + i * (colW + gap)), (int)top, (int)colW, (int)colH);
+                cols[i] = new RectangleF(x0 + i * (colW + gap), top, colW, colH);
 
             // 懒创建/重建 RT（尺寸随列尺寸；仅尺寸变化时重建）
             int rw = (int)colW, rh = (int)colH;
@@ -94,7 +94,7 @@ namespace KFramework.Test.WebGL20.Tests
             DrawCentered(batch, _upTex, cols[0]);
             batch.End();
 
-            // —— ② RT 烘焙 Bundle：背景直绘 + 下+上(Bundle)进 RT → 上屏（AlphaBlend 读预乘）——
+            // —— ② RT 烘焙 Bundle：背景直绘 + 下+上(Bundle)进 RT → 上屏（DefaultBlend 读预乘）——
             batch.Begin(SpriteSortMode.Deferred, BlendState.DefaultBlend);
             batch.Draw(_bgTex, cols[1], null, BgColors[_bgIndex]); // 背景直绘（不参与 RT）
             batch.End();
@@ -134,13 +134,13 @@ namespace KFramework.Test.WebGL20.Tests
             Device.SetRenderTarget(null);
         }
 
-        // 按纹理原图宽高，在容器内居中绘制（不拉伸）。
-        private static void DrawCentered(SpriteBatch b, Texture2D tex, Rectangle container)
+        // 按纹理原图宽高，在容器内居中绘制（不拉伸）。容器为浮点 RectangleF，保留亚像素精度。
+        private static void DrawCentered(SpriteBatch b, Texture2D tex, RectangleF container)
         {
-            int w = tex.Width, h = tex.Height;
-            int x = container.X + (container.Width - w) / 2;
-            int y = container.Y + (container.Height - h) / 2;
-            b.Draw(tex, new Rectangle(x, y, w, h), null, Color.White);
+            float w = tex.Width, h = tex.Height;
+            float x = container.X + (container.Width - w) / 2;
+            float y = container.Y + (container.Height - h) / 2;
+            b.Draw(tex, new RectangleF(x, y, w, h), null, Color.White);
         }
     }
 }

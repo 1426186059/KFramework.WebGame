@@ -97,11 +97,11 @@ namespace KFramework.MonoGame
             float w = System.Math.Max(1f, lineH * 0.06f);
 
             batch.Draw(WhitePixel(device),
-                new Rectangle(
-                    bounds.X + (int)System.Math.Round(pos.X),
-                    bounds.Y + (int)System.Math.Round(pos.Y),
-                    (int)System.Math.Round(w),
-                    (int)System.Math.Round(lineH)),
+                new RectangleF(
+                    bounds.X + pos.X,
+                    bounds.Y + pos.Y,
+                    w,
+                    lineH),
                 null,
                 color);
         }

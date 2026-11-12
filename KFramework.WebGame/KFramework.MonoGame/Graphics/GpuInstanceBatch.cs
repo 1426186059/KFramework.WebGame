@@ -85,7 +85,7 @@ namespace KFramework.MonoGame
             return program;
         }
         
-        public void Draw(Texture2D texture, Rectangle? targetRectangle, Rectangle? sourceRectangle, Color color,
+        public void Draw(Texture2D texture, RectangleF? targetRectangle, Rectangle? sourceRectangle, Color color,
                          float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth = 0f)
         {
             ArgumentNullException.ThrowIfNull(texture);

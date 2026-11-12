@@ -182,7 +182,7 @@ namespace KFramework.MonoGame
         /// <see cref="SpriteBatch.Draw(Texture2D, Rectangle, Rectangle?, Color, float, Vector2, SpriteEffects, float)"/>
         /// 完全一致（targetRectangle 的 X/Y 是锚点落点、Width/Height 是基准尺寸，null = 落点在原点、尺寸取源尺寸；scale 在矩形尺寸之上再做额外缩放）。
         /// </summary>
-        public void Draw(Texture2D texture, Rectangle? targetRectangle, Rectangle? sourceRectangle, Color color, float rotation,
+        public void Draw(Texture2D texture, RectangleF? targetRectangle, Rectangle? sourceRectangle, Color color, float rotation,
                          Vector2 origin, Vector2 scale, SpriteEffects effects, float layerDepth = 0f)
         {
             ArgumentNullException.ThrowIfNull(texture);

@@ -11,7 +11,7 @@ namespace KFramework.MonoGameExtend
     internal static class SpriteBatchRectDraw
     {
         /// <summary>按目标矩形绘制一个精灵（位置取矩形左上角、尺寸按矩形 : 源矩形 缩放）。</summary>
-        internal static void DrawRect(this SpriteBatch batch, Texture2D texture, Rectangle destination,
+        internal static void DrawRect(this SpriteBatch batch, Texture2D texture, RectangleF? destination,
                                       Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin,
                                       SpriteEffects effects, float layerDepth)
             => batch.Draw(texture, destination, sourceRectangle, color, rotation, origin, null, effects, layerDepth);

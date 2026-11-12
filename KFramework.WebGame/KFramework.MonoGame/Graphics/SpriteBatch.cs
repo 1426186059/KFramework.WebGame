@@ -288,7 +288,7 @@ namespace KFramework.MonoGame
         /// </summary>
         public void Draw(
             Texture2D texture, 
-            Rectangle? targetRectangle, 
+            RectangleF? targetRectangle, 
             Rectangle? sourceRectangle, 
             Color color,
             float rotation = 0f, 
@@ -398,10 +398,8 @@ namespace KFramework.MonoGame
         public void DrawCentered(Texture2D texture, Vector2 center, Color color,
                                  float rotation = 0f, float scale = 1f, float layerDepth = 0f)
         {
-            // 中心点对齐：目标矩形的锚点落在 center，锚点取纹理中心 —— 于是精灵（含旋转）绕 center 摆。
-            var target = new Rectangle((int)MathF.Round(center.X), (int)MathF.Round(center.Y),
-                                       (int)MathF.Round(texture.Width * scale),
-                                       (int)MathF.Round(texture.Height * scale));
+            // 中心点对齐：目标矩形（浮点，不取整）的锚点落在 center，锚点取纹理中心 —— 精灵（含旋转）绕 center 摆，保留亚像素精度。
+            var target = new RectangleF(center.X, center.Y, texture.Width * scale, texture.Height * scale);
             Draw(texture, target, null, color, rotation,
                  new Vector2(texture.Width / 2f, texture.Height / 2f), null, SpriteEffects.None, layerDepth);
         }
