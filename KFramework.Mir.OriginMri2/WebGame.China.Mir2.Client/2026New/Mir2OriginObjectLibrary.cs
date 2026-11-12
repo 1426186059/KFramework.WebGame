@@ -129,7 +129,7 @@ public static class Mir2OriginObjectLibrary
     /// 查不到返回 false（调用方回落 SourceW/2）。</summary>
     public static bool TryGetStand(int model, int action, out int standx, out int standy)
         {
-            if (ExcelTableMgr.ModelInfos.TryGetValue((long)model * 1000 + action, out var r))
+            if (ExcelTableMgr.TryGetModelInfo(model, action, out var r))
             {
                 standx = (int)Math.Round(r.standx);
                 standy = (int)Math.Round(r.standy);
@@ -141,7 +141,7 @@ public static class Mir2OriginObjectLibrary
     /// <summary>查 (model, action) 的逐帧毫秒 intval（来自 2config.modelInfo 的 intval 字段）。</summary>
     public static bool TryGetInterval(int model, int action, out int interval)
         {
-            if (ExcelTableMgr.ModelInfos.TryGetValue((long)model * 1000 + action, out var r)) { interval = r.intval; return true; }
+            if (ExcelTableMgr.TryGetModelInfo(model, action, out var r)) { interval = r.intval; return true; }
             interval = 0; return false;
         }
 
@@ -470,11 +470,11 @@ public static class Mir2OriginObjectLibrary
     public static void PreloadModel(Mir2ObjectKind kind, int id, int priority = PriorityUser)
     {
         if (id <= 0) return;
-        if (ExcelTableMgr.ModelActions.TryGetValue(id, out var acts))
+        if (ExcelTableMgr.TryGetModelActions(id, out var acts) && acts != null)
         {
             foreach (var a in acts)
             {
-                int td = ExcelTableMgr.ModelInfos.TryGetValue((long)id * 1000 + a, out var r) ? r.totaldir : 8;
+                int td = ExcelTableMgr.TryGetModelInfo(id, a, out var r) ? r!.totaldir : 8;
                 int maxDir = td == 1 ? 4 : 7;
                 for (int d = 0; d <= maxDir; d++) Request(kind, id, a, d, priority);
             }
@@ -495,7 +495,7 @@ public static class Mir2OriginObjectLibrary
     public static void PreloadAction(Mir2ObjectKind kind, int id, int action, int priority = PriorityBackground)
     {
         if (id <= 0) return;
-        int td = ExcelTableMgr.ModelInfos.TryGetValue((long)id * 1000 + action, out var r) ? r.totaldir : DefaultTotalDir;
+        int td = ExcelTableMgr.TryGetModelInfo(id, action, out var r) ? r!.totaldir : DefaultTotalDir;
         int maxDir = td == 1 ? 4 : (td == 5 ? 4 : 7);
         for (int d = 0; d <= maxDir; d++) Request(kind, id, action, d, priority);
     }

@@ -326,13 +326,14 @@ namespace Client.MirObjects
         }
         public override void Draw()
         {
-            // 换表后 Image 是原始传奇 model 号（1000+），与 .Lib 图集无关。纯线上：origin 未就绪/缺失时不再回落 .Lib，直接不绘制。
+            // 换表后 Image 多为原始传奇 model 号（1000+），走 CDN 独立图集；但部分 NPC 的 Image 仍是经典 .Lib 索引
+            // （如 1827）被误当 origin 号，导致 origin 精灵缺失而不显示。故 origin 缺失时回落 .Lib 经典图集，保证 NPC 始终可见。
             // 2config.modelInfo 里 NPC 待机动作 totaldir=1，方向一律折叠到 NONE(=4)。
             bool drawnByCdn = false;
+            int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
+            int dir = Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.NPCTotalDir, (int)Direction);
             if (_originModel > 0)
             {
-                int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
-                int dir = Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.NPCTotalDir, (int)Direction);
                 Mir2OriginObjectLibrary.Request(Mir2ObjectKind.NPC, _originModel, action, dir, Mir2OriginObjectLibrary.PriorityVisible);
                 drawnByCdn = Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.NPC, _originModel, action, dir,
                                                                    FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour, scale: Scale);
@@ -341,6 +342,20 @@ namespace Client.MirObjects
                     drawnByCdn = Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.NPC, _originModel,
                                                                       Mir2OriginObjectLibrary.ActionStand, dir, 0,
                                                                       DrawLocation.X, DrawLocation.Y, DrawColour, scale: Scale);
+
+                // 名字/命中框定位：用 origin 真实绘制矩形覆盖 DisplayRectangle（origin NPC 脚底对齐 DrawLocation，
+                // 竖直延展约 standy 像素，否则名字会落在脚底附近）。
+                if (Mir2OriginObjectLibrary.TryGetDrawRect(Mir2ObjectKind.NPC, _originModel, action, dir, 0,
+                        DrawLocation.X, DrawLocation.Y, out var nrect, Scale))
+                    DisplayRectangle = new Rectangle(nrect.X, nrect.Y, nrect.Width, nrect.Height);
+            }
+
+            // origin 模型确实缺失（404 确认）时回落 .Lib 经典图集，保证 NPC 始终可见；
+            // 仅“未就绪/加载中”不回落，避免 origin 加载完成前的 .Lib 闪烁。
+            if (!drawnByCdn && BodyLibrary != null && Mir2OriginObjectLibrary.IsMissing(Mir2ObjectKind.NPC, _originModel, action, dir))
+            {
+                BodyLibrary.Draw(DrawFrame, DrawLocation, DrawColour, false);
+                drawnByCdn = true;
             }
 
             if (QuestIcon == QuestIcon.None) return;

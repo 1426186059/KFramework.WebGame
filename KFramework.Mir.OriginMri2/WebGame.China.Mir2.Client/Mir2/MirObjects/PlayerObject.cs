@@ -4773,6 +4773,13 @@ namespace Client.MirObjects
                 DrawLayer(PlayerXuanGuangModel()); // 旋光（type7，环绕光效）— 自身枢轴
                 DrawLayer(PlayerTitleModel());     // 称号（type3，头顶光环/称号）— 自身枢轴
                 DrawLayer(PlayerHuiJiModel());     // 徽记（type4，徽印）— 自身枢轴
+
+                // 名字/鼠标命中框定位用：origin 身体实际绘制在 DrawLocation 上方（脚底对齐 DrawLocation，
+                // 竖直延展约 standy 像素），而 DisplayRectangle 仍由 .Lib 以脚底为左上角设出，导致名字落在脚底附近。
+                // 用“站立帧”真实矩形覆盖 DisplayRectangle：站立姿势不随走路动画变化，名字稳定落在头顶上方（不会一帧帧抖）。
+                if (Mir2OriginObjectLibrary.TryGetDrawRect(Mir2ObjectKind.Player, bodyModel, Mir2OriginObjectLibrary.ActionStand, dir, 0,
+                        DrawLocation.X, DrawLocation.Y, out var bodyRect, 1f, mirror: (int)Direction >= 5))
+                    DisplayRectangle = new Rectangle(bodyRect.X, bodyRect.Y, bodyRect.Width, bodyRect.Height);
             }
 
 

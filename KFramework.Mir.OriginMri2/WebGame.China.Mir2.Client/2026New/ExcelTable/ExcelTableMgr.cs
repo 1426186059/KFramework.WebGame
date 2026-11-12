@@ -11,11 +11,12 @@ public static partial class ExcelTableMgr
     // 其他分片：兜底缓存为 JsonElement（供 GetTable 定位特定表）
     private static readonly Dictionary<int, JsonElement> _shards = new();
 
-    // ── 已加载的表（InitializeAsync 后填充）──
-    public static Dictionary<int, MapTable> Maps { get; private set; } = new();
-    public static Dictionary<long, ModelInfoTable> ModelInfos { get; private set; } = new();
-    public static Dictionary<int, List<int>> ModelActions { get; private set; } = new();
-    public static bool IsReady { get; private set; }
+    // ── 已加载的表（直接从 config DTO 派生，无需在 InitializeAsync 里单独赋值）──
+    // Maps 与 0config 的 map 表完全一致，直接返回。
+    public static Dictionary<int, MapTable> Maps => _config0?.map ?? new Dictionary<int, MapTable>();
+    // 模型枢轴/帧间隔/方向数/动作清单等查询见 partial 类 ExcelTableMgr.Func.cs（按 model+action 二维查询，
+    // 不再用 (long)model*1000+action 一维 long 键 hack）。
+    public static bool IsReady => _config0 != null && _config2 != null;
 
     /// <summary>
     /// 1) 预加载所需 config 分片（0config=map，2config=modelInfo 等），整文件反序列化为 DTO；
@@ -32,12 +33,8 @@ public static partial class ExcelTableMgr
             await PreloadShardsAsync(new[] { 0, 2 }, ct).ConfigureAwait(false);
 
             PrintTool.Log("[ExcelTableMgr] 配置表预加载完成");
-            // 2) 从 DTO 加载特定表
-            LoadMaps();
-            LoadModelInfo();
 
             PrintTool.Log("[ExcelTableMgr] IsReady True");
-            IsReady = true;
         }
         catch (Exception ex)
         {
@@ -88,40 +85,5 @@ public static partial class ExcelTableMgr
             return true;
         table = default;
         return false;
-    }
-
-    private static void LoadMaps()
-    {
-        if (_config0?.map == null) return;
-        var map = new Dictionary<int, MapTable>();
-        foreach (var kv in _config0.map)
-        {
-            if (kv.Value != null) map[kv.Key] = kv.Value;
-        }
-        Maps = map;
-    }
-
-    private static void LoadModelInfo()
-    {
-        if (_config2?.modelInfo == null) return;
-        var infos = new Dictionary<long, ModelInfoTable>();
-        var actions = new Dictionary<int, List<int>>();
-        foreach (var mkv in _config2.modelInfo)
-        {
-            int model = mkv.Key;
-            var al = new List<int>();
-            actions[model] = al;
-            foreach (var akv in mkv.Value)
-            {
-                int action = akv.Key;
-                if (akv.Value != null)
-                {
-                    infos[(long)model * 1000 + action] = akv.Value;
-                    al.Add(action);
-                }
-            }
-        }
-        ModelInfos = infos;
-        ModelActions = actions;
     }
 }
