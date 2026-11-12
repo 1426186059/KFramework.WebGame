@@ -2,15 +2,12 @@ namespace KFramework.MonoGame
 {
     public struct RectangleF : IEquatable<RectangleF>
     {
-        private static RectangleF emptyRectangle;
-
         public float X;
         public float Y;
         public float Width;
         public float Height;
 
-        public static RectangleF Empty => emptyRectangle;
-
+        public static RectangleF Empty => new RectangleF();
 
         public float Left { get { return X; } set { X = value; } }
         public float Right { get { return X + Width; } set { Width = value - X; } }
