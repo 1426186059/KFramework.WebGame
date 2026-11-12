@@ -1,7 +1,4 @@
-using KFramework.MonoGame;
-using System;
-
-namespace KFramework.MonoGameExtend
+namespace KFramework.MonoGame
 {
     public struct RectangleF : IEquatable<RectangleF>
     {
@@ -151,15 +148,7 @@ namespace KFramework.MonoGameExtend
             Y += amount.Y;
         }
 
-        //隐式转换
-
-        public static implicit operator Rectangle(RectangleF a)
-        {
-            return new Rectangle((int)a.X, (int)a.Y, (int)a.Width, (int)a.Height);
-        }
-
-        //强制 转换
-        public static explicit operator RectangleF(Rectangle a)
+        public static implicit operator RectangleF(Rectangle a)
         {
             return new RectangleF(a.X, a.Y, a.Width, a.Height);
         }
@@ -174,14 +163,9 @@ namespace KFramework.MonoGameExtend
             return !(a == b);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            if (obj is RectangleF)
-            {
-                return this == (RectangleF)obj;
-            }
-
-            return false;
+           return obj is RectangleF r && Equals(r);
         }
 
         public bool Equals(RectangleF other)
@@ -191,12 +175,12 @@ namespace KFramework.MonoGameExtend
 
         public override int GetHashCode()
         {
-            return (((17 * 23 + X.GetHashCode()) * 23 + Y.GetHashCode()) * 23 + Width.GetHashCode()) * 23 + Height.GetHashCode();
+            return HashCode.Combine(X, Y, Width, Height);
         }
 
         public override string ToString()
         {
-            return "{X:" + X + " Y:" + Y + " Width:" + Width + " Height:" + Height + "}";
+            return $"({X}, {Y}, {Width}, {Height})";
         }
     }
 }
