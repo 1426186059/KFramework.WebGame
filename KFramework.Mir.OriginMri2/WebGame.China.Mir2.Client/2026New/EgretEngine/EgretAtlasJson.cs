@@ -40,26 +40,33 @@ public sealed class EgretRectJson
 public sealed class EgretAtlasJson
 {
     /// <summary>同目录整页 PNG 文件名。</summary>
-    [JsonPropertyName("file")] public string File { get; set; }
+    [JsonPropertyName("file")] 
+    public string File { get; set; }
 
     /// <summary>模型图集自带的帧数提示，运行时不依赖它。</summary>
-    [JsonPropertyName("count")] public int? Count { get; set; }
+    [JsonPropertyName("count")] 
+    public int? Count { get; set; }
 
     /// <summary>
     /// frames 段：白鹭导出器会输出「按名字的字典」或「按帧序的数组」两种形态，
     /// 因此保留 JsonElement 原样，由下面两个方法按形态反序列化成强类型集合。
     /// 序列化时原样写回，不会把数组变成字典（或反过来）。
     /// </summary>
-    [JsonPropertyName("frames")] public JsonElement? Frames { get; set; }
+    [JsonPropertyName("frames")] 
+    public JsonElement? Frames { get; set; }
 
     /// <summary>MovieClip 图集的 res 段（结构与 UI 图集的 frames 字典等价）。</summary>
-    [JsonPropertyName("res")] public Dictionary<string, EgretRectJson> Res { get; set; }
+    [JsonPropertyName("res")] 
+    public Dictionary<string, EgretRectJson> Res { get; set; }
 
     /// <summary>frames 为字典形态时的强类型视图（反序列化时一次解析，之后运行时直接读）。</summary>
-    [JsonIgnore] public Dictionary<string, EgretRectJson> NamedFrames { get; private set; }
+    [JsonIgnore] 
+    public Dictionary<string, EgretRectJson> NamedFrames { get; private set; }
 
     /// <summary>frames 为数组形态时的强类型视图（反序列化时一次解析，之后运行时直接读）。</summary>
-    [JsonIgnore] public List<EgretRectJson> OrderedFrames { get; private set; }
+    [JsonIgnore] 
+    public List<EgretRectJson> OrderedFrames { get; private set; }
+
 
     public static EgretAtlasJson Deserialize(string json)
     {

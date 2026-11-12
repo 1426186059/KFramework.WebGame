@@ -79,19 +79,33 @@ public sealed class EgretAtlas
         var anchors = new Dictionary<string, Vector2>(StringComparer.OrdinalIgnoreCase);
 
         if (Json?.NamedFrames != null)
+        {
             foreach (var kv in Json.NamedFrames)
                 AddFrame(frames, anchors, kv.Key, kv.Value, true);
+            _frameNames = new List<string>(frames.Keys);
+            SortFrameNames(_frameNames); // 命名帧无固有播放顺序，排序仅为稳定取帧
+        }
         else if (Json?.OrderedFrames != null)
+        {
+            // 模型帧图集：frames 数组天然即播放顺序，按数组下标命名并【直接保序】，
+            // 不依赖字符串排序（否则 >10 帧时字典序会把 "10"/"11" 排到 "2" 之前而错乱）。
+            _frameNames = new List<string>();
             for (int i = 0; i < Json.OrderedFrames.Count; i++)
+            {
                 AddFrame(frames, anchors, i.ToString(), Json.OrderedFrames[i], false);
+                _frameNames.Add(i.ToString());
+            }
+        }
         else if (Json?.Res != null)
+        {
             foreach (var kv in Json.Res)
                 AddFrame(frames, anchors, kv.Key, kv.Value, true);
+            _frameNames = new List<string>(frames.Keys);
+            SortFrameNames(_frameNames);
+        }
 
         Frames = frames;
         Anchors = anchors;
-        _frameNames = new List<string>(frames.Keys);
-        _frameNames.Sort(StringComparer.Ordinal);
     }
 
     private void AddFrame(Dictionary<string, KSpriteInfo> frames, Dictionary<string, Vector2> anchors,
@@ -106,7 +120,18 @@ public sealed class EgretAtlas
         anchors[name] = named ? Vector2.Zero : new Vector2(r.OffX ?? 0, r.OffY ?? 0);
     }
 
-    /// <summary>按帧序取帧名：普通图集按帧名字典序（模型帧 "0","1"... 正好即播放顺序）。</summary>
+    /// <summary>帧名排序：若全部可解析为整数（模型帧 "0","1"...）则按数值顺序，否则按字典序（UI 图集命名帧）。
+    /// 修复原先一律字典序导致 "10"/"11" 排在 "2" 之前、>10 帧动画顺序错乱的问题。</summary>
+    private static void SortFrameNames(List<string> names)
+    {
+        if (names == null || names.Count == 0) return;
+        bool allInt = true;
+        foreach (var n in names) { if (!int.TryParse(n, out _)) { allInt = false; break; } }
+        if (allInt) names.Sort((a, b) => int.Parse(a).CompareTo(int.Parse(b)));
+        else names.Sort(StringComparer.Ordinal);
+    }
+
+    /// <summary>按帧序取帧名：OrderedFrames（模型帧）已是数组下标顺序；NamedFrames/Res 按字典序（无固有播放顺序）。</summary>
     public bool TryGetFrameName(int frameIndex, out string frameName)
     {
         frameName = null;
@@ -114,7 +139,7 @@ public sealed class EgretAtlas
         if (_frameNames == null)
         {
             _frameNames = new List<string>(Frames.Keys);
-            _frameNames.Sort(StringComparer.Ordinal);
+            SortFrameNames(_frameNames);
         }
         frameName = _frameNames[Math.Abs(frameIndex) % _frameNames.Count];
         return true;

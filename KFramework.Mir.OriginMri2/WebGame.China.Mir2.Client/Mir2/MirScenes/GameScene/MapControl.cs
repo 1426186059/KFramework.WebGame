@@ -39,16 +39,25 @@ public sealed class MapControl : MirControl
     public const int TileTexWidth = 512;
     public const int TileTexHeight = 256;
 
-    /// <summary>选中目标脚下显示的「选择环」贴图（程序化生成的白色圆环，绘制时染色）。
-    /// 按传奇经典风格新增：在所选敌人/玩家脚底画一个等距椭圆环。</summary>
-    private static KFramework.MonoGame.Texture2D _selectionRingTex;
-    private static KFramework.MonoGame.Texture2D SelectionRingTexture
+    /// <summary>选中目标脚下显示的脚底选中环（动画）。
+    /// 真实资源 = 原始传奇 CDN 的脚底特效图集：model 15033 / action 1 / dir 4 → 15033014.png（12 帧脉动动画），
+    /// 网页版选中 NPC / 怪物 / 玩家通用同一套脚底环。图集未就绪（加载中或缺失）时回落到程序化红环。</summary>
+    private const int RingModel = 15033;                  // 脚底选中环模型号
+    private const int RingAction = 1;                     // stand（与网页版 15033014 一致）
+    private const int RingDir = 4;                        // 该图集仅有 dir4 一帧方向集
+    private const float SelectionRingScale = 1.0f;        // 环宽 = SelectionRingScale 格（高按帧原比例）
+    private const int SelectionRingFrameMs = 90;          // 每帧时长(ms)，12 帧 ≈ 1.08s 循环
+    private static bool _ringRequested;
+    private static KFramework.MonoGame.Texture2D _proceduralRingTex;
+
+    /// <summary>程序化生成的白色圆环贴图，作为 CDN 图集未就绪时的回落。</summary>
+    private static KFramework.MonoGame.Texture2D ProceduralSelectionRingTexture
     {
         get
         {
-            if (_selectionRingTex == null)
-                _selectionRingTex = CreateSelectionRingTexture();
-            return _selectionRingTex;
+            if (_proceduralRingTex == null)
+                _proceduralRingTex = CreateSelectionRingTexture();
+            return _proceduralRingTex;
         }
     }
 
@@ -78,28 +87,57 @@ public sealed class MapControl : MirControl
         return DXManager.GDevice.CreateTexture(size, size, rgba);
     }
 
-    /// <summary>在指定对象脚底绘制等距椭圆选中环（不随 HighlightTarget 开关，选中即显示）。</summary>
+    /// <summary>在指定对象脚底绘制脚底选中环动画（不随 HighlightTarget 开关，选中即显示）。
+    /// 优先播放 CDN 图集 12 帧脉动动画（环心居中脚底、按帧原比例缩放），否则回落程序化红环。</summary>
     private void DrawSelectionRing(MapObject obj)
     {
         if (obj == null || obj.Dead) return;
-        var tex = SelectionRingTexture;
-        if (tex == null) return;
 
         // 脚底世界屏幕坐标：对象所在格左下中心（角色站立点）。
         int footX = obj.DrawLocation.X + CellWidth / 2;
         int footY = obj.DrawLocation.Y + CellHeight;
 
-        // 等距椭圆半轴：地面圆环宽:高 = CellWidth:CellHeight。
-        float semiW = CellWidth * 0.9f;
-        float semiH = CellHeight * 0.9f;
+        // 触发一次图集异步预取（去重由 Mir2OriginObjectLibrary 内部保证）。
+        if (!_ringRequested)
+        {
+            Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, RingModel, RingAction, RingDir, Mir2OriginObjectLibrary.PriorityVisible);
+            _ringRequested = true;
+        }
 
-        bool oldBlend = DXManager.Blending;
-        DXManager.SetBlend(false);
-        DXManager.Draw(tex,
-            new Rectangle(0, 0, tex.Width, tex.Height),
-            new RectangleF(footX - semiW, footY - semiH, semiW * 2, semiH * 2),
-            new SlimDX.Color4(0.9f, 1f, 0.15f, 0.15f)); // 经典红色，90% 不透明
-        DXManager.SetBlend(oldBlend);
+        // 播放脚底环动画：按时间推进帧，循环 12 帧（帧序已修复为数值顺序）。
+        if (Mir2OriginObjectLibrary.TryGetFrameCount(Mir2ObjectKind.Monster, RingModel, RingAction, RingDir, out int frameCount) && frameCount > 0)
+        {
+            int frame = (int)((System.Environment.TickCount / SelectionRingFrameMs) % frameCount);
+            if (Mir2OriginObjectLibrary.TryGetSprite(Mir2ObjectKind.Monster, RingModel, RingAction, RingDir, frame, out var sprite) && sprite != null)
+            {
+                var src = sprite.SourceRectangle;
+                int dw = (int)(CellWidth * SelectionRingScale);
+                int dh = (int)(dw * (src.Height / (float)src.Width)); // 保持图集帧原纵横比，避免环被压扁/拉宽
+                bool oldBlend = DXManager.Blending;
+                DXManager.SetBlend(false);
+                DXManager.Draw(sprite.Texture,
+                    new Rectangle(src.X, src.Y, src.Width, src.Height),
+                    new RectangleF(footX - dw / 2f, footY - dh / 2f, dw, dh),
+                    new SlimDX.Color4(1f, 1f, 1f, 1f)); // 贴图自带颜色，白色着色不偏色
+                DXManager.SetBlend(oldBlend);
+                return;
+            }
+        }
+
+        // 回落：程序化红色等距椭圆环（图集未就绪 / 加载失败）。
+        var ptex = ProceduralSelectionRingTexture;
+        if (ptex != null)
+        {
+            bool oldBlend = DXManager.Blending;
+            DXManager.SetBlend(false);
+            float semiW = CellWidth * 0.9f;
+            float semiH = CellHeight * 0.9f;
+            DXManager.Draw(ptex,
+                new Rectangle(0, 0, ptex.Width, ptex.Height),
+                new RectangleF(footX - semiW, footY - semiH, semiW * 2, semiH * 2),
+                new SlimDX.Color4(0.9f, 1f, 0.15f, 0.15f)); // 经典红色，90% 不透明
+            DXManager.SetBlend(oldBlend);
+        }
     }
 
     public static int OffSetX;
