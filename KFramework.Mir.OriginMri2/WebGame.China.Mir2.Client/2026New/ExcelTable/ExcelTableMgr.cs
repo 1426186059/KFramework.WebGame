@@ -1,15 +1,11 @@
 using KFramework.MonoGame;
-using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
 
 public static partial class ExcelTableMgr
 {
     // ── 预加载的 config 分片 ──
     // 0config / 2config：直接整文件反序列化为 DTO，避免逐条二次解析
-    private static OriginMir2Config0 _config0;
-    private static OriginMir2Config2 _config2;
-    // 其他分片：兜底缓存为 JsonElement（供 GetTable 定位特定表）
-    private static readonly Dictionary<int, JsonElement> _shards = new();
+    public static OriginMir2Config0 _config0;
+    public static OriginMir2Config2 _config2;
 
     // ── 已加载的表（直接从 config DTO 派生，无需在 InitializeAsync 里单独赋值）──
     // Maps 与 0config 的 map 表完全一致，直接返回。
@@ -53,8 +49,7 @@ public static partial class ExcelTableMgr
                 byte[] bytes = await Mir2OriginResource.GetConfigShardBytesAsync(shard, ct).ConfigureAwait(false);
                 PrintTool.Log("[ExcelTableMgr] PreloadShardsAsync 11111");
                 if (bytes == null || bytes.Length == 0) continue;
-                var options = new JsonSerializerOptions { TypeInfoResolver = new ConfigTypeInfoResolver() };
-                var info = (JsonTypeInfo<OriginMir2Config0>)options.GetTypeInfo(typeof(OriginMir2Config0))!;
+                var info = AppJsonContext.Default.OriginMir2Config0;
                 _config0 = JsonTool.FromJson<OriginMir2Config0>(System.Text.Encoding.UTF8.GetString(bytes), info);
             }
             else if (shard == 2)
@@ -64,26 +59,13 @@ public static partial class ExcelTableMgr
                 byte[] bytes = await Mir2OriginResource.GetConfigShardBytesAsync(shard, ct).ConfigureAwait(false);
                 PrintTool.Log("[ExcelTableMgr] PreloadShardsAsync 11111");
                 if (bytes == null || bytes.Length == 0) continue;
-                var options = new JsonSerializerOptions { TypeInfoResolver = new ConfigTypeInfoResolver() };
-                var info = (JsonTypeInfo<OriginMir2Config2>)options.GetTypeInfo(typeof(OriginMir2Config2))!;
+                var info = AppJsonContext.Default.OriginMir2Config2;
                 _config2 = JsonTool.FromJson<OriginMir2Config2>(System.Text.Encoding.UTF8.GetString(bytes), info);
             }
             else
             {
-                if (_shards.ContainsKey(shard)) continue;
-                byte[] bytes = await Mir2OriginResource.GetConfigShardBytesAsync(shard, ct).ConfigureAwait(false);
-                if (bytes == null || bytes.Length == 0) continue;
-                _shards[shard] = JsonElement.Parse(bytes);
+                
             }
         }
-    }
-
-    // 在已缓存的分片里取名为 tableName 的顶层表（用于未显式建 DTO 的分片）
-    private static bool GetTable(int shard, string tableName, out JsonElement table)
-    {
-        if (_shards.TryGetValue(shard, out var doc) && doc.TryGetProperty(tableName, out table))
-            return true;
-        table = default;
-        return false;
     }
 }
