@@ -17,6 +17,9 @@ namespace Client.MirObjects
         public static UserHeroObject Hero;
         public static HeroObject HeroObject;
         public static MapObject MouseObject, TargetObject, MagicObject;
+        // 脚底选中环的"当前选中对象"：点击任意可交互实体（NPC/怪物/玩家）即设为它，
+        // 单一变量天然互斥（新选中覆盖旧选中）；对象离场时由 Remove() 清理。
+        public static MapObject SelectionTarget;
 
         private static uint mouseObjectID;
         public static uint MouseObjectID
@@ -161,6 +164,7 @@ namespace Client.MirObjects
                 lastTargetObjectId = ObjectID;
             }
             if (MagicObject == this) MagicObjectID = 0;
+            if (SelectionTarget == this) SelectionTarget = null;
 
             if (this == User.NextMagicObject)
                 User.ClearMagic();

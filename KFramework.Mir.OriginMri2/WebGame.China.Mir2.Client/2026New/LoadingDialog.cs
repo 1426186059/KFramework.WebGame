@@ -163,6 +163,18 @@ namespace Client.MirControls
                 {
                     //PrintTool.LogError("[LoadingDialog] y_homeUI-sheet 预加载失败（不影响进入游戏）：" + ex);
                 }
+
+                // 非阻塞预加载脚底选中环图集（model 15033 / action 1 / dir 4）：
+                // 进游戏后选中 NPC/怪物/玩家即用，不计入进度、不阻塞进入游戏。
+                try
+                {
+                    Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, 15033, 1, 4, Mir2OriginObjectLibrary.PriorityVisible);
+                }
+                catch (System.Exception ex)
+                {
+                    //PrintTool.LogError("[LoadingDialog] 脚底选中环预加载触发失败（不影响进入游戏）：" + ex);
+                }
+
                 _loaded = 3;
                 _status = "加载完成，正在进入游戏…";
             }

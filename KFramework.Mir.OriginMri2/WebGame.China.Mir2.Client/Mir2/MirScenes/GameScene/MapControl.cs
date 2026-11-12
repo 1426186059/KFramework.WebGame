@@ -45,7 +45,6 @@ public sealed class MapControl : MirControl
     private const int RingModel = 15033;                  // 脚底选中环模型号
     private const int RingAction = 1;                     // stand（与网页版 15033014 一致）
     private const int RingDir = 4;                        // 该图集仅有 dir4 一帧方向集
-    private const float SelectionRingScale = 1.0f;        // 环宽 = SelectionRingScale 格（高按帧原比例）
     private const int SelectionRingFrameMs = 90;          // 每帧时长(ms)，12 帧 ≈ 1.08s 循环
     private static bool _ringRequested;
     private static KFramework.MonoGame.Texture2D _proceduralRingTex;
@@ -93,9 +92,10 @@ public sealed class MapControl : MirControl
     {
         if (obj == null || obj.Dead) return;
 
-        // 脚底世界屏幕坐标：对象所在格左下中心（角色站立点）。
-        int footX = obj.DrawLocation.X + CellWidth / 2;
-        int footY = obj.DrawLocation.Y + CellHeight;
+        // 脚底世界屏幕坐标：引擎的 DrawLocation 即对象「模型参考点/脚底基准」（水平中心 X、脚底 Y），
+        // 直接用，不要再 +CellWidth/2 / +CellHeight（会把环往右下拉偏）。
+        int footX = obj.DrawLocation.X;
+        int footY = obj.DrawLocation.Y;
 
         // 触发一次图集异步预取（去重由 Mir2OriginObjectLibrary 内部保证）。
         if (!_ringRequested)
@@ -107,17 +107,16 @@ public sealed class MapControl : MirControl
         // 播放脚底环动画：按时间推进帧，循环 12 帧（帧序已修复为数值顺序）。
         if (Mir2OriginObjectLibrary.TryGetFrameCount(Mir2ObjectKind.Monster, RingModel, RingAction, RingDir, out int frameCount) && frameCount > 0)
         {
-            int frame = (int)((System.Environment.TickCount / SelectionRingFrameMs) % frameCount);
+            int frame = (int)((CMain.Time / SelectionRingFrameMs) % frameCount);
             if (Mir2OriginObjectLibrary.TryGetSprite(Mir2ObjectKind.Monster, RingModel, RingAction, RingDir, frame, out var sprite) && sprite != null)
             {
                 var src = sprite.SourceRectangle;
-                int dw = (int)(CellWidth * SelectionRingScale);
-                int dh = (int)(dw * (src.Height / (float)src.Width)); // 保持图集帧原纵横比，避免环被压扁/拉宽
                 bool oldBlend = DXManager.Blending;
                 DXManager.SetBlend(false);
+                // 原尺寸 1:1 显示（不缩放），环心居中脚底。
                 DXManager.Draw(sprite.Texture,
                     new Rectangle(src.X, src.Y, src.Width, src.Height),
-                    new RectangleF(footX - dw / 2f, footY - dh / 2f, dw, dh),
+                    new RectangleF(footX - src.Width / 2f, footY - src.Height / 2f, src.Width, src.Height),
                     new SlimDX.Color4(1f, 1f, 1f, 1f)); // 贴图自带颜色，白色着色不偏色
                 DXManager.SetBlend(oldBlend);
                 return;
@@ -940,11 +939,9 @@ public sealed class MapControl : MirControl
                 MapObject.TargetObject.DrawBlend();
         }
 
-        // 选中目标脚下显示经典选择环（敌人/玩家均可，不依赖 HighlightTarget 开关）。
-        // 走位时左键点地面会清空 TargetObject，但雷电术等远程攻击仍走 MagicObject，
-        // 因此这里以"实际战斗目标"= TargetObject ?? MagicObject 作为环的载体，保证边走边打时环不丢。
-        var sel = MapObject.TargetObject;
-        if (sel == null || sel.Dead) sel = MapObject.MagicObject;
+        // 脚底环只跟随"当前选中对象"SelectionTarget（点击任意可交互实体即设为它，单一变量天然互斥），
+        // 走路/施法期间回落到 MagicObject，保证边走边打时环不丢。
+        var sel = MapObject.SelectionTarget ?? MapObject.MagicObject;
         if (sel != null && !sel.Dead) DrawSelectionRing(sel);
 
         if (Settings.Effect)
@@ -1006,6 +1003,7 @@ public sealed class MapControl : MirControl
                     NPCObject npc = MapObject.MouseObject as NPCObject;
                     if (npc != null)
                     {
+                        MapObject.SelectionTarget = npc; // 选定 NPC：单一变量覆盖旧选中（互斥），脚底环随之移到 NPC
                         // 城市传送员：自定义分类传送对话框（开关 TeleporterData.UseCustomDialog，默认关，暂用原 NPC 脚本菜单）。
                         if (TeleporterData.UseCustomDialog && TeleporterData.IsCityTeleporter(npc.Name))
                         {
@@ -1175,6 +1173,7 @@ public sealed class MapControl : MirControl
              && !(MapObject.MouseObject is MonsterObject && MapObject.MouseObject.AI == 70))
         {
             MapObject.TargetObjectID = MapObject.MouseObject.ObjectID;
+            MapObject.SelectionTarget = MapObject.MouseObject; // 选定怪物/玩家：覆盖旧选中（互斥）
             if (MapObject.MouseObject is MonsterObject && MapObject.MouseObject.AI != 6)
                 MapObject.MagicObjectID = MapObject.TargetObject.ObjectID;
         }
