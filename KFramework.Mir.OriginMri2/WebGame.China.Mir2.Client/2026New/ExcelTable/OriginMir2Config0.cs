@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 /// <summary>整个 0config 分片 JSON 的 DTO。map 键为数字字符串，System.Text.Json 会自动转 int 字典键。</summary>
-public class OriginMir2Config0Table
+public class OriginMir2Config0
 {
     // 地图 id → 记录（MapTable）
     [JsonPropertyName("map")]

@@ -15,8 +15,8 @@ using System.Text.Json.Serialization;
 [JsonSerializable(typeof(TextMap))]
 [JsonSerializable(typeof(MapTable))]
 [JsonSerializable(typeof(ModelInfoTable))]
-[JsonSerializable(typeof(OriginMir2Config2Table))]
-[JsonSerializable(typeof(OriginMir2Config0Table))]
+[JsonSerializable(typeof(OriginMir2Config2))]
+[JsonSerializable(typeof(OriginMir2Config0))]
 
 // 图集 JSON 核心数据：普通图集 / MovieClip 图集及其嵌套类型与 frames 的两种集合形态。
 [JsonSerializable(typeof(EgretAtlasJson))]

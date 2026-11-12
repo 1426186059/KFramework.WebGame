@@ -6,8 +6,8 @@ public static partial class ExcelTableMgr
 {
     // ── 预加载的 config 分片 ──
     // 0config / 2config：直接整文件反序列化为 DTO，避免逐条二次解析
-    private static OriginMir2Config0Table _config0;
-    private static OriginMir2Config2Table _config2;
+    private static OriginMir2Config0 _config0;
+    private static OriginMir2Config2 _config2;
     // 其他分片：兜底缓存为 JsonElement（供 GetTable 定位特定表）
     private static readonly Dictionary<int, JsonElement> _shards = new();
 
@@ -57,8 +57,8 @@ public static partial class ExcelTableMgr
                 PrintTool.Log("[ExcelTableMgr] PreloadShardsAsync 11111");
                 if (bytes == null || bytes.Length == 0) continue;
                 var options = new JsonSerializerOptions { TypeInfoResolver = new ConfigTypeInfoResolver() };
-                var info = (JsonTypeInfo<OriginMir2Config0Table>)options.GetTypeInfo(typeof(OriginMir2Config0Table))!;
-                _config0 = JsonTool.FromJson<OriginMir2Config0Table>(System.Text.Encoding.UTF8.GetString(bytes), info);
+                var info = (JsonTypeInfo<OriginMir2Config0>)options.GetTypeInfo(typeof(OriginMir2Config0))!;
+                _config0 = JsonTool.FromJson<OriginMir2Config0>(System.Text.Encoding.UTF8.GetString(bytes), info);
             }
             else if (shard == 2)
             {
@@ -68,8 +68,8 @@ public static partial class ExcelTableMgr
                 PrintTool.Log("[ExcelTableMgr] PreloadShardsAsync 11111");
                 if (bytes == null || bytes.Length == 0) continue;
                 var options = new JsonSerializerOptions { TypeInfoResolver = new ConfigTypeInfoResolver() };
-                var info = (JsonTypeInfo<OriginMir2Config2Table>)options.GetTypeInfo(typeof(OriginMir2Config2Table))!;
-                _config2 = JsonTool.FromJson<OriginMir2Config2Table>(System.Text.Encoding.UTF8.GetString(bytes), info);
+                var info = (JsonTypeInfo<OriginMir2Config2>)options.GetTypeInfo(typeof(OriginMir2Config2))!;
+                _config2 = JsonTool.FromJson<OriginMir2Config2>(System.Text.Encoding.UTF8.GetString(bytes), info);
             }
             else
             {
