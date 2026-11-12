@@ -30,14 +30,16 @@ public sealed class ResourceVersionJson
         if (string.IsNullOrEmpty(json)) return null;
         try
         {
-            var entries = KFramework.MonoGame.JsonTool.FromJson(
-                json, AppJsonContext.Default.ResourceVersionDictionary);
-            return entries == null
-                ? null
-                : new ResourceVersionJson
-                {
-                    Entries = new Dictionary<string, string>(entries, StringComparer.OrdinalIgnoreCase)
-                };
+            // 用 JsonDocument 手解析（AOT/裁剪安全，不依赖反射式 JsonSerializer，
+            // 也不依赖源生成对 Dictionary<string,string> 的注册——后者在本 WASM 构建里会返回 null）。
+            using var doc = JsonDocument.Parse(json);
+            var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var prop in doc.RootElement.EnumerateObject())
+            {
+                if (prop.Value.ValueKind == JsonValueKind.String)
+                    dict[prop.Name] = prop.Value.GetString();
+            }
+            return new ResourceVersionJson { Entries = dict };
         }
         catch (JsonException) { return null; }
     }

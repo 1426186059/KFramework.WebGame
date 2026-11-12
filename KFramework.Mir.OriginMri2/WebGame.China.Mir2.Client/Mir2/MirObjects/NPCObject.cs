@@ -32,6 +32,11 @@ namespace Client.MirObjects
         /// <summary>非零 = NPCInfo.Image 是原始传奇 model 号，走 Mir2OriginObjectLibrary 的独立图集。</summary>
         private int _originModel;
 
+        /// <summary>经典兜底诊断去重：每个 origin model 只打一次日志，定位“名字在、精灵没有”的根因。</summary>
+        private static readonly System.Collections.Generic.Dictionary<int, int> _npcFallbackLogged = new();
+        /// <summary>1827/1910 绘制诊断去重：CDN 资源确认存在，记录实际绘制屏幕矩形与脚点，确认是否被推到屏幕外。</summary>
+        private static readonly System.Collections.Generic.Dictionary<int, int> _npcDrawDiag = new();
+
         /// <summary>后台懒预取：把自己当前动作的各方向暖好（低优先级，空闲才下）。</summary>
         public override void PrefetchBackground()
         {
@@ -73,7 +78,7 @@ namespace Client.MirObjects
             Quests = GameScene.QuestInfoList.Where(c => c.NPCIndex == ObjectID).ToList();
 
             Image = info.Image;
-            Scale = info.Scale;
+            Scale = info.Scale > 0 ? info.Scale : 1f; // 数据未配置缩放（ScalePercent=0）时回落默认 1；否则按 0 缩放会渲染成 1px 不可见
             Colour = info.Colour;
 
             // 换成原始传奇 NPC 表后 Image 就是页游 model 号（如 医师=1078）；旧表只有 0~185，
@@ -350,15 +355,31 @@ namespace Client.MirObjects
                 {
                     DisplayRectangle = new Rectangle(nrect.X, nrect.Y, nrect.Width, nrect.Height);
                     DrawRectangleMarker(DisplayRectangle);
+                    // 调试：1827/1910 资源已确认在 CDN 上存在（含版本目录与图集），此处记录实际绘制屏幕矩形与脚点，确认是否被推到屏幕外。
+                    if ((_originModel == 1827 || _originModel == 1910) && !_npcDrawDiag.ContainsKey(_originModel))
+                    {
+                        _npcDrawDiag[_originModel] = 1;
+                        CMain.SaveError($"[NPC1827诊断] model={_originModel} drawnByCdn={drawnByCdn} nrect=({nrect.X},{nrect.Y},{nrect.Width},{nrect.Height}) DrawLoc=({DrawLocation.X},{DrawLocation.Y}) Scale={Scale}");
+                    }
                 }
                 // 调试：在脚底基准 DrawLocation 画红圈，核对模型是否偏移。
                 DrawLocationMarker(DrawLocation);
             }
 
-            // origin 模型确实缺失（404 确认）时回落 .Lib 经典图集，保证 NPC 始终可见；
-            // 仅“未就绪/加载中”不回落，避免 origin 加载完成前的 .Lib 闪烁。
-            if (!drawnByCdn && BodyLibrary != null && Mir2OriginObjectLibrary.IsMissing(Mir2ObjectKind.NPC, _originModel, action, dir))
+            // origin 没画出来时回落 .Lib 经典图集，保证 NPC 始终可见。
+            // 不再用 IsPending 卡门：origin 请求若挂起（既不 404 也不完成）会永久挡住兜底而整只不显示；
+            // 直接“origin 没画就落经典”，origin 真正就绪的那一帧 drawnByCdn 会先置 true 跳过此处（仅加载期可能短暂闪一下）。
+            if (!drawnByCdn && BodyLibrary != null)
             {
+                if (!_npcFallbackLogged.ContainsKey(_originModel))
+                {
+                    _npcFallbackLogged[_originModel] = 1;
+                    bool missing = Mir2OriginObjectLibrary.IsMissing(Mir2ObjectKind.NPC, _originModel, action, dir)
+                                || Mir2OriginObjectLibrary.IsMissing(Mir2ObjectKind.NPC, _originModel, Mir2OriginObjectLibrary.ActionStand, dir);
+                    bool pending = Mir2OriginObjectLibrary.IsPending(Mir2ObjectKind.NPC, _originModel, action, dir)
+                                || Mir2OriginObjectLibrary.IsPending(Mir2ObjectKind.NPC, _originModel, Mir2OriginObjectLibrary.ActionStand, dir);
+                    CMain.SaveError($"[NPC兜底] 名={Name} model={_originModel} Image={Image} NPCsLen={Libraries.NPCs.Length} 落Flags={Image >= Libraries.NPCs.Length} missing={missing} pending={pending} DrawFrame={DrawFrame}");
+                }
                 BodyLibrary.Draw(DrawFrame, DrawLocation, DrawColour, false);
                 drawnByCdn = true;
             }
@@ -387,6 +408,9 @@ namespace Client.MirObjects
                     && p.X >= krect.X && p.X < krect.X + krect.Width
                     && p.Y >= krect.Y && p.Y < krect.Y + krect.Height)
                     return true;
+                // origin 未就绪/缺失（回落经典 .Lib）时，用经典图集做命中检测，保证可见即可点击。
+                if (BodyLibrary != null)
+                    return BodyLibrary.VisiblePixel(DrawFrame, p.Subtract(FinalDrawLocation), false);
                 return false;
             }
 

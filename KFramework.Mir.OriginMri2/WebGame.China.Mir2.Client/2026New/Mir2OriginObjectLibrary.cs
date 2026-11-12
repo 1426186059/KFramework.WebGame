@@ -180,11 +180,23 @@ public static class Mir2OriginObjectLibrary
 
                 _versions = dict;
                 _versionsReady = true;
+                // 版本表就绪后，清掉此前因“缺版本段而 404 被锁”的缺失标记（如 1827/1910 这类带版本目录的模型），
+                // 让它们立即用带版本段的 URL 重试；否则会被 _missing 锁 MissingTtlMs，期间一直不可见。
+                _missing.Clear();
+                _loggedMissing.Clear();
+                string v1827 = GetVersion("model/1827");
+                string v1910 = GetVersion("model/1910");
+                KFramework.MonoGame.PrintTool.LogError(
+                    $"[版本表] 就绪：{dict.Count} 条（model/1827={v1827} model/1910={v1910}）");
                 return;
             }
             catch (OperationCanceledException) { throw; }
-            catch { /* 换下一个分版参数重试 */ }
+            catch (Exception ex)
+            {
+                KFramework.MonoGame.PrintTool.LogError($"[版本表] 加载异常 suffix={suffix}：{ex.Message}");
+            }
         }
+        KFramework.MonoGame.PrintTool.LogError("[版本表] 全部分版参数加载失败，版本段路径不可用，model 类资源将走无版本段路径（可能 404）。");
     }
 
     /// <summary>查资源版本号；查不到返回 null（走无版本段路径）。</summary>
@@ -504,6 +516,15 @@ public static class Mir2OriginObjectLibrary
     public static bool IsMissing(Mir2ObjectKind kind, int id, int action = ActionStand, int direction = 0)
         => IsMissing(CacheKey(kind, id, action, direction));
 
+    /// <summary>该 (kind,id,action,dir) 图集是否仍在异步加载中（尚未成功、也未确认缺失）。</summary>
+    public static bool IsPending(Mir2ObjectKind kind, int id, int action = ActionStand, int direction = 0)
+    {
+        var key = CacheKey(kind, id, action, direction);
+        if (IsMissing(key)) return false;
+        if (_sheets.TryGetValue(key, out var t) && t != null && !t.IsCompletedSuccessfully) return true;
+        return false;
+    }
+
     // ===================== 统一取帧 / 绘制 =====================
 
     /// <summary>
@@ -635,18 +656,16 @@ public static class Mir2OriginObjectLibrary
             cx = sheet.SourceW > 0 ? sheet.SourceW / 2 : src.Width / 2;
             cy = sheet.SourceH > 0 ? sheet.SourceH / 2 : src.Height / 2;
         }
-        int x = screenX + ox - cx;
-        int y = screenY + oy - cy;
-
-        // 按 scale 缩放：水平中心保持不变，脚底(底边)锚定到 (screenX,screenY)，缩放时不上下漂移。
+        // 按 scale 缩放：把“注册点(cx,cy)在画布中的像素位置”映射到屏幕 (screenX,screenY)，
+        // 任意 scale 下都精确对齐角色点（旧公式只在“注册点=画布中心”时正确，scale!=1 时整只偏移出屏幕）。
         int dw = (int)Math.Round(src.Width * scale);
         int dh = (int)Math.Round(src.Height * scale);
-        int dx = x + (src.Width - dw) / 2;
-        // 镜像（仅 5 向模型回落路径会走到这里）：把目标矩形整体以 screenX 为轴镜像，脚底保持不动；
+        int dx = (int)Math.Round(screenX + (ox - cx) * scale);
+        // 镜像（仅 5 向模型回落路径会走到这里）：把目标矩形整体以 screenX 为轴镜像，注册点保持不动；
         // DXManager.Draw 的 FlipHorizontally 在矩形内翻面，二者合起来即绕角色点翻。
         if (flip)
             dx = 2 * screenX - dx - dw;
-        int dy = y + (src.Height - dh);
+        int dy = (int)Math.Round(screenY + (oy - cy) * scale);
         DXManager.Draw(sprite.Texture, src, new Rectangle(dx, dy, Math.Max(1, dw), Math.Max(1, dh)),
                        colour ?? KFramework.MonoGame.Color.White, MirBlend.Normal.ToBlendState(), drawEffects);
         return true;
@@ -723,13 +742,11 @@ public static class Mir2OriginObjectLibrary
             cx = sheet.SourceW > 0 ? sheet.SourceW / 2 : src.Width / 2;
             cy = sheet.SourceH > 0 ? sheet.SourceH / 2 : src.Height / 2;
         }
-        int x = screenX + ox - cx;
-        int y = screenY + oy - cy;
         int dw = (int)Math.Round(src.Width * scale);
         int dh = (int)Math.Round(src.Height * scale);
-        int dx = x + (src.Width - dw) / 2;
+        int dx = (int)Math.Round(screenX + (ox - cx) * scale);
         if (flip) dx = 2 * screenX - dx - dw;
-        int dy = y + (src.Height - dh);
+        int dy = (int)Math.Round(screenY + (oy - cy) * scale);
         rect = new Rectangle(dx, dy, Math.Max(1, dw), Math.Max(1, dh));
         return true;
     }

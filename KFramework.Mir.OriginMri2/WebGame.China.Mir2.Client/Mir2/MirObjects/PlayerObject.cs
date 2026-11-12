@@ -4726,12 +4726,13 @@ namespace Client.MirObjects
                 // 局部：绘制一个 origin 层（请求+锚定绘制）。每层用自己的 standx/standy（来自 2config.modelInfo），
                 // 各部件按自身枢轴对齐角色点、自然合成正确人形；不强制共享单一枢轴
                 // （之前强制成盔甲注册点会把武器/护肩等彼此错开，模型“散架/画歪”）。
-                void DrawLayer(int m)
+                // 头发/头部饰品应使用身体的枢轴（见 bodySx/bodySy），其余部件保持自身枢轴。
+                void DrawLayer(int m, int? sx = null, int? sy = null)
                 {
                     if (m <= 0) return;
                     int pr = (this == User) ? Mir2OriginObjectLibrary.PriorityUser : Mir2OriginObjectLibrary.PriorityVisible;
                     Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Player, m, action, dir, pr);
-                    Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Player, m, action, dir, FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour, fx);
+                    Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Player, m, action, dir, FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour, fx, standX: sx, standY: sy);
                 }
                 // 分层顺序（底→顶）：法阵→足迹→坐骑→翅膀→披风(后)→身体→护肩/玉佩/勋章/斗笠/面纱(覆盖)→武器→护盾(副手)→疗伤石→旋光/称号/徽记(顶)
                 DrawLayer(PlayerZhenfaModel());    // 法阵（type5，地面法阵）
@@ -4751,15 +4752,28 @@ namespace Client.MirObjects
                     }
                     bodyModel = naked;
                 }
-                DrawLayer(PlayerPiFengModel());    // 披风（背后，自身枢轴）
-                DrawLayer(bodyModel);              // 身体（中，含装扮覆盖，自身枢轴）
+                // 角色主体层（身体/头发/头部饰品）以【身体】为枢轴基准对齐角色点（身体为准，头发跟随）。
+                // 身体优先用自己的 stand；装备铠甲(9027)等缺 stand 时回落裸身 9001/9002 的 stand（必有），
+                // 避免回落画布中心导致身体歪、而头发用自己的 stand 又与身体错开。
+                // 头发/头部饰品（斗笠/面纱）跟随身体枢轴；披风为背后独立层，用自身枢轴（强制共用会让披风/武器错开、模型散架）。
+                int baseBody = Gender == MirGender.Female ? 9002 : 9001;
+                int charSx, charSy;
+                if (!Mir2OriginObjectLibrary.TryGetStand(bodyModel, action, out charSx, out charSy)
+                    && !Mir2OriginObjectLibrary.TryGetStand(baseBody, action, out charSx, out charSy))
+                {
+                    // 裸身也缺（如女性 9002 不在 stand 表）：用男裸身 9001 的枢轴作通用兜底（同虚拟画布，脚底基准一致）。
+                    Mir2OriginObjectLibrary.TryGetStand(9001, action, out charSx, out charSy);
+                }
+                int hairModel = PlayerHairModel();
+                DrawLayer(PlayerPiFengModel());                    // 披风（自身枢轴，不跟随身体）
+                DrawLayer(bodyModel, charSx, charSy);              // 身体（中，含装扮覆盖）
                 // 头发/护肩/玉佩/勋章/斗笠/面纱/武器/护盾：各自用自身 standx/standy，与身体按角色点自然对齐。
-                DrawLayer(PlayerHairModel());     // 头发（叠在光头身体之上，位于斗笠/面纱之下）
+                DrawLayer(hairModel, charSx, charSy);              // 头发（叠在光头身体之上，位于斗笠/面纱之下）
                 DrawLayer(PlayerHuJianModel());    // 护肩
                 DrawLayer(PlayerYuPeiModel());     // 玉佩
                 DrawLayer(PlayerXunZhangModel());  // 勋章（荣誉勋章）
-                DrawLayer(PlayerDouLiModel());     // 斗笠（头部）
-                DrawLayer(PlayerMianShaModel());   // 面纱（面部）
+                DrawLayer(PlayerDouLiModel(), charSx, charSy);     // 斗笠（头部，与身体同画布）
+                DrawLayer(PlayerMianShaModel(), charSx, charSy);   // 面纱（面部，与身体同画布）
                 DrawLayer(PlayerWeaponModel());    // 武器（前，含幻武覆盖）
                 DrawLayer(PlayerHuDunModel());     // 护盾（副手）
                 DrawLayer(PlayerLiaoShangModel()); // 疗伤石（无精灵，保留）— 自身枢轴
@@ -4771,7 +4785,7 @@ namespace Client.MirObjects
                 // 各层已恢复各自 standx/standy，身体层用的就是它自己的注册点，命中框据此计算即贴合身体。
                 // 名字定位已改到 MapObject.DrawName 里相对脚底基准 DrawLocation 固定定位，不依赖此处。
                 if (Mir2OriginObjectLibrary.TryGetDrawRect(Mir2ObjectKind.Player, bodyModel, action, dir, FrameIndex,
-                        DrawLocation.X, DrawLocation.Y, out var bodyRect, 1f, mirror: (int)Direction >= 5))
+                        DrawLocation.X, DrawLocation.Y, out var bodyRect, 1f, mirror: (int)Direction >= 5, standX: charSx, standY: charSy))
                 {
                     DisplayRectangle = new Rectangle(bodyRect.X, bodyRect.Y, bodyRect.Width, bodyRect.Height);
                     DrawRectangleMarker(DisplayRectangle);
