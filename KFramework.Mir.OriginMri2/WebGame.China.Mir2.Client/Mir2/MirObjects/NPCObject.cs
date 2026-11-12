@@ -347,7 +347,12 @@ namespace Client.MirObjects
                 // 名字定位已改到 MapObject.DrawName 里相对脚底基准 DrawLocation 固定定位，不依赖此处。
                 if (Mir2OriginObjectLibrary.TryGetDrawRect(Mir2ObjectKind.NPC, _originModel, action, dir, FrameIndex,
                         DrawLocation.X, DrawLocation.Y, out var nrect, Scale))
+                {
                     DisplayRectangle = new Rectangle(nrect.X, nrect.Y, nrect.Width, nrect.Height);
+                    DrawRectangleMarker(DisplayRectangle);
+                }
+                // 调试：在脚底基准 DrawLocation 画红圈，核对模型是否偏移。
+                DrawLocationMarker(DrawLocation);
             }
 
             // origin 模型确实缺失（404 确认）时回落 .Lib 经典图集，保证 NPC 始终可见；

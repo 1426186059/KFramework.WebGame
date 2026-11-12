@@ -577,16 +577,12 @@ public static class Mir2OriginObjectLibrary
                                     SpriteEffects effects = SpriteEffects.None, float scale = 1f,
                                     int? standX = null, int? standY = null)
     {
-        // 该页游资源为 8 方向独立精灵：逻辑方向 5/6/7 在 CDN 上各自有真帧，并非“5 向 + 运行时翻面”。
-        // 翻面请求时，若对应的 8 向真帧已就绪（或尚未拉取），则直接用它、不再运行时翻面，
-        // 避免“翻出来的 3/2/1 镜像”与“真正的 5/6/7 姿势”不一致导致的转身跳变。
-        // 若 8 向真帧确实缺失（5 向模型），回落到原 5 向镜像逻辑，行为不变。
+        // 与 24 小时前一致：8 方向精灵，逻辑方向 5/6/7 用镜像方向(8-direction)的真帧回落（经典做法），
+        // 若该 8 向真帧就绪则直接用、不翻面；否则保持翻面。
         int loadDir = direction;
         bool flip = (effects & SpriteEffects.FlipHorizontally) != 0;
         if (flip)
         {
-            // 8 向独立精灵：逻辑方向 5/6/7 在 CDN 各自有真帧。把镜像请求改写成对应 8 向真帧（rawDir），
-            // 交给下方统一逻辑加载/绘制；若该 8 向真帧确已 404（5 向模型），_missing 命中后回落镜像。
             int rawDir = 8 - direction;
             var key8 = CacheKey(kind, id, action, rawDir);
             bool has8 = _sheets.TryGetValue(key8, out var s8) && s8 != null && s8.IsCompletedSuccessfully
@@ -684,7 +680,7 @@ public static class Mir2OriginObjectLibrary
         rect = default(Rectangle);
         if (kind == Mir2ObjectKind.Item) return false;
 
-        // 与 DrawAnchored 一致：优先用 8 向真帧，否则回落 5 向镜像。
+        // 与 DrawAnchored 完全一致（含 24 小时前的 rawDir 方向解析）：8 向真帧优先、否则镜像回落。
         int loadDir = direction;
         bool flip = mirror;
         if (flip)

@@ -449,6 +449,41 @@ namespace Client.MirObjects
             }
             NameLabel.Draw();
         }
+
+        // 调试可视化：在对象的 DrawLocation（模型参考点/脚底基准）画一个红色圆圈，
+        // 便于核对“模型实际画出来的位置”是否偏离了这个基准点（用来查模型画歪/偏移）。
+        public static bool DebugShowDrawLocation = true;
+        public static void DrawLocationMarker(Point p)
+        {
+            if (!DebugShowDrawLocation) return;
+            const int r = 7;
+            const int seg = 28;
+            var pts = new SlimDX.Vector2[seg + 1];
+            for (int i = 0; i <= seg; i++)
+            {
+                double a = i * 2.0 * Math.PI / seg;
+                pts[i] = new SlimDX.Vector2(p.X + (float)(r * Math.Cos(a)), p.Y + (float)(r * Math.Sin(a)));
+            }
+            DXManager.DrawLines(pts, 2f, MirEngine.Color.Red);
+        }
+
+        // 调试可视化：把点击区域 DisplayRectangle 画成绿色矩形轮廓，便于核对命中框是否与模型贴合。
+        public static void DrawRectangleMarker(Rectangle rect)
+        {
+            if (!DebugShowDrawLocation) return;
+            if (rect.Width <= 0 || rect.Height <= 0) return;
+            int x = rect.X, y = rect.Y, w = rect.Width, h = rect.Height;
+            var pts = new SlimDX.Vector2[]
+            {
+                new SlimDX.Vector2(x, y),
+                new SlimDX.Vector2(x + w, y),
+                new SlimDX.Vector2(x + w, y + h),
+                new SlimDX.Vector2(x, y + h),
+                new SlimDX.Vector2(x, y),
+            };
+            DXManager.DrawLines(pts, 2f, MirEngine.Color.Lime);
+        }
+
         public virtual void DrawBlend()
         {
             DXManager.SetBlend(true, 0.3F); //0.8

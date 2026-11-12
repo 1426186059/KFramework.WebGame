@@ -4172,7 +4172,12 @@ namespace Client.MirObjects
                     // 否则命中框偏到模型旁。死亡时上面已把 action 锁成死亡动作、FrameIndex 锁成末帧，这里直接沿用即贴合尸体。
                     if (Mir2OriginObjectLibrary.TryGetDrawRect(Mir2ObjectKind.Monster, _originModel, action, dir, FrameIndex,
                             DrawLocation.X, DrawLocation.Y, out var mrect, mirror: (int)Direction >= 5))
+                    {
                         DisplayRectangle = new Rectangle(mrect.X, mrect.Y, mrect.Width, mrect.Height);
+                        DrawRectangleMarker(DisplayRectangle);
+                    }
+                    // 调试：在脚底基准 DrawLocation 画红圈，核对模型是否偏移。
+                    DrawLocationMarker(DrawLocation);
                     DXManager.SetGrayscale(oldGrayScale);
                     DXManager.SetOpacity(oldOpacity);
                     return;
@@ -4186,6 +4191,25 @@ namespace Client.MirObjects
 
         public override bool MouseOver(Point p)
         {
+            if (_originModel > 0)
+            {
+                // origin CDN 模型：用与 Draw 完全相同的参数（同 action / 同方向 / 同帧 / 同镜像，含死亡锁定）
+                // 算实际绘制矩形做精确命中，避免旧 .Lib BodyLibrary.VisiblePixel 与 origin 模型对不上而点不到。
+                int action = Mir2OriginObjectLibrary.MapAction(CurrentAction);
+                int dir = Mir2OriginObjectLibrary.GetDir(Mir2OriginObjectLibrary.DefaultTotalDir, (int)Direction);
+                int fi = FrameIndex;
+                if (Dead && CurrentAction != MirAction.Die && CurrentAction != MirAction.Struck)
+                {
+                    action = Mir2OriginObjectLibrary.ActionDie;
+                    if (Mir2OriginObjectLibrary.TryGetFrameCount(Mir2ObjectKind.Monster, _originModel, action, dir, out int corpseFrames) && corpseFrames > 0)
+                        fi = corpseFrames - 1;
+                }
+                if (Mir2OriginObjectLibrary.TryGetDrawRect(Mir2ObjectKind.Monster, _originModel, action, dir, fi,
+                                                          DrawLocation.X, DrawLocation.Y, out KFramework.MonoGame.Rectangle krect, 1f,
+                                                          mirror: (int)Direction >= 5))
+                    return krect.Contains(p.X, p.Y);
+                return MapControl.MapLocation == CurrentLocation; // 精灵未就绪时回落格子命中
+            }
             return MapControl.MapLocation == CurrentLocation || BodyLibrary != null && BodyLibrary.VisiblePixel(DrawFrame, p.Subtract(FinalDrawLocation), false);
         }
 
