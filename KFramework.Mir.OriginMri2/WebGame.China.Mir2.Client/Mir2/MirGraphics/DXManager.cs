@@ -4,7 +4,7 @@ using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
 using Color = MirEngine.Color;
 using Rectangle = MirEngine.Rectangle;
-using RectangleF = KFramework.MonoGame.RectangleF;
+using RectangleF = MirEngine.RectangleF;
 
 namespace Client.MirGraphics
 {
@@ -301,7 +301,10 @@ void main()
             BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
             // 目标矩形按浮点传递（引擎 SpriteBatch 已支持 RectangleF? 目标矩形），不再强转 int，
             // 保留亚像素定位，消除缩放精灵的逐帧取整抖动。
-            Batch.Draw(texture, destRect, ToRect(sourceRect), ToColor(color));
+            // 调用方传入游戏侧 MirEngine.RectangleF，此处桥接为引擎侧 KFramework.MonoGame.RectangleF。
+            Batch.Draw(texture,
+                new KFramework.MonoGame.RectangleF(destRect.X, destRect.Y, destRect.Width, destRect.Height),
+                ToRect(sourceRect), ToColor(color));
             CMain.DPSCounter++;
         }
 
@@ -326,7 +329,9 @@ void main()
         {
             if (texture == null) return;
             BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
-            Batch.Draw(texture, destRect, sourceRect, color, 0f, KFramework.MonoGame.Vector2.Zero, (KFramework.MonoGame.Vector2?)null, effects, 0f);
+            Batch.Draw(texture,
+                new KFramework.MonoGame.RectangleF(destRect.X, destRect.Y, destRect.Width, destRect.Height),
+                sourceRect, color, 0f, KFramework.MonoGame.Vector2.Zero, (KFramework.MonoGame.Vector2?)null, effects, 0f);
             CMain.DPSCounter++;
         }
 

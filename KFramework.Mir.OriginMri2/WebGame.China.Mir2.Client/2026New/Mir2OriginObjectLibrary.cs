@@ -668,7 +668,7 @@ public static class Mir2OriginObjectLibrary
         if (flip)
             dx = 2 * screenX - dx - dw;
         float dy = screenY + (oy - cy) * scale;
-        DXManager.Draw(sprite.Texture, src, new KFramework.MonoGame.RectangleF(dx, dy, Math.Max(1f, dw), Math.Max(1f, dh)),
+        DXManager.Draw(sprite.Texture, src, new MirEngine.RectangleF(dx, dy, Math.Max(1f, dw), Math.Max(1f, dh)),
                        colour ?? KFramework.MonoGame.Color.White, MirBlend.Normal.ToBlendState(), drawEffects);
         return true;
     }
