@@ -55,7 +55,7 @@ namespace KFramework.MonoGame
             }
         }
 
-        private static float YOf(int lineIndex, bool multiline, float lineH, Rectangle bounds)
+        private static float YOf(int lineIndex, bool multiline, float lineH, RectangleF bounds)
             => multiline
                 ? (lineIndex * lineH + 2f)
                 : System.Math.Max(0f, (bounds.Height - lineH) / 2f);
@@ -65,7 +65,7 @@ namespace KFramework.MonoGame
         /// x 取 caretIndex 之前文本的测量宽度（光标落在该字符右侧）；
         /// 单行垂直居中，多行按字符所在行顶定位。
         /// </summary>
-        public Vector2 GetPosition(IFont font, string text, int caretIndex, Rectangle bounds, bool multiline, float padLeft = DefaultPadLeft)
+        public Vector2 GetPosition(IFont font, string text, int caretIndex, RectangleF bounds, bool multiline, float padLeft = DefaultPadLeft)
         {
             float lineH = font != null ? font.LineSpacing : 0f;
 
@@ -87,7 +87,7 @@ namespace KFramework.MonoGame
         /// 绘制光标竖线（按当前闪烁相位决定是否可见）。调用方每帧调用即可看到闪烁；未聚焦时光标自动熄灭。
         /// </summary>
         public void Draw(SpriteBatch batch, GraphicsDevice device, IFont font, string text, int caretIndex,
-                         Rectangle bounds, Color color, bool multiline, float padLeft = DefaultPadLeft)
+                         RectangleF bounds, Color color, bool multiline, float padLeft = DefaultPadLeft)
         {
             Tick();
             if (alpha <= 0f) return;

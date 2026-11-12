@@ -112,9 +112,9 @@ namespace KFramework.Example.Mario
             // 位置（浮点）与缩放折进目标矩形：矩形尺寸 = 源尺寸 × WorldScale。
             _spriteBatch.Draw(
                 _sprite.Texture,
-                new Rectangle((int)MathF.Round(_root.WorldPosition.X), (int)MathF.Round(_root.WorldPosition.Y),
-                              (int)MathF.Round(_sprite.SourceRectangle.Width * _root.WorldScale.X),
-                              (int)MathF.Round(_sprite.SourceRectangle.Height * _root.WorldScale.Y)),
+                new RectangleF(_root.WorldPosition.X, _root.WorldPosition.Y,
+                               _sprite.SourceRectangle.Width * _root.WorldScale.X,
+                               _sprite.SourceRectangle.Height * _root.WorldScale.Y),
                 _sprite.SourceRectangle,
                 Color.White,
                 _root.WorldRotation,
@@ -125,9 +125,9 @@ namespace KFramework.Example.Mario
 
             _spriteBatch.Draw(
                 _sprite.Texture,
-                new Rectangle((int)MathF.Round(_child.WorldPosition.X), (int)MathF.Round(_child.WorldPosition.Y),
-                              (int)MathF.Round(_sprite.SourceRectangle.Width * _child.WorldScale.X),
-                              (int)MathF.Round(_sprite.SourceRectangle.Height * _child.WorldScale.Y)),
+                new RectangleF(_child.WorldPosition.X, _child.WorldPosition.Y,
+                               _sprite.SourceRectangle.Width * _child.WorldScale.X,
+                               _sprite.SourceRectangle.Height * _child.WorldScale.Y),
                 _sprite.SourceRectangle,
                 Color.Red,
                 _child.WorldRotation,

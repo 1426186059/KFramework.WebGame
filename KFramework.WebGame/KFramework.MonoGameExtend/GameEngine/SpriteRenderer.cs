@@ -185,9 +185,7 @@ namespace KFramework.MonoGameExtend
             var batch = KSceneMgr.SpriteBatch;
             Vector2 worldPos = WorldPosition;
             Vector2 origin = Pivot * m_Sprite.Rectangle.Size.ToVector2();
-            Rectangle target = new Rectangle(
-                worldPos.ToPoint(),
-                (m_Size * WorldScale).ToPoint());
+            RectangleF target = new RectangleF(worldPos, m_Size * WorldScale);
 
             batch.DrawRect(
                 m_Sprite.Texture,
@@ -218,18 +216,18 @@ namespace KFramework.MonoGameExtend
             if (centerW < 1) centerW = 1;
             if (centerH < 1) centerH = 1;
 
-            // 目标尺寸（含世界缩放）
+            // 目标尺寸（含世界缩放，保留浮点以支持亚像素缩放）
             Vector2 scaledSize = m_Size * WorldScale;
-            int dstW = (int)Math.Round(scaledSize.X);
-            int dstH = (int)Math.Round(scaledSize.Y);
+            float dstW = scaledSize.X;
+            float dstH = scaledSize.Y;
 
             // 目标边宽：保持角/边原始像素尺寸（不受拉伸影响）
-            int dstLeft = (int)Math.Round(left * WorldScale.X);
-            int dstTop = (int)Math.Round(top * WorldScale.Y);
-            int dstRight = (int)Math.Round(right * WorldScale.X);
-            int dstBottom = (int)Math.Round(bottom * WorldScale.Y);
-            int dstCenterW = Math.Max(0, dstW - dstLeft - dstRight);
-            int dstCenterH = Math.Max(0, dstH - dstTop - dstBottom);
+            float dstLeft = left * WorldScale.X;
+            float dstTop = top * WorldScale.Y;
+            float dstRight = right * WorldScale.X;
+            float dstBottom = bottom * WorldScale.Y;
+            float dstCenterW = Math.Max(0f, dstW - dstLeft - dstRight);
+            float dstCenterH = Math.Max(0f, dstH - dstTop - dstBottom);
 
             Vector2 origin = new Vector2(0); // 九宫格自身管理布局，不走 Pivot 旋转中心
             Vector2 pos = WorldPosition;
@@ -244,8 +242,8 @@ namespace KFramework.MonoGameExtend
         private void DrawGridCell(
             SpriteBatch batch, Vector2 basePos, float rot,
             Rectangle src, Rectangle b,
-            int dstLeft, int dstTop, int dstRight, int dstBottom,
-            int dstCenterW, int dstCenterH,
+            float dstLeft, float dstTop, float dstRight, float dstBottom,
+            float dstCenterW, float dstCenterH,
             Vector2 origin)
         {
             // 源九宫格矩形
@@ -261,15 +259,15 @@ namespace KFramework.MonoGameExtend
             srcCells[8] = new Rectangle(src.X + src.Width - b.Right, src.Y + src.Height - b.Bottom, b.Right, b.Bottom);
 
             // 目标九宫格尺寸
-            int[] dstW = { dstLeft, dstCenterW, dstRight };
-            int[] dstH = { dstTop, dstCenterH, dstBottom };
+            float[] dstW = { dstLeft, dstCenterW, dstRight };
+            float[] dstH = { dstTop, dstCenterH, dstBottom };
 
             for (int r = 0; r < 3; r++)
             {
                 for (int c = 0; c < 3; c++)
                 {
-                    int w = dstW[c];
-                    int h = dstH[r];
+                    float w = dstW[c];
+                    float h = dstH[r];
                     if (w <= 0 || h <= 0)
                         continue;
 
@@ -281,7 +279,7 @@ namespace KFramework.MonoGameExtend
                     // 旋转围绕 basePos（让九宫格整体随节点旋转）
                     Vector2 rotated = RotateAround(cellPos, basePos, rot);
 
-                    Rectangle dstRect = new Rectangle(rotated.ToPoint(), new Point(w, h));
+                    RectangleF dstRect = new RectangleF(rotated, new Vector2(w, h));
 
                     batch.DrawRect(
                         m_Sprite.Texture,
@@ -302,12 +300,12 @@ namespace KFramework.MonoGameExtend
             var batch = KSceneMgr.SpriteBatch;
             Rectangle src = m_Sprite.Rectangle;
             Vector2 scaledSize = m_Size * WorldScale;
-            int dstW = (int)Math.Round(scaledSize.X);
-            int dstH = (int)Math.Round(scaledSize.Y);
+            float dstW = scaledSize.X;
+            float dstH = scaledSize.Y;
 
             // 平铺单元尺寸：用精灵原始像素尺寸（不受 Size 拉伸影响，仅受 WorldScale）
-            int tileW = (int)Math.Round(src.Width * WorldScale.X);
-            int tileH = (int)Math.Round(src.Height * WorldScale.Y);
+            float tileW = src.Width * WorldScale.X;
+            float tileH = src.Height * WorldScale.Y;
             if (tileW < 1) tileW = 1;
             if (tileH < 1) tileH = 1;
 
@@ -315,18 +313,18 @@ namespace KFramework.MonoGameExtend
             float rot = WorldRotation;
             Vector2 origin = new Vector2(0);
 
-            for (int y = 0; y < dstH; y += tileH)
+            for (float y = 0; y < dstH; y += tileH)
             {
-                for (int x = 0; x < dstW; x += tileW)
+                for (float x = 0; x < dstW; x += tileW)
                 {
-                    int w = Math.Min(tileW, dstW - x);
-                    int h = Math.Min(tileH, dstH - y);
+                    float w = Math.Min(tileW, dstW - x);
+                    float h = Math.Min(tileH, dstH - y);
                     if (w <= 0 || h <= 0)
                         continue;
 
                     Vector2 cellPos = basePos + new Vector2(x, y);
                     Vector2 rotated = RotateAround(cellPos, basePos, rot);
-                    Rectangle dstRect = new Rectangle(rotated.ToPoint(), new Point(w, h));
+                    RectangleF dstRect = new RectangleF(rotated, new Vector2(w, h));
 
                     // 末块若被裁切，对应截取源矩形
                     Rectangle sRect = src;

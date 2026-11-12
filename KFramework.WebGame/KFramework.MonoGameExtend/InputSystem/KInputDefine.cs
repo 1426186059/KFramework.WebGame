@@ -61,8 +61,8 @@ namespace KFramework.MonoGameExtend
         /// <summary>是否参与事件分发</summary>
         bool RaycastEnabled { get; }
 
-        /// <summary>碰撞区域（屏幕坐标）</summary>
-        Rectangle Bounds { get; }
+        /// <summary>碰撞区域（屏幕坐标，浮点以支持亚像素命中）</summary>
+        RectangleF Bounds { get; }
 
         /// <summary>优先级，数值越大越先接收事件</summary>
         int Priority { get; }

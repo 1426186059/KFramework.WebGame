@@ -170,12 +170,11 @@ namespace KFramework.MonoGameExtend
         }
 
         // ===== IClickable =====
-        public Rectangle Bounds
+        public RectangleF Bounds
         {
             get
             {
-                RectangleF r = GetWorldBound();
-                return new Rectangle((int)Math.Round(r.X), (int)Math.Round(r.Y), (int)Math.Round(r.Width), (int)Math.Round(r.Height));
+                return GetWorldBound();
             }
         }
 
@@ -248,14 +247,14 @@ namespace KFramework.MonoGameExtend
                 var batch = KSceneMgr.SpriteBatch;
                 RectangleF view = _owner.GetWorldBound();
                 float x = view.Right - _owner.ScrollBarWidth;
-                Rectangle track = new Rectangle((int)Math.Round(x), (int)Math.Round(view.Top), (int)Math.Round(_owner.ScrollBarWidth), (int)Math.Round(view.Height));
+                RectangleF track = new RectangleF(x, view.Top, _owner.ScrollBarWidth, view.Height);
                 batch.DrawRect(KDefaultRes.DefaultTexture2D, track, null, new Color(40, 46, 70), 0, Vector2.Zero, SpriteEffects.None, 0);
 
                 float maxY = Math.Max(1, _owner.ContentSize.Y - _owner.Size.Y);
                 float thumbH = _owner.ScrollBarThumbHeight();
                 float travel = view.Height - thumbH;
                 float thumbTop = travel * (_owner.ScrollOffset.Y / maxY);
-                Rectangle thumb = new Rectangle((int)Math.Round(x), (int)Math.Round(view.Top + thumbTop), (int)Math.Round(_owner.ScrollBarWidth), (int)Math.Round(thumbH));
+                RectangleF thumb = new RectangleF(x, view.Top + thumbTop, _owner.ScrollBarWidth, thumbH);
                 batch.DrawRect(KDefaultRes.DefaultTexture2D, thumb, null, new Color(110, 150, 210), 0, Vector2.Zero, SpriteEffects.None, 0);
             }
         }

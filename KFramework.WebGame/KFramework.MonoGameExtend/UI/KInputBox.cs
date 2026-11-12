@@ -97,7 +97,7 @@ namespace KFramework.MonoGameExtend
             if (_tb.Focused && KInputMgr.GetMouseButtonDown(MouseButton.Left))
             {
                 Vector2 mp = KInputMgr.MousePosition;
-                Rectangle b = Bounds;
+                RectangleF b = Bounds;
                 if (!(mp.X >= b.Left && mp.X <= b.Right && mp.Y >= b.Top && mp.Y <= b.Bottom))
                     _tb.Blur();
             }
@@ -109,7 +109,7 @@ namespace KFramework.MonoGameExtend
             Color = focused ? FocusedColor : UnfocusedColor; // 背景随焦点变色（必须在 base.Draw 之前设置）
             base.Draw(); // 画背景框（KImage）
 
-            Rectangle b = Bounds;
+            RectangleF b = Bounds;
             bool empty = string.IsNullOrEmpty(_tb.Text);
             bool showPlaceholder = !focused && empty;
             string drawText = showPlaceholder ? Placeholder : _tb.Text;
@@ -136,14 +136,14 @@ namespace KFramework.MonoGameExtend
         public bool RaycastEnabled => Interactable;
 
         /// <summary>命中区与 KImage.Draw 的绘制矩形一致：以 WorldPosition 为左上角。</summary>
-        public Rectangle Bounds
+        public RectangleF Bounds
         {
             get
             {
                 Vector2 ws = Size * WorldScale;
-                return new Rectangle(
-                    (int)Math.Round(WorldPosition.X), (int)Math.Round(WorldPosition.Y),
-                    (int)Math.Round(ws.X), (int)Math.Round(ws.Y));
+                return new RectangleF(
+                    WorldPosition.X, WorldPosition.Y,
+                    ws.X, ws.Y);
             }
         }
 

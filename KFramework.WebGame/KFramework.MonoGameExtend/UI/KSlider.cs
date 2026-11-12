@@ -114,7 +114,7 @@ namespace KFramework.MonoGameExtend
 
         private void SetValueFromPointer(Vector2 screen)
         {
-            Rectangle b = Bounds;
+            RectangleF b = Bounds;
             if (Direction == KSliderDir.Horizontal)
             {
                 float track = Math.Max(1f, b.Width - _thumbSize);
@@ -146,15 +146,15 @@ namespace KFramework.MonoGameExtend
         public bool RaycastEnabled => _interactable;
 
         /// <summary>屏幕空间碰撞区域，与 KImage.Draw 使用的矩形一致（WorldPosition + Size*WorldScale）。</summary>
-        public Rectangle Bounds
+        public RectangleF Bounds
         {
             get
             {
                 Vector2 worldSize = Size * WorldScale;
                 Vector2 leftTop = WorldPosition - Pivot * worldSize;
-                return new Rectangle(
-                    (int)Math.Round(leftTop.X), (int)Math.Round(leftTop.Y),
-                    (int)Math.Round(worldSize.X), (int)Math.Round(worldSize.Y));
+                return new RectangleF(
+                    leftTop.X, leftTop.Y,
+                    worldSize.X, worldSize.Y);
             }
         }
 

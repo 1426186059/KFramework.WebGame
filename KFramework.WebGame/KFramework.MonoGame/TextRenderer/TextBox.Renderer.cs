@@ -13,7 +13,7 @@ namespace KFramework.MonoGame
     public sealed partial class TextBox
     {
         public void DrawTextBox(SpriteBatch batch, GraphicsDevice device, IFont font, string text,
-            Rectangle bounds, Color foreColor, int caretIndex,
+            RectangleF bounds, Color foreColor, int caretIndex,
             bool multiline, bool focused, float padLeft = DefaultPadLeft, string composition = "",
             int selectionStart = 0, int selectionLength = 0)
         {
@@ -66,7 +66,7 @@ namespace KFramework.MonoGame
         /// 而不污染只负责光标的 TextBox.Caret 部分。
         /// </summary>
         private static void DrawSelection(SpriteBatch batch, GraphicsDevice device, IFont font, string text,
-            int selStart, int selEnd, Rectangle bounds, Color color, bool multiline, float padLeft = DefaultPadLeft)
+            int selStart, int selEnd, RectangleF bounds, Color color, bool multiline, float padLeft = DefaultPadLeft)
         {
             if (batch == null || device == null || font == null) return;
             if (selEnd < selStart) { int tmp = selStart; selStart = selEnd; selEnd = tmp; }

@@ -204,17 +204,17 @@ namespace KFramework.MonoGameExtend
         /// 屏幕空间碰撞区域。必须与 KImage.Draw 使用的矩形一致：
         /// 都用 WorldPosition + Size * WorldScale，否则嵌套或缩放后点击会错位
         /// </summary>
-        public Rectangle Bounds
+        public RectangleF Bounds
         {
             get
             {
                 Vector2 worldSize = Size * WorldScale;
                 Vector2 LeftTopWorldPos = WorldPosition - Pivot * worldSize;
-                return new Rectangle(
-                    (int)Math.Round(LeftTopWorldPos.X),
-                    (int)Math.Round(LeftTopWorldPos.Y),
-                    (int)Math.Round(worldSize.X),
-                    (int)Math.Round(worldSize.Y));
+                return new RectangleF(
+                    LeftTopWorldPos.X,
+                    LeftTopWorldPos.Y,
+                    worldSize.X,
+                    worldSize.Y);
             }
         }
 

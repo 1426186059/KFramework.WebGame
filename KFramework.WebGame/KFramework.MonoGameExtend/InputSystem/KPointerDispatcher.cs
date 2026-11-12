@@ -228,7 +228,7 @@ namespace KFramework.MonoGameExtend
             {
                 IClickable c = _clickables[i];
                 if (!c.RaycastEnabled) continue;
-                if (c.Bounds.Contains(position.ToPoint())) return c;
+                if (c.Bounds.Contains(position)) return c;
             }
             return null;
         }
@@ -239,12 +239,11 @@ namespace KFramework.MonoGameExtend
         public void RaycastAll(Vector2 position, List<IClickable> results)
         {
             results.Clear();
-            var point = new Point((int)position.X, (int)position.Y);
             for (int i = 0; i < _clickables.Count; i++)
             {
                 IClickable c = _clickables[i];
                 if (!c.RaycastEnabled) continue;
-                if (c.Bounds.Contains(point)) results.Add(c);
+                if (c.Bounds.Contains(position)) results.Add(c);
             }
         }
 

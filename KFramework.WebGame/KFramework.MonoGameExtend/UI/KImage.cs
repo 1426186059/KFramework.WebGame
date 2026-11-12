@@ -70,7 +70,7 @@ namespace KFramework.MonoGameExtend
             }
 
             var mSpriteBatch = KSceneMgr.SpriteBatch;
-            Rectangle targetRegion = new Rectangle(WorldPosition.ToPoint(), (Size * WorldScale).ToPoint());
+            RectangleF targetRegion = new RectangleF(WorldPosition, Size * WorldScale);
             mSpriteBatch.DrawRect(
                 _cacheSprite.Texture,
                 targetRegion,

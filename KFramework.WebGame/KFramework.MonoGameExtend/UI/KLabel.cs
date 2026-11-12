@@ -60,17 +60,17 @@ namespace KFramework.MonoGameExtend
         }
 
         /// <summary>控件矩形（世界坐标：左上角 + 缩放后尺寸），与 <see cref="KImage"/> / KButton.Bounds 同一约定。</summary>
-        public Rectangle Bounds
+        public RectangleF Bounds
         {
             get
             {
                 Vector2 worldSize = Size * WorldScale;
                 Vector2 leftTop = WorldPosition - Pivot * worldSize;
-                return new Rectangle(
-                    (int)Math.Round(leftTop.X),
-                    (int)Math.Round(leftTop.Y),
-                    (int)Math.Round(worldSize.X),
-                    (int)Math.Round(worldSize.Y));
+                return new RectangleF(
+                    leftTop.X,
+                    leftTop.Y,
+                    worldSize.X,
+                    worldSize.Y);
             }
         }
 

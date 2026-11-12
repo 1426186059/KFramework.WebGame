@@ -67,7 +67,7 @@ namespace KFramework.MonoGame
         // ---------------- DrawText（一律用调用方传入的批） ----------------
 
         /// <summary>在给定矩形内绘制文本；<paramref name="batch"/> 必须处于 Begin / End 之间。</summary>
-        public static void DrawText(SpriteBatch batch, string text, IFont font, Rectangle bounds, Color foreColor,
+        public static void DrawText(SpriteBatch batch, string text, IFont font, RectangleF bounds, Color foreColor,
                                     TextAnchor anchor = TextAnchor.UpperLeft,
                                     HorizontalWrapMode hWrap = HorizontalWrapMode.Overflow,
                                     VerticalWrapMode vWrap = VerticalWrapMode.Overflow)
@@ -75,7 +75,7 @@ namespace KFramework.MonoGame
             if (batch == null || font == null || string.IsNullOrEmpty(text)) return;
 
             // Wrap 才折行；Overflow 只按显式 '\n' 分行（maxWidth <= 0 即不折）。
-            int maxWidth = hWrap == HorizontalWrapMode.Wrap ? bounds.Width : 0;
+            int maxWidth = hWrap == HorizontalWrapMode.Wrap ? (int)bounds.Width : 0;
             List<string> lines = WrapLines(text, font, maxWidth);
 
             float lineH = font.LineSpacing;
@@ -115,7 +115,7 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>带背景铺底的重载：<paramref name="backColor"/> 非透明时先用 1x1 白纹把矩形填满，再画文本。</summary>
-        public static void DrawText(SpriteBatch batch, string text, IFont font, Rectangle bounds, Color foreColor, Color backColor,
+        public static void DrawText(SpriteBatch batch, string text, IFont font, RectangleF bounds, Color foreColor, Color backColor,
                                     TextAnchor anchor = TextAnchor.UpperLeft,
                                     HorizontalWrapMode hWrap = HorizontalWrapMode.Overflow,
                                     VerticalWrapMode vWrap = VerticalWrapMode.Overflow)
@@ -126,7 +126,7 @@ namespace KFramework.MonoGame
         }
 
         /// <summary>backColor 非透明时用 1x1 白纹铺底（对齐原版 backColor 语义）。</summary>
-        private static void FillBackground(SpriteBatch batch, Rectangle bounds, Color backColor)
+        private static void FillBackground(SpriteBatch batch, RectangleF bounds, Color backColor)
         {
             if (backColor.A == 0) return;
             if (_whitePixel == null)

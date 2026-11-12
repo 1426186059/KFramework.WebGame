@@ -281,9 +281,9 @@ namespace KFramework.MonoGameExtend
                     Vector2 worldPos = WorldPosition;
                     Vector2 origin = Vector2.Zero;
 
-                    Rectangle target = new Rectangle(
-                        (WorldPosition - Size * Pivot * WorldScale).ToPoint(),
-                        (Size * WorldScale).ToPoint());
+                    RectangleF target = new RectangleF(
+                        WorldPosition - Size * Pivot * WorldScale,
+                        Size * WorldScale);
 
                     Color mColor = new Color(255, 255, 255, 200);
                     batch.DrawRect(
