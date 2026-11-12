@@ -133,7 +133,7 @@ namespace WebGame.Mir2.MonoGame.Client
             // 故需设为 false，否则 key 会被当成逻辑路径直接拼到 CDN 根而 404（之前就是这么挂的）。
             Mir2OriginResource.LocalMirrorUsesKeyPath = false;
 
-            _ = ExcelTableMgr.InitializeAsync();   // 配置表后台加载，不阻塞进 LoginScene（就绪后由 IsReady 校验）
+            await ExcelTableMgr.InitializeAsync();   // 配置表后台加载，不阻塞进 LoginScene（就绪后由 IsReady 校验）
             // 提前并发拉取图集/UI 资源索引（manifest + RES 配置 default.res.json）：
             // 二者是后续所有 CDN 图集解析的前置；与首屏 Lib 加载并行发起，缩短进图等待。
             // 失败已在 Mir2AtlasLibrary 内部消化，不会中断启动；懒加载路径会兜底重试。
