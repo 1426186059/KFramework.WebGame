@@ -4774,10 +4774,11 @@ namespace Client.MirObjects
                 DrawLayer(PlayerTitleModel());     // 称号（type3，头顶光环/称号）— 自身枢轴
                 DrawLayer(PlayerHuiJiModel());     // 徽记（type4，徽印）— 自身枢轴
 
-                // 鼠标命中框/血条定位用：用“站立帧”真实矩形覆盖 DisplayRectangle（站立姿势不随走路动画变化，稳定）。
-                // 名字定位已改到 MapObject.DrawName 里相对 DrawLocation(脚底) 固定偏移，不再依赖此处。
-                if (Mir2OriginObjectLibrary.TryGetDrawRect(Mir2ObjectKind.Player, bodyModel, Mir2OriginObjectLibrary.ActionStand, dir, 0,
-                        DrawLocation.X, DrawLocation.Y, out var bodyRect, 1f, mirror: (int)Direction >= 5))
+                // 鼠标命中框/血条定位用：必须与“身体实际绘制”用完全相同的参数（同 action / 同帧 / 同强制枢轴 bax,bay / 同镜像），
+                // 否则命中框会偏到模型旁边（之前用 ActionStand+帧0、而身体用当前动作+当前帧 → standx/standy/几何不一致）。
+                // 名字定位已改到 MapObject.DrawName 里相对脚底基准 DrawLocation 固定定位，不依赖此处。
+                if (Mir2OriginObjectLibrary.TryGetDrawRect(Mir2ObjectKind.Player, bodyModel, action, dir, FrameIndex,
+                        DrawLocation.X, DrawLocation.Y, out var bodyRect, 1f, mirror: (int)Direction >= 5, standX: bax, standY: bay))
                     DisplayRectangle = new Rectangle(bodyRect.X, bodyRect.Y, bodyRect.Width, bodyRect.Height);
             }
 

@@ -678,7 +678,8 @@ public static class Mir2OriginObjectLibrary
     /// （8 向真帧优先、standx/standy 枢轴、镜像绕角色点），保证命中框与显示像素完全对齐。
     /// 资源未就绪或缺失返回 false。mirror 表示逻辑方向 5..7（需绕角色点翻面）。</summary>
     public static bool TryGetDrawRect(Mir2ObjectKind kind, int id, int action, int direction, int frameIndex,
-                                      int screenX, int screenY, out Rectangle rect, float scale = 1f, bool mirror = false)
+                                      int screenX, int screenY, out Rectangle rect, float scale = 1f, bool mirror = false,
+                                      int? standX = null, int? standY = null)
     {
         rect = default(Rectangle);
         if (kind == Mir2ObjectKind.Item) return false;
@@ -714,7 +715,14 @@ public static class Mir2OriginObjectLibrary
         { ox = (int)a.X; oy = (int)a.Y; }
         var src = sprite.SourceRectangle;
         int cx, cy;
-        if (!TryGetStand(id, action, out cx, out cy))
+        if (standX.HasValue && standY.HasValue)
+        {
+            // 调用方强制指定枢轴（角色多层共享身体锚点，避免某一层缺 standx/standy 回落画布中心造成层间漂移），
+            // 与 DrawAnchored 行为一致。
+            cx = standX.Value;
+            cy = standY.Value;
+        }
+        else if (!TryGetStand(id, action, out cx, out cy))
         {
             cx = sheet.SourceW > 0 ? sheet.SourceW / 2 : src.Width / 2;
             cy = sheet.SourceH > 0 ? sheet.SourceH / 2 : src.Height / 2;

@@ -21,7 +21,7 @@ public class ModelInfoTable
     [JsonPropertyName("totaldir")]
     public int totaldir { get; set; } = default;
 
-    // 对齐枢轴 X（部分模型为小数，用 double 兼容；FlexInt 仅作用于 int 属性，不影响）
+    // 对齐枢轴 X（部分模型为小数，用 double 兼容）
     [JsonPropertyName("standx")]
     public double standx { get; set; } = default;
 

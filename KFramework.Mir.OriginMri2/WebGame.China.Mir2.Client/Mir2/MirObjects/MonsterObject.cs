@@ -4168,6 +4168,11 @@ namespace Client.MirObjects
                 if (Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Monster, _originModel, action, dir,
                                                          FrameIndex, DrawLocation.X, DrawLocation.Y, drawColour, fx))
                 {
+                    // 鼠标命中框/血条定位用：必须与“模型实际绘制”用完全相同的参数（同 action / 同帧 / 同镜像），
+                    // 否则命中框偏到模型旁。死亡时上面已把 action 锁成死亡动作、FrameIndex 锁成末帧，这里直接沿用即贴合尸体。
+                    if (Mir2OriginObjectLibrary.TryGetDrawRect(Mir2ObjectKind.Monster, _originModel, action, dir, FrameIndex,
+                            DrawLocation.X, DrawLocation.Y, out var mrect, mirror: (int)Direction >= 5))
+                        DisplayRectangle = new Rectangle(mrect.X, mrect.Y, mrect.Width, mrect.Height);
                     DXManager.SetGrayscale(oldGrayScale);
                     DXManager.SetOpacity(oldOpacity);
                     return;
