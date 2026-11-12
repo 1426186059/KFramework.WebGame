@@ -4,6 +4,7 @@ using SlimDX.Direct3D9;
 using WebGame.Mir2.MonoGame.Client;
 using Color = MirEngine.Color;
 using Rectangle = MirEngine.Rectangle;
+using RectangleF = KFramework.MonoGame.RectangleF;
 
 namespace Client.MirGraphics
 {
@@ -298,9 +299,9 @@ void main()
         {
             if (texture == null) return;
             BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
-            Batch.Draw(texture,
-                new KFramework.MonoGame.Rectangle((int)destRect.X, (int)destRect.Y, (int)destRect.Width, (int)destRect.Height),
-                ToRect(sourceRect), ToColor(color));
+            // 目标矩形按浮点传递（引擎 SpriteBatch 已支持 RectangleF? 目标矩形），不再强转 int，
+            // 保留亚像素定位，消除缩放精灵的逐帧取整抖动。
+            Batch.Draw(texture, destRect, ToRect(sourceRect), ToColor(color));
             CMain.DPSCounter++;
         }
 
@@ -313,6 +314,15 @@ void main()
         }
 
         public static void Draw(Texture2D texture, KFramework.MonoGame.Rectangle sourceRect, KFramework.MonoGame.Rectangle destRect, KFramework.MonoGame.Color color, KFramework.MonoGame.BlendState? blendState, KFramework.MonoGame.SpriteEffects effects)
+        {
+            if (texture == null) return;
+            BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);
+            Batch.Draw(texture, destRect, sourceRect, color, 0f, KFramework.MonoGame.Vector2.Zero, (KFramework.MonoGame.Vector2?)null, effects, 0f);
+            CMain.DPSCounter++;
+        }
+
+        /// <summary>浮点目标矩形版（含翻转）：用于缩放精灵的亚像素定位，避免整型取整导致的逐帧抖动。</summary>
+        public static void Draw(Texture2D texture, KFramework.MonoGame.Rectangle sourceRect, RectangleF destRect, KFramework.MonoGame.Color color, KFramework.MonoGame.BlendState? blendState, KFramework.MonoGame.SpriteEffects effects)
         {
             if (texture == null) return;
             BeginSprite(GetMaterial(ResolveBlend(blendState)), RenderTransform);

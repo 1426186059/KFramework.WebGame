@@ -635,11 +635,11 @@ public static class Mir2OriginObjectLibrary
         if (!sheet.TryGetFrameName(frameIndex, out var frameName)) return false;
         if (!sheet.Frames.TryGetValue(frameName, out var sprite) || sprite == null) return false;
 
-        int ox = 0, oy = 0;
+        float ox = 0, oy = 0;
         if (sheet.Anchors != null && sheet.Anchors.TryGetValue(frameName, out var a))
         {
-            ox = (int)a.X;
-            oy = (int)a.Y;
+            ox = a.X;
+            oy = a.Y;
         }
         var src = sprite.SourceRectangle;
         // 枢轴取该模型该动作的 standx/standy（原始传奇每个部件按自身枢轴对齐角色点，
@@ -656,17 +656,19 @@ public static class Mir2OriginObjectLibrary
             cx = sheet.SourceW > 0 ? sheet.SourceW / 2 : src.Width / 2;
             cy = sheet.SourceH > 0 ? sheet.SourceH / 2 : src.Height / 2;
         }
-        // 按 scale 缩放：把“注册点(cx,cy)在画布中的像素位置”映射到屏幕 (screenX,screenY)，
-        // 任意 scale 下都精确对齐角色点（旧公式只在“注册点=画布中心”时正确，scale!=1 时整只偏移出屏幕）。
-        int dw = (int)Math.Round(src.Width * scale);
-        int dh = (int)Math.Round(src.Height * scale);
-        int dx = (int)Math.Round(screenX + (ox - cx) * scale);
+        // 按 scale 缩放：把“注册点(cx,cy)在画布中的像素位置”映射到屏幕 (screenX,screenY)。
+        // 全程浮点、不再 Math.Round 成整型 —— 交由引擎 SpriteBatch 的浮点目标矩形做亚像素定位，
+        // 消除 1827/1910 这类每帧 offX/offY 抖动（±2px ×缩放）在整型取整边界翻转造成的脚点轻微晃动，
+        // 与原始 Egret（浮点定位）行为一致。
+        float dw = src.Width * scale;
+        float dh = src.Height * scale;
+        float dx = screenX + (ox - cx) * scale;
         // 镜像（仅 5 向模型回落路径会走到这里）：把目标矩形整体以 screenX 为轴镜像，注册点保持不动；
         // DXManager.Draw 的 FlipHorizontally 在矩形内翻面，二者合起来即绕角色点翻。
         if (flip)
             dx = 2 * screenX - dx - dw;
-        int dy = (int)Math.Round(screenY + (oy - cy) * scale);
-        DXManager.Draw(sprite.Texture, src, new Rectangle(dx, dy, Math.Max(1, dw), Math.Max(1, dh)),
+        float dy = screenY + (oy - cy) * scale;
+        DXManager.Draw(sprite.Texture, src, new KFramework.MonoGame.RectangleF(dx, dy, Math.Max(1f, dw), Math.Max(1f, dh)),
                        colour ?? KFramework.MonoGame.Color.White, MirBlend.Normal.ToBlendState(), drawEffects);
         return true;
     }
