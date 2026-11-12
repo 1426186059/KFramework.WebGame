@@ -343,8 +343,8 @@ namespace Client.MirObjects
                                                                       Mir2OriginObjectLibrary.ActionStand, dir, 0,
                                                                       DrawLocation.X, DrawLocation.Y, DrawColour, scale: Scale);
 
-                // 名字/命中框定位：用 origin 真实绘制矩形覆盖 DisplayRectangle（origin NPC 脚底对齐 DrawLocation，
-                // 竖直延展约 standy 像素，否则名字会落在脚底附近）。
+                // 鼠标命中框/血条定位用：用 origin 真实绘制矩形覆盖 DisplayRectangle（稳定）。
+                // 名字定位已改到 MapObject.DrawName 里相对 DrawLocation(脚底) 固定偏移，不再依赖此处。
                 if (Mir2OriginObjectLibrary.TryGetDrawRect(Mir2ObjectKind.NPC, _originModel, action, dir, 0,
                         DrawLocation.X, DrawLocation.Y, out var nrect, Scale))
                     DisplayRectangle = new Rectangle(nrect.X, nrect.Y, nrect.Width, nrect.Height);
