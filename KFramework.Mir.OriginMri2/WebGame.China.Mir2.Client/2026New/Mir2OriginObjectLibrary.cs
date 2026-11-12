@@ -574,7 +574,8 @@ public static class Mir2OriginObjectLibrary
     /// </summary>
     public static bool DrawAnchored(Mir2ObjectKind kind, int id, int action, int direction, int frameIndex,
                                     int screenX, int screenY, KFramework.MonoGame.Color? colour = null,
-                                    SpriteEffects effects = SpriteEffects.None, float scale = 1f)
+                                    SpriteEffects effects = SpriteEffects.None, float scale = 1f,
+                                    int? standX = null, int? standY = null)
     {
         // 该页游资源为 8 方向独立精灵：逻辑方向 5/6/7 在 CDN 上各自有真帧，并非“5 向 + 运行时翻面”。
         // 翻面请求时，若对应的 8 向真帧已就绪（或尚未拉取），则直接用它、不再运行时翻面，
@@ -627,7 +628,13 @@ public static class Mir2OriginObjectLibrary
         // 枢轴取该模型该动作的 standx/standy（原始传奇每个部件按自身枢轴对齐角色点，
         // 见 2config.modelInfo）；查不到时回落画布中心，行为与旧逻辑一致。
         int cx, cy;
-        if (!TryGetStand(id, action, out cx, out cy))
+        if (standX.HasValue && standY.HasValue)
+        {
+            // 调用方强制指定枢轴（角色多层共享身体锚点，避免某一层缺 standx/standy 回落画布中心造成层间漂移）。
+            cx = standX.Value;
+            cy = standY.Value;
+        }
+        else if (!TryGetStand(id, action, out cx, out cy))
         {
             cx = sheet.SourceW > 0 ? sheet.SourceW / 2 : src.Width / 2;
             cy = sheet.SourceH > 0 ? sheet.SourceH / 2 : src.Height / 2;

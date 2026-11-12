@@ -4723,20 +4723,20 @@ namespace Client.MirObjects
                 // 原始传奇 5 方向精灵：逻辑方向 5/6/7（左下/左/左上）复用右侧真帧 3/2/1，绘制时需水平翻转。
                 bool mirror = (int)Direction >= 5;
                 KFramework.MonoGame.SpriteEffects fx = mirror ? KFramework.MonoGame.SpriteEffects.FlipHorizontally : KFramework.MonoGame.SpriteEffects.None;
-                // 局部：绘制一个 origin 层（请求+锚定绘制）。
-                void DrawLayer(int m)
+                // 局部：绘制一个 origin 层（请求+锚定绘制）。ax/ay 为强制共享枢轴：
+                // 传入时该层改用身体的注册点，避免身体模型缺 standx/standy 回落画布中心、与头发/装备层产生层间漂移。
+                void DrawLayer(int m, int? ax = null, int? ay = null)
                 {
                     if (m <= 0) return;
                     int pr = (this == User) ? Mir2OriginObjectLibrary.PriorityUser : Mir2OriginObjectLibrary.PriorityVisible;
                     Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Player, m, action, dir, pr);
-                    Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Player, m, action, dir, FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour, fx);
+                    Mir2OriginObjectLibrary.DrawAnchored(Mir2ObjectKind.Player, m, action, dir, FrameIndex, DrawLocation.X, DrawLocation.Y, DrawColour, fx, standX: ax, standY: ay);
                 }
                 // 分层顺序（底→顶）：法阵→足迹→坐骑→翅膀→披风(后)→身体→护肩/玉佩/勋章/斗笠/面纱(覆盖)→武器→护盾(副手)→疗伤石→旋光/称号/徽记(顶)
                 DrawLayer(PlayerZhenfaModel());    // 法阵（type5，地面法阵）
                 DrawLayer(PlayerFootModel());      // 足迹（type2，脚下痕迹）
                 DrawLayer(PlayerMountModel());     // 坐骑（底）
                 DrawLayer(PlayerWingModel());      // 翅膀（后）
-                DrawLayer(PlayerPiFengModel());    // 披风（背后）
                 // 身体层：主模型（盔甲/时装，由 _originModel 给出）若在 CDN 确认缺失，回落裸身 9001/9002。
                 // 仍走 origin 独立图集（非旧 .Lib），保证玩家始终可见，而不是整人消失。
                 int bodyModel = _originModel;
@@ -4750,21 +4750,29 @@ namespace Client.MirObjects
                     }
                     bodyModel = naked;
                 }
-                DrawLayer(bodyModel);                  // 身体（中，含装扮覆盖）
-                // 头发：原始传奇里头发是叠在（光头）身体之上的独立 origin 层，按各自 standx/standy 枢轴对齐
-                // （9498 的 536/531 与身体 9001 的 537/530 仅差 ~1px），直接锚定绘制即自然对齐，无需额外补偿。
-                DrawLayer(PlayerHairModel());          // 头发（叠在光头身体之上，位于斗笠/面纱之下）
-                DrawLayer(PlayerHuJianModel());    // 护肩
-                DrawLayer(PlayerYuPeiModel());     // 玉佩
-                DrawLayer(PlayerXunZhangModel());  // 勋章（荣誉勋章）
-                DrawLayer(PlayerDouLiModel());     // 斗笠（头部）
-                DrawLayer(PlayerMianShaModel());   // 面纱（面部）
-                DrawLayer(PlayerWeaponModel());    // 武器（前，含幻武覆盖）
-                DrawLayer(PlayerHuDunModel());     // 护盾（副手）
-                DrawLayer(PlayerLiaoShangModel()); // 疗伤石（无精灵，保留）
-                DrawLayer(PlayerXuanGuangModel()); // 旋光（type7，环绕光效）
-                DrawLayer(PlayerTitleModel());     // 称号（type3，头顶光环/称号）
-                DrawLayer(PlayerHuiJiModel());     // 徽记（type4，徽印）
+                // 角色共享注册点：身体、头发及所有装备叠层强制用同一枢轴，避免身体模型缺 standx/standy
+                // 时回落画布中心、与头发/装备层（有枢轴）产生层间漂移（女裸身 9002、缺枢轴盔甲均有此问题）。
+                int bax, bay;
+                if (!Mir2OriginObjectLibrary.TryGetStand(bodyModel, action, out bax, out bay))
+                {
+                    if (!Mir2OriginObjectLibrary.TryGetStand(Gender == MirGender.Female ? 9002 : 9001, action, out bax, out bay))
+                    { bax = 537; bay = 530; } // 标准角色注册点（男裸身 9001）兜底
+                }
+                DrawLayer(PlayerPiFengModel(), bax, bay);    // 披风（背后）
+                DrawLayer(bodyModel, bax, bay);             // 身体（中，含装扮覆盖）
+                // 头发：原始传奇里头发是叠在（光头）身体之上的独立 origin 层，与身体共用注册点即自然对齐。
+                DrawLayer(PlayerHairModel(), bax, bay);     // 头发（叠在光头身体之上，位于斗笠/面纱之下）
+                DrawLayer(PlayerHuJianModel(), bax, bay);    // 护肩
+                DrawLayer(PlayerYuPeiModel(), bax, bay);     // 玉佩
+                DrawLayer(PlayerXunZhangModel(), bax, bay);  // 勋章（荣誉勋章）
+                DrawLayer(PlayerDouLiModel(), bax, bay);     // 斗笠（头部）
+                DrawLayer(PlayerMianShaModel(), bax, bay);   // 面纱（面部）
+                DrawLayer(PlayerWeaponModel(), bax, bay);    // 武器（前，含幻武覆盖）
+                DrawLayer(PlayerHuDunModel(), bax, bay);     // 护盾（副手）
+                DrawLayer(PlayerLiaoShangModel()); // 疗伤石（无精灵，保留）— 自身枢轴
+                DrawLayer(PlayerXuanGuangModel()); // 旋光（type7，环绕光效）— 自身枢轴
+                DrawLayer(PlayerTitleModel());     // 称号（type3，头顶光环/称号）— 自身枢轴
+                DrawLayer(PlayerHuiJiModel());     // 徽记（type4，徽印）— 自身枢轴
             }
 
 
