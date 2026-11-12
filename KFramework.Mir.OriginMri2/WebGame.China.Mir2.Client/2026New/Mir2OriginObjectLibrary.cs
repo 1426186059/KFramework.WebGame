@@ -94,7 +94,7 @@ public static class Mir2OriginObjectLibrary
     public const int PriorityItem = 5;
 
     // —— 版本表（resourceVersion.json：资源名 -> 版本号）——
-    private static Dictionary<string, string> _versions = new(StringComparer.OrdinalIgnoreCase);
+    private static ResourceVersionJson _versionTable;
     private static volatile bool _versionsReady;
     private static Task _initTask;
 
@@ -173,12 +173,12 @@ public static class Mir2OriginObjectLibrary
                 var bytes = await Mir2OriginResource.GetBytesAsync(VersionManifest + suffix, ct);
                 if (bytes == null || bytes.Length == 0) continue;
 
-                // 用 OriginMir2.ResourceVersionJson DTO 反序列化（替代原先 JsonDocument 手解析）。
+                // 用 JsonDocument 按需解析（ResourceVersionJson）：容忍清单里混入的非字符串条目（如 "version": -1），
+                // 查哪个 key 解析哪个，不会整段失败。
                 var table = ResourceVersionJson.Parse(bytes);
-                var dict = table?.Entries;
-                if (dict == null || dict.Count == 0) continue;
+                if (table == null) continue;
 
-                _versions = dict;
+                _versionTable = table;
                 _versionsReady = true;
                 // 版本表就绪后，清掉此前因“缺版本段而 404 被锁”的缺失标记（如 1827/1910 这类带版本目录的模型），
                 // 让它们立即用带版本段的 URL 重试；否则会被 _missing 锁 MissingTtlMs，期间一直不可见。
@@ -187,7 +187,7 @@ public static class Mir2OriginObjectLibrary
                 string v1827 = GetVersion("model/1827");
                 string v1910 = GetVersion("model/1910");
                 KFramework.MonoGame.PrintTool.LogError(
-                    $"[版本表] 就绪：{dict.Count} 条（model/1827={v1827} model/1910={v1910}）");
+                    $"[版本表] 就绪：{table.Count} 条（model/1827={v1827} model/1910={v1910}）");
                 return;
             }
             catch (OperationCanceledException) { throw; }
@@ -201,7 +201,7 @@ public static class Mir2OriginObjectLibrary
 
     /// <summary>查资源版本号；查不到返回 null（走无版本段路径）。</summary>
     public static string GetVersion(string resourceKey)
-        => _versions.TryGetValue(resourceKey, out var v) && !string.IsNullOrEmpty(v) ? v : null;
+        => _versionTable != null && _versionTable.TryGet(resourceKey, out var v) && !string.IsNullOrEmpty(v) ? v : null;
 
     // ===================== 动作 / 方向（2config.modelInfo + DirectionType）=====================
 

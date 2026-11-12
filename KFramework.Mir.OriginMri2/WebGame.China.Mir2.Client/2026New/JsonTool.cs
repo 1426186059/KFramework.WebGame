@@ -32,8 +32,6 @@ using System.Text.Json.Serialization;
 [JsonSerializable(typeof(Dictionary<string, ManifestEntryJson>), TypeInfoPropertyName = "ManifestEntryDictionary")]
 // 白鹭资源清单 default.res.json：{ resources:[...], groups:[...] }。
 [JsonSerializable(typeof(DefaultResJson))]
-// 资源版本表 resourceVersion.json：根即字典 { name: version }。
-[JsonSerializable(typeof(Dictionary<string, string>), TypeInfoPropertyName = "ResourceVersionDictionary")]
 internal sealed partial class AppJsonContext : JsonSerializerContext
 {
 }
