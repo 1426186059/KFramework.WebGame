@@ -31,7 +31,6 @@ namespace Client.MirScenes.Dialogs
             Visible = false;
             Size = new Size(600, 464);
             DrawImage = false;
-            Location = new Point(Settings.ScreenWidth / 2 + 200, Settings.ScreenHeight / 2 - 300);
 
             var originBackground = new MirImageControl
             {
@@ -594,10 +593,10 @@ namespace Client.MirScenes.Dialogs
         public override void Show()
         {
             base.Show();
+            Location = new Point(Settings.ScreenWidth / 2 - 100, Settings.ScreenHeight / 2 - 300);
         }
+
     }
-
-
 
     public sealed class BeltDialog : MirImageControl
     {

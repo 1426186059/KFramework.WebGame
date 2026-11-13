@@ -6459,14 +6459,13 @@ namespace Client.MirScenes
             if (cell != null)
                 cell.Locked = p.Locked;
         }
+
         private void Awakening(S.Awakening p)
         {
             if (NPCAwakeDialog.Visible)
                 NPCAwakeDialog.Hide();
             if (InventoryDialog.Visible)
                 InventoryDialog.Hide();
-
-            InventoryDialog.Location = new Point(0, 0);
 
             MirItemCell cell = InventoryDialog.GetCell((ulong)p.removeID);
             if (cell != null)

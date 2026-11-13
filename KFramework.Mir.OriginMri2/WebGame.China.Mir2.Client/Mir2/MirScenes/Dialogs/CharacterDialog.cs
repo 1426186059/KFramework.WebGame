@@ -28,7 +28,6 @@ namespace Client.MirScenes.Dialogs
         {
             Actor = actor;
             GridType = gridType;
-            Location = new Point(Settings.ScreenWidth / 2 - 300, Settings.ScreenHeight / 2 - 300);
             Movable = true;
             Sort = true;
             Size = new Size(350, 475);
@@ -615,8 +614,8 @@ namespace Client.MirScenes.Dialogs
 
         public override void Show()
         {
-            if (Visible) return;
-            Visible = true;
+            base.Show();
+            Location = new Point(Settings.ScreenWidth / 2 - 600, Settings.ScreenHeight / 2 - 300);
         }
 
         public override void Hide()
