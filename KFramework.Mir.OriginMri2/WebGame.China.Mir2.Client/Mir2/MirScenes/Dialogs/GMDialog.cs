@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
 using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
@@ -48,9 +51,14 @@ namespace Client.MirScenes.Dialogs
 
         private MirTextBox ItemSearchBox;        // 物品搜索框（按 Id 或 名字 过滤）
         private string _itemSearch = string.Empty;
-        private MirScrollView ItemScrollView;   // 物品行滚动区（放在 ItemPanel 内、表头下方）
-        private readonly List<MirControl> ItemRows = new List<MirControl>();
-        private int _itemListVersion;
+        private MirScrollView2 ItemScrollView;   // 物品行虚拟化滚动列表（无限滚动，只创建视口内行）
+        private readonly List<GmItem> _gmItems = new List<GmItem>();       // 从本地 ExcelConfig/ItemInfo.json 加载的全量物品
+        private List<GmItem> _filteredCache = new List<GmItem>();          // 当前搜索过滤结果（createRow 按索引取）
+        private bool _gmItemsLoaded;                                          // 加载已触发（幂等）
+
+        // GM 窗口物品表的轻量条目：只取显示/发命令所需字段，避免依赖 ItemInfo 全字段反序列化（WASM AOT 禁反射）。
+        // Image 用 uint 保留原始传奇 col19 图标号（46% 超过 ushort，截断会画错图标）。
+        private struct GmItem { public int Index; public string Name; public uint Image; }
 
         // GM 命令清单(命令名|参数提示)。发送时自动加 @ 前缀,参数以空格分隔。
         private static readonly string[] GMCommands = new[]
@@ -210,19 +218,17 @@ namespace Client.MirScenes.Dialogs
             ItemSearchBox.TextBox.TextChanged += (s, e) =>
             {
                 _itemSearch = ItemSearchBox.Text;
-                BuildItemRows(GetFilteredItems());
+                ApplyFilterAndRefresh();
             };
 
-            // 物品行滚动区：放在表头下方，自带填充与边框
-            ItemScrollView = new MirScrollView
+            // 物品行滚动区：虚拟化无限滚动（MirScrollView2），只创建视口内可见行，12594 项也不卡。
+            ItemScrollView = new MirScrollView2
             {
                 Parent = ItemPanel,
                 Location = new Point(3, 24),
                 Size = new Size(ItemPanel.Size.Width - 6, ItemPanel.Size.Height - 24 - 6),
                 BackColour = PanelFill, Border = true, BorderColour = PanelBorder,
             };
-            // 列表很长，只保留视口附近行可见，避免每次滚动都烘焙上千行
-            ItemScrollView.ScrollChanged += OnItemScrollChanged;
 
             ShowGMCommandTab();
         }
@@ -241,7 +247,8 @@ namespace Client.MirScenes.Dialogs
             ItemPanel.Visible = true;
             GMCommandTab.ForeColour = TabInactive;
             ItemTab.ForeColour = TabActive;
-            RefreshItemRows();
+            EnsureGmItemsLoaded();      // 首次切到物品页时从本地 ExcelConfig 异步加载全量物品（幂等）
+            ApplyFilterAndRefresh();
         }
 
         #region GM 命令行
@@ -303,120 +310,144 @@ namespace Client.MirScenes.Dialogs
         #endregion
 
         #region 物品行
-        private void RefreshItemRows()
+        // 物品数据来自本地资源服务器 http://127.0.0.1:5080/MyRes/ExcelConfig/ItemInfo.json
+        //（即 Mir2Res/MyRes/ExcelConfig/ItemInfo.json，与服务器换表后那份同源，12594 项）。
+        // 不再依赖服务端下发的 GameScene.ItemInfoList（可能为空/不全），GM 面板自己拉全量。
+        // JSON 用 JsonDocument 按需取 Index/Name/Image 三字段（WASM AOT 禁反射式 JsonSerializer）。
+        private void EnsureGmItemsLoaded()
         {
-            // 列表有变化时重建物品行（应用当前搜索过滤）
-            if (_itemListVersion == GameScene.ItemInfoList.Count) return;
-            _itemListVersion = GameScene.ItemInfoList.Count;
-            BuildItemRows(GetFilteredItems());
+            if (_gmItemsLoaded) return;
+            _gmItemsLoaded = true;   // 防重入：失败也只试一次，避免每次切页都重发
+            _ = LoadGmItemsAsync();
+        }
+
+        private async Task LoadGmItemsAsync()
+        {
+            try
+            {
+                byte[] bytes = await BrowserResource.GetBytesAsync("MyRes/ExcelConfig/ItemInfo.json");
+                if (bytes == null || bytes.Length == 0)
+                {
+                    GameScene.Scene.OutputMessage("GM:物品表加载失败（检查 127.0.0.1:5080）");
+                    return;
+                }
+                var list = new List<GmItem>(8192);
+                using (JsonDocument doc = JsonDocument.Parse(Encoding.UTF8.GetString(bytes)))
+                {
+                    foreach (JsonElement el in doc.RootElement.EnumerateArray())
+                    {
+                        int idx = 0; string name = null; uint img = 0;
+                        if (el.TryGetProperty("Index", out var je) && je.TryGetInt32(out int v)) idx = v;
+                        if (el.TryGetProperty("Name", out var ne)) name = ne.GetString();
+                        if (el.TryGetProperty("Image", out var ie) && ie.TryGetUInt32(out uint u)) img = u;
+                        if (string.IsNullOrEmpty(name)) continue;   // 跳过无名/无用项
+                        list.Add(new GmItem { Index = idx, Name = name, Image = img });
+                    }
+                }
+                _gmItems.Clear();
+                _gmItems.AddRange(list);
+                GameScene.Scene.OutputMessage("GM:物品表已加载 " + list.Count + " 项");
+                if (ItemPanel != null && ItemPanel.Visible) ApplyFilterAndRefresh();
+            }
+            catch (Exception ex)
+            {
+                GameScene.Scene.OutputMessage("GM:物品表加载异常 " + ex.Message);
+            }
         }
 
         // 按搜索词过滤：纯数字→按 Id(Index) 精确匹配；否则按名字包含(忽略大小写)
-        private List<ItemInfo> GetFilteredItems()
+        private List<GmItem> GetFilteredItems()
         {
-            var all = GameScene.ItemInfoList;
             string q = _itemSearch.Trim();
-            if (q.Length == 0) return all;
+            if (q.Length == 0) return _gmItems;
             if (int.TryParse(q, out int id) && id > 0)
-                return all.Where(x => x != null && x.Index == id).ToList();
-            return all.Where(x => x != null && !string.IsNullOrEmpty(x.Name) &&
-                                  x.Name.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                return _gmItems.Where(x => x.Index == id).ToList();
+            return _gmItems.Where(x => !string.IsNullOrEmpty(x.Name) &&
+                                      x.Name.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
         }
 
-        private void BuildItemRows(List<ItemInfo> list)
+        /// <summary>按当前搜索词刷新过滤结果并喂给虚拟化列表。</summary>
+        private void ApplyFilterAndRefresh()
         {
-            foreach (var c in ItemRows)
-                if (!c.IsDisposed) c.Dispose();
-            ItemRows.Clear();
+            _filteredCache = GetFilteredItems();
+            ItemScrollView.SetDataSource(_filteredCache.Count, RowH, CreateItemRow);
+        }
 
+        /// <summary>MirScrollView2 的行工厂：为第 i 行创建一个完整行控件（背景/origin图标/名字/数量/执行）。</summary>
+        private MirControl CreateItemRow(int i)
+        {
+            var info = _filteredCache[i];
             int rowW = ItemScrollView.Size.Width - 6 - MirScrollView.ScrollBarWidth;
-            for (int i = 0; i < list.Count; i++)
+
+            var bg = new MirImageControl
             {
-                var info = list[i];
-                if (info == null || string.IsNullOrEmpty(info.Name)) continue;
+                AutoSize = false, Size = new Size(rowW, RowH), Location = new Point(3, 0),
+                Texture = DefTex, ForeColour = ItemRowFill,
+            };
 
-                string name = info.Name;
-                var bg = new MirImageControl
-                {
-                    AutoSize = false, Size = new Size(rowW, RowH), Location = new Point(3, i * RowH),
-                    Texture = DefTex, ForeColour = ItemRowFill,
-                };
-
-                // 物品图标（真实图集；与全工程一致直接按 Image 索引绘制，库会容错无效索引）
-                var icon = new MirImageControl
-                {
-                    Parent = bg, AutoSize = false, Size = new Size(20, 20),
-                    Location = new Point(4, (RowH - 20) / 2), NotControl = true,
-                };
-                if (Libraries.Items != null)
-                {
-                    icon.Library = Libraries.Items;
-                    icon.Index = info.Image;
-                }
-
-                // 名字
-                var label = new MirLabel
-                {
-                    Parent = bg, NotControl = true,
-                    Location = new Point(28, 0), Size = new Size(Math.Max(40, rowW - 136), RowH),
-                    Text = name, ForeColour = Color.White, AutoSize = false,
-                };
-
-                // 数量输入框（默认 1）
-                var qtyBox = new MirTextBox
-                {
-                    Parent = bg, Border = true, BorderColour = Color.Lime, MaxLength = 9,
-                    Location = new Point(rowW - 104, (RowH - 20) / 2), Size = new Size(44, 20),
-                    Text = "1",
-                };
-                // 烘焙内的文本框键入后不会自动重画，手动让滚动视图重烘焙以显示输入的数字
-                qtyBox.TextBox.TextChanged += (s, e) => ItemScrollView.Refresh();
-
-                // 执行按钮
-                var btn = new MirButton
-                {
-                    Parent = bg, AutoSize = false, Size = new Size(52, 20),
-                    Location = new Point(rowW - 56, (RowH - 20) / 2),
-                    Sound = SoundList.ButtonA, Texture = DefTex, ForeColour = ButtonFill,
-                    Border = true, BorderColour = ButtonBorder,
-                };
-                btn.Label.Text = "执行";
-                btn.Label.ForeColour = Color.White;
-
-                // 发送 @MAKE 物品名 [数量]（数量为 1 时省略）
-                void Execute()
-                {
-                    string qtyText = qtyBox.Text.Trim();
-                    string msg = "@MAKE " + name;
-                    if (qtyText.Length > 0 && int.TryParse(qtyText, out int qty) && qty > 1)
-                        msg += " " + qty;
-                    Network.Enqueue(new C.GMCommand { Message = msg });
-                }
-
-                bg.Click += (o, e) => Execute();   // 点行内空白/图标/名字执行
-                btn.Click += (o, e) => Execute();   // 点执行按钮（Click 不冒泡，不会重复执行）
-
-                bg.BeforeDraw += (o, e) =>
-                {
-                    bg.ForeColour = MirControl.MouseControl == bg ? ItemRowHover : ItemRowFill;
-                };
-
-                ItemScrollView.Add(bg);   // 加入滚动内容（内容本地坐标 i*RowH）
-                ItemRows.Add(bg);
-            }
-            ItemScrollView.SetScrollOffset(Point.Empty);   // 夹紧并触发可见窗口更新
-            GameScene.Scene.OutputMessage("物品数量:" + ItemRows.Count);
-        }
-
-        // 只在视口附近保留行可见，缩小 ScrollView 每次烘焙的开销（列表可能上千行）。
-        private void OnItemScrollChanged(MirScrollView sv)
-        {
-            int view = sv.Size.Height;
-            foreach (var bg in ItemRows)
+            // 物品图标：走原始传奇 CDN origin 图标（与背包 MirItemCell 同链路），不依赖 Libraries.Items。
+            int img = (int)info.Image;
+            var icon = new MirImageControl
             {
-                int y = bg.Location.Y;   // 内容本地坐标
-                bg.Visible = y >= sv.ScrollOffset.Y - RowH * 2 && y <= sv.ScrollOffset.Y + view + RowH * 2;
+                Parent = bg, DrawImage = false, AutoSize = false, Size = new Size(20, 20),
+                Location = new Point(4, (RowH - 20) / 2), NotControl = true,
+            };
+            icon.BeforeDraw += (o, e) =>
+            {
+                Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Item, img,
+                                                priority: Mir2OriginObjectLibrary.PriorityItem);
+                Mir2OriginObjectLibrary.DrawItemIconFit(img, icon.DisplayLocation.X, icon.DisplayLocation.Y, 20, 20);
+            };
+
+            // 名字
+            var label = new MirLabel
+            {
+                Parent = bg, NotControl = true,
+                Location = new Point(28, 0), Size = new Size(Math.Max(40, rowW - 136), RowH),
+                Text = info.Name, ForeColour = Color.White, AutoSize = false,
+            };
+
+            // 数量输入框（默认 1）
+            var qtyBox = new MirTextBox
+            {
+                Parent = bg, Border = true, BorderColour = Color.Lime, MaxLength = 9,
+                Location = new Point(rowW - 104, (RowH - 20) / 2), Size = new Size(44, 20),
+                Text = "1",
+            };
+            // 烘焙内的文本框键入后不会自动重画，手动让滚动视图重烘焙以显示输入的数字
+            qtyBox.TextBox.TextChanged += (s, e) => ItemScrollView.InvalidateTexture();
+
+            // 执行按钮
+            var btn = new MirButton
+            {
+                Parent = bg, AutoSize = false, Size = new Size(52, 20),
+                Location = new Point(rowW - 56, (RowH - 20) / 2),
+                Sound = SoundList.ButtonA, Texture = DefTex, ForeColour = ButtonFill,
+                Border = true, BorderColour = ButtonBorder,
+            };
+            btn.Label.Text = "执行";
+            btn.Label.ForeColour = Color.White;
+
+            // 发送 @MAKE 物品名 [数量]（数量为 1 时省略）
+            string name = info.Name;
+            void Execute()
+            {
+                string qtyText = qtyBox.Text.Trim();
+                string msg = "@MAKE " + name;
+                if (qtyText.Length > 0 && int.TryParse(qtyText, out int qty) && qty > 1)
+                    msg += " " + qty;
+                Network.Enqueue(new C.GMCommand { Message = msg });
             }
+
+            bg.Click += (o, e) => Execute();   // 点行内空白/图标/名字执行
+            btn.Click += (o, e) => Execute();   // 点执行按钮（Click 不冒泡，不会重复执行）
+
+            bg.BeforeDraw += (o, e) =>
+            {
+                bg.ForeColour = MirControl.MouseControl == bg ? ItemRowHover : ItemRowFill;
+            };
+
+            return bg;
         }
         #endregion
 
@@ -426,8 +457,9 @@ namespace Client.MirScenes.Dialogs
             if (Parent == null) Parent = GameScene.Scene;
             base.Show();
             BringToFront();
-            // 每次显示时刷新一次物品(可能已拉取)
-            if (ItemPanel.Visible) RefreshItemRows();
+            // 每次显示时确保物品表已开始加载；若当前在物品页则刷新虚拟列表
+            EnsureGmItemsLoaded();
+            if (ItemPanel.Visible) ApplyFilterAndRefresh();
         }
 
         public new void Hide()
@@ -444,9 +476,8 @@ namespace Client.MirScenes.Dialogs
         public override void Update()
         {
             base.Update();
-            // 物品在后台陆续到达时,自动刷新物品列表
-            if (Visible && ItemPanel.Visible && _itemListVersion != GameScene.ItemInfoList.Count)
-                RefreshItemRows();
+            // 物品列表由 MirScrollView2 虚拟化自动管理（只创建视口内行），无需轮询刷新。
+            // 本地 ItemInfo.json 在 EnsureGmItemsLoaded 里一次性异步加载，完成回调会触发 ApplyFilterAndRefresh。
         }
     }
 }

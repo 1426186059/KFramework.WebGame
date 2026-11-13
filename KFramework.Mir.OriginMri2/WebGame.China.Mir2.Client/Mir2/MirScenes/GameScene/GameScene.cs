@@ -4,6 +4,7 @@ using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirScenes.Dialogs;
 using Client.MirSounds;
+using SlimDX;
 using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
 using Effect = Client.MirObjects.Effect;
@@ -328,6 +329,18 @@ namespace Client.MirScenes
             GuildDialog = new GuildDialog { Parent = this, Visible = false };
             GuildTerritoryDialog = new GuildTerritoryDialog { Parent = this, Visible = false };
             GMDialog = new GMDialog { Parent = this, Visible = false };
+            // 左下角 GM 工具按钮：浏览器 WASM 下 Ctrl+G 常被浏览器/系统拦截，提供一个可点击的兜底入口。
+            var gmButton = new MirButton
+            {
+                Parent = this,
+                AutoSize = false, Size = new Size(36, 18),
+                Location = new Point(8, Settings.ScreenHeight - 26),
+                Border = true, BorderColour = Color.Lime,
+                ForeColour = new Color(20, 35, 12),
+            };
+            gmButton.Label.Text = "GM";
+            gmButton.Label.ForeColour = Color.White;
+            gmButton.Click += (o, e) => GMDialog.Toggle();
             NewHeroDialog = new NewCharacterDialog { Parent = this, Visible = false };
             NewHeroDialog.TitleLabel.Index = 847;
             NewHeroDialog.TitleLabel.Location = new Point(246, 11);
@@ -522,8 +535,9 @@ namespace Client.MirScenes
 
         private void GameScene_KeyDown(object sender, KeyEventArgs e)
         {
-            // GM 工具面板: 组合键 Ctrl+G 开关
-            if (CMain.Ctrl && e.KeyCode == Keys.KeyG)
+            // GM 工具面板: 组合键 Ctrl+G 开关（用当前事件的 e.Control，比 CMain.Ctrl 更准；
+            // 但浏览器 WASM 下 Ctrl+G 可能被浏览器/系统拦截，左下角还有 GM 按钮兜底）
+            if (e.Control && e.KeyCode == Keys.KeyG)
             {
                 GMDialog.Toggle();
                 return;
