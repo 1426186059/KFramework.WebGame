@@ -24,6 +24,16 @@ namespace Client.MirScenes.Dialogs
         public int StartIndex;
         private UserObject Actor;
 
+        // 角色面板人物立绘分层（页游 UIStaticModel 的 Body/Head/Weapon/Shield/Miansha）。
+        private MirImageControl[] _modelLayers;
+        private readonly int[] _modelIds = new int[Mir2OriginUIModel.LayerCount];
+        private int _modelPosVersion = -1;
+
+        /// <summary>装扮装备的页游物品 id：斗笠(401) / 护盾(402) / 面纱(406)。0 = 未装备。
+        /// 本服务端 UserInformation 暂未下发 ActiveDouLi/ActiveHuDun/ActiveMianSha（只有 ObjectPlayer 包有），
+        /// 默认 0 即隐藏这三层；下发后由 GameScene 填入即可直接点亮，无需改绘制逻辑。</summary>
+        public int DouLiItemId, HuDunItemId, MianShaItemId;
+
         public CharacterDialog(MirGridType gridType, UserObject actor)
         {
             Actor = actor;
@@ -168,54 +178,39 @@ namespace Client.MirScenes.Dialogs
                 DrawImage = false,
             };
 
-            var mRole = new MirImageControl
+            // —— 人物立绘：对齐页游 UIStaticModel 的分层 uiModel 皮肤 ——
+            // 身体/头发(或头盔、斗笠)/武器/面纱/盾牌各是一张 uiModel/{模型号}.png，
+            // 尺寸各不相同，按 uiModel/pos.json 的 x/y 站位点摆进同一 1025×1025 画布后叠加。
+            // 容器原点 = 人物脚底中心 (159,400)，位于内框 (16,65)-(302,461) 的中下部；
+            // 它是 CharacterPage 的第一个子节点，故立绘在装备格之下，不遮挡格子。
+            var modelHost = new MirImageControl
             {
                 Parent = CharacterPage,
-                ImageUrl = Actor.Gender == MirGender.Male
-                   ? "assets/resource/uiModel/9001.png?ver=1.0.2"
-                   : "assets/resource/uiModel/9002.png?ver=1.0.2",
+                Location = new Point(159, 350),
+                DrawImage = false,
                 NotControl = true,
-                Location = new Point(100, 250),
             };
+            Mir2OriginUIModel.EnsurePos();
 
-            CharacterPage.AfterDraw += (o, e) =>
+            _modelLayers = new MirImageControl[Mir2OriginUIModel.LayerCount];
+            foreach (int layer in Mir2OriginUIModel.DrawOrder)
             {
-                if (Libraries.StateItems == null) return;
-                ItemInfo RealItem = null;
-                if (Grid[(int)EquipmentSlot.Armour].Item != null)
+                int captured = layer;
+                var node = new MirImageControl
                 {
-                    if (actor.WingEffect == 1 || actor.WingEffect == 2)
-                    {
-                        int wingOffset = actor.WingEffect == 1 ? 2 : 4;
+                    Parent = modelHost,
+                    NotControl = true,
+                    Visible = false,
+                    SizeScale = Mir2OriginUIModel.Scale,
+                };
+                // pos.json 可能比图片晚到、图片本身也异步解码；纹理就绪后重算一次坐标（居中回落需要真实尺寸）。
+                node.RemoteImageLoaded += (o, e) => ApplyModelLayerPosition(captured, node);
+                _modelLayers[layer] = node;
+            }
 
-                        int genderOffset = actor.Gender == MirGender.Male ? 0 : 1;
-
-                        Libraries.Prguse2.DrawBlend(1200 + wingOffset + genderOffset, DisplayLocation, Color.White, true, 1F);
-                    }
-
-                    RealItem = Functions.GetRealItem(Grid[(int)EquipmentSlot.Armour].Item.Info, actor.Level, actor.Class, GameScene.ItemInfoList);
-                    Libraries.StateItems.Draw(RealItem.Image, DisplayLocation, Color.White, true, 1F);
-
-                }
-                if (Grid[(int)EquipmentSlot.Weapon].Item != null)
-                {
-                    RealItem = Functions.GetRealItem(Grid[(int)EquipmentSlot.Weapon].Item.Info, actor.Level, actor.Class, GameScene.ItemInfoList);
-                    Libraries.StateItems.Draw(RealItem.Image, DisplayLocation, Color.White, true, 1F);
-
-                }
-
-                if (Grid[(int)EquipmentSlot.Helmet].Item != null)
-                    Libraries.StateItems.Draw(Grid[(int)EquipmentSlot.Helmet].Item.Info.Image, DisplayLocation, Color.White, true, 1F);
-                else
-                {
-                    int hair = 441 + actor.Hair + (actor.Class == MirClass.Assassin ? 20 : 0) + (actor.Gender == MirGender.Male ? 0 : 40);
-
-                    int offSetX = actor.Class == MirClass.Assassin ? (actor.Gender == MirGender.Male ? 6 : 4) : 0;
-                    int offSetY = actor.Class == MirClass.Assassin ? (actor.Gender == MirGender.Male ? 25 : 18) : 0;
-
-                    Libraries.Prguse.Draw(hair, new Point(DisplayLocation.X + offSetX, DisplayLocation.Y + offSetY), Color.White, true, 1F);
-                }
-            };
+            // 换装/卸装后每帧按 Grid[] 解算模型号；模型号不变不重发图片请求。
+            // 用 BeforeDraw（子控件绘制之前）而非 AfterDraw，保证同帧生效。
+            CharacterPage.BeforeDraw += (o, e) => RefreshModelLayers(actor);
 
             int cellWidth = 60;
             int cellHeigth = 60;
@@ -377,6 +372,67 @@ namespace Client.MirScenes.Dialogs
                 cell.Size = new Size(60, 60);
             }
 
+        }
+
+        /// <summary>按页游 UIModelUtil.setFirstPlayerModel 的规则，从装备槽解算各层模型号并刷新立绘节点。</summary>
+        private void RefreshModelLayers(UserObject actor)
+        {
+            if (Grid == null || _modelLayers == null) return;
+            Mir2OriginUIModel.EnsurePos();   // 幂等；面板构造过早导致首次加载失败时，这里会自动重试
+
+            int ItemId(EquipmentSlot slot)
+            {
+                int i = (int)slot;
+                return i < Grid.Length && Grid[i] != null ? Grid[i].Item?.Info?.Index ?? 0 : 0;
+            }
+
+            int[] models = Mir2OriginUIModel.ResolvePlayerModels(
+                actor.Gender == MirGender.Female,
+                ItemId(EquipmentSlot.Armour),
+                ItemId(EquipmentSlot.Weapon),
+                ItemId(EquipmentSlot.Helmet),
+                DouLiItemId, HuDunItemId, MianShaItemId);
+
+            int posVersion = Mir2OriginUIModel.PosVersion;
+            bool posChanged = posVersion != _modelPosVersion;
+            _modelPosVersion = posVersion;
+
+            foreach (int layer in Mir2OriginUIModel.DrawOrder)
+            {
+                MirImageControl node = _modelLayers[layer];
+                if (node == null) continue;
+
+                int model = models[layer];
+                if (_modelIds[layer] != model)
+                {
+                    _modelIds[layer] = model;
+                    node.Visible = model > 0;
+                    // ImageUrl setter 自带去重（值相同不重发请求）；设 null 清空旧图。
+                    node.ImageUrl = model > 0 ? Mir2OriginUIModel.Path(model) : null;
+                    ApplyModelLayerPosition(layer, node);
+                }
+                else if (posChanged)
+                    ApplyModelLayerPosition(layer, node);
+            }
+        }
+
+        /// <summary>按 uiModel/pos.json 的站位点摆放单层；无站位数据时退化为「图片中心对齐容器脚底原点」。</summary>
+        private void ApplyModelLayerPosition(int layer, MirImageControl node)
+        {
+            int model = _modelIds[layer];
+            if (model <= 0 || node == null) return;
+
+            if (Mir2OriginUIModel.TryGetOffset(model, out int x, out int y))
+            {
+                node.Location = new Point(x, y);
+            }
+            else
+            {
+                // 对应页游 UIModelSkin type!=1 分支：bitmap.x = -width>>1 / y = -height>>1。
+                // Size 已含 SizeScale，纹理异步解码完成后由 RemoteImageLoaded 再重算一次。
+                Size size = node.Size;
+                node.Location = new Point(-size.Width / 2, -size.Height / 2);
+            }
         }
 
 
