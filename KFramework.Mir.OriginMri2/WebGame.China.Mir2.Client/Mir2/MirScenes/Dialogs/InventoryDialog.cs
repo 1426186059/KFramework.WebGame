@@ -1,7 +1,6 @@
 ﻿using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
-using Client.MirObjects;
 using Client.MirSounds;
 using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
@@ -10,12 +9,14 @@ namespace Client.MirScenes.Dialogs
 {
     public sealed class InventoryDialog : MirImageControl
     {
-        public MirImageControl WeightBar;
         public MirImageControl[] LockBar = new MirImageControl[10];
         public MirItemCell[] Grid;
         public MirItemCell[] QuestGrid;
 
-        public MirButton CloseButton, ItemButton, ItemButton2, QuestButton, AddButton, DelItemButton;
+        public MirButton CloseButton, Bag1Button, Bag2Button, StorageButton;
+        public MirImageControl Bag1ButtonSelectImage, Bag2ButtonSelectImage, StorageButtonSelectImage;
+        public MirButton YiJianShiYongButton, ZhengLiButton, HuiShouButton;
+
         public MirLabel GoldLabel, WeightLabel;
 
         private bool _deleteMode;
@@ -25,173 +26,102 @@ namespace Client.MirScenes.Dialogs
 
         public InventoryDialog()
         {
-            Index = 196;
-            Library = Libraries.Title;
             Movable = true;
             Sort = true;
             Visible = false;
+            Size = new Size(542, 464);
+            DrawImage = false;
 
-            // 《原始传奇》背包背景：manifest 逻辑名 resource/assets/gameui4/jpg/bag_bg3.png
-            // （CDN 哈希 resource/73/73844c34_153164.png，542×464，自带 8×6 格子线与底部金币条）。
-            // 必须走 ImageKey 经 manifest 解析，直接拼 CDN 路径会 404。整图拉伸到面板尺寸，
-            // 背景已画好格子，故不再额外叠格子底框；加载失败时自动露出老 .Lib 背景。
             var originBackground = new MirImageControl
             {
                 Parent = this,
                 ImageKey = "resource/assets/gameui4/jpg/bag_bg3.png",
-                AutoSize = false,
                 NotControl = true,
-            };
-            originBackground.BeforeDraw += (o, e) => originBackground.Size = Size;
-
-            // 金币堆：y_bag-sheet 的 bag_coin0 原生 35×21，按原比例贴在 GoldLabel 左侧，
-            // 正好落在 bag_bg3 背景左下角的圆形凹槽里。
-            new MirImageControl
-            {
-                Parent = this,
-                AtlasNameKey = "y_bag-sheet#bag_coin0",
-                AutoSize = false,
-                Size = new Size(35, 21),
-                Location = new Point(4, 209),
-                NotControl = true,
-            };
-
-            WeightBar = new MirImageControl
-            {
-                Index = 24,
-                Library = Libraries.Prguse,
-                Location = new Point(182, 217),
-                Parent = this,
-                DrawImage = false,
-                NotControl = true,
-            };
-
-            // 三个页签用《原始传奇》背包按钮底：bag_Btn0(蓝/选中)、bag_Btn1(棕/未选中)，原生 82×29。
-            // AutoSize=false 固定成原来的 72×23 命中区，页签间距不变；图集未就绪时老 .Lib 帧仍是回退。
-            ItemButton = new MirButton
-            {
-                Index = 197,
-                Library = Libraries.Title,
-                Location = new Point(6, 7),
-                Parent = this,
-                Size = new Size(72, 23),
-                Sound = SoundList.ButtonA,
-                AtlasNameKey = "y_bag-sheet",
-                AtlasFrame = "bag_Btn0",
-                AutoSize = false,
-            };
-            ItemButton.Click += Button_Click;
-
-            ItemButton2 = new MirButton
-            {
-                Index = 738,
-                Library = Libraries.Title,
-                Location = new Point(76, 7),
-                Parent = this,
-                Size = new Size(72, 23),
-                Sound = SoundList.ButtonA,
-                AtlasNameKey = "y_bag-sheet",
-                AtlasFrame = "bag_Btn1",
-                AutoSize = false,
-            };
-            ItemButton2.Click += Button_Click;
-
-            QuestButton = new MirButton
-            {
-                Index = 739,
-                Library = Libraries.Title,
-                Location = new Point(146, 7),
-                Parent = this,
-                Size = new Size(72, 23),
-                Sound = SoundList.ButtonA,
-                AtlasNameKey = "y_bag-sheet",
-                AtlasFrame = "bag_Btn1",
-                AutoSize = false,
-            };
-            QuestButton.Click += Button_Click;
-
-            AddButton = new MirButton
-            {
-                Index = 483,
-                HoverIndex = 484,
-                PressedIndex = 485,
-                Library = Libraries.Title,
-                Location = new Point(235, 5),
-                Parent = this,
-                Size = new Size(72, 23),
-                Sound = SoundList.ButtonA,
-                Visible = false,
-            };
-            AddButton.Click += (o1, e) =>
-            {
-                int openLevel = (GameScene.User.Inventory.Length - 46) / 4;
-                int openGold = (1000000 + openLevel * 1000000);
-                MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization((ClientTextKeys.ExtraSlots4), openGold), MirMessageBoxButtons.OKCancel);
-
-                messageBox.OKButton.Click += (o, a) =>
-                {
-                    Network.Enqueue(new C.Chat { Message = "@ADDINVENTORY" });
-                };
-                messageBox.Show();
+                Size = new Size(542, 464),
+                Location = new Point(0, 0)
             };
 
             CloseButton = new MirButton
             {
-                HoverIndex = 361,
-                Index = 360,
-                Location = new Point(289, 3),
-                Library = Libraries.Prguse2,
+                Location = new Point(542, 3),
                 Parent = this,
-                PressedIndex = 362,
                 Sound = SoundList.ButtonA,
-                // 《原始传奇》关闭按钮；图集未就绪时上面的 .Lib 帧仍是回退。
                 AtlasNameKey = "y_common-sheet#com_btn_close0",
-                HoverAtlasFrame = "com_btn_close1",
-                AutoSize = false,
-                Size = new Size(20, 20),
+                PressedAtlasFrame = "com_btn_close1",
+                Size = new Size(26, 42),
             };
             CloseButton.Click += (o, e) => Hide();
 
-            // 删除物品开关仍用老 .Lib 图标：y_bag-sheet 里 bag_recy1 是 87×23 的「快速回收」标题文字，
-            // 不是小图标，压成 18×18 会糊掉；底部条也没有放下整块文字的空间，故暂不接入。
-            // 同图集的 storageSuo（锁，43×49）对应 LockBar，尺寸/可见性逻辑不同，也先不动。
-            DelItemButton = new MirButton
+            Bag1Button = new MirButton
             {
-                Index = 366,
-                HoverIndex = 367,
-                PressedIndex = 368,
-                Location = new Point(291, 212),
-                Library = Libraries.Prguse2,
+                Location = new Point(542, 50),
                 Parent = this,
                 Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_common-sheet",
+                AtlasFrame = "com_btn_page0",
+                Size = new Size(27, 79),
             };
-            DelItemButton.Click += DelItemButton_Click;
+            Bag1Button.Click += Button_Click;
 
-            _deleteCursorIcon = new MirImageControl
+            Bag2Button = new MirButton
             {
-                Parent = GameScene.Scene,
-                Library = Libraries.Prguse2,
-                Index = 366,
+                Location = new Point(542, 135),
+                Parent = this,
+                Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_common-sheet",
+                AtlasFrame = "com_btn_page0",
+                Size = new Size(27, 79),
+            };
+            Bag2Button.Click += Button_Click;
+
+            StorageButton = new MirButton
+            {
+                Location = new Point(542, 220),
+                Parent = this,
+                Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_common-sheet",
+                AtlasFrame = "com_btn_page0",
+                Size = new Size(27, 79),
+            };
+            StorageButton.Click += Button_Click;
+
+            YiJianShiYongButton = new MirButton
+            {
+                Location = new Point(542, 464),
+                Parent = this,
+                Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_bag-sheet",
+                AtlasFrame = "bag_Btn0",
+                Size = new Size(27, 79),
+            };
+            YiJianShiYongButton.Click += Button_Click;
+
+            var mCoin = new MirImageControl
+            {
+                Parent = this,
+                AtlasNameKey = "y_bag-sheet#bag_coin0",
+                Location = new Point(4, 464),
                 NotControl = true,
-                Visible = false
+                Size = new Size(35, 21),
             };
 
             GoldLabel = new MirLabel
             {
                 Parent = this,
-                Location = new Point(40, 212),
+                Location = new Point(40, 464),
                 Size = new Size(111, 14),
                 Sound = SoundList.Gold,
             };
+
             GoldLabel.Click += (o, e) =>
             {
                 if (GameScene.SelectedCell == null)
+                {
                     GameScene.PickedUpGold = !GameScene.PickedUpGold && GameScene.Gold > 0;
+                }
             };
 
-
             Grid = new MirItemCell[8 * 10];
-
             for (int x = 0; x < 8; x++)
             {
                 for (int y = 0; y < 10; y++)
@@ -201,48 +131,22 @@ namespace Client.MirScenes.Dialogs
                     {
                         ItemSlot = 6 + idx,
                         GridType = MirGridType.Inventory,
-                        Library = Libraries.Items,
                         Parent = this,
                         Location = new Point(x * 36 + 9 + x, y % 5 * 32 + 37 + y % 5),
                     };
 
-                    if (idx >= 40)
-                        Grid[idx].Visible = false;
-                }
-            }
-
-            QuestGrid = new MirItemCell[8 * 5];
-
-            for (int x = 0; x < 8; x++)
-            {
-                for (int y = 0; y < 5; y++)
-                {
-                    QuestGrid[8 * y + x] = new MirItemCell
+                    if (idx >= 48)
                     {
-                        ItemSlot = 8 * y + x,
-                        GridType = MirGridType.QuestInventory,
-                        Library = Libraries.Items,
-                        Parent = this,
-                        Location = new Point(x * 36 + 9 + x, y * 32 + 37 + y),
-                        Visible = false
-                    };
+                        Grid[idx].Visible = false;
+                    }
                 }
             }
-
-            WeightLabel = new MirLabel
-            {
-                Parent = this,
-                Location = new Point(268, 212),
-                Size = new Size(26, 14)
-            };
-            WeightBar.BeforeDraw += WeightBar_BeforeDraw;
 
             for (int i = 0; i < LockBar.Length; i++)
             {
                 LockBar[i] = new MirImageControl
                 {
-                    Index = 307,
-                    Library = Libraries.Prguse2,
+                    AtlasNameKey = "y_bag-sheet#storageSuo",
                     Location = new Point(9 + i % 2 * 148, 37 + i / 2 * 33),
                     Parent = this,
                     DrawImage = true,
@@ -261,18 +165,18 @@ namespace Client.MirScenes.Dialogs
                 me.Button == MouseButtons.Left &&
                 (Control.ModifierKeys == Keys.ControlLeft))
             {
-                if (sender == ItemButton)
+                if (sender == Bag1Button)
                 {
                     TryMoveSelectedInventoryItem(false);
                 }
-                else if (sender == ItemButton2)
+                else if (sender == Bag2Button)
                 {
                     TryMoveSelectedInventoryItem(true);
                 }
                 return;
             }
 
-            if (GameScene.User.Inventory.Length == 46 && sender == ItemButton2)
+            if (GameScene.User.Inventory.Length == 46 && sender == Bag2Button)
             {
                 MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExtraSlots8), MirMessageBoxButtons.OKCancel);
 
@@ -284,32 +188,13 @@ namespace Client.MirScenes.Dialogs
             }
             else
             {
-                if (sender == ItemButton)
+                if (sender == Bag1Button)
                 {
                     RefreshInventory();
                 }
-                else if (sender == ItemButton2)
+                else if (sender == Bag2Button)
                 {
                     RefreshInventory2();
-                }
-                else if (sender == QuestButton)
-                {
-                    Reset();
-                    SetBagTab(2);
-
-                    ItemButton.Index = 737;
-                    ItemButton2.Index = 738;
-                    QuestButton.Index = 198;
-
-                    if (GameScene.User.Inventory.Length == 46)
-                    {
-                        ItemButton2.Index = 169;
-                    }
-
-                    foreach (var grid in QuestGrid)
-                    {
-                        grid.Visible = true;
-                    }
                 }
             }
         }
@@ -362,18 +247,11 @@ namespace Client.MirScenes.Dialogs
         // 加载完成时不会覆盖这里设置的帧；未加载好时老 .Lib 的 Index 切换照常回退。
         private void SetBagTab(int active)
         {
-            ItemButton.AtlasFrame = active == 0 ? "bag_Btn0" : "bag_Btn1";
-            ItemButton2.AtlasFrame = active == 1 ? "bag_Btn0" : "bag_Btn1";
-            QuestButton.AtlasFrame = active == 2 ? "bag_Btn0" : "bag_Btn1";
+            
         }
 
         void Reset()
         {
-            foreach (MirItemCell grid in QuestGrid)
-            {
-                grid.Visible = false;
-            }
-
             foreach (MirItemCell grid in Grid)
             {
                 grid.Visible = false;
@@ -383,8 +261,6 @@ namespace Client.MirScenes.Dialogs
             {
                 LockBar[i].Visible = false;
             }
-
-            AddButton.Visible = false;
         }
 
 
@@ -394,21 +270,16 @@ namespace Client.MirScenes.Dialogs
             Reset();
             SetBagTab(0);
 
-            ItemButton.Index = 197;
-            ItemButton2.Index = 738;
-            QuestButton.Index = 739;
-
-            if (GameScene.User.Inventory.Length == 46)
-            {
-                ItemButton2.Index = 169;
-            }
-
             foreach (var grid in Grid)
             {
                 if (grid.ItemSlot < 46)
+                {
                     grid.Visible = true;
+                }
                 else
+                {
                     grid.Visible = false;
+                }
             }
         }
 
@@ -417,72 +288,28 @@ namespace Client.MirScenes.Dialogs
             Reset();
             SetBagTab(1);
 
-            ItemButton.Index = 737;
-            ItemButton2.Index = 168;
-            QuestButton.Index = 739;
-
             foreach (var grid in Grid)
             {
                 if (grid.ItemSlot < 46 || grid.ItemSlot >= GameScene.User.Inventory.Length)
+                {
                     grid.Visible = false;
+                }
                 else
+                {
                     grid.Visible = true;
+                }
             }
-
             int openLevel = (GameScene.User.Inventory.Length - 46) / 4;
             for (int i = 0; i < LockBar.Length; i++)
             {
                 LockBar[i].Visible = (i < openLevel) ? false : true;
             }
-
-            AddButton.Visible = openLevel >= 10 ? false : true;
         }
 
         public void Process()
         {
-            WeightLabel.Text = GameScene.User.Inventory.Count(t => t == null).ToString();
-            //WeightLabel.Text = (MapObject.User.MaxBagWeight - MapObject.User.CurrentBagWeight).ToString();
             GoldLabel.Text = GameScene.Gold.ToString("###,###,##0");
-
-            // Delete-mode cursor icon follows the mouse
-            if (_deleteMode && _deleteCursorIcon != null && _deleteCursorIcon.Visible)
-                UpdateDeleteCursorPos();
         }
-
-
-        private void WeightBar_BeforeDraw(object sender, EventArgs e)
-        {
-            if (WeightBar.Library == null) return;
-
-            double percent = MapObject.User.CurrentBagWeight / (double)MapObject.User.Stats[Stat.BagWeight];
-            if (percent > 1) percent = 1;
-            if (percent <= 0) return;
-
-            // Weight bar art based on fill
-            if (percent <= 0.50)
-            {
-                WeightBar.Library = Libraries.Prguse;
-                WeightBar.Index = 24;
-            }
-            else if (percent <= 0.75)
-            {
-                WeightBar.Library = Libraries.UI_32bit;
-                WeightBar.Index = 471;
-            }
-            else
-            {
-                WeightBar.Library = Libraries.UI_32bit;
-                WeightBar.Index = 470;
-            }
-
-            Rectangle section = new Rectangle
-            {
-                Size = new Size((int)((WeightBar.Size.Width - 3) * percent), WeightBar.Size.Height)
-            };
-
-            WeightBar.Library.Draw(WeightBar.Index, section, WeightBar.DisplayLocation, Color.White, false);
-        }
-
 
         public MirItemCell GetCell(ulong id)
         {
@@ -563,8 +390,6 @@ namespace Client.MirScenes.Dialogs
         public void ToggleDeleteMode(bool on)
         {
             _deleteMode = on;
-
-            DelItemButton.Index = on ? 368 : 366;
 
             if (_deleteCursorIcon != null)
             {

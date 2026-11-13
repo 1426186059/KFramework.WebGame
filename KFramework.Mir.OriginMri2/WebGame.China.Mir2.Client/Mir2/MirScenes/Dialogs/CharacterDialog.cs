@@ -28,25 +28,20 @@ namespace Client.MirScenes.Dialogs
         {
             Actor = actor;
             GridType = gridType;
-
-            Index = 504;
-            Library = Libraries.Title;
             Location = new Point(Settings.ScreenWidth - 264, 0);
             Movable = true;
-            Sort = true;            
-
-            // 《原始传奇》角色面板外框：resource/assets/gameui4/jpg/bag_bg.png
-            // （CDN resource/7e/7e5fcb4c_104188.png，318×475，金色拱顶 + 金属边框）。
-            // 父面板仍由 .Lib 图决定 Size/坐标，这里只叠加绘制在最底下的背景，布局一点不动；
-            // 图片异步加载完成前 Texture 为空，自动露出老 .Lib 背景作为回退。
+            Sort = true;
+            Size = new Size(350, 475);
+            DrawImage = false;
+            
             var originBackground = new MirImageControl
             {
                 Parent = this,
                 ImageKey = "resource/assets/gameui4/jpg/bag_bg.png",
                 AutoSize = false,
                 NotControl = true,
+                Size = new Size(318, 475),
             };
-            originBackground.BeforeDraw += (o, e) => originBackground.Size = Size;
 
             // 叠在外框之上的内页底图：resource/assets/gameui4/jpg/bag_bg2.jpg
             // （CDN resource/99/99e56c43_10166.jpg，286×396，龙纹 + 人物圆台）。
