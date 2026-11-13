@@ -615,7 +615,7 @@ namespace Client.MirScenes.Dialogs
         public override void Show()
         {
             base.Show();
-            Location = new Point(Settings.ScreenWidth / 2 - 600, Settings.ScreenHeight / 2 - 300);
+            Location = new Point(Settings.ScreenWidth / 2 - 600, Settings.ScreenHeight / 2 - 350);
         }
 
         public override void Hide()
