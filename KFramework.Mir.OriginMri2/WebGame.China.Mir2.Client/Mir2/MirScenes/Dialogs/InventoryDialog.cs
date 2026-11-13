@@ -29,7 +29,7 @@ namespace Client.MirScenes.Dialogs
             Movable = true;
             Sort = true;
             Visible = false;
-            Size = new Size(542, 464);
+            Size = new Size(600, 464);
             DrawImage = false;
 
             var originBackground = new MirImageControl
@@ -62,10 +62,14 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(27, 79),
             };
             Bag1Button.Click += Button_Click;
+            Bag1Button.Label.Text = "背包";
+            Bag1Button.Label.OutLine = true;
+            Bag1Button.Label.ForeColour = Color.White;
+            Bag1Button.Label.Alignment = KFramework.MonoGame.TextAnchor.MiddleCenter;
 
             Bag2Button = new MirButton
             {
-                Location = new Point(542, 135),
+                Location = new Point(542, 110),
                 Parent = this,
                 Sound = SoundList.ButtonA,
                 AtlasNameKey = "y_common-sheet",
@@ -73,10 +77,14 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(27, 79),
             };
             Bag2Button.Click += Button_Click;
+            Bag2Button.Label.Text = "背包";
+            Bag2Button.Label.OutLine = true;
+            Bag2Button.Label.ForeColour = Color.White;
+            Bag2Button.Label.Alignment = KFramework.MonoGame.TextAnchor.MiddleCenter;
 
             StorageButton = new MirButton
             {
-                Location = new Point(542, 220),
+                Location = new Point(542, 170),
                 Parent = this,
                 Sound = SoundList.ButtonA,
                 AtlasNameKey = "y_common-sheet",
@@ -84,23 +92,62 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(27, 79),
             };
             StorageButton.Click += Button_Click;
+            StorageButton.Label.Text = "仓库";
+            StorageButton.Label.OutLine = true;
+            StorageButton.Label.ForeColour = Color.White;
+            StorageButton.Label.Alignment = KFramework.MonoGame.TextAnchor.MiddleCenter;
 
             YiJianShiYongButton = new MirButton
             {
-                Location = new Point(542, 464),
+                Location = new Point(250, 410),
+                Parent = this,
+                Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_bag-sheet",
+                AtlasFrame = "bag_Btn0",
+                Size = new Size(27, 79),
+            
+            };
+            YiJianShiYongButton.Click += Button_Click;
+            YiJianShiYongButton.Label.Text = "一键使用";
+            YiJianShiYongButton.Label.OutLine = true;
+            YiJianShiYongButton.Label.ForeColour = Color.Yellow;
+            YiJianShiYongButton.Label.Alignment = KFramework.MonoGame.TextAnchor.MiddleCenter;
+
+            ZhengLiButton = new MirButton
+            {
+                Location = new Point(330, 410),
                 Parent = this,
                 Sound = SoundList.ButtonA,
                 AtlasNameKey = "y_bag-sheet",
                 AtlasFrame = "bag_Btn0",
                 Size = new Size(27, 79),
             };
-            YiJianShiYongButton.Click += Button_Click;
+            ZhengLiButton.Click += Button_Click;
+            ZhengLiButton.Label.Text = "整理";
+            ZhengLiButton.Label.OutLine = true;
+            ZhengLiButton.Label.ForeColour = Color.Yellow;
+            ZhengLiButton.Label.Alignment = KFramework.MonoGame.TextAnchor.MiddleCenter;
+
+            HuiShouButton = new MirButton
+            {
+                Location = new Point(410, 410),
+                Parent = this,
+                Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_bag-sheet",
+                AtlasFrame = "bag_Btn0",
+                Size = new Size(27, 79),
+            };
+            HuiShouButton.Click += Button_Click;
+            HuiShouButton.Label.Text = "回收";
+            HuiShouButton.Label.OutLine = true;
+            HuiShouButton.Label.ForeColour = Color.Yellow;
+            HuiShouButton.Label.Alignment = KFramework.MonoGame.TextAnchor.MiddleCenter;
 
             var mCoin = new MirImageControl
             {
                 Parent = this,
                 AtlasNameKey = "y_bag-sheet#bag_coin0",
-                Location = new Point(4, 464),
+                Location = new Point(10, 420),
                 NotControl = true,
                 Size = new Size(35, 21),
             };
@@ -108,8 +155,8 @@ namespace Client.MirScenes.Dialogs
             GoldLabel = new MirLabel
             {
                 Parent = this,
-                Location = new Point(40, 464),
-                Size = new Size(111, 14),
+                Location = new Point(80, 415),
+                AutoSize = true,
                 Sound = SoundList.Gold,
             };
 
