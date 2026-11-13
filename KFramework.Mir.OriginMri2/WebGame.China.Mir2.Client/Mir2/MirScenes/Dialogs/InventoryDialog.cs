@@ -31,6 +31,7 @@ namespace Client.MirScenes.Dialogs
             Visible = false;
             Size = new Size(600, 464);
             DrawImage = false;
+            Location = new Point(Settings.ScreenWidth / 2 + 200, Settings.ScreenHeight / 2 - 300);
 
             var originBackground = new MirImageControl
             {
@@ -589,7 +590,15 @@ namespace Client.MirScenes.Dialogs
         {
             Network.Enqueue(new C.DeleteItem { UniqueID = uniqueId, Count = count, HeroInventory = heroInventory });
         }
+
+        public override void Show()
+        {
+            base.Show();
+        }
     }
+
+
+
     public sealed class BeltDialog : MirImageControl
     {
         public MirLabel[] Key = new MirLabel[5];

@@ -28,7 +28,7 @@ namespace Client.MirScenes.Dialogs
         {
             Actor = actor;
             GridType = gridType;
-            Location = new Point(Settings.ScreenWidth / 2 - 200, Settings.ScreenHeight / 2 - 240);
+            Location = new Point(Settings.ScreenWidth / 2 - 300, Settings.ScreenHeight / 2 - 300);
             Movable = true;
             Sort = true;
             Size = new Size(350, 475);
@@ -214,6 +214,10 @@ namespace Client.MirScenes.Dialogs
                 Size = new Size(27, 79)
             };
             StatusButton.Click += (o, e) => ShowStatusPage();
+            StatusButton.Label.Text = "仓库";
+            StatusButton.Label.OutLine = true;
+            StatusButton.Label.ForeColour = Color.Gray;
+            StatusButton.Label.Location = new Point(0, 10);
 
             NameLabel = new MirLabel
             {
