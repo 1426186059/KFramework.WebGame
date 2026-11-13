@@ -175,7 +175,7 @@ namespace Client.MirScenes.Dialogs
                    ? "assets/resource/uiModel/9001.png?ver=1.0.2"
                    : "assets/resource/uiModel/9002.png?ver=1.0.2",
                 NotControl = true,
-                Location = new Point(150, 150),
+                Location = new Point(100, 250),
             };
 
             CharacterPage.AfterDraw += (o, e) =>
@@ -382,13 +382,22 @@ namespace Client.MirScenes.Dialogs
 
         private void CreateStatusPage(UserObject actor, MirGridType gridType)
         {
+            // 页父节点（空容器）：本页所有 UI 都作为子节点挂到 StatusPage 下，切页只需显隐它。
             StatusPage = new MirImageControl
             {
-                Index = 506,
                 Parent = this,
-                Library = Libraries.Title,
                 Location = new Point(8, 90),
                 Visible = false,
+                NotControl = true,
+            };
+            // 背景图作为子节点（原来 Index=506 那张页签底图）。
+            new MirImageControl
+            {
+                Parent = StatusPage,
+                Index = 506,
+                Library = Libraries.Title,
+                NotControl = true,
+                Location = new Point(0, 0),
             };
             StatusPage.BeforeDraw += (o, e) =>
             {
@@ -516,11 +525,18 @@ namespace Client.MirScenes.Dialogs
         {
             StatePage = new MirImageControl
             {
-                Index = 507,
                 Parent = this,
-                Library = Libraries.Title,
                 Location = new Point(8, 90),
-                Visible = false
+                Visible = false,
+                NotControl = true,
+            };
+            new MirImageControl
+            {
+                Parent = StatePage,
+                Index = 507,
+                Library = Libraries.Title,
+                NotControl = true,
+                Location = new Point(0, 0),
             };
             StatePage.BeforeDraw += (o, e) =>
             {
@@ -640,11 +656,18 @@ namespace Client.MirScenes.Dialogs
         {
             SkillPage = new MirImageControl
             {
-                Index = 508,
                 Parent = this,
-                Library = Libraries.Title,
                 Location = new Point(8, 90),
-                Visible = false
+                Visible = false,
+                NotControl = true,
+            };
+            new MirImageControl
+            {
+                Parent = SkillPage,
+                Index = 508,
+                Library = Libraries.Title,
+                NotControl = true,
+                Location = new Point(0, 0),
             };
 
             Magics = new MagicButton[7];
@@ -757,8 +780,6 @@ namespace Client.MirScenes.Dialogs
 
         private void RefreshInterface()
         {
-            Index = 504;
-
             switch (Actor.Class)
             {
                 case MirClass.Warrior:
