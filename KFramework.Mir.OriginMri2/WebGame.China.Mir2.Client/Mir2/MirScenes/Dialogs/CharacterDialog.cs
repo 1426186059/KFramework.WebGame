@@ -28,7 +28,7 @@ namespace Client.MirScenes.Dialogs
         {
             Actor = actor;
             GridType = gridType;
-            Location = new Point(Settings.ScreenWidth - 264, 0);
+            Location = new Point(Settings.ScreenWidth / 2 - 200, Settings.ScreenHeight / 2 - 240);
             Movable = true;
             Sort = true;
             Size = new Size(350, 475);
@@ -38,30 +38,17 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 ImageKey = "resource/assets/gameui4/jpg/bag_bg.png",
-                AutoSize = false,
                 NotControl = true,
-                Size = new Size(318, 475),
+                Size = new Size(318, 475)
             };
 
-            // 叠在外框之上的内页底图：resource/assets/gameui4/jpg/bag_bg2.jpg
-            // （CDN resource/99/99e56c43_10166.jpg，286×396，龙纹 + 人物圆台）。
-            // 比例取自 gameEui.json 的 RolePopSkin：外框容器 354×475，group_page = 286×396 @ (15,66)；
-            // 按外框图实际 318×475 归一化，随父面板尺寸等比缩放，拱顶/边框保持露出。
             var originInner = new MirImageControl
             {
                 Parent = this,
                 ImageKey = "resource/assets/gameui4/jpg/bag_bg2.jpg",
-                AutoSize = false,
                 NotControl = true,
-            };
-            originInner.BeforeDraw += (o, e) =>
-            {
-                originInner.Location = new Point(
-                    (int)(Size.Width * 15f / 318f),
-                    (int)(Size.Height * 66f / 475f));
-                originInner.Size = new Size(
-                    (int)(Size.Width * 286f / 318f),
-                    (int)(Size.Height * 396f / 475f));
+                Location = new Point(16, 65),
+                Size = new Size(286, 396)
             };
 
             BeforeDraw += (o, e) => RefreshInterface();
@@ -183,16 +170,6 @@ namespace Client.MirScenes.Dialogs
                 Sound = SoundList.ButtonA,
             };
             CharacterButton.Click += (o, e) => ShowCharacterPage();
-            StatusButton = new MirButton
-            {
-                Library = Libraries.Title,
-                Location = new Point(70, 70),
-                Parent = this,
-                PressedIndex = 501,
-                Size = new Size(64, 20),
-                Sound = SoundList.ButtonA
-            };
-            StatusButton.Click += (o, e) => ShowStatusPage();
 
             StateButton = new MirButton
             {
@@ -218,20 +195,25 @@ namespace Client.MirScenes.Dialogs
 
             CloseButton = new MirButton
             {
-                HoverIndex = 361,
-                Index = 360,
-                Location = new Point(241, 3),
-                Library = Libraries.Prguse2,
                 Parent = this,
-                PressedIndex = 362,
+                Location = new Point(318, 60),
                 Sound = SoundList.ButtonA,
-                // 换用《原始传奇》关闭按钮；图集未就绪时上面的 .Lib 帧仍是回退。
-                AtlasNameKey = "y_common-sheet#com_btn_close0",
-                HoverAtlasFrame = "com_btn_close1",
-                AutoSize = false,
-                Size = new Size(20, 20),
+                AtlasNameKey = "y_common-sheet",
+                AtlasFrame = "com_btn_close0",
+                PressedAtlasFrame = "com_btn_close1",
             };
             CloseButton.Click += (o, e) => Hide();
+
+            StatusButton = new MirButton
+            {
+                Location = new Point(318, 105),
+                Parent = this,
+                Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_common-sheet",
+                AtlasFrame = "com_btn_page0",
+                Size = new Size(27, 79)
+            };
+            StatusButton.Click += (o, e) => ShowStatusPage();
 
             NameLabel = new MirLabel
             {

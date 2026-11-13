@@ -181,13 +181,10 @@ namespace Client.MirControls
             Size = new Size(36, 32);
             GridType = MirGridType.None;
             DrawImage = false;
-
             BorderColour = Color.Lime;
-
             BackColour = Color.FromArgb(255, 255, 125, 125);
             Opacity = 0.5F;
             DrawControlTexture = true;
-            Library = Libraries.Items;
         }
 
         public void SetEffect()
