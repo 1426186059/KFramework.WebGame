@@ -1130,7 +1130,7 @@ public sealed class MapControl : MirControl
             }
             else
             {
-                MirAmountBox amountBox = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.DropAmount), cell.Item.Info.Image, cell.Item.Count);
+                MirAmountBox amountBox = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.DropAmount), (int)cell.Item.Info.Image, cell.Item.Count);
 
                 amountBox.OKButton.Click += (o, a) =>
                 {

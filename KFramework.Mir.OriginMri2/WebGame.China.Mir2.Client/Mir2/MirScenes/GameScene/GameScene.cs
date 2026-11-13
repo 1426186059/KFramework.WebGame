@@ -1200,17 +1200,35 @@ namespace Client.MirScenes
 
             if (PickedUpGold || (SelectedCell != null && SelectedCell.Item != null))
             {
-                int image = PickedUpGold ? 116 : SelectedCell.Item.Image;
-                Size imgSize = Libraries.Items.GetTrueSize(image);
-                Point p = CMain.MPoint.Add(-imgSize.Width / 2, -imgSize.Height / 2);
+                if (PickedUpGold)
+                {
+                    int image = 116;
+                    Size imgSize = Libraries.Items.GetTrueSize(image);
+                    Point p = CMain.MPoint.Add(-imgSize.Width / 2, -imgSize.Height / 2);
 
-                if (p.X + imgSize.Width >= DXManager.GDevice.Viewport.Width)
-                    p.X = DXManager.GDevice.Viewport.Width - imgSize.Width;
+                    if (p.X + imgSize.Width >= DXManager.GDevice.Viewport.Width)
+                        p.X = DXManager.GDevice.Viewport.Width - imgSize.Width;
 
-                if (p.Y + imgSize.Height >= DXManager.GDevice.Viewport.Height)
-                    p.Y = DXManager.GDevice.Viewport.Height - imgSize.Height;
+                    if (p.Y + imgSize.Height >= DXManager.GDevice.Viewport.Height)
+                        p.Y = DXManager.GDevice.Viewport.Height - imgSize.Height;
 
-                Libraries.Items.Draw(image, p.X, p.Y);
+                    Libraries.Items.Draw(image, p.X, p.Y);
+                }
+                else
+                {
+                    // 拖拽预览走 origin 图标（与 MirItemCell.DrawItemIcon 同链路）：
+                    // 服务器 S.NewItemInfo 下发的 ItemInfo.Image 已是完整 uint，直接用。
+                    var item = SelectedCell.Item;
+                    int id = (int)item.Info.Image;
+                    if (id > 0)
+                    {
+                        const int box = 48;
+                        Point p = CMain.MPoint.Add(-box / 2, -box / 2);
+                        Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Item, id,
+                                                        priority: Mir2OriginObjectLibrary.PriorityItem);
+                        Mir2OriginObjectLibrary.DrawItemIconFit(id, p.X, p.Y, box, box);
+                    }
+                }
             }
 
             for (int i = 0; i < OutputLines.Length; i++)

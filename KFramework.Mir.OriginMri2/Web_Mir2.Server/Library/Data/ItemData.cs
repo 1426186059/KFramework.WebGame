@@ -83,7 +83,7 @@ public class ItemInfo
         Light = reader.ReadByte();
         RequiredAmount = reader.ReadByte();
 
-        Image = reader.ReadUInt16();
+        Image = reader.ReadUInt32();
         Durability = reader.ReadUInt16();
 
         if (version <= 84)
@@ -225,7 +225,7 @@ public class ItemInfo
         // 协议固定为 ushort：两端 ItemInfo(BinaryReader) 都是 ReadUInt16。
         // 数据层 Image 扩成 uint 只为容纳原始传奇的 7 位图标 ID，发往客户端必须截断，
         // 否则多写 2 字节会让后续字段整体错位（ReadString 抛 Format_Bad7BitInt）。
-        writer.Write((ushort)Image);
+        writer.Write(Image);
         writer.Write(Durability);
 
         writer.Write(StackSize);

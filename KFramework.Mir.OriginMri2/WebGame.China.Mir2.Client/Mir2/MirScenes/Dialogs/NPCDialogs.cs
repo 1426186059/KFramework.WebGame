@@ -604,7 +604,7 @@ namespace Client.MirScenes.Dialogs
 
                             // Show item image using Items_Tooltip_32bit library for KR style
                             _tooltipImage.Library = Libraries.Items_Tooltip_32bit;
-                            _tooltipImage.Index = item.Image;
+                            _tooltipImage.Index = (int)item.Image;
                             _tooltipImage.Location = new Point(10, 10);
                             showImage = true;
                         }
@@ -2459,7 +2459,7 @@ namespace Client.MirScenes.Dialogs
 
             if (max > 1)
             {
-                MirAmountBox amountBox = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CraftAmount), RecipeItem.Info.Image, max, 0, max);
+                MirAmountBox amountBox = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.CraftAmount), (int)RecipeItem.Info.Image, max, 0, max);
 
                 amountBox.OKButton.Click += (o, e) =>
                 {

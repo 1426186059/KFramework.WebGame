@@ -858,6 +858,11 @@ namespace Client.MirScenes.Dialogs
             NameLabel.Text = Actor.Name;
             GuildLabel.Text = Actor.GuildName + " " + Actor.GuildRankName;
 
+            // 同步装备槽：把 Actor.Equipment[slot] 喂给 Grid[slot].Item，DrawControl 才会画图标。
+            // （之前 RefreshInterface 漏了这一步，装备槽 Item 恒为 null，图标全不显示。）
+            for (int i = 0; i < Grid.Length; i++)
+                Grid[i].Item = Actor.Equipment != null && i < Actor.Equipment.Length ? Actor.Equipment[i] : null;
+
             for (int i = 0; i < Magics.Length; i++)
             {
                 if (i + StartIndex >= Actor.Magics.Count)

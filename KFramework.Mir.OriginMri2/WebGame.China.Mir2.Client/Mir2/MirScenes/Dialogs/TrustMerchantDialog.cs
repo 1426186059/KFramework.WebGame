@@ -414,7 +414,7 @@ namespace Client.MirScenes.Dialogs
                             break;
                         case MarketItemType.Auction:
                             {
-                                MirAmountBox bidAmount = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BidAmount), Selected.Listing.Item.Info.Image, uint.MaxValue, Selected.Listing.Price + 1, Selected.Listing.Price + 1);
+                                MirAmountBox bidAmount = new MirAmountBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.BidAmount), (int)Selected.Listing.Item.Info.Image, uint.MaxValue, Selected.Listing.Price + 1, Selected.Listing.Price + 1);
 
                                 bidAmount.OKButton.Click += (o1, e1) =>
                                 {
@@ -1516,7 +1516,7 @@ namespace Client.MirScenes.Dialogs
 
                 if (Listing.Item.Count > 0)
                 {
-                    IconImage.Index = Listing.Item.Info.Image;
+                    IconImage.Index = (int)Listing.Item.Info.Image;
                     IconImage.Library = Libraries.Items;
                 }
                 else

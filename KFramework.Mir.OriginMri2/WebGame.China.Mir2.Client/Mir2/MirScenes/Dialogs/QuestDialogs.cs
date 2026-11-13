@@ -1098,7 +1098,7 @@ namespace Client.MirScenes.Dialogs
         {
             if (Item == null) return;
 
-            Size size = Libraries.Items.GetTrueSize(Item.Image);
+            Size size = Libraries.Items.GetTrueSize((int)Item.Image);
             Point offSet = new Point((40 - size.Width) / 2, (32 - size.Height) / 2);
 
             CreateDisposeLabel();
@@ -1112,7 +1112,7 @@ namespace Client.MirScenes.Dialogs
                 Libraries.Prguse.Draw(979, DisplayLocation.X, DisplayLocation.Y - 5);
             }
 
-            Libraries.Items.Draw(Item.Image, offSet.X + DisplayLocation.X, offSet.Y + DisplayLocation.Y);
+            Libraries.Items.Draw((int)Item.Image, offSet.X + DisplayLocation.X, offSet.Y + DisplayLocation.Y);
         }
 
         protected override void Dispose(bool disposing)

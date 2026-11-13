@@ -2121,7 +2121,7 @@ namespace Client.MirScenes.Dialogs
                 if (ArmorCell.Item != null)
                 {
                     RealItem = Functions.GetRealItem(ArmorCell.Item.Info, Level, Class, GameScene.ItemInfoList);
-                    Libraries.StateItems.Draw(RealItem.Image, new Point(DisplayLocation.X + 0, DisplayLocation.Y + -20), Color.White, true, 1F);
+                    Libraries.StateItems.Draw((int)RealItem.Image, new Point(DisplayLocation.X + 0, DisplayLocation.Y + -20), Color.White, true, 1F);
 
                     if (RealItem.Effect > 0)
                     {
@@ -2136,13 +2136,13 @@ namespace Client.MirScenes.Dialogs
                 if (WeaponCell.Item != null)
                 {
                     RealItem = Functions.GetRealItem(WeaponCell.Item.Info, Level, Class, GameScene.ItemInfoList);
-                    Libraries.StateItems.Draw(RealItem.Image, new Point(DisplayLocation.X, DisplayLocation.Y - 20),
+                    Libraries.StateItems.Draw((int)RealItem.Image, new Point(DisplayLocation.X, DisplayLocation.Y - 20),
                     Color.White, true, 1F);
 
                 }
 
                 if (HelmetCell.Item != null)
-                    Libraries.StateItems.Draw(HelmetCell.Item.Info.Image, new Point(DisplayLocation.X, DisplayLocation.Y - 20), Color.White, true, 1F);
+                    Libraries.StateItems.Draw((int)HelmetCell.Item.Info.Image, new Point(DisplayLocation.X, DisplayLocation.Y - 20), Color.White, true, 1F);
                 else
                 {
                     int hair = 441 + Hair + (Class == MirClass.Assassin ? 20 : 0) + (Gender == MirGender.Male ? 0 : 40);

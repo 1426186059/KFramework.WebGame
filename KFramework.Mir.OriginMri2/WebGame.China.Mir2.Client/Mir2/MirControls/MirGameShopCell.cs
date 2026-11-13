@@ -292,10 +292,10 @@ namespace Client.MirControls
 
             UpdateText();
 
-            Size size = Libraries.Items.GetTrueSize(Item.Info.Image);
+            Size size = Libraries.Items.GetTrueSize((int)Item.Info.Image);
             Point offSet = new Point((32 - size.Width) / 2, (32 - size.Height) / 2);
 
-            Libraries.Items.Draw(Item.Info.Image, offSet.X + DisplayLocation.X + 12, offSet.Y + DisplayLocation.Y + 40);
+            Libraries.Items.Draw((int)Item.Info.Image, offSet.X + DisplayLocation.X + 12, offSet.Y + DisplayLocation.Y + 40);
             ItemDisplayArea = new Rectangle(new Point(offSet.X + DisplayLocation.X + 12, offSet.Y + DisplayLocation.Y + 40), size);
         }
 

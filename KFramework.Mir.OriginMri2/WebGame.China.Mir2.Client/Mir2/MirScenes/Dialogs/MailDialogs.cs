@@ -514,7 +514,7 @@ namespace Client.MirScenes.Dialogs
 
             if (Mail.Items.Count > 0)
             {
-                IconImage.Index = Mail.Items[0].Info.Image;
+                IconImage.Index = (int)Mail.Items[0].Info.Image;
                 IconImage.Library = Libraries.Items;
             }
             else if (Mail.Gold > 0)

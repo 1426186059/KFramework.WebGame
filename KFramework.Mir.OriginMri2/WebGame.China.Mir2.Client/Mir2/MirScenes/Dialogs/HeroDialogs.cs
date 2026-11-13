@@ -728,7 +728,7 @@ namespace Client.MirScenes.Dialogs
             AmountLabel.Visible = Info != null;
             if (Info == null) return;
             AmountLabel.Text = CountItem(Info).ToString();
-            Libraries.Items.Draw(Info.Image, DisplayLocation.Add(2, 3), Size, Color.White);
+            Libraries.Items.Draw((int)Info.Image, DisplayLocation.Add(2, 3), Size, Color.White);
             AmountLabel.Draw();
         }
 

@@ -14,7 +14,8 @@ public class ItemInfo
     public short Shape;
     public byte Weight, Light, RequiredAmount;
 
-    public ushort Image, Durability;
+    public uint Image;
+    public ushort Durability;
 
     public uint Price;
     public ushort StackSize = 1;
@@ -82,7 +83,7 @@ public class ItemInfo
         Light = reader.ReadByte();
         RequiredAmount = reader.ReadByte();
 
-        Image = reader.ReadUInt16();
+        Image = reader.ReadUInt32();
         Durability = reader.ReadUInt16();
 
         if (version <= 84)
@@ -670,7 +671,7 @@ public class UserItem
             }
 
 
-            return Info.Image;
+            return (ushort)Info.Image;
         }
     }
 
