@@ -52,13 +52,8 @@ namespace Client.MirScenes.Dialogs
         private MirTextBox ItemSearchBox;        // 物品搜索框（按 Id 或 名字 过滤）
         private string _itemSearch = string.Empty;
         private MirScrollView2 ItemScrollView;   // 物品行虚拟化滚动列表（无限滚动，只创建视口内行）
-        private readonly List<GmItem> _gmItems = new List<GmItem>();       // 从本地 ExcelConfig/ItemInfo.json 加载的全量物品
-        private List<GmItem> _filteredCache = new List<GmItem>();          // 当前搜索过滤结果（createRow 按索引取）
-        private bool _gmItemsLoaded;                                          // 加载已触发（幂等）
-
-        // GM 窗口物品表的轻量条目：只取显示/发命令所需字段，避免依赖 ItemInfo 全字段反序列化（WASM AOT 禁反射）。
-        // Image 用 uint 保留原始传奇 col19 图标号（46% 超过 ushort，截断会画错图标）。
-        private struct GmItem { public int Index; public string Name; public uint Image; }
+        private List<ItemTableDTO> _filteredCache = new List<ItemTableDTO>();  // 当前搜索过滤结果（createRow 按索引取）
+        private int _lastItemsCount = -1;        // 上次见到的全量物品条数，用于后台加载完成后自动刷新
 
         // GM 命令清单(命令名|参数提示)。发送时自动加 @ 前缀,参数以空格分隔。
         private static readonly string[] GMCommands = new[]
@@ -247,7 +242,6 @@ namespace Client.MirScenes.Dialogs
             ItemPanel.Visible = true;
             GMCommandTab.ForeColour = TabInactive;
             ItemTab.ForeColour = TabActive;
-            EnsureGmItemsLoaded();      // 首次切到物品页时从本地 ExcelConfig 异步加载全量物品（幂等）
             ApplyFilterAndRefresh();
         }
 
@@ -310,60 +304,19 @@ namespace Client.MirScenes.Dialogs
         #endregion
 
         #region 物品行
-        // 物品数据来自本地资源服务器 http://127.0.0.1:5080/MyRes/ExcelConfig/ItemInfo.json
-        //（即 Mir2Res/MyRes/ExcelConfig/ItemInfo.json，与服务器换表后那份同源，12594 项）。
-        // 不再依赖服务端下发的 GameScene.ItemInfoList（可能为空/不全），GM 面板自己拉全量。
-        // JSON 用 JsonDocument 按需取 Index/Name/Image 三字段（WASM AOT 禁反射式 JsonSerializer）。
-        private void EnsureGmItemsLoaded()
-        {
-            if (_gmItemsLoaded) return;
-            _gmItemsLoaded = true;   // 防重入：失败也只试一次，避免每次切页都重发
-            _ = LoadGmItemsAsync();
-        }
-
-        private async Task LoadGmItemsAsync()
-        {
-            try
-            {
-                byte[] bytes = await BrowserResource.GetBytesAsync("MyRes/ExcelConfig/ItemInfo.json");
-                if (bytes == null || bytes.Length == 0)
-                {
-                    GameScene.Scene.OutputMessage("GM:物品表加载失败（检查 127.0.0.1:5080）");
-                    return;
-                }
-                var list = new List<GmItem>(8192);
-                using (JsonDocument doc = JsonDocument.Parse(Encoding.UTF8.GetString(bytes)))
-                {
-                    foreach (JsonElement el in doc.RootElement.EnumerateArray())
-                    {
-                        int idx = 0; string name = null; uint img = 0;
-                        if (el.TryGetProperty("Index", out var je) && je.TryGetInt32(out int v)) idx = v;
-                        if (el.TryGetProperty("Name", out var ne)) name = ne.GetString();
-                        if (el.TryGetProperty("Image", out var ie) && ie.TryGetUInt32(out uint u)) img = u;
-                        if (string.IsNullOrEmpty(name)) continue;   // 跳过无名/无用项
-                        list.Add(new GmItem { Index = idx, Name = name, Image = img });
-                    }
-                }
-                _gmItems.Clear();
-                _gmItems.AddRange(list);
-                GameScene.Scene.OutputMessage("GM:物品表已加载 " + list.Count + " 项");
-                if (ItemPanel != null && ItemPanel.Visible) ApplyFilterAndRefresh();
-            }
-            catch (Exception ex)
-            {
-                GameScene.Scene.OutputMessage("GM:物品表加载异常 " + ex.Message);
-            }
-        }
+        // 物品数据由 ExcelTableMgr.InitializeAsync 在启动时预加载（MyRes/ExcelConfig/ItemInfo.json，12594 项），
+        // GM 面板直接取 ExcelTableMgr.Items，不再自己异步拉表。若打开时还在加载，Update 监测到条数变化后自动刷新。
 
         // 按搜索词过滤：纯数字→按 Id(Index) 精确匹配；否则按名字包含(忽略大小写)
-        private List<GmItem> GetFilteredItems()
+        private List<ItemTableDTO> GetFilteredItems()
         {
+            var all = ExcelTableMgr.Items;
             string q = _itemSearch.Trim();
-            if (q.Length == 0) return _gmItems;
+            if (q.Length == 0) return all;
             if (int.TryParse(q, out int id) && id > 0)
-                return _gmItems.Where(x => x.Index == id).ToList();
-            return _gmItems.Where(x => !string.IsNullOrEmpty(x.Name) &&
-                                      x.Name.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                return all.Where(x => x.Index == id).ToList();
+            return all.Where(x => !string.IsNullOrEmpty(x.Name) &&
+                                  x.Name.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
         }
 
         /// <summary>按当前搜索词刷新过滤结果并喂给虚拟化列表。</summary>
@@ -458,7 +411,7 @@ namespace Client.MirScenes.Dialogs
             base.Show();
             BringToFront();
             // 每次显示时确保物品表已开始加载；若当前在物品页则刷新虚拟列表
-            EnsureGmItemsLoaded();
+            // 每次显示时刷新一次物品列表（ExcelTableMgr 已在启动时预加载；若还在加载，Update 会监测到条数变化后自动刷新）
             if (ItemPanel.Visible) ApplyFilterAndRefresh();
         }
 
@@ -476,8 +429,16 @@ namespace Client.MirScenes.Dialogs
         public override void Update()
         {
             base.Update();
-            // 物品列表由 MirScrollView2 虚拟化自动管理（只创建视口内行），无需轮询刷新。
-            // 本地 ItemInfo.json 在 EnsureGmItemsLoaded 里一次性异步加载，完成回调会触发 ApplyFilterAndRefresh。
+            // 物品表在 ExcelTableMgr 后台预加载，加载完成（条数从 0 变 >0）时若在物品页则自动刷新一次。
+            if (Visible && ItemPanel.Visible)
+            {
+                int cur = ExcelTableMgr.Items.Count;
+                if (cur != _lastItemsCount)
+                {
+                    _lastItemsCount = cur;
+                    ApplyFilterAndRefresh();
+                }
+            }
         }
     }
 }

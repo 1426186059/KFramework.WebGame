@@ -14,6 +14,13 @@ public static partial class ExcelTableMgr
     // 不再用 (long)model*1000+action 一维 long 键 hack）。
     public static bool IsReady => _config0 != null && _config2 != null;
 
+    // ── 物品表（独立于 config 分片，从本地 MyRes/ExcelConfig/ItemInfo.json 加载）──
+    // GM 面板等需要全量物品的场合直接取 ExcelTableMgr.Items，不再各自异步拉表。
+    public static List<ItemTableDTO> _items;
+    public static List<ItemTableDTO> Items => _items ?? new List<ItemTableDTO>();
+    public static bool ItemsReady => _items != null;
+
+
     /// <summary>
     /// 1) 预加载所需 config 分片（0config=map，2config=modelInfo 等），整文件反序列化为 DTO；
     /// 2) 再从 DTO 里取出特定表（map、modelInfo）。分片只下载一次。
@@ -21,20 +28,49 @@ public static partial class ExcelTableMgr
     /// </summary>
     public static async Task InitializeAsync(CancellationToken ct = default)
     {
-        if (IsReady) return;
         try
         {
-            PrintTool.Log("[ExcelTableMgr] Start initializing");
-            // 1) 预加载 config 分片
-            await PreloadShardsAsync(new[] { 0, 2 }, ct).ConfigureAwait(false);
+            if (!IsReady)
+            {
+                PrintTool.Log("[ExcelTableMgr] Start initializing");
+                // 1) 预加载 config 分片
+                await PreloadShardsAsync(new[] { 0, 2 }, ct).ConfigureAwait(false);
 
-            PrintTool.Log("[ExcelTableMgr] 配置表预加载完成");
+                PrintTool.Log("[ExcelTableMgr] 配置表预加载完成");
 
-            PrintTool.Log("[ExcelTableMgr] IsReady True");
+                PrintTool.Log("[ExcelTableMgr] IsReady True");
+            }
+            // 2) 物品表独立加载（不并入 IsReady：config 已就绪后再次调用仍会补拉物品表）
+            await LoadItemsAsync(ct).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
             Console.Error.WriteLine($"[ExcelTableMgr] 配置表加载失败：{ex}");
+        }
+    }
+
+    /// <summary>从本地资源服务器加载 MyRes/ExcelConfig/ItemInfo.json（12594 项物品）。
+    /// 走源生成 JsonTool，AOT 安全。失败仅记录日志，不抛出。</summary>
+    private static async Task LoadItemsAsync(CancellationToken ct)
+    {
+        if (_items != null) return;
+        try
+        {
+            PrintTool.Log("[ExcelTableMgr] 开始加载 ItemInfo.json");
+            byte[] bytes = await BrowserResource.GetBytesAsync("MyRes/ExcelConfig/ItemInfo.json", ct).ConfigureAwait(false);
+            if (bytes == null || bytes.Length == 0)
+            {
+                PrintTool.Log("[ExcelTableMgr] ItemInfo.json 为空（检查 127.0.0.1:5080/MyRes/ExcelConfig/）");
+                return;
+            }
+            _items = JsonTool.FromJson<List<ItemTableDTO>>(
+                System.Text.Encoding.UTF8.GetString(bytes),
+                AppJsonContext.Default.ItemList);
+            PrintTool.Log($"[ExcelTableMgr] ItemInfo 加载完成 {(_items?.Count ?? 0)} 项");
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"[ExcelTableMgr] ItemInfo 加载失败：{ex}");
         }
     }
 

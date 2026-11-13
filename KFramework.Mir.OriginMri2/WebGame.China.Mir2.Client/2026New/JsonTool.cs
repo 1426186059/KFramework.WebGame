@@ -17,6 +17,9 @@ using System.Text.Json.Serialization;
 [JsonSerializable(typeof(ModelInfoTable))]
 [JsonSerializable(typeof(OriginMir2Config2))]
 [JsonSerializable(typeof(OriginMir2Config0))]
+// 物品表 ItemInfo（顶层数组）：GM 面板等需要全量物品时直接反序列化整张表。
+[JsonSerializable(typeof(ItemTableDTO))]
+[JsonSerializable(typeof(List<ItemTableDTO>), TypeInfoPropertyName = "ItemList")]
 
 // 图集 JSON 核心数据：普通图集 / MovieClip 图集及其嵌套类型与 frames 的两种集合形态。
 [JsonSerializable(typeof(EgretAtlasJson))]
