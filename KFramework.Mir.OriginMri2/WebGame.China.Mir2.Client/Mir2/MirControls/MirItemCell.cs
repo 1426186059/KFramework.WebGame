@@ -2457,7 +2457,13 @@ namespace Client.MirControls
         {
             if (item?.Info == null) return;
             KFramework.MonoGame.Color originColour = dim ? Color.DimGray : ForeColour;
-            if (DrawOriginItem(item.Info.Image, DisplayLocation, Size, originColour))
+            // 服务端协议里 ItemInfo.Image 是 ushort（BinaryReader.ReadUInt16），换表后 col19 大图标号
+            // （46% 超过 65535）在传输时已被截断，客户端拿到的 item.Info.Image 是截断值，CDN 会 404。
+            // 用 ItemIndex 从本地 ExcelTableMgr 全表查原始 uint 图标号；查不到回落协议里的截断值。
+            uint iconId = (uint)item.Info.Image;
+            if (item.Info.Index > 0 && ExcelTableMgr.TryGetItem(item.Info.Index, out var dto))
+                iconId = dto.Image;
+            if (DrawOriginItem(iconId, DisplayLocation, Size, originColour))
                 return;
 
             if (Library == null) return;

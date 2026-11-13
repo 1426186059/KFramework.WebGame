@@ -17,8 +17,17 @@ public static partial class ExcelTableMgr
     // ── 物品表（独立于 config 分片，从本地 MyRes/ExcelConfig/ItemInfo.json 加载）──
     // GM 面板等需要全量物品的场合直接取 ExcelTableMgr.Items，不再各自异步拉表。
     public static List<ItemTableDTO> _items;
+    public static Dictionary<int, ItemTableDTO> _itemsByIndex;   // Index → DTO 索引（按物品 Index 快速查原始 uint 图标号等）
     public static List<ItemTableDTO> Items => _items ?? new List<ItemTableDTO>();
     public static bool ItemsReady => _items != null;
+
+    /// <summary>按物品 Index 查 ItemTableDTO。用于客户端补全被网络协议截断的字段
+    ///（ItemInfo.Image 协议传输是 ushort，换表后 46% 图标号 >65535 被截断；本地表存原始 uint）。</summary>
+    public static bool TryGetItem(int index, out ItemTableDTO item)
+    {
+        item = null;
+        return _itemsByIndex != null && _itemsByIndex.TryGetValue(index, out item) && item != null;
+    }
 
 
     /// <summary>
@@ -66,7 +75,14 @@ public static partial class ExcelTableMgr
             _items = JsonTool.FromJson<List<ItemTableDTO>>(
                 System.Text.Encoding.UTF8.GetString(bytes),
                 AppJsonContext.Default.ItemList);
-            PrintTool.Log($"[ExcelTableMgr] ItemInfo 加载完成 {(_items?.Count ?? 0)} 项");
+            // 建 Index → DTO 索引：客户端用它补全协议截断的字段（ItemInfo.Image 协议是 ushort，本地表存原始 uint）
+            var byIdx = new Dictionary<int, ItemTableDTO>(_items?.Count ?? 0);
+            if (_items != null)
+                foreach (var it in _items)
+                    if (it != null && it.Index > 0 && !byIdx.ContainsKey(it.Index))
+                        byIdx[it.Index] = it;
+            _itemsByIndex = byIdx;
+            PrintTool.Log($"[ExcelTableMgr] ItemInfo 加载完成 {(_items?.Count ?? 0)} 项，索引 {byIdx.Count} 条");
         }
         catch (Exception ex)
         {
