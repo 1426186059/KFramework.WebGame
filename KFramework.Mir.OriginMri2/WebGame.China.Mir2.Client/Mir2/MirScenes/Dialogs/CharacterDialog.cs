@@ -30,7 +30,7 @@ namespace Client.MirScenes.Dialogs
             GridType = gridType;
             Movable = true;
             Sort = true;
-            Size = new Size(350, 475);
+            Size = new Size(390, 525);
             DrawImage = false;
             
             var originBackground = new MirImageControl
@@ -38,7 +38,7 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,
                 ImageKey = "resource/assets/gameui4/jpg/bag_bg.png",
                 NotControl = true,
-                Size = new Size(318, 475)
+                Size = new Size(390, 525)
             };
 
             var originInner = new MirImageControl
@@ -61,7 +61,7 @@ namespace Client.MirScenes.Dialogs
                     ? "assets/resource/uiModel/9001.png?ver=1.0.2"
                     : "assets/resource/uiModel/9002.png?ver=1.0.2",
                 NotControl = true,
-                Location = new Point(100, 200),
+                Location = new Point(20, 95),
             };
             CharacterPage.AfterDraw += (o, e) =>
             {
@@ -102,25 +102,33 @@ namespace Client.MirScenes.Dialogs
                 }
             };
 
+            int cellWidth = 60;
+            int cellHeigth = 60;
+            int nSpace = 5;
+
+            Point GetGridPos(int x, int y)
+            {
+                Point p = new Point(y * (cellWidth + nSpace), x * (cellHeigth + nSpace));
+                p.Offset(new Point(100, 100));
+                return p;
+            }
+
             // 装备槽底图：原始 RolePop 的 EquipItemRenderSkin.bgImg.source = "equip_grid"（60×60），
             // 取自 gameui4 图集 y_ngrid-sheet。逐槽垫在槽位下方（位置与下方 Grid[] 创建顺序/坐标一致），NotControl 不挡点击。
             var slotGridPoints = new Point[]
             {
-                new Point(123, 7),   // Weapon
-                new Point(163, 7),   // Armour
-                new Point(203, 7),   // Helmet
-                new Point(203, 134), // Torch
-                new Point(203, 98),  // Necklace
-                new Point(8, 170),   // BraceletL
-                new Point(203, 170), // BraceletR
-                new Point(8, 206),   // RingL
-                new Point(203, 206), // RingR
-                new Point(8, 242),   // Amulet
-                new Point(48, 242),  // Boots
-                new Point(88, 242),  // Belt
-                new Point(128, 242), // Stone
-                new Point(203, 62),  // Mount
+                GetGridPos(0, 3), // 项链
+                GetGridPos(1, 3), // 荣誉勋章
+                GetGridPos(2, 0),   // 左手镯
+                GetGridPos(2, 3), // 右手镯
+                GetGridPos(3, 0),   // 左戒指
+                GetGridPos(3, 3), // 右戒指
+                GetGridPos(4, 0),   // 玉佩
+                GetGridPos(4, 1), // 腰带
+                GetGridPos(4, 2),  // 鞋子
+                GetGridPos(4, 3), // 疗伤石
             };
+
             foreach (var gp in slotGridPoints)
             {
                 new MirImageControl
@@ -129,6 +137,8 @@ namespace Client.MirScenes.Dialogs
                     AtlasNameKey = "y_ngrid-sheet#equip_grid",
                     NotControl = true,
                     Location = gp,
+                    Size = new Size(cellWidth, cellHeigth),
+                    AutoSize = false,
                 };
             }
 
@@ -284,7 +294,7 @@ namespace Client.MirScenes.Dialogs
                 ItemSlot = (int)EquipmentSlot.Weapon,
                 GridType = gridType,
                 Parent = CharacterPage,
-                Location = new Point(123, 7),
+                Location = new Point(184, 10),
             };
 
 
@@ -293,7 +303,7 @@ namespace Client.MirScenes.Dialogs
                 ItemSlot = (int)EquipmentSlot.Armour,
                 GridType = gridType,
                 Parent = CharacterPage,
-                Location = new Point(163, 7),
+                Location = new Point(244, 10),
             };
 
 
@@ -302,7 +312,7 @@ namespace Client.MirScenes.Dialogs
                 ItemSlot = (int)EquipmentSlot.Helmet,
                 GridType = gridType,
                 Parent = CharacterPage,
-                Location = new Point(203, 7),
+                Location = new Point(304, 10),
             };
 
 
@@ -312,7 +322,7 @@ namespace Client.MirScenes.Dialogs
                 ItemSlot = (int)EquipmentSlot.Torch,
                 GridType = gridType,
                 Parent = CharacterPage,
-                Location = new Point(203, 134),
+                Location = new Point(304, 201),
             };
 
 
@@ -321,7 +331,7 @@ namespace Client.MirScenes.Dialogs
                 ItemSlot = (int)EquipmentSlot.Necklace,
                 GridType = gridType,
                 Parent = CharacterPage,
-                Location = new Point(203, 98),
+                Location = new Point(304, 147),
             };
 
 
@@ -330,7 +340,7 @@ namespace Client.MirScenes.Dialogs
                 ItemSlot = (int)EquipmentSlot.BraceletL,
                 GridType = gridType,
                 Parent = CharacterPage,
-                Location = new Point(8, 170),
+                Location = new Point(12, 255),
             };
 
             Grid[(int)EquipmentSlot.BraceletR] = new MirItemCell
@@ -338,7 +348,7 @@ namespace Client.MirScenes.Dialogs
                 ItemSlot = (int)EquipmentSlot.BraceletR,
                 GridType = gridType,
                 Parent = CharacterPage,
-                Location = new Point(203, 170),
+                Location = new Point(304, 255),
             };
 
             Grid[(int)EquipmentSlot.RingL] = new MirItemCell
@@ -346,7 +356,7 @@ namespace Client.MirScenes.Dialogs
                 ItemSlot = (int)EquipmentSlot.RingL,
                 GridType = gridType,
                 Parent = CharacterPage,
-                Location = new Point(8, 206),
+                Location = new Point(12, 309),
             };
 
             Grid[(int)EquipmentSlot.RingR] = new MirItemCell
@@ -354,7 +364,7 @@ namespace Client.MirScenes.Dialogs
                 ItemSlot = (int)EquipmentSlot.RingR,
                 GridType = gridType,
                 Parent = CharacterPage,
-                Location = new Point(203, 206),
+                Location = new Point(304, 309),
             };
 
 
@@ -363,7 +373,7 @@ namespace Client.MirScenes.Dialogs
                 ItemSlot = (int)EquipmentSlot.Amulet,
                 GridType = gridType,
                 Parent = CharacterPage,
-                Location = new Point(8, 242),
+                Location = new Point(12, 363),
             };
 
 
@@ -372,7 +382,7 @@ namespace Client.MirScenes.Dialogs
                 ItemSlot = (int)EquipmentSlot.Boots,
                 GridType = gridType,
                 Parent = CharacterPage,
-                Location = new Point(48, 242),
+                Location = new Point(72, 363),
             };
 
             Grid[(int)EquipmentSlot.Belt] = new MirItemCell
@@ -380,7 +390,7 @@ namespace Client.MirScenes.Dialogs
                 ItemSlot = (int)EquipmentSlot.Belt,
                 GridType = gridType,
                 Parent = CharacterPage,
-                Location = new Point(88, 242),
+                Location = new Point(132, 363),
             };
 
 
@@ -389,7 +399,7 @@ namespace Client.MirScenes.Dialogs
                 ItemSlot = (int)EquipmentSlot.Stone,
                 GridType = gridType,
                 Parent = CharacterPage,
-                Location = new Point(128, 242),
+                Location = new Point(192, 363),
             };
 
             Grid[(int)EquipmentSlot.Mount] = new MirItemCell
@@ -397,8 +407,11 @@ namespace Client.MirScenes.Dialogs
                 ItemSlot = (int)EquipmentSlot.Mount,
                 GridType = gridType,
                 Parent = CharacterPage,
-                Location = new Point(203, 62),
+                Location = new Point(304, 93),
             };
+
+            // 装备槽按原始 equip_grid 尺寸 60×60 显示（覆盖 MirItemCell 默认 36×32）。
+            foreach (var cell in Grid) cell.Size = new Size(60, 60);
 
             // STATS I
             HealthLabel = new MirLabel
