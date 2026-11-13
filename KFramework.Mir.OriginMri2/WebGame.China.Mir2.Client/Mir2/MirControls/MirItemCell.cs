@@ -2439,13 +2439,33 @@ namespace Client.MirControls
         }
 
         // 物品图标统一走 Mir2OriginObjectLibrary：ItemInfo.Image 是原始传奇 1config.item 的 col19
-        // 图标号，对应 assets/resource/{版本}/icon/tool/{图标号}.png。资源未就绪时回落到 .Lib 图集。
-        private bool DrawOriginItem(uint iconId, Point drawAt, KFramework.MonoGame.Color colour)
+        // 图标号，对应 assets/resource/icon/tool/{图标号}.png（col19 有 46% 超过 ushort，必须用 uint）。
+        // 注意：这里绝不能依赖 Library != null —— 背包 / 角色装备格子并没有配置 .Lib 图库，
+        // 旧代码把整段绘制包在 if (Library != null) 里，导致背包里一个图标都画不出来。
+        private bool DrawOriginItem(uint iconId, Point drawAt, Size boxSize, KFramework.MonoGame.Color colour)
         {
             int id = (int)iconId;
-            Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Item, id);
-            return Mir2OriginObjectLibrary.DrawSpriteAt(Mir2ObjectKind.Item, id, 0, 0, 0,
-                                                         drawAt.X, drawAt.Y, colour);
+            if (id <= 0) return false;
+            Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Item, id,
+                                            priority: Mir2OriginObjectLibrary.PriorityItem);
+            return Mir2OriginObjectLibrary.DrawItemIconFit(id, drawAt.X, drawAt.Y,
+                                                           boxSize.Width, boxSize.Height, colour);
+        }
+
+        /// <summary>origin 图标优先；尚未就绪 / CDN 404 时才回落旧 .Lib 图集（需格子配置了 Library）。</summary>
+        private void DrawItemIcon(UserItem item, bool dim)
+        {
+            if (item?.Info == null) return;
+            KFramework.MonoGame.Color originColour = dim ? Color.DimGray : ForeColour;
+            if (DrawOriginItem(item.Info.Image, DisplayLocation, Size, originColour))
+                return;
+
+            if (Library == null) return;
+            ushort image = item.Image;
+            Size imgSize = Library.GetTrueSize(image);
+            Point offSet = new Point((Size.Width - imgSize.Width) / 2, (Size.Height - imgSize.Height) / 2);
+            Library.Draw(image, DisplayLocation.Add(offSet), dim ? Color.DimGray : ForeColour,
+                         UseOffSet, dim ? 0.8F : 1F);
         }
 
         protected internal override void DrawControl()
@@ -2454,64 +2474,27 @@ namespace Client.MirControls
             {
                 CreateDisposeLabel();
 
-                if (Library != null)
-                {
-                    ushort image = Item.Image;
+                if (GridType == MirGridType.Craft && Libraries.Prguse != null)
+                    Libraries.Prguse.Draw(1121, DisplayLocation.Add(new Point(-2, -1)), Color.White, UseOffSet, 0.8F);
 
-                    Size imgSize = Library.GetTrueSize(image);
+                DrawItemIcon(Item, false);
 
-                    Point offSet = new Point((Size.Width - imgSize.Width) / 2, (Size.Height - imgSize.Height) / 2);
-
-                    if (GridType == MirGridType.Craft)
-                    {
-                        Libraries.Prguse.Draw(1121, DisplayLocation.Add(new Point(-2, -1)), Color.White, UseOffSet, 0.8F);
-                    }
-
-                    if (!DrawOriginItem(Item.Info.Image, DisplayLocation.Add(offSet), ForeColour))
-                        Library.Draw(image, DisplayLocation.Add(offSet), ForeColour, UseOffSet, 1F);
-
-                    if (Item.SealedInfo != null && Item.SealedInfo.ExpiryDate > CMain.Now)
-                    {
-                        Libraries.StateItems.Draw(3590, DisplayLocation.Add(new Point(2, 2)), Color.White, UseOffSet, 1F);
-                    }
-                }
+                if (Item.SealedInfo != null && Item.SealedInfo.ExpiryDate > CMain.Now && Libraries.StateItems != null)
+                    Libraries.StateItems.Draw(3590, DisplayLocation.Add(new Point(2, 2)), Color.White, UseOffSet, 1F);
             }
             else if (Item != null && (GameScene.SelectedCell == this || Locked))
             {
                 CreateDisposeLabel();
-
-                if (Library != null)
-                {
-                    ushort image = Item.Image;
-
-                    Size imgSize = Library.GetTrueSize(image);
-
-                    Point offSet = new Point((Size.Width - imgSize.Width) / 2, (Size.Height - imgSize.Height) / 2);
-
-                    if (!DrawOriginItem(Item.Info.Image, DisplayLocation.Add(offSet), Color.DimGray))
-                        Library.Draw(image, DisplayLocation.Add(offSet), Color.DimGray, UseOffSet, 0.8F);
-                }
+                DrawItemIcon(Item, true);
             }
             else if (ShadowItem != null)
             {
                 CreateDisposeLabel();
 
-                if (Library != null)
-                {
-                    ushort image = ShadowItem.Info.Image;
+                if (GridType == MirGridType.Craft && Libraries.Prguse != null)
+                    Libraries.Prguse.Draw(1121, DisplayLocation.Add(new Point(-2, -1)), Color.White, UseOffSet, 0.8F);
 
-                    Size imgSize = Library.GetTrueSize(image);
-
-                    Point offSet = new Point((Size.Width - imgSize.Width) / 2, (Size.Height - imgSize.Height) / 2);
-
-                    if (GridType == MirGridType.Craft)
-                    {
-                        Libraries.Prguse.Draw(1121, DisplayLocation.Add(new Point(-2, -1)), Color.White, UseOffSet, 0.8F);
-                    }
-
-                    if (!DrawOriginItem(ShadowItem.Info.Image, DisplayLocation.Add(offSet), Color.DimGray))
-                        Library.Draw(image, DisplayLocation.Add(offSet), Color.DimGray, UseOffSet, 0.8F);
-                }
+                DrawItemIcon(ShadowItem, true);
             }
             else
                 DisposeCountLabel();

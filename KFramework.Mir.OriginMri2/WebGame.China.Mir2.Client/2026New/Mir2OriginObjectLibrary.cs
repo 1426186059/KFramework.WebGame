@@ -691,6 +691,30 @@ public static class Mir2OriginObjectLibrary
         return true;
     }
 
+    /// <summary>
+    /// 把已就绪的物品图标等比缩放、居中画进 (x,y,boxW,boxH) 格子。
+    /// 页游 icon/tool/*.png 实测多为 48~54px，而 Crystal 格子是 36×32 / 60×60，
+    /// 用 DrawSpriteAt 按原尺寸画会溢出格子；未就绪返回 false（调用方回落 .Lib 或跳过）。
+    /// </summary>
+    public static bool DrawItemIconFit(int iconId, int x, int y, int boxW, int boxH,
+                                      KFramework.MonoGame.Color? colour = null)
+    {
+        if (iconId <= 0 || boxW <= 0 || boxH <= 0) return false;
+        if (!TryGetSprite(Mir2ObjectKind.Item, iconId, 0, 0, 0, out var sprite) || sprite == null)
+            return false;
+
+        var src = sprite.SourceRectangle;
+        if (src.Width <= 0 || src.Height <= 0) return false;
+
+        float scale = Math.Min((float)boxW / src.Width, (float)boxH / src.Height);
+        int w = Math.Max(1, (int)Math.Round(src.Width * scale));
+        int h = Math.Max(1, (int)Math.Round(src.Height * scale));
+        var dst = new Rectangle(x + (boxW - w) / 2, y + (boxH - h) / 2, w, h);
+        DXManager.Draw(sprite.Texture, src, dst, colour ?? KFramework.MonoGame.Color.White,
+                       MirBlend.Normal.ToBlendState(), SpriteEffects.None);
+        return true;
+    }
+
     /// <summary>获取模型帧的实际绘制矩形（屏幕坐标），用于鼠标命中检测；与 DrawAnchored 完全一致的坐标公式
     /// （8 向真帧优先、standx/standy 枢轴、镜像绕角色点），保证命中框与显示像素完全对齐。
     /// 资源未就绪或缺失返回 false。mirror 表示逻辑方向 5..7（需绕角色点翻面）。</summary>
