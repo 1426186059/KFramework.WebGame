@@ -14,7 +14,7 @@ namespace Client.MirScenes.Dialogs
         public MirItemCell[] QuestGrid;
 
         public MirButton CloseButton, Bag1Button, Bag2Button, StorageButton;
-        public MirImageControl Bag1ButtonSelectImage, Bag2ButtonSelectImage, StorageButtonSelectImage;
+        public MirButton Bag1SelectButton, Bag2SelectButton, StorageSelectButton;
         public MirButton YiJianShiYongButton, ZhengLiButton, HuiShouButton;
 
         public MirLabel GoldLabel, WeightLabel;
@@ -96,6 +96,55 @@ namespace Client.MirScenes.Dialogs
             StorageButton.Label.OutLine = true;
             StorageButton.Label.ForeColour = Color.Gray;
             StorageButton.Label.Location = new Point(0, 10);
+
+
+            Bag1SelectButton = new MirButton
+            {
+                Location = new Point(542, 50),
+                Parent = this,
+                Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_common-sheet",
+                AtlasFrame = "com_btn_page1",
+                Size = new Size(34, 92),
+                NotControl = true,
+            };
+            Bag1SelectButton.Label.Text = "背包";
+            Bag1SelectButton.Label.OutLine = true;
+            Bag1SelectButton.Label.ForeColour = Color.White;
+            Bag1SelectButton.Label.Location = new Point(5, 10);
+            Bag1SelectButton.Label.Size = new Size(20, 92);
+
+            Bag2SelectButton = new MirButton
+            {
+                Location = new Point(542, 120),
+                Parent = this,
+                Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_common-sheet",
+                AtlasFrame = "com_btn_page1",
+                Size = new Size(34, 92),
+                NotControl = true,
+            };
+            Bag2SelectButton.Label.Text = "背包";
+            Bag2SelectButton.Label.OutLine = true;
+            Bag2SelectButton.Label.ForeColour = Color.White;
+            Bag2SelectButton.Label.Location = new Point(5, 10);
+            Bag2SelectButton.Label.Size = new Size(20, 92);
+
+            StorageSelectButton = new MirButton
+            {
+                Location = new Point(542, 190),
+                Parent = this,
+                Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_common-sheet",
+                AtlasFrame = "com_btn_page1",
+                Size = new Size(34, 92),
+                NotControl = true,
+            };
+            StorageSelectButton.Label.Text = "仓库";
+            StorageSelectButton.Label.OutLine = true;
+            StorageSelectButton.Label.ForeColour = Color.White;
+            StorageSelectButton.Label.Location = new Point(5, 10);
+            StorageSelectButton.Label.Size = new Size(20, 92);
 
             YiJianShiYongButton = new MirButton
             {
@@ -294,7 +343,22 @@ namespace Client.MirScenes.Dialogs
         // 加载完成时不会覆盖这里设置的帧；未加载好时老 .Lib 的 Index 切换照常回退。
         private void SetBagTab(int active)
         {
-            
+            Bag1SelectButton.Visible = false;
+            Bag2SelectButton.Visible = false;
+            StorageSelectButton.Visible = false;
+
+            if (active == 0)
+            {
+                Bag1SelectButton.Visible = true;
+            }
+            else if (active == 1)
+            {
+                Bag2SelectButton.Visible = true;
+            }
+            else
+            {
+                Bag1SelectButton.Visible = true;
+            }
         }
 
         void Reset()
