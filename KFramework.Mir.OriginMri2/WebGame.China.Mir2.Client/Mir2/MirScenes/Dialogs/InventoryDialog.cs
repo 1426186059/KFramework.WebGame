@@ -228,7 +228,10 @@ namespace Client.MirScenes.Dialogs
                         ItemSlot = 6 + idx,
                         GridType = MirGridType.Inventory,
                         Parent = this,
-                        Location = new Point(x * 36 + 9 + x, y % 5 * 32 + 37 + y % 5),
+                        Size = new Size(60, 60),
+                        // 60×60 格子 + 3px 间距（对齐原始传奇 BagPopSkin _TileLayout1: columnWidth=60, rowHeight=60, gap=3）。
+                        // 起点 (20,20)：8 列到 461+60=521 < 右侧按钮栏 542；5 行到 272+60=332 < 底部按钮栏 410。
+                        Location = new Point(x * 63 + 20, y % 5 * 63 + 20),
                     };
 
                     if (idx >= 48)
@@ -651,11 +654,10 @@ namespace Client.MirScenes.Dialogs
                 Grid[x] = new MirItemCell
                 {
                     ItemSlot = x,
-                    Size = new Size(32, 32),
                     GridType = MirGridType.Inventory,
                     Library = Libraries.Items,
                     Parent = this,
-                    Location = new Point(x * 35 + 12, 3),
+                    Location = new Point(x * 63 + 12, 3),
                 };
             }
 

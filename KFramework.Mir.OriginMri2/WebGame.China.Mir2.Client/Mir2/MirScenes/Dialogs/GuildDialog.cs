@@ -653,8 +653,7 @@ namespace Client.MirScenes.Dialogs
                             GridType = MirGridType.GuildStorage,
                             Library = Libraries.Items,
                             Parent = StoragePage,
-                            Size = new Size(35, 35),
-                            Location = new Point(x * 35 + 31 + x, y * 35 + 20 + y),
+                            Location = new Point(x * 63 + 31, y * 63 + 20),
                         };
                         if (y > 7) StorageGrid[idx].Visible = false;
                         StorageGrid[idx].MouseWheel += StoragePanel_MouseWheel;

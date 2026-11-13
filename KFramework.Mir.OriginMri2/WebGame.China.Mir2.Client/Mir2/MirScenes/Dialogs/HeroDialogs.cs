@@ -55,7 +55,7 @@ namespace Client.MirScenes.Dialogs
                         GridType = MirGridType.HeroInventory,
                         Library = Libraries.Items,
                         Parent = this,
-                        Location = new Point(x * 36 + 14 + x, y % 5 * 32 + 23 + y % 5),
+                        Location = new Point(x * 63 + 14, y * 63 + 23),
                     };
 
                     if (idx >= 40)
@@ -307,11 +307,10 @@ namespace Client.MirScenes.Dialogs
                 Grid[x] = new MirItemCell
                 {
                     ItemSlot = x,
-                    Size = new Size(32, 32),
                     GridType = MirGridType.HeroInventory,
                     Library = Libraries.Items,
                     Parent = this,
-                    Location = new Point(x * 35 + 12, 3),
+                    Location = new Point(x * 63 + 12, 3),
                 };
             }
 

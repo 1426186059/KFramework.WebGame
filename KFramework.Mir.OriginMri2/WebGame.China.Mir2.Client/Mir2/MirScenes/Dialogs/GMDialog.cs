@@ -356,8 +356,24 @@ namespace Client.MirScenes.Dialogs
             var label = new MirLabel
             {
                 Parent = bg, NotControl = true,
-                Location = new Point(28, 0), Size = new Size(Math.Max(40, rowW - 136), RowH),
+                Location = new Point(28, 0), Size = new Size(Math.Max(40, rowW - 264), RowH),
                 Text = info.Name, ForeColour = Color.White, AutoSize = false,
+            };
+
+            // 品质（按 Grade 着色，GM 一眼区分档次）
+            new MirLabel
+            {
+                Parent = bg, NotControl = true,
+                Location = new Point(rowW - 232, 0), Size = new Size(56, RowH),
+                Text = "品质 " + info.Grade, ForeColour = GradeColour(info.Grade), AutoSize = false,
+            };
+
+            // 需求等级（RequiredAmount = 装备需求等级）
+            new MirLabel
+            {
+                Parent = bg, NotControl = true,
+                Location = new Point(rowW - 168, 0), Size = new Size(56, RowH),
+                Text = "需求 " + info.RequiredAmount, ForeColour = Color.LightGray, AutoSize = false,
             };
 
             // 数量输入框（默认 1）
@@ -401,6 +417,20 @@ namespace Client.MirScenes.Dialogs
             };
 
             return bg;
+        }
+
+        /// <summary>品质 Grade → 颜色（0普通灰 … ≥5神器橙），供物品行着色。</summary>
+        private static Color GradeColour(int grade)
+        {
+            switch (grade)
+            {
+                case 0: return Color.Gray;
+                case 1: return Color.White;
+                case 2: return Color.LimeGreen;
+                case 3: return Color.RoyalBlue;
+                case 4: return Color.MediumPurple;
+                default: return Color.Orange;
+            }
         }
         #endregion
 
