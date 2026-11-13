@@ -64,12 +64,12 @@ namespace Client.MirScenes.Dialogs
             Bag1Button.Click += Button_Click;
             Bag1Button.Label.Text = "背包";
             Bag1Button.Label.OutLine = true;
-            Bag1Button.Label.ForeColour = Color.White;
-            Bag1Button.Label.Alignment = KFramework.MonoGame.TextAnchor.MiddleCenter;
+            Bag1Button.Label.ForeColour = Color.Gray;
+            Bag1Button.Label.Location = new Point(0, 10);
 
             Bag2Button = new MirButton
             {
-                Location = new Point(542, 110),
+                Location = new Point(542, 120),
                 Parent = this,
                 Sound = SoundList.ButtonA,
                 AtlasNameKey = "y_common-sheet",
@@ -79,12 +79,12 @@ namespace Client.MirScenes.Dialogs
             Bag2Button.Click += Button_Click;
             Bag2Button.Label.Text = "背包";
             Bag2Button.Label.OutLine = true;
-            Bag2Button.Label.ForeColour = Color.White;
-            Bag2Button.Label.Alignment = KFramework.MonoGame.TextAnchor.MiddleCenter;
+            Bag2Button.Label.ForeColour = Color.Gray;
+            Bag2Button.Label.Location = new Point(0, 10);
 
             StorageButton = new MirButton
             {
-                Location = new Point(542, 170),
+                Location = new Point(542, 190),
                 Parent = this,
                 Sound = SoundList.ButtonA,
                 AtlasNameKey = "y_common-sheet",
@@ -94,8 +94,8 @@ namespace Client.MirScenes.Dialogs
             StorageButton.Click += Button_Click;
             StorageButton.Label.Text = "仓库";
             StorageButton.Label.OutLine = true;
-            StorageButton.Label.ForeColour = Color.White;
-            StorageButton.Label.Alignment = KFramework.MonoGame.TextAnchor.MiddleCenter;
+            StorageButton.Label.ForeColour = Color.Gray;
+            StorageButton.Label.Location = new Point(0, 10);
 
             YiJianShiYongButton = new MirButton
             {
@@ -115,7 +115,7 @@ namespace Client.MirScenes.Dialogs
 
             ZhengLiButton = new MirButton
             {
-                Location = new Point(330, 410),
+                Location = new Point(340, 410),
                 Parent = this,
                 Sound = SoundList.ButtonA,
                 AtlasNameKey = "y_bag-sheet",
@@ -130,7 +130,7 @@ namespace Client.MirScenes.Dialogs
 
             HuiShouButton = new MirButton
             {
-                Location = new Point(410, 410),
+                Location = new Point(430, 410),
                 Parent = this,
                 Sound = SoundList.ButtonA,
                 AtlasNameKey = "y_bag-sheet",
