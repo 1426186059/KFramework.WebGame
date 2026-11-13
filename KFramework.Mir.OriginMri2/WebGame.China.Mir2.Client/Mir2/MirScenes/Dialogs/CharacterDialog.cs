@@ -54,10 +54,14 @@ namespace Client.MirScenes.Dialogs
 
             CharacterPage = new MirImageControl
             {
-                Index = 340,
                 Parent = this,
-                Library = Libraries.Prguse,
-                Location = new Point(8, 90),
+                // 角色面板人物立绘：原始 uiModel 裸身 body 按性别分号（男 9001 / 女 9002，
+                // 对应 JS：2 == sex ? 9002 : 9001）。裸身 body 不分职业，职业差异在装备上。
+                ImageUrl = Actor.Gender == MirGender.Male
+                    ? "assets/resource/uiModel/9001.png?ver=1.0.2"
+                    : "assets/resource/uiModel/9002.png?ver=1.0.2",
+                NotControl = true,
+                Location = new Point(100, 200),
             };
             CharacterPage.AfterDraw += (o, e) =>
             {
@@ -97,6 +101,36 @@ namespace Client.MirScenes.Dialogs
                     Libraries.Prguse.Draw(hair, new Point(DisplayLocation.X + offSetX, DisplayLocation.Y + offSetY), Color.White, true, 1F);
                 }
             };
+
+            // 装备槽底图：原始 RolePop 的 EquipItemRenderSkin.bgImg.source = "equip_grid"（60×60），
+            // 取自 gameui4 图集 y_ngrid-sheet。逐槽垫在槽位下方（位置与下方 Grid[] 创建顺序/坐标一致），NotControl 不挡点击。
+            var slotGridPoints = new Point[]
+            {
+                new Point(123, 7),   // Weapon
+                new Point(163, 7),   // Armour
+                new Point(203, 7),   // Helmet
+                new Point(203, 134), // Torch
+                new Point(203, 98),  // Necklace
+                new Point(8, 170),   // BraceletL
+                new Point(203, 170), // BraceletR
+                new Point(8, 206),   // RingL
+                new Point(203, 206), // RingR
+                new Point(8, 242),   // Amulet
+                new Point(48, 242),  // Boots
+                new Point(88, 242),  // Belt
+                new Point(128, 242), // Stone
+                new Point(203, 62),  // Mount
+            };
+            foreach (var gp in slotGridPoints)
+            {
+                new MirImageControl
+                {
+                    Parent = CharacterPage,
+                    AtlasNameKey = "y_ngrid-sheet#equip_grid",
+                    NotControl = true,
+                    Location = gp,
+                };
+            }
 
             StatusPage = new MirImageControl
             {
@@ -675,10 +709,7 @@ namespace Client.MirScenes.Dialogs
 
         private void RefreshInterface()
         {
-            int offSet = Actor.Gender == MirGender.Male ? 0 : 1;
-
-            Index = 504;// +offSet;
-            CharacterPage.Index = 340 + offSet;
+            Index = 504;
 
             switch (Actor.Class)
             {
