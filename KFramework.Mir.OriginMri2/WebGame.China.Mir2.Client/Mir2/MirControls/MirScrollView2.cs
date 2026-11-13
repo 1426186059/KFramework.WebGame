@@ -47,8 +47,10 @@ namespace Client.MirControls
             _createRow = createRow;
             _lastFirst = int.MinValue;   // 强制重建
 
-            // 虚拟总尺寸：滚动条据此计算最大偏移；宽度沿用内容容器现有宽度（行控件自己决定 X/Width）
-            Content.Size = new Size(Content.Size.Width, _itemCount * _rowHeight);
+            // 虚拟总尺寸：高度=总行数*行高（滚动条据此算最大偏移）；
+            // 宽度必须=视口宽，否则 _content.DisplayRectangle 宽度为 0 → IsMouseOver 永远 false，
+            // 鼠标事件递归不进 _content 的子控件，行内按钮/输入框/点击全都点不到。
+            Content.Size = new Size(Size.Width, _itemCount * _rowHeight);
             SetScrollOffset(Point.Empty);   // 回到顶部（会触发 ScrollChanged → RefreshVisible）
             RefreshVisible();
         }
