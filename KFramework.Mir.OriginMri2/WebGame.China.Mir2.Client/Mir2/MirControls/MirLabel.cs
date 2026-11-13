@@ -193,11 +193,10 @@ namespace Client.MirControls
             DrawControlTexture = true;
             _drawFormat = TextFormatFlags.WordBreak;
 
-            _font = ScaleFont(new Font(Settings.FontName, 10F));
+            _font = ScaleFont(new Font(Settings.FontName, 12F));
             _outLine = true;
             _outLineColour = Color.Black; 
             _text = string.Empty;
-
         }
         
         protected override void CreateTexture()

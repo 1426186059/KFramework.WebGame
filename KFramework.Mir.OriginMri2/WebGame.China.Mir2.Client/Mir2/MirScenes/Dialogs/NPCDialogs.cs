@@ -1,16 +1,13 @@
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text.RegularExpressions;
 using Client.MirControls;
 using Client.MirGraphics;
 using Client.MirNetwork;
 using Client.MirObjects;
 using Client.MirSounds;
-using MirEngine;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using WebGame.Mir2.MonoGame.Client;
 using C = ClientPackets;
 using S = ServerPackets;
-using System.Diagnostics;
-using WebGame.Mir2.MonoGame.Client;
 
 namespace Client.MirScenes.Dialogs
 {
@@ -34,7 +31,7 @@ namespace Client.MirScenes.Dialogs
 
         public MirLabel NameLabel;
 
-        Font font = new Font(Settings.FontName, 9F);
+        readonly Font font = new Font(Settings.FontName, 12F);
 
         private static readonly HashSet<int> PendingMapInfoRequests = new HashSet<int>();
 
@@ -51,8 +48,9 @@ namespace Client.MirScenes.Dialogs
         public NPCDialog()
         {
             // 背景改用原始传奇资源（y_task_bg.png，manifest 解析为 resource/2a/2a3d3cc4_79142.png）
-            AutoSize = true;
-            ImageKey = "resource/assets/gameui4/jpg/y_task_bg.png";
+            AutoSize = false;
+            Size = new Size(600, 180);
+            DrawImage = false;
 
             // Hide tooltip when dialog is clicked
             this.MouseDown += (o, e) => HideTooltip();
@@ -65,94 +63,41 @@ namespace Client.MirScenes.Dialogs
 
             Sort = true;
 
+            var mBg = new MirImageControl
+            {
+                Parent = this,
+                Location = new Point(0, 0),
+                ImageKey = "resource/assets/gameui4/jpg/y_task_bg.png",
+            };
+
             NameLabel = new MirLabel
             {
                 Text = "",
                 Parent = this,
                 Font = new Font(Settings.FontName, 10F, KFramework.MonoGame.FontStyle.Bold),
                 ForeColour = Color.BurlyWood,
-                Location = new Point(30, 6),
+                Location = new Point(20, 13),
                 AutoSize = true
-            };
-
-            UpButton = new MirButton
-            {
-                Index = 197,
-                HoverIndex = 198,
-                PressedIndex = 199,
-                Library = Libraries.Prguse2,
-                Parent = this,
-                Size = new Size(16, 14),
-                Location = new Point(417, 34),
-                Sound = SoundList.ButtonA,
-                Visible = false
-            };
-            UpButton.Click += (o, e) =>
-            {
-                if (_index <= 0) return;
-
-                _index--;
-
-                NewText(CurrentLines, false);
-                UpdatePositionBar();
-            };
-
-            DownButton = new MirButton
-            {
-                Index = 207,
-                HoverIndex = 208,
-                Library = Libraries.Prguse2,
-                PressedIndex = 209,
-                Parent = this,
-                Size = new Size(16, 14),
-                Location = new Point(417, 175),
-                Sound = SoundList.ButtonA,
-                Visible = false
-            };
-            DownButton.Click += (o, e) =>
-            {
-                if (_index + MaximumLines >= CurrentLines.Count) return;
-
-                _index++;
-
-                NewText(CurrentLines, false);
-                UpdatePositionBar();
-            };
-
-            PositionBar = new MirButton
-            {
-                Index = 205,
-                HoverIndex = 206,
-                PressedIndex = 206,
-                Library = Libraries.Prguse2,
-                Location = new Point(417, 47),
-                Parent = this,
-                Movable = true,
-                Sound = SoundList.None,
-                Visible = false
-            };
-            PositionBar.OnMoving += PositionBar_OnMoving;            
+            };          
 
             CloseButton = new MirButton
             {
-                HoverIndex = 361,
-                Index = 360,
-                Location = new Point(413, 3),
-                Library = Libraries.Prguse2,
                 Parent = this,
-                PressedIndex = 362,
+                Location = new Point(546, 3),
                 Sound = SoundList.ButtonA,
+                AtlasNameKey = "y_common-sheet",
+                AtlasFrame = "com_btn_close0",
+                PressedAtlasFrame = "com_btn_close1",
             };
             CloseButton.Click += (o, e) => Hide();
 
             HelpButton = new MirButton
             {
-                Index = 257,
-                HoverIndex = 258,
-                PressedIndex = 259,
-                Library = Libraries.Prguse2,
+                AtlasNameKey = "y_common-sheet",
+                AtlasFrame = "com_question",
+                PressedAtlasFrame = "com_question0",
                 Parent = this,
-                Location = new Point(390, 3),
+                Location = new Point(500, 10),
                 Sound = SoundList.ButtonA,
             };
             HelpButton.Click += (o, e) => GameScene.Scene.HelpDialog.DisplayPage(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.Purchasing));
@@ -162,8 +107,6 @@ namespace Client.MirScenes.Dialogs
                 Parent = this,               
             };
 
-
-            // Initialize tooltip panel
             InitializeTooltipPanel();
         }
 
@@ -357,22 +300,7 @@ namespace Client.MirScenes.Dialogs
                     BigButtonDialog.Show(BigButtons, minimumButtons);
                     Size = new Size(Size.Width, BigButtonDialog.Location.Y + BigButtonDialog.Size.Height);
                 }
-            }                
-            
-            if (lines.Count > MaximumLines)
-            {
-                Index = 385;
-                UpButton.Visible = true;
-                DownButton.Visible = true;
-                PositionBar.Visible = true;
-            }
-            else
-            {
-                Index = 384;
-                UpButton.Visible = false;
-                DownButton.Visible = false;
-                PositionBar.Visible = false;                
-            }         
+            }                     
 
             for (int i = 0; i < TextButtons.Count; i++)
                 TextButtons[i].Dispose();
@@ -395,7 +323,7 @@ namespace Client.MirScenes.Dialogs
                     Visible = true,
                     Parent = this,
                     Size = new Size(420, 20),
-                    Location = new Point(8, 34 + (i - _index) * 18),
+                    Location = new Point(15, 34 + (i - _index) * 18),
                     NotControl = true
                 };
 
@@ -443,7 +371,10 @@ namespace Client.MirScenes.Dialogs
                         }
 
                         string displayName = GetDisplayNameForLink(linkType, linkIdx, providedName);
-                        if (string.IsNullOrEmpty(displayName)) displayName = $"LINK_{linkIdx}";
+                        if (string.IsNullOrEmpty(displayName))
+                        {
+                            displayName = $"LINK_{linkIdx}";
+                        }
 
                         int matchStart = match.Index - offSet;
                         int matchLength = match.Length;
