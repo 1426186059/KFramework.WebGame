@@ -32,7 +32,21 @@ namespace Client.MirScenes.Dialogs
             Sort = true;
             Size = new Size(390, 525);
             DrawImage = false;
-            
+
+            // 装配各标签页 / 控件，具体 UI 创建分散到各自的 Create 方法里，避免改动互相牵连。
+            CreateBackground();
+            CreateHeader();
+            CreateTabButtons();
+            CreateCharacterPage(actor, gridType);
+            CreateStatusPage(actor, gridType);
+            CreateStatePage(actor, gridType);
+            CreateSkillPage(actor, gridType);
+
+            BeforeDraw += (o, e) => RefreshInterface();
+        }
+
+        private void CreateBackground()
+        {
             var originBackground = new MirImageControl
             {
                 Parent = this,
@@ -49,159 +63,40 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(16, 65),
                 Size = new Size(286, 396)
             };
+        }
 
-            BeforeDraw += (o, e) => RefreshInterface();
 
-            CharacterPage = new MirImageControl
+        private void CreateHeader()
+        {
+            NameLabel = new MirLabel
             {
+                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
                 Parent = this,
-                // 角色面板人物立绘：原始 uiModel 裸身 body 按性别分号（男 9001 / 女 9002，
-                // 对应 JS：2 == sex ? 9002 : 9001）。裸身 body 不分职业，职业差异在装备上。
-                ImageUrl = Actor.Gender == MirGender.Male
-                    ? "assets/resource/uiModel/9001.png?ver=1.0.2"
-                    : "assets/resource/uiModel/9002.png?ver=1.0.2",
+                Location = new Point(0, 12),
+                Size = new Size(264, 20),
                 NotControl = true,
-                Location = new Point(20, 95),
             };
-            CharacterPage.AfterDraw += (o, e) =>
+            GuildLabel = new MirLabel
             {
-                if (Libraries.StateItems == null) return;
-                ItemInfo RealItem = null;
-                if (Grid[(int)EquipmentSlot.Armour].Item != null)
-                {
-                    if (actor.WingEffect == 1 || actor.WingEffect == 2)
-                    {
-                        int wingOffset = actor.WingEffect == 1 ? 2 : 4;
-
-                        int genderOffset = actor.Gender == MirGender.Male ? 0 : 1;
-
-                        Libraries.Prguse2.DrawBlend(1200 + wingOffset + genderOffset, DisplayLocation, Color.White, true, 1F);
-                    }
-
-                    RealItem = Functions.GetRealItem(Grid[(int)EquipmentSlot.Armour].Item.Info, actor.Level, actor.Class, GameScene.ItemInfoList);
-                    Libraries.StateItems.Draw(RealItem.Image, DisplayLocation, Color.White, true, 1F);
-
-                }
-                if (Grid[(int)EquipmentSlot.Weapon].Item != null)
-                {
-                    RealItem = Functions.GetRealItem(Grid[(int)EquipmentSlot.Weapon].Item.Info, actor.Level, actor.Class, GameScene.ItemInfoList);
-                    Libraries.StateItems.Draw(RealItem.Image, DisplayLocation, Color.White, true, 1F);
-
-                }
-
-                if (Grid[(int)EquipmentSlot.Helmet].Item != null)
-                    Libraries.StateItems.Draw(Grid[(int)EquipmentSlot.Helmet].Item.Info.Image, DisplayLocation, Color.White, true, 1F);
-                else
-                {
-                    int hair = 441 + actor.Hair + (actor.Class == MirClass.Assassin ? 20 : 0) + (actor.Gender == MirGender.Male ? 0 : 40);
-
-                    int offSetX = actor.Class == MirClass.Assassin ? (actor.Gender == MirGender.Male ? 6 : 4) : 0;
-                    int offSetY = actor.Class == MirClass.Assassin ? (actor.Gender == MirGender.Male ? 25 : 18) : 0;
-
-                    Libraries.Prguse.Draw(hair, new Point(DisplayLocation.X + offSetX, DisplayLocation.Y + offSetY), Color.White, true, 1F);
-                }
-            };
-
-            int cellWidth = 60;
-            int cellHeigth = 60;
-            int nSpace = 5;
-
-            Point GetGridPos(int x, int y)
-            {
-                Point p = new Point(y * (cellWidth + nSpace), x * (cellHeigth + nSpace));
-                p.Offset(new Point(100, 100));
-                return p;
-            }
-
-            // 装备槽底图：原始 RolePop 的 EquipItemRenderSkin.bgImg.source = "equip_grid"（60×60），
-            // 取自 gameui4 图集 y_ngrid-sheet。逐槽垫在槽位下方（位置与下方 Grid[] 创建顺序/坐标一致），NotControl 不挡点击。
-            var slotGridPoints = new Point[]
-            {
-                GetGridPos(0, 3), // 项链
-                GetGridPos(1, 3), // 荣誉勋章
-                GetGridPos(2, 0),   // 左手镯
-                GetGridPos(2, 3), // 右手镯
-                GetGridPos(3, 0),   // 左戒指
-                GetGridPos(3, 3), // 右戒指
-                GetGridPos(4, 0),   // 玉佩
-                GetGridPos(4, 1), // 腰带
-                GetGridPos(4, 2),  // 鞋子
-                GetGridPos(4, 3), // 疗伤石
-            };
-
-            foreach (var gp in slotGridPoints)
-            {
-                new MirImageControl
-                {
-                    Parent = CharacterPage,
-                    AtlasNameKey = "y_ngrid-sheet#equip_grid",
-                    NotControl = true,
-                    Location = gp,
-                    Size = new Size(cellWidth, cellHeigth),
-                    AutoSize = false,
-                };
-            }
-
-            StatusPage = new MirImageControl
-            {
-                Index = 506,
+                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
                 Parent = this,
-                Library = Libraries.Title,
-                Location = new Point(8, 90),
-                Visible = false,
+                Location = new Point(0, 33),
+                Size = new Size(264, 30),
+                NotControl = true,
             };
-            StatusPage.BeforeDraw += (o, e) =>
+            ClassImage = new MirImageControl
             {
-                ACLabel.Text = string.Format("{0}-{1}", actor.Stats[Stat.MinAC], actor.Stats[Stat.MaxAC]);
-                MACLabel.Text = string.Format("{0}-{1}", actor.Stats[Stat.MinMAC], actor.Stats[Stat.MaxMAC]);
-                DCLabel.Text = string.Format("{0}-{1}", actor.Stats[Stat.MinDC], actor.Stats[Stat.MaxDC]);
-                MCLabel.Text = string.Format("{0}-{1}", actor.Stats[Stat.MinMC], actor.Stats[Stat.MaxMC]);
-                SCLabel.Text = string.Format("{0}-{1}", actor.Stats[Stat.MinSC], actor.Stats[Stat.MaxSC]);
-                HealthLabel.Text = string.Format("{0}/{1}", actor.HP, actor.Stats[Stat.HP]);
-                ManaLabel.Text = string.Format("{0}/{1}", actor.MP, actor.Stats[Stat.MP]);
-                CritRLabel.Text = string.Format("{0}%", actor.Stats[Stat.CriticalRate]);
-                CritDLabel.Text = string.Format("{0}", actor.Stats[Stat.CriticalDamage]);
-                AttkSpdLabel.Text = string.Format("{0}", actor.Stats[Stat.AttackSpeed]);
-                AccLabel.Text = string.Format("+{0}", actor.Stats[Stat.Accuracy]);
-                AgilLabel.Text = string.Format("+{0}", actor.Stats[Stat.Agility]);
-                LuckLabel.Text = string.Format("{0}", actor.Stats[Stat.Luck]);
-            };
-
-            StatePage = new MirImageControl
-            {
-                Index = 507,
+                Index = 100,
+                Library = Libraries.Prguse,
+                Location = new Point(15, 33),
                 Parent = this,
-                Library = Libraries.Title,
-                Location = new Point(8, 90),
-                Visible = false
+                NotControl = true,
             };
-            StatePage.BeforeDraw += (o, e) =>
-            {
-                ExpPLabel.Text = string.Format("{0:0.##%}", actor.Experience / (double)actor.MaxExperience);
-                BagWLabel.Text = string.Format("{0}/{1}", actor.CurrentBagWeight, actor.Stats[Stat.BagWeight]);
-                WearWLabel.Text = string.Format("{0}/{1}", actor.CurrentWearWeight, actor.Stats[Stat.WearWeight]);
-                HandWLabel.Text = string.Format("{0}/{1}", actor.CurrentHandWeight, actor.Stats[Stat.HandWeight]);
-                MagicRLabel.Text = string.Format("+{0}", actor.Stats[Stat.MagicResist]);
-                PoisonResLabel.Text = string.Format("+{0}", actor.Stats[Stat.PoisonResist]);
-                HealthRLabel.Text = string.Format("+{0}", actor.Stats[Stat.HealthRecovery]);
-                ManaRLabel.Text = string.Format("+{0}", actor.Stats[Stat.SpellRecovery]);
-                PoisonRecLabel.Text = string.Format("+{0}", actor.Stats[Stat.PoisonRecovery]);
-                HolyTLabel.Text = string.Format("+{0}", actor.Stats[Stat.Holy]);
-                FreezeLabel.Text = string.Format("+{0}", actor.Stats[Stat.Freezing]);
-                PoisonAtkLabel.Text = string.Format("+{0}", actor.Stats[Stat.PoisonAttack]);
-            };
+        }
 
 
-            SkillPage = new MirImageControl
-            {
-                Index = 508,
-                Parent = this,
-                Library = Libraries.Title,
-                Location = new Point(8, 90),
-                Visible = false
-            };
-
-
+        private void CreateTabButtons()
+        {
             CharacterButton = new MirButton
             {
                 Index = 500,
@@ -261,31 +156,106 @@ namespace Client.MirScenes.Dialogs
             StatusButton.Label.OutLine = true;
             StatusButton.Label.ForeColour = Color.Gray;
             StatusButton.Label.Location = new Point(0, 10);
+        }
 
-            NameLabel = new MirLabel
+
+        private void CreateCharacterPage(UserObject actor, MirGridType gridType)
+        {
+            CharacterPage = new MirImageControl
             {
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
                 Parent = this,
-                Location = new Point(0, 12),
-                Size = new Size(264, 20),
-                NotControl = true,
+                Location = new Point(0, 0),
+                DrawImage = false,
             };
-            GuildLabel = new MirLabel
+
+            var mRole = new MirImageControl
             {
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
-                Parent = this,
-                Location = new Point(0, 33),
-                Size = new Size(264, 30),
+                Parent = CharacterPage,
+                ImageUrl = Actor.Gender == MirGender.Male
+                   ? "assets/resource/uiModel/9001.png?ver=1.0.2"
+                   : "assets/resource/uiModel/9002.png?ver=1.0.2",
                 NotControl = true,
+                Location = new Point(150, 150),
             };
-            ClassImage = new MirImageControl
+
+            CharacterPage.AfterDraw += (o, e) =>
             {
-                Index = 100,
-                Library = Libraries.Prguse,
-                Location = new Point(15, 33),
-                Parent = this,
-                NotControl = true,
+                if (Libraries.StateItems == null) return;
+                ItemInfo RealItem = null;
+                if (Grid[(int)EquipmentSlot.Armour].Item != null)
+                {
+                    if (actor.WingEffect == 1 || actor.WingEffect == 2)
+                    {
+                        int wingOffset = actor.WingEffect == 1 ? 2 : 4;
+
+                        int genderOffset = actor.Gender == MirGender.Male ? 0 : 1;
+
+                        Libraries.Prguse2.DrawBlend(1200 + wingOffset + genderOffset, DisplayLocation, Color.White, true, 1F);
+                    }
+
+                    RealItem = Functions.GetRealItem(Grid[(int)EquipmentSlot.Armour].Item.Info, actor.Level, actor.Class, GameScene.ItemInfoList);
+                    Libraries.StateItems.Draw(RealItem.Image, DisplayLocation, Color.White, true, 1F);
+
+                }
+                if (Grid[(int)EquipmentSlot.Weapon].Item != null)
+                {
+                    RealItem = Functions.GetRealItem(Grid[(int)EquipmentSlot.Weapon].Item.Info, actor.Level, actor.Class, GameScene.ItemInfoList);
+                    Libraries.StateItems.Draw(RealItem.Image, DisplayLocation, Color.White, true, 1F);
+
+                }
+
+                if (Grid[(int)EquipmentSlot.Helmet].Item != null)
+                    Libraries.StateItems.Draw(Grid[(int)EquipmentSlot.Helmet].Item.Info.Image, DisplayLocation, Color.White, true, 1F);
+                else
+                {
+                    int hair = 441 + actor.Hair + (actor.Class == MirClass.Assassin ? 20 : 0) + (actor.Gender == MirGender.Male ? 0 : 40);
+
+                    int offSetX = actor.Class == MirClass.Assassin ? (actor.Gender == MirGender.Male ? 6 : 4) : 0;
+                    int offSetY = actor.Class == MirClass.Assassin ? (actor.Gender == MirGender.Male ? 25 : 18) : 0;
+
+                    Libraries.Prguse.Draw(hair, new Point(DisplayLocation.X + offSetX, DisplayLocation.Y + offSetY), Color.White, true, 1F);
+                }
             };
+
+            int cellWidth = 60;
+            int cellHeigth = 60;
+            int nSpace = 11;
+
+            Point GetGridPos(int x, int y)
+            {
+                Point p = new Point(y * (cellWidth + nSpace), x * (cellHeigth + nSpace));
+                p.Offset(new Point(23, 110));
+                return p;
+            }
+
+            // 装备槽底图：原始 RolePop 的 EquipItemRenderSkin.bgImg.source = "equip_grid"（60×60），
+            // 取自 gameui4 图集 y_ngrid-sheet。逐槽垫在槽位下方（位置与下方 Grid[] 创建顺序/坐标一致），NotControl 不挡点击。
+            var slotGridPoints = new Point[]
+            {
+                GetGridPos(0, 3), // 项链
+                GetGridPos(1, 3), // 荣誉勋章
+                GetGridPos(2, 0),   // 左手镯
+                GetGridPos(2, 3), // 右手镯
+                GetGridPos(3, 0),   // 左戒指
+                GetGridPos(3, 3), // 右戒指
+                GetGridPos(4, 0),   // 玉佩
+                GetGridPos(4, 1), // 腰带
+                GetGridPos(4, 2),  // 鞋子
+                GetGridPos(4, 3), // 疗伤石
+            };
+
+            foreach (var gp in slotGridPoints)
+            {
+                new MirImageControl
+                {
+                    Parent = CharacterPage,
+                    AtlasNameKey = "y_ngrid-sheet#equip_grid",
+                    NotControl = true,
+                    Location = gp,
+                    Size = new Size(cellWidth, cellHeigth),
+                    AutoSize = false,
+                };
+            }
 
             Grid = new MirItemCell[Enum.GetNames(typeof(EquipmentSlot)).Length];
 
@@ -297,7 +267,6 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(184, 10),
             };
 
-
             Grid[(int)EquipmentSlot.Armour] = new MirItemCell
             {
                 ItemSlot = (int)EquipmentSlot.Armour,
@@ -305,7 +274,6 @@ namespace Client.MirScenes.Dialogs
                 Parent = CharacterPage,
                 Location = new Point(244, 10),
             };
-
 
             Grid[(int)EquipmentSlot.Helmet] = new MirItemCell
             {
@@ -315,8 +283,6 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(304, 10),
             };
 
-
-
             Grid[(int)EquipmentSlot.Torch] = new MirItemCell
             {
                 ItemSlot = (int)EquipmentSlot.Torch,
@@ -325,7 +291,6 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(304, 201),
             };
 
-
             Grid[(int)EquipmentSlot.Necklace] = new MirItemCell
             {
                 ItemSlot = (int)EquipmentSlot.Necklace,
@@ -333,7 +298,6 @@ namespace Client.MirScenes.Dialogs
                 Parent = CharacterPage,
                 Location = new Point(304, 147),
             };
-
 
             Grid[(int)EquipmentSlot.BraceletL] = new MirItemCell
             {
@@ -367,7 +331,6 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(304, 309),
             };
 
-
             Grid[(int)EquipmentSlot.Amulet] = new MirItemCell
             {
                 ItemSlot = (int)EquipmentSlot.Amulet,
@@ -375,7 +338,6 @@ namespace Client.MirScenes.Dialogs
                 Parent = CharacterPage,
                 Location = new Point(12, 363),
             };
-
 
             Grid[(int)EquipmentSlot.Boots] = new MirItemCell
             {
@@ -392,7 +354,6 @@ namespace Client.MirScenes.Dialogs
                 Parent = CharacterPage,
                 Location = new Point(132, 363),
             };
-
 
             Grid[(int)EquipmentSlot.Stone] = new MirItemCell
             {
@@ -411,9 +372,41 @@ namespace Client.MirScenes.Dialogs
             };
 
             // 装备槽按原始 equip_grid 尺寸 60×60 显示（覆盖 MirItemCell 默认 36×32）。
-            foreach (var cell in Grid) cell.Size = new Size(60, 60);
+            foreach (var cell in Grid)
+            {
+                cell.Size = new Size(60, 60);
+            }
 
-            // STATS I
+        }
+
+
+        private void CreateStatusPage(UserObject actor, MirGridType gridType)
+        {
+            StatusPage = new MirImageControl
+            {
+                Index = 506,
+                Parent = this,
+                Library = Libraries.Title,
+                Location = new Point(8, 90),
+                Visible = false,
+            };
+            StatusPage.BeforeDraw += (o, e) =>
+            {
+                ACLabel.Text = string.Format("{0}-{1}", actor.Stats[Stat.MinAC], actor.Stats[Stat.MaxAC]);
+                MACLabel.Text = string.Format("{0}-{1}", actor.Stats[Stat.MinMAC], actor.Stats[Stat.MaxMAC]);
+                DCLabel.Text = string.Format("{0}-{1}", actor.Stats[Stat.MinDC], actor.Stats[Stat.MaxDC]);
+                MCLabel.Text = string.Format("{0}-{1}", actor.Stats[Stat.MinMC], actor.Stats[Stat.MaxMC]);
+                SCLabel.Text = string.Format("{0}-{1}", actor.Stats[Stat.MinSC], actor.Stats[Stat.MaxSC]);
+                HealthLabel.Text = string.Format("{0}/{1}", actor.HP, actor.Stats[Stat.HP]);
+                ManaLabel.Text = string.Format("{0}/{1}", actor.MP, actor.Stats[Stat.MP]);
+                CritRLabel.Text = string.Format("{0}%", actor.Stats[Stat.CriticalRate]);
+                CritDLabel.Text = string.Format("{0}", actor.Stats[Stat.CriticalDamage]);
+                AttkSpdLabel.Text = string.Format("{0}", actor.Stats[Stat.AttackSpeed]);
+                AccLabel.Text = string.Format("+{0}", actor.Stats[Stat.Accuracy]);
+                AgilLabel.Text = string.Format("+{0}", actor.Stats[Stat.Agility]);
+                LuckLabel.Text = string.Format("{0}", actor.Stats[Stat.Luck]);
+            };
+
             HealthLabel = new MirLabel
             {
                 AutoSize = true,
@@ -516,7 +509,35 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(126, 236),
                 NotControl = true
             };
-            // STATS II 
+        }
+
+
+        private void CreateStatePage(UserObject actor, MirGridType gridType)
+        {
+            StatePage = new MirImageControl
+            {
+                Index = 507,
+                Parent = this,
+                Library = Libraries.Title,
+                Location = new Point(8, 90),
+                Visible = false
+            };
+            StatePage.BeforeDraw += (o, e) =>
+            {
+                ExpPLabel.Text = string.Format("{0:0.##%}", actor.Experience / (double)actor.MaxExperience);
+                BagWLabel.Text = string.Format("{0}/{1}", actor.CurrentBagWeight, actor.Stats[Stat.BagWeight]);
+                WearWLabel.Text = string.Format("{0}/{1}", actor.CurrentWearWeight, actor.Stats[Stat.WearWeight]);
+                HandWLabel.Text = string.Format("{0}/{1}", actor.CurrentHandWeight, actor.Stats[Stat.HandWeight]);
+                MagicRLabel.Text = string.Format("+{0}", actor.Stats[Stat.MagicResist]);
+                PoisonResLabel.Text = string.Format("+{0}", actor.Stats[Stat.PoisonResist]);
+                HealthRLabel.Text = string.Format("+{0}", actor.Stats[Stat.HealthRecovery]);
+                ManaRLabel.Text = string.Format("+{0}", actor.Stats[Stat.SpellRecovery]);
+                PoisonRecLabel.Text = string.Format("+{0}", actor.Stats[Stat.PoisonRecovery]);
+                HolyTLabel.Text = string.Format("+{0}", actor.Stats[Stat.Holy]);
+                FreezeLabel.Text = string.Format("+{0}", actor.Stats[Stat.Freezing]);
+                PoisonAtkLabel.Text = string.Format("+{0}", actor.Stats[Stat.PoisonAttack]);
+            };
+
             ExpPLabel = new MirLabel
             {
                 AutoSize = true,
@@ -612,14 +633,27 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(126, 218),
                 NotControl = true
             };
+        }
+
+
+        private void CreateSkillPage(UserObject actor, MirGridType gridType)
+        {
+            SkillPage = new MirImageControl
+            {
+                Index = 508,
+                Parent = this,
+                Library = Libraries.Title,
+                Location = new Point(8, 90),
+                Visible = false
+            };
 
             Magics = new MagicButton[7];
 
             for (int i = 0; i < Magics.Length; i++)
-                Magics[i] = new MagicButton 
-                { 
-                    Parent = SkillPage, 
-                    Visible = false, 
+                Magics[i] = new MagicButton
+                {
+                    Parent = SkillPage,
+                    Visible = false,
                     Location = new Point(8, 8 + i * 33),
                     HeroMagic = gridType == MirGridType.HeroEquipment
                 };
@@ -658,6 +692,7 @@ namespace Client.MirScenes.Dialogs
                 RefreshInterface();
             };
         }
+
 
         public override void Show()
         {
