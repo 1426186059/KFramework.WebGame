@@ -20,23 +20,9 @@ public static class Mir2OriginResource
     private static ContentManager _dataContent = new ContentManager("", CdnBase);
     private static readonly Caching Cache = Caching.Open("Mir2Origin.Cache");
 
-    // —— 文本（string）内存缓存：manifest / config / 图集与帧 JSON 等纯文本资源，避免反复远程拉取 ——
-    // 与 _texCache 分工：本层缓存「解码前/未解码的文本」，_texCache 缓存「解码后的 Texture2D」；
-    // 图片类字节因最终经 _texCache 复用解码纹理，不在此重复缓存。
-    // 文本不像 Texture2D 需要引用计数（非 GPU 资源、不存在悬空问题），故只用「容量 + 时间 LRU」淘汰：
-    // 超容量预算且距上次访问超过 TextTrimAgeMs 的条目被移除（由 TrimTextCache 执行，与 TrimTextureCache 平行）。
-    private sealed class TextEntry
-    {
-        public Task<string> Task;
-        public long LastAccess;
-    }
-    private static readonly ConcurrentDictionary<string, TextEntry> _textCache =
-        new(StringComparer.OrdinalIgnoreCase);
-
-    private const int TextCacheMaxEntries = 2000;    // 文本条目容量预算，超即触发淘汰
-    private const long TextTrimAgeMs = 180_000;      // 超过该时长(ms)未再访问才淘汰（3 分钟，比纹理宽，核心索引不易被冲掉）
-    private const long TextTrimIntervalMs = 1500;    // 淘汰轮询间隔（与纹理一致）
-    private static long _lastTextTrimTick;
+    // —— 文本（string）取数：GetTextAsync 直接委托底层 LoadTextAsync（Cache 做 HTTP 级去重/驻留），
+    // 不另设 string 字典缓存——图集/配置/地图等消费方各自已缓存解析结果（_sheets/_config/_entries/...），
+    // 首次加载后不会重复取，故源 json 字符串无需在此层冗余驻留。
 
     // —— 解码后 Texture2D 的内存缓存（key = 规范化相对路径/URL）——
     // 这是原始传奇 RES.host（root+name → 解码 Texture/SpriteSheet）在我们工程里的对应层：所有远程图
@@ -76,20 +62,12 @@ public static class Mir2OriginResource
     }
 
     // ===================== 通用取文本 =====================
-    /// <summary>按相对路径取文本（UTF-8 解码）。走 _textCache：同 URL 只在首次下载+解码，
-    /// 之后 GetOrAdd 复用同一份 string，避免 manifest/config/图集 JSON 等纯文本资源反复远程拉取；
-    /// 命中时刷新 LastAccess，并由 TrimTextCache 按容量+时间 LRU 淘汰，避免无界增长。</summary>
+    /// <summary>按相对路径取文本（UTF-8 解码）。直接委托底层 LoadTextAsync（Cache 做 HTTP 级去重/驻留），
+    /// 不另设 string 字典缓存——图集/配置/地图等消费方各自已缓存解析结果，首次加载后不会重复取。</summary>
     public static Task<string> GetTextAsync(string relativePath, int priority = 0, CancellationToken ct = default)
     {
         string key = Norm(relativePath);
-        var entry = _textCache.GetOrAdd(key, k => new TextEntry
-        {
-            Task = _imageContent.LoadTextAsync(k, Cache, priority, ct),
-            LastAccess = Environment.TickCount64,
-        });
-        entry.LastAccess = Environment.TickCount64;
-        TrimTextCache();
-        return entry.Task;
+        return _imageContent.LoadTextAsync(key, Cache, priority, ct);
     }
     /// <summary>便捷重载：直接以 ct 作为第二参数。</summary>
     public static Task<string> GetTextAsync(string relativePath, CancellationToken ct)
@@ -159,29 +137,6 @@ public static class Mir2OriginResource
             if (_texCache.Count <= TexCacheMaxEntries) break;
             if (!_texCache.TryRemove(kv.Key, out var entry)) continue;
             if (entry.Task != null && entry.Task.IsCompletedSuccessfully) entry.Task.Result?.Dispose();
-        }
-    }
-
-    /// <summary>文本缓存淘汰（与 TrimTextureCache 平行）：超容量预算且距上次访问 ≥ TextTrimIntervalMs 时，
-    /// 移除最久未访问的文本条目。文本无引用计数（非 GPU 资源），仅按 LRU 时间释放，不会悬空；
-    /// 核心索引（manifest/config）因访问频繁、超时宽，一般不会被冲掉；即便被淘汰，
-    /// 再次 GetTextAsync 会重新拉取并解析，不致命。</summary>
-    private static void TrimTextCache()
-    {
-        long now = Environment.TickCount64;
-        if (now - _lastTextTrimTick < TextTrimIntervalMs) return;
-        if (_textCache.Count <= TextCacheMaxEntries) { _lastTextTrimTick = now; return; }
-        _lastTextTrimTick = now;
-
-        long cutoff = now - TextTrimAgeMs;
-        int toEvict = _textCache.Count - TextCacheMaxEntries + 32;
-        foreach (var kv in _textCache
-            .Where(e => e.Value.LastAccess < cutoff)
-            .OrderBy(e => e.Value.LastAccess)
-            .Take(toEvict))
-        {
-            if (_textCache.Count <= TextCacheMaxEntries) break;
-            _textCache.TryRemove(kv.Key, out _);
         }
     }
 
