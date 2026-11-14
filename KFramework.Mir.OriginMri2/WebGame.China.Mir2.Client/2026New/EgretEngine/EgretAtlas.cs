@@ -22,7 +22,7 @@ public sealed class EgretAtlas
     public EgretAtlasJson Json { get; private set; }
 
     /// <summary>同目录整页贴图文件名（png），直接来自 JSON 的 file。</summary>
-    public string File => Json?.File ?? "";
+    public string File { get { return Json?.File ?? ""; } }
 
     /// <summary>已加载的整页贴图（Build 后可用）。</summary>
     public Texture2D Texture { get; private set; }
@@ -35,8 +35,8 @@ public sealed class EgretAtlas
         = new Dictionary<string, Vector2>(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>模型帧的虚拟画布尺寸，直接取 JSON 首个有效帧的 sourceW/sourceH；UI 图集为 0。</summary>
-    public int SourceW => CanvasSize.W;
-    public int SourceH => CanvasSize.H;
+    public int SourceW { get { return CanvasSize.W; } }
+    public int SourceH { get { return CanvasSize.H; } }
 
     private (int W, int H) CanvasSize
     {
@@ -55,7 +55,7 @@ public sealed class EgretAtlas
     private List<string> _frameNames;
 
     /// <summary>解析并保存 JSON 核心数据；整页贴图需再调 Build。</summary>
-    public void ParseJson(string json) => Json = EgretAtlasJson.Deserialize(json);
+    public void ParseJson(string json) { Json = EgretAtlasJson.Deserialize(json); }
 
     /// <summary>
     /// MovieClip 图集的 Atlas 完全由 movieJson 提供：file + res 子图矩形即足够，

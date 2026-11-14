@@ -28,16 +28,16 @@ public sealed class Mir2AtlasSheet
     }
 
     // ── 普通图集成员转发 ────────────────────────────────────────────────
-    public EgretAtlasJson Json => Atlas.Json;
-    public string File => Atlas.File;
-    public Texture2D Texture => Atlas.Texture;
-    public Dictionary<string, KSpriteInfo> Frames => Atlas.Frames;
-    public Dictionary<string, Vector2> Anchors => Atlas.Anchors;
-    public int SourceW => Atlas.SourceW;
-    public int SourceH => Atlas.SourceH;
+    public EgretAtlasJson Json { get { return Atlas.Json; } }
+    public string File { get { return Atlas.File; } }
+    public Texture2D Texture { get { return Atlas.Texture; } }
+    public Dictionary<string, KSpriteInfo> Frames { get { return Atlas.Frames; } }
+    public Dictionary<string, Vector2> Anchors { get { return Atlas.Anchors; } }
+    public int SourceW { get { return Atlas.SourceW; } }
+    public int SourceH { get { return Atlas.SourceH; } }
 
     /// <summary>是否含 mc 时间线。</summary>
-    public bool IsMovieClip => MovieClip != null;
+    public bool IsMovieClip { get { return MovieClip != null; } }
 
     /// <summary>绑定整页贴图；之后用真实子图尺寸重算 MovieClip 的每帧绘制矩形。</summary>
     public void Build(Texture2D texture)
@@ -48,12 +48,18 @@ public sealed class Mir2AtlasSheet
 
     // ── MovieClip 时序层 ────────────────────────────────────────────────
     /// <summary>兼容旧调用：首个时间线未展开的 res 序列。</summary>
-    public List<string> PlayOrder => MovieClip?.TimelineResIds;
+    public List<string> PlayOrder { get { return MovieClip?.TimelineResIds; } }
 
     /// <summary>实际可播放帧数：取时间线长度（同一子图会被重复引用做定格），不用 Frames.Count。</summary>
-    public int PlayableFrameCount => (PlayOrder != null && PlayOrder.Count > 0)
-        ? PlayOrder.Count
-        : (Frames != null ? Frames.Count : 0);
+    public int PlayableFrameCount
+    {
+        get
+        {
+            return (PlayOrder != null && PlayOrder.Count > 0)
+                ? PlayOrder.Count
+                : (Frames != null ? Frames.Count : 0);
+        }
+    }
 
     /// <summary>MovieClip 按时间线取帧名；普通图集回落到图集的帧名字典序。</summary>
     public bool TryGetFrameName(int frameIndex, out string frameName)

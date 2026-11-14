@@ -21,7 +21,7 @@ public static class Mir2AtlasLibrary
     private static Dictionary<string, string[]> _groups;
     private const string ResourceRoot = "resource/";
     private static Task _initTask;
-    public static Mir2AtlasManifest Manifest => Mir2OriginResource.Manifest;
+    public static Mir2AtlasManifest Manifest { get { return Mir2OriginResource.Manifest; } }
 
     public sealed class Mir2ResItem
     {
@@ -30,7 +30,7 @@ public static class Mir2AtlasLibrary
         public string Type;     // "sheet" / "image" / ...
         public string[] Subkeys;// ["adv_fail","adv_per","adv_suc"]
         public string Root = ResourceRoot;
-        public string ManifestKey => Root + Url.TrimStart('/'); // -> "resource/assets/gameui4/..."
+        public string ManifestKey { get { return Root + Url.TrimStart('/'); } } // -> "resource/assets/gameui4/..."
     }
 
     public static async Task EnsureManifestAsync(CancellationToken ct = default)

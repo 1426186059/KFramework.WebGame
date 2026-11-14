@@ -9,17 +9,17 @@ public static partial class ExcelTableMgr
 
     // ── 已加载的表（直接从 config DTO 派生，无需在 InitializeAsync 里单独赋值）──
     // Maps 与 0config 的 map 表完全一致，直接返回。
-    public static Dictionary<int, MapTable> Maps => _config0?.map ?? new Dictionary<int, MapTable>();
+    public static Dictionary<int, MapTable> Maps { get { return _config0?.map ?? new Dictionary<int, MapTable>(); } }
     // 模型枢轴/帧间隔/方向数/动作清单等查询见 partial 类 ExcelTableMgr.Func.cs（按 model+action 二维查询，
     // 不再用 (long)model*1000+action 一维 long 键 hack）。
-    public static bool IsReady => _config0 != null && _config2 != null;
+    public static bool IsReady { get { return _config0 != null && _config2 != null; } }
 
     // ── 物品表（独立于 config 分片，从本地 MyRes/ExcelConfig/ItemInfo.json 加载）──
     // GM 面板等需要全量物品的场合直接取 ExcelTableMgr.Items，不再各自异步拉表。
     public static List<ItemTableDTO> _items;
     public static Dictionary<int, ItemTableDTO> _itemsByIndex;   // Index → DTO 索引（按物品 Index 快速查原始 uint 图标号等）
-    public static List<ItemTableDTO> Items => _items ?? new List<ItemTableDTO>();
-    public static bool ItemsReady => _items != null;
+    public static List<ItemTableDTO> Items { get { return _items ?? new List<ItemTableDTO>(); } }
+    public static bool ItemsReady { get { return _items != null; } }
 
     /// <summary>按物品 Index 查 ItemTableDTO。用于客户端补全被网络协议截断的字段
     ///（ItemInfo.Image 协议传输是 ushort，换表后 46% 图标号 >65535 被截断；本地表存原始 uint）。</summary>

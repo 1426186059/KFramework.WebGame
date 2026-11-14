@@ -300,6 +300,6 @@ namespace Client.MirControls
         }
 
         /// <summary>取消仍在进行的资源加载任务（在 Dispose 前由 GameScene 调用）。</summary>
-        public void Cancel() => _cts.Cancel();
+        public void Cancel() { _cts.Cancel(); }
     }
 }

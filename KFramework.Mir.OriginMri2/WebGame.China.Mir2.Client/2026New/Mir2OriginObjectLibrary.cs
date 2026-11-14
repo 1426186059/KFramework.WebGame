@@ -121,7 +121,7 @@ public static class Mir2OriginObjectLibrary
     // 见 ModelInfoTable.cs。本类仅做转发，不再持有这些字典、也不再内嵌 modelInfo_stand.json。
 
     /// <summary>版本表是否就绪。未就绪时仍可用无版本段路径加载，只是可能 404。</summary>
-    public static bool IsReady => _versionsReady;
+    public static bool IsReady { get { return _versionsReady; } }
 
     // ===================== 枢轴表（来自 ModelInfoTable / 2config.modelInfo）=====================
 
@@ -201,7 +201,9 @@ public static class Mir2OriginObjectLibrary
 
     /// <summary>查资源版本号；查不到返回 null（走无版本段路径）。</summary>
     public static string GetVersion(string resourceKey)
-        => _versionTable != null && _versionTable.TryGet(resourceKey, out var v) && !string.IsNullOrEmpty(v) ? v : null;
+    {
+        return _versionTable != null && _versionTable.TryGet(resourceKey, out var v) && !string.IsNullOrEmpty(v) ? v : null;
+    }
 
     // ===================== 动作 / 方向（2config.modelInfo + DirectionType）=====================
 
@@ -320,7 +322,9 @@ public static class Mir2OriginObjectLibrary
     }
 
     private static string CacheKey(Mir2ObjectKind kind, int id, int action, int direction)
-        => $"{(int)kind}:{id}:{action}:{direction}";
+    {
+        return $"{(int)kind}:{id}:{action}:{direction}";
+    }
 
     // ===================== 统一加载（去重 / 缓存 / 失败缓存）=====================
 
@@ -514,7 +518,9 @@ public static class Mir2OriginObjectLibrary
 
     /// <summary>该资源当前是否缺失（瞬时缺失在 TTL 内 true；永久缺失永远 true；超时/未缺失 false）。</summary>
     public static bool IsMissing(Mir2ObjectKind kind, int id, int action = ActionStand, int direction = 0)
-        => IsMissing(CacheKey(kind, id, action, direction));
+    {
+        return IsMissing(CacheKey(kind, id, action, direction));
+    }
 
     /// <summary>该 (kind,id,action,dir) 图集是否仍在异步加载中（尚未成功、也未确认缺失）。</summary>
     public static bool IsPending(Mir2ObjectKind kind, int id, int action = ActionStand, int direction = 0)

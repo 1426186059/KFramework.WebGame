@@ -51,7 +51,7 @@ public sealed class ResourceVersionJson
         return d;
     }
 
-    public int Count => EnsureDict().Count;
+    public int Count { get { return EnsureDict().Count; } }
 
     /// <summary>查资源名对应的版本号；查不到或非字符串值返回 false。</summary>
     public bool TryGet(string key, out string version)

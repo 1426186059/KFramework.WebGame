@@ -69,7 +69,7 @@ public static class EgretJsonDetector
         return EgretJsonKind.Other;
     }
 
-    public static bool IsAtlas(string json) => Detect(json) == EgretJsonKind.Atlas;
+    public static bool IsAtlas(string json) { return Detect(json) == EgretJsonKind.Atlas; }
 
-    public static bool IsMovieClip(string json) => Detect(json) == EgretJsonKind.MovieClip;
+    public static bool IsMovieClip(string json) { return Detect(json) == EgretJsonKind.MovieClip; }
 }

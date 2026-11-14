@@ -81,8 +81,7 @@ public sealed class EgretAtlasJson
         catch (JsonException) { return null; }
     }
 
-    public string Serialize() =>
-        KFramework.MonoGame.JsonTool.ToJson(this, AppJsonContext.Default.EgretAtlasJson);
+    public string Serialize() { return KFramework.MonoGame.JsonTool.ToJson(this, AppJsonContext.Default.EgretAtlasJson); }
 
     /// <summary>把 frames 的两种形态解析成强类型视图，只做一次；序列化仍走原始 JsonElement。</summary>
     private void ResolveFrames()
