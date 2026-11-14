@@ -22,7 +22,8 @@ namespace Client.MirControls
         // 原版 CDN 直链资源（不在 manifest/RES 表内，按相对 CDN 根的路径 + 缓存参数加载）
         private const string BgImageName = "img/bg_loading2n.jpg?qufu_version=229";                          // 加载背景图
         private const string SheetJsonPath = "qufu_resource1/assets/sheet/preload-sheet.json?qufu_version=229"; // 进度条图集 JSON（preload-sheet）
-        private const string BarBgFrame = "qufu_ProgressBg5";   // preload-sheet 里的进度条底图帧（AtlasNameKey 让组件内部下载/管理图集）
+        private const string BarTrackFrame = "qufu_ProgressBg4";   // preload-sheet 里的进度条底槽帧（AtlasNameKey 让组件内部下载/管理图集）
+        private const string BarFillFrame = "qufu_ProgressBg5";   // preload-sheet 里的进度条填充帧
         private const string HomeUiSheetKey = "y_homeUI-sheet";   // 主界面 UI 图集（正式 RES 资源，预加载进缓存，进主界面不卡）
 
         // 背景图用 MirImageControl（ImageKey 经 manifest 解析，等价于原 GetImageTextureAsync）；
@@ -65,6 +66,7 @@ namespace Client.MirControls
             _bgImage.ImageKey = BgImageName;   // 交由 MirImageControl 异步下载/解码/绘制（完成事件推进进度）
 
             // 进度条：用现成的 MirProgressBar（自身=轨道、内嵌 Fill=填充，进度由 Value 驱动）。
+            // 轨道/填充均取自 preload-sheet 图集（AtlasNameKey 让组件内部下载/管理图集并取帧）。
             _bar = new MirProgressBar
             {
                 Parent = this,
@@ -72,14 +74,14 @@ namespace Client.MirControls
                 AnchorPos = new Point(0, _barCenterOffset),
                 AutoSize = false,
                 Size = new Size(_trackWidth, _barHeight),
-                DrawControlTexture = false,   // 有图集帧时直接实时绘制；取不到时改 true 退化为纯色条
+                DrawControlTexture = false,   // 轨道直接用图集帧实时绘制
                 Minimum = 0,
                 Maximum = _total,
             };
             _bar.ApplyAnchor();
-            _bar.AtlasNameKey = SheetJsonPath + "#" + BarBgFrame;
-            _bar.Fill.DrawControlTexture = true;
-            _bar.Fill.BackColour = Color.FromArgb(255, 58, 160, 255);   // 蓝青填充
+            _bar.AtlasNameKey = SheetJsonPath + "#" + BarTrackFrame;       // 轨道（底槽）
+            _bar.Fill.AtlasNameKey = SheetJsonPath + "#" + BarFillFrame;  // 填充（与轨道同图集，组件按 sheet key 去重只下载一次）
+            _bar.Fill.DrawControlTexture = false;                         // 填充用图集帧，不走纯色兜底
 
             _statusLabel = new MirLabel
             {
@@ -116,11 +118,11 @@ namespace Client.MirControls
         {
             try
             {
-                // 预加载主界面 UI 图集（y_homeUI-sheet）：进主界面后立即要用
+                // 预加载主界面 UI 图集（y_homeUI-sheet）：进主界面后立即要用，属 UI 资源，按最高优先级（PriorityUI）。
 
                 {
                     _status = "预加载主界面 UI…";
-                    await Mir2AtlasLibrary.GetSheetAsync(HomeUiSheetKey, device, _cts.Token);
+                    await Mir2AtlasLibrary.GetSheetAsync(HomeUiSheetKey, device, _cts.Token, Mir2OriginObjectLibrary.PriorityUI);
                     _loaded = 1;
                 }
 
@@ -132,6 +134,13 @@ namespace Client.MirControls
                 PrintTool.LogError("[LoadingDialog] y_homeUI-sheet 预加载失败（不影响进入游戏）：" + ex);
                 _status = "部分资源加载失败：" + ex.Message;
             }
+        }
+
+        /// <summary>在登录界面即以最低优先级后台预加载进度条图集（preload-sheet）：仅暖缓存、不阻塞、可失败，
+        /// 进度条组件经 AtlasNameKey 复用本次加载（按 sheet key 去重，只下载一次）；取不到时进度条退化为纯色条，故用最低优先级。</summary>
+        public static void PreloadProgressSheet()
+        {
+            _ = Mir2AtlasLibrary.GetSheetAsync(SheetJsonPath, DXManager.GDevice, default, Mir2OriginObjectLibrary.PriorityBackground);
         }
 
         //加载非阻塞等待的资源

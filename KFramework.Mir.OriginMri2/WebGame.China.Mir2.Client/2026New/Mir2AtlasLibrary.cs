@@ -175,16 +175,16 @@ public static class Mir2AtlasLibrary
     // 大家都 await 同一个 Task<Mir2AtlasSheet>，避免重复 HTTP 拉取（见 _sheetTasks）。
     // 注意：共享任务不使用调用方的 ct —— 一个控件取消不应连累其他共享同一图集的控件；
     // 各控件的「取消是否应用结果」在其自身层（见 MirImageControl.LoadAtlasAsync）处理。
-    public static Task<Mir2AtlasSheet> GetSheetAsync(string nameOrKey, GraphicsDevice device, CancellationToken ct = default)
+    public static Task<Mir2AtlasSheet> GetSheetAsync(string nameOrKey, GraphicsDevice device, CancellationToken ct = default, int priority = Mir2OriginObjectLibrary.PriorityUser)
     {
         var (key, _) = ResolveName(nameOrKey);
         if (_sheets.TryGetValue(key, out var existing))
             return Task.FromResult(existing);
-        return _sheetTasks.GetOrAdd(key, k => LoadSheetCoreAsync(k, device));
+        return _sheetTasks.GetOrAdd(key, k => LoadSheetCoreAsync(k, device, priority));
     }
 
     // 实际加载（被 GetOrAdd 合并调用，保证同一 key 同时只下载一次）。
-    private static async Task<Mir2AtlasSheet> LoadSheetCoreAsync(string key, GraphicsDevice device)
+    private static async Task<Mir2AtlasSheet> LoadSheetCoreAsync(string key, GraphicsDevice device, int priority = Mir2OriginObjectLibrary.PriorityUser)
     {
         try
         {
@@ -194,7 +194,7 @@ public static class Mir2AtlasLibrary
                 return existing;
 
             var jsonPath = Mir2OriginResource.ResolveManifestAssetPath(key);
-            var text = await Mir2OriginResource.GetTextAsync(jsonPath, ct: CancellationToken.None);
+            var text = await Mir2OriginResource.GetTextAsync(jsonPath, priority, CancellationToken.None);
             if (string.IsNullOrEmpty(text))
             {
                 throw new InvalidOperationException(
@@ -209,7 +209,7 @@ public static class Mir2AtlasLibrary
             if (string.IsNullOrEmpty(pngFile)) pngFile = Path.GetFileNameWithoutExtension(key) + ".png";
             var pngKey = SheetPngKey(key, pngFile);
             var pngPath = Mir2OriginResource.ResolveManifestAssetPath(pngKey);
-            var texture = await Mir2OriginResource.GetTextureAsync(pngPath, device, ct: CancellationToken.None);
+            var texture = await Mir2OriginResource.GetTextureAsync(pngPath, device, priority, CancellationToken.None);
             if (texture == null)
             {
                 KFramework.MonoGame.PrintTool.LogError(

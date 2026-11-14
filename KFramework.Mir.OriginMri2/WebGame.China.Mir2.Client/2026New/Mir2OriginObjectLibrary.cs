@@ -86,6 +86,8 @@ public static class Mir2OriginObjectLibrary
     // —— 加载优先级层级（对齐原始 ActionLoader 的 急/懒 双队列：自己=急、他人=懒）——
     /// <summary>自己（本体+装备）：最高，先于他人出；低于地图瓦片(10)以保地面先出。</summary>
     public const int PriorityUser = 8;
+    /// <summary>UI 资源（登录界面、加载进度条图集等）：最高优先级，先于玩家模型等加载，确保首屏/加载条立即可见。</summary>
+    public const int PriorityUI = 9;
     /// <summary>当前在屏、正在绘制的他人/怪物/NPC：次高。</summary>
     public const int PriorityVisible = 5;
     /// <summary>后台静默预载（懒队列）：最低，仅在无更急请求时空闲暖缓存。</summary>
