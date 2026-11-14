@@ -246,7 +246,7 @@ public static class Mir2AtlasLibrary
         await EnsureManifestAsync(ct);
         await EnsureResConfigAsync(ct);
         var (key, _) = ResolveName(name); // 图片资源 -> 其 manifestKey（无帧）
-        return await Mir2OriginResource.GetManifestAssetTextureAsync(key, ct);
+        return await Mir2OriginResource.GetManifestAssetTextureAsync(key, ct: ct);
     }
     
     public static async Task<Mir2AtlasSheet> GetSheetByPathsAsync(string jsonRelativePath, string pngRelativePath, CancellationToken ct = default)

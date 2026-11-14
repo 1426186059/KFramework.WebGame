@@ -307,7 +307,7 @@ namespace Client.MirControls
             {
                 if (Mir2OriginResource.Manifest == null)
                     await Mir2OriginResource.LoadManifestAsync(ct);
-                var tex = await Mir2OriginResource.GetManifestAssetTextureAsync(key, ct);
+                var tex = await Mir2OriginResource.GetManifestAssetTextureAsync(key, ct: ct);
                 if (ct.IsCancellationRequested) return;
                 Texture = tex;
                 Redraw();

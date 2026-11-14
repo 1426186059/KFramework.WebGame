@@ -222,8 +222,8 @@ public static class Mir2OriginResource
         return Manifest?.ResolvePath(key, LocalMirrorUsesKeyPath) ?? key;
     }
 
-    public static Task<Texture2D> GetManifestAssetTextureAsync(string key, CancellationToken ct = default)
+    public static Task<Texture2D> GetManifestAssetTextureAsync(string key, int priority = Mir2OriginObjectLibrary.PriorityUI, CancellationToken ct = default)
     {
-        return GetTextureAsync(ResolveManifestAssetPath(key), ct: ct);
+        return GetTextureAsync(ResolveManifestAssetPath(key), priority, ct: ct);
     }
 }
