@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON 解析 / 序列化 — C# vs JS</title>
+  <link rel="preload" id="webassembly" />
+  <script type="importmap"></script>
+  <script type='module' src="main#[.{fingerprint}].js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>JSON 解析 / 序列化（C# vs JS）</h1>
+  <p class="muted">数据源：<code>2config10.25341.1.json</code>（约 7MB 的 <code>modelInfo</code> 三层配置，
+    modelId → actionId → 记录）。起因：其他游戏的经验里，JSON 的序列化 / 反序列化是<b>严重性能瓶颈</b>——
+    一份大配置反复 parse / stringify 会直接吃掉启动与热重载预算。这里把「C# 与 JS 解析同一份文件」的差距测成数字。</p>
+
+  <h3>测什么</h3>
+  <p class="muted">
+    <b>反序列化</b>：C# <code>JsonDocument.Parse</code>（仅解析建只读 DOM）/
+    C# <code>Deserialize&lt;OriginMir2Config2&gt;</code>（解析 + 强类型映射）/
+    JS <code>JSON.parse</code>；<br>
+    <b>序列化</b>：C# <code>Serialize</code>（强类型对象 / 只读 DOM 两档）/
+    JS <code>JSON.stringify</code>。</p>
+  <p class="muted">关键看两件事：① 纯解析 C# 与 JS 谁快；② 强类型映射 / 序列化比纯解析多花多少——
+    后者正是「JSON 慢」的主因（慢不在解析，在映射成强类型对象）。</p>
+
+  <div class="bar">
+    <a class="btn" href="index.html">← 返回总纲</a>
+    <button id="runAll">运行全部测试</button>
+    <span id="status">加载中...</span>
+  </div>
+
+  <div id="results"><i>loading...</i></div>
+</body>
+
+</html>

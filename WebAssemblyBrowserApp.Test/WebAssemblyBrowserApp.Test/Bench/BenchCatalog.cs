@@ -53,6 +53,9 @@ public static class BenchCatalog
         new Bench_ByteArrayReturn(),
         // JSObject 的跨边界代价：与 int 句柄对照，回答「JSObject 会不会严重拖性能、WebGL 能不能换成 int」。
         new Bench_JSObject(),
+        // JSON 解析 / 序列化：C#（JsonDocument / 强类型 Deserialize / Serialize）对阵 JS（JSON.parse / stringify），
+        // 用 2config10.25341.1.json（约 7MB 的 modelInfo 配置）放大「强类型映射 + 序列化」的代价。
+        new Bench_Json(),
     };
 
     /// <summary>按序号取模块，越界返回 null。</summary>

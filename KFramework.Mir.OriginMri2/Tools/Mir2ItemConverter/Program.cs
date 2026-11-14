@@ -140,10 +140,32 @@ public static class Program
         return 0;
     }
 
+    /// <summary>从当前目录 / 程序目录向上找工作区根，避免默认输入指向下载目录里的旧 item.json。</summary>
+    private static string FindWorkspaceRoot()
+    {
+        string marker = Path.Combine("Tools", "原始传奇-资源提取", "原始传奇-资源参考", "1config10.25341.1.json");
+        foreach (string start in new[] { Environment.CurrentDirectory, AppContext.BaseDirectory })
+        {
+            for (var dir = new DirectoryInfo(start); dir != null; dir = dir.Parent)
+            {
+                if (File.Exists(Path.Combine(dir.FullName, marker))) return dir.FullName;
+            }
+        }
+        return "";
+    }
+
     public static int Main(string[] args)
     {
-        string input = @"C:\Users\Administrator\Downloads\Mir2Config\Json\item.json";
-        string output = @"D:\OpenSource\KFramework.WebGame\KFramework.Mir.OriginMri2\Tools\原始传奇-资源提取\migration-preview\ItemInfo.fromOriginal.json";
+        // 权威输入 = 工作区里的 1config 分片（含 item + attribute_score）。旧默认值硬编码到
+        // C:\Users\...\Downloads\Mir2Config\Json\item.json，会用一份来源不明、可能过期的表来生成线上数据。
+        string workspaceRoot = FindWorkspaceRoot();
+        string input = workspaceRoot.Length > 0
+            ? Path.Combine(workspaceRoot, "Tools", "原始传奇-资源提取", "原始传奇-资源参考", "1config10.25341.1.json")
+            : "";
+        // 只是预览产物；线上表是 Web_Mir2.Server.Version/ExcelConfig/ItemInfo.json，需显式 --output 覆盖。
+        string output = workspaceRoot.Length > 0
+            ? Path.Combine(workspaceRoot, "Tools", "原始传奇-资源提取", "migration-preview", "ItemInfo.fromOriginal.json")
+            : "ItemInfo.fromOriginal.json";
         // 属性来源已由客户端 JS 核实为 col40，默认开启；--no-stats 可回到空属性。
         bool withStats = true;
         string? attrsPath = null;
@@ -197,6 +219,7 @@ public static class Program
                 }
 
                 string name = GetStr(item, "2").Trim();
+                if (string.IsNullOrEmpty(name)) name = GetStr(item, "3").Trim(); // 别名/外显名兜底
                 // 过滤废弃条目：Name 为“没用/无用”等
                 if (string.IsNullOrEmpty(name) || UnusedNames.Contains(name))
                 {
@@ -240,6 +263,13 @@ public static class Program
                 }
                 outItem.RequiredClass = careerLimit switch { 1 => 1, 2 => 2, 3 => 4, _ => 31 };
 
+                // 这几列在参考表里语义明确，旧版完全没读，导致全表恒为 0 / 恒为 1。
+                // Grade <- col4 品质(1..4)；RequiredAmount <- col24 穿戴等级
+                // (木剑1 / 重盔甲22 / 裁决30 / 骨玉35 / 天魔神甲40)；StackSize <- col16 堆叠上限。
+                if (TryGetInt(item, "4", out int grade)) outItem.Grade = grade;
+                if (TryGetInt(item, "24", out int needLevel)) outItem.RequiredAmount = needLevel;
+                if (TryGetInt(item, "16", out int stack) && stack > 1) outItem.StackSize = stack;
+
                 // RequiredGender <- Sex(col56)
                 if (TryGetInt(item, "56", out int sex))
                     outItem.RequiredGender = sex switch { 1 => 1, 2 => 2, _ => 3 };
@@ -260,7 +290,12 @@ public static class Program
                     else outItem.Effect = eff;
                 }
 
-                // Price <- col22 ("price#cur")
+                // Price <- col22：这一列语义未确证，先保留旧映射并标记为待核实。
+                // GameConfigService._itemFieldOverrides 把 22 标为「价格」、12 标为「合成配方」，
+                // 但实测 col22 大量是 "79001" / "2#0#500#10#4"（更像道具ID / 药品效果串），
+                // col12 才是 "1#50" / "1#12000" / "20#300"（更像 货币类型#价格）。
+                // ParsePrice 取 '#' 前第一段，对复合串会得到 2 之类的噪声值。
+                // 在从客户端 JS 确认列义之前不要拿这段价格做经济逻辑。
                 outItem.Price = ParsePrice(GetStr(item, "22"));
 
                 // ToolTip <- Desc(col42) 去 HTML
@@ -295,6 +330,8 @@ public static class Program
             IncludeFields = true,
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         };
+        string? outDir = Path.GetDirectoryName(Path.GetFullPath(output));
+        if (!string.IsNullOrEmpty(outDir)) Directory.CreateDirectory(outDir);
         File.WriteAllText(output, JsonSerializer.Serialize(list, opts));
 
         Console.WriteLine($"输入条目总数      : {total}");
@@ -307,7 +344,7 @@ public static class Program
         Console.WriteLine($"Icon>65535(已保留uint): {iconOverUshort}");
         Console.WriteLine($"Effect>255被截断  : {effectClamped}");
         Console.WriteLine($"带属性条目(col40) : {attrItems}");
-        Console.WriteLine($"  其中职业分3段   : {attrSplitItems} (取第 {career} 段: {(career == 1 ? "战" : career == 2 ? "法" : "道")})");
+        Console.WriteLine($"  其中 col40 分3段: {attrSplitItems} (静态取第 {career} 段，段义未确证)");
         Console.WriteLine($"丢弃的现代属性   : {attrsDropped}");
         Console.WriteLine($"Index 范围        : {minIdx} .. {maxIdx}");
         Console.WriteLine($"输出文件          : {Path.GetFullPath(output)}");
@@ -327,6 +364,24 @@ public static class Program
             }
         }
         Console.WriteLine($"全量类别分布      : {reportPath}");
+
+        // 字段覆盖率：把「整张表恒为默认值」的字段直接暴露出来。
+        // 旧版没有这个检查，RequiredClass 全表 31、RequiredAmount 全表 0 都能悄悄生成出来。
+        Console.WriteLine("字段有值条数（0 = 整张表都没填）:");
+        foreach (var fi in typeof(ItemInfoOut).GetFields())
+        {
+            int filled = 0;
+            foreach (ItemInfoOut o in list)
+            {
+                object? v = fi.GetValue(o);
+                if (v is string s) { if (s.Length > 0) filled++; }
+                else if (v is int i) { if (i != 0) filled++; }
+                else if (v is long l) { if (l != 0) filled++; }
+                else if (v is bool b) { if (b) filled++; }
+                else if (v is StatsOut so) { if (so.Values.Count > 0) filled++; }
+            }
+            Console.WriteLine($"  {fi.Name,-20} {filled,6} / {list.Count}");
+        }
 
         return 0;
     }
@@ -354,7 +409,10 @@ public static class Program
         careerSplit = false;
         dropped = 0;
 
-        // col40 = "id#值|id#值..."，可按 & 分 3 段对应 战/法/道（JS: getAttributeBycareer）
+        // col40 = "id#值|id#值..."，部分条目按 & 分 3 段。
+        // 「3 段 = 战/法/道」只是早期推测，未从客户端 JS 得到确证：实测 2344 条分段条目
+        // 的 col59(装备职业) 全部缺失，样例是「[天]XXX符文」的三档数值(180/60/120)，
+        // 更像品级档位。--career 仅决定静态表取哪一档，不代表按职业生成属性。
         string raw = GetRaw(item, "40");
         if (string.IsNullOrWhiteSpace(raw)) return s;
 
@@ -428,8 +486,15 @@ public static class Program
 
     static string GetStr(JsonElement e, string key)
     {
-        if (e.TryGetProperty(key, out var p) && p.ValueKind == JsonValueKind.String) return p.GetString() ?? "";
-        return "";
+        if (!e.TryGetProperty(key, out var p)) return "";
+        // item 是稀疏对象：同一列在不同条目里可能是字符串也可能是数字（col50/col12 多为串，
+        // col4/col24 多为数字）。只认 String 会静默丢值。
+        return p.ValueKind switch
+        {
+            JsonValueKind.String => p.GetString() ?? "",
+            JsonValueKind.Number => p.GetRawText(),
+            _ => ""
+        };
     }
 
     static long ParsePrice(string s)
