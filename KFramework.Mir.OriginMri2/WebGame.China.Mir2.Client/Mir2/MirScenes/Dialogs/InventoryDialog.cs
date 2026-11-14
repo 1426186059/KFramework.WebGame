@@ -9,7 +9,8 @@ namespace Client.MirScenes.Dialogs
 {
     public sealed class InventoryDialog : MirImageControl
     {
-        public MirImageControl[] LockBar = new MirImageControl[10];
+        /// <summary>第二页未解锁格位上的锁：点击锁才弹解锁提示。</summary>
+        public MirButton[] LockCells = new MirButton[InventoryLayout.SlotsPerBagPage];
         public MirItemCell[] Grid;
         public MirItemCell[] QuestGrid;
 
@@ -217,42 +218,44 @@ namespace Client.MirScenes.Dialogs
                 }
             };
 
-            Grid = new MirItemCell[8 * 10];
-            for (int x = 0; x < 8; x++)
+            // 两页各 8 x 6 = 48 格，共 96 个背包格；5 个快捷栏格由 BeltDialog 单独显示。
+            // Grid 下标 = 数组下标 - BeltSlots，GameScene 里所有 p.From / p.To 都按此换算。
+            Grid = new MirItemCell[InventoryLayout.BagSlots];
+            for (int idx = 0; idx < Grid.Length; idx++)
             {
-                for (int y = 0; y < 10; y++)
-                {
-                    int idx = 8 * y + x;
-                    Grid[idx] = new MirItemCell
-                    {
-                        // 与 User.BeltIdx / 服务器 BeltSize(=5) 对齐：快捷栏占 0..4，背包第一格是 5。
-                        ItemSlot = 5 + idx,
-                        GridType = MirGridType.Inventory,
-                        Parent = this,
-                        Size = new Size(60, 60),
-                        // 60×60 格子 + 3px 间距（对齐原始传奇 BagPopSkin _TileLayout1: columnWidth=60, rowHeight=60, gap=3）。
-                        // 起点 (20,20)：8 列到 461+60=521 < 右侧按钮栏 542；5 行到 272+60=332 < 底部按钮栏 410。
-                        Location = new Point(x * 63 + 20, y % 5 * 63 + 20),
-                    };
+                int x = idx % InventoryLayout.BagColumns;
+                int y = idx / InventoryLayout.BagColumns;
 
-                    if (idx >= 40)
-                    {
-                        Grid[idx].Visible = false;
-                    }
-                }
-            }
-
-            for (int i = 0; i < LockBar.Length; i++)
-            {
-                LockBar[i] = new MirImageControl
+                Grid[idx] = new MirItemCell
                 {
-                    AtlasNameKey = "y_bag-sheet#storageSuo",
-                    Location = new Point(9 + i % 2 * 148, 37 + i / 2 * 33),
+                    ItemSlot = InventoryLayout.BeltSlots + idx,
+                    GridType = MirGridType.Inventory,
                     Parent = this,
-                    DrawImage = true,
-                    NotControl = true,
+                    Size = new Size(60, 60),
+                    // 60x60 格子 + 3px 间距（对齐原始传奇 BagPopSkin _TileLayout1）。
+                    // 两页复用同一显示区，y % BagRows 让第二页回到顶部。
+                    Location = new Point(x * 63 + 20, y % InventoryLayout.BagRows * 63 + 20),
                     Visible = false,
                 };
+            }
+
+            // 第二页未解锁的格位显示锁，点击锁才弹扩容提示（点标签页本身不再弹）。
+            for (int i = 0; i < LockCells.Length; i++)
+            {
+                int x = i % InventoryLayout.BagColumns;
+                int y = i / InventoryLayout.BagColumns;
+
+                LockCells[i] = new MirButton
+                {
+                    Parent = this,
+                    AtlasNameKey = "y_bag-sheet",
+                    AtlasFrame = "storageSuo",
+                    Size = new Size(60, 60),
+                    Location = new Point(x * 63 + 20, y * 63 + 20),
+                    Sound = SoundList.ButtonA,
+                    Visible = false,
+                };
+                LockCells[i].Click += (o, e) => PromptUnlockSlot();
             }
 
         }
@@ -276,27 +279,34 @@ namespace Client.MirScenes.Dialogs
                 return;
             }
 
-            if (GameScene.User.Inventory.Length == 46 && sender == Bag2Button)
+            if (sender == Bag1Button)
             {
-                MirMessageBox messageBox = new MirMessageBox(GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExtraSlots8), MirMessageBoxButtons.OKCancel);
+                RefreshInventory();
+            }
+            else if (sender == Bag2Button)
+            {
+                // 第二页始终可以打开，锁着的格子由 LockCells 自己弹提示。
+                RefreshInventory2();
+            }
+        }
 
-                messageBox.OKButton.Click += (o, a) =>
-                {
-                    Network.Enqueue(new C.Chat { Message = "@ADDINVENTORY" });
-                };
-                messageBox.Show();
-            }
-            else
+        /// <summary>只有点击未解锁的格子（锁）才询问是否扩容。</summary>
+        private void PromptUnlockSlot()
+        {
+            if (GameScene.User.Inventory.Length >= InventoryLayout.MaxSlots) return;
+
+            int openLevel = (GameScene.User.Inventory.Length - InventoryLayout.InitialSlots) / InventoryLayout.InventoryExpandStep;
+            uint openGold = (uint)(InventoryLayout.InventoryExpandBaseGold * (1 + openLevel));
+
+            MirMessageBox messageBox = new MirMessageBox(
+                GameLanguage.ClientTextMap.GetLocalization(ClientTextKeys.ExtraSlots4, openGold),
+                MirMessageBoxButtons.OKCancel);
+
+            messageBox.OKButton.Click += (o, a) =>
             {
-                if (sender == Bag1Button)
-                {
-                    RefreshInventory();
-                }
-                else if (sender == Bag2Button)
-                {
-                    RefreshInventory2();
-                }
-            }
+                Network.Enqueue(new C.Chat { Message = "@ADDINVENTORY" });
+            };
+            messageBox.Show();
         }
 
         private bool TryMoveSelectedInventoryItem(bool toSecondBag)
@@ -306,9 +316,8 @@ namespace Client.MirScenes.Dialogs
             if (selected == null || selected.Item == null || selected.Locked || selected.GridType != MirGridType.Inventory)
                 return false;
 
-            const int firstBagVisibleSlots = 40; // 40 slots per bag page, belt is handled separately.
-            int firstBagStart = GameScene.User.BeltIdx;
-            int secondBagStart = firstBagStart + firstBagVisibleSlots;
+            int firstBagStart = InventoryLayout.BeltSlots;
+            int secondBagStart = InventoryLayout.FirstPageEndSlot;
             int inventoryLength = GameScene.User.Inventory.Length;
 
             bool targetIsSecond = toSecondBag;
@@ -372,29 +381,21 @@ namespace Client.MirScenes.Dialogs
                 grid.Visible = false;
             }
 
-            for (int i = 0; i < LockBar.Length; i++)
+            foreach (MirButton lockCell in LockCells)
             {
-                LockBar[i].Visible = false;
+                lockCell.Visible = false;
             }
         }
-
-
 
         public void RefreshInventory()
         {
             Reset();
             SetBagTab(0);
 
-            foreach (var grid in Grid)
+            // 第一页在开局就已全部解锁。
+            for (int i = 0; i < InventoryLayout.SlotsPerBagPage; i++)
             {
-                if (grid.ItemSlot < 45)
-                {
-                    grid.Visible = true;
-                }
-                else
-                {
-                    grid.Visible = false;
-                }
+                Grid[i].Visible = true;
             }
         }
 
@@ -403,21 +404,15 @@ namespace Client.MirScenes.Dialogs
             Reset();
             SetBagTab(1);
 
-            foreach (var grid in Grid)
+            int unlocked = GameScene.User.Inventory.Length;
+
+            for (int i = 0; i < InventoryLayout.SlotsPerBagPage; i++)
             {
-                if (grid.ItemSlot < 45 || grid.ItemSlot >= GameScene.User.Inventory.Length)
-                {
-                    grid.Visible = false;
-                }
-                else
-                {
-                    grid.Visible = true;
-                }
-            }
-            int openLevel = (GameScene.User.Inventory.Length - 46) / 4;
-            for (int i = 0; i < LockBar.Length; i++)
-            {
-                LockBar[i].Visible = (i < openLevel) ? false : true;
+                MirItemCell cell = Grid[InventoryLayout.SlotsPerBagPage + i];
+                bool isUnlocked = cell.ItemSlot < unlocked;
+
+                cell.Visible = isUnlocked;
+                LockCells[i].Visible = !isUnlocked;
             }
         }
 

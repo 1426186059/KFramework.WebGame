@@ -2055,7 +2055,7 @@ public static class GameLanguage
             { nameof(ClientTextKeys.MaxCombine), "Max Combine Count : {0}{1}Shift + Left click to split the stack" },
             { nameof(ClientTextKeys.Count), " Count {0}" },
             { nameof(ClientTextKeys.ExtraSlots8), "Are you sure you would like to buy 8 extra slots for 1,000,000 gold? Next purchase you can unlock 4 extra slots up to a maximum of 40 slots." },
-            { nameof(ClientTextKeys.ExtraSlots4), "Are you sure you would like to unlock 4 extra slots? for gold: {0:###,###}" },
+            { nameof(ClientTextKeys.ExtraSlots4), "是否花费 {0:###,###} 金币解锁更多背包格子？" },
 
             { nameof(ClientTextKeys.Chat_All), "All" },
             { nameof(ClientTextKeys.Chat_Short), "Shout" },

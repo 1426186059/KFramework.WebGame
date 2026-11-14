@@ -3815,8 +3815,15 @@ namespace Server.MirObjects
                         break;
                     case "ADDINVENTORY":
                         {
-                            int openLevel = (int)((Info.Inventory.Length - 46) / 4);
-                            uint openGold = (uint)(1000000 + openLevel * 1000000);
+                            if (Info.Inventory.Length >= InventoryLayout.MaxSlots)
+                            {
+                                ReceiveChat("背包格子已全部解锁。", ChatType.System);
+                                ChatTime = 0;
+                                break;
+                            }
+
+                            int openLevel = (Info.Inventory.Length - InventoryLayout.InitialSlots) / InventoryLayout.InventoryExpandStep;
+                            uint openGold = (uint)(InventoryLayout.InventoryExpandBaseGold * (1 + openLevel));
                             if (Account.Gold >= openGold)
                             {
                                 Account.Gold -= openGold;

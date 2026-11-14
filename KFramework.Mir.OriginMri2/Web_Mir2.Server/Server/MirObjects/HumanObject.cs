@@ -179,7 +179,7 @@ namespace Server.MirObjects
         public virtual int PotionBeltMaximum => 4;
         public virtual int AmuletBeltMinimum => 4;
         public virtual int AmuletBeltMaximum => 6;
-        public virtual int BeltSize => 5;
+        public virtual int BeltSize => InventoryLayout.BeltSlots;
 
         public LevelEffects LevelEffects = LevelEffects.None;
 

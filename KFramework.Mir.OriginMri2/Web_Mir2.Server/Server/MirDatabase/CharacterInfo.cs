@@ -72,7 +72,7 @@ namespace Server.MirDatabase
         public byte MentalState;
         public byte MentalStateLvl;
 
-        public UserItem[] Inventory = new UserItem[46], Equipment = new UserItem[14], Trade = new UserItem[10], QuestInventory = new UserItem[40], Refine = new UserItem[16];
+        public UserItem[] Inventory = new UserItem[InventoryLayout.InitialSlots], Equipment = new UserItem[14], Trade = new UserItem[10], QuestInventory = new UserItem[40], Refine = new UserItem[16];
         public List<ItemRentalInformation> RentedItems = new List<ItemRentalInformation>();
         public List<ItemRentalInformation> RentedItemsToRemove = new List<ItemRentalInformation>();
         public bool HasRentedItem;
@@ -659,17 +659,15 @@ namespace Server.MirDatabase
         }
         public virtual int ResizeInventory()
         {
-            if (Inventory.Length >= 86) return Inventory.Length;
+            if (Inventory.Length >= InventoryLayout.MaxSlots) return Inventory.Length;
 
-            if (Inventory.Length == 46)
-            {
-                Array.Resize(ref Inventory, Inventory.Length + 8);
-            }
-            else
-            {
-                Array.Resize(ref Inventory, Inventory.Length + 4);
-            }
+            int size = Inventory.Length == InventoryLayout.InitialSlots
+                ? Inventory.Length + InventoryLayout.InventoryExpandFirstStep
+                : Inventory.Length + InventoryLayout.InventoryExpandStep;
 
+            if (size > InventoryLayout.MaxSlots) size = InventoryLayout.MaxSlots;
+
+            Array.Resize(ref Inventory, size);
             return Inventory.Length;
         }
     }

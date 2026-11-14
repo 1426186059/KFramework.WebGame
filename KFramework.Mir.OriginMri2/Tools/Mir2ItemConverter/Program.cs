@@ -85,6 +85,34 @@ public static class Program
         { "其他", 0 }, { "杂项", 0 }, { "杂物", 0 },
     };
 
+    // col5 有 1373 种取值，大量是复合类别（洪荒武器 / 御龙头盔 / 新幻武 / 男衣服 …）。
+    // 精确表命中不了时按关键词兜底，否则 Type 会大面积落到 0(Nothing)，
+    // 客户端 UseItem() 与服务器 CanEquipItem() 会判定"不是装备"而拒绝穿戴。
+    // 顺序即优先级：部位词必须排在泛化词之前。
+    private static readonly (string Keyword, int Type)[] CategoryKeywords = new[]
+    {
+        ("护身符", 8), ("护符", 8),
+        ("头盔", 4), ("项链", 5), ("手镯", 6), ("护手", 6),
+        ("戒指", 7), ("特戒", 7), ("腰带", 9), ("靴", 10), ("鞋", 10),
+        ("武器", 1), ("幻武", 1), ("神兵", 1), ("魔兵", 1), ("兵器", 1),
+        ("衣服", 2), ("战衣", 2), ("盔甲", 2), ("铠甲", 2), ("防具", 2),
+        ("宝石", 18), ("药水", 13), ("药品", 13), ("卷轴", 17),
+        ("技能书", 20), ("书", 20), ("材料", 16), ("时装", 38),
+        ("坐骑", 19), ("矿石", 14), ("食物", 27),
+    };
+
+    private static int ResolveType(string category)
+    {
+        if (string.IsNullOrEmpty(category)) return 0;
+        if (CategoryMap.TryGetValue(category, out int exact)) return exact;
+
+        foreach (var (keyword, type) in CategoryKeywords)
+        {
+            if (category.Contains(keyword, StringComparison.Ordinal)) return type;
+        }
+        return 0;
+    }
+
     public static int Main(string[] args)
     {
         string input = @"C:\Users\Administrator\Downloads\Mir2Config\Json\item.json";
@@ -121,7 +149,15 @@ public static class Program
         int minIdx = int.MaxValue, maxIdx = int.MinValue;
 
         using var doc = JsonDocument.Parse(File.ReadAllText(input));
-        foreach (var prop in doc.RootElement.EnumerateObject())
+        // 既支持"抽取出来的 item.json"（顶层直接是条目），也支持本地 0~5config 分片
+        // （顶层是 {"item": {...}}），这样不用再依赖外部下载目录。
+        var root = doc.RootElement;
+        if (root.ValueKind == JsonValueKind.Object &&
+            root.TryGetProperty("item", out var itemNode) &&
+            itemNode.ValueKind == JsonValueKind.Object)
+            root = itemNode;
+
+        foreach (var prop in root.EnumerateObject())
         {
             total++;
             var item = prop.Value;
@@ -156,8 +192,8 @@ public static class Program
                     catCount.TryGetValue(cat, out int c);
                     catCount[cat] = c + 1;
                 }
-                if (CategoryMap.TryGetValue(cat, out int type)) outItem.Type = type;
-                else { outItem.Type = 0; unknownType++; }
+                outItem.Type = ResolveType(cat);
+                if (outItem.Type == 0) unknownType++;
 
                 // RequiredClass <- Career(col52)
                 if (TryGetInt(item, "52", out int careerLimit))
@@ -246,7 +282,10 @@ public static class Program
         {
             w.WriteLine($"总类别数: {catCount.Count}；未识别(Type=0)条目: {unknownType}");
             foreach (var kv in catCount.OrderByDescending(x => x.Value))
-                w.WriteLine($"{kv.Key}\t{kv.Value}\t{(CategoryMap.ContainsKey(kv.Key) ? CategoryMap[kv.Key].ToString() : "??")}");
+            {
+                int resolved = ResolveType(kv.Key);
+                w.WriteLine($"{kv.Key}\t{kv.Value}\t{(resolved > 0 ? resolved.ToString() : "??")}");
+            }
         }
         Console.WriteLine($"全量类别分布      : {reportPath}");
 
