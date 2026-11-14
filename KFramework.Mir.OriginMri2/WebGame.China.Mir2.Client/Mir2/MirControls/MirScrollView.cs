@@ -3,14 +3,17 @@ using SlimDX;
 using SlimDX.Direct3D9;
 using Client.MirGraphics;
 using KFramework.MonoGameExtend;
+using WebGame.Mir2.MonoGame.Client; // CMain.MPoint（与 DisplayLocation 同一坐标系）
 
 namespace Client.MirControls
 {
     /// <summary>
     /// 滚动视图（参考 Unity ScrollRect + Scrollbar）：把子控件放进一个"内容容器"，通过将内容渲染进一张"视口大小"的离屏纹理(RenderTarget)再贴回屏幕，
     /// <b>天然裁掉超出视口的溢出部分</b>（与后端无关，不依赖 scissor / 模板）。
-    /// 滚动由 <see cref="ScrollOffset"/> 驱动（内容容器 Location = -ScrollOffset），并内置一条可拖拽的竖直滚动条 + 滚轮（事件沿父链冒泡到本控件）。
-    /// <para>用法：把子控件用 <see cref="Add"/> 加进来，设置本控件的 <c>Size</c>（= 可视区大小）；滚轮 / 拖拽右侧滚动条 / 翻页 均可滚动。</para>
+    /// 滚动由 <see cref="ScrollOffset"/> 驱动（内容容器 Location = -ScrollOffset），内置竖直滚动条 + 滚轮（事件沿父链冒泡到本控件），
+    /// 并支持像 Unity ScrollRect 一样<b>拖住内容区滚动</b>：左键按下后移动超过 <see cref="DragThreshold"/> 像素即进入拖拽，
+    /// 位移增量直接驱动 ScrollOffset（水平/竖直均可），拖拽期间鼠标命中被内容容器捕获，松手不会误点列表里的按钮。
+    /// <para>用法：把子控件用 <see cref="Add"/> 加进来，设置本控件的 <c>Size</c>（= 可视区大小）；滚轮 / 拖拽滚动条 / 翻页 / 拖动内容区 均可滚动。</para>
     /// </summary>
     public class MirScrollView : MirControl
     {
@@ -26,7 +29,7 @@ namespace Client.MirControls
         public MirScrollView()
         {
             DrawControlTexture = true;       // 走离屏烘焙：把内容烘进 ControlTexture 再上屏
-            _content = new MirControl();     // 内容容器（也在 Controls 里，用于命中测试 / 输入转发）
+            _content = new DragContent(this); // 内容容器（也在 Controls 里，并把按下/移动/抬起转发给本控件做拖拽）
             InsertControl(0, _content);      // 设 _content.Parent = this，使其 DisplayLocation 参与滚动
             ScrollOffset = Point.Empty;
             _content.Location = Point.Empty;
@@ -44,6 +47,9 @@ namespace Client.MirControls
             };
             InsertControl(Controls.Count, _track);
             InsertControl(Controls.Count, _thumb);
+            // 松手落在滚动条上时同样要结束「内容区拖拽」（滚动条自身的拖拽不受影响）。
+            _track.MouseUp += OnContentMouseUp;
+            _thumb.MouseUp += OnContentMouseUp;
         }
 
         /// <summary>内容容器（子控件加到这里）。也可直接 scrollView.Content.Controls.Add(...)。</summary>
@@ -57,6 +63,78 @@ namespace Client.MirControls
 
         /// <summary>滚动偏移变化（SetScrollOffset / ScrollBy / 滚轮 / 拖拽）后触发，参数为本控件。可用于做"可见窗口"优化。</summary>
         public event Action<MirScrollView> ScrollChanged;
+
+        // —— 内容区拖拽（Unity ScrollRect 的手势拖动）——
+        // OnMouseDown/Up 由 MirScene 只派发给 MouseControl（最深命中控件），不会沿父链上抛，
+        // 因此内容容器和它的直接子控件都要把按下/抬起转发进来，否则按在内容上根本起不了拖拽。
+        private const int DragThreshold = 4;
+        private bool _dragPending;   // 左键已按下但还没越过阈值：此时单击行为完全不变
+        private bool _dragging;      // 已进入拖拽：开始滚动 + 捕获鼠标命中
+        private Point _dragAnchor;
+        private Point _lastDragPoint;
+
+        /// <summary>是否允许拖住内容区滚动（默认 true）。内容里若有需要自行处理拖放的控件可关掉。</summary>
+        public bool DragToScroll { get; set; } = true;
+
+        private void BeginDrag()
+        {
+            EndDrag();
+            if (!DragToScroll) return;
+            // 没有溢出内容就不需要拖拽。
+            if (_content.Size.Width <= Size.Width && _content.Size.Height <= Size.Height) return;
+            _dragPending = true;
+            _dragAnchor = CMain.MPoint;
+            _lastDragPoint = CMain.MPoint;
+        }
+
+        /// <summary>每帧 OnMouseMove 调用：用「上一帧 → 当前」的位移增量滚动，而不是「按下点 → 当前」的绝对差。
+        /// 这样拖到顶/底被 SetScrollOffset 夹紧后反向拖动能立刻响应，不会出现要先把超出位移走完的死区。</summary>
+        private void UpdateDrag()
+        {
+            if (!_dragPending && !_dragging) return;
+
+            // 浏览器失焦 / 在视图外松手 / 事件丢失时，MouseUp 派发不到本视图；
+            // 读引擎的左键电平兜底，避免拖拽状态卡死（电平由 Input_Mouse.OnButton 实时维护）。
+            // 输入装置未激活（非浏览器端）时不做此判断，纯靠上面的事件转发结束拖拽。
+            if (KFramework.MonoGame.Input_Mouse.Active &&
+                !KFramework.MonoGame.Input_Mouse.GetButton(KFramework.MonoGame.MouseButton.Left))
+            {
+                EndDrag();
+                return;
+            }
+
+            Point p = CMain.MPoint;
+
+            if (_dragPending)
+            {
+                if (Math.Abs(p.X - _dragAnchor.X) < DragThreshold &&
+                    Math.Abs(p.Y - _dragAnchor.Y) < DragThreshold)
+                {
+                    _lastDragPoint = p;
+                    return;
+                }
+                _dragPending = false;
+                _dragging = true;
+            }
+
+            int dx = _lastDragPoint.X - p.X;
+            int dy = _lastDragPoint.Y - p.Y;
+            _lastDragPoint = p;
+            if (dx != 0 || dy != 0) ScrollBy(new Point(dx, dy));
+        }
+
+        private void EndDrag()
+        {
+            _dragPending = false;
+            _dragging = false;
+        }
+
+        private void OnContentMouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left) BeginDrag();
+        }
+
+        private void OnContentMouseUp(object sender, MouseEventArgs e) => EndDrag();
 
         /// <summary>添加子控件（= 加到内容容器），并刷新内容尺寸 / 重新烘焙。</summary>
         public void Add(MirControl control)
@@ -206,6 +284,34 @@ namespace Client.MirControls
             }
         }
 
+        /// <summary>拖拽期间放宽命中：鼠标略微飘出视口仍能持续收到 OnMouseMove（与 ScrollThumb 的 _captured 同理）。</summary>
+        public override bool IsMouseOver(Point p) => (_dragging && Visible) || base.IsMouseOver(p);
+
+        public override void OnMouseDown(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left) BeginDrag();
+            base.OnMouseDown(e);
+        }
+
+        public override void OnMouseMove(MouseEventArgs e)
+        {
+            UpdateDrag();   // 递归进 _content 之前先算一次；_content 再算时增量为 0，不会重复滚动
+            base.OnMouseMove(e);
+        }
+
+        public override void OnMouseUp(MouseEventArgs e)
+        {
+            EndDrag();
+            base.OnMouseUp(e);
+        }
+
+        protected override void Deactivate()
+        {
+            // 引擎每次 OnMouseUp 都会 Deactivate；无论松手落在视图内还是飘到别处，都要解除拖拽状态。
+            EndDrag();
+            base.Deactivate();
+        }
+
         /// <summary>鼠标滚轮滚动：向上滚（Delta&gt;0）= 内容下移（ScrollOffset 增大）；并标记 Handled 停止冒泡。</summary>
         public override void OnMouseWheel(MouseEventArgs e)
         {
@@ -216,6 +322,67 @@ namespace Client.MirControls
                 ScrollBy(new Point(0, notches * 30));   // 上滚(delta>0)=内容下移(ScrollOffset 增大)
             e.Handled = true;
             base.OnMouseWheel(e);
+        }
+
+        /// <summary>内容容器：把按下/移动/抬起转发给 ScrollView，并在拖拽期间捕获鼠标命中。</summary>
+        private sealed class DragContent : MirControl
+        {
+            private readonly MirScrollView _owner;
+
+            public DragContent(MirScrollView owner) { _owner = owner; }
+
+            public override bool IsMouseOver(Point p) => (_owner._dragging && Visible) || base.IsMouseOver(p);
+
+            /// <summary>Add() 与 MirScrollView2.RefreshVisible() 都走 InsertControl，在此统一挂上转发。</summary>
+            public override void InsertControl(int index, MirControl control)
+            {
+                base.InsertControl(index, control);
+                if (control == null) return;
+                control.MouseDown += _owner.OnContentMouseDown;
+                control.MouseUp += _owner.OnContentMouseUp;
+            }
+
+            public override void OnMouseDown(MouseEventArgs e)
+            {
+                if (e.Button == MouseButtons.Left) _owner.BeginDrag();
+                base.OnMouseDown(e);
+            }
+
+            public override void OnMouseMove(MouseEventArgs e)
+            {
+                _owner.UpdateDrag();
+                if (_owner._dragging)
+                {
+                    // 拖拽期间不再递归子控件，MouseControl 固定为本容器：
+                    // 列表里的按钮不会被高亮，松手时的 Click 也不会落到按钮上（Unity 拖动列表的同一行为）；
+                    // 同时 MirScene.OnMouseUp 仍会派发到本容器，保证 EndDrag 一定被调用。
+                    if (MouseControl != this)
+                    {
+                        Highlight();          // 让旧 MouseControl 正常走 OnMouseLeave（清掉物品提示框等）
+                        // Highlight 可能被 ActiveControl 检查提前 return 并把 MouseControl 置空，
+                        // 这里补回捕获，保证松手时 MirScene.OnMouseUp 仍派发到本容器 → EndDrag 一定执行。
+                        if (MouseControl != this)
+                        {
+                            MouseControl = this;
+                            OnMouseEnter();
+                        }
+                    }
+                    return;
+                }
+                base.OnMouseMove(e);
+            }
+
+            public override void OnMouseUp(MouseEventArgs e)
+            {
+                _owner.EndDrag();
+                base.OnMouseUp(e);
+            }
+
+            protected override void Deactivate()
+            {
+                _owner.EndDrag();
+                base.Deactivate();
+            }
         }
 
         // —— 滚动条轨道（点击翻页）——
