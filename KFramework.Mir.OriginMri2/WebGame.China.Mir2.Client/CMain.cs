@@ -116,11 +116,21 @@ namespace WebGame.Mir2.MonoGame.Client
         // 不向 JS 暴露任何入口。昔日挂在 CMain 上的 [JSExport] Init/Frame/Step 已移除：Frame/Step
         // 是纯 JS 入口，会被引擎 findHost 的递归兜底误判为帧宿主，从而绕过 Game.TickFrame/上屏导致黑屏。
 
-        public static async Task Init()
+        public static async Task InitAsync()
         {
             if (_bootstrapped) return;
             _bootstrapped = true;
+            MirScene.ActiveScene = new InitLoadingScene();
+        }
 
+        /// <summary>
+        /// 真正的游戏初始化重活：配置表 / 图集 / 首屏资源等。由 InitLoadingScene 在渲染循环里异步驱动，
+        /// 每完成一步通过 setStatus 更新 Loading 界面文本；全部完成后切换到 LoginScene。
+        /// 之所以放在场景里异步跑（而非 CMain.Init 内同步 await），是因为渲染循环在 Init 返回后才启动；
+        /// 若在 Init 内 await 全部，Loading 界面无法显示，且重活卡主线程会导致心跳超时掉线。
+        /// </summary>
+        internal static async Task RunGameInitializationAsync(Action<string> setStatus)
+        {
             // 两个 HTTP 资源服务器地址统一从 RemoteWebSetting 取（Web 部署相关配置集中地，无本地概念，写死在该类）
             BrowserResource.Configure(RemoteWebSetting.LibBaseUrl);
 
@@ -153,22 +163,7 @@ namespace WebGame.Mir2.MonoGame.Client
                     GameScene.Scene.MapControl.FloorValid = false;
             };
 
-            // 初始化 Loading 场景立即成为 ActiveScene：渲染循环（LoadContentAsync 返回后即启动）一启动就会绘制它，
-            // 中间旋转圆圈 + 上方状态文本可见。真正的重活（配置表 / 图集 / 首屏资源）由该场景在渲染循环里
-            // 异步推进（见 InitLoadingScene → CMain.RunGameInitializationAsync），每完成一步更新状态文本，
-            // 全部完成后切到 LoginScene。这样重活不再阻塞 Init，避免「初始化期间渲染循环不启动 →
-            // Loading 界面显示不出来 / 主线程卡死心跳超时」。
-            MirScene.ActiveScene = new InitLoadingScene();
-        }
 
-        /// <summary>
-        /// 真正的游戏初始化重活：配置表 / 图集 / 首屏资源等。由 InitLoadingScene 在渲染循环里异步驱动，
-        /// 每完成一步通过 setStatus 更新 Loading 界面文本；全部完成后切换到 LoginScene。
-        /// 之所以放在场景里异步跑（而非 CMain.Init 内同步 await），是因为渲染循环在 Init 返回后才启动；
-        /// 若在 Init 内 await 全部，Loading 界面无法显示，且重活卡主线程会导致心跳超时掉线。
-        /// </summary>
-        internal static async Task RunGameInitializationAsync(Action<string> setStatus)
-        {
             setStatus?.Invoke("加载配置表…");
             await ExcelTableMgr.InitializeAsync();   // 配置表后台加载，不阻塞进 LoginScene（就绪后由 IsReady 校验）
 

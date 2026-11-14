@@ -30,7 +30,7 @@ namespace WebGame.Mir2.MonoGame.Client
         protected override async Task LoadContentAsync()
         {
             await KSceneMgr.SetMainSceneAsync(new KMainScene()).ConfigureAwait(false);
-            await CMain.Init().ConfigureAwait(false);
+            await CMain.InitAsync().ConfigureAwait(false);
         }
 
         protected override void Update(GameTime gameTime)
