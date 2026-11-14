@@ -189,9 +189,16 @@ public static class Mir2OriginResource
     {
         return $"{shard}config{GameVersion}.json?v={GameVersion}";
     }
+    // 配置分片文本进程内复用：0config 等超大分片（6.7MB / 175 表）会被 ExcelTableMgr 与
+    // Mir2MapSource 等多个模块各自请求。若每次都重新下载 + UTF-8 解码，进 GameScene 时叠加会长时间
+    // 阻塞主线程（WASM 单线程，Task.Run 不另起 OS 线程），导致心跳（5s）超时断开。故在此层对同一
+    // shard 只下载/解码一次，各调用方共享同一份 string。
+    // 注意：图集/UI 帧 JSON 不在此缓存——其解析结果由 Mir2AtlasLibrary._sheets 自身缓存，源文本无复用需求。
+    private static readonly ConcurrentDictionary<int, Task<string>> _configShardTextCache =
+        new ConcurrentDictionary<int, Task<string>>();
     public static Task<string> GetConfigShardTextAsync(int shard, CancellationToken ct = default)
     {
-        return GetTextAsync(ConfigShardPath(shard), ct: ct);
+        return _configShardTextCache.GetOrAdd(shard, s => GetTextAsync(ConfigShardPath(s), ct: ct));
     }
 
     /// <summary>逻辑地图数据：{data}.bin / .dat / .csv（数据服务器根，非图片 CDN）。</summary>
