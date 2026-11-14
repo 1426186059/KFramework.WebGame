@@ -113,6 +113,33 @@ public static class Program
         return 0;
     }
 
+    // 新增 5 个《原始传奇》装备部位按物品名判定；宝图/礼盒/碎片等衍生道具不算装备。
+    private static readonly (string Keyword, int Type)[] NewSlotKeywords = new[]
+    {
+        ("斗笠", 43), ("面纱", 44), ("荣誉勋章", 45), ("勋章", 45),
+        ("玉佩", 46), ("疗伤石", 47),
+    };
+
+    private static readonly string[] NewSlotExclude =
+    {
+        "宝图", "礼盒", "碎片", "卷轴", "箱子", "宝箱", "礼包",
+        "图纸", "材料", "合成", "升阶", "精华", "残页", "兑换", "展示",
+    };
+
+    private static int ResolveNewSlotType(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return 0;
+        foreach (string word in NewSlotExclude)
+        {
+            if (name.Contains(word, StringComparison.Ordinal)) return 0;
+        }
+        foreach (var (keyword, type) in NewSlotKeywords)
+        {
+            if (name.Contains(keyword, StringComparison.Ordinal)) return type;
+        }
+        return 0;
+    }
+
     public static int Main(string[] args)
     {
         string input = @"C:\Users\Administrator\Downloads\Mir2Config\Json\item.json";
@@ -193,7 +220,9 @@ public static class Program
                     catCount[cat] = c + 1;
                 }
                 outItem.Type = ResolveType(cat);
-                if (outItem.Type == 0) unknownType++;
+                int newSlotType = ResolveNewSlotType(name);
+                if (newSlotType > 0) outItem.Type = newSlotType;
+                else if (outItem.Type == 0) unknownType++;
 
                 // RequiredClass <- Career(col52)
                 if (TryGetInt(item, "52", out int careerLimit))
