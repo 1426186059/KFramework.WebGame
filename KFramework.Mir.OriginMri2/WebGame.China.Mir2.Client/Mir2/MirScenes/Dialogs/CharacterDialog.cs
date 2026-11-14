@@ -191,7 +191,11 @@ namespace Client.MirScenes.Dialogs
                 DrawImage = false,
                 NotControl = true,
             };
-            Mir2OriginUIModel.EnsurePos();
+            // 裸模与头发是常驻层，先预热它们的站立帧站位。
+            Mir2OriginUIModel.EnsureFrame(Mir2OriginUIModel.MaleBody);
+            Mir2OriginUIModel.EnsureFrame(Mir2OriginUIModel.FemaleBody);
+            Mir2OriginUIModel.EnsureFrame(Mir2OriginUIModel.MaleHair);
+            Mir2OriginUIModel.EnsureFrame(Mir2OriginUIModel.FemaleHair);
 
             _modelLayers = new MirImageControl[Mir2OriginUIModel.LayerCount];
             foreach (int layer in Mir2OriginUIModel.DrawOrder)
@@ -332,7 +336,8 @@ namespace Client.MirScenes.Dialogs
         private void RefreshModelLayers(UserObject actor)
         {
             if (Grid == null || _modelLayers == null) return;
-            Mir2OriginUIModel.EnsurePos();   // 幂等；面板构造过早导致首次加载失败时，这里会自动重试
+            // 版本表未就绪时 URL 会缺版本段，等下一帧再解算，避免错误的 ImageUrl 被缓存住。
+            if (!Mir2OriginUIModel.PathsReady) return;
 
             int ItemId(EquipmentSlot slot)
             {
@@ -353,6 +358,9 @@ namespace Client.MirScenes.Dialogs
                 ItemId(EquipmentSlot.Weapon),
                 ItemId(EquipmentSlot.Helmet),
                 douLi, HuDunItemId, mianSha);
+
+            // 每个用到的模型都要拉一次站立帧 json（offX/offY），每帧调用是幂等的。
+            Mir2OriginUIModel.EnsureFrames(models);
 
             int posVersion = Mir2OriginUIModel.PosVersion;
             bool posChanged = posVersion != _modelPosVersion;
