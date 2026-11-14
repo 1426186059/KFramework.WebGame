@@ -5001,16 +5001,25 @@ namespace Server.MirObjects
                 OriginZhenfaID = Info.ActiveZhenFa,        // 法阵
                 OriginXuanGuangID = Info.ActiveXuanGuang,  // 旋光
                 // 页游装饰装备层（cm.item[type] 角色精灵；type：斗笠50/勋章51/玉佩52/护盾53/护肩54/披风55/面纱406/疗伤石）。默认 0 = 不绘制。
-                OriginDouLiID = Info.ActiveDouLi,
-                OriginMianShaID = Info.ActiveMianSha,
-                OriginYuPeiID = Info.ActiveYuPei,
-                OriginXunZhangID = Info.ActiveXunZhang,
+                // 新增 5 个装备槽优先驱动角色外观；Active* 保留为旧装扮系统的兜底。
+                OriginDouLiID = EquippedIndex(EquipmentSlot.DouLi, Info.ActiveDouLi),
+                OriginMianShaID = EquippedIndex(EquipmentSlot.MianSha, Info.ActiveMianSha),
+                OriginYuPeiID = EquippedIndex(EquipmentSlot.YuPei, Info.ActiveYuPei),
+                OriginXunZhangID = EquippedIndex(EquipmentSlot.XunZhang, Info.ActiveXunZhang),
                 OriginHuDunID = Info.ActiveHuDun,
                 OriginHuJianID = Info.ActiveHuJian,
                 OriginPiFengID = Info.ActivePiFeng,
-                OriginLiaoShangID = Info.ActiveLiaoShang,
+                OriginLiaoShangID = EquippedIndex(EquipmentSlot.LiaoShang, Info.ActiveLiaoShang),
             };
         }
+        /// <summary>取指定装备槽里物品的 cm.item 键（物品 Index）；空槽回落到旧的装扮字段。</summary>
+        private int EquippedIndex(EquipmentSlot slot, int fallback)
+        {
+            int i = (int)slot;
+            UserItem item = Info.Equipment != null && i < Info.Equipment.Length ? Info.Equipment[i] : null;
+            return item != null ? item.Info.Index : fallback;
+        }
+
         public void EquipSlotItem(MirGridType grid, ulong id, int to, MirGridType gridTo, ulong idTo)
         {
             S.EquipSlotItem p = new S.EquipSlotItem { Grid = grid, UniqueID = id, To = to, GridTo = gridTo, Success = false };
