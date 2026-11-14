@@ -683,7 +683,9 @@ namespace Client.MirScenes
         {
             if (_createPanel.Visible) { SubmitCreate(); return; }
             if (_selected < 0 || _selected >= Characters.Count) return;
-            if (!Libraries.Loaded) { ShowError("资源加载中，请稍候"); ResetCountdown(); return; }
+            // 旧版以 Libraries.Loaded 作为进入游戏的前置门禁；游戏已彻底抛弃 Libraries（见 CMain.RunGameInitializationAsync），
+            // 该库不再加载，Libraries.Loaded 恒为 false 会死循环弹「资源加载中」。现资源由 Mir2AtlasLibrary /
+            // Mir2OriginObjectLibrary / ExcelTableMgr 懒加载并按需兜底，故移除该门禁。
             _startButton.Enabled = false;
             Network.Enqueue(new C.StartGame { CharacterIndex = Characters[_selected].Index });
         }
