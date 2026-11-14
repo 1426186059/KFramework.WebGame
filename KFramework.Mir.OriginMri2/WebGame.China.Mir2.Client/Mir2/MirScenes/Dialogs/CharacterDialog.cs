@@ -7,8 +7,17 @@ namespace Client.MirScenes.Dialogs
 {
     public sealed class CharacterDialog : MirImageControl
     {
-        public MirButton CloseButton, CharacterButton, StatusButton, StateButton, SkillButton;
+        public MirButton CloseButton;
+
+        // 右侧竖排页签：与背包一致，普通态(com_btn_page0) + 选中态(com_btn_page1) 各一组。
+        public const int TabCount = 5;
+        public static readonly string[] TabNames = { "装备", "状态", "属性", "时装", "套装" };
+        private readonly MirButton[] _tabButtons = new MirButton[TabCount];
+        private readonly MirButton[] _tabSelectButtons = new MirButton[TabCount];
+
         public MirImageControl CharacterPage, StatusPage, StatePage, SkillPage, ClassImage;
+        public MirImageControl FashionPage, SuitPage;
+        private MirImageControl[] _pages;
 
         public MirLabel NameLabel, GuildLabel, LoverLabel;
         public MirLabel ACLabel, MACLabel, DCLabel, MCLabel, SCLabel, HealthLabel, ManaLabel;
@@ -51,6 +60,11 @@ namespace Client.MirScenes.Dialogs
             CreateStatusPage(actor, gridType);
             CreateStatePage(actor, gridType);
             CreateSkillPage(actor, gridType);
+            CreateExtraPages();
+
+            // 顺序必须与 TabNames 一致；技能页不在其中，由 ShowSkillPage 单独切换。
+            _pages = new[] { CharacterPage, StatusPage, StatePage, FashionPage, SuitPage };
+            ShowPage(0);
 
             BeforeDraw += (o, e) => RefreshInterface();
         }
@@ -107,40 +121,6 @@ namespace Client.MirScenes.Dialogs
 
         private void CreateTabButtons()
         {
-            CharacterButton = new MirButton
-            {
-                Index = 500,
-                Library = Libraries.Title,
-                Location = new Point(8, 70),
-                Parent = this,
-                PressedIndex = 500,
-                Size = new Size(64, 20),
-                Sound = SoundList.ButtonA,
-            };
-            CharacterButton.Click += (o, e) => ShowCharacterPage();
-
-            StateButton = new MirButton
-            {
-                Library = Libraries.Title,
-                Location = new Point(132, 70),
-                Parent = this,
-                PressedIndex = 502,
-                Size = new Size(64, 20),
-                Sound = SoundList.ButtonA
-            };
-            StateButton.Click += (o, e) => ShowStatePage();
-
-            SkillButton = new MirButton
-            {
-                Library = Libraries.Title,
-                Location = new Point(194, 70),
-                Parent = this,
-                PressedIndex = 503,
-                Size = new Size(64, 20),
-                Sound = SoundList.ButtonA
-            };
-            SkillButton.Click += (o, e) => ShowSkillPage();
-
             CloseButton = new MirButton
             {
                 Parent = this,
@@ -152,20 +132,80 @@ namespace Client.MirScenes.Dialogs
             };
             CloseButton.Click += (o, e) => Hide();
 
-            StatusButton = new MirButton
+            // 与背包右侧竖排页签同一套写法：普通态 com_btn_page0 负责点击，
+            // 选中态 com_btn_page1 覆盖在上层、NotControl 不接收鼠标，只做高亮。
+            const int tabX = 318;
+            const int firstY = 105;
+            const int stepY = 70;
+
+            for (int i = 0; i < TabCount; i++)
             {
-                Location = new Point(318, 105),
+                int index = i;
+
+                var normal = new MirButton
+                {
+                    Location = new Point(tabX, firstY + i * stepY),
+                    Parent = this,
+                    Sound = SoundList.ButtonA,
+                    AtlasNameKey = "y_common-sheet",
+                    AtlasFrame = "com_btn_page0",
+                    Size = new Size(27, 79),
+                };
+                normal.Click += (o, e) => ShowPage(index);
+                normal.Label.Text = TabNames[i];
+                normal.Label.OutLine = true;
+                normal.Label.ForeColour = Color.Gray;
+                normal.Label.Location = new Point(0, 10);
+                _tabButtons[i] = normal;
+
+                var selected = new MirButton
+                {
+                    Location = new Point(tabX, firstY + i * stepY),
+                    Parent = this,
+                    Sound = SoundList.ButtonA,
+                    AtlasNameKey = "y_common-sheet",
+                    AtlasFrame = "com_btn_page1",
+                    Size = new Size(34, 92),
+                    NotControl = true,
+                    Visible = false,
+                };
+                selected.Label.Text = TabNames[i];
+                selected.Label.OutLine = true;
+                selected.Label.ForeColour = Color.White;
+                selected.Label.Location = new Point(5, 10);
+                selected.Label.Size = new Size(20, 92);
+                _tabSelectButtons[i] = selected;
+            }
+        }
+
+        /// <summary>时装 / 套装暂未接入数据，先建占位容器，保证切页时页面不为空。</summary>
+        private void CreateExtraPages()
+        {
+            FashionPage = CreatePlaceholderPage("时装");
+            SuitPage = CreatePlaceholderPage("套装");
+        }
+
+        private MirImageControl CreatePlaceholderPage(string title)
+        {
+            var page = new MirImageControl
+            {
                 Parent = this,
-                Sound = SoundList.ButtonA,
-                AtlasNameKey = "y_common-sheet",
-                AtlasFrame = "com_btn_page0",
-                Size = new Size(27, 79)
+                Location = new Point(8, 90),
+                Size = new Size(286, 396),
+                Visible = false,
+                NotControl = true,
             };
-            StatusButton.Click += (o, e) => ShowStatusPage();
-            StatusButton.Label.Text = "仓库";
-            StatusButton.Label.OutLine = true;
-            StatusButton.Label.ForeColour = Color.Gray;
-            StatusButton.Label.Location = new Point(0, 10);
+            new MirLabel
+            {
+                Parent = page,
+                AutoSize = true,
+                NotControl = true,
+                Text = title + "暂未开放",
+                ForeColour = Color.White,
+                OutLine = true,
+                Location = new Point(70, 180),
+            };
+            return page;
         }
 
 
@@ -754,53 +794,37 @@ namespace Client.MirScenes.Dialogs
             base.Hide();
         }
 
+        /// <summary>统一切页：只显示目标页，隐藏技能页，并点亮对应的选中态按钮。</summary>
+        public void ShowPage(int index)
+        {
+            if (_pages == null || index < 0 || index >= TabCount) return;
+
+            for (int i = 0; i < _pages.Length; i++)
+                _pages[i].Visible = i == index;
+
+            SkillPage.Visible = false;
+
+            for (int i = 0; i < TabCount; i++)
+                _tabSelectButtons[i].Visible = i == index;
+        }
+
+        // 快捷键 / 主界面按钮仍调用这两个入口，保持原有语义。
         public void ShowCharacterPage()
         {
-            CharacterPage.Visible = true;
-            StatusPage.Visible = false;
-            StatePage.Visible = false;
-            SkillPage.Visible = false;
-            CharacterButton.Index = 500;
-            StatusButton.Index = -1;
-            StateButton.Index = -1;
-            SkillButton.Index = -1;
+            ShowPage(0);
         }
 
-        private void ShowStatusPage()
-        {
-            CharacterPage.Visible = false;
-            StatusPage.Visible = true;
-            StatePage.Visible = false;
-            SkillPage.Visible = false;
-            CharacterButton.Index = -1;
-            StatusButton.Index = 501;
-            StateButton.Index = -1;
-            SkillButton.Index = -1;
-        }
-
-        private void ShowStatePage()
-        {
-            CharacterPage.Visible = false;
-            StatusPage.Visible = false;
-            StatePage.Visible = true;
-            SkillPage.Visible = false;
-            CharacterButton.Index = -1;
-            StatusButton.Index = -1;
-            StateButton.Index = 502;
-            SkillButton.Index = -1;
-        }
-
+        /// <summary>技能页不在新的 5 个页签里，但快捷键与英雄面板靠 SkillPage.Visible 判断是否收起窗口，
+        /// 因此保留为独立隐藏页：显示它时熄灭全部页签高亮。</summary>
         public void ShowSkillPage()
         {
-            CharacterPage.Visible = false;
-            StatusPage.Visible = false;
-            StatePage.Visible = false;
+            foreach (MirImageControl page in _pages)
+                page.Visible = false;
+
+            foreach (MirButton button in _tabSelectButtons)
+                button.Visible = false;
+
             SkillPage.Visible = true;
-            CharacterButton.Index = -1;
-            StatusButton.Index = -1;
-            StateButton.Index = -1;
-            SkillButton.Index = 503;
-            //StartIndex = 0;
         }
 
         private void RefreshInterface()
