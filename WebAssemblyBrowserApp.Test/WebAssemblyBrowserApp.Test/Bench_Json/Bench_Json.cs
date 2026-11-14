@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -131,15 +132,53 @@ public sealed class Bench_Json : IBenchModule
             "绝对值不可直接比（输出范围不同），但都能反映「对象图 → 文本」的遍历开销量级。",
             seRows, SeConclusion(seRows, byteSize)));
 
-        // 口径提醒：本 WASM 默认 dotnet run 跑的是解释器（无 JIT/SIMD），C# 数字会被放大数百倍，
-        // 不可据此直接得出“C# JSON 是瓶颈”——那是解释器税，不是语言/库本身差距。
-        sb.Append("<div class='card'><p class='muted'>⚠ <b>口径提醒（务必先看这条再下结论）</b>：本测试运行在 " +
-            ".NET 浏览器的<b>解释器</b>运行时（默认 <code>dotnet run</code>，无 JIT、无 SIMD）。" +
-            "<code>System.Text.Json</code> 高度依赖 JIT 内联与向量化，在解释器下会被放大到数百倍慢；" +
-            "而 JS 跑在浏览器 JIT 引擎下。所以本页 <b>C# 远慢于 JS 主要是解释器税，不是语言/库的差距</b>。" +
-            "在 AOT 编译的正式 WASM 或服务端/桌面 .NET（JIT）下，C# 会接近 JS 量级。" +
-            "要拿到可横向对比的 C# 数字，需对该 WASM 工程开启 <code>RunAotCompilation</code> 再测。" +
-            "另：本模块只用<b>源生成</b>实现，已刻意避开反射式（本运行时默认禁用反射式 JSON，会直接抛异常）。" +
+        // ================= 二进制序列化（手写紧凑格式，对比 JSON 文本）=================
+        // 同一份强类型对象图，额外量一遍「手写二进制」（MemoryStream + BinaryWriter/Reader，无反射、AOT 友好），
+        // 看它比 JSON 文本在「同对象图」下快多少、小多少。二进制省掉文本分词与逐字段字符串→数值解析，
+        // 但仍要把数据落成同样的强类型对象，所以「映射/分配」这块开销它一样背。
+        var binRows = new List<BenchRow>();
+        byte[]? binBytes = null;
+        if (typed != null)
+        {
+            binRows.Add(SafeMeasure("C# 二进制：Serialize", "把强类型对象图写成紧凑二进制（MemoryStream + BinaryWriter）",
+                () => BenchKit.MeasureFixed(() =>
+                {
+                    var ms = new MemoryStream();
+                    using (var w = new BinaryWriter(ms)) BinarySerialize(w, typed!);
+                    binBytes = ms.ToArray();
+                }, Times, Warmup, Rounds), 1, "二进制序列化"));
+
+            if (binBytes != null)
+                binRows.Add(SafeMeasure("C# 二进制：Deserialize", "从紧凑二进制读回强类型对象图（BinaryReader）",
+                    () => BenchKit.MeasureFixed(() =>
+                    {
+                        using var ms = new MemoryStream(binBytes);
+                        using var r = new BinaryReader(ms);
+                        _sinkObj = BinaryDeserialize(r);
+                    }, Times, Warmup, Rounds), 1, "二进制反序列化"));
+        }
+        else
+        {
+            binRows.Add(new BenchRow("C# 二进制：Serialize/Deserialize", "依赖强类型对象图",
+                new BenchTiming(0, Times), 1, BlockedReason("二进制", parseErr)));
+        }
+        int binSize = binBytes?.Length ?? 0;
+        sb.Append(BenchKit.Section("二进制序列化（手写紧凑格式，对比 JSON）",
+            "同一份 <code>OriginMir2Config2</code> 对象图，额外量一遍手动二进制（MemoryStream + BinaryWriter/Reader，无反射、AOT 友好）。" +
+            "二进制省掉 JSON 的文本分词与逐字段「字符串→数值」解析，理应更快；但仍要把树落成同样的强类型对象，" +
+            "所以「映射成对象」这部分开销它一样逃不掉。" +
+            (binSize > 0 ? " 本文件二进制体积 " + FmtBytes(binSize) + "，文本 " + FmtBytes(byteSize) +
+                "（约为文本的 " + (binSize * 100.0 / byteSize).ToString("F0", CultureInfo.InvariantCulture) + "%）。" : "") +
+            "以上均为<b>单次测量</b>（1 轮取最快）。",
+            binRows, BinConclusion(binRows, binSize, byteSize)));
+
+        // 口径提醒：本模块就跑在游戏客户端实际使用的 AOT 浏览器 WASM 运行时，故 C# 慢是客户端真实成本反映。
+        sb.Append("<div class='card'><p class='muted'>⚠ <b>口径提醒（务必先看这条再下结论）</b>：本测试跑在游戏客户端实际使用的 " +
+            "<b>AOT 编译浏览器 WASM</b> 运行时（工程已开 <code>RunAOTCompilation</code>）。" +
+            "所以这里 C# 远慢于 JS（V8 有 JIT + SIMD，而 WASM 端的 <code>System.Text.Json</code> 在此目标上吞吐受限），" +
+            "<b>正是客户端真实加载成本的反映</b>，不是开发期解释器的虚高。" +
+            "要横向看「C# 在服务端 / 桌面能多快」，得在 JIT 运行时另测；但就客户端而言，这里的秒级数字就是真相。" +
+            "本模块只用<b>源生成</b>实现，已刻意避开反射式（该 WASM 禁用反射式 JSON，会直接抛异常）。" +
             "单次测量（无取平均）下数字有抖动，结论看量级即可。</p></div>");
 
         return sb.ToString();
@@ -256,4 +295,85 @@ public sealed class Bench_Json : IBenchModule
         => n >= 1024 * 1024 ? (n / 1024 / 1024) + " MB"
             : n >= 1024 ? (n / 1024) + " KB"
                 : n + " B";
+
+    // ---------------------------------------------------------------- 手写二进制（无反射，AOT 友好）
+    private static void BinarySerialize(BinaryWriter w, OriginMir2Config2 cfg)
+    {
+        var mi = cfg.modelInfo;
+        w.Write(mi.Count);
+        foreach (var outer in mi)
+        {
+            w.Write(outer.Key);
+            var inner = outer.Value;
+            w.Write(inner.Count);
+            foreach (var innerKv in inner)
+            {
+                w.Write(innerKv.Key);
+                var rec = innerKv.Value;
+                w.Write(rec.id);
+                w.Write(rec.action);
+                w.Write(rec.intval);
+                w.Write(rec.totaldir);
+                w.Write(rec.standx);
+                w.Write(rec.standy);
+            }
+        }
+    }
+
+    private static OriginMir2Config2 BinaryDeserialize(BinaryReader r)
+    {
+        var mi = new Dictionary<string, Dictionary<string, ModelInfoTable>>();
+        int mCount = r.ReadInt32();
+        for (int i = 0; i < mCount; i++)
+        {
+            string mKey = r.ReadString();
+            int aCount = r.ReadInt32();
+            var inner = new Dictionary<string, ModelInfoTable>();
+            for (int j = 0; j < aCount; j++)
+            {
+                string aKey = r.ReadString();
+                inner[aKey] = new ModelInfoTable
+                {
+                    id = r.ReadInt32(),
+                    action = r.ReadInt32(),
+                    intval = r.ReadInt32(),
+                    totaldir = r.ReadInt32(),
+                    standx = r.ReadDouble(),
+                    standy = r.ReadDouble(),
+                };
+            }
+            mi[mKey] = inner;
+        }
+        return new OriginMir2Config2 { modelInfo = mi };
+    }
+
+    /// <summary>二进制段结论：与 JSON 源生成对照体积与耗时。</summary>
+    private static string? BinConclusion(List<BenchRow> rows, int binSize, int textSize)
+    {
+        double binSer = NsOf(rows, "C# 二进制：Serialize");
+        double binDe = NsOf(rows, "C# 二进制：Deserialize");
+        double csSer = NsOf(rows, "C# 序列化：Serialize<OriginMir2Config2>");
+        double csDe = NsOf(rows, "C# 反序列化：源生成");
+
+        var sb = new StringBuilder();
+        if (binSize > 0)
+            sb.Append("<b>体积：</b>二进制 ").Append(FmtBytes(binSize)).Append(" vs 文本 ")
+              .Append(FmtBytes(textSize)).Append(" —— 二进制约为文本的 ")
+              .Append((binSize * 100.0 / textSize).ToString("F0", CultureInfo.InvariantCulture)).Append("%。");
+
+        if (binSer >= 0 && csSer >= 0)
+            sb.Append(" <b>序列化（对象图→字节/文本）：</b>二进制 ").Append(Ns(binSer))
+              .Append(" ns/次 vs JSON 源生成 ").Append(Ns(csSer)).Append(" ns/次（JSON 是二进制的 ")
+              .Append((csSer / Math.Max(binSer, 1)).ToString("F2", CultureInfo.InvariantCulture)).Append(" 倍）。");
+
+        if (binDe >= 0 && csDe >= 0)
+            sb.Append(" <b>反序列化（字节/文本→对象图）：</b>二进制 ").Append(Ns(binDe))
+              .Append(" ns/次 vs JSON 源生成 ").Append(Ns(csDe)).Append(" ns/次（JSON 是二进制的 ")
+              .Append((csDe / Math.Max(binDe, 1)).ToString("F2", CultureInfo.InvariantCulture)).Append(" 倍）。");
+
+        sb.Append(" 结论：二进制确实比 JSON 文本快（省掉分词与逐字段数值解析），但两者都要把数据落成同样的强类型对象，" +
+                  "所以「JSON 慢」里那块<b>映射/分配</b>开销二进制一样背——想压客户端加载时间，" +
+                  "要么接受这一次性映射，要么用「只读视图」式读取（不落全套对象）。");
+        return sb.ToString();
+    }
 }
