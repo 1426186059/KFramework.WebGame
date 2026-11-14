@@ -218,6 +218,11 @@ namespace Client.MirScenes.Dialogs
             {
                 Parent = this,
                 Location = new Point(0, 0),
+                // 命中区域必须覆盖装备格与立绘热区（最右到 x=296、最下到 y=454）。
+                // MirControl.OnMouseMove 只递归 IsMouseOver 为真的直接子控件，容器不设 Size
+                // 就是 0x0，整棵子树收不到鼠标 —— 悬停提示与点击卸下都会失效。
+                // 只取 302x461，避免盖住 x>=318 的右侧页签按钮与关闭按钮。
+                Size = new Size(302, 461),
                 DrawImage = false,
             };
 

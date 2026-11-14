@@ -224,11 +224,21 @@ public static class Program
                 if (newSlotType > 0) outItem.Type = newSlotType;
                 else if (outItem.Type == 0) unknownType++;
 
-                // RequiredClass <- Career(col52)
-                if (TryGetInt(item, "52", out int careerLimit))
-                    outItem.RequiredClass = careerLimit == 0 ? 31 : (careerLimit & 0x1F);
-                else
-                    outItem.RequiredClass = 31;
+                // RequiredClass <- 职业：col59(装备归属) > col52(技能书) > col50 首段(兜底)。
+                // 三处都是 1=战 / 2=法 / 3=道 的枚举，必须映射到 RequiredClass 位掩码
+                // (Warrior=1, Wizard=2, Taoist=4, None=31)。旧代码直接写枚举值，
+                // 3 会被解释成「战|法」，道士装备反而道士不能用；且 col59 未读，
+                // 所有装备都落成 31，职业穿戴限制形同虚设。
+                int careerLimit = 0;
+                if (!TryGetInt(item, "59", out careerLimit) || careerLimit < 1 || careerLimit > 3)
+                    if (!TryGetInt(item, "52", out careerLimit) || careerLimit < 1 || careerLimit > 3)
+                        careerLimit = 0;
+                if (careerLimit == 0)
+                {
+                    string first50 = GetStr(item, "50").Split('#')[0];
+                    if (int.TryParse(first50, out int c50) && c50 >= 1 && c50 <= 3) careerLimit = c50;
+                }
+                outItem.RequiredClass = careerLimit switch { 1 => 1, 2 => 2, 3 => 4, _ => 31 };
 
                 // RequiredGender <- Sex(col56)
                 if (TryGetInt(item, "56", out int sex))

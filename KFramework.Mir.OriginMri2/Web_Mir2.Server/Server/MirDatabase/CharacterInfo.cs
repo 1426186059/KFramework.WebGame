@@ -222,6 +222,11 @@ namespace Server.MirDatabase
                 }
             }
 
+            // 旧存档可能只有 53 格（InitialSlots 曾为 53）。按存档数量读完物品后再补齐到
+            // 当前初始值，否则第 54 格（背包第二页首格）会被客户端判为未解锁而显示锁。
+            if (Inventory.Length < InventoryLayout.InitialSlots)
+                Array.Resize(ref Inventory, InventoryLayout.InitialSlots);
+
             count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
