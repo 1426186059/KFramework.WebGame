@@ -271580,7 +271580,7 @@
   {
     "Index": 1405011,
     "Name": "疗伤战石(1阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -271623,7 +271623,7 @@
   {
     "Index": 1405012,
     "Name": "疗伤魔石(1阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -271666,7 +271666,7 @@
   {
     "Index": 1405013,
     "Name": "疗伤道石(1阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 4,
@@ -271747,7 +271747,7 @@
   {
     "Index": 1405021,
     "Name": "疗伤战石(2阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -271790,7 +271790,7 @@
   {
     "Index": 1405022,
     "Name": "疗伤魔石(2阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -271833,7 +271833,7 @@
   {
     "Index": 1405023,
     "Name": "疗伤道石(2阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 4,
@@ -271914,7 +271914,7 @@
   {
     "Index": 1405031,
     "Name": "疗伤战石(3阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -271957,7 +271957,7 @@
   {
     "Index": 1405032,
     "Name": "疗伤魔石(3阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -272000,7 +272000,7 @@
   {
     "Index": 1405033,
     "Name": "疗伤道石(3阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 4,
@@ -272043,7 +272043,7 @@
   {
     "Index": 1405041,
     "Name": "疗伤战石(4阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -272086,7 +272086,7 @@
   {
     "Index": 1405042,
     "Name": "疗伤魔石(4阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -272129,7 +272129,7 @@
   {
     "Index": 1405043,
     "Name": "疗伤道石(4阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 4,
@@ -272172,7 +272172,7 @@
   {
     "Index": 1405051,
     "Name": "疗伤战石(5阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -272215,7 +272215,7 @@
   {
     "Index": 1405052,
     "Name": "疗伤魔石(5阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -272258,7 +272258,7 @@
   {
     "Index": 1405053,
     "Name": "疗伤道石(5阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 4,
@@ -272301,7 +272301,7 @@
   {
     "Index": 1405061,
     "Name": "疗伤战石(6阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -272344,7 +272344,7 @@
   {
     "Index": 1405062,
     "Name": "疗伤魔石(6阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -272387,7 +272387,7 @@
   {
     "Index": 1405063,
     "Name": "疗伤道石(6阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 4,
@@ -272430,7 +272430,7 @@
   {
     "Index": 1405071,
     "Name": "疗伤战石(7阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -272473,7 +272473,7 @@
   {
     "Index": 1405072,
     "Name": "疗伤魔石(7阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -272516,7 +272516,7 @@
   {
     "Index": 1405073,
     "Name": "疗伤道石(7阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 4,
@@ -272559,7 +272559,7 @@
   {
     "Index": 1405081,
     "Name": "疗伤战石(8阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -272602,7 +272602,7 @@
   {
     "Index": 1405082,
     "Name": "疗伤魔石(8阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -272645,7 +272645,7 @@
   {
     "Index": 1405083,
     "Name": "疗伤道石(8阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 4,
@@ -272688,7 +272688,7 @@
   {
     "Index": 1405091,
     "Name": "疗伤战石(9阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -272731,7 +272731,7 @@
   {
     "Index": 1405092,
     "Name": "疗伤魔石(9阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -272774,7 +272774,7 @@
   {
     "Index": 1405093,
     "Name": "疗伤道石(9阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 4,
@@ -272817,7 +272817,7 @@
   {
     "Index": 1405101,
     "Name": "疗伤战石(10阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -272860,7 +272860,7 @@
   {
     "Index": 1405102,
     "Name": "疗伤魔石(10阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -272903,7 +272903,7 @@
   {
     "Index": 1405103,
     "Name": "疗伤道石(10阶)",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 4,

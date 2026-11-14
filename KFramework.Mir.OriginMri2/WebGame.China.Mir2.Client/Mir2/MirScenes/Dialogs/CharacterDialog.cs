@@ -2,6 +2,7 @@
 using Client.MirGraphics;
 using Client.MirObjects;
 using Client.MirSounds;
+using WebGame.Mir2.MonoGame.Client; // CMain.MPoint
 
 namespace Client.MirScenes.Dialogs
 {
@@ -40,6 +41,8 @@ namespace Client.MirScenes.Dialogs
         private MirImageControl[] _modelLayers;
         private readonly int[] _modelIds = new int[Mir2OriginUIModel.LayerCount];
         private int _modelPosVersion = -1;
+        // 立绘热区当前正在显示提示框的物品：同一物品不重建提示框，换装/移出时才刷新。
+        private UserItem _modelHoverItem;
 
         /// <summary>装扮装备的页游物品 id：斗笠(401) / 护盾(402) / 面纱(406)。0 = 未装备。
         /// 本服务端 UserInformation 暂未下发 ActiveDouLi/ActiveHuDun/ActiveMianSha（只有 ObjectPlayer 包有），
@@ -265,6 +268,9 @@ namespace Client.MirScenes.Dialogs
             // 用 BeforeDraw（子控件绘制之前）而非 AfterDraw，保证同帧生效。
             CharacterPage.BeforeDraw += (o, e) => RefreshModelLayers(actor);
 
+            // 热区必须比装备格先加入 Controls：OnMouseMove 倒序命中，可见装备格才能盖过热区。
+            CreateModelHotspots();
+
             int cellWidth = 60;
             int cellHeigth = 60;
             int nSpace = 11;
@@ -346,37 +352,127 @@ namespace Client.MirScenes.Dialogs
                 cell.Location = slotGridPoints[i];
                 cell.Visible = true;
             }
-
-            CreateModelHotspots();
-
         }
 
-        /// <summary>角色立绘上的部位热区：手上有选中物品时点击 = 穿戴，否则点击 = 卸下。
-        /// 坐标是相对 CharacterPage 的人体分区，按 UIStaticModel 脚底原点 (159,350) 估算，可按实际立绘微调。</summary>
+        /// <summary>角色立绘热区：一整块透明命中区覆盖立绘，按【各层精灵帧的实际绘制矩形】
+        /// 判断鼠标落在哪件装备上；悬停显示该装备的物品提示框，左键/右键走现有格子的穿脱链路。
+        ///
+        /// 旧实现按固定小矩形估算部位，还把武器放在立绘右侧；而 model/{id}/...994.png 的武器帧
+        /// （如木剑 9501 offX=542）实际画在立绘左侧，点上去既没有提示也卸不下来。
+        /// 热区必须【先于】装备格创建：OnMouseMove 倒序命中，真实的可见装备格因此优先，
+        /// 热区才能放宽到覆盖整个人物区而不挡格子。</summary>
         private void CreateModelHotspots()
         {
-            var hotspots = new (EquipmentSlot Slot, int X, int Y, int W, int H)[]
+            var hotspot = new MirButton
             {
-                (EquipmentSlot.DouLi,   129, 75,  60, 50),  // 斗笠：头顶
-                (EquipmentSlot.Helmet,  129, 125, 60, 45),  // 头盔：头部
-                (EquipmentSlot.MianSha, 129, 170, 60, 40),  // 面纱：面部
-                (EquipmentSlot.Armour,  119, 210, 80, 95),  // 衣服：躯干
-                (EquipmentSlot.Weapon,  195, 185, 40, 120), // 武器：右手侧（避开 x>=236 的右侧格子）
+                Parent = CharacterPage,
+                Location = new Point(0, 60),
+                Size = new Size(302, 340),
+                AutoSize = false,
+                // DrawImage=false 只关绘制，不影响鼠标命中与 Click 事件。
+                DrawImage = false,
+                Sound = SoundList.ButtonA,
             };
 
-            foreach (var (slot, x, y, w, h) in hotspots)
+            hotspot.MouseEnter += (o, e) => RefreshModelTooltip();
+            hotspot.MouseMove += (o, e) => RefreshModelTooltip();
+            hotspot.MouseLeave += (o, e) => ClearModelTooltip();
+
+            hotspot.Click += (o, e) =>
             {
-                EquipmentSlot captured = slot;
-                var hotspot = new MirButton
+                MirItemCell cell = CurrentModelCell();
+                if (cell == null) return;
+
+                // 右键沿用其它装备格「右键卸下」的习惯，直接走 UseItem；
+                // 否则手上还选着物品时 HandleModelSlotClick 会误判成「穿戴」而不卸下。
+                if (e is MouseEventArgs me && me.Button == MouseButtons.Right)
+                    cell.UseItem();
+                else
+                    cell.HandleModelSlotClick();
+            };
+        }
+
+        /// <summary>悬停：把落点所属装备挂到 GameScene 的物品提示框，与背包/装备格共用 CreateItemLabel。</summary>
+        private void RefreshModelTooltip()
+        {
+            if (GameScene.Scene == null) return;
+
+            UserItem item = CurrentModelCell()?.Item;
+            // 鼠标在立绘与可见装备格之间移动时，格子的 OnMouseLeave 会把提示框 Dispose 掉，
+            // 所以缓存命中还要确认提示框确实还在，否则会出现「回到立绘后提示框不出现」。
+            bool labelAlive = GameScene.Scene.ItemLabel != null && !GameScene.Scene.ItemLabel.IsDisposed;
+            if (ReferenceEquals(item, _modelHoverItem))
+            {
+                if (item == null && !labelAlive) return;
+                if (item != null && labelAlive) return;
+            }
+            _modelHoverItem = item;
+
+            GameScene.Scene.DisposeItemLabel();
+            GameScene.HoverItem = null;
+            if (item != null) GameScene.Scene.CreateItemLabel(item);
+        }
+
+        private void ClearModelTooltip()
+        {
+            _modelHoverItem = null;
+            if (GameScene.Scene == null) return;
+            GameScene.Scene.DisposeItemLabel();
+            GameScene.HoverItem = null;
+        }
+
+        private MirItemCell CurrentModelCell()
+        {
+            if (Grid == null) return null;
+            int slot = (int)PickModelSlot(CMain.MPoint);
+            return slot >= 0 && slot < Grid.Length ? Grid[slot] : null;
+        }
+
+        /// <summary>鼠标落点（UI 绝对坐标）→ 装备部位：优先按立绘层的真实绘制矩形从上层往下找；
+        /// 帧图尚未加载完或落在裸模空白区时，退回按人物上中下三分的粗略划分。</summary>
+        private EquipmentSlot PickModelSlot(Point p)
+        {
+            if (_modelLayers != null)
+            {
+                for (int i = Mir2OriginUIModel.DrawOrder.Length - 1; i >= 0; i--)
                 {
-                    Parent = CharacterPage,
-                    Location = new Point(x, y),
-                    Size = new Size(w, h),
-                    // DrawImage=false 只关绘制，不影响鼠标命中与 Click 事件。
-                    DrawImage = false,
-                    Sound = SoundList.ButtonA,
-                };
-                hotspot.Click += (o, e) => Grid[(int)captured].HandleModelSlotClick();
+                    int layer = Mir2OriginUIModel.DrawOrder[i];
+                    if (!TryMapLayerToSlot(layer, out EquipmentSlot slot)) continue;
+
+                    MirImageControl node = _modelLayers[layer];
+                    if (node == null || !node.Visible) continue;
+
+                    Point loc = node.DisplayLocationWithoutOffSet;
+                    Size size = node.Size;
+                    if (size.Width <= 0 || size.Height <= 0) continue;
+                    if (p.X >= loc.X && p.X < loc.X + size.Width &&
+                        p.Y >= loc.Y && p.Y < loc.Y + size.Height)
+                        return slot;
+                }
+            }
+
+            int x = p.X - CharacterPage.DisplayLocation.X;
+            int y = p.Y - CharacterPage.DisplayLocation.Y;
+            if (y < 120) return EquipmentSlot.DouLi;
+            if (y < 165) return EquipmentSlot.Helmet;
+            if (x < 120 && y < 300) return EquipmentSlot.Weapon;   // 武器帧在立绘左侧
+            return EquipmentSlot.Armour;
+        }
+
+        /// <summary>立绘层 → 装备槽。裸模/头发/护盾没有装备槽，不参与命中。</summary>
+        private bool TryMapLayerToSlot(int layer, out EquipmentSlot slot)
+        {
+            switch (layer)
+            {
+                case Mir2OriginUIModel.Armour: slot = EquipmentSlot.Armour; return true;
+                case Mir2OriginUIModel.Weapon: slot = EquipmentSlot.Weapon; return true;
+                case Mir2OriginUIModel.Miansha: slot = EquipmentSlot.MianSha; return true;
+                case Mir2OriginUIModel.HeadGear:
+                    // 头部覆盖层同时承载斗笠与头盔，斗笠优先（与 ResolvePlayerModels 一致）。
+                    slot = Grid != null && Grid[(int)EquipmentSlot.DouLi]?.Item != null
+                        ? EquipmentSlot.DouLi : EquipmentSlot.Helmet;
+                    return true;
+                default: slot = EquipmentSlot.Weapon; return false;
             }
         }
 

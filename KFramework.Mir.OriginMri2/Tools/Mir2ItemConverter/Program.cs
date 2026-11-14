@@ -114,10 +114,14 @@ public static class Program
     }
 
     // 新增 5 个《原始传奇》装备部位按物品名判定；宝图/礼盒/碎片等衍生道具不算装备。
+    // 疗伤石有「疗伤战石/疗伤魔石/疗伤道石(1阶~10阶)」三种职业变体，职业字插在
+    // 「疗伤」与「石」中间，旧的连续关键字 "疗伤石" 一个都匹配不到，会全部落成
+    // Type=0(Nothing)，客户端 UseItem 与服务器 CanEquipItem 都判定「不是装备」而拒绝穿戴。
     private static readonly (string Keyword, int Type)[] NewSlotKeywords = new[]
     {
         ("斗笠", 43), ("面纱", 44), ("荣誉勋章", 45), ("勋章", 45),
-        ("玉佩", 46), ("疗伤石", 47),
+        ("玉佩", 46),
+        ("疗伤战石", 47), ("疗伤魔石", 47), ("疗伤道石", 47), ("疗伤石", 47),
     };
 
     private static readonly string[] NewSlotExclude =
