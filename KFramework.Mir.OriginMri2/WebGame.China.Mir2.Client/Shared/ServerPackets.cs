@@ -1258,6 +1258,40 @@ namespace ServerPackets
             writer.Write((byte)Type);
         }
     }
+    // 背包整理结果：服务器整理完整体下发背包数组（含空槽）。
+    // 序列化与 UserInformation.Inventory 同模板：长度 + 每格 [bool 非空][UserItem.Save]。
+    public sealed class RefreshInventory : Packet
+    {
+        public override short Index
+        {
+            get { return (short)ServerPacketIds.RefreshInventory; }
+        }
+
+        public override bool Observable => false;
+
+        public UserItem[] Inventory;
+
+        protected override void ReadPacket(BinaryReader reader)
+        {
+            Inventory = new UserItem[reader.ReadInt32()];
+            for (int i = 0; i < Inventory.Length; i++)
+            {
+                if (!reader.ReadBoolean()) continue;
+                Inventory[i] = new UserItem(reader);
+            }
+        }
+
+        protected override void WritePacket(BinaryWriter writer)
+        {
+            writer.Write(Inventory.Length);
+            for (int i = 0; i < Inventory.Length; i++)
+            {
+                writer.Write(Inventory[i] != null);
+                if (Inventory[i] == null) continue;
+                Inventory[i].Save(writer);
+            }
+        }
+    }
     public sealed class NewItemInfo : Packet
     {
         public override short Index

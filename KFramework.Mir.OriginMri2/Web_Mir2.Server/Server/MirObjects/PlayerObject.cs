@@ -5563,6 +5563,75 @@ namespace Server.MirObjects
 
             Enqueue(p);
         }
+
+        /// <summary>背包整理（传奇标准）：
+        /// 1) 前 BeltSize(5) 个物品快捷栏完全不参与；
+        /// 2) 同类可堆叠物品先合并成满堆，腾出格子（照 AddItem/MergeItem 的同类堆叠规则）；
+        /// 3) 按一定规则排序：物品大类 → 品质(高在前) → 需求等级(高在前) → Index → 数量；
+        /// 4) 从 BeltSize 起依次放进【前面的空格子】，空槽全部留在末尾（紧凑，前排不留空洞）。
+        /// 合并会删物品、改数量，逐格 S.MoveItem 交换表达不了，故整理完整体下发背包数组 S.RefreshInventory。</summary>
+        public void SortInventory()
+        {
+            UserItem[] array = Info.Inventory;
+            int start = BeltSize; // 跳过前 5 个物品快捷栏（腰带槽）
+
+            // 收集背包区（快捷栏之后）的所有非空物品
+            var items = new List<UserItem>();
+            for (int i = start; i < array.Length; i++)
+                if (array[i] != null) items.Add(array[i]);
+
+            if (items.Count == 0) return;
+
+            // 1) 同类可堆叠合并：同一 ItemInfo、未满堆，把后面的数量并进前面的堆，腾出格子
+            for (int i = 0; i < items.Count; i++)
+            {
+                UserItem dst = items[i];
+                if (dst == null || dst.Info == null || dst.Info.StackSize <= 1 || dst.Count >= dst.Info.StackSize) continue;
+
+                for (int j = i + 1; j < items.Count && dst.Count < dst.Info.StackSize; j++)
+                {
+                    UserItem src = items[j];
+                    // 按 Index 判定同类（GetRealItem 可能对同一配置生成不同 ItemInfo 实例）
+                    if (src == null || src.Info == null || src.Info.Index != dst.Info.Index) continue;
+
+                    int take = Math.Min(dst.Info.StackSize - dst.Count, (int)src.Count);
+                    if (take <= 0) continue;
+
+                    dst.Count += (ushort)take;
+                    src.Count -= (ushort)take;
+                    if (src.Count == 0) items[j] = null; // 整堆被吸收
+                }
+            }
+            items.RemoveAll(x => x == null || x.Count == 0);
+
+            // 2) 排序：大类聚拢，同类按品质→需求等级→Index→数量
+            items.Sort((a, b) =>
+            {
+                ItemInfo ia = a.Info, ib = b.Info;
+                if (ia == null || ib == null) return 0;
+
+                int c = ((int)ia.Type).CompareTo((int)ib.Type);          // 物品大类
+                if (c != 0) return c;
+                c = ((int)ib.Grade).CompareTo((int)ia.Grade);             // 品质高在前
+                if (c != 0) return c;
+                c = ib.RequiredAmount.CompareTo(ia.RequiredAmount);       // 需求等级高在前
+                if (c != 0) return c;
+                c = ia.Index.CompareTo(ib.Index);                         // 同类按 Index
+                if (c != 0) return c;
+                return b.Count.CompareTo(a.Count);                        // 数量多在前
+            });
+
+            // 3) 清空背包区，依次放入前面的空格子；空槽全部留在末尾
+            for (int i = start; i < array.Length; i++) array[i] = null;
+            int slot = start;
+            foreach (UserItem item in items) array[slot++] = item;
+
+            RefreshBagWeight();
+            RefreshStats();
+
+            // 4) 整体下发整理后的背包（含空槽），客户端替换数组并刷新界面
+            Enqueue(new S.RefreshInventory { Inventory = (UserItem[])array.Clone() });
+        }
         public void StoreItem(int from, int to)
         {
             S.StoreItem p = new S.StoreItem { From = from, To = to, Success = false };

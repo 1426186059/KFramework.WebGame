@@ -131,6 +131,8 @@ public abstract class Packet
                 return new C.Chat();
             case (short)ClientPacketIds.GMCommand:
                 return new C.GMCommand();
+            case (short)ClientPacketIds.SortInventory:
+                return new C.SortInventory();
             case (short)ClientPacketIds.MoveItem:
                 return new C.MoveItem();
             case (short)ClientPacketIds.StoreItem:
@@ -482,6 +484,8 @@ public abstract class Packet
                 return new S.ObjectChat();
             case (short)ServerPacketIds.NewItemInfo:
                 return new S.NewItemInfo();
+            case (short)ServerPacketIds.RefreshInventory:
+                return new S.RefreshInventory();
             case (short)ServerPacketIds.NewMonsterInfo:
                 return new S.NewMonsterInfo();
             case (short)ServerPacketIds.NewNPCInfo:

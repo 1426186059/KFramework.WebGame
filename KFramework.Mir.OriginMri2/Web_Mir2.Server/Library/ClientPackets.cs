@@ -344,6 +344,20 @@ namespace ClientPackets
             writer.Write(Message);
         }
     }
+
+    // 背包整理请求（空包）：服务器收到后排序 Info.Inventory 并发 S.MoveItem 序列同步。
+    public sealed class SortInventory : Packet
+    {
+        public override short Index { get { return (short)ClientPacketIds.SortInventory; } }
+
+        protected override void ReadPacket(BinaryReader reader)
+        {
+        }
+
+        protected override void WritePacket(BinaryWriter writer)
+        {
+        }
+    }
     public sealed class MoveItem : Packet
     {
         public override short Index { get { return (short)ClientPacketIds.MoveItem; } }

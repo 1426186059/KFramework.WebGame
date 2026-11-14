@@ -1703,6 +1703,7 @@ public enum ServerPacketIds : short
     GuildTerritoryPage,
     StorageUnlockResult,
     StoragePasswordResult,
+    RefreshInventory,
 }
 
 public enum ClientPacketIds : short
@@ -1869,6 +1870,7 @@ public enum ClientPacketIds : short
     SetStoragePassword,
     RemoveStoragePassword,
     GMCommand,
+    SortInventory,
 }
 
 public enum ConquestType : byte

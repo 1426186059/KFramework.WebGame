@@ -400,6 +400,9 @@ namespace Server.MirNetwork
                 case (short)ClientPacketIds.GMCommand:
                     GMCommand((C.GMCommand) p);
                     break;
+                case (short)ClientPacketIds.SortInventory:
+                    SortInventory((C.SortInventory) p);
+                    break;
                 case (short)ClientPacketIds.MoveItem:
                     MoveItem((C.MoveItem) p);
                     break;
@@ -1290,6 +1293,12 @@ namespace Server.MirNetwork
                     player.AddObserver(this);
                 }
             }
+        }
+
+        private void SortInventory(C.SortInventory p)
+        {
+            if (Stage != GameStage.Game) return;
+            Player.SortInventory();
         }
 
         private void MoveItem(C.MoveItem p)

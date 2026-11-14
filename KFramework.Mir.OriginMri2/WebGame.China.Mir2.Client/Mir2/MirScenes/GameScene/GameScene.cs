@@ -1446,6 +1446,9 @@ namespace Client.MirScenes
                 case (short)ServerPacketIds.MoveItem:
                     MoveItem((S.MoveItem)p);
                     break;
+                case (short)ServerPacketIds.RefreshInventory:
+                    ApplyRefreshedInventory((S.RefreshInventory)p);
+                    break;
                 case (short)ServerPacketIds.EquipItem:
                     EquipItem((S.EquipItem)p);
                     break;
@@ -2431,6 +2434,30 @@ namespace Client.MirScenes
             UserItem i = fromCell.Item;
             fromCell.Item = toCell.Item;
             toCell.Item = i;
+
+            User.RefreshStats();
+            CharacterDuraPanel.GetCharacterDura();
+        }
+
+        // 背包整理结果：服务器已完成「同类合并 + 排序 + 紧凑使用前面空格子」，
+        // 客户端整体替换背包数组、重建 Info 绑定并刷新所有格子（含快捷栏，快捷栏本身未被整理）。
+        private void ApplyRefreshedInventory(S.RefreshInventory p)
+        {
+            if (p.Inventory == null) return;
+
+            User.Inventory = p.Inventory;
+            for (int i = 0; i < User.Inventory.Length; i++)
+                if (User.Inventory[i] != null) Bind(User.Inventory[i]);
+
+            // 合并会删物品、改数量，旧的选中/拖拽态与悬浮框一律清掉
+            SelectedCell = null;
+            DisposeItemLabel();
+
+            // 触发背包格与快捷栏格重绘（MirItemCell 的 Item setter 会 Redraw + SetEffect）
+            foreach (var cell in InventoryDialog.Grid)
+                if (cell != null) cell.Item = cell.Item;
+            foreach (var cell in BeltDialog.Grid)
+                if (cell != null) cell.Item = cell.Item;
 
             User.RefreshStats();
             CharacterDuraPanel.GetCharacterDura();

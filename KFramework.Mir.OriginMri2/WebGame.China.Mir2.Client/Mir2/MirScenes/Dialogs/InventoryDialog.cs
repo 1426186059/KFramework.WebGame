@@ -171,7 +171,7 @@ namespace Client.MirScenes.Dialogs
                 AtlasFrame = "bag_Btn0",
                 Size = new Size(27, 79),
             };
-            ZhengLiButton.Click += Button_Click;
+            ZhengLiButton.Click += (o, e) => Network.Enqueue(new C.SortInventory());
             ZhengLiButton.Label.Text = "整理";
             ZhengLiButton.Label.OutLine = true;
             ZhengLiButton.Label.ForeColour = Color.Yellow;
@@ -225,7 +225,8 @@ namespace Client.MirScenes.Dialogs
                     int idx = 8 * y + x;
                     Grid[idx] = new MirItemCell
                     {
-                        ItemSlot = 6 + idx,
+                        // 与 User.BeltIdx / 服务器 BeltSize(=5) 对齐：快捷栏占 0..4，背包第一格是 5。
+                        ItemSlot = 5 + idx,
                         GridType = MirGridType.Inventory,
                         Parent = this,
                         Size = new Size(60, 60),
@@ -234,7 +235,7 @@ namespace Client.MirScenes.Dialogs
                         Location = new Point(x * 63 + 20, y % 5 * 63 + 20),
                     };
 
-                    if (idx >= 48)
+                    if (idx >= 40)
                     {
                         Grid[idx].Visible = false;
                     }
@@ -386,7 +387,7 @@ namespace Client.MirScenes.Dialogs
 
             foreach (var grid in Grid)
             {
-                if (grid.ItemSlot < 46)
+                if (grid.ItemSlot < 45)
                 {
                     grid.Visible = true;
                 }
@@ -404,7 +405,7 @@ namespace Client.MirScenes.Dialogs
 
             foreach (var grid in Grid)
             {
-                if (grid.ItemSlot < 46 || grid.ItemSlot >= GameScene.User.Inventory.Length)
+                if (grid.ItemSlot < 45 || grid.ItemSlot >= GameScene.User.Inventory.Length)
                 {
                     grid.Visible = false;
                 }
