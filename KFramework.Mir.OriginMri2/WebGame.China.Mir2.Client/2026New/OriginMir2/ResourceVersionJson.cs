@@ -27,12 +27,12 @@ public sealed class ResourceVersionJson
         _doc = doc;
     }
 
-    public static ResourceVersionJson Parse(byte[] json)
+    public static ResourceVersionJson Parse(string json)
     {
-        if (json == null || json.Length == 0) return null;
+        if (string.IsNullOrEmpty(json)) return null;
         try
         {
-            return new ResourceVersionJson(JsonDocument.Parse(System.Text.Encoding.UTF8.GetString(json)));
+            return new ResourceVersionJson(JsonDocument.Parse(json));
         }
         catch (JsonException) { return null; }
     }

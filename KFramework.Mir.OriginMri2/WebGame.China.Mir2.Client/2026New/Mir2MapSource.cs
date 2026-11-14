@@ -166,7 +166,7 @@ namespace Client.MirObjects
 
                 var cfgT0 = DateTime.Now;
                 var dict = new Dictionary<int, Mir2MapEntry>();
-                ParseMapTable(System.Text.Encoding.UTF8.GetBytes(jsonText ?? ""), dict);
+                ParseMapTable(jsonText ?? "", dict);
                 _entries = dict;
             }
             catch (Exception ex)
@@ -176,9 +176,9 @@ namespace Client.MirObjects
         }
 
         /// <summary>只抽取根对象的 map 表，其余全部 Skip（不建 DOM）。</summary>
-        private static void ParseMapTable(byte[] json, Dictionary<int, Mir2MapEntry> dict)
+        private static void ParseMapTable(string jsonText, Dictionary<int, Mir2MapEntry> dict)
         {
-            var reader = new Utf8JsonReader(json, new JsonReaderOptions
+            var reader = new Utf8JsonReader(System.Text.Encoding.UTF8.GetBytes(jsonText), new JsonReaderOptions
             {
                 AllowTrailingCommas = true,
                 CommentHandling = JsonCommentHandling.Skip,

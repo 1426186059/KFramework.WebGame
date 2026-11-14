@@ -181,7 +181,7 @@ public static class Mir2OriginObjectLibrary
 
                 // 用 JsonDocument 按需解析（ResourceVersionJson）：容忍清单里混入的非字符串条目（如 "version": -1），
                 // 查哪个 key 解析哪个，不会整段失败。
-                var table = ResourceVersionJson.Parse(System.Text.Encoding.UTF8.GetBytes(text));
+                var table = ResourceVersionJson.Parse(text);
                 if (table == null) continue;
 
                 _versionTable = table;
@@ -372,7 +372,6 @@ public static class Mir2OriginObjectLibrary
     {
         string pngPath = null, jsonPath = null;
         Texture2D tex = null;
-        byte[] jsonBytes = null;
         try
         {
             if (!_versionsReady) await InitializeAsync(CancellationToken.None);
@@ -394,14 +393,10 @@ public static class Mir2OriginObjectLibrary
             }
 
             string json;
-            try { jsonBytes = System.Text.Encoding.UTF8.GetBytes(await Mir2OriginResource.GetTextAsync(jsonPath, priority, CancellationToken.None)); }
-            catch { /* 无 json 视为整图单帧 */ }
+            try { json = await Mir2OriginResource.GetTextAsync(jsonPath, priority, CancellationToken.None); }
+            catch { json = null; /* 无 json 视为整图单帧 */ }
 
-            if (jsonBytes != null && jsonBytes.Length > 0)
-            {
-                json = Encoding.UTF8.GetString(jsonBytes);
-            }
-            else
+            if (string.IsNullOrEmpty(json))
             {
                 // 没有配套帧表：把整张 png 当作只有 "0" 一帧的图集，复用 Mir2AtlasSheet 的解析/构建。
                 json = $"{{\"file\":\"f.png\",\"frames\":{{\"0\":{{\"x\":0,\"y\":0,\"w\":{tex.Width},\"h\":{tex.Height}," +
@@ -413,14 +408,14 @@ public static class Mir2OriginObjectLibrary
             if (sheet.Frames == null || sheet.Frames.Count == 0)
             {
                 KFramework.MonoGame.PrintTool.LogError(
-                    $"[Mir2ObjectAtlas] 图集帧数为0(空动画) key={key} action={ActionName(action)} png={pngPath} jsonLen={(jsonBytes?.Length ?? -1)} tex={tex?.Width}x{tex?.Height}");
+                    $"[Mir2ObjectAtlas] 图集帧数为0(空动画) key={key} action={ActionName(action)} png={pngPath} jsonLen={(json?.Length ?? -1)} tex={tex?.Width}x{tex?.Height}");
             }
             return sheet;
         }
         catch (Exception ex)
         {
             KFramework.MonoGame.PrintTool.LogError(
-                $"[Mir2ObjectAtlas] 图集加载失败 key={key} action={ActionName(action)} png={pngPath} jsonLen={(jsonBytes?.Length ?? -1)} tex={tex?.Width}x{tex?.Height}\n{ex}");
+                $"[Mir2ObjectAtlas] 图集加载失败 key={key} action={ActionName(action)} png={pngPath} jsonLen=-1 tex={tex?.Width}x{tex?.Height}\n{ex}");
             RecordFailure(key);
             return null;
         }
