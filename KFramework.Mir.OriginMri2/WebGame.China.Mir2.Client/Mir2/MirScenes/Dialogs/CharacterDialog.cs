@@ -10,21 +10,24 @@ namespace Client.MirScenes.Dialogs
         public MirButton CloseButton;
 
         // 右侧竖排页签：与背包一致，普通态(com_btn_page0) + 选中态(com_btn_page1) 各一组。
-        public const int TabCount = 5;
-        public static readonly string[] TabNames = { "装备", "状态", "属性", "时装", "套装" };
+        public const int TabCount = 4;
+        public static readonly string[] TabNames = { "装备", "属性", "时装", "套装" };
         private readonly MirButton[] _tabButtons = new MirButton[TabCount];
         private readonly MirButton[] _tabSelectButtons = new MirButton[TabCount];
 
-        public MirImageControl CharacterPage, StatusPage, StatePage, SkillPage, ClassImage;
+        public MirImageControl CharacterPage, StatusPage, SkillPage, ClassImage;
         public MirImageControl FashionPage, SuitPage;
         private MirImageControl[] _pages;
 
         public MirLabel NameLabel, GuildLabel, LoverLabel;
-        public MirLabel ACLabel, MACLabel, DCLabel, MCLabel, SCLabel, HealthLabel, ManaLabel;
-        public MirLabel CritRLabel, CritDLabel, LuckLabel, AttkSpdLabel, AccLabel, AgilLabel;
-        public MirLabel ExpPLabel, BagWLabel, WearWLabel, HandWLabel, MagicRLabel, PoisonRecLabel, HealthRLabel, ManaRLabel, PoisonResLabel, HolyTLabel, FreezeLabel, PoisonAtkLabel;
         public MirLabel HeadingLabel, StatLabel;
         public MirButton NextButton, BackButton;
+
+        // 状态与属性合并成一页：仿页游 NewheroPop_roleSkin 的 eui.Scroller + VerticalLayout，
+        // 行由数据驱动生成，滚动/裁剪/滚轮交给 MirScrollView。
+        private const int StatusRowHeight = 22;
+        private MirScrollView _statusScroll;
+        private AttrRow[] _statusRows;
 
         public MirItemCell[] Grid;
         private MirGridType GridType;
@@ -58,12 +61,12 @@ namespace Client.MirScenes.Dialogs
             CreateTabButtons();
             CreateCharacterPage(actor, gridType);
             CreateStatusPage(actor, gridType);
-            CreateStatePage(actor, gridType);
             CreateSkillPage(actor, gridType);
             CreateExtraPages();
 
-            // 顺序必须与 TabNames 一致；技能页不在其中，由 ShowSkillPage 单独切换。
-            _pages = new[] { CharacterPage, StatusPage, StatePage, FashionPage, SuitPage };
+            // 「状态」与「属性」共用同一个滚动页：状态停在顶部角色资料，属性滚到属性表起点。
+            // 技能页不在其中，由 ShowSkillPage 单独切换。
+            _pages = new[] { CharacterPage, StatusPage, FashionPage, SuitPage };
             ShowPage(0);
 
             BeforeDraw += (o, e) => RefreshInterface();
@@ -445,276 +448,174 @@ namespace Client.MirScenes.Dialogs
         }
 
 
+        /// <summary>属性行：名称取自 0config.attribute_score[id].description（上下限合并项用
+        /// CommonUtils.getSpecialAttrName 的全角空格写法），取值取自本服务端 UserObject。
+        /// 对应页游 showDetailAttr() 里 createAttr(description + "  :", value, tips, type) 的一行。</summary>
+        private sealed class AttrRow
+        {
+            public readonly string Name;
+            public readonly Func<UserObject, string> Read;
+            public MirLabel Value;
+
+            public AttrRow(string name, Func<UserObject, string> read)
+            {
+                Name = name;
+                Read = read;
+            }
+        }
+
+        /// <summary>页游角色面板只用一个长属性页：前 6 行是 RolePop_ztSkin 的角色资料
+        /// （职　　业 / 等　　级 / 封　　号 / 阵　　法 / 血魔之体 / 金刚之体），
+        /// 后面是 showDetailAttr() 按 attribute_score.sorting 排的属性表。
+        /// 服务端尚未下发的封号/阵法/血魔之体/金刚之体沿用页游的「未解锁」。</summary>
+        private static AttrRow[] BuildAttributeRows()
+        {
+            var rows = new List<AttrRow>();
+
+            void Add(string name, Func<UserObject, string> read) => rows.Add(new AttrRow(name, read));
+            string Range(UserObject a, Stat min, Stat max) => a.Stats[min] + "﹣" + a.Stats[max];
+
+            // —— 角色资料（RolePop_ztSkin 前 6 项）——
+            Add("职　　业", a => ClassName(a.Class));
+            Add("等　　级", a => a.Level + "级");
+            Add("封　　号", a => "未解锁");
+            Add("阵　　法", a => "未解锁");
+            Add("血魔之体", a => "未解锁");
+            Add("金刚之体", a => "未解锁");
+
+            // —— 基础属性（attribute_score.sorting 顺序）——
+            Add("生　　命", a => a.HP + "/" + a.Stats[Stat.HP]);
+            Add("魔法值", a => a.MP + "/" + a.Stats[Stat.MP]);
+            Add("攻　　击", a => Range(a, Stat.MinDC, Stat.MaxDC));
+            Add("防　　御", a => Range(a, Stat.MinAC, Stat.MaxAC));
+            Add("魔　　防", a => Range(a, Stat.MinMAC, Stat.MaxMAC));
+            Add("准　　确", a => "+" + a.Stats[Stat.Accuracy]);
+            Add("敏　　捷", a => "+" + a.Stats[Stat.Agility]);
+            Add("魔　　法", a => Range(a, Stat.MinMC, Stat.MaxMC));
+            Add("道　　术", a => Range(a, Stat.MinSC, Stat.MaxSC));
+            Add("魔法躲避", a => "+" + a.Stats[Stat.MagicResist]);
+            Add("暴击几率", a => a.Stats[Stat.CriticalRate] + "%");
+            Add("暴击伤害", a => a.Stats[Stat.CriticalDamage].ToString());
+            Add("攻击速度", a => a.Stats[Stat.AttackSpeed].ToString());
+            Add("幸　　运", a => a.Stats[Stat.Luck].ToString());
+            Add("神　　圣", a => "+" + a.Stats[Stat.Holy]);
+            Add("冰　　冻", a => "+" + a.Stats[Stat.Freezing]);
+            Add("中毒攻击", a => "+" + a.Stats[Stat.PoisonAttack]);
+            Add("中毒抗性", a => "+" + a.Stats[Stat.PoisonResist]);
+            Add("生命恢复", a => "+" + a.Stats[Stat.HealthRecovery]);
+            Add("魔法恢复", a => "+" + a.Stats[Stat.SpellRecovery]);
+            Add("中毒恢复", a => "+" + a.Stats[Stat.PoisonRecovery]);
+            Add("伤害反弹", a => a.Stats[Stat.Reflect].ToString());
+            Add("强　　壮", a => a.Stats[Stat.Strong].ToString());
+            Add("背包负重", a => a.CurrentBagWeight + "/" + a.Stats[Stat.BagWeight]);
+            Add("穿戴负重", a => a.CurrentWearWeight + "/" + a.Stats[Stat.WearWeight]);
+            Add("手持负重", a => a.CurrentHandWeight + "/" + a.Stats[Stat.HandWeight]);
+            Add("经验进度", a => string.Format("{0:0.##%}", a.Experience / (double)a.MaxExperience));
+
+            // —— 倍率/加成项：页游属性页同样会列大量加成，靠滚动查看 ——
+            Add("生命加成", a => a.Stats[Stat.HPRatePercent] + "%");
+            Add("魔法加成", a => a.Stats[Stat.MPRatePercent] + "%");
+            Add("攻击加成", a => a.Stats[Stat.MaxDCRatePercent] + "%");
+            Add("防御加成", a => a.Stats[Stat.MaxACRatePercent] + "%");
+            Add("魔防加成", a => a.Stats[Stat.MaxMACRatePercent] + "%");
+            Add("法术加成", a => a.Stats[Stat.MaxMCRatePercent] + "%");
+            Add("道术加成", a => a.Stats[Stat.MaxSCRatePercent] + "%");
+            Add("攻速加成", a => a.Stats[Stat.AttackSpeedRatePercent] + "%");
+            Add("生命汲取", a => a.Stats[Stat.HPDrainRatePercent] + "%");
+            Add("经验倍率", a => a.Stats[Stat.ExpRatePercent] + "%");
+            Add("物品爆率", a => a.Stats[Stat.ItemDropRatePercent] + "%");
+            Add("金币爆率", a => a.Stats[Stat.GoldDropRatePercent] + "%");
+            Add("挖矿倍率", a => a.Stats[Stat.MineRatePercent] + "%");
+            Add("宝石倍率", a => a.Stats[Stat.GemRatePercent] + "%");
+            Add("钓鱼倍率", a => a.Stats[Stat.FishRatePercent] + "%");
+            Add("合成倍率", a => a.Stats[Stat.CraftRatePercent] + "%");
+            Add("技能领悟", a => a.Stats[Stat.SkillGainMultiplier] + "%");
+            Add("攻击附加值", a => a.Stats[Stat.AttackBonus].ToString());
+            Add("伤害减免", a => a.Stats[Stat.DamageReductionPercent] + "%");
+            Add("护盾加成", a => a.Stats[Stat.EnergyShieldPercent] + "%");
+            Add("师徒伤害", a => a.Stats[Stat.MentorDamageRatePercent] + "%");
+            Add("法力惩罚", a => a.Stats[Stat.ManaPenaltyPercent] + "%");
+
+            return rows.ToArray();
+        }
+
+        private static string ClassName(MirClass c)
+        {
+            switch (c)
+            {
+                case MirClass.Warrior: return "战士";
+                case MirClass.Wizard: return "法师";
+                case MirClass.Taoist: return "道士";
+                case MirClass.Assassin: return "刺客";
+                case MirClass.Archer: return "弓手";
+                default: return "—";
+            }
+        }
+
         private void CreateStatusPage(UserObject actor, MirGridType gridType)
         {
-            // 页父节点（空容器）：本页所有 UI 都作为子节点挂到 StatusPage 下，切页只需显隐它。
+            // 状态/属性合并成一页。页游 NewheroPop_roleSkin 是 286×396 的 eui.Scroller(s1)，
+            // viewport = grp_attr(eui.VerticalLayout gap=0)，showDetailAttr() 用 createAttr()
+            // 每行 36px 往 grp_attr 里 addChild，属性名来自 attribute_score.description。
+            // 这里用 MirScrollView 承载同样的数据驱动长列表，滚轮/拖拽滚动条/溢出裁剪由它接管。
             StatusPage = new MirImageControl
             {
                 Parent = this,
-                Location = new Point(8, 90),
+                Location = new Point(8, 70),
+                Size = new Size(286, 396),
                 Visible = false,
-                NotControl = true,
+                // 不能设 NotControl：MirControl.OnMouseMove 只遍历直接子控件，
+                // 父级 NotControl=true 会让整棵子树收不到鼠标，滚动视图的滚轮/滚动条就失效。
             };
-            // 背景图作为子节点（原来 Index=506 那张页签底图）。
-            new MirImageControl
+
+            _statusScroll = new MirScrollView
             {
                 Parent = StatusPage,
-                Index = 506,
-                Library = Libraries.Title,
-                NotControl = true,
                 Location = new Point(0, 0),
+                Size = new Size(286, 380),
+                ShowScrollBar = true,
             };
+
+            _statusRows = BuildAttributeRows();
+            for (int i = 0; i < _statusRows.Length; i++)
+            {
+                int y = i * StatusRowHeight;
+                // 仿 createAttr()：名称 x=2,width=103,textAlign=right；数值 x=110。
+                var nameLabel = new MirLabel
+                {
+                    Text = _statusRows[i].Name + "：",
+                    AutoSize = false,
+                    Size = new Size(103, StatusRowHeight),
+                    Location = new Point(2, y),
+                    DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.Right,
+                    ForeColour = Color.White,
+                    OutLine = true,
+                    NotControl = true,
+                };
+                var valueLabel = new MirLabel
+                {
+                    AutoSize = false,
+                    Size = new Size(160, StatusRowHeight),
+                    Location = new Point(110, y),
+                    ForeColour = Color.White,
+                    OutLine = true,
+                    NotControl = true,
+                };
+                _statusRows[i].Value = valueLabel;
+                _statusScroll.Add(nameLabel);
+                _statusScroll.Add(valueLabel);
+            }
+
+            // 页游 refr() 打开面板时重刷一遍；这里逐行刷新，MirLabel.Text 自带去重，
+            // 只有数值变化才重绘，MirScrollView 会自动重烘离屏纹理。
             StatusPage.BeforeDraw += (o, e) =>
             {
-                ACLabel.Text = string.Format("{0}-{1}", actor.Stats[Stat.MinAC], actor.Stats[Stat.MaxAC]);
-                MACLabel.Text = string.Format("{0}-{1}", actor.Stats[Stat.MinMAC], actor.Stats[Stat.MaxMAC]);
-                DCLabel.Text = string.Format("{0}-{1}", actor.Stats[Stat.MinDC], actor.Stats[Stat.MaxDC]);
-                MCLabel.Text = string.Format("{0}-{1}", actor.Stats[Stat.MinMC], actor.Stats[Stat.MaxMC]);
-                SCLabel.Text = string.Format("{0}-{1}", actor.Stats[Stat.MinSC], actor.Stats[Stat.MaxSC]);
-                HealthLabel.Text = string.Format("{0}/{1}", actor.HP, actor.Stats[Stat.HP]);
-                ManaLabel.Text = string.Format("{0}/{1}", actor.MP, actor.Stats[Stat.MP]);
-                CritRLabel.Text = string.Format("{0}%", actor.Stats[Stat.CriticalRate]);
-                CritDLabel.Text = string.Format("{0}", actor.Stats[Stat.CriticalDamage]);
-                AttkSpdLabel.Text = string.Format("{0}", actor.Stats[Stat.AttackSpeed]);
-                AccLabel.Text = string.Format("+{0}", actor.Stats[Stat.Accuracy]);
-                AgilLabel.Text = string.Format("+{0}", actor.Stats[Stat.Agility]);
-                LuckLabel.Text = string.Format("{0}", actor.Stats[Stat.Luck]);
-            };
-
-            HealthLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatusPage,
-                Location = new Point(126, 20),
-                NotControl = true,
-                Text = "0-0",
-            };
-
-            ManaLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatusPage,
-                Location = new Point(126, 38),
-                NotControl = true,
-                Text = "0-0",
-            };
-
-            ACLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatusPage,
-                Location = new Point(126, 56),
-                NotControl = true,
-                Text = "0-0",
-            };
-
-            MACLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatusPage,
-                Location = new Point(126, 74),
-                NotControl = true,
-                Text = "0-0",
-            };
-            DCLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatusPage,
-                Location = new Point(126, 92),
-                NotControl = true,
-                Text = "0-0"
-            };
-            MCLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatusPage,
-                Location = new Point(126, 110),
-                NotControl = true,
-                Text = "0/0"
-            };
-            SCLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatusPage,
-                Location = new Point(126, 128),
-                NotControl = true,
-                Text = "0/0"
-            };
-            //Breezer - New Labels
-            CritRLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatusPage,
-                Location = new Point(126, 146),
-                NotControl = true
-            };
-            CritDLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatusPage,
-                Location = new Point(126, 164),
-                NotControl = true
-            };
-            AttkSpdLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatusPage,
-                Location = new Point(126, 182),
-                NotControl = true
-            };
-            AccLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatusPage,
-                Location = new Point(126, 200),
-                NotControl = true
-            };
-            AgilLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatusPage,
-                Location = new Point(126, 218),
-                NotControl = true
-            };
-            LuckLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatusPage,
-                Location = new Point(126, 236),
-                NotControl = true
+                foreach (AttrRow row in _statusRows)
+                    row.Value.Text = row.Read(actor);
             };
         }
 
 
-        private void CreateStatePage(UserObject actor, MirGridType gridType)
-        {
-            StatePage = new MirImageControl
-            {
-                Parent = this,
-                Location = new Point(8, 90),
-                Visible = false,
-                NotControl = true,
-            };
-            new MirImageControl
-            {
-                Parent = StatePage,
-                Index = 507,
-                Library = Libraries.Title,
-                NotControl = true,
-                Location = new Point(0, 0),
-            };
-            StatePage.BeforeDraw += (o, e) =>
-            {
-                ExpPLabel.Text = string.Format("{0:0.##%}", actor.Experience / (double)actor.MaxExperience);
-                BagWLabel.Text = string.Format("{0}/{1}", actor.CurrentBagWeight, actor.Stats[Stat.BagWeight]);
-                WearWLabel.Text = string.Format("{0}/{1}", actor.CurrentWearWeight, actor.Stats[Stat.WearWeight]);
-                HandWLabel.Text = string.Format("{0}/{1}", actor.CurrentHandWeight, actor.Stats[Stat.HandWeight]);
-                MagicRLabel.Text = string.Format("+{0}", actor.Stats[Stat.MagicResist]);
-                PoisonResLabel.Text = string.Format("+{0}", actor.Stats[Stat.PoisonResist]);
-                HealthRLabel.Text = string.Format("+{0}", actor.Stats[Stat.HealthRecovery]);
-                ManaRLabel.Text = string.Format("+{0}", actor.Stats[Stat.SpellRecovery]);
-                PoisonRecLabel.Text = string.Format("+{0}", actor.Stats[Stat.PoisonRecovery]);
-                HolyTLabel.Text = string.Format("+{0}", actor.Stats[Stat.Holy]);
-                FreezeLabel.Text = string.Format("+{0}", actor.Stats[Stat.Freezing]);
-                PoisonAtkLabel.Text = string.Format("+{0}", actor.Stats[Stat.PoisonAttack]);
-            };
-
-            ExpPLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatePage,
-                Location = new Point(126, 20),
-                NotControl = true,
-                Text = "0-0",
-            };
-
-            BagWLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatePage,
-                Location = new Point(126, 38),
-                NotControl = true,
-                Text = "0-0",
-            };
-
-            WearWLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatePage,
-                Location = new Point(126, 56),
-                NotControl = true,
-                Text = "0-0",
-            };
-
-            HandWLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatePage,
-                Location = new Point(126, 74),
-                NotControl = true,
-                Text = "0-0",
-            };
-            MagicRLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatePage,
-                Location = new Point(126, 92),
-                NotControl = true,
-                Text = "0-0"
-            };
-            PoisonResLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatePage,
-                Location = new Point(126, 110),
-                NotControl = true,
-                Text = "0/0"
-            };
-            HealthRLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatePage,
-                Location = new Point(126, 128),
-                NotControl = true,
-                Text = "0/0"
-            };
-            //Breezer
-            ManaRLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatePage,
-                Location = new Point(126, 146),
-                NotControl = true
-            };
-            PoisonRecLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatePage,
-                Location = new Point(126, 164),
-                NotControl = true
-            };
-            HolyTLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatePage,
-                Location = new Point(126, 182),
-                NotControl = true
-            };
-            FreezeLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatePage,
-                Location = new Point(126, 200),
-                NotControl = true
-            };
-            PoisonAtkLabel = new MirLabel
-            {
-                AutoSize = true,
-                Parent = StatePage,
-                Location = new Point(126, 218),
-                NotControl = true
-            };
-        }
 
 
         private void CreateSkillPage(UserObject actor, MirGridType gridType)
@@ -794,18 +695,25 @@ namespace Client.MirScenes.Dialogs
             base.Hide();
         }
 
-        /// <summary>统一切页：只显示目标页，隐藏技能页，并点亮对应的选中态按钮。</summary>
+        /// <summary>统一切页：先隐藏全部页，再显示目标页并点亮对应选中态。
+        /// 「状态」与「属性」共用同一个滚动页，用滚动位置区分：状态停在顶部角色资料，属性滚到属性表起点。</summary>
         public void ShowPage(int index)
         {
             if (_pages == null || index < 0 || index >= TabCount) return;
 
             for (int i = 0; i < _pages.Length; i++)
-                _pages[i].Visible = i == index;
+                _pages[i].Visible = false;
+            _pages[index].Visible = true;
 
             SkillPage.Visible = false;
 
             for (int i = 0; i < TabCount; i++)
                 _tabSelectButtons[i].Visible = i == index;
+
+            if (_statusScroll != null && _pages[index] == StatusPage)
+            {
+                _statusScroll.SetScrollOffset(new Point(0, 0));
+            }
         }
 
         // 快捷键 / 主界面按钮仍调用这两个入口，保持原有语义。
