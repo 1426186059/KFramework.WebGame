@@ -4,18 +4,25 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-/// <summary>整个 2config 分片 JSON 的 DTO。modelInfo 键为数字字符串，System.Text.Json 会自动转 int 字典键。</summary>
+/// <summary>整个 2config 分片 JSON 的 DTO。
+/// <para>
+/// 键用 <b>string</b> 而非 int：实测这份 <c>2config10.25341.1.json</c> 的 <c>modelInfo</c> 里混有非整数键
+/// （如 <c>"box"</c>），且记录类型也不统一（model 用 <c>id/action/intval/...</c>，skill 用 <c>skillId/level/...</c>，
+/// box 用 <c>id/isShow/items</c>）。若用 <c>Dictionary&lt;int,…&gt;</c>，碰到 <c>"box"</c> 键会直接抛
+/// <c>JsonException</c>；改用 string 键后整数式键与 <c>"box"</c> 都能落字典，缺失字段走默认、多余字段忽略，不再崩溃。
+/// </para>
+/// </summary>
 public class OriginMir2Config2
 {
-    // modelId → actionId → 记录（ModelInfoTable）
+    // modelId → actionId → 记录（ModelInfoTable）；键用 string 以兼容非整数键
     [JsonPropertyName("modelInfo")]
-    public Dictionary<int, Dictionary<int, ModelInfoTable>> modelInfo { get; set; } = new();
+    public Dictionary<string, Dictionary<string, ModelInfoTable>> modelInfo { get; set; } = new();
 }
 
 /// <summary>
 /// 源生成的 JSON 序列化上下文：避免反射式 <c>JsonSerializer</c> 在 WASM 裁剪下失效（IL2026），
 /// 同时让「强类型映射」这一项的测量更贴近真实工程的编译期代码生成路径。
 /// </summary>
-[JsonSourceGenerationOptions]
+//[JsonSourceGenerationOptions]
 [JsonSerializable(typeof(OriginMir2Config2))]
 internal sealed partial class ConfigJsonContext : JsonSerializerContext { }

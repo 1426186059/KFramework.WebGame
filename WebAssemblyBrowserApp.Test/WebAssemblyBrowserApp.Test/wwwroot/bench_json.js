@@ -21,7 +21,7 @@ export function Json_GetText() { return text; }
 
 // ---------------------------------------------------------------- 计时
 // 与 C# 侧 BenchKit.MeasureFixed 对齐：warmup 不计入 / 取最快轮 / rounds 轮。
-// 重操作：warmup 必须很小（默认上百次会让光预热就几十秒），这里固定 2。
+// 用户要求只测一次：warmup=1、rounds=1（单次解析几十 ms，已远大于计时器分辨率，足够稳定）。
 function timeJson(n, fn, warmup, rounds) {
     for (let i = 0; i < warmup; i++) fn(i);
 
@@ -40,12 +40,12 @@ function timeJson(n, fn, warmup, rounds) {
 export function CallParseN(n) {
     if (!text) return '-1|-1|文本未加载（fetch 失败或文件缺失）';
     // 解析到的对象不保留（纯解析计时，与 C# JsonDocument.Parse 口径一致）
-    return timeJson(n, () => { const o = JSON.parse(text); return o; }, 2, 3);
+    return timeJson(n, () => { const o = JSON.parse(text); return o; }, 1, 1);
 }
 
 // ---------------------------------------------------------------- 序列化
 export function CallStringifyN(n) {
     if (!text) return '-1|-1|文本未加载';
     if (!parsed) parsed = JSON.parse(text);   // 解析一次，序列化计时复用
-    return timeJson(n, () => { const s = JSON.stringify(parsed); return s; }, 2, 3);
+    return timeJson(n, () => { const s = JSON.stringify(parsed); return s; }, 1, 1);
 }
