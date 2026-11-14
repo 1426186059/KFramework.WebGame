@@ -52,7 +52,7 @@ namespace Client.MirScenes.Dialogs
         private MirTextBox ItemSearchBox;        // 物品搜索框（按 Id 或 名字 过滤）
         private string _itemSearch = string.Empty;
         private MirScrollView2 ItemScrollView;   // 物品行虚拟化滚动列表（无限滚动，只创建视口内行）
-        private List<ItemTableDTO> _filteredCache = new List<ItemTableDTO>();  // 当前搜索过滤结果（createRow 按索引取）
+        private List<ItemTableDTO> _filteredCache = new List<ItemTableDTO>();  // 当前搜索过滤结果（bindRow 按索引取）
         private int _lastItemsCount = -1;        // 上次见到的全量物品条数，用于后台加载完成后自动刷新
 
         // GM 命令清单(命令名|参数提示)。发送时自动加 @ 前缀,参数以空格分隔。
@@ -276,13 +276,11 @@ namespace Client.MirScenes.Dialogs
                 btn.Label.ForeColour = Color.White;
                 btn.Click += (o, e) => SendGMCommand(cmd, box.Text);
 
+                // 回车只吞掉（避免冒泡到全局快捷键），绝不发命令。
+                // GM 命令一律只能由「执行」按钮的 Click 触发。
                 box.TextBox.KeyDown += (s, ev) =>
                 {
-                    if (ev.KeyCode == Keys.Enter)
-                    {
-                        SendGMCommand(cmd, box.Text);
-                        ev.Handled = true;
-                    }
+                    if (ev.KeyCode == Keys.Enter) ev.Handled = true;
                 };
 
                 GMCommandScrollView.Add(label);
@@ -323,100 +321,117 @@ namespace Client.MirScenes.Dialogs
         private void ApplyFilterAndRefresh()
         {
             _filteredCache = GetFilteredItems();
-            ItemScrollView.SetDataSource(_filteredCache.Count, RowH, CreateItemRow);
+            ItemScrollView.SetDataSource(_filteredCache.Count, RowH, CreateItemRowView, BindItemRow);
         }
 
-        /// <summary>MirScrollView2 的行工厂：为第 i 行创建一个完整行控件（背景/origin图标/名字/数量/执行）。</summary>
-        private MirControl CreateItemRow(int i)
+        /// <summary>可复用的物品行控件：数据放在字段里，绑定时覆写；事件闭包读「当前绑定值」而不是创建时的快照。</summary>
+        private sealed class ItemRow : MirImageControl
         {
-            var info = _filteredCache[i];
+            public MirImageControl Icon;
+            public MirLabel NameLabel, GradeLabel, ReqLabel;
+            public MirTextBox QtyBox;
+            public MirButton ExecuteButton;
+            public int IconId;
+            public string ItemName = "";
+        }
+
+        /// <summary>行控件空壳工厂：整个列表生命周期只会被调用「视口行数 + 缓冲」这么多次。</summary>
+        private MirControl CreateItemRowView()
+        {
             int rowW = ItemScrollView.Size.Width - 6 - MirScrollView.ScrollBarWidth;
 
-            var bg = new MirImageControl
+            var row = new ItemRow
             {
                 AutoSize = false, Size = new Size(rowW, RowH), Location = new Point(3, 0),
                 Texture = DefTex, ForeColour = ItemRowFill,
             };
 
             // 物品图标：走原始传奇 CDN origin 图标（与背包 MirItemCell 同链路），不依赖 Libraries.Items。
-            int img = (int)info.Image;
-            var icon = new MirImageControl
+            // 图标号从 row.IconId 读，槽位复用换数据后自动跟着变。
+            row.Icon = new MirImageControl
             {
-                Parent = bg, DrawImage = false, AutoSize = false, Size = new Size(20, 20),
+                Parent = row, DrawImage = false, AutoSize = false, Size = new Size(20, 20),
                 Location = new Point(4, (RowH - 20) / 2), NotControl = true,
             };
-            icon.BeforeDraw += (o, e) =>
+            row.Icon.BeforeDraw += (o, e) =>
             {
-                Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Item, img,
+                Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Item, row.IconId,
                                                 priority: Mir2OriginObjectLibrary.PriorityItem);
-                Mir2OriginObjectLibrary.DrawItemIconFit(img, icon.DisplayLocation.X, icon.DisplayLocation.Y, 20, 20);
+                Mir2OriginObjectLibrary.DrawItemIconFit(row.IconId, row.Icon.DisplayLocation.X, row.Icon.DisplayLocation.Y, 20, 20);
             };
 
-            // 名字
-            var label = new MirLabel
+            row.NameLabel = new MirLabel
             {
-                Parent = bg, NotControl = true,
+                Parent = row, NotControl = true,
                 Location = new Point(28, 0), Size = new Size(Math.Max(40, rowW - 264), RowH),
-                Text = info.Name, ForeColour = Color.White, AutoSize = false,
+                ForeColour = Color.White, AutoSize = false,
             };
-
-            // 品质（按 Grade 着色，GM 一眼区分档次）
-            new MirLabel
+            row.GradeLabel = new MirLabel
             {
-                Parent = bg, NotControl = true,
+                Parent = row, NotControl = true,
                 Location = new Point(rowW - 232, 0), Size = new Size(56, RowH),
-                Text = "品质 " + info.Grade, ForeColour = GradeColour(info.Grade), AutoSize = false,
+                AutoSize = false,
             };
-
-            // 需求等级（RequiredAmount = 装备需求等级）
-            new MirLabel
+            row.ReqLabel = new MirLabel
             {
-                Parent = bg, NotControl = true,
+                Parent = row, NotControl = true,
                 Location = new Point(rowW - 168, 0), Size = new Size(56, RowH),
-                Text = "需求 " + info.RequiredAmount, ForeColour = Color.LightGray, AutoSize = false,
+                ForeColour = Color.LightGray, AutoSize = false,
             };
 
-            // 数量输入框（默认 1）
-            var qtyBox = new MirTextBox
+            row.QtyBox = new MirTextBox
             {
-                Parent = bg, Border = true, BorderColour = Color.Lime, MaxLength = 9,
+                Parent = row, Border = true, BorderColour = Color.Lime, MaxLength = 9,
                 Location = new Point(rowW - 104, (RowH - 20) / 2), Size = new Size(44, 20),
                 Text = "1",
             };
             // 烘焙内的文本框键入后不会自动重画，手动让滚动视图重烘焙以显示输入的数字
-            qtyBox.TextBox.TextChanged += (s, e) => ItemScrollView.InvalidateTexture();
+            row.QtyBox.TextBox.TextChanged += (s, e) => ItemScrollView.InvalidateTexture();
 
-            // 执行按钮
-            var btn = new MirButton
+            row.ExecuteButton = new MirButton
             {
-                Parent = bg, AutoSize = false, Size = new Size(52, 20),
+                Parent = row, AutoSize = false, Size = new Size(52, 20),
                 Location = new Point(rowW - 56, (RowH - 20) / 2),
                 Sound = SoundList.ButtonA, Texture = DefTex, ForeColour = ButtonFill,
                 Border = true, BorderColour = ButtonBorder,
             };
-            btn.Label.Text = "执行";
-            btn.Label.ForeColour = Color.White;
+            row.ExecuteButton.Label.Text = "执行";
+            row.ExecuteButton.Label.ForeColour = Color.White;
 
-            // 发送 @MAKE 物品名 [数量]（数量为 1 时省略）
-            string name = info.Name;
+            // 发送 @MAKE 物品名 [数量]（数量为 1 时省略）；都取 row 的当前绑定值。
             void Execute()
             {
-                string qtyText = qtyBox.Text.Trim();
-                string msg = "@MAKE " + name;
+                string qtyText = row.QtyBox.Text.Trim();
+                string msg = "@MAKE " + row.ItemName;
                 if (qtyText.Length > 0 && int.TryParse(qtyText, out int qty) && qty > 1)
                     msg += " " + qty;
                 Network.Enqueue(new C.GMCommand { Message = msg });
             }
 
-            bg.Click += (o, e) => Execute();   // 点行内空白/图标/名字执行
-            btn.Click += (o, e) => Execute();   // 点执行按钮（Click 不冒泡，不会重复执行）
+            // 只有「执行」按钮会发 @MAKE：点行内空白/图标/名字/数量框都不发命令，避免误刷物品。
+            row.ExecuteButton.Click += (o, e) => Execute();
 
-            bg.BeforeDraw += (o, e) =>
+            row.BeforeDraw += (o, e) =>
             {
-                bg.ForeColour = MirControl.MouseControl == bg ? ItemRowHover : ItemRowFill;
+                row.ForeColour = MirControl.MouseControl == row ? ItemRowHover : ItemRowFill;
             };
 
-            return bg;
+            return row;
+        }
+
+        /// <summary>把第 i 行数据写进复用的行控件（滚动跨行时只有新进入视口的槽位会调用）。</summary>
+        private void BindItemRow(MirControl control, int i)
+        {
+            var row = (ItemRow)control;
+            var info = _filteredCache[i];
+
+            row.IconId = (int)info.Image;
+            row.ItemName = info.Name;
+            row.NameLabel.Text = info.Name;
+            row.GradeLabel.Text = "品质 " + info.Grade;
+            row.GradeLabel.ForeColour = GradeColour(info.Grade);
+            row.ReqLabel.Text = "需求 " + info.RequiredAmount;
+            row.QtyBox.Text = "1";
         }
 
         /// <summary>品质 Grade → 颜色（0普通灰 … ≥5神器橙），供物品行着色。</summary>
