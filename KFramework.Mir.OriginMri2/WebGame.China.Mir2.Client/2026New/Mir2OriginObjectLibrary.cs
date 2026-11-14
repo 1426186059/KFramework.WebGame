@@ -176,12 +176,12 @@ public static class Mir2OriginObjectLibrary
         {
             try
             {
-                var bytes = await Mir2OriginResource.GetBytesAsync(VersionManifest + suffix, ct);
-                if (bytes == null || bytes.Length == 0) continue;
+                var text = await Mir2OriginResource.GetTextAsync(VersionManifest + suffix, ct);
+                if (string.IsNullOrEmpty(text)) continue;
 
                 // 用 JsonDocument 按需解析（ResourceVersionJson）：容忍清单里混入的非字符串条目（如 "version": -1），
                 // 查哪个 key 解析哪个，不会整段失败。
-                var table = ResourceVersionJson.Parse(bytes);
+                var table = ResourceVersionJson.Parse(System.Text.Encoding.UTF8.GetBytes(text));
                 if (table == null) continue;
 
                 _versionTable = table;
@@ -393,10 +393,10 @@ public static class Mir2OriginObjectLibrary
                 return null;
             }
 
-            try { jsonBytes = await Mir2OriginResource.GetBytesAsync(jsonPath, priority, CancellationToken.None); }
+            string json;
+            try { jsonBytes = System.Text.Encoding.UTF8.GetBytes(await Mir2OriginResource.GetTextAsync(jsonPath, priority, CancellationToken.None)); }
             catch { /* 无 json 视为整图单帧 */ }
 
-            string json;
             if (jsonBytes != null && jsonBytes.Length > 0)
             {
                 json = Encoding.UTF8.GetString(jsonBytes);

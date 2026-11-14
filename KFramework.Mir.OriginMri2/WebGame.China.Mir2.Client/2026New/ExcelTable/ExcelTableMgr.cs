@@ -122,21 +122,21 @@ public static partial class ExcelTableMgr
             {
                 if (_config0 != null) continue;
                 PrintTool.Log("[ExcelTableMgr] PreloadShardsAsync 0000");
-                byte[] bytes = await Mir2OriginResource.GetConfigShardBytesAsync(shard, ct).ConfigureAwait(false);
+                string text = await Mir2OriginResource.GetConfigShardTextAsync(shard, ct).ConfigureAwait(false);
                 PrintTool.Log("[ExcelTableMgr] PreloadShardsAsync 11111");
-                if (bytes == null || bytes.Length == 0) continue;
+                if (string.IsNullOrEmpty(text)) continue;
                 var info = AppJsonContext.Default.OriginMir2Config0;
-                _config0 = JsonTool.FromJson<OriginMir2Config0>(System.Text.Encoding.UTF8.GetString(bytes), info);
+                _config0 = JsonTool.FromJson<OriginMir2Config0>(text, info);
             }
             else if (shard == 2)
             {
                 if (_config2 != null) continue;
                 PrintTool.Log("[ExcelTableMgr] PreloadShardsAsync 0000");
-                byte[] bytes = await Mir2OriginResource.GetConfigShardBytesAsync(shard, ct).ConfigureAwait(false);
+                string text = await Mir2OriginResource.GetConfigShardTextAsync(shard, ct).ConfigureAwait(false);
                 PrintTool.Log("[ExcelTableMgr] PreloadShardsAsync 11111");
-                if (bytes == null || bytes.Length == 0) continue;
+                if (string.IsNullOrEmpty(text)) continue;
                 var info = AppJsonContext.Default.OriginMir2Config2;
-                _config2 = JsonTool.FromJson<OriginMir2Config2>(System.Text.Encoding.UTF8.GetString(bytes), info);
+                _config2 = JsonTool.FromJson<OriginMir2Config2>(text, info);
             }
             else
             {

@@ -121,8 +121,8 @@ public static class Mir2OriginUIModel
                 await Mir2OriginObjectLibrary.InitializeAsync(CancellationToken.None);
 
             // JsonDocument 是读取器 API，不走反射式序列化（浏览器 WASM/AOT 安全）。
-            byte[] bytes = await Mir2OriginResource.GetBytesAsync(FrameJsonPath(model), CancellationToken.None);
-            using var doc = JsonDocument.Parse(Encoding.UTF8.GetString(bytes));
+            string text = await Mir2OriginResource.GetTextAsync(FrameJsonPath(model), CancellationToken.None);
+            using var doc = JsonDocument.Parse(text);
             if (doc.RootElement.TryGetProperty("frames", out JsonElement frames) && frames.GetArrayLength() > 0)
             {
                 JsonElement f = frames[0];

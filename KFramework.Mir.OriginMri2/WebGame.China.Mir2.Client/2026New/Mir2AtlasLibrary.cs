@@ -58,16 +58,16 @@ public static class Mir2AtlasLibrary
 
         try
         {
-            var bytes = await Mir2OriginResource.GetBytesAsync(
+            var text = await Mir2OriginResource.GetTextAsync(
                 Mir2OriginResource.ResolveManifestAssetPath("resource/default.res.json"), ct: ct);
-            
-            if (bytes == null || bytes.Length == 0)
+
+            if (string.IsNullOrEmpty(text))
             {
                 return;
             }
 
             // 用 OriginMir2.DefaultResJson DTO 反序列化（替代原先 JsonNode 手解析）。
-            var cfg = DefaultResJson.Deserialize(Encoding.UTF8.GetString(bytes));
+            var cfg = DefaultResJson.Deserialize(text);
             if (cfg != null)
             {
                 if (cfg.Resources != null)
@@ -194,8 +194,8 @@ public static class Mir2AtlasLibrary
                 return existing;
 
             var jsonPath = Mir2OriginResource.ResolveManifestAssetPath(key);
-            var jsonBytes = await Mir2OriginResource.GetBytesAsync(jsonPath, ct: CancellationToken.None);
-            if (jsonBytes == null || jsonBytes.Length == 0)
+            var text = await Mir2OriginResource.GetTextAsync(jsonPath, ct: CancellationToken.None);
+            if (string.IsNullOrEmpty(text))
             {
                 throw new InvalidOperationException(
                     $"[Mir2Atlas] 图集 JSON 下载为空：key={key}，resolvedPath={jsonPath}。" +
@@ -203,7 +203,7 @@ public static class Mir2AtlasLibrary
                     $"若已是哈希路径(resource/xx/...)仍空，说明该 key 不在 manifest 或资源缺失。");
             }
 
-            var sheet = Mir2AtlasSheet.Parse(Encoding.UTF8.GetString(jsonBytes));
+            var sheet = Mir2AtlasSheet.Parse(text);
             // 普通精灵图集从 JSON 的 "file" 取 PNG 名；MovieClip（mc/res 格式，无 "file"）则按 JSON 同名推断（task_complete.json → task_complete.png）。
             var pngFile = sheet.File;
             if (string.IsNullOrEmpty(pngFile)) pngFile = Path.GetFileNameWithoutExtension(key) + ".png";
@@ -252,9 +252,9 @@ public static class Mir2AtlasLibrary
     public static async Task<Mir2AtlasSheet> GetSheetByPathsAsync(string jsonRelativePath, string pngRelativePath, GraphicsDevice device, CancellationToken ct = default)
     {
         await EnsureManifestAsync(ct); // 仅保证 Manifest 字段存在（不影响直链解析）
-        var jsonBytes = await Mir2OriginResource.GetBytesAsync(jsonRelativePath, ct: ct);
-        if (jsonBytes == null || jsonBytes.Length == 0) return null;
-        var sheet = Mir2AtlasSheet.Parse(Encoding.UTF8.GetString(jsonBytes));
+        var text = await Mir2OriginResource.GetTextAsync(jsonRelativePath, ct: ct);
+        if (string.IsNullOrEmpty(text)) return null;
+        var sheet = Mir2AtlasSheet.Parse(text);
         var texture = await Mir2OriginResource.GetTextureAsync(pngRelativePath, device, ct: ct);
         sheet.Build(texture);
         //PrintTool.Log($"[Mir2Atlas] 已加载直链图集 {jsonRelativePath}：{sheet.Frames.Count} 帧");

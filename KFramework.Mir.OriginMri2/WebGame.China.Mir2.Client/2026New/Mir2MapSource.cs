@@ -162,11 +162,11 @@ namespace Client.MirObjects
                 // 主线程一帧卡死 17.7 秒 → 服务端心跳超时（10s）直接断开，表现为「第一次进 GameScene 就掉线」。
                 // 而我们只要其中一张 map 表（991 条）。改为 Utf8JsonReader 流式前向扫描：
                 // 非目标属性直接 Skip，零 DOM、零中间字符串，代价仅为线性扫一遍字节。
-                byte[] json = await Mir2OriginResource.GetConfigShardBytesAsync(0, ct).ConfigureAwait(false);
+                string jsonText = await Mir2OriginResource.GetConfigShardTextAsync(0, ct).ConfigureAwait(false);
 
                 var cfgT0 = DateTime.Now;
                 var dict = new Dictionary<int, Mir2MapEntry>();
-                ParseMapTable(json, dict);
+                ParseMapTable(System.Text.Encoding.UTF8.GetBytes(jsonText ?? ""), dict);
                 _entries = dict;
             }
             catch (Exception ex)

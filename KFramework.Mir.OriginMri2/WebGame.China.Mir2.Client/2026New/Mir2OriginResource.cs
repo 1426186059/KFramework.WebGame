@@ -20,6 +20,24 @@ public static class Mir2OriginResource
     private static ContentManager _dataContent = new ContentManager("", CdnBase);
     private static readonly Caching Cache = Caching.Open("Mir2Origin.Cache");
 
+    // —— 文本（string）内存缓存：manifest / config / 图集与帧 JSON 等纯文本资源，避免反复远程拉取 ——
+    // 与 _texCache 分工：本层缓存「解码前/未解码的文本」，_texCache 缓存「解码后的 Texture2D」；
+    // 图片类字节因最终经 _texCache 复用解码纹理，不在此重复缓存。
+    // 文本不像 Texture2D 需要引用计数（非 GPU 资源、不存在悬空问题），故只用「容量 + 时间 LRU」淘汰：
+    // 超容量预算且距上次访问超过 TextTrimAgeMs 的条目被移除（由 TrimTextCache 执行，与 TrimTextureCache 平行）。
+    private sealed class TextEntry
+    {
+        public Task<string> Task;
+        public long LastAccess;
+    }
+    private static readonly ConcurrentDictionary<string, TextEntry> _textCache =
+        new(StringComparer.OrdinalIgnoreCase);
+
+    private const int TextCacheMaxEntries = 2000;    // 文本条目容量预算，超即触发淘汰
+    private const long TextTrimAgeMs = 180_000;      // 超过该时长(ms)未再访问才淘汰（3 分钟，比纹理宽，核心索引不易被冲掉）
+    private const long TextTrimIntervalMs = 1500;    // 淘汰轮询间隔（与纹理一致）
+    private static long _lastTextTrimTick;
+
     // —— 解码后 Texture2D 的内存缓存（key = 规范化相对路径/URL）——
     // 这是原始传奇 RES.host（root+name → 解码 Texture/SpriteSheet）在我们工程里的对应层：所有远程图
     // （模型图集 / UI 图集 / 人物立绘 / 物品图标 / 地图瓦片）统一经此取解码纹理，首次下载+解码后常驻复用，
@@ -57,16 +75,26 @@ public static class Mir2OriginResource
         return BrowserResource.NormalizePath(p);
     }
 
-    // ===================== 通用取数 =====================
-    /// <summary>按相对路径取任意字节流（图片 CDN 根）。</summary>
-    public static Task<byte[]> GetBytesAsync(string relativePath, int priority = 0, CancellationToken ct = default)
+    // ===================== 通用取文本 =====================
+    /// <summary>按相对路径取文本（UTF-8 解码）。走 _textCache：同 URL 只在首次下载+解码，
+    /// 之后 GetOrAdd 复用同一份 string，避免 manifest/config/图集 JSON 等纯文本资源反复远程拉取；
+    /// 命中时刷新 LastAccess，并由 TrimTextCache 按容量+时间 LRU 淘汰，避免无界增长。</summary>
+    public static Task<string> GetTextAsync(string relativePath, int priority = 0, CancellationToken ct = default)
     {
-        return _imageContent.LoadBytesAsync(Norm(relativePath), Cache, priority, ct);
+        string key = Norm(relativePath);
+        var entry = _textCache.GetOrAdd(key, k => new TextEntry
+        {
+            Task = _imageContent.LoadTextAsync(k, Cache, priority, ct),
+            LastAccess = Environment.TickCount64,
+        });
+        entry.LastAccess = Environment.TickCount64;
+        TrimTextCache();
+        return entry.Task;
     }
-    /// <summary>便捷重载：直接以 ct 作为第二参数（避免把 ct 误传给 priority）。</summary>
-    public static Task<byte[]> GetBytesAsync(string relativePath, CancellationToken ct)
+    /// <summary>便捷重载：直接以 ct 作为第二参数。</summary>
+    public static Task<string> GetTextAsync(string relativePath, CancellationToken ct)
     {
-        return GetBytesAsync(relativePath, 0, ct);
+        return GetTextAsync(relativePath, 0, ct);
     }
 
     /// <summary>按相对路径取纹理（浏览器原生解码 jpg/png → RGBA Texture2D）。
@@ -134,6 +162,29 @@ public static class Mir2OriginResource
         }
     }
 
+    /// <summary>文本缓存淘汰（与 TrimTextureCache 平行）：超容量预算且距上次访问 ≥ TextTrimIntervalMs 时，
+    /// 移除最久未访问的文本条目。文本无引用计数（非 GPU 资源），仅按 LRU 时间释放，不会悬空；
+    /// 核心索引（manifest/config）因访问频繁、超时宽，一般不会被冲掉；即便被淘汰，
+    /// 再次 GetTextAsync 会重新拉取并解析，不致命。</summary>
+    private static void TrimTextCache()
+    {
+        long now = Environment.TickCount64;
+        if (now - _lastTextTrimTick < TextTrimIntervalMs) return;
+        if (_textCache.Count <= TextCacheMaxEntries) { _lastTextTrimTick = now; return; }
+        _lastTextTrimTick = now;
+
+        long cutoff = now - TextTrimAgeMs;
+        int toEvict = _textCache.Count - TextCacheMaxEntries + 32;
+        foreach (var kv in _textCache
+            .Where(e => e.Value.LastAccess < cutoff)
+            .OrderBy(e => e.Value.LastAccess)
+            .Take(toEvict))
+        {
+            if (_textCache.Count <= TextCacheMaxEntries) break;
+            _textCache.TryRemove(kv.Key, out _);
+        }
+    }
+
     /// <summary>逻辑地图数据等：按相对路径取字节流（数据服务器根，非图片 CDN）。</summary>
     public static Task<byte[]> GetDataBytesAsync(string relativePath, int priority = 10, CancellationToken ct = default)
     {
@@ -153,10 +204,6 @@ public static class Mir2OriginResource
     {
         return $"assets/resource/zipmap/{img}/{index}.jpg?ver={ResourceVersion}";
     }
-    public static Task<byte[]> GetMapTileBytesAsync(int img, int index, CancellationToken ct = default)
-    {
-        return GetBytesAsync(MapTilePath(img, index), 10, ct);
-    }
     public static Task<Texture2D> GetMapTileTextureAsync(int img, int index, GraphicsDevice device, CancellationToken ct = default)
     {
         return GetTextureAsync(MapTilePath(img, index), device, 10, ct);
@@ -166,10 +213,6 @@ public static class Mir2OriginResource
     public static string MinimapPath(int img)
     {
         return $"assets/resource/minimap/{img}.jpg?ver={ResourceVersion}";
-    }
-    public static Task<byte[]> GetMinimapBytesAsync(int img, CancellationToken ct = default)
-    {
-        return GetBytesAsync(MinimapPath(img), 10, ct);
     }
     public static Task<Texture2D> GetMinimapTextureAsync(int img, GraphicsDevice device, CancellationToken ct = default)
     {
@@ -181,10 +224,6 @@ public static class Mir2OriginResource
     {
         return $"assets/resource/bigmap/{img}.jpg?ver={ResourceVersion}";
     }
-    public static Task<byte[]> GetBigMapBytesAsync(int img, CancellationToken ct = default)
-    {
-        return GetBytesAsync(BigMapPath(img), 10, ct);
-    }
     public static Task<Texture2D> GetBigMapTextureAsync(int img, GraphicsDevice device, CancellationToken ct = default)
     {
         return GetTextureAsync(BigMapPath(img), device, 10, ct);
@@ -195,21 +234,12 @@ public static class Mir2OriginResource
     {
         return $"{shard}config{GameVersion}.json?v={GameVersion}";
     }
-    public static Task<byte[]> GetConfigShardBytesAsync(int shard, CancellationToken ct = default)
-    {
-        return GetBytesAsync(ConfigShardPath(shard), ct: ct);
-    }
     public static Task<string> GetConfigShardTextAsync(int shard, CancellationToken ct = default)
     {
-        return _imageContent.LoadTextAsync(ConfigShardPath(shard), Cache, cancellationToken: ct);
+        return GetTextAsync(ConfigShardPath(shard), ct: ct);
     }
 
     /// <summary>逻辑地图数据：{data}.bin / .dat / .csv（数据服务器根，非图片 CDN）。</summary>
-    public static Task<byte[]> GetMapDataBytesAsync(int data, string ext, CancellationToken ct = default)
-    {
-        return GetDataBytesAsync($"{data}.{ext.TrimStart('.')}", ct: ct);
-    }
-
     // ===================== UI / 图集资源（manifest 索引：key → {v,s}）=====================
     // CDN：实际文件 = resource/{v前2}/{v}_{s}.{ext}
     // 本地镜像（KeyPath 模式）：直接用 key 原路径
@@ -219,8 +249,8 @@ public static class Mir2OriginResource
     /// <summary>拉取资源清单 manifest（图集 + UI + 配置 总索引），供 UI/图集资源按 key 解析。解析委托 Mir2AtlasManifest。</summary>
     public static async Task LoadManifestAsync(CancellationToken ct = default)
     {
-        var json = await GetBytesAsync($"allmanifest{GameVersion}.json?v=20260922111844&qufu_version=229", ct: ct);
-        Manifest = Mir2AtlasManifest.Parse(json);
+        var json = await GetTextAsync($"allmanifest{GameVersion}.json?v=20260922111844&qufu_version=229", ct: ct);
+        Manifest = Mir2AtlasManifest.Deserialize(json);
         //PrintTool.Log($"[Mir2Origin] manifest 已加载：{Manifest.Entries.Count} 条");
     }
 
@@ -230,10 +260,6 @@ public static class Mir2OriginResource
         return Manifest?.ResolvePath(key, LocalMirrorUsesKeyPath) ?? key;
     }
 
-    public static Task<byte[]> GetManifestAssetBytesAsync(string key, CancellationToken ct = default)
-    {
-        return GetBytesAsync(ResolveManifestAssetPath(key), ct: ct);
-    }
     public static Task<Texture2D> GetManifestAssetTextureAsync(string key, GraphicsDevice device, CancellationToken ct = default)
     {
         return GetTextureAsync(ResolveManifestAssetPath(key), device, ct: ct);
