@@ -52,7 +52,7 @@ namespace Client.MirScenes.Dialogs
             {
                 // 用现成的 Atlas 解析 API：按 manifest key 加载整张图集，
                 // GetSheetAsync 内部会 ResolveManifestAssetPath 解析 JSON 并按 sheet.file 拼出 PNG 路径解析贴图。
-                var sheet = await Mir2AtlasLibrary.GetSheetAsync(SheetKey, DXManager.GDevice, CancellationToken.None);
+                var sheet = await Mir2AtlasLibrary.GetSheetAsync(SheetKey, CancellationToken.None);
                 if (sheet == null) return;
 
                 _ani.AtlasSheet = sheet;

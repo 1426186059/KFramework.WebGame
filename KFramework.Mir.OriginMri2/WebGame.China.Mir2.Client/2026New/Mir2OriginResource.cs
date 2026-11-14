@@ -78,12 +78,12 @@ public static class Mir2OriginResource
     /// <summary>按相对路径取纹理（浏览器原生解码 jpg/png → RGBA Texture2D）。
     /// 走 _texCache：同一 URL 只在首次下载+解码，之后 GetOrAdd 复用同一份，所有调用方共享；
     /// 引用计数 +1（上层不再需要时调 ReleaseTexture）；超预算且引用归零的纹理由 TrimTextureCache 释放。</summary>
-    public static Task<Texture2D> GetTextureAsync(string relativePath, GraphicsDevice device, int priority = 0, CancellationToken ct = default)
+    public static Task<Texture2D> GetTextureAsync(string relativePath, int priority = 0, CancellationToken ct = default)
     {
         string key = Norm(relativePath);
         var entry = _texCache.GetOrAdd(key, k => new TexEntry
         {
-            Task = _imageContent.LoadTexture2DAsync(k, device, Cache, priority, ct),
+            Task = _imageContent.LoadTexture2DAsync(k, Cache, priority, ct),
             LastAccess = Environment.TickCount64,
             RefCount = 0,
         });
@@ -93,9 +93,9 @@ public static class Mir2OriginResource
         return entry.Task;
     }
     /// <summary>便捷重载：直接以 ct 作为第三参数（避免把 ct 误传给 priority）。</summary>
-    public static Task<Texture2D> GetTextureAsync(string relativePath, GraphicsDevice device, CancellationToken ct)
+    public static Task<Texture2D> GetTextureAsync(string relativePath, CancellationToken ct)
     {
-        return GetTextureAsync(relativePath, device, 0, ct);
+        return GetTextureAsync(relativePath, 0, ct);
     }
 
     /// <summary>上层不再需要某纹理时调用（图集从 _sheets/_images 淘汰、或场景切换释放）。refCount 归 0 后，
@@ -159,9 +159,9 @@ public static class Mir2OriginResource
     {
         return $"assets/resource/zipmap/{img}/{index}.jpg?ver={ResourceVersion}";
     }
-    public static Task<Texture2D> GetMapTileTextureAsync(int img, int index, GraphicsDevice device, CancellationToken ct = default)
+    public static Task<Texture2D> GetMapTileTextureAsync(int img, int index, CancellationToken ct = default)
     {
-        return GetTextureAsync(MapTilePath(img, index), device, 10, ct);
+        return GetTextureAsync(MapTilePath(img, index), 10, ct);
     }
 
     /// <summary>小地图：assets/resource/minimap/{img}.jpg（优先独立整图；图集帧回退由上层处理）。</summary>
@@ -169,9 +169,9 @@ public static class Mir2OriginResource
     {
         return $"assets/resource/minimap/{img}.jpg?ver={ResourceVersion}";
     }
-    public static Task<Texture2D> GetMinimapTextureAsync(int img, GraphicsDevice device, CancellationToken ct = default)
+    public static Task<Texture2D> GetMinimapTextureAsync(int img, CancellationToken ct = default)
     {
-        return GetTextureAsync(MinimapPath(img), device, 10, ct);
+        return GetTextureAsync(MinimapPath(img), 10, ct);
     }
 
     /// <summary>大地图（世界地图整图）：assets/resource/bigmap/{img}.jpg。路径按站点资源规律推断，若实际不符请调整此处。</summary>
@@ -179,9 +179,9 @@ public static class Mir2OriginResource
     {
         return $"assets/resource/bigmap/{img}.jpg?ver={ResourceVersion}";
     }
-    public static Task<Texture2D> GetBigMapTextureAsync(int img, GraphicsDevice device, CancellationToken ct = default)
+    public static Task<Texture2D> GetBigMapTextureAsync(int img, CancellationToken ct = default)
     {
-        return GetTextureAsync(BigMapPath(img), device, 10, ct);
+        return GetTextureAsync(BigMapPath(img), 10, ct);
     }
 
     /// <summary>配置分片：{i}config{GameVersion}.json（地图表 map 在 0config 分片）。</summary>
@@ -222,8 +222,8 @@ public static class Mir2OriginResource
         return Manifest?.ResolvePath(key, LocalMirrorUsesKeyPath) ?? key;
     }
 
-    public static Task<Texture2D> GetManifestAssetTextureAsync(string key, GraphicsDevice device, CancellationToken ct = default)
+    public static Task<Texture2D> GetManifestAssetTextureAsync(string key, CancellationToken ct = default)
     {
-        return GetTextureAsync(ResolveManifestAssetPath(key), device, ct: ct);
+        return GetTextureAsync(ResolveManifestAssetPath(key), ct: ct);
     }
 }

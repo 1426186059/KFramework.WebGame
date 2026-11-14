@@ -217,7 +217,7 @@ namespace Client.MirScenes.Dialogs
         {
             try
             {
-                var tex = await Mir2OriginResource.GetMinimapTextureAsync(img, DXManager.GDevice);
+                var tex = await Mir2OriginResource.GetMinimapTextureAsync(img);
                 if (_bigMapLoadedIdx == img) _bigMapTexture = tex;
             }
             catch

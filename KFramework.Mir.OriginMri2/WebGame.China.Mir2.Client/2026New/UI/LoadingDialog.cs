@@ -107,14 +107,12 @@ namespace Client.MirControls
             };
             _percentLabel.ApplyAnchor();
 
-            var device = DXManager.GDevice;
-
-            _ = Task.Run(async () => await PreLoadNeedWaitRes(device));
-            _ = Task.Run(async () => await PreLoad_NotNeedWaitRes(device));
+            _ = Task.Run(async () => await PreLoadNeedWaitRes());
+            _ = Task.Run(async () => await PreLoad_NotNeedWaitRes());
         }
 
         //加载阻塞等待的资源
-        private async Task PreLoadNeedWaitRes(GraphicsDevice device)
+        private async Task PreLoadNeedWaitRes()
         {
             try
             {
@@ -122,7 +120,7 @@ namespace Client.MirControls
 
                 {
                     _status = "预加载主界面 UI…";
-                    await Mir2AtlasLibrary.GetSheetAsync(HomeUiSheetKey, device, _cts.Token, Mir2OriginObjectLibrary.PriorityUI);
+                    await Mir2AtlasLibrary.GetSheetAsync(HomeUiSheetKey, _cts.Token, Mir2OriginObjectLibrary.PriorityUI);
                     _loaded = 1;
                 }
 
@@ -140,11 +138,11 @@ namespace Client.MirControls
         /// 进度条组件经 AtlasNameKey 复用本次加载（按 sheet key 去重，只下载一次）；取不到时进度条退化为纯色条，故用最低优先级。</summary>
         public static void PreloadProgressSheet()
         {
-            _ = Mir2AtlasLibrary.GetSheetAsync(SheetJsonPath, DXManager.GDevice, default, Mir2OriginObjectLibrary.PriorityBackground);
+            _ = Mir2AtlasLibrary.GetSheetAsync(SheetJsonPath, default, Mir2OriginObjectLibrary.PriorityBackground);
         }
 
         //加载非阻塞等待的资源
-        private async Task PreLoad_NotNeedWaitRes(GraphicsDevice device)
+        private async Task PreLoad_NotNeedWaitRes()
         {
             Mir2OriginObjectLibrary.Request(Mir2ObjectKind.Monster, 15033, 1, 4, Mir2OriginObjectLibrary.PriorityVisible);
         }

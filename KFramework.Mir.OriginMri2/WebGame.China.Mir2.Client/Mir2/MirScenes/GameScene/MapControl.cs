@@ -843,7 +843,7 @@ public sealed class MapControl : MirControl
         try
         {
             var tex = await MapTileLoadGate.RunAsync(() =>
-                Mir2OriginResource.GetMapTileTextureAsync(MapImg, index, DXManager.GDevice)).ConfigureAwait(false);
+                Mir2OriginResource.GetMapTileTextureAsync(MapImg, index)).ConfigureAwait(false);
             if (tex != null) _mapTileCache[index] = tex;
             _tilesReady++;
         }

@@ -114,7 +114,7 @@ namespace Client.MirScenes
             if (DXManager.GDevice == null) return Task.FromResult<Texture2D>(null);
             var content = BrowserResource.Content
                           ?? new KFramework.MonoGame.ContentManager("", RemoteWebSetting.LibBaseUrl);
-            return content.LoadTexture2DAsync(ArtRoot + png, DXManager.GDevice, BrowserResource.mCacheInstance);
+            return content.LoadTexture2DAsync(ArtRoot + png, BrowserResource.mCacheInstance);
         }
 
         // ===== 登录过场动画：FGUI LoginUI 的 Login_00049~00057（9 帧，597x406）=====

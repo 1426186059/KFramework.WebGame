@@ -350,27 +350,27 @@ public static class Mir2OriginObjectLibrary
         if (device == null) return;
 
         if (kind == Mir2ObjectKind.Item)
-            _ = GetItemTextureAsync(id, device, priority: priority);
+            _ = GetItemTextureAsync(id, priority: priority);
         else
-            _ = GetSheetAsync(kind, id, action, direction, device, priority);
+            _ = GetSheetAsync(kind, id, action, direction, priority);
     }
 
     /// <summary>取得（或异步加载）一份模型独立图集。同 key 并发只发一次下载。</summary>
     public static Task<Mir2AtlasSheet> GetSheetAsync(Mir2ObjectKind kind, int id, int action, int direction,
-                                                     GraphicsDevice device, int priority = PriorityBackground, CancellationToken ct = default)
+                                                     int priority = PriorityBackground, CancellationToken ct = default)
     {
-        if (kind == Mir2ObjectKind.Item || id <= 0 || device == null)
+        if (kind == Mir2ObjectKind.Item || id <= 0 || Game.Current.GraphicsDevice == null)
             return Task.FromResult<Mir2AtlasSheet>(null);
 
         var key = CacheKey(kind, id, action, direction);
         if (IsMissing(key)) return Task.FromResult<Mir2AtlasSheet>(null);
         if (_sheets.TryGetValue(key, out var cached) && cached != null) return cached;
 
-        return _sheets.GetOrAdd(key, k => LoadSheetAsync(k, id, action, direction, device, priority));
+        return _sheets.GetOrAdd(key, k => LoadSheetAsync(k, id, action, direction, priority));
     }
 
     private static async Task<Mir2AtlasSheet> LoadSheetAsync(string key, int model, int action, int direction,
-                                                             GraphicsDevice device, int priority = PriorityBackground)
+                                                             int priority = PriorityBackground)
     {
         string pngPath = null, jsonPath = null;
         Texture2D tex = null;
@@ -381,7 +381,7 @@ public static class Mir2OriginObjectLibrary
             pngPath = ModelFramePath(model, action, direction, "png");
             jsonPath = ModelFramePath(model, action, direction, "json");
 
-            tex = await Mir2OriginResource.GetTextureAsync(pngPath, device, priority, CancellationToken.None);
+            tex = await Mir2OriginResource.GetTextureAsync(pngPath, priority, CancellationToken.None);
             if (tex == null)
             {
                 if (!_loggedMissing.ContainsKey(key))
@@ -424,23 +424,23 @@ public static class Mir2OriginObjectLibrary
     }
 
     /// <summary>取得（或异步加载）一张物品图标纹理。同 iconId 并发只发一次下载。</summary>
-    public static Task<Texture2D> GetItemTextureAsync(int iconId, GraphicsDevice device,
+    public static Task<Texture2D> GetItemTextureAsync(int iconId,
                                                       string iconSubDir = "tool", int priority = PriorityItem, CancellationToken ct = default)
     {
         var key = CacheKey(Mir2ObjectKind.Item, iconId, 0, 0);
-        if (iconId <= 0 || device == null) return Task.FromResult<Texture2D>(null);
+        if (iconId <= 0 || Game.Current.GraphicsDevice == null) return Task.FromResult<Texture2D>(null);
         if (IsMissing(key)) return Task.FromResult<Texture2D>(null);
         if (_images.TryGetValue(key, out var cached) && cached != null) return cached;
 
-        return _images.GetOrAdd(key, k => LoadItemAsync(k, iconId, device, iconSubDir, priority));
+        return _images.GetOrAdd(key, k => LoadItemAsync(k, iconId, iconSubDir, priority));
     }
 
-    private static async Task<Texture2D> LoadItemAsync(string key, int iconId, GraphicsDevice device, string iconSubDir, int priority = PriorityItem)
+    private static async Task<Texture2D> LoadItemAsync(string key, int iconId, string iconSubDir, int priority = PriorityItem)
     {
         try
         {
             if (!_versionsReady) await InitializeAsync(CancellationToken.None);
-            var tex = await Mir2OriginResource.GetTextureAsync(ItemIconPath(iconId, iconSubDir), device, priority, CancellationToken.None);
+            var tex = await Mir2OriginResource.GetTextureAsync(ItemIconPath(iconId, iconSubDir), priority, CancellationToken.None);
             if (tex == null)
             {
                 if (!_loggedMissing.ContainsKey(key))

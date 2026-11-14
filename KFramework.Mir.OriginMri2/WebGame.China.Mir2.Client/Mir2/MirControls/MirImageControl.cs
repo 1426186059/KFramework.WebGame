@@ -196,7 +196,7 @@ namespace Client.MirControls
             var (sheetKey, frame) = Mir2AtlasLibrary.ResolveName(key);
             try
             {
-                var sheet = await Mir2AtlasLibrary.GetSheetAsync(sheetKey, DXManager.GDevice, CancellationToken.None);
+                var sheet = await Mir2AtlasLibrary.GetSheetAsync(sheetKey, CancellationToken.None);
                 if (ct.IsCancellationRequested) return;
 
                 if (ct.IsCancellationRequested) return;
@@ -270,7 +270,7 @@ namespace Client.MirControls
 
             try
             {
-                var tex = await Mir2OriginResource.GetTextureAsync(url, DXManager.GDevice, ct);
+                var tex = await Mir2OriginResource.GetTextureAsync(url, ct);
                 if (ct.IsCancellationRequested) return;
                 Texture = tex;
                 Redraw();
@@ -307,7 +307,7 @@ namespace Client.MirControls
             {
                 if (Mir2OriginResource.Manifest == null)
                     await Mir2OriginResource.LoadManifestAsync(ct);
-                var tex = await Mir2OriginResource.GetManifestAssetTextureAsync(key, DXManager.GDevice, ct);
+                var tex = await Mir2OriginResource.GetManifestAssetTextureAsync(key, ct);
                 if (ct.IsCancellationRequested) return;
                 Texture = tex;
                 Redraw();

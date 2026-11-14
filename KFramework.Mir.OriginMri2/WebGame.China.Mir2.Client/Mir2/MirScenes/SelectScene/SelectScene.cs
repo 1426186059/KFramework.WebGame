@@ -568,7 +568,7 @@ namespace Client.MirScenes
         {
             try
             {
-                Mir2AtlasSheet sheet = await Mir2AtlasLibrary.GetSheetAsync(key, DXManager.GDevice);
+                Mir2AtlasSheet sheet = await Mir2AtlasLibrary.GetSheetAsync(key);
                 MirAnimatedAtlasControl anim = _slotAnim[slot];
                 if (sheet == null || anim.IsDisposed || _slotAnim[slot] != anim || _slotAnimKey[slot] != key)
                 {
