@@ -45,7 +45,7 @@ namespace KFramework.Test.WebGL20.Tests
             // 第③种：Bundle 之外的原始 PNG。内容管线 CopyRawAssets 会把它原样输出到
             // hot_update_res/y_lefttop-sheet/（不解码、不预乘），运行时由浏览器解码成非预乘 RGBA，
             // 从而绕开 Bundle 打包这一环 —— 与 ① 的唯一区别就是“是否经过 Bundle”。
-            _extDownTex = await ContentManager.Default.LoadTexture2DAsync("y_lefttop-sheet/lefttop_leftbg2.png", Device);
+            _extDownTex = await ContentManager.Default.LoadTexture2DAsync("y_lefttop-sheet/lefttop_leftbg2.png");
         }
 
         public override void Update()

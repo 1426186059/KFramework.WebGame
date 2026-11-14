@@ -116,7 +116,7 @@ namespace KFramework.Test.Common.Tests.ImageTest
             {
                 try
                 {
-                    Texture2D tex = await ContentManager.Default.LoadTexture2DAsync(f.Path, Device).ConfigureAwait(false);
+                    Texture2D tex = await ContentManager.Default.LoadTexture2DAsync(f.Path).ConfigureAwait(false);
                     _remote.Add(new ImgItem($"远程·{f.Label}", tex, $"{tex.Width}×{tex.Height} OK"));
                 }
                 catch (Exception ex)
