@@ -99,6 +99,7 @@ namespace WebGame.Mir2.MonoGame.Client
                 LoadingDialog = null;
             }
         }
+
         public static long PingTime;
         public static long NextPing = 10000;
 
@@ -133,18 +134,6 @@ namespace WebGame.Mir2.MonoGame.Client
             // 故需设为 false，否则 key 会被当成逻辑路径直接拼到 CDN 根而 404（之前就是这么挂的）。
             Mir2OriginResource.LocalMirrorUsesKeyPath = false;
 
-            await ExcelTableMgr.InitializeAsync();   // 配置表后台加载，不阻塞进 LoginScene（就绪后由 IsReady 校验）
-            // 提前并发拉取图集/UI 资源索引（manifest + RES 配置 default.res.json）：
-            // 二者是后续所有 CDN 图集解析的前置；与首屏 Lib 加载并行发起，缩短进图等待。
-            // 失败已在 Mir2AtlasLibrary 内部消化，不会中断启动；懒加载路径会兜底重试。
-            var atlasInitTask = Mir2AtlasLibrary.InitializeAsync();
-            // 怪物/NPC/物品三类独立图集的版本表（resourceVersion.json）：与 UI 图集索引并行预取，
-            // 不阻塞进 LoginScene；懒加载路径（Mir2OriginObjectLibrary.Request）会自动兜底重试。
-            _ = Mir2OriginObjectLibrary.InitializeAsync();
-
-            // 触发 Libraries 静态构造（登记各库，不加载）
-            _ = Libraries.Loaded;
-
             // 资源（贴图库）是异步加载的，而场景离屏纹理只在首次绘制时烘焙一次。
             // 若烘焙时库尚未就绪，场景会卡在默认背景色（整屏粉红）。因此每当有库加载完成，
             // 就令当前活动场景递归失效、下一帧重新烘焙，纹理就绪后即可正常显示。
@@ -164,10 +153,38 @@ namespace WebGame.Mir2.MonoGame.Client
                     GameScene.Scene.MapControl.FloorValid = false;
             };
 
-            // 等待首屏库（登录/选角界面立即需要的 ChrSel/Prguse/UI_32bit/Title 等）全部就绪后再继续：
-            // 渲染循环在 LoadContentAsync 完成后才启动，避免首屏库尚未下载完就开画导致的"隔几帧黑屏"闪烁。
-            // 其余库（地图/怪物/装备等）不在启动时加载，绘制时按需 InitializeAsync，就绪后 LibraryLoaded 触发重绘。
-            await Libraries.LoadAsync();
+            // 初始化 Loading 场景立即成为 ActiveScene：渲染循环（LoadContentAsync 返回后即启动）一启动就会绘制它，
+            // 中间旋转圆圈 + 上方状态文本可见。真正的重活（配置表 / 图集 / 首屏资源）由该场景在渲染循环里
+            // 异步推进（见 InitLoadingScene → CMain.RunGameInitializationAsync），每完成一步更新状态文本，
+            // 全部完成后切到 LoginScene。这样重活不再阻塞 Init，避免「初始化期间渲染循环不启动 →
+            // Loading 界面显示不出来 / 主线程卡死心跳超时」。
+            MirScene.ActiveScene = new InitLoadingScene();
+        }
+
+        /// <summary>
+        /// 真正的游戏初始化重活：配置表 / 图集 / 首屏资源等。由 InitLoadingScene 在渲染循环里异步驱动，
+        /// 每完成一步通过 setStatus 更新 Loading 界面文本；全部完成后切换到 LoginScene。
+        /// 之所以放在场景里异步跑（而非 CMain.Init 内同步 await），是因为渲染循环在 Init 返回后才启动；
+        /// 若在 Init 内 await 全部，Loading 界面无法显示，且重活卡主线程会导致心跳超时掉线。
+        /// </summary>
+        internal static async Task RunGameInitializationAsync(Action<string> setStatus)
+        {
+            setStatus?.Invoke("加载配置表…");
+            await ExcelTableMgr.InitializeAsync();   // 配置表后台加载，不阻塞进 LoginScene（就绪后由 IsReady 校验）
+
+            setStatus?.Invoke("加载图集/UI 资源索引…");
+            // 提前并发拉取图集/UI 资源索引（manifest + RES 配置 default.res.json）：
+            // 二者是后续所有 CDN 图集解析的前置；与首屏 Lib 加载并行发起，缩短进图等待。
+            // 失败已在 Mir2AtlasLibrary 内部消化，不会中断启动；懒加载路径会兜底重试。
+            var atlasInitTask = Mir2AtlasLibrary.InitializeAsync();
+            // 怪物/NPC/物品三类独立图集的版本表（resourceVersion.json）：与 UI 图集索引并行预取，
+            // 不阻塞进 LoginScene；懒加载路径（Mir2OriginObjectLibrary.Request）会自动兜底重试。
+            _ = Mir2OriginObjectLibrary.InitializeAsync();
+
+            // 触发 Libraries 静态构造（登记各库，不加载）；游戏已彻底抛弃 Libraries，仅保留注册以便兼容。
+            _ = Libraries.Loaded;
+
+            // 等待图集索引就绪后再进 LoginScene（失败已消化，不中断启动）。
             await atlasInitTask;   // 通常已先完成；保证 LoginScene 之前就绪（失败已消化，不中断启动）
             // 配置表（ExcelTableMgr）已在上面并行发起、后台加载，不阻塞进 LoginScene；
             // 用到时通过 ExcelTableMgr.IsReady 校验即可。
