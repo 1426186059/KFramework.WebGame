@@ -30,10 +30,22 @@ public sealed class EgretMovieClip
     public string Name { get; }
 
     /// <summary>帧率，直接取 JSON 的 frameRate（缺省 24）。</summary>
-    public int FrameRate { get { return Timeline?.FrameRate > 0 ? Timeline.FrameRate.Value : 24; } }
+    public int FrameRate
+    {
+        get
+        {
+            return Timeline?.FrameRate > 0 ? Timeline.FrameRate.Value : 24;
+        }
+    }
 
     /// <summary>每帧间隔(ms)。</summary>
-    public long DelayMs { get { return FrameRate > 0 ? 1000L / FrameRate : 250L; } }
+    public long DelayMs
+    {
+        get
+        {
+            return FrameRate > 0 ? 1000L / FrameRate : 250L;
+        }
+    }
 
     /// <summary>JSON 时间线的帧序列（唯一数据源，未展开 duration）。</summary>
     public IReadOnlyList<EgretMovieClipFrameJson> Frames

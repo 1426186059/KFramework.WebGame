@@ -22,7 +22,10 @@ public sealed class ResourceVersionJson
     // 惰性构建：第一次 TryGet 时才遍历根对象，只收字符串值的条目（跳过 version:-1 这类）。
     private Dictionary<string, string> _dict;
 
-    private ResourceVersionJson(JsonDocument doc) { _doc = doc; }
+    private ResourceVersionJson(JsonDocument doc)
+    {
+        _doc = doc;
+    }
 
     public static ResourceVersionJson Parse(byte[] json)
     {
@@ -51,7 +54,13 @@ public sealed class ResourceVersionJson
         return d;
     }
 
-    public int Count { get { return EnsureDict().Count; } }
+    public int Count
+    {
+        get
+        {
+            return EnsureDict().Count;
+        }
+    }
 
     /// <summary>查资源名对应的版本号；查不到或非字符串值返回 false。</summary>
     public bool TryGet(string key, out string version)

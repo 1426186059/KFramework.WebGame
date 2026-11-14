@@ -61,3 +61,24 @@
 说明：上述禁令针对**成员定义**的 `=>` 简写（expression-bodied members）。
 匿名函数（lambda，如 `x => x.Foo()`、`(a, b) => ...`、事件回调 `() => { ... }`）
 是语言级函数字面量，不在禁令范围，仍可使用 `=>`。请勿将二者混淆。
+
+3. **统一 Allman 风格（开括号 `}` 换行）**：本目录所有成员（方法 / 属性 / 构造器 / `get` / `set` 等）
+   的左大括号 **必须另起一行**，不允许 K&R 紧凑写法（签名与 `{` 同行、单行 `Foo() { ... }`）。
+   例如：
+   - 禁止：`public bool Foo() { return Bar(); }` 或 `public int Count { get { return _n; } }`
+   - 必须：
+     ```csharp
+     public bool Foo()
+     {
+         return Bar();
+     }
+
+     public int Count
+     {
+         get
+         {
+             return _n;
+         }
+     }
+     ```
+   控制流（`if` / `for` / `while` / `using` 等）建议同样换行，保持目录整体一致。

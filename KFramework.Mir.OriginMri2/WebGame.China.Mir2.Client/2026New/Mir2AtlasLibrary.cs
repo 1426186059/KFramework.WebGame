@@ -21,7 +21,13 @@ public static class Mir2AtlasLibrary
     private static Dictionary<string, string[]> _groups;
     private const string ResourceRoot = "resource/";
     private static Task _initTask;
-    public static Mir2AtlasManifest Manifest { get { return Mir2OriginResource.Manifest; } }
+    public static Mir2AtlasManifest Manifest
+    {
+        get
+        {
+            return Mir2OriginResource.Manifest;
+        }
+    }
 
     public sealed class Mir2ResItem
     {

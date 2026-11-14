@@ -52,7 +52,10 @@ public static class Mir2OriginResource
     }
 
     // 规范化：相对路径统一成 HTTP 友好形式（复用 BrowserResource 的语义）。
-    private static string Norm(string p) { return BrowserResource.NormalizePath(p); }
+    private static string Norm(string p)
+    {
+        return BrowserResource.NormalizePath(p);
+    }
 
     // ===================== 通用取数 =====================
     /// <summary>按相对路径取任意字节流（图片 CDN 根）。</summary>
@@ -146,24 +149,60 @@ public static class Mir2OriginResource
     // 地图资源优先级最高（与 BrowserResource.PriorityMap=10 一致）：进图/传送后第一时间出地面。
 
     /// <summary>真实地图瓦片：assets/resource/zipmap/{img}/{index}.jpg（512×256，index 从 1 开始、无零补零）。</summary>
-    public static string MapTilePath(int img, int index) { return $"assets/resource/zipmap/{img}/{index}.jpg?ver={ResourceVersion}"; }
-    public static Task<byte[]> GetMapTileBytesAsync(int img, int index, CancellationToken ct = default) { return GetBytesAsync(MapTilePath(img, index), 10, ct); }
-    public static Task<Texture2D> GetMapTileTextureAsync(int img, int index, GraphicsDevice device, CancellationToken ct = default) { return GetTextureAsync(MapTilePath(img, index), device, 10, ct); }
+    public static string MapTilePath(int img, int index)
+    {
+        return $"assets/resource/zipmap/{img}/{index}.jpg?ver={ResourceVersion}";
+    }
+    public static Task<byte[]> GetMapTileBytesAsync(int img, int index, CancellationToken ct = default)
+    {
+        return GetBytesAsync(MapTilePath(img, index), 10, ct);
+    }
+    public static Task<Texture2D> GetMapTileTextureAsync(int img, int index, GraphicsDevice device, CancellationToken ct = default)
+    {
+        return GetTextureAsync(MapTilePath(img, index), device, 10, ct);
+    }
 
     /// <summary>小地图：assets/resource/minimap/{img}.jpg（优先独立整图；图集帧回退由上层处理）。</summary>
-    public static string MinimapPath(int img) { return $"assets/resource/minimap/{img}.jpg?ver={ResourceVersion}"; }
-    public static Task<byte[]> GetMinimapBytesAsync(int img, CancellationToken ct = default) { return GetBytesAsync(MinimapPath(img), 10, ct); }
-    public static Task<Texture2D> GetMinimapTextureAsync(int img, GraphicsDevice device, CancellationToken ct = default) { return GetTextureAsync(MinimapPath(img), device, 10, ct); }
+    public static string MinimapPath(int img)
+    {
+        return $"assets/resource/minimap/{img}.jpg?ver={ResourceVersion}";
+    }
+    public static Task<byte[]> GetMinimapBytesAsync(int img, CancellationToken ct = default)
+    {
+        return GetBytesAsync(MinimapPath(img), 10, ct);
+    }
+    public static Task<Texture2D> GetMinimapTextureAsync(int img, GraphicsDevice device, CancellationToken ct = default)
+    {
+        return GetTextureAsync(MinimapPath(img), device, 10, ct);
+    }
 
     /// <summary>大地图（世界地图整图）：assets/resource/bigmap/{img}.jpg。路径按站点资源规律推断，若实际不符请调整此处。</summary>
-    public static string BigMapPath(int img) { return $"assets/resource/bigmap/{img}.jpg?ver={ResourceVersion}"; }
-    public static Task<byte[]> GetBigMapBytesAsync(int img, CancellationToken ct = default) { return GetBytesAsync(BigMapPath(img), 10, ct); }
-    public static Task<Texture2D> GetBigMapTextureAsync(int img, GraphicsDevice device, CancellationToken ct = default) { return GetTextureAsync(BigMapPath(img), device, 10, ct); }
+    public static string BigMapPath(int img)
+    {
+        return $"assets/resource/bigmap/{img}.jpg?ver={ResourceVersion}";
+    }
+    public static Task<byte[]> GetBigMapBytesAsync(int img, CancellationToken ct = default)
+    {
+        return GetBytesAsync(BigMapPath(img), 10, ct);
+    }
+    public static Task<Texture2D> GetBigMapTextureAsync(int img, GraphicsDevice device, CancellationToken ct = default)
+    {
+        return GetTextureAsync(BigMapPath(img), device, 10, ct);
+    }
 
     /// <summary>配置分片：{i}config{GameVersion}.json（地图表 map 在 0config 分片）。</summary>
-    public static string ConfigShardPath(int shard) { return $"{shard}config{GameVersion}.json?v={GameVersion}"; }
-    public static Task<byte[]> GetConfigShardBytesAsync(int shard, CancellationToken ct = default) { return GetBytesAsync(ConfigShardPath(shard), ct: ct); }
-    public static Task<string> GetConfigShardTextAsync(int shard, CancellationToken ct = default) { return _imageContent.LoadTextAsync(ConfigShardPath(shard), Cache, cancellationToken: ct); }
+    public static string ConfigShardPath(int shard)
+    {
+        return $"{shard}config{GameVersion}.json?v={GameVersion}";
+    }
+    public static Task<byte[]> GetConfigShardBytesAsync(int shard, CancellationToken ct = default)
+    {
+        return GetBytesAsync(ConfigShardPath(shard), ct: ct);
+    }
+    public static Task<string> GetConfigShardTextAsync(int shard, CancellationToken ct = default)
+    {
+        return _imageContent.LoadTextAsync(ConfigShardPath(shard), Cache, cancellationToken: ct);
+    }
 
     /// <summary>逻辑地图数据：{data}.bin / .dat / .csv（数据服务器根，非图片 CDN）。</summary>
     public static Task<byte[]> GetMapDataBytesAsync(int data, string ext, CancellationToken ct = default)
@@ -191,6 +230,12 @@ public static class Mir2OriginResource
         return Manifest?.ResolvePath(key, LocalMirrorUsesKeyPath) ?? key;
     }
 
-    public static Task<byte[]> GetManifestAssetBytesAsync(string key, CancellationToken ct = default) { return GetBytesAsync(ResolveManifestAssetPath(key), ct: ct); }
-    public static Task<Texture2D> GetManifestAssetTextureAsync(string key, GraphicsDevice device, CancellationToken ct = default) { return GetTextureAsync(ResolveManifestAssetPath(key), device, ct: ct); }
+    public static Task<byte[]> GetManifestAssetBytesAsync(string key, CancellationToken ct = default)
+    {
+        return GetBytesAsync(ResolveManifestAssetPath(key), ct: ct);
+    }
+    public static Task<Texture2D> GetManifestAssetTextureAsync(string key, GraphicsDevice device, CancellationToken ct = default)
+    {
+        return GetTextureAsync(ResolveManifestAssetPath(key), device, ct: ct);
+    }
 }

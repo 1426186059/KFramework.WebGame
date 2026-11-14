@@ -55,9 +55,15 @@ public static class Mir2OriginUIModel
     };
 
     /// <summary>立绘层的站定精灵帧 png（版本目录由 resourceVersion.json 决定）。</summary>
-    public static string Path(int model) { return Mir2OriginObjectLibrary.ModelFramePath(model, UIStandAction, UIStandDirection, "png"); }
+    public static string Path(int model)
+    {
+        return Mir2OriginObjectLibrary.ModelFramePath(model, UIStandAction, UIStandDirection, "png");
+    }
 
-    private static string FrameJsonPath(int model) { return Mir2OriginObjectLibrary.ModelFramePath(model, UIStandAction, UIStandDirection, "json"); }
+    private static string FrameJsonPath(int model)
+    {
+        return Mir2OriginObjectLibrary.ModelFramePath(model, UIStandAction, UIStandDirection, "json");
+    }
 
     // —— 帧站位缓存：model -> (offX, offY) ——
     private static readonly object Sync = new object();
@@ -66,10 +72,22 @@ public static class Mir2OriginUIModel
     private static readonly Dictionary<int, long> _retryAt = new Dictionary<int, long>();
     private static int _posVersion;   // 帧元数据就绪后 +1，UI 据此重算一次坐标
 
-    public static int PosVersion { get { return Volatile.Read(ref _posVersion); } }
+    public static int PosVersion
+    {
+        get
+        {
+            return Volatile.Read(ref _posVersion);
+        }
+    }
 
     /// <summary>模型版本表是否就绪；未就绪时 ModelFramePath 会缺版本段，不宜设置 ImageUrl。</summary>
-    public static bool PathsReady { get { return Mir2OriginObjectLibrary.IsReady; } }
+    public static bool PathsReady
+    {
+        get
+        {
+            return Mir2OriginObjectLibrary.IsReady;
+        }
+    }
 
     /// <summary>确保某模型的帧站位已加载（幂等；失败 5 秒冷却，可由 UI 每帧安全调用）。</summary>
     public static void EnsureFrame(int model)

@@ -78,7 +78,13 @@ public sealed class EgretMovieClipJson
     /// <summary>子图名 → 整页 PNG 上的矩形。</summary>
     [JsonPropertyName("res")] public Dictionary<string, EgretRectJson> Res { get; set; }
 
-    public bool HasTimeline { get { return Mc != null && Mc.Count > 0; } }
+    public bool HasTimeline
+    {
+        get
+        {
+            return Mc != null && Mc.Count > 0;
+        }
+    }
 
     /// <summary>反序列化；不含 "mc" 时间线时返回 null（即这不是 MovieClip 图集）。</summary>
     public static EgretMovieClipJson TryDeserialize(string json)
@@ -94,7 +100,13 @@ public sealed class EgretMovieClipJson
     }
 
     /// <summary>类型判定统一交给 EgretJsonDetector（只探测根字段，不做完整反序列化）。</summary>
-    public static bool IsMovieClip(string json) { return EgretJsonDetector.IsMovieClip(json); }
+    public static bool IsMovieClip(string json)
+    {
+        return EgretJsonDetector.IsMovieClip(json);
+    }
 
-    public string Serialize() { return KFramework.MonoGame.JsonTool.ToJson(this, AppJsonContext.Default.EgretMovieClipJson); }
+    public string Serialize()
+    {
+        return KFramework.MonoGame.JsonTool.ToJson(this, AppJsonContext.Default.EgretMovieClipJson);
+    }
 }

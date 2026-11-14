@@ -8,7 +8,13 @@ public class BrowserResource
     private const string CacheName = "WebGame.Mir2.Cache";
     public static readonly Caching mCacheInstance = Caching.Open(CacheName);
     public static ContentManager Content { get; private set; }
-    public static ContentManager LibContent { get { return Content; } }
+    public static ContentManager LibContent
+    {
+        get
+        {
+            return Content;
+        }
+    }
 
     private static readonly HashSet<string> _missing = new HashSet<string>();
 
@@ -72,7 +78,10 @@ public class BrowserResource
         return null;
     }
 
-    public static string ResolveUrl(string fileName) { return NormalizePath(fileName); }
+    public static string ResolveUrl(string fileName)
+    {
+        return NormalizePath(fileName);
+    }
 
     // 把 Windows 风格的相对路径（".\Data\ChrSel.Lib"）规范成 HTTP 友好的 "Data/ChrSel.Lib"。
     public static string NormalizePath(string path)
@@ -88,7 +97,10 @@ public class BrowserResource
     private static string _libBaseUrl = "/";
     public static string LibBaseUrl
     {
-        get { return _libBaseUrl; }
+        get
+        {
+            return _libBaseUrl;
+        }
         set { _libBaseUrl = value; }
     }
 

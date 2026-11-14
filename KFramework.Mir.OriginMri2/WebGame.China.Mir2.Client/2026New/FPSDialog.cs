@@ -15,7 +15,10 @@ public sealed class FPSDialog : MirControl
     private string _text = string.Empty;
     public string Text
     {
-        get { return _text; }
+        get
+        {
+            return _text;
+        }
         set
         {
             if (_text == value) return;           // 文本未变：命中离屏缓存，不重烘焙
@@ -27,7 +30,10 @@ public sealed class FPSDialog : MirControl
     private Font _font;
     public Font Font
     {
-        get { return _font; }
+        get
+        {
+            return _font;
+        }
         set { _font = ScaleFont(value); OnFontChanged(); }
     }
 

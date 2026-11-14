@@ -121,7 +121,13 @@ public static class Mir2OriginObjectLibrary
     // 见 ModelInfoTable.cs。本类仅做转发，不再持有这些字典、也不再内嵌 modelInfo_stand.json。
 
     /// <summary>版本表是否就绪。未就绪时仍可用无版本段路径加载，只是可能 404。</summary>
-    public static bool IsReady { get { return _versionsReady; } }
+    public static bool IsReady
+    {
+        get
+        {
+            return _versionsReady;
+        }
+    }
 
     // ===================== 枢轴表（来自 ModelInfoTable / 2config.modelInfo）=====================
 
