@@ -2,11 +2,10 @@
 //
 // 逆向结论（js/ 参考包）：
 //   UISkinIndex: Circle0 / Wing1 / Body2 / Head3 / Weapon4 / Shield5 / Miansha6 / Yuyi7
-//   UIModelUtil.setFirstPlayerModel（自己的角色面板）：
-//     Body   = 衣服槽 getEquipId(sex, itemId, 0, fashionId)；无衣服回落裸身 9001(男)/9002(女)
-//     Weapon = 武器槽 getEquipId(sex, itemId, 1, fashionWeapon)；无武器返回 0（不画）
-//     Head   = 斗笠(401) > 头盔(4) > 头发 9498(男)/9499(女)   ← 头部只有一层，戴帽即替换头发
-//     Shield = 盾牌(402)；Miansha = 面纱(406)
+//   UIModelUtil.setFirstPlayerModel（自己的角色面板）按「裸模 + 装备覆盖层」叠加：
+//     底层常驻：裸身 9001(男)/9002(女) + 头发 9498(男)/9499(女)，不随装备替换
+//     覆盖层：衣服 / 武器 / 头盔(斗笠优先) / 面纱 / 盾牌，各自一张 uiModel/{模型号}.png
+//     无对应装备时该层不画；装备图只是盖在裸模之上
 //     getModel / getEquipId 都取 cm.item[itemId][17]（"男号/女号"），按性别取一半。
 //   UIModelSkin.load: ResUrl.url(model, 16) = assets/resource/uiModel/{model}.png
 //   cm.posJson = ResUrl.url("pos", 17) = assets/resource/uiModel/pos.json，
@@ -34,13 +33,23 @@ public static class Mir2OriginUIModel
     public const int MaleBody = 9001, FemaleBody = 9002;
     public const int MaleHair = 9498, FemaleHair = 9499;
 
-    // 页游 UISkinIndex 的层号。
+    // 页游 UISkinIndex 的层号；Armour / HeadGear 是本工程为「裸模常驻 + 装备叠加」新增的两层。
     public const int Circle = 0, Wing = 1, Body = 2, Head = 3, Weapon = 4, Shield = 5, Miansha = 6, Yuyi = 7;
-    public const int LayerCount = 8;
+    public const int Armour = 8, HeadGear = 9;
+    public const int LayerCount = 10;
 
-    /// <summary>实际 z 序：身体 → 头(头发/头盔/斗笠) → 武器 → 面纱 → 盾牌。
-    /// 页游 sortIndex() 只把 0..3 排到最底，其余按 addSkin 先后叠加，与此处顺序一致。</summary>
-    public static readonly int[] DrawOrder = { Body, Head, Weapon, Miansha, Shield };
+    /// <summary>z 序：最底永远是原始裸模 + 原始头发，装备图片逐层覆盖上去，不替换底层。
+    /// 衣服 / 头盔(斗笠) / 武器 / 面纱 / 护盾各自独立一层，没装备时该层不画。</summary>
+    public static readonly int[] DrawOrder =
+    {
+        Body,       // 原始裸模（常驻）
+        Head,       // 原始头发（常驻）
+        Armour,     // 衣服覆盖层
+        HeadGear,   // 头盔 / 斗笠覆盖层
+        Weapon,     // 武器覆盖层
+        Miansha,    // 面纱覆盖层
+        Shield,     // 护盾覆盖层
+    };
 
     /// <summary>uiModel 单图路径（与 ResUrl.url(model,16) 一致）。</summary>
     public static string Path(int model) => $"{Dir}{model}.png?ver={Mir2OriginResource.ResourceVersion}";
@@ -136,20 +145,19 @@ public static class Mir2OriginUIModel
         int nakedBody = female ? FemaleBody : MaleBody;
         int hair = female ? FemaleHair : MaleHair;
 
-        // Body：穿衣用 cm.item[衣服][17]；无衣服/查不到模型 → 裸身。
-        int body = armour > 0 ? Mir2OriginModelResolver.GetModel(armour, female, nakedBody) : nakedBody;
-        models[Body] = body > 0 ? body : nakedBody;
+        // 最底两层永远在：原始裸模 + 原始头发。装备只是叠在它们上面的独立图片，绝不替换底层。
+        models[Body] = nakedBody;
+        models[Head] = hair;
 
-        // Weapon：无武器不画（页游 getEquipId 的 type=1 分支返回 0）。
+        if (armour > 0) models[Armour] = Mir2OriginModelResolver.GetModel(armour, female, 0);
         if (weapon > 0) models[Weapon] = Mir2OriginModelResolver.GetModel(weapon, female, 0);
-
-        // Head：斗笠优先、其次头盔，都没有才画头发（头部是单层，戴帽即替换头发）。
-        int head = douli > 0 ? Mir2OriginModelResolver.GetModel(douli, female, 0) : 0;
-        if (head <= 0 && helmet > 0) head = Mir2OriginModelResolver.GetModel(helmet, female, 0);
-        models[Head] = head > 0 ? head : hair;
-
-        if (shield > 0) models[Shield] = Mir2OriginModelResolver.GetModel(shield, female, 0);
         if (miansha > 0) models[Miansha] = Mir2OriginModelResolver.GetModel(miansha, female, 0);
+        if (shield > 0) models[Shield] = Mir2OriginModelResolver.GetModel(shield, female, 0);
+
+        // 头部覆盖层：斗笠优先、其次头盔；都没有就不画，头发保持可见。
+        int headGear = douli > 0 ? Mir2OriginModelResolver.GetModel(douli, female, 0) : 0;
+        if (headGear <= 0 && helmet > 0) headGear = Mir2OriginModelResolver.GetModel(helmet, female, 0);
+        if (headGear > 0) models[HeadGear] = headGear;
 
         return models;
     }

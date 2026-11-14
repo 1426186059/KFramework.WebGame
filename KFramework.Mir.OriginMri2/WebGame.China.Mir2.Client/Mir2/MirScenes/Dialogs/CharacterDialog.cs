@@ -179,9 +179,10 @@ namespace Client.MirScenes.Dialogs
             };
 
             // —— 人物立绘：对齐页游 UIStaticModel 的分层 uiModel 皮肤 ——
-            // 身体/头发(或头盔、斗笠)/武器/面纱/盾牌各是一张 uiModel/{模型号}.png，
-            // 尺寸各不相同，按 uiModel/pos.json 的 x/y 站位点摆进同一 1025×1025 画布后叠加。
-            // 容器原点 = 人物脚底中心 (159,400)，位于内框 (16,65)-(302,461) 的中下部；
+            // 最底是原始裸模 + 原始头发，常驻不替换；上层依次覆盖
+            // 衣服 / 头盔(斗笠) / 武器 / 面纱 / 护盾，每层一张 uiModel/{模型号}.png，
+            // 按 uiModel/pos.json 的 x/y 站位点摆进同一 1025×1025 画布后叠加。
+            // 容器原点 = 人物脚底中心 (159,350)，位于内框 (16,65)-(302,461) 的中下部；
             // 它是 CharacterPage 的第一个子节点，故立绘在装备格之下，不遮挡格子。
             var modelHost = new MirImageControl
             {
