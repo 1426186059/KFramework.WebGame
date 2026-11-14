@@ -910,7 +910,14 @@ public enum ItemType : byte
     Socket = 39,
     MonsterSpawn = 40,
     SiegeAmmo = 41, //TODO
-    SealedHero = 42
+    SealedHero = 42,
+
+    // 《原始传奇》新增装备部位（对应 EquipmentSlot 14..18）
+    DouLi = 43,        // 斗笠
+    MianSha = 44,      // 面纱
+    XunZhang = 45,     // 荣誉勋章
+    YuPei = 46,        // 玉佩
+    LiaoShang = 47     // 疗伤石
 }
 
 public enum MirGridType : byte
@@ -957,7 +964,14 @@ public enum EquipmentSlot : byte
     Belt = 10,
     Boots = 11,
     Stone = 12,
-    Mount = 13
+    Mount = 13,
+
+    // 《原始传奇》新增部位：DouLi / MianSha 只在角色立绘上显示，其余三个有装备槽格子。
+    DouLi = 14,        // 斗笠
+    MianSha = 15,      // 面纱
+    XunZhang = 16,     // 荣誉勋章
+    YuPei = 17,        // 玉佩
+    LiaoShang = 18     // 疗伤石
 }
 
 public enum MountSlot : byte

@@ -252,126 +252,79 @@ namespace Client.MirScenes.Dialogs
                 };
             }
 
+            // 有格子的 10 个部位：顺序与上面 slotGridPoints 的注释一一对应。
+            // 武器/衣服/头盔/斗笠/面纱没有槽位，改在角色立绘上显示并点击穿脱。
+            EquipmentSlot[] visibleSlots =
+            {
+                EquipmentSlot.Necklace,      // 项链
+                EquipmentSlot.XunZhang,      // 荣誉勋章
+                EquipmentSlot.BraceletL,     // 左手镯
+                EquipmentSlot.BraceletR,     // 右手镯
+                EquipmentSlot.RingL,         // 左戒指
+                EquipmentSlot.RingR,         // 右戒指
+                EquipmentSlot.YuPei,         // 玉佩
+                EquipmentSlot.Belt,          // 腰带
+                EquipmentSlot.Boots,         // 鞋子
+                EquipmentSlot.LiaoShang,     // 疗伤石
+            };
+
             Grid = new MirItemCell[Enum.GetNames(typeof(EquipmentSlot)).Length];
 
-            Grid[(int)EquipmentSlot.Weapon] = new MirItemCell
+            // 先把所有槽位建成隐藏格子：没有格子的部位也要有对象，
+            // 否则 GameScene 的 Grid[p.To] 与 RefreshInterface 的 Grid[i].Item 会索引到 null。
+            for (int i = 0; i < Grid.Length; i++)
             {
-                ItemSlot = (int)EquipmentSlot.Weapon,
-                GridType = gridType,
-                Parent = CharacterPage,
-                Location = new Point(184, 10),
-            };
-
-            Grid[(int)EquipmentSlot.Armour] = new MirItemCell
-            {
-                ItemSlot = (int)EquipmentSlot.Armour,
-                GridType = gridType,
-                Parent = CharacterPage,
-                Location = new Point(244, 10),
-            };
-
-            Grid[(int)EquipmentSlot.Helmet] = new MirItemCell
-            {
-                ItemSlot = (int)EquipmentSlot.Helmet,
-                GridType = gridType,
-                Parent = CharacterPage,
-                Location = new Point(304, 10),
-            };
-
-            Grid[(int)EquipmentSlot.Torch] = new MirItemCell
-            {
-                ItemSlot = (int)EquipmentSlot.Torch,
-                GridType = gridType,
-                Parent = CharacterPage,
-                Location = new Point(304, 201),
-            };
-
-            Grid[(int)EquipmentSlot.Necklace] = new MirItemCell
-            {
-                ItemSlot = (int)EquipmentSlot.Necklace,
-                GridType = gridType,
-                Parent = CharacterPage,
-                Location = new Point(304, 147),
-            };
-
-            Grid[(int)EquipmentSlot.BraceletL] = new MirItemCell
-            {
-                ItemSlot = (int)EquipmentSlot.BraceletL,
-                GridType = gridType,
-                Parent = CharacterPage,
-                Location = new Point(12, 255),
-            };
-
-            Grid[(int)EquipmentSlot.BraceletR] = new MirItemCell
-            {
-                ItemSlot = (int)EquipmentSlot.BraceletR,
-                GridType = gridType,
-                Parent = CharacterPage,
-                Location = new Point(304, 255),
-            };
-
-            Grid[(int)EquipmentSlot.RingL] = new MirItemCell
-            {
-                ItemSlot = (int)EquipmentSlot.RingL,
-                GridType = gridType,
-                Parent = CharacterPage,
-                Location = new Point(12, 309),
-            };
-
-            Grid[(int)EquipmentSlot.RingR] = new MirItemCell
-            {
-                ItemSlot = (int)EquipmentSlot.RingR,
-                GridType = gridType,
-                Parent = CharacterPage,
-                Location = new Point(304, 309),
-            };
-
-            Grid[(int)EquipmentSlot.Amulet] = new MirItemCell
-            {
-                ItemSlot = (int)EquipmentSlot.Amulet,
-                GridType = gridType,
-                Parent = CharacterPage,
-                Location = new Point(12, 363),
-            };
-
-            Grid[(int)EquipmentSlot.Boots] = new MirItemCell
-            {
-                ItemSlot = (int)EquipmentSlot.Boots,
-                GridType = gridType,
-                Parent = CharacterPage,
-                Location = new Point(72, 363),
-            };
-
-            Grid[(int)EquipmentSlot.Belt] = new MirItemCell
-            {
-                ItemSlot = (int)EquipmentSlot.Belt,
-                GridType = gridType,
-                Parent = CharacterPage,
-                Location = new Point(132, 363),
-            };
-
-            Grid[(int)EquipmentSlot.Stone] = new MirItemCell
-            {
-                ItemSlot = (int)EquipmentSlot.Stone,
-                GridType = gridType,
-                Parent = CharacterPage,
-                Location = new Point(192, 363),
-            };
-
-            Grid[(int)EquipmentSlot.Mount] = new MirItemCell
-            {
-                ItemSlot = (int)EquipmentSlot.Mount,
-                GridType = gridType,
-                Parent = CharacterPage,
-                Location = new Point(304, 93),
-            };
-
-            // 装备槽按原始 equip_grid 尺寸 60×60 显示（覆盖 MirItemCell 默认 36×32）。
-            foreach (var cell in Grid)
-            {
-                cell.Size = new Size(60, 60);
+                Grid[i] = new MirItemCell
+                {
+                    ItemSlot = i,
+                    GridType = gridType,
+                    Parent = CharacterPage,
+                    Location = new Point(0, 0),
+                    // 装备槽按原始 equip_grid 尺寸 60×60 显示（覆盖 MirItemCell 默认 36×32）。
+                    Size = new Size(60, 60),
+                    Visible = false,
+                };
             }
 
+            // 有槽位的部位直接落在 equip_grid 底图坐标上，图标与底图严丝合缝。
+            for (int i = 0; i < visibleSlots.Length; i++)
+            {
+                MirItemCell cell = Grid[(int)visibleSlots[i]];
+                cell.Location = slotGridPoints[i];
+                cell.Visible = true;
+            }
+
+            CreateModelHotspots();
+
+        }
+
+        /// <summary>角色立绘上的部位热区：手上有选中物品时点击 = 穿戴，否则点击 = 卸下。
+        /// 坐标是相对 CharacterPage 的人体分区，按 UIStaticModel 脚底原点 (159,350) 估算，可按实际立绘微调。</summary>
+        private void CreateModelHotspots()
+        {
+            var hotspots = new (EquipmentSlot Slot, int X, int Y, int W, int H)[]
+            {
+                (EquipmentSlot.DouLi,   129, 75,  60, 50),  // 斗笠：头顶
+                (EquipmentSlot.Helmet,  129, 125, 60, 45),  // 头盔：头部
+                (EquipmentSlot.MianSha, 129, 170, 60, 40),  // 面纱：面部
+                (EquipmentSlot.Armour,  119, 210, 80, 95),  // 衣服：躯干
+                (EquipmentSlot.Weapon,  195, 185, 40, 120), // 武器：右手侧（避开 x>=236 的右侧格子）
+            };
+
+            foreach (var (slot, x, y, w, h) in hotspots)
+            {
+                EquipmentSlot captured = slot;
+                var hotspot = new MirButton
+                {
+                    Parent = CharacterPage,
+                    Location = new Point(x, y),
+                    Size = new Size(w, h),
+                    // DrawImage=false 只关绘制，不影响鼠标命中与 Click 事件。
+                    DrawImage = false,
+                    Sound = SoundList.ButtonA,
+                };
+                hotspot.Click += (o, e) => Grid[(int)captured].HandleModelSlotClick();
+            }
         }
 
         /// <summary>按页游 UIModelUtil.setFirstPlayerModel 的规则，从装备槽解算各层模型号并刷新立绘节点。</summary>
@@ -386,12 +339,19 @@ namespace Client.MirScenes.Dialogs
                 return i < Grid.Length && Grid[i] != null ? Grid[i].Item?.Info?.Index ?? 0 : 0;
             }
 
+            // 斗笠/面纱现在是真实装备槽，优先用槽里的物品 Index；旧的外部注入字段作兜底。
+            int douLi = ItemId(EquipmentSlot.DouLi);
+            if (douLi == 0) douLi = DouLiItemId;
+
+            int mianSha = ItemId(EquipmentSlot.MianSha);
+            if (mianSha == 0) mianSha = MianShaItemId;
+
             int[] models = Mir2OriginUIModel.ResolvePlayerModels(
                 actor.Gender == MirGender.Female,
                 ItemId(EquipmentSlot.Armour),
                 ItemId(EquipmentSlot.Weapon),
                 ItemId(EquipmentSlot.Helmet),
-                DouLiItemId, HuDunItemId, MianShaItemId);
+                douLi, HuDunItemId, mianSha);
 
             int posVersion = Mir2OriginUIModel.PosVersion;
             bool posChanged = posVersion != _modelPosVersion;

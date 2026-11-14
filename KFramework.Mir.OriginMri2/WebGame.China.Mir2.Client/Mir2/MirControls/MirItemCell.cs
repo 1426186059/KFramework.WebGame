@@ -361,6 +361,23 @@ namespace Client.MirControls
 
         private bool HeroGridType => GridType == MirGridType.HeroInventory || GridType == MirGridType.HeroEquipment;
 
+        /// <summary>角色立绘上的部位热区点击：手上拿着物品就穿戴到本槽，否则卸下本槽装备。
+        /// 复用现有的拖放穿戴 / 卸下流程，避免为立绘另写一套协议逻辑。</summary>
+        public void HandleModelSlotClick()
+        {
+            if (Locked || GameScene.Observing) return;
+            if (GridType != MirGridType.Equipment && GridType != MirGridType.HeroEquipment) return;
+
+            if (GameScene.SelectedCell != null && GameScene.SelectedCell != this && GameScene.SelectedCell.Item != null)
+            {
+                MoveItem();   // 选中背包物品点装备格：CorrectSlot + CanWearItem + C.EquipItem
+            }
+            else if (Item != null)
+            {
+                UseItem();    // 装备格 UseItem -> RemoveItem（卸下到背包）
+            }
+        }
+
         public void UseItem()
         {
             if (Locked || GridType == MirGridType.Inspect || GridType == MirGridType.TrustMerchant || GridType == MirGridType.GuildStorage || GridType == MirGridType.Craft) return;
@@ -404,6 +421,17 @@ namespace Client.MirControls
                     return;
             }
             
+
+            // 新增的 5 个《原始传奇》部位统一走这一个穿戴流程。
+            void Equip(EquipmentSlot slot)
+            {
+                MirItemCell cell = dialog.Grid[(int)slot];
+                if (cell == null || !cell.CanWearItem(actor, Item)) return;
+
+                Network.Enqueue(new C.EquipItem { Grid = GridType, UniqueID = Item.UniqueID, To = (int)slot });
+                cell.Locked = true;
+                Locked = true;
+            }
 
             switch (Item.Info.Type)
             {
@@ -590,6 +618,21 @@ namespace Client.MirControls
 
                         Locked = true;
                     }
+                    break;
+                case ItemType.DouLi:
+                    Equip(EquipmentSlot.DouLi);
+                    break;
+                case ItemType.MianSha:
+                    Equip(EquipmentSlot.MianSha);
+                    break;
+                case ItemType.XunZhang:
+                    Equip(EquipmentSlot.XunZhang);
+                    break;
+                case ItemType.YuPei:
+                    Equip(EquipmentSlot.YuPei);
+                    break;
+                case ItemType.LiaoShang:
+                    Equip(EquipmentSlot.LiaoShang);
                     break;
                 case ItemType.Mount:
                     if (dialog.Grid[(int)EquipmentSlot.Mount].CanWearItem(actor, Item))
@@ -2049,6 +2092,16 @@ namespace Client.MirControls
                     return type == ItemType.Stone;
                 case EquipmentSlot.Mount:
                     return type == ItemType.Mount;
+                case EquipmentSlot.DouLi:
+                    return type == ItemType.DouLi;
+                case EquipmentSlot.MianSha:
+                    return type == ItemType.MianSha;
+                case EquipmentSlot.XunZhang:
+                    return type == ItemType.XunZhang;
+                case EquipmentSlot.YuPei:
+                    return type == ItemType.YuPei;
+                case EquipmentSlot.LiaoShang:
+                    return type == ItemType.LiaoShang;
                 default:
                     return false;
             }

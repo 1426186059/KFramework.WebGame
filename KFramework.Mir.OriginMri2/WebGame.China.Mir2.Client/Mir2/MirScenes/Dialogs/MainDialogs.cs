@@ -2061,7 +2061,7 @@ namespace Client.MirScenes.Dialogs
     }
     public sealed class InspectDialog : MirImageControl
     {
-        public static UserItem[] Items = new UserItem[14];
+        public static UserItem[] Items = new UserItem[Enum.GetNames(typeof(EquipmentSlot)).Length];
         public static uint InspectID;
 
         public string Name;

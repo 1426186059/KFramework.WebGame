@@ -3318,7 +3318,7 @@
   {
     "Index": 102,
     "Name": "劳动勋章",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -34058,7 +34058,7 @@
   {
     "Index": 4627,
     "Name": "额外玉佩试练",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -34706,7 +34706,7 @@
   {
     "Index": 4651,
     "Name": "玉佩淬炼直升+3",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -44494,7 +44494,7 @@
   {
     "Index": 8230,
     "Name": "勋章之心",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -50686,7 +50686,7 @@
   {
     "Index": 8420,
     "Name": "1阶疗伤石",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -54906,7 +54906,7 @@
   {
     "Index": 8560,
     "Name": "额外玉佩试练",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -56598,7 +56598,7 @@
   {
     "Index": 8611,
     "Name": "3阶疗伤石",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -58758,7 +58758,7 @@
   {
     "Index": 8671,
     "Name": "2阶疗伤石",
-    "Type": 0,
+    "Type": 47,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -58974,7 +58974,7 @@
   {
     "Index": 8683,
     "Name": "2阶斗笠",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -59262,7 +59262,7 @@
   {
     "Index": 8691,
     "Name": "王者斗笠",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -71322,7 +71322,7 @@
   {
     "Index": 9417,
     "Name": "沙巴克面纱奖励",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -71430,7 +71430,7 @@
   {
     "Index": 9420,
     "Name": "沙巴克面纱奖励",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -71574,7 +71574,7 @@
   {
     "Index": 9424,
     "Name": "沙巴克面纱奖励",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -80826,7 +80826,7 @@
   {
     "Index": 10131,
     "Name": "斗笠(废弃)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -80862,7 +80862,7 @@
   {
     "Index": 10132,
     "Name": "幸运斗笠(废弃)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -80898,7 +80898,7 @@
   {
     "Index": 10133,
     "Name": "黄金斗笠(废弃)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -80934,7 +80934,7 @@
   {
     "Index": 10134,
     "Name": "白金斗笠(废弃)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -80970,7 +80970,7 @@
   {
     "Index": 10135,
     "Name": "钻石斗笠(废弃)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -81006,7 +81006,7 @@
   {
     "Index": 10136,
     "Name": "超凡斗笠(废弃)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -81042,7 +81042,7 @@
   {
     "Index": 10137,
     "Name": "王者斗笠(废弃)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -81150,7 +81150,7 @@
   {
     "Index": 10140,
     "Name": "斗笠包",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -100098,7 +100098,7 @@
   {
     "Index": 32037,
     "Name": "魂●玉佩",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -266619,7 +266619,7 @@
   {
     "Index": 1401000,
     "Name": "斗笠",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -266663,7 +266663,7 @@
   {
     "Index": 1401011,
     "Name": "王者斗笠(战)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -266703,7 +266703,7 @@
   {
     "Index": 1401012,
     "Name": "王者斗笠(法)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -266743,7 +266743,7 @@
   {
     "Index": 1401013,
     "Name": "王者斗笠(道)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 3,
@@ -266783,7 +266783,7 @@
   {
     "Index": 1401021,
     "Name": "金牛斗笠(战)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -266823,7 +266823,7 @@
   {
     "Index": 1401022,
     "Name": "金牛斗笠(法)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -266863,7 +266863,7 @@
   {
     "Index": 1401023,
     "Name": "金牛斗笠(道)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 3,
@@ -266903,7 +266903,7 @@
   {
     "Index": 1401031,
     "Name": "荣耀斗笠(战)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -266943,7 +266943,7 @@
   {
     "Index": 1401032,
     "Name": "荣耀斗笠(法)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -266983,7 +266983,7 @@
   {
     "Index": 1401033,
     "Name": "荣耀斗笠(道)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 3,
@@ -267023,7 +267023,7 @@
   {
     "Index": 1401041,
     "Name": "主宰斗笠(战)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -267063,7 +267063,7 @@
   {
     "Index": 1401042,
     "Name": "主宰斗笠(法)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -267103,7 +267103,7 @@
   {
     "Index": 1401043,
     "Name": "主宰斗笠(道)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 3,
@@ -267143,7 +267143,7 @@
   {
     "Index": 1401051,
     "Name": "传奇斗笠(战)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -267183,7 +267183,7 @@
   {
     "Index": 1401052,
     "Name": "传奇斗笠(法)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -267223,7 +267223,7 @@
   {
     "Index": 1401053,
     "Name": "传奇斗笠(道)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 3,
@@ -267263,7 +267263,7 @@
   {
     "Index": 1401061,
     "Name": "皓月斗笠(战)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -267303,7 +267303,7 @@
   {
     "Index": 1401062,
     "Name": "皓月斗笠(法)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -267343,7 +267343,7 @@
   {
     "Index": 1401063,
     "Name": "皓月斗笠(道)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 3,
@@ -267383,7 +267383,7 @@
   {
     "Index": 1401071,
     "Name": "热血斗笠(战)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -267423,7 +267423,7 @@
   {
     "Index": 1401072,
     "Name": "热血斗笠(法)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -267463,7 +267463,7 @@
   {
     "Index": 1401073,
     "Name": "热血斗笠(道)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 3,
@@ -267503,7 +267503,7 @@
   {
     "Index": 1401081,
     "Name": "神龙斗笠(战)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -267543,7 +267543,7 @@
   {
     "Index": 1401082,
     "Name": "神龙斗笠(法)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -267583,7 +267583,7 @@
   {
     "Index": 1401083,
     "Name": "神龙斗笠(道)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 3,
@@ -267623,7 +267623,7 @@
   {
     "Index": 1401091,
     "Name": "真龙斗笠(战)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 1,
@@ -267663,7 +267663,7 @@
   {
     "Index": 1401092,
     "Name": "真龙斗笠(法)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 2,
@@ -267703,7 +267703,7 @@
   {
     "Index": 1401093,
     "Name": "真龙斗笠(道)",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 3,
@@ -268973,7 +268973,7 @@
   {
     "Index": 1403000,
     "Name": "经验勋章(24小时)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269011,7 +269011,7 @@
   {
     "Index": 1403001,
     "Name": "荣誉勋章(1阶)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269054,7 +269054,7 @@
   {
     "Index": 1403002,
     "Name": "荣誉勋章(2阶)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269097,7 +269097,7 @@
   {
     "Index": 1403003,
     "Name": "荣誉勋章(3阶)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269140,7 +269140,7 @@
   {
     "Index": 1403004,
     "Name": "荣誉勋章(4阶)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269183,7 +269183,7 @@
   {
     "Index": 1403005,
     "Name": "荣誉勋章(5阶)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269226,7 +269226,7 @@
   {
     "Index": 1403006,
     "Name": "荣誉勋章(6阶)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269269,7 +269269,7 @@
   {
     "Index": 1403007,
     "Name": "荣誉勋章(7阶)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269312,7 +269312,7 @@
   {
     "Index": 1403008,
     "Name": "荣誉勋章(8阶)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269355,7 +269355,7 @@
   {
     "Index": 1403009,
     "Name": "荣誉勋章(9阶)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269398,7 +269398,7 @@
   {
     "Index": 1403010,
     "Name": "荣誉勋章(10阶)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269441,7 +269441,7 @@
   {
     "Index": 1403501,
     "Name": "荣誉勋章11号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269479,7 +269479,7 @@
   {
     "Index": 1403502,
     "Name": "荣誉勋章12号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269517,7 +269517,7 @@
   {
     "Index": 1403503,
     "Name": "荣誉勋章13号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269555,7 +269555,7 @@
   {
     "Index": 1403504,
     "Name": "荣誉勋章14号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269593,7 +269593,7 @@
   {
     "Index": 1403505,
     "Name": "荣誉勋章15号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269631,7 +269631,7 @@
   {
     "Index": 1403506,
     "Name": "荣誉勋章21号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269669,7 +269669,7 @@
   {
     "Index": 1403507,
     "Name": "荣誉勋章22号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269707,7 +269707,7 @@
   {
     "Index": 1403508,
     "Name": "荣誉勋章23号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269745,7 +269745,7 @@
   {
     "Index": 1403509,
     "Name": "荣誉勋章24号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269783,7 +269783,7 @@
   {
     "Index": 1403510,
     "Name": "荣誉勋章25号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269821,7 +269821,7 @@
   {
     "Index": 1403511,
     "Name": "荣誉勋章31号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269860,7 +269860,7 @@
   {
     "Index": 1403512,
     "Name": "荣誉勋章32号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269899,7 +269899,7 @@
   {
     "Index": 1403513,
     "Name": "荣誉勋章33号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269938,7 +269938,7 @@
   {
     "Index": 1403514,
     "Name": "荣誉勋章34号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -269977,7 +269977,7 @@
   {
     "Index": 1403515,
     "Name": "荣誉勋章35号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270016,7 +270016,7 @@
   {
     "Index": 1403516,
     "Name": "荣誉勋章41号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270055,7 +270055,7 @@
   {
     "Index": 1403517,
     "Name": "荣誉勋章42号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270094,7 +270094,7 @@
   {
     "Index": 1403518,
     "Name": "荣誉勋章43号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270133,7 +270133,7 @@
   {
     "Index": 1403519,
     "Name": "荣誉勋章44号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270172,7 +270172,7 @@
   {
     "Index": 1403520,
     "Name": "荣誉勋章45号",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270211,7 +270211,7 @@
   {
     "Index": 1403521,
     "Name": "荣誉勋章(11阶)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270254,7 +270254,7 @@
   {
     "Index": 1403522,
     "Name": "荣誉勋章(12阶)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270297,7 +270297,7 @@
   {
     "Index": 1403523,
     "Name": "荣誉勋章(13阶)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270340,7 +270340,7 @@
   {
     "Index": 1403524,
     "Name": "荣誉勋章(14阶)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270383,7 +270383,7 @@
   {
     "Index": 1403525,
     "Name": "荣誉勋章(15阶)",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270426,7 +270426,7 @@
   {
     "Index": 1404000,
     "Name": "玉佩",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270469,7 +270469,7 @@
   {
     "Index": 1404010,
     "Name": "玉佩(1阶)",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270512,7 +270512,7 @@
   {
     "Index": 1404020,
     "Name": "玉佩(2阶)",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270555,7 +270555,7 @@
   {
     "Index": 1404030,
     "Name": "玉佩(3阶)",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270598,7 +270598,7 @@
   {
     "Index": 1404040,
     "Name": "玉佩(4阶)",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270641,7 +270641,7 @@
   {
     "Index": 1404050,
     "Name": "玉佩(5阶)",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270684,7 +270684,7 @@
   {
     "Index": 1404060,
     "Name": "玉佩(6阶)",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270727,7 +270727,7 @@
   {
     "Index": 1404070,
     "Name": "玉佩(7阶)",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270770,7 +270770,7 @@
   {
     "Index": 1404080,
     "Name": "玉佩(8阶)",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270813,7 +270813,7 @@
   {
     "Index": 1404090,
     "Name": "玉佩(9阶)",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270856,7 +270856,7 @@
   {
     "Index": 1404100,
     "Name": "玉佩(10阶)",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270899,7 +270899,7 @@
   {
     "Index": 1404110,
     "Name": "玉佩(11阶)",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270942,7 +270942,7 @@
   {
     "Index": 1404120,
     "Name": "玉佩(12阶)",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -270985,7 +270985,7 @@
   {
     "Index": 1404130,
     "Name": "玉佩(13阶)",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -271028,7 +271028,7 @@
   {
     "Index": 1404140,
     "Name": "玉佩『应龍』",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -271071,7 +271071,7 @@
   {
     "Index": 1404150,
     "Name": "玉佩『烛龍』",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -271114,7 +271114,7 @@
   {
     "Index": 1404160,
     "Name": "玉佩『神龍』",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -271157,7 +271157,7 @@
   {
     "Index": 1404170,
     "Name": "玉佩『祖龍』",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -272946,7 +272946,7 @@
   {
     "Index": 1406010,
     "Name": "神秘面纱[幸运]",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -272993,7 +272993,7 @@
   {
     "Index": 1406020,
     "Name": "神秘面纱[增伤]",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -273040,7 +273040,7 @@
   {
     "Index": 1406030,
     "Name": "神秘面纱[减伤]",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -273087,7 +273087,7 @@
   {
     "Index": 1406040,
     "Name": "神秘面纱[剧毒]",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -273134,7 +273134,7 @@
   {
     "Index": 1406050,
     "Name": "神秘面纱[幸运Ⅱ]",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -273181,7 +273181,7 @@
   {
     "Index": 1406051,
     "Name": "神秘面纱[幸运Ⅲ]",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -273228,7 +273228,7 @@
   {
     "Index": 1406060,
     "Name": "神秘面纱[剧毒Ⅱ]",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -273275,7 +273275,7 @@
   {
     "Index": 1406061,
     "Name": "神秘面纱[剧毒Ⅲ]",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -273322,7 +273322,7 @@
   {
     "Index": 1406070,
     "Name": "面纱(1阶)",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -273369,7 +273369,7 @@
   {
     "Index": 1406080,
     "Name": "面纱(2阶)",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -273416,7 +273416,7 @@
   {
     "Index": 1406090,
     "Name": "面纱(3阶)",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -273463,7 +273463,7 @@
   {
     "Index": 1406100,
     "Name": "面纱(4阶)",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -273510,7 +273510,7 @@
   {
     "Index": 1406110,
     "Name": "面纱(5阶)",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -273557,7 +273557,7 @@
   {
     "Index": 1406120,
     "Name": "面纱(6阶)",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -273604,7 +273604,7 @@
   {
     "Index": 1406130,
     "Name": "面纱(7阶)",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -273651,7 +273651,7 @@
   {
     "Index": 1406140,
     "Name": "面纱(8阶)",
-    "Type": 0,
+    "Type": 44,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -404941,7 +404941,7 @@
   {
     "Index": 20444050,
     "Name": "玉佩福利1活动特惠",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -404977,7 +404977,7 @@
   {
     "Index": 20444051,
     "Name": "玉佩福利2活动特惠",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -405013,7 +405013,7 @@
   {
     "Index": 20444052,
     "Name": "玉佩福利3活动特惠",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -405049,7 +405049,7 @@
   {
     "Index": 20444053,
     "Name": "玉佩福利4活动特惠",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -407605,7 +407605,7 @@
   {
     "Index": 20445223,
     "Name": "玉佩宝藏·精品",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -407641,7 +407641,7 @@
   {
     "Index": 20445224,
     "Name": "玉佩宝藏·珍品",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -407677,7 +407677,7 @@
   {
     "Index": 20445225,
     "Name": "玉佩宝藏·极品",
-    "Type": 0,
+    "Type": 46,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -425491,7 +425491,7 @@
   {
     "Index": 43750001,
     "Name": "屠魔勋章1阶",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -425539,7 +425539,7 @@
   {
     "Index": 43750002,
     "Name": "屠魔勋章2阶",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -425587,7 +425587,7 @@
   {
     "Index": 43750003,
     "Name": "屠魔勋章3阶",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -425635,7 +425635,7 @@
   {
     "Index": 43750004,
     "Name": "屠魔勋章4阶",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -425683,7 +425683,7 @@
   {
     "Index": 43750005,
     "Name": "屠魔勋章5阶",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -425731,7 +425731,7 @@
   {
     "Index": 43750006,
     "Name": "屠魔勋章6阶",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -425779,7 +425779,7 @@
   {
     "Index": 43750007,
     "Name": "屠魔勋章7阶",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -425827,7 +425827,7 @@
   {
     "Index": 43750008,
     "Name": "屠魔勋章8阶",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -425875,7 +425875,7 @@
   {
     "Index": 43750009,
     "Name": "屠魔勋章9阶",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -425923,7 +425923,7 @@
   {
     "Index": 43750010,
     "Name": "屠魔勋章10阶",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -425971,7 +425971,7 @@
   {
     "Index": 43750011,
     "Name": "屠魔勋章11阶",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -426019,7 +426019,7 @@
   {
     "Index": 43750012,
     "Name": "屠魔勋章12阶",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -426067,7 +426067,7 @@
   {
     "Index": 43750013,
     "Name": "屠魔勋章13阶",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -426115,7 +426115,7 @@
   {
     "Index": 43750014,
     "Name": "屠魔勋章14阶",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -426163,7 +426163,7 @@
   {
     "Index": 43750015,
     "Name": "屠魔勋章15阶",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -426211,7 +426211,7 @@
   {
     "Index": 43750016,
     "Name": "屠魔勋章元素测试",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -435465,7 +435465,7 @@
   {
     "Index": 50410105,
     "Name": "荣誉勋章1号掉落",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -435501,7 +435501,7 @@
   {
     "Index": 50410106,
     "Name": "荣誉勋章3号掉落",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -450297,7 +450297,7 @@
   {
     "Index": 50981009,
     "Name": "1号荣誉勋章掉落",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -450333,7 +450333,7 @@
   {
     "Index": 50981010,
     "Name": "2号荣誉勋章掉落",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -450369,7 +450369,7 @@
   {
     "Index": 50981011,
     "Name": "3号荣誉勋章掉落",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -450405,7 +450405,7 @@
   {
     "Index": 50981012,
     "Name": "4号荣誉勋章掉落",
-    "Type": 0,
+    "Type": 45,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,
@@ -450477,7 +450477,7 @@
   {
     "Index": 50981014,
     "Name": "斗笠掉落",
-    "Type": 0,
+    "Type": 43,
     "Grade": 0,
     "RequiredType": 0,
     "RequiredClass": 31,

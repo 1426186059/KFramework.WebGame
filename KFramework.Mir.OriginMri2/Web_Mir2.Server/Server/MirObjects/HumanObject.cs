@@ -7706,6 +7706,26 @@ namespace Server.MirObjects
                     if (item.Info.Type != ItemType.Mount)
                         return false;
                     break;
+                case EquipmentSlot.DouLi:
+                    if (item.Info.Type != ItemType.DouLi)
+                        return false;
+                    break;
+                case EquipmentSlot.MianSha:
+                    if (item.Info.Type != ItemType.MianSha)
+                        return false;
+                    break;
+                case EquipmentSlot.XunZhang:
+                    if (item.Info.Type != ItemType.XunZhang)
+                        return false;
+                    break;
+                case EquipmentSlot.YuPei:
+                    if (item.Info.Type != ItemType.YuPei)
+                        return false;
+                    break;
+                case EquipmentSlot.LiaoShang:
+                    if (item.Info.Type != ItemType.LiaoShang)
+                        return false;
+                    break;
                 default:
                     return false;
             }

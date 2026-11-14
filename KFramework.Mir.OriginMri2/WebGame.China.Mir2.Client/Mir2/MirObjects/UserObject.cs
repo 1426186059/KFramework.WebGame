@@ -35,7 +35,7 @@ namespace Client.MirObjects
 
         public virtual BuffDialog GetBuffDialog => GameScene.Scene.BuffsDialog;
 
-        public UserItem[] Inventory = new UserItem[InventoryLayout.InitialSlots], Equipment = new UserItem[14], Trade = new UserItem[10], QuestInventory = new UserItem[40];
+        public UserItem[] Inventory = new UserItem[InventoryLayout.InitialSlots], Equipment = new UserItem[Enum.GetNames(typeof(EquipmentSlot)).Length], Trade = new UserItem[10], QuestInventory = new UserItem[40];
         public int BeltIdx = InventoryLayout.BeltSlots, HeroBeltIdx = 2;
         public bool HasExpandedStorage = false;
         public bool HasStoragePassword = false;

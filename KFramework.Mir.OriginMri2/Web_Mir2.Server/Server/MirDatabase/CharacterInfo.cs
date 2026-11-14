@@ -72,7 +72,7 @@ namespace Server.MirDatabase
         public byte MentalState;
         public byte MentalStateLvl;
 
-        public UserItem[] Inventory = new UserItem[InventoryLayout.InitialSlots], Equipment = new UserItem[14], Trade = new UserItem[10], QuestInventory = new UserItem[40], Refine = new UserItem[16];
+        public UserItem[] Inventory = new UserItem[InventoryLayout.InitialSlots], Equipment = new UserItem[Enum.GetNames(typeof(EquipmentSlot)).Length], Trade = new UserItem[10], QuestInventory = new UserItem[40], Refine = new UserItem[16];
         public List<ItemRentalInformation> RentedItems = new List<ItemRentalInformation>();
         public List<ItemRentalInformation> RentedItemsToRemove = new List<ItemRentalInformation>();
         public bool HasRentedItem;
