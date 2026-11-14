@@ -519,6 +519,15 @@ public static class Mir2OriginObjectLibrary
         for (int d = 0; d <= maxDir; d++) Request(kind, id, action, d, priority);
     }
 
+    /// <summary>统一后台静默预下载物品/装备图标（iconId）。最低优先级（PriorityBackground），不阻塞、不等待；
+    /// 内部复用 GetItemTextureAsync 的 Key 加载状态逻辑：已下载完成 / 正在下载都直接复用，未下载才开拉。
+    /// 供收到服务器消息协议里的任何人的物品/装备、经 GameScene.Bind / GetItemInfo 解析出 icon 时调用。</summary>
+    public static void PreloadItemIcon(int iconId, string iconSubDir = "tool")
+    {
+        if (iconId <= 0) return;
+        _ = GetItemTextureAsync(iconId, iconSubDir, priority: PriorityBackground);
+    }
+
     /// <summary>该资源当前是否缺失（瞬时缺失在 TTL 内 true；永久缺失永远 true；超时/未缺失 false）。</summary>
     public static bool IsMissing(Mir2ObjectKind kind, int id, int action = ActionStand, int direction = 0)
     {
