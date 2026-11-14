@@ -11,3 +11,11 @@ public class OriginMir2Config2
     [JsonPropertyName("modelInfo")]
     public Dictionary<int, Dictionary<int, ModelInfoTable>> modelInfo { get; set; } = new();
 }
+
+/// <summary>
+/// 源生成的 JSON 序列化上下文：避免反射式 <c>JsonSerializer</c> 在 WASM 裁剪下失效（IL2026），
+/// 同时让「强类型映射」这一项的测量更贴近真实工程的编译期代码生成路径。
+/// </summary>
+[JsonSourceGenerationOptions]
+[JsonSerializable(typeof(OriginMir2Config2))]
+internal sealed partial class ConfigJsonContext : JsonSerializerContext { }
