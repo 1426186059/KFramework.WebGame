@@ -6,6 +6,11 @@ KCBWG 是 KFramework.CSharp.Browser.WebAssembly.Game 的缩写。
 
 本仓库是 KCBWG 引擎本体与示例 / 测试 / 工具集；基于它复刻《原始传奇》页游的实际游戏工程在同级目录 `KFramework.Mir.OriginMri2/`。
 
+> ### ⚠️ 适用规模（选型前务必先看）
+>
+> **现阶段，KCBWG 非常适合小微型游戏的开发**；**中大型游戏不太合适**——开发效率与运行性能都会出问题，不建议采用。
+> 下文第三节列出了具体原因（非 AOT 下解释器性能、JSON 解析、反射约束等）。
+
 ---
 
 ## 一、技术栈与分层
@@ -67,7 +72,7 @@ KCBWG 是 KFramework.CSharp.Browser.WebAssembly.Game 的缩写。
 
 ## 三、缺点与限制（务必先读）
 
-> **现阶段结论：KCBWG 只适合小微型游戏。中大型游戏无论开发效率还是运行性能都存在问题，不建议采用。**
+> **现阶段结论（同开头）：KCBWG 非常适合小微型游戏的开发；中大型游戏不太合适——开发效率与运行性能都会出问题，不建议采用。**
 
 1. **非 AOT（解释器模式）下性能巨慢——最需要警惕**
    - .NET Browser-WASM 有两种执行形态：**AOT**（编译期把 IL 编成 wasm 原生码）与 **Mono 解释器**（运行时逐条解释 IL）。
@@ -75,10 +80,10 @@ KCBWG 是 KFramework.CSharp.Browser.WebAssembly.Game 的缩写。
    - 后果：同一个游戏在解释器下可能卡到几乎不可玩，**只有 Release + AOT 发布才接近可用性能**。因此务必用 AOT 形态做性能评估，不要拿解释器下的帧率下结论；也不要指望"开发环境凑合、发布自然流畅"——发布若漏配 AOT 反而更慢。
 
 2. **JSON 解析巨慢——中大型游戏加载大量配置表可卡几十秒**
-   - JSON 是中大型游戏配置的主要载体：成百上千张配置表、地图数据、存档、网络协议几乎都是 JSON。而 JSON 解析恰好踩中上面所有性能雷区——默认 `JsonSerializer` 走**反射式反序列化**（元数据查找 + 动态构造 + IL 解释），在 wasm 解释器下慢得离谱。
-   - **典型现象**：中大型游戏一次性加载几十 / 上百张配置表，非 AOT 下**直接卡住几十秒**，页面假死；同一份逻辑换成 AOT + 源生成序列化后，耗时可降到可接受范围。差距不是几倍，而是一到数个数量级。
-   - **正确做法**：禁用反射式反序列化，改用 `JsonDocument` / `Utf8JsonReader` 这类读取器 API（纯顺序解析、零反射、AOT 安全），或用 source-generated `JsonSerializerContext`（`[JsonSerializable]` + `JsonSerializer.Deserialize(json, ctx.XXX)`）生成强类型访问代码；配置表尽量在构建期转成二进制 / 紧凑格式，避免运行时全量解析。
-   - **附带约束**：反射式路径在 IL 裁剪后还会直接抛 `TypeLoadException` / `NullReferenceException`（开发期正常、发布期崩），双重坑。
+   - JSON 是中大型游戏配置的主要载体：成百上千张配置表、地图数据、存档、网络协议几乎都是 JSON。JSON 解析是**计算密集**操作——海量字符扫描、字符串比较、对象分配、状态机调用；在非 AOT 下这些 IL 全部由 **Mono 解释器逐条解释执行**，而非编译成 wasm 原生码，因此慢得离谱。**根子是解释器本身执行慢，不是反射**：即便用零反射的 `JsonDocument`，解释器下照样慢。
+   - **典型现象**：中大型游戏一次性加载几十 / 上百张配置表，非 AOT 下**直接卡住几十秒**，页面假死；同一份逻辑换成 AOT 发布后，耗时可降到可接受范围。差距不是几倍，而是一到数个数量级。
+   - **正确做法**：① **务必用 AOT 发布**再评估解析性能，不要在解释器下测；② 改用 `JsonDocument` / `Utf8JsonReader` 这类读取器 API（纯顺序解析、零反射、AOT 安全），或 source-generated `JsonSerializerContext`（`[JsonSerializable]` + `JsonSerializer.Deserialize(json, ctx.XXX)`）避免反射式反序列化的额外开销；③ 配置表尽量在构建期转成二进制 / 紧凑格式，从源头减少运行时解析量。
+   - **附带约束**：若用默认反射式反序列化，在 IL 裁剪后还会直接抛 `TypeLoadException` / `NullReferenceException`（开发期正常、发布期崩），与上面的性能问题叠加。
 
 3. **禁止运行时反射，开发约束多**
    `Type.GetType` / `Activator.CreateInstance` / `PropertyInfo.GetValue` / `Expression.Compile` / 依赖反射的反序列化（默认 `JsonSerializer` 对未知 / 多态类型）一律不可用。任何"按名字建对象 / 通用属性读写 / 多态分发 / 序列化"都必须改成显式 `switch`、静态字典工厂或 Roslyn 源生成器。大量现成 .NET 库因此不能直接拿来用，开发效率显著低于原生 C# 桌面 / 服务端。
