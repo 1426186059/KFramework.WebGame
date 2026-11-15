@@ -1,4 +1,4 @@
-# KCBWG
+# KCBWG 游戏引擎
 
 KCBWG 是 KFramework.CSharp.Browser.WebAssembly.Game 的缩写。
 
@@ -154,13 +154,3 @@ AOT 发布后，`publish/wwwroot` 里每个文件会并存三套形态（原始 
 | `KFramework.WebGame/Need_DLL/`、`TestTool/` | 依赖 DLL 与测试工具 |
 | `KFramework.Mir.OriginMri2/` | 基于 KCBWG 复刻《原始传奇》页游的实际游戏工程（含服务端） |
 | `KFramework.Mir.Crystal/`、`KNI.Engine/`、`PixiJS.Engine/`、`WebAssemblyBrowserApp*/` | 其它技术路线 / 历史工程对照 |
-
----
-
-## 八、AI 协作约定（代码注释与命名）
-
-- 类 / 文件头注释可以写长（设计、跨语言对应、关键约束越清楚越好）；方法注释顶多一行。
-- JS ↔ C# 互操作命名一致：TS 导出函数名 == C# `[JSImport]` 字符串 == `JSBind_*` 静态方法名（PascalCase + `Async` 后缀），动词直接开头（`Get` / `Load` / `Save` / `Remove` + 对象 + `Async`），不加 `Caching` 前缀。
-- 禁止表达式体成员（`=>` 简写）：属性 getter / 方法统一展开成带 `{ }` 的语句体。
-- 库代码（`KFramework.MonoGame`、`KFramework.TSEngine`）严格遵守；纯工具 / 脚本可放宽。
-- 详见 `KFramework.WebGame/ReadMe.txt`。
