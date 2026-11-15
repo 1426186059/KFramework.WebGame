@@ -1,6 +1,6 @@
 # KCBWG
 
-**KCBWG** = **K**Framework.**C**Sharp.**B**rowser.**W**eb**A**ssembly.**G**ame
+KCBWG 是 KFramework.CSharp.Browser.WebAssembly.Game 的缩写。
 
 一句话定位：**用纯 C# 编写浏览器 2D 游戏的一套引擎 / 框架**——把 .NET 编译为 WebAssembly，在浏览器里跑 C# 游戏逻辑，底层图形 / 输入 / 音频 / 内容管线由 `KFramework.MonoGame` 提供，浏览器能力通过 `KFramework.TSEngine`（TypeScript → JS）薄桥暴露。
 
