@@ -41,11 +41,6 @@ KCBWG 是 KFramework.CSharp.Browser.WebAssembly.Game 的缩写。
       → 游戏 Update / Draw
       → 框架在本帧末上屏（present）
 
-**硬约束**：
-- 业务工程内**禁止出现任何 `[JSExport]` / `[JSImport]`**；JS 互操作基础设施统一由 `KFramework.MonoGame` 的 `JSBind_*` 提供，业务只写纯 C#。
-- **运行时禁止反射**（见第五节）：反射在 wasm 解释 / AOT 下极慢且发布裁剪后易崩，一律用 Roslyn 源生成器 / 静态注册替代。
-- JS 是 TS 的**自动生成产物**：改渲染逻辑只改 `KFramework.TSEngine/src/*.ts`，再 `tsc` 生成 `dist/<Debug|Release>/jsengine`，由 `SyncJsEngine` 拷入各 `wwwroot/jsengine`；不要手改生成的 `.js`。
-
 ---
 
 ## 二、引擎特点（优势）
