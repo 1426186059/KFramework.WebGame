@@ -168,23 +168,11 @@ namespace WebGame.Mir2.MonoGame.Client
             await ExcelTableMgr.InitializeAsync();   // 配置表后台加载，不阻塞进 LoginScene（就绪后由 IsReady 校验）
 
             setStatus?.Invoke("加载图集/UI 资源索引…");
-            // 提前并发拉取图集/UI 资源索引（manifest + RES 配置 default.res.json）：
-            // 二者是后续所有 CDN 图集解析的前置；与首屏 Lib 加载并行发起，缩短进图等待。
-            // 失败已在 Mir2AtlasLibrary 内部消化，不会中断启动；懒加载路径会兜底重试。
-            var atlasInitTask = Mir2AtlasLibrary.InitializeAsync();
-            // 怪物/NPC/物品三类独立图集的版本表（resourceVersion.json）：与 UI 图集索引并行预取，
-            // 不阻塞进 LoginScene；懒加载路径（Mir2OriginObjectLibrary.Request）会自动兜底重试。
-            _ = Mir2OriginObjectLibrary.InitializeAsync();
+            await Mir2AtlasLibrary.InitializeAsync();
 
-            // 触发 Libraries 静态构造（登记各库，不加载）；游戏已彻底抛弃 Libraries，仅保留注册以便兼容。
+            _ = Mir2OriginObjectLibrary.InitializeAsync();
             _ = Libraries.Loaded;
 
-            // 等待图集索引就绪后再进 LoginScene（失败已消化，不中断启动）。
-            await atlasInitTask;   // 通常已先完成；保证 LoginScene 之前就绪（失败已消化，不中断启动）
-            // 配置表（ExcelTableMgr）已在上面并行发起、后台加载，不阻塞进 LoginScene；
-            // 用到时通过 ExcelTableMgr.IsReady 校验即可。
-
-            //KFramework.MonoGame.PrintTool.Log($"[Scene] 切换: {(MirScene.ActiveScene == null ? "null" : MirScene.ActiveScene.GetType().Name)} → LoginScene  时刻={DateTime.Now:HH:mm:ss.fff}");
             MirScene.ActiveScene = new LoginScene();
             await SoundManager.CreateAsync().ConfigureAwait(false);
             ConfigureInput();
@@ -272,7 +260,10 @@ namespace WebGame.Mir2.MonoGame.Client
                 DXManager.Clean(); // Clean once a second.
             }
 
-            Network.Process();
+            if (!(MirScene.ActiveScene is InitLoadingScene))
+            {
+                Network.Process();
+            }
 
             if (MirScene.ActiveScene != null)
             {
