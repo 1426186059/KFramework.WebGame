@@ -69,14 +69,6 @@ namespace Client.MirScenes.Dialogs
                 Location = new Point(ListX, ListY),
                 Size = new Size(ViewW, ViewH),
             };
-            _scroll.ShowScrollBar = true;
-
-            // 列表右侧滚动条（JS barGro/s_bar，用 y_common-sheet 帧做滑块）
-            new MirImageControl
-            {
-                Parent = this, AtlasNameKey = CommonSheet + "#com_line_v",
-                Location = new Point(318 - 12, 20), Size = new Size(2, 310), NotControl = true,
-            };
 
             // 底部页码标签（原版此位置是"觉醒技能"/"技能配置"按钮，客户端无觉醒系统，仅显示提示）
             _pageLabel = new MirLabel
@@ -209,6 +201,11 @@ namespace Client.MirScenes.Dialogs
                     AtlasNameKey = RoleSheet + "#role_jn_img0",
                     Location = new Point(200, 9),
                     NotControl = true,
+                };
+                _level = new MirLabel
+                {
+                    Parent = this, Location = new Point(200, 9), Size = new Size(42, 30),
+                    DrawFormat = new TextStyle(TextAnchor.MiddleCenter), NotControl = true,
                 };
                 _point = new MirLabel
                 {

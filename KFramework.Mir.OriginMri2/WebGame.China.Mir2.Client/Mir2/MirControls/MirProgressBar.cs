@@ -1,6 +1,3 @@
-using System;
-using Client.MirGraphics;
-
 namespace Client.MirControls
 {
     // 进度条（Unity Slider/ProgressBar 风格）：自身图像作底，内嵌一个 Fill 子控件按百分比拉伸。

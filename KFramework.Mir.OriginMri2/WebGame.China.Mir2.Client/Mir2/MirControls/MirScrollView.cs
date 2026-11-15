@@ -19,12 +19,11 @@ namespace Client.MirControls
     {
         // 滚动条布局
         public const int ScrollBarWidth = 14;
-        private const int TrackPad = 2;
-        private const int MinThumb = 16;
 
-        private readonly MirControl _content;
-        private readonly MirImageControl _track;
-        private readonly ScrollThumb _thumb;
+        private readonly MirControl _content;   // 内容容器：滚动=移动它；子控件全加进它；绝不能删
+
+        // 三段式皮肤滚动条（构造即创建默认皮肤，所有面板自动获得；外部直接对 Slider 设图集帧换肤）
+        private MirSlider _skinSlider;
 
         public MirScrollView()
         {
@@ -34,26 +33,26 @@ namespace Client.MirControls
             ScrollOffset = Point.Zero;
             _content.Location = Point.Zero;
 
-            // 滚动条（直接挂在 ScrollView 下、NOT 在 _content 内，所以不被滚动/烘焙，固定显示在右缘）
-            _track = new ScrollTrack(this)
-            {
-                Visible = false, NotControl = false,
-                Texture = KDefaultRes.DefaultTexture2D, ForeColour = new MirEngine.Color(40, 46, 70),
-            };
-            _thumb = new ScrollThumb(this)
-            {
-                Visible = false, NotControl = false,
-                Texture = KDefaultRes.DefaultTexture2D, ForeColour = new MirEngine.Color(110, 150, 210),
-            };
-            InsertControl(Controls.Count, _track);
-            InsertControl(Controls.Count, _thumb);
-            // 松手落在滚动条上时同样要结束「内容区拖拽」（滚动条自身的拖拽不受影响）。
-            _track.MouseUp += OnContentMouseUp;
-            _thumb.MouseUp += OnContentMouseUp;
+            // 皮肤滚动条（挂在 ScrollView 下、不在 _content 内，故不被滚动/烘焙，固定显示在右缘）
+            _skinSlider = new MirSlider();
+            _skinSlider.ValueChanged += OnSkinSliderValueChanged;
+            _skinSlider.PageRequested += OnSkinSliderPageRequested;
+            InsertControl(Controls.Count, _skinSlider);
+            _skinSlider.Visible = false;
         }
 
         /// <summary>内容容器（子控件加到这里）。也可直接 scrollView.Content.Controls.Add(...)。</summary>
         public MirControl Content { get { return _content; } }
+
+        /// <summary>
+        /// 当前皮肤滚动条（三段式：背景轨道/上下箭头/滑块），构造即带默认皮肤。
+        /// 外部直接对 Slider.Track / Thumb / UpArrow / DownArrow 四个组件设图集帧换肤。
+        /// 滚动数据逻辑仍由本控件持有（slider 只回报比例/翻页意图）。
+        /// </summary>
+        public MirSlider Slider { get { return _skinSlider; } }
+
+        private void OnSkinSliderValueChanged(MirSlider slider, float percent) => SetScrollNormalizedY(percent);
+        private void OnSkinSliderPageRequested(MirSlider slider, int dir) => PageScroll(dir);
 
         /// <summary>当前滚动偏移（像素，内容相对视口左上角的位移，>=0）。</summary>
         public Point ScrollOffset { get; private set; }
@@ -188,9 +187,6 @@ namespace Client.MirControls
             ScrollBy(new Point(0, dir * step));
         }
 
-        /// <summary>滚动条 thumb 中心（屏幕 Y），供轨道翻页判断方向。</summary>
-        internal int ThumbCenterY { get { return _thumb.DisplayLocation.Y + _thumb.Size.Height / 2; } }
-
         /// <summary>根据内容子控件重新计算内容尺寸（=_content 需要的包围盒），并重新夹紧滚动。</summary>
         public void UpdateContentSize()
         {
@@ -205,26 +201,18 @@ namespace Client.MirControls
             SetScrollOffset(ScrollOffset);   // 尺寸变了可能要回弹夹紧
         }
 
-        /// <summary>依据当前滚动量摆放滚动条（thumb 大小=可见占比，位置=滚动比例）。</summary>
+        /// <summary>依据当前滚动量摆放皮肤滚动条（thumb 大小=可见占比，位置=滚动比例）。</summary>
         private void UpdateScrollBar()
         {
             int maxY = Math.Max(0, _content.Size.Height - Size.Height);
             bool scrollable = maxY > 0 && ShowScrollBar;
-            _track.Visible = scrollable;
-            _thumb.Visible = scrollable;
-            if (!scrollable) return;
 
             int stripX = Size.Width - ScrollBarWidth;
-            _track.Location = new Point(stripX, 0);
-            _track.Size = new Size(ScrollBarWidth, Size.Height);
-
-            int trackH = Size.Height - TrackPad * 2;
-            int thumbH = (int)(trackH * (Size.Height / (float)Math.Max(1, _content.Size.Height)));
-            thumbH = Math.Max(MinThumb, Math.Min(trackH, thumbH));
-            int travel = trackH - thumbH;
-            int thumbTop = travel > 0 ? (int)(travel * (ScrollOffset.Y / (float)maxY)) : 0;
-            _thumb.Size = new Size(ScrollBarWidth - TrackPad * 2, thumbH);
-            _thumb.Location = new Point(stripX + TrackPad, TrackPad + thumbTop);
+            _skinSlider.Location = new Point(stripX, 0);
+            _skinSlider.Size = new Size(ScrollBarWidth, Size.Height);
+            float visibleRatio = Size.Height / (float)Math.Max(1, _content.Size.Height);
+            float percent = maxY > 0 ? ScrollOffset.Y / (float)maxY : 0f;
+            _skinSlider.SetState(scrollable, visibleRatio, percent);
         }
 
         /// <summary>
@@ -252,8 +240,7 @@ namespace Client.MirControls
 
             BeforeDrawControl();
             DrawControl();   // 烘焙子控件进 ControlTexture（见 CreateTexture 重写）+ 贴回屏幕；屏幕上不再单独画子控件
-            if (_track.Visible) _track.Draw();
-            if (_thumb.Visible) _thumb.Draw();
+            if (_skinSlider.Visible) _skinSlider.Draw();
             DrawBorder();
             AfterDrawControl();
         }
@@ -284,7 +271,7 @@ namespace Client.MirControls
             }
         }
 
-        /// <summary>拖拽期间放宽命中：鼠标略微飘出视口仍能持续收到 OnMouseMove（与 ScrollThumb 的 _captured 同理）。</summary>
+        /// <summary>拖拽期间放宽命中：鼠标略微飘出视口仍能持续收到 OnMouseMove。</summary>
         public override bool IsMouseOver(Point p) => (_dragging && Visible) || base.IsMouseOver(p);
 
         public override void OnMouseDown(MouseEventArgs e)
@@ -381,74 +368,6 @@ namespace Client.MirControls
             protected override void Deactivate()
             {
                 _owner.EndDrag();
-                base.Deactivate();
-            }
-        }
-
-        // —— 滚动条轨道（点击翻页）——
-        private sealed class ScrollTrack : MirImageControl
-        {
-            private readonly MirScrollView _owner;
-            public ScrollTrack(MirScrollView owner) { _owner = owner; }
-            public override void OnMouseDown(MouseEventArgs e)
-            {
-                if (e.Button == MouseButtons.Left)
-                    _owner.PageScroll(e.Y < _owner.ThumbCenterY ? -1 : 1);
-                base.OnMouseDown(e);
-            }
-        }
-
-        // —— 滚动条滑块（拖拽）——
-        private sealed class ScrollThumb : MirImageControl
-        {
-            private readonly MirScrollView _owner;
-            private bool _captured;
-            private int _grabOffset;   // 按下时鼠标与 thumb 顶部的偏移
-
-            public ScrollThumb(MirScrollView owner) { _owner = owner; }
-
-            // 拖拽期间始终视为"鼠标悬停在本控件"，保证鼠标移出滑块也能持续收到 OnMouseMove
-            public override bool IsMouseOver(Point p) => _captured || base.IsMouseOver(p);
-
-            public override void OnMouseDown(MouseEventArgs e)
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    _captured = true;
-                    _grabOffset = e.Y - DisplayLocation.Y;
-                }
-                base.OnMouseDown(e);
-            }
-
-            public override void OnMouseMove(MouseEventArgs e)
-            {
-                if (_captured)
-                {
-                    int trackTop = _owner.DisplayLocation.Y + TrackPad;
-                    int trackH = _owner.Size.Height - TrackPad * 2;
-                    int thumbH = Size.Height;
-                    int travel = trackH - thumbH;
-                    int desiredTop = (e.Y - _grabOffset) - trackTop;
-                    float t = travel > 0 ? Math.Max(0, Math.Min(1, desiredTop / (float)travel)) : 0;
-                    _owner.SetScrollNormalizedY(t);
-                }
-                base.OnMouseMove(e);
-            }
-
-            public override void OnMouseUp(MouseEventArgs e)
-            {
-                _captured = false;
-                base.OnMouseUp(e);
-            }
-
-            // 关键修复：引擎每次 OnMouseUp 都会走 base.OnMouseUp → ActiveControl.Deactivate()，
-            // 而按下时 Activate() 已把 ActiveControl 设为本滑块。重写 Deactivate 在此清掉 _captured，
-            // 这样无论 mouse up 落在滑块本身还是其它控件（光标在拖拽中可能飘走），捕获都会被释放，
-            // 避免"松手后没按键只是移动，内容却一直跟着滚动"的卡死式拖拽。
-            protected override void Deactivate()
-            {
-                _captured = false;
-                if (ActiveControl == this) ActiveControl = null;
                 base.Deactivate();
             }
         }
