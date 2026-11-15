@@ -7,3 +7,4 @@ global using HorizontalWrapMode = KFramework.MonoGame.HorizontalWrapMode;
 global using VerticalWrapMode = KFramework.MonoGame.VerticalWrapMode;
 global using PrintTool = KFramework.MonoGame.PrintTool;
 global using Size = KFramework.MonoGame.Size;
+global using RectangleF = KFramework.MonoGame.RectangleF;

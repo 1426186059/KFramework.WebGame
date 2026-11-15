@@ -183,10 +183,6 @@ namespace MirEngine
         public static bool operator ==(Rectangle left, Rectangle right) => left.X == right.X && left.Y == right.Y && left.Width == right.Width && left.Height == right.Height;
         public static bool operator !=(Rectangle left, Rectangle right) => !(left == right);
 
-        public static Rectangle Ceiling(RectangleF value) => new Rectangle((int)Math.Ceiling(value.X), (int)Math.Ceiling(value.Y), (int)Math.Ceiling(value.Width), (int)Math.Ceiling(value.Height));
-        public static Rectangle Truncate(RectangleF value) => new Rectangle((int)value.X, (int)value.Y, (int)value.Width, (int)value.Height);
-        public static Rectangle Round(RectangleF value) => new Rectangle((int)Math.Round(value.X), (int)Math.Round(value.Y), (int)Math.Round(value.Width), (int)Math.Round(value.Height));
-
         public bool Contains(int x, int y) => X <= x && x < X + Width && Y <= y && y < Y + Height;
         public bool Contains(Point pt) => Contains(pt.X, pt.Y);
         public bool Contains(Rectangle rect) => X <= rect.X && rect.X + rect.Width <= X + Width && Y <= rect.Y && rect.Y + rect.Height <= Y + Height;
@@ -223,99 +219,5 @@ namespace MirEngine
         public void Offset(int x, int y) { X += x; Y += y; }
 
         public override string ToString() => $"({X}, {Y}, {Width}, {Height})";
-    }
-
-    public struct RectangleF
-    {
-        public static readonly RectangleF Empty;
-
-        private float x;
-        private float y;
-        private float width;
-        private float height;
-
-        public PointF Location { get => new PointF(X, Y); set { X = value.X; Y = value.Y; } }
-        public SizeF Size { get => new SizeF(Width, Height); set { Width = value.Width; Height = value.Height; } }
-
-        public float X { get => x; set => x = value; }
-        public float Y { get => y; set => y = value; }
-        public float Width { get => width; set => width = value; }
-        public float Height { get => height; set => height = value; }
-
-        public float Left => X;
-        public float Top => Y;
-        public float Right => X + Width;
-        public float Bottom => Y + Height;
-
-        public bool IsEmpty => !(Width > 0f) && Height <= 0f;
-
-        public RectangleF(float x, float y, float width, float height) { this.x = x; this.y = y; this.width = width; this.height = height; }
-        public RectangleF(PointF location, SizeF size) { x = location.X; y = location.Y; width = size.Width; height = size.Height; }
-
-        public static RectangleF FromLTRB(float left, float top, float right, float bottom) => new RectangleF(left, top, right - left, bottom - top);
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is RectangleF)) return false;
-            RectangleF r = (RectangleF)obj;
-            return r.X == X && r.Y == Y && r.Width == Width && r.Height == Height;
-        }
-
-        public static bool operator ==(RectangleF left, RectangleF right) => left.X == right.X && left.Y == right.Y && left.Width == right.Width && left.Height == right.Height;
-        public static bool operator !=(RectangleF left, RectangleF right) => !(left == right);
-
-        public bool Contains(float x, float y) => X <= x && x < X + Width && Y <= y && y < Y + Height;
-        public bool Contains(PointF pt) => Contains(pt.X, pt.Y);
-        public bool Contains(RectangleF rect) => X <= rect.X && rect.X + rect.Width <= X + Width && Y <= rect.Y && rect.Y + rect.Height <= Y + Height;
-
-        public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode() ^ Width.GetHashCode() ^ Height.GetHashCode();
-
-        public void Inflate(float x, float y) { X -= x; Y -= y; Width += 2f * x; Height += 2f * y; }
-        public void Inflate(SizeF size) => Inflate(size.Width, size.Height);
-        public static RectangleF Inflate(RectangleF rect, float x, float y) { RectangleF r = rect; r.Inflate(x, y); return r; }
-
-        public void Intersect(RectangleF rect) { RectangleF r = Intersect(rect, this); X = r.X; Y = r.Y; Width = r.Width; Height = r.Height; }
-        public static RectangleF Intersect(RectangleF a, RectangleF b)
-        {
-            float num = Math.Max(a.X, b.X);
-            float num2 = Math.Min(a.X + a.Width, b.X + b.Width);
-            float num3 = Math.Max(a.Y, b.Y);
-            float num4 = Math.Min(a.Y + a.Height, b.Y + b.Height);
-            if (num2 >= num && num4 >= num3) return new RectangleF(num, num3, num2 - num, num4 - num3);
-            return Empty;
-        }
-
-        public bool IntersectsWith(RectangleF rect) => rect.X < X + Width && X < rect.X + rect.Width && rect.Y < Y + Height && Y < rect.Y + rect.Height;
-
-        public static RectangleF Union(RectangleF a, RectangleF b)
-        {
-            float num = Math.Min(a.X, b.X);
-            float num2 = Math.Max(a.X + a.Width, b.X + b.Width);
-            float num3 = Math.Min(a.Y, b.Y);
-            float num4 = Math.Max(a.Y + a.Height, b.Y + b.Height);
-            return new RectangleF(num, num3, num2 - num, num4 - num3);
-        }
-
-        public void Offset(PointF pos) => Offset(pos.X, pos.Y);
-        public void Offset(float x, float y) { X += x; Y += y; }
-
-        public static implicit operator RectangleF(Rectangle r) => new RectangleF(r.X, r.Y, r.Width, r.Height);
-
-        public override string ToString() => $"({X}, {Y}, {Width}, {Height})";
-    }
-
-    // ===== 像素格式 / 数据矩形（原 Imaging.cs）=====
-    public enum PixelFormat
-    {
-        Alpha, Canonical, DontCare, Extended, Format16bppArgb1555, Format16bppGrayScale,
-        Format16bppRgb555, Format16bppRgb565, Format1bppIndexed, Format24bppRgb,
-        Format32bppArgb, Format32bppPArgb, Format32bppRgb, Format48bppRgb, Format4bppIndexed,
-        Format64bppArgb, Format64bppPArgb, Format8bppIndexed, Gdi, Indexed, Max, PAlpha, Undefined
-    }
-
-    public struct DataRectangle
-    {
-        public int Pitch;
-        public IntPtr DataPointer;
     }
 }
