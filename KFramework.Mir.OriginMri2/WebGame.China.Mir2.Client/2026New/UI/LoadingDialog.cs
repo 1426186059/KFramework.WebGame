@@ -136,8 +136,9 @@ namespace Client.MirControls
 
         /// <summary>在登录界面即以最低优先级后台预加载进度条图集（preload-sheet）：仅暖缓存、不阻塞、可失败，
         /// 进度条组件经 AtlasNameKey 复用本次加载（按 sheet key 去重，只下载一次）；取不到时进度条退化为纯色条，故用最低优先级。</summary>
-        public static void PreloadProgressSheet()
+        public static void PreLoadRes()
         {
+            _ = Mir2OriginResource.GetTextureAsync(BgImageName);
             _ = Mir2AtlasLibrary.GetSheetAsync(SheetJsonPath, default, Mir2OriginObjectLibrary.PriorityBackground);
         }
 

@@ -114,7 +114,7 @@ namespace Client.MirScenes
 
         public void PreLoadRes()
         {
-            LoadingDialog.PreloadProgressSheet();
+            LoadingDialog.PreLoadRes();
         }
 
         public override void Process()
