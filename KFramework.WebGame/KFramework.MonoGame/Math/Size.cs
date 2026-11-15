@@ -7,8 +7,8 @@ namespace KFramework.MonoGame
 
         public Size(int width, int height)
         {
-            Width = width;
-            Height = height;
+            this.Width = width;
+            this.Height = height;
         }
 
         public static Size Empty => new Size(0, 0);
@@ -18,36 +18,39 @@ namespace KFramework.MonoGame
             get { return Width == 0 && Height == 0; }
         }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object? other)
         {
-            if (!(obj is Size)) return false;
-            Size size = (Size)obj;
-            return size.Width == Height && size.Height == Height;
+            if (!(other is Size))
+            {
+                return false;
+            }
+
+            return this == (Size)other;
         }
 
         public bool Equals(Size other)
         {
-            return Width == other.Width && Height == other.Height;
+            return this == other;
         }
 
         public override int GetHashCode()
         {
-            return (Width * 397) ^ Height;
+            return HashCode.Combine(Width, Height);
         }
 
         public static bool operator ==(Size a, Size b)
         {
-            return a.Equals(b);
+            return a.Width == b.Width && a.Height == b.Height;
         }
 
         public static bool operator !=(Size a, Size b)
         {
-            return !a.Equals(b);
+            return !(a == b);
         }
 
         public override string ToString()
         {
-            return $"{{Width={Width}, Height={Height}}}";
+            return $"(Width={Width}, Height={Height})";
         }
     }
 }
